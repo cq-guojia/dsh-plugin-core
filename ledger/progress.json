@@ -16,21 +16,21 @@
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
     },
-    "20261018-0409-utils-子包-日期-字符串-字节-时间区间-内置多语言-b981": {
+    "20261018-0414-ui-基础零件-控件-css-前缀化-基础控件-e19d": {
       "category": "建设",
-      "created": "2026-10-18 04:09:28",
+      "created": "2026-10-18 04:14:17",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-18 04:09:28",
+      "started": "2026-10-18 04:14:17",
       "status": "doing",
       "tags": [
-        "utils",
-        "日期",
-        "格式化"
+        "ui",
+        "控件",
+        "样式"
       ],
-      "title": "utils 子包：日期/字符串/字节/时间区间 + 内置多语言",
-      "worklog": "worklog/202610/18-0409-utils-子包-日期-字符串-字节-时间区间-内置多语言-b981.md"
+      "title": "ui 基础零件：控件 CSS 前缀化 + 基础控件",
+      "worklog": "worklog/202610/18-0414-ui-基础零件-控件-css-前缀化-基础控件-e19d.md"
     }
   }
 }

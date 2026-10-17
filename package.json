@@ -53,9 +53,9 @@
     "test": "node --test test/*.test.mjs"
   },
   "peerDependencies": {
+    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.0",
     "react": ">=18",
-    "react-dom": ">=18",
-    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.0"
+    "react-dom": ">=18"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -69,6 +69,7 @@
     }
   },
   "devDependencies": {
+    "@types/react": "^19.3.0",
     "typescript": "5.9.3"
   },
   "engines": {
