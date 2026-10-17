@@ -16,21 +16,21 @@
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
     },
-    "20261018-0306-design-子包-token-前缀参数化-createstylekit-工厂-56ee": {
+    "20261018-0409-utils-子包-日期-字符串-字节-时间区间-内置多语言-b981": {
       "category": "建设",
-      "created": "2026-10-18 03:06:11",
+      "created": "2026-10-18 04:09:28",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-18 03:06:11",
+      "started": "2026-10-18 04:09:28",
       "status": "doing",
       "tags": [
-        "design",
-        "token",
-        "样式注入"
+        "utils",
+        "日期",
+        "格式化"
       ],
-      "title": "design 子包：token 前缀参数化 + createStyleKit 工厂",
-      "worklog": "worklog/202610/18-0306-design-子包-token-前缀参数化-createstylekit-工厂-56ee.md"
+      "title": "utils 子包：日期/字符串/字节/时间区间 + 内置多语言",
+      "worklog": "worklog/202610/18-0409-utils-子包-日期-字符串-字节-时间区间-内置多语言-b981.md"
     }
   }
 }
