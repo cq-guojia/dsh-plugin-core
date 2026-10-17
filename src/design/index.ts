@@ -1,2 +1,3 @@
-// 占位：内容由对应子包任务填充，见 docs/requirements.md
-export {}
+export { TOKENS_CSS_TEMPLATE } from './tokens-css.js'
+export { DARK_THEME_SELECTOR, buildTokensCss, createStyleKit } from './style-kit.js'
+export type { StyleKit, StyleKitOptions } from './style-kit.js'
