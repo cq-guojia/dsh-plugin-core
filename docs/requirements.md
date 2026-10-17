@@ -149,11 +149,14 @@ dsh-plugin-core/
 
 | 期 | 内容 | 状态 |
 |---|---|---|
-| 骨架 | package.json exports / tsconfig / tsdown 出 dist | 待做 |
-| v1 | `design` + `utils` + `ui` | 待做 |
-| v2 | `explorer`（用户拍板要抽） | 待做 |
-| v3 | `session` | 待做 |
-| 文档 | README + 使用说明 | 待做 |
+| 骨架 | package.json exports / tsconfig / 构建出 dist | ✅ 已完成（`tsc` 出 ESM + d.ts，不走 tsdown） |
+| v1 | `design` + `utils` + `ui` | ✅ 已完成（零件 + Picker / ModelPicker + Modal / toast / 空态 / 错误边界） |
+| v2 | `explorer`（用户拍板要抽） | ✅ 已完成（浏览面板 + 预览 + WorkspacePicker / FilePicker） |
+| v3 | `session` | ⚠️ **半完成**：契约与三种承载已好，**官方会话 UI 镜像未搬**（只做最简渲染） |
+| 文档 | README 接入指南 | ✅ 已完成 |
+
+**未做**（按重要性）：真实插件接入验证 / 会话 UI 镜像 / 代码高亮与 PDF 预览 / 类名隔离 /
+设置页骨架（等第二个消费者）/ npm 发布流程。详见 README「还没做的事」。
 
 ## 8. 验收口径
 

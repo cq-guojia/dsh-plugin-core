@@ -16,21 +16,21 @@
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
     },
-    "20261018-0610-session-子包-会话预览-承载可换-注入-source-定制扩展点-8bbb": {
+    "20261018-0613-文档-readme-接入指南-需求文档分期状态回填-e9f2": {
       "category": "建设",
-      "created": "2026-10-18 06:10:36",
+      "created": "2026-10-18 06:13:15",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-18 06:10:36",
+      "started": "2026-10-18 06:13:15",
       "status": "doing",
       "tags": [
-        "session",
-        "会话",
-        "预览"
+        "文档",
+        "README",
+        "接入"
       ],
-      "title": "session 子包：会话预览（承载可换 + 注入 source + 定制扩展点）",
-      "worklog": "worklog/202610/18-0610-session-子包-会话预览-承载可换-注入-source-定制扩展点-8bbb.md"
+      "title": "文档：README 接入指南 + 需求文档分期状态回填",
+      "worklog": "worklog/202610/18-0613-文档-readme-接入指南-需求文档分期状态回填-e9f2.md"
     }
   }
 }
