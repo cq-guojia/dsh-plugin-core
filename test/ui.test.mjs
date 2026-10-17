@@ -5,11 +5,12 @@ import { createStyleKit } from '../dist/design/index.js'
 
 const SAMPLE = '.dsh-tdt-btn{color:var(--tdt-fg);border:1px solid var(--tdt-border)}'
 
-test('buildCss 同时换类名前缀与变量前缀', () => {
+test('buildCss 换变量前缀，但保留类名前缀（与控件硬编码 className 对齐）', () => {
   const css = buildCss(SAMPLE, 'acme')
-  assert.equal(css, '.dsh-acme-btn{color:var(--acme-fg);border:1px solid var(--acme-border)}')
-  assert.ok(!css.includes('dsh-tdt-'), '类名前缀必须换掉，否则多插件同类名互相覆盖')
+  assert.equal(css, '.dsh-tdt-btn{color:var(--acme-fg);border:1px solid var(--acme-border)}')
   assert.ok(!css.includes('--tdt-'))
+  // 类名必须原样保留：控件里的 className 是硬编码的 dsh-tdt-*，换掉就对不上、样式全丢
+  assert.ok(css.includes('dsh-tdt-btn'))
 })
 
 test('setStyleKit 生效，getStyleKit 拿得到', () => {

@@ -16,21 +16,21 @@
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
     },
-    "20261018-0414-ui-基础零件-控件-css-前缀化-基础控件-e19d": {
-      "category": "建设",
-      "created": "2026-10-18 04:14:17",
+    "20261018-0423-缺陷修复-css-类名换了前缀但控件-classname-没换-样式对不上-d14b": {
+      "category": "缺陷修复",
+      "created": "2026-10-18 04:23:45",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-18 04:14:17",
+      "started": "2026-10-18 04:23:45",
       "status": "doing",
       "tags": [
-        "ui",
-        "控件",
-        "样式"
+        "样式",
+        "前缀",
+        "控件"
       ],
-      "title": "ui 基础零件：控件 CSS 前缀化 + 基础控件",
-      "worklog": "worklog/202610/18-0414-ui-基础零件-控件-css-前缀化-基础控件-e19d.md"
+      "title": "缺陷修复：CSS 类名换了前缀但控件 className 没换，样式对不上",
+      "worklog": "worklog/202610/18-0423-缺陷修复-css-类名换了前缀但控件-classname-没换-样式对不上-d14b.md"
     }
   }
 }
