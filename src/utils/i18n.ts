@@ -10,6 +10,13 @@ export type Locale = 'zh' | 'en'
 
 /** utils 内置文案的 key（ui 的选择器也复用这套字典，保持单一 locale 状态）。 */
 export type UtilMessageKey =
+  | 'sessionLoading'
+  | 'sessionFailed'
+  | 'sessionEmpty'
+  | 'sessionAttachments'
+  | 'sessionRoleUser'
+  | 'sessionRoleAssistant'
+  | 'sessionRoleTool'
   | 'explorerLoading'
   | 'explorerFailed'
   | 'explorerUnsupported'
@@ -45,6 +52,13 @@ export type Translate = (key: UtilMessageKey, vars?: Record<string, number | str
 
 const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
   zh: {
+    sessionLoading: '加载会话…',
+    sessionFailed: '会话加载失败',
+    sessionEmpty: '该会话暂无内容',
+    sessionAttachments: '附件',
+    sessionRoleUser: '用户',
+    sessionRoleAssistant: '助手',
+    sessionRoleTool: '工具',
     explorerLoading: '加载中…',
     explorerFailed: '加载失败',
     explorerUnsupported: '暂不支持预览该类型',
@@ -76,6 +90,13 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     relYearsAgo: '{n} 年前',
   },
   en: {
+    sessionLoading: 'Loading session…',
+    sessionFailed: 'Failed to load session',
+    sessionEmpty: 'No content in this session',
+    sessionAttachments: 'Attachments',
+    sessionRoleUser: 'User',
+    sessionRoleAssistant: 'Assistant',
+    sessionRoleTool: 'Tool',
     explorerLoading: 'Loading…',
     explorerFailed: 'Failed to load',
     explorerUnsupported: 'Preview not supported',

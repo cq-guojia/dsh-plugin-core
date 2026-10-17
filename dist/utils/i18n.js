@@ -7,6 +7,13 @@
  */
 const DICT = {
     zh: {
+        sessionLoading: '加载会话…',
+        sessionFailed: '会话加载失败',
+        sessionEmpty: '该会话暂无内容',
+        sessionAttachments: '附件',
+        sessionRoleUser: '用户',
+        sessionRoleAssistant: '助手',
+        sessionRoleTool: '工具',
         explorerLoading: '加载中…',
         explorerFailed: '加载失败',
         explorerUnsupported: '暂不支持预览该类型',
@@ -38,6 +45,13 @@ const DICT = {
         relYearsAgo: '{n} 年前',
     },
     en: {
+        sessionLoading: 'Loading session…',
+        sessionFailed: 'Failed to load session',
+        sessionEmpty: 'No content in this session',
+        sessionAttachments: 'Attachments',
+        sessionRoleUser: 'User',
+        sessionRoleAssistant: 'Assistant',
+        sessionRoleTool: 'Tool',
         explorerLoading: 'Loading…',
         explorerFailed: 'Failed to load',
         explorerUnsupported: 'Preview not supported',

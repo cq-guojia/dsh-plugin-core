@@ -3,6 +3,7 @@ import { BACK_TO_TOP_CSS, BUTTON_CSS, DATETIME_CSS, FIELD_CSS, LOADING_CSS, SEGM
 import { PICKER_CSS } from './picker-css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
 import { EXPLORER_CSS } from '../explorer/explorer-css.js';
+import { SESSION_CSS } from '../session/session-css.js';
 export const CONTROLS_DOMAIN = 'controls';
 /**
  * 把 CSS 模板里的 **变量前缀** `--tdt-` 换成当前插件的。
@@ -28,6 +29,7 @@ const CONTROLS_CSS = [
     PICKER_CSS,
     FEEDBACK_CSS,
     EXPLORER_CSS,
+    SESSION_CSS,
 ].join('\n');
 /**
  * 当前插件的样式设施。

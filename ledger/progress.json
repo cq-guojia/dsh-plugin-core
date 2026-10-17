@@ -16,21 +16,21 @@
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
     },
-    "20261018-0605-explorer-子包-工作区浏览-预览-选工作区-文件-d32e": {
+    "20261018-0610-session-子包-会话预览-承载可换-注入-source-定制扩展点-8bbb": {
       "category": "建设",
-      "created": "2026-10-18 06:05:37",
+      "created": "2026-10-18 06:10:36",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-18 06:05:37",
+      "started": "2026-10-18 06:10:36",
       "status": "doing",
       "tags": [
-        "explorer",
-        "工作区",
+        "session",
+        "会话",
         "预览"
       ],
-      "title": "explorer 子包：工作区浏览 + 预览 + 选工作区/文件",
-      "worklog": "worklog/202610/18-0605-explorer-子包-工作区浏览-预览-选工作区-文件-d32e.md"
+      "title": "session 子包：会话预览（承载可换 + 注入 source + 定制扩展点）",
+      "worklog": "worklog/202610/18-0610-session-子包-会话预览-承载可换-注入-source-定制扩展点-8bbb.md"
     }
   }
 }
