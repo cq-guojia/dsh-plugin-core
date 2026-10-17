@@ -3,5 +3,13 @@ node_modules/
 .DS_Store
 __pycache__/
 *.pyc
+*.tsbuildinfo
+*.tgz
+.env
+.env.local
+
+# IDE 本地状态（机器相关）：忽略但不要删目录
+.codebuddy/
+.trae/
 
 # dist/ 不可忽略：宿主以 git/npm 安装且不跑构建脚本，产物必须入库随包发布
