@@ -2,6 +2,18 @@
 // 使用前：插件启动时 `setStyleKit(createStyleKit({ id, prefix }))` 一次，
 // 再调一次 `ensureControls()` 把 token + 控件样式挂上（幂等）。
 export { CONTROLS_DOMAIN, buildCss, ensureControls, getStyleKit, setStyleKit } from './css.js'
+export {
+  filterGroups,
+  flattenOptions,
+  groupOf,
+  labelsOf,
+  toGroups,
+  toggleValue,
+  type PickerGroup,
+  type PickerOption,
+} from './picker-logic.js'
+export { Picker, type PickerProps } from './Picker.js'
+export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js'
 
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js'
 export { Segmented, type SegmentedProps } from './Segmented.js'
@@ -19,12 +31,10 @@ export {
   Input,
   NumberInput,
   PrefixedInput,
-  SelectField,
   fieldMetricsOf,
   type EditorOption,
   type FieldSize,
   type InputProps,
   type NumberInputProps,
   type PrefixedInputProps,
-  type SelectFieldProps,
 } from './Field.js'

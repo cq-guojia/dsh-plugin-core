@@ -18,7 +18,6 @@
  */
 import { ensureControls } from './css.js';
 import { createElement as h, useEffect, useRef, useState } from 'react';
-import { IconChevronUpOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitives';
 // 主内容列 id 与 `<Loading />` 同源：必须 == ui/index.ts 的 `PANEL_CONTENT_ID`（`dsh-tdt-main`），
 // 这里用字面量避免与 ui/index 形成循环依赖（Loading 同样如此）。
 const DEFAULT_ANCHOR_ID = 'dsh-tdt-main';
@@ -106,6 +105,6 @@ export function BackToTop(props) {
         'aria-label': '回到顶部',
         title: '回到顶部',
         onClick,
-    }, h(IconChevronUpOutlineRegular, { size: 20 }));
+    }, h('span', { className: 'dsh-tdt-backto-top__arrow' }, '↑'));
 }
 //# sourceMappingURL=BackToTop.js.map

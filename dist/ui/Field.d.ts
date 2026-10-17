@@ -1,4 +1,4 @@
-import { createElement as h, type CSSProperties, type ReactElement, type ReactNode, type RefObject } from 'react';
+import { createElement as h, type CSSProperties, type RefObject } from 'react';
 /** 输入高度档（sm 24 / md 28 / lg 32）。 */
 export type FieldSize = 'sm' | 'md' | 'lg';
 export interface InputProps {
@@ -101,43 +101,4 @@ export declare function fieldMetricsOf(size: FieldSize): {
     icon: number;
     gap: string;
 };
-export interface SelectFieldProps {
-    /** 当前值。 */
-    value: string;
-    /** 选项。 */
-    options: EditorOption[];
-    /** 选中回调。 */
-    onChange: (value: string) => void;
-    /** 未选中时的占位。 */
-    placeholder: string;
-    /** 列表为空时的文案。 */
-    emptyLabel: string;
-    /** 无障碍名。 */
-    ariaLabel: string;
-    /** 行首图标。 */
-    icon?: ReactNode;
-    /** 浮层对齐。 */
-    align?: 'start' | 'end';
-    /** 禁用。 */
-    disabled?: boolean;
-    /** 悬停提示。 */
-    title?: string;
-    /** 锚点宽度（数字 = px）。 */
-    width?: number | string;
-    /** 锚点最大宽度（数字 = px）。 */
-    maxWidth?: number | string;
-    /** 文本超长时走 MarqueeText（默认省略号）。 */
-    marquee?: boolean;
-    /** 整行下拉（撑满父宽）。 */
-    block?: boolean;
-    /** 高度档（sm 24 / md 28 / lg 32，默认 lg = 32 标准行）。 */
-    size?: 'sm' | 'md' | 'lg';
-    /** 校验不通过：描红。 */
-    error?: boolean;
-}
-/**
- * 下拉选择：官方 `Menu`（portal 到 body，避免被弹窗内部滚动裁掉；选中项自动带对勾）。
- * 空列表 ⇒ 禁用并显示空态文案（接不到真数据时不塞假值）。
- */
-export declare function SelectField(props: SelectFieldProps): ReactElement;
 //# sourceMappingURL=Field.d.ts.map

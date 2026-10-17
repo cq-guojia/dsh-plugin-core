@@ -16,21 +16,21 @@
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
     },
-    "20261018-0423-缺陷修复-css-类名换了前缀但控件-classname-没换-样式对不上-d14b": {
-      "category": "缺陷修复",
-      "created": "2026-10-18 04:23:45",
+    "20261018-0425-ui-选择器-picker-通用选择器-modelpicker-双形态-b6cd": {
+      "category": "建设",
+      "created": "2026-10-18 04:25:16",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-18 04:23:45",
+      "started": "2026-10-18 04:25:16",
       "status": "doing",
       "tags": [
-        "样式",
-        "前缀",
-        "控件"
+        "ui",
+        "选择器",
+        "模型"
       ],
-      "title": "缺陷修复：CSS 类名换了前缀但控件 className 没换，样式对不上",
-      "worklog": "worklog/202610/18-0423-缺陷修复-css-类名换了前缀但控件-classname-没换-样式对不上-d14b.md"
+      "title": "ui 选择器：Picker 通用选择器 + ModelPicker 双形态",
+      "worklog": "worklog/202610/18-0425-ui-选择器-picker-通用选择器-modelpicker-双形态-b6cd.md"
     }
   }
 }

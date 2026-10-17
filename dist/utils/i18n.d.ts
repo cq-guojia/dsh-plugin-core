@@ -6,8 +6,8 @@
  * 需要覆盖时传自己的 `t` 进来即可。
  */
 export type Locale = 'zh' | 'en';
-/** utils 内置文案的 key。 */
-export type UtilMessageKey = 'relNow' | 'relJustNow' | 'relMinutesAgo' | 'relHoursAgo' | 'relDaysAgo' | 'relWeeksAgo' | 'relMonthsAgo' | 'relYearsAgo';
+/** utils 内置文案的 key（ui 的选择器也复用这套字典，保持单一 locale 状态）。 */
+export type UtilMessageKey = 'pickerPlaceholder' | 'pickerEmpty' | 'pickerNoMatch' | 'pickerSearch' | 'pickerSelected' | 'pickerMaxReached' | 'pickerDegraded' | 'modelProvider' | 'modelModel' | 'relNow' | 'relJustNow' | 'relMinutesAgo' | 'relHoursAgo' | 'relDaysAgo' | 'relWeeksAgo' | 'relMonthsAgo' | 'relYearsAgo';
 /** 文案函数：`vars` 用于填 `{n}` 这类占位。 */
 export type Translate = (key: UtilMessageKey, vars?: Record<string, number | string>) => string;
 export declare function setLocale(locale: Locale): void;

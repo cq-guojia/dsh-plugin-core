@@ -8,8 +8,17 @@
 
 export type Locale = 'zh' | 'en'
 
-/** utils 内置文案的 key。 */
+/** utils 内置文案的 key（ui 的选择器也复用这套字典，保持单一 locale 状态）。 */
 export type UtilMessageKey =
+  | 'pickerPlaceholder'
+  | 'pickerEmpty'
+  | 'pickerNoMatch'
+  | 'pickerSearch'
+  | 'pickerSelected'
+  | 'pickerMaxReached'
+  | 'pickerDegraded'
+  | 'modelProvider'
+  | 'modelModel'
   | 'relNow'
   | 'relJustNow'
   | 'relMinutesAgo'
@@ -24,6 +33,15 @@ export type Translate = (key: UtilMessageKey, vars?: Record<string, number | str
 
 const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
   zh: {
+    pickerPlaceholder: '请选择',
+    pickerEmpty: '暂无可选',
+    pickerNoMatch: '无匹配项',
+    pickerSearch: '搜索…',
+    pickerSelected: '已选 {n} 项',
+    pickerMaxReached: '最多选 {n} 项',
+    pickerDegraded: '候选可能不完整',
+    modelProvider: '供应商',
+    modelModel: '模型',
     relNow: '刚刚',
     relJustNow: '刚刚',
     relMinutesAgo: '{n} 分钟前',
@@ -34,6 +52,15 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     relYearsAgo: '{n} 年前',
   },
   en: {
+    pickerPlaceholder: 'Select…',
+    pickerEmpty: 'No options',
+    pickerNoMatch: 'No match',
+    pickerSearch: 'Search…',
+    pickerSelected: '{n} selected',
+    pickerMaxReached: 'Up to {n}',
+    pickerDegraded: 'List may be incomplete',
+    modelProvider: 'Provider',
+    modelModel: 'Model',
     relNow: 'just now',
     relJustNow: 'just now',
     relMinutesAgo: '{n}m ago',
