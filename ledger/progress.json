@@ -16,21 +16,21 @@
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
     },
-    "20261018-0602-ui-反馈件-modal-toast-空态-错误边界-916a": {
+    "20261018-0605-explorer-子包-工作区浏览-预览-选工作区-文件-d32e": {
       "category": "建设",
-      "created": "2026-10-18 06:02:37",
+      "created": "2026-10-18 06:05:37",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-18 06:02:37",
+      "started": "2026-10-18 06:05:37",
       "status": "doing",
       "tags": [
-        "ui",
-        "反馈",
-        "弹窗"
+        "explorer",
+        "工作区",
+        "预览"
       ],
-      "title": "ui 反馈件：Modal + toast + 空态 + 错误边界",
-      "worklog": "worklog/202610/18-0602-ui-反馈件-modal-toast-空态-错误边界-916a.md"
+      "title": "explorer 子包：工作区浏览 + 预览 + 选工作区/文件",
+      "worklog": "worklog/202610/18-0605-explorer-子包-工作区浏览-预览-选工作区-文件-d32e.md"
     }
   }
 }

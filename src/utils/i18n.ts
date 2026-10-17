@@ -10,6 +10,14 @@ export type Locale = 'zh' | 'en'
 
 /** utils 内置文案的 key（ui 的选择器也复用这套字典，保持单一 locale 状态）。 */
 export type UtilMessageKey =
+  | 'explorerLoading'
+  | 'explorerFailed'
+  | 'explorerUnsupported'
+  | 'explorerRoot'
+  | 'explorerUp'
+  | 'explorerRefresh'
+  | 'explorerTruncated'
+  | 'explorerEmptyDir'
   | 'modalClose'
   | 'emptyText'
   | 'errorTitle'
@@ -37,6 +45,14 @@ export type Translate = (key: UtilMessageKey, vars?: Record<string, number | str
 
 const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
   zh: {
+    explorerLoading: '加载中…',
+    explorerFailed: '加载失败',
+    explorerUnsupported: '暂不支持预览该类型',
+    explorerRoot: '工作区',
+    explorerUp: '上一级',
+    explorerRefresh: '刷新',
+    explorerTruncated: '条目过多，已截断',
+    explorerEmptyDir: '空目录',
     modalClose: '关闭',
     emptyText: '暂无数据',
     errorTitle: '出错了',
@@ -60,6 +76,14 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     relYearsAgo: '{n} 年前',
   },
   en: {
+    explorerLoading: 'Loading…',
+    explorerFailed: 'Failed to load',
+    explorerUnsupported: 'Preview not supported',
+    explorerRoot: 'Workspace',
+    explorerUp: 'Up',
+    explorerRefresh: 'Refresh',
+    explorerTruncated: 'Too many entries, truncated',
+    explorerEmptyDir: 'Empty folder',
     modalClose: 'Close',
     emptyText: 'No data',
     errorTitle: 'Something went wrong',

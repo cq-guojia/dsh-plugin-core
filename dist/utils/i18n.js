@@ -7,6 +7,14 @@
  */
 const DICT = {
     zh: {
+        explorerLoading: '加载中…',
+        explorerFailed: '加载失败',
+        explorerUnsupported: '暂不支持预览该类型',
+        explorerRoot: '工作区',
+        explorerUp: '上一级',
+        explorerRefresh: '刷新',
+        explorerTruncated: '条目过多，已截断',
+        explorerEmptyDir: '空目录',
         modalClose: '关闭',
         emptyText: '暂无数据',
         errorTitle: '出错了',
@@ -30,6 +38,14 @@ const DICT = {
         relYearsAgo: '{n} 年前',
     },
     en: {
+        explorerLoading: 'Loading…',
+        explorerFailed: 'Failed to load',
+        explorerUnsupported: 'Preview not supported',
+        explorerRoot: 'Workspace',
+        explorerUp: 'Up',
+        explorerRefresh: 'Refresh',
+        explorerTruncated: 'Too many entries, truncated',
+        explorerEmptyDir: 'Empty folder',
         modalClose: 'Close',
         emptyText: 'No data',
         errorTitle: 'Something went wrong',
