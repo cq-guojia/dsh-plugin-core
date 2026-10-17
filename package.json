@@ -1,0 +1,28 @@
+{
+  "name": "dsh-plugin-core",
+  "version": "0.0.0",
+  "description": "Shared base for DSH plugins: UI tokens, style injector, common controls, file browsing",
+  "keywords": [
+    "deepseek",
+    "harness",
+    "dsh",
+    "dsh-plugin"
+  ],
+  "homepage": "https://github.com/cq-guojia/dsh-plugin-core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cq-guojia/dsh-plugin-core.git"
+  },
+  "author": "cq-guojia",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.5"
+  }
+}
