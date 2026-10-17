@@ -9,6 +9,7 @@ import {
   SELECT_CSS,
 } from './controls-css.js'
 import { PICKER_CSS } from './picker-css.js'
+import { FEEDBACK_CSS } from './feedback-css.js'
 
 export const CONTROLS_DOMAIN = 'controls'
 
@@ -35,6 +36,7 @@ const CONTROLS_CSS = [
   LOADING_CSS,
   BACK_TO_TOP_CSS,
   PICKER_CSS,
+  FEEDBACK_CSS,
 ].join('\n')
 
 /**

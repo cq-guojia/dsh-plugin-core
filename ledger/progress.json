@@ -16,21 +16,21 @@
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
     },
-    "20261018-0425-ui-选择器-picker-通用选择器-modelpicker-双形态-b6cd": {
+    "20261018-0602-ui-反馈件-modal-toast-空态-错误边界-916a": {
       "category": "建设",
-      "created": "2026-10-18 04:25:16",
+      "created": "2026-10-18 06:02:37",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-18 04:25:16",
+      "started": "2026-10-18 06:02:37",
       "status": "doing",
       "tags": [
         "ui",
-        "选择器",
-        "模型"
+        "反馈",
+        "弹窗"
       ],
-      "title": "ui 选择器：Picker 通用选择器 + ModelPicker 双形态",
-      "worklog": "worklog/202610/18-0425-ui-选择器-picker-通用选择器-modelpicker-双形态-b6cd.md"
+      "title": "ui 反馈件：Modal + toast + 空态 + 错误边界",
+      "worklog": "worklog/202610/18-0602-ui-反馈件-modal-toast-空态-错误边界-916a.md"
     }
   }
 }

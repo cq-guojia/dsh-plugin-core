@@ -7,6 +7,10 @@
  */
 const DICT = {
     zh: {
+        modalClose: '关闭',
+        emptyText: '暂无数据',
+        errorTitle: '出错了',
+        errorRetry: '重试',
         pickerPlaceholder: '请选择',
         pickerEmpty: '暂无可选',
         pickerNoMatch: '无匹配项',
@@ -26,6 +30,10 @@ const DICT = {
         relYearsAgo: '{n} 年前',
     },
     en: {
+        modalClose: 'Close',
+        emptyText: 'No data',
+        errorTitle: 'Something went wrong',
+        errorRetry: 'Retry',
         pickerPlaceholder: 'Select…',
         pickerEmpty: 'No options',
         pickerNoMatch: 'No match',

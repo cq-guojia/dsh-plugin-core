@@ -10,6 +10,10 @@ export type Locale = 'zh' | 'en'
 
 /** utils 内置文案的 key（ui 的选择器也复用这套字典，保持单一 locale 状态）。 */
 export type UtilMessageKey =
+  | 'modalClose'
+  | 'emptyText'
+  | 'errorTitle'
+  | 'errorRetry'
   | 'pickerPlaceholder'
   | 'pickerEmpty'
   | 'pickerNoMatch'
@@ -33,6 +37,10 @@ export type Translate = (key: UtilMessageKey, vars?: Record<string, number | str
 
 const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
   zh: {
+    modalClose: '关闭',
+    emptyText: '暂无数据',
+    errorTitle: '出错了',
+    errorRetry: '重试',
     pickerPlaceholder: '请选择',
     pickerEmpty: '暂无可选',
     pickerNoMatch: '无匹配项',
@@ -52,6 +60,10 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     relYearsAgo: '{n} 年前',
   },
   en: {
+    modalClose: 'Close',
+    emptyText: 'No data',
+    errorTitle: 'Something went wrong',
+    errorRetry: 'Retry',
     pickerPlaceholder: 'Select…',
     pickerEmpty: 'No options',
     pickerNoMatch: 'No match',
