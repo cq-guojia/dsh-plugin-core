@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-core",
   "version": "0.0.0",
-  "description": "Shared base for DSH plugins: UI tokens, style injector, common controls, file browsing",
+  "description": "Shared base for DSH plugins: design tokens, UI controls, utils, workspace explorer, session preview",
   "keywords": [
     "deepseek",
     "harness",
@@ -16,12 +16,61 @@
   "author": "cq-guojia",
   "license": "MIT",
   "type": "module",
+  "sideEffects": false,
   "exports": {
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./design": {
+      "types": "./dist/design/index.d.ts",
+      "default": "./dist/design/index.js"
+    },
+    "./ui": {
+      "types": "./dist/ui/index.d.ts",
+      "default": "./dist/ui/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "./explorer": {
+      "types": "./dist/explorer/index.d.ts",
+      "default": "./dist/explorer/index.js"
+    },
+    "./explorer/preview": {
+      "types": "./dist/explorer/preview/index.d.ts",
+      "default": "./dist/explorer/preview/index.js"
+    },
+    "./session": {
+      "types": "./dist/session/index.d.ts",
+      "default": "./dist/session/index.js"
+    }
   },
   "files": [
     "dist"
   ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.mjs"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-primitives": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  },
   "engines": {
     "node": ">=22.5"
   }

@@ -15,6 +15,22 @@
       ],
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
+    },
+    "20261018-0302-工程骨架-exports-tsconfig-tsdown-出-dist-106e": {
+      "category": "建设",
+      "created": "2026-10-18 03:02:52",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-18 03:02:52",
+      "status": "doing",
+      "tags": [
+        "打包",
+        "tsdown",
+        "骨架"
+      ],
+      "title": "工程骨架：exports + tsconfig + tsdown 出 dist",
+      "worklog": "worklog/202610/18-0302-工程骨架-exports-tsconfig-tsdown-出-dist-106e.md"
     }
   }
 }
