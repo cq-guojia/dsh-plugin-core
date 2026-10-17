@@ -15,22 +15,6 @@
       ],
       "title": "DSH 插件共享底座：需求澄清与需求文档",
       "worklog": "worklog/202610/18-0110-dsh-插件共享底座-需求澄清与需求文档-7ec5.md"
-    },
-    "20261018-0613-文档-readme-接入指南-需求文档分期状态回填-e9f2": {
-      "category": "建设",
-      "created": "2026-10-18 06:13:15",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-18 06:13:15",
-      "status": "doing",
-      "tags": [
-        "文档",
-        "README",
-        "接入"
-      ],
-      "title": "文档：README 接入指南 + 需求文档分期状态回填",
-      "worklog": "worklog/202610/18-0613-文档-readme-接入指南-需求文档分期状态回填-e9f2.md"
     }
   }
 }
