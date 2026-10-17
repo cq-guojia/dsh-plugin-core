@@ -1,0 +1,21 @@
+{
+  "tasks": {
+    "20261018-0048-dsh-插件共享底座-样式-通用功能-7ade": {
+      "category": "建设",
+      "created": "2026-10-18 00:48:34",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-18 00:48:34",
+      "status": "doing",
+      "tags": [
+        "共享包",
+        "样式",
+        "UI",
+        "打包"
+      ],
+      "title": "DSH 插件共享底座（样式+通用功能）",
+      "worklog": "worklog/202610/18-0048-dsh-插件共享底座-样式-通用功能-7ade.md"
+    }
+  }
+}
