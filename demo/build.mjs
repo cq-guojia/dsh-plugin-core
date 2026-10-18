@@ -44,34 +44,12 @@ const jsFile = (await import('node:fs')).readdirSync(`${OUT_DIR}/assets`)
   .find((f) => f.endsWith('.js'))
 if (!jsFile) throw new Error('未找到构建产物 JS')
 
-// 宿主主题基础层：从已安装的 @deepseek-ai/dsh-client-ui-theme 抽取其内置 CSS 文本。
-// 只抽 CSS、不执行其运行时（inject 绑死宿主 ctx，且会拖一整条依赖树）；脱离宿主的预览站
-// 借此拿到 --dsw-* 真值，亮/暗都与真实插件一致，且随该包版本升级自动跟上游。
-// 装不到（如 CI 未配内部 registry）时优雅退回兜底值，不影响构建。
-function extractHostThemeCss() {
-  const themePkg = 'node_modules/@deepseek-ai/dsh-client-ui-theme/lib/client.js'
-  if (!existsSync(themePkg)) {
-    console.warn('[demo] 未找到宿主主题包，预览站退回兜底值（不影响构建）。')
-    return null
-  }
-  const src = readFileSync(themePkg, 'utf8')
-  const re = /var (\w+_css_default) = "((?:[^"\\]|\\.)*)";/g
-  const chunks = []
-  let m
-  while ((m = re.exec(src))) chunks.push(m[2].replace(/\\"/g, '"').replace(/\\\\/g, '\\'))
-  return chunks.length ? chunks.join('\n') : null
-}
-const hostCss = extractHostThemeCss()
-
 // HTML 里把 module 入口换成本地打包产物（去掉 type="module" 与 crossorigin）
 let html = readFileSync('demo/index.html', 'utf8')
   .replace(
     /<script[^>]*src="\.\/main\.tsx"[^>]*><\/script>/,
     `<script defer src="./assets/${jsFile}"></script>`,
   )
-if (hostCss) {
-  html = html.replace('</head>', `<style id="dsh-host-theme">\n${hostCss}\n</style>\n</head>`)
-}
 // 版本标签写入 window，供顶栏展示（用户据此确认看到的是最新构建）。
 html = html.replace(
   '</head>',
@@ -79,7 +57,4 @@ html = html.replace(
 )
 writeFileSync(`${OUT_DIR}/index.html`, html)
 
-console.log(
-  `\n✓ 完成：${OUT_DIR}/index.html（双击即可打开，无需本地服务；产物 ${jsFile}` +
-    `${hostCss ? '；已注入宿主主题' : '；未注入宿主主题（退回兜底）'}）`,
-)
+console.log(`\n✓ 完成：${OUT_DIR}/index.html（双击即可打开，无需本地服务；产物 ${jsFile}）`)
