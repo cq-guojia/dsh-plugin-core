@@ -1,8 +1,8 @@
 // 预览站骨架：顶栏（品牌 + 语言/主题）+ 分组侧栏 + 单节内容区。
 // 主流组件库文档站的三段式布局；主题默认跟随系统，可手动切档（记忆在 localStorage）。
-import { createElement as h, useEffect, useState } from 'react'
+import { createElement as h, useEffect, useRef, useState } from 'react'
 import { getLocale, setLocale } from '../dist/utils/index.js'
-import { Picker } from '../dist/ui/index.js'
+import { Picker, Segmented } from '../dist/ui/index.js'
 import { Sections, type SectionId } from './sections/index.js'
 import { applyTheme, initialThemeMode, saveThemeMode, type ThemeMode } from './theme.js'
 
@@ -26,6 +26,87 @@ const NAV: { group: string; items: { id: SectionId; label: string }[] }[] = [
   },
   { group: '工具', items: [{ id: 'utils', label: '通用方法' }] },
 ]
+
+/**
+ * 诊断面板（临时调参工具）：自带参照控件，直接打印浏览器「实际算出来」的样式值。
+ * 用途：用户反馈「控件没变化」时，用面板里的数字区分两种情况——
+ * ① 数字 = 预期值但观感不对 ⇒ 皮肤/对比度问题，改 CSS 值；
+ * ② 数字 ≠ 预期值 ⇒ CSS 没生效（注入/级联/缓存问题），查环境。
+ */
+function Diagnostics(): ReturnType<typeof h> {
+  const [open, setOpen] = useState(true)
+  const [info, setInfo] = useState('读取中…')
+  const segWrap = useRef<HTMLDivElement>(null)
+  const weekWrap = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // 延一帧：等本帧样式注入与布局完成后再取 computed style
+    requestAnimationFrame(() => {
+      const seg = segWrap.current?.querySelector('.dsh-tdt-seg')
+      const week = weekWrap.current?.querySelector('.dsh-tdt-seg')
+      const root = getComputedStyle(document.documentElement)
+      if (!seg || !week) { setInfo('未找到参照控件'); return }
+      const a = getComputedStyle(seg)
+      const b = getComputedStyle(week)
+      setInfo([
+        `--tdt-hover = ${root.getPropertyValue('--tdt-hover').trim() || '(空)'}`,
+        `inset 轨道背景 = ${a.backgroundColor}`,
+        `inset 轨道圆角 = ${a.borderTopLeftRadius}`,
+        `weekday 间距 gap = ${b.gap}`,
+        `weekday 外框 = ${b.borderTopWidth} ${b.borderTopStyle}`,
+      ].join('\n'))
+    })
+  }, [])
+
+  return h(
+    'div',
+    {
+      style: {
+        position: 'fixed', right: '16px', bottom: '16px', zIndex: 60, maxWidth: '340px',
+        background: 'var(--tdt-surface-1)', border: '1px solid var(--tdt-border)',
+        borderRadius: '8px', padding: '10px 12px', boxShadow: 'var(--tdt-shadow-2)', fontSize: '12px',
+      },
+    },
+    h(
+      'div',
+      {
+        onClick: () => { setOpen(!open) },
+        style: { cursor: 'pointer', fontWeight: 600, userSelect: 'none' as never },
+      },
+      open ? '▾ 诊断（点我收起）' : '▸ 诊断',
+    ),
+    open
+      ? h(
+          'div',
+          null,
+          h('pre', {
+            style: {
+              margin: '6px 0 0', fontFamily: 'var(--tdt-font-mono)', fontSize: '11px',
+              whiteSpace: 'pre-line', color: 'var(--tdt-fg-2)',
+            },
+          }, info),
+          h('div', { ref: segWrap, style: { marginTop: '8px' } },
+            h(Segmented, {
+              variant: 'inset',
+              value: 'week',
+              onChange: () => {},
+              items: [{ value: 'day', label: '日' }, { value: 'week', label: '周' }],
+            })),
+          h('div', { ref: weekWrap, style: { marginTop: '8px' } },
+            h(Segmented, {
+              multiple: true,
+              className: 'dsh-tdt-seg--weekday',
+              value: ['1', '2', '3'],
+              onChange: () => {},
+              items: [
+                { value: '1', label: '一' }, { value: '2', label: '二' }, { value: '3', label: '三' },
+                { value: '4', label: '四' }, { value: '5', label: '五' },
+              ],
+            })),
+        )
+      : null,
+  )
+}
 
 export function App(): ReturnType<typeof h> {
   const [locale, setLoc] = useState(getLocale())
@@ -154,5 +235,7 @@ export function App(): ReturnType<typeof h> {
         h(Sections, { active, onNavigate: setActive }),
       ),
     ),
+    // ── 诊断面板（临时）────────────────────────────────────────────────
+    h(Diagnostics, null),
   )
 }
