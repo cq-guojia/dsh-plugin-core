@@ -69,8 +69,8 @@ function SectionHead(props: { id: SectionId; title: string }): ReturnType<typeof
   )
 }
 
-/** 全部小节（顺序即目录顺序）；App 侧导航分组引用同一批 id。 */
-const ALL_SECTIONS: { id: SectionId; title: string; render: () => ReturnType<typeof h> }[] = [
+/** 全部小节（顺序即目录顺序）；预览站导航与**插件内预览页**共用同一份目录（单一事实源）。 */
+export const ALL_SECTIONS: { id: SectionId; title: string; render: () => ReturnType<typeof h> }[] = [
   { id: 'design', title: '设计基础', render: () => h(DesignSection, null) },
   { id: 'buttons', title: '按钮与输入', render: () => h(ButtonsSection, null) },
   { id: 'pickers', title: '选择器', render: () => h(PickersSection, null) },

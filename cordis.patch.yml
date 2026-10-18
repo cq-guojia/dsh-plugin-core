@@ -1,0 +1,7 @@
+# bundle 补丁：把本 npm 包作为插件插入宿主组合。
+# 格式与 dsh-task-dispatch-table/cordis.patch.yml 一致（顶层 YAML 数组，条目 = loader patch 的 insert 列表）。
+# 本插件无服务端配置项，故 config 为空对象。
+- insert:
+    - id: dsh-plugin-core
+      name: dsh-plugin-core
+      config: {}

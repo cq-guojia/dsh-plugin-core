@@ -117,3 +117,31 @@ setLocale('en') // 中文是默认
 4. **类名没按插件隔离** —— CSS 类名仍是 `dsh-tdt-*`，两个插件若引的 core 版本不同会互相覆盖
    （同版本无害）。主防线是 style 标签 id 与变量前缀隔离。
 5. 设置页骨架没抽（等第二个消费者）；发布流程（npm + OIDC）没配。
+
+## 两种身份：npm 库 + DSH 插件
+
+本包**同时**是「给插件用的基础库」和「可被 DSH 安装的组件预览插件」。两条线互不相干：
+
+- **库（npm）**：消费端一律走子路径导出，插件身份不影响它们：
+
+  ```ts
+  import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
+  import { createStyleKit }            from 'dsh-plugin-core/design'
+  import { formatTime }                from 'dsh-plugin-core/utils'
+  ```
+
+  零 runtime 依赖（react 是可选 peer），npm tarball 只含 `dist/`（**排除 `dist/client.js`**）与 `docs/`。
+
+- **插件（DSH）**：`main` 指向 `dist/index.js`（插件 server 入口，只导出 `name/inject/apply`，
+  **不 re-export 任何浏览器侧代码**），`exports['./client']` 指向 `dist/client.js`（预览页 bundle），
+  加 `dsh` 清单 + `cordis.patch.yml`。安装：
+
+  ```bash
+  dsh plugin --profile web add git+https://github.com/cq-guojia/dsh-plugin-core.git
+  ```
+
+  装好后：插件列表 → 本插件 → 设置页里的「组件预览」卡片 → 点开即整页预览（或点侧栏图标）。
+  预览页在**真实宿主**里渲染，明暗与 token 全部跟随宿主。
+
+插件相关代码全部隔离在 `src/index.ts` + `src/plugin/`；将来若要彻底拆成独立仓，搬这两个即可。
+`dist/` 随包入库（宿主安装不跑构建脚本），改 `src/` 必须 `pnpm run build` 后一起提交。
