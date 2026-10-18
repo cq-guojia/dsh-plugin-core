@@ -41,6 +41,8 @@ export const CHIP_CSS = `
 .dsh-tdt-chip{
   display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;
   background:var(--tdt-chip-bg);color:var(--tdt-fg);font-size:11px;line-height:18px;
+  /* 2026-10-18：chip 是 flex 行里的常用项，禁止被压缩换行（预览站出现过文字竖排、互相叠压的挤压）。 */
+  white-space:nowrap;flex:none;box-sizing:border-box;
 }
 .dsh-tdt-chip--clickable{cursor:pointer;border:none;font:inherit;font-size:11px}
 .dsh-tdt-chip--clickable:hover{background:var(--tdt-chip-bg-hover)}

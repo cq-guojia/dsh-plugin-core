@@ -85,9 +85,12 @@ body{
   --tdt-danger-soft:color-mix(in srgb,var(--tdt-danger) 8%,transparent);
   --tdt-business-soft:color-mix(in srgb,var(--tdt-business) 8%,transparent);
 
-  /* ── 交互底 / 遮罩 ────────────────────────────────────────────────── */
-  --tdt-hover:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));
-  --tdt-active:var(--dsw-alias-interactive-bg-active,#2631481a);
+  /* ── 交互底 / 遮罩 ──────────────────────────────────────────────────
+     ⚠️ 2026-10-18 用户拍板：宿主 alias 的 hover（暗色白 8% / 亮色 6%）**太弱**，
+     「移上去要仔细看才看得出来」⇒ 不再委托宿主 hover 别名，改为自掺中性色并加重：
+     亮色掺黑 10%、暗色掺白 14%（active 再加一档）。按钮 / 分段轨道 / 各类 hover 底同时受益。 */
+  --tdt-hover:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 10%,transparent);
+  --tdt-active:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 18%,transparent);
   --tdt-mask:var(--dsw-alias-bg-mask-1,#0000003d);
   /* 「选中面」（2026-10-06，任务日程页首创）= 当前底色**朝更深掺 12% 文字色**：
      浅色主题下文字色是黑 ⇒ 选中面比常态底色**深一档**。深色分支见 body[data-ds-dark-theme]（朝背景色掺）。
@@ -176,6 +179,9 @@ body{
 body[data-ds-dark-theme]{
   --tdt-solid:var(--dsw-static-neutral-900,#0f0f0f);
   --tdt-on-solid:var(--dsw-static-neutral-00,#fff);
+  /* 暗色 hover 掺白 14% / active 24%（对齐上面 2026-10-18 的加重拍板）。 */
+  --tdt-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 14%,transparent);
+  --tdt-active:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 24%,transparent);
   --tdt-plate:var(--dsw-static-neutral-850,#212123);
   --tdt-plate-hover:var(--dsw-static-neutral-800,#292929);
   --tdt-icon-plate:rgba(255,255,255,.05);

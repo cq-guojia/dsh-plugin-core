@@ -14,8 +14,10 @@ export const SEGMENTED_CSS = `
    inset 无边框故 padding 收 3px 把缺的 1px 补回，两种外观总高都 == token（24/28/32），不再多 +2px。
    以后 Button / Input 的有边 / 无边同此规则。 */
 .dsh-tdt-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--tdt-radius-md);background:var(--seg-track);}
-.dsh-tdt-seg--default{--seg-track:var(--tdt-surface-2);--seg-thumb:var(--tdt-surface-raised);border:1px solid var(--tdt-border);}
-.dsh-tdt-seg--inset{--seg-track:var(--tdt-hover);--seg-thumb:var(--tdt-surface-raised);border:0;padding:3px;}
+/* 选中片 = --tdt-solid（亮=白片 / 暗=黑片，2026-10-18 对齐真实插件截图）。
+   原先取 surface-raised ⇒ 与卡片底（同为 bg-layer-1）同色，选中片在卡上隐形、只剩阴影圈。 */
+.dsh-tdt-seg--default{--seg-track:var(--tdt-surface-2);--seg-thumb:var(--tdt-solid);border:1px solid var(--tdt-border);}
+.dsh-tdt-seg--inset{--seg-track:var(--tdt-hover);--seg-thumb:var(--tdt-solid);border:0;padding:3px;}
 
 .dsh-tdt-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
   height:calc(var(--tdt-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--tdt-radius-sm);
@@ -51,7 +53,13 @@ export const SEGMENTED_CSS = `
    - 每格做成正方形（宽 = 段高）；
    - 选中态用品牌蓝（--tdt-business）、反白字，轨道用 hover 灰（与原自绘轨道一致）。
    皮肤集中在此、不内联；调用点只挂 .dsh-tdt-seg--weekday 一个修饰类，符合「皮肤只在 controls-css」的规矩。 */
-.dsh-tdt-seg--weekday{--seg-track:var(--tdt-hover);}
+/* weekday：星期多选方块（任务新增 / 编辑页）。基础插件的特殊化定制（用户 2026-10-01 明确要求：
+   原 WeekdayPicker 即「蓝底 + 近似方形」，统一到 Segmented 后由这一修饰类补回两处差异）：
+   - 每格做成正方形（宽 = 段高）；
+   - 选中态用品牌蓝（--tdt-business）、反白字，轨道用 hover 灰（与原自绘轨道一致）。
+   2026-10-18 用户重申（对齐真实截图）：**无外描边**（不管挂哪个 variant，这里一律撤边），
+   且方块之间要有间距（gap 6px，不再 2px 挤成一坨）。 */
+.dsh-tdt-seg--weekday{--seg-track:var(--tdt-hover);gap:6px;border:0;padding:3px;}
 .dsh-tdt-seg--weekday .dsh-tdt-seg__item{width:calc(var(--tdt-control-h-lg) - 6px);padding:0;justify-content:center;}
 .dsh-tdt-seg--weekday .dsh-tdt-seg__item[aria-pressed='true']{background:var(--tdt-business);color:var(--tdt-fg-inverse);box-shadow:var(--tdt-shadow-raised);}
 
@@ -315,8 +323,8 @@ export const HINT_CSS = `
    本体 16px 细圈 + 圈内 ?，颜色 fg-3、hover 只提亮不加底（与 dsh-tdt-ed-help 同规矩）。
    纯 CSS tooltip：hover / 键盘聚焦浮出气泡，零 JS。独立组件，标题后、行尾随处可挂。 */
 .dsh-tdt-hint{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;
-  box-sizing:border-box;width:16px;height:16px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;
-  color:var(--tdt-fg-3);font-family:inherit;font-size:9px;font-weight:600;line-height:14px;cursor:help;vertical-align:middle;
+  box-sizing:border-box;width:14px;height:14px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;
+  color:var(--tdt-fg-3);font-family:inherit;font-size:8px;font-weight:600;line-height:12px;cursor:help;vertical-align:middle;
   transition:color var(--tdt-dur-fast) var(--tdt-ease);}
 .dsh-tdt-hint:hover,.dsh-tdt-hint:focus-visible{color:var(--tdt-fg);background:0 0;}
 .dsh-tdt-hint:focus-visible{outline:2px solid var(--tdt-focus);outline-offset:1px;}
