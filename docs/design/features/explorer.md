@@ -43,17 +43,12 @@ h(ExplorerPanel, {
 })
 ```
 
-## `WorkspacePicker` / `FilePicker`
+## 选工作区 / 选文件 —— 在 `ui`，不在这里
 
-都是 `ui` 的 `Picker` 的薄封装，**数据调用方给**：
+`WorkspacePicker` / `FilePicker` 已移到 `dsh-plugin-core/ui`（见 [`ui.md`](ui.md#workspacepicker--filepicker)）。
 
-| 组件 | 数据参数 | 其余 |
-|---|---|---|
-| `WorkspacePicker` | `workspaces: readonly string[]` | `value` `defaultValue` `mode` `max` `onChange` `clearable` `searchable` `disabled` `size` `placement` `className` `placeholder` `translate` |
-| `FilePicker` | `files: readonly string[]` | 同上 |
-
-工作区列表**组件不自己取**：它是 host 侧 `ctx.workspaceRegistry.list()` 取的，要经插件自己的
-HTTP 通道送到 client，那条通道是插件私有的。
+理由：它们只是 `Picker` 的薄封装（select），不碰目录树 / 预览 / `WorkspaceFilesFace`——
+放在 ui 里，需要「选工作区」的地方不必引入整个 explorer。explorer 内部要用，一样从 ui 引。
 
 ## 单文件预览（`dsh-plugin-core/explorer/preview`）
 

@@ -69,7 +69,7 @@ h(ExplorerPanel, { workspaceFiles, sessionId, path: '', onSelect: (p) => setFile
 选工作区的下拉（数据由你给——它要经插件私有通道送到 client）：
 
 ```tsx
-import { WorkspacePicker } from 'dsh-plugin-core/explorer'
+import { WorkspacePicker } from 'dsh-plugin-core/ui'
 
 h(WorkspacePicker, { workspaces: wsList, value: cur, onChange: setCur })
 ```

@@ -1,5 +1,4 @@
 export { ExplorerPanel, type ExplorerPanelProps } from './ExplorerPanel.js'
-export { FilePicker, WorkspacePicker, type FilePickerProps, type WorkspacePickerProps } from './pickers.js'
 export {
   crumbsOf,
   extOf,

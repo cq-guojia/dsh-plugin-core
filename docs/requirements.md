@@ -151,7 +151,7 @@ dsh-plugin-core/
 |---|---|---|
 | 骨架 | package.json exports / tsconfig / 构建出 dist | ✅ 已完成（`tsc` 出 ESM + d.ts，不走 tsdown） |
 | v1 | `design` + `utils` + `ui` | ✅ 已完成（零件 + Picker / ModelPicker + Modal / toast / 空态 / 错误边界） |
-| v2 | `explorer`（用户拍板要抽） | ✅ 已完成（浏览面板 + 预览 + WorkspacePicker / FilePicker） |
+| v2 | `explorer`（用户拍板要抽） | ✅ 已完成（浏览面板 + 预览；**选择器后移至 ui**，见 §2.4） |
 | v3 | `session` | ⚠️ **半完成**：契约与三种承载已好，**官方会话 UI 镜像未搬**（只做最简渲染） |
 | 文档 | README 接入指南 | ✅ 已完成 |
 

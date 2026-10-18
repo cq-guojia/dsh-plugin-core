@@ -5,6 +5,7 @@ export { CONTROLS_DOMAIN, buildCss, ensureControls, getStyleKit, setStyleKit } f
 export { filterGroups, flattenOptions, groupOf, labelsOf, toGroups, toggleValue, } from './picker-logic.js';
 export { Picker } from './Picker.js';
 export { ModelPicker } from './ModelPicker.js';
+export { FilePicker, WorkspacePicker, } from './WorkspacePicker.js';
 export { Modal } from './Modal.js';
 export { showToast } from './Toast.js';
 export { EmptyState } from './EmptyState.js';

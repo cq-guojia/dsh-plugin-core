@@ -1,6 +1,9 @@
+// 领域选择器：WorkspacePicker / FilePicker。
+// 它们是 ui 的 Picker 的薄封装（领域数据 + 通用选择器交互），与 explorer 的浏览/预览无关 ——
+// 放在 ui 里，需要选工作区/选文件的地方不必引入整个 explorer（需求文档 §2.4）。
 import { createElement as h } from 'react'
-import { ensureControls } from '../ui/css.js'
-import { Picker, type PickerSize } from '../ui/Picker.js'
+import { ensureControls } from './css.js'
+import { Picker, type PickerSize } from './Picker.js'
 import { t, type Translate } from '../utils/i18n.js'
 
 export interface WorkspacePickerProps {

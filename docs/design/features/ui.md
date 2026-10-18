@@ -78,6 +78,27 @@ ensureControls()
 
 纯逻辑也可单用：`toGroups` / `flattenOptions` / `filterGroups` / `toggleValue` / `labelsOf` / `groupOf`。
 
+### WorkspacePicker / FilePicker
+
+领域选择器——`Picker` 的薄封装（**领域数据 + 通用选择器交互**，与 explorer 的浏览/预览无关）。
+
+| 组件 | 数据参数 | 其余 |
+|---|---|---|
+| `WorkspacePicker` | `workspaces: readonly string[]` | `value` `defaultValue` `mode` `max` `onChange` `clearable` `searchable` `disabled` `size` `placement` `className` `placeholder` `translate` |
+| `FilePicker` | `files: readonly string[]` | 同上 |
+
+**为什么在 ui 而不在 explorer**：它俩只是 select，不碰目录树 / 预览 / `WorkspaceFilesFace`。
+放在 ui 里，需要「选工作区」的地方不必引入整个 explorer；explorer 内部要用也一样从 ui 引。
+
+**数据由调用方给**：工作区列表是 host 侧 `ctx.workspaceRegistry.list()` 取的，要经插件自己的 HTTP 通道
+送到 client，那条通道是插件私有的，组件取不到。
+
+```tsx
+import { WorkspacePicker } from 'dsh-plugin-core/ui'
+
+h(WorkspacePicker, { workspaces: wsList, value: cur, onChange: setCur })
+```
+
 ### ModelPicker
 
 `groups: PickerGroup[]`（一组 = 一个供应商）+ `variant: 'cascade' | 'flat'`（默认 `flat`）。
