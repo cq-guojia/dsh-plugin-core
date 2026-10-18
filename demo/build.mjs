@@ -4,10 +4,13 @@
 // 而浏览器在 file:// 协议下会拒绝加载 module 脚本（直接白屏）。
 // IIFE 是普通 <script>，双击 index.html 就能跑，不需要任何本地服务。
 import { build } from 'esbuild'
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 
 const OUT_DIR = 'demo-dist'
 
+// 产物目录整体重建：esbuild 的 hash 文件名只保证「新产物不撞旧缓存」，
+// 但旧 hash 文件会一直躺在 assets 里，而下方「取第一个 .js」会抓到旧文件（真踩过）⇒ 每次先清场。
+if (existsSync(OUT_DIR)) rmSync(OUT_DIR, { recursive: true, force: true })
 mkdirSync(`${OUT_DIR}/assets`, { recursive: true })
 
 await build({

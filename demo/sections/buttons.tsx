@@ -47,7 +47,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'Checkbox / Segmented', hint: 'size 三档（sm/md/lg）× variant 两套外观；badge = danger 圆角标，count = 中性计数' },
+      { title: 'Checkbox / Segmented', hint: '外观对齐真实插件：灰底 inset（无外描边）；带描边的 default 仅供特殊场合，见下' },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'flex-start' } },
@@ -56,6 +56,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
           { style: { display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' } },
           h(Checkbox, { checked, onChange: setChecked, label: '启用' }),
           h(Segmented, {
+            variant: 'inset',
             items: [
               { value: 'day', label: '日' },
               { value: 'week', label: '周' },
@@ -65,18 +66,20 @@ export function ButtonsSection(): ReturnType<typeof h> {
             onChange: setSeg,
           }),
           h(Segmented, {
+            variant: 'inset',
+            size: 'sm',
             items: [
               { value: 'day', label: '日' },
               { value: 'week', label: '周' },
               { value: 'month', label: '月' },
             ],
-            size: 'sm',
             value: seg,
             onChange: setSeg,
           }),
         ),
-        // 筛选条形态：中性计数（对齐真实插件「全部 11 / 进行中 …」）
+        // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
         h(Segmented, {
+          variant: 'inset',
           items: [
             { value: 'all', label: '全部', count: 11 },
             { value: 'doing', label: '进行中', count: 5 },
@@ -103,6 +106,18 @@ export function ButtonsSection(): ReturnType<typeof h> {
           ],
           value: multi,
           onChange: setMulti,
+        }),
+        // default 变体（外描边）：预览顶栏切换这类小场景在用
+        h(Segmented, {
+          size: 'sm',
+          variant: 'default',
+          label: 'default 外观示例',
+          items: [
+            { value: 'render', label: '预览' },
+            { value: 'source', label: '源码' },
+          ],
+          value: seg === 'week' ? 'render' : 'source',
+          onChange: () => {},
         }),
       ),
     ),

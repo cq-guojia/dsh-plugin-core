@@ -91,7 +91,10 @@ export function NumberInput(props) {
     return h('div', {
         className: `dsh-tdt-num dsh-tdt-num${sizeClass(size)}${disabled === true ? ' dsh-tdt-num--disabled' : ''}${className !== undefined && className !== '' ? ' ' + className : ''}`,
         style,
-    }, h(IconButton, { variant: 'plain', size, icon: '−', label: decreaseLabel, disabled, onClick: () => { bump(-1); } }), h('input', {
+    }, h(IconButton, { variant: 'plain', size, icon: '−', label: decreaseLabel, disabled, onClick: () => { bump(-1); } }), 
+    // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
+    // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
+    h('span', { className: 'dsh-tdt-num__mid' }, h('input', {
         className: 'dsh-tdt-num__input',
         ...(inputWidth === undefined ? {} : { style: { width: `${inputWidth}px` } }),
         value: text,
@@ -102,7 +105,7 @@ export function NumberInput(props) {
         onBlur: () => { commit(text); },
         onKeyDown: (event) => { if (event.key === 'Enter')
             commit(text); },
-    }), suffix !== undefined ? h('span', { className: 'dsh-tdt-num__suffix' }, suffix) : null, h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1); } }));
+    }), suffix !== undefined ? h('span', { className: 'dsh-tdt-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1); } }));
 }
 /**
  * 下拉锚点的统一样式（**全站唯一一份**）：`SelectField` 与 `TaskPicker` 共用 —— 两者是同一类锚点，

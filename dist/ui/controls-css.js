@@ -13,12 +13,12 @@ export const SEGMENTED_CSS = `
    几何 = 段高 = token − 6px（上下各 2px padding + 1px 边框）；default 真边框 1px + padding 2px，
    inset 无边框故 padding 收 3px 把缺的 1px 补回，两种外观总高都 == token（24/28/32），不再多 +2px。
    以后 Button / Input 的有边 / 无边同此规则。 */
-.dsh-tdt-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:999px;background:var(--seg-track);}
+.dsh-tdt-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--tdt-radius-md);background:var(--seg-track);}
 .dsh-tdt-seg--default{--seg-track:var(--tdt-surface-2);--seg-thumb:var(--tdt-surface-raised);border:1px solid var(--tdt-border);}
 .dsh-tdt-seg--inset{--seg-track:var(--tdt-hover);--seg-thumb:var(--tdt-surface-raised);border:0;padding:3px;}
 
 .dsh-tdt-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
-  height:calc(var(--tdt-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:999px;
+  height:calc(var(--tdt-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--tdt-radius-sm);
   background:transparent;color:var(--tdt-fg-2);font-family:inherit;font-size:var(--tdt-font-sm);line-height:var(--tdt-line-sm);
   font-weight:400;white-space:nowrap;cursor:pointer;
   transition:color var(--tdt-dur-fast) var(--tdt-ease),background-color var(--tdt-dur-fast) var(--tdt-ease),box-shadow var(--tdt-dur-fast) var(--tdt-ease);}
@@ -52,9 +52,7 @@ export const SEGMENTED_CSS = `
    - 选中态用品牌蓝（--tdt-business）、反白字，轨道用 hover 灰（与原自绘轨道一致）。
    皮肤集中在此、不内联；调用点只挂 .dsh-tdt-seg--weekday 一个修饰类，符合「皮肤只在 controls-css」的规矩。 */
 .dsh-tdt-seg--weekday{--seg-track:var(--tdt-hover);}
-.dsh-tdt-seg--weekday .dsh-tdt-seg__item{width:calc(var(--tdt-control-h-lg) - 6px);padding:0;justify-content:center;
-  /* 药丸化只属于普通段；星期方块仍要「近似方形」（用户 2026-10-18 重申），这里把圆角收回来。 */
-  border-radius:var(--tdt-radius-sm);}
+.dsh-tdt-seg--weekday .dsh-tdt-seg__item{width:calc(var(--tdt-control-h-lg) - 6px);padding:0;justify-content:center;}
 .dsh-tdt-seg--weekday .dsh-tdt-seg__item[aria-pressed='true']{background:var(--tdt-business);color:var(--tdt-fg-inverse);box-shadow:var(--tdt-shadow-raised);}
 
 @media (prefers-reduced-motion: reduce){.dsh-tdt-seg__item{transition:none;}}
@@ -173,8 +171,10 @@ export const FIELD_CSS = `
   font-family:inherit;font-size:var(--tdt-font-sm);line-height:var(--tdt-line-sm);outline:none;}
 .dsh-tdt-pfx__input::placeholder{color:var(--tdt-fg-dim);}
 
-.dsh-tdt-num{display:inline-flex;align-items:center;box-sizing:border-box;overflow:hidden;
+.dsh-tdt-num{display:inline-flex;align-items:center;justify-content:space-between;box-sizing:border-box;overflow:hidden;
   border:1px solid var(--tdt-border);border-radius:var(--tdt-radius-md);background:var(--tdt-surface-1);color:var(--tdt-fg);}
+/* 中段：数字 + 后缀成组居中；容器被消费端拉宽时吃掉全部余量，两端 − / + 因此钉死在左右边缘。 */
+.dsh-tdt-num__mid{display:flex;align-items:center;justify-content:center;flex:1 1 auto;min-width:0;}
 .dsh-tdt-num--sm{height:var(--tdt-control-h-sm);}
 .dsh-tdt-num--md{height:var(--tdt-control-h-md);}
 .dsh-tdt-num--lg{height:var(--tdt-control-h-lg);}
@@ -184,7 +184,7 @@ export const FIELD_CSS = `
 .dsh-tdt-num__input{width:36px;height:100%;padding:0 2px;border:0;background:transparent;color:var(--tdt-fg);
   font-family:inherit;font-size:var(--tdt-font-sm);line-height:var(--tdt-line-sm);text-align:center;outline:none;}
 .dsh-tdt-num__suffix{padding:0 6px;color:var(--tdt-fg-2);font-size:var(--tdt-font-sm);white-space:nowrap;}
-.dsh-tdt-num .dsh-tdt-iconbtn{border-radius:0;color:var(--tdt-fg-2);}
+.dsh-tdt-num .dsh-tdt-iconbtn{border-radius:0;color:var(--tdt-fg-2);flex:none;}
 
 /* 官方 Switch 包装统一：选中 = success 绿。
    （合并原先 task-editor-css / task-list 两处就地覆盖；选择器带包装类 + role，特异性高于官方。） */
@@ -311,14 +311,14 @@ export const BACK_TO_TOP_CSS = `
 }
 `;
 export const HINT_CSS = `
-/* ── 字段问号提示 P4（用户 2026-10-18：输入框/行尾要能挂「?」，悬停出说明）──
-   纯 CSS tooltip：本体 16px 正圆问号，hover / 键盘聚焦浮出气泡。纯展示、零 JS。
-   气泡底色用 solid/on-solid（与 BackToTop 同一对反色），亮暗两态都有足够对比。 */
+/* ── 问号提示 P4（用户 2026-10-18：对齐真实插件 HelpButton——**带圈的问号图标**）──
+   本体 16px 细圈 + 圈内 ?，颜色 fg-3、hover 只提亮不加底（与 dsh-tdt-ed-help 同规矩）。
+   纯 CSS tooltip：hover / 键盘聚焦浮出气泡，零 JS。独立组件，标题后、行尾随处可挂。 */
 .dsh-tdt-hint{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:16px;height:16px;padding:0;border:0;border-radius:50%;background:transparent;
-  color:var(--tdt-fg-3);font-family:inherit;font-size:11px;line-height:1;cursor:help;vertical-align:middle;
+  box-sizing:border-box;width:16px;height:16px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;
+  color:var(--tdt-fg-3);font-family:inherit;font-size:9px;font-weight:600;line-height:14px;cursor:help;vertical-align:middle;
   transition:color var(--tdt-dur-fast) var(--tdt-ease);}
-.dsh-tdt-hint:hover,.dsh-tdt-hint:focus-visible{color:var(--tdt-fg);}
+.dsh-tdt-hint:hover,.dsh-tdt-hint:focus-visible{color:var(--tdt-fg);background:0 0;}
 .dsh-tdt-hint:focus-visible{outline:2px solid var(--tdt-focus);outline-offset:1px;}
 .dsh-tdt-hint__bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
   box-sizing:border-box;width:max-content;max-width:280px;padding:8px 10px;

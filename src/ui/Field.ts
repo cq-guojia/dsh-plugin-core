@@ -166,18 +166,21 @@ export function NumberInput(props: NumberInputProps): ReturnType<typeof h> {
     style,
   },
     h(IconButton, { variant: 'plain', size, icon: '−', label: decreaseLabel, disabled, onClick: () => { bump(-1) } }),
-    h('input', {
-      className: 'dsh-tdt-num__input',
-      ...(inputWidth === undefined ? {} : { style: { width: `${inputWidth}px` } }),
-      value: text,
-      disabled,
-      inputMode: 'numeric',
-      'aria-label': label,
-      onChange: (event: { target: { value: string } }) => { setText(event.target.value) },
-      onBlur: () => { commit(text) },
-      onKeyDown: (event: { key: string }) => { if (event.key === 'Enter') commit(text) },
-    } as never),
-    suffix !== undefined ? h('span', { className: 'dsh-tdt-num__suffix' }, suffix) : null,
+    // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
+    // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
+    h('span', { className: 'dsh-tdt-num__mid' },
+      h('input', {
+        className: 'dsh-tdt-num__input',
+        ...(inputWidth === undefined ? {} : { style: { width: `${inputWidth}px` } }),
+        value: text,
+        disabled,
+        inputMode: 'numeric',
+        'aria-label': label,
+        onChange: (event: { target: { value: string } }) => { setText(event.target.value) },
+        onBlur: () => { commit(text) },
+        onKeyDown: (event: { key: string }) => { if (event.key === 'Enter') commit(text) },
+      } as never),
+      suffix !== undefined ? h('span', { className: 'dsh-tdt-num__suffix' }, suffix) : null),
     h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1) } }))
 }
 
