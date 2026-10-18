@@ -9,13 +9,15 @@
  * 也在用这个前缀；demo 展示代码里的内联 --tdt-* 由 token-alias 那层接到 --dshpc-* 上。
  */
 import { createElement as h, useState } from 'react'
-import { createStyleKit } from '../../design/index.js'
-import { ensureControls, setStyleKit } from '../../ui/index.js'
-import { ALL_SECTIONS, Sections, type SectionId } from '../../../demo/sections/index.js'
+// ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
+//    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
+import { createStyleKit } from '../../../../dist/design/index.js'
+import { ensureControls, setStyleKit } from '../../../../dist/ui/index.js'
+import { ALL_SECTIONS, Sections, type SectionId } from '../../../../demo/sections/index.js'
 import { ALIAS_TOKEN_NAMES } from './token-alias.js'
 
-/** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致（宿主机制）。 */
-const PANEL_ID = 'dsh-plugin-core'
+/** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
+const PANEL_ID = 'dsh-plugin-core-demo'
 /** 本插件的变量前缀：与 --tdt-*（其他插件在用）隔离。 */
 const PREFIX = 'dshpc'
 

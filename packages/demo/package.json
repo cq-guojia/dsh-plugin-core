@@ -1,0 +1,53 @@
+{
+  "name": "dsh-plugin-core-demo",
+  "version": "0.0.1",
+  "description": "dsh-plugin-core 的组件预览插件：装进 DSH 宿主后，在真实宿主环境里预览控件与业务组件",
+  "keywords": ["deepseek", "harness", "dsh", "dsh-plugin", "dsh-plugin-core"],
+  "homepage": "https://github.com/cq-guojia/dsh-plugin-core/tree/main/packages/demo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cq-guojia/dsh-plugin-core.git",
+    "directory": "packages/demo"
+  },
+  "author": "cq-guojia",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./client": "./dist/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-ui-settings-plugins",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
+  },
+  "files": ["dist", "cordis.patch.yml"],
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": { "optional": true },
+    "react-dom": { "optional": true }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
