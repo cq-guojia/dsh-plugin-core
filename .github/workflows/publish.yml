@@ -1,0 +1,44 @@
+name: Publish to npm
+
+# 触发：① 推送 v* 标签（如 `npm version` 生成的 v0.1.0）；② 手动在 Actions 页点 Run。
+# 注意：你已在 npm 侧启用「分阶段发布（staged）」且未勾选「直接发布」，
+#       故下方用 `npm publish --provenance --staging` 把包推到**暂存区**，
+#       之后需由拥有 npm 发布权限的人（你）在 npm 网页端「Promote」确认，才正式上线。
+#       若想一步到位，去 npm Trusted Publisher 设置把「publish directly」勾上，
+#       再把本文件的 `--staging` 去掉即可。
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+# id-token: write 是 OIDC 的硬性要求——npm 借此在 CI 内拿到短期发布凭证，不需要 _authToken。
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'   # 触发 OIDC 的 registry 上下文
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build   # dist 随包发布且宿主安装不跑构建，CI 内重建保证产物新鲜
+        run: pnpm run build
+
+      - name: Publish (staged, provenance)
+        # 不设置 NODE_AUTH_TOKEN：在 GitHub Actions 中 npm 9.5+ 自动用 OIDC 凭证。
+        run: npm publish --provenance --staging --access public
