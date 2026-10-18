@@ -25,8 +25,10 @@ export interface SegmentedItem<T extends string = string> {
   value: T
   /** 段内文字。 */
   label: string
-  /** 段内角标数字（如「异常 3」）；`undefined` 或 ≤0 不显示。 */
+  /** 段内角标数字（如「异常 3」）；`undefined` 或 ≤0 不显示。danger 红圆标。 */
   badge?: number
+  /** 段内中性计数（如筛选条「全部 11」）；`undefined` 或 ≤0 不显示。弱化灰字，不做角标。 */
+  count?: number
   /** 置灰不可点。 */
   disabled?: boolean
 }
@@ -112,8 +114,12 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
       'aria-pressed': on,
       disabled,
       onClick: handle,
-    }, item.label, item.badge !== undefined && item.badge > 0
-      ? h('span', { className: 'dsh-tdt-seg__badge' }, String(item.badge))
-      : null)
+    }, item.label,
+      item.count !== undefined && item.count > 0
+        ? h('span', { className: 'dsh-tdt-seg__count' }, String(item.count))
+        : null,
+      item.badge !== undefined && item.badge > 0
+        ? h('span', { className: 'dsh-tdt-seg__badge' }, String(item.badge))
+        : null)
   }))
 }

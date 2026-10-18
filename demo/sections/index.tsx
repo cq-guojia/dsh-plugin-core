@@ -69,25 +69,25 @@ function SectionHead(props: { id: SectionId; title: string }): ReturnType<typeof
   )
 }
 
+/** 全部小节（顺序即目录顺序）；App 侧导航分组引用同一批 id。 */
+const ALL_SECTIONS: { id: SectionId; title: string; render: () => ReturnType<typeof h> }[] = [
+  { id: 'design', title: '设计基础', render: () => h(DesignSection, null) },
+  { id: 'buttons', title: '按钮与输入', render: () => h(ButtonsSection, null) },
+  { id: 'pickers', title: '选择器', render: () => h(PickersSection, null) },
+  { id: 'feedback', title: '弹窗与反馈', render: () => h(FeedbackSection, null) },
+  { id: 'display', title: '卡片与展示', render: () => h(DisplaySection, null) },
+  { id: 'utils', title: '通用方法', render: () => h(UtilsSection, null) },
+  { id: 'explorer', title: '工作区浏览', render: () => h(ExplorerSection, null) },
+  { id: 'session', title: '会话预览', render: () => h(SessionSection, null) },
+]
+
+/** 一次只渲染当前小节（文档站式：左栏切换、右侧单页），不再一页堆全部。 */
 export function Sections(props: SectionsProps): ReturnType<typeof h> {
+  const current = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0]
   return h(
     'div',
     null,
-    h(SectionHead, { id: 'design', title: '设计基础' }),
-    h(DesignSection, null),
-    h(SectionHead, { id: 'buttons', title: '按钮与输入' }),
-    h(ButtonsSection, null),
-    h(SectionHead, { id: 'pickers', title: '选择器' }),
-    h(PickersSection, null),
-    h(SectionHead, { id: 'feedback', title: '弹窗与反馈' }),
-    h(FeedbackSection, null),
-    h(SectionHead, { id: 'display', title: '卡片与展示' }),
-    h(DisplaySection, null),
-    h(SectionHead, { id: 'utils', title: '通用方法' }),
-    h(UtilsSection, null),
-    h(SectionHead, { id: 'explorer', title: '工作区浏览' }),
-    h(ExplorerSection, null),
-    h(SectionHead, { id: 'session', title: '会话预览' }),
-    h(SessionSection, null),
+    h(SectionHead, { id: current.id, title: current.title }),
+    current.render(),
   )
 }

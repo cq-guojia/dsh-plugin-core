@@ -16,6 +16,7 @@ export { Checkbox, type CheckboxProps } from './Checkbox.js';
 export { MarqueeText } from './MarqueeText.js';
 export { Loading, RunningBlocks, type LoadingProps } from './Loading.js';
 export { SectionHead } from './SectionHead.js';
+export { FieldHint, type FieldHintProps } from './FieldHint.js';
 export { LiveText } from './LiveText.js';
 export { BackToTop, type BackToTopProps } from './BackToTop.js';
 export { startResizeLayoutWidth, type ResizeOptions } from './resizer.js';

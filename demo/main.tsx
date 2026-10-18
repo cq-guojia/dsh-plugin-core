@@ -5,10 +5,10 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { ensureControls, setStyleKit } from '../dist/ui/index.js'
+import { applyTheme, initialThemeMode } from './theme.js'
 
-const params = new URLSearchParams(location.search)
-const dark = params.get('theme') === 'dark'
-if (dark) document.body.setAttribute('data-ds-dark-theme', '')
+// 首帧前先落主题（跟随系统 / URL 参数 / localStorage 记忆），避免闪白；之后 App 接管切档。
+applyTheme(initialThemeMode())
 
 // demo 自己领一套 kit（id / prefix 与真实插件同机制）
 setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo', prefix: 'dsh' }))

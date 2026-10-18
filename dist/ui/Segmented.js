@@ -64,7 +64,9 @@ export function Segmented(props) {
             'aria-pressed': on,
             disabled,
             onClick: handle,
-        }, item.label, item.badge !== undefined && item.badge > 0
+        }, item.label, item.count !== undefined && item.count > 0
+            ? h('span', { className: 'dsh-tdt-seg__count' }, String(item.count))
+            : null, item.badge !== undefined && item.badge > 0
             ? h('span', { className: 'dsh-tdt-seg__badge' }, String(item.badge))
             : null);
     }));

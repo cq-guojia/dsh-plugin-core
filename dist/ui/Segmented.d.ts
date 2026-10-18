@@ -5,8 +5,10 @@ export interface SegmentedItem<T extends string = string> {
     value: T;
     /** 段内文字。 */
     label: string;
-    /** 段内角标数字（如「异常 3」）；`undefined` 或 ≤0 不显示。 */
+    /** 段内角标数字（如「异常 3」）；`undefined` 或 ≤0 不显示。danger 红圆标。 */
     badge?: number;
+    /** 段内中性计数（如筛选条「全部 11」）；`undefined` 或 ≤0 不显示。弱化灰字，不做角标。 */
+    count?: number;
     /** 置灰不可点。 */
     disabled?: boolean;
 }

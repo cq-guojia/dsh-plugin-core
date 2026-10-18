@@ -19,6 +19,7 @@ export { Checkbox } from './Checkbox.js';
 export { MarqueeText } from './MarqueeText.js';
 export { Loading, RunningBlocks } from './Loading.js';
 export { SectionHead } from './SectionHead.js';
+export { FieldHint } from './FieldHint.js';
 export { LiveText } from './LiveText.js';
 export { BackToTop } from './BackToTop.js';
 export { startResizeLayoutWidth } from './resizer.js';
