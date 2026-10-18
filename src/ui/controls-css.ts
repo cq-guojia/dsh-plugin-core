@@ -41,9 +41,10 @@ export const SEGMENTED_CSS = `
   border-radius:50%;background:var(--tdt-danger);color:var(--tdt-on-signal);
   font-size:10px;line-height:16px;font-weight:500;font-variant-numeric:tabular-nums;}
 
-/* 段内中性计数（如筛选条「全部 11」）：弱化灰字、跟随文字排，不做角标。
-   （用户 2026-10-18 对齐真实插件截图：筛选类计数是淡灰小字，不是 danger 圆标；danger 角标仍走 __badge。） */
-.dsh-tdt-seg__count{color:var(--tdt-fg-3);font-size:var(--tdt-font-xs);line-height:1;font-variant-numeric:tabular-nums;}
+/* 段内中性计数（如筛选条「全部 11」）：**纯文字，无底、无边、无圆角**（对齐 task-ledger 2026-10-18
+   拍板的 .dtl-seg__num：圆圈取了、字再小点）；0 由组件侧不渲染。danger 角标仍走 __badge。 */
+.dsh-tdt-seg__count{display:inline;flex:none;margin-left:3px;padding:0;border:0;border-radius:0;
+  background:none;color:var(--tdt-fg-3);font-size:10px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;}
 
 /* block：撑满父宽（表单行用），各段等分 */
 .dsh-tdt-seg--block{display:flex;width:100%;}
