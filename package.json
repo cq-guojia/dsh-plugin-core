@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Shared base for DSH plugins: design tokens, UI controls, utils, workspace explorer, session preview",
   "keywords": [
     "deepseek",
