@@ -15,6 +15,22 @@
       ],
       "title": "文档补全：AGENTS 入口 + 每个包的 props/方法说明",
       "worklog": "worklog/202610/18-1124-文档补全-agents-入口-每个包的-props-方法说明-890a.md"
+    },
+    "20261018-1351-pnpm-store-迁到-code-同挂载点-硬链接-97-6-生效-a53c": {
+      "category": "建设",
+      "created": "2026-10-18 13:51:16",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-18 13:51:16",
+      "status": "doing",
+      "tags": [
+        "pnpm",
+        "store",
+        "硬链接"
+      ],
+      "title": "pnpm store 迁到 /code 同挂载点，硬链接 97.6% 生效",
+      "worklog": "worklog/202610/18-1351-pnpm-store-迁到-code-同挂载点-硬链接-97-6-生效-a53c.md"
     }
   }
 }

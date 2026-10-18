@@ -32,6 +32,27 @@ pnpm run build        # tsc 出 ESM + d.ts 到 dist/（产物必须入库：宿�
 pnpm test             # 全部自检（当前 33 条）
 ```
 
+## 本机 pnpm 环境（硬链接要生效的前提）
+
+本机 `/code` 与 `/opt/node-persist` 是**两个独立挂载点**（FUSE），硬链接跨不过去
+（实测 `ln` 报 `Invalid cross-device link`；`stat -c %d` 显示同设备号是假象）。
+故 store 已迁到与项目同一挂载点：
+
+| 项 | 值 |
+|---|---|
+| store 目录 | `/code/dsh-plugins/.pnpm-store`（三仓共用） |
+| 配置位置 | `/root/.config/pnpm/config.yaml` 的 `storeDir`（**机器级，未进仓**） |
+| 硬链接生效比例 | 97.6%（inode 对账实测） |
+
+换机器 / 重装环境后要重设一次：
+
+```bash
+pnpm config set store-dir /code/dsh-plugins/.pnpm-store
+```
+
+不设的后果：pnpm 会把 store 放回 `/opt/node-persist`，硬链接静默降级为 copy，
+多仓共享省空间的好处消失（单仓体积也会涨约 30%）。
+
 ## 改完的 checklist
 
 - [ ] `pnpm run build` 干净（`noUnusedLocals` / `strict` 全开）
