@@ -15,22 +15,6 @@
       ],
       "title": "文档补全：AGENTS 入口 + 每个包的 props/方法说明",
       "worklog": "worklog/202610/18-1124-文档补全-agents-入口-每个包的-props-方法说明-890a.md"
-    },
-    "20261018-1503-ui-新增-card-圆角-贴边两样式-chip-07b3": {
-      "category": "建设",
-      "created": "2026-10-18 15:03:12",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-18 15:03:12",
-      "status": "doing",
-      "tags": [
-        "ui",
-        "卡片",
-        "chip"
-      ],
-      "title": "ui 新增 Card（圆角/贴边两样式）+ Chip",
-      "worklog": "worklog/202610/18-1503-ui-新增-card-圆角-贴边两样式-chip-07b3.md"
     }
   }
 }
