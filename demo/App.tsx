@@ -87,6 +87,11 @@ export function App(): ReturnType<typeof h> {
         { style: { display: 'flex', alignItems: 'baseline', gap: '10px' } },
         h('span', { style: { fontWeight: 700, fontSize: '15px' } }, 'dsh-plugin-core'),
         h('span', { style: { fontSize: '12px', color: 'var(--tdt-fg-3)' } }, '组件预览 · 效果即真实'),
+        h(
+          'span',
+          { style: { fontSize: '11px', color: 'var(--tdt-fg-4)', fontFamily: 'var(--tdt-font-mono)' } },
+          (window as unknown as { __DEMO_VERSION__?: string }).__DEMO_VERSION__ ?? '',
+        ),
       ),
       h(
         'div',

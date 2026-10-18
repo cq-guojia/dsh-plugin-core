@@ -4,11 +4,19 @@
 // 而浏览器在 file:// 协议下会拒绝加载 module 脚本（直接白屏）。
 // IIFE 是普通 <script>，双击 index.html 就能跑，不需要任何本地服务。
 import { build } from 'esbuild'
+import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 
 const OUT_DIR = 'demo-dist'
 
-// 产物目录整体重建：esbuild 的 hash 文件名只保证「新产物不撞旧缓存」，
+// 版本标签：取自 package.json 版本 + 入口产物内容哈希。内容哈希每次改代码都会变，
+// 注入到预览站左上角，方便核对「看到的是不是最新」（GitHub Pages / 浏览器易缓存旧 index.html）。
+const pkgVersion = JSON.parse(readFileSync('package.json', 'utf8')).version || '0.0.0'
+let buildHash = 'unknown'
+try {
+  buildHash = execSync('git rev-parse --short HEAD', { cwd: process.cwd() })
+    .toString().trim()
+} catch { /* 非 git 环境退回 unknown */ }
 // 但旧 hash 文件会一直躺在 assets 里，而下方「取第一个 .js」会抓到旧文件（真踩过）⇒ 每次先清场。
 if (existsSync(OUT_DIR)) rmSync(OUT_DIR, { recursive: true, force: true })
 mkdirSync(`${OUT_DIR}/assets`, { recursive: true })
@@ -64,6 +72,11 @@ let html = readFileSync('demo/index.html', 'utf8')
 if (hostCss) {
   html = html.replace('</head>', `<style id="dsh-host-theme">\n${hostCss}\n</style>\n</head>`)
 }
+// 版本标签写入 window，供顶栏展示（用户据此确认看到的是最新构建）。
+html = html.replace(
+  '</head>',
+  `<script>window.__DEMO_VERSION__=${JSON.stringify(`${pkgVersion} · ${buildHash}`)};</script>\n</head>`,
+)
 writeFileSync(`${OUT_DIR}/index.html`, html)
 
 console.log(
