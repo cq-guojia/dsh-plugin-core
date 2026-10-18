@@ -1,2 +1,9 @@
+# pnpm v12 起配置统一放这里（package.json 的 pnpm 字段已废弃）。
+# packages 限定为根目录，保持单包行为（不因引入 workspace 而改变 node_modules 布局）。
+packages:
+  - '.'
+
+# 允许 esbuild 跑安装脚本（就位原生二进制），否则 CI 报 ERR_PNPM_IGNORED_BUILDS。
+# 旧键 onlyBuiltDependencies 在 v12 已改名 allowBuilds，值为布尔：true=允许跑脚本。
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: true
