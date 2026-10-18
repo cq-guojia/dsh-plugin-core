@@ -23,9 +23,8 @@ pnpm run demo:build   # 生成静态文件到 demo-dist/
 - 不用起 dev server、不占端口
 - 目录可以随便挪，拷到别的机器上也能打开
 
-> 想放到网上：仓库带 `.github/workflows/deploy-demo.yml`，先到
-> Settings → Pages → Source 选 **GitHub Actions**，再手动触发一次该 workflow 即可
-> （默认不自动跑，避免没启用 Pages 时每次 push 都报红）。
+> 已放到网上：仓库 Settings → Pages → Source 已选 **GitHub Actions**，`on: push` 自动部署，
+> 地址 `https://cq-guojia.github.io/dsh-plugin-core/`，每次 push 自动更新。
 
 预览站用的就是**同一份 `dist/` + 同一套样式注入代码**（`setStyleKit` + `ensureControls`），
 与真实插件走同一条渲染路径——你在预览里看到的就是插件里得到的。
