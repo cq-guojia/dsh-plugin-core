@@ -22,16 +22,23 @@ await build({
   sourcemap: false,
   loader: { '.tsx': 'tsx', '.ts': 'ts' },
   define: { 'process.env.NODE_ENV': '"production"' },
-  outfile: `${OUT_DIR}/assets/index.js`,
+  outdir: `${OUT_DIR}/assets`,
+  // 内容 hash 文件名：每次构建产物名都不同，杜绝浏览器/Page CDN 缓存旧版导致白屏
+  entryNames: '[name].[hash]',
   logLevel: 'info',
 })
+
+// 读取实际生成的（带 hash 的）JS 文件名，注入到 HTML
+const jsFile = (await import('node:fs')).readdirSync(`${OUT_DIR}/assets`)
+  .find((f) => f.endsWith('.js'))
+if (!jsFile) throw new Error('未找到构建产物 JS')
 
 // HTML 里把 module 入口换成本地打包产物（去掉 type="module" 与 crossorigin）
 const html = readFileSync('demo/index.html', 'utf8')
   .replace(
     /<script[^>]*src="\.\/main\.tsx"[^>]*><\/script>/,
-    '<script defer src="./assets/index.js"></script>',
+    `<script defer src="./assets/${jsFile}"></script>`,
   )
 writeFileSync(`${OUT_DIR}/index.html`, html)
 
-console.log(`\n✓ 完成：${OUT_DIR}/index.html（双击即可打开，无需本地服务）`)
+console.log(`\n✓ 完成：${OUT_DIR}/index.html（双击即可打开，无需本地服务；产物 ${jsFile}）`)
