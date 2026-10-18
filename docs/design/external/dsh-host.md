@@ -8,6 +8,15 @@
 - 后果：`import './x.css'` 只产出独立 css 资源、**内核不加载** ⇒ 样式必须运行时注入。
 - 来源：`dsh-task-dispatch-table` 的 `task-editor-css.ts` / `archive-session-css.ts` / `toast-css.ts` 三处注释结论 + `tsdown.client.config.ts`。
 
+### 1.1 为什么不用 CSS Module / `.css` 文件
+
+- CSS Module 是**构建期**方案：打包器把类名哈希化，产出一个 css 资源 + 一个 js 映射。
+  但它同样要回答「css 资源谁来加载」——而内核不加载（见上），哈希类名对应的规则页面上根本不存在。
+- 官方自己的做法也是运行时注入：官方 CSS module 由宿主注入 `<style data-plugin-css="…">`。
+- ⇒ 本包把 CSS 以 **TS 字符串**分发、运行时注入。这不是偏好，是宿主产物形态决定的。
+- 若将来宿主支持加载 css 资源，可回归 `.css` + CSS Module——那是破坏性变更，要发 major。
+- 来源：同上（三处 css.ts 注释结论 + 官方 `official-classes.ts` 观察到的注入形态）。
+
 ## 2. 官方包只在宿主编解，Node / 非内核环境不可解析
 
 - 事实：`@deepseek-ai/dsh-client-ui-primitives` 等是**平台模块**，运行时由内核模块表 `require()` 解析，

@@ -10,7 +10,7 @@
 import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
-setStyleKit(createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' }))
+setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui', prefix: 'reminder' }))
 ensureControls()
 ```
 

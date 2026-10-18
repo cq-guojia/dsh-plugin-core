@@ -19,9 +19,10 @@ DSH（DeepSeek Harness）插件共享底座：把跨插件复用的样式、控�
 ## 安装
 
 ```bash
-npm i dsh-plugin-core
+pnpm add dsh-plugin-core
 ```
 
+（npm 也能用；推荐 pnpm。）
 包里带预编译 `dist`（宿主以 git/npm 装插件**不跑构建脚本**，产物必须随包发布）。
 `react` 是 optional peer：只用 `utils` / `design` 的插件不必装。
 
@@ -32,7 +33,9 @@ import { createStyleKit } from 'dsh-plugin-core/design'
 import { Button, ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
 // 1) 领一套本插件专属的样式设施（id + 变量前缀都隔离）
-setStyleKit(createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' }))
+//    id / prefix 的取值按项目规范定（多插件同页必须互不冲突）；
+//    下面的 dsh-task-reminder / reminder 只是演示命名规律（前缀取插件名缩写）
+setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui', prefix: 'reminder' }))
 // 2) 挂上 token + 控件样式（幂等，可反复调）
 ensureControls()
 

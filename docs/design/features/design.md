@@ -37,10 +37,10 @@
 ```ts
 import { createStyleKit } from 'dsh-plugin-core/design'
 
-const kit = createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' })
+const kit = createStyleKit({ id: 'dsh-task-reminder-ui', prefix: 'reminder' })
 kit.applyStyle('tokens', kit.tokensCss)
 // 之后自己的样式域：
-kit.applyStyle('my-widget', '.my-widget{color:var(--myplugin-fg)}')
+kit.applyStyle('reminder-widget', '.reminder-widget{color:var(--reminder-fg)}')
 ```
 
 ## token 口径

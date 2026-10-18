@@ -5,9 +5,10 @@
 ## 0. 装包
 
 ```bash
-npm i dsh-plugin-core
+pnpm add dsh-plugin-core
 ```
 
+（npm 也能用；推荐 pnpm。）
 `react` 是 optional peer——只用 `utils` / `design` 的插件不必装。
 包里带预编译 `dist`（宿主以 git/npm 装插件**不跑构建脚本**，产物必须随包发布）。
 
@@ -18,12 +19,14 @@ npm i dsh-plugin-core
 import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
-const kit = createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' })
+const kit = createStyleKit({ id: 'dsh-task-reminder-ui', prefix: 'reminder' })
 setStyleKit(kit)
 ensureControls()
 ```
 
-`id` 必须插件内唯一；`prefix` 是变量前缀（`myplugin` ⇒ `--myplugin-fg`）。
+`id` 必须插件内唯一；`prefix` 是变量前缀（`reminder` ⇒ `--reminder-fg`）。
+两者取值按**项目规范**定（多插件同页必须互不冲突）——示例里的 `dsh-task-reminder` / `reminder`
+只是演示命名规律（前缀取插件名缩写），不是可用值的枚举。
 
 ## 2. 用一个控件
 

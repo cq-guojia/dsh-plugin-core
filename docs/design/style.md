@@ -55,6 +55,6 @@ token 原文提取自 `dsh-task-dispatch-table/src/client/ui/tokens.ts`，含深
 ## 定制边界
 
 - **换肤**：给同一批变量名赋新值（在插件自己的样式域里覆盖），不需要 fork。
-- **加域**：`kit.registerStyle('my-widget', css)`，同一域重复登记 = 覆盖。
+- **加域**：`kit.registerStyle('reminder-widget', css)`，同一域重复登记 = 覆盖。
 - **`tokens` 域恒排最前**（变量定义必须先于消费它的规则），kit 内部已保证。
 - 皮肤写在调用方自己的样式域里；组件只认 token，不认调用方的具体颜色。

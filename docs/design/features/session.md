@@ -53,7 +53,7 @@ h(SessionPreview, {
   source,                    // 从 ctx 取出后注入
   variant: 'modal',
   onClose: () => setOpen(false),
-  renderMessage: (m) => h(MyRichMessage, { message: m }),  // 可选
+  renderMessage: (m) => h(RichMessage, { message: m }),  // 可选
 })
 ```
 
