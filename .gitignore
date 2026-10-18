@@ -13,3 +13,6 @@ __pycache__/
 .trae/
 
 # dist/ 不可忽略：宿主以 git/npm 安装且不跑构建脚本，产物必须入库随包发布
+
+# demo 预览站构建产物（源码在 demo/，npm 发布物不含它）
+demo-dist/

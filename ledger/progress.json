@@ -15,6 +15,22 @@
       ],
       "title": "文档补全：AGENTS 入口 + 每个包的 props/方法说明",
       "worklog": "worklog/202610/18-1124-文档补全-agents-入口-每个包的-props-方法说明-890a.md"
+    },
+    "20261018-1625-组件预览站-demo-页-左侧分类导航-明暗-中英切换-3497": {
+      "category": "建设",
+      "created": "2026-10-18 16:25:15",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-18 16:25:15",
+      "status": "doing",
+      "tags": [
+        "demo",
+        "预览",
+        "文档站"
+      ],
+      "title": "组件预览站：demo 页 + 左侧分类导航 + 明暗/中英切换",
+      "worklog": "worklog/202610/18-1625-组件预览站-demo-页-左侧分类导航-明暗-中英切换-3497.md"
     }
   }
 }

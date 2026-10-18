@@ -7,6 +7,20 @@ DSH（DeepSeek Harness）插件共享底座：把跨插件复用的样式、控�
 
 > **状态**：🚧 可用但**未在真实插件里接入验证过**（见下方「还没做的事」）
 
+## 本地预览（先看这个）
+
+不想读文档？起预览站，所有控件**实时可点**，右上角切明暗 / 中英：
+
+```bash
+pnpm install
+pnpm run build      # 先出 dist（预览站消费的就是它）
+pnpm run demo       # http://localhost:5180
+```
+
+预览站用的就是**同一份 `dist/` + 同一套样式注入代码**（`setStyleKit` + `ensureControls`），
+与真实插件走同一条渲染路径——你在预览里看到的就是插件里得到的。
+`explorer` / `session` 的宿主数据是 mock 的（`demo/mock.ts`）。
+
 ## 文档在哪
 
 | 我想… | 看哪 |
