@@ -28,13 +28,13 @@
 ## 常用命令
 
 ```bash
-npm run build          # tsc 出 ESM + d.ts 到 dist/（产物必须入库：宿主装插件不跑构建）
-node --test test/*.test.mjs   # 全部自检（当前 33 条）
+pnpm run build        # tsc 出 ESM + d.ts 到 dist/（产物必须入库：宿主装插件不跑构建）
+pnpm test             # 全部自检（当前 33 条）
 ```
 
 ## 改完的 checklist
 
-- [ ] `npm run build` 干净（`noUnusedLocals` / `strict` 全开）
+- [ ] `pnpm run build` 干净（`noUnusedLocals` / `strict` 全开）
 - [ ] `node --test test/*.test.mjs` 全绿
 - [ ] 新增导出是否进了对应 `index.ts`（曾漏过 `relativeFuture`）
 - [ ] 新增文案 key 是否被使用（死 key 自检会红）

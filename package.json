@@ -54,7 +54,6 @@
     "test": "node --test test/*.test.mjs"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.0",
     "react": ">=18",
     "react-dom": ">=18"
   },
@@ -63,9 +62,6 @@
       "optional": true
     },
     "react-dom": {
-      "optional": true
-    },
-    "@deepseek-ai/dsh-client-ui-primitives": {
       "optional": true
     }
   },
