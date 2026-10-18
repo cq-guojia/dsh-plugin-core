@@ -15,21 +15,6 @@
       ],
       "title": "文档补全：AGENTS 入口 + 每个包的 props/方法说明",
       "worklog": "worklog/202610/18-1124-文档补全-agents-入口-每个包的-props-方法说明-890a.md"
-    },
-    "20261018-1307-修正-pnpm-硬链接在-fuse-下不生效-撤-npmrc-4298": {
-      "category": "缺陷修复",
-      "created": "2026-10-18 13:07:42",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-18 13:07:42",
-      "status": "doing",
-      "tags": [
-        "pnpm",
-        "环境"
-      ],
-      "title": "修正：pnpm 硬链接在 FUSE 下不生效，撤 .npmrc",
-      "worklog": "worklog/202610/18-1307-修正-pnpm-硬链接在-fuse-下不生效-撤-npmrc-4298.md"
     }
   }
 }
