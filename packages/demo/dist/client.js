@@ -20,7 +20,7 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/client/index.tsx
+// packages/demo/src/client/index.tsx
 var index_exports = {};
 __export(index_exports, {
   apply: () => apply
@@ -28,7 +28,7 @@ __export(index_exports, {
 module.exports = __toCommonJS(index_exports);
 var import_react31 = require("react");
 
-// ../../dist/design/tokens-css.js
+// dist/design/tokens-css.js
 var TOKENS_CSS_TEMPLATE = `
 /* \u2500\u2500 \u6587\u5B57\uFF08\u5BBF\u4E3B label \u56DB\u6863 + \u53CD\u8272\u9762\u7528\u5B57\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 body{
@@ -250,7 +250,7 @@ body[data-ds-dark-theme]{
 }
 \``;
 
-// ../../dist/design/style-kit.js
+// dist/design/style-kit.js
 var SOURCE_PREFIX = "--tdt-";
 var TOKENS_DOMAIN = "tokens";
 var PREFIX_RE = /^[a-zA-Z][a-zA-Z0-9-]*$/;
@@ -334,7 +334,7 @@ function createStyleKit(options) {
   };
 }
 
-// ../../dist/ui/controls-css.js
+// dist/ui/controls-css.js
 var SEGMENTED_CSS = `
 /* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6\uFF08\u6ED1\u52A8\u5757\uFF09P1 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
    \u7ED3\u6784\u4E00\u5957 + \u4E24\u4E2A\u53D7\u63A7\u8F74\uFF1Asize(sm|md|lg) \xD7 variant(default|inset)\u3002
@@ -673,7 +673,7 @@ var HINT_CSS = `
 .dsh-tdt-hint:hover .dsh-tdt-hint__bubble,.dsh-tdt-hint:focus-visible .dsh-tdt-hint__bubble{opacity:1;visibility:visible;}
 `;
 
-// ../../dist/ui/picker-css.js
+// dist/ui/picker-css.js
 var PICKER_CSS = `
 .dsh-tdt-picker{position:relative;display:inline-block;font-size:13px;line-height:20px}
 .dsh-tdt-picker__trigger{
@@ -723,7 +723,7 @@ var PICKER_CSS = `
 .dsh-tdt-picker__row{display:flex;align-items:center;gap:8px}
 `;
 
-// ../../dist/ui/feedback-css.js
+// dist/ui/feedback-css.js
 var FEEDBACK_CSS = `
 .dsh-tdt-modal-mask{
   position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;
@@ -769,7 +769,7 @@ var FEEDBACK_CSS = `
 }
 `;
 
-// ../../dist/ui/card-css.js
+// dist/ui/card-css.js
 var CARD_CSS = `
 .dsh-tdt-card{
   position:relative;padding:12px 14px;background:var(--tdt-surface-1);
@@ -816,7 +816,7 @@ var CHIP_CSS = `
 .dsh-tdt-chip--clickable:hover{background:var(--tdt-chip-bg-hover)}
 `;
 
-// ../../dist/explorer/explorer-css.js
+// dist/explorer/explorer-css.js
 var EXPLORER_CSS = `
 .dsh-tdt-exp{display:flex;flex-direction:column;height:100%;min-height:0;color:var(--tdt-fg);font-size:13px}
 .dsh-tdt-exp__crumbs{
@@ -849,7 +849,7 @@ var EXPLORER_CSS = `
 .dsh-tdt-exp__image{max-width:100%;border-radius:6px;border:1px solid var(--tdt-border-faint)}
 `;
 
-// ../../dist/session/session-css.js
+// dist/session/session-css.js
 var SESSION_CSS = `
 .dsh-tdt-ses{display:flex;flex-direction:column;min-height:0;color:var(--tdt-fg);font-size:13px}
 .dsh-tdt-ses--sidebar{height:100%;border-left:1px solid var(--tdt-border-faint);background:var(--tdt-surface-base)}
@@ -868,7 +868,7 @@ var SESSION_CSS = `
 .dsh-tdt-ses__note{padding:12px;color:var(--tdt-fg-3);text-align:center}
 `;
 
-// ../../dist/ui/css.js
+// dist/ui/css.js
 var CONTROLS_DOMAIN = "controls";
 function buildCss(template, prefix) {
   return template.split("--tdt-").join(`--${prefix}-`);
@@ -898,7 +898,7 @@ function ensureControls(kit = current) {
   kit.applyStyle(CONTROLS_DOMAIN, buildCss(CONTROLS_CSS, kit.prefix));
 }
 
-// ../../dist/ui/picker-logic.js
+// dist/ui/picker-logic.js
 function toGroups(groups, options) {
   if (groups !== void 0 && groups.length > 0)
     return groups;
@@ -947,10 +947,10 @@ function groupOf(groups, value) {
   return groups.find((g) => g.options.some((o) => o.value === value));
 }
 
-// ../../dist/ui/Picker.js
+// dist/ui/Picker.js
 var import_react = require("react");
 
-// ../../dist/utils/i18n.js
+// dist/utils/i18n.js
 var DICT = {
   zh: {
     sessionLoading: "\u52A0\u8F7D\u4F1A\u8BDD\u2026",
@@ -1056,7 +1056,7 @@ function t(key, vars) {
   });
 }
 
-// ../../dist/ui/Picker.js
+// dist/ui/Picker.js
 function Picker(props) {
   ensureControls();
   const tt = props.translate ?? t;
@@ -1187,7 +1187,7 @@ function toArray(v) {
   return Array.isArray(v) ? [...v] : [v];
 }
 
-// ../../dist/ui/ModelPicker.js
+// dist/ui/ModelPicker.js
 var import_react2 = require("react");
 function ModelPicker(props) {
   ensureControls();
@@ -1236,7 +1236,7 @@ function ModelPicker(props) {
   }));
 }
 
-// ../../dist/ui/WorkspacePicker.js
+// dist/ui/WorkspacePicker.js
 var import_react3 = require("react");
 function WorkspacePicker(props) {
   ensureControls();
@@ -1277,7 +1277,7 @@ function FilePicker(props) {
   });
 }
 
-// ../../dist/ui/Modal.js
+// dist/ui/Modal.js
 var import_react4 = require("react");
 function Modal(props) {
   ensureControls();
@@ -1312,7 +1312,7 @@ function Modal(props) {
   }, "\u2715")), (0, import_react4.createElement)("div", { className: "dsh-tdt-modal__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react4.createElement)("div", { className: "dsh-tdt-modal__foot" }, props.footer)));
 }
 
-// ../../dist/ui/Card.js
+// dist/ui/Card.js
 var import_react5 = require("react");
 var CARD_ACCENTS = ["business", "success", "warning", "danger", "neutral"];
 function CardShell(kind, props) {
@@ -1342,7 +1342,7 @@ function StripCard(props) {
   return CardShell("strip", props);
 }
 
-// ../../dist/ui/Chip.js
+// dist/ui/Chip.js
 var import_react6 = require("react");
 function Chip(props) {
   ensureControls();
@@ -1354,7 +1354,7 @@ function Chip(props) {
   }, props.children ?? null);
 }
 
-// ../../dist/ui/Toast.js
+// dist/ui/Toast.js
 var HOST_ID = "dsh-tdt-toast-host";
 var DEFAULT_MS = 2600;
 function showToast(message, opts) {
@@ -1385,7 +1385,7 @@ function ensureHost() {
   return host;
 }
 
-// ../../dist/ui/EmptyState.js
+// dist/ui/EmptyState.js
 var import_react7 = require("react");
 function EmptyState(props) {
   ensureControls();
@@ -1393,7 +1393,7 @@ function EmptyState(props) {
   return (0, import_react7.createElement)("div", { className: "dsh-tdt-empty" }, props.icon ?? null, (0, import_react7.createElement)("div", null, props.text ?? tt("emptyText")), props.action ?? null);
 }
 
-// ../../dist/ui/ErrorBoundary.js
+// dist/ui/ErrorBoundary.js
 var import_react8 = require("react");
 var ErrorBoundary = class extends import_react8.Component {
   constructor() {
@@ -1421,7 +1421,7 @@ var ErrorBoundary = class extends import_react8.Component {
   }
 };
 
-// ../../dist/ui/Button.js
+// dist/ui/Button.js
 var import_react9 = require("react");
 function buttonClass(variant, size, extra) {
   return `dsh-tdt-btn dsh-tdt-btn--${variant} dsh-tdt-btn--${size}${extra !== void 0 && extra !== "" ? " " + extra : ""}`;
@@ -1451,7 +1451,7 @@ function IconButton(props) {
   return (0, import_react9.createElement)("button", attrs, icon);
 }
 
-// ../../dist/ui/Segmented.js
+// dist/ui/Segmented.js
 var import_react10 = require("react");
 function Segmented(props) {
   ensureControls();
@@ -1495,7 +1495,7 @@ function Segmented(props) {
   }));
 }
 
-// ../../dist/ui/Textarea.js
+// dist/ui/Textarea.js
 var import_react11 = require("react");
 function Textarea(props) {
   ensureControls();
@@ -1516,7 +1516,7 @@ function Textarea(props) {
   });
 }
 
-// ../../dist/ui/Checkbox.js
+// dist/ui/Checkbox.js
 var import_react12 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className } = props;
@@ -1548,7 +1548,7 @@ function Checkbox(props) {
   }), label !== void 0 ? (0, import_react12.createElement)("span", null, label) : null);
 }
 
-// ../../dist/ui/MarqueeText.js
+// dist/ui/MarqueeText.js
 var import_react13 = require("react");
 function MarqueeText(props) {
   const outerRef = (0, import_react13.useRef)(null);
@@ -1590,7 +1590,7 @@ function MarqueeText(props) {
   }, props.text));
 }
 
-// ../../dist/ui/SectionHead.js
+// dist/ui/SectionHead.js
 var import_react14 = require("react");
 function SectionHead(props) {
   return (0, import_react14.createElement)("div", {
@@ -1598,7 +1598,7 @@ function SectionHead(props) {
   }, (0, import_react14.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", color: "var(--tdt-fg-3)" } }, props.icon), (0, import_react14.createElement)("span", { style: { fontSize: "var(--tdt-font-lg)", lineHeight: "var(--tdt-line-lg)", fontWeight: 600, color: "var(--tdt-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react14.createElement)("div", { style: { marginLeft: "auto", display: "flex", alignItems: "center", gap: "var(--tdt-space-2)", minWidth: 0 } }, props.right));
 }
 
-// ../../dist/ui/FieldHint.js
+// dist/ui/FieldHint.js
 var import_react15 = require("react");
 function FieldHint(props) {
   ensureControls();
@@ -1611,10 +1611,10 @@ function FieldHint(props) {
   }, "?", (0, import_react15.createElement)("span", { className: "dsh-tdt-hint__bubble", role: "tooltip" }, props.text));
 }
 
-// ../../dist/ui/LiveText.js
+// dist/ui/LiveText.js
 var import_react17 = require("react");
 
-// ../../dist/ui/ticker.js
+// dist/ui/ticker.js
 var import_react16 = require("react");
 var tickerListeners = /* @__PURE__ */ new Set();
 var tickerTimer = null;
@@ -1644,7 +1644,7 @@ function subscribeTicker(cb) {
   };
 }
 
-// ../../dist/ui/LiveText.js
+// dist/ui/LiveText.js
 function LiveText(props) {
   const [, force] = (0, import_react17.useState)(0);
   const renderRef = (0, import_react17.useRef)(props.render);
@@ -1653,7 +1653,7 @@ function LiveText(props) {
   return (0, import_react17.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
 }
 
-// ../../dist/ui/Field.js
+// dist/ui/Field.js
 var import_react18 = require("react");
 function sizeClass(size) {
   return size === "lg" ? "--lg" : size === "md" ? "--md" : "--sm";
@@ -1743,10 +1743,10 @@ function NumberInput(props) {
   );
 }
 
-// ../../demo/sections/index.tsx
+// demo/sections/index.tsx
 var import_react30 = require("react");
 
-// ../../demo/sections/design.tsx
+// demo/sections/design.tsx
 var import_react19 = require("react");
 var TOKENS = [
   { label: "business", cssVar: "--tdt-business" },
@@ -1809,7 +1809,7 @@ ensureControls()`
   );
 }
 
-// ../../demo/sections/buttons.tsx
+// demo/sections/buttons.tsx
 var import_react20 = require("react");
 function ButtonsSection() {
   const [text, setText] = (0, import_react20.useState)("");
@@ -1935,7 +1935,7 @@ function ButtonsSection() {
   );
 }
 
-// ../../demo/sections/pickers.tsx
+// demo/sections/pickers.tsx
 var import_react21 = require("react");
 var MODELS = [
   {
@@ -2029,7 +2029,7 @@ function PickersSection() {
   );
 }
 
-// ../../demo/sections/feedback.tsx
+// demo/sections/feedback.tsx
 var import_react22 = require("react");
 function Boom() {
   throw new Error("\u6F14\u793A\uFF1A\u5B50\u7EC4\u4EF6\u629B\u9519\u88AB\u8FB9\u754C\u63A5\u4F4F");
@@ -2087,7 +2087,7 @@ function FeedbackSection() {
   );
 }
 
-// ../../demo/sections/display.tsx
+// demo/sections/display.tsx
 var import_react23 = require("react");
 function DisplaySection() {
   const [open, setOpen] = (0, import_react23.useState)(false);
@@ -2207,10 +2207,10 @@ function DisplaySection() {
   );
 }
 
-// ../../demo/sections/utils.tsx
+// demo/sections/utils.tsx
 var import_react24 = require("react");
 
-// ../../dist/utils/date.js
+// dist/utils/date.js
 function pad2(value) {
   return String(value).padStart(2, "0");
 }
@@ -2312,7 +2312,7 @@ function formatRange(fromIso, toIso, opts) {
   return `${day(a)} ${clock(a)} \u2013 ${day(b)} ${clock(b)}`;
 }
 
-// ../../dist/utils/number.js
+// dist/utils/number.js
 function formatBytes(bytes) {
   if (!Number.isFinite(bytes) || bytes <= 0)
     return "\u2014";
@@ -2328,7 +2328,7 @@ function formatBytes(bytes) {
   return `${value >= 10 ? String(Math.round(value)) : value.toFixed(1)} ${units[unit]}`;
 }
 
-// ../../demo/sections/utils.tsx
+// demo/sections/utils.tsx
 var NOW = Date.parse("2026-10-18T12:00:00.000Z");
 var ROWS = [
   ["formatDateTime", formatDateTime("2026-10-18T09:30:05.000Z", { seconds: true }), "2026-10-18 09:30:05"],
@@ -2375,16 +2375,16 @@ function UtilsSection() {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--tdt-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--tdt-border-faint)" };
 
-// ../../demo/sections/explorer.tsx
+// demo/sections/explorer.tsx
 var import_react27 = require("react");
 
-// ../../dist/explorer/ExplorerPanel.js
+// dist/explorer/ExplorerPanel.js
 var import_react26 = require("react");
 
-// ../../dist/explorer/preview/index.js
+// dist/explorer/preview/index.js
 var import_react25 = require("react");
 
-// ../../dist/explorer/types.js
+// dist/explorer/types.js
 var IMAGE_EXT = {
   png: "image/png",
   jpg: "image/jpeg",
@@ -2454,7 +2454,7 @@ function joinPath(dir, name) {
   return dir === "" ? name : `${dir}/${name}`;
 }
 
-// ../../dist/explorer/preview/index.js
+// dist/explorer/preview/index.js
 function FilePreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
@@ -2506,7 +2506,7 @@ function FilePreview(props) {
   return text === null ? (0, import_react25.createElement)("div", { className: "dsh-tdt-exp__note" }, tt("explorerLoading")) : (0, import_react25.createElement)("pre", { className: "dsh-tdt-exp__text" }, text);
 }
 
-// ../../dist/explorer/ExplorerPanel.js
+// dist/explorer/ExplorerPanel.js
 function ExplorerPanel(props) {
   ensureControls();
   const tt = props.translate ?? t;
@@ -2587,7 +2587,7 @@ function ExplorerPanel(props) {
   }))));
 }
 
-// ../../demo/mock.ts
+// demo/mock.ts
 var TREE = {
   ".": [
     { name: "src", type: "directory" },
@@ -2722,7 +2722,7 @@ function delay(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// ../../demo/sections/explorer.tsx
+// demo/sections/explorer.tsx
 function ExplorerSection() {
   const [selected, setSelected] = (0, import_react27.useState)(null);
   return (0, import_react27.createElement)(
@@ -2761,13 +2761,13 @@ function ExplorerSection() {
   );
 }
 
-// ../../demo/sections/session.tsx
+// demo/sections/session.tsx
 var import_react29 = require("react");
 
-// ../../dist/session/index.js
+// dist/session/index.js
 var import_react28 = require("react");
 
-// ../../dist/session/types.js
+// dist/session/types.js
 var ROLE_LABEL_KEY = {
   user: "sessionRoleUser",
   assistant: "sessionRoleAssistant",
@@ -2775,7 +2775,7 @@ var ROLE_LABEL_KEY = {
   system: "sessionRoleTool"
 };
 
-// ../../dist/session/index.js
+// dist/session/index.js
 function SessionPreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
@@ -2824,7 +2824,7 @@ function SessionPreview(props) {
   return (0, import_react28.createElement)("div", { className: `dsh-tdt-ses dsh-tdt-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react28.createElement)("div", { className: "dsh-tdt-ses__head" }, (0, import_react28.createElement)("button", { type: "button", className: "dsh-tdt-exp__crumb", onClick: props.onClose }, "\u2715")), body);
 }
 
-// ../../demo/sections/session.tsx
+// demo/sections/session.tsx
 function SessionSection() {
   const [open, setOpen] = (0, import_react29.useState)(false);
   return (0, import_react29.createElement)(
@@ -2853,7 +2853,7 @@ function SessionSection() {
   }
 }
 
-// ../../demo/sections/index.tsx
+// demo/sections/index.tsx
 function Demo(props) {
   return (0, import_react30.createElement)(
     "section",
@@ -2915,10 +2915,10 @@ function Sections(props) {
   );
 }
 
-// src/client/token-alias.ts
+// packages/demo/src/client/token-alias.ts
 var ALIAS_TOKEN_NAMES = ["accent", "active", "border", "border-faint", "border-heavy", "border-strong", "business", "chip-bg", "chip-bg-hover", "code-font", "code-surface", "control-h-lg", "control-h-md", "control-h-sm", "danger", "dur", "dur-fast", "ease", "fg", "fg-2", "fg-3", "fg-4", "fg-dim", "fg-inverse", "focus", "font-lg", "font-md", "font-mono", "font-sm", "font-xs", "hover", "line-lg", "line-md", "line-sm", "link", "on-signal", "on-solid", "open-bg", "open-bg-soft", "radius-md", "radius-sm", "radius-xs", "shadow-1", "shadow-2", "shadow-raised", "solid", "space-1", "space-2", "space-3", "space-4", "success", "surface-1", "surface-2", "surface-base", "surface-menu", "surface-sunken", "warning", "warning-label", "z-dock", "z-menu"];
 
-// src/client/index.tsx
+// packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";
 var PREFIX = "dshpc";
 function aliasCss() {

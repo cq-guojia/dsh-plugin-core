@@ -1,4 +1,4 @@
-// src/index.ts
+// packages/demo/src/index.ts
 var name = "dsh-plugin-core-demo";
 var inject = [];
 function apply() {
