@@ -7,6 +7,15 @@ DSH（DeepSeek Harness）插件共享底座：把跨插件复用的样式、控�
 
 > **状态**：🚧 可用但**未在真实插件里接入验证过**（见下方「还没做的事」）
 
+## 文档在哪
+
+| 我想… | 看哪 |
+|---|---|
+| 知道每个包提供什么、怎么用 | [`docs/README.md`](docs/README.md)（槽位表）→ [`docs/design/features.md`](docs/design/features.md) |
+| 从零接入一个插件 | [`docs/examples/integration.md`](docs/examples/integration.md) |
+| 改这个仓库本身 | `AGENTS.md` |
+| 查为什么这么设计 | [`docs/requirements.md`](docs/requirements.md) |
+
 ## 安装
 
 ```bash
