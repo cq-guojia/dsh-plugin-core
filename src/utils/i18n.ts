@@ -25,6 +25,7 @@ export type UtilMessageKey =
   | 'explorerRefresh'
   | 'explorerTruncated'
   | 'explorerEmptyDir'
+  | 'cardToggle'
   | 'modalClose'
   | 'emptyText'
   | 'errorTitle'
@@ -74,6 +75,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerRefresh: '刷新',
     explorerTruncated: '条目过多，已截断',
     explorerEmptyDir: '空目录',
+    cardToggle: '展开/收起',
     modalClose: '关闭',
     emptyText: '暂无数据',
     errorTitle: '出错了',
@@ -119,6 +121,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerRefresh: 'Refresh',
     explorerTruncated: 'Too many entries, truncated',
     explorerEmptyDir: 'Empty folder',
+    cardToggle: 'Expand/Collapse',
     modalClose: 'Close',
     emptyText: 'No data',
     errorTitle: 'Something went wrong',

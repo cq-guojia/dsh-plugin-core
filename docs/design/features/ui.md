@@ -111,6 +111,50 @@ h(WorkspacePicker, { workspaces: wsList, value: cur, onChange: setCur })
 
 「跟随宿主」这类默认项由调用方自己往 `groups` 里塞一项——编码口径（如 `provider/id`）也归调用方。
 
+### Card / StripCard / Chip
+
+**两种卡片外观，拆成两个独立组件**（消费方要用哪个拖哪个，不搞 variant 二合一）：
+
+| 组件 | 外观 | 色条 |
+|---|---|---|
+| `Card` | 圆角 + 1px 边框 | 短条，上下留距 8px |
+| `StripCard` | 无圆角、无边框（贴边） | **通高**（贴顶到底） |
+
+两者共享同一套 props：
+
+| 参数 | 类型 | 默认 | 说明 |
+|---|---|---|---|
+| `accent` | 5 档 or 任意 CSS 色值 | `'business'` | 档位：`business`(蓝) / `success`(绿) / `warning`(黄) / `danger`(红) / `neutral`(灰)，映射到 design 的 token；也可传 `'#f59e0b'` 这类自定义值 |
+| `expanded` | `boolean` | `false` | 展开态（箭头朝向 + `panel` 显隐） |
+| `onToggle` | `() => void` | — | 传了才显示右侧折叠箭头；**展开状态由调用方管** |
+| `action` | `ReactNode` | — | 右上角操作区（「跳过」「查看会话」） |
+| `children` | `ReactNode` | — | 主内容，排版随你 |
+| `panel` | `ReactNode` | — | 展开后才显示的额外内容 |
+| `className` / `style` | — | — | 追加类 / 样式 |
+
+色条是绝对定位 + `top/bottom`，**跟着内容高度自适应**；上下是否留距由外观决定（`Card` 留 8px、`StripCard` 通高）。
+颜色全走 token ⇒ **亮暗自动跟随宿主**（`body[data-ds-dark-theme]`），不需要调用方处理。
+
+```tsx
+import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'
+
+h(Card, {
+  accent: 'warning',
+  action: h(Button, { size: 'sm', variant: 'ghost' }, '跳过'),
+},
+  h('div', null, '标题'),
+  h(Chip, null, '#npm'),
+)
+
+h(StripCard, {
+  accent: 'success',
+  expanded: open, onToggle: () => setOpen(!open),
+  panel: h('div', null, '展开详情'),
+}, h('div', null, '标题 + 元信息'))
+```
+
+`Chip`：小标签，token 用现成的 `--tdt-chip-bg`；传 `onClick` 才是可点的。
+
 ### Modal
 
 | 参数 | 类型 | 默认 | 说明 |

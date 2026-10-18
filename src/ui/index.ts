@@ -21,6 +21,14 @@ export {
   type WorkspacePickerProps,
 } from './WorkspacePicker.js'
 export { Modal, type ModalProps } from './Modal.js'
+export {
+  CARD_ACCENTS,
+  Card,
+  StripCard,
+  type CardAccent,
+  type CardSharedProps,
+} from './Card.js'
+export { Chip, type ChipProps } from './Chip.js'
 export { showToast, type ToastVariant } from './Toast.js'
 export { EmptyState, type EmptyStateProps } from './EmptyState.js'
 export { ErrorBoundary, type ErrorBoundaryProps } from './ErrorBoundary.js'
