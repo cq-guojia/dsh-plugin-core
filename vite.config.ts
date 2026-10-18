@@ -7,6 +7,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   root: 'demo',
+  // 相对路径 ⇒ 构建产物可以**直接双击 index.html 用 file:// 打开**，不需要起任何服务
+  base: './',
   build: {
     outDir: '../demo-dist',
     emptyOutDir: true,
