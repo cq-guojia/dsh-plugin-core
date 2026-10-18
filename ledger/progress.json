@@ -15,21 +15,6 @@
       ],
       "title": "文档补全：AGENTS 入口 + 每个包的 props/方法说明",
       "worklog": "worklog/202610/18-1124-文档补全-agents-入口-每个包的-props-方法说明-890a.md"
-    },
-    "20261018-1243-包管理器切-pnpm-含文档命令同步-9798": {
-      "category": "建设",
-      "created": "2026-10-18 12:43:43",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-18 12:43:43",
-      "status": "doing",
-      "tags": [
-        "pnpm",
-        "依赖"
-      ],
-      "title": "包管理器切 pnpm（含文档命令同步）",
-      "worklog": "worklog/202610/18-1243-包管理器切-pnpm-含文档命令同步-9798.md"
     }
   }
 }
