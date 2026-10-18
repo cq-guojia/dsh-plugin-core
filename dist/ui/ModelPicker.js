@@ -6,20 +6,26 @@ import { flattenOptions, groupOf } from './picker-logic.js';
 export function ModelPicker(props) {
     ensureControls();
     const tt = props.translate ?? t;
-    const value = props.value ?? '';
+    const value = props.value;
     const variant = props.variant ?? 'flat';
+    const cur = value ?? '';
     if (variant === 'flat') {
         return h(Picker, {
             options: flattenOptions(props.groups),
-            value: value === '' ? undefined : value,
+            value,
+            defaultValue: props.defaultValue,
             placeholder: tt('modelModel'),
             degraded: props.degraded,
             disabled: props.disabled,
-            searchable: true,
+            clearable: props.clearable,
+            searchable: props.searchable ?? true,
+            size: props.size,
+            placement: props.placement,
+            className: props.className,
             onChange: (v) => props.onChange?.(typeof v === 'string' ? v : v[0] ?? ''),
         });
     }
-    const group = groupOf(props.groups, value);
+    const group = groupOf(props.groups, cur);
     const provider = group?.value ?? '';
     return h('div', { className: 'dsh-tdt-picker__row' }, h(Picker, {
         options: props.groups.map((g) => ({ value: g.value, label: g.label })),
@@ -30,11 +36,16 @@ export function ModelPicker(props) {
         onChange: () => props.onChange?.(''),
     }), h(Picker, {
         options: group?.options ?? [],
-        value: value === '' ? undefined : value,
+        value,
+        defaultValue: props.defaultValue,
         placeholder: tt('modelModel'),
         degraded: props.degraded,
         disabled: props.disabled === true || provider === '',
-        searchable: true,
+        clearable: props.clearable,
+        searchable: props.searchable ?? true,
+        size: props.size,
+        placement: props.placement,
+        className: props.className,
         onChange: (v) => props.onChange?.(typeof v === 'string' ? v : v[0] ?? ''),
     }));
 }

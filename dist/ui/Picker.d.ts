@@ -2,22 +2,37 @@ import { createElement as h } from 'react';
 import { type Translate } from '../utils/i18n.js';
 import { type PickerGroup, type PickerOption } from './picker-logic.js';
 export type { PickerGroup, PickerOption };
+export type PickerSize = 'sm' | 'md' | 'lg';
 export interface PickerProps {
     /** 分组数据（模型选择里一组 = 一个 provider）。 */
     groups?: PickerGroup[];
     /** 扁平数据的快捷写法；与 `groups` 二选一。 */
     options?: PickerOption[];
+    /** 受控值。给了它就是受控；不给就内部管（配 `defaultValue`）。 */
     value?: string | string[];
+    /** 非受控模式下的初始值。 */
+    defaultValue?: string | string[];
+    onChange?: (value: string | string[]) => void;
     mode?: 'single' | 'multiple';
-    /** 多选上限；到上限后不再添加（不静默截断）。 */
+    /** 多选上限；到上限后其余选项置灰并提示（不静默截断）。 */
     max?: number;
     searchable?: boolean;
+    /** 单选时允许「不选」——选项列表顶部多一项清除。 */
+    clearable?: boolean;
     placeholder?: string;
     /** 候选可能不完整（宿主没接上服务之类）⇒ 如实告诉用户，不编造。 */
     degraded?: boolean;
     disabled?: boolean;
+    size?: PickerSize;
+    /** 菜单展开方向：靠近视口底部时用 `up`。 */
+    placement?: 'down' | 'up';
+    /** 选中后是否收起菜单；多选默认**不收起**（方便连续选）。 */
+    closeOnSelect?: boolean;
+    /** 多选时是否把已选项列在触发器上（默认列）。 */
+    showLabels?: boolean;
+    className?: string;
+    ariaLabel?: string;
     translate?: Translate;
-    onChange?: (value: string | string[]) => void;
 }
 /**
  * 通用选择器：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级。

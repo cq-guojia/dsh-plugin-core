@@ -30,6 +30,7 @@ export type UtilMessageKey =
   | 'errorTitle'
   | 'errorRetry'
   | 'pickerPlaceholder'
+  | 'pickerClear'
   | 'pickerEmpty'
   | 'pickerNoMatch'
   | 'pickerSearch'
@@ -39,6 +40,12 @@ export type UtilMessageKey =
   | 'modelProvider'
   | 'modelModel'
   | 'relNow'
+  | 'relInJustNow'
+  | 'relInMinutes'
+  | 'relInHours'
+  | 'relInDays'
+  | 'relInMonths'
+  | 'relInYears'
   | 'relJustNow'
   | 'relMinutesAgo'
   | 'relHoursAgo'
@@ -72,6 +79,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     errorTitle: '出错了',
     errorRetry: '重试',
     pickerPlaceholder: '请选择',
+    pickerClear: '不选',
     pickerEmpty: '暂无可选',
     pickerNoMatch: '无匹配项',
     pickerSearch: '搜索…',
@@ -81,6 +89,12 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     modelProvider: '供应商',
     modelModel: '模型',
     relNow: '刚刚',
+    relInJustNow: '即将',
+    relInMinutes: '{n} 分钟后',
+    relInHours: '{n} 小时后',
+    relInDays: '{n} 天后',
+    relInMonths: '{n} 个月后',
+    relInYears: '{n} 年后',
     relJustNow: '刚刚',
     relMinutesAgo: '{n} 分钟前',
     relHoursAgo: '{n} 小时前',
@@ -110,6 +124,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     errorTitle: 'Something went wrong',
     errorRetry: 'Retry',
     pickerPlaceholder: 'Select…',
+    pickerClear: 'None',
     pickerEmpty: 'No options',
     pickerNoMatch: 'No match',
     pickerSearch: 'Search…',
@@ -119,6 +134,12 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     modelProvider: 'Provider',
     modelModel: 'Model',
     relNow: 'just now',
+    relInJustNow: 'soon',
+    relInMinutes: 'in {n}m',
+    relInHours: 'in {n}h',
+    relInDays: 'in {n}d',
+    relInMonths: 'in {n}mo',
+    relInYears: 'in {n}y',
     relJustNow: 'just now',
     relMinutesAgo: '{n}m ago',
     relHoursAgo: '{n}h ago',

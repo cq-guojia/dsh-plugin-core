@@ -17,6 +17,14 @@ export const PICKER_CSS = `
   background:var(--tdt-surface-menu);border:1px solid var(--tdt-border);
   border-radius:8px;box-shadow:0 8px 24px rgba(15,23,42,.12);
 }
+/* 向上展开（触发器靠近视口底部时用 placement="up"）。 */
+.dsh-tdt-picker__menu--up{top:auto;bottom:calc(100% + 4px)}
+/* 尺寸档（与 Field 的 sm/md/lg 对应）。 */
+.dsh-tdt-picker__trigger--sm{height:24px;font-size:12px}
+.dsh-tdt-picker__trigger--lg{height:32px}
+/* 键盘游标所在项（无 hover 也要看得见）。 */
+.dsh-tdt-picker__option[data-active='true']{background:var(--tdt-surface-sunken);outline:1px solid var(--tdt-border)}
+.dsh-tdt-picker__option--clear{color:var(--tdt-fg-3)}
 .dsh-tdt-picker__search{
   width:100%;height:28px;margin-bottom:4px;padding:0 8px;box-sizing:border-box;
   color:var(--tdt-fg);background:var(--tdt-surface-sunken);

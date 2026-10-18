@@ -12,7 +12,7 @@ export {
   type PickerGroup,
   type PickerOption,
 } from './picker-logic.js'
-export { Picker, type PickerProps } from './Picker.js'
+export { Picker, type PickerProps, type PickerSize } from './Picker.js'
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js'
 export { Modal, type ModalProps } from './Modal.js'
 export { showToast, type ToastVariant } from './Toast.js'

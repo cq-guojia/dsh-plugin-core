@@ -7,7 +7,11 @@ export interface ExplorerPanelProps {
     sessionId: string;
     /** 起始路径；`''` = 工作区根。 */
     path?: string;
+    /** 选中文件时回调（点目录也会清空选中后进入）。 */
+    onSelect?: (path: string | null) => void;
     onOpenFile?: (path: string) => void;
+    /** 空目录文案；不传用内置。 */
+    emptyText?: string;
     translate?: Translate;
 }
 /**

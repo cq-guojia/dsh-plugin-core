@@ -31,6 +31,8 @@ export interface StyleKit {
   ensureStyles(): void
   /** 登记 + 立刻确保挂载。 */
   applyStyle(domain: string, css: string): void
+  /** 卸载清理：撤掉挂载的 `<style>` 标签并清空登记域（插件卸载 / HMR 时用）。 */
+  dispose(): void
 }
 
 /** 把 token 原文的前缀换成调用方自己的。 */
@@ -98,6 +100,13 @@ export function createStyleKit(options: StyleKitOptions): StyleKit {
     if (tag !== null && tag.isConnected) flush()
   }
 
+  const dispose = (): void => {
+    if (tag !== null && tag.isConnected) tag.remove()
+    tag = null
+    domains.clear()
+    dirty = true
+  }
+
   return {
     id,
     prefix,
@@ -105,6 +114,7 @@ export function createStyleKit(options: StyleKitOptions): StyleKit {
     cssVar: (name: string): string => `--${prefix}-${name}`,
     registerStyle,
     ensureStyles,
+    dispose,
     applyStyle: (domain: string, css: string): void => {
       registerStyle(domain, css)
       ensureStyles()

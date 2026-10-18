@@ -18,21 +18,22 @@ export function formatDateTime(iso, opts) {
     const base = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
     return opts?.seconds === true ? `${base}:${pad2(d.getSeconds())}` : base;
 }
-/** `YYYY-MM-DD`（带年份，跨年也能看懂）。解析失败 ⇒ `—`。 */
-export function formatYmd(iso) {
+/** `YYYY-MM-DD`（带年份，跨年也能看懂）。解析失败 ⇒ `opts.fallback`，缺省 `—`。 */
+export function formatYmd(iso, opts) {
     const ms = Date.parse(iso);
     if (Number.isNaN(ms))
-        return FALLBACK;
+        return opts?.fallback ?? FALLBACK;
     const d = new Date(ms);
     return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 }
-/** 只到 `HH:mm:ss`；空值或解析失败 ⇒ `-`。 */
-export function formatClock(iso) {
-    if (iso === null)
-        return '-';
+/** 只到 `HH:mm:ss`；`null` / `undefined` / 解析失败 ⇒ `opts.fallback`，缺省 `-`。 */
+export function formatClock(iso, opts) {
+    const fb = opts?.fallback ?? '-';
+    if (iso === null || iso === undefined || iso === '')
+        return fb;
     const ms = Date.parse(iso);
     if (Number.isNaN(ms))
-        return '-';
+        return fb;
     const d = new Date(ms);
     return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
 }
@@ -77,6 +78,35 @@ export function relativePast(iso, nowMs, translate) {
     if (months < 12)
         return tt('relMonthsAgo', { n: months });
     return tt('relYearsAgo', { n: Math.floor(days / 365) });
+}
+/**
+ * 相对时间（**未来**）：`3 分钟后` / `2 小时后` / `1 天后`。
+ * 与 `relativePast` 对偶 —— 调度表这类「还没发生」的场景必须用它，
+ * 用 `relativePast` 会把未来时间显示成「刚刚」（丢失「计划中」的语义）。
+ * 解析失败 ⇒ 回退成 `formatYmd`（不编造）。
+ */
+export function relativeFuture(iso, nowMs, translate) {
+    const tt = translate ?? t;
+    const diff = Date.parse(iso) - nowMs;
+    if (Number.isNaN(diff))
+        return formatYmd(iso);
+    if (diff <= 0)
+        return tt('relNow');
+    if (diff < 60000)
+        return tt('relInJustNow');
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 60)
+        return tt('relInMinutes', { n: minutes });
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24)
+        return tt('relInHours', { n: hours });
+    const days = Math.floor(hours / 24);
+    if (days < 30)
+        return tt('relInDays', { n: days });
+    const months = Math.floor(days / 30);
+    if (months < 12)
+        return tt('relInMonths', { n: months });
+    return tt('relInYears', { n: Math.floor(days / 365) });
 }
 /**
  * 时间区间：同一天 ⇒ `09:00 – 10:30`；跨天 ⇒ 两端都带日期。

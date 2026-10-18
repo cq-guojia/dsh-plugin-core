@@ -12,7 +12,11 @@ export interface ExplorerPanelProps {
   sessionId: string
   /** 起始路径；`''` = 工作区根。 */
   path?: string
+  /** 选中文件时回调（点目录也会清空选中后进入）。 */
+  onSelect?: (path: string | null) => void
   onOpenFile?: (path: string) => void
+  /** 空目录文案；不传用内置。 */
+  emptyText?: string
   translate?: Translate
 }
 
@@ -61,6 +65,7 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
 
   const goto = (next: string): void => {
     setSelected(null)
+    props.onSelect?.(null)
     setDir(next)
   }
 
@@ -117,7 +122,7 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
       : failed
         ? h(EmptyState, { text: tt('explorerFailed'), translate: tt })
         : entries.length === 0
-          ? h('div', { className: 'dsh-tdt-exp__note' }, tt('explorerEmptyDir'))
+          ? h('div', { className: 'dsh-tdt-exp__note' }, props.emptyText ?? tt('explorerEmptyDir'))
           : h(
               'div',
               { className: 'dsh-tdt-exp__tree' },
@@ -138,6 +143,7 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
                         if (isDir) goto(full)
                         else {
                           setSelected(full)
+                          props.onSelect?.(full)
                           props.onOpenFile?.(full)
                         }
                       },

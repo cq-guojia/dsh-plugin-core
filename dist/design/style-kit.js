@@ -71,6 +71,13 @@ export function createStyleKit(options) {
         if (tag !== null && tag.isConnected)
             flush();
     };
+    const dispose = () => {
+        if (tag !== null && tag.isConnected)
+            tag.remove();
+        tag = null;
+        domains.clear();
+        dirty = true;
+    };
     return {
         id,
         prefix,
@@ -78,6 +85,7 @@ export function createStyleKit(options) {
         cssVar: (name) => `--${prefix}-${name}`,
         registerStyle,
         ensureStyles,
+        dispose,
         applyStyle: (domain, css) => {
             registerStyle(domain, css);
             ensureStyles();

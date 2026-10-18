@@ -7,6 +7,7 @@ export {
   formatYmd,
   overlaps,
   pad2,
+  relativeFuture,
   relativePast,
   sameCalendarDay,
 } from './date.js'

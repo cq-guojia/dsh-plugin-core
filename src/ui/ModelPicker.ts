@@ -1,7 +1,7 @@
 import { createElement as h } from 'react'
 import { ensureControls } from './css.js'
 import { t, type Translate } from '../utils/i18n.js'
-import { Picker } from './Picker.js'
+import { Picker, type PickerSize } from './Picker.js'
 import { flattenOptions, groupOf, type PickerGroup } from './picker-logic.js'
 
 /**
@@ -20,32 +20,46 @@ export interface ModelPickerProps {
   variant?: ModelPickerVariant
   /** 最终模型值（`option.value`，编码口径由调用方定，如 `${provider}/${id}`）。 */
   value?: string
+  /** 非受控初始值。 */
+  defaultValue?: string
+  onChange?: (value: string) => void
   /** 候选可能不完整 ⇒ 如实提示。 */
   degraded?: boolean
   disabled?: boolean
+  /** 允许清空（「跟随宿主」这类语义靠调用方自己塞默认项，这里只负责能清掉）。 */
+  clearable?: boolean
+  searchable?: boolean
+  size?: PickerSize
+  placement?: 'down' | 'up'
+  className?: string
   translate?: Translate
-  onChange?: (value: string) => void
 }
 
 export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
   ensureControls()
   const tt = props.translate ?? t
-  const value = props.value ?? ''
+  const value = props.value
   const variant = props.variant ?? 'flat'
+  const cur = value ?? ''
 
   if (variant === 'flat') {
     return h(Picker, {
       options: flattenOptions(props.groups),
-      value: value === '' ? undefined : value,
+      value,
+      defaultValue: props.defaultValue,
       placeholder: tt('modelModel'),
       degraded: props.degraded,
       disabled: props.disabled,
-      searchable: true,
+      clearable: props.clearable,
+      searchable: props.searchable ?? true,
+      size: props.size,
+      placement: props.placement,
+      className: props.className,
       onChange: (v) => props.onChange?.(typeof v === 'string' ? v : v[0] ?? ''),
     })
   }
 
-  const group = groupOf(props.groups, value)
+  const group = groupOf(props.groups, cur)
   const provider = group?.value ?? ''
   return h(
     'div',
@@ -60,11 +74,16 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
     }),
     h(Picker, {
       options: group?.options ?? [],
-      value: value === '' ? undefined : value,
+      value,
+      defaultValue: props.defaultValue,
       placeholder: tt('modelModel'),
       degraded: props.degraded,
       disabled: props.disabled === true || provider === '',
-      searchable: true,
+      clearable: props.clearable,
+      searchable: props.searchable ?? true,
+      size: props.size,
+      placement: props.placement,
+      className: props.className,
       onChange: (v) => props.onChange?.(typeof v === 'string' ? v : v[0] ?? ''),
     }),
   )

@@ -19,6 +19,8 @@ export interface StyleKit {
     ensureStyles(): void;
     /** 登记 + 立刻确保挂载。 */
     applyStyle(domain: string, css: string): void;
+    /** 卸载清理：撤掉挂载的 `<style>` 标签并清空登记域（插件卸载 / HMR 时用）。 */
+    dispose(): void;
 }
 /** 把 token 原文的前缀换成调用方自己的。 */
 export declare function buildTokensCss(prefix: string): string;

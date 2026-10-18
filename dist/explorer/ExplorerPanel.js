@@ -49,6 +49,7 @@ export function ExplorerPanel(props) {
     const crumbs = crumbsOf(dir);
     const goto = (next) => {
         setSelected(null);
+        props.onSelect?.(null);
         setDir(next);
     };
     const crumbBar = h('div', { className: 'dsh-tdt-exp__crumbs' }, h('button', { type: 'button', className: 'dsh-tdt-exp__crumb', onClick: () => goto('') }, tt('explorerRoot')), crumbs.map((c, i) => {
@@ -70,7 +71,7 @@ export function ExplorerPanel(props) {
         : failed
             ? h(EmptyState, { text: tt('explorerFailed'), translate: tt })
             : entries.length === 0
-                ? h('div', { className: 'dsh-tdt-exp__note' }, tt('explorerEmptyDir'))
+                ? h('div', { className: 'dsh-tdt-exp__note' }, props.emptyText ?? tt('explorerEmptyDir'))
                 : h('div', { className: 'dsh-tdt-exp__tree' }, [...entries]
                     .sort((a, b) => {
                     if (a.type !== b.type)
@@ -88,6 +89,7 @@ export function ExplorerPanel(props) {
                                 goto(full);
                             else {
                                 setSelected(full);
+                                props.onSelect?.(full);
                                 props.onOpenFile?.(full);
                             }
                         },

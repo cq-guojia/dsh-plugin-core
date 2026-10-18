@@ -4,6 +4,14 @@ export interface ModalProps {
     title?: ReactNode;
     /** 关闭回调；不传就不显示关闭钮（必须自己给关闭路径）。 */
     onClose?: () => void;
+    /** 点遮罩是否关闭（默认 true；误触代价大的场景设 false）。 */
+    closeOnMask?: boolean;
+    /** 按 Esc 是否关闭（默认 true）。 */
+    escClose?: boolean;
+    /** 面板最大宽度，默认 `min(960px, 92vw)`。 */
+    maxWidth?: string;
+    /** 不传 `title` 且传这个为 true ⇒ 不渲染头部（沉浸式场景）。 */
+    hideHeader?: boolean;
     footer?: ReactNode;
     children?: ReactNode;
     translate?: Translate;

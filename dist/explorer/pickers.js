@@ -9,12 +9,17 @@ export function WorkspacePicker(props) {
     return h(Picker, {
         options: props.workspaces.map((w) => ({ value: w, label: w })),
         value: props.value,
+        defaultValue: props.defaultValue,
         mode: props.mode,
         max: props.max,
-        searchable: true,
+        onChange: props.onChange,
+        clearable: props.clearable,
+        searchable: props.searchable ?? true,
         placeholder: props.placeholder ?? tt('explorerRoot'),
         disabled: props.disabled,
-        onChange: props.onChange,
+        size: props.size,
+        placement: props.placement,
+        className: props.className,
     });
 }
 /** 选文件（同上：交互全管，数据调用方给）。 */
@@ -24,12 +29,17 @@ export function FilePicker(props) {
     return h(Picker, {
         options: props.files.map((f) => ({ value: f, label: f })),
         value: props.value,
+        defaultValue: props.defaultValue,
         mode: props.mode,
         max: props.max,
-        searchable: true,
+        onChange: props.onChange,
+        clearable: props.clearable,
+        searchable: props.searchable ?? true,
         placeholder: props.placeholder ?? tt('pickerPlaceholder'),
         disabled: props.disabled,
-        onChange: props.onChange,
+        size: props.size,
+        placement: props.placement,
+        className: props.className,
     });
 }
 //# sourceMappingURL=pickers.js.map
