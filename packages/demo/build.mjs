@@ -9,28 +9,38 @@
 // ⚠️ 展示内容与控件代码从**仓库内的 dsh-plugin-core 产物**引入（../../dist/…）并打进包里，
 //    所以本包自包含、发布时不需要 dsh-plugin-core 先发 npm；预览的也永远是当前这份代码。
 import { build } from 'esbuild'
+import { mkdirSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// ⚠️ 一律按**本脚本所在目录**解析，不依赖 cwd：
+// 根脚本 `pnpm run build:demo` 的 cwd 是仓库根，写相对路径会指到根上去（真踩过）。
+const HERE = dirname(fileURLToPath(import.meta.url))
+const at = (p) => resolve(HERE, p)
 
 const PKG = 'dsh-plugin-core-demo'
 const EXTERNAL = ['react', 'react-dom', 'react/jsx-runtime', 'cordis', '@deepseek-ai/*']
 
+mkdirSync(at('dist'), { recursive: true })
+
 await build({
-  entryPoints: ['src/index.ts'],
+  entryPoints: [at('src/index.ts')],
   bundle: true,
   format: 'esm',
   platform: 'node',
   target: 'node22',
-  outfile: 'dist/index.js',
+  outfile: at('dist/index.js'),
   logLevel: 'info',
 })
 
 await build({
-  entryPoints: ['src/client/index.tsx'],
+  entryPoints: [at('src/client/index.tsx')],
   bundle: true,
   format: 'cjs',
   platform: 'browser',
   target: 'es2020',
   jsx: 'automatic',
-  outfile: 'dist/client.js',
+  outfile: at('dist/client.js'),
   external: EXTERNAL,
   define: { 'process.env.NODE_ENV': '"production"' },
   loader: { '.tsx': 'tsx', '.ts': 'ts' },
