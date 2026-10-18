@@ -85,11 +85,15 @@ body{
   --tdt-danger-soft:color-mix(in srgb,var(--tdt-danger) 8%,transparent);
   --tdt-business-soft:color-mix(in srgb,var(--tdt-business) 8%,transparent);
 
-  /* ── 交互底 / 遮罩 ──────────────────────────────────────────────────
-     ⚠️ 2026-10-18 用户拍板：宿主 alias 的 hover（暗色白 8% / 亮色 6%）**太弱**，
+  /* ⚠️ 2026-10-18 用户拍板：宿主 alias 的 hover（暗色白 8% / 亮色 6%）**太弱**，
      「移上去要仔细看才看得出来」⇒ 不再委托宿主 hover 别名，改为自掺中性色并加重：
-     亮色掺黑 10%、暗色掺白 14%（active 再加一档）。按钮 / 分段轨道 / 各类 hover 底同时受益。 */
+     亮色掺黑 10%、暗色掺白 14%（active 再加一档）。按钮 / 分段轨道 / 各类 hover 底同时受益。
+     ⚠️ 必须保留 rgba 兜底行在前（本文件惯例，见 icon-plate 注释）：掺的是**固定中性色**
+     （neutral-900=#0f0f0f / neutral-00=#fff），预计算无损；旧内核不认 color-mix 时走兜底，
+     否则整条 background:var(--seg-track) 作废 ⇒ 分段轨道透明（真踩过：预览站轨道消失）。 */
+  --tdt-hover:rgba(15,15,15,.10);
   --tdt-hover:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 10%,transparent);
+  --tdt-active:rgba(15,15,15,.18);
   --tdt-active:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 18%,transparent);
   --tdt-mask:var(--dsw-alias-bg-mask-1,#0000003d);
   /* 「选中面」（2026-10-06，任务日程页首创）= 当前底色**朝更深掺 12% 文字色**：
@@ -179,8 +183,10 @@ body{
 body[data-ds-dark-theme]{
   --tdt-solid:var(--dsw-static-neutral-900,#0f0f0f);
   --tdt-on-solid:var(--dsw-static-neutral-00,#fff);
-  /* 暗色 hover 掺白 14% / active 24%（对齐上面 2026-10-18 的加重拍板）。 */
+  /* 暗色 hover 掺白 14% / active 24%（对齐上面 2026-10-18 的加重拍板）。rgba 兜底行同上。 */
+  --tdt-hover:rgba(255,255,255,.14);
   --tdt-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 14%,transparent);
+  --tdt-active:rgba(255,255,255,.24);
   --tdt-active:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 24%,transparent);
   --tdt-plate:var(--dsw-static-neutral-850,#212123);
   --tdt-plate-hover:var(--dsw-static-neutral-800,#292929);

@@ -42,19 +42,33 @@ function Diagnostics(): ReturnType<typeof h> {
   useEffect(() => {
     // 延一帧：等本帧样式注入与布局完成后再取 computed style
     requestAnimationFrame(() => {
-      const seg = segWrap.current?.querySelector('.dsh-tdt-seg')
-      const week = weekWrap.current?.querySelector('.dsh-tdt-seg')
-      const root = getComputedStyle(document.documentElement)
-      if (!seg || !week) { setInfo('未找到参照控件'); return }
-      const a = getComputedStyle(seg)
-      const b = getComputedStyle(week)
-      setInfo([
-        `--tdt-hover = ${root.getPropertyValue('--tdt-hover').trim() || '(空)'}`,
-        `inset 轨道背景 = ${a.backgroundColor}`,
-        `inset 轨道圆角 = ${a.borderTopLeftRadius}`,
-        `weekday 间距 gap = ${b.gap}`,
-        `weekday 外框 = ${b.borderTopWidth} ${b.borderTopStyle}`,
-      ].join('\n'))
+      const seg = segWrap.current?.querySelector('.dsh-tdt-seg') as HTMLElement | null
+      if (!seg) { setInfo('未找到参照控件'); return }
+      const cs = getComputedStyle(seg)
+      // ⚠️ demo 的 kit prefix 是 'dsh'，token 实际叫 --dsh-*（--tdt- 已被运行时替换）
+      const lines = [
+        `className = ${seg.className}`,
+        `--seg-track(元素) = ${cs.getPropertyValue('--seg-track').trim() || '(空)'}`,
+        `--dsh-hover(元素) = ${cs.getPropertyValue('--dsh-hover').trim() || '(空)'}`,
+        `--dsh-radius-md(元素) = ${cs.getPropertyValue('--dsh-radius-md').trim() || '(空)'}`,
+        `--dsh-radius-sm(元素) = ${cs.getPropertyValue('--dsh-radius-sm').trim() || '(空)'}`,
+        `--dsw-radius-md(元素) = ${cs.getPropertyValue('--dsw-radius-md').trim() || '(空)'}`,
+        `color-mix 支持 = ${CSS.supports('background', 'color-mix(in srgb,#fff 14%,transparent)') ? '是' : '否'}`,
+        `基线：bg=${cs.backgroundColor} radius=${cs.borderTopLeftRadius}`,
+      ]
+      // 内联实验：inline 优先级最高。内联 var() 生效 ⇒ 之前是级联覆盖；仍失效 ⇒ var 链断。
+      seg.style.background = 'var(--seg-track)'
+      seg.style.borderRadius = 'var(--dsh-radius-md)'
+      requestAnimationFrame(() => {
+        const cs2 = getComputedStyle(seg)
+        lines.push(
+          `内联 var(--seg-track) ⇒ bg=${cs2.backgroundColor}`,
+          `内联 var(--dsh-radius-md) ⇒ radius=${cs2.borderTopLeftRadius}`,
+        )
+        setInfo(lines.join('\n'))
+        seg.style.background = ''
+        seg.style.borderRadius = ''
+      })
     })
   }, [])
 
