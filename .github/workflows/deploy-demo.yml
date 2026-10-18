@@ -1,8 +1,9 @@
 name: Deploy demo to GitHub Pages
 
 # 推到 main 自动部署预览站；也保留手动触发。
-# 首次运行靠 enablement: true 自动创建 Pages 站点；若仓库未授权自动创建，
-# 则需到 仓库 Settings → Pages → Source 选 "GitHub Actions" 后，下次 push 即生效。
+# 前置一次性操作（GitHub 安全限制，workflow 的 token 无法自动建站，必须人点）：
+#   仓库 Settings → Pages → Source 选 "GitHub Actions"
+# 点完后再 push / 手动 Run 即可，之后每次 push 自动更新。
 on:
   push:
     branches: [main]
@@ -38,8 +39,6 @@ jobs:
       - run: pnpm run demo:build
 
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: demo-dist
