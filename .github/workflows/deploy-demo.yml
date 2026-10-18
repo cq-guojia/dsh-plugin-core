@@ -1,8 +1,10 @@
 name: Deploy demo to GitHub Pages
 
+# 只手动触发：Pages 未启用时自动跑会每次 push 都报红（configure-pages 拿不到 Pages 站点）。
+# 启用方式二选一：
+#   1. 仓库 Settings → Pages → Source 选 "GitHub Actions"，再手动 Run 一次本 workflow；
+#   2. 直接手动 Run 一次（下面 enablement: true 会尝试自动启用，需要 token 有对应权限）。
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -35,6 +37,8 @@ jobs:
       - run: pnpm run demo:build
 
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: demo-dist

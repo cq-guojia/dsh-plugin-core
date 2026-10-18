@@ -7,11 +7,9 @@ DSH（DeepSeek Harness）插件共享底座：把跨插件复用的样式、控�
 
 > **状态**：🚧 可用但**未在真实插件里接入验证过**（见下方「还没做的事」）
 
-## 预览（三种方式，挑顺手的）
+## 预览（双击 HTML，不起任何服务）
 
 不想读文档？所有控件**实时可点**，右上角切明暗 / 中英。
-
-**① 双击 HTML（最省事，不起任何服务）**
 
 ```bash
 pnpm install
@@ -19,18 +17,15 @@ pnpm run build        # 先出 dist（预览站消费的就是它）
 pnpm run demo:build   # 生成静态文件到 demo-dist/
 ```
 
-然后**用浏览器打开 `demo-dist/index.html`**（双击即可，`file://` 直接能用，产物是相对路径）。
+然后**用浏览器打开 `demo-dist/index.html`**（双击即可）。
 
-**② 本地服务（要热更新时）**
+产物是**单文件 IIFE + 相对路径**，所以 `file://` 能直接跑：
+- 不用起 dev server、不占端口
+- 目录可以随便挪，拷到别的机器上也能打开
 
-```bash
-pnpm run demo         # http://localhost:5180
-```
-
-**③ GitHub Pages（不用本地任何东西）**
-
-push 到 main 自动部署，地址：`https://cq-guojia.github.io/dsh-plugin-core/`
-（首次需在仓库 Settings → Pages → Source 选 **GitHub Actions**，之后每次 push 自动更新）
+> 想放到网上：仓库带 `.github/workflows/deploy-demo.yml`，先到
+> Settings → Pages → Source 选 **GitHub Actions**，再手动触发一次该 workflow 即可
+> （默认不自动跑，避免没启用 Pages 时每次 push 都报红）。
 
 预览站用的就是**同一份 `dist/` + 同一套样式注入代码**（`setStyleKit` + `ensureControls`），
 与真实插件走同一条渲染路径——你在预览里看到的就是插件里得到的。

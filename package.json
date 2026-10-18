@@ -52,8 +52,7 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test test/*.test.mjs",
-    "demo": "vite",
-    "demo:build": "vite build"
+    "demo:build": "node demo/build.mjs"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -69,11 +68,10 @@
   },
   "devDependencies": {
     "@types/react": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
+    "esbuild": "^0.28.2",
     "react": "^18.3.1",
     "react-dom": ">=18",
-    "typescript": "5.9.3",
-    "vite": "^8.3.4"
+    "typescript": "5.9.3"
   },
   "engines": {
     "node": ">=22.5"
