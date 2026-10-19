@@ -16,7 +16,7 @@
 
 | 事实 | 出处 |
 |---|---|
-| 样式只能以 TS 字符串在运行时注入 `<style>`，`import './x.css'` 内核不加载 | `docs/design/architecture.md` §样式注入 |
+| **运行时**必须以 TS 字符串注入 `<style>`（`import './x.css'` 内核不加载）；**源码**写真的 `src/**/*.css`，由 `scripts/gen-css.mjs` 生成 `*.generated.ts`，改样式改 `.css` | `docs/design/architecture.md` §样式注入 |
 | 多插件同页必须 `createStyleKit({ id })`，固定 style id 会互相覆盖 | 同上 |
 | CSS 变量与类名统一 `dshpc` 前缀（`--dshpc-*` / `dshpc-*`），类名必须与控件硬编码的 className 逐字一致 | `docs/design/style.md` |
 | 明暗判据是 `body[data-ds-dark-theme]`，**不是** `prefers-color-scheme` | 同上 |

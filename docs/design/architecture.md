@@ -51,6 +51,25 @@ utils（谁都不依赖，谁都可以用）
 为什么必须运行时注入：DSH 客户端产物是 `window.__ModuleLoader__.load({ id, factory })` 的
 CJS 闭包，`import './x.css'` 只会产出独立 css 资源、**内核不加载它** ⇒ CSS 只能以字符串在运行时注入。
 
+**但那只约束产物，不约束源码**。样式是分三层走的：
+
+```
+src/**/*.css            真源 —— 编辑器高亮 / 括号匹配 / 格式化 / CSS lint 都生效
+        │  scripts/gen-css.mjs（构建期：lightningcss 解析 + JSON.stringify）
+        ▼
+*.generated.ts         字符串常量（入库，勿手改）
+        │  tsc 1:1 编译
+        ▼
+dist/**                产物形态不变，仍由 createStyleKit 拼成一份文本注入 <style>
+```
+
+为什么要这一层：2026-10-19 曾因手写模板字符串结尾多一个反斜杠，在注入文本里留下字面反引号，
+吞掉紧随其后那条规则的选择器，排查耗掉一天（见 `docs/design/external/dsh-host.md` §9）。
+`JSON.stringify` 生成 + 构建期解析闸，把这类事故从根上删掉，产物形态却一点没变。
+
+改样式的正确姿势：改 `src/**/*.css` → `pnpm run gen:css`（或 `pnpm run build`）→ 提交含生成物与
+`dist/`。`pnpm test` 的 `pretest` 会跑 `gen:css --check`，生成物不同步直接红。
+
 为什么是工厂而不是模块级单例：单例只有一个固定 style id，多个插件同处一页时会抢同一个 `<style>` 标签、
 后挂载的覆盖先挂载的。每个插件领一套自己的（`id` 按插件唯一）；变量前缀全生态统一 `dshpc`。
 

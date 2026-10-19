@@ -1,0 +1,16 @@
+
+.dshpc-chip{
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;
+  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;
+  background:var(--dshpc-chip-bg);color:var(--dshpc-fg);
+  font-family:inherit;font-size:11px;line-height:18px;margin:0;
+  /* 2026-10-18：chip 是 flex 行里的常用项，禁止被压缩换行（预览站出现过文字竖排、互相叠压的挤压）。 */
+  white-space:nowrap;flex:none;
+  appearance:none;-webkit-appearance:none;
+}
+/* 可点态：button 渲染（见 Chip.ts），光标 + hover 加深。 */
+.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-chip--clickable:hover:not(:disabled){background:var(--dshpc-chip-bg-hover)}
+.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
+.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}
+@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}

@@ -1,0 +1,110 @@
+
+/* ── 按钮 / 图标钮 P2 ───────────────────────────────────────────────────
+   与 Segmented 同一条高度纪律：--dshpc-control-h-sm(24) / -md(28) / -lg(32)，
+   有边框的 variant 用 1px 真边框 + 内部 padding 补回，**有边 / 无边同高**。
+
+   三条受控轴（2026-10-19 重写，对齐主流 UI 框架的分类口径）：
+     · variant —— 外观档 = 形态 + 语义色，共 10 档：
+         primary / secondary / outline / ghost / danger / success / warning / info /
+         danger-outline（红字描边）/ link（行内链接）
+     · size —— sm / md / lg
+     · block —— 撑满父宽
+   每一档**只填 5 个局部变量**（--btn-bg / -fg / -border / -bg-hover / -bg-active），
+   结构与交互只有上面这一份；任何档位都不许再写一遍 display/height/padding。
+   自定义颜色（Button 的 color 参数）同样只覆盖这 5 个变量（token 覆盖，不是新皮肤）。
+
+   ⚠️ hover 不再用 opacity 压一层（用户 2026-10-19：「黑色和红色的按钮移上去变化太小，
+   完全感觉不到颜色变了」）⇒ 走 --dshpc-*-hover / -active 的明确混色，见 tokens-css.ts。 */
+.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);
+  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);
+  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}
+.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
+.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
+/* block：撑满父宽（表单底栏 / 抽屉底部的主操作） */
+.dshpc-btn--block{display:flex;width:100%;}
+/* block + 前置图标 ⇒ 文字视觉居中（2026-10-19 用户点名）：
+   内容组 [图标 + 间距 + 文字] 整体在盒内居中时，**文字**的中心会被图标推右半格。
+   把右内边距补上「图标宽 + 间距」，可用盒随之左移同量 ⇒ 文字落回视觉中心，图标贴左侧。
+   图标宽按 1.2em 估（官方图标 14/16px vs 字号 12/13px），em 随字号档自动缩放。 */
+.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}
+.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}
+.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;}
+/* loading：不换 DOM 结构，只在文案前插一个同色小圈（尺寸随字号，缩放不依赖常量） */
+.dshpc-btn__spinner{display:block;flex:none;width:12px;height:12px;box-sizing:border-box;
+  border:1.5px solid currentColor;border-right-color:transparent;border-radius:999px;
+  animation:dshpc-btn-spin .7s linear infinite;}
+/* shortcut: 12px 是固定值，不随按钮字号缩放；要更大就改这一处。 */
+@keyframes dshpc-btn-spin{to{transform:rotate(360deg)}}
+
+/* 交互态：颜色变化写在变量上 ⇒ 所有档位一次生效，且变化幅度由 token 决定（够明显） */
+.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}
+.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}
+.dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
+.dshpc-btn:disabled{cursor:default;opacity:.5;}
+
+.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);
+  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}
+/* secondary：中性实心（灰面），用于「取消 / 次要」这类与主操作并排的按钮 */
+.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);
+  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}
+.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}
+.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);
+  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}
+.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}
+/* danger-outline：红字描边（破坏性次要操作，如卡片上的「删除」）。
+   ⚠️ 旧修饰类 danger-ink 保留为别名（消费方可能还在挂），两者同一套皮肤。 */
+.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);
+  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}
+/* link：行内文字链接型（会话 / 产出文件名），无底无边、品牌蓝、hover 下划线 */
+.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);
+  --btn-bg-hover:transparent;--btn-bg-active:transparent;
+  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}
+.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}
+
+/* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高 */
+.dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);
+  font-family:inherit;cursor:pointer;flex:none;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}
+.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}
+.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}
+.dshpc-iconbtn--plain{color:var(--dshpc-fg-2);}
+.dshpc-iconbtn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border);color:var(--dshpc-fg-2);}
+.dshpc-iconbtn--danger{color:var(--dshpc-danger);}
+.dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
+.dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}
+.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
+.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
+
+/* ── 行式文件按钮（图标 + 文件名）P2：**全站唯一实现**（2026-10-04 收编）──────────
+   用途：「产出物 / 附件」那种**一行一个文件**的清单项（基础信息右栏产出物清单、附件区、
+   执行记录页的展开区）。平时透明、**鼠标移上去才出浅底**（沿用用户 2026-10-03 定的观感）。
+   两个形态修饰类：
+     --block   撑满父宽（清单里一项一行）
+     --inline  内容宽（跟在文字后头，如附件行）
+   收编原因：这份皮肤此前只写在 task-list.tsx 的 TASK_LIST_CSS 里（旧名 .dshpc-info-out），
+   执行记录页展开区要用同一种观感 ⇒ 上提基础层，避免再出现「各写一份外观」（同名不同皮的坑刚踩过）。 */
+.dshpc-filechip{appearance:none;-webkit-appearance:none;border:0;border-radius:var(--dshpc-radius-xs);
+  background:transparent;color:var(--dshpc-fg);font:inherit;text-align:left;cursor:pointer;min-width:0;
+  transition:background-color var(--dshpc-dur) var(--dshpc-ease);}
+.dshpc-filechip:hover:not(:disabled){background:var(--dshpc-chip-bg);}
+.dshpc-filechip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}
+.dshpc-filechip:disabled{cursor:default;background:transparent;color:var(--dshpc-fg-3);}
+.dshpc-filechip--block{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;
+  padding:4px 6px;font-size:var(--dshpc-font-xs);}
+.dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}
+
+@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}

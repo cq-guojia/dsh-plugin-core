@@ -50,8 +50,10 @@
     "docs"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "gen:css": "node scripts/gen-css.mjs",
+    "build": "node scripts/gen-css.mjs && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pretest": "node scripts/gen-css.mjs --check && tsc -p tsconfig.json",
     "test": "node --test test/*.test.mjs",
     "build:demo": "node packages/demo/build.mjs"
   },

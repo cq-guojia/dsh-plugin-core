@@ -6,6 +6,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
+import { rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { spawnSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import * as controls from '../dist/ui/controls-css.js'
 import { PICKER_CSS } from '../dist/ui/picker-css.js'
 import { FEEDBACK_CSS } from '../dist/ui/feedback-css.js'
@@ -140,4 +145,36 @@ test('Modal 关闭按钮用专属类名，不借 Picker 触发器皮肤', async 
   const modal = await readFile(new URL('../dist/ui/Modal.js', import.meta.url), 'utf8')
   assert.ok(modal.includes('dshpc-modal__close'), 'Modal 关闭按钮未用 dshpc-modal__close')
   assert.ok(!modal.includes('dshpc-picker__trigger'), 'Modal 仍在借 dshpc-picker__trigger')
+})
+
+// ── 真源 → 生成物 这一跳的闸 ──────────────────────────────────────────────
+// 样式真源是 src/**/*.css，由 scripts/gen-css.mjs 转成 *.generated.ts。
+// 中间多了一跳，就多了「生成物被手改」和「改了 .css 忘了重新生成」两种静默失败，必须钉死。
+const GEN = fileURLToPath(new URL('../scripts/gen-css.mjs', import.meta.url))
+
+test('生成物与真源同步（改了 .css 忘了重新生成会红）', () => {
+  const r = spawnSync(process.execPath, [GEN, '--check'], { encoding: 'utf8' })
+  assert.equal(r.status, 0, `生成物与 .css 不同步：\n${r.stdout ?? ''}${r.stderr ?? ''}`)
+})
+
+test('反证：真源里出现反引号必须被生成器拒绝', () => {
+  const file = join(tmpdir(), 'dshpc-bad-source.css')
+  writeFileSync(file, 'body{--a:1;}\n`.dshpc-seg{display:inline-flex;}\n', 'utf8')
+  try {
+    const r = spawnSync(process.execPath, [GEN, '--verify', file], { encoding: 'utf8' })
+    assert.notEqual(r.status, 0, '含反引号的 CSS 竟然通过了生成器校验 —— 闸失效了')
+  } finally {
+    rmSync(file, { force: true })
+  }
+})
+
+test('生成器对合法 CSS 放行（闸没误伤）', () => {
+  const file = join(tmpdir(), 'dshpc-good-source.css')
+  writeFileSync(file, 'body{--a:1;}\n.dshpc-seg{display:inline-flex;}\n', 'utf8')
+  try {
+    const r = spawnSync(process.execPath, [GEN, '--verify', file], { encoding: 'utf8' })
+    assert.equal(r.status, 0, `合法 CSS 被拒：\n${r.stdout ?? ''}${r.stderr ?? ''}`)
+  } finally {
+    rmSync(file, { force: true })
+  }
 })
