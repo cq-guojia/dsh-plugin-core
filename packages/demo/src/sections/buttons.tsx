@@ -284,6 +284,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
           h(Checkbox, { checked, onChange: setChecked, label: '启用' }),
           h(Segmented<'day' | 'week' | 'month'>, {
             variant: 'inset',
+            className: 'dsh-tdt-seg dsh-tdt-seg--inset',
             items: [
               { value: 'day', label: '日' },
               { value: 'week', label: '周' },
@@ -295,6 +296,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
           h(Segmented<'day' | 'week' | 'month'>, {
             variant: 'inset',
             size: 'sm',
+            className: 'dsh-tdt-seg dsh-tdt-seg--inset',
             items: [
               { value: 'day', label: '日' },
               { value: 'week', label: '周' },
@@ -307,6 +309,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
         // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
         h(Segmented, {
           variant: 'inset',
+          className: 'dsh-tdt-seg dsh-tdt-seg--inset',
           items: [
             { value: 'all', label: t('segAll'), count: 11 },
             { value: 'doing', label: t('segDoing'), count: 5 },
@@ -320,7 +323,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
         // 星期多选方块（蓝底选中、近似方形）
         h(Segmented, {
           multiple: true,
-          className: 'dshpc-seg--weekday',
+          className: 'dshpc-seg--weekday dsh-tdt-seg dsh-tdt-seg--weekday',
           label: '星期',
           items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
             value: String(n),
@@ -333,6 +336,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
         h(Segmented<'render' | 'source'>, {
           size: 'sm',
           variant: 'default',
+          className: 'dsh-tdt-seg dsh-tdt-seg--default',
           label: 'default 外观示例',
           items: [
             { value: 'render', label: t('segPreview') },
