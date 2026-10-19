@@ -5,7 +5,7 @@ import {
   ErrorBoundary,
   Modal,
   showToast,
-} from '../../dist/ui/index.js'
+} from '../../../../dist/ui/index.js'
 import { Demo } from './index.js'
 import { t } from '../i18n.js'
 

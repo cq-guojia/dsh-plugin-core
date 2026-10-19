@@ -1,7 +1,7 @@
 import { createElement as h, useState } from 'react'
-import { SessionPreview } from '../../dist/session/index.js'
+import { SessionPreview } from '../../../../dist/session/index.js'
 import { mockSessionSource } from '../mock.js'
-import { Button } from '../../dist/ui/index.js'
+import { Button } from '../../../../dist/ui/index.js'
 import { Demo } from './index.js'
 import { t } from '../i18n.js'
 

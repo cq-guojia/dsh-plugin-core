@@ -53,7 +53,6 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test test/*.test.mjs",
-    "demo:build": "node demo/build.mjs",
     "build:demo": "node packages/demo/build.mjs"
   },
   "peerDependencies": {

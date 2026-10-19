@@ -1046,6 +1046,9 @@ var DICT = {
   }
 };
 var current2 = "zh";
+function getLocale() {
+  return current2;
+}
 function t(key, vars) {
   const template = DICT[current2][key] ?? DICT.zh[key] ?? key;
   if (vars === void 0)
@@ -1742,479 +1745,11 @@ function NumberInput(props) {
   );
 }
 
-// demo/sections/index.tsx
+// packages/demo/src/sections/index.tsx
 var import_react30 = require("react");
 
-// demo/sections/design.tsx
+// packages/demo/src/sections/design.tsx
 var import_react19 = require("react");
-var TOKENS = [
-  { label: "business", cssVar: "--tdt-business" },
-  { label: "success", cssVar: "--tdt-success" },
-  { label: "warning", cssVar: "--tdt-warning" },
-  { label: "danger", cssVar: "--tdt-danger" },
-  { label: "surface-1", cssVar: "--tdt-surface-1" },
-  { label: "surface-2", cssVar: "--tdt-surface-2" },
-  { label: "surface-sunken", cssVar: "--tdt-surface-sunken" },
-  { label: "border", cssVar: "--tdt-border" },
-  { label: "fg", cssVar: "--tdt-fg" },
-  { label: "fg-3", cssVar: "--tdt-fg-3" },
-  { label: "fg-4", cssVar: "--tdt-fg-4" }
-];
-function DesignSection() {
-  return (0, import_react19.createElement)(
-    "div",
-    null,
-    (0, import_react19.createElement)(
-      Demo,
-      { title: "token \u8272\u677F", hint: "\u989C\u8272\u5168\u90E8\u6765\u81EA design \u7684 token\uFF1B\u5207\u6362\u53F3\u4E0A\u89D2\u660E\u6697\uFF0C\u4E0B\u9762\u4F1A\u8DDF\u7740\u53D8" },
-      (0, import_react19.createElement)(
-        "div",
-        { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
-        TOKENS.map(
-          (t2) => (0, import_react19.createElement)(
-            "div",
-            { key: t2.cssVar, style: { width: "104px" } },
-            (0, import_react19.createElement)("div", {
-              style: {
-                height: "40px",
-                borderRadius: "6px",
-                background: `var(${t2.cssVar})`,
-                border: "1px solid var(--tdt-border-faint)"
-              }
-            }),
-            (0, import_react19.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, t2.label),
-            (0, import_react19.createElement)("div", { style: { fontSize: "10px", color: "var(--tdt-fg-4)" } }, t2.cssVar)
-          )
-        )
-      )
-    ),
-    (0, import_react19.createElement)(
-      Demo,
-      {
-        title: "\u6837\u5F0F\u6CE8\u5165\u673A\u5236",
-        hint: "\u63A7\u4EF6\u6E32\u67D3\u524D\u8C03\u4E00\u6B21 setStyleKit + ensureControls\uFF0Ctoken \u4E0E\u63A7\u4EF6 CSS \u7531 kit \u6CE8\u5165 <head>",
-        code: `import { createStyleKit } from 'dsh-plugin-core/design'
-import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
-
-setStyleKit(createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' }))
-ensureControls()`
-      },
-      (0, import_react19.createElement)(
-        "div",
-        { style: { color: "var(--tdt-fg-3)", fontSize: "12px" } },
-        "\u672C\u9884\u89C8\u7AD9\u81EA\u5DF1\u5C31\u662F\u8FD9\u4E48\u505A\u521D\u59CB\u5316\u7684\uFF08\u89C1 demo/main.tsx\uFF09\u2014\u2014\u9884\u89C8\u4E0E\u771F\u5B9E\u63D2\u4EF6\u8D70\u540C\u4E00\u6761\u8DEF\u3002"
-      )
-    )
-  );
-}
-
-// demo/sections/buttons.tsx
-var import_react20 = require("react");
-function ButtonsSection() {
-  const [text, setText] = (0, import_react20.useState)("");
-  const [num, setNum] = (0, import_react20.useState)(3);
-  const [checked, setChecked] = (0, import_react20.useState)(true);
-  const [seg, setSeg] = (0, import_react20.useState)("week");
-  const [filter, setFilter] = (0, import_react20.useState)("all");
-  const [multi, setMulti] = (0, import_react20.useState)(["1"]);
-  return (0, import_react20.createElement)(
-    "div",
-    null,
-    (0, import_react20.createElement)(
-      Demo,
-      { title: "Button", hint: "variant \u56DB\u6863 \xD7 size \u4E09\u6863" },
-      (0, import_react20.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } },
-        ["primary", "outline", "ghost", "danger"].map(
-          (v) => (0, import_react20.createElement)(Button, { key: v, variant: v, onClick: () => {
-          } }, v)
-        ),
-        (0, import_react20.createElement)(Button, { size: "sm" }, "sm"),
-        (0, import_react20.createElement)(Button, { size: "lg" }, "lg"),
-        (0, import_react20.createElement)(IconButton, { icon: "+", label: "\u65B0\u589E" })
-      )
-    ),
-    (0, import_react20.createElement)(
-      Demo,
-      { title: "Input \u5BB6\u65CF", hint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u884C\u5C3E\u53EF\u6302 FieldHint \u95EE\u53F7\u63D0\u793A" },
-      (0, import_react20.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react20.createElement)(
-          "div",
-          { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react20.createElement)("span", { style: { color: "var(--tdt-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
-          (0, import_react20.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F" }),
-          (0, import_react20.createElement)(FieldHint, { text: "\u4EFB\u52A1\u81EA\u8BE5\u65E5\u8D77\u5F00\u59CB\u6267\u884C\u3002\u53EF\u63D0\u524D\u521B\u5EFA\u4EFB\u52A1\uFF0C\u81F3\u8BE5\u65E5\u81EA\u52A8\u5F00\u8DD1\uFF1B\u300C\u6BCF N \u5468\u300D\u4EA6\u81EA\u8BE5\u65E5\u8D77\u7B97\u9996\u5468\u3002" })
-        ),
-        (0, import_react20.createElement)(Input, { value: "bad value", onChange: () => {
-        }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
-        (0, import_react20.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21" }),
-        (0, import_react20.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165" })
-      )
-    ),
-    (0, import_react20.createElement)(
-      Demo,
-      { title: "Checkbox / Segmented", hint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95 inset\uFF08\u65E0\u5916\u63CF\u8FB9\uFF09\uFF1B\u5E26\u63CF\u8FB9\u7684 default \u4EC5\u4F9B\u7279\u6B8A\u573A\u5408\uFF0C\u89C1\u4E0B" },
-      (0, import_react20.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react20.createElement)(
-          "div",
-          { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
-          (0, import_react20.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-          (0, import_react20.createElement)(Segmented, {
-            variant: "inset",
-            items: [
-              { value: "day", label: "\u65E5" },
-              { value: "week", label: "\u5468" },
-              { value: "month", label: "\u6708" }
-            ],
-            value: seg,
-            onChange: setSeg
-          }),
-          (0, import_react20.createElement)(Segmented, {
-            variant: "inset",
-            size: "sm",
-            items: [
-              { value: "day", label: "\u65E5" },
-              { value: "week", label: "\u5468" },
-              { value: "month", label: "\u6708" }
-            ],
-            value: seg,
-            onChange: setSeg
-          })
-        ),
-        // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
-        (0, import_react20.createElement)(Segmented, {
-          variant: "inset",
-          items: [
-            { value: "all", label: "\u5168\u90E8", count: 11 },
-            { value: "doing", label: "\u8FDB\u884C\u4E2D", count: 5 },
-            { value: "claimed", label: "\u5F85\u8BA4\u9886", count: 11 },
-            { value: "blocked", label: "\u963B\u585E" },
-            { value: "stalled", label: "\u505C\u6EDE" }
-          ],
-          value: filter,
-          onChange: setFilter
-        }),
-        // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react20.createElement)(Segmented, {
-          multiple: true,
-          className: "dsh-tdt-seg--weekday",
-          label: "\u661F\u671F",
-          items: [
-            { value: "1", label: "\u4E00" },
-            { value: "2", label: "\u4E8C" },
-            { value: "3", label: "\u4E09" },
-            { value: "4", label: "\u56DB" },
-            { value: "5", label: "\u4E94" },
-            { value: "6", label: "\u516D" },
-            { value: "7", label: "\u65E5" }
-          ],
-          value: multi,
-          onChange: setMulti
-        }),
-        // default 变体（外描边）：预览顶栏切换这类小场景在用
-        (0, import_react20.createElement)(Segmented, {
-          size: "sm",
-          variant: "default",
-          label: "default \u5916\u89C2\u793A\u4F8B",
-          items: [
-            { value: "render", label: "\u9884\u89C8" },
-            { value: "source", label: "\u6E90\u7801" }
-          ],
-          value: seg === "week" ? "render" : "source",
-          onChange: () => {
-          }
-        })
-      )
-    )
-  );
-}
-
-// demo/sections/pickers.tsx
-var import_react21 = require("react");
-var MODELS = [
-  {
-    value: "openai",
-    label: "OpenAI",
-    options: [
-      { value: "openai/gpt-4", label: "GPT-4" },
-      { value: "openai/gpt-3", label: "GPT-3.5" }
-    ]
-  },
-  {
-    value: "anthropic",
-    label: "Anthropic",
-    options: [{ value: "anthropic/claude", label: "Claude" }]
-  }
-];
-function PickersSection() {
-  const [single, setSingle] = (0, import_react21.useState)(void 0);
-  const [multi, setMulti] = (0, import_react21.useState)([]);
-  const [model, setModel] = (0, import_react21.useState)("");
-  const [ws, setWs] = (0, import_react21.useState)(void 0);
-  const [file, setFile] = (0, import_react21.useState)(void 0);
-  return (0, import_react21.createElement)(
-    "div",
-    null,
-    (0, import_react21.createElement)(
-      Demo,
-      { title: "Picker", hint: "\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\u2014\u2014\u5168\u90E8\u53EF\u7528 props \u63A7\u5236" },
-      (0, import_react21.createElement)(
-        "div",
-        { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react21.createElement)(Picker, {
-          options: [
-            { value: "a", label: "\u9009\u9879 A" },
-            { value: "b", label: "\u9009\u9879 B" },
-            { value: "c", label: "\u9009\u9879 C" }
-          ],
-          value: single,
-          onChange: (v) => setSingle(v),
-          searchable: true,
-          clearable: true,
-          placeholder: "\u5355\u9009\uFF08\u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
-        }),
-        (0, import_react21.createElement)(Picker, {
-          groups: MODELS,
-          value: multi,
-          mode: "multiple",
-          max: 2,
-          onChange: (v) => setMulti(v),
-          searchable: true,
-          placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF09"
-        }),
-        (0, import_react21.createElement)(Picker, {
-          options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
-          degraded: true,
-          disabled: true,
-          placeholder: "\u964D\u7EA7 + \u7981\u7528"
-        })
-      )
-    ),
-    (0, import_react21.createElement)(
-      Demo,
-      { title: "ModelPicker", hint: "flat \u4E00\u4E2A\u4E0B\u62C9 / cascade \u5148\u9009\u4F9B\u5E94\u5546\u518D\u9009\u6A21\u578B\u2014\u2014\u540C\u4E00\u4EFD\u6570\u636E\u4E24\u79CD\u5F62\u6001" },
-      (0, import_react21.createElement)(
-        "div",
-        { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-        (0, import_react21.createElement)(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: "flat" }),
-        (0, import_react21.createElement)(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: "cascade" })
-      )
-    ),
-    (0, import_react21.createElement)(
-      Demo,
-      { title: "WorkspacePicker / FilePicker", hint: "\u6570\u636E\u8C03\u7528\u65B9\u7ED9\uFF08\u8981\u8DE8 host\u2194client \u8FB9\u754C\uFF0C\u7EC4\u4EF6\u53D6\u4E0D\u5230\uFF09" },
-      (0, import_react21.createElement)(
-        "div",
-        { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-        (0, import_react21.createElement)(WorkspacePicker, {
-          workspaces: ["nas", "code", "docs"],
-          value: ws,
-          onChange: (v) => setWs(v),
-          clearable: true
-        }),
-        (0, import_react21.createElement)(FilePicker, {
-          files: ["README.md", "package.json", "src/index.ts"],
-          value: file,
-          onChange: (v) => setFile(v),
-          clearable: true
-        })
-      )
-    )
-  );
-}
-
-// demo/sections/feedback.tsx
-var import_react22 = require("react");
-function Boom() {
-  throw new Error("\u6F14\u793A\uFF1A\u5B50\u7EC4\u4EF6\u629B\u9519\u88AB\u8FB9\u754C\u63A5\u4F4F");
-}
-function FeedbackSection() {
-  const [open, setOpen] = (0, import_react22.useState)(false);
-  const [boom, setBoom] = (0, import_react22.useState)(false);
-  return (0, import_react22.createElement)(
-    "div",
-    null,
-    (0, import_react22.createElement)(
-      Demo,
-      {
-        title: "Modal",
-        hint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757"
-      },
-      (0, import_react22.createElement)(
-        "div",
-        null,
-        (0, import_react22.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5F39\u7A97"),
-        open ? (0, import_react22.createElement)(Modal, {
-          title: "\u4EFB\u52A1\u8BE6\u60C5",
-          onClose: () => setOpen(false),
-          footer: (0, import_react22.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-        }, (0, import_react22.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
-      )
-    ),
-    (0, import_react22.createElement)(
-      Demo,
-      { title: "toast", hint: "\u547D\u4EE4\u5F0F showToast\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6" },
-      (0, import_react22.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px" } },
-        (0, import_react22.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A"),
-        (0, import_react22.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react22.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25")
-      )
-    ),
-    (0, import_react22.createElement)(
-      Demo,
-      { title: "Loading / EmptyState / ErrorBoundary" },
-      (0, import_react22.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react22.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" }),
-        (0, import_react22.createElement)(
-          "div",
-          { style: { border: "1px solid var(--tdt-border-faint)", borderRadius: "8px", padding: "10px" } },
-          boom ? (0, import_react22.createElement)(ErrorBoundary, null, (0, import_react22.createElement)(Boom, null)) : (0, import_react22.createElement)(Button, { variant: "danger", onClick: () => setBoom(true) }, "\u70B9\u6211\u629B\u9519\uFF08\u770B\u8FB9\u754C\u515C\u5E95\uFF09")
-        ),
-        (0, import_react22.createElement)(
-          "div",
-          { style: { color: "var(--tdt-fg-3)", fontSize: "12px" } },
-          "Loading \u662F\u8D34\u5230\u4E3B\u5BB9\u5668\u53F3\u4E0B\u89D2\u7684\u6307\u793A\u5668\uFF08anchorId \u9ED8\u8BA4 dsh-tdt-main\uFF09\uFF0C\u6B64\u5904\u4E0D\u6E32\u67D3\u4EE5\u514D\u906E\u6321\u3002"
-        )
-      )
-    )
-  );
-}
-
-// demo/sections/display.tsx
-var import_react23 = require("react");
-function DisplaySection() {
-  const [open, setOpen] = (0, import_react23.useState)(false);
-  return (0, import_react23.createElement)(
-    "div",
-    null,
-    (0, import_react23.createElement)(
-      Demo,
-      { title: "Card\uFF08\u5706\u89D2 + \u8FB9\u6846 + \u77ED\u8272\u6761\uFF09", hint: "\u6392\u7248\u5B8C\u5168\u7531\u8C03\u7528\u65B9\u51B3\u5B9A\u2014\u2014\u771F\u5B9E\u63D2\u4EF6\u7684\u5F62\u6001\uFF1A\u6807\u9898\u884C + \u53F3\u4FA7\u5143\u4FE1\u606F + chips \u884C\uFF1Baccent \u4E94\u6863\u89C1\u4E0B\u65B9\u901F\u89C8" },
-      (0, import_react23.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
-        // 真实形态示例（任务卡同款排版）
-        (0, import_react23.createElement)(
-          Card,
-          { accent: "business" },
-          (0, import_react23.createElement)(
-            "div",
-            { style: { display: "flex", alignItems: "baseline", gap: "8px" } },
-            (0, import_react23.createElement)(
-              "div",
-              { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--tdt-font-md)" } },
-              "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
-            ),
-            (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
-          ),
-          (0, import_react23.createElement)(
-            "div",
-            { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react23.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react23.createElement)(Chip, null, "#npm"),
-            (0, import_react23.createElement)(Chip, null, "#pnpm"),
-            (0, import_react23.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react23.createElement)(Chip, null, "#\u8FC1\u79FB")
-          )
-        ),
-        // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react23.createElement)(
-          "div",
-          { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
-          ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react23.createElement)(
-              Card,
-              { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react23.createElement)("div", { style: { fontSize: "var(--tdt-font-sm)", color: "var(--tdt-fg-2)" } }, `accent="${a}"`)
-            )
-          )
-        )
-      )
-    ),
-    (0, import_react23.createElement)(
-      Demo,
-      { title: "StripCard\uFF08\u65E0\u8FB9\u6846 + \u901A\u9AD8\u7AD6\u7EBF\uFF09", hint: "\u540C\u4E00\u4E2A\u8272\u6761\u673A\u5236\uFF0C\u5916\u89C2\u662F\u901A\u9AD8\u8D34\u9876\u5230\u5E95\u2014\u2014\u771F\u5B9E\u63D2\u4EF6\u7684\u5F62\u6001\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C" },
-      (0, import_react23.createElement)(
-        "div",
-        { style: { maxWidth: "640px", background: "var(--tdt-surface-sunken)", borderRadius: "8px", overflow: "hidden" } },
-        (0, import_react23.createElement)(
-          StripCard,
-          {
-            accent: "business",
-            action: (0, import_react23.createElement)("span", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
-          },
-          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react23.createElement)(
-            "div",
-            { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react23.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react23.createElement)(
-              "span",
-              { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)" } },
-              "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
-            )
-          )
-        ),
-        (0, import_react23.createElement)(
-          StripCard,
-          { accent: "success" },
-          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
-        ),
-        (0, import_react23.createElement)(
-          StripCard,
-          {
-            accent: "warning",
-            expanded: open,
-            onToggle: () => setOpen(!open),
-            action: (0, import_react23.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD"),
-            panel: (0, import_react23.createElement)("div", { style: { fontSize: "12px", color: "var(--tdt-fg-3)" } }, "\u5C55\u5F00\u540E\u7684\u8BE6\u60C5\u9762\u677F")
-          },
-          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "\u6709\u8B66\u544A\uFF08\u53EF\u6298\u53E0\uFF0C\u70B9\u53F3\u4FA7\u7BAD\u5934\uFF09"),
-          (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 8s \xB7 1 \u4E2A\u8B66\u544A")
-        )
-      )
-    ),
-    (0, import_react23.createElement)(
-      Demo,
-      {
-        title: "Chip / SectionHead / MarqueeText / LiveText",
-        hint: "chip \u53EA\u6709\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u4E00\u5957\u76AE\u80A4\uFF1A\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6700\u540E\u4E00\u9897\u662F\u957F\u6587\u5B57\uFF0C\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219"
-      },
-      (0, import_react23.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react23.createElement)(
-          "div",
-          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react23.createElement)(Chip, null, "#npm"),
-          (0, import_react23.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react23.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react23.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
-        ),
-        (0, import_react23.createElement)(SectionHead, { icon: "\u25B8", title: "\u5206\u533A\u6807\u9898", right: (0, import_react23.createElement)(Button, { size: "sm" }, "\u64CD\u4F5C") }),
-        (0, import_react23.createElement)(
-          "div",
-          { style: { maxWidth: "200px" } },
-          (0, import_react23.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
-        ),
-        (0, import_react23.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
-      )
-    )
-  );
-}
-
-// demo/sections/utils.tsx
-var import_react24 = require("react");
 
 // dist/utils/date.js
 function pad2(value) {
@@ -2365,7 +1900,527 @@ function joinPath(dir, name) {
   return dir === "" ? name : `${dir}/${name}`;
 }
 
-// demo/sections/utils.tsx
+// packages/demo/src/i18n.ts
+var DICT2 = {
+  zh: {
+    sessionHint: "\u4E09\u79CD\u627F\u8F7D\uFF1Amodal / sidebar / page\uFF1Bsource \u662F mock \u7684\uFF1BrenderMessage \u53EF\u63A5\u7BA1\u5BCC\u5185\u5BB9",
+    explorerHint: "\u9762\u5305\u5C51 + \u76EE\u5F55\u6811 + \u9884\u89C8\uFF1BworkspaceFiles \u662F mock \u7684\uFF08\u771F\u5B9E\u63D2\u4EF6\u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF09",
+    utilsHint: "\u89E3\u6790\u5931\u8D25\u4E0D\u629B\u9519\u3001\u7ED9\u515C\u5E95\u3001\u4E0D\u7F16\u9020\uFF1B\u6240\u6709\u51FD\u6570\u65E0 UI \u4F9D\u8D56",
+    displayCardHint: "\u6392\u7248\u5B8C\u5168\u7531\u8C03\u7528\u65B9\u51B3\u5B9A\u2014\u2014\u771F\u5B9E\u63D2\u4EF6\u7684\u5F62\u6001\uFF1A\u6807\u9898\u884C + \u53F3\u4FA7\u5143\u4FE1\u606F + chips \u884C\uFF1Baccent \u4E94\u6863\u89C1\u4E0B\u65B9\u901F\u89C8",
+    displayStripHint: "\u540C\u4E00\u4E2A\u8272\u6761\u673A\u5236\uFF0C\u5916\u89C2\u662F\u901A\u9AD8\u8D34\u9876\u5230\u5E95\u2014\u2014\u771F\u5B9E\u63D2\u4EF6\u7684\u5F62\u6001\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C",
+    displayChipHint: "chip \u53EA\u6709\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u4E00\u5957\u76AE\u80A4\uFF1A\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6700\u540E\u4E00\u9897\u662F\u957F\u6587\u5B57\uFF0C\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219",
+    feedbackModalHint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757",
+    feedbackToastHint: "\u547D\u4EE4\u5F0F showToast\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6",
+    pickerHint: "\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\u2014\u2014\u5168\u90E8\u53EF\u7528 props \u63A7\u5236",
+    modelPickerHint: "flat \u4E00\u4E2A\u4E0B\u62C9 / cascade \u5148\u9009\u4F9B\u5E94\u5546\u518D\u9009\u6A21\u578B\u2014\u2014\u540C\u4E00\u4EFD\u6570\u636E\u4E24\u79CD\u5F62\u6001",
+    workspacePickerHint: "\u6570\u636E\u8C03\u7528\u65B9\u7ED9\uFF08\u8981\u8DE8 host\u2194client \u8FB9\u754C\uFF0C\u7EC4\u4EF6\u53D6\u4E0D\u5230\uFF09",
+    buttonHint: "variant \u56DB\u6863 \xD7 size \u4E09\u6863",
+    inputHint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u884C\u5C3E\u53EF\u6302 FieldHint \u95EE\u53F7\u63D0\u793A",
+    checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95 inset\uFF08\u65E0\u5916\u63CF\u8FB9\uFF09\uFF1B\u5E26\u63CF\u8FB9\u7684 default \u4EC5\u4F9B\u7279\u6B8A\u573A\u5408\uFF0C\u89C1\u4E0B",
+    designTokenHint: "\u989C\u8272\u5168\u90E8\u6765\u81EA design \u7684 token\uFF1B\u5207\u6362\u53F3\u4E0A\u89D2\u660E\u6697\uFF0C\u4E0B\u9762\u4F1A\u8DDF\u7740\u53D8",
+    designInjectHint: "\u63A7\u4EF6\u6E32\u67D3\u524D\u8C03\u4E00\u6B21 setStyleKit + ensureControls\uFF0Ctoken \u4E0E\u63A7\u4EF6 CSS \u7531 kit \u6CE8\u5165 <head>",
+    fieldHintDate: "\u4EFB\u52A1\u81EA\u8BE5\u65E5\u8D77\u5F00\u59CB\u6267\u884C\u3002\u53EF\u63D0\u524D\u521B\u5EFA\u4EFB\u52A1\uFF0C\u81F3\u8BE5\u65E5\u81EA\u52A8\u5F00\u8DD1\uFF1B\u300C\u6BCF N \u5468\u300D\u4EA6\u81EA\u8BE5\u65E5\u8D77\u7B97\u9996\u5468\u3002",
+    loadingNote: "Loading \u662F\u8D34\u5230\u4E3B\u5BB9\u5668\u53F3\u4E0B\u89D2\u7684\u6307\u793A\u5668\uFF08anchorId \u9ED8\u8BA4 dsh-tdt-main\uFF09\uFF0C\u6B64\u5904\u4E0D\u6E32\u67D3\u4EE5\u514D\u906E\u6321\u3002"
+  },
+  en: {
+    sessionHint: "Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content",
+    explorerHint: "Breadcrumb + directory tree + preview; workspaceFiles is mocked (a real plugin reads it from ctx and injects)",
+    utilsHint: "No throw on parse failure \u2014 falls back gracefully and never fabricates; all functions are UI-free",
+    displayCardHint: "Layout is entirely up to the caller \u2014 the real-plugin shape: title row + right-side meta + chips row; five accent tiers below",
+    displayStripHint: "Same accent-bar mechanism, but full-height edge-to-edge \u2014 real-plugin shape: title + meta row + right-side time/actions",
+    displayChipHint: "Chip has one pill skin only: width hugs the text, no wrap; the last one is long text \u2014 if squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in",
+    feedbackModalHint: "Hand-rolled overlay (no portal); click backdrop / Esc / \u2715 all close it. The header \u2715 is a 24\xD724 icon slot \u2014 no border or 120px-wide color block should appear",
+    feedbackToastHint: "Imperative showToast \u2014 no component mounting required",
+    pickerHint: "Single / multi / max / search / grouped / empty / degraded \u2014 all driven by props",
+    modelPickerHint: "flat: one dropdown / cascade: pick provider then model \u2014 same data, two shapes",
+    workspacePickerHint: "Data is supplied by the caller (crosses the host\u2194client boundary; the component cannot fetch it)",
+    buttonHint: "Four variants \xD7 three sizes",
+    inputHint: "Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; a FieldHint question-mark tip can hang at the row end",
+    checkboxHint: "Looks match the real plugin: grey inset background (no outer border); the bordered default is for special cases only, see below",
+    designTokenHint: "All colors come from design tokens; switch light/dark at top-right and these update with it",
+    designInjectHint: "Call setStyleKit + ensureControls once before controls render; the kit injects tokens and control CSS into <head>",
+    fieldHintDate: 'The task runs starting from this date. You can create it ahead of time and it auto-starts on that day; "every N weeks" also counts its first week from this date.',
+    loadingNote: "Loading is an indicator pinned to the bottom-right of the main container (anchorId defaults to dsh-tdt-main); not rendered here to avoid covering content."
+  }
+};
+function t2(key, vars) {
+  const template = DICT2[getLocale()][key] ?? DICT2.zh[key] ?? key;
+  if (vars === void 0) return template;
+  return template.replace(/\{(\w+)\}/g, (whole, name) => {
+    const value = vars[name];
+    return value === void 0 ? whole : String(value);
+  });
+}
+
+// packages/demo/src/sections/design.tsx
+var TOKENS = [
+  { label: "business", cssVar: "--tdt-business" },
+  { label: "success", cssVar: "--tdt-success" },
+  { label: "warning", cssVar: "--tdt-warning" },
+  { label: "danger", cssVar: "--tdt-danger" },
+  { label: "surface-1", cssVar: "--tdt-surface-1" },
+  { label: "surface-2", cssVar: "--tdt-surface-2" },
+  { label: "surface-sunken", cssVar: "--tdt-surface-sunken" },
+  { label: "border", cssVar: "--tdt-border" },
+  { label: "fg", cssVar: "--tdt-fg" },
+  { label: "fg-3", cssVar: "--tdt-fg-3" },
+  { label: "fg-4", cssVar: "--tdt-fg-4" }
+];
+function DesignSection() {
+  return (0, import_react19.createElement)(
+    "div",
+    null,
+    (0, import_react19.createElement)(
+      Demo,
+      { title: "token \u8272\u677F", hint: t2("designTokenHint") },
+      (0, import_react19.createElement)(
+        "div",
+        { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
+        TOKENS.map(
+          (t3) => (0, import_react19.createElement)(
+            "div",
+            { key: t3.cssVar, style: { width: "104px" } },
+            (0, import_react19.createElement)("div", {
+              style: {
+                height: "40px",
+                borderRadius: "6px",
+                background: `var(${t3.cssVar})`,
+                border: "1px solid var(--tdt-border-faint)"
+              }
+            }),
+            (0, import_react19.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, t3.label),
+            (0, import_react19.createElement)("div", { style: { fontSize: "10px", color: "var(--tdt-fg-4)" } }, t3.cssVar)
+          )
+        )
+      )
+    ),
+    (0, import_react19.createElement)(
+      Demo,
+      {
+        title: "\u6837\u5F0F\u6CE8\u5165\u673A\u5236",
+        hint: t2("designInjectHint"),
+        code: `import { createStyleKit } from 'dsh-plugin-core/design'
+import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
+
+setStyleKit(createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' }))
+ensureControls()`
+      },
+      (0, import_react19.createElement)(
+        "div",
+        { style: { color: "var(--tdt-fg-3)", fontSize: "12px" } },
+        "\u672C\u9884\u89C8\u7AD9\u81EA\u5DF1\u5C31\u662F\u8FD9\u4E48\u505A\u521D\u59CB\u5316\u7684\uFF08\u89C1 demo/main.tsx\uFF09\u2014\u2014\u9884\u89C8\u4E0E\u771F\u5B9E\u63D2\u4EF6\u8D70\u540C\u4E00\u6761\u8DEF\u3002"
+      )
+    )
+  );
+}
+
+// packages/demo/src/sections/buttons.tsx
+var import_react20 = require("react");
+function ButtonsSection() {
+  const [text, setText] = (0, import_react20.useState)("");
+  const [num, setNum] = (0, import_react20.useState)(3);
+  const [checked, setChecked] = (0, import_react20.useState)(true);
+  const [seg, setSeg] = (0, import_react20.useState)("week");
+  const [filter, setFilter] = (0, import_react20.useState)("all");
+  const [multi, setMulti] = (0, import_react20.useState)(["1"]);
+  return (0, import_react20.createElement)(
+    "div",
+    null,
+    (0, import_react20.createElement)(
+      Demo,
+      { title: "Button", hint: t2("buttonHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } },
+        ["primary", "outline", "ghost", "danger"].map(
+          (v) => (0, import_react20.createElement)(Button, { key: v, variant: v, onClick: () => {
+          } }, v)
+        ),
+        (0, import_react20.createElement)(Button, { size: "sm" }, "sm"),
+        (0, import_react20.createElement)(Button, { size: "lg" }, "lg"),
+        (0, import_react20.createElement)(IconButton, { icon: "+", label: "\u65B0\u589E" })
+      )
+    ),
+    (0, import_react20.createElement)(
+      Demo,
+      { title: "Input \u5BB6\u65CF", hint: t2("inputHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
+        (0, import_react20.createElement)(
+          "div",
+          { style: { display: "flex", alignItems: "center", gap: "6px" } },
+          (0, import_react20.createElement)("span", { style: { color: "var(--tdt-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
+          (0, import_react20.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F" }),
+          (0, import_react20.createElement)(FieldHint, { text: t2("fieldHintDate") })
+        ),
+        (0, import_react20.createElement)(Input, { value: "bad value", onChange: () => {
+        }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
+        (0, import_react20.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21" }),
+        (0, import_react20.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165" })
+      )
+    ),
+    (0, import_react20.createElement)(
+      Demo,
+      { title: "Checkbox / Segmented", hint: t2("checkboxHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
+        (0, import_react20.createElement)(
+          "div",
+          { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
+          (0, import_react20.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+          (0, import_react20.createElement)(Segmented, {
+            variant: "inset",
+            items: [
+              { value: "day", label: "\u65E5" },
+              { value: "week", label: "\u5468" },
+              { value: "month", label: "\u6708" }
+            ],
+            value: seg,
+            onChange: setSeg
+          }),
+          (0, import_react20.createElement)(Segmented, {
+            variant: "inset",
+            size: "sm",
+            items: [
+              { value: "day", label: "\u65E5" },
+              { value: "week", label: "\u5468" },
+              { value: "month", label: "\u6708" }
+            ],
+            value: seg,
+            onChange: setSeg
+          })
+        ),
+        // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
+        (0, import_react20.createElement)(Segmented, {
+          variant: "inset",
+          items: [
+            { value: "all", label: "\u5168\u90E8", count: 11 },
+            { value: "doing", label: "\u8FDB\u884C\u4E2D", count: 5 },
+            { value: "claimed", label: "\u5F85\u8BA4\u9886", count: 11 },
+            { value: "blocked", label: "\u963B\u585E" },
+            { value: "stalled", label: "\u505C\u6EDE" }
+          ],
+          value: filter,
+          onChange: setFilter
+        }),
+        // 星期多选方块（蓝底选中、近似方形）
+        (0, import_react20.createElement)(Segmented, {
+          multiple: true,
+          className: "dsh-tdt-seg--weekday",
+          label: "\u661F\u671F",
+          items: [
+            { value: "1", label: "\u4E00" },
+            { value: "2", label: "\u4E8C" },
+            { value: "3", label: "\u4E09" },
+            { value: "4", label: "\u56DB" },
+            { value: "5", label: "\u4E94" },
+            { value: "6", label: "\u516D" },
+            { value: "7", label: "\u65E5" }
+          ],
+          value: multi,
+          onChange: setMulti
+        }),
+        // default 变体（外描边）：预览顶栏切换这类小场景在用
+        (0, import_react20.createElement)(Segmented, {
+          size: "sm",
+          variant: "default",
+          label: "default \u5916\u89C2\u793A\u4F8B",
+          items: [
+            { value: "render", label: "\u9884\u89C8" },
+            { value: "source", label: "\u6E90\u7801" }
+          ],
+          value: seg === "week" ? "render" : "source",
+          onChange: () => {
+          }
+        })
+      )
+    )
+  );
+}
+
+// packages/demo/src/sections/pickers.tsx
+var import_react21 = require("react");
+var MODELS = [
+  {
+    value: "openai",
+    label: "OpenAI",
+    options: [
+      { value: "openai/gpt-4", label: "GPT-4" },
+      { value: "openai/gpt-3", label: "GPT-3.5" }
+    ]
+  },
+  {
+    value: "anthropic",
+    label: "Anthropic",
+    options: [{ value: "anthropic/claude", label: "Claude" }]
+  }
+];
+function PickersSection() {
+  const [single, setSingle] = (0, import_react21.useState)(void 0);
+  const [multi, setMulti] = (0, import_react21.useState)([]);
+  const [model, setModel] = (0, import_react21.useState)("");
+  const [ws, setWs] = (0, import_react21.useState)(void 0);
+  const [file, setFile] = (0, import_react21.useState)(void 0);
+  return (0, import_react21.createElement)(
+    "div",
+    null,
+    (0, import_react21.createElement)(
+      Demo,
+      { title: "Picker", hint: t2("pickerHint") },
+      (0, import_react21.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
+        (0, import_react21.createElement)(Picker, {
+          options: [
+            { value: "a", label: "\u9009\u9879 A" },
+            { value: "b", label: "\u9009\u9879 B" },
+            { value: "c", label: "\u9009\u9879 C" }
+          ],
+          value: single,
+          onChange: (v) => setSingle(v),
+          searchable: true,
+          clearable: true,
+          placeholder: "\u5355\u9009\uFF08\u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
+        }),
+        (0, import_react21.createElement)(Picker, {
+          groups: MODELS,
+          value: multi,
+          mode: "multiple",
+          max: 2,
+          onChange: (v) => setMulti(v),
+          searchable: true,
+          placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF09"
+        }),
+        (0, import_react21.createElement)(Picker, {
+          options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
+          degraded: true,
+          disabled: true,
+          placeholder: "\u964D\u7EA7 + \u7981\u7528"
+        })
+      )
+    ),
+    (0, import_react21.createElement)(
+      Demo,
+      { title: "ModelPicker", hint: t2("modelPickerHint") },
+      (0, import_react21.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
+        (0, import_react21.createElement)(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: "flat" }),
+        (0, import_react21.createElement)(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: "cascade" })
+      )
+    ),
+    (0, import_react21.createElement)(
+      Demo,
+      { title: "WorkspacePicker / FilePicker", hint: t2("workspacePickerHint") },
+      (0, import_react21.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
+        (0, import_react21.createElement)(WorkspacePicker, {
+          workspaces: ["nas", "code", "docs"],
+          value: ws,
+          onChange: (v) => setWs(v),
+          clearable: true
+        }),
+        (0, import_react21.createElement)(FilePicker, {
+          files: ["README.md", "package.json", "src/index.ts"],
+          value: file,
+          onChange: (v) => setFile(v),
+          clearable: true
+        })
+      )
+    )
+  );
+}
+
+// packages/demo/src/sections/feedback.tsx
+var import_react22 = require("react");
+function Boom() {
+  throw new Error("\u6F14\u793A\uFF1A\u5B50\u7EC4\u4EF6\u629B\u9519\u88AB\u8FB9\u754C\u63A5\u4F4F");
+}
+function FeedbackSection() {
+  const [open, setOpen] = (0, import_react22.useState)(false);
+  const [boom, setBoom] = (0, import_react22.useState)(false);
+  return (0, import_react22.createElement)(
+    "div",
+    null,
+    (0, import_react22.createElement)(
+      Demo,
+      {
+        title: "Modal",
+        hint: t2("feedbackModalHint")
+      },
+      (0, import_react22.createElement)(
+        "div",
+        null,
+        (0, import_react22.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5F39\u7A97"),
+        open ? (0, import_react22.createElement)(Modal, {
+          title: "\u4EFB\u52A1\u8BE6\u60C5",
+          onClose: () => setOpen(false),
+          footer: (0, import_react22.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+        }, (0, import_react22.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+      )
+    ),
+    (0, import_react22.createElement)(
+      Demo,
+      { title: "toast", hint: t2("feedbackToastHint") },
+      (0, import_react22.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px" } },
+        (0, import_react22.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A"),
+        (0, import_react22.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react22.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25")
+      )
+    ),
+    (0, import_react22.createElement)(
+      Demo,
+      { title: "Loading / EmptyState / ErrorBoundary" },
+      (0, import_react22.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react22.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" }),
+        (0, import_react22.createElement)(
+          "div",
+          { style: { border: "1px solid var(--tdt-border-faint)", borderRadius: "8px", padding: "10px" } },
+          boom ? (0, import_react22.createElement)(ErrorBoundary, null, (0, import_react22.createElement)(Boom, null)) : (0, import_react22.createElement)(Button, { variant: "danger", onClick: () => setBoom(true) }, "\u70B9\u6211\u629B\u9519\uFF08\u770B\u8FB9\u754C\u515C\u5E95\uFF09")
+        ),
+        (0, import_react22.createElement)(
+          "div",
+          { style: { color: "var(--tdt-fg-3)", fontSize: "12px" } },
+          t2("loadingNote")
+        )
+      )
+    )
+  );
+}
+
+// packages/demo/src/sections/display.tsx
+var import_react23 = require("react");
+function DisplaySection() {
+  const [open, setOpen] = (0, import_react23.useState)(false);
+  return (0, import_react23.createElement)(
+    "div",
+    null,
+    (0, import_react23.createElement)(
+      Demo,
+      { title: "Card\uFF08\u5706\u89D2 + \u8FB9\u6846 + \u77ED\u8272\u6761\uFF09", hint: t2("displayCardHint") },
+      (0, import_react23.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
+        // 真实形态示例（任务卡同款排版）
+        (0, import_react23.createElement)(
+          Card,
+          { accent: "business" },
+          (0, import_react23.createElement)(
+            "div",
+            { style: { display: "flex", alignItems: "baseline", gap: "8px" } },
+            (0, import_react23.createElement)(
+              "div",
+              { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--tdt-font-md)" } },
+              "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
+            ),
+            (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+          ),
+          (0, import_react23.createElement)(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
+            (0, import_react23.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react23.createElement)(Chip, null, "#npm"),
+            (0, import_react23.createElement)(Chip, null, "#pnpm"),
+            (0, import_react23.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react23.createElement)(Chip, null, "#\u8FC1\u79FB")
+          )
+        ),
+        // accent 速览：单行紧凑卡，只看色条档位
+        (0, import_react23.createElement)(
+          "div",
+          { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
+          ["business", "success", "warning", "danger", "neutral"].map(
+            (a) => (0, import_react23.createElement)(
+              Card,
+              { key: a, accent: a, style: { padding: "8px 12px" } },
+              (0, import_react23.createElement)("div", { style: { fontSize: "var(--tdt-font-sm)", color: "var(--tdt-fg-2)" } }, `accent="${a}"`)
+            )
+          )
+        )
+      )
+    ),
+    (0, import_react23.createElement)(
+      Demo,
+      { title: "StripCard\uFF08\u65E0\u8FB9\u6846 + \u901A\u9AD8\u7AD6\u7EBF\uFF09", hint: t2("displayStripHint") },
+      (0, import_react23.createElement)(
+        "div",
+        { style: { maxWidth: "640px", background: "var(--tdt-surface-sunken)", borderRadius: "8px", overflow: "hidden" } },
+        (0, import_react23.createElement)(
+          StripCard,
+          {
+            accent: "business",
+            action: (0, import_react23.createElement)("span", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+          },
+          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react23.createElement)(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
+            (0, import_react23.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react23.createElement)(
+              "span",
+              { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)" } },
+              "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
+            )
+          )
+        ),
+        (0, import_react23.createElement)(
+          StripCard,
+          { accent: "success" },
+          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+        ),
+        (0, import_react23.createElement)(
+          StripCard,
+          {
+            accent: "warning",
+            expanded: open,
+            onToggle: () => setOpen(!open),
+            action: (0, import_react23.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD"),
+            panel: (0, import_react23.createElement)("div", { style: { fontSize: "12px", color: "var(--tdt-fg-3)" } }, "\u5C55\u5F00\u540E\u7684\u8BE6\u60C5\u9762\u677F")
+          },
+          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "\u6709\u8B66\u544A\uFF08\u53EF\u6298\u53E0\uFF0C\u70B9\u53F3\u4FA7\u7BAD\u5934\uFF09"),
+          (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 8s \xB7 1 \u4E2A\u8B66\u544A")
+        )
+      )
+    ),
+    (0, import_react23.createElement)(
+      Demo,
+      {
+        title: "Chip / SectionHead / MarqueeText / LiveText",
+        hint: t2("displayChipHint")
+      },
+      (0, import_react23.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react23.createElement)(
+          "div",
+          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
+          (0, import_react23.createElement)(Chip, null, "#npm"),
+          (0, import_react23.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react23.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react23.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+        ),
+        (0, import_react23.createElement)(SectionHead, { icon: "\u25B8", title: "\u5206\u533A\u6807\u9898", right: (0, import_react23.createElement)(Button, { size: "sm" }, "\u64CD\u4F5C") }),
+        (0, import_react23.createElement)(
+          "div",
+          { style: { maxWidth: "200px" } },
+          (0, import_react23.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
+        ),
+        (0, import_react23.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+      )
+    )
+  );
+}
+
+// packages/demo/src/sections/utils.tsx
+var import_react24 = require("react");
 var NOW = Date.parse("2026-10-18T12:00:00.000Z");
 var ROWS = [
   ["formatDateTime", formatDateTime("2026-10-18T09:30:05.000Z", { seconds: true }), "2026-10-18 09:30:05"],
@@ -2380,7 +2435,7 @@ var ROWS = [
 function UtilsSection() {
   return (0, import_react24.createElement)(
     Demo,
-    { title: "\u65E5\u671F / \u5B57\u7B26\u4E32 / \u5B57\u8282", hint: "\u89E3\u6790\u5931\u8D25\u4E0D\u629B\u9519\u3001\u7ED9\u515C\u5E95\u3001\u4E0D\u7F16\u9020\uFF1B\u6240\u6709\u51FD\u6570\u65E0 UI \u4F9D\u8D56" },
+    { title: "\u65E5\u671F / \u5B57\u7B26\u4E32 / \u5B57\u8282", hint: t2("utilsHint") },
     (0, import_react24.createElement)(
       "table",
       { style: { borderCollapse: "collapse", fontSize: "13px" } },
@@ -2412,7 +2467,7 @@ function UtilsSection() {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--tdt-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--tdt-border-faint)" };
 
-// demo/sections/explorer.tsx
+// packages/demo/src/sections/explorer.tsx
 var import_react27 = require("react");
 
 // dist/explorer/ExplorerPanel.js
@@ -2595,7 +2650,7 @@ function ExplorerPanel(props) {
   }))));
 }
 
-// demo/mock.ts
+// packages/demo/src/mock.ts
 var TREE = {
   ".": [
     { name: "src", type: "directory" },
@@ -2730,14 +2785,14 @@ function delay(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// demo/sections/explorer.tsx
+// packages/demo/src/sections/explorer.tsx
 function ExplorerSection() {
   const [selected, setSelected] = (0, import_react27.useState)(null);
   return (0, import_react27.createElement)(
     Demo,
     {
       title: "ExplorerPanel",
-      hint: "\u9762\u5305\u5C51 + \u76EE\u5F55\u6811 + \u9884\u89C8\uFF1BworkspaceFiles \u662F mock \u7684\uFF08\u771F\u5B9E\u63D2\u4EF6\u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF09"
+      hint: t2("explorerHint")
     },
     (0, import_react27.createElement)(
       "div",
@@ -2769,7 +2824,7 @@ function ExplorerSection() {
   );
 }
 
-// demo/sections/session.tsx
+// packages/demo/src/sections/session.tsx
 var import_react29 = require("react");
 
 // dist/session/index.js
@@ -2832,14 +2887,14 @@ function SessionPreview(props) {
   return (0, import_react28.createElement)("div", { className: `dsh-tdt-ses dsh-tdt-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react28.createElement)("div", { className: "dsh-tdt-ses__head" }, (0, import_react28.createElement)("button", { type: "button", className: "dsh-tdt-exp__crumb", onClick: props.onClose }, "\u2715")), body);
 }
 
-// demo/sections/session.tsx
+// packages/demo/src/sections/session.tsx
 function SessionSection() {
   const [open, setOpen] = (0, import_react29.useState)(false);
   return (0, import_react29.createElement)(
     Demo,
     {
       title: "SessionPreview",
-      hint: "\u4E09\u79CD\u627F\u8F7D\uFF1Amodal / sidebar / page\uFF1Bsource \u662F mock \u7684\uFF1BrenderMessage \u53EF\u63A5\u7BA1\u5BCC\u5185\u5BB9"
+      hint: t2("sessionHint")
     },
     (0, import_react29.createElement)(
       "div",
@@ -2861,7 +2916,7 @@ function SessionSection() {
   }
 }
 
-// demo/sections/index.tsx
+// packages/demo/src/sections/index.tsx
 function Demo(props) {
   return (0, import_react30.createElement)(
     "section",

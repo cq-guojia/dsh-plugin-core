@@ -1,5 +1,5 @@
 import { createElement as h, useState } from 'react'
-import { Button, Checkbox, FieldHint, IconButton, Input, NumberInput, Segmented, Textarea } from '../../dist/ui/index.js'
+import { Button, Checkbox, FieldHint, IconButton, Input, NumberInput, Segmented, Textarea } from '../../../../dist/ui/index.js'
 import { Demo } from './index.js'
 import { t } from '../i18n.js'
 

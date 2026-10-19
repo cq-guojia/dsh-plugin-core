@@ -13,7 +13,7 @@ import { createElement as h, useState } from 'react'
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
 import { ensureControls, setStyleKit } from '../../../../dist/ui/index.js'
-import { ALL_SECTIONS, Sections, type SectionId } from '../../../../demo/sections/index.js'
+import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
 import { ALIAS_TOKEN_NAMES } from './token-alias.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */

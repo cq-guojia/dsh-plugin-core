@@ -1,6 +1,6 @@
-// demo 作为「正规 DSH 插件」的预览：界面文案自管（核心只保证单一 locale 状态，不提供插件级 i18n 框架）。
-// 复用核心的 getLocale() 单一语言状态，字典与 key 由本 demo 自己维护。
-import { getLocale } from '../dist/utils/index.js'
+// 预览插件（packages/demo）界面文案自管（核心只保证单一 locale 状态，不提供插件级 i18n 框架）。
+// 复用核心的 getLocale() 单一语言状态，字典与 key 由本插件自己维护；locale 由宿主 harness 驱动（见 client/index.tsx）。
+import { getLocale } from '../../../dist/utils/index.js'
 
 export type Locale = 'zh' | 'en'
 

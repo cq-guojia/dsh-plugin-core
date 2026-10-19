@@ -1,5 +1,5 @@
 import { createElement as h, useState } from 'react'
-import { Button, Card, Chip, LiveText, MarqueeText, SectionHead, showToast, StripCard } from '../../dist/ui/index.js'
+import { Button, Card, Chip, LiveText, MarqueeText, SectionHead, showToast, StripCard } from '../../../../dist/ui/index.js'
 import { Demo } from './index.js'
 import { t } from '../i18n.js'
 

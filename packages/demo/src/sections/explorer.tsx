@@ -1,5 +1,5 @@
 import { createElement as h, useState } from 'react'
-import { ExplorerPanel } from '../../dist/explorer/index.js'
+import { ExplorerPanel } from '../../../../dist/explorer/index.js'
 import { mockWorkspaceFiles } from '../mock.js'
 import { Demo } from './index.js'
 import { t } from '../i18n.js'

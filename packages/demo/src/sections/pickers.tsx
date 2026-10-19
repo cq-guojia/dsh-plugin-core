@@ -1,5 +1,5 @@
 import { createElement as h, useState } from 'react'
-import { FilePicker, ModelPicker, Picker, WorkspacePicker } from '../../dist/ui/index.js'
+import { FilePicker, ModelPicker, Picker, WorkspacePicker } from '../../../../dist/ui/index.js'
 import { Demo } from './index.js'
 import { t } from '../i18n.js'
 

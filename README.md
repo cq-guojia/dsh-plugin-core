@@ -7,29 +7,11 @@ DSH（DeepSeek Harness）插件共享底座：把跨插件复用的样式、控�
 
 > **状态**：🚧 可用但**未在真实插件里接入验证过**（见下方「还没做的事」）
 
-## 预览（双击 HTML，不起任何服务）
+## 预览（装在真实宿主里看）
 
-不想读文档？所有控件**实时可点**，右上角切明暗 / 中英。
+控件**不在独立网页里预览**。仓库里的 `packages/demo/`（包名 `dsh-plugin-core-demo`）是装进 DSH 宿主的预览插件，在真实 harness 里渲染，明暗与 token 全部跟随宿主。用法见下方「组件预览插件（packages/demo/）」一节。
 
-```bash
-pnpm install
-pnpm run build        # 先出 dist（预览站消费的就是它）
-pnpm run demo:build   # 生成静态文件到 demo-dist/
-```
-
-然后**用浏览器打开 `demo-dist/index.html`**（双击即可）。
-
-产物是**单文件 IIFE + 相对路径**，所以 `file://` 能直接跑：
-
-- 不用起 dev server、不占端口
-- 目录可以随便挪，拷到别的机器上也能打开
-
-> 已放到网上：仓库 Settings → Pages → Source 已选 **GitHub Actions**，`on: push` 自动部署，
-> 地址 `https://cq-guojia.github.io/dsh-plugin-core/`，每次 push 自动更新。
-
-预览站用的就是**同一份 `dist/` + 同一套样式注入代码**（`setStyleKit` + `ensureControls`），
-与真实插件走同一条渲染路径——你在预览里看到的就是插件里得到的。
-`explorer` / `session` 的宿主数据是 mock 的（`demo/mock.ts`）。
+> 旧版「双击 HTML 的独立预览站」（`demo-dist/` + `demo:build` 脚本 + GitHub Pages 部署）已**废弃删除**：它不走宿主、语言 / 明暗靠自带选择器，与 harness 脱节。`explorer` / `session` 的宿主数据仍是 mock 的（现位于 `packages/demo/src/mock.ts`）。
 
 ## 文档在哪
 

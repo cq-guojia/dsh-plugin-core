@@ -8,7 +8,7 @@ import {
   formatYmd,
   relativeFuture,
   relativePast,
-} from '../../dist/utils/index.js'
+} from '../../../../dist/utils/index.js'
 import { Demo } from './index.js'
 import { t } from '../i18n.js'
 
