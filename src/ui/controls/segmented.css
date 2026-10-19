@@ -31,13 +31,13 @@
 .dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 8px);padding:0;justify-content:center;}
 .dshpc-seg--weekday .dshpc-seg__item[aria-pressed='true']{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);box-shadow:var(--dshpc-shadow-raised);}
 
-/* ── bordered 外框（2026-10-20 用户要的第二种模式）：最外 1px 描边，选中段用描边块而非填充。
+/* ── bordered 外框（2026-10-20 用户要的第二种模式）：**只在最外面套一圈 1px 描边**，
+   里面一概不动 —— 选中段的填充色 / 阴影 / 文字色全部保持各自变体原本的样子
+   （default 的灰面、weekday 的蓝面都照旧），这里不写任何针对 __item 的规则。
    总高必须与无框版逐像素一致：border 1px×2 由各变体的 padding 各让 1px 抵消
-   （default 2→1、inset/weekday 3→2），所以三种变体 × bordered 的总高都与无框版相同。
-   选中态用 inset box-shadow 画描边，不碰布局；本规则写在该变体之后 ⇒ 与 weekday 组合时也覆盖其蓝面选中。 */
+   （default 2→1、inset/weekday 3→2），所以三种变体 × bordered 的总高都与无框版相同。 */
 .dshpc-seg--bordered{border:1px solid var(--dshpc-border);padding:1px;}
 .dshpc-seg--bordered.dshpc-seg--inset{padding:2px;}
 .dshpc-seg--bordered.dshpc-seg--weekday{padding:2px;}
-.dshpc-seg--bordered .dshpc-seg__item[aria-pressed='true']{background:transparent;box-shadow:inset 0 0 0 1px var(--dshpc-border-strong);}
 
 @media (prefers-reduced-motion: reduce){.dshpc-seg__item{transition:none;}}
