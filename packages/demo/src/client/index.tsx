@@ -51,13 +51,23 @@ function useLocaleTick(): void {
 function DemoPage(): ReturnType<typeof h> {
   useLocaleTick()
   const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
-  // 诊断行：Segmented 轨道底色 / 间距实测（真机上「改了没生效」的最终裁判，不再隔空猜）
+  // 诊断行：Segmented 轨道底色 / 间距实测 + CSSOM 里规则是否真在（真机上「改了没生效」的最终裁判）
   const [diag, setDiag] = useState('seg: …')
   useEffect(() => {
     const el = document.querySelector('.dshpc-seg')
     if (el === null) { setDiag('seg: no element'); return }
     const cs = getComputedStyle(el)
-    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap}${el.classList.contains('dshpc-seg--weekday') ? ' weekday' : ''}`)
+    let rule = 'no-rule'
+    for (const sh of Array.from(document.styleSheets)) {
+      let rules: CSSRuleList
+      try { rules = sh.cssRules } catch { continue }
+      for (const r of Array.from(rules)) {
+        if (r instanceof CSSStyleRule && r.selectorText === '.dshpc-seg') {
+          rule = r.style.cssText.slice(0, 90)
+        }
+      }
+    }
+    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap}\nrule: ${rule}`)
   }, [active])
   const dark = typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme')
   // ⚠️ 高度必须两端一起给：

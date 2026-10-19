@@ -357,81 +357,35 @@ function createStyleKit(options) {
 
 // dist/ui/controls-css.js
 var SEGMENTED_CSS = `
-/* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6\uFF08\u6ED1\u52A8\u5757\uFF09P1 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-   \u7ED3\u6784\u4E00\u5957 + \u4E24\u4E2A\u53D7\u63A7\u8F74\uFF1Asize(sm|md|lg) \xD7 variant(default|inset)\u3002
-   \u53D8\u4F53**\u53EA\u8986\u76D6\u4E24\u4E2A\u989C\u8272\u53D8\u91CF**\uFF08--seg-track \u8F68\u9053\u5E95 / --seg-thumb \u9009\u4E2D\u5757\uFF09\uFF0C
-   \u8FD9\u6B63\u662F\u300C\u540C\u4E00\u4EFD\u6837\u5F0F\u3001\u53EA\u91CD\u8F7D\u989C\u8272\u300D\u7684\u843D\u5730\u5F62\u6001\u3002 */
-/* \u4E24\u5957\u57FA\u7840\u6837\u5F0F\uFF082026-10-01 \u7528\u6237\u62CD\u677F\uFF1A\u4FDD\u7559\u300C\u7EAF\u9ED1\u9762\u300D\u4E0E\u300C\u7070\u5E95\u9762\u300D\u4E24\u5957\uFF0C\u4E0D\u53EF\u5408\u5E76\uFF09\uFF1A
-   - default = \u7EAF\u9ED1\u9762\uFF1A\u8F68\u9053=\u7B2C\u4E8C\u5C42\u9762 + \u5916\u63CF\u8FB9\uFF0C\u9009\u4E2D=\u4EAE\u7247\u5E95\uFF1B
-   - inset = \u7070\u5E95\u9762\uFF1A\u6284\u300C\u7248\u672C\u300D\u5F00\u5173\u89C2\u611F\uFF08\u8F68\u9053=\u4EA4\u4E92\u7070 hover \u5E95\u3001\u65E0\u5916\u63CF\u8FB9\u3001\u9009\u4E2D=\u4EAE\u7247\u5E95\uFF09\uFF0C\u7528\u6237\u89C9\u5F97\u6BD4\u539F\u7070\u5E95\u90A3\u5957\u597D\u770B\u3002
-   \u26A0\uFE0F \u9AD8\u5EA6\u5BF9\u9F50\u89C4\u5219\uFF082026-10-01 \u7528\u6237\u62CD\u677F\uFF0C\u540C\u65E5\u4FEE\u6B63 +2\uFF09\uFF1A\u6709\u8FB9 / \u65E0\u8FB9\u603B\u9AD8\u5FC5\u987B == \u63A7\u4EF6 token\uFF0C\u8FB9\u6846\u5728\u5185\u90E8\u8865\u56DE\uFF0C\u4E0D\u8BB8\u989D\u5916\u6491\u9AD8\u3002
-   \u51E0\u4F55 = \u6BB5\u9AD8 = token \u2212 6px\uFF08\u4E0A\u4E0B\u5404 2px padding + 1px \u8FB9\u6846\uFF09\uFF1Bdefault \u771F\u8FB9\u6846 1px + padding 2px\uFF0C
-   inset \u65E0\u8FB9\u6846\u6545 padding \u6536 3px \u628A\u7F3A\u7684 1px \u8865\u56DE\uFF0C\u4E24\u79CD\u5916\u89C2\u603B\u9AD8\u90FD == token\uFF0824/28/32\uFF09\uFF0C\u4E0D\u518D\u591A +2px\u3002
-   \u4EE5\u540E Button / Input \u7684\u6709\u8FB9 / \u65E0\u8FB9\u540C\u6B64\u89C4\u5219\u3002 */
-/* \u26A0\uFE0F \u8F68\u9053 / \u9009\u4E2D\u7247\u7684\u989C\u8272\u53D8\u91CF\u5728\u57FA\u7840\u7C7B\u4E0A\u7ED9**\u9ED8\u8BA4\u503C**\uFF08= inset \u89C2\u611F\uFF09\uFF0Cvariant \u7C7B\u53EA\u505A\u8986\u76D6\uFF1A
-   \u6B64\u524D --seg-track \u53EA\u7531 variant \u7C7B\u5B9A\u4E49\uFF0C\u7C7B\u4E00\u65E6\u6CA1\u751F\u6548\uFF08\u5BBF\u4E3B\u6837\u5F0F\u88C1\u526A / \u9009\u62E9\u5668\u88AB\u88C1 / \u7248\u672C\u9519\u4F4D\uFF09\uFF0C
-   background:var(--seg-track) \u6574\u6761\u4F5C\u5E9F \u21D2 \u8F68\u9053\u5168\u900F\u660E\u3001\u300C\u5C31\u5269\u51E0\u4E2A\u5B57\u6D6E\u5728\u9875\u9762\u4E0A\u300D\uFF080.2.2 \u771F\u673A\u73B0\u8C61\uFF09\u3002
-   --seg-track \u7684\u94FE\u672B\u662F\u4E13\u7528 token --dshpc-seg-track\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u7ECF --dshpc-hover \u4E2D\u8F6C\uFF09\uFF1A
-   2026-10-19 \u7684\u6559\u8BAD\u662F\u300C\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid\uFF0C\u6574\u6761\u5C5E\u6027\u4F5C\u5E9F\u300D\uFF0C\u6240\u4EE5\u8F68\u9053\u8272\u5FC5\u987B\u81EA\u5DF1\u4E00\u6761\u8DEF\u3002 */
-.dshpc-seg{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);
-  display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
-/* \u9009\u4E2D\u7247 = --dshpc-surface-raised\uFF08\u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684\u53D6\u6CD5\uFF0C2026-10-19 \u7528\u6237\u70B9\u540D
-   \u300C\u628A\u5144\u5F1F\u7684\u6837\u5F0F\u6E05\u4E86\u5C31\u4E0D\u6B63\u5E38 \u21D2 \u6CA1\u642C\u5168\u300D\u540E\u6539\u56DE\uFF09\u300210-18 \u66FE\u6539\u6210 --dshpc-solid\uFF0C\u4F46\u5B83\u5728\u6697\u8272\u4E3B\u9898\u4E0B
-   \u662F\u8FD1\u9ED1\uFF08\u6BD4\u8F68\u9053\u8FD8\u6697\uFF09\u21D2 \u9009\u4E2D\u7247\u9677\u8FDB\u8F68\u9053\u91CC\uFF1Braised \u5728\u4E24\u4E2A\u4E3B\u9898\u4E0B\u90FD\u6BD4\u8F68\u9053\u4EAE\u4E00\u6863\uFF0C\u65B9\u5411\u6B63\u786E\u3002
-   raised \u4E0E\u5361\u7247\u5E95\u540C\u4E3A bg-layer-1 \u21D2 \u9009\u4E2D\u7247\u9760**1px \u63CF\u8FB9 + \u9634\u5F71**\u4E0E\u5361\u7247\u533A\u5206\uFF08\u89C1 __item[aria-pressed]\uFF09\u3002 */
+/* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6 P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   2026-10-19\uFF1A\u6309\u7528\u6237\u70B9\u540D\u300C\u539F\u5C01\u4E0D\u52A8\u7167\u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u6284\u300D\u2014\u2014
+   \u89C4\u5219\u7ED3\u6784\u3001\u5199\u6CD5\u3001transition \u5168\u90E8\u5BF9\u9F50\u5144\u5F1F\u539F\u6587\uFF08\u5355\u884C\u89C4\u5219\u3001item \u65E0\u8FB9\u6846\u3001hover \u53EA\u63D0\u4EAE\u6587\u5B57\uFF09\uFF0C
+   \u53EA\u628A\u524D\u7F00 / \u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\u30020.2.2-0.2.8 \u771F\u673A\u4E0A\u300C\u8F68\u9053\u900F\u660E\u3001gap \u5931\u6548\u300D\u81EA\u67E5\u591A\u8F6E\u65E0\u679C
+   \u21D2 \u4E0D\u518D\u81EA\u521B\u5199\u6CD5\uFF0C\u56DE\u5230\u5144\u5F1F\u540C\u6B3E\u3002
+   \u7528\u6237\u989D\u5916\u8981\u7684\u4E24\u5904\uFF08\u5144\u5F1F\u6CA1\u6709\uFF0C\u4FDD\u7559\uFF09\uFF1Aweekday \u65B9\u5757\u95F4\u8DDD gap:6px\uFF1B\u6BB5\u5185\u4E2D\u6027\u8BA1\u6570 __count\u3002 */
+.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track,var(--dshpc-seg-track));}
 .dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-surface-raised);border:1px solid var(--dshpc-border);}
 .dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
-
-.dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
-  height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:1px solid transparent;border-radius:var(--dshpc-radius-sm);
-  background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);
-  font-weight:400;white-space:nowrap;cursor:pointer;
-  transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-xs);font-weight:500;white-space:nowrap;cursor:pointer;flex:none;transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-seg--md .dshpc-seg__item{height:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item{height:calc(var(--dshpc-control-h-lg) - 6px);}
-/* \u672A\u9009\u4E2D\u9879 hover\uFF1A\u7ED9\u4E00\u5C42\u6D45\u5E95\uFF08\u6B64\u524D\u53EA\u63D0\u4EAE\u6587\u5B57\uFF0C\u7528\u6237\u770B\u4E0D\u51FA\u300C\u8FD9\u91CC\u53EF\u4EE5\u70B9\u300D\uFF09\u3002
-   inset \u7684\u8F68\u9053\u672C\u8EAB\u5C31\u662F --dshpc-hover \u21D2 \u90A3\u91CC\u7528 active \u4E00\u6863\uFF0C\u907F\u514D hover \u4E0E\u8F68\u9053\u540C\u8272\u7B49\u4E8E\u6CA1\u53D8\u3002 */
-.dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);background:var(--dshpc-hover);}
-.dshpc-seg--inset .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){background:var(--dshpc-active);}
-/* \u9009\u4E2D\u7247\uFF1A\u4EAE\u7247 + \u63CF\u8FB9 + \u6D6E\u8D77\u9634\u5F71 \u21D2 \u5728\u5361\u7247\u5E95\uFF08\u4E0E\u4EAE\u7247\u540C\u8272\uFF09\u4E0A\u4E5F\u770B\u5F97\u51FA\u8FB9\u754C */
-.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb,var(--dshpc-surface-raised));border-color:var(--dshpc-border);
-  box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
+.dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);}
+.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
 .dshpc-seg__item:disabled{cursor:default;opacity:.4;}
-
-/* \u6BB5\u5185\u89D2\u6807\uFF08\u5982\u300C\u5F02\u5E38\u300D\u7684\u6570\u91CF\uFF09\uFF1A\u8BED\u4E49\u8272\u5B9E\u9762 + \u53CD\u767D\u5B57\uFF0C0 \u7531\u7EC4\u4EF6\u4FA7\u4E0D\u6E32\u67D3\u3002
-   \u26A0\uFE0F **\u5FC5\u987B\u662F\u6B63\u5706**\uFF08\u7528\u6237 2026-10-03\uFF1A\u300C\u591A\u4F4D\u6570\u7ED9\u5B83\u6491\u5F00\u4E86\uFF0C\u90A3\u4E0D\u662F\u5706\u7684\u5C31\u6CA1\u529E\u6CD5\u4E86\u300D\uFF09\uFF1A
-   \u56FA\u5B9A 16\xD716 + border-radius:50% + padding:0 + overflow:hidden \u21D2 \u4E00\u4F4D\u6570 / \u4E24\u4F4D\u6570\u90FD\u662F\u540C\u4E00\u4E2A\u5706\uFF0C
-   \u6570\u5B57\u7F29\u5230 10px \u585E\u5F97\u4E0B\uFF1B\u4E0D\u518D\u7528 min-width + \u5DE6\u53F3 padding\uFF08\u90A3\u4F1A\u8BA9\u5BBD\u5EA6\u968F\u4F4D\u6570\u589E\u957F\u53D8\u692D\u5706\uFF09\u3002 */
-.dshpc-seg__badge{display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:16px;height:16px;padding:0;overflow:hidden;
-  border-radius:50%;background:var(--dshpc-danger);color:var(--dshpc-on-signal);
-  font-size:10px;line-height:16px;font-weight:500;font-variant-numeric:tabular-nums;}
-
-/* \u6BB5\u5185\u4E2D\u6027\u8BA1\u6570\uFF08\u5982\u7B5B\u9009\u6761\u300C\u5168\u90E8 11\u300D\uFF09\uFF1A**\u7EAF\u6587\u5B57\uFF0C\u65E0\u5E95\u3001\u65E0\u8FB9\u3001\u65E0\u5706\u89D2**\uFF08\u5BF9\u9F50 task-ledger 2026-10-18
-   \u62CD\u677F\u7684 .dtl-seg__num\uFF1A\u5706\u5708\u53D6\u4E86\u3001\u5B57\u518D\u5C0F\u70B9\uFF09\uFF1B0 \u7531\u7EC4\u4EF6\u4FA7\u4E0D\u6E32\u67D3\u3002danger \u89D2\u6807\u4ECD\u8D70 __badge\u3002 */
-.dshpc-seg__count{display:inline;flex:none;margin-left:3px;padding:0;border:0;border-radius:0;
-  background:none;color:var(--dshpc-fg-3);font-size:10px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;}
-
+/* \u6BB5\u5185\u89D2\u6807\uFF08\u5982\u300C\u5F02\u5E38\u300D\u7684\u6570\u91CF\uFF09\uFF1A\u8BED\u4E49\u8272\u5B9E\u9762 + \u53CD\u767D\u5B57\uFF0C0 \u7531\u7EC4\u4EF6\u4FA7\u4E0D\u6E32\u67D3\u3002\u5FC5\u987B\u662F\u6B63\u5706\uFF08\u7528\u6237 2026-10-03\uFF09\u3002 */
+.dshpc-seg__badge{display:inline-flex;align-items:center;justify-content:center;flex:none;width:16px;height:16px;padding:0;overflow:hidden;border-radius:50%;background:var(--dshpc-danger);color:var(--dshpc-on-signal);font-size:10px;line-height:16px;font-weight:500;font-variant-numeric:tabular-nums;}
+/* \u6BB5\u5185\u4E2D\u6027\u8BA1\u6570\uFF08\u5982\u7B5B\u9009\u6761\u300C\u5168\u90E8 11\u300D\uFF09\uFF1A\u7EAF\u6587\u5B57\u3001\u65E0\u5E95\u65E0\u8FB9\uFF08\u5BF9\u9F50 task-ledger .dtl-seg__num \u62CD\u677F\u53E3\u5F84\uFF09\uFF1B0 \u7531\u7EC4\u4EF6\u4FA7\u4E0D\u6E32\u67D3\u3002 */
+.dshpc-seg__count{display:inline;flex:none;margin-left:3px;padding:0;border:0;border-radius:0;background:none;color:var(--dshpc-fg-3);font-size:10px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;}
 /* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u884C\u7528\uFF09\uFF0C\u5404\u6BB5\u7B49\u5206 */
 .dshpc-seg--block{display:flex;width:100%;}
 .dshpc-seg--block .dshpc-seg__item{flex:1 1 auto;justify-content:center;}
-
-/* weekday\uFF1A\u661F\u671F\u591A\u9009\u65B9\u5757\uFF08\u4EFB\u52A1\u65B0\u589E / \u7F16\u8F91\u9875\uFF09\u3002\u57FA\u7840\u63D2\u4EF6\u7684\u7279\u6B8A\u5316\u5B9A\u5236\uFF08\u7528\u6237 2026-10-01 \u660E\u786E\u8981\u6C42\uFF1A
-   \u539F WeekdayPicker \u5373\u300C\u84DD\u5E95 + \u8FD1\u4F3C\u65B9\u5F62\u300D\uFF0C\u7EDF\u4E00\u5230 Segmented \u540E\u7531\u8FD9\u4E00\u4FEE\u9970\u7C7B\u8865\u56DE\u4E24\u5904\u5DEE\u5F02\uFF09\uFF1A
-   - \u6BCF\u683C\u505A\u6210\u6B63\u65B9\u5F62\uFF08\u5BBD = \u6BB5\u9AD8\uFF09\uFF1B
-   - \u9009\u4E2D\u6001\u7528\u54C1\u724C\u84DD\uFF08--dshpc-business\uFF09\u3001\u53CD\u767D\u5B57\uFF0C\u8F68\u9053\u7528 hover \u7070\uFF08\u4E0E\u539F\u81EA\u7ED8\u8F68\u9053\u4E00\u81F4\uFF09\u3002
-   \u76AE\u80A4\u96C6\u4E2D\u5728\u6B64\u3001\u4E0D\u5185\u8054\uFF1B\u8C03\u7528\u70B9\u53EA\u6302 .dshpc-seg--weekday \u4E00\u4E2A\u4FEE\u9970\u7C7B\uFF0C\u7B26\u5408\u300C\u76AE\u80A4\u53EA\u5728 controls-css\u300D\u7684\u89C4\u77E9\u3002 */
-/* weekday\uFF1A\u661F\u671F\u591A\u9009\u65B9\u5757\uFF08\u4EFB\u52A1\u65B0\u589E / \u7F16\u8F91\u9875\uFF09\u3002\u57FA\u7840\u63D2\u4EF6\u7684\u7279\u6B8A\u5316\u5B9A\u5236\uFF08\u7528\u6237 2026-10-01 \u660E\u786E\u8981\u6C42\uFF1A
-   \u539F WeekdayPicker \u5373\u300C\u84DD\u5E95 + \u8FD1\u4F3C\u65B9\u5F62\u300D\uFF0C\u7EDF\u4E00\u5230 Segmented \u540E\u7531\u8FD9\u4E00\u4FEE\u9970\u7C7B\u8865\u56DE\u4E24\u5904\u5DEE\u5F02\uFF09\uFF1A
-   - \u6BCF\u683C\u505A\u6210\u6B63\u65B9\u5F62\uFF08\u5BBD = \u6BB5\u9AD8\uFF09\uFF1B
-   - \u9009\u4E2D\u6001\u7528\u54C1\u724C\u84DD\uFF08--dshpc-business\uFF09\u3001\u53CD\u767D\u5B57\uFF0C\u8F68\u9053\u7528 hover \u7070\uFF08\u4E0E\u539F\u81EA\u7ED8\u8F68\u9053\u4E00\u81F4\uFF09\u3002
-   2026-10-18 \u7528\u6237\u91CD\u7533\uFF08\u5BF9\u9F50\u771F\u5B9E\u622A\u56FE\uFF09\uFF1A**\u65E0\u5916\u63CF\u8FB9**\uFF08\u4E0D\u7BA1\u6302\u54EA\u4E2A variant\uFF0C\u8FD9\u91CC\u4E00\u5F8B\u64A4\u8FB9\uFF09\uFF0C
-   \u4E14\u65B9\u5757\u4E4B\u95F4\u8981\u6709\u95F4\u8DDD\uFF08gap 6px\uFF0C\u4E0D\u518D 2px \u6324\u6210\u4E00\u5768\uFF09\u3002 */
+/* weekday\uFF1A\u661F\u671F\u591A\u9009\u65B9\u5757\u3002\u57FA\u7840\u63D2\u4EF6\u7684\u7279\u6B8A\u5316\u5B9A\u5236\uFF08\u7528\u6237 2026-10-01\uFF1A\u539F WeekdayPicker \u5373\u300C\u84DD\u5E95 + \u8FD1\u4F3C\u65B9\u5F62\u300D\uFF09\uFF1A
+   \u6BCF\u683C\u6B63\u65B9\u5F62\uFF08\u5BBD = \u6BB5\u9AD8\uFF09\u3001\u9009\u4E2D\u54C1\u724C\u84DD\u53CD\u767D\u5B57\u3001**\u65E0\u5916\u63CF\u8FB9**\uFF082026-10-18 \u91CD\u7533\uFF09\u3001
+   \u65B9\u5757\u4E4B\u95F4\u95F4\u8DDD gap:6px\uFF082026-10-18\uFF1A\u4E0D\u518D 2px \u6324\u6210\u4E00\u5768 \u2014\u2014 \u8FD9\u4E00\u6761\u5144\u5F1F\u6CA1\u6709\u3001\u662F\u7528\u6237\u989D\u5916\u8981\u7684\uFF09\u3002 */
 .dshpc-seg--weekday{--seg-track:var(--dshpc-seg-track);gap:6px;border:0;padding:3px;}
 .dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 6px);padding:0;justify-content:center;}
 .dshpc-seg--weekday .dshpc-seg__item[aria-pressed='true']{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);box-shadow:var(--dshpc-shadow-raised);}
-
 @media (prefers-reduced-motion: reduce){.dshpc-seg__item{transition:none;}}
 `;
 var BUTTON_CSS = `
@@ -457,9 +411,9 @@ var BUTTON_CSS = `
   box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);
   background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}
-.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
-.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}
+.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
+.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
 /* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */
 .dshpc-btn--block{display:flex;width:100%;}
 /* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A
@@ -3506,7 +3460,22 @@ function DemoPage() {
       return;
     }
     const cs = getComputedStyle(el);
-    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap}${el.classList.contains("dshpc-seg--weekday") ? " weekday" : ""}`);
+    let rule = "no-rule";
+    for (const sh of Array.from(document.styleSheets)) {
+      let rules;
+      try {
+        rules = sh.cssRules;
+      } catch {
+        continue;
+      }
+      for (const r of Array.from(rules)) {
+        if (r instanceof CSSStyleRule && r.selectorText === ".dshpc-seg") {
+          rule = r.style.cssText.slice(0, 90);
+        }
+      }
+    }
+    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap}
+rule: ${rule}`);
   }, [active]);
   const dark = typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme");
   return (0, import_react31.createElement)(
@@ -3565,8 +3534,8 @@ function DemoPage() {
             fontFamily: "var(--dshpc-font-mono)"
           }
         },
-        (0, import_react31.createElement)("div", null, `core v${"0.2.7"}`),
-        (0, import_react31.createElement)("div", null, `demo v${"0.2.7"}`),
+        (0, import_react31.createElement)("div", null, `core v${"0.2.8"}`),
+        (0, import_react31.createElement)("div", null, `demo v${"0.2.8"}`),
         (0, import_react31.createElement)("div", { title: "body[data-ds-dark-theme]" }, `dark: ${dark ? "yes" : "no"}`),
         (0, import_react31.createElement)("div", { title: "\u5B9E\u6D4B\u9875\u9762\u4E0A\u7B2C\u4E00\u4E2A .dshpc-seg \u7684\u8F68\u9053\u5E95\u8272\u4E0E\u95F4\u8DDD" }, diag)
       )

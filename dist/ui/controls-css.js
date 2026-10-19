@@ -1,80 +1,34 @@
 // 控件样式。类名与变量统一使用 dshpc 前缀。
 export const SEGMENTED_CSS = `
-/* ── 分段控件（滑动块）P1 ────────────────────────────────────────────────
-   结构一套 + 两个受控轴：size(sm|md|lg) × variant(default|inset)。
-   变体**只覆盖两个颜色变量**（--seg-track 轨道底 / --seg-thumb 选中块），
-   这正是「同一份样式、只重载颜色」的落地形态。 */
-/* 两套基础样式（2026-10-01 用户拍板：保留「纯黑面」与「灰底面」两套，不可合并）：
-   - default = 纯黑面：轨道=第二层面 + 外描边，选中=亮片底；
-   - inset = 灰底面：抄「版本」开关观感（轨道=交互灰 hover 底、无外描边、选中=亮片底），用户觉得比原灰底那套好看。
-   ⚠️ 高度对齐规则（2026-10-01 用户拍板，同日修正 +2）：有边 / 无边总高必须 == 控件 token，边框在内部补回，不许额外撑高。
-   几何 = 段高 = token − 6px（上下各 2px padding + 1px 边框）；default 真边框 1px + padding 2px，
-   inset 无边框故 padding 收 3px 把缺的 1px 补回，两种外观总高都 == token（24/28/32），不再多 +2px。
-   以后 Button / Input 的有边 / 无边同此规则。 */
-/* ⚠️ 轨道 / 选中片的颜色变量在基础类上给**默认值**（= inset 观感），variant 类只做覆盖：
-   此前 --seg-track 只由 variant 类定义，类一旦没生效（宿主样式裁剪 / 选择器被裁 / 版本错位），
-   background:var(--seg-track) 整条作废 ⇒ 轨道全透明、「就剩几个字浮在页面上」（0.2.2 真机现象）。
-   --seg-track 的链末是专用 token --dshpc-seg-track（rgba 字面量、不经 --dshpc-hover 中转）：
-   2026-10-19 的教训是「变量链中间任何一环 invalid，整条属性作废」，所以轨道色必须自己一条路。 */
-.dshpc-seg{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);
-  display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
-/* 选中片 = --dshpc-surface-raised（兄弟项目 dsh-task-dispatch-table 的取法，2026-10-19 用户点名
-   「把兄弟的样式清了就不正常 ⇒ 没搬全」后改回）。10-18 曾改成 --dshpc-solid，但它在暗色主题下
-   是近黑（比轨道还暗）⇒ 选中片陷进轨道里；raised 在两个主题下都比轨道亮一档，方向正确。
-   raised 与卡片底同为 bg-layer-1 ⇒ 选中片靠**1px 描边 + 阴影**与卡片区分（见 __item[aria-pressed]）。 */
+/* ── 分段控件 P2 ─────────────────────────────────────────────────────
+   2026-10-19：按用户点名「原封不动照兄弟项目 dsh-task-dispatch-table 抄」——
+   规则结构、写法、transition 全部对齐兄弟原文（单行规则、item 无边框、hover 只提亮文字），
+   只把前缀 / 变量名换成本仓口径。0.2.2-0.2.8 真机上「轨道透明、gap 失效」自查多轮无果
+   ⇒ 不再自创写法，回到兄弟同款。
+   用户额外要的两处（兄弟没有，保留）：weekday 方块间距 gap:6px；段内中性计数 __count。 */
+.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track,var(--dshpc-seg-track));}
 .dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-surface-raised);border:1px solid var(--dshpc-border);}
 .dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
-
-.dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
-  height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:1px solid transparent;border-radius:var(--dshpc-radius-sm);
-  background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);
-  font-weight:400;white-space:nowrap;cursor:pointer;
-  transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-xs);font-weight:500;white-space:nowrap;cursor:pointer;flex:none;transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-seg--md .dshpc-seg__item{height:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item{height:calc(var(--dshpc-control-h-lg) - 6px);}
-/* 未选中项 hover：给一层浅底（此前只提亮文字，用户看不出「这里可以点」）。
-   inset 的轨道本身就是 --dshpc-hover ⇒ 那里用 active 一档，避免 hover 与轨道同色等于没变。 */
-.dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);background:var(--dshpc-hover);}
-.dshpc-seg--inset .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){background:var(--dshpc-active);}
-/* 选中片：亮片 + 描边 + 浮起阴影 ⇒ 在卡片底（与亮片同色）上也看得出边界 */
-.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb,var(--dshpc-surface-raised));border-color:var(--dshpc-border);
-  box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
+.dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);}
+.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
 .dshpc-seg__item:disabled{cursor:default;opacity:.4;}
-
-/* 段内角标（如「异常」的数量）：语义色实面 + 反白字，0 由组件侧不渲染。
-   ⚠️ **必须是正圆**（用户 2026-10-03：「多位数给它撑开了，那不是圆的就没办法了」）：
-   固定 16×16 + border-radius:50% + padding:0 + overflow:hidden ⇒ 一位数 / 两位数都是同一个圆，
-   数字缩到 10px 塞得下；不再用 min-width + 左右 padding（那会让宽度随位数增长变椭圆）。 */
-.dshpc-seg__badge{display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:16px;height:16px;padding:0;overflow:hidden;
-  border-radius:50%;background:var(--dshpc-danger);color:var(--dshpc-on-signal);
-  font-size:10px;line-height:16px;font-weight:500;font-variant-numeric:tabular-nums;}
-
-/* 段内中性计数（如筛选条「全部 11」）：**纯文字，无底、无边、无圆角**（对齐 task-ledger 2026-10-18
-   拍板的 .dtl-seg__num：圆圈取了、字再小点）；0 由组件侧不渲染。danger 角标仍走 __badge。 */
-.dshpc-seg__count{display:inline;flex:none;margin-left:3px;padding:0;border:0;border-radius:0;
-  background:none;color:var(--dshpc-fg-3);font-size:10px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;}
-
+/* 段内角标（如「异常」的数量）：语义色实面 + 反白字，0 由组件侧不渲染。必须是正圆（用户 2026-10-03）。 */
+.dshpc-seg__badge{display:inline-flex;align-items:center;justify-content:center;flex:none;width:16px;height:16px;padding:0;overflow:hidden;border-radius:50%;background:var(--dshpc-danger);color:var(--dshpc-on-signal);font-size:10px;line-height:16px;font-weight:500;font-variant-numeric:tabular-nums;}
+/* 段内中性计数（如筛选条「全部 11」）：纯文字、无底无边（对齐 task-ledger .dtl-seg__num 拍板口径）；0 由组件侧不渲染。 */
+.dshpc-seg__count{display:inline;flex:none;margin-left:3px;padding:0;border:0;border-radius:0;background:none;color:var(--dshpc-fg-3);font-size:10px;line-height:1;font-weight:400;font-variant-numeric:tabular-nums;}
 /* block：撑满父宽（表单行用），各段等分 */
 .dshpc-seg--block{display:flex;width:100%;}
 .dshpc-seg--block .dshpc-seg__item{flex:1 1 auto;justify-content:center;}
-
-/* weekday：星期多选方块（任务新增 / 编辑页）。基础插件的特殊化定制（用户 2026-10-01 明确要求：
-   原 WeekdayPicker 即「蓝底 + 近似方形」，统一到 Segmented 后由这一修饰类补回两处差异）：
-   - 每格做成正方形（宽 = 段高）；
-   - 选中态用品牌蓝（--dshpc-business）、反白字，轨道用 hover 灰（与原自绘轨道一致）。
-   皮肤集中在此、不内联；调用点只挂 .dshpc-seg--weekday 一个修饰类，符合「皮肤只在 controls-css」的规矩。 */
-/* weekday：星期多选方块（任务新增 / 编辑页）。基础插件的特殊化定制（用户 2026-10-01 明确要求：
-   原 WeekdayPicker 即「蓝底 + 近似方形」，统一到 Segmented 后由这一修饰类补回两处差异）：
-   - 每格做成正方形（宽 = 段高）；
-   - 选中态用品牌蓝（--dshpc-business）、反白字，轨道用 hover 灰（与原自绘轨道一致）。
-   2026-10-18 用户重申（对齐真实截图）：**无外描边**（不管挂哪个 variant，这里一律撤边），
-   且方块之间要有间距（gap 6px，不再 2px 挤成一坨）。 */
+/* weekday：星期多选方块。基础插件的特殊化定制（用户 2026-10-01：原 WeekdayPicker 即「蓝底 + 近似方形」）：
+   每格正方形（宽 = 段高）、选中品牌蓝反白字、**无外描边**（2026-10-18 重申）、
+   方块之间间距 gap:6px（2026-10-18：不再 2px 挤成一坨 —— 这一条兄弟没有、是用户额外要的）。 */
 .dshpc-seg--weekday{--seg-track:var(--dshpc-seg-track);gap:6px;border:0;padding:3px;}
 .dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 6px);padding:0;justify-content:center;}
 .dshpc-seg--weekday .dshpc-seg__item[aria-pressed='true']{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);box-shadow:var(--dshpc-shadow-raised);}
-
 @media (prefers-reduced-motion: reduce){.dshpc-seg__item{transition:none;}}
 `;
 export const BUTTON_CSS = `
@@ -100,9 +54,9 @@ export const BUTTON_CSS = `
   box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);
   background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}
-.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
-.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}
+.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
+.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
 /* block：撑满父宽（表单底栏 / 抽屉底部的主操作） */
 .dshpc-btn--block{display:flex;width:100%;}
 /* block + 前置图标 ⇒ 文字视觉居中（2026-10-19 用户点名）：
