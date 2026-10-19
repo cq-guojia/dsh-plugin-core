@@ -104,3 +104,29 @@
 - ⚠️ **教训**：只凭现象推断的“谁吃了规则”，在读到对方源码前不要写成结论；先看拼接处的原始字节。
 - 来源：`packages/demo/src/probes.ts` P27–P34 实测（2026-10-19，用户回传读数）+ 官方仓库源码 +
   本仓 `ledger/worklog/202610/19-1604-按钮与输入分区控件样式全面梳理与修复-823a.md`。
+
+## 10. 官方 HoverCard 的 compact 变体不设文字色（2026-10-19 实测）
+
+- **事实**：`HoverCard` 的默认 `variant` 就是 `'compact'`，走 `.card`。该变体**只写背景、不写 `color`**：
+
+  | 变体 | 背景 | 文字色 |
+  |---|---|---|
+  | `.card`（compact，默认） | `--dsw-hovercard-bg: #2C2C2E`（**硬编码，不随明暗变**） | **无声明** |
+  | `.preview` | `--dsw-alias-bg-layer-1`（跟随主题） | `--dsw-alias-label-primary` |
+
+  卡片最终 `createPortal(card, document.body)` ⇒ 挂在 `body` 直下 ⇒ 文字色退化为**继承**。
+- **后果**：亮色主题下继承到 body 的前景色（实测 `rgb(15,17,21)` ≈ `#0f1115`），压在 `#2C2C2E` 深底上
+  ⇒ **黑字看不清**；暗色下继承到近白，看起来正常。**只有亮色暴露。**
+- **为什么官方自己不暴露**：`.card` 的 `content` 收任意 ReactNode，宿主自己传的都是官方组件（自带 color）。
+  传裸 `div` / 纯文本就会踩到。本仓 demo 正是这么踩到的（已修）。
+- **修法**：由**调用方自己给内容色**。因为背景恒为 `#2C2C2E`（官方写死的深色），内容就该恒亮——
+  用官方在同场景（Tooltip 深底）使用的常量 `--dsw-static-neutral-bluish-00`（`#fff`）。
+  ⚠️ 别用 `--dsw-alias-label-primary`：它在亮色下是近黑，压深底正好复现这个 bug。
+- **对照：官方 Tooltip 没有这个问题**——`.bubble` 两条声明齐全
+  （`background: var(--dsw-alias-tooltip-bg)` + `color: var(--dsw-static-neutral-bluish-00)`），
+  实测亮/暗都正常。气泡带 `role="tooltip"`，需要选中它时可用该属性（不要用 CSS-module 哈希类名）。
+- 来源：`@deepseek-ai/dsh-client-ui-primitives@0.2.1-rc.2`
+  · `lib/HoverCard.module.css` 的 `.card` / `.preview`
+  · `lib/index.js` 的 `function HoverCard({ …, variant = "compact", … })`
+  · 真机实测 2026-10-19（宿主**亮色**）：浮层类名 `_card_38jqx_9`、`role: null`、
+    父节点 `BODY`、`color: rgb(15,17,21)`、`background: rgb(44,44,46)`。

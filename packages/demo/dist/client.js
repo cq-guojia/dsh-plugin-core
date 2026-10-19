@@ -1742,11 +1742,21 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
             anchor: (0, import_react20.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t2("tooltipName")),
+            // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
+            // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
+            // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
+            // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
             content: (0, import_react20.createElement)(
               "div",
-              { style: { padding: "4px 2px", minWidth: "220px" } },
+              {
+                style: {
+                  padding: "4px 2px",
+                  minWidth: "220px",
+                  color: "var(--dsw-static-neutral-bluish-00,#fff)"
+                }
+              },
               (0, import_react20.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
-              (0, import_react20.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line" } }, t2("tooltipLongText"))
+              (0, import_react20.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
             )
           })
         )
@@ -2757,7 +2767,7 @@ function DemoPage() {
   const buildBadge = (0, import_react31.createElement)(
     "div",
     {
-      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2318-4s05"}
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2358-jm3r"}
 \u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
       style: {
         fontFamily: "var(--dshpc-font-mono)",
@@ -2768,7 +2778,7 @@ function DemoPage() {
         wordBreak: "break-all"
       }
     },
-    `build ${"1019-2318-4s05"}`
+    `build ${"1019-2358-jm3r"}`
   );
   return (0, import_react31.createElement)(
     "div",
