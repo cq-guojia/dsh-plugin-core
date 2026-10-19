@@ -130,6 +130,8 @@ body{
   --tdt-radius-lg:var(--dsw-radius-lg,16px);
   --tdt-radius-xl:var(--dsw-radius-xl,20px);
   --tdt-radius-panel:var(--dsw-radius-panel,28px);
+  /* 全圆（胶囊标签）：宿主的 radius 档最大只有 28px，撑不满 24px 高的 chip */
+  --tdt-radius-pill:999px;
 
   /* ── 间距四拍（只许用这四档，不许出现 5 / 7 / 9px）────────────────── */
   --tdt-space-1:4px;

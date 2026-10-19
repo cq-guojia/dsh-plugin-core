@@ -37,7 +37,7 @@ export function Modal(props) {
             ? null
             : h('button', {
                 type: 'button',
-                className: 'dsh-tdt-picker__trigger',
+                className: 'dsh-tdt-modal__close',
                 'aria-label': tt('modalClose'),
                 onClick: () => props.onClose?.(),
             }, '✕')), h('div', { className: 'dsh-tdt-modal__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dsh-tdt-modal__foot' }, props.footer)));

@@ -66,7 +66,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
                   'button',
                   {
                     type: 'button',
-                    className: 'dsh-tdt-picker__trigger',
+                    className: 'dsh-tdt-modal__close',
                     'aria-label': tt('modalClose'),
                     onClick: () => props.onClose?.(),
                   },

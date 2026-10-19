@@ -1,5 +1,5 @@
-// Card / StripCard / Chip 样式。
-// 类名固定 dsh-tdt-card* / dsh-tdt-chip*（与组件硬编码 className 对齐，见 css.ts 的 buildCss）；
+// Card / StripCard 样式（Chip 已独立到 chip-css.ts，勿再往这里加 chip 规则）。
+// 类名固定 dsh-tdt-card*（与组件硬编码 className 对齐，见 css.ts 的 buildCss）；
 // 颜色一律吃 token，深色由 design 的 token 深色段自动生效（不写死颜色值）。
 export const CARD_CSS = `
 .dsh-tdt-card{
@@ -35,15 +35,5 @@ export const CARD_CSS = `
 .dsh-tdt-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}
 .dsh-tdt-card__caret.is-open{transform:rotate(180deg)}
 .dsh-tdt-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--tdt-border-faint)}
-`;
-export const CHIP_CSS = `
-.dsh-tdt-chip{
-  display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;
-  background:var(--tdt-chip-bg);color:var(--tdt-fg);font-size:11px;line-height:18px;
-  /* 2026-10-18：chip 是 flex 行里的常用项，禁止被压缩换行（预览站出现过文字竖排、互相叠压的挤压）。 */
-  white-space:nowrap;flex:none;box-sizing:border-box;
-}
-.dsh-tdt-chip--clickable{cursor:pointer;border:none;font:inherit;font-size:11px}
-.dsh-tdt-chip--clickable:hover{background:var(--tdt-chip-bg-hover)}
 `;
 //# sourceMappingURL=card-css.js.map

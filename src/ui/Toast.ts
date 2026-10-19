@@ -20,13 +20,11 @@ export function showToast(message: string, opts?: { variant?: ToastVariant; dura
   el.className = `dsh-tdt-toast${variant === 'info' ? '' : ` dsh-tdt-toast--${variant}`}`
   el.textContent = message
   host.appendChild(el)
-  const timer = setTimeout(() => {
+  setTimeout(() => {
     el.remove()
     // 容器空了就撤掉，别在页面上留一个空壳
     if (host.childElementCount === 0) host.remove()
   }, opts?.durationMs ?? DEFAULT_MS)
-  // 被提前移除时清掉定时器（避免泄漏）
-  el.addEventListener('remove', () => clearTimeout(timer))
 }
 
 function ensureHost(): HTMLElement {

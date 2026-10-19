@@ -16,6 +16,15 @@ export const FEEDBACK_CSS = `
   border-bottom:1px solid var(--tdt-border-faint);color:var(--tdt-fg);font-size:14px;
 }
 .dsh-tdt-modal__title{flex:1;min-width:0}
+/* 关闭按钮：24×24 方角图标位，不借用 Picker 的触发器皮肤（那份带 min-width:120px）。 */
+.dsh-tdt-modal__close{
+  display:inline-flex;align-items:center;justify-content:center;flex:none;
+  width:24px;height:24px;padding:0;border:none;border-radius:var(--tdt-radius-sm);
+  background:transparent;color:var(--tdt-fg-3);font-family:inherit;font-size:12px;line-height:1;cursor:pointer;
+  transition:background-color var(--tdt-dur-fast) var(--tdt-ease),color var(--tdt-dur-fast) var(--tdt-ease);
+}
+.dsh-tdt-modal__close:hover{background:var(--tdt-hover);color:var(--tdt-fg)}
+.dsh-tdt-modal__close:focus-visible{outline:2px solid var(--tdt-focus);outline-offset:1px}
 .dsh-tdt-modal__body{flex:1;min-height:0;overflow:auto;padding:12px 14px}
 .dsh-tdt-modal__foot{
   display:flex;justify-content:flex-end;gap:8px;padding:10px 14px;

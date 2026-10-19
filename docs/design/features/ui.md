@@ -155,6 +155,10 @@ h(StripCard, {
 
 `Chip`：小标签，token 用现成的 `--tdt-chip-bg`；传 `onClick` 才是可点的。
 
+**语义边界**：`Chip` 只管「胶囊标签」这一件事。**只给图标的小按钮请用 `IconButton`**（`.dsh-tdt-iconbtn`），
+不要拿 `Chip` 当图标底板——同一个类名两套皮肤（28px 定宽 vs 胶囊形）会互相覆盖、把文字挤成一列。
+现在一套皮肤只允许出现一次，由 `test/css-contract.test.mjs` 盯着。
+
 ### Modal
 
 | 参数 | 类型 | 默认 | 说明 |

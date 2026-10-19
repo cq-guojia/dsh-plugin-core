@@ -29,7 +29,7 @@
 
 ```bash
 pnpm run build        # tsc 出 ESM + d.ts 到 dist/（产物必须入库：宿主装插件不跑构建）
-pnpm test             # 全部自检（当前 33 条）
+pnpm test             # 全部自检（条数以 test/ 下实际用例为准，不在此写死）
 ```
 
 ## 改完的 checklist
