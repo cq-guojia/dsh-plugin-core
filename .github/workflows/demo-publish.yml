@@ -11,6 +11,8 @@ on:
   push:
     tags:
       - 'v*'
+  # 补发通道：发布失败修好后不必重建 tag，直接在 Actions 页 Run 一次即可
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -33,17 +35,26 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
+      - name: Upgrade npm
+        # Trusted Publishing 要求 npm CLI ≥ 11.5.1；Node 22 自带 npm 10.x，
+        # 版本不够时 npm 不会走 OIDC，退化成匿名发布 ⇒ registry 回 404（假象，不是包不存在）
+        run: |
+          npm install -g npm@latest
+          npm --version
+
       - name: Install
         run: pnpm install --frozen-lockfile
 
       - name: 版本一致性校验（tag / 核心 / demo 三者必须同号）
         run: |
-          TAG="${GITHUB_REF_NAME#v}"
           CORE=$(node -p "require('./package.json').version")
           DEMO=$(node -p "require('./packages/demo/package.json').version")
-          echo "tag=$TAG core=$CORE demo=$DEMO"
-          [ "$TAG" = "$CORE" ] || { echo "::error::tag v$TAG 与核心版本 $CORE 不一致"; exit 1; }
+          echo "ref_type=$GITHUB_REF_TYPE ref_name=$GITHUB_REF_NAME core=$CORE demo=$DEMO"
           [ "$DEMO" = "$CORE" ] || { echo "::error::demo 版本 $DEMO 与核心版本 $CORE 不一致"; exit 1; }
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            TAG="${GITHUB_REF_NAME#v}"
+            [ "$TAG" = "$CORE" ] || { echo "::error::tag v$TAG 与核心版本 $CORE 不一致"; exit 1; }
+          fi
 
       - name: Build library
         # demo 把库的产物打进自己的 bundle
