@@ -3391,6 +3391,127 @@ var LEGACY_TDT_SEGMENTED_CSS = `
 @media (prefers-reduced-motion: reduce){.dsh-tdt-seg__item{transition:none;}}
 `;
 
+// packages/demo/src/probes.ts
+var KIT_TAG_ID = "dsh-plugin-core-plugin";
+function countOccur(haystack, needle) {
+  let n = 0;
+  let i = haystack.indexOf(needle);
+  while (i >= 0) {
+    n++;
+    i = haystack.indexOf(needle, i + needle.length);
+  }
+  return n;
+}
+function selectorsOf(css) {
+  const body = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  const out = [];
+  for (const chunk of body.split("}")) {
+    const brace = chunk.lastIndexOf("{");
+    if (brace < 0) continue;
+    const sel = chunk.slice(0, brace).split("{").pop()?.trim() ?? "";
+    if (sel === "" || sel.startsWith("@")) continue;
+    out.push(sel);
+  }
+  return out;
+}
+function readSheets() {
+  const out = [];
+  const add = (sheet) => {
+    if (sheet === null) return;
+    try {
+      const rules = Array.from(sheet.cssRules);
+      const selectors = [];
+      for (const r of rules) {
+        if (r instanceof CSSStyleRule) selectors.push(r.selectorText);
+      }
+      out.push({ count: rules.length, selectors });
+    } catch {
+      out.push({ count: -1, selectors: [] });
+    }
+  };
+  for (const sheet of Array.from(document.styleSheets)) add(sheet);
+  const adopted = document.adoptedStyleSheets;
+  for (const sheet of Array.from(adopted ?? [])) add(sheet);
+  return out;
+}
+function describeRoot(el) {
+  const root = el.getRootNode();
+  if (root === document) return "document";
+  if (typeof ShadowRoot !== "undefined" && root instanceof ShadowRoot) return "shadow";
+  return root.nodeName;
+}
+function collectSegProbes() {
+  if (typeof document === "undefined") return [{ id: "P0", text: "no document" }];
+  const lines = [];
+  const allTags = Array.from(document.querySelectorAll("style"));
+  const segTags = allTags.filter((t3) => (t3.textContent ?? "").includes("dshpc-seg"));
+  lines.push({
+    id: "P1",
+    text: `style \u6807\u7B7E\u603B ${String(allTags.length)}\uFF0C\u542B dshpc-seg ${String(segTags.length)} \u4E2A [${segTags.map((t3) => t3.id === "" ? "(\u65E0id)" : t3.id).join(", ")}]`
+  });
+  const kitTag = document.getElementById(KIT_TAG_ID);
+  const kitCss = kitTag?.textContent ?? "";
+  lines.push({
+    id: "P2",
+    text: kitTag === null ? `\u627E\u4E0D\u5230 #${KIT_TAG_ID}` : `#${KIT_TAG_ID} len ${String(kitCss.length)}\uFF0C\u6587\u672C\u91CC '.dshpc-seg{' \xD7 ${String(countOccur(kitCss, ".dshpc-seg{"))}`
+  });
+  const sheets = readSheets();
+  const readable = sheets.filter((s) => s.count >= 0);
+  lines.push({
+    id: "P3",
+    text: `sheets \u603B ${String(sheets.length)}\uFF0C\u53EF\u8BFB ${String(readable.length)}\uFF0C\u89C4\u5219\u5408\u8BA1 ${String(readable.reduce((a, s) => a + s.count, 0))}\uFF0C\u8BFB\u4E0D\u4E86 ${String(sheets.length - readable.length)}`
+  });
+  const cssomSeg = readable.flatMap((s) => s.selectors.filter((x) => x.startsWith(".dshpc-seg")));
+  lines.push({
+    id: "P4",
+    text: `CSSOM \u91CC .dshpc-seg* \u5171 ${String(cssomSeg.length)} \u6761\uFF1A${cssomSeg.slice(0, 6).join(" | ") || "(\u65E0)"}`
+  });
+  const textSeg = selectorsOf(kitCss).filter((x) => x.startsWith(".dshpc-seg"));
+  const present = new Set(cssomSeg);
+  const missing = textSeg.filter((x) => !present.has(x));
+  lines.push({
+    id: "P5",
+    text: `\u6587\u672C\u91CC .dshpc-seg* ${String(textSeg.length)} \u6761\uFF0CCSSOM \u7F3A ${String(missing.length)} \u6761\uFF1A${missing.slice(0, 6).join(" | ") || "(\u65E0)"}`
+  });
+  const el = document.querySelector(".dshpc-seg");
+  if (el === null) {
+    lines.push({ id: "P6", text: "\u9875\u9762\u4E0A\u6CA1\u6709 .dshpc-seg \u5143\u7D20\uFF08\u6362\u5230\u300C\u6ED1\u52A8\u5757\u300D\u90A3\u8282\u518D\u770B\uFF09" });
+    return lines;
+  }
+  lines.push({
+    id: "P6",
+    text: `\u5143\u7D20 class="${el.className}"\uFF0Cmatches ${String(el.matches(".dshpc-seg"))}\uFF0C\u6839 ${describeRoot(el)}\uFF0Cdisplay=${getComputedStyle(el).display}`
+  });
+  const clone = document.createElement("div");
+  clone.className = "dshpc-seg";
+  clone.style.cssText = "position:fixed;left:-9999px;top:0";
+  document.body.appendChild(clone);
+  const cloneDisplay = getComputedStyle(clone).display;
+  clone.remove();
+  lines.push({ id: "P7", text: `\u88F8 div.dshpc-seg \u7684 display=${cloneDisplay}` });
+  el.classList.add("dshpc-segprobe");
+  const probeDisplay = getComputedStyle(el).display;
+  el.classList.remove("dshpc-segprobe");
+  lines.push({ id: "P8", text: `\u771F\u5B9E\u5143\u7D20\u4E34\u65F6\u52A0 .dshpc-segprobe \u21D2 display=${probeDisplay}` });
+  const fresh = document.createElement("style");
+  fresh.setAttribute("data-probe", "seg-fresh");
+  fresh.textContent = ".dshpc-seg{display:inline-flex}";
+  document.head.appendChild(fresh);
+  const freshDisplay = getComputedStyle(el).display;
+  let freshRules = -1;
+  try {
+    freshRules = fresh.sheet?.cssRules.length ?? -1;
+  } catch {
+    freshRules = -1;
+  }
+  fresh.remove();
+  lines.push({
+    id: "P9",
+    text: `\u4E34\u65F6\u6807\u7B7E\u53EA\u5199 .dshpc-seg{display:inline-flex} \u21D2 display=${freshDisplay}\uFF08cssRules ${String(freshRules)}\uFF09\uFF0C\u5DF2\u5220`
+  });
+  return lines;
+}
+
 // packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";
 var localeRuntime;
@@ -3409,6 +3530,7 @@ function DemoPage() {
   const [active, setActive] = (0, import_react31.useState)(ALL_SECTIONS[0].id);
   const [diag, setDiag] = (0, import_react31.useState)("seg: \u2026");
   const [diag2, setDiag2] = (0, import_react31.useState)("btn: \u2026");
+  const [probes, setProbes] = (0, import_react31.useState)([]);
   (0, import_react31.useEffect)(() => {
     const el = document.querySelector(".dshpc-seg");
     if (el === null) {
@@ -3476,6 +3598,33 @@ wk ${probe(".dshpc-seg--weekday")} df ${probe(".dshpc-seg--default")} tdt ${prob
 rule: ${rule}`);
   }, [active]);
   const dark = typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme");
+  (0, import_react31.useEffect)(() => {
+    const timer = setTimeout(() => {
+      const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`);
+      setProbes(lines);
+      console.log(`[probe] build ${"1019-2113-sh85"}
+${lines.join("\n")}`);
+    }, 150);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [active]);
+  const buildBadge = (0, import_react31.createElement)(
+    "div",
+    {
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2113-sh85"}
+\u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
+      style: {
+        fontFamily: "var(--dshpc-font-mono)",
+        fontSize: "11px",
+        lineHeight: "16px",
+        color: "var(--dshpc-business)",
+        padding: "0 2px 8px",
+        wordBreak: "break-all"
+      }
+    },
+    `build ${"1019-2113-sh85"}`
+  );
   return (0, import_react31.createElement)(
     "div",
     { style: { display: "flex", alignItems: "stretch", height: "100%", minHeight: 0, overflow: "hidden" } },
@@ -3493,6 +3642,7 @@ rule: ${rule}`);
           fontFamily: "var(--dshpc-font-md)"
         }
       },
+      buildBadge,
       ALL_SECTIONS.map(
         (s) => (0, import_react31.createElement)(
           "button",
@@ -3536,7 +3686,8 @@ rule: ${rule}`);
         (0, import_react31.createElement)("div", null, `demo v${"0.2.14"}`),
         (0, import_react31.createElement)("div", { title: "body[data-ds-dark-theme]" }, `dark: ${dark ? "yes" : "no"}`),
         (0, import_react31.createElement)("div", { title: "\u5B9E\u6D4B\u9875\u9762\u4E0A\u7B2C\u4E00\u4E2A .dshpc-seg \u7684\u8F68\u9053\u5E95\u8272\u4E0E\u95F4\u8DDD" }, diag),
-        (0, import_react31.createElement)("div", { title: "\u5B9E\u6D4B\u9875\u9762\u4E0A\u7B2C\u4E00\u4E2A .dshpc-btn" }, diag2)
+        (0, import_react31.createElement)("div", { title: "\u5B9E\u6D4B\u9875\u9762\u4E0A\u7B2C\u4E00\u4E2A .dshpc-btn" }, diag2),
+        ...probes.map((line) => (0, import_react31.createElement)("div", { key: line, style: { marginTop: "4px", whiteSpace: "pre-wrap" } }, line))
       )
     ),
     (0, import_react31.createElement)(

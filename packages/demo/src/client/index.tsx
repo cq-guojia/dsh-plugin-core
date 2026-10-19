@@ -18,6 +18,7 @@ import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
 import { LEGACY_TDT_SEGMENTED_CSS, LEGACY_TDT_TOKENS_CSS } from '../legacy-tdt.js'
+import { collectSegProbes } from '../probes.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
 const PANEL_ID = 'dsh-plugin-core-demo'
@@ -26,6 +27,8 @@ const PANEL_ID = 'dsh-plugin-core-demo'
 // 侧栏底部常驻显示 —— 更没更新、装的是哪版，一眼可查，不靠猜。
 declare const __CORE_VERSION__: string
 declare const __DEMO_VERSION__: string
+// 构建唯一编码（build.mjs 每次构建生成）：版本号不 bump 时，靠它确认宿主里跑的是不是刚 build 的产物。
+declare const __BUILD_STAMP__: string
 
 /** 宿主 locale 服务的结构类型（不引入宿主包，按接口使用）。 */
 interface LocaleRuntimeLike {
@@ -57,6 +60,8 @@ function DemoPage(): ReturnType<typeof h> {
   //    所以同时打 display / padding：display 不是 inline-flex ⇒ 规则真没生效。
   const [diag, setDiag] = useState('seg: …')
   const [diag2, setDiag2] = useState('btn: …')
+  // 【临时探针 · 定位完必删，清单见 ../probes.ts 文件头】P1-P9。
+  const [probes, setProbes] = useState<string[]>([])
   useEffect(() => {
     const el = document.querySelector('.dshpc-seg')
     if (el === null) { setDiag('seg: no element'); return }
@@ -103,6 +108,29 @@ function DemoPage(): ReturnType<typeof h> {
     setDiag2(`btn ${cs.display} align ${cs.alignItems} lh ${cs.lineHeight}\nrule: ${rule}`)
   }, [active])
   const dark = typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme')
+  // 【临时探针 · 定位完必删】等 React 挂载完再采（P6 依赖真实 DOM），同时打一份到 console
+  // 方便整段复制；侧栏里也能直接看。
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`)
+      setProbes(lines)
+      console.log(`[probe] build ${__BUILD_STAMP__}\n${lines.join('\n')}`)
+    }, 150)
+    return () => { clearTimeout(timer) }
+  }, [active])
+  // 左侧最顶部常驻：构建唯一编码（每次 build 必变）。版本号不 bump 时，这是唯一能确认
+  // 「宿主里跑的是最新产物」的锚点；完整信息放 title 里，不占侧栏高度。
+  const buildBadge = h(
+    'div',
+    {
+      title: `core v${__CORE_VERSION__} · demo v${__DEMO_VERSION__} · build ${__BUILD_STAMP__}\n每次 build 都会生成新的编码`,
+      style: {
+        fontFamily: 'var(--dshpc-font-mono)', fontSize: '11px', lineHeight: '16px',
+        color: 'var(--dshpc-business)', padding: '0 2px 8px', wordBreak: 'break-all',
+      },
+    },
+    `build ${__BUILD_STAMP__}`,
+  )
   // ⚠️ 高度必须两端一起给：
   //   · alignItems 必须是 stretch（默认）；写 flex-start 会让两侧高度退化成内容高 ⇒ main 的
   //     overflowY:auto 失去可滚高度，超出部分被宿主容器裁掉、连滚动条都不出现（2026-10-19 真踩过：
@@ -119,6 +147,7 @@ function DemoPage(): ReturnType<typeof h> {
           borderRight: '1px solid var(--dshpc-border-faint)', fontFamily: 'var(--dshpc-font-md)',
         },
       },
+      buildBadge,
       ALL_SECTIONS.map((s) =>
         h(
           'button',
@@ -150,6 +179,8 @@ function DemoPage(): ReturnType<typeof h> {
         h('div', { title: 'body[data-ds-dark-theme]' }, `dark: ${dark ? 'yes' : 'no'}`),
         h('div', { title: '实测页面上第一个 .dshpc-seg 的轨道底色与间距' }, diag),
         h('div', { title: '实测页面上第一个 .dshpc-btn' }, diag2),
+        // 【临时探针 · 定位完必删】P1-P9，见 ../probes.ts
+        ...probes.map((line) => h('div', { key: line, style: { marginTop: '4px', whiteSpace: 'pre-wrap' } }, line)),
       ),
     ),
     h(

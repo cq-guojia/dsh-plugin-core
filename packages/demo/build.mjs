@@ -23,12 +23,22 @@ const at = (p) => resolve(HERE, p)
 const CORE_VERSION = JSON.parse(readFileSync(at('../../package.json'), 'utf8')).version
 const DEMO_VERSION = JSON.parse(readFileSync(at('package.json'), 'utf8')).version
 
+// 构建唯一编码：每次 build 都变（时间 + 随机 4 位）。用户侧看侧栏左边这一串就知道
+// 「宿主里跑的是不是刚 build 的这份产物」——版本号不 bump 时唯一可辨的锚点。
+const BUILD_STAMP = (() => {
+  const d = new Date()
+  const p = (n) => String(n).padStart(2, '0')
+  const rand = Math.random().toString(36).slice(2, 6)
+  return `${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}-${rand}`
+})()
+
 const PKG = 'dsh-plugin-core-demo'
 const EXTERNAL = ['react', 'react-dom', 'react/jsx-runtime', 'cordis', '@deepseek-ai/*']
 const DEFINE = {
   'process.env.NODE_ENV': '"production"',
   __CORE_VERSION__: JSON.stringify(CORE_VERSION),
   __DEMO_VERSION__: JSON.stringify(DEMO_VERSION),
+  __BUILD_STAMP__: JSON.stringify(BUILD_STAMP),
 }
 
 mkdirSync(at('dist'), { recursive: true })
