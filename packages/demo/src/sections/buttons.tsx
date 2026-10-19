@@ -82,7 +82,7 @@ function tipAnchor(text: string, side: 'top' | 'bottom' | 'right', align?: 'cent
     type: 'button',
     style: {
       padding: '4px 10px', border: '1px solid var(--dshpc-border)', borderRadius: '6px',
-      background: 'var(--dshpc-surface-1)', color: 'var(--dshpc-fg)', fontSize: '12px', cursor: 'help',
+      background: 'var(--dshpc-surface-1)', color: 'var(--dshpc-fg)', fontSize: '12px', cursor: 'pointer',
     },
   }, text))
 }
@@ -95,7 +95,7 @@ function Row(props: { children?: ReturnType<typeof h>[] | ReturnType<typeof h> }
 /** 一个标签 + 内容行（标签宽 64，便于纵向对齐）。 */
 function Labeled(props: { label: string; children?: ReturnType<typeof h>[] | ReturnType<typeof h> }): ReturnType<typeof h> {
   return h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } },
-    h('span', { style: { width: '64px', flex: 'none', color: 'var(--dshpc-fg-3)', fontSize: '12px' } }, props.label),
+    h('span', { style: { width: 'auto', minWidth: '64px', flex: 'none', whiteSpace: 'normal', color: 'var(--dshpc-fg-3)', fontSize: '12px' } }, props.label),
     props.children)
 }
 
@@ -186,17 +186,17 @@ export function ButtonsSection(): ReturnType<typeof h> {
         h(Labeled, { label: t('tooltipAnchorText') },
           h(Tooltip, { label: t('tooltipHint'), side: 'top' },
             h('span', {
-              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
+              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
             }, t('tooltipAnchorText'))),
           h(Tooltip, { label: t('tooltipLongText'), side: 'bottom', maxWidth: 240 },
             h('span', {
-              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
+              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
             }, t('tooltipLong')))),
         // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
         h(Labeled, { label: t('tooltipMultiline') },
           h(Tooltip, { label: `${t('tooltipName')}\n${t('tooltipLongText')}`, side: 'top', maxWidth: 260 },
             h('span', {
-              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
+              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
             }, t('tooltipName')))),
         // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
         h(Labeled, { label: t('tooltipRich') },
@@ -204,7 +204,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
             variant: 'compact',
             openDelayMs: 200,
             anchor: h('span', {
-              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
+              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
             }, t('tooltipName')),
             content: h('div', { style: { padding: '4px 2px', minWidth: '220px' } },
               h('div', { style: { fontWeight: 600, fontSize: '14px', marginBottom: '4px' } }, t('tooltipName')),

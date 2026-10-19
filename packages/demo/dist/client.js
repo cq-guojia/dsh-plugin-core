@@ -139,6 +139,10 @@ body{
      \u5426\u5219\u6574\u6761 background:var(--seg-track) \u4F5C\u5E9F \u21D2 \u5206\u6BB5\u8F68\u9053\u900F\u660E\uFF08\u771F\u8E29\u8FC7\uFF1A\u9884\u89C8\u7AD9\u8F68\u9053\u6D88\u5931\uFF09\u3002 */
   --dshpc-hover:rgba(15,15,15,.10);
   --dshpc-active:rgba(15,15,15,.18);
+  /* \u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u5E95\uFF1A\u4E13\u7528 token\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u501F --dshpc-hover \u4E2D\u8F6C\uFF09\u2014\u2014
+     2026-10-19 \u6559\u8BAD\uFF1A\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid \u21D2 background \u6574\u6761\u4F5C\u5E9F\u3001\u8F68\u9053\u5168\u900F\u660E\u3002
+     \u4EAE\u8272\uFF1A\u9ED1 7%\uFF08\u6BD4 hover \u7684 10% \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u767D\u7247\u624D\u8DF3\u5F97\u51FA\uFF09\u3002 */
+  --dshpc-seg-track:rgba(15,15,15,.07);
   --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);
   /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A
      \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002
@@ -244,6 +248,8 @@ body[data-ds-dark-theme]{
   /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */
   --dshpc-hover:rgba(255,255,255,.14);
   --dshpc-active:rgba(255,255,255,.24);
+  /* \u5206\u6BB5\u8F68\u9053\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 10%\u2014\u2014\u6BD4 hover \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u4EAE\u7247\u624D\u8DF3\u5F97\u51FA\u3002 */
+  --dshpc-seg-track:rgba(255,255,255,.10);
   --dshpc-plate:var(--dsw-static-neutral-850,#212123);
   --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);
   --dshpc-icon-plate:rgba(255,255,255,.05);
@@ -365,15 +371,16 @@ var SEGMENTED_CSS = `
 /* \u26A0\uFE0F \u8F68\u9053 / \u9009\u4E2D\u7247\u7684\u989C\u8272\u53D8\u91CF\u5728\u57FA\u7840\u7C7B\u4E0A\u7ED9**\u9ED8\u8BA4\u503C**\uFF08= inset \u89C2\u611F\uFF09\uFF0Cvariant \u7C7B\u53EA\u505A\u8986\u76D6\uFF1A
    \u6B64\u524D --seg-track \u53EA\u7531 variant \u7C7B\u5B9A\u4E49\uFF0C\u7C7B\u4E00\u65E6\u6CA1\u751F\u6548\uFF08\u5BBF\u4E3B\u6837\u5F0F\u88C1\u526A / \u9009\u62E9\u5668\u88AB\u88C1 / \u7248\u672C\u9519\u4F4D\uFF09\uFF0C
    background:var(--seg-track) \u6574\u6761\u4F5C\u5E9F \u21D2 \u8F68\u9053\u5168\u900F\u660E\u3001\u300C\u5C31\u5269\u51E0\u4E2A\u5B57\u6D6E\u5728\u9875\u9762\u4E0A\u300D\uFF080.2.2 \u771F\u673A\u73B0\u8C61\uFF09\u3002
-   var() \u7684\u7B2C\u4E8C\u53C2\u515C\u5E95\u4FDD\u8BC1\u4EFB\u4F55\u60C5\u51B5\u4E0B\u8F68\u9053\u90FD\u6709\u5E95\u3001\u9009\u4E2D\u7247\u90FD\u6709\u8272\u3002 */
-.dshpc-seg{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-surface-raised);
+   --seg-track \u7684\u94FE\u672B\u662F\u4E13\u7528 token --dshpc-seg-track\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u7ECF --dshpc-hover \u4E2D\u8F6C\uFF09\uFF1A
+   2026-10-19 \u7684\u6559\u8BAD\u662F\u300C\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid\uFF0C\u6574\u6761\u5C5E\u6027\u4F5C\u5E9F\u300D\uFF0C\u6240\u4EE5\u8F68\u9053\u8272\u5FC5\u987B\u81EA\u5DF1\u4E00\u6761\u8DEF\u3002 */
+.dshpc-seg{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);
   display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
 /* \u9009\u4E2D\u7247 = --dshpc-surface-raised\uFF08\u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684\u53D6\u6CD5\uFF0C2026-10-19 \u7528\u6237\u70B9\u540D
    \u300C\u628A\u5144\u5F1F\u7684\u6837\u5F0F\u6E05\u4E86\u5C31\u4E0D\u6B63\u5E38 \u21D2 \u6CA1\u642C\u5168\u300D\u540E\u6539\u56DE\uFF09\u300210-18 \u66FE\u6539\u6210 --dshpc-solid\uFF0C\u4F46\u5B83\u5728\u6697\u8272\u4E3B\u9898\u4E0B
    \u662F\u8FD1\u9ED1\uFF08\u6BD4\u8F68\u9053\u8FD8\u6697\uFF09\u21D2 \u9009\u4E2D\u7247\u9677\u8FDB\u8F68\u9053\u91CC\uFF1Braised \u5728\u4E24\u4E2A\u4E3B\u9898\u4E0B\u90FD\u6BD4\u8F68\u9053\u4EAE\u4E00\u6863\uFF0C\u65B9\u5411\u6B63\u786E\u3002
    raised \u4E0E\u5361\u7247\u5E95\u540C\u4E3A bg-layer-1 \u21D2 \u9009\u4E2D\u7247\u9760**1px \u63CF\u8FB9 + \u9634\u5F71**\u4E0E\u5361\u7247\u533A\u5206\uFF08\u89C1 __item[aria-pressed]\uFF09\u3002 */
 .dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-surface-raised);border:1px solid var(--dshpc-border);}
-.dshpc-seg--inset{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
+.dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
 
 .dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
   height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:1px solid transparent;border-radius:var(--dshpc-radius-sm);
@@ -421,7 +428,7 @@ var SEGMENTED_CSS = `
    - \u9009\u4E2D\u6001\u7528\u54C1\u724C\u84DD\uFF08--dshpc-business\uFF09\u3001\u53CD\u767D\u5B57\uFF0C\u8F68\u9053\u7528 hover \u7070\uFF08\u4E0E\u539F\u81EA\u7ED8\u8F68\u9053\u4E00\u81F4\uFF09\u3002
    2026-10-18 \u7528\u6237\u91CD\u7533\uFF08\u5BF9\u9F50\u771F\u5B9E\u622A\u56FE\uFF09\uFF1A**\u65E0\u5916\u63CF\u8FB9**\uFF08\u4E0D\u7BA1\u6302\u54EA\u4E2A variant\uFF0C\u8FD9\u91CC\u4E00\u5F8B\u64A4\u8FB9\uFF09\uFF0C
    \u4E14\u65B9\u5757\u4E4B\u95F4\u8981\u6709\u95F4\u8DDD\uFF08gap 6px\uFF0C\u4E0D\u518D 2px \u6324\u6210\u4E00\u5768\uFF09\u3002 */
-.dshpc-seg--weekday{--seg-track:var(--dshpc-hover);gap:6px;border:0;padding:3px;}
+.dshpc-seg--weekday{--seg-track:var(--dshpc-seg-track);gap:6px;border:0;padding:3px;}
 .dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 6px);padding:0;justify-content:center;}
 .dshpc-seg--weekday .dshpc-seg__item[aria-pressed='true']{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);box-shadow:var(--dshpc-shadow-raised);}
 
@@ -460,11 +467,13 @@ var BUTTON_CSS = `
    \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002
    \u56FE\u6807\u5BBD\u6309 1.2em \u4F30\uFF08\u5B98\u65B9\u56FE\u6807 14/16px vs \u5B57\u53F7 12/13px\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */
 .dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}
-.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;}
+.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}
+.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;}
 /* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u4E2A\u540C\u8272\u5C0F\u5708\uFF08\u5C3A\u5BF8\u968F\u5B57\u53F7\uFF0C\u7F29\u653E\u4E0D\u4F9D\u8D56\u5E38\u91CF\uFF09 */
-.dshpc-btn__spinner{display:inline-block;flex:none;width:1em;height:1em;box-sizing:border-box;
-  border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;
+.dshpc-btn__spinner{display:block;flex:none;width:12px;height:12px;box-sizing:border-box;
+  border:1.5px solid currentColor;border-right-color:transparent;border-radius:999px;
   animation:dshpc-btn-spin .7s linear infinite;}
+/* shortcut: 12px \u662F\u56FA\u5B9A\u503C\uFF0C\u4E0D\u968F\u6309\u94AE\u5B57\u53F7\u7F29\u653E\uFF1B\u8981\u66F4\u5927\u5C31\u6539\u8FD9\u4E00\u5904\u3002 */
 @keyframes dshpc-btn-spin{to{transform:rotate(360deg)}}
 
 /* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */
@@ -2030,7 +2039,7 @@ var DICT2 = {
     tooltipAnchorButton: "\u6309\u94AE\u951A\u70B9",
     tooltipLong: "\u957F\u6587\u672C\u6362\u884C",
     tooltipName: "\u5F20\u4E09\u4E30",
-    tooltipRich: "\u5BCC\u5361\u7247\uFF08HoverCard\uFF09",
+    tooltipRich: "\u5BCC\u5361\u7247",
     tooltipMultiline: "\u4E24\u6BB5\u5F0F",
     tooltipLongText: "\u8FD9\u662F\u4E00\u6BB5\u8DB3\u591F\u957F\u7684\u63D0\u793A\u6587\u5B57\uFF1A\u6C14\u6CE1\u9047\u5230 maxWidth \u4F1A\u81EA\u52A8\u6362\u884C\uFF0C\u800C\u4E0D\u4F1A\u4E00\u8DEF\u6491\u5230\u534A\u4E2A\u5C4F\u5E55\u5BBD\uFF0C anchored \u5143\u7D20\u5728\u8FB9\u7F18\u65F6\u5B98\u65B9\u8FD8\u4F1A\u81EA\u52A8\u628A\u6C14\u6CE1\u6536\u56DE\u89C6\u53E3\u5185\u3002",
     btnHintTitle: "\u95EE\u53F7\u63D0\u793A\uFF08FieldHint\uFF09",
@@ -2111,7 +2120,7 @@ var DICT2 = {
     tooltipAnchorButton: "Button anchor",
     tooltipLong: "Long label",
     tooltipName: "Alex Chen",
-    tooltipRich: "Rich card (HoverCard)",
+    tooltipRich: "Rich card",
     tooltipMultiline: "Two-part",
     tooltipLongText: "A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.",
     btnHintTitle: "Question-mark hint (FieldHint)",
@@ -2302,7 +2311,7 @@ function tipAnchor(text, side, align) {
       background: "var(--dshpc-surface-1)",
       color: "var(--dshpc-fg)",
       fontSize: "12px",
-      cursor: "help"
+      cursor: "pointer"
     }
   }, text));
 }
@@ -2313,7 +2322,7 @@ function Labeled(props) {
   return (0, import_react20.createElement)(
     "div",
     { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react20.createElement)("span", { style: { width: "64px", flex: "none", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    (0, import_react20.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
     props.children
   );
 }
@@ -2444,14 +2453,14 @@ function ButtonsSection() {
             import_dsh_client_ui_primitives.Tooltip,
             { label: t2("tooltipHint"), side: "top" },
             (0, import_react20.createElement)("span", {
-              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t2("tooltipAnchorText"))
           ),
           (0, import_react20.createElement)(
             import_dsh_client_ui_primitives.Tooltip,
             { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
             (0, import_react20.createElement)("span", {
-              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t2("tooltipLong"))
           )
         ),
@@ -2464,7 +2473,7 @@ function ButtonsSection() {
             { label: `${t2("tooltipName")}
 ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
             (0, import_react20.createElement)("span", {
-              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t2("tooltipName"))
           )
         ),
@@ -2476,7 +2485,7 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
             variant: "compact",
             openDelayMs: 200,
             anchor: (0, import_react20.createElement)("span", {
-              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t2("tooltipName")),
             content: (0, import_react20.createElement)(
               "div",
@@ -3489,6 +3498,17 @@ function useLocaleTick() {
 function DemoPage() {
   useLocaleTick();
   const [active, setActive] = (0, import_react31.useState)(ALL_SECTIONS[0].id);
+  const [diag, setDiag] = (0, import_react31.useState)("seg: \u2026");
+  (0, import_react31.useEffect)(() => {
+    const el = document.querySelector(".dshpc-seg");
+    if (el === null) {
+      setDiag("seg: no element");
+      return;
+    }
+    const cs = getComputedStyle(el);
+    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap}${el.classList.contains("dshpc-seg--weekday") ? " weekday" : ""}`);
+  }, [active]);
+  const dark = typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme");
   return (0, import_react31.createElement)(
     "div",
     { style: { display: "flex", alignItems: "stretch", height: "100%", minHeight: 0, overflow: "hidden" } },
@@ -3532,7 +3552,7 @@ function DemoPage() {
           t2(s.titleKey)
         )
       ),
-      // 底部常驻：bundle 的真实版本 + 当前暗色判据实测值（查「改了没生效」类问题的锚点）。
+      // 底部常驻：bundle 的真实版本 + 当前暗色判据 + Segmented 实测（查「改了没生效」类问题的锚点）。
       (0, import_react31.createElement)(
         "div",
         {
@@ -3545,13 +3565,10 @@ function DemoPage() {
             fontFamily: "var(--dshpc-font-mono)"
           }
         },
-        (0, import_react31.createElement)("div", null, `core v${"0.2.6"}`),
-        (0, import_react31.createElement)("div", null, `demo v${"0.2.6"}`),
-        (0, import_react31.createElement)(
-          "div",
-          { title: "body[data-ds-dark-theme]" },
-          `dark: ${typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "yes" : "no"}`
-        )
+        (0, import_react31.createElement)("div", null, `core v${"0.2.7"}`),
+        (0, import_react31.createElement)("div", null, `demo v${"0.2.7"}`),
+        (0, import_react31.createElement)("div", { title: "body[data-ds-dark-theme]" }, `dark: ${dark ? "yes" : "no"}`),
+        (0, import_react31.createElement)("div", { title: "\u5B9E\u6D4B\u9875\u9762\u4E0A\u7B2C\u4E00\u4E2A .dshpc-seg \u7684\u8F68\u9053\u5E95\u8272\u4E0E\u95F4\u8DDD" }, diag)
       )
     ),
     (0, import_react31.createElement)(

@@ -110,6 +110,10 @@ body{
      否则整条 background:var(--seg-track) 作废 ⇒ 分段轨道透明（真踩过：预览站轨道消失）。 */
   --dshpc-hover:rgba(15,15,15,.10);
   --dshpc-active:rgba(15,15,15,.18);
+  /* 分段控件轨道底：专用 token（rgba 字面量、不借 --dshpc-hover 中转）——
+     2026-10-19 教训：变量链中间任何一环 invalid ⇒ background 整条作废、轨道全透明。
+     亮色：黑 7%（比 hover 的 10% 淡一档，选中白片才跳得出）。 */
+  --dshpc-seg-track:rgba(15,15,15,.07);
   --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);
   /* 「选中面」（2026-10-06，任务日程页首创）= 当前底色**朝更深掺 12% 文字色**：
      浅色主题下文字色是黑 ⇒ 选中面比常态底色**深一档**。深色分支见 body[data-ds-dark-theme]（朝背景色掺）。
@@ -215,6 +219,8 @@ body[data-ds-dark-theme]{
   /* 暗色 hover 掺白 14% / active 24%（对齐上面 2026-10-18 的加重拍板）。rgba 兜底行同上。 */
   --dshpc-hover:rgba(255,255,255,.14);
   --dshpc-active:rgba(255,255,255,.24);
+  /* 分段轨道（暗色版）：白 10%——比 hover 淡一档，选中亮片才跳得出。 */
+  --dshpc-seg-track:rgba(255,255,255,.10);
   --dshpc-plate:var(--dsw-static-neutral-850,#212123);
   --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);
   --dshpc-icon-plate:rgba(255,255,255,.05);

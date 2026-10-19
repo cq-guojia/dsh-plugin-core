@@ -14,15 +14,16 @@ export const SEGMENTED_CSS = `
 /* ⚠️ 轨道 / 选中片的颜色变量在基础类上给**默认值**（= inset 观感），variant 类只做覆盖：
    此前 --seg-track 只由 variant 类定义，类一旦没生效（宿主样式裁剪 / 选择器被裁 / 版本错位），
    background:var(--seg-track) 整条作废 ⇒ 轨道全透明、「就剩几个字浮在页面上」（0.2.2 真机现象）。
-   var() 的第二参兜底保证任何情况下轨道都有底、选中片都有色。 */
-.dshpc-seg{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-surface-raised);
+   --seg-track 的链末是专用 token --dshpc-seg-track（rgba 字面量、不经 --dshpc-hover 中转）：
+   2026-10-19 的教训是「变量链中间任何一环 invalid，整条属性作废」，所以轨道色必须自己一条路。 */
+.dshpc-seg{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);
   display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
 /* 选中片 = --dshpc-surface-raised（兄弟项目 dsh-task-dispatch-table 的取法，2026-10-19 用户点名
    「把兄弟的样式清了就不正常 ⇒ 没搬全」后改回）。10-18 曾改成 --dshpc-solid，但它在暗色主题下
    是近黑（比轨道还暗）⇒ 选中片陷进轨道里；raised 在两个主题下都比轨道亮一档，方向正确。
    raised 与卡片底同为 bg-layer-1 ⇒ 选中片靠**1px 描边 + 阴影**与卡片区分（见 __item[aria-pressed]）。 */
 .dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-surface-raised);border:1px solid var(--dshpc-border);}
-.dshpc-seg--inset{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
+.dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
 
 .dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
   height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:1px solid transparent;border-radius:var(--dshpc-radius-sm);
@@ -70,7 +71,7 @@ export const SEGMENTED_CSS = `
    - 选中态用品牌蓝（--dshpc-business）、反白字，轨道用 hover 灰（与原自绘轨道一致）。
    2026-10-18 用户重申（对齐真实截图）：**无外描边**（不管挂哪个 variant，这里一律撤边），
    且方块之间要有间距（gap 6px，不再 2px 挤成一坨）。 */
-.dshpc-seg--weekday{--seg-track:var(--dshpc-hover);gap:6px;border:0;padding:3px;}
+.dshpc-seg--weekday{--seg-track:var(--dshpc-seg-track);gap:6px;border:0;padding:3px;}
 .dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 6px);padding:0;justify-content:center;}
 .dshpc-seg--weekday .dshpc-seg__item[aria-pressed='true']{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);box-shadow:var(--dshpc-shadow-raised);}
 
@@ -109,11 +110,13 @@ export const BUTTON_CSS = `
    把右内边距补上「图标宽 + 间距」，可用盒随之左移同量 ⇒ 文字落回视觉中心，图标贴左侧。
    图标宽按 1.2em 估（官方图标 14/16px vs 字号 12/13px），em 随字号档自动缩放。 */
 .dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}
-.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;}
+.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}
+.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;}
 /* loading：不换 DOM 结构，只在文案前插一个同色小圈（尺寸随字号，缩放不依赖常量） */
-.dshpc-btn__spinner{display:inline-block;flex:none;width:1em;height:1em;box-sizing:border-box;
-  border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;
+.dshpc-btn__spinner{display:block;flex:none;width:12px;height:12px;box-sizing:border-box;
+  border:1.5px solid currentColor;border-right-color:transparent;border-radius:999px;
   animation:dshpc-btn-spin .7s linear infinite;}
+/* shortcut: 12px 是固定值，不随按钮字号缩放；要更大就改这一处。 */
 @keyframes dshpc-btn-spin{to{transform:rotate(360deg)}}
 
 /* 交互态：颜色变化写在变量上 ⇒ 所有档位一次生效，且变化幅度由 token 决定（够明显） */

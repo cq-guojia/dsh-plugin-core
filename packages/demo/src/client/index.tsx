@@ -51,6 +51,15 @@ function useLocaleTick(): void {
 function DemoPage(): ReturnType<typeof h> {
   useLocaleTick()
   const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
+  // 诊断行：Segmented 轨道底色 / 间距实测（真机上「改了没生效」的最终裁判，不再隔空猜）
+  const [diag, setDiag] = useState('seg: …')
+  useEffect(() => {
+    const el = document.querySelector('.dshpc-seg')
+    if (el === null) { setDiag('seg: no element'); return }
+    const cs = getComputedStyle(el)
+    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap}${el.classList.contains('dshpc-seg--weekday') ? ' weekday' : ''}`)
+  }, [active])
+  const dark = typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme')
   // ⚠️ 高度必须两端一起给：
   //   · alignItems 必须是 stretch（默认）；写 flex-start 会让两侧高度退化成内容高 ⇒ main 的
   //     overflowY:auto 失去可滚高度，超出部分被宿主容器裁掉、连滚动条都不出现（2026-10-19 真踩过：
@@ -84,7 +93,7 @@ function DemoPage(): ReturnType<typeof h> {
           t(s.titleKey),
         ),
       ),
-      // 底部常驻：bundle 的真实版本 + 当前暗色判据实测值（查「改了没生效」类问题的锚点）。
+      // 底部常驻：bundle 的真实版本 + 当前暗色判据 + Segmented 实测（查「改了没生效」类问题的锚点）。
       h(
         'div',
         {
@@ -95,8 +104,8 @@ function DemoPage(): ReturnType<typeof h> {
         },
         h('div', null, `core v${__CORE_VERSION__}`),
         h('div', null, `demo v${__DEMO_VERSION__}`),
-        h('div', { title: 'body[data-ds-dark-theme]' },
-          `dark: ${typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme') ? 'yes' : 'no'}`),
+        h('div', { title: 'body[data-ds-dark-theme]' }, `dark: ${dark ? 'yes' : 'no'}`),
+        h('div', { title: '实测页面上第一个 .dshpc-seg 的轨道底色与间距' }, diag),
       ),
     ),
     h(
