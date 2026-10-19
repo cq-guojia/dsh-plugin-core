@@ -13,6 +13,8 @@ import { CARD_CSS } from '../dist/ui/card-css.js'
 import { CHIP_CSS } from '../dist/ui/chip-css.js'
 import { EXPLORER_CSS } from '../dist/explorer/explorer-css.js'
 import { SESSION_CSS } from '../dist/session/session-css.js'
+import { CONTROLS_CSS_WITH_GUARD } from '../dist/ui/css.js'
+import { CSS_GUARD } from '../dist/ui/controls-css.js'
 
 /** css.ts 里参与注入的全部常量（新增 CSS 常量时同步加进来）。 */
 const CONSTANTS = {
@@ -67,6 +69,19 @@ test('chip 只有标签一套皮肤，图标按钮走 iconbtn', () => {
     .map(([name]) => name)
   assert.deepEqual(holders, ['CHIP_CSS'], 'dshpc-chip 只允许出现在 chip-css.ts')
   assert.ok(!CHIP_CSS.includes('dshpc-chip--label'), 'dshpc-chip--label 是被删掉的图标语义，勿回潮')
+})
+
+// 宿主会吃掉「token 块之后的第一条 CSS 规则」（整条不进 CSSOM）。
+// 见 docs/design/external/dsh-host.md §5 与 controls-css.ts 的 CSS_GUARD 注释。
+// 这条自检盯的是：注入文本必须以无害守卫开头，且守卫本身只有 display:none 一条声明。
+// 谁把守卫挪走/删掉，真规则会静默失效——这种坑 2026-10-19 查了整整一天。
+test('控件样式第一条必须是牺牲规则 .dshpc-css-guard', () => {
+  assert.ok(
+    CONTROLS_CSS_WITH_GUARD.startsWith(CSS_GUARD),
+    `注入文本没有以守卫开头：${CONTROLS_CSS_WITH_GUARD.slice(0, 80)}`,
+  )
+  assert.deepEqual(topSelectors(CSS_GUARD), ['.dshpc-css-guard'], '守卫只能有这一条规则')
+  assert.equal(CSS_GUARD, '.dshpc-css-guard{display:none}', '守卫只允许 display:none，不许掺别的声明')
 })
 
 test('Modal 关闭按钮用专属类名，不借 Picker 触发器皮肤', async () => {

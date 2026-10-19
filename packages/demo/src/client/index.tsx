@@ -17,7 +17,6 @@ import { ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dis
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
-import { collectSegProbes } from '../probes.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
 const PANEL_ID = 'dsh-plugin-core-demo'
@@ -54,69 +53,7 @@ function useLocaleTick(): void {
 function DemoPage(): ReturnType<typeof h> {
   useLocaleTick()
   const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
-  // 诊断行：Segmented 实测 + CSSOM 规则原文（真机上「改了没生效」的最终裁判）。
-  // ⚠️ cssRules 在宿主里可能被跨域策略挡（SecurityError）⇒ no-rule 不等于规则真不在，
-  //    所以同时打 display / padding：display 不是 inline-flex ⇒ 规则真没生效。
-  const [diag, setDiag] = useState('seg: …')
-  const [diag2, setDiag2] = useState('btn: …')
-  // 【临时探针 · 定位完必删，清单见 ../probes.ts 文件头】P1-P9。
-  const [probes, setProbes] = useState<string[]>([])
-  useEffect(() => {
-    const el = document.querySelector('.dshpc-seg')
-    if (el === null) { setDiag('seg: no element'); return }
-    const cs = getComputedStyle(el)
-    let rule = 'no-rule'
-    let sheets = 0
-    for (const sh of Array.from(document.styleSheets)) {
-      let rules: CSSRuleList
-      try { rules = sh.cssRules; sheets++ } catch { continue }
-      for (const r of Array.from(rules)) {
-        if (r instanceof CSSStyleRule && r.selectorText === '.dshpc-seg') {
-          rule = r.style.cssText.slice(0, 90)
-        }
-      }
-    }
-    const probe = (sel: string): string => {
-      const el2 = document.querySelector(sel)
-      if (el2 === null) return 'none'
-      let r = 'no-rule'
-      for (const sh of Array.from(document.styleSheets)) {
-        let rules: CSSRuleList
-        try { rules = sh.cssRules } catch { continue }
-        for (const rr of Array.from(rules)) {
-          if (rr instanceof CSSStyleRule && rr.selectorText === sel) r = 'live'
-        }
-      }
-      return `${getComputedStyle(el2).display}/${r}`
-    }
-    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap} display ${cs.display}\nrule(${sheets} sheets): ${rule}\nwk ${probe('.dshpc-seg--weekday')} df ${probe('.dshpc-seg--default')} probe ${probe('.dshpc-segprobe')}`)
-  }, [active])
-  // 附带查 .dshpc-btn（与 seg 同一条注入文本，验证「单行活 / 多行死」的模式）
-  useEffect(() => {
-    const el = document.querySelector('.dshpc-btn')
-    if (el === null) { setDiag2('btn: no element'); return }
-    const cs = getComputedStyle(el)
-    let rule = 'no-rule'
-    for (const sh of Array.from(document.styleSheets)) {
-      let rules: CSSRuleList
-      try { rules = sh.cssRules } catch { continue }
-      for (const r of Array.from(rules)) {
-        if (r instanceof CSSStyleRule && r.selectorText === '.dshpc-btn') rule = r.style.cssText.slice(0, 60)
-      }
-    }
-    setDiag2(`btn ${cs.display} align ${cs.alignItems} lh ${cs.lineHeight}\nrule: ${rule}`)
-  }, [active])
   const dark = typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme')
-  // 【临时探针 · 定位完必删】等 React 挂载完再采（P6 依赖真实 DOM），同时打一份到 console
-  // 方便整段复制；侧栏里也能直接看。
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`)
-      setProbes(lines)
-      console.log(`[probe] build ${__BUILD_STAMP__}\n${lines.join('\n')}`)
-    }, 150)
-    return () => { clearTimeout(timer) }
-  }, [active])
   // 左侧最顶部常驻：构建唯一编码（每次 build 必变）。版本号不 bump 时，这是唯一能确认
   // 「宿主里跑的是最新产物」的锚点；完整信息放 title 里，不占侧栏高度。
   const buildBadge = h(
@@ -176,10 +113,6 @@ function DemoPage(): ReturnType<typeof h> {
         h('div', null, `core v${__CORE_VERSION__}`),
         h('div', null, `demo v${__DEMO_VERSION__}`),
         h('div', { title: 'body[data-ds-dark-theme]' }, `dark: ${dark ? 'yes' : 'no'}`),
-        h('div', { title: '实测页面上第一个 .dshpc-seg 的轨道底色与间距' }, diag),
-        h('div', { title: '实测页面上第一个 .dshpc-btn' }, diag2),
-        // 【临时探针 · 定位完必删】P1-P9，见 ../probes.ts
-        ...probes.map((line) => h('div', { key: line, style: { marginTop: '4px', whiteSpace: 'pre-wrap' } }, line)),
       ),
     ),
     h(
