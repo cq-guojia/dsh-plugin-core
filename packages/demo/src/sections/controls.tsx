@@ -1,0 +1,747 @@
+import { createElement as h, useState, type ComponentType } from 'react'
+import type { ButtonSize, ButtonVariant } from '../../../../dist/ui/index.js'
+import {
+  Button,
+  Card,
+  Checkbox,
+  Chip,
+  EmptyState,
+  ErrorBoundary,
+  FieldHint,
+  IconButton,
+  Input,
+  LiveText,
+  MarqueeText,
+  Modal,
+  ModelPicker,
+  NumberInput,
+  Picker,
+  SectionHead,
+  Segmented,
+  StripCard,
+  Textarea,
+  WorkspacePicker,
+  FilePicker,
+  showToast,
+} from '../../../../dist/ui/index.js'
+import {
+  HoverCard,
+  IconCheckOutlineRegular,
+  IconChevronDownOutlineRegular,
+  IconClockOutlineRegular,
+  IconCloseOutlineRegular,
+  IconCopyOutlineRegular,
+  IconEditOutlineRegular,
+  IconPaperPlaneOutlineRegular,
+  IconPlayOutlineRegular,
+  IconPlusOutlineRegular,
+  IconRefreshOutlineRegular,
+  IconSearchOutlineRegular,
+  IconSparkleRegular,
+  Switch,
+  Tooltip,
+} from '@deepseek-ai/dsh-client-ui-primitives'
+import { Demo, Placeholder } from './index.js'
+import { t, type DemoMessageKey } from '../i18n.js'
+
+/**
+ * 按钮图标集：**先给每颗 icon 起个名字，再按名字取用**。
+ * 演示里不写死某个图标组件，而是遍历这份数组 —— 换成官方 / 业务自有图标只改这一处。
+ */
+const BUTTON_ICONS: readonly { name: string; Icon: ComponentType<{ size?: number }> }[] = [
+  { name: 'plus', Icon: IconPlusOutlineRegular },
+  { name: 'check', Icon: IconCheckOutlineRegular },
+  { name: 'close', Icon: IconCloseOutlineRegular },
+  { name: 'refresh', Icon: IconRefreshOutlineRegular },
+  { name: 'copy', Icon: IconCopyOutlineRegular },
+  { name: 'search', Icon: IconSearchOutlineRegular },
+  { name: 'edit', Icon: IconEditOutlineRegular },
+  { name: 'play', Icon: IconPlayOutlineRegular },
+  { name: 'send', Icon: IconPaperPlaneOutlineRegular },
+  { name: 'clock', Icon: IconClockOutlineRegular },
+  { name: 'sparkle', Icon: IconSparkleRegular },
+  { name: 'chevron', Icon: IconChevronDownOutlineRegular },
+]
+
+/** 按名字取一颗图标（找不到返回 null，不抛）。 */
+function iconOf(name: string, size = 14): ReturnType<typeof h> | null {
+  const found = BUTTON_ICONS.find((item) => item.name === name)
+  return found === undefined ? null : h(found.Icon, { size })
+}
+
+/** 自绘 SVG：演示 icon 参数不认「名字」——这里直接传一个普通的 React 元素进去。 */
+function StarSvg(): ReturnType<typeof h> {
+  return h('svg', { width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', 'aria-hidden': true },
+    h('path', {
+      d: 'M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z',
+      stroke: 'currentColor', strokeWidth: 1.2, strokeLinejoin: 'round',
+    }))
+}
+
+/** 图标尺寸随按钮档位走（24 高配 12 / 28 配 14 / 32 配 16）。 */
+const ICON_SIZE: Record<ButtonSize, number> = { sm: 12, md: 14, lg: 16 }
+
+/** 10 档外观各配一颗语义图标，一眼看出「图标在前、文字在后」。 */
+const VARIANTS: readonly { value: ButtonVariant; icon: string }[] = [
+  { value: 'primary', icon: 'check' },
+  { value: 'secondary', icon: 'copy' },
+  { value: 'outline', icon: 'edit' },
+  { value: 'ghost', icon: 'refresh' },
+  { value: 'danger', icon: 'close' },
+  { value: 'success', icon: 'play' },
+  { value: 'warning', icon: 'clock' },
+  { value: 'info', icon: 'send' },
+  { value: 'danger-outline', icon: 'close' },
+  { value: 'link', icon: 'search' },
+]
+
+/** 自定义颜色演示：实心档作底色、线框档作主色。 */
+const CUSTOM_COLORS: readonly string[] = ['#7c3aed', '#0ea5e9', '#f97316', '#16a34a']
+
+/** Tooltip 锚点必须是真实 DOM 元素（官方往子元素挂 ref；函数组件挂不上 ⇒ 悬停无气泡，兄弟仓踩过）。 */
+function tipAnchor(text: string, side: 'top' | 'bottom' | 'right', align?: 'center' | 'end'): ReturnType<typeof h> {
+  const props: Record<string, unknown> = { label: text, side }
+  if (align !== undefined) props.align = align
+  return h(Tooltip, props as never, h('button', {
+    type: 'button',
+    style: {
+      padding: '4px 10px', border: '1px solid var(--dshpc-border)', borderRadius: '6px',
+      background: 'var(--dshpc-surface-1)', color: 'var(--dshpc-fg)', fontSize: '12px', cursor: 'pointer',
+    },
+  }, text))
+}
+
+/** 一行横排（自动换行，间距 8）。 */
+function Row(props: { children?: ReturnType<typeof h>[] | ReturnType<typeof h> }): ReturnType<typeof h> {
+  return h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' } }, props.children)
+}
+
+/** 一个标签 + 内容行（标签宽 64，便于纵向对齐）。 */
+function Labeled(props: { label: string; children?: ReturnType<typeof h>[] | ReturnType<typeof h> }): ReturnType<typeof h> {
+  return h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } },
+    h('span', { style: { width: 'auto', minWidth: '64px', flex: 'none', whiteSpace: 'normal', color: 'var(--dshpc-fg-3)', fontSize: '12px' } }, props.label),
+    props.children)
+}
+
+// ── 按钮 ────────────────────────────────────────────────────────────────
+
+export function ButtonPage(): ReturnType<typeof h> {
+  return h(
+    'div',
+    null,
+    // 文案与语言
+    h(
+      Demo,
+      { title: t('btnTextTitle'), hint: t('btnTextHint') },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        h(Labeled, { label: 'locale' },
+          h(Button, { variant: 'primary', icon: iconOf('check', ICON_SIZE.lg) }, t('btnLabelSave')),
+          h(Button, { variant: 'outline' }, t('btnLabelCancel')),
+          h(Button, { variant: 'danger', icon: iconOf('close', ICON_SIZE.lg) }, t('btnLabelDelete'))),
+        h(Labeled, { label: 'en' },
+          h(Button, { variant: 'primary' }, 'Save'),
+          h(Button, { variant: 'outline' }, 'Cancel'),
+          h(Button, { variant: 'ghost' }, 'Learn more')),
+        h(Labeled, { label: 'zh' },
+          h(Button, { variant: 'primary' }, '保存'),
+          h(Button, { variant: 'outline' }, '取消'),
+          h(Button, { variant: 'ghost' }, '了解更多')),
+        h(Labeled, { label: 'zh + en' },
+          h(Button, { variant: 'primary', icon: iconOf('sparkle', ICON_SIZE.lg) }, t('btnLabelMixed')),
+          h(Button, { variant: 'outline' }, '复制 Copy'),
+          h(Button, { variant: 'secondary' }, '重试 Retry'))),
+    ),
+
+    // 10 档外观
+    h(
+      Demo,
+      { title: t('btnVariantTitle'), hint: t('btnVariantHint') },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
+        h(Row, null, VARIANTS.map((item) =>
+          h(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
+        h(Row, null, VARIANTS.map((item) =>
+          h(Button, { key: item.value, variant: item.value, size: 'sm', icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))),
+    ),
+
+    // 尺寸 / 图标位置 / block
+    h(
+      Demo,
+      { title: t('btnSizeTitle'), hint: t('btnSizeHint') },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        h(Labeled, { label: 'size' },
+          (['sm', 'md', 'lg'] as const).map((size) =>
+            h(Button, { key: size, size, variant: 'outline', icon: iconOf('plus', ICON_SIZE[size]) }, size))),
+        // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
+        h(Labeled, { label: 'icon' },
+          h(Button, { variant: 'primary', icon: iconOf('send', ICON_SIZE.lg) }, '官方图标'),
+          h(Button, { variant: 'outline', icon: h(StarSvg, null) }, '自绘 SVG'),
+          h(Button, { variant: 'ghost', icon: '+' }, '一个字符')),
+        h(Labeled, { label: 'iconRight' },
+          h(Button, { variant: 'outline', iconRight: iconOf('chevron', ICON_SIZE.lg) }, '更多'),
+          h(Button, { variant: 'primary' }, '下一步')),
+        // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
+        h(Labeled, { label: 'block' },
+          h('div', { style: { width: '260px' } },
+            h(Button, { variant: 'primary', block: true, icon: iconOf('check', ICON_SIZE.lg) }, '撑满父宽'),
+            h('div', { style: { height: '8px' } }),
+            h(Button, { variant: 'outline', block: true }, '无图标对照'))),
+        h(Labeled, { label: t('btnIconOnly') },
+          BUTTON_ICONS.slice(0, 6).map((item) =>
+            h(IconButton, { key: item.name, icon: h(item.Icon, { size: 16 }), label: item.name })))),
+    ),
+
+    // 状态
+    h(
+      Demo,
+      { title: t('btnStateTitle'), hint: t('btnStateHint') },
+      h(Row, null,
+        h(Button, { variant: 'primary' }, '默认'),
+        h(Button, { variant: 'primary', disabled: true }, '禁用'),
+        h(Button, { variant: 'danger', disabled: true, icon: iconOf('close', ICON_SIZE.lg) }, '禁用'),
+        h(Button, { variant: 'outline', loading: true }, '加载中'),
+        h(Button, { variant: 'primary', loading: true, icon: iconOf('refresh', ICON_SIZE.lg) }, '提交中')),
+    ),
+
+    // 自定义颜色
+    h(
+      Demo,
+      { title: t('btnColorTitle'), hint: t('btnColorHint') },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
+        h(Row, null, CUSTOM_COLORS.map((color) =>
+          h(Button, { key: color, variant: 'primary', color, icon: iconOf('sparkle', ICON_SIZE.lg) }, color))),
+        h(Row, null, CUSTOM_COLORS.map((color) =>
+          h(Button, { key: color, variant: 'outline', color }, color)))),
+    ),
+  )
+}
+
+// ── 录入 ────────────────────────────────────────────────────────────────
+
+export function InputPage(): ReturnType<typeof h> {
+  const [text, setText] = useState('')
+  const [num, setNum] = useState(3)
+  const [checked, setChecked] = useState(true)
+  const [seg, setSeg] = useState<'day' | 'week' | 'month'>('week')
+  const [filter, setFilter] = useState('all')
+  const [multi, setMulti] = useState<string[]>(['1'])
+
+  return h(
+    'div',
+    null,
+    // Input 家族
+    h(
+      Demo,
+      { title: t('demoInputFamily'), hint: t('inputHint') },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '380px' } },
+        h(
+          'div',
+          { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
+          h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '开始时间'),
+          h(Input, { value: text, onChange: setText, placeholder: '选择日期' }),
+          h(FieldHint, { text: t('fieldHintDate') }),
+        ),
+        h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
+        // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
+        //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
+        h(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: '次', style: { alignSelf: 'flex-start' } }),
+        h(Textarea, { value: text, onChange: setText, placeholder: '多行输入' }),
+      ),
+    ),
+
+    // 问号提示：证明它不属于 Input 家族，随处可挂
+    h(
+      Demo,
+      { title: t('btnHintTitle'), hint: t('btnHintHint') },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
+        h(Row, null,
+          h('b', { style: { fontSize: '13px' } }, '一个标题'),
+          h(FieldHint, { text: '挂在标题后面：说明这一块是干什么的。' })),
+        h(Row, null,
+          h(Button, { variant: 'outline' }, '一个按钮'),
+          h(FieldHint, { text: '挂在按钮后面：解释这个操作会发生什么。' })),
+        h(Row, null,
+          h('span', { style: { fontSize: '13px' } }, '一段普通文字'),
+          h(FieldHint, { text: '挂在任何文字后面都行，它只是一个 14px 的内联元素。' }))),
+    ),
+
+    // Switch / Checkbox / Segmented
+    h(
+      Demo,
+      { title: t('switchTip'), hint: t('checkboxHint') },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'flex-start' } },
+        h(
+          'div',
+          { style: { display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' } },
+          // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
+          // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
+          // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
+          h(
+            'span',
+            { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } },
+            h(Switch, { checked, onChange: setChecked, label: '启用' }),
+            h('span', {
+              style: { fontSize: '13px', cursor: 'pointer', userSelect: 'none' },
+              onClick: () => { setChecked(!checked) },
+            }, '启用'),
+          ),
+          h(Checkbox, { checked, onChange: setChecked, label: '多选' }),
+          h(Segmented<'day' | 'week' | 'month'>, {
+            variant: 'inset',
+            items: [
+              { value: 'day', label: '日' },
+              { value: 'week', label: '周' },
+              { value: 'month', label: '月' },
+            ],
+            value: seg,
+            onChange: setSeg,
+          }),
+          h(Segmented<'day' | 'week' | 'month'>, {
+            variant: 'inset',
+            bordered: true,
+            items: [
+              { value: 'day', label: '日' },
+              { value: 'week', label: '周' },
+              { value: 'month', label: '月' },
+            ],
+            value: seg,
+            onChange: setSeg,
+          }),
+          h(Segmented<'day' | 'week' | 'month'>, {
+            variant: 'inset',
+            size: 'sm',
+            items: [
+              { value: 'day', label: '日' },
+              { value: 'week', label: '周' },
+              { value: 'month', label: '月' },
+            ],
+            value: seg,
+            onChange: setSeg,
+          }),
+          h(Segmented<'day' | 'week' | 'month'>, {
+            variant: 'inset',
+            size: 'sm',
+            bordered: true,
+            items: [
+              { value: 'day', label: '日' },
+              { value: 'week', label: '周' },
+              { value: 'month', label: '月' },
+            ],
+            value: seg,
+            onChange: setSeg,
+          }),
+        ),
+        // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
+        h(Segmented, {
+          variant: 'inset',
+          items: [
+            { value: 'all', label: t('segAll'), count: 11 },
+            { value: 'doing', label: t('segDoing'), count: 5 },
+            { value: 'claimed', label: t('segClaimed'), count: 11 },
+            { value: 'blocked', label: t('segBlocked') },
+            { value: 'stalled', label: t('segStalled') },
+          ],
+          value: filter,
+          onChange: setFilter,
+        }),
+        h(Segmented, {
+          variant: 'inset',
+          bordered: true,
+          items: [
+            { value: 'all', label: t('segAll'), count: 11 },
+            { value: 'doing', label: t('segDoing'), count: 5 },
+            { value: 'claimed', label: t('segClaimed'), count: 11 },
+            { value: 'blocked', label: t('segBlocked') },
+            { value: 'stalled', label: t('segStalled') },
+          ],
+          value: filter,
+          onChange: setFilter,
+        }),
+        // 星期多选方块（蓝底选中、近似方形）
+        h(Segmented, {
+          multiple: true,
+          className: 'dshpc-seg--weekday',
+          label: '星期',
+          items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
+            value: String(n),
+            label: t(`weekday${n}` as DemoMessageKey),
+          })),
+          value: multi,
+          onChange: setMulti,
+        }),
+        h(Segmented, {
+          multiple: true,
+          className: 'dshpc-seg--weekday',
+          bordered: true,
+          label: '星期（带外框）',
+          items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
+            value: String(n),
+            label: t(`weekday${n}` as DemoMessageKey),
+          })),
+          value: multi,
+          onChange: setMulti,
+        }),
+      ),
+    ),
+    h(Placeholder, { descKey: 'inputMissingDesc' }),
+  )
+}
+
+// ── 选择器 ──────────────────────────────────────────────────────────────
+
+const MODELS = [
+  {
+    value: 'openai',
+    label: 'OpenAI',
+    options: [
+      { value: 'openai/gpt-4', label: 'GPT-4' },
+      { value: 'openai/gpt-3', label: 'GPT-3.5' },
+    ],
+  },
+  {
+    value: 'anthropic',
+    label: 'Anthropic',
+    options: [{ value: 'anthropic/claude', label: 'Claude' }],
+  },
+]
+
+export function PickerPage(): ReturnType<typeof h> {
+  const [single, setSingle] = useState<string | undefined>(undefined)
+  const [multi, setMulti] = useState<string[]>([])
+  const [model, setModel] = useState('')
+  const [ws, setWs] = useState<string | undefined>(undefined)
+  const [file, setFile] = useState<string | undefined>(undefined)
+
+  return h(
+    'div',
+    null,
+    h(
+      Demo,
+      { title: 'Picker', hint: t('pickerHint') },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start' } },
+        h(Picker, {
+          options: [
+            { value: 'a', label: '选项 A' },
+            { value: 'b', label: '选项 B' },
+            { value: 'c', label: '选项 C' },
+          ],
+          value: single,
+          onChange: (v) => setSingle(v as string),
+          searchable: true,
+          clearable: true,
+          placeholder: '单选（可搜索/可清除）',
+        }),
+        h(Picker, {
+          groups: MODELS,
+          value: multi,
+          mode: 'multiple',
+          max: 2,
+          onChange: (v) => setMulti(v as string[]),
+          searchable: true,
+          placeholder: '多选（上限 2）',
+        }),
+        h(Picker, {
+          options: [{ value: 'x', label: '降级示例' }],
+          degraded: true,
+          disabled: true,
+          placeholder: '降级 + 禁用',
+        }),
+      ),
+    ),
+    h(
+      Demo,
+      { title: 'ModelPicker', hint: t('modelPickerHint') },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
+        h(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: 'flat' }),
+        h(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: 'cascade' }),
+      ),
+    ),
+    h(
+      Demo,
+      { title: 'WorkspacePicker / FilePicker', hint: t('workspacePickerHint') },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
+        h(WorkspacePicker, {
+          workspaces: ['nas', 'code', 'docs'],
+          value: ws,
+          onChange: (v) => setWs(v as string),
+          clearable: true,
+        }),
+        h(FilePicker, {
+          files: ['README.md', 'package.json', 'src/index.ts'],
+          value: file,
+          onChange: (v) => setFile(v as string),
+          clearable: true,
+        }),
+      ),
+    ),
+    h(Placeholder, { descKey: 'pickerLogicDesc' }),
+  )
+}
+
+// ── 提示 ────────────────────────────────────────────────────────────────
+
+export function TooltipPage(): ReturnType<typeof h> {
+  return h(
+    Demo,
+    { title: t('tooltipTitle'), hint: t('tooltipHint') },
+    h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+      h(Labeled, { label: t('tooltipAnchorButton') },
+        tipAnchor('top · center', 'top', 'center'),
+        tipAnchor('top · end', 'top', 'end'),
+        tipAnchor('bottom · center', 'bottom', 'center'),
+        tipAnchor('bottom · end', 'bottom', 'end'),
+        tipAnchor('right', 'right')),
+      h(Labeled, { label: t('tooltipAnchorText') },
+        h(Tooltip, { label: t('tooltipHint'), side: 'top' },
+          h('span', {
+            style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
+          }, t('tooltipAnchorText'))),
+        h(Tooltip, { label: t('tooltipLongText'), side: 'bottom', maxWidth: 240 },
+          h('span', {
+            style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
+          }, t('tooltipLong')))),
+      // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
+      h(Labeled, { label: t('tooltipMultiline') },
+        h(Tooltip, { label: `${t('tooltipName')}\n${t('tooltipLongText')}`, side: 'top', maxWidth: 260 },
+          h('span', {
+            style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
+          }, t('tooltipName')))),
+      // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
+      h(Labeled, { label: t('tooltipRich') },
+        h(HoverCard, {
+          variant: 'compact',
+          openDelayMs: 200,
+          anchor: h('span', {
+            style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
+          }, t('tooltipName')),
+          // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
+          // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
+          // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
+          // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
+          content: h('div', {
+            style: {
+              padding: '4px 2px', minWidth: '220px',
+              color: 'var(--dsw-static-neutral-bluish-00,#fff)',
+            },
+          },
+            h('div', { style: { fontWeight: 600, fontSize: '14px', marginBottom: '4px' } }, t('tooltipName')),
+            h('div', { style: { fontSize: '12px', lineHeight: 1.6, whiteSpace: 'pre-line', opacity: .78 } }, t('tooltipLongText'))),
+        }))),
+  )
+}
+
+// ── 卡片与容器 ──────────────────────────────────────────────────────────
+
+export function CardPage(): ReturnType<typeof h> {
+  const [open, setOpen] = useState(false)
+
+  return h(
+    'div',
+    null,
+    h(
+      Demo,
+      { title: t('demoCardTitle'), hint: t('cardHint') },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '640px' } },
+        // 真实形态示例（任务卡同款排版）
+        h(Card, { accent: 'business' },
+          h('div', { style: { display: 'flex', alignItems: 'baseline', gap: '8px' } },
+            h('div', { style: { fontWeight: 600, flex: '1 1 auto', minWidth: 0, fontSize: 'var(--dshpc-font-md)' } },
+              '将 OpenSSH 上所有 NPM 安装迁移到 PNPM'),
+            h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', flex: 'none' } }, '2026-10-18 创建'),
+          ),
+          h('div', { style: { display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', flexWrap: 'wrap' } },
+            h(Chip, null, 'NAS-Docker'),
+            h(Chip, null, '#npm'),
+            h(Chip, null, '#pnpm'),
+            h(Chip, null, '#OpenSSH'),
+            h(Chip, null, '#迁移'),
+          ),
+        ),
+        // accent 速览：单行紧凑卡，只看色条档位
+        h(
+          'div',
+          { style: { display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' } },
+          (['business', 'success', 'warning', 'danger', 'neutral'] as const).map((a) =>
+            h(Card, { key: a, accent: a, style: { padding: '8px 12px' } },
+              h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, `accent="${a}"`),
+            ),
+          ),
+        ),
+      ),
+    ),
+    h(
+      Demo,
+      { title: t('demoStripTitle'), hint: t('stripHint') },
+      h(
+        'div',
+        { style: { maxWidth: '640px', background: 'var(--dshpc-surface-sunken)', borderRadius: '8px', overflow: 'hidden' } },
+        h(StripCard, {
+          accent: 'business',
+          action: h('span', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', flex: 'none' } }, '2026-10-18 开始 · 今天'),
+        },
+          h('div', { style: { fontWeight: 600, fontSize: 'var(--dshpc-font-md)' } }, 'DAY:1 - Docker 镜像版本检查器'),
+          h('div', { style: { display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px', flexWrap: 'wrap' } },
+            h(Chip, null, 'NAS-Docker'),
+            h('span', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' } },
+              '计划 02:00 · 实际 02:00 · 时长 04:02 · 2.4M'),
+          ),
+        ),
+        h(StripCard, { accent: 'success' },
+          h('div', { style: { fontWeight: 600, fontSize: 'var(--dshpc-font-md)' } }, '执行成功'),
+          h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', marginTop: '4px' } }, '耗时 12s · 3 个文件变更'),
+        ),
+        h(StripCard, {
+          accent: 'warning',
+          expanded: open,
+          onToggle: () => setOpen(!open),
+          action: h(Button, { size: 'sm', variant: 'ghost' }, '查看会话'),
+          panel: h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)' } }, '展开后的详情面板'),
+        },
+          h('div', { style: { fontWeight: 600, fontSize: 'var(--dshpc-font-md)' } }, '有警告（可折叠，点右侧箭头）'),
+          h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', marginTop: '4px' } }, '耗时 8s · 1 个警告'),
+        ),
+      ),
+    ),
+    h(
+      Demo,
+      { title: t('sectionHeadTitle'), hint: '分区标题：icon + 标题 + 右侧操作区三段式' },
+      h(SectionHead, { icon: '▸', title: '分区标题', right: h(Button, { size: 'sm' }, '操作') }),
+    ),
+  )
+}
+
+// ── 标签 · 文本 · 状态 ──────────────────────────────────────────────────
+
+export function ChipPage(): ReturnType<typeof h> {
+  return h(
+    'div',
+    null,
+    h(
+      Demo,
+      { title: 'Chip', hint: t('chipHint') },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        // 语义色实心档：状态标签（逾期 / 停滞这类），文案随 locale 切中英
+        h(
+          'div',
+          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
+          h(Chip, { tone: 'warning' }, t('chipOverdue')),
+          h(Chip, { tone: 'danger' }, t('chipStalled')),
+          h(Chip, { tone: 'success' }, t('chipDone')),
+          h(Chip, { tone: 'business' }, t('chipDoing')),
+        ),
+        // 尺寸对比：同一组文案 sm / md 各一行，好挑
+        h(
+          'div',
+          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
+          h(Chip, { size: 'md', tone: 'warning' }, t('chipOverdue')),
+          h(Chip, { size: 'md', tone: 'danger' }, t('chipStalled')),
+          h(Chip, { size: 'md' }, 'Tag MD'),
+          h(Chip, null, 'Tag SM'),
+        ),
+        // 中性 # 标签（语言无关）+ 长文字回归样
+        h(
+          'div',
+          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
+          h(Chip, null, '#npm'),
+          h(Chip, null, '#构建'),
+          h(Chip, { onClick: () => showToast('点了 chip') }, '#可点'),
+          h(Chip, null, '一整段比较长的标签文字，宽度应该跟着文字走'),
+        ),
+      ),
+    ),
+    h(
+      Demo,
+      { title: t('marqueeTitle'), hint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号' },
+      h('div', { style: { maxWidth: '200px' } },
+        h(MarqueeText, { text: '这是一段很长的文字，放不下时 hover 会滚动展示全名' })),
+    ),
+    h(
+      Demo,
+      { title: t('liveTitle'), hint: '订阅内部节拍器，走时 Ui 由调用方渲染' },
+      h(LiveText, { render: (nowMs: number) => new Date(nowMs).toLocaleTimeString() }),
+    ),
+    h(
+      Demo,
+      { title: t('emptyStateTitle'), hint: '业务空态：无数据时的占位，可挂一个操作按钮' },
+      h(EmptyState, { text: '暂无数据' }),
+    ),
+  )
+}
+
+// ── 反馈 ────────────────────────────────────────────────────────────────
+
+function Boom(): ReturnType<typeof h> {
+  throw new Error('演示：子组件抛错被边界接住')
+}
+
+export function FeedbackPage(): ReturnType<typeof h> {
+  const [open, setOpen] = useState(false)
+  const [boom, setBoom] = useState(false)
+
+  return h(
+    'div',
+    null,
+    h(
+      Demo,
+      { title: 'Modal', hint: t('feedbackModalHint') },
+      h(
+        'div',
+        null,
+        h(Button, { onClick: () => setOpen(true) }, '打开弹窗'),
+        open
+          ? h(Modal, {
+              title: '任务详情',
+              onClose: () => setOpen(false),
+              footer: h(Button, { variant: 'primary', onClick: () => setOpen(false) }, '知道了'),
+            }, h('div', null, '弹窗主体内容——会话预览这类功能就用它来承载。'))
+          : null,
+      ),
+    ),
+    h(
+      Demo,
+      { title: 'toast', hint: t('feedbackToastHint') },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px' } },
+        h(Button, { onClick: () => showToast('已保存') }, '普通'),
+        h(Button, { onClick: () => showToast('保存成功', { variant: 'success' }) }, '成功'),
+        h(Button, { onClick: () => showToast('保存失败', { variant: 'error' }) }, '失败'),
+      ),
+    ),
+    h(
+      Demo,
+      { title: 'ErrorBoundary / Loading' },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        h(
+          'div',
+          { style: { border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px', padding: '10px' } },
+          boom
+            ? h(ErrorBoundary, null, h(Boom, null))
+            : h(Button, { variant: 'danger', onClick: () => setBoom(true) }, '点我抛错（看边界兜底）'),
+        ),
+        h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px' } }, t('loadingNote')),
+      ),
+    ),
+  )
+}
+
+// ── 布局与滚动 ──────────────────────────────────────────────────────────
+
+export function LayoutPage(): ReturnType<typeof h> {
+  return h(Placeholder, { descKey: 'layoutDesc' })
+}

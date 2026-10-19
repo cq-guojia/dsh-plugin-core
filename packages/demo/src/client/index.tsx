@@ -15,7 +15,7 @@ import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 import { createStyleKit } from '../../../../dist/design/index.js'
 import { ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
-import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
+import { ALL_SECTIONS, SECTION_GROUPS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
@@ -49,24 +49,50 @@ function useLocaleTick(): void {
   }, [])
 }
 
-/** 整页：左侧目录 + 右侧当前小节（套用 demo 的展示内容）。 */
+/** 整页：左侧两级目录 + 右侧当前页（套用 demo 的展示内容）。 */
 function DemoPage(): ReturnType<typeof h> {
   useLocaleTick()
   const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
-  const dark = typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme')
-  // 左侧最顶部常驻：构建唯一编码（每次 build 必变）。版本号不 bump 时，这是唯一能确认
-  // 「宿主里跑的是最新产物」的锚点；完整信息放 title 里，不占侧栏高度。
-  const buildBadge = h(
-    'div',
-    {
-      title: `core v${__CORE_VERSION__} · demo v${__DEMO_VERSION__} · build ${__BUILD_STAMP__}\n每次 build 都会生成新的编码`,
-      style: {
-        fontFamily: 'var(--dshpc-font-mono)', fontSize: '11px', lineHeight: '16px',
-        color: 'var(--dshpc-business)', padding: '0 2px 8px', wordBreak: 'break-all',
-      },
-    },
-    `build ${__BUILD_STAMP__}`,
-  )
+
+  // 侧栏：第一层是能力域的纯标题（不可点），第二层是可点的页。
+  // 版本 / build 编码原先吊在这里，按两级 IA 它们属于「参考 · 版本与构建」一页，不再占导航。
+  const nav: ReturnType<typeof h>[] = []
+  SECTION_GROUPS.forEach((group, gi) => {
+    nav.push(
+      h(
+        'div',
+        {
+          key: `group-${group.id}`,
+          style: {
+            fontSize: '11px', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase',
+            color: 'var(--dshpc-fg-4)',
+            padding: gi === 0 ? '0 10px 6px' : '16px 10px 6px',
+          },
+        },
+        t(group.titleKey),
+      ),
+    )
+    for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
+      nav.push(
+        h(
+          'button',
+          {
+            key: section.id,
+            type: 'button',
+            onClick: () => { setActive(section.id) },
+            style: {
+              display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
+              background: active === section.id ? 'var(--dshpc-open-bg)' : 'transparent',
+              color: active === section.id ? 'var(--dshpc-business)' : 'var(--dshpc-fg)',
+              padding: '7px 10px', borderRadius: '6px', fontSize: '13px', marginBottom: '2px',
+            },
+          },
+          t(section.titleKey),
+        ),
+      )
+    }
+  })
+
   // ⚠️ 高度必须两端一起给：
   //   · alignItems 必须是 stretch（默认）；写 flex-start 会让两侧高度退化成内容高 ⇒ main 的
   //     overflowY:auto 失去可滚高度，超出部分被宿主容器裁掉、连滚动条都不出现（2026-10-19 真踩过：
@@ -83,42 +109,12 @@ function DemoPage(): ReturnType<typeof h> {
           borderRight: '1px solid var(--dshpc-border-faint)', fontFamily: 'var(--dshpc-font-md)',
         },
       },
-      buildBadge,
-      ALL_SECTIONS.map((s) =>
-        h(
-          'button',
-          {
-            key: s.id,
-            type: 'button',
-            onClick: () => { setActive(s.id) },
-            style: {
-              display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
-              background: active === s.id ? 'var(--dshpc-open-bg)' : 'transparent',
-              color: active === s.id ? 'var(--dshpc-business)' : 'var(--dshpc-fg)',
-              padding: '7px 10px', borderRadius: '6px', fontSize: '13px', marginBottom: '2px',
-            },
-          },
-          t(s.titleKey),
-        ),
-      ),
-      // 底部常驻：bundle 的真实版本 + 当前暗色判据 + Segmented 实测（查「改了没生效」类问题的锚点）。
-      h(
-        'div',
-        {
-          style: {
-            marginTop: '18px', paddingTop: '10px', borderTop: '1px solid var(--dshpc-border-faint)',
-            color: 'var(--dshpc-fg-3)', fontSize: '11px', fontFamily: 'var(--dshpc-font-mono)',
-          },
-        },
-        h('div', null, `core v${__CORE_VERSION__}`),
-        h('div', null, `demo v${__DEMO_VERSION__}`),
-        h('div', { title: 'body[data-ds-dark-theme]' }, `dark: ${dark ? 'yes' : 'no'}`),
-      ),
+      nav,
     ),
     h(
       'main',
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: '100%', boxSizing: 'border-box', overflowY: 'auto', padding: '12px 22px 60px' } },
-      h(Sections, { active, onNavigate: setActive }),
+      h(Sections, { active }),
     ),
   )
 }

@@ -1,28 +1,110 @@
 import { createElement as h, type ReactNode } from 'react'
-import { DesignSection } from './design.js'
-import { ButtonsSection } from './buttons.js'
-import { PickersSection } from './pickers.js'
-import { FeedbackSection } from './feedback.js'
-import { DisplaySection } from './display.js'
-import { UtilsSection } from './utils.js'
-import { ExplorerSection } from './explorer.js'
-import { SessionSection } from './session.js'
-import { t, type DemoMessageKey } from '../i18n.js'
+import type { DemoMessageKey } from '../i18n.js'
+import { t } from '../i18n.js'
+import { InstallPage, OverviewPage, QuickstartPage } from './start.js'
+import { DarkPage, InjectPage, NamingPage, TokensPage } from './foundation.js'
+import {
+  ButtonPage,
+  CardPage,
+  ChipPage,
+  FeedbackPage,
+  InputPage,
+  LayoutPage,
+  PickerPage,
+  TooltipPage,
+} from './controls.js'
+import { ExplorerPage, SessionPage } from './blocks.js'
+import { DatePage, HttpPage, I18nPage, NumberPage, TextPage } from './utils.js'
+import { A11yPage, BuildPage, RoadmapPage } from './reference.js'
+
+/**
+ * 两级目录：第一层（group）是能力域的纯标题，不可点；第二层（id）是一个可看页。
+ * 归类判据写在 straight 下面每个 group 的上头，加页时照它填，不必再讨论。
+ */
+export type SectionGroup = 'start' | 'foundation' | 'components' | 'blocks' | 'utils' | 'reference'
 
 export type SectionId =
-  | 'design'
-  | 'buttons'
-  | 'pickers'
+  | 'overview'
+  | 'install'
+  | 'quickstart'
+  | 'tokens'
+  | 'dark'
+  | 'inject'
+  | 'naming'
+  | 'button'
+  | 'input'
+  | 'picker'
+  | 'tooltip'
+  | 'card'
+  | 'chip'
   | 'feedback'
-  | 'display'
-  | 'utils'
+  | 'layout'
   | 'explorer'
   | 'session'
+  | 'date'
+  | 'text'
+  | 'number'
+  | 'http'
+  | 'i18n'
+  | 'a11y'
+  | 'roadmap'
+  | 'build'
 
-export interface SectionsProps {
-  active: SectionId
-  onNavigate: (id: SectionId) => void
+export interface SectionDef {
+  id: SectionId
+  group: SectionGroup
+  titleKey: DemoMessageKey
+  render: () => ReturnType<typeof h>
 }
+
+/** 第一层：顺序即侧栏顺序。 */
+export const SECTION_GROUPS: { id: SectionGroup; titleKey: DemoMessageKey }[] = [
+  { id: 'start', titleKey: 'grpStart' },
+  { id: 'foundation', titleKey: 'grpFoundation' },
+  { id: 'components', titleKey: 'grpComponents' },
+  { id: 'blocks', titleKey: 'grpBlocks' },
+  { id: 'utils', titleKey: 'grpUtils' },
+  { id: 'reference', titleKey: 'grpReference' },
+]
+
+// 归类判据（以后加东西照这条填，不用再开会）：
+//   跨页复用、无业务含义        → components
+//   要注入数据、有业务语义的整块 → blocks
+//   无 UI 的纯函数              → utils
+//   说明性 / 元信息             → start / foundation / reference
+/** 全部二级页（顺序即组内顺序）；侧栏与右侧渲染共用同一份目录（单一事实源）。 */
+export const ALL_SECTIONS: SectionDef[] = [
+  { id: 'overview', group: 'start', titleKey: 'secOverview', render: () => h(OverviewPage, null) },
+  { id: 'install', group: 'start', titleKey: 'secInstall', render: () => h(InstallPage, null) },
+  { id: 'quickstart', group: 'start', titleKey: 'secQuickstart', render: () => h(QuickstartPage, null) },
+
+  { id: 'tokens', group: 'foundation', titleKey: 'secTokens', render: () => h(TokensPage, null) },
+  { id: 'dark', group: 'foundation', titleKey: 'secDark', render: () => h(DarkPage, null) },
+  { id: 'inject', group: 'foundation', titleKey: 'secInject', render: () => h(InjectPage, null) },
+  { id: 'naming', group: 'foundation', titleKey: 'secNaming', render: () => h(NamingPage, null) },
+
+  { id: 'button', group: 'components', titleKey: 'secButton', render: () => h(ButtonPage, null) },
+  { id: 'input', group: 'components', titleKey: 'secInput', render: () => h(InputPage, null) },
+  { id: 'picker', group: 'components', titleKey: 'secPicker', render: () => h(PickerPage, null) },
+  { id: 'tooltip', group: 'components', titleKey: 'secTooltip', render: () => h(TooltipPage, null) },
+  { id: 'card', group: 'components', titleKey: 'secCard', render: () => h(CardPage, null) },
+  { id: 'chip', group: 'components', titleKey: 'secChip', render: () => h(ChipPage, null) },
+  { id: 'feedback', group: 'components', titleKey: 'secFeedback', render: () => h(FeedbackPage, null) },
+  { id: 'layout', group: 'components', titleKey: 'secLayout', render: () => h(LayoutPage, null) },
+
+  { id: 'explorer', group: 'blocks', titleKey: 'secExplorer', render: () => h(ExplorerPage, null) },
+  { id: 'session', group: 'blocks', titleKey: 'secSession', render: () => h(SessionPage, null) },
+
+  { id: 'date', group: 'utils', titleKey: 'secDate', render: () => h(DatePage, null) },
+  { id: 'text', group: 'utils', titleKey: 'secText', render: () => h(TextPage, null) },
+  { id: 'number', group: 'utils', titleKey: 'secNumber', render: () => h(NumberPage, null) },
+  { id: 'http', group: 'utils', titleKey: 'secHttp', render: () => h(HttpPage, null) },
+  { id: 'i18n', group: 'utils', titleKey: 'secI18n', render: () => h(I18nPage, null) },
+
+  { id: 'a11y', group: 'reference', titleKey: 'secA11y', render: () => h(A11yPage, null) },
+  { id: 'roadmap', group: 'reference', titleKey: 'secRoadmap', render: () => h(RoadmapPage, null) },
+  { id: 'build', group: 'reference', titleKey: 'secBuild', render: () => h(BuildPage, null) },
+]
 
 /** 一个 demo 块：标题 + 一句话 + 实时渲染 + 用法（主流文档站的两段式，API 表在 docs/）。 */
 export function Demo(props: {
@@ -61,6 +143,30 @@ export function Demo(props: {
   )
 }
 
+/**
+ * 空位：这一页该有但还没有的东西，画一个灰框把清单写在里面。
+ * 用意是让「还有什么没做」看得见 —— 不是 EmptyState 那种「当前无数据」的业务空态。
+ */
+export function Placeholder(props: { descKey: DemoMessageKey }): ReturnType<typeof h> {
+  return h(
+    'div',
+    {
+      style: {
+        marginTop: '4px', padding: '16px 18px',
+        border: '1px dashed var(--dshpc-border)', borderRadius: '8px',
+        background: 'var(--dshpc-surface-sunken)', color: 'var(--dshpc-fg-3)',
+      },
+    },
+    h('div', {
+      style: {
+        fontSize: '11px', fontWeight: 600, letterSpacing: '.06em',
+        textTransform: 'uppercase', color: 'var(--dshpc-fg-4)', marginBottom: '10px',
+      },
+    }, t('phTodo')),
+    h('div', { style: { fontSize: '13px', lineHeight: '1.9', whiteSpace: 'pre-line' } }, t(props.descKey)),
+  )
+}
+
 function SectionHead(props: { id: SectionId; title: string }): ReturnType<typeof h> {
   return h(
     'div',
@@ -70,20 +176,8 @@ function SectionHead(props: { id: SectionId; title: string }): ReturnType<typeof
   )
 }
 
-/** 全部小节（顺序即目录顺序）；预览站导航与**插件内预览页**共用同一份目录（单一事实源）。 */
-export const ALL_SECTIONS: { id: SectionId; titleKey: DemoMessageKey; render: () => ReturnType<typeof h> }[] = [
-  { id: 'design', titleKey: 'secDesign', render: () => h(DesignSection, null) },
-  { id: 'buttons', titleKey: 'secButtons', render: () => h(ButtonsSection, null) },
-  { id: 'pickers', titleKey: 'secPickers', render: () => h(PickersSection, null) },
-  { id: 'feedback', titleKey: 'secFeedback', render: () => h(FeedbackSection, null) },
-  { id: 'display', titleKey: 'secDisplay', render: () => h(DisplaySection, null) },
-  { id: 'utils', titleKey: 'secUtils', render: () => h(UtilsSection, null) },
-  { id: 'explorer', titleKey: 'secExplorer', render: () => h(ExplorerSection, null) },
-  { id: 'session', titleKey: 'secSession', render: () => h(SessionSection, null) },
-]
-
 /** 一次只渲染当前小节（文档站式：左栏切换、右侧单页），不再一页堆全部。 */
-export function Sections(props: SectionsProps): ReturnType<typeof h> {
+export function Sections(props: { active: SectionId }): ReturnType<typeof h> {
   const current = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0]
   return h(
     'div',
