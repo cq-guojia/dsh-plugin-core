@@ -1,0 +1,46 @@
+name: Publish demo plugin to npm
+
+# 发布 packages/demo（包名 dsh-plugin-core-demo，DSH 预览插件）。
+# 触发：① 推送 demo-v* 标签；② 手动 dispatch。
+# ⚠️ 该包有**独立**的 npm Trusted Publisher：package name = dsh-plugin-core-demo，
+#    仓库 = cq-guojia/dsh-plugin-core，workflow = publish-demo.yml。
+#    需你在 npm 侧单独建一个（和库那个分开）。未勾 publish directly ⇒ 走 --staging，发完去 npm Promote。
+on:
+  push:
+    tags:
+      - 'demo-v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build library (demo 把库的产物打进自己的 bundle)
+        run: pnpm run build
+
+      - name: Build demo plugin bundle
+        run: node packages/demo/build.mjs
+
+      - name: Publish (staged, provenance)
+        working-directory: packages/demo
+        # 不设置 NODE_AUTH_TOKEN：GitHub Actions 中 npm 9.5+ 自动用 OIDC 凭证。
+        run: npm publish --provenance --staging --access public
