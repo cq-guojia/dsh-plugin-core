@@ -2,26 +2,45 @@
  * 问号提示 —— **全站唯一实现、独立组件**（L2，P4）
  *
  * ⚠️ 它**不属于 Input 家族**：任何地方都能挂——表单行尾、标题后面、卡片角落……
- * 调用点自己把它排进自己的 flex / label 里即可（组件只是 16px 的内联图标 + 气泡）。
+ * 调用点自己把它排进自己的 flex / label 里即可（组件只是 14px 的内联图标 + 气泡）。
  *
- * 交互：鼠标悬停（或键盘聚焦）浮出说明气泡；外观对齐真实插件 HelpButton（细圈 ? + 无 hover 底色）。
- * 纯 CSS 实现（见 controls-css 的 HINT_CSS），组件只负责拼结构，无任何 JS 状态。
- *
- * 用法：
- *   h('label', null, '开始时间', h(FieldHint, { text: '任务自该日起开始执行……' }), h(Input, {...}))
- *   h('div', null, h('b', null, '附加文件'), h(FieldHint, { text: '会随任务一起派发给 Agent……' }))
+ * 气泡的渲染分两条路（2026-10-19 用户拍板「必须和悬停提示用**同一个**」）：
+ *  - 插件启动时注入了官方 Tooltip（`setTooltipRenderer`，demo 已注入）⇒ 气泡由**官方组件本体**渲染，
+ *    定位 / 边界回避 / 明暗用色全归官方；
+ *  - 未注入（node 自检、非宿主预览）⇒ 降级自绘气泡（HINT_CSS，皮肤与官方对齐，含 `\n` 换行）。
  */
 import { ensureControls } from './css.js';
+import { getTooltipRenderer } from './tooltip.js';
 import { createElement as h } from 'react';
 /** 问号提示图标：hover / focus 浮出说明气泡。 */
 export function FieldHint(props) {
     ensureControls();
-    return h('span', {
-        className: `dshpc-hint${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
-        style: props.style,
+    const { text, side, align, maxWidth, className, style } = props;
+    // 官方往子元素挂 ref / 事件 ⇒ 锚点必须是真实 DOM 元素（兄弟仓踩过两次的坑），这里恒为原生 span。
+    const anchor = h('span', {
+        className: `dshpc-hint${className !== undefined && className !== '' ? ` ${className}` : ''}`,
+        style,
         tabIndex: 0,
         role: 'note',
-        'aria-label': props.text,
-    }, '?', h('span', { className: 'dshpc-hint__bubble', role: 'tooltip' }, props.text));
+        'aria-label': text,
+    }, '?');
+    const renderer = getTooltipRenderer();
+    if (renderer !== undefined) {
+        return renderer({
+            label: text,
+            side: side ?? 'top',
+            ...(align !== undefined ? { align } : {}),
+            ...(maxWidth !== undefined ? { maxWidth } : {}),
+            children: anchor,
+        });
+    }
+    // 降级：自绘气泡（皮肤已对齐官方：--dshpc-tooltip-bg + pre-line）
+    return h('span', {
+        className: `dshpc-hint${className !== undefined && className !== '' ? ` ${className}` : ''}`,
+        style,
+        tabIndex: 0,
+        role: 'note',
+        'aria-label': text,
+    }, '?', h('span', { className: 'dshpc-hint__bubble', role: 'tooltip' }, text));
 }
 //# sourceMappingURL=FieldHint.js.map

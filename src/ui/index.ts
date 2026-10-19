@@ -41,6 +41,12 @@ export { MarqueeText } from './MarqueeText.js'
 export { Loading, RunningBlocks, type LoadingProps } from './Loading.js'
 export { SectionHead } from './SectionHead.js'
 export { FieldHint, type FieldHintProps } from './FieldHint.js'
+export {
+  getTooltipRenderer,
+  setTooltipRenderer,
+  type TooltipRenderProps,
+  type TooltipRenderer,
+} from './tooltip.js'
 export { LiveText } from './LiveText.js'
 export { BackToTop, type BackToTopProps } from './BackToTop.js'
 export { startResizeLayoutWidth, type ResizeOptions } from './resizer.js'

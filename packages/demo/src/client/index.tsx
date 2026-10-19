@@ -9,10 +9,11 @@
  * （宿主官方）都分开；demo 展示代码里直接用 --dshpc-*，不再做任何跨前缀别名。
  */
 import { createElement as h, useEffect, useState } from 'react'
+import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { ensureControls, setStyleKit } from '../../../../dist/ui/index.js'
+import { ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
@@ -147,6 +148,10 @@ export function apply(ctx: {
   setStyleKit(kit)
   ensureControls(kit)
   kit.ensureStyles()
+
+  // 把官方 Tooltip 交给 core：此后 FieldHint（问号提示）的气泡就是官方组件本体，
+  // 与 Tooltip 展示区里的是同一个（core 零官方依赖 ⇒ 只能由插件侧注入，见 src/ui/tooltip.ts）。
+  setTooltipRenderer((props) => h(Tooltip, props as never))
 
   // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）
   let jump: (id: string) => void = () => {}

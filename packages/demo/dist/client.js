@@ -27,6 +27,7 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 var import_react31 = require("react");
+var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.js
 var TOKENS_CSS_TEMPLATE = `
@@ -1708,17 +1709,44 @@ function SectionHead(props) {
   }, (0, import_react14.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", color: "var(--dshpc-fg-3)" } }, props.icon), (0, import_react14.createElement)("span", { style: { fontSize: "var(--dshpc-font-lg)", lineHeight: "var(--dshpc-line-lg)", fontWeight: 600, color: "var(--dshpc-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react14.createElement)("div", { style: { marginLeft: "auto", display: "flex", alignItems: "center", gap: "var(--dshpc-space-2)", minWidth: 0 } }, props.right));
 }
 
+// dist/ui/tooltip.js
+var renderer;
+function setTooltipRenderer(fn) {
+  renderer = fn;
+}
+function getTooltipRenderer() {
+  return renderer;
+}
+
 // dist/ui/FieldHint.js
 var import_react15 = require("react");
 function FieldHint(props) {
   ensureControls();
-  return (0, import_react15.createElement)("span", {
-    className: `dshpc-hint${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}`,
-    style: props.style,
+  const { text, side, align, maxWidth, className, style } = props;
+  const anchor = (0, import_react15.createElement)("span", {
+    className: `dshpc-hint${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
+    style,
     tabIndex: 0,
     role: "note",
-    "aria-label": props.text
-  }, "?", (0, import_react15.createElement)("span", { className: "dshpc-hint__bubble", role: "tooltip" }, props.text));
+    "aria-label": text
+  }, "?");
+  const renderer2 = getTooltipRenderer();
+  if (renderer2 !== void 0) {
+    return renderer2({
+      label: text,
+      side: side ?? "top",
+      ...align !== void 0 ? { align } : {},
+      ...maxWidth !== void 0 ? { maxWidth } : {},
+      children: anchor
+    });
+  }
+  return (0, import_react15.createElement)("span", {
+    className: `dshpc-hint${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
+    style,
+    tabIndex: 0,
+    role: "note",
+    "aria-label": text
+  }, "?", (0, import_react15.createElement)("span", { className: "dshpc-hint__bubble", role: "tooltip" }, text));
 }
 
 // dist/ui/LiveText.js
@@ -3531,8 +3559,8 @@ function DemoPage() {
             fontFamily: "var(--dshpc-font-mono)"
           }
         },
-        (0, import_react31.createElement)("div", null, `core v${"0.2.4"}`),
-        (0, import_react31.createElement)("div", null, `demo v${"0.2.4"}`),
+        (0, import_react31.createElement)("div", null, `core v${"0.2.5"}`),
+        (0, import_react31.createElement)("div", null, `demo v${"0.2.5"}`),
         (0, import_react31.createElement)(
           "div",
           { title: "body[data-ds-dark-theme]" },
@@ -3591,6 +3619,7 @@ function apply(ctx) {
   setStyleKit(kit);
   ensureControls(kit);
   kit.ensureStyles();
+  setTooltipRenderer((props) => (0, import_react31.createElement)(import_dsh_client_ui_primitives2.Tooltip, props));
   let jump = () => {
   };
   ctx.inject(["layout"], (sub) => {
