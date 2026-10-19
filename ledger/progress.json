@@ -53,24 +53,6 @@
       "title": "CSS 改为真文件源码：构建期解析校验 + 生成 TS 字符串",
       "updated": "2026-10-19 23:19:29",
       "worklog": "worklog/202610/19-2310-css-改为真文件源码-构建期解析校验-生成-ts-字符串-dd55.md"
-    },
-    "20261019-2359-亮色下-hovercard-内容黑字的定位与修复-5df3": {
-      "category": "样式",
-      "created": "2026-10-19 23:59:09",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-19 23:59:09",
-      "status": "doing",
-      "tags": [
-        "HoverCard",
-        "样式",
-        "外部事实",
-        "实测"
-      ],
-      "title": "亮色下 HoverCard 内容黑字的定位与修复",
-      "updated": "2026-10-19 23:59:43",
-      "worklog": "worklog/202610/19-2359-亮色下-hovercard-内容黑字的定位与修复-5df3.md"
     }
   }
 }

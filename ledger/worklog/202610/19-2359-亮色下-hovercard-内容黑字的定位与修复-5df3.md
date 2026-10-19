@@ -1,5 +1,6 @@
 # 20261019-2359-亮色下-hovercard-内容黑字的定位与修复-5df3：亮色下 HoverCard 内容黑字的定位与修复
 
+> **✅ 完成封卷**：2026-10-20 00:52:04（@GuoJia-Agent）
 > **创建**：2026-10-19 23:59:09（@GuoJia-Agent）
 > **分类**：样式 ｜ **标签**：HoverCard、样式、外部事实、实测
 
@@ -120,3 +121,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-19 23:59:09 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-19 23:59:43 · log · @GuoJia-Agent · 读数定性：黑字是 HoverCard .card(compact) 不设 color + 我们 content 裸 div 双层缺失，亮色继承近黑；改在调用方给 #fff，dsh-host §10 记官方事实，84950b9 已推
+- 2026-10-20 00:52:04 · close · @GuoJia-Agent · 结案：已修复结案：HoverCard compact 的 .card 只写背景不写 color，content 是裸 div ⇒ 亮色下文字继承近黑；修在调用方给 content 上色（--dsw-static-neutral-bluish-00），官方事实已入 dsh-host.md §10
