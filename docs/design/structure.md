@@ -21,7 +21,7 @@
 | 标记 | 含义 |
 |---|---|
 | ✅ | 代码已在（质量待逐个重审） |
-| 🟡 | 缺口：需要补的基础组件 |
+| 🟡 | 缺口 / 待迁：需要补或需要挪位置的 |
 | ⚪ | 暂缓：先标着，不做 |
 
 ---
@@ -54,13 +54,14 @@ dsh-plugin-core/
 │   ├── i18n                ✅ 内置中英字典
 │   ├── string              ⚪ 暂缓
 │   ├── number              ⚪ 暂缓（注：formatBytes 已被 adv.session 附件卡使用，只「不对外承诺」，不删）
-│   └── http                ⚪ 暂缓
+│   ├── http                ⚪ 暂缓
+│   └── path                🟡 纯路径方法（无 UI）：joinPath / parentOf / crumbsOf / extOf / mimeOf
+│                              现在散在 explorer/types.ts，建议迁入这里（待你确认）
 │
 ├── adv.explorer/        ④ 高级空间①：文件浏览（依赖 ui + utils）
-│   └── ExplorerPanel       ✅ 成品：ui 的侧边栏/拉栏 + ui 的两个 Picker + 目录树/预览
-│                              路径工具（crumbsOf / joinPath / mimeOf / previewKindOf）
-│                              = 纯字符串函数（拆面包屑 / 取扩展名 / 判预览类型），
-│                                属内部实现，不对外导出
+│   └── ExplorerPanel       ✅ 成品：目录树 + 面包屑 + 文件预览
+│                              （内部组合 ui 的侧栏/拉栏与 Picker；不对外暴露它们）
+│                              `previewKindOf`（决定用哪种预览器）是业务判断，留内部
 │
 └── adv.session/         ⑤ 高级空间②：会话记录（依赖 ui + utils）
     └── SessionPreview      ✅ 成品：ui.Modal 承载会话消息（modal / sidebar / page）
@@ -138,8 +139,10 @@ utils（谁都不依赖，谁都可以用）
 - **目录改名**：`src/explorer` → `src/adv.explorer`、`src/session` → `src/adv.session`；同步改
   `package.json` 的 `exports`、各 `index.ts`、`packages/demo` 的 import、`docs/design/architecture.md` 的树。
   代码现在仍是旧名。
-- **收窄导出**：`adv.explorer` 只暴露 `ExplorerPanel`；`WorkspacePicker` / `FilePicker` 留在 `ui`（已在那），
-  路径工具（`crumbsOf` / `joinPath` / `mimeOf` / `previewKindOf`）降为内部实现、不再从包入口导出。
+- **收窄导出**：`adv.explorer` 只暴露 `ExplorerPanel`；`WorkspacePicker` / `FilePicker` 留在 `ui`（已在那）。
+- **路径方法归基础**：`joinPath` / `parentOf` / `crumbsOf` / `extOf` / `mimeOf` 是纯方法（无 UI），
+  建议迁入 `utils/`（`path` 域）；`previewKindOf`（选哪种预览器）是文件浏览的业务判断，留在 `ExplorerPanel` 内部。
+  待你确认。
 - **补基础组件**：`ui` 目前只有拖拽函数 `resizer`（`startResizeLayoutWidth`），需补 `SidebarLayout` / `SplitPane`
   组件，供 `ExplorerPanel` 组合使用。
 - **暂缓项**：`utils/string`、`utils/number`、`utils/http`、`ui/feedback/Loading` —— 只标注，未删代码。

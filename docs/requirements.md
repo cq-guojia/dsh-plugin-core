@@ -26,14 +26,14 @@
 
 ```
 dsh-plugin-core/
-├── design/    token（含深色段）+ 样式注入器工厂 + 主题判据
-├── ui/        控件（零件 + 选择器 + 反馈件）
-├── utils/     纯方法（日期 / 字符串 / 字节 / 时间区间 / HTTP 骨架）
-├── explorer/  工作区浏览 + 预览 + 选工作区 + 选文件
-└── session/   会话预览
+├── design/         token（含深色段）+ 样式注入器工厂 + 主题判据
+├── ui/             基础控件（零件 + 选择器 + 反馈件 + 侧栏/拉栏 + 选工作区/选文件）
+├── utils/          纯方法（日期 / 字符串 / 字节 / 时间区间 / HTTP 骨架 / 路径）
+├── adv.explorer/   文件浏览成品（目录树 + 面包屑 + 预览）
+└── adv.session/    会话记录预览成品
 ```
 
-依赖方向**单向**：`design` ← `ui` ← `explorer` / `session`；
+依赖方向**单向**：`design` ← `ui` ← `adv.explorer` / `adv.session`；
 `utils` 与 `design` **互不依赖**；`ui` 不反向依赖任何人。
 
 ### 2.1 design
@@ -47,9 +47,11 @@ dsh-plugin-core/
 
 - 零件：Button / Input 家族 / Textarea / Checkbox / Segmented / 下拉框 / 搜索框 / 滑轨 /
   MarqueeText / LiveText / Field（含错误提示）/ resizer / DateTime / TimeRange
-- 选择器：`Picker`（通用：单选/多选/上限/搜索/分组/空态/降级）、`ModelPicker`
+- 选择器：`Picker`（通用：单选/多选/上限/搜索/分组/空态/降级）、`ModelPicker`、
+  `WorkspacePicker`（选工作区）、`FilePicker`（选文件）
 - 「统一某类元素」的控件：`SectionHead` 等
 - 反馈件：`Modal` / `Loading` / `toast` / 空态 / 错误边界
+- 布局基础：`SidebarLayout` / `SplitPane`（侧栏 + 拖拽拉栏；现只有 `resizer` 函数，组件待补）
 - **纯零件，不自己取数** —— 数据由调用方传入
 
 ### 2.3 utils
@@ -58,13 +60,12 @@ dsh-plugin-core/
 - **硬约束**：不得 import `utils` 以外的任何子包，不得依赖 React / DOM / 宿主 API，
   只能用标准库 + 注入的参数（为的是将来能整体剥出去复用）
 
-### 2.4 explorer
+### 2.4 adv.explorer
 
-- `ExplorerPanel`：工作区浏览（目录树 + 面包屑）+ 文件预览
-- `WorkspacePicker`：选工作区
-- `FilePicker`：选文件
+- `ExplorerPanel`：文件浏览成品（目录树 + 面包屑 + 文件预览），内部组合 `ui` 的侧栏/拉栏与 Picker
+- 选工作区 / 选文件（`WorkspacePicker` / `FilePicker`）在 `ui`，不在这里
 
-### 2.5 session
+### 2.5 adv.session
 
 - 会话预览：整体封装（连会话渲染一起），调用方注入取数能力
 - `variant` 决定承载方式：弹窗 / 侧栏 / 整页（**承载可换**是硬要求）

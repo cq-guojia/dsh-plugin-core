@@ -8,18 +8,20 @@
 
 ```
 dsh-plugin-core/
-├── design/    token + createStyleKit 注入器工厂 + 主题判据    （零 React）
-├── ui/        控件（Button / Input / Picker / Modal / toast …） （依赖 design）
-├── utils/     纯方法：日期 / 字符串 / 字节 / 时间区间 / HTTP    （零 React / DOM）
-├── explorer/  工作区浏览面板 + 文件预览 + 选工作区/选文件      （依赖 ui + design）
-└── session/   会话预览                                          （依赖 ui）
+├── design/         token + createStyleKit 注入器工厂 + 主题判据    （零 React）
+├── ui/             基础控件（Button / Input / Picker / Modal / toast …） （依赖 design）
+├── utils/          纯方法：日期 / 字符串 / 字节 / 时间区间 / HTTP / 路径    （零 React / DOM）
+├── adv.explorer/   文件浏览成品（目录树 + 面包屑 + 预览）           （依赖 ui + utils）
+└── adv.session/    会话记录预览成品                                 （依赖 ui + utils）
 ```
+
+> 目录名目标态（`adv.` 前缀）。选工作区/选文件在 `ui`，路径方法归 `utils`——结构细节见
+> `docs/design/structure.md`。
 
 ## 依赖方向（单向，不许反向）
 
 ```
-design ──▶ ui ──▶ explorer
-   │         └────▶ session
+design ──▶ ui ──▶ adv.explorer / adv.session
 utils（谁都不依赖，谁都可以用）
 ```
 
@@ -27,7 +29,7 @@ utils（谁都不依赖，谁都可以用）
 
 - `utils` 不得 import `ui` / `design` / React / DOM / 任何宿主 API —— 它将来要能被整体剥出去复用。
 - `design` 不得依赖 `ui`（否则「只想用 token 的插件」被迫拖进 React）。
-- `ui` 不得依赖 `explorer` / `session`（反向依赖会造成环）。
+- `ui` 不得依赖 `adv.*`（反向依赖会造成环）。
 
 ## 立包判据
 

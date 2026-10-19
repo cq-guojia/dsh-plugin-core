@@ -1,6 +1,7 @@
 # explorer —— 工作区浏览
 
-依赖 `ui` + `design`。装的是「工作区 / 文件」这个领域：浏览面板、预览、选工作区、选文件。
+依赖 `ui` + `design`。装的是「文件浏览」这个成品：目录树 + 面包屑 + 文件预览。
+选工作区 / 选文件在 `ui`（`WorkspacePicker` / `FilePicker`），不在这里。
 
 ## 宿主契约：`WorkspaceFilesFace`
 
@@ -14,8 +15,10 @@
 | `list` | `(sessionId, path, signal?)` ⇒ `{ path, entries: [{ name, type, size? }], truncated }`；list 一个文件会报 not-directory |
 | `stat?` | 可选；宿主过旧没有此方法时降级。只认普通文件，目录会抛 |
 
-类型与工具（`types.ts`）：`WorkspaceFilesFace` / `DirEntry` / `Listing` / `PreviewKind`，
-以及 `crumbsOf` / `parentOf` / `joinPath` / `extOf` / `mimeOf` / `previewKindOf`。
+类型与工具（`types.ts`）：`WorkspaceFilesFace` / `DirEntry` / `Listing` / `PreviewKind`。
+
+路径方法 `crumbsOf` / `parentOf` / `joinPath` / `extOf` / `mimeOf` 是纯方法（无 UI），
+建议迁入 `utils/`（`path` 域，待定）；`previewKindOf`（决定用哪种预览器）是文件浏览的业务判断，留在内部。
 
 ## `ExplorerPanel`
 
