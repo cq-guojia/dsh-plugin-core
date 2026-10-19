@@ -369,7 +369,12 @@ var SEGMENTED_CSS = `
    \u51E0\u4F55 = \u6BB5\u9AD8 = token \u2212 6px\uFF08\u4E0A\u4E0B\u5404 2px padding + 1px \u8FB9\u6846\uFF09\uFF1Bdefault \u771F\u8FB9\u6846 1px + padding 2px\uFF0C
    inset \u65E0\u8FB9\u6846\u6545 padding \u6536 3px \u628A\u7F3A\u7684 1px \u8865\u56DE\uFF0C\u4E24\u79CD\u5916\u89C2\u603B\u9AD8\u90FD == token\uFF0824/28/32\uFF09\uFF0C\u4E0D\u518D\u591A +2px\u3002
    \u4EE5\u540E Button / Input \u7684\u6709\u8FB9 / \u65E0\u8FB9\u540C\u6B64\u89C4\u5219\u3002 */
-.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
+/* \u26A0\uFE0F \u8F68\u9053 / \u9009\u4E2D\u7247\u7684\u989C\u8272\u53D8\u91CF\u5728\u57FA\u7840\u7C7B\u4E0A\u7ED9**\u9ED8\u8BA4\u503C**\uFF08= inset \u89C2\u611F\uFF09\uFF0Cvariant \u7C7B\u53EA\u505A\u8986\u76D6\uFF1A
+   \u6B64\u524D --seg-track \u53EA\u7531 variant \u7C7B\u5B9A\u4E49\uFF0C\u7C7B\u4E00\u65E6\u6CA1\u751F\u6548\uFF08\u5BBF\u4E3B\u6837\u5F0F\u88C1\u526A / \u9009\u62E9\u5668\u88AB\u88C1 / \u7248\u672C\u9519\u4F4D\uFF09\uFF0C
+   background:var(--seg-track) \u6574\u6761\u4F5C\u5E9F \u21D2 \u8F68\u9053\u5168\u900F\u660E\u3001\u300C\u5C31\u5269\u51E0\u4E2A\u5B57\u6D6E\u5728\u9875\u9762\u4E0A\u300D\uFF080.2.2 \u771F\u673A\u73B0\u8C61\uFF09\u3002
+   var() \u7684\u7B2C\u4E8C\u53C2\u515C\u5E95\u4FDD\u8BC1\u4EFB\u4F55\u60C5\u51B5\u4E0B\u8F68\u9053\u90FD\u6709\u5E95\u3001\u9009\u4E2D\u7247\u90FD\u6709\u8272\u3002 */
+.dshpc-seg{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-surface-raised);
+  display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
 /* \u9009\u4E2D\u7247 = --dshpc-surface-raised\uFF08\u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684\u53D6\u6CD5\uFF0C2026-10-19 \u7528\u6237\u70B9\u540D
    \u300C\u628A\u5144\u5F1F\u7684\u6837\u5F0F\u6E05\u4E86\u5C31\u4E0D\u6B63\u5E38 \u21D2 \u6CA1\u642C\u5168\u300D\u540E\u6539\u56DE\uFF09\u300210-18 \u66FE\u6539\u6210 --dshpc-solid\uFF0C\u4F46\u5B83\u5728\u6697\u8272\u4E3B\u9898\u4E0B
    \u662F\u8FD1\u9ED1\uFF08\u6BD4\u8F68\u9053\u8FD8\u6697\uFF09\u21D2 \u9009\u4E2D\u7247\u9677\u8FDB\u8F68\u9053\u91CC\uFF1Braised \u5728\u4E24\u4E2A\u4E3B\u9898\u4E0B\u90FD\u6BD4\u8F68\u9053\u4EAE\u4E00\u6863\uFF0C\u65B9\u5411\u6B63\u786E\u3002
@@ -389,7 +394,7 @@ var SEGMENTED_CSS = `
 .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);background:var(--dshpc-hover);}
 .dshpc-seg--inset .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){background:var(--dshpc-active);}
 /* \u9009\u4E2D\u7247\uFF1A\u4EAE\u7247 + \u63CF\u8FB9 + \u6D6E\u8D77\u9634\u5F71 \u21D2 \u5728\u5361\u7247\u5E95\uFF08\u4E0E\u4EAE\u7247\u540C\u8272\uFF09\u4E0A\u4E5F\u770B\u5F97\u51FA\u8FB9\u754C */
-.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);border-color:var(--dshpc-border);
+.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb,var(--dshpc-surface-raised));border-color:var(--dshpc-border);
   box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
 .dshpc-seg__item:disabled{cursor:default;opacity:.4;}
@@ -515,21 +520,6 @@ var BUTTON_CSS = `
 .dshpc-iconbtn--danger{color:var(--dshpc-danger);}
 .dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
 .dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}
-.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
-.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
-
-.dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
-  border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);
-  font-family:inherit;cursor:pointer;flex:none;
-  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}
-.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}
-.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}
-.dshpc-iconbtn--plain{color:var(--dshpc-fg-2);}
-.dshpc-iconbtn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border);color:var(--dshpc-fg-2);}
-.dshpc-iconbtn--danger{color:var(--dshpc-danger);}
-.dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
-.dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-danger);}
 .dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
 .dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
 
@@ -2027,7 +2017,13 @@ var DICT2 = {
     btnVariantHint: "\u5B9E\u5FC3\uFF1Aprimary / secondary / danger / success / warning / info\uFF1B\u7EBF\u6846\uFF1Aoutline / danger-outline\uFF1B\u65E0\u5E95\uFF1Aghost / link",
     btnSizeTitle: "\u5C3A\u5BF8 / \u56FE\u6807 / block",
     btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32 \u540C\u9AD8\uFF1Bicon \u6536\u7684\u662F ReactNode\u2014\u2014\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6\u3001\u81EA\u7ED8 SVG\u3001\u751A\u81F3\u4E00\u4E2A\u5B57\u7B26\u90FD\u884C\uFF0C\u4E0D\u662F\u540D\u5B57\u4E5F\u4E0D\u662F class\uFF08\u4E0B\u9762\u4E09\u9897\u5206\u522B\u662F\u8FD9\u4E09\u79CD\uFF09\uFF1BiconRight \u540E\u7F6E\u3001block \u6491\u6EE1\u7236\u5BBD",
-    btnIconOnly: "\u7EAF\u56FE\u6807\u94AE",
+    btnIconOnly: "icon only",
+    tooltipTitle: "Tooltip\uFF08\u9F20\u6807\u60AC\u505C\u63D0\u793A\uFF09",
+    tooltipHint: "\u5B98\u65B9 Tooltip\uFF1Aside \u4E0A / \u4E0B / \u53F3 \xD7 align \u5C45\u4E2D / \u8D34\u8FB9\uFF1B\u951A\u70B9\u53EF\u4EE5\u662F\u6309\u94AE\u3001\u4E5F\u53EF\u4EE5\u662F\u4E00\u6BB5\u6587\u5B57\uFF1B\u957F\u6587\u672C\u81EA\u52A8\u6362\u884C\uFF08maxWidth \u9650\u5BBD\uFF09",
+    tooltipAnchorText: "\u6587\u5B57\u951A\u70B9",
+    tooltipAnchorButton: "\u6309\u94AE\u951A\u70B9",
+    tooltipLong: "\u957F\u6587\u672C\u6362\u884C",
+    tooltipLongText: "\u8FD9\u662F\u4E00\u6BB5\u8DB3\u591F\u957F\u7684\u63D0\u793A\u6587\u5B57\uFF1A\u6C14\u6CE1\u9047\u5230 maxWidth \u4F1A\u81EA\u52A8\u6362\u884C\uFF0C\u800C\u4E0D\u4F1A\u4E00\u8DEF\u6491\u5230\u534A\u4E2A\u5C4F\u5E55\u5BBD\uFF0C anchored \u5143\u7D20\u5728\u8FB9\u7F18\u65F6\u5B98\u65B9\u8FD8\u4F1A\u81EA\u52A8\u628A\u6C14\u6CE1\u6536\u56DE\u89C6\u53E3\u5185\u3002",
     btnHintTitle: "\u95EE\u53F7\u63D0\u793A\uFF08FieldHint\uFF09",
     btnHintHint: "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF1A\u6807\u9898\u540E / \u6309\u94AE\u540E / \u4E00\u6BB5\u6587\u5B57\u540E / \u8F93\u5165\u6846\u540E\uFF1B\u9F20\u6807\u60AC\u505C\u6216\u952E\u76D8\u805A\u7126\u6D6E\u51FA\u6C14\u6CE1",
     btnStateTitle: "\u72B6\u6001",
@@ -2039,7 +2035,24 @@ var DICT2 = {
     btnLabelDelete: "\u5220\u9664",
     btnLabelMixed: "\u4FDD\u5B58 Save",
     inputHint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u884C\u5C3E\u53EF\u6302 FieldHint \u95EE\u53F7\u63D0\u793A",
-    checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95 inset\uFF08\u65E0\u5916\u63CF\u8FB9\uFF09\uFF1B\u5E26\u63CF\u8FB9\u7684 default \u4EC5\u4F9B\u7279\u6B8A\u573A\u5408\uFF0C\u89C1\u4E0B",
+    checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95 inset\uFF08\u65E0\u5916\u63CF\u8FB9\uFF09\uFF1B\u5E26\u63CF\u8FB9\u7684 default \u4EC5\u4F9B\u7279\u6B8A\u573A\u5408\uFF08\u6700\u53F3\uFF0C\u53EF\u70B9\u7740\u73A9\uFF09\uFF1B\u661F\u671F\u65B9\u5757\u662F\u591A\u9009\u3002\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362",
+    segDay: "\u65E5",
+    segWeek: "\u5468",
+    segMonth: "\u6708",
+    segAll: "\u5168\u90E8",
+    segDoing: "\u8FDB\u884C\u4E2D",
+    segClaimed: "\u5F85\u8BA4\u9886",
+    segBlocked: "\u963B\u585E",
+    segStalled: "\u505C\u6EDE",
+    segPreview: "\u9884\u89C8",
+    segSource: "\u6E90\u7801",
+    weekday1: "\u4E00",
+    weekday2: "\u4E8C",
+    weekday3: "\u4E09",
+    weekday4: "\u56DB",
+    weekday5: "\u4E94",
+    weekday6: "\u516D",
+    weekday7: "\u65E5",
     designTokenHint: "\u989C\u8272\u5168\u90E8\u6765\u81EA design \u7684 token\uFF1B\u5207\u6362\u53F3\u4E0A\u89D2\u660E\u6697\uFF0C\u4E0B\u9762\u4F1A\u8DDF\u7740\u53D8",
     designInjectHint: "\u63A7\u4EF6\u6E32\u67D3\u524D\u8C03\u4E00\u6B21 setStyleKit + ensureControls\uFF0Ctoken \u4E0E\u63A7\u4EF6 CSS \u7531 kit \u6CE8\u5165 <head>",
     fieldHintDate: "\u4EFB\u52A1\u81EA\u8BE5\u65E5\u8D77\u5F00\u59CB\u6267\u884C\u3002\u53EF\u63D0\u524D\u521B\u5EFA\u4EFB\u52A1\uFF0C\u81F3\u8BE5\u65E5\u81EA\u52A8\u5F00\u8DD1\uFF1B\u300C\u6BCF N \u5468\u300D\u4EA6\u81EA\u8BE5\u65E5\u8D77\u7B97\u9996\u5468\u3002",
@@ -2082,7 +2095,13 @@ var DICT2 = {
     btnVariantHint: "Solid: primary / secondary / danger / success / warning / info; outlined: outline / danger-outline; flat: ghost / link",
     btnSizeTitle: "Sizes / icons / block",
     btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32, same height; icon takes any ReactNode \u2014 an official icon component, your own SVG, even a single character (not a name, not a class); iconRight trails, block fills the parent",
-    btnIconOnly: "Icon-only",
+    btnIconOnly: "icon only",
+    tooltipTitle: "Tooltip (hover hint)",
+    tooltipHint: "Official Tooltip: side top / bottom / right x align center / end; anchor can be a button or a span of text; long labels wrap (maxWidth)",
+    tooltipAnchorText: "Text anchor",
+    tooltipAnchorButton: "Button anchor",
+    tooltipLong: "Long label",
+    tooltipLongText: "A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.",
     btnHintTitle: "Question-mark hint (FieldHint)",
     btnHintHint: "Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal",
     btnStateTitle: "States",
@@ -2094,7 +2113,24 @@ var DICT2 = {
     btnLabelDelete: "Delete",
     btnLabelMixed: "Save \u4FDD\u5B58",
     inputHint: "Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; a FieldHint question-mark tip can hang at the row end",
-    checkboxHint: "Looks match the real plugin: grey inset background (no outer border); the bordered default is for special cases only, see below",
+    checkboxHint: "Looks match the real plugin: grey inset background (no outer border); the bordered default (rightmost, clickable) is for special cases; the weekday squares are multi-select. Labels follow the locale",
+    segDay: "Day",
+    segWeek: "Week",
+    segMonth: "Month",
+    segAll: "All",
+    segDoing: "Doing",
+    segClaimed: "Open",
+    segBlocked: "Blocked",
+    segStalled: "Stalled",
+    segPreview: "Render",
+    segSource: "Source",
+    weekday1: "Mo",
+    weekday2: "Tu",
+    weekday3: "We",
+    weekday4: "Th",
+    weekday5: "Fr",
+    weekday6: "Sa",
+    weekday7: "Su",
     designTokenHint: "All colors come from design tokens; switch light/dark at top-right and these update with it",
     designInjectHint: "Call setStyleKit + ensureControls once before controls render; the kit injects tokens and control CSS into <head>",
     fieldHintDate: 'The task runs starting from this date. You can create it ahead of time and it auto-starts on that day; "every N weeks" also counts its first week from this date.',
@@ -2242,6 +2278,22 @@ var VARIANTS = [
   { value: "link", icon: "search" }
 ];
 var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
+function tipAnchor(text, side, align) {
+  const props = { label: text, side };
+  if (align !== void 0) props.align = align;
+  return (0, import_react20.createElement)(import_dsh_client_ui_primitives.Tooltip, props, (0, import_react20.createElement)("button", {
+    type: "button",
+    style: {
+      padding: "4px 10px",
+      border: "1px solid var(--dshpc-border)",
+      borderRadius: "6px",
+      background: "var(--dshpc-surface-1)",
+      color: "var(--dshpc-fg)",
+      fontSize: "12px",
+      cursor: "help"
+    }
+  }, text));
+}
 function Row(props) {
   return (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
 }
@@ -2260,6 +2312,7 @@ function ButtonsSection() {
   const [seg, setSeg] = (0, import_react20.useState)("week");
   const [filter, setFilter] = (0, import_react20.useState)("all");
   const [multi, setMulti] = (0, import_react20.useState)(["1"]);
+  const [view, setView] = (0, import_react20.useState)("render");
   return (0, import_react20.createElement)(
     "div",
     null,
@@ -2353,6 +2406,42 @@ function ButtonsSection() {
           Labeled,
           { label: t2("btnIconOnly") },
           BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react20.createElement)(IconButton, { key: item.name, icon: (0, import_react20.createElement)(item.Icon, { size: 16 }), label: item.name }))
+        )
+      )
+    ),
+    // ── Tooltip：官方悬停提示，side × align 全组合 + 双锚点类型 + 长文本换行 ──
+    (0, import_react20.createElement)(
+      Demo,
+      { title: t2("tooltipTitle"), hint: t2("tooltipHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: t2("tooltipAnchorButton") },
+          tipAnchor("top \xB7 center", "top", "center"),
+          tipAnchor("top \xB7 end", "top", "end"),
+          tipAnchor("bottom \xB7 center", "bottom", "center"),
+          tipAnchor("bottom \xB7 end", "bottom", "end"),
+          tipAnchor("right", "right")
+        ),
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: t2("tooltipAnchorText") },
+          (0, import_react20.createElement)(
+            import_dsh_client_ui_primitives.Tooltip,
+            { label: t2("tooltipHint"), side: "top" },
+            (0, import_react20.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
+            }, t2("tooltipAnchorText"))
+          ),
+          (0, import_react20.createElement)(
+            import_dsh_client_ui_primitives.Tooltip,
+            { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
+            (0, import_react20.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
+            }, t2("tooltipLong"))
+          )
         )
       )
     ),
@@ -2465,11 +2554,11 @@ function ButtonsSection() {
         (0, import_react20.createElement)(Segmented, {
           variant: "inset",
           items: [
-            { value: "all", label: "\u5168\u90E8", count: 11 },
-            { value: "doing", label: "\u8FDB\u884C\u4E2D", count: 5 },
-            { value: "claimed", label: "\u5F85\u8BA4\u9886", count: 11 },
-            { value: "blocked", label: "\u963B\u585E" },
-            { value: "stalled", label: "\u505C\u6EDE" }
+            { value: "all", label: t2("segAll"), count: 11 },
+            { value: "doing", label: t2("segDoing"), count: 5 },
+            { value: "claimed", label: t2("segClaimed"), count: 11 },
+            { value: "blocked", label: t2("segBlocked") },
+            { value: "stalled", label: t2("segStalled") }
           ],
           value: filter,
           onChange: setFilter
@@ -2479,15 +2568,10 @@ function ButtonsSection() {
           multiple: true,
           className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
-          items: [
-            { value: "1", label: "\u4E00" },
-            { value: "2", label: "\u4E8C" },
-            { value: "3", label: "\u4E09" },
-            { value: "4", label: "\u56DB" },
-            { value: "5", label: "\u4E94" },
-            { value: "6", label: "\u516D" },
-            { value: "7", label: "\u65E5" }
-          ],
+          items: [1, 2, 3, 4, 5, 6, 7].map((n) => ({
+            value: String(n),
+            label: t2(`weekday${n}`)
+          })),
           value: multi,
           onChange: setMulti
         }),
@@ -2497,12 +2581,11 @@ function ButtonsSection() {
           variant: "default",
           label: "default \u5916\u89C2\u793A\u4F8B",
           items: [
-            { value: "render", label: "\u9884\u89C8" },
-            { value: "source", label: "\u6E90\u7801" }
+            { value: "render", label: t2("segPreview") },
+            { value: "source", label: t2("segSource") }
           ],
-          value: seg === "week" ? "render" : "source",
-          onChange: () => {
-          }
+          value: view,
+          onChange: setView
         })
       )
     )

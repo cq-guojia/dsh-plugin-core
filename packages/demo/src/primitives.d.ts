@@ -16,4 +16,16 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   export const IconChevronDownOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconClockOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconSparkleRegular: ComponentType<{ size?: number; className?: string }>
+
+  /** 官方气泡提示：label + side；children 为唯一锚点元素（须能挂 ref 的真实 DOM）。 */
+  export const Tooltip: ComponentType<{
+    label: string
+    side?: 'right' | 'bottom' | 'top'
+    align?: 'center' | 'end'
+    gap?: number
+    maxWidth?: number
+    delayMs?: number
+    portal?: boolean
+    children?: import('react').ReactElement
+  }>
 }

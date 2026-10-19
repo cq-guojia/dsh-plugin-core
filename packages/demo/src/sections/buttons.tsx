@@ -14,9 +14,10 @@ import {
   IconRefreshOutlineRegular,
   IconSearchOutlineRegular,
   IconSparkleRegular,
+  Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import { Demo } from './index.js'
-import { t } from '../i18n.js'
+import { t, type DemoMessageKey } from '../i18n.js'
 
 /**
  * 按钮图标集：**先给每颗 icon 起个名字，再按名字取用**。
@@ -72,6 +73,19 @@ const VARIANTS: readonly { value: ButtonVariant; icon: string }[] = [
 /** 自定义颜色演示：实心档作底色、线框档作主色。 */
 const CUSTOM_COLORS: readonly string[] = ['#7c3aed', '#0ea5e9', '#f97316', '#16a34a']
 
+/** Tooltip 锚点必须是真实 DOM 元素（官方往子元素挂 ref；函数组件挂不上 ⇒ 悬停无气泡，兄弟仓踩过）。 */
+function tipAnchor(text: string, side: 'top' | 'bottom' | 'right', align?: 'center' | 'end'): ReturnType<typeof h> {
+  const props: Record<string, unknown> = { label: text, side }
+  if (align !== undefined) props.align = align
+  return h(Tooltip, props as never, h('button', {
+    type: 'button',
+    style: {
+      padding: '4px 10px', border: '1px solid var(--dshpc-border)', borderRadius: '6px',
+      background: 'var(--dshpc-surface-1)', color: 'var(--dshpc-fg)', fontSize: '12px', cursor: 'help',
+    },
+  }, text))
+}
+
 /** 一行横排（自动换行，间距 8）。 */
 function Row(props: { children?: ReturnType<typeof h>[] | ReturnType<typeof h> }): ReturnType<typeof h> {
   return h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' } }, props.children)
@@ -91,6 +105,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
   const [seg, setSeg] = useState<'day' | 'week' | 'month'>('week')
   const [filter, setFilter] = useState('all')
   const [multi, setMulti] = useState<string[]>(['1'])
+  const [view, setView] = useState<'render' | 'source'>('render')
 
   return h(
     'div',
@@ -154,6 +169,28 @@ export function ButtonsSection(): ReturnType<typeof h> {
         h(Labeled, { label: t('btnIconOnly') },
           BUTTON_ICONS.slice(0, 6).map((item) =>
             h(IconButton, { key: item.name, icon: h(item.Icon, { size: 16 }), label: item.name })))),
+    ),
+
+    // ── Tooltip：官方悬停提示，side × align 全组合 + 双锚点类型 + 长文本换行 ──
+    h(
+      Demo,
+      { title: t('tooltipTitle'), hint: t('tooltipHint') },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        h(Labeled, { label: t('tooltipAnchorButton') },
+          tipAnchor('top · center', 'top', 'center'),
+          tipAnchor('top · end', 'top', 'end'),
+          tipAnchor('bottom · center', 'bottom', 'center'),
+          tipAnchor('bottom · end', 'bottom', 'end'),
+          tipAnchor('right', 'right')),
+        h(Labeled, { label: t('tooltipAnchorText') },
+          h(Tooltip, { label: t('tooltipHint'), side: 'top' },
+            h('span', {
+              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
+            }, t('tooltipAnchorText'))),
+          h(Tooltip, { label: t('tooltipLongText'), side: 'bottom', maxWidth: 240 },
+            h('span', {
+              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
+            }, t('tooltipLong'))))),
     ),
 
     // ── 问号提示：证明它不属于 Input 家族，随处可挂 ──────────────────────
@@ -252,11 +289,11 @@ export function ButtonsSection(): ReturnType<typeof h> {
         h(Segmented, {
           variant: 'inset',
           items: [
-            { value: 'all', label: '全部', count: 11 },
-            { value: 'doing', label: '进行中', count: 5 },
-            { value: 'claimed', label: '待认领', count: 11 },
-            { value: 'blocked', label: '阻塞' },
-            { value: 'stalled', label: '停滞' },
+            { value: 'all', label: t('segAll'), count: 11 },
+            { value: 'doing', label: t('segDoing'), count: 5 },
+            { value: 'claimed', label: t('segClaimed'), count: 11 },
+            { value: 'blocked', label: t('segBlocked') },
+            { value: 'stalled', label: t('segStalled') },
           ],
           value: filter,
           onChange: setFilter,
@@ -266,15 +303,10 @@ export function ButtonsSection(): ReturnType<typeof h> {
           multiple: true,
           className: 'dshpc-seg--weekday',
           label: '星期',
-          items: [
-            { value: '1', label: '一' },
-            { value: '2', label: '二' },
-            { value: '3', label: '三' },
-            { value: '4', label: '四' },
-            { value: '5', label: '五' },
-            { value: '6', label: '六' },
-            { value: '7', label: '日' },
-          ],
+          items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
+            value: String(n),
+            label: t(`weekday${n}` as DemoMessageKey),
+          })),
           value: multi,
           onChange: setMulti,
         }),
@@ -284,11 +316,11 @@ export function ButtonsSection(): ReturnType<typeof h> {
           variant: 'default',
           label: 'default 外观示例',
           items: [
-            { value: 'render', label: '预览' },
-            { value: 'source', label: '源码' },
+            { value: 'render', label: t('segPreview') },
+            { value: 'source', label: t('segSource') },
           ],
-          value: seg === 'week' ? 'render' : 'source',
-          onChange: () => {},
+          value: view,
+          onChange: setView,
         }),
       ),
     ),

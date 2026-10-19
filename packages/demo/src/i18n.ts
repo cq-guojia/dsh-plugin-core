@@ -35,6 +35,29 @@ export type DemoMessageKey =
   | 'btnIconOnly'
   | 'btnHintTitle'
   | 'btnHintHint'
+  | 'tooltipTitle'
+  | 'tooltipHint'
+  | 'tooltipAnchorText'
+  | 'tooltipAnchorButton'
+  | 'tooltipLong'
+  | 'tooltipLongText'
+  | 'segDay'
+  | 'segWeek'
+  | 'segMonth'
+  | 'segAll'
+  | 'segDoing'
+  | 'segClaimed'
+  | 'segBlocked'
+  | 'segStalled'
+  | 'segPreview'
+  | 'segSource'
+  | 'weekday1'
+  | 'weekday2'
+  | 'weekday3'
+  | 'weekday4'
+  | 'weekday5'
+  | 'weekday6'
+  | 'weekday7'
   | 'inputHint'
   | 'checkboxHint'
   | 'designTokenHint'
@@ -80,7 +103,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnVariantHint: '实心：primary / secondary / danger / success / warning / info；线框：outline / danger-outline；无底：ghost / link',
     btnSizeTitle: '尺寸 / 图标 / block',
     btnSizeHint: 'sm 24 · md 28 · lg 32 同高；icon 收的是 ReactNode——官方图标组件、自绘 SVG、甚至一个字符都行，不是名字也不是 class（下面三颗分别是这三种）；iconRight 后置、block 撑满父宽',
-    btnIconOnly: '纯图标钮',
+    btnIconOnly: 'icon only',
+    tooltipTitle: 'Tooltip（鼠标悬停提示）',
+    tooltipHint: '官方 Tooltip：side 上 / 下 / 右 × align 居中 / 贴边；锚点可以是按钮、也可以是一段文字；长文本自动换行（maxWidth 限宽）',
+    tooltipAnchorText: '文字锚点',
+    tooltipAnchorButton: '按钮锚点',
+    tooltipLong: '长文本换行',
+    tooltipLongText: '这是一段足够长的提示文字：气泡遇到 maxWidth 会自动换行，而不会一路撑到半个屏幕宽， anchored 元素在边缘时官方还会自动把气泡收回视口内。',
     btnHintTitle: '问号提示（FieldHint）',
     btnHintHint: '独立组件，放哪都行：标题后 / 按钮后 / 一段文字后 / 输入框后；鼠标悬停或键盘聚焦浮出气泡',
     btnStateTitle: '状态',
@@ -92,7 +121,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnLabelDelete: '删除',
     btnLabelMixed: '保存 Save',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；行尾可挂 FieldHint 问号提示',
-    checkboxHint: '外观对齐真实插件：灰底 inset（无外描边）；带描边的 default 仅供特殊场合，见下',
+    checkboxHint: '外观对齐真实插件：灰底 inset（无外描边）；带描边的 default 仅供特殊场合（最右，可点着玩）；星期方块是多选。文案随语言切换',
+    segDay: '日',
+    segWeek: '周',
+    segMonth: '月',
+    segAll: '全部',
+    segDoing: '进行中',
+    segClaimed: '待认领',
+    segBlocked: '阻塞',
+    segStalled: '停滞',
+    segPreview: '预览',
+    segSource: '源码',
+    weekday1: '一',
+    weekday2: '二',
+    weekday3: '三',
+    weekday4: '四',
+    weekday5: '五',
+    weekday6: '六',
+    weekday7: '日',
     designTokenHint: '颜色全部来自 design 的 token；切换右上角明暗，下面会跟着变',
     designInjectHint: '控件渲染前调一次 setStyleKit + ensureControls，token 与控件 CSS 由 kit 注入 <head>',
     fieldHintDate: '任务自该日起开始执行。可提前创建任务，至该日自动开跑；「每 N 周」亦自该日起算首周。',
@@ -135,7 +181,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnVariantHint: 'Solid: primary / secondary / danger / success / warning / info; outlined: outline / danger-outline; flat: ghost / link',
     btnSizeTitle: 'Sizes / icons / block',
     btnSizeHint: 'sm 24 · md 28 · lg 32, same height; icon takes any ReactNode — an official icon component, your own SVG, even a single character (not a name, not a class); iconRight trails, block fills the parent',
-    btnIconOnly: 'Icon-only',
+    btnIconOnly: 'icon only',
+    tooltipTitle: 'Tooltip (hover hint)',
+    tooltipHint: 'Official Tooltip: side top / bottom / right x align center / end; anchor can be a button or a span of text; long labels wrap (maxWidth)',
+    tooltipAnchorText: 'Text anchor',
+    tooltipAnchorButton: 'Button anchor',
+    tooltipLong: 'Long label',
+    tooltipLongText: 'A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.',
     btnHintTitle: 'Question-mark hint (FieldHint)',
     btnHintHint: 'Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal',
     btnStateTitle: 'States',
@@ -147,7 +199,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnLabelDelete: 'Delete',
     btnLabelMixed: 'Save 保存',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; a FieldHint question-mark tip can hang at the row end',
-    checkboxHint: 'Looks match the real plugin: grey inset background (no outer border); the bordered default is for special cases only, see below',
+    checkboxHint: 'Looks match the real plugin: grey inset background (no outer border); the bordered default (rightmost, clickable) is for special cases; the weekday squares are multi-select. Labels follow the locale',
+    segDay: 'Day',
+    segWeek: 'Week',
+    segMonth: 'Month',
+    segAll: 'All',
+    segDoing: 'Doing',
+    segClaimed: 'Open',
+    segBlocked: 'Blocked',
+    segStalled: 'Stalled',
+    segPreview: 'Render',
+    segSource: 'Source',
+    weekday1: 'Mo',
+    weekday2: 'Tu',
+    weekday3: 'We',
+    weekday4: 'Th',
+    weekday5: 'Fr',
+    weekday6: 'Sa',
+    weekday7: 'Su',
     designTokenHint: 'All colors come from design tokens; switch light/dark at top-right and these update with it',
     designInjectHint: 'Call setStyleKit + ensureControls once before controls render; the kit injects tokens and control CSS into <head>',
     fieldHintDate: 'The task runs starting from this date. You can create it ahead of time and it auto-starts on that day; "every N weeks" also counts its first week from this date.',

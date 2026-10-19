@@ -12,7 +12,12 @@ export const SEGMENTED_CSS = `
    几何 = 段高 = token − 6px（上下各 2px padding + 1px 边框）；default 真边框 1px + padding 2px，
    inset 无边框故 padding 收 3px 把缺的 1px 补回，两种外观总高都 == token（24/28/32），不再多 +2px。
    以后 Button / Input 的有边 / 无边同此规则。 */
-.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
+/* ⚠️ 轨道 / 选中片的颜色变量在基础类上给**默认值**（= inset 观感），variant 类只做覆盖：
+   此前 --seg-track 只由 variant 类定义，类一旦没生效（宿主样式裁剪 / 选择器被裁 / 版本错位），
+   background:var(--seg-track) 整条作废 ⇒ 轨道全透明、「就剩几个字浮在页面上」（0.2.2 真机现象）。
+   var() 的第二参兜底保证任何情况下轨道都有底、选中片都有色。 */
+.dshpc-seg{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-surface-raised);
+  display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
 /* 选中片 = --dshpc-surface-raised（兄弟项目 dsh-task-dispatch-table 的取法，2026-10-19 用户点名
    「把兄弟的样式清了就不正常 ⇒ 没搬全」后改回）。10-18 曾改成 --dshpc-solid，但它在暗色主题下
    是近黑（比轨道还暗）⇒ 选中片陷进轨道里；raised 在两个主题下都比轨道亮一档，方向正确。
@@ -32,7 +37,7 @@ export const SEGMENTED_CSS = `
 .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);background:var(--dshpc-hover);}
 .dshpc-seg--inset .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){background:var(--dshpc-active);}
 /* 选中片：亮片 + 描边 + 浮起阴影 ⇒ 在卡片底（与亮片同色）上也看得出边界 */
-.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);border-color:var(--dshpc-border);
+.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb,var(--dshpc-surface-raised));border-color:var(--dshpc-border);
   box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
 .dshpc-seg__item:disabled{cursor:default;opacity:.4;}
@@ -159,21 +164,6 @@ export const BUTTON_CSS = `
 .dshpc-iconbtn--danger{color:var(--dshpc-danger);}
 .dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
 .dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}
-.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
-.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
-
-.dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
-  border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);
-  font-family:inherit;cursor:pointer;flex:none;
-  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}
-.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}
-.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}
-.dshpc-iconbtn--plain{color:var(--dshpc-fg-2);}
-.dshpc-iconbtn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border);color:var(--dshpc-fg-2);}
-.dshpc-iconbtn--danger{color:var(--dshpc-danger);}
-.dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
-.dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-danger);}
 .dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
 .dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
 
