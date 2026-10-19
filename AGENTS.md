@@ -50,6 +50,9 @@ pnpm test             # 全部自检（条数以 test/ 下实际用例为准，�
 - tag push 触发 GitHub Actions **自动 `npm publish`**，不需要人工点 Run、也不需要去 npm Promote。
 - 依赖两件事：npm 侧 Trusted Publisher 对**两个包**都允许 `npm publish`（一次性设置）；workflow 用 Node 22（OIDC 要求 npm CLI ≥ 11.5.1，Node 20 不满足）。
 
+**demo 改动 = 必须发版**：凡是 demo 有改动、需要人看的，一律 bump 版本 + 打 `vX.Y.Z` tag 推送（tag 触发 demo 包自动发布到 npm）。
+用户之后在 DSH 插件市场更新该插件即可测试，不必再问要不要发。
+
 ## 改完的 checklist
 
 - [ ] `pnpm run build` 干净（`noUnusedLocals` / `strict` 全开）
