@@ -23,6 +23,13 @@
  *   P13 裸 div 只挂 `.dshpc-segprobe`：display（同内容换名在裸 div 上活不活）
  *   P14 裸 div 的 inline `style.display` vs computed（有无内联覆盖）
  *   P15 裸 div 挂 `.dshpc-btn`：display（同文件控件族的对照组）
+ *   P16 新标签只写 `.dshpc-sga{display:inline-flex}`：CSSOM 命中几条 + 裸 div display
+ *   P17 新标签（注释在最前）+ 同一条规则：注释会不会连累后面那条
+ *   P18 新标签写 6 条拆分规则（display 在最前）：拆分形态本身会不会丢
+ *   P19 我们那张表前 5 条 CSSStyleRule 的选择器（看规则从哪开始）
+ *   P20 第一条 `.dshpc-seg` 在表里的序号 + 它前一条是谁
+ *   P21 所有 `.dshpc-seg` 规则在表里的序号
+ *   P22 运行时 `sheet.insertRule('.dshpc-seg{display:inline-flex}', 0)`：活不活（区分导入期过滤 / 运行期过滤）
  */
 
 export interface ProbeLine {
@@ -171,10 +178,11 @@ export function collectSegProbes(): ProbeLine[] {
   })
   lines.push({ id: 'P7', text: `裸 div.dshpc-seg 挂 body 下：${bareDiv('dshpc-seg', document.body)}` })
 
+  const elInlineDisplay = el instanceof HTMLElement ? el.style.display : ''
   el.classList.add('dshpc-segprobe')
   const probeDisplay = getComputedStyle(el).display
   el.classList.remove('dshpc-segprobe')
-  lines.push({ id: 'P8', text: `真实元素临时加 .dshpc-segprobe ⇒ display=${probeDisplay}` })
+  lines.push({ id: 'P8', text: `真实元素 tag=${el.tagName} inline="${elInlineDisplay}"，加 .dshpc-segprobe ⇒ display=${probeDisplay}` })
 
   const fresh = document.createElement('style')
   fresh.setAttribute('data-probe', 'seg-fresh')
@@ -214,6 +222,65 @@ export function collectSegProbes(): ProbeLine[] {
   })
   inlineProbe.remove()
   lines.push({ id: 'P15', text: `裸 div.dshpc-btn 挂 body 下：${bareDiv('dshpc-btn', document.body)}` })
+
+  /** 在新标签里复现某种写法：返回 CSSOM 里命中条数 + 裸 div 的 display。 */
+  const tryTag = (label: string, css: string, probeClass: string): string => {
+    const tag = document.createElement('style')
+    tag.setAttribute('data-probe', label)
+    tag.textContent = css
+    document.head.appendChild(tag)
+    let hit = -1
+    try {
+      const list = Array.from(tag.sheet?.cssRules ?? [])
+      hit = list.filter((r) => r instanceof CSSStyleRule && normSel(r.selectorText) === normSel(`.${probeClass}`)).length
+    } catch {
+      hit = -1
+    }
+    const div = document.createElement('div')
+    div.className = probeClass
+    document.body.appendChild(div)
+    const display = getComputedStyle(div).display
+    div.remove()
+    tag.remove()
+    return `CSSOM 命中 ${String(hit)} 条，裸 div display=${display}`
+  }
+
+  lines.push({ id: 'P16', text: `新标签只写 .dshpc-sga{display:inline-flex}（无注释）：${tryTag('sga', '.dshpc-sga{display:inline-flex}', 'dshpc-sga')}` })
+  lines.push({ id: 'P17', text: `新标签 /*c*/ + .dshpc-sgb{display:inline-flex}：${tryTag('sgb', '/* c */ .dshpc-sgb{display:inline-flex}', 'dshpc-sgb')}` })
+  lines.push({
+    id: 'P18',
+    text: `新标签 6 条拆分规则（display 在最前）：${tryTag('sgc', '.dshpc-sgc{display:inline-flex;} .dshpc-sgc{align-items:center;} .dshpc-sgc{gap:2px;} .dshpc-sgc{padding:2px;} .dshpc-sgc{border-radius:4px;} .dshpc-sgc{background:red;}', 'dshpc-sgc')}`,
+  })
+
+  // P19 / P20：我们那张表里，规则从第几条开始、`.dshpc-seg` 落在第几条 —— 判断丢规则是不是「位置型」。
+  const ourSheet = sheets.find((s) => s.owner.includes(`#${KIT_TAG_ID}`))
+  const segIndex = ourSheet?.rules.findIndex((r) => normSel(r.sel) === '.dshpc-seg') ?? -1
+  lines.push({
+    id: 'P19',
+    text:
+      ourSheet === undefined
+        ? '找不到我们的 sheet'
+        : `我们 sheet 的 CSSStyleRule ${String(ourSheet.rules.length)} 条，前 5 条：${ourSheet.rules.slice(0, 5).map((r, i) => `${String(i)}:${r.sel}`).join(' | ')}`,
+  })
+  lines.push({ id: 'P20', text: `第一条 .dshpc-seg 规则在 CSSStyleRule 序号 ${String(segIndex)}；其前一条：${segIndex > 0 && ourSheet !== undefined ? ourSheet.rules[segIndex - 1].sel : '(无)'}` })
+  lines.push({ id: 'P21', text: `我们的 sheet 里所有 .dshpc-seg 规则序号：${(ourSheet?.rules ?? []).map((r, i) => (normSel(r.sel) === '.dshpc-seg' ? String(i) : '')).filter((x) => x !== '').join(',')}` })
+
+  // P22：往我们那张表里**运行时插入**同一条规则，看它活不活。
+  //      活 ⇒ 丢规则发生在「文本导入」那一步（写法/位置问题）；死 ⇒ 运行时也在过滤（更狠）。
+  let insertResult = 'failed'
+  try {
+    const kitSheet = (document.getElementById(KIT_TAG_ID) as HTMLStyleElement | null)?.sheet ?? null
+    if (kitSheet === null) {
+      insertResult = '拿不到 sheet'
+    } else {
+      const idx = kitSheet.insertRule('.dshpc-seg{display:inline-flex}', 0)
+      insertResult = `insertRule@${String(idx)} 成功 ⇒ 真实元素 display=${getComputedStyle(el).display}`
+      kitSheet.deleteRule(idx)
+    }
+  } catch (err) {
+    insertResult = `抛错 ${String(err)}`
+  }
+  lines.push({ id: 'P22', text: `运行时往我们 sheet 插 .dshpc-seg{display:inline-flex}：${insertResult}（已 deleteRule 撤销）` })
 
   return lines
 }

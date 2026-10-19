@@ -3235,10 +3235,11 @@ function collectSegProbes() {
     text: `\u5143\u7D20 class="${el.className}"\uFF0C\u6839 ${describeRoot(el)}\uFF0Cdisplay=${getComputedStyle(el).display}`
   });
   lines.push({ id: "P7", text: `\u88F8 div.dshpc-seg \u6302 body \u4E0B\uFF1A${bareDiv("dshpc-seg", document.body)}` });
+  const elInlineDisplay = el instanceof HTMLElement ? el.style.display : "";
   el.classList.add("dshpc-segprobe");
   const probeDisplay = getComputedStyle(el).display;
   el.classList.remove("dshpc-segprobe");
-  lines.push({ id: "P8", text: `\u771F\u5B9E\u5143\u7D20\u4E34\u65F6\u52A0 .dshpc-segprobe \u21D2 display=${probeDisplay}` });
+  lines.push({ id: "P8", text: `\u771F\u5B9E\u5143\u7D20 tag=${el.tagName} inline="${elInlineDisplay}"\uFF0C\u52A0 .dshpc-segprobe \u21D2 display=${probeDisplay}` });
   const fresh = document.createElement("style");
   fresh.setAttribute("data-probe", "seg-fresh");
   fresh.textContent = ".dshpc-seg{display:inline-flex}";
@@ -3273,6 +3274,54 @@ function collectSegProbes() {
   });
   inlineProbe.remove();
   lines.push({ id: "P15", text: `\u88F8 div.dshpc-btn \u6302 body \u4E0B\uFF1A${bareDiv("dshpc-btn", document.body)}` });
+  const tryTag = (label, css, probeClass) => {
+    const tag = document.createElement("style");
+    tag.setAttribute("data-probe", label);
+    tag.textContent = css;
+    document.head.appendChild(tag);
+    let hit = -1;
+    try {
+      const list = Array.from(tag.sheet?.cssRules ?? []);
+      hit = list.filter((r) => r instanceof CSSStyleRule && normSel(r.selectorText) === normSel(`.${probeClass}`)).length;
+    } catch {
+      hit = -1;
+    }
+    const div = document.createElement("div");
+    div.className = probeClass;
+    document.body.appendChild(div);
+    const display = getComputedStyle(div).display;
+    div.remove();
+    tag.remove();
+    return `CSSOM \u547D\u4E2D ${String(hit)} \u6761\uFF0C\u88F8 div display=${display}`;
+  };
+  lines.push({ id: "P16", text: `\u65B0\u6807\u7B7E\u53EA\u5199 .dshpc-sga{display:inline-flex}\uFF08\u65E0\u6CE8\u91CA\uFF09\uFF1A${tryTag("sga", ".dshpc-sga{display:inline-flex}", "dshpc-sga")}` });
+  lines.push({ id: "P17", text: `\u65B0\u6807\u7B7E /*c*/ + .dshpc-sgb{display:inline-flex}\uFF1A${tryTag("sgb", "/* c */ .dshpc-sgb{display:inline-flex}", "dshpc-sgb")}` });
+  lines.push({
+    id: "P18",
+    text: `\u65B0\u6807\u7B7E 6 \u6761\u62C6\u5206\u89C4\u5219\uFF08display \u5728\u6700\u524D\uFF09\uFF1A${tryTag("sgc", ".dshpc-sgc{display:inline-flex;} .dshpc-sgc{align-items:center;} .dshpc-sgc{gap:2px;} .dshpc-sgc{padding:2px;} .dshpc-sgc{border-radius:4px;} .dshpc-sgc{background:red;}", "dshpc-sgc")}`
+  });
+  const ourSheet = sheets.find((s) => s.owner.includes(`#${KIT_TAG_ID}`));
+  const segIndex = ourSheet?.rules.findIndex((r) => normSel(r.sel) === ".dshpc-seg") ?? -1;
+  lines.push({
+    id: "P19",
+    text: ourSheet === void 0 ? "\u627E\u4E0D\u5230\u6211\u4EEC\u7684 sheet" : `\u6211\u4EEC sheet \u7684 CSSStyleRule ${String(ourSheet.rules.length)} \u6761\uFF0C\u524D 5 \u6761\uFF1A${ourSheet.rules.slice(0, 5).map((r, i) => `${String(i)}:${r.sel}`).join(" | ")}`
+  });
+  lines.push({ id: "P20", text: `\u7B2C\u4E00\u6761 .dshpc-seg \u89C4\u5219\u5728 CSSStyleRule \u5E8F\u53F7 ${String(segIndex)}\uFF1B\u5176\u524D\u4E00\u6761\uFF1A${segIndex > 0 && ourSheet !== void 0 ? ourSheet.rules[segIndex - 1].sel : "(\u65E0)"}` });
+  lines.push({ id: "P21", text: `\u6211\u4EEC\u7684 sheet \u91CC\u6240\u6709 .dshpc-seg \u89C4\u5219\u5E8F\u53F7\uFF1A${(ourSheet?.rules ?? []).map((r, i) => normSel(r.sel) === ".dshpc-seg" ? String(i) : "").filter((x) => x !== "").join(",")}` });
+  let insertResult = "failed";
+  try {
+    const kitSheet = document.getElementById(KIT_TAG_ID)?.sheet ?? null;
+    if (kitSheet === null) {
+      insertResult = "\u62FF\u4E0D\u5230 sheet";
+    } else {
+      const idx = kitSheet.insertRule(".dshpc-seg{display:inline-flex}", 0);
+      insertResult = `insertRule@${String(idx)} \u6210\u529F \u21D2 \u771F\u5B9E\u5143\u7D20 display=${getComputedStyle(el).display}`;
+      kitSheet.deleteRule(idx);
+    }
+  } catch (err) {
+    insertResult = `\u629B\u9519 ${String(err)}`;
+  }
+  lines.push({ id: "P22", text: `\u8FD0\u884C\u65F6\u5F80\u6211\u4EEC sheet \u63D2 .dshpc-seg{display:inline-flex}\uFF1A${insertResult}\uFF08\u5DF2 deleteRule \u64A4\u9500\uFF09` });
   return lines;
 }
 
@@ -3366,7 +3415,7 @@ rule: ${rule}`);
     const timer = setTimeout(() => {
       const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`);
       setProbes(lines);
-      console.log(`[probe] build ${"1019-2125-ctqn"}
+      console.log(`[probe] build ${"1019-2129-nyyu"}
 ${lines.join("\n")}`);
     }, 150);
     return () => {
@@ -3376,7 +3425,7 @@ ${lines.join("\n")}`);
   const buildBadge = (0, import_react31.createElement)(
     "div",
     {
-      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2125-ctqn"}
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2129-nyyu"}
 \u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
       style: {
         fontFamily: "var(--dshpc-font-mono)",
@@ -3387,7 +3436,7 @@ ${lines.join("\n")}`);
         wordBreak: "break-all"
       }
     },
-    `build ${"1019-2125-ctqn"}`
+    `build ${"1019-2129-nyyu"}`
   );
   return (0, import_react31.createElement)(
     "div",
