@@ -32,6 +32,9 @@ export type DemoMessageKey =
   | 'btnLabelCancel'
   | 'btnLabelDelete'
   | 'btnLabelMixed'
+  | 'btnIconOnly'
+  | 'btnHintTitle'
+  | 'btnHintHint'
   | 'inputHint'
   | 'checkboxHint'
   | 'designTokenHint'
@@ -76,7 +79,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnVariantTitle: '外观档（10 档）',
     btnVariantHint: '实心：primary / secondary / danger / success / warning / info；线框：outline / danger-outline；无底：ghost / link',
     btnSizeTitle: '尺寸 / 图标 / block',
-    btnSizeHint: 'sm 24 · md 28 · lg 32 同高；icon 前置、iconRight 后置、block 撑满父宽',
+    btnSizeHint: 'sm 24 · md 28 · lg 32 同高；icon 收的是 ReactNode——官方图标组件、自绘 SVG、甚至一个字符都行，不是名字也不是 class（下面三颗分别是这三种）；iconRight 后置、block 撑满父宽',
+    btnIconOnly: '纯图标钮',
+    btnHintTitle: '问号提示（FieldHint）',
+    btnHintHint: '独立组件，放哪都行：标题后 / 按钮后 / 一段文字后 / 输入框后；鼠标悬停或键盘聚焦浮出气泡',
     btnStateTitle: '状态',
     btnStateHint: 'disabled 半透明不可点；loading 前置同色小圈并自动禁用',
     btnColorTitle: '自定义颜色',
@@ -128,7 +134,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnVariantTitle: 'Variants (10)',
     btnVariantHint: 'Solid: primary / secondary / danger / success / warning / info; outlined: outline / danger-outline; flat: ghost / link',
     btnSizeTitle: 'Sizes / icons / block',
-    btnSizeHint: 'sm 24 · md 28 · lg 32, same height; icon leading, iconRight trailing, block fills the parent',
+    btnSizeHint: 'sm 24 · md 28 · lg 32, same height; icon takes any ReactNode — an official icon component, your own SVG, even a single character (not a name, not a class); iconRight trails, block fills the parent',
+    btnIconOnly: 'Icon-only',
+    btnHintTitle: 'Question-mark hint (FieldHint)',
+    btnHintHint: 'Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal',
     btnStateTitle: 'States',
     btnStateHint: 'disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself',
     btnColorTitle: 'Custom colors',

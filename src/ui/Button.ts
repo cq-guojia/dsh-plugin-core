@@ -107,9 +107,11 @@ function colorVars(variant: ButtonVariant, color: string | undefined): CSSProper
 }
 
 /** 组装按钮 class（结构一套 + 轴类）。 */
-function buttonClass(variant: ButtonVariant, size: ButtonSize, block: boolean, extra?: string): string {
+function buttonClass(variant: ButtonVariant, size: ButtonSize, block: boolean, hasIcon: boolean, extra?: string): string {
   return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}`
     + `${block ? ' dshpc-btn--block' : ''}`
+    // 前置图标标记：block 时靠它把文字拉回视觉中心（见 controls-css 的 --icon-start 规则）
+    + `${hasIcon ? ' dshpc-btn--icon-start' : ''}`
     + `${extra !== undefined && extra !== '' ? ` ${extra}` : ''}`
 }
 
@@ -129,7 +131,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     ...rest,
     type: (rest.type as string | undefined) ?? 'button',
     disabled: rest.disabled === true || loading,
-    className: buttonClass(variant, size, block, className),
+    className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, className),
     style: { ...colorVars(variant, color), ...style },
   }
   return h('button', attrs as never,

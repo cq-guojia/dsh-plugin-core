@@ -45,14 +45,19 @@ function useLocaleTick(): void {
 function DemoPage(): ReturnType<typeof h> {
   useLocaleTick()
   const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
+  // ⚠️ 高度必须两端一起给：
+  //   · alignItems 必须是 stretch（默认）；写 flex-start 会让两侧高度退化成内容高 ⇒ main 的
+  //     overflowY:auto 失去可滚高度，超出部分被宿主容器裁掉、连滚动条都不出现（2026-10-19 真踩过：
+  //     用户滚不到「滑动块」那一节）。
+  //   · main 自己再给 height:100% + minHeight:0（flex 子项的默认 min-height:auto 会撑破容器）。
   return h(
     'div',
-    { style: { display: 'flex', alignItems: 'flex-start', height: '100%', minHeight: 0 } },
+    { style: { display: 'flex', alignItems: 'stretch', height: '100%', minHeight: 0, overflow: 'hidden' } },
     h(
       'aside',
       {
         style: {
-          width: '180px', flex: 'none', padding: '14px 10px', overflowY: 'auto',
+          width: '180px', flex: 'none', height: '100%', boxSizing: 'border-box', padding: '14px 10px', overflowY: 'auto',
           borderRight: '1px solid var(--dshpc-border-faint)', fontFamily: 'var(--dshpc-font-md)',
         },
       },
@@ -76,7 +81,7 @@ function DemoPage(): ReturnType<typeof h> {
     ),
     h(
       'main',
-      { style: { flex: 1, minWidth: 0, overflowY: 'auto', padding: '12px 22px 60px' } },
+      { style: { flex: 1, minWidth: 0, minHeight: 0, height: '100%', boxSizing: 'border-box', overflowY: 'auto', padding: '12px 22px 60px' } },
       h(Sections, { active, onNavigate: setActive }),
     ),
   )

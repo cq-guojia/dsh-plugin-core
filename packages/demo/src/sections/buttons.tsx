@@ -43,6 +43,15 @@ function iconOf(name: string, size = 14): ReturnType<typeof h> | null {
   return found === undefined ? null : h(found.Icon, { size })
 }
 
+/** 自绘 SVG：演示 icon 参数不认「名字」——这里直接传一个普通的 React 元素进去。 */
+function StarSvg(): ReturnType<typeof h> {
+  return h('svg', { width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', 'aria-hidden': true },
+    h('path', {
+      d: 'M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z',
+      stroke: 'currentColor', strokeWidth: 1.2, strokeLinejoin: 'round',
+    }))
+}
+
 /** 图标尺寸随按钮档位走（24 高配 12 / 28 配 14 / 32 配 16）。 */
 const ICON_SIZE: Record<ButtonSize, number> = { sm: 12, md: 14, lg: 16 }
 
@@ -128,19 +137,39 @@ export function ButtonsSection(): ReturnType<typeof h> {
         h(Labeled, { label: 'size' },
           (['sm', 'md', 'lg'] as const).map((size) =>
             h(Button, { key: size, size, variant: 'outline', icon: iconOf('plus', ICON_SIZE[size]) }, size))),
+        // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
         h(Labeled, { label: 'icon' },
-          h(Button, { variant: 'primary', icon: iconOf('send', ICON_SIZE.lg) }, '发送'),
-          h(Button, { variant: 'outline', icon: iconOf('search', ICON_SIZE.lg) }, '搜索'),
-          h(Button, { variant: 'ghost', icon: iconOf('edit', ICON_SIZE.lg) }, '编辑')),
+          h(Button, { variant: 'primary', icon: iconOf('send', ICON_SIZE.lg) }, '官方图标'),
+          h(Button, { variant: 'outline', icon: h(StarSvg, null) }, '自绘 SVG'),
+          h(Button, { variant: 'ghost', icon: '+' }, '一个字符')),
         h(Labeled, { label: 'iconRight' },
           h(Button, { variant: 'outline', iconRight: iconOf('chevron', ICON_SIZE.lg) }, '更多'),
           h(Button, { variant: 'primary' }, '下一步')),
+        // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
         h(Labeled, { label: 'block' },
-          h('div', { style: { width: '240px' } },
-            h(Button, { variant: 'primary', block: true, icon: iconOf('check', ICON_SIZE.lg) }, '撑满父宽'))),
-        h(Labeled, { label: 'icon only' },
+          h('div', { style: { width: '260px' } },
+            h(Button, { variant: 'primary', block: true, icon: iconOf('check', ICON_SIZE.lg) }, '撑满父宽'),
+            h('div', { style: { height: '8px' } }),
+            h(Button, { variant: 'outline', block: true }, '无图标对照'))),
+        h(Labeled, { label: t('btnIconOnly') },
           BUTTON_ICONS.slice(0, 6).map((item) =>
             h(IconButton, { key: item.name, icon: h(item.Icon, { size: 16 }), label: item.name })))),
+    ),
+
+    // ── 问号提示：证明它不属于 Input 家族，随处可挂 ──────────────────────
+    h(
+      Demo,
+      { title: t('btnHintTitle'), hint: t('btnHintHint') },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
+        h(Row, null,
+          h('b', { style: { fontSize: '13px' } }, '一个标题'),
+          h(FieldHint, { text: '挂在标题后面：说明这一块是干什么的。' })),
+        h(Row, null,
+          h(Button, { variant: 'outline' }, '一个按钮'),
+          h(FieldHint, { text: '挂在按钮后面：解释这个操作会发生什么。' })),
+        h(Row, null,
+          h('span', { style: { fontSize: '13px' } }, '一段普通文字'),
+          h(FieldHint, { text: '挂在任何文字后面都行，它只是一个 14px 的内联元素。' }))),
     ),
 
     // ── 状态 ───────────────────────────────────────────────────────────

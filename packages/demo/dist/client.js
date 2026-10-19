@@ -446,17 +446,22 @@ var BUTTON_CSS = `
 
    \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C
    \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */
-.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;
+.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;
   --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);
   appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;
   box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);
   background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-btn--sm{height:var(--dshpc-control-h-sm);padding:0 10px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}
-.dshpc-btn--md{height:var(--dshpc-control-h-md);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
-.dshpc-btn--lg{height:var(--dshpc-control-h-lg);padding:0 14px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}
+.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 /* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */
 .dshpc-btn--block{display:flex;width:100%;}
+/* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A
+   \u5185\u5BB9\u7EC4 [\u56FE\u6807 + \u95F4\u8DDD + \u6587\u5B57] \u6574\u4F53\u5728\u76D2\u5185\u5C45\u4E2D\u65F6\uFF0C**\u6587\u5B57**\u7684\u4E2D\u5FC3\u4F1A\u88AB\u56FE\u6807\u63A8\u53F3\u534A\u683C\u3002
+   \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002
+   \u56FE\u6807\u5BBD\u6309 1.2em \u4F30\uFF08\u5B98\u65B9\u56FE\u6807 14/16px vs \u5B57\u53F7 12/13px\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */
+.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}
 .dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;}
 /* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u4E2A\u540C\u8272\u5C0F\u5708\uFF08\u5C3A\u5BF8\u968F\u5B57\u53F7\uFF0C\u7F29\u653E\u4E0D\u4F9D\u8D56\u5E38\u91CF\uFF09 */
 .dshpc-btn__spinner{display:inline-block;flex:none;width:1em;height:1em;box-sizing:border-box;
@@ -1525,8 +1530,8 @@ function colorVars(variant, color) {
     "--btn-bg-active": `color-mix(in srgb, ${color} 18%, transparent)`
   };
 }
-function buttonClass(variant, size, block, extra) {
-  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${block ? " dshpc-btn--block" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
+function buttonClass(variant, size, block, hasIcon, extra) {
+  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${block ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
 }
 function Button(props) {
   ensureControls();
@@ -1535,7 +1540,7 @@ function Button(props) {
     ...rest,
     type: rest.type ?? "button",
     disabled: rest.disabled === true || loading,
-    className: buttonClass(variant, size, block, className),
+    className: buttonClass(variant, size, block, icon !== void 0 && icon !== null && !loading, className),
     style: { ...colorVars(variant, color), ...style }
   };
   return (0, import_react9.createElement)("button", attrs, loading ? (0, import_react9.createElement)("span", { className: "dshpc-btn__spinner", "aria-hidden": true }) : icon !== void 0 && icon !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null, children, iconRight !== void 0 && iconRight !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
@@ -2021,7 +2026,10 @@ var DICT2 = {
     btnVariantTitle: "\u5916\u89C2\u6863\uFF0810 \u6863\uFF09",
     btnVariantHint: "\u5B9E\u5FC3\uFF1Aprimary / secondary / danger / success / warning / info\uFF1B\u7EBF\u6846\uFF1Aoutline / danger-outline\uFF1B\u65E0\u5E95\uFF1Aghost / link",
     btnSizeTitle: "\u5C3A\u5BF8 / \u56FE\u6807 / block",
-    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32 \u540C\u9AD8\uFF1Bicon \u524D\u7F6E\u3001iconRight \u540E\u7F6E\u3001block \u6491\u6EE1\u7236\u5BBD",
+    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32 \u540C\u9AD8\uFF1Bicon \u6536\u7684\u662F ReactNode\u2014\u2014\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6\u3001\u81EA\u7ED8 SVG\u3001\u751A\u81F3\u4E00\u4E2A\u5B57\u7B26\u90FD\u884C\uFF0C\u4E0D\u662F\u540D\u5B57\u4E5F\u4E0D\u662F class\uFF08\u4E0B\u9762\u4E09\u9897\u5206\u522B\u662F\u8FD9\u4E09\u79CD\uFF09\uFF1BiconRight \u540E\u7F6E\u3001block \u6491\u6EE1\u7236\u5BBD",
+    btnIconOnly: "\u7EAF\u56FE\u6807\u94AE",
+    btnHintTitle: "\u95EE\u53F7\u63D0\u793A\uFF08FieldHint\uFF09",
+    btnHintHint: "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF1A\u6807\u9898\u540E / \u6309\u94AE\u540E / \u4E00\u6BB5\u6587\u5B57\u540E / \u8F93\u5165\u6846\u540E\uFF1B\u9F20\u6807\u60AC\u505C\u6216\u952E\u76D8\u805A\u7126\u6D6E\u51FA\u6C14\u6CE1",
     btnStateTitle: "\u72B6\u6001",
     btnStateHint: "disabled \u534A\u900F\u660E\u4E0D\u53EF\u70B9\uFF1Bloading \u524D\u7F6E\u540C\u8272\u5C0F\u5708\u5E76\u81EA\u52A8\u7981\u7528",
     btnColorTitle: "\u81EA\u5B9A\u4E49\u989C\u8272",
@@ -2073,7 +2081,10 @@ var DICT2 = {
     btnVariantTitle: "Variants (10)",
     btnVariantHint: "Solid: primary / secondary / danger / success / warning / info; outlined: outline / danger-outline; flat: ghost / link",
     btnSizeTitle: "Sizes / icons / block",
-    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32, same height; icon leading, iconRight trailing, block fills the parent",
+    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32, same height; icon takes any ReactNode \u2014 an official icon component, your own SVG, even a single character (not a name, not a class); iconRight trails, block fills the parent",
+    btnIconOnly: "Icon-only",
+    btnHintTitle: "Question-mark hint (FieldHint)",
+    btnHintHint: "Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal",
     btnStateTitle: "States",
     btnStateHint: "disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself",
     btnColorTitle: "Custom colors",
@@ -2205,6 +2216,18 @@ function iconOf(name, size = 14) {
   const found = BUTTON_ICONS.find((item) => item.name === name);
   return found === void 0 ? null : (0, import_react20.createElement)(found.Icon, { size });
 }
+function StarSvg() {
+  return (0, import_react20.createElement)(
+    "svg",
+    { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
+    (0, import_react20.createElement)("path", {
+      d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
+      stroke: "currentColor",
+      strokeWidth: 1.2,
+      strokeLinejoin: "round"
+    })
+  );
+}
 var ICON_SIZE = { sm: 12, md: 14, lg: 16 };
 var VARIANTS = [
   { value: "primary", icon: "check" },
@@ -2300,12 +2323,13 @@ function ButtonsSection() {
           { label: "size" },
           ["sm", "md", "lg"].map((size) => (0, import_react20.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
         ),
+        // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
         (0, import_react20.createElement)(
           Labeled,
           { label: "icon" },
-          (0, import_react20.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u53D1\u9001"),
-          (0, import_react20.createElement)(Button, { variant: "outline", icon: iconOf("search", ICON_SIZE.lg) }, "\u641C\u7D22"),
-          (0, import_react20.createElement)(Button, { variant: "ghost", icon: iconOf("edit", ICON_SIZE.lg) }, "\u7F16\u8F91")
+          (0, import_react20.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react20.createElement)(Button, { variant: "outline", icon: (0, import_react20.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react20.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
         ),
         (0, import_react20.createElement)(
           Labeled,
@@ -2313,19 +2337,49 @@ function ButtonsSection() {
           (0, import_react20.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
           (0, import_react20.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
         ),
+        // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
         (0, import_react20.createElement)(
           Labeled,
           { label: "block" },
           (0, import_react20.createElement)(
             "div",
-            { style: { width: "240px" } },
-            (0, import_react20.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD")
+            { style: { width: "260px" } },
+            (0, import_react20.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react20.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react20.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
           )
         ),
         (0, import_react20.createElement)(
           Labeled,
-          { label: "icon only" },
+          { label: t2("btnIconOnly") },
           BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react20.createElement)(IconButton, { key: item.name, icon: (0, import_react20.createElement)(item.Icon, { size: 16 }), label: item.name }))
+        )
+      )
+    ),
+    // ── 问号提示：证明它不属于 Input 家族，随处可挂 ──────────────────────
+    (0, import_react20.createElement)(
+      Demo,
+      { title: t2("btnHintTitle"), hint: t2("btnHintHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        (0, import_react20.createElement)(
+          Row,
+          null,
+          (0, import_react20.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react20.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+        ),
+        (0, import_react20.createElement)(
+          Row,
+          null,
+          (0, import_react20.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react20.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+        ),
+        (0, import_react20.createElement)(
+          Row,
+          null,
+          (0, import_react20.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react20.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
         )
       )
     ),
@@ -3311,13 +3365,15 @@ function DemoPage() {
   const [active, setActive] = (0, import_react31.useState)(ALL_SECTIONS[0].id);
   return (0, import_react31.createElement)(
     "div",
-    { style: { display: "flex", alignItems: "flex-start", height: "100%", minHeight: 0 } },
+    { style: { display: "flex", alignItems: "stretch", height: "100%", minHeight: 0, overflow: "hidden" } },
     (0, import_react31.createElement)(
       "aside",
       {
         style: {
           width: "180px",
           flex: "none",
+          height: "100%",
+          boxSizing: "border-box",
           padding: "14px 10px",
           overflowY: "auto",
           borderRight: "1px solid var(--dshpc-border-faint)",
@@ -3353,7 +3409,7 @@ function DemoPage() {
     ),
     (0, import_react31.createElement)(
       "main",
-      { style: { flex: 1, minWidth: 0, overflowY: "auto", padding: "12px 22px 60px" } },
+      { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
       (0, import_react31.createElement)(Sections, { active, onNavigate: setActive })
     )
   );
