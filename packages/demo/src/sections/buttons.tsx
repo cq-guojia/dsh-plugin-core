@@ -106,7 +106,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
   const [seg, setSeg] = useState<'day' | 'week' | 'month'>('week')
   const [filter, setFilter] = useState('all')
   const [multi, setMulti] = useState<string[]>(['1'])
-  const [view, setView] = useState<'render' | 'source'>('render')
+
 
   return h(
     'div',
@@ -275,7 +275,9 @@ export function ButtonsSection(): ReturnType<typeof h> {
           h(FieldHint, { text: t('fieldHintDate') }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
-        h(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: '次' }),
+        // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
+        //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
+        h(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: '次', style: { alignSelf: 'flex-start' } }),
         h(Textarea, { value: text, onChange: setText, placeholder: '多行输入' }),
       ),
     ),
@@ -303,7 +305,30 @@ export function ButtonsSection(): ReturnType<typeof h> {
           }),
           h(Segmented<'day' | 'week' | 'month'>, {
             variant: 'inset',
+            bordered: true,
+            items: [
+              { value: 'day', label: '日' },
+              { value: 'week', label: '周' },
+              { value: 'month', label: '月' },
+            ],
+            value: seg,
+            onChange: setSeg,
+          }),
+          h(Segmented<'day' | 'week' | 'month'>, {
+            variant: 'inset',
             size: 'sm',
+            items: [
+              { value: 'day', label: '日' },
+              { value: 'week', label: '周' },
+              { value: 'month', label: '月' },
+            ],
+            value: seg,
+            onChange: setSeg,
+          }),
+          h(Segmented<'day' | 'week' | 'month'>, {
+            variant: 'inset',
+            size: 'sm',
+            bordered: true,
             items: [
               { value: 'day', label: '日' },
               { value: 'week', label: '周' },
@@ -326,6 +351,19 @@ export function ButtonsSection(): ReturnType<typeof h> {
           value: filter,
           onChange: setFilter,
         }),
+        h(Segmented, {
+          variant: 'inset',
+          bordered: true,
+          items: [
+            { value: 'all', label: t('segAll'), count: 11 },
+            { value: 'doing', label: t('segDoing'), count: 5 },
+            { value: 'claimed', label: t('segClaimed'), count: 11 },
+            { value: 'blocked', label: t('segBlocked') },
+            { value: 'stalled', label: t('segStalled') },
+          ],
+          value: filter,
+          onChange: setFilter,
+        }),
         // 星期多选方块（蓝底选中、近似方形）
         h(Segmented, {
           multiple: true,
@@ -338,29 +376,17 @@ export function ButtonsSection(): ReturnType<typeof h> {
           value: multi,
           onChange: setMulti,
         }),
-        // default 变体（外描边）：预览顶栏切换这类小场景在用
-        h(Segmented<'render' | 'source'>, {
-          size: 'sm',
-          variant: 'default',
-          label: 'default 外观示例',
-          items: [
-            { value: 'render', label: t('segPreview') },
-            { value: 'source', label: t('segSource') },
-          ],
-          value: view,
-          onChange: setView,
-        }),
-        // bordered 变体（最外 1px 描边 + 选中段描边块）：与上一颗无框版共用同一状态，方便对比总高一致
-        h(Segmented<'render' | 'source'>, {
-          size: 'sm',
+        h(Segmented, {
+          multiple: true,
+          className: 'dshpc-seg--weekday',
           bordered: true,
-          label: 'bordered 外观示例',
-          items: [
-            { value: 'render', label: t('segPreview') },
-            { value: 'source', label: t('segSource') },
-          ],
-          value: view,
-          onChange: setView,
+          label: '星期（带外框）',
+          items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
+            value: String(n),
+            label: t(`weekday${n}` as DemoMessageKey),
+          })),
+          value: multi,
+          onChange: setMulti,
         }),
       ),
     ),

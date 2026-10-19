@@ -52,8 +52,6 @@ export type DemoMessageKey =
   | 'segClaimed'
   | 'segBlocked'
   | 'segStalled'
-  | 'segPreview'
-  | 'segSource'
   | 'weekday1'
   | 'weekday2'
   | 'weekday3'
@@ -136,8 +134,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     segClaimed: '待认领',
     segBlocked: '阻塞',
     segStalled: '停滞',
-    segPreview: '预览',
-    segSource: '源码',
     weekday1: '一',
     weekday2: '二',
     weekday3: '三',
@@ -217,8 +213,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     segClaimed: 'Open',
     segBlocked: 'Blocked',
     segStalled: 'Stalled',
-    segPreview: 'Render',
-    segSource: 'Source',
     weekday1: 'Mo',
     weekday2: 'Tu',
     weekday3: 'We',
