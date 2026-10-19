@@ -889,7 +889,7 @@ var CONTROLS_CSS = [
   CARD_CSS,
   CHIP_CSS
 ].join("\n");
-var current = createStyleKit({ id: "dsh-plugin-core-ui", prefix: "dsh" });
+var current = createStyleKit({ id: "dsh-plugin-core-ui", prefix: "dshpc" });
 function setStyleKit(kit) {
   current = kit;
 }
@@ -1998,17 +1998,17 @@ function t2(key, vars) {
 
 // packages/demo/src/sections/design.tsx
 var TOKENS = [
-  { label: "business", cssVar: "--tdt-business" },
-  { label: "success", cssVar: "--tdt-success" },
-  { label: "warning", cssVar: "--tdt-warning" },
-  { label: "danger", cssVar: "--tdt-danger" },
-  { label: "surface-1", cssVar: "--tdt-surface-1" },
-  { label: "surface-2", cssVar: "--tdt-surface-2" },
-  { label: "surface-sunken", cssVar: "--tdt-surface-sunken" },
-  { label: "border", cssVar: "--tdt-border" },
-  { label: "fg", cssVar: "--tdt-fg" },
-  { label: "fg-3", cssVar: "--tdt-fg-3" },
-  { label: "fg-4", cssVar: "--tdt-fg-4" }
+  { label: "business", cssVar: "--dshpc-business" },
+  { label: "success", cssVar: "--dshpc-success" },
+  { label: "warning", cssVar: "--dshpc-warning" },
+  { label: "danger", cssVar: "--dshpc-danger" },
+  { label: "surface-1", cssVar: "--dshpc-surface-1" },
+  { label: "surface-2", cssVar: "--dshpc-surface-2" },
+  { label: "surface-sunken", cssVar: "--dshpc-surface-sunken" },
+  { label: "border", cssVar: "--dshpc-border" },
+  { label: "fg", cssVar: "--dshpc-fg" },
+  { label: "fg-3", cssVar: "--dshpc-fg-3" },
+  { label: "fg-4", cssVar: "--dshpc-fg-4" }
 ];
 function DesignSection() {
   return (0, import_react19.createElement)(
@@ -2029,11 +2029,11 @@ function DesignSection() {
                 height: "40px",
                 borderRadius: "6px",
                 background: `var(${t3.cssVar})`,
-                border: "1px solid var(--tdt-border-faint)"
+                border: "1px solid var(--dshpc-border-faint)"
               }
             }),
             (0, import_react19.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, t3.label),
-            (0, import_react19.createElement)("div", { style: { fontSize: "10px", color: "var(--tdt-fg-4)" } }, t3.cssVar)
+            (0, import_react19.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, t3.cssVar)
           )
         )
       )
@@ -2051,7 +2051,7 @@ ensureControls()`
       },
       (0, import_react19.createElement)(
         "div",
-        { style: { color: "var(--tdt-fg-3)", fontSize: "12px" } },
+        { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
         t2("designInjectNote")
       )
     )
@@ -2094,7 +2094,7 @@ function ButtonsSection() {
         (0, import_react20.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react20.createElement)("span", { style: { color: "var(--tdt-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
+          (0, import_react20.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
           (0, import_react20.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F" }),
           (0, import_react20.createElement)(FieldHint, { text: t2("fieldHintDate") })
         ),
@@ -2326,12 +2326,12 @@ function FeedbackSection() {
         (0, import_react22.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" }),
         (0, import_react22.createElement)(
           "div",
-          { style: { border: "1px solid var(--tdt-border-faint)", borderRadius: "8px", padding: "10px" } },
+          { style: { border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "10px" } },
           boom ? (0, import_react22.createElement)(ErrorBoundary, null, (0, import_react22.createElement)(Boom, null)) : (0, import_react22.createElement)(Button, { variant: "danger", onClick: () => setBoom(true) }, "\u70B9\u6211\u629B\u9519\uFF08\u770B\u8FB9\u754C\u515C\u5E95\uFF09")
         ),
         (0, import_react22.createElement)(
           "div",
-          { style: { color: "var(--tdt-fg-3)", fontSize: "12px" } },
+          { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
           t2("loadingNote")
         )
       )
@@ -2361,10 +2361,10 @@ function DisplaySection() {
             { style: { display: "flex", alignItems: "baseline", gap: "8px" } },
             (0, import_react23.createElement)(
               "div",
-              { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--tdt-font-md)" } },
+              { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
               "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
             ),
-            (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            (0, import_react23.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
           ),
           (0, import_react23.createElement)(
             "div",
@@ -2384,7 +2384,7 @@ function DisplaySection() {
             (a) => (0, import_react23.createElement)(
               Card,
               { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react23.createElement)("div", { style: { fontSize: "var(--tdt-font-sm)", color: "var(--tdt-fg-2)" } }, `accent="${a}"`)
+              (0, import_react23.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
@@ -2395,21 +2395,21 @@ function DisplaySection() {
       { title: t2("demoStripTitle"), hint: t2("displayStripHint") },
       (0, import_react23.createElement)(
         "div",
-        { style: { maxWidth: "640px", background: "var(--tdt-surface-sunken)", borderRadius: "8px", overflow: "hidden" } },
+        { style: { maxWidth: "640px", background: "var(--dshpc-surface-sunken)", borderRadius: "8px", overflow: "hidden" } },
         (0, import_react23.createElement)(
           StripCard,
           {
             accent: "business",
-            action: (0, import_react23.createElement)("span", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+            action: (0, import_react23.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
           },
-          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
           (0, import_react23.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
             (0, import_react23.createElement)(Chip, null, "NAS-Docker"),
             (0, import_react23.createElement)(
               "span",
-              { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)" } },
+              { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
             )
           )
@@ -2417,8 +2417,8 @@ function DisplaySection() {
         (0, import_react23.createElement)(
           StripCard,
           { accent: "success" },
-          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react23.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
         (0, import_react23.createElement)(
           StripCard,
@@ -2427,10 +2427,10 @@ function DisplaySection() {
             expanded: open,
             onToggle: () => setOpen(!open),
             action: (0, import_react23.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD"),
-            panel: (0, import_react23.createElement)("div", { style: { fontSize: "12px", color: "var(--tdt-fg-3)" } }, "\u5C55\u5F00\u540E\u7684\u8BE6\u60C5\u9762\u677F")
+            panel: (0, import_react23.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } }, "\u5C55\u5F00\u540E\u7684\u8BE6\u60C5\u9762\u677F")
           },
-          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--tdt-font-md)" } }, "\u6709\u8B66\u544A\uFF08\u53EF\u6298\u53E0\uFF0C\u70B9\u53F3\u4FA7\u7BAD\u5934\uFF09"),
-          (0, import_react23.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "var(--tdt-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 8s \xB7 1 \u4E2A\u8B66\u544A")
+          (0, import_react23.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6709\u8B66\u544A\uFF08\u53EF\u6298\u53E0\uFF0C\u70B9\u53F3\u4FA7\u7BAD\u5934\uFF09"),
+          (0, import_react23.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 8s \xB7 1 \u4E2A\u8B66\u544A")
         )
       )
     ),
@@ -2508,8 +2508,8 @@ function UtilsSection() {
     )
   );
 }
-var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--tdt-fg-3)" };
-var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--tdt-border-faint)" };
+var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
+var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 
 // packages/demo/src/sections/explorer.tsx
 var import_react27 = require("react");
@@ -2848,7 +2848,7 @@ function ExplorerSection() {
             width: "520px",
             height: "380px",
             overflow: "hidden",
-            border: "1px solid var(--tdt-border)",
+            border: "1px solid var(--dshpc-border)",
             borderRadius: "8px"
           }
         },
@@ -2861,7 +2861,7 @@ function ExplorerSection() {
       ),
       (0, import_react27.createElement)(
         "div",
-        { style: { fontSize: "12px", color: "var(--tdt-fg-3)", alignSelf: "center" } },
+        { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", alignSelf: "center" } },
         selected === null ? "\u70B9\u5DE6\u4FA7\u6587\u4EF6\u8BD5\u8BD5" : `\u5DF2\u9009\u4E2D\uFF1A${selected}`
       )
     )
@@ -2968,13 +2968,13 @@ function Demo(props) {
       style: {
         marginBottom: "28px",
         padding: "16px 18px",
-        border: "1px solid var(--tdt-border-faint)",
+        border: "1px solid var(--dshpc-border-faint)",
         borderRadius: "8px",
-        background: "var(--tdt-surface-1)"
+        background: "var(--dshpc-surface-1)"
       }
     },
     (0, import_react30.createElement)("h3", { style: { margin: "0 0 2px", fontSize: "15px" } }, props.title),
-    props.hint === void 0 ? null : (0, import_react30.createElement)("div", { style: { color: "var(--tdt-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
+    props.hint === void 0 ? null : (0, import_react30.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
     (0, import_react30.createElement)("div", { style: { marginBottom: props.code === void 0 ? 0 : "12px" } }, props.children ?? null),
     props.code === void 0 ? null : (0, import_react30.createElement)(
       "pre",
@@ -2984,9 +2984,9 @@ function Demo(props) {
           padding: "10px 12px",
           borderRadius: "6px",
           overflowX: "auto",
-          background: "var(--tdt-code-surface)",
-          color: "var(--tdt-fg)",
-          font: "var(--tdt-code-font)",
+          background: "var(--dshpc-code-surface)",
+          color: "var(--dshpc-fg)",
+          font: "var(--dshpc-code-font)",
           fontSize: "12px"
         }
       },
@@ -2999,7 +2999,7 @@ function SectionHead2(props) {
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
     (0, import_react30.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react30.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--tdt-business)", borderRadius: "2px", marginTop: "6px" } })
+    (0, import_react30.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
   );
 }
 var ALL_SECTIONS = [
@@ -3022,9 +3022,6 @@ function Sections(props) {
   );
 }
 
-// packages/demo/src/client/token-alias.ts
-var ALIAS_TOKEN_NAMES = ["accent", "active", "border", "border-faint", "border-heavy", "border-strong", "business", "chip-bg", "chip-bg-hover", "code-font", "code-surface", "control-h-lg", "control-h-md", "control-h-sm", "danger", "dur", "dur-fast", "ease", "fg", "fg-2", "fg-3", "fg-4", "fg-dim", "fg-inverse", "focus", "font-lg", "font-md", "font-mono", "font-sm", "font-xs", "hover", "line-lg", "line-md", "line-sm", "link", "on-signal", "on-solid", "open-bg", "open-bg-soft", "radius-md", "radius-sm", "radius-xs", "shadow-1", "shadow-2", "shadow-raised", "solid", "space-1", "space-2", "space-3", "space-4", "success", "surface-1", "surface-2", "surface-base", "surface-menu", "surface-sunken", "warning", "warning-label", "z-dock", "z-menu"];
-
 // packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";
 var PREFIX = "dshpc";
@@ -3038,10 +3035,6 @@ function useLocaleTick() {
       setTick((v) => v + 1);
     });
   }, []);
-}
-function aliasCss() {
-  const decls = ALIAS_TOKEN_NAMES.map((n) => `--tdt-${n}:var(--${PREFIX}-${n})`);
-  return `body{${decls.join(";")}}`;
 }
 function DemoPage() {
   useLocaleTick();
@@ -3138,7 +3131,6 @@ function apply(ctx) {
   const kit = createStyleKit({ id: "dsh-plugin-core-plugin", prefix: PREFIX });
   setStyleKit(kit);
   ensureControls(kit);
-  kit.registerStyle("tdt-alias", aliasCss());
   kit.ensureStyles();
   let jump = () => {
   };

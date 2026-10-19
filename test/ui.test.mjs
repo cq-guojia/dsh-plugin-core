@@ -27,7 +27,7 @@ test('ensureControls 在无 DOM 环境不抛，并登记 tokens + controls 两�
   assert.ok(kit.tokensCss.includes('--acme-fg'))
 })
 
-test('默认 kit 兜底：不 setStyleKit 也能用，prefix 为 dsh', () => {
+test('setStyleKit 覆盖默认 kit，getStyleKit 反映新值', () => {
   setStyleKit(createStyleKit({ id: 'probe', prefix: 'probe' }))
   assert.equal(getStyleKit().prefix, 'probe')
 })

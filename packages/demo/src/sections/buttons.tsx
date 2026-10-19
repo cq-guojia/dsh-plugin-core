@@ -37,7 +37,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
         h(
           'div',
           { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
-          h('span', { style: { color: 'var(--tdt-fg-2)', fontSize: '13px', flex: 'none' } }, '开始时间'),
+          h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '开始时间'),
           h(Input, { value: text, onChange: setText, placeholder: '选择日期' }),
           h(FieldHint, { text: t('fieldHintDate') }),
         ),

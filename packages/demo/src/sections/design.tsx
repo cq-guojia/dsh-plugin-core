@@ -3,17 +3,17 @@ import { Demo } from './index.js'
 import { t } from '../i18n.js'
 
 const TOKENS: { label: string; cssVar: string }[] = [
-  { label: 'business', cssVar: '--tdt-business' },
-  { label: 'success', cssVar: '--tdt-success' },
-  { label: 'warning', cssVar: '--tdt-warning' },
-  { label: 'danger', cssVar: '--tdt-danger' },
-  { label: 'surface-1', cssVar: '--tdt-surface-1' },
-  { label: 'surface-2', cssVar: '--tdt-surface-2' },
-  { label: 'surface-sunken', cssVar: '--tdt-surface-sunken' },
-  { label: 'border', cssVar: '--tdt-border' },
-  { label: 'fg', cssVar: '--tdt-fg' },
-  { label: 'fg-3', cssVar: '--tdt-fg-3' },
-  { label: 'fg-4', cssVar: '--tdt-fg-4' },
+  { label: 'business', cssVar: '--dshpc-business' },
+  { label: 'success', cssVar: '--dshpc-success' },
+  { label: 'warning', cssVar: '--dshpc-warning' },
+  { label: 'danger', cssVar: '--dshpc-danger' },
+  { label: 'surface-1', cssVar: '--dshpc-surface-1' },
+  { label: 'surface-2', cssVar: '--dshpc-surface-2' },
+  { label: 'surface-sunken', cssVar: '--dshpc-surface-sunken' },
+  { label: 'border', cssVar: '--dshpc-border' },
+  { label: 'fg', cssVar: '--dshpc-fg' },
+  { label: 'fg-3', cssVar: '--dshpc-fg-3' },
+  { label: 'fg-4', cssVar: '--dshpc-fg-4' },
 ]
 
 export function DesignSection(): ReturnType<typeof h> {
@@ -34,11 +34,11 @@ export function DesignSection(): ReturnType<typeof h> {
               style: {
                 height: '40px', borderRadius: '6px',
                 background: `var(${t.cssVar})`,
-                border: '1px solid var(--tdt-border-faint)',
+                border: '1px solid var(--dshpc-border-faint)',
               },
             }),
             h('div', { style: { fontSize: '11px', marginTop: '4px' } }, t.label),
-            h('div', { style: { fontSize: '10px', color: 'var(--tdt-fg-4)' } }, t.cssVar),
+            h('div', { style: { fontSize: '10px', color: 'var(--dshpc-fg-4)' } }, t.cssVar),
           ),
         ),
       ),
@@ -54,7 +54,7 @@ import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 setStyleKit(createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' }))
 ensureControls()`,
       },
-      h('div', { style: { color: 'var(--tdt-fg-3)', fontSize: '12px' } },
+      h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px' } },
         t('designInjectNote')),
     ),
   )

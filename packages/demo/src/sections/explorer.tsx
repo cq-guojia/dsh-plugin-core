@@ -21,7 +21,7 @@ export function ExplorerSection(): ReturnType<typeof h> {
         {
           style: {
             width: '520px', height: '380px', overflow: 'hidden',
-            border: '1px solid var(--tdt-border)', borderRadius: '8px',
+            border: '1px solid var(--dshpc-border)', borderRadius: '8px',
           },
         },
         h(ExplorerPanel, {
@@ -33,7 +33,7 @@ export function ExplorerSection(): ReturnType<typeof h> {
       ),
       h(
         'div',
-        { style: { fontSize: '12px', color: 'var(--tdt-fg-3)', alignSelf: 'center' } },
+        { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', alignSelf: 'center' } },
         selected === null ? '点左侧文件试试' : `已选中：${selected}`,
       ),
     ),

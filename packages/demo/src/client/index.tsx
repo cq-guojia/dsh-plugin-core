@@ -5,8 +5,8 @@
  *  client 侧**顶层不得导出 inject**，等待一律写 ctx.inject([...], cb) 内，否则 entry 一直 pending、
  *  卡死整个 dsh 启动。本文件只导出 apply。
  *
- * 身份隔离：本插件领一套自己的 kit（prefix 'dshpc'）——**不能占用 --tdt-***，宿主里别的插件
- * 也在用这个前缀；demo 展示代码里的内联 --tdt-* 由 token-alias 那层接到 --dshpc-* 上。
+ * 身份隔离：本插件领一套自己的 kit（prefix 'dshpc'）——与 --tdt-*（兄弟插件）、--dsw-* 和 --dsh-*
+ * （宿主官方）都分开；demo 展示代码里直接用 --dshpc-*，不再做任何跨前缀别名。
  */
 import { createElement as h, useEffect, useState } from 'react'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
@@ -16,11 +16,10 @@ import { ensureControls, setStyleKit } from '../../../../dist/ui/index.js'
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
-import { ALIAS_TOKEN_NAMES } from './token-alias.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
 const PANEL_ID = 'dsh-plugin-core-demo'
-/** 本插件的变量前缀：与 --tdt-*（其他插件在用）隔离。 */
+/** 本插件的变量前缀：与 --tdt-*（兄弟插件）、--dsw-* 和 --dsh-*（宿主）隔离。 */
 const PREFIX = 'dshpc'
 
 /** 宿主 locale 服务的结构类型（不引入宿主包，按接口使用）。 */
@@ -42,12 +41,6 @@ function useLocaleTick(): void {
     if (rt === undefined) return
     return rt.subscribe(() => { setTick((v) => v + 1) })
   }, [])
-}
-
-/** --tdt-* → --dshpc-* 别名层：让 demo 展示代码的内联样式零改动复用。 */
-function aliasCss(): string {
-  const decls = ALIAS_TOKEN_NAMES.map((n) => `--tdt-${n}:var(--${PREFIX}-${n})`)
-  return `body{${decls.join(';')}}`
 }
 
 /** 整页：左侧目录 + 右侧当前小节（套用 demo 的展示内容）。 */
@@ -131,7 +124,6 @@ export function apply(ctx: {
   const kit = createStyleKit({ id: 'dsh-plugin-core-plugin', prefix: PREFIX })
   setStyleKit(kit)
   ensureControls(kit)
-  kit.registerStyle('tdt-alias', aliasCss())
   kit.ensureStyles()
 
   // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）

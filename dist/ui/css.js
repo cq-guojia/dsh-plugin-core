@@ -43,7 +43,7 @@ const CONTROLS_CSS = [
  * 模块级变量天然按插件隔离（不像共享运行时那样会互相踩）。
  * 插件启动时 `setStyleKit(createStyleKit({ id, prefix }))` 一次即可；不设就走默认 kit。
  */
-let current = createStyleKit({ id: 'dsh-plugin-core-ui', prefix: 'dsh' });
+let current = createStyleKit({ id: 'dsh-plugin-core-ui', prefix: 'dshpc' });
 export function setStyleKit(kit) {
     current = kit;
 }

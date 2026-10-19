@@ -38,6 +38,6 @@ dsh plugin --profile web add dsh-plugin-core-demo
 - client 侧只导出 `apply`；依赖一律 `ctx.inject([...], cb)` 内等待（顶层导出 `inject` 会卡死宿主启动）。
 - 三块注册（`sidebar.panellist` / `main` / `settings.plugin.item`）各自 `ctx.inject`、自成一块；
   `settings.plugin.item` 与 `main` 的 key 必须 = 包名（宿主机制）。
-- 变量前缀用本插件独有的 `dshpc`，**不占用 `--tdt-*`**（宿主里别的插件在用）；
-  展示代码里的 `--tdt-*` 由 `src/client/token-alias.ts` 那层别名接过去。
+- 变量前缀统一用 `dshpc`，**完全不碰 `--tdt-*` / `--dsw-*` / `--dsh-*`**（兄弟插件与宿主在用）；
+  展示代码直接用 `--dshpc-*`。已删除旧的 `token-alias` 别名层——那层会往 `body` 写 `--tdt-*`，把兄弟插件的 token 抢过来。
 - 零运行时依赖：不引内部 `@deepseek-ai/*`，故不声明 schemastery Config。

@@ -36,14 +36,14 @@ export function Demo(props: {
     {
       style: {
         marginBottom: '28px', padding: '16px 18px',
-        border: '1px solid var(--tdt-border-faint)', borderRadius: '8px',
-        background: 'var(--tdt-surface-1)',
+        border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px',
+        background: 'var(--dshpc-surface-1)',
       },
     },
     h('h3', { style: { margin: '0 0 2px', fontSize: '15px' } }, props.title),
     props.hint === undefined
       ? null
-      : h('div', { style: { color: 'var(--tdt-fg-3)', fontSize: '12px', marginBottom: '12px' } }, props.hint),
+      : h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px', marginBottom: '12px' } }, props.hint),
     h('div', { style: { marginBottom: props.code === undefined ? 0 : '12px' } }, props.children ?? null),
     props.code === undefined
       ? null
@@ -52,8 +52,8 @@ export function Demo(props: {
           {
             style: {
               margin: 0, padding: '10px 12px', borderRadius: '6px', overflowX: 'auto',
-              background: 'var(--tdt-code-surface)', color: 'var(--tdt-fg)',
-              font: 'var(--tdt-code-font)', fontSize: '12px',
+              background: 'var(--dshpc-code-surface)', color: 'var(--dshpc-fg)',
+              font: 'var(--dshpc-code-font)', fontSize: '12px',
             },
           },
           props.code,
@@ -66,7 +66,7 @@ function SectionHead(props: { id: SectionId; title: string }): ReturnType<typeof
     'div',
     { id: `sec-${props.id}`, style: { margin: '28px 0 14px' } },
     h('h2', { style: { margin: 0, fontSize: '20px' } }, props.title),
-    h('div', { style: { height: '3px', width: '36px', background: 'var(--tdt-business)', borderRadius: '2px', marginTop: '6px' } }),
+    h('div', { style: { height: '3px', width: '36px', background: 'var(--dshpc-business)', borderRadius: '2px', marginTop: '6px' } }),
   )
 }
 

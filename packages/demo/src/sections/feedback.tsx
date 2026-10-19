@@ -59,12 +59,12 @@ export function FeedbackSection(): ReturnType<typeof h> {
         h(EmptyState, { text: '暂无数据' }),
         h(
           'div',
-          { style: { border: '1px solid var(--tdt-border-faint)', borderRadius: '8px', padding: '10px' } },
+          { style: { border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px', padding: '10px' } },
           boom
             ? h(ErrorBoundary, null, h(Boom, null))
             : h(Button, { variant: 'danger', onClick: () => setBoom(true) }, '点我抛错（看边界兜底）'),
         ),
-        h('div', { style: { color: 'var(--tdt-fg-3)', fontSize: '12px' } },
+        h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px' } },
           t('loadingNote')),
       ),
     ),

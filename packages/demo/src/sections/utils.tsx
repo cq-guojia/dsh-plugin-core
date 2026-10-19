@@ -58,5 +58,5 @@ export function UtilsSection(): ReturnType<typeof h> {
   )
 }
 
-const th: Record<string, string | number> = { textAlign: 'left', padding: '6px 14px 6px 0', color: 'var(--tdt-fg-3)' }
-const td: Record<string, string | number> = { padding: '5px 14px 5px 0', borderTop: '1px solid var(--tdt-border-faint)' }
+const th: Record<string, string | number> = { textAlign: 'left', padding: '6px 14px 6px 0', color: 'var(--dshpc-fg-3)' }
+const td: Record<string, string | number> = { padding: '5px 14px 5px 0', borderTop: '1px solid var(--dshpc-border-faint)' }
