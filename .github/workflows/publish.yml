@@ -1,15 +1,13 @@
 name: Publish to npm
 
-# 触发：① 推送 v* 标签（如 `npm version` 生成的 v0.1.0）；② 手动在 Actions 页点 Run。
+# 触发：手动在 Actions 页点 Run（必须走默认分支 main，npm 可信发布才认；
+#       标签触发 ref=refs/tags/* 会被 404 拒，所以去掉了 tag 触发）。
 # 注意：你已在 npm 侧启用「分阶段发布（staged）」且未勾选「直接发布」，
 #       故下方用 `npm publish --provenance --staging` 把包推到**暂存区**，
 #       之后需由拥有 npm 发布权限的人（你）在 npm 网页端「Promote」确认，才正式上线。
 #       若想一步到位，去 npm Trusted Publisher 设置把「publish directly」勾上，
 #       再把本文件的 `--staging` 去掉即可。
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 # id-token: write 是 OIDC 的硬性要求——npm 借此在 CI 内拿到短期发布凭证，不需要 _authToken。

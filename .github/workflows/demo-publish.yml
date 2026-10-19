@@ -1,14 +1,11 @@
 name: Publish demo plugin to npm
 
 # 发布 packages/demo（包名 dsh-plugin-core-demo，DSH 预览插件）。
-# 触发：① 推送 demo-v* 标签；② 手动 dispatch。
+# 触发：手动 dispatch（必须走默认分支 main，npm 可信发布才认；标签触发 ref=refs/tags/* 会被 404 拒）。
 # ⚠️ 该包有**独立**的 npm Trusted Publisher：package name = dsh-plugin-core-demo，
-#    仓库 = cq-guojia/dsh-plugin-core，workflow = publish-demo.yml。
+#    仓库 = cq-guojia/dsh-plugin-core，workflow = demo-publish.yml。
 #    需你在 npm 侧单独建一个（和库那个分开）。未勾 publish directly ⇒ 走 --staging，发完去 npm Promote。
 on:
-  push:
-    tags:
-      - 'demo-v*'
   workflow_dispatch:
 
 permissions:
