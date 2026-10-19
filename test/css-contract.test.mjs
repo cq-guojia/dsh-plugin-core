@@ -13,8 +13,8 @@ import { CARD_CSS } from '../dist/ui/card-css.js'
 import { CHIP_CSS } from '../dist/ui/chip-css.js'
 import { EXPLORER_CSS } from '../dist/explorer/explorer-css.js'
 import { SESSION_CSS } from '../dist/session/session-css.js'
-import { CONTROLS_CSS_WITH_GUARD } from '../dist/ui/css.js'
-import { CSS_GUARD } from '../dist/ui/controls-css.js'
+import { CONTROLS_CSS } from '../dist/ui/css.js'
+import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
 
 /** css.ts 里参与注入的全部常量（新增 CSS 常量时同步加进来）。 */
 const CONSTANTS = {
@@ -71,17 +71,35 @@ test('chip 只有标签一套皮肤，图标按钮走 iconbtn', () => {
   assert.ok(!CHIP_CSS.includes('dshpc-chip--label'), 'dshpc-chip--label 是被删掉的图标语义，勿回潮')
 })
 
-// 宿主会吃掉「token 块之后的第一条 CSS 规则」（整条不进 CSSOM）。
-// 见 docs/design/external/dsh-host.md §5 与 controls-css.ts 的 CSS_GUARD 注释。
-// 这条自检盯的是：注入文本必须以无害守卫开头，且守卫本身只有 display:none 一条声明。
-// 谁把守卫挪走/删掉，真规则会静默失效——这种坑 2026-10-19 查了整整一天。
-test('控件样式第一条必须是牺牲规则 .dshpc-css-guard', () => {
-  assert.ok(
-    CONTROLS_CSS_WITH_GUARD.startsWith(CSS_GUARD),
-    `注入文本没有以守卫开头：${CONTROLS_CSS_WITH_GUARD.slice(0, 80)}`,
+// 2026-10-19 真因（详见 docs/design/external/dsh-host.md §9）：
+// tokens 模板字符串结尾多了一个反斜杠，字符串里因此多出字面反引号。CSS 解析器把它当作
+// 不合格选择器的开头，一路吞到下一个 `{` ⇒ **紧随其后的那条规则**的选择器被污染成
+// 永远匹配不到元素的怪选择器。规则仍在 CSSOM 里，所以不报错、不告警，只是永不生效。
+// 当年的 `.dshpc-css-guard` 牺牲规则只是替它挨刀，机制已删除，改由下面两条自检盯住根本。
+const INJECTED = `${TOKENS_CSS_TEMPLATE}\n${CONTROLS_CSS}`
+
+test('注入的 CSS 文本不得含反引号 / 反斜杠（会污染下一条规则的选择器）', () => {
+  const bad = ['`', '\\'].filter((ch) => INJECTED.includes(ch))
+  assert.deepEqual(bad, [], `注入文本出现非法字符：${JSON.stringify(bad)}`)
+})
+
+test('tokens 模板必须以 } 收尾，不带任何尾巴字符', () => {
+  assert.equal(
+    TOKENS_CSS_TEMPLATE.trimEnd().at(-1),
+    '}',
+    `tokens 模板结尾是 ${JSON.stringify(TOKENS_CSS_TEMPLATE.slice(-24))}，应为规则右花括号`,
   )
-  assert.deepEqual(topSelectors(CSS_GUARD), ['.dshpc-css-guard'], '守卫只能有这一条规则')
-  assert.equal(CSS_GUARD, '.dshpc-css-guard{display:none}', '守卫只允许 display:none，不许掺别的声明')
+})
+
+test('注入文本的括号与注释必须平衡', () => {
+  const src = INJECTED.replace(/\/\*[\s\S]*?\*\//g, '')
+  let depth = 0
+  for (const ch of src) {
+    if (ch === '{') depth += 1
+    else if (ch === '}') depth -= 1
+    assert.ok(depth >= 0, '出现多余的右花括号')
+  }
+  assert.equal(depth, 0, `花括号不平衡，残留 ${depth} 层`)
 })
 
 test('Modal 关闭按钮用专属类名，不借 Picker 触发器皮肤', async () => {

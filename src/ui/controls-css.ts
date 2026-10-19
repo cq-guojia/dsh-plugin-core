@@ -1,26 +1,20 @@
 // 控件样式。类名与变量统一使用 dshpc 前缀。
 
-/**
- * ⚠️ 牺牲规则（宿主事实，见 `docs/design/external/dsh-host.md` §9）：
- * 宿主会吃掉「token 块之后的**第一条** CSS 规则」——整条消失，不进 CSSOM。
- *
- * 真机证据（2026-10-19，三条互不依赖）：
- *   · 0.2.12：`.dshpc-seg` 单条合并规则排在首位 ⇒ **整条**被吃，`display` 从未落地；
- *   · 0.2.13：拆成 6 条单声明 ⇒ 只有**第一条**（display）被吃，其余 5 条活着 ⇒ 轨道退化成 block；
- *   · 同内容放进独立新标签、或运行时 `insertRule` ⇒ 全部正常（与写法无关，只与导入期位置有关）。
- *
- * 对策：控件样式最前面永远放这一条——只设 `display:none` 且选择器匹配不到任何元素，被吃掉零影响。
- * 顺序由 `test/css-contract.test.mjs` 盯着（必须是注入文本的第一条规则）。
- */
-export const CSS_GUARD = '.dshpc-css-guard{display:none}'
+// ⚠️ 曾有过的错误结论（2026-10-19 已查清，勿回潮）：
+// 「宿主会吃掉 token 块之后的第一条 CSS 规则」是**误判**，因此加的 `.dshpc-css-guard`
+// 牺牲规则也已删除。真因见 `docs/design/external/dsh-host.md` §9：tokens 模板字符串
+// 结尾多了一个反斜杠，在注入文本里留下字面反引号，把**紧随其后的那条规则的选择器**污染成
+// 匹配不到任何元素的怪选择器（规则仍在 CSSOM 里，只是永不生效）——守卫当年只是替它挨刀。
+// 现在由 `test/css-contract.test.mjs` 盯「CSS 文本里不得出现反引号 / 反斜杠」。
 
 export const SEGMENTED_CSS = `
 /* ── 分段控件 P2 ─────────────────────────────────────────────────────
    结构照兄弟项目 dsh-task-dispatch-table 的 Segmented 皮肤（item 无边框、hover 只提亮文字），
    前缀 / 变量名换成本仓口径。用户额外要的两处（兄弟没有）：weekday 方块间隔 gap:6px；段内中性计数 __count。
-   ⚠️ 2026-10-19 更正：此前认为「宿主只认单行 CSS、多行规则整条丢失」——**已证伪**
-   （tokens 与其余控件常量一直是多行且正常生效）。真实原因是宿主吃掉 token 块后的第一条规则，
-   由文件头的 CSS_GUARD 顶在最前替它挨刀。样式请照常多行书写，别再压行了。 */
+   ⚠️ 2026-10-19 两次误判均已澄清：① 「宿主只认单行 CSS」——假，多行一直正常；
+   ② 「宿主吃掉 token 块之后第一条规则」——也假，真因是 tokens 模板字符串结尾多了一个反斜杠，
+   注入文本里留下字面反引号，把紧随其后的那条规则的选择器污染掉了（见 dsh-host.md §9）。
+   样式照常多行书写，不必压行；也不需要任何「牺牲规则」。 */
 .dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--dshpc-seg-track);}
 .dshpc-seg--default{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:2px;background:var(--seg-track);}
 .dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;background:var(--seg-track);}

@@ -281,7 +281,7 @@ body[data-ds-dark-theme]{
   /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u5C55\u5F00\u9762\u677F\u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06 \u7EED\uFF09\uFF1A\u4E0E\u539F selected-bg \u6697\u503C\u4E00\u81F4\uFF0C\u6DF1\u8272 UI \u4E0D\u52A8 */
   --dshpc-cal-panel-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));
 }
-\``;
+`;
 
 // dist/design/style-kit.js
 var CSS_PREFIX = "dshpc";
@@ -356,14 +356,14 @@ function createStyleKit(options) {
 }
 
 // dist/ui/controls-css.js
-var CSS_GUARD = ".dshpc-css-guard{display:none}";
 var SEGMENTED_CSS = `
 /* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6 P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
    \u7ED3\u6784\u7167\u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 Segmented \u76AE\u80A4\uFF08item \u65E0\u8FB9\u6846\u3001hover \u53EA\u63D0\u4EAE\u6587\u5B57\uFF09\uFF0C
    \u524D\u7F00 / \u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\u3002\u7528\u6237\u989D\u5916\u8981\u7684\u4E24\u5904\uFF08\u5144\u5F1F\u6CA1\u6709\uFF09\uFF1Aweekday \u65B9\u5757\u95F4\u9694 gap:6px\uFF1B\u6BB5\u5185\u4E2D\u6027\u8BA1\u6570 __count\u3002
-   \u26A0\uFE0F 2026-10-19 \u66F4\u6B63\uFF1A\u6B64\u524D\u8BA4\u4E3A\u300C\u5BBF\u4E3B\u53EA\u8BA4\u5355\u884C CSS\u3001\u591A\u884C\u89C4\u5219\u6574\u6761\u4E22\u5931\u300D\u2014\u2014**\u5DF2\u8BC1\u4F2A**
-   \uFF08tokens \u4E0E\u5176\u4F59\u63A7\u4EF6\u5E38\u91CF\u4E00\u76F4\u662F\u591A\u884C\u4E14\u6B63\u5E38\u751F\u6548\uFF09\u3002\u771F\u5B9E\u539F\u56E0\u662F\u5BBF\u4E3B\u5403\u6389 token \u5757\u540E\u7684\u7B2C\u4E00\u6761\u89C4\u5219\uFF0C
-   \u7531\u6587\u4EF6\u5934\u7684 CSS_GUARD \u9876\u5728\u6700\u524D\u66FF\u5B83\u6328\u5200\u3002\u6837\u5F0F\u8BF7\u7167\u5E38\u591A\u884C\u4E66\u5199\uFF0C\u522B\u518D\u538B\u884C\u4E86\u3002 */
+   \u26A0\uFE0F 2026-10-19 \u4E24\u6B21\u8BEF\u5224\u5747\u5DF2\u6F84\u6E05\uFF1A\u2460 \u300C\u5BBF\u4E3B\u53EA\u8BA4\u5355\u884C CSS\u300D\u2014\u2014\u5047\uFF0C\u591A\u884C\u4E00\u76F4\u6B63\u5E38\uFF1B
+   \u2461 \u300C\u5BBF\u4E3B\u5403\u6389 token \u5757\u4E4B\u540E\u7B2C\u4E00\u6761\u89C4\u5219\u300D\u2014\u2014\u4E5F\u5047\uFF0C\u771F\u56E0\u662F tokens \u6A21\u677F\u5B57\u7B26\u4E32\u7ED3\u5C3E\u591A\u4E86\u4E00\u4E2A\u53CD\u659C\u6760\uFF0C
+   \u6CE8\u5165\u6587\u672C\u91CC\u7559\u4E0B\u5B57\u9762\u53CD\u5F15\u53F7\uFF0C\u628A\u7D27\u968F\u5176\u540E\u7684\u90A3\u6761\u89C4\u5219\u7684\u9009\u62E9\u5668\u6C61\u67D3\u6389\u4E86\uFF08\u89C1 dsh-host.md \xA79\uFF09\u3002
+   \u6837\u5F0F\u7167\u5E38\u591A\u884C\u4E66\u5199\uFF0C\u4E0D\u5FC5\u538B\u884C\uFF1B\u4E5F\u4E0D\u9700\u8981\u4EFB\u4F55\u300C\u727A\u7272\u89C4\u5219\u300D\u3002 */
 .dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--dshpc-seg-track);}
 .dshpc-seg--default{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:2px;background:var(--seg-track);}
 .dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;background:var(--seg-track);}
@@ -911,15 +911,13 @@ var CONTROLS_CSS = [
   CARD_CSS,
   CHIP_CSS
 ].join("\n");
-var CONTROLS_CSS_WITH_GUARD = `${CSS_GUARD}
-${CONTROLS_CSS}`;
 var current = createStyleKit({ id: "dsh-plugin-core-ui" });
 function setStyleKit(kit) {
   current = kit;
 }
 function ensureControls(kit = current) {
   kit.registerStyle("tokens", kit.tokensCss);
-  kit.applyStyle(CONTROLS_DOMAIN, CONTROLS_CSS_WITH_GUARD);
+  kit.applyStyle(CONTROLS_DOMAIN, CONTROLS_CSS);
 }
 
 // dist/ui/picker-logic.js
@@ -3439,84 +3437,6 @@ function Sections(props) {
   );
 }
 
-// packages/demo/src/probes.ts
-var KIT_TAG_ID = "dsh-plugin-core-plugin";
-function normSel(sel) {
-  return sel.replace(/'/g, '"').replace(/\s+/g, " ").trim();
-}
-function statsOfSheet(sheet) {
-  if (sheet === null) return "\u62FF\u4E0D\u5230 sheet";
-  let total = -1;
-  let base = 0;
-  let withDisplay = 0;
-  let bodyRules = 0;
-  try {
-    const list = Array.from(sheet.cssRules);
-    total = list.length;
-    for (const r of list) {
-      if (!(r instanceof CSSStyleRule)) continue;
-      const sel = normSel(r.selectorText);
-      if (sel === ".dshpc-seg") {
-        base++;
-        if (r.style.getPropertyValue("display") !== "") withDisplay++;
-      }
-      if (sel === "body") bodyRules++;
-    }
-  } catch {
-    return "\u8BFB cssRules \u629B\u9519";
-  }
-  return `\u89C4\u5219 ${String(total)}\uFF5C.dshpc-seg \u57FA\u7840 ${String(base)} \u6761\uFF08\u542B display ${String(withDisplay)}\uFF09\uFF5Cbody ${String(bodyRules)} \u6761`;
-}
-function statsOfText(css) {
-  const tag = document.createElement("style");
-  tag.setAttribute("data-probe", "stats");
-  tag.textContent = css;
-  document.head.appendChild(tag);
-  const out = statsOfSheet(tag.sheet);
-  tag.remove();
-  return out;
-}
-function statsOfReplaceSync(css) {
-  try {
-    const sheet = new CSSStyleSheet();
-    sheet.replaceSync(css);
-    return statsOfSheet(sheet);
-  } catch (err) {
-    return `replaceSync \u629B\u9519\uFF1A${String(err)}`;
-  }
-}
-function collectSegProbes() {
-  if (typeof document === "undefined") return [{ id: "P0", text: "no document" }];
-  const tag = document.getElementById(KIT_TAG_ID);
-  if (tag === null) return [{ id: "P27", text: `\u627E\u4E0D\u5230 #${KIT_TAG_ID}` }];
-  const css = tag.textContent ?? "";
-  const lines = [
-    { id: "P27", text: `\u6211\u4EEC\u81EA\u5DF1\u7684\u6807\u7B7E\uFF1A${statsOfSheet(tag.sheet)}` },
-    { id: "P28", text: `\u540C\u6587\u672C\u53E6\u5F00\u65B0\u6807\u7B7E\uFF08${String(css.length)} \u5B57\uFF09\uFF1A${statsOfText(css)}` }
-  ];
-  const cut = css.indexOf("/* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6");
-  if (cut < 0) {
-    lines.push({ id: "P29", text: "\u6587\u672C\u91CC\u627E\u4E0D\u5230\u300C\u5206\u6BB5\u63A7\u4EF6\u300D\u6CE8\u91CA\uFF0C\u65E0\u6CD5\u5207\u6BB5" });
-  } else {
-    lines.push({ id: "P29", text: `\u53EA\u6CE8\u5165\u63A7\u4EF6\u6BB5\uFF08\u7B2C ${String(cut)} \u5B57\u8D77\uFF09\uFF1A${statsOfText(css.slice(cut))}` });
-    lines.push({ id: "P30", text: `\u53EA\u6CE8\u5165 tokens \u6BB5\uFF08\u524D ${String(cut)} \u5B57\uFF09\uFF1A${statsOfText(css.slice(0, cut))}` });
-  }
-  lines.push({ id: "P31", text: `\u540C\u6587\u672C\u8D70 replaceSync\uFF08\u4E0D\u8D70\u6807\u7B7E\uFF09\uFF1A${statsOfReplaceSync(css)}` });
-  const noGuard = css.replace(".dshpc-css-guard{display:none}", "");
-  lines.push({ id: "P32", text: `\u53BB\u5B88\u536B\u540E\u53E6\u5F00\u65B0\u6807\u7B7E\uFF1A${statsOfText(noGuard)}` });
-  lines.push({ id: "P33", text: `\u53BB\u5B88\u536B\u540E\u8D70 replaceSync\uFF1A${statsOfReplaceSync(noGuard)}` });
-  const before = tag.textContent ?? "";
-  tag.textContent = noGuard;
-  const inOwnTag = statsOfSheet(tag.sheet);
-  tag.textContent = before;
-  const restored = statsOfSheet(tag.sheet);
-  lines.push({
-    id: "P34",
-    text: `\u53BB\u5B88\u536B\u6587\u672C\u5199\u56DE\u6211\u4EEC\u81EA\u5DF1\u7684\u6807\u7B7E\uFF1A${inOwnTag} \uFF5C \u8FD8\u539F\u540E\uFF1A${restored}`
-  });
-  return lines;
-}
-
 // packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";
 var localeRuntime;
@@ -3533,23 +3453,11 @@ function useLocaleTick() {
 function DemoPage() {
   useLocaleTick();
   const [active, setActive] = (0, import_react31.useState)(ALL_SECTIONS[0].id);
-  const [probes, setProbes] = (0, import_react31.useState)([]);
   const dark = typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme");
-  (0, import_react31.useEffect)(() => {
-    const timer = setTimeout(() => {
-      const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`);
-      setProbes(lines);
-      console.log(`[probe] build ${"1019-2152-66kk"}
-${lines.join("\n")}`);
-    }, 150);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [active]);
   const buildBadge = (0, import_react31.createElement)(
     "div",
     {
-      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2152-66kk"}
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2244-2v5n"}
 \u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
       style: {
         fontFamily: "var(--dshpc-font-mono)",
@@ -3560,7 +3468,7 @@ ${lines.join("\n")}`);
         wordBreak: "break-all"
       }
     },
-    `build ${"1019-2152-66kk"}`
+    `build ${"1019-2244-2v5n"}`
   );
   return (0, import_react31.createElement)(
     "div",
@@ -3621,8 +3529,7 @@ ${lines.join("\n")}`);
         },
         (0, import_react31.createElement)("div", null, `core v${"0.2.14"}`),
         (0, import_react31.createElement)("div", null, `demo v${"0.2.14"}`),
-        (0, import_react31.createElement)("div", { title: "body[data-ds-dark-theme]" }, `dark: ${dark ? "yes" : "no"}`),
-        ...probes.map((line) => (0, import_react31.createElement)("div", { key: line, style: { marginTop: "4px", whiteSpace: "pre-wrap" } }, line))
+        (0, import_react31.createElement)("div", { title: "body[data-ds-dark-theme]" }, `dark: ${dark ? "yes" : "no"}`)
       )
     ),
     (0, import_react31.createElement)(

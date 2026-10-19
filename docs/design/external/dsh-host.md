@@ -74,26 +74,30 @@
   「会话预览要长得像官方」必须自己维护这套镜像，且**宿主升级就要跟着改**。
 - 状态：本包 `session` **尚未搬入**这套镜像，只有最简渲染 + `renderMessage` 扩展点。
 
-## 9. 宿主会吃掉「token 块之后的第一条 CSS 规则」
+## 9. 插件注入的 CSS 曾被自己的模板字符串污染（2026-10-19，已修复）
 
-- 事实：插件把所有 CSS 拼成一份文本写进 `<style>` 时，**寄存器里 token 块之后的**第一条规则
-  **整条消失**（既不进 CSSOM、也不生效），后面的规则全部正常。同一条文本放进**独立的新** `<style>`、
-  或用 `sheet.insertRule()` 运行时插入，都**不会**丢 ⇒ 只发生在「随插件产物一起导入」那一步，且只丢第一条。
-- 后果：如果第一条恰好是控件的结构规则（`display` 之类），控件会静默退化——规则"看起来在"（其余声明都生效），
-  只有被吞那几条失效。2026-10-19 的分段控件轨道就是这样：`display:inline-flex` 被吞 ⇒ 轨道变 `block`
-  ⇒ `gap`/`padding` 对 block 容器无效 ⇒ 星期方块挤成一坨。
-- 处置：**控件样式最前面永远放一条无害牺牲规则** `.dshpc-css-guard{display:none}`（匹配不到任何元素），
-  由 `src/ui/css.ts` 的 `CONTROLS_CSS_WITH_GUARD` 拼在最前，`test/css-contract.test.mjs` 盯着顺序。
-  ⚠️ 谁在 `CONTROLS_CSS` 前面插了别的域、或把守卫挪走，就会有人替它挨刀。
-- 证据（真机 2026-10-19，三轮对照 + 历史产物）：
-  · `v0.2.12`：`.dshpc-seg` 是**一条**含 6 个声明的规则、排在首位 ⇒ 整条被吞（诊断 `rule:no-rule`、`display:block`）；
-  · `v0.2.13`：同一份声明拆成 6 条单声明 ⇒ 只有第一条（`display`）被吞，其余 5 条在 CSSOM 里；
-  · 同内容写进新标签、以及运行时 `insertRule(…, 0)` ⇒ 全部正常；
-  · 加上守卫后真规则存活、控件恢复正常。
-- ❌ **已证伪的旧说法**：「宿主只认单行 CSS，多行规则会整条丢」。它出自 0.2.11 的误判——
-  当时被丢的恰好是唯一被压行的规则，但真正原因是**它排在第一位**。反证：`tokens-css` 与
-  `LOADING_CSS` / `HINT_CSS` / `BACK_TO_TOP_CSS` 一直是多行且正常生效；且 0.2.11 压成单行后
-  0.2.12 **依然坏**（诊断仍 `no-rule`）。⇒ 样式照常多行书写，不要再压行。
-- 来源：本仓 `dsh-plugin-core` 0.2.2–0.2.14 期间的真机诊断（`packages/demo` 的探针 P1–P22，
-  记录见 `ledger/worklog/202610/19-1604-按钮与输入分区控件样式全面梳理与修复-823a.md`）。
-  宿主侧实现未读到（本地无宿主内核源码）⇒ 结论由现象对照得出，宿主升级后需复核本条。
+- ❌ **已作废的结论**：本项目曾长期认为「宿主会吃掉 token 块之后的**第一条** CSS 规则」，
+  并据此在控件样式最前面加了一条 `.dshpc-css-guard{display:none}` 牺牲规则。**这是误判，
+  官方没有这种行为。** 该牺牲规则机制已整体删除。
+- **真因**：`src/design/tokens-css.ts` 模板字符串结尾多写了一个反斜杠（写成 `\`` 而非 `` ` ``），
+  字符串内容里因此多出一个**字面反引号**。所有 CSS 拼成一份文本写进 `<style>` 时，反引号正好落在
+  tokens 与控件样式的交界处；CSS 解析器把它当成不合格选择器的开头，一路吞到下一个 `{`，
+  ⇒ **紧随其后的那条规则的整个选择器**被污染（`.dshpc-seg` → `` `.dshpc-seg ``），永远匹配不到元素。
+- **后果**：规则仍在 CSSOM 里（所以按选择器名去查会误判为“规则不存在”），但永不生效。
+  当时排首位的是 `.dshpc-seg{display:inline-flex;}` ⇒ 轨道退化成 `block` ⇒ `gap`/`padding`
+  对 block 容器无效 ⇒ 星期方块挤成一坨。拆成多条单声明时「只有第一条失效」也是同一原因。
+- **为什么长期没被发现**：CSS 天生容错（非法 token 走错误恢复，不抛错、不打日志）；TS 里
+  `\`` 是**合法转义**（语法完全正确）；而当年的牺牲规则恰好排反引号之后替它挨刀，
+  现象被“修好了”，反而加固了错误结论。
+- **官方侧核实**（`github.com/deepseek-ai/deepseek-harness`）：插件 `<style>` 相关代码只有两处——
+  `packages/client/modules/src/client/system.ts` 的 `claimStyles`（给 factory 执行期新增的、
+  未标记的 `<style>` 打 `data-plugin` 并登记 `data-plugin-css`）与
+  `packages/client/modules/src/client/entry-lifecycle.ts` 的 `removeOwnedStyles`（卸载时 `el.remove()`）。
+  **没有任何代码改写 `textContent` 或操作 `cssRules`。**
+  官方自己的注入顺序是 `textContent` 先、`appendChild` 后（`packages/client/tsdown.client.ts`），
+  与本仓相反——但**该差异与本次事故无关**（用 `replaceSync` 即可复现，完全不经 DOM 插入）。
+- **防再犯**：`test/css-contract.test.mjs` 现在断言——注入文本（tokens + 控件）不得含反引号/反斜杠、
+  tokens 模板必须以 `}` 收尾、括号与注释平衡。
+- ⚠️ **教训**：只凭现象推断的“谁吃了规则”，在读到对方源码前不要写成结论；先看拼接处的原始字节。
+- 来源：`packages/demo/src/probes.ts` P27–P34 实测（2026-10-19，用户回传读数）+ 官方仓库源码 +
+  本仓 `ledger/worklog/202610/19-1604-按钮与输入分区控件样式全面梳理与修复-823a.md`。
