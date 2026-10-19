@@ -17,6 +17,7 @@ import { ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dis
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
+import { collectSegProbes } from '../probes.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
 const PANEL_ID = 'dsh-plugin-core-demo'
@@ -53,7 +54,18 @@ function useLocaleTick(): void {
 function DemoPage(): ReturnType<typeof h> {
   useLocaleTick()
   const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
+  // 【临时探针 · 定位完必删，清单见 ../probes.ts 文件头】P27-P31。
+  const [probes, setProbes] = useState<string[]>([])
   const dark = typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme')
+  // 【临时探针 · 定位完必删】等挂载完再采，并打一份到 console 便于整段复制。
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`)
+      setProbes(lines)
+      console.log(`[probe] build ${__BUILD_STAMP__}\n${lines.join('\n')}`)
+    }, 150)
+    return () => { clearTimeout(timer) }
+  }, [active])
   // 左侧最顶部常驻：构建唯一编码（每次 build 必变）。版本号不 bump 时，这是唯一能确认
   // 「宿主里跑的是最新产物」的锚点；完整信息放 title 里，不占侧栏高度。
   const buildBadge = h(
@@ -113,6 +125,8 @@ function DemoPage(): ReturnType<typeof h> {
         h('div', null, `core v${__CORE_VERSION__}`),
         h('div', null, `demo v${__DEMO_VERSION__}`),
         h('div', { title: 'body[data-ds-dark-theme]' }, `dark: ${dark ? 'yes' : 'no'}`),
+        // 【临时探针 · 定位完必删】P27-P31，见 ../probes.ts
+        ...probes.map((line) => h('div', { key: line, style: { marginTop: '4px', whiteSpace: 'pre-wrap' } }, line)),
       ),
     ),
     h(

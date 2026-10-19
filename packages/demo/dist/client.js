@@ -3439,6 +3439,72 @@ function Sections(props) {
   );
 }
 
+// packages/demo/src/probes.ts
+var KIT_TAG_ID = "dsh-plugin-core-plugin";
+function normSel(sel) {
+  return sel.replace(/'/g, '"').replace(/\s+/g, " ").trim();
+}
+function statsOfSheet(sheet) {
+  if (sheet === null) return "\u62FF\u4E0D\u5230 sheet";
+  let total = -1;
+  let base = 0;
+  let withDisplay = 0;
+  let bodyRules = 0;
+  try {
+    const list = Array.from(sheet.cssRules);
+    total = list.length;
+    for (const r of list) {
+      if (!(r instanceof CSSStyleRule)) continue;
+      const sel = normSel(r.selectorText);
+      if (sel === ".dshpc-seg") {
+        base++;
+        if (r.style.getPropertyValue("display") !== "") withDisplay++;
+      }
+      if (sel === "body") bodyRules++;
+    }
+  } catch {
+    return "\u8BFB cssRules \u629B\u9519";
+  }
+  return `\u89C4\u5219 ${String(total)}\uFF5C.dshpc-seg \u57FA\u7840 ${String(base)} \u6761\uFF08\u542B display ${String(withDisplay)}\uFF09\uFF5Cbody ${String(bodyRules)} \u6761`;
+}
+function statsOfText(css) {
+  const tag = document.createElement("style");
+  tag.setAttribute("data-probe", "stats");
+  tag.textContent = css;
+  document.head.appendChild(tag);
+  const out = statsOfSheet(tag.sheet);
+  tag.remove();
+  return out;
+}
+function statsOfReplaceSync(css) {
+  try {
+    const sheet = new CSSStyleSheet();
+    sheet.replaceSync(css);
+    return statsOfSheet(sheet);
+  } catch (err) {
+    return `replaceSync \u629B\u9519\uFF1A${String(err)}`;
+  }
+}
+function collectSegProbes() {
+  if (typeof document === "undefined") return [{ id: "P0", text: "no document" }];
+  const tag = document.getElementById(KIT_TAG_ID);
+  if (tag === null) return [{ id: "P27", text: `\u627E\u4E0D\u5230 #${KIT_TAG_ID}` }];
+  const css = tag.textContent ?? "";
+  const lines = [
+    { id: "P27", text: `\u6211\u4EEC\u81EA\u5DF1\u7684\u6807\u7B7E\uFF1A${statsOfSheet(tag.sheet)}` },
+    { id: "P28", text: `\u540C\u6587\u672C\u53E6\u5F00\u65B0\u6807\u7B7E\uFF08${String(css.length)} \u5B57\uFF09\uFF1A${statsOfText(css)}` }
+  ];
+  const cut = css.indexOf("/* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6");
+  if (cut < 0) {
+    lines.push({ id: "P29", text: "\u6587\u672C\u91CC\u627E\u4E0D\u5230\u300C\u5206\u6BB5\u63A7\u4EF6\u300D\u6CE8\u91CA\uFF0C\u65E0\u6CD5\u5207\u6BB5" });
+  } else {
+    lines.push({ id: "P29", text: `\u53EA\u6CE8\u5165\u63A7\u4EF6\u6BB5\uFF08\u7B2C ${String(cut)} \u5B57\u8D77\uFF09\uFF1A${statsOfText(css.slice(cut))}` });
+    lines.push({ id: "P30", text: `\u53EA\u6CE8\u5165 tokens \u6BB5\uFF08\u524D ${String(cut)} \u5B57\uFF09\uFF1A${statsOfText(css.slice(0, cut))}` });
+  }
+  lines.push({ id: "P31", text: `\u540C\u6587\u672C\u8D70 replaceSync\uFF08\u4E0D\u8D70\u6807\u7B7E\uFF09\uFF1A${statsOfReplaceSync(css)}` });
+  return lines;
+}
+
 // packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";
 var localeRuntime;
@@ -3455,11 +3521,23 @@ function useLocaleTick() {
 function DemoPage() {
   useLocaleTick();
   const [active, setActive] = (0, import_react31.useState)(ALL_SECTIONS[0].id);
+  const [probes, setProbes] = (0, import_react31.useState)([]);
   const dark = typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme");
+  (0, import_react31.useEffect)(() => {
+    const timer = setTimeout(() => {
+      const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`);
+      setProbes(lines);
+      console.log(`[probe] build ${"1019-2149-qs8b"}
+${lines.join("\n")}`);
+    }, 150);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [active]);
   const buildBadge = (0, import_react31.createElement)(
     "div",
     {
-      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2147-4j7s"}
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2149-qs8b"}
 \u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
       style: {
         fontFamily: "var(--dshpc-font-mono)",
@@ -3470,7 +3548,7 @@ function DemoPage() {
         wordBreak: "break-all"
       }
     },
-    `build ${"1019-2147-4j7s"}`
+    `build ${"1019-2149-qs8b"}`
   );
   return (0, import_react31.createElement)(
     "div",
@@ -3531,7 +3609,8 @@ function DemoPage() {
         },
         (0, import_react31.createElement)("div", null, `core v${"0.2.14"}`),
         (0, import_react31.createElement)("div", null, `demo v${"0.2.14"}`),
-        (0, import_react31.createElement)("div", { title: "body[data-ds-dark-theme]" }, `dark: ${dark ? "yes" : "no"}`)
+        (0, import_react31.createElement)("div", { title: "body[data-ds-dark-theme]" }, `dark: ${dark ? "yes" : "no"}`),
+        ...probes.map((line) => (0, import_react31.createElement)("div", { key: line, style: { marginTop: "4px", whiteSpace: "pre-wrap" } }, line))
       )
     ),
     (0, import_react31.createElement)(
