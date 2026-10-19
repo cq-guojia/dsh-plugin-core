@@ -13,6 +13,7 @@ import { CARD_CSS } from '../dist/ui/card-css.js'
 import { CHIP_CSS } from '../dist/ui/chip-css.js'
 import { EXPLORER_CSS } from '../dist/explorer/explorer-css.js'
 import { SESSION_CSS } from '../dist/session/session-css.js'
+import { transform } from 'lightningcss'
 import { CONTROLS_CSS } from '../dist/ui/css.js'
 import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
 
@@ -75,12 +76,44 @@ test('chip 只有标签一套皮肤，图标按钮走 iconbtn', () => {
 // tokens 模板字符串结尾多了一个反斜杠，字符串里因此多出字面反引号。CSS 解析器把它当作
 // 不合格选择器的开头，一路吞到下一个 `{` ⇒ **紧随其后的那条规则**的选择器被污染成
 // 永远匹配不到元素的怪选择器。规则仍在 CSSOM 里，所以不报错、不告警，只是永不生效。
-// 当年的 `.dshpc-css-guard` 牺牲规则只是替它挨刀，机制已删除，改由下面两条自检盯住根本。
+// 当年的 `.dshpc-css-guard` 牺牲规则只是替它挨刀，机制已删除。
+//
+// 主检查 = 真 CSS 解析器（lightningcss，官方构建期用的是同一个）：
+// 它对那个反引号直接抛 `Invalid empty selector` ⇒ 这类事故不可能再静默溜过去。
+// 字符黑名单只作快速失败，用来把「是哪个字符出的问题」说清楚。
 const INJECTED = `${TOKENS_CSS_TEMPLATE}\n${CONTROLS_CSS}`
 
-test('注入的 CSS 文本不得含反引号 / 反斜杠（会污染下一条规则的选择器）', () => {
+test('注入文本必须通过真实 CSS 解析器（lightningcss）', () => {
+  assert.doesNotThrow(
+    () => transform({ filename: 'dshpc-injected.css', code: Buffer.from(INJECTED), minify: false }),
+    '注入的 CSS 解析失败：非法 token 会让解析器把紧随其后的那条规则的选择器整个吞掉',
+  )
+})
+
+test('解析结果里关键结构规则必须完好', () => {
+  const parsed = transform({ filename: 'dshpc-injected.css', code: Buffer.from(INJECTED), minify: false })
+  const out = parsed.code.toString()
+  assert.ok(out.includes('.dshpc-seg'), '解析后 .dshpc-seg 规则消失')
+  assert.ok(
+    /\.dshpc-seg\s*\{[^}]*display:\s*inline-flex/.test(out),
+    '.dshpc-seg 丢了 display:inline-flex（选择器或声明被吞）',
+  )
+})
+
+test('快速失败：注入文本不得含反引号 / 反斜杠', () => {
   const bad = ['`', '\\'].filter((ch) => INJECTED.includes(ch))
   assert.deepEqual(bad, [], `注入文本出现非法字符：${JSON.stringify(bad)}`)
+})
+
+// 反证：把 2026-10-19 的事故原样重演一遍，确认防线真的会红。
+// 没有这条，将来谁把上面的解析断言删了/放宽了都没人知道。
+test('反证：事故文本（.dshpc-seg 前多一个反引号）必须被拒绝', () => {
+  const broken = INJECTED.replace('.dshpc-seg{', '`.dshpc-seg{')
+  assert.notEqual(broken, INJECTED, '构造事故文本失败：文本里没有 .dshpc-seg{')
+  assert.throws(
+    () => transform({ filename: 'dshpc-injected.css', code: Buffer.from(broken), minify: false }),
+    '带反引号的 CSS 竟然解析通过 —— 防线失效了',
+  )
 })
 
 test('tokens 模板必须以 } 收尾，不带任何尾巴字符', () => {
