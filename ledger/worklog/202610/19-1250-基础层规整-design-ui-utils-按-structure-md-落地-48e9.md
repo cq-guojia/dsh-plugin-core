@@ -1,5 +1,6 @@
 # 20261019-1250-基础层规整-design-ui-utils-按-structure-md-落地-48e9：基础层规整：design/ui/utils 按 structure.md 落地（adv.* 不动）
 
+> **✅ 完成封卷**：2026-10-19 13:56:08（@GuoJia-Agent）
 > **创建**：2026-10-19 12:50:25（@GuoJia-Agent）
 > **分类**：建设 ｜ **标签**：规整、ui、结构、官方原语
 
@@ -28,7 +29,14 @@
 
 ## 下一步
 
-从第 1 步起手：读 `src/explorer/types.ts` 与所有调用点，把 5 个纯路径方法迁到 `src/utils/path.ts`，跑 build + test。
+本任务由用户指令结案，**第 2–7 步未开始**，需另立任务承接：
+
+- 第 2 步 `SidebarLayout` / `SplitPane`
+- 第 3 步 L1 adapter 显式具名再导出
+- 第 4 步逐控件包官方（Modal / Toast / Chip / Switch / Input / FieldHint / MarqueeText / Picker / 图标）
+- 第 5 步 P1 抽象收敛（focus ring、hover、transition、reduced-motion、语义 tint）
+- 第 6 步平台类型进 dist
+- 第 7 步文档 / 样例同步
 
 ## 过程
 
@@ -36,6 +44,22 @@
 
 执行流程（用户指定）：**写代码 → 专家团评审 → 不结案 → 升版 + 推 `style` tag 给用户真机测试**。
 
+**2026-10-19 13:00** 第 1 步完成：5 个纯路径方法（`joinPath` / `parentOf` / `crumbsOf` / `extOf` / `mimeOf`）从 `src/explorer/types.ts` 迁入 `src/utils/path.ts` 并由 `utils/index.ts` 导出；`explorer/types.ts` 只留 `previewKindOf` 与宿主契约类型，调用点与 `test/explorer.test.mjs` 同步。build 干净、自检全绿，随 `7d0557b` 入库。
+
+**2026-10-19 13:20** 控件层同名不同皮收敛（第 5 步「删孤儿 CSS」的一小块前置）：`.dsh-tdt-chip` 此前在 `controls-css.ts:124` 是 28×28 图标底板、在 `card-css.ts:41` 是胶囊标签，同页注入后互相覆盖。现独立为 `src/ui/chip-css.ts` 唯一来源（补 `focus-visible` / `disabled` / reduced-motion），图标按钮回归既有 `.dsh-tdt-iconbtn`，删除 `--label` 变体；`Modal` 关闭按钮改用 `.dsh-tdt-modal__close`（原借 `dsh-tdt-picker__trigger`，带 `min-width:120px`）；`Toast` 删掉不存在的 `remove` 事件监听。新增 `test/css-contract.test.mjs`（3 条：跨常量同名选择器即红、chip 语义边界、Modal 不借 Picker 类名）。
+
+**2026-10-19 13:40** 发布链路接通：`publish.yml` / `demo-publish.yml` 由 `workflow_dispatch` 改为 `push tag v*` 自动发布，去掉 `--staging`；首次 404 定位为 Node 22 自带 npm 10.x 不满足 Trusted Publishing 的 npm ≥ 11.5.1，已加 `Upgrade npm` 步骤并打印版本。版本规则落为硬约束：`tag vX.Y.Z` == 核心 version == demo version，demo 由 `0.0.2` 对齐到 `0.1.2`，`test/version-sync.test.mjs` 本地校验，规则写入 `AGENTS.md`。`v0.1.2` 已发布。
+
 ## 结论
 
-<!-- 收尾时填 -->
+已完成本任务第 1 步（路径方法归 `utils`）与 ui 层「同名不同皮」收敛（chip / Modal 关闭按钮 / Toast 清理），并额外接通 tag 自动发布链路（库 + demo 同版本 `0.1.2`）。
+
+**剩余第 2–7 步未做**，按用户 2026-10-19 指令本任务先结案，剩余内容见「下一步」，由后续任务承接。
+
+## 执行记录
+
+<!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
+     要补一条就跑 progress.py log --id <任务号> --note "做了什么"。 -->
+
+- 2026-10-19 13:56:05 · log · @GuoJia-Agent · 第1步完成（路径方法归 utils）+ chip/Modal/Toast 同名不同皮收敛 + tag 自动发布接通（v0.1.2），第2-7步未做，按用户指令结案
+- 2026-10-19 13:56:08 · close · @GuoJia-Agent · 结案：第1步路径方法归 utils 完成；chip/Modal/Toast 同名不同皮收敛并加 CSS 契约自检；tag 自动发布接通（库+demo 同版本 0.1.2）；第2-7步未做、另立任务承接

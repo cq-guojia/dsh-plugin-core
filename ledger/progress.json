@@ -1,22 +1,3 @@
 {
-  "tasks": {
-    "20261019-1250-基础层规整-design-ui-utils-按-structure-md-落地-48e9": {
-      "category": "建设",
-      "created": "2026-10-19 12:50:25",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-19 12:50:25",
-      "status": "doing",
-      "tags": [
-        "规整",
-        "ui",
-        "结构",
-        "官方原语"
-      ],
-      "title": "基础层规整：design/ui/utils 按 structure.md 落地（adv.* 不动）",
-      "updated": "2026-10-19 12:50:25",
-      "worklog": "worklog/202610/19-1250-基础层规整-design-ui-utils-按-structure-md-落地-48e9.md"
-    }
-  }
+  "tasks": {}
 }
