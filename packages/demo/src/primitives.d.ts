@@ -26,6 +26,17 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
     inline?: boolean
   }>
 
+  /** 官方开关：胶囊 36×20，className 落在 button[role=switch] 本体上（无包裹元素）；
+      选中底 `--dsw-alias-brand-primary`、关闭 `--dsw-alias-border-l3`。label 只作无障碍名，可见文案调用方自己画。 */
+  export const Switch: ComponentType<{
+    checked: boolean
+    onChange: (next: boolean) => void
+    label: string
+    disabled?: boolean
+    title?: string | undefined
+    className?: string | undefined
+  }>
+
   /** 官方气泡提示：label + side；children 为唯一锚点元素（须能挂 ref 的真实 DOM）。 */
   export const Tooltip: ComponentType<{
     label: string

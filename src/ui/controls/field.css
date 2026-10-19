@@ -45,11 +45,20 @@
    （合并原先 task-editor-css / task-list 两处就地覆盖；选择器带包装类 + role，特异性高于官方。） */
 .dshpc-switch button[role='switch'][aria-checked='true']{background:var(--dshpc-success);}
 
-/* 多行文本输入（提示词等，P3）：卡内无边框（视觉重心在整张卡上），占位色走 dimmed；校验不通过描红盒。
+/* 多行文本输入（提示词等，P3）：**边框 / 圆角 / 底 / 焦点态与 Input 同一套口径**（用户 2026-10-20：
+   「多行输入应该和 input 的边儿是一个道理，包括圆角在内，都是一个东西」）。
+   ⚠️ 旧意图「卡内无边框、视觉重心在整张卡上」已作废 —— 现在它就是一只带框的多行输入框。
    （从 task-editor-css 的 .dshpc-ed-prompt 上提而来；业务文件不再自写 textarea 皮肤。） */
-.dshpc-textarea{display:block;width:100%;box-sizing:border-box;min-height:132px;padding:2px;border:none;outline:none;background:0 0;color:var(--dshpc-fg);font:inherit;font-size:var(--dshpc-font-lg);line-height:1.6;resize:vertical;}
+.dshpc-textarea{display:block;width:100%;box-sizing:border-box;min-height:132px;padding:8px 12px;
+  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);outline:none;
+  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;font-size:var(--dshpc-font-lg);line-height:1.6;resize:vertical;
+  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-textarea::placeholder{color:var(--dshpc-fg-dim);}
-.dshpc-textarea--error{box-shadow:0 0 0 1px var(--dshpc-danger);}
+.dshpc-textarea:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
+/* 校验不通过：与 Input 一致，走边框描红（旧版是 box-shadow 描红盒，与 Input 不同口径） */
+.dshpc-textarea--error{border-color:var(--dshpc-danger);}
+.dshpc-textarea:disabled{cursor:default;opacity:.5;}
+@media (prefers-reduced-motion: reduce){.dshpc-textarea{transition:none;}}
 
 /* 拖拽分隔条（编辑分栏 / 预览 dock 共用，U20 #3）：6px 命中区，col-resize，不画线，hover/按下浮出浅带。
    具体 z-index 由 .dshpc-ed-resizer / .dshpc-sv-resizer 各自补。 */

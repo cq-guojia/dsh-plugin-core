@@ -15,6 +15,7 @@ import {
   IconRefreshOutlineRegular,
   IconSearchOutlineRegular,
   IconSparkleRegular,
+  Switch,
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import { Demo } from './index.js'
@@ -285,14 +286,26 @@ export function ButtonsSection(): ReturnType<typeof h> {
     // ── Checkbox / Segmented ───────────────────────────────────────────
     h(
       Demo,
-      { title: 'Checkbox / Segmented', hint: t('checkboxHint') },
+      { title: 'Switch / Checkbox / Segmented', hint: t('checkboxHint') },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'flex-start' } },
         h(
           'div',
           { style: { display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' } },
-          h(Checkbox, { checked, onChange: setChecked, label: '启用' }),
+          // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
+          // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
+          // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
+          h(
+            'span',
+            { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } },
+            h(Switch, { checked, onChange: setChecked, label: '启用' }),
+            h('span', {
+              style: { fontSize: '13px', cursor: 'pointer', userSelect: 'none' },
+              onClick: () => { setChecked(!checked) },
+            }, '启用'),
+          ),
+          h(Checkbox, { checked, onChange: setChecked, label: '多选' }),
           h(Segmented<'day' | 'week' | 'month'>, {
             variant: 'inset',
             items: [
