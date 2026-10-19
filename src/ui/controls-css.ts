@@ -1,15 +1,29 @@
 // 控件样式。类名与变量统一使用 dshpc 前缀。
 
+/**
+ * ⚠️ 牺牲规则（宿主事实，见 `docs/design/external/dsh-host.md` §9）：
+ * 宿主会吃掉「token 块之后的**第一条** CSS 规则」——整条消失，不进 CSSOM。
+ *
+ * 真机证据（2026-10-19，三条互不依赖）：
+ *   · 0.2.12：`.dshpc-seg` 单条合并规则排在首位 ⇒ **整条**被吃，`display` 从未落地；
+ *   · 0.2.13：拆成 6 条单声明 ⇒ 只有**第一条**（display）被吃，其余 5 条活着 ⇒ 轨道退化成 block；
+ *   · 同内容放进独立新标签、或运行时 `insertRule` ⇒ 全部正常（与写法无关，只与导入期位置有关）。
+ *
+ * 对策：控件样式最前面永远放这一条——只设 `display:none` 且选择器匹配不到任何元素，被吃掉零影响。
+ * 顺序由 `test/css-contract.test.mjs` 盯着（必须是注入文本的第一条规则）。
+ */
+export const CSS_GUARD = '.dshpc-css-guard{display:none}'
+
 export const SEGMENTED_CSS = `
 /* ── 分段控件 P2 ─────────────────────────────────────────────────────
-   2026-10-19：按用户点名「原封不动照兄弟项目 dsh-task-dispatch-table 抄」——
-   规则结构、写法、transition 全部对齐兄弟原文（单行规则、item 无边框、hover 只提亮文字），
-   只把前缀 / 变量名换成本仓口径。0.2.2-0.2.8 真机上「轨道透明、gap 失效」自查多轮无果
-   ⇒ 不再自创写法，回到兄弟同款。
-   用户额外要的两处（兄弟没有，保留）：weekday 方块间距 gap:6px；段内中性计数 __count。 */
-.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track,var(--dshpc-seg-track));}
-.dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-surface-raised);border:1px solid var(--dshpc-border);}
-.dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
+   结构照兄弟项目 dsh-task-dispatch-table 的 Segmented 皮肤（item 无边框、hover 只提亮文字），
+   前缀 / 变量名换成本仓口径。用户额外要的两处（兄弟没有）：weekday 方块间隔 gap:6px；段内中性计数 __count。
+   ⚠️ 2026-10-19 更正：此前认为「宿主只认单行 CSS、多行规则整条丢失」——**已证伪**
+   （tokens 与其余控件常量一直是多行且正常生效）。真实原因是宿主吃掉 token 块后的第一条规则，
+   由文件头的 CSS_GUARD 顶在最前替它挨刀。样式请照常多行书写，别再压行了。 */
+.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--dshpc-seg-track);}
+.dshpc-seg--default{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:2px;background:var(--seg-track);}
+.dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;background:var(--seg-track);}
 .dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-xs);font-weight:500;white-space:nowrap;cursor:pointer;flex:none;transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-seg--md .dshpc-seg__item{height:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item{height:calc(var(--dshpc-control-h-lg) - 6px);}
@@ -27,8 +41,8 @@ export const SEGMENTED_CSS = `
 /* weekday：星期多选方块。基础插件的特殊化定制（用户 2026-10-01：原 WeekdayPicker 即「蓝底 + 近似方形」）：
    每格正方形（宽 = 段高）、选中品牌蓝反白字、**无外描边**（2026-10-18 重申）、
    方块之间间距 gap:6px（2026-10-18：不再 2px 挤成一坨 —— 这一条兄弟没有、是用户额外要的）。 */
-.dshpc-seg--weekday{--seg-track:var(--dshpc-seg-track);gap:6px;border:0;padding:3px;}
-.dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 6px);padding:0;justify-content:center;}
+.dshpc-seg--weekday{--seg-track:var(--dshpc-seg-track);gap:6px;border:0;padding:3px;background:var(--seg-track);}
+.dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 8px);padding:0;justify-content:center;}
 .dshpc-seg--weekday .dshpc-seg__item[aria-pressed='true']{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);box-shadow:var(--dshpc-shadow-raised);}
 @media (prefers-reduced-motion: reduce){.dshpc-seg__item{transition:none;}}
 `
