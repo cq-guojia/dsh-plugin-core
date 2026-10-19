@@ -84,6 +84,25 @@ export function DisplaySection(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        // 语义色实心档：状态标签（逾期 / 停滞这类），文案随 locale 切中英
+        h(
+          'div',
+          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
+          h(Chip, { tone: 'warning' }, t('chipOverdue')),
+          h(Chip, { tone: 'danger' }, t('chipStalled')),
+          h(Chip, { tone: 'success' }, t('chipDone')),
+          h(Chip, { tone: 'business' }, t('chipDoing')),
+        ),
+        // 尺寸对比：同一组文案 sm / md 各一行，好挑
+        h(
+          'div',
+          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
+          h(Chip, { size: 'md', tone: 'warning' }, t('chipOverdue')),
+          h(Chip, { size: 'md', tone: 'danger' }, t('chipStalled')),
+          h(Chip, { size: 'md' }, 'Tag MD'),
+          h(Chip, null, 'Tag SM'),
+        ),
+        // 中性 # 标签（语言无关）+ 长文字回归样
         h(
           'div',
           { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },

@@ -1,16 +1,24 @@
 
-.dshpc-chip{
+/* 三条局部变量承载配色：neutral 走旧灰面；语义档换底字配对（2026-10-20 用户要多色多尺寸标签）。 */
+.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);
   display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;
   box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;
-  background:var(--dshpc-chip-bg);color:var(--dshpc-fg);
+  background:var(--chip-bg);color:var(--chip-fg);
   font-family:inherit;font-size:11px;line-height:18px;margin:0;
   /* 2026-10-18：chip 是 flex 行里的常用项，禁止被压缩换行（预览站出现过文字竖排、互相叠压的挤压）。 */
   white-space:nowrap;flex:none;
   appearance:none;-webkit-appearance:none;
 }
+/* md 档：卡片元信息行等稍大场景；sm 即旧版默认，逐像素不动。 */
+.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}
+/* 语义色实心档：底 / 字 / hover 配对与 Button 同源（黄底中高明度 ⇒ 字用 --dshpc-on-warning）。 */
+.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}
+.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}
+.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}
+.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}
 /* 可点态：button 渲染（见 Chip.ts），光标 + hover 加深。 */
 .dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-chip--clickable:hover:not(:disabled){background:var(--dshpc-chip-bg-hover)}
+.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}
 .dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
 .dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}
 @media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}

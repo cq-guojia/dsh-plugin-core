@@ -185,7 +185,7 @@ var FEEDBACK_CSS = "\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;
 var CARD_CSS = "\n.dshpc-card{\n  position:relative;padding:12px 14px;background:var(--dshpc-surface-1);\n  --card-accent:var(--dshpc-business);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger)}\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4)}\n\n/* \u5916\u89C2\u4E00\uFF1A\u5706\u89D2 + 1px \u8FB9\u6846\uFF0C\u8272\u6761\u4E0A\u4E0B\u7559\u8DDD\uFF08\u77ED\u6761\uFF09\u3002 */\n.dshpc-card--bordered{border-radius:8px;border:1px solid var(--dshpc-border)}\n.dshpc-card--bordered .dshpc-card__bar{top:8px;bottom:8px;border-radius:2px}\n\n/* \u5916\u89C2\u4E8C\uFF1A\u65E0\u5706\u89D2\u65E0\u8FB9\u6846\uFF0C\u8272\u6761\u901A\u9AD8\u3002 */\n.dshpc-card--strip{border-radius:0;border:none}\n.dshpc-card--strip .dshpc-card__bar{top:0;bottom:0;border-radius:0}\n\n/* \u8272\u6761\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D + top/bottom \u21D2 \u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\uFF1B\u4E0A\u4E0B\u662F\u5426\u7559\u8DDD\u7531\u5916\u89C2\u51B3\u5B9A\u3002 */\n.dshpc-card__bar{position:absolute;left:0;width:3px;background:var(--card-accent)}\n\n.dshpc-card__head{display:flex;align-items:flex-start;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
 
 // dist/ui/chip-css.generated.js
-var CHIP_CSS = "\n.dshpc-chip{\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--dshpc-chip-bg);color:var(--dshpc-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--dshpc-chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
+var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u8272\uFF1Aneutral \u8D70\u65E7\u7070\u9762\uFF1B\u8BED\u4E49\u6863\u6362\u5E95\u5B57\u914D\u5BF9\uFF082026-10-20 \u7528\u6237\u8981\u591A\u8272\u591A\u5C3A\u5BF8\u6807\u7B7E\uFF09\u3002 */\n.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--chip-bg);color:var(--chip-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* md \u6863\uFF1A\u5361\u7247\u5143\u4FE1\u606F\u884C\u7B49\u7A0D\u5927\u573A\u666F\uFF1Bsm \u5373\u65E7\u7248\u9ED8\u8BA4\uFF0C\u9010\u50CF\u7D20\u4E0D\u52A8\u3002 */\n.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}\n/* \u8BED\u4E49\u8272\u5B9E\u5FC3\u6863\uFF1A\u5E95 / \u5B57 / hover \u914D\u5BF9\u4E0E Button \u540C\u6E90\uFF08\u9EC4\u5E95\u4E2D\u9AD8\u660E\u5EA6 \u21D2 \u5B57\u7528 --dshpc-on-warning\uFF09\u3002 */\n.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}\n.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}\n.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}\n.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
 
 // dist/explorer/explorer-css.generated.js
 var EXPLORER_CSS = "\n.dshpc-exp{display:flex;flex-direction:column;height:100%;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-exp__crumbs{\n  display:flex;align-items:center;gap:2px;flex-wrap:wrap;padding:6px 8px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n.dshpc-exp__crumb{\n  background:none;border:none;padding:2px 4px;border-radius:4px;cursor:pointer;\n  color:var(--dshpc-link);font:inherit;\n}\n.dshpc-exp__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default}\n.dshpc-exp__sep{color:var(--dshpc-fg-4)}\n.dshpc-exp__tools{display:flex;gap:6px;margin-left:auto}\n.dshpc-exp__body{display:flex;flex:1;min-height:0}\n.dshpc-exp__tree{width:220px;flex:none;overflow:auto;border-right:1px solid var(--dshpc-border-faint)}\n.dshpc-exp__item{\n  display:flex;align-items:center;gap:6px;padding:4px 8px;cursor:pointer;white-space:nowrap;\n}\n.dshpc-exp__item:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-exp__item--active{background:var(--dshpc-open-bg)}\n.dshpc-exp__icon{width:14px;flex:none;color:var(--dshpc-fg-3)}\n.dshpc-exp__name{overflow:hidden;text-overflow:ellipsis}\n.dshpc-exp__size{margin-left:auto;color:var(--dshpc-fg-4);font-size:11px}\n.dshpc-exp__preview{flex:1;min-width:0;overflow:auto;padding:8px}\n.dshpc-exp__note{padding:6px 8px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-exp__text{\n  margin:0;padding:8px;border-radius:6px;background:var(--dshpc-code-surface);\n  font:var(--dshpc-code-font);white-space:pre-wrap;word-break:break-all;\n}\n.dshpc-exp__image{max-width:100%;border-radius:6px;border:1px solid var(--dshpc-border-faint)}\n";
@@ -675,9 +675,11 @@ var import_react6 = require("react");
 function Chip(props) {
   ensureControls();
   const clickable = props.onClick !== void 0;
+  const tone = props.tone ?? "neutral";
+  const size = props.size ?? "sm";
   return (0, import_react6.createElement)(clickable ? "button" : "span", {
     type: clickable ? "button" : void 0,
-    className: `dshpc-chip${clickable ? " dshpc-chip--clickable" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`,
+    className: `dshpc-chip${tone !== "neutral" ? ` dshpc-chip--${tone}` : ""}${size !== "sm" ? ` dshpc-chip--${size}` : ""}${clickable ? " dshpc-chip--clickable" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`,
     onClick: props.onClick
   }, props.children ?? null);
 }
@@ -1290,7 +1292,11 @@ var DICT2 = {
     utilsHint: "\u89E3\u6790\u5931\u8D25\u4E0D\u629B\u9519\u3001\u7ED9\u515C\u5E95\u3001\u4E0D\u7F16\u9020\uFF1B\u6240\u6709\u51FD\u6570\u65E0 UI \u4F9D\u8D56",
     displayCardHint: "\u6392\u7248\u5B8C\u5168\u7531\u8C03\u7528\u65B9\u51B3\u5B9A\u2014\u2014\u771F\u5B9E\u63D2\u4EF6\u7684\u5F62\u6001\uFF1A\u6807\u9898\u884C + \u53F3\u4FA7\u5143\u4FE1\u606F + chips \u884C\uFF1Baccent \u4E94\u6863\u89C1\u4E0B\u65B9\u901F\u89C8",
     displayStripHint: "\u540C\u4E00\u4E2A\u8272\u6761\u673A\u5236\uFF0C\u5916\u89C2\u662F\u901A\u9AD8\u8D34\u9876\u5230\u5E95\u2014\u2014\u771F\u5B9E\u63D2\u4EF6\u7684\u5F62\u6001\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C",
-    displayChipHint: "chip \u53EA\u6709\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u4E00\u5957\u76AE\u80A4\uFF1A\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6700\u540E\u4E00\u9897\u662F\u957F\u6587\u5B57\uFF0C\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219",
+    displayChipHint: "chip \u4E24\u8F74\u53EF\u9009\uFF1Atone \u8BED\u4E49\u8272\uFF08neutral \u7070\u9762 / business / success / warning / danger \u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09\u3001size\uFF08sm / md\uFF09\uFF1B\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362\uFF08\u4E2D\u82F1\u793A\u4F8B\uFF09\uFF1B\u6700\u540E\u4E00\u9897\u957F\u6587\u5B57\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219",
+    chipOverdue: "\u903E\u671F",
+    chipStalled: "\u505C\u6EDE",
+    chipDone: "\u5DF2\u5B8C\u6210",
+    chipDoing: "\u8FDB\u884C\u4E2D",
     feedbackModalHint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757",
     feedbackToastHint: "\u547D\u4EE4\u5F0F showToast\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6",
     pickerHint: "\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\u2014\u2014\u5168\u90E8\u53EF\u7528 props \u63A7\u5236",
@@ -1369,7 +1375,11 @@ var DICT2 = {
     utilsHint: "No throw on parse failure \u2014 falls back gracefully and never fabricates; all functions are UI-free",
     displayCardHint: "Layout is entirely up to the caller \u2014 the real-plugin shape: title row + right-side meta + chips row; five accent tiers below",
     displayStripHint: "Same accent-bar mechanism, but full-height edge-to-edge \u2014 real-plugin shape: title + meta row + right-side time/actions",
-    displayChipHint: "Chip has one pill skin only: width hugs the text, no wrap; the last one is long text \u2014 if squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in",
+    displayChipHint: "Two optional axes: tone (neutral grey / business / success / warning / danger solid signal) and size (sm / md); width hugs the text, no wrap; labels follow the locale (zh & en examples); if the long-text chip at the end is squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in",
+    chipOverdue: "Overdue",
+    chipStalled: "Stalled",
+    chipDone: "Done",
+    chipDoing: "In progress",
     feedbackModalHint: "Hand-rolled overlay (no portal); click backdrop / Esc / \u2715 all close it. The header \u2715 is a 24\xD724 icon slot \u2014 no border or 120px-wide color block should appear",
     feedbackToastHint: "Imperative showToast \u2014 no component mounting required",
     pickerHint: "Single / multi / max / search / grouped / empty / degraded \u2014 all driven by props",
@@ -2231,6 +2241,25 @@ function DisplaySection() {
       (0, import_react23.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        // 语义色实心档：状态标签（逾期 / 停滞这类），文案随 locale 切中英
+        (0, import_react23.createElement)(
+          "div",
+          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
+          (0, import_react23.createElement)(Chip, { tone: "warning" }, t2("chipOverdue")),
+          (0, import_react23.createElement)(Chip, { tone: "danger" }, t2("chipStalled")),
+          (0, import_react23.createElement)(Chip, { tone: "success" }, t2("chipDone")),
+          (0, import_react23.createElement)(Chip, { tone: "business" }, t2("chipDoing"))
+        ),
+        // 尺寸对比：同一组文案 sm / md 各一行，好挑
+        (0, import_react23.createElement)(
+          "div",
+          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
+          (0, import_react23.createElement)(Chip, { size: "md", tone: "warning" }, t2("chipOverdue")),
+          (0, import_react23.createElement)(Chip, { size: "md", tone: "danger" }, t2("chipStalled")),
+          (0, import_react23.createElement)(Chip, { size: "md" }, "Tag MD"),
+          (0, import_react23.createElement)(Chip, null, "Tag SM")
+        ),
+        // 中性 # 标签（语言无关）+ 长文字回归样
         (0, import_react23.createElement)(
           "div",
           { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
@@ -2830,7 +2859,7 @@ function DemoPage() {
   const buildBadge = (0, import_react31.createElement)(
     "div",
     {
-      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1020-0038-4p3h"}
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1020-0045-77k1"}
 \u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
       style: {
         fontFamily: "var(--dshpc-font-mono)",
@@ -2841,7 +2870,7 @@ function DemoPage() {
         wordBreak: "break-all"
       }
     },
-    `build ${"1020-0038-4p3h"}`
+    `build ${"1020-0045-77k1"}`
   );
   return (0, import_react31.createElement)(
     "div",

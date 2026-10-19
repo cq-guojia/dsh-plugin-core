@@ -12,6 +12,10 @@ export type DemoMessageKey =
   | 'displayCardHint'
   | 'displayStripHint'
   | 'displayChipHint'
+  | 'chipOverdue'
+  | 'chipStalled'
+  | 'chipDone'
+  | 'chipDoing'
   | 'feedbackModalHint'
   | 'feedbackToastHint'
   | 'pickerHint'
@@ -91,7 +95,11 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     utilsHint: '解析失败不抛错、给兜底、不编造；所有函数无 UI 依赖',
     displayCardHint: '排版完全由调用方决定——真实插件的形态：标题行 + 右侧元信息 + chips 行；accent 五档见下方速览',
     displayStripHint: '同一个色条机制，外观是通高贴顶到底——真实插件的形态：标题 + 元信息行 + 右侧时间/操作',
-    displayChipHint: 'chip 只有「胶囊标签」一套皮肤：宽度按文字撑开、不换行；最后一颗是长文字，若被压成 28px 竖排就是又混进了图标按钮的定宽规则',
+    displayChipHint: 'chip 两轴可选：tone 语义色（neutral 灰面 / business / success / warning / danger 实心信号面）、size（sm / md）；宽度按文字撑开、不换行；文案随语言切换（中英示例）；最后一颗长文字若被压成 28px 竖排就是又混进了图标按钮的定宽规则',
+    chipOverdue: '逾期',
+    chipStalled: '停滞',
+    chipDone: '已完成',
+    chipDoing: '进行中',
     feedbackModalHint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关。标题栏的 ✕ 是 24×24 图标位，不该出现边框或 120px 宽的底色块',
     feedbackToastHint: '命令式 showToast，不要求挂组件',
     pickerHint: '单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级——全部可用 props 控制',
@@ -170,7 +178,11 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     utilsHint: 'No throw on parse failure — falls back gracefully and never fabricates; all functions are UI-free',
     displayCardHint: 'Layout is entirely up to the caller — the real-plugin shape: title row + right-side meta + chips row; five accent tiers below',
     displayStripHint: 'Same accent-bar mechanism, but full-height edge-to-edge — real-plugin shape: title + meta row + right-side time/actions',
-    displayChipHint: 'Chip has one pill skin only: width hugs the text, no wrap; the last one is long text — if squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in',
+    displayChipHint: 'Two optional axes: tone (neutral grey / business / success / warning / danger solid signal) and size (sm / md); width hugs the text, no wrap; labels follow the locale (zh & en examples); if the long-text chip at the end is squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in',
+    chipOverdue: 'Overdue',
+    chipStalled: 'Stalled',
+    chipDone: 'Done',
+    chipDoing: 'In progress',
     feedbackModalHint: 'Hand-rolled overlay (no portal); click backdrop / Esc / ✕ all close it. The header ✕ is a 24×24 icon slot — no border or 120px-wide color block should appear',
     feedbackToastHint: 'Imperative showToast — no component mounting required',
     pickerHint: 'Single / multi / max / search / grouped / empty / degraded — all driven by props',

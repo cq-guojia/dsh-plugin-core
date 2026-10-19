@@ -5,7 +5,7 @@ export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './M
 export { FilePicker, WorkspacePicker, type FilePickerProps, type WorkspacePickerProps, } from './WorkspacePicker.js';
 export { Modal, type ModalProps } from './Modal.js';
 export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardSharedProps, } from './Card.js';
-export { Chip, type ChipProps } from './Chip.js';
+export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js';
 export { showToast, type ToastVariant } from './Toast.js';
 export { EmptyState, type EmptyStateProps } from './EmptyState.js';
 export { ErrorBoundary, type ErrorBoundaryProps } from './ErrorBoundary.js';

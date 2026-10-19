@@ -28,7 +28,7 @@ export {
   type CardAccent,
   type CardSharedProps,
 } from './Card.js'
-export { Chip, type ChipProps } from './Chip.js'
+export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js'
 export { showToast, type ToastVariant } from './Toast.js'
 export { EmptyState, type EmptyStateProps } from './EmptyState.js'
 export { ErrorBoundary, type ErrorBoundaryProps } from './ErrorBoundary.js'

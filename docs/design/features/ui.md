@@ -171,7 +171,13 @@ h(StripCard, {
 }, h('div', null, '标题 + 元信息'))
 ```
 
-`Chip`：小标签，token 用现成的 `--dshpc-chip-bg`；传 `onClick` 才是可点的。
+`Chip`：小标签。两条可选轴（2026-10-20）：
+
+- `tone`：`neutral`（默认，灰面 `--dshpc-chip-bg`）/ `business` / `success` / `warning` / `danger`
+  —— 非 neutral 为实心信号面，底 / 字 / hover 配对与 Button 同源（黄底中高明度 ⇒ 字用 `--dshpc-on-warning`）。
+- `size`：`sm`（默认，与旧版逐像素一致）/ `md`（`font-size:12px`，卡片元信息行用）。
+
+传 `onClick` 才是可点的。
 
 **语义边界**：`Chip` 只管「胶囊标签」这一件事。**只给图标的小按钮请用 `IconButton`**（`.dshpc-iconbtn`），
 不要拿 `Chip` 当图标底板——同一个类名两套皮肤（28px 定宽 vs 胶囊形）会互相覆盖、把文字挤成一列。
