@@ -53,6 +53,11 @@ pnpm test             # 全部自检（条数以 test/ 下实际用例为准，�
 **demo 改动 = 必须发版**：凡是 demo 有改动、需要人看的，一律 bump 版本 + 打 `vX.Y.Z` tag 推送（tag 触发 demo 包自动发布到 npm）。
 用户之后在 DSH 插件市场更新该插件即可测试，不必再问要不要发。
 
+**调试期不发 tag**（用户 2026-10-19 定）：宿主真机调试阶段，改动直接 `commit + push` 到 `main` 即可
+（`dist/` 随提交入库，git 安装的用户重装/pull 即得最新代码），**不 bump、不打 tag**——
+tag 会触发 npm publish，调试期不需要走发布链。问题定位收敛、用户验收通过后，再走正式发版流程
+（bump 两包同号 → build → commit → push → tag）。npm 渠道的用户只有 tag 才拿得到，调试期接受。
+
 ## 改完的 checklist
 
 - [ ] `pnpm run build` 干净（`noUnusedLocals` / `strict` 全开）
