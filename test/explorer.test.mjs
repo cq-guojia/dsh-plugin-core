@@ -1,13 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {
-  crumbsOf,
-  extOf,
-  joinPath,
-  mimeOf,
-  parentOf,
-  previewKindOf,
-} from '../dist/explorer/index.js'
+import { crumbsOf, extOf, joinPath, mimeOf, parentOf } from '../dist/utils/index.js'
+import { previewKindOf } from '../dist/explorer/index.js'
 
 test('crumbsOf / parentOf / joinPath', () => {
   assert.deepEqual(crumbsOf(''), [])

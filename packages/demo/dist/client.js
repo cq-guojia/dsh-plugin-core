@@ -156,6 +156,8 @@ body{
   --tdt-radius-lg:var(--dsw-radius-lg,16px);
   --tdt-radius-xl:var(--dsw-radius-xl,20px);
   --tdt-radius-panel:var(--dsw-radius-panel,28px);
+  /* \u5168\u5706\uFF08\u80F6\u56CA\u6807\u7B7E\uFF09\uFF1A\u5BBF\u4E3B\u7684 radius \u6863\u6700\u5927\u53EA\u6709 28px\uFF0C\u6491\u4E0D\u6EE1 24px \u9AD8\u7684 chip */
+  --tdt-radius-pill:999px;
 
   /* \u2500\u2500 \u95F4\u8DDD\u56DB\u62CD\uFF08\u53EA\u8BB8\u7528\u8FD9\u56DB\u6863\uFF0C\u4E0D\u8BB8\u51FA\u73B0 5 / 7 / 9px\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   --tdt-space-1:4px;
@@ -446,26 +448,6 @@ var BUTTON_CSS = `
 .dsh-tdt-iconbtn:focus-visible{outline:2px solid var(--tdt-focus);outline-offset:2px;}
 .dsh-tdt-iconbtn:disabled{cursor:default;opacity:.4;}
 
-/* \u2500\u2500 \u4EA7\u51FA\u7269\u300C\u56FE\u6807 chip\u300DP2\uFF1A28\xD728 \u65B9\u89D2\u5C0F\u5E95\u677F + \u5B98\u65B9\u6587\u4EF6\u7C7B\u578B\u56FE\u6807 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-   \u7528\u9014\uFF1A\u4EA7\u51FA\u7269\u5217\u8868\u91CC**\u53EA\u7ED9\u56FE\u6807**\u7684\u5C0F\u6309\u94AE\uFF08\u5361\u7247\u300C\u6267\u884C\u8BB0\u5F55\u300D\u9762\u677F\u3001\u6267\u884C\u8BB0\u5F55\u603B\u67E5\u8BE2\u9875\u3001\u5C55\u5F00\u533A\u90FD\u6302\u5B83\uFF09\u3002
-   \u26A0\uFE0F \u5E95\u677F**\u5FC5\u987B\u8D70 class**\u2014\u2014inline background \u4F1A\u76D6\u6389 :hover\uFF08\u7528\u6237 2026-10-03 \u8E29\u8FC7\uFF09\u3002
-   hover \u7528 \u300C--tdt-chip-bg-hover\u300D\uFF1A\u6D45\u8272\u66F4\u6DF1\u3001\u6697\u8272\u66F4\u4EAE\uFF08\u4E24\u7AEF\u90FD\u662F\u300C\u66F4\u660E\u663E\u300D\uFF09\uFF1B\u4E0D\u8BB8\u62FF
-   \u300C--tdt-plate-hover\u300D \u9876\u2014\u2014\u6697\u8272\u4E0B\u53CD\u800C\u66F4\u6DE1\uFF0C\u9F20\u6807\u79FB\u4E0A\u53BB\u5E95\u677F\u5C31\u6D88\u5931\u4E86\u3002
-   \u2705 **\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\uFF1A\u6B64\u524D\u5361\u7247\u9762\u677F\u4E0E\u6267\u884C\u8BB0\u5F55\u9875\u5404\u5199\u4E00\u4EFD**\u540C\u540D\u4E0D\u540C\u76AE**\u7684
-   \u300C.dsh-tdt-rec-out\u300D\uFF0C\u4E24\u4EFD CSS \u90FD\u6CE8\u5165\u540C\u4E00\u9875\u9762 \u21D2 \u8C01\u540E\u6CE8\u518C\u8C01\u751F\u6548\u3001\u4E92\u76F8\u6C61\u67D3\uFF1B\u73B0\u5DF2\u6536\u6210\u8FD9\u4E00\u4EFD\u3002 */
-.dsh-tdt-chip{appearance:none;-webkit-appearance:none;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
-  width:var(--tdt-control-h-md);height:var(--tdt-control-h-md);padding:0;border:none;border-radius:var(--tdt-radius-sm);
-  background:transparent;color:var(--tdt-fg-2);font-family:inherit;line-height:0;cursor:pointer;
-  transition:background-color var(--tdt-dur) var(--tdt-ease),color var(--tdt-dur) var(--tdt-ease);}
-/* \u5E95\u677F**\u5E73\u65F6\u900F\u660E\u3001\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u6D6E\u51FA\u6765**\uFF08\u7528\u6237 2026-10-04\uFF1A\u300C\u90A3\u4E2A\u5E26\u5E95\u8272\u7684\u6846\uFF0C\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u6709\u300D\uFF09\u3002
-   \u53EA\u7ED9\u56FE\u6807\u3001\u6CA1\u6709\u6587\u5B57\u53EF\u8BFB \u21D2 hover \u7528\u66F4\u660E\u663E\u7684\u90A3\u6863\uFF08\u6D45\u8272\u66F4\u6DF1\u3001\u6697\u8272\u66F4\u4EAE\uFF0C\u4E24\u7AEF\u90FD\u662F\u300C\u66F4\u660E\u663E\u300D\uFF09\u3002 */
-.dsh-tdt-chip:hover:not(:disabled){background:var(--tdt-chip-bg-hover);}
-.dsh-tdt-chip:focus-visible{outline:2px solid var(--tdt-focus);outline-offset:1px;}
-/* \u4E0D\u53EF\u70B9\uFF08\u6CA1\u6709\u4F1A\u8BDD / \u9884\u89C8\u9762\u672A\u5C31\u4F4D\uFF09\uFF1A\u6CA1\u6709\u5E95\u677F\u3001\u6CA1\u6709\u624B\u6307\uFF0C\u522B\u7ED9\u5047\u5165\u53E3 */
-.dsh-tdt-chip:disabled{cursor:default;background:transparent;color:var(--tdt-fg-3);}
-/* \u6587\u5B57\u578B chip\uFF08\u300C\u2026\u300D / \u300C+N\u300D\uFF09\uFF1A\u4E0D\u56FA\u5B9A\u65B9\u5BBD\uFF0C\u6309\u5185\u5BB9\u6491\u5F00 */
-.dsh-tdt-chip--label{width:auto;padding:0 6px;font-size:var(--tdt-font-md);line-height:var(--tdt-line-md);}
-
 /* \u2500\u2500 \u884C\u5F0F\u6587\u4EF6\u6309\u94AE\uFF08\u56FE\u6807 + \u6587\u4EF6\u540D\uFF09P2\uFF1A**\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
    \u7528\u9014\uFF1A\u300C\u4EA7\u51FA\u7269 / \u9644\u4EF6\u300D\u90A3\u79CD**\u4E00\u884C\u4E00\u4E2A\u6587\u4EF6**\u7684\u6E05\u5355\u9879\uFF08\u57FA\u7840\u4FE1\u606F\u53F3\u680F\u4EA7\u51FA\u7269\u6E05\u5355\u3001\u9644\u4EF6\u533A\u3001
    \u6267\u884C\u8BB0\u5F55\u9875\u7684\u5C55\u5F00\u533A\uFF09\u3002\u5E73\u65F6\u900F\u660E\u3001**\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u51FA\u6D45\u5E95**\uFF08\u6CBF\u7528\u7528\u6237 2026-10-03 \u5B9A\u7684\u89C2\u611F\uFF09\u3002
@@ -484,7 +466,7 @@ var BUTTON_CSS = `
   padding:4px 6px;font-size:var(--tdt-font-xs);}
 .dsh-tdt-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--tdt-font-sm);}
 
-@media (prefers-reduced-motion: reduce){.dsh-tdt-btn,.dsh-tdt-iconbtn,.dsh-tdt-chip,.dsh-tdt-filechip{transition:none;}}
+@media (prefers-reduced-motion: reduce){.dsh-tdt-btn,.dsh-tdt-iconbtn,.dsh-tdt-filechip{transition:none;}}
 `;
 var FIELD_CSS = `
 /* \u2500\u2500 \u8F93\u5165\u7C7B P3 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
@@ -739,6 +721,15 @@ var FEEDBACK_CSS = `
   border-bottom:1px solid var(--tdt-border-faint);color:var(--tdt-fg);font-size:14px;
 }
 .dsh-tdt-modal__title{flex:1;min-width:0}
+/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */
+.dsh-tdt-modal__close{
+  display:inline-flex;align-items:center;justify-content:center;flex:none;
+  width:24px;height:24px;padding:0;border:none;border-radius:var(--tdt-radius-sm);
+  background:transparent;color:var(--tdt-fg-3);font-family:inherit;font-size:12px;line-height:1;cursor:pointer;
+  transition:background-color var(--tdt-dur-fast) var(--tdt-ease),color var(--tdt-dur-fast) var(--tdt-ease);
+}
+.dsh-tdt-modal__close:hover{background:var(--tdt-hover);color:var(--tdt-fg)}
+.dsh-tdt-modal__close:focus-visible{outline:2px solid var(--tdt-focus);outline-offset:1px}
 .dsh-tdt-modal__body{flex:1;min-height:0;overflow:auto;padding:12px 14px}
 .dsh-tdt-modal__foot{
   display:flex;justify-content:flex-end;gap:8px;padding:10px 14px;
@@ -805,15 +796,24 @@ var CARD_CSS = `
 .dsh-tdt-card__caret.is-open{transform:rotate(180deg)}
 .dsh-tdt-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--tdt-border-faint)}
 `;
+
+// dist/ui/chip-css.js
 var CHIP_CSS = `
 .dsh-tdt-chip{
-  display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;
-  background:var(--tdt-chip-bg);color:var(--tdt-fg);font-size:11px;line-height:18px;
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;
+  box-sizing:border-box;border-radius:var(--tdt-radius-pill,999px);border:none;
+  background:var(--tdt-chip-bg);color:var(--tdt-fg);
+  font-family:inherit;font-size:11px;line-height:18px;margin:0;
   /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */
-  white-space:nowrap;flex:none;box-sizing:border-box;
+  white-space:nowrap;flex:none;
+  appearance:none;-webkit-appearance:none;
 }
-.dsh-tdt-chip--clickable{cursor:pointer;border:none;font:inherit;font-size:11px}
-.dsh-tdt-chip--clickable:hover{background:var(--tdt-chip-bg-hover)}
+/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */
+.dsh-tdt-chip--clickable{cursor:pointer;transition:background-color var(--tdt-dur-fast) var(--tdt-ease);}
+.dsh-tdt-chip--clickable:hover:not(:disabled){background:var(--tdt-chip-bg-hover)}
+.dsh-tdt-chip:focus-visible{outline:2px solid var(--tdt-focus);outline-offset:1px}
+.dsh-tdt-chip:disabled{cursor:default;color:var(--tdt-fg-3)}
+@media (prefers-reduced-motion: reduce){.dsh-tdt-chip{transition:none}}
 `;
 
 // dist/explorer/explorer-css.js
@@ -1306,7 +1306,7 @@ function Modal(props) {
     onClick: (e) => e.stopPropagation()
   }, props.hideHeader === true || props.title === void 0 && props.onClose === void 0 ? null : (0, import_react4.createElement)("div", { className: "dsh-tdt-modal__head" }, (0, import_react4.createElement)("div", { className: "dsh-tdt-modal__title" }, props.title ?? ""), props.onClose === void 0 ? null : (0, import_react4.createElement)("button", {
     type: "button",
-    className: "dsh-tdt-picker__trigger",
+    className: "dsh-tdt-modal__close",
     "aria-label": tt("modalClose"),
     onClick: () => props.onClose?.()
   }, "\u2715")), (0, import_react4.createElement)("div", { className: "dsh-tdt-modal__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react4.createElement)("div", { className: "dsh-tdt-modal__foot" }, props.footer)));
@@ -1367,12 +1367,11 @@ function showToast(message, opts) {
   el.className = `dsh-tdt-toast${variant === "info" ? "" : ` dsh-tdt-toast--${variant}`}`;
   el.textContent = message;
   host.appendChild(el);
-  const timer = setTimeout(() => {
+  setTimeout(() => {
     el.remove();
     if (host.childElementCount === 0)
       host.remove();
   }, opts?.durationMs ?? DEFAULT_MS);
-  el.addEventListener("remove", () => clearTimeout(timer));
 }
 function ensureHost() {
   const found = document.getElementById(HOST_ID);
@@ -2042,7 +2041,10 @@ function FeedbackSection() {
     null,
     (0, import_react22.createElement)(
       Demo,
-      { title: "Modal", hint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173" },
+      {
+        title: "Modal",
+        hint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757"
+      },
       (0, import_react22.createElement)(
         "div",
         null,
@@ -2184,16 +2186,20 @@ function DisplaySection() {
     ),
     (0, import_react23.createElement)(
       Demo,
-      { title: "Chip / SectionHead / MarqueeText / LiveText" },
+      {
+        title: "Chip / SectionHead / MarqueeText / LiveText",
+        hint: "chip \u53EA\u6709\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u4E00\u5957\u76AE\u80A4\uFF1A\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6700\u540E\u4E00\u9897\u662F\u957F\u6587\u5B57\uFF0C\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219"
+      },
       (0, import_react23.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
         (0, import_react23.createElement)(
           "div",
-          { style: { display: "flex", gap: "6px", flexWrap: "wrap" } },
+          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
           (0, import_react23.createElement)(Chip, null, "#npm"),
           (0, import_react23.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react23.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9")
+          (0, import_react23.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react23.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
         ),
         (0, import_react23.createElement)(SectionHead, { icon: "\u25B8", title: "\u5206\u533A\u6807\u9898", right: (0, import_react23.createElement)(Button, { size: "sm" }, "\u64CD\u4F5C") }),
         (0, import_react23.createElement)(
@@ -2328,6 +2334,37 @@ function formatBytes(bytes) {
   return `${value >= 10 ? String(Math.round(value)) : value.toFixed(1)} ${units[unit]}`;
 }
 
+// dist/utils/path.js
+var IMAGE_EXT = {
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  gif: "image/gif",
+  webp: "image/webp",
+  bmp: "image/bmp",
+  svg: "image/svg+xml",
+  ico: "image/x-icon"
+};
+function mimeOf(path) {
+  const ext = extOf(path);
+  return ext === "" ? void 0 : IMAGE_EXT[ext];
+}
+function extOf(path) {
+  const name = path.slice(path.lastIndexOf("/") + 1);
+  const dot = name.lastIndexOf(".");
+  return dot <= 0 ? "" : name.slice(dot + 1).toLowerCase();
+}
+function crumbsOf(path) {
+  return path.split("/").filter((s) => s !== "");
+}
+function parentOf(path) {
+  const cut = path.lastIndexOf("/");
+  return cut < 0 ? "" : path.slice(0, cut);
+}
+function joinPath(dir, name) {
+  return dir === "" ? name : `${dir}/${name}`;
+}
+
 // demo/sections/utils.tsx
 var NOW = Date.parse("2026-10-18T12:00:00.000Z");
 var ROWS = [
@@ -2385,25 +2422,6 @@ var import_react26 = require("react");
 var import_react25 = require("react");
 
 // dist/explorer/types.js
-var IMAGE_EXT = {
-  png: "image/png",
-  jpg: "image/jpeg",
-  jpeg: "image/jpeg",
-  gif: "image/gif",
-  webp: "image/webp",
-  bmp: "image/bmp",
-  svg: "image/svg+xml",
-  ico: "image/x-icon"
-};
-function mimeOf(path) {
-  const ext = extOf(path);
-  return ext === "" ? void 0 : IMAGE_EXT[ext];
-}
-function extOf(path) {
-  const name = path.slice(path.lastIndexOf("/") + 1);
-  const dot = name.lastIndexOf(".");
-  return dot <= 0 ? "" : name.slice(dot + 1).toLowerCase();
-}
 function previewKindOf(path) {
   if (mimeOf(path) !== void 0)
     return "image";
@@ -2442,16 +2460,6 @@ function previewKindOf(path) {
     "xml"
   ]);
   return textLike.has(ext) ? "text" : "unsupported";
-}
-function crumbsOf(path) {
-  return path.split("/").filter((s) => s !== "");
-}
-function parentOf(path) {
-  const cut = path.lastIndexOf("/");
-  return cut < 0 ? "" : path.slice(0, cut);
-}
-function joinPath(dir, name) {
-  return dir === "" ? name : `${dir}/${name}`;
 }
 
 // dist/explorer/preview/index.js

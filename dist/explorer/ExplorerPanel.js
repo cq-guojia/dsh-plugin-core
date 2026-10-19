@@ -4,7 +4,7 @@ import { EmptyState } from '../ui/EmptyState.js';
 import { t } from '../utils/i18n.js';
 import { formatBytes } from '../utils/number.js';
 import { FilePreview } from './preview/index.js';
-import { crumbsOf, joinPath, parentOf } from './types.js';
+import { crumbsOf, joinPath, parentOf } from '../utils/path.js';
 /**
  * 工作区浏览面板：面包屑 + 目录树 + 文件预览。
  *

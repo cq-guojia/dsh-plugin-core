@@ -14,3 +14,4 @@ export {
 export { baseNameOf, safeTrim, truncateBytes } from './string.js'
 export { formatBytes, formatCount } from './number.js'
 export { HttpError, request, requestJson, type RequestOptions } from './http.js'
+export { crumbsOf, extOf, joinPath, mimeOf, parentOf } from './path.js'

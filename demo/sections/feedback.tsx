@@ -3,7 +3,6 @@ import {
   Button,
   EmptyState,
   ErrorBoundary,
-  Loading,
   Modal,
   showToast,
 } from '../../dist/ui/index.js'
@@ -22,7 +21,10 @@ export function FeedbackSection(): ReturnType<typeof h> {
     null,
     h(
       Demo,
-      { title: 'Modal', hint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关' },
+      {
+        title: 'Modal',
+        hint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关。标题栏的 ✕ 是 24×24 图标位，不该出现边框或 120px 宽的底色块',
+      },
       h(
         'div',
         null,

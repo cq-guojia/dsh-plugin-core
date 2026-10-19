@@ -76,16 +76,20 @@ export function DisplaySection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'Chip / SectionHead / MarqueeText / LiveText' },
+      {
+        title: 'Chip / SectionHead / MarqueeText / LiveText',
+        hint: 'chip 只有「胶囊标签」一套皮肤：宽度按文字撑开、不换行；最后一颗是长文字，若被压成 28px 竖排就是又混进了图标按钮的定宽规则',
+      },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
         h(
           'div',
-          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap' } },
+          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
           h(Chip, null, '#npm'),
           h(Chip, null, '#构建'),
           h(Chip, { onClick: () => showToast('点了 chip') }, '#可点'),
+          h(Chip, null, '一整段比较长的标签文字，宽度应该跟着文字走'),
         ),
         h(SectionHead, { icon: '▸', title: '分区标题', right: h(Button, { size: 'sm' }, '操作') }),
         h('div', { style: { maxWidth: '200px' } },

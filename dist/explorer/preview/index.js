@@ -2,7 +2,8 @@ import { createElement as h, useEffect, useState } from 'react';
 import { ensureControls } from '../../ui/css.js';
 import { EmptyState } from '../../ui/EmptyState.js';
 import { t } from '../../utils/i18n.js';
-import { mimeOf, previewKindOf } from '../types.js';
+import { mimeOf } from '../../utils/path.js';
+import { previewKindOf } from '../types.js';
 /** 单文件预览：文本 / 图片 / 不支持（明确兜底，不硬撑）。 */
 export function FilePreview(props) {
     ensureControls();

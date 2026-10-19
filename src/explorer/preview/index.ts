@@ -2,7 +2,8 @@ import { createElement as h, useEffect, useState } from 'react'
 import { ensureControls } from '../../ui/css.js'
 import { EmptyState } from '../../ui/EmptyState.js'
 import { t, type Translate } from '../../utils/i18n.js'
-import { mimeOf, previewKindOf, type WorkspaceFilesFace } from '../types.js'
+import { mimeOf } from '../../utils/path.js'
+import { previewKindOf, type WorkspaceFilesFace } from '../types.js'
 
 export interface FilePreviewProps {
   workspaceFiles: WorkspaceFilesFace

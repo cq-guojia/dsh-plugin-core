@@ -53,14 +53,6 @@ export interface Listing {
 }
 /** 预览类型（决定用哪个预览体）。 */
 export type PreviewKind = 'text' | 'image' | 'unsupported';
-export declare function mimeOf(path: string): string | undefined;
-export declare function extOf(path: string): string;
 /** 按扩展名猜预览类型；猜不出就 `unsupported`（不硬撑，交给调用方决定兜底）。 */
 export declare function previewKindOf(path: string): PreviewKind;
-/** 路径分段（面包屑用）：`a/b/c` ⇒ `['a','b','c']`；空串 = 工作区根。 */
-export declare function crumbsOf(path: string): string[];
-/** 父目录（无父 = 空串，list('') = 工作区根）。 */
-export declare function parentOf(path: string): string;
-/** 拼接子路径，避免多余斜杠。 */
-export declare function joinPath(dir: string, name: string): string;
 //# sourceMappingURL=types.d.ts.map

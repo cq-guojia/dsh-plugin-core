@@ -4,7 +4,8 @@ import { EmptyState } from '../ui/EmptyState.js'
 import { t, type Translate } from '../utils/i18n.js'
 import { formatBytes } from '../utils/number.js'
 import { FilePreview } from './preview/index.js'
-import { crumbsOf, joinPath, parentOf, type DirEntry, type WorkspaceFilesFace } from './types.js'
+import { crumbsOf, joinPath, parentOf } from '../utils/path.js'
+import { type DirEntry, type WorkspaceFilesFace } from './types.js'
 
 export interface ExplorerPanelProps {
   /** 宿主能力面，由插件从 ctx 取出后注入（本包不抓宿主全局）。 */

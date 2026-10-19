@@ -1,21 +1,22 @@
 {
   "tasks": {
-    "20261019-1132-控件层重构-改继承官方-primitives-l0-l4-分层-逐控件包裹-eb12": {
+    "20261019-1250-基础层规整-design-ui-utils-按-structure-md-落地-48e9": {
       "category": "建设",
-      "created": "2026-10-19 11:32:47",
+      "created": "2026-10-19 12:50:25",
       "creator": "GuoJia-Agent",
       "finished": null,
       "owner": "GuoJia-Agent",
-      "started": "2026-10-19 11:32:47",
+      "started": "2026-10-19 12:50:25",
       "status": "doing",
       "tags": [
-        "重构",
-        "控件",
-        "官方原语",
-        "分层"
+        "规整",
+        "ui",
+        "结构",
+        "官方原语"
       ],
-      "title": "控件层重构：改继承官方 primitives（L0-L4 分层 + 逐控件包裹）",
-      "worklog": "worklog/202610/19-1132-控件层重构-改继承官方-primitives-l0-l4-分层-逐控件包裹-eb12.md"
+      "title": "基础层规整：design/ui/utils 按 structure.md 落地（adv.* 不动）",
+      "updated": "2026-10-19 12:50:25",
+      "worklog": "worklog/202610/19-1250-基础层规整-design-ui-utils-按-structure-md-落地-48e9.md"
     }
   }
 }

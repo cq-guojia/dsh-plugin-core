@@ -1,3 +1,3 @@
 export { ExplorerPanel, type ExplorerPanelProps } from './ExplorerPanel.js';
-export { crumbsOf, extOf, joinPath, mimeOf, parentOf, previewKindOf, type DirEntry, type Listing, type PreviewKind, type WorkspaceFilesFace, } from './types.js';
+export { previewKindOf, type DirEntry, type Listing, type PreviewKind, type WorkspaceFilesFace, } from './types.js';
 //# sourceMappingURL=index.d.ts.map
