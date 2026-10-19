@@ -103,10 +103,6 @@ body{
   --dshpc-on-signal:#fff;
   /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */
   --dshpc-on-warning:#1f2328;
-  /* \u60AC\u505C\u63D0\u793A\u6C14\u6CE1\uFF08\u5BF9\u9F50\u5B98\u65B9 Tooltip \u7684\u7528\u8272\uFF1A\u5E95\u8D70\u5BBF\u4E3B alias-tooltip-bg\uFF0C\u7F3A\u5931\u65F6\u7ED9\u56FA\u5B9A\u4E2D\u6027\u515C\u5E95\uFF09\u3002
-     FieldHint \u7684\u81EA\u7ED8\u6C14\u6CE1\u4E5F\u5403\u8FD9\u4E24\u6761 \u2014\u2014 \u4FDD\u8BC1\u300C\u95EE\u53F7\u63D0\u793A\u300D\u4E0E\u300C\u5B98\u65B9 Tooltip\u300D\u540C\u4E00\u79CD\u6C14\u6CE1\u76AE\u80A4\u3002 */
-  --dshpc-tooltip-bg:var(--dsw-alias-tooltip-bg,#1f2328);
-  --dshpc-tooltip-fg:#ffffff;
 
   /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
      \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002
@@ -236,9 +232,6 @@ body{
 body[data-ds-dark-theme]{
   --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);
   --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);
-  /* \u60AC\u505C\u63D0\u793A\u6C14\u6CE1\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u5B98\u65B9 alias \u5728\u6697\u8272\u4E0B\u81EA\u52A8\u6362\u503C\uFF1Balias \u7F3A\u5931\u65F6\u7ED9\u4EAE\u5E95\u6DF1\u5B57\uFF08\u4E0E\u5B98\u65B9\u6697\u8272\u6C14\u6CE1\u540C\u5411\uFF09\u3002 */
-  --dshpc-tooltip-bg:var(--dsw-alias-tooltip-bg,#e8e8e8);
-  --dshpc-tooltip-fg:#1f2328;
   /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B
      \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */
   --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);
@@ -720,27 +713,15 @@ var BACK_TO_TOP_CSS = `
 `;
 var HINT_CSS = `
 /* \u2500\u2500 \u95EE\u53F7\u63D0\u793A P4\uFF08\u7528\u6237 2026-10-18\uFF1A\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6 HelpButton\u2014\u2014**\u5E26\u5708\u7684\u95EE\u53F7\u56FE\u6807**\uFF09\u2500\u2500
-   \u672C\u4F53 16px \u7EC6\u5708 + \u5708\u5185 ?\uFF0C\u989C\u8272 fg-3\u3001hover \u53EA\u63D0\u4EAE\u4E0D\u52A0\u5E95\uFF08\u4E0E dshpc-ed-help \u540C\u89C4\u77E9\uFF09\u3002
-   \u7EAF CSS tooltip\uFF1Ahover / \u952E\u76D8\u805A\u7126\u6D6E\u51FA\u6C14\u6CE1\uFF0C\u96F6 JS\u3002\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u6807\u9898\u540E\u3001\u884C\u5C3E\u968F\u5904\u53EF\u6302\u3002 */
-.dshpc-hint{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;
+   \u672C\u4F53 14px \u7EC6\u5708 + \u5708\u5185 ?\uFF0C\u989C\u8272 fg-3\u3001hover \u53EA\u63D0\u4EAE\u4E0D\u52A0\u5E95\uFF08\u4E0E dshpc-ed-help \u540C\u89C4\u77E9\uFF09\u3002
+   \u6C14\u6CE1\u4E0D\u5728\u672C\u6587\u4EF6\uFF1A2026-10-19 \u7528\u6237\u62CD\u677F\u300C\u95EE\u53F7\u5FC5\u987B\u7528\u5B98\u65B9 Tooltip \u90A3\u4E00\u4E2A\u300D\u21D2 \u6C14\u6CE1\u7531\u6CE8\u5165\u7684
+   \u5B98\u65B9\u7EC4\u4EF6\u6E32\u67D3\uFF08src/ui/tooltip.ts\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u95EE\u53F7\u56FE\u6807\u672C\u8EAB\u3002 */
+.dshpc-hint{display:inline-flex;align-items:center;justify-content:center;flex:none;
   box-sizing:border-box;width:14px;height:14px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;
   color:var(--dshpc-fg-3);font-family:inherit;font-size:8px;font-weight:600;line-height:12px;cursor:help;vertical-align:middle;
   transition:color var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-hint:hover,.dshpc-hint:focus-visible{color:var(--dshpc-fg);background:0 0;}
 .dshpc-hint:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}
-/* \u6C14\u6CE1\u76AE\u80A4 = \u5B98\u65B9 Tooltip \u540C\u6B3E\uFF082026-10-19 \u7528\u6237\u70B9\u540D\u300C\u4E24\u4E2A\u6C14\u6CE1\u5FC5\u987B\u4E00\u79CD\u76AE\u80A4\u300D\uFF09\uFF1A
-   \u5E95\u8272\u8D70 --dsw-alias-tooltip-bg \u7684 token \u5305\u88C5\uFF08--dshpc-tooltip-bg\uFF0C\u660E\u6697\u5404\u7ED9\u515C\u5E95\uFF09\u3001
-   13px \u5B57\u53F7\u3001\u5C0F\u5185\u8DDD\u3001radius-sm\uFF1Bwhite-space:pre-line \u21D2 \u6587\u672C\u91CC\u7684 
- \u662F\u771F\u5B9E\u6362\u884C
-   \uFF08\u7B2C\u4E00\u884C\u540D\u5B57\u3001\u7B2C\u4E8C\u884C\u6B63\u6587\u7684\u4E24\u6BB5\u5F0F\u63D0\u793A\u5C31\u9760\u5B83\uFF09\u3002 */
-.dshpc-hint__bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
-  box-sizing:border-box;width:max-content;max-width:280px;padding:5px 9px;
-  border-radius:var(--dshpc-radius-sm);background:var(--dshpc-tooltip-bg);color:var(--dshpc-tooltip-fg);
-  font-size:var(--dshpc-font-md);line-height:1.55;text-align:left;white-space:pre-line;
-  box-shadow:var(--dshpc-shadow-2);z-index:var(--dshpc-z-menu);
-  opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-hint:hover .dshpc-hint__bubble,.dshpc-hint:focus-visible .dshpc-hint__bubble{opacity:1;visibility:visible;}
 `;
 
 // dist/ui/picker-css.js
@@ -1731,22 +1712,15 @@ function FieldHint(props) {
     "aria-label": text
   }, "?");
   const renderer2 = getTooltipRenderer();
-  if (renderer2 !== void 0) {
-    return renderer2({
-      label: text,
-      side: side ?? "top",
-      ...align !== void 0 ? { align } : {},
-      ...maxWidth !== void 0 ? { maxWidth } : {},
-      children: anchor
-    });
-  }
-  return (0, import_react15.createElement)("span", {
-    className: `dshpc-hint${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
-    style,
-    tabIndex: 0,
-    role: "note",
-    "aria-label": text
-  }, "?", (0, import_react15.createElement)("span", { className: "dshpc-hint__bubble", role: "tooltip" }, text));
+  if (renderer2 === void 0)
+    return anchor;
+  return renderer2({
+    label: text,
+    side: side ?? "top",
+    ...align !== void 0 ? { align } : {},
+    ...maxWidth !== void 0 ? { maxWidth } : {},
+    children: anchor
+  });
 }
 
 // dist/ui/LiveText.js
@@ -3559,8 +3533,8 @@ function DemoPage() {
             fontFamily: "var(--dshpc-font-mono)"
           }
         },
-        (0, import_react31.createElement)("div", null, `core v${"0.2.5"}`),
-        (0, import_react31.createElement)("div", null, `demo v${"0.2.5"}`),
+        (0, import_react31.createElement)("div", null, `core v${"0.2.6"}`),
+        (0, import_react31.createElement)("div", null, `demo v${"0.2.6"}`),
         (0, import_react31.createElement)(
           "div",
           { title: "body[data-ds-dark-theme]" },

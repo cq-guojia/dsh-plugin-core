@@ -74,10 +74,6 @@ body{
   --dshpc-on-signal:#fff;
   /* 黄底上的字：黄色是中高明度，白字看不清 ⇒ 固定深色（与主题无关）。 */
   --dshpc-on-warning:#1f2328;
-  /* 悬停提示气泡（对齐官方 Tooltip 的用色：底走宿主 alias-tooltip-bg，缺失时给固定中性兜底）。
-     FieldHint 的自绘气泡也吃这两条 —— 保证「问号提示」与「官方 Tooltip」同一种气泡皮肤。 */
-  --dshpc-tooltip-bg:var(--dsw-alias-tooltip-bg,#1f2328);
-  --dshpc-tooltip-fg:#ffffff;
 
   /* ── 实心按钮的 hover / active 派生态（2026-10-19 用户点名）─────────────────
      原实现是 :hover 直接压 opacity .9：黑底压 10% 几乎看不出来，用户原话「完全感觉不到颜色变了」。
@@ -207,9 +203,6 @@ body{
 body[data-ds-dark-theme]{
   --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);
   --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);
-  /* 悬停提示气泡（暗色版）：官方 alias 在暗色下自动换值；alias 缺失时给亮底深字（与官方暗色气泡同向）。 */
-  --dshpc-tooltip-bg:var(--dsw-alias-tooltip-bg,#e8e8e8);
-  --dshpc-tooltip-fg:#1f2328;
   /* 实心按钮 hover / active（暗色版）：黑底（浅色主题的近黑 → 暗色下的近白）掺黑压深；
      红 / 绿 / 黄 / 蓝掺白提亮。与亮色段方向相反，保证两种主题下「一眼看出变了」。 */
   --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);

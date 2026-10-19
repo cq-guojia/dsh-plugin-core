@@ -195,11 +195,10 @@ h(StripCard, {
 ### 反馈件
 
 **FieldHint（问号提示）**：独立组件，不属于 Input 家族——标题后、按钮后、文字后、输入框后随处可挂。
-气泡渲染走两条路（2026-10-19 拍板「必须与悬停提示**用同一个**」）：
-
-- 插件启动时 `setTooltipRenderer((props) => h(OfficialTooltip, props))` 把官方 Tooltip 交给 core
-  ⇒ 气泡 = **官方组件本体**（定位 / 边界回避 / 明暗用色全归官方），`side` / `align` / `maxWidth` 可选透传；
-- 未注入（node 自检、非宿主预览）⇒ 降级自绘气泡（皮肤与官方对齐，`white-space: pre-line` ⇒ `\n` 是真实换行）。
+气泡 = **官方 Tooltip 本体**（2026-10-19 拍板「必须与悬停提示用同一个」）：插件启动时
+`setTooltipRenderer((props) => h(OfficialTooltip, props))` 把官方组件交给 core，`side` / `align` / `maxWidth` 可透传。
+**不做降级兜底**（用户同日明确：宿主内官方包恒在；官方改版 = 重新适配，不另造一套）——
+未注入 renderer 的非宿主环境（node 自检）只出问号图标、没有气泡。
 
 core 保持零官方依赖：官方 Tooltip 只能由插件侧注入（`src/ui/tooltip.ts`），不许静态 import。
 
