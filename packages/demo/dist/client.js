@@ -1046,6 +1046,9 @@ var DICT = {
   }
 };
 var current2 = "zh";
+function setLocale(locale) {
+  current2 = locale;
+}
 function getLocale() {
   return current2;
 }
@@ -1745,12 +1748,6 @@ function NumberInput(props) {
   );
 }
 
-// packages/demo/src/sections/index.tsx
-var import_react30 = require("react");
-
-// packages/demo/src/sections/design.tsx
-var import_react19 = require("react");
-
 // dist/utils/date.js
 function pad2(value) {
   return String(value).padStart(2, "0");
@@ -1900,6 +1897,12 @@ function joinPath(dir, name) {
   return dir === "" ? name : `${dir}/${name}`;
 }
 
+// packages/demo/src/sections/index.tsx
+var import_react30 = require("react");
+
+// packages/demo/src/sections/design.tsx
+var import_react19 = require("react");
+
 // packages/demo/src/i18n.ts
 var DICT2 = {
   zh: {
@@ -1935,7 +1938,10 @@ var DICT2 = {
     demoUtilsTitle: "\u65E5\u671F / \u5B57\u7B26\u4E32 / \u5B57\u8282",
     demoCardTitle: "Card\uFF08\u5706\u89D2 + \u8FB9\u6846 + \u77ED\u8272\u6761\uFF09",
     demoStripTitle: "StripCard\uFF08\u65E0\u8FB9\u6846 + \u901A\u9AD8\u7AD6\u7EBF\uFF09",
-    designInjectNote: "\u672C\u9884\u89C8\u63D2\u4EF6\u81EA\u5DF1\u5C31\u662F\u8FD9\u4E48\u505A\u521D\u59CB\u5316\u7684\u2014\u2014\u9884\u89C8\u4E0E\u771F\u5B9E\u63D2\u4EF6\u8D70\u540C\u4E00\u6761\u8DEF\u3002"
+    designInjectNote: "\u672C\u9884\u89C8\u63D2\u4EF6\u81EA\u5DF1\u5C31\u662F\u8FD9\u4E48\u505A\u521D\u59CB\u5316\u7684\u2014\u2014\u9884\u89C8\u4E0E\u771F\u5B9E\u63D2\u4EF6\u8D70\u540C\u4E00\u6761\u8DEF\u3002",
+    pluginTitle: "\u7EC4\u4EF6\u9884\u89C8",
+    pluginCardDesc: "\u6253\u5F00 dsh-plugin-core \u7684\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u5C55\u793A\u9875",
+    pluginCardOpen: "\u6253\u5F00 \u203A"
   },
   en: {
     sessionHint: "Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content",
@@ -1970,10 +1976,18 @@ var DICT2 = {
     demoUtilsTitle: "Date / String / Bytes",
     demoCardTitle: "Card (rounded + border + accent bar)",
     demoStripTitle: "StripCard (borderless + full-height stripe)",
-    designInjectNote: "This preview plugin initializes itself exactly this way \u2014 preview and real plugin take the same path."
+    designInjectNote: "This preview plugin initializes itself exactly this way \u2014 preview and real plugin take the same path.",
+    pluginTitle: "Component preview",
+    pluginCardDesc: "Open the showcase of dsh-plugin-core controls and business components",
+    pluginCardOpen: "Open \u203A"
   }
 };
+var boundT;
+function setDemoTranslate(fn) {
+  boundT = fn;
+}
 function t2(key, vars) {
+  if (boundT !== void 0) return boundT(key, vars);
   const template = DICT2[getLocale()][key] ?? DICT2.zh[key] ?? key;
   if (vars === void 0) return template;
   return template.replace(/\{(\w+)\}/g, (whole, name) => {
@@ -3014,11 +3028,23 @@ var ALIAS_TOKEN_NAMES = ["accent", "active", "border", "border-faint", "border-h
 // packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";
 var PREFIX = "dshpc";
+var localeRuntime;
+function useLocaleTick() {
+  const [, setTick] = (0, import_react31.useState)(0);
+  (0, import_react31.useEffect)(() => {
+    const rt = localeRuntime;
+    if (rt === void 0) return;
+    return rt.subscribe(() => {
+      setTick((v) => v + 1);
+    });
+  }, []);
+}
 function aliasCss() {
   const decls = ALIAS_TOKEN_NAMES.map((n) => `--tdt-${n}:var(--${PREFIX}-${n})`);
   return `body{${decls.join(";")}}`;
 }
 function DemoPage() {
+  useLocaleTick();
   const [active, setActive] = (0, import_react31.useState)(ALL_SECTIONS[0].id);
   return (0, import_react31.createElement)(
     "div",
@@ -3091,14 +3117,14 @@ function OpenPreviewCard(props) {
     (0, import_react31.createElement)(
       "div",
       null,
-      (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, "\u7EC4\u4EF6\u9884\u89C8"),
+      (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
       (0, import_react31.createElement)(
         "div",
         { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
-        "\u6253\u5F00 dsh-plugin-core \u7684\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u5C55\u793A\u9875"
+        t2("pluginCardDesc")
       )
     ),
-    (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, "\u6253\u5F00 \u203A")
+    (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
   );
 }
 function PanelIcon() {
@@ -3122,12 +3148,28 @@ function apply(ctx) {
       select(id);
     };
   });
+  ctx.inject(["locale"], (sub) => {
+    const loc = sub?.locale;
+    if (loc === void 0) return;
+    localeRuntime = loc;
+    try {
+      loc.register(PANEL_ID, "zh", { ...DICT2.zh });
+      loc.register(PANEL_ID, "en", { ...DICT2.en });
+      setDemoTranslate(loc.bind(PANEL_ID));
+    } catch {
+    }
+    const sync = () => {
+      setLocale(loc.getLocale().active === "en" ? "en" : "zh");
+    };
+    sync();
+    loc.subscribe(sync);
+  });
   ctx.inject(["slots"], (sub) => {
     const slots = sub.slots;
     if (slots === void 0) return;
     slots.inject("sidebar.panellist", () => {
       slots.register(
-        { name: "sidebar.panellist", id: PANEL_ID, order: 90, label: () => "\u7EC4\u4EF6\u9884\u89C8" },
+        { name: "sidebar.panellist", id: PANEL_ID, order: 90, label: () => t2("pluginTitle") },
         PanelIcon
       );
     });

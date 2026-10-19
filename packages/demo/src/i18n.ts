@@ -39,8 +39,11 @@ export type DemoMessageKey =
   | 'demoCardTitle'
   | 'demoStripTitle'
   | 'designInjectNote'
+  | 'pluginTitle'
+  | 'pluginCardDesc'
+  | 'pluginCardOpen'
 
-const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
+export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   zh: {
     sessionHint: '三种承载：modal / sidebar / page；source 是 mock 的；renderMessage 可接管富内容',
     explorerHint: '面包屑 + 目录树 + 预览；workspaceFiles 是 mock 的（真实插件从 ctx 取出后注入）',
@@ -75,6 +78,9 @@ const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     demoCardTitle: 'Card（圆角 + 边框 + 短色条）',
     demoStripTitle: 'StripCard（无边框 + 通高竖线）',
     designInjectNote: '本预览插件自己就是这么做初始化的——预览与真实插件走同一条路。',
+    pluginTitle: '组件预览',
+    pluginCardDesc: '打开 dsh-plugin-core 的控件与业务组件展示页',
+    pluginCardOpen: '打开 ›',
   },
   en: {
     sessionHint: 'Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content',
@@ -110,11 +116,22 @@ const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     demoCardTitle: 'Card (rounded + border + accent bar)',
     demoStripTitle: 'StripCard (borderless + full-height stripe)',
     designInjectNote: 'This preview plugin initializes itself exactly this way — preview and real plugin take the same path.',
+    pluginTitle: 'Component preview',
+    pluginCardDesc: 'Open the showcase of dsh-plugin-core controls and business components',
+    pluginCardOpen: 'Open ›',
   },
+}
+
+/** 宿主 locale 绑定的翻译函数（apply 里 ctx.locale.bind 注入）；未注入时回退核心 getLocale。 */
+let boundT: ((key: string, vars?: Record<string, number | string>) => string) | undefined
+
+export function setDemoTranslate(fn: ((key: string, vars?: Record<string, number | string>) => string) | undefined): void {
+  boundT = fn
 }
 
 /** 用本 demo 字典翻译一个 key；未知 key 直接回退 zh，再不行回退 key 本身（不抛、不空白）。 */
 export function t(key: DemoMessageKey, vars?: Record<string, number | string>): string {
+  if (boundT !== undefined) return boundT(key, vars)
   const template = DICT[getLocale()][key] ?? DICT.zh[key] ?? key
   if (vars === undefined) return template
   return template.replace(/\{(\w+)\}/g, (whole, name: string): string => {
