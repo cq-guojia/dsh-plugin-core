@@ -1,6 +1,7 @@
 import { createElement as h, useState } from 'react'
 import { Button, Checkbox, FieldHint, IconButton, Input, NumberInput, Segmented, Textarea } from '../../dist/ui/index.js'
 import { Demo } from './index.js'
+import { t } from '../i18n.js'
 
 export function ButtonsSection(): ReturnType<typeof h> {
   const [text, setText] = useState('')
@@ -15,7 +16,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
     null,
     h(
       Demo,
-      { title: 'Button', hint: 'variant 四档 × size 三档' },
+      { title: 'Button', hint: t('buttonHint') },
       h(
         'div',
         { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' } },
@@ -29,7 +30,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'Input 家族', hint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；行尾可挂 FieldHint 问号提示' },
+      { title: 'Input 家族', hint: t('inputHint') },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '380px' } },
@@ -38,7 +39,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
           { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
           h('span', { style: { color: 'var(--tdt-fg-2)', fontSize: '13px', flex: 'none' } }, '开始时间'),
           h(Input, { value: text, onChange: setText, placeholder: '选择日期' }),
-          h(FieldHint, { text: '任务自该日起开始执行。可提前创建任务，至该日自动开跑；「每 N 周」亦自该日起算首周。' }),
+          h(FieldHint, { text: t('fieldHintDate') }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
         h(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: '次' }),
@@ -47,7 +48,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'Checkbox / Segmented', hint: '外观对齐真实插件：灰底 inset（无外描边）；带描边的 default 仅供特殊场合，见下' },
+      { title: 'Checkbox / Segmented', hint: t('checkboxHint') },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'flex-start' } },

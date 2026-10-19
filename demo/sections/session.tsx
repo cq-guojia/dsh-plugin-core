@@ -3,6 +3,7 @@ import { SessionPreview } from '../../dist/session/index.js'
 import { mockSessionSource } from '../mock.js'
 import { Button } from '../../dist/ui/index.js'
 import { Demo } from './index.js'
+import { t } from '../i18n.js'
 
 export function SessionSection(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
@@ -11,7 +12,7 @@ export function SessionSection(): ReturnType<typeof h> {
     Demo,
     {
       title: 'SessionPreview',
-      hint: '三种承载：modal / sidebar / page；source 是 mock 的；renderMessage 可接管富内容',
+      hint: t('sessionHint'),
     },
     h(
       'div',

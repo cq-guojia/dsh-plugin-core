@@ -1,6 +1,7 @@
 import { createElement as h, useState } from 'react'
 import { FilePicker, ModelPicker, Picker, WorkspacePicker } from '../../dist/ui/index.js'
 import { Demo } from './index.js'
+import { t } from '../i18n.js'
 
 const MODELS = [
   {
@@ -30,7 +31,7 @@ export function PickersSection(): ReturnType<typeof h> {
     null,
     h(
       Demo,
-      { title: 'Picker', hint: '单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级——全部可用 props 控制' },
+      { title: 'Picker', hint: t('pickerHint') },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start' } },
@@ -65,7 +66,7 @@ export function PickersSection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'ModelPicker', hint: 'flat 一个下拉 / cascade 先选供应商再选模型——同一份数据两种形态' },
+      { title: 'ModelPicker', hint: t('modelPickerHint') },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
@@ -75,7 +76,7 @@ export function PickersSection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'WorkspacePicker / FilePicker', hint: '数据调用方给（要跨 host↔client 边界，组件取不到）' },
+      { title: 'WorkspacePicker / FilePicker', hint: t('workspacePickerHint') },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },

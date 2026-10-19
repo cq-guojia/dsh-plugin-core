@@ -1,6 +1,7 @@
 import { createElement as h, useState } from 'react'
 import { Button, Card, Chip, LiveText, MarqueeText, SectionHead, showToast, StripCard } from '../../dist/ui/index.js'
 import { Demo } from './index.js'
+import { t } from '../i18n.js'
 
 export function DisplaySection(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
@@ -10,7 +11,7 @@ export function DisplaySection(): ReturnType<typeof h> {
     null,
     h(
       Demo,
-      { title: 'Card（圆角 + 边框 + 短色条）', hint: '排版完全由调用方决定——真实插件的形态：标题行 + 右侧元信息 + chips 行；accent 五档见下方速览' },
+      { title: 'Card（圆角 + 边框 + 短色条）', hint: t('displayCardHint') },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '640px' } },
@@ -43,7 +44,7 @@ export function DisplaySection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'StripCard（无边框 + 通高竖线）', hint: '同一个色条机制，外观是通高贴顶到底——真实插件的形态：标题 + 元信息行 + 右侧时间/操作' },
+      { title: 'StripCard（无边框 + 通高竖线）', hint: t('displayStripHint') },
       h(
         'div',
         { style: { maxWidth: '640px', background: 'var(--tdt-surface-sunken)', borderRadius: '8px', overflow: 'hidden' } },
@@ -78,7 +79,7 @@ export function DisplaySection(): ReturnType<typeof h> {
       Demo,
       {
         title: 'Chip / SectionHead / MarqueeText / LiveText',
-        hint: 'chip 只有「胶囊标签」一套皮肤：宽度按文字撑开、不换行；最后一颗是长文字，若被压成 28px 竖排就是又混进了图标按钮的定宽规则',
+        hint: t('displayChipHint'),
       },
       h(
         'div',

@@ -2,6 +2,7 @@ import { createElement as h, useState } from 'react'
 import { ExplorerPanel } from '../../dist/explorer/index.js'
 import { mockWorkspaceFiles } from '../mock.js'
 import { Demo } from './index.js'
+import { t } from '../i18n.js'
 
 export function ExplorerSection(): ReturnType<typeof h> {
   const [selected, setSelected] = useState<string | null>(null)
@@ -10,7 +11,7 @@ export function ExplorerSection(): ReturnType<typeof h> {
     Demo,
     {
       title: 'ExplorerPanel',
-      hint: '面包屑 + 目录树 + 预览；workspaceFiles 是 mock 的（真实插件从 ctx 取出后注入）',
+      hint: t('explorerHint'),
     },
     h(
       'div',

@@ -10,6 +10,7 @@ import {
   relativePast,
 } from '../../dist/utils/index.js'
 import { Demo } from './index.js'
+import { t } from '../i18n.js'
 
 const NOW = Date.parse('2026-10-18T12:00:00.000Z')
 
@@ -27,7 +28,7 @@ const ROWS: [string, string, string][] = [
 export function UtilsSection(): ReturnType<typeof h> {
   return h(
     Demo,
-    { title: '日期 / 字符串 / 字节', hint: '解析失败不抛错、给兜底、不编造；所有函数无 UI 依赖' },
+    { title: '日期 / 字符串 / 字节', hint: t('utilsHint') },
     h(
       'table',
       { style: { borderCollapse: 'collapse', fontSize: '13px' } },

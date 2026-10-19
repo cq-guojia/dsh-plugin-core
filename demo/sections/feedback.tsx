@@ -7,6 +7,7 @@ import {
   showToast,
 } from '../../dist/ui/index.js'
 import { Demo } from './index.js'
+import { t } from '../i18n.js'
 
 function Boom(): ReturnType<typeof h> {
   throw new Error('演示：子组件抛错被边界接住')
@@ -23,7 +24,7 @@ export function FeedbackSection(): ReturnType<typeof h> {
       Demo,
       {
         title: 'Modal',
-        hint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关。标题栏的 ✕ 是 24×24 图标位，不该出现边框或 120px 宽的底色块',
+        hint: t('feedbackModalHint'),
       },
       h(
         'div',
@@ -40,7 +41,7 @@ export function FeedbackSection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'toast', hint: '命令式 showToast，不要求挂组件' },
+      { title: 'toast', hint: t('feedbackToastHint') },
       h(
         'div',
         { style: { display: 'flex', gap: '8px' } },
@@ -64,7 +65,7 @@ export function FeedbackSection(): ReturnType<typeof h> {
             : h(Button, { variant: 'danger', onClick: () => setBoom(true) }, '点我抛错（看边界兜底）'),
         ),
         h('div', { style: { color: 'var(--tdt-fg-3)', fontSize: '12px' } },
-          'Loading 是贴到主容器右下角的指示器（anchorId 默认 dsh-tdt-main），此处不渲染以免遮挡。'),
+          t('loadingNote')),
       ),
     ),
   )

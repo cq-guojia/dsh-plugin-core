@@ -1,5 +1,6 @@
 import { createElement as h } from 'react'
 import { Demo } from './index.js'
+import { t } from '../i18n.js'
 
 const TOKENS: { label: string; cssVar: string }[] = [
   { label: 'business', cssVar: '--tdt-business' },
@@ -21,7 +22,7 @@ export function DesignSection(): ReturnType<typeof h> {
     null,
     h(
       Demo,
-      { title: 'token 色板', hint: '颜色全部来自 design 的 token；切换右上角明暗，下面会跟着变' },
+      { title: 'token 色板', hint: t('designTokenHint') },
       h(
         'div',
         { style: { display: 'flex', flexWrap: 'wrap', gap: '10px' } },
@@ -46,7 +47,7 @@ export function DesignSection(): ReturnType<typeof h> {
       Demo,
       {
         title: '样式注入机制',
-        hint: '控件渲染前调一次 setStyleKit + ensureControls，token 与控件 CSS 由 kit 注入 <head>',
+        hint: t('designInjectHint'),
         code: `import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
