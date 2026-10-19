@@ -21,6 +21,8 @@ interface SegmentedBaseProps<T extends string = string> {
     variant?: 'default' | 'inset';
     /** 撑满父宽、各段等分。 */
     block?: boolean;
+    /** 最外层 1px 描边框（默认 false）。选中段变为描边块；总高与无框版逐像素一致。 */
+    bordered?: boolean;
     /** 无障碍组名（读屏用）。 */
     label?: string;
     /** 根节点 id（锚点 / 自动化测试用）。 */

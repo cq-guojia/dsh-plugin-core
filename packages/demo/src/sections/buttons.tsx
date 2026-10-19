@@ -350,6 +350,18 @@ export function ButtonsSection(): ReturnType<typeof h> {
           value: view,
           onChange: setView,
         }),
+        // bordered 变体（最外 1px 描边 + 选中段描边块）：与上一颗无框版共用同一状态，方便对比总高一致
+        h(Segmented<'render' | 'source'>, {
+          size: 'sm',
+          bordered: true,
+          label: 'bordered 外观示例',
+          items: [
+            { value: 'render', label: t('segPreview') },
+            { value: 'source', label: t('segSource') },
+          ],
+          value: view,
+          onChange: setView,
+        }),
       ),
     ),
   )

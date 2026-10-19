@@ -6,6 +6,8 @@
  *    （真不够用才允许在调用点本地覆盖 `--dshpc-control-h-*`，属例外而非常态）；
  *  - `variant`：`default`（纯黑面：轨道=第二层面 + 外描边）/ `inset`（灰底面：抄「版本」开关观感，
  *    轨道=交互灰 hover 底、无外描边）—— 两套都保留、不合并；变体只改两个颜色变量，结构 / 尺寸 / 交互规则零重复。
+ *  - `bordered`（默认 false）：最外再包一圈 1px 描边，选中段相应变为描边块而非填充；
+ *    总高与无框版逐像素一致（border 由 padding 抵消），两种模式整行混排不跳高。
  *
  * 用法：
  *   // 单选
@@ -42,6 +44,8 @@ interface SegmentedBaseProps<T extends string = string> {
   variant?: 'default' | 'inset'
   /** 撑满父宽、各段等分。 */
   block?: boolean
+  /** 最外层 1px 描边框（默认 false）。选中段变为描边块；总高与无框版逐像素一致。 */
+  bordered?: boolean
   /** 无障碍组名（读屏用）。 */
   label?: string
   /** 根节点 id（锚点 / 自动化测试用）。 */
@@ -91,7 +95,7 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
     'aria-label': props.label,
     id: props.id,
     // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
-    className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size}${props.block === true ? ' dshpc-seg--block' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
+    className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
     style: props.style,
   }, props.items.map(item => {
     const on = multiple ? (value as T[]).includes(item.value) : value === item.value
