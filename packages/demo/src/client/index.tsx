@@ -55,6 +55,7 @@ function DemoPage(): ReturnType<typeof h> {
   // ⚠️ cssRules 在宿主里可能被跨域策略挡（SecurityError）⇒ no-rule 不等于规则真不在，
   //    所以同时打 display / padding：display 不是 inline-flex ⇒ 规则真没生效。
   const [diag, setDiag] = useState('seg: …')
+  const [diag2, setDiag2] = useState('btn: …')
   useEffect(() => {
     const el = document.querySelector('.dshpc-seg')
     if (el === null) { setDiag('seg: no element'); return }
@@ -71,6 +72,21 @@ function DemoPage(): ReturnType<typeof h> {
       }
     }
     setDiag(`seg ${cs.backgroundColor} gap ${cs.gap} display ${cs.display}\nrule(${sheets} sheets): ${rule}`)
+  }, [active])
+  // 附带查 .dshpc-btn（与 seg 同一条注入文本，验证「单行活 / 多行死」的模式）
+  useEffect(() => {
+    const el = document.querySelector('.dshpc-btn')
+    if (el === null) { setDiag2('btn: no element'); return }
+    const cs = getComputedStyle(el)
+    let rule = 'no-rule'
+    for (const sh of Array.from(document.styleSheets)) {
+      let rules: CSSRuleList
+      try { rules = sh.cssRules } catch { continue }
+      for (const r of Array.from(rules)) {
+        if (r instanceof CSSStyleRule && r.selectorText === '.dshpc-btn') rule = r.style.cssText.slice(0, 60)
+      }
+    }
+    setDiag2(`btn ${cs.display} align ${cs.alignItems} lh ${cs.lineHeight}\nrule: ${rule}`)
   }, [active])
   const dark = typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme')
   // ⚠️ 高度必须两端一起给：
@@ -119,6 +135,7 @@ function DemoPage(): ReturnType<typeof h> {
         h('div', null, `demo v${__DEMO_VERSION__}`),
         h('div', { title: 'body[data-ds-dark-theme]' }, `dark: ${dark ? 'yes' : 'no'}`),
         h('div', { title: '实测页面上第一个 .dshpc-seg 的轨道底色与间距' }, diag),
+        h('div', { title: '实测页面上第一个 .dshpc-btn' }, diag2),
       ),
     ),
     h(

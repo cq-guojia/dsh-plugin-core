@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-core-demo",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "dsh-plugin-core 的组件预览插件：装进 DSH 宿主后，在真实宿主环境里预览控件与业务组件",
   "keywords": ["deepseek", "harness", "dsh", "dsh-plugin", "dsh-plugin-core"],
   "homepage": "https://github.com/cq-guojia/dsh-plugin-core/tree/main/packages/demo",
