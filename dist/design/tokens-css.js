@@ -35,18 +35,17 @@ body{
   /* 交付文件卡那种「浅底盘 + hover 加深」两拍 */
   --dshpc-plate:var(--dsw-static-neutral-50,#fafafa);
   --dshpc-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);
-  /* 旧内核回退（Chrome <111 不认 color-mix ⇒ 这条生效；新内核被下面那条覆盖）。
-     这几个是**固定中性面**、不靠跟随宿主主题色，故可以无损地给明文回退。 */
+  /* ⚠️ 这些**固定中性面一律用 rgba 字面量**（2026-10-19 真机教训）：不要写成
+     「rgba 回退行 + 嵌 --dsw-static-* 的 color-mix 行」两条同名声明——自定义属性**后者恒胜**，
+     哪怕它的值在宿主里算不出来（static 变量 invalid）⇒ 整条 token 作废、rgba 兜底一起被废，
+     0.2.6 里 Segmented 轨道全透明就是这么来的。要跟宿主主题联动的面用 alias token（那些实测有效）。 */
   --dshpc-icon-plate:rgba(255,255,255,.5);
-  --dshpc-icon-plate:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 50%,transparent);
   /* 表头底：浅色主题**偏深**，且必须**比斑马纹（--dshpc-plate）再深一档**——
      两者不能撞色（用户 2026-10-02：表头跟斑马纹一模一样）。 */
   --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);
   /* 图标小底板（产出物）：浅色下要**看得见**（原先取 plate ⇒ 在白底上等于没有）；hover 加倍。 */
   --dshpc-chip-bg:rgba(15,15,15,.07);
-  --dshpc-chip-bg:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 7%,transparent);
   --dshpc-chip-bg-hover:rgba(15,15,15,.14);
-  --dshpc-chip-bg-hover:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 14%,transparent);
   /* 展开行：**带透明度的蓝**——不是灰、也不是纯色，透出卡片底色，一眼看出「这是展开的」
      （用户 2026-10-02：灰色跟斑马纹分不出来）。内容区再淡一档，形成「行深 / 内容浅」的区隔。 */
   --dshpc-open-bg:rgba(37,99,235,.10);
@@ -110,9 +109,7 @@ body{
      （neutral-900=#0f0f0f / neutral-00=#fff），预计算无损；旧内核不认 color-mix 时走兜底，
      否则整条 background:var(--seg-track) 作废 ⇒ 分段轨道透明（真踩过：预览站轨道消失）。 */
   --dshpc-hover:rgba(15,15,15,.10);
-  --dshpc-hover:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 10%,transparent);
   --dshpc-active:rgba(15,15,15,.18);
-  --dshpc-active:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 18%,transparent);
   --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);
   /* 「选中面」（2026-10-06，任务日程页首创）= 当前底色**朝更深掺 12% 文字色**：
      浅色主题下文字色是黑 ⇒ 选中面比常态底色**深一档**。深色分支见 body[data-ds-dark-theme]（朝背景色掺）。
@@ -217,20 +214,15 @@ body[data-ds-dark-theme]{
   --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#ffffff);
   /* 暗色 hover 掺白 14% / active 24%（对齐上面 2026-10-18 的加重拍板）。rgba 兜底行同上。 */
   --dshpc-hover:rgba(255,255,255,.14);
-  --dshpc-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 14%,transparent);
   --dshpc-active:rgba(255,255,255,.24);
-  --dshpc-active:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 24%,transparent);
   --dshpc-plate:var(--dsw-static-neutral-850,#212123);
   --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);
   --dshpc-icon-plate:rgba(255,255,255,.05);
-  --dshpc-icon-plate:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 5%,transparent);
   /* 暗色主题**反过来**：表头要比卡片面**亮**、比斑马纹再**浅一档**（用户：纯黑背景没法看）。 */
   --dshpc-head-bg:var(--dshpc-surface-2);
   /* 暗色底板**微亮**；hover **更亮**（原先 hover 取 plate-hover 反而更淡 ⇒ 鼠标移上去就没了）。 */
   --dshpc-chip-bg:rgba(255,255,255,.08);
-  --dshpc-chip-bg:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 8%,transparent);
   --dshpc-chip-bg-hover:rgba(255,255,255,.16);
-  --dshpc-chip-bg-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 16%,transparent);
   /* 暗色下蓝色要更亮、透明度略高才压得住深底。 */
   --dshpc-open-bg:rgba(96,165,250,.18);
   --dshpc-open-bg-soft:rgba(96,165,250,.08);

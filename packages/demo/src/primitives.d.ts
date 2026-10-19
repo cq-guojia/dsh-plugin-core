@@ -17,6 +17,15 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   export const IconClockOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconSparkleRegular: ComponentType<{ size?: number; className?: string }>
 
+  /** 官方悬停富卡片：anchor 原位渲染，content 任意 ReactNode（compact 紧凑卡）。 */
+  export const HoverCard: ComponentType<{
+    anchor: import('react').ReactNode
+    content: import('react').ReactNode
+    openDelayMs?: number
+    variant?: 'compact' | 'preview'
+    inline?: boolean
+  }>
+
   /** 官方气泡提示：label + side；children 为唯一锚点元素（须能挂 ref 的真实 DOM）。 */
   export const Tooltip: ComponentType<{
     label: string

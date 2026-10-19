@@ -2,6 +2,7 @@ import { createElement as h, useState, type ComponentType } from 'react'
 import type { ButtonSize, ButtonVariant } from '../../../../dist/ui/index.js'
 import { Button, Checkbox, FieldHint, IconButton, Input, NumberInput, Segmented, Textarea } from '../../../../dist/ui/index.js'
 import {
+  HoverCard,
   IconCheckOutlineRegular,
   IconChevronDownOutlineRegular,
   IconClockOutlineRegular,
@@ -196,7 +197,19 @@ export function ButtonsSection(): ReturnType<typeof h> {
           h(Tooltip, { label: `${t('tooltipName')}\n${t('tooltipLongText')}`, side: 'top', maxWidth: 260 },
             h('span', {
               style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
-            }, t('tooltipName'))))),
+            }, t('tooltipName')))),
+        // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
+        h(Labeled, { label: t('tooltipRich') },
+          h(HoverCard, {
+            variant: 'compact',
+            openDelayMs: 200,
+            anchor: h('span', {
+              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
+            }, t('tooltipName')),
+            content: h('div', { style: { padding: '4px 2px', minWidth: '220px' } },
+              h('div', { style: { fontWeight: 600, fontSize: '14px', marginBottom: '4px' } }, t('tooltipName')),
+              h('div', { style: { fontSize: '12px', lineHeight: 1.6, whiteSpace: 'pre-line' } }, t('tooltipLongText'))),
+          }))),
     ),
 
     // ── 问号提示：证明它不属于 Input 家族，随处可挂 ──────────────────────

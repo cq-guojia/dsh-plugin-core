@@ -64,18 +64,17 @@ body{
   /* \u4EA4\u4ED8\u6587\u4EF6\u5361\u90A3\u79CD\u300C\u6D45\u5E95\u76D8 + hover \u52A0\u6DF1\u300D\u4E24\u62CD */
   --dshpc-plate:var(--dsw-static-neutral-50,#fafafa);
   --dshpc-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);
-  /* \u65E7\u5185\u6838\u56DE\u9000\uFF08Chrome <111 \u4E0D\u8BA4 color-mix \u21D2 \u8FD9\u6761\u751F\u6548\uFF1B\u65B0\u5185\u6838\u88AB\u4E0B\u9762\u90A3\u6761\u8986\u76D6\uFF09\u3002
-     \u8FD9\u51E0\u4E2A\u662F**\u56FA\u5B9A\u4E2D\u6027\u9762**\u3001\u4E0D\u9760\u8DDF\u968F\u5BBF\u4E3B\u4E3B\u9898\u8272\uFF0C\u6545\u53EF\u4EE5\u65E0\u635F\u5730\u7ED9\u660E\u6587\u56DE\u9000\u3002 */
+  /* \u26A0\uFE0F \u8FD9\u4E9B**\u56FA\u5B9A\u4E2D\u6027\u9762\u4E00\u5F8B\u7528 rgba \u5B57\u9762\u91CF**\uFF082026-10-19 \u771F\u673A\u6559\u8BAD\uFF09\uFF1A\u4E0D\u8981\u5199\u6210
+     \u300Crgba \u56DE\u9000\u884C + \u5D4C --dsw-static-* \u7684 color-mix \u884C\u300D\u4E24\u6761\u540C\u540D\u58F0\u660E\u2014\u2014\u81EA\u5B9A\u4E49\u5C5E\u6027**\u540E\u8005\u6052\u80DC**\uFF0C
+     \u54EA\u6015\u5B83\u7684\u503C\u5728\u5BBF\u4E3B\u91CC\u7B97\u4E0D\u51FA\u6765\uFF08static \u53D8\u91CF invalid\uFF09\u21D2 \u6574\u6761 token \u4F5C\u5E9F\u3001rgba \u515C\u5E95\u4E00\u8D77\u88AB\u5E9F\uFF0C
+     0.2.6 \u91CC Segmented \u8F68\u9053\u5168\u900F\u660E\u5C31\u662F\u8FD9\u4E48\u6765\u7684\u3002\u8981\u8DDF\u5BBF\u4E3B\u4E3B\u9898\u8054\u52A8\u7684\u9762\u7528 alias token\uFF08\u90A3\u4E9B\u5B9E\u6D4B\u6709\u6548\uFF09\u3002 */
   --dshpc-icon-plate:rgba(255,255,255,.5);
-  --dshpc-icon-plate:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 50%,transparent);
   /* \u8868\u5934\u5E95\uFF1A\u6D45\u8272\u4E3B\u9898**\u504F\u6DF1**\uFF0C\u4E14\u5FC5\u987B**\u6BD4\u6591\u9A6C\u7EB9\uFF08--dshpc-plate\uFF09\u518D\u6DF1\u4E00\u6863**\u2014\u2014
      \u4E24\u8005\u4E0D\u80FD\u649E\u8272\uFF08\u7528\u6237 2026-10-02\uFF1A\u8868\u5934\u8DDF\u6591\u9A6C\u7EB9\u4E00\u6A21\u4E00\u6837\uFF09\u3002 */
   --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);
   /* \u56FE\u6807\u5C0F\u5E95\u677F\uFF08\u4EA7\u51FA\u7269\uFF09\uFF1A\u6D45\u8272\u4E0B\u8981**\u770B\u5F97\u89C1**\uFF08\u539F\u5148\u53D6 plate \u21D2 \u5728\u767D\u5E95\u4E0A\u7B49\u4E8E\u6CA1\u6709\uFF09\uFF1Bhover \u52A0\u500D\u3002 */
   --dshpc-chip-bg:rgba(15,15,15,.07);
-  --dshpc-chip-bg:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 7%,transparent);
   --dshpc-chip-bg-hover:rgba(15,15,15,.14);
-  --dshpc-chip-bg-hover:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 14%,transparent);
   /* \u5C55\u5F00\u884C\uFF1A**\u5E26\u900F\u660E\u5EA6\u7684\u84DD**\u2014\u2014\u4E0D\u662F\u7070\u3001\u4E5F\u4E0D\u662F\u7EAF\u8272\uFF0C\u900F\u51FA\u5361\u7247\u5E95\u8272\uFF0C\u4E00\u773C\u770B\u51FA\u300C\u8FD9\u662F\u5C55\u5F00\u7684\u300D
      \uFF08\u7528\u6237 2026-10-02\uFF1A\u7070\u8272\u8DDF\u6591\u9A6C\u7EB9\u5206\u4E0D\u51FA\u6765\uFF09\u3002\u5185\u5BB9\u533A\u518D\u6DE1\u4E00\u6863\uFF0C\u5F62\u6210\u300C\u884C\u6DF1 / \u5185\u5BB9\u6D45\u300D\u7684\u533A\u9694\u3002 */
   --dshpc-open-bg:rgba(37,99,235,.10);
@@ -139,9 +138,7 @@ body{
      \uFF08neutral-900=#0f0f0f / neutral-00=#fff\uFF09\uFF0C\u9884\u8BA1\u7B97\u65E0\u635F\uFF1B\u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u8D70\u515C\u5E95\uFF0C
      \u5426\u5219\u6574\u6761 background:var(--seg-track) \u4F5C\u5E9F \u21D2 \u5206\u6BB5\u8F68\u9053\u900F\u660E\uFF08\u771F\u8E29\u8FC7\uFF1A\u9884\u89C8\u7AD9\u8F68\u9053\u6D88\u5931\uFF09\u3002 */
   --dshpc-hover:rgba(15,15,15,.10);
-  --dshpc-hover:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 10%,transparent);
   --dshpc-active:rgba(15,15,15,.18);
-  --dshpc-active:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 18%,transparent);
   --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);
   /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A
      \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002
@@ -246,20 +243,15 @@ body[data-ds-dark-theme]{
   --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#ffffff);
   /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */
   --dshpc-hover:rgba(255,255,255,.14);
-  --dshpc-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 14%,transparent);
   --dshpc-active:rgba(255,255,255,.24);
-  --dshpc-active:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 24%,transparent);
   --dshpc-plate:var(--dsw-static-neutral-850,#212123);
   --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);
   --dshpc-icon-plate:rgba(255,255,255,.05);
-  --dshpc-icon-plate:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 5%,transparent);
   /* \u6697\u8272\u4E3B\u9898**\u53CD\u8FC7\u6765**\uFF1A\u8868\u5934\u8981\u6BD4\u5361\u7247\u9762**\u4EAE**\u3001\u6BD4\u6591\u9A6C\u7EB9\u518D**\u6D45\u4E00\u6863**\uFF08\u7528\u6237\uFF1A\u7EAF\u9ED1\u80CC\u666F\u6CA1\u6CD5\u770B\uFF09\u3002 */
   --dshpc-head-bg:var(--dshpc-surface-2);
   /* \u6697\u8272\u5E95\u677F**\u5FAE\u4EAE**\uFF1Bhover **\u66F4\u4EAE**\uFF08\u539F\u5148 hover \u53D6 plate-hover \u53CD\u800C\u66F4\u6DE1 \u21D2 \u9F20\u6807\u79FB\u4E0A\u53BB\u5C31\u6CA1\u4E86\uFF09\u3002 */
   --dshpc-chip-bg:rgba(255,255,255,.08);
-  --dshpc-chip-bg:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 8%,transparent);
   --dshpc-chip-bg-hover:rgba(255,255,255,.16);
-  --dshpc-chip-bg-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 16%,transparent);
   /* \u6697\u8272\u4E0B\u84DD\u8272\u8981\u66F4\u4EAE\u3001\u900F\u660E\u5EA6\u7565\u9AD8\u624D\u538B\u5F97\u4F4F\u6DF1\u5E95\u3002 */
   --dshpc-open-bg:rgba(96,165,250,.18);
   --dshpc-open-bg-soft:rgba(96,165,250,.08);
@@ -2038,7 +2030,8 @@ var DICT2 = {
     tooltipAnchorButton: "\u6309\u94AE\u951A\u70B9",
     tooltipLong: "\u957F\u6587\u672C\u6362\u884C",
     tooltipName: "\u5F20\u4E09\u4E30",
-    tooltipMultiline: "\u4E24\u6BB5\u5F0F\uFF08\u540D\u5B57 + \u6B63\u6587\uFF09",
+    tooltipRich: "\u5BCC\u5361\u7247\uFF08HoverCard\uFF09",
+    tooltipMultiline: "\u4E24\u6BB5\u5F0F",
     tooltipLongText: "\u8FD9\u662F\u4E00\u6BB5\u8DB3\u591F\u957F\u7684\u63D0\u793A\u6587\u5B57\uFF1A\u6C14\u6CE1\u9047\u5230 maxWidth \u4F1A\u81EA\u52A8\u6362\u884C\uFF0C\u800C\u4E0D\u4F1A\u4E00\u8DEF\u6491\u5230\u534A\u4E2A\u5C4F\u5E55\u5BBD\uFF0C anchored \u5143\u7D20\u5728\u8FB9\u7F18\u65F6\u5B98\u65B9\u8FD8\u4F1A\u81EA\u52A8\u628A\u6C14\u6CE1\u6536\u56DE\u89C6\u53E3\u5185\u3002",
     btnHintTitle: "\u95EE\u53F7\u63D0\u793A\uFF08FieldHint\uFF09",
     btnHintHint: "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF1A\u6807\u9898\u540E / \u6309\u94AE\u540E / \u4E00\u6BB5\u6587\u5B57\u540E / \u8F93\u5165\u6846\u540E\uFF1B\u9F20\u6807\u60AC\u505C\u6216\u952E\u76D8\u805A\u7126\u6D6E\u51FA\u6C14\u6CE1",
@@ -2118,7 +2111,8 @@ var DICT2 = {
     tooltipAnchorButton: "Button anchor",
     tooltipLong: "Long label",
     tooltipName: "Alex Chen",
-    tooltipMultiline: "Two-part (name + body)",
+    tooltipRich: "Rich card (HoverCard)",
+    tooltipMultiline: "Two-part",
     tooltipLongText: "A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.",
     btnHintTitle: "Question-mark hint (FieldHint)",
     btnHintHint: "Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal",
@@ -2473,6 +2467,24 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
             }, t2("tooltipName"))
           )
+        ),
+        // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: t2("tooltipRich") },
+          (0, import_react20.createElement)(import_dsh_client_ui_primitives.HoverCard, {
+            variant: "compact",
+            openDelayMs: 200,
+            anchor: (0, import_react20.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
+            }, t2("tooltipName")),
+            content: (0, import_react20.createElement)(
+              "div",
+              { style: { padding: "4px 2px", minWidth: "220px" } },
+              (0, import_react20.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
+              (0, import_react20.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line" } }, t2("tooltipLongText"))
+            )
+          })
         )
       )
     ),

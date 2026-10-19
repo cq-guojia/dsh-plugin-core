@@ -43,6 +43,7 @@ export type DemoMessageKey =
   | 'tooltipLongText'
   | 'tooltipName'
   | 'tooltipMultiline'
+  | 'tooltipRich'
   | 'segDay'
   | 'segWeek'
   | 'segMonth'
@@ -112,7 +113,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tooltipAnchorButton: '按钮锚点',
     tooltipLong: '长文本换行',
     tooltipName: '张三丰',
-    tooltipMultiline: '两段式（名字 + 正文）',
+    tooltipRich: '富卡片（HoverCard）',
+    tooltipMultiline: '两段式',
     tooltipLongText: '这是一段足够长的提示文字：气泡遇到 maxWidth 会自动换行，而不会一路撑到半个屏幕宽， anchored 元素在边缘时官方还会自动把气泡收回视口内。',
     btnHintTitle: '问号提示（FieldHint）',
     btnHintHint: '独立组件，放哪都行：标题后 / 按钮后 / 一段文字后 / 输入框后；鼠标悬停或键盘聚焦浮出气泡',
@@ -192,7 +194,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tooltipAnchorButton: 'Button anchor',
     tooltipLong: 'Long label',
     tooltipName: 'Alex Chen',
-    tooltipMultiline: 'Two-part (name + body)',
+    tooltipRich: 'Rich card (HoverCard)',
+    tooltipMultiline: 'Two-part',
     tooltipLongText: 'A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.',
     btnHintTitle: 'Question-mark hint (FieldHint)',
     btnHintHint: 'Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal',
