@@ -282,5 +282,28 @@ export function collectSegProbes(): ProbeLine[] {
   }
   lines.push({ id: 'P22', text: `运行时往我们 sheet 插 .dshpc-seg{display:inline-flex}：${insertResult}（已 deleteRule 撤销）` })
 
+  // P23–P26：验证「tokens 块之后的第一条规则被吃」这个判断。
+  const segAt = kitCss.indexOf('.dshpc-seg{')
+  lines.push({
+    id: 'P23',
+    text:
+      segAt < 0
+        ? '文本里找不到 .dshpc-seg{'
+        : `文本 .dshpc-seg{ 前 100 字："${kitCss.slice(Math.max(0, segAt - 100), segAt)}" ｜ 后 60 字："${kitCss.slice(segAt, segAt + 60)}"`,
+  })
+  lines.push({
+    id: 'P24',
+    text:
+      ourSheet === undefined
+        ? '找不到我们的 sheet'
+        : `表里前 3 条规则 cssText：${ourSheet.rules.slice(0, 3).map((r, i) => `${String(i)}:${r.sel}{${r.css.slice(0, 90)}}`).join(' | ')}`,
+  })
+  lines.push({ id: 'P25', text: `文本开头 120 字："${kitCss.slice(0, 120)}"` })
+  const guardIndex = ourSheet?.rules.findIndex((r) => normSel(r.sel) === '.dshpc-css-guard') ?? -1
+  lines.push({
+    id: 'P26',
+    text: `.dshpc-css-guard 守卫规则在表里：${guardIndex < 0 ? '不存在（被吃了）' : `序号 ${String(guardIndex)}`}`,
+  })
+
   return lines
 }
