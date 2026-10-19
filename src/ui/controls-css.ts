@@ -370,10 +370,14 @@ export const HINT_CSS = `
   transition:color var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-hint:hover,.dshpc-hint:focus-visible{color:var(--dshpc-fg);background:0 0;}
 .dshpc-hint:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}
+/* 气泡皮肤 = 官方 Tooltip 同款（2026-10-19 用户点名「两个气泡必须一种皮肤」）：
+   底色走 --dsw-alias-tooltip-bg 的 token 包装（--dshpc-tooltip-bg，明暗各给兜底）、
+   13px 字号、小内距、radius-sm；white-space:pre-line ⇒ 文本里的 \n 是真实换行
+   （第一行名字、第二行正文的两段式提示就靠它）。 */
 .dshpc-hint__bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
-  box-sizing:border-box;width:max-content;max-width:280px;padding:8px 10px;
-  border-radius:var(--dshpc-radius-sm);background:var(--dshpc-solid);color:var(--dshpc-on-solid);
-  font-size:var(--dshpc-font-xs);line-height:1.7;text-align:left;white-space:normal;
+  box-sizing:border-box;width:max-content;max-width:280px;padding:5px 9px;
+  border-radius:var(--dshpc-radius-sm);background:var(--dshpc-tooltip-bg);color:var(--dshpc-tooltip-fg);
+  font-size:var(--dshpc-font-md);line-height:1.55;text-align:left;white-space:pre-line;
   box-shadow:var(--dshpc-shadow-2);z-index:var(--dshpc-z-menu);
   opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);}

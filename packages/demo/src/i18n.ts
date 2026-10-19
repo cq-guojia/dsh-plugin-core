@@ -41,6 +41,8 @@ export type DemoMessageKey =
   | 'tooltipAnchorButton'
   | 'tooltipLong'
   | 'tooltipLongText'
+  | 'tooltipName'
+  | 'tooltipMultiline'
   | 'segDay'
   | 'segWeek'
   | 'segMonth'
@@ -105,10 +107,12 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnSizeHint: 'sm 24 · md 28 · lg 32 同高；icon 收的是 ReactNode——官方图标组件、自绘 SVG、甚至一个字符都行，不是名字也不是 class（下面三颗分别是这三种）；iconRight 后置、block 撑满父宽',
     btnIconOnly: 'icon only',
     tooltipTitle: 'Tooltip（鼠标悬停提示）',
-    tooltipHint: '官方 Tooltip：side 上 / 下 / 右 × align 居中 / 贴边；锚点可以是按钮、也可以是一段文字；长文本自动换行（maxWidth 限宽）',
+    tooltipHint: '官方 Tooltip：side 上 / 下 / 右 × align 居中 / 贴边；锚点可以是按钮或一段文字；长文本按 maxWidth 自动折行；最右一颗是「名字 + 正文」两段式——文本里的 \n 就是真实换行',
     tooltipAnchorText: '文字锚点',
     tooltipAnchorButton: '按钮锚点',
     tooltipLong: '长文本换行',
+    tooltipName: '张三丰',
+    tooltipMultiline: '两段式（名字 + 正文）',
     tooltipLongText: '这是一段足够长的提示文字：气泡遇到 maxWidth 会自动换行，而不会一路撑到半个屏幕宽， anchored 元素在边缘时官方还会自动把气泡收回视口内。',
     btnHintTitle: '问号提示（FieldHint）',
     btnHintHint: '独立组件，放哪都行：标题后 / 按钮后 / 一段文字后 / 输入框后；鼠标悬停或键盘聚焦浮出气泡',
@@ -183,10 +187,12 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnSizeHint: 'sm 24 · md 28 · lg 32, same height; icon takes any ReactNode — an official icon component, your own SVG, even a single character (not a name, not a class); iconRight trails, block fills the parent',
     btnIconOnly: 'icon only',
     tooltipTitle: 'Tooltip (hover hint)',
-    tooltipHint: 'Official Tooltip: side top / bottom / right x align center / end; anchor can be a button or a span of text; long labels wrap (maxWidth)',
+    tooltipHint: 'Official Tooltip: side top / bottom / right x align center / end; anchor can be a button or a span of text; long labels wrap at maxWidth; the rightmost one is a two-part hint (name + body) where \n in the text is a real line break',
     tooltipAnchorText: 'Text anchor',
     tooltipAnchorButton: 'Button anchor',
     tooltipLong: 'Long label',
+    tooltipName: 'Alex Chen',
+    tooltipMultiline: 'Two-part (name + body)',
     tooltipLongText: 'A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.',
     btnHintTitle: 'Question-mark hint (FieldHint)',
     btnHintHint: 'Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal',

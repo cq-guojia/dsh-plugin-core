@@ -9,7 +9,7 @@
 // ⚠️ 展示内容与控件代码从**仓库内的 dsh-plugin-core 产物**引入（../../dist/…）并打进包里，
 //    所以本包自包含、发布时不需要 dsh-plugin-core 先发 npm；预览的也永远是当前这份代码。
 import { build } from 'esbuild'
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -18,8 +18,18 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const at = (p) => resolve(HERE, p)
 
+// 预览页侧栏要显示「core / demo 各自的版本号」：构建时从两份 package.json 注入，
+// 运行时不再 fetch —— 装进宿主看到的就是这份 bundle 的真实版本（防「以为更新了」）。
+const CORE_VERSION = JSON.parse(readFileSync(at('../../package.json'), 'utf8')).version
+const DEMO_VERSION = JSON.parse(readFileSync(at('package.json'), 'utf8')).version
+
 const PKG = 'dsh-plugin-core-demo'
 const EXTERNAL = ['react', 'react-dom', 'react/jsx-runtime', 'cordis', '@deepseek-ai/*']
+const DEFINE = {
+  'process.env.NODE_ENV': '"production"',
+  __CORE_VERSION__: JSON.stringify(CORE_VERSION),
+  __DEMO_VERSION__: JSON.stringify(DEMO_VERSION),
+}
 
 mkdirSync(at('dist'), { recursive: true })
 
@@ -42,7 +52,7 @@ await build({
   jsx: 'automatic',
   outfile: at('dist/client.js'),
   external: EXTERNAL,
-  define: { 'process.env.NODE_ENV': '"production"' },
+  define: DEFINE,
   loader: { '.tsx': 'tsx', '.ts': 'ts' },
   banner: {
     js:

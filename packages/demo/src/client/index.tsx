@@ -20,6 +20,11 @@ import { DICT, setDemoTranslate, t } from '../i18n.js'
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
 const PANEL_ID = 'dsh-plugin-core-demo'
 
+// 构建时由 packages/demo/build.mjs 的 define 注入（读两份 package.json）。
+// 侧栏底部常驻显示 —— 更没更新、装的是哪版，一眼可查，不靠猜。
+declare const __CORE_VERSION__: string
+declare const __DEMO_VERSION__: string
+
 /** 宿主 locale 服务的结构类型（不引入宿主包，按接口使用）。 */
 interface LocaleRuntimeLike {
   getLocale(): { active: string }
@@ -77,6 +82,20 @@ function DemoPage(): ReturnType<typeof h> {
           },
           t(s.titleKey),
         ),
+      ),
+      // 底部常驻：bundle 的真实版本 + 当前暗色判据实测值（查「改了没生效」类问题的锚点）。
+      h(
+        'div',
+        {
+          style: {
+            marginTop: '18px', paddingTop: '10px', borderTop: '1px solid var(--dshpc-border-faint)',
+            color: 'var(--dshpc-fg-3)', fontSize: '11px', fontFamily: 'var(--dshpc-font-mono)',
+          },
+        },
+        h('div', null, `core v${__CORE_VERSION__}`),
+        h('div', null, `demo v${__DEMO_VERSION__}`),
+        h('div', { title: 'body[data-ds-dark-theme]' },
+          `dark: ${typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme') ? 'yes' : 'no'}`),
       ),
     ),
     h(

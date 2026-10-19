@@ -102,6 +102,10 @@ body{
   --dshpc-on-signal:#fff;
   /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */
   --dshpc-on-warning:#1f2328;
+  /* \u60AC\u505C\u63D0\u793A\u6C14\u6CE1\uFF08\u5BF9\u9F50\u5B98\u65B9 Tooltip \u7684\u7528\u8272\uFF1A\u5E95\u8D70\u5BBF\u4E3B alias-tooltip-bg\uFF0C\u7F3A\u5931\u65F6\u7ED9\u56FA\u5B9A\u4E2D\u6027\u515C\u5E95\uFF09\u3002
+     FieldHint \u7684\u81EA\u7ED8\u6C14\u6CE1\u4E5F\u5403\u8FD9\u4E24\u6761 \u2014\u2014 \u4FDD\u8BC1\u300C\u95EE\u53F7\u63D0\u793A\u300D\u4E0E\u300C\u5B98\u65B9 Tooltip\u300D\u540C\u4E00\u79CD\u6C14\u6CE1\u76AE\u80A4\u3002 */
+  --dshpc-tooltip-bg:var(--dsw-alias-tooltip-bg,#1f2328);
+  --dshpc-tooltip-fg:#ffffff;
 
   /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
      \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002
@@ -231,6 +235,9 @@ body{
 body[data-ds-dark-theme]{
   --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);
   --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);
+  /* \u60AC\u505C\u63D0\u793A\u6C14\u6CE1\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u5B98\u65B9 alias \u5728\u6697\u8272\u4E0B\u81EA\u52A8\u6362\u503C\uFF1Balias \u7F3A\u5931\u65F6\u7ED9\u4EAE\u5E95\u6DF1\u5B57\uFF08\u4E0E\u5B98\u65B9\u6697\u8272\u6C14\u6CE1\u540C\u5411\uFF09\u3002 */
+  --dshpc-tooltip-bg:var(--dsw-alias-tooltip-bg,#e8e8e8);
+  --dshpc-tooltip-fg:#1f2328;
   /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B
      \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */
   --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);
@@ -720,10 +727,15 @@ var HINT_CSS = `
   transition:color var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-hint:hover,.dshpc-hint:focus-visible{color:var(--dshpc-fg);background:0 0;}
 .dshpc-hint:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}
+/* \u6C14\u6CE1\u76AE\u80A4 = \u5B98\u65B9 Tooltip \u540C\u6B3E\uFF082026-10-19 \u7528\u6237\u70B9\u540D\u300C\u4E24\u4E2A\u6C14\u6CE1\u5FC5\u987B\u4E00\u79CD\u76AE\u80A4\u300D\uFF09\uFF1A
+   \u5E95\u8272\u8D70 --dsw-alias-tooltip-bg \u7684 token \u5305\u88C5\uFF08--dshpc-tooltip-bg\uFF0C\u660E\u6697\u5404\u7ED9\u515C\u5E95\uFF09\u3001
+   13px \u5B57\u53F7\u3001\u5C0F\u5185\u8DDD\u3001radius-sm\uFF1Bwhite-space:pre-line \u21D2 \u6587\u672C\u91CC\u7684 
+ \u662F\u771F\u5B9E\u6362\u884C
+   \uFF08\u7B2C\u4E00\u884C\u540D\u5B57\u3001\u7B2C\u4E8C\u884C\u6B63\u6587\u7684\u4E24\u6BB5\u5F0F\u63D0\u793A\u5C31\u9760\u5B83\uFF09\u3002 */
 .dshpc-hint__bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
-  box-sizing:border-box;width:max-content;max-width:280px;padding:8px 10px;
-  border-radius:var(--dshpc-radius-sm);background:var(--dshpc-solid);color:var(--dshpc-on-solid);
-  font-size:var(--dshpc-font-xs);line-height:1.7;text-align:left;white-space:normal;
+  box-sizing:border-box;width:max-content;max-width:280px;padding:5px 9px;
+  border-radius:var(--dshpc-radius-sm);background:var(--dshpc-tooltip-bg);color:var(--dshpc-tooltip-fg);
+  font-size:var(--dshpc-font-md);line-height:1.55;text-align:left;white-space:pre-line;
   box-shadow:var(--dshpc-shadow-2);z-index:var(--dshpc-z-menu);
   opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
@@ -2019,10 +2031,12 @@ var DICT2 = {
     btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32 \u540C\u9AD8\uFF1Bicon \u6536\u7684\u662F ReactNode\u2014\u2014\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6\u3001\u81EA\u7ED8 SVG\u3001\u751A\u81F3\u4E00\u4E2A\u5B57\u7B26\u90FD\u884C\uFF0C\u4E0D\u662F\u540D\u5B57\u4E5F\u4E0D\u662F class\uFF08\u4E0B\u9762\u4E09\u9897\u5206\u522B\u662F\u8FD9\u4E09\u79CD\uFF09\uFF1BiconRight \u540E\u7F6E\u3001block \u6491\u6EE1\u7236\u5BBD",
     btnIconOnly: "icon only",
     tooltipTitle: "Tooltip\uFF08\u9F20\u6807\u60AC\u505C\u63D0\u793A\uFF09",
-    tooltipHint: "\u5B98\u65B9 Tooltip\uFF1Aside \u4E0A / \u4E0B / \u53F3 \xD7 align \u5C45\u4E2D / \u8D34\u8FB9\uFF1B\u951A\u70B9\u53EF\u4EE5\u662F\u6309\u94AE\u3001\u4E5F\u53EF\u4EE5\u662F\u4E00\u6BB5\u6587\u5B57\uFF1B\u957F\u6587\u672C\u81EA\u52A8\u6362\u884C\uFF08maxWidth \u9650\u5BBD\uFF09",
+    tooltipHint: "\u5B98\u65B9 Tooltip\uFF1Aside \u4E0A / \u4E0B / \u53F3 \xD7 align \u5C45\u4E2D / \u8D34\u8FB9\uFF1B\u951A\u70B9\u53EF\u4EE5\u662F\u6309\u94AE\u6216\u4E00\u6BB5\u6587\u5B57\uFF1B\u957F\u6587\u672C\u6309 maxWidth \u81EA\u52A8\u6298\u884C\uFF1B\u6700\u53F3\u4E00\u9897\u662F\u300C\u540D\u5B57 + \u6B63\u6587\u300D\u4E24\u6BB5\u5F0F\u2014\u2014\u6587\u672C\u91CC\u7684 \n \u5C31\u662F\u771F\u5B9E\u6362\u884C",
     tooltipAnchorText: "\u6587\u5B57\u951A\u70B9",
     tooltipAnchorButton: "\u6309\u94AE\u951A\u70B9",
     tooltipLong: "\u957F\u6587\u672C\u6362\u884C",
+    tooltipName: "\u5F20\u4E09\u4E30",
+    tooltipMultiline: "\u4E24\u6BB5\u5F0F\uFF08\u540D\u5B57 + \u6B63\u6587\uFF09",
     tooltipLongText: "\u8FD9\u662F\u4E00\u6BB5\u8DB3\u591F\u957F\u7684\u63D0\u793A\u6587\u5B57\uFF1A\u6C14\u6CE1\u9047\u5230 maxWidth \u4F1A\u81EA\u52A8\u6362\u884C\uFF0C\u800C\u4E0D\u4F1A\u4E00\u8DEF\u6491\u5230\u534A\u4E2A\u5C4F\u5E55\u5BBD\uFF0C anchored \u5143\u7D20\u5728\u8FB9\u7F18\u65F6\u5B98\u65B9\u8FD8\u4F1A\u81EA\u52A8\u628A\u6C14\u6CE1\u6536\u56DE\u89C6\u53E3\u5185\u3002",
     btnHintTitle: "\u95EE\u53F7\u63D0\u793A\uFF08FieldHint\uFF09",
     btnHintHint: "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF1A\u6807\u9898\u540E / \u6309\u94AE\u540E / \u4E00\u6BB5\u6587\u5B57\u540E / \u8F93\u5165\u6846\u540E\uFF1B\u9F20\u6807\u60AC\u505C\u6216\u952E\u76D8\u805A\u7126\u6D6E\u51FA\u6C14\u6CE1",
@@ -2097,10 +2111,12 @@ var DICT2 = {
     btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32, same height; icon takes any ReactNode \u2014 an official icon component, your own SVG, even a single character (not a name, not a class); iconRight trails, block fills the parent",
     btnIconOnly: "icon only",
     tooltipTitle: "Tooltip (hover hint)",
-    tooltipHint: "Official Tooltip: side top / bottom / right x align center / end; anchor can be a button or a span of text; long labels wrap (maxWidth)",
+    tooltipHint: "Official Tooltip: side top / bottom / right x align center / end; anchor can be a button or a span of text; long labels wrap at maxWidth; the rightmost one is a two-part hint (name + body) where \n in the text is a real line break",
     tooltipAnchorText: "Text anchor",
     tooltipAnchorButton: "Button anchor",
     tooltipLong: "Long label",
+    tooltipName: "Alex Chen",
+    tooltipMultiline: "Two-part (name + body)",
     tooltipLongText: "A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.",
     btnHintTitle: "Question-mark hint (FieldHint)",
     btnHintHint: "Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal",
@@ -2441,6 +2457,19 @@ function ButtonsSection() {
             (0, import_react20.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
             }, t2("tooltipLong"))
+          )
+        ),
+        // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: t2("tooltipMultiline") },
+          (0, import_react20.createElement)(
+            import_dsh_client_ui_primitives.Tooltip,
+            { label: `${t2("tooltipName")}
+${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
+            (0, import_react20.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "help", fontSize: "13px" }
+            }, t2("tooltipName"))
           )
         )
       )
@@ -3487,6 +3516,27 @@ function DemoPage() {
             }
           },
           t2(s.titleKey)
+        )
+      ),
+      // 底部常驻：bundle 的真实版本 + 当前暗色判据实测值（查「改了没生效」类问题的锚点）。
+      (0, import_react31.createElement)(
+        "div",
+        {
+          style: {
+            marginTop: "18px",
+            paddingTop: "10px",
+            borderTop: "1px solid var(--dshpc-border-faint)",
+            color: "var(--dshpc-fg-3)",
+            fontSize: "11px",
+            fontFamily: "var(--dshpc-font-mono)"
+          }
+        },
+        (0, import_react31.createElement)("div", null, `core v${"0.2.4"}`),
+        (0, import_react31.createElement)("div", null, `demo v${"0.2.4"}`),
+        (0, import_react31.createElement)(
+          "div",
+          { title: "body[data-ds-dark-theme]" },
+          `dark: ${typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "yes" : "no"}`
         )
       )
     ),

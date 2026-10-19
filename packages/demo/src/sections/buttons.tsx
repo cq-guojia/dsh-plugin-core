@@ -190,7 +190,13 @@ export function ButtonsSection(): ReturnType<typeof h> {
           h(Tooltip, { label: t('tooltipLongText'), side: 'bottom', maxWidth: 240 },
             h('span', {
               style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
-            }, t('tooltipLong'))))),
+            }, t('tooltipLong')))),
+        // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
+        h(Labeled, { label: t('tooltipMultiline') },
+          h(Tooltip, { label: `${t('tooltipName')}\n${t('tooltipLongText')}`, side: 'top', maxWidth: 260 },
+            h('span', {
+              style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'help', fontSize: '13px' },
+            }, t('tooltipName'))))),
     ),
 
     // ── 问号提示：证明它不属于 Input 家族，随处可挂 ──────────────────────
