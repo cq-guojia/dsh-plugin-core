@@ -1,10 +1,7 @@
 
-/* 下拉 / 日历 / 时分锚点：键盘可达性描边 + 校验描红（类名从业务层沿用，皮肤归位基础层） */
-.dshpc-ed-field:focus-visible{outline:2px solid var(--dshpc-business);outline-offset:1px;}
-.dshpc-ed-field--error{border-color:var(--dshpc-danger)!important;box-shadow:0 0 0 1px var(--dshpc-danger);}
-/* 整行下拉：官方 Menu 的包装 span 是 inline-flex（shrink-to-fit），要连它一起撑满 */
-.dshpc-ed-selectwrap{width:100%;}
-
+/* 通用工具 + 文本行为：不绑定具体控件，谁都能挂。
+   2026-10-20：原 select.css 里下拉锚点那几条（.dshpc-ed-field* / .dshpc-ed-selectwrap）
+   随 SelectField 一起投胎后无人引用，已删；文件随之改名，不再假称「下拉」。 */
 /* 省略号三件套（ui-style-guide §三「待抽象 #1」的收敛点）：**新代码一律挂这个类**，不再各写一遍。
    ⚠️ 已有 19 处旧写法待逐步收编（2026-10-04 起新增的调用点不许再手写这三条属性）。 */
 .dshpc-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}

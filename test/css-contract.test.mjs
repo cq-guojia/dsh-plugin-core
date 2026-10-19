@@ -5,7 +5,7 @@
 // 28px 宽（文字挤压）、图标按钮被撑成胶囊。这类「同名不同皮」靠人眼审不出来，必须由测试盯。
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import { rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -166,6 +166,33 @@ test('反证：真源里出现反引号必须被生成器拒绝', () => {
   } finally {
     rmSync(file, { force: true })
   }
+})
+
+// 2026-10-20：删 DATETIME_CSS / 改 SELECT_CSS→UTILITY_CSS 时发现，把一行从 MAP 里摘掉，
+// `gen-css.mjs` 不会去删那份旧生成物（tsc 也不清 outDir）⇒ 孤儿 generated.ts 会一直躺在 src/
+// 和 dist/ 里，下次谁改动 CSS 又会被它误导。这条钉死「MAP ⇄ 磁盘」必须一一对应。
+test('src 下不得残留 MAP 之外的孤儿生成物', async () => {
+  const script = await readFile(GEN, 'utf8')
+  const mapped = [...script.matchAll(/\['[^']+\.css',\s*'([^']+\.generated\.ts)'/g)]
+    .map((m) => m[1])
+    .sort()
+  assert.ok(mapped.length >= 10, `MAP 行数异常（${mapped.length}）—— 解析正则可能失效了`)
+
+  const found = []
+  const walk = async (dir) => {
+    for (const entry of await readdir(new URL(dir, import.meta.url), { withFileTypes: true })) {
+      const rel = `${dir}/${entry.name}`
+      if (entry.isDirectory()) await walk(rel)
+      else if (entry.name.endsWith('.generated.ts')) found.push(rel.slice('../'.length))
+    }
+  }
+  await walk('../src')
+
+  assert.deepEqual(
+    found.sort(),
+    mapped,
+    '生成物与 scripts/gen-css.mjs 的 MAP 不一致：MAP 里删了行就得把那份 generated.ts 删掉',
+  )
 })
 
 test('生成器对合法 CSS 放行（闸没误伤）', () => {
