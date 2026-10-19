@@ -85,7 +85,7 @@ function DemoPage(): ReturnType<typeof h> {
       }
       return `${getComputedStyle(el2).display}/${r}`
     }
-    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap} display ${cs.display}\nrule(${sheets} sheets): ${rule}\nwk ${probe('.dshpc-seg--weekday')} df ${probe('.dshpc-seg--default')} tdt ${probe('.dsh-tdt-seg')}`)
+    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap} display ${cs.display}\nrule(${sheets} sheets): ${rule}\nwk ${probe('.dshpc-seg--weekday')} df ${probe('.dshpc-seg--default')} tdt ${probe('.dsh-tdt-seg')} probe ${probe('.dshpc-segprobe')}`)
   }, [active])
   // 附带查 .dshpc-btn（与 seg 同一条注入文本，验证「单行活 / 多行死」的模式）
   useEffect(() => {
