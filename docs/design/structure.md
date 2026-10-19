@@ -11,8 +11,8 @@
 
 ## 命名约定
 
-- **`ui`** = 基础控件：纯零件、纯样式、不碰业务数据。
-- **`adv.`** = advanced，高级空间：**高度整合、与业务对象相关**的共享件，一眼和 `ui` 区分开。
+- **`ui`** = 基础能力：纯零件 + 可复用的基础容器（`Modal`、侧边栏/拉栏、选工作区/选文件），不碰业务成品。
+- **`adv.`** = advanced，高级空间：**成品**——拿 `ui` 的基础能力拼出来、与业务对象相关的共享件。
 - 高级空间统一加 `adv.` 前缀：`adv.explorer`、`adv.session`。
 - npm 子路径允许带点，引用写法就是 `dsh-plugin-core/adv.explorer`。
 
@@ -21,6 +21,7 @@
 | 标记 | 含义 |
 |---|---|
 | ✅ | 代码已在（质量待逐个重审） |
+| 🟡 | 缺口：需要补的基础组件 |
 | ⚪ | 暂缓：先标着，不做 |
 
 ---
@@ -34,7 +35,7 @@ dsh-plugin-core/
 │   ├── tokens              ✅ 颜色 / 字号 / 间距 / 圆角 / 层级（别名官方 --dsw-alias-*）
 │   └── style-kit           ✅ 运行时注入 <style>，createStyleKit({ id, prefix })
 │
-├── ui/                  ② 基础控件 —— 纯样式 + 无业务逻辑（依赖 design）
+├── ui/                  ② 基础控件 —— 纯零件 + 可复用基础能力（依赖 design）
 │   ├── official.ts         ✅ 全仓唯一 import 官方 primitives 的入口（L1）
 │   ├── 表单                ✅ Input / NumberInput / PrefixedInput / Textarea /
 │   │                          Checkbox / Segmented / Picker（下拉选择）
@@ -43,7 +44,10 @@ dsh-plugin-core/
 │   │   └── Loading         ⚪ 暂缓
 │   ├── 展示                ✅ Card / StripCard / Chip / MarqueeText /
 │   │                          SectionHead / FieldHint / LiveText / BackToTop
-│   └── 基础能力            ✅ resizer（侧边栏拖拽改宽）
+│   ├── 选择                ✅ WorkspacePicker（选工作区）/ FilePicker（选文件）
+│   │                          数据由调用方给，只是选择器，不含浏览逻辑
+│   └── 布局                🟡 SidebarLayout / SplitPane（侧边栏 + 拖拽拉栏）
+│                              现在只有底层函数 resizer（startResizeLayoutWidth），组件待补
 │
 ├── utils/               ③ 纯方法 —— 零 React / 零 DOM（谁都能用，它不依赖谁）
 │   ├── date                ✅ 日期 / 相对时间 / 时间区间
@@ -53,14 +57,23 @@ dsh-plugin-core/
 │   └── http                ⚪ 暂缓
 │
 ├── adv.explorer/        ④ 高级空间①：文件浏览（依赖 ui + utils）
-│   ├── ExplorerPanel       ✅ 目录树 + 面包屑 + 文件预览
-│   ├── WorkspacePicker     ✅ 选工作区（现暂放 ui，待迁入）
-│   ├── FilePicker          ✅ 选文件（同上）
-│   └── 路径工具            ✅ crumbsOf / joinPath / mimeOf / previewKindOf
+│   └── ExplorerPanel       ✅ 成品：ui 的侧边栏/拉栏 + ui 的两个 Picker + 目录树/预览
+│                              路径工具（crumbsOf / joinPath / mimeOf / previewKindOf）
+│                              = 纯字符串函数（拆面包屑 / 取扩展名 / 判预览类型），
+│                                属内部实现，不对外导出
 │
 └── adv.session/         ⑤ 高级空间②：会话记录（依赖 ui + utils）
-    └── SessionPreview      ✅ modal / sidebar / page 三种承载
+    └── SessionPreview      ✅ 成品：ui.Modal 承载会话消息（modal / sidebar / page）
 ```
+
+### 组合关系（成品 = 基础能力 + 定制）
+
+| 成品 | 用到的 `ui` 基础能力 | 定制了什么 |
+|---|---|---|
+| `adv.session` · `SessionPreview` | `Modal` | 把会话消息放进弹窗 |
+| `adv.explorer` · `ExplorerPanel` | `SidebarLayout` / `SplitPane` + `WorkspacePicker` / `FilePicker` | 目录树 + 面包屑 + 文件预览 |
+
+`adv.*` 只做「拼装 + 业务定制」，不重新实现按钮 / 下拉 / 弹窗 / 侧栏。
 
 ### 依赖方向（单向，不许反向）
 
@@ -94,7 +107,8 @@ utils（谁都不依赖，谁都可以用）
 │   ├─ 表单    Input / NumberInput / PrefixedInput / Textarea / Checkbox / Segmented / Picker
 │   ├─ 动作    Button / IconButton
 │   ├─ 反馈    Modal / Toast / EmptyState / ErrorBoundary
-│   └─ 展示    Card / StripCard / Chip / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop
+│   ├─ 展示    Card / StripCard / Chip / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop
+│   └─ 布局    侧边栏 / 拉栏
 │
 ├─ ③ 高级空间
 │   ├─ 文件浏览   ExplorerPanel（点文件夹、点文件看预览）
@@ -124,7 +138,10 @@ utils（谁都不依赖，谁都可以用）
 - **目录改名**：`src/explorer` → `src/adv.explorer`、`src/session` → `src/adv.session`；同步改
   `package.json` 的 `exports`、各 `index.ts`、`packages/demo` 的 import、`docs/design/architecture.md` 的树。
   代码现在仍是旧名。
-- **迁移**：`WorkspacePicker` / `FilePicker` 从 `ui` 迁到 `adv.explorer`。
+- **收窄导出**：`adv.explorer` 只暴露 `ExplorerPanel`；`WorkspacePicker` / `FilePicker` 留在 `ui`（已在那），
+  路径工具（`crumbsOf` / `joinPath` / `mimeOf` / `previewKindOf`）降为内部实现、不再从包入口导出。
+- **补基础组件**：`ui` 目前只有拖拽函数 `resizer`（`startResizeLayoutWidth`），需补 `SidebarLayout` / `SplitPane`
+  组件，供 `ExplorerPanel` 组合使用。
 - **暂缓项**：`utils/string`、`utils/number`、`utils/http`、`ui/feedback/Loading` —— 只标注，未删代码。
 - **库里没有的**：
   - 表格 Table —— 待真实需求再定，不预造；
