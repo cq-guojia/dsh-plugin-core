@@ -1,24 +1,396 @@
-// 官方 primitives 是平台模块（运行时由内核模块表解析），既不在本包依赖里，也拿不到它的 .d.ts。
-// 这里只做「能编译」的最小声明：全部按 any 放行；用到它的控件由插件侧的真实类型兜底。
-// 本包不强制依赖它 —— 它是 optional peer，只用 utils / design 的插件不必装。
+// 官方 UI primitives 的本地最小类型声明（本仓库 client 惯例：官方包不在我们的依赖里，
+// 不做跨版本引类型，只复述我们要用的消费面）。
+//
+// 事实来源：@deepseek-ai/dsh-client-ui-primitives@0.1.7-rc.2 的 lib/types/*.d.ts。
+// 该包是 dsh 浏览器内核的**平台模块**（见 tsdown.client.config.ts 的 PLATFORM_MODULES），
+// 运行时由内核模块表 require() 解析，故**无需**写进 dsh.client.inject（兄弟插件同样只 import）。
 declare module '@deepseek-ai/dsh-client-ui-primitives' {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export type MenuEntry = any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const Menu: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const IconChevronDownOutlineRegular: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const IconChevronUpOutlineRegular: any
-export const IconArrowUpOutlineRegular: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const Tooltip: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const writeClipboard: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const IconButton: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const Segmented: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const MarqueeText: any
+  import type { ComponentType, ReactNode } from 'react'
+
+  /** 代码块卡片工具条文案（官方 CodeToolbarLabels：语言回落名 + 换行/取消换行）。 */
+  export interface MarkdownCodeToolbarLabels {
+    codeLabel: string
+    wrapLabel: string
+    unwrapLabel: string
+  }
+  /** markdown 代码块控件的本地化文案。 */
+  export interface MarkdownCodeLabels {
+    copyLabel: string
+    copiedLabel: string
+    /** 共享卡片控件；**缺省即官方降级**为老式 banner（文字复制钮、无换行钮）。 */
+    toolbarLabels?: MarkdownCodeToolbarLabels
+  }
+  /** markdown 文档的本地化外壳文案。 */
+  export interface MarkdownLabels {
+    code: MarkdownCodeLabels
+    footnotes: string
+  }
+
+  /** 官方 markdown 渲染器（mdast 管线 + KaTeX；labels 需引用稳定）。 */
+  export const MarkdownText: ComponentType<{
+    text: string
+    labels: MarkdownLabels
+    streaming?: boolean
+    variant?: 'body' | 'compact'
+    /** 行内 code 文件词表：resolve 命中 ⇒ 渲成可点链接；解析不出保持惰性 code（renderer never guesses）。 */
+    fileMentions?: {
+      resolve(value: string): { open(): void; label: string; title: string } | undefined
+    }
+  }>
+
+  /** 官方 Shiki 代码块（diff 面与文档预览同源积木；lang 直接传 fence info / 扩展名）。 */
+  export const CodeBlock: ComponentType<{
+    code: string
+    lang?: string
+    streaming?: boolean
+    lineNumbers?: boolean
+    showHeader?: boolean
+    copyLabel?: string
+    copiedLabel?: string
+    toolbarLabels?: Record<string, string>
+    wrap?: boolean
+    className?: string
+    contentRef?: import('react').Ref<HTMLElement>
+  }>
+
+  /** 官方紧凑折叠行（图标 + 标题 + 箭头，箭头与展开行为自带）。 */
+  export const DisclosureRow: ComponentType<{
+    icon: ReactNode
+    title: string
+    open: boolean
+    expandable: boolean
+    onToggle: () => void
+    running?: boolean
+    expandOnRowClick?: boolean
+    previewChevron?: boolean
+    keepContentWhenOpen?: boolean
+    collapsedContent?: ReactNode
+    children?: ReactNode
+    className?: string
+    rowClassName?: string
+    leadingClassName?: string
+    chevronClassName?: string
+    titleClassName?: string
+  }>
+
+  /** 官方按钮（variant 各由 --dsw-alias-button-* token 族驱动，明暗主题自适应）。 */
+  export const Button: import('react').ForwardRefExoticComponent<{
+    variant?: 'primary' | 'ghost' | 'outline' | 'toolbar'
+    size?: 'md' | 'sm'
+    icon?: ReactNode
+    className?: string
+    children?: ReactNode
+  } & import('react').ButtonHTMLAttributes<HTMLButtonElement> & import('react').RefAttributes<HTMLButtonElement>>
+
+  /** 官方居中模态弹窗（body portal + mask/blur + 标准头部/正文/footer；Escape 与遮罩点击触发 onClose）。 */
+  export function Modal(props: {
+    open: boolean
+    onClose: () => void
+    title: string
+    description?: string
+    children?: ReactNode
+    footer?: ReactNode
+    className?: string
+    contentClassName?: string
+    shortcutModal?: string
+    onKeyDownCapture?: import('react').KeyboardEventHandler<HTMLDivElement>
+    backdropBlur?: boolean
+  } & (
+    | { headless: true; closeLabel?: never }
+    | { headless?: false; closeLabel: string }
+  )): import('react').ReactPortal | null
+
+  /** 官方状态点（10px 布局位、6px currentColor 芯；error 红 / warning 琥珀，色随官方 token）。 */
+  export function StateDot(props: {
+    state: 'done' | 'warning' | 'ongoing' | 'error' | 'idle'
+    size?: number
+    className?: string
+    appearance?: 'dot' | 'step'
+  }): ReactNode
+
+  /** 官方图标（1px 线宽）。 */
+  export const IconCodeOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconChevronRightOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconChevronDownOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconChevronLeftOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconCopyOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconCheckOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconCloseOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconRefreshOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconBranchOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconDatabaseOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconContextInjectionOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconGoalOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconPaperPlaneOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconAgentPresetOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconGlobeOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconAlarmClockOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconPlayOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconQueueOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconCordisPluginOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconThinkOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconBrowseOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconSearchOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconEditOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconApiOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconPlanOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconQuestionOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 时钟（时分选择锚点用）。 */
+  export const IconClockOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 加号（「添加」入口用）。 */
+  export const IconPlusOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 打开的文件夹（工作区 chip 用；实测与官方输入框 chip 同款）。 */
+  export const IconFolderOpenOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 关合的文件夹（下拉里「其他工作区」用，与当前工作区的打开图标区分）。 */
+  export const IconFolderCloseRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconSparkleRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconChevronUpOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 官方文件类型图标（按路径分类着色 SVG；交付文件卡同款）。 */
+  export const FileTypeIcon: ComponentType<{ path: string; size?: number; className?: string }>
+  /** 官方交付图标（present 工具行 / 交付文件行）。 */
+  export const IconDeliverDocRegular: ComponentType<{ size?: number; className?: string }>
+  /** 官方「新建对话 / 打开会话」图标（会话记录列入口用；0.2.0-rc.2 核实存在于 icons/index.d.ts）。 */
+  export const IconNewChatOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 官方圆勾（实心）——执行记录「成功」状态图标。 */
+  export const IconCheckCircleFillRegular: ComponentType<{ size?: number; className?: string }>
+  /** 官方圆叉（实心）——执行记录「失败 / 跳过」状态图标。 */
+  export const IconCloseCircleFillRegular: ComponentType<{ size?: number; className?: string }>
+  /** 官方加载转圈（1px）——执行记录「运行中」状态图标（配 CSS 旋转）。 */
+  export const IconLoadingOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 取文件扩展名（无点 / 尾点返回空串；大小写保持）。 */
+  export function fileExtension(path: string): string
+  /** 按路径推语法高亮语言（官方 code/CodeBody 预览体同款入参来源）。 */
+  export function languageForPath(path: string): string | undefined
+
+  // ── 表单件（2026-09-29 核实：官方**有**这一套，此前「官方无表单件」的记载有误）──
+  // 事实来源同上包 lib/types/{Switch,Input,Checkbox,SegmentedControl,SegmentedTabs,Menu,Pill,Tag}.d.ts
+  // 与 lib/*.module.css。⚠️ **官方没有日期 / 时间选择器**（lib/types 与 icons/ 里均无 calendar/datepicker），
+  // 日历与时分列只能自绘（照官方 token 与几何，见 editor-fields.tsx）。
+
+  /** 官方开关：胶囊 36×20、选中 `--dsw-alias-brand-primary`、关闭 `--dsw-alias-border-l3`。 */
+  export const Switch: ComponentType<{
+    checked: boolean
+    onChange: (next: boolean) => void
+    /** 无障碍名（不渲染可见文字，可见标签由调用方自己画）。 */
+    label: string
+    disabled?: boolean
+    title?: string | undefined
+    className?: string | undefined
+  }>
+
+  /** 官方输入框：高度 32、0.5px border-l4、bg-layer-1；icon 为 16px 前置图标。 */
+  export const Input: ComponentType<{
+    icon?: ReactNode
+    className?: string
+  } & import('react').InputHTMLAttributes<HTMLInputElement>>
+
+  /** 官方可选 chip（onClick 存在时渲染为 button）。 */
+  export const Pill: ComponentType<{
+    active?: boolean
+    className?: string | undefined
+    children?: ReactNode
+  } & import('react').ButtonHTMLAttributes<HTMLButtonElement>>
+
+  /** 官方分段控件（滑块指示器；至少两项）。 */
+  export interface SegmentedControlOption<Value extends string> {
+    value: Value
+    label: string
+    disabled?: boolean
+    title?: string
+  }
+  export function SegmentedControl<Value extends string>(props: {
+    id: string
+    value: Value
+    options: readonly SegmentedControlOption<Value>[]
+    onChange: (next: Value) => void
+    label: string
+    disabled?: boolean
+    className?: string | undefined
+  }): ReactNode
+
+  /** 官方菜单项（数据形态）。 */
+  export interface MenuItem {
+    id: string
+    label: ReactNode
+    disabled?: boolean
+    icon?: ReactNode
+    danger?: boolean
+  }
+  /** 分隔线 / 分组标题（非可选项）。 */
+  export interface MenuSeparator { type: 'separator'; id: string }
+  export interface MenuLabel { type: 'label'; id: string; text: string }
+  export type MenuEntry = MenuItem | MenuSeparator | MenuLabel
+
+  /**
+   * 官方下拉菜单：anchor 为锚点元素，列表自带定位/键盘游走/点外关闭。
+   * `selection='check'` 时选中项尾随对勾（官方默认）。**rc.1 起即存在**（`MenuSurface` 则仅 rc.2 有）。
+   */
+  export const Menu: ComponentType<{
+    open: boolean
+    anchor: ReactNode
+    items?: readonly MenuEntry[]
+    children?: ReactNode
+    footer?: readonly MenuEntry[]
+    selectedId?: string | undefined
+    selectedIds?: readonly string[] | undefined
+    onSelect?: (id: string) => void
+    onClose: () => void
+    align?: 'start' | 'end'
+    side?: 'bottom' | 'top' | 'right'
+    portal?: boolean
+    closeOnPointerLeave?: boolean
+    dense?: boolean
+    compact?: boolean
+    autoFocus?: boolean
+    selection?: 'check' | 'fill'
+    getAnchorRect?: () => DOMRect | null
+    className?: string | undefined
+    listClassName?: string | undefined
+  }>
+
+  /** 官方气泡提示：label + side；children 为唯一锚点元素，ref/事件会被接管。 */
+  export const Tooltip: ComponentType<{
+    label: string
+    side?: 'right' | 'bottom' | 'top'
+    /** 实测只有这两种（官方 types：'center' | 'end'）。 */
+    align?: 'center' | 'end'
+    gap?: number
+    maxWidth?: number
+    disabled?: boolean
+    /** 挂到 document.body，躲开祖先裁剪与层叠上下文。 */
+    portal?: boolean
+    children?: ReactNode
+  }>
+
+  /** 官方剪贴板写入：返回是否成功。 */
+  export function writeClipboard(text: string): Promise<boolean>
+
+  /**
+   * 官方 Toast（顶部居中横幅，body 传送门）：滑入 → holdMs 全显 → 淡出 → onDone（宿主卸载）。
+   * 重播同文案须换 key 重挂（官方文档明说）。事实来源：0.2.0-rc.1 lib/types/Toast.d.ts。
+   */
+  export const Toast: ComponentType<{
+    text: string
+    icon?: ReactNode
+    /** 仅 'success' 有绿圈勾；缺省图标位呈警示色。 */
+    tone?: 'success'
+    /** 横幅水平中心跟随该元素；缺省居中视口。 */
+    anchor?: HTMLElement | null
+    holdMs?: number
+    actions?: readonly { label: string; prefix?: string; onClick: () => void }[]
+    onDone: () => void
+  }>
+
+  /** 官方「固定定位浮层贴住锚点」：滚动 / 尺寸变化时自动重算并夹在视口内。 */
+  export function useAnchoredPosition(options: {
+    open: boolean
+    anchorRef: { current: HTMLElement | null }
+    panelRef: { current: HTMLElement | null }
+    side?: 'top' | 'bottom'
+    align?: 'start' | 'end'
+    gap: number
+    margin: number
+  }): import('react').CSSProperties | undefined
+
+  /** 官方「点外关闭」：锚点与面板之外按下指针时关闭。 */
+  export function useDismissOnOutsidePointer(
+    rootRef: { current: HTMLElement | null },
+    open: boolean,
+    setOpen: (open: boolean) => void,
+    panelRef?: { current: HTMLElement | null },
+  ): void
+
+  /** 运行态文字微光（工具行摘要 running 时官方套的 shimmer 壳）。 */
+  export function TextShimmer(props: {
+    active?: boolean
+    className?: string
+    children?: ReactNode
+  }): ReactNode
+
+  /** 官方读取文件卡：行号列 + 中间截断（「… 其余 N 行」）+ Shiki 高亮。 */
+  export const ReadBlock: ComponentType<{
+    /** 顶部横幅标签（文件路径）。 */
+    label?: string
+    /** 返回窗口的行（保留文件自身行号）。 */
+    lines: ReadonlyArray<{ number: number; text: string }>
+    labels: {
+      codeLabel: string
+      wrapLabel: string
+      unwrapLabel: string
+      window: (shown: number, total: number) => string
+      copy: string
+      copied: string
+      collapseAria: string
+      expandAria: (hidden: number) => string
+      collapse: string
+      expand: (hidden: number) => string
+    }
+    /** 文件总行数（「显示 N / M 行」用）。 */
+    totalLines: number
+    /** 语言提示（扩展名推导）；未知 = 纯等宽。 */
+    lang?: string
+    /** 中间截断前的内容行上限（官方 ToolRow 传 8）。 */
+    maxLines?: number
+    className?: string
+  }>
+
+  /** 官方终端卡：命令行 + 输出面 + 退出码/信号 pill。 */
+  export const TerminalBlock: ComponentType<{
+    /** 命令行（提示符后原样渲染）。 */
+    command: string
+    /** 提示符工作目录；缺省渲染裸 `$`。 */
+    cwd?: string
+    /** 宿主 home：cwd 等于它时折叠成 `~`；缺省不折叠。 */
+    home?: string
+    output?: string
+    /** 结算退出码；非零出状态 pill，null = 无退出码。 */
+    exitCode?: number | null
+    /** 结算终止信号；有值时优先于退出码。 */
+    signal?: string
+    /** 仍在运行：无 output 只画提示行。 */
+    running?: boolean
+    /** 输出行上限（官方 ToolRow 传 Infinity = 不截断）。 */
+    maxLines?: number
+    /** 复制载荷覆盖；缺省复制原始输出。 */
+    copyText?: string
+    /** 卡片侧栏运行状态点（官方 ToolRow 让外层行承担 ⇒ 不传）。 */
+    runStateDot?: boolean
+    className?: string
+    labels: {
+      signal: (signal: string) => string
+      exitCode: (exitCode: number) => string
+      noExitCode: string
+      running: string
+      failed: string
+      done: string
+      copy: string
+      copied: string
+      noOutput: string
+      collapseAria: string
+      collapse: string
+      expandAria: (hidden: number) => string
+      expand: (hidden: number) => string
+    }
+  }>
+
+  /** 官方文件变更内联 diff 面（编辑/写入工具卡展开体）。 */
+  export function DiffBlock(props: {
+    diffs: ReadonlyArray<{ path: string; oldText: string | null; newText: string }>
+    labels: {
+      codeLabel: string
+      wrapLabel: string
+      unwrapLabel: string
+      copy: string
+      copied: string
+      collapseAria: string
+      expandAria: (hidden: number) => string
+      collapse: string
+      expand: (hidden: number) => string
+    }
+    maxLines?: number
+    className?: string
+  }): ReactNode | null
+
+  /** 官方 diff 统计（+新增 / -删除）。 */
+  export function diffTotals(diffs: ReadonlyArray<{ oldText: string | null; newText: string }>): { added: number; removed: number }
 }
