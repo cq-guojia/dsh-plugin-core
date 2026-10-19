@@ -1,19 +1,28 @@
 /**
  * 【临时探针 · 定位完必删】
  *
- * 用途：定位「`.dshpc-seg` 基础规则在宿主里查不到 / 不生效，而同文件同标签的 `.dshpc-btn` 正常」。
+ * 用途：定位「`.dshpc-seg` 基础规则在 CSSOM 里明明存在、却不落到元素上」。
  * 删法：删掉本文件、删 `client/index.tsx` 里的 import 与 `probes` 状态 / effect / 渲染三处。
  *
+ * ⚠️ 读数前提：**demo 里的兄弟皮肤对照（legacy-tdt）已拆**。它与我们同特异性又后注入，
+ *    任何读数都会被它盖住（第一轮 P1-P9 就吃了这个亏）。
+ *
  * 探针清单（编号固定，回答诊断时按编号报）：
- *   P1 页面上含 `dshpc-seg` 文本的 <style> 标签有几个（判断是不是有第二份/旧 id 的标签）
- *   P2 我们这把 kit 的标签 id 是否存在、文本长度、文本里 `.dshpc-seg{` 出现几次
- *   P3 document.styleSheets（含 adopted）总数 / 可读数 / 规则总数（可读=0 说明被跨域挡）
- *   P4 CSSOM 里 `.dshpc-seg*` 规则有几条、前几条选择器原文
- *   P5 文本里有、CSSOM 里没有的 `.dshpc-seg*` 选择器（差集）—— 直接指出被丢的是哪几条
- *   P6 真实元素的 className / matches / 所在根节点 / 基线 display
- *   P7 新建一个裸 div.dshpc-seg 的 display（排除「这个元素被宿主动过」）
- *   P8 真实元素临时加 `.dshpc-segprobe` 后的 display（内容相同、只换类名）
- *   P9 临时新标签里只写 `.dshpc-seg{display:inline-flex}` 后真实元素的 display（排除「我们这份文本里前面某条规则整条吞掉后面」）
+ *   P1  含 `dshpc-seg` 文本的 <style> 标签个数与 id
+ *   P2  我们这把 kit 的标签是否存在 / 文本长度 / 文本里 `.dshpc-seg{` 次数
+ *   P3  styleSheets（含 adopted）总数 / 可读 / 规则合计
+ *   P4  CSSOM 里 `.dshpc-seg*` 规则条数 + 前几条选择器
+ *   P5  文本有、CSSOM 缺的选择器差集（**已做引号归一化**，避免 `'true'` vs `"true"` 假警报）
+ *   P6  真实元素 className / matches / 根节点 / computed display
+ *   P7  裸 div.dshpc-seg 挂 body 下：display / gap / padding（**不设 position**，避免 fixed 触发 display 块化）
+ *   P8  真实元素临时加 `.dshpc-segprobe`：display 会不会变成 inline-flex
+ *   P9  临时新标签只写 `.dshpc-seg{display:inline-flex}`：真实元素 display 变不变
+ *   P10 我们那 6 条 `.dshpc-seg` 规则的 cssText + 所属 sheet 的 owner / disabled / media
+ *   P11 裸 div.dshpc-seg 挂到真实元素父节点下：同上三项（区分「作用域」问题）
+ *   P12 `matches` + 全文档 `.dshpc-seg` 元素个数
+ *   P13 裸 div 只挂 `.dshpc-segprobe`：display（同内容换名在裸 div 上活不活）
+ *   P14 裸 div 的 inline `style.display` vs computed（有无内联覆盖）
+ *   P15 裸 div 挂 `.dshpc-btn`：display（同文件控件族的对照组）
  */
 
 export interface ProbeLine {
@@ -34,7 +43,12 @@ function countOccur(haystack: string, needle: string): number {
   return n
 }
 
-/** 从 CSS 文本里抽选择器（剥注释；粗略但够用：本仓 CSS 每条规则都以 `}` 收尾，无嵌套）。 */
+/** 选择器归一化：Chrome 把属性选择器里的单引号序列化成双引号，精确比对前先抹平。 */
+function normSel(sel: string): string {
+  return sel.replace(/'/g, '"').replace(/\s+/g, ' ')
+}
+
+/** 从 CSS 文本里抽选择器（剥注释；本仓 CSS 每条规则都以 `}` 收尾，规则之间不嵌套）。 */
 function selectorsOf(css: string): string[] {
   const body = css.replace(/\/\*[\s\S]*?\*\//g, '')
   const out: string[] = []
@@ -48,30 +62,39 @@ function selectorsOf(css: string): string[] {
   return out
 }
 
+interface RuleInfo {
+  sel: string
+  css: string
+}
+
 interface SheetInfo {
-  /** -1 表示读 cssRules 抛错（跨域 / SecurityError）。 */
+  owner: string
+  disabled: boolean
+  media: string
+  /** -1 = 读 cssRules 抛错（跨域 / SecurityError）。 */
   count: number
-  selectors: string[]
+  rules: RuleInfo[]
 }
 
 function readSheets(): SheetInfo[] {
   const out: SheetInfo[] = []
-  const add = (sheet: CSSStyleSheet | null): void => {
-    if (sheet === null) return
+  const add = (sheet: CSSStyleSheet, label: string): void => {
+    const node = sheet.ownerNode as Element | null
+    const owner = `${label}${node === null ? '' : `(${node.id === '' ? node.nodeName.toLowerCase() : `#${node.id}`})`}`
     try {
-      const rules = Array.from(sheet.cssRules)
-      const selectors: string[] = []
-      for (const r of rules) {
-        if (r instanceof CSSStyleRule) selectors.push(r.selectorText)
+      const list = Array.from(sheet.cssRules)
+      const rules: RuleInfo[] = []
+      for (const r of list) {
+        if (r instanceof CSSStyleRule) rules.push({ sel: r.selectorText, css: r.style.cssText })
       }
-      out.push({ count: rules.length, selectors })
+      out.push({ owner, disabled: sheet.disabled, media: sheet.media.mediaText, count: list.length, rules })
     } catch {
-      out.push({ count: -1, selectors: [] })
+      out.push({ owner, disabled: sheet.disabled, media: sheet.media.mediaText, count: -1, rules: [] })
     }
   }
-  for (const sheet of Array.from(document.styleSheets)) add(sheet)
+  Array.from(document.styleSheets).forEach((s, i) => { add(s, `S${String(i)}`) })
   const adopted = (document as Document & { adoptedStyleSheets?: CSSStyleSheet[] }).adoptedStyleSheets
-  for (const sheet of Array.from(adopted ?? [])) add(sheet)
+  Array.from(adopted ?? []).forEach((s, i) => { add(s, `A${String(i)}`) })
   return out
 }
 
@@ -80,6 +103,18 @@ function describeRoot(el: Element): string {
   if (root === document) return 'document'
   if (typeof ShadowRoot !== 'undefined' && root instanceof ShadowRoot) return 'shadow'
   return root.nodeName
+}
+
+/** 往指定父节点放一个只带 className 的裸 div，读完三项再移除。 */
+function bareDiv(className: string, parent: Element | null): string {
+  const host = parent ?? document.body
+  const div = document.createElement('div')
+  div.className = className
+  host.appendChild(div)
+  const cs = getComputedStyle(div)
+  const out = `display=${cs.display} gap=${cs.gap} padding=${cs.padding} inline="${div.style.display}"`
+  div.remove()
+  return out
 }
 
 /** 采集一次全部探针。返回按编号排好的行，直接可渲染 / 打日志。 */
@@ -108,21 +143,21 @@ export function collectSegProbes(): ProbeLine[] {
   const readable = sheets.filter((s) => s.count >= 0)
   lines.push({
     id: 'P3',
-    text: `sheets 总 ${String(sheets.length)}，可读 ${String(readable.length)}，规则合计 ${String(readable.reduce((a, s) => a + s.count, 0))}，读不了 ${String(sheets.length - readable.length)}`,
+    text: `sheets 总 ${String(sheets.length)}（含 adopted），可读 ${String(readable.length)}，规则合计 ${String(readable.reduce((a, s) => a + s.count, 0))}`,
   })
 
-  const cssomSeg = readable.flatMap((s) => s.selectors.filter((x) => x.startsWith('.dshpc-seg')))
+  const cssomSeg = readable.flatMap((s) => s.rules.filter((r) => r.sel.startsWith('.dshpc-seg')))
   lines.push({
     id: 'P4',
-    text: `CSSOM 里 .dshpc-seg* 共 ${String(cssomSeg.length)} 条：${cssomSeg.slice(0, 6).join(' | ') || '(无)'}`,
+    text: `CSSOM 里 .dshpc-seg* 共 ${String(cssomSeg.length)} 条：${cssomSeg.slice(0, 6).map((r) => r.sel).join(' | ') || '(无)'}`,
   })
 
   const textSeg = selectorsOf(kitCss).filter((x) => x.startsWith('.dshpc-seg'))
-  const present = new Set(cssomSeg)
-  const missing = textSeg.filter((x) => !present.has(x))
+  const present = new Set(cssomSeg.map((r) => normSel(r.sel)))
+  const missing = textSeg.filter((x) => !present.has(normSel(x)))
   lines.push({
     id: 'P5',
-    text: `文本里 .dshpc-seg* ${String(textSeg.length)} 条，CSSOM 缺 ${String(missing.length)} 条：${missing.slice(0, 6).join(' | ') || '(无)'}`,
+    text: `文本 .dshpc-seg* ${String(textSeg.length)} 条，CSSOM 缺 ${String(missing.length)} 条：${missing.slice(0, 6).join(' | ') || '(无)'}`,
   })
 
   const el = document.querySelector('.dshpc-seg')
@@ -132,16 +167,9 @@ export function collectSegProbes(): ProbeLine[] {
   }
   lines.push({
     id: 'P6',
-    text: `元素 class="${el.className}"，matches ${String(el.matches('.dshpc-seg'))}，根 ${describeRoot(el)}，display=${getComputedStyle(el).display}`,
+    text: `元素 class="${el.className}"，根 ${describeRoot(el)}，display=${getComputedStyle(el).display}`,
   })
-
-  const clone = document.createElement('div')
-  clone.className = 'dshpc-seg'
-  clone.style.cssText = 'position:fixed;left:-9999px;top:0'
-  document.body.appendChild(clone)
-  const cloneDisplay = getComputedStyle(clone).display
-  clone.remove()
-  lines.push({ id: 'P7', text: `裸 div.dshpc-seg 的 display=${cloneDisplay}` })
+  lines.push({ id: 'P7', text: `裸 div.dshpc-seg 挂 body 下：${bareDiv('dshpc-seg', document.body)}` })
 
   el.classList.add('dshpc-segprobe')
   const probeDisplay = getComputedStyle(el).display
@@ -160,10 +188,32 @@ export function collectSegProbes(): ProbeLine[] {
     freshRules = -1
   }
   fresh.remove()
+  lines.push({ id: 'P9', text: `临时标签只写 .dshpc-seg{display:inline-flex} ⇒ display=${freshDisplay}（cssRules ${String(freshRules)}），已删` })
+
+  // P10：把我们那几条规则连同宿主所属 sheet 一起打出来（owner / disabled / media 是关键）。
+  const baseRules = cssomSeg.filter((r) => normSel(r.sel) === '.dshpc-seg')
+  const owner = readable.find((s) => s.rules.some((r) => normSel(r.sel) === '.dshpc-seg'))
   lines.push({
-    id: 'P9',
-    text: `临时标签只写 .dshpc-seg{display:inline-flex} ⇒ display=${freshDisplay}（cssRules ${String(freshRules)}），已删`,
+    id: 'P10',
+    text: `${String(baseRules.length)} 条 .dshpc-seg 规则声明：${baseRules.map((r, i) => `${String(i + 1)}.${r.css}`).join(' ')} ｜ sheet ${owner === undefined ? '(未找到)' : `${owner.owner} disabled=${String(owner.disabled)} media="${owner.media}"`}`,
   })
+
+  lines.push({ id: 'P11', text: `裸 div.dshpc-seg 挂真实元素同父下：${bareDiv('dshpc-seg', el.parentElement)}` })
+  lines.push({
+    id: 'P12',
+    text: `真实元素 matches=${String(el.matches('.dshpc-seg'))}，全文档 .dshpc-seg 元素 ${String(document.querySelectorAll('.dshpc-seg').length)} 个`,
+  })
+  lines.push({ id: 'P13', text: `裸 div.dshpc-segprobe 挂 body 下：${bareDiv('dshpc-segprobe', document.body)}` })
+
+  const inlineProbe = document.createElement('div')
+  inlineProbe.className = 'dshpc-seg'
+  document.body.appendChild(inlineProbe)
+  lines.push({
+    id: 'P14',
+    text: `裸 div 的 inline display="${inlineProbe.style.display}"，computed=${getComputedStyle(inlineProbe).display}`,
+  })
+  inlineProbe.remove()
+  lines.push({ id: 'P15', text: `裸 div.dshpc-btn 挂 body 下：${bareDiv('dshpc-btn', document.body)}` })
 
   return lines
 }

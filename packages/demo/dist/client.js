@@ -2225,7 +2225,6 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
           (0, import_react20.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u542F\u7528" }),
           (0, import_react20.createElement)(Segmented, {
             variant: "inset",
-            className: "dsh-tdt-seg dsh-tdt-seg--inset",
             items: [
               { value: "day", label: "\u65E5" },
               { value: "week", label: "\u5468" },
@@ -2237,7 +2236,6 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
           (0, import_react20.createElement)(Segmented, {
             variant: "inset",
             size: "sm",
-            className: "dsh-tdt-seg dsh-tdt-seg--inset",
             items: [
               { value: "day", label: "\u65E5" },
               { value: "week", label: "\u5468" },
@@ -2250,7 +2248,6 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
         // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
         (0, import_react20.createElement)(Segmented, {
           variant: "inset",
-          className: "dsh-tdt-seg dsh-tdt-seg--inset",
           items: [
             { value: "all", label: t2("segAll"), count: 11 },
             { value: "doing", label: t2("segDoing"), count: 5 },
@@ -2264,7 +2261,7 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
         // 星期多选方块（蓝底选中、近似方形）
         (0, import_react20.createElement)(Segmented, {
           multiple: true,
-          className: "dshpc-seg--weekday dsh-tdt-seg dsh-tdt-seg--weekday",
+          className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
           items: [1, 2, 3, 4, 5, 6, 7].map((n) => ({
             value: String(n),
@@ -2277,7 +2274,6 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
         (0, import_react20.createElement)(Segmented, {
           size: "sm",
           variant: "default",
-          className: "dsh-tdt-seg dsh-tdt-seg--default",
           label: "default \u5916\u89C2\u793A\u4F8B",
           items: [
             { value: "render", label: t2("segPreview") },
@@ -3129,268 +3125,6 @@ function Sections(props) {
   );
 }
 
-// packages/demo/src/legacy-tdt.ts
-var LEGACY_TDT_TOKENS_CSS = `
-/* \u2500\u2500 \u6587\u5B57\uFF08\u5BBF\u4E3B label \u56DB\u6863 + \u53CD\u8272\u9762\u7528\u5B57\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-body{
-  --tdt-fg:var(--dsw-alias-label-primary,#1f2328);
-  --tdt-fg-2:var(--dsw-alias-label-secondary,#5c6370);
-  --tdt-fg-3:var(--dsw-alias-label-tertiary,#767d87);
-  --tdt-fg-4:var(--dsw-alias-label-caption,#9aa1ab);
-  --tdt-fg-dim:var(--dsw-alias-label-dimmed,#b9bfc7);
-  /* \u53CD\u8272\u9762\u4E0A\u7684\u5B57\uFF08\u5B9E\u5FC3\u94AE / \u89D2\u6807\uFF09\uFF1A\u6697\u8272\u4E0B\u662F bluish-1000\uFF0C\u6545\u7528 -foreground \u800C\u975E -inverted */
-  --tdt-fg-inverse:var(--dsw-alias-label-primary-foreground,#fff);
-
-  /* \u2500\u2500 \u9762\uFF08\u5BBF\u4E3B bg-layer \u4E09\u6863 + \u4E0B\u6C89\u8F68\u9053\u5E95\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  --tdt-surface-1:var(--dsw-alias-bg-layer-1,#fff);
-  --tdt-surface-2:var(--dsw-alias-bg-layer-2,#fff);
-  --tdt-surface-3:var(--dsw-alias-bg-layer-3,#fff);
-  /* \u300C\u9009\u4E2D\u4EAE\u7247\u300D\u7684\u5E95\u76D8\u8272\uFF08\u914D --tdt-shadow-raised \u7528\uFF09 */
-  --tdt-surface-raised:var(--dsw-alias-bg-layer-1,#fff);
-  /* \u8F68\u9053 / \u4E0B\u6C89\u5E95\uFF08\u5B98\u65B9\u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u7528\u7684\u5C31\u662F\u8FD9\u6761\uFF09 */
-  --tdt-surface-sunken:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));
-  /* \u6574\u9875 / \u7F16\u8F91\u5668\u5E95\uFF08bg-base\uFF09 */
-  --tdt-surface-base:var(--dsw-alias-bg-base,#fff);
-  /* \u81EA\u7ED8\u6D6E\u5C42 / \u83DC\u5355\u5361\u7684\u4E0D\u900F\u660E\u5E95\uFF08= base\uFF1B\u4E0D\u8981\u7528\u534A\u900F\u660E\u7684 specific-menu\uFF09 */
-  --tdt-surface-menu:var(--tdt-surface-base);
-  /* markdown \u4EE3\u7801\u5757\u9762 / \u5B57\u4F53\uFF08\u4F1A\u8BDD\u955C\u50CF\u91CC\u7528\u5230\uFF09 */
-  --tdt-code-surface:var(--dsw-alias-markdown-code-block,rgba(128,128,128,.10));
-  --tdt-code-font:var(--dsw-font-markdown-code-block-small,12px/18px var(--ds-font-family-code,monospace));
-  /* \u8B66\u544A\u6587\u5B57\u8272\uFF08\u5BBF\u4E3B state-warn-label\uFF09 */
-  --tdt-warning-label:var(--dsw-alias-state-warn-label,#f5a623);
-  /* \u56FA\u5B9A\u4E2D\u6027\u5B9E\u9762\uFF08\u81EA\u7ED8\u6D6E\u5C42\u3001\u6DF1\u8272\u4E3B\u9898\u4E0B\u5FC5\u987B\u81EA\u5DF1\u53D8\u7684\u90A3\u51E0\u4E2A\uFF09\u2014\u2014\u53EA\u6709\u5B83\u9700\u8981\u6697\u8272\u8986\u76D6 */
-  --tdt-solid:var(--dsw-static-neutral-00,#fff);
-  --tdt-on-solid:var(--dsw-alias-label-primary,#1f2328);
-  /* \u4EA4\u4ED8\u6587\u4EF6\u5361\u90A3\u79CD\u300C\u6D45\u5E95\u76D8 + hover \u52A0\u6DF1\u300D\u4E24\u62CD */
-  --tdt-plate:var(--dsw-static-neutral-50,#fafafa);
-  --tdt-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);
-  /* \u65E7\u5185\u6838\u56DE\u9000\uFF08Chrome <111 \u4E0D\u8BA4 color-mix \u21D2 \u8FD9\u6761\u751F\u6548\uFF1B\u65B0\u5185\u6838\u88AB\u4E0B\u9762\u90A3\u6761\u8986\u76D6\uFF09\u3002
-     \u8FD9\u51E0\u4E2A\u662F**\u56FA\u5B9A\u4E2D\u6027\u9762**\u3001\u4E0D\u9760\u8DDF\u968F\u5BBF\u4E3B\u4E3B\u9898\u8272\uFF0C\u6545\u53EF\u4EE5\u65E0\u635F\u5730\u7ED9\u660E\u6587\u56DE\u9000\u3002 */
-  --tdt-icon-plate:rgba(255,255,255,.5);
-  --tdt-icon-plate:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 50%,transparent);
-  /* \u8868\u5934\u5E95\uFF1A\u6D45\u8272\u4E3B\u9898**\u504F\u6DF1**\uFF0C\u4E14\u5FC5\u987B**\u6BD4\u6591\u9A6C\u7EB9\uFF08--tdt-plate\uFF09\u518D\u6DF1\u4E00\u6863**\u2014\u2014
-     \u4E24\u8005\u4E0D\u80FD\u649E\u8272\uFF08\u7528\u6237 2026-10-02\uFF1A\u8868\u5934\u8DDF\u6591\u9A6C\u7EB9\u4E00\u6A21\u4E00\u6837\uFF09\u3002 */
-  --tdt-head-bg:var(--dsw-static-neutral-100,#f5f5f5);
-  /* \u56FE\u6807\u5C0F\u5E95\u677F\uFF08\u4EA7\u51FA\u7269\uFF09\uFF1A\u6D45\u8272\u4E0B\u8981**\u770B\u5F97\u89C1**\uFF08\u539F\u5148\u53D6 plate \u21D2 \u5728\u767D\u5E95\u4E0A\u7B49\u4E8E\u6CA1\u6709\uFF09\uFF1Bhover \u52A0\u500D\u3002 */
-  --tdt-chip-bg:rgba(15,15,15,.07);
-  --tdt-chip-bg:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 7%,transparent);
-  --tdt-chip-bg-hover:rgba(15,15,15,.14);
-  --tdt-chip-bg-hover:color-mix(in srgb,var(--dsw-static-neutral-900,#0f0f0f) 14%,transparent);
-  /* \u5C55\u5F00\u884C\uFF1A**\u5E26\u900F\u660E\u5EA6\u7684\u84DD**\u2014\u2014\u4E0D\u662F\u7070\u3001\u4E5F\u4E0D\u662F\u7EAF\u8272\uFF0C\u900F\u51FA\u5361\u7247\u5E95\u8272\uFF0C\u4E00\u773C\u770B\u51FA\u300C\u8FD9\u662F\u5C55\u5F00\u7684\u300D
-     \uFF08\u7528\u6237 2026-10-02\uFF1A\u7070\u8272\u8DDF\u6591\u9A6C\u7EB9\u5206\u4E0D\u51FA\u6765\uFF09\u3002\u5185\u5BB9\u533A\u518D\u6DE1\u4E00\u6863\uFF0C\u5F62\u6210\u300C\u884C\u6DF1 / \u5185\u5BB9\u6D45\u300D\u7684\u533A\u9694\u3002 */
-  --tdt-open-bg:rgba(37,99,235,.10);
-  --tdt-open-bg-soft:rgba(37,99,235,.05);
-  --tdt-card-hover:rgba(37,99,235,.07);
-
-  /* \u2500\u2500 \u63CF\u8FB9\u56DB\u6863\uFF08\u5BBF\u4E3B\u771F\u503C\uFF1Al1 4% / l2 10% / l3 12% / l4 16%\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  --tdt-border-faint:var(--dsw-alias-border-l1,#0000000a);
-  --tdt-border:var(--dsw-alias-border-l2,#0000001a);
-  --tdt-border-strong:var(--dsw-alias-border-l3,#0000001f);
-  --tdt-border-heavy:var(--dsw-alias-border-l4,#00000029);
-
-  /* \u2500\u2500 \u54C1\u724C / \u8BED\u4E49\u8272 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  /* \u54C1\u724C\u300C\u9762\u300D\u8272\uFF1A\u660E\u8272\u8FD1\u9ED1\u3001\u6697\u8272\u8FD1\u767D\uFF08\u5B98\u65B9 Switch \u9009\u4E2D\u6001\u5373\u6B64\uFF09\uFF0C**\u4E0D\u662F\u84DD\u8272** */
-  --tdt-accent:var(--dsw-alias-brand-primary,#0f1115);
-  /* \u84DD\u8272\uFF1A\u5F3A\u8C03 / \u9009\u4E2D / \u7126\u70B9\uFF0C\u4E00\u5F8B\u8D70\u8FD9\u6761 */
-  --tdt-business:var(--dsw-alias-state-business-primary,#3b5bdb);
-  --tdt-success:var(--dsw-alias-state-success-primary,#22c55e);
-  /* \u26A0\uFE0F \u662F state-warn\uFF08\u4E0D\u662F state-warning\uFF0C\u540E\u8005\u5BBF\u4E3B\u65E0\u6B64\u5B9A\u4E49\uFF09 */
-  --tdt-warning:var(--dsw-alias-state-warn-primary,#f59e0b);
-  --tdt-danger:var(--dsw-alias-state-error-primary,#ec1313);
-  --tdt-link:var(--dsw-alias-link,#3b5bdb);
-  /* \u8BED\u4E49\u8272**\u5B9E\u9762**\u4E0A\u7684\u5B57\uFF08\u89D2\u6807 / \u5B9E\u5FC3\u63D0\u793A\uFF09\uFF1A\u5BBF\u4E3B\u7EA2\u7EFF\u9EC4\u4E09\u8272\u90FD\u662F\u4E2D\u8C03 \u21D2 \u767D\u5B57\u4E24\u4E2A\u4E3B\u9898\u90FD\u53EF\u8BFB\uFF0C
-     \u6545\u8FD9\u662F\u4E00\u6761\u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u5E38\u91CF\uFF1B\u4E0D\u8981\u62FF --tdt-fg-inverse \u9876\u2014\u2014\u5B83\u5728\u6697\u8272\u4E0B\u662F\u8FD1\u9ED1\uFF0C\u538B\u5728\u7EA2\u5E95\u4E0A\u770B\u4E0D\u6E05\u3002 */
-  --tdt-on-signal:#fff;
-  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF1A\u72B6\u6001\u8272\u7CFB\u7684\u300C\u4E00\u5757\u5E95\u8272\u300D\u2014\u2014\u6267\u884C\u8BB0\u5F55\u9875\u6BCF\u6761\u6D41\u6C34\u8D26\u7684\u5757\u5E95\u5C31\u662F\u5B83
-     \uFF08\u7528\u6237 2026-10-04\uFF1A\u6B63\u5E38\u6001\u7ED9\u540C\u8272\u7CFB\u5F88\u6D45\u7684\u900F\u660E\u5E95\u3001\u5931\u8D25\u7528\u7EA2\u5E95\u900F\u51FA\u6765\uFF09\u3002
-     \u7528 \u300Ccolor-mix\u300D \u73B0\u7B97\u800C\u4E0D\u5199\u6B7B rgba\uFF1A\u72B6\u6001\u8272\u672C\u8EAB\u8DDF\u968F\u5BBF\u4E3B alias\uFF0C\u4E3B\u9898\u4E00\u6362\u81EA\u52A8\u6210\u7ACB\u3002
-     \u26A0\uFE0F **\u6DF1\u8272\u4E0B\u8981\u66F4\u6DE1**\uFF1A\u7528\u6237 2026-10-04\u300C\u6DF1\u8272\u98CE\u683C\u7684\u7EFF\u8272\u548C\u7EA2\u8272\u597D\u50CF\u90FD\u6709\u70B9\u6DF1\u300D\u21D2 dark \u6BB5
-     \u628A\u8FD9\u56DB\u6761\u538B\u5230 5%\uFF08\u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF09\uFF1B\u6D45\u8272\u6BB5\u7EF4\u6301 8%\u3002\u4E24\u7AEF\u5404\u81EA\u7ED9\u503C\uFF0C\u4E0D\u5171\u7528\u4E00\u6761\u66F2\u7EBF\u3002
-     \u547D\u540D\u6536\u5728 tokens.ts \u5355\u70B9\uFF08\u672C\u4ED3\u786C\u89C4\u77E9\uFF1A\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u81EA\u9020 --tdt-*\uFF09\u3002 */
-  --tdt-success-soft:color-mix(in srgb,var(--tdt-success) 8%,transparent);
-  --tdt-warning-soft:color-mix(in srgb,var(--tdt-warning) 8%,transparent);
-  --tdt-danger-soft:color-mix(in srgb,var(--tdt-danger) 8%,transparent);
-  --tdt-business-soft:color-mix(in srgb,var(--tdt-business) 8%,transparent);
-
-  /* \u2500\u2500 \u4EA4\u4E92\u5E95 / \u906E\u7F69 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  --tdt-hover:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));
-  --tdt-active:var(--dsw-alias-interactive-bg-active,#2631481a);
-  --tdt-mask:var(--dsw-alias-bg-mask-1,#0000003d);
-  /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A
-     \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002
-     \u8BED\u4E49\uFF1A\u6807\u8BB0\u300C\u6B63\u5728\u770B\u7684\u4E1C\u897F\u300D\uFF0C\u6BD4\u5E38\u6001\u660E\u663E\u3001\u53C8\u4E0D\u8BB8\u76D6\u4F4F\u5185\u5BB9\uFF08\u4E0D\u8BB8\u7528\u534A\u900F\u660E\u53E0\u72B6\u6001\u8272\uFF09\u3002 */
-  --tdt-selected-bg:color-mix(in srgb,var(--tdt-surface-1) 88%,var(--tdt-fg));
-  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u9ED8\u8BA4\u5E95\uFF082026-10-06 \u2192 \u7EED2\uFF09\uFF1A\u6D45\u8272\u4E0B\u7ED9**\u6DE1\u84DD**\uFF08business 8% \u900F\u767D\u5E95\uFF09\u2014\u2014
-     \u53C2\u7167\u7528\u6237\u53C2\u8003\u7A3F\u91CC\u672A\u9009\u4E2D\u65E5\u7A0B\u5757 / Tuesday \u5217\u7684\u90A3\u79CD\u84DD\u3001\u518D\u6D45\u4E00\u70B9\u70B9\uFF1B
-     \u76F8\u90BB\u6708\u8865\u4F4D\u683C\u4ECD\u8D70 --tdt-surface-2\uFF08\u66F4\u7070\uFF09\uFF0C\u4E0D\u53D7\u5F71\u54CD\u3002
-     \u6DF1\u8272\u6BB5\u7EF4\u6301 #23262e\uFF08\u7528\u6237\uFF1A\u6DF1\u8272 UI \u5DF2\u5DEE\u4E0D\u591A\uFF0C\u4E0D\u52A8\uFF09\u3002 */
-  --tdt-cal-cell-bg:color-mix(in srgb,var(--tdt-business) 8%,var(--tdt-surface-1));
-  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u300C\u70B9\u5F00\u67D0\u5929\u300D\u5C55\u5F00\u7684\u9762\u677F\u5E95\uFF082026-10-06 \u7EED\uFF09\uFF1A\u6D45\u8272\u4E0B**\u65E0\u9650\u63A5\u8FD1\u767D\u3001\u53EA\u5E26\u4E00\u4E01\u70B9\u7070**
-     \uFF08neutral-50 = #fafafa\uFF09\u2014\u2014\u9762\u677F\u91CC\u88C5\u534A\u900F\u660E\u6267\u884C\u8BB0\u5F55\u5217\u8868\uFF0C\u5E95\u518D\u6DF1\u6574\u7247\u5C31\u53D1\u7CCA\u53D1\u7070\uFF1B
-     \u6DF1\u8272\u6BB5\u6CBF\u7528\u539F selected-bg \u6697\u503C\uFF0C\u4FDD\u6301\u4E0D\u52A8\u3002 */
-  --tdt-cal-panel-bg:var(--dsw-static-neutral-50,#fafafa);
-  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6D45\u8272\u6BB5\uFF0C2026-10-06 \u7EED3\uFF09\uFF1A\u4E0D\u518D\u8D70\u7070\u8272\u901A\u7528\u4EA4\u4E92\u5E95\u2014\u2014
-     \u9F20\u6807\u79FB\u4E0A\u53BB\u5E94\u662F\u300C\u66F4\u4EAE\u4E00\u70B9\u70B9\u7684\u84DD\u300D\uFF08\u4E0E\u6DF1\u8272\u6BB5\u540C\u8BED\u4E49\uFF1Ahover = \u63D0\u4EAE\u7684\u84DD\uFF0C\u4E0D\u662F\u7070\u4E0B\u53BB\uFF09\u3002
-     \u6D53\u5EA6**\u4ECB\u4E8E**\u8868\u5934\u84DD\uFF0814%\uFF09\u4E0E\u672A\u9009\u4E2D\u683C\u84DD\uFF088%\uFF09\u4E4B\u95F4\u3001\u7565\u504F\u8868\u5934\u4E00\u4FA7\uFF1Abusiness 12% \u900F\u767D\u5E95
-     \uFF08\u6BD4\u8868\u5934\u6D45\u4E00\u70B9\u3001\u6BD4\u672A\u9009\u4E2D\u683C\u6DF1\u4E00\u70B9\uFF09\u3002 */
-  --tdt-cal-cell-hover:color-mix(in srgb,var(--tdt-business) 12%,var(--tdt-surface-1));
-
-  /* \u2500\u2500 \u6295\u5F71 / \u7126\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  --tdt-shadow-1:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);
-  /* \u4EAE\u7247\u81EA\u5E26\u7684\u6D6E\u8D77\u611F\uFF08\u9009\u4E2D\u6001\u7528\uFF1B\u4E0E --tdt-surface-raised \u914D\u5BF9\uFF09 */
-  --tdt-shadow-raised:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);
-  --tdt-shadow-2:var(--dsw-shadow-lv3,0 12px 32px 0 #00000014);
-  /* \u952E\u76D8\u7126\u70B9\u73AF\u3002\u26A0\uFE0F \u4E0D\u7528\u5BBF\u4E3B --dsw-focus-ring-color\uFF1A\u5B83\u9ED8\u8BA4\u503C\u662F transparent\uFF08\u515C\u5E95\u4E0D\u751F\u6548\u3001\u4F1A\u9690\u8EAB\uFF09 */
-  --tdt-focus:var(--dsw-alias-state-business-primary,#3b5bdb);
-
-  /* \u2500\u2500 \u5706\u89D2\uFF08\u5BBF\u4E3B\u771F\u503C 4 / 8 / 12 / 16 / 20 / 28\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  --tdt-radius-xs:var(--dsw-radius-xs,4px);
-  --tdt-radius-sm:var(--dsw-radius-sm,8px);
-  --tdt-radius-md:var(--dsw-radius-md,12px);
-  --tdt-radius-lg:var(--dsw-radius-lg,16px);
-  --tdt-radius-xl:var(--dsw-radius-xl,20px);
-  --tdt-radius-panel:var(--dsw-radius-panel,28px);
-
-  /* \u2500\u2500 \u95F4\u8DDD\u56DB\u62CD\uFF08\u53EA\u8BB8\u7528\u8FD9\u56DB\u6863\uFF0C\u4E0D\u8BB8\u51FA\u73B0 5 / 7 / 9px\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  --tdt-space-1:4px;
-  --tdt-space-2:8px;
-  --tdt-space-3:12px;
-  --tdt-space-4:16px;
-
-  /* \u2500\u2500 \u63A7\u4EF6\u9AD8\u5EA6\uFF1A\u79BB\u6563\u4E09\u6863\uFF08\u63A7\u4EF6\u7528 size="sm|md|lg" \u9009\uFF1B\u8C03\u7528\u70B9\u4E0D\u8BB8\u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF0C
-       \u771F\u4E0D\u591F\u7528\u624D\u5141\u8BB8\u5728\u8C03\u7528\u70B9\u672C\u5730\u8986\u76D6 --tdt-control-h-*\uFF0C\u5C5E\u4F8B\u5916\u800C\u975E\u5E38\u6001\uFF09\u2500\u2500 */
-  --tdt-control-h-sm:24px;
-  --tdt-control-h-md:28px;
-  --tdt-control-h-lg:32px;
-
-  /* \u2500\u2500 \u5B57\u53F7 / \u884C\u9AD8\uFF1A\u76F4\u7ED1\u5BBF\u4E3B\u5B57\u53F7\u65CF\uFF08\u5BBF\u4E3B\u771F\u503C 11 / 12 / 13 / 14 / 16\uFF09\u2500\u2500\u2500\u2500\u2500 */
-  --tdt-font-xs:var(--dsw-font-xxxs-11-font-size,11px);
-  --tdt-font-sm:var(--dsw-font-xxs-12-font-size,12px);
-  --tdt-font-md:var(--dsw-font-xs-13-font-size,13px);
-  --tdt-font-lg:var(--dsw-font-s-14-font-size,14px);
-  --tdt-font-xl:var(--dsw-font-base-16-font-size,16px);
-  --tdt-line-xs:var(--dsw-font-xxxs-11-line-height,14px);
-  --tdt-line-sm:var(--dsw-font-xxs-12-line-height,18px);
-  --tdt-line-md:var(--dsw-font-xs-13-line-height,20px);
-  --tdt-line-lg:var(--dsw-font-s-14-line-height,22px);
-  --tdt-line-xl:var(--dsw-font-base-16-line-height,24px);
-  --tdt-font-mono:var(--ds-font-family-code,monospace);
-
-  /* \u2500\u2500 \u5C42\u7EA7\u9636\u68AF\uFF08\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u518D\u5199\u88F8 z-index\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  /* \u9875\u9762\u7EA7\u9884\u89C8\u5206\u680F \u2192 \u62BD\u5C49\uFF08\u65B0\u5EFA/\u7F16\u8F91\uFF09\u2192 \u5F39\u7A97/\u786E\u8BA4\u6846 \u2192 \u6D6E\u5C42\u83DC\u5355 \u2192 \u6D6E\u5C42\u63D0\u793A */
-  /* \u5185\u5BB9\u5C42\u5438\u9876\uFF08\u5929\u6807\u7B7E / \u8868\u5934\u8FD9\u7C7B\u300C\u8DDF\u7740\u6EDA\u4F46\u538B\u4F4F\u540C\u5C42\u5185\u5BB9\u300D\u7684\u5143\u7D20\uFF09\uFF1A\u53EA\u538B\u540C\u5C42\u5144\u5F1F\uFF0C
-     \u5FC5\u987B\u4F4E\u4E8E\u4E0B\u9762\u6240\u6709\u6D6E\u5C42\u6863 \u2014\u2014 \u6240\u4EE5\u5B83\u4E0D\u662F\u300C\u5F00\u65B0\u6D6E\u5C42\u6863\u300D\uFF0C\u800C\u662F\u5185\u5BB9\u5C42\u5185\u90E8\u7684\u6392\u5E8F\u4F4D\u3002 */
-  --tdt-z-sticky:10;
-  --tdt-z-dock:1030;
-  --tdt-z-drawer:1040;
-  --tdt-z-modal:1070;
-  --tdt-z-menu:1100;
-  --tdt-z-tip:1200;
-
-  /* \u2500\u2500 \u52A8\u6548 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-  --tdt-dur:var(--ds-transition-duration,.2s);
-  --tdt-dur-fast:var(--ds-transition-duration-fast,.12s);
-  --tdt-ease:var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1));
-  /* \u8FD0\u884C\u4E2D\u72B6\u6001\u7684\u8109\u52A8\u65F6\u957F\uFF082026-10-06 \u7EDF\u4E00\u524D\u540E\u4E24\u7AEF\uFF1A\u4EFB\u52A1\u914D\u7F6E\u91CC\u7684\u7EFF\u547C\u5438 \u2192 \u84DD\u3001\u653E\u6162\uFF1B
-     \u6267\u884C\u8BB0\u5F55\u91CC\u7684\u84DD\u95EA \u2192 \u653E\u6162\u4E00\u70B9\u3002\u4E24\u8005\u7528\u540C\u4E00\u4E2A\u503C\uFF0C\u52A8\u753B\u5F62\u72B6\u672C\u5C31\u4E00\u81F4\uFF09\u3002 */
-  --tdt-dur-run:500ms;
-}
-
-/* \u2500\u2500 \u660E\u6697\u5DEE\u5F02\u7684**\u552F\u4E00**\u843D\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-   \u5224\u636E = body[data-ds-dark-theme]\uFF08\u5BBF\u4E3B 0.2.0-rc.2 \u6E90\u7801\u6838\u5B9E\uFF1A\u542F\u52A8\u811A\u672C toggleAttribute \u5199\u5165\uFF0C
-   \u552F\u4E00\u660E\u6697\u5224\u636E\uFF1B\u63D2\u4EF6\u7981\u6B62\u7528 prefers-color-scheme \u2014\u2014 \u5B83\u8DDF\u7684\u662F\u7CFB\u7EDF\u3001\u4E0D\u662F\u7528\u6237\u5728\u5BBF\u4E3B\u91CC\u7684\u9009\u62E9\uFF09\u3002
-   \u4E0B\u9762\u53EA\u653E alias \u8868\u8FBE\u4E0D\u4E86\u7684\u300C\u56FA\u5B9A\u4E2D\u6027\u9762\u300D\uFF1B\u989C\u8272\u82E5\u80FD\u9760 alias \u81EA\u52A8\u8DDF\u968F\uFF0C\u4E00\u5F8B\u4E0D\u8981\u5199\u5728\u8FD9\u91CC\u3002 */
-body[data-ds-dark-theme]{
-  --tdt-solid:var(--dsw-static-neutral-900,#0f0f0f);
-  --tdt-on-solid:var(--dsw-static-neutral-00,#fff);
-  --tdt-plate:var(--dsw-static-neutral-850,#212123);
-  --tdt-plate-hover:var(--dsw-static-neutral-800,#292929);
-  --tdt-icon-plate:rgba(255,255,255,.05);
-  --tdt-icon-plate:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 5%,transparent);
-  /* \u6697\u8272\u4E3B\u9898**\u53CD\u8FC7\u6765**\uFF1A\u8868\u5934\u8981\u6BD4\u5361\u7247\u9762**\u4EAE**\u3001\u6BD4\u6591\u9A6C\u7EB9\u518D**\u6D45\u4E00\u6863**\uFF08\u7528\u6237\uFF1A\u7EAF\u9ED1\u80CC\u666F\u6CA1\u6CD5\u770B\uFF09\u3002 */
-  --tdt-head-bg:var(--tdt-surface-2);
-  /* \u6697\u8272\u5E95\u677F**\u5FAE\u4EAE**\uFF1Bhover **\u66F4\u4EAE**\uFF08\u539F\u5148 hover \u53D6 plate-hover \u53CD\u800C\u66F4\u6DE1 \u21D2 \u9F20\u6807\u79FB\u4E0A\u53BB\u5C31\u6CA1\u4E86\uFF09\u3002 */
-  --tdt-chip-bg:rgba(255,255,255,.08);
-  --tdt-chip-bg:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 8%,transparent);
-  --tdt-chip-bg-hover:rgba(255,255,255,.16);
-  --tdt-chip-bg-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 16%,transparent);
-  /* \u6697\u8272\u4E0B\u84DD\u8272\u8981\u66F4\u4EAE\u3001\u900F\u660E\u5EA6\u7565\u9AD8\u624D\u538B\u5F97\u4F4F\u6DF1\u5E95\u3002 */
-  --tdt-open-bg:rgba(96,165,250,.18);
-  --tdt-open-bg-soft:rgba(96,165,250,.08);
-  --tdt-card-hover:rgba(96,165,250,.13);
-  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF08\u6DF1\u8272\u7248\uFF09\uFF1A\u7528\u6237\u5ACC\u6DF1\u8272\u7684\u7EFF / \u7EA2\u300C\u6709\u70B9\u6DF1\u300D\u21D2 \u538B\u5230 **5%**\uFF08\u6D45\u8272\u6BB5\u662F 8%\uFF09\uFF0C
-     \u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u8272\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF1B\u5757\u5E95\u4E0E\u72B6\u6001\u8272\u7AD6\u6761\u4ECD\u540C\u6E90\uFF08\u7AD6\u6761\u662F\u5B9E\u8272\uFF0C\u4E0D\u53D7\u8FD9\u6761\u5F71\u54CD\uFF09\u3002 */
-  --tdt-success-soft:color-mix(in srgb,var(--tdt-success) 5%,transparent);
-  --tdt-warning-soft:color-mix(in srgb,var(--tdt-warning) 5%,transparent);
-  --tdt-danger-soft:color-mix(in srgb,var(--tdt-danger) 5%,transparent);
-  --tdt-business-soft:color-mix(in srgb,var(--tdt-business) 5%,transparent);
-  /* \u300C\u9009\u4E2D\u9762\u300D\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u63BA **~40% \u80CC\u666F\u8272**\uFF08--tdt-surface-base\uFF09\u21D2 \u65E0\u9650\u63A5\u8FD1\u9875\u9762\u80CC\u666F\u7684\u9ED1\u3001
-     \u53EA\u6BD4\u80CC\u666F\u7565\u6DF1\u4E00\u70B9\u70B9\uFF08\u7528\u6237\uFF1A\u6DF1\u8272\u4E0B\u5C55\u5F00\u533A\u538B\u7740\u4EFB\u52A1\u900F\u660E\u7EFF\u4F1A\u53D1\u7070\uFF0C\u5E95\u8272\u8981\u5C3D\u91CF\u8D34\u8FD1\u80CC\u666F\u624D\u4E0D\u663E\u7070\uFF09\u3002
-     \u26A0\uFE0F \u6DF1\u8272\u4E0B\u4E0D\u80FD\u63BA\u6587\u5B57\u8272 \u2014\u2014 \u90A3\u662F\u767D\uFF0C\u4F1A\u53D8\u4EAE\uFF0C\u9009\u4E2D\u53CD\u800C\u6BD4\u672C\u6708\u65E5\u671F\u6D45\u3002 */
-  --tdt-selected-bg:color-mix(in srgb,var(--tdt-surface-1) 60%,var(--tdt-surface-base));
-  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u7684\u9ED8\u8BA4\u5E95\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u6DF1\u7684\u3001\u5E26\u70B9\u7070\u84DD\u7684\u6697\u8272\uFF08\u7528\u6237\u7ED9\u7684\u53C2\u8003\u56FE \u2248 #23262e\uFF09\uFF0C
-     \u6BD4\u539F\u6765\u7684\u5361\u7247\u9762\u66F4\u6C89\u3001\u66F4\u504F\u84DD\u7070\uFF1B\u9009\u4E2D\u683C\u4ECD\u8D70 --tdt-selected-bg\uFF08\u66F4\u6697\u4E00\u6863\uFF09\uFF0C\u5C42\u7EA7\u4E0D\u53D8\u3002 */
-  --tdt-cal-cell-bg:#23262e;
-  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06\uFF09\uFF1A\u539F\u5148\u8D70 --tdt-hover\uFF08\u5BBF\u4E3B\u6D45\u8272\u53E0\u52A0\uFF09\u5728\u6DF1\u5E95\u4E0A\u663E\u5F97
-     \u300C\u7070\u53D1\u4EAE\u300D\uFF0C\u4E0D\u597D\u770B \u21D2 \u6362\u6210\u66F4\u8D34\u5E95\u7684\u84DD\u8C03\u5FAE\u4EAE\uFF08\u4E0E open-bg-soft \u540C\u65CF\uFF09\uFF0Chover \u65F6\u4E0D\u523A\u773C\u3001\u53C8\u6709\u53CD\u9988\u3002 */
-  --tdt-cal-cell-hover:rgba(96,165,250,.12);
-  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u5C55\u5F00\u9762\u677F\u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06 \u7EED\uFF09\uFF1A\u4E0E\u539F selected-bg \u6697\u503C\u4E00\u81F4\uFF0C\u6DF1\u8272 UI \u4E0D\u52A8 */
-  --tdt-cal-panel-bg:color-mix(in srgb,var(--tdt-surface-1) 60%,var(--tdt-surface-base));
-}
-`;
-var LEGACY_TDT_SEGMENTED_CSS = `
-/* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6\uFF08\u6ED1\u52A8\u5757\uFF09P1 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-   \u7ED3\u6784\u4E00\u5957 + \u4E24\u4E2A\u53D7\u63A7\u8F74\uFF1Asize(sm|md|lg) \xD7 variant(default|inset)\u3002
-   \u53D8\u4F53**\u53EA\u8986\u76D6\u4E24\u4E2A\u989C\u8272\u53D8\u91CF**\uFF08--seg-track \u8F68\u9053\u5E95 / --seg-thumb \u9009\u4E2D\u5757\uFF09\uFF0C
-   \u8FD9\u6B63\u662F\u300C\u540C\u4E00\u4EFD\u6837\u5F0F\u3001\u53EA\u91CD\u8F7D\u989C\u8272\u300D\u7684\u843D\u5730\u5F62\u6001\u3002 */
-/* \u4E24\u5957\u57FA\u7840\u6837\u5F0F\uFF082026-10-01 \u7528\u6237\u62CD\u677F\uFF1A\u4FDD\u7559\u300C\u7EAF\u9ED1\u9762\u300D\u4E0E\u300C\u7070\u5E95\u9762\u300D\u4E24\u5957\uFF0C\u4E0D\u53EF\u5408\u5E76\uFF09\uFF1A
-   - default = \u7EAF\u9ED1\u9762\uFF1A\u8F68\u9053=\u7B2C\u4E8C\u5C42\u9762 + \u5916\u63CF\u8FB9\uFF0C\u9009\u4E2D=\u4EAE\u7247\u5E95\uFF1B
-   - inset = \u7070\u5E95\u9762\uFF1A\u6284\u300C\u7248\u672C\u300D\u5F00\u5173\u89C2\u611F\uFF08\u8F68\u9053=\u4EA4\u4E92\u7070 hover \u5E95\u3001\u65E0\u5916\u63CF\u8FB9\u3001\u9009\u4E2D=\u4EAE\u7247\u5E95\uFF09\uFF0C\u7528\u6237\u89C9\u5F97\u6BD4\u539F\u7070\u5E95\u90A3\u5957\u597D\u770B\u3002
-   \u26A0\uFE0F \u9AD8\u5EA6\u5BF9\u9F50\u89C4\u5219\uFF082026-10-01 \u7528\u6237\u62CD\u677F\uFF0C\u540C\u65E5\u4FEE\u6B63 +2\uFF09\uFF1A\u6709\u8FB9 / \u65E0\u8FB9\u603B\u9AD8\u5FC5\u987B == \u63A7\u4EF6 token\uFF0C\u8FB9\u6846\u5728\u5185\u90E8\u8865\u56DE\uFF0C\u4E0D\u8BB8\u989D\u5916\u6491\u9AD8\u3002
-   \u51E0\u4F55 = \u6BB5\u9AD8 = token \u2212 6px\uFF08\u4E0A\u4E0B\u5404 2px padding + 1px \u8FB9\u6846\uFF09\uFF1Bdefault \u771F\u8FB9\u6846 1px + padding 2px\uFF0C
-   inset \u65E0\u8FB9\u6846\u6545 padding \u6536 3px \u628A\u7F3A\u7684 1px \u8865\u56DE\uFF0C\u4E24\u79CD\u5916\u89C2\u603B\u9AD8\u90FD == token\uFF0824/28/32\uFF09\uFF0C\u4E0D\u518D\u591A +2px\u3002
-   \u4EE5\u540E Button / Input \u7684\u6709\u8FB9 / \u65E0\u8FB9\u540C\u6B64\u89C4\u5219\u3002 */
-.dsh-tdt-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--tdt-radius-md);background:var(--seg-track);}
-.dsh-tdt-seg--default{--seg-track:var(--tdt-surface-2);--seg-thumb:var(--tdt-surface-raised);border:1px solid var(--tdt-border);}
-.dsh-tdt-seg--inset{--seg-track:var(--tdt-hover);--seg-thumb:var(--tdt-surface-raised);border:0;padding:3px;}
-
-.dsh-tdt-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
-  height:calc(var(--tdt-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--tdt-radius-sm);
-  background:transparent;color:var(--tdt-fg-2);font-family:inherit;font-size:var(--tdt-font-sm);line-height:var(--tdt-line-sm);
-  font-weight:400;white-space:nowrap;cursor:pointer;
-  transition:color var(--tdt-dur-fast) var(--tdt-ease),background-color var(--tdt-dur-fast) var(--tdt-ease),box-shadow var(--tdt-dur-fast) var(--tdt-ease);}
-.dsh-tdt-seg--md .dsh-tdt-seg__item{height:calc(var(--tdt-control-h-md) - 6px);}
-.dsh-tdt-seg--lg .dsh-tdt-seg__item{height:calc(var(--tdt-control-h-lg) - 6px);}
-.dsh-tdt-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--tdt-fg);}
-.dsh-tdt-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--tdt-shadow-raised);color:var(--tdt-fg);font-weight:600;}
-.dsh-tdt-seg__item:focus-visible{outline:2px solid var(--tdt-focus);outline-offset:-2px;}
-.dsh-tdt-seg__item:disabled{cursor:default;opacity:.4;}
-
-/* \u6BB5\u5185\u89D2\u6807\uFF08\u5982\u300C\u5F02\u5E38\u300D\u7684\u6570\u91CF\uFF09\uFF1A\u8BED\u4E49\u8272\u5B9E\u9762 + \u53CD\u767D\u5B57\uFF0C0 \u7531\u7EC4\u4EF6\u4FA7\u4E0D\u6E32\u67D3\u3002
-   \u26A0\uFE0F **\u5FC5\u987B\u662F\u6B63\u5706**\uFF08\u7528\u6237 2026-10-03\uFF1A\u300C\u591A\u4F4D\u6570\u7ED9\u5B83\u6491\u5F00\u4E86\uFF0C\u90A3\u4E0D\u662F\u5706\u7684\u5C31\u6CA1\u529E\u6CD5\u4E86\u300D\uFF09\uFF1A
-   \u56FA\u5B9A 16\xD716 + border-radius:50% + padding:0 + overflow:hidden \u21D2 \u4E00\u4F4D\u6570 / \u4E24\u4F4D\u6570\u90FD\u662F\u540C\u4E00\u4E2A\u5706\uFF0C
-   \u6570\u5B57\u7F29\u5230 10px \u585E\u5F97\u4E0B\uFF1B\u4E0D\u518D\u7528 min-width + \u5DE6\u53F3 padding\uFF08\u90A3\u4F1A\u8BA9\u5BBD\u5EA6\u968F\u4F4D\u6570\u589E\u957F\u53D8\u692D\u5706\uFF09\u3002 */
-.dsh-tdt-seg__badge{display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:16px;height:16px;padding:0;overflow:hidden;
-  border-radius:50%;background:var(--tdt-danger);color:var(--tdt-on-signal);
-  font-size:10px;line-height:16px;font-weight:500;font-variant-numeric:tabular-nums;}
-
-/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u884C\u7528\uFF09\uFF0C\u5404\u6BB5\u7B49\u5206 */
-.dsh-tdt-seg--block{display:flex;width:100%;}
-.dsh-tdt-seg--block .dsh-tdt-seg__item{flex:1 1 auto;justify-content:center;}
-
-/* weekday\uFF1A\u661F\u671F\u591A\u9009\u65B9\u5757\uFF08\u4EFB\u52A1\u65B0\u589E / \u7F16\u8F91\u9875\uFF09\u3002\u57FA\u7840\u63D2\u4EF6\u7684\u7279\u6B8A\u5316\u5B9A\u5236\uFF08\u7528\u6237 2026-10-01 \u660E\u786E\u8981\u6C42\uFF1A
-   \u539F WeekdayPicker \u5373\u300C\u84DD\u5E95 + \u8FD1\u4F3C\u65B9\u5F62\u300D\uFF0C\u7EDF\u4E00\u5230 Segmented \u540E\u7531\u8FD9\u4E00\u4FEE\u9970\u7C7B\u8865\u56DE\u4E24\u5904\u5DEE\u5F02\uFF09\uFF1A
-   - \u6BCF\u683C\u505A\u6210\u6B63\u65B9\u5F62\uFF08\u5BBD = \u6BB5\u9AD8\uFF09\uFF1B
-   - \u9009\u4E2D\u6001\u7528\u54C1\u724C\u84DD\uFF08--tdt-business\uFF09\u3001\u53CD\u767D\u5B57\uFF0C\u8F68\u9053\u7528 hover \u7070\uFF08\u4E0E\u539F\u81EA\u7ED8\u8F68\u9053\u4E00\u81F4\uFF09\u3002
-   \u76AE\u80A4\u96C6\u4E2D\u5728\u6B64\u3001\u4E0D\u5185\u8054\uFF1B\u8C03\u7528\u70B9\u53EA\u6302 .dsh-tdt-seg--weekday \u4E00\u4E2A\u4FEE\u9970\u7C7B\uFF0C\u7B26\u5408\u300C\u76AE\u80A4\u53EA\u5728 controls-css\u300D\u7684\u89C4\u77E9\u3002 */
-.dsh-tdt-seg--weekday{--seg-track:var(--tdt-hover);}
-.dsh-tdt-seg--weekday .dsh-tdt-seg__item{width:calc(var(--tdt-control-h-lg) - 6px);padding:0;justify-content:center;}
-.dsh-tdt-seg--weekday .dsh-tdt-seg__item[aria-pressed='true']{background:var(--tdt-business);color:var(--tdt-fg-inverse);box-shadow:var(--tdt-shadow-raised);}
-
-@media (prefers-reduced-motion: reduce){.dsh-tdt-seg__item{transition:none;}}
-`;
-
 // packages/demo/src/probes.ts
 var KIT_TAG_ID = "dsh-plugin-core-plugin";
 function countOccur(haystack, needle) {
@@ -3401,6 +3135,9 @@ function countOccur(haystack, needle) {
     i = haystack.indexOf(needle, i + needle.length);
   }
   return n;
+}
+function normSel(sel) {
+  return sel.replace(/'/g, '"').replace(/\s+/g, " ");
 }
 function selectorsOf(css) {
   const body = css.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -3416,22 +3153,27 @@ function selectorsOf(css) {
 }
 function readSheets() {
   const out = [];
-  const add = (sheet) => {
-    if (sheet === null) return;
+  const add = (sheet, label) => {
+    const node = sheet.ownerNode;
+    const owner = `${label}${node === null ? "" : `(${node.id === "" ? node.nodeName.toLowerCase() : `#${node.id}`})`}`;
     try {
-      const rules = Array.from(sheet.cssRules);
-      const selectors = [];
-      for (const r of rules) {
-        if (r instanceof CSSStyleRule) selectors.push(r.selectorText);
+      const list = Array.from(sheet.cssRules);
+      const rules = [];
+      for (const r of list) {
+        if (r instanceof CSSStyleRule) rules.push({ sel: r.selectorText, css: r.style.cssText });
       }
-      out.push({ count: rules.length, selectors });
+      out.push({ owner, disabled: sheet.disabled, media: sheet.media.mediaText, count: list.length, rules });
     } catch {
-      out.push({ count: -1, selectors: [] });
+      out.push({ owner, disabled: sheet.disabled, media: sheet.media.mediaText, count: -1, rules: [] });
     }
   };
-  for (const sheet of Array.from(document.styleSheets)) add(sheet);
+  Array.from(document.styleSheets).forEach((s, i) => {
+    add(s, `S${String(i)}`);
+  });
   const adopted = document.adoptedStyleSheets;
-  for (const sheet of Array.from(adopted ?? [])) add(sheet);
+  Array.from(adopted ?? []).forEach((s, i) => {
+    add(s, `A${String(i)}`);
+  });
   return out;
 }
 function describeRoot(el) {
@@ -3439,6 +3181,16 @@ function describeRoot(el) {
   if (root === document) return "document";
   if (typeof ShadowRoot !== "undefined" && root instanceof ShadowRoot) return "shadow";
   return root.nodeName;
+}
+function bareDiv(className, parent) {
+  const host = parent ?? document.body;
+  const div = document.createElement("div");
+  div.className = className;
+  host.appendChild(div);
+  const cs = getComputedStyle(div);
+  const out = `display=${cs.display} gap=${cs.gap} padding=${cs.padding} inline="${div.style.display}"`;
+  div.remove();
+  return out;
 }
 function collectSegProbes() {
   if (typeof document === "undefined") return [{ id: "P0", text: "no document" }];
@@ -3459,19 +3211,19 @@ function collectSegProbes() {
   const readable = sheets.filter((s) => s.count >= 0);
   lines.push({
     id: "P3",
-    text: `sheets \u603B ${String(sheets.length)}\uFF0C\u53EF\u8BFB ${String(readable.length)}\uFF0C\u89C4\u5219\u5408\u8BA1 ${String(readable.reduce((a, s) => a + s.count, 0))}\uFF0C\u8BFB\u4E0D\u4E86 ${String(sheets.length - readable.length)}`
+    text: `sheets \u603B ${String(sheets.length)}\uFF08\u542B adopted\uFF09\uFF0C\u53EF\u8BFB ${String(readable.length)}\uFF0C\u89C4\u5219\u5408\u8BA1 ${String(readable.reduce((a, s) => a + s.count, 0))}`
   });
-  const cssomSeg = readable.flatMap((s) => s.selectors.filter((x) => x.startsWith(".dshpc-seg")));
+  const cssomSeg = readable.flatMap((s) => s.rules.filter((r) => r.sel.startsWith(".dshpc-seg")));
   lines.push({
     id: "P4",
-    text: `CSSOM \u91CC .dshpc-seg* \u5171 ${String(cssomSeg.length)} \u6761\uFF1A${cssomSeg.slice(0, 6).join(" | ") || "(\u65E0)"}`
+    text: `CSSOM \u91CC .dshpc-seg* \u5171 ${String(cssomSeg.length)} \u6761\uFF1A${cssomSeg.slice(0, 6).map((r) => r.sel).join(" | ") || "(\u65E0)"}`
   });
   const textSeg = selectorsOf(kitCss).filter((x) => x.startsWith(".dshpc-seg"));
-  const present = new Set(cssomSeg);
-  const missing = textSeg.filter((x) => !present.has(x));
+  const present = new Set(cssomSeg.map((r) => normSel(r.sel)));
+  const missing = textSeg.filter((x) => !present.has(normSel(x)));
   lines.push({
     id: "P5",
-    text: `\u6587\u672C\u91CC .dshpc-seg* ${String(textSeg.length)} \u6761\uFF0CCSSOM \u7F3A ${String(missing.length)} \u6761\uFF1A${missing.slice(0, 6).join(" | ") || "(\u65E0)"}`
+    text: `\u6587\u672C .dshpc-seg* ${String(textSeg.length)} \u6761\uFF0CCSSOM \u7F3A ${String(missing.length)} \u6761\uFF1A${missing.slice(0, 6).join(" | ") || "(\u65E0)"}`
   });
   const el = document.querySelector(".dshpc-seg");
   if (el === null) {
@@ -3480,15 +3232,9 @@ function collectSegProbes() {
   }
   lines.push({
     id: "P6",
-    text: `\u5143\u7D20 class="${el.className}"\uFF0Cmatches ${String(el.matches(".dshpc-seg"))}\uFF0C\u6839 ${describeRoot(el)}\uFF0Cdisplay=${getComputedStyle(el).display}`
+    text: `\u5143\u7D20 class="${el.className}"\uFF0C\u6839 ${describeRoot(el)}\uFF0Cdisplay=${getComputedStyle(el).display}`
   });
-  const clone = document.createElement("div");
-  clone.className = "dshpc-seg";
-  clone.style.cssText = "position:fixed;left:-9999px;top:0";
-  document.body.appendChild(clone);
-  const cloneDisplay = getComputedStyle(clone).display;
-  clone.remove();
-  lines.push({ id: "P7", text: `\u88F8 div.dshpc-seg \u7684 display=${cloneDisplay}` });
+  lines.push({ id: "P7", text: `\u88F8 div.dshpc-seg \u6302 body \u4E0B\uFF1A${bareDiv("dshpc-seg", document.body)}` });
   el.classList.add("dshpc-segprobe");
   const probeDisplay = getComputedStyle(el).display;
   el.classList.remove("dshpc-segprobe");
@@ -3505,10 +3251,28 @@ function collectSegProbes() {
     freshRules = -1;
   }
   fresh.remove();
+  lines.push({ id: "P9", text: `\u4E34\u65F6\u6807\u7B7E\u53EA\u5199 .dshpc-seg{display:inline-flex} \u21D2 display=${freshDisplay}\uFF08cssRules ${String(freshRules)}\uFF09\uFF0C\u5DF2\u5220` });
+  const baseRules = cssomSeg.filter((r) => normSel(r.sel) === ".dshpc-seg");
+  const owner = readable.find((s) => s.rules.some((r) => normSel(r.sel) === ".dshpc-seg"));
   lines.push({
-    id: "P9",
-    text: `\u4E34\u65F6\u6807\u7B7E\u53EA\u5199 .dshpc-seg{display:inline-flex} \u21D2 display=${freshDisplay}\uFF08cssRules ${String(freshRules)}\uFF09\uFF0C\u5DF2\u5220`
+    id: "P10",
+    text: `${String(baseRules.length)} \u6761 .dshpc-seg \u89C4\u5219\u58F0\u660E\uFF1A${baseRules.map((r, i) => `${String(i + 1)}.${r.css}`).join(" ")} \uFF5C sheet ${owner === void 0 ? "(\u672A\u627E\u5230)" : `${owner.owner} disabled=${String(owner.disabled)} media="${owner.media}"`}`
   });
+  lines.push({ id: "P11", text: `\u88F8 div.dshpc-seg \u6302\u771F\u5B9E\u5143\u7D20\u540C\u7236\u4E0B\uFF1A${bareDiv("dshpc-seg", el.parentElement)}` });
+  lines.push({
+    id: "P12",
+    text: `\u771F\u5B9E\u5143\u7D20 matches=${String(el.matches(".dshpc-seg"))}\uFF0C\u5168\u6587\u6863 .dshpc-seg \u5143\u7D20 ${String(document.querySelectorAll(".dshpc-seg").length)} \u4E2A`
+  });
+  lines.push({ id: "P13", text: `\u88F8 div.dshpc-segprobe \u6302 body \u4E0B\uFF1A${bareDiv("dshpc-segprobe", document.body)}` });
+  const inlineProbe = document.createElement("div");
+  inlineProbe.className = "dshpc-seg";
+  document.body.appendChild(inlineProbe);
+  lines.push({
+    id: "P14",
+    text: `\u88F8 div \u7684 inline display="${inlineProbe.style.display}"\uFF0Ccomputed=${getComputedStyle(inlineProbe).display}`
+  });
+  inlineProbe.remove();
+  lines.push({ id: "P15", text: `\u88F8 div.dshpc-btn \u6302 body \u4E0B\uFF1A${bareDiv("dshpc-btn", document.body)}` });
   return lines;
 }
 
@@ -3573,7 +3337,7 @@ function DemoPage() {
     };
     setDiag(`seg ${cs.backgroundColor} gap ${cs.gap} display ${cs.display}
 rule(${sheets} sheets): ${rule}
-wk ${probe(".dshpc-seg--weekday")} df ${probe(".dshpc-seg--default")} tdt ${probe(".dsh-tdt-seg")} probe ${probe(".dshpc-segprobe")}`);
+wk ${probe(".dshpc-seg--weekday")} df ${probe(".dshpc-seg--default")} probe ${probe(".dshpc-segprobe")}`);
   }, [active]);
   (0, import_react31.useEffect)(() => {
     const el = document.querySelector(".dshpc-btn");
@@ -3602,7 +3366,7 @@ rule: ${rule}`);
     const timer = setTimeout(() => {
       const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`);
       setProbes(lines);
-      console.log(`[probe] build ${"1019-2113-sh85"}
+      console.log(`[probe] build ${"1019-2125-ctqn"}
 ${lines.join("\n")}`);
     }, 150);
     return () => {
@@ -3612,7 +3376,7 @@ ${lines.join("\n")}`);
   const buildBadge = (0, import_react31.createElement)(
     "div",
     {
-      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2113-sh85"}
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2125-ctqn"}
 \u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
       style: {
         fontFamily: "var(--dshpc-font-mono)",
@@ -3623,7 +3387,7 @@ ${lines.join("\n")}`);
         wordBreak: "break-all"
       }
     },
-    `build ${"1019-2113-sh85"}`
+    `build ${"1019-2125-ctqn"}`
   );
   return (0, import_react31.createElement)(
     "div",
@@ -3742,13 +3506,6 @@ function apply(ctx) {
   ensureControls(kit);
   kit.ensureStyles();
   setTooltipRenderer((props) => (0, import_react31.createElement)(import_dsh_client_ui_primitives2.Tooltip, props));
-  {
-    const el = document.createElement("style");
-    el.setAttribute("data-legacy-tdt", "1");
-    el.textContent = `${LEGACY_TDT_TOKENS_CSS}
-${LEGACY_TDT_SEGMENTED_CSS}`;
-    document.head.appendChild(el);
-  }
   let jump = () => {
   };
   ctx.inject(["layout"], (sub) => {

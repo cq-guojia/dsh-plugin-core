@@ -17,7 +17,6 @@ import { ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dis
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
-import { LEGACY_TDT_SEGMENTED_CSS, LEGACY_TDT_TOKENS_CSS } from '../legacy-tdt.js'
 import { collectSegProbes } from '../probes.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
@@ -90,7 +89,7 @@ function DemoPage(): ReturnType<typeof h> {
       }
       return `${getComputedStyle(el2).display}/${r}`
     }
-    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap} display ${cs.display}\nrule(${sheets} sheets): ${rule}\nwk ${probe('.dshpc-seg--weekday')} df ${probe('.dshpc-seg--default')} tdt ${probe('.dsh-tdt-seg')} probe ${probe('.dshpc-segprobe')}`)
+    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap} display ${cs.display}\nrule(${sheets} sheets): ${rule}\nwk ${probe('.dshpc-seg--weekday')} df ${probe('.dshpc-seg--default')} probe ${probe('.dshpc-segprobe')}`)
   }, [active])
   // 附带查 .dshpc-btn（与 seg 同一条注入文本，验证「单行活 / 多行死」的模式）
   useEffect(() => {
@@ -236,16 +235,6 @@ export function apply(ctx: {
   // 把官方 Tooltip 交给 core：此后 FieldHint（问号提示）的气泡就是官方组件本体，
   // 与 Tooltip 展示区里的是同一个（core 零官方依赖 ⇒ 只能由插件侧注入，见 src/ui/tooltip.ts）。
   setTooltipRenderer((props) => h(Tooltip, props as never))
-
-  // 临时对照（2026-10-19 用户授权）：注入兄弟项目 dsh-task-dispatch-table 的 tokens + Segmented
-  // 皮肤原文，Segmented 调用点额外挂 dsh-tdt-* 类 ⇒ 两套皮肤叠加、兄弟的后注入赢。
-  // 用途：验证 core 的 dshpc-seg 规则在用户宿主里整条丢失是不是类名/写法触雷。验证完即删。
-  {
-    const el = document.createElement('style')
-    el.setAttribute('data-legacy-tdt', '1')
-    el.textContent = `${LEGACY_TDT_TOKENS_CSS}\n${LEGACY_TDT_SEGMENTED_CSS}`
-    document.head.appendChild(el)
-  }
 
   // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）
   let jump: (id: string) => void = () => {}
