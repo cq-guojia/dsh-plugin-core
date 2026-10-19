@@ -100,6 +100,26 @@ body{
   /* \u8BED\u4E49\u8272**\u5B9E\u9762**\u4E0A\u7684\u5B57\uFF08\u89D2\u6807 / \u5B9E\u5FC3\u63D0\u793A\uFF09\uFF1A\u5BBF\u4E3B\u7EA2\u7EFF\u9EC4\u4E09\u8272\u90FD\u662F\u4E2D\u8C03 \u21D2 \u767D\u5B57\u4E24\u4E2A\u4E3B\u9898\u90FD\u53EF\u8BFB\uFF0C
      \u6545\u8FD9\u662F\u4E00\u6761\u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u5E38\u91CF\uFF1B\u4E0D\u8981\u62FF --dshpc-fg-inverse \u9876\u2014\u2014\u5B83\u5728\u6697\u8272\u4E0B\u662F\u8FD1\u9ED1\uFF0C\u538B\u5728\u7EA2\u5E95\u4E0A\u770B\u4E0D\u6E05\u3002 */
   --dshpc-on-signal:#fff;
+  /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */
+  --dshpc-on-warning:#1f2328;
+
+  /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002
+     \u21D2 \u6539\u6210\u5BF9\u5E95\u8272\u505A**\u660E\u786E\u7684\u6DF7\u8272**\uFF08\u538B 22% / 34%\uFF09\uFF0C\u4E0D\u7528 opacity\uFF1A
+       \xB7 \u4EAE\u8272\u4E3B\u9898\uFF1A\u9ED1\u5E95\uFF08--dshpc-accent\uFF09\u63BA\u767D\u63D0\u4EAE\uFF1B\u7EA2 / \u7EFF / \u9EC4 / \u84DD\u5E95\u63BA\u9ED1\u538B\u6DF1\uFF1B
+       \xB7 \u6697\u8272\u4E3B\u9898\uFF1A\u53CD\u8FC7\u6765\uFF08\u6697\u5E95\u63BA\u767D\u3001\u4EAE\u5E95\u63BA\u9ED1\uFF09\u3002
+     \u6DF7\u8272\u5BF9\u8C61\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272\u5B57\u9762\u91CF**\uFF08#fff / #000\uFF09\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B static-neutral \u662F\u5426\u5B58\u5728\uFF1B
+     \u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u6574\u6761\u58F0\u660E\u4F5C\u5E9F \u21D2 \u56DE\u843D\u5404\u6863\u539F\u8272\uFF08\u53EF\u63A5\u53D7\uFF1A\u4ECD\u53EF\u70B9\uFF0C\u53EA\u662F\u6CA1\u6709 hover \u53CD\u9988\uFF09\u3002 */
+  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 78%,#ffffff);
+  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 64%,#ffffff);
+  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#000000);
+  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#000000);
+  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#000000);
+  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#000000);
+  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#000000);
+  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#000000);
+  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#000000);
+  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#000000);
   /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF1A\u72B6\u6001\u8272\u7CFB\u7684\u300C\u4E00\u5757\u5E95\u8272\u300D\u2014\u2014\u6267\u884C\u8BB0\u5F55\u9875\u6BCF\u6761\u6D41\u6C34\u8D26\u7684\u5757\u5E95\u5C31\u662F\u5B83
      \uFF08\u7528\u6237 2026-10-04\uFF1A\u6B63\u5E38\u6001\u7ED9\u540C\u8272\u7CFB\u5F88\u6D45\u7684\u900F\u660E\u5E95\u3001\u5931\u8D25\u7528\u7EA2\u5E95\u900F\u51FA\u6765\uFF09\u3002
      \u7528 \u300Ccolor-mix\u300D \u73B0\u7B97\u800C\u4E0D\u5199\u6B7B rgba\uFF1A\u72B6\u6001\u8272\u672C\u8EAB\u8DDF\u968F\u5BBF\u4E3B alias\uFF0C\u4E3B\u9898\u4E00\u6362\u81EA\u52A8\u6210\u7ACB\u3002
@@ -211,6 +231,18 @@ body{
 body[data-ds-dark-theme]{
   --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);
   --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);
+  /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B
+     \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */
+  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);
+  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 66%,#000000);
+  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#ffffff);
+  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#ffffff);
+  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#ffffff);
+  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);
+  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);
+  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);
+  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);
+  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#ffffff);
   /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */
   --dshpc-hover:rgba(255,255,255,.14);
   --dshpc-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 14%,transparent);
@@ -338,20 +370,27 @@ var SEGMENTED_CSS = `
    inset \u65E0\u8FB9\u6846\u6545 padding \u6536 3px \u628A\u7F3A\u7684 1px \u8865\u56DE\uFF0C\u4E24\u79CD\u5916\u89C2\u603B\u9AD8\u90FD == token\uFF0824/28/32\uFF09\uFF0C\u4E0D\u518D\u591A +2px\u3002
    \u4EE5\u540E Button / Input \u7684\u6709\u8FB9 / \u65E0\u8FB9\u540C\u6B64\u89C4\u5219\u3002 */
 .dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
-/* \u9009\u4E2D\u7247 = --dshpc-solid\uFF08\u4EAE=\u767D\u7247 / \u6697=\u9ED1\u7247\uFF0C2026-10-18 \u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\u622A\u56FE\uFF09\u3002
-   \u539F\u5148\u53D6 surface-raised \u21D2 \u4E0E\u5361\u7247\u5E95\uFF08\u540C\u4E3A bg-layer-1\uFF09\u540C\u8272\uFF0C\u9009\u4E2D\u7247\u5728\u5361\u4E0A\u9690\u5F62\u3001\u53EA\u5269\u9634\u5F71\u5708\u3002 */
-.dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-solid);border:1px solid var(--dshpc-border);}
-.dshpc-seg--inset{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-solid);border:0;padding:3px;}
+/* \u9009\u4E2D\u7247 = --dshpc-surface-raised\uFF08\u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684\u53D6\u6CD5\uFF0C2026-10-19 \u7528\u6237\u70B9\u540D
+   \u300C\u628A\u5144\u5F1F\u7684\u6837\u5F0F\u6E05\u4E86\u5C31\u4E0D\u6B63\u5E38 \u21D2 \u6CA1\u642C\u5168\u300D\u540E\u6539\u56DE\uFF09\u300210-18 \u66FE\u6539\u6210 --dshpc-solid\uFF0C\u4F46\u5B83\u5728\u6697\u8272\u4E3B\u9898\u4E0B
+   \u662F\u8FD1\u9ED1\uFF08\u6BD4\u8F68\u9053\u8FD8\u6697\uFF09\u21D2 \u9009\u4E2D\u7247\u9677\u8FDB\u8F68\u9053\u91CC\uFF1Braised \u5728\u4E24\u4E2A\u4E3B\u9898\u4E0B\u90FD\u6BD4\u8F68\u9053\u4EAE\u4E00\u6863\uFF0C\u65B9\u5411\u6B63\u786E\u3002
+   raised \u4E0E\u5361\u7247\u5E95\u540C\u4E3A bg-layer-1 \u21D2 \u9009\u4E2D\u7247\u9760**1px \u63CF\u8FB9 + \u9634\u5F71**\u4E0E\u5361\u7247\u533A\u5206\uFF08\u89C1 __item[aria-pressed]\uFF09\u3002 */
+.dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-surface-raised);border:1px solid var(--dshpc-border);}
+.dshpc-seg--inset{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
 
 .dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
-  height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--dshpc-radius-sm);
+  height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:1px solid transparent;border-radius:var(--dshpc-radius-sm);
   background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);
   font-weight:400;white-space:nowrap;cursor:pointer;
   transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-seg--md .dshpc-seg__item{height:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item{height:calc(var(--dshpc-control-h-lg) - 6px);}
-.dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);}
-.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
+/* \u672A\u9009\u4E2D\u9879 hover\uFF1A\u7ED9\u4E00\u5C42\u6D45\u5E95\uFF08\u6B64\u524D\u53EA\u63D0\u4EAE\u6587\u5B57\uFF0C\u7528\u6237\u770B\u4E0D\u51FA\u300C\u8FD9\u91CC\u53EF\u4EE5\u70B9\u300D\uFF09\u3002
+   inset \u7684\u8F68\u9053\u672C\u8EAB\u5C31\u662F --dshpc-hover \u21D2 \u90A3\u91CC\u7528 active \u4E00\u6863\uFF0C\u907F\u514D hover \u4E0E\u8F68\u9053\u540C\u8272\u7B49\u4E8E\u6CA1\u53D8\u3002 */
+.dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);background:var(--dshpc-hover);}
+.dshpc-seg--inset .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){background:var(--dshpc-active);}
+/* \u9009\u4E2D\u7247\uFF1A\u4EAE\u7247 + \u63CF\u8FB9 + \u6D6E\u8D77\u9634\u5F71 \u21D2 \u5728\u5361\u7247\u5E95\uFF08\u4E0E\u4EAE\u7247\u540C\u8272\uFF09\u4E0A\u4E5F\u770B\u5F97\u51FA\u8FB9\u754C */
+.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);border-color:var(--dshpc-border);
+  box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
 .dshpc-seg__item:disabled{cursor:default;opacity:.4;}
 
@@ -394,32 +433,85 @@ var BUTTON_CSS = `
 /* \u2500\u2500 \u6309\u94AE / \u56FE\u6807\u94AE P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
    \u4E0E Segmented \u540C\u4E00\u6761\u9AD8\u5EA6\u7EAA\u5F8B\uFF1A--dshpc-control-h-sm(24) / -md(28) / -lg(32)\uFF0C
    \u6709\u8FB9\u6846\u7684 variant \u7528 1px \u771F\u8FB9\u6846 + \u5185\u90E8 padding \u8865\u56DE\uFF0C**\u6709\u8FB9 / \u65E0\u8FB9\u540C\u9AD8**\u3002
-   variant \u53EA\u6362\u989C\u8272\uFF0C\u7ED3\u6784 / \u5C3A\u5BF8 / \u4EA4\u4E92\u53EA\u6B64\u4E00\u4EFD\u3002 */
-.dshpc-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:var(--dshpc-space-1);
-  box-sizing:border-box;border:1px solid transparent;border-radius:var(--dshpc-radius-md);
-  background:transparent;color:var(--dshpc-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
-  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
+
+   \u4E09\u6761\u53D7\u63A7\u8F74\uFF082026-10-19 \u91CD\u5199\uFF0C\u5BF9\u9F50\u4E3B\u6D41 UI \u6846\u67B6\u7684\u5206\u7C7B\u53E3\u5F84\uFF09\uFF1A
+     \xB7 variant \u2014\u2014 \u5916\u89C2\u6863 = \u5F62\u6001 + \u8BED\u4E49\u8272\uFF0C\u5171 10 \u6863\uFF1A
+         primary / secondary / outline / ghost / danger / success / warning / info /
+         danger-outline\uFF08\u7EA2\u5B57\u63CF\u8FB9\uFF09/ link\uFF08\u884C\u5185\u94FE\u63A5\uFF09
+     \xB7 size \u2014\u2014 sm / md / lg
+     \xB7 block \u2014\u2014 \u6491\u6EE1\u7236\u5BBD
+   \u6BCF\u4E00\u6863**\u53EA\u586B 5 \u4E2A\u5C40\u90E8\u53D8\u91CF**\uFF08--btn-bg / -fg / -border / -bg-hover / -bg-active\uFF09\uFF0C
+   \u7ED3\u6784\u4E0E\u4EA4\u4E92\u53EA\u6709\u4E0A\u9762\u8FD9\u4E00\u4EFD\uFF1B\u4EFB\u4F55\u6863\u4F4D\u90FD\u4E0D\u8BB8\u518D\u5199\u4E00\u904D display/height/padding\u3002
+   \u81EA\u5B9A\u4E49\u989C\u8272\uFF08Button \u7684 color \u53C2\u6570\uFF09\u540C\u6837\u53EA\u8986\u76D6\u8FD9 5 \u4E2A\u53D8\u91CF\uFF08token \u8986\u76D6\uFF0C\u4E0D\u662F\u65B0\u76AE\u80A4\uFF09\u3002
+
+   \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C
+   \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */
+.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);
+  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);
+  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-btn--sm{height:var(--dshpc-control-h-sm);padding:0 10px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}
 .dshpc-btn--md{height:var(--dshpc-control-h-md);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 .dshpc-btn--lg{height:var(--dshpc-control-h-lg);padding:0 14px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
-.dshpc-btn__icon{display:inline-flex;align-items:center;flex:none;}
+/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */
+.dshpc-btn--block{display:flex;width:100%;}
+.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;}
+/* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u4E2A\u540C\u8272\u5C0F\u5708\uFF08\u5C3A\u5BF8\u968F\u5B57\u53F7\uFF0C\u7F29\u653E\u4E0D\u4F9D\u8D56\u5E38\u91CF\uFF09 */
+.dshpc-btn__spinner{display:inline-block;flex:none;width:1em;height:1em;box-sizing:border-box;
+  border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;
+  animation:dshpc-btn-spin .7s linear infinite;}
+@keyframes dshpc-btn-spin{to{transform:rotate(360deg)}}
 
-.dshpc-btn--primary{background:var(--dshpc-accent);color:var(--dshpc-fg-inverse);}
-.dshpc-btn--primary:hover:not(:disabled){opacity:.9;}
-.dshpc-btn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border-strong);color:var(--dshpc-fg);}
-.dshpc-btn--outline:hover:not(:disabled){background:var(--dshpc-hover);}
-.dshpc-btn--ghost{color:var(--dshpc-fg-2);}
-.dshpc-btn--ghost:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
-.dshpc-btn--danger{background:var(--dshpc-danger);color:var(--dshpc-on-signal);}
-.dshpc-btn--danger:hover:not(:disabled){opacity:.9;}
-/* danger-ink\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\uFF0C\u6302\u4E0E outline \u7EC4\u5408\u7684\u4FEE\u9970\u7C7B */
-.dshpc-btn--danger-ink{border-color:var(--dshpc-danger);color:var(--dshpc-danger);}
-.dshpc-btn--danger-ink:hover:not(:disabled){background:color-mix(in srgb,var(--dshpc-danger) 10%,transparent);color:var(--dshpc-danger);}
-/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF */
-.dshpc-btn--link{height:auto;padding:0;border:0;background:none;color:var(--dshpc-link);font-weight:400;text-align:left;}
-.dshpc-btn--link:hover:not(:disabled){background:none;color:var(--dshpc-link);text-decoration:underline;}
+/* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */
+.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}
+.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}
 .dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
 .dshpc-btn:disabled{cursor:default;opacity:.5;}
+
+.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);
+  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}
+/* secondary\uFF1A\u4E2D\u6027\u5B9E\u5FC3\uFF08\u7070\u9762\uFF09\uFF0C\u7528\u4E8E\u300C\u53D6\u6D88 / \u6B21\u8981\u300D\u8FD9\u7C7B\u4E0E\u4E3B\u64CD\u4F5C\u5E76\u6392\u7684\u6309\u94AE */
+.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);
+  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}
+.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}
+.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);
+  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}
+.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}
+/* danger-outline\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\u3002
+   \u26A0\uFE0F \u65E7\u4FEE\u9970\u7C7B danger-ink \u4FDD\u7559\u4E3A\u522B\u540D\uFF08\u6D88\u8D39\u65B9\u53EF\u80FD\u8FD8\u5728\u6302\uFF09\uFF0C\u4E24\u8005\u540C\u4E00\u5957\u76AE\u80A4\u3002 */
+.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);
+  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}
+/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF */
+.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);
+  --btn-bg-hover:transparent;--btn-bg-active:transparent;
+  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}
+.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}
+
+/* \u56FE\u6807\u94AE\uFF1A\u7EAF\u56FE\u6807\uFF0C\u65B9\u5F62\uFF1B\u5C3A\u5BF8\u6863\u7684\u5BBD\u9AD8\u4E0E\u540C\u6863\u6587\u5B57\u6309\u94AE\u7B49\u9AD8 */
+.dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);
+  font-family:inherit;cursor:pointer;flex:none;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}
+.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}
+.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}
+.dshpc-iconbtn--plain{color:var(--dshpc-fg-2);}
+.dshpc-iconbtn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border);color:var(--dshpc-fg-2);}
+.dshpc-iconbtn--danger{color:var(--dshpc-danger);}
+.dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
+.dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}
+.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
+.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
 
 .dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
   border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);
@@ -1413,19 +1505,40 @@ var ErrorBoundary = class extends import_react8.Component {
 
 // dist/ui/Button.js
 var import_react9 = require("react");
-function buttonClass(variant, size, extra) {
-  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
+var SOLID_VARIANTS = ["primary", "secondary", "danger", "success", "warning", "info"];
+function colorVars(variant, color) {
+  if (color === void 0 || color === "")
+    return void 0;
+  if (SOLID_VARIANTS.includes(variant)) {
+    return {
+      "--btn-bg": color,
+      // 亮色主题下 --dshpc-fg 是黑 ⇒ 压深；暗色下是白 ⇒ 提亮。两边都能明确看出变化。
+      "--btn-bg-hover": `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`,
+      "--btn-bg-active": `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`
+    };
+  }
+  return {
+    "--btn-fg": color,
+    "--btn-fg-hover": color,
+    "--btn-border": color,
+    "--btn-bg-hover": `color-mix(in srgb, ${color} 12%, transparent)`,
+    "--btn-bg-active": `color-mix(in srgb, ${color} 18%, transparent)`
+  };
+}
+function buttonClass(variant, size, block, extra) {
+  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${block ? " dshpc-btn--block" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
 }
 function Button(props) {
   ensureControls();
-  const { variant = "outline", size = "lg", icon, className, style, children, ...rest } = props;
+  const { variant = "outline", size = "lg", icon, iconRight, color, loading = false, block = false, className, style, children, ...rest } = props;
   const attrs = {
     ...rest,
     type: rest.type ?? "button",
-    className: buttonClass(variant, size, className),
-    style
+    disabled: rest.disabled === true || loading,
+    className: buttonClass(variant, size, block, className),
+    style: { ...colorVars(variant, color), ...style }
   };
-  return (0, import_react9.createElement)("button", attrs, icon !== void 0 && icon !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null, children);
+  return (0, import_react9.createElement)("button", attrs, loading ? (0, import_react9.createElement)("span", { className: "dshpc-btn__spinner", "aria-hidden": true }) : icon !== void 0 && icon !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null, children, iconRight !== void 0 && iconRight !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
 }
 function IconButton(props) {
   ensureControls();
@@ -1902,7 +2015,21 @@ var DICT2 = {
     pickerHint: "\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\u2014\u2014\u5168\u90E8\u53EF\u7528 props \u63A7\u5236",
     modelPickerHint: "flat \u4E00\u4E2A\u4E0B\u62C9 / cascade \u5148\u9009\u4F9B\u5E94\u5546\u518D\u9009\u6A21\u578B\u2014\u2014\u540C\u4E00\u4EFD\u6570\u636E\u4E24\u79CD\u5F62\u6001",
     workspacePickerHint: "\u6570\u636E\u8C03\u7528\u65B9\u7ED9\uFF08\u8981\u8DE8 host\u2194client \u8FB9\u754C\uFF0C\u7EC4\u4EF6\u53D6\u4E0D\u5230\uFF09",
-    buttonHint: "variant \u56DB\u6863 \xD7 size \u4E09\u6863",
+    buttonHint: "10 \u6863\u5916\u89C2 \xD7 3 \u6863\u9AD8\u5EA6 \xD7 \u56FE\u6807 / \u72B6\u6001 / \u81EA\u5B9A\u4E49\u989C\u8272",
+    btnTextTitle: "\u6309\u94AE\u6587\u6848\u4E0E\u8BED\u8A00",
+    btnTextHint: "\u6587\u6848\u7531\u8C03\u7528\u65B9\u7ED9\uFF1A\u4E2D\u6587\u73AF\u5883\u51FA\u4E2D\u6587\u3001\u82F1\u6587\u73AF\u5883\u51FA\u82F1\u6587\uFF1B\u4E2D\u82F1\u5E76\u6392\u7684\u7EC4\u5408\u4E5F\u652F\u6301\uFF08\u6700\u53F3\u4E00\u9897\uFF09",
+    btnVariantTitle: "\u5916\u89C2\u6863\uFF0810 \u6863\uFF09",
+    btnVariantHint: "\u5B9E\u5FC3\uFF1Aprimary / secondary / danger / success / warning / info\uFF1B\u7EBF\u6846\uFF1Aoutline / danger-outline\uFF1B\u65E0\u5E95\uFF1Aghost / link",
+    btnSizeTitle: "\u5C3A\u5BF8 / \u56FE\u6807 / block",
+    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32 \u540C\u9AD8\uFF1Bicon \u524D\u7F6E\u3001iconRight \u540E\u7F6E\u3001block \u6491\u6EE1\u7236\u5BBD",
+    btnStateTitle: "\u72B6\u6001",
+    btnStateHint: "disabled \u534A\u900F\u660E\u4E0D\u53EF\u70B9\uFF1Bloading \u524D\u7F6E\u540C\u8272\u5C0F\u5708\u5E76\u81EA\u52A8\u7981\u7528",
+    btnColorTitle: "\u81EA\u5B9A\u4E49\u989C\u8272",
+    btnColorHint: "color \u4F20\u4EFB\u610F CSS \u8272\u503C\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\u3001\u7EBF\u6846\u4E0E\u6587\u5B57\u6863\u4F5C\u4E3B\u8272\uFF1Bhover / \u6309\u4E0B\u81EA\u52A8\u6309\u8BE5\u8272\u6DF7\u51FA",
+    btnLabelSave: "\u4FDD\u5B58\u4FEE\u6539",
+    btnLabelCancel: "\u53D6\u6D88",
+    btnLabelDelete: "\u5220\u9664",
+    btnLabelMixed: "\u4FDD\u5B58 Save",
     inputHint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u884C\u5C3E\u53EF\u6302 FieldHint \u95EE\u53F7\u63D0\u793A",
     checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95 inset\uFF08\u65E0\u5916\u63CF\u8FB9\uFF09\uFF1B\u5E26\u63CF\u8FB9\u7684 default \u4EC5\u4F9B\u7279\u6B8A\u573A\u5408\uFF0C\u89C1\u4E0B",
     designTokenHint: "\u989C\u8272\u5168\u90E8\u6765\u81EA design \u7684 token\uFF1B\u5207\u6362\u53F3\u4E0A\u89D2\u660E\u6697\uFF0C\u4E0B\u9762\u4F1A\u8DDF\u7740\u53D8",
@@ -1940,7 +2067,21 @@ var DICT2 = {
     pickerHint: "Single / multi / max / search / grouped / empty / degraded \u2014 all driven by props",
     modelPickerHint: "flat: one dropdown / cascade: pick provider then model \u2014 same data, two shapes",
     workspacePickerHint: "Data is supplied by the caller (crosses the host\u2194client boundary; the component cannot fetch it)",
-    buttonHint: "Four variants \xD7 three sizes",
+    buttonHint: "10 variants \xD7 3 sizes \xD7 icons / states / custom colors",
+    btnTextTitle: "Button labels & language",
+    btnTextHint: "Labels come from the caller: Chinese in zh, English in en; a mixed zh+en label is fine too (rightmost)",
+    btnVariantTitle: "Variants (10)",
+    btnVariantHint: "Solid: primary / secondary / danger / success / warning / info; outlined: outline / danger-outline; flat: ghost / link",
+    btnSizeTitle: "Sizes / icons / block",
+    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32, same height; icon leading, iconRight trailing, block fills the parent",
+    btnStateTitle: "States",
+    btnStateHint: "disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself",
+    btnColorTitle: "Custom colors",
+    btnColorHint: "Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it",
+    btnLabelSave: "Save changes",
+    btnLabelCancel: "Cancel",
+    btnLabelDelete: "Delete",
+    btnLabelMixed: "Save \u4FDD\u5B58",
     inputHint: "Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; a FieldHint question-mark tip can hang at the row end",
     checkboxHint: "Looks match the real plugin: grey inset background (no outer border); the bordered default is for special cases only, see below",
     designTokenHint: "All colors come from design tokens; switch light/dark at top-right and these update with it",
@@ -2045,6 +2186,50 @@ ensureControls()`
 
 // packages/demo/src/sections/buttons.tsx
 var import_react20 = require("react");
+var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+var BUTTON_ICONS = [
+  { name: "plus", Icon: import_dsh_client_ui_primitives.IconPlusOutlineRegular },
+  { name: "check", Icon: import_dsh_client_ui_primitives.IconCheckOutlineRegular },
+  { name: "close", Icon: import_dsh_client_ui_primitives.IconCloseOutlineRegular },
+  { name: "refresh", Icon: import_dsh_client_ui_primitives.IconRefreshOutlineRegular },
+  { name: "copy", Icon: import_dsh_client_ui_primitives.IconCopyOutlineRegular },
+  { name: "search", Icon: import_dsh_client_ui_primitives.IconSearchOutlineRegular },
+  { name: "edit", Icon: import_dsh_client_ui_primitives.IconEditOutlineRegular },
+  { name: "play", Icon: import_dsh_client_ui_primitives.IconPlayOutlineRegular },
+  { name: "send", Icon: import_dsh_client_ui_primitives.IconPaperPlaneOutlineRegular },
+  { name: "clock", Icon: import_dsh_client_ui_primitives.IconClockOutlineRegular },
+  { name: "sparkle", Icon: import_dsh_client_ui_primitives.IconSparkleRegular },
+  { name: "chevron", Icon: import_dsh_client_ui_primitives.IconChevronDownOutlineRegular }
+];
+function iconOf(name, size = 14) {
+  const found = BUTTON_ICONS.find((item) => item.name === name);
+  return found === void 0 ? null : (0, import_react20.createElement)(found.Icon, { size });
+}
+var ICON_SIZE = { sm: 12, md: 14, lg: 16 };
+var VARIANTS = [
+  { value: "primary", icon: "check" },
+  { value: "secondary", icon: "copy" },
+  { value: "outline", icon: "edit" },
+  { value: "ghost", icon: "refresh" },
+  { value: "danger", icon: "close" },
+  { value: "success", icon: "play" },
+  { value: "warning", icon: "clock" },
+  { value: "info", icon: "send" },
+  { value: "danger-outline", icon: "close" },
+  { value: "link", icon: "search" }
+];
+var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
+function Row(props) {
+  return (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+}
+function Labeled(props) {
+  return (0, import_react20.createElement)(
+    "div",
+    { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
+    (0, import_react20.createElement)("span", { style: { width: "64px", flex: "none", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    props.children
+  );
+}
 function ButtonsSection() {
   const [text, setText] = (0, import_react20.useState)("");
   const [num, setNum] = (0, import_react20.useState)(3);
@@ -2055,21 +2240,121 @@ function ButtonsSection() {
   return (0, import_react20.createElement)(
     "div",
     null,
+    // ── 文案与语言 ──────────────────────────────────────────────────────
     (0, import_react20.createElement)(
       Demo,
-      { title: "Button", hint: t2("buttonHint") },
+      { title: t2("btnTextTitle"), hint: t2("btnTextHint") },
       (0, import_react20.createElement)(
         "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } },
-        ["primary", "outline", "ghost", "danger"].map(
-          (v) => (0, import_react20.createElement)(Button, { key: v, variant: v, onClick: () => {
-          } }, v)
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "locale" },
+          (0, import_react20.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
+          (0, import_react20.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
+          (0, import_react20.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
         ),
-        (0, import_react20.createElement)(Button, { size: "sm" }, "sm"),
-        (0, import_react20.createElement)(Button, { size: "lg" }, "lg"),
-        (0, import_react20.createElement)(IconButton, { icon: "+", label: "\u65B0\u589E" })
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "en" },
+          (0, import_react20.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react20.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react20.createElement)(Button, { variant: "ghost" }, "Learn more")
+        ),
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "zh" },
+          (0, import_react20.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react20.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react20.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+        ),
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "zh + en" },
+          (0, import_react20.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
+          (0, import_react20.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react20.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+        )
       )
     ),
+    // ── 10 档外观 ──────────────────────────────────────────────────────
+    (0, import_react20.createElement)(
+      Demo,
+      { title: t2("btnVariantTitle"), hint: t2("btnVariantHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        (0, import_react20.createElement)(Row, null, VARIANTS.map((item) => (0, import_react20.createElement)(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
+        (0, import_react20.createElement)(Row, null, VARIANTS.map((item) => (0, import_react20.createElement)(Button, { key: item.value, variant: item.value, size: "sm", icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))
+      )
+    ),
+    // ── 尺寸 / 图标位置 / block ─────────────────────────────────────────
+    (0, import_react20.createElement)(
+      Demo,
+      { title: t2("btnSizeTitle"), hint: t2("btnSizeHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "size" },
+          ["sm", "md", "lg"].map((size) => (0, import_react20.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
+        ),
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "icon" },
+          (0, import_react20.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u53D1\u9001"),
+          (0, import_react20.createElement)(Button, { variant: "outline", icon: iconOf("search", ICON_SIZE.lg) }, "\u641C\u7D22"),
+          (0, import_react20.createElement)(Button, { variant: "ghost", icon: iconOf("edit", ICON_SIZE.lg) }, "\u7F16\u8F91")
+        ),
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "iconRight" },
+          (0, import_react20.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
+          (0, import_react20.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+        ),
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "block" },
+          (0, import_react20.createElement)(
+            "div",
+            { style: { width: "240px" } },
+            (0, import_react20.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD")
+          )
+        ),
+        (0, import_react20.createElement)(
+          Labeled,
+          { label: "icon only" },
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react20.createElement)(IconButton, { key: item.name, icon: (0, import_react20.createElement)(item.Icon, { size: 16 }), label: item.name }))
+        )
+      )
+    ),
+    // ── 状态 ───────────────────────────────────────────────────────────
+    (0, import_react20.createElement)(
+      Demo,
+      { title: t2("btnStateTitle"), hint: t2("btnStateHint") },
+      (0, import_react20.createElement)(
+        Row,
+        null,
+        (0, import_react20.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+        (0, import_react20.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+        (0, import_react20.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528"),
+        (0, import_react20.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+        (0, import_react20.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+      )
+    ),
+    // ── 自定义颜色 ─────────────────────────────────────────────────────
+    (0, import_react20.createElement)(
+      Demo,
+      { title: t2("btnColorTitle"), hint: t2("btnColorHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        (0, import_react20.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react20.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color))),
+        (0, import_react20.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react20.createElement)(Button, { key: color, variant: "outline", color }, color)))
+      )
+    ),
+    // ── Input 家族 ─────────────────────────────────────────────────────
     (0, import_react20.createElement)(
       Demo,
       { title: t2("demoInputFamily"), hint: t2("inputHint") },
@@ -2089,6 +2374,7 @@ function ButtonsSection() {
         (0, import_react20.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165" })
       )
     ),
+    // ── Checkbox / Segmented ───────────────────────────────────────────
     (0, import_react20.createElement)(
       Demo,
       { title: "Checkbox / Segmented", hint: t2("checkboxHint") },

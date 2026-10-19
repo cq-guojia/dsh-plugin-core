@@ -72,6 +72,26 @@ body{
   /* 语义色**实面**上的字（角标 / 实心提示）：宿主红绿黄三色都是中调 ⇒ 白字两个主题都可读，
      故这是一条与主题无关的常量；不要拿 --dshpc-fg-inverse 顶——它在暗色下是近黑，压在红底上看不清。 */
   --dshpc-on-signal:#fff;
+  /* 黄底上的字：黄色是中高明度，白字看不清 ⇒ 固定深色（与主题无关）。 */
+  --dshpc-on-warning:#1f2328;
+
+  /* ── 实心按钮的 hover / active 派生态（2026-10-19 用户点名）─────────────────
+     原实现是 :hover 直接压 opacity .9：黑底压 10% 几乎看不出来，用户原话「完全感觉不到颜色变了」。
+     ⇒ 改成对底色做**明确的混色**（压 22% / 34%），不用 opacity：
+       · 亮色主题：黑底（--dshpc-accent）掺白提亮；红 / 绿 / 黄 / 蓝底掺黑压深；
+       · 暗色主题：反过来（暗底掺白、亮底掺黑）。
+     混色对象是**固定中性色字面量**（#fff / #000），不依赖宿主 static-neutral 是否存在；
+     旧内核不认 color-mix 时整条声明作废 ⇒ 回落各档原色（可接受：仍可点，只是没有 hover 反馈）。 */
+  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 78%,#ffffff);
+  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 64%,#ffffff);
+  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#000000);
+  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#000000);
+  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#000000);
+  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#000000);
+  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#000000);
+  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#000000);
+  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#000000);
+  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#000000);
   /* 语义色**浅底**：状态色系的「一块底色」——执行记录页每条流水账的块底就是它
      （用户 2026-10-04：正常态给同色系很浅的透明底、失败用红底透出来）。
      用 「color-mix」 现算而不写死 rgba：状态色本身跟随宿主 alias，主题一换自动成立。
@@ -183,6 +203,18 @@ body{
 body[data-ds-dark-theme]{
   --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);
   --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);
+  /* 实心按钮 hover / active（暗色版）：黑底（浅色主题的近黑 → 暗色下的近白）掺黑压深；
+     红 / 绿 / 黄 / 蓝掺白提亮。与亮色段方向相反，保证两种主题下「一眼看出变了」。 */
+  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);
+  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 66%,#000000);
+  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#ffffff);
+  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#ffffff);
+  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#ffffff);
+  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);
+  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);
+  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);
+  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);
+  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#ffffff);
   /* 暗色 hover 掺白 14% / active 24%（对齐上面 2026-10-18 的加重拍板）。rgba 兜底行同上。 */
   --dshpc-hover:rgba(255,255,255,.14);
   --dshpc-hover:color-mix(in srgb,var(--dsw-static-neutral-00,#fff) 14%,transparent);

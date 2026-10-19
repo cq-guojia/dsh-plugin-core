@@ -47,6 +47,22 @@ token 原文提取自 `dsh-task-dispatch-table/src/client/ui/tokens.ts`，含深
 完整清单以 `src/design/tokens-css.ts` 为准（**真源在代码，不在这里抄第二份**）。
 消费方查某个变量叫什么：`kit.cssVar('fg')` 或直接 grep `tokens-css.ts`。
 
+## 交互态颜色（hover / active）
+
+**实心控件不许用 `opacity` 表达 hover**（2026-10-19 用户点名：「黑色和红色的按钮移上去变化太小，
+完全感觉不到颜色变了」）。压 10% opacity 与底色无关，几乎不可见。
+
+改用 token 层的**派生色**（`--dshpc-{accent,danger,success,warning,business}-hover / -active`）：
+
+| 主题 | 黑底（accent） | 红 / 绿 / 黄 / 蓝底 |
+|---|---|---|
+| 亮色 | 掺白提亮（黑 → 灰） | 掺黑压深（红 → 暗红） |
+| 暗色 | 掺黑压深（近白 → 灰） | 掺白提亮 |
+
+- 幅度 22% / 36%（hover / active），两种主题下都「一眼看出变了」。
+- 混色对象写成**固定中性色字面量** `#fff` / `#000`，不依赖宿主 `--dsw-static-neutral-*` 是否存在。
+- 旧内核不认 `color-mix` 时整条声明作废 ⇒ 回落该档原色（仍有基本可用性，只是没有 hover 反馈）。
+
 ## 三条硬规矩
 
 1. 不许再有第二处 `document.createElement('style')` —— 一律走 kit。

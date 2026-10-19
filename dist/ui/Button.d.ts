@@ -1,15 +1,26 @@
 import { createElement as h, type CSSProperties, type ReactNode } from 'react';
 /** 按钮外观档。 */
-export type ButtonVariant = 'primary' | 'outline' | 'ghost' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success' | 'warning' | 'info' | 'danger-outline' | 'link';
 /** 按钮高度档（sm 24 / md 28 / lg 32）。 */
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export interface ButtonProps {
     /** 外观档（默认 outline）。 */
     variant?: ButtonVariant;
-    /** 高度档（默认 sm）。 */
+    /** 高度档（默认 lg）。 */
     size?: ButtonSize;
-    /** 前置图标（可选）。 */
+    /** 前置图标（可选；字符串 / 官方图标组件都可以）。 */
     icon?: ReactNode;
+    /** 后置图标（可选；如「展开 / 外链」箭头）。 */
+    iconRight?: ReactNode;
+    /**
+     * 自定义主色（任意 CSS 色值，如 `#7c3aed` / `var(--dshpc-business)`）。
+     * 实心档作底色、描边与文字档作主色；hover / active 由基础层按该色混出。
+     */
+    color?: string;
+    /** 加载中：文案前显示同色小圈，并自动禁用点击。 */
+    loading?: boolean;
+    /** 撑满父宽。 */
+    block?: boolean;
     /** 追加 class（只允许补布局、或挂本文件声明的修饰类，不许覆盖皮肤）。 */
     className?: string;
     /** 追加样式（只允许补布局，不许覆盖皮肤）。 */
@@ -22,7 +33,7 @@ export interface ButtonProps {
 export interface IconButtonProps {
     /** 外观档（默认 plain）。 */
     variant?: 'plain' | 'outline' | 'danger';
-    /** 高度档（默认 sm）。 */
+    /** 高度档（默认 lg）。 */
     size?: ButtonSize;
     /** 图标（必填）。 */
     icon: ReactNode;
@@ -36,7 +47,7 @@ export interface IconButtonProps {
     [key: string]: unknown;
 }
 /**
- * 渲染一个文字 / 图标 + 文字按钮。
+ * 渲染一个「图标 + 文案」按钮。
  *
  * @param props 见 {@link ButtonProps}。
  * @returns 按钮元素。

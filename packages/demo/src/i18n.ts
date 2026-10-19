@@ -18,6 +18,20 @@ export type DemoMessageKey =
   | 'modelPickerHint'
   | 'workspacePickerHint'
   | 'buttonHint'
+  | 'btnTextTitle'
+  | 'btnTextHint'
+  | 'btnVariantTitle'
+  | 'btnVariantHint'
+  | 'btnSizeTitle'
+  | 'btnSizeHint'
+  | 'btnStateTitle'
+  | 'btnStateHint'
+  | 'btnColorTitle'
+  | 'btnColorHint'
+  | 'btnLabelSave'
+  | 'btnLabelCancel'
+  | 'btnLabelDelete'
+  | 'btnLabelMixed'
   | 'inputHint'
   | 'checkboxHint'
   | 'designTokenHint'
@@ -56,7 +70,21 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     pickerHint: '单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级——全部可用 props 控制',
     modelPickerHint: 'flat 一个下拉 / cascade 先选供应商再选模型——同一份数据两种形态',
     workspacePickerHint: '数据调用方给（要跨 host↔client 边界，组件取不到）',
-    buttonHint: 'variant 四档 × size 三档',
+    buttonHint: '10 档外观 × 3 档高度 × 图标 / 状态 / 自定义颜色',
+    btnTextTitle: '按钮文案与语言',
+    btnTextHint: '文案由调用方给：中文环境出中文、英文环境出英文；中英并排的组合也支持（最右一颗）',
+    btnVariantTitle: '外观档（10 档）',
+    btnVariantHint: '实心：primary / secondary / danger / success / warning / info；线框：outline / danger-outline；无底：ghost / link',
+    btnSizeTitle: '尺寸 / 图标 / block',
+    btnSizeHint: 'sm 24 · md 28 · lg 32 同高；icon 前置、iconRight 后置、block 撑满父宽',
+    btnStateTitle: '状态',
+    btnStateHint: 'disabled 半透明不可点；loading 前置同色小圈并自动禁用',
+    btnColorTitle: '自定义颜色',
+    btnColorHint: 'color 传任意 CSS 色值：实心档作底色、线框与文字档作主色；hover / 按下自动按该色混出',
+    btnLabelSave: '保存修改',
+    btnLabelCancel: '取消',
+    btnLabelDelete: '删除',
+    btnLabelMixed: '保存 Save',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；行尾可挂 FieldHint 问号提示',
     checkboxHint: '外观对齐真实插件：灰底 inset（无外描边）；带描边的 default 仅供特殊场合，见下',
     designTokenHint: '颜色全部来自 design 的 token；切换右上角明暗，下面会跟着变',
@@ -94,7 +122,21 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     pickerHint: 'Single / multi / max / search / grouped / empty / degraded — all driven by props',
     modelPickerHint: 'flat: one dropdown / cascade: pick provider then model — same data, two shapes',
     workspacePickerHint: 'Data is supplied by the caller (crosses the host↔client boundary; the component cannot fetch it)',
-    buttonHint: 'Four variants × three sizes',
+    buttonHint: '10 variants × 3 sizes × icons / states / custom colors',
+    btnTextTitle: 'Button labels & language',
+    btnTextHint: 'Labels come from the caller: Chinese in zh, English in en; a mixed zh+en label is fine too (rightmost)',
+    btnVariantTitle: 'Variants (10)',
+    btnVariantHint: 'Solid: primary / secondary / danger / success / warning / info; outlined: outline / danger-outline; flat: ghost / link',
+    btnSizeTitle: 'Sizes / icons / block',
+    btnSizeHint: 'sm 24 · md 28 · lg 32, same height; icon leading, iconRight trailing, block fills the parent',
+    btnStateTitle: 'States',
+    btnStateHint: 'disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself',
+    btnColorTitle: 'Custom colors',
+    btnColorHint: 'Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it',
+    btnLabelSave: 'Save changes',
+    btnLabelCancel: 'Cancel',
+    btnLabelDelete: 'Delete',
+    btnLabelMixed: 'Save 保存',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; a FieldHint question-mark tip can hang at the row end',
     checkboxHint: 'Looks match the real plugin: grey inset background (no outer border); the bordered default is for special cases only, see below',
     designTokenHint: 'All colors come from design tokens; switch light/dark at top-right and these update with it',

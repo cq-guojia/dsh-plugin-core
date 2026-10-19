@@ -12,20 +12,27 @@ export const SEGMENTED_CSS = `
    inset 无边框故 padding 收 3px 把缺的 1px 补回，两种外观总高都 == token（24/28/32），不再多 +2px。
    以后 Button / Input 的有边 / 无边同此规则。 */
 .dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--seg-track);}
-/* 选中片 = --dshpc-solid（亮=白片 / 暗=黑片，2026-10-18 对齐真实插件截图）。
-   原先取 surface-raised ⇒ 与卡片底（同为 bg-layer-1）同色，选中片在卡上隐形、只剩阴影圈。 */
-.dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-solid);border:1px solid var(--dshpc-border);}
-.dshpc-seg--inset{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-solid);border:0;padding:3px;}
+/* 选中片 = --dshpc-surface-raised（兄弟项目 dsh-task-dispatch-table 的取法，2026-10-19 用户点名
+   「把兄弟的样式清了就不正常 ⇒ 没搬全」后改回）。10-18 曾改成 --dshpc-solid，但它在暗色主题下
+   是近黑（比轨道还暗）⇒ 选中片陷进轨道里；raised 在两个主题下都比轨道亮一档，方向正确。
+   raised 与卡片底同为 bg-layer-1 ⇒ 选中片靠**1px 描边 + 阴影**与卡片区分（见 __item[aria-pressed]）。 */
+.dshpc-seg--default{--seg-track:var(--dshpc-surface-2);--seg-thumb:var(--dshpc-surface-raised);border:1px solid var(--dshpc-border);}
+.dshpc-seg--inset{--seg-track:var(--dshpc-hover);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;}
 
 .dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;
-  height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--dshpc-radius-sm);
+  height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:1px solid transparent;border-radius:var(--dshpc-radius-sm);
   background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);
   font-weight:400;white-space:nowrap;cursor:pointer;
   transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-seg--md .dshpc-seg__item{height:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item{height:calc(var(--dshpc-control-h-lg) - 6px);}
-.dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);}
-.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
+/* 未选中项 hover：给一层浅底（此前只提亮文字，用户看不出「这里可以点」）。
+   inset 的轨道本身就是 --dshpc-hover ⇒ 那里用 active 一档，避免 hover 与轨道同色等于没变。 */
+.dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);background:var(--dshpc-hover);}
+.dshpc-seg--inset .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){background:var(--dshpc-active);}
+/* 选中片：亮片 + 描边 + 浮起阴影 ⇒ 在卡片底（与亮片同色）上也看得出边界 */
+.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);border-color:var(--dshpc-border);
+  box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
 .dshpc-seg__item:disabled{cursor:default;opacity:.4;}
 
@@ -68,32 +75,85 @@ export const BUTTON_CSS = `
 /* ── 按钮 / 图标钮 P2 ───────────────────────────────────────────────────
    与 Segmented 同一条高度纪律：--dshpc-control-h-sm(24) / -md(28) / -lg(32)，
    有边框的 variant 用 1px 真边框 + 内部 padding 补回，**有边 / 无边同高**。
-   variant 只换颜色，结构 / 尺寸 / 交互只此一份。 */
-.dshpc-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:var(--dshpc-space-1);
-  box-sizing:border-box;border:1px solid transparent;border-radius:var(--dshpc-radius-md);
-  background:transparent;color:var(--dshpc-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
-  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
+
+   三条受控轴（2026-10-19 重写，对齐主流 UI 框架的分类口径）：
+     · variant —— 外观档 = 形态 + 语义色，共 10 档：
+         primary / secondary / outline / ghost / danger / success / warning / info /
+         danger-outline（红字描边）/ link（行内链接）
+     · size —— sm / md / lg
+     · block —— 撑满父宽
+   每一档**只填 5 个局部变量**（--btn-bg / -fg / -border / -bg-hover / -bg-active），
+   结构与交互只有上面这一份；任何档位都不许再写一遍 display/height/padding。
+   自定义颜色（Button 的 color 参数）同样只覆盖这 5 个变量（token 覆盖，不是新皮肤）。
+
+   ⚠️ hover 不再用 opacity 压一层（用户 2026-10-19：「黑色和红色的按钮移上去变化太小，
+   完全感觉不到颜色变了」）⇒ 走 --dshpc-*-hover / -active 的明确混色，见 tokens-css.ts。 */
+.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);
+  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);
+  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-btn--sm{height:var(--dshpc-control-h-sm);padding:0 10px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}
 .dshpc-btn--md{height:var(--dshpc-control-h-md);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 .dshpc-btn--lg{height:var(--dshpc-control-h-lg);padding:0 14px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
-.dshpc-btn__icon{display:inline-flex;align-items:center;flex:none;}
+/* block：撑满父宽（表单底栏 / 抽屉底部的主操作） */
+.dshpc-btn--block{display:flex;width:100%;}
+.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;}
+/* loading：不换 DOM 结构，只在文案前插一个同色小圈（尺寸随字号，缩放不依赖常量） */
+.dshpc-btn__spinner{display:inline-block;flex:none;width:1em;height:1em;box-sizing:border-box;
+  border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;
+  animation:dshpc-btn-spin .7s linear infinite;}
+@keyframes dshpc-btn-spin{to{transform:rotate(360deg)}}
 
-.dshpc-btn--primary{background:var(--dshpc-accent);color:var(--dshpc-fg-inverse);}
-.dshpc-btn--primary:hover:not(:disabled){opacity:.9;}
-.dshpc-btn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border-strong);color:var(--dshpc-fg);}
-.dshpc-btn--outline:hover:not(:disabled){background:var(--dshpc-hover);}
-.dshpc-btn--ghost{color:var(--dshpc-fg-2);}
-.dshpc-btn--ghost:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
-.dshpc-btn--danger{background:var(--dshpc-danger);color:var(--dshpc-on-signal);}
-.dshpc-btn--danger:hover:not(:disabled){opacity:.9;}
-/* danger-ink：红字描边（破坏性次要操作，如卡片上的「删除」），挂与 outline 组合的修饰类 */
-.dshpc-btn--danger-ink{border-color:var(--dshpc-danger);color:var(--dshpc-danger);}
-.dshpc-btn--danger-ink:hover:not(:disabled){background:color-mix(in srgb,var(--dshpc-danger) 10%,transparent);color:var(--dshpc-danger);}
-/* link：行内文字链接型（会话 / 产出文件名），无底无边、品牌蓝、hover 下划线 */
-.dshpc-btn--link{height:auto;padding:0;border:0;background:none;color:var(--dshpc-link);font-weight:400;text-align:left;}
-.dshpc-btn--link:hover:not(:disabled){background:none;color:var(--dshpc-link);text-decoration:underline;}
+/* 交互态：颜色变化写在变量上 ⇒ 所有档位一次生效，且变化幅度由 token 决定（够明显） */
+.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}
+.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}
 .dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
 .dshpc-btn:disabled{cursor:default;opacity:.5;}
+
+.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);
+  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}
+/* secondary：中性实心（灰面），用于「取消 / 次要」这类与主操作并排的按钮 */
+.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);
+  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);
+  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}
+.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}
+.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}
+.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);
+  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}
+.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);
+  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}
+/* danger-outline：红字描边（破坏性次要操作，如卡片上的「删除」）。
+   ⚠️ 旧修饰类 danger-ink 保留为别名（消费方可能还在挂），两者同一套皮肤。 */
+.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);
+  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}
+/* link：行内文字链接型（会话 / 产出文件名），无底无边、品牌蓝、hover 下划线 */
+.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);
+  --btn-bg-hover:transparent;--btn-bg-active:transparent;
+  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}
+.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}
+
+/* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高 */
+.dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);
+  font-family:inherit;cursor:pointer;flex:none;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}
+.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}
+.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}
+.dshpc-iconbtn--plain{color:var(--dshpc-fg-2);}
+.dshpc-iconbtn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border);color:var(--dshpc-fg-2);}
+.dshpc-iconbtn--danger{color:var(--dshpc-danger);}
+.dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
+.dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}
+.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
+.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
 
 .dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
   border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);

@@ -23,21 +23,39 @@ ensureControls()
 
 ### Button / IconButton
 
+10 档外观（2026-10-19 扩充，对齐主流 UI 框架的分类口径）：
+
+| 类别 | `variant` 档 |
+|---|---|
+| 实心（语义色底） | `primary`（黑）/ `secondary`（灰）/ `danger`（红）/ `success`（绿）/ `warning`（黄）/ `info`（蓝） |
+| 线框 | `outline`（中性描边）/ `danger-outline`（红字描边，旧别名 `danger-ink` 仍可用） |
+| 无底 | `ghost`（灰字，hover 起底）/ `link`（行内链接） |
+
 | 参数 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `variant` | `'primary' \| 'outline' \| 'ghost' \| 'danger'` | `outline` | 外观档 |
-| `size` | `'sm' \| 'md' \| 'lg'` | `sm` | 高度档 |
-| `icon` | `ReactNode` | — | 前置图标 |
-| `children` | `ReactNode` | — | 文案 |
+| `variant` | 上表 10 档 | `outline` | 外观档 |
+| `size` | `'sm' \| 'md' \| 'lg'` | `lg` | 高度档（24 / 28 / 32，有边无边同高） |
+| `icon` | `ReactNode` | — | 前置图标（官方图标组件 / 字符串均可） |
+| `iconRight` | `ReactNode` | — | 后置图标（展开箭头、外链） |
+| `color` | `string` | — | 自定义主色（任意 CSS 色值）：实心档作底色，线框 / 无底档作主色 |
+| `loading` | `boolean` | `false` | 文案前显示同色小圈，并自动 `disabled` |
+| `block` | `boolean` | `false` | 撑满父宽 |
+| `children` | `ReactNode` | — | 文案（由调用方按语言给：中文出中文、英文出英文，中英混排也支持） |
 | `…rest` | 原生 button 属性 | — | `type` / `disabled` / `title` / `aria-*` / `onClick` 原样透传 |
 
-`IconButton`：`variant: 'plain' | 'outline' | 'danger'`（默认 `plain`）、`icon`（必填）、`label`（必填，无障碍名兼 title）。
+hover / active 走 token 派生色（**不用 opacity**），幅度见 `docs/design/style.md` §交互态颜色。
+
+`IconButton`：`variant: 'plain' | 'outline' | 'danger'`（默认 `plain`）、`size`（默认 `lg`）、`icon`（必填）、
+`label`（必填，无障碍名兼 title）。
 
 ### Segmented
 
 `items: readonly { value: T; label: ReactNode }[]`（必填）+ 单选（`value: T` / `onChange: (v: T) => void`）
 或多选（`multiple: true` + `value: T[]`）。另有 `size`（默认 `lg`）、`variant: 'default' | 'inset'`、
 `block`（撑满等分）、`label`（无障碍组名）、`id`、`disabled`。
+
+选中片 = `--dshpc-surface-raised`（与兄弟项目同取法）+ 1px 描边 + 浮起阴影：两种主题下都比轨道亮一档，
+在卡片面上靠描边与阴影分界。未选中项 hover 起浅底（inset 用深一档，避免与轨道同色）。
 
 ### Input 家族（`Field.ts`）
 

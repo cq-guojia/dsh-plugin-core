@@ -1,31 +1,64 @@
 /**
  * 按钮 / 图标钮 —— **全站唯一实现**（L2 组件皮肤，P2）
  *
- * 两轴模型（同 Segmented）：
- *  - `variant`：`primary`（实心强调）/ `outline`（描边中性）/ `ghost`（无底无边）/ `danger`（实心红，破坏性确认）
- *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— 高度一律吃 `--dshpc-control-h-*`，**有边 / 无边同高**（边框在内部补回）
+ * 三轴模型：
+ *  - `variant`：外观档（形态 + 语义色），共 10 档
+ *      primary（黑实心）/ secondary（灰实心）/ outline（描边）/ ghost（无底无边）
+ *      danger（红实心）/ success（绿实心）/ warning（黄实心）/ info（蓝实心）
+ *      danger-outline（红字描边）/ link（行内链接）
+ *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— 高度一律吃 `--dshpc-control-h-*`，
+ *    **有边 / 无边同高**（边框在内部补回）
+ *  - `block`：撑满父宽
+ *
+ * 内容轴：`icon`（前置）/ `iconRight`（后置）/ `loading`（前置小圈并自动禁用）。
+ * 颜色轴：任一档都可以再用 `color` 传任意 CSS 色值 —— 只覆盖 `--btn-*` 几个变量，
+ * 不新增皮肤（皮肤仍只在 `controls-css.ts` 里）。
  *
  * `IconButton` 是纯图标钮：`plain`（默认无底无边，hover 起灰底）/ `outline`（描边）/ `danger`（红）。
- * 链接型文字钮 = `Button variant="ghost"` + 修饰类 `dshpc-btn--link`（红字危险描边 = `outline` + `dshpc-btn--danger-ink`）。
+ * 兼容别名：`danger-ink` 仍是 `danger-outline` 的旧类名，可直接挂 className。
  *
- * ⚠️ 不许在任何使用点就地写按钮样式；要多一档外观 ⇒ 走
- * docs/design/ui-style-guide.md §五 的流程（改基础层，一处改全站生效）。
+ * ⚠️ 不许在任何使用点就地写按钮样式；要多一档外观 ⇒ 改基础层（一处改全站生效）。
  */
 import { ensureControls } from './css.js'
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
 
 /** 按钮外观档。 */
-export type ButtonVariant = 'primary' | 'outline' | 'ghost' | 'danger'
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'outline'
+  | 'ghost'
+  | 'danger'
+  | 'success'
+  | 'warning'
+  | 'info'
+  | 'danger-outline'
+  | 'link'
+
 /** 按钮高度档（sm 24 / md 28 / lg 32）。 */
 export type ButtonSize = 'sm' | 'md' | 'lg'
+
+/** 实心档（color 参数按「底色」处理；其余档按「字色 + 描边色」处理）。 */
+const SOLID_VARIANTS: readonly ButtonVariant[] = ['primary', 'secondary', 'danger', 'success', 'warning', 'info']
 
 export interface ButtonProps {
   /** 外观档（默认 outline）。 */
   variant?: ButtonVariant
-  /** 高度档（默认 sm）。 */
+  /** 高度档（默认 lg）。 */
   size?: ButtonSize
-  /** 前置图标（可选）。 */
+  /** 前置图标（可选；字符串 / 官方图标组件都可以）。 */
   icon?: ReactNode
+  /** 后置图标（可选；如「展开 / 外链」箭头）。 */
+  iconRight?: ReactNode
+  /**
+   * 自定义主色（任意 CSS 色值，如 `#7c3aed` / `var(--dshpc-business)`）。
+   * 实心档作底色、描边与文字档作主色；hover / active 由基础层按该色混出。
+   */
+  color?: string
+  /** 加载中：文案前显示同色小圈，并自动禁用点击。 */
+  loading?: boolean
+  /** 撑满父宽。 */
+  block?: boolean
   /** 追加 class（只允许补布局、或挂本文件声明的修饰类，不许覆盖皮肤）。 */
   className?: string
   /** 追加样式（只允许补布局，不许覆盖皮肤）。 */
@@ -39,7 +72,7 @@ export interface ButtonProps {
 export interface IconButtonProps {
   /** 外观档（默认 plain）。 */
   variant?: 'plain' | 'outline' | 'danger'
-  /** 高度档（默认 sm）。 */
+  /** 高度档（默认 lg）。 */
   size?: ButtonSize
   /** 图标（必填）。 */
   icon: ReactNode
@@ -53,29 +86,62 @@ export interface IconButtonProps {
   [key: string]: unknown
 }
 
+/** 把自定义颜色翻译成 5 个局部变量（只覆盖 token，不新增皮肤）。 */
+function colorVars(variant: ButtonVariant, color: string | undefined): CSSProperties | undefined {
+  if (color === undefined || color === '') return undefined
+  if (SOLID_VARIANTS.includes(variant)) {
+    return {
+      '--btn-bg': color,
+      // 亮色主题下 --dshpc-fg 是黑 ⇒ 压深；暗色下是白 ⇒ 提亮。两边都能明确看出变化。
+      '--btn-bg-hover': `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`,
+      '--btn-bg-active': `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`,
+    } as CSSProperties
+  }
+  return {
+    '--btn-fg': color,
+    '--btn-fg-hover': color,
+    '--btn-border': color,
+    '--btn-bg-hover': `color-mix(in srgb, ${color} 12%, transparent)`,
+    '--btn-bg-active': `color-mix(in srgb, ${color} 18%, transparent)`,
+  } as CSSProperties
+}
+
 /** 组装按钮 class（结构一套 + 轴类）。 */
-function buttonClass(variant: ButtonVariant, size: ButtonSize, extra?: string): string {
-  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${extra !== undefined && extra !== '' ? ` ${extra}` : ''}`
+function buttonClass(variant: ButtonVariant, size: ButtonSize, block: boolean, extra?: string): string {
+  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}`
+    + `${block ? ' dshpc-btn--block' : ''}`
+    + `${extra !== undefined && extra !== '' ? ` ${extra}` : ''}`
 }
 
 /**
- * 渲染一个文字 / 图标 + 文字按钮。
+ * 渲染一个「图标 + 文案」按钮。
  *
  * @param props 见 {@link ButtonProps}。
  * @returns 按钮元素。
  */
 export function Button(props: ButtonProps): ReturnType<typeof h> {
   ensureControls()
-  const { variant = 'outline', size = 'lg', icon, className, style, children, ...rest } = props
+  const {
+    variant = 'outline', size = 'lg', icon, iconRight, color, loading = false,
+    block = false, className, style, children, ...rest
+  } = props
   const attrs = {
     ...rest,
     type: (rest.type as string | undefined) ?? 'button',
-    className: buttonClass(variant, size, className),
-    style,
+    disabled: rest.disabled === true || loading,
+    className: buttonClass(variant, size, block, className),
+    style: { ...colorVars(variant, color), ...style },
   }
   return h('button', attrs as never,
-    icon !== undefined && icon !== null ? h('span', { className: 'dshpc-btn__icon' }, icon) : null,
-    children)
+    loading
+      ? h('span', { className: 'dshpc-btn__spinner', 'aria-hidden': true })
+      : icon !== undefined && icon !== null
+        ? h('span', { className: 'dshpc-btn__icon' }, icon)
+        : null,
+    children,
+    iconRight !== undefined && iconRight !== null
+      ? h('span', { className: 'dshpc-btn__icon-end' }, iconRight)
+      : null)
 }
 
 /**
