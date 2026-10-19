@@ -6,7 +6,7 @@
  * - `NumberInput`：数字步进（显式 `− / +`，替换原生 `<input type="number">` 的浏览器 spinner，
  *   支持 step / min / max、clamp、Enter 提交、失焦回弹）。
  *
- * 高度一律吃 `--tdt-control-h-*`；有边 / 无边同高（边框在内部补回）。
+ * 高度一律吃 `--dshpc-control-h-*`；有边 / 无边同高（边框在内部补回）。
  */
 import { ensureControls } from './css.js'
 import { createElement as h, useEffect, useState, type CSSProperties, type RefObject } from 'react'
@@ -62,7 +62,7 @@ export function Input(props: InputProps): ReturnType<typeof h> {
     disabled,
     'aria-label': props['aria-label'],
     title: props.title,
-    className: `dsh-tdt-input dsh-tdt-input${sizeClass(size)}${error === true ? ' dsh-tdt-input--error' : ''}${className !== undefined && className !== '' ? ' ' + className : ''}`,
+    className: `dshpc-input dshpc-input${sizeClass(size)}${error === true ? ' dshpc-input--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style,
     onChange: (event: { target: { value: string } }) => { onChange(event.target.value) },
     onKeyDown: props.onKeyDown,
@@ -82,10 +82,10 @@ export function PrefixedInput(props: PrefixedInputProps): ReturnType<typeof h> {
   ensureControls()
   const { prefix, value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props
   return h('div', {
-    className: `dsh-tdt-pfx dsh-tdt-pfx${sizeClass(size)}${error === true ? ' dsh-tdt-pfx--error' : ''}${className !== undefined && className !== '' ? ' ' + className : ''}`,
+    className: `dshpc-pfx dshpc-pfx${sizeClass(size)}${error === true ? ' dshpc-pfx--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style,
   },
-    h('span', { className: 'dsh-tdt-pfx__label' }, prefix),
+    h('span', { className: 'dshpc-pfx__label' }, prefix),
     h('input', {
       type: type ?? 'text',
       value,
@@ -93,7 +93,7 @@ export function PrefixedInput(props: PrefixedInputProps): ReturnType<typeof h> {
       disabled,
       'aria-label': props['aria-label'],
       title: props.title,
-      className: 'dsh-tdt-pfx__input',
+      className: 'dshpc-pfx__input',
       onChange: (event: { target: { value: string } }) => { onChange(event.target.value) },
     } as never))
 }
@@ -162,15 +162,15 @@ export function NumberInput(props: NumberInputProps): ReturnType<typeof h> {
     if (next !== value) onChange(next)
   }
   return h('div', {
-    className: `dsh-tdt-num dsh-tdt-num${sizeClass(size)}${disabled === true ? ' dsh-tdt-num--disabled' : ''}${className !== undefined && className !== '' ? ' ' + className : ''}`,
+    className: `dshpc-num dshpc-num${sizeClass(size)}${disabled === true ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style,
   },
     h(IconButton, { variant: 'plain', size, icon: '−', label: decreaseLabel, disabled, onClick: () => { bump(-1) } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
-    h('span', { className: 'dsh-tdt-num__mid' },
+    h('span', { className: 'dshpc-num__mid' },
       h('input', {
-        className: 'dsh-tdt-num__input',
+        className: 'dshpc-num__input',
         ...(inputWidth === undefined ? {} : { style: { width: `${inputWidth}px` } }),
         value: text,
         disabled,
@@ -180,7 +180,7 @@ export function NumberInput(props: NumberInputProps): ReturnType<typeof h> {
         onBlur: () => { commit(text) },
         onKeyDown: (event: { key: string }) => { if (event.key === 'Enter') commit(text) },
       } as never),
-      suffix !== undefined ? h('span', { className: 'dsh-tdt-num__suffix' }, suffix) : null),
+      suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null),
     h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1) } }))
 }
 
@@ -197,14 +197,14 @@ export interface EditorOption {
  * 不许各抄一份（2026-10-04 评审：TaskPicker 曾抄第二/第三份，观感会持续漂移）。
  */
 export const FIELD_ANCHOR_STYLE: CSSProperties = {
-  display: 'inline-flex', alignItems: 'center', gap: '6px', height: 'var(--tdt-control-h-lg)', boxSizing: 'border-box',
-  minWidth: 0, maxWidth: '100%', padding: '0 var(--tdt-space-2)',
-  border: '0.5px solid var(--tdt-border-heavy)', borderRadius: 'var(--tdt-radius-md)', background: 'var(--tdt-surface-1)',
-  color: 'var(--tdt-fg)', font: 'inherit', fontSize: 'var(--tdt-font-md)', lineHeight: 'var(--tdt-line-md)', cursor: 'pointer',
-  transition: 'background var(--tdt-dur-fast) var(--tdt-ease), color var(--tdt-dur-fast) var(--tdt-ease), border-color var(--tdt-dur-fast) var(--tdt-ease)',
+  display: 'inline-flex', alignItems: 'center', gap: '6px', height: 'var(--dshpc-control-h-lg)', boxSizing: 'border-box',
+  minWidth: 0, maxWidth: '100%', padding: '0 var(--dshpc-space-2)',
+  border: '0.5px solid var(--dshpc-border-heavy)', borderRadius: 'var(--dshpc-radius-md)', background: 'var(--dshpc-surface-1)',
+  color: 'var(--dshpc-fg)', font: 'inherit', fontSize: 'var(--dshpc-font-md)', lineHeight: 'var(--dshpc-line-md)', cursor: 'pointer',
+  transition: 'background var(--dshpc-dur-fast) var(--dshpc-ease), color var(--dshpc-dur-fast) var(--dshpc-ease), border-color var(--dshpc-dur-fast) var(--dshpc-ease)',
 }
 
-/** 下拉锚点里那行文字（省略号三件套收敛到 `.dsh-tdt-ellipsis`，见 ui-style-guide §三 待抽象 #1）。 */
+/** 下拉锚点里那行文字（省略号三件套收敛到 `.dshpc-ellipsis`，见 ui-style-guide §三 待抽象 #1）。 */
 export const FIELD_LABEL_STYLE: CSSProperties = {
   flex: '1 1 auto', minWidth: 0, textAlign: 'left',
 }
@@ -212,10 +212,10 @@ export const FIELD_LABEL_STYLE: CSSProperties = {
 /** 尺寸档 → 锚点几何（高度 / 字号 / 行高 / 图标 / 间距）。**翻译只此一处**，下拉类控件共用。 */
 export function fieldMetricsOf(size: FieldSize): { height: string; font: string; line: string; icon: number; gap: string } {
   return {
-    height: size === 'sm' ? 'var(--tdt-control-h-sm)' : size === 'md' ? 'var(--tdt-control-h-md)' : 'var(--tdt-control-h-lg)',
-    font: size === 'sm' ? 'var(--tdt-font-sm)' : 'var(--tdt-font-md)',
-    line: size === 'sm' ? 'var(--tdt-line-sm)' : 'var(--tdt-line-md)',
+    height: size === 'sm' ? 'var(--dshpc-control-h-sm)' : size === 'md' ? 'var(--dshpc-control-h-md)' : 'var(--dshpc-control-h-lg)',
+    font: size === 'sm' ? 'var(--dshpc-font-sm)' : 'var(--dshpc-font-md)',
+    line: size === 'sm' ? 'var(--dshpc-line-sm)' : 'var(--dshpc-line-md)',
     icon: size === 'sm' ? 14 : 16,
-    gap: size === 'sm' ? 'var(--tdt-space-1)' : '6px',
+    gap: size === 'sm' ? 'var(--dshpc-space-1)' : '6px',
   }
 }

@@ -38,10 +38,8 @@ pnpm add dsh-plugin-core
 import { createStyleKit } from 'dsh-plugin-core/design'
 import { Button, ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
-// 1) 领一套本插件专属的样式设施（id + 变量前缀都隔离）
-//    id / prefix 的取值按项目规范定（多插件同页必须互不冲突）；
-//    下面的 dsh-task-reminder / reminder 只是演示命名规律（前缀取插件名缩写）
-setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui', prefix: 'reminder' }))
+// 1) 领一套本插件专属的样式设施：id 按插件唯一（多插件同页靠它互不覆盖）
+setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))
 // 2) 挂上 token + 控件样式（幂等，可反复调）
 ensureControls()
 
@@ -50,8 +48,8 @@ const view = <Button variant="primary" onClick={save}>保存</Button>
 ```
 
 **为什么必须先 `setStyleKit`**：样式只能以字符串在运行时注入 `<style>`（客户端产物是 JS 闭包，
-`.css` 文件内核不加载）。固定 style id 与变量前缀在多插件同页时会互相覆盖，所以做成工厂，
-每个插件领一套自己的。
+`.css` 文件内核不加载）。固定 style id 在多插件同页时会互相覆盖，所以做成工厂，每个插件领一套自己的；
+变量前缀则统一为 `dshpc`，不再按插件区分。
 
 ## 子包
 
@@ -97,8 +95,8 @@ setLocale('en') // 中文是默认
    还没搬进来，富内容要走 `renderMessage` 扩展点。
 3. **文件预览只有文本 / 图片** —— 代码无语法高亮（不引 `@codemirror/*`），
    PDF / Office 显示「暂不支持预览」。
-4. **类名没按插件隔离** —— CSS 类名仍是 `dsh-tdt-*`，两个插件若引的 core 版本不同会互相覆盖
-   （同版本无害）。主防线是 style 标签 id 与变量前缀隔离。
+4. **类名未做版本隔离** —— CSS 类名统一 `dshpc-*`，两个插件若引的 core 版本不同会互相覆盖
+   （同版本无害）。隔离靠 style 标签 id。
 5. 设置页骨架没抽（等第二个消费者）。
 
 ## 发布（打 tag 即发布，无需人工 Promote）

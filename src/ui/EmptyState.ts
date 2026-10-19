@@ -16,7 +16,7 @@ export function EmptyState(props: EmptyStateProps): ReturnType<typeof h> {
   const tt = props.translate ?? t
   return h(
     'div',
-    { className: 'dsh-tdt-empty' },
+    { className: 'dshpc-empty' },
     props.icon ?? null,
     h('div', null, props.text ?? tt('emptyText')),
     props.action ?? null,

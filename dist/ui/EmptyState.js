@@ -5,6 +5,6 @@ import { t } from '../utils/i18n.js';
 export function EmptyState(props) {
     ensureControls();
     const tt = props.translate ?? t;
-    return h('div', { className: 'dsh-tdt-empty' }, props.icon ?? null, h('div', null, props.text ?? tt('emptyText')), props.action ?? null);
+    return h('div', { className: 'dshpc-empty' }, props.icon ?? null, h('div', null, props.text ?? tt('emptyText')), props.action ?? null);
 }
 //# sourceMappingURL=EmptyState.js.map

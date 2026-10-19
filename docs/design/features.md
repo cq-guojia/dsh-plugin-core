@@ -4,7 +4,7 @@
 
 | 子路径 | 提供什么 | 详细文档 |
 |---|---|---|
-| `dsh-plugin-core/design` | token 变量表（含深色段）、`createStyleKit` 注入器工厂、`DARK_THEME_SELECTOR`、`buildTokensCss` | [`features/design.md`](features/design.md) |
+| `dsh-plugin-core/design` | token 变量表（含深色段）、`createStyleKit` 注入器工厂、`DARK_THEME_SELECTOR` | [`features/design.md`](features/design.md) |
 | `dsh-plugin-core/ui` | 控件：Button / IconButton / Segmented / Textarea / Checkbox / Input 家族 / Picker / ModelPicker / WorkspacePicker / FilePicker / **Card** / **StripCard** / **Chip** / Modal / toast / Loading / SectionHead / MarqueeText / LiveText / BackToTop / resizer / EmptyState / ErrorBoundary | [`features/ui.md`](features/ui.md) |
 | `dsh-plugin-core/utils` | 日期（含相对时间过去/未来）、字符串、字节/计数、时间区间、HTTP 取数、内置中英多语言 | [`features/utils.md`](features/utils.md) |
 | `dsh-plugin-core/explorer` | `ExplorerPanel`（面包屑 + 目录树 + 预览）、`WorkspaceFilesFace` 契约与路径工具（**不含选择器**——选工作区/选文件在 ui） | [`features/explorer.md`](features/explorer.md) |

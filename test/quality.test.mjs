@@ -27,7 +27,7 @@ test('formatYmd 可覆盖兜底', () => {
 })
 
 test('StyleKit.dispose 在无 DOM 下不抛', () => {
-  const kit = createStyleKit({ id: 'probe', prefix: 'probe' })
+  const kit = createStyleKit({ id: 'probe' })
   assert.doesNotThrow(() => kit.dispose())
   assert.doesNotThrow(() => kit.dispose())
 })

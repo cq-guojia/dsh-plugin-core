@@ -5,7 +5,7 @@ export function startResizeLayoutWidth(opts) {
     const prevUserSelect = body.style.userSelect;
     body.style.userSelect = 'none';
     window.getSelection()?.removeAllRanges();
-    const rootEl = document.getElementById('dsh-tdt-root');
+    const rootEl = document.getElementById('dshpc-root');
     if (opts.rootClass !== undefined)
         rootEl?.classList.add(opts.rootClass);
     let frame = 0;

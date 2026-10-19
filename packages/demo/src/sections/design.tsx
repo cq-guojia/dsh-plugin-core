@@ -51,7 +51,7 @@ export function DesignSection(): ReturnType<typeof h> {
         code: `import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
-setStyleKit(createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' }))
+setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
 ensureControls()`,
       },
       h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px' } },

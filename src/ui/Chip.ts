@@ -7,7 +7,7 @@ export interface ChipProps {
   className?: string
 }
 
-/** 小标签（token 用现成的 `--tdt-chip-bg`；传 `onClick` 才是可点的）。 */
+/** 小标签（token 用现成的 `--dshpc-chip-bg`；传 `onClick` 才是可点的）。 */
 export function Chip(props: ChipProps): ReturnType<typeof h> {
   ensureControls()
   const clickable = props.onClick !== undefined
@@ -15,7 +15,7 @@ export function Chip(props: ChipProps): ReturnType<typeof h> {
     clickable ? 'button' : 'span',
     {
       type: clickable ? 'button' : undefined,
-      className: `dsh-tdt-chip${clickable ? ' dsh-tdt-chip--clickable' : ''}${props.className === undefined ? '' : ` ${props.className}`}`,
+      className: `dshpc-chip${clickable ? ' dshpc-chip--clickable' : ''}${props.className === undefined ? '' : ` ${props.className}`}`,
       onClick: props.onClick,
     },
     props.children ?? null,

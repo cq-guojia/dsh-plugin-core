@@ -17,8 +17,8 @@
 | 事实 | 出处 |
 |---|---|
 | 样式只能以 TS 字符串在运行时注入 `<style>`，`import './x.css'` 内核不加载 | `docs/design/architecture.md` §样式注入 |
-| 多插件同页必须 `createStyleKit({ id, prefix })`，固定 id / 前缀会互相覆盖 | 同上 |
-| CSS **只换变量前缀** `--tdt-`，类名 `dsh-tdt-*` 必须与控件里硬编码的 className 一致 | `docs/design/style.md` |
+| 多插件同页必须 `createStyleKit({ id })`，固定 style id 会互相覆盖 | 同上 |
+| CSS 变量与类名统一 `dshpc` 前缀（`--dshpc-*` / `dshpc-*`），类名必须与控件硬编码的 className 逐字一致 | `docs/design/style.md` |
 | 明暗判据是 `body[data-ds-dark-theme]`，**不是** `prefers-color-scheme` | 同上 |
 | `ui` 必须零 `@deepseek-ai/*` 依赖（官方包只在宿主内可解析，依赖它会让整入口 import 失败） | `docs/design/external/dsh-host.md` |
 | `utils` 不得依赖 `ui` / React / DOM / 宿主 | `docs/design/architecture.md` §依赖方向 |

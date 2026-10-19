@@ -53,11 +53,11 @@ export function FilePreview(props) {
         return h(EmptyState, { text: tt('explorerFailed'), translate: tt });
     if (kind === 'image') {
         return imageUrl === null
-            ? h('div', { className: 'dsh-tdt-exp__note' }, tt('explorerLoading'))
-            : h('img', { className: 'dsh-tdt-exp__image', src: imageUrl, alt: props.path });
+            ? h('div', { className: 'dshpc-exp__note' }, tt('explorerLoading'))
+            : h('img', { className: 'dshpc-exp__image', src: imageUrl, alt: props.path });
     }
     return text === null
-        ? h('div', { className: 'dsh-tdt-exp__note' }, tt('explorerLoading'))
-        : h('pre', { className: 'dsh-tdt-exp__text' }, text);
+        ? h('div', { className: 'dshpc-exp__note' }, tt('explorerLoading'))
+        : h('pre', { className: 'dshpc-exp__text' }, text);
 }
 //# sourceMappingURL=index.js.map

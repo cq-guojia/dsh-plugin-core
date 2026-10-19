@@ -1,4 +1,4 @@
-export { CONTROLS_DOMAIN, buildCss, ensureControls, getStyleKit, setStyleKit } from './css.js';
+export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css.js';
 export { filterGroups, flattenOptions, groupOf, labelsOf, toGroups, toggleValue, type PickerGroup, type PickerOption, } from './picker-logic.js';
 export { Picker, type PickerProps, type PickerSize } from './Picker.js';
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js';

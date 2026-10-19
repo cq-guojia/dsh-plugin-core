@@ -15,9 +15,9 @@ function CardShell(kind, props) {
     const accent = props.accent ?? 'business';
     const isPreset = CARD_ACCENTS.includes(accent);
     const classes = [
-        'dsh-tdt-card',
-        kind === 'strip' ? 'dsh-tdt-card--strip' : 'dsh-tdt-card--bordered',
-        isPreset ? `dsh-tdt-card--${accent}` : '',
+        'dshpc-card',
+        kind === 'strip' ? 'dshpc-card--strip' : 'dshpc-card--bordered',
+        isPreset ? `dshpc-card--${accent}` : '',
         props.className ?? '',
     ]
         .filter((s) => s !== '')
@@ -26,19 +26,19 @@ function CardShell(kind, props) {
     const style = isPreset
         ? props.style
         : { ...props.style, ['--card-accent']: accent };
-    return h('div', { className: classes, style }, h('span', { className: 'dsh-tdt-card__bar', 'aria-hidden': true }), h('div', { className: 'dsh-tdt-card__head' }, h('div', { className: 'dsh-tdt-card__main' }, props.children ?? null), props.action === undefined && props.onToggle === undefined
+    return h('div', { className: classes, style }, h('span', { className: 'dshpc-card__bar', 'aria-hidden': true }), h('div', { className: 'dshpc-card__head' }, h('div', { className: 'dshpc-card__main' }, props.children ?? null), props.action === undefined && props.onToggle === undefined
         ? null
-        : h('div', { className: 'dsh-tdt-card__side' }, props.action ?? null, props.onToggle === undefined
+        : h('div', { className: 'dshpc-card__side' }, props.action ?? null, props.onToggle === undefined
             ? null
             : h('button', {
                 type: 'button',
-                className: 'dsh-tdt-card__toggle',
+                className: 'dshpc-card__toggle',
                 'aria-label': tt('cardToggle'),
                 'aria-expanded': props.expanded === true,
                 onClick: props.onToggle,
-            }, h('span', { className: props.expanded === true ? 'dsh-tdt-card__caret is-open' : 'dsh-tdt-card__caret' }, '▾')))), props.panel === undefined || props.expanded !== true
+            }, h('span', { className: props.expanded === true ? 'dshpc-card__caret is-open' : 'dshpc-card__caret' }, '▾')))), props.panel === undefined || props.expanded !== true
         ? null
-        : h('div', { className: 'dsh-tdt-card__panel' }, props.panel));
+        : h('div', { className: 'dshpc-card__panel' }, props.panel));
 }
 /**
  * 卡片：圆角 + 1px 边框，左侧色条上下留距（短条）。

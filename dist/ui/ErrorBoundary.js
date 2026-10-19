@@ -24,7 +24,7 @@ export class ErrorBoundary extends Component {
         if (this.props.fallback !== undefined)
             return this.props.fallback(err, this.retry);
         const tt = this.props.translate ?? t;
-        return h('div', { className: 'dsh-tdt-error' }, h('div', null, `${tt('errorTitle')}：${err.message}`), h('button', { type: 'button', className: 'dsh-tdt-error__retry', onClick: this.retry }, tt('errorRetry')));
+        return h('div', { className: 'dshpc-error' }, h('div', null, `${tt('errorTitle')}：${err.message}`), h('button', { type: 'button', className: 'dshpc-error__retry', onClick: this.retry }, tt('errorRetry')));
     }
 }
 //# sourceMappingURL=ErrorBoundary.js.map

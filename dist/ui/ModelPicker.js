@@ -27,7 +27,7 @@ export function ModelPicker(props) {
     }
     const group = groupOf(props.groups, cur);
     const provider = group?.value ?? '';
-    return h('div', { className: 'dsh-tdt-picker__row' }, h(Picker, {
+    return h('div', { className: 'dshpc-picker__row' }, h(Picker, {
         options: props.groups.map((g) => ({ value: g.value, label: g.label })),
         value: provider === '' ? undefined : provider,
         placeholder: tt('modelProvider'),

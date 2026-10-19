@@ -6,7 +6,7 @@
  *
  * 行为：
  * - 渲染在主面板滚动容器（page 容器，overflow:auto）内；fixed 定位，**不占布局空间**；
- * - 横向贴在主内容列（`PANEL_CONTENT_ID` = `dsh-tdt-main`，限宽 1120）**右缘外侧**、页面靠下，
+ * - 横向贴在主内容列（`PANEL_CONTENT_ID` = `dshpc-main`，限宽 1120）**右缘外侧**、页面靠下，
  *   与主内容同进退（窗口 resize / 分栏 dock 开合都会跟住）；
  * - 滚动超过阈值（默认 320px）才显形，否则隐身（`.is-visible` 切换）；
  * - 点击把滚动容器平滑滚回顶部（prefers-reduced-motion 下改用瞬时）。
@@ -19,9 +19,9 @@
 import { ensureControls } from './css.js'
 import { createElement as h, useEffect, useRef, useState } from 'react'
 
-// 主内容列 id 与 `<Loading />` 同源：必须 == ui/index.ts 的 `PANEL_CONTENT_ID`（`dsh-tdt-main`），
+// 主内容列 id 与 `<Loading />` 同源：必须 == ui/index.ts 的 `PANEL_CONTENT_ID`（`dshpc-main`），
 // 这里用字面量避免与 ui/index 形成循环依赖（Loading 同样如此）。
-const DEFAULT_ANCHOR_ID = 'dsh-tdt-main'
+const DEFAULT_ANCHOR_ID = 'dshpc-main'
 
 /** 滚动超过这个距离（px）才显形。 */
 const SHOW_THRESHOLD_PX = 320
@@ -42,7 +42,7 @@ function findScrollContainer(node: HTMLElement | null): HTMLElement | null {
 }
 
 export interface BackToTopProps {
-  /** 主内容容器 id，按钮贴到它的右缘外侧；默认 `dsh-tdt-main`。 */
+  /** 主内容容器 id，按钮贴到它的右缘外侧；默认 `dshpc-main`。 */
   anchorId?: string
 }
 
@@ -106,10 +106,10 @@ export function BackToTop(props: BackToTopProps): ReturnType<typeof h> {
   return h('button', {
     ref,
     type: 'button',
-    className: `dsh-tdt-backtotop${visible ? ' is-visible' : ''}`,
+    className: `dshpc-backtotop${visible ? ' is-visible' : ''}`,
     style: { left },
     'aria-label': '回到顶部',
     title: '回到顶部',
     onClick,
-  }, h('span', { className: 'dsh-tdt-backto-top__arrow' }, '↑'))
+  }, h('span', { className: 'dshpc-backto-top__arrow' }, '↑'))
 }

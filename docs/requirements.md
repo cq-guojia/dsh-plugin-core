@@ -38,8 +38,8 @@ dsh-plugin-core/
 
 ### 2.1 design
 
-- token 变量表，**前缀参数化**（`--tdt-` / `--dtl-` / `--stp-` → 由调用方给的 prefix 决定）
-- 样式注入器工厂 `createStyleKit({ id, prefix })`
+- token 变量表，**变量前缀全生态统一为 `dshpc`**
+- 样式注入器工厂 `createStyleKit({ id })`
 - 主题判据
 - **零 React、没有组件**
 
@@ -76,7 +76,7 @@ dsh-plugin-core/
 - 设置页骨架（**候补**：等出现第二个愿意用它的消费者再抽；`stp` 目前走官方 `SettingsForm`）
 - `host` 子包（**已取消**）
 - `llm/` 独立子包（**已取消**，ModelPicker 进 ui）
-- 业务件：`TaskPicker` / 日历 / `CodeViewer` 审美 / 业务 token（`--tdt-cal-*` / chip-bg /
+- 业务件：`TaskPicker` / 日历 / `CodeViewer` 审美 / 业务 token（`--dshpc-cal-*` / chip-bg /
   filechip / PROCESS_FILES_CSS）/ 页面几何 / 插件私有路由 / DB 表 / `mirror/` 之外的业务 UI
 
 ## 4. 立包判据（防止子包无限膨胀）
@@ -104,8 +104,7 @@ dsh-plugin-core/
 现 `dsh-task-dispatch-table/src/client/ui/style.ts:25` 是模块级单例 + 固定 style id
 `dsh-task-dispatch-table-ui`，多插件同页必然互相覆盖。
 
-⇒ 必须是 `createStyleKit({ id, prefix })`：每个插件调一次领一套自己的
-（自己的 `<style>` 标签 id + 自己的变量前缀），互不干扰。
+⇒ 必须是 `createStyleKit({ id })`：每个插件调一次领一套自己的（`<style>` 标签 id 按插件唯一）。
 
 ### 5.3 明暗色判据（别跟错）
 
@@ -134,15 +133,12 @@ dsh-plugin-core/
 
 | 位置 | 约定 |
 |---|---|
-| design | `createStyleKit({ id, prefix })` → `{ registerStyle, ensureStyles, applyStyle }` |
-| ui / ModelPicker | `variant: 'cascade' \| 'flat'`（级联：先厂商后模型 / 平铺：一个下拉列全部）；
-数据统一为 `groups: [{ value, label, options }]`，一份数据两种渲染。**禁止用数字或无意义名** |
+| design | `createStyleKit({ id })` → `{ registerStyle, ensureStyles, applyStyle }` |
+| ui / ModelPicker | `variant: 'cascade' \| 'flat'`（级联：先厂商后模型 / 平铺：一个下拉列全部）；数据统一为 `groups: [{ value, label, options }]`，一份数据两种渲染。**禁止用数字或无意义名** |
 | ui / Picker | `mode: 'single' \| 'multiple'`、`max`、分组、搜索、空态、降级 |
 | explorer | `WorkspaceFilesFace` 由插件注入（`list` / `stat` / `read` 最小面），组件不抓宿主全局 |
-| explorer / WorkspacePicker | `WorkspacePicker({ workspaces, mode, max, onChange })` —— 数据调用方给
-（工作区列表是 host 侧 `ctx.workspaceRegistry.list()` 取的，要经插件私有通道送到 client，**组件自己取不到**） |
-| session | `SessionPreview({ sessionId, source, variant })` —— `source` = 取数能力接口
-（会话预览内部有交互：传输文件等，光有静态消息流不够） |
+| explorer / WorkspacePicker | `WorkspacePicker({ workspaces, mode, max, onChange })` —— 数据调用方给（工作区列表是 host 侧 `ctx.workspaceRegistry.list()` 取的，要经插件私有通道送到 client，**组件自己取不到**） |
+| session | `SessionPreview({ sessionId, source, variant })` —— `source` = 取数能力接口（会话预览内部有交互：传输文件等，光有静态消息流不够） |
 
 ## 7. 分期与任务切分
 

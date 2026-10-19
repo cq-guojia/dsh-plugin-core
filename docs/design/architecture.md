@@ -41,7 +41,7 @@ utils（谁都不依赖，谁都可以用）
 ## 样式注入（本包最特殊的机制）
 
 ```
-插件启动 ──▶ setStyleKit(createStyleKit({ id, prefix }))
+插件启动 ──▶ setStyleKit(createStyleKit({ id }))
                     │
                     ▼
               ensureControls() ──▶ 往 <head> 插一个 <style id="{id}">
@@ -51,8 +51,8 @@ utils（谁都不依赖，谁都可以用）
 为什么必须运行时注入：DSH 客户端产物是 `window.__ModuleLoader__.load({ id, factory })` 的
 CJS 闭包，`import './x.css'` 只会产出独立 css 资源、**内核不加载它** ⇒ CSS 只能以字符串在运行时注入。
 
-为什么是工厂而不是模块级单例：单例只有一个固定 style id 与固定变量前缀，多个插件同处一页时会抢同一个
-`<style>` 标签、变量互相覆盖。每个插件领一套自己的（`id` + `prefix`）。
+为什么是工厂而不是模块级单例：单例只有一个固定 style id，多个插件同处一页时会抢同一个 `<style>` 标签、
+后挂载的覆盖先挂载的。每个插件领一套自己的（`id` 按插件唯一）；变量前缀全生态统一 `dshpc`。
 
 为什么 core 可以用模块级变量存「当前 kit」：core 会被**内联进每个插件各自的 bundle**（不是共享运行时），
 模块级变量天然按插件隔离，不像共享模块那样会互相踩。

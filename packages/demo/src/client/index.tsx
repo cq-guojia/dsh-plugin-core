@@ -5,7 +5,7 @@
  *  client 侧**顶层不得导出 inject**，等待一律写 ctx.inject([...], cb) 内，否则 entry 一直 pending、
  *  卡死整个 dsh 启动。本文件只导出 apply。
  *
- * 身份隔离：本插件领一套自己的 kit（prefix 'dshpc'）——与 --tdt-*（兄弟插件）、--dsw-* 和 --dsh-*
+ * 身份隔离：本插件领一套自己的 kit（prefix 'dshpc'）——与 --dshpc-*（兄弟插件）、--dsw-* 和 --dsh-*
  * （宿主官方）都分开；demo 展示代码里直接用 --dshpc-*，不再做任何跨前缀别名。
  */
 import { createElement as h, useEffect, useState } from 'react'
@@ -19,8 +19,6 @@ import { DICT, setDemoTranslate, t } from '../i18n.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
 const PANEL_ID = 'dsh-plugin-core-demo'
-/** 本插件的变量前缀：与 --tdt-*（兄弟插件）、--dsw-* 和 --dsh-*（宿主）隔离。 */
-const PREFIX = 'dshpc'
 
 /** 宿主 locale 服务的结构类型（不引入宿主包，按接口使用）。 */
 interface LocaleRuntimeLike {
@@ -121,7 +119,7 @@ export function apply(ctx: {
   inject: (deps: string[], cb: (sub: unknown) => void) => void
 }): void {
   // 领一套自己的 kit 并注入 token + 控件样式（与库在宿主里的用法完全一致）
-  const kit = createStyleKit({ id: 'dsh-plugin-core-plugin', prefix: PREFIX })
+  const kit = createStyleKit({ id: 'dsh-plugin-core-plugin' })
   setStyleKit(kit)
   ensureControls(kit)
   kit.ensureStyles()

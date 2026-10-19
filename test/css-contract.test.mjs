@@ -1,6 +1,6 @@
 // CSS 契约自检：一个类名只能有一套皮肤。
 //
-// 背景（2026-10-19）：`.dsh-tdt-chip` 曾在 controls-css 里被定义成 28×28 方角图标底板、
+// 背景（2026-10-19）：`.dshpc-chip` 曾在 controls-css 里被定义成 28×28 方角图标底板、
 // 在 card-css 里被定义成胶囊标签，两份都注入同一页面 ⇒ 后者覆盖前者：Chip 组件被锁成
 // 28px 宽（文字挤压）、图标按钮被撑成胶囊。这类「同名不同皮」靠人眼审不出来，必须由测试盯。
 import test from 'node:test'
@@ -63,15 +63,15 @@ test('CSS 常量之间不得有同名顶层选择器（同名不同皮会互相�
 
 test('chip 只有标签一套皮肤，图标按钮走 iconbtn', () => {
   const holders = Object.entries(CONSTANTS)
-    .filter(([, css]) => css.includes('dsh-tdt-chip'))
+    .filter(([, css]) => css.includes('.dshpc-chip'))
     .map(([name]) => name)
-  assert.deepEqual(holders, ['CHIP_CSS'], 'dsh-tdt-chip 只允许出现在 chip-css.ts')
-  assert.ok(!CHIP_CSS.includes('dsh-tdt-chip--label'), 'dsh-tdt-chip--label 是被删掉的图标语义，勿回潮')
+  assert.deepEqual(holders, ['CHIP_CSS'], 'dshpc-chip 只允许出现在 chip-css.ts')
+  assert.ok(!CHIP_CSS.includes('dshpc-chip--label'), 'dshpc-chip--label 是被删掉的图标语义，勿回潮')
 })
 
 test('Modal 关闭按钮用专属类名，不借 Picker 触发器皮肤', async () => {
-  assert.ok(FEEDBACK_CSS.includes('.dsh-tdt-modal__close'), 'FEEDBACK_CSS 缺 .dsh-tdt-modal__close')
+  assert.ok(FEEDBACK_CSS.includes('.dshpc-modal__close'), 'FEEDBACK_CSS 缺 .dshpc-modal__close')
   const modal = await readFile(new URL('../dist/ui/Modal.js', import.meta.url), 'utf8')
-  assert.ok(modal.includes('dsh-tdt-modal__close'), 'Modal 关闭按钮未用 dsh-tdt-modal__close')
-  assert.ok(!modal.includes('dsh-tdt-picker__trigger'), 'Modal 仍在借 dsh-tdt-picker__trigger')
+  assert.ok(modal.includes('dshpc-modal__close'), 'Modal 关闭按钮未用 dshpc-modal__close')
+  assert.ok(!modal.includes('dshpc-picker__trigger'), 'Modal 仍在借 dshpc-picker__trigger')
 })

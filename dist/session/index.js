@@ -37,35 +37,35 @@ export function SessionPreview(props) {
         };
     }, [props.sessionId, props.source, nonce]);
     const body = loading
-        ? h('div', { className: 'dsh-tdt-ses__note' }, tt('sessionLoading'))
+        ? h('div', { className: 'dshpc-ses__note' }, tt('sessionLoading'))
         : failed
             ? h(EmptyState, {
                 text: tt('sessionFailed'),
                 translate: tt,
-                action: h('button', { type: 'button', className: 'dsh-tdt-error__retry', onClick: () => setNonce(nonce + 1) }, tt('errorRetry')),
+                action: h('button', { type: 'button', className: 'dshpc-error__retry', onClick: () => setNonce(nonce + 1) }, tt('errorRetry')),
             })
             : messages.length === 0
                 ? h(EmptyState, { text: tt('sessionEmpty'), translate: tt })
-                : h('div', { className: 'dsh-tdt-ses__list' }, messages.map((m) => props.renderMessage !== undefined
+                : h('div', { className: 'dshpc-ses__list' }, messages.map((m) => props.renderMessage !== undefined
                     ? h('div', { key: m.id }, props.renderMessage(m))
-                    : h('div', { key: m.id, className: `dsh-tdt-ses__msg dsh-tdt-ses__msg--${m.role}` }, h('div', { className: 'dsh-tdt-ses__head' }, tt(ROLE_LABEL_KEY[m.role])), h('pre', { className: 'dsh-tdt-ses__text' }, m.text), (m.attachments ?? []).length === 0
+                    : h('div', { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, h('div', { className: 'dshpc-ses__head' }, tt(ROLE_LABEL_KEY[m.role])), h('pre', { className: 'dshpc-ses__text' }, m.text), (m.attachments ?? []).length === 0
                         ? null
-                        : h('div', { className: 'dsh-tdt-ses__atts' }, (m.attachments ?? []).map((a) => h('button', {
+                        : h('div', { className: 'dshpc-ses__atts' }, (m.attachments ?? []).map((a) => h('button', {
                             key: a.path,
                             type: 'button',
-                            className: 'dsh-tdt-ses__att',
+                            className: 'dshpc-ses__att',
                             onClick: () => props.onOpenFile?.(a.path),
                         }, a.name, a.bytes === undefined ? null : ` ${formatBytes(a.bytes)}`))))));
     if (variant === 'modal') {
         return h(Modal, {
             title: props.title ?? props.sessionId,
             onClose: props.onClose,
-            children: h('div', { className: 'dsh-tdt-ses', style: { minWidth: 'min(720px, 88vw)' } }, body),
+            children: h('div', { className: 'dshpc-ses', style: { minWidth: 'min(720px, 88vw)' } }, body),
         });
     }
-    return h('div', { className: `dsh-tdt-ses dsh-tdt-ses--${variant}` }, props.onClose === undefined
+    return h('div', { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === undefined
         ? null
-        : h('div', { className: 'dsh-tdt-ses__head' }, h('button', { type: 'button', className: 'dsh-tdt-exp__crumb', onClick: props.onClose }, '✕')), body);
+        : h('div', { className: 'dshpc-ses__head' }, h('button', { type: 'button', className: 'dshpc-exp__crumb', onClick: props.onClose }, '✕')), body);
 }
 export { ROLE_LABEL_KEY } from './types.js';
 //# sourceMappingURL=index.js.map

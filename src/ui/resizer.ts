@@ -14,7 +14,7 @@ export interface ResizeOptions {
   onMove: (width: number) => void
   /** 松手：提交最终宽度（落 state / 持久化）。 */
   onCommit: (width: number) => void
-  /** 拖拽期间挂到 #dsh-tdt-root 的类（如预览 dock 的 `dsh-tdt-resizing` 令 iframe pointer-events:none）；松手移除。 */
+  /** 拖拽期间挂到 #dshpc-root 的类（如预览 dock 的 `dshpc-resizing` 令 iframe pointer-events:none）；松手移除。 */
   rootClass?: string
   /** rAF 节流（预览 dock 用，避免每帧整页重排）。 */
   rafThrottle?: boolean
@@ -27,7 +27,7 @@ export function startResizeLayoutWidth(opts: ResizeOptions): void {
   const prevUserSelect = body.style.userSelect
   body.style.userSelect = 'none'
   window.getSelection()?.removeAllRanges()
-  const rootEl = document.getElementById('dsh-tdt-root')
+  const rootEl = document.getElementById('dshpc-root')
   if (opts.rootClass !== undefined) rootEl?.classList.add(opts.rootClass)
   let frame = 0
   let pendingX = 0

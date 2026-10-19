@@ -63,7 +63,7 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
   const provider = group?.value ?? ''
   return h(
     'div',
-    { className: 'dsh-tdt-picker__row' },
+    { className: 'dshpc-picker__row' },
     h(Picker, {
       options: props.groups.map((g) => ({ value: g.value, label: g.label })),
       value: provider === '' ? undefined : provider,

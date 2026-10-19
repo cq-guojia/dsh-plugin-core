@@ -91,7 +91,7 @@ export interface EditorOption {
  * 不许各抄一份（2026-10-04 评审：TaskPicker 曾抄第二/第三份，观感会持续漂移）。
  */
 export declare const FIELD_ANCHOR_STYLE: CSSProperties;
-/** 下拉锚点里那行文字（省略号三件套收敛到 `.dsh-tdt-ellipsis`，见 ui-style-guide §三 待抽象 #1）。 */
+/** 下拉锚点里那行文字（省略号三件套收敛到 `.dshpc-ellipsis`，见 ui-style-guide §三 待抽象 #1）。 */
 export declare const FIELD_LABEL_STYLE: CSSProperties;
 /** 尺寸档 → 锚点几何（高度 / 字号 / 行高 / 图标 / 间距）。**翻译只此一处**，下拉类控件共用。 */
 export declare function fieldMetricsOf(size: FieldSize): {

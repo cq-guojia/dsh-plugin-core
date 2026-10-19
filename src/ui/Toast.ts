@@ -2,7 +2,7 @@ import { ensureControls } from './css.js'
 
 export type ToastVariant = 'info' | 'success' | 'error'
 
-const HOST_ID = 'dsh-tdt-toast-host'
+const HOST_ID = 'dshpc-toast-host'
 const DEFAULT_MS = 2600
 
 /**
@@ -17,7 +17,7 @@ export function showToast(message: string, opts?: { variant?: ToastVariant; dura
   const variant = opts?.variant ?? 'info'
   const host = ensureHost()
   const el = document.createElement('div')
-  el.className = `dsh-tdt-toast${variant === 'info' ? '' : ` dsh-tdt-toast--${variant}`}`
+  el.className = `dshpc-toast${variant === 'info' ? '' : ` dshpc-toast--${variant}`}`
   el.textContent = message
   host.appendChild(el)
   setTimeout(() => {
@@ -32,7 +32,7 @@ function ensureHost(): HTMLElement {
   if (found !== null) return found as HTMLElement
   const host = document.createElement('div')
   host.id = HOST_ID
-  host.className = 'dsh-tdt-toast-host'
+  host.className = 'dshpc-toast-host'
   document.body.appendChild(host)
   return host
 }

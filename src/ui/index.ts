@@ -1,7 +1,7 @@
 // ui —— 基础控件（依赖 design）。
-// 使用前：插件启动时 `setStyleKit(createStyleKit({ id, prefix }))` 一次，
+// 使用前：插件启动时 `setStyleKit(createStyleKit({ id }))` 一次，
 // 再调一次 `ensureControls()` 把 token + 控件样式挂上（幂等）。
-export { CONTROLS_DOMAIN, buildCss, ensureControls, getStyleKit, setStyleKit } from './css.js'
+export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css.js'
 export {
   filterGroups,
   flattenOptions,

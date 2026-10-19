@@ -3,10 +3,10 @@
  *
  * 两轴模型（同 Segmented）：
  *  - `variant`：`primary`（实心强调）/ `outline`（描边中性）/ `ghost`（无底无边）/ `danger`（实心红，破坏性确认）
- *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— 高度一律吃 `--tdt-control-h-*`，**有边 / 无边同高**（边框在内部补回）
+ *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— 高度一律吃 `--dshpc-control-h-*`，**有边 / 无边同高**（边框在内部补回）
  *
  * `IconButton` 是纯图标钮：`plain`（默认无底无边，hover 起灰底）/ `outline`（描边）/ `danger`（红）。
- * 链接型文字钮 = `Button variant="ghost"` + 修饰类 `dsh-tdt-btn--link`（红字危险描边 = `outline` + `dsh-tdt-btn--danger-ink`）。
+ * 链接型文字钮 = `Button variant="ghost"` + 修饰类 `dshpc-btn--link`（红字危险描边 = `outline` + `dshpc-btn--danger-ink`）。
  *
  * ⚠️ 不许在任何使用点就地写按钮样式；要多一档外观 ⇒ 走
  * docs/design/ui-style-guide.md §五 的流程（改基础层，一处改全站生效）。
@@ -55,7 +55,7 @@ export interface IconButtonProps {
 
 /** 组装按钮 class（结构一套 + 轴类）。 */
 function buttonClass(variant: ButtonVariant, size: ButtonSize, extra?: string): string {
-  return `dsh-tdt-btn dsh-tdt-btn--${variant} dsh-tdt-btn--${size}${extra !== undefined && extra !== '' ? ' ' + extra : ''}`
+  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${extra !== undefined && extra !== '' ? ` ${extra}` : ''}`
 }
 
 /**
@@ -74,7 +74,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     style,
   }
   return h('button', attrs as never,
-    icon !== undefined && icon !== null ? h('span', { className: 'dsh-tdt-btn__icon' }, icon) : null,
+    icon !== undefined && icon !== null ? h('span', { className: 'dshpc-btn__icon' }, icon) : null,
     children)
 }
 
@@ -92,7 +92,7 @@ export function IconButton(props: IconButtonProps): ReturnType<typeof h> {
     type: (rest.type as string | undefined) ?? 'button',
     title: rest.title ?? label,
     'aria-label': rest['aria-label'] ?? label,
-    className: `dsh-tdt-iconbtn dsh-tdt-iconbtn--${variant} dsh-tdt-iconbtn--${size}${className !== undefined && className !== '' ? ' ' + className : ''}`,
+    className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style,
   }
   return h('button', attrs as never, icon)

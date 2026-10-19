@@ -10,7 +10,7 @@
 import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
-setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui', prefix: 'reminder' }))
+setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))
 ensureControls()
 ```
 
@@ -153,9 +153,9 @@ h(StripCard, {
 }, h('div', null, '标题 + 元信息'))
 ```
 
-`Chip`：小标签，token 用现成的 `--tdt-chip-bg`；传 `onClick` 才是可点的。
+`Chip`：小标签，token 用现成的 `--dshpc-chip-bg`；传 `onClick` 才是可点的。
 
-**语义边界**：`Chip` 只管「胶囊标签」这一件事。**只给图标的小按钮请用 `IconButton`**（`.dsh-tdt-iconbtn`），
+**语义边界**：`Chip` 只管「胶囊标签」这一件事。**只给图标的小按钮请用 `IconButton`**（`.dshpc-iconbtn`），
 不要拿 `Chip` 当图标底板——同一个类名两套皮肤（28px 定宽 vs 胶囊形）会互相覆盖、把文字挤成一列。
 现在一套皮肤只允许出现一次，由 `test/css-contract.test.mjs` 盯着。
 
@@ -179,7 +179,7 @@ h(StripCard, {
 | 组件 / 函数 | 说明 |
 |---|---|
 | `showToast(message, opts?)` | **命令式**，不要求挂组件。`opts: { variant?: 'info' \| 'success' \| 'error', durationMs? }`（默认 2600ms）。无 `document` 静默跳过 |
-| `Loading({ anchorId? })` | 贴到主内容容器右下角的加载指示；`anchorId` 默认 `dsh-tdt-main` |
+| `Loading({ anchorId? })` | 贴到主内容容器右下角的加载指示；`anchorId` 默认 `dshpc-main` |
 | `RunningBlocks()` | 运行中的占位块 |
 | `EmptyState({ text?, icon?, action?, translate? })` | 统一空态 |
 | `ErrorBoundary({ fallback?, onError?, translate? })` | class 组件；子组件抛错不让整个插件白屏，默认给「出错了 + 重试」 |

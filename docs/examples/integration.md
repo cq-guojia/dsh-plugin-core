@@ -19,14 +19,12 @@ pnpm add dsh-plugin-core
 import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
-const kit = createStyleKit({ id: 'dsh-task-reminder-ui', prefix: 'reminder' })
+const kit = createStyleKit({ id: 'dsh-task-reminder-ui' })
 setStyleKit(kit)
 ensureControls()
 ```
 
-`id` 必须插件内唯一；`prefix` 是变量前缀（`reminder` ⇒ `--reminder-fg`）。
-两者取值按**项目规范**定（多插件同页必须互不冲突）——示例里的 `dsh-task-reminder` / `reminder`
-只是演示命名规律（前缀取插件名缩写），不是可用值的枚举。
+`id` 必须插件内唯一（多插件同页靠它互不覆盖）；变量与类名统一使用 `dshpc` 前缀，不需要传参。
 
 ## 2. 用一个控件
 
@@ -97,7 +95,7 @@ kit.dispose()   // 撤掉 <style> 标签并清空登记域（插件卸载 / HMR�
 
 | 坑 | 现象 | 解法 |
 |---|---|---|
-| 忘了 `setStyleKit` 就渲染控件 | 样式晚一帧或串到默认前缀 | 入口处先调，再渲染 |
+| 忘了 `setStyleKit` 就渲染控件 | 样式晚一帧或落到默认 style id | 入口处先调，再渲染 |
 | 直接 `import` 官方 `@deepseek-ai/*` 并指望本包帮你引 | Node 下 `ERR_MODULE_NOT_FOUND` | 本包 `ui` 已零官方依赖；你要用官方件就在插件侧自己处理平台模块 |
 | 给 `read` 少传第三参 `range` | 远端拒：`expected 3 business argument(s) … got 2` | 一律显式传 `{}` |
 | 用 `relativePast` 显示未来时间 | 「3 分钟后」显示成「刚刚」 | 用 `relativeFuture` |

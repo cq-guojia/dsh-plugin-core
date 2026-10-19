@@ -38,11 +38,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
     const tt = this.props.translate ?? t
     return h(
       'div',
-      { className: 'dsh-tdt-error' },
+      { className: 'dshpc-error' },
       h('div', null, `${tt('errorTitle')}：${err.message}`),
       h(
         'button',
-        { type: 'button', className: 'dsh-tdt-error__retry', onClick: this.retry },
+        { type: 'button', className: 'dshpc-error__retry', onClick: this.retry },
         tt('errorRetry'),
       ),
     )

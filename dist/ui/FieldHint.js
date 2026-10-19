@@ -17,11 +17,11 @@ import { createElement as h } from 'react';
 export function FieldHint(props) {
     ensureControls();
     return h('span', {
-        className: `dsh-tdt-hint${props.className !== undefined && props.className !== '' ? ' ' + props.className : ''}`,
+        className: `dshpc-hint${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
         style: props.style,
         tabIndex: 0,
         role: 'note',
         'aria-label': props.text,
-    }, '?', h('span', { className: 'dsh-tdt-hint__bubble', role: 'tooltip' }, props.text));
+    }, '?', h('span', { className: 'dshpc-hint__bubble', role: 'tooltip' }, props.text));
 }
 //# sourceMappingURL=FieldHint.js.map

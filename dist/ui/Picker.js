@@ -96,52 +96,52 @@ export function Picker(props) {
         }
     };
     return h('div', {
-        className: `dsh-tdt-picker${props.className === undefined ? '' : ` ${props.className}`}`,
+        className: `dshpc-picker${props.className === undefined ? '' : ` ${props.className}`}`,
         ref: rootRef,
         onKeyDown,
     }, h('button', {
         type: 'button',
         'aria-label': props.ariaLabel,
         'aria-expanded': open,
-        className: `dsh-tdt-picker__trigger dsh-tdt-picker__trigger--${size}`,
+        className: `dshpc-picker__trigger dshpc-picker__trigger--${size}`,
         disabled: props.disabled === true,
         onClick: () => {
             if (props.disabled !== true)
                 setOpen(!open);
         },
-    }, h('span', null, summary), h('span', { className: 'dsh-tdt-picker__caret' }, '▾')), open
+    }, h('span', null, summary), h('span', { className: 'dshpc-picker__caret' }, '▾')), open
         ? h('div', {
             className: placement === 'up'
-                ? 'dsh-tdt-picker__menu dsh-tdt-picker__menu--up'
-                : 'dsh-tdt-picker__menu',
+                ? 'dshpc-picker__menu dshpc-picker__menu--up'
+                : 'dshpc-picker__menu',
         }, props.degraded === true
-            ? h('div', { className: 'dsh-tdt-picker__degraded' }, tt('pickerDegraded'))
-            : null, atMax ? h('div', { className: 'dsh-tdt-picker__degraded' }, tt('pickerMaxReached', { n: props.max ?? 0 })) : null, props.searchable === true
+            ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerDegraded'))
+            : null, atMax ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerMaxReached', { n: props.max ?? 0 })) : null, props.searchable === true
             ? h('input', {
-                className: 'dsh-tdt-picker__search',
+                className: 'dshpc-picker__search',
                 placeholder: tt('pickerSearch'),
                 value: query,
                 onChange: (e) => setQuery(e.target.value),
             })
             : null, flat.length === 0 && groups.length === 0
-            ? h('div', { className: 'dsh-tdt-picker__empty' }, tt('pickerEmpty'))
+            ? h('div', { className: 'dshpc-picker__empty' }, tt('pickerEmpty'))
             : flat.length === 0
-                ? h('div', { className: 'dsh-tdt-picker__empty' }, tt('pickerNoMatch'))
+                ? h('div', { className: 'dshpc-picker__empty' }, tt('pickerNoMatch'))
                 : [
                     clearable && mode === 'single' && selected.length > 0
                         ? h('div', {
                             key: '__clear__',
-                            className: 'dsh-tdt-picker__option dsh-tdt-picker__option--clear',
+                            className: 'dshpc-picker__option dshpc-picker__option--clear',
                             onClick: clear,
                         }, tt('pickerClear'))
                         : null,
                     ...shown.map((g) => h('div', { key: g.value || '_' }, g.label === ''
                         ? null
-                        : h('div', { className: 'dsh-tdt-picker__group-label' }, g.label), g.options.map((o) => {
+                        : h('div', { className: 'dshpc-picker__group-label' }, g.label), g.options.map((o) => {
                         const activeCls = [
-                            'dsh-tdt-picker__option',
-                            selected.includes(o.value) ? 'dsh-tdt-picker__option--active' : '',
-                            o.disabled === true || atMax ? 'dsh-tdt-picker__option--disabled' : '',
+                            'dshpc-picker__option',
+                            selected.includes(o.value) ? 'dshpc-picker__option--active' : '',
+                            o.disabled === true || atMax ? 'dshpc-picker__option--disabled' : '',
                         ]
                             .filter((s) => s !== '')
                             .join(' ');
@@ -155,7 +155,7 @@ export function Picker(props) {
                                     pick(o.value);
                             },
                         }, mode === 'multiple'
-                            ? h('span', { className: 'dsh-tdt-picker__tick' }, selected.includes(o.value) ? '✓' : '')
+                            ? h('span', { className: 'dshpc-picker__tick' }, selected.includes(o.value) ? '✓' : '')
                             : null, h('span', null, o.label));
                     }))),
                 ])

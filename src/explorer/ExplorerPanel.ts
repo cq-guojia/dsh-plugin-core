@@ -72,10 +72,10 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
 
   const crumbBar = h(
     'div',
-    { className: 'dsh-tdt-exp__crumbs' },
+    { className: 'dshpc-exp__crumbs' },
     h(
       'button',
-      { type: 'button', className: 'dsh-tdt-exp__crumb', onClick: () => goto('') },
+      { type: 'button', className: 'dshpc-exp__crumb', onClick: () => goto('') },
       tt('explorerRoot'),
     ),
     crumbs.map((c, i) => {
@@ -84,12 +84,12 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
       return h(
         'span',
         { key: upto },
-        h('span', { className: 'dsh-tdt-exp__sep' }, ' / '),
+        h('span', { className: 'dshpc-exp__sep' }, ' / '),
         h(
           'button',
           {
             type: 'button',
-            className: `dsh-tdt-exp__crumb${isLast ? ' dsh-tdt-exp__crumb--current' : ''}`,
+            className: `dshpc-exp__crumb${isLast ? ' dshpc-exp__crumb--current' : ''}`,
             onClick: () => goto(upto),
           },
           c,
@@ -98,12 +98,12 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
     }),
     h(
       'span',
-      { className: 'dsh-tdt-exp__tools' },
+      { className: 'dshpc-exp__tools' },
       h(
         'button',
         {
           type: 'button',
-          className: 'dsh-tdt-exp__crumb',
+          className: 'dshpc-exp__crumb',
           disabled: dir === '',
           onClick: () => goto(parentOf(dir)),
         },
@@ -111,7 +111,7 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
       ),
       h(
         'button',
-        { type: 'button', className: 'dsh-tdt-exp__crumb', onClick: () => setNonce(nonce + 1) },
+        { type: 'button', className: 'dshpc-exp__crumb', onClick: () => setNonce(nonce + 1) },
         tt('explorerRefresh'),
       ),
     ),
@@ -119,14 +119,14 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
 
   const tree =
     loading
-      ? h('div', { className: 'dsh-tdt-exp__note' }, tt('explorerLoading'))
+      ? h('div', { className: 'dshpc-exp__note' }, tt('explorerLoading'))
       : failed
         ? h(EmptyState, { text: tt('explorerFailed'), translate: tt })
         : entries.length === 0
-          ? h('div', { className: 'dsh-tdt-exp__note' }, props.emptyText ?? tt('explorerEmptyDir'))
+          ? h('div', { className: 'dshpc-exp__note' }, props.emptyText ?? tt('explorerEmptyDir'))
           : h(
               'div',
-              { className: 'dsh-tdt-exp__tree' },
+              { className: 'dshpc-exp__tree' },
               [...entries]
                 .sort((a, b) => {
                   if (a.type !== b.type) return a.type === 'directory' ? -1 : 1
@@ -139,7 +139,7 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
                     'div',
                     {
                       key: full,
-                      className: `dsh-tdt-exp__item${selected === full ? ' dsh-tdt-exp__item--active' : ''}`,
+                      className: `dshpc-exp__item${selected === full ? ' dshpc-exp__item--active' : ''}`,
                       onClick: () => {
                         if (isDir) goto(full)
                         else {
@@ -149,29 +149,29 @@ export function ExplorerPanel(props: ExplorerPanelProps): ReturnType<typeof h> {
                         }
                       },
                     },
-                    h('span', { className: 'dsh-tdt-exp__icon' }, isDir ? '▸' : '·'),
-                    h('span', { className: 'dsh-tdt-exp__name' }, e.name),
+                    h('span', { className: 'dshpc-exp__icon' }, isDir ? '▸' : '·'),
+                    h('span', { className: 'dshpc-exp__name' }, e.name),
                     e.size === undefined
                       ? null
-                      : h('span', { className: 'dsh-tdt-exp__size' }, formatBytes(e.size)),
+                      : h('span', { className: 'dshpc-exp__size' }, formatBytes(e.size)),
                   )
                 }),
               truncated
-                ? h('div', { className: 'dsh-tdt-exp__note' }, tt('explorerTruncated'))
+                ? h('div', { className: 'dshpc-exp__note' }, tt('explorerTruncated'))
                 : null,
             )
 
   return h(
     'div',
-    { className: 'dsh-tdt-exp' },
+    { className: 'dshpc-exp' },
     crumbBar,
     h(
       'div',
-      { className: 'dsh-tdt-exp__body' },
+      { className: 'dshpc-exp__body' },
       tree,
       h(
         'div',
-        { className: 'dsh-tdt-exp__preview' },
+        { className: 'dshpc-exp__preview' },
         selected === null
           ? null
           : h(FilePreview, {

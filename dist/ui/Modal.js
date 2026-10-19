@@ -22,24 +22,24 @@ export function Modal(props) {
         return () => document.removeEventListener('keydown', onKey);
     }, [escClose, props.onClose]);
     return h('div', {
-        className: 'dsh-tdt-modal-mask',
+        className: 'dshpc-modal-mask',
         onClick: () => {
             if (closeOnMask)
                 props.onClose?.();
         },
     }, h('div', {
-        className: 'dsh-tdt-modal',
+        className: 'dshpc-modal',
         style: props.maxWidth === undefined ? undefined : { maxWidth: props.maxWidth },
         onClick: (e) => e.stopPropagation(),
     }, props.hideHeader === true || (props.title === undefined && props.onClose === undefined)
         ? null
-        : h('div', { className: 'dsh-tdt-modal__head' }, h('div', { className: 'dsh-tdt-modal__title' }, props.title ?? ''), props.onClose === undefined
+        : h('div', { className: 'dshpc-modal__head' }, h('div', { className: 'dshpc-modal__title' }, props.title ?? ''), props.onClose === undefined
             ? null
             : h('button', {
                 type: 'button',
-                className: 'dsh-tdt-modal__close',
+                className: 'dshpc-modal__close',
                 'aria-label': tt('modalClose'),
                 onClick: () => props.onClose?.(),
-            }, '✕')), h('div', { className: 'dsh-tdt-modal__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dsh-tdt-modal__foot' }, props.footer)));
+            }, '✕')), h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dshpc-modal__foot' }, props.footer)));
 }
 //# sourceMappingURL=Modal.js.map

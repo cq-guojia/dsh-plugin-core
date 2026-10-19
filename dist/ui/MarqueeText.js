@@ -2,9 +2,9 @@
  * 跑马灯文本 —— **全站唯一实现**（L2，P6 从 editor-fields 迁入 ui）
  *
  * 默认超长省略号；hover 且确实放不下时，来回滚动展示全名。自实现原因：官方 primitives 无跑马灯组件。
- * 测宽用 ResizeObserver + 文本变化重测；滚动距离 0 时不启用 hover 动画（`.dsh-tdt-mq-run` 才有动画）。
+ * 测宽用 ResizeObserver + 文本变化重测；滚动距离 0 时不启用 hover 动画（`.dshpc-mq-run` 才有动画）。
  *
- * **双层结构**：外层 `.dsh-tdt-mq` 只负责裁剪（overflow:hidden），内层 `.dsh-tdt-mq-in` 才做
+ * **双层结构**：外层 `.dshpc-mq` 只负责裁剪（overflow:hidden），内层 `.dshpc-mq-in` 才做
  * transform 滚动——文字永远在自己那一块里跑，不会压到相邻文字。皮肤在 `controls-css.ts`。
  */
 import { createElement as h, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -33,14 +33,14 @@ export function MarqueeText(props) {
     const run = dist > 0;
     return h('span', {
         ref: outerRef,
-        className: (run ? 'dsh-tdt-mq dsh-tdt-mq-run' : 'dsh-tdt-mq') + (props.className === undefined ? '' : ` ${props.className}`),
+        className: (run ? 'dshpc-mq dshpc-mq-run' : 'dshpc-mq') + (props.className === undefined ? '' : ` ${props.className}`),
         title: props.title,
         style: props.style,
     }, h('span', {
         ref: innerRef,
-        className: 'dsh-tdt-mq-in',
+        className: 'dshpc-mq-in',
         style: {
-            ...(run ? { '--dsh-tdt-mq-dist': `${-dist}px`, '--dsh-tdt-mq-dur': `${Math.max(3, Math.round(dist / 30))}s` } : null),
+            ...(run ? { '--dshpc-mq-dist': `${-dist}px`, '--dshpc-mq-dur': `${Math.max(3, Math.round(dist / 30))}s` } : null),
         },
     }, props.text));
 }

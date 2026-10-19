@@ -33,7 +33,7 @@ dsh-plugin-core/
 │
 ├── design/              ① 设计层 —— 只放「值」和「注入机制」，零 React
 │   ├── tokens              ✅ 颜色 / 字号 / 间距 / 圆角 / 层级（别名官方 --dsw-alias-*）
-│   └── style-kit           ✅ 运行时注入 <style>，createStyleKit({ id, prefix })
+│   └── style-kit           ✅ 运行时注入 <style>，createStyleKit({ id })
 │
 ├── ui/                  ② 基础控件 —— 纯零件 + 可复用基础能力（依赖 design）
 │   ├── official.ts         ✅ 全仓唯一 import 官方 primitives 的入口（L1）

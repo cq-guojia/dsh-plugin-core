@@ -94,7 +94,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
         // 星期多选方块（蓝底选中、近似方形）
         h(Segmented, {
           multiple: true,
-          className: 'dsh-tdt-seg--weekday',
+          className: 'dshpc-seg--weekday',
           label: '星期',
           items: [
             { value: '1', label: '一' },
