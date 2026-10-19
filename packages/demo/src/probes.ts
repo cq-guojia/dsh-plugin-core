@@ -97,5 +97,23 @@ export function collectSegProbes(): ProbeLine[] {
   }
 
   lines.push({ id: 'P31', text: `同文本走 replaceSync（不走标签）：${statsOfReplaceSync(css)}` })
+
+  // ---- 关键对照：把守卫去掉，让 `.dshpc-seg{display…}` 重新变成「token 块之后第一条」----
+  const noGuard = css.replace('.dshpc-css-guard{display:none}', '')
+  lines.push({ id: 'P32', text: `去守卫后另开新标签：${statsOfText(noGuard)}` })
+  lines.push({ id: 'P33', text: `去守卫后走 replaceSync：${statsOfReplaceSync(noGuard)}` })
+
+  // P34：把去守卫文本**写回我们自己的标签**（模拟导入期那次写入），读完立刻还原。
+  //      新标签活、自己标签死 ⇒ 宿主盯的是「这张标签」，不是文本。
+  const before = tag.textContent ?? ''
+  tag.textContent = noGuard
+  const inOwnTag = statsOfSheet(tag.sheet)
+  tag.textContent = before
+  const restored = statsOfSheet(tag.sheet)
+  lines.push({
+    id: 'P34',
+    text: `去守卫文本写回我们自己的标签：${inOwnTag} ｜ 还原后：${restored}`,
+  })
+
   return lines
 }

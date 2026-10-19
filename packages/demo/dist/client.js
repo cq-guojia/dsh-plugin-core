@@ -3502,6 +3502,18 @@ function collectSegProbes() {
     lines.push({ id: "P30", text: `\u53EA\u6CE8\u5165 tokens \u6BB5\uFF08\u524D ${String(cut)} \u5B57\uFF09\uFF1A${statsOfText(css.slice(0, cut))}` });
   }
   lines.push({ id: "P31", text: `\u540C\u6587\u672C\u8D70 replaceSync\uFF08\u4E0D\u8D70\u6807\u7B7E\uFF09\uFF1A${statsOfReplaceSync(css)}` });
+  const noGuard = css.replace(".dshpc-css-guard{display:none}", "");
+  lines.push({ id: "P32", text: `\u53BB\u5B88\u536B\u540E\u53E6\u5F00\u65B0\u6807\u7B7E\uFF1A${statsOfText(noGuard)}` });
+  lines.push({ id: "P33", text: `\u53BB\u5B88\u536B\u540E\u8D70 replaceSync\uFF1A${statsOfReplaceSync(noGuard)}` });
+  const before = tag.textContent ?? "";
+  tag.textContent = noGuard;
+  const inOwnTag = statsOfSheet(tag.sheet);
+  tag.textContent = before;
+  const restored = statsOfSheet(tag.sheet);
+  lines.push({
+    id: "P34",
+    text: `\u53BB\u5B88\u536B\u6587\u672C\u5199\u56DE\u6211\u4EEC\u81EA\u5DF1\u7684\u6807\u7B7E\uFF1A${inOwnTag} \uFF5C \u8FD8\u539F\u540E\uFF1A${restored}`
+  });
   return lines;
 }
 
@@ -3527,7 +3539,7 @@ function DemoPage() {
     const timer = setTimeout(() => {
       const lines = collectSegProbes().map((l) => `${l.id} ${l.text}`);
       setProbes(lines);
-      console.log(`[probe] build ${"1019-2149-qs8b"}
+      console.log(`[probe] build ${"1019-2152-66kk"}
 ${lines.join("\n")}`);
     }, 150);
     return () => {
@@ -3537,7 +3549,7 @@ ${lines.join("\n")}`);
   const buildBadge = (0, import_react31.createElement)(
     "div",
     {
-      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2149-qs8b"}
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1019-2152-66kk"}
 \u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
       style: {
         fontFamily: "var(--dshpc-font-mono)",
@@ -3548,7 +3560,7 @@ ${lines.join("\n")}`);
         wordBreak: "break-all"
       }
     },
-    `build ${"1019-2149-qs8b"}`
+    `build ${"1019-2152-66kk"}`
   );
   return (0, import_react31.createElement)(
     "div",
