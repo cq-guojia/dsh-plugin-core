@@ -3461,10 +3461,12 @@ function DemoPage() {
     }
     const cs = getComputedStyle(el);
     let rule = "no-rule";
+    let sheets = 0;
     for (const sh of Array.from(document.styleSheets)) {
       let rules;
       try {
         rules = sh.cssRules;
+        sheets++;
       } catch {
         continue;
       }
@@ -3474,8 +3476,8 @@ function DemoPage() {
         }
       }
     }
-    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap}
-rule: ${rule}`);
+    setDiag(`seg ${cs.backgroundColor} gap ${cs.gap} display ${cs.display}
+rule(${sheets} sheets): ${rule}`);
   }, [active]);
   const dark = typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme");
   return (0, import_react31.createElement)(
@@ -3534,8 +3536,8 @@ rule: ${rule}`);
             fontFamily: "var(--dshpc-font-mono)"
           }
         },
-        (0, import_react31.createElement)("div", null, `core v${"0.2.8"}`),
-        (0, import_react31.createElement)("div", null, `demo v${"0.2.8"}`),
+        (0, import_react31.createElement)("div", null, `core v${"0.2.10"}`),
+        (0, import_react31.createElement)("div", null, `demo v${"0.2.10"}`),
         (0, import_react31.createElement)("div", { title: "body[data-ds-dark-theme]" }, `dark: ${dark ? "yes" : "no"}`),
         (0, import_react31.createElement)("div", { title: "\u5B9E\u6D4B\u9875\u9762\u4E0A\u7B2C\u4E00\u4E2A .dshpc-seg \u7684\u8F68\u9053\u5E95\u8272\u4E0E\u95F4\u8DDD" }, diag)
       )
