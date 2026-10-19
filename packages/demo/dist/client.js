@@ -122,8 +122,8 @@ var BACK_TO_TOP_CSS = "\n/* \u56DE\u5230\u9876\u90E8\u60AC\u6D6E\u94AE\uFF1A\u57
 // dist/ui/controls/hint-css.generated.js
 var HINT_CSS = "\n/* \u2500\u2500 \u95EE\u53F7\u63D0\u793A P4\uFF08\u7528\u6237 2026-10-18\uFF1A\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6 HelpButton\u2014\u2014**\u5E26\u5708\u7684\u95EE\u53F7\u56FE\u6807**\uFF09\u2500\u2500\n   \u672C\u4F53 14px \u7EC6\u5708 + \u5708\u5185 ?\uFF0C\u989C\u8272 fg-3\u3001hover \u53EA\u63D0\u4EAE\u4E0D\u52A0\u5E95\uFF08\u4E0E dshpc-ed-help \u540C\u89C4\u77E9\uFF09\u3002\n   \u6C14\u6CE1\u4E0D\u5728\u672C\u6587\u4EF6\uFF1A2026-10-19 \u7528\u6237\u62CD\u677F\u300C\u95EE\u53F7\u5FC5\u987B\u7528\u5B98\u65B9 Tooltip \u90A3\u4E00\u4E2A\u300D\u21D2 \u6C14\u6CE1\u7531\u6CE8\u5165\u7684\n   \u5B98\u65B9\u7EC4\u4EF6\u6E32\u67D3\uFF08src/ui/tooltip.ts\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u95EE\u53F7\u56FE\u6807\u672C\u8EAB\u3002 */\n.dshpc-hint{display:inline-flex;align-items:center;justify-content:center;flex:none;\n  box-sizing:border-box;width:14px;height:14px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;\n  color:var(--dshpc-fg-3);font-family:inherit;font-size:8px;font-weight:600;line-height:12px;cursor:help;vertical-align:middle;\n  transition:color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-hint:hover,.dshpc-hint:focus-visible{color:var(--dshpc-fg);background:0 0;}\n.dshpc-hint:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n";
 
-// dist/ui/utility-css.generated.js
-var UTILITY_CSS = "\n/* \u901A\u7528\u5DE5\u5177 + \u6587\u672C\u884C\u4E3A\uFF1A\u4E0D\u7ED1\u5B9A\u5177\u4F53\u63A7\u4EF6\uFF0C\u8C01\u90FD\u80FD\u6302\u3002\n   2026-10-20\uFF1A\u539F select.css \u91CC\u4E0B\u62C9\u951A\u70B9\u90A3\u51E0\u6761\uFF08.dshpc-ed-field* / .dshpc-ed-selectwrap\uFF09\n   \u968F SelectField \u4E00\u8D77\u6295\u80CE\u540E\u65E0\u4EBA\u5F15\u7528\uFF0C\u5DF2\u5220\uFF1B\u6587\u4EF6\u968F\u4E4B\u6539\u540D\uFF0C\u4E0D\u518D\u5047\u79F0\u300C\u4E0B\u62C9\u300D\u3002 */\n/* \u7701\u7565\u53F7\u4E09\u4EF6\u5957\uFF08ui-style-guide \xA7\u4E09\u300C\u5F85\u62BD\u8C61 #1\u300D\u7684\u6536\u655B\u70B9\uFF09\uFF1A**\u65B0\u4EE3\u7801\u4E00\u5F8B\u6302\u8FD9\u4E2A\u7C7B**\uFF0C\u4E0D\u518D\u5404\u5199\u4E00\u904D\u3002\n   \u26A0\uFE0F \u5DF2\u6709 19 \u5904\u65E7\u5199\u6CD5\u5F85\u9010\u6B65\u6536\u7F16\uFF082026-10-04 \u8D77\u65B0\u589E\u7684\u8C03\u7528\u70B9\u4E0D\u8BB8\u518D\u624B\u5199\u8FD9\u4E09\u6761\u5C5E\u6027\uFF09\u3002 */\n.dshpc-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}\n\n/* \u8DD1\u9A6C\u706F\u6587\u672C\uFF08MarqueeText\uFF09\uFF1A\u53CC\u5C42\u2014\u2014\u5916\u5C42\u53EA\u88C1\u526A\uFF0C\u5185\u5C42\u624D transform \u6EDA\u52A8\uFF1B\u975E hover \u5185\u5C42\u81EA\u5E26\u7701\u7565\u53F7 */\n.dshpc-mq{display:block;overflow:hidden;white-space:nowrap;}\n.dshpc-mq .dshpc-mq-in{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:top;}\n/* \u26A0\uFE0F \u8DD1\u6CD5\uFF08\u7528\u6237 2026-10-03 \u62CD\u677F\uFF09\uFF1A**\u8DD1\u4E00\u904D\u3001\u505C\u5728\u5C3E\u5B57**\uFF08\u64AD\u653E 1 \u6B21 + forwards\uFF09\uFF0C\u4E0D\u6765\u56DE\u5F39\u3001\u4E0D\u65E0\u9650\u8DD1\u3002\n   \u6EDA\u8DDD = \u7CBE\u786E\u6EA2\u51FA\u91CF \u21D2 \u505C\u4E0B\u65F6\u6700\u540E\u4E00\u4E2A\u5B57\u6B63\u597D\u8D34\u53F3\u7F18\uFF0C**\u4E0D\u4F1A\u8DD1\u8FDB\u9ED1\u5757**\uFF08\u9ED1\u5757\u662F\u65E7\u624B\u5199\u7248\u628A\n   \u5185\u5C42\u76D2\u5B50\u88C1\u4E86\u3001\u6309\u300C\u534A\u622A\u6587\u672C\u300D\u5E73\u79FB\u5BFC\u81F4\u7684\uFF09\u3002\u9F20\u6807\u79FB\u5F00 \u21D2 :hover \u5931\u6548 \u21D2 \u81EA\u52A8\u590D\u4F4D\u56DE\u7701\u7565\u53F7\u6001\u3002 */\n.dshpc-mq-run:hover .dshpc-mq-in{max-width:none;overflow:visible;animation:dshpc-mq-scroll var(--dshpc-mq-dur,6s) linear .4s 1 forwards;}\n@keyframes dshpc-mq-scroll{from{transform:translateX(0)}to{transform:translateX(var(--dshpc-mq-dist,-40px))}}\n";
+// dist/ui/marquee-css.generated.js
+var MARQUEE_CSS = "/* \u8DD1\u9A6C\u706F\uFF08MarqueeText\uFF09\uFF1A\u53CC\u5C42\u2014\u2014\u5916\u5C42\u53EA\u88C1\u526A\uFF0C\u5185\u5C42\u624D transform \u6EDA\u52A8\uFF1B\u975E hover \u5185\u5C42\u81EA\u5E26\u7701\u7565\u53F7\u3002\n   2026-10-20\uFF1A\u672C\u6587\u4EF6\u539F\u662F\u6742\u70E9\u300Cselect.css\u300D\uFF08\u4E0B\u62C9 / \u65E5\u5386 / \u65F6\u5206\u7684\u76AE\u80A4\u90FD\u88C5\u8FC7\uFF09\uFF0C\u968F\u7740\u90A3\u4E9B\u63A7\u4EF6\n   \u4E00\u4E2A\u4E2A\u5220\u5B8C\uFF0C\u6700\u540E\u53EA\u5269\u8DD1\u9A6C\u706F\uFF0C\u6545\u6309\u672C\u5305\u300C\u4E00\u4E2A css \u670D\u52A1\u4E00\u4E2A\u5BF9\u8C61\u300D\u7684\u683C\u5C40\u6539\u540D\u5F52\u6863\u3002\n   \u540C\u6279\u6E05\u6389\u7684\u8FD8\u6709\u96F6\u5F15\u7528\u7684\u7701\u7565\u53F7\u7C7B .dshpc-ellipsis \u2014\u2014 \u672C\u5305\u4E09\u4E2A\u7528\u5230\u622A\u65AD\u7684\u5730\u65B9\u90FD\u6CA1\u91C7\u7EB3\u5B83\u3002 */\n.dshpc-mq{display:block;overflow:hidden;white-space:nowrap;}\n.dshpc-mq .dshpc-mq-in{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:top;}\n/* \u26A0\uFE0F \u8DD1\u6CD5\uFF08\u7528\u6237 2026-10-03 \u62CD\u677F\uFF09\uFF1A**\u8DD1\u4E00\u904D\u3001\u505C\u5728\u5C3E\u5B57**\uFF08\u64AD\u653E 1 \u6B21 + forwards\uFF09\uFF0C\u4E0D\u6765\u56DE\u5F39\u3001\u4E0D\u65E0\u9650\u8DD1\u3002\n   \u6EDA\u8DDD = \u7CBE\u786E\u6EA2\u51FA\u91CF \u21D2 \u505C\u4E0B\u65F6\u6700\u540E\u4E00\u4E2A\u5B57\u6B63\u597D\u8D34\u53F3\u7F18\uFF0C**\u4E0D\u4F1A\u8DD1\u8FDB\u9ED1\u5757**\uFF08\u9ED1\u5757\u662F\u65E7\u624B\u5199\u7248\u628A\n   \u5185\u5C42\u76D2\u5B50\u88C1\u4E86\u3001\u6309\u300C\u534A\u622A\u6587\u672C\u300D\u5E73\u79FB\u5BFC\u81F4\u7684\uFF09\u3002\u9F20\u6807\u79FB\u5F00 \u21D2 :hover \u5931\u6548 \u21D2 \u81EA\u52A8\u590D\u4F4D\u56DE\u7701\u7565\u53F7\u6001\u3002 */\n.dshpc-mq-run:hover .dshpc-mq-in{max-width:none;overflow:visible;animation:dshpc-mq-scroll var(--dshpc-mq-dur,6s) linear .4s 1 forwards;}\n@keyframes dshpc-mq-scroll{from{transform:translateX(0)}to{transform:translateX(var(--dshpc-mq-dist,-40px))}}\n";
 
 // dist/ui/picker-css.generated.js
 var PICKER_CSS = `
@@ -205,8 +205,7 @@ var CONTROLS_CSS = [
   SESSION_CSS,
   CARD_CSS,
   CHIP_CSS,
-  // 通用工具类放最后：省略号 / 跑马灯是给别人的规则让路的行为类，不当皮肤源。
-  UTILITY_CSS
+  MARQUEE_CSS
 ].join("\n");
 var current = createStyleKit({ id: "dsh-plugin-core-ui" });
 function setStyleKit(kit) {
@@ -2856,7 +2855,7 @@ function DemoPage() {
   const buildBadge = (0, import_react31.createElement)(
     "div",
     {
-      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1020-0115-7q8e"}
+      title: `core v${"0.2.14"} \xB7 demo v${"0.2.14"} \xB7 build ${"1020-0134-fido"}
 \u6BCF\u6B21 build \u90FD\u4F1A\u751F\u6210\u65B0\u7684\u7F16\u7801`,
       style: {
         fontFamily: "var(--dshpc-font-mono)",
@@ -2867,7 +2866,7 @@ function DemoPage() {
         wordBreak: "break-all"
       }
     },
-    `build ${"1020-0115-7q8e"}`
+    `build ${"1020-0134-fido"}`
   );
   return (0, import_react31.createElement)(
     "div",

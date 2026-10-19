@@ -31,7 +31,7 @@ const MAP = [
   ['src/ui/controls/segmented.css', 'src/ui/controls/segmented-css.generated.ts', 'SEGMENTED_CSS'],
   ['src/ui/controls/button.css', 'src/ui/controls/button-css.generated.ts', 'BUTTON_CSS'],
   ['src/ui/controls/field.css', 'src/ui/controls/field-css.generated.ts', 'FIELD_CSS'],
-  ['src/ui/utility.css', 'src/ui/utility-css.generated.ts', 'UTILITY_CSS'],
+  ['src/ui/marquee.css', 'src/ui/marquee-css.generated.ts', 'MARQUEE_CSS'],
   ['src/ui/controls/loading.css', 'src/ui/controls/loading-css.generated.ts', 'LOADING_CSS'],
   ['src/ui/controls/back-to-top.css', 'src/ui/controls/back-to-top-css.generated.ts', 'BACK_TO_TOP_CSS'],
   ['src/ui/controls/hint.css', 'src/ui/controls/hint-css.generated.ts', 'HINT_CSS'],

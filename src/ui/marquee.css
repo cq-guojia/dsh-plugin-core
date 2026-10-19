@@ -1,12 +1,7 @@
-
-/* 通用工具 + 文本行为：不绑定具体控件，谁都能挂。
-   2026-10-20：原 select.css 里下拉锚点那几条（.dshpc-ed-field* / .dshpc-ed-selectwrap）
-   随 SelectField 一起投胎后无人引用，已删；文件随之改名，不再假称「下拉」。 */
-/* 省略号三件套（ui-style-guide §三「待抽象 #1」的收敛点）：**新代码一律挂这个类**，不再各写一遍。
-   ⚠️ 已有 19 处旧写法待逐步收编（2026-10-04 起新增的调用点不许再手写这三条属性）。 */
-.dshpc-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-/* 跑马灯文本（MarqueeText）：双层——外层只裁剪，内层才 transform 滚动；非 hover 内层自带省略号 */
+/* 跑马灯（MarqueeText）：双层——外层只裁剪，内层才 transform 滚动；非 hover 内层自带省略号。
+   2026-10-20：本文件原是杂烩「select.css」（下拉 / 日历 / 时分的皮肤都装过），随着那些控件
+   一个个删完，最后只剩跑马灯，故按本包「一个 css 服务一个对象」的格局改名归档。
+   同批清掉的还有零引用的省略号类 .dshpc-ellipsis —— 本包三个用到截断的地方都没采纳它。 */
 .dshpc-mq{display:block;overflow:hidden;white-space:nowrap;}
 .dshpc-mq .dshpc-mq-in{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:top;}
 /* ⚠️ 跑法（用户 2026-10-03 拍板）：**跑一遍、停在尾字**（播放 1 次 + forwards），不来回弹、不无限跑。

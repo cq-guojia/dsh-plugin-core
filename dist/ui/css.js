@@ -1,6 +1,6 @@
 import { createStyleKit } from '../design/index.js';
 import { BACK_TO_TOP_CSS, BUTTON_CSS, FIELD_CSS, HINT_CSS, LOADING_CSS, SEGMENTED_CSS, } from './controls-css.js';
-import { UTILITY_CSS } from './utility-css.js';
+import { MARQUEE_CSS } from './marquee-css.js';
 import { PICKER_CSS } from './picker-css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
 import { CARD_CSS } from './card-css.js';
@@ -25,8 +25,7 @@ export const CONTROLS_CSS = [
     SESSION_CSS,
     CARD_CSS,
     CHIP_CSS,
-    // 通用工具类放最后：省略号 / 跑马灯是给别人的规则让路的行为类，不当皮肤源。
-    UTILITY_CSS,
+    MARQUEE_CSS,
 ].join('\n');
 /**
  * 当前插件的样式设施。
