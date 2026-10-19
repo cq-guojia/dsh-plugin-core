@@ -20,6 +20,7 @@ pnpm run demo:build   # 生成静态文件到 demo-dist/
 然后**用浏览器打开 `demo-dist/index.html`**（双击即可）。
 
 产物是**单文件 IIFE + 相对路径**，所以 `file://` 能直接跑：
+
 - 不用起 dev server、不占端口
 - 目录可以随便挪，拷到别的机器上也能打开
 
@@ -116,19 +117,41 @@ setLocale('en') // 中文是默认
    PDF / Office 显示「暂不支持预览」。
 4. **类名没按插件隔离** —— CSS 类名仍是 `dsh-tdt-*`，两个插件若引的 core 版本不同会互相覆盖
    （同版本无害）。主防线是 style 标签 id 与变量前缀隔离。
-5. 设置页骨架没抽（等第二个消费者）；发布流程（npm + OIDC）没配。
+5. 设置页骨架没抽（等第二个消费者）。
+
+## 发布（打 tag 即发布，无需人工 Promote）
+
+核心与 demo 插件**共用同一个版本号**，一个 tag 同时发两个包：
+
+```bash
+# 1. 两个 package.json 的 version 改成同一个号（本地自检与 CI 都会校验）
+# 2. 构建 + 提交（dist/ 必须入库）
+pnpm run build && pnpm run build:demo
+git add -A && git commit -m "发布 0.1.3" && git push
+# 3. 打 tag 即触发 GitHub Actions 自动发布
+git tag v0.1.3 && git push origin v0.1.3
+```
+
+| tag | 谁在发 | 发到哪 |
+|---|---|---|
+| `v0.1.3` | `.github/workflows/publish.yml` | `dsh-plugin-core` |
+| 同上 | `.github/workflows/demo-publish.yml` | `dsh-plugin-core-demo` |
+
+硬规则：`tag vX.Y.Z` == 根 `package.json` 的 `version` == `packages/demo/package.json` 的 `version`，
+三者不一致时 workflow 直接失败，不会发布半套。**没有 `demo-v*` 这种独立 tag。**
+
+一次性前置（npm 网页，两个包各做一遍）：Settings → Trusted Publisher 里允许的 actions 勾上 `npm publish`。
 
 ## 组件预览插件（packages/demo/）
 
 库本身是**纯库**：只有六个子路径导出，没有 main、没有 dsh 字段、零运行时依赖。
 
 预览用的插件是仓库里的**独立 npm 包** `packages/demo/`（包名 `dsh-plugin-core-demo`）：它把 core 的构建产物
-打进自己的 bundle ⇒ 自包含、可独立发版，**不需要 core 先发 npm**，预览的也永远是当前这份代码。
+打进自己的 bundle ⇒ 自包含、**不需要 core 先发 npm**，预览的也永远是当前这份代码。
 
 ```bash
 pnpm run build        # 先构建库（demo 包引用 dist/）
 pnpm run build:demo   # 构建预览插件 → packages/demo/dist/{index.js,client.js}
-cd packages/demo && npm publish --access public
 dsh plugin --profile web add dsh-plugin-core-demo
 ```
 

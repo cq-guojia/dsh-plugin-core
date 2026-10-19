@@ -1,12 +1,16 @@
 name: Publish demo plugin to npm
 
-# 发布 packages/demo（包名 dsh-plugin-core-demo，DSH 预览插件）。
-# 触发：手动 dispatch（必须走默认分支 main，npm 可信发布才认；标签触发 ref=refs/tags/* 会被 404 拒）。
-# ⚠️ 该包有**独立**的 npm Trusted Publisher：package name = dsh-plugin-core-demo，
-#    仓库 = cq-guojia/dsh-plugin-core，workflow = demo-publish.yml。
-#    需你在 npm 侧单独建一个（和库那个分开）。未勾 publish directly ⇒ 走 --staging，发完去 npm Promote。
+# 发布 packages/demo（包名 `dsh-plugin-core-demo`）。
+# 触发：与库共用同一个 `vX.Y.Z` tag —— 打一次 tag，两个包一起发。
+# 版本必须与核心**完全一致**（规则见 AGENTS.md）；不一致时本 workflow 直接失败，不发布。
+#
+# 前置（一次，人在 npm 网页做）：本包有独立的 Trusted Publisher
+#   （package = dsh-plugin-core-demo，仓库 = cq-guojia/dsh-plugin-core，workflow = demo-publish.yml），
+#   允许的 actions 必须勾上 `npm publish`。
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
@@ -24,20 +28,30 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # OIDC 发布要求 Node ≥ 22.14 / npm CLI ≥ 11.5.1，20 不满足
+          node-version: 22
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Build library (demo 把库的产物打进自己的 bundle)
+      - name: 版本一致性校验（tag / 核心 / demo 三者必须同号）
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          CORE=$(node -p "require('./package.json').version")
+          DEMO=$(node -p "require('./packages/demo/package.json').version")
+          echo "tag=$TAG core=$CORE demo=$DEMO"
+          [ "$TAG" = "$CORE" ] || { echo "::error::tag v$TAG 与核心版本 $CORE 不一致"; exit 1; }
+          [ "$DEMO" = "$CORE" ] || { echo "::error::demo 版本 $DEMO 与核心版本 $CORE 不一致"; exit 1; }
+
+      - name: Build library
+        # demo 把库的产物打进自己的 bundle
         run: pnpm run build
 
       - name: Build demo plugin bundle
         run: node packages/demo/build.mjs
 
-      - name: Publish (staged, provenance)
+      - name: Publish
         working-directory: packages/demo
-        # 不设置 NODE_AUTH_TOKEN：GitHub Actions 中 npm 9.5+ 自动用 OIDC 凭证。
-        run: npm publish --provenance --staging --access public
+        run: npm publish --access public

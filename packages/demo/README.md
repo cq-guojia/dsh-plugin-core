@@ -22,8 +22,12 @@ pnpm run build:demo
 
 ## 发布与安装
 
+**不要在本目录手跑 `npm publish`。** 本包与核心共用同一个 `vX.Y.Z` tag，由
+`.github/workflows/demo-publish.yml` 自动发布；版本必须与根 `package.json` 完全一致
+（`test/version-sync.test.mjs` 与 CI 都校验，不一致直接失败）。
+
 ```bash
-npm publish --access public                    # 在本目录
+git tag v0.1.3 && git push origin v0.1.3      # 在仓库根：一次 tag 发库 + 本包
 dsh plugin --profile web add dsh-plugin-core-demo
 ```
 

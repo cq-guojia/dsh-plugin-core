@@ -24,13 +24,31 @@
 | `utils` 不得依赖 `ui` / React / DOM / 宿主 | `docs/design/architecture.md` §依赖方向 |
 | 组件**不自己取数**：数据由调用方经 props / 注入接口给 | `docs/requirements.md` §6 |
 | 内置字典新增 key 必须被真正使用（有自检盯着） | `test/no-dead-keys.test.mjs` |
+| 打 `vX.Y.Z` tag 即自动发 npm；**demo 与核心版本必须同号**，不允许 `demo-v*` 独立 tag | `test/version-sync.test.mjs` + `.github/workflows/*publish.yml` |
 
 ## 常用命令
 
 ```bash
 pnpm run build        # tsc 出 ESM + d.ts 到 dist/（产物必须入库：宿主装插件不跑构建）
+pnpm run build:demo   # demo 插件产物 → packages/demo/dist/（同样入库）
 pnpm test             # 全部自检（条数以 test/ 下实际用例为准，不在此写死）
 ```
+
+## 发版规则（硬约束）
+
+**`tag vX.Y.Z` == 根 `package.json` 的 `version` == `packages/demo/package.json` 的 `version`。**
+
+一个 tag 同时发两个包，两件事一起发生：
+
+| tag | workflow | 发布物 |
+|---|---|---|
+| `vX.Y.Z` | `.github/workflows/publish.yml` | `dsh-plugin-core` |
+| 同一个 | `.github/workflows/demo-publish.yml` | `dsh-plugin-core-demo` |
+
+- **禁止** `demo-v*` 这类独立 tag，**禁止**两个包版本走岔——三处校验会拦住：`test/version-sync.test.mjs`（本地）、两个 workflow（CI）。
+- 流程：改两个 `version` 为同一个号 → `pnpm run build && pnpm run build:demo` → commit（含 `dist/`）→ push → `git tag vX.Y.Z && git push origin vX.Y.Z`。
+- tag push 触发 GitHub Actions **自动 `npm publish`**，不需要人工点 Run、也不需要去 npm Promote。
+- 依赖两件事：npm 侧 Trusted Publisher 对**两个包**都允许 `npm publish`（一次性设置）；workflow 用 Node 22（OIDC 要求 npm CLI ≥ 11.5.1，Node 20 不满足）。
 
 ## 改完的 checklist
 
