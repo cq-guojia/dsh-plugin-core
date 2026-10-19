@@ -4,7 +4,7 @@ import { getLocale } from '../../../dist/utils/index.js'
 
 export type Locale = 'zh' | 'en'
 
-/** demo 界面提示文案的 key（标题不在范围内，只管 hint / FieldHint 这类「提示」内容）。 */
+/** demo 界面文案的 key（含菜单分类名、各 Demo 块标题、hint / FieldHint 说明；演示数据/按钮文案不在内）。 */
 export type DemoMessageKey =
   | 'sessionHint'
   | 'explorerHint'
@@ -24,6 +24,21 @@ export type DemoMessageKey =
   | 'designInjectHint'
   | 'fieldHintDate'
   | 'loadingNote'
+  | 'secDesign'
+  | 'secButtons'
+  | 'secPickers'
+  | 'secFeedback'
+  | 'secDisplay'
+  | 'secUtils'
+  | 'secExplorer'
+  | 'secSession'
+  | 'demoTokenPalette'
+  | 'demoStyleInject'
+  | 'demoInputFamily'
+  | 'demoUtilsTitle'
+  | 'demoCardTitle'
+  | 'demoStripTitle'
+  | 'designInjectNote'
 
 const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   zh: {
@@ -45,6 +60,21 @@ const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     designInjectHint: '控件渲染前调一次 setStyleKit + ensureControls，token 与控件 CSS 由 kit 注入 <head>',
     fieldHintDate: '任务自该日起开始执行。可提前创建任务，至该日自动开跑；「每 N 周」亦自该日起算首周。',
     loadingNote: 'Loading 是贴到主容器右下角的指示器（anchorId 默认 dsh-tdt-main），此处不渲染以免遮挡。',
+    secDesign: '设计基础',
+    secButtons: '按钮与输入',
+    secPickers: '选择器',
+    secFeedback: '弹窗与反馈',
+    secDisplay: '卡片与展示',
+    secUtils: '通用方法',
+    secExplorer: '工作区浏览',
+    secSession: '会话预览',
+    demoTokenPalette: 'token 色板',
+    demoStyleInject: '样式注入机制',
+    demoInputFamily: 'Input 家族',
+    demoUtilsTitle: '日期 / 字符串 / 字节',
+    demoCardTitle: 'Card（圆角 + 边框 + 短色条）',
+    demoStripTitle: 'StripCard（无边框 + 通高竖线）',
+    designInjectNote: '本预览插件自己就是这么做初始化的——预览与真实插件走同一条路。',
   },
   en: {
     sessionHint: 'Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content',
@@ -65,6 +95,21 @@ const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     designInjectHint: 'Call setStyleKit + ensureControls once before controls render; the kit injects tokens and control CSS into <head>',
     fieldHintDate: 'The task runs starting from this date. You can create it ahead of time and it auto-starts on that day; "every N weeks" also counts its first week from this date.',
     loadingNote: 'Loading is an indicator pinned to the bottom-right of the main container (anchorId defaults to dsh-tdt-main); not rendered here to avoid covering content.',
+    secDesign: 'Design basics',
+    secButtons: 'Buttons & inputs',
+    secPickers: 'Pickers',
+    secFeedback: 'Modal & feedback',
+    secDisplay: 'Cards & display',
+    secUtils: 'Utilities',
+    secExplorer: 'Workspace browsing',
+    secSession: 'Session preview',
+    demoTokenPalette: 'Token palette',
+    demoStyleInject: 'Style injection',
+    demoInputFamily: 'Input family',
+    demoUtilsTitle: 'Date / String / Bytes',
+    demoCardTitle: 'Card (rounded + border + accent bar)',
+    demoStripTitle: 'StripCard (borderless + full-height stripe)',
+    designInjectNote: 'This preview plugin initializes itself exactly this way — preview and real plugin take the same path.',
   },
 }
 

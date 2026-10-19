@@ -22,7 +22,7 @@ export function DesignSection(): ReturnType<typeof h> {
     null,
     h(
       Demo,
-      { title: 'token 色板', hint: t('designTokenHint') },
+      { title: t('demoTokenPalette'), hint: t('designTokenHint') },
       h(
         'div',
         { style: { display: 'flex', flexWrap: 'wrap', gap: '10px' } },
@@ -46,7 +46,7 @@ export function DesignSection(): ReturnType<typeof h> {
     h(
       Demo,
       {
-        title: '样式注入机制',
+        title: t('demoStyleInject'),
         hint: t('designInjectHint'),
         code: `import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
@@ -55,7 +55,7 @@ setStyleKit(createStyleKit({ id: 'my-plugin-ui', prefix: 'myplugin' }))
 ensureControls()`,
       },
       h('div', { style: { color: 'var(--tdt-fg-3)', fontSize: '12px' } },
-        '本预览站自己就是这么做初始化的（见 demo/main.tsx）——预览与真实插件走同一条路。'),
+        t('designInjectNote')),
     ),
   )
 }

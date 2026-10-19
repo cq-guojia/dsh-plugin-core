@@ -28,7 +28,7 @@ const ROWS: [string, string, string][] = [
 export function UtilsSection(): ReturnType<typeof h> {
   return h(
     Demo,
-    { title: '日期 / 字符串 / 字节', hint: t('utilsHint') },
+    { title: t('demoUtilsTitle'), hint: t('utilsHint') },
     h(
       'table',
       { style: { borderCollapse: 'collapse', fontSize: '13px' } },

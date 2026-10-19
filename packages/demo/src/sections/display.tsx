@@ -11,7 +11,7 @@ export function DisplaySection(): ReturnType<typeof h> {
     null,
     h(
       Demo,
-      { title: 'Card（圆角 + 边框 + 短色条）', hint: t('displayCardHint') },
+      { title: t('demoCardTitle'), hint: t('displayCardHint') },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '640px' } },
@@ -44,7 +44,7 @@ export function DisplaySection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'StripCard（无边框 + 通高竖线）', hint: t('displayStripHint') },
+      { title: t('demoStripTitle'), hint: t('displayStripHint') },
       h(
         'div',
         { style: { maxWidth: '640px', background: 'var(--tdt-surface-sunken)', borderRadius: '8px', overflow: 'hidden' } },

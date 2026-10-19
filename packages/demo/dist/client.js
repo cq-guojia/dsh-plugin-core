@@ -1920,7 +1920,22 @@ var DICT2 = {
     designTokenHint: "\u989C\u8272\u5168\u90E8\u6765\u81EA design \u7684 token\uFF1B\u5207\u6362\u53F3\u4E0A\u89D2\u660E\u6697\uFF0C\u4E0B\u9762\u4F1A\u8DDF\u7740\u53D8",
     designInjectHint: "\u63A7\u4EF6\u6E32\u67D3\u524D\u8C03\u4E00\u6B21 setStyleKit + ensureControls\uFF0Ctoken \u4E0E\u63A7\u4EF6 CSS \u7531 kit \u6CE8\u5165 <head>",
     fieldHintDate: "\u4EFB\u52A1\u81EA\u8BE5\u65E5\u8D77\u5F00\u59CB\u6267\u884C\u3002\u53EF\u63D0\u524D\u521B\u5EFA\u4EFB\u52A1\uFF0C\u81F3\u8BE5\u65E5\u81EA\u52A8\u5F00\u8DD1\uFF1B\u300C\u6BCF N \u5468\u300D\u4EA6\u81EA\u8BE5\u65E5\u8D77\u7B97\u9996\u5468\u3002",
-    loadingNote: "Loading \u662F\u8D34\u5230\u4E3B\u5BB9\u5668\u53F3\u4E0B\u89D2\u7684\u6307\u793A\u5668\uFF08anchorId \u9ED8\u8BA4 dsh-tdt-main\uFF09\uFF0C\u6B64\u5904\u4E0D\u6E32\u67D3\u4EE5\u514D\u906E\u6321\u3002"
+    loadingNote: "Loading \u662F\u8D34\u5230\u4E3B\u5BB9\u5668\u53F3\u4E0B\u89D2\u7684\u6307\u793A\u5668\uFF08anchorId \u9ED8\u8BA4 dsh-tdt-main\uFF09\uFF0C\u6B64\u5904\u4E0D\u6E32\u67D3\u4EE5\u514D\u906E\u6321\u3002",
+    secDesign: "\u8BBE\u8BA1\u57FA\u7840",
+    secButtons: "\u6309\u94AE\u4E0E\u8F93\u5165",
+    secPickers: "\u9009\u62E9\u5668",
+    secFeedback: "\u5F39\u7A97\u4E0E\u53CD\u9988",
+    secDisplay: "\u5361\u7247\u4E0E\u5C55\u793A",
+    secUtils: "\u901A\u7528\u65B9\u6CD5",
+    secExplorer: "\u5DE5\u4F5C\u533A\u6D4F\u89C8",
+    secSession: "\u4F1A\u8BDD\u9884\u89C8",
+    demoTokenPalette: "token \u8272\u677F",
+    demoStyleInject: "\u6837\u5F0F\u6CE8\u5165\u673A\u5236",
+    demoInputFamily: "Input \u5BB6\u65CF",
+    demoUtilsTitle: "\u65E5\u671F / \u5B57\u7B26\u4E32 / \u5B57\u8282",
+    demoCardTitle: "Card\uFF08\u5706\u89D2 + \u8FB9\u6846 + \u77ED\u8272\u6761\uFF09",
+    demoStripTitle: "StripCard\uFF08\u65E0\u8FB9\u6846 + \u901A\u9AD8\u7AD6\u7EBF\uFF09",
+    designInjectNote: "\u672C\u9884\u89C8\u63D2\u4EF6\u81EA\u5DF1\u5C31\u662F\u8FD9\u4E48\u505A\u521D\u59CB\u5316\u7684\u2014\u2014\u9884\u89C8\u4E0E\u771F\u5B9E\u63D2\u4EF6\u8D70\u540C\u4E00\u6761\u8DEF\u3002"
   },
   en: {
     sessionHint: "Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content",
@@ -1940,7 +1955,22 @@ var DICT2 = {
     designTokenHint: "All colors come from design tokens; switch light/dark at top-right and these update with it",
     designInjectHint: "Call setStyleKit + ensureControls once before controls render; the kit injects tokens and control CSS into <head>",
     fieldHintDate: 'The task runs starting from this date. You can create it ahead of time and it auto-starts on that day; "every N weeks" also counts its first week from this date.',
-    loadingNote: "Loading is an indicator pinned to the bottom-right of the main container (anchorId defaults to dsh-tdt-main); not rendered here to avoid covering content."
+    loadingNote: "Loading is an indicator pinned to the bottom-right of the main container (anchorId defaults to dsh-tdt-main); not rendered here to avoid covering content.",
+    secDesign: "Design basics",
+    secButtons: "Buttons & inputs",
+    secPickers: "Pickers",
+    secFeedback: "Modal & feedback",
+    secDisplay: "Cards & display",
+    secUtils: "Utilities",
+    secExplorer: "Workspace browsing",
+    secSession: "Session preview",
+    demoTokenPalette: "Token palette",
+    demoStyleInject: "Style injection",
+    demoInputFamily: "Input family",
+    demoUtilsTitle: "Date / String / Bytes",
+    demoCardTitle: "Card (rounded + border + accent bar)",
+    demoStripTitle: "StripCard (borderless + full-height stripe)",
+    designInjectNote: "This preview plugin initializes itself exactly this way \u2014 preview and real plugin take the same path."
   }
 };
 function t2(key, vars) {
@@ -1972,7 +2002,7 @@ function DesignSection() {
     null,
     (0, import_react19.createElement)(
       Demo,
-      { title: "token \u8272\u677F", hint: t2("designTokenHint") },
+      { title: t2("demoTokenPalette"), hint: t2("designTokenHint") },
       (0, import_react19.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
@@ -1997,7 +2027,7 @@ function DesignSection() {
     (0, import_react19.createElement)(
       Demo,
       {
-        title: "\u6837\u5F0F\u6CE8\u5165\u673A\u5236",
+        title: t2("demoStyleInject"),
         hint: t2("designInjectHint"),
         code: `import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
@@ -2008,7 +2038,7 @@ ensureControls()`
       (0, import_react19.createElement)(
         "div",
         { style: { color: "var(--tdt-fg-3)", fontSize: "12px" } },
-        "\u672C\u9884\u89C8\u7AD9\u81EA\u5DF1\u5C31\u662F\u8FD9\u4E48\u505A\u521D\u59CB\u5316\u7684\uFF08\u89C1 demo/main.tsx\uFF09\u2014\u2014\u9884\u89C8\u4E0E\u771F\u5B9E\u63D2\u4EF6\u8D70\u540C\u4E00\u6761\u8DEF\u3002"
+        t2("designInjectNote")
       )
     )
   );
@@ -2043,7 +2073,7 @@ function ButtonsSection() {
     ),
     (0, import_react20.createElement)(
       Demo,
-      { title: "Input \u5BB6\u65CF", hint: t2("inputHint") },
+      { title: t2("demoInputFamily"), hint: t2("inputHint") },
       (0, import_react20.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
@@ -2304,7 +2334,7 @@ function DisplaySection() {
     null,
     (0, import_react23.createElement)(
       Demo,
-      { title: "Card\uFF08\u5706\u89D2 + \u8FB9\u6846 + \u77ED\u8272\u6761\uFF09", hint: t2("displayCardHint") },
+      { title: t2("demoCardTitle"), hint: t2("displayCardHint") },
       (0, import_react23.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
@@ -2348,7 +2378,7 @@ function DisplaySection() {
     ),
     (0, import_react23.createElement)(
       Demo,
-      { title: "StripCard\uFF08\u65E0\u8FB9\u6846 + \u901A\u9AD8\u7AD6\u7EBF\uFF09", hint: t2("displayStripHint") },
+      { title: t2("demoStripTitle"), hint: t2("displayStripHint") },
       (0, import_react23.createElement)(
         "div",
         { style: { maxWidth: "640px", background: "var(--tdt-surface-sunken)", borderRadius: "8px", overflow: "hidden" } },
@@ -2435,7 +2465,7 @@ var ROWS = [
 function UtilsSection() {
   return (0, import_react24.createElement)(
     Demo,
-    { title: "\u65E5\u671F / \u5B57\u7B26\u4E32 / \u5B57\u8282", hint: t2("utilsHint") },
+    { title: t2("demoUtilsTitle"), hint: t2("utilsHint") },
     (0, import_react24.createElement)(
       "table",
       { style: { borderCollapse: "collapse", fontSize: "13px" } },
@@ -2959,21 +2989,21 @@ function SectionHead2(props) {
   );
 }
 var ALL_SECTIONS = [
-  { id: "design", title: "\u8BBE\u8BA1\u57FA\u7840", render: () => (0, import_react30.createElement)(DesignSection, null) },
-  { id: "buttons", title: "\u6309\u94AE\u4E0E\u8F93\u5165", render: () => (0, import_react30.createElement)(ButtonsSection, null) },
-  { id: "pickers", title: "\u9009\u62E9\u5668", render: () => (0, import_react30.createElement)(PickersSection, null) },
-  { id: "feedback", title: "\u5F39\u7A97\u4E0E\u53CD\u9988", render: () => (0, import_react30.createElement)(FeedbackSection, null) },
-  { id: "display", title: "\u5361\u7247\u4E0E\u5C55\u793A", render: () => (0, import_react30.createElement)(DisplaySection, null) },
-  { id: "utils", title: "\u901A\u7528\u65B9\u6CD5", render: () => (0, import_react30.createElement)(UtilsSection, null) },
-  { id: "explorer", title: "\u5DE5\u4F5C\u533A\u6D4F\u89C8", render: () => (0, import_react30.createElement)(ExplorerSection, null) },
-  { id: "session", title: "\u4F1A\u8BDD\u9884\u89C8", render: () => (0, import_react30.createElement)(SessionSection, null) }
+  { id: "design", titleKey: "secDesign", render: () => (0, import_react30.createElement)(DesignSection, null) },
+  { id: "buttons", titleKey: "secButtons", render: () => (0, import_react30.createElement)(ButtonsSection, null) },
+  { id: "pickers", titleKey: "secPickers", render: () => (0, import_react30.createElement)(PickersSection, null) },
+  { id: "feedback", titleKey: "secFeedback", render: () => (0, import_react30.createElement)(FeedbackSection, null) },
+  { id: "display", titleKey: "secDisplay", render: () => (0, import_react30.createElement)(DisplaySection, null) },
+  { id: "utils", titleKey: "secUtils", render: () => (0, import_react30.createElement)(UtilsSection, null) },
+  { id: "explorer", titleKey: "secExplorer", render: () => (0, import_react30.createElement)(ExplorerSection, null) },
+  { id: "session", titleKey: "secSession", render: () => (0, import_react30.createElement)(SessionSection, null) }
 ];
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
   return (0, import_react30.createElement)(
     "div",
     null,
-    (0, import_react30.createElement)(SectionHead2, { id: current3.id, title: current3.title }),
+    (0, import_react30.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
     current3.render()
   );
 }
@@ -3028,7 +3058,7 @@ function DemoPage() {
               marginBottom: "2px"
             }
           },
-          s.title
+          t2(s.titleKey)
         )
       )
     ),

@@ -14,6 +14,7 @@ import { createElement as h, useState } from 'react'
 import { createStyleKit } from '../../../../dist/design/index.js'
 import { ensureControls, setStyleKit } from '../../../../dist/ui/index.js'
 import { ALL_SECTIONS, Sections, type SectionId } from '../sections/index.js'
+import { t } from '../i18n.js'
 import { ALIAS_TOKEN_NAMES } from './token-alias.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
@@ -55,7 +56,7 @@ function DemoPage(): ReturnType<typeof h> {
               padding: '7px 10px', borderRadius: '6px', fontSize: '13px', marginBottom: '2px',
             },
           },
-          s.title,
+          t(s.titleKey),
         ),
       ),
     ),

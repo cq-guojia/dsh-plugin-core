@@ -30,7 +30,7 @@ export function ButtonsSection(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'Input 家族', hint: t('inputHint') },
+      { title: t('demoInputFamily'), hint: t('inputHint') },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '380px' } },
