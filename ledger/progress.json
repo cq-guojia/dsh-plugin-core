@@ -15,6 +15,23 @@
       ],
       "title": "文档补全：AGENTS 入口 + 每个包的 props/方法说明",
       "worklog": "worklog/202610/18-1124-文档补全-agents-入口-每个包的-props-方法说明-890a.md"
+    },
+    "20261019-1132-控件层重构-改继承官方-primitives-l0-l4-分层-逐控件包裹-eb12": {
+      "category": "建设",
+      "created": "2026-10-19 11:32:47",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-19 11:32:47",
+      "status": "doing",
+      "tags": [
+        "重构",
+        "控件",
+        "官方原语",
+        "分层"
+      ],
+      "title": "控件层重构：改继承官方 primitives（L0-L4 分层 + 逐控件包裹）",
+      "worklog": "worklog/202610/19-1132-控件层重构-改继承官方-primitives-l0-l4-分层-逐控件包裹-eb12.md"
     }
   }
 }
