@@ -1280,18 +1280,17 @@ var import_react28 = require("react");
 // packages/demo/src/i18n.ts
 var DICT2 = {
   zh: {
-    grpStart: "\u5F00\u59CB",
-    grpFoundation: "\u8BBE\u8BA1\u57FA\u7840",
+    grpStart: "\u5165\u95E8",
     grpComponents: "\u63A7\u4EF6",
     grpBlocks: "\u4E1A\u52A1\u6A21\u5757",
     grpUtils: "\u901A\u7528\u65B9\u6CD5",
     grpReference: "\u53C2\u8003",
     secOverview: "\u6982\u89C8",
     secInstall: "\u5B89\u88C5\u4E0E\u521D\u59CB\u5316",
-    secQuickstart: "\u5199\u4E00\u4E2A\u63D2\u4EF6",
-    secTokens: "Token \u8272\u677F",
-    secDark: "\u6697\u8272\u4E3B\u9898",
-    secInject: "\u6837\u5F0F\u6CE8\u5165\u4E0E\u9694\u79BB",
+    secQuickstart: "\u5FEB\u901F\u5F00\u59CB",
+    secFoundation: "\u8BBE\u8BA1\u57FA\u7840",
+    secWritePlugin: "\u5199\u4E00\u4E2A\u63D2\u4EF6",
+    secReference: "\u53C2\u8003\u4E0E\u7EA6\u5B9A",
     secNaming: "\u547D\u540D\u4E0E\u524D\u7F00\u5951\u7EA6",
     secButton: "\u6309\u94AE",
     secInput: "\u5F55\u5165",
@@ -1418,17 +1417,16 @@ var DICT2 = {
   },
   en: {
     grpStart: "Getting started",
-    grpFoundation: "Foundations",
     grpComponents: "Components",
     grpBlocks: "Blocks",
     grpUtils: "Utilities",
     grpReference: "Reference",
     secOverview: "Overview",
     secInstall: "Install & init",
-    secQuickstart: "Write a plugin",
-    secTokens: "Token palette",
-    secDark: "Dark theme",
-    secInject: "Style injection & isolation",
+    secQuickstart: "Quick start",
+    secFoundation: "Foundations",
+    secWritePlugin: "Write a plugin",
+    secReference: "Reference",
     secNaming: "Naming & prefix contract",
     secButton: "Button",
     secInput: "Inputs",
@@ -1570,14 +1568,14 @@ function t2(key, vars) {
 
 // packages/demo/src/sections/start.tsx
 var import_react19 = require("react");
-function OverviewPage() {
-  return (0, import_react19.createElement)(Placeholder, { descKey: "overviewDesc" });
-}
-function InstallPage() {
-  return (0, import_react19.createElement)(Placeholder, { descKey: "installDesc" });
-}
 function QuickstartPage() {
-  return (0, import_react19.createElement)(Placeholder, { descKey: "quickstartDesc" });
+  return (0, import_react19.createElement)(
+    "div",
+    null,
+    (0, import_react19.createElement)(Demo, { title: t2("secOverview") }, (0, import_react19.createElement)(Placeholder, { descKey: "overviewDesc" })),
+    (0, import_react19.createElement)(Demo, { title: t2("secInstall") }, (0, import_react19.createElement)(Placeholder, { descKey: "installDesc" })),
+    (0, import_react19.createElement)(Demo, { title: t2("secWritePlugin") }, (0, import_react19.createElement)(Placeholder, { descKey: "quickstartDesc" }))
+  );
 }
 
 // packages/demo/src/sections/foundation.tsx
@@ -1595,75 +1593,73 @@ var TOKENS = [
   { label: "fg-3", cssVar: "--dshpc-fg-3" },
   { label: "fg-4", cssVar: "--dshpc-fg-4" }
 ];
-function TokensPage() {
+function FoundationPage() {
   return (0, import_react20.createElement)(
-    Demo,
-    { title: t2("demoTokenPalette"), hint: t2("tokensHint") },
+    "div",
+    null,
     (0, import_react20.createElement)(
-      "div",
-      { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
-      TOKENS.map(
-        (item) => (0, import_react20.createElement)(
-          "div",
-          { key: item.cssVar, style: { width: "104px" } },
-          (0, import_react20.createElement)("div", {
-            style: {
-              height: "40px",
-              borderRadius: "6px",
-              background: `var(${item.cssVar})`,
-              border: "1px solid var(--dshpc-border-faint)"
-            }
-          }),
-          (0, import_react20.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
-          (0, import_react20.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+      Demo,
+      { title: t2("demoTokenPalette"), hint: t2("tokensHint") },
+      (0, import_react20.createElement)(
+        "div",
+        { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
+        TOKENS.map(
+          (item) => (0, import_react20.createElement)(
+            "div",
+            { key: item.cssVar, style: { width: "104px" } },
+            (0, import_react20.createElement)("div", {
+              style: {
+                height: "40px",
+                borderRadius: "6px",
+                background: `var(${item.cssVar})`,
+                border: "1px solid var(--dshpc-border-faint)"
+              }
+            }),
+            (0, import_react20.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
+            (0, import_react20.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+          )
         )
       )
-    )
-  );
-}
-function DarkPage() {
-  const dark = typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme");
-  return (0, import_react20.createElement)(
-    Demo,
-    { title: "body[data-ds-dark-theme]", hint: t2("darkHint") },
+    ),
+    // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
     (0, import_react20.createElement)(
-      "div",
-      { style: { display: "flex", alignItems: "center", gap: "10px" } },
+      Demo,
+      { title: "body[data-ds-dark-theme]", hint: t2("darkHint") },
       (0, import_react20.createElement)(
-        "span",
-        { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
-        t2("darkNow")
-      ),
-      (0, import_react20.createElement)("code", {
-        style: {
-          fontFamily: "var(--dshpc-font-mono)",
-          fontSize: "13px",
-          padding: "3px 10px",
-          borderRadius: "6px",
-          background: "var(--dshpc-open-bg)",
-          color: dark ? "var(--dshpc-success)" : "var(--dshpc-fg-2)"
-        }
-      }, dark ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
-    )
-  );
-}
-function InjectPage() {
-  return (0, import_react20.createElement)(
-    Demo,
-    {
-      title: t2("demoStyleInject"),
-      hint: t2("injectHint"),
-      code: `import { createStyleKit } from 'dsh-plugin-core/design'
+        "div",
+        { style: { display: "flex", alignItems: "center", gap: "10px" } },
+        (0, import_react20.createElement)(
+          "span",
+          { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
+          t2("darkNow")
+        ),
+        (0, import_react20.createElement)("code", {
+          style: {
+            fontFamily: "var(--dshpc-font-mono)",
+            fontSize: "13px",
+            padding: "3px 10px",
+            borderRadius: "6px",
+            background: "var(--dshpc-open-bg)",
+            color: typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "var(--dshpc-success)" : "var(--dshpc-fg-2)"
+          }
+        }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
+      )
+    ),
+    (0, import_react20.createElement)(
+      Demo,
+      {
+        title: t2("demoStyleInject"),
+        hint: t2("injectHint"),
+        code: `import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 
 setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
 ensureControls()`
-    },
-    (0, import_react20.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
+      },
+      (0, import_react20.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
+    ),
+    (0, import_react20.createElement)(Demo, { title: t2("secNaming") }, (0, import_react20.createElement)(Placeholder, { descKey: "namingDesc" }))
   );
-}
-function NamingPage() {
-  return (0, import_react20.createElement)(Placeholder, { descKey: "namingDesc" });
 }
 
 // packages/demo/src/sections/controls.tsx
@@ -2962,62 +2958,60 @@ function I18nPage() {
 
 // packages/demo/src/sections/reference.tsx
 var import_react27 = require("react");
-function A11yPage() {
-  return (0, import_react27.createElement)(Placeholder, { descKey: "a11yDesc" });
-}
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
-function RoadmapPage() {
+function ReferencePage() {
   return (0, import_react27.createElement)(
-    Demo,
-    { title: "out of scope", hint: t2("roadmapHint") },
+    "div",
+    null,
+    (0, import_react27.createElement)(Demo, { title: t2("secA11y") }, (0, import_react27.createElement)(Placeholder, { descKey: "a11yDesc" })),
     (0, import_react27.createElement)(
-      "div",
-      { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-      OUT_OF_SCOPE.map(
-        (key) => (0, import_react27.createElement)(
-          "div",
-          { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-          (0, import_react27.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-          (0, import_react27.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
-        )
-      ),
-      // SidebarLayout / SplitPane 属于「待补」但没那么绝对，单独标一行
+      Demo,
+      { title: t2("secRoadmap"), hint: t2("roadmapHint") },
       (0, import_react27.createElement)(
         "div",
-        { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
-        t2("roadmapLayout")
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        OUT_OF_SCOPE.map(
+          (key) => (0, import_react27.createElement)(
+            "div",
+            { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
+            (0, import_react27.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react27.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
+          )
+        ),
+        (0, import_react27.createElement)(
+          "div",
+          { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
+          t2("roadmapLayout")
+        )
       )
-    )
-  );
-}
-function BuildPage() {
-  const rows = [
-    [t2("buildCore"), `v${"0.2.14"}`],
-    [t2("buildDemo"), `v${"0.2.14"}`],
-    [t2("buildStamp"), "1020-0725-7jts"]
-  ];
-  return (0, import_react27.createElement)(
-    Demo,
-    { title: "version / build", hint: t2("buildDesc") },
+    ),
     (0, import_react27.createElement)(
-      "table",
-      { style: { borderCollapse: "collapse", fontSize: "13px" } },
+      Demo,
+      { title: t2("secBuild"), hint: t2("buildDesc") },
       (0, import_react27.createElement)(
-        "tbody",
-        null,
-        rows.map(
-          ([label, value]) => (0, import_react27.createElement)(
-            "tr",
-            { key: label },
-            (0, import_react27.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-            (0, import_react27.createElement)("td", {
-              style: {
-                padding: "5px 14px 5px 0",
-                fontFamily: "var(--dshpc-font-mono)",
-                color: "var(--dshpc-fg)",
-                wordBreak: "break-all"
-              }
-            }, value)
+        "table",
+        { style: { borderCollapse: "collapse", fontSize: "13px" } },
+        (0, import_react27.createElement)(
+          "tbody",
+          null,
+          [
+            [t2("buildCore"), `v${"0.2.14"}`],
+            [t2("buildDemo"), `v${"0.2.14"}`],
+            [t2("buildStamp"), "1020-0734-1t0x"]
+          ].map(
+            ([label, value]) => (0, import_react27.createElement)(
+              "tr",
+              { key: label },
+              (0, import_react27.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react27.createElement)("td", {
+                style: {
+                  padding: "5px 14px 5px 0",
+                  fontFamily: "var(--dshpc-font-mono)",
+                  color: "var(--dshpc-fg)",
+                  wordBreak: "break-all"
+                }
+              }, value)
+            )
           )
         )
       )
@@ -3028,20 +3022,15 @@ function BuildPage() {
 // packages/demo/src/sections/index.tsx
 var SECTION_GROUPS = [
   { id: "start", titleKey: "grpStart" },
-  { id: "foundation", titleKey: "grpFoundation" },
   { id: "components", titleKey: "grpComponents" },
   { id: "blocks", titleKey: "grpBlocks" },
   { id: "utils", titleKey: "grpUtils" },
   { id: "reference", titleKey: "grpReference" }
 ];
 var ALL_SECTIONS = [
-  { id: "overview", group: "start", titleKey: "secOverview", render: () => (0, import_react28.createElement)(OverviewPage, null) },
-  { id: "install", group: "start", titleKey: "secInstall", render: () => (0, import_react28.createElement)(InstallPage, null) },
+  // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
   { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react28.createElement)(QuickstartPage, null) },
-  { id: "tokens", group: "foundation", titleKey: "secTokens", render: () => (0, import_react28.createElement)(TokensPage, null) },
-  { id: "dark", group: "foundation", titleKey: "secDark", render: () => (0, import_react28.createElement)(DarkPage, null) },
-  { id: "inject", group: "foundation", titleKey: "secInject", render: () => (0, import_react28.createElement)(InjectPage, null) },
-  { id: "naming", group: "foundation", titleKey: "secNaming", render: () => (0, import_react28.createElement)(NamingPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react28.createElement)(FoundationPage, null) },
   { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react28.createElement)(ButtonPage, null) },
   { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react28.createElement)(InputPage, null) },
   { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react28.createElement)(PickerPage, null) },
@@ -3057,9 +3046,8 @@ var ALL_SECTIONS = [
   { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react28.createElement)(NumberPage, null) },
   { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react28.createElement)(HttpPage, null) },
   { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react28.createElement)(I18nPage, null) },
-  { id: "a11y", group: "reference", titleKey: "secA11y", render: () => (0, import_react28.createElement)(A11yPage, null) },
-  { id: "roadmap", group: "reference", titleKey: "secRoadmap", render: () => (0, import_react28.createElement)(RoadmapPage, null) },
-  { id: "build", group: "reference", titleKey: "secBuild", render: () => (0, import_react28.createElement)(BuildPage, null) }
+  // 参考：无障碍 / 路线图 / 版本构建三条并成一页
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react28.createElement)(ReferencePage, null) }
 ];
 function Demo(props) {
   return (0, import_react28.createElement)(

@@ -1,8 +1,8 @@
 import { createElement as h, type ReactNode } from 'react'
 import type { DemoMessageKey } from '../i18n.js'
 import { t } from '../i18n.js'
-import { InstallPage, OverviewPage, QuickstartPage } from './start.js'
-import { DarkPage, InjectPage, NamingPage, TokensPage } from './foundation.js'
+import { QuickstartPage } from './start.js'
+import { FoundationPage } from './foundation.js'
 import {
   ButtonPage,
   CardPage,
@@ -15,22 +15,17 @@ import {
 } from './controls.js'
 import { ExplorerPage, SessionPage } from './blocks.js'
 import { DatePage, HttpPage, I18nPage, NumberPage, TextPage } from './utils.js'
-import { A11yPage, BuildPage, RoadmapPage } from './reference.js'
+import { ReferencePage } from './reference.js'
 
 /**
  * 两级目录：第一层（group）是能力域的纯标题，不可点；第二层（id）是一个可看页。
- * 归类判据写在 straight 下面每个 group 的上头，加页时照它填，不必再讨论。
+ * 一级刻意压到 5 个 —— 侧栏条目一多就糊成一团，看不出来分区。
  */
-export type SectionGroup = 'start' | 'foundation' | 'components' | 'blocks' | 'utils' | 'reference'
+export type SectionGroup = 'start' | 'components' | 'blocks' | 'utils' | 'reference'
 
 export type SectionId =
-  | 'overview'
-  | 'install'
   | 'quickstart'
-  | 'tokens'
-  | 'dark'
-  | 'inject'
-  | 'naming'
+  | 'foundation'
   | 'button'
   | 'input'
   | 'picker'
@@ -46,9 +41,7 @@ export type SectionId =
   | 'number'
   | 'http'
   | 'i18n'
-  | 'a11y'
-  | 'roadmap'
-  | 'build'
+  | 'reference'
 
 export interface SectionDef {
   id: SectionId
@@ -60,7 +53,6 @@ export interface SectionDef {
 /** 第一层：顺序即侧栏顺序。 */
 export const SECTION_GROUPS: { id: SectionGroup; titleKey: DemoMessageKey }[] = [
   { id: 'start', titleKey: 'grpStart' },
-  { id: 'foundation', titleKey: 'grpFoundation' },
   { id: 'components', titleKey: 'grpComponents' },
   { id: 'blocks', titleKey: 'grpBlocks' },
   { id: 'utils', titleKey: 'grpUtils' },
@@ -71,17 +63,12 @@ export const SECTION_GROUPS: { id: SectionGroup; titleKey: DemoMessageKey }[] = 
 //   跨页复用、无业务含义        → components
 //   要注入数据、有业务语义的整块 → blocks
 //   无 UI 的纯函数              → utils
-//   说明性 / 元信息             → start / foundation / reference
+//   说明性 / 元信息             → start / reference
 /** 全部二级页（顺序即组内顺序）；侧栏与右侧渲染共用同一份目录（单一事实源）。 */
 export const ALL_SECTIONS: SectionDef[] = [
-  { id: 'overview', group: 'start', titleKey: 'secOverview', render: () => h(OverviewPage, null) },
-  { id: 'install', group: 'start', titleKey: 'secInstall', render: () => h(InstallPage, null) },
+  // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
   { id: 'quickstart', group: 'start', titleKey: 'secQuickstart', render: () => h(QuickstartPage, null) },
-
-  { id: 'tokens', group: 'foundation', titleKey: 'secTokens', render: () => h(TokensPage, null) },
-  { id: 'dark', group: 'foundation', titleKey: 'secDark', render: () => h(DarkPage, null) },
-  { id: 'inject', group: 'foundation', titleKey: 'secInject', render: () => h(InjectPage, null) },
-  { id: 'naming', group: 'foundation', titleKey: 'secNaming', render: () => h(NamingPage, null) },
+  { id: 'foundation', group: 'start', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
 
   { id: 'button', group: 'components', titleKey: 'secButton', render: () => h(ButtonPage, null) },
   { id: 'input', group: 'components', titleKey: 'secInput', render: () => h(InputPage, null) },
@@ -101,9 +88,8 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'http', group: 'utils', titleKey: 'secHttp', render: () => h(HttpPage, null) },
   { id: 'i18n', group: 'utils', titleKey: 'secI18n', render: () => h(I18nPage, null) },
 
-  { id: 'a11y', group: 'reference', titleKey: 'secA11y', render: () => h(A11yPage, null) },
-  { id: 'roadmap', group: 'reference', titleKey: 'secRoadmap', render: () => h(RoadmapPage, null) },
-  { id: 'build', group: 'reference', titleKey: 'secBuild', render: () => h(BuildPage, null) },
+  // 参考：无障碍 / 路线图 / 版本构建三条并成一页
+  { id: 'reference', group: 'reference', titleKey: 'secReference', render: () => h(ReferencePage, null) },
 ]
 
 /** 一个 demo 块：标题 + 一句话 + 实时渲染 + 用法（主流文档站的两段式，API 表在 docs/）。 */

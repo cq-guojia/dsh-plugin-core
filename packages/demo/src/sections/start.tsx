@@ -1,17 +1,18 @@
 import { createElement as h } from 'react'
-import { Placeholder } from './index.js'
+import { Demo, Placeholder } from './index.js'
+import { t } from '../i18n.js'
 
-/** 概览：包是什么、能力地图。素材在 README.md 与 docs/design/features.md，尚未搬进页面。 */
-export function OverviewPage(): ReturnType<typeof h> {
-  return h(Placeholder, { descKey: 'overviewDesc' })
-}
-
-/** 安装与初始化：怎么写真实插件才能跑起来。 */
-export function InstallPage(): ReturnType<typeof h> {
-  return h(Placeholder, { descKey: 'installDesc' })
-}
-
-/** 写一个插件：最小骨架。 */
+/**
+ * 快速开始。
+ * 原「开始」组的三条（概览 / 安装与初始化 / 写一个插件）并成一页 —— 侧栏条目一多就糊，
+ * 并页后每块仍是独立的 Demo 卡片，视觉上照样分得清。
+ */
 export function QuickstartPage(): ReturnType<typeof h> {
-  return h(Placeholder, { descKey: 'quickstartDesc' })
+  return h(
+    'div',
+    null,
+    h(Demo, { title: t('secOverview') }, h(Placeholder, { descKey: 'overviewDesc' })),
+    h(Demo, { title: t('secInstall') }, h(Placeholder, { descKey: 'installDesc' })),
+    h(Demo, { title: t('secWritePlugin') }, h(Placeholder, { descKey: 'quickstartDesc' })),
+  )
 }

@@ -7,7 +7,6 @@ export type Locale = 'zh' | 'en'
 /** demo 界面文案的 key（含六个分组名、25 个页面标题、各 Demo 块 hint、空页待补说明；演示数据/按钮文案不在内）。 */
 export type DemoMessageKey =
   | 'grpStart'
-  | 'grpFoundation'
   | 'grpComponents'
   | 'grpBlocks'
   | 'grpUtils'
@@ -15,9 +14,9 @@ export type DemoMessageKey =
   | 'secOverview'
   | 'secInstall'
   | 'secQuickstart'
-  | 'secTokens'
-  | 'secDark'
-  | 'secInject'
+  | 'secFoundation'
+  | 'secWritePlugin'
+  | 'secReference'
   | 'secNaming'
   | 'secButton'
   | 'secInput'
@@ -144,8 +143,7 @@ export type DemoMessageKey =
 
 export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   zh: {
-    grpStart: '开始',
-    grpFoundation: '设计基础',
+    grpStart: '入门',
     grpComponents: '控件',
     grpBlocks: '业务模块',
     grpUtils: '通用方法',
@@ -153,10 +151,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     secOverview: '概览',
     secInstall: '安装与初始化',
-    secQuickstart: '写一个插件',
-    secTokens: 'Token 色板',
-    secDark: '暗色主题',
-    secInject: '样式注入与隔离',
+    secQuickstart: '快速开始',
+    secFoundation: '设计基础',
+    secWritePlugin: '写一个插件',
+    secReference: '参考与约定',
     secNaming: '命名与前缀契约',
     secButton: '按钮',
     secInput: '录入',
@@ -312,7 +310,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   },
   en: {
     grpStart: 'Getting started',
-    grpFoundation: 'Foundations',
     grpComponents: 'Components',
     grpBlocks: 'Blocks',
     grpUtils: 'Utilities',
@@ -320,10 +317,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     secOverview: 'Overview',
     secInstall: 'Install & init',
-    secQuickstart: 'Write a plugin',
-    secTokens: 'Token palette',
-    secDark: 'Dark theme',
-    secInject: 'Style injection & isolation',
+    secQuickstart: 'Quick start',
+    secFoundation: 'Foundations',
+    secWritePlugin: 'Write a plugin',
+    secReference: 'Reference',
     secNaming: 'Naming & prefix contract',
     secButton: 'Button',
     secInput: 'Inputs',
