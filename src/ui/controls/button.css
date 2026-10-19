@@ -33,9 +33,11 @@
 .dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}
 .dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}
 .dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;}
-/* loading：不换 DOM 结构，只在文案前插一个同色小圈（尺寸随字号，缩放不依赖常量） */
-.dshpc-btn__spinner{display:block;flex:none;width:12px;height:12px;box-sizing:border-box;
-  border:1.5px solid currentColor;border-right-color:transparent;border-radius:999px;
+/* loading：不换 DOM 结构，只在文案前插一个同色小圈。
+   ⚠️ 2026-10-20 改画法：原来是 border:1.5px 加 border-radius:999px 画的环 —— 真机实测 computed
+   radius 就是 999px、宽高都是 12px（没被任何样式覆盖），看着却"像圆角方"，原因是**次像素边框
+   （1.5px）在 12px 这么小的圆上被抗锯齿插值拉毛**。改用 SVG 矢量弧：任意 DPR 下都是真圆。 */
+.dshpc-btn__spinner{display:block;flex:none;width:12px;height:12px;
   animation:dshpc-btn-spin .7s linear infinite;}
 /* shortcut: 12px 是固定值，不随按钮字号缩放；要更大就改这一处。 */
 @keyframes dshpc-btn-spin{to{transform:rotate(360deg)}}

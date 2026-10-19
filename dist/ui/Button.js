@@ -68,7 +68,20 @@ export function Button(props) {
         style: { ...colorVars(variant, color), ...style },
     };
     return h('button', attrs, loading
-        ? h('span', { className: 'dshpc-btn__spinner', 'aria-hidden': true })
+        // 转圈用 SVG 矢量弧，不用 border 画环：1.5px 的次像素边框在 12px 圆上会被抗锯齿拉毛，
+        // 看着像圆角方（实测 computed radius 确实是 999px，不是被覆盖 —— 是渲染质量问题）。
+        ? h('svg', {
+            className: 'dshpc-btn__spinner',
+            viewBox: '0 0 12 12',
+            width: 12,
+            height: 12,
+            'aria-hidden': true,
+        }, h('circle', {
+            cx: 6, cy: 6, r: 4.75, fill: 'none',
+            stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round',
+            // 周长 ≈ 29.85，画 22 的弧 + 足够长的空缺 ⇒ 一个约 270° 的开口环
+            strokeDasharray: '22 30',
+        }))
         : icon !== undefined && icon !== null
             ? h('span', { className: 'dshpc-btn__icon' }, icon)
             : null, children, iconRight !== undefined && iconRight !== null
