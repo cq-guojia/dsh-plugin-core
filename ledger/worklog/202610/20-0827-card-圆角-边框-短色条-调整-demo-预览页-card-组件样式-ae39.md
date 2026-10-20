@@ -13,7 +13,7 @@
 
 ## 待办
 
-- 待用户验收：demo CardPage 两节——`Card`（框式：边框+圆角+6×36 短条）与 `StripCard`（浅底+5px 通高条），以及右侧槽整体垂直居中的效果。
+- 待用户验收：demo CardPage 两节——`Card`（框式 + 自适应短条 + action 槽单按钮示例）与 `StripCard`（浅底通高条），右侧槽/裸放元素的垂直居中效果。
 
 ## 下一步
 
@@ -52,6 +52,16 @@
 - 修正内容：恢复 `CardShell(kind)` 双外观（`--bordered` / `--strip`）；`.dshpc-card__head` 改 `align-items:center`（两种外观都居中）；色条 span 移入头部第一个子元素（bordered 行内短条需参与 flex）；demo 记录流节改回 `StripCard`；i18n 四条案 + `docs/design/features/ui.md` 同步双外观与居中约定。
 - 验证：build + build:demo 通过；`pnpm test` 49/49 绿；codelint 6 文件全层过；生成物确认含 `align-items:center` 与两套外观类。
 
+2026-10-20 第三轮（用户继续提规范）：
+
+- **容器职责确认**（用户原话口径）：外壳只提供「外框 + 左竖条颜色 + 整体垂直居中」；里面几列、每列放什么、悬停浮出的按钮，全是调用方自己的事，我们不负责。
+- **垂直居中规则定稿**：一级子项目默认垂直居中；调用方自己放了带高度的 div 并在里面自居中的，不动；裸放的 button 等元素必须自动居中。
+- **「框式右侧没居中」真因**：demo 框式示例的日期放在调用方自己的内容里（标题 baseline 行），没走 `action` 槽 ⇒ 不受居中路管。已把日期移入 `action` 槽，并加「action 裸放一个 button」的框式示例。
+- **竖条修正**（用户指「新建的左边竖条」= 框式短条）：`height:36px` 写死 → `align-self:stretch` + `min-height:var(--dshpc-line-md)`（一行文字时齐高、不撑卡；两行时跟内容）；Card padding 由 `12px 14px` → 全向 `14px` ⇒ 条子距左 / 上 / 下外间距恒等（两行时的匀称间距为准）。StripCard 的 5px 通高绝对定位条不动（上一轮已批准）。
+- **demo 清理**：按用户要求删掉右侧小箭头（toggle）示例——「小箭头不是推荐用法」，该示例只留一个 button；连带移除 `open` 状态。 StripCard 节保留两条（DAY:1 + 执行成功）。
+- **宽度确认**：两样式默认 100% 宽（block div，无 width 声明）；demo 显示约 640px 是 demo 包装器 `maxWidth:'640px'` 所为，非组件行为，不改。
+- 验证：build + build:demo 通过；`pnpm test` 49/49 绿；codelint 6 文件全层过；生成物确认含 `align-self:stretch;min-height` 与 `padding:14px`。
+
 ## 结论
 
 Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修正：撤回第一轮的「二合一」，按用户明确要求恢复双外观并补上图示框式卡）：
@@ -74,3 +84,4 @@ Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修
 - 2026-10-20 08:47:31 · log · @GuoJia-Agent · Card 外观统一为兄弟 rec-item 同款（浅底+透明占位边框+5px通高方角色条+方角）：改 card.css/Card.ts/demo 两文件/features-ui.md，build+49 测试+codelint 全过，待验收
 - 2026-10-20 08:47:35 · log · @GuoJia-Agent · 收工三步：正文已落本轮事实，下一步=用户验收 CardPage；改动未 commit 等指示
 - 2026-10-20 09:04:58 · log · @GuoJia-Agent · 第二轮修正：恢复双外观（Card=框式照 taskrow、StripCard=浅底条照 rec-item）+ 头部改 align-items:center 修右侧居顶；build+49 测试+codelint 全过，待验收
+- 2026-10-20 09:25:13 · log · @GuoJia-Agent · 第三轮：框式短条改 stretch+最小一行、padding 全向 14 使左/上/下等距；日期改走 action 槽+加单按钮示例、删小箭头示例；build+49 测试+codelint 全过
