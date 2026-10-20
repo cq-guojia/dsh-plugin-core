@@ -31,3 +31,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-20 23:17:28 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-20 23:23:03 · log · @GuoJia-Agent · 开坑+勘察：demo 现状=三栏无路由、Demo 组件裸 pre 无高亮、demo 零 CSS 全 inline；Bootstrap 页结构实测；布局提案已交用户等拍板
+- 2026-10-20 23:33:39 · log · @GuoJia-Agent · Button 页试点完成：新增 demo.css 真源+生成链路、doc.tsx 四件套、Note/5 示例/用法/API 表；typecheck+73 测试+codelint 全绿，产物已 build；等用户在宿主验收
