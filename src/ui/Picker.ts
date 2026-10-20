@@ -1,6 +1,7 @@
-import { createElement as h, useEffect, useMemo, useRef, useState } from 'react'
+import { createElement as h, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ensureControls } from './css.js'
 import { t, type Translate } from '../utils/i18n.js'
+import { FieldHint } from './FieldHint.js'
 import {
   filterGroups,
   flattenOptions,
@@ -40,8 +41,14 @@ export interface PickerProps {
   placement?: 'down' | 'up'
   /** 选中后是否收起菜单；多选默认**不收起**（方便连续选）。 */
   closeOnSelect?: boolean
+  /** 触发器文字对齐：默认 `left`；`center` 只在确实需要居中的地方显式传（2026-10-20）。 */
+  align?: 'left' | 'center'
   /** 多选时是否把已选项列在触发器上（默认列）。 */
   showLabels?: boolean
+  /** 触发器文字前的图标（任意 ReactNode；不传就没有这一段）。 */
+  icon?: ReactNode
+  /** 问号提示文字：给了就在触发器后面挂标准 FieldHint（排版收进组件，调用方不再手动拼）。 */
+  hint?: string
   className?: string
   ariaLabel?: string
   translate?: Translate
@@ -82,6 +89,12 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(-1)
   const rootRef = useRef<HTMLDivElement | null>(null)
+  const searchRef = useRef<HTMLInputElement | null>(null)
+
+  // 展开即聚焦搜索框（2026-10-20 用户：点开就能直接打字，不用再点一下）
+  useEffect(() => {
+    if (open && props.searchable === true) searchRef.current?.focus()
+  }, [open, props.searchable])
 
   // 点外面收起
   useEffect(() => {
@@ -147,6 +160,54 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
     }
   }
 
+  // 触发器（右侧箭头 = 内联 SVG chevron，与官方 ⌄ 同形；ui 零官方依赖故自绘）。
+  const trigger = h(
+    'button',
+    {
+      type: 'button',
+      'aria-label': props.ariaLabel,
+      'aria-expanded': open,
+      className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === 'center' ? ' dshpc-picker__trigger--center' : ''}`,
+      disabled: props.disabled === true,
+      onClick: () => {
+        if (props.disabled !== true) setOpen(!open)
+      },
+    },
+    props.icon !== undefined && props.icon !== null
+      ? h('span', { className: 'dshpc-picker__icon' }, props.icon)
+      : null,
+    // 文字吃掉剩余宽度并靠左（默认）：否则 space-between 会把短文案推到中间
+    h('span', { className: 'dshpc-picker__label' }, summary),
+    h(
+      'svg',
+      {
+        className: 'dshpc-picker__caret',
+        width: 12,
+        height: 12,
+        viewBox: '0 0 16 16',
+        fill: 'none',
+        'aria-hidden': true,
+      },
+      h('path', {
+        d: 'M4 6l4 4 4-4',
+        stroke: 'currentColor',
+        'stroke-width': 1.5,
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+      }),
+    ),
+  )
+  // hint 给了就把触发器与 FieldHint 包进同一行（间距/对齐收进组件）。
+  const triggerRow =
+    props.hint === undefined
+      ? trigger
+      : h(
+          'span',
+          { className: 'dshpc-fieldwrap dshpc-fieldwrap--inline' },
+          trigger,
+          h(FieldHint, { text: props.hint }),
+        )
+
   return h(
     'div',
     {
@@ -154,21 +215,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
       ref: rootRef,
       onKeyDown,
     },
-    h(
-      'button',
-      {
-        type: 'button',
-        'aria-label': props.ariaLabel,
-        'aria-expanded': open,
-        className: `dshpc-picker__trigger dshpc-picker__trigger--${size}`,
-        disabled: props.disabled === true,
-        onClick: () => {
-          if (props.disabled !== true) setOpen(!open)
-        },
-      },
-      h('span', null, summary),
-      h('span', { className: 'dshpc-picker__caret' }, '▾'),
-    ),
+    triggerRow,
     open
       ? h(
           'div',
@@ -184,6 +231,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
           atMax ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerMaxReached', { n: props.max ?? 0 })) : null,
           props.searchable === true
             ? h('input', {
+                ref: searchRef,
                 className: 'dshpc-picker__search',
                 placeholder: tt('pickerSearch'),
                 value: query,
@@ -214,10 +262,12 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                         ? null
                         : h('div', { className: 'dshpc-picker__group-label' }, g.label),
                       g.options.map((o) => {
+                        // 到上限后：未选项置灰，**已选项保持可点**（点了是取消，不是再加）。
+                        const blocked = o.disabled === true || (atMax && !selected.includes(o.value))
                         const activeCls = [
                           'dshpc-picker__option',
                           selected.includes(o.value) ? 'dshpc-picker__option--active' : '',
-                          o.disabled === true || atMax ? 'dshpc-picker__option--disabled' : '',
+                          blocked ? 'dshpc-picker__option--disabled' : '',
                         ]
                           .filter((s) => s !== '')
                           .join(' ')
@@ -229,7 +279,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                             className: activeCls,
                             'data-active': idx === active ? 'true' : undefined,
                             onClick: () => {
-                              if (o.disabled !== true && !atMax) pick(o.value)
+                              if (!blocked) pick(o.value)
                             },
                           },
                           mode === 'multiple'
@@ -238,6 +288,9 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                                 { className: 'dshpc-picker__tick' },
                                 selected.includes(o.value) ? '✓' : '',
                               )
+                            : null,
+                          o.icon !== undefined && o.icon !== null
+                            ? h('span', { className: 'dshpc-picker__option-icon' }, o.icon)
                             : null,
                           h('span', null, o.label),
                         )

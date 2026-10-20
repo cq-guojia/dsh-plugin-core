@@ -76,14 +76,25 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
 为什么 core 可以用模块级变量存「当前 kit」：core 会被**内联进每个插件各自的 bundle**（不是共享运行时），
 模块级变量天然按插件隔离，不像共享模块那样会互相踩。
 
-## 数据从哪来（组件不自己取数）
+## 数据从哪来
 
-工作区列表、模型列表、会话消息都要跨 host↔client 边界，而那条通道是**插件私有**的 ⇒ 组件取不到。
-所以统一约定：**数据由调用方经 props 给，宿主能力经接口注入**。
+工作区列表、模型列表、会话消息都要跨 host↔client 边界。分两条口径（2026-10-20 拍板）：
 
-| 组件 | 要调用方给什么 |
+- **通用控件是纯零件**：数据由调用方经 props 给，宿主能力经接口注入（`ExplorerPanel`、
+  `SessionPreview`、通用 `Picker` 都算这类）。
+- **领域选择器自带数据面**：`ModelPicker` / `WorkspacePicker` 经接线后**自己取数自己显示**，
+  消费方不再传数组。两条通路（2026-10-20 真机核实）：
+  - 工作区：client 侧 `ctx.inject(['workspaces'])` 的快照（getSnapshot + subscribe，follow 流实时更新），
+    封装在 `src/ui/host-data.ts` 的 `workspaceList`。
+  - 模型目录：client 侧 remote **拿不到**每个 provider 的模型 ⇒ 插件宿主侧
+    `llm.listModels()` 现查、`serveModelCatalog()`（`src/host/index.ts`，`./host` 子路径）挂成只读路由，
+    client 侧 `connectHost(ctx, { modelsPath })` fetch。两侧共用同一个 path 常量。
+  任一通路缺席只影响那一块，选择器渲染空态 / 降级提示。
+
+| 组件 | 数据从哪来 |
 |---|---|
-| `Picker` / `ModelPicker` / `WorkspacePicker` / `FilePicker` | 选项数据（props） |
+| `Picker` | 选项数据（props） |
+| `ModelPicker` / `WorkspacePicker` | 自取（connectHost 接线；`groups` 参数仅作覆盖） |
 | `ExplorerPanel` | `WorkspaceFilesFace`（从 ctx 取出后注入） |
 | `SessionPreview` | `SessionSource`（同上） |
 

@@ -1,14 +1,7 @@
-import { createElement as h } from 'react';
+import { createElement as h, type ReactNode } from 'react';
 import { type PickerSize } from './Picker.js';
 import { type Translate } from '../utils/i18n.js';
 export interface WorkspacePickerProps {
-    /**
-     * 工作区名字列表 —— **由调用方给**。
-     *
-     * 为什么组件不自己取：工作区列表是 host 侧 `ctx.workspaceRegistry.list()` 取的，
-     * 要经插件自己的 HTTP 通道送到 client，那条通道是插件私有的（需求文档 §6）。
-     */
-    workspaces: readonly string[];
     value?: string | string[];
     defaultValue?: string | string[];
     mode?: 'single' | 'multiple';
@@ -16,33 +9,20 @@ export interface WorkspacePickerProps {
     onChange?: (value: string | string[]) => void;
     /** 允许「不选」。 */
     clearable?: boolean;
+    /** 下拉内搜索框（默认关；要就传 true）。 */
     searchable?: boolean;
     disabled?: boolean;
     size?: PickerSize;
     placement?: 'down' | 'up';
     className?: string;
+    /** 未选时的文字（默认「工作区」；想叫「选择工作区」就传它）。 */
     placeholder?: string;
+    /** 触发器前置图标：不传 = 默认文件夹；传 `null` = 不显示；传元素 = 自定义。 */
+    icon?: ReactNode | null;
+    /** 问号提示文字（传了才显示）。 */
+    hint?: string;
     translate?: Translate;
 }
-/** 选工作区（交互全管：单选 / 多选 / 上限 / 空态；数据调用方给）。 */
+/** 选工作区（交互全管：单选 / 多选 / 上限 / 空态；数据自动来自宿主工作区快照）。 */
 export declare function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof h>;
-export interface FilePickerProps {
-    /** 候选文件（相对路径）；同样由调用方给。 */
-    files: readonly string[];
-    value?: string | string[];
-    defaultValue?: string | string[];
-    mode?: 'single' | 'multiple';
-    max?: number;
-    onChange?: (value: string | string[]) => void;
-    clearable?: boolean;
-    searchable?: boolean;
-    disabled?: boolean;
-    size?: PickerSize;
-    placement?: 'down' | 'up';
-    className?: string;
-    placeholder?: string;
-    translate?: Translate;
-}
-/** 选文件（同上：交互全管，数据调用方给）。 */
-export declare function FilePicker(props: FilePickerProps): ReturnType<typeof h>;
 //# sourceMappingURL=WorkspacePicker.d.ts.map

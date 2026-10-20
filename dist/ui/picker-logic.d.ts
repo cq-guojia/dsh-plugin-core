@@ -1,6 +1,9 @@
+import type { ReactNode } from 'react';
 export interface PickerOption {
     value: string;
     label: string;
+    /** 选项文字前的图标（任意 ReactNode；不传就没有这一段）。 */
+    icon?: ReactNode;
     disabled?: boolean;
 }
 /** 一组选项（模型选择里 group 就是 provider）。 */
@@ -17,6 +20,6 @@ export declare function filterGroups(groups: PickerGroup[], query: string): Pick
 /** 多选切换；`max` 达到上限时不再添加（返回原数组，不静默截断）。 */
 export declare function toggleValue(current: readonly string[], value: string, max?: number): string[];
 export declare function labelsOf(groups: PickerGroup[], values: readonly string[]): string[];
-/** 值落在哪个组里（cascade 形态用来反推 provider）。 */
+/** 值落在哪个组里（按模型值反推供应商等场景）。 */
 export declare function groupOf(groups: PickerGroup[], value: string): PickerGroup | undefined;
 //# sourceMappingURL=picker-logic.d.ts.map

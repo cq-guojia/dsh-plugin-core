@@ -6,11 +6,12 @@
  */
 import { createElement as h } from 'react';
 import { ensureControls } from './css.js';
+import { FieldHint } from './FieldHint.js';
 /** 多行文本输入。 */
 export function Textarea(props) {
     ensureControls();
     const { value, onChange, placeholder, error, disabled, id, rows, spellCheck, className, style } = props;
-    return h('textarea', {
+    const box = h('textarea', {
         id,
         rows,
         value,
@@ -22,5 +23,9 @@ export function Textarea(props) {
         style,
         onChange: (event) => { onChange(event.target.value); },
     });
+    // 多行的问号放**右下角**（2026-10-20 用户：不要垂直居中，那样像贴在中间的空白上）
+    if (props.hint === undefined)
+        return box;
+    return h('span', { className: 'dshpc-fieldwrap dshpc-fieldwrap--block' }, box, h(FieldHint, { text: props.hint }));
 }
 //# sourceMappingURL=Textarea.js.map

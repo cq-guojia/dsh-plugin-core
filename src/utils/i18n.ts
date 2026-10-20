@@ -45,6 +45,7 @@ export type UtilMessageKey =
   | 'pickerDegraded'
   | 'modelProvider'
   | 'modelModel'
+  | 'modelDefault'
   | 'relNow'
   | 'relInJustNow'
   | 'relInMinutes'
@@ -100,6 +101,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     pickerDegraded: '候选可能不完整',
     modelProvider: '供应商',
     modelModel: '模型',
+    modelDefault: '默认模型',
     relNow: '刚刚',
     relInJustNow: '即将',
     relInMinutes: '{n} 分钟后',
@@ -151,6 +153,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     pickerDegraded: 'List may be incomplete',
     modelProvider: 'Provider',
     modelModel: 'Model',
+    modelDefault: 'Default model',
     relNow: 'just now',
     relInJustNow: 'soon',
     relInMinutes: 'in {n}m',

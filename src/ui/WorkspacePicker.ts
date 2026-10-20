@@ -1,19 +1,15 @@
-// 领域选择器：WorkspacePicker / FilePicker。
-// 它们是 ui 的 Picker 的薄封装（领域数据 + 通用选择器交互），与 explorer 的浏览/预览无关 ——
-// 放在 ui 里，需要选工作区/选文件的地方不必引入整个 explorer（需求文档 §2.4）。
-import { createElement as h } from 'react'
+// 领域选择器：WorkspacePicker（选工作区）。
+// 通用交互由 ui 的 Picker 承担；工作区数据由本组件自己订（host-data.ts 的
+// workspaceList，connectHost 喂官方 `workspaces` 服务快照）—— 消费方不再传数组
+// （用户 2026-10-20 拍板）。FilePicker 已删（用户同日：文件选择框没有用）。
+import { createElement as h, useSyncExternalStore, type ReactNode } from 'react'
 import { ensureControls } from './css.js'
 import { Picker, type PickerSize } from './Picker.js'
 import { t, type Translate } from '../utils/i18n.js'
+import { workspaceList } from './host-data.js'
+import { folderIcon } from './picker-icons.js'
 
 export interface WorkspacePickerProps {
-  /**
-   * 工作区名字列表 —— **由调用方给**。
-   *
-   * 为什么组件不自己取：工作区列表是 host 侧 `ctx.workspaceRegistry.list()` 取的，
-   * 要经插件自己的 HTTP 通道送到 client，那条通道是插件私有的（需求文档 §6）。
-   */
-  workspaces: readonly string[]
   value?: string | string[]
   defaultValue?: string | string[]
   mode?: 'single' | 'multiple'
@@ -21,68 +17,38 @@ export interface WorkspacePickerProps {
   onChange?: (value: string | string[]) => void
   /** 允许「不选」。 */
   clearable?: boolean
+  /** 下拉内搜索框（默认关；要就传 true）。 */
   searchable?: boolean
   disabled?: boolean
   size?: PickerSize
   placement?: 'down' | 'up'
   className?: string
+  /** 未选时的文字（默认「工作区」；想叫「选择工作区」就传它）。 */
   placeholder?: string
+  /** 触发器前置图标：不传 = 默认文件夹；传 `null` = 不显示；传元素 = 自定义。 */
+  icon?: ReactNode | null
+  /** 问号提示文字（传了才显示）。 */
+  hint?: string
   translate?: Translate
 }
 
-/** 选工作区（交互全管：单选 / 多选 / 上限 / 空态；数据调用方给）。 */
+/** 选工作区（交互全管：单选 / 多选 / 上限 / 空态；数据自动来自宿主工作区快照）。 */
 export function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof h> {
   ensureControls()
   const tt = props.translate ?? t
+  const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
   return h(Picker, {
-    options: props.workspaces.map((w) => ({ value: w, label: w })),
+    options: items.map((w) => ({ value: w.workspaceId, label: w.title })),
     value: props.value,
     defaultValue: props.defaultValue,
     mode: props.mode,
     max: props.max,
     onChange: props.onChange,
     clearable: props.clearable,
-    searchable: props.searchable ?? true,
+    searchable: props.searchable,
+    hint: props.hint,
+    icon: props.icon === undefined ? folderIcon() : props.icon ?? undefined,
     placeholder: props.placeholder ?? tt('explorerRoot'),
-    disabled: props.disabled,
-    size: props.size,
-    placement: props.placement,
-    className: props.className,
-  })
-}
-
-export interface FilePickerProps {
-  /** 候选文件（相对路径）；同样由调用方给。 */
-  files: readonly string[]
-  value?: string | string[]
-  defaultValue?: string | string[]
-  mode?: 'single' | 'multiple'
-  max?: number
-  onChange?: (value: string | string[]) => void
-  clearable?: boolean
-  searchable?: boolean
-  disabled?: boolean
-  size?: PickerSize
-  placement?: 'down' | 'up'
-  className?: string
-  placeholder?: string
-  translate?: Translate
-}
-
-/** 选文件（同上：交互全管，数据调用方给）。 */
-export function FilePicker(props: FilePickerProps): ReturnType<typeof h> {
-  ensureControls()
-  const tt = props.translate ?? t
-  return h(Picker, {
-    options: props.files.map((f) => ({ value: f, label: f })),
-    value: props.value,
-    defaultValue: props.defaultValue,
-    mode: props.mode,
-    max: props.max,
-    onChange: props.onChange,
-    clearable: props.clearable,
-    searchable: props.searchable ?? true,
-    placeholder: props.placeholder ?? tt('pickerPlaceholder'),
     disabled: props.disabled,
     size: props.size,
     placement: props.placement,

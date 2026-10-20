@@ -48,11 +48,14 @@ dsh-plugin-core/
 - 零件：Button / Input 家族 / Textarea / Checkbox / Segmented / 下拉框 / 搜索框 / 滑轨 /
   MarqueeText / LiveText / Field（含错误提示）/ resizer / DateTime / TimeRange
 - 选择器：`Picker`（通用：单选/多选/上限/搜索/分组/空态/降级）、`ModelPicker`、
-  `WorkspacePicker`（选工作区）、`FilePicker`（选文件）
+  `WorkspacePicker`（选工作区）；`FilePicker` 已删（2026-10-20 用户：文件选择框没有用）
 - 「统一某类元素」的控件：`SectionHead` 等
 - 反馈件：`Modal` / `Loading` / `toast` / 空态 / 错误边界
 - 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 浮动层 / 多份同名。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
-- **纯零件，不自己取数** —— 数据由调用方传入
+- **通用控件是纯零件，数据由调用方传入**；**领域选择器例外**（2026-10-20 用户拍板反转）：
+  `ModelPicker` / `WorkspacePicker` 是「现成的包」，接线后**自己取数自己显示**，消费方不再拿数组传 props。
+  接线两处、共用同一 path 常量：宿主 `serveModelCatalog(ctx,{path})`（`llm.listModels` 挂只读路由，
+  client 侧 remote 拿不到模型列表）+ client `connectHost(ctx,{modelsPath})`（工作区走官方 `workspaces` 快照）
 
 ### 2.3 utils
 
@@ -63,7 +66,7 @@ dsh-plugin-core/
 ### 2.4 adv.explorer
 
 - `ExplorerPanel`：文件浏览成品（目录树 + 面包屑 + 文件预览），内部组合 `ui` 的侧栏/拉栏与 Picker
-- 选工作区 / 选文件（`WorkspacePicker` / `FilePicker`）在 `ui`，不在这里
+- 选工作区（`WorkspacePicker`）在 `ui`，不在这里；`FilePicker` 已删（2026-10-20）
 
 ### 2.5 adv.session
 
@@ -143,10 +146,10 @@ dsh-plugin-core/
 | 位置 | 约定 |
 |---|---|
 | design | `createStyleKit({ id })` → `{ registerStyle, ensureStyles, applyStyle }` |
-| ui / ModelPicker | `variant: 'cascade' \| 'flat'`（级联：先厂商后模型 / 平铺：一个下拉列全部）；数据统一为 `groups: [{ value, label, options }]`，一份数据两种渲染。**禁止用数字或无意义名** |
-| ui / Picker | `mode: 'single' \| 'multiple'`、`max`、分组、搜索、空态、降级 |
+| ui / ModelPicker | `variant: 'grouped' \| 'cascade'`（分组：一个下拉、完全独立 / 联动：供应商与模型两个下拉联动；2026-10-20 用户拍板两形态都要）；**两种形态 onChange 都发最终模型 value**；「默认模型」选项默认提供（`allowDefault:false` 关），选中发 `''`。默认读 connectHost 喂入的真实目录，`groups` 仅作覆盖。**禁止用数字或无意义名** |
+| ui / Picker | `mode: 'single' \| 'multiple'`、`max`（到上限已选项仍可反选）、`searchable`（搜索框开关）、`icon`（触发器前置 icon）、选项级 `icon`、`hint`（问号提示内置）、分组、空态、降级 |
 | explorer | `WorkspaceFilesFace` 由插件注入（`list` / `stat` / `read` 最小面），组件不抓宿主全局 |
-| explorer / WorkspacePicker | `WorkspacePicker({ workspaces, mode, max, onChange })` —— 数据调用方给（工作区列表是 host 侧 `ctx.workspaceRegistry.list()` 取的，要经插件私有通道送到 client，**组件自己取不到**） |
+| explorer / WorkspacePicker | `WorkspacePicker({ mode, max, onChange, … })` —— **无数据参数**：connectHost 接线后自动订官方 `workspaces` 服务快照，选中值为 `workspaceId`（2026-10-20 反转旧口径「数据调用方给」） |
 | session | `SessionPreview({ sessionId, source, variant })` —— `source` = 取数能力接口（会话预览内部有交互：传输文件等，光有静态消息流不够） |
 
 ## 7. 分期与任务切分

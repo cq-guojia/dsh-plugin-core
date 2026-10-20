@@ -11,6 +11,16 @@
 import { ensureControls } from './css.js';
 import { createElement as h, useEffect, useState } from 'react';
 import { IconButton } from './Button.js';
+import { FieldHint } from './FieldHint.js';
+/**
+ * 字段 hint 的统一包法：控件 + 问号提示同一行（间距/对齐收进组件，调用方传个
+ * `hint` 字符串就行，不再手动拼排版 —— 用户 2026-10-20 拍板）。
+ */
+export function withHint(control, hint) {
+    if (hint === undefined)
+        return control;
+    return h('span', { className: 'dshpc-fieldwrap' }, control, h(FieldHint, { text: hint }));
+}
 function sizeClass(size) {
     return size === 'lg' ? '--lg' : size === 'md' ? '--md' : '--sm';
 }
@@ -18,7 +28,7 @@ function sizeClass(size) {
 export function Input(props) {
     ensureControls();
     const { value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props;
-    return h('input', {
+    return withHint(h('input', {
         ref: props.inputRef,
         type: type ?? 'text',
         value,
@@ -31,7 +41,7 @@ export function Input(props) {
         onChange: (event) => { onChange(event.target.value); },
         onKeyDown: props.onKeyDown,
         onBlur: props.onBlur,
-    });
+    }), props.hint);
 }
 /** 前缀 + 文本输入。 */
 export function PrefixedInput(props) {
@@ -88,7 +98,7 @@ export function NumberInput(props) {
         if (next !== value)
             onChange(next);
     };
-    return h('div', {
+    return withHint(h('div', {
         className: `dshpc-num dshpc-num${sizeClass(size)}${disabled === true ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
         style,
     }, h(IconButton, { variant: 'plain', size, icon: '−', label: decreaseLabel, disabled, onClick: () => { bump(-1); } }), 
@@ -105,7 +115,7 @@ export function NumberInput(props) {
         onBlur: () => { commit(text); },
         onKeyDown: (event) => { if (event.key === 'Enter')
             commit(text); },
-    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1); } }));
+    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1); } })), props.hint);
 }
 /**
  * 下拉锚点的统一样式（**全站唯一一份**）：`SelectField` 与 `TaskPicker` 共用 —— 两者是同一类锚点，

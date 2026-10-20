@@ -28,6 +28,8 @@ export interface TextareaProps {
     className?: string;
     /** 追加样式（只允许补布局）。 */
     style?: CSSProperties;
+    /** 问号提示文字：给了就在输入框后面挂标准 FieldHint。 */
+    hint?: string;
 }
 /** 多行文本输入。 */
 export declare function Textarea(props: TextareaProps): ReturnType<typeof h>;

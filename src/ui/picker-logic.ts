@@ -1,8 +1,11 @@
-// 选择器的纯逻辑（与 React 无关，便于单测）。
+// 选择器的纯逻辑（与 React 运行时无关，便于单测；React 只进类型引用，编译期擦除）。
+import type { ReactNode } from 'react'
 
 export interface PickerOption {
   value: string
   label: string
+  /** 选项文字前的图标（任意 ReactNode；不传就没有这一段）。 */
+  icon?: ReactNode
   disabled?: boolean
 }
 
@@ -59,7 +62,7 @@ export function labelsOf(groups: PickerGroup[], values: readonly string[]): stri
   return out
 }
 
-/** 值落在哪个组里（cascade 形态用来反推 provider）。 */
+/** 值落在哪个组里（按模型值反推供应商等场景）。 */
 export function groupOf(groups: PickerGroup[], value: string): PickerGroup | undefined {
   if (value === '') return undefined
   return groups.find((g) => g.options.some((o) => o.value === value))

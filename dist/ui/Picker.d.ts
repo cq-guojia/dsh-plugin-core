@@ -1,4 +1,4 @@
-import { createElement as h } from 'react';
+import { createElement as h, type ReactNode } from 'react';
 import { type Translate } from '../utils/i18n.js';
 import { type PickerGroup, type PickerOption } from './picker-logic.js';
 export type { PickerGroup, PickerOption };
@@ -28,8 +28,14 @@ export interface PickerProps {
     placement?: 'down' | 'up';
     /** 选中后是否收起菜单；多选默认**不收起**（方便连续选）。 */
     closeOnSelect?: boolean;
+    /** 触发器文字对齐：默认 `left`；`center` 只在确实需要居中的地方显式传（2026-10-20）。 */
+    align?: 'left' | 'center';
     /** 多选时是否把已选项列在触发器上（默认列）。 */
     showLabels?: boolean;
+    /** 触发器文字前的图标（任意 ReactNode；不传就没有这一段）。 */
+    icon?: ReactNode;
+    /** 问号提示文字：给了就在触发器后面挂标准 FieldHint（排版收进组件，调用方不再手动拼）。 */
+    hint?: string;
     className?: string;
     ariaLabel?: string;
     translate?: Translate;

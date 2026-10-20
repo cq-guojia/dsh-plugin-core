@@ -9,9 +9,15 @@
  *
  * 全部展示逻辑在 client 侧（settings.plugin.item 入口卡片 + sidebar.panellist / main 整页）。
  */
+import { serveModelCatalog, type HostContextLike } from '../../../dist/host/index.js'
+import { MODELS_PATH } from './paths.js'
+
 export const name = 'dsh-plugin-core-demo'
 
-/** 无宿主服务依赖：不碰会话 / 定时器 / 工作区等能力。 */
+/** 不声明式依赖任何宿主服务：模型目录路由用 apply 内 ctx.inject 延迟等待（缺服务 = 没路由）。 */
 export const inject: readonly string[] = []
 
-export function apply(): void {}
+export function apply(ctx: HostContextLike): void {
+  // 模型目录（供应商 → 模型）只有宿主侧 llm.listModels 拿得到，挂成只读路由给 client fetch。
+  serveModelCatalog(ctx, { path: MODELS_PATH })
+}

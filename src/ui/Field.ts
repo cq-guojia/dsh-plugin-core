@@ -9,8 +9,18 @@
  * 高度一律吃 `--dshpc-control-h-*`；有边 / 无边同高（边框在内部补回）。
  */
 import { ensureControls } from './css.js'
-import { createElement as h, useEffect, useState, type CSSProperties, type RefObject } from 'react'
+import { createElement as h, useEffect, useState, type CSSProperties, type ReactElement, type RefObject } from 'react'
 import { IconButton } from './Button.js'
+import { FieldHint } from './FieldHint.js'
+
+/**
+ * 字段 hint 的统一包法：控件 + 问号提示同一行（间距/对齐收进组件，调用方传个
+ * `hint` 字符串就行，不再手动拼排版 —— 用户 2026-10-20 拍板）。
+ */
+export function withHint(control: ReactElement, hint: string | undefined): ReactElement {
+  if (hint === undefined) return control
+  return h('span', { className: 'dshpc-fieldwrap' }, control, h(FieldHint, { text: hint }))
+}
 
 /** 输入高度档（sm 24 / md 28 / lg 32）。 */
 export type FieldSize = 'sm' | 'md' | 'lg'
@@ -48,13 +58,15 @@ export interface InputProps {
   onKeyDown?: (event: { key: string; preventDefault(): void }) => void
   /** 失焦（如数字框把「清空 / 输一半」的草稿回弹成已提交值）。 */
   onBlur?: () => void
+  /** 问号提示文字：给了就在输入框后面挂标准 FieldHint。 */
+  hint?: string
 }
 
 /** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export function Input(props: InputProps): ReturnType<typeof h> {
   ensureControls()
   const { value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props
-  return h('input', {
+  return withHint(h('input', {
     ref: props.inputRef,
     type: type ?? 'text',
     value,
@@ -67,7 +79,7 @@ export function Input(props: InputProps): ReturnType<typeof h> {
     onChange: (event: { target: { value: string } }) => { onChange(event.target.value) },
     onKeyDown: props.onKeyDown,
     onBlur: props.onBlur,
-  } as never)
+  } as never), props.hint)
 }
 
 export interface PrefixedInputProps extends Omit<InputProps, 'className'> {
@@ -127,6 +139,8 @@ export interface NumberInputProps {
   className?: string
   /** 追加样式（只允许补布局）。 */
   style?: CSSProperties
+  /** 问号提示文字：给了就在控件后面挂标准 FieldHint。 */
+  hint?: string
 }
 
 /**
@@ -161,7 +175,7 @@ export function NumberInput(props: NumberInputProps): ReturnType<typeof h> {
     setText(String(next))
     if (next !== value) onChange(next)
   }
-  return h('div', {
+  return withHint(h('div', {
     className: `dshpc-num dshpc-num${sizeClass(size)}${disabled === true ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style,
   },
@@ -181,7 +195,7 @@ export function NumberInput(props: NumberInputProps): ReturnType<typeof h> {
         onKeyDown: (event: { key: string }) => { if (event.key === 'Enter') commit(text) },
       } as never),
       suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null),
-    h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1) } }))
+    h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1) } })), props.hint)
 }
 
 // ─────────────────────── 下拉（官方 Menu）P6 ───────────────────────

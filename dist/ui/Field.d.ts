@@ -1,4 +1,9 @@
-import { createElement as h, type CSSProperties, type RefObject } from 'react';
+import { createElement as h, type CSSProperties, type ReactElement, type RefObject } from 'react';
+/**
+ * 字段 hint 的统一包法：控件 + 问号提示同一行（间距/对齐收进组件，调用方传个
+ * `hint` 字符串就行，不再手动拼排版 —— 用户 2026-10-20 拍板）。
+ */
+export declare function withHint(control: ReactElement, hint: string | undefined): ReactElement;
 /** 输入高度档（sm 24 / md 28 / lg 32）。 */
 export type FieldSize = 'sm' | 'md' | 'lg';
 export interface InputProps {
@@ -33,6 +38,8 @@ export interface InputProps {
     }) => void;
     /** 失焦（如数字框把「清空 / 输一半」的草稿回弹成已提交值）。 */
     onBlur?: () => void;
+    /** 问号提示文字：给了就在输入框后面挂标准 FieldHint。 */
+    hint?: string;
 }
 /** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export declare function Input(props: InputProps): ReturnType<typeof h>;
@@ -73,6 +80,8 @@ export interface NumberInputProps {
     className?: string;
     /** 追加样式（只允许补布局）。 */
     style?: CSSProperties;
+    /** 问号提示文字：给了就在控件后面挂标准 FieldHint。 */
+    hint?: string;
 }
 /**
  * 数字步进输入：显式 `− / +` 按钮 + 可输入数字。

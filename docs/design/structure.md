@@ -44,8 +44,8 @@ dsh-plugin-core/
 │   │   └── Loading         ⚪ 暂缓
 │   ├── 展示                ✅ Card / StripCard / Chip / MarqueeText /
 │   │                          SectionHead / FieldHint / LiveText / BackToTop
-│   ├── 选择                ✅ WorkspacePicker（选工作区）/ FilePicker（选文件）
-│   │                          数据由调用方给，只是选择器，不含浏览逻辑
+│   ├── 选择                ✅ WorkspacePicker（选工作区，自取宿主快照）
+│   │                          通用 Picker 是纯零件；领域选择器经 connectHost 自取数（2026-10-20）
 │   └── 布局                ✅ PanelDock / createPanelDock（可停靠分栏：多面板 + 拖拽拉栏）
 │                              组名 = 窗口一对一、同名覆盖、默认上限 3 超限拒绝；
 │                              不做 tab 切换 / 自动淘汰 / 浮动层（用户 2026-10-20 定案）
@@ -73,7 +73,7 @@ dsh-plugin-core/
 | 成品 | 用到的 `ui` 基础能力 | 定制了什么 |
 |---|---|---|
 | `adv.session` · `SessionPreview` | `Modal` | 把会话消息放进弹窗 |
-| `adv.explorer` · `ExplorerPanel` | `PanelDock`（放它）+ `WorkspacePicker` / `FilePicker` | 目录树 + 面包屑 + 文件预览 |
+| `adv.explorer` · `ExplorerPanel` | `PanelDock`（放它）+ `WorkspacePicker` | 目录树 + 面包屑 + 文件预览 |
 
 `adv.*` 只做「拼装 + 业务定制」，不重新实现按钮 / 下拉 / 弹窗 / 侧栏。
 
@@ -140,7 +140,7 @@ utils（谁都不依赖，谁都可以用）
 - **目录改名**：`src/explorer` → `src/adv.explorer`、`src/session` → `src/adv.session`；同步改
   `package.json` 的 `exports`、各 `index.ts`、`packages/demo` 的 import、`docs/design/architecture.md` 的树。
   代码现在仍是旧名。
-- **收窄导出**：`adv.explorer` 只暴露 `ExplorerPanel`；`WorkspacePicker` / `FilePicker` 留在 `ui`（已在那）。
+- **收窄导出**：`adv.explorer` 只暴露 `ExplorerPanel`；`WorkspacePicker` 留在 `ui`（已在那）。
 - **路径方法归基础**：`joinPath` / `parentOf` / `crumbsOf` / `extOf` / `mimeOf` 是纯方法（无 UI），
   建议迁入 `utils/`（`path` 域）；`previewKindOf`（选哪种预览器）是文件浏览的业务判断，留在 `ExplorerPanel` 内部。
   待你确认。

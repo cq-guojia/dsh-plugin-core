@@ -6,6 +6,7 @@
  */
 import { createElement as h, type CSSProperties } from 'react'
 import { ensureControls } from './css.js'
+import { FieldHint } from './FieldHint.js'
 
 export interface TextareaProps {
   /** 当前值。 */
@@ -30,13 +31,15 @@ export interface TextareaProps {
   className?: string
   /** 追加样式（只允许补布局）。 */
   style?: CSSProperties
+  /** 问号提示文字：给了就在输入框后面挂标准 FieldHint。 */
+  hint?: string
 }
 
 /** 多行文本输入。 */
 export function Textarea(props: TextareaProps): ReturnType<typeof h> {
   ensureControls()
   const { value, onChange, placeholder, error, disabled, id, rows, spellCheck, className, style } = props
-  return h('textarea', {
+  const box = h('textarea', {
     id,
     rows,
     value,
@@ -48,4 +51,7 @@ export function Textarea(props: TextareaProps): ReturnType<typeof h> {
     style,
     onChange: (event: { target: { value: string } }) => { onChange(event.target.value) },
   } as never)
+  // 多行的问号放**右下角**（2026-10-20 用户：不要垂直居中，那样像贴在中间的空白上）
+  if (props.hint === undefined) return box
+  return h('span', { className: 'dshpc-fieldwrap dshpc-fieldwrap--block' }, box, h(FieldHint, { text: props.hint }))
 }

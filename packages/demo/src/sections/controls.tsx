@@ -412,6 +412,8 @@ export function PickerPage(): ReturnType<typeof h> {
   const [single, setSingle] = useState<string | undefined>(undefined)
   const [multi, setMulti] = useState<string[]>([])
   const [model, setModel] = useState('')
+  // 两种形态各用各的值：演示里互不影响（共用一份 state 会误以为它们是联动的）
+  const [model2, setModel2] = useState('')
   const [ws, setWs] = useState<string | undefined>(undefined)
 
   return h(
@@ -478,10 +480,15 @@ export function PickerPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
-        // 默认星形图标 + 默认文案「模型」
+        // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
         h(ModelPicker, { value: model, onChange: setModel, variant: 'grouped' }),
-        // 自定义初始文字 + 联动形态
-        h(ModelPicker, { value: model, onChange: setModel, variant: 'cascade', searchable: true, placeholder: '选择模型' }),
+        // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
+        h(ModelPicker, {
+          value: model2,
+          onChange: setModel2,
+          variant: 'cascade',
+          placeholder: '选择模型',
+        }),
       ),
     ),
     h(
@@ -490,25 +497,12 @@ export function PickerPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
-        // 默认文件夹图标 + 默认文案「工作区」
+        // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
         h(WorkspacePicker, {
           value: ws,
           onChange: (v) => setWs(v as string),
           clearable: true,
           searchable: true,
-        }),
-        // 自定义初始文字
-        h(WorkspacePicker, {
-          value: ws,
-          onChange: (v) => setWs(v as string),
-          placeholder: '选择工作区',
-        }),
-        // 去掉默认图标（icon: null）
-        h(WorkspacePicker, {
-          value: ws,
-          onChange: (v) => setWs(v as string),
-          icon: null,
-          placeholder: '无图标',
         }),
       ),
     ),

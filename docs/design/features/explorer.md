@@ -1,7 +1,7 @@
 # explorer —— 工作区浏览
 
 依赖 `ui` + `design`。装的是「文件浏览」这个成品：目录树 + 面包屑 + 文件预览。
-选工作区 / 选文件在 `ui`（`WorkspacePicker` / `FilePicker`），不在这里。
+选工作区在 `ui`（`WorkspacePicker`，自取宿主快照；`FilePicker` 已删），不在这里。
 
 ## 宿主契约：`WorkspaceFilesFace`
 
@@ -48,7 +48,7 @@ h(ExplorerPanel, {
 
 ## 选工作区 / 选文件 —— 在 `ui`，不在这里
 
-`WorkspacePicker` / `FilePicker` 已移到 `dsh-plugin-core/ui`（见 [`ui.md`](ui.md#workspacepicker--filepicker)）。
+`WorkspacePicker` 已移到 `dsh-plugin-core/ui`（见 [`ui.md`](ui.md#workspacepicker)）。
 
 理由：它们只是 `Picker` 的薄封装（select），不碰目录树 / 预览 / `WorkspaceFilesFace`——
 放在 ui 里，需要「选工作区」的地方不必引入整个 explorer。explorer 内部要用，一样从 ui 引。

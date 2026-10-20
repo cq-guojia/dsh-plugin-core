@@ -1,4 +1,3 @@
-// 选择器的纯逻辑（与 React 无关，便于单测）。
 /** 两种输入归一成 groups：给了 `options` 就当成一个无标题的组。 */
 export function toGroups(groups, options) {
     if (groups !== undefined && groups.length > 0)
@@ -44,7 +43,7 @@ export function labelsOf(groups, values) {
     }
     return out;
 }
-/** 值落在哪个组里（cascade 形态用来反推 provider）。 */
+/** 值落在哪个组里（按模型值反推供应商等场景）。 */
 export function groupOf(groups, value) {
     if (value === '')
         return undefined;

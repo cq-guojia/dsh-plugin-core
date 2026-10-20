@@ -1,33 +1,48 @@
-import { createElement as h } from 'react'
+import { createElement as h, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { ensureControls } from './css.js'
 import { t, type Translate } from '../utils/i18n.js'
 import { Picker, type PickerSize } from './Picker.js'
 import { flattenOptions, groupOf, type PickerGroup } from './picker-logic.js'
+import { modelCatalog } from './host-data.js'
+import { sparkleIcon } from './picker-icons.js'
 
 /**
- * 模型选择的两种形态（需求文档 §6）：
- * - `cascade`（级联）：先选供应商、再选模型（一行两个下拉，stp 的形态）
- * - `flat`（平铺）：一个下拉列出全部（dispatch 的形态）
+ * 模型选择器的两种形态（消费者自选）：
+ * - `grouped`（分组，默认）：**一个下拉、完全独立**，供应商做组头、模型列在下面，不与任何东西联动。
+ * - `cascade`（联动）：**两个下拉、彼此联动** —— 先选供应商，后面模型列表跟着筛；
+ *   换供应商会清空已选模型（旧模型不属于新供应商）。
  *
- * 两种形态吃**同一份分组数据**，只是渲染方式不同 —— 调用方不用准备两套数据。
- * 数据由调用方给（供应商目录来自 `llm/listProviders` 这类宿主路由，组件取不到）。
+ * **返回口径一致**：`onChange` 一律发最终模型值（`${provider}/${id}`）；级联态换供应商先发 `''`。
+ * 选「默认模型」也发 `''` —— 表示没选，调用方自己处理。
+ *
+ * **数据自带**：不传 `groups` 就读 `connectHost(ctx, { modelsPath })` 喂进的真实目录。
  */
-export type ModelPickerVariant = 'cascade' | 'flat'
+export type ModelPickerVariant = 'grouped' | 'cascade'
 
 export interface ModelPickerProps {
-  /** 分组数据：一组 = 一个供应商。 */
-  groups: PickerGroup[]
+  /** 覆盖内置目录（一般不用；测试或特殊数据源时才传）。 */
+  groups?: PickerGroup[]
   variant?: ModelPickerVariant
-  /** 最终模型值（`option.value`，编码口径由调用方定，如 `${provider}/${id}`）。 */
+  /** 最终模型值；`''` = 默认模型（没选）。 */
   value?: string
   /** 非受控初始值。 */
   defaultValue?: string
   onChange?: (value: string) => void
-  /** 候选可能不完整 ⇒ 如实提示。 */
+  /** 是否提供「默认模型」选项（默认提供；不需要就传 false）。 */
+  allowDefault?: boolean
+  /** 「默认模型」的文案（默认取内置字典）。 */
+  defaultLabel?: string
+  /** 未选时的文字（默认「模型」）。 */
+  placeholder?: string
+  /** 触发器前置图标：不传 = 默认星形；传 `null` = 不显示；传元素 = 自定义。 */
+  icon?: ReactNode | null
+  /** 问号提示文字（传了才显示）。 */
+  hint?: string
+  /** 目录不可用时的如实提示（不传则由目录状态决定）。 */
   degraded?: boolean
   disabled?: boolean
-  /** 允许清空（「跟随宿主」这类语义靠调用方自己塞默认项，这里只负责能清掉）。 */
   clearable?: boolean
+  /** 下拉内搜索框（默认开；要关传 false）。 */
   searchable?: boolean
   size?: PickerSize
   placement?: 'down' | 'up'
@@ -39,52 +54,101 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
   ensureControls()
   const tt = props.translate ?? t
   const value = props.value
-  const variant = props.variant ?? 'flat'
-  const cur = value ?? ''
+  const variant = props.variant ?? 'grouped'
+  const searchable = props.searchable ?? true
+  const defaultOption = props.allowDefault === false
+    ? undefined
+    : { value: '', label: props.defaultLabel ?? tt('modelDefault') }
 
-  if (variant === 'flat') {
+  // 目录状态：外部没喂目录（Node 自检 / 宿主缺服务）⇒ 空 + 如实降级，不编数据。
+  const catalog = useSyncExternalStore(modelCatalog.subscribe, modelCatalog.getSnapshot)
+  const groups =
+    props.groups ??
+    (catalog.status === 'ready'
+      ? catalog.routes.map((route) => ({
+          value: route.provider,
+          label: route.displayName,
+          options: route.models.map((model) => ({
+            value: `${route.provider}/${model.id}`,
+            label: model.name ?? model.id,
+          })),
+        }))
+      : [])
+  // 目录不可用、或读出来是空的 ⇒ 如实提示「候选可能不完整」，别让空列表看起来像坏了。
+  const degraded = props.degraded ?? (catalog.status === 'unavailable' || (catalog.status === 'ready' && groups.length === 0))
+  const icon = props.icon === undefined ? sparkleIcon() : props.icon ?? undefined
+  const emitModel = (v: string | string[]): void => {
+    props.onChange?.(typeof v === 'string' ? v : v[0] ?? '')
+  }
+
+  // 联动态的厂商选择必须组件自己记 —— 值是从模型值反推的，换厂商会把模型清成 ''
+  // （拍板口径），反推就再也找不到刚点的厂商（2026-10-20 真机：选完厂商后面仍是黑的）。
+  const [pickedProvider, setPickedProvider] = useState('')
+  const curGroup = groupOf(groups, value ?? '')
+  const provider =
+    pickedProvider !== '' && groups.some((g) => g.value === pickedProvider)
+      ? pickedProvider
+      : curGroup?.value ?? ''
+  // 值定到某模型上 ⇒ 临时选的厂商功成身退，回到按值反推
+  useEffect(() => {
+    if (value !== undefined && value !== '') setPickedProvider('')
+  }, [value])
+
+  if (variant === 'grouped') {
     return h(Picker, {
-      options: flattenOptions(props.groups),
+      // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
+      groups: defaultOption === undefined
+        ? groups
+        : [{ value: '', label: '', options: [defaultOption] }, ...groups],
       value,
       defaultValue: props.defaultValue,
-      placeholder: tt('modelModel'),
-      degraded: props.degraded,
+      icon,
+      placeholder: props.placeholder ?? tt('modelModel'),
+      degraded,
       disabled: props.disabled,
       clearable: props.clearable,
-      searchable: props.searchable ?? true,
+      searchable,
+      hint: props.hint,
       size: props.size,
       placement: props.placement,
       className: props.className,
-      onChange: (v) => props.onChange?.(typeof v === 'string' ? v : v[0] ?? ''),
+      onChange: emitModel,
     })
   }
 
-  const group = groupOf(props.groups, cur)
-  const provider = group?.value ?? ''
+  // cascade：两个下拉联动 —— 供应商筛模型；换供应商清空模型
+  const group = groups.find((g) => g.value === provider)
+  const options = group === undefined ? [] : flattenOptions([group])
   return h(
     'div',
     { className: 'dshpc-picker__row' },
     h(Picker, {
-      options: props.groups.map((g) => ({ value: g.value, label: g.label })),
+      options: groups.map((g) => ({ value: g.value, label: g.label })),
       value: provider === '' ? undefined : provider,
       placeholder: tt('modelProvider'),
+      degraded,
       disabled: props.disabled,
-      // 换供应商 ⇒ 清空已选模型（旧的模型不属于新供应商）；参数不用，故不命名
-      onChange: () => props.onChange?.(''),
+      searchable: false,
+      onChange: (v) => {
+        setPickedProvider(typeof v === 'string' ? v : v[0] ?? '')
+        props.onChange?.('')
+      },
     }),
     h(Picker, {
-      options: group?.options ?? [],
+      options: defaultOption === undefined ? options : [defaultOption, ...options],
       value,
       defaultValue: props.defaultValue,
-      placeholder: tt('modelModel'),
-      degraded: props.degraded,
+      icon,
+      placeholder: props.placeholder ?? tt('modelModel'),
+      degraded,
       disabled: props.disabled === true || provider === '',
       clearable: props.clearable,
-      searchable: props.searchable ?? true,
+      searchable,
+      hint: props.hint,
       size: props.size,
       placement: props.placement,
       className: props.className,
-      onChange: (v) => props.onChange?.(typeof v === 'string' ? v : v[0] ?? ''),
+      onChange: emitModel,
     }),
   )
 }

@@ -1,44 +1,30 @@
-// 领域选择器：WorkspacePicker / FilePicker。
-// 它们是 ui 的 Picker 的薄封装（领域数据 + 通用选择器交互），与 explorer 的浏览/预览无关 ——
-// 放在 ui 里，需要选工作区/选文件的地方不必引入整个 explorer（需求文档 §2.4）。
-import { createElement as h } from 'react';
+// 领域选择器：WorkspacePicker（选工作区）。
+// 通用交互由 ui 的 Picker 承担；工作区数据由本组件自己订（host-data.ts 的
+// workspaceList，connectHost 喂官方 `workspaces` 服务快照）—— 消费方不再传数组
+// （用户 2026-10-20 拍板）。FilePicker 已删（用户同日：文件选择框没有用）。
+import { createElement as h, useSyncExternalStore } from 'react';
 import { ensureControls } from './css.js';
 import { Picker } from './Picker.js';
 import { t } from '../utils/i18n.js';
-/** 选工作区（交互全管：单选 / 多选 / 上限 / 空态；数据调用方给）。 */
+import { workspaceList } from './host-data.js';
+import { folderIcon } from './picker-icons.js';
+/** 选工作区（交互全管：单选 / 多选 / 上限 / 空态；数据自动来自宿主工作区快照）。 */
 export function WorkspacePicker(props) {
     ensureControls();
     const tt = props.translate ?? t;
+    const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot);
     return h(Picker, {
-        options: props.workspaces.map((w) => ({ value: w, label: w })),
+        options: items.map((w) => ({ value: w.workspaceId, label: w.title })),
         value: props.value,
         defaultValue: props.defaultValue,
         mode: props.mode,
         max: props.max,
         onChange: props.onChange,
         clearable: props.clearable,
-        searchable: props.searchable ?? true,
+        searchable: props.searchable,
+        hint: props.hint,
+        icon: props.icon === undefined ? folderIcon() : props.icon ?? undefined,
         placeholder: props.placeholder ?? tt('explorerRoot'),
-        disabled: props.disabled,
-        size: props.size,
-        placement: props.placement,
-        className: props.className,
-    });
-}
-/** 选文件（同上：交互全管，数据调用方给）。 */
-export function FilePicker(props) {
-    ensureControls();
-    const tt = props.translate ?? t;
-    return h(Picker, {
-        options: props.files.map((f) => ({ value: f, label: f })),
-        value: props.value,
-        defaultValue: props.defaultValue,
-        mode: props.mode,
-        max: props.max,
-        onChange: props.onChange,
-        clearable: props.clearable,
-        searchable: props.searchable ?? true,
-        placeholder: props.placeholder ?? tt('pickerPlaceholder'),
         disabled: props.disabled,
         size: props.size,
         placement: props.placement,

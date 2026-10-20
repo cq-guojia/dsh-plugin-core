@@ -13,11 +13,12 @@ import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { PanelDock, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { PanelDock, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { demoDock, demoPanels } from '../dock.js'
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, SECTION_GROUPS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
+import { MODELS_PATH } from '../paths.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
 const PANEL_ID = 'dsh-plugin-core-demo'
@@ -181,6 +182,10 @@ export function apply(ctx: {
     const select = (sub as { layout?: { selectPanel?: (id: string) => void } } | null)?.layout?.selectPanel
     if (typeof select === 'function') jump = (id) => { select(id) }
   })
+
+  // 领域选择器的数据面（工作区列表 / 模型目录）：core 自己订数，这里只递一次 ctx。
+  // 模型目录走宿主路由（server 侧 serveModelCatalog 注册的同一个 path）。
+  connectHost(ctx, { modelsPath: MODELS_PATH })
 
   // 宿主语言：注册本插件字典 + 绑定 t；切换时同步核心 setLocale，内置组件随之切换
   ctx.inject(['locale'], (sub: unknown) => {

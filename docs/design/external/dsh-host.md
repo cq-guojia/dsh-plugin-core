@@ -130,3 +130,41 @@
   · `lib/index.js` 的 `function HoverCard({ …, variant = "compact", … })`
   · 真机实测 2026-10-19（宿主**亮色**）：浮层类名 `_card_38jqx_9`、`role: null`、
     父节点 `BODY`、`color: rgb(15,17,21)`、`background: rgb(44,44,46)`。
+
+## 11. client 侧现成数据面：`workspaces` 服务与 `remote.llm`（2026-10-20 核实）
+
+- 事实 1（工作区）：官方 client 挂了 cordis 服务 **`workspaces`**（`IWorkspaces`），
+  其 `list` 是 observable 快照源（`getSnapshot()` + `subscribe()`）；
+  快照 `items: readonly WorkspaceView[]`，每行含 `workspaceId` / `path` / `title` /
+  `sessionIds` / `createdAt` / `updatedAt`；数据由宿主 `workspace/follow` 流实时推送。
+- 事实 2（模型）：client remote 命名空间 **`llm`** 有 `listProviders()`（已注册路由，
+  `{id, name}`）与 `listConfigurableProviders()`（可配置目录，带 `settingsNs` /
+  `settingsPath`）。**各 provider 的已配模型不在 remote 里**——要读设置镜像
+  （`configForms.describe()`）里该 provider profile 的 `models` 数组，且只认用户层
+  真正写过的（空壳 profile 不算）。写法照 `dsh-session-title-pattern` 的 DirectoryStore。
+- 后果：工作区在 client 侧 `ctx.inject(['workspaces'])` 即可自取（本包 `workspaceList` 就是它的镜像）。
+- ⚠️ **模型不能只靠 client**：`remote.llm` 只有 `listProviders` / `listConfigurableProviders` /
+  `discoverModels`，**没有「某 provider 的模型列表」**；模型只能宿主侧
+  `llm.listModels(providerId)` 取（`dsh-task-dispatch-table/src/dispatch.ts:81-88` 实测用法）。
+  ⇒ 要模型就得插件 host 半侧挂一条只读路由（本包 `src/host/index.ts` 的 `serveModelCatalog`）。
+- ❌ **已废弃的结论（2026-10-20）**：曾以为「读设置镜像 `configForms.describe()` 里各 provider
+  profile 的 `models`」能拿全（照抄 dsh-session-title-pattern 的 DirectoryStore）。真机上 demo
+  按此路子读出来是 0 个供应商（describe 快照里的命名空间不保证含 provider 模型）。别再走它。
+- 来源：`@deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.1`
+  · `lib/types/client/index.d.ts:19`（`workspaces: IWorkspaces`）、`lib/types/client/index.js:8`
+  （client 模块 inject = `['remote','remote.workspace']`）、`lib/types/client/service.d.ts:38`
+  · `@deepseek-ai/dsh-llm` `lib/typert.remote-client.d.ts:10-12`
+  · `dsh-session-title-pattern/src/client/model-pair.tsx:32-217`（模型目录组装口径）
+
+### 11.1 插件宿主侧数据面：`llm.listModels` + `webServer.register`（2026-10-20 核实）
+
+- 事实（`@deepseek-ai/dsh-llm` 宿主服务）：`listProviders()` 同步返回已注册 provider
+  `{id,name}`；`listModels(providerId)` **异步**返回该 provider 可发现的模型
+  （advisory，未列出 ≠ 不可用）。单个 provider 抛错要局部跳过，不整表失败。
+- 事实（`webServer` 服务）：`register({ kind:'exact' | 'prefix', path, handler(req,res) })`；
+  客户端同源相对路径 `fetch('/api/xxx')` 即可取（`dsh-task-ledger` / `dsh-task-dispatch-table` 同款）。
+- 口径：**模型目录必须走宿主 → 路由 → client**；client 侧 remote 只够列供应商名字。
+  本包 `src/host/index.ts` 的 `serveModelCatalog()` 封装了这条链路，`connectHost(ctx, { modelsPath })`
+  在 client 侧 fetch 同一个 path。
+- 来源：`dsh-task-dispatch-table/src/host.ts:214-232`（`HostLlm` 面）、`src/dispatch.ts:81-88`（listModels 用法）、
+  `dsh-task-ledger/packages/plugin/src/host/routes.ts:20-44`（webServer.register + sendJson）。

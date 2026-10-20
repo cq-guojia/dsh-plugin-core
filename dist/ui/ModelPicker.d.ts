@@ -1,30 +1,43 @@
-import { createElement as h } from 'react';
+import { createElement as h, type ReactNode } from 'react';
 import { type Translate } from '../utils/i18n.js';
 import { type PickerSize } from './Picker.js';
 import { type PickerGroup } from './picker-logic.js';
 /**
- * 模型选择的两种形态（需求文档 §6）：
- * - `cascade`（级联）：先选供应商、再选模型（一行两个下拉，stp 的形态）
- * - `flat`（平铺）：一个下拉列出全部（dispatch 的形态）
+ * 模型选择器的两种形态（消费者自选）：
+ * - `grouped`（分组，默认）：**一个下拉、完全独立**，供应商做组头、模型列在下面，不与任何东西联动。
+ * - `cascade`（联动）：**两个下拉、彼此联动** —— 先选供应商，后面模型列表跟着筛；
+ *   换供应商会清空已选模型（旧模型不属于新供应商）。
  *
- * 两种形态吃**同一份分组数据**，只是渲染方式不同 —— 调用方不用准备两套数据。
- * 数据由调用方给（供应商目录来自 `llm/listProviders` 这类宿主路由，组件取不到）。
+ * **返回口径一致**：`onChange` 一律发最终模型值（`${provider}/${id}`）；级联态换供应商先发 `''`。
+ * 选「默认模型」也发 `''` —— 表示没选，调用方自己处理。
+ *
+ * **数据自带**：不传 `groups` 就读 `connectHost(ctx, { modelsPath })` 喂进的真实目录。
  */
-export type ModelPickerVariant = 'cascade' | 'flat';
+export type ModelPickerVariant = 'grouped' | 'cascade';
 export interface ModelPickerProps {
-    /** 分组数据：一组 = 一个供应商。 */
-    groups: PickerGroup[];
+    /** 覆盖内置目录（一般不用；测试或特殊数据源时才传）。 */
+    groups?: PickerGroup[];
     variant?: ModelPickerVariant;
-    /** 最终模型值（`option.value`，编码口径由调用方定，如 `${provider}/${id}`）。 */
+    /** 最终模型值；`''` = 默认模型（没选）。 */
     value?: string;
     /** 非受控初始值。 */
     defaultValue?: string;
     onChange?: (value: string) => void;
-    /** 候选可能不完整 ⇒ 如实提示。 */
+    /** 是否提供「默认模型」选项（默认提供；不需要就传 false）。 */
+    allowDefault?: boolean;
+    /** 「默认模型」的文案（默认取内置字典）。 */
+    defaultLabel?: string;
+    /** 未选时的文字（默认「模型」）。 */
+    placeholder?: string;
+    /** 触发器前置图标：不传 = 默认星形；传 `null` = 不显示；传元素 = 自定义。 */
+    icon?: ReactNode | null;
+    /** 问号提示文字（传了才显示）。 */
+    hint?: string;
+    /** 目录不可用时的如实提示（不传则由目录状态决定）。 */
     degraded?: boolean;
     disabled?: boolean;
-    /** 允许清空（「跟随宿主」这类语义靠调用方自己塞默认项，这里只负责能清掉）。 */
     clearable?: boolean;
+    /** 下拉内搜索框（默认开；要关传 false）。 */
     searchable?: boolean;
     size?: PickerSize;
     placement?: 'down' | 'up';

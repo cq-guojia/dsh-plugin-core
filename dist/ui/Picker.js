@@ -1,6 +1,7 @@
 import { createElement as h, useEffect, useMemo, useRef, useState } from 'react';
 import { ensureControls } from './css.js';
 import { t } from '../utils/i18n.js';
+import { FieldHint } from './FieldHint.js';
 import { filterGroups, flattenOptions, labelsOf, toGroups, toggleValue, } from './picker-logic.js';
 /**
  * 通用选择器：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级。
@@ -31,6 +32,12 @@ export function Picker(props) {
     const [query, setQuery] = useState('');
     const [active, setActive] = useState(-1);
     const rootRef = useRef(null);
+    const searchRef = useRef(null);
+    // 展开即聚焦搜索框（2026-10-20 用户：点开就能直接打字，不用再点一下）
+    useEffect(() => {
+        if (open && props.searchable === true)
+            searchRef.current?.focus();
+    }, [open, props.searchable]);
     // 点外面收起
     useEffect(() => {
         if (!open)
@@ -95,21 +102,44 @@ export function Picker(props) {
                 pick(hit.value);
         }
     };
-    return h('div', {
-        className: `dshpc-picker${props.className === undefined ? '' : ` ${props.className}`}`,
-        ref: rootRef,
-        onKeyDown,
-    }, h('button', {
+    // 触发器（右侧箭头 = 内联 SVG chevron，与官方 ⌄ 同形；ui 零官方依赖故自绘）。
+    const trigger = h('button', {
         type: 'button',
         'aria-label': props.ariaLabel,
         'aria-expanded': open,
-        className: `dshpc-picker__trigger dshpc-picker__trigger--${size}`,
+        className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === 'center' ? ' dshpc-picker__trigger--center' : ''}`,
         disabled: props.disabled === true,
         onClick: () => {
             if (props.disabled !== true)
                 setOpen(!open);
         },
-    }, h('span', null, summary), h('span', { className: 'dshpc-picker__caret' }, '▾')), open
+    }, props.icon !== undefined && props.icon !== null
+        ? h('span', { className: 'dshpc-picker__icon' }, props.icon)
+        : null, 
+    // 文字吃掉剩余宽度并靠左（默认）：否则 space-between 会把短文案推到中间
+    h('span', { className: 'dshpc-picker__label' }, summary), h('svg', {
+        className: 'dshpc-picker__caret',
+        width: 12,
+        height: 12,
+        viewBox: '0 0 16 16',
+        fill: 'none',
+        'aria-hidden': true,
+    }, h('path', {
+        d: 'M4 6l4 4 4-4',
+        stroke: 'currentColor',
+        'stroke-width': 1.5,
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+    })));
+    // hint 给了就把触发器与 FieldHint 包进同一行（间距/对齐收进组件）。
+    const triggerRow = props.hint === undefined
+        ? trigger
+        : h('span', { className: 'dshpc-fieldwrap dshpc-fieldwrap--inline' }, trigger, h(FieldHint, { text: props.hint }));
+    return h('div', {
+        className: `dshpc-picker${props.className === undefined ? '' : ` ${props.className}`}`,
+        ref: rootRef,
+        onKeyDown,
+    }, triggerRow, open
         ? h('div', {
             className: placement === 'up'
                 ? 'dshpc-picker__menu dshpc-picker__menu--up'
@@ -118,6 +148,7 @@ export function Picker(props) {
             ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerDegraded'))
             : null, atMax ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerMaxReached', { n: props.max ?? 0 })) : null, props.searchable === true
             ? h('input', {
+                ref: searchRef,
                 className: 'dshpc-picker__search',
                 placeholder: tt('pickerSearch'),
                 value: query,
@@ -138,10 +169,12 @@ export function Picker(props) {
                     ...shown.map((g) => h('div', { key: g.value || '_' }, g.label === ''
                         ? null
                         : h('div', { className: 'dshpc-picker__group-label' }, g.label), g.options.map((o) => {
+                        // 到上限后：未选项置灰，**已选项保持可点**（点了是取消，不是再加）。
+                        const blocked = o.disabled === true || (atMax && !selected.includes(o.value));
                         const activeCls = [
                             'dshpc-picker__option',
                             selected.includes(o.value) ? 'dshpc-picker__option--active' : '',
-                            o.disabled === true || atMax ? 'dshpc-picker__option--disabled' : '',
+                            blocked ? 'dshpc-picker__option--disabled' : '',
                         ]
                             .filter((s) => s !== '')
                             .join(' ');
@@ -151,11 +184,13 @@ export function Picker(props) {
                             className: activeCls,
                             'data-active': idx === active ? 'true' : undefined,
                             onClick: () => {
-                                if (o.disabled !== true && !atMax)
+                                if (!blocked)
                                     pick(o.value);
                             },
                         }, mode === 'multiple'
                             ? h('span', { className: 'dshpc-picker__tick' }, selected.includes(o.value) ? '✓' : '')
+                            : null, o.icon !== undefined && o.icon !== null
+                            ? h('span', { className: 'dshpc-picker__option-icon' }, o.icon)
                             : null, h('span', null, o.label));
                     }))),
                 ])

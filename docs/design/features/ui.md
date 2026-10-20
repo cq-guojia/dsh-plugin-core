@@ -80,6 +80,7 @@ hover / active 走 token 派生色（**不用 opacity**），幅度见 `docs/des
 | `mode` | `'single' \| 'multiple'` | `single` | — |
 | `max` | `number` | — | 多选上限；到上限其余项置灰 + 提示（不静默截断） |
 | `searchable` | `boolean` | `false` | 显示搜索框；展开菜单时**自动聚焦**搜索框（点开即可直接打字） |
+| `align` | `'left' \| 'center'` | `left` | 触发器文字对齐（2026-10-20：默认居左，要居中显式传） |
 | `clearable` | `boolean` | `false` | 单选时列表顶部多一项「不选」 |
 | `placeholder` | `string` | 内置「请选择」 | — |
 | `degraded` | `boolean` | `false` | 候选可能不完整 ⇒ 顶部如实提示，不编造 |
@@ -125,15 +126,16 @@ h(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })
 
 ### ModelPicker
 
-**数据自带的现成组件** + `variant: 'cascade' | 'grouped'`（默认 `grouped`；2026-10-20 由 flat
-改名 grouped——拍平丢分组，不符合「厂商做组头、模型列下面」的需求）。
+**数据自带的现成组件** + `variant: 'grouped' | 'cascade'`（默认 `grouped`）。
 
-- `grouped`：一个下拉，供应商做组头、模型列在下面（搜索框**默认开**，`searchable: false` 可关）
-- `cascade`：一行两个下拉，先选供应商再选模型；换供应商会自动清空已选模型
-  （所选厂商由组件自己记住——值是从模型值反推的，清空后反推不到，2026-10-20 修的）
+- `grouped`：**一个下拉、完全独立**，供应商做组头、模型列在下面（搜索框**默认开**，`searchable: false` 可关）
+- `cascade`：**两个下拉、联动** —— 先选供应商，后面模型列表跟着筛；换供应商会清空已选模型
+  （所选厂商由组件自己记住：值是从模型值反推的，清空后反推不到）
 
-**两种形态返回口径一致**：`onChange` 都发最终模型的 value（`${provider}/${id}`）；
-级联态换供应商先发 `''`。
+**两种形态返回口径一致**：`onChange` 都发最终模型 value（`${provider}/${id}`）。
+
+**「默认模型」选项**：默认提供（`allowDefault: false` 关闭），文案可传 `defaultLabel`；
+选中即发 `''` —— 表示「没选」，是否回落宿主默认由消费方自己处理。
 
 **目录自动来自宿主**（2026-10-20 真机核实的两处接线，共用同一 path 常量）：
 
