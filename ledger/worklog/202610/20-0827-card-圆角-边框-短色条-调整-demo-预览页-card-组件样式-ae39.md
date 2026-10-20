@@ -13,11 +13,12 @@
 
 ## 待办
 
-- 待用户确认「调」的具体目标（现状已是圆角+边框+短色条，见「过程」）。
+- 微调 `Card` 外观数值（用户 2026-10-20 已确认方向）；目标值待用户给出。
+- 验收：改后 demo 预览站 CardPage 视觉效果。
 
 ## 下一步
 
-- 用户给出目标后，改 `src/ui/card.css`（真源）→ `pnpm run gen:css` → `pnpm run build` → `pnpm run build:demo` → 跑自检。
+- 等用户给目标值（圆角 / 边框 / 色条宽度 / 上下留距），改 `src/ui/card.css` → `pnpm run gen:css` → `pnpm run build` → `pnpm run build:demo` → 跑自检。
 
 ## 过程
 
@@ -38,3 +39,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-20 08:27:40 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-20 08:29:51 · log · @GuoJia-Agent · 只读调查：Card 现状已是圆角8px+1px边框+短色条（card.css:13-14），生成物/dist/注入/token 全同步，待用户确认要调什么
+- 2026-10-20 08:30:41 · log · @GuoJia-Agent · 用户确认方向：微调 Card 外观数值，目标值待给（圆角/边框/色条宽/留距）
