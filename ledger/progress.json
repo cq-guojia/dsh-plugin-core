@@ -17,6 +17,23 @@
       "title": "Demo 预览站：侧栏分类可展开 + 提示文案双语",
       "updated": "2026-10-20 07:37:14",
       "worklog": "worklog/202610/19-1401-demo-预览站-侧栏分类可展开-提示文案双语-13a7.md"
+    },
+    "20261020-0827-card-圆角-边框-短色条-调整-demo-预览页-card-组件样式-ae39": {
+      "category": "界面",
+      "created": "2026-10-20 08:27:40",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-20 08:27:40",
+      "status": "doing",
+      "tags": [
+        "Card",
+        "demo",
+        "样式"
+      ],
+      "title": "Card（圆角+边框+短色条）调整 demo 预览页 Card 组件样式",
+      "updated": "2026-10-20 08:27:40",
+      "worklog": "worklog/202610/20-0827-card-圆角-边框-短色条-调整-demo-预览页-card-组件样式-ae39.md"
     }
   }
 }
