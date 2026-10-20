@@ -30,3 +30,4 @@
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-20 22:55:12 · new · @GuoJia-Agent · 创建任务（doing）
+- 2026-10-20 22:59:57 · log · @GuoJia-Agent · 删除完成：src/ui/ErrorBoundary.ts、导出、.dshpc-error CSS、errorTitle、demo 演示块、测试断言、5 处文档；build+test 64 绿，dist 残留已清
