@@ -1,5 +1,6 @@
 # 20261020-1603-选择器-picker-ui-改版-e0bb：选择器（Picker）UI 改版
 
+> **✅ 完成封卷**：2026-10-20 17:56:40（@GuoJia-Agent）
 > **创建**：2026-10-20 16:03:53（@GuoJia-Agent）
 > **分类**：界面 ｜ **标签**：选择器、Picker、样式
 
@@ -74,7 +75,19 @@
 
 ## 结论
 
-<!-- 做成了什么、留了什么坑 -->
+选择器 UI 改版落地，真机验收通过（2026-10-20）：
+
+1. 触发器箭头 = 内联 SVG chevron；触发器与选项都支持前置 icon；文字默认居左（`align` 可居中）。
+2. 搜索框 `searchable` 可配，展开自动聚焦；ModelPicker 默认开。
+3. ModelPicker 两形态：`grouped`（一个下拉、厂商做组头、完全独立）/ `cascade`（供应商与模型两个下拉联动）。
+4. 「默认模型」选项默认提供（`allowDefault` / `defaultLabel`），选中发 `''`。
+5. 多选到上限后已选项仍可反选；`FilePicker` 删除。
+6. hint 内置：Input / NumberInput / Textarea / Picker 加 `hint` 参数（传了才显示，默认隐藏）；多行输入的问号在右下角；NumberInput 补焦点态。
+7. 领域选择器自取数：工作区走官方 `workspaces` 快照（`connectHost`）；模型走宿主 `llm.listModels` →
+   `serveModelCatalog`（`./host` 子路径）→ client fetch。**remote.llm 拿不到模型列表**（external §11 已记）。
+
+教训：领域数据源先读兄弟仓**能跑通的那条链路**（宿主 listModels + 路由），不要从 .d.ts 方法名推测「远端能拿全」。
+未做（留给以后）：AGENTS.md 首表「组件不自己取数」一行已过时（领域选择器已反转），属注入规则文件，等用户授权再改。
 
 ## 执行记录
 
@@ -90,3 +103,4 @@
 - 2026-10-20 17:49:03 · log · @GuoJia-Agent · 第五轮：去掉 cascade 改 split(两个独立下拉,互不联动)/ModelPicker 增默认模型项 allowDefault+defaultLabel(选中发空串)/Picker 增 align 默认居左(修 space-between 把短文案推中间)
 - 2026-10-20 17:53:28 · log · @GuoJia-Agent · 第六轮纠偏：grouped 保留(独立) + cascade 恢复(联动)；split 撤销；demo 两形态各用独立 state，只留两组
 - 2026-10-20 17:53:53 · log · @GuoJia-Agent · 第七轮：demo 去掉「无图标」与自定义文案演示，工作区只留默认形态（默认即核心给的名字+图标；自定义能力保留不演示）
+- 2026-10-20 17:56:40 · close · @GuoJia-Agent · 结案：选择器 UI 改版：chevron 箭头、icon、搜索自动聚焦、grouped/cascade 双形态、默认模型项、hint 内置、多选反选修复、删 FilePicker，领域选择器改自取数（workspaces 快照 + 宿主 llm.listModels 路由）
