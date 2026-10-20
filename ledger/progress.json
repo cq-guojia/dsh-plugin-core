@@ -17,6 +17,25 @@
       "title": "Demo 预览站：侧栏分类可展开 + 提示文案双语",
       "updated": "2026-10-20 07:37:14",
       "worklog": "worklog/202610/19-1401-demo-预览站-侧栏分类可展开-提示文案双语-13a7.md"
+    },
+    "20261020-2254-explorer-子包-工作区文件浏览与预览-dock-预览-选择弹窗两能力-6152": {
+      "category": "功能",
+      "created": "2026-10-20 22:54:32",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-20 22:54:32",
+      "status": "doing",
+      "tags": [
+        "explorer",
+        "文件预览",
+        "dock",
+        "picker",
+        "官方件"
+      ],
+      "title": "explorer 子包：工作区文件浏览与预览（dock 预览 + 选择弹窗两能力）",
+      "updated": "2026-10-20 22:54:32",
+      "worklog": "worklog/202610/20-2254-explorer-子包-工作区文件浏览与预览-dock-预览-选择弹窗两能力-6152.md"
     }
   }
 }
