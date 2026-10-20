@@ -50,11 +50,49 @@ function dismiss(id: number): void {
   flush()
 }
 
-export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel'>
-export type AlertOptions = Omit<AlertModalProps, 'onConfirm'>
+// ── 宿主皮肤注册：official.js 在加载时调用，把「宿主原生 Modal」渲染器注入进来 ──
+// ui 入口（本文件）零官方依赖，故 host 渲染不住这里，只留一个注册槽；
+// confirmModal/alertModal 传 skin:"host" 时委托给它，没注册则回落 core 并报一次警。
+export interface HostConfirmArgs {
+  title?: string
+  description?: string
+  confirmText?: string
+  cancelText?: string
+  danger?: boolean
+}
+export interface HostAlertArgs {
+  title?: string
+  description?: string
+  confirmText?: string
+}
+export interface HostDialogHandlers {
+  confirm: (opts: HostConfirmArgs) => Promise<boolean>
+  alert: (opts: HostAlertArgs) => Promise<void>
+}
+let hostHandlers: HostDialogHandlers | null = null
+export function registerHostDialog(handlers: HostDialogHandlers): void {
+  hostHandlers = handlers
+}
 
-/** 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。 */
+export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel'> & { skin?: 'core' | 'host' }
+export type AlertOptions = Omit<AlertModalProps, 'onConfirm'> & { skin?: 'core' | 'host' }
+
+/** 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。`skin:"host"` 走宿主原生 Modal。 */
 export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
+  if (opts.skin === 'host') {
+    if (hostHandlers !== null) {
+      return hostHandlers.confirm({
+        title: opts.title == null ? undefined : String(opts.title),
+        description: opts.message == null ? undefined : String(opts.message),
+        confirmText: opts.confirmText,
+        cancelText: opts.cancelText,
+        danger: opts.tone === 'danger',
+      })
+    }
+    console.warn('[dsh-plugin-core] confirmModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤')
+  }
+  const { skin: _skin, ...core } = opts
+  void _skin
   return new Promise<boolean>((resolve) => {
     const id = ++idSeq
     const close = (result: boolean): void => {
@@ -63,21 +101,33 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
     }
     entries.push({
       id,
-      node: h(ConfirmModal, { ...opts, onConfirm: () => close(true), onCancel: () => close(false) }),
+      node: h(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) }),
     })
     flush()
   })
 }
 
-/** 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。 */
+/** 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。`skin:"host"` 走宿主原生 Modal。 */
 export function alertModal(opts: AlertOptions): Promise<void> {
+  if (opts.skin === 'host') {
+    if (hostHandlers !== null) {
+      return hostHandlers.alert({
+        title: opts.title == null ? undefined : String(opts.title),
+        description: opts.message == null ? undefined : String(opts.message),
+        confirmText: opts.confirmText,
+      })
+    }
+    console.warn('[dsh-plugin-core] alertModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤')
+  }
+  const { skin: _skin, ...core } = opts
+  void _skin
   return new Promise<void>((resolve) => {
     const id = ++idSeq
     const close = (): void => {
       dismiss(id)
       resolve()
     }
-    entries.push({ id, node: h(AlertModal, { ...opts, onConfirm: close }) })
+    entries.push({ id, node: h(AlertModal, { ...core, onConfirm: close }) })
     flush()
   })
 }

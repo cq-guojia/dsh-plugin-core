@@ -41,8 +41,26 @@ function dismiss(id) {
     entries = entries.filter((e) => e.id !== id);
     flush();
 }
-/** 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。 */
+let hostHandlers = null;
+export function registerHostDialog(handlers) {
+    hostHandlers = handlers;
+}
+/** 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。`skin:"host"` 走宿主原生 Modal。 */
 export function confirmModal(opts) {
+    if (opts.skin === 'host') {
+        if (hostHandlers !== null) {
+            return hostHandlers.confirm({
+                title: opts.title == null ? undefined : String(opts.title),
+                description: opts.message == null ? undefined : String(opts.message),
+                confirmText: opts.confirmText,
+                cancelText: opts.cancelText,
+                danger: opts.tone === 'danger',
+            });
+        }
+        console.warn('[dsh-plugin-core] confirmModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤');
+    }
+    const { skin: _skin, ...core } = opts;
+    void _skin;
     return new Promise((resolve) => {
         const id = ++idSeq;
         const close = (result) => {
@@ -51,20 +69,32 @@ export function confirmModal(opts) {
         };
         entries.push({
             id,
-            node: h(ConfirmModal, { ...opts, onConfirm: () => close(true), onCancel: () => close(false) }),
+            node: h(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) }),
         });
         flush();
     });
 }
-/** 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。 */
+/** 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。`skin:"host"` 走宿主原生 Modal。 */
 export function alertModal(opts) {
+    if (opts.skin === 'host') {
+        if (hostHandlers !== null) {
+            return hostHandlers.alert({
+                title: opts.title == null ? undefined : String(opts.title),
+                description: opts.message == null ? undefined : String(opts.message),
+                confirmText: opts.confirmText,
+            });
+        }
+        console.warn('[dsh-plugin-core] alertModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤');
+    }
+    const { skin: _skin, ...core } = opts;
+    void _skin;
     return new Promise((resolve) => {
         const id = ++idSeq;
         const close = () => {
             dismiss(id);
             resolve();
         };
-        entries.push({ id, node: h(AlertModal, { ...opts, onConfirm: close }) });
+        entries.push({ id, node: h(AlertModal, { ...core, onConfirm: close }) });
         flush();
     });
 }

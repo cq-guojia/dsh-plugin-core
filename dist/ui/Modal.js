@@ -21,8 +21,13 @@ export function Modal(props) {
         document.addEventListener('keydown', onKey);
         return () => document.removeEventListener('keydown', onKey);
     }, [escClose, props.onClose]);
-    const sizeMax = { sm: '420px', md: 'min(960px,92vw)', lg: 'min(1200px,94vw)' };
-    const effectiveMax = props.maxWidth ?? sizeMax[props.size ?? 'md'];
+    // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
+    const sizeStyle = {
+        sm: { width: '360px', maxWidth: 'calc(100vw - 48px)' },
+        md: { width: 'min(720px, calc(100vw - 32px))', maxHeight: '86vh' },
+        lg: { width: 'min(1120px, calc(100vw - 32px))', height: 'calc(100% - 80px)' },
+    };
+    const s = sizeStyle[props.size ?? 'md'];
     const showClose = props.closable !== false && props.onClose !== undefined;
     const showHeader = props.hideHeader !== true &&
         (props.icon !== undefined ||
@@ -38,7 +43,12 @@ export function Modal(props) {
         },
     }, h('div', {
         className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}`,
-        style: { maxWidth: effectiveMax },
+        style: {
+            width: props.width ?? s.width,
+            maxWidth: props.maxWidth ?? s.maxWidth,
+            maxHeight: props.maxHeight ?? s.maxHeight,
+            height: props.height ?? s.height,
+        },
         onClick: (e) => e.stopPropagation(),
     }, showHeader
         ? h('div', { className: 'dshpc-modal__head' }, h('div', { className: 'dshpc-modal__heading' }, props.icon === undefined ? null : h('span', { className: 'dshpc-modal__lead' }, props.icon), h('div', { className: 'dshpc-modal__title' }, props.title ?? ''), props.headerExtra === undefined

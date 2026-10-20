@@ -21,10 +21,15 @@ export interface ModalProps {
   closeOnMask?: boolean
   /** 按 Esc 是否关闭（默认 true）。 */
   escClose?: boolean
-  /** 尺寸档：sm≈确认框 / md(默认) / lg 大窗；也可直接传 maxWidth 精确覆盖。 */
+  /** 尺寸档：sm=小确认框家族 / md·lg=大弹窗家族；也可用 width/height 精确覆盖。 */
   size?: ModalSize
-  /** 面板最大宽度，默认随 size（sm 420px / md min(960px,92vw) / lg min(1200px,94vw)）。 */
+  /** 面板宽度（默认随 size：sm 360px / md 720px / lg 1120px，均带视口兜底）。 */
+  width?: string
+  /** 面板高度（默认仅 lg 有：calc(100% - 80px)，同兄弟项目大弹窗）。 */
+  height?: string
+  /** 面板最大宽度 / 最大高度覆盖（不传走 size 默认）。 */
   maxWidth?: string
+  maxHeight?: string
   /** 不渲染头部（沉浸式 / 无标题场景）。 */
   hideHeader?: boolean
   footer?: ReactNode
@@ -52,8 +57,13 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
     return () => document.removeEventListener('keydown', onKey)
   }, [escClose, props.onClose])
 
-  const sizeMax: Record<ModalSize, string> = { sm: '420px', md: 'min(960px,92vw)', lg: 'min(1200px,94vw)' }
-  const effectiveMax = props.maxWidth ?? sizeMax[props.size ?? 'md']
+  // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
+  const sizeStyle: Record<ModalSize, { width: string; maxWidth?: string; maxHeight?: string; height?: string }> = {
+    sm: { width: '360px', maxWidth: 'calc(100vw - 48px)' },
+    md: { width: 'min(720px, calc(100vw - 32px))', maxHeight: '86vh' },
+    lg: { width: 'min(1120px, calc(100vw - 32px))', height: 'calc(100% - 80px)' },
+  }
+  const s = sizeStyle[props.size ?? 'md']
   const showClose = props.closable !== false && props.onClose !== undefined
   const showHeader =
     props.hideHeader !== true &&
@@ -75,7 +85,12 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
       'div',
       {
         className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}`,
-        style: { maxWidth: effectiveMax },
+        style: {
+          width: props.width ?? s.width,
+          maxWidth: props.maxWidth ?? s.maxWidth,
+          maxHeight: props.maxHeight ?? s.maxHeight,
+          height: props.height ?? s.height,
+        },
         onClick: (e: { stopPropagation: () => void }) => e.stopPropagation(),
       },
       showHeader

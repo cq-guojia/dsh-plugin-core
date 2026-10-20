@@ -753,33 +753,23 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [confirmCfg, setConfirmCfg] = useState<{ tone: ConfirmTone; confirmText: string; cancelText: string } | null>(null)
   const [confirmResult, setConfirmResult] = useState('')
   const [largeOpen, setLargeOpen] = useState(false)
+  const [largeOpenB, setLargeOpenB] = useState(false)
 
   return h(
     'div',
     null,
     h(
       Demo,
-      { title: 'Modal', hint: t('feedbackModalHint') },
+      { title: '原生弹窗（宿主）', hint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。' },
       h(
         'div',
-        null,
-        h(Button, { onClick: () => setOpen(true) }, '打开弹窗'),
-        open
-          ? h(Modal, {
-              title: '任务详情',
-              onClose: () => setOpen(false),
-              footer: h(Button, { variant: 'primary', onClick: () => setOpen(false) }, '知道了'),
-            }, h('div', null, '弹窗主体内容——会话预览这类功能就用它来承载。'))
-          : null,
-      ),
-    ),
-    h(
-      Demo,
-      { title: '原生弹窗（宿主）', hint: '宿主内核提供的官方 Modal：正文区可塞任意自定义内容，footer 可放任意按钮组合，尺寸经 contentClassName 定制' },
-      h(
-        'div',
-        null,
-        h(Button, { variant: 'outline', onClick: () => setOpenNative(true) }, '打开宿主原生弹窗'),
+        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
+        h(Button, { variant: 'outline', onClick: () => setOpenNative(true) }, '打开宿主原生弹窗（组件）'),
+        h(Button, { variant: 'ghost', onClick: () => { void alertModal({ title: '宿主提示', message: '这是宿主样式的命令式 alert（skin:"host"），关闭即确认' }) } }, 'alertModal({skin:"host"})'),
+        h(Button, { variant: 'ghost', onClick: async () => {
+            const ok = await confirmModal({ title: '宿主确认框', message: '官方 Modal 弹出的确认（danger）', tone: 'danger', confirmText: '删除', cancelText: '再想想', skin: 'host' })
+            showToast(ok ? '宿主 confirm：你点了删除' : '宿主 confirm：你点了取消')
+          } }, 'confirmModal({skin:"host"})'),
         openNative
           ? h(
               Official.Modal,
@@ -815,104 +805,153 @@ export function FeedbackPage(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'AlertModal（自绘·警告框）', hint: '单按钮 + severity 图标（info/success/warning/error）；不传标题时整条头部消失，直接出说明文字' },
+      { title: '小型弹窗（自定义）', hint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。' },
       h(
         'div',
-        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
-        h(Button, { onClick: () => setAlertState({ sev: 'info', titled: true }) }, 'info'),
-        h(Button, { onClick: () => setAlertState({ sev: 'success', titled: true }) }, 'success'),
-        h(Button, { onClick: () => setAlertState({ sev: 'warning', titled: true }) }, 'warning'),
-        h(Button, { onClick: () => setAlertState({ sev: 'error', titled: true }) }, 'error'),
-        h(Button, { variant: 'outline', onClick: () => setAlertState({ sev: 'warning', titled: false }) }, '无标题'),
+        { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
+        h(
+          'div',
+          null,
+          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, 'AlertModal（组件）'),
+          h(
+            'div',
+            { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
+            h(Button, { onClick: () => setAlertState({ sev: 'info', titled: true }) }, 'info'),
+            h(Button, { onClick: () => setAlertState({ sev: 'success', titled: true }) }, 'success'),
+            h(Button, { onClick: () => setAlertState({ sev: 'warning', titled: true }) }, 'warning'),
+            h(Button, { onClick: () => setAlertState({ sev: 'error', titled: true }) }, 'error'),
+            h(Button, { variant: 'outline', onClick: () => setAlertState({ sev: 'warning', titled: false }) }, '无标题'),
+          ),
+          alertState !== null
+            ? h(AlertModal, {
+                severity: alertState.sev,
+                title: alertState.titled ? '操作结果' : undefined,
+                message: '这是一条说明文字：AlertModal 用于只需一个确认动作的提示场景。',
+                onConfirm: () => setAlertState(null),
+              })
+            : null,
+        ),
+        h(
+          'div',
+          null,
+          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, 'ConfirmModal（组件）'),
+          h(
+            'div',
+            { style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } },
+            h(Button, { onClick: () => { setConfirmCfg({ tone: 'primary', confirmText: '确定', cancelText: '取消' }); setConfirmResult('') } }, '默认（primary）'),
+            h(Button, { variant: 'outline', onClick: () => { setConfirmCfg({ tone: 'danger', confirmText: '删除', cancelText: '再想想' }); setConfirmResult('') } }, 'danger 变体'),
+            h(Button, { variant: 'ghost', onClick: () => { setConfirmCfg({ tone: 'warning', confirmText: '我已知晓', cancelText: '返回' }); setConfirmResult('') } }, '改文案'),
+            confirmResult ? h('span', { style: { fontSize: '13px', color: 'var(--dshpc-fg-3)' } }, confirmResult) : null,
+          ),
+          confirmCfg !== null
+            ? h(ConfirmModal, {
+                title: '删除任务',
+                message: '删除后不可恢复，确定要删除吗？',
+                tone: confirmCfg.tone,
+                confirmText: confirmCfg.confirmText,
+                cancelText: confirmCfg.cancelText,
+                onConfirm: () => { setConfirmCfg(null); setConfirmResult(`你点了：${confirmCfg.confirmText}（确认）`) },
+                onCancel: () => { setConfirmCfg(null); setConfirmResult(`你点了：${confirmCfg.cancelText}（取消）`) },
+              })
+            : null,
+        ),
+        h(
+          'div',
+          null,
+          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, '命令式（Promise）'),
+          h(
+            'div',
+            { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
+            h(Button, { variant: 'outline', onClick: () => { alertModal({ title: '提示', message: '这是命令式 alert，关闭即确认' }).then(() => showToast('alert 已关闭')) } }, 'alertModal()'),
+            h(Button, { onClick: async () => {
+                const ok = await confirmModal({ title: '确认提交', message: '提交后不可撤销', tone: 'danger', confirmText: '提交', cancelText: '取消' })
+                showToast(ok ? '你点了：提交' : '你点了：取消')
+              } }, 'confirmModal()'),
+          ),
+        ),
       ),
-      alertState !== null
-        ? h(AlertModal, {
-            severity: alertState.sev,
-            title: alertState.titled ? '操作结果' : undefined,
-            message: '这是一条说明文字：AlertModal 用于只需一个确认动作的提示场景。',
-            onConfirm: () => setAlertState(null),
-          })
-        : null,
     ),
     h(
       Demo,
-      { title: 'ConfirmModal（自绘·确认框）', hint: '双按钮（取消 outline + 确认语义档）；不传标题时整条头部消失；样式封闭只暴露语义档' },
+      { title: '大型弹窗（自定义）', hint: '我们的内容弹窗：Modal（size md/lg），承载任意内容，不是「确定/取消」命令式。三张示例：默认 md / 带 footer / 无 footer（内容自定义），头部排法可不同。' },
       h(
         'div',
-        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } },
-        h(Button, { onClick: () => { setConfirmCfg({ tone: 'primary', confirmText: '确定', cancelText: '取消' }); setConfirmResult('') } }, '默认（primary）'),
-        h(Button, { variant: 'outline', onClick: () => { setConfirmCfg({ tone: 'danger', confirmText: '删除', cancelText: '再想想' }); setConfirmResult('') } }, 'danger 变体'),
-        h(Button, { variant: 'ghost', onClick: () => { setConfirmCfg({ tone: 'warning', confirmText: '我已知晓', cancelText: '返回' }); setConfirmResult('') } }, '改文案'),
-        confirmResult ? h('span', { style: { fontSize: '13px', color: 'var(--dshpc-fg-3)' } }, confirmResult) : null,
-      ),
-      confirmCfg !== null
-        ? h(ConfirmModal, {
-            title: '删除任务',
-            message: '删除后不可恢复，确定要删除吗？',
-            tone: confirmCfg.tone,
-            confirmText: confirmCfg.confirmText,
-            cancelText: confirmCfg.cancelText,
-            onConfirm: () => { setConfirmCfg(null); setConfirmResult(`你点了：${confirmCfg.confirmText}（确认）`) },
-            onCancel: () => { setConfirmCfg(null); setConfirmResult(`你点了：${confirmCfg.cancelText}（取消）`) },
-          })
-        : null,
-    ),
-    h(
-      Demo,
-      { title: '命令式 alertModal() / confirmModal()（Promise）', hint: '无需在组件树里写 state：await confirmModal(...) 拿到 true/false' },
-      h(
-        'div',
-        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
-        h(Button, { variant: 'outline', onClick: () => { alertModal({ title: '提示', message: '这是命令式 alert，关闭即确认' }).then(() => showToast('alert 已关闭')) } }, 'alertModal()'),
-        h(Button, { onClick: async () => {
-            const ok = await confirmModal({ title: '确认提交', message: '提交后不可撤销', tone: 'danger', confirmText: '提交', cancelText: '取消' })
-            showToast(ok ? '你点了：提交' : '你点了：取消')
-          } }, 'confirmModal()'),
-      ),
-    ),
-    h(
-      Demo,
-      { title: '大弹窗（底层 Modal·多排标题 + 头部动作区 + 滚动）', hint: '标题可多排；头部右侧动作区放关闭钮 + 更多；中间滚动；closable:false 只留动作区关闭钮' },
-      h(
-        'div',
-        null,
-        h(Button, { variant: 'outline', onClick: () => setLargeOpen(true) }, '打开大弹窗'),
-        largeOpen
-          ? h(
-              Modal,
-              {
-                size: 'lg',
-                closable: false,
-                title: h(
+        { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
+        h(
+          'div',
+          null,
+          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, '默认（md）'),
+          h(Button, { onClick: () => setOpen(true) }, '打开大弹窗（md 默认）'),
+          open
+            ? h(Modal, {
+                title: '任务详情',
+                onClose: () => setOpen(false),
+                footer: h(Button, { variant: 'primary', onClick: () => setOpen(false) }, '知道了'),
+              }, h('div', null, '弹窗主体内容——会话预览这类功能就用它来承载。'))
+            : null,
+        ),
+        h(
+          'div',
+          null,
+          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, '带 footer（lg）'),
+          h(Button, { variant: 'outline', onClick: () => setLargeOpen(true) }, '打开大弹窗（带 footer）'),
+          largeOpen
+            ? h(
+                Modal,
+                {
+                  size: 'lg',
+                  title: '会话记录',
+                  headerActions: h(
+                    Button,
+                    { variant: 'outline', size: 'sm', icon: iconOf('chevron', 14) },
+                    '更多',
+                  ),
+                  onClose: () => setLargeOpen(false),
+                  footer: h(
+                    'div',
+                    { style: { display: 'flex', justifyContent: 'flex-end', gap: '8px' } },
+                    h(Button, { variant: 'outline', onClick: () => setLargeOpen(false) }, '关闭'),
+                    h(Button, { variant: 'primary', onClick: () => setLargeOpen(false) }, '完成'),
+                  ),
+                },
+                h(
                   'div',
                   null,
-                  h('div', { style: { fontWeight: 600 } }, '会话记录'),
-                  h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginTop: '2px' } }, '共 128 条 · 最近更新 2 分钟前'),
+                  Array.from({ length: 40 }, (_, i) =>
+                    h('div', { key: i, style: { padding: '10px 0', borderBottom: '1px solid var(--dshpc-border-faint)', fontSize: '13px' } }, `列表项 ${i + 1}：这是一段可滚动的内容示例`),
+                  ),
+                  h('div', { className: 'dshpc-modal__sid' }, '共 128 条 · 最近更新 2 分钟前'),
                 ),
-                headerExtra: h(Chip, { tone: 'business' }, '128 条'),
-                headerActions: h(
+              )
+            : null,
+        ),
+        h(
+          'div',
+          null,
+          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, '无 footer（内容自定义）'),
+          h(Button, { variant: 'outline', onClick: () => setLargeOpenB(true) }, '打开大弹窗（无 footer）'),
+          largeOpenB
+            ? h(
+                Modal,
+                {
+                  size: 'lg',
+                  title: h(
+                    'div',
+                    null,
+                    h('div', { style: { fontWeight: 600 } }, '任务详情'),
+                    h('div', { className: 'dshpc-modal__sid' }, 'sid-2026-1020-7f3a · 5 个步骤'),
+                  ),
+                  onClose: () => setLargeOpenB(false),
+                },
+                h(
                   'div',
-                  { style: { display: 'flex', gap: '8px' } },
-                  h(Button, { variant: 'ghost', size: 'sm', onClick: () => {} }, '更多'),
-                  h(IconButton, { variant: 'plain', icon: h(IconCloseOutlineRegular), label: '关闭', onClick: () => setLargeOpen(false) }),
+                  null,
+                  h('div', { style: { fontSize: '13px', lineHeight: '1.7' } }, '这里整个弹窗都由调用方自己定义：没有 footer，头部也换了一种排法（多排标题 + 副标题行）。内容区可放任意业务组件。'),
+                  h('div', { style: { marginTop: '12px', border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px', padding: '12px', fontSize: '13px' } }, '任意内容，例如一段说明或一个业务卡片。'),
                 ),
-                onClose: () => setLargeOpen(false),
-                footer: h(
-                  'div',
-                  { style: { display: 'flex', justifyContent: 'flex-end', gap: '8px' } },
-                  h(Button, { variant: 'outline', onClick: () => setLargeOpen(false) }, '关闭'),
-                  h(Button, { variant: 'primary', onClick: () => setLargeOpen(false) }, '完成'),
-                ),
-              },
-              h(
-                'div',
-                null,
-                Array.from({ length: 40 }, (_, i) =>
-                  h('div', { key: i, style: { padding: '10px 0', borderBottom: '1px solid var(--dshpc-border-faint)', fontSize: '13px' } }, `列表项 ${i + 1}：这是一段可滚动的内容示例`),
-                ),
-              ),
-            )
-          : null,
+              )
+            : null,
+        ),
       ),
     ),
     h(

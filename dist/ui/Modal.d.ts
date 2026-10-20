@@ -18,10 +18,15 @@ export interface ModalProps {
     closeOnMask?: boolean;
     /** 按 Esc 是否关闭（默认 true）。 */
     escClose?: boolean;
-    /** 尺寸档：sm≈确认框 / md(默认) / lg 大窗；也可直接传 maxWidth 精确覆盖。 */
+    /** 尺寸档：sm=小确认框家族 / md·lg=大弹窗家族；也可用 width/height 精确覆盖。 */
     size?: ModalSize;
-    /** 面板最大宽度，默认随 size（sm 420px / md min(960px,92vw) / lg min(1200px,94vw)）。 */
+    /** 面板宽度（默认随 size：sm 360px / md 720px / lg 1120px，均带视口兜底）。 */
+    width?: string;
+    /** 面板高度（默认仅 lg 有：calc(100% - 80px)，同兄弟项目大弹窗）。 */
+    height?: string;
+    /** 面板最大宽度 / 最大高度覆盖（不传走 size 默认）。 */
     maxWidth?: string;
+    maxHeight?: string;
     /** 不渲染头部（沉浸式 / 无标题场景）。 */
     hideHeader?: boolean;
     footer?: ReactNode;
