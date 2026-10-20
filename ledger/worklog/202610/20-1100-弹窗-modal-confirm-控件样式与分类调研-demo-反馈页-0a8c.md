@@ -175,6 +175,18 @@
 
 验证：`build` + `build:demo` + `pnpm test` 49/49 + `koc-codelint` 全过。
 
+### 九、大弹窗示例二次修订（2026-10-20）
+
+用户真机复看后指出大弹窗示例不对，逐项修订：
+
+- 布局：原 `headerExtra` 的「128 条」Chip 移出头部，挂到会话记录列表之后，改用最小副标题行 `.dshpc-modal__sid`（font-xs / caption 色 / 等宽字体，feedback.css:20）。
+- 垂直居中：原示例用 `IconButton(plain)` 关闭（md 尺寸）配 `ghost sm`「更多」，两尺寸不齐 ⇒ 歪。改为统一小尺度——关闭叉缩到 20px（`.dshpc-modal__close` 24→20，feedback.css），「更多」用 `outline sm` 带 icon 按钮，头部 `align-items:center` 居中。
+- 叉 / 按钮样式：关闭叉 20px（更小）；按钮与叉同尺度示例；「更多」改为带 border 的图标按钮（`icon: iconOf('chevron',14)`）。
+- 内距：大弹窗家族左右内距各减 3px（head/body/foot 的 34→31）。
+- 示例拆两个：① 带 footer（会话记录 + 底部右对齐按钮）；② 无 footer、内容自定义，头部换多排标题 + 副标题行排法（演示 head 差异）。
+
+验证：`build` + `build:demo` + `pnpm test` 49/49 + `koc-codelint` 全过。
+
 ## 执行记录
 
 <!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
@@ -185,3 +197,4 @@
 - 2026-10-20 11:41:49 · log · @GuoJia-Agent · 收用户弹窗控件族需求，出专家团讨论稿：Modal 头部四槽(icon/title/extra/actions)+closable 拆分+size 档；AlertModal/ConfirmModal 语义封装样式封闭；底座自绘（官方头部做不到）；讨论稿入 worklog 六节，4 个决策点待拍板
 - 2026-10-20 12:06:37 · log · @GuoJia-Agent · 实现完成：Modal 扩四槽+closable+size；新增 AlertModal/ConfirmModal/modal-host(Promise)；i18n 补 confirm/cancel/dialogOk；demo 反馈页示例矩阵（Alert×4/Confirm/命令式/大弹窗）；@types/react-dom 新增；build+test49/49+koc-codelint 全过
 - 2026-10-20 12:35:38 · log · @GuoJia-Agent · 真机反馈三连改：①宿主示例置顶+宿主命令示例；②遮罩换宿主变量 --dshpc-mask（原写死蓝灰 rgba(15,23,42,.45)）；③三套样式严格分开——小确认框严格抄 task-list renderConfirm(360px/18px/无分隔线)、大弹窗严格抄 archive-session(min(1120px,100vw-32px)×calc(100%-80px)/18-34-12头)、Modal 补 width/height/maxHeight 默认宽高可覆盖；official.ts 新增第二套命令 confirmModalHost/alertModalHost(Promise)；build+test49/49+lint 全过
+- 2026-10-20 12:48:15 · log · @GuoJia-Agent · 大弹窗示例二次修订：①128条标签移出头部、挂会话记录后用最小副标题行 __sid；②关闭叉缩到20px、更多改用outline sm带icon按钮、头部align-items居中解决歪斜；③左右内距各减3px(34→31)；④示例拆带footer/无footer两个且head排法不同；build+build:demo+test49/49+lint全过
