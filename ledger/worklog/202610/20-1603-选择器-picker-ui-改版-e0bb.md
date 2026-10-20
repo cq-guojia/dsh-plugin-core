@@ -35,8 +35,17 @@
 
 ## 下一步
 
-- 用户在宿主真机更新 demo 插件验收：选择器页看 chevron 箭头、icon、搜索开关、ModelPicker 双形态（grouped/cascade）、多选反选、真实模型/工作区数据。
-- AGENTS.md 首表「组件**不自己取数**」一行已过时（领域选择器已反转）——属注入规则文件，待用户授权后改。
+- 用户在宿主真机更新 demo 插件验收：搜索框自动聚焦、默认图标 / 自定义初始文字、ModelPicker 真实目录、Textarea 右下角问号、NumberInput 焦点蓝框。
+- 若模型目录仍空：看选择器顶部是否有「候选可能不完整」降级条——有 = 目录读到但 0 条路由（要么 listProviders 空、要么 provider profile 无 models），无 = 注入线没到。
+
+## 过程（第二轮：真机反馈修复，2026-10-20）
+
+- 搜索框自动聚焦：`Picker.ts` 加 `searchRef` + open 时 `focus()`。
+- 模型目录空：原过滤要求 provider 的 profile 在设置文档**用户层**被写过（照抄 stp），改成「已注册 + profile 里有非空 models」——`user` 层在 describe 快照里不一定存在，按它过滤会把全部供应商滤空。**这是根据工作区有数据 / 模型全空的现象推断的成因，待真机复验**。
+- 领域选择器默认图标 + 初始文字：`picker-icons.ts`（自绘文件夹 / 星），`icon` 三态（不传=默认 / null=无 / 元素=自定义），`placeholder` 可传（默认「工作区」/「模型」）。
+- Textarea 的 hint 改右下角：`.dshpc-fieldwrap--block` 绝对定位，textarea 加 `padding-bottom:24px`。
+- NumberInput 焦点态：`.dshpc-num:focus-within` 与 Input 同款蓝框（内层 input 无边框，状态画在外框）。
+- hint 口径确认：**单参数**（传字符串才显示，不传不显示，默认隐藏）——用户选的第二种方式，无需改 API。
 
 ## 过程
 
@@ -53,3 +62,4 @@
 - 2026-10-20 16:03:53 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-20 16:27:00 · log · @GuoJia-Agent · 需求入库：worklog 记 8 条（chevron/icon/搜索可配/双形态/删FilePicker/多选上限bug/真实数据/hint讨论），待对齐工作区取数通路
 - 2026-10-20 16:56:38 · log · @GuoJia-Agent · 交付：chevron/icon/hint内置/双形态改名grouped/多选反选bug/删FilePicker/host-data自取数(connectHost)+5项新测试；65测试+typecheck+codelint全过，产物入库待真机验收
+- 2026-10-20 17:24:35 · log · @GuoJia-Agent · 第二轮：搜索自动聚焦/模型目录改按models过滤(推断user层缺失致滤空)/领域选择器默认icon+可自定义文案/Textarea问号右下/NumberInput焦点态；65测试+codelint全过
