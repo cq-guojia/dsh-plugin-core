@@ -187,6 +187,22 @@
 
 验证：`build` + `build:demo` + `pnpm test` 49/49 + `koc-codelint` 全过。
 
+### 十、弹窗 API 收敛为「三块」（2026-10-20）
+
+用户反馈对外这道牌太散：自绘组件 / 自绘命令 / 宿主组件 / 宿主命令四摊，且「连打弹窗都有两个」（core + host 两套命令）。要求统一，并澄清「命令是否覆盖原生」「大弹窗为何不是命令」。
+
+结论（写进代码与 demo）：
+- **命令合一**：`confirmModal(opts)` / `alertModal(opts)` 加 `opts.skin?: 'core' | 'host'`（默认 `core`）。删除 `alertModalHost` / `confirmModalHost` 两个重复命令——宿主皮肤经 `skin:"host"` 委托。
+- **零依赖保持**：宿主渲染逻辑仍只住 `official.ts`（唯一 import 平台模块处），通过新增 `registerHostDialog()` 把宿主渲染器注册进 `modal-host.ts` 的模块级槽位；ui 入口静态图不含 `@deepseek-ai`。未引入 official 时 `skin:"host"` 回落 core 并报一次警。
+- **不覆盖原生**：命令名带 `Modal` 后缀（`alertModal`/`confirmModal`），不 shadow `window.alert`/`confirm`；宿主原生仍是显式的 `Official.Modal`。
+- **大弹窗不是命令**：`Modal` 是承载任意内容的组件（size md/lg），不是「确定/取消」二选一，故无 alert/confirm 命令——这正是第三块。
+- **demo 重组为三块**：① 原生弹窗（宿主）② 小型弹窗（自定义）③ 大型弹窗（自定义）。各块内部分子项（组件 / 命令式 / 多示例）。
+- **命名**：代码标识符不变（Modal/AlertModal/ConfirmModal/confirmModal/alertModal）；demo 展示标题用「原生弹窗（宿主）/ 小型弹窗（自定义）/ 大型弹窗（自定义）」，用户可随时改名。
+
+验证：build（清旧产物强制重建，dist 已无 Host 残留）+ build:demo + test 49/49 + koc-codelint 全过。
+
+> 注：本节九之前的 worklog（172/174/199 行）记录了早先「两套命令 *Host」的过渡方案，已被本节反转——属同一轮迭代中的方案调整，保留原记录以追溯，不单独删改。
+
 ## 执行记录
 
 <!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
@@ -198,3 +214,4 @@
 - 2026-10-20 12:06:37 · log · @GuoJia-Agent · 实现完成：Modal 扩四槽+closable+size；新增 AlertModal/ConfirmModal/modal-host(Promise)；i18n 补 confirm/cancel/dialogOk；demo 反馈页示例矩阵（Alert×4/Confirm/命令式/大弹窗）；@types/react-dom 新增；build+test49/49+koc-codelint 全过
 - 2026-10-20 12:35:38 · log · @GuoJia-Agent · 真机反馈三连改：①宿主示例置顶+宿主命令示例；②遮罩换宿主变量 --dshpc-mask（原写死蓝灰 rgba(15,23,42,.45)）；③三套样式严格分开——小确认框严格抄 task-list renderConfirm(360px/18px/无分隔线)、大弹窗严格抄 archive-session(min(1120px,100vw-32px)×calc(100%-80px)/18-34-12头)、Modal 补 width/height/maxHeight 默认宽高可覆盖；official.ts 新增第二套命令 confirmModalHost/alertModalHost(Promise)；build+test49/49+lint 全过
 - 2026-10-20 12:48:15 · log · @GuoJia-Agent · 大弹窗示例二次修订：①128条标签移出头部、挂会话记录后用最小副标题行 __sid；②关闭叉缩到20px、更多改用outline sm带icon按钮、头部align-items居中解决歪斜；③左右内距各减3px(34→31)；④示例拆带footer/无footer两个且head排法不同；build+build:demo+test49/49+lint全过
+- 2026-10-20 13:54:59 · log · @GuoJia-Agent · 弹窗API收敛为三块：confirmModal/alertModal加skin:'core'|'host'参数，删除重复的alertModalHost/confirmModalHost；宿主渲染经registerHostDialog注册进modal-host保持ui零官方依赖；命令名带Modal后缀不覆盖原生；Modal是大内容组件非命令；demo重组为原生弹窗(宿主)/小型弹窗(自定义)/大型弹窗(自定义)三块；清旧产物强制重建dist无Host残留+build+test49/49+lint全过
