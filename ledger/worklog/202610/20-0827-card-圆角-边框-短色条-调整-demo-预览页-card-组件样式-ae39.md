@@ -68,6 +68,12 @@
 - 容器职责再次向用户确认并记录：卡内内容 100% 调用方定制，与控件无关；demo 里的标题 / chips / 按钮都只是从其他控件（Chip / Button / 文本）引进的示例。
 - 验证：build + build:demo 通过；`pnpm test` 49/49 绿；codelint 6 文件全层过。
 
+2026-10-20 第五轮（demo 收口）：
+
+- Cancel 钮由 `secondary`（灰实心、无描边）改 `outline`（描边档），尺寸仍 `sm`（与查看会话同档）。
+- 核对「示例控件全部来自核心」：demo 无 `h('button')` / `h('input')` / 手写 `dshpc-*` 类；controls / blocks / client 三处控件均 import 自 `dist/ui/index.js`。唯一手写 UI = demo 设置页入口卡（`client/index.tsx:123`，demo 壳、非示例）——未动，已向用户说明。
+- 验证：build + build:demo 通过；`pnpm test` 49/49 绿；codelint 6 文件全层过。
+
 ## 结论
 
 Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修正：撤回第一轮的「二合一」，按用户明确要求恢复双外观并补上图示框式卡）：
@@ -92,3 +98,4 @@ Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修
 - 2026-10-20 09:04:58 · log · @GuoJia-Agent · 第二轮修正：恢复双外观（Card=框式照 taskrow、StripCard=浅底条照 rec-item）+ 头部改 align-items:center 修右侧居顶；build+49 测试+codelint 全过，待验收
 - 2026-10-20 09:25:13 · log · @GuoJia-Agent · 第三轮：框式短条改 stretch+最小一行、padding 全向 14 使左/上/下等距；日期改走 action 槽+加单按钮示例、删小箭头示例；build+49 测试+codelint 全过
 - 2026-10-20 09:30:41 · log · @GuoJia-Agent · 第四轮：StripCard 节补单行五档速览+第二事例加 secondary/sm Cancel 钮；确认卡内内容归调用方；build+49 测试+codelint 全过
+- 2026-10-20 09:47:37 · log · @GuoJia-Agent · 第五轮：Cancel 钮改 outline（描边档，size 仍 sm）；核对 demo 无手写控件、示例控件全来自核心 dist/ui；build+49 测试+codelint 全过
