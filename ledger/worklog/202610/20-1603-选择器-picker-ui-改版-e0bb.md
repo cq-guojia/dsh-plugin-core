@@ -63,3 +63,4 @@
 - 2026-10-20 16:27:00 · log · @GuoJia-Agent · 需求入库：worklog 记 8 条（chevron/icon/搜索可配/双形态/删FilePicker/多选上限bug/真实数据/hint讨论），待对齐工作区取数通路
 - 2026-10-20 16:56:38 · log · @GuoJia-Agent · 交付：chevron/icon/hint内置/双形态改名grouped/多选反选bug/删FilePicker/host-data自取数(connectHost)+5项新测试；65测试+typecheck+codelint全过，产物入库待真机验收
 - 2026-10-20 17:24:35 · log · @GuoJia-Agent · 第二轮：搜索自动聚焦/模型目录改按models过滤(推断user层缺失致滤空)/领域选择器默认icon+可自定义文案/Textarea问号右下/NumberInput焦点态；65测试+codelint全过
+- 2026-10-20 17:27:56 · log · @GuoJia-Agent · 根因1：demo 的 dsh.client.inject 缺 @deepseek-ai/dsh-api-remotes ⇒ remote.llm 不挂载(已补)；根因2：fieldwrap 让位规则把 textarea 缩窄(已还宽度)；已记 external §11.1
