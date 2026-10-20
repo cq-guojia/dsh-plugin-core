@@ -233,6 +233,7 @@ export function notify(message: string, opts?: NotifyOptions): void {
                   Button,
                   {
                     variant: a.variant ?? 'outline',
+                    size: 'md',
                     onClick: () => {
                       a.onClick()
                       toast.dismiss(id)

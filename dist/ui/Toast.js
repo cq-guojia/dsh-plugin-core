@@ -163,6 +163,7 @@ export function notify(message, opts) {
         : null), actions !== undefined && actions.length > 0
         ? h('div', { style: { display: 'flex', gap: '8px', flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => h(Button, {
             variant: a.variant ?? 'outline',
+            size: 'md',
             onClick: () => {
                 a.onClick();
                 toast.dismiss(id);
