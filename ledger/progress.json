@@ -36,24 +36,6 @@
       "title": "弹窗（Modal/Confirm）控件样式与分类调研——demo 反馈页",
       "updated": "2026-10-20 13:54:59",
       "worklog": "worklog/202610/20-1100-弹窗-modal-confirm-控件样式与分类调研-demo-反馈页-0a8c.md"
-    },
-    "20261020-1418-ui-抽象可停靠分栏面板-多面板并存-按名覆盖内容-5564": {
-      "category": "架构",
-      "created": "2026-10-20 14:18:55",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-20 14:18:55",
-      "status": "doing",
-      "tags": [
-        "分栏",
-        "dock",
-        "ui",
-        "多面板"
-      ],
-      "title": "ui 抽象可停靠分栏面板：多面板并存 + 按名覆盖内容",
-      "updated": "2026-10-20 15:36:10",
-      "worklog": "worklog/202610/20-1418-ui-抽象可停靠分栏面板-多面板并存-按名覆盖内容-5564.md"
     }
   }
 }
