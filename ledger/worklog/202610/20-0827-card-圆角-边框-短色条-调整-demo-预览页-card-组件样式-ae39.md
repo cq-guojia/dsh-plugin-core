@@ -1,5 +1,6 @@
 # 20261020-0827-card-圆角-边框-短色条-调整-demo-预览页-card-组件样式-ae39：Card（圆角+边框+短色条）调整 demo 预览页 Card 组件样式
 
+> **✅ 完成封卷**：2026-10-20 12:35:03（@GuoJia-Agent）
 > **创建**：2026-10-20 08:27:40（@GuoJia-Agent）
 > **分类**：界面 ｜ **标签**：Card、demo、样式
 
@@ -105,3 +106,4 @@ Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修
 - 2026-10-20 11:48:02 · log · @GuoJia-Agent · 第六轮：Chip 加 xs 超小档(16px,font10)并用于最新标签；Card 左内边距12(头部整体左缩2px,弃left:-2补丁)；StripCard 单行速览内联padding修正左20与宽卡一致；build+49测试+codelint全过
 - 2026-10-20 11:57:00 · log · @GuoJia-Agent · 第七轮：SectionHead 右侧槽 marginLeft:auto→flex:1+justifyContent:flex-end（搜索框始终贴右，修窄容器塌陷）；ChipPage 文本状态区补 xs 超小档行；其他控件暂不加 xs；build+49测试+codelint全过
 - 2026-10-20 12:09:55 · log · @GuoJia-Agent · 第八轮：抓到搜索框没居右的真正根因——.dshpc-input 无 width 规则，input 按原生 size 内在宽渲染不铺满壳（自家 .dshpc-textarea 却是 width:100%，同体系俩口径）；核心修复 .dshpc-input 补 display:block;width:100%；ChipPage 尺寸对比改 map 生成三行固定 md→sm→xs 同组文案；build+49 测试+codelint(23文件)全过
+- 2026-10-20 12:35:03 · close · @GuoJia-Agent · 结案：Card 双外观(框式/浅底通高条)+头部居中；SectionHead 右侧槽 flex:1 贴右+title ReactNode+icon 居中+三示例；Card 左内边距12(内容随竖条左移2px)；StripCard 条4px+单行速览对齐；Chip 新增 xs 超小档+三档由大到小展示；Input width:100% 修套壳空一截根因；docs/ui.md 同步。已 commit e06ffd7
