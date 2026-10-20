@@ -18,8 +18,8 @@ function renderToaster() {
     root.render(h(Toaster, {
         theme: currentTheme(),
         position: 'bottom-center',
-        richColors: true,
-        closeButton: true,
+        // 不开 richColors / closeButton：官方默认才是「中性卡 + 语义色只在图标」；
+        // closeButton 在宿主里吃不到 Sonner 的 CSS 变量，会渲染成白底方块叉（真机踩过）。
     }));
 }
 // 全局唯一 Toaster：命令式 toast() 需要一个挂着的 Toaster 才能渲染；
