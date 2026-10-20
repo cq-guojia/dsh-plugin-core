@@ -87,3 +87,4 @@
 - 2026-10-20 17:27:56 · log · @GuoJia-Agent · 根因1：demo 的 dsh.client.inject 缺 @deepseek-ai/dsh-api-remotes ⇒ remote.llm 不挂载(已补)；根因2：fieldwrap 让位规则把 textarea 缩窄(已还宽度)；已记 external §11.1
 - 2026-10-20 17:39:45 · log · @GuoJia-Agent · 第三轮真因：remote.llm 无模型列表，改宿主 llm.listModels + serveModelCatalog 路由(./host) + client fetch；删 configForms/remote 路径；需重装 demo 让宿主入口生效
 - 2026-10-20 17:43:35 · log · @GuoJia-Agent · 第四轮：模型目录已出；修 cascade 联动(组件内自记厂商，原先靠值反推被清空后永远空) + ModelPicker 搜索框默认开；顺手清 Toast 无用 case(过 lint)
+- 2026-10-20 17:49:03 · log · @GuoJia-Agent · 第五轮：去掉 cascade 改 split(两个独立下拉,互不联动)/ModelPicker 增默认模型项 allowDefault+defaultLabel(选中发空串)/Picker 增 align 默认居左(修 space-between 把短文案推中间)
