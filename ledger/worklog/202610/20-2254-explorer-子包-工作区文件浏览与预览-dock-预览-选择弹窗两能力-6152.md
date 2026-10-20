@@ -31,3 +31,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-20 22:54:32 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-20 22:55:52 · log · @GuoJia-Agent · 填正文：背景=用户两能力定义+拍板口径表+兄弟项目7条问题清单；待办9项；下一步读实现依赖现状文件
+- 2026-10-20 23:27:43 · log · @GuoJia-Agent · 交付：FileBrowser 面板 + openFilePreview/pickWorkspaceFile 两能力 + 六档预览体 + ./ui/official 通路；build/build:demo/73 测试/codelint 全过；正文曾被拉取回滚已重写；待用户真机验收
