@@ -13,7 +13,7 @@
 
 ## 待办
 
-- 待用户验收（第五轮）：框式短条改 -2px；SectionHead 3 组示例（3 图标 / 标题后缀 / 两右侧组合）；icon+标题垂直居中修复。
+- 待用户验收（第六轮）：Chip 新增 xs 超小档并用于 SectionHead「最新」标签；Card 左内边距 12（内容随竖条左移 2px，弃相对定位补丁）；StripCard 单行速览左内边距修正为 20（与宽卡一致）。
 
 ## 下一步
 
@@ -102,3 +102,4 @@ Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修
 - 2026-10-20 09:58:59 · log · @GuoJia-Agent · 已 commit 740ab1d（15 文件 +176/-110）：Card 双外观 + 头部居中 + 竖条自适应 + demo 示例收口；用户说稍后继续
 - 2026-10-20 10:55:12 · log · @GuoJia-Agent · 第四轮：SectionHead 示例照兄弟 board-home 全部待办段头（Segmented 计数+192 搜索，全核心控件）；框式短条 relative left:-3px；StripCard 条 5→4px（padding 20 保 16 留白）；build+49 测试+codelint 全过
 - 2026-10-20 11:24:19 · log · @GuoJia-Agent · 第五轮：框式短条 -2px；SectionHead title 拓宽 ReactNode + icon 补 lineHeight 修居中；demo 三示例（sparkle/clock/refresh 图标 + 计数/彩色标签/小字 + 过滤组/单钮/双钮）；build+49 测试+codelint 全过
+- 2026-10-20 11:48:02 · log · @GuoJia-Agent · 第六轮：Chip 加 xs 超小档(16px,font10)并用于最新标签；Card 左内边距12(头部整体左缩2px,弃left:-2补丁)；StripCard 单行速览内联padding修正左20与宽卡一致；build+49测试+codelint全过
