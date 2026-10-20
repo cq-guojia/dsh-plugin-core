@@ -34,7 +34,7 @@ export interface InputProps {
     /** 失焦（如数字框把「清空 / 输一半」的草稿回弹成已提交值）。 */
     onBlur?: () => void;
 }
-/** 文本输入。 */
+/** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export declare function Input(props: InputProps): ReturnType<typeof h>;
 export interface PrefixedInputProps extends Omit<InputProps, 'className'> {
     /** 前置文案（如 https:// / C:\）。 */

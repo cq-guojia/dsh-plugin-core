@@ -4,13 +4,13 @@
  * 2026-10-08 设置页重构时定型：每块 = 标题行 + 一块内容，标题行左侧 icon、右侧留给该块的控件
  * （日志块的自动刷新 / 刷新钮，表查询块的表切换）。此前三个块各写一个 `h3`，形态不统一。
  *
- * 排版规则：字号 / 行高 / 字色走 `--dshpc-*` token；`right` 用 `marginLeft:auto` 靠右；
- * 标题 `flex:none` 不被压缩（与手册 §五「窄栏里的一行」同口径）。
+ * 排版规则：字号 / 行高 / 字色走 `--dshpc-*` token；`right` 用 `flex:1` + `justifyContent:flex-end`
+ * 靠右（比 `marginLeft:auto` 稳：内容再宽也始终贴右，不会塌成靠左）；标题 `flex:none` 不被压缩。
  */
 import { createElement as h, type ReactNode } from 'react';
 export declare function SectionHead(props: {
     icon: ReactNode;
-    title: string;
+    title: ReactNode;
     right?: ReactNode;
 }): ReturnType<typeof h>;
 //# sourceMappingURL=SectionHead.d.ts.map

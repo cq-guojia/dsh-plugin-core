@@ -11,6 +11,8 @@
 }
 /* md 档：卡片元信息行等稍大场景；sm 即旧版默认，逐像素不动。 */
 .dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}
+/* xs 档：标题后缀等极紧凑场景（2026-10-20 用户要更小标签）；16px 高、font 10。 */
+.dshpc-chip--xs{padding:0 6px;font-size:10px;line-height:16px;}
 /* 语义色实心档：底 / 字 / hover 配对与 Button 同源（黄底中高明度 ⇒ 字用 --dshpc-on-warning）。 */
 .dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}
 .dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}

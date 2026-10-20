@@ -3,7 +3,10 @@ export { filterGroups, flattenOptions, groupOf, labelsOf, toGroups, toggleValue,
 export { Picker, type PickerProps, type PickerSize } from './Picker.js';
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js';
 export { FilePicker, WorkspacePicker, type FilePickerProps, type WorkspacePickerProps, } from './WorkspacePicker.js';
-export { Modal, type ModalProps } from './Modal.js';
+export { Modal, type ModalProps, type ModalSize } from './Modal.js';
+export { AlertModal, type AlertModalProps, type AlertSeverity, } from './AlertModal.js';
+export { ConfirmModal, type ConfirmModalProps, type ConfirmTone, } from './ConfirmModal.js';
+export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, } from './modal-host.js';
 export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardSharedProps, } from './Card.js';
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js';
 export { showToast, type ToastVariant } from './Toast.js';

@@ -136,8 +136,8 @@ h(WorkspacePicker, { workspaces: wsList, value: cur, onChange: setCur })
 
 | 组件 | 外观 | 色条 |
 |---|---|---|
-| `Card` | surface 底 + 1px 边框 + 圆角（`--dshpc-radius-sm`），padding 全向 14px | 行内 **6px** 圆角短条（`--dshpc-radius-xs`），高度跟随内容、最小一行 |
-| `StripCard` | 同色系浅底（`--dshpc-*-soft`）+ 1px 不可见占位边框 + 方角 | **5px 通高**、方角、贴左缘 |
+| `Card` | surface 底 + 1px 边框 + 圆角（`--dshpc-radius-sm`），padding 14px（左 12 使竖条贴边） | 行内 **6px** 圆角短条（`--dshpc-radius-xs`），高度跟随内容、最小一行 |
+| `StripCard` | 同色系浅底（`--dshpc-*-soft`）+ 1px 不可见占位边框 + 方角 | **4px 通高**、方角、贴左缘 |
 
 两种外观的头部都是**整体垂直居中**（`align-items:center`）：调用方在 `action` 里裸放一个元素
 （按钮 / 文字 / 图标）即垂直居中，**不用自己套容器**；框内一行两行、右侧放什么、
@@ -161,8 +161,8 @@ h(WorkspacePicker, { workspaces: wsList, value: cur, onChange: setCur })
 
 色条几何随外观：
 
-- `StripCard`：绝对定位 + `top/bottom` ⇒ **通高**（贴顶到底，含展开区）；左内边距 21px = 16px 留白 + 5px 条宽 ⇒ 内容从色条**右缘**起算（与兄弟项目块同口径）。
-- `Card`：行内 flex 短条，**高度跟着内容走**（`align-self:stretch`），最小一行文字（`--dshpc-line-md`）⇒ 一行文字时条子与文字齐高、不把卡撑高；padding 全向 14px ⇒ 条子距左 / 上 / 下的外间距恒等。
+- `StripCard`：绝对定位 + `top/bottom` ⇒ **通高**（贴顶到底，含展开区）；左内边距 20px = 16px 留白 + 4px 条宽 ⇒ 内容从色条**右缘**起算（与兄弟项目块同口径）。
+- `Card`：行内 flex 短条，**高度跟着内容走**（`align-self:stretch`），最小一行文字（`--dshpc-line-md`）⇒ 一行文字时条子与文字齐高、不把卡撑高；左内边距 12px（较上 / 右 / 下 14 少 2，使竖条贴近边框），竖条↔内容间距 12px 不变。
 
 颜色全走 token ⇒ **亮暗自动跟随宿主**（`body[data-ds-dark-theme]`），不需要调用方处理。
 

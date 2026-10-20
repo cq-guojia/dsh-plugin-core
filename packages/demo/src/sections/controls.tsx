@@ -1,5 +1,5 @@
 import { createElement as h, useState, type ComponentType } from 'react'
-import type { ButtonSize, ButtonVariant } from '../../../../dist/ui/index.js'
+import type { AlertSeverity, ButtonSize, ButtonVariant, ConfirmTone } from '../../../../dist/ui/index.js'
 import {
   Button,
   Card,
@@ -13,6 +13,8 @@ import {
   LiveText,
   MarqueeText,
   Modal,
+  AlertModal,
+  ConfirmModal,
   ModelPicker,
   NumberInput,
   Picker,
@@ -23,7 +25,11 @@ import {
   WorkspacePicker,
   FilePicker,
   showToast,
+  alertModal,
+  confirmModal,
 } from '../../../../dist/ui/index.js'
+// 宿主原生弹窗：经官方适配层 official.js 取（全仓唯一 import 平台模块处），保持本包 ui 入口零官方依赖。
+import { Official } from '../../../../dist/ui/official.js'
 import {
   HoverCard,
   IconCheckOutlineRegular,
@@ -542,6 +548,8 @@ export function TooltipPage(): ReturnType<typeof h> {
 // ── 卡片与容器 ──────────────────────────────────────────────────────────
 
 export function CardPage(): ReturnType<typeof h> {
+  const [seg, setSeg] = useState('all')
+  const [kw, setKw] = useState('')
   return h(
     'div',
     null,
@@ -616,7 +624,7 @@ export function CardPage(): ReturnType<typeof h> {
           'div',
           { style: { display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' } },
           (['business', 'success', 'warning', 'danger', 'neutral'] as const).map((a) =>
-            h(StripCard, { key: a, accent: a, style: { padding: '8px 12px' } },
+            h(StripCard, { key: a, accent: a, style: { padding: '8px 12px 8px 20px' } },
               h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, `accent="${a}"`),
             ),
           ),
@@ -625,8 +633,56 @@ export function CardPage(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: t('sectionHeadTitle'), hint: '分区标题：icon + 标题 + 右侧操作区三段式' },
-      h(SectionHead, { icon: '▸', title: '分区标题', right: h(Button, { size: 'sm' }, '操作') }),
+      { title: t('sectionHeadTitle'), hint: '分区标题：icon + 标题 + 右侧操作区三段式——纯排版壳，icon/标题/右侧都调用方自定；下示 3 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合' },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
+        // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
+        h(SectionHead, {
+          icon: h(IconSparkleRegular, { size: 16 }),
+          title: h('span', { style: { display: 'inline-flex', alignItems: 'baseline', gap: '6px' } },
+            '全部待办',
+            h('span', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', fontWeight: 400 } }, '22'),
+          ),
+          right: [
+            h(Segmented, {
+              variant: 'inset',
+              items: [
+                { value: 'all', label: t('segAll'), count: 22 },
+                { value: 'doing', label: t('segDoing'), count: 11 },
+                { value: 'claimed', label: t('segClaimed'), count: 11 },
+                { value: 'backlog', label: '积压' },
+                { value: 'overdue', label: '逾期', count: 4 },
+                { value: 'stalled', label: '停滞', count: 8 },
+              ],
+              value: seg,
+              onChange: setSeg,
+            }),
+            // 搜索框 192px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
+            h('div', { style: { width: '192px', flex: 'none' } },
+              h(Input, { value: kw, onChange: setKw, placeholder: '搜索' })),
+          ],
+        }),
+        // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
+        h(SectionHead, {
+          icon: h(IconClockOutlineRegular, { size: 16 }),
+          title: h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
+            '我的待办',
+            h(Chip, { tone: 'success', size: 'xs' }, '最新'),
+          ),
+          right: h(Button, { size: 'sm', variant: 'ghost' }, '刷新'),
+        }),
+        // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
+        h(SectionHead, {
+          icon: h(IconRefreshOutlineRegular, { size: 16 }),
+          title: h('span', { style: { display: 'inline-flex', alignItems: 'baseline', gap: '6px' } },
+            '已归档',
+            h('span', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', fontWeight: 400 } }, '共 8 条'),
+          ),
+          right: [
+            h(Button, { size: 'sm', variant: 'ghost' }, '操作'),
+            h(Button, { size: 'sm', variant: 'secondary' }, '设置'),
+          ],
+        }),
+      ),
     ),
   )
 }
@@ -643,23 +699,15 @@ export function ChipPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
-        // 语义色实心档：状态标签（逾期 / 停滞这类），文案随 locale 切中英
-        h(
-          'div',
-          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
-          h(Chip, { tone: 'warning' }, t('chipOverdue')),
-          h(Chip, { tone: 'danger' }, t('chipStalled')),
-          h(Chip, { tone: 'success' }, t('chipDone')),
-          h(Chip, { tone: 'business' }, t('chipDoing')),
-        ),
-        // 尺寸对比：同一组文案 sm / md 各一行，好挑
-        h(
-          'div',
-          { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
-          h(Chip, { size: 'md', tone: 'warning' }, t('chipOverdue')),
-          h(Chip, { size: 'md', tone: 'danger' }, t('chipStalled')),
-          h(Chip, { size: 'md' }, 'Tag MD'),
-          h(Chip, null, 'Tag SM'),
+        // 尺寸 + 语义色：三档各一行，**固定由大到小**（md → sm → xs），每行同组文案同档，杜绝乱序
+        ...(['md', 'sm', 'xs'] as const).map((sz) =>
+          h('div', { key: sz, style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
+            h(Chip, { size: sz, tone: 'warning' }, t('chipOverdue')),
+            h(Chip, { size: sz, tone: 'danger' }, t('chipStalled')),
+            h(Chip, { size: sz, tone: 'success' }, t('chipDone')),
+            h(Chip, { size: sz, tone: 'business' }, t('chipDoing')),
+            h(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`),
+          ),
         ),
         // 中性 # 标签（语言无关）+ 长文字回归样
         h(
@@ -699,7 +747,12 @@ function Boom(): ReturnType<typeof h> {
 
 export function FeedbackPage(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
+  const [openNative, setOpenNative] = useState(false)
   const [boom, setBoom] = useState(false)
+  const [alertState, setAlertState] = useState<{ sev: AlertSeverity; titled: boolean } | null>(null)
+  const [confirmCfg, setConfirmCfg] = useState<{ tone: ConfirmTone; confirmText: string; cancelText: string } | null>(null)
+  const [confirmResult, setConfirmResult] = useState('')
+  const [largeOpen, setLargeOpen] = useState(false)
 
   return h(
     'div',
@@ -717,6 +770,148 @@ export function FeedbackPage(): ReturnType<typeof h> {
               onClose: () => setOpen(false),
               footer: h(Button, { variant: 'primary', onClick: () => setOpen(false) }, '知道了'),
             }, h('div', null, '弹窗主体内容——会话预览这类功能就用它来承载。'))
+          : null,
+      ),
+    ),
+    h(
+      Demo,
+      { title: '原生弹窗（宿主）', hint: '宿主内核提供的官方 Modal：正文区可塞任意自定义内容，footer 可放任意按钮组合，尺寸经 contentClassName 定制' },
+      h(
+        'div',
+        null,
+        h(Button, { variant: 'outline', onClick: () => setOpenNative(true) }, '打开宿主原生弹窗'),
+        openNative
+          ? h(
+              Official.Modal,
+              {
+                open: openNative,
+                onClose: () => setOpenNative(false),
+                title: '宿主原生弹窗',
+                closeLabel: '关闭',
+                description: '这是宿主内核提供的 Modal，下面一段是调用方塞进来的自定义内容（输入框 + 勾选）。',
+                contentClassName: 'dshpc-native-demo-content',
+                footer: h(
+                  'div',
+                  { style: { display: 'flex', justifyContent: 'flex-end', gap: '8px' } },
+                  h(Button, { variant: 'outline', onClick: () => setOpenNative(false) }, '取消'),
+                  h(Button, { variant: 'danger', onClick: () => setOpenNative(false) }, '删除'),
+                  h(Button, { variant: 'primary', onClick: () => setOpenNative(false) }, '确认'),
+                ),
+              },
+              h(
+                'div',
+                { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+                h(Input, { placeholder: '自定义输入框（来自 core 控件）' }),
+                h(
+                  'label',
+                  { style: { display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px' } },
+                  h(Checkbox, { checked: false, onChange: () => {} }),
+                  '自定义勾选项',
+                ),
+              ),
+            )
+          : null,
+      ),
+    ),
+    h(
+      Demo,
+      { title: 'AlertModal（自绘·警告框）', hint: '单按钮 + severity 图标（info/success/warning/error）；不传标题时整条头部消失，直接出说明文字' },
+      h(
+        'div',
+        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
+        h(Button, { onClick: () => setAlertState({ sev: 'info', titled: true }) }, 'info'),
+        h(Button, { onClick: () => setAlertState({ sev: 'success', titled: true }) }, 'success'),
+        h(Button, { onClick: () => setAlertState({ sev: 'warning', titled: true }) }, 'warning'),
+        h(Button, { onClick: () => setAlertState({ sev: 'error', titled: true }) }, 'error'),
+        h(Button, { variant: 'outline', onClick: () => setAlertState({ sev: 'warning', titled: false }) }, '无标题'),
+      ),
+      alertState !== null
+        ? h(AlertModal, {
+            severity: alertState.sev,
+            title: alertState.titled ? '操作结果' : undefined,
+            message: '这是一条说明文字：AlertModal 用于只需一个确认动作的提示场景。',
+            onConfirm: () => setAlertState(null),
+          })
+        : null,
+    ),
+    h(
+      Demo,
+      { title: 'ConfirmModal（自绘·确认框）', hint: '双按钮（取消 outline + 确认语义档）；不传标题时整条头部消失；样式封闭只暴露语义档' },
+      h(
+        'div',
+        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } },
+        h(Button, { onClick: () => { setConfirmCfg({ tone: 'primary', confirmText: '确定', cancelText: '取消' }); setConfirmResult('') } }, '默认（primary）'),
+        h(Button, { variant: 'outline', onClick: () => { setConfirmCfg({ tone: 'danger', confirmText: '删除', cancelText: '再想想' }); setConfirmResult('') } }, 'danger 变体'),
+        h(Button, { variant: 'ghost', onClick: () => { setConfirmCfg({ tone: 'warning', confirmText: '我已知晓', cancelText: '返回' }); setConfirmResult('') } }, '改文案'),
+        confirmResult ? h('span', { style: { fontSize: '13px', color: 'var(--dshpc-fg-3)' } }, confirmResult) : null,
+      ),
+      confirmCfg !== null
+        ? h(ConfirmModal, {
+            title: '删除任务',
+            message: '删除后不可恢复，确定要删除吗？',
+            tone: confirmCfg.tone,
+            confirmText: confirmCfg.confirmText,
+            cancelText: confirmCfg.cancelText,
+            onConfirm: () => { setConfirmCfg(null); setConfirmResult(`你点了：${confirmCfg.confirmText}（确认）`) },
+            onCancel: () => { setConfirmCfg(null); setConfirmResult(`你点了：${confirmCfg.cancelText}（取消）`) },
+          })
+        : null,
+    ),
+    h(
+      Demo,
+      { title: '命令式 alertModal() / confirmModal()（Promise）', hint: '无需在组件树里写 state：await confirmModal(...) 拿到 true/false' },
+      h(
+        'div',
+        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
+        h(Button, { variant: 'outline', onClick: () => { alertModal({ title: '提示', message: '这是命令式 alert，关闭即确认' }).then(() => showToast('alert 已关闭')) } }, 'alertModal()'),
+        h(Button, { onClick: async () => {
+            const ok = await confirmModal({ title: '确认提交', message: '提交后不可撤销', tone: 'danger', confirmText: '提交', cancelText: '取消' })
+            showToast(ok ? '你点了：提交' : '你点了：取消')
+          } }, 'confirmModal()'),
+      ),
+    ),
+    h(
+      Demo,
+      { title: '大弹窗（底层 Modal·多排标题 + 头部动作区 + 滚动）', hint: '标题可多排；头部右侧动作区放关闭钮 + 更多；中间滚动；closable:false 只留动作区关闭钮' },
+      h(
+        'div',
+        null,
+        h(Button, { variant: 'outline', onClick: () => setLargeOpen(true) }, '打开大弹窗'),
+        largeOpen
+          ? h(
+              Modal,
+              {
+                size: 'lg',
+                closable: false,
+                title: h(
+                  'div',
+                  null,
+                  h('div', { style: { fontWeight: 600 } }, '会话记录'),
+                  h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginTop: '2px' } }, '共 128 条 · 最近更新 2 分钟前'),
+                ),
+                headerExtra: h(Chip, { tone: 'business' }, '128 条'),
+                headerActions: h(
+                  'div',
+                  { style: { display: 'flex', gap: '8px' } },
+                  h(Button, { variant: 'ghost', size: 'sm', onClick: () => {} }, '更多'),
+                  h(IconButton, { variant: 'plain', icon: h(IconCloseOutlineRegular), label: '关闭', onClick: () => setLargeOpen(false) }),
+                ),
+                onClose: () => setLargeOpen(false),
+                footer: h(
+                  'div',
+                  { style: { display: 'flex', justifyContent: 'flex-end', gap: '8px' } },
+                  h(Button, { variant: 'outline', onClick: () => setLargeOpen(false) }, '关闭'),
+                  h(Button, { variant: 'primary', onClick: () => setLargeOpen(false) }, '完成'),
+                ),
+              },
+              h(
+                'div',
+                null,
+                Array.from({ length: 40 }, (_, i) =>
+                  h('div', { key: i, style: { padding: '10px 0', borderBottom: '1px solid var(--dshpc-border-faint)', fontSize: '13px' } }, `列表项 ${i + 1}：这是一段可滚动的内容示例`),
+                ),
+              ),
+            )
           : null,
       ),
     ),

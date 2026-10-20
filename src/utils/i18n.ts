@@ -30,6 +30,9 @@ export type UtilMessageKey =
   | 'emptyText'
   | 'errorTitle'
   | 'errorRetry'
+  | 'confirm'
+  | 'cancel'
+  | 'dialogOk'
   | 'pickerPlaceholder'
   | 'pickerClear'
   | 'pickerEmpty'
@@ -80,6 +83,9 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     emptyText: '暂无数据',
     errorTitle: '出错了',
     errorRetry: '重试',
+    confirm: '确定',
+    cancel: '取消',
+    dialogOk: '知道了',
     pickerPlaceholder: '请选择',
     pickerClear: '不选',
     pickerEmpty: '暂无可选',
@@ -126,6 +132,9 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     emptyText: 'No data',
     errorTitle: 'Something went wrong',
     errorRetry: 'Retry',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    dialogOk: 'OK',
     pickerPlaceholder: 'Select…',
     pickerClear: 'None',
     pickerEmpty: 'No options',

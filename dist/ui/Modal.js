@@ -21,6 +21,15 @@ export function Modal(props) {
         document.addEventListener('keydown', onKey);
         return () => document.removeEventListener('keydown', onKey);
     }, [escClose, props.onClose]);
+    const sizeMax = { sm: '420px', md: 'min(960px,92vw)', lg: 'min(1200px,94vw)' };
+    const effectiveMax = props.maxWidth ?? sizeMax[props.size ?? 'md'];
+    const showClose = props.closable !== false && props.onClose !== undefined;
+    const showHeader = props.hideHeader !== true &&
+        (props.icon !== undefined ||
+            props.title !== undefined ||
+            props.headerExtra !== undefined ||
+            props.headerActions !== undefined ||
+            showClose);
     return h('div', {
         className: 'dshpc-modal-mask',
         onClick: () => {
@@ -28,18 +37,22 @@ export function Modal(props) {
                 props.onClose?.();
         },
     }, h('div', {
-        className: 'dshpc-modal',
-        style: props.maxWidth === undefined ? undefined : { maxWidth: props.maxWidth },
+        className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}`,
+        style: { maxWidth: effectiveMax },
         onClick: (e) => e.stopPropagation(),
-    }, props.hideHeader === true || (props.title === undefined && props.onClose === undefined)
-        ? null
-        : h('div', { className: 'dshpc-modal__head' }, h('div', { className: 'dshpc-modal__title' }, props.title ?? ''), props.onClose === undefined
+    }, showHeader
+        ? h('div', { className: 'dshpc-modal__head' }, h('div', { className: 'dshpc-modal__heading' }, props.icon === undefined ? null : h('span', { className: 'dshpc-modal__lead' }, props.icon), h('div', { className: 'dshpc-modal__title' }, props.title ?? ''), props.headerExtra === undefined
             ? null
-            : h('button', {
+            : h('div', { className: 'dshpc-modal__extra' }, props.headerExtra)), h('div', { className: 'dshpc-modal__spacer' }), props.headerActions === undefined
+            ? null
+            : h('div', { className: 'dshpc-modal__actions' }, props.headerActions), showClose
+            ? h('button', {
                 type: 'button',
                 className: 'dshpc-modal__close',
                 'aria-label': tt('modalClose'),
                 onClick: () => props.onClose?.(),
-            }, '✕')), h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dshpc-modal__foot' }, props.footer)));
+            }, '✕')
+            : null)
+        : null, h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dshpc-modal__foot' }, props.footer)));
 }
 //# sourceMappingURL=Modal.js.map

@@ -59,7 +59,7 @@ function CardShell(
     h(
       'div',
       { className: 'dshpc-card__head' },
-      // 色条是头部第一个子元素：strip 外观 = 绝对定位 5px 通高贴左缘；bordered 外观 = 行内 6px 圆角短条（高度跟随内容，最小一行）。
+      // 色条是头部第一个子元素：strip 外观 = 绝对定位 4px 通高贴左缘；bordered 外观 = 行内 6px 圆角短条（高度跟随内容，最小一行，左移 3px）。
       h('span', { className: 'dshpc-card__bar', 'aria-hidden': true }),
       h('div', { className: 'dshpc-card__main' }, props.children ?? null),
       props.action === undefined && props.onToggle === undefined
@@ -90,7 +90,7 @@ function CardShell(
 }
 
 /**
- * 卡片（框式）：surface 底 + 1px 边框 + 圆角，左缘行内 6×36 圆角短条。
+ * 卡片（框式）：surface 底 + 1px 边框 + 圆角，左缘行内 6px 圆角短条（高度随内容）。
  * 头部整体垂直居中；悬停浮出的按钮、一行两行由调用方在框内自定。
  *
  * ```tsx
@@ -105,7 +105,7 @@ export function Card(props: CardSharedProps): ReturnType<typeof h> {
 }
 
 /**
- * 条带卡片（浅底式）：同色系浅底 + 1px 不可见占位边框 + 方角 + 左缘 5px 通高方角色条（贴左缘）。
+ * 条带卡片（浅底式）：同色系浅底 + 1px 不可见占位边框 + 方角 + 左缘 4px 通高方角色条（贴左缘）。
  * 与 `Card` 同一份 props，头部同样整体垂直居中。
  *
  * ```tsx

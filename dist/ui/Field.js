@@ -14,7 +14,7 @@ import { IconButton } from './Button.js';
 function sizeClass(size) {
     return size === 'lg' ? '--lg' : size === 'md' ? '--md' : '--sm';
 }
-/** 文本输入。 */
+/** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export function Input(props) {
     ensureControls();
     const { value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props;

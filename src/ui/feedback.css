@@ -50,3 +50,20 @@
 .dshpc-error__retry{
   margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;
 }
+/* 原生弹窗演示：经宿主 Modal 的 contentClassName 注入，证明宿主内容区尺寸可经类名自定义。 */
+.dshpc-native-demo-content{max-width:520px}
+/* Modal 头部四槽：左图标 / 标题组 / 弹性间隔 / 右侧动作区 + 关闭钮。 */
+.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
+.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}
+.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}
+.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}
+/* 头部信号图标（AlertModal 按 severity 注入）：自含配色，不依赖宿主 token。 */
+.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}
+.dshpc-alert-sev--info{background:#2563eb}
+.dshpc-alert-sev--success{background:#16a34a}
+.dshpc-alert-sev--warning{background:#d97706}
+.dshpc-alert-sev--error{background:#dc2626}
+/* 尺寸档（maxWidth 仍以 inline style 为准，这里给档位级额外样式钩子）。 */
+.dshpc-modal--sm{}
+.dshpc-modal--lg{}

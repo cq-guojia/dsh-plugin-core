@@ -250,8 +250,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     demoCardTitle: 'Card（边框 + 圆角 + 短色条）',
     demoStripTitle: 'StripCard（浅底 + 通高色条）',
-    cardHint: 'surface 底 + 1px 边框 + 圆角 + 行内 6×36 圆角短条；头部整体垂直居中——action 里裸放一个元素即居中，悬停浮出的按钮、一行两行都由调用方在框内自定；真实插件形态：标题行 + 右侧元信息 + chips 行；accent 五档见下方速览',
-    stripHint: '同色系浅底 + 左缘 5px 通高方角色条（照兄弟项目执行记录块）；同样整体垂直居中——流水账排版：标题 + 元信息行 + 右侧时间/操作',
+    cardHint: 'surface 底 + 1px 边框 + 圆角 + 行内 6px 圆角短条（高度随内容）；头部整体垂直居中——action 里裸放一个元素即居中，悬停浮出的按钮、一行两行都由调用方在框内自定；真实插件形态：标题行 + 右侧元信息 + chips 行；accent 五档见下方速览',
+    stripHint: '同色系浅底 + 左缘 4px 通高方角色条（照兄弟项目执行记录块）；同样整体垂直居中——流水账排版：标题 + 元信息行 + 右侧时间/操作',
     sectionHeadTitle: 'SectionHead 分区标题',
     chipHint: 'chip 两轴可选：tone 语义色（neutral 灰面 / business / success / warning / danger 实心信号面）、size（sm / md）；宽度按文字撑开、不换行；文案随语言切换（中英示例）；最后一颗长文字若被压成 28px 竖排就是又混进了图标按钮的定宽规则',
     chipOverdue: '逾期',
@@ -416,8 +416,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     demoCardTitle: 'Card (frame + radius + short rail)',
     demoStripTitle: 'StripCard (soft tint + full-height bar)',
-    cardHint: 'Surface + 1px border + radius + inline 6×36 rounded rail; the head is vertically centered as a whole — drop a bare element into action and it centers itself; hover-floating buttons, one or two rows are all up to the caller inside the frame; real-plugin shape: title row + right-side meta + chips row; five accent tiers below',
-    stripHint: 'Same-hue soft tint + 5px full-height square accent bar at the left edge (mirrors the sibling record block); equally centered as a whole — record-stream layout: title + meta row + right-side time/actions',
+    cardHint: 'Surface + 1px border + radius + inline 6px rounded rail (height follows content); the head is vertically centered as a whole — drop a bare element into action and it centers itself; hover-floating buttons, one or two rows are all up to the caller inside the frame; real-plugin shape: title row + right-side meta + chips row; five accent tiers below',
+    stripHint: 'Same-hue soft tint + 4px full-height square accent bar at the left edge (mirrors the sibling record block); equally centered as a whole — record-stream layout: title + meta row + right-side time/actions',
     sectionHeadTitle: 'SectionHead',
     chipHint: 'Two optional axes: tone (neutral grey / business / success / warning / danger solid signal) and size (sm / md); width hugs the text, no wrap; labels follow the locale (zh & en examples); if the long-text chip at the end is squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in',
     chipOverdue: 'Overdue',

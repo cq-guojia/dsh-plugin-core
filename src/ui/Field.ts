@@ -50,7 +50,7 @@ export interface InputProps {
   onBlur?: () => void
 }
 
-/** 文本输入。 */
+/** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export function Input(props: InputProps): ReturnType<typeof h> {
   ensureControls()
   const { value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props

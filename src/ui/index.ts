@@ -20,7 +20,23 @@ export {
   type FilePickerProps,
   type WorkspacePickerProps,
 } from './WorkspacePicker.js'
-export { Modal, type ModalProps } from './Modal.js'
+export { Modal, type ModalProps, type ModalSize } from './Modal.js'
+export {
+  AlertModal,
+  type AlertModalProps,
+  type AlertSeverity,
+} from './AlertModal.js'
+export {
+  ConfirmModal,
+  type ConfirmModalProps,
+  type ConfirmTone,
+} from './ConfirmModal.js'
+export {
+  alertModal,
+  confirmModal,
+  type AlertOptions,
+  type ConfirmOptions,
+} from './modal-host.js'
 export {
   CARD_ACCENTS,
   Card,

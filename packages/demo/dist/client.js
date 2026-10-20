@@ -2,9 +2,11 @@ window.__ModuleLoader__.load({ id: "dsh-plugin-core-demo", factory: (require) =>
 var module = { exports: {} }; var exports = module.exports;
 
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -18,6 +20,15 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // packages/demo/src/client/index.tsx
@@ -26,7 +37,7 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react29 = require("react");
+var import_react32 = require("react");
 var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
@@ -44,11 +55,11 @@ function createStyleKit(options) {
   let tag = null;
   let dirty = true;
   const composeCss = () => {
-    const entries = [...domains.entries()];
-    entries.sort((a, b) => a[0] === TOKENS_DOMAIN ? -1 : b[0] === TOKENS_DOMAIN ? 1 : 0);
-    return entries.map(([, css]) => css).join("\n");
+    const entries2 = [...domains.entries()];
+    entries2.sort((a, b) => a[0] === TOKENS_DOMAIN ? -1 : b[0] === TOKENS_DOMAIN ? 1 : 0);
+    return entries2.map(([, css]) => css).join("\n");
   };
-  const flush = () => {
+  const flush2 = () => {
     if (tag === null)
       return;
     tag.textContent = composeCss();
@@ -73,7 +84,7 @@ function createStyleKit(options) {
       dirty = true;
     }
     if (dirty)
-      flush();
+      flush2();
   };
   const registerStyle = (domain, css) => {
     if (domains.get(domain) === css)
@@ -81,7 +92,7 @@ function createStyleKit(options) {
     domains.set(domain, css);
     dirty = true;
     if (tag?.isConnected === true)
-      flush();
+      flush2();
   };
   const dispose = () => {
     if (tag?.isConnected === true)
@@ -111,7 +122,7 @@ var SEGMENTED_CSS = "\n/* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6 P2 \u2500\u2500\
 var BUTTON_CSS = '\n/* \u2500\u2500 \u6309\u94AE / \u56FE\u6807\u94AE P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E0E Segmented \u540C\u4E00\u6761\u9AD8\u5EA6\u7EAA\u5F8B\uFF1A--dshpc-control-h-sm(24) / -md(28) / -lg(32)\uFF0C\n   \u6709\u8FB9\u6846\u7684 variant \u7528 1px \u771F\u8FB9\u6846 + \u5185\u90E8 padding \u8865\u56DE\uFF0C**\u6709\u8FB9 / \u65E0\u8FB9\u540C\u9AD8**\u3002\n\n   \u4E09\u6761\u53D7\u63A7\u8F74\uFF082026-10-19 \u91CD\u5199\uFF0C\u5BF9\u9F50\u4E3B\u6D41 UI \u6846\u67B6\u7684\u5206\u7C7B\u53E3\u5F84\uFF09\uFF1A\n     \xB7 variant \u2014\u2014 \u5916\u89C2\u6863 = \u5F62\u6001 + \u8BED\u4E49\u8272\uFF0C\u5171 10 \u6863\uFF1A\n         primary / secondary / outline / ghost / danger / success / warning / info /\n         danger-outline\uFF08\u7EA2\u5B57\u63CF\u8FB9\uFF09/ link\uFF08\u884C\u5185\u94FE\u63A5\uFF09\n     \xB7 size \u2014\u2014 sm / md / lg\n     \xB7 block \u2014\u2014 \u6491\u6EE1\u7236\u5BBD\n   \u6BCF\u4E00\u6863**\u53EA\u586B 5 \u4E2A\u5C40\u90E8\u53D8\u91CF**\uFF08--btn-bg / -fg / -border / -bg-hover / -bg-active\uFF09\uFF0C\n   \u7ED3\u6784\u4E0E\u4EA4\u4E92\u53EA\u6709\u4E0A\u9762\u8FD9\u4E00\u4EFD\uFF1B\u4EFB\u4F55\u6863\u4F4D\u90FD\u4E0D\u8BB8\u518D\u5199\u4E00\u904D display/height/padding\u3002\n   \u81EA\u5B9A\u4E49\u989C\u8272\uFF08Button \u7684 color \u53C2\u6570\uFF09\u540C\u6837\u53EA\u8986\u76D6\u8FD9 5 \u4E2A\u53D8\u91CF\uFF08token \u8986\u76D6\uFF0C\u4E0D\u662F\u65B0\u76AE\u80A4\uFF09\u3002\n\n   \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C\n   \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */\n.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;\n  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);\n  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}\n.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */\n.dshpc-btn--block{display:flex;width:100%;}\n/* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A\n   \u5185\u5BB9\u7EC4 [\u56FE\u6807 + \u95F4\u8DDD + \u6587\u5B57] \u6574\u4F53\u5728\u76D2\u5185\u5C45\u4E2D\u65F6\uFF0C**\u6587\u5B57**\u7684\u4E2D\u5FC3\u4F1A\u88AB\u56FE\u6807\u63A8\u53F3\u534A\u683C\u3002\n   \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002\n   \u56FE\u6807\u5BBD\u6309 1.2em \u4F30\uFF08\u5B98\u65B9\u56FE\u6807 14/16px vs \u5B57\u53F7 12/13px\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */\n.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}\n.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}\n.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;}\n/* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u4E2A\u540C\u8272\u5C0F\u5708\u3002\n   \u26A0\uFE0F 2026-10-20 \u6539\u753B\u6CD5\uFF1A\u539F\u6765\u662F border:1.5px \u52A0 border-radius:999px \u753B\u7684\u73AF \u2014\u2014 \u771F\u673A\u5B9E\u6D4B computed\n   radius \u5C31\u662F 999px\u3001\u5BBD\u9AD8\u90FD\u662F 12px\uFF08\u6CA1\u88AB\u4EFB\u4F55\u6837\u5F0F\u8986\u76D6\uFF09\uFF0C\u770B\u7740\u5374"\u50CF\u5706\u89D2\u65B9"\uFF0C\u539F\u56E0\u662F**\u6B21\u50CF\u7D20\u8FB9\u6846\n   \uFF081.5px\uFF09\u5728 12px \u8FD9\u4E48\u5C0F\u7684\u5706\u4E0A\u88AB\u6297\u952F\u9F7F\u63D2\u503C\u62C9\u6BDB**\u3002\u6539\u7528 SVG \u77E2\u91CF\u5F27\uFF1A\u4EFB\u610F DPR \u4E0B\u90FD\u662F\u771F\u5706\u3002 */\n.dshpc-btn__spinner{display:block;flex:none;width:12px;height:12px;\n  animation:dshpc-btn-spin .7s linear infinite;}\n/* shortcut: 12px \u662F\u56FA\u5B9A\u503C\uFF0C\u4E0D\u968F\u6309\u94AE\u5B57\u53F7\u7F29\u653E\uFF1B\u8981\u66F4\u5927\u5C31\u6539\u8FD9\u4E00\u5904\u3002 */\n@keyframes dshpc-btn-spin{to{transform:rotate(360deg)}}\n\n/* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */\n.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}\n.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}\n.dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-btn:disabled{cursor:default;opacity:.5;}\n\n.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);\n  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}\n/* secondary\uFF1A\u4E2D\u6027\u5B9E\u5FC3\uFF08\u7070\u9762\uFF09\uFF0C\u7528\u4E8E\u300C\u53D6\u6D88 / \u6B21\u8981\u300D\u8FD9\u7C7B\u4E0E\u4E3B\u64CD\u4F5C\u5E76\u6392\u7684\u6309\u94AE */\n.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}\n.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}\n.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);\n  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}\n.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}\n/* danger-outline\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u4FEE\u9970\u7C7B danger-ink \u4FDD\u7559\u4E3A\u522B\u540D\uFF08\u6D88\u8D39\u65B9\u53EF\u80FD\u8FD8\u5728\u6302\uFF09\uFF0C\u4E24\u8005\u540C\u4E00\u5957\u76AE\u80A4\u3002 */\n.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);\n  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}\n/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF */\n.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);\n  --btn-bg-hover:transparent;--btn-bg-active:transparent;\n  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}\n.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}\n\n/* \u56FE\u6807\u94AE\uFF1A\u7EAF\u56FE\u6807\uFF0C\u65B9\u5F62\uFF1B\u5C3A\u5BF8\u6863\u7684\u5BBD\u9AD8\u4E0E\u540C\u6863\u6587\u5B57\u6309\u94AE\u7B49\u9AD8 */\n.dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;\n  border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);\n  font-family:inherit;cursor:pointer;flex:none;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}\n.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--plain{color:var(--dshpc-fg-2);}\n.dshpc-iconbtn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border);color:var(--dshpc-fg-2);}\n.dshpc-iconbtn--danger{color:var(--dshpc-danger);}\n.dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}\n.dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}\n.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}\n\n/* \u2500\u2500 \u884C\u5F0F\u6587\u4EF6\u6309\u94AE\uFF08\u56FE\u6807 + \u6587\u4EF6\u540D\uFF09P2\uFF1A**\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7528\u9014\uFF1A\u300C\u4EA7\u51FA\u7269 / \u9644\u4EF6\u300D\u90A3\u79CD**\u4E00\u884C\u4E00\u4E2A\u6587\u4EF6**\u7684\u6E05\u5355\u9879\uFF08\u57FA\u7840\u4FE1\u606F\u53F3\u680F\u4EA7\u51FA\u7269\u6E05\u5355\u3001\u9644\u4EF6\u533A\u3001\n   \u6267\u884C\u8BB0\u5F55\u9875\u7684\u5C55\u5F00\u533A\uFF09\u3002\u5E73\u65F6\u900F\u660E\u3001**\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u51FA\u6D45\u5E95**\uFF08\u6CBF\u7528\u7528\u6237 2026-10-03 \u5B9A\u7684\u89C2\u611F\uFF09\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4FEE\u9970\u7C7B\uFF1A\n     --block   \u6491\u6EE1\u7236\u5BBD\uFF08\u6E05\u5355\u91CC\u4E00\u9879\u4E00\u884C\uFF09\n     --inline  \u5185\u5BB9\u5BBD\uFF08\u8DDF\u5728\u6587\u5B57\u540E\u5934\uFF0C\u5982\u9644\u4EF6\u884C\uFF09\n   \u6536\u7F16\u539F\u56E0\uFF1A\u8FD9\u4EFD\u76AE\u80A4\u6B64\u524D\u53EA\u5199\u5728 task-list.tsx \u7684 TASK_LIST_CSS \u91CC\uFF08\u65E7\u540D .dshpc-info-out\uFF09\uFF0C\n   \u6267\u884C\u8BB0\u5F55\u9875\u5C55\u5F00\u533A\u8981\u7528\u540C\u4E00\u79CD\u89C2\u611F \u21D2 \u4E0A\u63D0\u57FA\u7840\u5C42\uFF0C\u907F\u514D\u518D\u51FA\u73B0\u300C\u5404\u5199\u4E00\u4EFD\u5916\u89C2\u300D\uFF08\u540C\u540D\u4E0D\u540C\u76AE\u7684\u5751\u521A\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-filechip{appearance:none;-webkit-appearance:none;border:0;border-radius:var(--dshpc-radius-xs);\n  background:transparent;color:var(--dshpc-fg);font:inherit;text-align:left;cursor:pointer;min-width:0;\n  transition:background-color var(--dshpc-dur) var(--dshpc-ease);}\n.dshpc-filechip:hover:not(:disabled){background:var(--dshpc-chip-bg);}\n.dshpc-filechip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-filechip:disabled{cursor:default;background:transparent;color:var(--dshpc-fg-3);}\n.dshpc-filechip--block{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;\n  padding:4px 6px;font-size:var(--dshpc-font-xs);}\n.dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}\n\n@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}\n';
 
 // dist/ui/controls/field-css.generated.js
-var FIELD_CSS = "\n/* \u2500\u2500 \u8F93\u5165\u7C7B P3 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n.dshpc-input{box-sizing:border-box;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;outline:none;\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-input--sm{height:var(--dshpc-control-h-sm);padding:0 8px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}\n.dshpc-input--md{height:var(--dshpc-control-h-md);padding:0 10px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-input--lg{height:var(--dshpc-control-h-lg);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-input::placeholder{color:var(--dshpc-fg-dim);}\n.dshpc-input:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n.dshpc-input--error{border-color:var(--dshpc-danger);}\n.dshpc-input:disabled{cursor:default;opacity:.5;}\n\n.dshpc-pfx{display:inline-flex;align-items:center;box-sizing:border-box;overflow:hidden;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}\n.dshpc-pfx--sm{height:var(--dshpc-control-h-sm);}\n.dshpc-pfx--md{height:var(--dshpc-control-h-md);}\n.dshpc-pfx--lg{height:var(--dshpc-control-h-lg);}\n/* md / lg \u6863\u5B57\u53F7\u8DDF\u6863\u8D70\uFF08\u4E0E\u540C\u6863\u4E0B\u62C9\u540C\u5B57\u53F7\uFF09\uFF1A\u6B64\u524D\u5199\u6B7B sm(12px)\uFF0C\u540C\u6392\u4E0B\u62C9\u662F 13px \u21D2 \u663E\u5F97\u300Cinput \u5B57\u5C0F\u300D\u3002 */\n.dshpc-pfx--md .dshpc-pfx__label,.dshpc-pfx--lg .dshpc-pfx__label{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-pfx--md .dshpc-pfx__input,.dshpc-pfx--lg .dshpc-pfx__input{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-pfx--error{border-color:var(--dshpc-danger);}\n.dshpc-pfx:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n.dshpc-pfx__label{padding:0 8px;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);white-space:nowrap;border-right:1px solid var(--dshpc-border);}\n.dshpc-pfx__input{flex:1 1 auto;min-width:0;height:100%;padding:0 8px;border:0;background:transparent;color:var(--dshpc-fg);\n  font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);outline:none;}\n.dshpc-pfx__input::placeholder{color:var(--dshpc-fg-dim);}\n\n.dshpc-num{display:inline-flex;align-items:center;justify-content:space-between;box-sizing:border-box;overflow:hidden;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}\n/* \u4E2D\u6BB5\uFF1A\u6570\u5B57 + \u540E\u7F00\u6210\u7EC4\u5C45\u4E2D\uFF1B\u5BB9\u5668\u88AB\u6D88\u8D39\u7AEF\u62C9\u5BBD\u65F6\u5403\u6389\u5168\u90E8\u4F59\u91CF\uFF0C\u4E24\u7AEF \u2212 / + \u56E0\u6B64\u9489\u6B7B\u5728\u5DE6\u53F3\u8FB9\u7F18\u3002 */\n.dshpc-num__mid{display:flex;align-items:center;justify-content:center;flex:1 1 auto;min-width:0;}\n.dshpc-num--sm{height:var(--dshpc-control-h-sm);}\n.dshpc-num--md{height:var(--dshpc-control-h-md);}\n.dshpc-num--lg{height:var(--dshpc-control-h-lg);}\n.dshpc-num--md .dshpc-num__input,.dshpc-num--lg .dshpc-num__input{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-num--md .dshpc-num__suffix,.dshpc-num--lg .dshpc-num__suffix{font-size:var(--dshpc-font-md);}\n.dshpc-num--disabled{opacity:.5;}\n.dshpc-num__input{width:36px;height:100%;padding:0 2px;border:0;background:transparent;color:var(--dshpc-fg);\n  font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);text-align:center;outline:none;}\n.dshpc-num__suffix{padding:0 6px;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);white-space:nowrap;}\n.dshpc-num .dshpc-iconbtn{border-radius:0;color:var(--dshpc-fg-2);flex:none;}\n\n/* \u5B98\u65B9 Switch \u5305\u88C5\u7EDF\u4E00\uFF1A\u9009\u4E2D = success \u7EFF\u3002\n   \uFF08\u5408\u5E76\u539F\u5148 task-editor-css / task-list \u4E24\u5904\u5C31\u5730\u8986\u76D6\uFF1B\u9009\u62E9\u5668\u5E26\u5305\u88C5\u7C7B + role\uFF0C\u7279\u5F02\u6027\u9AD8\u4E8E\u5B98\u65B9\u3002\uFF09 */\n.dshpc-switch button[role='switch'][aria-checked='true']{background:var(--dshpc-success);}\n\n/* \u591A\u884C\u6587\u672C\u8F93\u5165\uFF08\u63D0\u793A\u8BCD\u7B49\uFF0CP3\uFF09\uFF1A**\u8FB9\u6846 / \u5706\u89D2 / \u5E95 / \u7126\u70B9\u6001\u4E0E Input \u540C\u4E00\u5957\u53E3\u5F84**\uFF08\u7528\u6237 2026-10-20\uFF1A\n   \u300C\u591A\u884C\u8F93\u5165\u5E94\u8BE5\u548C input \u7684\u8FB9\u513F\u662F\u4E00\u4E2A\u9053\u7406\uFF0C\u5305\u62EC\u5706\u89D2\u5728\u5185\uFF0C\u90FD\u662F\u4E00\u4E2A\u4E1C\u897F\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u610F\u56FE\u300C\u5361\u5185\u65E0\u8FB9\u6846\u3001\u89C6\u89C9\u91CD\u5FC3\u5728\u6574\u5F20\u5361\u4E0A\u300D\u5DF2\u4F5C\u5E9F \u2014\u2014 \u73B0\u5728\u5B83\u5C31\u662F\u4E00\u53EA\u5E26\u6846\u7684\u591A\u884C\u8F93\u5165\u6846\u3002\n   \uFF08\u4ECE task-editor-css \u7684 .dshpc-ed-prompt \u4E0A\u63D0\u800C\u6765\uFF1B\u4E1A\u52A1\u6587\u4EF6\u4E0D\u518D\u81EA\u5199 textarea \u76AE\u80A4\u3002\uFF09 */\n.dshpc-textarea{display:block;width:100%;box-sizing:border-box;min-height:132px;padding:8px 12px;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);outline:none;\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;font-size:var(--dshpc-font-lg);line-height:1.6;resize:vertical;\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-textarea::placeholder{color:var(--dshpc-fg-dim);}\n.dshpc-textarea:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n/* \u6821\u9A8C\u4E0D\u901A\u8FC7\uFF1A\u4E0E Input \u4E00\u81F4\uFF0C\u8D70\u8FB9\u6846\u63CF\u7EA2\uFF08\u65E7\u7248\u662F box-shadow \u63CF\u7EA2\u76D2\uFF0C\u4E0E Input \u4E0D\u540C\u53E3\u5F84\uFF09 */\n.dshpc-textarea--error{border-color:var(--dshpc-danger);}\n.dshpc-textarea:disabled{cursor:default;opacity:.5;}\n@media (prefers-reduced-motion: reduce){.dshpc-textarea{transition:none;}}\n\n/* \u62D6\u62FD\u5206\u9694\u6761\uFF08\u7F16\u8F91\u5206\u680F / \u9884\u89C8 dock \u5171\u7528\uFF0CU20 #3\uFF09\uFF1A6px \u547D\u4E2D\u533A\uFF0Ccol-resize\uFF0C\u4E0D\u753B\u7EBF\uFF0Chover/\u6309\u4E0B\u6D6E\u51FA\u6D45\u5E26\u3002\n   \u5177\u4F53 z-index \u7531 .dshpc-ed-resizer / .dshpc-sv-resizer \u5404\u81EA\u8865\u3002 */\n.dshpc-resizer{position:absolute;top:0;bottom:0;left:0;width:6px;cursor:col-resize;background:0 0;touch-action:none;user-select:none;}\n.dshpc-resizer:hover,.dshpc-resizer:active{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n\n@media (prefers-reduced-motion: reduce){.dshpc-input,.dshpc-pfx{transition:none;}}\n";
+var FIELD_CSS = "\n/* \u2500\u2500 \u8F93\u5165\u7C7B P3 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n/* \u9ED8\u8BA4\u94FA\u6EE1\u5BB9\u5668\uFF08width:100%\uFF0C\u4E0E .dshpc-textarea \u540C\u53E3\u5F84\uFF09\uFF1Ainput \u539F\u751F\u6309 size \u5C5E\u6027\u53D6\u5185\u5728\u5BBD\uFF0C\n   \u4E0D\u94FA\u6EE1 \u21D2 \u8C03\u7528\u65B9\u5957\u5B9A\u5BBD\u58F3\u65F6\u4F1A\u300C\u53F3\u8FB9\u7A7A\u4E00\u622A\u3001\u770B\u7740\u6CA1\u8D34\u53F3\u300D\uFF082026-10-20 \u7528\u6237\u6293\u7684 bug\uFF09\u3002\n   \u8981\u5B9A\u5BBD\u7531\u8C03\u7528\u65B9\u5728\u5916\u9762\u5957\u58F3\u63A7\u5236\uFF08\u5982 192px \u641C\u7D22\u69FD\uFF09\u3002 */\n.dshpc-input{display:block;width:100%;box-sizing:border-box;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;outline:none;\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-input--sm{height:var(--dshpc-control-h-sm);padding:0 8px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}\n.dshpc-input--md{height:var(--dshpc-control-h-md);padding:0 10px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-input--lg{height:var(--dshpc-control-h-lg);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-input::placeholder{color:var(--dshpc-fg-dim);}\n.dshpc-input:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n.dshpc-input--error{border-color:var(--dshpc-danger);}\n.dshpc-input:disabled{cursor:default;opacity:.5;}\n\n.dshpc-pfx{display:inline-flex;align-items:center;box-sizing:border-box;overflow:hidden;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}\n.dshpc-pfx--sm{height:var(--dshpc-control-h-sm);}\n.dshpc-pfx--md{height:var(--dshpc-control-h-md);}\n.dshpc-pfx--lg{height:var(--dshpc-control-h-lg);}\n/* md / lg \u6863\u5B57\u53F7\u8DDF\u6863\u8D70\uFF08\u4E0E\u540C\u6863\u4E0B\u62C9\u540C\u5B57\u53F7\uFF09\uFF1A\u6B64\u524D\u5199\u6B7B sm(12px)\uFF0C\u540C\u6392\u4E0B\u62C9\u662F 13px \u21D2 \u663E\u5F97\u300Cinput \u5B57\u5C0F\u300D\u3002 */\n.dshpc-pfx--md .dshpc-pfx__label,.dshpc-pfx--lg .dshpc-pfx__label{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-pfx--md .dshpc-pfx__input,.dshpc-pfx--lg .dshpc-pfx__input{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-pfx--error{border-color:var(--dshpc-danger);}\n.dshpc-pfx:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n.dshpc-pfx__label{padding:0 8px;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);white-space:nowrap;border-right:1px solid var(--dshpc-border);}\n.dshpc-pfx__input{flex:1 1 auto;min-width:0;height:100%;padding:0 8px;border:0;background:transparent;color:var(--dshpc-fg);\n  font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);outline:none;}\n.dshpc-pfx__input::placeholder{color:var(--dshpc-fg-dim);}\n\n.dshpc-num{display:inline-flex;align-items:center;justify-content:space-between;box-sizing:border-box;overflow:hidden;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}\n/* \u4E2D\u6BB5\uFF1A\u6570\u5B57 + \u540E\u7F00\u6210\u7EC4\u5C45\u4E2D\uFF1B\u5BB9\u5668\u88AB\u6D88\u8D39\u7AEF\u62C9\u5BBD\u65F6\u5403\u6389\u5168\u90E8\u4F59\u91CF\uFF0C\u4E24\u7AEF \u2212 / + \u56E0\u6B64\u9489\u6B7B\u5728\u5DE6\u53F3\u8FB9\u7F18\u3002 */\n.dshpc-num__mid{display:flex;align-items:center;justify-content:center;flex:1 1 auto;min-width:0;}\n.dshpc-num--sm{height:var(--dshpc-control-h-sm);}\n.dshpc-num--md{height:var(--dshpc-control-h-md);}\n.dshpc-num--lg{height:var(--dshpc-control-h-lg);}\n.dshpc-num--md .dshpc-num__input,.dshpc-num--lg .dshpc-num__input{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-num--md .dshpc-num__suffix,.dshpc-num--lg .dshpc-num__suffix{font-size:var(--dshpc-font-md);}\n.dshpc-num--disabled{opacity:.5;}\n.dshpc-num__input{width:36px;height:100%;padding:0 2px;border:0;background:transparent;color:var(--dshpc-fg);\n  font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);text-align:center;outline:none;}\n.dshpc-num__suffix{padding:0 6px;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);white-space:nowrap;}\n.dshpc-num .dshpc-iconbtn{border-radius:0;color:var(--dshpc-fg-2);flex:none;}\n\n/* \u5B98\u65B9 Switch \u5305\u88C5\u7EDF\u4E00\uFF1A\u9009\u4E2D = success \u7EFF\u3002\n   \uFF08\u5408\u5E76\u539F\u5148 task-editor-css / task-list \u4E24\u5904\u5C31\u5730\u8986\u76D6\uFF1B\u9009\u62E9\u5668\u5E26\u5305\u88C5\u7C7B + role\uFF0C\u7279\u5F02\u6027\u9AD8\u4E8E\u5B98\u65B9\u3002\uFF09 */\n.dshpc-switch button[role='switch'][aria-checked='true']{background:var(--dshpc-success);}\n\n/* \u591A\u884C\u6587\u672C\u8F93\u5165\uFF08\u63D0\u793A\u8BCD\u7B49\uFF0CP3\uFF09\uFF1A**\u8FB9\u6846 / \u5706\u89D2 / \u5E95 / \u7126\u70B9\u6001\u4E0E Input \u540C\u4E00\u5957\u53E3\u5F84**\uFF08\u7528\u6237 2026-10-20\uFF1A\n   \u300C\u591A\u884C\u8F93\u5165\u5E94\u8BE5\u548C input \u7684\u8FB9\u513F\u662F\u4E00\u4E2A\u9053\u7406\uFF0C\u5305\u62EC\u5706\u89D2\u5728\u5185\uFF0C\u90FD\u662F\u4E00\u4E2A\u4E1C\u897F\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u610F\u56FE\u300C\u5361\u5185\u65E0\u8FB9\u6846\u3001\u89C6\u89C9\u91CD\u5FC3\u5728\u6574\u5F20\u5361\u4E0A\u300D\u5DF2\u4F5C\u5E9F \u2014\u2014 \u73B0\u5728\u5B83\u5C31\u662F\u4E00\u53EA\u5E26\u6846\u7684\u591A\u884C\u8F93\u5165\u6846\u3002\n   \uFF08\u4ECE task-editor-css \u7684 .dshpc-ed-prompt \u4E0A\u63D0\u800C\u6765\uFF1B\u4E1A\u52A1\u6587\u4EF6\u4E0D\u518D\u81EA\u5199 textarea \u76AE\u80A4\u3002\uFF09 */\n.dshpc-textarea{display:block;width:100%;box-sizing:border-box;min-height:132px;padding:8px 12px;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);outline:none;\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;font-size:var(--dshpc-font-lg);line-height:1.6;resize:vertical;\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-textarea::placeholder{color:var(--dshpc-fg-dim);}\n.dshpc-textarea:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n/* \u6821\u9A8C\u4E0D\u901A\u8FC7\uFF1A\u4E0E Input \u4E00\u81F4\uFF0C\u8D70\u8FB9\u6846\u63CF\u7EA2\uFF08\u65E7\u7248\u662F box-shadow \u63CF\u7EA2\u76D2\uFF0C\u4E0E Input \u4E0D\u540C\u53E3\u5F84\uFF09 */\n.dshpc-textarea--error{border-color:var(--dshpc-danger);}\n.dshpc-textarea:disabled{cursor:default;opacity:.5;}\n@media (prefers-reduced-motion: reduce){.dshpc-textarea{transition:none;}}\n\n/* \u62D6\u62FD\u5206\u9694\u6761\uFF08\u7F16\u8F91\u5206\u680F / \u9884\u89C8 dock \u5171\u7528\uFF0CU20 #3\uFF09\uFF1A6px \u547D\u4E2D\u533A\uFF0Ccol-resize\uFF0C\u4E0D\u753B\u7EBF\uFF0Chover/\u6309\u4E0B\u6D6E\u51FA\u6D45\u5E26\u3002\n   \u5177\u4F53 z-index \u7531 .dshpc-ed-resizer / .dshpc-sv-resizer \u5404\u81EA\u8865\u3002 */\n.dshpc-resizer{position:absolute;top:0;bottom:0;left:0;width:6px;cursor:col-resize;background:0 0;touch-action:none;user-select:none;}\n.dshpc-resizer:hover,.dshpc-resizer:active{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n\n@media (prefers-reduced-motion: reduce){.dshpc-input,.dshpc-pfx{transition:none;}}\n";
 
 // dist/ui/controls/loading-css.generated.js
 var LOADING_CSS = "\n/* \u8FD0\u884C\u4E2D / loading \u7684\u6D3B\u52A8\u6307\u793A\uFF1A\u4E09\u4E2A\u5C0F\u65B9\u5757\u4F9D\u6B21\u8109\u52A8\u3002 */\n@keyframes dshpc-run-block { 0%, 80%, 100% { opacity: 0.25; transform: scale(0.8) } 40% { opacity: 1; transform: scale(1) } }\n.dshpc-run-blocks { display: inline-flex; align-items: center; gap: 3px; }\n.dshpc-run-blocks > i { width: 5px; height: 5px; border-radius: 1px; background: currentColor; animation: dshpc-run-block 1.2s ease-in-out infinite; }\n.dshpc-run-blocks > i:nth-child(2) { animation-delay: 0.15s; }\n.dshpc-run-blocks > i:nth-child(3) { animation-delay: 0.3s; }\n@media (prefers-reduced-motion: reduce) { .dshpc-run-blocks > i { animation: none; opacity: 1; } }\n";
@@ -176,13 +187,13 @@ var PICKER_CSS = `
 `;
 
 // dist/ui/feedback-css.generated.js
-var FEEDBACK_CSS = "\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;\n  background:rgba(15,23,42,.45);\n}\n.dshpc-modal{\n  display:flex;flex-direction:column;max-width:min(960px,92vw);max-height:86vh;\n  background:var(--dshpc-surface-base);border:1px solid var(--dshpc-border);\n  border-radius:10px;box-shadow:0 16px 48px rgba(15,23,42,.24);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:12px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);color:var(--dshpc-fg);font-size:14px;\n}\n.dshpc-modal__title{flex:1;min-width:0}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:24px;height:24px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:12px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-modal__body{flex:1;min-height:0;overflow:auto;padding:12px 14px}\n.dshpc-modal__foot{\n  display:flex;justify-content:flex-end;gap:8px;padding:10px 14px;\n  border-top:1px solid var(--dshpc-border-faint);\n}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error{\n  padding:12px 14px;border-radius:8px;font-size:13px;\n  color:var(--dshpc-danger);background:color-mix(in srgb,var(--dshpc-danger) 10%,transparent);\n  border:1px solid color-mix(in srgb,var(--dshpc-danger) 30%,transparent);\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n";
+var FEEDBACK_CSS = "\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;\n  background:rgba(15,23,42,.45);\n}\n.dshpc-modal{\n  display:flex;flex-direction:column;max-width:min(960px,92vw);max-height:86vh;\n  background:var(--dshpc-surface-base);border:1px solid var(--dshpc-border);\n  border-radius:10px;box-shadow:0 16px 48px rgba(15,23,42,.24);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:12px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);color:var(--dshpc-fg);font-size:14px;\n}\n.dshpc-modal__title{flex:1;min-width:0}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:24px;height:24px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:12px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-modal__body{flex:1;min-height:0;overflow:auto;padding:12px 14px}\n.dshpc-modal__foot{\n  display:flex;justify-content:flex-end;gap:8px;padding:10px 14px;\n  border-top:1px solid var(--dshpc-border-faint);\n}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error{\n  padding:12px 14px;border-radius:8px;font-size:13px;\n  color:var(--dshpc-danger);background:color-mix(in srgb,var(--dshpc-danger) 10%,transparent);\n  border:1px solid color-mix(in srgb,var(--dshpc-danger) 30%,transparent);\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* Modal \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002 */\n.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C3A\u5BF8\u6863\uFF08maxWidth \u4ECD\u4EE5 inline style \u4E3A\u51C6\uFF0C\u8FD9\u91CC\u7ED9\u6863\u4F4D\u7EA7\u989D\u5916\u6837\u5F0F\u94A9\u5B50\uFF09\u3002 */\n.dshpc-modal--sm{}\n.dshpc-modal--lg{}\n";
 
 // dist/ui/card-css.generated.js
-var CARD_CSS = "\n.dshpc-card{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n\n/* \u5934\u90E8\u4E00\u884C = \u8272\u6761 + \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 5px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500 */\n.dshpc-card--strip{\n  padding:12px 12px 12px 21px;border:1px solid transparent;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 21px = 16 \u7559\u767D + 5 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002 */\n.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--card-accent)}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1Asurface \u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185\u5706\u89D2\u77ED\u6761 \u2500\u2500 */\n.dshpc-card--bordered{\n  padding:14px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  background:var(--dshpc-surface-1);\n}\n.dshpc-card--bordered .dshpc-card__head{gap:12px}\n/* \u77ED\u6761\uFF1A\u884C\u5185 flex \u9879\uFF0C**\u9AD8\u5EA6\u8DDF\u7740\u5185\u5BB9\u8D70**\uFF08stretch\uFF09\uFF0C\u6700\u5C0F\u4E00\u884C\u6587\u5B57\uFF08--dshpc-line-md\uFF09\u2014\u2014\n   \u4E00\u884C\u6587\u5B57\u65F6\u6761\u5B50\u4E0E\u6587\u5B57\u9F50\u9AD8\uFF0C\u4E0D\u4F1A\u628A\u5361\u6491\u9AD8\uFF1B\u56DB\u8FB9\u5185\u95F4\u8DDD\u4E00\u81F4\uFF08padding 14 \u5168\u5411\uFF09\u21D2 \u6761\u5B50\u8DDD\n   \u5DE6 / \u4E0A / \u4E0B\u5916\u95F4\u8DDD\u6052\u7B49\u3002 */\n.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
+var CARD_CSS = "\n.dshpc-card{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n\n/* \u5934\u90E8\u4E00\u884C = \u8272\u6761 + \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500 */\n.dshpc-card--strip{\n  padding:12px 12px 12px 20px;border:1px solid transparent;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002 */\n.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--card-accent)}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1Asurface \u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185\u5706\u89D2\u77ED\u6761 \u2500\u2500 */\n.dshpc-card--bordered{\n  /* \u5DE6\u5185\u8FB9\u8DDD 12\uFF08\u6BD4\u4E0A/\u53F3/\u4E0B 14 \u5C11 2\uFF09\uFF1A\u7AD6\u6761\u8D34\u8FD1\u8FB9\u6846\uFF1B\u5934\u90E8\u5185\u7F29 2px \u21D2 \u4E3B\u5185\u5BB9\u8DDF\u7740\u5DE6\u79FB 2px\uFF0C\n     \u7AD6\u6761\u2194\u5185\u5BB9\u7684 12px \u95F4\u8DDD\u4E0D\u53D8\u2014\u2014\u6BD4\u300C\u6761\u5B50 left:-2 \u800C\u5185\u5BB9\u4E0D\u52A8\u300D\u66F4\u6B63\u89C4\uFF08\u4E0D\u9760\u76F8\u5BF9\u5B9A\u4F4D\u786C\u8865\uFF09\u3002 */\n  padding:14px 14px 14px 12px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  background:var(--dshpc-surface-1);\n}\n.dshpc-card--bordered .dshpc-card__head{gap:12px}\n/* \u77ED\u6761\uFF1A\u884C\u5185 flex \u9879\uFF0C**\u9AD8\u5EA6\u8DDF\u7740\u5185\u5BB9\u8D70**\uFF08stretch\uFF09\uFF0C\u6700\u5C0F\u4E00\u884C\u6587\u5B57\uFF08--dshpc-line-md\uFF09\u2014\u2014\n   \u4E00\u884C\u6587\u5B57\u65F6\u6761\u5B50\u4E0E\u6587\u5B57\u9F50\u9AD8\uFF0C\u4E0D\u4F1A\u628A\u5361\u6491\u9AD8\uFF1B\u7AD6\u6761\u8DDD\u5DE6 12\uFF08= \u5DE6\u5185\u8FB9\u8DDD\uFF09\uFF0C\u8DDD\u4E0A/\u53F3/\u4E0B 14\u3002 */\n.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
 
 // dist/ui/chip-css.generated.js
-var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u8272\uFF1Aneutral \u8D70\u65E7\u7070\u9762\uFF1B\u8BED\u4E49\u6863\u6362\u5E95\u5B57\u914D\u5BF9\uFF082026-10-20 \u7528\u6237\u8981\u591A\u8272\u591A\u5C3A\u5BF8\u6807\u7B7E\uFF09\u3002 */\n.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--chip-bg);color:var(--chip-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* md \u6863\uFF1A\u5361\u7247\u5143\u4FE1\u606F\u884C\u7B49\u7A0D\u5927\u573A\u666F\uFF1Bsm \u5373\u65E7\u7248\u9ED8\u8BA4\uFF0C\u9010\u50CF\u7D20\u4E0D\u52A8\u3002 */\n.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}\n/* \u8BED\u4E49\u8272\u5B9E\u5FC3\u6863\uFF1A\u5E95 / \u5B57 / hover \u914D\u5BF9\u4E0E Button \u540C\u6E90\uFF08\u9EC4\u5E95\u4E2D\u9AD8\u660E\u5EA6 \u21D2 \u5B57\u7528 --dshpc-on-warning\uFF09\u3002 */\n.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}\n.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}\n.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}\n.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
+var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u8272\uFF1Aneutral \u8D70\u65E7\u7070\u9762\uFF1B\u8BED\u4E49\u6863\u6362\u5E95\u5B57\u914D\u5BF9\uFF082026-10-20 \u7528\u6237\u8981\u591A\u8272\u591A\u5C3A\u5BF8\u6807\u7B7E\uFF09\u3002 */\n.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--chip-bg);color:var(--chip-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* md \u6863\uFF1A\u5361\u7247\u5143\u4FE1\u606F\u884C\u7B49\u7A0D\u5927\u573A\u666F\uFF1Bsm \u5373\u65E7\u7248\u9ED8\u8BA4\uFF0C\u9010\u50CF\u7D20\u4E0D\u52A8\u3002 */\n.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}\n/* xs \u6863\uFF1A\u6807\u9898\u540E\u7F00\u7B49\u6781\u7D27\u51D1\u573A\u666F\uFF082026-10-20 \u7528\u6237\u8981\u66F4\u5C0F\u6807\u7B7E\uFF09\uFF1B16px \u9AD8\u3001font 10\u3002 */\n.dshpc-chip--xs{padding:0 6px;font-size:10px;line-height:16px;}\n/* \u8BED\u4E49\u8272\u5B9E\u5FC3\u6863\uFF1A\u5E95 / \u5B57 / hover \u914D\u5BF9\u4E0E Button \u540C\u6E90\uFF08\u9EC4\u5E95\u4E2D\u9AD8\u660E\u5EA6 \u21D2 \u5B57\u7528 --dshpc-on-warning\uFF09\u3002 */\n.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}\n.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}\n.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}\n.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
 
 // dist/explorer/explorer-css.generated.js
 var EXPLORER_CSS = "\n.dshpc-exp{display:flex;flex-direction:column;height:100%;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-exp__crumbs{\n  display:flex;align-items:center;gap:2px;flex-wrap:wrap;padding:6px 8px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n.dshpc-exp__crumb{\n  background:none;border:none;padding:2px 4px;border-radius:4px;cursor:pointer;\n  color:var(--dshpc-link);font:inherit;\n}\n.dshpc-exp__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default}\n.dshpc-exp__sep{color:var(--dshpc-fg-4)}\n.dshpc-exp__tools{display:flex;gap:6px;margin-left:auto}\n.dshpc-exp__body{display:flex;flex:1;min-height:0}\n.dshpc-exp__tree{width:220px;flex:none;overflow:auto;border-right:1px solid var(--dshpc-border-faint)}\n.dshpc-exp__item{\n  display:flex;align-items:center;gap:6px;padding:4px 8px;cursor:pointer;white-space:nowrap;\n}\n.dshpc-exp__item:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-exp__item--active{background:var(--dshpc-open-bg)}\n.dshpc-exp__icon{width:14px;flex:none;color:var(--dshpc-fg-3)}\n.dshpc-exp__name{overflow:hidden;text-overflow:ellipsis}\n.dshpc-exp__size{margin-left:auto;color:var(--dshpc-fg-4);font-size:11px}\n.dshpc-exp__preview{flex:1;min-width:0;overflow:auto;padding:8px}\n.dshpc-exp__note{padding:6px 8px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-exp__text{\n  margin:0;padding:8px;border-radius:6px;background:var(--dshpc-code-surface);\n  font:var(--dshpc-code-font);white-space:pre-wrap;word-break:break-all;\n}\n.dshpc-exp__image{max-width:100%;border-radius:6px;border:1px solid var(--dshpc-border-faint)}\n";
@@ -210,6 +221,9 @@ var CONTROLS_CSS = [
 var current = createStyleKit({ id: "dsh-plugin-core-ui" });
 function setStyleKit(kit) {
   current = kit;
+}
+function getStyleKit() {
+  return current;
 }
 function ensureControls(kit = current) {
   kit.registerStyle("tokens", kit.tokensCss);
@@ -291,6 +305,9 @@ var DICT = {
     emptyText: "\u6682\u65E0\u6570\u636E",
     errorTitle: "\u51FA\u9519\u4E86",
     errorRetry: "\u91CD\u8BD5",
+    confirm: "\u786E\u5B9A",
+    cancel: "\u53D6\u6D88",
+    dialogOk: "\u77E5\u9053\u4E86",
     pickerPlaceholder: "\u8BF7\u9009\u62E9",
     pickerClear: "\u4E0D\u9009",
     pickerEmpty: "\u6682\u65E0\u53EF\u9009",
@@ -337,6 +354,9 @@ var DICT = {
     emptyText: "No data",
     errorTitle: "Something went wrong",
     errorRetry: "Retry",
+    confirm: "Confirm",
+    cancel: "Cancel",
+    dialogOk: "OK",
     pickerPlaceholder: "Select\u2026",
     pickerClear: "None",
     pickerEmpty: "No options",
@@ -618,6 +638,10 @@ function Modal(props) {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [escClose, props.onClose]);
+  const sizeMax = { sm: "420px", md: "min(960px,92vw)", lg: "min(1200px,94vw)" };
+  const effectiveMax = props.maxWidth ?? sizeMax[props.size ?? "md"];
+  const showClose = props.closable !== false && props.onClose !== void 0;
+  const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
   return (0, import_react4.createElement)("div", {
     className: "dshpc-modal-mask",
     onClick: () => {
@@ -625,19 +649,190 @@ function Modal(props) {
         props.onClose?.();
     }
   }, (0, import_react4.createElement)("div", {
-    className: "dshpc-modal",
-    style: props.maxWidth === void 0 ? void 0 : { maxWidth: props.maxWidth },
+    className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}`,
+    style: { maxWidth: effectiveMax },
     onClick: (e) => e.stopPropagation()
-  }, props.hideHeader === true || props.title === void 0 && props.onClose === void 0 ? null : (0, import_react4.createElement)("div", { className: "dshpc-modal__head" }, (0, import_react4.createElement)("div", { className: "dshpc-modal__title" }, props.title ?? ""), props.onClose === void 0 ? null : (0, import_react4.createElement)("button", {
+  }, showHeader ? (0, import_react4.createElement)("div", { className: "dshpc-modal__head" }, (0, import_react4.createElement)("div", { className: "dshpc-modal__heading" }, props.icon === void 0 ? null : (0, import_react4.createElement)("span", { className: "dshpc-modal__lead" }, props.icon), (0, import_react4.createElement)("div", { className: "dshpc-modal__title" }, props.title ?? ""), props.headerExtra === void 0 ? null : (0, import_react4.createElement)("div", { className: "dshpc-modal__extra" }, props.headerExtra)), (0, import_react4.createElement)("div", { className: "dshpc-modal__spacer" }), props.headerActions === void 0 ? null : (0, import_react4.createElement)("div", { className: "dshpc-modal__actions" }, props.headerActions), showClose ? (0, import_react4.createElement)("button", {
     type: "button",
     className: "dshpc-modal__close",
     "aria-label": tt("modalClose"),
     onClick: () => props.onClose?.()
-  }, "\u2715")), (0, import_react4.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react4.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)));
+  }, "\u2715") : null) : null, (0, import_react4.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react4.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)));
+}
+
+// dist/ui/AlertModal.js
+var import_react6 = require("react");
+
+// dist/ui/Button.js
+var import_react5 = require("react");
+var SOLID_VARIANTS = ["primary", "secondary", "danger", "success", "warning", "info"];
+function colorVars(variant, color) {
+  if (color === void 0 || color === "")
+    return void 0;
+  if (SOLID_VARIANTS.includes(variant)) {
+    return {
+      "--btn-bg": color,
+      // 亮色主题下 --dshpc-fg 是黑 ⇒ 压深；暗色下是白 ⇒ 提亮。两边都能明确看出变化。
+      "--btn-bg-hover": `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`,
+      "--btn-bg-active": `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`
+    };
+  }
+  return {
+    "--btn-fg": color,
+    "--btn-fg-hover": color,
+    "--btn-border": color,
+    "--btn-bg-hover": `color-mix(in srgb, ${color} 12%, transparent)`,
+    "--btn-bg-active": `color-mix(in srgb, ${color} 18%, transparent)`
+  };
+}
+function buttonClass(variant, size, block, hasIcon, extra) {
+  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${block ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
+}
+function Button(props) {
+  ensureControls();
+  const { variant = "outline", size = "lg", icon, iconRight, color, loading = false, block = false, className, style, children, ...rest } = props;
+  const attrs = {
+    ...rest,
+    type: rest.type ?? "button",
+    disabled: rest.disabled === true || loading,
+    className: buttonClass(variant, size, block, icon !== void 0 && icon !== null && !loading, className),
+    style: { ...colorVars(variant, color), ...style }
+  };
+  return (0, import_react5.createElement)("button", attrs, loading ? (0, import_react5.createElement)("svg", {
+    className: "dshpc-btn__spinner",
+    viewBox: "0 0 12 12",
+    width: 12,
+    height: 12,
+    "aria-hidden": true
+  }, (0, import_react5.createElement)("circle", {
+    cx: 6,
+    cy: 6,
+    r: 4.75,
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    strokeLinecap: "round",
+    // 周长 ≈ 29.85，画 22 的弧 + 足够长的空缺 ⇒ 一个约 270° 的开口环
+    strokeDasharray: "22 30"
+  })) : icon !== void 0 && icon !== null ? (0, import_react5.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null, children, iconRight !== void 0 && iconRight !== null ? (0, import_react5.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
+}
+function IconButton(props) {
+  ensureControls();
+  const { variant = "plain", size = "lg", icon, label, className, style, ...rest } = props;
+  const attrs = {
+    ...rest,
+    type: rest.type ?? "button",
+    title: rest.title ?? label,
+    "aria-label": rest["aria-label"] ?? label,
+    className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
+    style
+  };
+  return (0, import_react5.createElement)("button", attrs, icon);
+}
+
+// dist/ui/AlertModal.js
+var SEVERITY_GLYPH = {
+  info: "\u24D8",
+  success: "\u2713",
+  warning: "\u26A0",
+  error: "\u2715"
+};
+function AlertModal(props) {
+  const tt = props.translate ?? t;
+  const severity = props.severity ?? "info";
+  return (0, import_react6.createElement)(Modal, {
+    icon: (0, import_react6.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
+    title: props.title,
+    size: props.size ?? "sm",
+    hideHeader: props.title === void 0,
+    closable: false,
+    closeOnMask: props.closeOnMask,
+    onClose: props.onConfirm,
+    footer: (0, import_react6.createElement)(Button, { variant: "primary", onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
+  }, props.message ?? null);
+}
+
+// dist/ui/ConfirmModal.js
+var import_react7 = require("react");
+function ConfirmModal(props) {
+  const tt = props.translate ?? t;
+  const tone = props.tone ?? "primary";
+  const confirmVariant = tone === "danger" ? "danger" : tone === "warning" ? "warning" : "primary";
+  return (0, import_react7.createElement)(Modal, {
+    title: props.title,
+    size: props.size ?? "sm",
+    hideHeader: props.title === void 0,
+    closable: false,
+    closeOnMask: props.closeOnMask,
+    onClose: props.onCancel,
+    footer: (0, import_react7.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react7.createElement)(Button, { variant: "outline", onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react7.createElement)(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
+  }, props.message ?? null);
+}
+
+// dist/ui/modal-host.js
+var import_react8 = require("react");
+var import_client = require("react-dom/client");
+var hostRoot = null;
+var hostContainer = null;
+var entries = [];
+var idSeq = 0;
+function getHostRoot() {
+  if (typeof document === "undefined")
+    return null;
+  if (hostRoot === null) {
+    hostContainer = document.createElement("div");
+    hostContainer.setAttribute("data-dshpc-modal-host", "");
+    document.body.appendChild(hostContainer);
+    hostRoot = (0, import_client.createRoot)(hostContainer);
+  }
+  return hostRoot;
+}
+function flush() {
+  const root = getHostRoot();
+  if (root === null)
+    return;
+  ensureControls(getStyleKit());
+  if (entries.length === 0) {
+    root.unmount();
+    hostContainer?.remove();
+    hostRoot = null;
+    hostContainer = null;
+    return;
+  }
+  root.render((0, import_react8.createElement)(import_react8.Fragment, null, entries.map((e) => e.node)));
+}
+function dismiss(id) {
+  entries = entries.filter((e) => e.id !== id);
+  flush();
+}
+function confirmModal(opts) {
+  return new Promise((resolve) => {
+    const id = ++idSeq;
+    const close = (result) => {
+      dismiss(id);
+      resolve(result);
+    };
+    entries.push({
+      id,
+      node: (0, import_react8.createElement)(ConfirmModal, { ...opts, onConfirm: () => close(true), onCancel: () => close(false) })
+    });
+    flush();
+  });
+}
+function alertModal(opts) {
+  return new Promise((resolve) => {
+    const id = ++idSeq;
+    const close = () => {
+      dismiss(id);
+      resolve();
+    };
+    entries.push({ id, node: (0, import_react8.createElement)(AlertModal, { ...opts, onConfirm: close }) });
+    flush();
+  });
 }
 
 // dist/ui/Card.js
-var import_react5 = require("react");
+var import_react9 = require("react");
 var CARD_ACCENTS = ["business", "success", "warning", "danger", "neutral"];
 function CardShell(kind, props) {
   ensureControls();
@@ -651,20 +846,20 @@ function CardShell(kind, props) {
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
   const style = isPreset ? props.style : { ...props.style, ["--card-accent"]: accent };
-  return (0, import_react5.createElement)("div", { className: classes, style }, (0, import_react5.createElement)(
+  return (0, import_react9.createElement)("div", { className: classes, style }, (0, import_react9.createElement)(
     "div",
     { className: "dshpc-card__head" },
-    // 色条是头部第一个子元素：strip 外观 = 绝对定位 5px 通高贴左缘；bordered 外观 = 行内 6px 圆角短条（高度跟随内容，最小一行）。
-    (0, import_react5.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
-    (0, import_react5.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null),
-    props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react5.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react5.createElement)("button", {
+    // 色条是头部第一个子元素：strip 外观 = 绝对定位 4px 通高贴左缘；bordered 外观 = 行内 6px 圆角短条（高度跟随内容，最小一行，左移 3px）。
+    (0, import_react9.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
+    (0, import_react9.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null),
+    props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react9.createElement)("button", {
       type: "button",
       className: "dshpc-card__toggle",
       "aria-label": tt("cardToggle"),
       "aria-expanded": props.expanded === true,
       onClick: props.onToggle
-    }, (0, import_react5.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, "\u25BE")))
-  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react5.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
+    }, (0, import_react9.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, "\u25BE")))
+  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react9.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
 }
 function Card(props) {
   return CardShell("bordered", props);
@@ -674,13 +869,13 @@ function StripCard(props) {
 }
 
 // dist/ui/Chip.js
-var import_react6 = require("react");
+var import_react10 = require("react");
 function Chip(props) {
   ensureControls();
   const clickable = props.onClick !== void 0;
   const tone = props.tone ?? "neutral";
   const size = props.size ?? "sm";
-  return (0, import_react6.createElement)(clickable ? "button" : "span", {
+  return (0, import_react10.createElement)(clickable ? "button" : "span", {
     type: clickable ? "button" : void 0,
     className: `dshpc-chip${tone !== "neutral" ? ` dshpc-chip--${tone}` : ""}${size !== "sm" ? ` dshpc-chip--${size}` : ""}${clickable ? " dshpc-chip--clickable" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`,
     onClick: props.onClick
@@ -718,16 +913,16 @@ function ensureHost() {
 }
 
 // dist/ui/EmptyState.js
-var import_react7 = require("react");
+var import_react11 = require("react");
 function EmptyState(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  return (0, import_react7.createElement)("div", { className: "dshpc-empty" }, props.icon ?? null, (0, import_react7.createElement)("div", null, props.text ?? tt("emptyText")), props.action ?? null);
+  return (0, import_react11.createElement)("div", { className: "dshpc-empty" }, props.icon ?? null, (0, import_react11.createElement)("div", null, props.text ?? tt("emptyText")), props.action ?? null);
 }
 
 // dist/ui/ErrorBoundary.js
-var import_react8 = require("react");
-var ErrorBoundary = class extends import_react8.Component {
+var import_react12 = require("react");
+var ErrorBoundary = class extends import_react12.Component {
   constructor() {
     super(...arguments);
     this.state = { error: null };
@@ -749,79 +944,12 @@ var ErrorBoundary = class extends import_react8.Component {
     if (this.props.fallback !== void 0)
       return this.props.fallback(err, this.retry);
     const tt = this.props.translate ?? t;
-    return (0, import_react8.createElement)("div", { className: "dshpc-error" }, (0, import_react8.createElement)("div", null, `${tt("errorTitle")}\uFF1A${err.message}`), (0, import_react8.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: this.retry }, tt("errorRetry")));
+    return (0, import_react12.createElement)("div", { className: "dshpc-error" }, (0, import_react12.createElement)("div", null, `${tt("errorTitle")}\uFF1A${err.message}`), (0, import_react12.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: this.retry }, tt("errorRetry")));
   }
 };
 
-// dist/ui/Button.js
-var import_react9 = require("react");
-var SOLID_VARIANTS = ["primary", "secondary", "danger", "success", "warning", "info"];
-function colorVars(variant, color) {
-  if (color === void 0 || color === "")
-    return void 0;
-  if (SOLID_VARIANTS.includes(variant)) {
-    return {
-      "--btn-bg": color,
-      // 亮色主题下 --dshpc-fg 是黑 ⇒ 压深；暗色下是白 ⇒ 提亮。两边都能明确看出变化。
-      "--btn-bg-hover": `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`,
-      "--btn-bg-active": `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`
-    };
-  }
-  return {
-    "--btn-fg": color,
-    "--btn-fg-hover": color,
-    "--btn-border": color,
-    "--btn-bg-hover": `color-mix(in srgb, ${color} 12%, transparent)`,
-    "--btn-bg-active": `color-mix(in srgb, ${color} 18%, transparent)`
-  };
-}
-function buttonClass(variant, size, block, hasIcon, extra) {
-  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${block ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
-}
-function Button(props) {
-  ensureControls();
-  const { variant = "outline", size = "lg", icon, iconRight, color, loading = false, block = false, className, style, children, ...rest } = props;
-  const attrs = {
-    ...rest,
-    type: rest.type ?? "button",
-    disabled: rest.disabled === true || loading,
-    className: buttonClass(variant, size, block, icon !== void 0 && icon !== null && !loading, className),
-    style: { ...colorVars(variant, color), ...style }
-  };
-  return (0, import_react9.createElement)("button", attrs, loading ? (0, import_react9.createElement)("svg", {
-    className: "dshpc-btn__spinner",
-    viewBox: "0 0 12 12",
-    width: 12,
-    height: 12,
-    "aria-hidden": true
-  }, (0, import_react9.createElement)("circle", {
-    cx: 6,
-    cy: 6,
-    r: 4.75,
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.5,
-    strokeLinecap: "round",
-    // 周长 ≈ 29.85，画 22 的弧 + 足够长的空缺 ⇒ 一个约 270° 的开口环
-    strokeDasharray: "22 30"
-  })) : icon !== void 0 && icon !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null, children, iconRight !== void 0 && iconRight !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
-}
-function IconButton(props) {
-  ensureControls();
-  const { variant = "plain", size = "lg", icon, label, className, style, ...rest } = props;
-  const attrs = {
-    ...rest,
-    type: rest.type ?? "button",
-    title: rest.title ?? label,
-    "aria-label": rest["aria-label"] ?? label,
-    className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
-    style
-  };
-  return (0, import_react9.createElement)("button", attrs, icon);
-}
-
 // dist/ui/Segmented.js
-var import_react10 = require("react");
+var import_react13 = require("react");
 function Segmented(props) {
   ensureControls();
   ensureControls();
@@ -830,7 +958,7 @@ function Segmented(props) {
   const multiple = props.multiple === true;
   const value = props.value;
   const onChange = props.onChange;
-  return (0, import_react10.createElement)("div", {
+  return (0, import_react13.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -852,7 +980,7 @@ function Segmented(props) {
         onChange(item.value);
       }
     };
-    return (0, import_react10.createElement)("button", {
+    return (0, import_react13.createElement)("button", {
       key: item.value,
       type: "button",
       className: "dshpc-seg__item",
@@ -860,16 +988,16 @@ function Segmented(props) {
       "aria-pressed": on,
       disabled,
       onClick: handle
-    }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react10.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react10.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
+    }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react13.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react13.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
   }));
 }
 
 // dist/ui/Textarea.js
-var import_react11 = require("react");
+var import_react14 = require("react");
 function Textarea(props) {
   ensureControls();
   const { value, onChange, placeholder, error, disabled, id, rows, spellCheck, className, style } = props;
-  return (0, import_react11.createElement)("textarea", {
+  return (0, import_react14.createElement)("textarea", {
     id,
     rows,
     value,
@@ -886,10 +1014,10 @@ function Textarea(props) {
 }
 
 // dist/ui/Checkbox.js
-var import_react12 = require("react");
+var import_react15 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className } = props;
-  return (0, import_react12.createElement)("label", {
+  return (0, import_react15.createElement)("label", {
     className: `dshpc-checkbox${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
     style: {
       display: "flex",
@@ -899,7 +1027,7 @@ function Checkbox(props) {
       lineHeight: "var(--dshpc-line-md)",
       cursor: disabled === true ? "default" : "pointer"
     }
-  }, (0, import_react12.createElement)("input", {
+  }, (0, import_react15.createElement)("input", {
     type: "checkbox",
     checked,
     disabled,
@@ -914,23 +1042,23 @@ function Checkbox(props) {
     onChange: (event) => {
       onChange(event.target.checked);
     }
-  }), label !== void 0 ? (0, import_react12.createElement)("span", null, label) : null);
+  }), label !== void 0 ? (0, import_react15.createElement)("span", null, label) : null);
 }
 
 // dist/ui/MarqueeText.js
-var import_react13 = require("react");
+var import_react16 = require("react");
 function MarqueeText(props) {
-  const outerRef = (0, import_react13.useRef)(null);
-  const innerRef = (0, import_react13.useRef)(null);
-  const [dist, setDist] = (0, import_react13.useState)(0);
-  const measure = (0, import_react13.useCallback)(() => {
+  const outerRef = (0, import_react16.useRef)(null);
+  const innerRef = (0, import_react16.useRef)(null);
+  const [dist, setDist] = (0, import_react16.useState)(0);
+  const measure = (0, import_react16.useCallback)(() => {
     const outer = outerRef.current;
     const inner = innerRef.current;
     if (outer === null || inner === null)
       return;
     setDist(Math.max(0, Math.ceil(inner.scrollWidth - outer.clientWidth)));
   }, []);
-  (0, import_react13.useLayoutEffect)(() => {
+  (0, import_react16.useLayoutEffect)(() => {
     const outer = outerRef.current;
     if (outer === null)
       return;
@@ -941,16 +1069,16 @@ function MarqueeText(props) {
       ro.disconnect();
     };
   }, [measure]);
-  (0, import_react13.useEffect)(() => {
+  (0, import_react16.useEffect)(() => {
     measure();
   }, [props.text, measure]);
   const run = dist > 0;
-  return (0, import_react13.createElement)("span", {
+  return (0, import_react16.createElement)("span", {
     ref: outerRef,
     className: (run ? "dshpc-mq dshpc-mq-run" : "dshpc-mq") + (props.className === void 0 ? "" : ` ${props.className}`),
     title: props.title,
     style: props.style
-  }, (0, import_react13.createElement)("span", {
+  }, (0, import_react16.createElement)("span", {
     ref: innerRef,
     className: "dshpc-mq-in",
     style: {
@@ -960,11 +1088,11 @@ function MarqueeText(props) {
 }
 
 // dist/ui/SectionHead.js
-var import_react14 = require("react");
+var import_react17 = require("react");
 function SectionHead(props) {
-  return (0, import_react14.createElement)("div", {
+  return (0, import_react17.createElement)("div", {
     style: { display: "flex", alignItems: "center", gap: "var(--dshpc-space-2)", marginBottom: "var(--dshpc-space-3)" }
-  }, (0, import_react14.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", color: "var(--dshpc-fg-3)" } }, props.icon), (0, import_react14.createElement)("span", { style: { fontSize: "var(--dshpc-font-lg)", lineHeight: "var(--dshpc-line-lg)", fontWeight: 600, color: "var(--dshpc-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react14.createElement)("div", { style: { marginLeft: "auto", display: "flex", alignItems: "center", gap: "var(--dshpc-space-2)", minWidth: 0 } }, props.right));
+  }, (0, import_react17.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", lineHeight: "var(--dshpc-line-lg)", color: "var(--dshpc-fg-3)" } }, props.icon), (0, import_react17.createElement)("span", { style: { fontSize: "var(--dshpc-font-lg)", lineHeight: "var(--dshpc-line-lg)", fontWeight: 600, color: "var(--dshpc-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react17.createElement)("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--dshpc-space-2)", minWidth: 0 } }, props.right));
 }
 
 // dist/ui/tooltip.js
@@ -977,11 +1105,11 @@ function getTooltipRenderer() {
 }
 
 // dist/ui/FieldHint.js
-var import_react15 = require("react");
+var import_react18 = require("react");
 function FieldHint(props) {
   ensureControls();
   const { text, side, align, maxWidth, className, style } = props;
-  const anchor = (0, import_react15.createElement)("span", {
+  const anchor = (0, import_react18.createElement)("span", {
     className: `dshpc-hint${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
     style,
     tabIndex: 0,
@@ -1001,10 +1129,10 @@ function FieldHint(props) {
 }
 
 // dist/ui/LiveText.js
-var import_react17 = require("react");
+var import_react20 = require("react");
 
 // dist/ui/ticker.js
-var import_react16 = require("react");
+var import_react19 = require("react");
 var tickerListeners = /* @__PURE__ */ new Set();
 var tickerTimer = null;
 var onVisibilityChange = () => {
@@ -1035,22 +1163,22 @@ function subscribeTicker(cb) {
 
 // dist/ui/LiveText.js
 function LiveText(props) {
-  const [, force] = (0, import_react17.useState)(0);
-  const renderRef = (0, import_react17.useRef)(props.render);
+  const [, force] = (0, import_react20.useState)(0);
+  const renderRef = (0, import_react20.useRef)(props.render);
   renderRef.current = props.render;
-  (0, import_react17.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
-  return (0, import_react17.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
+  (0, import_react20.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
+  return (0, import_react20.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
 }
 
 // dist/ui/Field.js
-var import_react18 = require("react");
+var import_react21 = require("react");
 function sizeClass(size) {
   return size === "lg" ? "--lg" : size === "md" ? "--md" : "--sm";
 }
 function Input(props) {
   ensureControls();
   const { value, onChange, placeholder, size = "lg", error, disabled, type, className, style } = props;
-  return (0, import_react18.createElement)("input", {
+  return (0, import_react21.createElement)("input", {
     ref: props.inputRef,
     type: type ?? "text",
     value,
@@ -1070,8 +1198,8 @@ function Input(props) {
 function NumberInput(props) {
   ensureControls();
   const { value, onChange, min = -Infinity, max = Infinity, step = 1, size = "lg", inputWidth, disabled, suffix, label, decreaseLabel = "\u51CF\u5C11", increaseLabel = "\u589E\u52A0", className, style } = props;
-  const [text, setText] = (0, import_react18.useState)(String(value));
-  (0, import_react18.useEffect)(() => {
+  const [text, setText] = (0, import_react21.useState)(String(value));
+  (0, import_react21.useEffect)(() => {
     setText(String(value));
   }, [value]);
   const clamp = (n) => Math.min(max, Math.max(min, n));
@@ -1097,18 +1225,18 @@ function NumberInput(props) {
     if (next !== value)
       onChange(next);
   };
-  return (0, import_react18.createElement)(
+  return (0, import_react21.createElement)(
     "div",
     {
       className: `dshpc-num dshpc-num${sizeClass(size)}${disabled === true ? " dshpc-num--disabled" : ""}${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
       style
     },
-    (0, import_react18.createElement)(IconButton, { variant: "plain", size, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
+    (0, import_react21.createElement)(IconButton, { variant: "plain", size, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
       bump(-1);
     } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
-    (0, import_react18.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react18.createElement)("input", {
+    (0, import_react21.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react21.createElement)("input", {
       className: "dshpc-num__input",
       ...inputWidth === void 0 ? {} : { style: { width: `${inputWidth}px` } },
       value: text,
@@ -1125,8 +1253,8 @@ function NumberInput(props) {
         if (event.key === "Enter")
           commit(text);
       }
-    }), suffix !== void 0 ? (0, import_react18.createElement)("span", { className: "dshpc-num__suffix" }, suffix) : null),
-    (0, import_react18.createElement)(IconButton, { variant: "plain", size, icon: "+", label: increaseLabel, disabled, onClick: () => {
+    }), suffix !== void 0 ? (0, import_react21.createElement)("span", { className: "dshpc-num__suffix" }, suffix) : null),
+    (0, import_react21.createElement)(IconButton, { variant: "plain", size, icon: "+", label: increaseLabel, disabled, onClick: () => {
       bump(1);
     } })
   );
@@ -1166,10 +1294,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h29 = Math.floor(totalSec / 3600);
+  const h32 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h29 > 0 ? `${h29}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h32 > 0 ? `${h32}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -1282,7 +1410,7 @@ function joinPath(dir, name) {
 }
 
 // packages/demo/src/sections/index.tsx
-var import_react28 = require("react");
+var import_react31 = require("react");
 
 // packages/demo/src/i18n.ts
 var DICT2 = {
@@ -1373,8 +1501,8 @@ var DICT2 = {
     tooltipLongText: "\u8FD9\u662F\u4E00\u6BB5\u8DB3\u591F\u957F\u7684\u63D0\u793A\u6587\u5B57\uFF1A\u6C14\u6CE1\u9047\u5230 maxWidth \u4F1A\u81EA\u52A8\u6362\u884C\uFF0C\u800C\u4E0D\u4F1A\u4E00\u8DEF\u6491\u5230\u534A\u4E2A\u5C4F\u5E55\u5BBD\uFF0C anchored \u5143\u7D20\u5728\u8FB9\u7F18\u65F6\u5B98\u65B9\u8FD8\u4F1A\u81EA\u52A8\u628A\u6C14\u6CE1\u6536\u56DE\u89C6\u53E3\u5185\u3002",
     demoCardTitle: "Card\uFF08\u8FB9\u6846 + \u5706\u89D2 + \u77ED\u8272\u6761\uFF09",
     demoStripTitle: "StripCard\uFF08\u6D45\u5E95 + \u901A\u9AD8\u8272\u6761\uFF09",
-    cardHint: "surface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185 6\xD736 \u5706\u89D2\u77ED\u6761\uFF1B\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5C45\u4E2D\uFF0C\u60AC\u505C\u6D6E\u51FA\u7684\u6309\u94AE\u3001\u4E00\u884C\u4E24\u884C\u90FD\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\uFF1B\u771F\u5B9E\u63D2\u4EF6\u5F62\u6001\uFF1A\u6807\u9898\u884C + \u53F3\u4FA7\u5143\u4FE1\u606F + chips \u884C\uFF1Baccent \u4E94\u6863\u89C1\u4E0B\u65B9\u901F\u89C8",
-    stripHint: "\u540C\u8272\u7CFB\u6D45\u5E95 + \u5DE6\u7F18 5px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\uFF08\u7167\u5144\u5F1F\u9879\u76EE\u6267\u884C\u8BB0\u5F55\u5757\uFF09\uFF1B\u540C\u6837\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014\u6D41\u6C34\u8D26\u6392\u7248\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C",
+    cardHint: "surface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185 6px \u5706\u89D2\u77ED\u6761\uFF08\u9AD8\u5EA6\u968F\u5185\u5BB9\uFF09\uFF1B\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5C45\u4E2D\uFF0C\u60AC\u505C\u6D6E\u51FA\u7684\u6309\u94AE\u3001\u4E00\u884C\u4E24\u884C\u90FD\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\uFF1B\u771F\u5B9E\u63D2\u4EF6\u5F62\u6001\uFF1A\u6807\u9898\u884C + \u53F3\u4FA7\u5143\u4FE1\u606F + chips \u884C\uFF1Baccent \u4E94\u6863\u89C1\u4E0B\u65B9\u901F\u89C8",
+    stripHint: "\u540C\u8272\u7CFB\u6D45\u5E95 + \u5DE6\u7F18 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\uFF08\u7167\u5144\u5F1F\u9879\u76EE\u6267\u884C\u8BB0\u5F55\u5757\uFF09\uFF1B\u540C\u6837\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014\u6D41\u6C34\u8D26\u6392\u7248\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C",
     sectionHeadTitle: "SectionHead \u5206\u533A\u6807\u9898",
     chipHint: "chip \u4E24\u8F74\u53EF\u9009\uFF1Atone \u8BED\u4E49\u8272\uFF08neutral \u7070\u9762 / business / success / warning / danger \u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09\u3001size\uFF08sm / md\uFF09\uFF1B\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362\uFF08\u4E2D\u82F1\u793A\u4F8B\uFF09\uFF1B\u6700\u540E\u4E00\u9897\u957F\u6587\u5B57\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219",
     chipOverdue: "\u903E\u671F",
@@ -1509,8 +1637,8 @@ var DICT2 = {
     tooltipLongText: "A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.",
     demoCardTitle: "Card (frame + radius + short rail)",
     demoStripTitle: "StripCard (soft tint + full-height bar)",
-    cardHint: "Surface + 1px border + radius + inline 6\xD736 rounded rail; the head is vertically centered as a whole \u2014 drop a bare element into action and it centers itself; hover-floating buttons, one or two rows are all up to the caller inside the frame; real-plugin shape: title row + right-side meta + chips row; five accent tiers below",
-    stripHint: "Same-hue soft tint + 5px full-height square accent bar at the left edge (mirrors the sibling record block); equally centered as a whole \u2014 record-stream layout: title + meta row + right-side time/actions",
+    cardHint: "Surface + 1px border + radius + inline 6px rounded rail (height follows content); the head is vertically centered as a whole \u2014 drop a bare element into action and it centers itself; hover-floating buttons, one or two rows are all up to the caller inside the frame; real-plugin shape: title row + right-side meta + chips row; five accent tiers below",
+    stripHint: "Same-hue soft tint + 4px full-height square accent bar at the left edge (mirrors the sibling record block); equally centered as a whole \u2014 record-stream layout: title + meta row + right-side time/actions",
     sectionHeadTitle: "SectionHead",
     chipHint: "Two optional axes: tone (neutral grey / business / success / warning / danger solid signal) and size (sm / md); width hugs the text, no wrap; labels follow the locale (zh & en examples); if the long-text chip at the end is squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in",
     chipOverdue: "Overdue",
@@ -1574,19 +1702,19 @@ function t2(key, vars) {
 }
 
 // packages/demo/src/sections/start.tsx
-var import_react19 = require("react");
+var import_react22 = require("react");
 function QuickstartPage() {
-  return (0, import_react19.createElement)(
+  return (0, import_react22.createElement)(
     "div",
     null,
-    (0, import_react19.createElement)(Demo, { title: t2("secOverview") }, (0, import_react19.createElement)(Placeholder, { descKey: "overviewDesc" })),
-    (0, import_react19.createElement)(Demo, { title: t2("secInstall") }, (0, import_react19.createElement)(Placeholder, { descKey: "installDesc" })),
-    (0, import_react19.createElement)(Demo, { title: t2("secWritePlugin") }, (0, import_react19.createElement)(Placeholder, { descKey: "quickstartDesc" }))
+    (0, import_react22.createElement)(Demo, { title: t2("secOverview") }, (0, import_react22.createElement)(Placeholder, { descKey: "overviewDesc" })),
+    (0, import_react22.createElement)(Demo, { title: t2("secInstall") }, (0, import_react22.createElement)(Placeholder, { descKey: "installDesc" })),
+    (0, import_react22.createElement)(Demo, { title: t2("secWritePlugin") }, (0, import_react22.createElement)(Placeholder, { descKey: "quickstartDesc" }))
   );
 }
 
 // packages/demo/src/sections/foundation.tsx
-var import_react20 = require("react");
+var import_react23 = require("react");
 var TOKENS = [
   { label: "business", cssVar: "--dshpc-business" },
   { label: "success", cssVar: "--dshpc-success" },
@@ -1601,20 +1729,20 @@ var TOKENS = [
   { label: "fg-4", cssVar: "--dshpc-fg-4" }
 ];
 function FoundationPage() {
-  return (0, import_react20.createElement)(
+  return (0, import_react23.createElement)(
     "div",
     null,
-    (0, import_react20.createElement)(
+    (0, import_react23.createElement)(
       Demo,
       { title: t2("demoTokenPalette"), hint: t2("tokensHint") },
-      (0, import_react20.createElement)(
+      (0, import_react23.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
         TOKENS.map(
-          (item) => (0, import_react20.createElement)(
+          (item) => (0, import_react23.createElement)(
             "div",
             { key: item.cssVar, style: { width: "104px" } },
-            (0, import_react20.createElement)("div", {
+            (0, import_react23.createElement)("div", {
               style: {
                 height: "40px",
                 borderRadius: "6px",
@@ -1622,25 +1750,25 @@ function FoundationPage() {
                 border: "1px solid var(--dshpc-border-faint)"
               }
             }),
-            (0, import_react20.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
-            (0, import_react20.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+            (0, import_react23.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
+            (0, import_react23.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
           )
         )
       )
     ),
     // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
-    (0, import_react20.createElement)(
+    (0, import_react23.createElement)(
       Demo,
       { title: "body[data-ds-dark-theme]", hint: t2("darkHint") },
-      (0, import_react20.createElement)(
+      (0, import_react23.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react20.createElement)(
+        (0, import_react23.createElement)(
           "span",
           { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t2("darkNow")
         ),
-        (0, import_react20.createElement)("code", {
+        (0, import_react23.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -1652,7 +1780,7 @@ function FoundationPage() {
         }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
       )
     ),
-    (0, import_react20.createElement)(
+    (0, import_react23.createElement)(
       Demo,
       {
         title: t2("demoStyleInject"),
@@ -1663,14 +1791,37 @@ import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
 ensureControls()`
       },
-      (0, import_react20.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
+      (0, import_react23.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
     ),
-    (0, import_react20.createElement)(Demo, { title: t2("secNaming") }, (0, import_react20.createElement)(Placeholder, { descKey: "namingDesc" }))
+    (0, import_react23.createElement)(Demo, { title: t2("secNaming") }, (0, import_react23.createElement)(Placeholder, { descKey: "namingDesc" }))
   );
 }
 
 // packages/demo/src/sections/controls.tsx
-var import_react21 = require("react");
+var import_react24 = require("react");
+
+// dist/ui/official.js
+var official_exports = {};
+__export(official_exports, {
+  Official: () => Official,
+  pickOfficial: () => pickOfficial
+});
+var Official = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
+__reExport(official_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
+var warned = /* @__PURE__ */ new Set();
+function pickOfficial(name, fallback) {
+  const value = Official[name];
+  if (value === void 0) {
+    if (!warned.has(name)) {
+      warned.add(name);
+      console.warn(`[dsh-plugin-core:official] \u5B98\u65B9 primitive "${String(name)}" \u7F3A\u5931\uFF0C\u56DE\u843D\u5230\u672C\u5730\u515C\u5E95`);
+    }
+    return fallback;
+  }
+  return value;
+}
+
+// packages/demo/src/sections/controls.tsx
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 var BUTTON_ICONS = [
   { name: "plus", Icon: import_dsh_client_ui_primitives.IconPlusOutlineRegular },
@@ -1688,13 +1839,13 @@ var BUTTON_ICONS = [
 ];
 function iconOf(name, size = 14) {
   const found = BUTTON_ICONS.find((item) => item.name === name);
-  return found === void 0 ? null : (0, import_react21.createElement)(found.Icon, { size });
+  return found === void 0 ? null : (0, import_react24.createElement)(found.Icon, { size });
 }
 function StarSvg() {
-  return (0, import_react21.createElement)(
+  return (0, import_react24.createElement)(
     "svg",
     { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-    (0, import_react21.createElement)("path", {
+    (0, import_react24.createElement)("path", {
       d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
       stroke: "currentColor",
       strokeWidth: 1.2,
@@ -1719,7 +1870,7 @@ var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
 function tipAnchor(text, side, align) {
   const props = { label: text, side };
   if (align !== void 0) props.align = align;
-  return (0, import_react21.createElement)(import_dsh_client_ui_primitives.Tooltip, props, (0, import_react21.createElement)("button", {
+  return (0, import_react24.createElement)(import_dsh_client_ui_primitives.Tooltip, props, (0, import_react24.createElement)("button", {
     type: "button",
     style: {
       padding: "4px 10px",
@@ -1733,225 +1884,225 @@ function tipAnchor(text, side, align) {
   }, text));
 }
 function Row(props) {
-  return (0, import_react21.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+  return (0, import_react24.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
 }
 function Labeled(props) {
-  return (0, import_react21.createElement)(
+  return (0, import_react24.createElement)(
     "div",
     { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react21.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    (0, import_react24.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
     props.children
   );
 }
 function ButtonPage() {
-  return (0, import_react21.createElement)(
+  return (0, import_react24.createElement)(
     "div",
     null,
     // 文案与语言
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("btnTextTitle"), hint: t2("btnTextHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: "locale" },
-          (0, import_react21.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
-          (0, import_react21.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
-          (0, import_react21.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
+          (0, import_react24.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
+          (0, import_react24.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
+          (0, import_react24.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: "en" },
-          (0, import_react21.createElement)(Button, { variant: "primary" }, "Save"),
-          (0, import_react21.createElement)(Button, { variant: "outline" }, "Cancel"),
-          (0, import_react21.createElement)(Button, { variant: "ghost" }, "Learn more")
+          (0, import_react24.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react24.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react24.createElement)(Button, { variant: "ghost" }, "Learn more")
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: "zh" },
-          (0, import_react21.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
-          (0, import_react21.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
-          (0, import_react21.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+          (0, import_react24.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react24.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react24.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: "zh + en" },
-          (0, import_react21.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
-          (0, import_react21.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
-          (0, import_react21.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+          (0, import_react24.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
+          (0, import_react24.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react24.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
         )
       )
     ),
     // 10 档外观
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("btnVariantTitle"), hint: t2("btnVariantHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react21.createElement)(Row, null, VARIANTS.map((item) => (0, import_react21.createElement)(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
-        (0, import_react21.createElement)(Row, null, VARIANTS.map((item) => (0, import_react21.createElement)(Button, { key: item.value, variant: item.value, size: "sm", icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))
+        (0, import_react24.createElement)(Row, null, VARIANTS.map((item) => (0, import_react24.createElement)(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
+        (0, import_react24.createElement)(Row, null, VARIANTS.map((item) => (0, import_react24.createElement)(Button, { key: item.value, variant: item.value, size: "sm", icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))
       )
     ),
     // 尺寸 / 图标位置 / block
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("btnSizeTitle"), hint: t2("btnSizeHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: "size" },
-          ["sm", "md", "lg"].map((size) => (0, import_react21.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
+          ["sm", "md", "lg"].map((size) => (0, import_react24.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
         ),
         // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: "icon" },
-          (0, import_react21.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
-          (0, import_react21.createElement)(Button, { variant: "outline", icon: (0, import_react21.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
-          (0, import_react21.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
+          (0, import_react24.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react24.createElement)(Button, { variant: "outline", icon: (0, import_react24.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react24.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: "iconRight" },
-          (0, import_react21.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
-          (0, import_react21.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+          (0, import_react24.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
+          (0, import_react24.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
         ),
         // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: "block" },
-          (0, import_react21.createElement)(
+          (0, import_react24.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react21.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
-            (0, import_react21.createElement)("div", { style: { height: "8px" } }),
-            (0, import_react21.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
+            (0, import_react24.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react24.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react24.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
           )
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Labeled,
           { label: t2("btnIconOnly") },
-          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react21.createElement)(IconButton, { key: item.name, icon: (0, import_react21.createElement)(item.Icon, { size: 16 }), label: item.name }))
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react24.createElement)(IconButton, { key: item.name, icon: (0, import_react24.createElement)(item.Icon, { size: 16 }), label: item.name }))
         )
       )
     ),
     // 状态
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("btnStateTitle"), hint: t2("btnStateHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         Row,
         null,
-        (0, import_react21.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-        (0, import_react21.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-        (0, import_react21.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528"),
-        (0, import_react21.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-        (0, import_react21.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+        (0, import_react24.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+        (0, import_react24.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+        (0, import_react24.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528"),
+        (0, import_react24.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+        (0, import_react24.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
       )
     ),
     // 自定义颜色
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("btnColorTitle"), hint: t2("btnColorHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react21.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react21.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color))),
-        (0, import_react21.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react21.createElement)(Button, { key: color, variant: "outline", color }, color)))
+        (0, import_react24.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react24.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color))),
+        (0, import_react24.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react24.createElement)(Button, { key: color, variant: "outline", color }, color)))
       )
     )
   );
 }
 function InputPage() {
-  const [text, setText] = (0, import_react21.useState)("");
-  const [num, setNum] = (0, import_react21.useState)(3);
-  const [checked, setChecked] = (0, import_react21.useState)(true);
-  const [seg, setSeg] = (0, import_react21.useState)("week");
-  const [filter, setFilter] = (0, import_react21.useState)("all");
-  const [multi, setMulti] = (0, import_react21.useState)(["1"]);
-  return (0, import_react21.createElement)(
+  const [text, setText] = (0, import_react24.useState)("");
+  const [num, setNum] = (0, import_react24.useState)(3);
+  const [checked, setChecked] = (0, import_react24.useState)(true);
+  const [seg, setSeg] = (0, import_react24.useState)("week");
+  const [filter, setFilter] = (0, import_react24.useState)("all");
+  const [multi, setMulti] = (0, import_react24.useState)(["1"]);
+  return (0, import_react24.createElement)(
     "div",
     null,
     // Input 家族
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("demoInputFamily"), hint: t2("inputHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react21.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
-          (0, import_react21.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F" }),
-          (0, import_react21.createElement)(FieldHint, { text: t2("fieldHintDate") })
+          (0, import_react24.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
+          (0, import_react24.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F" }),
+          (0, import_react24.createElement)(FieldHint, { text: t2("fieldHintDate") })
         ),
-        (0, import_react21.createElement)(Input, { value: "bad value", onChange: () => {
+        (0, import_react24.createElement)(Input, { value: "bad value", onChange: () => {
         }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        (0, import_react21.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" } }),
-        (0, import_react21.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165" })
+        (0, import_react24.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" } }),
+        (0, import_react24.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165" })
       )
     ),
     // 问号提示：证明它不属于 Input 家族，随处可挂
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("btnHintTitle"), hint: t2("btnHintHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Row,
           null,
-          (0, import_react21.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
-          (0, import_react21.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+          (0, import_react24.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react24.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Row,
           null,
-          (0, import_react21.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
-          (0, import_react21.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+          (0, import_react24.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react24.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Row,
           null,
-          (0, import_react21.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
-          (0, import_react21.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
+          (0, import_react24.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react24.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
         )
       )
     ),
     // Switch / Checkbox / Segmented
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("switchTip"), hint: t2("checkboxHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
           // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
           // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
           // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
-          (0, import_react21.createElement)(
+          (0, import_react24.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
-            (0, import_react21.createElement)(import_dsh_client_ui_primitives.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-            (0, import_react21.createElement)("span", {
+            (0, import_react24.createElement)(import_dsh_client_ui_primitives.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+            (0, import_react24.createElement)("span", {
               style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
               onClick: () => {
                 setChecked(!checked);
               }
             }, "\u542F\u7528")
           ),
-          (0, import_react21.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" }),
-          (0, import_react21.createElement)(Segmented, {
+          (0, import_react24.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" }),
+          (0, import_react24.createElement)(Segmented, {
             variant: "inset",
             items: [
               { value: "day", label: "\u65E5" },
@@ -1961,7 +2112,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react21.createElement)(Segmented, {
+          (0, import_react24.createElement)(Segmented, {
             variant: "inset",
             bordered: true,
             items: [
@@ -1972,7 +2123,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react21.createElement)(Segmented, {
+          (0, import_react24.createElement)(Segmented, {
             variant: "inset",
             size: "sm",
             items: [
@@ -1983,7 +2134,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react21.createElement)(Segmented, {
+          (0, import_react24.createElement)(Segmented, {
             variant: "inset",
             size: "sm",
             bordered: true,
@@ -1997,7 +2148,7 @@ function InputPage() {
           })
         ),
         // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
-        (0, import_react21.createElement)(Segmented, {
+        (0, import_react24.createElement)(Segmented, {
           variant: "inset",
           items: [
             { value: "all", label: t2("segAll"), count: 11 },
@@ -2009,7 +2160,7 @@ function InputPage() {
           value: filter,
           onChange: setFilter
         }),
-        (0, import_react21.createElement)(Segmented, {
+        (0, import_react24.createElement)(Segmented, {
           variant: "inset",
           bordered: true,
           items: [
@@ -2023,7 +2174,7 @@ function InputPage() {
           onChange: setFilter
         }),
         // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react21.createElement)(Segmented, {
+        (0, import_react24.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
@@ -2034,7 +2185,7 @@ function InputPage() {
           value: multi,
           onChange: setMulti
         }),
-        (0, import_react21.createElement)(Segmented, {
+        (0, import_react24.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           bordered: true,
@@ -2048,7 +2199,7 @@ function InputPage() {
         })
       )
     ),
-    (0, import_react21.createElement)(Placeholder, { descKey: "inputMissingDesc" })
+    (0, import_react24.createElement)(Placeholder, { descKey: "inputMissingDesc" })
   );
 }
 var MODELS = [
@@ -2067,21 +2218,21 @@ var MODELS = [
   }
 ];
 function PickerPage() {
-  const [single, setSingle] = (0, import_react21.useState)(void 0);
-  const [multi, setMulti] = (0, import_react21.useState)([]);
-  const [model, setModel] = (0, import_react21.useState)("");
-  const [ws, setWs] = (0, import_react21.useState)(void 0);
-  const [file, setFile] = (0, import_react21.useState)(void 0);
-  return (0, import_react21.createElement)(
+  const [single, setSingle] = (0, import_react24.useState)(void 0);
+  const [multi, setMulti] = (0, import_react24.useState)([]);
+  const [model, setModel] = (0, import_react24.useState)("");
+  const [ws, setWs] = (0, import_react24.useState)(void 0);
+  const [file, setFile] = (0, import_react24.useState)(void 0);
+  return (0, import_react24.createElement)(
     "div",
     null,
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: "Picker", hint: t2("pickerHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react21.createElement)(Picker, {
+        (0, import_react24.createElement)(Picker, {
           options: [
             { value: "a", label: "\u9009\u9879 A" },
             { value: "b", label: "\u9009\u9879 B" },
@@ -2093,7 +2244,7 @@ function PickerPage() {
           clearable: true,
           placeholder: "\u5355\u9009\uFF08\u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
         }),
-        (0, import_react21.createElement)(Picker, {
+        (0, import_react24.createElement)(Picker, {
           groups: MODELS,
           value: multi,
           mode: "multiple",
@@ -2102,7 +2253,7 @@ function PickerPage() {
           searchable: true,
           placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF09"
         }),
-        (0, import_react21.createElement)(Picker, {
+        (0, import_react24.createElement)(Picker, {
           options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
           degraded: true,
           disabled: true,
@@ -2110,29 +2261,29 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: "ModelPicker", hint: t2("modelPickerHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-        (0, import_react21.createElement)(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: "flat" }),
-        (0, import_react21.createElement)(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: "cascade" })
+        (0, import_react24.createElement)(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: "flat" }),
+        (0, import_react24.createElement)(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: "cascade" })
       )
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: "WorkspacePicker / FilePicker", hint: t2("workspacePickerHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-        (0, import_react21.createElement)(WorkspacePicker, {
+        (0, import_react24.createElement)(WorkspacePicker, {
           workspaces: ["nas", "code", "docs"],
           value: ws,
           onChange: (v) => setWs(v),
           clearable: true
         }),
-        (0, import_react21.createElement)(FilePicker, {
+        (0, import_react24.createElement)(FilePicker, {
           files: ["README.md", "package.json", "src/index.ts"],
           value: file,
           onChange: (v) => setFile(v),
@@ -2140,17 +2291,17 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react21.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
+    (0, import_react24.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
   );
 }
 function TooltipPage() {
-  return (0, import_react21.createElement)(
+  return (0, import_react24.createElement)(
     Demo,
     { title: t2("tooltipTitle"), hint: t2("tooltipHint") },
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       "div",
       { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         Labeled,
         { label: t2("tooltipAnchorButton") },
         tipAnchor("top \xB7 center", "top", "center"),
@@ -2159,52 +2310,52 @@ function TooltipPage() {
         tipAnchor("bottom \xB7 end", "bottom", "end"),
         tipAnchor("right", "right")
       ),
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         Labeled,
         { label: t2("tooltipAnchorText") },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           import_dsh_client_ui_primitives.Tooltip,
           { label: t2("tooltipHint"), side: "top" },
-          (0, import_react21.createElement)("span", {
+          (0, import_react24.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipAnchorText"))
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           import_dsh_client_ui_primitives.Tooltip,
           { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
-          (0, import_react21.createElement)("span", {
+          (0, import_react24.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipLong"))
         )
       ),
       // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         Labeled,
         { label: t2("tooltipMultiline") },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           import_dsh_client_ui_primitives.Tooltip,
           { label: `${t2("tooltipName")}
 ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
-          (0, import_react21.createElement)("span", {
+          (0, import_react24.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipName"))
         )
       ),
       // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         Labeled,
         { label: t2("tooltipRich") },
-        (0, import_react21.createElement)(import_dsh_client_ui_primitives.HoverCard, {
+        (0, import_react24.createElement)(import_dsh_client_ui_primitives.HoverCard, {
           variant: "compact",
           openDelayMs: 200,
-          anchor: (0, import_react21.createElement)("span", {
+          anchor: (0, import_react24.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipName")),
           // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
           // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
           // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
           // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-          content: (0, import_react21.createElement)(
+          content: (0, import_react24.createElement)(
             "div",
             {
               style: {
@@ -2213,8 +2364,8 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
                 color: "var(--dsw-static-neutral-bluish-00,#fff)"
               }
             },
-            (0, import_react21.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
-            (0, import_react21.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
+            (0, import_react24.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
+            (0, import_react24.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
           )
         })
       )
@@ -2222,173 +2373,227 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
   );
 }
 function CardPage() {
-  return (0, import_react21.createElement)(
+  const [seg, setSeg] = (0, import_react24.useState)("all");
+  const [kw, setKw] = (0, import_react24.useState)("");
+  return (0, import_react24.createElement)(
     "div",
     null,
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("demoCardTitle"), hint: t2("cardHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
         // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react21.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            action: (0, import_react24.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
           },
-          (0, import_react21.createElement)(
+          (0, import_react24.createElement)(
             "div",
             { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
             "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
           ),
-          (0, import_react21.createElement)(
+          (0, import_react24.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react21.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react21.createElement)(Chip, null, "#npm"),
-            (0, import_react21.createElement)(Chip, null, "#pnpm"),
-            (0, import_react21.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react21.createElement)(Chip, null, "#\u8FC1\u79FB")
+            (0, import_react24.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react24.createElement)(Chip, null, "#npm"),
+            (0, import_react24.createElement)(Chip, null, "#pnpm"),
+            (0, import_react24.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react24.createElement)(Chip, null, "#\u8FC1\u79FB")
           )
         ),
         // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react21.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+            action: (0, import_react24.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
           },
-          (0, import_react21.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react21.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
+          (0, import_react24.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react24.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
         // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react21.createElement)(
+            (a) => (0, import_react24.createElement)(
               Card,
               { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react21.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react24.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("demoStripTitle"), hint: t2("stripHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           StripCard,
           {
             accent: "business",
-            action: (0, import_react21.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+            action: (0, import_react24.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
           },
-          (0, import_react21.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react21.createElement)(
+          (0, import_react24.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react24.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react21.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react21.createElement)(
+            (0, import_react24.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react24.createElement)(
               "span",
               { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
             )
           )
         ),
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           StripCard,
           {
             accent: "success",
             // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
-            action: (0, import_react21.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+            action: (0, import_react24.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
           },
-          (0, import_react21.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react21.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+          (0, import_react24.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react24.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react21.createElement)(
+            (a) => (0, import_react24.createElement)(
               StripCard,
-              { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react21.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
+              (0, import_react24.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
-      { title: t2("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F" },
-      (0, import_react21.createElement)(SectionHead, { icon: "\u25B8", title: "\u5206\u533A\u6807\u9898", right: (0, import_react21.createElement)(Button, { size: "sm" }, "\u64CD\u4F5C") })
+      { title: t2("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408" },
+      (0, import_react24.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "8px" } },
+        // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
+        (0, import_react24.createElement)(SectionHead, {
+          icon: (0, import_react24.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, { size: 16 }),
+          title: (0, import_react24.createElement)(
+            "span",
+            { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
+            "\u5168\u90E8\u5F85\u529E",
+            (0, import_react24.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
+          ),
+          right: [
+            (0, import_react24.createElement)(Segmented, {
+              variant: "inset",
+              items: [
+                { value: "all", label: t2("segAll"), count: 22 },
+                { value: "doing", label: t2("segDoing"), count: 11 },
+                { value: "claimed", label: t2("segClaimed"), count: 11 },
+                { value: "backlog", label: "\u79EF\u538B" },
+                { value: "overdue", label: "\u903E\u671F", count: 4 },
+                { value: "stalled", label: "\u505C\u6EDE", count: 8 }
+              ],
+              value: seg,
+              onChange: setSeg
+            }),
+            // 搜索框 192px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
+            (0, import_react24.createElement)(
+              "div",
+              { style: { width: "192px", flex: "none" } },
+              (0, import_react24.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+            )
+          ]
+        }),
+        // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
+        (0, import_react24.createElement)(SectionHead, {
+          icon: (0, import_react24.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, { size: 16 }),
+          title: (0, import_react24.createElement)(
+            "span",
+            { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
+            "\u6211\u7684\u5F85\u529E",
+            (0, import_react24.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
+          ),
+          right: (0, import_react24.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
+        }),
+        // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
+        (0, import_react24.createElement)(SectionHead, {
+          icon: (0, import_react24.createElement)(import_dsh_client_ui_primitives.IconRefreshOutlineRegular, { size: 16 }),
+          title: (0, import_react24.createElement)(
+            "span",
+            { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
+            "\u5DF2\u5F52\u6863",
+            (0, import_react24.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
+          ),
+          right: [
+            (0, import_react24.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
+            (0, import_react24.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
+          ]
+        })
+      )
     )
   );
 }
 function ChipPage() {
-  return (0, import_react21.createElement)(
+  return (0, import_react24.createElement)(
     "div",
     null,
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: "Chip", hint: t2("chipHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        // 语义色实心档：状态标签（逾期 / 停滞这类），文案随 locale 切中英
-        (0, import_react21.createElement)(
-          "div",
-          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react21.createElement)(Chip, { tone: "warning" }, t2("chipOverdue")),
-          (0, import_react21.createElement)(Chip, { tone: "danger" }, t2("chipStalled")),
-          (0, import_react21.createElement)(Chip, { tone: "success" }, t2("chipDone")),
-          (0, import_react21.createElement)(Chip, { tone: "business" }, t2("chipDoing"))
-        ),
-        // 尺寸对比：同一组文案 sm / md 各一行，好挑
-        (0, import_react21.createElement)(
-          "div",
-          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react21.createElement)(Chip, { size: "md", tone: "warning" }, t2("chipOverdue")),
-          (0, import_react21.createElement)(Chip, { size: "md", tone: "danger" }, t2("chipStalled")),
-          (0, import_react21.createElement)(Chip, { size: "md" }, "Tag MD"),
-          (0, import_react21.createElement)(Chip, null, "Tag SM")
+        ...["md", "sm", "xs"].map(
+          (sz) => (0, import_react24.createElement)(
+            "div",
+            { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
+            (0, import_react24.createElement)(Chip, { size: sz, tone: "warning" }, t2("chipOverdue")),
+            (0, import_react24.createElement)(Chip, { size: sz, tone: "danger" }, t2("chipStalled")),
+            (0, import_react24.createElement)(Chip, { size: sz, tone: "success" }, t2("chipDone")),
+            (0, import_react24.createElement)(Chip, { size: sz, tone: "business" }, t2("chipDoing")),
+            (0, import_react24.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
+          )
         ),
         // 中性 # 标签（语言无关）+ 长文字回归样
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           "div",
           { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react21.createElement)(Chip, null, "#npm"),
-          (0, import_react21.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react21.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react21.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+          (0, import_react24.createElement)(Chip, null, "#npm"),
+          (0, import_react24.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react24.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react24.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
         )
       )
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("marqueeTitle"), hint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7" },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { maxWidth: "200px" } },
-        (0, import_react21.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
+        (0, import_react24.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
       )
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("liveTitle"), hint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3" },
-      (0, import_react21.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+      (0, import_react24.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: t2("emptyStateTitle"), hint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE" },
-      (0, import_react21.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
+      (0, import_react24.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
     )
   );
 }
@@ -2396,64 +2601,223 @@ function Boom() {
   throw new Error("\u6F14\u793A\uFF1A\u5B50\u7EC4\u4EF6\u629B\u9519\u88AB\u8FB9\u754C\u63A5\u4F4F");
 }
 function FeedbackPage() {
-  const [open, setOpen] = (0, import_react21.useState)(false);
-  const [boom, setBoom] = (0, import_react21.useState)(false);
-  return (0, import_react21.createElement)(
+  const [open, setOpen] = (0, import_react24.useState)(false);
+  const [openNative, setOpenNative] = (0, import_react24.useState)(false);
+  const [boom, setBoom] = (0, import_react24.useState)(false);
+  const [alertState, setAlertState] = (0, import_react24.useState)(null);
+  const [confirmCfg, setConfirmCfg] = (0, import_react24.useState)(null);
+  const [confirmResult, setConfirmResult] = (0, import_react24.useState)("");
+  const [largeOpen, setLargeOpen] = (0, import_react24.useState)(false);
+  return (0, import_react24.createElement)(
     "div",
     null,
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: "Modal", hint: t2("feedbackModalHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         null,
-        (0, import_react21.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5F39\u7A97"),
-        open ? (0, import_react21.createElement)(Modal, {
+        (0, import_react24.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5F39\u7A97"),
+        open ? (0, import_react24.createElement)(Modal, {
           title: "\u4EFB\u52A1\u8BE6\u60C5",
           onClose: () => setOpen(false),
-          footer: (0, import_react21.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-        }, (0, import_react21.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+          footer: (0, import_react24.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+        }, (0, import_react24.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
       )
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
+      Demo,
+      { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: "\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684\u5B98\u65B9 Modal\uFF1A\u6B63\u6587\u533A\u53EF\u585E\u4EFB\u610F\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF0Cfooter \u53EF\u653E\u4EFB\u610F\u6309\u94AE\u7EC4\u5408\uFF0C\u5C3A\u5BF8\u7ECF contentClassName \u5B9A\u5236" },
+      (0, import_react24.createElement)(
+        "div",
+        null,
+        (0, import_react24.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97"),
+        openNative ? (0, import_react24.createElement)(
+          Official.Modal,
+          {
+            open: openNative,
+            onClose: () => setOpenNative(false),
+            title: "\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97",
+            closeLabel: "\u5173\u95ED",
+            description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
+            contentClassName: "dshpc-native-demo-content",
+            footer: (0, import_react24.createElement)(
+              "div",
+              { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
+              (0, import_react24.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react24.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react24.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+            )
+          },
+          (0, import_react24.createElement)(
+            "div",
+            { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+            (0, import_react24.createElement)(Input, { placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react24.createElement)(
+              "label",
+              { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
+              (0, import_react24.createElement)(Checkbox, { checked: false, onChange: () => {
+              } }),
+              "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
+            )
+          )
+        ) : null
+      )
+    ),
+    (0, import_react24.createElement)(
+      Demo,
+      { title: "AlertModal\uFF08\u81EA\u7ED8\xB7\u8B66\u544A\u6846\uFF09", hint: "\u5355\u6309\u94AE + severity \u56FE\u6807\uFF08info/success/warning/error\uFF09\uFF1B\u4E0D\u4F20\u6807\u9898\u65F6\u6574\u6761\u5934\u90E8\u6D88\u5931\uFF0C\u76F4\u63A5\u51FA\u8BF4\u660E\u6587\u5B57" },
+      (0, import_react24.createElement)(
+        "div",
+        { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
+        (0, import_react24.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
+        (0, import_react24.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
+        (0, import_react24.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
+        (0, import_react24.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
+        (0, import_react24.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
+      ),
+      alertState !== null ? (0, import_react24.createElement)(AlertModal, {
+        severity: alertState.sev,
+        title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
+        message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
+        onConfirm: () => setAlertState(null)
+      }) : null
+    ),
+    (0, import_react24.createElement)(
+      Demo,
+      { title: "ConfirmModal\uFF08\u81EA\u7ED8\xB7\u786E\u8BA4\u6846\uFF09", hint: "\u53CC\u6309\u94AE\uFF08\u53D6\u6D88 outline + \u786E\u8BA4\u8BED\u4E49\u6863\uFF09\uFF1B\u4E0D\u4F20\u6807\u9898\u65F6\u6574\u6761\u5934\u90E8\u6D88\u5931\uFF1B\u6837\u5F0F\u5C01\u95ED\u53EA\u66B4\u9732\u8BED\u4E49\u6863" },
+      (0, import_react24.createElement)(
+        "div",
+        { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
+        (0, import_react24.createElement)(Button, { onClick: () => {
+          setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
+          setConfirmResult("");
+        } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
+        (0, import_react24.createElement)(Button, { variant: "outline", onClick: () => {
+          setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
+          setConfirmResult("");
+        } }, "danger \u53D8\u4F53"),
+        (0, import_react24.createElement)(Button, { variant: "ghost", onClick: () => {
+          setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
+          setConfirmResult("");
+        } }, "\u6539\u6587\u6848"),
+        confirmResult ? (0, import_react24.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
+      ),
+      confirmCfg !== null ? (0, import_react24.createElement)(ConfirmModal, {
+        title: "\u5220\u9664\u4EFB\u52A1",
+        message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
+        tone: confirmCfg.tone,
+        confirmText: confirmCfg.confirmText,
+        cancelText: confirmCfg.cancelText,
+        onConfirm: () => {
+          setConfirmCfg(null);
+          setConfirmResult(`\u4F60\u70B9\u4E86\uFF1A${confirmCfg.confirmText}\uFF08\u786E\u8BA4\uFF09`);
+        },
+        onCancel: () => {
+          setConfirmCfg(null);
+          setConfirmResult(`\u4F60\u70B9\u4E86\uFF1A${confirmCfg.cancelText}\uFF08\u53D6\u6D88\uFF09`);
+        }
+      }) : null
+    ),
+    (0, import_react24.createElement)(
+      Demo,
+      { title: "\u547D\u4EE4\u5F0F alertModal() / confirmModal()\uFF08Promise\uFF09", hint: "\u65E0\u9700\u5728\u7EC4\u4EF6\u6811\u91CC\u5199 state\uFF1Aawait confirmModal(...) \u62FF\u5230 true/false" },
+      (0, import_react24.createElement)(
+        "div",
+        { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
+        (0, import_react24.createElement)(Button, { variant: "outline", onClick: () => {
+          alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => showToast("alert \u5DF2\u5173\u95ED"));
+        } }, "alertModal()"),
+        (0, import_react24.createElement)(Button, { onClick: async () => {
+          const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
+          showToast(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
+        } }, "confirmModal()")
+      )
+    ),
+    (0, import_react24.createElement)(
+      Demo,
+      { title: "\u5927\u5F39\u7A97\uFF08\u5E95\u5C42 Modal\xB7\u591A\u6392\u6807\u9898 + \u5934\u90E8\u52A8\u4F5C\u533A + \u6EDA\u52A8\uFF09", hint: "\u6807\u9898\u53EF\u591A\u6392\uFF1B\u5934\u90E8\u53F3\u4FA7\u52A8\u4F5C\u533A\u653E\u5173\u95ED\u94AE + \u66F4\u591A\uFF1B\u4E2D\u95F4\u6EDA\u52A8\uFF1Bclosable:false \u53EA\u7559\u52A8\u4F5C\u533A\u5173\u95ED\u94AE" },
+      (0, import_react24.createElement)(
+        "div",
+        null,
+        (0, import_react24.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97"),
+        largeOpen ? (0, import_react24.createElement)(
+          Modal,
+          {
+            size: "lg",
+            closable: false,
+            title: (0, import_react24.createElement)(
+              "div",
+              null,
+              (0, import_react24.createElement)("div", { style: { fontWeight: 600 } }, "\u4F1A\u8BDD\u8BB0\u5F55"),
+              (0, import_react24.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginTop: "2px" } }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
+            ),
+            headerExtra: (0, import_react24.createElement)(Chip, { tone: "business" }, "128 \u6761"),
+            headerActions: (0, import_react24.createElement)(
+              "div",
+              { style: { display: "flex", gap: "8px" } },
+              (0, import_react24.createElement)(Button, { variant: "ghost", size: "sm", onClick: () => {
+              } }, "\u66F4\u591A"),
+              (0, import_react24.createElement)(IconButton, { variant: "plain", icon: (0, import_react24.createElement)(import_dsh_client_ui_primitives.IconCloseOutlineRegular), label: "\u5173\u95ED", onClick: () => setLargeOpen(false) })
+            ),
+            onClose: () => setLargeOpen(false),
+            footer: (0, import_react24.createElement)(
+              "div",
+              { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
+              (0, import_react24.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
+              (0, import_react24.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
+            )
+          },
+          (0, import_react24.createElement)(
+            "div",
+            null,
+            Array.from(
+              { length: 40 },
+              (_, i) => (0, import_react24.createElement)("div", { key: i, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
+            )
+          )
+        ) : null
+      )
+    ),
+    (0, import_react24.createElement)(
       Demo,
       { title: "toast", hint: t2("feedbackToastHint") },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", gap: "8px" } },
-        (0, import_react21.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A"),
-        (0, import_react21.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react21.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25")
+        (0, import_react24.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A"),
+        (0, import_react24.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react24.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25")
       )
     ),
-    (0, import_react21.createElement)(
+    (0, import_react24.createElement)(
       Demo,
       { title: "ErrorBoundary / Loading" },
-      (0, import_react21.createElement)(
+      (0, import_react24.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react21.createElement)(
+        (0, import_react24.createElement)(
           "div",
           { style: { border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "10px" } },
-          boom ? (0, import_react21.createElement)(ErrorBoundary, null, (0, import_react21.createElement)(Boom, null)) : (0, import_react21.createElement)(Button, { variant: "danger", onClick: () => setBoom(true) }, "\u70B9\u6211\u629B\u9519\uFF08\u770B\u8FB9\u754C\u515C\u5E95\uFF09")
+          boom ? (0, import_react24.createElement)(ErrorBoundary, null, (0, import_react24.createElement)(Boom, null)) : (0, import_react24.createElement)(Button, { variant: "danger", onClick: () => setBoom(true) }, "\u70B9\u6211\u629B\u9519\uFF08\u770B\u8FB9\u754C\u515C\u5E95\uFF09")
         ),
-        (0, import_react21.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("loadingNote"))
+        (0, import_react24.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("loadingNote"))
       )
     )
   );
 }
 function LayoutPage() {
-  return (0, import_react21.createElement)(Placeholder, { descKey: "layoutDesc" });
+  return (0, import_react24.createElement)(Placeholder, { descKey: "layoutDesc" });
 }
 
 // packages/demo/src/sections/blocks.tsx
-var import_react25 = require("react");
+var import_react28 = require("react");
 
 // dist/explorer/ExplorerPanel.js
-var import_react23 = require("react");
+var import_react26 = require("react");
 
 // dist/explorer/preview/index.js
-var import_react22 = require("react");
+var import_react25 = require("react");
 
 // dist/explorer/types.js
 function previewKindOf(path) {
@@ -2501,10 +2865,10 @@ function FilePreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const kind = previewKindOf(props.path);
-  const [text, setText] = (0, import_react22.useState)(null);
-  const [imageUrl, setImageUrl] = (0, import_react22.useState)(null);
-  const [failed, setFailed] = (0, import_react22.useState)(false);
-  (0, import_react22.useEffect)(() => {
+  const [text, setText] = (0, import_react25.useState)(null);
+  const [imageUrl, setImageUrl] = (0, import_react25.useState)(null);
+  const [failed, setFailed] = (0, import_react25.useState)(false);
+  (0, import_react25.useEffect)(() => {
     let alive = true;
     let url = null;
     setText(null);
@@ -2538,28 +2902,28 @@ function FilePreview(props) {
     };
   }, [props.path, props.sessionId, props.workspaceFiles, kind]);
   if (kind === "unsupported") {
-    return (0, import_react22.createElement)(EmptyState, { text: tt("explorerUnsupported"), translate: tt });
+    return (0, import_react25.createElement)(EmptyState, { text: tt("explorerUnsupported"), translate: tt });
   }
   if (failed)
-    return (0, import_react22.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt });
+    return (0, import_react25.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt });
   if (kind === "image") {
-    return imageUrl === null ? (0, import_react22.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react22.createElement)("img", { className: "dshpc-exp__image", src: imageUrl, alt: props.path });
+    return imageUrl === null ? (0, import_react25.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react25.createElement)("img", { className: "dshpc-exp__image", src: imageUrl, alt: props.path });
   }
-  return text === null ? (0, import_react22.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react22.createElement)("pre", { className: "dshpc-exp__text" }, text);
+  return text === null ? (0, import_react25.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react25.createElement)("pre", { className: "dshpc-exp__text" }, text);
 }
 
 // dist/explorer/ExplorerPanel.js
 function ExplorerPanel(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const [dir, setDir] = (0, import_react23.useState)(props.path ?? "");
-  const [entries, setEntries] = (0, import_react23.useState)([]);
-  const [truncated, setTruncated] = (0, import_react23.useState)(false);
-  const [loading, setLoading] = (0, import_react23.useState)(true);
-  const [failed, setFailed] = (0, import_react23.useState)(false);
-  const [selected, setSelected] = (0, import_react23.useState)(null);
-  const [nonce, setNonce] = (0, import_react23.useState)(0);
-  (0, import_react23.useEffect)(() => {
+  const [dir, setDir] = (0, import_react26.useState)(props.path ?? "");
+  const [entries2, setEntries] = (0, import_react26.useState)([]);
+  const [truncated, setTruncated] = (0, import_react26.useState)(false);
+  const [loading, setLoading] = (0, import_react26.useState)(true);
+  const [failed, setFailed] = (0, import_react26.useState)(false);
+  const [selected, setSelected] = (0, import_react26.useState)(null);
+  const [nonce, setNonce] = (0, import_react26.useState)(0);
+  (0, import_react26.useEffect)(() => {
     let alive = true;
     setLoading(true);
     setFailed(false);
@@ -2586,28 +2950,28 @@ function ExplorerPanel(props) {
     props.onSelect?.(null);
     setDir(next);
   };
-  const crumbBar = (0, import_react23.createElement)("div", { className: "dshpc-exp__crumbs" }, (0, import_react23.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => goto("") }, tt("explorerRoot")), crumbs.map((c, i) => {
+  const crumbBar = (0, import_react26.createElement)("div", { className: "dshpc-exp__crumbs" }, (0, import_react26.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => goto("") }, tt("explorerRoot")), crumbs.map((c, i) => {
     const isLast = i === crumbs.length - 1;
     const upto = crumbs.slice(0, i + 1).join("/");
-    return (0, import_react23.createElement)("span", { key: upto }, (0, import_react23.createElement)("span", { className: "dshpc-exp__sep" }, " / "), (0, import_react23.createElement)("button", {
+    return (0, import_react26.createElement)("span", { key: upto }, (0, import_react26.createElement)("span", { className: "dshpc-exp__sep" }, " / "), (0, import_react26.createElement)("button", {
       type: "button",
       className: `dshpc-exp__crumb${isLast ? " dshpc-exp__crumb--current" : ""}`,
       onClick: () => goto(upto)
     }, c));
-  }), (0, import_react23.createElement)("span", { className: "dshpc-exp__tools" }, (0, import_react23.createElement)("button", {
+  }), (0, import_react26.createElement)("span", { className: "dshpc-exp__tools" }, (0, import_react26.createElement)("button", {
     type: "button",
     className: "dshpc-exp__crumb",
     disabled: dir === "",
     onClick: () => goto(parentOf(dir))
-  }, tt("explorerUp")), (0, import_react23.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => setNonce(nonce + 1) }, tt("explorerRefresh"))));
-  const tree = loading ? (0, import_react23.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : failed ? (0, import_react23.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt }) : entries.length === 0 ? (0, import_react23.createElement)("div", { className: "dshpc-exp__note" }, props.emptyText ?? tt("explorerEmptyDir")) : (0, import_react23.createElement)("div", { className: "dshpc-exp__tree" }, [...entries].sort((a, b) => {
+  }, tt("explorerUp")), (0, import_react26.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => setNonce(nonce + 1) }, tt("explorerRefresh"))));
+  const tree = loading ? (0, import_react26.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : failed ? (0, import_react26.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt }) : entries2.length === 0 ? (0, import_react26.createElement)("div", { className: "dshpc-exp__note" }, props.emptyText ?? tt("explorerEmptyDir")) : (0, import_react26.createElement)("div", { className: "dshpc-exp__tree" }, [...entries2].sort((a, b) => {
     if (a.type !== b.type)
       return a.type === "directory" ? -1 : 1;
     return a.name.localeCompare(b.name);
   }).map((e) => {
     const full = joinPath(dir, e.name);
     const isDir = e.type === "directory";
-    return (0, import_react23.createElement)("div", {
+    return (0, import_react26.createElement)("div", {
       key: full,
       className: `dshpc-exp__item${selected === full ? " dshpc-exp__item--active" : ""}`,
       onClick: () => {
@@ -2619,9 +2983,9 @@ function ExplorerPanel(props) {
           props.onOpenFile?.(full);
         }
       }
-    }, (0, import_react23.createElement)("span", { className: "dshpc-exp__icon" }, isDir ? "\u25B8" : "\xB7"), (0, import_react23.createElement)("span", { className: "dshpc-exp__name" }, e.name), e.size === void 0 ? null : (0, import_react23.createElement)("span", { className: "dshpc-exp__size" }, formatBytes(e.size)));
-  }), truncated ? (0, import_react23.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerTruncated")) : null);
-  return (0, import_react23.createElement)("div", { className: "dshpc-exp" }, crumbBar, (0, import_react23.createElement)("div", { className: "dshpc-exp__body" }, tree, (0, import_react23.createElement)("div", { className: "dshpc-exp__preview" }, selected === null ? null : (0, import_react23.createElement)(FilePreview, {
+    }, (0, import_react26.createElement)("span", { className: "dshpc-exp__icon" }, isDir ? "\u25B8" : "\xB7"), (0, import_react26.createElement)("span", { className: "dshpc-exp__name" }, e.name), e.size === void 0 ? null : (0, import_react26.createElement)("span", { className: "dshpc-exp__size" }, formatBytes(e.size)));
+  }), truncated ? (0, import_react26.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerTruncated")) : null);
+  return (0, import_react26.createElement)("div", { className: "dshpc-exp" }, crumbBar, (0, import_react26.createElement)("div", { className: "dshpc-exp__body" }, tree, (0, import_react26.createElement)("div", { className: "dshpc-exp__preview" }, selected === null ? null : (0, import_react26.createElement)(FilePreview, {
     workspaceFiles: props.workspaceFiles,
     sessionId: props.sessionId,
     path: selected,
@@ -2630,7 +2994,7 @@ function ExplorerPanel(props) {
 }
 
 // dist/session/index.js
-var import_react24 = require("react");
+var import_react27 = require("react");
 
 // dist/session/types.js
 var ROLE_LABEL_KEY = {
@@ -2645,11 +3009,11 @@ function SessionPreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const variant = props.variant ?? "modal";
-  const [messages, setMessages] = (0, import_react24.useState)([]);
-  const [loading, setLoading] = (0, import_react24.useState)(true);
-  const [failed, setFailed] = (0, import_react24.useState)(false);
-  const [nonce, setNonce] = (0, import_react24.useState)(0);
-  (0, import_react24.useEffect)(() => {
+  const [messages, setMessages] = (0, import_react27.useState)([]);
+  const [loading, setLoading] = (0, import_react27.useState)(true);
+  const [failed, setFailed] = (0, import_react27.useState)(false);
+  const [nonce, setNonce] = (0, import_react27.useState)(0);
+  (0, import_react27.useEffect)(() => {
     let alive = true;
     setLoading(true);
     setFailed(false);
@@ -2669,24 +3033,24 @@ function SessionPreview(props) {
       alive = false;
     };
   }, [props.sessionId, props.source, nonce]);
-  const body = loading ? (0, import_react24.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react24.createElement)(EmptyState, {
+  const body = loading ? (0, import_react27.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react27.createElement)(EmptyState, {
     text: tt("sessionFailed"),
     translate: tt,
-    action: (0, import_react24.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
-  }) : messages.length === 0 ? (0, import_react24.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react24.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react24.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react24.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react24.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react24.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react24.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react24.createElement)("button", {
+    action: (0, import_react27.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
+  }) : messages.length === 0 ? (0, import_react27.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react27.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react27.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react27.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react27.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react27.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react27.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react27.createElement)("button", {
     key: a.path,
     type: "button",
     className: "dshpc-ses__att",
     onClick: () => props.onOpenFile?.(a.path)
   }, a.name, a.bytes === void 0 ? null : ` ${formatBytes(a.bytes)}`))))));
   if (variant === "modal") {
-    return (0, import_react24.createElement)(Modal, {
+    return (0, import_react27.createElement)(Modal, {
       title: props.title ?? props.sessionId,
       onClose: props.onClose,
-      children: (0, import_react24.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
+      children: (0, import_react27.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
     });
   }
-  return (0, import_react24.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react24.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react24.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
+  return (0, import_react27.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react27.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react27.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
 }
 
 // packages/demo/src/mock.ts
@@ -2796,9 +3160,9 @@ var mockWorkspaceFiles = {
   async list(sessionId, path) {
     await delay(120);
     const key = path === "." || path === "" ? "." : path;
-    const entries = TREE[key];
-    if (entries === void 0) throw new Error("not-directory");
-    return { path, entries: entries.map((e) => ({ ...e })), truncated: false };
+    const entries2 = TREE[key];
+    if (entries2 === void 0) throw new Error("not-directory");
+    return { path, entries: entries2.map((e) => ({ ...e })), truncated: false };
   }
 };
 var mockSessionSource = {
@@ -2826,17 +3190,17 @@ function delay(ms) {
 
 // packages/demo/src/sections/blocks.tsx
 function ExplorerPage() {
-  const [selected, setSelected] = (0, import_react25.useState)(null);
-  return (0, import_react25.createElement)(
+  const [selected, setSelected] = (0, import_react28.useState)(null);
+  return (0, import_react28.createElement)(
     "div",
     null,
-    (0, import_react25.createElement)(
+    (0, import_react28.createElement)(
       Demo,
       { title: "ExplorerPanel", hint: t2("explorerHint") },
-      (0, import_react25.createElement)(
+      (0, import_react28.createElement)(
         "div",
         { style: { display: "flex", gap: "16px", flexWrap: "wrap" } },
-        (0, import_react25.createElement)(
+        (0, import_react28.createElement)(
           "div",
           {
             style: {
@@ -2847,21 +3211,21 @@ function ExplorerPage() {
               borderRadius: "8px"
             }
           },
-          (0, import_react25.createElement)(ExplorerPanel, {
+          (0, import_react28.createElement)(ExplorerPanel, {
             workspaceFiles: mockWorkspaceFiles,
             sessionId: "demo-session",
             path: "",
             onSelect: setSelected
           })
         ),
-        (0, import_react25.createElement)(
+        (0, import_react28.createElement)(
           "div",
           { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", alignSelf: "center" } },
           selected === null ? "\u70B9\u5DE6\u4FA7\u6587\u4EF6\u8BD5\u8BD5" : `\u5DF2\u9009\u4E2D\uFF1A${selected}`
         )
       )
     ),
-    (0, import_react25.createElement)(
+    (0, import_react28.createElement)(
       Demo,
       { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") },
       null
@@ -2869,17 +3233,17 @@ function ExplorerPage() {
   );
 }
 function SessionPage() {
-  const [open, setOpen] = (0, import_react25.useState)(false);
-  return (0, import_react25.createElement)(
+  const [open, setOpen] = (0, import_react28.useState)(false);
+  return (0, import_react28.createElement)(
     Demo,
     { title: "SessionPreview", hint: t2("sessionHint") },
-    (0, import_react25.createElement)(
+    (0, import_react28.createElement)(
       "div",
       { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-      (0, import_react25.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09"),
-      (0, import_react25.createElement)(Button, { onClick: () => setOpen(false) }, "\u5173\u95ED")
+      (0, import_react28.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09"),
+      (0, import_react28.createElement)(Button, { onClick: () => setOpen(false) }, "\u5173\u95ED")
     ),
-    open ? (0, import_react25.createElement)(SessionPreview, {
+    open ? (0, import_react28.createElement)(SessionPreview, {
       sessionId: "demo-session",
       source: mockSessionSource,
       variant: "modal",
@@ -2891,7 +3255,7 @@ function SessionPage() {
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react26 = require("react");
+var import_react29 = require("react");
 var NOW = Date.parse("2026-10-18T12:00:00.000Z");
 var DATE_ROWS = [
   ["formatDateTime", formatDateTime("2026-10-18T09:30:05.000Z", { seconds: true })],
@@ -2906,28 +3270,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react26.createElement)(
+  return (0, import_react29.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react26.createElement)(
+    (0, import_react29.createElement)(
       "thead",
       null,
-      (0, import_react26.createElement)(
+      (0, import_react29.createElement)(
         "tr",
         null,
-        (0, import_react26.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react26.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react29.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react29.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react26.createElement)(
+    (0, import_react29.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react26.createElement)(
+        ([fn, out]) => (0, import_react29.createElement)(
           "tr",
           { key: fn },
-          (0, import_react26.createElement)("td", { style: td }, fn),
-          (0, import_react26.createElement)("td", { style: td }, out)
+          (0, import_react29.createElement)("td", { style: td }, fn),
+          (0, import_react29.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -2936,29 +3300,29 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react26.createElement)(Demo, { title: "date / time", hint: t2("dateHint") }, (0, import_react26.createElement)(FnTable, { rows: DATE_ROWS }));
+  return (0, import_react29.createElement)(Demo, { title: "date / time", hint: t2("dateHint") }, (0, import_react29.createElement)(FnTable, { rows: DATE_ROWS }));
 }
 function NumberPage() {
-  return (0, import_react26.createElement)(Demo, { title: "number / bytes", hint: t2("numberHint") }, (0, import_react26.createElement)(FnTable, { rows: NUMBER_ROWS }));
+  return (0, import_react29.createElement)(Demo, { title: "number / bytes", hint: t2("numberHint") }, (0, import_react29.createElement)(FnTable, { rows: NUMBER_ROWS }));
 }
 function TextPage() {
-  return (0, import_react26.createElement)(Placeholder, { descKey: "textDesc" });
+  return (0, import_react29.createElement)(Placeholder, { descKey: "textDesc" });
 }
 function HttpPage() {
-  return (0, import_react26.createElement)(Placeholder, { descKey: "httpDesc" });
+  return (0, import_react29.createElement)(Placeholder, { descKey: "httpDesc" });
 }
 function I18nPage() {
-  return (0, import_react26.createElement)(
+  return (0, import_react29.createElement)(
     "div",
     null,
-    (0, import_react26.createElement)(
+    (0, import_react29.createElement)(
       Demo,
       { title: "getLocale / setLocale", hint: t2("i18nDesc") },
-      (0, import_react26.createElement)(
+      (0, import_react29.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react26.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
-        (0, import_react26.createElement)("code", {
+        (0, import_react29.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
+        (0, import_react29.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -2970,58 +3334,58 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react26.createElement)(Placeholder, { descKey: "i18nDesc" })
+    (0, import_react29.createElement)(Placeholder, { descKey: "i18nDesc" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react27 = require("react");
+var import_react30 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react27.createElement)(
+  return (0, import_react30.createElement)(
     "div",
     null,
-    (0, import_react27.createElement)(Demo, { title: t2("secA11y") }, (0, import_react27.createElement)(Placeholder, { descKey: "a11yDesc" })),
-    (0, import_react27.createElement)(
+    (0, import_react30.createElement)(Demo, { title: t2("secA11y") }, (0, import_react30.createElement)(Placeholder, { descKey: "a11yDesc" })),
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("secRoadmap"), hint: t2("roadmapHint") },
-      (0, import_react27.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react27.createElement)(
+          (key) => (0, import_react30.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react27.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react27.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
+            (0, import_react30.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react30.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
           )
         ),
-        (0, import_react27.createElement)(
+        (0, import_react30.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t2("roadmapLayout")
         )
       )
     ),
-    (0, import_react27.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("secBuild"), hint: t2("buildDesc") },
-      (0, import_react27.createElement)(
+      (0, import_react30.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react27.createElement)(
+        (0, import_react30.createElement)(
           "tbody",
           null,
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1020-0947-ei1k"]
+            [t2("buildStamp"), "1020-1226-ln57"]
           ].map(
-            ([label, value]) => (0, import_react27.createElement)(
+            ([label, value]) => (0, import_react30.createElement)(
               "tr",
               { key: label },
-              (0, import_react27.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react27.createElement)("td", {
+              (0, import_react30.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react30.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -3047,28 +3411,28 @@ var SECTION_GROUPS = [
 ];
 var ALL_SECTIONS = [
   // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react28.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react28.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react28.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react28.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react28.createElement)(PickerPage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react28.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react28.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react28.createElement)(ChipPage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react28.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react28.createElement)(LayoutPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react28.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react28.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react28.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react28.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react28.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react28.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react28.createElement)(I18nPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react31.createElement)(QuickstartPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react31.createElement)(FoundationPage, null) },
+  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react31.createElement)(ButtonPage, null) },
+  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react31.createElement)(InputPage, null) },
+  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react31.createElement)(PickerPage, null) },
+  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react31.createElement)(TooltipPage, null) },
+  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react31.createElement)(CardPage, null) },
+  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react31.createElement)(ChipPage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react31.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react31.createElement)(LayoutPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react31.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react31.createElement)(SessionPage, null) },
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react31.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react31.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react31.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react31.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react31.createElement)(I18nPage, null) },
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react28.createElement)(ReferencePage, null) }
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react31.createElement)(ReferencePage, null) }
 ];
 function Demo(props) {
-  return (0, import_react28.createElement)(
+  return (0, import_react31.createElement)(
     "section",
     {
       style: {
@@ -3079,10 +3443,10 @@ function Demo(props) {
         background: "var(--dshpc-surface-1)"
       }
     },
-    (0, import_react28.createElement)("h3", { style: { margin: "0 0 2px", fontSize: "15px" } }, props.title),
-    props.hint === void 0 ? null : (0, import_react28.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
-    (0, import_react28.createElement)("div", { style: { marginBottom: props.code === void 0 ? 0 : "12px" } }, props.children ?? null),
-    props.code === void 0 ? null : (0, import_react28.createElement)(
+    (0, import_react31.createElement)("h3", { style: { margin: "0 0 2px", fontSize: "15px" } }, props.title),
+    props.hint === void 0 ? null : (0, import_react31.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
+    (0, import_react31.createElement)("div", { style: { marginBottom: props.code === void 0 ? 0 : "12px" } }, props.children ?? null),
+    props.code === void 0 ? null : (0, import_react31.createElement)(
       "pre",
       {
         style: {
@@ -3101,7 +3465,7 @@ function Demo(props) {
   );
 }
 function Placeholder(props) {
-  return (0, import_react28.createElement)(
+  return (0, import_react31.createElement)(
     "div",
     {
       style: {
@@ -3113,7 +3477,7 @@ function Placeholder(props) {
         color: "var(--dshpc-fg-3)"
       }
     },
-    (0, import_react28.createElement)("div", {
+    (0, import_react31.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -3123,23 +3487,23 @@ function Placeholder(props) {
         marginBottom: "10px"
       }
     }, t2("phTodo")),
-    (0, import_react28.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
+    (0, import_react31.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react28.createElement)(
+  return (0, import_react31.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react28.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react28.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
+    (0, import_react31.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react31.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react28.createElement)(
+  return (0, import_react31.createElement)(
     "div",
     null,
-    (0, import_react28.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
+    (0, import_react31.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
     current3.render()
   );
 }
@@ -3148,8 +3512,8 @@ function Sections(props) {
 var PANEL_ID = "dsh-plugin-core-demo";
 var localeRuntime;
 function useLocaleTick() {
-  const [, setTick] = (0, import_react29.useState)(0);
-  (0, import_react29.useEffect)(() => {
+  const [, setTick] = (0, import_react32.useState)(0);
+  (0, import_react32.useEffect)(() => {
     const rt = localeRuntime;
     if (rt === void 0) return;
     return rt.subscribe(() => {
@@ -3159,11 +3523,11 @@ function useLocaleTick() {
 }
 function DemoPage() {
   useLocaleTick();
-  const [active, setActive] = (0, import_react29.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive] = (0, import_react32.useState)(ALL_SECTIONS[0].id);
   const nav = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav.push(
-      (0, import_react29.createElement)(
+      (0, import_react32.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -3181,7 +3545,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav.push(
-        (0, import_react29.createElement)(
+        (0, import_react32.createElement)(
           "button",
           {
             key: section.id,
@@ -3208,10 +3572,10 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react29.createElement)(
+  return (0, import_react32.createElement)(
     "div",
     { style: { display: "flex", alignItems: "stretch", height: "100%", minHeight: 0, overflow: "hidden" } },
-    (0, import_react29.createElement)(
+    (0, import_react32.createElement)(
       "aside",
       {
         style: {
@@ -3227,15 +3591,15 @@ function DemoPage() {
       },
       nav
     ),
-    (0, import_react29.createElement)(
+    (0, import_react32.createElement)(
       "main",
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
-      (0, import_react29.createElement)(Sections, { active })
+      (0, import_react32.createElement)(Sections, { active })
     )
   );
 }
 function OpenPreviewCard(props) {
-  return (0, import_react29.createElement)(
+  return (0, import_react32.createElement)(
     "div",
     {
       role: "button",
@@ -3253,21 +3617,21 @@ function OpenPreviewCard(props) {
         background: "var(--dshpc-surface-1)"
       }
     },
-    (0, import_react29.createElement)(
+    (0, import_react32.createElement)(
       "div",
       null,
-      (0, import_react29.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
-      (0, import_react29.createElement)(
+      (0, import_react32.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
+      (0, import_react32.createElement)(
         "div",
         { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
         t2("pluginCardDesc")
       )
     ),
-    (0, import_react29.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
+    (0, import_react32.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
   );
 }
 function PanelIcon() {
-  return (0, import_react29.createElement)(
+  return (0, import_react32.createElement)(
     "span",
     { style: { display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "13px" } },
     "\u25E7"
@@ -3278,7 +3642,7 @@ function apply(ctx) {
   setStyleKit(kit);
   ensureControls(kit);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react29.createElement)(import_dsh_client_ui_primitives2.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react32.createElement)(import_dsh_client_ui_primitives2.Tooltip, props));
   let jump = () => {
   };
   ctx.inject(["layout"], (sub) => {
@@ -3325,7 +3689,7 @@ function apply(ctx) {
             jump(PANEL_ID);
           } })
         },
-        (props) => (0, import_react29.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
+        (props) => (0, import_react32.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
           jump(PANEL_ID);
         }) })
       );
