@@ -131,12 +131,21 @@ h(WorkspacePicker, { workspaces: wsList, value: cur, onChange: setCur })
 
 ### Card / StripCard / Chip
 
-**两种卡片外观，拆成两个独立组件**（消费方要用哪个拖哪个，不搞 variant 二合一）：
+**两种卡片外观，两个独立组件**（2026-10-20 对齐兄弟项目：框式照 `dsh-task-ledger` 任务行、
+浅底条照 `dsh-task-dispatch-table` 执行记录块；import 即表明用的是哪种）：
 
 | 组件 | 外观 | 色条 |
 |---|---|---|
-| `Card` | 圆角 + 1px 边框 | 短条，上下留距 8px |
-| `StripCard` | 无圆角、无边框（贴边） | **通高**（贴顶到底） |
+| `Card` | surface 底 + 1px 边框 + 圆角（`--dshpc-radius-sm`），padding 全向 14px | 行内 **6px** 圆角短条（`--dshpc-radius-xs`），高度跟随内容、最小一行 |
+| `StripCard` | 同色系浅底（`--dshpc-*-soft`）+ 1px 不可见占位边框 + 方角 | **5px 通高**、方角、贴左缘 |
+
+两种外观的头部都是**整体垂直居中**（`align-items:center`）：调用方在 `action` 里裸放一个元素
+（按钮 / 文字 / 图标）即垂直居中，**不用自己套容器**；框内一行两行、右侧放什么、
+悬停浮出的按钮，都由调用方在框内自定——外壳只提供框与居中。
+
+浅底与色条同源（仅 `StripCard`）：`accent` 档位同时驱动 `--card-accent`（条）与
+`--card-accent-soft`（底）；`neutral` 档浅底借 `--dshpc-chip-bg`（与兄弟项目 mute 档同款，明暗都成立）。
+`StripCard` 的边框写 `1px solid transparent` 只为占位（将来状态态切 `border-color` 不跳布局），**不可见**。
 
 两者共享同一套 props：
 
@@ -150,7 +159,11 @@ h(WorkspacePicker, { workspaces: wsList, value: cur, onChange: setCur })
 | `panel` | `ReactNode` | — | 展开后才显示的额外内容 |
 | `className` / `style` | — | — | 追加类 / 样式 |
 
-色条是绝对定位 + `top/bottom`，**跟着内容高度自适应**；上下是否留距由外观决定（`Card` 留 8px、`StripCard` 通高）。
+色条几何随外观：
+
+- `StripCard`：绝对定位 + `top/bottom` ⇒ **通高**（贴顶到底，含展开区）；左内边距 21px = 16px 留白 + 5px 条宽 ⇒ 内容从色条**右缘**起算（与兄弟项目块同口径）。
+- `Card`：行内 flex 短条，**高度跟着内容走**（`align-self:stretch`），最小一行文字（`--dshpc-line-md`）⇒ 一行文字时条子与文字齐高、不把卡撑高；padding 全向 14px ⇒ 条子距左 / 上 / 下的外间距恒等。
+
 颜色全走 token ⇒ **亮暗自动跟随宿主**（`body[data-ds-dark-theme]`），不需要调用方处理。
 
 ```tsx

@@ -4,10 +4,12 @@ import { t } from '../utils/i18n.js';
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
 export const CARD_ACCENTS = ['business', 'success', 'warning', 'danger', 'neutral'];
 /**
- * 内部共享壳：两个公开组件（`Card` / `StripCard`）只是 `kind` 不同。
+ * 内部共享壳：两个公开组件（`Card` / `StripCard`）只是 `kind` 不同——
+ * 一个组件一种外观，import 即表明用的是哪种。
  *
- * 为什么不导出一个带 variant 的组件：消费方「要用哪个拖哪个」，
- * 一个组件带两种样式等于每次都要记参数；拆成两个，import 即表明用的是哪种外观。
+ * 两种外观的头部都是**整体垂直居中**（`align-items:center`）：调用方在 `action` 里
+ * 裸放一个元素（按钮 / 文字 / 图标）即垂直居中，不用自己套容器；框内一行两行、
+ * 右侧放什么、悬停浮出的按钮，都由调用方在框内自定——外壳只提供框与居中。
  */
 function CardShell(kind, props) {
     ensureControls();
@@ -26,7 +28,9 @@ function CardShell(kind, props) {
     const style = isPreset
         ? props.style
         : { ...props.style, ['--card-accent']: accent };
-    return h('div', { className: classes, style }, h('span', { className: 'dshpc-card__bar', 'aria-hidden': true }), h('div', { className: 'dshpc-card__head' }, h('div', { className: 'dshpc-card__main' }, props.children ?? null), props.action === undefined && props.onToggle === undefined
+    return h('div', { className: classes, style }, h('div', { className: 'dshpc-card__head' }, 
+    // 色条是头部第一个子元素：strip 外观 = 绝对定位 5px 通高贴左缘；bordered 外观 = 行内 6px 圆角短条（高度跟随内容，最小一行）。
+    h('span', { className: 'dshpc-card__bar', 'aria-hidden': true }), h('div', { className: 'dshpc-card__main' }, props.children ?? null), props.action === undefined && props.onToggle === undefined
         ? null
         : h('div', { className: 'dshpc-card__side' }, props.action ?? null, props.onToggle === undefined
             ? null
@@ -41,7 +45,8 @@ function CardShell(kind, props) {
         : h('div', { className: 'dshpc-card__panel' }, props.panel));
 }
 /**
- * 卡片：圆角 + 1px 边框，左侧色条上下留距（短条）。
+ * 卡片（框式）：surface 底 + 1px 边框 + 圆角，左缘行内 6×36 圆角短条。
+ * 头部整体垂直居中；悬停浮出的按钮、一行两行由调用方在框内自定。
  *
  * ```tsx
  * h(Card, {
@@ -54,7 +59,8 @@ export function Card(props) {
     return CardShell('bordered', props);
 }
 /**
- * 条带卡片：无圆角、无边框，左侧色条**通高**（贴顶到底）。
+ * 条带卡片（浅底式）：同色系浅底 + 1px 不可见占位边框 + 方角 + 左缘 5px 通高方角色条（贴左缘）。
+ * 与 `Card` 同一份 props，头部同样整体垂直居中。
  *
  * ```tsx
  * h(StripCard, {

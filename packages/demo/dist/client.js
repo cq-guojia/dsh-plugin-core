@@ -179,7 +179,7 @@ var PICKER_CSS = `
 var FEEDBACK_CSS = "\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;\n  background:rgba(15,23,42,.45);\n}\n.dshpc-modal{\n  display:flex;flex-direction:column;max-width:min(960px,92vw);max-height:86vh;\n  background:var(--dshpc-surface-base);border:1px solid var(--dshpc-border);\n  border-radius:10px;box-shadow:0 16px 48px rgba(15,23,42,.24);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:12px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);color:var(--dshpc-fg);font-size:14px;\n}\n.dshpc-modal__title{flex:1;min-width:0}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:24px;height:24px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:12px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-modal__body{flex:1;min-height:0;overflow:auto;padding:12px 14px}\n.dshpc-modal__foot{\n  display:flex;justify-content:flex-end;gap:8px;padding:10px 14px;\n  border-top:1px solid var(--dshpc-border-faint);\n}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error{\n  padding:12px 14px;border-radius:8px;font-size:13px;\n  color:var(--dshpc-danger);background:color-mix(in srgb,var(--dshpc-danger) 10%,transparent);\n  border:1px solid color-mix(in srgb,var(--dshpc-danger) 30%,transparent);\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n";
 
 // dist/ui/card-css.generated.js
-var CARD_CSS = "\n.dshpc-card{\n  position:relative;padding:12px 14px;background:var(--dshpc-surface-1);\n  --card-accent:var(--dshpc-business);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger)}\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4)}\n\n/* \u5916\u89C2\u4E00\uFF1A\u5706\u89D2 + 1px \u8FB9\u6846\uFF0C\u8272\u6761\u4E0A\u4E0B\u7559\u8DDD\uFF08\u77ED\u6761\uFF09\u3002 */\n.dshpc-card--bordered{border-radius:8px;border:1px solid var(--dshpc-border)}\n.dshpc-card--bordered .dshpc-card__bar{top:8px;bottom:8px;border-radius:2px}\n\n/* \u5916\u89C2\u4E8C\uFF1A\u65E0\u5706\u89D2\u65E0\u8FB9\u6846\uFF0C\u8272\u6761\u901A\u9AD8\u3002 */\n.dshpc-card--strip{border-radius:0;border:none}\n.dshpc-card--strip .dshpc-card__bar{top:0;bottom:0;border-radius:0}\n\n/* \u8272\u6761\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D + top/bottom \u21D2 \u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\uFF1B\u4E0A\u4E0B\u662F\u5426\u7559\u8DDD\u7531\u5916\u89C2\u51B3\u5B9A\u3002 */\n.dshpc-card__bar{position:absolute;left:0;width:3px;background:var(--card-accent)}\n\n.dshpc-card__head{display:flex;align-items:flex-start;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
+var CARD_CSS = "\n.dshpc-card{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n\n/* \u5934\u90E8\u4E00\u884C = \u8272\u6761 + \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 5px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500 */\n.dshpc-card--strip{\n  padding:12px 12px 12px 21px;border:1px solid transparent;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 21px = 16 \u7559\u767D + 5 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002 */\n.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--card-accent)}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1Asurface \u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185\u5706\u89D2\u77ED\u6761 \u2500\u2500 */\n.dshpc-card--bordered{\n  padding:14px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  background:var(--dshpc-surface-1);\n}\n.dshpc-card--bordered .dshpc-card__head{gap:12px}\n/* \u77ED\u6761\uFF1A\u884C\u5185 flex \u9879\uFF0C**\u9AD8\u5EA6\u8DDF\u7740\u5185\u5BB9\u8D70**\uFF08stretch\uFF09\uFF0C\u6700\u5C0F\u4E00\u884C\u6587\u5B57\uFF08--dshpc-line-md\uFF09\u2014\u2014\n   \u4E00\u884C\u6587\u5B57\u65F6\u6761\u5B50\u4E0E\u6587\u5B57\u9F50\u9AD8\uFF0C\u4E0D\u4F1A\u628A\u5361\u6491\u9AD8\uFF1B\u56DB\u8FB9\u5185\u95F4\u8DDD\u4E00\u81F4\uFF08padding 14 \u5168\u5411\uFF09\u21D2 \u6761\u5B50\u8DDD\n   \u5DE6 / \u4E0A / \u4E0B\u5916\u95F4\u8DDD\u6052\u7B49\u3002 */\n.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
 
 // dist/ui/chip-css.generated.js
 var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u8272\uFF1Aneutral \u8D70\u65E7\u7070\u9762\uFF1B\u8BED\u4E49\u6863\u6362\u5E95\u5B57\u914D\u5BF9\uFF082026-10-20 \u7528\u6237\u8981\u591A\u8272\u591A\u5C3A\u5BF8\u6807\u7B7E\uFF09\u3002 */\n.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--chip-bg);color:var(--chip-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* md \u6863\uFF1A\u5361\u7247\u5143\u4FE1\u606F\u884C\u7B49\u7A0D\u5927\u573A\u666F\uFF1Bsm \u5373\u65E7\u7248\u9ED8\u8BA4\uFF0C\u9010\u50CF\u7D20\u4E0D\u52A8\u3002 */\n.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}\n/* \u8BED\u4E49\u8272\u5B9E\u5FC3\u6863\uFF1A\u5E95 / \u5B57 / hover \u914D\u5BF9\u4E0E Button \u540C\u6E90\uFF08\u9EC4\u5E95\u4E2D\u9AD8\u660E\u5EA6 \u21D2 \u5B57\u7528 --dshpc-on-warning\uFF09\u3002 */\n.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}\n.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}\n.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}\n.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
@@ -651,13 +651,20 @@ function CardShell(kind, props) {
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
   const style = isPreset ? props.style : { ...props.style, ["--card-accent"]: accent };
-  return (0, import_react5.createElement)("div", { className: classes, style }, (0, import_react5.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }), (0, import_react5.createElement)("div", { className: "dshpc-card__head" }, (0, import_react5.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null), props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react5.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react5.createElement)("button", {
-    type: "button",
-    className: "dshpc-card__toggle",
-    "aria-label": tt("cardToggle"),
-    "aria-expanded": props.expanded === true,
-    onClick: props.onToggle
-  }, (0, import_react5.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, "\u25BE")))), props.panel === void 0 || props.expanded !== true ? null : (0, import_react5.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
+  return (0, import_react5.createElement)("div", { className: classes, style }, (0, import_react5.createElement)(
+    "div",
+    { className: "dshpc-card__head" },
+    // 色条是头部第一个子元素：strip 外观 = 绝对定位 5px 通高贴左缘；bordered 外观 = 行内 6px 圆角短条（高度跟随内容，最小一行）。
+    (0, import_react5.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
+    (0, import_react5.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null),
+    props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react5.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react5.createElement)("button", {
+      type: "button",
+      className: "dshpc-card__toggle",
+      "aria-label": tt("cardToggle"),
+      "aria-expanded": props.expanded === true,
+      onClick: props.onToggle
+    }, (0, import_react5.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, "\u25BE")))
+  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react5.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
 }
 function Card(props) {
   return CardShell("bordered", props);
@@ -1364,10 +1371,10 @@ var DICT2 = {
     tooltipRich: "\u5BCC\u5361\u7247",
     tooltipMultiline: "\u4E24\u6BB5\u5F0F",
     tooltipLongText: "\u8FD9\u662F\u4E00\u6BB5\u8DB3\u591F\u957F\u7684\u63D0\u793A\u6587\u5B57\uFF1A\u6C14\u6CE1\u9047\u5230 maxWidth \u4F1A\u81EA\u52A8\u6362\u884C\uFF0C\u800C\u4E0D\u4F1A\u4E00\u8DEF\u6491\u5230\u534A\u4E2A\u5C4F\u5E55\u5BBD\uFF0C anchored \u5143\u7D20\u5728\u8FB9\u7F18\u65F6\u5B98\u65B9\u8FD8\u4F1A\u81EA\u52A8\u628A\u6C14\u6CE1\u6536\u56DE\u89C6\u53E3\u5185\u3002",
-    demoCardTitle: "Card\uFF08\u5706\u89D2 + \u8FB9\u6846 + \u77ED\u8272\u6761\uFF09",
-    demoStripTitle: "StripCard\uFF08\u65E0\u8FB9\u6846 + \u901A\u9AD8\u7AD6\u7EBF\uFF09",
-    cardHint: "\u6392\u7248\u5B8C\u5168\u7531\u8C03\u7528\u65B9\u51B3\u5B9A\u2014\u2014\u771F\u5B9E\u63D2\u4EF6\u7684\u5F62\u6001\uFF1A\u6807\u9898\u884C + \u53F3\u4FA7\u5143\u4FE1\u606F + chips \u884C\uFF1Baccent \u4E94\u6863\u89C1\u4E0B\u65B9\u901F\u89C8",
-    stripHint: "\u540C\u4E00\u4E2A\u8272\u6761\u673A\u5236\uFF0C\u5916\u89C2\u662F\u901A\u9AD8\u8D34\u9876\u5230\u5E95\u2014\u2014\u771F\u5B9E\u63D2\u4EF6\u7684\u5F62\u6001\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C",
+    demoCardTitle: "Card\uFF08\u8FB9\u6846 + \u5706\u89D2 + \u77ED\u8272\u6761\uFF09",
+    demoStripTitle: "StripCard\uFF08\u6D45\u5E95 + \u901A\u9AD8\u8272\u6761\uFF09",
+    cardHint: "surface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185 6\xD736 \u5706\u89D2\u77ED\u6761\uFF1B\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5C45\u4E2D\uFF0C\u60AC\u505C\u6D6E\u51FA\u7684\u6309\u94AE\u3001\u4E00\u884C\u4E24\u884C\u90FD\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\uFF1B\u771F\u5B9E\u63D2\u4EF6\u5F62\u6001\uFF1A\u6807\u9898\u884C + \u53F3\u4FA7\u5143\u4FE1\u606F + chips \u884C\uFF1Baccent \u4E94\u6863\u89C1\u4E0B\u65B9\u901F\u89C8",
+    stripHint: "\u540C\u8272\u7CFB\u6D45\u5E95 + \u5DE6\u7F18 5px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\uFF08\u7167\u5144\u5F1F\u9879\u76EE\u6267\u884C\u8BB0\u5F55\u5757\uFF09\uFF1B\u540C\u6837\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014\u6D41\u6C34\u8D26\u6392\u7248\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C",
     sectionHeadTitle: "SectionHead \u5206\u533A\u6807\u9898",
     chipHint: "chip \u4E24\u8F74\u53EF\u9009\uFF1Atone \u8BED\u4E49\u8272\uFF08neutral \u7070\u9762 / business / success / warning / danger \u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09\u3001size\uFF08sm / md\uFF09\uFF1B\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362\uFF08\u4E2D\u82F1\u793A\u4F8B\uFF09\uFF1B\u6700\u540E\u4E00\u9897\u957F\u6587\u5B57\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219",
     chipOverdue: "\u903E\u671F",
@@ -1500,10 +1507,10 @@ var DICT2 = {
     tooltipRich: "Rich card",
     tooltipMultiline: "Two-part",
     tooltipLongText: "A deliberately long hint: the bubble wraps at maxWidth instead of stretching to half the viewport, and the official layer pulls it back inside the viewport near the edges.",
-    demoCardTitle: "Card (rounded + border + accent bar)",
-    demoStripTitle: "StripCard (borderless + full-height stripe)",
-    cardHint: "Layout is entirely up to the caller \u2014 the real-plugin shape: title row + right-side meta + chips row; five accent tiers below",
-    stripHint: "Same accent-bar mechanism, but full-height edge-to-edge \u2014 real-plugin shape: title + meta row + right-side time/actions",
+    demoCardTitle: "Card (frame + radius + short rail)",
+    demoStripTitle: "StripCard (soft tint + full-height bar)",
+    cardHint: "Surface + 1px border + radius + inline 6\xD736 rounded rail; the head is vertically centered as a whole \u2014 drop a bare element into action and it centers itself; hover-floating buttons, one or two rows are all up to the caller inside the frame; real-plugin shape: title row + right-side meta + chips row; five accent tiers below",
+    stripHint: "Same-hue soft tint + 5px full-height square accent bar at the left edge (mirrors the sibling record block); equally centered as a whole \u2014 record-stream layout: title + meta row + right-side time/actions",
     sectionHeadTitle: "SectionHead",
     chipHint: "Two optional axes: tone (neutral grey / business / success / warning / danger solid signal) and size (sm / md); width hugs the text, no wrap; labels follow the locale (zh & en examples); if the long-text chip at the end is squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in",
     chipOverdue: "Overdue",
@@ -2215,7 +2222,6 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
   );
 }
 function CardPage() {
-  const [open, setOpen] = (0, import_react21.useState)(false);
   return (0, import_react21.createElement)(
     "div",
     null,
@@ -2225,19 +2231,17 @@ function CardPage() {
       (0, import_react21.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
-        // 真实形态示例（任务卡同款排版）
+        // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
         (0, import_react21.createElement)(
           Card,
-          { accent: "business" },
+          {
+            accent: "business",
+            action: (0, import_react21.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+          },
           (0, import_react21.createElement)(
             "div",
-            { style: { display: "flex", alignItems: "baseline", gap: "8px" } },
-            (0, import_react21.createElement)(
-              "div",
-              { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
-              "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
-            ),
-            (0, import_react21.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
+            "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
           ),
           (0, import_react21.createElement)(
             "div",
@@ -2248,6 +2252,16 @@ function CardPage() {
             (0, import_react21.createElement)(Chip, null, "#OpenSSH"),
             (0, import_react21.createElement)(Chip, null, "#\u8FC1\u79FB")
           )
+        ),
+        // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
+        (0, import_react21.createElement)(
+          Card,
+          {
+            accent: "business",
+            action: (0, import_react21.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+          },
+          (0, import_react21.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react21.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
         // accent 速览：单行紧凑卡，只看色条档位
         (0, import_react21.createElement)(
@@ -2268,7 +2282,7 @@ function CardPage() {
       { title: t2("demoStripTitle"), hint: t2("stripHint") },
       (0, import_react21.createElement)(
         "div",
-        { style: { maxWidth: "640px", background: "var(--dshpc-surface-sunken)", borderRadius: "8px", overflow: "hidden" } },
+        { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
         (0, import_react21.createElement)(
           StripCard,
           {
@@ -2289,21 +2303,25 @@ function CardPage() {
         ),
         (0, import_react21.createElement)(
           StripCard,
-          { accent: "success" },
+          {
+            accent: "success",
+            // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
+            action: (0, import_react21.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+          },
           (0, import_react21.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
           (0, import_react21.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
+        // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
         (0, import_react21.createElement)(
-          StripCard,
-          {
-            accent: "warning",
-            expanded: open,
-            onToggle: () => setOpen(!open),
-            action: (0, import_react21.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD"),
-            panel: (0, import_react21.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } }, "\u5C55\u5F00\u540E\u7684\u8BE6\u60C5\u9762\u677F")
-          },
-          (0, import_react21.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6709\u8B66\u544A\uFF08\u53EF\u6298\u53E0\uFF0C\u70B9\u53F3\u4FA7\u7BAD\u5934\uFF09"),
-          (0, import_react21.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 8s \xB7 1 \u4E2A\u8B66\u544A")
+          "div",
+          { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
+          ["business", "success", "warning", "danger", "neutral"].map(
+            (a) => (0, import_react21.createElement)(
+              StripCard,
+              { key: a, accent: a, style: { padding: "8px 12px" } },
+              (0, import_react21.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+            )
+          )
         )
       )
     ),
@@ -2997,7 +3015,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1020-0734-1t0x"]
+            [t2("buildStamp"), "1020-0947-ei1k"]
           ].map(
             ([label, value]) => (0, import_react27.createElement)(
               "tr",

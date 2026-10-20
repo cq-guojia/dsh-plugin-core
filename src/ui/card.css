@@ -1,28 +1,40 @@
 
 .dshpc-card{
-  position:relative;padding:12px 14px;background:var(--dshpc-surface-1);
+  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;
   --card-accent:var(--dshpc-business);
+  --card-accent-soft:var(--dshpc-business-soft);
 }
-/* 档位 → token（照 records-timeline 的 tone 模式：一个变量切档，不写 5 套规则）。 */
-.dshpc-card--success{--card-accent:var(--dshpc-success)}
-.dshpc-card--warning{--card-accent:var(--dshpc-warning)}
-.dshpc-card--danger{--card-accent:var(--dshpc-danger)}
-.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4)}
+/* 档位 → token（照 records-timeline 的 tone 模式：一个变量切档，不写 5 套规则；浅底与色条同源）。 */
+.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}
+.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}
+.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}
+/* neutral 浅底借 chip 底（兄弟项目 mute 档同款：明暗都成立）。 */
+.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}
 
-/* 外观一：圆角 + 1px 边框，色条上下留距（短条）。 */
-.dshpc-card--bordered{border-radius:8px;border:1px solid var(--dshpc-border)}
-.dshpc-card--bordered .dshpc-card__bar{top:8px;bottom:8px;border-radius:2px}
-
-/* 外观二：无圆角无边框，色条通高。 */
-.dshpc-card--strip{border-radius:0;border:none}
-.dshpc-card--strip .dshpc-card__bar{top:0;bottom:0;border-radius:0}
-
-/* 色条：绝对定位 + top/bottom ⇒ 跟着内容高度自适应；上下是否留距由外观决定。 */
-.dshpc-card__bar{position:absolute;left:0;width:3px;background:var(--card-accent)}
-
-.dshpc-card__head{display:flex;align-items:flex-start;gap:8px;min-width:0}
+/* 头部一行 = 色条 + 主内容 + 右侧槽，**整体垂直居中**：调用方在 action 里裸放一个元素
+   （按钮 / 文字 / 图标）不用自己套容器居中；一行两行、右边怎么放由调用方在框内自定。 */
+.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}
 .dshpc-card__main{flex:1;min-width:0}
 .dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}
+
+/* ── 外观一 · StripCard：同色系浅底 + 1px 不可见占位边框 + 方角 + 5px 通高方角色条贴左缘 ── */
+.dshpc-card--strip{
+  padding:12px 12px 12px 21px;border:1px solid transparent;
+  background:var(--card-accent-soft,transparent);
+}
+/* 左内边距 21px = 16 留白 + 5 条宽 ⇒ 内容从色条右缘起算；色条绝对定位通高，跟着内容高度自适应。 */
+.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--card-accent)}
+
+/* ── 外观二 · Card：surface 底 + 1px 实色边框 + 圆角 + 行内圆角短条 ── */
+.dshpc-card--bordered{
+  padding:14px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);
+  background:var(--dshpc-surface-1);
+}
+.dshpc-card--bordered .dshpc-card__head{gap:12px}
+/* 短条：行内 flex 项，**高度跟着内容走**（stretch），最小一行文字（--dshpc-line-md）——
+   一行文字时条子与文字齐高，不会把卡撑高；四边内间距一致（padding 14 全向）⇒ 条子距
+   左 / 上 / 下外间距恒等。 */
+.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}
 .dshpc-card__toggle{
   display:inline-flex;align-items:center;justify-content:center;
   width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;

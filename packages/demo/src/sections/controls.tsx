@@ -542,8 +542,6 @@ export function TooltipPage(): ReturnType<typeof h> {
 // ── 卡片与容器 ──────────────────────────────────────────────────────────
 
 export function CardPage(): ReturnType<typeof h> {
-  const [open, setOpen] = useState(false)
-
   return h(
     'div',
     null,
@@ -553,13 +551,13 @@ export function CardPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '640px' } },
-        // 真实形态示例（任务卡同款排版）
-        h(Card, { accent: 'business' },
-          h('div', { style: { display: 'flex', alignItems: 'baseline', gap: '8px' } },
-            h('div', { style: { fontWeight: 600, flex: '1 1 auto', minWidth: 0, fontSize: 'var(--dshpc-font-md)' } },
-              '将 OpenSSH 上所有 NPM 安装迁移到 PNPM'),
-            h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', flex: 'none' } }, '2026-10-18 创建'),
-          ),
+        // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
+        h(Card, {
+          accent: 'business',
+          action: h('span', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', flex: 'none' } }, '2026-10-18 创建'),
+        },
+          h('div', { style: { fontWeight: 600, flex: '1 1 auto', minWidth: 0, fontSize: 'var(--dshpc-font-md)' } },
+            '将 OpenSSH 上所有 NPM 安装迁移到 PNPM'),
           h('div', { style: { display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', flexWrap: 'wrap' } },
             h(Chip, null, 'NAS-Docker'),
             h(Chip, null, '#npm'),
@@ -567,6 +565,14 @@ export function CardPage(): ReturnType<typeof h> {
             h(Chip, null, '#OpenSSH'),
             h(Chip, null, '#迁移'),
           ),
+        ),
+        // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
+        h(Card, {
+          accent: 'business',
+          action: h(Button, { size: 'sm', variant: 'ghost' }, '查看会话'),
+        },
+          h('div', { style: { fontWeight: 600, fontSize: 'var(--dshpc-font-md)' } }, 'DAY:1 - Docker 镜像版本检查器'),
+          h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', marginTop: '4px' } }, 'NAS-Docker · 计划 02:00 · 实际 02:00 · 时长 04:02'),
         ),
         // accent 速览：单行紧凑卡，只看色条档位
         h(
@@ -585,7 +591,7 @@ export function CardPage(): ReturnType<typeof h> {
       { title: t('demoStripTitle'), hint: t('stripHint') },
       h(
         'div',
-        { style: { maxWidth: '640px', background: 'var(--dshpc-surface-sunken)', borderRadius: '8px', overflow: 'hidden' } },
+        { style: { display: 'flex', flexDirection: 'column', gap: '4px', maxWidth: '640px' } },
         h(StripCard, {
           accent: 'business',
           action: h('span', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', flex: 'none' } }, '2026-10-18 开始 · 今天'),
@@ -597,19 +603,23 @@ export function CardPage(): ReturnType<typeof h> {
               '计划 02:00 · 实际 02:00 · 时长 04:02 · 2.4M'),
           ),
         ),
-        h(StripCard, { accent: 'success' },
+        h(StripCard, {
+          accent: 'success',
+          // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
+          action: h(Button, { size: 'sm', variant: 'outline' }, 'Cancel'),
+        },
           h('div', { style: { fontWeight: 600, fontSize: 'var(--dshpc-font-md)' } }, '执行成功'),
           h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', marginTop: '4px' } }, '耗时 12s · 3 个文件变更'),
         ),
-        h(StripCard, {
-          accent: 'warning',
-          expanded: open,
-          onToggle: () => setOpen(!open),
-          action: h(Button, { size: 'sm', variant: 'ghost' }, '查看会话'),
-          panel: h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)' } }, '展开后的详情面板'),
-        },
-          h('div', { style: { fontWeight: 600, fontSize: 'var(--dshpc-font-md)' } }, '有警告（可折叠，点右侧箭头）'),
-          h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', marginTop: '4px' } }, '耗时 8s · 1 个警告'),
+        // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
+        h(
+          'div',
+          { style: { display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' } },
+          (['business', 'success', 'warning', 'danger', 'neutral'] as const).map((a) =>
+            h(StripCard, { key: a, accent: a, style: { padding: '8px 12px' } },
+              h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, `accent="${a}"`),
+            ),
+          ),
         ),
       ),
     ),
