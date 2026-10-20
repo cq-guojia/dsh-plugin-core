@@ -36,6 +36,23 @@
       "title": "弹窗（Modal/Confirm）控件样式与分类调研——demo 反馈页",
       "updated": "2026-10-20 13:54:59",
       "worklog": "worklog/202610/20-1100-弹窗-modal-confirm-控件样式与分类调研-demo-反馈页-0a8c.md"
+    },
+    "20261020-1603-选择器-picker-ui-改版-e0bb": {
+      "category": "界面",
+      "created": "2026-10-20 16:03:53",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-20 16:03:53",
+      "status": "doing",
+      "tags": [
+        "选择器",
+        "Picker",
+        "样式"
+      ],
+      "title": "选择器（Picker）UI 改版",
+      "updated": "2026-10-20 16:03:53",
+      "worklog": "worklog/202610/20-1603-选择器-picker-ui-改版-e0bb.md"
     }
   }
 }
