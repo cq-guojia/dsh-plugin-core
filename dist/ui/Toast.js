@@ -1,6 +1,7 @@
 import { createElement as h } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Toaster, toast } from 'sonner';
+import { Button } from './Button.js';
 const DEFAULT_MS = 2600;
 const ROOT_ID = 'dshpc-toast-root';
 let root = null;
@@ -19,13 +20,13 @@ function renderToaster() {
     root.render(h(Toaster, {
         theme: currentTheme(),
         position: currentPosition,
-        // richColors：success=绿整条 / error=红整条（Sonner 自带）；
+        // richColors：success=绿整条 / error=红整条 / warning=黄整条（Sonner 自带）；
         // 不开 closeButton：在宿主里吃不到 Sonner 的 CSS 变量，会渲染成白底方块叉（真机踩过）。
         richColors: true,
     }));
 }
 // 全局唯一 Toaster：命令式 toast() 需要一个挂着的 Toaster 才能渲染；
-// 首次 showToast 时懒挂载一个 React root，避免无 document 环境（SSR / 单测）崩。
+// 首次调用时懒挂载一个 React root，避免无 document 环境（SSR / 单测）崩。
 function ensureToaster() {
     if (root !== null)
         return;
@@ -43,11 +44,8 @@ function ensureToaster() {
     });
 }
 /**
- * 弹一条轻提示（**命令式**，不要求调用方挂组件）。
- *
- * 底层用 Sonner（第三方，已作为 core 内部依赖封装，不对外 re-export）。
- * 满足：文字 / 时长 / 整条自定义色 / 消失回调；暗色跟随宿主 `body[data-ds-dark-theme]`。
- *
+ * 官方 Sonner 原生提示（**命令式**）。用于「官方的」对比 demo 与需要 Sonner 原味的场景。
+ * 变体：info（中性卡）/ success（绿）/ error（红）/ warning（黄，richColors）。
  * 无 `document` 时静默跳过（Node 单测 / SSR 不炸）。
  */
 export function showToast(message, opts) {
@@ -89,8 +87,85 @@ export function showToast(message, opts) {
     else if (variant === 'error') {
         toast.error(message, { duration, onDismiss });
     }
+    else if (variant === 'warning') {
+        toast.warning(message, { duration, onDismiss });
+    }
     else {
         toast(message, { duration, onDismiss });
     }
+}
+// 我们封装卡片的配色：info 走灰（不是纯黑，随明暗切换）；其余用整条语义色。
+function notifyPalette(variant, theme) {
+    switch (variant) {
+        case 'success':
+            return { bg: '#16a34a', fg: '#ffffff', glyph: '✓' };
+        case 'error':
+            return { bg: '#dc2626', fg: '#ffffff', glyph: '✕' };
+        case 'warning':
+            return { bg: '#f59e0b', fg: '#1f2937', glyph: '!' };
+        default:
+            return theme === 'dark'
+                ? { bg: '#3f3f46', fg: '#fafafa', glyph: 'i' }
+                : { bg: '#f4f4f5', fg: '#18181b', glyph: 'i' };
+    }
+}
+/**
+ * 我们封装好的提示（**推荐项目内使用**）：统一卡片样式（灰/绿/红/黄，跟随明暗皮肤），
+ * 右侧可挂 1–2 个**我们自己的 Button** 动作按钮，点击后自动关闭并调用你的事件。
+ *
+ * 底层仍是 Sonner（动画 / 定位 / 堆叠），但视觉与交互是我们定制的。
+ * 无 `document` 时静默跳过。
+ */
+export function notify(message, opts) {
+    if (typeof document === 'undefined')
+        return;
+    if (opts?.position !== undefined)
+        currentPosition = opts.position;
+    ensureToaster();
+    renderToaster();
+    const variant = opts?.variant ?? 'info';
+    const palette = notifyPalette(variant, currentTheme());
+    const duration = opts?.durationMs ?? DEFAULT_MS;
+    const actions = opts?.actions;
+    const id = toast.custom(() => h('div', {
+        style: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            minWidth: '320px',
+            minHeight: '48px',
+            padding: '12px 16px',
+            borderRadius: '10px',
+            boxShadow: '0 6px 16px rgba(0, 0, 0, 0.18)',
+            background: palette.bg,
+            color: palette.fg,
+            boxSizing: 'border-box',
+            fontSize: '14px',
+            lineHeight: '20px',
+        },
+    }, h('span', {
+        style: {
+            flexShrink: 0,
+            width: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.25)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '13px',
+            fontWeight: 700,
+        },
+    }, palette.glyph), h('div', { style: { flex: 1, minWidth: 0 } }, h('div', { style: { fontWeight: 600 } }, message), opts?.description !== undefined
+        ? h('div', { style: { opacity: 0.9, fontSize: '13px', marginTop: '2px' } }, opts.description)
+        : null), actions !== undefined && actions.length > 0
+        ? h('div', { style: { display: 'flex', gap: '8px', flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => h(Button, {
+            variant: a.variant ?? 'outline',
+            onClick: () => {
+                a.onClick();
+                toast.dismiss(id);
+            },
+        }, a.text)))
+        : null), { duration, unstyled: true });
 }
 //# sourceMappingURL=Toast.js.map

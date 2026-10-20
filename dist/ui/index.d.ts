@@ -2,14 +2,15 @@ export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css
 export { filterGroups, flattenOptions, groupOf, labelsOf, toGroups, toggleValue, type PickerGroup, type PickerOption, } from './picker-logic.js';
 export { Picker, type PickerProps, type PickerSize } from './Picker.js';
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js';
-export { FilePicker, WorkspacePicker, type FilePickerProps, type WorkspacePickerProps, } from './WorkspacePicker.js';
+export { WorkspacePicker, type WorkspacePickerProps } from './WorkspacePicker.js';
+export { connectHost, modelCatalog, workspaceList, type ConnectHostOptions, type HostClientContext, type HostWorkspaceSource, type ModelCatalogState, type ModelRoute, } from './host-data.js';
 export { Modal, type ModalProps, type ModalSize } from './Modal.js';
 export { AlertModal, type AlertModalProps, type AlertSeverity, } from './AlertModal.js';
 export { ConfirmModal, type ConfirmModalProps, type ConfirmTone, } from './ConfirmModal.js';
 export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, } from './modal-host.js';
 export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardSharedProps, } from './Card.js';
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js';
-export { showToast, type ToastVariant } from './Toast.js';
+export { showToast, notify, type ToastVariant, type ToastPosition, type ToastOptions, type ToastAction, type NotifyOptions, } from './Toast.js';
 export { EmptyState, type EmptyStateProps } from './EmptyState.js';
 export { ErrorBoundary, type ErrorBoundaryProps } from './ErrorBoundary.js';
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js';

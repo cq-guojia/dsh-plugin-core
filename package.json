@@ -28,6 +28,10 @@
       "types": "./dist/ui/index.d.ts",
       "default": "./dist/ui/index.js"
     },
+    "./ui/host": {
+      "types": "./dist/ui/host-toast.d.ts",
+      "default": "./dist/ui/host-toast.js"
+    },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "default": "./dist/utils/index.js"
@@ -43,6 +47,10 @@
     "./session": {
       "types": "./dist/session/index.d.ts",
       "default": "./dist/session/index.js"
+    },
+    "./host": {
+      "types": "./dist/host/index.d.ts",
+      "default": "./dist/host/index.js"
     }
   },
   "files": [

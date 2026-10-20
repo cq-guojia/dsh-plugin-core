@@ -24,11 +24,14 @@ import {
   Textarea,
   WorkspacePicker,
   showToast,
+  notify,
   alertModal,
   confirmModal,
 } from '../../../../dist/ui/index.js'
 // 宿主原生弹窗：经官方适配层 official.js 取（全仓唯一 import 平台模块处），保持本包 ui 入口零官方依赖。
 import { Official } from '../../../../dist/ui/official.js'
+// 宿主原生 Toast 封装（独立子路径，避免 ui 入口静态 import 平台模块导致 Node 单测崩）。
+import { showHostToast } from '../../../../dist/ui/host-toast.js'
 import {
   HoverCard,
   IconCheckOutlineRegular,
@@ -475,8 +478,10 @@ export function PickerPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
+        // 默认星形图标 + 默认文案「模型」
         h(ModelPicker, { value: model, onChange: setModel, variant: 'grouped' }),
-        h(ModelPicker, { value: model, onChange: setModel, variant: 'cascade', searchable: true }),
+        // 自定义初始文字 + 联动形态
+        h(ModelPicker, { value: model, onChange: setModel, variant: 'cascade', searchable: true, placeholder: '选择模型' }),
       ),
     ),
     h(
@@ -485,11 +490,25 @@ export function PickerPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
+        // 默认文件夹图标 + 默认文案「工作区」
         h(WorkspacePicker, {
           value: ws,
           onChange: (v) => setWs(v as string),
           clearable: true,
           searchable: true,
+        }),
+        // 自定义初始文字
+        h(WorkspacePicker, {
+          value: ws,
+          onChange: (v) => setWs(v as string),
+          placeholder: '选择工作区',
+        }),
+        // 去掉默认图标（icon: null）
+        h(WorkspacePicker, {
+          value: ws,
+          onChange: (v) => setWs(v as string),
+          icon: null,
+          placeholder: '无图标',
         }),
       ),
     ),
@@ -960,13 +979,14 @@ export function FeedbackPage(): ReturnType<typeof h> {
     ),
     h(
       Demo,
-      { title: 'toast', hint: t('feedbackToastHint') },
+      { title: 'Toast · 官方 Sonner', hint: 'showToast()：第三方库原味，对比用' },
       h(
         'div',
-        { style: { display: 'flex', gap: '8px' } },
-        h(Button, { onClick: () => showToast('已保存') }, '普通'),
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
+        h(Button, { onClick: () => showToast('已保存') }, '普通(info)'),
         h(Button, { onClick: () => showToast('保存成功', { variant: 'success' }) }, '成功'),
         h(Button, { onClick: () => showToast('保存失败', { variant: 'error' }) }, '失败'),
+        h(Button, { onClick: () => showToast('注意一下', { variant: 'warning' }) }, '警告'),
         h(Button, { onClick: () => showToast('整条自定义色', { color: '#7c3aed' }) }, '自定义色'),
         h(
           Button,
@@ -988,6 +1008,64 @@ export function FeedbackPage(): ReturnType<typeof h> {
         h(Button, { onClick: () => showToast('底部-左', { position: 'bottom-left' }) }, 'bottom-left'),
         h(Button, { onClick: () => showToast('底部-中', { position: 'bottom-center' }) }, 'bottom-center'),
         h(Button, { onClick: () => showToast('底部-右', { position: 'bottom-right' }) }, 'bottom-right'),
+      ),
+    ),
+    h(
+      Demo,
+      { title: 'Toast · 宿主原生', hint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）' },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
+        h(Button, { onClick: () => showHostToast('这是宿主原生提示') }, '普通'),
+        h(Button, { onClick: () => showHostToast('操作成功', { tone: 'success' }) }, '成功(success)'),
+        h(
+          Button,
+          {
+            onClick: () =>
+              showHostToast('有动作的原生提示', {
+                actions: [{ text: '查看', onClick: () => showToast('点了「查看」') }],
+              }),
+          },
+          '带动作',
+        ),
+      ),
+    ),
+    h(
+      Demo,
+      { title: 'Toast · 我们封装 notify', hint: 'notify()：统一灰/绿/红/黄 + 右侧我们自己的按钮' },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
+        h(Button, { onClick: () => notify('已保存草稿') }, '普通(info)'),
+        h(Button, { onClick: () => notify('保存成功', { variant: 'success' }) }, '成功'),
+        h(Button, { onClick: () => notify('保存失败', { variant: 'error' }) }, '失败'),
+        h(Button, { onClick: () => notify('磁盘空间不足', { variant: 'warning' }) }, '警告'),
+        h(
+          Button,
+          {
+            onClick: () =>
+              notify('已删除该文件', {
+                variant: 'success',
+                description: '可在 10 秒内撤销',
+                actions: [{ text: '撤销', variant: 'outline', onClick: () => notify('已撤销') }],
+              }),
+          },
+          '单按钮+描述',
+        ),
+        h(
+          Button,
+          {
+            onClick: () =>
+              notify('确认提交吗？', {
+                description: '提交后将通知相关成员',
+                actions: [
+                  { text: '取消', variant: 'outline', onClick: () => notify('已取消') },
+                  { text: '提交', variant: 'primary', onClick: () => notify('已提交', { variant: 'success' }) },
+                ],
+              }),
+          },
+          '双按钮',
+        ),
       ),
     ),
     h(

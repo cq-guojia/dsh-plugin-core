@@ -64,7 +64,7 @@ hover / active 走 token 派生色（**不用 opacity**），幅度见 `docs/des
 | `Input` | `value` `onChange(v)` `size`（默认 `sm`）`error` `disabled` `type` `placeholder` `inputRef` `onKeyDown` `onBlur` `aria-label` `title` `hint` | 基础输入框；`error` 描红；`hint` 给字符串即自动挂标准问号提示（2026-10-20） |
 | `PrefixedInput` | 同 `Input` + `prefix: string` | 前置文案（`https://` / `C:\`） |
 | `NumberInput` | `value: number` `onChange(v)` `min` `max` `step`（默认 1）`inputWidth` `suffix` `label` `decreaseLabel` `increaseLabel` `hint` | 已 clamp；失焦回弹草稿 |
-| `Textarea` | `value` `onChange(v)` `placeholder` `error` `disabled` `rows` `spellCheck`（默认关）`aria-label` `hint` | — |
+| `Textarea` | `value` `onChange(v)` `placeholder` `error` `disabled` `rows` `spellCheck`（默认关）`aria-label` `hint` | `hint` 的问号钉在**右下角**（单行控件则在行尾垂直居中） |
 | `Checkbox` | `checked` `onChange(next)` `label` `accentColor` `disabled` | — |
 | `fieldMetricsOf(size)` | `→ { height, font, line, icon, gap }` | 自己搭同款输入框时对齐尺寸 |
 
@@ -79,7 +79,7 @@ hover / active 走 token 派生色（**不用 opacity**），幅度见 `docs/des
 | `onChange` | `(v: string \| string[]) => void` | — | 单选回 `string`，多选回 `string[]` |
 | `mode` | `'single' \| 'multiple'` | `single` | — |
 | `max` | `number` | — | 多选上限；到上限其余项置灰 + 提示（不静默截断） |
-| `searchable` | `boolean` | `false` | 显示搜索框 |
+| `searchable` | `boolean` | `false` | 显示搜索框；展开菜单时**自动聚焦**搜索框（点开即可直接打字） |
 | `clearable` | `boolean` | `false` | 单选时列表顶部多一项「不选」 |
 | `placeholder` | `string` | 内置「请选择」 | — |
 | `degraded` | `boolean` | `false` | 候选可能不完整 ⇒ 顶部如实提示，不编造 |
@@ -108,7 +108,9 @@ hover / active 走 token 派生色（**不用 opacity**），幅度见 `docs/des
 |---|---|
 | `value` / `defaultValue` / `onChange` | 选中值为 **`workspaceId`**（不是 title） |
 | `mode` `max` | 单选 / 多选 / 上限（到上限已选项仍可反选） |
-| `clearable` `searchable` `disabled` `size` `placement` `className` `placeholder` `hint` `translate` | 同 `Picker` 同名参数 |
+| `clearable` `searchable` `disabled` `size` `placement` `className` `hint` `translate` | 同 `Picker` 同名参数 |
+| `placeholder` | 未选时的文字（默认「工作区」；想叫「选择工作区」就传它） |
+| `icon` | 触发器前置图标：**不传 = 默认文件夹**；`null` = 不显示；传元素 = 自定义（2026-10-20） |
 
 **数据自动来自宿主**：插件 `apply` 里调一次 `connectHost(ctx)`（见 host-data.ts），组件即订住官方
 `workspaces` 服务的快照（getSnapshot + subscribe，follow 流实时更新）。消费方**不再传工作区数组**。
@@ -126,19 +128,27 @@ h(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })
 **数据自带的现成组件** + `variant: 'cascade' | 'grouped'`（默认 `grouped`；2026-10-20 由 flat
 改名 grouped——拍平丢分组，不符合「厂商做组头、模型列下面」的需求）。
 
-- `grouped`：一个下拉，供应商做组头、模型列在下面
+- `grouped`：一个下拉，供应商做组头、模型列在下面（搜索框**默认开**，`searchable: false` 可关）
 - `cascade`：一行两个下拉，先选供应商再选模型；换供应商会自动清空已选模型
+  （所选厂商由组件自己记住——值是从模型值反推的，清空后反推不到，2026-10-20 修的）
 
 **两种形态返回口径一致**：`onChange` 都发最终模型的 value（`${provider}/${id}`）；
 级联态换供应商先发 `''`。
 
-**目录自动来自宿主**：`connectHost(ctx)` 接线后读 `remote.llm`（listProviders /
-listConfigurableProviders）+ 设置镜像（各 provider profile 的 `models`，只保留用户真正写过的
-供应商——写法抄自 dsh-session-title-pattern 的 DirectoryStore）。`groups` 参数仅作覆盖
-（测试 / 特殊数据源）。目录不可用 ⇒ 如实降级提示。
+**目录自动来自宿主**（2026-10-20 真机核实的两处接线，共用同一 path 常量）：
+
+- 宿主 `apply`：`serveModelCatalog(ctx, { path })` —— 用宿主 `llm.listProviders()` +
+  `llm.listModels(id)` 现查，挂成只读路由（`./host` 子路径）。
+- client `apply`：`connectHost(ctx, { modelsPath: path })` —— fetch 该路由喂进 `modelCatalog`。
+- ⚠️ client 侧 remote **拿不到每个供应商的模型**（只有 listProviders），别再从远端/设置镜像凑。
+
+`groups` 参数仅作覆盖（测试 / 特殊数据源）。目录不可用 ⇒ 如实降级提示。
 
 其余参数透传给 `Picker`：`value` / `defaultValue` / `onChange` / `clearable` / `searchable` /
 `hint` / `size` / `placement` / `className` / `disabled` / `degraded` / `translate`。
+
+`placeholder`：未选时的文字（默认「模型」）；`icon`：触发器前置图标，**不传 = 默认星形**、
+`null` = 不显示、传元素 = 自定义（2026-10-20）。目录不可用**或读出来是空目录**都走降级提示。
 
 「跟随宿主」这类默认项由调用方自己往 `groups` 里塞一项。
 
@@ -238,7 +248,9 @@ core 保持零官方依赖：官方 Tooltip 只能由插件侧注入（`src/ui/t
 
 | 组件 / 函数 | 说明 |
 |---|---|
-| `showToast(message, opts?)` | **命令式**，不要求挂组件；底层 Sonner（core 内部依赖，不对外 re-export）。`opts: { variant?: 'info' \| 'success' \| 'error', durationMs?, color?, onDismiss?, position? }`：`color` 整条自定义背景色（unstyled 自定义卡，默认无 min 尺寸故需自设宽高）；`onDismiss` 消失回调；`position` 6 向位置（作用于全局唯一 Toaster，默认 bottom-center）；success/error 走 Sonner `richColors` 整条绿/红。暗色跟随宿主 `body[data-ds-dark-theme]`。无 `document` 静默跳过 |
+| `showToast(message, opts?)` | 官方 Sonner 原生（对比 / demo 用）。`opts: { variant?: 'info' \| 'success' \| 'error' \| 'warning', durationMs?, color?, onDismiss?, position? }`：`color` 整条自定义背景色（unstyled 卡）；`position` 6 向（作用于全局唯一 Toaster，默认 bottom-center）；success/error/warning 走 Sonner `richColors` 整条色。暗色跟随宿主 `body[data-ds-dark-theme]`。无 `document` 静默跳过 |
+| `notify(message, opts?)` | **项目内推荐**：我们封装好的提示。`opts: { variant?, description?, durationMs?, position?, actions? }`。卡片统一配色（info 灰随明暗 / success 绿 / error 红 / warning 黄），右侧 `actions?: { text, variant?, onClick }[]`（1–2 个，用我们自己的 Button；点击后自动 dismiss 并调你的事件）。底层仍是 Sonner（动画/定位/堆叠） |
+| `showHostToast(message, opts?)`（子路径 `dsh-plugin-core/ui/host`） | 宿主原生 Toast（`@deepseek-ai` 官方 `Toast` 顶部横幅）。`opts: { tone?: 'success', holdMs?, actions?: { text, onClick }[], onDismiss? }`。独立子路径导出，隔离平台模块、避免 `ui` 入口在 Node 单测崩 |
 | `Loading({ anchorId? })` | 贴到主内容容器右下角的加载指示；`anchorId` 默认 `dshpc-main` |
 | `RunningBlocks()` | 运行中的占位块 |
 | `EmptyState({ text?, icon?, action?, translate? })` | 统一空态 |

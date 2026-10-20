@@ -5,14 +5,15 @@ export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css
 export { filterGroups, flattenOptions, groupOf, labelsOf, toGroups, toggleValue, } from './picker-logic.js';
 export { Picker } from './Picker.js';
 export { ModelPicker } from './ModelPicker.js';
-export { FilePicker, WorkspacePicker, } from './WorkspacePicker.js';
+export { WorkspacePicker } from './WorkspacePicker.js';
+export { connectHost, modelCatalog, workspaceList, } from './host-data.js';
 export { Modal } from './Modal.js';
 export { AlertModal, } from './AlertModal.js';
 export { ConfirmModal, } from './ConfirmModal.js';
 export { alertModal, confirmModal, } from './modal-host.js';
 export { CARD_ACCENTS, Card, StripCard, } from './Card.js';
 export { Chip } from './Chip.js';
-export { showToast } from './Toast.js';
+export { showToast, notify, } from './Toast.js';
 export { EmptyState } from './EmptyState.js';
 export { ErrorBoundary } from './ErrorBoundary.js';
 export { Button, IconButton } from './Button.js';

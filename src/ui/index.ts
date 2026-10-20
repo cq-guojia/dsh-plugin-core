@@ -14,12 +14,17 @@ export {
 } from './picker-logic.js'
 export { Picker, type PickerProps, type PickerSize } from './Picker.js'
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js'
+export { WorkspacePicker, type WorkspacePickerProps } from './WorkspacePicker.js'
 export {
-  FilePicker,
-  WorkspacePicker,
-  type FilePickerProps,
-  type WorkspacePickerProps,
-} from './WorkspacePicker.js'
+  connectHost,
+  modelCatalog,
+  workspaceList,
+  type ConnectHostOptions,
+  type HostClientContext,
+  type HostWorkspaceSource,
+  type ModelCatalogState,
+  type ModelRoute,
+} from './host-data.js'
 export { Modal, type ModalProps, type ModalSize } from './Modal.js'
 export {
   AlertModal,
@@ -45,7 +50,15 @@ export {
   type CardSharedProps,
 } from './Card.js'
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js'
-export { showToast, type ToastVariant } from './Toast.js'
+export {
+  showToast,
+  notify,
+  type ToastVariant,
+  type ToastPosition,
+  type ToastOptions,
+  type ToastAction,
+  type NotifyOptions,
+} from './Toast.js'
 export { EmptyState, type EmptyStateProps } from './EmptyState.js'
 export { ErrorBoundary, type ErrorBoundaryProps } from './ErrorBoundary.js'
 
