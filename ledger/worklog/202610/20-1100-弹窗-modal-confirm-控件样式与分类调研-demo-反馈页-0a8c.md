@@ -1,5 +1,6 @@
 # 20261020-1100-弹窗-modal-confirm-控件样式与分类调研-demo-反馈页-0a8c：弹窗（Modal/Confirm）控件样式与分类调研——demo 反馈页
 
+> **✅ 完成封卷**：2026-10-20 17:57:38（@GuoJia-Agent）
 > **创建**：2026-10-20 11:00:31（@GuoJia-Agent）
 > **分类**：界面 ｜ **标签**：弹窗、Modal、调研、demo、样式
 
@@ -215,3 +216,4 @@
 - 2026-10-20 12:35:38 · log · @GuoJia-Agent · 真机反馈三连改：①宿主示例置顶+宿主命令示例；②遮罩换宿主变量 --dshpc-mask（原写死蓝灰 rgba(15,23,42,.45)）；③三套样式严格分开——小确认框严格抄 task-list renderConfirm(360px/18px/无分隔线)、大弹窗严格抄 archive-session(min(1120px,100vw-32px)×calc(100%-80px)/18-34-12头)、Modal 补 width/height/maxHeight 默认宽高可覆盖；official.ts 新增第二套命令 confirmModalHost/alertModalHost(Promise)；build+test49/49+lint 全过
 - 2026-10-20 12:48:15 · log · @GuoJia-Agent · 大弹窗示例二次修订：①128条标签移出头部、挂会话记录后用最小副标题行 __sid；②关闭叉缩到20px、更多改用outline sm带icon按钮、头部align-items居中解决歪斜；③左右内距各减3px(34→31)；④示例拆带footer/无footer两个且head排法不同；build+build:demo+test49/49+lint全过
 - 2026-10-20 13:54:59 · log · @GuoJia-Agent · 弹窗API收敛为三块：confirmModal/alertModal加skin:'core'|'host'参数，删除重复的alertModalHost/confirmModalHost；宿主渲染经registerHostDialog注册进modal-host保持ui零官方依赖；命令名带Modal后缀不覆盖原生；Modal是大内容组件非命令；demo重组为原生弹窗(宿主)/小型弹窗(自定义)/大型弹窗(自定义)三块；清旧产物强制重建dist无Host残留+build+test49/49+lint全过
+- 2026-10-20 17:57:38 · close · @GuoJia-Agent · 结案：弹窗调研与落地完成：确认宿主只有通用 Modal；Modal 头部四槽扩展 + AlertModal/ConfirmModal + Promise 式 alertModal/confirmModal（含 skin:host），demo 反馈页示例矩阵已接入

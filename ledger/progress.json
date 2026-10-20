@@ -17,25 +17,6 @@
       "title": "Demo 预览站：侧栏分类可展开 + 提示文案双语",
       "updated": "2026-10-20 07:37:14",
       "worklog": "worklog/202610/19-1401-demo-预览站-侧栏分类可展开-提示文案双语-13a7.md"
-    },
-    "20261020-1100-弹窗-modal-confirm-控件样式与分类调研-demo-反馈页-0a8c": {
-      "category": "界面",
-      "created": "2026-10-20 11:00:31",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-20 11:00:31",
-      "status": "doing",
-      "tags": [
-        "弹窗",
-        "Modal",
-        "调研",
-        "demo",
-        "样式"
-      ],
-      "title": "弹窗（Modal/Confirm）控件样式与分类调研——demo 反馈页",
-      "updated": "2026-10-20 13:54:59",
-      "worklog": "worklog/202610/20-1100-弹窗-modal-confirm-控件样式与分类调研-demo-反馈页-0a8c.md"
     }
   }
 }
