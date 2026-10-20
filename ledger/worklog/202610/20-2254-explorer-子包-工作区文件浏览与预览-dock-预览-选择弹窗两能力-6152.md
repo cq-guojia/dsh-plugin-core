@@ -32,3 +32,4 @@
 - 2026-10-20 22:54:32 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-20 22:55:52 · log · @GuoJia-Agent · 填正文：背景=用户两能力定义+拍板口径表+兄弟项目7条问题清单；待办9项；下一步读实现依赖现状文件
 - 2026-10-20 23:27:43 · log · @GuoJia-Agent · 交付：FileBrowser 面板 + openFilePreview/pickWorkspaceFile 两能力 + 六档预览体 + ./ui/official 通路；build/build:demo/73 测试/codelint 全过；正文曾被拉取回滚已重写；待用户真机验收
+- 2026-10-21 01:18:31 · log · @GuoJia-Agent · 本轮：openFilePreview 改挂核心 PanelDock、FileBrowser 全换核心按钮并统一高度档、▾ 反转为准 兄弟度量的自写浮层、demo 改接 remote.workspaceFiles + 真样例文件 + pickWorkspaceAnchor 锚点；build/tests 74/codelint 全过，待真机验收
