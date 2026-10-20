@@ -99,6 +99,30 @@
 - `src/ui/feedback.css`：补 `.dshpc-native-demo-content{max-width:520px}`，经 `contentClassName` 注入证明宿主内容区尺寸可经类名自定义。
 - **踩到硬约束**：最初把 `Official` 经 `src/ui/index.ts` 透出，结果 `ui` 入口重新依赖平台模块，4 个 Node 单测 `import dist/ui` 全挂（`ERR_MODULE_NOT_FOUND`，根因 `official.js` 顶层静态 import 平台模块）。依据 `docs/examples/integration.md:99` + `docs/design/external/dsh-host.md:23-31`「本包 ui 已零官方依赖，官方件在插件侧自己处理」——**撤销 index 透出**，改为 demo 直接从官方适配层 `dist/ui/official.js` 取 `Official`（全仓唯一 import 点仍是 official.ts，审计口径不变）。改完 `pnpm test` 49 项全绿、`koc-codelint` 全过。
 
+### 六、弹窗控件族需求（用户 2026-10-20 口述）与专家团讨论稿
+
+需求：demo 反馈页补齐原生弹窗示例（alert / 确定框 / 自定义）；自绘弹窗至少两种形态——
+
+- **形态 A（小型确认框）**：无 ✕；头部三块 = 左 icon + 主标题 + 标题右侧小标签/数字；标题可不传（整条头部消失，直接出说明文字）；底部按钮区。
+- **形态 B（大弹窗）**：头部右侧动作区（关闭钮甚至更多按钮）；左侧标题可多排自定义；底部 Footer 可选（不要 Footer 时中间区直接写）；中间滚动。
+- **封装要求**：alert、confirm 一行调用；按钮默认样式预置，改文字传文字、改主色传色；**样式封闭**——不接受自定义样式，只开放语义档。
+
+现状盘点（证据）：
+
+- Button 已有 10 个语义档（primary/secondary/outline/ghost/danger/success/warning/info/danger-outline/link）+ size 三档 + icon/iconRight/color/loading（`src/ui/Button.ts:26-39,44-70`）→ 封装层直接用，无需新皮肤。
+- 现有 Modal 缺：头部 icon 位、标题右侧 extra 位、头部动作区、size 档；`onClose` 双重职责（既是回调又是 ✕ 开关，`src/ui/Modal.ts:57-75`）需拆出 `closable`。footer/hideHeader/closeOnMask/escClose/maxWidth 已有。
+- 官方 Modal 头部只有 title+closeLabel，做不到上述头部需求 → **底座走自绘扩展**（与"Card 官方无原件故自绘"同一逻辑，不违反"不写降级兜底"——官方缺该能力，非降级）。
+
+讨论稿（两视角结论收敛后）：
+
+- **容器 Modal 扩展**：头部四槽 `icon` / `title`(ReactNode，可多排) / `headerExtra`(ReactNode，标签/数字) / `headerActions`(ReactNode，动作区)；新增 `closable?`（默认=onClose 是否传入）；新增 size 档 `sm`(≈400px)/默认；其余沿用。
+- **AlertModal**：severity(info/success/warning/error→图标+色) + title? + message + confirmText(默认 i18n「知道了」)；单按钮固定 primary；默认无 ✕。
+- **ConfirmModal**：title? + message + tone('primary'|'danger'|'warning'→确认钮档位) + confirmText/cancelText(默认 i18n) + onConfirm/onCancel；双按钮固定布局（三按钮场景直接用底层 Modal，属容器职责）；不接受自定义样式 props（样式封闭，只开放 文字/主色/档位）。
+- **样式封闭实现**：封装层不透传 className/style 给按钮，只透传 variant/color/文字。
+- **demo 反馈页示例矩阵**：原生区（官方 Modal 基础 + 官方当 alert 用）+ 自绘区（Alert ×4 severity、Confirm 默认/danger/改文案、无标题纯文字、大弹窗多排标题+actions+footer+滚动）。
+
+待用户拍板：① 底座自绘扩展（推荐）；② 命令式 alert()/confirm() 本轮不做（声明式够用）；③ ConfirmModal 默认允许点遮罩关（=取消）；④ headerExtra 用 ReactNode slot（demo 用 Chip 演示）。
+
 ### 五、宿主原生弹窗可定制性结论（答用户问）
 
 以钉版本 ambient 声明 `src/types/primitives.d.ts:85-101` 为准（真机以装进宿主后所见为准）：
@@ -116,3 +140,4 @@
 
 - 2026-10-20 11:07:52 · log · @GuoJia-Agent · 调研完成：官方仅有通用 Modal 无确认变体；兄弟项目两弹窗均为自绘且互不统一（task-list.tsx:1066 / task-editor.tsx:940）；开源共识=容器+确认语义层；结论与分类建议已写入 worklog，待用户拍板
 - 2026-10-20 11:20:10 · log · @GuoJia-Agent · 反馈页加『原生弹窗（宿主）』演示：Official.Modal 展示自定义内容与三按钮 footer（controls.tsx:744+）；踩硬约束 ui 零官方依赖，撤销 index 透出改从 official.js 取，49 测试+lint 全过；可定制性结论已写入 worklog 五节
+- 2026-10-20 11:41:49 · log · @GuoJia-Agent · 收用户弹窗控件族需求，出专家团讨论稿：Modal 头部四槽(icon/title/extra/actions)+closable 拆分+size 档；AlertModal/ConfirmModal 语义封装样式封闭；底座自绘（官方头部做不到）；讨论稿入 worklog 六节，4 个决策点待拍板
