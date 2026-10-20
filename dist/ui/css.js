@@ -5,6 +5,7 @@ import { PICKER_CSS } from './picker-css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
 import { CARD_CSS } from './card-css.js';
 import { CHIP_CSS } from './chip-css.js';
+import { PANEL_DOCK_CSS } from './panel-dock-css.js';
 import { EXPLORER_CSS } from '../explorer/explorer-css.js';
 import { SESSION_CSS } from '../session/session-css.js';
 export const CONTROLS_DOMAIN = 'controls';
@@ -26,6 +27,7 @@ export const CONTROLS_CSS = [
     CARD_CSS,
     CHIP_CSS,
     MARQUEE_CSS,
+    PANEL_DOCK_CSS,
 ].join('\n');
 /**
  * 当前插件的样式设施。

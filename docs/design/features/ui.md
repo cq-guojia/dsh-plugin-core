@@ -234,7 +234,82 @@ core 保持零官方依赖：官方 Tooltip 只能由插件侧注入（`src/ui/t
 | `MarqueeText({ text, style?, title?, className? })` | 超长省略、hover 滚动 |
 | `LiveText({ render, style? })` | 定时重渲染（相对时间这类） |
 | `BackToTop({ anchorId? })` | 回到顶部，贴主容器右缘外侧 |
-| `startResizeLayoutWidth(opts)` | 拖拽调整布局宽度 |
+| `startResizeLayoutWidth(opts)` | 拖拽调整布局宽度（`root` 不传则回落 `#dshpc-root`） |
+| `PanelDock` / `createPanelDock(opts)` | 可停靠分栏容器，见下节 |
+
+### PanelDock（停靠分栏）
+
+「右侧分栏」从业务里剥出来的通用壳。**它是布局成员，不是浮层**：占宽度、把主区挤窄，
+不是盖上去。因此必须由调用方放进自己的 flex 根里。
+
+**分工照成熟组件库的通行做法**（Ant Design `Tabs` / `Drawer` 同一套）：
+**结构写在调用点（children），显隐归状态（`open/close` 只传 id）**。
+
+```ts
+const dock = createPanelDock({ maxPanels: 3 })   // 一次，挂在插件级
+
+// 页面里：结构就在这儿写，不塞进任何调用参数
+h('div', { style: { display: 'flex' } },
+  h(Main, null),                                  // flex:1 1 auto; min-width:0
+  h(PanelDock, { dock },
+    h(DockPanel, { id: 'files', title: '工作区' }, h(FilePanel)),
+    h(DockPanel, { id: 'preview', header: h(PreviewBar) }, h(PreviewBody)),
+    h(DockPanel, { id: 'raw', header: null, closeButton: 'floating' }, h(RawBody)),
+  ),
+)
+// 之后任何地方：dock.open('files') / dock.close('files')
+```
+
+| 行为 | 结果 |
+|---|---|
+| `open()` 不传 `id` | 开默认窗口（保留名 `default`） |
+| `open(id)`，已开 | 什么都不做（`created: false`），不新增一栏、不跳位 |
+| `open(id)`，未开且未满 | 追加一栏 |
+| 已到 `maxPanels` 再开新组名 | **拒绝**，返回 `{ ok: false, reason: 'limit' }` 并回调 `onLimitReached`；库不弹提示、不抛异常 |
+| `close(id?, reason?)` | 关一栏（缺省关 `default`）；腾出的位置可再开新组名 |
+| `toggle(id)` | 开着就关、关着就开 |
+
+`createPanelDock(opts)`：
+
+| 参数 | 默认 | 说明 |
+|---|---|---|
+| `maxPanels` | `3` | 同时存在的栏数上限 |
+| `defaultWidth` / `minWidth` | `460` / `320` | 兜底宽度与下限（面板自己给了就以面板为准） |
+| `storageKey` | `'dshpc-dock'` | 宽度记忆前缀；传 `false` 关闭 |
+
+`<DockPanel>` 的 props：
+
+| 字段 | 说明 |
+|---|---|
+| `id` | 组名（寻址键），同名唯一 |
+| `title` / `icon` | 内置头的标题与标题前图标（ReactNode，可多个） |
+| `extra` | 标题**右侧**的任意内容（不只是按钮） |
+| `header` | 整块替换头部：不传 = 内置头；`null` = **不要头部**；其他 = 你的头（库不加内边距/边框/背景） |
+| `closable` / `closeButton` / `closeIcon` | 关钮开关；位置 `auto`（默认：有头 = 右上 `top10/right8`、无头 = 浮动）/ `header` / `floating` / `none`。关钮一律**绝对定位**：位置固定、不占头部布局宽度（自定义头拿到整行），锚在面板上不随正文滚动；要挪位置或自己画，用 `closeButton="none"` |
+| `width` / `minWidth` / `maxWidth` | 宽度与可拖动区间；`maxWidth` 不传 = 只受视口与主区保底约束 |
+| `ariaLabel` | 无头部时的无障碍名（缺省退回 `title` / `id`） |
+
+**事件都带 `id` 与原因**（`createPanelDock` 的选项）：
+
+| 回调 | 时机 | 参数 |
+|---|---|---|
+| `onOpen` | 首次打开 | `{ id, created: true }` |
+| `onBeforeClose` | 关闭**之前**，返回 `false` 可取消 | `{ id, reason: 'button' \| 'api' }` |
+| `onClose` | 已关闭 | `{ id, reason }` |
+| `onResize` | 拖宽松手 | `{ id, width }` |
+| `onLimitReached` | 到上限被拒 | `{ id }` |
+
+组件参数 `mainMinWidth`（默认 480）：拖宽时给主区留的最小宽度，算单栏宽度上限用。
+
+面板高度默认视口高（`height: var(--dshpc-dock-h, 100vh)`）：整页场景不用管；嵌在定高容器里时
+由调用方在该容器上给 `--dshpc-dock-h`（如 `100%` / `420px`）。
+
+不做的事（拍板留档，别重提）：多份同名（`multi`）、tab 切换条、自动淘汰、浮动层——
+**标签切换由消费方在自己的面板内容里实现**。
+
+两条实现约束：面板是 `position:sticky` + `height:100vh` 的 flex 成员，**刻意不设 z-index**
+（布局成员一旦有正 z-index 会盖过宿主 portal 的弹窗）；拖动期给 `iframe` 让出指针事件，
+否则拖进 PDF/HTML 预览会卡死。
 
 ## 定制边界
 

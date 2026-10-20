@@ -16,6 +16,7 @@ import { PICKER_CSS } from '../dist/ui/picker-css.js'
 import { FEEDBACK_CSS } from '../dist/ui/feedback-css.js'
 import { CARD_CSS } from '../dist/ui/card-css.js'
 import { CHIP_CSS } from '../dist/ui/chip-css.js'
+import { PANEL_DOCK_CSS } from '../dist/ui/panel-dock-css.js'
 import { EXPLORER_CSS } from '../dist/explorer/explorer-css.js'
 import { SESSION_CSS } from '../dist/session/session-css.js'
 import { transform } from 'lightningcss'
@@ -31,6 +32,7 @@ const CONSTANTS = {
   FEEDBACK_CSS,
   CARD_CSS,
   CHIP_CSS,
+  PANEL_DOCK_CSS,
   EXPLORER_CSS,
   SESSION_CSS,
 }

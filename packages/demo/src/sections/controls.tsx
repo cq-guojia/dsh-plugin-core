@@ -1,4 +1,4 @@
-import { createElement as h, useState, type ComponentType } from 'react'
+import { createElement as h, useState, useSyncExternalStore, type ComponentType } from 'react'
 import type { AlertSeverity, ButtonSize, ButtonVariant, ConfirmTone } from '../../../../dist/ui/index.js'
 import {
   Button,
@@ -48,6 +48,7 @@ import {
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import { Demo, Placeholder } from './index.js'
+import { demoDock } from '../dock.js'
 import { t, type DemoMessageKey } from '../i18n.js'
 
 /**
@@ -987,5 +988,61 @@ export function FeedbackPage(): ReturnType<typeof h> {
 // ── 布局与滚动 ──────────────────────────────────────────────────────────
 
 export function LayoutPage(): ReturnType<typeof h> {
-  return h(Placeholder, { descKey: 'layoutDesc' })
+  // 控制器与「页面右侧那份 PanelDock」都在 client/index.tsx（页面级），这里只负责触发与读状态。
+  const state = useSyncExternalStore(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot)
+  const [notice, setNotice] = useState<string | null>(null)
+
+  const open = (id: string): void => {
+    const result = demoDock.open(id)
+    setNotice(result.ok ? null : t('dockLimitWarn'))
+  }
+  const close = (id: string): void => {
+    demoDock.close(id)
+    setNotice(null)
+  }
+  const opened = state.ids
+
+  return h(
+    'div',
+    null,
+    h(
+      Demo,
+      { title: 'PanelDock', hint: t('dockHint') },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' } },
+        h(Button, { size: 'sm', onClick: () => open('A') }, t('dockBtnOpenA')),
+        h(Button, { size: 'sm', onClick: () => open('B') }, t('dockBtnOpenB')),
+        h(Button, { size: 'sm', variant: 'primary', onClick: () => open('A') }, t('dockBtnOpenA2')),
+        h(Button, { size: 'sm', onClick: () => close('A') }, t('dockBtnCloseA')),
+        h(Button, { size: 'sm', onClick: () => open('default') }, t('dockBtnDefault')),
+        h(Button, { size: 'sm', onClick: () => open('C') }, t('dockBtnOpenC')),
+        h(
+          Button,
+          {
+            size: 'sm',
+            variant: 'ghost',
+            onClick: () => {
+              for (const id of demoDock.ids()) demoDock.close(id)
+              setNotice(null)
+            },
+          },
+          t('dockBtnReset'),
+        ),
+      ),
+      h(
+        'div',
+        { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)' } },
+        `${t('dockOpened')}${opened.length === 0 ? '—' : opened.join(', ')}`,
+        notice === null ? '' : `　${notice}`,
+      ),
+      h(
+        'div',
+        { style: { marginTop: '10px', fontSize: '12px', color: 'var(--dshpc-fg-3)', lineHeight: '1.9' } },
+        t('dockMainText'),
+      ),
+    ),
+  )
 }
+
+

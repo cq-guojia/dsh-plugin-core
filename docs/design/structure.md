@@ -46,8 +46,9 @@ dsh-plugin-core/
 │   │                          SectionHead / FieldHint / LiveText / BackToTop
 │   ├── 选择                ✅ WorkspacePicker（选工作区）/ FilePicker（选文件）
 │   │                          数据由调用方给，只是选择器，不含浏览逻辑
-│   └── 布局                🟡 SidebarLayout / SplitPane（侧边栏 + 拖拽拉栏）
-│                              现在只有底层函数 resizer（startResizeLayoutWidth），组件待补
+│   └── 布局                ✅ PanelDock / createPanelDock（可停靠分栏：多面板 + 拖拽拉栏）
+│                              组名 = 窗口一对一、同名覆盖、默认上限 3 超限拒绝；
+│                              不做 tab 切换 / 自动淘汰 / 浮动层（用户 2026-10-20 定案）
 │
 ├── utils/               ③ 纯方法 —— 零 React / 零 DOM（谁都能用，它不依赖谁）
 │   ├── date                ✅ 日期 / 相对时间 / 时间区间
@@ -72,7 +73,7 @@ dsh-plugin-core/
 | 成品 | 用到的 `ui` 基础能力 | 定制了什么 |
 |---|---|---|
 | `adv.session` · `SessionPreview` | `Modal` | 把会话消息放进弹窗 |
-| `adv.explorer` · `ExplorerPanel` | `SidebarLayout` / `SplitPane` + `WorkspacePicker` / `FilePicker` | 目录树 + 面包屑 + 文件预览 |
+| `adv.explorer` · `ExplorerPanel` | `PanelDock`（放它）+ `WorkspacePicker` / `FilePicker` | 目录树 + 面包屑 + 文件预览 |
 
 `adv.*` 只做「拼装 + 业务定制」，不重新实现按钮 / 下拉 / 弹窗 / 侧栏。
 
@@ -109,7 +110,7 @@ utils（谁都不依赖，谁都可以用）
 │   ├─ 动作    Button / IconButton
 │   ├─ 反馈    Modal / Toast / EmptyState / ErrorBoundary
 │   ├─ 展示    Card / StripCard / Chip / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop
-│   └─ 布局    侧边栏 / 拉栏
+│   └─ 布局    PanelDock / 拉栏
 │
 ├─ ③ 高级空间
 │   ├─ 文件浏览   ExplorerPanel（点文件夹、点文件看预览）
@@ -143,8 +144,8 @@ utils（谁都不依赖，谁都可以用）
 - **路径方法归基础**：`joinPath` / `parentOf` / `crumbsOf` / `extOf` / `mimeOf` 是纯方法（无 UI），
   建议迁入 `utils/`（`path` 域）；`previewKindOf`（选哪种预览器）是文件浏览的业务判断，留在 `ExplorerPanel` 内部。
   待你确认。
-- **补基础组件**：`ui` 目前只有拖拽函数 `resizer`（`startResizeLayoutWidth`），需补 `SidebarLayout` / `SplitPane`
-  组件，供 `ExplorerPanel` 组合使用。
+- ~~**补基础组件**：`ui` 需补 `SidebarLayout` / `SplitPane`~~ → **已落地为 `PanelDock`**（2026-10-20），
+  `resizer` 保留为它的底层函数。
 - **暂缓项**：`utils/string`、`utils/number`、`utils/http`、`ui/feedback/Loading` —— 只标注，未删代码。
 - **库里没有的**：
   - 表格 Table —— 待真实需求再定，不预造；

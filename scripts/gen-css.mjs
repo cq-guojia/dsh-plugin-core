@@ -39,6 +39,7 @@ const MAP = [
   ['src/ui/feedback.css', 'src/ui/feedback-css.generated.ts', 'FEEDBACK_CSS'],
   ['src/ui/card.css', 'src/ui/card-css.generated.ts', 'CARD_CSS'],
   ['src/ui/chip.css', 'src/ui/chip-css.generated.ts', 'CHIP_CSS'],
+  ['src/ui/panel-dock.css', 'src/ui/panel-dock-css.generated.ts', 'PANEL_DOCK_CSS'],
   ['src/explorer/explorer.css', 'src/explorer/explorer-css.generated.ts', 'EXPLORER_CSS'],
   ['src/session/session.css', 'src/session/session-css.generated.ts', 'SESSION_CSS'],
 ]

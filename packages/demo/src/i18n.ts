@@ -94,7 +94,23 @@ export type DemoMessageKey =
   | 'feedbackModalHint'
   | 'feedbackToastHint'
   | 'loadingNote'
-  | 'layoutDesc'
+  | 'dockHint'
+  | 'dockMainText'
+  | 'dockPanelBody'
+  | 'dockOpened'
+  | 'dockLimitWarn'
+  | 'dockBtnOpenA'
+  | 'dockBtnOpenB'
+  | 'dockBtnOpenA2'
+  | 'dockBtnCloseA'
+  | 'dockBtnDefault'
+  | 'dockBtnOpenC'
+  | 'dockBtnReset'
+  | 'dockPanelA'
+  | 'dockPanelATag'
+  | 'dockPanelC'
+  | 'dockCustomHeadTitle'
+  | 'dockCustomHeadHint'
   | 'explorerHint'
   | 'previewBodyTitle'
   | 'previewBodyHint'
@@ -189,8 +205,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
       '待补：\n· 一个最小可跑插件的完整源码\n· 从建目录到在宿主里看见它的分步说明\n· 本预览插件自己就是样例，可对照 packages/demo/src',
     namingDesc:
       '待补：\n· 变量与类名统一 dshpc 前缀的理由\n· 类名必须与组件里硬编码的 className 逐字一致——不一致会整片失效\n· createStyleKit({ id }) 隔离到什么粒度\n· 注入顺序：同特异性时后注入者胜出\n· 明暗判据为什么是 body[data-ds-dark-theme] 而不是系统设置',
-    layoutDesc:
-      '待补：\n· BackToTop 回到顶部\n· startResizeLayoutWidth 拖拽改侧栏宽度\n· SidebarLayout / SplitPane —— 需求文档已记为待补，组件尚未实现\n· 为什么现在只有底层函数没有组件',
+    dockHint:
+      '右侧停靠分栏，挂在整页上：结构写在页面里（DockPanel），open(id) 只管显隐。\n试一遍：开 A（图标 + 标题 + 右侧标签）→ 开 B（整块自定义头部）→ 开 C（无头部、关闭钮浮在右上角）→ 关 A 后再开新组名 → 满 3 栏再开会被拒绝。',
+    dockMainText: '分栏是布局成员：它把这一页的正文挤窄，而不是盖在上面。三个面板分别演示内置头、自定义头、无头 + 浮动关闭钮。',
+    dockPanelA: '内置头：图标 + 标题 + 右侧内容',
+    dockPanelATag: '新',
+    dockPanelC: '无头面板',
+    dockCustomHeadTitle: '自定义头部（本行及以下都由调用方画）',
+    dockCustomHeadHint: '库不加内边距、不加边框 —— 多高、几行、放什么弹层都随你',
+    dockPanelBody: '这一栏的内容。再开同名面板会替换它，宽度与位置保持不变。',
+    dockOpened: '当前窗口：',
+    dockLimitWarn: '已满 3 栏，新组名被拒绝（open 返回 ok:false / reason:limit）',
+    dockBtnOpenA: '打开 A',
+    dockBtnOpenB: '打开 B',
+    dockBtnOpenA2: '再开 A（不会多开）',
+    dockBtnCloseA: '关闭 A',
+    dockBtnDefault: '打开默认窗口',
+    dockBtnOpenC: '打开 C',
+    dockBtnReset: '全部关闭',
     textDesc:
       '待补：\n· baseNameOf / safeTrim / truncateBytes 的实际表现\n· crumbsOf / extOf / joinPath / mimeOf / parentOf\n· 共同口径：解析失败一律兜底、不抛错、不编造',
     httpDesc:
@@ -281,7 +313,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     roadmapOut: '设置页骨架、i18n 框架（插件文案插件自管）、host 宿主类型面',
     roadmapMirror: '官方会话 UI 的完整镜像（工具卡 / 代码块 / 推理行）——session 目前只有最简渲染，富内容走 renderMessage 扩展点',
     roadmapPreview: '代码语法高亮 / PDF / Office 预览——explorer 的预览只有文本与图片',
-    roadmapSkeleton: 'SidebarLayout / SplitPane——现只有底层 resizer 函数，组件待补',
+    roadmapSkeleton: '（已落地）PanelDock——可停靠分栏：多面板、按名覆盖、上限 3',
     roadmapLayout: '红线：整合以前的.share(plugins/demo)',
 
     buildDesc: '版本号不 bump 时，判断宿主里跑的是不是最新产物，靠的是 build 编码——每次构建都变。',
@@ -355,8 +387,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
       'To be added:\n· Full source of a minimal working plugin\n· Step-by-step from empty folder to visible panel\n· This preview plugin is itself the sample — see packages/demo/src',
     namingDesc:
       'To be added:\n· Why variables and class names share the dshpc prefix\n· Class names must match the hard-coded className character for character — any drift kills the whole block\n· How far createStyleKit({ id }) isolates\n· Injection order: at equal specificity the later one wins\n· Why the theme switch is body[data-ds-dark-theme] and not prefers-color-scheme',
-    layoutDesc:
-      'To be added:\n· BackToTop\n· startResizeLayoutWidth — drag to resize a sidebar\n· SidebarLayout / SplitPane — logged as pending in the requirements doc, component not built yet\n· Why only the low-level helper exists today',
+    dockHint:
+      'Right-side dock: a group name is one window; reopening the same name replaces its content in place (no extra column).\nTry it: open A → open B → reopen A (content replaced) → close A → open C (the freed slot is usable) → with 3 columns open, a new group name is rejected.',
+    dockMainText: 'The dock is a layout member: it squeezes the page content instead of covering it. The three panels demo a built-in header, a custom header, and a header-less panel with a floating close button.',
+    dockPanelA: 'Built-in header: icon + title + right-side content',
+    dockPanelATag: 'new',
+    dockPanelC: 'Header-less panel',
+    dockCustomHeadTitle: 'Custom header (everything from here down is yours)',
+    dockCustomHeadHint: 'No padding, no border from the library — height, rows and popovers are up to you',
+    dockPanelBody: 'Content of this column. Reopening the same name replaces it; width and position stay put.',
+    dockOpened: 'Open now: ',
+    dockLimitWarn: 'All 3 columns are taken — the new group name was rejected (open returns ok:false / reason:limit)',
+    dockBtnOpenA: 'Open A',
+    dockBtnOpenB: 'Open B',
+    dockBtnOpenA2: 'Reopen A (no duplicate)',
+    dockBtnCloseA: 'Close A',
+    dockBtnDefault: 'Open default',
+    dockBtnOpenC: 'Open C',
+    dockBtnReset: 'Close all',
     textDesc:
       'To be added:\n· What baseNameOf / safeTrim / truncateBytes actually return\n· crumbsOf / extOf / joinPath / mimeOf / parentOf\n· Shared rule: never throw on parse failure — fall back, never fabricate',
     httpDesc:
@@ -447,7 +495,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     roadmapOut: 'A settings-page skeleton, an i18n framework (plugin copy is the plugin’s own job), a host typings surface',
     roadmapMirror: 'A full mirror of the official session UI (tool cards / code blocks / reasoning rows) — session renders only the minimal shape today; rich content goes through the renderMessage hook',
     roadmapPreview: 'Syntax highlighting / PDF / Office preview — the explorer preview handles text and images only',
-    roadmapSkeleton: 'SidebarLayout / SplitPane — only the low-level resizer exists; the components are pending',
+    roadmapSkeleton: '(shipped) PanelDock — dockable split panes: multi-panel, replace-by-name, limit 3',
     roadmapLayout: 'Red line: consolidation of the old packages/demo',
 
     buildDesc: 'When the version number does not change, the build stamp is what tells you whether the host is running the newest bundle — it changes on every build.',

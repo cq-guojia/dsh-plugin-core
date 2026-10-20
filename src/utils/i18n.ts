@@ -27,6 +27,8 @@ export type UtilMessageKey =
   | 'explorerEmptyDir'
   | 'cardToggle'
   | 'modalClose'
+  | 'dockClose'
+  | 'dockResize'
   | 'emptyText'
   | 'errorTitle'
   | 'errorRetry'
@@ -80,6 +82,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerEmptyDir: '空目录',
     cardToggle: '展开/收起',
     modalClose: '关闭',
+    dockClose: '关闭面板',
+    dockResize: '拖动调整宽度',
     emptyText: '暂无数据',
     errorTitle: '出错了',
     errorRetry: '重试',
@@ -129,6 +133,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerEmptyDir: 'Empty folder',
     cardToggle: 'Expand/Collapse',
     modalClose: 'Close',
+    dockClose: 'Close panel',
+    dockResize: 'Drag to resize',
     emptyText: 'No data',
     errorTitle: 'Something went wrong',
     errorRetry: 'Retry',

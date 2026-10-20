@@ -27,5 +27,7 @@ export { getTooltipRenderer, setTooltipRenderer, } from './tooltip.js';
 export { LiveText } from './LiveText.js';
 export { BackToTop } from './BackToTop.js';
 export { startResizeLayoutWidth } from './resizer.js';
+export { DockPanel, PanelDock, createPanelDock, } from './PanelDock.js';
+export { DEFAULT_PANEL_ID, clampWidth, closePanel, emptyDock, isOpen, openPanel, othersWidth, setPanelWidth, } from './panel-dock-logic.js';
 export { FIELD_ANCHOR_STYLE, FIELD_LABEL_STYLE, Input, NumberInput, PrefixedInput, fieldMetricsOf, } from './Field.js';
 //# sourceMappingURL=index.js.map

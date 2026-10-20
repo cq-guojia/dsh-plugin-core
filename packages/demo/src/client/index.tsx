@@ -13,7 +13,8 @@ import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { PanelDock, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { demoDock, demoPanels } from '../dock.js'
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, SECTION_GROUPS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
@@ -100,7 +101,13 @@ function DemoPage(): ReturnType<typeof h> {
   //   · main 自己再给 height:100% + minHeight:0（flex 子项的默认 min-height:auto 会撑破容器）。
   return h(
     'div',
-    { style: { display: 'flex', alignItems: 'stretch', height: '100%', minHeight: 0, overflow: 'hidden' } },
+    {
+      style: {
+        display: 'flex', alignItems: 'stretch', height: '100%', minHeight: 0, overflow: 'hidden',
+        // 分栏是页面级布局成员：高度吃这个变量（默认 100vh 是给整页场景的，这里是宿主页面区）。
+        ['--dshpc-dock-h' as string]: '100%',
+      },
+    },
     h(
       'aside',
       {
@@ -116,6 +123,9 @@ function DemoPage(): ReturnType<typeof h> {
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: '100%', boxSizing: 'border-box', overflowY: 'auto', padding: '12px 22px 60px' } },
       h(Sections, { active }),
     ),
+    // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
+    // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
+    h(PanelDock, { dock: demoDock }, ...demoPanels()),
   )
 }
 

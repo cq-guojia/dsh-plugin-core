@@ -51,7 +51,7 @@ dsh-plugin-core/
   `WorkspacePicker`（选工作区）、`FilePicker`（选文件）
 - 「统一某类元素」的控件：`SectionHead` 等
 - 反馈件：`Modal` / `Loading` / `toast` / 空态 / 错误边界
-- 布局基础：`SidebarLayout` / `SplitPane`（侧栏 + 拖拽拉栏；现只有 `resizer` 函数，组件待补）
+- 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 浮动层 / 多份同名。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
 - **纯零件，不自己取数** —— 数据由调用方传入
 
 ### 2.3 utils
@@ -128,6 +128,15 @@ dsh-plugin-core/
 - 不传整个 `ctx`（传了就把包和宿主版本焊死），只传**需要的那一小块能力**
   （`WorkspaceFilesFace` / `source` 这类最小接口）
 - 好处：宿主 breaking 时改的是插件「取出那一小块」的一行，包不用动；包也能用假实现做单测
+
+### 5.6 第三方依赖（**非**绝对禁止）
+
+> **不是「绝对不允许引第三方包」。默认优先用官方件（`@deepseek-ai/dsh-client-ui-primitives`）；当某个外部包明显比我们自己手搓的实现更好（更成熟 / 更稳 / 更省事 / 观感更好）时，可以引入——但必须先向用户提建议并说明理由，用户明确拍板后才可引入。**
+
+- **引入前提**：该能力确实值得（如 toast 这类成熟库、文件预览要的解释器），自研没有性价比。
+- **引入方式**：作为 core 的**内部依赖封装**，对外只暴露 core 自己的 API（如 `showToast`），**不 re-export 第三方包**，使消费者无法直接引用第三方、保持单点管控。
+- **引入后必须真机验证**：在真实 DSH profile 加载，确认渲染 / 暗色跟随 `body[data-ds-dark-theme]` / 回调 / 与宿主层级无冲突。
+- **仍硬禁止**（与「能否引第三方」是两条独立规则，本条不动）：把 `react` / `react-dom` / 官方 `@deepseek-ai/*` 打进包（见 §5.1，会产生第二份 React 实例、Node 下 import 崩）。这条 `external + optional peer` 是宿主运行时决定的。
 
 ## 6. 关键接口约定
 

@@ -9,7 +9,7 @@
 ```
 dsh-plugin-core/
 ├── design/         token + createStyleKit 注入器工厂 + 主题判据    （零 React）
-├── ui/             基础控件（Button / Input / Picker / Modal / toast …） （依赖 design）
+├── ui/             基础控件与布局容器（Button / Input / Picker / Modal / toast / PanelDock …） （依赖 design）
 ├── utils/          纯方法：日期 / 字符串 / 字节 / 时间区间 / HTTP / 路径    （零 React / DOM）
 ├── adv.explorer/   文件浏览成品（目录树 + 面包屑 + 预览）           （依赖 ui + utils）
 └── adv.session/    会话记录预览成品                                 （依赖 ui + utils）
