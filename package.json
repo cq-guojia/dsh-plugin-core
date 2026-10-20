@@ -28,6 +28,10 @@
       "types": "./dist/ui/index.d.ts",
       "default": "./dist/ui/index.js"
     },
+    "./ui/official": {
+      "types": "./dist/ui/official.d.ts",
+      "default": "./dist/ui/official.js"
+    },
     "./ui/host": {
       "types": "./dist/ui/host-toast.d.ts",
       "default": "./dist/ui/host-toast.js"

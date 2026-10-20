@@ -16,6 +16,13 @@ ensureControls()
 
 漏了也不白屏（控件内部会补调），但样式可能晚一帧。
 
+## 官方件通路（子路径 `dsh-plugin-core/ui/official`）
+
+`ui` 入口保持**零 `@deepseek-ai/*` 依赖**（Node 单测 / 非宿主环境 import 不崩）；官方 primitives
+经 `src/ui/official.ts`（全仓唯一 import 平台模块的文件）以**独立子路径** `dsh-plugin-core/ui/official`
+透出，与 `./ui/host` 同款隔离理由。要消费官方件（`FileTypeIcon` / `MarkdownText` / `CodeBlock` /
+`Menu` / `writeClipboard` / `Tooltip` …）的封装（如 explorer）从这条通路引，**不许**在别处 import 平台模块。
+
 ## 控件清单与 props
 
 > 完整签名以 TypeScript 声明为准（`src/ui/*.ts`），下表是导读。

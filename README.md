@@ -58,8 +58,8 @@ const view = <Button variant="primary" onClick={save}>保存</Button>
 | `dsh-plugin-core/design` | token 变量表（含深色段）+ `createStyleKit` 注入器工厂 + 主题判据（**零 React**） |
 | `dsh-plugin-core/ui` | 控件：Button / Input 家族 / Textarea / Checkbox / Segmented / Select / Picker / ModelPicker / Modal / toast / 空态 / 错误边界 / Loading … |
 | `dsh-plugin-core/utils` | 纯方法：日期 / 字符串 / 字节 / 时间区间 / HTTP 取数 + 内置中英多语言 |
-| `dsh-plugin-core/explorer` | 工作区浏览面板 + 选工作区 + 选文件 |
-| `dsh-plugin-core/explorer/preview` | 文件预览体 |
+| `dsh-plugin-core/explorer` | 工作区浏览：`openFilePreview`（侧边栏预览）/ `pickWorkspaceFile`（弹窗选文件）/ `FileBrowser` 面板 |
+| `dsh-plugin-core/explorer/preview` | 文件预览体（md / 代码高亮 / HTML / PDF / Office / 图片） |
 | `dsh-plugin-core/session` | 会话预览（承载可换：弹窗 / 侧栏 / 整页） |
 
 依赖方向单向：`design` ← `ui` ← `explorer` / `session`，`utils` 谁也不依赖。

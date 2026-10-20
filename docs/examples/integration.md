@@ -56,13 +56,19 @@ formatBytes(file.size)                          // 12 KB
 ## 4. 接工作区浏览（要宿主能力）
 
 ```tsx
-import { ExplorerPanel } from 'dsh-plugin-core/explorer'
+import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 
 // 从 ctx 取出这一小块（不要传整个 ctx）
 const workspaceFiles = ctx.remote.workspaceFiles
 
-h(ExplorerPanel, { workspaceFiles, sessionId, path: '', onSelect: (p) => setFile(p) })
+// 预览某文件/文件夹：右侧弹出可拖宽的停靠预览
+openFilePreview({ workspaceFiles, sessionId, path: 'docs/requirements.md' })
+
+// 让用户选文件：锚定按钮旁弹模态，Promise 返回 { path, isDir }（工作区相对路径）
+const picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })
 ```
+
+要自己摆面板（嵌进布局）用 `FileBrowser`；说明见 `docs/design/features/explorer.md`。
 
 选工作区的下拉（数据由你给——它要经插件私有通道送到 client）：
 

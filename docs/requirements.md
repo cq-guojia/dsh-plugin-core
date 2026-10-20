@@ -65,7 +65,7 @@ dsh-plugin-core/
 
 ### 2.4 adv.explorer
 
-- `ExplorerPanel`：文件浏览成品（目录树 + 面包屑 + 文件预览），内部组合 `ui` 的侧栏/拉栏与 Picker
+- `FileBrowser` 面板 + 两命令式能力：`openFilePreview`（侧边栏预览）/ `pickWorkspaceFile`（锚定弹窗选文件，Promise 返回工作区相对路径），2026-10-20 移植自重做
 - 选工作区（`WorkspacePicker`）在 `ui`，不在这里；`FilePicker` 已删（2026-10-20）
 
 ### 2.5 adv.session
@@ -148,7 +148,7 @@ dsh-plugin-core/
 | design | `createStyleKit({ id })` → `{ registerStyle, ensureStyles, applyStyle }` |
 | ui / ModelPicker | `variant: 'grouped' \| 'cascade'`（分组：一个下拉、完全独立 / 联动：供应商与模型两个下拉联动；2026-10-20 用户拍板两形态都要）；**两种形态 onChange 都发最终模型 value**；「默认模型」选项默认提供（`allowDefault:false` 关），选中发 `''`。默认读 connectHost 喂入的真实目录，`groups` 仅作覆盖。**禁止用数字或无意义名** |
 | ui / Picker | `mode: 'single' \| 'multiple'`、`max`（到上限已选项仍可反选）、`searchable`（搜索框开关）、`icon`（触发器前置 icon）、选项级 `icon`、`hint`（问号提示内置）、分组、空态、降级 |
-| explorer | `WorkspaceFilesFace` 由插件注入（`list` / `stat` / `read` 最小面），组件不抓宿主全局 |
+| explorer | `WorkspaceFilesFace` 由插件注入（`list` / `stat` / `read` 最小面），组件不抓宿主全局；对外 = 两命令式能力 `openFilePreview`（侧边栏预览）+ `pickWorkspaceFile`（Promise 选文件，回传工作区相对路径），共用同一 `FileBrowser` 面板（2026-10-20 拍板） |
 | explorer / WorkspacePicker | `WorkspacePicker({ mode, max, onChange, allowDefault, defaultLabel, … })` —— **无数据参数**：connectHost 接线后自动订官方 `workspaces` 服务快照，选中值为 `workspaceId`；「所有工作区」默认项默认提供、选中发 `''`（2026-10-20） |
 | session | `SessionPreview({ sessionId, source, variant })` —— `source` = 取数能力接口（会话预览内部有交互：传输文件等，光有静态消息流不够） |
 
@@ -161,10 +161,11 @@ dsh-plugin-core/
 | 骨架 | package.json exports / tsconfig / 构建出 dist | ✅ 已完成（`tsc` 出 ESM + d.ts，不走 tsdown） |
 | v1 | `design` + `utils` + `ui` | ✅ 已完成（零件 + Picker / ModelPicker + Modal / toast / 空态） |
 | v2 | `explorer`（用户拍板要抽） | ✅ 已完成（浏览面板 + 预览；**选择器后移至 ui**，见 §2.4） |
+| v2+ | `explorer` 重做（2026-10-20） | ✅ 已完成（FileBrowser 面板 + `openFilePreview` / `pickWorkspaceFile` 两能力 + 全量预览：md / 代码高亮 / HTML / PDF / Office；官方件经 `./ui/official` 子路径） |
 | v3 | `session` | ⚠️ **半完成**：契约与三种承载已好，**官方会话 UI 镜像未搬**（只做最简渲染） |
 | 文档 | README 接入指南 | ✅ 已完成 |
 
-**未做**（按重要性）：真实插件接入验证 / 会话 UI 镜像 / 代码高亮与 PDF 预览 / 类名隔离 /
+**未做**（按重要性）：真实插件接入验证 / 会话 UI 镜像 / 类名隔离 /
 设置页骨架（等第二个消费者）/ npm 发布流程。详见 README「还没做的事」。
 
 ## 8. 验收口径

@@ -56,13 +56,14 @@ dsh-plugin-core/
 │   ├── string              ⚪ 暂缓
 │   ├── number              ⚪ 暂缓（注：formatBytes 已被 adv.session 附件卡使用，只「不对外承诺」，不删）
 │   ├── http                ⚪ 暂缓
-│   └── path                🟡 纯路径方法（无 UI）：joinPath / parentOf / crumbsOf / extOf / mimeOf
-│                              现在散在 explorer/types.ts，建议迁入这里（待你确认）
+│   └── path                ✅ 纯路径方法（无 UI）：joinPath / parentOf / crumbsOf / extOf / mimeOf
+│                              （已从 explorer/types.ts 迁入，2026-10-20）
 │
 ├── adv.explorer/        ④ 高级空间①：文件浏览（依赖 ui + utils）
-│   └── ExplorerPanel       ✅ 成品：目录树 + 面包屑 + 文件预览
-│                              （内部组合 ui 的侧栏/拉栏与 Picker；不对外暴露它们）
-│                              `previewKindOf`（决定用哪种预览器）是业务判断，留内部
+│   ├── FileBrowser        ✅ 面板本体：面包屑（▾ 选层）+ 内联展开树 + 预览 + dock/picker 两形态
+│   ├── open               ✅ 两命令式能力：openFilePreview（侧边栏预览）/ pickWorkspaceFile（锚定弹窗选文件）
+│   ├── types              ✅ 纯逻辑层（零 React / 零官方件）：预览分发 / 错误码 / 根反推 / 过滤
+│   └── preview            ✅ 预览体家族：md / 代码 / HTML / PDF / Office / 图片
 │
 └── adv.session/         ⑤ 高级空间②：会话记录（依赖 ui + utils）
     └── SessionPreview      ✅ 成品：ui.Modal 承载会话消息（modal / sidebar / page）
@@ -73,7 +74,7 @@ dsh-plugin-core/
 | 成品 | 用到的 `ui` 基础能力 | 定制了什么 |
 |---|---|---|
 | `adv.session` · `SessionPreview` | `Modal` | 把会话消息放进弹窗 |
-| `adv.explorer` · `ExplorerPanel` | `PanelDock`（放它）+ `WorkspacePicker` | 目录树 + 面包屑 + 文件预览 |
+| `adv.explorer` · `FileBrowser` | `IconButton` / `Segmented` / `MarqueeText` / `PanelDock`（dock 形态）+ 官方件（`FileTypeIcon` / `Menu` / `MarkdownText` / `CodeBlock`，经 `ui/official`） | 面包屑 + 内联展开树 + 预览体家族 + 两命令式能力 |
 
 `adv.*` 只做「拼装 + 业务定制」，不重新实现按钮 / 下拉 / 弹窗 / 侧栏。
 
@@ -113,7 +114,7 @@ utils（谁都不依赖，谁都可以用）
 │   └─ 布局    PanelDock / 拉栏
 │
 ├─ ③ 高级空间
-│   ├─ 文件浏览   ExplorerPanel（点文件夹、点文件看预览）
+│   ├─ 文件浏览   FileBrowser + openFilePreview / pickWorkspaceFile（点文件夹、点文件看预览）
 │   └─ 会话预览   SessionPreview（弹窗里放会话记录）
 │
 └─ ④ 工具方法
@@ -140,10 +141,10 @@ utils（谁都不依赖，谁都可以用）
 - **目录改名**：`src/explorer` → `src/adv.explorer`、`src/session` → `src/adv.session`；同步改
   `package.json` 的 `exports`、各 `index.ts`、`packages/demo` 的 import、`docs/design/architecture.md` 的树。
   代码现在仍是旧名。
-- **收窄导出**：`adv.explorer` 只暴露 `ExplorerPanel`；`WorkspacePicker` 留在 `ui`（已在那）。
-- **路径方法归基础**：`joinPath` / `parentOf` / `crumbsOf` / `extOf` / `mimeOf` 是纯方法（无 UI），
-  建议迁入 `utils/`（`path` 域）；`previewKindOf`（选哪种预览器）是文件浏览的业务判断，留在 `ExplorerPanel` 内部。
-  待你确认。
+- ~~**收窄导出**：`adv.explorer` 只暴露 `ExplorerPanel`~~ → 已定（2026-10-20）：暴露 `FileBrowser` 面板 +
+  `openFilePreview` / `pickWorkspaceFile` 两命令式能力 + 纯逻辑层；`WorkspacePicker` 留在 `ui`。
+- ~~**路径方法归基础**~~ → **已落地**（2026-10-20）：`joinPath` / `parentOf` / `crumbsOf` / `extOf` / `mimeOf`
+  在 `utils/path`；`previewInfoOf` 等业务判断留 `explorer/types.ts`（纯逻辑层，node 单测直接引）。
 - ~~**补基础组件**：`ui` 需补 `SidebarLayout` / `SplitPane`~~ → **已落地为 `PanelDock`**（2026-10-20），
   `resizer` 保留为它的底层函数。
 - **暂缓项**：`utils/string`、`utils/number`、`utils/http`、`ui/feedback/Loading` —— 只标注，未删代码。

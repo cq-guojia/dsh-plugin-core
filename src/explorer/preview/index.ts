@@ -1,70 +1,72 @@
-import { createElement as h, useEffect, useState } from 'react'
+// 单文件预览分派：按扩展名选预览体（image/pdf/md/html/office/text），认不出 ⇒ 明确兜底。
+// md/html 的「渲染 ⇄ 源码」由面板工具条切 sourceView 传进来。
+import { createElement as h } from 'react'
 import { ensureControls } from '../../ui/css.js'
-import { EmptyState } from '../../ui/EmptyState.js'
 import { t, type Translate } from '../../utils/i18n.js'
-import { mimeOf } from '../../utils/path.js'
-import { previewKindOf, type WorkspaceFilesFace } from '../types.js'
+import { previewInfoOf, type OfficeToPdfFace, type WorkspaceFilesFace } from '../types.js'
+import { BytesPreview } from './BytesPreview.js'
+import { HtmlPreview } from './HtmlPreview.js'
+import { OfficePreview } from './OfficePreview.js'
+import { TextPreview } from './TextPreview.js'
+
+export { BytesPreview, type BytesPreviewProps } from './BytesPreview.js'
+export { HtmlPreview, buildStaticHtml, type HtmlPreviewProps } from './HtmlPreview.js'
+export { OfficePreview, type OfficePreviewProps } from './OfficePreview.js'
+export { TextPreview, type TextPreviewProps } from './TextPreview.js'
 
 export interface FilePreviewProps {
   workspaceFiles: WorkspaceFilesFace
   sessionId: string
   path: string
+  /** 官方 remote.officeToPdf；未就位传 null ⇒ Office 文件出「不可用」空态。 */
+  officeToPdf?: OfficeToPdfFace | null
+  /** true = 源码态（md/html 生效）。 */
+  sourceView?: boolean
   translate?: Translate
 }
 
-/** 单文件预览：文本 / 图片 / 不支持（明确兜底，不硬撑）。 */
-export function FilePreview(props: FilePreviewProps): ReturnType<typeof h> {
+export function FilePreview(props: FilePreviewProps): ReturnType<typeof h> | null {
   ensureControls()
   const tt = props.translate ?? t
-  const kind = previewKindOf(props.path)
-  const [text, setText] = useState<string | null>(null)
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
-  const [failed, setFailed] = useState(false)
-
-  useEffect(() => {
-    let alive = true
-    let url: string | null = null
-    setText(null)
-    setImageUrl(null)
-    setFailed(false)
-
-    const run = async (): Promise<void> => {
-      if (kind === 'text') {
-        const res = await props.workspaceFiles.read(props.sessionId, props.path, {})
-        if (alive) setText(res.text)
-        return
-      }
-      if (kind === 'image') {
-        const res = await props.workspaceFiles.readBytes(props.sessionId, props.path, {})
-        const mime = mimeOf(props.path) ?? 'application/octet-stream'
-        // 复制一份：TS 5.9 下 Uint8Array<ArrayBufferLike> 不是合法的 BlobPart
-        const blob = new Blob([new Uint8Array(res.data)], { type: mime })
-        url = URL.createObjectURL(blob)
-        if (alive) setImageUrl(url)
-        return
-      }
-    }
-
-    run().catch(() => {
-      if (alive) setFailed(true)
-    })
-
-    return () => {
-      alive = false
-      if (url !== null) URL.revokeObjectURL(url)
-    }
-  }, [props.path, props.sessionId, props.workspaceFiles, kind])
-
-  if (kind === 'unsupported') {
-    return h(EmptyState, { text: tt('explorerUnsupported'), translate: tt })
+  const info = previewInfoOf(props.path)
+  const sourceView = props.sourceView === true
+  switch (info.kind) {
+    case 'image':
+    case 'pdf':
+      return h(BytesPreview, {
+        workspaceFiles: props.workspaceFiles,
+        sessionId: props.sessionId,
+        path: props.path,
+        kind: info.kind,
+        mime: info.mime ?? 'application/octet-stream',
+        translate: tt,
+      })
+    case 'office':
+      return h(OfficePreview, {
+        officeToPdf: props.officeToPdf ?? null,
+        sessionId: props.sessionId,
+        path: props.path,
+        translate: tt,
+      })
+    case 'html':
+      return h(HtmlPreview, {
+        workspaceFiles: props.workspaceFiles,
+        sessionId: props.sessionId,
+        path: props.path,
+        sourceView,
+        translate: tt,
+      })
+    case 'md':
+    case 'text':
+      return h(TextPreview, {
+        workspaceFiles: props.workspaceFiles,
+        sessionId: props.sessionId,
+        path: props.path,
+        markdown: info.kind === 'md',
+        sourceView,
+        translate: tt,
+      })
   }
-  if (failed) return h(EmptyState, { text: tt('explorerFailed'), translate: tt })
-  if (kind === 'image') {
-    return imageUrl === null
-      ? h('div', { className: 'dshpc-exp__note' }, tt('explorerLoading'))
-      : h('img', { className: 'dshpc-exp__image', src: imageUrl, alt: props.path })
-  }
-  return text === null
-    ? h('div', { className: 'dshpc-exp__note' }, tt('explorerLoading'))
-    : h('pre', { className: 'dshpc-exp__text' }, text)
+  // switch 已穷尽 PreviewKind；保留 return 满足 TS 控制流分析
+  return null
 }

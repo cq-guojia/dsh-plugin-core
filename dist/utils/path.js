@@ -13,6 +13,7 @@ const IMAGE_EXT = {
     bmp: 'image/bmp',
     svg: 'image/svg+xml',
     ico: 'image/x-icon',
+    avif: 'image/avif',
 };
 /** 扩展名 → 图片 MIME；不是已知图片扩展名返回 `undefined`。 */
 export function mimeOf(path) {

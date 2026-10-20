@@ -1,63 +1,60 @@
-import { createElement as h, useEffect, useState } from 'react';
+// 单文件预览分派：按扩展名选预览体（image/pdf/md/html/office/text），认不出 ⇒ 明确兜底。
+// md/html 的「渲染 ⇄ 源码」由面板工具条切 sourceView 传进来。
+import { createElement as h } from 'react';
 import { ensureControls } from '../../ui/css.js';
-import { EmptyState } from '../../ui/EmptyState.js';
 import { t } from '../../utils/i18n.js';
-import { mimeOf } from '../../utils/path.js';
-import { previewKindOf } from '../types.js';
-/** 单文件预览：文本 / 图片 / 不支持（明确兜底，不硬撑）。 */
+import { previewInfoOf } from '../types.js';
+import { BytesPreview } from './BytesPreview.js';
+import { HtmlPreview } from './HtmlPreview.js';
+import { OfficePreview } from './OfficePreview.js';
+import { TextPreview } from './TextPreview.js';
+export { BytesPreview } from './BytesPreview.js';
+export { HtmlPreview, buildStaticHtml } from './HtmlPreview.js';
+export { OfficePreview } from './OfficePreview.js';
+export { TextPreview } from './TextPreview.js';
 export function FilePreview(props) {
     ensureControls();
     const tt = props.translate ?? t;
-    const kind = previewKindOf(props.path);
-    const [text, setText] = useState(null);
-    const [imageUrl, setImageUrl] = useState(null);
-    const [failed, setFailed] = useState(false);
-    useEffect(() => {
-        let alive = true;
-        let url = null;
-        setText(null);
-        setImageUrl(null);
-        setFailed(false);
-        const run = async () => {
-            if (kind === 'text') {
-                const res = await props.workspaceFiles.read(props.sessionId, props.path, {});
-                if (alive)
-                    setText(res.text);
-                return;
-            }
-            if (kind === 'image') {
-                const res = await props.workspaceFiles.readBytes(props.sessionId, props.path, {});
-                const mime = mimeOf(props.path) ?? 'application/octet-stream';
-                // 复制一份：TS 5.9 下 Uint8Array<ArrayBufferLike> 不是合法的 BlobPart
-                const blob = new Blob([new Uint8Array(res.data)], { type: mime });
-                url = URL.createObjectURL(blob);
-                if (alive)
-                    setImageUrl(url);
-                return;
-            }
-        };
-        run().catch(() => {
-            if (alive)
-                setFailed(true);
-        });
-        return () => {
-            alive = false;
-            if (url !== null)
-                URL.revokeObjectURL(url);
-        };
-    }, [props.path, props.sessionId, props.workspaceFiles, kind]);
-    if (kind === 'unsupported') {
-        return h(EmptyState, { text: tt('explorerUnsupported'), translate: tt });
+    const info = previewInfoOf(props.path);
+    const sourceView = props.sourceView === true;
+    switch (info.kind) {
+        case 'image':
+        case 'pdf':
+            return h(BytesPreview, {
+                workspaceFiles: props.workspaceFiles,
+                sessionId: props.sessionId,
+                path: props.path,
+                kind: info.kind,
+                mime: info.mime ?? 'application/octet-stream',
+                translate: tt,
+            });
+        case 'office':
+            return h(OfficePreview, {
+                officeToPdf: props.officeToPdf ?? null,
+                sessionId: props.sessionId,
+                path: props.path,
+                translate: tt,
+            });
+        case 'html':
+            return h(HtmlPreview, {
+                workspaceFiles: props.workspaceFiles,
+                sessionId: props.sessionId,
+                path: props.path,
+                sourceView,
+                translate: tt,
+            });
+        case 'md':
+        case 'text':
+            return h(TextPreview, {
+                workspaceFiles: props.workspaceFiles,
+                sessionId: props.sessionId,
+                path: props.path,
+                markdown: info.kind === 'md',
+                sourceView,
+                translate: tt,
+            });
     }
-    if (failed)
-        return h(EmptyState, { text: tt('explorerFailed'), translate: tt });
-    if (kind === 'image') {
-        return imageUrl === null
-            ? h('div', { className: 'dshpc-exp__note' }, tt('explorerLoading'))
-            : h('img', { className: 'dshpc-exp__image', src: imageUrl, alt: props.path });
-    }
-    return text === null
-        ? h('div', { className: 'dshpc-exp__note' }, tt('explorerLoading'))
-        : h('pre', { className: 'dshpc-exp__text' }, text);
+    // switch 已穷尽 PreviewKind；保留 return 满足 TS 控制流分析
+    return null;
 }
 //# sourceMappingURL=index.js.map

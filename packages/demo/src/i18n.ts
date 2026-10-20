@@ -111,6 +111,18 @@ export type DemoMessageKey =
   | 'dockCustomHeadTitle'
   | 'dockCustomHeadHint'
   | 'explorerHint'
+  | 'methodATitle'
+  | 'methodAHint'
+  | 'openFilePreview'
+  | 'openDirPreview'
+  | 'openPdfPreview'
+  | 'methodBTitle'
+  | 'methodBHint'
+  | 'pickAny'
+  | 'pickTs'
+  | 'pickDir'
+  | 'pickNone'
+  | 'pickResult'
   | 'previewBodyTitle'
   | 'previewBodyHint'
   | 'sessionHint'
@@ -155,6 +167,28 @@ export type DemoMessageKey =
   | 'pluginTitle'
   | 'pluginCardDesc'
   | 'pluginCardOpen'
+  // 文档骨架（示例 / 代码 / 用法 / API 表）与按钮页的页级备注
+  | 'btnNote'
+  | 'docNote'
+  | 'docPreview'
+  | 'docCode'
+  | 'docUsage'
+  | 'docApi'
+  | 'docApiName'
+  | 'docApiType'
+  | 'docApiDefault'
+  | 'docApiDesc'
+  | 'docCopy'
+  | 'docCopied'
+  | 'apiVariant'
+  | 'apiSize'
+  | 'apiIcon'
+  | 'apiIconRight'
+  | 'apiColor'
+  | 'apiLoading'
+  | 'apiBlock'
+  | 'apiDisabled'
+  | 'apiChildren'
 
 export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   zh: {
@@ -251,6 +285,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnStateHint: 'disabled 半透明不可点；loading 前置同色小圈并自动禁用',
     btnColorTitle: '自定义颜色',
     btnColorHint: 'color 传任意 CSS 色值：实心档作底色、线框与文字档作主色；hover / 按下自动按该色混出',
+    btnNote: '官方 primitives 没有 danger / lg 这两条轴，Button 由本库自绘；外观全走 --dshpc-* token，跟着宿主明暗主题走。',
     btnLabelSave: '保存修改',
     btnLabelCancel: '取消',
     btnLabelDelete: '删除',
@@ -296,12 +331,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     feedbackModalHint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关。标题栏的 ✕ 是 24×24 图标位，不该出现边框或 120px 宽的底色块',
     feedbackToastHint: '命令式 showToast，不要求挂组件',
 
-    explorerHint: '面包屑 + 目录树 + 预览；workspaceFiles 是 mock 的（真实插件从 ctx 取出后注入）',
+    explorerHint:
+      '面包屑（超宽折叠 + ▾ 选层）+ 内联展开目录树 + 预览（md 渲染 / 代码高亮 / HTML / PDF / Office）。workspaceFiles 是 mock 的（真实插件从 ctx 取出后注入）',
+    methodATitle: '方法 A：openFilePreview 侧边栏预览',
+    methodAHint: '传文件或文件夹路径，右侧弹出可拖宽的停靠预览；Esc / ✕ 关闭。返回 handle 可代码关',
+    openFilePreview: '预览 READ.md',
+    openDirPreview: '浏览 docs 文件夹',
+    openPdfPreview: '预览 PDF',
+    methodBTitle: '方法 B：pickWorkspaceFile 选择文件',
+    methodBHint: '在锚点按钮旁弹出模态弹窗；Promise 返回 { path, isDir }（path 为工作区相对路径）；Esc / 点外部 / ✕ 取消返回 null',
+    pickAny: '选择文件（不限）',
+    pickTs: '只要 .ts',
+    pickDir: '只要文件夹',
+    pickNone: '还没选',
+    pickResult: '已选择',
     previewBodyTitle: 'FilePreview 预览体（可单独用）',
     previewBodyHint:
-      '上面那块已经包含它——ExplorerPanel 内部渲染的就是 FilePreview。\n' +
-      '它同时也是一条独立子路径 dsh-plugin-core/explorer/preview：只有一个文件要显示时（会话附件、工具输出）不必搬出整个面板。\n' +
-      '⚠️ 本页不另挂一块单独渲染：预览体的 path / files 由父组件注入，要脱离面板展示得先准备一份自己的数据，属于待补。',
+      '上面那块已经包含它——FileBrowser 内部渲染的就是 FilePreview。\n' +
+      '它同时也是一条独立子路径 dsh-plugin-core/explorer/preview：只有一个文件要显示时（会话附件、工具输出）不必搬出整个面板。',
     sessionHint: '三种承载：modal / sidebar / page；source 是 mock 的；renderMessage 可接管富内容',
 
     dateHint: '解析失败不抛错、给兜底、不编造；所有函数无 UI 依赖，Node 里也能跑',
@@ -310,7 +357,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     roadmapHint: '下面是「明确不提供」的部分——写在这里是为了让你不用猜，也让后来人知道边界在哪。',
     roadmapOut: '设置页骨架、i18n 框架（插件文案插件自管）、host 宿主类型面',
     roadmapMirror: '官方会话 UI 的完整镜像（工具卡 / 代码块 / 推理行）——session 目前只有最简渲染，富内容走 renderMessage 扩展点',
-    roadmapPreview: '代码语法高亮 / PDF / Office 预览——explorer 的预览只有文本与图片',
+    roadmapPreview: '（已落地）md 渲染（官方 MarkdownText）/ 代码高亮（官方 CodeBlock）/ HTML / PDF / Office 预览',
     roadmapSkeleton: '（已落地）PanelDock——可停靠分栏：多面板、按名覆盖、上限 3',
     roadmapLayout: '红线：整合以前的.share(plugins/demo)',
 
@@ -334,6 +381,29 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     weekday5: '五',
     weekday6: '六',
     weekday7: '日',
+    // 文档骨架：示例 / 代码 / 用法 / API 表的栏位名与表头
+    docNote: '备注',
+    docPreview: '示例',
+    docCode: '代码',
+    docUsage: '怎么用',
+    docApi: 'API',
+    docApiName: '属性',
+    docApiType: '类型',
+    docApiDefault: '默认值',
+    docApiDesc: '说明',
+    docCopy: '复制',
+    docCopied: '已复制',
+
+    apiVariant: '外观十档：primary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link',
+    apiSize: '高度三档：sm 24 / md 28 / lg 32，有边与无边同高',
+    apiIcon: '前置图标：官方图标组件、自绘 SVG、一个字符都行（收的是 ReactNode）',
+    apiIconRight: '后置图标（展开箭头、外链等）',
+    apiColor: '自定义主色：实心档作底色，描边与文字档作字色和描边色',
+    apiLoading: '转圈并自动禁用点击',
+    apiBlock: '撑满父宽；有前置图标时文字仍在视觉中心',
+    apiDisabled: '透传原生 disabled',
+    apiChildren: '按钮文案 / 内容',
+
     pluginTitle: '组件预览',
     pluginCardDesc: '打开 dsh-plugin-core 的控件与业务组件展示页',
     pluginCardOpen: '打开 ›',
@@ -432,6 +502,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnStateHint: 'disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself',
     btnColorTitle: 'Custom colors',
     btnColorHint: 'Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it',
+    btnNote: 'The official primitives have no danger / lg axis, so Button is drawn in this library; it consumes --dshpc-* tokens only and follows the host light/dark theme.',
     btnLabelSave: 'Save changes',
     btnLabelCancel: 'Cancel',
     btnLabelDelete: 'Delete',
@@ -477,12 +548,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     feedbackModalHint: 'Hand-rolled overlay (no portal); click backdrop / Esc / ✕ all close it. The header ✕ is a 24×24 icon slot — no border or 120px-wide color block should appear',
     feedbackToastHint: 'Imperative showToast — no component mounting required',
 
-    explorerHint: 'Breadcrumb + directory tree + preview; workspaceFiles is mocked (a real plugin reads it from ctx and injects)',
+    explorerHint:
+      'Breadcrumb (collapses when too wide + ▾ level picker) + inline-expandable tree + preview (md render / code highlight / HTML / PDF / Office). workspaceFiles is mocked (a real plugin reads it from ctx and injects)',
+    methodATitle: 'Method A: openFilePreview dock preview',
+    methodAHint: 'Pass a file or folder path: a resizable dock preview opens on the right; Esc / ✕ closes it. The returned handle can close it programmatically',
+    openFilePreview: 'Preview READ.md',
+    openDirPreview: 'Browse the docs folder',
+    openPdfPreview: 'Preview PDF',
+    methodBTitle: 'Method B: pickWorkspaceFile',
+    methodBHint: 'A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / ✕ cancels with null',
+    pickAny: 'Pick a file (any)',
+    pickTs: '.ts only',
+    pickDir: 'Folders only',
+    pickNone: 'Nothing picked yet',
+    pickResult: 'Picked',
     previewBodyTitle: 'FilePreview (usable on its own)',
     previewBodyHint:
-      'The block above already includes it — ExplorerPanel renders FilePreview inside.\n' +
-      'It is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.\n' +
-      '⚠️ No standalone render here: the preview body takes its path and files from the parent, so showing it outside the panel needs its own data source — still to be added.',
+      'The block above already includes it — FileBrowser renders FilePreview inside.\n' +
+      'It is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.',
     sessionHint: 'Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content',
 
     dateHint: 'No throw on parse failure — falls back gracefully and never fabricates; all functions are UI-free and run in Node too',
@@ -491,7 +574,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     roadmapHint: 'The list below is what this package explicitly does NOT provide — written down so nobody has to guess, and so the boundary stays visible.',
     roadmapOut: 'A settings-page skeleton, an i18n framework (plugin copy is the plugin’s own job), a host typings surface',
     roadmapMirror: 'A full mirror of the official session UI (tool cards / code blocks / reasoning rows) — session renders only the minimal shape today; rich content goes through the renderMessage hook',
-    roadmapPreview: 'Syntax highlighting / PDF / Office preview — the explorer preview handles text and images only',
+    roadmapPreview: '(shipped) md render (official MarkdownText) / code highlight (official CodeBlock) / HTML / PDF / Office preview',
     roadmapSkeleton: '(shipped) PanelDock — dockable split panes: multi-panel, replace-by-name, limit 3',
     roadmapLayout: 'Red line: consolidation of the old packages/demo',
 
@@ -515,6 +598,29 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     weekday5: 'Fr',
     weekday6: 'Sa',
     weekday7: 'Su',
+    // Documentation skeleton: labels for the example / code / usage / API table
+    docNote: 'Note',
+    docPreview: 'Example',
+    docCode: 'Code',
+    docUsage: 'Usage',
+    docApi: 'API',
+    docApiName: 'Prop',
+    docApiType: 'Type',
+    docApiDefault: 'Default',
+    docApiDesc: 'Description',
+    docCopy: 'Copy',
+    docCopied: 'Copied',
+
+    apiVariant: 'Ten appearances: primary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link',
+    apiSize: 'Three heights: sm 24 / md 28 / lg 32; bordered and borderless are the same height',
+    apiIcon: 'Leading icon: an official icon component, your own SVG, or even a single character (it takes a ReactNode)',
+    apiIconRight: 'Trailing icon (expand chevron, external link, ...)',
+    apiColor: 'Custom accent: solid variants use it as fill, outlined and text variants use it for text and border',
+    apiLoading: 'Spins and disables clicks by itself',
+    apiBlock: 'Fills the parent width; with a leading icon the label stays optically centered',
+    apiDisabled: 'Passed through to the native disabled',
+    apiChildren: 'Button label / content',
+
     pluginTitle: 'Component preview',
     pluginCardDesc: 'Open the showcase of dsh-plugin-core controls and business components',
     pluginCardOpen: 'Open ›',

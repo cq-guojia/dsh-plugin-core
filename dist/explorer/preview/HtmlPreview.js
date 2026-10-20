@@ -1,0 +1,104 @@
+// HTML 静态预览：官方同款安全处理（禁标签 / 禁属性 / CSP + sandbox=""）后 iframe 渲染；
+// 源码态走 TextPreview 并按 256K 截断。降级路径（无 DOM 能力时）直接出错误态，不猜。
+import { createElement as h, useEffect, useState } from 'react';
+import { ensureControls } from '../../ui/css.js';
+import { EmptyState } from '../../ui/EmptyState.js';
+import { t } from '../../utils/i18n.js';
+import { bytesOf, errView, SOURCE_MAX_BYTES } from '../types.js';
+import { TextPreview } from './TextPreview.js';
+/** 官方 CSP 原文（documentpreview lib/client.js 同款，不多开不少关）。 */
+const HTML_CSP = "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; media-src data:";
+/** 禁用标签（官方清单）。 */
+const HTML_FORBID_TAGS = ['noscript', 'base', 'link', 'meta', 'iframe', 'frame', 'object', 'embed', 'set', 'animate', 'animatemotion', 'animatetransform'];
+/** 禁用属性（官方清单）。 */
+const HTML_FORBID_ATTRS = ['href', 'xlink:href'];
+/**
+ * 把 HTML 字节做成官方同款的静态预览文档：剔除禁用标签/属性、head 首项插 CSP。
+ * 真正的兜底是 iframe `sandbox=""`（禁脚本执行）+ CSP（禁一切外链）。
+ */
+export function buildStaticHtml(data) {
+    if (typeof DOMParser === 'undefined')
+        return undefined;
+    let source;
+    try {
+        source = new TextDecoder('utf-8', { fatal: false }).decode(data);
+    }
+    catch {
+        return undefined;
+    }
+    let doc;
+    try {
+        doc = new DOMParser().parseFromString(source, 'text/html');
+    }
+    catch {
+        return undefined;
+    }
+    for (const tag of HTML_FORBID_TAGS) {
+        for (const el of Array.from(doc.getElementsByTagName(tag)))
+            el.remove();
+    }
+    for (const attr of HTML_FORBID_ATTRS) {
+        for (const el of Array.from(doc.querySelectorAll(`[${attr}]`)))
+            el.removeAttribute(attr);
+    }
+    const csp = doc.createElement('meta');
+    csp.setAttribute('http-equiv', 'Content-Security-Policy');
+    csp.setAttribute('content', HTML_CSP);
+    const head = doc.head ?? doc.documentElement;
+    head.insertBefore(csp, head.firstChild);
+    return `<!DOCTYPE html>\n${doc.documentElement.outerHTML}`;
+}
+export function HtmlPreview(props) {
+    ensureControls();
+    const tt = props.translate ?? t;
+    const [doc, setDoc] = useState(null);
+    const [failed, setFailed] = useState(null);
+    useEffect(() => {
+        if (props.sourceView)
+            return;
+        let alive = true;
+        setDoc(null);
+        setFailed(null);
+        props.workspaceFiles
+            .readBytes(props.sessionId, props.path, {})
+            .then((res) => {
+            const data = bytesOf(res);
+            if (!alive)
+                return;
+            if (data === null || 'failed' in data) {
+                setFailed(errView(data === null ? undefined : data.failed));
+                return;
+            }
+            const html = buildStaticHtml(data);
+            if (html === undefined) {
+                setFailed({ key: 'previewRenderFailed' });
+                return;
+            }
+            setDoc(html);
+        })
+            .catch((error) => {
+            if (alive)
+                setFailed(errView(error));
+        });
+        return () => {
+            alive = false;
+        };
+    }, [props.workspaceFiles, props.sessionId, props.path, props.sourceView]);
+    if (props.sourceView) {
+        return h(TextPreview, {
+            workspaceFiles: props.workspaceFiles,
+            sessionId: props.sessionId,
+            path: props.path,
+            markdown: false,
+            sourceView: true,
+            maxBytes: SOURCE_MAX_BYTES,
+            translate: tt,
+        });
+    }
+    if (failed !== null)
+        return h(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+    if (doc === null)
+        return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'));
+    return h('iframe', { className: 'dshpc-fb__frame', sandbox: '', srcDoc: doc, title: props.path });
+}
+//# sourceMappingURL=HtmlPreview.js.map

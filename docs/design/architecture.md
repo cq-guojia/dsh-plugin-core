@@ -80,8 +80,8 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
 
 工作区列表、模型列表、会话消息都要跨 host↔client 边界。分两条口径（2026-10-20 拍板）：
 
-- **通用控件是纯零件**：数据由调用方经 props 给，宿主能力经接口注入（`ExplorerPanel`、
-  `SessionPreview`、通用 `Picker` 都算这类）。
+- **通用控件是纯零件**：数据由调用方经 props 给，宿主能力经接口注入（`FileBrowser` /
+  `openFilePreview` / `pickWorkspaceFile`、`SessionPreview`、通用 `Picker` 都算这类）。
 - **领域选择器自带数据面**：`ModelPicker` / `WorkspacePicker` 经接线后**自己取数自己显示**，
   消费方不再传数组。两条通路（2026-10-20 真机核实）：
   - 工作区：client 侧 `ctx.inject(['workspaces'])` 的快照（getSnapshot + subscribe，follow 流实时更新），
@@ -95,7 +95,7 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
 |---|---|
 | `Picker` | 选项数据（props） |
 | `ModelPicker` / `WorkspacePicker` | 自取（connectHost 接线；`groups` 参数仅作覆盖） |
-| `ExplorerPanel` | `WorkspaceFilesFace`（从 ctx 取出后注入） |
+| `FileBrowser` / `openFilePreview` / `pickWorkspaceFile` | `WorkspaceFilesFace`（从 ctx 取出后注入） |
 | `SessionPreview` | `SessionSource`（同上） |
 
 不传整个 `ctx`：ctx 是宿主给的整个大对象，传进来就把本包和宿主版本焊死；只传需要的那一小块，

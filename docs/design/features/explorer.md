@@ -1,73 +1,99 @@
 # explorer —— 工作区浏览
 
-依赖 `ui` + `design`。装的是「文件浏览」这个成品：目录树 + 面包屑 + 文件预览。
-选工作区在 `ui`（`WorkspacePicker`，自取宿主快照；`FilePicker` 已删），不在这里。
+依赖 `ui` + `design` + `utils`。装的是「文件浏览」这个成品：**一个面板本体 + 两个命令式能力**。
+选工作区在 `ui`（`WorkspacePicker`），不在这里。
 
-## 宿主契约：`WorkspaceFilesFace`
+2026-10-20 重做（移植自兄弟项目 `dsh-task-dispatch-table/src/client/file-browser.tsx`，
+"抄"不是"复制"：组件全部换 core 体系，官方件只经 `ui/official` 子路径消费）。
+
+## 两个命令式能力（对外主入口）
+
+| 能力 | 签名要点 | 形态 |
+|---|---|---|
+| `openFilePreview(opts)` | `{ workspaceFiles, sessionId, path, officeToPdf?, rootName?, width?, onClose? }` ⇒ `{ close(), path }` | 右侧停靠预览（可拖宽、Esc / ✕ 关）；重复打开关旧的 |
+| `pickWorkspaceFile(opts)` | `{ workspaceFiles, sessionId, anchor?, filter?, officeToPdf?, rootName?, workspaces? }` ⇒ `Promise<{ path, isDir } \| null>` | 锚定按钮旁的模态弹窗；Esc / 点外部 / ✕ 取消 resolve `null` |
+
+- `path` 文件或文件夹都吃：`list(path)` 成功 ⇒ 目录树；报错 ⇒ 文件预览态（dir 取父目录，面包屑保留可返回）。
+- `pickWorkspaceFile` 的 `filter`：`{ exts: ['ts'] }` 只要某扩展名 / `{ dirs: true }` 只要文件夹 / 不传不限。
+- 选中回传**工作区相对路径**（口径同兄弟项目：绝对路径会被宿主附件 zod 拒；根由 `stat.absolutePath` 反推）。
+- 两者共用同一 `FileBrowser` 面板（用户 2026-10-20 拍板：同一套内容，两种展现形式）。
+
+```ts
+import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+
+openFilePreview({ workspaceFiles, sessionId, path: 'docs/requirements.md' })
+
+const picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })
+```
+
+## 面板本体 `FileBrowser`
+
+`FileBrowser(props)`：`workspaceFiles` / `officeToPdf?` / `sessionId` / `path` / `onClose?` /
+`rootName?` / `workspaces?` / `onSelectWorkspace?` / `rootCache?` / `style?` / `translate?`；
+形态二选一：`picker` + `onPick(path, isDir)` + `filter?`（选择器态）｜ `dock` + `onResizeStart`（浏览态）。
+
+提供：
+
+- **面包屑**：超宽折叠为当前层名（隐藏测量条 + ResizeObserver，与可见态同构，不超长必还原）；
+  行首 `▾` 选层下拉（官方 `Menu`，条目 = 当前工作区置顶 + 路径层级缩进 + 其他工作区，点当前工作区回根）；
+  根名不写死（调用方传 `rootName`，否则用反推根的末段）。
+- **内联展开目录树**：行 = 就地展开/收起（两种形态统一），行尾小按钮分派（选择器 = 选此文件夹，浏览 = 进入）；
+  子项懒加载 + 缓存；截断提示；键盘可达（role/tabIndex/Enter/Space）。
+- **文件态第二排**（仅预览态显示）：文件名跑马灯 + md/html「渲染 ⇄ 源码」切换 + 复制路径 + 刷新。
+- **越界降级**：list 真实错误码 `outside-workspace` / `not-found` ⇒ 第一排换只读完整路径，不给会失败的入口。
+- **工作区根反推**：`stat.absolutePath` 后缀匹配 + 有界 BFS（每层 ≤5 目录、≤3 层）⇒ 空目录/只含子目录也能拼绝对路径；
+  缓存**可注入**（`rootCache`，调用方控制生命周期；不传内部自建随组件废弃——不用模块级 Map）。
+
+## 宿主契约：`WorkspaceFilesFace` / `OfficeToPdfFace`
 
 **由插件从 `ctx` 取出这一小块传进来**（不要传整个 `ctx`——那会把本包和宿主版本焊死）。
-宿主 breaking 时改的是插件「取出」的一行。
 
 | 方法 | 签名要点 |
 |---|---|
-| `read` | `(sessionId, path, range, signal?)` —— ⚠️ `range` **必传**（官方按位置参数个数校验，省了会被远端拒），读全量传 `{}` |
+| `read` | `(sessionId, path, range, signal?)` —— ⚠️ `range` **必传**（官方按位置参数个数校验），读全量传 `{}` |
 | `readBytes` | `(sessionId, path, options, signal?)` —— `options` 同样必传；不传 range 读全量 |
-| `list` | `(sessionId, path, signal?)` ⇒ `{ path, entries: [{ name, type, size? }], truncated }`；list 一个文件会报 not-directory |
-| `stat?` | 可选；宿主过旧没有此方法时降级。只认普通文件，目录会抛 |
+| `list` | `(sessionId, path, signal?)` ⇒ `{ path, entries, truncated }`；list 一个文件报 not-directory；空串根以 `'.'` 上线（0.2.0-rc.1 起官方拒空路径） |
+| `stat?` | 可选；只认 regular file（目录抛）。用于工作区根反推 |
+| `officeToPdf` | 不是 `WorkspaceFilesFace` 的槽位，是组件可选 prop；宿主没装 ⇒ Office 文件出「不可用」空态，不崩 |
 
-类型与工具（`types.ts`）：`WorkspaceFilesFace` / `DirEntry` / `Listing` / `PreviewKind`。
-
-路径方法 `crumbsOf` / `parentOf` / `joinPath` / `extOf` / `mimeOf` 是纯方法（无 UI），
-建议迁入 `utils/`（`path` 域，待定）；`previewKindOf`（决定用哪种预览器）是文件浏览的业务判断，留在内部。
-
-## `ExplorerPanel`
-
-| 参数 | 类型 | 默认 | 说明 |
-|---|---|---|---|
-| `workspaceFiles` | `WorkspaceFilesFace` | — | 必填，注入的宿主能力 |
-| `sessionId` | `string` | — | 必填 |
-| `path` | `string` | `''` | 起始路径，`''` = 工作区根 |
-| `onSelect` | `(path: string \| null) => void` | — | 选中文件 / 清空选中时回调 |
-| `onOpenFile` | `(path: string) => void` | — | 点文件时回调（与 `onSelect` 同时触发） |
-| `emptyText` | `string` | 内置「空目录」 | — |
-| `translate` | `Translate` | 内置 | — |
-
-提供：面包屑（可点回跳，含上一级 / 刷新）、目录树（目录优先排序 + 显示体积）、
-预览区（文本 / 图片 / 不支持兜底）。
-
-```tsx
-import { ExplorerPanel } from 'dsh-plugin-core/explorer'
-
-h(ExplorerPanel, {
-  workspaceFiles,           // 从 ctx 取出
-  sessionId,
-  path: '',
-  onSelect: (p) => setCurrent(p),
-})
-```
-
-## 选工作区 / 选文件 —— 在 `ui`，不在这里
-
-`WorkspacePicker` 已移到 `dsh-plugin-core/ui`（见 [`ui.md`](ui.md#workspacepicker)）。
-
-理由：它们只是 `Picker` 的薄封装（select），不碰目录树 / 预览 / `WorkspaceFilesFace`——
-放在 ui 里，需要「选工作区」的地方不必引入整个 explorer。explorer 内部要用，一样从 ui 引。
+纯逻辑层在 `types.ts`（零 React / 零官方件，node 单测直接引）：`previewInfoOf` / `errView` /
+`listingOf` / `textPageOf` / `bytesOf` / `sortEntries` / `matchesFilter` / `learnRoot` /
+`relativizeToRoot` / `absolutizeDir` / `findAnyFileAbs` 等。
 
 ## 单文件预览（`dsh-plugin-core/explorer/preview`）
 
-`FilePreview({ workspaceFiles, sessionId, path, translate? })` —— 按扩展名分派：
-图片 ⇒ `readBytes` 转 Blob（卸载时 `revokeObjectURL`）；文本类 ⇒ `read` 取正文；
-认不出的二进制 ⇒ 明确「暂不支持预览」，不硬撑。
+`FilePreview({ workspaceFiles, sessionId, path, officeToPdf?, sourceView? })` —— 按扩展名分派：
+
+| 类型 | 渲染 |
+|---|---|
+| md | 官方 `MarkdownText`（mdast + KaTeX，labels 从 core 字典构造） |
+| 代码 / 文本 | 官方 `CodeBlock`（Shiki，`languageForPath` 判语言，默认换行）；read 分页 + 「加载更多」 |
+| html | sandbox iframe + 官方同款 CSP/禁标签清单（`buildStaticHtml`）；源码态 256K 字节截断 |
+| pdf / 图片 | `readBytes` → Blob → iframe / `<img>` |
+| office（doc/docx/ppt/pptx） | 宿主 `officeToPdf` 转 PDF → iframe；未注入 ⇒ 不可用空态 |
+| 其余 | 按文本读，read 抛 `not-text` ⇒ 「不是文本文件」空态（不本地猜二进制清单；xls/xlsx 按 2026-10-05 拍板暂不纳入） |
+
+预览体可单独 import（会话附件、工具输出场景），不必搬整个面板。
+
+## 移植时修掉的源实现问题
+
+| 源实现问题 | 处理 |
+|---|---|
+| 模块级 `workspaceRoots` Map 永不清除 + `setRootNonce` hack | 改可注入 `RootCache`（`createRootCache()`），随组件/调用方废弃 |
+| 复制路径复制当前形态（可能绝对路径）vs picker 回传相对 | 统一为工作区相对（`relativizeToRoot`） |
+| `copyPath` 无 catch（剪贴板 reject = unhandled rejection） | 补 `.catch`，静默 |
+| 自绘 menu 浮层 + backdrop + 点外关闭与官方 Menu portal 豁免坑 | 官方 `Menu`（自带定位/键盘/点外关闭）；picker 点外用整屏 backdrop（天然豁免 portal 菜单） |
+| 死代码 `barRef` / `ListEntry.size`；`ensureRootLearned` 与 `absolutizeDir` 重复 | 删除 / 合并进挂载效应 |
 
 ## 已知限制（选型前必读）
 
-- **无代码语法高亮**（不引 `@codemirror/*`），代码文件按纯文本渲染。
-- **不支持 PDF / Office 预览**（那要依赖宿主 `officeToPdf`）。
-- 目录树**无懒加载 / 虚拟滚动**，超大目录（官方上限 2000 条）会一次渲染完。
-- 面包屑超宽时**简单换行**，没有「折叠为当前层名 + 下拉选层」。
+- 代码高亮用官方 Shiki `CodeBlock`：大文件（万行级）整篇 DOM 重排在拖宽时可能卡——
+  兄弟项目为此自绘过 CodeMirror 版，core 不引重依赖，真出现再议。
+- 目录树无虚拟滚动，超大目录（官方上限 2000 条）一次渲染完。
+- `learnRoot` 是 `endsWith` 启发式：symlink / 改名挂载可能学不出根（退化显示，不崩）。
 
 ## 定制边界
 
 - 宿主能力接口稳定 ⇒ 换宿主版本通常只改插件侧「取出」那一行。
-- 要加预览类型：在调用方自己渲染（用 `previewKindOf` 判断），或提需求进本包。
 - 不要 fork 面板：内部与 `ui` 的样式域耦合，fork 后跟不上 token 调整。
+- picker 弹窗的定位 / 关闭逻辑在 `open.ts`（core 包好）；要换形态（非锚定、多选）提需求进本包。
