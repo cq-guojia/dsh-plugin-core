@@ -2385,6 +2385,7 @@ function notify(message, opts) {
     }
   }, palette.glyph), (0, import_react14.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react14.createElement)("div", { style: { fontWeight: 600 } }, message), opts?.description !== void 0 ? (0, import_react14.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, opts.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react14.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react14.createElement)(Button, {
     variant: a.variant ?? "outline",
+    size: "md",
     onClick: () => {
       a.onClick();
       toast.dismiss(id);
@@ -5484,7 +5485,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1020-1801-cqf8"]
+            [t2("buildStamp"), "1020-2117-6nwr"]
           ].map(
             ([label, value]) => (0, import_react37.createElement)(
               "tr",
