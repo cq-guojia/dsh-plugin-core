@@ -62,6 +62,12 @@
 - **宽度确认**：两样式默认 100% 宽（block div，无 width 声明）；demo 显示约 640px 是 demo 包装器 `maxWidth:'640px'` 所为，非组件行为，不改。
 - 验证：build + build:demo 通过；`pnpm test` 49/49 绿；codelint 6 文件全层过；生成物确认含 `align-self:stretch;min-height` 与 `padding:14px`。
 
+2026-10-20 第四轮（demo 示例补全）：
+
+- StripCard 节补「单行 accent 五档速览」（与 Card 节同款，inline padding 8/12）；第二个事例（执行成功）右侧加 `Button{size:'sm',variant:'secondary'}` Cancel 钮——对应用户截图里深灰底白字圆角钮，尺寸与「查看会话」示例同为 sm（24px）。
+- 容器职责再次向用户确认并记录：卡内内容 100% 调用方定制，与控件无关；demo 里的标题 / chips / 按钮都只是从其他控件（Chip / Button / 文本）引进的示例。
+- 验证：build + build:demo 通过；`pnpm test` 49/49 绿；codelint 6 文件全层过。
+
 ## 结论
 
 Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修正：撤回第一轮的「二合一」，按用户明确要求恢复双外观并补上图示框式卡）：
@@ -85,3 +91,4 @@ Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修
 - 2026-10-20 08:47:35 · log · @GuoJia-Agent · 收工三步：正文已落本轮事实，下一步=用户验收 CardPage；改动未 commit 等指示
 - 2026-10-20 09:04:58 · log · @GuoJia-Agent · 第二轮修正：恢复双外观（Card=框式照 taskrow、StripCard=浅底条照 rec-item）+ 头部改 align-items:center 修右侧居顶；build+49 测试+codelint 全过，待验收
 - 2026-10-20 09:25:13 · log · @GuoJia-Agent · 第三轮：框式短条改 stretch+最小一行、padding 全向 14 使左/上/下等距；日期改走 action 槽+加单按钮示例、删小箭头示例；build+49 测试+codelint 全过
+- 2026-10-20 09:30:41 · log · @GuoJia-Agent · 第四轮：StripCard 节补单行五档速览+第二事例加 secondary/sm Cancel 钮；确认卡内内容归调用方；build+49 测试+codelint 全过
