@@ -61,3 +61,4 @@ Button 页已按 Bootstrap 文档站式布局改造完成（备注框 + 示例/�
 - 2026-10-20 23:17:28 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-20 23:23:03 · log · @GuoJia-Agent · 开坑+勘察：demo 现状=三栏无路由、Demo 组件裸 pre 无高亮、demo 零 CSS 全 inline；Bootstrap 页结构实测；布局提案已交用户等拍板
 - 2026-10-20 23:33:39 · log · @GuoJia-Agent · Button 页试点完成：新增 demo.css 真源+生成链路、doc.tsx 四件套、Note/5 示例/用法/API 表；typecheck+73 测试+codelint 全绿，产物已 build；等用户在宿主验收
+- 2026-10-21 00:43:54 · log · @GuoJia-Agent · 第二轮调整：备注框改核心 StripCard（方角+左4px通高色条+浅底，删自绘边框盒）；外观档按主行动/中性/语义色/弱化四组分行，状态与颜色块同步分层
