@@ -17,23 +17,6 @@
       "title": "Demo 预览站：侧栏分类可展开 + 提示文案双语",
       "updated": "2026-10-20 07:37:14",
       "worklog": "worklog/202610/19-1401-demo-预览站-侧栏分类可展开-提示文案双语-13a7.md"
-    },
-    "20261020-1800-工作区选择器默认项-所有工作区-a009": {
-      "category": "界面",
-      "created": "2026-10-20 18:00:51",
-      "creator": "GuoJia-Agent",
-      "finished": null,
-      "owner": "GuoJia-Agent",
-      "started": "2026-10-20 18:00:51",
-      "status": "doing",
-      "tags": [
-        "选择器",
-        "WorkspacePicker",
-        "默认项"
-      ],
-      "title": "工作区选择器默认项（所有工作区）",
-      "updated": "2026-10-20 18:02:07",
-      "worklog": "worklog/202610/20-1800-工作区选择器默认项-所有工作区-a009.md"
     }
   }
 }
