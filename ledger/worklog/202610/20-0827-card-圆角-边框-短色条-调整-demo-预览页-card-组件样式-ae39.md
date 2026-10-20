@@ -99,3 +99,4 @@ Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修
 - 2026-10-20 09:25:13 · log · @GuoJia-Agent · 第三轮：框式短条改 stretch+最小一行、padding 全向 14 使左/上/下等距；日期改走 action 槽+加单按钮示例、删小箭头示例；build+49 测试+codelint 全过
 - 2026-10-20 09:30:41 · log · @GuoJia-Agent · 第四轮：StripCard 节补单行五档速览+第二事例加 secondary/sm Cancel 钮；确认卡内内容归调用方；build+49 测试+codelint 全过
 - 2026-10-20 09:47:37 · log · @GuoJia-Agent · 第五轮：Cancel 钮改 outline（描边档，size 仍 sm）；核对 demo 无手写控件、示例控件全来自核心 dist/ui；build+49 测试+codelint 全过
+- 2026-10-20 09:58:59 · log · @GuoJia-Agent · 已 commit 740ab1d（15 文件 +176/-110）：Card 双外观 + 头部居中 + 竖条自适应 + demo 示例收口；用户说稍后继续
