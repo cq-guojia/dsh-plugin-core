@@ -155,6 +155,26 @@
 - demo `controls.tsx` FeedbackPage：自绘区新增 AlertModal（4 severity + 无标题）、ConfirmModal（默认/danger/改文案，显示结果）、命令式 `alertModal()/confirmModal()`、大弹窗（多排标题 + headerExtra Chip + headerActions 关闭钮+更多 + 滚动 + footer）；原生区保留官方 Modal 演示。
 - `package.json`：新增 devDependency `@types/react-dom@^18.3.0`（modal-host 用 `react-dom/client` 类型）。
 
+### 八、用户真机反馈三连改（2026-10-20）
+
+反馈：① 宿主示例要置顶；② 自绘弹窗遮罩发蓝（写死了 `rgba(15,23,42,.45)`），要求用宿主遮罩；③ 三套弹窗样式必须严格分开（宿主的 / 兄弟项目小确认框 / 兄弟项目大弹窗），且都要默认宽高、可覆盖。
+
+溯源真值（全部有出处）：
+
+- 遮罩：`--dshpc-mask: var(--dsw-alias-bg-mask-1, #0000003d)` 本来就在 tokens.css:114（与兄弟项目 `--tdt-mask` 同一宿主变量）⇒ mask 直接换成该变量即可，**遮罩就是宿主那条真值**。
+- 小确认框 = `dsh-task-dispatch-table/src/client/task-list.tsx:452-461`（overlayStyle/dialogStyle）：360px、maxWidth calc(100vw-48px)、18px 内距、无头部分隔线、标题 font-lg(600)、说明 font-sm/fg-2、底部右对齐 outline+danger。
+- 大弹窗 = `dsh-task-dispatch-table/src/client/archive-session-css.ts:21,42,43,61,62,66`：遮罩同上、面板 surface-base + border-l2 + radius-md(12) + shadow-2、header 18px 34px 12px 带底线、标题 font-lg 600、副标题 mono/fg-3、内容区左右 34 上下 17、默认 `min(1120px, calc(100vw-32px)) × calc(100% - 80px)`。
+
+改动：
+
+- `src/ui/feedback.css`：mask→`var(--dshpc-mask)`；面板/头/体/底按大弹窗家族重刷；新增 `.dshpc-modal--sm` 小确认框家族覆盖（18px 内距、去分隔线、说明 fg-2）；新增 `.dshpc-modal__sid` 副标题行。
+- `src/ui/Modal.ts`：新增 `width`/`height`/`maxHeight` props；size 默认宽高 = sm 360px / md min(720px,100vw-32px)+maxHeight 86vh / lg min(1120px,100vw-32px)×calc(100%-80px)，props 可覆盖。
+- `src/ui/official.ts`：新增**第二套命令** `confirmModalHost()`/`alertModalHost()`（Promise，走官方 Modal；title/description 官方声明为 string、closeLabel 必填走 i18n）。为什么不是传参数：宿主 Modal 必须经 official 适配层，平台模块不能进 ui 入口（零官方依赖硬约束）⇒ 按用户拍板「传参数解决不了就两套命令」，命名用 `*Host` 后缀。
+- `pickOfficial` 改走 `officialRegistry` Record 索引（biome 不许动态访问命名空间 import）。
+- demo：宿主示例置顶（第一套），加 `alertModalHost()/confirmModalHost()` 演示；自绘 Modal 标注「大弹窗家族」。
+
+验证：`build` + `build:demo` + `pnpm test` 49/49 + `koc-codelint` 全过。
+
 ## 执行记录
 
 <!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
@@ -164,3 +184,4 @@
 - 2026-10-20 11:20:10 · log · @GuoJia-Agent · 反馈页加『原生弹窗（宿主）』演示：Official.Modal 展示自定义内容与三按钮 footer（controls.tsx:744+）；踩硬约束 ui 零官方依赖，撤销 index 透出改从 official.js 取，49 测试+lint 全过；可定制性结论已写入 worklog 五节
 - 2026-10-20 11:41:49 · log · @GuoJia-Agent · 收用户弹窗控件族需求，出专家团讨论稿：Modal 头部四槽(icon/title/extra/actions)+closable 拆分+size 档；AlertModal/ConfirmModal 语义封装样式封闭；底座自绘（官方头部做不到）；讨论稿入 worklog 六节，4 个决策点待拍板
 - 2026-10-20 12:06:37 · log · @GuoJia-Agent · 实现完成：Modal 扩四槽+closable+size；新增 AlertModal/ConfirmModal/modal-host(Promise)；i18n 补 confirm/cancel/dialogOk；demo 反馈页示例矩阵（Alert×4/Confirm/命令式/大弹窗）；@types/react-dom 新增；build+test49/49+koc-codelint 全过
+- 2026-10-20 12:35:38 · log · @GuoJia-Agent · 真机反馈三连改：①宿主示例置顶+宿主命令示例；②遮罩换宿主变量 --dshpc-mask（原写死蓝灰 rgba(15,23,42,.45)）；③三套样式严格分开——小确认框严格抄 task-list renderConfirm(360px/18px/无分隔线)、大弹窗严格抄 archive-session(min(1120px,100vw-32px)×calc(100%-80px)/18-34-12头)、Modal 补 width/height/maxHeight 默认宽高可覆盖；official.ts 新增第二套命令 confirmModalHost/alertModalHost(Promise)；build+test49/49+lint 全过
