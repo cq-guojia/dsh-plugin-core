@@ -59,3 +59,4 @@ Card 外观已统一为兄弟项目执行记录块同款：同色系浅底（acc
 - 2026-10-20 08:29:51 · log · @GuoJia-Agent · 只读调查：Card 现状已是圆角8px+1px边框+短色条（card.css:13-14），生成物/dist/注入/token 全同步，待用户确认要调什么
 - 2026-10-20 08:30:41 · log · @GuoJia-Agent · 用户确认方向：微调 Card 外观数值，目标值待给（圆角/边框/色条宽/留距）
 - 2026-10-20 08:47:31 · log · @GuoJia-Agent · Card 外观统一为兄弟 rec-item 同款（浅底+透明占位边框+5px通高方角色条+方角）：改 card.css/Card.ts/demo 两文件/features-ui.md，build+49 测试+codelint 全过，待验收
+- 2026-10-20 08:47:35 · log · @GuoJia-Agent · 收工三步：正文已落本轮事实，下一步=用户验收 CardPage；改动未 commit 等指示
