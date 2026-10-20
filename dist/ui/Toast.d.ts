@@ -1,4 +1,5 @@
 export type ToastVariant = 'info' | 'success' | 'error';
+export type ToastPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 export interface ToastOptions {
     variant?: ToastVariant;
     /** 停留时长（毫秒），默认 2600。 */
@@ -7,6 +8,8 @@ export interface ToastOptions {
     color?: string;
     /** toast 消失（自动或手动关闭）后触发。 */
     onDismiss?: () => void;
+    /** 出现位置（作用于全局唯一 Toaster），默认 'bottom-center'。 */
+    position?: ToastPosition;
 }
 /**
  * 弹一条轻提示（**命令式**，不要求调用方挂组件）。

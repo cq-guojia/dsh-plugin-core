@@ -61,10 +61,10 @@ hover / active 走 token 派生色（**不用 opacity**），幅度见 `docs/des
 
 | 组件 | 关键参数 | 说明 |
 |---|---|---|
-| `Input` | `value` `onChange(v)` `size`（默认 `sm`）`error` `disabled` `type` `placeholder` `inputRef` `onKeyDown` `onBlur` `aria-label` `title` | 基础输入框；`error` 描红 |
+| `Input` | `value` `onChange(v)` `size`（默认 `sm`）`error` `disabled` `type` `placeholder` `inputRef` `onKeyDown` `onBlur` `aria-label` `title` `hint` | 基础输入框；`error` 描红；`hint` 给字符串即自动挂标准问号提示（2026-10-20） |
 | `PrefixedInput` | 同 `Input` + `prefix: string` | 前置文案（`https://` / `C:\`） |
-| `NumberInput` | `value: number` `onChange(v)` `min` `max` `step`（默认 1）`inputWidth` `suffix` `label` `decreaseLabel` `increaseLabel` | 已 clamp；失焦回弹草稿 |
-| `Textarea` | `value` `onChange(v)` `placeholder` `error` `disabled` `rows` `spellCheck`（默认关）`aria-label` | — |
+| `NumberInput` | `value: number` `onChange(v)` `min` `max` `step`（默认 1）`inputWidth` `suffix` `label` `decreaseLabel` `increaseLabel` `hint` | 已 clamp；失焦回弹草稿 |
+| `Textarea` | `value` `onChange(v)` `placeholder` `error` `disabled` `rows` `spellCheck`（默认关）`aria-label` `hint` | — |
 | `Checkbox` | `checked` `onChange(next)` `label` `accentColor` `disabled` | — |
 | `fieldMetricsOf(size)` | `→ { height, font, line, icon, gap }` | 自己搭同款输入框时对齐尺寸 |
 
@@ -88,46 +88,59 @@ hover / active 走 token 派生色（**不用 opacity**），幅度见 `docs/des
 | `placement` | `'down' \| 'up'` | `down` | 触发器靠近视口底部时用 `up` |
 | `closeOnSelect` | `boolean` | 多选 `false` / 单选恒关 | 选中后是否收起 |
 | `showLabels` | `boolean` | `true` | 多选时触发器列出已选项，而非只显示「已选 N 项」 |
+| `icon` | `ReactNode` | — | 触发器文字前的图标（2026-10-20） |
+| `hint` | `string` | — | 问号提示文字：自动在触发器后挂标准 FieldHint（2026-10-20） |
 | `className` | `string` | — | 定制宽度 / 外边距 |
 | `ariaLabel` | `string` | — | 无障碍名 |
 | `translate` | `Translate` | 内置 | 覆盖文案 |
+
+`PickerOption` 另有 `icon?: ReactNode`（选项文字前的前置图标）。多选到上限后**已选项仍可点选取消**（未选项置灰）。
 
 键盘：`Esc` 关、`↑↓` 移游标、`Enter` 选。
 
 纯逻辑也可单用：`toGroups` / `flattenOptions` / `filterGroups` / `toggleValue` / `labelsOf` / `groupOf`。
 
-### WorkspacePicker / FilePicker
+### WorkspacePicker
 
-领域选择器——`Picker` 的薄封装（**领域数据 + 通用选择器交互**，与 explorer 的浏览/预览无关）。
+领域选择器——**数据自带的现成组件**（`FilePicker` 已删，2026-10-20 用户：文件选择框没有用）。
 
-| 组件 | 数据参数 | 其余 |
-|---|---|---|
-| `WorkspacePicker` | `workspaces: readonly string[]` | `value` `defaultValue` `mode` `max` `onChange` `clearable` `searchable` `disabled` `size` `placement` `className` `placeholder` `translate` |
-| `FilePicker` | `files: readonly string[]` | 同上 |
+| 参数 | 说明 |
+|---|---|
+| `value` / `defaultValue` / `onChange` | 选中值为 **`workspaceId`**（不是 title） |
+| `mode` `max` | 单选 / 多选 / 上限（到上限已选项仍可反选） |
+| `clearable` `searchable` `disabled` `size` `placement` `className` `placeholder` `hint` `translate` | 同 `Picker` 同名参数 |
 
-**为什么在 ui 而不在 explorer**：它俩只是 select，不碰目录树 / 预览 / `WorkspaceFilesFace`。
-放在 ui 里，需要「选工作区」的地方不必引入整个 explorer；explorer 内部要用也一样从 ui 引。
-
-**数据由调用方给**：工作区列表是 host 侧 `ctx.workspaceRegistry.list()` 取的，要经插件自己的 HTTP 通道
-送到 client，那条通道是插件私有的，组件取不到。
+**数据自动来自宿主**：插件 `apply` 里调一次 `connectHost(ctx)`（见 host-data.ts），组件即订住官方
+`workspaces` 服务的快照（getSnapshot + subscribe，follow 流实时更新）。消费方**不再传工作区数组**。
+不接线 = 空态（如实，不编数据）。
 
 ```tsx
-import { WorkspacePicker } from 'dsh-plugin-core/ui'
+import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'
 
-h(WorkspacePicker, { workspaces: wsList, value: cur, onChange: setCur })
+// apply(ctx) 里：connectHost(ctx)
+h(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })
 ```
 
 ### ModelPicker
 
-`groups: PickerGroup[]`（一组 = 一个供应商）+ `variant: 'cascade' | 'flat'`（默认 `flat`）。
+**数据自带的现成组件** + `variant: 'cascade' | 'grouped'`（默认 `grouped`；2026-10-20 由 flat
+改名 grouped——拍平丢分组，不符合「厂商做组头、模型列下面」的需求）。
 
-- `flat`：一个下拉列全部
+- `grouped`：一个下拉，供应商做组头、模型列在下面
 - `cascade`：一行两个下拉，先选供应商再选模型；换供应商会自动清空已选模型
 
-其余参数透传给 `Picker`：`value` / `defaultValue` / `onChange` / `clearable` / `searchable` /
-`size` / `placement` / `className` / `disabled` / `degraded` / `translate`。
+**两种形态返回口径一致**：`onChange` 都发最终模型的 value（`${provider}/${id}`）；
+级联态换供应商先发 `''`。
 
-「跟随宿主」这类默认项由调用方自己往 `groups` 里塞一项——编码口径（如 `provider/id`）也归调用方。
+**目录自动来自宿主**：`connectHost(ctx)` 接线后读 `remote.llm`（listProviders /
+listConfigurableProviders）+ 设置镜像（各 provider profile 的 `models`，只保留用户真正写过的
+供应商——写法抄自 dsh-session-title-pattern 的 DirectoryStore）。`groups` 参数仅作覆盖
+（测试 / 特殊数据源）。目录不可用 ⇒ 如实降级提示。
+
+其余参数透传给 `Picker`：`value` / `defaultValue` / `onChange` / `clearable` / `searchable` /
+`hint` / `size` / `placement` / `className` / `disabled` / `degraded` / `translate`。
+
+「跟随宿主」这类默认项由调用方自己往 `groups` 里塞一项。
 
 ### Card / StripCard / Chip
 
@@ -225,7 +238,7 @@ core 保持零官方依赖：官方 Tooltip 只能由插件侧注入（`src/ui/t
 
 | 组件 / 函数 | 说明 |
 |---|---|
-| `showToast(message, opts?)` | **命令式**，不要求挂组件；底层 Sonner（core 内部依赖，不对外 re-export）。`opts: { variant?: 'info' \| 'success' \| 'error', durationMs?, color?, onDismiss? }`：`color` 整条自定义背景色（走 unstyled 自定义卡），`onDismiss` 消失（自动/手动）回调，默认 2600ms。暗色跟随宿主 `body[data-ds-dark-theme]`。无 `document` 静默跳过 |
+| `showToast(message, opts?)` | **命令式**，不要求挂组件；底层 Sonner（core 内部依赖，不对外 re-export）。`opts: { variant?: 'info' \| 'success' \| 'error', durationMs?, color?, onDismiss?, position? }`：`color` 整条自定义背景色（unstyled 自定义卡，默认无 min 尺寸故需自设宽高）；`onDismiss` 消失回调；`position` 6 向位置（作用于全局唯一 Toaster，默认 bottom-center）；success/error 走 Sonner `richColors` 整条绿/红。暗色跟随宿主 `body[data-ds-dark-theme]`。无 `document` 静默跳过 |
 | `Loading({ anchorId? })` | 贴到主内容容器右下角的加载指示；`anchorId` 默认 `dshpc-main` |
 | `RunningBlocks()` | 运行中的占位块 |
 | `EmptyState({ text?, icon?, action?, translate? })` | 统一空态 |

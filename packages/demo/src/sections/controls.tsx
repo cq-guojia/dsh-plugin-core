@@ -23,7 +23,6 @@ import {
   StripCard,
   Textarea,
   WorkspacePicker,
-  FilePicker,
   showToast,
   alertModal,
   confirmModal,
@@ -246,14 +245,14 @@ export function InputPage(): ReturnType<typeof h> {
           'div',
           { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
           h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '开始时间'),
-          h(Input, { value: text, onChange: setText, placeholder: '选择日期' }),
-          h(FieldHint, { text: t('fieldHintDate') }),
+          // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
+          h(Input, { value: text, onChange: setText, placeholder: '选择日期', hint: t('fieldHintDate') }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        h(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: '次', style: { alignSelf: 'flex-start' } }),
-        h(Textarea, { value: text, onChange: setText, placeholder: '多行输入' }),
+        h(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: '次', style: { alignSelf: 'flex-start' }, hint: '超出范围会自动收回到 min / max。' }),
+        h(Textarea, { value: text, onChange: setText, placeholder: '多行输入', hint: '多行输入也支持 hint 参数。' }),
       ),
     ),
 
@@ -399,20 +398,11 @@ export function InputPage(): ReturnType<typeof h> {
 
 // ── 选择器 ──────────────────────────────────────────────────────────────
 
-const MODELS = [
-  {
-    value: 'openai',
-    label: 'OpenAI',
-    options: [
-      { value: 'openai/gpt-4', label: 'GPT-4' },
-      { value: 'openai/gpt-3', label: 'GPT-3.5' },
-    ],
-  },
-  {
-    value: 'anthropic',
-    label: 'Anthropic',
-    options: [{ value: 'anthropic/claude', label: 'Claude' }],
-  },
+/** 选项 icon 演示：三个官方图标各领一个选项（icon 收任意 ReactNode）。 */
+const ICON_OPTIONS = [
+  { value: 'a', label: '选项 A', icon: h(IconSparkleRegular, { size: 14 }) },
+  { value: 'b', label: '选项 B', icon: h(IconClockOutlineRegular, { size: 14 }) },
+  { value: 'c', label: '选项 C', icon: h(IconPlayOutlineRegular, { size: 14 }) },
 ]
 
 export function PickerPage(): ReturnType<typeof h> {
@@ -420,7 +410,6 @@ export function PickerPage(): ReturnType<typeof h> {
   const [multi, setMulti] = useState<string[]>([])
   const [model, setModel] = useState('')
   const [ws, setWs] = useState<string | undefined>(undefined)
-  const [file, setFile] = useState<string | undefined>(undefined)
 
   return h(
     'div',
@@ -432,25 +421,38 @@ export function PickerPage(): ReturnType<typeof h> {
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start' } },
         h(Picker, {
-          options: [
-            { value: 'a', label: '选项 A' },
-            { value: 'b', label: '选项 B' },
-            { value: 'c', label: '选项 C' },
-          ],
+          options: ICON_OPTIONS,
+          icon: h(IconSparkleRegular, { size: 14 }),
           value: single,
           onChange: (v) => setSingle(v as string),
           searchable: true,
           clearable: true,
-          placeholder: '单选（可搜索/可清除）',
+          placeholder: '单选（icon + 可搜索/可清除）',
         }),
         h(Picker, {
-          groups: MODELS,
+          options: ICON_OPTIONS,
+          value: single,
+          onChange: (v) => setSingle(v as string),
+          placeholder: '单选（无搜索框）',
+        }),
+        h(Picker, {
+          groups: [
+            { value: 'g1', label: '组一', options: ICON_OPTIONS },
+            {
+              value: 'g2',
+              label: '组二',
+              options: [
+                { value: 'd', label: '选项 D', icon: h(IconRefreshOutlineRegular, { size: 14 }) },
+                { value: 'e', label: '选项 E', icon: h(IconPlusOutlineRegular, { size: 14 }) },
+              ],
+            },
+          ],
           value: multi,
           mode: 'multiple',
           max: 2,
           onChange: (v) => setMulti(v as string[]),
           searchable: true,
-          placeholder: '多选（上限 2）',
+          placeholder: '多选（上限 2，可反选）',
         }),
         h(Picker, {
           options: [{ value: 'x', label: '降级示例' }],
@@ -458,35 +460,36 @@ export function PickerPage(): ReturnType<typeof h> {
           disabled: true,
           placeholder: '降级 + 禁用',
         }),
+        h(Picker, {
+          options: ICON_OPTIONS,
+          value: single,
+          onChange: (v) => setSingle(v as string),
+          hint: '挂在触发器后面的问号提示，不用再手动拼 FieldHint。',
+          placeholder: '单选（带 hint）',
+        }),
       ),
     ),
     h(
       Demo,
-      { title: 'ModelPicker', hint: t('modelPickerHint') },
+      { title: 'ModelPicker（真实目录）', hint: t('modelPickerHint') },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
-        h(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: 'flat' }),
-        h(ModelPicker, { groups: MODELS, value: model, onChange: setModel, variant: 'cascade' }),
+        h(ModelPicker, { value: model, onChange: setModel, variant: 'grouped' }),
+        h(ModelPicker, { value: model, onChange: setModel, variant: 'cascade', searchable: true }),
       ),
     ),
     h(
       Demo,
-      { title: 'WorkspacePicker / FilePicker', hint: t('workspacePickerHint') },
+      { title: 'WorkspacePicker（真实列表）', hint: t('workspacePickerHint') },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
         h(WorkspacePicker, {
-          workspaces: ['nas', 'code', 'docs'],
           value: ws,
           onChange: (v) => setWs(v as string),
           clearable: true,
-        }),
-        h(FilePicker, {
-          files: ['README.md', 'package.json', 'src/index.ts'],
-          value: file,
-          onChange: (v) => setFile(v as string),
-          clearable: true,
+          searchable: true,
         }),
       ),
     ),
@@ -975,6 +978,16 @@ export function FeedbackPage(): ReturnType<typeof h> {
           },
           '带回调',
         ),
+      ),
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
+        h(Button, { onClick: () => showToast('顶部-左', { position: 'top-left' }) }, 'top-left'),
+        h(Button, { onClick: () => showToast('顶部-中', { position: 'top-center' }) }, 'top-center'),
+        h(Button, { onClick: () => showToast('顶部-右', { position: 'top-right' }) }, 'top-right'),
+        h(Button, { onClick: () => showToast('底部-左', { position: 'bottom-left' }) }, 'bottom-left'),
+        h(Button, { onClick: () => showToast('底部-中', { position: 'bottom-center' }) }, 'bottom-center'),
+        h(Button, { onClick: () => showToast('底部-右', { position: 'bottom-right' }) }, 'bottom-right'),
       ),
     ),
     h(

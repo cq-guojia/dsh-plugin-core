@@ -4,6 +4,14 @@ import { Toaster, toast } from 'sonner'
 
 export type ToastVariant = 'info' | 'success' | 'error'
 
+export type ToastPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+
 export interface ToastOptions {
   variant?: ToastVariant
   /** 停留时长（毫秒），默认 2600。 */
@@ -12,6 +20,8 @@ export interface ToastOptions {
   color?: string
   /** toast 消失（自动或手动关闭）后触发。 */
   onDismiss?: () => void
+  /** 出现位置（作用于全局唯一 Toaster），默认 'bottom-center'。 */
+  position?: ToastPosition
 }
 
 const DEFAULT_MS = 2600
@@ -19,6 +29,7 @@ const ROOT_ID = 'dshpc-toast-root'
 
 let root: Root | null = null
 let themeObserver: MutationObserver | null = null
+let currentPosition: ToastPosition = 'bottom-center'
 
 // 宿主暗色判据是 body[data-ds-dark-theme]（不是 prefers-color-scheme），
 // Sonner 的 theme 必须显式传，故从这里读并监听变化。
@@ -32,9 +43,10 @@ function renderToaster(): void {
   root.render(
     h(Toaster, {
       theme: currentTheme(),
-      position: 'bottom-center',
-      // 不开 richColors / closeButton：官方默认才是「中性卡 + 语义色只在图标」；
-      // closeButton 在宿主里吃不到 Sonner 的 CSS 变量，会渲染成白底方块叉（真机踩过）。
+      position: currentPosition,
+      // richColors：success=绿整条 / error=红整条（Sonner 自带）；
+      // 不开 closeButton：在宿主里吃不到 Sonner 的 CSS 变量，会渲染成白底方块叉（真机踩过）。
+      richColors: true,
     }),
   )
 }
@@ -66,7 +78,9 @@ function ensureToaster(): void {
  */
 export function showToast(message: string, opts?: ToastOptions): void {
   if (typeof document === 'undefined') return
+  if (opts?.position !== undefined) currentPosition = opts.position
   ensureToaster()
+  renderToaster() // 应用最新 position / theme（root 已存在时也要重渲染）
 
   const duration = opts?.durationMs ?? DEFAULT_MS
   const onDismiss = opts?.onDismiss
@@ -80,11 +94,16 @@ export function showToast(message: string, opts?: ToastOptions): void {
       style: {
         background: opts.color,
         color: '#fff',
+        minWidth: '320px',
+        minHeight: '48px',
         padding: '12px 16px',
         borderRadius: '8px',
         boxShadow: '0 6px 16px rgba(0, 0, 0, 0.18)',
         fontSize: '14px',
         lineHeight: '20px',
+        boxSizing: 'border-box',
+        display: 'flex',
+        alignItems: 'center',
       },
     })
     return
