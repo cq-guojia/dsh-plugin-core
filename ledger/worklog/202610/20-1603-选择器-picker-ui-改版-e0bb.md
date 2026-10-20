@@ -20,21 +20,23 @@
 
 ## 待办
 
-- [ ] Picker 触发器箭头改内联 SVG chevron（ui 零官方依赖，不能直接用官方图标组件）。
-- [ ] `PickerOption.icon?: ReactNode` + `Picker` 触发器 `icon?: ReactNode`；CSS 配套。
-- [ ] searchable 保持可配，包装器默认值统一（现 Picker 默认关、三个包装器默认开）。
-- [ ] ModelPicker：`flat`（拍平丢分组）改为分组渲染；`cascade` 保留；两种形态返回口径统一（onChange 都发最终模型 value，cascade 换厂商先发 ''）。
-- [ ] 修多选上限 bug：atMax 时已选项仍可点击取消（`Picker.ts:220,232` 与 `picker-logic.ts` `toggleValue` 对齐）。
-- [ ] 删 `FilePicker`（src/ui/WorkspacePicker.ts + index.ts 导出 + demo）。
-- [ ] demo 模型数据走真实目录：`ctx.inject(['remote','remote.llm'])`（dsh-session-title-pattern/src/client/index.tsx:450 已验证通路）。
-- [ ] demo 工作区数据真实通路待定（见下一步）。
-- [ ] demo 选择器页按新能力重排演示。
-- [ ] build + 产物入库 + 验证脚本 + typecheck。
+- [x] Picker 触发器箭头改内联 SVG chevron（`Picker.ts` 触发器重排为 icon/summary/svg）。
+- [x] `PickerOption.icon` + `Picker` 触发器 `icon`（CSS：`.dshpc-picker__icon` / `.dshpc-picker__option-icon`）。
+- [x] `searchable` 语义统一：核心与包装器默认全关，要就传 true。
+- [x] ModelPicker：`flat` 改名 `grouped`（分组渲染，厂商做组头）；两种形态 onChange 口径统一（都发最终模型 value，级联换厂商先发 `''`）；默认变更为 grouped。
+- [x] 修多选上限 bug：atMax 时已选项保持可点（取消），未选项置灰（`Picker.ts` 选项渲染处）。
+- [x] 删 `FilePicker`（组件 / 导出 / demo 全清）。
+- [x] 新增 `src/ui/host-data.ts`：`connectHost(ctx)` 一次接线，`modelCatalog`（抄 stp DirectoryStore）+ `workspaceList`（镜像官方 `workspaces` 服务快照）；ModelPicker/WorkspacePicker 改 `useSyncExternalStore` 自取数，`groups` 参数仅作覆盖。
+- [x] hint 内置：`Input` / `NumberInput` / `Textarea` / `Picker` 加 `hint?: string`，内部走 `withHint()` 挂标准 FieldHint（CSS `.dshpc-fieldwrap`）；FieldHint 本体保留可单独用。
+- [x] demo：PickerPage 重排（icon/搜索开关/分组/多选可反选/hint）、ModelPicker+WorkspacePicker 吃真实目录与真实工作区列表、client apply 调 `connectHost(ctx)`、i18n 文案同步。
+- [x] 文档同变更集：requirements §2.2/§6、architecture §数据从哪来、features/ui.md（Picker/Input/ModelPicker/WorkspacePicker 章节）、features.md、structure.md、features/explorer.md、external/dsh-host.md 新增 §11（本次核实的宿主 client 数据面）。
+- [x] 新增 `test/host-data.test.mjs`（5 项：目录组装/空壳剔除/失败降级/两阶段幂等/换源镜像）。
+- [x] build + 产物入库（dist/ 与 demo dist/ 均已更新）；`node --test` 65 项全绿；typecheck 干净；koc-codelint 六层全过（2 轮修完 2 条 biome 警告）。
 
 ## 下一步
 
-- 与用户对齐两点：① demo 工作区列表的 client 侧真实通路（demo 无 host 半侧；dsh-task-dispatch-table 是走自家 host 路由，demo 要么补 host 半侧要么用宿主现成 remote 面——需核实/拍板）；② hint 内置方案是否照「字段类组件加可选 `hint` prop」落地。
-- 对齐后按待办顺序改 `src/ui/Picker.ts`、`ModelPicker.ts`、`WorkspacePicker.ts`、`picker.css`，再改 demo。
+- 用户在宿主真机更新 demo 插件验收：选择器页看 chevron 箭头、icon、搜索开关、ModelPicker 双形态（grouped/cascade）、多选反选、真实模型/工作区数据。
+- AGENTS.md 首表「组件**不自己取数**」一行已过时（领域选择器已反转）——属注入规则文件，待用户授权后改。
 
 ## 过程
 
@@ -50,3 +52,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-20 16:03:53 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-20 16:27:00 · log · @GuoJia-Agent · 需求入库：worklog 记 8 条（chevron/icon/搜索可配/双形态/删FilePicker/多选上限bug/真实数据/hint讨论），待对齐工作区取数通路
+- 2026-10-20 16:56:38 · log · @GuoJia-Agent · 交付：chevron/icon/hint内置/双形态改名grouped/多选反选bug/删FilePicker/host-data自取数(connectHost)+5项新测试；65测试+typecheck+codelint全过，产物入库待真机验收
