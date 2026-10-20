@@ -121,7 +121,13 @@
 - **样式封闭实现**：封装层不透传 className/style 给按钮，只透传 variant/color/文字。
 - **demo 反馈页示例矩阵**：原生区（官方 Modal 基础 + 官方当 alert 用）+ 自绘区（Alert ×4 severity、Confirm 默认/danger/改文案、无标题纯文字、大弹窗多排标题+actions+footer+滚动）。
 
-待用户拍板：① 底座自绘扩展（推荐）；② 命令式 alert()/confirm() 本轮不做（声明式够用）；③ ConfirmModal 默认允许点遮罩关（=取消）；④ headerExtra 用 ReactNode slot（demo 用 Chip 演示）。
+需求已全锁定（2026-10-20 用户拍板）：
+- ① 底座：**自绘扩展** `src/ui/Modal.ts`（官方 Modal 保留 demo 原生示例）。
+- ② 命令式 alert()/confirm()：**做，Promise 形式**（`await confirmModal(...)` → true/false；`alertModal(...)` 解析即关）。
+- ③ ConfirmModal 遮罩关闭：**默认允许（=取消），`closeOnMask` 参数让消费方可关**。
+- ④ headerExtra：**自由 slot（ReactNode，demo 用 Chip 演示）**。
+- 长期偏好（已存记忆）：**异步/确认类 API 一律 Promise 形式**，以后都如此。
+- 成本归类：命令式属「开发复杂度」(第1类)，非包体积/性能/不规范问题；react-dom 本就 external、host root 常驻+堆叠、StyleKit+i18n 内部接线。
 
 ### 五、宿主原生弹窗可定制性结论（答用户问）
 
@@ -133,6 +139,22 @@
 - **去官方头部自绘**：`headless: true`（此时 `closeLabel` 不适用）可完全自绘头部与关闭钮。
 - 头部：官方提供 `title` + `description` 标准头部；暗/亮由宿主 token 决定。
 
+### 七、实现完成（2026-10-20）
+
+按六节锁定的规范落地，验证全过（`pnpm run build` + `build:demo` + `pnpm test` 49/49 + `koc-codelint` 全过）。
+
+新增/改动：
+
+- `src/ui/Modal.ts`：接口新增 `icon` / `headerExtra` / `headerActions` / `closable` / `size`；拆分 `onClose` 与 `closable`（✕ 显隐不再绑死 onClose）；头部重排为 heading(icon+title+extra) + spacer + actions + ✕；size 档 sm/md/lg 默认 maxWidth。
+- `src/ui/feedback.css` + 生成 `feedback-css.generated.ts`：补头部四槽样式、`dshpc-alert-sev` 四档信号图标（自含配色）。
+- `src/ui/AlertModal.ts`（新增）：severity 四档 + 默认文案走 i18n「dialogOk」；无标题时 `hideHeader`；单按钮固定 primary；`closable:false`。
+- `src/ui/ConfirmModal.ts`（新增）：`tone`→确认钮档位（primary/danger/warning）；默认文案「确定/取消」走 i18n；双按钮布局；`closable:false`；样式封闭（不透传 className/style）。
+- `src/ui/modal-host.ts`（新增）：常驻 React root + 堆叠队列，`alertModal()` / `confirmModal()` **Promise 形式**；StyleKit/i18n 因是模块级单例天然继承，无需手动注入插件上下文（见文件注释）。
+- `src/utils/i18n.ts`：补 `confirm`/`cancel`/`dialogOk` 三 key（中英），死 key 自检通过。
+- `src/ui/index.ts`：导出以上新件与类型。
+- demo `controls.tsx` FeedbackPage：自绘区新增 AlertModal（4 severity + 无标题）、ConfirmModal（默认/danger/改文案，显示结果）、命令式 `alertModal()/confirmModal()`、大弹窗（多排标题 + headerExtra Chip + headerActions 关闭钮+更多 + 滚动 + footer）；原生区保留官方 Modal 演示。
+- `package.json`：新增 devDependency `@types/react-dom@^18.3.0`（modal-host 用 `react-dom/client` 类型）。
+
 ## 执行记录
 
 <!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
@@ -141,3 +163,4 @@
 - 2026-10-20 11:07:52 · log · @GuoJia-Agent · 调研完成：官方仅有通用 Modal 无确认变体；兄弟项目两弹窗均为自绘且互不统一（task-list.tsx:1066 / task-editor.tsx:940）；开源共识=容器+确认语义层；结论与分类建议已写入 worklog，待用户拍板
 - 2026-10-20 11:20:10 · log · @GuoJia-Agent · 反馈页加『原生弹窗（宿主）』演示：Official.Modal 展示自定义内容与三按钮 footer（controls.tsx:744+）；踩硬约束 ui 零官方依赖，撤销 index 透出改从 official.js 取，49 测试+lint 全过；可定制性结论已写入 worklog 五节
 - 2026-10-20 11:41:49 · log · @GuoJia-Agent · 收用户弹窗控件族需求，出专家团讨论稿：Modal 头部四槽(icon/title/extra/actions)+closable 拆分+size 档；AlertModal/ConfirmModal 语义封装样式封闭；底座自绘（官方头部做不到）；讨论稿入 worklog 六节，4 个决策点待拍板
+- 2026-10-20 12:06:37 · log · @GuoJia-Agent · 实现完成：Modal 扩四槽+closable+size；新增 AlertModal/ConfirmModal/modal-host(Promise)；i18n 补 confirm/cancel/dialogOk；demo 反馈页示例矩阵（Alert×4/Confirm/命令式/大弹窗）；@types/react-dom 新增；build+test49/49+koc-codelint 全过
