@@ -30,3 +30,4 @@
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-20 23:17:28 · new · @GuoJia-Agent · 创建任务（doing）
+- 2026-10-20 23:23:03 · log · @GuoJia-Agent · 开坑+勘察：demo 现状=三栏无路由、Demo 组件裸 pre 无高亮、demo 零 CSS 全 inline；Bootstrap 页结构实测；布局提案已交用户等拍板
