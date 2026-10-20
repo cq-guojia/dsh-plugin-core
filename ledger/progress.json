@@ -36,6 +36,24 @@
       "title": "explorer 子包：工作区文件浏览与预览（dock 预览 + 选择弹窗两能力）",
       "updated": "2026-10-20 22:54:32",
       "worklog": "worklog/202610/20-2254-explorer-子包-工作区文件浏览与预览-dock-预览-选择弹窗两能力-6152.md"
+    },
+    "20261020-2255-删除-errorboundary-组件-宿主已有槽位错误边界-4113": {
+      "category": "清理",
+      "created": "2026-10-20 22:55:12",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-20 22:55:12",
+      "status": "doing",
+      "tags": [
+        "ErrorBoundary",
+        "ui",
+        "demo",
+        "文档"
+      ],
+      "title": "删除 ErrorBoundary 组件（宿主已有槽位错误边界）",
+      "updated": "2026-10-20 22:55:12",
+      "worklog": "worklog/202610/20-2255-删除-errorboundary-组件-宿主已有槽位错误边界-4113.md"
     }
   }
 }
