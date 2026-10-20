@@ -13,8 +13,7 @@
 
 ## 待办
 
-- 待用户验收：demo 预览站 CardPage 与兄弟项目截图（任务列表卡 + 执行记录块）对比。
-- `StripCard` 已改为 `Card` 的兼容别名（渲染一致）；是否直接删掉这个别名，等用户发话。
+- 待用户验收：demo CardPage 两节——`Card`（框式：边框+圆角+6×36 短条）与 `StripCard`（浅底+5px 通高条），以及右侧槽整体垂直居中的效果。
 
 ## 下一步
 
@@ -47,9 +46,23 @@
 
 验证：`pnpm run build` + `build:demo` 通过；`pnpm test` 49/49 绿（含 gen-css 同步闸、css-contract 同名选择器闸）；koc-codelint 6 文件全层过；dist 生成物确认无旧外观类。
 
+2026-10-20 第二轮（用户看图后纠正）：两种样式不许合并——第一种（浅底通高条）保留，第二种（图里框式卡）也要抽象进核心；且右侧槽被顶到顶部是 bug，调用方裸放元素应自动垂直居中。
+
+- 框式卡真源 = `dsh-task-ledger/packages/plugin/src/client/ui.ts:103-115`（`.dtl-taskrow` + `.dtl-rail`）：surface-1 + 1px `--dtl-border` + `--tdt-radius-sm` + 行内 6×36 `--tdl-radius-xs` 短条 + `align-items:center` + padding 12/14 + gap 12。token 与我们的 `--dshpc-*` 完全同源（tokens.css:13/54/143-144），直接映射。
+- 修正内容：恢复 `CardShell(kind)` 双外观（`--bordered` / `--strip`）；`.dshpc-card__head` 改 `align-items:center`（两种外观都居中）；色条 span 移入头部第一个子元素（bordered 行内短条需参与 flex）；demo 记录流节改回 `StripCard`；i18n 四条案 + `docs/design/features/ui.md` 同步双外观与居中约定。
+- 验证：build + build:demo 通过；`pnpm test` 49/49 绿；codelint 6 文件全层过；生成物确认含 `align-items:center` 与两套外观类。
+
 ## 结论
 
-Card 外观已统一为兄弟项目执行记录块同款：同色系浅底（accent 档驱动）+ 1px 不可见占位边框 + 5px 通高方角色条贴左缘 + 方角；`StripCard` 成为 `Card` 兼容别名。demo CardPage 两节均换新外观（记录流节去容器、块间 4px），文案与 `docs/design/features/ui.md` 同步。产物已重建入库路径（dist/），未 commit（等用户验收与指示）。
+Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修正：撤回第一轮的「二合一」，按用户明确要求恢复双外观并补上图示框式卡）：
+
+- `Card`（框式，照 `dsh-task-ledger` 任务行 `.dtl-taskrow`，ui.ts:103-115）：surface 底 + 1px 边框（`--dshpc-border`）+ 圆角（`--dshpc-radius-sm`）+ 行内 6×36 圆角短条（`--dshpc-radius-xs`）；padding 12/14、头部 gap 12。
+- `StripCard`（浅底条，照 `dsh-task-dispatch-table` 执行记录块 rec-item）：同色系浅底（`--dshpc-*-soft`，accent 档驱动）+ 1px 不可见占位边框 + 方角 + 5px 通高方角色条贴左缘；左内边距 21px（16 留白 + 5 条宽）。
+- **垂直居中修复**：头部由 `align-items:flex-start` 改 `align-items:center`——调用方在 `action` 裸放一个元素即垂直居中，不用自己套容器（用户第一轮指出的「右边垂直居顶」bug）。
+- 两种外观共享同一份 props；框内一行两行、右侧放什么、悬停浮出的按钮都由调用方自定，外壳只提供框与居中。
+- 色条 DOM 位置调整：`<span class="dshpc-card__bar">` 移入头部第一个子元素（bordered 行内短条需要参与 flex；strip 绝对定位不受影响）。
+
+验证：`pnpm run build` + `build:demo` 通过；`pnpm test` 49/49 绿；koc-codelint 6 文件全层过。产物已重建（dist/），未 commit（等用户验收与指示）。
 
 ## 执行记录
 
@@ -60,3 +73,4 @@ Card 外观已统一为兄弟项目执行记录块同款：同色系浅底（acc
 - 2026-10-20 08:30:41 · log · @GuoJia-Agent · 用户确认方向：微调 Card 外观数值，目标值待给（圆角/边框/色条宽/留距）
 - 2026-10-20 08:47:31 · log · @GuoJia-Agent · Card 外观统一为兄弟 rec-item 同款（浅底+透明占位边框+5px通高方角色条+方角）：改 card.css/Card.ts/demo 两文件/features-ui.md，build+49 测试+codelint 全过，待验收
 - 2026-10-20 08:47:35 · log · @GuoJia-Agent · 收工三步：正文已落本轮事实，下一步=用户验收 CardPage；改动未 commit 等指示
+- 2026-10-20 09:04:58 · log · @GuoJia-Agent · 第二轮修正：恢复双外观（Card=框式照 taskrow、StripCard=浅底条照 rec-item）+ 头部改 align-items:center 修右侧居顶；build+49 测试+codelint 全过，待验收
