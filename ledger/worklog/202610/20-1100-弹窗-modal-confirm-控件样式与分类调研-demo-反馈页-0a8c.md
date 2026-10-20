@@ -91,9 +91,28 @@
    - Popconfirm（气泡轻确认）本轮不做，等有真实场景再加。
 4. 决策点留给用户：① ConfirmDialog 底座用自绘 Modal 还是官方 Modal（口径不同：open 受控 vs 条件渲染；官方在宿主内恒在，按既有拍板"不写降级兜底"，用官方则直连）；② 是否提供命令式 `confirm()` API；③ danger 档按钮本仓 Button 需确认已有（src/ui/controls/button.css 似有）。
 
+### 四、本次在 demo 反馈页加了"原生弹窗（宿主）"演示
+
+用户要亲眼看看宿主原生弹窗长什么样、是否可定制。改动：
+
+- `packages/demo/src/sections/controls.tsx` FeedbackPage：新增一个 `Demo` 块，按钮"打开宿主原生弹窗"→ 用 `Official.Modal`（`open` 受控 + `closeLabel` + `description` + `contentClassName`、`children` 里塞 core 的 Input/Checkbox、`footer` 放 取消/删除(danger)/确认 三按钮）。
+- `src/ui/feedback.css`：补 `.dshpc-native-demo-content{max-width:520px}`，经 `contentClassName` 注入证明宿主内容区尺寸可经类名自定义。
+- **踩到硬约束**：最初把 `Official` 经 `src/ui/index.ts` 透出，结果 `ui` 入口重新依赖平台模块，4 个 Node 单测 `import dist/ui` 全挂（`ERR_MODULE_NOT_FOUND`，根因 `official.js` 顶层静态 import 平台模块）。依据 `docs/examples/integration.md:99` + `docs/design/external/dsh-host.md:23-31`「本包 ui 已零官方依赖，官方件在插件侧自己处理」——**撤销 index 透出**，改为 demo 直接从官方适配层 `dist/ui/official.js` 取 `Official`（全仓唯一 import 点仍是 official.ts，审计口径不变）。改完 `pnpm test` 49 项全绿、`koc-codelint` 全过。
+
+### 五、宿主原生弹窗可定制性结论（答用户问）
+
+以钉版本 ambient 声明 `src/types/primitives.d.ts:85-101` 为准（真机以装进宿主后所见为准）：
+
+- **自定义内容**：`children?: ReactNode` —— 正文区可塞任意自定义节点（演示里放了 Input + Checkbox），支持。
+- **自定义按钮**：`footer?: ReactNode` —— 任意按钮组合，多个/危险档/主按钮都行（演示放了 3 个），支持。
+- **改大小**：`className`（外层容器）+ `contentClassName`（内容区）两个样式钩子 → 经这两个 class 用 CSS 改尺寸/外观（演示用 contentClassName 注入 max-width:520px）。宿主内容区默认宽度不在声明里，**默认尺寸以真机为准**。
+- **去官方头部自绘**：`headless: true`（此时 `closeLabel` 不适用）可完全自绘头部与关闭钮。
+- 头部：官方提供 `title` + `description` 标准头部；暗/亮由宿主 token 决定。
+
 ## 执行记录
 
 <!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
      要补一条就跑 progress.py log --id <任务号> --note "做了什么"。 -->
 
 - 2026-10-20 11:07:52 · log · @GuoJia-Agent · 调研完成：官方仅有通用 Modal 无确认变体；兄弟项目两弹窗均为自绘且互不统一（task-list.tsx:1066 / task-editor.tsx:940）；开源共识=容器+确认语义层；结论与分类建议已写入 worklog，待用户拍板
+- 2026-10-20 11:20:10 · log · @GuoJia-Agent · 反馈页加『原生弹窗（宿主）』演示：Official.Modal 展示自定义内容与三按钮 footer（controls.tsx:744+）；踩硬约束 ui 零官方依赖，撤销 index 透出改从 official.js 取，49 测试+lint 全过；可定制性结论已写入 worklog 五节
