@@ -225,7 +225,7 @@ core 保持零官方依赖：官方 Tooltip 只能由插件侧注入（`src/ui/t
 
 | 组件 / 函数 | 说明 |
 |---|---|
-| `showToast(message, opts?)` | **命令式**，不要求挂组件。`opts: { variant?: 'info' \| 'success' \| 'error', durationMs? }`（默认 2600ms）。无 `document` 静默跳过 |
+| `showToast(message, opts?)` | **命令式**，不要求挂组件；底层 Sonner（core 内部依赖，不对外 re-export）。`opts: { variant?: 'info' \| 'success' \| 'error', durationMs?, color?, onDismiss? }`：`color` 整条自定义背景色（走 unstyled 自定义卡），`onDismiss` 消失（自动/手动）回调，默认 2600ms。暗色跟随宿主 `body[data-ds-dark-theme]`。无 `document` 静默跳过 |
 | `Loading({ anchorId? })` | 贴到主内容容器右下角的加载指示；`anchorId` 默认 `dshpc-main` |
 | `RunningBlocks()` | 运行中的占位块 |
 | `EmptyState({ text?, icon?, action?, translate? })` | 统一空态 |

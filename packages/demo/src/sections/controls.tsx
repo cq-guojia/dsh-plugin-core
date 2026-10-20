@@ -964,6 +964,17 @@ export function FeedbackPage(): ReturnType<typeof h> {
         h(Button, { onClick: () => showToast('已保存') }, '普通'),
         h(Button, { onClick: () => showToast('保存成功', { variant: 'success' }) }, '成功'),
         h(Button, { onClick: () => showToast('保存失败', { variant: 'error' }) }, '失败'),
+        h(Button, { onClick: () => showToast('整条自定义色', { color: '#7c3aed' }) }, '自定义色'),
+        h(
+          Button,
+          {
+            onClick: () =>
+              showToast('消失后回调', {
+                onDismiss: () => showToast('上一条消失了'),
+              }),
+          },
+          '带回调',
+        ),
       ),
     ),
     h(
