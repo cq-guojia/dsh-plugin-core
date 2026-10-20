@@ -93,7 +93,6 @@ export type DemoMessageKey =
   | 'liveTitle'
   | 'feedbackModalHint'
   | 'feedbackToastHint'
-  | 'loadingNote'
   | 'dockHint'
   | 'dockMainText'
   | 'dockPanelBody'
@@ -296,7 +295,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     feedbackModalHint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关。标题栏的 ✕ 是 24×24 图标位，不该出现边框或 120px 宽的底色块',
     feedbackToastHint: '命令式 showToast，不要求挂组件',
-    loadingNote: 'Loading 是贴到主容器右下角的指示器（anchorId 默认 dshpc-main），此处不渲染以免遮挡。',
 
     explorerHint: '面包屑 + 目录树 + 预览；workspaceFiles 是 mock 的（真实插件从 ctx 取出后注入）',
     previewBodyTitle: 'FilePreview 预览体（可单独用）',
@@ -478,7 +476,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     feedbackModalHint: 'Hand-rolled overlay (no portal); click backdrop / Esc / ✕ all close it. The header ✕ is a 24×24 icon slot — no border or 120px-wide color block should appear',
     feedbackToastHint: 'Imperative showToast — no component mounting required',
-    loadingNote: 'Loading is an indicator pinned to the bottom-right of the main container (anchorId defaults to dshpc-main); not rendered here to avoid covering content.',
 
     explorerHint: 'Breadcrumb + directory tree + preview; workspaceFiles is mocked (a real plugin reads it from ctx and injects)',
     previewBodyTitle: 'FilePreview (usable on its own)',

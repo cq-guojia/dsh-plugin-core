@@ -30,7 +30,6 @@ export type UtilMessageKey =
   | 'dockClose'
   | 'dockResize'
   | 'emptyText'
-  | 'errorTitle'
   | 'errorRetry'
   | 'confirm'
   | 'cancel'
@@ -87,7 +86,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     dockClose: '关闭面板',
     dockResize: '拖动调整宽度',
     emptyText: '暂无数据',
-    errorTitle: '出错了',
     errorRetry: '重试',
     confirm: '确定',
     cancel: '取消',
@@ -140,7 +138,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     dockClose: 'Close panel',
     dockResize: 'Drag to resize',
     emptyText: 'No data',
-    errorTitle: 'Something went wrong',
     errorRetry: 'Retry',
     confirm: 'Confirm',
     cancel: 'Cancel',

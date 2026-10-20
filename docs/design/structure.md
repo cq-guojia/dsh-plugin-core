@@ -40,7 +40,7 @@ dsh-plugin-core/
 │   ├── 表单                ✅ Input / NumberInput / PrefixedInput / Textarea /
 │   │                          Checkbox / Segmented / Picker（下拉选择）
 │   ├── 动作                ✅ Button / IconButton
-│   ├── 反馈                ✅ Modal / Toast / EmptyState / ErrorBoundary
+│   ├── 反馈                ✅ Modal / Toast / EmptyState
 │   │   └── Loading         ⚪ 暂缓
 │   ├── 展示                ✅ Card / StripCard / Chip / MarqueeText /
 │   │                          SectionHead / FieldHint / LiveText / BackToTop
@@ -108,7 +108,7 @@ utils（谁都不依赖，谁都可以用）
 ├─ ② 基础控件
 │   ├─ 表单    Input / NumberInput / PrefixedInput / Textarea / Checkbox / Segmented / Picker
 │   ├─ 动作    Button / IconButton
-│   ├─ 反馈    Modal / Toast / EmptyState / ErrorBoundary
+│   ├─ 反馈    Modal / Toast / EmptyState
 │   ├─ 展示    Card / StripCard / Chip / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop
 │   └─ 布局    PanelDock / 拉栏
 │

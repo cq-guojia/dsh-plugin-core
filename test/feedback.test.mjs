@@ -13,7 +13,6 @@ test('反馈件文案自带中英', () => {
   setLocale('zh')
   assert.equal(t('modalClose'), '关闭')
   assert.equal(t('emptyText'), '暂无数据')
-  assert.equal(t('errorTitle'), '出错了')
   assert.equal(t('errorRetry'), '重试')
   setLocale('en')
   assert.equal(t('modalClose'), 'Close')

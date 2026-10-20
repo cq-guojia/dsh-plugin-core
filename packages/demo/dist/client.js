@@ -37,7 +37,7 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react39 = require("react");
+var import_react38 = require("react");
 var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
@@ -193,7 +193,7 @@ var PICKER_CSS = `
 `;
 
 // dist/ui/feedback-css.generated.js
-var FEEDBACK_CSS = "\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;\n  background:var(--dshpc-mask);\n}\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:18px 31px 12px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-modal__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-modal__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 31px}\n.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 31px 18px}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error{\n  padding:12px 14px;border-radius:8px;font-size:13px;\n  color:var(--dshpc-danger);background:color-mix(in srgb,var(--dshpc-danger) 10%,transparent);\n  border:1px solid color-mix(in srgb,var(--dshpc-danger) 30%,transparent);\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* Modal \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002 */\n.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-modal__head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0}\n";
+var FEEDBACK_CSS = "\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;\n  background:var(--dshpc-mask);\n}\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:18px 31px 12px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-modal__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-modal__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 31px}\n.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 31px 18px}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* Modal \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002 */\n.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-modal__head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0}\n";
 
 // dist/ui/card-css.generated.js
 var CARD_CSS = "\n.dshpc-card{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n\n/* \u5934\u90E8\u4E00\u884C = \u8272\u6761 + \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500 */\n.dshpc-card--strip{\n  padding:12px 12px 12px 20px;border:1px solid transparent;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002 */\n.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--card-accent)}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1Asurface \u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185\u5706\u89D2\u77ED\u6761 \u2500\u2500 */\n.dshpc-card--bordered{\n  /* \u5DE6\u5185\u8FB9\u8DDD 12\uFF08\u6BD4\u4E0A/\u53F3/\u4E0B 14 \u5C11 2\uFF09\uFF1A\u7AD6\u6761\u8D34\u8FD1\u8FB9\u6846\uFF1B\u5934\u90E8\u5185\u7F29 2px \u21D2 \u4E3B\u5185\u5BB9\u8DDF\u7740\u5DE6\u79FB 2px\uFF0C\n     \u7AD6\u6761\u2194\u5185\u5BB9\u7684 12px \u95F4\u8DDD\u4E0D\u53D8\u2014\u2014\u6BD4\u300C\u6761\u5B50 left:-2 \u800C\u5185\u5BB9\u4E0D\u52A8\u300D\u66F4\u6B63\u89C4\uFF08\u4E0D\u9760\u76F8\u5BF9\u5B9A\u4F4D\u786C\u8865\uFF09\u3002 */\n  padding:14px 14px 14px 12px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  background:var(--dshpc-surface-1);\n}\n.dshpc-card--bordered .dshpc-card__head{gap:12px}\n/* \u77ED\u6761\uFF1A\u884C\u5185 flex \u9879\uFF0C**\u9AD8\u5EA6\u8DDF\u7740\u5185\u5BB9\u8D70**\uFF08stretch\uFF09\uFF0C\u6700\u5C0F\u4E00\u884C\u6587\u5B57\uFF08--dshpc-line-md\uFF09\u2014\u2014\n   \u4E00\u884C\u6587\u5B57\u65F6\u6761\u5B50\u4E0E\u6587\u5B57\u9F50\u9AD8\uFF0C\u4E0D\u4F1A\u628A\u5361\u6491\u9AD8\uFF1B\u7AD6\u6761\u8DDD\u5DE6 12\uFF08= \u5DE6\u5185\u8FB9\u8DDD\uFF09\uFF0C\u8DDD\u4E0A/\u53F3/\u4E0B 14\u3002 */\n.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
@@ -315,7 +315,6 @@ var DICT = {
     dockClose: "\u5173\u95ED\u9762\u677F",
     dockResize: "\u62D6\u52A8\u8C03\u6574\u5BBD\u5EA6",
     emptyText: "\u6682\u65E0\u6570\u636E",
-    errorTitle: "\u51FA\u9519\u4E86",
     errorRetry: "\u91CD\u8BD5",
     confirm: "\u786E\u5B9A",
     cancel: "\u53D6\u6D88",
@@ -368,7 +367,6 @@ var DICT = {
     dockClose: "Close panel",
     dockResize: "Drag to resize",
     emptyText: "No data",
-    errorTitle: "Something went wrong",
     errorRetry: "Retry",
     confirm: "Confirm",
     cancel: "Cancel",
@@ -1656,15 +1654,15 @@ var Toast = (props) => {
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h38) => [
+      setHeights((h37) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h38
+        ...h37
       ]);
-      return () => setHeights((h38) => h38.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h37) => h37.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
@@ -1709,7 +1707,7 @@ var Toast = (props) => {
   const deleteToast = import_react13.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset.current);
-    setHeights((h38) => h38.filter((height) => height.toastId !== toast2.id));
+    setHeights((h37) => h37.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -2236,7 +2234,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t3) => t3.position == toast2.position),
-          heights: heights.filter((h38) => h38.position == toast2.position),
+          heights: heights.filter((h37) => h37.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -2401,36 +2399,8 @@ function EmptyState(props) {
   return (0, import_react15.createElement)("div", { className: "dshpc-empty" }, props.icon ?? null, (0, import_react15.createElement)("div", null, props.text ?? tt("emptyText")), props.action ?? null);
 }
 
-// dist/ui/ErrorBoundary.js
-var import_react16 = require("react");
-var ErrorBoundary = class extends import_react16.Component {
-  constructor() {
-    super(...arguments);
-    this.state = { error: null };
-    this.retry = () => {
-      this.setState({ error: null });
-    };
-  }
-  static getDerivedStateFromError(error) {
-    return { error };
-  }
-  componentDidCatch(error, info) {
-    this.props.onError?.(error, info);
-  }
-  render() {
-    const err = this.state.error;
-    if (err === null)
-      return this.props.children ?? null;
-    ensureControls();
-    if (this.props.fallback !== void 0)
-      return this.props.fallback(err, this.retry);
-    const tt = this.props.translate ?? t;
-    return (0, import_react16.createElement)("div", { className: "dshpc-error" }, (0, import_react16.createElement)("div", null, `${tt("errorTitle")}\uFF1A${err.message}`), (0, import_react16.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: this.retry }, tt("errorRetry")));
-  }
-};
-
 // dist/ui/Segmented.js
-var import_react17 = require("react");
+var import_react16 = require("react");
 function Segmented(props) {
   ensureControls();
   ensureControls();
@@ -2439,7 +2409,7 @@ function Segmented(props) {
   const multiple = props.multiple === true;
   const value = props.value;
   const onChange = props.onChange;
-  return (0, import_react17.createElement)("div", {
+  return (0, import_react16.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -2461,7 +2431,7 @@ function Segmented(props) {
         onChange(item.value);
       }
     };
-    return (0, import_react17.createElement)("button", {
+    return (0, import_react16.createElement)("button", {
       key: item.value,
       type: "button",
       className: "dshpc-seg__item",
@@ -2469,16 +2439,16 @@ function Segmented(props) {
       "aria-pressed": on,
       disabled,
       onClick: handle
-    }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react17.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react17.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
+    }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react16.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react16.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
   }));
 }
 
 // dist/ui/Textarea.js
-var import_react18 = require("react");
+var import_react17 = require("react");
 function Textarea(props) {
   ensureControls();
   const { value, onChange, placeholder, error, disabled, id, rows, spellCheck, className, style } = props;
-  const box = (0, import_react18.createElement)("textarea", {
+  const box = (0, import_react17.createElement)("textarea", {
     id,
     rows,
     value,
@@ -2494,14 +2464,14 @@ function Textarea(props) {
   });
   if (props.hint === void 0)
     return box;
-  return (0, import_react18.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react18.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react17.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react17.createElement)(FieldHint, { text: props.hint }));
 }
 
 // dist/ui/Checkbox.js
-var import_react19 = require("react");
+var import_react18 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className } = props;
-  return (0, import_react19.createElement)("label", {
+  return (0, import_react18.createElement)("label", {
     className: `dshpc-checkbox${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
     style: {
       display: "flex",
@@ -2511,7 +2481,7 @@ function Checkbox(props) {
       lineHeight: "var(--dshpc-line-md)",
       cursor: disabled === true ? "default" : "pointer"
     }
-  }, (0, import_react19.createElement)("input", {
+  }, (0, import_react18.createElement)("input", {
     type: "checkbox",
     checked,
     disabled,
@@ -2526,23 +2496,23 @@ function Checkbox(props) {
     onChange: (event) => {
       onChange(event.target.checked);
     }
-  }), label !== void 0 ? (0, import_react19.createElement)("span", null, label) : null);
+  }), label !== void 0 ? (0, import_react18.createElement)("span", null, label) : null);
 }
 
 // dist/ui/MarqueeText.js
-var import_react20 = require("react");
+var import_react19 = require("react");
 function MarqueeText(props) {
-  const outerRef = (0, import_react20.useRef)(null);
-  const innerRef = (0, import_react20.useRef)(null);
-  const [dist, setDist] = (0, import_react20.useState)(0);
-  const measure = (0, import_react20.useCallback)(() => {
+  const outerRef = (0, import_react19.useRef)(null);
+  const innerRef = (0, import_react19.useRef)(null);
+  const [dist, setDist] = (0, import_react19.useState)(0);
+  const measure = (0, import_react19.useCallback)(() => {
     const outer = outerRef.current;
     const inner = innerRef.current;
     if (outer === null || inner === null)
       return;
     setDist(Math.max(0, Math.ceil(inner.scrollWidth - outer.clientWidth)));
   }, []);
-  (0, import_react20.useLayoutEffect)(() => {
+  (0, import_react19.useLayoutEffect)(() => {
     const outer = outerRef.current;
     if (outer === null)
       return;
@@ -2553,16 +2523,16 @@ function MarqueeText(props) {
       ro.disconnect();
     };
   }, [measure]);
-  (0, import_react20.useEffect)(() => {
+  (0, import_react19.useEffect)(() => {
     measure();
   }, [props.text, measure]);
   const run = dist > 0;
-  return (0, import_react20.createElement)("span", {
+  return (0, import_react19.createElement)("span", {
     ref: outerRef,
     className: (run ? "dshpc-mq dshpc-mq-run" : "dshpc-mq") + (props.className === void 0 ? "" : ` ${props.className}`),
     title: props.title,
     style: props.style
-  }, (0, import_react20.createElement)("span", {
+  }, (0, import_react19.createElement)("span", {
     ref: innerRef,
     className: "dshpc-mq-in",
     style: {
@@ -2572,18 +2542,18 @@ function MarqueeText(props) {
 }
 
 // dist/ui/SectionHead.js
-var import_react21 = require("react");
+var import_react20 = require("react");
 function SectionHead(props) {
-  return (0, import_react21.createElement)("div", {
+  return (0, import_react20.createElement)("div", {
     style: { display: "flex", alignItems: "center", gap: "var(--dshpc-space-2)", marginBottom: "var(--dshpc-space-3)" }
-  }, (0, import_react21.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", lineHeight: "var(--dshpc-line-lg)", color: "var(--dshpc-fg-3)" } }, props.icon), (0, import_react21.createElement)("span", { style: { fontSize: "var(--dshpc-font-lg)", lineHeight: "var(--dshpc-line-lg)", fontWeight: 600, color: "var(--dshpc-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react21.createElement)("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--dshpc-space-2)", minWidth: 0 } }, props.right));
+  }, (0, import_react20.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", lineHeight: "var(--dshpc-line-lg)", color: "var(--dshpc-fg-3)" } }, props.icon), (0, import_react20.createElement)("span", { style: { fontSize: "var(--dshpc-font-lg)", lineHeight: "var(--dshpc-line-lg)", fontWeight: 600, color: "var(--dshpc-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react20.createElement)("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--dshpc-space-2)", minWidth: 0 } }, props.right));
 }
 
 // dist/ui/LiveText.js
-var import_react23 = require("react");
+var import_react22 = require("react");
 
 // dist/ui/ticker.js
-var import_react22 = require("react");
+var import_react21 = require("react");
 var tickerListeners = /* @__PURE__ */ new Set();
 var tickerTimer = null;
 var onVisibilityChange = () => {
@@ -2614,11 +2584,11 @@ function subscribeTicker(cb) {
 
 // dist/ui/LiveText.js
 function LiveText(props) {
-  const [, force] = (0, import_react23.useState)(0);
-  const renderRef = (0, import_react23.useRef)(props.render);
+  const [, force] = (0, import_react22.useState)(0);
+  const renderRef = (0, import_react22.useRef)(props.render);
   renderRef.current = props.render;
-  (0, import_react23.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
-  return (0, import_react23.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
+  (0, import_react22.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
+  return (0, import_react22.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
 }
 
 // dist/ui/resizer.js
@@ -2666,7 +2636,7 @@ function startResizeLayoutWidth(opts) {
 }
 
 // dist/ui/PanelDock.js
-var import_react24 = require("react");
+var import_react23 = require("react");
 
 // dist/ui/panel-dock-logic.js
 var DEFAULT_PANEL_ID = "default";
@@ -2809,8 +2779,8 @@ function createPanelDock(options = {}) {
 }
 function panesOf(children) {
   const out = [];
-  import_react24.Children.forEach(children, (child) => {
-    if ((0, import_react24.isValidElement)(child) && child.type === DockPanel)
+  import_react23.Children.forEach(children, (child) => {
+    if ((0, import_react23.isValidElement)(child) && child.type === DockPanel)
       out.push(child.props);
   });
   return out;
@@ -2818,9 +2788,9 @@ function panesOf(children) {
 function PanelDock(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const state = (0, import_react24.useSyncExternalStore)(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
-  const rootRef = (0, import_react24.useRef)(null);
-  const panelRefs = (0, import_react24.useRef)(/* @__PURE__ */ new Map());
+  const state = (0, import_react23.useSyncExternalStore)(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
+  const rootRef = (0, import_react23.useRef)(null);
+  const panelRefs = (0, import_react23.useRef)(/* @__PURE__ */ new Map());
   const panes = panesOf(props.children);
   const { defaultWidth, minWidth: fallbackMin } = props.dock.defaults;
   const widthOf = (pane) => state.widths[pane.id] ?? clampWidth(pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth);
@@ -2866,7 +2836,7 @@ function PanelDock(props) {
     const hasHeader = pane.header !== null;
     if (!closable || !(mode === "header" || mode === "auto" && hasHeader))
       return null;
-    return (0, import_react24.createElement)("button", {
+    return (0, import_react23.createElement)("button", {
       type: "button",
       className: "dshpc-dock__close dshpc-dock__close--abs",
       "aria-label": tt("dockClose"),
@@ -2877,9 +2847,9 @@ function PanelDock(props) {
     if (pane.header === null)
       return null;
     if (pane.header !== void 0) {
-      return (0, import_react24.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, pane.header);
+      return (0, import_react23.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, pane.header);
     }
-    return (0, import_react24.createElement)("div", { className: "dshpc-dock__head" }, pane.icon === void 0 ? null : (0, import_react24.createElement)("div", { className: "dshpc-dock__lead" }, pane.icon), (0, import_react24.createElement)("div", { className: "dshpc-dock__title" }, pane.title), pane.extra === void 0 ? null : (0, import_react24.createElement)("div", { className: "dshpc-dock__extra" }, pane.extra));
+    return (0, import_react23.createElement)("div", { className: "dshpc-dock__head" }, pane.icon === void 0 ? null : (0, import_react23.createElement)("div", { className: "dshpc-dock__lead" }, pane.icon), (0, import_react23.createElement)("div", { className: "dshpc-dock__title" }, pane.title), pane.extra === void 0 ? null : (0, import_react23.createElement)("div", { className: "dshpc-dock__extra" }, pane.extra));
   };
   const floatingCloseOf = (pane) => {
     if (pane.closable === false)
@@ -2888,17 +2858,17 @@ function PanelDock(props) {
     const hasHeader = pane.header !== null;
     if (mode !== "floating" && !(mode === "auto" && !hasHeader))
       return null;
-    return (0, import_react24.createElement)("button", {
+    return (0, import_react23.createElement)("button", {
       type: "button",
       className: "dshpc-dock__close dshpc-dock__close--floating",
       "aria-label": tt("dockClose"),
       onClick: () => props.dock.close(pane.id, "button")
     }, pane.closeIcon ?? "\u2715");
   };
-  return (0, import_react24.createElement)("div", {
+  return (0, import_react23.createElement)("div", {
     ref: rootRef,
     className: props.className === void 0 ? "dshpc-dock" : `dshpc-dock ${props.className}`
-  }, panes.filter((pane) => state.ids.includes(pane.id)).map((pane) => (0, import_react24.createElement)("section", {
+  }, panes.filter((pane) => state.ids.includes(pane.id)).map((pane) => (0, import_react23.createElement)("section", {
     key: pane.id,
     ref: (element) => {
       if (element === null)
@@ -2910,7 +2880,7 @@ function PanelDock(props) {
     style: { width: `${widthOf(pane)}px` },
     "data-panel": pane.id,
     "aria-label": pane.ariaLabel ?? (typeof pane.title === "string" ? pane.title : pane.id)
-  }, (0, import_react24.createElement)("div", {
+  }, (0, import_react23.createElement)("div", {
     className: "dshpc-dock__resizer",
     role: "separator",
     "aria-orientation": "vertical",
@@ -2918,15 +2888,15 @@ function PanelDock(props) {
     onPointerDown: (event) => {
       beginResize(pane, event);
     }
-  }), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), (0, import_react24.createElement)("div", { className: "dshpc-dock__body" }, pane.children ?? null))));
+  }), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), (0, import_react23.createElement)("div", { className: "dshpc-dock__body" }, pane.children ?? null))));
 }
 
 // dist/ui/Field.js
-var import_react25 = require("react");
+var import_react24 = require("react");
 function withHint(control, hint) {
   if (hint === void 0)
     return control;
-  return (0, import_react25.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react25.createElement)(FieldHint, { text: hint }));
+  return (0, import_react24.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react24.createElement)(FieldHint, { text: hint }));
 }
 function sizeClass(size) {
   return size === "lg" ? "--lg" : size === "md" ? "--md" : "--sm";
@@ -2934,7 +2904,7 @@ function sizeClass(size) {
 function Input(props) {
   ensureControls();
   const { value, onChange, placeholder, size = "lg", error, disabled, type, className, style } = props;
-  return withHint((0, import_react25.createElement)("input", {
+  return withHint((0, import_react24.createElement)("input", {
     ref: props.inputRef,
     type: type ?? "text",
     value,
@@ -2954,8 +2924,8 @@ function Input(props) {
 function NumberInput(props) {
   ensureControls();
   const { value, onChange, min = -Infinity, max = Infinity, step = 1, size = "lg", inputWidth, disabled, suffix, label, decreaseLabel = "\u51CF\u5C11", increaseLabel = "\u589E\u52A0", className, style } = props;
-  const [text, setText] = (0, import_react25.useState)(String(value));
-  (0, import_react25.useEffect)(() => {
+  const [text, setText] = (0, import_react24.useState)(String(value));
+  (0, import_react24.useEffect)(() => {
     setText(String(value));
   }, [value]);
   const clamp = (n) => Math.min(max, Math.max(min, n));
@@ -2981,18 +2951,18 @@ function NumberInput(props) {
     if (next !== value)
       onChange(next);
   };
-  return withHint((0, import_react25.createElement)(
+  return withHint((0, import_react24.createElement)(
     "div",
     {
       className: `dshpc-num dshpc-num${sizeClass(size)}${disabled === true ? " dshpc-num--disabled" : ""}${className !== void 0 && className !== "" ? ` ${className}` : ""}`,
       style
     },
-    (0, import_react25.createElement)(IconButton, { variant: "plain", size, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
+    (0, import_react24.createElement)(IconButton, { variant: "plain", size, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
       bump(-1);
     } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
-    (0, import_react25.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react25.createElement)("input", {
+    (0, import_react24.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react24.createElement)("input", {
       className: "dshpc-num__input",
       ...inputWidth === void 0 ? {} : { style: { width: `${inputWidth}px` } },
       value: text,
@@ -3009,15 +2979,15 @@ function NumberInput(props) {
         if (event.key === "Enter")
           commit(text);
       }
-    }), suffix !== void 0 ? (0, import_react25.createElement)("span", { className: "dshpc-num__suffix" }, suffix) : null),
-    (0, import_react25.createElement)(IconButton, { variant: "plain", size, icon: "+", label: increaseLabel, disabled, onClick: () => {
+    }), suffix !== void 0 ? (0, import_react24.createElement)("span", { className: "dshpc-num__suffix" }, suffix) : null),
+    (0, import_react24.createElement)(IconButton, { variant: "plain", size, icon: "+", label: increaseLabel, disabled, onClick: () => {
       bump(1);
     } })
   ), props.hint);
 }
 
 // packages/demo/src/dock.ts
-var import_react26 = require("react");
+var import_react25 = require("react");
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/utils/date.js
@@ -3054,10 +3024,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h38 = Math.floor(totalSec / 3600);
+  const h37 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h38 > 0 ? `${h38}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h37 > 0 ? `${h37}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -3287,7 +3257,6 @@ var DICT2 = {
     liveTitle: "LiveText \u5B9E\u65F6\u6587\u672C",
     feedbackModalHint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757",
     feedbackToastHint: "\u547D\u4EE4\u5F0F showToast\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6",
-    loadingNote: "Loading \u662F\u8D34\u5230\u4E3B\u5BB9\u5668\u53F3\u4E0B\u89D2\u7684\u6307\u793A\u5668\uFF08anchorId \u9ED8\u8BA4 dshpc-main\uFF09\uFF0C\u6B64\u5904\u4E0D\u6E32\u67D3\u4EE5\u514D\u906E\u6321\u3002",
     explorerHint: "\u9762\u5305\u5C51 + \u76EE\u5F55\u6811 + \u9884\u89C8\uFF1BworkspaceFiles \u662F mock \u7684\uFF08\u771F\u5B9E\u63D2\u4EF6\u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF09",
     previewBodyTitle: "FilePreview \u9884\u89C8\u4F53\uFF08\u53EF\u5355\u72EC\u7528\uFF09",
     previewBodyHint: "\u4E0A\u9762\u90A3\u5757\u5DF2\u7ECF\u5305\u542B\u5B83\u2014\u2014ExplorerPanel \u5185\u90E8\u6E32\u67D3\u7684\u5C31\u662F FilePreview\u3002\n\u5B83\u540C\u65F6\u4E5F\u662F\u4E00\u6761\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/explorer/preview\uFF1A\u53EA\u6709\u4E00\u4E2A\u6587\u4EF6\u8981\u663E\u793A\u65F6\uFF08\u4F1A\u8BDD\u9644\u4EF6\u3001\u5DE5\u5177\u8F93\u51FA\uFF09\u4E0D\u5FC5\u642C\u51FA\u6574\u4E2A\u9762\u677F\u3002\n\u26A0\uFE0F \u672C\u9875\u4E0D\u53E6\u6302\u4E00\u5757\u5355\u72EC\u6E32\u67D3\uFF1A\u9884\u89C8\u4F53\u7684 path / files \u7531\u7236\u7EC4\u4EF6\u6CE8\u5165\uFF0C\u8981\u8131\u79BB\u9762\u677F\u5C55\u793A\u5F97\u5148\u51C6\u5907\u4E00\u4EFD\u81EA\u5DF1\u7684\u6570\u636E\uFF0C\u5C5E\u4E8E\u5F85\u8865\u3002",
@@ -3439,7 +3408,6 @@ var DICT2 = {
     liveTitle: "LiveText",
     feedbackModalHint: "Hand-rolled overlay (no portal); click backdrop / Esc / \u2715 all close it. The header \u2715 is a 24\xD724 icon slot \u2014 no border or 120px-wide color block should appear",
     feedbackToastHint: "Imperative showToast \u2014 no component mounting required",
-    loadingNote: "Loading is an indicator pinned to the bottom-right of the main container (anchorId defaults to dshpc-main); not rendered here to avoid covering content.",
     explorerHint: "Breadcrumb + directory tree + preview; workspaceFiles is mocked (a real plugin reads it from ctx and injects)",
     previewBodyTitle: "FilePreview (usable on its own)",
     previewBodyHint: "The block above already includes it \u2014 ExplorerPanel renders FilePreview inside.\nIt is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.\n\u26A0\uFE0F No standalone render here: the preview body takes its path and files from the parent, so showing it outside the panel needs its own data source \u2014 still to be added.",
@@ -3493,24 +3461,24 @@ function t2(key, vars) {
 // packages/demo/src/dock.ts
 var demoDock = createPanelDock({ maxPanels: 3 });
 function Body(props) {
-  return (0, import_react26.createElement)(
+  return (0, import_react25.createElement)(
     "div",
     { style: { padding: "12px 14px", fontSize: "13px", lineHeight: "1.9" } },
-    (0, import_react26.createElement)("div", { style: { fontWeight: 600 } }, props.id),
-    (0, import_react26.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t2("dockPanelBody"))
+    (0, import_react25.createElement)("div", { style: { fontWeight: 600 } }, props.id),
+    (0, import_react25.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t2("dockPanelBody"))
   );
 }
 function CustomHead() {
-  return (0, import_react26.createElement)(
+  return (0, import_react25.createElement)(
     "div",
     { style: { padding: "10px 12px", borderBottom: "1px solid var(--dshpc-border-faint)" } },
-    (0, import_react26.createElement)(
+    (0, import_react25.createElement)(
       "div",
       { style: { display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600 } },
-      (0, import_react26.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react25.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
       t2("dockCustomHeadTitle")
     ),
-    (0, import_react26.createElement)(
+    (0, import_react25.createElement)(
       "div",
       { style: { marginTop: "6px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
       t2("dockCustomHeadHint")
@@ -3521,20 +3489,20 @@ var PANELS = [
   {
     id: "A",
     title: t2("dockPanelA"),
-    icon: (0, import_react26.createElement)(
+    icon: (0, import_react25.createElement)(
       "span",
       { style: { display: "inline-flex", gap: "4px" } },
-      (0, import_react26.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
-      (0, import_react26.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
+      (0, import_react25.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react25.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
     ),
     // 标题右侧：任意内容，不只按钮。
-    extra: (0, import_react26.createElement)(Chip, { tone: "business", size: "sm" }, t2("dockPanelATag")),
+    extra: (0, import_react25.createElement)(Chip, { tone: "business", size: "sm" }, t2("dockPanelATag")),
     minWidth: 300,
     maxWidth: 620
   },
   {
     id: "B",
-    header: (0, import_react26.createElement)(CustomHead, null),
+    header: (0, import_react25.createElement)(CustomHead, null),
     minWidth: 320
   },
   {
@@ -3547,27 +3515,27 @@ var PANELS = [
 ];
 function demoPanels() {
   return PANELS.map(
-    (pane) => (0, import_react26.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react26.createElement)(Body, { id: pane.id }))
+    (pane) => (0, import_react25.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react25.createElement)(Body, { id: pane.id }))
   );
 }
 
 // packages/demo/src/sections/index.tsx
-var import_react38 = require("react");
+var import_react37 = require("react");
 
 // packages/demo/src/sections/start.tsx
-var import_react27 = require("react");
+var import_react26 = require("react");
 function QuickstartPage() {
-  return (0, import_react27.createElement)(
+  return (0, import_react26.createElement)(
     "div",
     null,
-    (0, import_react27.createElement)(Demo, { title: t2("secOverview") }, (0, import_react27.createElement)(Placeholder, { descKey: "overviewDesc" })),
-    (0, import_react27.createElement)(Demo, { title: t2("secInstall") }, (0, import_react27.createElement)(Placeholder, { descKey: "installDesc" })),
-    (0, import_react27.createElement)(Demo, { title: t2("secWritePlugin") }, (0, import_react27.createElement)(Placeholder, { descKey: "quickstartDesc" }))
+    (0, import_react26.createElement)(Demo, { title: t2("secOverview") }, (0, import_react26.createElement)(Placeholder, { descKey: "overviewDesc" })),
+    (0, import_react26.createElement)(Demo, { title: t2("secInstall") }, (0, import_react26.createElement)(Placeholder, { descKey: "installDesc" })),
+    (0, import_react26.createElement)(Demo, { title: t2("secWritePlugin") }, (0, import_react26.createElement)(Placeholder, { descKey: "quickstartDesc" }))
   );
 }
 
 // packages/demo/src/sections/foundation.tsx
-var import_react28 = require("react");
+var import_react27 = require("react");
 var TOKENS = [
   { label: "business", cssVar: "--dshpc-business" },
   { label: "success", cssVar: "--dshpc-success" },
@@ -3582,20 +3550,20 @@ var TOKENS = [
   { label: "fg-4", cssVar: "--dshpc-fg-4" }
 ];
 function FoundationPage() {
-  return (0, import_react28.createElement)(
+  return (0, import_react27.createElement)(
     "div",
     null,
-    (0, import_react28.createElement)(
+    (0, import_react27.createElement)(
       Demo,
       { title: t2("demoTokenPalette"), hint: t2("tokensHint") },
-      (0, import_react28.createElement)(
+      (0, import_react27.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
         TOKENS.map(
-          (item) => (0, import_react28.createElement)(
+          (item) => (0, import_react27.createElement)(
             "div",
             { key: item.cssVar, style: { width: "104px" } },
-            (0, import_react28.createElement)("div", {
+            (0, import_react27.createElement)("div", {
               style: {
                 height: "40px",
                 borderRadius: "6px",
@@ -3603,25 +3571,25 @@ function FoundationPage() {
                 border: "1px solid var(--dshpc-border-faint)"
               }
             }),
-            (0, import_react28.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
-            (0, import_react28.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+            (0, import_react27.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
+            (0, import_react27.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
           )
         )
       )
     ),
     // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
-    (0, import_react28.createElement)(
+    (0, import_react27.createElement)(
       Demo,
       { title: "body[data-ds-dark-theme]", hint: t2("darkHint") },
-      (0, import_react28.createElement)(
+      (0, import_react27.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react28.createElement)(
+        (0, import_react27.createElement)(
           "span",
           { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t2("darkNow")
         ),
-        (0, import_react28.createElement)("code", {
+        (0, import_react27.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -3633,7 +3601,7 @@ function FoundationPage() {
         }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
       )
     ),
-    (0, import_react28.createElement)(
+    (0, import_react27.createElement)(
       Demo,
       {
         title: t2("demoStyleInject"),
@@ -3644,14 +3612,14 @@ import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
 ensureControls()`
       },
-      (0, import_react28.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
+      (0, import_react27.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
     ),
-    (0, import_react28.createElement)(Demo, { title: t2("secNaming") }, (0, import_react28.createElement)(Placeholder, { descKey: "namingDesc" }))
+    (0, import_react27.createElement)(Demo, { title: t2("secNaming") }, (0, import_react27.createElement)(Placeholder, { descKey: "namingDesc" }))
   );
 }
 
 // packages/demo/src/sections/controls.tsx
-var import_react31 = require("react");
+var import_react30 = require("react");
 
 // dist/ui/official.js
 var official_exports = {};
@@ -3661,7 +3629,7 @@ __export(official_exports, {
 });
 var Official = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
 __reExport(official_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
-var import_react29 = require("react");
+var import_react28 = require("react");
 var import_client3 = require("react-dom/client");
 var warned = /* @__PURE__ */ new Set();
 var officialRegistry = Official;
@@ -3689,7 +3657,7 @@ function mountHostModal(render) {
   root2.render(render(close));
 }
 var hostConfirm = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react29.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react28.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -3698,17 +3666,17 @@ var hostConfirm = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react29.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react29.createElement)(Button, { variant: "outline", onClick: () => {
+    footer: (0, import_react28.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react28.createElement)(Button, { variant: "outline", onClick: () => {
       close();
       resolve(false);
-    } }, opts.cancelText ?? t("cancel")), (0, import_react29.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
+    } }, opts.cancelText ?? t("cancel")), (0, import_react28.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
       close();
       resolve(true);
     } }, opts.confirmText ?? t("confirm")))
   }));
 });
 var hostAlert = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react29.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react28.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -3717,7 +3685,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react29.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react29.createElement)(Button, { variant: "primary", onClick: () => {
+    footer: (0, import_react28.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react28.createElement)(Button, { variant: "primary", onClick: () => {
       close();
       resolve();
     } }, opts.confirmText ?? t("dialogOk")))
@@ -3726,7 +3694,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
 registerHostDialog({ confirm: hostConfirm, alert: hostAlert });
 
 // dist/ui/host-toast.js
-var import_react30 = require("react");
+var import_react29 = require("react");
 var import_client4 = require("react-dom/client");
 function showHostToast(message, opts) {
   if (typeof document === "undefined")
@@ -3738,7 +3706,7 @@ function showHostToast(message, opts) {
     root2.unmount();
     container.remove();
   };
-  root2.render((0, import_react30.createElement)(Official.Toast, {
+  root2.render((0, import_react29.createElement)(Official.Toast, {
     text: message,
     tone: opts?.tone,
     holdMs: opts?.holdMs ?? 3e3,
@@ -3768,13 +3736,13 @@ var BUTTON_ICONS = [
 ];
 function iconOf(name, size = 14) {
   const found = BUTTON_ICONS.find((item) => item.name === name);
-  return found === void 0 ? null : (0, import_react31.createElement)(found.Icon, { size });
+  return found === void 0 ? null : (0, import_react30.createElement)(found.Icon, { size });
 }
 function StarSvg() {
-  return (0, import_react31.createElement)(
+  return (0, import_react30.createElement)(
     "svg",
     { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-    (0, import_react31.createElement)("path", {
+    (0, import_react30.createElement)("path", {
       d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
       stroke: "currentColor",
       strokeWidth: 1.2,
@@ -3799,7 +3767,7 @@ var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
 function tipAnchor(text, side, align) {
   const props = { label: text, side };
   if (align !== void 0) props.align = align;
-  return (0, import_react31.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react31.createElement)("button", {
+  return (0, import_react30.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react30.createElement)("button", {
     type: "button",
     style: {
       padding: "4px 10px",
@@ -3813,225 +3781,225 @@ function tipAnchor(text, side, align) {
   }, text));
 }
 function Row(props) {
-  return (0, import_react31.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+  return (0, import_react30.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
 }
 function Labeled(props) {
-  return (0, import_react31.createElement)(
+  return (0, import_react30.createElement)(
     "div",
     { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react31.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    (0, import_react30.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
     props.children
   );
 }
 function ButtonPage() {
-  return (0, import_react31.createElement)(
+  return (0, import_react30.createElement)(
     "div",
     null,
     // 文案与语言
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("btnTextTitle"), hint: t2("btnTextHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: "locale" },
-          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
-          (0, import_react31.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
-          (0, import_react31.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
+          (0, import_react30.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
+          (0, import_react30.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
+          (0, import_react30.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: "en" },
-          (0, import_react31.createElement)(Button, { variant: "primary" }, "Save"),
-          (0, import_react31.createElement)(Button, { variant: "outline" }, "Cancel"),
-          (0, import_react31.createElement)(Button, { variant: "ghost" }, "Learn more")
+          (0, import_react30.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react30.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react30.createElement)(Button, { variant: "ghost" }, "Learn more")
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: "zh" },
-          (0, import_react31.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
-          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
-          (0, import_react31.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+          (0, import_react30.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react30.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react30.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: "zh + en" },
-          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
-          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
-          (0, import_react31.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+          (0, import_react30.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
+          (0, import_react30.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react30.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
         )
       )
     ),
     // 10 档外观
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("btnVariantTitle"), hint: t2("btnVariantHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react31.createElement)(Row, null, VARIANTS.map((item) => (0, import_react31.createElement)(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
-        (0, import_react31.createElement)(Row, null, VARIANTS.map((item) => (0, import_react31.createElement)(Button, { key: item.value, variant: item.value, size: "sm", icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))
+        (0, import_react30.createElement)(Row, null, VARIANTS.map((item) => (0, import_react30.createElement)(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
+        (0, import_react30.createElement)(Row, null, VARIANTS.map((item) => (0, import_react30.createElement)(Button, { key: item.value, variant: item.value, size: "sm", icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))
       )
     ),
     // 尺寸 / 图标位置 / block
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("btnSizeTitle"), hint: t2("btnSizeHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: "size" },
-          ["sm", "md", "lg"].map((size) => (0, import_react31.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
+          ["sm", "md", "lg"].map((size) => (0, import_react30.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
         ),
         // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: "icon" },
-          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
-          (0, import_react31.createElement)(Button, { variant: "outline", icon: (0, import_react31.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
-          (0, import_react31.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
+          (0, import_react30.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react30.createElement)(Button, { variant: "outline", icon: (0, import_react30.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react30.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: "iconRight" },
-          (0, import_react31.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
-          (0, import_react31.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+          (0, import_react30.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
+          (0, import_react30.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
         ),
         // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: "block" },
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react31.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
-            (0, import_react31.createElement)("div", { style: { height: "8px" } }),
-            (0, import_react31.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
+            (0, import_react30.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react30.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react30.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
           )
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Labeled,
           { label: t2("btnIconOnly") },
-          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react31.createElement)(IconButton, { key: item.name, icon: (0, import_react31.createElement)(item.Icon, { size: 16 }), label: item.name }))
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react30.createElement)(IconButton, { key: item.name, icon: (0, import_react30.createElement)(item.Icon, { size: 16 }), label: item.name }))
         )
       )
     ),
     // 状态
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("btnStateTitle"), hint: t2("btnStateHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         Row,
         null,
-        (0, import_react31.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-        (0, import_react31.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-        (0, import_react31.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528"),
-        (0, import_react31.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-        (0, import_react31.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+        (0, import_react30.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+        (0, import_react30.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+        (0, import_react30.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528"),
+        (0, import_react30.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+        (0, import_react30.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
       )
     ),
     // 自定义颜色
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("btnColorTitle"), hint: t2("btnColorHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color))),
-        (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "outline", color }, color)))
+        (0, import_react30.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react30.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color))),
+        (0, import_react30.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react30.createElement)(Button, { key: color, variant: "outline", color }, color)))
       )
     )
   );
 }
 function InputPage() {
-  const [text, setText] = (0, import_react31.useState)("");
-  const [num, setNum] = (0, import_react31.useState)(3);
-  const [checked, setChecked] = (0, import_react31.useState)(true);
-  const [seg, setSeg] = (0, import_react31.useState)("week");
-  const [filter, setFilter] = (0, import_react31.useState)("all");
-  const [multi, setMulti] = (0, import_react31.useState)(["1"]);
-  return (0, import_react31.createElement)(
+  const [text, setText] = (0, import_react30.useState)("");
+  const [num, setNum] = (0, import_react30.useState)(3);
+  const [checked, setChecked] = (0, import_react30.useState)(true);
+  const [seg, setSeg] = (0, import_react30.useState)("week");
+  const [filter, setFilter] = (0, import_react30.useState)("all");
+  const [multi, setMulti] = (0, import_react30.useState)(["1"]);
+  return (0, import_react30.createElement)(
     "div",
     null,
     // Input 家族
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("demoInputFamily"), hint: t2("inputHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
+          (0, import_react30.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
-          (0, import_react31.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F", hint: t2("fieldHintDate") })
+          (0, import_react30.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F", hint: t2("fieldHintDate") })
         ),
-        (0, import_react31.createElement)(Input, { value: "bad value", onChange: () => {
+        (0, import_react30.createElement)(Input, { value: "bad value", onChange: () => {
         }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        (0, import_react31.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
-        (0, import_react31.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
+        (0, import_react30.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
+        (0, import_react30.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
       )
     ),
     // 问号提示：证明它不属于 Input 家族，随处可挂
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("btnHintTitle"), hint: t2("btnHintHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Row,
           null,
-          (0, import_react31.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
-          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+          (0, import_react30.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react30.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Row,
           null,
-          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
-          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+          (0, import_react30.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react30.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Row,
           null,
-          (0, import_react31.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
-          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
+          (0, import_react30.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react30.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
         )
       )
     ),
     // Switch / Checkbox / Segmented
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("switchTip"), hint: t2("checkboxHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
           // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
           // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
           // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
-            (0, import_react31.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-            (0, import_react31.createElement)("span", {
+            (0, import_react30.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+            (0, import_react30.createElement)("span", {
               style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
               onClick: () => {
                 setChecked(!checked);
               }
             }, "\u542F\u7528")
           ),
-          (0, import_react31.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" }),
-          (0, import_react31.createElement)(Segmented, {
+          (0, import_react30.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" }),
+          (0, import_react30.createElement)(Segmented, {
             variant: "inset",
             items: [
               { value: "day", label: "\u65E5" },
@@ -4041,7 +4009,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react31.createElement)(Segmented, {
+          (0, import_react30.createElement)(Segmented, {
             variant: "inset",
             bordered: true,
             items: [
@@ -4052,7 +4020,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react31.createElement)(Segmented, {
+          (0, import_react30.createElement)(Segmented, {
             variant: "inset",
             size: "sm",
             items: [
@@ -4063,7 +4031,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react31.createElement)(Segmented, {
+          (0, import_react30.createElement)(Segmented, {
             variant: "inset",
             size: "sm",
             bordered: true,
@@ -4077,7 +4045,7 @@ function InputPage() {
           })
         ),
         // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
-        (0, import_react31.createElement)(Segmented, {
+        (0, import_react30.createElement)(Segmented, {
           variant: "inset",
           items: [
             { value: "all", label: t2("segAll"), count: 11 },
@@ -4089,7 +4057,7 @@ function InputPage() {
           value: filter,
           onChange: setFilter
         }),
-        (0, import_react31.createElement)(Segmented, {
+        (0, import_react30.createElement)(Segmented, {
           variant: "inset",
           bordered: true,
           items: [
@@ -4103,7 +4071,7 @@ function InputPage() {
           onChange: setFilter
         }),
         // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react31.createElement)(Segmented, {
+        (0, import_react30.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
@@ -4114,7 +4082,7 @@ function InputPage() {
           value: multi,
           onChange: setMulti
         }),
-        (0, import_react31.createElement)(Segmented, {
+        (0, import_react30.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           bordered: true,
@@ -4128,53 +4096,53 @@ function InputPage() {
         })
       )
     ),
-    (0, import_react31.createElement)(Placeholder, { descKey: "inputMissingDesc" })
+    (0, import_react30.createElement)(Placeholder, { descKey: "inputMissingDesc" })
   );
 }
 var ICON_OPTIONS = [
-  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
-  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
-  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
+  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
+  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
+  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
 ];
 function PickerPage() {
-  const [single, setSingle] = (0, import_react31.useState)(void 0);
-  const [multi, setMulti] = (0, import_react31.useState)([]);
-  const [model, setModel] = (0, import_react31.useState)("");
-  const [model2, setModel2] = (0, import_react31.useState)("");
-  const [ws, setWs] = (0, import_react31.useState)(void 0);
-  return (0, import_react31.createElement)(
+  const [single, setSingle] = (0, import_react30.useState)(void 0);
+  const [multi, setMulti] = (0, import_react30.useState)([]);
+  const [model, setModel] = (0, import_react30.useState)("");
+  const [model2, setModel2] = (0, import_react30.useState)("");
+  const [ws, setWs] = (0, import_react30.useState)(void 0);
+  return (0, import_react30.createElement)(
     "div",
     null,
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "Picker", hint: t2("pickerHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react31.createElement)(Picker, {
+        (0, import_react30.createElement)(Picker, {
           options: ICON_OPTIONS,
-          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
+          icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
           value: single,
           onChange: (v) => setSingle(v),
           searchable: true,
           clearable: true,
           placeholder: "\u5355\u9009\uFF08icon + \u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
         }),
-        (0, import_react31.createElement)(Picker, {
+        (0, import_react30.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
           placeholder: "\u5355\u9009\uFF08\u65E0\u641C\u7D22\u6846\uFF09"
         }),
-        (0, import_react31.createElement)(Picker, {
+        (0, import_react30.createElement)(Picker, {
           groups: [
             { value: "g1", label: "\u7EC4\u4E00", options: ICON_OPTIONS },
             {
               value: "g2",
               label: "\u7EC4\u4E8C",
               options: [
-                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
-                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
+                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
+                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
               ]
             }
           ],
@@ -4185,13 +4153,13 @@ function PickerPage() {
           searchable: true,
           placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF0C\u53EF\u53CD\u9009\uFF09"
         }),
-        (0, import_react31.createElement)(Picker, {
+        (0, import_react30.createElement)(Picker, {
           options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
           degraded: true,
           disabled: true,
           placeholder: "\u964D\u7EA7 + \u7981\u7528"
         }),
-        (0, import_react31.createElement)(Picker, {
+        (0, import_react30.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
@@ -4200,16 +4168,16 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09", hint: t2("modelPickerHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
-        (0, import_react31.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
+        (0, import_react30.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
         // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
-        (0, import_react31.createElement)(ModelPicker, {
+        (0, import_react30.createElement)(ModelPicker, {
           value: model2,
           onChange: setModel2,
           variant: "cascade",
@@ -4217,14 +4185,14 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09", hint: t2("workspacePickerHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
-        (0, import_react31.createElement)(WorkspacePicker, {
+        (0, import_react30.createElement)(WorkspacePicker, {
           value: ws,
           onChange: (v) => setWs(v),
           clearable: true,
@@ -4232,17 +4200,17 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react31.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
+    (0, import_react30.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
   );
 }
 function TooltipPage() {
-  return (0, import_react31.createElement)(
+  return (0, import_react30.createElement)(
     Demo,
     { title: t2("tooltipTitle"), hint: t2("tooltipHint") },
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       "div",
       { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         Labeled,
         { label: t2("tooltipAnchorButton") },
         tipAnchor("top \xB7 center", "top", "center"),
@@ -4251,52 +4219,52 @@ function TooltipPage() {
         tipAnchor("bottom \xB7 end", "bottom", "end"),
         tipAnchor("right", "right")
       ),
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         Labeled,
         { label: t2("tooltipAnchorText") },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           import_dsh_client_ui_primitives2.Tooltip,
           { label: t2("tooltipHint"), side: "top" },
-          (0, import_react31.createElement)("span", {
+          (0, import_react30.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipAnchorText"))
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           import_dsh_client_ui_primitives2.Tooltip,
           { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
-          (0, import_react31.createElement)("span", {
+          (0, import_react30.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipLong"))
         )
       ),
       // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         Labeled,
         { label: t2("tooltipMultiline") },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           import_dsh_client_ui_primitives2.Tooltip,
           { label: `${t2("tooltipName")}
 ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
-          (0, import_react31.createElement)("span", {
+          (0, import_react30.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipName"))
         )
       ),
       // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         Labeled,
         { label: t2("tooltipRich") },
-        (0, import_react31.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
+        (0, import_react30.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
           variant: "compact",
           openDelayMs: 200,
-          anchor: (0, import_react31.createElement)("span", {
+          anchor: (0, import_react30.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipName")),
           // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
           // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
           // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
           // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-          content: (0, import_react31.createElement)(
+          content: (0, import_react30.createElement)(
             "div",
             {
               style: {
@@ -4305,8 +4273,8 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
                 color: "var(--dsw-static-neutral-bluish-00,#fff)"
               }
             },
-            (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
-            (0, import_react31.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
+            (0, import_react30.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
+            (0, import_react30.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
           )
         })
       )
@@ -4314,128 +4282,128 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
   );
 }
 function CardPage() {
-  const [seg, setSeg] = (0, import_react31.useState)("all");
-  const [kw, setKw] = (0, import_react31.useState)("");
-  return (0, import_react31.createElement)(
+  const [seg, setSeg] = (0, import_react30.useState)("all");
+  const [kw, setKw] = (0, import_react30.useState)("");
+  return (0, import_react30.createElement)(
     "div",
     null,
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("demoCardTitle"), hint: t2("cardHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
         // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            action: (0, import_react30.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
           },
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)(
             "div",
             { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
             "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
           ),
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react31.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react31.createElement)(Chip, null, "#npm"),
-            (0, import_react31.createElement)(Chip, null, "#pnpm"),
-            (0, import_react31.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react31.createElement)(Chip, null, "#\u8FC1\u79FB")
+            (0, import_react30.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react30.createElement)(Chip, null, "#npm"),
+            (0, import_react30.createElement)(Chip, null, "#pnpm"),
+            (0, import_react30.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react30.createElement)(Chip, null, "#\u8FC1\u79FB")
           )
         ),
         // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+            action: (0, import_react30.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
           },
-          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react31.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
+          (0, import_react30.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react30.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
         // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react31.createElement)(
+            (a) => (0, import_react30.createElement)(
               Card,
               { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react31.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react30.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("demoStripTitle"), hint: t2("stripHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           StripCard,
           {
             accent: "business",
-            action: (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+            action: (0, import_react30.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
           },
-          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react30.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react31.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react31.createElement)(
+            (0, import_react30.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react30.createElement)(
               "span",
               { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
             )
           )
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           StripCard,
           {
             accent: "success",
             // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
-            action: (0, import_react31.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+            action: (0, import_react30.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
           },
-          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react31.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+          (0, import_react30.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react30.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react31.createElement)(
+            (a) => (0, import_react30.createElement)(
               StripCard,
               { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
-              (0, import_react31.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react30.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408" },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "8px" } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
-        (0, import_react31.createElement)(SectionHead, {
-          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
-          title: (0, import_react31.createElement)(
+        (0, import_react30.createElement)(SectionHead, {
+          icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
+          title: (0, import_react30.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5168\u90E8\u5F85\u529E",
-            (0, import_react31.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
+            (0, import_react30.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
           ),
           right: [
-            (0, import_react31.createElement)(Segmented, {
+            (0, import_react30.createElement)(Segmented, {
               variant: "inset",
               items: [
                 { value: "all", label: t2("segAll"), count: 22 },
@@ -4449,36 +4417,36 @@ function CardPage() {
               onChange: setSeg
             }),
             // 搜索框 192px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
-            (0, import_react31.createElement)(
+            (0, import_react30.createElement)(
               "div",
               { style: { width: "192px", flex: "none" } },
-              (0, import_react31.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+              (0, import_react30.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
             )
           ]
         }),
         // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
-        (0, import_react31.createElement)(SectionHead, {
-          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
-          title: (0, import_react31.createElement)(
+        (0, import_react30.createElement)(SectionHead, {
+          icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
+          title: (0, import_react30.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
             "\u6211\u7684\u5F85\u529E",
-            (0, import_react31.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
+            (0, import_react30.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
           ),
-          right: (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
+          right: (0, import_react30.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
         }),
         // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
-        (0, import_react31.createElement)(SectionHead, {
-          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
-          title: (0, import_react31.createElement)(
+        (0, import_react30.createElement)(SectionHead, {
+          icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
+          title: (0, import_react30.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5DF2\u5F52\u6863",
-            (0, import_react31.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
+            (0, import_react30.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
           ),
           right: [
-            (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
-            (0, import_react31.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
+            (0, import_react30.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
+            (0, import_react30.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
           ]
         })
       )
@@ -4486,88 +4454,84 @@ function CardPage() {
   );
 }
 function ChipPage() {
-  return (0, import_react31.createElement)(
+  return (0, import_react30.createElement)(
     "div",
     null,
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "Chip", hint: t2("chipHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
         ...["md", "sm", "xs"].map(
-          (sz) => (0, import_react31.createElement)(
+          (sz) => (0, import_react30.createElement)(
             "div",
             { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-            (0, import_react31.createElement)(Chip, { size: sz, tone: "warning" }, t2("chipOverdue")),
-            (0, import_react31.createElement)(Chip, { size: sz, tone: "danger" }, t2("chipStalled")),
-            (0, import_react31.createElement)(Chip, { size: sz, tone: "success" }, t2("chipDone")),
-            (0, import_react31.createElement)(Chip, { size: sz, tone: "business" }, t2("chipDoing")),
-            (0, import_react31.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
+            (0, import_react30.createElement)(Chip, { size: sz, tone: "warning" }, t2("chipOverdue")),
+            (0, import_react30.createElement)(Chip, { size: sz, tone: "danger" }, t2("chipStalled")),
+            (0, import_react30.createElement)(Chip, { size: sz, tone: "success" }, t2("chipDone")),
+            (0, import_react30.createElement)(Chip, { size: sz, tone: "business" }, t2("chipDoing")),
+            (0, import_react30.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
           )
         ),
         // 中性 # 标签（语言无关）+ 长文字回归样
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react31.createElement)(Chip, null, "#npm"),
-          (0, import_react31.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react31.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react31.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+          (0, import_react30.createElement)(Chip, null, "#npm"),
+          (0, import_react30.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react30.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react30.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
         )
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("marqueeTitle"), hint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7" },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { maxWidth: "200px" } },
-        (0, import_react31.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
+        (0, import_react30.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("liveTitle"), hint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3" },
-      (0, import_react31.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+      (0, import_react30.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: t2("emptyStateTitle"), hint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE" },
-      (0, import_react31.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
+      (0, import_react30.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
     )
   );
 }
-function Boom() {
-  throw new Error("\u6F14\u793A\uFF1A\u5B50\u7EC4\u4EF6\u629B\u9519\u88AB\u8FB9\u754C\u63A5\u4F4F");
-}
 function FeedbackPage() {
-  const [open, setOpen] = (0, import_react31.useState)(false);
-  const [openNative, setOpenNative] = (0, import_react31.useState)(false);
-  const [boom, setBoom] = (0, import_react31.useState)(false);
-  const [alertState, setAlertState] = (0, import_react31.useState)(null);
-  const [confirmCfg, setConfirmCfg] = (0, import_react31.useState)(null);
-  const [confirmResult, setConfirmResult] = (0, import_react31.useState)("");
-  const [largeOpen, setLargeOpen] = (0, import_react31.useState)(false);
-  const [largeOpenB, setLargeOpenB] = (0, import_react31.useState)(false);
-  return (0, import_react31.createElement)(
+  const [open, setOpen] = (0, import_react30.useState)(false);
+  const [openNative, setOpenNative] = (0, import_react30.useState)(false);
+  const [alertState, setAlertState] = (0, import_react30.useState)(null);
+  const [confirmCfg, setConfirmCfg] = (0, import_react30.useState)(null);
+  const [confirmResult, setConfirmResult] = (0, import_react30.useState)("");
+  const [largeOpen, setLargeOpen] = (0, import_react30.useState)(false);
+  const [largeOpenB, setLargeOpenB] = (0, import_react30.useState)(false);
+  return (0, import_react30.createElement)(
     "div",
     null,
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002' },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
-        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
+        (0, import_react30.createElement)(Button, { variant: "ghost", onClick: () => {
           void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
         } }, 'alertModal({skin:"host"})'),
-        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: async () => {
+        (0, import_react30.createElement)(Button, { variant: "ghost", onClick: async () => {
           const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
           showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
         } }, 'confirmModal({skin:"host"})'),
-        openNative ? (0, import_react31.createElement)(
+        openNative ? (0, import_react30.createElement)(
           Official.Modal,
           {
             open: openNative,
@@ -4576,22 +4540,22 @@ function FeedbackPage() {
             closeLabel: "\u5173\u95ED",
             description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
             contentClassName: "dshpc-native-demo-content",
-            footer: (0, import_react31.createElement)(
+            footer: (0, import_react30.createElement)(
               "div",
               { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-              (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
-              (0, import_react31.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
-              (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+              (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react30.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react30.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
             )
           },
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-            (0, import_react31.createElement)(Input, { placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
-            (0, import_react31.createElement)(
+            (0, import_react30.createElement)(Input, { placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react30.createElement)(
               "label",
               { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
-              (0, import_react31.createElement)(Checkbox, { checked: false, onChange: () => {
+              (0, import_react30.createElement)(Checkbox, { checked: false, onChange: () => {
               } }),
               "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
             )
@@ -4599,54 +4563,54 @@ function FeedbackPage() {
         ) : null
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002" },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react30.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
-            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
-            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
-            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
-            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
+            (0, import_react30.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
+            (0, import_react30.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
+            (0, import_react30.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
+            (0, import_react30.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
+            (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
           ),
-          alertState !== null ? (0, import_react31.createElement)(AlertModal, {
+          alertState !== null ? (0, import_react30.createElement)(AlertModal, {
             severity: alertState.sev,
             title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
             message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
             onConfirm: () => setAlertState(null)
           }) : null
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react30.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
-            (0, import_react31.createElement)(Button, { onClick: () => {
+            (0, import_react30.createElement)(Button, { onClick: () => {
               setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
               setConfirmResult("");
             } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
-            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => {
               setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
               setConfirmResult("");
             } }, "danger \u53D8\u4F53"),
-            (0, import_react31.createElement)(Button, { variant: "ghost", onClick: () => {
+            (0, import_react30.createElement)(Button, { variant: "ghost", onClick: () => {
               setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
               setConfirmResult("");
             } }, "\u6539\u6587\u6848"),
-            confirmResult ? (0, import_react31.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
+            confirmResult ? (0, import_react30.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
           ),
-          confirmCfg !== null ? (0, import_react31.createElement)(ConfirmModal, {
+          confirmCfg !== null ? (0, import_react30.createElement)(ConfirmModal, {
             title: "\u5220\u9664\u4EFB\u52A1",
             message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
             tone: confirmCfg.tone,
@@ -4662,17 +4626,17 @@ function FeedbackPage() {
             }
           }) : null
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
-          (0, import_react31.createElement)(
+          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
+          (0, import_react30.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => {
               alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => showToast("alert \u5DF2\u5173\u95ED"));
             } }, "alertModal()"),
-            (0, import_react31.createElement)(Button, { onClick: async () => {
+            (0, import_react30.createElement)(Button, { onClick: async () => {
               const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
               showToast(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
             } }, "confirmModal()")
@@ -4680,96 +4644,96 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002" },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
-          (0, import_react31.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
-          open ? (0, import_react31.createElement)(Modal, {
+          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
+          (0, import_react30.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
+          open ? (0, import_react30.createElement)(Modal, {
             title: "\u4EFB\u52A1\u8BE6\u60C5",
             onClose: () => setOpen(false),
-            footer: (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-          }, (0, import_react31.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+            footer: (0, import_react30.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+          }, (0, import_react30.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
-          (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
-          largeOpen ? (0, import_react31.createElement)(
+          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
+          (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
+          largeOpen ? (0, import_react30.createElement)(
             Modal,
             {
               size: "lg",
               title: "\u4F1A\u8BDD\u8BB0\u5F55",
-              headerActions: (0, import_react31.createElement)(
+              headerActions: (0, import_react30.createElement)(
                 Button,
                 { variant: "outline", size: "sm", icon: iconOf("chevron", 14) },
                 "\u66F4\u591A"
               ),
               onClose: () => setLargeOpen(false),
-              footer: (0, import_react31.createElement)(
+              footer: (0, import_react30.createElement)(
                 "div",
                 { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-                (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
-                (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
+                (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
+                (0, import_react30.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
               )
             },
-            (0, import_react31.createElement)(
+            (0, import_react30.createElement)(
               "div",
               null,
               Array.from(
                 { length: 40 },
-                (_, i) => (0, import_react31.createElement)("div", { key: i, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
+                (_, i) => (0, import_react30.createElement)("div", { key: i, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
               ),
-              (0, import_react31.createElement)("div", { className: "dshpc-modal__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
+              (0, import_react30.createElement)("div", { className: "dshpc-modal__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
             )
           ) : null
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           "div",
           null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
-          (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
-          largeOpenB ? (0, import_react31.createElement)(
+          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
+          (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
+          largeOpenB ? (0, import_react30.createElement)(
             Modal,
             {
               size: "lg",
-              title: (0, import_react31.createElement)(
+              title: (0, import_react30.createElement)(
                 "div",
                 null,
-                (0, import_react31.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
-                (0, import_react31.createElement)("div", { className: "dshpc-modal__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
+                (0, import_react30.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
+                (0, import_react30.createElement)("div", { className: "dshpc-modal__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
               ),
               onClose: () => setLargeOpenB(false)
             },
-            (0, import_react31.createElement)(
+            (0, import_react30.createElement)(
               "div",
               null,
-              (0, import_react31.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
-              (0, import_react31.createElement)("div", { style: { marginTop: "12px", border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
+              (0, import_react30.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
+              (0, import_react30.createElement)("div", { style: { marginTop: "12px", border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
             )
           ) : null
         )
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528" },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
+        (0, import_react30.createElement)(
           Button,
           {
             onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
@@ -4779,26 +4743,26 @@ function FeedbackPage() {
           "\u5E26\u56DE\u8C03"
         )
       ),
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
+        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09" },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
-        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
+        (0, import_react30.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
+        (0, import_react30.createElement)(
           Button,
           {
             onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
@@ -4809,17 +4773,17 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify", hint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE" },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
-        (0, import_react31.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react31.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react31.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
+        (0, import_react30.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react30.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react30.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react30.createElement)(
           Button,
           {
             onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
@@ -4830,7 +4794,7 @@ function FeedbackPage() {
           },
           "\u5355\u6309\u94AE+\u63CF\u8FF0"
         ),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(
           Button,
           {
             onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
@@ -4844,26 +4808,12 @@ function FeedbackPage() {
           "\u53CC\u6309\u94AE"
         )
       )
-    ),
-    (0, import_react31.createElement)(
-      Demo,
-      { title: "ErrorBoundary / Loading" },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react31.createElement)(
-          "div",
-          { style: { border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "10px" } },
-          boom ? (0, import_react31.createElement)(ErrorBoundary, null, (0, import_react31.createElement)(Boom, null)) : (0, import_react31.createElement)(Button, { variant: "danger", onClick: () => setBoom(true) }, "\u70B9\u6211\u629B\u9519\uFF08\u770B\u8FB9\u754C\u515C\u5E95\uFF09")
-        ),
-        (0, import_react31.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("loadingNote"))
-      )
     )
   );
 }
 function LayoutPage() {
-  const state = (0, import_react31.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
-  const [notice, setNotice] = (0, import_react31.useState)(null);
+  const state = (0, import_react30.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
+  const [notice, setNotice] = (0, import_react30.useState)(null);
   const open = (id) => {
     const result = demoDock.open(id);
     setNotice(result.ok ? null : t2("dockLimitWarn"));
@@ -4873,22 +4823,22 @@ function LayoutPage() {
     setNotice(null);
   };
   const opened = state.ids;
-  return (0, import_react31.createElement)(
+  return (0, import_react30.createElement)(
     "div",
     null,
-    (0, import_react31.createElement)(
+    (0, import_react30.createElement)(
       Demo,
       { title: "PanelDock", hint: t2("dockHint") },
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("A") }, t2("dockBtnOpenA")),
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("B") }, t2("dockBtnOpenB")),
-        (0, import_react31.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t2("dockBtnOpenA2")),
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => close("A") }, t2("dockBtnCloseA")),
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("default") }, t2("dockBtnDefault")),
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("C") }, t2("dockBtnOpenC")),
-        (0, import_react31.createElement)(
+        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => open("A") }, t2("dockBtnOpenA")),
+        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => open("B") }, t2("dockBtnOpenB")),
+        (0, import_react30.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t2("dockBtnOpenA2")),
+        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => close("A") }, t2("dockBtnCloseA")),
+        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => open("default") }, t2("dockBtnDefault")),
+        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => open("C") }, t2("dockBtnOpenC")),
+        (0, import_react30.createElement)(
           Button,
           {
             size: "sm",
@@ -4901,13 +4851,13 @@ function LayoutPage() {
           t2("dockBtnReset")
         )
       ),
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } },
         `${t2("dockOpened")}${opened.length === 0 ? "\u2014" : opened.join(", ")}`,
         notice === null ? "" : `\u3000${notice}`
       ),
-      (0, import_react31.createElement)(
+      (0, import_react30.createElement)(
         "div",
         { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
         t2("dockMainText")
@@ -4917,13 +4867,13 @@ function LayoutPage() {
 }
 
 // packages/demo/src/sections/blocks.tsx
-var import_react35 = require("react");
+var import_react34 = require("react");
 
 // dist/explorer/ExplorerPanel.js
-var import_react33 = require("react");
+var import_react32 = require("react");
 
 // dist/explorer/preview/index.js
-var import_react32 = require("react");
+var import_react31 = require("react");
 
 // dist/explorer/types.js
 function previewKindOf(path) {
@@ -4971,10 +4921,10 @@ function FilePreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const kind = previewKindOf(props.path);
-  const [text, setText] = (0, import_react32.useState)(null);
-  const [imageUrl, setImageUrl] = (0, import_react32.useState)(null);
-  const [failed, setFailed] = (0, import_react32.useState)(false);
-  (0, import_react32.useEffect)(() => {
+  const [text, setText] = (0, import_react31.useState)(null);
+  const [imageUrl, setImageUrl] = (0, import_react31.useState)(null);
+  const [failed, setFailed] = (0, import_react31.useState)(false);
+  (0, import_react31.useEffect)(() => {
     let alive = true;
     let url = null;
     setText(null);
@@ -5008,28 +4958,28 @@ function FilePreview(props) {
     };
   }, [props.path, props.sessionId, props.workspaceFiles, kind]);
   if (kind === "unsupported") {
-    return (0, import_react32.createElement)(EmptyState, { text: tt("explorerUnsupported"), translate: tt });
+    return (0, import_react31.createElement)(EmptyState, { text: tt("explorerUnsupported"), translate: tt });
   }
   if (failed)
-    return (0, import_react32.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt });
+    return (0, import_react31.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt });
   if (kind === "image") {
-    return imageUrl === null ? (0, import_react32.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react32.createElement)("img", { className: "dshpc-exp__image", src: imageUrl, alt: props.path });
+    return imageUrl === null ? (0, import_react31.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react31.createElement)("img", { className: "dshpc-exp__image", src: imageUrl, alt: props.path });
   }
-  return text === null ? (0, import_react32.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react32.createElement)("pre", { className: "dshpc-exp__text" }, text);
+  return text === null ? (0, import_react31.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react31.createElement)("pre", { className: "dshpc-exp__text" }, text);
 }
 
 // dist/explorer/ExplorerPanel.js
 function ExplorerPanel(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const [dir, setDir] = (0, import_react33.useState)(props.path ?? "");
-  const [entries2, setEntries] = (0, import_react33.useState)([]);
-  const [truncated, setTruncated] = (0, import_react33.useState)(false);
-  const [loading, setLoading] = (0, import_react33.useState)(true);
-  const [failed, setFailed] = (0, import_react33.useState)(false);
-  const [selected, setSelected] = (0, import_react33.useState)(null);
-  const [nonce, setNonce] = (0, import_react33.useState)(0);
-  (0, import_react33.useEffect)(() => {
+  const [dir, setDir] = (0, import_react32.useState)(props.path ?? "");
+  const [entries2, setEntries] = (0, import_react32.useState)([]);
+  const [truncated, setTruncated] = (0, import_react32.useState)(false);
+  const [loading, setLoading] = (0, import_react32.useState)(true);
+  const [failed, setFailed] = (0, import_react32.useState)(false);
+  const [selected, setSelected] = (0, import_react32.useState)(null);
+  const [nonce, setNonce] = (0, import_react32.useState)(0);
+  (0, import_react32.useEffect)(() => {
     let alive = true;
     setLoading(true);
     setFailed(false);
@@ -5056,28 +5006,28 @@ function ExplorerPanel(props) {
     props.onSelect?.(null);
     setDir(next);
   };
-  const crumbBar = (0, import_react33.createElement)("div", { className: "dshpc-exp__crumbs" }, (0, import_react33.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => goto("") }, tt("explorerRoot")), crumbs.map((c, i) => {
+  const crumbBar = (0, import_react32.createElement)("div", { className: "dshpc-exp__crumbs" }, (0, import_react32.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => goto("") }, tt("explorerRoot")), crumbs.map((c, i) => {
     const isLast = i === crumbs.length - 1;
     const upto = crumbs.slice(0, i + 1).join("/");
-    return (0, import_react33.createElement)("span", { key: upto }, (0, import_react33.createElement)("span", { className: "dshpc-exp__sep" }, " / "), (0, import_react33.createElement)("button", {
+    return (0, import_react32.createElement)("span", { key: upto }, (0, import_react32.createElement)("span", { className: "dshpc-exp__sep" }, " / "), (0, import_react32.createElement)("button", {
       type: "button",
       className: `dshpc-exp__crumb${isLast ? " dshpc-exp__crumb--current" : ""}`,
       onClick: () => goto(upto)
     }, c));
-  }), (0, import_react33.createElement)("span", { className: "dshpc-exp__tools" }, (0, import_react33.createElement)("button", {
+  }), (0, import_react32.createElement)("span", { className: "dshpc-exp__tools" }, (0, import_react32.createElement)("button", {
     type: "button",
     className: "dshpc-exp__crumb",
     disabled: dir === "",
     onClick: () => goto(parentOf(dir))
-  }, tt("explorerUp")), (0, import_react33.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => setNonce(nonce + 1) }, tt("explorerRefresh"))));
-  const tree = loading ? (0, import_react33.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : failed ? (0, import_react33.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt }) : entries2.length === 0 ? (0, import_react33.createElement)("div", { className: "dshpc-exp__note" }, props.emptyText ?? tt("explorerEmptyDir")) : (0, import_react33.createElement)("div", { className: "dshpc-exp__tree" }, [...entries2].sort((a, b) => {
+  }, tt("explorerUp")), (0, import_react32.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => setNonce(nonce + 1) }, tt("explorerRefresh"))));
+  const tree = loading ? (0, import_react32.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : failed ? (0, import_react32.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt }) : entries2.length === 0 ? (0, import_react32.createElement)("div", { className: "dshpc-exp__note" }, props.emptyText ?? tt("explorerEmptyDir")) : (0, import_react32.createElement)("div", { className: "dshpc-exp__tree" }, [...entries2].sort((a, b) => {
     if (a.type !== b.type)
       return a.type === "directory" ? -1 : 1;
     return a.name.localeCompare(b.name);
   }).map((e) => {
     const full = joinPath(dir, e.name);
     const isDir = e.type === "directory";
-    return (0, import_react33.createElement)("div", {
+    return (0, import_react32.createElement)("div", {
       key: full,
       className: `dshpc-exp__item${selected === full ? " dshpc-exp__item--active" : ""}`,
       onClick: () => {
@@ -5089,9 +5039,9 @@ function ExplorerPanel(props) {
           props.onOpenFile?.(full);
         }
       }
-    }, (0, import_react33.createElement)("span", { className: "dshpc-exp__icon" }, isDir ? "\u25B8" : "\xB7"), (0, import_react33.createElement)("span", { className: "dshpc-exp__name" }, e.name), e.size === void 0 ? null : (0, import_react33.createElement)("span", { className: "dshpc-exp__size" }, formatBytes(e.size)));
-  }), truncated ? (0, import_react33.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerTruncated")) : null);
-  return (0, import_react33.createElement)("div", { className: "dshpc-exp" }, crumbBar, (0, import_react33.createElement)("div", { className: "dshpc-exp__body" }, tree, (0, import_react33.createElement)("div", { className: "dshpc-exp__preview" }, selected === null ? null : (0, import_react33.createElement)(FilePreview, {
+    }, (0, import_react32.createElement)("span", { className: "dshpc-exp__icon" }, isDir ? "\u25B8" : "\xB7"), (0, import_react32.createElement)("span", { className: "dshpc-exp__name" }, e.name), e.size === void 0 ? null : (0, import_react32.createElement)("span", { className: "dshpc-exp__size" }, formatBytes(e.size)));
+  }), truncated ? (0, import_react32.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerTruncated")) : null);
+  return (0, import_react32.createElement)("div", { className: "dshpc-exp" }, crumbBar, (0, import_react32.createElement)("div", { className: "dshpc-exp__body" }, tree, (0, import_react32.createElement)("div", { className: "dshpc-exp__preview" }, selected === null ? null : (0, import_react32.createElement)(FilePreview, {
     workspaceFiles: props.workspaceFiles,
     sessionId: props.sessionId,
     path: selected,
@@ -5100,7 +5050,7 @@ function ExplorerPanel(props) {
 }
 
 // dist/session/index.js
-var import_react34 = require("react");
+var import_react33 = require("react");
 
 // dist/session/types.js
 var ROLE_LABEL_KEY = {
@@ -5115,11 +5065,11 @@ function SessionPreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const variant = props.variant ?? "modal";
-  const [messages, setMessages] = (0, import_react34.useState)([]);
-  const [loading, setLoading] = (0, import_react34.useState)(true);
-  const [failed, setFailed] = (0, import_react34.useState)(false);
-  const [nonce, setNonce] = (0, import_react34.useState)(0);
-  (0, import_react34.useEffect)(() => {
+  const [messages, setMessages] = (0, import_react33.useState)([]);
+  const [loading, setLoading] = (0, import_react33.useState)(true);
+  const [failed, setFailed] = (0, import_react33.useState)(false);
+  const [nonce, setNonce] = (0, import_react33.useState)(0);
+  (0, import_react33.useEffect)(() => {
     let alive = true;
     setLoading(true);
     setFailed(false);
@@ -5139,24 +5089,24 @@ function SessionPreview(props) {
       alive = false;
     };
   }, [props.sessionId, props.source, nonce]);
-  const body = loading ? (0, import_react34.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react34.createElement)(EmptyState, {
+  const body = loading ? (0, import_react33.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react33.createElement)(EmptyState, {
     text: tt("sessionFailed"),
     translate: tt,
-    action: (0, import_react34.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
-  }) : messages.length === 0 ? (0, import_react34.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react34.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react34.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react34.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react34.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react34.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react34.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react34.createElement)("button", {
+    action: (0, import_react33.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
+  }) : messages.length === 0 ? (0, import_react33.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react33.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react33.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react33.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react33.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react33.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react33.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react33.createElement)("button", {
     key: a.path,
     type: "button",
     className: "dshpc-ses__att",
     onClick: () => props.onOpenFile?.(a.path)
   }, a.name, a.bytes === void 0 ? null : ` ${formatBytes(a.bytes)}`))))));
   if (variant === "modal") {
-    return (0, import_react34.createElement)(Modal, {
+    return (0, import_react33.createElement)(Modal, {
       title: props.title ?? props.sessionId,
       onClose: props.onClose,
-      children: (0, import_react34.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
+      children: (0, import_react33.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
     });
   }
-  return (0, import_react34.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react34.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react34.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
+  return (0, import_react33.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react33.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react33.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
 }
 
 // packages/demo/src/mock.ts
@@ -5296,17 +5246,17 @@ function delay(ms) {
 
 // packages/demo/src/sections/blocks.tsx
 function ExplorerPage() {
-  const [selected, setSelected] = (0, import_react35.useState)(null);
-  return (0, import_react35.createElement)(
+  const [selected, setSelected] = (0, import_react34.useState)(null);
+  return (0, import_react34.createElement)(
     "div",
     null,
-    (0, import_react35.createElement)(
+    (0, import_react34.createElement)(
       Demo,
       { title: "ExplorerPanel", hint: t2("explorerHint") },
-      (0, import_react35.createElement)(
+      (0, import_react34.createElement)(
         "div",
         { style: { display: "flex", gap: "16px", flexWrap: "wrap" } },
-        (0, import_react35.createElement)(
+        (0, import_react34.createElement)(
           "div",
           {
             style: {
@@ -5317,21 +5267,21 @@ function ExplorerPage() {
               borderRadius: "8px"
             }
           },
-          (0, import_react35.createElement)(ExplorerPanel, {
+          (0, import_react34.createElement)(ExplorerPanel, {
             workspaceFiles: mockWorkspaceFiles,
             sessionId: "demo-session",
             path: "",
             onSelect: setSelected
           })
         ),
-        (0, import_react35.createElement)(
+        (0, import_react34.createElement)(
           "div",
           { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", alignSelf: "center" } },
           selected === null ? "\u70B9\u5DE6\u4FA7\u6587\u4EF6\u8BD5\u8BD5" : `\u5DF2\u9009\u4E2D\uFF1A${selected}`
         )
       )
     ),
-    (0, import_react35.createElement)(
+    (0, import_react34.createElement)(
       Demo,
       { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") },
       null
@@ -5339,17 +5289,17 @@ function ExplorerPage() {
   );
 }
 function SessionPage() {
-  const [open, setOpen] = (0, import_react35.useState)(false);
-  return (0, import_react35.createElement)(
+  const [open, setOpen] = (0, import_react34.useState)(false);
+  return (0, import_react34.createElement)(
     Demo,
     { title: "SessionPreview", hint: t2("sessionHint") },
-    (0, import_react35.createElement)(
+    (0, import_react34.createElement)(
       "div",
       { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-      (0, import_react35.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09"),
-      (0, import_react35.createElement)(Button, { onClick: () => setOpen(false) }, "\u5173\u95ED")
+      (0, import_react34.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09"),
+      (0, import_react34.createElement)(Button, { onClick: () => setOpen(false) }, "\u5173\u95ED")
     ),
-    open ? (0, import_react35.createElement)(SessionPreview, {
+    open ? (0, import_react34.createElement)(SessionPreview, {
       sessionId: "demo-session",
       source: mockSessionSource,
       variant: "modal",
@@ -5361,7 +5311,7 @@ function SessionPage() {
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react36 = require("react");
+var import_react35 = require("react");
 var NOW = Date.parse("2026-10-18T12:00:00.000Z");
 var DATE_ROWS = [
   ["formatDateTime", formatDateTime("2026-10-18T09:30:05.000Z", { seconds: true })],
@@ -5376,28 +5326,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react36.createElement)(
+  return (0, import_react35.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react36.createElement)(
+    (0, import_react35.createElement)(
       "thead",
       null,
-      (0, import_react36.createElement)(
+      (0, import_react35.createElement)(
         "tr",
         null,
-        (0, import_react36.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react36.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react35.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react35.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react36.createElement)(
+    (0, import_react35.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react36.createElement)(
+        ([fn, out]) => (0, import_react35.createElement)(
           "tr",
           { key: fn },
-          (0, import_react36.createElement)("td", { style: td }, fn),
-          (0, import_react36.createElement)("td", { style: td }, out)
+          (0, import_react35.createElement)("td", { style: td }, fn),
+          (0, import_react35.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -5406,29 +5356,29 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react36.createElement)(Demo, { title: "date / time", hint: t2("dateHint") }, (0, import_react36.createElement)(FnTable, { rows: DATE_ROWS }));
+  return (0, import_react35.createElement)(Demo, { title: "date / time", hint: t2("dateHint") }, (0, import_react35.createElement)(FnTable, { rows: DATE_ROWS }));
 }
 function NumberPage() {
-  return (0, import_react36.createElement)(Demo, { title: "number / bytes", hint: t2("numberHint") }, (0, import_react36.createElement)(FnTable, { rows: NUMBER_ROWS }));
+  return (0, import_react35.createElement)(Demo, { title: "number / bytes", hint: t2("numberHint") }, (0, import_react35.createElement)(FnTable, { rows: NUMBER_ROWS }));
 }
 function TextPage() {
-  return (0, import_react36.createElement)(Placeholder, { descKey: "textDesc" });
+  return (0, import_react35.createElement)(Placeholder, { descKey: "textDesc" });
 }
 function HttpPage() {
-  return (0, import_react36.createElement)(Placeholder, { descKey: "httpDesc" });
+  return (0, import_react35.createElement)(Placeholder, { descKey: "httpDesc" });
 }
 function I18nPage() {
-  return (0, import_react36.createElement)(
+  return (0, import_react35.createElement)(
     "div",
     null,
-    (0, import_react36.createElement)(
+    (0, import_react35.createElement)(
       Demo,
       { title: "getLocale / setLocale", hint: t2("i18nDesc") },
-      (0, import_react36.createElement)(
+      (0, import_react35.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react36.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
-        (0, import_react36.createElement)("code", {
+        (0, import_react35.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
+        (0, import_react35.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -5440,58 +5390,58 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react36.createElement)(Placeholder, { descKey: "i18nDesc" })
+    (0, import_react35.createElement)(Placeholder, { descKey: "i18nDesc" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react37 = require("react");
+var import_react36 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react37.createElement)(
+  return (0, import_react36.createElement)(
     "div",
     null,
-    (0, import_react37.createElement)(Demo, { title: t2("secA11y") }, (0, import_react37.createElement)(Placeholder, { descKey: "a11yDesc" })),
-    (0, import_react37.createElement)(
+    (0, import_react36.createElement)(Demo, { title: t2("secA11y") }, (0, import_react36.createElement)(Placeholder, { descKey: "a11yDesc" })),
+    (0, import_react36.createElement)(
       Demo,
       { title: t2("secRoadmap"), hint: t2("roadmapHint") },
-      (0, import_react37.createElement)(
+      (0, import_react36.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react37.createElement)(
+          (key) => (0, import_react36.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react37.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react37.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
+            (0, import_react36.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react36.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
           )
         ),
-        (0, import_react37.createElement)(
+        (0, import_react36.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t2("roadmapLayout")
         )
       )
     ),
-    (0, import_react37.createElement)(
+    (0, import_react36.createElement)(
       Demo,
       { title: t2("secBuild"), hint: t2("buildDesc") },
-      (0, import_react37.createElement)(
+      (0, import_react36.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react37.createElement)(
+        (0, import_react36.createElement)(
           "tbody",
           null,
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1020-2117-6nwr"]
+            [t2("buildStamp"), "1020-2258-bkps"]
           ].map(
-            ([label, value]) => (0, import_react37.createElement)(
+            ([label, value]) => (0, import_react36.createElement)(
               "tr",
               { key: label },
-              (0, import_react37.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react37.createElement)("td", {
+              (0, import_react36.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react36.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -5517,28 +5467,28 @@ var SECTION_GROUPS = [
 ];
 var ALL_SECTIONS = [
   // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react38.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react38.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react38.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react38.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react38.createElement)(PickerPage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react38.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react38.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react38.createElement)(ChipPage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react38.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react38.createElement)(LayoutPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react38.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react38.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react38.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react38.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react38.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react38.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react38.createElement)(I18nPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react37.createElement)(QuickstartPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react37.createElement)(FoundationPage, null) },
+  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react37.createElement)(ButtonPage, null) },
+  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react37.createElement)(InputPage, null) },
+  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react37.createElement)(PickerPage, null) },
+  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react37.createElement)(TooltipPage, null) },
+  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react37.createElement)(CardPage, null) },
+  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react37.createElement)(ChipPage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react37.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react37.createElement)(LayoutPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react37.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react37.createElement)(SessionPage, null) },
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react37.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react37.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react37.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react37.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react37.createElement)(I18nPage, null) },
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react38.createElement)(ReferencePage, null) }
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react37.createElement)(ReferencePage, null) }
 ];
 function Demo(props) {
-  return (0, import_react38.createElement)(
+  return (0, import_react37.createElement)(
     "section",
     {
       style: {
@@ -5549,10 +5499,10 @@ function Demo(props) {
         background: "var(--dshpc-surface-1)"
       }
     },
-    (0, import_react38.createElement)("h3", { style: { margin: "0 0 2px", fontSize: "15px" } }, props.title),
-    props.hint === void 0 ? null : (0, import_react38.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
-    (0, import_react38.createElement)("div", { style: { marginBottom: props.code === void 0 ? 0 : "12px" } }, props.children ?? null),
-    props.code === void 0 ? null : (0, import_react38.createElement)(
+    (0, import_react37.createElement)("h3", { style: { margin: "0 0 2px", fontSize: "15px" } }, props.title),
+    props.hint === void 0 ? null : (0, import_react37.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
+    (0, import_react37.createElement)("div", { style: { marginBottom: props.code === void 0 ? 0 : "12px" } }, props.children ?? null),
+    props.code === void 0 ? null : (0, import_react37.createElement)(
       "pre",
       {
         style: {
@@ -5571,7 +5521,7 @@ function Demo(props) {
   );
 }
 function Placeholder(props) {
-  return (0, import_react38.createElement)(
+  return (0, import_react37.createElement)(
     "div",
     {
       style: {
@@ -5583,7 +5533,7 @@ function Placeholder(props) {
         color: "var(--dshpc-fg-3)"
       }
     },
-    (0, import_react38.createElement)("div", {
+    (0, import_react37.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -5593,23 +5543,23 @@ function Placeholder(props) {
         marginBottom: "10px"
       }
     }, t2("phTodo")),
-    (0, import_react38.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
+    (0, import_react37.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react38.createElement)(
+  return (0, import_react37.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react38.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react38.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
+    (0, import_react37.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react37.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react38.createElement)(
+  return (0, import_react37.createElement)(
     "div",
     null,
-    (0, import_react38.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
+    (0, import_react37.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
     current3.render()
   );
 }
@@ -5621,8 +5571,8 @@ var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 var PANEL_ID = "dsh-plugin-core-demo";
 var localeRuntime;
 function useLocaleTick() {
-  const [, setTick] = (0, import_react39.useState)(0);
-  (0, import_react39.useEffect)(() => {
+  const [, setTick] = (0, import_react38.useState)(0);
+  (0, import_react38.useEffect)(() => {
     const rt = localeRuntime;
     if (rt === void 0) return;
     return rt.subscribe(() => {
@@ -5632,11 +5582,11 @@ function useLocaleTick() {
 }
 function DemoPage() {
   useLocaleTick();
-  const [active, setActive] = (0, import_react39.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive] = (0, import_react38.useState)(ALL_SECTIONS[0].id);
   const nav = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav.push(
-      (0, import_react39.createElement)(
+      (0, import_react38.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -5654,7 +5604,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav.push(
-        (0, import_react39.createElement)(
+        (0, import_react38.createElement)(
           "button",
           {
             key: section.id,
@@ -5681,7 +5631,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react39.createElement)(
+  return (0, import_react38.createElement)(
     "div",
     {
       style: {
@@ -5694,7 +5644,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react39.createElement)(
+    (0, import_react38.createElement)(
       "aside",
       {
         style: {
@@ -5710,18 +5660,18 @@ function DemoPage() {
       },
       nav
     ),
-    (0, import_react39.createElement)(
+    (0, import_react38.createElement)(
       "main",
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
-      (0, import_react39.createElement)(Sections, { active })
+      (0, import_react38.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react39.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react38.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function OpenPreviewCard(props) {
-  return (0, import_react39.createElement)(
+  return (0, import_react38.createElement)(
     "div",
     {
       role: "button",
@@ -5739,21 +5689,21 @@ function OpenPreviewCard(props) {
         background: "var(--dshpc-surface-1)"
       }
     },
-    (0, import_react39.createElement)(
+    (0, import_react38.createElement)(
       "div",
       null,
-      (0, import_react39.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
-      (0, import_react39.createElement)(
+      (0, import_react38.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
+      (0, import_react38.createElement)(
         "div",
         { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
         t2("pluginCardDesc")
       )
     ),
-    (0, import_react39.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
+    (0, import_react38.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
   );
 }
 function PanelIcon() {
-  return (0, import_react39.createElement)(
+  return (0, import_react38.createElement)(
     "span",
     { style: { display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "13px" } },
     "\u25E7"
@@ -5764,7 +5714,7 @@ function apply(ctx) {
   setStyleKit(kit);
   ensureControls(kit);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react39.createElement)(import_dsh_client_ui_primitives3.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react38.createElement)(import_dsh_client_ui_primitives3.Tooltip, props));
   let jump = () => {
   };
   ctx.inject(["layout"], (sub) => {
@@ -5812,7 +5762,7 @@ function apply(ctx) {
             jump(PANEL_ID);
           } })
         },
-        (props) => (0, import_react39.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
+        (props) => (0, import_react38.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
           jump(PANEL_ID);
         }) })
       );

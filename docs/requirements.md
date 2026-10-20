@@ -50,7 +50,7 @@ dsh-plugin-core/
 - 选择器：`Picker`（通用：单选/多选/上限/搜索/分组/空态/降级）、`ModelPicker`、
   `WorkspacePicker`（选工作区）；`FilePicker` 已删（2026-10-20 用户：文件选择框没有用）
 - 「统一某类元素」的控件：`SectionHead` 等
-- 反馈件：`Modal` / `Loading` / `toast` / 空态 / 错误边界
+- 反馈件：`Modal` / `Loading` / `toast` / 空态
 - 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 浮动层 / 多份同名。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
 - **通用控件是纯零件，数据由调用方传入**；**领域选择器例外**（2026-10-20 用户拍板反转）：
   `ModelPicker` / `WorkspacePicker` 是「现成的包」，接线后**自己取数自己显示**，消费方不再拿数组传 props。
@@ -159,7 +159,7 @@ dsh-plugin-core/
 | 期 | 内容 | 状态 |
 |---|---|---|
 | 骨架 | package.json exports / tsconfig / 构建出 dist | ✅ 已完成（`tsc` 出 ESM + d.ts，不走 tsdown） |
-| v1 | `design` + `utils` + `ui` | ✅ 已完成（零件 + Picker / ModelPicker + Modal / toast / 空态 / 错误边界） |
+| v1 | `design` + `utils` + `ui` | ✅ 已完成（零件 + Picker / ModelPicker + Modal / toast / 空态） |
 | v2 | `explorer`（用户拍板要抽） | ✅ 已完成（浏览面板 + 预览；**选择器后移至 ui**，见 §2.4） |
 | v3 | `session` | ⚠️ **半完成**：契约与三种承载已好，**官方会话 UI 镜像未搬**（只做最简渲染） |
 | 文档 | README 接入指南 | ✅ 已完成 |

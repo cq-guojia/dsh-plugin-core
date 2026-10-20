@@ -6,7 +6,6 @@ import {
   Checkbox,
   Chip,
   EmptyState,
-  ErrorBoundary,
   FieldHint,
   IconButton,
   Input,
@@ -758,20 +757,14 @@ export function ChipPage(): ReturnType<typeof h> {
 
 // ── 反馈 ────────────────────────────────────────────────────────────────
 
-function Boom(): ReturnType<typeof h> {
-  throw new Error('演示：子组件抛错被边界接住')
-}
-
 export function FeedbackPage(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
   const [openNative, setOpenNative] = useState(false)
-  const [boom, setBoom] = useState(false)
   const [alertState, setAlertState] = useState<{ sev: AlertSeverity; titled: boolean } | null>(null)
   const [confirmCfg, setConfirmCfg] = useState<{ tone: ConfirmTone; confirmText: string; cancelText: string } | null>(null)
   const [confirmResult, setConfirmResult] = useState('')
   const [largeOpen, setLargeOpen] = useState(false)
   const [largeOpenB, setLargeOpenB] = useState(false)
-
   return h(
     'div',
     null,
@@ -1060,22 +1053,6 @@ export function FeedbackPage(): ReturnType<typeof h> {
           },
           '双按钮',
         ),
-      ),
-    ),
-    h(
-      Demo,
-      { title: 'ErrorBoundary / Loading' },
-      h(
-        'div',
-        { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
-        h(
-          'div',
-          { style: { border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px', padding: '10px' } },
-          boom
-            ? h(ErrorBoundary, null, h(Boom, null))
-            : h(Button, { variant: 'danger', onClick: () => setBoom(true) }, '点我抛错（看边界兜底）'),
-        ),
-        h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px' } }, t('loadingNote')),
       ),
     ),
   )

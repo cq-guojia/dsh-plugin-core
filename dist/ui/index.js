@@ -15,7 +15,6 @@ export { CARD_ACCENTS, Card, StripCard, } from './Card.js';
 export { Chip } from './Chip.js';
 export { showToast, notify, } from './Toast.js';
 export { EmptyState } from './EmptyState.js';
-export { ErrorBoundary } from './ErrorBoundary.js';
 export { Button, IconButton } from './Button.js';
 export { Segmented } from './Segmented.js';
 export { Textarea } from './Textarea.js';

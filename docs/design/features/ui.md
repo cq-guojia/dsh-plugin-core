@@ -257,7 +257,6 @@ core 保持零官方依赖：官方 Tooltip 只能由插件侧注入（`src/ui/t
 | `Loading({ anchorId? })` | 贴到主内容容器右下角的加载指示；`anchorId` 默认 `dshpc-main` |
 | `RunningBlocks()` | 运行中的占位块 |
 | `EmptyState({ text?, icon?, action?, translate? })` | 统一空态 |
-| `ErrorBoundary({ fallback?, onError?, translate? })` | class 组件；子组件抛错不让整个插件白屏，默认给「出错了 + 重试」 |
 | `SectionHead({ icon, title, right? })` | 分区标题 |
 | `MarqueeText({ text, style?, title?, className? })` | 超长省略、hover 滚动 |
 | `LiveText({ render, style? })` | 定时重渲染（相对时间这类） |
