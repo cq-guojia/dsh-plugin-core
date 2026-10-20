@@ -13,7 +13,7 @@
 
 ## 待办
 
-- 待用户验收：demo CardPage 两节——`Card`（框式 + 自适应短条 + action 槽单按钮示例）与 `StripCard`（浅底通高条），右侧槽/裸放元素的垂直居中效果。
+- 待用户验收（第四轮）：SectionHead 示例换「全部待办」段头形态；框式短条左移 3px 目测；StripCard 条 4px 目测。
 
 ## 下一步
 
@@ -100,3 +100,4 @@ Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修
 - 2026-10-20 09:30:41 · log · @GuoJia-Agent · 第四轮：StripCard 节补单行五档速览+第二事例加 secondary/sm Cancel 钮；确认卡内内容归调用方；build+49 测试+codelint 全过
 - 2026-10-20 09:47:37 · log · @GuoJia-Agent · 第五轮：Cancel 钮改 outline（描边档，size 仍 sm）；核对 demo 无手写控件、示例控件全来自核心 dist/ui；build+49 测试+codelint 全过
 - 2026-10-20 09:58:59 · log · @GuoJia-Agent · 已 commit 740ab1d（15 文件 +176/-110）：Card 双外观 + 头部居中 + 竖条自适应 + demo 示例收口；用户说稍后继续
+- 2026-10-20 10:55:12 · log · @GuoJia-Agent · 第四轮：SectionHead 示例照兄弟 board-home 全部待办段头（Segmented 计数+192 搜索，全核心控件）；框式短条 relative left:-3px；StripCard 条 5→4px（padding 20 保 16 留白）；build+49 测试+codelint 全过
