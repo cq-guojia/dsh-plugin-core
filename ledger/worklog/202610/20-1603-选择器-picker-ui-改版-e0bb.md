@@ -38,6 +38,27 @@
 - 用户在宿主真机更新 demo 插件验收：搜索框自动聚焦、默认图标 / 自定义初始文字、ModelPicker 真实目录、Textarea 右下角问号、NumberInput 焦点蓝框。
 - 若模型目录仍空：看选择器顶部是否有「候选可能不完整」降级条——有 = 目录读到但 0 条路由（要么 listProviders 空、要么 provider profile 无 models），无 = 注入线没到。
 
+## 过程（第三轮：模型目录真因与改道，2026-10-20）
+
+- **前两轮的判断都错了**：① 补 `dsh.client.inject` 的 `@deepseek-ai/dsh-api-remotes` —— 该模块只影响
+  remote 装配，而 `remote.llm` **根本没有「某 provider 的模型列表」**（只有 listProviders /
+  listConfigurableProviders / discoverModels，见 `dsh-llm/lib/typert.remote-client.d.ts:10-12`）；
+  ② 「读设置镜像 profile.models」在真机读出 0 个供应商。两条都不成立。
+- **真因（读兄弟仓实现得出）**：模型只能宿主侧 `llm.listModels(providerId)` 取
+  （`dsh-task-dispatch-table/src/dispatch.ts:81-88`、`src/host.ts:227-232`），再经插件自己的
+  `webServer.register({ kind:'exact', path, handler })` 挂路由给 client fetch
+  （`dsh-task-ledger/packages/plugin/src/host/routes.ts:20-44`）。demo 有宿主入口（`dist/index.js`），
+  但之前是空壳，从来没挂过路由。
+- **改道**：
+  - 新增 `src/host/index.ts`（`./host` 子路径）：`buildModelRoutes(llm)` 现查目录 +
+    `serveModelCatalog(ctx, { path })` 注册只读路由；单 provider 抛错局部跳过。
+  - `src/ui/host-data.ts`：删掉 remote.llm / configForms / loadModelDirectory，模型目录改成
+    `connectHost(ctx, { modelsPath })` fetch 宿主路由；`modelCatalog.setRoutes/setUnavailable`。
+  - demo：`src/paths.ts` 单一 path 常量、宿主入口 `apply` 调 `serveModelCatalog`、client 传
+    `modelsPath`；撤掉 `@deepseek-ai/dsh-api-remotes` 声明（不再用 remote）。
+  - `external/dsh-host.md §11/§11.1` 改写并标注两条已废弃结论；architecture / requirements / ui.md 同步。
+- 测试随改：`test/host-data.test.mjs` 改为 buildModelRoutes + 两个 store（64 项全绿）。
+
 ## 过程（第二轮：真机反馈修复，2026-10-20）
 
 - 搜索框自动聚焦：`Picker.ts` 加 `searchRef` + open 时 `focus()`。
@@ -64,3 +85,4 @@
 - 2026-10-20 16:56:38 · log · @GuoJia-Agent · 交付：chevron/icon/hint内置/双形态改名grouped/多选反选bug/删FilePicker/host-data自取数(connectHost)+5项新测试；65测试+typecheck+codelint全过，产物入库待真机验收
 - 2026-10-20 17:24:35 · log · @GuoJia-Agent · 第二轮：搜索自动聚焦/模型目录改按models过滤(推断user层缺失致滤空)/领域选择器默认icon+可自定义文案/Textarea问号右下/NumberInput焦点态；65测试+codelint全过
 - 2026-10-20 17:27:56 · log · @GuoJia-Agent · 根因1：demo 的 dsh.client.inject 缺 @deepseek-ai/dsh-api-remotes ⇒ remote.llm 不挂载(已补)；根因2：fieldwrap 让位规则把 textarea 缩窄(已还宽度)；已记 external §11.1
+- 2026-10-20 17:39:45 · log · @GuoJia-Agent · 第三轮真因：remote.llm 无模型列表，改宿主 llm.listModels + serveModelCatalog 路由(./host) + client fetch；删 configForms/remote 路径；需重装 demo 让宿主入口生效
