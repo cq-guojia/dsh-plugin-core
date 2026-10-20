@@ -205,7 +205,7 @@ var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u827
 var PANEL_DOCK_CSS = "\n/* \u505C\u9760\u680F = **\u5E03\u5C40\u6210\u5458**\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5B83\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u771F\u6B63\u6324\u7A84\uFF08\u5144\u5F1F\u9879\u76EE 2026-09-28\uFF1A\n   \u300C\u5206\u680F\u538B\u8FC7\u6765\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u300D\uFF09\u3002\u6240\u4EE5\u8C03\u7528\u65B9\u5FC5\u987B\u628A\u5B83\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002 */\n.dshpc-dock{display:flex;flex:0 0 auto;align-self:stretch;min-width:0}\n\n/* \u5355\u680F\uFF1Asticky + 100vh \u8BA9\u5B83\u5728\u9875\u9762\u6EDA\u52A8\u65F6\u4FDD\u6301\u53EF\u89C1\uFF0C\u540C\u65F6\u4ECD\u7136\u5360\u5BBD\u5EA6\u3002\n   \u26A0\uFE0F **\u672C\u6761\u523B\u610F\u4E0D\u8BBE z-index**\uFF1A\u5E03\u5C40\u6210\u5458\u4E00\u65E6\u5E26\u6B63 z-index\uFF0C\u5C31\u4F1A\u65E0\u6761\u4EF6\u538B\u8FC7\u5BBF\u4E3B portal \u5230 body \u7684\n   \u5F39\u7A97\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-05 \u771F\u673A\u4E8B\u6545\u300C\u4FA7\u8FB9\u680F\u76D6\u4F4F\u5BBF\u4E3B\u8BBE\u7F6E\u5F39\u7A97\u300D\uFF09\u3002\u5C42\u5E8F\u4EA4\u7ED9 DOM \u987A\u5E8F\u88C1\u51B3\u3002 */\n.dshpc-dock__panel{\n  position:sticky;top:0;align-self:stretch;\n  display:flex;flex-direction:column;flex:0 0 auto;\n  /* \u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF08\u6574\u9875\u573A\u666F\uFF09\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\uFF08\u5982 420px / 100%\uFF09\u3002 */\n  height:var(--dshpc-dock-h,100vh);max-height:var(--dshpc-dock-h,100vh);min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border-left:1px solid var(--dshpc-border);\n  box-shadow:var(--dshpc-shadow-2);\n}\n\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  /* \u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB */\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF0C\u4F4D\u7F6E\u4E0E\u5185\u7F6E\u5934\u5B8C\u5168\u4E00\u81F4\uFF08top 10 / right 8\uFF09\uFF1B\u81EA\u5B9A\u4E49\u5934\u4E5F\u7528\u8FD9\u4E00\u4E2A\u4F4D\u7F6E\u3002\n   \u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB\uFF08position:sticky \u5373\u5B9A\u4F4D\u4E0A\u4E0B\u6587\uFF09\uFF0C\u4E0D\u5728\u6EDA\u52A8\u5185\u5BB9\u91CC\uFF0C\u6240\u4EE5\u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF1A\u9762\u677F\u9AD8\u5EA6\u9501 100vh\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u6574\u9875\u6491\u9AD8\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto}\n\n/* \u62D6\u62FD\u6761\uFF1A\u5DE6\u7F18 6px \u547D\u4E2D\u533A\uFF0C**\u4E0D\u753B\u7EBF**\uFF0Chover/\u6309\u4F4F\u65F6\u624D\u6D6E\u51FA\u4E00\u6761\u6D45\u8272\u5E26\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__resizer:hover,.dshpc-dock__resizer:active{background:var(--dshpc-hover)}\n\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove\uFF0C\n   \u5411\u53F3\u62D6\u8FDB iframe \u5C31\u5361\u6B7B \u2014\u2014 \u6574\u7247\u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u680F\u5185\uFF0C\n   \u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u5EA6\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-04 \u771F\u673A\u300C\u632A\u5F88\u4E45\u624D\u52A8\u4E00\u4E0B\u300D\uFF09\u3002 */\n.dshpc-dock.dshpc-dock--resizing iframe{pointer-events:none}\n.dshpc-dock.dshpc-dock--resizing .dshpc-dock__panel{contain:layout paint;will-change:width}\n";
 
 // dist/explorer/explorer-css.generated.js
-var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\u7C7B\u540D\u4E0E FileBrowser / preview \u7EC4\u4EF6\u786C\u7F16\u7801\u9010\u5B57\u4E00\u81F4\u3002 */\n.dshpc-fb{display:flex;flex-direction:column;height:100%;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-fb--dock{height:100%;border-left:1px solid var(--dshpc-border-faint)}\n.dshpc-fb--resizing{contain:layout paint}\n.dshpc-fb--resizing .dshpc-fb__frame{pointer-events:none}\n.dshpc-fb__resizer{position:absolute;top:0;bottom:0;left:0;width:4px;cursor:col-resize;z-index:2}\n.dshpc-fb__resizer:hover{background:var(--dshpc-open-bg)}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C */\n.dshpc-fb__bar{display:flex;align-items:center;gap:2px;padding:6px 8px;border-bottom:1px solid var(--dshpc-border-faint);min-width:0}\n.dshpc-fb__menu-wrap{flex:none;display:flex}\n.dshpc-fb__crumbs{flex:1 1 auto;display:flex;align-items:center;gap:2px;min-width:0;overflow:hidden}\n.dshpc-fb__crumbs-measure{position:absolute;visibility:hidden;pointer-events:none;display:flex;align-items:center;gap:2px;white-space:nowrap}\n.dshpc-fb__crumb{\n  background:none;border:none;padding:2px 4px;border-radius:4px;cursor:pointer;\n  color:var(--dshpc-link);font:inherit;max-width:180px;flex:none;\n}\n.dshpc-fb__crumb:disabled{color:var(--dshpc-fg-4);cursor:default}\n.dshpc-fb__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default;min-width:0;max-width:100%}\n.dshpc-fb__crumb-mq{display:inline-block;max-width:160px;vertical-align:bottom}\n.dshpc-fb__crumb-sep{color:var(--dshpc-fg-4);flex:none}\n.dshpc-fb__actions{display:flex;gap:2px;margin-left:auto;flex:none;align-items:center}\n.dshpc-fb__bar-plain{color:var(--dshpc-fg-3);font-size:12px}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177 */\n.dshpc-fb__title{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--dshpc-border-faint);min-width:0}\n.dshpc-fb__title-inner{font-size:13px;font-weight:600}\n\n/* \u4E3B\u4F53 */\n.dshpc-fb__body{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:4px 0}\n.dshpc-fb__note{padding:6px 10px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-fb__err{padding:6px 10px;color:var(--dshpc-fg-3);font-size:12px;text-align:center}\n\n/* \u6811\u884C */\n.dshpc-fb__row{display:flex;align-items:center;gap:6px;padding:3px 10px;cursor:pointer;white-space:nowrap}\n.dshpc-fb__row:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-link);outline-offset:-2px}\n.dshpc-fb__row-icon{width:18px;flex:none;display:inline-flex;color:var(--dshpc-fg-3)}\n.dshpc-fb__row-name{overflow:hidden;text-overflow:ellipsis;min-width:0}\n.dshpc-fb__row-toggle{\n  flex:none;display:inline-flex;align-items:center;justify-content:center;\n  width:18px;height:18px;padding:0;border:none;border-radius:4px;background:none;\n  color:var(--dshpc-fg-3);cursor:pointer;transition:transform .12s ease;\n}\n.dshpc-fb__row-toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n.dshpc-fb__row-act{\n  margin-left:auto;flex:none;border:1px solid var(--dshpc-border);border-radius:4px;\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg-2);font:inherit;font-size:11px;\n  padding:1px 8px;cursor:pointer;\n}\n.dshpc-fb__row-act:hover{color:var(--dshpc-fg);border-color:var(--dshpc-border-strong)}\n.dshpc-fb__row-children{padding-left:14px}\n.dshpc-fb__row-note{padding:4px 10px;color:var(--dshpc-fg-4);font-size:11px}\n.dshpc-fb__row-err{padding:4px 10px;color:var(--dshpc-fg-3);font-size:11px}\n\n/* \u25BE \u9009\u5C42\u83DC\u5355\u6761\u76EE\uFF08\u5B98\u65B9 Menu portal \u5185\uFF09 */\n.dshpc-fb__menu-item{display:flex;align-items:center;gap:6px;padding-left:8px}\n.dshpc-fb__menu-icon{display:inline-flex;align-items:center;flex:none}\n.dshpc-fb__menu-chev-slot{display:inline-block;width:11px;flex:none}\n.dshpc-fb__menu-chev{display:inline-flex;align-items:center;flex:none;color:var(--dshpc-fg-4)}\n\n/* \u9884\u89C8\u4F53 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg-soft);color:var(--dshpc-fg-2);font-size:11px}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:6px;border:1px solid var(--dshpc-border-faint)}\n.dshpc-fb__frame{flex:1;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
+var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\u7C7B\u540D\u4E0E FileBrowser / preview \u7EC4\u4EF6\u786C\u7F16\u7801\u9010\u5B57\u4E00\u81F4\u3002\n *\n * \u5EA6\u91CF\u53E3\u5F84\uFF1A\u80FD\u7528\u6838\u5FC3\u63A7\u4EF6\u7684\u4E00\u5F8B\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = \u6838\u5FC3 ghost \u94AE\u3001\u884C\u5C3E\u6309\u94AE = \u6838\u5FC3 outline \u94AE\u3001\n * \u5C55\u5F00\u5F00\u5173 / \u56FE\u6807\u94AE = \u6838\u5FC3 IconButton\uFF09\uFF1B\u6838\u5FC3\u6CA1\u6709\u7684\u90A3\u4E00\u9879 = \u25BE \u9009\u5C42\u6D6E\u5C42\uFF0C\u6309\u5144\u5F1F\u9879\u76EE\n * dsh-task-dispatch-table \u7684 .dsh-tdt-sv-crumbs-*\uFF08archive-session-css.ts\uFF09\u9010\u6761\u7167\u6284\uFF1A\n *   \xB7 \u884C / \u83DC\u5355\u5706\u89D2 6px\uFF08\u5144\u5F1F --tdt-radius-sm \u7684\u5B9E\u53D6\u503C\uFF09\u21D2 \u7EDF\u4E00\u7531 --fb-radius \u4E00\u5904\u5B9A\u4E49\uFF1B\n *   \xB7 \u6811\u884C padding 6px 8px / gap 8px\uFF1B\u83DC\u5355\u6761\u76EE padding 4px 8px\u3001\u6700\u5927\u5BBD 280px\uFF1B\n *   \xB7 \u4E0B\u62C9 max-height 240px \u540E\u6EDA\u52A8\uFF1B\u7A7A\u6001\u4E0E\u5144\u5F1F\u540C\u6B3E\u5F31\u5316\u3002\n */\n.dshpc-fb{\n  --fb-radius:6px;\n  display:flex;flex-direction:column;height:100%;min-height:0;\n  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\u3002\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\uFF08\u5144\u5F1F\u9879\u76EE\u56DB\u9A8C\u771F\u673A bug\uFF09\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  padding:4px 10px;border-bottom:1px solid var(--dshpc-border-faint);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;visibility:hidden;pointer-events:none;white-space:nowrap}\n/* \u9762\u5305\u5C51 = \u6838\u5FC3 ghost \u94AE\uFF08\u65E0\u5E95\u65E0\u8FB9\uFF09\uFF1A\u6B64\u5904\u53EA\u8865\u300C\u53EF\u6536\u7F29 + \u8DD1\u9A6C\u706F\u5360\u6EE1\u300D\u7684\u5E03\u5C40\uFF0C\u4E0D\u6539\u76AE\u80A4\u3002 */\n.dshpc-fb__crumb{min-width:0;max-width:100%;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm)}\n.dshpc-fb__crumb:disabled{color:var(--dshpc-fg-4);cursor:default}\n.dshpc-fb__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{color:var(--dshpc-fg-3);flex:none}\n.dshpc-fb__bar-plain{color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none}\n.dshpc-fb__actions{display:flex;align-items:center;gap:4px;margin-left:auto;flex:none}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\uFF08\u7167\u6284\u5144\u5F1F .dsh-tdt-sv-crumbs-*\uFF09\uFF1A\u900F\u660E\u906E\u7F69\u63A5\u300C\u70B9\u5916\u90E8\u300D\uFF0C\u83DC\u5355\u672C\u4F53\u9650\u9AD8\u6EDA\u52A8\u3002\n   \u5C42\u5E8F\u5FC5\u987B\u9AD8\u4E8E picker \u9762\u677F\uFF08z-index 1100\uFF09\u2014\u2014\u5426\u5219\u83DC\u5355\u5F00\u7740\u65F6\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);box-shadow:0 4px 16px rgba(0,0,0,.18);\n  border-radius:var(--fb-radius);padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  padding:4px 8px;border-radius:var(--fb-radius);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3)}\n.dshpc-fb__menu-icon{display:inline-flex;align-items:center;flex:none}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u9AD8\u5EA6\u6863\u7EDF\u4E00 md\uFF0C\u89C1\u7EC4\u4EF6\u6CE8\u91CA\uFF09\u3002 */\n.dshpc-fb__title{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--dshpc-border-faint);min-width:0}\n.dshpc-fb__title-inner{font-size:var(--dshpc-font-md);font-weight:600}\n\n/* \u4E3B\u4F53 */\n.dshpc-fb__body{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}\n.dshpc-fb__note{padding:6px 10px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__err{padding:6px 10px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-md);text-align:center}\n\n/* \u6811\u884C\uFF08\u7167\u6284\u5144\u5F1F .dsh-tdt-sv-tree-row\uFF1Agap 8 / padding 6px 8px / \u5706\u89D2 6px\uFF09 */\n.dshpc-fb__row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--fb-radius);cursor:pointer;user-select:none}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u6B64\u6587\u4EF6\u5939\u300D\uFF1A\u6838\u5FC3 outline \u94AE\uFF0C**\u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D**\uFF0C\u60AC\u505C / \u805A\u7126\u8BE5\u884C\u624D\u51FA\u73B0\n   \uFF08\u7167\u6284\u5144\u5F1F .dsh-tdt-sv-tree-act\uFF1Aopacity 0 + pointer-events none\uFF0C\u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\uFF09\u3002 */\n.dshpc-fb__row-act{flex:none;margin-left:auto;opacity:0;pointer-events:none;transition:opacity var(--dshpc-dur-fast,120ms) var(--dshpc-ease,ease)}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n.dshpc-fb__row-children{margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border-faint);display:flex;flex-direction:column}\n.dshpc-fb__row-note{padding:4px 8px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;color:var(--dshpc-danger);font-size:var(--dshpc-font-sm)}\n\n/* \u9884\u89C8\u4F53 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg-soft);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:6px;border:1px solid var(--dshpc-border-faint)}\n.dshpc-fb__frame{flex:1;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
 
 // dist/session/session-css.generated.js
 var SESSION_CSS = "\n.dshpc-ses{display:flex;flex-direction:column;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-ses--sidebar{height:100%;border-left:1px solid var(--dshpc-border-faint);background:var(--dshpc-surface-base)}\n.dshpc-ses--page{height:100%;background:var(--dshpc-surface-base)}\n.dshpc-ses__list{flex:1;min-height:0;overflow:auto;padding:8px 12px;display:flex;flex-direction:column;gap:10px}\n.dshpc-ses__msg{padding:8px 10px;border-radius:8px;background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border-faint)}\n.dshpc-ses__msg--user{background:var(--dshpc-open-bg-soft)}\n.dshpc-ses__head{display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-ses__text{margin:0;white-space:pre-wrap;word-break:break-word;line-height:1.6}\n.dshpc-ses__atts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}\n.dshpc-ses__att{\n  display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;\n  background:var(--dshpc-chip-bg);color:var(--dshpc-fg);cursor:pointer;border:none;font:inherit;font-size:12px;\n}\n.dshpc-ses__att:hover{background:var(--dshpc-chip-bg-hover)}\n.dshpc-ses__note{padding:12px;color:var(--dshpc-fg-3);text-align:center}\n";
@@ -316,7 +316,6 @@ var DICT = {
     explorerPickFile: "\u9009\u62E9\u6B64\u6587\u4EF6",
     explorerPickDir: "\u9009\u62E9\u6B64\u6587\u4EF6\u5939",
     previewClose: "\u5173\u95ED",
-    previewResize: "\u62D6\u52A8\u8C03\u6574\u5BBD\u5EA6",
     previewCopyPath: "\u590D\u5236\u8DEF\u5F84",
     previewRefresh: "\u5237\u65B0",
     previewRender: "\u9884\u89C8",
@@ -397,7 +396,6 @@ var DICT = {
     explorerPickFile: "Pick this file",
     explorerPickDir: "Pick this folder",
     previewClose: "Close",
-    previewResize: "Drag to resize",
     previewCopyPath: "Copy path",
     previewRefresh: "Refresh",
     previewRender: "Preview",
@@ -555,7 +553,7 @@ function Picker(props) {
   const flat = flattenOptions(shown);
   const atMax = mode === "multiple" && props.max !== void 0 && selected.length >= props.max;
   const summary = selected.length === 0 ? props.placeholder ?? tt("pickerPlaceholder") : mode === "multiple" && !showLabels ? tt("pickerSelected", { n: selected.length }) : labelsOf(groups, selected).join("\u3001") || (props.placeholder ?? tt("pickerPlaceholder"));
-  const pick = (value) => {
+  const pick2 = (value) => {
     if (mode === "single") {
       emit([value]);
       setOpen(false);
@@ -588,7 +586,7 @@ function Picker(props) {
       e.preventDefault();
       const hit = flat[active];
       if (hit !== void 0)
-        pick(hit.value);
+        pick2(hit.value);
     }
   };
   const trigger = (0, import_react2.createElement)(
@@ -655,7 +653,7 @@ function Picker(props) {
         "data-active": idx === active ? "true" : void 0,
         onClick: () => {
           if (!blocked)
-            pick(o.value);
+            pick2(o.value);
         }
       }, mode === "multiple" ? (0, import_react2.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null, o.icon !== void 0 && o.icon !== null ? (0, import_react2.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null, (0, import_react2.createElement)("span", null, o.label));
     })))
@@ -3044,6 +3042,50 @@ function NumberInput(props) {
   ), props.hint);
 }
 
+// packages/demo/src/host-files.ts
+var FileServicesStore = class {
+  constructor() {
+    this.snapshot = { workspaceFiles: null, officeToPdf: null };
+    this.listeners = /* @__PURE__ */ new Set();
+    this.getSnapshot = () => this.snapshot;
+    this.subscribe = (listener) => {
+      this.listeners.add(listener);
+      return () => {
+        this.listeners.delete(listener);
+      };
+    };
+  }
+  set(patch) {
+    this.snapshot = { ...this.snapshot, ...patch };
+    for (const listener of this.listeners) listener();
+  }
+  setFiles(workspaceFiles) {
+    this.set({ workspaceFiles });
+  }
+  setOffice(officeToPdf) {
+    this.set({ officeToPdf });
+  }
+};
+var fileServices = new FileServicesStore();
+function pick(sub, dotted, prop, probe) {
+  const rec = sub;
+  const remote = rec.remote;
+  const candidate = rec[dotted] ?? remote?.[prop];
+  if (candidate === null || candidate === void 0) return null;
+  const probeValue = candidate[probe];
+  return typeof probeValue === "function" ? candidate : null;
+}
+function connectFileServices(ctx) {
+  ctx.inject(["remote", "remote.workspaceFiles"], (sub) => {
+    const found = pick(sub, "remote.workspaceFiles", "workspaceFiles", "list");
+    if (found !== null) fileServices.setFiles(found);
+  });
+  ctx.inject(["remote", "remote.officeToPdf"], (sub) => {
+    const found = pick(sub, "remote.officeToPdf", "officeToPdf", "render");
+    if (found !== null) fileServices.setOffice(found);
+  });
+}
+
 // packages/demo/src/dock.ts
 var import_react25 = require("react");
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
@@ -3314,22 +3356,37 @@ var DICT2 = {
     liveTitle: "LiveText \u5B9E\u65F6\u6587\u672C",
     feedbackModalHint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757",
     feedbackToastHint: "\u547D\u4EE4\u5F0F showToast\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6",
-    explorerHint: "\u9762\u5305\u5C51\uFF08\u8D85\u5BBD\u6298\u53E0 + \u25BE \u9009\u5C42\uFF09+ \u5185\u8054\u5C55\u5F00\u76EE\u5F55\u6811 + \u9884\u89C8\uFF08md \u6E32\u67D3 / \u4EE3\u7801\u9AD8\u4EAE / HTML / PDF / Office\uFF09\u3002workspaceFiles \u662F mock \u7684\uFF08\u771F\u5B9E\u63D2\u4EF6\u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF09",
+    explorerDataTitle: "\u6570\u636E\u6765\u6E90\uFF08\u771F\u6570\u636E\uFF0C\u65E0 mock\uFF09",
+    explorerDataHint: "\u6587\u4EF6\u670D\u52A1\u53D6\u5BBF\u4E3B\u7684 remote.workspaceFiles\uFF08dotted \u6CE8\u5165\uFF09\uFF0C\u5DE5\u4F5C\u533A\u6E05\u5355\u53D6\u5B98\u65B9 workspaces \u670D\u52A1\u5FEB\u7167\uFF1B\u300C\u6700\u8FD1\u4F1A\u8BDD\u6240\u5C5E\u5DE5\u4F5C\u533A\u300D= \u66F4\u65B0\u8FC7\u7684\u6700\u65B0\u4E14\u5E26\u4F1A\u8BDD\u7684\u90A3\u4E2A\u5DE5\u4F5C\u533A\uFF08pickWorkspaceAnchor\uFF09\u2014\u2014list / read \u90FD\u8981 sessionId\uFF0C\u951A\u70B9\u5FC5\u987B\u5148\u843D\u5230\u4E00\u4E2A\u771F\u4F1A\u8BDD\u4E0A\u3002",
+    explorerFilesNone: "\u672A\u5C31\u4F4D\uFF1A\u5BBF\u4E3B\u8FD8\u6CA1\u7ED9\u51FA remote.workspaceFiles\uFF08\u6587\u4EF6\u9884\u89C8 / \u9009\u62E9\u90FD\u4E0D\u53EF\u7528\uFF0C\u4E0D\u9020\u5047\u6570\u636E\uFF09",
+    explorerAnchorNone: "\u672A\u5C31\u4F4D\uFF1A\u5DE5\u4F5C\u533A\u6E05\u5355\u91CC\u8FD8\u6CA1\u6709\u5E26\u4F1A\u8BDD\u7684\u5DE5\u4F5C\u533A\uFF08\u5148\u5728\u5BBF\u4E3B\u91CC\u5F00\u4E00\u4E2A\u4F1A\u8BDD\u518D\u56DE\u6765\u770B\uFF09",
+    explorerAnchorLabel: "\u5F53\u524D\u951A\u70B9\uFF1A",
+    explorerSessionLabel: "\u4F1A\u8BDD\uFF1A",
+    explorerWorkspaces: "\u5DE5\u4F5C\u533A\u6570\uFF1A",
     methodATitle: "\u65B9\u6CD5 A\uFF1AopenFilePreview \u4FA7\u8FB9\u680F\u9884\u89C8",
-    methodAHint: "\u4F20\u6587\u4EF6\u6216\u6587\u4EF6\u5939\u8DEF\u5F84\uFF0C\u53F3\u4FA7\u5F39\u51FA\u53EF\u62D6\u5BBD\u7684\u505C\u9760\u9884\u89C8\uFF1BEsc / \u2715 \u5173\u95ED\u3002\u8FD4\u56DE handle \u53EF\u4EE3\u7801\u5173",
-    openFilePreview: "\u9884\u89C8 READ.md",
-    openDirPreview: "\u6D4F\u89C8 docs \u6587\u4EF6\u5939",
-    openPdfPreview: "\u9884\u89C8 PDF",
+    methodAHint: "\u4F20\u6587\u4EF6\u6216\u6587\u4EF6\u5939\u8DEF\u5F84\uFF0C\u53F3\u4FA7\u5F39\u51FA\u505C\u9760\u9884\u89C8 \u2014\u2014 \u5916\u58F3\u662F\u6838\u5FC3 PanelDock\uFF08\u62D6\u5BBD / \u2715 \u90FD\u7531\u5B83\u8D1F\u8D23\uFF0C\u9762\u677F\u81EA\u5DF1\u4E0D\u753B\uFF09\u3002\u6837\u4F8B\u6309\u94AE\u6307\u5411\u4ED3\u5E93\u91CC packages/demo/src/samples/ \u7684\u771F\u6587\u4EF6\uFF08\u76EE\u5F55\u662F\u6309\u5185\u5BB9\u63A2\u51FA\u6765\u7684\uFF0C\u4E0D\u5199\u6B7B\u8DEF\u5F84\uFF09\u3002",
+    openRootPreview: "\u6253\u5F00\u6700\u8FD1\u5DE5\u4F5C\u533A\u7684\u6839\u76EE\u5F55",
+    openSamplesDir: "\u6D4F\u89C8\u6837\u4F8B\u76EE\u5F55",
+    sampleMd: "\u9884\u89C8 README.md",
+    sampleHtml: "\u9884\u89C8 demo.html",
+    sampleJs: "\u9884\u89C8 sample.js",
+    sampleCss: "\u9884\u89C8 sample.css",
+    samplesProbing: "\u6B63\u5728\u771F\u5B9E\u5DE5\u4F5C\u533A\u91CC\u627E\u6837\u4F8B\u76EE\u5F55\u2026",
+    samplesNotFound: "\u6CA1\u627E\u5230\u6837\u4F8B\u76EE\u5F55\uFF08\u5F53\u524D\u951A\u5B9A\u7684\u5DE5\u4F5C\u533A\u91CC\u6CA1\u6709 packages/demo/src/samples\uFF09",
     methodBTitle: "\u65B9\u6CD5 B\uFF1ApickWorkspaceFile \u9009\u62E9\u6587\u4EF6",
     methodBHint: "\u5728\u951A\u70B9\u6309\u94AE\u65C1\u5F39\u51FA\u6A21\u6001\u5F39\u7A97\uFF1BPromise \u8FD4\u56DE { path, isDir }\uFF08path \u4E3A\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\uFF1BEsc / \u70B9\u5916\u90E8 / \u2715 \u53D6\u6D88\u8FD4\u56DE null",
     pickAny: "\u9009\u62E9\u6587\u4EF6\uFF08\u4E0D\u9650\uFF09",
     pickTs: "\u53EA\u8981 .ts",
     pickDir: "\u53EA\u8981\u6587\u4EF6\u5939",
+    pickFolder: "\u6587\u4EF6\u5939",
     pickNone: "\u8FD8\u6CA1\u9009",
     pickResult: "\u5DF2\u9009\u62E9",
     previewBodyTitle: "FilePreview \u9884\u89C8\u4F53\uFF08\u53EF\u5355\u72EC\u7528\uFF09",
     previewBodyHint: "\u4E0A\u9762\u90A3\u5757\u5DF2\u7ECF\u5305\u542B\u5B83\u2014\u2014FileBrowser \u5185\u90E8\u6E32\u67D3\u7684\u5C31\u662F FilePreview\u3002\n\u5B83\u540C\u65F6\u4E5F\u662F\u4E00\u6761\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/explorer/preview\uFF1A\u53EA\u6709\u4E00\u4E2A\u6587\u4EF6\u8981\u663E\u793A\u65F6\uFF08\u4F1A\u8BDD\u9644\u4EF6\u3001\u5DE5\u5177\u8F93\u51FA\uFF09\u4E0D\u5FC5\u642C\u51FA\u6574\u4E2A\u9762\u677F\u3002",
     sessionHint: "\u4E09\u79CD\u627F\u8F7D\uFF1Amodal / sidebar / page\uFF1Bsource \u662F mock \u7684\uFF1BrenderMessage \u53EF\u63A5\u7BA1\u5BCC\u5185\u5BB9",
+    sessionOpenModal: "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09",
+    sessionClose: "\u5173\u95ED",
+    sessionPreviewTitle: "\u4F1A\u8BDD\u9884\u89C8\uFF08\u5047\u6570\u636E\uFF09",
     dateHint: "\u89E3\u6790\u5931\u8D25\u4E0D\u629B\u9519\u3001\u7ED9\u515C\u5E95\u3001\u4E0D\u7F16\u9020\uFF1B\u6240\u6709\u51FD\u6570\u65E0 UI \u4F9D\u8D56\uFF0CNode \u91CC\u4E5F\u80FD\u8DD1",
     numberHint: "formatBytes \u6309 1024 \u8FDB\u5236\u3001\u5355\u4F4D\u81EA\u52A8\u8FDB\u4F4D\uFF1BformatCount \u7ED9\u5927\u6570\u52A0\u5343\u5206\u4F4D",
     roadmapHint: "\u4E0B\u9762\u662F\u300C\u660E\u786E\u4E0D\u63D0\u4F9B\u300D\u7684\u90E8\u5206\u2014\u2014\u5199\u5728\u8FD9\u91CC\u662F\u4E3A\u4E86\u8BA9\u4F60\u4E0D\u7528\u731C\uFF0C\u4E5F\u8BA9\u540E\u6765\u4EBA\u77E5\u9053\u8FB9\u754C\u5728\u54EA\u3002",
@@ -3499,22 +3556,37 @@ var DICT2 = {
     liveTitle: "LiveText",
     feedbackModalHint: "Hand-rolled overlay (no portal); click backdrop / Esc / \u2715 all close it. The header \u2715 is a 24\xD724 icon slot \u2014 no border or 120px-wide color block should appear",
     feedbackToastHint: "Imperative showToast \u2014 no component mounting required",
-    explorerHint: "Breadcrumb (collapses when too wide + \u25BE level picker) + inline-expandable tree + preview (md render / code highlight / HTML / PDF / Office). workspaceFiles is mocked (a real plugin reads it from ctx and injects)",
+    explorerDataTitle: "Where the data comes from (real data, no mocks)",
+    explorerDataHint: 'File services come from the host remote.workspaceFiles (dotted injection); the workspace list is the official workspaces snapshot. The "most recent workspace" is the newest updated one that owns a session (pickWorkspaceAnchor) \u2014 list / read all need a sessionId, so browsing must land on a real session first.',
+    explorerFilesNone: "Not ready: the host has not exposed remote.workspaceFiles yet (no preview, no picking \u2014 no fake data either)",
+    explorerAnchorNone: "Not ready: no workspace in the list owns a session yet (open a session in the host and come back)",
+    explorerAnchorLabel: "Anchor: ",
+    explorerSessionLabel: "session: ",
+    explorerWorkspaces: "workspaces: ",
     methodATitle: "Method A: openFilePreview dock preview",
-    methodAHint: "Pass a file or folder path: a resizable dock preview opens on the right; Esc / \u2715 closes it. The returned handle can close it programmatically",
-    openFilePreview: "Preview READ.md",
-    openDirPreview: "Browse the docs folder",
-    openPdfPreview: "Preview PDF",
+    methodAHint: "Pass a file or folder path and a dock preview opens on the right \u2014 the shell is the core PanelDock (resizing / \u2715 are its job, the panel draws neither). The sample buttons point at real files under packages/demo/src/samples/ (the directory is probed by content, never hardcoded).",
+    openRootPreview: "Open the most recent workspace root",
+    openSamplesDir: "Browse the sample directory",
+    sampleMd: "Preview README.md",
+    sampleHtml: "Preview demo.html",
+    sampleJs: "Preview sample.js",
+    sampleCss: "Preview sample.css",
+    samplesProbing: "Looking for the sample directory in the real workspace\u2026",
+    samplesNotFound: "Sample directory not found (the anchored workspace has no packages/demo/src/samples)",
     methodBTitle: "Method B: pickWorkspaceFile",
     methodBHint: "A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / \u2715 cancels with null",
     pickAny: "Pick a file (any)",
     pickTs: ".ts only",
     pickDir: "Folders only",
+    pickFolder: "folder",
     pickNone: "Nothing picked yet",
     pickResult: "Picked",
     previewBodyTitle: "FilePreview (usable on its own)",
     previewBodyHint: "The block above already includes it \u2014 FileBrowser renders FilePreview inside.\nIt is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.",
     sessionHint: "Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content",
+    sessionOpenModal: "Open session preview (modal)",
+    sessionClose: "Close",
+    sessionPreviewTitle: "Session preview (mock data)",
     dateHint: "No throw on parse failure \u2014 falls back gracefully and never fabricates; all functions are UI-free and run in Node too",
     numberHint: "formatBytes is 1024-based with automatic unit scaling; formatCount adds thousands separators",
     roadmapHint: "The list below is what this package explicitly does NOT provide \u2014 written down so nobody has to guess, and so the boundary stays visible.",
@@ -3850,10 +3922,14 @@ var import_react30 = require("react");
 var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
 function Note(props) {
   return (0, import_react30.createElement)(
-    "div",
-    { className: "dshpc-doc-note" },
-    (0, import_react30.createElement)("span", { className: "dshpc-doc-note__mark" }, t2("docNote")),
-    (0, import_react30.createElement)("span", null, props.text)
+    StripCard,
+    { accent: "business", className: "dshpc-doc-note" },
+    (0, import_react30.createElement)(
+      "div",
+      { className: "dshpc-doc-note__body" },
+      (0, import_react30.createElement)("span", { className: "dshpc-doc-note__mark" }, t2("docNote")),
+      (0, import_react30.createElement)("span", null, props.text)
+    )
   );
 }
 function CodeOnly(props) {
@@ -3978,17 +4054,23 @@ function StarSvg() {
   );
 }
 var ICON_SIZE = { sm: 12, md: 14, lg: 16 };
-var VARIANTS = [
-  { value: "primary", icon: "check" },
-  { value: "secondary", icon: "copy" },
-  { value: "outline", icon: "edit" },
-  { value: "ghost", icon: "refresh" },
-  { value: "danger", icon: "close" },
-  { value: "success", icon: "play" },
-  { value: "warning", icon: "clock" },
-  { value: "info", icon: "send" },
-  { value: "danger-outline", icon: "close" },
-  { value: "link", icon: "search" }
+var VARIANT_ICON = {
+  primary: "check",
+  secondary: "copy",
+  outline: "edit",
+  ghost: "refresh",
+  danger: "close",
+  success: "play",
+  warning: "clock",
+  info: "send",
+  "danger-outline": "close",
+  link: "search"
+};
+var VARIANT_GROUPS = [
+  { label: "\u4E3B\u884C\u52A8", items: ["primary", "secondary"] },
+  { label: "\u4E2D\u6027", items: ["outline", "ghost"] },
+  { label: "\u8BED\u4E49\u8272", items: ["danger", "success", "warning", "info"] },
+  { label: "\u5F31\u5316 / \u884C\u5185", items: ["danger-outline", "link"] }
 ];
 var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
 function tipAnchor(text, side, align) {
@@ -4021,16 +4103,26 @@ function Labeled(props) {
 var CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>\u4FDD\u5B58</Button>
 <Button variant="outline">\u53D6\u6D88</Button>
 <Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>\u5220\u9664</Button>`;
-var CODE_BTN_VARIANT = `<Button variant="primary">primary</Button>
-<Button variant="secondary">secondary</Button>
-<Button variant="outline">outline</Button>
-<Button variant="ghost">ghost</Button>
-<Button variant="danger">danger</Button>
-<Button variant="success">success</Button>
-<Button variant="warning">warning</Button>
-<Button variant="info">info</Button>
-<Button variant="danger-outline">danger-outline</Button>
-<Button variant="link">link</Button>`;
+var CODE_BTN_VARIANT = `// \u4E3B\u884C\u52A8
+<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>primary</Button>
+<Button variant="secondary" icon={<IconCopyOutlineRegular size={16} />}>secondary</Button>
+
+// \u4E2D\u6027
+<Button variant="outline" icon={<IconEditOutlineRegular size={16} />}>outline</Button>
+<Button variant="ghost" icon={<IconRefreshOutlineRegular size={16} />}>ghost</Button>
+
+// \u8BED\u4E49\u8272
+<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>danger</Button>
+<Button variant="success" icon={<IconPlayOutlineRegular size={16} />}>success</Button>
+<Button variant="warning" icon={<IconClockOutlineRegular size={16} />}>warning</Button>
+<Button variant="info" icon={<IconPaperPlaneOutlineRegular size={16} />}>info</Button>
+
+// \u5F31\u5316 / \u884C\u5185
+<Button variant="danger-outline" icon={<IconCloseOutlineRegular size={16} />}>danger-outline</Button>
+<Button variant="link" icon={<IconSearchOutlineRegular size={16} />}>link</Button>
+
+// \u4EFB\u610F\u4E00\u6863\u90FD\u80FD\u518D\u7ED9 size\uFF08\u8FD9\u91CC sm 24 \u9AD8\uFF09
+<Button variant="danger" size="sm" icon={<IconCloseOutlineRegular size={12} />}>danger</Button>`;
 var CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
 <Button size="md" variant="outline">md</Button>
 <Button size="lg" variant="outline">lg</Button>
@@ -4121,8 +4213,16 @@ function ButtonPage() {
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react31.createElement)(Row, null, VARIANTS.map((item) => (0, import_react31.createElement)(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
-        (0, import_react31.createElement)(Row, null, VARIANTS.map((item) => (0, import_react31.createElement)(Button, { key: item.value, variant: item.value, size: "sm", icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))
+        VARIANT_GROUPS.map((group) => (0, import_react31.createElement)(
+          Labeled,
+          { key: group.label, label: group.label },
+          (0, import_react31.createElement)(
+            "div",
+            { style: { display: "flex", flexDirection: "column", gap: "6px", alignItems: "flex-start" } },
+            (0, import_react31.createElement)(Row, null, group.items.map((variant) => (0, import_react31.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
+            (0, import_react31.createElement)(Row, null, group.items.map((variant) => (0, import_react31.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
+          )
+        ))
       )
     ),
     // 尺寸 / 图标位置 / block
@@ -4175,13 +4275,21 @@ function ButtonPage() {
       Example,
       { title: t2("btnStateTitle"), hint: t2("btnStateHint"), code: CODE_BTN_STATE },
       (0, import_react31.createElement)(
-        Row,
-        null,
-        (0, import_react31.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-        (0, import_react31.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-        (0, import_react31.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528"),
-        (0, import_react31.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-        (0, import_react31.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        (0, import_react31.createElement)(
+          Labeled,
+          { label: "\u7981\u7528" },
+          (0, import_react31.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+          (0, import_react31.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+          (0, import_react31.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
+        ),
+        (0, import_react31.createElement)(
+          Labeled,
+          { label: "loading" },
+          (0, import_react31.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+          (0, import_react31.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+        )
       )
     ),
     // 自定义颜色
@@ -4191,8 +4299,16 @@ function ButtonPage() {
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color))),
-        (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "outline", color }, color)))
+        (0, import_react31.createElement)(
+          Labeled,
+          { label: "\u5B9E\u5FC3" },
+          (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
+        ),
+        (0, import_react31.createElement)(
+          Labeled,
+          { label: "\u63CF\u8FB9" },
+          (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "outline", color }, color)))
+        )
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BTN_USAGE }),
@@ -5421,6 +5537,21 @@ function baseNameOfPath(p) {
 function dirnameOf(p) {
   return parentOf(p);
 }
+function pickWorkspaceAnchor(items) {
+  let best = null;
+  let bestAt = Number.NEGATIVE_INFINITY;
+  for (const item of items) {
+    const sessionId = item.sessionIds?.[item.sessionIds.length - 1];
+    if (typeof item.title !== "string" || item.title === "" || typeof sessionId !== "string" || sessionId === "")
+      continue;
+    const at = typeof item.updatedAt === "number" && Number.isFinite(item.updatedAt) ? item.updatedAt : Number.NEGATIVE_INFINITY;
+    if (best !== null && at <= bestAt)
+      continue;
+    best = { title: item.title, sessionId };
+    bestAt = at;
+  }
+  return best;
+}
 
 // dist/explorer/preview/BytesPreview.js
 var import_react32 = require("react");
@@ -5725,19 +5856,32 @@ function FilePreview(props) {
 
 // dist/explorer/FileBrowser.js
 function crumbsMenuEntries(params) {
-  const { workspaces, rootName, rootFallbackLabel, crumbs } = params;
+  const { workspaces, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
   const out = [];
-  const wsEntry = (ws, current3) => ({
-    id: current3 ? "dir:" : `ws:${ws}`,
-    label: (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-item", title: ws }, (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react37.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react37.createElement)("span", { style: { fontWeight: current3 ? 600 : 400 } }, ws))
-  });
-  const pathEntry = (crumb, depth, withArrow = true) => ({
-    id: `dir:${crumb.path}`,
-    label: (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-item", title: crumb.path }, withArrow ? (0, import_react37.createElement)(import_react37.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react37.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot" })), (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react37.createElement)("span", null, crumb.label))
-  });
+  const wsEntry = (ws, current3) => (0, import_react37.createElement)("button", {
+    key: `ws:${ws}`,
+    type: "button",
+    role: "menuitem",
+    className: "dshpc-fb__menu-item",
+    title: ws,
+    // 当前工作区也可点（源实现用户 2026-10-10）：点它 = 回到该工作区根目录（浏览深处时唯一的「回根」入口）。
+    onClick: () => {
+      onPickWorkspace?.(ws);
+    }
+  }, (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react37.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current3 ? 600 : 400 } }, ws));
+  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react37.createElement)("button", {
+    key: `dir:${crumb.path}`,
+    type: "button",
+    role: "menuitem",
+    className: "dshpc-fb__menu-item",
+    title: crumb.path,
+    onClick: () => {
+      onLoadDir?.(crumb.path);
+    }
+  }, withArrow ? (0, import_react37.createElement)(import_react37.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react37.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
   if (workspaces === void 0) {
     if (crumbs.length === 0)
-      return [{ id: "noop", label: rootFallbackLabel, disabled: true }];
+      return [(0, import_react37.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
     return crumbs.map((crumb, index) => pathEntry(crumb, index === 0 ? 0 : index - 1, index !== 0));
   }
   const segments = rootName !== "" && crumbs.length > 0 && crumbs[0]?.path === "" ? crumbs.slice(1) : crumbs;
@@ -5991,7 +6135,7 @@ function FileBrowser(props) {
     if (!isDir && picker && !matchesFilter(childPath, false, props.filter))
       return null;
     if (!isDir) {
-      const pick = () => {
+      const pick2 = () => {
         if (picker && props.onPick !== void 0) {
           props.onPick(relativizeToRoot(rootCache, props.sessionId, childPath), false);
           return;
@@ -6009,10 +6153,10 @@ function FileBrowser(props) {
         role: "button",
         tabIndex: 0,
         title: picker ? tt("explorerPickFile") : childPath,
-        onClick: pick,
+        onClick: pick2,
         onKeyDown: (event) => {
           if (event.key === "Enter" || event.key === " ")
-            pick();
+            pick2();
         }
       }, (0, import_react37.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react37.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 16 })), (0, import_react37.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name));
     }
@@ -6030,30 +6174,40 @@ function FileBrowser(props) {
       }
       loadDir(childPath);
     };
-    return (0, import_react37.createElement)(import_react37.Fragment, { key: childPath }, (0, import_react37.createElement)("div", {
-      className: "dshpc-fb__row",
-      role: "button",
-      tabIndex: 0,
-      title: childPath,
-      onClick: rowAction,
-      onKeyDown: (event) => {
-        if (event.key === "Enter" || event.key === " ")
-          rowAction();
-      }
-    }, (0, import_react37.createElement)("button", {
-      type: "button",
-      className: `dshpc-fb__row-toggle${isOpen2 ? " dshpc-fb__row-toggle--open" : ""}`,
-      "aria-expanded": isOpen2,
-      "aria-label": isOpen2 ? tt("explorerCollapse") : tt("explorerExpand"),
-      onClick: (event) => {
-        event.stopPropagation();
-        toggleDir(childPath);
-      }
-    }, (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 14 })), (0, import_react37.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name), props.onPick === void 0 && picker ? null : (0, import_react37.createElement)("button", {
-      type: "button",
-      className: "dshpc-fb__row-act",
-      onClick: actThisDir
-    }, tt(picker ? "explorerPickDir" : "explorerEnter"))), isOpen2 ? (0, import_react37.createElement)(
+    return (0, import_react37.createElement)(import_react37.Fragment, { key: childPath }, (0, import_react37.createElement)(
+      "div",
+      {
+        className: "dshpc-fb__row",
+        role: "button",
+        tabIndex: 0,
+        title: childPath,
+        onClick: rowAction,
+        onKeyDown: (event) => {
+          if (event.key === "Enter" || event.key === " ")
+            rowAction();
+        }
+      },
+      // 展开 / 收起：核心 IconButton（换图标表达朝向，不用 CSS 旋转）。
+      (0, import_react37.createElement)(IconButton, {
+        variant: "plain",
+        size: "sm",
+        className: "dshpc-fb__row-toggle",
+        icon: (0, import_react37.createElement)(isOpen2 ? official_exports.IconChevronDownOutlineRegular : official_exports.IconChevronRightOutlineRegular, { size: 14 }),
+        label: isOpen2 ? tt("explorerCollapse") : tt("explorerExpand"),
+        "aria-expanded": isOpen2,
+        onClick: (event) => {
+          event.stopPropagation();
+          toggleDir(childPath);
+        }
+      }),
+      (0, import_react37.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+      props.onPick === void 0 && picker ? null : (0, import_react37.createElement)(Button, {
+        variant: "outline",
+        size: "sm",
+        className: "dshpc-fb__row-act",
+        onClick: actThisDir
+      }, tt(picker ? "explorerPickDir" : "explorerEnter"))
+    ), isOpen2 ? (0, import_react37.createElement)(
       "div",
       { className: "dshpc-fb__row-children" },
       // 硬性规定：不新建 Loading、不写加载文案 ⇒ 还在拉就空着（源实现用户 2026-10-05）。
@@ -6074,43 +6228,41 @@ function FileBrowser(props) {
     onPickWorkspace: props.onSelectWorkspace,
     onLoadDir: loadDir
   });
-  const onMenuSelect = (id) => {
-    setMenuOpen(false);
-    if (id.startsWith("ws:")) {
-      props.onSelectWorkspace?.(id.slice(3));
-      return;
-    }
-    if (id.startsWith("dir:"))
-      loadDir(id.slice(4));
-  };
-  const crumbBar = (0, import_react37.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-wrap" }, (0, import_react37.createElement)(official_exports.Menu, {
-    open: menuOpen,
-    anchor: (0, import_react37.createElement)(IconButton, {
+  const crumbButton = (label, onClick, current3 = false) => (0, import_react37.createElement)(Button, {
+    variant: "ghost",
+    size: "sm",
+    className: `dshpc-fb__crumb${current3 ? " dshpc-fb__crumb--current" : ""}`,
+    disabled: onClick === void 0,
+    tabIndex: onClick === void 0 ? -1 : 0,
+    onClick
+  }, (0, import_react37.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
+  const crumbBar = (0, import_react37.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react37.createElement)(
+    "div",
+    { className: "dshpc-fb__menu-wrap" },
+    (0, import_react37.createElement)(IconButton, {
       variant: "plain",
-      size: "md",
+      size: "sm",
       icon: (0, import_react37.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
       label: tt("explorerLevels"),
       "aria-expanded": menuOpen,
       onClick: () => setMenuOpen((v) => !v)
     }),
-    items: menuItems,
-    align: "start",
-    side: "bottom",
-    onSelect: onMenuSelect,
-    onClose: () => setMenuOpen(false)
-  })), (0, import_react37.createElement)(
+    // 选层下拉 = 自写浮层（抄兄弟 .dsh-tdt-sv-crumbs-*）：透明遮罩点一下即收，
+    // 遮罩层序高于 picker 面板（1100）⇒ 菜单开着时点面板也算「点外部」。
+    menuOpen ? (0, import_react37.createElement)(import_react37.Fragment, null, (0, import_react37.createElement)("div", {
+      className: "dshpc-fb__crumbs-backdrop",
+      onClick: () => setMenuOpen(false)
+    }), (0, import_react37.createElement)("div", { className: "dshpc-fb__crumbs-menu", role: "menu" }, menuItems)) : null
+  ), (0, import_react37.createElement)(
     "div",
     { ref: regionRef, className: "dshpc-fb__crumbs" },
     // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
-    (0, import_react37.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? (0, import_react37.createElement)("button", { type: "button", className: "dshpc-fb__crumb", disabled: true, tabIndex: -1 }, tt("explorerRootName")) : crumbs.map((crumb, index) => (0, import_react37.createElement)(import_react37.Fragment, { key: crumb.path }, index > 0 ? (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 12 }) : null, (0, import_react37.createElement)("button", { type: "button", className: "dshpc-fb__crumb", disabled: true, tabIndex: -1 }, crumb.label)))),
+    (0, import_react37.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index) => (0, import_react37.createElement)(import_react37.Fragment, { key: crumb.path }, index > 0 ? (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
     // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
-    crumbsOverflow ? (0, import_react37.createElement)("span", { className: "dshpc-fb__crumb dshpc-fb__crumb--current" }, (0, import_react37.createElement)(MarqueeText, {
-      text: crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"),
-      className: "dshpc-fb__crumb-mq"
-    })) : crumbs.length === 0 ? (0, import_react37.createElement)("span", { className: "dshpc-fb__crumb dshpc-fb__crumb--current" }, tt("explorerRootName")) : crumbs.map((crumb, index) => (0, import_react37.createElement)(import_react37.Fragment, { key: crumb.path }, index > 0 ? (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, (0, import_react37.createElement)("button", { type: "button", className: "dshpc-fb__crumb", onClick: () => loadDir(crumb.path) }, (0, import_react37.createElement)(MarqueeText, { text: crumb.label, className: "dshpc-fb__crumb-mq" }))))
+    crumbsOverflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index) => (0, import_react37.createElement)(import_react37.Fragment, { key: crumb.path }, index > 0 ? (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))
   ), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react37.createElement)(IconButton, {
     variant: "plain",
-    size: "md",
+    size: "sm",
     icon: (0, import_react37.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
     label: tt("previewClose"),
     onClick: props.onClose
@@ -6122,7 +6274,7 @@ function FileBrowser(props) {
     style: { flex: "1 1 auto", minWidth: 0 }
   }), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react37.createElement)(IconButton, {
     variant: "plain",
-    size: "md",
+    size: "sm",
     icon: (0, import_react37.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
     label: tt("previewClose"),
     onClick: props.onClose
@@ -6133,7 +6285,7 @@ function FileBrowser(props) {
     className: "dshpc-fb__title-inner",
     style: { flex: "1 1 auto", minWidth: 0 }
   }), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react37.createElement)(Segmented, {
-    size: "sm",
+    size: "md",
     label: viewingIsMd ? tt("previewMdSwitchAria") : tt("previewHtmlSwitchAria"),
     value: sourceView ? "source" : "render",
     items: [
@@ -6173,24 +6325,17 @@ function FileBrowser(props) {
   } else {
     body = (0, import_react37.createElement)("div", { className: "dshpc-fb__body" });
   }
-  return (0, import_react37.createElement)("aside", {
-    className: `dshpc-fb${props.dock === true ? " dshpc-fb--dock" : ""}`,
+  return (0, import_react37.createElement)("div", {
+    className: "dshpc-fb",
     style: props.style ?? void 0
-  }, props.onResizeStart === void 0 ? null : (0, import_react37.createElement)("div", {
-    className: "dshpc-fb__resizer",
-    role: "separator",
-    "aria-orientation": "vertical",
-    title: tt("previewResize"),
-    onPointerDown: (event) => {
-      props.onResizeStart?.(event);
-    }
-  }), outside ? crumbBarPlain : crumbBar, titleBar, body);
+  }, outside ? crumbBarPlain : crumbBar, titleBar, body);
 }
 
 // dist/explorer/open.js
 var import_react38 = require("react");
 var import_client5 = require("react-dom/client");
 var PREVIEW_HOST_ID = "dshpc-file-preview-host";
+var PREVIEW_PANEL_ID = "file-preview";
 function openFilePreview(options) {
   if (typeof document === "undefined")
     return null;
@@ -6200,8 +6345,20 @@ function openFilePreview(options) {
   const container = document.createElement("div");
   container.id = PREVIEW_HOST_ID;
   container.setAttribute("data-dshpc-file-preview", "");
-  container.style.cssText = `position:fixed;top:0;right:0;bottom:0;z-index:1050;display:flex;width:${options.width ?? 460}px;max-width:100vw;background:var(--dshpc-surface-1,#fff);border-left:1px solid var(--dshpc-border,#d0d7de);box-shadow:var(--dshpc-shadow-2,none)`;
+  container.style.cssText = "position:fixed;top:0;right:0;bottom:0;z-index:1050;display:flex";
   document.body.appendChild(container);
+  const dock = createPanelDock({
+    maxPanels: 1,
+    defaultWidth: options.width ?? 460,
+    minWidth: options.minWidth ?? 320,
+    // 每次打开都从默认宽度起步（预览是临时面板，不继承上次的落位）。
+    storageKey: false,
+    // 关钮被点 ⇒ 整个挂载体回收（close 内部幂等，不受 onClose 回调顺序影响）。
+    onClose: () => {
+      close();
+    }
+  });
+  dock.open(PREVIEW_PANEL_ID);
   let closed = false;
   const root2 = (0, import_client5.createRoot)(container);
   const close = () => {
@@ -6219,37 +6376,23 @@ function openFilePreview(options) {
   };
   window.addEventListener("keydown", onKeyDown);
   ensureControls(getStyleKit());
-  root2.render((0, import_react38.createElement)(FileBrowser, {
+  root2.render((0, import_react38.createElement)("div", { style: { display: "flex", height: "100%", ["--dshpc-dock-h"]: "100%" } }, (0, import_react38.createElement)(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, (0, import_react38.createElement)(DockPanel, {
+    id: PREVIEW_PANEL_ID,
+    // 内置头部、只留关闭钮（用户 2026-10-21：核心有 header 机制，不要自定义一排）。
+    title: options.title ?? "",
+    width: options.width ?? 460,
+    minWidth: options.minWidth ?? 320,
+    maxWidth: options.maxWidth
+  }, (0, import_react38.createElement)(FileBrowser, {
     workspaceFiles: options.workspaceFiles,
     officeToPdf: options.officeToPdf ?? null,
     sessionId: options.sessionId,
     path: options.path,
     rootName: options.rootName,
     rootCache: options.rootCache,
-    dock: true,
-    onClose: close,
-    onResizeStart: (event) => {
-      const min = options.minWidth ?? 320;
-      const max = Math.max(min, Math.round(window.innerWidth * 0.7));
-      startResizeLayoutWidth({
-        startEvent: event,
-        root: container,
-        rootClass: "dshpc-fb--resizing",
-        rafThrottle: true,
-        compute: (clientX) => {
-          const w = (options.width ?? 460) + (event.clientX - clientX);
-          return Math.min(max, Math.max(min, w));
-        },
-        onMove: (width) => {
-          container.style.width = `${width}px`;
-        },
-        onCommit: (width) => {
-          container.style.width = `${width}px`;
-        }
-      });
-    },
-    style: { flex: "1 1 auto", minWidth: 0, minHeight: 0 }
-  }));
+    translate: options.translate,
+    style: { height: "100%", minHeight: 0 }
+  })))));
   return { close, path: options.path };
 }
 var PICKER_WIDTH = 480;
@@ -6376,162 +6519,59 @@ function SessionPreview(props) {
   return (0, import_react39.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react39.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react39.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
 }
 
+// packages/demo/src/samples.ts
+var SAMPLE_NAMES = ["README.md", "demo.html", "sample.js", "sample.css"];
+var MAX_DIRS_PER_LEVEL = 6;
+var MAX_DEPTH = 4;
+var SKIP = /* @__PURE__ */ new Set(["node_modules", "dist", ".git", "coverage", "build"]);
+async function readDir(files, sessionId, dir) {
+  try {
+    const parsed = listingOf(await files.list(sessionId, listPathOf(dir)));
+    if (parsed === null || isFailed(parsed)) return null;
+    return parsed.entries;
+  } catch {
+    return null;
+  }
+}
+function hitOf(dir, entries2) {
+  const names = new Set(entries2.filter((entry) => entry.type === "file").map((entry) => entry.name));
+  if (!SAMPLE_NAMES.every((name) => names.has(name))) return null;
+  return {
+    dir,
+    md: joinPath(dir, "README.md"),
+    html: joinPath(dir, "demo.html"),
+    js: joinPath(dir, "sample.js"),
+    css: joinPath(dir, "sample.css")
+  };
+}
+async function findSamples(files, sessionId) {
+  const root2 = await readDir(files, sessionId, "");
+  if (root2 === null) return null;
+  let frontier = [""];
+  const hit = hitOf("", root2);
+  if (hit !== null) return hit;
+  for (let depth = 0; depth < MAX_DEPTH; depth++) {
+    const next = [];
+    for (const dir of frontier) {
+      const listed = dir === "" ? root2 : await readDir(files, sessionId, dir);
+      if (listed === null) continue;
+      const subdirs = listed.filter((entry) => entry.type === "directory" && !SKIP.has(entry.name));
+      for (const sub of subdirs.slice(0, MAX_DIRS_PER_LEVEL)) {
+        const childPath = joinPath(dir, sub.name);
+        const childEntries = await readDir(files, sessionId, childPath);
+        if (childEntries === null) continue;
+        const found = hitOf(childPath, childEntries);
+        if (found !== null) return found;
+        next.push(childPath);
+      }
+    }
+    if (next.length === 0) return null;
+    frontier = next;
+  }
+  return null;
+}
+
 // packages/demo/src/mock.ts
-var ROOT = "/home/demo-workspace";
-var TREE = {
-  ".": ["src", "docs", "assets", "README.md", "package.json", "logo.png", "notes.txt", "big.log"],
-  src: ["index.ts", "ui", "explorer"],
-  "src/ui": ["Button.ts", "Picker.ts"],
-  "src/explorer": ["FileBrowser.ts", "types.ts"],
-  docs: ["requirements.md", "guide.html", "report.pdf", "spec.docx", "diagram.svg"],
-  assets: ["logo.png", "photo.jpg"]
-};
-var TEXT = {
-  "README.md": "# dsh-plugin-core\n\nDSH \u63D2\u4EF6\u5171\u4EAB\u5E95\u5EA7\u3002\n",
-  "package.json": '{\n  "name": "dsh-plugin-core"\n}\n',
-  "notes.txt": "\u9884\u89C8\u7AD9\u5047\u6570\u636E\u3002\n",
-  "src/index.ts": "export * from './ui/index.js'\n",
-  "src/ui/Button.ts": "export function Button() { /* ... */ }\n",
-  "src/ui/Picker.ts": "export function Picker() { /* ... */ }\n",
-  "src/explorer/FileBrowser.ts": "export function FileBrowser() { /* ... */ }\n",
-  "src/explorer/types.ts": "export interface WorkspaceFilesFace {}\n",
-  "docs/requirements.md": "# \u9700\u6C42\u6587\u6863\n\n\uFF08\u9884\u89C8\u7528\u5047\u6570\u636E\uFF09\n",
-  "docs/guide.html": "<!DOCTYPE html><html><head><title>\u6307\u5357</title></head><body><h1>\u6307\u5357</h1><p>\u5047 HTML\u3002</p></body></html>\n"
-};
-var BIG_LINES = 12e3;
-function bigLine(i) {
-  return `[${String(i).padStart(5, "0")}] dsh-plugin-core demo log line \u2014 \u5206\u9875\u8BFB\u53D6\u6F14\u793A`;
-}
-var PNG_1X1 = new Uint8Array([
-  137,
-  80,
-  78,
-  71,
-  13,
-  10,
-  26,
-  10,
-  0,
-  0,
-  0,
-  13,
-  73,
-  72,
-  68,
-  82,
-  0,
-  0,
-  0,
-  1,
-  0,
-  0,
-  0,
-  1,
-  8,
-  6,
-  0,
-  0,
-  0,
-  31,
-  21,
-  196,
-  137,
-  0,
-  0,
-  0,
-  10,
-  73,
-  68,
-  65,
-  84,
-  120,
-  156,
-  99,
-  0,
-  1,
-  0,
-  0,
-  5,
-  0,
-  1,
-  13,
-  10,
-  45,
-  180,
-  0,
-  0,
-  0,
-  0,
-  73,
-  69,
-  78,
-  68,
-  174,
-  66,
-  96,
-  130
-]);
-function bytesOfText(text) {
-  return new TextEncoder().encode(text);
-}
-function fakePdf() {
-  return bytesOfText("%PDF-1.4\n% \u5047 PDF\uFF08demo \u6570\u636E\uFF09\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n");
-}
-var mockWorkspaceFiles = {
-  async read(_sessionId, path, range) {
-    await delay(120);
-    if (path === "big.log") {
-      const offset = range.offset ?? 0;
-      const limit = range.limit ?? 5e3;
-      const end = Math.min(offset + limit, BIG_LINES);
-      const lines = [];
-      for (let i = offset; i < end; i++) lines.push(bigLine(i));
-      return { offset, text: lines.length === 0 ? "" : `${lines.join("\n")}
-`, lines: lines.length, eof: end >= BIG_LINES };
-    }
-    const text = TEXT[path];
-    if (text === void 0) throw { code: "workspace-file/not-text" };
-    return { offset: 0, text, lines: text.split("\n").length, eof: true };
-  },
-  async readBytes(_sessionId, path) {
-    await delay(120);
-    if (path === "docs/report.pdf") return { offset: 0, data: fakePdf(), eof: true };
-    if (path === "logo.png" || path === "assets/logo.png") return { offset: 0, data: PNG_1X1, eof: true };
-    if (path === "docs/guide.html") return { offset: 0, data: bytesOfText(TEXT["docs/guide.html"]), eof: true };
-    if (path === "docs/diagram.svg") {
-      return { offset: 0, data: bytesOfText('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" fill="#3b82f6"/></svg>'), eof: true };
-    }
-    throw { code: "workspace-file/not-found" };
-  },
-  async list(_sessionId, path) {
-    await delay(120);
-    if (path === "outside") {
-      return { ok: false, error: { code: "workspace-file/outside-workspace" } };
-    }
-    const key = path === "." || path === "" ? "." : path;
-    const names = TREE[key];
-    if (names === void 0) throw { code: "workspace-file/not-directory" };
-    return {
-      path: key === "." ? "" : key,
-      truncated: false,
-      entries: names.map((name) => ({
-        name,
-        type: name.includes(".") ? "file" : "directory",
-        size: name.includes(".") ? 1024 : void 0
-      }))
-    };
-  },
-  async stat(_sessionId, path) {
-    await delay(80);
-    return { absolutePath: `${ROOT}/${path}` };
-  }
-};
-var mockOfficeToPdf = {
-  async render(_sessionId, _path) {
-    await delay(200);
-    return { ok: true, value: { offset: 0, data: fakePdf(), eof: true } };
-  }
-};
 var mockSessionSource = {
   async listMessages(_sessionId) {
     await delay(150);
@@ -6551,24 +6591,66 @@ var mockSessionSource = {
     return bytesOfText(`\u9884\u89C8\u5047\u6587\u4EF6\uFF1A${path}`);
   }
 };
+function bytesOfText(text) {
+  return new TextEncoder().encode(text);
+}
 function delay(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
 // packages/demo/src/sections/blocks.tsx
-var SESSION = "demo-session";
+function Row2(props) {
+  return (0, import_react40.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, ...props.children);
+}
+function Hint(props) {
+  return (0, import_react40.createElement)("span", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } }, props.text);
+}
 function ExplorerPage() {
+  const services = (0, import_react40.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const workspaces = (0, import_react40.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const anchor = pickWorkspaceAnchor(workspaces);
+  const [samples, setSamples] = (0, import_react40.useState)(null);
+  const [probing, setProbing] = (0, import_react40.useState)(false);
   const [picked, setPicked] = (0, import_react40.useState)(null);
-  const pickAllRef = (0, import_react40.useRef)(null);
-  const pickTsRef = (0, import_react40.useRef)(null);
-  const pickDirRef = (0, import_react40.useRef)(null);
-  const preview = (path) => {
+  const files = services.workspaceFiles;
+  const officeToPdf = services.officeToPdf;
+  const sessionId = anchor?.sessionId ?? "";
+  const ready = files !== null && anchor !== null;
+  (0, import_react40.useEffect)(() => {
+    if (files === null || sessionId === "") return;
+    let alive = true;
+    setProbing(true);
+    void findSamples(files, sessionId).then((found) => {
+      if (!alive) return;
+      setSamples(found);
+      setProbing(false);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [files, sessionId]);
+  const open = (path) => {
+    if (files === null || anchor === null) return;
     openFilePreview({
-      workspaceFiles: mockWorkspaceFiles,
-      officeToPdf: mockOfficeToPdf,
-      sessionId: SESSION,
+      workspaceFiles: files,
+      officeToPdf,
+      sessionId: anchor.sessionId,
       path,
-      rootName: "demo-workspace"
+      rootName: anchor.title
+    });
+  };
+  const pick2 = (event, filter) => {
+    if (files === null || anchor === null) return;
+    void pickWorkspaceFile({
+      workspaceFiles: files,
+      officeToPdf,
+      sessionId: anchor.sessionId,
+      anchor: event.currentTarget,
+      rootName: anchor.title,
+      workspaces: workspaces.map((item) => item.title),
+      filter
+    }).then((result) => {
+      setPicked(result === null ? null : `${result.path}${result.isDir ? `\uFF08${t2("pickFolder")}\uFF09` : ""}`);
     });
   };
   return (0, import_react40.createElement)(
@@ -6576,109 +6658,60 @@ function ExplorerPage() {
     null,
     (0, import_react40.createElement)(
       Demo,
-      { title: "FileBrowser\uFF08\u9762\u677F\u672C\u4F53\uFF09", hint: t2("explorerHint") },
-      (0, import_react40.createElement)(
-        "div",
-        {
-          style: {
-            width: "720px",
-            height: "420px",
-            overflow: "hidden",
-            border: "1px solid var(--dshpc-border)",
-            borderRadius: "8px"
-          }
-        },
-        (0, import_react40.createElement)(FileBrowser, {
-          workspaceFiles: mockWorkspaceFiles,
-          officeToPdf: mockOfficeToPdf,
-          sessionId: SESSION,
-          path: "",
-          rootName: "demo-workspace",
-          workspaces: ["demo-workspace"]
-        })
-      )
+      { title: t2("explorerDataTitle"), hint: t2("explorerDataHint") },
+      files === null ? (0, import_react40.createElement)(Hint, { text: t2("explorerFilesNone") }) : anchor === null ? (0, import_react40.createElement)(Hint, { text: t2("explorerAnchorNone") }) : (0, import_react40.createElement)(Hint, {
+        text: `${t2("explorerAnchorLabel")}${anchor.title}\uFF5C${t2("explorerSessionLabel")}${anchor.sessionId}\uFF5C${t2("explorerWorkspaces")}${workspaces.length}`
+      })
     ),
     (0, import_react40.createElement)(
       Demo,
       { title: t2("methodATitle"), hint: t2("methodAHint") },
-      (0, import_react40.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react40.createElement)(Button, { variant: "primary", onClick: () => preview("README.md") }, t2("openFilePreview")),
-        (0, import_react40.createElement)(Button, { onClick: () => preview("docs") }, t2("openDirPreview")),
-        (0, import_react40.createElement)(Button, { onClick: () => preview("docs/report.pdf") }, t2("openPdfPreview"))
-      )
+      ready ? (0, import_react40.createElement)(
+        Row2,
+        null,
+        (0, import_react40.createElement)(Button, { variant: "primary", onClick: () => {
+          open("");
+        } }, t2("openRootPreview")),
+        samples !== null ? (0, import_react40.createElement)(
+          Row2,
+          null,
+          (0, import_react40.createElement)(Button, { onClick: () => {
+            open(samples.dir);
+          } }, t2("openSamplesDir")),
+          (0, import_react40.createElement)(Button, { onClick: () => {
+            open(samples.md);
+          } }, t2("sampleMd")),
+          (0, import_react40.createElement)(Button, { onClick: () => {
+            open(samples.html);
+          } }, t2("sampleHtml")),
+          (0, import_react40.createElement)(Button, { onClick: () => {
+            open(samples.js);
+          } }, t2("sampleJs")),
+          (0, import_react40.createElement)(Button, { onClick: () => {
+            open(samples.css);
+          } }, t2("sampleCss"))
+        ) : (0, import_react40.createElement)(Hint, { text: probing ? t2("samplesProbing") : t2("samplesNotFound") })
+      ) : (0, import_react40.createElement)(Hint, { text: t2("explorerFilesNone") })
     ),
     (0, import_react40.createElement)(
       Demo,
       { title: t2("methodBTitle"), hint: t2("methodBHint") },
-      (0, import_react40.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } },
-        (0, import_react40.createElement)(
-          "button",
-          {
-            ref: pickAllRef,
-            type: "button",
-            className: "dshpc-btn dshpc-btn--outline dshpc-btn--lg",
-            onClick: () => {
-              void pickWorkspaceFile({
-                workspaceFiles: mockWorkspaceFiles,
-                officeToPdf: mockOfficeToPdf,
-                sessionId: SESSION,
-                anchor: pickAllRef.current,
-                rootName: "demo-workspace"
-              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? "\uFF08\u6587\u4EF6\u5939\uFF09" : ""}`));
-            }
-          },
-          t2("pickAny")
-        ),
-        (0, import_react40.createElement)(
-          "button",
-          {
-            ref: pickTsRef,
-            type: "button",
-            className: "dshpc-btn dshpc-btn--outline dshpc-btn--lg",
-            onClick: () => {
-              void pickWorkspaceFile({
-                workspaceFiles: mockWorkspaceFiles,
-                officeToPdf: mockOfficeToPdf,
-                sessionId: SESSION,
-                anchor: pickTsRef.current,
-                rootName: "demo-workspace",
-                filter: { exts: ["ts"] }
-              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? "\uFF08\u6587\u4EF6\u5939\uFF09" : ""}`));
-            }
-          },
-          t2("pickTs")
-        ),
-        (0, import_react40.createElement)(
-          "button",
-          {
-            ref: pickDirRef,
-            type: "button",
-            className: "dshpc-btn dshpc-btn--outline dshpc-btn--lg",
-            onClick: () => {
-              void pickWorkspaceFile({
-                workspaceFiles: mockWorkspaceFiles,
-                officeToPdf: mockOfficeToPdf,
-                sessionId: SESSION,
-                anchor: pickDirRef.current,
-                rootName: "demo-workspace",
-                filter: { dirs: true }
-              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? "\uFF08\u6587\u4EF6\u5939\uFF09" : ""}`));
-            }
-          },
-          t2("pickDir")
-        ),
-        (0, import_react40.createElement)("span", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } }, picked === null ? t2("pickNone") : `${t2("pickResult")}\uFF1A${picked}`)
-      )
+      ready ? (0, import_react40.createElement)(
+        Row2,
+        null,
+        (0, import_react40.createElement)(Button, { onClick: (event) => {
+          pick2(event);
+        } }, t2("pickAny")),
+        (0, import_react40.createElement)(Button, { onClick: (event) => {
+          pick2(event, { exts: ["ts"] });
+        } }, t2("pickTs")),
+        (0, import_react40.createElement)(Button, { onClick: (event) => {
+          pick2(event, { dirs: true });
+        } }, t2("pickDir")),
+        (0, import_react40.createElement)(Hint, { text: picked === null ? t2("pickNone") : `${t2("pickResult")}\uFF1A${picked}` })
+      ) : (0, import_react40.createElement)(Hint, { text: t2("explorerFilesNone") })
     ),
-    (0, import_react40.createElement)(
-      Demo,
-      { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") },
-      null
-    )
+    (0, import_react40.createElement)(Demo, { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") }, null)
   );
 }
 function SessionPage() {
@@ -6687,18 +6720,26 @@ function SessionPage() {
     Demo,
     { title: "SessionPreview", hint: t2("sessionHint") },
     (0, import_react40.createElement)(
-      "div",
-      { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-      (0, import_react40.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09"),
-      (0, import_react40.createElement)(Button, { onClick: () => setOpen(false) }, "\u5173\u95ED")
+      Row2,
+      null,
+      (0, import_react40.createElement)(Button, { variant: "primary", onClick: () => {
+        setOpen(true);
+      } }, t2("sessionOpenModal")),
+      (0, import_react40.createElement)(Button, { onClick: () => {
+        setOpen(false);
+      } }, t2("sessionClose"))
     ),
     open ? (0, import_react40.createElement)(SessionPreview, {
       sessionId: "demo-session",
       source: mockSessionSource,
       variant: "modal",
-      title: "\u4F1A\u8BDD\u9884\u89C8\uFF08\u5047\u6570\u636E\uFF09",
-      onClose: () => setOpen(false),
-      onOpenFile: () => setOpen(false)
+      title: t2("sessionPreviewTitle"),
+      onClose: () => {
+        setOpen(false);
+      },
+      onOpenFile: () => {
+        setOpen(false);
+      }
     }) : null
   );
 }
@@ -6828,7 +6869,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0011-8zkz"]
+            [t2("buildStamp"), "1021-0739-4341"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",
@@ -6958,7 +6999,7 @@ function Sections(props) {
 }
 
 // packages/demo/src/demo-css.generated.ts
-var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n.dshpc-doc-note {\n  display: flex;\n  gap: 8px;\n  padding: 10px 12px;\n  margin: 0 0 16px;\n  border: 1px solid var(--dshpc-border);\n  border-left: 3px solid var(--dshpc-business);\n  border-radius: var(--dshpc-radius-sm);\n  background: var(--dshpc-business-soft);\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u8FB9\u6846\u76D2\uFF1A\u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3 */\n.dshpc-doc-block {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  padding: 12px 14px;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n.dshpc-doc-example {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  padding: 14px;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n}\n\n/* \u4EE3\u7801\u53EA\u5728\u5185\u5C42\u6EDA\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70 */\n.dshpc-doc-example__scroll {\n  max-height: 320px;\n  overflow: auto;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n";
+var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n/* \u5907\u6CE8\u6846\u672C\u4F53\u662F\u6838\u5FC3 StripCard\uFF08\u65B9\u89D2 + \u5DE6 4px \u901A\u9AD8\u8272\u6761 + \u540C\u8272\u7CFB\u6D45\u5E95\uFF09\uFF0C\u8FD9\u91CC\u53EA\u8865\u884C\u5185\u6392\u7248\u3002 */\n.dshpc-doc-note {\n  margin-bottom: 16px;\n}\n\n.dshpc-doc-note__body {\n  display: flex;\n  gap: 8px;\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u8FB9\u6846\u76D2\uFF1A\u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3 */\n.dshpc-doc-block {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  padding: 12px 14px;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n.dshpc-doc-example {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  padding: 14px;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n}\n\n/* \u4EE3\u7801\u53EA\u5728\u5185\u5C42\u6EDA\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70 */\n.dshpc-doc-example__scroll {\n  max-height: 320px;\n  overflow: auto;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n";
 
 // packages/demo/src/paths.ts
 var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
@@ -7121,6 +7162,7 @@ function apply(ctx) {
     };
   });
   connectHost(ctx, { modelsPath: MODELS_PATH });
+  connectFileServices(ctx);
   ctx.inject(["locale"], (sub) => {
     const loc = sub?.locale;
     if (loc === void 0) return;

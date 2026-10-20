@@ -5,14 +5,19 @@
 //    Esc / 点外部 / ✕ 关，选中即 resolve）。
 //
 // 两者共用同一套 FileBrowser 面板（用户拍板：同一套内容，两种展现形式）。
-// 挂载模式照 ui/modal-host.ts：自建 container + createRoot，关闭即卸载回收，不残留空根。
+//
+// ⚠️ 方法 A 的**侧边栏本体是核心 PanelDock**（用户 2026-10-21 拍板：不许自绘制外壳 + 拖拽条）。
+// PanelDock 是布局成员（占宽度、挤窄主区），同 ui/modal-host.ts 的做法：自建 container 挂 + createRoot，
+// 关闭即卸载回收，不残留空根；拖宽与关闭交给 PanelDock 自己的 resizer / header 关钮。
 import { createElement as h } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ensureControls, getStyleKit } from '../ui/css.js';
-import { startResizeLayoutWidth } from '../ui/resizer.js';
+import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js';
 import { FileBrowser } from './FileBrowser.js';
 /** 预览侧边栏的挂载容器 id（全站唯一，重复打开先关旧的）。 */
 const PREVIEW_HOST_ID = 'dshpc-file-preview-host';
+/** dock 里的面板 id（本.container 里只有一个）。 */
+const PREVIEW_PANEL_ID = 'file-preview';
 /** 打开工作区文件/文件夹的停靠预览；重复打开会关掉上一个（同侧边栏位）。 */
 export function openFilePreview(options) {
     if (typeof document === 'undefined')
@@ -24,11 +29,21 @@ export function openFilePreview(options) {
     const container = document.createElement('div');
     container.id = PREVIEW_HOST_ID;
     container.setAttribute('data-dshpc-file-preview', '');
-    container.style.cssText =
-        'position:fixed;top:0;right:0;bottom:0;z-index:1050;display:flex;' +
-            `width:${options.width ?? 460}px;max-width:100vw;background:var(--dshpc-surface-1,#fff);` +
-            'border-left:1px solid var(--dshpc-border,#d0d7de);box-shadow:var(--dshpc-shadow-2,none)';
+    // PanelDock 是 flex 布局成员：容器自己撑满右侧（高度由 --dshpc-dock-h 透给面板）。
+    container.style.cssText = 'position:fixed;top:0;right:0;bottom:0;z-index:1050;display:flex';
     document.body.appendChild(container);
+    const dock = createPanelDock({
+        maxPanels: 1,
+        defaultWidth: options.width ?? 460,
+        minWidth: options.minWidth ?? 320,
+        // 每次打开都从默认宽度起步（预览是临时面板，不继承上次的落位）。
+        storageKey: false,
+        // 关钮被点 ⇒ 整个挂载体回收（close 内部幂等，不受 onClose 回调顺序影响）。
+        onClose: () => {
+            close();
+        },
+    });
+    dock.open(PREVIEW_PANEL_ID);
     let closed = false;
     const root = createRoot(container);
     const close = () => {
@@ -46,37 +61,23 @@ export function openFilePreview(options) {
     };
     window.addEventListener('keydown', onKeyDown);
     ensureControls(getStyleKit());
-    root.render(h(FileBrowser, {
+    root.render(h('div', { style: { display: 'flex', height: '100%', ['--dshpc-dock-h']: '100%' } }, h(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, h(DockPanel, {
+        id: PREVIEW_PANEL_ID,
+        // 内置头部、只留关闭钮（用户 2026-10-21：核心有 header 机制，不要自定义一排）。
+        title: options.title ?? '',
+        width: options.width ?? 460,
+        minWidth: options.minWidth ?? 320,
+        maxWidth: options.maxWidth,
+    }, h(FileBrowser, {
         workspaceFiles: options.workspaceFiles,
         officeToPdf: options.officeToPdf ?? null,
         sessionId: options.sessionId,
         path: options.path,
         rootName: options.rootName,
         rootCache: options.rootCache,
-        dock: true,
-        onClose: close,
-        onResizeStart: (event) => {
-            const min = options.minWidth ?? 320;
-            const max = Math.max(min, Math.round(window.innerWidth * 0.7));
-            startResizeLayoutWidth({
-                startEvent: event,
-                root: container,
-                rootClass: 'dshpc-fb--resizing',
-                rafThrottle: true,
-                compute: (clientX) => {
-                    const w = (options.width ?? 460) + (event.clientX - clientX);
-                    return Math.min(max, Math.max(min, w));
-                },
-                onMove: (width) => {
-                    container.style.width = `${width}px`;
-                },
-                onCommit: (width) => {
-                    container.style.width = `${width}px`;
-                },
-            });
-        },
-        style: { flex: '1 1 auto', minWidth: 0, minHeight: 0 },
-    }));
+        translate: options.translate,
+        style: { height: '100%', minHeight: 0 },
+    })))));
     return { close, path: options.path };
 }
 /** 弹窗宽度（源实现 480，用户 2026-09-29 微调定值）。 */

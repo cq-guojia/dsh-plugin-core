@@ -91,17 +91,29 @@ function StarSvg(): ReturnType<typeof h> {
 const ICON_SIZE: Record<ButtonSize, number> = { sm: 12, md: 14, lg: 16 }
 
 /** 10 档外观各配一颗语义图标，一眼看出「图标在前、文字在后」。 */
-const VARIANTS: readonly { value: ButtonVariant; icon: string }[] = [
-  { value: 'primary', icon: 'check' },
-  { value: 'secondary', icon: 'copy' },
-  { value: 'outline', icon: 'edit' },
-  { value: 'ghost', icon: 'refresh' },
-  { value: 'danger', icon: 'close' },
-  { value: 'success', icon: 'play' },
-  { value: 'warning', icon: 'clock' },
-  { value: 'info', icon: 'send' },
-  { value: 'danger-outline', icon: 'close' },
-  { value: 'link', icon: 'search' },
+const VARIANT_ICON: Record<ButtonVariant, string> = {
+  primary: 'check',
+  secondary: 'copy',
+  outline: 'edit',
+  ghost: 'refresh',
+  danger: 'close',
+  success: 'play',
+  warning: 'clock',
+  info: 'send',
+  'danger-outline': 'close',
+  link: 'search',
+}
+
+/**
+ * 10 档按语义分四组展示。
+ * 为什么不横排：10 颗 + 缩小版再 10 颗平铺，主行动、中性、语义色、弱化混在一起，
+ * 看不出层次也看不出差别（用户 2026-10-21：纯粹堆着）。分组后每组一行，同组才可比。
+ */
+const VARIANT_GROUPS: readonly { label: string; items: readonly ButtonVariant[] }[] = [
+  { label: '主行动', items: ['primary', 'secondary'] },
+  { label: '中性', items: ['outline', 'ghost'] },
+  { label: '语义色', items: ['danger', 'success', 'warning', 'info'] },
+  { label: '弱化 / 行内', items: ['danger-outline', 'link'] },
 ]
 
 /** 自定义颜色演示：实心档作底色、线框档作主色。 */
@@ -139,16 +151,26 @@ const CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular 
 <Button variant="outline">取消</Button>
 <Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>删除</Button>`
 
-const CODE_BTN_VARIANT = `<Button variant="primary">primary</Button>
-<Button variant="secondary">secondary</Button>
-<Button variant="outline">outline</Button>
-<Button variant="ghost">ghost</Button>
-<Button variant="danger">danger</Button>
-<Button variant="success">success</Button>
-<Button variant="warning">warning</Button>
-<Button variant="info">info</Button>
-<Button variant="danger-outline">danger-outline</Button>
-<Button variant="link">link</Button>`
+const CODE_BTN_VARIANT = `// 主行动
+<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>primary</Button>
+<Button variant="secondary" icon={<IconCopyOutlineRegular size={16} />}>secondary</Button>
+
+// 中性
+<Button variant="outline" icon={<IconEditOutlineRegular size={16} />}>outline</Button>
+<Button variant="ghost" icon={<IconRefreshOutlineRegular size={16} />}>ghost</Button>
+
+// 语义色
+<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>danger</Button>
+<Button variant="success" icon={<IconPlayOutlineRegular size={16} />}>success</Button>
+<Button variant="warning" icon={<IconClockOutlineRegular size={16} />}>warning</Button>
+<Button variant="info" icon={<IconPaperPlaneOutlineRegular size={16} />}>info</Button>
+
+// 弱化 / 行内
+<Button variant="danger-outline" icon={<IconCloseOutlineRegular size={16} />}>danger-outline</Button>
+<Button variant="link" icon={<IconSearchOutlineRegular size={16} />}>link</Button>
+
+// 任意一档都能再给 size（这里 sm 24 高）
+<Button variant="danger" size="sm" icon={<IconCloseOutlineRegular size={12} />}>danger</Button>`
 
 const CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
 <Button size="md" variant="outline">md</Button>
@@ -231,10 +253,13 @@ export function ButtonPage(): ReturnType<typeof h> {
       Example,
       { title: t('btnVariantTitle'), hint: t('btnVariantHint'), code: CODE_BTN_VARIANT },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
-        h(Row, null, VARIANTS.map((item) =>
-          h(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
-        h(Row, null, VARIANTS.map((item) =>
-          h(Button, { key: item.value, variant: item.value, size: 'sm', icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))),
+        VARIANT_GROUPS.map((group) =>
+          h(Labeled, { key: group.label, label: group.label },
+            h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' } },
+              h(Row, null, group.items.map((variant) =>
+                h(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
+              h(Row, null, group.items.map((variant) =>
+                h(Button, { key: variant, variant, size: 'sm', icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant))))))),
     ),
 
     // 尺寸 / 图标位置 / block
@@ -268,12 +293,14 @@ export function ButtonPage(): ReturnType<typeof h> {
     h(
       Example,
       { title: t('btnStateTitle'), hint: t('btnStateHint'), code: CODE_BTN_STATE },
-      h(Row, null,
-        h(Button, { variant: 'primary' }, '默认'),
-        h(Button, { variant: 'primary', disabled: true }, '禁用'),
-        h(Button, { variant: 'danger', disabled: true, icon: iconOf('close', ICON_SIZE.lg) }, '禁用'),
-        h(Button, { variant: 'outline', loading: true }, '加载中'),
-        h(Button, { variant: 'primary', loading: true, icon: iconOf('refresh', ICON_SIZE.lg) }, '提交中')),
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
+        h(Labeled, { label: '禁用' },
+          h(Button, { variant: 'primary' }, '默认'),
+          h(Button, { variant: 'primary', disabled: true }, '禁用'),
+          h(Button, { variant: 'danger', disabled: true, icon: iconOf('close', ICON_SIZE.lg) }, '禁用')),
+        h(Labeled, { label: 'loading' },
+          h(Button, { variant: 'outline', loading: true }, '加载中'),
+          h(Button, { variant: 'primary', loading: true, icon: iconOf('refresh', ICON_SIZE.lg) }, '提交中'))),
     ),
 
     // 自定义颜色
@@ -281,10 +308,12 @@ export function ButtonPage(): ReturnType<typeof h> {
       Example,
       { title: t('btnColorTitle'), hint: t('btnColorHint'), code: CODE_BTN_COLOR },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
-        h(Row, null, CUSTOM_COLORS.map((color) =>
-          h(Button, { key: color, variant: 'primary', color, icon: iconOf('sparkle', ICON_SIZE.lg) }, color))),
-        h(Row, null, CUSTOM_COLORS.map((color) =>
-          h(Button, { key: color, variant: 'outline', color }, color)))),
+        h(Labeled, { label: '实心' },
+          h(Row, null, CUSTOM_COLORS.map((color) =>
+            h(Button, { key: color, variant: 'primary', color, icon: iconOf('sparkle', ICON_SIZE.lg) }, color)))),
+        h(Labeled, { label: '描边' },
+          h(Row, null, CUSTOM_COLORS.map((color) =>
+            h(Button, { key: color, variant: 'outline', color }, color))))),
     ),
 
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_BTN_USAGE }),

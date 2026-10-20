@@ -43,13 +43,23 @@ declare class ModelCatalogStore {
 }
 /** 模型目录单例（ModelPicker 消费；connectHost 负责喂）。 */
 export declare const modelCatalog: ModelCatalogStore;
-/** 官方 `workspaces` client 服务的 `list`（WorkspaceSource 结构化子集）。 */
+/** 官方 `workspaces` client 服务 `list` 的一行（`WorkspaceView` 的消费子集，见 docs/design/external/dsh-host.md §11）。 */
+export interface HostWorkspaceItem {
+    workspaceId: string;
+    title: string;
+    /** 本工作区名下的会话 id（追加序）；文件浏览的 sessionId 只能从这来。 */
+    sessionIds?: readonly string[];
+    /** 更新时间戳；「最近打开的工作区」排序用。 */
+    updatedAt?: number;
+}
+/**
+ * 官方 `workspaces` client 服务的 `list`（WorkspaceSource 结构化子集）。
+ * ⚠️ `sessionIds` / `updatedAt` 由官方 `WorkspaceView` 提供（dsh-host.md §11 已核实）；
+ *    本宿主没给时保持 undefined，取锚点方自行判空，不得编造。
+ */
 export interface HostWorkspaceSource {
     getSnapshot: () => {
-        items: readonly {
-            workspaceId: string;
-            title: string;
-        }[];
+        items: readonly HostWorkspaceItem[];
     };
     subscribe: (listener: () => void) => () => void;
 }
@@ -63,10 +73,7 @@ declare class WorkspaceListStore {
     private unsubscribe;
     /** 换源（仅 connectHost 调；重复调用换到新源）。 */
     setSource(source: HostWorkspaceSource): void;
-    readonly getSnapshot: () => readonly {
-        workspaceId: string;
-        title: string;
-    }[];
+    readonly getSnapshot: () => readonly HostWorkspaceItem[];
     readonly subscribe: (listener: () => void) => (() => void);
 }
 /** 工作区列表单例（WorkspacePicker 消费；connectHost 负责喂）。 */

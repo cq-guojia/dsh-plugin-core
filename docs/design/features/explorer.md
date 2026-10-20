@@ -10,13 +10,17 @@
 
 | 能力 | 签名要点 | 形态 |
 |---|---|---|
-| `openFilePreview(opts)` | `{ workspaceFiles, sessionId, path, officeToPdf?, rootName?, width?, onClose? }` ⇒ `{ close(), path }` | 右侧停靠预览（可拖宽、Esc / ✕ 关）；重复打开关旧的 |
+| `openFilePreview(opts)` | `{ workspaceFiles, sessionId, path, officeToPdf?, rootName?, width?, maxWidth?, mainMinWidth?, title?, onClose? }` ⇒ `{ close(), path }` | 右侧停靠预览（拖宽、✕ 归核心 `PanelDock`；Esc / `close()` 也能关）；重复打开关旧的 |
 | `pickWorkspaceFile(opts)` | `{ workspaceFiles, sessionId, anchor?, filter?, officeToPdf?, rootName?, workspaces? }` ⇒ `Promise<{ path, isDir } \| null>` | 锚定按钮旁的模态弹窗；Esc / 点外部 / ✕ 取消 resolve `null` |
 
 - `path` 文件或文件夹都吃：`list(path)` 成功 ⇒ 目录树；报错 ⇒ 文件预览态（dir 取父目录，面包屑保留可返回）。
 - `pickWorkspaceFile` 的 `filter`：`{ exts: ['ts'] }` 只要某扩展名 / `{ dirs: true }` 只要文件夹 / 不传不限。
 - 选中回传**工作区相对路径**（口径同兄弟项目：绝对路径会被宿主附件 zod 拒；根由 `stat.absolutePath` 反推）。
 - 两者共用同一 `FileBrowser` 面板（用户 2026-10-20 拍板：同一套内容，两种展现形式）。
+- **浏览态的侧边栏本体是核心 `PanelDock`**（用户 2026-10-21 拍板）：`openFilePreview` 自建
+  container + `createRoot` 挂载 `<PanelDock><DockPanel>{FileBrowser}</DockPanel></PanelDock>`，
+  拖宽与关闭由 PanelDock 出（它的 resizer / header 关钮），FileBrowser **自己不画外壳也不画拖拽条**；
+  宽度记忆按调用方的 `width` 走（本用例传 `storageKey: false`，预览是临时面板不继承上次落位）。
 
 ```ts
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
@@ -30,14 +34,23 @@ const picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn,
 
 `FileBrowser(props)`：`workspaceFiles` / `officeToPdf?` / `sessionId` / `path` / `onClose?` /
 `rootName?` / `workspaces?` / `onSelectWorkspace?` / `rootCache?` / `style?` / `translate?`；
-形态二选一：`picker` + `onPick(path, isDir)` + `filter?`（选择器态）｜ `dock` + `onResizeStart`（浏览态）。
+选择器态另加 `picker` + `onPick(path, isDir)` + `filter?`（浏览态不加任何形态参数——外壳归 PanelDock）。
+
+**控件纪律（用户 2026-10-21 定）**：核心有控件的用核心 —— 面包屑 = `Button variant="ghost"`、
+复制 / 刷新 / 关闭 / 展开开关 = `IconButton`、渲染 ⇄ 源码 = `Segmented`、文字 = `MarqueeText`、
+行尾「进入 / 选择此文件夹」= `Button variant="outline"`；**第二排所有控件与 Segmented 同高度档（md = 28px）**。
+唯一自写项是 **▾ 选层浮层**（核心没有「带缩进的选择层菜单」这类控件）⇒ 按兄弟项目
+`.dsh-tdt-sv-crumbs-*`（`archive-session-css.ts`）逐像素照抄：backdrop + 菜单本体
+（`padding:4px`、`max-height:240px` 后滚动、条目 `padding:4px 8px`、最大宽 280px、箭头位 11px、空态弱化）。
+树行同口径：`gap:8px` / `padding:6px 8px` / 圆角 6px（一处定义 `--fb-radius`）。
 
 提供：
 
 - **面包屑**：超宽折叠为当前层名（隐藏测量条 + ResizeObserver，与可见态同构，不超长必还原）；
-  行首 `▾` 选层下拉（官方 `Menu`，条目 = 当前工作区置顶 + 路径层级缩进 + 其他工作区，点当前工作区回根）；
+  行首 `▾` 选层下拉（自写浮层，条目 = 当前工作区置顶 + 路径层级缩进 + 其他工作区，点当前工作区回根）；
   根名不写死（调用方传 `rootName`，否则用反推根的末段）。
-- **内联展开目录树**：行 = 就地展开/收起（两种形态统一），行尾小按钮分派（选择器 = 选此文件夹，浏览 = 进入）；
+- **内联展开目录树**：行 = 就地展开/收起（两种形态统一），行尾核心按钮分派（选择器 = 选此文件夹，
+  浏览 = 进入）且**悬停 / 聚焦该行才出现**（平时保留占位、出现时不顶动行内布局）；
   子项懒加载 + 缓存；截断提示；键盘可达（role/tabIndex/Enter/Space）。
 - **文件态第二排**（仅预览态显示）：文件名跑马灯 + md/html「渲染 ⇄ 源码」切换 + 复制路径 + 刷新。
 - **越界降级**：list 真实错误码 `outside-workspace` / `not-found` ⇒ 第一排换只读完整路径，不给会失败的入口。
@@ -58,7 +71,12 @@ const picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn,
 
 纯逻辑层在 `types.ts`（零 React / 零官方件，node 单测直接引）：`previewInfoOf` / `errView` /
 `listingOf` / `textPageOf` / `bytesOf` / `sortEntries` / `matchesFilter` / `learnRoot` /
-`relativizeToRoot` / `absolutizeDir` / `findAnyFileAbs` 等。
+`relativizeToRoot` / `absolutizeDir` / `findAnyFileAbs` / `pickWorkspaceAnchor` 等。
+
+**`pickWorkspaceAnchor(items)`** —— 浏览锚点的唯一落点：`workspaceFiles` 是**会话作用域**服务
+（list / read 都要 `sessionId`），「打开文件夹」必须先落到真会话上。入参 = 宿主 `workspaces`
+服务快照的行（`{ title, sessionIds?, updatedAt? }`，见 `docs/design/external/dsh-host.md` §11），
+返回最近更新且带会话的那个工作区的 `{ title, sessionId }`；都没有 ⇒ `null`（调用方如实显示「未就位」）。
 
 ## 单文件预览（`dsh-plugin-core/explorer/preview`）
 
@@ -82,7 +100,7 @@ const picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn,
 | 模块级 `workspaceRoots` Map 永不清除 + `setRootNonce` hack | 改可注入 `RootCache`（`createRootCache()`），随组件/调用方废弃 |
 | 复制路径复制当前形态（可能绝对路径）vs picker 回传相对 | 统一为工作区相对（`relativizeToRoot`） |
 | `copyPath` 无 catch（剪贴板 reject = unhandled rejection） | 补 `.catch`，静默 |
-| 自绘 menu 浮层 + backdrop + 点外关闭与官方 Menu portal 豁免坑 | 官方 `Menu`（自带定位/键盘/点外关闭）；picker 点外用整屏 backdrop（天然豁免 portal 菜单） |
+| 自绘 menu 浮层 + backdrop + 点外关闭与官方 Menu portal 豁免坑 | 2026-10-21 反转为**自写浮层**（回流到源实现形态）：官方 Menu 的观感对不上「▾ 选层」这份特有的缩进菜单；改用兄弟项目同款度量 + 整屏透明 backdrop（层序 1200/1201 高于 picker 面板 1100 ⇒ 点面板也算「点外部」） |
 | 死代码 `barRef` / `ListEntry.size`；`ensureRootLearned` 与 `absolutizeDir` 重复 | 删除 / 合并进挂载效应 |
 
 ## 已知限制（选型前必读）

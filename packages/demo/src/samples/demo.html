@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>dsh-plugin-core demo 样例</title>
+<style>
+  body{margin:24px;font:14px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif;color:#1f2328}
+  .card{max-width:520px;padding:18px 22px;border:1px solid #d0d7de;border-radius:12px;background:#fff}
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#3b5bdb;font-size:12px}
+  table{border-collapse:collapse;margin-top:12px}
+  th,td{border:1px solid #d0d7de;padding:4px 10px;text-align:left}
+</style>
+</head>
+<body>
+  <div class="card">
+    <p><span class="tag">HTML 预览</span></p>
+    <h1>我是真实存在的 HTML</h1>
+    <p>这段 markup 由 <code>FilePreview</code> 的 HTML 分支渲染：内容经官方同款的 CSP +
+       禁标签清单过滤后，塞进 <code>sandbox</code> iframe。点上面的「源码」换到源码视图，
+       看到的就是本文件的原始文本。</p>
+    <table>
+      <tr><th>能力</th><th>入口</th></tr>
+      <tr><td>沙箱渲染</td><td>HtmlPreview</td></tr>
+      <tr><td>源码切换</td><td>Segmented（渲染 ⇄ 源码）</td></tr>
+    </table>
+  </div>
+</body>
+</html>

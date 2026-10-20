@@ -31,7 +31,6 @@ export type UtilMessageKey =
   | 'explorerPickFile'
   | 'explorerPickDir'
   | 'previewClose'
-  | 'previewResize'
   | 'previewCopyPath'
   | 'previewRefresh'
   | 'previewRender'
@@ -116,7 +115,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerPickFile: '选择此文件',
     explorerPickDir: '选择此文件夹',
     previewClose: '关闭',
-    previewResize: '拖动调整宽度',
     previewCopyPath: '复制路径',
     previewRefresh: '刷新',
     previewRender: '预览',
@@ -197,7 +195,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerPickFile: 'Pick this file',
     explorerPickDir: 'Pick this folder',
     previewClose: 'Close',
-    previewResize: 'Drag to resize',
     previewCopyPath: 'Copy path',
     previewRefresh: 'Refresh',
     previewRender: 'Preview',

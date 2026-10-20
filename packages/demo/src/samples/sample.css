@@ -1,0 +1,13 @@
+/* 真实样例样式表：扩展名不在预览分发的特殊档里 ⇒ 按纯文本读出来看。 */
+
+:root {
+  --sample-fg: #1f2328;
+  --sample-bg: #ffffff;
+}
+
+.sample-note {
+  color: var(--sample-fg);
+  background: var(--sample-bg);
+  border-radius: 6px;
+  padding: 6px 8px;
+}

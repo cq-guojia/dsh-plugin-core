@@ -21,6 +21,7 @@ export {
   workspaceList,
   type ConnectHostOptions,
   type HostClientContext,
+  type HostWorkspaceItem,
   type HostWorkspaceSource,
   type ModelCatalogState,
   type ModelRoute,

@@ -1,69 +1,85 @@
-/* 工作区文件浏览器（dshpc-fb-*）。类名与 FileBrowser / preview 组件硬编码逐字一致。 */
-.dshpc-fb{display:flex;flex-direction:column;height:100%;min-height:0;color:var(--dshpc-fg);font-size:13px}
-.dshpc-fb--dock{height:100%;border-left:1px solid var(--dshpc-border-faint)}
-.dshpc-fb--resizing{contain:layout paint}
-.dshpc-fb--resizing .dshpc-fb__frame{pointer-events:none}
-.dshpc-fb__resizer{position:absolute;top:0;bottom:0;left:0;width:4px;cursor:col-resize;z-index:2}
-.dshpc-fb__resizer:hover{background:var(--dshpc-open-bg)}
-
-/* 第一排：▾ 选层 + 面包屑 + 动作 */
-.dshpc-fb__bar{display:flex;align-items:center;gap:2px;padding:6px 8px;border-bottom:1px solid var(--dshpc-border-faint);min-width:0}
-.dshpc-fb__menu-wrap{flex:none;display:flex}
-.dshpc-fb__crumbs{flex:1 1 auto;display:flex;align-items:center;gap:2px;min-width:0;overflow:hidden}
-.dshpc-fb__crumbs-measure{position:absolute;visibility:hidden;pointer-events:none;display:flex;align-items:center;gap:2px;white-space:nowrap}
-.dshpc-fb__crumb{
-  background:none;border:none;padding:2px 4px;border-radius:4px;cursor:pointer;
-  color:var(--dshpc-link);font:inherit;max-width:180px;flex:none;
+/* 工作区文件浏览器（dshpc-fb-*）。类名与 FileBrowser / preview 组件硬编码逐字一致。
+ *
+ * 度量口径：能用核心控件的一律核心（面包屑 = 核心 ghost 钮、行尾按钮 = 核心 outline 钮、
+ * 展开开关 / 图标钮 = 核心 IconButton）；核心没有的那一项 = ▾ 选层浮层，按兄弟项目
+ * dsh-task-dispatch-table 的 .dsh-tdt-sv-crumbs-*（archive-session-css.ts）逐条照抄：
+ *   · 行 / 菜单圆角 6px（兄弟 --tdt-radius-sm 的实取值）⇒ 统一由 --fb-radius 一处定义；
+ *   · 树行 padding 6px 8px / gap 8px；菜单条目 padding 4px 8px、最大宽 280px；
+ *   · 下拉 max-height 240px 后滚动；空态与兄弟同款弱化。
+ */
+.dshpc-fb{
+  --fb-radius:6px;
+  display:flex;flex-direction:column;height:100%;min-height:0;
+  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);
 }
-.dshpc-fb__crumb:disabled{color:var(--dshpc-fg-4);cursor:default}
-.dshpc-fb__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default;min-width:0;max-width:100%}
-.dshpc-fb__crumb-mq{display:inline-block;max-width:160px;vertical-align:bottom}
-.dshpc-fb__crumb-sep{color:var(--dshpc-fg-4);flex:none}
-.dshpc-fb__actions{display:flex;gap:2px;margin-left:auto;flex:none;align-items:center}
-.dshpc-fb__bar-plain{color:var(--dshpc-fg-3);font-size:12px}
 
-/* 第二排（仅预览态）：文件名 + 工具 */
+/* 第一排：▾ 选层 + 面包屑 + 动作。
+   ⚠️ 不能 overflow:hidden —— 下拉浮层挂在它下面，裁了就看不见（兄弟项目四验真机 bug）。 */
+.dshpc-fb__bar{
+  position:relative;flex:none;display:flex;align-items:center;gap:2px;
+  padding:4px 10px;border-bottom:1px solid var(--dshpc-border-faint);white-space:nowrap;
+}
+.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}
+.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}
+.dshpc-fb__crumbs-measure{position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;visibility:hidden;pointer-events:none;white-space:nowrap}
+/* 面包屑 = 核心 ghost 钮（无底无边）：此处只补「可收缩 + 跑马灯占满」的布局，不改皮肤。 */
+.dshpc-fb__crumb{min-width:0;max-width:100%;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm)}
+.dshpc-fb__crumb:disabled{color:var(--dshpc-fg-4);cursor:default}
+.dshpc-fb__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default}
+.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}
+.dshpc-fb__crumb-sep{color:var(--dshpc-fg-3);flex:none}
+.dshpc-fb__bar-plain{color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none}
+.dshpc-fb__actions{display:flex;align-items:center;gap:4px;margin-left:auto;flex:none}
+
+/* ▾ 选层浮层（照抄兄弟 .dsh-tdt-sv-crumbs-*）：透明遮罩接「点外部」，菜单本体限高滚动。
+   层序必须高于 picker 面板（z-index 1100）——否则菜单开着时点面板不算「点外部」。 */
+.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}
+.dshpc-fb__crumbs-menu{
+  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;
+  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);box-shadow:0 4px 16px rgba(0,0,0,.18);
+  border-radius:var(--fb-radius);padding:4px;display:flex;flex-direction:column;
+}
+.dshpc-fb__menu-item{
+  appearance:none;background:0 0;border:none;text-align:left;font:inherit;
+  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);
+  padding:4px 8px;border-radius:var(--fb-radius);cursor:pointer;
+  max-width:280px;display:flex;align-items:center;gap:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}
+.dshpc-fb__menu-empty{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3)}
+.dshpc-fb__menu-icon{display:inline-flex;align-items:center;flex:none}
+.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}
+.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}
+.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* 第二排（仅预览态）：文件名 + 工具（高度档统一 md，见组件注释）。 */
 .dshpc-fb__title{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--dshpc-border-faint);min-width:0}
-.dshpc-fb__title-inner{font-size:13px;font-weight:600}
+.dshpc-fb__title-inner{font-size:var(--dshpc-font-md);font-weight:600}
 
 /* 主体 */
 .dshpc-fb__body{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}
-.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:4px 0}
-.dshpc-fb__note{padding:6px 10px;color:var(--dshpc-fg-3);font-size:11px}
-.dshpc-fb__err{padding:6px 10px;color:var(--dshpc-fg-3);font-size:12px;text-align:center}
+.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}
+.dshpc-fb__note{padding:6px 10px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm)}
+.dshpc-fb__err{padding:6px 10px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-md);text-align:center}
 
-/* 树行 */
-.dshpc-fb__row{display:flex;align-items:center;gap:6px;padding:3px 10px;cursor:pointer;white-space:nowrap}
-.dshpc-fb__row:hover{background:var(--dshpc-surface-sunken)}
-.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-link);outline-offset:-2px}
-.dshpc-fb__row-icon{width:18px;flex:none;display:inline-flex;color:var(--dshpc-fg-3)}
-.dshpc-fb__row-name{overflow:hidden;text-overflow:ellipsis;min-width:0}
-.dshpc-fb__row-toggle{
-  flex:none;display:inline-flex;align-items:center;justify-content:center;
-  width:18px;height:18px;padding:0;border:none;border-radius:4px;background:none;
-  color:var(--dshpc-fg-3);cursor:pointer;transition:transform .12s ease;
-}
-.dshpc-fb__row-toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}
-.dshpc-fb__row-toggle--open{transform:rotate(90deg)}
-.dshpc-fb__row-act{
-  margin-left:auto;flex:none;border:1px solid var(--dshpc-border);border-radius:4px;
-  background:var(--dshpc-surface-1);color:var(--dshpc-fg-2);font:inherit;font-size:11px;
-  padding:1px 8px;cursor:pointer;
-}
-.dshpc-fb__row-act:hover{color:var(--dshpc-fg);border-color:var(--dshpc-border-strong)}
-.dshpc-fb__row-children{padding-left:14px}
-.dshpc-fb__row-note{padding:4px 10px;color:var(--dshpc-fg-4);font-size:11px}
-.dshpc-fb__row-err{padding:4px 10px;color:var(--dshpc-fg-3);font-size:11px}
-
-/* ▾ 选层菜单条目（官方 Menu portal 内） */
-.dshpc-fb__menu-item{display:flex;align-items:center;gap:6px;padding-left:8px}
-.dshpc-fb__menu-icon{display:inline-flex;align-items:center;flex:none}
-.dshpc-fb__menu-chev-slot{display:inline-block;width:11px;flex:none}
-.dshpc-fb__menu-chev{display:inline-flex;align-items:center;flex:none;color:var(--dshpc-fg-4)}
+/* 树行（照抄兄弟 .dsh-tdt-sv-tree-row：gap 8 / padding 6px 8px / 圆角 6px） */
+.dshpc-fb__row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--fb-radius);cursor:pointer;user-select:none}
+.dshpc-fb__row:hover{background:var(--dshpc-hover)}
+.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}
+.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}
+.dshpc-fb__row-name{flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 行尾「进入 / 选择此文件夹」：核心 outline 钮，**平时隐身但占位**，悬停 / 聚焦该行才出现
+   （照抄兄弟 .dsh-tdt-sv-tree-act：opacity 0 + pointer-events none，出现时不顶动行内布局）。 */
+.dshpc-fb__row-act{flex:none;margin-left:auto;opacity:0;pointer-events:none;transition:opacity var(--dshpc-dur-fast,120ms) var(--dshpc-ease,ease)}
+.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}
+.dshpc-fb__row-children{margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border-faint);display:flex;flex-direction:column}
+.dshpc-fb__row-note{padding:4px 8px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm)}
+.dshpc-fb__row-err{padding:4px 8px 4px 36px;color:var(--dshpc-danger);font-size:var(--dshpc-font-sm)}
 
 /* 预览体 */
 .dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%}
-.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg-soft);color:var(--dshpc-fg-2);font-size:11px}
+.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg-soft);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}
 .dshpc-fb__more{display:flex;justify-content:center;padding:10px}
 .dshpc-fb__image{max-width:100%;border-radius:6px;border:1px solid var(--dshpc-border-faint)}
 .dshpc-fb__frame{flex:1;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}

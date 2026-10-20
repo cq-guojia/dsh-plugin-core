@@ -14,6 +14,7 @@ import {
   learnRoot,
   listPathOf,
   matchesFilter,
+  pickWorkspaceAnchor,
   previewInfoOf,
   previewKindOf,
   relativizeToRoot,
@@ -189,4 +190,36 @@ test('findAnyFileAbs 有界 BFS 找任一文件', async () => {
   assert.deepEqual(found, { absolutePath: '/home/ws/README.md', relativePath: 'README.md' })
   // list 一个文件报 not-directory ⇒ 找不到（返回 null 而不是抛）
   assert.equal(await findAnyFileAbs(mockWf, 's', 'README.md'), null)
+})
+
+test('pickWorkspaceAnchor 取「最近更新且有会话」的工作区', () => {
+  assert.equal(pickWorkspaceAnchor([]), null)
+  // 没有会话 / 没 sessionIds ⇒ 不能做浏览锚点（list/read 都要 sessionId）
+  assert.equal(pickWorkspaceAnchor([{ title: 'ws', updatedAt: 9 }]), null)
+  assert.equal(pickWorkspaceAnchor([{ title: 'ws', sessionIds: [] }]), null)
+  // 取最后一个 sessionId（追加序 == 最近一个会话）
+  assert.deepEqual(pickWorkspaceAnchor([{ title: 'ws', sessionIds: ['a', 'b'] }]), { title: 'ws', sessionId: 'b' })
+  // updatedAt 大者胜；时间戳相同时保留靠前的那个（不抖动）
+  assert.deepEqual(
+    pickWorkspaceAnchor([
+      { title: 'old', sessionIds: ['a'], updatedAt: 100 },
+      { title: 'new', sessionIds: ['z'], updatedAt: 200 },
+    ]),
+    { title: 'new', sessionId: 'z' },
+  )
+  assert.deepEqual(
+    pickWorkspaceAnchor([
+      { title: 'first', sessionIds: ['a'] },
+      { title: 'second', sessionIds: ['b'] },
+    ]),
+    { title: 'first', sessionId: 'a' },
+  )
+  // 缺 timestamps 的工作区不会赢过有 timestamps 的
+  assert.deepEqual(
+    pickWorkspaceAnchor([
+      { title: 'no-time', sessionIds: ['a'] },
+      { title: 'has-time', sessionIds: ['b'], updatedAt: 1 },
+    ]),
+    { title: 'has-time', sessionId: 'b' },
+  )
 })

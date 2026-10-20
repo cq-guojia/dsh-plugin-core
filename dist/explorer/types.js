@@ -324,4 +324,29 @@ export function dirnameOf(p) {
 export { joinPath } from '../utils/path.js';
 /** mimeOf 再导出（预览体要用，避免各自 import utils）。 */
 export { extOf, mimeOf };
+/**
+ * 从宿主工作区清单里挑一个**真实浏览锚点**：最近更新过、且有会话的工作区。
+ *
+ * `workspaceFiles` 是会话作用域服务（list/read 都要 sessionId），所以「打开文件夹」必须先
+ * 落到一个真会话上 —— 这里是它的唯一落点。
+ *
+ * @param items 宿主工作区清单（真实快照）。
+ * @returns 锚点；清单为空 / 都没有会话则返回 null。
+ */
+export function pickWorkspaceAnchor(items) {
+    let best = null;
+    let bestAt = Number.NEGATIVE_INFINITY;
+    for (const item of items) {
+        const sessionId = item.sessionIds?.[item.sessionIds.length - 1];
+        if (typeof item.title !== 'string' || item.title === '' || typeof sessionId !== 'string' || sessionId === '')
+            continue;
+        const at = typeof item.updatedAt === 'number' && Number.isFinite(item.updatedAt) ? item.updatedAt : Number.NEGATIVE_INFINITY;
+        // 等号不覆盖 ⇒ 时间戳相同（含都缺失）时保留靠前的那个。
+        if (best !== null && at <= bestAt)
+            continue;
+        best = { title: item.title, sessionId };
+        bestAt = at;
+    }
+    return best;
+}
 //# sourceMappingURL=types.js.map

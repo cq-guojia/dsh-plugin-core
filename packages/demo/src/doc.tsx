@@ -7,6 +7,7 @@
  */
 import { createElement as h, type ReactNode } from 'react'
 import { CodeBlock } from '@deepseek-ai/dsh-client-ui-primitives'
+import { StripCard } from '../../../dist/ui/index.js'
 import { t, type DemoMessageKey } from './i18n.js'
 
 export type ApiRow = {
@@ -16,13 +17,20 @@ export type ApiRow = {
   descKey: DemoMessageKey
 }
 
-/** 页级备注框：把「这一页要知道的事」放在最上面（Bootstrap 的 callout 位置）。 */
+/**
+ * 页级备注框：直接用核心 StripCard（方角 + 左缘 4px 通高色条 + 同色系浅底，无可见边框），
+ * 不自绘 callout —— 演示站里的提示与插件真实用的提示必须是同一个东西。
+ */
 export function Note(props: { text: string }): ReturnType<typeof h> {
   return h(
-    'div',
-    { className: 'dshpc-doc-note' },
-    h('span', { className: 'dshpc-doc-note__mark' }, t('docNote')),
-    h('span', null, props.text),
+    StripCard,
+    { accent: 'business', className: 'dshpc-doc-note' },
+    h(
+      'div',
+      { className: 'dshpc-doc-note__body' },
+      h('span', { className: 'dshpc-doc-note__mark' }, t('docNote')),
+      h('span', null, props.text),
+    ),
   )
 }
 

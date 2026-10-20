@@ -60,7 +60,7 @@ dsh-plugin-core/
 │                              （已从 explorer/types.ts 迁入，2026-10-20）
 │
 ├── adv.explorer/        ④ 高级空间①：文件浏览（依赖 ui + utils）
-│   ├── FileBrowser        ✅ 面板本体：面包屑（▾ 选层）+ 内联展开树 + 预览 + dock/picker 两形态
+│   ├── FileBrowser        ✅ 面板本体：面包屑（▾ 选层）+ 内联展开树 + 预览（+ picker 形态）
 │   ├── open               ✅ 两命令式能力：openFilePreview（侧边栏预览）/ pickWorkspaceFile（锚定弹窗选文件）
 │   ├── types              ✅ 纯逻辑层（零 React / 零官方件）：预览分发 / 错误码 / 根反推 / 过滤
 │   └── preview            ✅ 预览体家族：md / 代码 / HTML / PDF / Office / 图片
@@ -74,7 +74,7 @@ dsh-plugin-core/
 | 成品 | 用到的 `ui` 基础能力 | 定制了什么 |
 |---|---|---|
 | `adv.session` · `SessionPreview` | `Modal` | 把会话消息放进弹窗 |
-| `adv.explorer` · `FileBrowser` | `IconButton` / `Segmented` / `MarqueeText` / `PanelDock`（dock 形态）+ 官方件（`FileTypeIcon` / `Menu` / `MarkdownText` / `CodeBlock`，经 `ui/official`） | 面包屑 + 内联展开树 + 预览体家族 + 两命令式能力 |
+| `adv.explorer` · `FileBrowser` | `Button`（面包屑 ghost / 行尾 outline）/ `IconButton` / `Segmented` / `MarqueeText` / `PanelDock`（浏览态外壳与拖宽）+ 官方件（`FileTypeIcon` / `MarkdownText` / `CodeBlock`，经 `ui/official`） | 面包屑 + 内联展开树 + 预览体家族 + 两命令式能力 |
 
 `adv.*` 只做「拼装 + 业务定制」，不重新实现按钮 / 下拉 / 弹窗 / 侧栏。
 

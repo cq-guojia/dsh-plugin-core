@@ -61,14 +61,18 @@ import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 // 从 ctx 取出这一小块（不要传整个 ctx）
 const workspaceFiles = ctx.remote.workspaceFiles
 
-// 预览某文件/文件夹：右侧弹出可拖宽的停靠预览
+// 预览某文件/文件夹：右侧弹出停靠预览（外壳 = 核心 PanelDock，可拖宽；✕ / Esc 关）
 openFilePreview({ workspaceFiles, sessionId, path: 'docs/requirements.md' })
 
 // 让用户选文件：锚定按钮旁弹模态，Promise 返回 { path, isDir }（工作区相对路径）
 const picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })
 ```
 
-要自己摆面板（嵌进布局）用 `FileBrowser`；说明见 `docs/design/features/explorer.md`。
+浏览态停靠就是 `FileBrowser` 套在核心 `PanelDock` 里（`openFilePreview` 已经这么做了）；
+要嵌进自己的布局直接用 `FileBrowser`，外壳仍建议交给 `PanelDock`。说明见 `docs/design/features/explorer.md`。
+
+> `sessionId` 不是随便填的：`workspaceFiles` 是**会话作用域**服务，必须给属于该工作区的真实会话 id。
+> 从宿主工作区快照挑锚点用 `pickWorkspaceAnchor(items)`（`ui` 的 `workspaceList` 快照可直接喂进去）。
 
 选工作区的下拉（数据由你给——它要经插件私有通道送到 client）：
 

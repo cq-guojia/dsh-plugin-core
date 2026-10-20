@@ -65,7 +65,8 @@ dsh-plugin-core/
 
 ### 2.4 adv.explorer
 
-- `FileBrowser` 面板 + 两命令式能力：`openFilePreview`（侧边栏预览）/ `pickWorkspaceFile`（锚定弹窗选文件，Promise 返回工作区相对路径），2026-10-20 移植自重做
+- `FileBrowser` 面板 + 两命令式能力：`openFilePreview`（侧边栏预览，外壳 = 核心 `PanelDock`，2026-10-21 拍板不许自绘外壳 / 拖拽条）/ `pickWorkspaceFile`（锚定弹窗选文件，Promise 返回工作区相对路径），2026-10-20 移植自重做
+- 控件纪律（2026-10-21）：核心有的控件一律核心（`Button` ghost 面包屑 / `IconButton` / `Segmented` / `MarqueeText` / `PanelDock`）；核心没有的那一项（▾ 选层浮层）严格按兄弟项目度量照抄
 - 选工作区（`WorkspacePicker`）在 `ui`，不在这里；`FilePicker` 已删（2026-10-20）
 
 ### 2.5 adv.session

@@ -61,9 +61,23 @@ export const modelCatalog = new ModelCatalogStore()
 
 // ── 工作区列表 ──────────────────────────────────────────────────────────
 
-/** 官方 `workspaces` client 服务的 `list`（WorkspaceSource 结构化子集）。 */
+/** 官方 `workspaces` client 服务 `list` 的一行（`WorkspaceView` 的消费子集，见 docs/design/external/dsh-host.md §11）。 */
+export interface HostWorkspaceItem {
+  workspaceId: string
+  title: string
+  /** 本工作区名下的会话 id（追加序）；文件浏览的 sessionId 只能从这来。 */
+  sessionIds?: readonly string[]
+  /** 更新时间戳；「最近打开的工作区」排序用。 */
+  updatedAt?: number
+}
+
+/**
+ * 官方 `workspaces` client 服务的 `list`（WorkspaceSource 结构化子集）。
+ * ⚠️ `sessionIds` / `updatedAt` 由官方 `WorkspaceView` 提供（dsh-host.md §11 已核实）；
+ *    本宿主没给时保持 undefined，取锚点方自行判空，不得编造。
+ */
 export interface HostWorkspaceSource {
-  getSnapshot: () => { items: readonly { workspaceId: string; title: string }[] }
+  getSnapshot: () => { items: readonly HostWorkspaceItem[] }
   subscribe: (listener: () => void) => () => void
 }
 
@@ -72,7 +86,7 @@ export interface HostWorkspaceSource {
  * （宿主权威快照，follow 流实时推 —— 源变我们就变，不自持第二份状态机）。
  */
 class WorkspaceListStore {
-  private items: readonly { workspaceId: string; title: string }[] = []
+  private items: readonly HostWorkspaceItem[] = []
   private readonly listeners = new Set<() => void>()
   private unsubscribe: (() => void) | undefined
 
@@ -87,7 +101,7 @@ class WorkspaceListStore {
     this.unsubscribe = source.subscribe(pull)
   }
 
-  readonly getSnapshot = (): readonly { workspaceId: string; title: string }[] => this.items
+  readonly getSnapshot = (): readonly HostWorkspaceItem[] => this.items
 
   readonly subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener)

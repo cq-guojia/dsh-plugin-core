@@ -450,3 +450,49 @@ export { joinPath } from '../utils/path.js'
 
 /** mimeOf 再导出（预览体要用，避免各自 import utils）。 */
 export { extOf, mimeOf }
+
+// ── 浏览锚点（真实数据） ──
+
+/**
+ * 工作区锚点的候选结构（官方 `workspaces` 服务快照 `WorkspaceView` 的消费子集，
+ * 见 docs/design/external/dsh-host.md §11）。只要够必要的字段，谁都能传。
+ */
+export interface WorkspaceAnchorItem {
+  /** 工作区显示名（面包屑首段 / 传给 FileBrowser 的 rootName）。 */
+  title: string
+  /** 本工作区名下的会话 id（追加序）；没有一个会话的工作区无法浏览。 */
+  sessionIds?: readonly string[]
+  /** 更新时间戳（毫秒/数字口径由宿主给）；用于「最近打开」排序。 */
+  updatedAt?: number
+}
+
+export interface WorkspaceAnchor {
+  /** 该工作区的显示名。 */
+  title: string
+  /** 用来 list / read 的会话 id（该工作区最近一个会话）。 */
+  sessionId: string
+}
+
+/**
+ * 从宿主工作区清单里挑一个**真实浏览锚点**：最近更新过、且有会话的工作区。
+ *
+ * `workspaceFiles` 是会话作用域服务（list/read 都要 sessionId），所以「打开文件夹」必须先
+ * 落到一个真会话上 —— 这里是它的唯一落点。
+ *
+ * @param items 宿主工作区清单（真实快照）。
+ * @returns 锚点；清单为空 / 都没有会话则返回 null。
+ */
+export function pickWorkspaceAnchor(items: readonly WorkspaceAnchorItem[]): WorkspaceAnchor | null {
+  let best: WorkspaceAnchor | null = null
+  let bestAt = Number.NEGATIVE_INFINITY
+  for (const item of items) {
+    const sessionId = item.sessionIds?.[item.sessionIds.length - 1]
+    if (typeof item.title !== 'string' || item.title === '' || typeof sessionId !== 'string' || sessionId === '') continue
+    const at = typeof item.updatedAt === 'number' && Number.isFinite(item.updatedAt) ? item.updatedAt : Number.NEGATIVE_INFINITY
+    // 等号不覆盖 ⇒ 时间戳相同（含都缺失）时保留靠前的那个。
+    if (best !== null && at <= bestAt) continue
+    best = { title: item.title, sessionId }
+    bestAt = at
+  }
+  return best
+}

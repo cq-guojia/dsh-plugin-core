@@ -1,32 +1,91 @@
-import { createElement as h, useRef, useState } from 'react'
-import { FileBrowser, openFilePreview, pickWorkspaceFile } from '../../../../dist/explorer/index.js'
+/**
+ * 工作区浏览（真实数据）—— 三块演示：
+ *  ① 数据来源：`remote.workspaceFiles` + 宿主工作区清单 ⇒ 最近会话的锚点；
+ *  ② 方法 A `openFilePreview`：右侧 core PanelDock 停靠预览（拖宽 / 关闭都由 PanelDock 负责）；
+ *  ③ 方法 B `pickWorkspaceFile`：锚定弹窗选文件，Promise 返回工作区相对路径。
+ *
+ * ⚠️ 本页面**不用任何 mock**：样例文件是仓库里 `packages/demo/src/samples/` 的真文件，
+ * 取数一律走宿主的 `remote.workspaceFiles`；探不到样例目录就如实说「没找到」。
+ */
+import { createElement as h, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react'
+import {
+  openFilePreview,
+  pickWorkspaceAnchor,
+  pickWorkspaceFile,
+  type OfficeToPdfFace,
+  type PickFilter,
+  type WorkspaceFilesFace,
+} from '../../../../dist/explorer/index.js'
+import { Button, workspaceList } from '../../../../dist/ui/index.js'
 import { SessionPreview } from '../../../../dist/session/index.js'
-import { Button } from '../../../../dist/ui/index.js'
-import { mockOfficeToPdf, mockSessionSource, mockWorkspaceFiles } from '../mock.js'
+import { fileServices } from '../host-files.js'
+import { findSamples, type SampleSet } from '../samples.js'
+import { mockSessionSource } from '../mock.js'
 import { Demo } from './index.js'
 import { t } from '../i18n.js'
 
-const SESSION = 'demo-session'
+/** 一排紧凑的核心按钮。 */
+function Row(props: { children: ReactNode[] }): ReturnType<typeof h> {
+  return h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' } }, ...props.children)
+}
 
-/**
- * 工作区浏览。三个区块对应三种用法：
- *  ① FileBrowser 面板本体（嵌入调用方布局）；
- *  ② 方法 A openFilePreview：命令式打开右侧停靠预览；
- *  ③ 方法 B pickWorkspaceFile：锚定弹窗选文件，Promise 返回工作区相对路径。
- */
+function Hint(props: { text: string }): ReturnType<typeof h> {
+  return h('span', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)' } }, props.text)
+}
+
 export function ExplorerPage(): ReturnType<typeof h> {
+  const services = useSyncExternalStore(fileServices.subscribe, fileServices.getSnapshot)
+  const workspaces = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
+  // 「打开文件夹」的落点 = 最近更新、且有会话的那个工作区（workspaceFiles 是会话作用域服务，
+  // 必须先落到一个真会话上）。期望值全来自宿主快照，拿不到就是 null，不猜。
+  const anchor = pickWorkspaceAnchor(workspaces)
+  const [samples, setSamples] = useState<SampleSet | null>(null)
+  const [probing, setProbing] = useState(false)
   const [picked, setPicked] = useState<string | null>(null)
-  const pickAllRef = useRef<HTMLButtonElement>(null)
-  const pickTsRef = useRef<HTMLButtonElement>(null)
-  const pickDirRef = useRef<HTMLButtonElement>(null)
 
-  const preview = (path: string): void => {
+  const files: WorkspaceFilesFace | null = services.workspaceFiles
+  const officeToPdf: OfficeToPdfFace | null = services.officeToPdf
+  const sessionId = anchor?.sessionId ?? ''
+  const ready = files !== null && anchor !== null
+
+  // 样例目录：有真锚点就探一次（有界层序探索，见 samples.ts）。
+  useEffect(() => {
+    if (files === null || sessionId === '') return
+    let alive = true
+    setProbing(true)
+    void findSamples(files, sessionId).then((found) => {
+      if (!alive) return
+      setSamples(found)
+      setProbing(false)
+    })
+    return () => {
+      alive = false
+    }
+  }, [files, sessionId])
+
+  const open = (path: string): void => {
+    if (files === null || anchor === null) return
     openFilePreview({
-      workspaceFiles: mockWorkspaceFiles,
-      officeToPdf: mockOfficeToPdf,
-      sessionId: SESSION,
+      workspaceFiles: files,
+      officeToPdf,
+      sessionId: anchor.sessionId,
       path,
-      rootName: 'demo-workspace',
+      rootName: anchor.title,
+    })
+  }
+
+  const pick = (event: { currentTarget: HTMLElement }, filter?: PickFilter): void => {
+    if (files === null || anchor === null) return
+    void pickWorkspaceFile({
+      workspaceFiles: files,
+      officeToPdf,
+      sessionId: anchor.sessionId,
+      anchor: event.currentTarget,
+      rootName: anchor.title,
+      workspaces: workspaces.map((item) => item.title),
+      filter,
+    }).then((result) => {
+      setPicked(result === null ? null : `${result.path}${result.isDir ? `（${t('pickFolder')}）` : ''}`)
     })
   }
 
@@ -35,106 +94,52 @@ export function ExplorerPage(): ReturnType<typeof h> {
     null,
     h(
       Demo,
-      { title: 'FileBrowser（面板本体）', hint: t('explorerHint') },
-      h(
-        'div',
-        {
-          style: {
-            width: '720px', height: '420px', overflow: 'hidden',
-            border: '1px solid var(--dshpc-border)', borderRadius: '8px',
-          },
-        },
-        h(FileBrowser, {
-          workspaceFiles: mockWorkspaceFiles,
-          officeToPdf: mockOfficeToPdf,
-          sessionId: SESSION,
-          path: '',
-          rootName: 'demo-workspace',
-          workspaces: ['demo-workspace'],
-        }),
-      ),
+      { title: t('explorerDataTitle'), hint: t('explorerDataHint') },
+      files === null
+        ? h(Hint, { text: t('explorerFilesNone') })
+        : anchor === null
+          ? h(Hint, { text: t('explorerAnchorNone') })
+          : h(Hint, {
+              text: `${t('explorerAnchorLabel')}${anchor.title}｜${t('explorerSessionLabel')}${anchor.sessionId}｜${t('explorerWorkspaces')}${workspaces.length}`,
+            }),
     ),
     h(
       Demo,
       { title: t('methodATitle'), hint: t('methodAHint') },
-      h(
-        'div',
-        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
-        h(Button, { variant: 'primary', onClick: () => preview('README.md') }, t('openFilePreview')),
-        h(Button, { onClick: () => preview('docs') }, t('openDirPreview')),
-        h(Button, { onClick: () => preview('docs/report.pdf') }, t('openPdfPreview')),
-      ),
+      ready
+        ? h(
+            Row,
+            null,
+            h(Button, { variant: 'primary', onClick: () => { open('') } }, t('openRootPreview')),
+            samples !== null
+              ? h(
+                  Row,
+                  null,
+                  h(Button, { onClick: () => { open(samples.dir) } }, t('openSamplesDir')),
+                  h(Button, { onClick: () => { open(samples.md) } }, t('sampleMd')),
+                  h(Button, { onClick: () => { open(samples.html) } }, t('sampleHtml')),
+                  h(Button, { onClick: () => { open(samples.js) } }, t('sampleJs')),
+                  h(Button, { onClick: () => { open(samples.css) } }, t('sampleCss')),
+                )
+              : h(Hint, { text: probing ? t('samplesProbing') : t('samplesNotFound') }),
+          )
+        : h(Hint, { text: t('explorerFilesNone') }),
     ),
     h(
       Demo,
       { title: t('methodBTitle'), hint: t('methodBHint') },
-      h(
-        'div',
-        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' } },
-        h(
-          'button',
-          {
-            ref: pickAllRef,
-            type: 'button',
-            className: 'dshpc-btn dshpc-btn--outline dshpc-btn--lg',
-            onClick: () => {
-              void pickWorkspaceFile({
-                workspaceFiles: mockWorkspaceFiles,
-                officeToPdf: mockOfficeToPdf,
-                sessionId: SESSION,
-                anchor: pickAllRef.current,
-                rootName: 'demo-workspace',
-              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? '（文件夹）' : ''}`))
-            },
-          },
-          t('pickAny'),
-        ),
-        h(
-          'button',
-          {
-            ref: pickTsRef,
-            type: 'button',
-            className: 'dshpc-btn dshpc-btn--outline dshpc-btn--lg',
-            onClick: () => {
-              void pickWorkspaceFile({
-                workspaceFiles: mockWorkspaceFiles,
-                officeToPdf: mockOfficeToPdf,
-                sessionId: SESSION,
-                anchor: pickTsRef.current,
-                rootName: 'demo-workspace',
-                filter: { exts: ['ts'] },
-              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? '（文件夹）' : ''}`))
-            },
-          },
-          t('pickTs'),
-        ),
-        h(
-          'button',
-          {
-            ref: pickDirRef,
-            type: 'button',
-            className: 'dshpc-btn dshpc-btn--outline dshpc-btn--lg',
-            onClick: () => {
-              void pickWorkspaceFile({
-                workspaceFiles: mockWorkspaceFiles,
-                officeToPdf: mockOfficeToPdf,
-                sessionId: SESSION,
-                anchor: pickDirRef.current,
-                rootName: 'demo-workspace',
-                filter: { dirs: true },
-              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? '（文件夹）' : ''}`))
-            },
-          },
-          t('pickDir'),
-        ),
-        h('span', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)' } }, picked === null ? t('pickNone') : `${t('pickResult')}：${picked}`),
-      ),
+      ready
+        ? h(
+            Row,
+            null,
+            h(Button, { onClick: (event: { currentTarget: HTMLElement }) => { pick(event) } }, t('pickAny')),
+            h(Button, { onClick: (event: { currentTarget: HTMLElement }) => { pick(event, { exts: ['ts'] }) } }, t('pickTs')),
+            h(Button, { onClick: (event: { currentTarget: HTMLElement }) => { pick(event, { dirs: true }) } }, t('pickDir')),
+            h(Hint, { text: picked === null ? t('pickNone') : `${t('pickResult')}：${picked}` }),
+          )
+        : h(Hint, { text: t('explorerFilesNone') }),
     ),
-    h(
-      Demo,
-      { title: t('previewBodyTitle'), hint: t('previewBodyHint') },
-      null,
-    ),
+    h(Demo, { title: t('previewBodyTitle'), hint: t('previewBodyHint') }, null),
   )
 }
 
@@ -145,19 +150,19 @@ export function SessionPage(): ReturnType<typeof h> {
     Demo,
     { title: 'SessionPreview', hint: t('sessionHint') },
     h(
-      'div',
-      { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
-      h(Button, { variant: 'primary', onClick: () => setOpen(true) }, '打开会话预览（modal）'),
-      h(Button, { onClick: () => setOpen(false) }, '关闭'),
+      Row,
+      null,
+      h(Button, { variant: 'primary', onClick: () => { setOpen(true) } }, t('sessionOpenModal')),
+      h(Button, { onClick: () => { setOpen(false) } }, t('sessionClose')),
     ),
     open
       ? h(SessionPreview, {
           sessionId: 'demo-session',
           source: mockSessionSource,
           variant: 'modal',
-          title: '会话预览（假数据）',
-          onClose: () => setOpen(false),
-          onOpenFile: () => setOpen(false),
+          title: t('sessionPreviewTitle'),
+          onClose: () => { setOpen(false) },
+          onOpenFile: () => { setOpen(false) },
         })
       : null,
   )

@@ -27,14 +27,6 @@ export interface FileBrowserProps {
     onPick?: (path: string, isDir: boolean) => void;
     /** 选择器过滤（exts = 只要这些扩展名；dirs = 只要文件夹；不传 = 不限）。 */
     filter?: PickFilter;
-    /** dock 态：左缘拖拽条 + 贴边布局类。 */
-    dock?: boolean;
-    /** 左缘拖拽条按下（调宽）；不传 = 不渲染拖拽条。 */
-    onResizeStart?: (event: {
-        clientX: number;
-        pointerId: number;
-        preventDefault?: () => void;
-    }) => void;
 }
 /** 目录浏览器面板。详见 {@link FileBrowserProps}。 */
 export declare function FileBrowser(props: FileBrowserProps): ReturnType<typeof h>;

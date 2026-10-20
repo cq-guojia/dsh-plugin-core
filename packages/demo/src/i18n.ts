@@ -110,22 +110,37 @@ export type DemoMessageKey =
   | 'dockPanelC'
   | 'dockCustomHeadTitle'
   | 'dockCustomHeadHint'
-  | 'explorerHint'
+  | 'explorerDataTitle'
+  | 'explorerDataHint'
+  | 'explorerFilesNone'
+  | 'explorerAnchorNone'
+  | 'explorerAnchorLabel'
+  | 'explorerSessionLabel'
+  | 'explorerWorkspaces'
   | 'methodATitle'
   | 'methodAHint'
-  | 'openFilePreview'
-  | 'openDirPreview'
-  | 'openPdfPreview'
+  | 'openRootPreview'
+  | 'openSamplesDir'
+  | 'sampleMd'
+  | 'sampleHtml'
+  | 'sampleJs'
+  | 'sampleCss'
+  | 'samplesProbing'
+  | 'samplesNotFound'
   | 'methodBTitle'
   | 'methodBHint'
   | 'pickAny'
   | 'pickTs'
   | 'pickDir'
+  | 'pickFolder'
   | 'pickNone'
   | 'pickResult'
   | 'previewBodyTitle'
   | 'previewBodyHint'
   | 'sessionHint'
+  | 'sessionOpenModal'
+  | 'sessionClose'
+  | 'sessionPreviewTitle'
   | 'dateHint'
   | 'numberHint'
   | 'textDesc'
@@ -331,18 +346,33 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     feedbackModalHint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关。标题栏的 ✕ 是 24×24 图标位，不该出现边框或 120px 宽的底色块',
     feedbackToastHint: '命令式 showToast，不要求挂组件',
 
-    explorerHint:
-      '面包屑（超宽折叠 + ▾ 选层）+ 内联展开目录树 + 预览（md 渲染 / 代码高亮 / HTML / PDF / Office）。workspaceFiles 是 mock 的（真实插件从 ctx 取出后注入）',
+    explorerDataTitle: '数据来源（真数据，无 mock）',
+    explorerDataHint:
+      '文件服务取宿主的 remote.workspaceFiles（dotted 注入），工作区清单取官方 workspaces 服务快照；' +
+      '「最近会话所属工作区」= 更新过的最新且带会话的那个工作区（pickWorkspaceAnchor）——list / read 都要 sessionId，锚点必须先落到一个真会话上。',
+    explorerFilesNone: '未就位：宿主还没给出 remote.workspaceFiles（文件预览 / 选择都不可用，不造假数据）',
+    explorerAnchorNone: '未就位：工作区清单里还没有带会话的工作区（先在宿主里开一个会话再回来看）',
+    explorerAnchorLabel: '当前锚点：',
+    explorerSessionLabel: '会话：',
+    explorerWorkspaces: '工作区数：',
     methodATitle: '方法 A：openFilePreview 侧边栏预览',
-    methodAHint: '传文件或文件夹路径，右侧弹出可拖宽的停靠预览；Esc / ✕ 关闭。返回 handle 可代码关',
-    openFilePreview: '预览 READ.md',
-    openDirPreview: '浏览 docs 文件夹',
-    openPdfPreview: '预览 PDF',
+    methodAHint:
+      '传文件或文件夹路径，右侧弹出停靠预览 —— 外壳是核心 PanelDock（拖宽 / ✕ 都由它负责，面板自己不画）。' +
+      '样例按钮指向仓库里 packages/demo/src/samples/ 的真文件（目录是按内容探出来的，不写死路径）。',
+    openRootPreview: '打开最近工作区的根目录',
+    openSamplesDir: '浏览样例目录',
+    sampleMd: '预览 README.md',
+    sampleHtml: '预览 demo.html',
+    sampleJs: '预览 sample.js',
+    sampleCss: '预览 sample.css',
+    samplesProbing: '正在真实工作区里找样例目录…',
+    samplesNotFound: '没找到样例目录（当前锚定的工作区里没有 packages/demo/src/samples）',
     methodBTitle: '方法 B：pickWorkspaceFile 选择文件',
     methodBHint: '在锚点按钮旁弹出模态弹窗；Promise 返回 { path, isDir }（path 为工作区相对路径）；Esc / 点外部 / ✕ 取消返回 null',
     pickAny: '选择文件（不限）',
     pickTs: '只要 .ts',
     pickDir: '只要文件夹',
+    pickFolder: '文件夹',
     pickNone: '还没选',
     pickResult: '已选择',
     previewBodyTitle: 'FilePreview 预览体（可单独用）',
@@ -350,6 +380,9 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
       '上面那块已经包含它——FileBrowser 内部渲染的就是 FilePreview。\n' +
       '它同时也是一条独立子路径 dsh-plugin-core/explorer/preview：只有一个文件要显示时（会话附件、工具输出）不必搬出整个面板。',
     sessionHint: '三种承载：modal / sidebar / page；source 是 mock 的；renderMessage 可接管富内容',
+    sessionOpenModal: '打开会话预览（modal）',
+    sessionClose: '关闭',
+    sessionPreviewTitle: '会话预览（假数据）',
 
     dateHint: '解析失败不抛错、给兜底、不编造；所有函数无 UI 依赖，Node 里也能跑',
     numberHint: 'formatBytes 按 1024 进制、单位自动进位；formatCount 给大数加千分位',
@@ -548,18 +581,33 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     feedbackModalHint: 'Hand-rolled overlay (no portal); click backdrop / Esc / ✕ all close it. The header ✕ is a 24×24 icon slot — no border or 120px-wide color block should appear',
     feedbackToastHint: 'Imperative showToast — no component mounting required',
 
-    explorerHint:
-      'Breadcrumb (collapses when too wide + ▾ level picker) + inline-expandable tree + preview (md render / code highlight / HTML / PDF / Office). workspaceFiles is mocked (a real plugin reads it from ctx and injects)',
+    explorerDataTitle: 'Where the data comes from (real data, no mocks)',
+    explorerDataHint:
+      'File services come from the host remote.workspaceFiles (dotted injection); the workspace list is the official workspaces snapshot. ' +
+      'The "most recent workspace" is the newest updated one that owns a session (pickWorkspaceAnchor) — list / read all need a sessionId, so browsing must land on a real session first.',
+    explorerFilesNone: 'Not ready: the host has not exposed remote.workspaceFiles yet (no preview, no picking — no fake data either)',
+    explorerAnchorNone: 'Not ready: no workspace in the list owns a session yet (open a session in the host and come back)',
+    explorerAnchorLabel: 'Anchor: ',
+    explorerSessionLabel: 'session: ',
+    explorerWorkspaces: 'workspaces: ',
     methodATitle: 'Method A: openFilePreview dock preview',
-    methodAHint: 'Pass a file or folder path: a resizable dock preview opens on the right; Esc / ✕ closes it. The returned handle can close it programmatically',
-    openFilePreview: 'Preview READ.md',
-    openDirPreview: 'Browse the docs folder',
-    openPdfPreview: 'Preview PDF',
+    methodAHint:
+      'Pass a file or folder path and a dock preview opens on the right — the shell is the core PanelDock (resizing / ✕ are its job, the panel draws neither). ' +
+      'The sample buttons point at real files under packages/demo/src/samples/ (the directory is probed by content, never hardcoded).',
+    openRootPreview: 'Open the most recent workspace root',
+    openSamplesDir: 'Browse the sample directory',
+    sampleMd: 'Preview README.md',
+    sampleHtml: 'Preview demo.html',
+    sampleJs: 'Preview sample.js',
+    sampleCss: 'Preview sample.css',
+    samplesProbing: 'Looking for the sample directory in the real workspace…',
+    samplesNotFound: 'Sample directory not found (the anchored workspace has no packages/demo/src/samples)',
     methodBTitle: 'Method B: pickWorkspaceFile',
     methodBHint: 'A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / ✕ cancels with null',
     pickAny: 'Pick a file (any)',
     pickTs: '.ts only',
     pickDir: 'Folders only',
+    pickFolder: 'folder',
     pickNone: 'Nothing picked yet',
     pickResult: 'Picked',
     previewBodyTitle: 'FilePreview (usable on its own)',
@@ -567,6 +615,9 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
       'The block above already includes it — FileBrowser renders FilePreview inside.\n' +
       'It is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.',
     sessionHint: 'Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content',
+    sessionOpenModal: 'Open session preview (modal)',
+    sessionClose: 'Close',
+    sessionPreviewTitle: 'Session preview (mock data)',
 
     dateHint: 'No throw on parse failure — falls back gracefully and never fabricates; all functions are UI-free and run in Node too',
     numberHint: 'formatBytes is 1024-based with automatic unit scaling; formatCount adds thousands separators',

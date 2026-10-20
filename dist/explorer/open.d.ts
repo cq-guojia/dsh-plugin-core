@@ -1,3 +1,4 @@
+import { type Translate } from '../utils/i18n.js';
 import type { OfficeToPdfFace, PickFilter, RootCache, WorkspaceFilesFace } from './types.js';
 export interface FilePreviewHandle {
     /** 关闭预览（幂等）。 */
@@ -19,8 +20,15 @@ export interface OpenFilePreviewOptions {
     width?: number;
     /** 宽度下限（默认 320）。 */
     minWidth?: number;
+    /** 宽度上限；不传 = 只受视口与主区保底约束。 */
+    maxWidth?: number;
+    /** 拖宽时给主区留的最小宽度（px，默认 480）。 */
+    mainMinWidth?: number;
+    /** 面板标题（核心 dock 内置头部）；不传 = 头部只留关闭钮。 */
+    title?: string;
     /** 工作区根缓存（与调用方共享时传）。 */
     rootCache?: RootCache;
+    translate?: Translate;
 }
 /** 打开工作区文件/文件夹的停靠预览；重复打开会关掉上一个（同侧边栏位）。 */
 export declare function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHandle | null;

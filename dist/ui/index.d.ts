@@ -3,7 +3,7 @@ export { filterGroups, flattenOptions, groupOf, labelsOf, toGroups, toggleValue,
 export { Picker, type PickerProps, type PickerSize } from './Picker.js';
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js';
 export { WorkspacePicker, type WorkspacePickerProps } from './WorkspacePicker.js';
-export { connectHost, modelCatalog, workspaceList, type ConnectHostOptions, type HostClientContext, type HostWorkspaceSource, type ModelCatalogState, type ModelRoute, } from './host-data.js';
+export { connectHost, modelCatalog, workspaceList, type ConnectHostOptions, type HostClientContext, type HostWorkspaceItem, type HostWorkspaceSource, type ModelCatalogState, type ModelRoute, } from './host-data.js';
 export { Modal, type ModalProps, type ModalSize } from './Modal.js';
 export { AlertModal, type AlertModalProps, type AlertSeverity, } from './AlertModal.js';
 export { ConfirmModal, type ConfirmModalProps, type ConfirmTone, } from './ConfirmModal.js';

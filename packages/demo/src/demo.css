@@ -2,15 +2,14 @@
    真源在这里，由 scripts/gen-css.mjs 生成 demo-css.generated.ts，运行时经 createStyleKit 注入。
    只消费 var(--dshpc-*)：明暗交给 token，本文件不写死任何颜色。 */
 
+/* 备注框本体是核心 StripCard（方角 + 左 4px 通高色条 + 同色系浅底），这里只补行内排版。 */
 .dshpc-doc-note {
+  margin-bottom: 16px;
+}
+
+.dshpc-doc-note__body {
   display: flex;
   gap: 8px;
-  padding: 10px 12px;
-  margin: 0 0 16px;
-  border: 1px solid var(--dshpc-border);
-  border-left: 3px solid var(--dshpc-business);
-  border-radius: var(--dshpc-radius-sm);
-  background: var(--dshpc-business-soft);
   font-size: var(--dshpc-font-md);
   line-height: var(--dshpc-line-md);
 }

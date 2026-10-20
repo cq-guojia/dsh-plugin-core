@@ -6,8 +6,13 @@
 // 复制/选中路径口径统一为工作区相对、去掉死代码。
 //
 // 两个消费场景共用本组件（用户 2026-10-20 拍板：同一套内容，两种展现形式）：
-//  · 浏览（dock）：`dock` + `onResizeStart`，点文件进预览；
+//  · 浏览（dock）：由 **核心 PanelDock** 承载（openFilePreview），拖宽与关闭都由它负责，
+//    本组件不再自绘拖拽条 / 侧边栏外壳；
 //  · 选择（picker）：`picker` + `onPick(path, isDir)`（path 为**工作区相对**路径），点文件即回调。
+//
+// 控件纪律：能用核心控件的一律核心（ghost 面包屑 / IconButton / Segmented / MarqueeText）；
+// 核心没有的那一项 = ▾ 选层浮层，按兄弟项目 dsh-task-dispatch-table 的 `.dsh-tdt-sv-crumbs-*`
+// 逐像素照抄（间距 / 圆角 / 最大高度 / 空态），不自创度量。
 import {
   createElement as h,
   Fragment,
@@ -28,13 +33,11 @@ import {
   IconFolderCloseRegular,
   IconFolderOpenOutlineRegular,
   IconRefreshOutlineRegular,
-  Menu,
   writeClipboard,
   FileTypeIcon,
-  type MenuEntry,
 } from '../ui/official.js'
 import { ensureControls } from '../ui/css.js'
-import { IconButton } from '../ui/Button.js'
+import { Button, IconButton } from '../ui/Button.js'
 import { MarqueeText } from '../ui/MarqueeText.js'
 import { Segmented } from '../ui/Segmented.js'
 import { t, type Translate } from '../utils/i18n.js'
@@ -98,10 +101,6 @@ export interface FileBrowserProps {
   onPick?: (path: string, isDir: boolean) => void
   /** 选择器过滤（exts = 只要这些扩展名；dirs = 只要文件夹；不传 = 不限）。 */
   filter?: PickFilter
-  /** dock 态：左缘拖拽条 + 贴边布局类。 */
-  dock?: boolean
-  /** 左缘拖拽条按下（调宽）；不传 = 不渲染拖拽条。 */
-  onResizeStart?: (event: { clientX: number; pointerId: number; preventDefault?: () => void }) => void
 }
 
 /**
@@ -111,7 +110,10 @@ export interface FileBrowserProps {
  *   再列其他工作区（关合图标 + 灰）——「打开哪个就跟在哪个下面」；点当前工作区 = 回到其根目录。
  *  - 当前工作区未知（rootName 空或不在清单）时路径段置顶、全部工作区按「其他」罗列；
  *  - workspaces 不传 = 不显示工作区段（根无箭头、其下逐层缩进）。
- * 返回官方 Menu 的 items（缩进结构塞在 label 里）。
+ *
+ * 条目是**自写浮层**（核心没有「带缩进的选择层菜单」这类控件 ⇒ 按兄弟项目
+ * `dsh-task-dispatch-table` 的 `.dsh-tdt-sv-crumbs-menu*` 逐条照抄间距）：
+ * backdrop + 菜单本体 + `-item`（4px 8px / 最大宽 280 / 超出滚动 / 空态）。
  */
 function crumbsMenuEntries(params: {
   workspaces: readonly string[] | undefined
@@ -120,40 +122,55 @@ function crumbsMenuEntries(params: {
   crumbs: ReadonlyArray<{ label: string; path: string }>
   onPickWorkspace?: (name: string) => void
   onLoadDir?: (path: string) => void
-}): MenuEntry[] {
-  const { workspaces, rootName, rootFallbackLabel, crumbs } = params
-  const out: MenuEntry[] = []
-  const wsEntry = (ws: string, current: boolean): MenuEntry => ({
-    id: current ? 'dir:' : `ws:${ws}`,
-    label: h(
-      'span',
-      { className: 'dshpc-fb__menu-item', title: ws },
+}): ReactNode[] {
+  const { workspaces, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params
+  const out: ReactNode[] = []
+  const wsEntry = (ws: string, current: boolean): ReactNode =>
+    h(
+      'button',
+      {
+        key: `ws:${ws}`,
+        type: 'button',
+        role: 'menuitem',
+        className: 'dshpc-fb__menu-item',
+        title: ws,
+        // 当前工作区也可点（源实现用户 2026-10-10）：点它 = 回到该工作区根目录（浏览深处时唯一的「回根」入口）。
+        onClick: () => {
+          onPickWorkspace?.(ws)
+        },
+      },
       h(
         'span',
         { className: 'dshpc-fb__menu-icon', style: { color: current ? 'var(--dshpc-fg)' : 'var(--dshpc-fg-2)' } },
         h(current ? IconFolderOpenOutlineRegular : IconFolderCloseRegular, { size: 13 }),
       ),
-      h('span', { style: { fontWeight: current ? 600 : 400 } }, ws),
-    ),
-  })
-  const pathEntry = (crumb: { label: string; path: string }, depth: number, withArrow = true): MenuEntry => ({
-    id: `dir:${crumb.path}`,
-    label: h(
-      'span',
-      { className: 'dshpc-fb__menu-item', title: crumb.path },
+      h('span', { className: 'dshpc-fb__menu-label', style: { fontWeight: current ? 600 : 400 } }, ws),
+    )
+  const pathEntry = (crumb: { label: string; path: string }, depth: number, withArrow = true): ReactNode =>
+    h(
+      'button',
+      {
+        key: `dir:${crumb.path}`,
+        type: 'button',
+        role: 'menuitem',
+        className: 'dshpc-fb__menu-item',
+        title: crumb.path,
+        onClick: () => {
+          onLoadDir?.(crumb.path)
+        },
+      },
       withArrow
         ? h(
             Fragment,
             null,
-            Array.from({ length: depth }, (_, s) => h('span', { key: `s${s}`, className: 'dshpc-fb__menu-chev-slot' })),
+            Array.from({ length: depth }, (_, s) => h('span', { key: `s${s}`, className: 'dshpc-fb__menu-chev-slot', 'aria-hidden': true })),
             h('span', { className: 'dshpc-fb__menu-chev' }, h(IconChevronRightOutlineRegular, { size: 11 })),
           )
         : null,
-      h('span', null, crumb.label),
-    ),
-  })
+      h('span', { className: 'dshpc-fb__menu-label' }, crumb.label),
+    )
   if (workspaces === undefined) {
-    if (crumbs.length === 0) return [{ id: 'noop', label: rootFallbackLabel, disabled: true }]
+    if (crumbs.length === 0) return [h('div', { key: 'empty', className: 'dshpc-fb__menu-empty' }, rootFallbackLabel)]
     return crumbs.map((crumb, index) => pathEntry(crumb, index === 0 ? 0 : index - 1, index !== 0))
   }
   // 路径段：根 crumb（path=''）已由工作区段表达时剔除，深度从根下一层起算。
@@ -530,27 +547,27 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
                 if (event.key === 'Enter' || event.key === ' ') rowAction()
               },
             },
-            h(
-              'button',
-              {
-                type: 'button',
-                className: `dshpc-fb__row-toggle${isOpen ? ' dshpc-fb__row-toggle--open' : ''}`,
-                'aria-expanded': isOpen,
-                'aria-label': isOpen ? tt('explorerCollapse') : tt('explorerExpand'),
-                onClick: (event: { stopPropagation: () => void }) => {
-                  event.stopPropagation()
-                  toggleDir(childPath)
-                },
+            // 展开 / 收起：核心 IconButton（换图标表达朝向，不用 CSS 旋转）。
+            h(IconButton, {
+              variant: 'plain',
+              size: 'sm',
+              className: 'dshpc-fb__row-toggle',
+              icon: h(isOpen ? IconChevronDownOutlineRegular : IconChevronRightOutlineRegular, { size: 14 }),
+              label: isOpen ? tt('explorerCollapse') : tt('explorerExpand'),
+              'aria-expanded': isOpen,
+              onClick: (event: { stopPropagation: () => void }) => {
+                event.stopPropagation()
+                toggleDir(childPath)
               },
-              h(IconChevronRightOutlineRegular, { size: 14 }),
-            ),
+            }),
             h('span', { className: 'dshpc-fb__row-name' }, entry.name),
             props.onPick === undefined && picker
               ? null
               : h(
-                  'button',
+                  Button,
                   {
-                    type: 'button',
+                    variant: 'outline',
+                    size: 'sm',
                     className: 'dshpc-fb__row-act',
                     onClick: actThisDir,
                   },
@@ -597,37 +614,48 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
     onLoadDir: loadDir,
   })
 
-  const onMenuSelect = (id: string): void => {
-    setMenuOpen(false)
-    if (id.startsWith('ws:')) {
-      props.onSelectWorkspace?.(id.slice(3))
-      return
-    }
-    if (id.startsWith('dir:')) loadDir(id.slice(4))
-  }
+  /** 一段面包屑（核心 ghost 钮：无底无边；度量条与可见态必须逐字同构）。 */
+  const crumbButton = (label: string, onClick?: () => void, current = false): ReactNode =>
+    h(
+      Button,
+      {
+        variant: 'ghost',
+        size: 'sm',
+        className: `dshpc-fb__crumb${current ? ' dshpc-fb__crumb--current' : ''}`,
+        disabled: onClick === undefined,
+        tabIndex: onClick === undefined ? -1 : 0,
+        onClick,
+      },
+      h(MarqueeText, { text: label, className: 'dshpc-fb__crumb-mq' }),
+    )
 
   const crumbBar: ReactNode = h(
     'nav',
     { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') },
     h(
-      'span',
+      'div',
       { className: 'dshpc-fb__menu-wrap' },
-      h(Menu, {
-        open: menuOpen,
-        anchor: h(IconButton, {
-          variant: 'plain',
-          size: 'md',
-          icon: h(IconChevronDownOutlineRegular, { size: 14 }),
-          label: tt('explorerLevels'),
-          'aria-expanded': menuOpen,
-          onClick: () => setMenuOpen((v) => !v),
-        }),
-        items: menuItems,
-        align: 'start',
-        side: 'bottom',
-        onSelect: onMenuSelect,
-        onClose: () => setMenuOpen(false),
+      h(IconButton, {
+        variant: 'plain',
+        size: 'sm',
+        icon: h(IconChevronDownOutlineRegular, { size: 14 }),
+        label: tt('explorerLevels'),
+        'aria-expanded': menuOpen,
+        onClick: () => setMenuOpen((v) => !v),
       }),
+      // 选层下拉 = 自写浮层（抄兄弟 .dsh-tdt-sv-crumbs-*）：透明遮罩点一下即收，
+      // 遮罩层序高于 picker 面板（1100）⇒ 菜单开着时点面板也算「点外部」。
+      menuOpen
+        ? h(
+            Fragment,
+            null,
+            h('div', {
+              className: 'dshpc-fb__crumbs-backdrop',
+              onClick: () => setMenuOpen(false),
+            }),
+            h('div', { className: 'dshpc-fb__crumbs-menu', role: 'menu' }, menuItems),
+          )
+        : null,
     ),
     h(
       'div',
@@ -637,38 +665,27 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
         'span',
         { ref: measureRef, className: 'dshpc-fb__crumbs-measure', 'aria-hidden': true },
         crumbs.length === 0
-          ? h('button', { type: 'button', className: 'dshpc-fb__crumb', disabled: true, tabIndex: -1 }, tt('explorerRootName'))
-          : crumbs.map((crumb, index) =>
-              h(
-                Fragment,
-                { key: crumb.path },
-                index > 0 ? h(IconChevronRightOutlineRegular, { size: 12 }) : null,
-                h('button', { type: 'button', className: 'dshpc-fb__crumb', disabled: true, tabIndex: -1 }, crumb.label),
-              ),
-            ),
-      ),
-      // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
-      crumbsOverflow
-        ? h(
-            'span',
-            { className: 'dshpc-fb__crumb dshpc-fb__crumb--current' },
-            h(MarqueeText, {
-              text: crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt('explorerRootName') : tt('explorerRootName'),
-              className: 'dshpc-fb__crumb-mq',
-            }),
-          )
-        : crumbs.length === 0
-          ? h('span', { className: 'dshpc-fb__crumb dshpc-fb__crumb--current' }, tt('explorerRootName'))
+          ? crumbButton(tt('explorerRootName'))
           : crumbs.map((crumb, index) =>
               h(
                 Fragment,
                 { key: crumb.path },
                 index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null,
-                h(
-                  'button',
-                  { type: 'button', className: 'dshpc-fb__crumb', onClick: () => loadDir(crumb.path) },
-                  h(MarqueeText, { text: crumb.label, className: 'dshpc-fb__crumb-mq' }),
-                ),
+                crumbButton(crumb.label),
+              ),
+            ),
+      ),
+      // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
+      crumbsOverflow
+        ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt('explorerRootName') : tt('explorerRootName'), undefined, true)
+        : crumbs.length === 0
+          ? crumbButton(tt('explorerRootName'), undefined, true)
+          : crumbs.map((crumb, index) =>
+              h(
+                Fragment,
+                { key: crumb.path },
+                index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null,
+                crumbButton(crumb.label, () => loadDir(crumb.path)),
               ),
             ),
     ),
@@ -679,7 +696,7 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
         ? null
         : h(IconButton, {
             variant: 'plain',
-            size: 'md',
+            size: 'sm',
             icon: h(IconCloseOutlineRegular, { size: 14 }),
             label: tt('previewClose'),
             onClick: props.onClose,
@@ -704,7 +721,7 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
         ? null
         : h(IconButton, {
             variant: 'plain',
-            size: 'md',
+            size: 'sm',
             icon: h(IconCloseOutlineRegular, { size: 14 }),
             label: tt('previewClose'),
             onClick: props.onClose,
@@ -713,6 +730,7 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
   )
 
   // 第二排（仅预览态显示）：文件名 + 渲染⇄源码切换 / 复制路径 / 刷新。
+  // ⚠️ 右侧三个核心控件的高度档必须与左边 Segmented **同一档**（md = 28px）——两档混排会肉眼错位。
   const titleBar: ReactNode =
     viewing === null
       ? null
@@ -730,7 +748,7 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
             { className: 'dshpc-fb__actions' },
             switchable
               ? h(Segmented, {
-                  size: 'sm',
+                  size: 'md',
                   label: viewingIsMd ? tt('previewMdSwitchAria') : tt('previewHtmlSwitchAria'),
                   value: sourceView ? 'source' : 'render',
                   items: [
@@ -789,22 +807,11 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
   }
 
   return h(
-    'aside',
+    'div',
     {
-      className: `dshpc-fb${props.dock === true ? ' dshpc-fb--dock' : ''}`,
+      className: 'dshpc-fb',
       style: props.style ?? undefined,
     },
-    props.onResizeStart === undefined
-      ? null
-      : h('div', {
-          className: 'dshpc-fb__resizer',
-          role: 'separator',
-          'aria-orientation': 'vertical',
-          title: tt('previewResize'),
-          onPointerDown: (event: { clientX: number; pointerId: number; preventDefault?: () => void }) => {
-            props.onResizeStart?.(event)
-          },
-        }),
     outside ? crumbBarPlain : crumbBar,
     titleBar,
     body,
