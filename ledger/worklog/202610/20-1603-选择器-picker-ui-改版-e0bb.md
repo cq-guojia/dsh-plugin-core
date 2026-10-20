@@ -89,3 +89,4 @@
 - 2026-10-20 17:43:35 · log · @GuoJia-Agent · 第四轮：模型目录已出；修 cascade 联动(组件内自记厂商，原先靠值反推被清空后永远空) + ModelPicker 搜索框默认开；顺手清 Toast 无用 case(过 lint)
 - 2026-10-20 17:49:03 · log · @GuoJia-Agent · 第五轮：去掉 cascade 改 split(两个独立下拉,互不联动)/ModelPicker 增默认模型项 allowDefault+defaultLabel(选中发空串)/Picker 增 align 默认居左(修 space-between 把短文案推中间)
 - 2026-10-20 17:53:28 · log · @GuoJia-Agent · 第六轮纠偏：grouped 保留(独立) + cascade 恢复(联动)；split 撤销；demo 两形态各用独立 state，只留两组
+- 2026-10-20 17:53:53 · log · @GuoJia-Agent · 第七轮：demo 去掉「无图标」与自定义文案演示，工作区只留默认形态（默认即核心给的名字+图标；自定义能力保留不演示）
