@@ -189,6 +189,8 @@ test('src 下不得残留 MAP 之外的孤儿生成物', async () => {
     }
   }
   await walk('../src')
+  // demo 包的样式也走同一条生成链（packages/demo/src/demo.css），一并纳入
+  await walk('../packages/demo/src')
 
   assert.deepEqual(
     found.sort(),

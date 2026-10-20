@@ -18,6 +18,7 @@ import { demoDock, demoPanels } from '../dock.js'
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, SECTION_GROUPS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
+import { DEMO_CSS } from '../demo-css.generated.js'
 import { MODELS_PATH } from '../paths.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
@@ -170,6 +171,8 @@ export function apply(ctx: {
   const kit = createStyleKit({ id: 'dsh-plugin-core-plugin' })
   setStyleKit(kit)
   ensureControls(kit)
+  // 文档骨架样式（示例/代码双栏等）是 demo 自己的，不进库；仍走同一个 kit、同一个 style 标签
+  kit.registerStyle('demo', DEMO_CSS)
   kit.ensureStyles()
 
   // 把官方 Tooltip 交给 core：此后 FieldHint（问号提示）的气泡就是官方组件本体，

@@ -37,8 +37,8 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react38 = require("react");
-var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
+var import_react44 = require("react");
+var import_dsh_client_ui_primitives4 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
 var TOKENS_CSS_TEMPLATE = '\n/* \u2500\u2500 \u6587\u5B57\uFF08\u5BBF\u4E3B label \u56DB\u6863 + \u53CD\u8272\u9762\u7528\u5B57\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\nbody{\n  --dshpc-fg:var(--dsw-alias-label-primary,#1f2328);\n  --dshpc-fg-2:var(--dsw-alias-label-secondary,#5c6370);\n  --dshpc-fg-3:var(--dsw-alias-label-tertiary,#767d87);\n  --dshpc-fg-4:var(--dsw-alias-label-caption,#9aa1ab);\n  --dshpc-fg-dim:var(--dsw-alias-label-dimmed,#b9bfc7);\n  /* \u53CD\u8272\u9762\u4E0A\u7684\u5B57\uFF08\u5B9E\u5FC3\u94AE / \u89D2\u6807\uFF09\uFF1A\u6697\u8272\u4E0B\u662F bluish-1000\uFF0C\u6545\u7528 -foreground \u800C\u975E -inverted */\n  --dshpc-fg-inverse:var(--dsw-alias-label-primary-foreground,#fff);\n\n  /* \u2500\u2500 \u9762\uFF08\u5BBF\u4E3B bg-layer \u4E09\u6863 + \u4E0B\u6C89\u8F68\u9053\u5E95\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-surface-1:var(--dsw-alias-bg-layer-1,#fff);\n  --dshpc-surface-2:var(--dsw-alias-bg-layer-2,#fff);\n  --dshpc-surface-3:var(--dsw-alias-bg-layer-3,#fff);\n  /* \u300C\u9009\u4E2D\u4EAE\u7247\u300D\u7684\u5E95\u76D8\u8272\uFF08\u914D --dshpc-shadow-raised \u7528\uFF09 */\n  --dshpc-surface-raised:var(--dsw-alias-bg-layer-1,#fff);\n  /* \u8F68\u9053 / \u4E0B\u6C89\u5E95\uFF08\u5B98\u65B9\u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u7528\u7684\u5C31\u662F\u8FD9\u6761\uFF09 */\n  --dshpc-surface-sunken:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));\n  /* \u6574\u9875 / \u7F16\u8F91\u5668\u5E95\uFF08bg-base\uFF09 */\n  --dshpc-surface-base:var(--dsw-alias-bg-base,#fff);\n  /* \u81EA\u7ED8\u6D6E\u5C42 / \u83DC\u5355\u5361\u7684\u4E0D\u900F\u660E\u5E95\uFF08= base\uFF1B\u4E0D\u8981\u7528\u534A\u900F\u660E\u7684 specific-menu\uFF09 */\n  --dshpc-surface-menu:var(--dshpc-surface-base);\n  /* markdown \u4EE3\u7801\u5757\u9762 / \u5B57\u4F53\uFF08\u4F1A\u8BDD\u955C\u50CF\u91CC\u7528\u5230\uFF09 */\n  --dshpc-code-surface:var(--dsw-alias-markdown-code-block,rgba(128,128,128,.10));\n  --dshpc-code-font:var(--dsw-font-markdown-code-block-small,12px/18px var(--ds-font-family-code,monospace));\n  /* \u8B66\u544A\u6587\u5B57\u8272\uFF08\u5BBF\u4E3B state-warn-label\uFF09 */\n  --dshpc-warning-label:var(--dsw-alias-state-warn-label,#f5a623);\n  /* \u56FA\u5B9A\u4E2D\u6027\u5B9E\u9762\uFF08\u81EA\u7ED8\u6D6E\u5C42\u3001\u6DF1\u8272\u4E3B\u9898\u4E0B\u5FC5\u987B\u81EA\u5DF1\u53D8\u7684\u90A3\u51E0\u4E2A\uFF09\u2014\u2014\u53EA\u6709\u5B83\u9700\u8981\u6697\u8272\u8986\u76D6 */\n  --dshpc-solid:var(--dsw-static-neutral-00,#fff);\n  --dshpc-on-solid:var(--dsw-alias-label-primary,#1f2328);\n  /* \u4EA4\u4ED8\u6587\u4EF6\u5361\u90A3\u79CD\u300C\u6D45\u5E95\u76D8 + hover \u52A0\u6DF1\u300D\u4E24\u62CD */\n  --dshpc-plate:var(--dsw-static-neutral-50,#fafafa);\n  --dshpc-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u26A0\uFE0F \u8FD9\u4E9B**\u56FA\u5B9A\u4E2D\u6027\u9762\u4E00\u5F8B\u7528 rgba \u5B57\u9762\u91CF**\uFF082026-10-19 \u771F\u673A\u6559\u8BAD\uFF09\uFF1A\u4E0D\u8981\u5199\u6210\n     \u300Crgba \u56DE\u9000\u884C + \u5D4C --dsw-static-* \u7684 color-mix \u884C\u300D\u4E24\u6761\u540C\u540D\u58F0\u660E\u2014\u2014\u81EA\u5B9A\u4E49\u5C5E\u6027**\u540E\u8005\u6052\u80DC**\uFF0C\n     \u54EA\u6015\u5B83\u7684\u503C\u5728\u5BBF\u4E3B\u91CC\u7B97\u4E0D\u51FA\u6765\uFF08static \u53D8\u91CF invalid\uFF09\u21D2 \u6574\u6761 token \u4F5C\u5E9F\u3001rgba \u515C\u5E95\u4E00\u8D77\u88AB\u5E9F\uFF0C\n     0.2.6 \u91CC Segmented \u8F68\u9053\u5168\u900F\u660E\u5C31\u662F\u8FD9\u4E48\u6765\u7684\u3002\u8981\u8DDF\u5BBF\u4E3B\u4E3B\u9898\u8054\u52A8\u7684\u9762\u7528 alias token\uFF08\u90A3\u4E9B\u5B9E\u6D4B\u6709\u6548\uFF09\u3002 */\n  --dshpc-icon-plate:rgba(255,255,255,.5);\n  /* \u8868\u5934\u5E95\uFF1A\u6D45\u8272\u4E3B\u9898**\u504F\u6DF1**\uFF0C\u4E14\u5FC5\u987B**\u6BD4\u6591\u9A6C\u7EB9\uFF08--dshpc-plate\uFF09\u518D\u6DF1\u4E00\u6863**\u2014\u2014\n     \u4E24\u8005\u4E0D\u80FD\u649E\u8272\uFF08\u7528\u6237 2026-10-02\uFF1A\u8868\u5934\u8DDF\u6591\u9A6C\u7EB9\u4E00\u6A21\u4E00\u6837\uFF09\u3002 */\n  --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u56FE\u6807\u5C0F\u5E95\u677F\uFF08\u4EA7\u51FA\u7269\uFF09\uFF1A\u6D45\u8272\u4E0B\u8981**\u770B\u5F97\u89C1**\uFF08\u539F\u5148\u53D6 plate \u21D2 \u5728\u767D\u5E95\u4E0A\u7B49\u4E8E\u6CA1\u6709\uFF09\uFF1Bhover \u52A0\u500D\u3002 */\n  --dshpc-chip-bg:rgba(15,15,15,.07);\n  --dshpc-chip-bg-hover:rgba(15,15,15,.14);\n  /* \u5C55\u5F00\u884C\uFF1A**\u5E26\u900F\u660E\u5EA6\u7684\u84DD**\u2014\u2014\u4E0D\u662F\u7070\u3001\u4E5F\u4E0D\u662F\u7EAF\u8272\uFF0C\u900F\u51FA\u5361\u7247\u5E95\u8272\uFF0C\u4E00\u773C\u770B\u51FA\u300C\u8FD9\u662F\u5C55\u5F00\u7684\u300D\n     \uFF08\u7528\u6237 2026-10-02\uFF1A\u7070\u8272\u8DDF\u6591\u9A6C\u7EB9\u5206\u4E0D\u51FA\u6765\uFF09\u3002\u5185\u5BB9\u533A\u518D\u6DE1\u4E00\u6863\uFF0C\u5F62\u6210\u300C\u884C\u6DF1 / \u5185\u5BB9\u6D45\u300D\u7684\u533A\u9694\u3002 */\n  --dshpc-open-bg:rgba(37,99,235,.10);\n  --dshpc-open-bg-soft:rgba(37,99,235,.05);\n  --dshpc-card-hover:rgba(37,99,235,.07);\n\n  /* \u2500\u2500 \u63CF\u8FB9\u56DB\u6863\uFF08\u5BBF\u4E3B\u771F\u503C\uFF1Al1 4% / l2 10% / l3 12% / l4 16%\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-border-faint:var(--dsw-alias-border-l1,#0000000a);\n  --dshpc-border:var(--dsw-alias-border-l2,#0000001a);\n  --dshpc-border-strong:var(--dsw-alias-border-l3,#0000001f);\n  --dshpc-border-heavy:var(--dsw-alias-border-l4,#00000029);\n\n  /* \u2500\u2500 \u54C1\u724C / \u8BED\u4E49\u8272 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u54C1\u724C\u300C\u9762\u300D\u8272\uFF1A\u660E\u8272\u8FD1\u9ED1\u3001\u6697\u8272\u8FD1\u767D\uFF08\u5B98\u65B9 Switch \u9009\u4E2D\u6001\u5373\u6B64\uFF09\uFF0C**\u4E0D\u662F\u84DD\u8272** */\n  --dshpc-accent:var(--dsw-alias-brand-primary,#0f1115);\n  /* \u84DD\u8272\uFF1A\u5F3A\u8C03 / \u9009\u4E2D / \u7126\u70B9\uFF0C\u4E00\u5F8B\u8D70\u8FD9\u6761 */\n  --dshpc-business:var(--dsw-alias-state-business-primary,#3b5bdb);\n  --dshpc-success:var(--dsw-alias-state-success-primary,#22c55e);\n  /* \u26A0\uFE0F \u662F state-warn\uFF08\u4E0D\u662F state-warning\uFF0C\u540E\u8005\u5BBF\u4E3B\u65E0\u6B64\u5B9A\u4E49\uFF09 */\n  --dshpc-warning:var(--dsw-alias-state-warn-primary,#f59e0b);\n  --dshpc-danger:var(--dsw-alias-state-error-primary,#ec1313);\n  --dshpc-link:var(--dsw-alias-link,#3b5bdb);\n  /* \u8BED\u4E49\u8272**\u5B9E\u9762**\u4E0A\u7684\u5B57\uFF08\u89D2\u6807 / \u5B9E\u5FC3\u63D0\u793A\uFF09\uFF1A\u5BBF\u4E3B\u7EA2\u7EFF\u9EC4\u4E09\u8272\u90FD\u662F\u4E2D\u8C03 \u21D2 \u767D\u5B57\u4E24\u4E2A\u4E3B\u9898\u90FD\u53EF\u8BFB\uFF0C\n     \u6545\u8FD9\u662F\u4E00\u6761\u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u5E38\u91CF\uFF1B\u4E0D\u8981\u62FF --dshpc-fg-inverse \u9876\u2014\u2014\u5B83\u5728\u6697\u8272\u4E0B\u662F\u8FD1\u9ED1\uFF0C\u538B\u5728\u7EA2\u5E95\u4E0A\u770B\u4E0D\u6E05\u3002 */\n  --dshpc-on-signal:#fff;\n  /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */\n  --dshpc-on-warning:#1f2328;\n\n  /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002\n     \u21D2 \u6539\u6210\u5BF9\u5E95\u8272\u505A**\u660E\u786E\u7684\u6DF7\u8272**\uFF08\u538B 22% / 34%\uFF09\uFF0C\u4E0D\u7528 opacity\uFF1A\n       \xB7 \u4EAE\u8272\u4E3B\u9898\uFF1A\u9ED1\u5E95\uFF08--dshpc-accent\uFF09\u63BA\u767D\u63D0\u4EAE\uFF1B\u7EA2 / \u7EFF / \u9EC4 / \u84DD\u5E95\u63BA\u9ED1\u538B\u6DF1\uFF1B\n       \xB7 \u6697\u8272\u4E3B\u9898\uFF1A\u53CD\u8FC7\u6765\uFF08\u6697\u5E95\u63BA\u767D\u3001\u4EAE\u5E95\u63BA\u9ED1\uFF09\u3002\n     \u6DF7\u8272\u5BF9\u8C61\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272\u5B57\u9762\u91CF**\uFF08#fff / #000\uFF09\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B static-neutral \u662F\u5426\u5B58\u5728\uFF1B\n     \u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u6574\u6761\u58F0\u660E\u4F5C\u5E9F \u21D2 \u56DE\u843D\u5404\u6863\u539F\u8272\uFF08\u53EF\u63A5\u53D7\uFF1A\u4ECD\u53EF\u70B9\uFF0C\u53EA\u662F\u6CA1\u6709 hover \u53CD\u9988\uFF09\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 78%,#ffffff);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 64%,#ffffff);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#000000);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#000000);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#000000);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#000000);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#000000);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#000000);\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#000000);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#000000);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF1A\u72B6\u6001\u8272\u7CFB\u7684\u300C\u4E00\u5757\u5E95\u8272\u300D\u2014\u2014\u6267\u884C\u8BB0\u5F55\u9875\u6BCF\u6761\u6D41\u6C34\u8D26\u7684\u5757\u5E95\u5C31\u662F\u5B83\n     \uFF08\u7528\u6237 2026-10-04\uFF1A\u6B63\u5E38\u6001\u7ED9\u540C\u8272\u7CFB\u5F88\u6D45\u7684\u900F\u660E\u5E95\u3001\u5931\u8D25\u7528\u7EA2\u5E95\u900F\u51FA\u6765\uFF09\u3002\n     \u7528 \u300Ccolor-mix\u300D \u73B0\u7B97\u800C\u4E0D\u5199\u6B7B rgba\uFF1A\u72B6\u6001\u8272\u672C\u8EAB\u8DDF\u968F\u5BBF\u4E3B alias\uFF0C\u4E3B\u9898\u4E00\u6362\u81EA\u52A8\u6210\u7ACB\u3002\n     \u26A0\uFE0F **\u6DF1\u8272\u4E0B\u8981\u66F4\u6DE1**\uFF1A\u7528\u6237 2026-10-04\u300C\u6DF1\u8272\u98CE\u683C\u7684\u7EFF\u8272\u548C\u7EA2\u8272\u597D\u50CF\u90FD\u6709\u70B9\u6DF1\u300D\u21D2 dark \u6BB5\n     \u628A\u8FD9\u56DB\u6761\u538B\u5230 5%\uFF08\u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF09\uFF1B\u6D45\u8272\u6BB5\u7EF4\u6301 8%\u3002\u4E24\u7AEF\u5404\u81EA\u7ED9\u503C\uFF0C\u4E0D\u5171\u7528\u4E00\u6761\u66F2\u7EBF\u3002\n     \u547D\u540D\u6536\u5728 tokens.ts \u5355\u70B9\uFF08\u672C\u4ED3\u786C\u89C4\u77E9\uFF1A\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u81EA\u9020 --dshpc-*\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 8%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 8%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 8%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 8%,transparent);\n\n  /* \u26A0\uFE0F 2026-10-18 \u7528\u6237\u62CD\u677F\uFF1A\u5BBF\u4E3B alias \u7684 hover\uFF08\u6697\u8272\u767D 8% / \u4EAE\u8272 6%\uFF09**\u592A\u5F31**\uFF0C\n     \u300C\u79FB\u4E0A\u53BB\u8981\u4ED4\u7EC6\u770B\u624D\u770B\u5F97\u51FA\u6765\u300D\u21D2 \u4E0D\u518D\u59D4\u6258\u5BBF\u4E3B hover \u522B\u540D\uFF0C\u6539\u4E3A\u81EA\u63BA\u4E2D\u6027\u8272\u5E76\u52A0\u91CD\uFF1A\n     \u4EAE\u8272\u63BA\u9ED1 10%\u3001\u6697\u8272\u63BA\u767D 14%\uFF08active \u518D\u52A0\u4E00\u6863\uFF09\u3002\u6309\u94AE / \u5206\u6BB5\u8F68\u9053 / \u5404\u7C7B hover \u5E95\u540C\u65F6\u53D7\u76CA\u3002\n     \u26A0\uFE0F \u5FC5\u987B\u4FDD\u7559 rgba \u515C\u5E95\u884C\u5728\u524D\uFF08\u672C\u6587\u4EF6\u60EF\u4F8B\uFF0C\u89C1 icon-plate \u6CE8\u91CA\uFF09\uFF1A\u63BA\u7684\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272**\n     \uFF08neutral-900=#0f0f0f / neutral-00=#fff\uFF09\uFF0C\u9884\u8BA1\u7B97\u65E0\u635F\uFF1B\u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u8D70\u515C\u5E95\uFF0C\n     \u5426\u5219\u6574\u6761 background:var(--seg-track) \u4F5C\u5E9F \u21D2 \u5206\u6BB5\u8F68\u9053\u900F\u660E\uFF08\u771F\u8E29\u8FC7\uFF1A\u9884\u89C8\u7AD9\u8F68\u9053\u6D88\u5931\uFF09\u3002 */\n  --dshpc-hover:rgba(15,15,15,.10);\n  --dshpc-active:rgba(15,15,15,.18);\n  /* \u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u5E95\uFF1A\u4E13\u7528 token\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u501F --dshpc-hover \u4E2D\u8F6C\uFF09\u2014\u2014\n     2026-10-19 \u6559\u8BAD\uFF1A\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid \u21D2 background \u6574\u6761\u4F5C\u5E9F\u3001\u8F68\u9053\u5168\u900F\u660E\u3002\n     \u4EAE\u8272\uFF1A\u9ED1 7%\uFF08\u6BD4 hover \u7684 10% \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u767D\u7247\u624D\u8DF3\u5F97\u51FA\uFF09\u3002 */\n  --dshpc-seg-track:rgba(15,15,15,.07);\n  --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A\n     \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002\n     \u8BED\u4E49\uFF1A\u6807\u8BB0\u300C\u6B63\u5728\u770B\u7684\u4E1C\u897F\u300D\uFF0C\u6BD4\u5E38\u6001\u660E\u663E\u3001\u53C8\u4E0D\u8BB8\u76D6\u4F4F\u5185\u5BB9\uFF08\u4E0D\u8BB8\u7528\u534A\u900F\u660E\u53E0\u72B6\u6001\u8272\uFF09\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 88%,var(--dshpc-fg));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u9ED8\u8BA4\u5E95\uFF082026-10-06 \u2192 \u7EED2\uFF09\uFF1A\u6D45\u8272\u4E0B\u7ED9**\u6DE1\u84DD**\uFF08business 8% \u900F\u767D\u5E95\uFF09\u2014\u2014\n     \u53C2\u7167\u7528\u6237\u53C2\u8003\u7A3F\u91CC\u672A\u9009\u4E2D\u65E5\u7A0B\u5757 / Tuesday \u5217\u7684\u90A3\u79CD\u84DD\u3001\u518D\u6D45\u4E00\u70B9\u70B9\uFF1B\n     \u76F8\u90BB\u6708\u8865\u4F4D\u683C\u4ECD\u8D70 --dshpc-surface-2\uFF08\u66F4\u7070\uFF09\uFF0C\u4E0D\u53D7\u5F71\u54CD\u3002\n     \u6DF1\u8272\u6BB5\u7EF4\u6301 #23262e\uFF08\u7528\u6237\uFF1A\u6DF1\u8272 UI \u5DF2\u5DEE\u4E0D\u591A\uFF0C\u4E0D\u52A8\uFF09\u3002 */\n  --dshpc-cal-cell-bg:color-mix(in srgb,var(--dshpc-business) 8%,var(--dshpc-surface-1));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u300C\u70B9\u5F00\u67D0\u5929\u300D\u5C55\u5F00\u7684\u9762\u677F\u5E95\uFF082026-10-06 \u7EED\uFF09\uFF1A\u6D45\u8272\u4E0B**\u65E0\u9650\u63A5\u8FD1\u767D\u3001\u53EA\u5E26\u4E00\u4E01\u70B9\u7070**\n     \uFF08neutral-50 = #fafafa\uFF09\u2014\u2014\u9762\u677F\u91CC\u88C5\u534A\u900F\u660E\u6267\u884C\u8BB0\u5F55\u5217\u8868\uFF0C\u5E95\u518D\u6DF1\u6574\u7247\u5C31\u53D1\u7CCA\u53D1\u7070\uFF1B\n     \u6DF1\u8272\u6BB5\u6CBF\u7528\u539F selected-bg \u6697\u503C\uFF0C\u4FDD\u6301\u4E0D\u52A8\u3002 */\n  --dshpc-cal-panel-bg:var(--dsw-static-neutral-50,#fafafa);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6D45\u8272\u6BB5\uFF0C2026-10-06 \u7EED3\uFF09\uFF1A\u4E0D\u518D\u8D70\u7070\u8272\u901A\u7528\u4EA4\u4E92\u5E95\u2014\u2014\n     \u9F20\u6807\u79FB\u4E0A\u53BB\u5E94\u662F\u300C\u66F4\u4EAE\u4E00\u70B9\u70B9\u7684\u84DD\u300D\uFF08\u4E0E\u6DF1\u8272\u6BB5\u540C\u8BED\u4E49\uFF1Ahover = \u63D0\u4EAE\u7684\u84DD\uFF0C\u4E0D\u662F\u7070\u4E0B\u53BB\uFF09\u3002\n     \u6D53\u5EA6**\u4ECB\u4E8E**\u8868\u5934\u84DD\uFF0814%\uFF09\u4E0E\u672A\u9009\u4E2D\u683C\u84DD\uFF088%\uFF09\u4E4B\u95F4\u3001\u7565\u504F\u8868\u5934\u4E00\u4FA7\uFF1Abusiness 12% \u900F\u767D\u5E95\n     \uFF08\u6BD4\u8868\u5934\u6D45\u4E00\u70B9\u3001\u6BD4\u672A\u9009\u4E2D\u683C\u6DF1\u4E00\u70B9\uFF09\u3002 */\n  --dshpc-cal-cell-hover:color-mix(in srgb,var(--dshpc-business) 12%,var(--dshpc-surface-1));\n\n  /* \u2500\u2500 \u6295\u5F71 / \u7126\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-shadow-1:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  /* \u4EAE\u7247\u81EA\u5E26\u7684\u6D6E\u8D77\u611F\uFF08\u9009\u4E2D\u6001\u7528\uFF1B\u4E0E --dshpc-surface-raised \u914D\u5BF9\uFF09 */\n  --dshpc-shadow-raised:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  --dshpc-shadow-2:var(--dsw-shadow-lv3,0 12px 32px 0 #00000014);\n  /* \u952E\u76D8\u7126\u70B9\u73AF\u3002\u26A0\uFE0F \u4E0D\u7528\u5BBF\u4E3B --dsw-focus-ring-color\uFF1A\u5B83\u9ED8\u8BA4\u503C\u662F transparent\uFF08\u515C\u5E95\u4E0D\u751F\u6548\u3001\u4F1A\u9690\u8EAB\uFF09 */\n  --dshpc-focus:var(--dsw-alias-state-business-primary,#3b5bdb);\n\n  /* \u2500\u2500 \u5706\u89D2\uFF08\u5BBF\u4E3B\u771F\u503C 4 / 8 / 12 / 16 / 20 / 28\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-radius-xs:var(--dsw-radius-xs,4px);\n  --dshpc-radius-sm:var(--dsw-radius-sm,8px);\n  --dshpc-radius-md:var(--dsw-radius-md,12px);\n  --dshpc-radius-lg:var(--dsw-radius-lg,16px);\n  --dshpc-radius-xl:var(--dsw-radius-xl,20px);\n  --dshpc-radius-panel:var(--dsw-radius-panel,28px);\n  /* \u5168\u5706\uFF08\u80F6\u56CA\u6807\u7B7E\uFF09\uFF1A\u5BBF\u4E3B\u7684 radius \u6863\u6700\u5927\u53EA\u6709 28px\uFF0C\u6491\u4E0D\u6EE1 24px \u9AD8\u7684 chip */\n  --dshpc-radius-pill:999px;\n\n  /* \u2500\u2500 \u95F4\u8DDD\u56DB\u62CD\uFF08\u53EA\u8BB8\u7528\u8FD9\u56DB\u6863\uFF0C\u4E0D\u8BB8\u51FA\u73B0 5 / 7 / 9px\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-space-1:4px;\n  --dshpc-space-2:8px;\n  --dshpc-space-3:12px;\n  --dshpc-space-4:16px;\n\n  /* \u2500\u2500 \u63A7\u4EF6\u9AD8\u5EA6\uFF1A\u79BB\u6563\u4E09\u6863\uFF08\u63A7\u4EF6\u7528 size="sm|md|lg" \u9009\uFF1B\u8C03\u7528\u70B9\u4E0D\u8BB8\u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF0C\n       \u771F\u4E0D\u591F\u7528\u624D\u5141\u8BB8\u5728\u8C03\u7528\u70B9\u672C\u5730\u8986\u76D6 --dshpc-control-h-*\uFF0C\u5C5E\u4F8B\u5916\u800C\u975E\u5E38\u6001\uFF09\u2500\u2500 */\n  --dshpc-control-h-sm:24px;\n  --dshpc-control-h-md:28px;\n  --dshpc-control-h-lg:32px;\n\n  /* \u2500\u2500 \u5B57\u53F7 / \u884C\u9AD8\uFF1A\u76F4\u7ED1\u5BBF\u4E3B\u5B57\u53F7\u65CF\uFF08\u5BBF\u4E3B\u771F\u503C 11 / 12 / 13 / 14 / 16\uFF09\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-font-xs:var(--dsw-font-xxxs-11-font-size,11px);\n  --dshpc-font-sm:var(--dsw-font-xxs-12-font-size,12px);\n  --dshpc-font-md:var(--dsw-font-xs-13-font-size,13px);\n  --dshpc-font-lg:var(--dsw-font-s-14-font-size,14px);\n  --dshpc-font-xl:var(--dsw-font-base-16-font-size,16px);\n  --dshpc-line-xs:var(--dsw-font-xxxs-11-line-height,14px);\n  --dshpc-line-sm:var(--dsw-font-xxs-12-line-height,18px);\n  --dshpc-line-md:var(--dsw-font-xs-13-line-height,20px);\n  --dshpc-line-lg:var(--dsw-font-s-14-line-height,22px);\n  --dshpc-line-xl:var(--dsw-font-base-16-line-height,24px);\n  --dshpc-font-mono:var(--ds-font-family-code,monospace);\n\n  /* \u2500\u2500 \u5C42\u7EA7\u9636\u68AF\uFF08\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u518D\u5199\u88F8 z-index\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u9875\u9762\u7EA7\u9884\u89C8\u5206\u680F \u2192 \u62BD\u5C49\uFF08\u65B0\u5EFA/\u7F16\u8F91\uFF09\u2192 \u5F39\u7A97/\u786E\u8BA4\u6846 \u2192 \u6D6E\u5C42\u83DC\u5355 \u2192 \u6D6E\u5C42\u63D0\u793A */\n  /* \u5185\u5BB9\u5C42\u5438\u9876\uFF08\u5929\u6807\u7B7E / \u8868\u5934\u8FD9\u7C7B\u300C\u8DDF\u7740\u6EDA\u4F46\u538B\u4F4F\u540C\u5C42\u5185\u5BB9\u300D\u7684\u5143\u7D20\uFF09\uFF1A\u53EA\u538B\u540C\u5C42\u5144\u5F1F\uFF0C\n     \u5FC5\u987B\u4F4E\u4E8E\u4E0B\u9762\u6240\u6709\u6D6E\u5C42\u6863 \u2014\u2014 \u6240\u4EE5\u5B83\u4E0D\u662F\u300C\u5F00\u65B0\u6D6E\u5C42\u6863\u300D\uFF0C\u800C\u662F\u5185\u5BB9\u5C42\u5185\u90E8\u7684\u6392\u5E8F\u4F4D\u3002 */\n  --dshpc-z-sticky:10;\n  --dshpc-z-dock:1030;\n  --dshpc-z-drawer:1040;\n  --dshpc-z-modal:1070;\n  --dshpc-z-menu:1100;\n  --dshpc-z-tip:1200;\n\n  /* \u2500\u2500 \u52A8\u6548 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-dur:var(--ds-transition-duration,.2s);\n  --dshpc-dur-fast:var(--ds-transition-duration-fast,.12s);\n  --dshpc-ease:var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1));\n  /* \u8FD0\u884C\u4E2D\u72B6\u6001\u7684\u8109\u52A8\u65F6\u957F\uFF082026-10-06 \u7EDF\u4E00\u524D\u540E\u4E24\u7AEF\uFF1A\u4EFB\u52A1\u914D\u7F6E\u91CC\u7684\u7EFF\u547C\u5438 \u2192 \u84DD\u3001\u653E\u6162\uFF1B\n     \u6267\u884C\u8BB0\u5F55\u91CC\u7684\u84DD\u95EA \u2192 \u653E\u6162\u4E00\u70B9\u3002\u4E24\u8005\u7528\u540C\u4E00\u4E2A\u503C\uFF0C\u52A8\u753B\u5F62\u72B6\u672C\u5C31\u4E00\u81F4\uFF09\u3002 */\n  --dshpc-dur-run:500ms;\n}\n\n/* \u2500\u2500 \u660E\u6697\u5DEE\u5F02\u7684**\u552F\u4E00**\u843D\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5224\u636E = body[data-ds-dark-theme]\uFF08\u5BBF\u4E3B 0.2.0-rc.2 \u6E90\u7801\u6838\u5B9E\uFF1A\u542F\u52A8\u811A\u672C toggleAttribute \u5199\u5165\uFF0C\n   \u552F\u4E00\u660E\u6697\u5224\u636E\uFF1B\u63D2\u4EF6\u7981\u6B62\u7528 prefers-color-scheme \u2014\u2014 \u5B83\u8DDF\u7684\u662F\u7CFB\u7EDF\u3001\u4E0D\u662F\u7528\u6237\u5728\u5BBF\u4E3B\u91CC\u7684\u9009\u62E9\uFF09\u3002\n   \u4E0B\u9762\u53EA\u653E alias \u8868\u8FBE\u4E0D\u4E86\u7684\u300C\u56FA\u5B9A\u4E2D\u6027\u9762\u300D\uFF1B\u989C\u8272\u82E5\u80FD\u9760 alias \u81EA\u52A8\u8DDF\u968F\uFF0C\u4E00\u5F8B\u4E0D\u8981\u5199\u5728\u8FD9\u91CC\u3002 */\nbody[data-ds-dark-theme]{\n  --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);\n  --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);\n  /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B\n     \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 66%,#000000);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#ffffff);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#ffffff);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#ffffff);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#ffffff);\n  /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */\n  --dshpc-hover:rgba(255,255,255,.14);\n  --dshpc-active:rgba(255,255,255,.24);\n  /* \u5206\u6BB5\u8F68\u9053\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 10%\u2014\u2014\u6BD4 hover \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u4EAE\u7247\u624D\u8DF3\u5F97\u51FA\u3002 */\n  --dshpc-seg-track:rgba(255,255,255,.10);\n  --dshpc-plate:var(--dsw-static-neutral-850,#212123);\n  --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);\n  --dshpc-icon-plate:rgba(255,255,255,.05);\n  /* \u6697\u8272\u4E3B\u9898**\u53CD\u8FC7\u6765**\uFF1A\u8868\u5934\u8981\u6BD4\u5361\u7247\u9762**\u4EAE**\u3001\u6BD4\u6591\u9A6C\u7EB9\u518D**\u6D45\u4E00\u6863**\uFF08\u7528\u6237\uFF1A\u7EAF\u9ED1\u80CC\u666F\u6CA1\u6CD5\u770B\uFF09\u3002 */\n  --dshpc-head-bg:var(--dshpc-surface-2);\n  /* \u6697\u8272\u5E95\u677F**\u5FAE\u4EAE**\uFF1Bhover **\u66F4\u4EAE**\uFF08\u539F\u5148 hover \u53D6 plate-hover \u53CD\u800C\u66F4\u6DE1 \u21D2 \u9F20\u6807\u79FB\u4E0A\u53BB\u5C31\u6CA1\u4E86\uFF09\u3002 */\n  --dshpc-chip-bg:rgba(255,255,255,.08);\n  --dshpc-chip-bg-hover:rgba(255,255,255,.16);\n  /* \u6697\u8272\u4E0B\u84DD\u8272\u8981\u66F4\u4EAE\u3001\u900F\u660E\u5EA6\u7565\u9AD8\u624D\u538B\u5F97\u4F4F\u6DF1\u5E95\u3002 */\n  --dshpc-open-bg:rgba(96,165,250,.18);\n  --dshpc-open-bg-soft:rgba(96,165,250,.08);\n  --dshpc-card-hover:rgba(96,165,250,.13);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF08\u6DF1\u8272\u7248\uFF09\uFF1A\u7528\u6237\u5ACC\u6DF1\u8272\u7684\u7EFF / \u7EA2\u300C\u6709\u70B9\u6DF1\u300D\u21D2 \u538B\u5230 **5%**\uFF08\u6D45\u8272\u6BB5\u662F 8%\uFF09\uFF0C\n     \u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u8272\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF1B\u5757\u5E95\u4E0E\u72B6\u6001\u8272\u7AD6\u6761\u4ECD\u540C\u6E90\uFF08\u7AD6\u6761\u662F\u5B9E\u8272\uFF0C\u4E0D\u53D7\u8FD9\u6761\u5F71\u54CD\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 5%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 5%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 5%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 5%,transparent);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u63BA **~40% \u80CC\u666F\u8272**\uFF08--dshpc-surface-base\uFF09\u21D2 \u65E0\u9650\u63A5\u8FD1\u9875\u9762\u80CC\u666F\u7684\u9ED1\u3001\n     \u53EA\u6BD4\u80CC\u666F\u7565\u6DF1\u4E00\u70B9\u70B9\uFF08\u7528\u6237\uFF1A\u6DF1\u8272\u4E0B\u5C55\u5F00\u533A\u538B\u7740\u4EFB\u52A1\u900F\u660E\u7EFF\u4F1A\u53D1\u7070\uFF0C\u5E95\u8272\u8981\u5C3D\u91CF\u8D34\u8FD1\u80CC\u666F\u624D\u4E0D\u663E\u7070\uFF09\u3002\n     \u26A0\uFE0F \u6DF1\u8272\u4E0B\u4E0D\u80FD\u63BA\u6587\u5B57\u8272 \u2014\u2014 \u90A3\u662F\u767D\uFF0C\u4F1A\u53D8\u4EAE\uFF0C\u9009\u4E2D\u53CD\u800C\u6BD4\u672C\u6708\u65E5\u671F\u6D45\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u7684\u9ED8\u8BA4\u5E95\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u6DF1\u7684\u3001\u5E26\u70B9\u7070\u84DD\u7684\u6697\u8272\uFF08\u7528\u6237\u7ED9\u7684\u53C2\u8003\u56FE \u2248 #23262e\uFF09\uFF0C\n     \u6BD4\u539F\u6765\u7684\u5361\u7247\u9762\u66F4\u6C89\u3001\u66F4\u504F\u84DD\u7070\uFF1B\u9009\u4E2D\u683C\u4ECD\u8D70 --dshpc-selected-bg\uFF08\u66F4\u6697\u4E00\u6863\uFF09\uFF0C\u5C42\u7EA7\u4E0D\u53D8\u3002 */\n  --dshpc-cal-cell-bg:#23262e;\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06\uFF09\uFF1A\u539F\u5148\u8D70 --dshpc-hover\uFF08\u5BBF\u4E3B\u6D45\u8272\u53E0\u52A0\uFF09\u5728\u6DF1\u5E95\u4E0A\u663E\u5F97\n     \u300C\u7070\u53D1\u4EAE\u300D\uFF0C\u4E0D\u597D\u770B \u21D2 \u6362\u6210\u66F4\u8D34\u5E95\u7684\u84DD\u8C03\u5FAE\u4EAE\uFF08\u4E0E open-bg-soft \u540C\u65CF\uFF09\uFF0Chover \u65F6\u4E0D\u523A\u773C\u3001\u53C8\u6709\u53CD\u9988\u3002 */\n  --dshpc-cal-cell-hover:rgba(96,165,250,.12);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u5C55\u5F00\u9762\u677F\u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06 \u7EED\uFF09\uFF1A\u4E0E\u539F selected-bg \u6697\u503C\u4E00\u81F4\uFF0C\u6DF1\u8272 UI \u4E0D\u52A8 */\n  --dshpc-cal-panel-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n}\n';
@@ -205,7 +205,7 @@ var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u827
 var PANEL_DOCK_CSS = "\n/* \u505C\u9760\u680F = **\u5E03\u5C40\u6210\u5458**\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5B83\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u771F\u6B63\u6324\u7A84\uFF08\u5144\u5F1F\u9879\u76EE 2026-09-28\uFF1A\n   \u300C\u5206\u680F\u538B\u8FC7\u6765\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u300D\uFF09\u3002\u6240\u4EE5\u8C03\u7528\u65B9\u5FC5\u987B\u628A\u5B83\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002 */\n.dshpc-dock{display:flex;flex:0 0 auto;align-self:stretch;min-width:0}\n\n/* \u5355\u680F\uFF1Asticky + 100vh \u8BA9\u5B83\u5728\u9875\u9762\u6EDA\u52A8\u65F6\u4FDD\u6301\u53EF\u89C1\uFF0C\u540C\u65F6\u4ECD\u7136\u5360\u5BBD\u5EA6\u3002\n   \u26A0\uFE0F **\u672C\u6761\u523B\u610F\u4E0D\u8BBE z-index**\uFF1A\u5E03\u5C40\u6210\u5458\u4E00\u65E6\u5E26\u6B63 z-index\uFF0C\u5C31\u4F1A\u65E0\u6761\u4EF6\u538B\u8FC7\u5BBF\u4E3B portal \u5230 body \u7684\n   \u5F39\u7A97\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-05 \u771F\u673A\u4E8B\u6545\u300C\u4FA7\u8FB9\u680F\u76D6\u4F4F\u5BBF\u4E3B\u8BBE\u7F6E\u5F39\u7A97\u300D\uFF09\u3002\u5C42\u5E8F\u4EA4\u7ED9 DOM \u987A\u5E8F\u88C1\u51B3\u3002 */\n.dshpc-dock__panel{\n  position:sticky;top:0;align-self:stretch;\n  display:flex;flex-direction:column;flex:0 0 auto;\n  /* \u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF08\u6574\u9875\u573A\u666F\uFF09\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\uFF08\u5982 420px / 100%\uFF09\u3002 */\n  height:var(--dshpc-dock-h,100vh);max-height:var(--dshpc-dock-h,100vh);min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border-left:1px solid var(--dshpc-border);\n  box-shadow:var(--dshpc-shadow-2);\n}\n\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  /* \u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB */\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF0C\u4F4D\u7F6E\u4E0E\u5185\u7F6E\u5934\u5B8C\u5168\u4E00\u81F4\uFF08top 10 / right 8\uFF09\uFF1B\u81EA\u5B9A\u4E49\u5934\u4E5F\u7528\u8FD9\u4E00\u4E2A\u4F4D\u7F6E\u3002\n   \u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB\uFF08position:sticky \u5373\u5B9A\u4F4D\u4E0A\u4E0B\u6587\uFF09\uFF0C\u4E0D\u5728\u6EDA\u52A8\u5185\u5BB9\u91CC\uFF0C\u6240\u4EE5\u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF1A\u9762\u677F\u9AD8\u5EA6\u9501 100vh\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u6574\u9875\u6491\u9AD8\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto}\n\n/* \u62D6\u62FD\u6761\uFF1A\u5DE6\u7F18 6px \u547D\u4E2D\u533A\uFF0C**\u4E0D\u753B\u7EBF**\uFF0Chover/\u6309\u4F4F\u65F6\u624D\u6D6E\u51FA\u4E00\u6761\u6D45\u8272\u5E26\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__resizer:hover,.dshpc-dock__resizer:active{background:var(--dshpc-hover)}\n\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove\uFF0C\n   \u5411\u53F3\u62D6\u8FDB iframe \u5C31\u5361\u6B7B \u2014\u2014 \u6574\u7247\u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u680F\u5185\uFF0C\n   \u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u5EA6\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-04 \u771F\u673A\u300C\u632A\u5F88\u4E45\u624D\u52A8\u4E00\u4E0B\u300D\uFF09\u3002 */\n.dshpc-dock.dshpc-dock--resizing iframe{pointer-events:none}\n.dshpc-dock.dshpc-dock--resizing .dshpc-dock__panel{contain:layout paint;will-change:width}\n";
 
 // dist/explorer/explorer-css.generated.js
-var EXPLORER_CSS = "\n.dshpc-exp{display:flex;flex-direction:column;height:100%;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-exp__crumbs{\n  display:flex;align-items:center;gap:2px;flex-wrap:wrap;padding:6px 8px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n.dshpc-exp__crumb{\n  background:none;border:none;padding:2px 4px;border-radius:4px;cursor:pointer;\n  color:var(--dshpc-link);font:inherit;\n}\n.dshpc-exp__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default}\n.dshpc-exp__sep{color:var(--dshpc-fg-4)}\n.dshpc-exp__tools{display:flex;gap:6px;margin-left:auto}\n.dshpc-exp__body{display:flex;flex:1;min-height:0}\n.dshpc-exp__tree{width:220px;flex:none;overflow:auto;border-right:1px solid var(--dshpc-border-faint)}\n.dshpc-exp__item{\n  display:flex;align-items:center;gap:6px;padding:4px 8px;cursor:pointer;white-space:nowrap;\n}\n.dshpc-exp__item:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-exp__item--active{background:var(--dshpc-open-bg)}\n.dshpc-exp__icon{width:14px;flex:none;color:var(--dshpc-fg-3)}\n.dshpc-exp__name{overflow:hidden;text-overflow:ellipsis}\n.dshpc-exp__size{margin-left:auto;color:var(--dshpc-fg-4);font-size:11px}\n.dshpc-exp__preview{flex:1;min-width:0;overflow:auto;padding:8px}\n.dshpc-exp__note{padding:6px 8px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-exp__text{\n  margin:0;padding:8px;border-radius:6px;background:var(--dshpc-code-surface);\n  font:var(--dshpc-code-font);white-space:pre-wrap;word-break:break-all;\n}\n.dshpc-exp__image{max-width:100%;border-radius:6px;border:1px solid var(--dshpc-border-faint)}\n";
+var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\u7C7B\u540D\u4E0E FileBrowser / preview \u7EC4\u4EF6\u786C\u7F16\u7801\u9010\u5B57\u4E00\u81F4\u3002 */\n.dshpc-fb{display:flex;flex-direction:column;height:100%;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-fb--dock{height:100%;border-left:1px solid var(--dshpc-border-faint)}\n.dshpc-fb--resizing{contain:layout paint}\n.dshpc-fb--resizing .dshpc-fb__frame{pointer-events:none}\n.dshpc-fb__resizer{position:absolute;top:0;bottom:0;left:0;width:4px;cursor:col-resize;z-index:2}\n.dshpc-fb__resizer:hover{background:var(--dshpc-open-bg)}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C */\n.dshpc-fb__bar{display:flex;align-items:center;gap:2px;padding:6px 8px;border-bottom:1px solid var(--dshpc-border-faint);min-width:0}\n.dshpc-fb__menu-wrap{flex:none;display:flex}\n.dshpc-fb__crumbs{flex:1 1 auto;display:flex;align-items:center;gap:2px;min-width:0;overflow:hidden}\n.dshpc-fb__crumbs-measure{position:absolute;visibility:hidden;pointer-events:none;display:flex;align-items:center;gap:2px;white-space:nowrap}\n.dshpc-fb__crumb{\n  background:none;border:none;padding:2px 4px;border-radius:4px;cursor:pointer;\n  color:var(--dshpc-link);font:inherit;max-width:180px;flex:none;\n}\n.dshpc-fb__crumb:disabled{color:var(--dshpc-fg-4);cursor:default}\n.dshpc-fb__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default;min-width:0;max-width:100%}\n.dshpc-fb__crumb-mq{display:inline-block;max-width:160px;vertical-align:bottom}\n.dshpc-fb__crumb-sep{color:var(--dshpc-fg-4);flex:none}\n.dshpc-fb__actions{display:flex;gap:2px;margin-left:auto;flex:none;align-items:center}\n.dshpc-fb__bar-plain{color:var(--dshpc-fg-3);font-size:12px}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177 */\n.dshpc-fb__title{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--dshpc-border-faint);min-width:0}\n.dshpc-fb__title-inner{font-size:13px;font-weight:600}\n\n/* \u4E3B\u4F53 */\n.dshpc-fb__body{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:4px 0}\n.dshpc-fb__note{padding:6px 10px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-fb__err{padding:6px 10px;color:var(--dshpc-fg-3);font-size:12px;text-align:center}\n\n/* \u6811\u884C */\n.dshpc-fb__row{display:flex;align-items:center;gap:6px;padding:3px 10px;cursor:pointer;white-space:nowrap}\n.dshpc-fb__row:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-link);outline-offset:-2px}\n.dshpc-fb__row-icon{width:18px;flex:none;display:inline-flex;color:var(--dshpc-fg-3)}\n.dshpc-fb__row-name{overflow:hidden;text-overflow:ellipsis;min-width:0}\n.dshpc-fb__row-toggle{\n  flex:none;display:inline-flex;align-items:center;justify-content:center;\n  width:18px;height:18px;padding:0;border:none;border-radius:4px;background:none;\n  color:var(--dshpc-fg-3);cursor:pointer;transition:transform .12s ease;\n}\n.dshpc-fb__row-toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n.dshpc-fb__row-act{\n  margin-left:auto;flex:none;border:1px solid var(--dshpc-border);border-radius:4px;\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg-2);font:inherit;font-size:11px;\n  padding:1px 8px;cursor:pointer;\n}\n.dshpc-fb__row-act:hover{color:var(--dshpc-fg);border-color:var(--dshpc-border-strong)}\n.dshpc-fb__row-children{padding-left:14px}\n.dshpc-fb__row-note{padding:4px 10px;color:var(--dshpc-fg-4);font-size:11px}\n.dshpc-fb__row-err{padding:4px 10px;color:var(--dshpc-fg-3);font-size:11px}\n\n/* \u25BE \u9009\u5C42\u83DC\u5355\u6761\u76EE\uFF08\u5B98\u65B9 Menu portal \u5185\uFF09 */\n.dshpc-fb__menu-item{display:flex;align-items:center;gap:6px;padding-left:8px}\n.dshpc-fb__menu-icon{display:inline-flex;align-items:center;flex:none}\n.dshpc-fb__menu-chev-slot{display:inline-block;width:11px;flex:none}\n.dshpc-fb__menu-chev{display:inline-flex;align-items:center;flex:none;color:var(--dshpc-fg-4)}\n\n/* \u9884\u89C8\u4F53 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg-soft);color:var(--dshpc-fg-2);font-size:11px}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:6px;border:1px solid var(--dshpc-border-faint)}\n.dshpc-fb__frame{flex:1;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
 
 // dist/session/session-css.generated.js
 var SESSION_CSS = "\n.dshpc-ses{display:flex;flex-direction:column;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-ses--sidebar{height:100%;border-left:1px solid var(--dshpc-border-faint);background:var(--dshpc-surface-base)}\n.dshpc-ses--page{height:100%;background:var(--dshpc-surface-base)}\n.dshpc-ses__list{flex:1;min-height:0;overflow:auto;padding:8px 12px;display:flex;flex-direction:column;gap:10px}\n.dshpc-ses__msg{padding:8px 10px;border-radius:8px;background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border-faint)}\n.dshpc-ses__msg--user{background:var(--dshpc-open-bg-soft)}\n.dshpc-ses__head{display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-ses__text{margin:0;white-space:pre-wrap;word-break:break-word;line-height:1.6}\n.dshpc-ses__atts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}\n.dshpc-ses__att{\n  display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;\n  background:var(--dshpc-chip-bg);color:var(--dshpc-fg);cursor:pointer;border:none;font:inherit;font-size:12px;\n}\n.dshpc-ses__att:hover{background:var(--dshpc-chip-bg-hover)}\n.dshpc-ses__note{padding:12px;color:var(--dshpc-fg-3);text-align:center}\n";
@@ -304,12 +304,41 @@ var DICT = {
     sessionRoleTool: "\u5DE5\u5177",
     explorerLoading: "\u52A0\u8F7D\u4E2D\u2026",
     explorerFailed: "\u52A0\u8F7D\u5931\u8D25",
-    explorerUnsupported: "\u6682\u4E0D\u652F\u6301\u9884\u89C8\u8BE5\u7C7B\u578B",
     explorerRoot: "\u5DE5\u4F5C\u533A",
-    explorerUp: "\u4E0A\u4E00\u7EA7",
-    explorerRefresh: "\u5237\u65B0",
     explorerTruncated: "\u6761\u76EE\u8FC7\u591A\uFF0C\u5DF2\u622A\u65AD",
     explorerEmptyDir: "\u7A7A\u76EE\u5F55",
+    explorerLevels: "\u9009\u62E9\u5C42\u7EA7",
+    explorerExpand: "\u5C55\u5F00",
+    explorerCollapse: "\u6536\u8D77",
+    explorerEnter: "\u8FDB\u5165",
+    explorerRootName: "\u5DE5\u4F5C\u533A\u6839\u76EE\u5F55",
+    explorerCrumbsAria: "\u76EE\u5F55\u8DEF\u5F84",
+    explorerPickFile: "\u9009\u62E9\u6B64\u6587\u4EF6",
+    explorerPickDir: "\u9009\u62E9\u6B64\u6587\u4EF6\u5939",
+    previewClose: "\u5173\u95ED",
+    previewResize: "\u62D6\u52A8\u8C03\u6574\u5BBD\u5EA6",
+    previewCopyPath: "\u590D\u5236\u8DEF\u5F84",
+    previewRefresh: "\u5237\u65B0",
+    previewRender: "\u9884\u89C8",
+    previewSource: "\u6E90\u7801",
+    previewMdSwitchAria: "\u5207\u6362\u6E32\u67D3\u6216\u6E90\u7801",
+    previewHtmlSwitchAria: "\u5207\u6362\u6E32\u67D3\u6216\u6E90\u7801",
+    previewLoadMore: "\u52A0\u8F7D\u66F4\u591A",
+    previewTruncated: "\u5185\u5BB9\u8FC7\u5927\uFF0C\u4EC5\u663E\u793A\u524D {n}",
+    previewOfficeUnavailable: "Office \u9884\u89C8\u4E0D\u53EF\u7528",
+    previewRenderFailed: "\u9884\u89C8\u6E32\u67D3\u5931\u8D25",
+    previewBadPayload: "\u8FD4\u56DE\u6570\u636E\u4E0D\u7B26\u5408\u9884\u671F",
+    previewOutside: "\u8DEF\u5F84\u5728\u5DE5\u4F5C\u533A\u4E4B\u5916",
+    previewNotFound: "\u6587\u4EF6\u4E0D\u5B58\u5728",
+    previewNotDirectory: "\u4E0D\u662F\u6587\u4EF6\u5939",
+    previewTooLarge: "\u6587\u4EF6\u8FC7\u5927\uFF0C\u65E0\u6CD5\u9884\u89C8",
+    previewNotText: "\u4E0D\u662F\u6587\u672C\u6587\u4EF6",
+    mdCopy: "\u590D\u5236",
+    mdCopied: "\u5DF2\u590D\u5236",
+    mdCode: "\u4EE3\u7801",
+    mdWrap: "\u6362\u884C",
+    mdUnwrap: "\u53D6\u6D88\u6362\u884C",
+    mdFootnotes: "\u811A\u6CE8",
     cardToggle: "\u5C55\u5F00/\u6536\u8D77",
     modalClose: "\u5173\u95ED",
     dockClose: "\u5173\u95ED\u9762\u677F",
@@ -356,12 +385,41 @@ var DICT = {
     sessionRoleTool: "Tool",
     explorerLoading: "Loading\u2026",
     explorerFailed: "Failed to load",
-    explorerUnsupported: "Preview not supported",
     explorerRoot: "Workspace",
-    explorerUp: "Up",
-    explorerRefresh: "Refresh",
     explorerTruncated: "Too many entries, truncated",
     explorerEmptyDir: "Empty folder",
+    explorerLevels: "Jump to level",
+    explorerExpand: "Expand",
+    explorerCollapse: "Collapse",
+    explorerEnter: "Open",
+    explorerRootName: "Workspace root",
+    explorerCrumbsAria: "Breadcrumb",
+    explorerPickFile: "Pick this file",
+    explorerPickDir: "Pick this folder",
+    previewClose: "Close",
+    previewResize: "Drag to resize",
+    previewCopyPath: "Copy path",
+    previewRefresh: "Refresh",
+    previewRender: "Preview",
+    previewSource: "Source",
+    previewMdSwitchAria: "Toggle render or source",
+    previewHtmlSwitchAria: "Toggle render or source",
+    previewLoadMore: "Load more",
+    previewTruncated: "Content too large, showing first {n}",
+    previewOfficeUnavailable: "Office preview unavailable",
+    previewRenderFailed: "Failed to render preview",
+    previewBadPayload: "Unexpected response payload",
+    previewOutside: "Path is outside the workspace",
+    previewNotFound: "File not found",
+    previewNotDirectory: "Not a folder",
+    previewTooLarge: "File too large to preview",
+    previewNotText: "Not a text file",
+    mdCopy: "Copy",
+    mdCopied: "Copied",
+    mdCode: "Code",
+    mdWrap: "Wrap",
+    mdUnwrap: "Unwrap",
+    mdFootnotes: "Footnotes",
     cardToggle: "Expand/Collapse",
     modalClose: "Close",
     dockClose: "Close panel",
@@ -1654,15 +1712,15 @@ var Toast = (props) => {
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h37) => [
+      setHeights((h43) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h37
+        ...h43
       ]);
-      return () => setHeights((h37) => h37.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h43) => h43.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
@@ -1707,7 +1765,7 @@ var Toast = (props) => {
   const deleteToast = import_react13.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset.current);
-    setHeights((h37) => h37.filter((height) => height.toastId !== toast2.id));
+    setHeights((h43) => h43.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -2234,7 +2292,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t3) => t3.position == toast2.position),
-          heights: heights.filter((h37) => h37.position == toast2.position),
+          heights: heights.filter((h43) => h43.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -3024,10 +3082,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h37 = Math.floor(totalSec / 3600);
+  const h43 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h37 > 0 ? `${h37}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h43 > 0 ? `${h43}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -3117,7 +3175,8 @@ var IMAGE_EXT = {
   webp: "image/webp",
   bmp: "image/bmp",
   svg: "image/svg+xml",
-  ico: "image/x-icon"
+  ico: "image/x-icon",
+  avif: "image/avif"
 };
 function mimeOf(path) {
   const ext = extOf(path);
@@ -3127,9 +3186,6 @@ function extOf(path) {
   const name = path.slice(path.lastIndexOf("/") + 1);
   const dot = name.lastIndexOf(".");
   return dot <= 0 ? "" : name.slice(dot + 1).toLowerCase();
-}
-function crumbsOf(path) {
-  return path.split("/").filter((s) => s !== "");
 }
 function parentOf(path) {
   const cut = path.lastIndexOf("/");
@@ -3218,6 +3274,7 @@ var DICT2 = {
     btnStateHint: "disabled \u534A\u900F\u660E\u4E0D\u53EF\u70B9\uFF1Bloading \u524D\u7F6E\u540C\u8272\u5C0F\u5708\u5E76\u81EA\u52A8\u7981\u7528",
     btnColorTitle: "\u81EA\u5B9A\u4E49\u989C\u8272",
     btnColorHint: "color \u4F20\u4EFB\u610F CSS \u8272\u503C\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\u3001\u7EBF\u6846\u4E0E\u6587\u5B57\u6863\u4F5C\u4E3B\u8272\uFF1Bhover / \u6309\u4E0B\u81EA\u52A8\u6309\u8BE5\u8272\u6DF7\u51FA",
+    btnNote: "\u5B98\u65B9 primitives \u6CA1\u6709 danger / lg \u8FD9\u4E24\u6761\u8F74\uFF0CButton \u7531\u672C\u5E93\u81EA\u7ED8\uFF1B\u5916\u89C2\u5168\u8D70 --dshpc-* token\uFF0C\u8DDF\u7740\u5BBF\u4E3B\u660E\u6697\u4E3B\u9898\u8D70\u3002",
     btnLabelSave: "\u4FDD\u5B58\u4FEE\u6539",
     btnLabelCancel: "\u53D6\u6D88",
     btnLabelDelete: "\u5220\u9664",
@@ -3257,16 +3314,28 @@ var DICT2 = {
     liveTitle: "LiveText \u5B9E\u65F6\u6587\u672C",
     feedbackModalHint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757",
     feedbackToastHint: "\u547D\u4EE4\u5F0F showToast\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6",
-    explorerHint: "\u9762\u5305\u5C51 + \u76EE\u5F55\u6811 + \u9884\u89C8\uFF1BworkspaceFiles \u662F mock \u7684\uFF08\u771F\u5B9E\u63D2\u4EF6\u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF09",
+    explorerHint: "\u9762\u5305\u5C51\uFF08\u8D85\u5BBD\u6298\u53E0 + \u25BE \u9009\u5C42\uFF09+ \u5185\u8054\u5C55\u5F00\u76EE\u5F55\u6811 + \u9884\u89C8\uFF08md \u6E32\u67D3 / \u4EE3\u7801\u9AD8\u4EAE / HTML / PDF / Office\uFF09\u3002workspaceFiles \u662F mock \u7684\uFF08\u771F\u5B9E\u63D2\u4EF6\u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF09",
+    methodATitle: "\u65B9\u6CD5 A\uFF1AopenFilePreview \u4FA7\u8FB9\u680F\u9884\u89C8",
+    methodAHint: "\u4F20\u6587\u4EF6\u6216\u6587\u4EF6\u5939\u8DEF\u5F84\uFF0C\u53F3\u4FA7\u5F39\u51FA\u53EF\u62D6\u5BBD\u7684\u505C\u9760\u9884\u89C8\uFF1BEsc / \u2715 \u5173\u95ED\u3002\u8FD4\u56DE handle \u53EF\u4EE3\u7801\u5173",
+    openFilePreview: "\u9884\u89C8 READ.md",
+    openDirPreview: "\u6D4F\u89C8 docs \u6587\u4EF6\u5939",
+    openPdfPreview: "\u9884\u89C8 PDF",
+    methodBTitle: "\u65B9\u6CD5 B\uFF1ApickWorkspaceFile \u9009\u62E9\u6587\u4EF6",
+    methodBHint: "\u5728\u951A\u70B9\u6309\u94AE\u65C1\u5F39\u51FA\u6A21\u6001\u5F39\u7A97\uFF1BPromise \u8FD4\u56DE { path, isDir }\uFF08path \u4E3A\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\uFF1BEsc / \u70B9\u5916\u90E8 / \u2715 \u53D6\u6D88\u8FD4\u56DE null",
+    pickAny: "\u9009\u62E9\u6587\u4EF6\uFF08\u4E0D\u9650\uFF09",
+    pickTs: "\u53EA\u8981 .ts",
+    pickDir: "\u53EA\u8981\u6587\u4EF6\u5939",
+    pickNone: "\u8FD8\u6CA1\u9009",
+    pickResult: "\u5DF2\u9009\u62E9",
     previewBodyTitle: "FilePreview \u9884\u89C8\u4F53\uFF08\u53EF\u5355\u72EC\u7528\uFF09",
-    previewBodyHint: "\u4E0A\u9762\u90A3\u5757\u5DF2\u7ECF\u5305\u542B\u5B83\u2014\u2014ExplorerPanel \u5185\u90E8\u6E32\u67D3\u7684\u5C31\u662F FilePreview\u3002\n\u5B83\u540C\u65F6\u4E5F\u662F\u4E00\u6761\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/explorer/preview\uFF1A\u53EA\u6709\u4E00\u4E2A\u6587\u4EF6\u8981\u663E\u793A\u65F6\uFF08\u4F1A\u8BDD\u9644\u4EF6\u3001\u5DE5\u5177\u8F93\u51FA\uFF09\u4E0D\u5FC5\u642C\u51FA\u6574\u4E2A\u9762\u677F\u3002\n\u26A0\uFE0F \u672C\u9875\u4E0D\u53E6\u6302\u4E00\u5757\u5355\u72EC\u6E32\u67D3\uFF1A\u9884\u89C8\u4F53\u7684 path / files \u7531\u7236\u7EC4\u4EF6\u6CE8\u5165\uFF0C\u8981\u8131\u79BB\u9762\u677F\u5C55\u793A\u5F97\u5148\u51C6\u5907\u4E00\u4EFD\u81EA\u5DF1\u7684\u6570\u636E\uFF0C\u5C5E\u4E8E\u5F85\u8865\u3002",
+    previewBodyHint: "\u4E0A\u9762\u90A3\u5757\u5DF2\u7ECF\u5305\u542B\u5B83\u2014\u2014FileBrowser \u5185\u90E8\u6E32\u67D3\u7684\u5C31\u662F FilePreview\u3002\n\u5B83\u540C\u65F6\u4E5F\u662F\u4E00\u6761\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/explorer/preview\uFF1A\u53EA\u6709\u4E00\u4E2A\u6587\u4EF6\u8981\u663E\u793A\u65F6\uFF08\u4F1A\u8BDD\u9644\u4EF6\u3001\u5DE5\u5177\u8F93\u51FA\uFF09\u4E0D\u5FC5\u642C\u51FA\u6574\u4E2A\u9762\u677F\u3002",
     sessionHint: "\u4E09\u79CD\u627F\u8F7D\uFF1Amodal / sidebar / page\uFF1Bsource \u662F mock \u7684\uFF1BrenderMessage \u53EF\u63A5\u7BA1\u5BCC\u5185\u5BB9",
     dateHint: "\u89E3\u6790\u5931\u8D25\u4E0D\u629B\u9519\u3001\u7ED9\u515C\u5E95\u3001\u4E0D\u7F16\u9020\uFF1B\u6240\u6709\u51FD\u6570\u65E0 UI \u4F9D\u8D56\uFF0CNode \u91CC\u4E5F\u80FD\u8DD1",
     numberHint: "formatBytes \u6309 1024 \u8FDB\u5236\u3001\u5355\u4F4D\u81EA\u52A8\u8FDB\u4F4D\uFF1BformatCount \u7ED9\u5927\u6570\u52A0\u5343\u5206\u4F4D",
     roadmapHint: "\u4E0B\u9762\u662F\u300C\u660E\u786E\u4E0D\u63D0\u4F9B\u300D\u7684\u90E8\u5206\u2014\u2014\u5199\u5728\u8FD9\u91CC\u662F\u4E3A\u4E86\u8BA9\u4F60\u4E0D\u7528\u731C\uFF0C\u4E5F\u8BA9\u540E\u6765\u4EBA\u77E5\u9053\u8FB9\u754C\u5728\u54EA\u3002",
     roadmapOut: "\u8BBE\u7F6E\u9875\u9AA8\u67B6\u3001i18n \u6846\u67B6\uFF08\u63D2\u4EF6\u6587\u6848\u63D2\u4EF6\u81EA\u7BA1\uFF09\u3001host \u5BBF\u4E3B\u7C7B\u578B\u9762",
     roadmapMirror: "\u5B98\u65B9\u4F1A\u8BDD UI \u7684\u5B8C\u6574\u955C\u50CF\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\uFF09\u2014\u2014session \u76EE\u524D\u53EA\u6709\u6700\u7B80\u6E32\u67D3\uFF0C\u5BCC\u5185\u5BB9\u8D70 renderMessage \u6269\u5C55\u70B9",
-    roadmapPreview: "\u4EE3\u7801\u8BED\u6CD5\u9AD8\u4EAE / PDF / Office \u9884\u89C8\u2014\u2014explorer \u7684\u9884\u89C8\u53EA\u6709\u6587\u672C\u4E0E\u56FE\u7247",
+    roadmapPreview: "\uFF08\u5DF2\u843D\u5730\uFF09md \u6E32\u67D3\uFF08\u5B98\u65B9 MarkdownText\uFF09/ \u4EE3\u7801\u9AD8\u4EAE\uFF08\u5B98\u65B9 CodeBlock\uFF09/ HTML / PDF / Office \u9884\u89C8",
     roadmapSkeleton: "\uFF08\u5DF2\u843D\u5730\uFF09PanelDock\u2014\u2014\u53EF\u505C\u9760\u5206\u680F\uFF1A\u591A\u9762\u677F\u3001\u6309\u540D\u8986\u76D6\u3001\u4E0A\u9650 3",
     roadmapLayout: "\u7EA2\u7EBF\uFF1A\u6574\u5408\u4EE5\u524D\u7684.share(plugins/demo)",
     buildDesc: "\u7248\u672C\u53F7\u4E0D bump \u65F6\uFF0C\u5224\u65AD\u5BBF\u4E3B\u91CC\u8DD1\u7684\u662F\u4E0D\u662F\u6700\u65B0\u4EA7\u7269\uFF0C\u9760\u7684\u662F build \u7F16\u7801\u2014\u2014\u6BCF\u6B21\u6784\u5EFA\u90FD\u53D8\u3002",
@@ -3288,6 +3357,27 @@ var DICT2 = {
     weekday5: "\u4E94",
     weekday6: "\u516D",
     weekday7: "\u65E5",
+    // 文档骨架：示例 / 代码 / 用法 / API 表的栏位名与表头
+    docNote: "\u5907\u6CE8",
+    docPreview: "\u793A\u4F8B",
+    docCode: "\u4EE3\u7801",
+    docUsage: "\u600E\u4E48\u7528",
+    docApi: "API",
+    docApiName: "\u5C5E\u6027",
+    docApiType: "\u7C7B\u578B",
+    docApiDefault: "\u9ED8\u8BA4\u503C",
+    docApiDesc: "\u8BF4\u660E",
+    docCopy: "\u590D\u5236",
+    docCopied: "\u5DF2\u590D\u5236",
+    apiVariant: "\u5916\u89C2\u5341\u6863\uFF1Aprimary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link",
+    apiSize: "\u9AD8\u5EA6\u4E09\u6863\uFF1Asm 24 / md 28 / lg 32\uFF0C\u6709\u8FB9\u4E0E\u65E0\u8FB9\u540C\u9AD8",
+    apiIcon: "\u524D\u7F6E\u56FE\u6807\uFF1A\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6\u3001\u81EA\u7ED8 SVG\u3001\u4E00\u4E2A\u5B57\u7B26\u90FD\u884C\uFF08\u6536\u7684\u662F ReactNode\uFF09",
+    apiIconRight: "\u540E\u7F6E\u56FE\u6807\uFF08\u5C55\u5F00\u7BAD\u5934\u3001\u5916\u94FE\u7B49\uFF09",
+    apiColor: "\u81EA\u5B9A\u4E49\u4E3B\u8272\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\uFF0C\u63CF\u8FB9\u4E0E\u6587\u5B57\u6863\u4F5C\u5B57\u8272\u548C\u63CF\u8FB9\u8272",
+    apiLoading: "\u8F6C\u5708\u5E76\u81EA\u52A8\u7981\u7528\u70B9\u51FB",
+    apiBlock: "\u6491\u6EE1\u7236\u5BBD\uFF1B\u6709\u524D\u7F6E\u56FE\u6807\u65F6\u6587\u5B57\u4ECD\u5728\u89C6\u89C9\u4E2D\u5FC3",
+    apiDisabled: "\u900F\u4F20\u539F\u751F disabled",
+    apiChildren: "\u6309\u94AE\u6587\u6848 / \u5185\u5BB9",
     pluginTitle: "\u7EC4\u4EF6\u9884\u89C8",
     pluginCardDesc: "\u6253\u5F00 dsh-plugin-core \u7684\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u5C55\u793A\u9875",
     pluginCardOpen: "\u6253\u5F00 \u203A"
@@ -3369,6 +3459,7 @@ var DICT2 = {
     btnStateHint: "disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself",
     btnColorTitle: "Custom colors",
     btnColorHint: "Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it",
+    btnNote: "The official primitives have no danger / lg axis, so Button is drawn in this library; it consumes --dshpc-* tokens only and follows the host light/dark theme.",
     btnLabelSave: "Save changes",
     btnLabelCancel: "Cancel",
     btnLabelDelete: "Delete",
@@ -3408,16 +3499,28 @@ var DICT2 = {
     liveTitle: "LiveText",
     feedbackModalHint: "Hand-rolled overlay (no portal); click backdrop / Esc / \u2715 all close it. The header \u2715 is a 24\xD724 icon slot \u2014 no border or 120px-wide color block should appear",
     feedbackToastHint: "Imperative showToast \u2014 no component mounting required",
-    explorerHint: "Breadcrumb + directory tree + preview; workspaceFiles is mocked (a real plugin reads it from ctx and injects)",
+    explorerHint: "Breadcrumb (collapses when too wide + \u25BE level picker) + inline-expandable tree + preview (md render / code highlight / HTML / PDF / Office). workspaceFiles is mocked (a real plugin reads it from ctx and injects)",
+    methodATitle: "Method A: openFilePreview dock preview",
+    methodAHint: "Pass a file or folder path: a resizable dock preview opens on the right; Esc / \u2715 closes it. The returned handle can close it programmatically",
+    openFilePreview: "Preview READ.md",
+    openDirPreview: "Browse the docs folder",
+    openPdfPreview: "Preview PDF",
+    methodBTitle: "Method B: pickWorkspaceFile",
+    methodBHint: "A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / \u2715 cancels with null",
+    pickAny: "Pick a file (any)",
+    pickTs: ".ts only",
+    pickDir: "Folders only",
+    pickNone: "Nothing picked yet",
+    pickResult: "Picked",
     previewBodyTitle: "FilePreview (usable on its own)",
-    previewBodyHint: "The block above already includes it \u2014 ExplorerPanel renders FilePreview inside.\nIt is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.\n\u26A0\uFE0F No standalone render here: the preview body takes its path and files from the parent, so showing it outside the panel needs its own data source \u2014 still to be added.",
+    previewBodyHint: "The block above already includes it \u2014 FileBrowser renders FilePreview inside.\nIt is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.",
     sessionHint: "Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content",
     dateHint: "No throw on parse failure \u2014 falls back gracefully and never fabricates; all functions are UI-free and run in Node too",
     numberHint: "formatBytes is 1024-based with automatic unit scaling; formatCount adds thousands separators",
     roadmapHint: "The list below is what this package explicitly does NOT provide \u2014 written down so nobody has to guess, and so the boundary stays visible.",
     roadmapOut: "A settings-page skeleton, an i18n framework (plugin copy is the plugin\u2019s own job), a host typings surface",
     roadmapMirror: "A full mirror of the official session UI (tool cards / code blocks / reasoning rows) \u2014 session renders only the minimal shape today; rich content goes through the renderMessage hook",
-    roadmapPreview: "Syntax highlighting / PDF / Office preview \u2014 the explorer preview handles text and images only",
+    roadmapPreview: "(shipped) md render (official MarkdownText) / code highlight (official CodeBlock) / HTML / PDF / Office preview",
     roadmapSkeleton: "(shipped) PanelDock \u2014 dockable split panes: multi-panel, replace-by-name, limit 3",
     roadmapLayout: "Red line: consolidation of the old packages/demo",
     buildDesc: "When the version number does not change, the build stamp is what tells you whether the host is running the newest bundle \u2014 it changes on every build.",
@@ -3439,6 +3542,27 @@ var DICT2 = {
     weekday5: "Fr",
     weekday6: "Sa",
     weekday7: "Su",
+    // Documentation skeleton: labels for the example / code / usage / API table
+    docNote: "Note",
+    docPreview: "Example",
+    docCode: "Code",
+    docUsage: "Usage",
+    docApi: "API",
+    docApiName: "Prop",
+    docApiType: "Type",
+    docApiDefault: "Default",
+    docApiDesc: "Description",
+    docCopy: "Copy",
+    docCopied: "Copied",
+    apiVariant: "Ten appearances: primary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link",
+    apiSize: "Three heights: sm 24 / md 28 / lg 32; bordered and borderless are the same height",
+    apiIcon: "Leading icon: an official icon component, your own SVG, or even a single character (it takes a ReactNode)",
+    apiIconRight: "Trailing icon (expand chevron, external link, ...)",
+    apiColor: "Custom accent: solid variants use it as fill, outlined and text variants use it for text and border",
+    apiLoading: "Spins and disables clicks by itself",
+    apiBlock: "Fills the parent width; with a leading icon the label stays optically centered",
+    apiDisabled: "Passed through to the native disabled",
+    apiChildren: "Button label / content",
     pluginTitle: "Component preview",
     pluginCardDesc: "Open the showcase of dsh-plugin-core controls and business components",
     pluginCardOpen: "Open \u203A"
@@ -3520,7 +3644,7 @@ function demoPanels() {
 }
 
 // packages/demo/src/sections/index.tsx
-var import_react37 = require("react");
+var import_react43 = require("react");
 
 // packages/demo/src/sections/start.tsx
 var import_react26 = require("react");
@@ -3619,7 +3743,7 @@ ensureControls()`
 }
 
 // packages/demo/src/sections/controls.tsx
-var import_react30 = require("react");
+var import_react31 = require("react");
 
 // dist/ui/official.js
 var official_exports = {};
@@ -3719,30 +3843,133 @@ function showHostToast(message, opts) {
 }
 
 // packages/demo/src/sections/controls.tsx
+var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
+
+// packages/demo/src/doc.tsx
+var import_react30 = require("react");
 var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
+function Note(props) {
+  return (0, import_react30.createElement)(
+    "div",
+    { className: "dshpc-doc-note" },
+    (0, import_react30.createElement)("span", { className: "dshpc-doc-note__mark" }, t2("docNote")),
+    (0, import_react30.createElement)("span", null, props.text)
+  );
+}
+function CodeOnly(props) {
+  return (0, import_react30.createElement)(
+    "div",
+    { className: "dshpc-doc-block" },
+    (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2(props.labelKey)),
+    (0, import_react30.createElement)(import_dsh_client_ui_primitives2.CodeBlock, {
+      code: props.code,
+      lang: props.lang ?? "tsx",
+      showHeader: true,
+      copyLabel: t2("docCopy"),
+      copiedLabel: t2("docCopied")
+    })
+  );
+}
+function Example(props) {
+  return (0, import_react30.createElement)(
+    "section",
+    { className: "dshpc-doc-example" },
+    (0, import_react30.createElement)(
+      "div",
+      { className: "dshpc-doc-example__head" },
+      (0, import_react30.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
+      props.hint === void 0 ? null : (0, import_react30.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
+    ),
+    (0, import_react30.createElement)(
+      "div",
+      { className: "dshpc-doc-example__body" },
+      (0, import_react30.createElement)(
+        "div",
+        { className: "dshpc-doc-example__demo" },
+        (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2("docPreview")),
+        props.children ?? null
+      ),
+      (0, import_react30.createElement)(
+        "div",
+        { className: "dshpc-doc-example__code" },
+        (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2("docCode")),
+        (0, import_react30.createElement)(
+          "div",
+          { className: "dshpc-doc-example__scroll" },
+          (0, import_react30.createElement)(import_dsh_client_ui_primitives2.CodeBlock, {
+            code: props.code,
+            lang: "tsx",
+            showHeader: true,
+            copyLabel: t2("docCopy"),
+            copiedLabel: t2("docCopied")
+          })
+        )
+      )
+    )
+  );
+}
+function ApiTable(props) {
+  return (0, import_react30.createElement)(
+    "div",
+    { className: "dshpc-doc-block" },
+    (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2("docApi")),
+    (0, import_react30.createElement)(
+      "table",
+      { className: "dshpc-doc-api" },
+      (0, import_react30.createElement)(
+        "thead",
+        null,
+        (0, import_react30.createElement)(
+          "tr",
+          null,
+          (0, import_react30.createElement)("th", null, t2("docApiName")),
+          (0, import_react30.createElement)("th", null, t2("docApiType")),
+          (0, import_react30.createElement)("th", null, t2("docApiDefault")),
+          (0, import_react30.createElement)("th", null, t2("docApiDesc"))
+        )
+      ),
+      (0, import_react30.createElement)(
+        "tbody",
+        null,
+        props.rows.map(
+          (row) => (0, import_react30.createElement)(
+            "tr",
+            { key: row.name },
+            (0, import_react30.createElement)("td", null, row.name),
+            (0, import_react30.createElement)("td", null, row.type),
+            (0, import_react30.createElement)("td", null, row.def),
+            (0, import_react30.createElement)("td", null, t2(row.descKey))
+          )
+        )
+      )
+    )
+  );
+}
+
+// packages/demo/src/sections/controls.tsx
 var BUTTON_ICONS = [
-  { name: "plus", Icon: import_dsh_client_ui_primitives2.IconPlusOutlineRegular },
-  { name: "check", Icon: import_dsh_client_ui_primitives2.IconCheckOutlineRegular },
-  { name: "close", Icon: import_dsh_client_ui_primitives2.IconCloseOutlineRegular },
-  { name: "refresh", Icon: import_dsh_client_ui_primitives2.IconRefreshOutlineRegular },
-  { name: "copy", Icon: import_dsh_client_ui_primitives2.IconCopyOutlineRegular },
-  { name: "search", Icon: import_dsh_client_ui_primitives2.IconSearchOutlineRegular },
-  { name: "edit", Icon: import_dsh_client_ui_primitives2.IconEditOutlineRegular },
-  { name: "play", Icon: import_dsh_client_ui_primitives2.IconPlayOutlineRegular },
-  { name: "send", Icon: import_dsh_client_ui_primitives2.IconPaperPlaneOutlineRegular },
-  { name: "clock", Icon: import_dsh_client_ui_primitives2.IconClockOutlineRegular },
-  { name: "sparkle", Icon: import_dsh_client_ui_primitives2.IconSparkleRegular },
-  { name: "chevron", Icon: import_dsh_client_ui_primitives2.IconChevronDownOutlineRegular }
+  { name: "plus", Icon: import_dsh_client_ui_primitives3.IconPlusOutlineRegular },
+  { name: "check", Icon: import_dsh_client_ui_primitives3.IconCheckOutlineRegular },
+  { name: "close", Icon: import_dsh_client_ui_primitives3.IconCloseOutlineRegular },
+  { name: "refresh", Icon: import_dsh_client_ui_primitives3.IconRefreshOutlineRegular },
+  { name: "copy", Icon: import_dsh_client_ui_primitives3.IconCopyOutlineRegular },
+  { name: "search", Icon: import_dsh_client_ui_primitives3.IconSearchOutlineRegular },
+  { name: "edit", Icon: import_dsh_client_ui_primitives3.IconEditOutlineRegular },
+  { name: "play", Icon: import_dsh_client_ui_primitives3.IconPlayOutlineRegular },
+  { name: "send", Icon: import_dsh_client_ui_primitives3.IconPaperPlaneOutlineRegular },
+  { name: "clock", Icon: import_dsh_client_ui_primitives3.IconClockOutlineRegular },
+  { name: "sparkle", Icon: import_dsh_client_ui_primitives3.IconSparkleRegular },
+  { name: "chevron", Icon: import_dsh_client_ui_primitives3.IconChevronDownOutlineRegular }
 ];
 function iconOf(name, size = 14) {
   const found = BUTTON_ICONS.find((item) => item.name === name);
-  return found === void 0 ? null : (0, import_react30.createElement)(found.Icon, { size });
+  return found === void 0 ? null : (0, import_react31.createElement)(found.Icon, { size });
 }
 function StarSvg() {
-  return (0, import_react30.createElement)(
+  return (0, import_react31.createElement)(
     "svg",
     { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-    (0, import_react30.createElement)("path", {
+    (0, import_react31.createElement)("path", {
       d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
       stroke: "currentColor",
       strokeWidth: 1.2,
@@ -3767,7 +3994,7 @@ var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
 function tipAnchor(text, side, align) {
   const props = { label: text, side };
   if (align !== void 0) props.align = align;
-  return (0, import_react30.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react30.createElement)("button", {
+  return (0, import_react31.createElement)(import_dsh_client_ui_primitives3.Tooltip, props, (0, import_react31.createElement)("button", {
     type: "button",
     style: {
       padding: "4px 10px",
@@ -3781,225 +4008,282 @@ function tipAnchor(text, side, align) {
   }, text));
 }
 function Row(props) {
-  return (0, import_react30.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+  return (0, import_react31.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
 }
 function Labeled(props) {
-  return (0, import_react30.createElement)(
+  return (0, import_react31.createElement)(
     "div",
     { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react30.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    (0, import_react31.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
     props.children
   );
 }
+var CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>\u4FDD\u5B58</Button>
+<Button variant="outline">\u53D6\u6D88</Button>
+<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>\u5220\u9664</Button>`;
+var CODE_BTN_VARIANT = `<Button variant="primary">primary</Button>
+<Button variant="secondary">secondary</Button>
+<Button variant="outline">outline</Button>
+<Button variant="ghost">ghost</Button>
+<Button variant="danger">danger</Button>
+<Button variant="success">success</Button>
+<Button variant="warning">warning</Button>
+<Button variant="info">info</Button>
+<Button variant="danger-outline">danger-outline</Button>
+<Button variant="link">link</Button>`;
+var CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
+<Button size="md" variant="outline">md</Button>
+<Button size="lg" variant="outline">lg</Button>
+
+// icon \u6536\u7684\u662F ReactNode\uFF1A\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u81EA\u7ED8 SVG / \u4E00\u4E2A\u5B57\u7B26\uFF0C\u4E09\u79CD\u90FD\u80FD\u8FDB
+<Button variant="primary" icon={<IconSendOutlineRegular size={16} />}>\u5B98\u65B9\u56FE\u6807</Button>
+<Button variant="outline" icon={<StarSvg />}>\u81EA\u7ED8 SVG</Button>
+<Button variant="ghost" icon="+">\u4E00\u4E2A\u5B57\u7B26</Button>
+
+// iconRight \u540E\u7F6E\uFF1Bblock \u6491\u6EE1\u7236\u5BBD\uFF08\u6709\u524D\u7F6E\u56FE\u6807\u65F6\u6587\u5B57\u4ECD\u5728\u89C6\u89C9\u4E2D\u5FC3\uFF09
+<Button variant="outline" iconRight={<IconChevronDownOutlineRegular size={16} />}>\u66F4\u591A</Button>
+<Button variant="primary" block icon={<IconCheckOutlineRegular size={16} />}>\u6491\u6EE1\u7236\u5BBD</Button>
+
+// \u7EAF\u56FE\u6807\u94AE\uFF1Alabel \u662F\u5FC5\u586B\u7684\u65E0\u969C\u788D\u540D\uFF08\u540C\u65F6\u4F5C title\uFF09
+<IconButton icon={<IconPlusOutlineRegular size={16} />} label="plus" />`;
+var CODE_BTN_STATE = `<Button variant="primary">\u9ED8\u8BA4</Button>
+<Button variant="primary" disabled>\u7981\u7528</Button>
+<Button variant="danger" disabled icon={<IconCloseOutlineRegular size={16} />}>\u7981\u7528</Button>
+<Button variant="outline" loading>\u52A0\u8F7D\u4E2D</Button>
+<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>\u63D0\u4EA4\u4E2D</Button>`;
+var CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
+<Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`;
+var CODE_BTN_USAGE = `pnpm add dsh-plugin-core
+
+import { Button, IconButton } from 'dsh-plugin-core/ui'
+
+<Button variant="primary" onClick={save}>\u4FDD\u5B58</Button>
+<Button variant="danger" size="sm" onClick={remove}>\u5220\u9664</Button>
+
+// \u6837\u5F0F\u4E0D\u7528\u53E6\u914D\uFF1A\u63A7\u4EF6\u81EA\u5DF1 ensureControls()\uFF0Ctoken \u8DDF\u968F\u5BBF\u4E3B\u660E\u6697\u4E3B\u9898`;
+var BUTTON_API = [
+  { name: "variant", type: "ButtonVariant", def: "'outline'", descKey: "apiVariant" },
+  { name: "size", type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: "apiSize" },
+  { name: "icon", type: "ReactNode", def: "\u2014", descKey: "apiIcon" },
+  { name: "iconRight", type: "ReactNode", def: "\u2014", descKey: "apiIconRight" },
+  { name: "color", type: "string", def: "\u2014", descKey: "apiColor" },
+  { name: "loading", type: "boolean", def: "false", descKey: "apiLoading" },
+  { name: "block", type: "boolean", def: "false", descKey: "apiBlock" },
+  { name: "disabled", type: "boolean", def: "false", descKey: "apiDisabled" },
+  { name: "children", type: "ReactNode", def: "\u2014", descKey: "apiChildren" }
+];
 function ButtonPage() {
-  return (0, import_react30.createElement)(
+  return (0, import_react31.createElement)(
     "div",
     null,
+    (0, import_react31.createElement)(Note, { text: t2("btnNote") }),
     // 文案与语言
-    (0, import_react30.createElement)(
-      Demo,
-      { title: t2("btnTextTitle"), hint: t2("btnTextHint") },
-      (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
+      Example,
+      { title: t2("btnTextTitle"), hint: t2("btnTextHint"), code: CODE_BTN_TEXT },
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: "locale" },
-          (0, import_react30.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
-          (0, import_react30.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
-          (0, import_react30.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
+          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
+          (0, import_react31.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
+          (0, import_react31.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: "en" },
-          (0, import_react30.createElement)(Button, { variant: "primary" }, "Save"),
-          (0, import_react30.createElement)(Button, { variant: "outline" }, "Cancel"),
-          (0, import_react30.createElement)(Button, { variant: "ghost" }, "Learn more")
+          (0, import_react31.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react31.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react31.createElement)(Button, { variant: "ghost" }, "Learn more")
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: "zh" },
-          (0, import_react30.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
-          (0, import_react30.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
-          (0, import_react30.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+          (0, import_react31.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react31.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: "zh + en" },
-          (0, import_react30.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
-          (0, import_react30.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
-          (0, import_react30.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
+          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react31.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
         )
       )
     ),
     // 10 档外观
-    (0, import_react30.createElement)(
-      Demo,
-      { title: t2("btnVariantTitle"), hint: t2("btnVariantHint") },
-      (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
+      Example,
+      { title: t2("btnVariantTitle"), hint: t2("btnVariantHint"), code: CODE_BTN_VARIANT },
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react30.createElement)(Row, null, VARIANTS.map((item) => (0, import_react30.createElement)(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
-        (0, import_react30.createElement)(Row, null, VARIANTS.map((item) => (0, import_react30.createElement)(Button, { key: item.value, variant: item.value, size: "sm", icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))
+        (0, import_react31.createElement)(Row, null, VARIANTS.map((item) => (0, import_react31.createElement)(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
+        (0, import_react31.createElement)(Row, null, VARIANTS.map((item) => (0, import_react31.createElement)(Button, { key: item.value, variant: item.value, size: "sm", icon: iconOf(item.icon, ICON_SIZE.sm) }, item.value)))
       )
     ),
     // 尺寸 / 图标位置 / block
-    (0, import_react30.createElement)(
-      Demo,
-      { title: t2("btnSizeTitle"), hint: t2("btnSizeHint") },
-      (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
+      Example,
+      { title: t2("btnSizeTitle"), hint: t2("btnSizeHint"), code: CODE_BTN_SIZE },
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: "size" },
-          ["sm", "md", "lg"].map((size) => (0, import_react30.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
+          ["sm", "md", "lg"].map((size) => (0, import_react31.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
         ),
         // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: "icon" },
-          (0, import_react30.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
-          (0, import_react30.createElement)(Button, { variant: "outline", icon: (0, import_react30.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
-          (0, import_react30.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
+          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react31.createElement)(Button, { variant: "outline", icon: (0, import_react31.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react31.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: "iconRight" },
-          (0, import_react30.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
-          (0, import_react30.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+          (0, import_react31.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
+          (0, import_react31.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
         ),
         // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: "block" },
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react30.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
-            (0, import_react30.createElement)("div", { style: { height: "8px" } }),
-            (0, import_react30.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
+            (0, import_react31.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react31.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react31.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
           )
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Labeled,
           { label: t2("btnIconOnly") },
-          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react30.createElement)(IconButton, { key: item.name, icon: (0, import_react30.createElement)(item.Icon, { size: 16 }), label: item.name }))
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react31.createElement)(IconButton, { key: item.name, icon: (0, import_react31.createElement)(item.Icon, { size: 16 }), label: item.name }))
         )
       )
     ),
     // 状态
-    (0, import_react30.createElement)(
-      Demo,
-      { title: t2("btnStateTitle"), hint: t2("btnStateHint") },
-      (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
+      Example,
+      { title: t2("btnStateTitle"), hint: t2("btnStateHint"), code: CODE_BTN_STATE },
+      (0, import_react31.createElement)(
         Row,
         null,
-        (0, import_react30.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-        (0, import_react30.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-        (0, import_react30.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528"),
-        (0, import_react30.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-        (0, import_react30.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+        (0, import_react31.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+        (0, import_react31.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+        (0, import_react31.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528"),
+        (0, import_react31.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+        (0, import_react31.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
       )
     ),
     // 自定义颜色
-    (0, import_react30.createElement)(
-      Demo,
-      { title: t2("btnColorTitle"), hint: t2("btnColorHint") },
-      (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
+      Example,
+      { title: t2("btnColorTitle"), hint: t2("btnColorHint"), code: CODE_BTN_COLOR },
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react30.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react30.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color))),
-        (0, import_react30.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react30.createElement)(Button, { key: color, variant: "outline", color }, color)))
+        (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color))),
+        (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "outline", color }, color)))
       )
-    )
+    ),
+    (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BTN_USAGE }),
+    (0, import_react31.createElement)(ApiTable, { rows: BUTTON_API })
   );
 }
 function InputPage() {
-  const [text, setText] = (0, import_react30.useState)("");
-  const [num, setNum] = (0, import_react30.useState)(3);
-  const [checked, setChecked] = (0, import_react30.useState)(true);
-  const [seg, setSeg] = (0, import_react30.useState)("week");
-  const [filter, setFilter] = (0, import_react30.useState)("all");
-  const [multi, setMulti] = (0, import_react30.useState)(["1"]);
-  return (0, import_react30.createElement)(
+  const [text, setText] = (0, import_react31.useState)("");
+  const [num, setNum] = (0, import_react31.useState)(3);
+  const [checked, setChecked] = (0, import_react31.useState)(true);
+  const [seg, setSeg] = (0, import_react31.useState)("week");
+  const [filter, setFilter] = (0, import_react31.useState)("all");
+  const [multi, setMulti] = (0, import_react31.useState)(["1"]);
+  return (0, import_react31.createElement)(
     "div",
     null,
     // Input 家族
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("demoInputFamily"), hint: t2("inputHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react30.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
+          (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
-          (0, import_react30.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F", hint: t2("fieldHintDate") })
+          (0, import_react31.createElement)(Input, { value: text, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F", hint: t2("fieldHintDate") })
         ),
-        (0, import_react30.createElement)(Input, { value: "bad value", onChange: () => {
+        (0, import_react31.createElement)(Input, { value: "bad value", onChange: () => {
         }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        (0, import_react30.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
-        (0, import_react30.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
+        (0, import_react31.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
+        (0, import_react31.createElement)(Textarea, { value: text, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
       )
     ),
     // 问号提示：证明它不属于 Input 家族，随处可挂
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("btnHintTitle"), hint: t2("btnHintHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Row,
           null,
-          (0, import_react30.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
-          (0, import_react30.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+          (0, import_react31.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Row,
           null,
-          (0, import_react30.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
-          (0, import_react30.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Row,
           null,
-          (0, import_react30.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
-          (0, import_react30.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
+          (0, import_react31.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
         )
       )
     ),
     // Switch / Checkbox / Segmented
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("switchTip"), hint: t2("checkboxHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
           // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
           // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
           // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
-            (0, import_react30.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-            (0, import_react30.createElement)("span", {
+            (0, import_react31.createElement)(import_dsh_client_ui_primitives3.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+            (0, import_react31.createElement)("span", {
               style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
               onClick: () => {
                 setChecked(!checked);
               }
             }, "\u542F\u7528")
           ),
-          (0, import_react30.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" }),
-          (0, import_react30.createElement)(Segmented, {
+          (0, import_react31.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" }),
+          (0, import_react31.createElement)(Segmented, {
             variant: "inset",
             items: [
               { value: "day", label: "\u65E5" },
@@ -4009,7 +4293,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react30.createElement)(Segmented, {
+          (0, import_react31.createElement)(Segmented, {
             variant: "inset",
             bordered: true,
             items: [
@@ -4020,7 +4304,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react30.createElement)(Segmented, {
+          (0, import_react31.createElement)(Segmented, {
             variant: "inset",
             size: "sm",
             items: [
@@ -4031,7 +4315,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react30.createElement)(Segmented, {
+          (0, import_react31.createElement)(Segmented, {
             variant: "inset",
             size: "sm",
             bordered: true,
@@ -4045,7 +4329,7 @@ function InputPage() {
           })
         ),
         // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
-        (0, import_react30.createElement)(Segmented, {
+        (0, import_react31.createElement)(Segmented, {
           variant: "inset",
           items: [
             { value: "all", label: t2("segAll"), count: 11 },
@@ -4057,7 +4341,7 @@ function InputPage() {
           value: filter,
           onChange: setFilter
         }),
-        (0, import_react30.createElement)(Segmented, {
+        (0, import_react31.createElement)(Segmented, {
           variant: "inset",
           bordered: true,
           items: [
@@ -4071,7 +4355,7 @@ function InputPage() {
           onChange: setFilter
         }),
         // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react30.createElement)(Segmented, {
+        (0, import_react31.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
@@ -4082,7 +4366,7 @@ function InputPage() {
           value: multi,
           onChange: setMulti
         }),
-        (0, import_react30.createElement)(Segmented, {
+        (0, import_react31.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           bordered: true,
@@ -4096,53 +4380,53 @@ function InputPage() {
         })
       )
     ),
-    (0, import_react30.createElement)(Placeholder, { descKey: "inputMissingDesc" })
+    (0, import_react31.createElement)(Placeholder, { descKey: "inputMissingDesc" })
   );
 }
 var ICON_OPTIONS = [
-  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
-  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
-  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
+  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconSparkleRegular, { size: 14 }) },
+  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconClockOutlineRegular, { size: 14 }) },
+  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconPlayOutlineRegular, { size: 14 }) }
 ];
 function PickerPage() {
-  const [single, setSingle] = (0, import_react30.useState)(void 0);
-  const [multi, setMulti] = (0, import_react30.useState)([]);
-  const [model, setModel] = (0, import_react30.useState)("");
-  const [model2, setModel2] = (0, import_react30.useState)("");
-  const [ws, setWs] = (0, import_react30.useState)(void 0);
-  return (0, import_react30.createElement)(
+  const [single, setSingle] = (0, import_react31.useState)(void 0);
+  const [multi, setMulti] = (0, import_react31.useState)([]);
+  const [model, setModel] = (0, import_react31.useState)("");
+  const [model2, setModel2] = (0, import_react31.useState)("");
+  const [ws, setWs] = (0, import_react31.useState)(void 0);
+  return (0, import_react31.createElement)(
     "div",
     null,
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "Picker", hint: t2("pickerHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react30.createElement)(Picker, {
+        (0, import_react31.createElement)(Picker, {
           options: ICON_OPTIONS,
-          icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
+          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconSparkleRegular, { size: 14 }),
           value: single,
           onChange: (v) => setSingle(v),
           searchable: true,
           clearable: true,
           placeholder: "\u5355\u9009\uFF08icon + \u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
         }),
-        (0, import_react30.createElement)(Picker, {
+        (0, import_react31.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
           placeholder: "\u5355\u9009\uFF08\u65E0\u641C\u7D22\u6846\uFF09"
         }),
-        (0, import_react30.createElement)(Picker, {
+        (0, import_react31.createElement)(Picker, {
           groups: [
             { value: "g1", label: "\u7EC4\u4E00", options: ICON_OPTIONS },
             {
               value: "g2",
               label: "\u7EC4\u4E8C",
               options: [
-                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
-                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
+                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconRefreshOutlineRegular, { size: 14 }) },
+                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconPlusOutlineRegular, { size: 14 }) }
               ]
             }
           ],
@@ -4153,13 +4437,13 @@ function PickerPage() {
           searchable: true,
           placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF0C\u53EF\u53CD\u9009\uFF09"
         }),
-        (0, import_react30.createElement)(Picker, {
+        (0, import_react31.createElement)(Picker, {
           options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
           degraded: true,
           disabled: true,
           placeholder: "\u964D\u7EA7 + \u7981\u7528"
         }),
-        (0, import_react30.createElement)(Picker, {
+        (0, import_react31.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
@@ -4168,16 +4452,16 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09", hint: t2("modelPickerHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
-        (0, import_react30.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
+        (0, import_react31.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
         // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
-        (0, import_react30.createElement)(ModelPicker, {
+        (0, import_react31.createElement)(ModelPicker, {
           value: model2,
           onChange: setModel2,
           variant: "cascade",
@@ -4185,14 +4469,14 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09", hint: t2("workspacePickerHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
-        (0, import_react30.createElement)(WorkspacePicker, {
+        (0, import_react31.createElement)(WorkspacePicker, {
           value: ws,
           onChange: (v) => setWs(v),
           clearable: true,
@@ -4200,17 +4484,17 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react30.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
+    (0, import_react31.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
   );
 }
 function TooltipPage() {
-  return (0, import_react30.createElement)(
+  return (0, import_react31.createElement)(
     Demo,
     { title: t2("tooltipTitle"), hint: t2("tooltipHint") },
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       "div",
       { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         Labeled,
         { label: t2("tooltipAnchorButton") },
         tipAnchor("top \xB7 center", "top", "center"),
@@ -4219,52 +4503,52 @@ function TooltipPage() {
         tipAnchor("bottom \xB7 end", "bottom", "end"),
         tipAnchor("right", "right")
       ),
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         Labeled,
         { label: t2("tooltipAnchorText") },
-        (0, import_react30.createElement)(
-          import_dsh_client_ui_primitives2.Tooltip,
+        (0, import_react31.createElement)(
+          import_dsh_client_ui_primitives3.Tooltip,
           { label: t2("tooltipHint"), side: "top" },
-          (0, import_react30.createElement)("span", {
+          (0, import_react31.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipAnchorText"))
         ),
-        (0, import_react30.createElement)(
-          import_dsh_client_ui_primitives2.Tooltip,
+        (0, import_react31.createElement)(
+          import_dsh_client_ui_primitives3.Tooltip,
           { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
-          (0, import_react30.createElement)("span", {
+          (0, import_react31.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipLong"))
         )
       ),
       // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         Labeled,
         { label: t2("tooltipMultiline") },
-        (0, import_react30.createElement)(
-          import_dsh_client_ui_primitives2.Tooltip,
+        (0, import_react31.createElement)(
+          import_dsh_client_ui_primitives3.Tooltip,
           { label: `${t2("tooltipName")}
 ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
-          (0, import_react30.createElement)("span", {
+          (0, import_react31.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipName"))
         )
       ),
       // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         Labeled,
         { label: t2("tooltipRich") },
-        (0, import_react30.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
+        (0, import_react31.createElement)(import_dsh_client_ui_primitives3.HoverCard, {
           variant: "compact",
           openDelayMs: 200,
-          anchor: (0, import_react30.createElement)("span", {
+          anchor: (0, import_react31.createElement)("span", {
             style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
           }, t2("tooltipName")),
           // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
           // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
           // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
           // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-          content: (0, import_react30.createElement)(
+          content: (0, import_react31.createElement)(
             "div",
             {
               style: {
@@ -4273,8 +4557,8 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
                 color: "var(--dsw-static-neutral-bluish-00,#fff)"
               }
             },
-            (0, import_react30.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
-            (0, import_react30.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
+            (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
+            (0, import_react31.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
           )
         })
       )
@@ -4282,128 +4566,128 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
   );
 }
 function CardPage() {
-  const [seg, setSeg] = (0, import_react30.useState)("all");
-  const [kw, setKw] = (0, import_react30.useState)("");
-  return (0, import_react30.createElement)(
+  const [seg, setSeg] = (0, import_react31.useState)("all");
+  const [kw, setKw] = (0, import_react31.useState)("");
+  return (0, import_react31.createElement)(
     "div",
     null,
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("demoCardTitle"), hint: t2("cardHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
         // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react30.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            action: (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
           },
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)(
             "div",
             { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
             "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
           ),
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react30.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react30.createElement)(Chip, null, "#npm"),
-            (0, import_react30.createElement)(Chip, null, "#pnpm"),
-            (0, import_react30.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react30.createElement)(Chip, null, "#\u8FC1\u79FB")
+            (0, import_react31.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react31.createElement)(Chip, null, "#npm"),
+            (0, import_react31.createElement)(Chip, null, "#pnpm"),
+            (0, import_react31.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react31.createElement)(Chip, null, "#\u8FC1\u79FB")
           )
         ),
         // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react30.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+            action: (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
           },
-          (0, import_react30.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react30.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
+          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react31.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
         // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react30.createElement)(
+            (a) => (0, import_react31.createElement)(
               Card,
               { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react30.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react31.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("demoStripTitle"), hint: t2("stripHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           StripCard,
           {
             accent: "business",
-            action: (0, import_react30.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+            action: (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
           },
-          (0, import_react30.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react31.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react30.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react30.createElement)(
+            (0, import_react31.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react31.createElement)(
               "span",
               { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
             )
           )
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           StripCard,
           {
             accent: "success",
             // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
-            action: (0, import_react30.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+            action: (0, import_react31.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
           },
-          (0, import_react30.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react30.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react31.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react30.createElement)(
+            (a) => (0, import_react31.createElement)(
               StripCard,
               { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
-              (0, import_react30.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react31.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408" },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "8px" } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
-        (0, import_react30.createElement)(SectionHead, {
-          icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
-          title: (0, import_react30.createElement)(
+        (0, import_react31.createElement)(SectionHead, {
+          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconSparkleRegular, { size: 16 }),
+          title: (0, import_react31.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5168\u90E8\u5F85\u529E",
-            (0, import_react30.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
+            (0, import_react31.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
           ),
           right: [
-            (0, import_react30.createElement)(Segmented, {
+            (0, import_react31.createElement)(Segmented, {
               variant: "inset",
               items: [
                 { value: "all", label: t2("segAll"), count: 22 },
@@ -4417,36 +4701,36 @@ function CardPage() {
               onChange: setSeg
             }),
             // 搜索框 192px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
-            (0, import_react30.createElement)(
+            (0, import_react31.createElement)(
               "div",
               { style: { width: "192px", flex: "none" } },
-              (0, import_react30.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+              (0, import_react31.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
             )
           ]
         }),
         // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
-        (0, import_react30.createElement)(SectionHead, {
-          icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
-          title: (0, import_react30.createElement)(
+        (0, import_react31.createElement)(SectionHead, {
+          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconClockOutlineRegular, { size: 16 }),
+          title: (0, import_react31.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
             "\u6211\u7684\u5F85\u529E",
-            (0, import_react30.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
+            (0, import_react31.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
           ),
-          right: (0, import_react30.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
+          right: (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
         }),
         // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
-        (0, import_react30.createElement)(SectionHead, {
-          icon: (0, import_react30.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
-          title: (0, import_react30.createElement)(
+        (0, import_react31.createElement)(SectionHead, {
+          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconRefreshOutlineRegular, { size: 16 }),
+          title: (0, import_react31.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5DF2\u5F52\u6863",
-            (0, import_react30.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
+            (0, import_react31.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
           ),
           right: [
-            (0, import_react30.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
-            (0, import_react30.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
+            (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
+            (0, import_react31.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
           ]
         })
       )
@@ -4454,84 +4738,85 @@ function CardPage() {
   );
 }
 function ChipPage() {
-  return (0, import_react30.createElement)(
+  return (0, import_react31.createElement)(
     "div",
     null,
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "Chip", hint: t2("chipHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
         ...["md", "sm", "xs"].map(
-          (sz) => (0, import_react30.createElement)(
+          (sz) => (0, import_react31.createElement)(
             "div",
             { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-            (0, import_react30.createElement)(Chip, { size: sz, tone: "warning" }, t2("chipOverdue")),
-            (0, import_react30.createElement)(Chip, { size: sz, tone: "danger" }, t2("chipStalled")),
-            (0, import_react30.createElement)(Chip, { size: sz, tone: "success" }, t2("chipDone")),
-            (0, import_react30.createElement)(Chip, { size: sz, tone: "business" }, t2("chipDoing")),
-            (0, import_react30.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
+            (0, import_react31.createElement)(Chip, { size: sz, tone: "warning" }, t2("chipOverdue")),
+            (0, import_react31.createElement)(Chip, { size: sz, tone: "danger" }, t2("chipStalled")),
+            (0, import_react31.createElement)(Chip, { size: sz, tone: "success" }, t2("chipDone")),
+            (0, import_react31.createElement)(Chip, { size: sz, tone: "business" }, t2("chipDoing")),
+            (0, import_react31.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
           )
         ),
         // 中性 # 标签（语言无关）+ 长文字回归样
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react30.createElement)(Chip, null, "#npm"),
-          (0, import_react30.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react30.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react30.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+          (0, import_react31.createElement)(Chip, null, "#npm"),
+          (0, import_react31.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react31.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react31.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
         )
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("marqueeTitle"), hint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7" },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { maxWidth: "200px" } },
-        (0, import_react30.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
+        (0, import_react31.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("liveTitle"), hint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3" },
-      (0, import_react30.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+      (0, import_react31.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: t2("emptyStateTitle"), hint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE" },
-      (0, import_react30.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
+      (0, import_react31.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
     )
   );
 }
 function FeedbackPage() {
-  const [open, setOpen] = (0, import_react30.useState)(false);
-  const [openNative, setOpenNative] = (0, import_react30.useState)(false);
-  const [alertState, setAlertState] = (0, import_react30.useState)(null);
-  const [confirmCfg, setConfirmCfg] = (0, import_react30.useState)(null);
-  const [confirmResult, setConfirmResult] = (0, import_react30.useState)("");
-  const [largeOpen, setLargeOpen] = (0, import_react30.useState)(false);
-  const [largeOpenB, setLargeOpenB] = (0, import_react30.useState)(false);
-  return (0, import_react30.createElement)(
+  const [open, setOpen] = (0, import_react31.useState)(false);
+  const [openNative, setOpenNative] = (0, import_react31.useState)(false);
+  const [alertState, setAlertState] = (0, import_react31.useState)(null);
+  const [confirmCfg, setConfirmCfg] = (0, import_react31.useState)(null);
+  const [confirmResult, setConfirmResult] = (0, import_react31.useState)("");
+  const [largeOpen, setLargeOpen] = (0, import_react31.useState)(false);
+  const [largeOpenB, setLargeOpenB] = (0, import_react31.useState)(false);
+  const [nativeText, setNativeText] = (0, import_react31.useState)("");
+  return (0, import_react31.createElement)(
     "div",
     null,
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002' },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
-        (0, import_react30.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
+        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: () => {
           void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
         } }, 'alertModal({skin:"host"})'),
-        (0, import_react30.createElement)(Button, { variant: "ghost", onClick: async () => {
+        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: async () => {
           const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
           showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
         } }, 'confirmModal({skin:"host"})'),
-        openNative ? (0, import_react30.createElement)(
+        openNative ? (0, import_react31.createElement)(
           Official.Modal,
           {
             open: openNative,
@@ -4540,22 +4825,22 @@ function FeedbackPage() {
             closeLabel: "\u5173\u95ED",
             description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
             contentClassName: "dshpc-native-demo-content",
-            footer: (0, import_react30.createElement)(
+            footer: (0, import_react31.createElement)(
               "div",
               { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-              (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
-              (0, import_react30.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
-              (0, import_react30.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+              (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react31.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
             )
           },
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-            (0, import_react30.createElement)(Input, { placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
-            (0, import_react30.createElement)(
+            (0, import_react31.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react31.createElement)(
               "label",
               { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
-              (0, import_react30.createElement)(Checkbox, { checked: false, onChange: () => {
+              (0, import_react31.createElement)(Checkbox, { checked: false, onChange: () => {
               } }),
               "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
             )
@@ -4563,54 +4848,54 @@ function FeedbackPage() {
         ) : null
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002" },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           null,
-          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react31.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react30.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
-            (0, import_react30.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
-            (0, import_react30.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
-            (0, import_react30.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
-            (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
+            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
+            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
+            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
+            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
+            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
           ),
-          alertState !== null ? (0, import_react30.createElement)(AlertModal, {
+          alertState !== null ? (0, import_react31.createElement)(AlertModal, {
             severity: alertState.sev,
             title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
             message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
             onConfirm: () => setAlertState(null)
           }) : null
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           null,
-          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react31.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
-            (0, import_react30.createElement)(Button, { onClick: () => {
+            (0, import_react31.createElement)(Button, { onClick: () => {
               setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
               setConfirmResult("");
             } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
-            (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => {
               setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
               setConfirmResult("");
             } }, "danger \u53D8\u4F53"),
-            (0, import_react30.createElement)(Button, { variant: "ghost", onClick: () => {
+            (0, import_react31.createElement)(Button, { variant: "ghost", onClick: () => {
               setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
               setConfirmResult("");
             } }, "\u6539\u6587\u6848"),
-            confirmResult ? (0, import_react30.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
+            confirmResult ? (0, import_react31.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
           ),
-          confirmCfg !== null ? (0, import_react30.createElement)(ConfirmModal, {
+          confirmCfg !== null ? (0, import_react31.createElement)(ConfirmModal, {
             title: "\u5220\u9664\u4EFB\u52A1",
             message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
             tone: confirmCfg.tone,
@@ -4626,17 +4911,17 @@ function FeedbackPage() {
             }
           }) : null
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           null,
-          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
-          (0, import_react30.createElement)(
+          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
+          (0, import_react31.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => {
               alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => showToast("alert \u5DF2\u5173\u95ED"));
             } }, "alertModal()"),
-            (0, import_react30.createElement)(Button, { onClick: async () => {
+            (0, import_react31.createElement)(Button, { onClick: async () => {
               const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
               showToast(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
             } }, "confirmModal()")
@@ -4644,96 +4929,96 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002" },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           null,
-          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
-          (0, import_react30.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
-          open ? (0, import_react30.createElement)(Modal, {
+          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
+          (0, import_react31.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
+          open ? (0, import_react31.createElement)(Modal, {
             title: "\u4EFB\u52A1\u8BE6\u60C5",
             onClose: () => setOpen(false),
-            footer: (0, import_react30.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-          }, (0, import_react30.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+            footer: (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+          }, (0, import_react31.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           null,
-          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
-          (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
-          largeOpen ? (0, import_react30.createElement)(
+          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
+          (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
+          largeOpen ? (0, import_react31.createElement)(
             Modal,
             {
               size: "lg",
               title: "\u4F1A\u8BDD\u8BB0\u5F55",
-              headerActions: (0, import_react30.createElement)(
+              headerActions: (0, import_react31.createElement)(
                 Button,
                 { variant: "outline", size: "sm", icon: iconOf("chevron", 14) },
                 "\u66F4\u591A"
               ),
               onClose: () => setLargeOpen(false),
-              footer: (0, import_react30.createElement)(
+              footer: (0, import_react31.createElement)(
                 "div",
                 { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-                (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
-                (0, import_react30.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
+                (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
+                (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
               )
             },
-            (0, import_react30.createElement)(
+            (0, import_react31.createElement)(
               "div",
               null,
               Array.from(
                 { length: 40 },
-                (_, i) => (0, import_react30.createElement)("div", { key: i, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
+                (_, i) => (0, import_react31.createElement)("div", { key: i, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
               ),
-              (0, import_react30.createElement)("div", { className: "dshpc-modal__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
+              (0, import_react31.createElement)("div", { className: "dshpc-modal__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
             )
           ) : null
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           "div",
           null,
-          (0, import_react30.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
-          (0, import_react30.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
-          largeOpenB ? (0, import_react30.createElement)(
+          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
+          (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
+          largeOpenB ? (0, import_react31.createElement)(
             Modal,
             {
               size: "lg",
-              title: (0, import_react30.createElement)(
+              title: (0, import_react31.createElement)(
                 "div",
                 null,
-                (0, import_react30.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
-                (0, import_react30.createElement)("div", { className: "dshpc-modal__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
+                (0, import_react31.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
+                (0, import_react31.createElement)("div", { className: "dshpc-modal__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
               ),
               onClose: () => setLargeOpenB(false)
             },
-            (0, import_react30.createElement)(
+            (0, import_react31.createElement)(
               "div",
               null,
-              (0, import_react30.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
-              (0, import_react30.createElement)("div", { style: { marginTop: "12px", border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
+              (0, import_react31.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
+              (0, import_react31.createElement)("div", { style: { marginTop: "12px", border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
             )
           ) : null
         )
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528" },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
+        (0, import_react31.createElement)(
           Button,
           {
             onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
@@ -4743,26 +5028,26 @@ function FeedbackPage() {
           "\u5E26\u56DE\u8C03"
         )
       ),
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
-        (0, import_react30.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09" },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react30.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
-        (0, import_react30.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
+        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
+        (0, import_react31.createElement)(
           Button,
           {
             onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
@@ -4773,17 +5058,17 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify", hint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE" },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react30.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
-        (0, import_react30.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react30.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react30.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
+        (0, import_react31.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react31.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react31.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react31.createElement)(
           Button,
           {
             onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
@@ -4794,7 +5079,7 @@ function FeedbackPage() {
           },
           "\u5355\u6309\u94AE+\u63CF\u8FF0"
         ),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(
           Button,
           {
             onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
@@ -4812,8 +5097,8 @@ function FeedbackPage() {
   );
 }
 function LayoutPage() {
-  const state = (0, import_react30.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
-  const [notice, setNotice] = (0, import_react30.useState)(null);
+  const state = (0, import_react31.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
+  const [notice, setNotice] = (0, import_react31.useState)(null);
   const open = (id) => {
     const result = demoDock.open(id);
     setNotice(result.ok ? null : t2("dockLimitWarn"));
@@ -4823,22 +5108,22 @@ function LayoutPage() {
     setNotice(null);
   };
   const opened = state.ids;
-  return (0, import_react30.createElement)(
+  return (0, import_react31.createElement)(
     "div",
     null,
-    (0, import_react30.createElement)(
+    (0, import_react31.createElement)(
       Demo,
       { title: "PanelDock", hint: t2("dockHint") },
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
-        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => open("A") }, t2("dockBtnOpenA")),
-        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => open("B") }, t2("dockBtnOpenB")),
-        (0, import_react30.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t2("dockBtnOpenA2")),
-        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => close("A") }, t2("dockBtnCloseA")),
-        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => open("default") }, t2("dockBtnDefault")),
-        (0, import_react30.createElement)(Button, { size: "sm", onClick: () => open("C") }, t2("dockBtnOpenC")),
-        (0, import_react30.createElement)(
+        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("A") }, t2("dockBtnOpenA")),
+        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("B") }, t2("dockBtnOpenB")),
+        (0, import_react31.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t2("dockBtnOpenA2")),
+        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => close("A") }, t2("dockBtnCloseA")),
+        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("default") }, t2("dockBtnDefault")),
+        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("C") }, t2("dockBtnOpenC")),
+        (0, import_react31.createElement)(
           Button,
           {
             size: "sm",
@@ -4851,13 +5136,13 @@ function LayoutPage() {
           t2("dockBtnReset")
         )
       ),
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } },
         `${t2("dockOpened")}${opened.length === 0 ? "\u2014" : opened.join(", ")}`,
         notice === null ? "" : `\u3000${notice}`
       ),
-      (0, import_react30.createElement)(
+      (0, import_react31.createElement)(
         "div",
         { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
         t2("dockMainText")
@@ -4867,190 +5152,1172 @@ function LayoutPage() {
 }
 
 // packages/demo/src/sections/blocks.tsx
-var import_react34 = require("react");
+var import_react40 = require("react");
 
-// dist/explorer/ExplorerPanel.js
-var import_react32 = require("react");
+// dist/explorer/FileBrowser.js
+var import_react37 = require("react");
 
 // dist/explorer/preview/index.js
-var import_react31 = require("react");
+var import_react36 = require("react");
 
 // dist/explorer/types.js
-function previewKindOf(path) {
-  if (mimeOf(path) !== void 0)
-    return "image";
+var HTML_KINDS = ["html", "htm"];
+var OFFICE_KINDS = ["doc", "docx", "ppt", "pptx"];
+var SOURCE_MAX_BYTES = 256 * 1024;
+function previewInfoOf(path) {
   const ext = extOf(path);
-  if (ext === "")
-    return "text";
-  const textLike = /* @__PURE__ */ new Set([
-    "txt",
-    "md",
-    "markdown",
-    "json",
-    "yaml",
-    "yml",
-    "toml",
-    "ini",
-    "csv",
-    "log",
-    "ts",
-    "tsx",
-    "js",
-    "jsx",
-    "mjs",
-    "cjs",
-    "py",
-    "go",
-    "rs",
-    "java",
-    "c",
-    "h",
-    "cpp",
-    "sh",
-    "bash",
-    "sql",
-    "html",
-    "css",
-    "xml"
-  ]);
-  return textLike.has(ext) ? "text" : "unsupported";
+  const mime = mimeOf(path);
+  if (mime !== void 0)
+    return { kind: "image", ext, mime };
+  if (ext === "pdf")
+    return { kind: "pdf", ext, mime: "application/pdf" };
+  if (ext === "md" || ext === "markdown")
+    return { kind: "md", ext };
+  if (HTML_KINDS.includes(ext))
+    return { kind: "html", ext };
+  if (OFFICE_KINDS.includes(ext))
+    return { kind: "office", ext, mime: "application/pdf" };
+  return { kind: "text", ext };
+}
+function unwrapEnvelope(result) {
+  if (typeof result === "object" && result !== null) {
+    const r = result;
+    if (r.ok === false)
+      return { kind: "error", error: r.error };
+    if (r.ok === true && "value" in r)
+      return { kind: "ok", payload: r.value };
+  }
+  return { kind: "ok", payload: result };
+}
+function isFailed(value) {
+  return typeof value === "object" && value !== null && "failed" in value;
+}
+function listingOf(result) {
+  const envelope = unwrapEnvelope(result);
+  if (envelope.kind === "error")
+    return { failed: envelope.error };
+  const raw = envelope.payload;
+  if (typeof raw !== "object" || raw === null) {
+    console.warn("[dsh-plugin-core:explorer] list \u8FD4\u56DE\u975E\u5BF9\u8C61");
+    return null;
+  }
+  const r = raw;
+  if (typeof r.path !== "string" || !Array.isArray(r.entries) || typeof r.truncated !== "boolean") {
+    console.warn("[dsh-plugin-core:explorer] list \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6");
+    return null;
+  }
+  return { path: r.path, entries: r.entries, truncated: r.truncated };
+}
+function textPageOf(result) {
+  const envelope = unwrapEnvelope(result);
+  if (envelope.kind === "error")
+    return { failed: envelope.error };
+  const raw = envelope.payload;
+  if (typeof raw !== "object" || raw === null) {
+    console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u975E\u5BF9\u8C61");
+    return null;
+  }
+  const r = raw;
+  if (typeof r.text !== "string") {
+    console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6\uFF08\u65E0 text \u5B57\u6BB5\uFF09");
+    return null;
+  }
+  const offset = typeof r.offset === "number" ? r.offset : 0;
+  const lines = typeof r.lines === "number" ? r.lines : r.text === "" ? 0 : r.text.split("\n").length;
+  return { text: r.text, offset, lines, eof: r.eof !== false };
+}
+function bytesOf(result) {
+  const envelope = unwrapEnvelope(result);
+  if (envelope.kind === "error")
+    return { failed: envelope.error };
+  const data = envelope.payload?.data;
+  if (data instanceof Uint8Array)
+    return data;
+  console.warn("[dsh-plugin-core:explorer] readBytes \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6");
+  return null;
+}
+function absolutePathOf(result) {
+  const envelope = unwrapEnvelope(result);
+  if (envelope.kind === "error")
+    return null;
+  const raw = envelope.payload;
+  if (typeof raw !== "object" || raw === null)
+    return null;
+  const abs = raw.absolutePath;
+  return typeof abs === "string" && abs !== "" ? abs : null;
+}
+function bareCode(raw) {
+  if (typeof raw === "string") {
+    const slash = raw.lastIndexOf("/");
+    return slash >= 0 ? raw.slice(slash + 1) : raw;
+  }
+  if (typeof raw === "object" && raw !== null) {
+    const code = raw.code;
+    if (typeof code === "string")
+      return bareCode(code);
+  }
+  return "";
+}
+function errView(error) {
+  const code = bareCode(error);
+  switch (code) {
+    case "outside-workspace":
+      return { key: "previewOutside" };
+    case "not-found":
+    case "lookup-not-found":
+      return { key: "previewNotFound" };
+    case "not-directory":
+      return { key: "previewNotDirectory" };
+    case "not-regular-file":
+      return { key: "previewNotDirectory" };
+    case "too-large":
+      return { key: "previewTooLarge" };
+    case "not-text":
+      return { key: "previewNotText" };
+    case "invocation-unavailable":
+    case "service-unavailable":
+      return { key: "previewOfficeUnavailable" };
+    default:
+      return { key: "explorerFailed" };
+  }
+}
+function sortEntries(entries2) {
+  return [...entries2].sort((a, b) => {
+    const ad = a.type === "directory" ? 0 : 1;
+    const bd = b.type === "directory" ? 0 : 1;
+    if (ad !== bd)
+      return ad - bd;
+    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+  });
+}
+function listPathOf(dir) {
+  return dir === "" ? "." : dir;
+}
+function createRootCache() {
+  const map = /* @__PURE__ */ new Map();
+  return {
+    get: (sessionId) => map.get(sessionId),
+    set: (sessionId, root2) => {
+      map.set(sessionId, root2);
+    }
+  };
+}
+function isAbsoluteish(p) {
+  return p.startsWith("/") || p.startsWith("\\") || /^[a-zA-Z]:[\\/]/.test(p);
+}
+function relJoin(dir, name) {
+  return dir.replace(/\/+$/, "") === "" ? name : `${dir.replace(/\/+$/, "")}/${name}`;
+}
+function learnRoot(cache, sessionId, relativePath, absolutePath) {
+  const rel = relativePath.replace(/^\/+/, "").replace(/\/+$/, "");
+  if (rel === "" || !absolutePath.endsWith(`/${rel}`))
+    return null;
+  const root2 = absolutePath.slice(0, absolutePath.length - rel.length - 1);
+  cache.set(sessionId, root2);
+  return root2;
+}
+function relativizeToRoot(cache, sessionId, dir) {
+  if (!isAbsoluteish(dir))
+    return dir;
+  const root2 = cache.get(sessionId);
+  if (root2 === void 0)
+    return dir;
+  const norm = root2.replace(/\/+$/, "");
+  if (dir === norm)
+    return "";
+  if (dir.startsWith(`${norm}/`))
+    return dir.slice(norm.length + 1);
+  return dir;
+}
+async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
+  const stat = workspaceFiles.stat;
+  if (stat === void 0)
+    return null;
+  let frontier = [startDir];
+  for (let depth = 0; depth < 3 && frontier.length > 0; depth++) {
+    const nextDirs = [];
+    for (const dir of frontier.slice(0, 5)) {
+      let entries2;
+      try {
+        const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir)));
+        if (parsed === null || isFailed(parsed))
+          continue;
+        entries2 = parsed.entries;
+      } catch {
+        continue;
+      }
+      const file = entries2.find((entry) => entry.type === "file");
+      if (file !== void 0) {
+        const rel = relJoin(dir, file.name);
+        try {
+          const abs = absolutePathOf(await stat(sessionId, rel));
+          if (abs !== null)
+            return { absolutePath: abs, relativePath: rel };
+        } catch {
+        }
+      }
+      for (const entry of entries2) {
+        if (entry.type === "directory" && nextDirs.length < 5)
+          nextDirs.push(relJoin(dir, entry.name));
+      }
+    }
+    frontier = nextDirs;
+  }
+  return null;
+}
+async function absolutizeDir(cache, workspaceFiles, sessionId, dir, canonical, entries2) {
+  if (isAbsoluteish(dir))
+    return dir;
+  const rel = canonical !== "" ? canonical : dir;
+  const cached = cache.get(sessionId);
+  if (cached !== void 0)
+    return `${cached}/${rel}`;
+  const stat = workspaceFiles.stat;
+  if (stat === void 0)
+    return dir;
+  const file = entries2.find((entry) => entry.type === "file");
+  if (file !== void 0) {
+    try {
+      const sub = relJoin(rel, file.name);
+      const abs = absolutePathOf(await stat(sessionId, sub));
+      if (abs?.endsWith(`/${file.name}`) === true && learnRoot(cache, sessionId, sub, abs) !== null) {
+        return abs.slice(0, abs.length - file.name.length - 1);
+      }
+    } catch {
+    }
+  }
+  const found = await findAnyFileAbs(workspaceFiles, sessionId, rel);
+  if (found === null)
+    return dir;
+  const root2 = learnRoot(cache, sessionId, found.relativePath, found.absolutePath);
+  return root2 === null ? dir : `${root2}/${rel}`;
+}
+function matchesFilter(path, isDir, filter) {
+  if (filter === void 0)
+    return true;
+  if (filter.dirs === true)
+    return isDir;
+  if (filter.exts === void 0 || filter.exts.length === 0)
+    return true;
+  if (isDir)
+    return true;
+  return filter.exts.includes(extOf(path));
+}
+function crumbsOfDir(dir) {
+  const isAbs = isAbsoluteish(dir);
+  const segs = dir.split("/").filter((s) => s.length > 0);
+  const out = [];
+  let acc = "";
+  for (const seg of segs) {
+    acc = acc === "" ? isAbs ? `/${seg}` : seg : `${acc}/${seg}`;
+    out.push({ label: seg, path: acc });
+  }
+  return out;
+}
+function baseNameOfPath(p) {
+  const i = Math.max(p.lastIndexOf("/"), p.lastIndexOf("\\"));
+  return i < 0 ? p : p.slice(i + 1);
+}
+function dirnameOf(p) {
+  return parentOf(p);
+}
+
+// dist/explorer/preview/BytesPreview.js
+var import_react32 = require("react");
+function BytesPreview(props) {
+  ensureControls();
+  const tt = props.translate ?? t;
+  const [url, setUrl] = (0, import_react32.useState)(null);
+  const [failed, setFailed] = (0, import_react32.useState)(null);
+  (0, import_react32.useEffect)(() => {
+    let alive = true;
+    let objectUrl = null;
+    setUrl(null);
+    setFailed(null);
+    props.workspaceFiles.readBytes(props.sessionId, props.path, {}).then((res) => {
+      const data = bytesOf(res);
+      if (!alive)
+        return;
+      if (data === null || "failed" in data) {
+        setFailed(errView(data === null ? void 0 : data.failed));
+        return;
+      }
+      const blob = new Blob([new Uint8Array(data)], { type: props.mime });
+      objectUrl = URL.createObjectURL(blob);
+      setUrl(objectUrl);
+    }).catch((error) => {
+      if (alive)
+        setFailed(errView(error));
+    });
+    return () => {
+      alive = false;
+      if (objectUrl !== null)
+        URL.revokeObjectURL(objectUrl);
+    };
+  }, [props.workspaceFiles, props.sessionId, props.path, props.mime]);
+  if (failed !== null)
+    return (0, import_react32.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+  if (url === null)
+    return (0, import_react32.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  if (props.kind === "image") {
+    return (0, import_react32.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
+  }
+  return (0, import_react32.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
+}
+
+// dist/explorer/preview/HtmlPreview.js
+var import_react34 = require("react");
+
+// dist/explorer/preview/TextPreview.js
+var import_react33 = require("react");
+
+// dist/explorer/preview/md-labels.js
+function markdownLabels() {
+  return {
+    code: {
+      copyLabel: t("mdCopy"),
+      copiedLabel: t("mdCopied"),
+      toolbarLabels: { codeLabel: t("mdCode"), wrapLabel: t("mdWrap"), unwrapLabel: t("mdUnwrap") }
+    },
+    footnotes: t("mdFootnotes")
+  };
+}
+
+// dist/explorer/preview/TextPreview.js
+var PAGE_LINES = 5e3;
+function TextPreview(props) {
+  ensureControls();
+  const tt = props.translate ?? t;
+  const [text, setText] = (0, import_react33.useState)("");
+  const [truncated, setTruncated] = (0, import_react33.useState)(false);
+  const [nextOffset, setNextOffset] = (0, import_react33.useState)(null);
+  const [loading, setLoading] = (0, import_react33.useState)(false);
+  const [failed, setFailed] = (0, import_react33.useState)(null);
+  const accRef = (0, import_react33.useRef)("");
+  const load = (0, import_react33.useCallback)(async (offset, append) => {
+    setLoading(true);
+    try {
+      const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, { offset, limit: PAGE_LINES }));
+      if (parsed === null || "failed" in parsed) {
+        setFailed(errView(parsed === null ? void 0 : parsed.failed));
+        return;
+      }
+      setFailed(null);
+      const full = append ? accRef.current + parsed.text : parsed.text;
+      accRef.current = full;
+      setText(full);
+      if (props.maxBytes !== void 0) {
+        if (parsed.eof) {
+          setNextOffset(null);
+        } else if (new Blob([full]).size >= props.maxBytes) {
+          setTruncated(true);
+          setNextOffset(null);
+        } else {
+          setNextOffset(parsed.offset + parsed.lines);
+        }
+        return;
+      }
+      setNextOffset(parsed.eof ? null : parsed.offset + parsed.lines);
+    } catch (error) {
+      setFailed(errView(error));
+    } finally {
+      setLoading(false);
+    }
+  }, [props.workspaceFiles, props.sessionId, props.path, props.maxBytes]);
+  (0, import_react33.useEffect)(() => {
+    accRef.current = "";
+    setText("");
+    setTruncated(false);
+    setNextOffset(null);
+    setFailed(null);
+    void load(0, false);
+  }, [load]);
+  if (failed !== null)
+    return (0, import_react33.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+  if (text === "" && loading)
+    return (0, import_react33.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  const rendered = props.markdown && !props.sourceView;
+  return (0, import_react33.createElement)("div", { className: "dshpc-fb__text" }, truncated ? (0, import_react33.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react33.createElement)(official_exports.MarkdownText, { text, labels: markdownLabels() }) : (0, import_react33.createElement)(official_exports.CodeBlock, {
+    code: text,
+    lang: (0, official_exports.languageForPath)(props.path),
+    lineNumbers: false,
+    wrap: true
+  }), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react33.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react33.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
+}
+
+// dist/explorer/preview/HtmlPreview.js
+var HTML_CSP = "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; media-src data:";
+var HTML_FORBID_TAGS = ["noscript", "base", "link", "meta", "iframe", "frame", "object", "embed", "set", "animate", "animatemotion", "animatetransform"];
+var HTML_FORBID_ATTRS = ["href", "xlink:href"];
+function buildStaticHtml(data) {
+  if (typeof DOMParser === "undefined")
+    return void 0;
+  let source;
+  try {
+    source = new TextDecoder("utf-8", { fatal: false }).decode(data);
+  } catch {
+    return void 0;
+  }
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(source, "text/html");
+  } catch {
+    return void 0;
+  }
+  for (const tag of HTML_FORBID_TAGS) {
+    for (const el of Array.from(doc.getElementsByTagName(tag)))
+      el.remove();
+  }
+  for (const attr of HTML_FORBID_ATTRS) {
+    for (const el of Array.from(doc.querySelectorAll(`[${attr}]`)))
+      el.removeAttribute(attr);
+  }
+  const csp = doc.createElement("meta");
+  csp.setAttribute("http-equiv", "Content-Security-Policy");
+  csp.setAttribute("content", HTML_CSP);
+  const head = doc.head ?? doc.documentElement;
+  head.insertBefore(csp, head.firstChild);
+  return `<!DOCTYPE html>
+${doc.documentElement.outerHTML}`;
+}
+function HtmlPreview(props) {
+  ensureControls();
+  const tt = props.translate ?? t;
+  const [doc, setDoc] = (0, import_react34.useState)(null);
+  const [failed, setFailed] = (0, import_react34.useState)(null);
+  (0, import_react34.useEffect)(() => {
+    if (props.sourceView)
+      return;
+    let alive = true;
+    setDoc(null);
+    setFailed(null);
+    props.workspaceFiles.readBytes(props.sessionId, props.path, {}).then((res) => {
+      const data = bytesOf(res);
+      if (!alive)
+        return;
+      if (data === null || "failed" in data) {
+        setFailed(errView(data === null ? void 0 : data.failed));
+        return;
+      }
+      const html = buildStaticHtml(data);
+      if (html === void 0) {
+        setFailed({ key: "previewRenderFailed" });
+        return;
+      }
+      setDoc(html);
+    }).catch((error) => {
+      if (alive)
+        setFailed(errView(error));
+    });
+    return () => {
+      alive = false;
+    };
+  }, [props.workspaceFiles, props.sessionId, props.path, props.sourceView]);
+  if (props.sourceView) {
+    return (0, import_react34.createElement)(TextPreview, {
+      workspaceFiles: props.workspaceFiles,
+      sessionId: props.sessionId,
+      path: props.path,
+      markdown: false,
+      sourceView: true,
+      maxBytes: SOURCE_MAX_BYTES,
+      translate: tt
+    });
+  }
+  if (failed !== null)
+    return (0, import_react34.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+  if (doc === null)
+    return (0, import_react34.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react34.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc, title: props.path });
+}
+
+// dist/explorer/preview/OfficePreview.js
+var import_react35 = require("react");
+function OfficePreview(props) {
+  ensureControls();
+  const tt = props.translate ?? t;
+  const [url, setUrl] = (0, import_react35.useState)(null);
+  const [failed, setFailed] = (0, import_react35.useState)(null);
+  (0, import_react35.useEffect)(() => {
+    let alive = true;
+    let objectUrl = null;
+    setUrl(null);
+    setFailed(null);
+    const face = props.officeToPdf;
+    if (face === null)
+      return;
+    face.render(props.sessionId, props.path, "foreground").then((res) => {
+      const data = bytesOf(res);
+      if (!alive)
+        return;
+      if (data === null || "failed" in data) {
+        setFailed(errView(data === null ? void 0 : data.failed));
+        return;
+      }
+      const blob = new Blob([new Uint8Array(data)], { type: "application/pdf" });
+      objectUrl = URL.createObjectURL(blob);
+      setUrl(objectUrl);
+    }).catch((error) => {
+      if (alive)
+        setFailed(errView(error));
+    });
+    return () => {
+      alive = false;
+      if (objectUrl !== null)
+        URL.revokeObjectURL(objectUrl);
+    };
+  }, [props.officeToPdf, props.sessionId, props.path]);
+  if (props.officeToPdf === null) {
+    return (0, import_react35.createElement)(EmptyState, { text: tt("previewOfficeUnavailable"), translate: tt });
+  }
+  if (failed !== null)
+    return (0, import_react35.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+  if (url === null)
+    return (0, import_react35.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react35.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
 }
 
 // dist/explorer/preview/index.js
 function FilePreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const kind = previewKindOf(props.path);
-  const [text, setText] = (0, import_react31.useState)(null);
-  const [imageUrl, setImageUrl] = (0, import_react31.useState)(null);
-  const [failed, setFailed] = (0, import_react31.useState)(false);
-  (0, import_react31.useEffect)(() => {
-    let alive = true;
-    let url = null;
-    setText(null);
-    setImageUrl(null);
-    setFailed(false);
-    const run = async () => {
-      if (kind === "text") {
-        const res = await props.workspaceFiles.read(props.sessionId, props.path, {});
-        if (alive)
-          setText(res.text);
-        return;
-      }
-      if (kind === "image") {
-        const res = await props.workspaceFiles.readBytes(props.sessionId, props.path, {});
-        const mime = mimeOf(props.path) ?? "application/octet-stream";
-        const blob = new Blob([new Uint8Array(res.data)], { type: mime });
-        url = URL.createObjectURL(blob);
-        if (alive)
-          setImageUrl(url);
-        return;
-      }
-    };
-    run().catch(() => {
-      if (alive)
-        setFailed(true);
-    });
-    return () => {
-      alive = false;
-      if (url !== null)
-        URL.revokeObjectURL(url);
-    };
-  }, [props.path, props.sessionId, props.workspaceFiles, kind]);
-  if (kind === "unsupported") {
-    return (0, import_react31.createElement)(EmptyState, { text: tt("explorerUnsupported"), translate: tt });
+  const info = previewInfoOf(props.path);
+  const sourceView = props.sourceView === true;
+  switch (info.kind) {
+    case "image":
+    case "pdf":
+      return (0, import_react36.createElement)(BytesPreview, {
+        workspaceFiles: props.workspaceFiles,
+        sessionId: props.sessionId,
+        path: props.path,
+        kind: info.kind,
+        mime: info.mime ?? "application/octet-stream",
+        translate: tt
+      });
+    case "office":
+      return (0, import_react36.createElement)(OfficePreview, {
+        officeToPdf: props.officeToPdf ?? null,
+        sessionId: props.sessionId,
+        path: props.path,
+        translate: tt
+      });
+    case "html":
+      return (0, import_react36.createElement)(HtmlPreview, {
+        workspaceFiles: props.workspaceFiles,
+        sessionId: props.sessionId,
+        path: props.path,
+        sourceView,
+        translate: tt
+      });
+    case "md":
+    case "text":
+      return (0, import_react36.createElement)(TextPreview, {
+        workspaceFiles: props.workspaceFiles,
+        sessionId: props.sessionId,
+        path: props.path,
+        markdown: info.kind === "md",
+        sourceView,
+        translate: tt
+      });
   }
-  if (failed)
-    return (0, import_react31.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt });
-  if (kind === "image") {
-    return imageUrl === null ? (0, import_react31.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react31.createElement)("img", { className: "dshpc-exp__image", src: imageUrl, alt: props.path });
-  }
-  return text === null ? (0, import_react31.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : (0, import_react31.createElement)("pre", { className: "dshpc-exp__text" }, text);
+  return null;
 }
 
-// dist/explorer/ExplorerPanel.js
-function ExplorerPanel(props) {
+// dist/explorer/FileBrowser.js
+function crumbsMenuEntries(params) {
+  const { workspaces, rootName, rootFallbackLabel, crumbs } = params;
+  const out = [];
+  const wsEntry = (ws, current3) => ({
+    id: current3 ? "dir:" : `ws:${ws}`,
+    label: (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-item", title: ws }, (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react37.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react37.createElement)("span", { style: { fontWeight: current3 ? 600 : 400 } }, ws))
+  });
+  const pathEntry = (crumb, depth, withArrow = true) => ({
+    id: `dir:${crumb.path}`,
+    label: (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-item", title: crumb.path }, withArrow ? (0, import_react37.createElement)(import_react37.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react37.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot" })), (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react37.createElement)("span", null, crumb.label))
+  });
+  if (workspaces === void 0) {
+    if (crumbs.length === 0)
+      return [{ id: "noop", label: rootFallbackLabel, disabled: true }];
+    return crumbs.map((crumb, index) => pathEntry(crumb, index === 0 ? 0 : index - 1, index !== 0));
+  }
+  const segments = rootName !== "" && crumbs.length > 0 && crumbs[0]?.path === "" ? crumbs.slice(1) : crumbs;
+  if (rootName !== "" && workspaces.includes(rootName)) {
+    out.push(wsEntry(rootName, true));
+    segments.forEach((crumb, i) => {
+      out.push(pathEntry(crumb, i));
+    });
+    for (const ws of workspaces) {
+      if (ws !== rootName)
+        out.push(wsEntry(ws, false));
+    }
+  } else {
+    segments.forEach((crumb, i) => {
+      out.push(pathEntry(crumb, i));
+    });
+    for (const ws of workspaces)
+      out.push(wsEntry(ws, false));
+  }
+  return out;
+}
+function FileBrowser(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const [dir, setDir] = (0, import_react32.useState)(props.path ?? "");
-  const [entries2, setEntries] = (0, import_react32.useState)([]);
-  const [truncated, setTruncated] = (0, import_react32.useState)(false);
-  const [loading, setLoading] = (0, import_react32.useState)(true);
-  const [failed, setFailed] = (0, import_react32.useState)(false);
-  const [selected, setSelected] = (0, import_react32.useState)(null);
-  const [nonce, setNonce] = (0, import_react32.useState)(0);
-  (0, import_react32.useEffect)(() => {
+  const picker = props.picker === true;
+  const cacheRef = (0, import_react37.useRef)(null);
+  if (cacheRef.current === null)
+    cacheRef.current = props.rootCache ?? createRootCache();
+  const rootCache = props.rootCache ?? cacheRef.current;
+  const [mode, setMode] = (0, import_react37.useState)("loading");
+  const [dir, setDir] = (0, import_react37.useState)("");
+  const [listing, setListing] = (0, import_react37.useState)(null);
+  const [truncated, setTruncated] = (0, import_react37.useState)(false);
+  const [viewing, setViewing] = (0, import_react37.useState)(null);
+  const [listErr, setListErr] = (0, import_react37.useState)(null);
+  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react37.useState)(false);
+  const [menuOpen, setMenuOpen] = (0, import_react37.useState)(false);
+  const regionRef = (0, import_react37.useRef)(null);
+  const measureRef = (0, import_react37.useRef)(null);
+  const [sourceView, setSourceView] = (0, import_react37.useState)(false);
+  const [reloadNonce, setReloadNonce] = (0, import_react37.useState)(0);
+  const [copied, setCopied] = (0, import_react37.useState)(false);
+  const [openDirs, setOpenDirs] = (0, import_react37.useState)(/* @__PURE__ */ new Set());
+  const [childCache, setChildCache] = (0, import_react37.useState)({});
+  const [, setRootNonce] = (0, import_react37.useState)(0);
+  const [outside, setOutside] = (0, import_react37.useState)(false);
+  const noteOutside = (parsed) => {
+    if (parsed === null || parsed === void 0)
+      return;
+    if (!isFailed(parsed)) {
+      setOutside(false);
+      return;
+    }
+    const code = bareCode(parsed.failed);
+    if (code === "outside-workspace" || code === "not-found" || code === "lookup-not-found")
+      setOutside(true);
+  };
+  const fetchDir = (0, import_react37.useCallback)((targetDir) => {
+    setDir(targetDir);
+    setViewing(null);
+    setListErr(null);
+    setMenuOpen(false);
+    setMode("loading");
+    setOpenDirs(/* @__PURE__ */ new Set());
+    setChildCache({});
+    props.workspaceFiles.list(props.sessionId, listPathOf(targetDir)).then((result) => {
+      const parsed = listingOf(result);
+      noteOutside(parsed);
+      if (isFailed(parsed)) {
+        setListErr(errView(parsed.failed));
+        setMode("error");
+        return;
+      }
+      if (parsed === null) {
+        setListErr({ key: "previewBadPayload" });
+        setMode("error");
+        return;
+      }
+      setListing(parsed.entries);
+      setTruncated(parsed.truncated);
+      setMode("dir");
+    }).catch((error) => {
+      setListErr(errView(error));
+      setMode("error");
+    });
+  }, [props.workspaceFiles, props.sessionId]);
+  const loadDir = (0, import_react37.useCallback)((targetDir) => {
+    if (targetDir === dir) {
+      fetchDir(targetDir);
+      return;
+    }
+    fetchDir(targetDir);
+  }, [dir, fetchDir]);
+  (0, import_react37.useEffect)(() => {
     let alive = true;
-    setLoading(true);
-    setFailed(false);
-    props.workspaceFiles.list(props.sessionId, dir === "" ? "." : dir).then((res) => {
+    setMode("loading");
+    setListErr(null);
+    setViewing(null);
+    setSourceView(false);
+    setReloadNonce(0);
+    setMenuOpen(false);
+    setOpenDirs(/* @__PURE__ */ new Set());
+    setChildCache({});
+    const ensureRootLearned = (currentDir) => {
+      if (rootCache.get(props.sessionId) !== void 0)
+        return;
+      void (async () => {
+        try {
+          const parsed = listingOf(await props.workspaceFiles.list(props.sessionId, listPathOf(currentDir)));
+          if (!alive || parsed === null || isFailed(parsed))
+            return;
+          const stat = props.workspaceFiles.stat;
+          if (stat === void 0)
+            return;
+          const rel = parsed.path;
+          const file = parsed.entries.find((entry) => entry.type === "file");
+          if (file !== void 0) {
+            const sub = rel === "" ? file.name : `${rel}/${file.name}`;
+            const abs = await stat(props.sessionId, sub).catch(() => null);
+            const absPath = typeof abs?.absolutePath === "string" ? abs.absolutePath : null;
+            if (absPath !== null && learnRoot(rootCache, props.sessionId, sub, absPath) !== null) {
+              setRootNonce((n) => n + 1);
+              return;
+            }
+          }
+          const found = await findAnyFileAbs(props.workspaceFiles, props.sessionId, rel);
+          if (found !== null && learnRoot(rootCache, props.sessionId, found.relativePath, found.absolutePath) !== null) {
+            setRootNonce((n) => n + 1);
+          }
+        } catch {
+        }
+      })();
+    };
+    props.workspaceFiles.list(props.sessionId, listPathOf(props.path)).then(async (result) => {
       if (!alive)
         return;
-      setEntries([...res.entries]);
-      setTruncated(res.truncated);
-      setLoading(false);
+      const parsed = listingOf(result);
+      if (!isFailed(parsed) && parsed !== null) {
+        setOutside(false);
+        const absDir = await absolutizeDir(rootCache, props.workspaceFiles, props.sessionId, props.path, parsed.path, parsed.entries);
+        if (!alive)
+          return;
+        setDir(absDir);
+        setListing(parsed.entries);
+        setTruncated(parsed.truncated);
+        setMode("dir");
+        ensureRootLearned(absDir);
+        return;
+      }
+      let parent = dirnameOf(props.path);
+      if (!isAbsoluteish(props.path)) {
+        const stat = props.workspaceFiles.stat;
+        if (stat !== void 0) {
+          try {
+            const res = await stat(props.sessionId, props.path);
+            const abs = typeof res.absolutePath === "string" ? res.absolutePath : null;
+            if (abs !== null) {
+              parent = dirnameOf(abs);
+              learnRoot(rootCache, props.sessionId, props.path, abs);
+            }
+          } catch {
+          }
+        }
+      }
+      if (!alive)
+        return;
+      setDir(parent);
+      setViewing(props.path);
+      setMode("file");
+      ensureRootLearned(parent);
+      props.workspaceFiles.list(props.sessionId, listPathOf(parent)).then((pres) => {
+        if (!alive)
+          return;
+        const pl = listingOf(pres);
+        noteOutside(pl);
+        if (!isFailed(pl) && pl !== null) {
+          setListing(pl.entries);
+          setTruncated(pl.truncated);
+        }
+      }).catch(() => {
+      });
     }).catch(() => {
       if (!alive)
         return;
-      setEntries([]);
-      setFailed(true);
-      setLoading(false);
+      setDir(dirnameOf(props.path));
+      setViewing(props.path);
+      setMode("file");
     });
     return () => {
       alive = false;
     };
-  }, [dir, props.sessionId, props.workspaceFiles, nonce]);
-  const crumbs = crumbsOf(dir);
-  const goto = (next) => {
-    setSelected(null);
-    props.onSelect?.(null);
-    setDir(next);
-  };
-  const crumbBar = (0, import_react32.createElement)("div", { className: "dshpc-exp__crumbs" }, (0, import_react32.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => goto("") }, tt("explorerRoot")), crumbs.map((c, i) => {
-    const isLast = i === crumbs.length - 1;
-    const upto = crumbs.slice(0, i + 1).join("/");
-    return (0, import_react32.createElement)("span", { key: upto }, (0, import_react32.createElement)("span", { className: "dshpc-exp__sep" }, " / "), (0, import_react32.createElement)("button", {
-      type: "button",
-      className: `dshpc-exp__crumb${isLast ? " dshpc-exp__crumb--current" : ""}`,
-      onClick: () => goto(upto)
-    }, c));
-  }), (0, import_react32.createElement)("span", { className: "dshpc-exp__tools" }, (0, import_react32.createElement)("button", {
-    type: "button",
-    className: "dshpc-exp__crumb",
-    disabled: dir === "",
-    onClick: () => goto(parentOf(dir))
-  }, tt("explorerUp")), (0, import_react32.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: () => setNonce(nonce + 1) }, tt("explorerRefresh"))));
-  const tree = loading ? (0, import_react32.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerLoading")) : failed ? (0, import_react32.createElement)(EmptyState, { text: tt("explorerFailed"), translate: tt }) : entries2.length === 0 ? (0, import_react32.createElement)("div", { className: "dshpc-exp__note" }, props.emptyText ?? tt("explorerEmptyDir")) : (0, import_react32.createElement)("div", { className: "dshpc-exp__tree" }, [...entries2].sort((a, b) => {
-    if (a.type !== b.type)
-      return a.type === "directory" ? -1 : 1;
-    return a.name.localeCompare(b.name);
-  }).map((e) => {
-    const full = joinPath(dir, e.name);
-    const isDir = e.type === "directory";
-    return (0, import_react32.createElement)("div", {
-      key: full,
-      className: `dshpc-exp__item${selected === full ? " dshpc-exp__item--active" : ""}`,
-      onClick: () => {
-        if (isDir)
-          goto(full);
-        else {
-          setSelected(full);
-          props.onSelect?.(full);
-          props.onOpenFile?.(full);
-        }
+  }, [props.workspaceFiles, props.sessionId, props.path, rootCache]);
+  (0, import_react37.useLayoutEffect)(() => {
+    const region = regionRef.current;
+    const measure = measureRef.current;
+    if (region === null || measure === null)
+      return;
+    const recompute = () => {
+      setCrumbsOverflow(measure.scrollWidth > region.clientWidth + 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(region);
+    return () => ro.disconnect();
+  }, [dir, viewing, mode, listing]);
+  const reload = (0, import_react37.useCallback)(() => {
+    if (viewing !== null) {
+      setReloadNonce((n) => n + 1);
+      return;
+    }
+    loadDir(dir);
+  }, [viewing, dir, loadDir]);
+  const copyPath = (0, import_react37.useCallback)(() => {
+    const target = viewing ?? dir;
+    if (target === "")
+      return;
+    const rel = relativizeToRoot(rootCache, props.sessionId, target);
+    (0, official_exports.writeClipboard)(rel).then((ok) => {
+      if (ok) {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1500);
       }
-    }, (0, import_react32.createElement)("span", { className: "dshpc-exp__icon" }, isDir ? "\u25B8" : "\xB7"), (0, import_react32.createElement)("span", { className: "dshpc-exp__name" }, e.name), e.size === void 0 ? null : (0, import_react32.createElement)("span", { className: "dshpc-exp__size" }, formatBytes(e.size)));
-  }), truncated ? (0, import_react32.createElement)("div", { className: "dshpc-exp__note" }, tt("explorerTruncated")) : null);
-  return (0, import_react32.createElement)("div", { className: "dshpc-exp" }, crumbBar, (0, import_react32.createElement)("div", { className: "dshpc-exp__body" }, tree, (0, import_react32.createElement)("div", { className: "dshpc-exp__preview" }, selected === null ? null : (0, import_react32.createElement)(FilePreview, {
-    workspaceFiles: props.workspaceFiles,
-    sessionId: props.sessionId,
-    path: selected,
-    translate: tt
-  }))));
+    }).catch(() => {
+    });
+  }, [viewing, dir, rootCache, props.sessionId]);
+  const toggleDir = (0, import_react37.useCallback)((path) => {
+    setOpenDirs((prev) => {
+      const next = new Set(prev);
+      if (next.has(path))
+        next.delete(path);
+      else
+        next.add(path);
+      return next;
+    });
+    if (!(path in childCache)) {
+      setChildCache((prev) => ({ ...prev, [path]: { status: "loading" } }));
+      props.workspaceFiles.list(props.sessionId, listPathOf(path)).then((result) => {
+        const parsed = listingOf(result);
+        setChildCache((prev) => ({
+          ...prev,
+          [path]: isFailed(parsed) || parsed === null ? { status: "error", error: errView(isFailed(parsed) ? parsed.failed : void 0) } : { status: "ready", entries: parsed.entries, truncated: parsed.truncated }
+        }));
+      }).catch((error) => {
+        setChildCache((prev) => ({ ...prev, [path]: { status: "error", error: errView(error) } }));
+      });
+    }
+  }, [childCache, props.workspaceFiles, props.sessionId]);
+  const renderTree = (0, import_react37.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
+    const childPath = joinPath(baseDir, entry.name);
+    const isDir = entry.type === "directory";
+    if (!isDir && picker && !matchesFilter(childPath, false, props.filter))
+      return null;
+    if (!isDir) {
+      const pick = () => {
+        if (picker && props.onPick !== void 0) {
+          props.onPick(relativizeToRoot(rootCache, props.sessionId, childPath), false);
+          return;
+        }
+        const parent = dirnameOf(childPath);
+        if (parent !== dir)
+          loadDir(parent);
+        setViewing(childPath);
+        setReloadNonce(0);
+        setSourceView(false);
+      };
+      return (0, import_react37.createElement)("div", {
+        key: childPath,
+        className: `dshpc-fb__row${picker ? " dshpc-fb__row--pick" : ""}`,
+        role: "button",
+        tabIndex: 0,
+        title: picker ? tt("explorerPickFile") : childPath,
+        onClick: pick,
+        onKeyDown: (event) => {
+          if (event.key === "Enter" || event.key === " ")
+            pick();
+        }
+      }, (0, import_react37.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react37.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 16 })), (0, import_react37.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name));
+    }
+    const cached = childCache[childPath];
+    const isOpen2 = openDirs.has(childPath);
+    const rowAction = () => {
+      toggleDir(childPath);
+    };
+    const actThisDir = (event) => {
+      event.stopPropagation();
+      if (picker) {
+        if (props.onPick !== void 0)
+          props.onPick(relativizeToRoot(rootCache, props.sessionId, childPath), true);
+        return;
+      }
+      loadDir(childPath);
+    };
+    return (0, import_react37.createElement)(import_react37.Fragment, { key: childPath }, (0, import_react37.createElement)("div", {
+      className: "dshpc-fb__row",
+      role: "button",
+      tabIndex: 0,
+      title: childPath,
+      onClick: rowAction,
+      onKeyDown: (event) => {
+        if (event.key === "Enter" || event.key === " ")
+          rowAction();
+      }
+    }, (0, import_react37.createElement)("button", {
+      type: "button",
+      className: `dshpc-fb__row-toggle${isOpen2 ? " dshpc-fb__row-toggle--open" : ""}`,
+      "aria-expanded": isOpen2,
+      "aria-label": isOpen2 ? tt("explorerCollapse") : tt("explorerExpand"),
+      onClick: (event) => {
+        event.stopPropagation();
+        toggleDir(childPath);
+      }
+    }, (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 14 })), (0, import_react37.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name), props.onPick === void 0 && picker ? null : (0, import_react37.createElement)("button", {
+      type: "button",
+      className: "dshpc-fb__row-act",
+      onClick: actThisDir
+    }, tt(picker ? "explorerPickDir" : "explorerEnter"))), isOpen2 ? (0, import_react37.createElement)(
+      "div",
+      { className: "dshpc-fb__row-children" },
+      // 硬性规定：不新建 Loading、不写加载文案 ⇒ 还在拉就空着（源实现用户 2026-10-05）。
+      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react37.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react37.createElement)(import_react37.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react37.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
+    ) : null);
+  }), [childCache, openDirs, picker, props.filter, props.onPick, props.sessionId, rootCache, dir, loadDir, tt]);
+  const rootAbs = rootCache.get(props.sessionId);
+  const rootLabel = props.rootName ?? (rootAbs !== void 0 ? baseNameOfPath(rootAbs.replace(/\/+$/, "")) : "");
+  const crumbs = rootLabel !== "" ? [{ label: rootLabel, path: "" }, ...crumbsOfDir(relativizeToRoot(rootCache, props.sessionId, dir))] : crumbsOfDir(dir);
+  const viewingIsMd = viewing !== null && /\.(md|markdown)$/i.test(viewing);
+  const viewingIsHtml = viewing !== null && /\.(html|htm)$/i.test(viewing);
+  const switchable = viewingIsMd || viewingIsHtml;
+  const menuItems = crumbsMenuEntries({
+    workspaces: props.workspaces,
+    rootName: rootLabel,
+    rootFallbackLabel: tt("explorerRootName"),
+    crumbs,
+    onPickWorkspace: props.onSelectWorkspace,
+    onLoadDir: loadDir
+  });
+  const onMenuSelect = (id) => {
+    setMenuOpen(false);
+    if (id.startsWith("ws:")) {
+      props.onSelectWorkspace?.(id.slice(3));
+      return;
+    }
+    if (id.startsWith("dir:"))
+      loadDir(id.slice(4));
+  };
+  const crumbBar = (0, import_react37.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-wrap" }, (0, import_react37.createElement)(official_exports.Menu, {
+    open: menuOpen,
+    anchor: (0, import_react37.createElement)(IconButton, {
+      variant: "plain",
+      size: "md",
+      icon: (0, import_react37.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
+      label: tt("explorerLevels"),
+      "aria-expanded": menuOpen,
+      onClick: () => setMenuOpen((v) => !v)
+    }),
+    items: menuItems,
+    align: "start",
+    side: "bottom",
+    onSelect: onMenuSelect,
+    onClose: () => setMenuOpen(false)
+  })), (0, import_react37.createElement)(
+    "div",
+    { ref: regionRef, className: "dshpc-fb__crumbs" },
+    // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
+    (0, import_react37.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? (0, import_react37.createElement)("button", { type: "button", className: "dshpc-fb__crumb", disabled: true, tabIndex: -1 }, tt("explorerRootName")) : crumbs.map((crumb, index) => (0, import_react37.createElement)(import_react37.Fragment, { key: crumb.path }, index > 0 ? (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 12 }) : null, (0, import_react37.createElement)("button", { type: "button", className: "dshpc-fb__crumb", disabled: true, tabIndex: -1 }, crumb.label)))),
+    // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
+    crumbsOverflow ? (0, import_react37.createElement)("span", { className: "dshpc-fb__crumb dshpc-fb__crumb--current" }, (0, import_react37.createElement)(MarqueeText, {
+      text: crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"),
+      className: "dshpc-fb__crumb-mq"
+    })) : crumbs.length === 0 ? (0, import_react37.createElement)("span", { className: "dshpc-fb__crumb dshpc-fb__crumb--current" }, tt("explorerRootName")) : crumbs.map((crumb, index) => (0, import_react37.createElement)(import_react37.Fragment, { key: crumb.path }, index > 0 ? (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, (0, import_react37.createElement)("button", { type: "button", className: "dshpc-fb__crumb", onClick: () => loadDir(crumb.path) }, (0, import_react37.createElement)(MarqueeText, { text: crumb.label, className: "dshpc-fb__crumb-mq" }))))
+  ), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react37.createElement)(IconButton, {
+    variant: "plain",
+    size: "md",
+    icon: (0, import_react37.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+    label: tt("previewClose"),
+    onClick: props.onClose
+  })));
+  const crumbBarPlain = (0, import_react37.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react37.createElement)(MarqueeText, {
+    text: dir,
+    title: dir,
+    className: "dshpc-fb__bar-plain",
+    style: { flex: "1 1 auto", minWidth: 0 }
+  }), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react37.createElement)(IconButton, {
+    variant: "plain",
+    size: "md",
+    icon: (0, import_react37.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+    label: tt("previewClose"),
+    onClick: props.onClose
+  })));
+  const titleBar = viewing === null ? null : (0, import_react37.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react37.createElement)(MarqueeText, {
+    text: baseNameOfPath(viewing),
+    title: viewing,
+    className: "dshpc-fb__title-inner",
+    style: { flex: "1 1 auto", minWidth: 0 }
+  }), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react37.createElement)(Segmented, {
+    size: "sm",
+    label: viewingIsMd ? tt("previewMdSwitchAria") : tt("previewHtmlSwitchAria"),
+    value: sourceView ? "source" : "render",
+    items: [
+      { value: "render", label: tt("previewRender") },
+      { value: "source", label: tt("previewSource") }
+    ],
+    onChange: (next) => setSourceView(next === "source")
+  }) : null, (0, import_react37.createElement)(IconButton, {
+    variant: "plain",
+    size: "md",
+    icon: copied ? (0, import_react37.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react37.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
+    label: tt("previewCopyPath"),
+    onClick: copyPath
+  }), (0, import_react37.createElement)(IconButton, {
+    variant: "plain",
+    size: "md",
+    icon: (0, import_react37.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
+    label: tt("previewRefresh"),
+    onClick: reload
+  })));
+  let body;
+  if (viewing !== null) {
+    body = (0, import_react37.createElement)(FilePreview, {
+      key: `${viewing}:${reloadNonce}`,
+      workspaceFiles: props.workspaceFiles,
+      officeToPdf: props.officeToPdf ?? null,
+      sessionId: props.sessionId,
+      path: viewing,
+      sourceView,
+      translate: tt
+    });
+  } else if (mode === "error" && listErr !== null) {
+    body = (0, import_react37.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react37.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
+  } else if (listing !== null) {
+    const visible = listing.filter((entry) => entry.type === "directory" || matchesFilter(joinPath(dir, entry.name), false, picker ? props.filter : void 0));
+    body = visible.length === 0 ? (0, import_react37.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react37.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react37.createElement)("div", { className: "dshpc-fb__tree" }, renderTree(visible, dir), truncated ? (0, import_react37.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
+  } else {
+    body = (0, import_react37.createElement)("div", { className: "dshpc-fb__body" });
+  }
+  return (0, import_react37.createElement)("aside", {
+    className: `dshpc-fb${props.dock === true ? " dshpc-fb--dock" : ""}`,
+    style: props.style ?? void 0
+  }, props.onResizeStart === void 0 ? null : (0, import_react37.createElement)("div", {
+    className: "dshpc-fb__resizer",
+    role: "separator",
+    "aria-orientation": "vertical",
+    title: tt("previewResize"),
+    onPointerDown: (event) => {
+      props.onResizeStart?.(event);
+    }
+  }), outside ? crumbBarPlain : crumbBar, titleBar, body);
+}
+
+// dist/explorer/open.js
+var import_react38 = require("react");
+var import_client5 = require("react-dom/client");
+var PREVIEW_HOST_ID = "dshpc-file-preview-host";
+function openFilePreview(options) {
+  if (typeof document === "undefined")
+    return null;
+  const previous = document.getElementById(PREVIEW_HOST_ID);
+  if (previous !== null)
+    previous.remove();
+  const container = document.createElement("div");
+  container.id = PREVIEW_HOST_ID;
+  container.setAttribute("data-dshpc-file-preview", "");
+  container.style.cssText = `position:fixed;top:0;right:0;bottom:0;z-index:1050;display:flex;width:${options.width ?? 460}px;max-width:100vw;background:var(--dshpc-surface-1,#fff);border-left:1px solid var(--dshpc-border,#d0d7de);box-shadow:var(--dshpc-shadow-2,none)`;
+  document.body.appendChild(container);
+  let closed = false;
+  const root2 = (0, import_client5.createRoot)(container);
+  const close = () => {
+    if (closed)
+      return;
+    closed = true;
+    window.removeEventListener("keydown", onKeyDown);
+    root2.unmount();
+    container.remove();
+    options.onClose?.();
+  };
+  const onKeyDown = (event) => {
+    if (event.key === "Escape")
+      close();
+  };
+  window.addEventListener("keydown", onKeyDown);
+  ensureControls(getStyleKit());
+  root2.render((0, import_react38.createElement)(FileBrowser, {
+    workspaceFiles: options.workspaceFiles,
+    officeToPdf: options.officeToPdf ?? null,
+    sessionId: options.sessionId,
+    path: options.path,
+    rootName: options.rootName,
+    rootCache: options.rootCache,
+    dock: true,
+    onClose: close,
+    onResizeStart: (event) => {
+      const min = options.minWidth ?? 320;
+      const max = Math.max(min, Math.round(window.innerWidth * 0.7));
+      startResizeLayoutWidth({
+        startEvent: event,
+        root: container,
+        rootClass: "dshpc-fb--resizing",
+        rafThrottle: true,
+        compute: (clientX) => {
+          const w = (options.width ?? 460) + (event.clientX - clientX);
+          return Math.min(max, Math.max(min, w));
+        },
+        onMove: (width) => {
+          container.style.width = `${width}px`;
+        },
+        onCommit: (width) => {
+          container.style.width = `${width}px`;
+        }
+      });
+    },
+    style: { flex: "1 1 auto", minWidth: 0, minHeight: 0 }
+  }));
+  return { close, path: options.path };
+}
+var PICKER_WIDTH = 480;
+var PICKER_MAX_H = 660;
+var PICKER_MIN_H = 240;
+function pickWorkspaceFile(options) {
+  return new Promise((resolve) => {
+    if (typeof document === "undefined") {
+      resolve(null);
+      return;
+    }
+    let settled = false;
+    const backdrop = document.createElement("div");
+    backdrop.setAttribute("data-dshpc-picker-backdrop", "");
+    backdrop.style.cssText = "position:fixed;inset:0;z-index:1099;background:rgba(0,0,0,0.28)";
+    const panel = document.createElement("div");
+    panel.setAttribute("data-dshpc-picker-panel", "");
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-modal", "true");
+    const anchor = options.anchor ?? null;
+    if (anchor !== null) {
+      const rect = anchor.getBoundingClientRect();
+      panel.style.cssText = `position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;right:${Math.max(12, window.innerWidth - rect.left)}px;bottom:${Math.max(12, window.innerHeight - rect.bottom)}px;width:min(${PICKER_WIDTH}px,calc(100vw - 24px));height:${Math.min(PICKER_MAX_H, Math.max(PICKER_MIN_H, rect.top - 12))}px;background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)`;
+    } else {
+      panel.style.cssText = `position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;width:min(${PICKER_WIDTH}px,calc(100vw - 24px));height:${PICKER_MAX_H}px;background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)`;
+    }
+    const finish = (result) => {
+      if (settled)
+        return;
+      settled = true;
+      window.removeEventListener("keydown", onKeyDown);
+      backdrop.remove();
+      root2.unmount();
+      panel.remove();
+      if (result === null)
+        options.onCancel?.();
+      resolve(result);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === "Escape")
+        finish(null);
+    };
+    backdrop.addEventListener("click", () => finish(null));
+    window.addEventListener("keydown", onKeyDown);
+    document.body.appendChild(backdrop);
+    document.body.appendChild(panel);
+    ensureControls(getStyleKit());
+    const root2 = (0, import_client5.createRoot)(panel);
+    root2.render((0, import_react38.createElement)(FileBrowser, {
+      workspaceFiles: options.workspaceFiles,
+      officeToPdf: options.officeToPdf ?? null,
+      sessionId: options.sessionId,
+      path: "",
+      rootName: options.rootName,
+      rootCache: options.rootCache,
+      workspaces: options.workspaces,
+      onSelectWorkspace: options.onSelectWorkspace,
+      picker: true,
+      filter: options.filter,
+      onPick: (path, isDir) => finish({ path, isDir }),
+      onClose: () => finish(null),
+      style: { flex: "1 1 auto", width: "100%", minWidth: 0, minHeight: 0 }
+    }));
+  });
 }
 
 // dist/session/index.js
-var import_react33 = require("react");
+var import_react39 = require("react");
 
 // dist/session/types.js
 var ROLE_LABEL_KEY = {
@@ -5065,11 +6332,11 @@ function SessionPreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const variant = props.variant ?? "modal";
-  const [messages, setMessages] = (0, import_react33.useState)([]);
-  const [loading, setLoading] = (0, import_react33.useState)(true);
-  const [failed, setFailed] = (0, import_react33.useState)(false);
-  const [nonce, setNonce] = (0, import_react33.useState)(0);
-  (0, import_react33.useEffect)(() => {
+  const [messages, setMessages] = (0, import_react39.useState)([]);
+  const [loading, setLoading] = (0, import_react39.useState)(true);
+  const [failed, setFailed] = (0, import_react39.useState)(false);
+  const [nonce, setNonce] = (0, import_react39.useState)(0);
+  (0, import_react39.useEffect)(() => {
     let alive = true;
     setLoading(true);
     setFailed(false);
@@ -5089,140 +6356,184 @@ function SessionPreview(props) {
       alive = false;
     };
   }, [props.sessionId, props.source, nonce]);
-  const body = loading ? (0, import_react33.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react33.createElement)(EmptyState, {
+  const body = loading ? (0, import_react39.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react39.createElement)(EmptyState, {
     text: tt("sessionFailed"),
     translate: tt,
-    action: (0, import_react33.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
-  }) : messages.length === 0 ? (0, import_react33.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react33.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react33.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react33.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react33.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react33.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react33.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react33.createElement)("button", {
+    action: (0, import_react39.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
+  }) : messages.length === 0 ? (0, import_react39.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react39.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react39.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react39.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react39.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react39.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react39.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react39.createElement)("button", {
     key: a.path,
     type: "button",
     className: "dshpc-ses__att",
     onClick: () => props.onOpenFile?.(a.path)
   }, a.name, a.bytes === void 0 ? null : ` ${formatBytes(a.bytes)}`))))));
   if (variant === "modal") {
-    return (0, import_react33.createElement)(Modal, {
+    return (0, import_react39.createElement)(Modal, {
       title: props.title ?? props.sessionId,
       onClose: props.onClose,
-      children: (0, import_react33.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
+      children: (0, import_react39.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
     });
   }
-  return (0, import_react33.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react33.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react33.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
+  return (0, import_react39.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react39.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react39.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
 }
 
 // packages/demo/src/mock.ts
+var ROOT = "/home/demo-workspace";
 var TREE = {
-  ".": [
-    { name: "src", type: "directory" },
-    { name: "docs", type: "directory" },
-    { name: "README.md", type: "file", size: 731 },
-    { name: "package.json", type: "file", size: 605 },
-    { name: "logo.png", type: "file", size: 24576 }
-  ],
-  src: [
-    { name: "index.ts", type: "file", size: 1204 },
-    { name: "ui", type: "directory" }
-  ],
-  "src/ui": [{ name: "Picker.ts", type: "file", size: 4180 }],
-  docs: [{ name: "requirements.md", type: "file", size: 8960 }]
+  ".": ["src", "docs", "assets", "README.md", "package.json", "logo.png", "notes.txt", "big.log"],
+  src: ["index.ts", "ui", "explorer"],
+  "src/ui": ["Button.ts", "Picker.ts"],
+  "src/explorer": ["FileBrowser.ts", "types.ts"],
+  docs: ["requirements.md", "guide.html", "report.pdf", "spec.docx", "diagram.svg"],
+  assets: ["logo.png", "photo.jpg"]
 };
 var TEXT = {
   "README.md": "# dsh-plugin-core\n\nDSH \u63D2\u4EF6\u5171\u4EAB\u5E95\u5EA7\u3002\n",
   "package.json": '{\n  "name": "dsh-plugin-core"\n}\n',
+  "notes.txt": "\u9884\u89C8\u7AD9\u5047\u6570\u636E\u3002\n",
   "src/index.ts": "export * from './ui/index.js'\n",
+  "src/ui/Button.ts": "export function Button() { /* ... */ }\n",
   "src/ui/Picker.ts": "export function Picker() { /* ... */ }\n",
-  "docs/requirements.md": "# \u9700\u6C42\u6587\u6863\n\n\uFF08\u9884\u89C8\u7528\u5047\u6570\u636E\uFF09\n"
+  "src/explorer/FileBrowser.ts": "export function FileBrowser() { /* ... */ }\n",
+  "src/explorer/types.ts": "export interface WorkspaceFilesFace {}\n",
+  "docs/requirements.md": "# \u9700\u6C42\u6587\u6863\n\n\uFF08\u9884\u89C8\u7528\u5047\u6570\u636E\uFF09\n",
+  "docs/guide.html": "<!DOCTYPE html><html><head><title>\u6307\u5357</title></head><body><h1>\u6307\u5357</h1><p>\u5047 HTML\u3002</p></body></html>\n"
 };
+var BIG_LINES = 12e3;
+function bigLine(i) {
+  return `[${String(i).padStart(5, "0")}] dsh-plugin-core demo log line \u2014 \u5206\u9875\u8BFB\u53D6\u6F14\u793A`;
+}
+var PNG_1X1 = new Uint8Array([
+  137,
+  80,
+  78,
+  71,
+  13,
+  10,
+  26,
+  10,
+  0,
+  0,
+  0,
+  13,
+  73,
+  72,
+  68,
+  82,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  1,
+  8,
+  6,
+  0,
+  0,
+  0,
+  31,
+  21,
+  196,
+  137,
+  0,
+  0,
+  0,
+  10,
+  73,
+  68,
+  65,
+  84,
+  120,
+  156,
+  99,
+  0,
+  1,
+  0,
+  0,
+  5,
+  0,
+  1,
+  13,
+  10,
+  45,
+  180,
+  0,
+  0,
+  0,
+  0,
+  73,
+  69,
+  78,
+  68,
+  174,
+  66,
+  96,
+  130
+]);
+function bytesOfText(text) {
+  return new TextEncoder().encode(text);
+}
+function fakePdf() {
+  return bytesOfText("%PDF-1.4\n% \u5047 PDF\uFF08demo \u6570\u636E\uFF09\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n");
+}
 var mockWorkspaceFiles = {
-  async read(sessionId, path) {
+  async read(_sessionId, path, range) {
     await delay(120);
-    return { offset: 0, text: TEXT[path] ?? "\uFF08\u9884\u89C8\uFF1A\u8BE5\u6587\u4EF6\u65E0\u5047\u6570\u636E\uFF09", lines: 1, eof: true };
+    if (path === "big.log") {
+      const offset = range.offset ?? 0;
+      const limit = range.limit ?? 5e3;
+      const end = Math.min(offset + limit, BIG_LINES);
+      const lines = [];
+      for (let i = offset; i < end; i++) lines.push(bigLine(i));
+      return { offset, text: lines.length === 0 ? "" : `${lines.join("\n")}
+`, lines: lines.length, eof: end >= BIG_LINES };
+    }
+    const text = TEXT[path];
+    if (text === void 0) throw { code: "workspace-file/not-text" };
+    return { offset: 0, text, lines: text.split("\n").length, eof: true };
   },
-  async readBytes(sessionId, path) {
+  async readBytes(_sessionId, path) {
     await delay(120);
+    if (path === "docs/report.pdf") return { offset: 0, data: fakePdf(), eof: true };
+    if (path === "logo.png" || path === "assets/logo.png") return { offset: 0, data: PNG_1X1, eof: true };
+    if (path === "docs/guide.html") return { offset: 0, data: bytesOfText(TEXT["docs/guide.html"]), eof: true };
+    if (path === "docs/diagram.svg") {
+      return { offset: 0, data: bytesOfText('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" fill="#3b82f6"/></svg>'), eof: true };
+    }
+    throw { code: "workspace-file/not-found" };
+  },
+  async list(_sessionId, path) {
+    await delay(120);
+    if (path === "outside") {
+      return { ok: false, error: { code: "workspace-file/outside-workspace" } };
+    }
+    const key = path === "." || path === "" ? "." : path;
+    const names = TREE[key];
+    if (names === void 0) throw { code: "workspace-file/not-directory" };
     return {
-      offset: 0,
-      eof: true,
-      data: new Uint8Array([
-        137,
-        80,
-        78,
-        71,
-        13,
-        10,
-        26,
-        10,
-        0,
-        0,
-        0,
-        13,
-        73,
-        72,
-        68,
-        82,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        8,
-        6,
-        0,
-        0,
-        0,
-        31,
-        21,
-        196,
-        137,
-        0,
-        0,
-        0,
-        10,
-        73,
-        68,
-        65,
-        84,
-        120,
-        156,
-        99,
-        0,
-        1,
-        0,
-        0,
-        5,
-        0,
-        1,
-        13,
-        10,
-        45,
-        180,
-        0,
-        0,
-        0,
-        0,
-        73,
-        69,
-        78,
-        68,
-        174,
-        66,
-        96,
-        130
-      ])
+      path: key === "." ? "" : key,
+      truncated: false,
+      entries: names.map((name) => ({
+        name,
+        type: name.includes(".") ? "file" : "directory",
+        size: name.includes(".") ? 1024 : void 0
+      }))
     };
   },
-  async list(sessionId, path) {
-    await delay(120);
-    const key = path === "." || path === "" ? "." : path;
-    const entries2 = TREE[key];
-    if (entries2 === void 0) throw new Error("not-directory");
-    return { path, entries: entries2.map((e) => ({ ...e })), truncated: false };
+  async stat(_sessionId, path) {
+    await delay(80);
+    return { absolutePath: `${ROOT}/${path}` };
+  }
+};
+var mockOfficeToPdf = {
+  async render(_sessionId, _path) {
+    await delay(200);
+    return { ok: true, value: { offset: 0, data: fakePdf(), eof: true } };
   }
 };
 var mockSessionSource = {
-  async listMessages(sessionId) {
+  async listMessages(_sessionId) {
     await delay(150);
     return [
       { id: "1", role: "user", text: "\u5E2E\u6211\u628A\u8FD9\u4E2A\u5305\u6784\u5EFA\u4E00\u4E0B" },
@@ -5233,11 +6544,11 @@ var mockSessionSource = {
         attachments: [{ name: "build.log", path: "build.log", bytes: 2048 }]
       },
       { id: "3", role: "tool", text: "tsc -p tsconfig.json \u2192 0 error" },
-      { id: "4", role: "assistant", text: "\u6784\u5EFA\u5B8C\u6210\uFF0C33 \u6761\u81EA\u68C0\u5168\u8FC7\u3002" }
+      { id: "4", role: "assistant", text: "\u6784\u5EFA\u5B8C\u6210\uFF0C\u81EA\u68C0\u5168\u8FC7\u3002" }
     ];
   },
-  async download(sessionId, path) {
-    return new TextEncoder().encode(`\u9884\u89C8\u5047\u6587\u4EF6\uFF1A${path}`);
+  async download(_sessionId, path) {
+    return bytesOfText(`\u9884\u89C8\u5047\u6587\u4EF6\uFF1A${path}`);
   }
 };
 function delay(ms) {
@@ -5245,43 +6556,125 @@ function delay(ms) {
 }
 
 // packages/demo/src/sections/blocks.tsx
+var SESSION = "demo-session";
 function ExplorerPage() {
-  const [selected, setSelected] = (0, import_react34.useState)(null);
-  return (0, import_react34.createElement)(
+  const [picked, setPicked] = (0, import_react40.useState)(null);
+  const pickAllRef = (0, import_react40.useRef)(null);
+  const pickTsRef = (0, import_react40.useRef)(null);
+  const pickDirRef = (0, import_react40.useRef)(null);
+  const preview = (path) => {
+    openFilePreview({
+      workspaceFiles: mockWorkspaceFiles,
+      officeToPdf: mockOfficeToPdf,
+      sessionId: SESSION,
+      path,
+      rootName: "demo-workspace"
+    });
+  };
+  return (0, import_react40.createElement)(
     "div",
     null,
-    (0, import_react34.createElement)(
+    (0, import_react40.createElement)(
       Demo,
-      { title: "ExplorerPanel", hint: t2("explorerHint") },
-      (0, import_react34.createElement)(
+      { title: "FileBrowser\uFF08\u9762\u677F\u672C\u4F53\uFF09", hint: t2("explorerHint") },
+      (0, import_react40.createElement)(
         "div",
-        { style: { display: "flex", gap: "16px", flexWrap: "wrap" } },
-        (0, import_react34.createElement)(
-          "div",
-          {
-            style: {
-              width: "520px",
-              height: "380px",
-              overflow: "hidden",
-              border: "1px solid var(--dshpc-border)",
-              borderRadius: "8px"
-            }
-          },
-          (0, import_react34.createElement)(ExplorerPanel, {
-            workspaceFiles: mockWorkspaceFiles,
-            sessionId: "demo-session",
-            path: "",
-            onSelect: setSelected
-          })
-        ),
-        (0, import_react34.createElement)(
-          "div",
-          { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", alignSelf: "center" } },
-          selected === null ? "\u70B9\u5DE6\u4FA7\u6587\u4EF6\u8BD5\u8BD5" : `\u5DF2\u9009\u4E2D\uFF1A${selected}`
-        )
+        {
+          style: {
+            width: "720px",
+            height: "420px",
+            overflow: "hidden",
+            border: "1px solid var(--dshpc-border)",
+            borderRadius: "8px"
+          }
+        },
+        (0, import_react40.createElement)(FileBrowser, {
+          workspaceFiles: mockWorkspaceFiles,
+          officeToPdf: mockOfficeToPdf,
+          sessionId: SESSION,
+          path: "",
+          rootName: "demo-workspace",
+          workspaces: ["demo-workspace"]
+        })
       )
     ),
-    (0, import_react34.createElement)(
+    (0, import_react40.createElement)(
+      Demo,
+      { title: t2("methodATitle"), hint: t2("methodAHint") },
+      (0, import_react40.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
+        (0, import_react40.createElement)(Button, { variant: "primary", onClick: () => preview("README.md") }, t2("openFilePreview")),
+        (0, import_react40.createElement)(Button, { onClick: () => preview("docs") }, t2("openDirPreview")),
+        (0, import_react40.createElement)(Button, { onClick: () => preview("docs/report.pdf") }, t2("openPdfPreview"))
+      )
+    ),
+    (0, import_react40.createElement)(
+      Demo,
+      { title: t2("methodBTitle"), hint: t2("methodBHint") },
+      (0, import_react40.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } },
+        (0, import_react40.createElement)(
+          "button",
+          {
+            ref: pickAllRef,
+            type: "button",
+            className: "dshpc-btn dshpc-btn--outline dshpc-btn--lg",
+            onClick: () => {
+              void pickWorkspaceFile({
+                workspaceFiles: mockWorkspaceFiles,
+                officeToPdf: mockOfficeToPdf,
+                sessionId: SESSION,
+                anchor: pickAllRef.current,
+                rootName: "demo-workspace"
+              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? "\uFF08\u6587\u4EF6\u5939\uFF09" : ""}`));
+            }
+          },
+          t2("pickAny")
+        ),
+        (0, import_react40.createElement)(
+          "button",
+          {
+            ref: pickTsRef,
+            type: "button",
+            className: "dshpc-btn dshpc-btn--outline dshpc-btn--lg",
+            onClick: () => {
+              void pickWorkspaceFile({
+                workspaceFiles: mockWorkspaceFiles,
+                officeToPdf: mockOfficeToPdf,
+                sessionId: SESSION,
+                anchor: pickTsRef.current,
+                rootName: "demo-workspace",
+                filter: { exts: ["ts"] }
+              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? "\uFF08\u6587\u4EF6\u5939\uFF09" : ""}`));
+            }
+          },
+          t2("pickTs")
+        ),
+        (0, import_react40.createElement)(
+          "button",
+          {
+            ref: pickDirRef,
+            type: "button",
+            className: "dshpc-btn dshpc-btn--outline dshpc-btn--lg",
+            onClick: () => {
+              void pickWorkspaceFile({
+                workspaceFiles: mockWorkspaceFiles,
+                officeToPdf: mockOfficeToPdf,
+                sessionId: SESSION,
+                anchor: pickDirRef.current,
+                rootName: "demo-workspace",
+                filter: { dirs: true }
+              }).then((r) => setPicked(r === null ? null : `${r.path}${r.isDir ? "\uFF08\u6587\u4EF6\u5939\uFF09" : ""}`));
+            }
+          },
+          t2("pickDir")
+        ),
+        (0, import_react40.createElement)("span", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } }, picked === null ? t2("pickNone") : `${t2("pickResult")}\uFF1A${picked}`)
+      )
+    ),
+    (0, import_react40.createElement)(
       Demo,
       { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") },
       null
@@ -5289,17 +6682,17 @@ function ExplorerPage() {
   );
 }
 function SessionPage() {
-  const [open, setOpen] = (0, import_react34.useState)(false);
-  return (0, import_react34.createElement)(
+  const [open, setOpen] = (0, import_react40.useState)(false);
+  return (0, import_react40.createElement)(
     Demo,
     { title: "SessionPreview", hint: t2("sessionHint") },
-    (0, import_react34.createElement)(
+    (0, import_react40.createElement)(
       "div",
       { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-      (0, import_react34.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09"),
-      (0, import_react34.createElement)(Button, { onClick: () => setOpen(false) }, "\u5173\u95ED")
+      (0, import_react40.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09"),
+      (0, import_react40.createElement)(Button, { onClick: () => setOpen(false) }, "\u5173\u95ED")
     ),
-    open ? (0, import_react34.createElement)(SessionPreview, {
+    open ? (0, import_react40.createElement)(SessionPreview, {
       sessionId: "demo-session",
       source: mockSessionSource,
       variant: "modal",
@@ -5311,7 +6704,7 @@ function SessionPage() {
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react35 = require("react");
+var import_react41 = require("react");
 var NOW = Date.parse("2026-10-18T12:00:00.000Z");
 var DATE_ROWS = [
   ["formatDateTime", formatDateTime("2026-10-18T09:30:05.000Z", { seconds: true })],
@@ -5326,28 +6719,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react35.createElement)(
+  return (0, import_react41.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react35.createElement)(
+    (0, import_react41.createElement)(
       "thead",
       null,
-      (0, import_react35.createElement)(
+      (0, import_react41.createElement)(
         "tr",
         null,
-        (0, import_react35.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react35.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react41.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react41.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react35.createElement)(
+    (0, import_react41.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react35.createElement)(
+        ([fn, out]) => (0, import_react41.createElement)(
           "tr",
           { key: fn },
-          (0, import_react35.createElement)("td", { style: td }, fn),
-          (0, import_react35.createElement)("td", { style: td }, out)
+          (0, import_react41.createElement)("td", { style: td }, fn),
+          (0, import_react41.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -5356,29 +6749,29 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react35.createElement)(Demo, { title: "date / time", hint: t2("dateHint") }, (0, import_react35.createElement)(FnTable, { rows: DATE_ROWS }));
+  return (0, import_react41.createElement)(Demo, { title: "date / time", hint: t2("dateHint") }, (0, import_react41.createElement)(FnTable, { rows: DATE_ROWS }));
 }
 function NumberPage() {
-  return (0, import_react35.createElement)(Demo, { title: "number / bytes", hint: t2("numberHint") }, (0, import_react35.createElement)(FnTable, { rows: NUMBER_ROWS }));
+  return (0, import_react41.createElement)(Demo, { title: "number / bytes", hint: t2("numberHint") }, (0, import_react41.createElement)(FnTable, { rows: NUMBER_ROWS }));
 }
 function TextPage() {
-  return (0, import_react35.createElement)(Placeholder, { descKey: "textDesc" });
+  return (0, import_react41.createElement)(Placeholder, { descKey: "textDesc" });
 }
 function HttpPage() {
-  return (0, import_react35.createElement)(Placeholder, { descKey: "httpDesc" });
+  return (0, import_react41.createElement)(Placeholder, { descKey: "httpDesc" });
 }
 function I18nPage() {
-  return (0, import_react35.createElement)(
+  return (0, import_react41.createElement)(
     "div",
     null,
-    (0, import_react35.createElement)(
+    (0, import_react41.createElement)(
       Demo,
       { title: "getLocale / setLocale", hint: t2("i18nDesc") },
-      (0, import_react35.createElement)(
+      (0, import_react41.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react35.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
-        (0, import_react35.createElement)("code", {
+        (0, import_react41.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
+        (0, import_react41.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -5390,58 +6783,58 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react35.createElement)(Placeholder, { descKey: "i18nDesc" })
+    (0, import_react41.createElement)(Placeholder, { descKey: "i18nDesc" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react36 = require("react");
+var import_react42 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react36.createElement)(
+  return (0, import_react42.createElement)(
     "div",
     null,
-    (0, import_react36.createElement)(Demo, { title: t2("secA11y") }, (0, import_react36.createElement)(Placeholder, { descKey: "a11yDesc" })),
-    (0, import_react36.createElement)(
+    (0, import_react42.createElement)(Demo, { title: t2("secA11y") }, (0, import_react42.createElement)(Placeholder, { descKey: "a11yDesc" })),
+    (0, import_react42.createElement)(
       Demo,
       { title: t2("secRoadmap"), hint: t2("roadmapHint") },
-      (0, import_react36.createElement)(
+      (0, import_react42.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react36.createElement)(
+          (key) => (0, import_react42.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react36.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react36.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
+            (0, import_react42.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react42.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
           )
         ),
-        (0, import_react36.createElement)(
+        (0, import_react42.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t2("roadmapLayout")
         )
       )
     ),
-    (0, import_react36.createElement)(
+    (0, import_react42.createElement)(
       Demo,
       { title: t2("secBuild"), hint: t2("buildDesc") },
-      (0, import_react36.createElement)(
+      (0, import_react42.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react36.createElement)(
+        (0, import_react42.createElement)(
           "tbody",
           null,
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1020-2258-bkps"]
+            [t2("buildStamp"), "1021-0011-8zkz"]
           ].map(
-            ([label, value]) => (0, import_react36.createElement)(
+            ([label, value]) => (0, import_react42.createElement)(
               "tr",
               { key: label },
-              (0, import_react36.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react36.createElement)("td", {
+              (0, import_react42.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react42.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -5467,28 +6860,28 @@ var SECTION_GROUPS = [
 ];
 var ALL_SECTIONS = [
   // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react37.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react37.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react37.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react37.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react37.createElement)(PickerPage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react37.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react37.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react37.createElement)(ChipPage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react37.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react37.createElement)(LayoutPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react37.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react37.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react37.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react37.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react37.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react37.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react37.createElement)(I18nPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react43.createElement)(QuickstartPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react43.createElement)(FoundationPage, null) },
+  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react43.createElement)(ButtonPage, null) },
+  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react43.createElement)(InputPage, null) },
+  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react43.createElement)(PickerPage, null) },
+  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react43.createElement)(TooltipPage, null) },
+  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react43.createElement)(CardPage, null) },
+  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react43.createElement)(ChipPage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react43.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react43.createElement)(LayoutPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react43.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react43.createElement)(SessionPage, null) },
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react43.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react43.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react43.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react43.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react43.createElement)(I18nPage, null) },
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react37.createElement)(ReferencePage, null) }
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react43.createElement)(ReferencePage, null) }
 ];
 function Demo(props) {
-  return (0, import_react37.createElement)(
+  return (0, import_react43.createElement)(
     "section",
     {
       style: {
@@ -5499,10 +6892,10 @@ function Demo(props) {
         background: "var(--dshpc-surface-1)"
       }
     },
-    (0, import_react37.createElement)("h3", { style: { margin: "0 0 2px", fontSize: "15px" } }, props.title),
-    props.hint === void 0 ? null : (0, import_react37.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
-    (0, import_react37.createElement)("div", { style: { marginBottom: props.code === void 0 ? 0 : "12px" } }, props.children ?? null),
-    props.code === void 0 ? null : (0, import_react37.createElement)(
+    (0, import_react43.createElement)("h3", { style: { margin: "0 0 2px", fontSize: "15px" } }, props.title),
+    props.hint === void 0 ? null : (0, import_react43.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
+    (0, import_react43.createElement)("div", { style: { marginBottom: props.code === void 0 ? 0 : "12px" } }, props.children ?? null),
+    props.code === void 0 ? null : (0, import_react43.createElement)(
       "pre",
       {
         style: {
@@ -5521,7 +6914,7 @@ function Demo(props) {
   );
 }
 function Placeholder(props) {
-  return (0, import_react37.createElement)(
+  return (0, import_react43.createElement)(
     "div",
     {
       style: {
@@ -5533,7 +6926,7 @@ function Placeholder(props) {
         color: "var(--dshpc-fg-3)"
       }
     },
-    (0, import_react37.createElement)("div", {
+    (0, import_react43.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -5543,26 +6936,29 @@ function Placeholder(props) {
         marginBottom: "10px"
       }
     }, t2("phTodo")),
-    (0, import_react37.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
+    (0, import_react43.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react37.createElement)(
+  return (0, import_react43.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react37.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react37.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
+    (0, import_react43.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react43.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react37.createElement)(
+  return (0, import_react43.createElement)(
     "div",
     null,
-    (0, import_react37.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
+    (0, import_react43.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
     current3.render()
   );
 }
+
+// packages/demo/src/demo-css.generated.ts
+var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n.dshpc-doc-note {\n  display: flex;\n  gap: 8px;\n  padding: 10px 12px;\n  margin: 0 0 16px;\n  border: 1px solid var(--dshpc-border);\n  border-left: 3px solid var(--dshpc-business);\n  border-radius: var(--dshpc-radius-sm);\n  background: var(--dshpc-business-soft);\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u8FB9\u6846\u76D2\uFF1A\u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3 */\n.dshpc-doc-block {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  padding: 12px 14px;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n.dshpc-doc-example {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  padding: 14px;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n}\n\n/* \u4EE3\u7801\u53EA\u5728\u5185\u5C42\u6EDA\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70 */\n.dshpc-doc-example__scroll {\n  max-height: 320px;\n  overflow: auto;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n";
 
 // packages/demo/src/paths.ts
 var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
@@ -5571,8 +6967,8 @@ var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 var PANEL_ID = "dsh-plugin-core-demo";
 var localeRuntime;
 function useLocaleTick() {
-  const [, setTick] = (0, import_react38.useState)(0);
-  (0, import_react38.useEffect)(() => {
+  const [, setTick] = (0, import_react44.useState)(0);
+  (0, import_react44.useEffect)(() => {
     const rt = localeRuntime;
     if (rt === void 0) return;
     return rt.subscribe(() => {
@@ -5582,11 +6978,11 @@ function useLocaleTick() {
 }
 function DemoPage() {
   useLocaleTick();
-  const [active, setActive] = (0, import_react38.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive] = (0, import_react44.useState)(ALL_SECTIONS[0].id);
   const nav = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav.push(
-      (0, import_react38.createElement)(
+      (0, import_react44.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -5604,7 +7000,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav.push(
-        (0, import_react38.createElement)(
+        (0, import_react44.createElement)(
           "button",
           {
             key: section.id,
@@ -5631,7 +7027,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react38.createElement)(
+  return (0, import_react44.createElement)(
     "div",
     {
       style: {
@@ -5644,7 +7040,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react38.createElement)(
+    (0, import_react44.createElement)(
       "aside",
       {
         style: {
@@ -5660,18 +7056,18 @@ function DemoPage() {
       },
       nav
     ),
-    (0, import_react38.createElement)(
+    (0, import_react44.createElement)(
       "main",
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
-      (0, import_react38.createElement)(Sections, { active })
+      (0, import_react44.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react38.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react44.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function OpenPreviewCard(props) {
-  return (0, import_react38.createElement)(
+  return (0, import_react44.createElement)(
     "div",
     {
       role: "button",
@@ -5689,21 +7085,21 @@ function OpenPreviewCard(props) {
         background: "var(--dshpc-surface-1)"
       }
     },
-    (0, import_react38.createElement)(
+    (0, import_react44.createElement)(
       "div",
       null,
-      (0, import_react38.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
-      (0, import_react38.createElement)(
+      (0, import_react44.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
+      (0, import_react44.createElement)(
         "div",
         { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
         t2("pluginCardDesc")
       )
     ),
-    (0, import_react38.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
+    (0, import_react44.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
   );
 }
 function PanelIcon() {
-  return (0, import_react38.createElement)(
+  return (0, import_react44.createElement)(
     "span",
     { style: { display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "13px" } },
     "\u25E7"
@@ -5713,8 +7109,9 @@ function apply(ctx) {
   const kit = createStyleKit({ id: "dsh-plugin-core-plugin" });
   setStyleKit(kit);
   ensureControls(kit);
+  kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react38.createElement)(import_dsh_client_ui_primitives3.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react44.createElement)(import_dsh_client_ui_primitives4.Tooltip, props));
   let jump = () => {
   };
   ctx.inject(["layout"], (sub) => {
@@ -5762,7 +7159,7 @@ function apply(ctx) {
             jump(PANEL_ID);
           } })
         },
-        (props) => (0, import_react38.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
+        (props) => (0, import_react44.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
           jump(PANEL_ID);
         }) })
       );

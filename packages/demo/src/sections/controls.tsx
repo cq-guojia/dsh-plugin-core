@@ -49,6 +49,7 @@ import {
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import { Demo, Placeholder } from './index.js'
+import { ApiTable, CodeOnly, Example, Note, type ApiRow } from '../doc.js'
 import { demoDock } from '../dock.js'
 import { t, type DemoMessageKey } from '../i18n.js'
 
@@ -133,14 +134,79 @@ function Labeled(props: { label: string; children?: ReturnType<typeof h>[] | Ret
 
 // ── 按钮 ────────────────────────────────────────────────────────────────
 
+// 示例右侧的代码：与左边渲染的一点不差，复制出去就能跑（改样式时必须两边一起改）。
+const CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>保存</Button>
+<Button variant="outline">取消</Button>
+<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>删除</Button>`
+
+const CODE_BTN_VARIANT = `<Button variant="primary">primary</Button>
+<Button variant="secondary">secondary</Button>
+<Button variant="outline">outline</Button>
+<Button variant="ghost">ghost</Button>
+<Button variant="danger">danger</Button>
+<Button variant="success">success</Button>
+<Button variant="warning">warning</Button>
+<Button variant="info">info</Button>
+<Button variant="danger-outline">danger-outline</Button>
+<Button variant="link">link</Button>`
+
+const CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
+<Button size="md" variant="outline">md</Button>
+<Button size="lg" variant="outline">lg</Button>
+
+// icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种都能进
+<Button variant="primary" icon={<IconSendOutlineRegular size={16} />}>官方图标</Button>
+<Button variant="outline" icon={<StarSvg />}>自绘 SVG</Button>
+<Button variant="ghost" icon="+">一个字符</Button>
+
+// iconRight 后置；block 撑满父宽（有前置图标时文字仍在视觉中心）
+<Button variant="outline" iconRight={<IconChevronDownOutlineRegular size={16} />}>更多</Button>
+<Button variant="primary" block icon={<IconCheckOutlineRegular size={16} />}>撑满父宽</Button>
+
+// 纯图标钮：label 是必填的无障碍名（同时作 title）
+<IconButton icon={<IconPlusOutlineRegular size={16} />} label="plus" />`
+
+const CODE_BTN_STATE = `<Button variant="primary">默认</Button>
+<Button variant="primary" disabled>禁用</Button>
+<Button variant="danger" disabled icon={<IconCloseOutlineRegular size={16} />}>禁用</Button>
+<Button variant="outline" loading>加载中</Button>
+<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>提交中</Button>`
+
+const CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
+<Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`
+
+const CODE_BTN_USAGE = `pnpm add dsh-plugin-core
+
+import { Button, IconButton } from 'dsh-plugin-core/ui'
+
+<Button variant="primary" onClick={save}>保存</Button>
+<Button variant="danger" size="sm" onClick={remove}>删除</Button>
+
+// 样式不用另配：控件自己 ensureControls()，token 跟随宿主明暗主题`
+
+/** Button 的对外参数（与 src/ui/Button.ts 的 ButtonProps 逐条对齐）。 */
+const BUTTON_API: readonly ApiRow[] = [
+  { name: 'variant', type: 'ButtonVariant', def: "'outline'", descKey: 'apiVariant' },
+  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: 'apiSize' },
+  { name: 'icon', type: 'ReactNode', def: '—', descKey: 'apiIcon' },
+  { name: 'iconRight', type: 'ReactNode', def: '—', descKey: 'apiIconRight' },
+  { name: 'color', type: 'string', def: '—', descKey: 'apiColor' },
+  { name: 'loading', type: 'boolean', def: 'false', descKey: 'apiLoading' },
+  { name: 'block', type: 'boolean', def: 'false', descKey: 'apiBlock' },
+  { name: 'disabled', type: 'boolean', def: 'false', descKey: 'apiDisabled' },
+  { name: 'children', type: 'ReactNode', def: '—', descKey: 'apiChildren' },
+]
+
 export function ButtonPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(Note, { text: t('btnNote') }),
+
     // 文案与语言
     h(
-      Demo,
-      { title: t('btnTextTitle'), hint: t('btnTextHint') },
+      Example,
+      { title: t('btnTextTitle'), hint: t('btnTextHint'), code: CODE_BTN_TEXT },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
         h(Labeled, { label: 'locale' },
           h(Button, { variant: 'primary', icon: iconOf('check', ICON_SIZE.lg) }, t('btnLabelSave')),
@@ -162,8 +228,8 @@ export function ButtonPage(): ReturnType<typeof h> {
 
     // 10 档外观
     h(
-      Demo,
-      { title: t('btnVariantTitle'), hint: t('btnVariantHint') },
+      Example,
+      { title: t('btnVariantTitle'), hint: t('btnVariantHint'), code: CODE_BTN_VARIANT },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
         h(Row, null, VARIANTS.map((item) =>
           h(Button, { key: item.value, variant: item.value, icon: iconOf(item.icon, ICON_SIZE.lg) }, item.value))),
@@ -173,8 +239,8 @@ export function ButtonPage(): ReturnType<typeof h> {
 
     // 尺寸 / 图标位置 / block
     h(
-      Demo,
-      { title: t('btnSizeTitle'), hint: t('btnSizeHint') },
+      Example,
+      { title: t('btnSizeTitle'), hint: t('btnSizeHint'), code: CODE_BTN_SIZE },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
         h(Labeled, { label: 'size' },
           (['sm', 'md', 'lg'] as const).map((size) =>
@@ -200,8 +266,8 @@ export function ButtonPage(): ReturnType<typeof h> {
 
     // 状态
     h(
-      Demo,
-      { title: t('btnStateTitle'), hint: t('btnStateHint') },
+      Example,
+      { title: t('btnStateTitle'), hint: t('btnStateHint'), code: CODE_BTN_STATE },
       h(Row, null,
         h(Button, { variant: 'primary' }, '默认'),
         h(Button, { variant: 'primary', disabled: true }, '禁用'),
@@ -212,14 +278,17 @@ export function ButtonPage(): ReturnType<typeof h> {
 
     // 自定义颜色
     h(
-      Demo,
-      { title: t('btnColorTitle'), hint: t('btnColorHint') },
+      Example,
+      { title: t('btnColorTitle'), hint: t('btnColorHint'), code: CODE_BTN_COLOR },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
         h(Row, null, CUSTOM_COLORS.map((color) =>
           h(Button, { key: color, variant: 'primary', color, icon: iconOf('sparkle', ICON_SIZE.lg) }, color))),
         h(Row, null, CUSTOM_COLORS.map((color) =>
           h(Button, { key: color, variant: 'outline', color }, color)))),
     ),
+
+    h(CodeOnly, { labelKey: 'docUsage', code: CODE_BTN_USAGE }),
+    h(ApiTable, { rows: BUTTON_API }),
   )
 }
 
@@ -765,6 +834,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [confirmResult, setConfirmResult] = useState('')
   const [largeOpen, setLargeOpen] = useState(false)
   const [largeOpenB, setLargeOpenB] = useState(false)
+  const [nativeText, setNativeText] = useState('')
   return h(
     'div',
     null,
@@ -801,7 +871,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
               h(
                 'div',
                 { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
-                h(Input, { placeholder: '自定义输入框（来自 core 控件）' }),
+                h(Input, { value: nativeText, onChange: setNativeText, placeholder: '自定义输入框（来自 core 控件）' }),
                 h(
                   'label',
                   { style: { display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px' } },

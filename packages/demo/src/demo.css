@@ -1,0 +1,116 @@
+/* demo 预览站的文档骨架样式（Bootstrap 文档站式：提示框 + 左示例右代码 + 用法 + API 表）。
+   真源在这里，由 scripts/gen-css.mjs 生成 demo-css.generated.ts，运行时经 createStyleKit 注入。
+   只消费 var(--dshpc-*)：明暗交给 token，本文件不写死任何颜色。 */
+
+.dshpc-doc-note {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  margin: 0 0 16px;
+  border: 1px solid var(--dshpc-border);
+  border-left: 3px solid var(--dshpc-business);
+  border-radius: var(--dshpc-radius-sm);
+  background: var(--dshpc-business-soft);
+  font-size: var(--dshpc-font-md);
+  line-height: var(--dshpc-line-md);
+}
+
+.dshpc-doc-note__mark {
+  flex: none;
+  font-weight: 600;
+  color: var(--dshpc-business);
+}
+
+/* 边框盒：用法块 / API 表的共同外壳 */
+.dshpc-doc-block {
+  border: 1px solid var(--dshpc-border-faint);
+  border-radius: var(--dshpc-radius-md);
+  background: var(--dshpc-surface-1);
+  padding: 12px 14px;
+  margin: 0 0 16px;
+}
+
+.dshpc-doc-label {
+  font-size: var(--dshpc-font-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dshpc-fg-4);
+  margin-bottom: 8px;
+}
+
+.dshpc-doc-example {
+  border: 1px solid var(--dshpc-border-faint);
+  border-radius: var(--dshpc-radius-md);
+  background: var(--dshpc-surface-1);
+  overflow: hidden;
+  margin: 0 0 16px;
+}
+
+.dshpc-doc-example__head {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--dshpc-border-faint);
+}
+
+.dshpc-doc-example__title {
+  font-size: var(--dshpc-font-lg);
+  font-weight: 600;
+  color: var(--dshpc-fg);
+}
+
+.dshpc-doc-example__hint {
+  margin-top: 2px;
+  font-size: var(--dshpc-font-sm);
+  line-height: var(--dshpc-line-sm);
+  color: var(--dshpc-fg-3);
+}
+
+/* 两栏；容器窄到放不下两列 300px 时自动塌成一列（代码落到示例下方）。 */
+.dshpc-doc-example__body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.dshpc-doc-example__demo {
+  min-width: 0;
+  padding: 14px;
+}
+
+.dshpc-doc-example__code {
+  min-width: 0;
+  padding: 14px;
+  border-left: 1px solid var(--dshpc-border-faint);
+  background: var(--dshpc-code-surface);
+}
+
+/* 代码只在内层滚：表头「代码」两个字不被滚走 */
+.dshpc-doc-example__scroll {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.dshpc-doc-api {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--dshpc-font-md);
+}
+
+.dshpc-doc-api th,
+.dshpc-doc-api td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--dshpc-border-faint);
+  vertical-align: top;
+}
+
+.dshpc-doc-api th {
+  font-weight: 600;
+  color: var(--dshpc-fg-3);
+  white-space: nowrap;
+}
+
+.dshpc-doc-api td:first-child {
+  font-family: var(--dshpc-font-mono);
+  white-space: nowrap;
+  color: var(--dshpc-fg);
+}

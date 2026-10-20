@@ -42,6 +42,8 @@ const MAP = [
   ['src/ui/panel-dock.css', 'src/ui/panel-dock-css.generated.ts', 'PANEL_DOCK_CSS'],
   ['src/explorer/explorer.css', 'src/explorer/explorer-css.generated.ts', 'EXPLORER_CSS'],
   ['src/session/session.css', 'src/session/session-css.generated.ts', 'SESSION_CSS'],
+  // demo 预览站的文档骨架（packages/demo）：与库同源同闸，只是不随库发布。
+  ['packages/demo/src/demo.css', 'packages/demo/src/demo-css.generated.ts', 'DEMO_CSS'],
 ]
 
 /** 真源里不该出现的字符：它们在 CSS 里要么非法、要么是 2026-10-19 那次事故的成因。 */

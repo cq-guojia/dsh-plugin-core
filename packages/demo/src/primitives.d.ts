@@ -37,6 +37,38 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
     className?: string | undefined
   }>
 
+  /** 官方弹窗（声明与 src/types/primitives.d.ts 同源同口径，版本钉死）。 */
+  export function Modal(props: {
+    open: boolean
+    onClose: () => void
+    title: string
+    description?: string
+    children?: import('react').ReactNode
+    footer?: import('react').ReactNode
+    className?: string
+    contentClassName?: string
+    shortcutModal?: string
+    backdropBlur?: boolean
+  } & (
+    | { headless: true; closeLabel?: never }
+    | { headless?: false; closeLabel: string }
+  )): import('react').ReactPortal | null
+
+  /** 官方 Shiki 代码块：本仓用它在示例右侧渲染可复制的高亮代码（demo 页唯一高亮实现，不自绘）。 */
+  export const CodeBlock: ComponentType<{
+    code: string
+    lang?: string
+    streaming?: boolean
+    lineNumbers?: boolean
+    /** 表头（语言标签 + 复制按钮）；示例块要复制按钮 ⇒ 传 true。 */
+    showHeader?: boolean
+    copyLabel?: string
+    copiedLabel?: string
+    toolbarLabels?: Record<string, string>
+    wrap?: boolean
+    className?: string
+  }>
+
   /** 官方气泡提示：label + side；children 为唯一锚点元素（须能挂 ref 的真实 DOM）。 */
   export const Tooltip: ComponentType<{
     label: string
