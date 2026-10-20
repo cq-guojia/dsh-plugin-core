@@ -107,7 +107,8 @@ hover / active 走 token 派生色（**不用 opacity**），幅度见 `docs/des
 
 | 参数 | 说明 |
 |---|---|
-| `value` / `defaultValue` / `onChange` | 选中值为 **`workspaceId`**（不是 title） |
+| `value` / `defaultValue` / `onChange` | 选中值为 **`workspaceId`**（不是 title）；`''` = 「所有工作区」（不筛） |
+| `allowDefault` / `defaultLabel` | 「所有工作区」默认项：默认提供、置顶、只在单选出现；选中发 `''`；`false` 关掉，文案可改 |
 | `mode` `max` | 单选 / 多选 / 上限（到上限已选项仍可反选） |
 | `clearable` `searchable` `disabled` `size` `placement` `className` `hint` `translate` | 同 `Picker` 同名参数 |
 | `placeholder` | 未选时的文字（默认「工作区」；想叫「选择工作区」就传它） |

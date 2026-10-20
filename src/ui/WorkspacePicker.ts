@@ -15,6 +15,13 @@ export interface WorkspacePickerProps {
   mode?: 'single' | 'multiple'
   max?: number
   onChange?: (value: string | string[]) => void
+  /**
+   * 是否提供「所有工作区」默认项（**默认提供**；只在单选形态下出现）：
+   * 选中即发 `''` —— 表示不筛，是否当「全部」由消费方自己处理。
+   */
+  allowDefault?: boolean
+  /** 「所有工作区」的文案（默认取内置字典）。 */
+  defaultLabel?: string
   /** 允许「不选」。 */
   clearable?: boolean
   /** 下拉内搜索框（默认关；要就传 true）。 */
@@ -37,8 +44,14 @@ export function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof 
   ensureControls()
   const tt = props.translate ?? t
   const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
+  const options = items.map((w) => ({ value: w.workspaceId, label: w.title }))
+  // 「所有工作区」放最上面（单选才有意义）；选中发 '' —— 空串表示不筛
+  const allOption =
+    props.allowDefault !== false && props.mode !== 'multiple'
+      ? { value: '', label: props.defaultLabel ?? tt('workspaceAll') }
+      : undefined
   return h(Picker, {
-    options: items.map((w) => ({ value: w.workspaceId, label: w.title })),
+    options: allOption === undefined ? options : [allOption, ...options],
     value: props.value,
     defaultValue: props.defaultValue,
     mode: props.mode,

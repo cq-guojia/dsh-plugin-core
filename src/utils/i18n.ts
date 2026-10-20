@@ -46,6 +46,7 @@ export type UtilMessageKey =
   | 'modelProvider'
   | 'modelModel'
   | 'modelDefault'
+  | 'workspaceAll'
   | 'relNow'
   | 'relInJustNow'
   | 'relInMinutes'
@@ -102,6 +103,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     modelProvider: '供应商',
     modelModel: '模型',
     modelDefault: '默认模型',
+    workspaceAll: '所有工作区',
     relNow: '刚刚',
     relInJustNow: '即将',
     relInMinutes: '{n} 分钟后',
@@ -154,6 +156,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     modelProvider: 'Provider',
     modelModel: 'Model',
     modelDefault: 'Default model',
+    workspaceAll: 'All workspaces',
     relNow: 'just now',
     relInJustNow: 'soon',
     relInMinutes: 'in {n}m',

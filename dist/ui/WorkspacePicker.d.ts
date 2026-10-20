@@ -7,6 +7,13 @@ export interface WorkspacePickerProps {
     mode?: 'single' | 'multiple';
     max?: number;
     onChange?: (value: string | string[]) => void;
+    /**
+     * 是否提供「所有工作区」默认项（**默认提供**；只在单选形态下出现）：
+     * 选中即发 `''` —— 表示不筛，是否当「全部」由消费方自己处理。
+     */
+    allowDefault?: boolean;
+    /** 「所有工作区」的文案（默认取内置字典）。 */
+    defaultLabel?: string;
     /** 允许「不选」。 */
     clearable?: boolean;
     /** 下拉内搜索框（默认关；要就传 true）。 */

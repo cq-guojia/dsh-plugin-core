@@ -331,6 +331,7 @@ var DICT = {
     modelProvider: "\u4F9B\u5E94\u5546",
     modelModel: "\u6A21\u578B",
     modelDefault: "\u9ED8\u8BA4\u6A21\u578B",
+    workspaceAll: "\u6240\u6709\u5DE5\u4F5C\u533A",
     relNow: "\u521A\u521A",
     relInJustNow: "\u5373\u5C06",
     relInMinutes: "{n} \u5206\u949F\u540E",
@@ -383,6 +384,7 @@ var DICT = {
     modelProvider: "Provider",
     modelModel: "Model",
     modelDefault: "Default model",
+    workspaceAll: "All workspaces",
     relNow: "just now",
     relInJustNow: "soon",
     relInMinutes: "in {n}m",
@@ -795,8 +797,10 @@ function WorkspacePicker(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const items = (0, import_react5.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const options = items.map((w) => ({ value: w.workspaceId, label: w.title }));
+  const allOption = props.allowDefault !== false && props.mode !== "multiple" ? { value: "", label: props.defaultLabel ?? tt("workspaceAll") } : void 0;
   return (0, import_react5.createElement)(Picker, {
-    options: items.map((w) => ({ value: w.workspaceId, label: w.title })),
+    options: allOption === void 0 ? options : [allOption, ...options],
     value: props.value,
     defaultValue: props.defaultValue,
     mode: props.mode,
@@ -5480,7 +5484,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1020-1753-3fuz"]
+            [t2("buildStamp"), "1020-1801-cqf8"]
           ].map(
             ([label, value]) => (0, import_react37.createElement)(
               "tr",

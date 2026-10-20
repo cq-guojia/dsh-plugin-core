@@ -13,8 +13,13 @@ export function WorkspacePicker(props) {
     ensureControls();
     const tt = props.translate ?? t;
     const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot);
+    const options = items.map((w) => ({ value: w.workspaceId, label: w.title }));
+    // 「所有工作区」放最上面（单选才有意义）；选中发 '' —— 空串表示不筛
+    const allOption = props.allowDefault !== false && props.mode !== 'multiple'
+        ? { value: '', label: props.defaultLabel ?? tt('workspaceAll') }
+        : undefined;
     return h(Picker, {
-        options: items.map((w) => ({ value: w.workspaceId, label: w.title })),
+        options: allOption === undefined ? options : [allOption, ...options],
         value: props.value,
         defaultValue: props.defaultValue,
         mode: props.mode,
