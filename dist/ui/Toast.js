@@ -99,10 +99,12 @@ function notifyPalette(variant, theme) {
     switch (variant) {
         case 'success':
             return { bg: '#16a34a', fg: '#ffffff', glyph: '✓' };
+        // error / warning 用哑光降饱和档：实心卡上加透明度会透出底层内容、伤可读性，
+        // 故改为压暗一档的色相（设计师口径：冷静的严重度，而非警报荧光）。
         case 'error':
-            return { bg: '#dc2626', fg: '#ffffff', glyph: '✕' };
+            return { bg: '#c0392b', fg: '#ffffff', glyph: '✕' };
         case 'warning':
-            return { bg: '#f59e0b', fg: '#1f2937', glyph: '!' };
+            return { bg: '#e0922f', fg: '#1f2937', glyph: '!' };
         default:
             return theme === 'dark'
                 ? { bg: '#3f3f46', fg: '#fafafa', glyph: 'i' }
