@@ -1,6 +1,5 @@
 import { createElement as h } from 'react'
-import { Placeholder } from './index.js'
-import { Example, Note } from '../doc.js'
+import { Example, DocProse, DocApi } from '../doc.js'
 import { t } from '../i18n.js'
 
 const TOKENS: { label: string; cssVar: string }[] = [
@@ -20,12 +19,14 @@ const TOKENS: { label: string; cssVar: string }[] = [
 /**
  * 设计基础。
  * 原「设计基础」组的四条（Token 色板 / 暗色主题 / 样式注入 / 命名契约）并成一页。
+ * 文档体（prose / api）吃 docData['foundation']；token 色板 / 暗色开关 / 样式注入三块是 live 演示，保留。
  */
 export function FoundationPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('foundationNote') }),
+    h(DocProse, { id: 'foundation' }),
+    // Token 色板：颜色全部来自 design 的 token。
     h(
       Example,
       { title: t('demoTokenPalette'), hint: t('tokensHint') },
@@ -82,6 +83,7 @@ ensureControls()`,
       },
       h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px' } }, t('designInjectNote')),
     ),
-    h(Example, { title: t('secNaming') }, h(Placeholder, { descKey: 'namingDesc' })),
+    // 命名契约（原「命名与前缀契约」页）的 API 表 —— 直接吃 docData['foundation'] 的 api 段。
+    h(DocApi, { id: 'foundation' }),
   )
 }

@@ -67,10 +67,11 @@
   ],
   "scripts": {
     "gen:css": "node scripts/gen-css.mjs",
-    "build": "node scripts/gen-css.mjs && tsc -p tsconfig.json",
+    "build": "node scripts/gen-css.mjs && node scripts/gen-docs.mjs && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "pretest": "node scripts/gen-css.mjs --check && tsc -p tsconfig.json",
+    "pretest": "node scripts/gen-css.mjs --check && node scripts/gen-docs.mjs --check && tsc -p tsconfig.json",
     "test": "node --test test/*.test.mjs",
+    "prepublishOnly": "pnpm run build && pnpm test",
     "typecheck:docs": "tsc -p tsconfig.docs.json",
     "gen:docs": "node scripts/gen-docs.mjs",
     "build:demo": "node packages/demo/build.mjs"

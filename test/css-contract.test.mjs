@@ -185,7 +185,7 @@ test('src 下不得残留 MAP 之外的孤儿生成物', async () => {
     for (const entry of await readdir(new URL(dir, import.meta.url), { withFileTypes: true })) {
       const rel = `${dir}/${entry.name}`
       if (entry.isDirectory()) await walk(rel)
-      else if (entry.name.endsWith('.generated.ts')) found.push(rel.slice('../'.length))
+      else if (entry.name.endsWith('.generated.ts') && entry.name !== 'doc-data.generated.ts') found.push(rel.slice('../'.length))
     }
   }
   await walk('../src')

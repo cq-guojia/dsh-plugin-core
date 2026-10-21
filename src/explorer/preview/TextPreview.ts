@@ -6,8 +6,9 @@
 //  - read 分页累积，`!eof` 出「加载更多」；传了 maxBytes（HTML 源码态）则按字节截断、
 //    不出按钮、顶部出横幅。
 import { createElement as h, useCallback, useEffect, useRef, useState } from 'react'
-import { CodeBlock, MarkdownText, languageForPath } from '../../ui/official.js'
+import { MarkdownText } from '../../ui/official.js'
 import { ensureControls } from '../../ui/css.js'
+import { CodeViewer } from '../../ui/CodeViewer.js'
 import { Button } from '../../ui/Button.js'
 import { EmptyState } from '../../ui/EmptyState.js'
 import { t, type Translate } from '../../utils/i18n.js'
@@ -92,18 +93,17 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
   const rendered = props.markdown && !props.sourceView
   return h(
     'div',
-    { className: 'dshpc-fb__text' },
+    { className: 'dshpc-fb__text', style: { display: 'flex', flexDirection: 'column' } },
     truncated
       ? h('div', { className: 'dshpc-fb__banner' }, tt('previewTruncated', { n: formatBytes(props.maxBytes ?? 0) }))
       : null,
     rendered
       ? h(MarkdownText, { text, labels: markdownLabels() })
-      : h(CodeBlock, {
-          code: text,
-          lang: languageForPath(props.path),
-          lineNumbers: false,
-          wrap: true,
-        }),
+      : h(
+          'div',
+          { style: { flex: '1 1 auto', minHeight: 0, display: 'flex' } },
+          h(CodeViewer, { text, path: props.path, t: tt }),
+        ),
     nextOffset !== null && props.maxBytes === undefined
       ? h(
           'div',

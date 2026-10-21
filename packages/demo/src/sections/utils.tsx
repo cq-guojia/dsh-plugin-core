@@ -10,8 +10,7 @@ import {
   relativeFuture,
   relativePast,
 } from '../../../../dist/utils/index.js'
-import { Placeholder } from './index.js'
-import { Example, CodeOnly, ApiTable, Note, type ApiRow } from '../doc.js'
+import { Example, CodeOnly, DocProse, DocApi, DocContent } from '../doc.js'
 import { t } from '../i18n.js'
 
 const CODE_DATE = `// 日期时间格式化（全部走当前 locale）
@@ -37,29 +36,6 @@ import {
   formatDateTime, formatYmd, formatClock, formatDurationHms, formatRange,
   relativePast, relativeFuture, formatBytes, getLocale, setLocale, t,
 } from 'dsh-plugin-core/utils'`
-
-/** 日期时间格式化函数一览（与 src/utils/datetime.ts 导出逐条对齐）。 */
-const DATE_API: readonly ApiRow[] = [
-  { name: 'formatDateTime', type: '(iso, opts?) => string', def: '—', descKey: 'apiDateDateTime' },
-  { name: 'formatYmd', type: '(iso) => string', def: '—', descKey: 'apiDateYmd' },
-  { name: 'formatClock', type: '(iso) => string', def: '—', descKey: 'apiDateClock' },
-  { name: 'formatDurationHms', type: '(ms) => string', def: '—', descKey: 'apiDateDuration' },
-  { name: 'formatRange', type: '(from, to) => string', def: '—', descKey: 'apiDateRange' },
-  { name: 'relativePast', type: '(iso, now) => string', def: '—', descKey: 'apiDatePast' },
-  { name: 'relativeFuture', type: '(iso, now) => string', def: '—', descKey: 'apiDateFuture' },
-]
-
-/** 数字 / 体积格式化（与 src/utils/format.ts 导出对齐）。 */
-const NUMBER_API: readonly ApiRow[] = [
-  { name: 'formatBytes', type: '(bytes) => string', def: '—', descKey: 'apiNumberBytes' },
-]
-
-/** 多语言 API（与 src/utils/i18n.ts 导出对齐）。 */
-const I18N_API: readonly ApiRow[] = [
-  { name: 'getLocale', type: '() => string', def: '—', descKey: 'apiI18nGet' },
-  { name: 'setLocale', type: '(locale) => void', def: '—', descKey: 'apiI18nSet' },
-  { name: 't', type: '(key) => string', def: '—', descKey: 'apiI18nT' },
-]
 
 const NOW = Date.parse('2026-10-18T12:00:00.000Z')
 
@@ -108,10 +84,10 @@ export function DatePage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('utilsNote') }),
-    h(Example, { title: 'date / time', hint: t('dateHint'), code: CODE_DATE }, h(FnTable, { rows: DATE_ROWS })),
+    h(DocProse, { id: 'date' }),
+    h(Example, { title: 'date / time', code: CODE_DATE }, h(FnTable, { rows: DATE_ROWS })),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_UTILS_USAGE }),
-    h(ApiTable, { title: '日期时间格式化函数', rows: DATE_API }),
+    h(DocApi, { id: 'date' }),
   )
 }
 
@@ -119,19 +95,21 @@ export function NumberPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('utilsNote') }),
-    h(Example, { title: 'number / bytes', hint: t('numberHint'), code: CODE_NUMBER }, h(FnTable, { rows: NUMBER_ROWS })),
+    h(DocProse, { id: 'number' }),
+    h(Example, { title: 'number / bytes', code: CODE_NUMBER }, h(FnTable, { rows: NUMBER_ROWS })),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_UTILS_USAGE }),
-    h(ApiTable, { title: '数字 / 体积格式化函数', rows: NUMBER_API }),
+    h(DocApi, { id: 'number' }),
   )
 }
 
 export function TextPage(): ReturnType<typeof h> {
-  return h(Placeholder, { descKey: 'textDesc' })
+  // 字符串 / 路径：纯函数，无 live 演示，文档体（prose + api）全吃 docData['text']。
+  return h(DocContent, { id: 'text' })
 }
 
 export function HttpPage(): ReturnType<typeof h> {
-  return h(Placeholder, { descKey: 'httpDesc' })
+  // HTTP 取数：文档体（prose + api）全吃 docData['http']。
+  return h(DocContent, { id: 'http' })
 }
 
 /**
@@ -142,10 +120,10 @@ export function I18nPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('utilsNote') }),
+    h(DocProse, { id: 'i18n' }),
     h(
       Example,
-      { title: 'getLocale / setLocale', hint: t('i18nDesc'), code: CODE_I18N },
+      { title: 'getLocale / setLocale', code: CODE_I18N },
       h(
         'div',
         { style: { display: 'flex', alignItems: 'center', gap: '10px' } },
@@ -159,6 +137,6 @@ export function I18nPage(): ReturnType<typeof h> {
       ),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_UTILS_USAGE }),
-    h(ApiTable, { title: '多语言 API', rows: I18N_API }),
+    h(DocApi, { id: 'i18n' }),
   )
 }

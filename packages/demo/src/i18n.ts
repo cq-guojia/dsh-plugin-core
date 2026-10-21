@@ -183,113 +183,13 @@ export type DemoMessageKey =
   | 'pluginCardDesc'
   | 'pluginCardOpen'
   // 文档骨架（示例 / 代码 / 用法 / API 表）与按钮页的页级备注
-  | 'btnNote'
-  | 'inputNote'
-  | 'apiValue'
-  | 'apiOnChange'
-  | 'apiPlaceholder'
-  | 'apiHint'
-  | 'apiError'
-  | 'apiSize'
-  | 'apiMin'
-  | 'apiMax'
-  | 'apiSuffix'
-  | 'apiRows'
-  | 'apiItems'
-  | 'apiMultiple'
-  | 'apiBordered'
-  | 'apiLabel'
   // 选择器 / 提示 / 卡片 / 标签四页
-  | 'pickerNote'
-  | 'tooltipNote'
-  | 'cardNote'
-  | 'chipNote'
-  | 'apiOptions'
-  | 'apiGroups'
-  | 'apiMode'
-  | 'apiSearchable'
-  | 'apiClearable'
-  | 'apiSide'
-  | 'apiAlign'
-  | 'apiMaxWidth'
-  | 'apiDelayMs'
-  | 'apiPortal'
-  | 'apiAnchor'
-  | 'apiAccent'
-  | 'apiExpanded'
-  | 'apiOnToggle'
-  | 'apiAction'
-  | 'apiPanel'
-  | 'apiTone'
-  | 'apiToneModal'
-  | 'apiOnClick'
-  | 'apiText'
-  | 'apiRender'
   // 反馈页（弹窗 + 提示）
-  | 'feedbackNote'
-  | 'apiTitle'
-  | 'apiMessage'
-  | 'apiSeverity'
-  | 'apiConfirmText'
-  | 'apiCancelText'
-  | 'apiOnConfirm'
-  | 'apiOnCancel'
-  | 'apiHeaderActions'
-  | 'apiFooter'
-  | 'apiDescription'
-  | 'apiActions'
-  | 'apiPosition'
-  | 'apiOnDismiss'
-  | 'apiDurationMs'
   // 布局页（PanelDock）
-  | 'layoutNote'
-  | 'apiPanelId'
-  | 'apiPanelTitle'
-  | 'apiPanelIcon'
-  | 'apiPanelExtra'
-  | 'apiPanelHeader'
-  | 'apiPanelClosable'
-  | 'apiPanelCloseButton'
-  | 'apiPanelWidth'
-  | 'apiPanelMinWidth'
-  | 'apiPanelMaxWidth'
-  | 'apiMaxPanels'
-  | 'apiDefaultWidth'
-  | 'apiStorageKey'
-  | 'apiOnOpen'
-  | 'apiOnBeforeClose'
-  | 'apiOnClose'
-  | 'apiOnResize'
-  | 'apiOnLimitReached'
   // 区块页（explorer / session）
   | 'blocksNote'
-  | 'apiExplorerMount'
-  | 'apiExplorerFiles'
-  | 'apiExplorerSession'
-  | 'apiExplorerPath'
-  | 'apiExplorerRoot'
-  | 'apiExplorerWorkspaces'
-  | 'apiExplorerOnSelect'
-  | 'apiPickAnchor'
-  | 'apiPickFilter'
-  | 'apiSessionId'
-  | 'apiSessionSource'
-  | 'apiSessionVariant'
-  | 'apiSessionTitle'
-  | 'apiSessionCallbacks'
   // 工具页（utils）
   | 'utilsNote'
-  | 'apiDateDateTime'
-  | 'apiDateYmd'
-  | 'apiDateClock'
-  | 'apiDateDuration'
-  | 'apiDateRange'
-  | 'apiDatePast'
-  | 'apiDateFuture'
-  | 'apiNumberBytes'
-  | 'apiI18nGet'
-  | 'apiI18nSet'
-  | 'apiI18nT'
   // 起始/基础/参考页
   | 'startNote'
   | 'foundationNote'
@@ -305,14 +205,6 @@ export type DemoMessageKey =
   | 'docApiDesc'
   | 'docCopy'
   | 'docCopied'
-  | 'apiVariant'
-  | 'apiIcon'
-  | 'apiIconRight'
-  | 'apiColor'
-  | 'apiLoading'
-  | 'apiBlock'
-  | 'apiDisabled'
-  | 'apiChildren'
 
 export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   zh: {
@@ -409,118 +301,19 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnStateHint: 'disabled 半透明不可点；loading 前置同色小圈并自动禁用',
     btnColorTitle: '自定义颜色',
     btnColorHint: 'color 传任意 CSS 色值：实心档作底色、线框与文字档作主色；hover / 按下自动按该色混出',
-    btnNote: '官方 primitives 没有 danger / lg 这两条轴，Button 由本库自绘；外观全走 --dshpc-* token，跟着宿主明暗主题走。',
-    inputNote: '录入家族三档高度吃 --dshpc-control-h-*；hint 参数由组件自己挂 FieldHint，不用手动拼。「启用」是开关语义：用官方 Switch（label 只是无障碍名，可见文案自己画在旁边），不用勾选框。',
 
-    apiValue: '当前值（受控）',
-    apiOnChange: '值变化回调',
-    apiPlaceholder: '占位文案',
-    apiHint: '框后挂问号提示（FieldHint 本体）',
-    apiError: '描红（校验失败态）',
-    apiMin: '下限，超出自动收回',
-    apiMax: '上限，超出自动收回',
-    apiSuffix: '数字后缀（如「次」）',
-    apiRows: '初始行数',
-    apiItems: '分段项：{ value, label, count?, badge?, disabled? }',
-    apiMultiple: '多选：value 与 onChange 都是数组',
-    apiBordered: '选中段变描边块',
-    apiLabel: 'aria 组名（无障碍，不可见）',
 
-    pickerNote: '选择器一个组件覆盖单选、分组、多选三种形态；选项 icon 收 ReactNode，hint 挂在触发器后面。ModelPicker / WorkspacePicker 是它的业务封装：数据由宿主给（connectHost 注入），不能凭空造。',
-    tooltipNote: 'Tooltip 是官方 primitive：label + side / align；children 必须是能挂 ref 的真实 DOM（函数组件挂不上 ⇒ 悬停无气泡，兄弟仓踩过）。HoverCard 是另一种悬停富卡片，compact 变体背景恒深，内容色要调用方自己给。',
-    cardNote: 'Card 与 StripCard 共用同一份 props，差的是外观：Card 是 surface 底 + 1px 边框 + 圆角；StripCard 是同色系浅底 + 方角 + 左缘 4px 通高色条 —— 备注框、执行记录条都是它。',
-    chipNote: 'Chip 是行内标签：tone 五档 + size 三档；传 onClick 才渲染成 button。中性 # 标签与语言无关，长文字宽度跟着文字走。',
 
-    apiOptions: '扁平选项：[{ value, label, icon?, disabled? }]',
-    apiGroups: '分组选项：[{ value, label, options }]（与 options 二选一）',
-    apiMode: "'single' | 'multiple'",
-    apiSearchable: '触发器内带搜索框',
-    apiClearable: '已选后可一键清除',
-    apiSide: "气泡方位：'top' | 'bottom' | 'right'",
-    apiAlign: "对齐：'center' | 'end'",
-    apiMaxWidth: '气泡最大宽度（像素）',
-    apiDelayMs: '悬停多久出气泡（毫秒）',
-    apiPortal: '挂到 document.body，避开祖先溢出裁剪',
-    apiAnchor: '锚点子元素：必须是能挂 ref 的真实 DOM',
-    apiAccent: '色条档位 business / success / warning / danger / neutral，或任意 CSS 色值',
-    apiExpanded: '展开态：决定箭头朝向与 panel 显隐',
-    apiOnToggle: '传了才显示折叠箭头；展开状态由调用方管',
-    apiAction: '右上角操作区（按钮 / 文字都行，自动垂直居中）',
-    apiPanel: '展开内容（expanded 为 true 时显示）',
-    apiTone: '语义色档：neutral / business / success / warning / danger',
-    apiToneModal: "语义档：'primary' | 'danger' | 'warning'（确认框专用，与 Chip 的五档 tone 不同）",
-    apiOnClick: '传了才渲染成 button',
-    apiText: '文字',
-    apiRender: '走时渲染函数：参数是当前毫秒数，返回任意 ReactNode',
 
-    feedbackNote: '弹窗分三层，按需要选：宿主官方 Modal（遮罩/头部/关闭叉全归宿主管，命令式加 skin:"host"）→ 我们的标准小框 AlertModal / ConfirmModal（单/双按钮，名字带 Modal 后缀，不覆盖宿主原生）→ 我们的内容弹窗 Modal（size md/lg，承载任意内容）。命令式一律 Promise（await confirmModal(...) 拿 true/false），不用回调式。提示三种：showToast 是 Sonner 原味（对比用）、showHostToast 是官方 Toast、notify 是项目内推荐（统一卡片 + 我们自己的按钮）。',
 
-    apiTitle: '标题：字符串或 ReactNode（自定义排法时传节点）',
-    apiMessage: '正文说明文字',
-    apiSeverity: "语义档：'info' | 'success' | 'warning' | 'error'",
-    apiConfirmText: '确认按钮文案',
-    apiCancelText: '取消按钮文案',
-    apiOnConfirm: '确认回调（命令式为 Promise resolve(true)）',
-    apiOnCancel: '取消回调（命令式为 Promise resolve(false)）',
-    apiHeaderActions: '右上角操作区',
-    apiFooter: '底部按钮区；不传则没有 footer',
-    apiDescription: '标题下方的次要说明',
-    apiActions: '右侧动作按钮（1–2 个，用我们自己的 Button 样式）',
-    apiPosition: "出现位置：'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
-    apiOnDismiss: '提示消失（自动或手动关闭）后触发',
-    apiDurationMs: '停留时长（毫秒），默认 2600',
 
-    layoutNote: 'PanelDock 是**布局成员，不是浮层**：它占宽度、把主区挤窄，因此必须由调用方放进自己的 flex 根容器里（自挂 document.body 只能遮盖、挤不窄）。分工：结构写在调用点（PanelDock 的 children 里放 DockPanel）、显隐归状态（dock.open(id) 只传 id 不传内容）、头部可控（title / icon / extra 三件套，或 header 整块替换）。本页右侧那一份就是真的，点上面的按钮试。',
 
-    apiPanelId: '组名（寻址键）；同名唯一',
-    apiPanelTitle: '标题；header 传了非 undefined 的值时它只用于无障碍名',
-    apiPanelIcon: '标题前的图标位（可多个）',
-    apiPanelExtra: '标题右侧的任意内容（按钮、标签、下拉都行）',
-    apiPanelHeader: '整块替换头部：不传 = 内置头；null = 不要头部；其他 = 你的头部（库不加内边距/边框/背景）',
-    apiPanelClosable: '是否显示关闭钮',
-    apiPanelCloseButton: "关闭钮位置：'auto' | 'header' | 'floating' | 'none'",
-    apiPanelWidth: '首次打开时的宽度（px）',
-    apiPanelMinWidth: '可拖动的宽度下限',
-    apiPanelMaxWidth: '可拖动的宽度上限；不传 = 只受视口与主区保底约束',
-    apiMaxPanels: '同时存在的栏数上限',
-    apiDefaultWidth: '新栏默认宽度',
-    apiStorageKey: '宽度记忆前缀；传 false 关闭记忆',
-    apiOnOpen: '新开一栏后触发（重复打开已存在的不触发）',
-    apiOnBeforeClose: '关闭之前触发；返回 false 可取消（未保存内容拦截就靠它）',
-    apiOnClose: '已经关掉之后触发',
-    apiOnResize: '拖宽松手后触发',
-    apiOnLimitReached: '到上限被拒时触发（库不弹提示、不抛异常）',
 
     blocksNote: '工作区浏览两块演示：① Explorer——右侧停靠预览（openFilePreview，占宽度、把主区挤窄）与锚定弹窗选文件（pickWorkspaceFile，Promise 返回工作区相对路径）。② Session——会话预览（SessionPreview，variant modal/inline）。本页不用任何 mock：样例文件是仓库真文件，取数走宿主 workspaceFiles，探不到就如实说「没找到」。',
 
-    apiExplorerMount: '分栏挂载点：整页 flex 行，dock 成为它的最后一个子项（主区被真正挤窄）。自挂 body 只能遮盖、挤不窄',
-    apiExplorerFiles: '宿主会话作用域的工作区文件服务（WorkspaceFilesFace）',
-    apiExplorerSession: '会话 id；workspaceFiles 是会话作用域，必须先落到一个真会话',
-    apiExplorerPath: '要预览的文件路径（工作区相对）；空串 = 打开根目录',
-    apiExplorerRoot: '根目录显示名（锚点/选层下拉用）',
-    apiExplorerWorkspaces: '工作区清单（标题数组），用于选层下拉',
-    apiExplorerOnSelect: '在选层下拉里换工作区时触发，回调里再 open 一次即可换会话重开',
-    apiPickAnchor: '触发元素（HTMLElement），弹窗据此定位；不自己挂 dock',
-    apiPickFilter: '过滤条件（exts 扩展名白名单 / dirs 是否含目录）',
-    apiSessionId: '会话 id',
-    apiSessionSource: '会话数据源（SessionSource）；真实走宿主，demo 用 mock',
-    apiSessionVariant: "渲染形态：'modal'（弹窗）｜'inline'（内联块）",
-    apiSessionTitle: '弹窗标题（variant=modal 时）',
-    apiSessionCallbacks: 'onClose：关闭；onOpenFile：点开文件时触发',
 
     utilsNote: 'utils 组是纯函数工具：日期时间格式化、数字/体积格式化、多语言。全部走当前 locale（由宿主驱动，切宿主语言即变）。',
 
-    apiDateDateTime: 'ISO 字符串 → 本地日期时间；opts.seconds 控制是否带秒',
-    apiDateYmd: 'ISO → 年月日',
-    apiDateClock: 'ISO → 时分秒',
-    apiDateDuration: '毫秒 → 时:分:秒',
-    apiDateRange: '两个 ISO → 区间文本（起 – 止）',
-    apiDatePast: '(iso, now) → 「N 分钟/小时/天前」',
-    apiDateFuture: '(iso, now) → 「N 分钟/小时后」',
-    apiNumberBytes: '(bytes) → 人类可读体积（B / KB / MB / GB …）',
-    apiI18nGet: '() => 当前 locale 字符串（由宿主驱动）',
-    apiI18nSet: '(locale) => void：切语言（宿主覆盖时以此为准）',
-    apiI18nT: '(key) => 当前语言的文案',
 
     startNote: '快速开始：原「概览 / 安装与初始化 / 写一个插件」三条并成一页，每块仍是独立卡片。先看一眼能从本包拿到什么，再照安装与样式注入两段把环境搭起来。',
     foundationNote: '设计基础：Token 色板（全部消费 --dshpc-* 变量，明暗交给 token）、暗色主题判据（渲染时读 body[data-ds-dark-theme]）、样式注入（createStyleKit + setStyleKit，每个插件用固定 id）、命名契约（dshpc- 前缀）。',
@@ -652,15 +445,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docCopy: '复制',
     docCopied: '已复制',
 
-    apiVariant: '外观十档：primary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link',
-    apiSize: '尺寸三档：sm 24 / md 28 / lg 32（高度档；有边无边同高）',
-    apiIcon: '前置图标：官方图标组件、自绘 SVG、一个字符都行（收的是 ReactNode）',
-    apiIconRight: '后置图标（展开箭头、外链等）',
-    apiColor: '自定义主色：实心档作底色，描边与文字档作字色和描边色',
-    apiLoading: '转圈并自动禁用点击',
-    apiBlock: '撑满父宽；有前置图标时文字仍在视觉中心',
-    apiDisabled: '透传原生 disabled（禁用）',
-    apiChildren: '按钮文案 / 内容',
 
     pluginTitle: '组件预览',
     pluginCardDesc: '打开 dsh-plugin-core 的控件与业务组件展示页',
@@ -760,118 +544,19 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnStateHint: 'disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself',
     btnColorTitle: 'Custom colors',
     btnColorHint: 'Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it',
-    btnNote: 'The official primitives have no danger / lg axis, so Button is drawn in this library; it consumes --dshpc-* tokens only and follows the host light/dark theme.',
-    inputNote: 'The field family takes its three heights from --dshpc-control-h-*; hint is attached by the component itself (FieldHint), no manual wiring. Enabling is switch semantics: use the official Switch (label is the accessible name only; draw the visible text yourself) — not a checkbox.',
 
-    apiValue: 'Current value (controlled)',
-    apiOnChange: 'Change callback',
-    apiPlaceholder: 'Placeholder',
-    apiHint: 'Attaches a question-mark hint (FieldHint) after the field',
-    apiError: 'Marks the field red (validation failed)',
-    apiMin: 'Lower bound; out-of-range values are clamped',
-    apiMax: 'Upper bound; out-of-range values are clamped',
-    apiSuffix: 'Numeric suffix (e.g. "times")',
-    apiRows: 'Initial rows',
-    apiItems: 'Segments: { value, label, count?, badge?, disabled? }',
-    apiMultiple: 'Multi-select: value and onChange are both arrays',
-    apiBordered: 'Makes the selected segment a bordered block',
-    apiLabel: 'Accessible group name (not visible)',
 
-    pickerNote: 'One Picker covers single, grouped and multiple modes; option icons take ReactNode and hint attaches behind the trigger. ModelPicker / WorkspacePicker are business wrappers of it: their data comes from the host (connectHost), it cannot be fabricated.',
-    tooltipNote: 'Tooltip is an official primitive: label plus side / align; children must be a real DOM node that can hold a ref (a function component cannot — no bubble on hover, hit in the sibling repo). HoverCard is a different, richer hover card; its compact variant has a permanently dark background, so the content color must be supplied by the caller.',
-    cardNote: 'Card and StripCard share one prop set and differ only in appearance: Card is a surface fill with a 1px border and rounded corners; StripCard is a same-family soft fill with square corners and a 4px full-height bar on the left edge — notes and execution-record rows both use it.',
-    chipNote: 'Chip is an inline label: five tones and three sizes; pass onClick to render it as a button. Neutral # tags are language-agnostic, and long text keeps its natural width.',
 
-    apiOptions: 'Flat options: [{ value, label, icon?, disabled? }]',
-    apiGroups: 'Grouped options: [{ value, label, options }] (either this or options)',
-    apiMode: "'single' | 'multiple'",
-    apiSearchable: 'Search box inside the trigger',
-    apiClearable: 'One-click clear once something is selected',
-    apiSide: "Bubble side: 'top' | 'bottom' | 'right'",
-    apiAlign: "Alignment: 'center' | 'end'",
-    apiMaxWidth: 'Max bubble width (pixels)',
-    apiDelayMs: 'Hover delay before the bubble shows (ms)',
-    apiPortal: 'Mount on document.body to escape ancestor overflow clipping',
-    apiAnchor: 'Anchor child: must be a real DOM node that can hold a ref',
-    apiAccent: 'Bar tier business / success / warning / danger / neutral, or any CSS color',
-    apiExpanded: 'Expanded state: drives the caret direction and panel visibility',
-    apiOnToggle: 'The caret only shows when this is passed; the caller owns the state',
-    apiAction: 'Top-right action area (a button or text is fine; auto-vertically centered)',
-    apiPanel: 'Expanded content (shown when expanded is true)',
-    apiTone: 'Semantic tier: neutral / business / success / warning / danger',
-    apiToneModal: "Semantic tier: 'primary' | 'danger' | 'warning' (confirm dialog only; different from Chip's five-tier tone)",
-    apiOnClick: 'Renders as a button only when passed',
-    apiText: 'Text',
-    apiRender: 'Ticker render function: takes the current timestamp in ms, returns any ReactNode',
 
-    feedbackNote: 'Modals come in three layers — pick by need: the host official Modal (mask/header/close button all belong to the host; command-style adds skin:"host") → our standard small boxes AlertModal / ConfirmModal (one/two buttons; the Modal suffix keeps them from shadowing the host native) → our content Modal (size md/lg, holds any content). Command-style APIs all return a Promise (await confirmModal(...) gives true/false), never callbacks. Three toasts: showToast is Sonner as-is (for comparison), showHostToast is the official Toast, notify is the in-project recommendation (unified card + our own buttons).',
 
-    apiTitle: 'Title: a string or a ReactNode (pass a node for a custom layout)',
-    apiMessage: 'Body text',
-    apiSeverity: "Semantic tier: 'info' | 'success' | 'warning' | 'error'",
-    apiConfirmText: 'Confirm button label',
-    apiCancelText: 'Cancel button label',
-    apiOnConfirm: 'Confirm callback (command-style: Promise resolve(true))',
-    apiOnCancel: 'Cancel callback (command-style: Promise resolve(false))',
-    apiHeaderActions: 'Top-right action area',
-    apiFooter: 'Bottom button area; omit it for no footer',
-    apiDescription: 'Secondary text under the title',
-    apiActions: 'Trailing action buttons (1–2, in our own Button style)',
-    apiPosition: "Position: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
-    apiOnDismiss: 'Fires after the toast disappears (auto or manual close)',
-    apiDurationMs: 'Dwell time in ms, default 2600',
 
-    layoutNote: 'PanelDock is a LAYOUT MEMBER, not an overlay: it takes width and squeezes the main area, so the caller must place it inside their own flex root (self-mounting on document.body can only cover, never squeeze). The split: structure lives at the call site (DockPanel inside PanelDock children), visibility belongs to state (dock.open(id) takes an id only, never content), and the header is controllable (title / icon / extra, or replace it wholesale with header). The one on the right of this page is real — press the buttons above to try it.',
 
-    apiPanelId: 'Group name (addressing key); unique per dock',
-    apiPanelTitle: 'Title; only the accessible name once header is passed a non-undefined value',
-    apiPanelIcon: 'Icon slot before the title (can be several)',
-    apiPanelExtra: 'Anything on the right of the title (button, tag, dropdown, …)',
-    apiPanelHeader: 'Replace the header wholesale: omit = built-in header; null = no header; anything else = your header (the library adds no padding/border/background)',
-    apiPanelClosable: 'Whether the close button shows',
-    apiPanelCloseButton: "Close button position: 'auto' | 'header' | 'floating' | 'none'",
-    apiPanelWidth: 'Width on first open (px)',
-    apiPanelMinWidth: 'Lower drag bound',
-    apiPanelMaxWidth: 'Upper drag bound; omit = bounded only by the viewport and the main-area floor',
-    apiMaxPanels: 'Max simultaneously open panels',
-    apiDefaultWidth: 'Default width for new panels',
-    apiStorageKey: 'Width-memory prefix; pass false to disable memory',
-    apiOnOpen: 'Fires after a new panel opens (re-opening an existing one does not)',
-    apiOnBeforeClose: 'Fires before closing; return false to cancel (how you intercept unsaved content)',
-    apiOnClose: 'Fires after the panel is gone',
-    apiOnResize: 'Fires when the drag is released',
-    apiOnLimitReached: 'Fires when the cap rejects an open (the library shows no toast and throws nothing)',
 
     blocksNote: 'Two workspace-browsing demos: ① Explorer — right-dock preview (openFilePreview, takes width and squeezes the main area) and anchor-popover file picking (pickWorkspaceFile, Promise returns the workspace-relative path). ② Session — session preview (SessionPreview, variant modal/inline). This page uses no mock: sample files are real repo files, data comes from the host workspaceFiles, and if probing fails it says "not found" honestly.',
 
-    apiExplorerMount: 'Dock mount point: the whole-page flex row; the dock becomes its last child (the main area is genuinely squeezed). Self-mounting on body can only cover, never squeeze',
-    apiExplorerFiles: 'Host session-scoped workspace file service (WorkspaceFilesFace)',
-    apiExplorerSession: 'Session id; workspaceFiles is session-scoped, so it must land on a real session first',
-    apiExplorerPath: 'Path to preview (workspace-relative); empty string = open the root dir',
-    apiExplorerRoot: 'Root dir display name (used by the anchor / layer picker)',
-    apiExplorerWorkspaces: 'Workspace list (titles array), for the layer picker',
-    apiExplorerOnSelect: 'Fires when switching workspace in the layer picker; open once more inside to re-open on the new session',
-    apiPickAnchor: 'Trigger element (HTMLElement); the popover positions from it; does not mount its own dock',
-    apiPickFilter: 'Filter (exts allow-list / dirs whether to include directories)',
-    apiSessionId: 'Session id',
-    apiSessionSource: 'Session data source (SessionSource); real builds use the host, the demo uses a mock',
-    apiSessionVariant: "Render form: 'modal' (dialog) | 'inline' (in-page block)",
-    apiSessionTitle: 'Dialog title (when variant=modal)',
-    apiSessionCallbacks: 'onClose: closes; onOpenFile: fires when a file is opened',
 
     utilsNote: 'The utils group is pure-function tooling: date/time formatting, number/byte formatting, and i18n. All honor the current locale (driven by the host; switch host language and it changes).',
 
-    apiDateDateTime: 'ISO string → local date-time; opts.seconds controls whether seconds show',
-    apiDateYmd: 'ISO → year-month-day',
-    apiDateClock: 'ISO → hours:minutes:seconds',
-    apiDateDuration: 'milliseconds → hours:minutes:seconds',
-    apiDateRange: 'two ISO → range text (start – end)',
-    apiDatePast: '(iso, now) → "N minutes/hours/days ago"',
-    apiDateFuture: '(iso, now) → "in N minutes/hours/days"',
-    apiNumberBytes: '(bytes) → human-readable size (B / KB / MB / GB …)',
-    apiI18nGet: '() => current locale string (driven by the host)',
-    apiI18nSet: '(locale) => void: switch language (the host override wins)',
-    apiI18nT: '(key) => the current-locale copy',
 
     startNote: 'Quick start: the original three (overview / install & init / write a plugin) are merged into one page, each still an independent card. First see what this package gives you, then set up the environment with the install and style-injection snippets.',
     foundationNote: 'Design foundations: the Token palette (all consume --dshpc-* variables; light/dark is the token’s job), the dark-theme predicate (read body[data-ds-dark-theme] at render time), style injection (createStyleKit + setStyleKit, each plugin uses a fixed id), and the naming contract (dshpc- prefix).',
@@ -1004,15 +689,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docCopy: 'Copy',
     docCopied: 'Copied',
 
-    apiVariant: 'Ten appearances: primary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link',
-    apiSize: 'Three heights: sm 24 / md 28 / lg 32 (bordered and borderless are the same height)',
-    apiIcon: 'Leading icon: an official icon component, your own SVG, or even a single character (it takes a ReactNode)',
-    apiIconRight: 'Trailing icon (expand chevron, external link, ...)',
-    apiColor: 'Custom accent: solid variants use it as fill, outlined and text variants use it for text and border',
-    apiLoading: 'Spins and disables clicks by itself',
-    apiBlock: 'Fills the parent width; with a leading icon the label stays optically centered',
-    apiDisabled: 'Passed through to the native disabled (disabled)',
-    apiChildren: 'Button label / content',
 
     pluginTitle: 'Component preview',
     pluginCardDesc: 'Open the showcase of dsh-plugin-core controls and business components',

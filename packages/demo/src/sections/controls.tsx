@@ -49,7 +49,7 @@ import {
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import { Placeholder } from './index.js'
-import { ApiTable, CodeOnly, Example, Note, type ApiRow } from '../doc.js'
+import { DocApi, DocCode, DocProse, Example } from '../doc.js'
 import { demoDock } from '../dock.js'
 import { t, type DemoMessageKey } from '../i18n.js'
 
@@ -197,33 +197,14 @@ const CODE_BTN_STATE = `<Button variant="primary">默认</Button>
 const CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
 <Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`
 
-const CODE_BTN_USAGE = `pnpm add dsh-plugin-core
-
-import { Button, IconButton } from 'dsh-plugin-core/ui'
-
-<Button variant="primary" onClick={save}>保存</Button>
-<Button variant="danger" size="sm" onClick={remove}>删除</Button>
-
-// 样式不用另配：控件自己 ensureControls()，token 跟随宿主明暗主题`
 
 /** Button 的对外参数（与 src/ui/Button.ts 的 ButtonProps 逐条对齐）。 */
-const BUTTON_API: readonly ApiRow[] = [
-  { name: 'variant', type: 'ButtonVariant', def: "'outline'", descKey: 'apiVariant' },
-  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: 'apiSize' },
-  { name: 'icon', type: 'ReactNode', def: '—', descKey: 'apiIcon' },
-  { name: 'iconRight', type: 'ReactNode', def: '—', descKey: 'apiIconRight' },
-  { name: 'color', type: 'string', def: '—', descKey: 'apiColor' },
-  { name: 'loading', type: 'boolean', def: 'false', descKey: 'apiLoading' },
-  { name: 'block', type: 'boolean', def: 'false', descKey: 'apiBlock' },
-  { name: 'disabled', type: 'boolean', def: 'false', descKey: 'apiDisabled' },
-  { name: 'children', type: 'ReactNode', def: '—', descKey: 'apiChildren' },
-]
 
 export function ButtonPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('btnNote') }),
+    h(DocProse, { id: 'button' }),
 
     // 文案与语言
     h(
@@ -316,8 +297,8 @@ export function ButtonPage(): ReturnType<typeof h> {
             h(Button, { key: color, variant: 'outline', color }, color))))),
     ),
 
-    h(CodeOnly, { labelKey: 'docUsage', code: CODE_BTN_USAGE }),
-    h(ApiTable, { title: 'Button 组件 props', rows: BUTTON_API }),
+    h(DocCode, { id: 'button' }),
+    h(DocApi, { id: 'button' }),
   )
 }
 
@@ -377,62 +358,14 @@ const CODE_SWITCH_SEG = `// 开关语义用官方 Switch：label 只是无障碍
   onChange={setMulti}
 />`
 
-const CODE_INPUT_USAGE = `pnpm add dsh-plugin-core
-
-import { Input, NumberInput, Textarea, Checkbox, Segmented, FieldHint } from 'dsh-plugin-core/ui'
-
-const [text, setText] = useState('')
-
-<Input value={text} onChange={setText} placeholder="选择日期" hint="开始时间" />
-<Textarea value={text} onChange={setText} placeholder="多行输入" rows={4} />
-<NumberInput value={3} onChange={setNum} min={0} max={10} suffix="次" />
-
-<Segmented
-  variant="inset"
-  items={[{ value: 'day', label: '日' }, { value: 'week', label: '周' }]}
-  value={seg}
-  onChange={setSeg}
-/>
-
-// 「启用」是开关语义：用官方 Switch，不要用勾选框
-import { Switch } from '@deepseek-ai/dsh-client-ui-primitives'
-<Switch checked={checked} onChange={setChecked} label="启用" />`
 
 /** Input 家族对外参数（与 src/ui/Field.ts 的 InputProps / NumberInputProps 逐条对齐）。 */
-const INPUT_API: readonly ApiRow[] = [
-  { name: 'value', type: 'string', def: '—', descKey: 'apiValue' },
-  { name: 'onChange', type: '(value: string) => void', def: '—', descKey: 'apiOnChange' },
-  { name: 'placeholder', type: 'string', def: '—', descKey: 'apiPlaceholder' },
-  { name: 'hint', type: 'string', def: '—', descKey: 'apiHint' },
-  { name: 'error', type: 'boolean', def: 'false', descKey: 'apiError' },
-  { name: 'disabled', type: 'boolean', def: 'false', descKey: 'apiDisabled' },
-  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: 'apiSize' },
-]
 
 /** NumberInput 在 InputProps 之上多出的参数（与 src/ui/Field.ts 的 NumberInputProps 对齐）。 */
-const NUMBER_API: readonly ApiRow[] = [
-  { name: 'value', type: 'number', def: '—', descKey: 'apiValue' },
-  { name: 'onChange', type: '(value: number) => void', def: '—', descKey: 'apiOnChange' },
-  { name: 'min / max', type: 'number', def: '±Infinity', descKey: 'apiMin' },
-  { name: 'suffix', type: 'string', def: '—', descKey: 'apiSuffix' },
-]
 
 /** Textarea 在 InputProps 之上多出的参数（与 src/ui/Textarea.ts 的 TextareaProps 对齐）。 */
-const TEXTAREA_API: readonly ApiRow[] = [
-  { name: 'rows', type: 'number', def: '—', descKey: 'apiRows' },
-]
 
 /** Segmented 对外参数（与 src/ui/Segmented.ts 的 SegmentedProps 对齐；单选 / 多选共用基座）。 */
-const SEGMENTED_API: readonly ApiRow[] = [
-  { name: 'items', type: 'readonly SegmentedItem[]', def: '—', descKey: 'apiItems' },
-  { name: 'value', type: 'T | T[]', def: '—', descKey: 'apiValue' },
-  { name: 'onChange', type: '(value: T | T[]) => void', def: '—', descKey: 'apiOnChange' },
-  { name: 'multiple', type: 'boolean', def: 'false', descKey: 'apiMultiple' },
-  { name: 'variant', type: "'default' | 'inset'", def: "'default'", descKey: 'apiVariant' },
-  { name: 'bordered', type: 'boolean', def: 'false', descKey: 'apiBordered' },
-  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: 'apiSize' },
-  { name: 'label', type: 'string', def: '—', descKey: 'apiLabel' },
-]
 
 export function InputPage(): ReturnType<typeof h> {
   const [text, setText] = useState('')
@@ -445,7 +378,7 @@ export function InputPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('inputNote') }),
+    h(DocProse, { id: 'input' }),
 
     // Input 家族
     h(
@@ -609,11 +542,8 @@ export function InputPage(): ReturnType<typeof h> {
         }),
       ),
     ),
-    h(CodeOnly, { labelKey: 'docUsage', code: CODE_INPUT_USAGE }),
-    h(ApiTable, { title: 'Input 组件 props', rows: INPUT_API }),
-    h(ApiTable, { title: 'NumberInput 组件 props', rows: NUMBER_API }),
-    h(ApiTable, { title: 'Textarea 组件 props', rows: TEXTAREA_API }),
-    h(ApiTable, { title: 'Segmented 组件 props', rows: SEGMENTED_API }),
+    h(DocCode, { id: 'input' }),
+    h(DocApi, { id: 'input' }),
     h(Placeholder, { descKey: 'inputMissingDesc' }),
   )
 }
@@ -657,44 +587,10 @@ const CODE_MODEL_PICKER = `// 数据来自宿主模型目录（宿主侧 connect
 const CODE_WORKSPACE_PICKER = `// 默认即「工作区」文案与文件夹图标；clearable / searchable 是可选能力
 <WorkspacePicker value={ws} onChange={setWs} clearable searchable />`
 
-const CODE_PICKER_USAGE = `pnpm add dsh-plugin-core
-
-import { Picker, ModelPicker, WorkspacePicker } from 'dsh-plugin-core/ui'
-
-<Picker
-  options={[{ value: 'a', label: '选项 A' }, { value: 'b', label: '选项 B' }]}
-  value={single}
-  onChange={setSingle}
-  searchable
-  clearable
-  placeholder="请选择"
-/>
-
-// ModelPicker / WorkspacePicker 要真实数据：
-// 宿主侧 connectHost(ctx, { modelsPath }) 注入连接，客户端只管渲染`
 
 /** Picker 对外参数（与 src/ui/Picker.ts 的 PickerProps 逐条对齐）。 */
-const PICKER_API: readonly ApiRow[] = [
-  { name: 'options', type: 'readonly PickerOption[]', def: '—', descKey: 'apiOptions' },
-  { name: 'groups', type: 'readonly PickerGroup[]', def: '—', descKey: 'apiGroups' },
-  { name: 'value', type: 'string | string[]', def: '—', descKey: 'apiValue' },
-  { name: 'onChange', type: '(value: string | string[]) => void', def: '—', descKey: 'apiOnChange' },
-  { name: 'mode', type: "'single' | 'multiple'", def: "'single'", descKey: 'apiMode' },
-  { name: 'max', type: 'number', def: '—', descKey: 'apiMax' },
-  { name: 'searchable', type: 'boolean', def: 'false', descKey: 'apiSearchable' },
-  { name: 'clearable', type: 'boolean', def: 'false', descKey: 'apiClearable' },
-  { name: 'hint', type: 'string', def: '—', descKey: 'apiHint' },
-  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'md'", descKey: 'apiSize' },
-]
 
 /** ModelPicker / WorkspacePicker：业务封装，props 与 Picker 同族（数据由宿主给）。 */
-const HOST_PICKER_API: readonly ApiRow[] = [
-  { name: 'value', type: 'string | string[]', def: '—', descKey: 'apiValue' },
-  { name: 'onChange', type: '(value: string | string[]) => void', def: '—', descKey: 'apiOnChange' },
-  { name: 'variant', type: "'grouped' | 'cascade'", def: "'grouped'", descKey: 'apiVariant' },
-  { name: 'placeholder', type: 'string', def: '—', descKey: 'apiPlaceholder' },
-  { name: 'clearable / searchable', type: 'boolean', def: 'false', descKey: 'apiClearable' },
-]
 
 export function PickerPage(): ReturnType<typeof h> {
   const [single, setSingle] = useState<string | undefined>(undefined)
@@ -707,7 +603,7 @@ export function PickerPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('pickerNote') }),
+    h(DocProse, { id: 'picker' }),
     h(
       Example,
       { title: 'Picker', hint: t('pickerHint'), code: CODE_PICKER },
@@ -795,9 +691,8 @@ export function PickerPage(): ReturnType<typeof h> {
         }),
       ),
     ),
-    h(CodeOnly, { labelKey: 'docUsage', code: CODE_PICKER_USAGE }),
-    h(ApiTable, { title: 'Picker 组件 props', rows: PICKER_API }),
-    h(ApiTable, { title: 'ModelPicker / WorkspacePicker props', rows: HOST_PICKER_API }),
+    h(DocCode, { id: 'picker' }),
+    h(DocApi, { id: 'picker' }),
     h(Placeholder, { descKey: 'pickerLogicDesc' }),
   )
 }
@@ -825,41 +720,16 @@ const CODE_TOOLTIP = `// label + side / align；children 必须是能挂 ref 的
   content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>…</div>}
 />`
 
-const CODE_TOOLTIP_USAGE = `pnpm add dsh-plugin-core
-
-import { Tooltip, HoverCard } from '@deepseek-ai/dsh-client-ui-primitives'
-
-<Tooltip label="解释这个操作会发生什么" side="right">
-  <Button variant="outline">一个按钮</Button>
-</Tooltip>
-
-// 问号提示（FieldHint）用的是同一个官方 Tooltip 本体：
-// 宿主侧 setTooltipRenderer((props) => h(Tooltip, props))，之后所有问号气泡都是它`
 
 /** Tooltip 对外参数（官方 primitive，宿主内核提供）。 */
-const TOOLTIP_API: readonly ApiRow[] = [
-  { name: 'label', type: 'string', def: '—', descKey: 'apiText' },
-  { name: 'side', type: "'top' | 'bottom' | 'right'", def: "'top'", descKey: 'apiSide' },
-  { name: 'align', type: "'center' | 'end'", def: "'center'", descKey: 'apiAlign' },
-  { name: 'maxWidth', type: 'number', def: '—', descKey: 'apiMaxWidth' },
-  { name: 'delayMs', type: 'number', def: '—', descKey: 'apiDelayMs' },
-  { name: 'portal', type: 'boolean', def: 'false', descKey: 'apiPortal' },
-  { name: 'children', type: 'ReactElement', def: '—', descKey: 'apiAnchor' },
-]
 
 /** HoverCard：另一种悬停富卡片（宿主工作区列表那种「标题 + 正文」卡就是它）。 */
-const HOVERCARD_API: readonly ApiRow[] = [
-  { name: 'anchor', type: 'ReactNode', def: '—', descKey: 'apiAnchor' },
-  { name: 'content', type: 'ReactNode', def: '—', descKey: 'apiChildren' },
-  { name: 'variant', type: "'compact' | 'preview'", def: "'compact'", descKey: 'apiVariant' },
-  { name: 'openDelayMs', type: 'number', def: '—', descKey: 'apiDelayMs' },
-]
 
 export function TooltipPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('tooltipNote') }),
+    h(DocProse, { id: 'tooltip' }),
     h(
       Example,
       { title: t('tooltipTitle'), hint: t('tooltipHint'), code: CODE_TOOLTIP },
@@ -907,9 +777,8 @@ export function TooltipPage(): ReturnType<typeof h> {
             h('div', { style: { fontSize: '12px', lineHeight: 1.6, whiteSpace: 'pre-line', opacity: .78 } }, t('tooltipLongText'))),
         }))),
     ),
-    h(CodeOnly, { labelKey: 'docUsage', code: CODE_TOOLTIP_USAGE }),
-    h(ApiTable, { title: 'Tooltip 组件 props', rows: TOOLTIP_API }),
-    h(ApiTable, { title: 'HoverCard 组件 props', rows: HOVERCARD_API }),
+    h(DocCode, { id: 'tooltip' }),
+    h(DocApi, { id: 'tooltip' }),
   )
 }
 
@@ -949,34 +818,10 @@ const CODE_SECTION_HEAD = `// 分区标题：icon + 标题 + 右侧操作区三�
   ]}
 />`
 
-const CODE_CARD_USAGE = `pnpm add dsh-plugin-core
-
-import { Card, StripCard, SectionHead } from 'dsh-plugin-core/ui'
-
-// 备注框、执行记录条：StripCard（浅底 + 左色条）
-<StripCard accent="business"><div>标题 + 内容</div></StripCard>
-
-// 普通卡片：Card（surface 底 + 边框 + 圆角）
-<Card accent="business" action={<Button size="sm" variant="ghost">查看会话</Button>}>
-  <div>标题 + 内容</div>
-</Card>`
 
 /** Card / StripCard 共用同一份 props（与 src/ui/Card.ts 的 CardSharedProps 逐条对齐）。 */
-const CARD_API: readonly ApiRow[] = [
-  { name: 'accent', type: "CardAccent | string", def: "'business'", descKey: 'apiAccent' },
-  { name: 'expanded', type: 'boolean', def: 'false', descKey: 'apiExpanded' },
-  { name: 'onToggle', type: '() => void', def: '—', descKey: 'apiOnToggle' },
-  { name: 'action', type: 'ReactNode', def: '—', descKey: 'apiAction' },
-  { name: 'panel', type: 'ReactNode', def: '—', descKey: 'apiPanel' },
-  { name: 'children', type: 'ReactNode', def: '—', descKey: 'apiChildren' },
-]
 
 /** SectionHead：纯排版壳，三段都由调用方给。 */
-const SECTION_HEAD_API: readonly ApiRow[] = [
-  { name: 'icon', type: 'ReactNode', def: '—', descKey: 'apiIcon' },
-  { name: 'title', type: 'ReactNode', def: '—', descKey: 'apiText' },
-  { name: 'right', type: 'ReactNode | ReactNode[]', def: '—', descKey: 'apiAction' },
-]
 
 export function CardPage(): ReturnType<typeof h> {
   const [seg, setSeg] = useState('all')
@@ -984,7 +829,7 @@ export function CardPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('cardNote') }),
+    h(DocProse, { id: 'card' }),
     h(
       Example,
       { title: t('demoCardTitle'), hint: t('cardHint'), code: CODE_CARD },
@@ -1113,9 +958,8 @@ export function CardPage(): ReturnType<typeof h> {
           }),
           ),
           ),
-          h(CodeOnly, { labelKey: 'docUsage', code: CODE_CARD_USAGE }),
-          h(ApiTable, { title: 'Card / StripCard props', rows: CARD_API }),
-          h(ApiTable, { title: 'SectionHead 组件 props', rows: SECTION_HEAD_API }),
+          h(DocCode, { id: 'card' }),
+          h(DocApi, { id: 'card' }),
           )
           }
 
@@ -1139,35 +983,16 @@ const CODE_LIVE = `// 订阅内部节拍器，走时内容调用方渲染
 const CODE_EMPTY = `// 业务空态：可挂一个操作按钮
 <EmptyState text="暂无数据" action={<Button size="sm" variant="outline">重试</Button>} />`
 
-const CODE_CHIP_USAGE = `pnpm add dsh-plugin-core
-
-import { Chip, MarqueeText, LiveText, EmptyState } from 'dsh-plugin-core/ui'
-
-<Chip tone="success">完成</Chip>
-<Chip onClick={openTask}>#可点</Chip>
-<MarqueeText text={taskTitle} />`
 
 /** Chip 对外参数（与 src/ui/Chip.ts 的 ChipProps 逐条对齐）。 */
-const CHIP_API: readonly ApiRow[] = [
-  { name: 'children', type: 'ReactNode', def: '—', descKey: 'apiChildren' },
-  { name: 'tone', type: "'neutral' | 'business' | 'success' | 'warning' | 'danger'", def: "'neutral'", descKey: 'apiTone' },
-  { name: 'size', type: "'xs' | 'sm' | 'md'", def: "'sm'", descKey: 'apiSize' },
-  { name: 'onClick', type: '() => void', def: '—', descKey: 'apiOnClick' },
-]
 
 /** MarqueeText / LiveText / EmptyState：三个小件各一行。 */
-const TEXT_KIT_API: readonly ApiRow[] = [
-  { name: 'MarqueeText · text', type: 'string', def: '—', descKey: 'apiText' },
-  { name: 'LiveText · render', type: '(nowMs: number) => ReactNode', def: '—', descKey: 'apiRender' },
-  { name: 'EmptyState · text', type: 'ReactNode', def: '「暂无数据」', descKey: 'apiText' },
-  { name: 'EmptyState · action', type: 'ReactNode', def: '—', descKey: 'apiAction' },
-]
 
 export function ChipPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('chipNote') }),
+    h(DocProse, { id: 'chip' }),
     h(
       Example,
       { title: 'Chip', hint: t('chipHint'), code: CODE_CHIP },
@@ -1211,9 +1036,8 @@ export function ChipPage(): ReturnType<typeof h> {
       { title: t('emptyStateTitle'), hint: '业务空态：无数据时的占位，可挂一个操作按钮', code: CODE_EMPTY },
       h(EmptyState, { text: '暂无数据' }),
     ),
-    h(CodeOnly, { labelKey: 'docUsage', code: CODE_CHIP_USAGE }),
-    h(ApiTable, { title: 'Chip 组件 props', rows: CHIP_API }),
-    h(ApiTable, { title: 'MarqueeText / LiveText / EmptyState props', rows: TEXT_KIT_API }),
+    h(DocCode, { id: 'chip' }),
+    h(DocApi, { id: 'chip' }),
   )
 }
 
@@ -1323,47 +1147,10 @@ notify('确认提交吗？', {
   ],
 })`
 
-const CODE_FEEDBACK_USAGE = `pnpm add dsh-plugin-core
-
-import {
-  Modal, AlertModal, ConfirmModal,
-  alertModal, confirmModal,
-  notify, showToast, showHostToast,
-} from 'dsh-plugin-core/ui'
-
-// 只问一句：命令式 + Promise，不用管开关状态
-const ok = await confirmModal({ title: '确认提交', message: '提交后不可撤销', tone: 'danger' })
-
-// 要装内容的弹窗：组件式
-<Modal title="任务详情" onClose={close} size="lg">…</Modal>
-
-// 提示：notify 是项目内推荐（统一卡片 + 我们自己的按钮）
-notify('已保存草稿', { actions: [{ text: '撤销', onClick: undo }] })
-
-// 要官方Toast 就用 showHostToast；showToast 是 Sonner 原味，仅对比用`
 
 /** 弹窗家族公共参数（AlertModal / ConfirmModal / Modal 同源，字段按各自能力裁剪）。 */
-const MODAL_API: readonly ApiRow[] = [
-  { name: 'title', type: 'string | ReactNode', def: '—', descKey: 'apiTitle' },
-  { name: 'message', type: 'string', def: '—', descKey: 'apiMessage' },
-  { name: 'severity', type: "'info' | 'success' | 'warning' | 'error'", def: "'info'", descKey: 'apiSeverity' },
-  { name: 'tone', type: "'primary' | 'danger' | 'warning'", def: "'primary'", descKey: 'apiToneModal' },
-  { name: 'confirmText / cancelText', type: 'string', def: '「确定」/「取消」', descKey: 'apiConfirmText' },
-  { name: 'onConfirm / onCancel', type: '() => void', def: '—', descKey: 'apiOnConfirm' },
-  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'md'", descKey: 'apiSize' },
-  { name: 'headerActions', type: 'ReactNode', def: '—', descKey: 'apiHeaderActions' },
-  { name: 'footer', type: 'ReactNode', def: '—', descKey: 'apiFooter' },
-]
 
 /** 提示家族参数（notify / showToast / showHostToast 三者的交集与差异）。 */
-const TOAST_API: readonly ApiRow[] = [
-  { name: 'variant / tone', type: "'info' | 'success' | 'error' | 'warning'", def: "'info'", descKey: 'apiVariant' },
-  { name: 'description', type: 'string', def: '—', descKey: 'apiDescription' },
-  { name: 'actions', type: 'ToastAction[]', def: '—', descKey: 'apiActions' },
-  { name: 'durationMs', type: 'number', def: '2600', descKey: 'apiDurationMs' },
-  { name: 'position', type: 'ToastPosition', def: "'bottom-center'", descKey: 'apiPosition' },
-  { name: 'onDismiss', type: '() => void', def: '—', descKey: 'apiOnDismiss' },
-]
 
 export function FeedbackPage(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
@@ -1377,7 +1164,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('feedbackNote') }),
+    h(DocProse, { id: 'feedback' }),
     h(
       Example,
       { title: '小型弹窗（自定义）', hint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。', code: CODE_SMALL_MODAL },
@@ -1665,9 +1452,8 @@ export function FeedbackPage(): ReturnType<typeof h> {
         h(Button, { onClick: () => showToast('底部-右', { position: 'bottom-right' }) }, 'bottom-right'),
       ),
     ),
-    h(CodeOnly, { labelKey: 'docUsage', code: CODE_FEEDBACK_USAGE }),
-    h(ApiTable, { title: '弹窗家族 props（Alert/Confirm/Modal）', rows: MODAL_API }),
-    h(ApiTable, { title: '提示家族 props（notify/toast）', rows: TOAST_API }),
+    h(DocCode, { id: 'feedback' }),
+    h(DocApi, { id: 'feedback' }),
   )
 }
 
@@ -1699,48 +1485,10 @@ dock.isOpen('files')
 // 4) 订阅状态驱动 UI（React）
 const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`
 
-const CODE_DOCK_USAGE = `pnpm add dsh-plugin-core
-
-import { PanelDock, DockPanel, createPanelDock } from 'dsh-plugin-core/ui'
-
-const dock = createPanelDock({ maxPanels: 3 })
-
-<div style={{ display: 'flex', height: '100%' }}>
-  <main style={{ flex: 1, minWidth: 0 }}>主区</main>
-  <PanelDock dock={dock}>
-    <DockPanel id="files" title="文件">
-      <FileBrowser />
-    </DockPanel>
-  </PanelDock>
-</div>
-
-// ⚠️ PanelDock 是布局成员不是浮层：必须由调用方放进自己的 flex 根容器；
-//    自挂 document.body 只能遮盖、挤不窄主区。`
 
 /** DockPanel 的 props（与 src/ui/PanelDock.ts 的 DockPanelProps 逐条对齐）。 */
-const DOCK_PANEL_API: readonly ApiRow[] = [
-  { name: 'id', type: 'string', def: '—', descKey: 'apiPanelId' },
-  { name: 'title', type: 'ReactNode', def: '—', descKey: 'apiPanelTitle' },
-  { name: 'icon', type: 'ReactNode', def: '—', descKey: 'apiPanelIcon' },
-  { name: 'extra', type: 'ReactNode', def: '—', descKey: 'apiPanelExtra' },
-  { name: 'header', type: 'ReactNode | null', def: '—', descKey: 'apiPanelHeader' },
-  { name: 'closable', type: 'boolean', def: 'true', descKey: 'apiPanelClosable' },
-  { name: 'closeButton', type: 'DockCloseButton', def: "'auto'", descKey: 'apiPanelCloseButton' },
-  { name: 'width / minWidth / maxWidth', type: 'number', def: '460 / 320 / —', descKey: 'apiPanelWidth' },
-]
 
 /** createPanelDock(options) 的参数（与 src/ui/PanelDock.ts 的 PanelDockOptions 逐条对齐）。 */
-const DOCK_OPTIONS_API: readonly ApiRow[] = [
-  { name: 'maxPanels', type: 'number', def: '3', descKey: 'apiMaxPanels' },
-  { name: 'defaultWidth', type: 'number', def: '460', descKey: 'apiDefaultWidth' },
-  { name: 'minWidth', type: 'number', def: '320', descKey: 'apiPanelMinWidth' },
-  { name: 'storageKey', type: 'string | false', def: "'dshpc-dock'", descKey: 'apiStorageKey' },
-  { name: 'onOpen', type: '({ id, created }) => void', def: '—', descKey: 'apiOnOpen' },
-  { name: 'onBeforeClose', type: '({ id, reason }) => boolean | undefined', def: '—', descKey: 'apiOnBeforeClose' },
-  { name: 'onClose', type: '({ id, reason }) => void', def: '—', descKey: 'apiOnClose' },
-  { name: 'onResize', type: '({ id, width }) => void', def: '—', descKey: 'apiOnResize' },
-  { name: 'onLimitReached', type: '({ id }) => void', def: '—', descKey: 'apiOnLimitReached' },
-]
 
 export function LayoutPage(): ReturnType<typeof h> {
   // 控制器与「页面右侧那份 PanelDock」都在 client/index.tsx（页面级），这里只负责触发与读状态。
@@ -1761,7 +1509,7 @@ export function LayoutPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Note, { text: t('layoutNote') }),
+    h(DocProse, { id: 'layout' }),
     h(
       Example,
       { title: 'PanelDock', hint: t('dockHint'), code: CODE_DOCK },
@@ -1799,9 +1547,8 @@ export function LayoutPage(): ReturnType<typeof h> {
         t('dockMainText'),
       ),
     ),
-    h(CodeOnly, { labelKey: 'docUsage', code: CODE_DOCK_USAGE }),
-    h(ApiTable, { title: 'DockPanel 组件 props', rows: DOCK_PANEL_API }),
-    h(ApiTable, { title: 'createPanelDock(options) 参数', rows: DOCK_OPTIONS_API }),
+    h(DocCode, { id: 'layout' }),
+    h(DocApi, { id: 'layout' }),
   )
 }
 
