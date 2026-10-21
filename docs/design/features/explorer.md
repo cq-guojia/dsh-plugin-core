@@ -10,17 +10,19 @@
 
 | 能力 | 签名要点 | 形态 |
 |---|---|---|
-| `openFilePreview(opts)` | `{ workspaceFiles, sessionId, path, officeToPdf?, rootName?, width?, maxWidth?, mainMinWidth?, title?, onClose? }` ⇒ `{ close(), path }` | 右侧停靠预览（拖宽、✕ 归核心 `PanelDock`；Esc / `close()` 也能关）；重复打开关旧的 |
+| `openFilePreview(opts)` | `{ mount, workspaceFiles, sessionId, path, officeToPdf?, rootName?, width?, maxWidth?, mainMinWidth?, title?, onClose? }` ⇒ `{ close(), path }` | 右侧**分栏**预览（挤窄 `mount` 左边的兄弟；拖宽、✕ 归核心 `PanelDock`；Esc / `close()` 也能关）；重复打开关旧的 |
 | `pickWorkspaceFile(opts)` | `{ workspaceFiles, sessionId, anchor?, filter?, officeToPdf?, rootName?, workspaces? }` ⇒ `Promise<{ path, isDir } \| null>` | 锚定按钮旁的模态弹窗；Esc / 点外部 / ✕ 取消 resolve `null` |
 
 - `path` 文件或文件夹都吃：`list(path)` 成功 ⇒ 目录树；报错 ⇒ 文件预览态（dir 取父目录，面包屑保留可返回）。
 - `pickWorkspaceFile` 的 `filter`：`{ exts: ['ts'] }` 只要某扩展名 / `{ dirs: true }` 只要文件夹 / 不传不限。
 - 选中回传**工作区相对路径**（口径同兄弟项目：绝对路径会被宿主附件 zod 拒；根由 `stat.absolutePath` 反推）。
 - 两者共用同一 `FileBrowser` 面板（用户 2026-10-20 拍板：同一套内容，两种展现形式）。
-- **浏览态的侧边栏本体是核心 `PanelDock`**（用户 2026-10-21 拍板）：`openFilePreview` 自建
-  container + `createRoot` 挂载 `<PanelDock><DockPanel>{FileBrowser}</DockPanel></PanelDock>`，
-  拖宽与关闭由 PanelDock 出（它的 resizer / header 关钮），FileBrowser **自己不画外壳也不画拖拽条**；
-  宽度记忆按调用方的 `width` 走（本用例传 `storageKey: false`，预览是临时面板不继承上次落位）。
+- **浏览态的侧边栏本体是核心 `PanelDock`**（用户 2026-10-21 拍板）：`openFilePreview` 往
+  `mount`（调用方的 flex 行）里插一个 `display:contents` 容器再 `createRoot`，于是核心
+  `<PanelDock><DockPanel header={null}>{FileBrowser}</DockPanel></PanelDock>` 成为 `mount` 的
+  直接 flex 子项 ⇒ **主区被挤窄，不是浮在上面**。拖宽 / ✕ 都由 PanelDock 出（`header={null}`
+  ⇒ 没有头部那条线，✕ 浮在右上角），FileBrowser **自己不画外壳也不画拖拽条**；
+  宽度记忆按调用方的 `width` 走（`storageKey: false`，预览是临时面板不继承上次落位）。
 
 ```ts
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'

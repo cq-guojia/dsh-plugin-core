@@ -3970,7 +3970,7 @@ function Example(props) {
         (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2("docPreview")),
         props.children ?? null
       ),
-      (0, import_react30.createElement)(
+      props.code === void 0 ? null : (0, import_react30.createElement)(
         "div",
         { className: "dshpc-doc-example__code" },
         (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2("docCode")),
@@ -6390,8 +6390,10 @@ function openFilePreview(options) {
     (0, import_react38.createElement)(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, (0, import_react38.createElement)(DockPanel, {
       id: PREVIEW_PANEL_ID,
       // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
-      // 关钮按核心规则自动浮到右上角，先用它；要换成自己的按钮再说。
       header: null,
+      // 关闭钮不用核心浮动的（那是 absolute 固定偏移、不垂直居中）；关掉它的，
+      // 改用 FileBrowser 自己的 ✕（和 pick 弹窗同一个 crumb-bar 钮，垂直居中）。
+      closeButton: "none",
       ariaLabel: options.title,
       width: options.width ?? 460,
       minWidth: options.minWidth ?? 320,
@@ -6404,6 +6406,8 @@ function openFilePreview(options) {
       rootName: options.rootName,
       rootCache: options.rootCache,
       translate: options.translate,
+      // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+      onClose: close,
       style: { height: "100%", minHeight: 0 }
     })))
   ));
@@ -6888,7 +6892,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0743-kb7m"]
+            [t2("buildStamp"), "1021-0819-82r2"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",
@@ -6941,37 +6945,7 @@ var ALL_SECTIONS = [
   { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react43.createElement)(ReferencePage, null) }
 ];
 function Demo(props) {
-  return (0, import_react43.createElement)(
-    "section",
-    {
-      style: {
-        marginBottom: "28px",
-        padding: "16px 18px",
-        border: "1px solid var(--dshpc-border-faint)",
-        borderRadius: "8px",
-        background: "var(--dshpc-surface-1)"
-      }
-    },
-    (0, import_react43.createElement)("h3", { style: { margin: "0 0 2px", fontSize: "15px" } }, props.title),
-    props.hint === void 0 ? null : (0, import_react43.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginBottom: "12px" } }, props.hint),
-    (0, import_react43.createElement)("div", { style: { marginBottom: props.code === void 0 ? 0 : "12px" } }, props.children ?? null),
-    props.code === void 0 ? null : (0, import_react43.createElement)(
-      "pre",
-      {
-        style: {
-          margin: 0,
-          padding: "10px 12px",
-          borderRadius: "6px",
-          overflowX: "auto",
-          background: "var(--dshpc-code-surface)",
-          color: "var(--dshpc-fg)",
-          font: "var(--dshpc-code-font)",
-          fontSize: "12px"
-        }
-      },
-      props.code
-    )
-  );
+  return (0, import_react43.createElement)(Example, props);
 }
 function Placeholder(props) {
   return (0, import_react43.createElement)(

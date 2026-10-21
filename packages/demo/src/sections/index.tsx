@@ -16,6 +16,7 @@ import {
 import { ExplorerPage, SessionPage } from './blocks.js'
 import { DatePage, HttpPage, I18nPage, NumberPage, TextPage } from './utils.js'
 import { ReferencePage } from './reference.js'
+import { Example } from '../doc.js'
 
 /**
  * 两级目录：第一层（group）是能力域的纯标题，不可点；第二层（id）是一个可看页。
@@ -92,41 +93,18 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'reference', group: 'reference', titleKey: 'secReference', render: () => h(ReferencePage, null) },
 ]
 
-/** 一个 demo 块：标题 + 一句话 + 实时渲染 + 用法（主流文档站的两段式，API 表在 docs/）。 */
+/**
+ * 一个 demo 块：直接就是文档骨架里的 `Example`（标题 + 一句话 + 左示例右代码）。
+ * 旧页都在用它 —— 换成同一个实现后，所有页立刻吃到文档站式布局；
+ * 逐页补 `code` / 备注 / API 表时不用再动这一层。
+ */
 export function Demo(props: {
   title: string
   hint?: string
   children?: ReactNode
   code?: string
 }): ReturnType<typeof h> {
-  return h(
-    'section',
-    {
-      style: {
-        marginBottom: '28px', padding: '16px 18px',
-        border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px',
-        background: 'var(--dshpc-surface-1)',
-      },
-    },
-    h('h3', { style: { margin: '0 0 2px', fontSize: '15px' } }, props.title),
-    props.hint === undefined
-      ? null
-      : h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px', marginBottom: '12px' } }, props.hint),
-    h('div', { style: { marginBottom: props.code === undefined ? 0 : '12px' } }, props.children ?? null),
-    props.code === undefined
-      ? null
-      : h(
-          'pre',
-          {
-            style: {
-              margin: 0, padding: '10px 12px', borderRadius: '6px', overflowX: 'auto',
-              background: 'var(--dshpc-code-surface)', color: 'var(--dshpc-fg)',
-              font: 'var(--dshpc-code-font)', fontSize: '12px',
-            },
-          },
-          props.code,
-        ),
-  )
+  return h(Example, props)
 }
 
 /**

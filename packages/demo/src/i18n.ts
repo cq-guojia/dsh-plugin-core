@@ -184,6 +184,22 @@ export type DemoMessageKey =
   | 'pluginCardOpen'
   // 文档骨架（示例 / 代码 / 用法 / API 表）与按钮页的页级备注
   | 'btnNote'
+  | 'inputNote'
+  | 'apiValue'
+  | 'apiOnChange'
+  | 'apiPlaceholder'
+  | 'apiHint'
+  | 'apiError'
+  | 'apiDisabled'
+  | 'apiSize'
+  | 'apiMin'
+  | 'apiMax'
+  | 'apiSuffix'
+  | 'apiRows'
+  | 'apiItems'
+  | 'apiMultiple'
+  | 'apiBordered'
+  | 'apiLabel'
   | 'docNote'
   | 'docPreview'
   | 'docCode'
@@ -301,6 +317,23 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnColorTitle: '自定义颜色',
     btnColorHint: 'color 传任意 CSS 色值：实心档作底色、线框与文字档作主色；hover / 按下自动按该色混出',
     btnNote: '官方 primitives 没有 danger / lg 这两条轴，Button 由本库自绘；外观全走 --dshpc-* token，跟着宿主明暗主题走。',
+    inputNote: '录入家族三档高度吃 --dshpc-control-h-*；hint 参数由组件自己挂 FieldHint，不用手动拼。「启用」是开关语义：用官方 Switch（label 只是无障碍名，可见文案自己画在旁边），不用勾选框。',
+
+    apiValue: '当前值（受控）',
+    apiOnChange: '值变化回调',
+    apiPlaceholder: '占位文案',
+    apiHint: '框后挂问号提示（FieldHint 本体）',
+    apiError: '描红（校验失败态）',
+    apiDisabled: '禁用',
+    apiSize: '尺寸档：sm / md / lg',
+    apiMin: '下限，超出自动收回',
+    apiMax: '上限，超出自动收回',
+    apiSuffix: '数字后缀（如「次」）',
+    apiRows: '初始行数',
+    apiItems: '分段项：{ value, label, count?, badge?, disabled? }',
+    apiMultiple: '多选：value 与 onChange 都是数组',
+    apiBordered: '选中段变描边块',
+    apiLabel: 'aria 组名（无障碍，不可见）',
     btnLabelSave: '保存修改',
     btnLabelCancel: '取消',
     btnLabelDelete: '删除',
@@ -537,6 +570,23 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnColorTitle: 'Custom colors',
     btnColorHint: 'Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it',
     btnNote: 'The official primitives have no danger / lg axis, so Button is drawn in this library; it consumes --dshpc-* tokens only and follows the host light/dark theme.',
+    inputNote: 'The field family takes its three heights from --dshpc-control-h-*; hint is attached by the component itself (FieldHint), no manual wiring. Enabling is switch semantics: use the official Switch (label is the accessible name only; draw the visible text yourself) — not a checkbox.',
+
+    apiValue: 'Current value (controlled)',
+    apiOnChange: 'Change callback',
+    apiPlaceholder: 'Placeholder',
+    apiHint: 'Attaches a question-mark hint (FieldHint) after the field',
+    apiError: 'Marks the field red (validation failed)',
+    apiDisabled: 'Disabled',
+    apiSize: 'Size tier: sm / md / lg',
+    apiMin: 'Lower bound; out-of-range values are clamped',
+    apiMax: 'Upper bound; out-of-range values are clamped',
+    apiSuffix: 'Numeric suffix (e.g. "times")',
+    apiRows: 'Initial rows',
+    apiItems: 'Segments: { value, label, count?, badge?, disabled? }',
+    apiMultiple: 'Multi-select: value and onChange are both arrays',
+    apiBordered: 'Makes the selected segment a bordered block',
+    apiLabel: 'Accessible group name (not visible)',
     btnLabelSave: 'Save changes',
     btnLabelCancel: 'Cancel',
     btnLabelDelete: 'Delete',

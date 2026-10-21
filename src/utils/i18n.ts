@@ -30,6 +30,7 @@ export type UtilMessageKey =
   | 'explorerCrumbsAria'
   | 'explorerPickFile'
   | 'explorerPickDir'
+  | 'explorerPickDirAria'
   | 'previewClose'
   | 'previewCopyPath'
   | 'previewRefresh'
@@ -110,10 +111,11 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerExpand: '展开',
     explorerCollapse: '收起',
     explorerEnter: '进入',
-    explorerRootName: '工作区根目录',
+    explorerRootName: '（工作区根目录）',
     explorerCrumbsAria: '目录路径',
     explorerPickFile: '选择此文件',
-    explorerPickDir: '选择此文件夹',
+    explorerPickDir: '选择',
+    explorerPickDirAria: '选择此目录（连带其下所有文件）',
     previewClose: '关闭',
     previewCopyPath: '复制路径',
     previewRefresh: '刷新',
@@ -190,10 +192,11 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerExpand: 'Expand',
     explorerCollapse: 'Collapse',
     explorerEnter: 'Open',
-    explorerRootName: 'Workspace root',
+    explorerRootName: '(workspace root)',
     explorerCrumbsAria: 'Breadcrumb',
     explorerPickFile: 'Pick this file',
-    explorerPickDir: 'Pick this folder',
+    explorerPickDir: 'Select',
+    explorerPickDirAria: 'Pick this folder (with everything under it)',
     previewClose: 'Close',
     previewCopyPath: 'Copy path',
     previewRefresh: 'Refresh',

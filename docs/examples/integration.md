@@ -61,15 +61,18 @@ import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 // 从 ctx 取出这一小块（不要传整个 ctx）
 const workspaceFiles = ctx.remote.workspaceFiles
 
-// 预览某文件/文件夹：右侧弹出停靠预览（外壳 = 核心 PanelDock，可拖宽；✕ / Esc 关）
-openFilePreview({ workspaceFiles, sessionId, path: 'docs/requirements.md' })
+// 预览某文件/文件夹：右侧**分栏**（挤窄 row 左边的主区，不是浮在上面）
+// mount = 你自己那层 flex 行（左导航 / 主区 / 分栏都挂在它下面）
+openFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })
 
 // 让用户选文件：锚定按钮旁弹模态，Promise 返回 { path, isDir }（工作区相对路径）
 const picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })
 ```
 
-浏览态停靠就是 `FileBrowser` 套在核心 `PanelDock` 里（`openFilePreview` 已经这么做了）；
-要嵌进自己的布局直接用 `FileBrowser`，外壳仍建议交给 `PanelDock`。说明见 `docs/design/features/explorer.md`。
+`mount` 是**必填**：`PanelDock` 是布局成员（占宽度、把主区挤窄），没有布局位置就只能遮盖 ——
+所以要传你页面里那一层 flex 行，**不要**传 `document.body` 再自己套 fixed。
+浏览态停靠就是 `FileBrowser` 套在核心 `PanelDock` 里（`openFilePreview` 已经这么做了，
+面板用 `header={null}`：没有头部那条线，✕ 浮在右上角）；说明见 `docs/design/features/explorer.md`。
 
 > `sessionId` 不是随便填的：`workspaceFiles` 是**会话作用域**服务，必须给属于该工作区的真实会话 id。
 > 从宿主工作区快照挑锚点用 `pickWorkspaceAnchor(items)`（`ui` 的 `workspaceList` 快照可直接喂进去）。

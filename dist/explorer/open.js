@@ -16,9 +16,12 @@ import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js';
 import { FileBrowser } from './FileBrowser.js';
 /** 预览侧边栏的挂载容器 id（全站唯一，重复打开先关旧的）。 */
 const PREVIEW_HOST_ID = 'dshpc-file-preview-host';
-/** dock 里的面板 id（本.container 里只有一个）。 */
+/** dock 里的面板 id（本 container 里只有一个）。 */
 const PREVIEW_PANEL_ID = 'file-preview';
-/** 打开工作区文件/文件夹的停靠预览；重复打开会关掉上一个（同侧边栏位）。 */
+/**
+ * 打开工作区文件/文件夹的**停靠**预览（分栏：挤窄 `mount` 左边的兄弟，不是盖上去）。
+ * 重复打开会关掉上一个（同侧边栏位）。
+ */
 export function openFilePreview(options) {
     if (typeof document === 'undefined')
         return null;
@@ -29,9 +32,10 @@ export function openFilePreview(options) {
     const container = document.createElement('div');
     container.id = PREVIEW_HOST_ID;
     container.setAttribute('data-dshpc-file-preview', '');
-    // PanelDock 是 flex 布局成员：容器自己撑满右侧（高度由 --dshpc-dock-h 透给面板）。
-    container.style.cssText = 'position:fixed;top:0;right:0;bottom:0;z-index:1050;display:flex';
-    document.body.appendChild(container);
+    // display:contents ⇒ 容器自身不产生盒子，核心 .dshpc-dock 直接成为 mount 的 flex 子项
+    // （这样才「挤」得动左边的兄弟；套一层真盒子会把 dock 变成 mount 的整行块）。
+    container.style.cssText = 'display:contents';
+    options.mount.appendChild(container);
     const dock = createPanelDock({
         maxPanels: 1,
         defaultWidth: options.width ?? 460,
@@ -61,10 +65,16 @@ export function openFilePreview(options) {
     };
     window.addEventListener('keydown', onKeyDown);
     ensureControls(getStyleKit());
-    root.render(h('div', { style: { display: 'flex', height: '100%', ['--dshpc-dock-h']: '100%' } }, h(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, h(DockPanel, {
+    root.render(h('div', 
+    // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
+    { style: { display: 'contents', ['--dshpc-dock-h']: '100%' } }, h(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, h(DockPanel, {
         id: PREVIEW_PANEL_ID,
-        // 内置头部、只留关闭钮（用户 2026-10-21：核心有 header 机制，不要自定义一排）。
-        title: options.title ?? '',
+        // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
+        header: null,
+        // 关闭钮不用核心浮动的（那是 absolute 固定偏移、不垂直居中）；关掉它的，
+        // 改用 FileBrowser 自己的 ✕（和 pick 弹窗同一个 crumb-bar 钮，垂直居中）。
+        closeButton: 'none',
+        ariaLabel: options.title,
         width: options.width ?? 460,
         minWidth: options.minWidth ?? 320,
         maxWidth: options.maxWidth,
@@ -76,6 +86,8 @@ export function openFilePreview(options) {
         rootName: options.rootName,
         rootCache: options.rootCache,
         translate: options.translate,
+        // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+        onClose: close,
         style: { height: '100%', minHeight: 0 },
     })))));
     return { close, path: options.path };
@@ -87,8 +99,10 @@ const PICKER_MAX_H = 660;
 const PICKER_MIN_H = 240;
 /**
  * 弹出「选择工作区文件」模态弹窗，Promise 返回选中结果；取消（Esc / 点外部 / ✕）resolve `null`。
- * 关闭路径与 portal 浮层菜单不冲突：点外部用**整屏 backdrop** 接——官方 Menu 的 portal
- * 层级在 backdrop 之上，点菜单项不会误判为「点外部」（源实现自实现点外检测踩过的坑）。
+ *
+ * **面板内容与 `openFilePreview` 完完全全是同一个 `FileBrowser`**（不是复制一套）：
+ * 差别只有 ① 承载（这里挂在锚点旁的弹窗面板里，那边挂在核心 PanelDock 分栏里）、
+ * ② `picker` 形态参数（点文件即回传、行尾按钮变「选择」）。文案 / 根名 / 过滤都按调用时传的走。
  */
 export function pickWorkspaceFile(options) {
     return new Promise((resolve) => {
@@ -156,6 +170,7 @@ export function pickWorkspaceFile(options) {
             onSelectWorkspace: options.onSelectWorkspace,
             picker: true,
             filter: options.filter,
+            translate: options.translate,
             onPick: (path, isDir) => finish({ path, isDir }),
             onClose: () => finish(null),
             style: { flex: '1 1 auto', width: '100%', minWidth: 0, minHeight: 0 },

@@ -399,7 +399,7 @@ export function FileBrowser(props) {
                     if (event.key === 'Enter' || event.key === ' ')
                         pick();
                 },
-            }, h('span', { className: 'dshpc-fb__row-icon' }, h(FileTypeIcon, { path: childPath, size: 16 })), h('span', { className: 'dshpc-fb__row-name' }, entry.name));
+            }, h('span', { className: 'dshpc-fb__row-icon' }, h(FileTypeIcon, { path: childPath, size: 18 })), h('span', { className: 'dshpc-fb__row-name' }, entry.name));
         }
         const cached = childCache[childPath];
         const isOpen = openDirs.has(childPath);
@@ -429,12 +429,12 @@ export function FileBrowser(props) {
                     rowAction();
             },
         }, 
-        // 展开 / 收起：核心 IconButton（换图标表达朝向，不用 CSS 旋转）。
+        // 展开 / 收起：核心 IconButton，20×20 命中位 + 展开时转 90°（与兄弟 .dsh-tdt-sv-tree-toggle 同款）。
         h(IconButton, {
             variant: 'plain',
             size: 'sm',
-            className: 'dshpc-fb__row-toggle',
-            icon: h(isOpen ? IconChevronDownOutlineRegular : IconChevronRightOutlineRegular, { size: 14 }),
+            className: `dshpc-fb__row-toggle${isOpen ? ' dshpc-fb__row-toggle--open' : ''}`,
+            icon: h(IconChevronRightOutlineRegular, { size: 16 }),
             label: isOpen ? tt('explorerCollapse') : tt('explorerExpand'),
             'aria-expanded': isOpen,
             onClick: (event) => {
@@ -447,6 +447,7 @@ export function FileBrowser(props) {
                 variant: 'outline',
                 size: 'sm',
                 className: 'dshpc-fb__row-act',
+                'aria-label': picker ? tt('explorerPickDirAria') : tt('explorerEnter'),
                 onClick: actThisDir,
             }, tt(picker ? 'explorerPickDir' : 'explorerEnter'))), isOpen
             ? h('div', { className: 'dshpc-fb__row-children' }, 
@@ -485,7 +486,7 @@ export function FileBrowser(props) {
     }, h(MarqueeText, { text: label, className: 'dshpc-fb__crumb-mq' }));
     const crumbBar = h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h('div', { className: 'dshpc-fb__menu-wrap' }, h(IconButton, {
         variant: 'plain',
-        size: 'sm',
+        size: 'md',
         icon: h(IconChevronDownOutlineRegular, { size: 14 }),
         label: tt('explorerLevels'),
         'aria-expanded': menuOpen,
@@ -512,7 +513,7 @@ export function FileBrowser(props) {
         ? null
         : h(IconButton, {
             variant: 'plain',
-            size: 'sm',
+            size: 'md',
             icon: h(IconCloseOutlineRegular, { size: 14 }),
             label: tt('previewClose'),
             onClick: props.onClose,
@@ -527,13 +528,13 @@ export function FileBrowser(props) {
         ? null
         : h(IconButton, {
             variant: 'plain',
-            size: 'sm',
+            size: 'md',
             icon: h(IconCloseOutlineRegular, { size: 14 }),
             label: tt('previewClose'),
             onClick: props.onClose,
         })));
     // 第二排（仅预览态显示）：文件名 + 渲染⇄源码切换 / 复制路径 / 刷新。
-    // ⚠️ 右侧三个核心控件的高度档必须与左边 Segmented **同一档**（md = 28px）——两档混排会肉眼错位。
+    // 档位照兄弟项目调用点：Segmented `sm` + 图标钮 `md`（核心 Segmented 高度由 CSS 定，不随档变）。
     const titleBar = viewing === null
         ? null
         : h('div', { className: 'dshpc-fb__title' }, h(MarqueeText, {
@@ -543,7 +544,8 @@ export function FileBrowser(props) {
             style: { flex: '1 1 auto', minWidth: 0 },
         }), h('div', { className: 'dshpc-fb__actions' }, switchable
             ? h(Segmented, {
-                size: 'md',
+                size: 'sm',
+                variant: 'default',
                 label: viewingIsMd ? tt('previewMdSwitchAria') : tt('previewHtmlSwitchAria'),
                 value: sourceView ? 'source' : 'render',
                 items: [

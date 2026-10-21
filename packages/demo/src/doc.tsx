@@ -57,7 +57,8 @@ export function CodeOnly(props: { labelKey: DemoMessageKey; code: string; lang?:
 export function Example(props: {
   title: string
   hint?: string
-  code: string
+  /** 不传就只渲染左栏（grid 单列时示例自动占满）—— 还在补代码的页先这样挂着。 */
+  code?: string
   children?: ReactNode
 }): ReturnType<typeof h> {
   return h(
@@ -80,22 +81,24 @@ export function Example(props: {
         h('div', { className: 'dshpc-doc-label' }, t('docPreview')),
         props.children ?? null,
       ),
-      h(
-        'div',
-        { className: 'dshpc-doc-example__code' },
-        h('div', { className: 'dshpc-doc-label' }, t('docCode')),
-        h(
-          'div',
-          { className: 'dshpc-doc-example__scroll' },
-          h(CodeBlock, {
-            code: props.code,
-            lang: 'tsx',
-            showHeader: true,
-            copyLabel: t('docCopy'),
-            copiedLabel: t('docCopied'),
-          }),
-        ),
-      ),
+      props.code === undefined
+        ? null
+        : h(
+            'div',
+            { className: 'dshpc-doc-example__code' },
+            h('div', { className: 'dshpc-doc-label' }, t('docCode')),
+            h(
+              'div',
+              { className: 'dshpc-doc-example__scroll' },
+              h(CodeBlock, {
+                code: props.code,
+                lang: 'tsx',
+                showHeader: true,
+                copyLabel: t('docCopy'),
+                copiedLabel: t('docCopied'),
+              }),
+            ),
+          ),
     ),
   )
 }
