@@ -21,7 +21,7 @@
 - [x] 走**子路径** `./ui/code-viewer` 导出（不进主桶 —— 主桶必须零平台模块静态依赖，与 `ui/official` / `ui/host` 同例）
 - [x] `pnpm run build` 干净；`node --test` 76/77 绿（唯一失败是**既有** `doc-data.generated.ts` 孤儿，与本次无关）
 - [ ] **未做**：替换 `explorer/TextPreview` 的 `CodeBlock`（后续任务，按拍板红线不动 explorer）
-- [ ] **未做**：`commit` + `push`（用户未授权，dist 已随改动生成、待提交）
+- [x] `commit` + `push`：c638149 推到 `main`（调试期不打 tag、不 bump；dist 随提交入库；不含 docs 生成 WIP 孤儿）
 - [ ] **未做**：`AGENTS.md`「ui 零官方依赖」旧约束改写 + `TextPreview.ts:5`「不引 CodeMirror」旧注释反转（文档，另议）
 
 ## 下一步
@@ -29,7 +29,7 @@
 - 等用户验收（核心 `CodeViewer` 落主包已完成，子路径 `dsh-plugin-core/ui/code-viewer`）。
 - 验收看点：明暗跟随 `body[data-ds-dark-theme]`、只读可选中、复制钮 hover 浮现、行级视图拖宽不卡。
 - 后续（不在本任务）：① 替换 `explorer/TextPreview.ts:101` 的 `CodeBlock`；② 处理既有 `doc-data` 孤儿让 `css-contract` 全绿；③ 改写 `AGENTS.md` 旧「ui 零官方依赖」约束与 `TextPreview.ts:5` 旧注释。
-- 提交：用户授权后再 `commit` + `push`（含 `dist/`）。
+- 已 `commit` + `push`（c638149）；后续任务：替换 `explorer/TextPreview.ts:101` 的 `CodeBlock`、处理 `doc-data` 孤儿让 `css-contract` 全绿、改写 `AGENTS.md` 旧「ui 零官方依赖」约束与 `TextPreview.ts:5` 旧注释。
 
 ## 过程
 
@@ -72,3 +72,4 @@
 - 2026-10-21 09:30:08 · log · @GuoJia-Agent · 补全 worklog 前因后果：兄弟预览栈逐文件核对（仅 CodeMirror 一处第三方）、官方 CodeBlock 卡顿根因、本会话决策时间线、放核心的红线与暗色判据坑
 - 2026-10-21 09:37:05 · log · @GuoJia-Agent · 补全 worklog 背景与完整讨论纪要（含完整讨论过程、兄弟项目预览栈逐文件核对、放核心的红线）
 - 2026-10-21 17:09:33 · log · @GuoJia-Agent · 落主包实现完成：核心新增只读 CodeViewer(CodeMirror6)，文件 CodeViewer.ts+lang+theme+css，依赖入 package.json，导出走子路径 ./ui/code-viewer（主桶零平台依赖）；build 干净，node --test 76/77 绿（唯一红项 css-contract 既有 doc-data 孤儿，与本次无关）；未 commit（待授权），未替换 explorer 的 CodeBlock
+- 2026-10-21 17:16:12 · log · @GuoJia-Agent · 已 commit+push c638149 到 main（调试期不打 tag 不 bump），38 文件含 dist；未带入 docs 生成 WIP 孤儿（doc-format.*/explorer.doc.ts/explorer.generated.md/gen-docs.mjs/tsconfig.docs.json/packages/demo/src/doc-data.generated.ts）；explorer 按用户要求未动
