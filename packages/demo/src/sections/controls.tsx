@@ -317,7 +317,7 @@ export function ButtonPage(): ReturnType<typeof h> {
     ),
 
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_BTN_USAGE }),
-    h(ApiTable, { rows: BUTTON_API }),
+    h(ApiTable, { title: 'Button 组件 props', rows: BUTTON_API }),
   )
 }
 
@@ -610,10 +610,10 @@ export function InputPage(): ReturnType<typeof h> {
       ),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_INPUT_USAGE }),
-    h(ApiTable, { rows: INPUT_API }),
-    h(ApiTable, { rows: NUMBER_API }),
-    h(ApiTable, { rows: TEXTAREA_API }),
-    h(ApiTable, { rows: SEGMENTED_API }),
+    h(ApiTable, { title: 'Input 组件 props', rows: INPUT_API }),
+    h(ApiTable, { title: 'NumberInput 组件 props', rows: NUMBER_API }),
+    h(ApiTable, { title: 'Textarea 组件 props', rows: TEXTAREA_API }),
+    h(ApiTable, { title: 'Segmented 组件 props', rows: SEGMENTED_API }),
     h(Placeholder, { descKey: 'inputMissingDesc' }),
   )
 }
@@ -796,8 +796,8 @@ export function PickerPage(): ReturnType<typeof h> {
       ),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_PICKER_USAGE }),
-    h(ApiTable, { rows: PICKER_API }),
-    h(ApiTable, { rows: HOST_PICKER_API }),
+    h(ApiTable, { title: 'Picker 组件 props', rows: PICKER_API }),
+    h(ApiTable, { title: 'ModelPicker / WorkspacePicker props', rows: HOST_PICKER_API }),
     h(Placeholder, { descKey: 'pickerLogicDesc' }),
   )
 }
@@ -908,8 +908,8 @@ export function TooltipPage(): ReturnType<typeof h> {
         }))),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_TOOLTIP_USAGE }),
-    h(ApiTable, { rows: TOOLTIP_API }),
-    h(ApiTable, { rows: HOVERCARD_API }),
+    h(ApiTable, { title: 'Tooltip 组件 props', rows: TOOLTIP_API }),
+    h(ApiTable, { title: 'HoverCard 组件 props', rows: HOVERCARD_API }),
   )
 }
 
@@ -1114,8 +1114,8 @@ export function CardPage(): ReturnType<typeof h> {
           ),
           ),
           h(CodeOnly, { labelKey: 'docUsage', code: CODE_CARD_USAGE }),
-          h(ApiTable, { rows: CARD_API }),
-          h(ApiTable, { rows: SECTION_HEAD_API }),
+          h(ApiTable, { title: 'Card / StripCard props', rows: CARD_API }),
+          h(ApiTable, { title: 'SectionHead 组件 props', rows: SECTION_HEAD_API }),
           )
           }
 
@@ -1212,8 +1212,8 @@ export function ChipPage(): ReturnType<typeof h> {
       h(EmptyState, { text: '暂无数据' }),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_CHIP_USAGE }),
-    h(ApiTable, { rows: CHIP_API }),
-    h(ApiTable, { rows: TEXT_KIT_API }),
+    h(ApiTable, { title: 'Chip 组件 props', rows: CHIP_API }),
+    h(ApiTable, { title: 'MarqueeText / LiveText / EmptyState props', rows: TEXT_KIT_API }),
   )
 }
 
@@ -1666,8 +1666,8 @@ export function FeedbackPage(): ReturnType<typeof h> {
       ),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_FEEDBACK_USAGE }),
-    h(ApiTable, { rows: MODAL_API }),
-    h(ApiTable, { rows: TOAST_API }),
+    h(ApiTable, { title: '弹窗家族 props（Alert/Confirm/Modal）', rows: MODAL_API }),
+    h(ApiTable, { title: '提示家族 props（notify/toast）', rows: TOAST_API }),
   )
 }
 
@@ -1800,8 +1800,8 @@ export function LayoutPage(): ReturnType<typeof h> {
       ),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_DOCK_USAGE }),
-    h(ApiTable, { rows: DOCK_PANEL_API }),
-    h(ApiTable, { rows: DOCK_OPTIONS_API }),
+    h(ApiTable, { title: 'DockPanel 组件 props', rows: DOCK_PANEL_API }),
+    h(ApiTable, { title: 'createPanelDock(options) 参数', rows: DOCK_OPTIONS_API }),
   )
 }
 

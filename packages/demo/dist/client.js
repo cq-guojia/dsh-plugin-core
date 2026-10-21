@@ -4060,7 +4060,11 @@ function ApiTable(props) {
   return (0, import_react26.createElement)(
     "div",
     { className: "dshpc-doc-block" },
-    (0, import_react26.createElement)("div", { className: "dshpc-doc-label" }, t2("docApi")),
+    (0, import_react26.createElement)(
+      "div",
+      { className: "dshpc-doc-label", style: props.title === void 0 ? void 0 : { textTransform: "none" } },
+      props.title ?? t2("docApi")
+    ),
     (0, import_react26.createElement)(
       "table",
       { className: "dshpc-doc-api" },
@@ -4593,7 +4597,7 @@ function ButtonPage() {
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BTN_USAGE }),
-    (0, import_react31.createElement)(ApiTable, { rows: BUTTON_API })
+    (0, import_react31.createElement)(ApiTable, { title: "Button \u7EC4\u4EF6 props", rows: BUTTON_API })
   );
 }
 var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
@@ -4881,10 +4885,10 @@ function InputPage() {
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_INPUT_USAGE }),
-    (0, import_react31.createElement)(ApiTable, { rows: INPUT_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: NUMBER_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: TEXTAREA_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: SEGMENTED_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "Input \u7EC4\u4EF6 props", rows: INPUT_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "NumberInput \u7EC4\u4EF6 props", rows: NUMBER_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "Textarea \u7EC4\u4EF6 props", rows: TEXTAREA_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "Segmented \u7EC4\u4EF6 props", rows: SEGMENTED_API }),
     (0, import_react31.createElement)(Placeholder, { descKey: "inputMissingDesc" })
   );
 }
@@ -5052,8 +5056,8 @@ function PickerPage() {
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_PICKER_USAGE }),
-    (0, import_react31.createElement)(ApiTable, { rows: PICKER_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: HOST_PICKER_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "Picker \u7EC4\u4EF6 props", rows: PICKER_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "ModelPicker / WorkspacePicker props", rows: HOST_PICKER_API }),
     (0, import_react31.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
   );
 }
@@ -5184,8 +5188,8 @@ ${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_TOOLTIP_USAGE }),
-    (0, import_react31.createElement)(ApiTable, { rows: TOOLTIP_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: HOVERCARD_API })
+    (0, import_react31.createElement)(ApiTable, { title: "Tooltip \u7EC4\u4EF6 props", rows: TOOLTIP_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "HoverCard \u7EC4\u4EF6 props", rows: HOVERCARD_API })
   );
 }
 var CODE_CARD = `// Card\uFF1Asurface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF1Baction \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u4E5F\u5782\u76F4\u5C45\u4E2D
@@ -5412,8 +5416,8 @@ function CardPage() {
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_CARD_USAGE }),
-    (0, import_react31.createElement)(ApiTable, { rows: CARD_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: SECTION_HEAD_API })
+    (0, import_react31.createElement)(ApiTable, { title: "Card / StripCard props", rows: CARD_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "SectionHead \u7EC4\u4EF6 props", rows: SECTION_HEAD_API })
   );
 }
 var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884C\u56FA\u5B9A\u7531\u5927\u5230\u5C0F\uFF08md \u2192 sm \u2192 xs\uFF09\uFF0C\u540C\u6863\u6587\u6848\u4E0D\u6DF7\u6392
@@ -5502,8 +5506,8 @@ function ChipPage() {
       (0, import_react31.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_CHIP_USAGE }),
-    (0, import_react31.createElement)(ApiTable, { rows: CHIP_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: TEXT_KIT_API })
+    (0, import_react31.createElement)(ApiTable, { title: "Chip \u7EC4\u4EF6 props", rows: CHIP_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "MarqueeText / LiveText / EmptyState props", rows: TEXT_KIT_API })
   );
 }
 var CODE_HOST_MODAL = `// \u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u76F4\u63A5\u7528\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF09
@@ -5947,8 +5951,8 @@ function FeedbackPage() {
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_FEEDBACK_USAGE }),
-    (0, import_react31.createElement)(ApiTable, { rows: MODAL_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: TOAST_API })
+    (0, import_react31.createElement)(ApiTable, { title: "\u5F39\u7A97\u5BB6\u65CF props\uFF08Alert/Confirm/Modal\uFF09", rows: MODAL_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "\u63D0\u793A\u5BB6\u65CF props\uFF08notify/toast\uFF09", rows: TOAST_API })
   );
 }
 var CODE_DOCK = `// 1) \u5EFA\u4E00\u4E2A dock \u63A7\u5236\u5668\uFF08\u5E94\u7528\u7EA7\u5355\u4F8B\uFF1BmaxPanels \u9ED8\u8BA4 3\uFF09
@@ -6068,8 +6072,8 @@ function LayoutPage() {
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_DOCK_USAGE }),
-    (0, import_react31.createElement)(ApiTable, { rows: DOCK_PANEL_API }),
-    (0, import_react31.createElement)(ApiTable, { rows: DOCK_OPTIONS_API })
+    (0, import_react31.createElement)(ApiTable, { title: "DockPanel \u7EC4\u4EF6 props", rows: DOCK_PANEL_API }),
+    (0, import_react31.createElement)(ApiTable, { title: "createPanelDock(options) \u53C2\u6570", rows: DOCK_OPTIONS_API })
   );
 }
 
@@ -7626,38 +7630,42 @@ function ExplorerPage() {
     ),
     (0, import_react40.createElement)(Example, { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") }, null),
     (0, import_react40.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
-    (0, import_react40.createElement)(ApiTable, { rows: EXPLORER_API }),
-    (0, import_react40.createElement)(ApiTable, { rows: PICK_API })
+    (0, import_react40.createElement)(ApiTable, { title: "openFilePreview(options) \u53C2\u6570", rows: EXPLORER_API }),
+    (0, import_react40.createElement)(ApiTable, { title: "pickWorkspaceFile(options) \u53C2\u6570", rows: PICK_API })
   );
 }
 function SessionPage() {
   const [open, setOpen] = (0, import_react40.useState)(false);
   return (0, import_react40.createElement)(
-    Example,
-    { title: "SessionPreview", hint: t2("sessionHint"), code: CODE_SESSION },
+    "div",
+    null,
     (0, import_react40.createElement)(
-      Row2,
-      null,
-      (0, import_react40.createElement)(Button, { variant: "primary", onClick: () => {
-        setOpen(true);
-      } }, t2("sessionOpenModal")),
-      (0, import_react40.createElement)(Button, { onClick: () => {
-        setOpen(false);
-      } }, t2("sessionClose"))
+      Example,
+      { title: "SessionPreview", hint: t2("sessionHint"), code: CODE_SESSION },
+      (0, import_react40.createElement)(
+        Row2,
+        null,
+        (0, import_react40.createElement)(Button, { variant: "primary", onClick: () => {
+          setOpen(true);
+        } }, t2("sessionOpenModal")),
+        (0, import_react40.createElement)(Button, { onClick: () => {
+          setOpen(false);
+        } }, t2("sessionClose"))
+      ),
+      open ? (0, import_react40.createElement)(SessionPreview, {
+        sessionId: "demo-session",
+        source: mockSessionSource,
+        variant: "modal",
+        title: t2("sessionPreviewTitle"),
+        onClose: () => {
+          setOpen(false);
+        },
+        onOpenFile: () => {
+          setOpen(false);
+        }
+      }) : null
     ),
-    open ? (0, import_react40.createElement)(SessionPreview, {
-      sessionId: "demo-session",
-      source: mockSessionSource,
-      variant: "modal",
-      title: t2("sessionPreviewTitle"),
-      onClose: () => {
-        setOpen(false);
-      },
-      onOpenFile: () => {
-        setOpen(false);
-      }
-    }) : null,
-    (0, import_react40.createElement)(ApiTable, { rows: SESSION_API })
+    (0, import_react40.createElement)(ApiTable, { title: "SessionPreview \u7EC4\u4EF6 props", rows: SESSION_API })
   );
 }
 
@@ -7750,7 +7758,7 @@ function DatePage() {
     (0, import_react41.createElement)(Note, { text: t2("utilsNote") }),
     (0, import_react41.createElement)(Example, { title: "date / time", hint: t2("dateHint"), code: CODE_DATE }, (0, import_react41.createElement)(FnTable, { rows: DATE_ROWS })),
     (0, import_react41.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react41.createElement)(ApiTable, { rows: DATE_API })
+    (0, import_react41.createElement)(ApiTable, { title: "\u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\u51FD\u6570", rows: DATE_API })
   );
 }
 function NumberPage() {
@@ -7760,7 +7768,7 @@ function NumberPage() {
     (0, import_react41.createElement)(Note, { text: t2("utilsNote") }),
     (0, import_react41.createElement)(Example, { title: "number / bytes", hint: t2("numberHint"), code: CODE_NUMBER }, (0, import_react41.createElement)(FnTable, { rows: NUMBER_ROWS })),
     (0, import_react41.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react41.createElement)(ApiTable, { rows: NUMBER_API2 })
+    (0, import_react41.createElement)(ApiTable, { title: "\u6570\u5B57 / \u4F53\u79EF\u683C\u5F0F\u5316\u51FD\u6570", rows: NUMBER_API2 })
   );
 }
 function TextPage() {
@@ -7794,7 +7802,7 @@ function I18nPage() {
       )
     ),
     (0, import_react41.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react41.createElement)(ApiTable, { rows: I18N_API })
+    (0, import_react41.createElement)(ApiTable, { title: "\u591A\u8BED\u8A00 API", rows: I18N_API })
   );
 }
 
@@ -7840,7 +7848,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0954-wl68"]
+            [t2("buildStamp"), "1021-1131-ahvw"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",
@@ -7937,7 +7945,7 @@ function Sections(props) {
 }
 
 // packages/demo/src/demo-css.generated.ts
-var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n/* \u5907\u6CE8\u6846\u672C\u4F53\u662F\u6838\u5FC3 StripCard\uFF08\u65B9\u89D2 + \u5DE6 4px \u901A\u9AD8\u8272\u6761 + \u540C\u8272\u7CFB\u6D45\u5E95\uFF09\uFF0C\u8FD9\u91CC\u53EA\u8865\u884C\u5185\u6392\u7248\u3002 */\n.dshpc-doc-note {\n  margin-bottom: 16px;\n}\n\n.dshpc-doc-note__body {\n  display: flex;\n  gap: 8px;\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u8FB9\u6846\u76D2\uFF1A\u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3 */\n.dshpc-doc-block {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  padding: 12px 14px;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n.dshpc-doc-example {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  padding: 14px;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n}\n\n/* \u4EE3\u7801\u53EA\u5728\u5185\u5C42\u6EDA\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70 */\n.dshpc-doc-example__scroll {\n  max-height: 320px;\n  overflow: auto;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n";
+var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n/* \u5907\u6CE8\u6846\u672C\u4F53\u662F\u6838\u5FC3 StripCard\uFF08\u65B9\u89D2 + \u5DE6 4px \u901A\u9AD8\u8272\u6761 + \u540C\u8272\u7CFB\u6D45\u5E95\uFF09\uFF0C\u8FD9\u91CC\u53EA\u8865\u884C\u5185\u6392\u7248\u3002 */\n.dshpc-doc-note {\n  margin-bottom: 16px;\n}\n\n.dshpc-doc-note__body {\n  display: flex;\n  gap: 8px;\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u8FB9\u6846\u76D2\uFF1A\u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3 */\n.dshpc-doc-block {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  padding: 12px 14px;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n.dshpc-doc-example {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  padding: 14px;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n}\n\n/* \u4EE3\u7801\u53EA\u5728\u5185\u5C42\u6EDA\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70 */\n.dshpc-doc-example__scroll {\n  max-height: 320px;\n  overflow: auto;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n\n/* \u6700\u540E\u4E00\u884C\u4E0D\u7559\u5E95\u8FB9\u6846\uFF1A\u8868\u683C\u5E95\u90E8\u4E0D\u518D\u591A\u51FA\u4E00\u6761\u60AC\u7A7A\u6A2A\u7EBF */\n.dshpc-doc-api tbody tr:last-child td {\n  border-bottom: none;\n}\n";
 
 // packages/demo/src/paths.ts
 var MODELS_PATH = "/api/dsh-plugin-core-demo/models";

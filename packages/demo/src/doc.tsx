@@ -103,12 +103,16 @@ export function Example(props: {
   )
 }
 
-/** API 表：属性 | 类型 | 默认值 | 说明（说明走字典，随语言切换）。 */
-export function ApiTable(props: { rows: readonly ApiRow[] }): ReturnType<typeof h> {
+/** API 表：属性 | 类型 | 默认值 | 说明（说明走字典，随语言切换）。title 用于一张表说不清时区分是哪组 API。 */
+export function ApiTable(props: { rows: readonly ApiRow[]; title?: string }): ReturnType<typeof h> {
   return h(
     'div',
     { className: 'dshpc-doc-block' },
-    h('div', { className: 'dshpc-doc-label' }, t('docApi')),
+    h(
+      'div',
+      { className: 'dshpc-doc-label', style: props.title === undefined ? undefined : { textTransform: 'none' } },
+      props.title ?? t('docApi'),
+    ),
     h(
       'table',
       { className: 'dshpc-doc-api' },

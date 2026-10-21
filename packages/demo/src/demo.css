@@ -113,3 +113,8 @@
   white-space: nowrap;
   color: var(--dshpc-fg);
 }
+
+/* 最后一行不留底边框：表格底部不再多出一条悬空横线 */
+.dshpc-doc-api tbody tr:last-child td {
+  border-bottom: none;
+}

@@ -236,8 +236,8 @@ export function ExplorerPage(): ReturnType<typeof h> {
     ),
     h(Example, { title: t('previewBodyTitle'), hint: t('previewBodyHint') }, null),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_BLOCKS_USAGE }),
-    h(ApiTable, { rows: EXPLORER_API }),
-    h(ApiTable, { rows: PICK_API }),
+    h(ApiTable, { title: 'openFilePreview(options) 参数', rows: EXPLORER_API }),
+    h(ApiTable, { title: 'pickWorkspaceFile(options) 参数', rows: PICK_API }),
   )
 }
 
@@ -245,24 +245,28 @@ export function SessionPage(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
 
   return h(
+    'div',
+    null,
+    h(
       Example,
       { title: 'SessionPreview', hint: t('sessionHint'), code: CODE_SESSION },
-    h(
-      Row,
-      null,
-      h(Button, { variant: 'primary', onClick: () => { setOpen(true) } }, t('sessionOpenModal')),
-      h(Button, { onClick: () => { setOpen(false) } }, t('sessionClose')),
+      h(
+        Row,
+        null,
+        h(Button, { variant: 'primary', onClick: () => { setOpen(true) } }, t('sessionOpenModal')),
+        h(Button, { onClick: () => { setOpen(false) } }, t('sessionClose')),
+      ),
+      open
+        ? h(SessionPreview, {
+            sessionId: 'demo-session',
+            source: mockSessionSource,
+            variant: 'modal',
+            title: t('sessionPreviewTitle'),
+            onClose: () => { setOpen(false) },
+            onOpenFile: () => { setOpen(false) },
+          })
+        : null,
     ),
-    open
-      ? h(SessionPreview, {
-          sessionId: 'demo-session',
-          source: mockSessionSource,
-          variant: 'modal',
-          title: t('sessionPreviewTitle'),
-          onClose: () => { setOpen(false) },
-          onOpenFile: () => { setOpen(false) },
-        })
-      : null,
-    h(ApiTable, { rows: SESSION_API }),
+    h(ApiTable, { title: 'SessionPreview 组件 props', rows: SESSION_API }),
   )
 }

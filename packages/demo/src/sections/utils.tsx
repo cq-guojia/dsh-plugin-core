@@ -111,7 +111,7 @@ export function DatePage(): ReturnType<typeof h> {
     h(Note, { text: t('utilsNote') }),
     h(Example, { title: 'date / time', hint: t('dateHint'), code: CODE_DATE }, h(FnTable, { rows: DATE_ROWS })),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_UTILS_USAGE }),
-    h(ApiTable, { rows: DATE_API }),
+    h(ApiTable, { title: '日期时间格式化函数', rows: DATE_API }),
   )
 }
 
@@ -122,7 +122,7 @@ export function NumberPage(): ReturnType<typeof h> {
     h(Note, { text: t('utilsNote') }),
     h(Example, { title: 'number / bytes', hint: t('numberHint'), code: CODE_NUMBER }, h(FnTable, { rows: NUMBER_ROWS })),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_UTILS_USAGE }),
-    h(ApiTable, { rows: NUMBER_API }),
+    h(ApiTable, { title: '数字 / 体积格式化函数', rows: NUMBER_API }),
   )
 }
 
@@ -159,6 +159,6 @@ export function I18nPage(): ReturnType<typeof h> {
       ),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_UTILS_USAGE }),
-    h(ApiTable, { rows: I18N_API }),
+    h(ApiTable, { title: '多语言 API', rows: I18N_API }),
   )
 }
