@@ -30,7 +30,8 @@
 3. **文档现状（专家 C）**：docs/ 14 个 .md 零 frontmatter、无机器可读索引，docs/README.md 槽位表是人工索引；「一主题一文件」在 features/<包名>.md 已成立；test/ 15 个测试无一看 docs 本身；src/utils/i18n.ts 是「TS 常量文档内容」先例但与 docs 不重复。
 4. **冲突点（专家 B）**：demo 双语（i18n.ts DICT.zh/en，2026-10-19 任务落地「所有用户可见文本随 harness 语言」），docs 纯中文 ⇒ 长文说明不能直接烧进 demo；语言中性列（API 表 name/type/def）可走生成物，desc 列需保留 DICT 或 docs 补 desc.zh/desc.en。
 5. **用户中午反馈后定稿方向**：单一真源不打折——真源 = md（一主题一文件），格式定死为「核心的格式」（frontmatter 含 display:{key:{zh,en}} + 固定五列 API 表 参数/类型/默认/说明/EN + 带 id 的围栏代码块）；scripts/gen-docs.mjs 照 gen-css 三件套生成 packages/demo/src/doc-data.generated.ts；demo 改纯渲染器（删 src/i18n.ts DICT 双字典与 *_API/CODE_* 硬编码，en 文案取自文档 EN 列/display.en）；新增 test/doc-contract.test.mjs 守生成同步 + MAP⇄磁盘 + demo 源码零硬编码文案；页面↔文档映射留 demo sections/index.tsx（属显示结构）。skill 二期。
-6. **ledger 机制坑**：progress.py 写前会拉远端并覆盖未提交的 worklog 正文（本轮实际发生两次，执行记录不丢、正文回骨架）。规避：正文放在本轮最后一次 log 之后改；根治需提交 ledger 文件（待用户「提交」指令）。
+6. **ledger 机制坑**：progress.py 写前会拉远端并覆盖未提交的 worklog 正文（2026-10-21 上午实际发生两次，执行记录不丢、正文回骨架；同日下午复测未复现——疑与远端有无新提交有关）。规避：正文放在本轮最后一次 log 之后改；根治需提交 ledger 文件（待用户「提交」指令）。
+7. **解析可行性实测（2026-10-21 下午，node 内联原型跑全 docs）**：42 个表格全部列数表内自洽 + 第二行均为分隔行；单元格内 `\|`（如 features/ui.md:44 `'sm' \| 'md' \| 'lg'`）按转义正确切分；25 个代码围栏全部闭合；0 个多行单元格；frontmatter 现状 0 个无冲突。demo 侧数据形状与文档表格 1:1：`ApiRow{name,type,def,descKey}`（packages/demo/src/doc.tsx:13-18）← 表格 参数/类型/默认/说明；`CodeOnly{labelKey,code}`（doc.tsx:38）← 围栏块。**发现真实漂移实证**：Button 表 docs 侧（features/ui.md:41-51）有 `…rest` 无 `disabled`，demo 侧（controls.tsx:210-220）有 `disabled` 无 `…rest`——正是单一真源要消的东西。定规范：demo 消费的表用前置标记注释定位（`<!-- dshpc-doc:table id="..." -->`，不按行号，抗文档编辑漂移）；围栏信息行加 `id="..."`；gen-docs 对标记表做强校验（列头固定、转义、禁多行单元格），不过即退出（类比 lightningcss 闸）。
 
 ## 结论
 
@@ -44,3 +45,4 @@
 - 2026-10-21 11:52:29 · log · @GuoJia-Agent · 三专家调研完成：docs 已在 npm files 内且 bundler 不吃 md（产物不带文档已成立）；demo 13 处写死内容与 docs 同源；docs 零 frontmatter 无机器可读索引；demo 双语 vs docs 纯中文有冲突。已产出 A/B/C 三方案待用户选型（推荐 B：MD 真源 + frontmatter 索引 + gen-docs.mjs 生成 + --check 闸）。
 - 2026-10-21 12:04:55 · log · @GuoJia-Agent · 用户否决最省式折中，定单一真源硬标准：demo 每字每表在 demo 源码无第二份、demo 只管显示。定稿方向：md 真源（frontmatter display{zh,en}+五列 API 表+带 id 代码块）→ gen-docs.mjs 生成 → demo 删 DICT 与硬编码改纯渲染；skill 列二期。注意 ledger log 前拉远端会覆盖未提交正文（本轮已被覆盖一次，已重写补回）。
 - 2026-10-21 16:30:14 · log · @GuoJia-Agent · 原型解析实测（node 内联跑全 docs）：42 个表全部列数自洽+分隔行齐全、转义管道 \| 正确切分、25 个代码围栏全闭合、0 个多行单元格；demo ApiRow(name/type/def/descKey) 与文档表格 1:1；发现真实漂移：Button 表 docs 有 …rest 无 disabled、demo 反之。定规范：demo 消费的表用前置标记注释定位（不按行号），围栏加 id。
+- 2026-10-21 16:38:56 · log · @GuoJia-Agent · 用户质疑 md 真源方案，重评定稿 TS 数据模块真源：docs/**/*.doc.ts 手写 typed（tsconfig.docs.json --noEmit 守 schema，根 tsconfig 只含 src/** 需独立配置），gen-docs.mjs 生成双投影（docs md 给 Agent 读 + packages/demo/src/doc-data.generated.ts 给 demo 零解析消费，对齐 gen-css 把生成物写进 demo/src 的先例）。md 被否真因：解析是困难方向且无 schema、双语笨拙；data→md 渲染是容易方向。只转 demo 消费的文档，requirements/architecture/external 保持手写 md。
