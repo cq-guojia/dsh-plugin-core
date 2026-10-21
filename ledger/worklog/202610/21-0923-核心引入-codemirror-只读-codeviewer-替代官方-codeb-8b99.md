@@ -32,3 +32,4 @@
 - 2026-10-21 09:23:59 · new · @GuoJia-Agent · 创建任务（open）
 - 2026-10-21 09:25:40 · claim · @GuoJia-Agent · 认领 → doing
 - 2026-10-21 09:25:47 · log · @GuoJia-Agent · 建任务台账并填正文：核心 src/ui/CodeViewer.tsx 引入 CodeMirror 只读查看器替代官方 CodeBlock，明确不进 explorer、不动 ui/official
+- 2026-10-21 09:30:08 · log · @GuoJia-Agent · 补全 worklog 前因后果：兄弟预览栈逐文件核对（仅 CodeMirror 一处第三方）、官方 CodeBlock 卡顿根因、本会话决策时间线、放核心的红线与暗色判据坑
