@@ -3444,7 +3444,6 @@ var DICT2 = {
     sampleHtml: "\u9884\u89C8 demo.html",
     sampleJs: "\u9884\u89C8 sample.js",
     sampleCss: "\u9884\u89C8 sample.css",
-    samplesProbing: "\u6B63\u5728\u771F\u5B9E\u5DE5\u4F5C\u533A\u91CC\u627E\u6837\u4F8B\u76EE\u5F55\u2026",
     samplesNotFound: "\u6CA1\u627E\u5230\u6837\u4F8B\u76EE\u5F55\uFF08\u5F53\u524D\u951A\u5B9A\u7684\u5DE5\u4F5C\u533A\u91CC\u6CA1\u6709 packages/demo/src/samples\uFF09",
     methodBTitle: "\u65B9\u6CD5 B\uFF1ApickWorkspaceFile \u9009\u62E9\u6587\u4EF6",
     methodBHint: "\u5728\u951A\u70B9\u6309\u94AE\u65C1\u5F39\u51FA\u6A21\u6001\u5F39\u7A97\uFF1BPromise \u8FD4\u56DE { path, isDir }\uFF08path \u4E3A\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\uFF1BEsc / \u70B9\u5916\u90E8 / \u2715 \u53D6\u6D88\u8FD4\u56DE null",
@@ -3639,7 +3638,6 @@ var DICT2 = {
     sampleHtml: "Preview demo.html",
     sampleJs: "Preview sample.js",
     sampleCss: "Preview sample.css",
-    samplesProbing: "Looking for the sample directory in the real workspace\u2026",
     samplesNotFound: "Sample directory not found (the anchored workspace has no packages/demo/src/samples)",
     methodBTitle: "Method B: pickWorkspaceFile",
     methodBHint: "A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / \u2715 cancels with null",
@@ -53994,8 +53992,20 @@ function NotReady(props) {
 function OpenPreviewDemo() {
   const { workspaceFiles, anchor, workspaceNames } = useExplorerHost();
   const [samples, setSamples] = (0, import_react43.useState)(null);
-  const [probed, setProbed] = (0, import_react43.useState)(false);
+  const [phase, setPhase] = (0, import_react43.useState)("idle");
   const [last2, setLast] = (0, import_react43.useState)(null);
+  const pending = (0, import_react43.useRef)(null);
+  const sessionId = anchor === null ? null : anchor.sessionId;
+  (0, import_react43.useEffect)(() => {
+    if (workspaceFiles === null || sessionId === null) return;
+    if (pending.current !== null) return;
+    setPhase("probing");
+    pending.current = findSamples(workspaceFiles, sessionId).then((s) => {
+      setSamples(s);
+      setPhase(s === null ? "missing" : "found");
+      return s;
+    });
+  }, [workspaceFiles, sessionId]);
   if (workspaceFiles === null) return (0, import_react43.createElement)(NotReady, { which: "files" });
   if (anchor === null) return (0, import_react43.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
@@ -54007,16 +54017,9 @@ function OpenPreviewDemo() {
     openFilePreview({ mount, workspaceFiles, sessionId: anchor.sessionId, path, rootName, workspaces });
     setLast(path === "" ? `${rootName}\uFF08\u6839\uFF09` : path);
   };
-  const probe = () => {
-    if (probed) return Promise.resolve(samples);
-    setProbed(true);
-    return findSamples(workspaceFiles, anchor.sessionId).then((s) => {
-      setSamples(s);
-      return s;
-    });
-  };
+  const sampleLabel = (normal3) => phase === "missing" ? t2("samplesNotFound") : t2(normal3);
   const openSamples = (pick2) => {
-    void probe().then((s) => {
+    void (pending.current ?? Promise.resolve(samples)).then((s) => {
       if (s !== null) open(pick2(s), anchor.title);
     });
   };
@@ -54024,16 +54027,8 @@ function OpenPreviewDemo() {
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
     (0, import_react43.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t2("openRootPreview")),
-    (0, import_react43.createElement)(
-      Button,
-      { variant: "secondary", onClick: () => openSamples((s) => s.dir) },
-      probed && samples === null ? t2("samplesNotFound") : t2("openSamplesDir")
-    ),
-    (0, import_react43.createElement)(
-      Button,
-      { variant: "ghost", onClick: () => openSamples((s) => s.js) },
-      probed && samples === null ? t2("samplesNotFound") : t2("sampleJs")
-    ),
+    (0, import_react43.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
+    (0, import_react43.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
     last2 === null ? null : (0, import_react43.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
     (0, import_react43.createElement)(
       "div",
@@ -54295,7 +54290,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1022-0014-9fe7"]
+            [t2("buildStamp"), "1022-0031-7quw"]
           ].map(
             ([label, value]) => (0, import_react45.createElement)(
               "tr",

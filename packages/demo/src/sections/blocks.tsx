@@ -1,4 +1,4 @@
-import { createElement as h, useState, useSyncExternalStore } from 'react'
+import { createElement as h, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import {
   openFilePreview,
   pickWorkspaceAnchor,
@@ -70,8 +70,25 @@ function NotReady(props: { which: 'files' | 'anchor' }): ReturnType<typeof h> {
 function OpenPreviewDemo(): ReturnType<typeof h> {
   const { workspaceFiles, anchor, workspaceNames } = useExplorerHost()
   const [samples, setSamples] = useState<SampleSet | null>(null)
-  const [probed, setProbed] = useState(false)
+  // idle → probing → found / missing。**「正在找」绝不能显示成「没找到」**：
+  // 旧实现点一下就把按钮文案切成「没找到样例目录」，BFS 完了才切回来，
+  // 用户看到的就是每次点预览都先闪一句假的失败（真机 2026-10-22）。
+  const [phase, setPhase] = useState<'idle' | 'probing' | 'found' | 'missing'>('idle')
   const [last, setLast] = useState<string | null>(null)
+  const pending = useRef<Promise<SampleSet | null> | null>(null)
+  const sessionId = anchor === null ? null : anchor.sessionId
+
+  // 进页面就开始有界探索，不等用户点按钮（待点时早就好了 ⇒ 不会再有文案跳变）。
+  useEffect(() => {
+    if (workspaceFiles === null || sessionId === null) return
+    if (pending.current !== null) return
+    setPhase('probing')
+    pending.current = findSamples(workspaceFiles, sessionId).then((s) => {
+      setSamples(s)
+      setPhase(s === null ? 'missing' : 'found')
+      return s
+    })
+  }, [workspaceFiles, sessionId])
 
   if (workspaceFiles === null) return h(NotReady, { which: 'files' })
   if (anchor === null) return h(NotReady, { which: 'anchor' })
@@ -85,17 +102,10 @@ function OpenPreviewDemo(): ReturnType<typeof h> {
     openFilePreview({ mount, workspaceFiles, sessionId: anchor.sessionId, path, rootName, workspaces })
     setLast(path === '' ? `${rootName}（根）` : path)
   }
-  // 样例目录用真实 list 有界探索（找不到就如实说，不造路径）；探到即缓存。
-  const probe = (): Promise<SampleSet | null> => {
-    if (probed) return Promise.resolve(samples)
-    setProbed(true)
-    return findSamples(workspaceFiles, anchor.sessionId).then((s) => {
-      setSamples(s)
-      return s
-    })
-  }
+  // 只在**确认没有**时才改文案；还在找就保持正常按钮文案（点了会等同一个 Promise）。
+  const sampleLabel = (normal: string): string => (phase === 'missing' ? t('samplesNotFound') : t(normal))
   const openSamples = (pick: (s: SampleSet) => string): void => {
-    void probe().then((s) => {
+    void (pending.current ?? Promise.resolve(samples)).then((s) => {
       if (s !== null) open(pick(s), anchor.title)
     })
   }
@@ -104,10 +114,8 @@ function OpenPreviewDemo(): ReturnType<typeof h> {
     'div',
     { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' } },
     h(Button, { variant: 'primary', onClick: () => open('', anchor.title, workspaceNames) }, t('openRootPreview')),
-    h(Button, { variant: 'secondary', onClick: () => openSamples((s) => s.dir) },
-      probed && samples === null ? t('samplesNotFound') : t('openSamplesDir')),
-    h(Button, { variant: 'ghost', onClick: () => openSamples((s) => s.js) },
-      probed && samples === null ? t('samplesNotFound') : t('sampleJs')),
+    h(Button, { variant: 'secondary', onClick: () => openSamples((s) => s.dir) }, sampleLabel('openSamplesDir')),
+    h(Button, { variant: 'ghost', onClick: () => openSamples((s) => s.js) }, sampleLabel('sampleJs')),
     last === null ? null : h('code', { style: { fontSize: '12px' } }, `已打开：${last}`),
     h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', width: '100%' } },
       `${t('explorerAnchorLabel')}${anchor.title} · ${t('explorerSessionLabel')}${anchor.sessionId} · ${t('explorerWorkspaces')}${String(workspaceNames.length)}`),

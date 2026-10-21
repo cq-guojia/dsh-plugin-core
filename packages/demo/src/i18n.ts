@@ -125,7 +125,6 @@ export type DemoMessageKey =
   | 'sampleHtml'
   | 'sampleJs'
   | 'sampleCss'
-  | 'samplesProbing'
   | 'samplesNotFound'
   | 'methodBTitle'
   | 'methodBHint'
@@ -383,7 +382,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sampleHtml: '预览 demo.html',
     sampleJs: '预览 sample.js',
     sampleCss: '预览 sample.css',
-    samplesProbing: '正在真实工作区里找样例目录…',
     samplesNotFound: '没找到样例目录（当前锚定的工作区里没有 packages/demo/src/samples）',
     methodBTitle: '方法 B：pickWorkspaceFile 选择文件',
     methodBHint: '在锚点按钮旁弹出模态弹窗；Promise 返回 { path, isDir }（path 为工作区相对路径）；Esc / 点外部 / ✕ 取消返回 null',
@@ -627,7 +625,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sampleHtml: 'Preview demo.html',
     sampleJs: 'Preview sample.js',
     sampleCss: 'Preview sample.css',
-    samplesProbing: 'Looking for the sample directory in the real workspace…',
     samplesNotFound: 'Sample directory not found (the anchored workspace has no packages/demo/src/samples)',
     methodBTitle: 'Method B: pickWorkspaceFile',
     methodBHint: 'A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / ✕ cancels with null',
