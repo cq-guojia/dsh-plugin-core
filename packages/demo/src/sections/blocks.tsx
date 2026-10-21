@@ -19,6 +19,7 @@ import {
 import { Button, workspaceList } from '../../../../dist/ui/index.js'
 import { SessionPreview } from '../../../../dist/session/index.js'
 import { fileServices } from '../host-files.js'
+import { pageRow } from '../layout-mount.js'
 import { findSamples, type SampleSet } from '../samples.js'
 import { mockSessionSource } from '../mock.js'
 import { Demo } from './index.js'
@@ -65,7 +66,11 @@ export function ExplorerPage(): ReturnType<typeof h> {
 
   const open = (path: string): void => {
     if (files === null || anchor === null) return
+    const mount = pageRow.element
+    if (mount === null) return
     openFilePreview({
+      // 分栏挂载点 = 整页 flex 行（核心 dock 成为它的最后一个子项 ⇒ 主区被真正挤窄）。
+      mount,
       workspaceFiles: files,
       officeToPdf,
       sessionId: anchor.sessionId,

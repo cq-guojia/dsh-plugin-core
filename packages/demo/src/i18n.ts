@@ -357,7 +357,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     explorerWorkspaces: '工作区数：',
     methodATitle: '方法 A：openFilePreview 侧边栏预览',
     methodAHint:
-      '传文件或文件夹路径，右侧弹出停靠预览 —— 外壳是核心 PanelDock（拖宽 / ✕ 都由它负责，面板自己不画）。' +
+      '传文件或文件夹路径，右侧**分栏**打开（核心 PanelDock，header=null 那版：没有头部那条线，✕ 浮在右上角）——' +
+      '它被塞进整页这层 flex 行，所以主区被挤窄，不是盖上去。拖宽由 PanelDock 负责，面板自己不画外壳。' +
       '样例按钮指向仓库里 packages/demo/src/samples/ 的真文件（目录是按内容探出来的，不写死路径）。',
     openRootPreview: '打开最近工作区的根目录',
     openSamplesDir: '浏览样例目录',
@@ -592,7 +593,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     explorerWorkspaces: 'workspaces: ',
     methodATitle: 'Method A: openFilePreview dock preview',
     methodAHint:
-      'Pass a file or folder path and a dock preview opens on the right — the shell is the core PanelDock (resizing / ✕ are its job, the panel draws neither). ' +
+      'Pass a file or folder path and a dock opens on the right (core PanelDock, the header=null variant: no head line, ✕ floats top-right) — ' +
+      'it is inserted into the page flex row, so the main area is squeezed rather than covered. Resizing belongs to PanelDock. ' +
       'The sample buttons point at real files under packages/demo/src/samples/ (the directory is probed by content, never hardcoded).',
     openRootPreview: 'Open the most recent workspace root',
     openSamplesDir: 'Browse the sample directory',

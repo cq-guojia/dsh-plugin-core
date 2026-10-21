@@ -205,7 +205,7 @@ var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u827
 var PANEL_DOCK_CSS = "\n/* \u505C\u9760\u680F = **\u5E03\u5C40\u6210\u5458**\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5B83\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u771F\u6B63\u6324\u7A84\uFF08\u5144\u5F1F\u9879\u76EE 2026-09-28\uFF1A\n   \u300C\u5206\u680F\u538B\u8FC7\u6765\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u300D\uFF09\u3002\u6240\u4EE5\u8C03\u7528\u65B9\u5FC5\u987B\u628A\u5B83\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002 */\n.dshpc-dock{display:flex;flex:0 0 auto;align-self:stretch;min-width:0}\n\n/* \u5355\u680F\uFF1Asticky + 100vh \u8BA9\u5B83\u5728\u9875\u9762\u6EDA\u52A8\u65F6\u4FDD\u6301\u53EF\u89C1\uFF0C\u540C\u65F6\u4ECD\u7136\u5360\u5BBD\u5EA6\u3002\n   \u26A0\uFE0F **\u672C\u6761\u523B\u610F\u4E0D\u8BBE z-index**\uFF1A\u5E03\u5C40\u6210\u5458\u4E00\u65E6\u5E26\u6B63 z-index\uFF0C\u5C31\u4F1A\u65E0\u6761\u4EF6\u538B\u8FC7\u5BBF\u4E3B portal \u5230 body \u7684\n   \u5F39\u7A97\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-05 \u771F\u673A\u4E8B\u6545\u300C\u4FA7\u8FB9\u680F\u76D6\u4F4F\u5BBF\u4E3B\u8BBE\u7F6E\u5F39\u7A97\u300D\uFF09\u3002\u5C42\u5E8F\u4EA4\u7ED9 DOM \u987A\u5E8F\u88C1\u51B3\u3002 */\n.dshpc-dock__panel{\n  position:sticky;top:0;align-self:stretch;\n  display:flex;flex-direction:column;flex:0 0 auto;\n  /* \u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF08\u6574\u9875\u573A\u666F\uFF09\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\uFF08\u5982 420px / 100%\uFF09\u3002 */\n  height:var(--dshpc-dock-h,100vh);max-height:var(--dshpc-dock-h,100vh);min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border-left:1px solid var(--dshpc-border);\n  box-shadow:var(--dshpc-shadow-2);\n}\n\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  /* \u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB */\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF0C\u4F4D\u7F6E\u4E0E\u5185\u7F6E\u5934\u5B8C\u5168\u4E00\u81F4\uFF08top 10 / right 8\uFF09\uFF1B\u81EA\u5B9A\u4E49\u5934\u4E5F\u7528\u8FD9\u4E00\u4E2A\u4F4D\u7F6E\u3002\n   \u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB\uFF08position:sticky \u5373\u5B9A\u4F4D\u4E0A\u4E0B\u6587\uFF09\uFF0C\u4E0D\u5728\u6EDA\u52A8\u5185\u5BB9\u91CC\uFF0C\u6240\u4EE5\u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF1A\u9762\u677F\u9AD8\u5EA6\u9501 100vh\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u6574\u9875\u6491\u9AD8\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto}\n\n/* \u62D6\u62FD\u6761\uFF1A\u5DE6\u7F18 6px \u547D\u4E2D\u533A\uFF0C**\u4E0D\u753B\u7EBF**\uFF0Chover/\u6309\u4F4F\u65F6\u624D\u6D6E\u51FA\u4E00\u6761\u6D45\u8272\u5E26\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__resizer:hover,.dshpc-dock__resizer:active{background:var(--dshpc-hover)}\n\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove\uFF0C\n   \u5411\u53F3\u62D6\u8FDB iframe \u5C31\u5361\u6B7B \u2014\u2014 \u6574\u7247\u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u680F\u5185\uFF0C\n   \u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u5EA6\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-04 \u771F\u673A\u300C\u632A\u5F88\u4E45\u624D\u52A8\u4E00\u4E0B\u300D\uFF09\u3002 */\n.dshpc-dock.dshpc-dock--resizing iframe{pointer-events:none}\n.dshpc-dock.dshpc-dock--resizing .dshpc-dock__panel{contain:layout paint;will-change:width}\n";
 
 // dist/explorer/explorer-css.generated.js
-var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\u7C7B\u540D\u4E0E FileBrowser / preview \u7EC4\u4EF6\u786C\u7F16\u7801\u9010\u5B57\u4E00\u81F4\u3002\n *\n * \u5EA6\u91CF\u53E3\u5F84\uFF1A\u80FD\u7528\u6838\u5FC3\u63A7\u4EF6\u7684\u4E00\u5F8B\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = \u6838\u5FC3 ghost \u94AE\u3001\u884C\u5C3E\u6309\u94AE = \u6838\u5FC3 outline \u94AE\u3001\n * \u5C55\u5F00\u5F00\u5173 / \u56FE\u6807\u94AE = \u6838\u5FC3 IconButton\uFF09\uFF1B\u6838\u5FC3\u6CA1\u6709\u7684\u90A3\u4E00\u9879 = \u25BE \u9009\u5C42\u6D6E\u5C42\uFF0C\u6309\u5144\u5F1F\u9879\u76EE\n * dsh-task-dispatch-table \u7684 .dsh-tdt-sv-crumbs-*\uFF08archive-session-css.ts\uFF09\u9010\u6761\u7167\u6284\uFF1A\n *   \xB7 \u884C / \u83DC\u5355\u5706\u89D2 6px\uFF08\u5144\u5F1F --tdt-radius-sm \u7684\u5B9E\u53D6\u503C\uFF09\u21D2 \u7EDF\u4E00\u7531 --fb-radius \u4E00\u5904\u5B9A\u4E49\uFF1B\n *   \xB7 \u6811\u884C padding 6px 8px / gap 8px\uFF1B\u83DC\u5355\u6761\u76EE padding 4px 8px\u3001\u6700\u5927\u5BBD 280px\uFF1B\n *   \xB7 \u4E0B\u62C9 max-height 240px \u540E\u6EDA\u52A8\uFF1B\u7A7A\u6001\u4E0E\u5144\u5F1F\u540C\u6B3E\u5F31\u5316\u3002\n */\n.dshpc-fb{\n  --fb-radius:6px;\n  display:flex;flex-direction:column;height:100%;min-height:0;\n  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\u3002\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\uFF08\u5144\u5F1F\u9879\u76EE\u56DB\u9A8C\u771F\u673A bug\uFF09\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  padding:4px 10px;border-bottom:1px solid var(--dshpc-border-faint);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;visibility:hidden;pointer-events:none;white-space:nowrap}\n/* \u9762\u5305\u5C51 = \u6838\u5FC3 ghost \u94AE\uFF08\u65E0\u5E95\u65E0\u8FB9\uFF09\uFF1A\u6B64\u5904\u53EA\u8865\u300C\u53EF\u6536\u7F29 + \u8DD1\u9A6C\u706F\u5360\u6EE1\u300D\u7684\u5E03\u5C40\uFF0C\u4E0D\u6539\u76AE\u80A4\u3002 */\n.dshpc-fb__crumb{min-width:0;max-width:100%;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm)}\n.dshpc-fb__crumb:disabled{color:var(--dshpc-fg-4);cursor:default}\n.dshpc-fb__crumb--current{color:var(--dshpc-fg);font-weight:600;cursor:default}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{color:var(--dshpc-fg-3);flex:none}\n.dshpc-fb__bar-plain{color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none}\n.dshpc-fb__actions{display:flex;align-items:center;gap:4px;margin-left:auto;flex:none}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\uFF08\u7167\u6284\u5144\u5F1F .dsh-tdt-sv-crumbs-*\uFF09\uFF1A\u900F\u660E\u906E\u7F69\u63A5\u300C\u70B9\u5916\u90E8\u300D\uFF0C\u83DC\u5355\u672C\u4F53\u9650\u9AD8\u6EDA\u52A8\u3002\n   \u5C42\u5E8F\u5FC5\u987B\u9AD8\u4E8E picker \u9762\u677F\uFF08z-index 1100\uFF09\u2014\u2014\u5426\u5219\u83DC\u5355\u5F00\u7740\u65F6\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);box-shadow:0 4px 16px rgba(0,0,0,.18);\n  border-radius:var(--fb-radius);padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  padding:4px 8px;border-radius:var(--fb-radius);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3)}\n.dshpc-fb__menu-icon{display:inline-flex;align-items:center;flex:none}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u9AD8\u5EA6\u6863\u7EDF\u4E00 md\uFF0C\u89C1\u7EC4\u4EF6\u6CE8\u91CA\uFF09\u3002 */\n.dshpc-fb__title{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--dshpc-border-faint);min-width:0}\n.dshpc-fb__title-inner{font-size:var(--dshpc-font-md);font-weight:600}\n\n/* \u4E3B\u4F53 */\n.dshpc-fb__body{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}\n.dshpc-fb__note{padding:6px 10px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__err{padding:6px 10px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-md);text-align:center}\n\n/* \u6811\u884C\uFF08\u7167\u6284\u5144\u5F1F .dsh-tdt-sv-tree-row\uFF1Agap 8 / padding 6px 8px / \u5706\u89D2 6px\uFF09 */\n.dshpc-fb__row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--fb-radius);cursor:pointer;user-select:none}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u6B64\u6587\u4EF6\u5939\u300D\uFF1A\u6838\u5FC3 outline \u94AE\uFF0C**\u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D**\uFF0C\u60AC\u505C / \u805A\u7126\u8BE5\u884C\u624D\u51FA\u73B0\n   \uFF08\u7167\u6284\u5144\u5F1F .dsh-tdt-sv-tree-act\uFF1Aopacity 0 + pointer-events none\uFF0C\u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\uFF09\u3002 */\n.dshpc-fb__row-act{flex:none;margin-left:auto;opacity:0;pointer-events:none;transition:opacity var(--dshpc-dur-fast,120ms) var(--dshpc-ease,ease)}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n.dshpc-fb__row-children{margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border-faint);display:flex;flex-direction:column}\n.dshpc-fb__row-note{padding:4px 8px;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;color:var(--dshpc-danger);font-size:var(--dshpc-font-sm)}\n\n/* \u9884\u89C8\u4F53 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg-soft);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:6px;border:1px solid var(--dshpc-border-faint)}\n.dshpc-fb__frame{flex:1;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
+var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  padding:4px 10px;border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbs-*\uFF09\u3002\n   \u5C42\u5E8F\uFF1A\u5144\u5F1F\u662F 30/31\uFF1B\u672C\u4ED3 picker \u9762\u677F\u662F 1100\uFF0C\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E\u5B83\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  box-shadow:0 4px 16px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:8px 14px;border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6838\u5FC3 outline \u94AE\uFF0C\u76AE\u80A4\u53D6\u5144\u5F1F .dsh-tdt-sv-tree-act\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF09\u3002\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;appearance:none;background:0 0;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  height:auto;padding:2px 8px;font-size:var(--dshpc-font-sm);line-height:1.4;\n  color:var(--dshpc-fg-2);cursor:pointer;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n.dshpc-fb .dshpc-fb__row-act:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n.dshpc-fb__frame{flex:1;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
 
 // dist/session/session-css.generated.js
 var SESSION_CSS = "\n.dshpc-ses{display:flex;flex-direction:column;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-ses--sidebar{height:100%;border-left:1px solid var(--dshpc-border-faint);background:var(--dshpc-surface-base)}\n.dshpc-ses--page{height:100%;background:var(--dshpc-surface-base)}\n.dshpc-ses__list{flex:1;min-height:0;overflow:auto;padding:8px 12px;display:flex;flex-direction:column;gap:10px}\n.dshpc-ses__msg{padding:8px 10px;border-radius:8px;background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border-faint)}\n.dshpc-ses__msg--user{background:var(--dshpc-open-bg-soft)}\n.dshpc-ses__head{display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-ses__text{margin:0;white-space:pre-wrap;word-break:break-word;line-height:1.6}\n.dshpc-ses__atts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}\n.dshpc-ses__att{\n  display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;\n  background:var(--dshpc-chip-bg);color:var(--dshpc-fg);cursor:pointer;border:none;font:inherit;font-size:12px;\n}\n.dshpc-ses__att:hover{background:var(--dshpc-chip-bg-hover)}\n.dshpc-ses__note{padding:12px;color:var(--dshpc-fg-3);text-align:center}\n";
@@ -311,10 +311,11 @@ var DICT = {
     explorerExpand: "\u5C55\u5F00",
     explorerCollapse: "\u6536\u8D77",
     explorerEnter: "\u8FDB\u5165",
-    explorerRootName: "\u5DE5\u4F5C\u533A\u6839\u76EE\u5F55",
+    explorerRootName: "\uFF08\u5DE5\u4F5C\u533A\u6839\u76EE\u5F55\uFF09",
     explorerCrumbsAria: "\u76EE\u5F55\u8DEF\u5F84",
     explorerPickFile: "\u9009\u62E9\u6B64\u6587\u4EF6",
-    explorerPickDir: "\u9009\u62E9\u6B64\u6587\u4EF6\u5939",
+    explorerPickDir: "\u9009\u62E9",
+    explorerPickDirAria: "\u9009\u62E9\u6B64\u76EE\u5F55\uFF08\u8FDE\u5E26\u5176\u4E0B\u6240\u6709\u6587\u4EF6\uFF09",
     previewClose: "\u5173\u95ED",
     previewCopyPath: "\u590D\u5236\u8DEF\u5F84",
     previewRefresh: "\u5237\u65B0",
@@ -391,10 +392,11 @@ var DICT = {
     explorerExpand: "Expand",
     explorerCollapse: "Collapse",
     explorerEnter: "Open",
-    explorerRootName: "Workspace root",
+    explorerRootName: "(workspace root)",
     explorerCrumbsAria: "Breadcrumb",
     explorerPickFile: "Pick this file",
-    explorerPickDir: "Pick this folder",
+    explorerPickDir: "Select",
+    explorerPickDirAria: "Pick this folder (with everything under it)",
     previewClose: "Close",
     previewCopyPath: "Copy path",
     previewRefresh: "Refresh",
@@ -3364,7 +3366,7 @@ var DICT2 = {
     explorerSessionLabel: "\u4F1A\u8BDD\uFF1A",
     explorerWorkspaces: "\u5DE5\u4F5C\u533A\u6570\uFF1A",
     methodATitle: "\u65B9\u6CD5 A\uFF1AopenFilePreview \u4FA7\u8FB9\u680F\u9884\u89C8",
-    methodAHint: "\u4F20\u6587\u4EF6\u6216\u6587\u4EF6\u5939\u8DEF\u5F84\uFF0C\u53F3\u4FA7\u5F39\u51FA\u505C\u9760\u9884\u89C8 \u2014\u2014 \u5916\u58F3\u662F\u6838\u5FC3 PanelDock\uFF08\u62D6\u5BBD / \u2715 \u90FD\u7531\u5B83\u8D1F\u8D23\uFF0C\u9762\u677F\u81EA\u5DF1\u4E0D\u753B\uFF09\u3002\u6837\u4F8B\u6309\u94AE\u6307\u5411\u4ED3\u5E93\u91CC packages/demo/src/samples/ \u7684\u771F\u6587\u4EF6\uFF08\u76EE\u5F55\u662F\u6309\u5185\u5BB9\u63A2\u51FA\u6765\u7684\uFF0C\u4E0D\u5199\u6B7B\u8DEF\u5F84\uFF09\u3002",
+    methodAHint: "\u4F20\u6587\u4EF6\u6216\u6587\u4EF6\u5939\u8DEF\u5F84\uFF0C\u53F3\u4FA7**\u5206\u680F**\u6253\u5F00\uFF08\u6838\u5FC3 PanelDock\uFF0Cheader=null \u90A3\u7248\uFF1A\u6CA1\u6709\u5934\u90E8\u90A3\u6761\u7EBF\uFF0C\u2715 \u6D6E\u5728\u53F3\u4E0A\u89D2\uFF09\u2014\u2014\u5B83\u88AB\u585E\u8FDB\u6574\u9875\u8FD9\u5C42 flex \u884C\uFF0C\u6240\u4EE5\u4E3B\u533A\u88AB\u6324\u7A84\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u3002\u62D6\u5BBD\u7531 PanelDock \u8D1F\u8D23\uFF0C\u9762\u677F\u81EA\u5DF1\u4E0D\u753B\u5916\u58F3\u3002\u6837\u4F8B\u6309\u94AE\u6307\u5411\u4ED3\u5E93\u91CC packages/demo/src/samples/ \u7684\u771F\u6587\u4EF6\uFF08\u76EE\u5F55\u662F\u6309\u5185\u5BB9\u63A2\u51FA\u6765\u7684\uFF0C\u4E0D\u5199\u6B7B\u8DEF\u5F84\uFF09\u3002",
     openRootPreview: "\u6253\u5F00\u6700\u8FD1\u5DE5\u4F5C\u533A\u7684\u6839\u76EE\u5F55",
     openSamplesDir: "\u6D4F\u89C8\u6837\u4F8B\u76EE\u5F55",
     sampleMd: "\u9884\u89C8 README.md",
@@ -3564,7 +3566,7 @@ var DICT2 = {
     explorerSessionLabel: "session: ",
     explorerWorkspaces: "workspaces: ",
     methodATitle: "Method A: openFilePreview dock preview",
-    methodAHint: "Pass a file or folder path and a dock preview opens on the right \u2014 the shell is the core PanelDock (resizing / \u2715 are its job, the panel draws neither). The sample buttons point at real files under packages/demo/src/samples/ (the directory is probed by content, never hardcoded).",
+    methodAHint: "Pass a file or folder path and a dock opens on the right (core PanelDock, the header=null variant: no head line, \u2715 floats top-right) \u2014 it is inserted into the page flex row, so the main area is squeezed rather than covered. Resizing belongs to PanelDock. The sample buttons point at real files under packages/demo/src/samples/ (the directory is probed by content, never hardcoded).",
     openRootPreview: "Open the most recent workspace root",
     openSamplesDir: "Browse the sample directory",
     sampleMd: "Preview README.md",
@@ -3714,6 +3716,9 @@ function demoPanels() {
     (pane) => (0, import_react25.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react25.createElement)(Body, { id: pane.id }))
   );
 }
+
+// packages/demo/src/layout-mount.ts
+var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
 var import_react43 = require("react");
@@ -6158,7 +6163,7 @@ function FileBrowser(props) {
           if (event.key === "Enter" || event.key === " ")
             pick2();
         }
-      }, (0, import_react37.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react37.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 16 })), (0, import_react37.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name));
+      }, (0, import_react37.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react37.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })), (0, import_react37.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name));
     }
     const cached = childCache[childPath];
     const isOpen2 = openDirs.has(childPath);
@@ -6187,12 +6192,12 @@ function FileBrowser(props) {
             rowAction();
         }
       },
-      // 展开 / 收起：核心 IconButton（换图标表达朝向，不用 CSS 旋转）。
+      // 展开 / 收起：核心 IconButton，20×20 命中位 + 展开时转 90°（与兄弟 .dsh-tdt-sv-tree-toggle 同款）。
       (0, import_react37.createElement)(IconButton, {
         variant: "plain",
         size: "sm",
-        className: "dshpc-fb__row-toggle",
-        icon: (0, import_react37.createElement)(isOpen2 ? official_exports.IconChevronDownOutlineRegular : official_exports.IconChevronRightOutlineRegular, { size: 14 }),
+        className: `dshpc-fb__row-toggle${isOpen2 ? " dshpc-fb__row-toggle--open" : ""}`,
+        icon: (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 16 }),
         label: isOpen2 ? tt("explorerCollapse") : tt("explorerExpand"),
         "aria-expanded": isOpen2,
         onClick: (event) => {
@@ -6205,6 +6210,7 @@ function FileBrowser(props) {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
+        "aria-label": picker ? tt("explorerPickDirAria") : tt("explorerEnter"),
         onClick: actThisDir
       }, tt(picker ? "explorerPickDir" : "explorerEnter"))
     ), isOpen2 ? (0, import_react37.createElement)(
@@ -6241,7 +6247,7 @@ function FileBrowser(props) {
     { className: "dshpc-fb__menu-wrap" },
     (0, import_react37.createElement)(IconButton, {
       variant: "plain",
-      size: "sm",
+      size: "md",
       icon: (0, import_react37.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
       label: tt("explorerLevels"),
       "aria-expanded": menuOpen,
@@ -6262,7 +6268,7 @@ function FileBrowser(props) {
     crumbsOverflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index) => (0, import_react37.createElement)(import_react37.Fragment, { key: crumb.path }, index > 0 ? (0, import_react37.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))
   ), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react37.createElement)(IconButton, {
     variant: "plain",
-    size: "sm",
+    size: "md",
     icon: (0, import_react37.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
     label: tt("previewClose"),
     onClick: props.onClose
@@ -6274,7 +6280,7 @@ function FileBrowser(props) {
     style: { flex: "1 1 auto", minWidth: 0 }
   }), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react37.createElement)(IconButton, {
     variant: "plain",
-    size: "sm",
+    size: "md",
     icon: (0, import_react37.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
     label: tt("previewClose"),
     onClick: props.onClose
@@ -6285,7 +6291,8 @@ function FileBrowser(props) {
     className: "dshpc-fb__title-inner",
     style: { flex: "1 1 auto", minWidth: 0 }
   }), (0, import_react37.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react37.createElement)(Segmented, {
-    size: "md",
+    size: "sm",
+    variant: "default",
     label: viewingIsMd ? tt("previewMdSwitchAria") : tt("previewHtmlSwitchAria"),
     value: sourceView ? "source" : "render",
     items: [
@@ -6345,8 +6352,8 @@ function openFilePreview(options) {
   const container = document.createElement("div");
   container.id = PREVIEW_HOST_ID;
   container.setAttribute("data-dshpc-file-preview", "");
-  container.style.cssText = "position:fixed;top:0;right:0;bottom:0;z-index:1050;display:flex";
-  document.body.appendChild(container);
+  container.style.cssText = "display:contents";
+  options.mount.appendChild(container);
   const dock = createPanelDock({
     maxPanels: 1,
     defaultWidth: options.width ?? 460,
@@ -6376,23 +6383,30 @@ function openFilePreview(options) {
   };
   window.addEventListener("keydown", onKeyDown);
   ensureControls(getStyleKit());
-  root2.render((0, import_react38.createElement)("div", { style: { display: "flex", height: "100%", ["--dshpc-dock-h"]: "100%" } }, (0, import_react38.createElement)(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, (0, import_react38.createElement)(DockPanel, {
-    id: PREVIEW_PANEL_ID,
-    // 内置头部、只留关闭钮（用户 2026-10-21：核心有 header 机制，不要自定义一排）。
-    title: options.title ?? "",
-    width: options.width ?? 460,
-    minWidth: options.minWidth ?? 320,
-    maxWidth: options.maxWidth
-  }, (0, import_react38.createElement)(FileBrowser, {
-    workspaceFiles: options.workspaceFiles,
-    officeToPdf: options.officeToPdf ?? null,
-    sessionId: options.sessionId,
-    path: options.path,
-    rootName: options.rootName,
-    rootCache: options.rootCache,
-    translate: options.translate,
-    style: { height: "100%", minHeight: 0 }
-  })))));
+  root2.render((0, import_react38.createElement)(
+    "div",
+    // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
+    { style: { display: "contents", ["--dshpc-dock-h"]: "100%" } },
+    (0, import_react38.createElement)(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, (0, import_react38.createElement)(DockPanel, {
+      id: PREVIEW_PANEL_ID,
+      // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
+      // 关钮按核心规则自动浮到右上角，先用它；要换成自己的按钮再说。
+      header: null,
+      ariaLabel: options.title,
+      width: options.width ?? 460,
+      minWidth: options.minWidth ?? 320,
+      maxWidth: options.maxWidth
+    }, (0, import_react38.createElement)(FileBrowser, {
+      workspaceFiles: options.workspaceFiles,
+      officeToPdf: options.officeToPdf ?? null,
+      sessionId: options.sessionId,
+      path: options.path,
+      rootName: options.rootName,
+      rootCache: options.rootCache,
+      translate: options.translate,
+      style: { height: "100%", minHeight: 0 }
+    })))
+  ));
   return { close, path: options.path };
 }
 var PICKER_WIDTH = 480;
@@ -6452,6 +6466,7 @@ function pickWorkspaceFile(options) {
       onSelectWorkspace: options.onSelectWorkspace,
       picker: true,
       filter: options.filter,
+      translate: options.translate,
       onPick: (path, isDir) => finish({ path, isDir }),
       onClose: () => finish(null),
       style: { flex: "1 1 auto", width: "100%", minWidth: 0, minHeight: 0 }
@@ -6631,7 +6646,11 @@ function ExplorerPage() {
   }, [files, sessionId]);
   const open = (path) => {
     if (files === null || anchor === null) return;
+    const mount = pageRow.element;
+    if (mount === null) return;
     openFilePreview({
+      // 分栏挂载点 = 整页 flex 行（核心 dock 成为它的最后一个子项 ⇒ 主区被真正挤窄）。
+      mount,
       workspaceFiles: files,
       officeToPdf,
       sessionId: anchor.sessionId,
@@ -6869,7 +6888,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0739-4341"]
+            [t2("buildStamp"), "1021-0743-kb7m"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",
@@ -7071,6 +7090,10 @@ function DemoPage() {
   return (0, import_react44.createElement)(
     "div",
     {
+      // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
+      ref: (element) => {
+        pageRow.element = element;
+      },
       style: {
         display: "flex",
         alignItems: "stretch",

@@ -16,6 +16,7 @@ import { createStyleKit } from '../../../../dist/design/index.js'
 import { PanelDock, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { connectFileServices } from '../host-files.js'
 import { demoDock, demoPanels } from '../dock.js'
+import { pageRow } from '../layout-mount.js'
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, SECTION_GROUPS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
@@ -105,6 +106,10 @@ function DemoPage(): ReturnType<typeof h> {
   return h(
     'div',
     {
+      // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
+      ref: (element: HTMLElement | null) => {
+        pageRow.element = element
+      },
       style: {
         display: 'flex', alignItems: 'stretch', height: '100%', minHeight: 0, overflow: 'hidden',
         // 分栏是页面级布局成员：高度吃这个变量（默认 100vh 是给整页场景的，这里是宿主页面区）。
