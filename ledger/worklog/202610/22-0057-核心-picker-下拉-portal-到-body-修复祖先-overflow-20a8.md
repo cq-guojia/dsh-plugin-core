@@ -53,3 +53,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-22 00:57:10 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-22 01:08:57 · log · @GuoJia-Agent · 实施：Picker 菜单 FloatingPortal 到 body + Floating UI 定位（flip/shift/offset/autoUpdate/size）；build/typecheck/test 77 绿；视觉裁剪待浏览器确认
+- 2026-10-22 01:14:09 · log · @GuoJia-Agent · 已 commit + push 到 main（调试期不 bump/tag）：核心 Picker 菜单 portal 到 body + Floating UI 定位，build/test 77 绿
