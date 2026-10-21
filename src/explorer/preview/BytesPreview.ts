@@ -31,8 +31,13 @@ export function BytesPreview(props: BytesPreviewProps): ReturnType<typeof h> {
       .then((res) => {
         const data = bytesOf(res)
         if (!alive) return
-        if (data === null || 'failed' in data) {
-          setFailed(errView(data === null ? undefined : data.failed))
+        if (data === null) {
+          console.warn('[dsh-plugin-core:explorer] readBytes 返回体无法解析为字节', props.path, res)
+          setFailed({ key: 'previewBadPayload' })
+          return
+        }
+        if ('failed' in data) {
+          setFailed(errView(data.failed))
           return
         }
         // 复制一份：TS 5.9 下 Uint8Array<ArrayBufferLike> 不是合法的 BlobPart
@@ -54,5 +59,9 @@ export function BytesPreview(props: BytesPreviewProps): ReturnType<typeof h> {
   if (props.kind === 'image') {
     return h('img', { className: 'dshpc-fb__image', src: url, alt: props.path })
   }
-  return h('iframe', { className: 'dshpc-fb__frame', src: url, title: props.path })
+  return h(
+    'div',
+    { className: 'dshpc-fb__fill' },
+    h('iframe', { className: 'dshpc-fb__frame', src: url, title: props.path }),
+  )
 }

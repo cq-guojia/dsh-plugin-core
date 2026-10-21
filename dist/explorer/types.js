@@ -146,7 +146,10 @@ export function errView(error) {
         case 'service-unavailable':
             return { key: 'previewOfficeUnavailable' };
         default:
-            return { key: 'explorerFailed' };
+            // 未映射的机器码**必须留痕**：写死「加载失败」会让消费方和我们自己都永远查不出是谁的锅
+            // （HTML/图片预览曾因此只剩一句「加载失败」，无法定位是远端拒了还是形状不对）。
+            console.warn('[dsh-plugin-core:explorer] 预览失败：未映射的远端错误码', code, error);
+            return { key: 'previewFailedCode', params: { code } };
     }
 }
 // ── 目录条目 ──

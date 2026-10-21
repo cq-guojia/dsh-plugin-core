@@ -142,4 +142,7 @@
 .dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}
 .dshpc-fb__more{display:flex;justify-content:center;padding:10px}
 .dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}
-.dshpc-fb__frame{flex:1;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}
+/* iframe 的外壳（兄弟 .dsh-tdt-sv-preview-fill）：iframe 必须包在这一层里才拿得到高度——
+   裸挂 iframe 时替换元素的自动最小尺寸会让高度算不出来（表现为预览区整片空白、像没反应）。 */
+.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}
+.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}

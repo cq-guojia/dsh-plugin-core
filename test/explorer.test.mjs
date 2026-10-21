@@ -67,9 +67,11 @@ test('bareCode 剥命名空间 / errView 按 code 分支', () => {
   assert.equal(errView({ code: 'too-large' }).key, 'previewTooLarge')
   assert.equal(errView({ code: 'not-text' }).key, 'previewNotText')
   assert.equal(errView({ code: 'service-unavailable' }).key, 'previewOfficeUnavailable')
-  // 未知/无 code ⇒ 通用失败，绝不按消息文本猜
-  assert.equal(errView(new Error('boom')).key, 'explorerFailed')
-  assert.equal(errView(undefined).key, 'explorerFailed')
+  // 未映射的 code ⇒ 通用失败 + **把机器码带出来**（写死「加载失败」会让消费方永远查不出是谁的锅）
+  assert.equal(errView({ code: 'workspace-file/whatever' }).key, 'previewFailedCode')
+  assert.equal(errView({ code: 'workspace-file/whatever' }).params.code, 'whatever')
+  assert.equal(errView(new Error('boom')).key, 'previewFailedCode')
+  assert.equal(errView(undefined).key, 'previewFailedCode')
 })
 
 test('sortEntries 目录在前 + 名称不区分大小写', () => {

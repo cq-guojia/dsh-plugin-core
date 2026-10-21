@@ -71,8 +71,14 @@ export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
       .then((res) => {
         const data = bytesOf(res)
         if (!alive) return
-        if (data === null || 'failed' in data) {
-          setFailed(errView(data === null ? undefined : data.failed))
+        if (data === null) {
+          // 形状不对要说「返回数据不符合预期」，不能混进「加载失败」——混了就永远查不出是谁的锅。
+          console.warn('[dsh-plugin-core:explorer] readBytes 返回体无法解析为字节', props.path, res)
+          setFailed({ key: 'previewBadPayload' })
+          return
+        }
+        if ('failed' in data) {
+          setFailed(errView(data.failed))
           return
         }
         const html = buildStaticHtml(data)
@@ -103,5 +109,9 @@ export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
   }
   if (failed !== null) return h(EmptyState, { text: tt(failed.key, failed.params), translate: tt })
   if (doc === null) return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'))
-  return h('iframe', { className: 'dshpc-fb__frame', sandbox: '', srcDoc: doc, title: props.path })
+  return h(
+    'div',
+    { className: 'dshpc-fb__fill' },
+    h('iframe', { className: 'dshpc-fb__frame', sandbox: '', srcDoc: doc, title: props.path }),
+  )
 }

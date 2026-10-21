@@ -48,6 +48,7 @@ export type UtilMessageKey =
   | 'previewNotDirectory'
   | 'previewTooLarge'
   | 'previewNotText'
+  | 'previewFailedCode'
   | 'mdCopy'
   | 'mdCopied'
   | 'mdCode'
@@ -135,6 +136,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     previewNotDirectory: '不是文件夹',
     previewTooLarge: '文件过大，无法预览',
     previewNotText: '不是文本文件',
+    previewFailedCode: '加载失败（{code}）',
     mdCopy: '复制',
     mdCopied: '已复制',
     mdCode: '代码',
@@ -218,6 +220,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     previewNotDirectory: 'Not a folder',
     previewTooLarge: 'File too large to preview',
     previewNotText: 'Not a text file',
+    previewFailedCode: 'Failed to load ({code})',
     mdCopy: 'Copy',
     mdCopied: 'Copied',
     mdCode: 'Code',

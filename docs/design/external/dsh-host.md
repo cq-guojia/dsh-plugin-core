@@ -38,6 +38,22 @@
 - 后果：本包调用处一律显式传 `{}`。
 - 来源：`dsh-task-dispatch-table/src/client/file-preview.tsx` 的 `WorkspaceFilesFace` 注释（真机 2026-10-03 踩坑记录）。
 
+## 3.1 `read` / `readBytes` 参数的**取值**约束（2026-10-21 读官方源码核实）
+
+- 版本：`@deepseek-ai/dsh-api-workspace-files@0.2.1-rc.2`（`lib/index.js` / `lib/typert.remote-client.js`）。
+- `read` 的 `range = { offset?, limit? }`：`offset` **从 1 起算**（`resolvePage` 里
+  `integerAtLeast(range.offset, 1)`，缺省 1）；`limit` 缺省 `maxLines`，**超过即抛
+  `gateway/bad-request`**（部署默认 `maxLines = 5000`）。⇒ 首页传 `{}`、翻页传 `{ offset }`，
+  **不要自己塞 limit**（曾经塞 `limit: 5000` 且 `offset: 0`，所有文件一律「加载失败」）。
+- `readBytes` 的 `options` 是 **strictObject**，只认 `range` / `baseFile` 两个键，
+  `{}` 合法；不带 `range` = 读全量，上限是部署 `maxFileBytes`（默认 32MiB），超出抛
+  `workspace-file/too-large`。
+- 两者成功体都在信封 payload：`read → { offset, text, lines, eof, absolutePath, version, bytes? }`，
+  `readBytes → { offset, data: Uint8Array, eof, absolutePath, version, bytes? }`。
+- 定位共用 `locateFile`：`path` 为空抛 `gateway/bad-request`，不存在抛 `workspace-file/not-found`，
+  非普通文件抛 `workspace-file/not-regular-file`。
+- 来源：官方包 `lib/index.js:427/447/536/546/589`、`lib/typert.remote-client.js:44-76`。
+
 ## 4. 明暗判据
 
 - 事实：宿主启动脚本 `toggleAttribute` 往 body 写 `data-ds-dark-theme`，是**唯一**明暗判据，
