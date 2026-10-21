@@ -48,7 +48,7 @@ import {
   Switch,
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
-import { Demo, Placeholder } from './index.js'
+import { Placeholder } from './index.js'
 import { ApiTable, CodeOnly, Example, Note, type ApiRow } from '../doc.js'
 import { demoDock } from '../dock.js'
 import { t, type DemoMessageKey } from '../i18n.js'
@@ -1218,6 +1218,152 @@ export function ChipPage(): ReturnType<typeof h> {
 
 // ── 反馈 ────────────────────────────────────────────────────────────────
 
+const CODE_HOST_MODAL = `// 宿主原生弹窗：组件直接用官方 Modal（遮罩/头部/关闭叉全归宿主管）
+import { Modal } from '@deepseek-ai/dsh-client-ui-primitives'
+
+<Modal
+  open={open}
+  onClose={() => setOpen(false)}
+  title="宿主原生弹窗"
+  closeLabel="关闭"
+  description="正文区塞任意内容，footer 任意按钮组合。"
+  footer={
+    <>
+      <Button variant="outline">取消</Button>
+      <Button variant="danger">删除</Button>
+    </>
+  }
+>
+  <Input value={text} onChange={setText} placeholder="自定义输入框（来自 core 控件）" />
+</Modal>
+
+// 命令式：加 skin:"host" 走同一个官方 Modal，返回 Promise
+const ok = await confirmModal({
+  title: '宿主确认框', message: '官方 Modal 弹出的确认（danger）',
+  tone: 'danger', confirmText: '删除', cancelText: '再想想', skin: 'host',
+})
+await alertModal({ title: '宿主提示', message: '关闭即确认', skin: 'host' })`
+
+const CODE_SMALL_MODAL = `// 我们的标准小框：名字带 Modal 后缀，不覆盖宿主原生
+<AlertModal
+  severity="warning"
+  title="操作结果"
+  message="这是一条说明文字：AlertModal 用于只需一个确认动作的提示场景。"
+  onConfirm={() => setOpen(false)}
+/>
+<ConfirmModal
+  title="删除任务"
+  message="删除后不可恢复，确定要删除吗？"
+  tone="danger"
+  confirmText="删除"
+  cancelText="再想想"
+  onConfirm={() => {}}
+  onCancel={() => {}}
+/>
+
+// 命令式（Promise，不用管开关状态）
+if (await confirmModal({ title: '确认提交', message: '提交后不可撤销', tone: 'danger' })) {
+  // 用户点了确认
+}
+await alertModal({ title: '提示', message: '这是命令式 alert，关闭即确认' })`
+
+const CODE_LARGE_MODAL = `// 内容弹窗：size md / lg，承载任意内容（不是「确定/取消」命令式）
+<Modal title="任务详情" onClose={close} footer={<Button variant="primary">知道了</Button>}>
+  <div>弹窗主体内容——会话预览这类功能就用它来承载。</div>
+</Modal>
+
+// lg + headerActions（右上角）+ 可滚动内容
+<Modal
+  size="lg"
+  title="会话记录"
+  headerActions={<Button variant="outline" size="sm">更多</Button>}
+  onClose={close}
+  footer={<><Button variant="outline">关闭</Button><Button variant="primary">完成</Button></>}
+>
+  {items.map((it) => <div key={it.id}>{it.title}</div>)}
+</Modal>
+
+// 无 footer、头部自定义排法：title 收 ReactNode
+<Modal
+  size="lg"
+  title={<><b>任务详情</b><span className="dshpc-modal__sid">sid-2026-1020-7f3a · 5 个步骤</span></>}
+  onClose={close}
+>
+  <div>这里整个弹窗都由调用方自己定义。</div>
+</Modal>`
+
+const CODE_TOAST_NATIVE = `// showToast：Sonner 原味（对比用）
+showToast('已保存')
+showToast('保存成功', { variant: 'success' })
+showToast('保存失败', { variant: 'error' })
+showToast('整条自定义色', { color: '#7c3aed' })
+showToast('消失后回调', { onDismiss: () => {} })
+showToast('顶部-左', { position: 'top-left' })`
+
+const CODE_TOAST_HOST = `// showHostToast：直接包官方 Toast（顶部横幅）
+showHostToast('这是宿主原生提示')
+showHostToast('操作成功', { tone: 'success' })
+showHostToast('有动作的原生提示', { actions: [{ text: '查看', onClick: () => {} }] })`
+
+const CODE_TOAST_NOTIFY = `// notify：统一灰/绿/红/黄 + 右侧我们自己的按钮（项目内推荐）
+notify('已保存草稿')
+notify('保存成功', { variant: 'success' })
+notify('磁盘空间不足', { variant: 'warning', description: '清理后重试' })
+notify('已删除该文件', {
+  variant: 'success',
+  description: '可在 10 秒内撤销',
+  actions: [{ text: '撤销', variant: 'outline', onClick: () => {} }],
+})
+notify('确认提交吗？', {
+  description: '提交后将通知相关成员',
+  actions: [
+    { text: '取消', variant: 'outline', onClick: () => {} },
+    { text: '提交', variant: 'primary', onClick: () => {} },
+  ],
+})`
+
+const CODE_FEEDBACK_USAGE = `pnpm add dsh-plugin-core
+
+import {
+  Modal, AlertModal, ConfirmModal,
+  alertModal, confirmModal,
+  notify, showToast, showHostToast,
+} from 'dsh-plugin-core/ui'
+
+// 只问一句：命令式 + Promise，不用管开关状态
+const ok = await confirmModal({ title: '确认提交', message: '提交后不可撤销', tone: 'danger' })
+
+// 要装内容的弹窗：组件式
+<Modal title="任务详情" onClose={close} size="lg">…</Modal>
+
+// 提示：notify 是项目内推荐（统一卡片 + 我们自己的按钮）
+notify('已保存草稿', { actions: [{ text: '撤销', onClick: undo }] })
+
+// 要官方Toast 就用 showHostToast；showToast 是 Sonner 原味，仅对比用`
+
+/** 弹窗家族公共参数（AlertModal / ConfirmModal / Modal 同源，字段按各自能力裁剪）。 */
+const MODAL_API: readonly ApiRow[] = [
+  { name: 'title', type: 'string | ReactNode', def: '—', descKey: 'apiTitle' },
+  { name: 'message', type: 'string', def: '—', descKey: 'apiMessage' },
+  { name: 'severity', type: "'info' | 'success' | 'warning' | 'error'", def: "'info'", descKey: 'apiSeverity' },
+  { name: 'tone', type: "'primary' | 'danger' | 'warning'", def: "'primary'", descKey: 'apiToneModal' },
+  { name: 'confirmText / cancelText', type: 'string', def: '「确定」/「取消」', descKey: 'apiConfirmText' },
+  { name: 'onConfirm / onCancel', type: '() => void', def: '—', descKey: 'apiOnConfirm' },
+  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'md'", descKey: 'apiSize' },
+  { name: 'headerActions', type: 'ReactNode', def: '—', descKey: 'apiHeaderActions' },
+  { name: 'footer', type: 'ReactNode', def: '—', descKey: 'apiFooter' },
+]
+
+/** 提示家族参数（notify / showToast / showHostToast 三者的交集与差异）。 */
+const TOAST_API: readonly ApiRow[] = [
+  { name: 'variant / tone', type: "'info' | 'success' | 'error' | 'warning'", def: "'info'", descKey: 'apiVariant' },
+  { name: 'description', type: 'string', def: '—', descKey: 'apiDescription' },
+  { name: 'actions', type: 'ToastAction[]', def: '—', descKey: 'apiActions' },
+  { name: 'durationMs', type: 'number', def: '2600', descKey: 'apiDurationMs' },
+  { name: 'position', type: 'ToastPosition', def: "'bottom-center'", descKey: 'apiPosition' },
+  { name: 'onDismiss', type: '() => void', def: '—', descKey: 'apiOnDismiss' },
+]
+
 export function FeedbackPage(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
   const [openNative, setOpenNative] = useState(false)
@@ -1230,9 +1376,10 @@ export function FeedbackPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(Note, { text: t('feedbackNote') }),
     h(
-      Demo,
-      { title: '原生弹窗（宿主）', hint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。' },
+      Example,
+      { title: '原生弹窗（宿主）', hint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。', code: CODE_HOST_MODAL },
       h(
         'div',
         { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
@@ -1276,8 +1423,8 @@ export function FeedbackPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: '小型弹窗（自定义）', hint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。' },
+      Example,
+      { title: '小型弹窗（自定义）', hint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。', code: CODE_SMALL_MODAL },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
@@ -1344,8 +1491,8 @@ export function FeedbackPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: '大型弹窗（自定义）', hint: '我们的内容弹窗：Modal（size md/lg），承载任意内容，不是「确定/取消」命令式。三张示例：默认 md / 带 footer / 无 footer（内容自定义），头部排法可不同。' },
+      Example,
+      { title: '大型弹窗（自定义）', hint: '我们的内容弹窗：Modal（size md/lg），承载任意内容，不是「确定/取消」命令式。三张示例：默认 md / 带 footer / 无 footer（内容自定义），头部排法可不同。', code: CODE_LARGE_MODAL },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
@@ -1427,8 +1574,8 @@ export function FeedbackPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: 'Toast · 官方 Sonner', hint: 'showToast()：第三方库原味，对比用' },
+      Example,
+      { title: 'Toast · 官方 Sonner', hint: 'showToast()：第三方库原味，对比用', code: CODE_TOAST_NATIVE },
       h(
         'div',
         { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
@@ -1460,8 +1607,8 @@ export function FeedbackPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: 'Toast · 宿主原生', hint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）' },
+      Example,
+      { title: 'Toast · 宿主原生', hint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）', code: CODE_TOAST_HOST },
       h(
         'div',
         { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
@@ -1480,8 +1627,8 @@ export function FeedbackPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: 'Toast · 我们封装 notify', hint: 'notify()：统一灰/绿/红/黄 + 右侧我们自己的按钮' },
+      Example,
+      { title: 'Toast · 我们封装 notify', hint: 'notify()：统一灰/绿/红/黄 + 右侧我们自己的按钮', code: CODE_TOAST_NOTIFY },
       h(
         'div',
         { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
@@ -1517,10 +1664,82 @@ export function FeedbackPage(): ReturnType<typeof h> {
         ),
       ),
     ),
+    h(CodeOnly, { labelKey: 'docUsage', code: CODE_FEEDBACK_USAGE }),
+    h(ApiTable, { rows: MODAL_API }),
+    h(ApiTable, { rows: TOAST_API }),
   )
 }
 
 // ── 布局与滚动 ──────────────────────────────────────────────────────────
+
+const CODE_DOCK = `// 1) 建一个 dock 控制器（应用级单例；maxPanels 默认 3）
+const dock = createPanelDock({ maxPanels: 3 })
+
+// 2) 渲染：结构写在调用点 —— PanelDock 读 children 里 DockPanel 的 props 统一画
+<div style={{ display: 'flex', height: '100%' }}>
+  <main style={{ flex: 1, minWidth: 0 }}>主区内容</main>
+  <PanelDock dock={dock}>
+    <DockPanel id="files" title="文件" icon={<FolderIcon />}>
+      <FileBrowser />
+    </DockPanel>
+    <DockPanel id="preview" title="预览" width={520} closeButton="floating">
+      <FilePreview />
+    </DockPanel>
+  </PanelDock>
+</div>
+
+// 3) 显隐归状态：只传 id，不传内容
+const result = dock.open('files')   // { ok, reason }；到上限时 ok=false
+if (!result.ok) showToast('最多同时开 3 栏')
+dock.close('files')
+dock.toggle('preview')
+dock.isOpen('files')
+
+// 4) 订阅状态驱动 UI（React）
+const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`
+
+const CODE_DOCK_USAGE = `pnpm add dsh-plugin-core
+
+import { PanelDock, DockPanel, createPanelDock } from 'dsh-plugin-core/ui'
+
+const dock = createPanelDock({ maxPanels: 3 })
+
+<div style={{ display: 'flex', height: '100%' }}>
+  <main style={{ flex: 1, minWidth: 0 }}>主区</main>
+  <PanelDock dock={dock}>
+    <DockPanel id="files" title="文件">
+      <FileBrowser />
+    </DockPanel>
+  </PanelDock>
+</div>
+
+// ⚠️ PanelDock 是布局成员不是浮层：必须由调用方放进自己的 flex 根容器；
+//    自挂 document.body 只能遮盖、挤不窄主区。`
+
+/** DockPanel 的 props（与 src/ui/PanelDock.ts 的 DockPanelProps 逐条对齐）。 */
+const DOCK_PANEL_API: readonly ApiRow[] = [
+  { name: 'id', type: 'string', def: '—', descKey: 'apiPanelId' },
+  { name: 'title', type: 'ReactNode', def: '—', descKey: 'apiPanelTitle' },
+  { name: 'icon', type: 'ReactNode', def: '—', descKey: 'apiPanelIcon' },
+  { name: 'extra', type: 'ReactNode', def: '—', descKey: 'apiPanelExtra' },
+  { name: 'header', type: 'ReactNode | null', def: '—', descKey: 'apiPanelHeader' },
+  { name: 'closable', type: 'boolean', def: 'true', descKey: 'apiPanelClosable' },
+  { name: 'closeButton', type: 'DockCloseButton', def: "'auto'", descKey: 'apiPanelCloseButton' },
+  { name: 'width / minWidth / maxWidth', type: 'number', def: '460 / 320 / —', descKey: 'apiPanelWidth' },
+]
+
+/** createPanelDock(options) 的参数（与 src/ui/PanelDock.ts 的 PanelDockOptions 逐条对齐）。 */
+const DOCK_OPTIONS_API: readonly ApiRow[] = [
+  { name: 'maxPanels', type: 'number', def: '3', descKey: 'apiMaxPanels' },
+  { name: 'defaultWidth', type: 'number', def: '460', descKey: 'apiDefaultWidth' },
+  { name: 'minWidth', type: 'number', def: '320', descKey: 'apiPanelMinWidth' },
+  { name: 'storageKey', type: 'string | false', def: "'dshpc-dock'", descKey: 'apiStorageKey' },
+  { name: 'onOpen', type: '({ id, created }) => void', def: '—', descKey: 'apiOnOpen' },
+  { name: 'onBeforeClose', type: '({ id, reason }) => boolean | undefined', def: '—', descKey: 'apiOnBeforeClose' },
+  { name: 'onClose', type: '({ id, reason }) => void', def: '—', descKey: 'apiOnClose' },
+  { name: 'onResize', type: '({ id, width }) => void', def: '—', descKey: 'apiOnResize' },
+  { name: 'onLimitReached', type: '({ id }) => void', def: '—', descKey: 'apiOnLimitReached' },
+]
 
 export function LayoutPage(): ReturnType<typeof h> {
   // 控制器与「页面右侧那份 PanelDock」都在 client/index.tsx（页面级），这里只负责触发与读状态。
@@ -1537,12 +1756,14 @@ export function LayoutPage(): ReturnType<typeof h> {
   }
   const opened = state.ids
 
+
   return h(
     'div',
     null,
+    h(Note, { text: t('layoutNote') }),
     h(
-      Demo,
-      { title: 'PanelDock', hint: t('dockHint') },
+      Example,
+      { title: 'PanelDock', hint: t('dockHint'), code: CODE_DOCK },
       h(
         'div',
         { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' } },
@@ -1577,6 +1798,9 @@ export function LayoutPage(): ReturnType<typeof h> {
         t('dockMainText'),
       ),
     ),
+    h(CodeOnly, { labelKey: 'docUsage', code: CODE_DOCK_USAGE }),
+    h(ApiTable, { rows: DOCK_PANEL_API }),
+    h(ApiTable, { rows: DOCK_OPTIONS_API }),
   )
 }
 

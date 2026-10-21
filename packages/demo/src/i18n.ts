@@ -221,9 +221,46 @@ export type DemoMessageKey =
   | 'apiAction'
   | 'apiPanel'
   | 'apiTone'
+  | 'apiToneModal'
   | 'apiOnClick'
   | 'apiText'
   | 'apiRender'
+  // 反馈页（弹窗 + 提示）
+  | 'feedbackNote'
+  | 'apiTitle'
+  | 'apiMessage'
+  | 'apiSeverity'
+  | 'apiConfirmText'
+  | 'apiCancelText'
+  | 'apiOnConfirm'
+  | 'apiOnCancel'
+  | 'apiHeaderActions'
+  | 'apiFooter'
+  | 'apiDescription'
+  | 'apiActions'
+  | 'apiPosition'
+  | 'apiOnDismiss'
+  | 'apiDurationMs'
+  // 布局页（PanelDock）
+  | 'layoutNote'
+  | 'apiPanelId'
+  | 'apiPanelTitle'
+  | 'apiPanelIcon'
+  | 'apiPanelExtra'
+  | 'apiPanelHeader'
+  | 'apiPanelClosable'
+  | 'apiPanelCloseButton'
+  | 'apiPanelWidth'
+  | 'apiPanelMinWidth'
+  | 'apiPanelMaxWidth'
+  | 'apiMaxPanels'
+  | 'apiDefaultWidth'
+  | 'apiStorageKey'
+  | 'apiOnOpen'
+  | 'apiOnBeforeClose'
+  | 'apiOnClose'
+  | 'apiOnResize'
+  | 'apiOnLimitReached'
   | 'docNote'
   | 'docPreview'
   | 'docCode'
@@ -378,9 +415,48 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiAction: '右上角操作区（按钮 / 文字都行，自动垂直居中）',
     apiPanel: '展开内容（expanded 为 true 时显示）',
     apiTone: '语义色档：neutral / business / success / warning / danger',
+    apiToneModal: "语义档：'primary' | 'danger' | 'warning'（确认框专用，与 Chip 的五档 tone 不同）",
     apiOnClick: '传了才渲染成 button',
     apiText: '文字',
     apiRender: '走时渲染函数：参数是当前毫秒数，返回任意 ReactNode',
+
+    feedbackNote: '弹窗分三层，按需要选：宿主官方 Modal（遮罩/头部/关闭叉全归宿主管，命令式加 skin:"host"）→ 我们的标准小框 AlertModal / ConfirmModal（单/双按钮，名字带 Modal 后缀，不覆盖宿主原生）→ 我们的内容弹窗 Modal（size md/lg，承载任意内容）。命令式一律 Promise（await confirmModal(...) 拿 true/false），不用回调式。提示三种：showToast 是 Sonner 原味（对比用）、showHostToast 是官方 Toast、notify 是项目内推荐（统一卡片 + 我们自己的按钮）。',
+
+    apiTitle: '标题：字符串或 ReactNode（自定义排法时传节点）',
+    apiMessage: '正文说明文字',
+    apiSeverity: "语义档：'info' | 'success' | 'warning' | 'error'",
+    apiConfirmText: '确认按钮文案',
+    apiCancelText: '取消按钮文案',
+    apiOnConfirm: '确认回调（命令式为 Promise resolve(true)）',
+    apiOnCancel: '取消回调（命令式为 Promise resolve(false)）',
+    apiHeaderActions: '右上角操作区',
+    apiFooter: '底部按钮区；不传则没有 footer',
+    apiDescription: '标题下方的次要说明',
+    apiActions: '右侧动作按钮（1–2 个，用我们自己的 Button 样式）',
+    apiPosition: "出现位置：'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
+    apiOnDismiss: '提示消失（自动或手动关闭）后触发',
+    apiDurationMs: '停留时长（毫秒），默认 2600',
+
+    layoutNote: 'PanelDock 是**布局成员，不是浮层**：它占宽度、把主区挤窄，因此必须由调用方放进自己的 flex 根容器里（自挂 document.body 只能遮盖、挤不窄）。分工：结构写在调用点（PanelDock 的 children 里放 DockPanel）、显隐归状态（dock.open(id) 只传 id 不传内容）、头部可控（title / icon / extra 三件套，或 header 整块替换）。本页右侧那一份就是真的，点上面的按钮试。',
+
+    apiPanelId: '组名（寻址键）；同名唯一',
+    apiPanelTitle: '标题；header 传了非 undefined 的值时它只用于无障碍名',
+    apiPanelIcon: '标题前的图标位（可多个）',
+    apiPanelExtra: '标题右侧的任意内容（按钮、标签、下拉都行）',
+    apiPanelHeader: '整块替换头部：不传 = 内置头；null = 不要头部；其他 = 你的头部（库不加内边距/边框/背景）',
+    apiPanelClosable: '是否显示关闭钮',
+    apiPanelCloseButton: "关闭钮位置：'auto' | 'header' | 'floating' | 'none'",
+    apiPanelWidth: '首次打开时的宽度（px）',
+    apiPanelMinWidth: '可拖动的宽度下限',
+    apiPanelMaxWidth: '可拖动的宽度上限；不传 = 只受视口与主区保底约束',
+    apiMaxPanels: '同时存在的栏数上限',
+    apiDefaultWidth: '新栏默认宽度',
+    apiStorageKey: '宽度记忆前缀；传 false 关闭记忆',
+    apiOnOpen: '新开一栏后触发（重复打开已存在的不触发）',
+    apiOnBeforeClose: '关闭之前触发；返回 false 可取消（未保存内容拦截就靠它）',
+    apiOnClose: '已经关掉之后触发',
+    apiOnResize: '拖宽松手后触发',
+    apiOnLimitReached: '到上限被拒时触发（库不弹提示、不抛异常）',
     btnLabelSave: '保存修改',
     btnLabelCancel: '取消',
     btnLabelDelete: '删除',
@@ -655,9 +731,48 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiAction: 'Top-right action area (a button or text is fine; auto-vertically centered)',
     apiPanel: 'Expanded content (shown when expanded is true)',
     apiTone: 'Semantic tier: neutral / business / success / warning / danger',
+    apiToneModal: "Semantic tier: 'primary' | 'danger' | 'warning' (confirm dialog only; different from Chip's five-tier tone)",
     apiOnClick: 'Renders as a button only when passed',
     apiText: 'Text',
     apiRender: 'Ticker render function: takes the current timestamp in ms, returns any ReactNode',
+
+    feedbackNote: 'Modals come in three layers — pick by need: the host official Modal (mask/header/close button all belong to the host; command-style adds skin:"host") → our standard small boxes AlertModal / ConfirmModal (one/two buttons; the Modal suffix keeps them from shadowing the host native) → our content Modal (size md/lg, holds any content). Command-style APIs all return a Promise (await confirmModal(...) gives true/false), never callbacks. Three toasts: showToast is Sonner as-is (for comparison), showHostToast is the official Toast, notify is the in-project recommendation (unified card + our own buttons).',
+
+    apiTitle: 'Title: a string or a ReactNode (pass a node for a custom layout)',
+    apiMessage: 'Body text',
+    apiSeverity: "Semantic tier: 'info' | 'success' | 'warning' | 'error'",
+    apiConfirmText: 'Confirm button label',
+    apiCancelText: 'Cancel button label',
+    apiOnConfirm: 'Confirm callback (command-style: Promise resolve(true))',
+    apiOnCancel: 'Cancel callback (command-style: Promise resolve(false))',
+    apiHeaderActions: 'Top-right action area',
+    apiFooter: 'Bottom button area; omit it for no footer',
+    apiDescription: 'Secondary text under the title',
+    apiActions: 'Trailing action buttons (1–2, in our own Button style)',
+    apiPosition: "Position: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
+    apiOnDismiss: 'Fires after the toast disappears (auto or manual close)',
+    apiDurationMs: 'Dwell time in ms, default 2600',
+
+    layoutNote: 'PanelDock is a LAYOUT MEMBER, not an overlay: it takes width and squeezes the main area, so the caller must place it inside their own flex root (self-mounting on document.body can only cover, never squeeze). The split: structure lives at the call site (DockPanel inside PanelDock children), visibility belongs to state (dock.open(id) takes an id only, never content), and the header is controllable (title / icon / extra, or replace it wholesale with header). The one on the right of this page is real — press the buttons above to try it.',
+
+    apiPanelId: 'Group name (addressing key); unique per dock',
+    apiPanelTitle: 'Title; only the accessible name once header is passed a non-undefined value',
+    apiPanelIcon: 'Icon slot before the title (can be several)',
+    apiPanelExtra: 'Anything on the right of the title (button, tag, dropdown, …)',
+    apiPanelHeader: 'Replace the header wholesale: omit = built-in header; null = no header; anything else = your header (the library adds no padding/border/background)',
+    apiPanelClosable: 'Whether the close button shows',
+    apiPanelCloseButton: "Close button position: 'auto' | 'header' | 'floating' | 'none'",
+    apiPanelWidth: 'Width on first open (px)',
+    apiPanelMinWidth: 'Lower drag bound',
+    apiPanelMaxWidth: 'Upper drag bound; omit = bounded only by the viewport and the main-area floor',
+    apiMaxPanels: 'Max simultaneously open panels',
+    apiDefaultWidth: 'Default width for new panels',
+    apiStorageKey: 'Width-memory prefix; pass false to disable memory',
+    apiOnOpen: 'Fires after a new panel opens (re-opening an existing one does not)',
+    apiOnBeforeClose: 'Fires before closing; return false to cancel (how you intercept unsaved content)',
+    apiOnClose: 'Fires after the panel is gone',
+    apiOnResize: 'Fires when the drag is released',
+    apiOnLimitReached: 'Fires when the cap rejects an open (the library shows no toast and throws nothing)',
     btnLabelSave: 'Save changes',
     btnLabelCancel: 'Cancel',
     btnLabelDelete: 'Delete',

@@ -538,8 +538,8 @@ function Picker(props) {
     if (!open)
       return;
     const onDown = (e) => {
-      const root2 = rootRef.current;
-      if (root2 !== null && !root2.contains(e.target))
+      const root = rootRef.current;
+      if (root !== null && !root.contains(e.target))
         setOpen(false);
     };
     document.addEventListener("mousedown", onDown);
@@ -1050,18 +1050,18 @@ function getHostRoot() {
   return hostRoot;
 }
 function flush() {
-  const root2 = getHostRoot();
-  if (root2 === null)
+  const root = getHostRoot();
+  if (root === null)
     return;
   ensureControls(getStyleKit());
   if (entries.length === 0) {
-    root2.unmount();
+    root.unmount();
     hostContainer?.remove();
     hostRoot = null;
     hostContainer = null;
     return;
   }
-  root2.render((0, import_react10.createElement)(import_react10.Fragment, null, entries.map((e) => e.node)));
+  root.render((0, import_react10.createElement)(import_react10.Fragment, null, entries.map((e) => e.node)));
 }
 function dismiss(id) {
   entries = entries.filter((e) => e.id !== id);
@@ -2304,86 +2304,175 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
   );
 });
 
+// dist/ui/toast-host.js
+var TOAST_HOST_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/toast-host");
+function claimToastHost(create) {
+  const g = globalThis;
+  const existing = g[TOAST_HOST_KEY];
+  if (existing !== void 0)
+    return existing;
+  const created = create();
+  g[TOAST_HOST_KEY] = created;
+  return created;
+}
+
 // dist/ui/Toast.js
 var DEFAULT_MS = 2600;
 var ROOT_ID = "dshpc-toast-root";
-var root = null;
-var themeObserver = null;
-var currentPosition = "bottom-center";
 function currentTheme() {
-  if (typeof document === "undefined")
-    return "light";
   return document.body.hasAttribute("data-ds-dark-theme") ? "dark" : "light";
 }
-function renderToaster() {
-  if (root === null)
-    return;
-  root.render((0, import_react14.createElement)(Toaster, {
-    theme: currentTheme(),
-    position: currentPosition,
-    // richColors：success=绿整条 / error=红整条 / warning=黄整条（Sonner 自带）；
-    // 不开 closeButton：在宿主里吃不到 Sonner 的 CSS 变量，会渲染成白底方块叉（真机踩过）。
-    richColors: true
-  }));
-}
-function ensureToaster() {
-  if (root !== null)
-    return;
+var sharedHost = null;
+function toasterHost() {
+  if (sharedHost !== null)
+    return sharedHost;
   if (typeof document === "undefined" || typeof MutationObserver === "undefined")
-    return;
-  const container = document.createElement("div");
-  container.id = ROOT_ID;
-  document.body.appendChild(container);
-  root = (0, import_client2.createRoot)(container);
-  renderToaster();
-  themeObserver = new MutationObserver(() => renderToaster());
-  themeObserver.observe(document.body, {
-    attributes: true,
-    attributeFilter: ["data-ds-dark-theme"]
-  });
+    return null;
+  sharedHost = claimToastHost(createToasterHost);
+  return sharedHost;
+}
+function createToasterHost() {
+  let root = null;
+  let themeObserver = null;
+  let position = "bottom-center";
+  function renderToaster() {
+    if (root === null)
+      return;
+    root.render((0, import_react14.createElement)(Toaster, {
+      theme: currentTheme(),
+      position,
+      // richColors：success=绿整条 / error=红整条 / warning=黄整条（Sonner 自带）；
+      // 不开 closeButton：在宿主里吃不到 Sonner 的 CSS 变量，会渲染成白底方块叉（真机踩过）。
+      richColors: true
+    }));
+  }
+  function ensureToaster() {
+    if (root !== null)
+      return;
+    let container = document.getElementById(ROOT_ID);
+    if (container === null) {
+      container = document.createElement("div");
+      container.id = ROOT_ID;
+      document.body.appendChild(container);
+    }
+    root = (0, import_client2.createRoot)(container);
+    renderToaster();
+    themeObserver = new MutationObserver(() => renderToaster());
+    themeObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["data-ds-dark-theme"]
+    });
+  }
+  function showNative(payload) {
+    const duration = payload.durationMs;
+    const onDismiss = payload.onDismiss;
+    if (payload.color !== void 0) {
+      toast(payload.message, {
+        duration,
+        unstyled: true,
+        onDismiss,
+        className: "dshpc-toast-custom",
+        style: {
+          background: payload.color,
+          color: "#fff",
+          minWidth: "320px",
+          minHeight: "48px",
+          padding: "12px 16px",
+          borderRadius: "8px",
+          boxShadow: "0 6px 16px rgba(0, 0, 0, 0.18)",
+          fontSize: "14px",
+          lineHeight: "20px",
+          boxSizing: "border-box",
+          display: "flex",
+          alignItems: "center"
+        }
+      });
+      return;
+    }
+    const variant = payload.variant;
+    if (variant === "success") {
+      toast.success(payload.message, { duration, onDismiss });
+    } else if (variant === "error") {
+      toast.error(payload.message, { duration, onDismiss });
+    } else if (variant === "warning") {
+      toast.warning(payload.message, { duration, onDismiss });
+    } else {
+      toast(payload.message, { duration, onDismiss });
+    }
+  }
+  function showCard(payload) {
+    const palette = notifyPalette(payload.variant, currentTheme());
+    const duration = payload.durationMs;
+    const actions = payload.actions;
+    const id = toast.custom(() => (0, import_react14.createElement)("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        minWidth: "320px",
+        minHeight: "48px",
+        padding: "12px 16px",
+        borderRadius: "10px",
+        boxShadow: "0 6px 16px rgba(0, 0, 0, 0.18)",
+        background: palette.bg,
+        color: palette.fg,
+        boxSizing: "border-box",
+        fontSize: "14px",
+        lineHeight: "20px"
+      }
+    }, (0, import_react14.createElement)("span", {
+      style: {
+        flexShrink: 0,
+        width: "20px",
+        height: "20px",
+        borderRadius: "50%",
+        background: "rgba(255, 255, 255, 0.25)",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "13px",
+        fontWeight: 700
+      }
+    }, palette.glyph), (0, import_react14.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react14.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react14.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react14.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react14.createElement)(Button, {
+      variant: a.variant ?? "outline",
+      size: "md",
+      onClick: () => {
+        a.onClick();
+        toast.dismiss(id);
+      }
+    }, a.text))) : null), { duration, unstyled: true });
+  }
+  return {
+    show(payload) {
+      ensureToaster();
+      renderToaster();
+      if (payload.style === "card")
+        showCard(payload);
+      else
+        showNative(payload);
+    },
+    setPosition(next) {
+      position = next;
+      renderToaster();
+    }
+  };
 }
 function showToast(message, opts) {
   if (typeof document === "undefined")
     return;
-  if (opts?.position !== void 0)
-    currentPosition = opts.position;
-  ensureToaster();
-  renderToaster();
-  const duration = opts?.durationMs ?? DEFAULT_MS;
-  const onDismiss = opts?.onDismiss;
-  if (opts?.color !== void 0) {
-    toast(message, {
-      duration,
-      unstyled: true,
-      onDismiss,
-      className: "dshpc-toast-custom",
-      style: {
-        background: opts.color,
-        color: "#fff",
-        minWidth: "320px",
-        minHeight: "48px",
-        padding: "12px 16px",
-        borderRadius: "8px",
-        boxShadow: "0 6px 16px rgba(0, 0, 0, 0.18)",
-        fontSize: "14px",
-        lineHeight: "20px",
-        boxSizing: "border-box",
-        display: "flex",
-        alignItems: "center"
-      }
-    });
+  const host = toasterHost();
+  if (host === null)
     return;
-  }
-  const variant = opts?.variant ?? "info";
-  if (variant === "success") {
-    toast.success(message, { duration, onDismiss });
-  } else if (variant === "error") {
-    toast.error(message, { duration, onDismiss });
-  } else if (variant === "warning") {
-    toast.warning(message, { duration, onDismiss });
-  } else {
-    toast(message, { duration, onDismiss });
-  }
+  if (opts?.position !== void 0)
+    host.setPosition(opts.position);
+  host.show({
+    message,
+    variant: opts?.variant ?? "info",
+    style: "native",
+    durationMs: opts?.durationMs ?? DEFAULT_MS,
+    color: opts?.color,
+    onDismiss: opts?.onDismiss
+  });
 }
 function notifyPalette(variant, theme) {
   switch (variant) {
@@ -2402,51 +2491,19 @@ function notifyPalette(variant, theme) {
 function notify(message, opts) {
   if (typeof document === "undefined")
     return;
+  const host = toasterHost();
+  if (host === null)
+    return;
   if (opts?.position !== void 0)
-    currentPosition = opts.position;
-  ensureToaster();
-  renderToaster();
-  const variant = opts?.variant ?? "info";
-  const palette = notifyPalette(variant, currentTheme());
-  const duration = opts?.durationMs ?? DEFAULT_MS;
-  const actions = opts?.actions;
-  const id = toast.custom(() => (0, import_react14.createElement)("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: "12px",
-      minWidth: "320px",
-      minHeight: "48px",
-      padding: "12px 16px",
-      borderRadius: "10px",
-      boxShadow: "0 6px 16px rgba(0, 0, 0, 0.18)",
-      background: palette.bg,
-      color: palette.fg,
-      boxSizing: "border-box",
-      fontSize: "14px",
-      lineHeight: "20px"
-    }
-  }, (0, import_react14.createElement)("span", {
-    style: {
-      flexShrink: 0,
-      width: "20px",
-      height: "20px",
-      borderRadius: "50%",
-      background: "rgba(255, 255, 255, 0.25)",
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: "13px",
-      fontWeight: 700
-    }
-  }, palette.glyph), (0, import_react14.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react14.createElement)("div", { style: { fontWeight: 600 } }, message), opts?.description !== void 0 ? (0, import_react14.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, opts.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react14.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react14.createElement)(Button, {
-    variant: a.variant ?? "outline",
-    size: "md",
-    onClick: () => {
-      a.onClick();
-      toast.dismiss(id);
-    }
-  }, a.text))) : null), { duration, unstyled: true });
+    host.setPosition(opts.position);
+  host.show({
+    message,
+    variant: opts?.variant ?? "info",
+    style: "card",
+    description: opts?.description,
+    durationMs: opts?.durationMs ?? DEFAULT_MS,
+    actions: opts?.actions
+  });
 }
 
 // dist/ui/EmptyState.js
@@ -3354,9 +3411,44 @@ var DICT2 = {
     apiAction: "\u53F3\u4E0A\u89D2\u64CD\u4F5C\u533A\uFF08\u6309\u94AE / \u6587\u5B57\u90FD\u884C\uFF0C\u81EA\u52A8\u5782\u76F4\u5C45\u4E2D\uFF09",
     apiPanel: "\u5C55\u5F00\u5185\u5BB9\uFF08expanded \u4E3A true \u65F6\u663E\u793A\uFF09",
     apiTone: "\u8BED\u4E49\u8272\u6863\uFF1Aneutral / business / success / warning / danger",
+    apiToneModal: "\u8BED\u4E49\u6863\uFF1A'primary' | 'danger' | 'warning'\uFF08\u786E\u8BA4\u6846\u4E13\u7528\uFF0C\u4E0E Chip \u7684\u4E94\u6863 tone \u4E0D\u540C\uFF09",
     apiOnClick: "\u4F20\u4E86\u624D\u6E32\u67D3\u6210 button",
     apiText: "\u6587\u5B57",
     apiRender: "\u8D70\u65F6\u6E32\u67D3\u51FD\u6570\uFF1A\u53C2\u6570\u662F\u5F53\u524D\u6BEB\u79D2\u6570\uFF0C\u8FD4\u56DE\u4EFB\u610F ReactNode",
+    feedbackNote: '\u5F39\u7A97\u5206\u4E09\u5C42\uFF0C\u6309\u9700\u8981\u9009\uFF1A\u5BBF\u4E3B\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF0C\u547D\u4EE4\u5F0F\u52A0 skin:"host"\uFF09\u2192 \u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846 AlertModal / ConfirmModal\uFF08\u5355/\u53CC\u6309\u94AE\uFF0C\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\uFF09\u2192 \u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97 Modal\uFF08size md/lg\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF09\u3002\u547D\u4EE4\u5F0F\u4E00\u5F8B Promise\uFF08await confirmModal(...) \u62FF true/false\uFF09\uFF0C\u4E0D\u7528\u56DE\u8C03\u5F0F\u3002\u63D0\u793A\u4E09\u79CD\uFF1AshowToast \u662F Sonner \u539F\u5473\uFF08\u5BF9\u6BD4\u7528\uFF09\u3001showHostToast \u662F\u5B98\u65B9 Toast\u3001notify \u662F\u9879\u76EE\u5185\u63A8\u8350\uFF08\u7EDF\u4E00\u5361\u7247 + \u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE\uFF09\u3002',
+    apiTitle: "\u6807\u9898\uFF1A\u5B57\u7B26\u4E32\u6216 ReactNode\uFF08\u81EA\u5B9A\u4E49\u6392\u6CD5\u65F6\u4F20\u8282\u70B9\uFF09",
+    apiMessage: "\u6B63\u6587\u8BF4\u660E\u6587\u5B57",
+    apiSeverity: "\u8BED\u4E49\u6863\uFF1A'info' | 'success' | 'warning' | 'error'",
+    apiConfirmText: "\u786E\u8BA4\u6309\u94AE\u6587\u6848",
+    apiCancelText: "\u53D6\u6D88\u6309\u94AE\u6587\u6848",
+    apiOnConfirm: "\u786E\u8BA4\u56DE\u8C03\uFF08\u547D\u4EE4\u5F0F\u4E3A Promise resolve(true)\uFF09",
+    apiOnCancel: "\u53D6\u6D88\u56DE\u8C03\uFF08\u547D\u4EE4\u5F0F\u4E3A Promise resolve(false)\uFF09",
+    apiHeaderActions: "\u53F3\u4E0A\u89D2\u64CD\u4F5C\u533A",
+    apiFooter: "\u5E95\u90E8\u6309\u94AE\u533A\uFF1B\u4E0D\u4F20\u5219\u6CA1\u6709 footer",
+    apiDescription: "\u6807\u9898\u4E0B\u65B9\u7684\u6B21\u8981\u8BF4\u660E",
+    apiActions: "\u53F3\u4FA7\u52A8\u4F5C\u6309\u94AE\uFF081\u20132 \u4E2A\uFF0C\u7528\u6211\u4EEC\u81EA\u5DF1\u7684 Button \u6837\u5F0F\uFF09",
+    apiPosition: "\u51FA\u73B0\u4F4D\u7F6E\uFF1A'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
+    apiOnDismiss: "\u63D0\u793A\u6D88\u5931\uFF08\u81EA\u52A8\u6216\u624B\u52A8\u5173\u95ED\uFF09\u540E\u89E6\u53D1",
+    apiDurationMs: "\u505C\u7559\u65F6\u957F\uFF08\u6BEB\u79D2\uFF09\uFF0C\u9ED8\u8BA4 2600",
+    layoutNote: "PanelDock \u662F**\u5E03\u5C40\u6210\u5458\uFF0C\u4E0D\u662F\u6D6E\u5C42**\uFF1A\u5B83\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF0C\u56E0\u6B64\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u5BB9\u5668\u91CC\uFF08\u81EA\u6302 document.body \u53EA\u80FD\u906E\u76D6\u3001\u6324\u4E0D\u7A84\uFF09\u3002\u5206\u5DE5\uFF1A\u7ED3\u6784\u5199\u5728\u8C03\u7528\u70B9\uFF08PanelDock \u7684 children \u91CC\u653E DockPanel\uFF09\u3001\u663E\u9690\u5F52\u72B6\u6001\uFF08dock.open(id) \u53EA\u4F20 id \u4E0D\u4F20\u5185\u5BB9\uFF09\u3001\u5934\u90E8\u53EF\u63A7\uFF08title / icon / extra \u4E09\u4EF6\u5957\uFF0C\u6216 header \u6574\u5757\u66FF\u6362\uFF09\u3002\u672C\u9875\u53F3\u4FA7\u90A3\u4E00\u4EFD\u5C31\u662F\u771F\u7684\uFF0C\u70B9\u4E0A\u9762\u7684\u6309\u94AE\u8BD5\u3002",
+    apiPanelId: "\u7EC4\u540D\uFF08\u5BFB\u5740\u952E\uFF09\uFF1B\u540C\u540D\u552F\u4E00",
+    apiPanelTitle: "\u6807\u9898\uFF1Bheader \u4F20\u4E86\u975E undefined \u7684\u503C\u65F6\u5B83\u53EA\u7528\u4E8E\u65E0\u969C\u788D\u540D",
+    apiPanelIcon: "\u6807\u9898\u524D\u7684\u56FE\u6807\u4F4D\uFF08\u53EF\u591A\u4E2A\uFF09",
+    apiPanelExtra: "\u6807\u9898\u53F3\u4FA7\u7684\u4EFB\u610F\u5185\u5BB9\uFF08\u6309\u94AE\u3001\u6807\u7B7E\u3001\u4E0B\u62C9\u90FD\u884C\uFF09",
+    apiPanelHeader: "\u6574\u5757\u66FF\u6362\u5934\u90E8\uFF1A\u4E0D\u4F20 = \u5185\u7F6E\u5934\uFF1Bnull = \u4E0D\u8981\u5934\u90E8\uFF1B\u5176\u4ED6 = \u4F60\u7684\u5934\u90E8\uFF08\u5E93\u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF09",
+    apiPanelClosable: "\u662F\u5426\u663E\u793A\u5173\u95ED\u94AE",
+    apiPanelCloseButton: "\u5173\u95ED\u94AE\u4F4D\u7F6E\uFF1A'auto' | 'header' | 'floating' | 'none'",
+    apiPanelWidth: "\u9996\u6B21\u6253\u5F00\u65F6\u7684\u5BBD\u5EA6\uFF08px\uFF09",
+    apiPanelMinWidth: "\u53EF\u62D6\u52A8\u7684\u5BBD\u5EA6\u4E0B\u9650",
+    apiPanelMaxWidth: "\u53EF\u62D6\u52A8\u7684\u5BBD\u5EA6\u4E0A\u9650\uFF1B\u4E0D\u4F20 = \u53EA\u53D7\u89C6\u53E3\u4E0E\u4E3B\u533A\u4FDD\u5E95\u7EA6\u675F",
+    apiMaxPanels: "\u540C\u65F6\u5B58\u5728\u7684\u680F\u6570\u4E0A\u9650",
+    apiDefaultWidth: "\u65B0\u680F\u9ED8\u8BA4\u5BBD\u5EA6",
+    apiStorageKey: "\u5BBD\u5EA6\u8BB0\u5FC6\u524D\u7F00\uFF1B\u4F20 false \u5173\u95ED\u8BB0\u5FC6",
+    apiOnOpen: "\u65B0\u5F00\u4E00\u680F\u540E\u89E6\u53D1\uFF08\u91CD\u590D\u6253\u5F00\u5DF2\u5B58\u5728\u7684\u4E0D\u89E6\u53D1\uFF09",
+    apiOnBeforeClose: "\u5173\u95ED\u4E4B\u524D\u89E6\u53D1\uFF1B\u8FD4\u56DE false \u53EF\u53D6\u6D88\uFF08\u672A\u4FDD\u5B58\u5185\u5BB9\u62E6\u622A\u5C31\u9760\u5B83\uFF09",
+    apiOnClose: "\u5DF2\u7ECF\u5173\u6389\u4E4B\u540E\u89E6\u53D1",
+    apiOnResize: "\u62D6\u5BBD\u677E\u624B\u540E\u89E6\u53D1",
+    apiOnLimitReached: "\u5230\u4E0A\u9650\u88AB\u62D2\u65F6\u89E6\u53D1\uFF08\u5E93\u4E0D\u5F39\u63D0\u793A\u3001\u4E0D\u629B\u5F02\u5E38\uFF09",
     btnLabelSave: "\u4FDD\u5B58\u4FEE\u6539",
     btnLabelCancel: "\u53D6\u6D88",
     btnLabelDelete: "\u5220\u9664",
@@ -3592,9 +3684,44 @@ var DICT2 = {
     apiAction: "Top-right action area (a button or text is fine; auto-vertically centered)",
     apiPanel: "Expanded content (shown when expanded is true)",
     apiTone: "Semantic tier: neutral / business / success / warning / danger",
+    apiToneModal: "Semantic tier: 'primary' | 'danger' | 'warning' (confirm dialog only; different from Chip's five-tier tone)",
     apiOnClick: "Renders as a button only when passed",
     apiText: "Text",
     apiRender: "Ticker render function: takes the current timestamp in ms, returns any ReactNode",
+    feedbackNote: 'Modals come in three layers \u2014 pick by need: the host official Modal (mask/header/close button all belong to the host; command-style adds skin:"host") \u2192 our standard small boxes AlertModal / ConfirmModal (one/two buttons; the Modal suffix keeps them from shadowing the host native) \u2192 our content Modal (size md/lg, holds any content). Command-style APIs all return a Promise (await confirmModal(...) gives true/false), never callbacks. Three toasts: showToast is Sonner as-is (for comparison), showHostToast is the official Toast, notify is the in-project recommendation (unified card + our own buttons).',
+    apiTitle: "Title: a string or a ReactNode (pass a node for a custom layout)",
+    apiMessage: "Body text",
+    apiSeverity: "Semantic tier: 'info' | 'success' | 'warning' | 'error'",
+    apiConfirmText: "Confirm button label",
+    apiCancelText: "Cancel button label",
+    apiOnConfirm: "Confirm callback (command-style: Promise resolve(true))",
+    apiOnCancel: "Cancel callback (command-style: Promise resolve(false))",
+    apiHeaderActions: "Top-right action area",
+    apiFooter: "Bottom button area; omit it for no footer",
+    apiDescription: "Secondary text under the title",
+    apiActions: "Trailing action buttons (1\u20132, in our own Button style)",
+    apiPosition: "Position: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
+    apiOnDismiss: "Fires after the toast disappears (auto or manual close)",
+    apiDurationMs: "Dwell time in ms, default 2600",
+    layoutNote: "PanelDock is a LAYOUT MEMBER, not an overlay: it takes width and squeezes the main area, so the caller must place it inside their own flex root (self-mounting on document.body can only cover, never squeeze). The split: structure lives at the call site (DockPanel inside PanelDock children), visibility belongs to state (dock.open(id) takes an id only, never content), and the header is controllable (title / icon / extra, or replace it wholesale with header). The one on the right of this page is real \u2014 press the buttons above to try it.",
+    apiPanelId: "Group name (addressing key); unique per dock",
+    apiPanelTitle: "Title; only the accessible name once header is passed a non-undefined value",
+    apiPanelIcon: "Icon slot before the title (can be several)",
+    apiPanelExtra: "Anything on the right of the title (button, tag, dropdown, \u2026)",
+    apiPanelHeader: "Replace the header wholesale: omit = built-in header; null = no header; anything else = your header (the library adds no padding/border/background)",
+    apiPanelClosable: "Whether the close button shows",
+    apiPanelCloseButton: "Close button position: 'auto' | 'header' | 'floating' | 'none'",
+    apiPanelWidth: "Width on first open (px)",
+    apiPanelMinWidth: "Lower drag bound",
+    apiPanelMaxWidth: "Upper drag bound; omit = bounded only by the viewport and the main-area floor",
+    apiMaxPanels: "Max simultaneously open panels",
+    apiDefaultWidth: "Default width for new panels",
+    apiStorageKey: "Width-memory prefix; pass false to disable memory",
+    apiOnOpen: "Fires after a new panel opens (re-opening an existing one does not)",
+    apiOnBeforeClose: "Fires before closing; return false to cancel (how you intercept unsaved content)",
+    apiOnClose: "Fires after the panel is gone",
+    apiOnResize: "Fires when the drag is released",
+    apiOnLimitReached: "Fires when the cap rejects an open (the library shows no toast and throws nothing)",
     btnLabelSave: "Save changes",
     btnLabelCancel: "Cancel",
     btnLabelDelete: "Delete",
@@ -3926,12 +4053,12 @@ function mountHostModal(render) {
     return;
   const container = document.createElement("div");
   document.body.appendChild(container);
-  const root2 = (0, import_client3.createRoot)(container);
+  const root = (0, import_client3.createRoot)(container);
   const close = () => {
-    root2.unmount();
+    root.unmount();
     container.remove();
   };
-  root2.render(render(close));
+  root.render(render(close));
 }
 var hostConfirm = (opts) => new Promise((resolve) => {
   mountHostModal((close) => (0, import_react28.createElement)(Official.Modal, {
@@ -3978,12 +4105,12 @@ function showHostToast(message, opts) {
     return;
   const container = document.createElement("div");
   document.body.appendChild(container);
-  const root2 = (0, import_client4.createRoot)(container);
+  const root = (0, import_client4.createRoot)(container);
   const close = () => {
-    root2.unmount();
+    root.unmount();
     container.remove();
   };
-  root2.render((0, import_react29.createElement)(Official.Toast, {
+  root.render((0, import_react29.createElement)(Official.Toast, {
     text: message,
     tone: opts?.tone,
     holdMs: opts?.holdMs ?? 3e3,
@@ -5305,6 +5432,141 @@ function ChipPage() {
     (0, import_react31.createElement)(ApiTable, { rows: TEXT_KIT_API })
   );
 }
+var CODE_HOST_MODAL = `// \u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u76F4\u63A5\u7528\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF09
+import { Modal } from '@deepseek-ai/dsh-client-ui-primitives'
+
+<Modal
+  open={open}
+  onClose={() => setOpen(false)}
+  title="\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97"
+  closeLabel="\u5173\u95ED"
+  description="\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002"
+  footer={
+    <>
+      <Button variant="outline">\u53D6\u6D88</Button>
+      <Button variant="danger">\u5220\u9664</Button>
+    </>
+  }
+>
+  <Input value={text} onChange={setText} placeholder="\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" />
+</Modal>
+
+// \u547D\u4EE4\u5F0F\uFF1A\u52A0 skin:"host" \u8D70\u540C\u4E00\u4E2A\u5B98\u65B9 Modal\uFF0C\u8FD4\u56DE Promise
+const ok = await confirmModal({
+  title: '\u5BBF\u4E3B\u786E\u8BA4\u6846', message: '\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09',
+  tone: 'danger', confirmText: '\u5220\u9664', cancelText: '\u518D\u60F3\u60F3', skin: 'host',
+})
+await alertModal({ title: '\u5BBF\u4E3B\u63D0\u793A', message: '\u5173\u95ED\u5373\u786E\u8BA4', skin: 'host' })`;
+var CODE_SMALL_MODAL = `// \u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1A\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F
+<AlertModal
+  severity="warning"
+  title="\u64CD\u4F5C\u7ED3\u679C"
+  message="\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002"
+  onConfirm={() => setOpen(false)}
+/>
+<ConfirmModal
+  title="\u5220\u9664\u4EFB\u52A1"
+  message="\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F"
+  tone="danger"
+  confirmText="\u5220\u9664"
+  cancelText="\u518D\u60F3\u60F3"
+  onConfirm={() => {}}
+  onCancel={() => {}}
+/>
+
+// \u547D\u4EE4\u5F0F\uFF08Promise\uFF0C\u4E0D\u7528\u7BA1\u5F00\u5173\u72B6\u6001\uFF09
+if (await confirmModal({ title: '\u786E\u8BA4\u63D0\u4EA4', message: '\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500', tone: 'danger' })) {
+  // \u7528\u6237\u70B9\u4E86\u786E\u8BA4
+}
+await alertModal({ title: '\u63D0\u793A', message: '\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' })`;
+var CODE_LARGE_MODAL = `// \u5185\u5BB9\u5F39\u7A97\uFF1Asize md / lg\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF08\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\uFF09
+<Modal title="\u4EFB\u52A1\u8BE6\u60C5" onClose={close} footer={<Button variant="primary">\u77E5\u9053\u4E86</Button>}>
+  <div>\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002</div>
+</Modal>
+
+// lg + headerActions\uFF08\u53F3\u4E0A\u89D2\uFF09+ \u53EF\u6EDA\u52A8\u5185\u5BB9
+<Modal
+  size="lg"
+  title="\u4F1A\u8BDD\u8BB0\u5F55"
+  headerActions={<Button variant="outline" size="sm">\u66F4\u591A</Button>}
+  onClose={close}
+  footer={<><Button variant="outline">\u5173\u95ED</Button><Button variant="primary">\u5B8C\u6210</Button></>}
+>
+  {items.map((it) => <div key={it.id}>{it.title}</div>)}
+</Modal>
+
+// \u65E0 footer\u3001\u5934\u90E8\u81EA\u5B9A\u4E49\u6392\u6CD5\uFF1Atitle \u6536 ReactNode
+<Modal
+  size="lg"
+  title={<><b>\u4EFB\u52A1\u8BE6\u60C5</b><span className="dshpc-modal__sid">sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4</span></>}
+  onClose={close}
+>
+  <div>\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\u3002</div>
+</Modal>`;
+var CODE_TOAST_NATIVE = `// showToast\uFF1ASonner \u539F\u5473\uFF08\u5BF9\u6BD4\u7528\uFF09
+showToast('\u5DF2\u4FDD\u5B58')
+showToast('\u4FDD\u5B58\u6210\u529F', { variant: 'success' })
+showToast('\u4FDD\u5B58\u5931\u8D25', { variant: 'error' })
+showToast('\u6574\u6761\u81EA\u5B9A\u4E49\u8272', { color: '#7c3aed' })
+showToast('\u6D88\u5931\u540E\u56DE\u8C03', { onDismiss: () => {} })
+showToast('\u9876\u90E8-\u5DE6', { position: 'top-left' })`;
+var CODE_TOAST_HOST = `// showHostToast\uFF1A\u76F4\u63A5\u5305\u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09
+showHostToast('\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A')
+showHostToast('\u64CD\u4F5C\u6210\u529F', { tone: 'success' })
+showHostToast('\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A', { actions: [{ text: '\u67E5\u770B', onClick: () => {} }] })`;
+var CODE_TOAST_NOTIFY = `// notify\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE\uFF08\u9879\u76EE\u5185\u63A8\u8350\uFF09
+notify('\u5DF2\u4FDD\u5B58\u8349\u7A3F')
+notify('\u4FDD\u5B58\u6210\u529F', { variant: 'success' })
+notify('\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3', { variant: 'warning', description: '\u6E05\u7406\u540E\u91CD\u8BD5' })
+notify('\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6', {
+  variant: 'success',
+  description: '\u53EF\u5728 10 \u79D2\u5185\u64A4\u9500',
+  actions: [{ text: '\u64A4\u9500', variant: 'outline', onClick: () => {} }],
+})
+notify('\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F', {
+  description: '\u63D0\u4EA4\u540E\u5C06\u901A\u77E5\u76F8\u5173\u6210\u5458',
+  actions: [
+    { text: '\u53D6\u6D88', variant: 'outline', onClick: () => {} },
+    { text: '\u63D0\u4EA4', variant: 'primary', onClick: () => {} },
+  ],
+})`;
+var CODE_FEEDBACK_USAGE = `pnpm add dsh-plugin-core
+
+import {
+  Modal, AlertModal, ConfirmModal,
+  alertModal, confirmModal,
+  notify, showToast, showHostToast,
+} from 'dsh-plugin-core/ui'
+
+// \u53EA\u95EE\u4E00\u53E5\uFF1A\u547D\u4EE4\u5F0F + Promise\uFF0C\u4E0D\u7528\u7BA1\u5F00\u5173\u72B6\u6001
+const ok = await confirmModal({ title: '\u786E\u8BA4\u63D0\u4EA4', message: '\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500', tone: 'danger' })
+
+// \u8981\u88C5\u5185\u5BB9\u7684\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u5F0F
+<Modal title="\u4EFB\u52A1\u8BE6\u60C5" onClose={close} size="lg">\u2026</Modal>
+
+// \u63D0\u793A\uFF1Anotify \u662F\u9879\u76EE\u5185\u63A8\u8350\uFF08\u7EDF\u4E00\u5361\u7247 + \u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE\uFF09
+notify('\u5DF2\u4FDD\u5B58\u8349\u7A3F', { actions: [{ text: '\u64A4\u9500', onClick: undo }] })
+
+// \u8981\u5B98\u65B9Toast \u5C31\u7528 showHostToast\uFF1BshowToast \u662F Sonner \u539F\u5473\uFF0C\u4EC5\u5BF9\u6BD4\u7528`;
+var MODAL_API = [
+  { name: "title", type: "string | ReactNode", def: "\u2014", descKey: "apiTitle" },
+  { name: "message", type: "string", def: "\u2014", descKey: "apiMessage" },
+  { name: "severity", type: "'info' | 'success' | 'warning' | 'error'", def: "'info'", descKey: "apiSeverity" },
+  { name: "tone", type: "'primary' | 'danger' | 'warning'", def: "'primary'", descKey: "apiToneModal" },
+  { name: "confirmText / cancelText", type: "string", def: "\u300C\u786E\u5B9A\u300D/\u300C\u53D6\u6D88\u300D", descKey: "apiConfirmText" },
+  { name: "onConfirm / onCancel", type: "() => void", def: "\u2014", descKey: "apiOnConfirm" },
+  { name: "size", type: "'sm' | 'md' | 'lg'", def: "'md'", descKey: "apiSize" },
+  { name: "headerActions", type: "ReactNode", def: "\u2014", descKey: "apiHeaderActions" },
+  { name: "footer", type: "ReactNode", def: "\u2014", descKey: "apiFooter" }
+];
+var TOAST_API = [
+  { name: "variant / tone", type: "'info' | 'success' | 'error' | 'warning'", def: "'info'", descKey: "apiVariant" },
+  { name: "description", type: "string", def: "\u2014", descKey: "apiDescription" },
+  { name: "actions", type: "ToastAction[]", def: "\u2014", descKey: "apiActions" },
+  { name: "durationMs", type: "number", def: "2600", descKey: "apiDurationMs" },
+  { name: "position", type: "ToastPosition", def: "'bottom-center'", descKey: "apiPosition" },
+  { name: "onDismiss", type: "() => void", def: "\u2014", descKey: "apiOnDismiss" }
+];
 function FeedbackPage() {
   const [open, setOpen] = (0, import_react31.useState)(false);
   const [openNative, setOpenNative] = (0, import_react31.useState)(false);
@@ -5317,9 +5579,10 @@ function FeedbackPage() {
   return (0, import_react31.createElement)(
     "div",
     null,
+    (0, import_react31.createElement)(Note, { text: t2("feedbackNote") }),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002' },
+      Example,
+      { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002', code: CODE_HOST_MODAL },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
@@ -5364,8 +5627,8 @@ function FeedbackPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002" },
+      Example,
+      { title: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002", code: CODE_SMALL_MODAL },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
@@ -5445,8 +5708,8 @@ function FeedbackPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002" },
+      Example,
+      { title: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002", code: CODE_LARGE_MODAL },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
@@ -5523,8 +5786,8 @@ function FeedbackPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528" },
+      Example,
+      { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528", code: CODE_TOAST_NATIVE },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
@@ -5555,8 +5818,8 @@ function FeedbackPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09" },
+      Example,
+      { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09", code: CODE_TOAST_HOST },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
@@ -5574,8 +5837,8 @@ function FeedbackPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify", hint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE" },
+      Example,
+      { title: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify", hint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE", code: CODE_TOAST_NOTIFY },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
@@ -5608,9 +5871,75 @@ function FeedbackPage() {
           "\u53CC\u6309\u94AE"
         )
       )
-    )
+    ),
+    (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_FEEDBACK_USAGE }),
+    (0, import_react31.createElement)(ApiTable, { rows: MODAL_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: TOAST_API })
   );
 }
+var CODE_DOCK = `// 1) \u5EFA\u4E00\u4E2A dock \u63A7\u5236\u5668\uFF08\u5E94\u7528\u7EA7\u5355\u4F8B\uFF1BmaxPanels \u9ED8\u8BA4 3\uFF09
+const dock = createPanelDock({ maxPanels: 3 })
+
+// 2) \u6E32\u67D3\uFF1A\u7ED3\u6784\u5199\u5728\u8C03\u7528\u70B9 \u2014\u2014 PanelDock \u8BFB children \u91CC DockPanel \u7684 props \u7EDF\u4E00\u753B
+<div style={{ display: 'flex', height: '100%' }}>
+  <main style={{ flex: 1, minWidth: 0 }}>\u4E3B\u533A\u5185\u5BB9</main>
+  <PanelDock dock={dock}>
+    <DockPanel id="files" title="\u6587\u4EF6" icon={<FolderIcon />}>
+      <FileBrowser />
+    </DockPanel>
+    <DockPanel id="preview" title="\u9884\u89C8" width={520} closeButton="floating">
+      <FilePreview />
+    </DockPanel>
+  </PanelDock>
+</div>
+
+// 3) \u663E\u9690\u5F52\u72B6\u6001\uFF1A\u53EA\u4F20 id\uFF0C\u4E0D\u4F20\u5185\u5BB9
+const result = dock.open('files')   // { ok, reason }\uFF1B\u5230\u4E0A\u9650\u65F6 ok=false
+if (!result.ok) showToast('\u6700\u591A\u540C\u65F6\u5F00 3 \u680F')
+dock.close('files')
+dock.toggle('preview')
+dock.isOpen('files')
+
+// 4) \u8BA2\u9605\u72B6\u6001\u9A71\u52A8 UI\uFF08React\uFF09
+const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`;
+var CODE_DOCK_USAGE = `pnpm add dsh-plugin-core
+
+import { PanelDock, DockPanel, createPanelDock } from 'dsh-plugin-core/ui'
+
+const dock = createPanelDock({ maxPanels: 3 })
+
+<div style={{ display: 'flex', height: '100%' }}>
+  <main style={{ flex: 1, minWidth: 0 }}>\u4E3B\u533A</main>
+  <PanelDock dock={dock}>
+    <DockPanel id="files" title="\u6587\u4EF6">
+      <FileBrowser />
+    </DockPanel>
+  </PanelDock>
+</div>
+
+// \u26A0\uFE0F PanelDock \u662F\u5E03\u5C40\u6210\u5458\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u5BB9\u5668\uFF1B
+//    \u81EA\u6302 document.body \u53EA\u80FD\u906E\u76D6\u3001\u6324\u4E0D\u7A84\u4E3B\u533A\u3002`;
+var DOCK_PANEL_API = [
+  { name: "id", type: "string", def: "\u2014", descKey: "apiPanelId" },
+  { name: "title", type: "ReactNode", def: "\u2014", descKey: "apiPanelTitle" },
+  { name: "icon", type: "ReactNode", def: "\u2014", descKey: "apiPanelIcon" },
+  { name: "extra", type: "ReactNode", def: "\u2014", descKey: "apiPanelExtra" },
+  { name: "header", type: "ReactNode | null", def: "\u2014", descKey: "apiPanelHeader" },
+  { name: "closable", type: "boolean", def: "true", descKey: "apiPanelClosable" },
+  { name: "closeButton", type: "DockCloseButton", def: "'auto'", descKey: "apiPanelCloseButton" },
+  { name: "width / minWidth / maxWidth", type: "number", def: "460 / 320 / \u2014", descKey: "apiPanelWidth" }
+];
+var DOCK_OPTIONS_API = [
+  { name: "maxPanels", type: "number", def: "3", descKey: "apiMaxPanels" },
+  { name: "defaultWidth", type: "number", def: "460", descKey: "apiDefaultWidth" },
+  { name: "minWidth", type: "number", def: "320", descKey: "apiPanelMinWidth" },
+  { name: "storageKey", type: "string | false", def: "'dshpc-dock'", descKey: "apiStorageKey" },
+  { name: "onOpen", type: "({ id, created }) => void", def: "\u2014", descKey: "apiOnOpen" },
+  { name: "onBeforeClose", type: "({ id, reason }) => boolean | undefined", def: "\u2014", descKey: "apiOnBeforeClose" },
+  { name: "onClose", type: "({ id, reason }) => void", def: "\u2014", descKey: "apiOnClose" },
+  { name: "onResize", type: "({ id, width }) => void", def: "\u2014", descKey: "apiOnResize" },
+  { name: "onLimitReached", type: "({ id }) => void", def: "\u2014", descKey: "apiOnLimitReached" }
+];
 function LayoutPage() {
   const state = (0, import_react31.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
   const [notice, setNotice] = (0, import_react31.useState)(null);
@@ -5626,9 +5955,10 @@ function LayoutPage() {
   return (0, import_react31.createElement)(
     "div",
     null,
+    (0, import_react31.createElement)(Note, { text: t2("layoutNote") }),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "PanelDock", hint: t2("dockHint") },
+      Example,
+      { title: "PanelDock", hint: t2("dockHint"), code: CODE_DOCK },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
@@ -5662,7 +5992,10 @@ function LayoutPage() {
         { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
         t2("dockMainText")
       )
-    )
+    ),
+    (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_DOCK_USAGE }),
+    (0, import_react31.createElement)(ApiTable, { rows: DOCK_PANEL_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: DOCK_OPTIONS_API })
   );
 }
 
@@ -5812,8 +6145,8 @@ function createRootCache() {
   const map = /* @__PURE__ */ new Map();
   return {
     get: (sessionId) => map.get(sessionId),
-    set: (sessionId, root2) => {
-      map.set(sessionId, root2);
+    set: (sessionId, root) => {
+      map.set(sessionId, root);
     }
   };
 }
@@ -5827,17 +6160,17 @@ function learnRoot(cache, sessionId, relativePath, absolutePath) {
   const rel = relativePath.replace(/^\/+/, "").replace(/\/+$/, "");
   if (rel === "" || !absolutePath.endsWith(`/${rel}`))
     return null;
-  const root2 = absolutePath.slice(0, absolutePath.length - rel.length - 1);
-  cache.set(sessionId, root2);
-  return root2;
+  const root = absolutePath.slice(0, absolutePath.length - rel.length - 1);
+  cache.set(sessionId, root);
+  return root;
 }
 function relativizeToRoot(cache, sessionId, dir) {
   if (!isAbsoluteish(dir))
     return dir;
-  const root2 = cache.get(sessionId);
-  if (root2 === void 0)
+  const root = cache.get(sessionId);
+  if (root === void 0)
     return dir;
-  const norm = root2.replace(/\/+$/, "");
+  const norm = root.replace(/\/+$/, "");
   if (dir === norm)
     return "";
   if (dir.startsWith(`${norm}/`))
@@ -5904,8 +6237,8 @@ async function absolutizeDir(cache, workspaceFiles, sessionId, dir, canonical, e
   const found = await findAnyFileAbs(workspaceFiles, sessionId, rel);
   if (found === null)
     return dir;
-  const root2 = learnRoot(cache, sessionId, found.relativePath, found.absolutePath);
-  return root2 === null ? dir : `${root2}/${rel}`;
+  const root = learnRoot(cache, sessionId, found.relativePath, found.absolutePath);
+  return root === null ? dir : `${root}/${rel}`;
 }
 function matchesFilter(path, isDir, filter) {
   if (filter === void 0)
@@ -6769,13 +7102,13 @@ function openFilePreview(options) {
   });
   dock.open(PREVIEW_PANEL_ID);
   let closed = false;
-  const root2 = (0, import_client5.createRoot)(container);
+  const root = (0, import_client5.createRoot)(container);
   const close = () => {
     if (closed)
       return;
     closed = true;
     window.removeEventListener("keydown", onKeyDown);
-    root2.unmount();
+    root.unmount();
     container.remove();
     options.onClose?.();
   };
@@ -6785,7 +7118,7 @@ function openFilePreview(options) {
   };
   window.addEventListener("keydown", onKeyDown);
   ensureControls(getStyleKit());
-  root2.render((0, import_react38.createElement)(
+  root.render((0, import_react38.createElement)(
     "div",
     // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
     { style: { display: "contents", ["--dshpc-dock-h"]: "100%" } },
@@ -6847,7 +7180,7 @@ function pickWorkspaceFile(options) {
       settled = true;
       window.removeEventListener("keydown", onKeyDown);
       backdrop.remove();
-      root2.unmount();
+      root.unmount();
       panel.remove();
       if (result === null)
         options.onCancel?.();
@@ -6862,8 +7195,8 @@ function pickWorkspaceFile(options) {
     document.body.appendChild(backdrop);
     document.body.appendChild(panel);
     ensureControls(getStyleKit());
-    const root2 = (0, import_client5.createRoot)(panel);
-    root2.render((0, import_react38.createElement)(FileBrowser, {
+    const root = (0, import_client5.createRoot)(panel);
+    root.render((0, import_react38.createElement)(FileBrowser, {
       workspaceFiles: options.workspaceFiles,
       officeToPdf: options.officeToPdf ?? null,
       sessionId: options.sessionId,
@@ -6968,15 +7301,15 @@ function hitOf(dir, entries2) {
   };
 }
 async function findSamples(files, sessionId) {
-  const root2 = await readDir(files, sessionId, "");
-  if (root2 === null) return null;
+  const root = await readDir(files, sessionId, "");
+  if (root === null) return null;
   let frontier = [""];
-  const hit = hitOf("", root2);
+  const hit = hitOf("", root);
   if (hit !== null) return hit;
   for (let depth = 0; depth < MAX_DEPTH; depth++) {
     const next = [];
     for (const dir of frontier) {
-      const listed = dir === "" ? root2 : await readDir(files, sessionId, dir);
+      const listed = dir === "" ? root : await readDir(files, sessionId, dir);
       if (listed === null) continue;
       const subdirs = listed.filter((entry) => entry.type === "directory" && !SKIP.has(entry.name));
       for (const sub of subdirs.slice(0, MAX_DIRS_PER_LEVEL)) {
@@ -7307,7 +7640,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0832-iy1b"]
+            [t2("buildStamp"), "1021-0928-ma4y"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",
