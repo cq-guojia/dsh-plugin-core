@@ -44,3 +44,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-22 01:07:22 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-22 01:13:18 · log · @GuoJia-Agent · 首轮交付：doc.tsx 两处官方 CodeBlock 换成核心 CodeViewer（CodeOnly/Example，lang→snippet.<ext> 喂 path、height auto、复制文案走核心 coreT），删 docCopy/docCopied、roadmap 文案改核心 CodeViewer；顺手修 blocks.tsx sampleLabel 的 DemoMessageKey 类型。demo typecheck 干净、build:demo 重建、产物 grep 确认 dshpc-cv 进包且无官方 CodeBlock 调用；commit 54d097a 已 push。待用户真机验收
+- 2026-10-22 01:21:11 · log · @GuoJia-Agent · 二轮（用户反馈）：CodeViewer 加 lineNumbers 开关（默认 true 保持文件预览带行号），demo 的 CodeOnly/Example 传 false ⇒ 预览站代码片段不显示行号。核心 dist 与 demo dist 重建，demo typecheck + 77 用例全绿，commit 03697f4 已 push。待真机验收
