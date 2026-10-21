@@ -640,7 +640,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     weekday6: '六',
     weekday7: '日',
     // 文档骨架：示例 / 代码 / 用法 / API 表的栏位名与表头
-    docNote: '备注',
+    docNote: '说明',
     docPreview: '示例',
     docCode: '代码',
     docUsage: '怎么用',

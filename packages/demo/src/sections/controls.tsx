@@ -508,6 +508,10 @@ export function InputPage(): ReturnType<typeof h> {
             }, '启用'),
           ),
           h(Checkbox, { checked, onChange: setChecked, label: '多选' }),
+        ),
+        h(
+          'div',
+          { style: { display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' } },
           h(Segmented<'day' | 'week' | 'month'>, {
             variant: 'inset',
             items: [
@@ -1077,15 +1081,12 @@ export function CardPage(): ReturnType<typeof h> {
                 { value: 'all', label: t('segAll'), count: 22 },
                 { value: 'doing', label: t('segDoing'), count: 11 },
                 { value: 'claimed', label: t('segClaimed'), count: 11 },
-                { value: 'backlog', label: '积压' },
-                { value: 'overdue', label: '逾期', count: 4 },
-                { value: 'stalled', label: '停滞', count: 8 },
               ],
               value: seg,
               onChange: setSeg,
             }),
-            // 搜索框 192px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
-            h('div', { style: { width: '192px', flex: 'none' } },
+            // 搜索框 140px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
+            h('div', { style: { width: '140px', flex: 'none' } },
               h(Input, { value: kw, onChange: setKw, placeholder: '搜索' })),
           ],
         }),
@@ -1379,51 +1380,6 @@ export function FeedbackPage(): ReturnType<typeof h> {
     h(Note, { text: t('feedbackNote') }),
     h(
       Example,
-      { title: '原生弹窗（宿主）', hint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。', code: CODE_HOST_MODAL },
-      h(
-        'div',
-        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
-        h(Button, { variant: 'outline', onClick: () => setOpenNative(true) }, '打开宿主原生弹窗（组件）'),
-        h(Button, { variant: 'ghost', onClick: () => { void alertModal({ title: '宿主提示', message: '这是宿主样式的命令式 alert（skin:"host"），关闭即确认' }) } }, 'alertModal({skin:"host"})'),
-        h(Button, { variant: 'ghost', onClick: async () => {
-            const ok = await confirmModal({ title: '宿主确认框', message: '官方 Modal 弹出的确认（danger）', tone: 'danger', confirmText: '删除', cancelText: '再想想', skin: 'host' })
-            showToast(ok ? '宿主 confirm：你点了删除' : '宿主 confirm：你点了取消')
-          } }, 'confirmModal({skin:"host"})'),
-        openNative
-          ? h(
-              Official.Modal,
-              {
-                open: openNative,
-                onClose: () => setOpenNative(false),
-                title: '宿主原生弹窗',
-                closeLabel: '关闭',
-                description: '这是宿主内核提供的 Modal，下面一段是调用方塞进来的自定义内容（输入框 + 勾选）。',
-                contentClassName: 'dshpc-native-demo-content',
-                footer: h(
-                  'div',
-                  { style: { display: 'flex', justifyContent: 'flex-end', gap: '8px' } },
-                  h(Button, { variant: 'outline', onClick: () => setOpenNative(false) }, '取消'),
-                  h(Button, { variant: 'danger', onClick: () => setOpenNative(false) }, '删除'),
-                  h(Button, { variant: 'primary', onClick: () => setOpenNative(false) }, '确认'),
-                ),
-              },
-              h(
-                'div',
-                { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
-                h(Input, { value: nativeText, onChange: setNativeText, placeholder: '自定义输入框（来自 core 控件）' }),
-                h(
-                  'label',
-                  { style: { display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px' } },
-                  h(Checkbox, { checked: false, onChange: () => {} }),
-                  '自定义勾选项',
-                ),
-              ),
-            )
-          : null,
-      ),
-    ),
-    h(
-      Example,
       { title: '小型弹窗（自定义）', hint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。', code: CODE_SMALL_MODAL },
       h(
         'div',
@@ -1575,55 +1531,47 @@ export function FeedbackPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: 'Toast · 官方 Sonner', hint: 'showToast()：第三方库原味，对比用', code: CODE_TOAST_NATIVE },
+      { title: '原生弹窗（宿主）', hint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。', code: CODE_HOST_MODAL },
       h(
         'div',
-        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
-        h(Button, { onClick: () => showToast('已保存') }, '普通(info)'),
-        h(Button, { onClick: () => showToast('保存成功', { variant: 'success' }) }, '成功'),
-        h(Button, { onClick: () => showToast('保存失败', { variant: 'error' }) }, '失败'),
-        h(Button, { onClick: () => showToast('注意一下', { variant: 'warning' }) }, '警告'),
-        h(Button, { onClick: () => showToast('整条自定义色', { color: '#7c3aed' }) }, '自定义色'),
-        h(
-          Button,
-          {
-            onClick: () =>
-              showToast('消失后回调', {
-                onDismiss: () => showToast('上一条消失了'),
-              }),
-          },
-          '带回调',
-        ),
-      ),
-      h(
-        'div',
-        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
-        h(Button, { onClick: () => showToast('顶部-左', { position: 'top-left' }) }, 'top-left'),
-        h(Button, { onClick: () => showToast('顶部-中', { position: 'top-center' }) }, 'top-center'),
-        h(Button, { onClick: () => showToast('顶部-右', { position: 'top-right' }) }, 'top-right'),
-        h(Button, { onClick: () => showToast('底部-左', { position: 'bottom-left' }) }, 'bottom-left'),
-        h(Button, { onClick: () => showToast('底部-中', { position: 'bottom-center' }) }, 'bottom-center'),
-        h(Button, { onClick: () => showToast('底部-右', { position: 'bottom-right' }) }, 'bottom-right'),
-      ),
-    ),
-    h(
-      Example,
-      { title: 'Toast · 宿主原生', hint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）', code: CODE_TOAST_HOST },
-      h(
-        'div',
-        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
-        h(Button, { onClick: () => showHostToast('这是宿主原生提示') }, '普通'),
-        h(Button, { onClick: () => showHostToast('操作成功', { tone: 'success' }) }, '成功(success)'),
-        h(
-          Button,
-          {
-            onClick: () =>
-              showHostToast('有动作的原生提示', {
-                actions: [{ text: '查看', onClick: () => showToast('点了「查看」') }],
-              }),
-          },
-          '带动作',
-        ),
+        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
+        h(Button, { variant: 'outline', onClick: () => setOpenNative(true) }, '打开宿主原生弹窗（组件）'),
+        h(Button, { variant: 'ghost', onClick: () => { void alertModal({ title: '宿主提示', message: '这是宿主样式的命令式 alert（skin:"host"），关闭即确认' }) } }, 'alertModal({skin:"host"})'),
+        h(Button, { variant: 'ghost', onClick: async () => {
+            const ok = await confirmModal({ title: '宿主确认框', message: '官方 Modal 弹出的确认（danger）', tone: 'danger', confirmText: '删除', cancelText: '再想想', skin: 'host' })
+            showToast(ok ? '宿主 confirm：你点了删除' : '宿主 confirm：你点了取消')
+          } }, 'confirmModal({skin:"host"})'),
+        openNative
+          ? h(
+              Official.Modal,
+              {
+                open: openNative,
+                onClose: () => setOpenNative(false),
+                title: '宿主原生弹窗',
+                closeLabel: '关闭',
+                description: '这是宿主内核提供的 Modal，下面一段是调用方塞进来的自定义内容（输入框 + 勾选）。',
+                contentClassName: 'dshpc-native-demo-content',
+                footer: h(
+                  'div',
+                  { style: { display: 'flex', justifyContent: 'flex-end', gap: '8px' } },
+                  h(Button, { variant: 'outline', onClick: () => setOpenNative(false) }, '取消'),
+                  h(Button, { variant: 'danger', onClick: () => setOpenNative(false) }, '删除'),
+                  h(Button, { variant: 'primary', onClick: () => setOpenNative(false) }, '确认'),
+                ),
+              },
+              h(
+                'div',
+                { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+                h(Input, { value: nativeText, onChange: setNativeText, placeholder: '自定义输入框（来自 core 控件）' }),
+                h(
+                  'label',
+                  { style: { display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px' } },
+                  h(Checkbox, { checked: false, onChange: () => {} }),
+                  '自定义勾选项',
+                ),
+              ),
+            )
+          : null,
       ),
     ),
     h(
@@ -1662,6 +1610,59 @@ export function FeedbackPage(): ReturnType<typeof h> {
           },
           '双按钮',
         ),
+      ),
+    ),
+    h(
+      Example,
+      { title: 'Toast · 宿主原生', hint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）', code: CODE_TOAST_HOST },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
+        h(Button, { onClick: () => showHostToast('这是宿主原生提示') }, '普通'),
+        h(Button, { onClick: () => showHostToast('操作成功', { tone: 'success' }) }, '成功(success)'),
+        h(
+          Button,
+          {
+            onClick: () =>
+              showHostToast('有动作的原生提示', {
+                actions: [{ text: '查看', onClick: () => showToast('点了「查看」') }],
+              }),
+          },
+          '带动作',
+        ),
+      ),
+    ),
+    h(
+      Example,
+      { title: 'Toast · 官方 Sonner', hint: 'showToast()：第三方库原味，对比用', code: CODE_TOAST_NATIVE },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' } },
+        h(Button, { onClick: () => showToast('已保存') }, '普通(info)'),
+        h(Button, { onClick: () => showToast('保存成功', { variant: 'success' }) }, '成功'),
+        h(Button, { onClick: () => showToast('保存失败', { variant: 'error' }) }, '失败'),
+        h(Button, { onClick: () => showToast('注意一下', { variant: 'warning' }) }, '警告'),
+        h(Button, { onClick: () => showToast('整条自定义色', { color: '#7c3aed' }) }, '自定义色'),
+        h(
+          Button,
+          {
+            onClick: () =>
+              showToast('消失后回调', {
+                onDismiss: () => showToast('上一条消失了'),
+              }),
+          },
+          '带回调',
+        ),
+      ),
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
+        h(Button, { onClick: () => showToast('顶部-左', { position: 'top-left' }) }, 'top-left'),
+        h(Button, { onClick: () => showToast('顶部-中', { position: 'top-center' }) }, 'top-center'),
+        h(Button, { onClick: () => showToast('顶部-右', { position: 'top-right' }) }, 'top-right'),
+        h(Button, { onClick: () => showToast('底部-左', { position: 'bottom-left' }) }, 'bottom-left'),
+        h(Button, { onClick: () => showToast('底部-中', { position: 'bottom-center' }) }, 'bottom-center'),
+        h(Button, { onClick: () => showToast('底部-右', { position: 'bottom-right' }) }, 'bottom-right'),
       ),
     ),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_FEEDBACK_USAGE }),

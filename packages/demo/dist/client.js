@@ -3577,7 +3577,7 @@ var DICT2 = {
     weekday6: "\u516D",
     weekday7: "\u65E5",
     // 文档骨架：示例 / 代码 / 用法 / API 表的栏位名与表头
-    docNote: "\u5907\u6CE8",
+    docNote: "\u8BF4\u660E",
     docPreview: "\u793A\u4F8B",
     docCode: "\u4EE3\u7801",
     docUsage: "\u600E\u4E48\u7528",
@@ -4778,7 +4778,11 @@ function InputPage() {
               }
             }, "\u542F\u7528")
           ),
-          (0, import_react31.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" }),
+          (0, import_react31.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
+        ),
+        (0, import_react31.createElement)(
+          "div",
+          { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
           (0, import_react31.createElement)(Segmented, {
             variant: "inset",
             items: [
@@ -5367,18 +5371,15 @@ function CardPage() {
               items: [
                 { value: "all", label: t2("segAll"), count: 22 },
                 { value: "doing", label: t2("segDoing"), count: 11 },
-                { value: "claimed", label: t2("segClaimed"), count: 11 },
-                { value: "backlog", label: "\u79EF\u538B" },
-                { value: "overdue", label: "\u903E\u671F", count: 4 },
-                { value: "stalled", label: "\u505C\u6EDE", count: 8 }
+                { value: "claimed", label: t2("segClaimed"), count: 11 }
               ],
               value: seg,
               onChange: setSeg
             }),
-            // 搜索框 192px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
+            // 搜索框 140px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
             (0, import_react31.createElement)(
               "div",
-              { style: { width: "192px", flex: "none" } },
+              { style: { width: "140px", flex: "none" } },
               (0, import_react31.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
             )
           ]
@@ -5655,52 +5656,6 @@ function FeedbackPage() {
     (0, import_react31.createElement)(Note, { text: t2("feedbackNote") }),
     (0, import_react31.createElement)(
       Example,
-      { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002', code: CODE_HOST_MODAL },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
-        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: () => {
-          void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
-        } }, 'alertModal({skin:"host"})'),
-        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: async () => {
-          const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
-          showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
-        } }, 'confirmModal({skin:"host"})'),
-        openNative ? (0, import_react31.createElement)(
-          Official.Modal,
-          {
-            open: openNative,
-            onClose: () => setOpenNative(false),
-            title: "\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97",
-            closeLabel: "\u5173\u95ED",
-            description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
-            contentClassName: "dshpc-native-demo-content",
-            footer: (0, import_react31.createElement)(
-              "div",
-              { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-              (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
-              (0, import_react31.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
-              (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
-            )
-          },
-          (0, import_react31.createElement)(
-            "div",
-            { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-            (0, import_react31.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
-            (0, import_react31.createElement)(
-              "label",
-              { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
-              (0, import_react31.createElement)(Checkbox, { checked: false, onChange: () => {
-              } }),
-              "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
-            )
-          )
-        ) : null
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
       { title: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002", code: CODE_SMALL_MODAL },
       (0, import_react31.createElement)(
         "div",
@@ -5860,53 +5815,48 @@ function FeedbackPage() {
     ),
     (0, import_react31.createElement)(
       Example,
-      { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528", code: CODE_TOAST_NATIVE },
+      { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002', code: CODE_HOST_MODAL },
       (0, import_react31.createElement)(
         "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
-        (0, import_react31.createElement)(
-          Button,
+        { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
+        (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
+        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: () => {
+          void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
+        } }, 'alertModal({skin:"host"})'),
+        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: async () => {
+          const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
+          showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
+        } }, 'confirmModal({skin:"host"})'),
+        openNative ? (0, import_react31.createElement)(
+          Official.Modal,
           {
-            onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
-              onDismiss: () => showToast("\u4E0A\u4E00\u6761\u6D88\u5931\u4E86")
-            })
+            open: openNative,
+            onClose: () => setOpenNative(false),
+            title: "\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97",
+            closeLabel: "\u5173\u95ED",
+            description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
+            contentClassName: "dshpc-native-demo-content",
+            footer: (0, import_react31.createElement)(
+              "div",
+              { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
+              (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react31.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+            )
           },
-          "\u5E26\u56DE\u8C03"
-        )
-      ),
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09", code: CODE_TOAST_HOST },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
-        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
-        (0, import_react31.createElement)(
-          Button,
-          {
-            onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
-              actions: [{ text: "\u67E5\u770B", onClick: () => showToast("\u70B9\u4E86\u300C\u67E5\u770B\u300D") }]
-            })
-          },
-          "\u5E26\u52A8\u4F5C"
-        )
+          (0, import_react31.createElement)(
+            "div",
+            { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+            (0, import_react31.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react31.createElement)(
+              "label",
+              { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
+              (0, import_react31.createElement)(Checkbox, { checked: false, onChange: () => {
+              } }),
+              "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
+            )
+          )
+        ) : null
       )
     ),
     (0, import_react31.createElement)(
@@ -5943,6 +5893,57 @@ function FeedbackPage() {
           },
           "\u53CC\u6309\u94AE"
         )
+      )
+    ),
+    (0, import_react31.createElement)(
+      Example,
+      { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09", code: CODE_TOAST_HOST },
+      (0, import_react31.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
+        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
+        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
+        (0, import_react31.createElement)(
+          Button,
+          {
+            onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
+              actions: [{ text: "\u67E5\u770B", onClick: () => showToast("\u70B9\u4E86\u300C\u67E5\u770B\u300D") }]
+            })
+          },
+          "\u5E26\u52A8\u4F5C"
+        )
+      )
+    ),
+    (0, import_react31.createElement)(
+      Example,
+      { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528", code: CODE_TOAST_NATIVE },
+      (0, import_react31.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" } },
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
+        (0, import_react31.createElement)(
+          Button,
+          {
+            onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
+              onDismiss: () => showToast("\u4E0A\u4E00\u6761\u6D88\u5931\u4E86")
+            })
+          },
+          "\u5E26\u56DE\u8C03"
+        )
+      ),
+      (0, import_react31.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
+        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
       )
     ),
     (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_FEEDBACK_USAGE }),
@@ -7839,7 +7840,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0939-iwdf"]
+            [t2("buildStamp"), "1021-0954-wl68"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",
