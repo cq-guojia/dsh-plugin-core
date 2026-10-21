@@ -31,3 +31,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-21 09:23:59 · new · @GuoJia-Agent · 创建任务（open）
 - 2026-10-21 09:25:40 · claim · @GuoJia-Agent · 认领 → doing
+- 2026-10-21 09:25:47 · log · @GuoJia-Agent · 建任务台账并填正文：核心 src/ui/CodeViewer.tsx 引入 CodeMirror 只读查看器替代官方 CodeBlock，明确不进 explorer、不动 ui/official
