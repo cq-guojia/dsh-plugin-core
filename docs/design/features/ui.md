@@ -271,6 +271,25 @@ core 保持零官方依赖：官方 Tooltip 只能由插件侧注入（`src/ui/t
 | `startResizeLayoutWidth(opts)` | 拖拽调整布局宽度（`root` 不传则回落 `#dshpc-root`） |
 | `PanelDock` / `createPanelDock(opts)` | 可停靠分栏容器，见下节 |
 
+### 跨副本 toast 宿主（多插件同页只留一个提示区）
+
+core 被打进每个插件的 bundle，`Toast.ts` 的模块级状态各副本一份 ⇒ 旧实现 N 个插件同页会挂出
+N 个同 id 容器 + N 个 Toaster，叠在同一屏位。现改为 `globalThis` 上
+`Symbol.for('dsh-plugin-core/toast-host')` 单例（`src/ui/toast-host.ts`）：先到场的副本建宿主
+（唯一容器 `#dshpc-toast-root` + 唯一 Toaster，`getElementById` 双闸防重复 id），其余副本
+（含跨版本）把 `ToastPayload` 交给宿主渲染。sonner 的 `toast()` / `toast.custom()` 是**模块级
+store**（B 副本调自己 bundle 的 sonner，事件只进 B 的 store），所以只能共享「命令式入口」、
+不能共享 React root。`showToast` / `notify` 签名与行为不变；无 `document` 的环境（Node 单测 /
+SSR）静默跳过、不注册。
+
+三条取舍（2026-10-21 用户拍板接受，不要自行"优化"）：
+
+| 取舍 | 内容 |
+|---|---|
+| 样式由第一个副本决定 | A 用 core 0.2.14、B 用 0.3.0 时，提示外观是先加载那一份的；要消除靠版本治理（各插件同步升 core），不做技术处理 |
+| position 全局共享 | 任一插件 `setPosition` 对所有插件生效；一个屏幕一个区，这是「统一」的必然代价 |
+| 不做卸载回收 / 引用计数 | 停用插件只留一个不可见空 div + 一个对象引用；DSH 装插件本就要重启核心，页面刷新即重置。引用计数解决不了唯一风险场景（热替换时宿主副本被废），故不加 |
+
 ### PanelDock（停靠分栏）
 
 「右侧分栏」从业务里剥出来的通用壳。**它是布局成员，不是浮层**：占宽度、把主区挤窄，
