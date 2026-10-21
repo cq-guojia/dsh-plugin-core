@@ -86,6 +86,8 @@ const DICT = {
         relWeeksAgo: '{n} 周前',
         relMonthsAgo: '{n} 个月前',
         relYearsAgo: '{n} 年前',
+        codeCopy: '复制',
+        codeCopied: '已复制',
     },
     en: {
         sessionLoading: 'Loading session…',
@@ -167,6 +169,8 @@ const DICT = {
         relWeeksAgo: '{n}w ago',
         relMonthsAgo: '{n}mo ago',
         relYearsAgo: '{n}y ago',
+        codeCopy: 'Copy',
+        codeCopied: 'Copied',
     },
 };
 let current = 'zh';

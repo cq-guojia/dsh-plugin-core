@@ -89,6 +89,8 @@ export type UtilMessageKey =
   | 'relWeeksAgo'
   | 'relMonthsAgo'
   | 'relYearsAgo'
+  | 'codeCopy'
+  | 'codeCopied'
 
 /** 文案函数：`vars` 用于填 `{n}` 这类占位。 */
 export type Translate = (key: UtilMessageKey, vars?: Record<string, number | string>) => string
@@ -174,6 +176,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     relWeeksAgo: '{n} 周前',
     relMonthsAgo: '{n} 个月前',
     relYearsAgo: '{n} 年前',
+    codeCopy: '复制',
+    codeCopied: '已复制',
   },
   en: {
     sessionLoading: 'Loading session…',
@@ -255,6 +259,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     relWeeksAgo: '{n}w ago',
     relMonthsAgo: '{n}mo ago',
     relYearsAgo: '{n}y ago',
+    codeCopy: 'Copy',
+    codeCopied: 'Copied',
   },
 }
 

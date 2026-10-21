@@ -40,6 +40,7 @@ const MAP = [
   ['src/ui/card.css', 'src/ui/card-css.generated.ts', 'CARD_CSS'],
   ['src/ui/chip.css', 'src/ui/chip-css.generated.ts', 'CHIP_CSS'],
   ['src/ui/panel-dock.css', 'src/ui/panel-dock-css.generated.ts', 'PANEL_DOCK_CSS'],
+  ['src/ui/code-viewer.css', 'src/ui/code-viewer-css.generated.ts', 'CODE_VIEWER_CSS'],
   ['src/explorer/explorer.css', 'src/explorer/explorer-css.generated.ts', 'EXPLORER_CSS'],
   ['src/session/session.css', 'src/session/session-css.generated.ts', 'SESSION_CSS'],
   // demo 预览站的文档骨架（packages/demo）：与库同源同闸，只是不随库发布。
