@@ -7841,6 +7841,21 @@ function baseNameOfPath(p) {
 function dirnameOf(p) {
   return parentOf(p);
 }
+function pickWorkspaceAnchor(items) {
+  let best = null;
+  let bestAt = Number.NEGATIVE_INFINITY;
+  for (const item of items) {
+    const sessionId = item.sessionIds?.[item.sessionIds.length - 1];
+    if (typeof item.title !== "string" || item.title === "" || typeof sessionId !== "string" || sessionId === "")
+      continue;
+    const at = typeof item.updatedAt === "number" && Number.isFinite(item.updatedAt) ? item.updatedAt : Number.NEGATIVE_INFINITY;
+    if (best !== null && at <= bestAt)
+      continue;
+    best = { title: item.title, sessionId };
+    bestAt = at;
+  }
+  return best;
+}
 
 // dist/explorer/preview/BytesPreview.js
 var import_react32 = require("react");
@@ -52899,7 +52914,6 @@ function markdownLabels() {
 }
 
 // dist/explorer/preview/TextPreview.js
-var PAGE_LINES = 5e3;
 function TextPreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
@@ -52912,9 +52926,14 @@ function TextPreview(props) {
   const load = (0, import_react36.useCallback)(async (offset, append2) => {
     setLoading(true);
     try {
-      const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, { offset, limit: PAGE_LINES }));
-      if (parsed === null || "failed" in parsed) {
-        setFailed(errView(parsed === null ? void 0 : parsed.failed));
+      const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset > 0 ? { offset } : {}));
+      if (parsed === null) {
+        console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u4F53\u65E0\u6CD5\u89E3\u6790\u4E3A\u6587\u672C\u9875", props.path);
+        setFailed({ key: "previewBadPayload" });
+        return;
+      }
+      if ("failed" in parsed) {
+        setFailed(errView(parsed.failed));
         return;
       }
       setFailed(null);
@@ -52952,7 +52971,7 @@ function TextPreview(props) {
   if (text2 === "" && loading)
     return (0, import_react36.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   const rendered = props.markdown && !props.sourceView;
-  return (0, import_react36.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column" } }, truncated ? (0, import_react36.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react36.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react36.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react36.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react36.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react36.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
+  return (0, import_react36.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "12px 14px" } : {} } }, truncated ? (0, import_react36.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react36.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react36.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react36.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react36.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react36.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
 }
 
 // dist/explorer/preview/HtmlPreview.js
@@ -53416,6 +53435,8 @@ function FileBrowser(props) {
       });
     }
   }, [childCache, props.workspaceFiles, props.sessionId]);
+  const extsOnly = picker && props.filter !== void 0 && props.filter.dirs !== true && (props.filter.exts?.length ?? 0) > 0;
+  const dirPickable = picker && props.onPick !== void 0 && !extsOnly;
   const renderTree = (0, import_react40.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
     const childPath = joinPath(baseDir, entry.name);
     const isDir = entry.type === "directory";
@@ -53434,18 +53455,35 @@ function FileBrowser(props) {
         setReloadNonce(0);
         setSourceView(false);
       };
-      return (0, import_react40.createElement)("div", {
-        key: childPath,
-        className: `dshpc-fb__row${picker ? " dshpc-fb__row--pick" : ""}`,
-        role: "button",
-        tabIndex: 0,
-        title: picker ? tt("explorerPickFile") : childPath,
-        onClick: pick2,
-        onKeyDown: (event) => {
-          if (event.key === "Enter" || event.key === " ")
+      return (0, import_react40.createElement)(
+        "div",
+        {
+          key: childPath,
+          className: `dshpc-fb__row${picker ? " dshpc-fb__row--pick" : ""}`,
+          role: "button",
+          tabIndex: 0,
+          title: picker ? tt("explorerPickFile") : childPath,
+          onClick: pick2,
+          onKeyDown: (event) => {
+            if (event.key === "Enter" || event.key === " ")
+              pick2();
+          }
+        },
+        (0, import_react40.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react40.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })),
+        (0, import_react40.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+        // 选择器里文件行也给一枚「选择」钮，与目录行的操作位对齐（目录没有时它仍在，
+        // 「点行 = 选中」的旧默契保持不变，外显入口不再缺）。
+        picker && props.onPick !== void 0 ? (0, import_react40.createElement)(Button, {
+          variant: "outline",
+          size: "sm",
+          className: "dshpc-fb__row-act",
+          "aria-label": tt("explorerPickFile"),
+          onClick: (event) => {
+            event.stopPropagation();
             pick2();
-        }
-      }, (0, import_react40.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react40.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })), (0, import_react40.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name));
+          }
+        }, tt("explorerPickDir")) : null
+      );
     }
     const cached = childCache[childPath];
     const isOpen2 = openDirs.has(childPath);
@@ -53455,7 +53493,7 @@ function FileBrowser(props) {
     const actThisDir = (event) => {
       event.stopPropagation();
       if (picker) {
-        if (props.onPick !== void 0)
+        if (!extsOnly && props.onPick !== void 0)
           props.onPick(relativizeToRoot(rootCache, props.sessionId, childPath), true);
         return;
       }
@@ -53488,20 +53526,28 @@ function FileBrowser(props) {
         }
       }),
       (0, import_react40.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
-      props.onPick === void 0 && picker ? null : (0, import_react40.createElement)(Button, {
+      // picker：仅目录可选时才出「选择」（扩展名过滤下没有，目录只作导航）；
+      // 浏览态：出「进入」。
+      picker ? dirPickable ? (0, import_react40.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
-        "aria-label": picker ? tt("explorerPickDirAria") : tt("explorerEnter"),
+        "aria-label": tt("explorerPickDirAria"),
         onClick: actThisDir
-      }, tt(picker ? "explorerPickDir" : "explorerEnter"))
+      }, tt("explorerPickDir")) : null : (0, import_react40.createElement)(Button, {
+        variant: "outline",
+        size: "sm",
+        className: "dshpc-fb__row-act",
+        "aria-label": tt("explorerEnter"),
+        onClick: actThisDir
+      }, tt("explorerEnter"))
     ), isOpen2 ? (0, import_react40.createElement)(
       "div",
       { className: "dshpc-fb__row-children" },
       // 硬性规定：不新建 Loading、不写加载文案 ⇒ 还在拉就空着（源实现用户 2026-10-05）。
       cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react40.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react40.createElement)(import_react40.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react40.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
     ) : null);
-  }), [childCache, openDirs, picker, props.filter, props.onPick, props.sessionId, rootCache, dir, loadDir, tt]);
+  }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, props.sessionId, rootCache, dir, loadDir, tt]);
   const rootAbs = rootCache.get(props.sessionId);
   const rootLabel = props.rootName ?? (rootAbs !== void 0 ? baseNameOfPath(rootAbs.replace(/\/+$/, "")) : "");
   const crumbs = rootLabel !== "" ? [{ label: rootLabel, path: "" }, ...crumbsOfDir(relativizeToRoot(rootCache, props.sessionId, dir))] : crumbsOfDir(dir);
@@ -53628,6 +53674,12 @@ var PREVIEW_PANEL_ID = "file-preview";
 function openFilePreview(options) {
   if (typeof document === "undefined")
     return null;
+  if (typeof getComputedStyle === "function") {
+    const cs = getComputedStyle(options.mount);
+    if (cs.display !== "flex" && cs.display !== "inline-flex") {
+      console.warn("[dsh-plugin-core/explorer] openFilePreview: mount \u4E0D\u662F flex \u884C \u2014\u2014 PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u505C\u9760\u53F3\u4FA7 + \u6324\u7A84\u4E3B\u533A\uFF09\u3002\u8BF7\u4F20\u4F60\u9875\u9762\u300C\u4E3B\u533A + \u4FA7\u680F\u300D\u90A3\u4E00\u5C42 flex \u5BB9\u5668\uFF0C\u4E0D\u8981\u4F20 document.body \u6216\u65E0\u5B9A\u9AD8\u7684\u7A84\u5BB9\u5668\u3002");
+    }
+  }
   const previous = document.getElementById(PREVIEW_HOST_ID);
   if (previous !== null)
     previous.remove();
@@ -53700,6 +53752,7 @@ function openFilePreview(options) {
 var PICKER_WIDTH = 480;
 var PICKER_MAX_H = 660;
 var PICKER_MIN_H = 240;
+var PICKER_MIN_FLOOR = 160;
 function pickWorkspaceFile(options) {
   return new Promise((resolve) => {
     if (typeof document === "undefined") {
@@ -53717,7 +53770,17 @@ function pickWorkspaceFile(options) {
     const anchor = options.anchor ?? null;
     if (anchor !== null) {
       const rect = anchor.getBoundingClientRect();
-      panel.style.cssText = `position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;right:${Math.max(12, window.innerWidth - rect.left)}px;bottom:${Math.max(12, window.innerHeight - rect.bottom)}px;width:min(${PICKER_WIDTH}px,calc(100vw - 24px));height:${Math.min(PICKER_MAX_H, Math.max(PICKER_MIN_H, rect.top - 12))}px;background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)`;
+      const GAP2 = 12;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const width = Math.min(PICKER_WIDTH, vw - 2 * GAP2);
+      const availBelow = vh - GAP2 - rect.bottom - GAP2;
+      const availAbove = rect.top - GAP2 - GAP2;
+      const below = availBelow >= PICKER_MIN_H || availBelow >= availAbove;
+      const height = Math.max(Math.min(PICKER_MAX_H, below ? availBelow : availAbove), PICKER_MIN_FLOOR);
+      const left = Math.max(GAP2, Math.min(rect.left, vw - GAP2 - width));
+      const top2 = below ? Math.min(rect.bottom + GAP2, Math.max(GAP2, vh - GAP2 - height)) : Math.max(GAP2, rect.top - GAP2 - height);
+      panel.style.cssText = `position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;left:${Math.round(left)}px;top:${Math.round(top2)}px;width:${Math.round(width)}px;height:${Math.round(height)}px;background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)`;
     } else {
       panel.style.cssText = `position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;width:min(${PICKER_WIDTH}px,calc(100vw - 24px));height:${PICKER_MAX_H}px;background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)`;
     }
@@ -53822,6 +53885,58 @@ function SessionPreview(props) {
   return (0, import_react42.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react42.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react42.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
 }
 
+// packages/demo/src/samples.ts
+var SAMPLE_NAMES = ["README.md", "demo.html", "sample.js", "sample.css"];
+var MAX_DIRS_PER_LEVEL = 6;
+var MAX_DEPTH = 4;
+var SKIP = /* @__PURE__ */ new Set(["node_modules", "dist", ".git", "coverage", "build"]);
+async function readDir(files, sessionId, dir) {
+  try {
+    const parsed = listingOf(await files.list(sessionId, listPathOf(dir)));
+    if (parsed === null || isFailed(parsed)) return null;
+    return parsed.entries;
+  } catch {
+    return null;
+  }
+}
+function hitOf(dir, entries2) {
+  const names = new Set(entries2.filter((entry) => entry.type === "file").map((entry) => entry.name));
+  if (!SAMPLE_NAMES.every((name2) => names.has(name2))) return null;
+  return {
+    dir,
+    md: joinPath(dir, "README.md"),
+    html: joinPath(dir, "demo.html"),
+    js: joinPath(dir, "sample.js"),
+    css: joinPath(dir, "sample.css")
+  };
+}
+async function findSamples(files, sessionId) {
+  const root = await readDir(files, sessionId, "");
+  if (root === null) return null;
+  let frontier = [""];
+  const hit = hitOf("", root);
+  if (hit !== null) return hit;
+  for (let depth = 0; depth < MAX_DEPTH; depth++) {
+    const next = [];
+    for (const dir of frontier) {
+      const listed = dir === "" ? root : await readDir(files, sessionId, dir);
+      if (listed === null) continue;
+      const subdirs = listed.filter((entry) => entry.type === "directory" && !SKIP.has(entry.name));
+      for (const sub of subdirs.slice(0, MAX_DIRS_PER_LEVEL)) {
+        const childPath = joinPath(dir, sub.name);
+        const childEntries = await readDir(files, sessionId, childPath);
+        if (childEntries === null) continue;
+        const found = hitOf(childPath, childEntries);
+        if (found !== null) return found;
+        next.push(childPath);
+      }
+    }
+    if (next.length === 0) return null;
+    frontier = next;
+  }
+  return null;
+}
+
 // packages/demo/src/sections/blocks.tsx
 var CODE_OPEN = `// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF1B\u4E0D\u662F\u6D6E\u5C42\uFF09
 import { openFilePreview } from 'dsh-plugin-core/explorer'
@@ -53836,7 +53951,7 @@ openFilePreview({
 var CODE_PICK = `// \u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09
 import { pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 
-const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })
+const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['js', 'md'] } })
 // r = { path, isDir }`;
 var CODE_SESSION = `import { SessionPreview } from 'dsh-plugin-core/session'
 
@@ -53850,112 +53965,104 @@ var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 import { SessionPreview } from 'dsh-plugin-core/session'`;
-var SAMPLES = ["docs/sample.md", "docs/sample.html", "docs/sample.js", "docs/sample.css"];
-var ExplorerDataHarness = class {
-  constructor(prefix2) {
-    this.prefix = prefix2;
-  }
-  async read(_sessionId, path) {
-    return { offset: 0, text: `# ${path}
-
-\u8FD9\u662F\u793A\u4F8B\u6587\u4EF6\u5185\u5BB9\uFF0C\u4E0D\u662F\u771F\u5B9E\u5BBF\u4E3B\u6570\u636E\u3002`, lines: 3, eof: true };
-  }
-  async readBytes(_sessionId, path) {
-    const text2 = await this.read(_sessionId, path).then((r2) => r2.text);
-    return { offset: 0, data: new TextEncoder().encode(text2), eof: true };
-  }
-  async list(_sessionId, _path) {
-    return {
-      path: this.prefix + SAMPLES[0],
-      entries: SAMPLES.map((name2) => ({ name: name2, type: "file" })),
-      truncated: false
-    };
-  }
-};
-function MethodADemo() {
-  const [dock, setDock] = (0, import_react43.useState)(null);
-  const [path, setPath] = (0, import_react43.useState)(null);
+function useExplorerHost() {
+  const { workspaceFiles, officeToPdf } = (0, import_react43.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react43.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const anchor = pickWorkspaceAnchor(wsItems);
+  return { workspaceFiles, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
+}
+function NotReady(props) {
   return (0, import_react43.createElement)(
     "div",
-    null,
+    { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } },
+    t2(props.which === "files" ? "explorerFilesNone" : "explorerAnchorNone")
+  );
+}
+function OpenPreviewDemo() {
+  const { workspaceFiles, anchor, workspaceNames } = useExplorerHost();
+  const [samples, setSamples] = (0, import_react43.useState)(null);
+  const [probed, setProbed] = (0, import_react43.useState)(false);
+  const [last2, setLast] = (0, import_react43.useState)(null);
+  if (workspaceFiles === null) return (0, import_react43.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react43.createElement)(NotReady, { which: "anchor" });
+  const open = (path, rootName, workspaces) => {
+    const mount = pageRow.element;
+    if (mount === null) {
+      console.warn("[demo] pageRow \u672A\u5C31\u7EEA\uFF0C\u65E0\u6CD5\u505C\u9760\u9884\u89C8");
+      return;
+    }
+    openFilePreview({ mount, workspaceFiles, sessionId: anchor.sessionId, path, rootName, workspaces });
+    setLast(path === "" ? `${rootName}\uFF08\u6839\uFF09` : path);
+  };
+  const probe = () => {
+    if (probed) return Promise.resolve(samples);
+    setProbed(true);
+    return findSamples(workspaceFiles, anchor.sessionId).then((s) => {
+      setSamples(s);
+      return s;
+    });
+  };
+  const openSamples = (pick2) => {
+    void probe().then((s) => {
+      if (s !== null) open(pick2(s), anchor.title);
+    });
+  };
+  return (0, import_react43.createElement)(
+    "div",
+    { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
+    (0, import_react43.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t2("openRootPreview")),
     (0, import_react43.createElement)(
-      "div",
-      { ref: setDock, style: { display: "flex", minWidth: 0 } },
-      (0, import_react43.createElement)(
-        "div",
-        { style: { flex: "1 1 auto", minWidth: 0 } },
-        (0, import_react43.createElement)(Button, {
-          variant: "primary",
-          onClick: () => {
-            const root = "\u6211\u7684\u9879\u76EE";
-            openFilePreview({
-              mount: dock,
-              workspaceFiles: new ExplorerDataHarness(root + "/"),
-              sessionId: "demo-session",
-              path: SAMPLES[0],
-              rootName: root
-            });
-            setPath(SAMPLES[0]);
-          }
-        }, t2("openRootPreview"))
-      )
+      Button,
+      { variant: "secondary", onClick: () => openSamples((s) => s.dir) },
+      probed && samples === null ? t2("samplesNotFound") : t2("openSamplesDir")
     ),
     (0, import_react43.createElement)(
+      Button,
+      { variant: "ghost", onClick: () => openSamples((s) => s.js) },
+      probed && samples === null ? t2("samplesNotFound") : t2("sampleJs")
+    ),
+    last2 === null ? null : (0, import_react43.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
+    (0, import_react43.createElement)(
       "div",
-      { style: { fontSize: "12px", color: "var(--dshpc-fg-4)", marginTop: "8px" } },
-      path === null ? t2("explorerFilesNone") : t2("explorerSessionLabel") + path
+      { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", width: "100%" } },
+      `${t2("explorerAnchorLabel")}${anchor.title} \xB7 ${t2("explorerSessionLabel")}${anchor.sessionId} \xB7 ${t2("explorerWorkspaces")}${String(workspaceNames.length)}`
     )
   );
 }
-function MethodBDemo() {
-  const [btn, setBtn] = (0, import_react43.useState)(null);
+function PickFileDemo() {
+  const { workspaceFiles, anchor } = useExplorerHost();
   const [picked, setPicked] = (0, import_react43.useState)(null);
+  if (workspaceFiles === null) return (0, import_react43.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react43.createElement)(NotReady, { which: "anchor" });
+  const pick2 = (anchorBtn, filter2) => {
+    void pickWorkspaceFile({
+      workspaceFiles,
+      sessionId: anchor.sessionId,
+      anchor: anchorBtn,
+      rootName: anchor.title,
+      filter: filter2
+    }).then((r2) => setPicked(r2 === null ? null : r2.path + (r2.isDir ? "/" : "")));
+  };
   return (0, import_react43.createElement)(
     "div",
-    { style: { display: "flex", gap: "12px", alignItems: "center" } },
-    (0, import_react43.createElement)(Button, {
-      variant: "secondary",
-      ref: setBtn,
-      onClick: async () => {
-        const r2 = await pickWorkspaceFile({
-          workspaceFiles: new ExplorerDataHarness("\u6211\u7684\u9879\u76EE/"),
-          sessionId: "demo-session",
-          anchor: btn ?? document.body,
-          filter: { exts: ["ts"] }
-        });
-        setPicked(r2.path + (r2.isDir ? "/" : ""));
-      }
-    }, t2("pickFolder")),
+    { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
     (0, import_react43.createElement)(
-      "code",
-      { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px" } },
-      picked === null ? t2("pickNone") : t2("pickResult") + picked
-    )
-  );
-}
-function PreviewBodyDemo() {
-  const [dock, setDock] = (0, import_react43.useState)(null);
-  return (0, import_react43.createElement)(
-    "div",
-    null,
+      Button,
+      {
+        variant: "primary",
+        onClick: (event) => pick2(event.currentTarget)
+      },
+      t2("pickAny")
+    ),
     (0, import_react43.createElement)(
-      "div",
-      { ref: setDock, style: { display: "flex", minWidth: 0 } },
-      (0, import_react43.createElement)(
-        "div",
-        { style: { flex: "1 1 auto", minWidth: 0 } },
-        (0, import_react43.createElement)(Button, {
-          variant: "primary",
-          onClick: () => openFilePreview({
-            mount: dock,
-            workspaceFiles: new ExplorerDataHarness("\u6211\u7684\u9879\u76EE/"),
-            sessionId: "demo-session",
-            path: SAMPLES[0],
-            rootName: "\u6211\u7684\u9879\u76EE"
-          })
-        }, t2("openSamplesDir"))
-      )
-    )
+      Button,
+      {
+        variant: "secondary",
+        onClick: (event) => pick2(event.currentTarget, { exts: ["js", "md"] })
+      },
+      "\u4EC5 JS/MD"
+    ),
+    (0, import_react43.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t2("pickNone") : `${t2("pickResult")}${picked}`)
   );
 }
 function SessionPreviewDemo() {
@@ -53987,23 +54094,13 @@ function ExplorerPage() {
     (0, import_react43.createElement)(DocProse, { id: "explorer" }),
     (0, import_react43.createElement)(
       Example,
-      { title: t2("explorerDataTitle"), hint: t2("explorerDataHint") },
-      (0, import_react43.createElement)(MethodADemo, null)
-    ),
-    (0, import_react43.createElement)(
-      Example,
       { title: t2("methodATitle"), hint: t2("methodAHint"), code: CODE_OPEN },
-      (0, import_react43.createElement)(MethodADemo, null)
+      (0, import_react43.createElement)(OpenPreviewDemo, null)
     ),
     (0, import_react43.createElement)(
       Example,
       { title: t2("methodBTitle"), hint: t2("methodBHint"), code: CODE_PICK },
-      (0, import_react43.createElement)(MethodBDemo, null)
-    ),
-    (0, import_react43.createElement)(
-      Example,
-      { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") },
-      (0, import_react43.createElement)(PreviewBodyDemo, null)
+      (0, import_react43.createElement)(PickFileDemo, null)
     ),
     (0, import_react43.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
     (0, import_react43.createElement)(DocApi, { id: "explorer" })
@@ -54185,7 +54282,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-2140-8kwb"]
+            [t2("buildStamp"), "1021-2330-trqs"]
           ].map(
             ([label, value]) => (0, import_react45.createElement)(
               "tr",

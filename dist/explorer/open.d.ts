@@ -56,7 +56,7 @@ export interface PickedFile {
 export interface PickWorkspaceFileOptions {
     workspaceFiles: WorkspaceFilesFace;
     sessionId: string;
-    /** 锚点元素：弹窗在其左侧展开、下缘齐平；不传 = 屏幕居中。 */
+    /** 锚点元素：弹窗左缘与之对齐、优先落在它**下方**（下方不够才翻到上方）；不传 = 屏幕居中。 */
     anchor?: HTMLElement | null;
     /** 过滤：exts = 只要这些扩展名（小写无点）；dirs = 只要文件夹；不传 = 不限。 */
     filter?: PickFilter;

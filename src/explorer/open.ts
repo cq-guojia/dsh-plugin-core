@@ -74,6 +74,18 @@ const PREVIEW_PANEL_ID = 'file-preview'
  */
 export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHandle | null {
   if (typeof document === 'undefined') return null
+  // 布局契约自检：PanelDock 是布局成员，mount 必须是 flex 行，否则 dock 不停右侧、高度也塌。
+  // 只 dev 期警告、不改行为——消费方传错时至少留痕，别静默破相。
+  if (typeof getComputedStyle === 'function') {
+    const cs = getComputedStyle(options.mount)
+    if (cs.display !== 'flex' && cs.display !== 'inline-flex') {
+      console.warn(
+        '[dsh-plugin-core/explorer] openFilePreview: mount 不是 flex 行 —— PanelDock 是布局成员'
+        + '（停靠右侧 + 挤窄主区）。请传你页面「主区 + 侧栏」那一层 flex 容器，'
+        + '不要传 document.body 或无定高的窄容器。',
+      )
+    }
+  }
   // 同位置只允许一个预览：先关旧的
   const previous = document.getElementById(PREVIEW_HOST_ID)
   if (previous !== null) previous.remove()
@@ -170,7 +182,7 @@ export interface PickedFile {
 export interface PickWorkspaceFileOptions {
   workspaceFiles: WorkspaceFilesFace
   sessionId: string
-  /** 锚点元素：弹窗在其左侧展开、下缘齐平；不传 = 屏幕居中。 */
+  /** 锚点元素：弹窗左缘与之对齐、优先落在它**下方**（下方不够才翻到上方）；不传 = 屏幕居中。 */
   anchor?: HTMLElement | null
   /** 过滤：exts = 只要这些扩展名（小写无点）；dirs = 只要文件夹；不传 = 不限。 */
   filter?: PickFilter
@@ -194,7 +206,10 @@ export interface PickWorkspaceFileOptions {
 const PICKER_WIDTH = 480
 /** 弹窗高度上限 / 保底。 */
 const PICKER_MAX_H = 660
+/** 判定「下方放得下」的最小高度：低于它就翻到上方。 */
 const PICKER_MIN_H = 240
+/** 硬地板：锚点上下都极窄时也要给出一个能滚动的高度（此时以夹紧进视口优先）。 */
+const PICKER_MIN_FLOOR = 160
 
 /**
  * 弹出「选择工作区文件」模态弹窗，Promise 返回选中结果；取消（Esc / 点外部 / ✕）resolve `null`。
@@ -221,12 +236,29 @@ export function pickWorkspaceFile(options: PickWorkspaceFileOptions): Promise<Pi
     const anchor = options.anchor ?? null
     if (anchor !== null) {
       const rect = anchor.getBoundingClientRect()
+      const GAP = 12
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+      const width = Math.min(PICKER_WIDTH, vw - 2 * GAP)
+      // 垂直：先量锚点上下各自还剩多少，再决定往哪边展——高度必须跟着所选那侧的空间走
+      // （旧实现先按「上方空间」定高，锚点靠顶时算出个矮条，还硬往上方塞）。
+      const availBelow = vh - GAP - rect.bottom - GAP
+      const availAbove = rect.top - GAP - GAP
+      const below = availBelow >= PICKER_MIN_H || availBelow >= availAbove
+      const height = Math.max(Math.min(PICKER_MAX_H, below ? availBelow : availAbove), PICKER_MIN_FLOOR)
+      // 水平：与锚点左缘对齐（下拉式），右侧放不下就整体左移，最后夹紧进视口——绝不溢出屏幕
+      // （旧实现先往左展、再往右翻，弹窗会横着跑到离按钮很远的地方；改成左缘对齐后
+      //  永远贴在所点按钮的正下方，第三方锚点靠左靠右都不会被推出屏外）。
+      const left = Math.max(GAP, Math.min(rect.left, vw - GAP - width))
+      // 垂直：**优先落在锚点下方**（下缘 + 间距），下方不够才翻到上方（上缘 - 间距 - 高）；
+      // 最后再夹紧进视口——绝不溢出，也绝不因为锚点靠顶就默认往上弹。
+      const top = below
+        ? Math.min(rect.bottom + GAP, Math.max(GAP, vh - GAP - height))
+        : Math.max(GAP, rect.top - GAP - height)
       panel.style.cssText =
         'position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;' +
-        `right:${Math.max(12, window.innerWidth - rect.left)}px;` +
-        `bottom:${Math.max(12, window.innerHeight - rect.bottom)}px;` +
-        `width:min(${PICKER_WIDTH}px,calc(100vw - 24px));` +
-        `height:${Math.min(PICKER_MAX_H, Math.max(PICKER_MIN_H, rect.top - 12))}px;` +
+        `left:${Math.round(left)}px;top:${Math.round(top)}px;` +
+        `width:${Math.round(width)}px;height:${Math.round(height)}px;` +
         'background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);' +
         'border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)'
     } else {

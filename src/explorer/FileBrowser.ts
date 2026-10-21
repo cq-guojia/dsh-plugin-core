@@ -484,6 +484,14 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
     [childCache, props.workspaceFiles, props.sessionId],
   )
 
+  // 过滤点名了扩展名 ⇒ 要的是**文件**：目录只作导航（点行就地展开），不给「选择」、也回传不了 isDir。
+  // （旧实现「目录永远保留且永远带选择钮」，于是「仅 JS/MD」下出现「文件夹旁边有选择、
+  //   MD 文件旁边反而没有」，选中还回传一个文件夹——与过滤语义直接打架。）
+  const extsOnly =
+    picker && props.filter !== undefined && props.filter.dirs !== true && (props.filter.exts?.length ?? 0) > 0
+  /** 选择器里目录是否可选：不限 或 明说 dirs:true 才可选；扩展名过滤下不可选。 */
+  const dirPickable = picker && props.onPick !== undefined && !extsOnly
+
   /** 递归渲染目录树（内联展开）。file = 点开预览（picker = 选中）；dir = ▸ 切展开、行尾钮分派。 */
   const renderTree = useCallback(
     (entries: readonly DirEntry[], baseDir: string): ReactNode =>
@@ -521,6 +529,24 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
             },
             h('span', { className: 'dshpc-fb__row-icon' }, h(FileTypeIcon, { path: childPath, size: 18 })),
             h('span', { className: 'dshpc-fb__row-name' }, entry.name),
+            // 选择器里文件行也给一枚「选择」钮，与目录行的操作位对齐（目录没有时它仍在，
+            // 「点行 = 选中」的旧默契保持不变，外显入口不再缺）。
+            picker && props.onPick !== undefined
+              ? h(
+                  Button,
+                  {
+                    variant: 'outline',
+                    size: 'sm',
+                    className: 'dshpc-fb__row-act',
+                    'aria-label': tt('explorerPickFile'),
+                    onClick: (event: { stopPropagation: () => void }) => {
+                      event.stopPropagation()
+                      pick()
+                    },
+                  },
+                  tt('explorerPickDir'),
+                )
+              : null,
           )
         }
         const cached: ChildData | undefined = childCache[childPath]
@@ -534,7 +560,8 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
         const actThisDir = (event: { stopPropagation: () => void }): void => {
           event.stopPropagation()
           if (picker) {
-            if (props.onPick !== undefined) props.onPick(relativizeToRoot(rootCache, props.sessionId, childPath), true)
+            // 扩展名过滤下这里不该被触发（目录行根本不渲染这枚钮）；兜住是为了语义不被绕过。
+            if (!extsOnly && props.onPick !== undefined) props.onPick(relativizeToRoot(rootCache, props.sessionId, childPath), true)
             return
           }
           loadDir(childPath)
@@ -568,18 +595,32 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
               },
             }),
             h('span', { className: 'dshpc-fb__row-name' }, entry.name),
-            props.onPick === undefined && picker
-              ? null
+            // picker：仅目录可选时才出「选择」（扩展名过滤下没有，目录只作导航）；
+            // 浏览态：出「进入」。
+            picker
+              ? dirPickable
+                ? h(
+                    Button,
+                    {
+                      variant: 'outline',
+                      size: 'sm',
+                      className: 'dshpc-fb__row-act',
+                      'aria-label': tt('explorerPickDirAria'),
+                      onClick: actThisDir,
+                    },
+                    tt('explorerPickDir'),
+                  )
+                : null
               : h(
                   Button,
                   {
                     variant: 'outline',
                     size: 'sm',
                     className: 'dshpc-fb__row-act',
-                    'aria-label': picker ? tt('explorerPickDirAria') : tt('explorerEnter'),
+                    'aria-label': tt('explorerEnter'),
                     onClick: actThisDir,
                   },
-                  tt(picker ? 'explorerPickDir' : 'explorerEnter'),
+                  tt('explorerEnter'),
                 ),
           ),
           isOpen
@@ -601,7 +642,7 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
             : null,
         )
       }),
-    [childCache, openDirs, picker, props.filter, props.onPick, props.sessionId, rootCache, dir, loadDir, tt],
+    [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, props.sessionId, rootCache, dir, loadDir, tt],
   )
 
   // 面包屑 = 工作区根 + 其下相对层级（根名不写死：调用方传 rootName，否则用缓存根末段）。

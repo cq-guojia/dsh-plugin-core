@@ -5,6 +5,11 @@
 //    大文件拖宽卡顿问题若真出现再议，不为此引 CodeMirror 全家桶进共享底座）；
 //  - read 分页累积，`!eof` 出「加载更多」；传了 maxBytes（HTML 源码态）则按字节截断、
 //    不出按钮、顶部出横幅。
+//
+// ⚠️ read 的第三个参数（range）口径：**首页 `{}`、翻页 `{offset}`，绝不带 `limit`**。
+//   远端对 range 按值校验，多塞 limit 会被拒（表现 = 每种文件都「加载失败」）；
+//   兄弟项目 dsh-task-dispatch-table 与本仓文档（types.ts / dsh-host.md / features/explorer.md）
+//   同为 `{}` + `{offset}` 两态，分页步长由远端定，不在这里猜。
 import { createElement as h, useCallback, useEffect, useRef, useState } from 'react';
 import { MarkdownText } from '../../ui/official.js';
 import { ensureControls } from '../../ui/css.js';
@@ -15,8 +20,6 @@ import { t } from '../../utils/i18n.js';
 import { errView, textPageOf } from '../types.js';
 import { formatBytes } from '../../utils/number.js';
 import { markdownLabels } from './md-labels.js';
-/** read 分页单页行数（官方单页上限 5000 行）。 */
-const PAGE_LINES = 5000;
 export function TextPreview(props) {
     ensureControls();
     const tt = props.translate ?? t;
@@ -30,9 +33,16 @@ export function TextPreview(props) {
     const load = useCallback(async (offset, append) => {
         setLoading(true);
         try {
-            const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, { offset, limit: PAGE_LINES }));
-            if (parsed === null || 'failed' in parsed) {
-                setFailed(errView(parsed === null ? undefined : parsed.failed));
+            // range 只两态：首页 `{}`、翻页 `{offset}`（见文件头口径说明）。
+            const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset > 0 ? { offset } : {}));
+            if (parsed === null) {
+                // 形状不对要说「返回数据不符合预期」，不能混进「加载失败」——混了就永远查不出是谁的锅。
+                console.warn('[dsh-plugin-core:explorer] read 返回体无法解析为文本页', props.path);
+                setFailed({ key: 'previewBadPayload' });
+                return;
+            }
+            if ('failed' in parsed) {
+                setFailed(errView(parsed.failed));
                 return;
             }
             setFailed(null);
@@ -75,7 +85,7 @@ export function TextPreview(props) {
     if (text === '' && loading)
         return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'));
     const rendered = props.markdown && !props.sourceView;
-    return h('div', { className: 'dshpc-fb__text', style: { display: 'flex', flexDirection: 'column' } }, truncated
+    return h('div', { className: 'dshpc-fb__text', style: { display: 'flex', flexDirection: 'column', ...(rendered ? { padding: '12px 14px' } : {}) } }, truncated
         ? h('div', { className: 'dshpc-fb__banner' }, tt('previewTruncated', { n: formatBytes(props.maxBytes ?? 0) }))
         : null, rendered
         ? h(MarkdownText, { text, labels: markdownLabels() })
