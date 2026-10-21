@@ -108,3 +108,4 @@ toast 多插件统一方案由另一 Agent（任务 9a8a）实施，工作区改
 - 2026-10-21 08:27:42 · log · @GuoJia-Agent · 第三轮：Demo→Example 骨架统一，5 页补齐
 - 2026-10-21 09:04:47 · log · @GuoJia-Agent · 第四轮：feedback/layout 完成，components 8 页全完
 - 2026-10-21 09:35:00 · log · @GuoJia-Agent · 第五轮：blocks/utils/start/foundation/reference 改造；全部 18 页完成；77 测试+codelint 全绿；demo 三批已提交推送（036903f/4b06009/836b4e6）
+- 2026-10-21 09:54:45 · log · @GuoJia-Agent · 用户验收微调（bf7ae92）：反馈页示例重排为 定制→原生→官方(官方置底)；Sonner 两排按钮加竖向间隔；录入页 日/周/月 4 个 Segmented 拆到独立一行；卡片页 SectionHead 第一个示例切换菜单留 3 项+搜索框缩至 140px；Note 蓝色标签 备注→说明；会话 API 经核对已与 demo 同页共处（blocks.tsx:266），风格已统一无需改动
