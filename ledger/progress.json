@@ -54,6 +54,25 @@
       "title": "核心引入 CodeMirror 只读 CodeViewer（替代官方 CodeBlock）",
       "updated": "2026-10-21 09:37:05",
       "worklog": "worklog/202610/21-0923-核心引入-codemirror-只读-codeviewer-替代官方-codeb-8b99.md"
+    },
+    "20261021-1151-core-文档随包分发-agent-可读文档机制-demo-与-docs-真源统-ebe3": {
+      "category": "基建",
+      "created": "2026-10-21 11:51:26",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-21 11:51:26",
+      "status": "doing",
+      "tags": [
+        "文档",
+        "分发",
+        "demo",
+        "Agent",
+        "真源"
+      ],
+      "title": "core 文档随包分发：Agent 可读文档机制 + demo 与 docs 真源统一",
+      "updated": "2026-10-21 11:51:26",
+      "worklog": "worklog/202610/21-1151-core-文档随包分发-agent-可读文档机制-demo-与-docs-真源统-ebe3.md"
     }
   }
 }
