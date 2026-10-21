@@ -37,15 +37,21 @@ import { absolutizeDir, bareCode, baseNameOfPath, crumbsOfDir, createRootCache, 
 function crumbsMenuEntries(params) {
     const { workspaces, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
     const out = [];
+    // 内联样式照抄兄弟项目（wsEntry 的 gap 6px 覆盖类的 2px：图标与文字的间距以它为准）。
     const wsEntry = (ws, current) => h('button', {
         key: `ws:${ws}`,
         type: 'button',
         role: 'menuitem',
         className: 'dshpc-fb__menu-item',
+        style: { paddingLeft: 8, display: 'flex', alignItems: 'center', gap: '6px' },
         title: ws,
-        // 当前工作区也可点（源实现用户 2026-10-10）：点它 = 回到该工作区根目录（浏览深处时唯一的「回根」入口）。
+        // 点当前工作区 = 回到该工作区根目录（浏览深处时唯一的「回根」入口，兄弟 2026-10-10）；
+        // 点其他工作区才走 onPickWorkspace（换会话）。
         onClick: () => {
-            onPickWorkspace?.(ws);
+            if (current)
+                onLoadDir?.('');
+            else
+                onPickWorkspace?.(ws);
         },
     }, h('span', { className: 'dshpc-fb__menu-icon', style: { color: current ? 'var(--dshpc-fg)' : 'var(--dshpc-fg-2)' } }, h(current ? IconFolderOpenOutlineRegular : IconFolderCloseRegular, { size: 13 })), h('span', { className: 'dshpc-fb__menu-label', style: { fontWeight: current ? 600 : 400 } }, ws));
     const pathEntry = (crumb, depth, withArrow = true) => h('button', {
@@ -53,6 +59,7 @@ function crumbsMenuEntries(params) {
         type: 'button',
         role: 'menuitem',
         className: 'dshpc-fb__menu-item',
+        style: { paddingLeft: 8 },
         title: crumb.path,
         onClick: () => {
             onLoadDir?.(crumb.path);
@@ -290,9 +297,11 @@ export function FileBrowser(props) {
             if (!alive)
                 return;
             // 传输层失败：仍尝试按文件预览（预览体内部会给出错误态）。
-            setDir(dirnameOf(props.path));
+            const parent = dirnameOf(props.path);
+            setDir(parent);
             setViewing(props.path);
             setMode('file');
+            ensureRootLearned(parent);
         });
         return () => {
             alive = false;

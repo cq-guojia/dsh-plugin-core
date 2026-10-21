@@ -14,6 +14,10 @@ export interface OpenFilePreviewOptions {
     officeToPdf?: OfficeToPdfFace | null;
     /** 工作区根显示名（面包屑首段）。 */
     rootName?: string;
+    /** ▾ 下拉顶部的工作区清单（当前工作区展开 + 其余罗列；不传 = 下拉只有路径层）。 */
+    workspaces?: readonly string[];
+    /** 从 ▾ 下拉选择其他工作区（点当前工作区 = 回其根目录，不走这里）。 */
+    onSelectWorkspace?: (name: string) => void;
     /** 关闭后回调（✕ / Esc / handle.close 都触发）。 */
     onClose?: () => void;
     /** 初始宽度（px，默认 460）。 */

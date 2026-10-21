@@ -84,6 +84,8 @@ export function openFilePreview(options) {
         sessionId: options.sessionId,
         path: options.path,
         rootName: options.rootName,
+        workspaces: options.workspaces,
+        onSelectWorkspace: options.onSelectWorkspace,
         rootCache: options.rootCache,
         translate: options.translate,
         // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
