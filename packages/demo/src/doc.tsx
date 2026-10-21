@@ -49,8 +49,9 @@ export type ApiRow = {
 /**
  * 页级备注框：直接用核心 StripCard（方角 + 左缘 4px 通高色条 + 同色系浅底，无可见边框），
  * 不自绘 callout —— 演示站里的提示与插件真实用的提示必须是同一个东西。
+ * text 与 children 二选一：单行提示走 text（reference/foundation 在用），多段说明走 children（DocProse 在用）。
  */
-export function Note(props: { text: string }): ReturnType<typeof h> {
+export function Note(props: { text?: string; children?: ReactNode }): ReturnType<typeof h> {
   return h(
     StripCard,
     { accent: 'business', className: 'dshpc-doc-note' },
@@ -58,7 +59,7 @@ export function Note(props: { text: string }): ReturnType<typeof h> {
       'div',
       { className: 'dshpc-doc-note__body' },
       h('span', { className: 'dshpc-doc-note__mark' }, t('docNote')),
-      h('span', null, props.text),
+      props.children ?? h('span', null, props.text ?? ''),
     ),
   )
 }
@@ -183,12 +184,23 @@ export function ApiTable(props: { rows: readonly ApiRow[]; title?: string }): Re
 
 // —— 以下四个从 docData[sectionId] 直接渲染文档体；与上面的 Example/Note/ApiTable 共用外观 ——
 
-/** 把某 section 的 prose 渲染成一串 Note（顺序同 .doc.ts）。 */
+/**
+ * 把某 section 的 prose 渲染成【一个】Note：框内按段落换行（一个 prose 项 = 一段），
+ * 不再一段一个框。顺序同 .doc.ts。
+ */
 export function DocProse(props: { id: string }): ReactNode {
   const section = DOC_DATA[props.id]
   if (section?.prose === undefined) return null
   const l = locale()
-  return h(Fragment, null, ...section.prose.map((p, i) => h(Note, { key: i, text: p[l] })))
+  return h(
+    Note,
+    null,
+    h(
+      'div',
+      { className: 'dshpc-doc-note__content' },
+      ...section.prose.map((p, i) => h('div', { key: i, className: 'dshpc-doc-note__p' }, p[l])),
+    ),
+  )
 }
 
 /** 把某 section 的 api 表渲染成一组 ApiTable（一个 section 可有多张表，按数组顺序）。 */

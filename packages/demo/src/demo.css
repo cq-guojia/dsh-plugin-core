@@ -20,6 +20,17 @@
   color: var(--dshpc-business);
 }
 
+/* 一个 Note 框内承载多段说明：mark 是左侧标签，content 是右侧竖排段落列。 */
+.dshpc-doc-note__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dshpc-doc-note__p {
+  line-height: var(--dshpc-line-md);
+}
+
 /* 边框盒：用法块 / API 表的共同外壳 */
 .dshpc-doc-block {
   border: 1px solid var(--dshpc-border-faint);
