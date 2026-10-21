@@ -1,5 +1,6 @@
 # 20261021-2212-修-demo-工作区浏览演示-2-组-pagerow-挂载-真样例内容-open-0a67：修 demo 工作区浏览演示：2 组 + pageRow 挂载 + 真样例内容 + openFilePreview 坏 mount 警告
 
+> **✅ 完成封卷**：2026-10-22 00:37:50（@GuoJia-Agent）
 > **创建**：2026-10-21 22:12:15（@GuoJia-Agent）
 > **分类**：界面 ｜ **标签**：demo、explorer、PanelDock、openFilePreview、CodeViewer
 
@@ -68,3 +69,4 @@
 - 2026-10-21 23:55:11 · log · @GuoJia-Agent · 五改·HTML：拽 @deepseek-ai/dsh-api-workspace-files@0.2.1-rc.2 源码核实契约（read offset 从1起算、limit 不得超 maxLines ⇒ 旧 {offset:0,limit:5000} 必被拒；readBytes options 是 strictObject，{} 合法）并写入 docs/design/external/dsh-host.md §3.1。核心侧改：errView 未映射分支带出机器码+console.warn（不再一律'加载失败'）、Html/BytesPreview 形状错改报 previewBadPayload、iframe 外套兄弟同款 .dshpc-fb__fill 并补 min-height:0。codelint 全过、77 用例全绿，已 commit+push（0ae7771）。待用户复验 HTML 并把界面上的错误码报回来
 - 2026-10-22 00:15:05 · log · @GuoJia-Agent · 六改·HTML 根因落地（用户报 console）：buildStaticHtml 用 querySelectorAll('[xlink:href]') 删禁用属性，带命名空间冒号的属性名不是合法 CSS 选择器 ⇒ Chrome 抛 SyntaxError 被 catch 兜成'加载失败'（源码态走 read 不受影响，所以'源码能出来、渲染不出来'）。改为遍历元素逐个 removeAttribute（兄弟项目同款）。此错正是上一轮 errView 带机器码后才能一眼定位。重建 dist，77 用例全绿，commit+push 95293a4，待用户复验
 - 2026-10-22 00:31:26 · log · @GuoJia-Agent · 七改·修「点示例预览先闪一句没找到样例目录」：demo blocks.tsx 旧逻辑点一下就置 probed=true 而 samples 仍 null ⇒ 按钮文案短暂变成 samplesNotFound（用户以为是 toast），BFS 完才切回。改为 idle/probing/found/missing 四态 + 进页面即 findSamples 预探测（点按钮时已就绪），只有确认 missing 才改文案；删掉死键 samplesProbing。build:demo 重建，77 用例全绿，commit+push 0431b41，待用户复验
+- 2026-10-22 00:37:50 · close · @GuoJia-Agent · 结案：真机验收通过：① 文件/文件夹/HTML/MD 预览全部正常（根因：read 传 {offset:0,limit:5000} 违反官方 offset≥1 且 limit≤maxLines；HTML 另因 buildStaticHtml 用 [xlink:href] 非法选择器抛 SyntaxError）；② 两个选择弹窗都锚在按钮下方（下方不够翻上），「仅 JS/MD」下目录不可选、文件行有「选择」；③ 点示例预览不再闪「没找到样例目录」。核心侧一并修：errView 带出真实错误码、形状错报 previewBadPayload、iframe 补兄弟同款外壳。commit e00add4/0ae7771/95293a4/0431b41 已 push main（未 bump、未打 tag）
