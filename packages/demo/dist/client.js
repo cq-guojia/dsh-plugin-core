@@ -3449,6 +3449,21 @@ var DICT2 = {
     apiOnClose: "\u5DF2\u7ECF\u5173\u6389\u4E4B\u540E\u89E6\u53D1",
     apiOnResize: "\u62D6\u5BBD\u677E\u624B\u540E\u89E6\u53D1",
     apiOnLimitReached: "\u5230\u4E0A\u9650\u88AB\u62D2\u65F6\u89E6\u53D1\uFF08\u5E93\u4E0D\u5F39\u63D0\u793A\u3001\u4E0D\u629B\u5F02\u5E38\uFF09",
+    blocksNote: "\u5DE5\u4F5C\u533A\u6D4F\u89C8\u4E24\u5757\u6F14\u793A\uFF1A\u2460 Explorer\u2014\u2014\u53F3\u4FA7\u505C\u9760\u9884\u89C8\uFF08openFilePreview\uFF0C\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF09\u4E0E\u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08pickWorkspaceFile\uFF0CPromise \u8FD4\u56DE\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\u3002\u2461 Session\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\uFF08SessionPreview\uFF0Cvariant modal/inline\uFF09\u3002\u672C\u9875\u4E0D\u7528\u4EFB\u4F55 mock\uFF1A\u6837\u4F8B\u6587\u4EF6\u662F\u4ED3\u5E93\u771F\u6587\u4EF6\uFF0C\u53D6\u6570\u8D70\u5BBF\u4E3B workspaceFiles\uFF0C\u63A2\u4E0D\u5230\u5C31\u5982\u5B9E\u8BF4\u300C\u6CA1\u627E\u5230\u300D\u3002",
+    apiExplorerMount: "\u5206\u680F\u6302\u8F7D\u70B9\uFF1A\u6574\u9875 flex \u884C\uFF0Cdock \u6210\u4E3A\u5B83\u7684\u6700\u540E\u4E00\u4E2A\u5B50\u9879\uFF08\u4E3B\u533A\u88AB\u771F\u6B63\u6324\u7A84\uFF09\u3002\u81EA\u6302 body \u53EA\u80FD\u906E\u76D6\u3001\u6324\u4E0D\u7A84",
+    apiExplorerFiles: "\u5BBF\u4E3B\u4F1A\u8BDD\u4F5C\u7528\u57DF\u7684\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\uFF08WorkspaceFilesFace\uFF09",
+    apiExplorerSession: "\u4F1A\u8BDD id\uFF1BworkspaceFiles \u662F\u4F1A\u8BDD\u4F5C\u7528\u57DF\uFF0C\u5FC5\u987B\u5148\u843D\u5230\u4E00\u4E2A\u771F\u4F1A\u8BDD",
+    apiExplorerPath: "\u8981\u9884\u89C8\u7684\u6587\u4EF6\u8DEF\u5F84\uFF08\u5DE5\u4F5C\u533A\u76F8\u5BF9\uFF09\uFF1B\u7A7A\u4E32 = \u6253\u5F00\u6839\u76EE\u5F55",
+    apiExplorerRoot: "\u6839\u76EE\u5F55\u663E\u793A\u540D\uFF08\u951A\u70B9/\u9009\u5C42\u4E0B\u62C9\u7528\uFF09",
+    apiExplorerWorkspaces: "\u5DE5\u4F5C\u533A\u6E05\u5355\uFF08\u6807\u9898\u6570\u7EC4\uFF09\uFF0C\u7528\u4E8E\u9009\u5C42\u4E0B\u62C9",
+    apiExplorerOnSelect: "\u5728\u9009\u5C42\u4E0B\u62C9\u91CC\u6362\u5DE5\u4F5C\u533A\u65F6\u89E6\u53D1\uFF0C\u56DE\u8C03\u91CC\u518D open \u4E00\u6B21\u5373\u53EF\u6362\u4F1A\u8BDD\u91CD\u5F00",
+    apiPickAnchor: "\u89E6\u53D1\u5143\u7D20\uFF08HTMLElement\uFF09\uFF0C\u5F39\u7A97\u636E\u6B64\u5B9A\u4F4D\uFF1B\u4E0D\u81EA\u5DF1\u6302 dock",
+    apiPickFilter: "\u8FC7\u6EE4\u6761\u4EF6\uFF08exts \u6269\u5C55\u540D\u767D\u540D\u5355 / dirs \u662F\u5426\u542B\u76EE\u5F55\uFF09",
+    apiSessionId: "\u4F1A\u8BDD id",
+    apiSessionSource: "\u4F1A\u8BDD\u6570\u636E\u6E90\uFF08SessionSource\uFF09\uFF1B\u771F\u5B9E\u8D70\u5BBF\u4E3B\uFF0Cdemo \u7528 mock",
+    apiSessionVariant: "\u6E32\u67D3\u5F62\u6001\uFF1A'modal'\uFF08\u5F39\u7A97\uFF09\uFF5C'inline'\uFF08\u5185\u8054\u5757\uFF09",
+    apiSessionTitle: "\u5F39\u7A97\u6807\u9898\uFF08variant=modal \u65F6\uFF09",
+    apiSessionCallbacks: "onClose\uFF1A\u5173\u95ED\uFF1BonOpenFile\uFF1A\u70B9\u5F00\u6587\u4EF6\u65F6\u89E6\u53D1",
     btnLabelSave: "\u4FDD\u5B58\u4FEE\u6539",
     btnLabelCancel: "\u53D6\u6D88",
     btnLabelDelete: "\u5220\u9664",
@@ -3722,6 +3737,21 @@ var DICT2 = {
     apiOnClose: "Fires after the panel is gone",
     apiOnResize: "Fires when the drag is released",
     apiOnLimitReached: "Fires when the cap rejects an open (the library shows no toast and throws nothing)",
+    blocksNote: 'Two workspace-browsing demos: \u2460 Explorer \u2014 right-dock preview (openFilePreview, takes width and squeezes the main area) and anchor-popover file picking (pickWorkspaceFile, Promise returns the workspace-relative path). \u2461 Session \u2014 session preview (SessionPreview, variant modal/inline). This page uses no mock: sample files are real repo files, data comes from the host workspaceFiles, and if probing fails it says "not found" honestly.',
+    apiExplorerMount: "Dock mount point: the whole-page flex row; the dock becomes its last child (the main area is genuinely squeezed). Self-mounting on body can only cover, never squeeze",
+    apiExplorerFiles: "Host session-scoped workspace file service (WorkspaceFilesFace)",
+    apiExplorerSession: "Session id; workspaceFiles is session-scoped, so it must land on a real session first",
+    apiExplorerPath: "Path to preview (workspace-relative); empty string = open the root dir",
+    apiExplorerRoot: "Root dir display name (used by the anchor / layer picker)",
+    apiExplorerWorkspaces: "Workspace list (titles array), for the layer picker",
+    apiExplorerOnSelect: "Fires when switching workspace in the layer picker; open once more inside to re-open on the new session",
+    apiPickAnchor: "Trigger element (HTMLElement); the popover positions from it; does not mount its own dock",
+    apiPickFilter: "Filter (exts allow-list / dirs whether to include directories)",
+    apiSessionId: "Session id",
+    apiSessionSource: "Session data source (SessionSource); real builds use the host, the demo uses a mock",
+    apiSessionVariant: "Render form: 'modal' (dialog) | 'inline' (in-page block)",
+    apiSessionTitle: "Dialog title (when variant=modal)",
+    apiSessionCallbacks: "onClose: closes; onOpenFile: fires when a file is opened",
     btnLabelSave: "Save changes",
     btnLabelCancel: "Cancel",
     btnLabelDelete: "Delete",
@@ -7355,6 +7385,73 @@ function delay(ms) {
 }
 
 // packages/demo/src/sections/blocks.tsx
+var CODE_OPEN = `// \u53F3\u4FA7\u505C\u9760\u9884\u89C8\uFF1Adock \u6210\u4E3A\u6574\u9875 flex \u884C\u7684\u6700\u540E\u4E00\u4E2A\u5B50\u9879\uFF08\u4E3B\u533A\u88AB\u771F\u6B63\u6324\u7A84\uFF09
+const mount = document.querySelector('.page-row')!
+openFilePreview({
+  mount,
+  workspaceFiles: services.workspaceFiles,   // \u5BBF\u4E3B\u4F1A\u8BDD\u4F5C\u7528\u57DF\u670D\u52A1
+  officeToPdf: services.officeToPdf,
+  sessionId: anchor.sessionId,
+  rootName: anchor.title,
+  path: 'packages/demo/src/samples/index.md',
+  workspaces: workspaces.map((w) => w.title),
+  onSelectWorkspace: (name) => { /* \u6362\u4F1A\u8BDD\u91CD\u5F00\u9884\u89C8 */ },
+})`;
+var CODE_PICK = `// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF1APromise \u8FD4\u56DE\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF08\u4E0D\u81EA\u5DF1\u6302 dock\uFF09
+const result = await pickWorkspaceFile({
+  workspaceFiles: services.workspaceFiles,
+  officeToPdf: services.officeToPdf,
+  sessionId: anchor.sessionId,
+  anchor: event.currentTarget,   // \u89E6\u53D1\u5143\u7D20\uFF0C\u5F39\u7A97\u636E\u6B64\u5B9A\u4F4D
+  rootName: anchor.title,
+  workspaces: workspaces.map((w) => w.title),
+  filter: { exts: ['ts'], dirs: true },
+})
+console.log(result?.path)`;
+var CODE_SESSION = `// \u4F1A\u8BDD\u9884\u89C8\uFF1Avariant 'modal' = \u5F39\u7A97\uFF1B'inline' = \u5185\u8054\u5757
+<SessionPreview
+  sessionId="demo-session"
+  source={mockSessionSource}      // \u6570\u636E\u6E90\uFF08\u771F\u5B9E\u8D70\u5BBF\u4E3B\uFF1Bdemo \u7528 mock\uFF09
+  variant="modal"
+  title="\u4F1A\u8BDD\u9884\u89C8"
+  onClose={() => setOpen(false)}
+  onOpenFile={() => setOpen(false)}
+/>`;
+var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
+
+import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+import { SessionPreview } from 'dsh-plugin-core/session'
+
+// \u53F3\u4FA7\u505C\u9760\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09
+openFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })
+
+// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09
+const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })
+
+// \u4F1A\u8BDD\u9884\u89C8
+<SessionPreview sessionId="..." source={source} variant="modal" />`;
+var EXPLORER_API = [
+  { name: "mount", type: "HTMLElement", def: "\u2014", descKey: "apiExplorerMount" },
+  { name: "workspaceFiles", type: "WorkspaceFilesFace", def: "\u2014", descKey: "apiExplorerFiles" },
+  { name: "sessionId", type: "string", def: "\u2014", descKey: "apiExplorerSession" },
+  { name: "path", type: "string", def: "\u2014", descKey: "apiExplorerPath" },
+  { name: "rootName", type: "string", def: "\u2014", descKey: "apiExplorerRoot" },
+  { name: "workspaces", type: "string[]", def: "\u2014", descKey: "apiExplorerWorkspaces" },
+  { name: "onSelectWorkspace", type: "(name) => void", def: "\u2014", descKey: "apiExplorerOnSelect" }
+];
+var PICK_API = [
+  { name: "workspaceFiles", type: "WorkspaceFilesFace", def: "\u2014", descKey: "apiExplorerFiles" },
+  { name: "anchor", type: "HTMLElement", def: "\u2014", descKey: "apiPickAnchor" },
+  { name: "filter", type: "PickFilter", def: "\u2014", descKey: "apiPickFilter" },
+  { name: "sessionId / rootName", type: "string", def: "\u2014", descKey: "apiExplorerSession" }
+];
+var SESSION_API = [
+  { name: "sessionId", type: "string", def: "\u2014", descKey: "apiSessionId" },
+  { name: "source", type: "SessionSource", def: "\u2014", descKey: "apiSessionSource" },
+  { name: "variant", type: "'modal' | 'inline'", def: "'modal'", descKey: "apiSessionVariant" },
+  { name: "title", type: "string", def: "\u2014", descKey: "apiSessionTitle" },
+  { name: "onClose / onOpenFile", type: "() => void", def: "\u2014", descKey: "apiSessionCallbacks" }
+];
 function Row2(props) {
   return (0, import_react40.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, ...props.children);
 }
@@ -7427,16 +7524,17 @@ function ExplorerPage() {
   return (0, import_react40.createElement)(
     "div",
     null,
+    (0, import_react40.createElement)(Note, { text: t2("blocksNote") }),
     (0, import_react40.createElement)(
-      Demo,
+      Example,
       { title: t2("explorerDataTitle"), hint: t2("explorerDataHint") },
       files === null ? (0, import_react40.createElement)(Hint, { text: t2("explorerFilesNone") }) : anchor === null ? (0, import_react40.createElement)(Hint, { text: t2("explorerAnchorNone") }) : (0, import_react40.createElement)(Hint, {
         text: `${t2("explorerAnchorLabel")}${anchor.title}\uFF5C${t2("explorerSessionLabel")}${anchor.sessionId}\uFF5C${t2("explorerWorkspaces")}${workspaces.length}`
       })
     ),
     (0, import_react40.createElement)(
-      Demo,
-      { title: t2("methodATitle"), hint: t2("methodAHint") },
+      Example,
+      { title: t2("methodATitle"), hint: t2("methodAHint"), code: CODE_OPEN },
       ready ? (0, import_react40.createElement)(
         Row2,
         null,
@@ -7465,8 +7563,8 @@ function ExplorerPage() {
       ) : (0, import_react40.createElement)(Hint, { text: t2("explorerFilesNone") })
     ),
     (0, import_react40.createElement)(
-      Demo,
-      { title: t2("methodBTitle"), hint: t2("methodBHint") },
+      Example,
+      { title: t2("methodBTitle"), hint: t2("methodBHint"), code: CODE_PICK },
       ready ? (0, import_react40.createElement)(
         Row2,
         null,
@@ -7482,14 +7580,17 @@ function ExplorerPage() {
         (0, import_react40.createElement)(Hint, { text: picked === null ? t2("pickNone") : `${t2("pickResult")}\uFF1A${picked}` })
       ) : (0, import_react40.createElement)(Hint, { text: t2("explorerFilesNone") })
     ),
-    (0, import_react40.createElement)(Demo, { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") }, null)
+    (0, import_react40.createElement)(Example, { title: t2("previewBodyTitle"), hint: t2("previewBodyHint") }, null),
+    (0, import_react40.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
+    (0, import_react40.createElement)(ApiTable, { rows: EXPLORER_API }),
+    (0, import_react40.createElement)(ApiTable, { rows: PICK_API })
   );
 }
 function SessionPage() {
   const [open, setOpen] = (0, import_react40.useState)(false);
   return (0, import_react40.createElement)(
-    Demo,
-    { title: "SessionPreview", hint: t2("sessionHint") },
+    Example,
+    { title: "SessionPreview", hint: t2("sessionHint"), code: CODE_SESSION },
     (0, import_react40.createElement)(
       Row2,
       null,
@@ -7511,7 +7612,8 @@ function SessionPage() {
       onOpenFile: () => {
         setOpen(false);
       }
-    }) : null
+    }) : null,
+    (0, import_react40.createElement)(ApiTable, { rows: SESSION_API })
   );
 }
 
@@ -7640,7 +7742,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0928-ma4y"]
+            [t2("buildStamp"), "1021-0933-0of2"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",

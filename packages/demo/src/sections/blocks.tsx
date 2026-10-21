@@ -22,8 +22,85 @@ import { fileServices } from '../host-files.js'
 import { pageRow } from '../layout-mount.js'
 import { findSamples, type SampleSet } from '../samples.js'
 import { mockSessionSource } from '../mock.js'
-import { Demo } from './index.js'
+import { Example, CodeOnly, ApiTable, Note, type ApiRow } from '../doc.js'
 import { t } from '../i18n.js'
+
+const CODE_OPEN = `// 右侧停靠预览：dock 成为整页 flex 行的最后一个子项（主区被真正挤窄）
+const mount = document.querySelector('.page-row')!
+openFilePreview({
+  mount,
+  workspaceFiles: services.workspaceFiles,   // 宿主会话作用域服务
+  officeToPdf: services.officeToPdf,
+  sessionId: anchor.sessionId,
+  rootName: anchor.title,
+  path: 'packages/demo/src/samples/index.md',
+  workspaces: workspaces.map((w) => w.title),
+  onSelectWorkspace: (name) => { /* 换会话重开预览 */ },
+})`
+
+const CODE_PICK = `// 锚定弹窗选文件：Promise 返回工作区相对路径（不自己挂 dock）
+const result = await pickWorkspaceFile({
+  workspaceFiles: services.workspaceFiles,
+  officeToPdf: services.officeToPdf,
+  sessionId: anchor.sessionId,
+  anchor: event.currentTarget,   // 触发元素，弹窗据此定位
+  rootName: anchor.title,
+  workspaces: workspaces.map((w) => w.title),
+  filter: { exts: ['ts'], dirs: true },
+})
+console.log(result?.path)`
+
+const CODE_SESSION = `// 会话预览：variant 'modal' = 弹窗；'inline' = 内联块
+<SessionPreview
+  sessionId="demo-session"
+  source={mockSessionSource}      // 数据源（真实走宿主；demo 用 mock）
+  variant="modal"
+  title="会话预览"
+  onClose={() => setOpen(false)}
+  onOpenFile={() => setOpen(false)}
+/>`
+
+const CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
+
+import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+import { SessionPreview } from 'dsh-plugin-core/session'
+
+// 右侧停靠预览（占宽度、挤窄主区）
+openFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })
+
+// 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）
+const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })
+
+// 会话预览
+<SessionPreview sessionId="..." source={source} variant="modal" />`
+
+/** openFilePreview(options) 的核心参数（与 src/explorer/preview 入口逐条对齐）。 */
+const EXPLORER_API: readonly ApiRow[] = [
+  { name: 'mount', type: 'HTMLElement', def: '—', descKey: 'apiExplorerMount' },
+  { name: 'workspaceFiles', type: 'WorkspaceFilesFace', def: '—', descKey: 'apiExplorerFiles' },
+  { name: 'sessionId', type: 'string', def: '—', descKey: 'apiExplorerSession' },
+  { name: 'path', type: 'string', def: '—', descKey: 'apiExplorerPath' },
+  { name: 'rootName', type: 'string', def: '—', descKey: 'apiExplorerRoot' },
+  { name: 'workspaces', type: 'string[]', def: '—', descKey: 'apiExplorerWorkspaces' },
+  { name: 'onSelectWorkspace', type: '(name) => void', def: '—', descKey: 'apiExplorerOnSelect' },
+]
+
+/** pickWorkspaceFile(options) 的核心参数。 */
+const PICK_API: readonly ApiRow[] = [
+  { name: 'workspaceFiles', type: 'WorkspaceFilesFace', def: '—', descKey: 'apiExplorerFiles' },
+  { name: 'anchor', type: 'HTMLElement', def: '—', descKey: 'apiPickAnchor' },
+  { name: 'filter', type: 'PickFilter', def: '—', descKey: 'apiPickFilter' },
+  { name: 'sessionId / rootName', type: 'string', def: '—', descKey: 'apiExplorerSession' },
+]
+
+/** SessionPreview 的 props（与 src/session/SessionPreview.ts 对齐）。 */
+const SESSION_API: readonly ApiRow[] = [
+  { name: 'sessionId', type: 'string', def: '—', descKey: 'apiSessionId' },
+  { name: 'source', type: 'SessionSource', def: '—', descKey: 'apiSessionSource' },
+  { name: 'variant', type: "'modal' | 'inline'", def: "'modal'", descKey: 'apiSessionVariant' },
+  { name: 'title', type: 'string', def: '—', descKey: 'apiSessionTitle' },
+  { name: 'onClose / onOpenFile', type: '() => void', def: '—', descKey: 'apiSessionCallbacks' },
+]
 
 /** 一排紧凑的核心按钮。 */
 function Row(props: { children: ReactNode[] }): ReturnType<typeof h> {
@@ -109,8 +186,9 @@ export function ExplorerPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(Note, { text: t('blocksNote') }),
     h(
-      Demo,
+      Example,
       { title: t('explorerDataTitle'), hint: t('explorerDataHint') },
       files === null
         ? h(Hint, { text: t('explorerFilesNone') })
@@ -121,8 +199,8 @@ export function ExplorerPage(): ReturnType<typeof h> {
             }),
     ),
     h(
-      Demo,
-      { title: t('methodATitle'), hint: t('methodAHint') },
+      Example,
+      { title: t('methodATitle'), hint: t('methodAHint'), code: CODE_OPEN },
       ready
         ? h(
             Row,
@@ -143,8 +221,8 @@ export function ExplorerPage(): ReturnType<typeof h> {
         : h(Hint, { text: t('explorerFilesNone') }),
     ),
     h(
-      Demo,
-      { title: t('methodBTitle'), hint: t('methodBHint') },
+      Example,
+      { title: t('methodBTitle'), hint: t('methodBHint'), code: CODE_PICK },
       ready
         ? h(
             Row,
@@ -156,7 +234,10 @@ export function ExplorerPage(): ReturnType<typeof h> {
           )
         : h(Hint, { text: t('explorerFilesNone') }),
     ),
-    h(Demo, { title: t('previewBodyTitle'), hint: t('previewBodyHint') }, null),
+    h(Example, { title: t('previewBodyTitle'), hint: t('previewBodyHint') }, null),
+    h(CodeOnly, { labelKey: 'docUsage', code: CODE_BLOCKS_USAGE }),
+    h(ApiTable, { rows: EXPLORER_API }),
+    h(ApiTable, { rows: PICK_API }),
   )
 }
 
@@ -164,8 +245,8 @@ export function SessionPage(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
 
   return h(
-    Demo,
-    { title: 'SessionPreview', hint: t('sessionHint') },
+      Example,
+      { title: 'SessionPreview', hint: t('sessionHint'), code: CODE_SESSION },
     h(
       Row,
       null,
@@ -182,5 +263,6 @@ export function SessionPage(): ReturnType<typeof h> {
           onOpenFile: () => { setOpen(false) },
         })
       : null,
+    h(ApiTable, { rows: SESSION_API }),
   )
 }

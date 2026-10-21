@@ -261,6 +261,22 @@ export type DemoMessageKey =
   | 'apiOnClose'
   | 'apiOnResize'
   | 'apiOnLimitReached'
+  // 区块页（explorer / session）
+  | 'blocksNote'
+  | 'apiExplorerMount'
+  | 'apiExplorerFiles'
+  | 'apiExplorerSession'
+  | 'apiExplorerPath'
+  | 'apiExplorerRoot'
+  | 'apiExplorerWorkspaces'
+  | 'apiExplorerOnSelect'
+  | 'apiPickAnchor'
+  | 'apiPickFilter'
+  | 'apiSessionId'
+  | 'apiSessionSource'
+  | 'apiSessionVariant'
+  | 'apiSessionTitle'
+  | 'apiSessionCallbacks'
   | 'docNote'
   | 'docPreview'
   | 'docCode'
@@ -457,6 +473,23 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiOnClose: '已经关掉之后触发',
     apiOnResize: '拖宽松手后触发',
     apiOnLimitReached: '到上限被拒时触发（库不弹提示、不抛异常）',
+
+    blocksNote: '工作区浏览两块演示：① Explorer——右侧停靠预览（openFilePreview，占宽度、把主区挤窄）与锚定弹窗选文件（pickWorkspaceFile，Promise 返回工作区相对路径）。② Session——会话预览（SessionPreview，variant modal/inline）。本页不用任何 mock：样例文件是仓库真文件，取数走宿主 workspaceFiles，探不到就如实说「没找到」。',
+
+    apiExplorerMount: '分栏挂载点：整页 flex 行，dock 成为它的最后一个子项（主区被真正挤窄）。自挂 body 只能遮盖、挤不窄',
+    apiExplorerFiles: '宿主会话作用域的工作区文件服务（WorkspaceFilesFace）',
+    apiExplorerSession: '会话 id；workspaceFiles 是会话作用域，必须先落到一个真会话',
+    apiExplorerPath: '要预览的文件路径（工作区相对）；空串 = 打开根目录',
+    apiExplorerRoot: '根目录显示名（锚点/选层下拉用）',
+    apiExplorerWorkspaces: '工作区清单（标题数组），用于选层下拉',
+    apiExplorerOnSelect: '在选层下拉里换工作区时触发，回调里再 open 一次即可换会话重开',
+    apiPickAnchor: '触发元素（HTMLElement），弹窗据此定位；不自己挂 dock',
+    apiPickFilter: '过滤条件（exts 扩展名白名单 / dirs 是否含目录）',
+    apiSessionId: '会话 id',
+    apiSessionSource: '会话数据源（SessionSource）；真实走宿主，demo 用 mock',
+    apiSessionVariant: "渲染形态：'modal'（弹窗）｜'inline'（内联块）",
+    apiSessionTitle: '弹窗标题（variant=modal 时）',
+    apiSessionCallbacks: 'onClose：关闭；onOpenFile：点开文件时触发',
     btnLabelSave: '保存修改',
     btnLabelCancel: '取消',
     btnLabelDelete: '删除',
@@ -773,6 +806,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiOnClose: 'Fires after the panel is gone',
     apiOnResize: 'Fires when the drag is released',
     apiOnLimitReached: 'Fires when the cap rejects an open (the library shows no toast and throws nothing)',
+
+    blocksNote: 'Two workspace-browsing demos: ① Explorer — right-dock preview (openFilePreview, takes width and squeezes the main area) and anchor-popover file picking (pickWorkspaceFile, Promise returns the workspace-relative path). ② Session — session preview (SessionPreview, variant modal/inline). This page uses no mock: sample files are real repo files, data comes from the host workspaceFiles, and if probing fails it says "not found" honestly.',
+
+    apiExplorerMount: 'Dock mount point: the whole-page flex row; the dock becomes its last child (the main area is genuinely squeezed). Self-mounting on body can only cover, never squeeze',
+    apiExplorerFiles: 'Host session-scoped workspace file service (WorkspaceFilesFace)',
+    apiExplorerSession: 'Session id; workspaceFiles is session-scoped, so it must land on a real session first',
+    apiExplorerPath: 'Path to preview (workspace-relative); empty string = open the root dir',
+    apiExplorerRoot: 'Root dir display name (used by the anchor / layer picker)',
+    apiExplorerWorkspaces: 'Workspace list (titles array), for the layer picker',
+    apiExplorerOnSelect: 'Fires when switching workspace in the layer picker; open once more inside to re-open on the new session',
+    apiPickAnchor: 'Trigger element (HTMLElement); the popover positions from it; does not mount its own dock',
+    apiPickFilter: 'Filter (exts allow-list / dirs whether to include directories)',
+    apiSessionId: 'Session id',
+    apiSessionSource: 'Session data source (SessionSource); real builds use the host, the demo uses a mock',
+    apiSessionVariant: "Render form: 'modal' (dialog) | 'inline' (in-page block)",
+    apiSessionTitle: 'Dialog title (when variant=modal)',
+    apiSessionCallbacks: 'onClose: closes; onOpenFile: fires when a file is opened',
+
     btnLabelSave: 'Save changes',
     btnLabelCancel: 'Cancel',
     btnLabelDelete: 'Delete',
