@@ -202,8 +202,6 @@ export type DemoMessageKey =
   | 'docApiType'
   | 'docApiDefault'
   | 'docApiDesc'
-  | 'docCopy'
-  | 'docCopied'
 
 export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   zh: {
@@ -406,7 +404,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     roadmapHint: '下面是「明确不提供」的部分——写在这里是为了让你不用猜，也让后来人知道边界在哪。',
     roadmapOut: '设置页骨架、i18n 框架（插件文案插件自管）、host 宿主类型面',
     roadmapMirror: '官方会话 UI 的完整镜像（工具卡 / 代码块 / 推理行）——session 目前只有最简渲染，富内容走 renderMessage 扩展点',
-    roadmapPreview: '（已落地）md 渲染（官方 MarkdownText）/ 代码高亮（官方 CodeBlock）/ HTML / PDF / Office 预览',
+    roadmapPreview: '（已落地）md 渲染（官方 MarkdownText）/ 代码高亮（核心 CodeViewer）/ HTML / PDF / Office 预览',
     roadmapSkeleton: '（已落地）PanelDock——可停靠分栏：多面板、按名覆盖、上限 3',
     roadmapLayout: '红线：整合以前的.share(plugins/demo)',
 
@@ -440,8 +438,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docApiType: '类型',
     docApiDefault: '默认值',
     docApiDesc: '说明',
-    docCopy: '复制',
-    docCopied: '已复制',
 
 
     pluginTitle: '组件预览',
@@ -649,7 +645,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     roadmapHint: 'The list below is what this package explicitly does NOT provide — written down so nobody has to guess, and so the boundary stays visible.',
     roadmapOut: 'A settings-page skeleton, an i18n framework (plugin copy is the plugin’s own job), a host typings surface',
     roadmapMirror: 'A full mirror of the official session UI (tool cards / code blocks / reasoning rows) — session renders only the minimal shape today; rich content goes through the renderMessage hook',
-    roadmapPreview: '(shipped) md render (official MarkdownText) / code highlight (official CodeBlock) / HTML / PDF / Office preview',
+    roadmapPreview: '(shipped) md render (official MarkdownText) / code highlight (core CodeViewer) / HTML / PDF / Office preview',
     roadmapSkeleton: '(shipped) PanelDock — dockable split panes: multi-panel, replace-by-name, limit 3',
     roadmapLayout: 'Red line: consolidation of the old packages/demo',
 
@@ -683,8 +679,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docApiType: 'Type',
     docApiDefault: 'Default',
     docApiDesc: 'Description',
-    docCopy: 'Copy',
-    docCopied: 'Copied',
 
 
     pluginTitle: 'Component preview',

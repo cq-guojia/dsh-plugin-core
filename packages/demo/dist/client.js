@@ -37,8 +37,8 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react47 = require("react");
-var import_dsh_client_ui_primitives4 = require("@deepseek-ai/dsh-client-ui-primitives");
+var import_react50 = require("react");
+var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
 var TOKENS_CSS_TEMPLATE = '\n/* \u2500\u2500 \u6587\u5B57\uFF08\u5BBF\u4E3B label \u56DB\u6863 + \u53CD\u8272\u9762\u7528\u5B57\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\nbody{\n  --dshpc-fg:var(--dsw-alias-label-primary,#1f2328);\n  --dshpc-fg-2:var(--dsw-alias-label-secondary,#5c6370);\n  --dshpc-fg-3:var(--dsw-alias-label-tertiary,#767d87);\n  --dshpc-fg-4:var(--dsw-alias-label-caption,#9aa1ab);\n  --dshpc-fg-dim:var(--dsw-alias-label-dimmed,#b9bfc7);\n  /* \u53CD\u8272\u9762\u4E0A\u7684\u5B57\uFF08\u5B9E\u5FC3\u94AE / \u89D2\u6807\uFF09\uFF1A\u6697\u8272\u4E0B\u662F bluish-1000\uFF0C\u6545\u7528 -foreground \u800C\u975E -inverted */\n  --dshpc-fg-inverse:var(--dsw-alias-label-primary-foreground,#fff);\n\n  /* \u2500\u2500 \u9762\uFF08\u5BBF\u4E3B bg-layer \u4E09\u6863 + \u4E0B\u6C89\u8F68\u9053\u5E95\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-surface-1:var(--dsw-alias-bg-layer-1,#fff);\n  --dshpc-surface-2:var(--dsw-alias-bg-layer-2,#fff);\n  --dshpc-surface-3:var(--dsw-alias-bg-layer-3,#fff);\n  /* \u300C\u9009\u4E2D\u4EAE\u7247\u300D\u7684\u5E95\u76D8\u8272\uFF08\u914D --dshpc-shadow-raised \u7528\uFF09 */\n  --dshpc-surface-raised:var(--dsw-alias-bg-layer-1,#fff);\n  /* \u8F68\u9053 / \u4E0B\u6C89\u5E95\uFF08\u5B98\u65B9\u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u7528\u7684\u5C31\u662F\u8FD9\u6761\uFF09 */\n  --dshpc-surface-sunken:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));\n  /* \u6574\u9875 / \u7F16\u8F91\u5668\u5E95\uFF08bg-base\uFF09 */\n  --dshpc-surface-base:var(--dsw-alias-bg-base,#fff);\n  /* \u81EA\u7ED8\u6D6E\u5C42 / \u83DC\u5355\u5361\u7684\u4E0D\u900F\u660E\u5E95\uFF08= base\uFF1B\u4E0D\u8981\u7528\u534A\u900F\u660E\u7684 specific-menu\uFF09 */\n  --dshpc-surface-menu:var(--dshpc-surface-base);\n  /* markdown \u4EE3\u7801\u5757\u9762 / \u5B57\u4F53\uFF08\u4F1A\u8BDD\u955C\u50CF\u91CC\u7528\u5230\uFF09 */\n  --dshpc-code-surface:var(--dsw-alias-markdown-code-block,rgba(128,128,128,.10));\n  --dshpc-code-font:var(--dsw-font-markdown-code-block-small,12px/18px var(--ds-font-family-code,monospace));\n  /* \u8B66\u544A\u6587\u5B57\u8272\uFF08\u5BBF\u4E3B state-warn-label\uFF09 */\n  --dshpc-warning-label:var(--dsw-alias-state-warn-label,#f5a623);\n  /* \u56FA\u5B9A\u4E2D\u6027\u5B9E\u9762\uFF08\u81EA\u7ED8\u6D6E\u5C42\u3001\u6DF1\u8272\u4E3B\u9898\u4E0B\u5FC5\u987B\u81EA\u5DF1\u53D8\u7684\u90A3\u51E0\u4E2A\uFF09\u2014\u2014\u53EA\u6709\u5B83\u9700\u8981\u6697\u8272\u8986\u76D6 */\n  --dshpc-solid:var(--dsw-static-neutral-00,#fff);\n  --dshpc-on-solid:var(--dsw-alias-label-primary,#1f2328);\n  /* \u4EA4\u4ED8\u6587\u4EF6\u5361\u90A3\u79CD\u300C\u6D45\u5E95\u76D8 + hover \u52A0\u6DF1\u300D\u4E24\u62CD */\n  --dshpc-plate:var(--dsw-static-neutral-50,#fafafa);\n  --dshpc-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u26A0\uFE0F \u8FD9\u4E9B**\u56FA\u5B9A\u4E2D\u6027\u9762\u4E00\u5F8B\u7528 rgba \u5B57\u9762\u91CF**\uFF082026-10-19 \u771F\u673A\u6559\u8BAD\uFF09\uFF1A\u4E0D\u8981\u5199\u6210\n     \u300Crgba \u56DE\u9000\u884C + \u5D4C --dsw-static-* \u7684 color-mix \u884C\u300D\u4E24\u6761\u540C\u540D\u58F0\u660E\u2014\u2014\u81EA\u5B9A\u4E49\u5C5E\u6027**\u540E\u8005\u6052\u80DC**\uFF0C\n     \u54EA\u6015\u5B83\u7684\u503C\u5728\u5BBF\u4E3B\u91CC\u7B97\u4E0D\u51FA\u6765\uFF08static \u53D8\u91CF invalid\uFF09\u21D2 \u6574\u6761 token \u4F5C\u5E9F\u3001rgba \u515C\u5E95\u4E00\u8D77\u88AB\u5E9F\uFF0C\n     0.2.6 \u91CC Segmented \u8F68\u9053\u5168\u900F\u660E\u5C31\u662F\u8FD9\u4E48\u6765\u7684\u3002\u8981\u8DDF\u5BBF\u4E3B\u4E3B\u9898\u8054\u52A8\u7684\u9762\u7528 alias token\uFF08\u90A3\u4E9B\u5B9E\u6D4B\u6709\u6548\uFF09\u3002 */\n  --dshpc-icon-plate:rgba(255,255,255,.5);\n  /* \u8868\u5934\u5E95\uFF1A\u6D45\u8272\u4E3B\u9898**\u504F\u6DF1**\uFF0C\u4E14\u5FC5\u987B**\u6BD4\u6591\u9A6C\u7EB9\uFF08--dshpc-plate\uFF09\u518D\u6DF1\u4E00\u6863**\u2014\u2014\n     \u4E24\u8005\u4E0D\u80FD\u649E\u8272\uFF08\u7528\u6237 2026-10-02\uFF1A\u8868\u5934\u8DDF\u6591\u9A6C\u7EB9\u4E00\u6A21\u4E00\u6837\uFF09\u3002 */\n  --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u56FE\u6807\u5C0F\u5E95\u677F\uFF08\u4EA7\u51FA\u7269\uFF09\uFF1A\u6D45\u8272\u4E0B\u8981**\u770B\u5F97\u89C1**\uFF08\u539F\u5148\u53D6 plate \u21D2 \u5728\u767D\u5E95\u4E0A\u7B49\u4E8E\u6CA1\u6709\uFF09\uFF1Bhover \u52A0\u500D\u3002 */\n  --dshpc-chip-bg:rgba(15,15,15,.07);\n  --dshpc-chip-bg-hover:rgba(15,15,15,.14);\n  /* \u5C55\u5F00\u884C\uFF1A**\u5E26\u900F\u660E\u5EA6\u7684\u84DD**\u2014\u2014\u4E0D\u662F\u7070\u3001\u4E5F\u4E0D\u662F\u7EAF\u8272\uFF0C\u900F\u51FA\u5361\u7247\u5E95\u8272\uFF0C\u4E00\u773C\u770B\u51FA\u300C\u8FD9\u662F\u5C55\u5F00\u7684\u300D\n     \uFF08\u7528\u6237 2026-10-02\uFF1A\u7070\u8272\u8DDF\u6591\u9A6C\u7EB9\u5206\u4E0D\u51FA\u6765\uFF09\u3002\u5185\u5BB9\u533A\u518D\u6DE1\u4E00\u6863\uFF0C\u5F62\u6210\u300C\u884C\u6DF1 / \u5185\u5BB9\u6D45\u300D\u7684\u533A\u9694\u3002 */\n  --dshpc-open-bg:rgba(37,99,235,.10);\n  --dshpc-open-bg-soft:rgba(37,99,235,.05);\n  --dshpc-card-hover:rgba(37,99,235,.07);\n\n  /* \u2500\u2500 \u63CF\u8FB9\u56DB\u6863\uFF08\u5BBF\u4E3B\u771F\u503C\uFF1Al1 4% / l2 10% / l3 12% / l4 16%\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-border-faint:var(--dsw-alias-border-l1,#0000000a);\n  --dshpc-border:var(--dsw-alias-border-l2,#0000001a);\n  --dshpc-border-strong:var(--dsw-alias-border-l3,#0000001f);\n  --dshpc-border-heavy:var(--dsw-alias-border-l4,#00000029);\n\n  /* \u2500\u2500 \u54C1\u724C / \u8BED\u4E49\u8272 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u54C1\u724C\u300C\u9762\u300D\u8272\uFF1A\u660E\u8272\u8FD1\u9ED1\u3001\u6697\u8272\u8FD1\u767D\uFF08\u5B98\u65B9 Switch \u9009\u4E2D\u6001\u5373\u6B64\uFF09\uFF0C**\u4E0D\u662F\u84DD\u8272** */\n  --dshpc-accent:var(--dsw-alias-brand-primary,#0f1115);\n  /* \u84DD\u8272\uFF1A\u5F3A\u8C03 / \u9009\u4E2D / \u7126\u70B9\uFF0C\u4E00\u5F8B\u8D70\u8FD9\u6761 */\n  --dshpc-business:var(--dsw-alias-state-business-primary,#3b5bdb);\n  --dshpc-success:var(--dsw-alias-state-success-primary,#22c55e);\n  /* \u26A0\uFE0F \u662F state-warn\uFF08\u4E0D\u662F state-warning\uFF0C\u540E\u8005\u5BBF\u4E3B\u65E0\u6B64\u5B9A\u4E49\uFF09 */\n  --dshpc-warning:var(--dsw-alias-state-warn-primary,#f59e0b);\n  --dshpc-danger:var(--dsw-alias-state-error-primary,#ec1313);\n  --dshpc-link:var(--dsw-alias-link,#3b5bdb);\n  /* \u8BED\u4E49\u8272**\u5B9E\u9762**\u4E0A\u7684\u5B57\uFF08\u89D2\u6807 / \u5B9E\u5FC3\u63D0\u793A\uFF09\uFF1A\u5BBF\u4E3B\u7EA2\u7EFF\u9EC4\u4E09\u8272\u90FD\u662F\u4E2D\u8C03 \u21D2 \u767D\u5B57\u4E24\u4E2A\u4E3B\u9898\u90FD\u53EF\u8BFB\uFF0C\n     \u6545\u8FD9\u662F\u4E00\u6761\u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u5E38\u91CF\uFF1B\u4E0D\u8981\u62FF --dshpc-fg-inverse \u9876\u2014\u2014\u5B83\u5728\u6697\u8272\u4E0B\u662F\u8FD1\u9ED1\uFF0C\u538B\u5728\u7EA2\u5E95\u4E0A\u770B\u4E0D\u6E05\u3002 */\n  --dshpc-on-signal:#fff;\n  /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */\n  --dshpc-on-warning:#1f2328;\n\n  /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002\n     \u21D2 \u6539\u6210\u5BF9\u5E95\u8272\u505A**\u660E\u786E\u7684\u6DF7\u8272**\uFF08\u538B 22% / 34%\uFF09\uFF0C\u4E0D\u7528 opacity\uFF1A\n       \xB7 \u4EAE\u8272\u4E3B\u9898\uFF1A\u9ED1\u5E95\uFF08--dshpc-accent\uFF09\u63BA\u767D\u63D0\u4EAE\uFF1B\u7EA2 / \u7EFF / \u9EC4 / \u84DD\u5E95\u63BA\u9ED1\u538B\u6DF1\uFF1B\n       \xB7 \u6697\u8272\u4E3B\u9898\uFF1A\u53CD\u8FC7\u6765\uFF08\u6697\u5E95\u63BA\u767D\u3001\u4EAE\u5E95\u63BA\u9ED1\uFF09\u3002\n     \u6DF7\u8272\u5BF9\u8C61\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272\u5B57\u9762\u91CF**\uFF08#fff / #000\uFF09\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B static-neutral \u662F\u5426\u5B58\u5728\uFF1B\n     \u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u6574\u6761\u58F0\u660E\u4F5C\u5E9F \u21D2 \u56DE\u843D\u5404\u6863\u539F\u8272\uFF08\u53EF\u63A5\u53D7\uFF1A\u4ECD\u53EF\u70B9\uFF0C\u53EA\u662F\u6CA1\u6709 hover \u53CD\u9988\uFF09\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 78%,#ffffff);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 64%,#ffffff);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#000000);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#000000);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#000000);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#000000);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#000000);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#000000);\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#000000);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#000000);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF1A\u72B6\u6001\u8272\u7CFB\u7684\u300C\u4E00\u5757\u5E95\u8272\u300D\u2014\u2014\u6267\u884C\u8BB0\u5F55\u9875\u6BCF\u6761\u6D41\u6C34\u8D26\u7684\u5757\u5E95\u5C31\u662F\u5B83\n     \uFF08\u7528\u6237 2026-10-04\uFF1A\u6B63\u5E38\u6001\u7ED9\u540C\u8272\u7CFB\u5F88\u6D45\u7684\u900F\u660E\u5E95\u3001\u5931\u8D25\u7528\u7EA2\u5E95\u900F\u51FA\u6765\uFF09\u3002\n     \u7528 \u300Ccolor-mix\u300D \u73B0\u7B97\u800C\u4E0D\u5199\u6B7B rgba\uFF1A\u72B6\u6001\u8272\u672C\u8EAB\u8DDF\u968F\u5BBF\u4E3B alias\uFF0C\u4E3B\u9898\u4E00\u6362\u81EA\u52A8\u6210\u7ACB\u3002\n     \u26A0\uFE0F **\u6DF1\u8272\u4E0B\u8981\u66F4\u6DE1**\uFF1A\u7528\u6237 2026-10-04\u300C\u6DF1\u8272\u98CE\u683C\u7684\u7EFF\u8272\u548C\u7EA2\u8272\u597D\u50CF\u90FD\u6709\u70B9\u6DF1\u300D\u21D2 dark \u6BB5\n     \u628A\u8FD9\u56DB\u6761\u538B\u5230 5%\uFF08\u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF09\uFF1B\u6D45\u8272\u6BB5\u7EF4\u6301 8%\u3002\u4E24\u7AEF\u5404\u81EA\u7ED9\u503C\uFF0C\u4E0D\u5171\u7528\u4E00\u6761\u66F2\u7EBF\u3002\n     \u547D\u540D\u6536\u5728 tokens.ts \u5355\u70B9\uFF08\u672C\u4ED3\u786C\u89C4\u77E9\uFF1A\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u81EA\u9020 --dshpc-*\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 8%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 8%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 8%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 8%,transparent);\n\n  /* \u26A0\uFE0F 2026-10-18 \u7528\u6237\u62CD\u677F\uFF1A\u5BBF\u4E3B alias \u7684 hover\uFF08\u6697\u8272\u767D 8% / \u4EAE\u8272 6%\uFF09**\u592A\u5F31**\uFF0C\n     \u300C\u79FB\u4E0A\u53BB\u8981\u4ED4\u7EC6\u770B\u624D\u770B\u5F97\u51FA\u6765\u300D\u21D2 \u4E0D\u518D\u59D4\u6258\u5BBF\u4E3B hover \u522B\u540D\uFF0C\u6539\u4E3A\u81EA\u63BA\u4E2D\u6027\u8272\u5E76\u52A0\u91CD\uFF1A\n     \u4EAE\u8272\u63BA\u9ED1 10%\u3001\u6697\u8272\u63BA\u767D 14%\uFF08active \u518D\u52A0\u4E00\u6863\uFF09\u3002\u6309\u94AE / \u5206\u6BB5\u8F68\u9053 / \u5404\u7C7B hover \u5E95\u540C\u65F6\u53D7\u76CA\u3002\n     \u26A0\uFE0F \u5FC5\u987B\u4FDD\u7559 rgba \u515C\u5E95\u884C\u5728\u524D\uFF08\u672C\u6587\u4EF6\u60EF\u4F8B\uFF0C\u89C1 icon-plate \u6CE8\u91CA\uFF09\uFF1A\u63BA\u7684\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272**\n     \uFF08neutral-900=#0f0f0f / neutral-00=#fff\uFF09\uFF0C\u9884\u8BA1\u7B97\u65E0\u635F\uFF1B\u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u8D70\u515C\u5E95\uFF0C\n     \u5426\u5219\u6574\u6761 background:var(--seg-track) \u4F5C\u5E9F \u21D2 \u5206\u6BB5\u8F68\u9053\u900F\u660E\uFF08\u771F\u8E29\u8FC7\uFF1A\u9884\u89C8\u7AD9\u8F68\u9053\u6D88\u5931\uFF09\u3002 */\n  --dshpc-hover:rgba(15,15,15,.10);\n  --dshpc-active:rgba(15,15,15,.18);\n  /* \u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u5E95\uFF1A\u4E13\u7528 token\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u501F --dshpc-hover \u4E2D\u8F6C\uFF09\u2014\u2014\n     2026-10-19 \u6559\u8BAD\uFF1A\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid \u21D2 background \u6574\u6761\u4F5C\u5E9F\u3001\u8F68\u9053\u5168\u900F\u660E\u3002\n     \u4EAE\u8272\uFF1A\u9ED1 7%\uFF08\u6BD4 hover \u7684 10% \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u767D\u7247\u624D\u8DF3\u5F97\u51FA\uFF09\u3002 */\n  --dshpc-seg-track:rgba(15,15,15,.07);\n  --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A\n     \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002\n     \u8BED\u4E49\uFF1A\u6807\u8BB0\u300C\u6B63\u5728\u770B\u7684\u4E1C\u897F\u300D\uFF0C\u6BD4\u5E38\u6001\u660E\u663E\u3001\u53C8\u4E0D\u8BB8\u76D6\u4F4F\u5185\u5BB9\uFF08\u4E0D\u8BB8\u7528\u534A\u900F\u660E\u53E0\u72B6\u6001\u8272\uFF09\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 88%,var(--dshpc-fg));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u9ED8\u8BA4\u5E95\uFF082026-10-06 \u2192 \u7EED2\uFF09\uFF1A\u6D45\u8272\u4E0B\u7ED9**\u6DE1\u84DD**\uFF08business 8% \u900F\u767D\u5E95\uFF09\u2014\u2014\n     \u53C2\u7167\u7528\u6237\u53C2\u8003\u7A3F\u91CC\u672A\u9009\u4E2D\u65E5\u7A0B\u5757 / Tuesday \u5217\u7684\u90A3\u79CD\u84DD\u3001\u518D\u6D45\u4E00\u70B9\u70B9\uFF1B\n     \u76F8\u90BB\u6708\u8865\u4F4D\u683C\u4ECD\u8D70 --dshpc-surface-2\uFF08\u66F4\u7070\uFF09\uFF0C\u4E0D\u53D7\u5F71\u54CD\u3002\n     \u6DF1\u8272\u6BB5\u7EF4\u6301 #23262e\uFF08\u7528\u6237\uFF1A\u6DF1\u8272 UI \u5DF2\u5DEE\u4E0D\u591A\uFF0C\u4E0D\u52A8\uFF09\u3002 */\n  --dshpc-cal-cell-bg:color-mix(in srgb,var(--dshpc-business) 8%,var(--dshpc-surface-1));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u300C\u70B9\u5F00\u67D0\u5929\u300D\u5C55\u5F00\u7684\u9762\u677F\u5E95\uFF082026-10-06 \u7EED\uFF09\uFF1A\u6D45\u8272\u4E0B**\u65E0\u9650\u63A5\u8FD1\u767D\u3001\u53EA\u5E26\u4E00\u4E01\u70B9\u7070**\n     \uFF08neutral-50 = #fafafa\uFF09\u2014\u2014\u9762\u677F\u91CC\u88C5\u534A\u900F\u660E\u6267\u884C\u8BB0\u5F55\u5217\u8868\uFF0C\u5E95\u518D\u6DF1\u6574\u7247\u5C31\u53D1\u7CCA\u53D1\u7070\uFF1B\n     \u6DF1\u8272\u6BB5\u6CBF\u7528\u539F selected-bg \u6697\u503C\uFF0C\u4FDD\u6301\u4E0D\u52A8\u3002 */\n  --dshpc-cal-panel-bg:var(--dsw-static-neutral-50,#fafafa);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6D45\u8272\u6BB5\uFF0C2026-10-06 \u7EED3\uFF09\uFF1A\u4E0D\u518D\u8D70\u7070\u8272\u901A\u7528\u4EA4\u4E92\u5E95\u2014\u2014\n     \u9F20\u6807\u79FB\u4E0A\u53BB\u5E94\u662F\u300C\u66F4\u4EAE\u4E00\u70B9\u70B9\u7684\u84DD\u300D\uFF08\u4E0E\u6DF1\u8272\u6BB5\u540C\u8BED\u4E49\uFF1Ahover = \u63D0\u4EAE\u7684\u84DD\uFF0C\u4E0D\u662F\u7070\u4E0B\u53BB\uFF09\u3002\n     \u6D53\u5EA6**\u4ECB\u4E8E**\u8868\u5934\u84DD\uFF0814%\uFF09\u4E0E\u672A\u9009\u4E2D\u683C\u84DD\uFF088%\uFF09\u4E4B\u95F4\u3001\u7565\u504F\u8868\u5934\u4E00\u4FA7\uFF1Abusiness 12% \u900F\u767D\u5E95\n     \uFF08\u6BD4\u8868\u5934\u6D45\u4E00\u70B9\u3001\u6BD4\u672A\u9009\u4E2D\u683C\u6DF1\u4E00\u70B9\uFF09\u3002 */\n  --dshpc-cal-cell-hover:color-mix(in srgb,var(--dshpc-business) 12%,var(--dshpc-surface-1));\n\n  /* \u2500\u2500 \u6295\u5F71 / \u7126\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-shadow-1:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  /* \u4EAE\u7247\u81EA\u5E26\u7684\u6D6E\u8D77\u611F\uFF08\u9009\u4E2D\u6001\u7528\uFF1B\u4E0E --dshpc-surface-raised \u914D\u5BF9\uFF09 */\n  --dshpc-shadow-raised:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  --dshpc-shadow-2:var(--dsw-shadow-lv3,0 12px 32px 0 #00000014);\n  /* \u952E\u76D8\u7126\u70B9\u73AF\u3002\u26A0\uFE0F \u4E0D\u7528\u5BBF\u4E3B --dsw-focus-ring-color\uFF1A\u5B83\u9ED8\u8BA4\u503C\u662F transparent\uFF08\u515C\u5E95\u4E0D\u751F\u6548\u3001\u4F1A\u9690\u8EAB\uFF09 */\n  --dshpc-focus:var(--dsw-alias-state-business-primary,#3b5bdb);\n\n  /* \u2500\u2500 \u5706\u89D2\uFF08\u5BBF\u4E3B\u771F\u503C 4 / 8 / 12 / 16 / 20 / 28\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-radius-xs:var(--dsw-radius-xs,4px);\n  --dshpc-radius-sm:var(--dsw-radius-sm,8px);\n  --dshpc-radius-md:var(--dsw-radius-md,12px);\n  --dshpc-radius-lg:var(--dsw-radius-lg,16px);\n  --dshpc-radius-xl:var(--dsw-radius-xl,20px);\n  --dshpc-radius-panel:var(--dsw-radius-panel,28px);\n  /* \u5168\u5706\uFF08\u80F6\u56CA\u6807\u7B7E\uFF09\uFF1A\u5BBF\u4E3B\u7684 radius \u6863\u6700\u5927\u53EA\u6709 28px\uFF0C\u6491\u4E0D\u6EE1 24px \u9AD8\u7684 chip */\n  --dshpc-radius-pill:999px;\n\n  /* \u2500\u2500 \u95F4\u8DDD\u56DB\u62CD\uFF08\u53EA\u8BB8\u7528\u8FD9\u56DB\u6863\uFF0C\u4E0D\u8BB8\u51FA\u73B0 5 / 7 / 9px\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-space-1:4px;\n  --dshpc-space-2:8px;\n  --dshpc-space-3:12px;\n  --dshpc-space-4:16px;\n\n  /* \u2500\u2500 \u63A7\u4EF6\u9AD8\u5EA6\uFF1A\u79BB\u6563\u4E09\u6863\uFF08\u63A7\u4EF6\u7528 size="sm|md|lg" \u9009\uFF1B\u8C03\u7528\u70B9\u4E0D\u8BB8\u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF0C\n       \u771F\u4E0D\u591F\u7528\u624D\u5141\u8BB8\u5728\u8C03\u7528\u70B9\u672C\u5730\u8986\u76D6 --dshpc-control-h-*\uFF0C\u5C5E\u4F8B\u5916\u800C\u975E\u5E38\u6001\uFF09\u2500\u2500 */\n  --dshpc-control-h-sm:24px;\n  --dshpc-control-h-md:28px;\n  --dshpc-control-h-lg:32px;\n\n  /* \u2500\u2500 \u5B57\u53F7 / \u884C\u9AD8\uFF1A\u76F4\u7ED1\u5BBF\u4E3B\u5B57\u53F7\u65CF\uFF08\u5BBF\u4E3B\u771F\u503C 11 / 12 / 13 / 14 / 16\uFF09\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-font-xs:var(--dsw-font-xxxs-11-font-size,11px);\n  --dshpc-font-sm:var(--dsw-font-xxs-12-font-size,12px);\n  --dshpc-font-md:var(--dsw-font-xs-13-font-size,13px);\n  --dshpc-font-lg:var(--dsw-font-s-14-font-size,14px);\n  --dshpc-font-xl:var(--dsw-font-base-16-font-size,16px);\n  --dshpc-line-xs:var(--dsw-font-xxxs-11-line-height,14px);\n  --dshpc-line-sm:var(--dsw-font-xxs-12-line-height,18px);\n  --dshpc-line-md:var(--dsw-font-xs-13-line-height,20px);\n  --dshpc-line-lg:var(--dsw-font-s-14-line-height,22px);\n  --dshpc-line-xl:var(--dsw-font-base-16-line-height,24px);\n  --dshpc-font-mono:var(--ds-font-family-code,monospace);\n\n  /* \u2500\u2500 \u5C42\u7EA7\u9636\u68AF\uFF08\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u518D\u5199\u88F8 z-index\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u9875\u9762\u7EA7\u9884\u89C8\u5206\u680F \u2192 \u62BD\u5C49\uFF08\u65B0\u5EFA/\u7F16\u8F91\uFF09\u2192 \u5F39\u7A97/\u786E\u8BA4\u6846 \u2192 \u6D6E\u5C42\u83DC\u5355 \u2192 \u6D6E\u5C42\u63D0\u793A */\n  /* \u5185\u5BB9\u5C42\u5438\u9876\uFF08\u5929\u6807\u7B7E / \u8868\u5934\u8FD9\u7C7B\u300C\u8DDF\u7740\u6EDA\u4F46\u538B\u4F4F\u540C\u5C42\u5185\u5BB9\u300D\u7684\u5143\u7D20\uFF09\uFF1A\u53EA\u538B\u540C\u5C42\u5144\u5F1F\uFF0C\n     \u5FC5\u987B\u4F4E\u4E8E\u4E0B\u9762\u6240\u6709\u6D6E\u5C42\u6863 \u2014\u2014 \u6240\u4EE5\u5B83\u4E0D\u662F\u300C\u5F00\u65B0\u6D6E\u5C42\u6863\u300D\uFF0C\u800C\u662F\u5185\u5BB9\u5C42\u5185\u90E8\u7684\u6392\u5E8F\u4F4D\u3002 */\n  --dshpc-z-sticky:10;\n  --dshpc-z-dock:1030;\n  --dshpc-z-drawer:1040;\n  --dshpc-z-modal:1070;\n  --dshpc-z-menu:1100;\n  --dshpc-z-tip:1200;\n\n  /* \u2500\u2500 \u52A8\u6548 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-dur:var(--ds-transition-duration,.2s);\n  --dshpc-dur-fast:var(--ds-transition-duration-fast,.12s);\n  --dshpc-ease:var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1));\n  /* \u8FD0\u884C\u4E2D\u72B6\u6001\u7684\u8109\u52A8\u65F6\u957F\uFF082026-10-06 \u7EDF\u4E00\u524D\u540E\u4E24\u7AEF\uFF1A\u4EFB\u52A1\u914D\u7F6E\u91CC\u7684\u7EFF\u547C\u5438 \u2192 \u84DD\u3001\u653E\u6162\uFF1B\n     \u6267\u884C\u8BB0\u5F55\u91CC\u7684\u84DD\u95EA \u2192 \u653E\u6162\u4E00\u70B9\u3002\u4E24\u8005\u7528\u540C\u4E00\u4E2A\u503C\uFF0C\u52A8\u753B\u5F62\u72B6\u672C\u5C31\u4E00\u81F4\uFF09\u3002 */\n  --dshpc-dur-run:500ms;\n}\n\n/* \u2500\u2500 \u660E\u6697\u5DEE\u5F02\u7684**\u552F\u4E00**\u843D\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5224\u636E = body[data-ds-dark-theme]\uFF08\u5BBF\u4E3B 0.2.0-rc.2 \u6E90\u7801\u6838\u5B9E\uFF1A\u542F\u52A8\u811A\u672C toggleAttribute \u5199\u5165\uFF0C\n   \u552F\u4E00\u660E\u6697\u5224\u636E\uFF1B\u63D2\u4EF6\u7981\u6B62\u7528 prefers-color-scheme \u2014\u2014 \u5B83\u8DDF\u7684\u662F\u7CFB\u7EDF\u3001\u4E0D\u662F\u7528\u6237\u5728\u5BBF\u4E3B\u91CC\u7684\u9009\u62E9\uFF09\u3002\n   \u4E0B\u9762\u53EA\u653E alias \u8868\u8FBE\u4E0D\u4E86\u7684\u300C\u56FA\u5B9A\u4E2D\u6027\u9762\u300D\uFF1B\u989C\u8272\u82E5\u80FD\u9760 alias \u81EA\u52A8\u8DDF\u968F\uFF0C\u4E00\u5F8B\u4E0D\u8981\u5199\u5728\u8FD9\u91CC\u3002 */\nbody[data-ds-dark-theme]{\n  --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);\n  --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);\n  /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B\n     \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 66%,#000000);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#ffffff);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#ffffff);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#ffffff);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#ffffff);\n  /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */\n  --dshpc-hover:rgba(255,255,255,.14);\n  --dshpc-active:rgba(255,255,255,.24);\n  /* \u5206\u6BB5\u8F68\u9053\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 10%\u2014\u2014\u6BD4 hover \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u4EAE\u7247\u624D\u8DF3\u5F97\u51FA\u3002 */\n  --dshpc-seg-track:rgba(255,255,255,.10);\n  --dshpc-plate:var(--dsw-static-neutral-850,#212123);\n  --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);\n  --dshpc-icon-plate:rgba(255,255,255,.05);\n  /* \u6697\u8272\u4E3B\u9898**\u53CD\u8FC7\u6765**\uFF1A\u8868\u5934\u8981\u6BD4\u5361\u7247\u9762**\u4EAE**\u3001\u6BD4\u6591\u9A6C\u7EB9\u518D**\u6D45\u4E00\u6863**\uFF08\u7528\u6237\uFF1A\u7EAF\u9ED1\u80CC\u666F\u6CA1\u6CD5\u770B\uFF09\u3002 */\n  --dshpc-head-bg:var(--dshpc-surface-2);\n  /* \u6697\u8272\u5E95\u677F**\u5FAE\u4EAE**\uFF1Bhover **\u66F4\u4EAE**\uFF08\u539F\u5148 hover \u53D6 plate-hover \u53CD\u800C\u66F4\u6DE1 \u21D2 \u9F20\u6807\u79FB\u4E0A\u53BB\u5C31\u6CA1\u4E86\uFF09\u3002 */\n  --dshpc-chip-bg:rgba(255,255,255,.08);\n  --dshpc-chip-bg-hover:rgba(255,255,255,.16);\n  /* \u6697\u8272\u4E0B\u84DD\u8272\u8981\u66F4\u4EAE\u3001\u900F\u660E\u5EA6\u7565\u9AD8\u624D\u538B\u5F97\u4F4F\u6DF1\u5E95\u3002 */\n  --dshpc-open-bg:rgba(96,165,250,.18);\n  --dshpc-open-bg-soft:rgba(96,165,250,.08);\n  --dshpc-card-hover:rgba(96,165,250,.13);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF08\u6DF1\u8272\u7248\uFF09\uFF1A\u7528\u6237\u5ACC\u6DF1\u8272\u7684\u7EFF / \u7EA2\u300C\u6709\u70B9\u6DF1\u300D\u21D2 \u538B\u5230 **5%**\uFF08\u6D45\u8272\u6BB5\u662F 8%\uFF09\uFF0C\n     \u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u8272\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF1B\u5757\u5E95\u4E0E\u72B6\u6001\u8272\u7AD6\u6761\u4ECD\u540C\u6E90\uFF08\u7AD6\u6761\u662F\u5B9E\u8272\uFF0C\u4E0D\u53D7\u8FD9\u6761\u5F71\u54CD\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 5%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 5%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 5%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 5%,transparent);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u63BA **~40% \u80CC\u666F\u8272**\uFF08--dshpc-surface-base\uFF09\u21D2 \u65E0\u9650\u63A5\u8FD1\u9875\u9762\u80CC\u666F\u7684\u9ED1\u3001\n     \u53EA\u6BD4\u80CC\u666F\u7565\u6DF1\u4E00\u70B9\u70B9\uFF08\u7528\u6237\uFF1A\u6DF1\u8272\u4E0B\u5C55\u5F00\u533A\u538B\u7740\u4EFB\u52A1\u900F\u660E\u7EFF\u4F1A\u53D1\u7070\uFF0C\u5E95\u8272\u8981\u5C3D\u91CF\u8D34\u8FD1\u80CC\u666F\u624D\u4E0D\u663E\u7070\uFF09\u3002\n     \u26A0\uFE0F \u6DF1\u8272\u4E0B\u4E0D\u80FD\u63BA\u6587\u5B57\u8272 \u2014\u2014 \u90A3\u662F\u767D\uFF0C\u4F1A\u53D8\u4EAE\uFF0C\u9009\u4E2D\u53CD\u800C\u6BD4\u672C\u6708\u65E5\u671F\u6D45\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u7684\u9ED8\u8BA4\u5E95\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u6DF1\u7684\u3001\u5E26\u70B9\u7070\u84DD\u7684\u6697\u8272\uFF08\u7528\u6237\u7ED9\u7684\u53C2\u8003\u56FE \u2248 #23262e\uFF09\uFF0C\n     \u6BD4\u539F\u6765\u7684\u5361\u7247\u9762\u66F4\u6C89\u3001\u66F4\u504F\u84DD\u7070\uFF1B\u9009\u4E2D\u683C\u4ECD\u8D70 --dshpc-selected-bg\uFF08\u66F4\u6697\u4E00\u6863\uFF09\uFF0C\u5C42\u7EA7\u4E0D\u53D8\u3002 */\n  --dshpc-cal-cell-bg:#23262e;\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06\uFF09\uFF1A\u539F\u5148\u8D70 --dshpc-hover\uFF08\u5BBF\u4E3B\u6D45\u8272\u53E0\u52A0\uFF09\u5728\u6DF1\u5E95\u4E0A\u663E\u5F97\n     \u300C\u7070\u53D1\u4EAE\u300D\uFF0C\u4E0D\u597D\u770B \u21D2 \u6362\u6210\u66F4\u8D34\u5E95\u7684\u84DD\u8C03\u5FAE\u4EAE\uFF08\u4E0E open-bg-soft \u540C\u65CF\uFF09\uFF0Chover \u65F6\u4E0D\u523A\u773C\u3001\u53C8\u6709\u53CD\u9988\u3002 */\n  --dshpc-cal-cell-hover:rgba(96,165,250,.12);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u5C55\u5F00\u9762\u677F\u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06 \u7EED\uFF09\uFF1A\u4E0E\u539F selected-bg \u6697\u503C\u4E00\u81F4\uFF0C\u6DF1\u8272 UI \u4E0D\u52A8 */\n  --dshpc-cal-panel-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n}\n';
@@ -154,13 +154,10 @@ var PICKER_CSS = `
 .dshpc-picker__icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
 .dshpc-picker__option-icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
 .dshpc-picker__menu{
-  position:absolute;z-index:60;top:calc(100% + 4px);left:0;min-width:100%;
-  max-height:280px;overflow:auto;padding:4px;
+  z-index:60;max-height:280px;overflow:auto;padding:4px;
   background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);
   border-radius:var(--dshpc-radius-md);box-shadow:0 8px 24px rgba(15,23,42,.12);
 }
-/* \u5411\u4E0A\u5C55\u5F00\uFF08\u89E6\u53D1\u5668\u9760\u8FD1\u89C6\u53E3\u5E95\u90E8\u65F6\u7528 placement="up"\uFF09\u3002 */
-.dshpc-picker__menu--up{top:auto;bottom:calc(100% + 4px)}
 /* \u5C3A\u5BF8\u6863\uFF08\u4E0E Field \u7684 sm/md/lg \u5BF9\u5E94\uFF09\u3002 */
 .dshpc-picker__trigger--sm{height:24px;font-size:12px}
 .dshpc-picker__trigger--lg{height:32px}
@@ -269,11 +266,11 @@ function filterGroups(groups, query) {
   }
   return out;
 }
-function toggleValue(current3, value, max) {
+function toggleValue(current3, value, max2) {
   const idx = current3.indexOf(value);
   if (idx >= 0)
     return current3.filter((v) => v !== value);
-  if (max !== void 0 && current3.length >= max)
+  if (max2 !== void 0 && current3.length >= max2)
     return [...current3];
   return [...current3, value];
 }
@@ -294,7 +291,2489 @@ function groupOf(groups, value) {
 }
 
 // dist/ui/Picker.js
+var import_react4 = require("react");
+
+// node_modules/.pnpm/@floating-ui+react@0.27.20_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react/dist/floating-ui.react.mjs
+var React3 = __toESM(require("react"), 1);
+
+// node_modules/.pnpm/@floating-ui+utils@0.2.12/node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
+function hasWindow() {
+  return typeof window !== "undefined";
+}
+function getNodeName(node) {
+  if (isNode(node)) {
+    return (node.nodeName || "").toLowerCase();
+  }
+  return "#document";
+}
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null || (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+}
+function isNode(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Node || value instanceof getWindow(value).Node;
+}
+function isElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Element || value instanceof getWindow(value).Element;
+}
+function isHTMLElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+function isShadowRoot(value) {
+  if (!hasWindow() || typeof ShadowRoot === "undefined") {
+    return false;
+  }
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
+}
+function isOverflowElement(element) {
+  const {
+    overflow,
+    overflowX,
+    overflowY,
+    display
+  } = getComputedStyle2(element);
+  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && display !== "inline" && display !== "contents";
+}
+function isTableElement(element) {
+  return /^(table|td|th)$/.test(getNodeName(element));
+}
+function isTopLayer(element) {
+  try {
+    if (element.matches(":popover-open")) {
+      return true;
+    }
+  } catch (_e) {
+  }
+  try {
+    return element.matches(":modal");
+  } catch (_e) {
+    return false;
+  }
+}
+var willChangeRe = /transform|translate|scale|rotate|perspective|filter/;
+var containRe = /paint|layout|strict|content/;
+var isNotNone = (value) => !!value && value !== "none";
+var isWebKitValue;
+function isContainingBlock(elementOrCss) {
+  const css3 = isElement(elementOrCss) ? getComputedStyle2(elementOrCss) : elementOrCss;
+  return isNotNone(css3.transform) || isNotNone(css3.translate) || isNotNone(css3.scale) || isNotNone(css3.rotate) || isNotNone(css3.perspective) || !isWebKit() && (isNotNone(css3.backdropFilter) || isNotNone(css3.filter)) || willChangeRe.test(css3.willChange || "") || containRe.test(css3.contain || "");
+}
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else if (isTopLayer(currentNode)) {
+      return null;
+    }
+    currentNode = getParentNode(currentNode);
+  }
+  return null;
+}
+function isWebKit() {
+  if (isWebKitValue == null) {
+    isWebKitValue = typeof CSS !== "undefined" && CSS.supports && CSS.supports("-webkit-backdrop-filter", "none");
+  }
+  return isWebKitValue;
+}
+function isLastTraversableNode(node) {
+  return /^(html|body|#document)$/.test(getNodeName(node));
+}
+function getComputedStyle2(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.scrollX,
+    scrollTop: element.scrollY
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === "html") {
+    return node;
+  }
+  const result = (
+    // Step into the shadow DOM of the parent of a slotted node.
+    node.assignedSlot || // DOM Element detected.
+    node.parentNode || // ShadowRoot detected.
+    isShadowRoot(node) && node.host || // Fallback.
+    getDocumentElement(node)
+  );
+  return isShadowRoot(result) ? result.host : result;
+}
+function getNearestOverflowAncestor(node) {
+  const parentNode = getParentNode(node);
+  if (isLastTraversableNode(parentNode)) {
+    return (node.ownerDocument || node).body;
+  }
+  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
+    return parentNode;
+  }
+  return getNearestOverflowAncestor(parentNode);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    const frameElement = getFrameElement(win);
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], frameElement && traverseIframes ? getOverflowAncestors(frameElement) : []);
+  } else {
+    return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+  }
+}
+function getFrameElement(win) {
+  return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
+}
+
+// node_modules/.pnpm/@floating-ui+react@0.27.20_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react/dist/floating-ui.react.utils.mjs
+var React = __toESM(require("react"), 1);
+var import_react = require("react");
+
+// node_modules/.pnpm/@floating-ui+utils@0.2.12/node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
+var min = Math.min;
+var max = Math.max;
+var round = Math.round;
+var floor = Math.floor;
+var createCoords = (v) => ({
+  x: v,
+  y: v
+});
+var oppositeSideMap = {
+  left: "right",
+  right: "left",
+  bottom: "top",
+  top: "bottom"
+};
+function clamp(start, value, end) {
+  return max(start, min(value, end));
+}
+function evaluate(value, param) {
+  return typeof value === "function" ? value(param) : value;
+}
+function getSide(placement) {
+  return placement.split("-")[0];
+}
+function getAlignment(placement) {
+  return placement.split("-")[1];
+}
+function getOppositeAxis(axis) {
+  return axis === "x" ? "y" : "x";
+}
+function getAxisLength(axis) {
+  return axis === "y" ? "height" : "width";
+}
+function getSideAxis(placement) {
+  const firstChar = placement[0];
+  return firstChar === "t" || firstChar === "b" ? "y" : "x";
+}
+function getAlignmentAxis(placement) {
+  return getOppositeAxis(getSideAxis(placement));
+}
+function getAlignmentSides(placement, rects, rtl) {
+  if (rtl === void 0) {
+    rtl = false;
+  }
+  const alignment = getAlignment(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const length = getAxisLength(alignmentAxis);
+  let mainAlignmentSide = alignmentAxis === "x" ? alignment === (rtl ? "end" : "start") ? "right" : "left" : alignment === "start" ? "bottom" : "top";
+  if (rects.reference[length] > rects.floating[length]) {
+    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
+  }
+  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide)];
+}
+function getExpandedPlacements(placement) {
+  const oppositePlacement = getOppositePlacement(placement);
+  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
+}
+function getOppositeAlignmentPlacement(placement) {
+  return placement.includes("start") ? placement.replace("start", "end") : placement.replace("end", "start");
+}
+var lrPlacement = ["left", "right"];
+var rlPlacement = ["right", "left"];
+var tbPlacement = ["top", "bottom"];
+var btPlacement = ["bottom", "top"];
+function getSideList(side, isStart, rtl) {
+  switch (side) {
+    case "top":
+    case "bottom":
+      if (rtl) return isStart ? rlPlacement : lrPlacement;
+      return isStart ? lrPlacement : rlPlacement;
+    case "left":
+    case "right":
+      return isStart ? tbPlacement : btPlacement;
+    default:
+      return [];
+  }
+}
+function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
+  const alignment = getAlignment(placement);
+  let list = getSideList(getSide(placement), direction === "start", rtl);
+  if (alignment) {
+    list = list.map((side) => side + "-" + alignment);
+    if (flipAlignment) {
+      list = list.concat(list.map(getOppositeAlignmentPlacement));
+    }
+  }
+  return list;
+}
+function getOppositePlacement(placement) {
+  const side = getSide(placement);
+  return oppositeSideMap[side] + placement.slice(side.length);
+}
+function expandPaddingObject(padding) {
+  var _padding$top, _padding$right, _padding$bottom, _padding$left;
+  return {
+    top: (_padding$top = padding.top) != null ? _padding$top : 0,
+    right: (_padding$right = padding.right) != null ? _padding$right : 0,
+    bottom: (_padding$bottom = padding.bottom) != null ? _padding$bottom : 0,
+    left: (_padding$left = padding.left) != null ? _padding$left : 0
+  };
+}
+function getPaddingObject(padding) {
+  return typeof padding !== "number" ? expandPaddingObject(padding) : {
+    top: padding,
+    right: padding,
+    bottom: padding,
+    left: padding
+  };
+}
+function rectToClientRect(rect) {
+  const {
+    x,
+    y,
+    width,
+    height
+  } = rect;
+  return {
+    width,
+    height,
+    top: y,
+    left: x,
+    right: x + width,
+    bottom: y + height,
+    x,
+    y
+  };
+}
+
+// node_modules/.pnpm/tabbable@6.5.0/node_modules/tabbable/dist/index.esm.js
+var candidateSelectors = ["input:not([inert]):not([inert] *)", "select:not([inert]):not([inert] *)", "textarea:not([inert]):not([inert] *)", "a[href]:not([inert]):not([inert] *)", "area[href]:not([inert]):not([inert] *)", "button:not([inert]):not([inert] *)", "[tabindex]:not(slot):not([inert]):not([inert] *)", "audio[controls]:not([inert]):not([inert] *)", "video[controls]:not([inert]):not([inert] *)", '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', "details>summary:first-of-type:not([inert]):not([inert] *)", "details:not([inert]):not([inert] *)"];
+var candidateSelector = /* @__PURE__ */ candidateSelectors.join(",");
+var NoElement = typeof Element === "undefined";
+var matches = NoElement ? function() {
+} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+var getRootNode = !NoElement && Element.prototype.getRootNode ? function(element) {
+  var _element$getRootNode;
+  return element === null || element === void 0 ? void 0 : (_element$getRootNode = element.getRootNode) === null || _element$getRootNode === void 0 ? void 0 : _element$getRootNode.call(element);
+} : function(element) {
+  return element === null || element === void 0 ? void 0 : element.ownerDocument;
+};
+var _isInert = function isInert(node, lookUp) {
+  var _node$getAttribute;
+  if (lookUp === void 0) {
+    lookUp = true;
+  }
+  var inertAtt = node === null || node === void 0 ? void 0 : (_node$getAttribute = node.getAttribute) === null || _node$getAttribute === void 0 ? void 0 : _node$getAttribute.call(node, "inert");
+  var inert = inertAtt === "" || inertAtt === "true";
+  var result = inert || lookUp && node && // closest does not exist on shadow roots, so we fall back to a manual
+  // lookup upward, in case it is not defined.
+  (typeof node.closest === "function" ? node.closest("[inert]") : _isInert(node.parentNode));
+  return result;
+};
+var isContentEditable = function isContentEditable2(node) {
+  var _node$getAttribute2;
+  var attValue = node === null || node === void 0 ? void 0 : (_node$getAttribute2 = node.getAttribute) === null || _node$getAttribute2 === void 0 ? void 0 : _node$getAttribute2.call(node, "contenteditable");
+  return attValue === "" || attValue === "true";
+};
+var getCandidates = function getCandidates2(el, includeContainer, filter2) {
+  if (_isInert(el)) {
+    return [];
+  }
+  var candidates = Array.prototype.slice.apply(el.querySelectorAll(candidateSelector));
+  if (includeContainer && matches.call(el, candidateSelector)) {
+    candidates.unshift(el);
+  }
+  candidates = candidates.filter(filter2);
+  return candidates;
+};
+var _getCandidatesIteratively = function getCandidatesIteratively(elements, includeContainer, options) {
+  var candidates = [];
+  var elementsToCheck = Array.from(elements);
+  while (elementsToCheck.length) {
+    var element = elementsToCheck.shift();
+    if (_isInert(element, false)) {
+      continue;
+    }
+    if (element.tagName === "SLOT") {
+      var assigned = element.assignedElements();
+      var content2 = assigned.length ? assigned : element.children;
+      var nestedCandidates = _getCandidatesIteratively(content2, true, options);
+      if (options.flatten) {
+        candidates.push.apply(candidates, nestedCandidates);
+      } else {
+        candidates.push({
+          scopeParent: element,
+          candidates: nestedCandidates
+        });
+      }
+    } else {
+      var validCandidate = matches.call(element, candidateSelector);
+      if (validCandidate && options.filter(element) && (includeContainer || !elements.includes(element))) {
+        candidates.push(element);
+      }
+      var shadowRoot = element.shadowRoot || // check for an undisclosed shadow
+      typeof options.getShadowRoot === "function" && options.getShadowRoot(element);
+      var validShadowRoot = !_isInert(shadowRoot, false) && (!options.shadowRootFilter || options.shadowRootFilter(element));
+      if (shadowRoot && validShadowRoot) {
+        var _nestedCandidates = _getCandidatesIteratively(shadowRoot === true ? element.children : shadowRoot.children, true, options);
+        if (options.flatten) {
+          candidates.push.apply(candidates, _nestedCandidates);
+        } else {
+          candidates.push({
+            scopeParent: element,
+            candidates: _nestedCandidates
+          });
+        }
+      } else {
+        elementsToCheck.unshift.apply(elementsToCheck, element.children);
+      }
+    }
+  }
+  return candidates;
+};
+var hasTabIndex = function hasTabIndex2(node) {
+  return !isNaN(parseInt(node.getAttribute("tabindex"), 10));
+};
+var getTabIndex = function getTabIndex2(node) {
+  if (!node) {
+    throw new Error("No node provided");
+  }
+  if (node.tabIndex < 0) {
+    if ((/^(AUDIO|VIDEO|DETAILS)$/.test(node.tagName) || isContentEditable(node)) && !hasTabIndex(node)) {
+      return 0;
+    }
+  }
+  return node.tabIndex;
+};
+var getSortOrderTabIndex = function getSortOrderTabIndex2(node, isScope) {
+  var tabIndex = getTabIndex(node);
+  if (tabIndex < 0 && isScope && !hasTabIndex(node)) {
+    return 0;
+  }
+  return tabIndex;
+};
+var sortOrderedTabbables = function sortOrderedTabbables2(a, b) {
+  return a.tabIndex === b.tabIndex ? a.documentOrder - b.documentOrder : a.tabIndex - b.tabIndex;
+};
+var isInput = function isInput2(node) {
+  return node.tagName === "INPUT";
+};
+var isHiddenInput = function isHiddenInput2(node) {
+  return isInput(node) && node.type === "hidden";
+};
+var isDetailsWithSummary = function isDetailsWithSummary2(node) {
+  var r2 = node.tagName === "DETAILS" && Array.prototype.slice.apply(node.children).some(function(child) {
+    return child.tagName === "SUMMARY";
+  });
+  return r2;
+};
+var getCheckedRadio = function getCheckedRadio2(nodes, form) {
+  for (var i2 = 0; i2 < nodes.length; i2++) {
+    if (nodes[i2].checked && nodes[i2].form === form) {
+      return nodes[i2];
+    }
+  }
+};
+var isTabbableRadio = function isTabbableRadio2(node) {
+  if (!node.name) {
+    return true;
+  }
+  var radioScope = node.form || getRootNode(node);
+  var queryRadios = function queryRadios2(name2) {
+    return radioScope.querySelectorAll('input[type="radio"][name="' + name2 + '"]');
+  };
+  var radioSet;
+  if (typeof window !== "undefined" && typeof window.CSS !== "undefined" && typeof window.CSS.escape === "function") {
+    radioSet = queryRadios(window.CSS.escape(node.name));
+  } else {
+    try {
+      radioSet = queryRadios(node.name);
+    } catch (err) {
+      console.error("Looks like you have a radio button with a name attribute containing invalid CSS selector characters and need the CSS.escape polyfill: %s", err.message);
+      return false;
+    }
+  }
+  var checked = getCheckedRadio(radioSet, node.form);
+  return !checked || checked === node;
+};
+var isRadio = function isRadio2(node) {
+  return isInput(node) && node.type === "radio";
+};
+var isNonTabbableRadio = function isNonTabbableRadio2(node) {
+  return isRadio(node) && !isTabbableRadio(node);
+};
+var isNodeAttached = function isNodeAttached2(node) {
+  var _nodeRoot;
+  var nodeRoot = node && getRootNode(node);
+  var nodeRootHost = (_nodeRoot = nodeRoot) === null || _nodeRoot === void 0 ? void 0 : _nodeRoot.host;
+  var attached = false;
+  if (nodeRoot && nodeRoot !== node) {
+    var _nodeRootHost, _nodeRootHost$ownerDo, _node$ownerDocument;
+    attached = !!((_nodeRootHost = nodeRootHost) !== null && _nodeRootHost !== void 0 && (_nodeRootHost$ownerDo = _nodeRootHost.ownerDocument) !== null && _nodeRootHost$ownerDo !== void 0 && _nodeRootHost$ownerDo.contains(nodeRootHost) || node !== null && node !== void 0 && (_node$ownerDocument = node.ownerDocument) !== null && _node$ownerDocument !== void 0 && _node$ownerDocument.contains(node));
+    while (!attached && nodeRootHost) {
+      var _nodeRoot2, _nodeRootHost2, _nodeRootHost2$ownerD;
+      nodeRoot = getRootNode(nodeRootHost);
+      nodeRootHost = (_nodeRoot2 = nodeRoot) === null || _nodeRoot2 === void 0 ? void 0 : _nodeRoot2.host;
+      attached = !!((_nodeRootHost2 = nodeRootHost) !== null && _nodeRootHost2 !== void 0 && (_nodeRootHost2$ownerD = _nodeRootHost2.ownerDocument) !== null && _nodeRootHost2$ownerD !== void 0 && _nodeRootHost2$ownerD.contains(nodeRootHost));
+    }
+  }
+  return attached;
+};
+var isZeroArea = function isZeroArea2(node) {
+  var _node$getBoundingClie = node.getBoundingClientRect(), width = _node$getBoundingClie.width, height = _node$getBoundingClie.height;
+  return width === 0 && height === 0;
+};
+var isHidden = function isHidden2(node, _ref) {
+  var displayCheck = _ref.displayCheck, getShadowRoot = _ref.getShadowRoot;
+  if (displayCheck === "full-native") {
+    if ("checkVisibility" in node) {
+      var visible = node.checkVisibility({
+        // Checking opacity might be desirable for some use cases, but natively,
+        // opacity zero elements _are_ focusable and tabbable.
+        checkOpacity: false,
+        opacityProperty: false,
+        contentVisibilityAuto: true,
+        visibilityProperty: true,
+        // This is an alias for `visibilityProperty`. Contemporary browsers
+        // support both. However, this alias has wider browser support (Chrome
+        // >= 105 and Firefox >= 106, vs. Chrome >= 121 and Firefox >= 122), so
+        // we include it anyway.
+        checkVisibilityCSS: true
+      });
+      return !visible;
+    }
+  }
+  var _getComputedStyle = getComputedStyle(node), visibility = _getComputedStyle.visibility;
+  if (visibility === "hidden" || visibility === "collapse") {
+    return true;
+  }
+  var isDirectSummary = matches.call(node, "details>summary:first-of-type");
+  var nodeUnderDetails = isDirectSummary ? node.parentElement : node;
+  if (matches.call(nodeUnderDetails, "details:not([open]) *")) {
+    return true;
+  }
+  if (!displayCheck || displayCheck === "full" || // full-native can run this branch when it falls through in case
+  // Element#checkVisibility is unsupported
+  displayCheck === "full-native" || displayCheck === "legacy-full") {
+    if (typeof getShadowRoot === "function") {
+      var originalNode = node;
+      while (node) {
+        var parentElement = node.parentElement;
+        var rootNode = getRootNode(node);
+        if (parentElement && !parentElement.shadowRoot && getShadowRoot(parentElement) === true) {
+          return isZeroArea(node);
+        } else if (node.assignedSlot) {
+          node = node.assignedSlot;
+        } else if (!parentElement && rootNode !== node.ownerDocument) {
+          node = rootNode.host;
+        } else {
+          node = parentElement;
+        }
+      }
+      node = originalNode;
+    }
+    if (isNodeAttached(node)) {
+      return !node.getClientRects().length;
+    }
+    if (displayCheck !== "legacy-full") {
+      return true;
+    }
+  } else if (displayCheck === "non-zero-area") {
+    return isZeroArea(node);
+  }
+  return false;
+};
+var isDisabledFromFieldset = function isDisabledFromFieldset2(node) {
+  if (/^(INPUT|BUTTON|SELECT|TEXTAREA)$/.test(node.tagName)) {
+    var parentNode = node.parentElement;
+    while (parentNode) {
+      if (parentNode.tagName === "FIELDSET" && parentNode.disabled) {
+        for (var i2 = 0; i2 < parentNode.children.length; i2++) {
+          var child = parentNode.children.item(i2);
+          if (child.tagName === "LEGEND") {
+            return matches.call(parentNode, "fieldset[disabled] *") ? true : !child.contains(node);
+          }
+        }
+        return true;
+      }
+      parentNode = parentNode.parentElement;
+    }
+  }
+  return false;
+};
+var isNodeMatchingSelectorFocusable = function isNodeMatchingSelectorFocusable2(options, node) {
+  if (node.disabled || isHiddenInput(node) || isHidden(node, options) || // For a details element with a summary, the summary element gets the focus
+  isDetailsWithSummary(node) || isDisabledFromFieldset(node)) {
+    return false;
+  }
+  return true;
+};
+var isNodeMatchingSelectorTabbable = function isNodeMatchingSelectorTabbable2(options, node) {
+  if (isNonTabbableRadio(node) || getTabIndex(node) < 0 || !isNodeMatchingSelectorFocusable(options, node)) {
+    return false;
+  }
+  return true;
+};
+var isShadowRootTabbable = function isShadowRootTabbable2(shadowHostNode) {
+  var tabIndex = parseInt(shadowHostNode.getAttribute("tabindex"), 10);
+  if (isNaN(tabIndex) || tabIndex >= 0) {
+    return true;
+  }
+  return false;
+};
+var _sortByOrder = function sortByOrder(candidates) {
+  var regularTabbables = [];
+  var orderedTabbables = [];
+  candidates.forEach(function(item, i2) {
+    var isScope = !!item.scopeParent;
+    var element = isScope ? item.scopeParent : item;
+    var candidateTabindex = getSortOrderTabIndex(element, isScope);
+    var elements = isScope ? _sortByOrder(item.candidates) : element;
+    if (candidateTabindex === 0) {
+      isScope ? regularTabbables.push.apply(regularTabbables, elements) : regularTabbables.push(element);
+    } else {
+      orderedTabbables.push({
+        documentOrder: i2,
+        tabIndex: candidateTabindex,
+        item,
+        isScope,
+        content: elements
+      });
+    }
+  });
+  return orderedTabbables.sort(sortOrderedTabbables).reduce(function(acc, sortable) {
+    sortable.isScope ? acc.push.apply(acc, sortable.content) : acc.push(sortable.content);
+    return acc;
+  }, []).concat(regularTabbables);
+};
+var tabbable = function tabbable2(container, options) {
+  options = options || {};
+  var candidates;
+  if (options.getShadowRoot) {
+    candidates = _getCandidatesIteratively([container], options.includeContainer, {
+      filter: isNodeMatchingSelectorTabbable.bind(null, options),
+      flatten: false,
+      getShadowRoot: options.getShadowRoot,
+      shadowRootFilter: isShadowRootTabbable
+    });
+  } else {
+    candidates = getCandidates(container, options.includeContainer, isNodeMatchingSelectorTabbable.bind(null, options));
+  }
+  return _sortByOrder(candidates);
+};
+
+// node_modules/.pnpm/@floating-ui+react@0.27.20_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react/dist/floating-ui.react.utils.mjs
+function isSafari() {
+  return /apple/i.test(navigator.vendor);
+}
+function activeElement(doc2) {
+  let activeElement2 = doc2.activeElement;
+  while (((_activeElement = activeElement2) == null || (_activeElement = _activeElement.shadowRoot) == null ? void 0 : _activeElement.activeElement) != null) {
+    var _activeElement;
+    activeElement2 = activeElement2.shadowRoot.activeElement;
+  }
+  return activeElement2;
+}
+function contains(parent, child) {
+  if (!parent || !child) {
+    return false;
+  }
+  const rootNode = child.getRootNode == null ? void 0 : child.getRootNode();
+  if (parent.contains(child)) {
+    return true;
+  }
+  if (rootNode && isShadowRoot(rootNode)) {
+    let next = child;
+    while (next) {
+      if (parent === next) {
+        return true;
+      }
+      next = next.parentNode || next.host;
+    }
+  }
+  return false;
+}
+function getDocument(node) {
+  return (node == null ? void 0 : node.ownerDocument) || document;
+}
+var isClient = typeof document !== "undefined";
+var noop = function noop2() {
+};
+var index = isClient ? import_react.useLayoutEffect : noop;
+var SafeReact = {
+  ...React
+};
+var useInsertionEffect = SafeReact.useInsertionEffect;
+var useSafeInsertionEffect = useInsertionEffect || ((fn) => fn());
+function useEffectEvent(callback) {
+  const ref = React.useRef(() => {
+    if (false) {
+      throw new Error("Cannot call an event handler while rendering.");
+    }
+  });
+  useSafeInsertionEffect(() => {
+    ref.current = callback;
+  });
+  return React.useCallback(function() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    return ref.current == null ? void 0 : ref.current(...args);
+  }, []);
+}
+var getTabbableOptions = () => ({
+  getShadowRoot: true,
+  displayCheck: (
+    // JSDOM does not support the `tabbable` library. To solve this we can
+    // check if `ResizeObserver` is a real function (not polyfilled), which
+    // determines if the current environment is JSDOM-like.
+    typeof ResizeObserver === "function" && ResizeObserver.toString().includes("[native code]") ? "full" : "none"
+  )
+});
+function getTabbableIn(container, dir) {
+  const list = tabbable(container, getTabbableOptions());
+  const len = list.length;
+  if (len === 0) return;
+  const active = activeElement(getDocument(container));
+  const index3 = list.indexOf(active);
+  const nextIndex = index3 === -1 ? dir === 1 ? 0 : len - 1 : index3 + dir;
+  return list[nextIndex];
+}
+function getNextTabbable(referenceElement) {
+  return getTabbableIn(getDocument(referenceElement).body, 1) || referenceElement;
+}
+function getPreviousTabbable(referenceElement) {
+  return getTabbableIn(getDocument(referenceElement).body, -1) || referenceElement;
+}
+function isOutsideEvent(event, container) {
+  const containerElement = container || event.currentTarget;
+  const relatedTarget = event.relatedTarget;
+  return !relatedTarget || !contains(containerElement, relatedTarget);
+}
+function disableFocusInside(container) {
+  const tabbableElements = tabbable(container, getTabbableOptions());
+  tabbableElements.forEach((element) => {
+    element.dataset.tabindex = element.getAttribute("tabindex") || "";
+    element.setAttribute("tabindex", "-1");
+  });
+}
+function enableFocusInside(container) {
+  const elements = container.querySelectorAll("[data-tabindex]");
+  elements.forEach((element) => {
+    const tabindex = element.dataset.tabindex;
+    delete element.dataset.tabindex;
+    if (tabindex) {
+      element.setAttribute("tabindex", tabindex);
+    } else {
+      element.removeAttribute("tabindex");
+    }
+  });
+}
+
+// node_modules/.pnpm/@floating-ui+react@0.27.20_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react/dist/floating-ui.react.mjs
+var import_jsx_runtime = require("react/jsx-runtime");
+var ReactDOM2 = __toESM(require("react-dom"), 1);
+
+// node_modules/.pnpm/@floating-ui+core@1.8.0/node_modules/@floating-ui/core/dist/floating-ui.core.mjs
+function computeCoordsFromPlacement(_ref, placement, rtl) {
+  let {
+    reference,
+    floating
+  } = _ref;
+  const sideAxis = getSideAxis(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const alignLength = getAxisLength(alignmentAxis);
+  const side = getSide(placement);
+  const isVertical = sideAxis === "y";
+  const commonX = reference.x + reference.width / 2 - floating.width / 2;
+  const commonY = reference.y + reference.height / 2 - floating.height / 2;
+  const commonAlign = reference[alignLength] / 2 - floating[alignLength] / 2;
+  let coords;
+  switch (side) {
+    case "top":
+      coords = {
+        x: commonX,
+        y: reference.y - floating.height
+      };
+      break;
+    case "bottom":
+      coords = {
+        x: commonX,
+        y: reference.y + reference.height
+      };
+      break;
+    case "right":
+      coords = {
+        x: reference.x + reference.width,
+        y: commonY
+      };
+      break;
+    case "left":
+      coords = {
+        x: reference.x - floating.width,
+        y: commonY
+      };
+      break;
+    default:
+      coords = {
+        x: reference.x,
+        y: reference.y
+      };
+  }
+  const alignment = getAlignment(placement);
+  if (alignment) {
+    coords[alignmentAxis] += commonAlign * (alignment === "end" ? 1 : -1) * (rtl && isVertical ? -1 : 1);
+  }
+  return coords;
+}
+async function detectOverflow(state, options) {
+  var _await$platform$isEle;
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    x,
+    y,
+    platform: platform2,
+    rects,
+    elements,
+    strategy
+  } = state;
+  const {
+    boundary = "clippingAncestors",
+    rootBoundary = "viewport",
+    elementContext: elementContext2 = "floating",
+    altBoundary = false,
+    padding = 0
+  } = evaluate(options, state);
+  const paddingObject = getPaddingObject(padding);
+  const altContext = elementContext2 === "floating" ? "reference" : "floating";
+  const element = elements[altBoundary ? altContext : elementContext2];
+  const clippingClientRect = rectToClientRect(await platform2.getClippingRect({
+    element: ((_await$platform$isEle = await (platform2.isElement == null ? void 0 : platform2.isElement(element))) != null ? _await$platform$isEle : true) ? element : element.contextElement || await (platform2.getDocumentElement == null ? void 0 : platform2.getDocumentElement(elements.floating)),
+    boundary,
+    rootBoundary,
+    strategy
+  }));
+  const rect = elementContext2 === "floating" ? {
+    x,
+    y,
+    width: rects.floating.width,
+    height: rects.floating.height
+  } : rects.reference;
+  const offsetParent = await (platform2.getOffsetParent == null ? void 0 : platform2.getOffsetParent(elements.floating));
+  const offsetScale = await (platform2.isElement == null ? void 0 : platform2.isElement(offsetParent)) && await (platform2.getScale == null ? void 0 : platform2.getScale(offsetParent)) || {
+    x: 1,
+    y: 1
+  };
+  const elementClientRect = rectToClientRect(platform2.convertOffsetParentRelativeRectToViewportRelativeRect ? await platform2.convertOffsetParentRelativeRectToViewportRelativeRect({
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  }) : rect);
+  return {
+    top: (clippingClientRect.top - elementClientRect.top + paddingObject.top) / offsetScale.y,
+    bottom: (elementClientRect.bottom - clippingClientRect.bottom + paddingObject.bottom) / offsetScale.y,
+    left: (clippingClientRect.left - elementClientRect.left + paddingObject.left) / offsetScale.x,
+    right: (elementClientRect.right - clippingClientRect.right + paddingObject.right) / offsetScale.x
+  };
+}
+var MAX_RESET_COUNT = 50;
+var computePosition = async (reference, floating, config2) => {
+  const {
+    placement = "bottom",
+    strategy = "absolute",
+    middleware = [],
+    platform: platform2
+  } = config2;
+  const platformWithDetectOverflow = platform2.detectOverflow ? platform2 : {
+    ...platform2,
+    detectOverflow
+  };
+  const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(floating));
+  let rects = await platform2.getElementRects({
+    reference,
+    floating,
+    strategy
+  });
+  let {
+    x,
+    y
+  } = computeCoordsFromPlacement(rects, placement, rtl);
+  let statefulPlacement = placement;
+  let resetCount = 0;
+  const middlewareData = {};
+  for (let i2 = 0; i2 < middleware.length; i2++) {
+    const currentMiddleware = middleware[i2];
+    if (!currentMiddleware) {
+      continue;
+    }
+    const {
+      name: name2,
+      fn
+    } = currentMiddleware;
+    const {
+      x: nextX,
+      y: nextY,
+      data: data2,
+      reset
+    } = await fn({
+      x,
+      y,
+      initialPlacement: placement,
+      placement: statefulPlacement,
+      strategy,
+      middlewareData,
+      rects,
+      platform: platformWithDetectOverflow,
+      elements: {
+        reference,
+        floating
+      }
+    });
+    x = nextX != null ? nextX : x;
+    y = nextY != null ? nextY : y;
+    middlewareData[name2] = {
+      ...middlewareData[name2],
+      ...data2
+    };
+    if (reset && resetCount < MAX_RESET_COUNT) {
+      resetCount++;
+      if (typeof reset === "object") {
+        if (reset.placement) {
+          statefulPlacement = reset.placement;
+        }
+        if (reset.rects) {
+          rects = reset.rects === true ? await platform2.getElementRects({
+            reference,
+            floating,
+            strategy
+          }) : reset.rects;
+        }
+        ({
+          x,
+          y
+        } = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
+      }
+      i2 = -1;
+    }
+  }
+  return {
+    x,
+    y,
+    placement: statefulPlacement,
+    strategy,
+    middlewareData
+  };
+};
+var flip = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "flip",
+    options,
+    async fn(state) {
+      var _middlewareData$arrow, _middlewareData$flip;
+      const {
+        placement,
+        middlewareData,
+        rects,
+        initialPlacement,
+        platform: platform2,
+        elements
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true,
+        fallbackPlacements: specifiedFallbackPlacements,
+        fallbackStrategy = "bestFit",
+        fallbackAxisSideDirection = "none",
+        flipAlignment = true,
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      if ((_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      const side = getSide(placement);
+      const initialSideAxis = getSideAxis(initialPlacement);
+      const isBasePlacement = getSide(initialPlacement) === initialPlacement;
+      const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
+      const fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipAlignment ? [getOppositePlacement(initialPlacement)] : getExpandedPlacements(initialPlacement));
+      const hasFallbackAxisSideDirection = fallbackAxisSideDirection !== "none";
+      if (!specifiedFallbackPlacements && hasFallbackAxisSideDirection) {
+        fallbackPlacements.push(...getOppositeAxisPlacements(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl));
+      }
+      const placements2 = [initialPlacement, ...fallbackPlacements];
+      const overflow = await platform2.detectOverflow(state, detectOverflowOptions);
+      const overflows = [];
+      let overflowsData = ((_middlewareData$flip = middlewareData.flip) == null ? void 0 : _middlewareData$flip.overflows) || [];
+      if (checkMainAxis) {
+        overflows.push(overflow[side]);
+      }
+      if (checkCrossAxis) {
+        const sides2 = getAlignmentSides(placement, rects, rtl);
+        overflows.push(overflow[sides2[0]], overflow[sides2[1]]);
+      }
+      overflowsData = [...overflowsData, {
+        placement,
+        overflows
+      }];
+      if (!overflows.every((side2) => side2 <= 0)) {
+        var _middlewareData$flip2, _overflowsData$filter;
+        const nextIndex = (((_middlewareData$flip2 = middlewareData.flip) == null ? void 0 : _middlewareData$flip2.index) || 0) + 1;
+        const nextPlacement = placements2[nextIndex];
+        if (nextPlacement) {
+          const ignoreCrossAxisOverflow = checkCrossAxis === "alignment" ? initialSideAxis !== getSideAxis(nextPlacement) : false;
+          if (!ignoreCrossAxisOverflow || // We leave the current main axis only if every placement on that axis
+          // overflows the main axis.
+          overflowsData.every((d2) => getSideAxis(d2.placement) === initialSideAxis ? d2.overflows[0] > 0 : true)) {
+            return {
+              data: {
+                index: nextIndex,
+                overflows: overflowsData
+              },
+              reset: {
+                placement: nextPlacement
+              }
+            };
+          }
+        }
+        let resetPlacement = (_overflowsData$filter = overflowsData.filter((d2) => d2.overflows[0] <= 0).sort((a, b) => a.overflows[1] - b.overflows[1])[0]) == null ? void 0 : _overflowsData$filter.placement;
+        if (!resetPlacement) {
+          switch (fallbackStrategy) {
+            case "bestFit": {
+              var _overflowsData$filter2;
+              const placement2 = (_overflowsData$filter2 = overflowsData.filter((d2) => {
+                if (hasFallbackAxisSideDirection) {
+                  const currentSideAxis = getSideAxis(d2.placement);
+                  return currentSideAxis === initialSideAxis || // Create a bias to the `y` side axis due to horizontal
+                  // reading directions favoring greater width.
+                  currentSideAxis === "y";
+                }
+                return true;
+              }).map((d2) => [d2.placement, d2.overflows.filter((overflow2) => overflow2 > 0).reduce((acc, overflow2) => acc + overflow2, 0)]).sort((a, b) => a[1] - b[1])[0]) == null ? void 0 : _overflowsData$filter2[0];
+              if (placement2) {
+                resetPlacement = placement2;
+              }
+              break;
+            }
+            case "initialPlacement":
+              resetPlacement = initialPlacement;
+              break;
+          }
+        }
+        if (placement !== resetPlacement) {
+          return {
+            reset: {
+              placement: resetPlacement
+            }
+          };
+        }
+      }
+      return {};
+    }
+  };
+};
+var originSides = /* @__PURE__ */ new Set(["left", "top"]);
+async function convertValueToCoords(state, options) {
+  const {
+    placement,
+    platform: platform2,
+    elements
+  } = state;
+  const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
+  const side = getSide(placement);
+  const alignment = getAlignment(placement);
+  const isVertical = getSideAxis(placement) === "y";
+  const mainAxisMulti = originSides.has(side) ? -1 : 1;
+  const crossAxisMulti = rtl && isVertical ? -1 : 1;
+  const rawValue = evaluate(options, state);
+  let {
+    mainAxis,
+    crossAxis,
+    alignmentAxis
+  } = typeof rawValue === "number" ? {
+    mainAxis: rawValue,
+    crossAxis: 0,
+    alignmentAxis: null
+  } : {
+    mainAxis: rawValue.mainAxis || 0,
+    crossAxis: rawValue.crossAxis || 0,
+    alignmentAxis: rawValue.alignmentAxis
+  };
+  if (alignment && typeof alignmentAxis === "number") {
+    crossAxis = alignment === "end" ? alignmentAxis * -1 : alignmentAxis;
+  }
+  return isVertical ? {
+    x: crossAxis * crossAxisMulti,
+    y: mainAxis * mainAxisMulti
+  } : {
+    x: mainAxis * mainAxisMulti,
+    y: crossAxis * crossAxisMulti
+  };
+}
+var offset = function(options) {
+  if (options === void 0) {
+    options = 0;
+  }
+  return {
+    name: "offset",
+    options,
+    async fn(state) {
+      var _middlewareData$offse, _middlewareData$arrow;
+      const {
+        x,
+        y,
+        placement,
+        middlewareData
+      } = state;
+      const diffCoords = await convertValueToCoords(state, options);
+      if (placement === ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse.placement) && (_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      return {
+        x: x + diffCoords.x,
+        y: y + diffCoords.y,
+        data: {
+          ...diffCoords,
+          placement
+        }
+      };
+    }
+  };
+};
+var shift = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "shift",
+    options,
+    async fn(state) {
+      const {
+        x,
+        y,
+        placement,
+        platform: platform2
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = false,
+        limiter = {
+          fn: (_ref) => {
+            let {
+              x: x2,
+              y: y2
+            } = _ref;
+            return {
+              x: x2,
+              y: y2
+            };
+          }
+        },
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      const coords = {
+        x,
+        y
+      };
+      const overflow = await platform2.detectOverflow(state, detectOverflowOptions);
+      const crossAxis = getSideAxis(placement);
+      const mainAxis = getOppositeAxis(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      const clampCoord = (axis, coord) => clamp(coord + overflow[axis === "y" ? "top" : "left"], coord, coord - overflow[axis === "y" ? "bottom" : "right"]);
+      if (checkMainAxis) {
+        mainAxisCoord = clampCoord(mainAxis, mainAxisCoord);
+      }
+      if (checkCrossAxis) {
+        crossAxisCoord = clampCoord(crossAxis, crossAxisCoord);
+      }
+      const limitedCoords = limiter.fn({
+        ...state,
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      });
+      return {
+        ...limitedCoords,
+        data: {
+          x: limitedCoords.x - x,
+          y: limitedCoords.y - y,
+          enabled: {
+            [mainAxis]: checkMainAxis,
+            [crossAxis]: checkCrossAxis
+          }
+        }
+      };
+    }
+  };
+};
+var size = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "size",
+    options,
+    async fn(state) {
+      const {
+        placement,
+        rects,
+        platform: platform2,
+        elements
+      } = state;
+      const {
+        apply: apply2 = () => {
+        },
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      const overflow = await platform2.detectOverflow(state, detectOverflowOptions);
+      const side = getSide(placement);
+      const alignment = getAlignment(placement);
+      const isYAxis = getSideAxis(placement) === "y";
+      const {
+        width,
+        height
+      } = rects.floating;
+      let heightSide;
+      let widthSide;
+      if (side === "top" || side === "bottom") {
+        heightSide = side;
+        widthSide = alignment === (await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating)) ? "start" : "end") ? "left" : "right";
+      } else {
+        widthSide = side;
+        heightSide = alignment === "end" ? "top" : "bottom";
+      }
+      const maximumClippingHeight = height - overflow.top - overflow.bottom;
+      const maximumClippingWidth = width - overflow.left - overflow.right;
+      const overflowAvailableHeight = min(height - overflow[heightSide], maximumClippingHeight);
+      const overflowAvailableWidth = min(width - overflow[widthSide], maximumClippingWidth);
+      const shiftData = state.middlewareData.shift;
+      const noShift = !shiftData;
+      let availableHeight = overflowAvailableHeight;
+      let availableWidth = overflowAvailableWidth;
+      if (shiftData != null && shiftData.enabled.x) {
+        availableWidth = maximumClippingWidth;
+      }
+      if (shiftData != null && shiftData.enabled.y) {
+        availableHeight = maximumClippingHeight;
+      }
+      if (noShift && !alignment) {
+        if (isYAxis) {
+          availableWidth = width - 2 * max(overflow.left, overflow.right);
+        } else {
+          availableHeight = height - 2 * max(overflow.top, overflow.bottom);
+        }
+      }
+      await apply2({
+        ...state,
+        availableWidth,
+        availableHeight
+      });
+      const nextDimensions = await platform2.getDimensions(elements.floating);
+      if (width !== nextDimensions.width || height !== nextDimensions.height) {
+        return {
+          reset: {
+            rects: true
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+
+// node_modules/.pnpm/@floating-ui+dom@1.8.0/node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
+function getCssDimensions(element) {
+  const css3 = getComputedStyle2(element);
+  let width = parseFloat(css3.width) || 0;
+  let height = parseFloat(css3.height) || 0;
+  const hasOffset = isHTMLElement(element);
+  const offsetWidth = hasOffset ? element.offsetWidth : width;
+  const offsetHeight = hasOffset ? element.offsetHeight : height;
+  const shouldFallback = round(width) !== offsetWidth || round(height) !== offsetHeight;
+  if (shouldFallback) {
+    width = offsetWidth;
+    height = offsetHeight;
+  }
+  return {
+    width,
+    height,
+    $: shouldFallback
+  };
+}
+function unwrapElement(element) {
+  return !isElement(element) ? element.contextElement : element;
+}
+function getScale(element) {
+  const domElement = unwrapElement(element);
+  if (!isHTMLElement(domElement)) {
+    return createCoords(1);
+  }
+  const rect = domElement.getBoundingClientRect();
+  const {
+    width,
+    height,
+    $
+  } = getCssDimensions(domElement);
+  let x = ($ ? round(rect.width) : rect.width) / width;
+  let y = ($ ? round(rect.height) : rect.height) / height;
+  if (!x || !Number.isFinite(x)) {
+    x = 1;
+  }
+  if (!y || !Number.isFinite(y)) {
+    y = 1;
+  }
+  return {
+    x,
+    y
+  };
+}
+var noOffsets = /* @__PURE__ */ createCoords(0);
+function getVisualOffsets(element) {
+  const win = getWindow(element);
+  if (!isWebKit() || !win.visualViewport) {
+    return noOffsets;
+  }
+  return {
+    x: win.visualViewport.offsetLeft,
+    y: win.visualViewport.offsetTop
+  };
+}
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+  if (isFixed === void 0) {
+    isFixed = false;
+  }
+  return !!floatingOffsetParent && isFixed && floatingOffsetParent === getWindow(element);
+}
+function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
+  if (includeScale === void 0) {
+    includeScale = false;
+  }
+  if (isFixedStrategy === void 0) {
+    isFixedStrategy = false;
+  }
+  const clientRect = element.getBoundingClientRect();
+  const domElement = unwrapElement(element);
+  let scale = createCoords(1);
+  if (includeScale) {
+    if (offsetParent) {
+      if (isElement(offsetParent)) {
+        scale = getScale(offsetParent);
+      }
+    } else {
+      scale = getScale(element);
+    }
+  }
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : createCoords(0);
+  let x = (clientRect.left + visualOffsets.x) / scale.x;
+  let y = (clientRect.top + visualOffsets.y) / scale.y;
+  let width = clientRect.width / scale.x;
+  let height = clientRect.height / scale.y;
+  if (domElement && offsetParent) {
+    const win = getWindow(domElement);
+    const offsetWin = isElement(offsetParent) ? getWindow(offsetParent) : offsetParent;
+    let currentWin = win;
+    let currentIFrame = getFrameElement(currentWin);
+    while (currentIFrame && offsetWin !== currentWin) {
+      const iframeScale = getScale(currentIFrame);
+      const iframeRect = currentIFrame.getBoundingClientRect();
+      const css3 = getComputedStyle2(currentIFrame);
+      const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css3.paddingLeft)) * iframeScale.x;
+      const top2 = iframeRect.top + (currentIFrame.clientTop + parseFloat(css3.paddingTop)) * iframeScale.y;
+      x *= iframeScale.x;
+      y *= iframeScale.y;
+      width *= iframeScale.x;
+      height *= iframeScale.y;
+      x += left;
+      y += top2;
+      currentWin = getWindow(currentIFrame);
+      currentIFrame = getFrameElement(currentWin);
+    }
+  }
+  return rectToClientRect({
+    width,
+    height,
+    x,
+    y
+  });
+}
+function getWindowScrollBarX(element, rect) {
+  const leftScroll = getNodeScroll(element).scrollLeft;
+  if (!rect) {
+    return getBoundingClientRect(getDocumentElement(element)).left + leftScroll;
+  }
+  return rect.left + leftScroll;
+}
+function getHTMLOffset(documentElement, scroll) {
+  const htmlRect = documentElement.getBoundingClientRect();
+  const x = htmlRect.left + scroll.scrollLeft - getWindowScrollBarX(documentElement, htmlRect);
+  const y = htmlRect.top + scroll.scrollTop;
+  return {
+    x,
+    y
+  };
+}
+function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
+  let {
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  } = _ref;
+  const isFixed = strategy === "fixed";
+  const documentElement = getDocumentElement(offsetParent);
+  const topLayer = elements ? isTopLayer(elements.floating) : false;
+  if (offsetParent === documentElement || topLayer && isFixed) {
+    return rect;
+  }
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  let scale = createCoords(1);
+  const offsets = createCoords(0);
+  const isOffsetParentAnElement = isHTMLElement(offsetParent);
+  if (isOffsetParentAnElement || !isFixed) {
+    if (getNodeName(offsetParent) !== "body" || isOverflowElement(documentElement)) {
+      scroll = getNodeScroll(offsetParent);
+    }
+    if (isOffsetParentAnElement) {
+      const offsetRect = getBoundingClientRect(offsetParent);
+      scale = getScale(offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    }
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : createCoords(0);
+  return {
+    width: rect.width * scale.x,
+    height: rect.height * scale.y,
+    x: rect.x * scale.x - scroll.scrollLeft * scale.x + offsets.x + htmlOffset.x,
+    y: rect.y * scale.y - scroll.scrollTop * scale.y + offsets.y + htmlOffset.y
+  };
+}
+function getClientRects(element) {
+  return element.getClientRects ? Array.from(element.getClientRects()) : [];
+}
+function getDocumentRect(html2) {
+  const scroll = getNodeScroll(html2);
+  const body = html2.ownerDocument.body;
+  const width = max(html2.scrollWidth, html2.clientWidth, body.scrollWidth, body.clientWidth);
+  const height = max(html2.scrollHeight, html2.clientHeight, body.scrollHeight, body.clientHeight);
+  let x = -scroll.scrollLeft + getWindowScrollBarX(html2);
+  const y = -scroll.scrollTop;
+  if (getComputedStyle2(body).direction === "rtl") {
+    x += max(html2.clientWidth, body.clientWidth) - width;
+  }
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+var SCROLLBAR_MAX = 25;
+function getViewportRect(element, strategy, rootBoundary) {
+  if (rootBoundary === void 0) {
+    rootBoundary = "viewport";
+  }
+  const isLayoutViewport = rootBoundary === "layoutViewport";
+  const win = getWindow(element);
+  const html2 = getDocumentElement(element);
+  const visualViewport = win.visualViewport;
+  let width = html2.clientWidth;
+  let height = html2.clientHeight;
+  let x = 0;
+  let y = 0;
+  if (visualViewport) {
+    const layoutRelativeClientCoords = !isWebKit() || strategy === "fixed";
+    if (isLayoutViewport) {
+      if (!layoutRelativeClientCoords) {
+        x = -visualViewport.offsetLeft;
+        y = -visualViewport.offsetTop;
+      }
+    } else {
+      width = visualViewport.width;
+      height = visualViewport.height;
+      if (layoutRelativeClientCoords) {
+        x = visualViewport.offsetLeft;
+        y = visualViewport.offsetTop;
+      }
+    }
+  }
+  const windowScrollbarX = getWindowScrollBarX(html2);
+  if (windowScrollbarX <= 0) {
+    const doc2 = html2.ownerDocument;
+    const body = doc2.body;
+    const bodyStyles = getComputedStyle(body);
+    const bodyMarginInline = doc2.compatMode === "CSS1Compat" ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0 : 0;
+    const reservedWidth = Math.abs(html2.clientWidth - body.clientWidth - bodyMarginInline);
+    const gutter2 = getComputedStyle(html2).scrollbarGutter === "stable both-edges" ? reservedWidth / 2 : reservedWidth;
+    if (gutter2 <= SCROLLBAR_MAX) {
+      width -= gutter2;
+    }
+  }
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+function getInnerBoundingClientRect(element, strategy) {
+  const clientRect = getBoundingClientRect(element, true, strategy === "fixed");
+  const top2 = clientRect.top + element.clientTop;
+  const left = clientRect.left + element.clientLeft;
+  const scale = getScale(element);
+  const width = element.clientWidth * scale.x;
+  const height = element.clientHeight * scale.y;
+  const x = left * scale.x;
+  const y = top2 * scale.y;
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) {
+  let rect;
+  if (clippingAncestor === "viewport" || clippingAncestor === "layoutViewport") {
+    rect = getViewportRect(element, strategy, clippingAncestor);
+  } else if (clippingAncestor === "document") {
+    rect = getDocumentRect(getDocumentElement(element));
+  } else if (isElement(clippingAncestor)) {
+    rect = getInnerBoundingClientRect(clippingAncestor, strategy);
+  } else {
+    const visualOffsets = getVisualOffsets(element);
+    rect = {
+      x: clippingAncestor.x - visualOffsets.x,
+      y: clippingAncestor.y - visualOffsets.y,
+      width: clippingAncestor.width,
+      height: clippingAncestor.height
+    };
+  }
+  return rectToClientRect(rect);
+}
+function getClippingElementAncestors(element, cache3) {
+  const cachedResult = cache3.get(element);
+  if (cachedResult) {
+    return cachedResult;
+  }
+  let result = getOverflowAncestors(element, [], false).filter((el) => isElement(el) && getNodeName(el) !== "body");
+  let lastKeptComputedStyle = null;
+  const elementIsFixed = getComputedStyle2(element).position === "fixed";
+  let currentNode = elementIsFixed ? getParentNode(element) : element;
+  while (isElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    const computedStyle = getComputedStyle2(currentNode);
+    const currentNodeIsContaining = isContainingBlock(currentNode);
+    const lastPosition = lastKeptComputedStyle ? lastKeptComputedStyle.position : elementIsFixed ? "fixed" : "";
+    const shouldDropCurrentNode = !currentNodeIsContaining && (lastPosition === "fixed" || lastPosition === "absolute" && computedStyle.position === "static");
+    if (shouldDropCurrentNode) {
+      result = result.filter((ancestor) => ancestor !== currentNode);
+    } else {
+      lastKeptComputedStyle = computedStyle;
+    }
+    currentNode = getParentNode(currentNode);
+  }
+  cache3.set(element, result);
+  return result;
+}
+function getClippingRect(_ref) {
+  let {
+    element,
+    boundary,
+    rootBoundary,
+    strategy
+  } = _ref;
+  const elementClippingAncestors = boundary === "clippingAncestors" ? isTopLayer(element) ? [] : getClippingElementAncestors(element, this._c) : [].concat(boundary);
+  const clippingAncestors = [...elementClippingAncestors, rootBoundary];
+  const firstRect = getClientRectFromClippingAncestor(element, clippingAncestors[0], strategy);
+  let top2 = firstRect.top;
+  let right = firstRect.right;
+  let bottom = firstRect.bottom;
+  let left = firstRect.left;
+  for (let i2 = 1; i2 < clippingAncestors.length; i2++) {
+    const rect = getClientRectFromClippingAncestor(element, clippingAncestors[i2], strategy);
+    top2 = max(rect.top, top2);
+    right = min(rect.right, right);
+    bottom = min(rect.bottom, bottom);
+    left = max(rect.left, left);
+  }
+  return {
+    width: right - left,
+    height: bottom - top2,
+    x: left,
+    y: top2
+  };
+}
+function getDimensions(element) {
+  const {
+    width,
+    height
+  } = getCssDimensions(element);
+  return {
+    width,
+    height
+  };
+}
+function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
+  const isOffsetParentAnElement = isHTMLElement(offsetParent);
+  const documentElement = getDocumentElement(offsetParent);
+  const isFixed = strategy === "fixed";
+  const rect = getBoundingClientRect(element, true, isFixed, offsetParent);
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  const offsets = createCoords(0);
+  if (isOffsetParentAnElement || !isFixed) {
+    if (getNodeName(offsetParent) !== "body" || isOverflowElement(documentElement)) {
+      scroll = getNodeScroll(offsetParent);
+    }
+    if (isOffsetParentAnElement) {
+      const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    }
+  }
+  if (!isOffsetParentAnElement && documentElement) {
+    offsets.x = getWindowScrollBarX(documentElement);
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : createCoords(0);
+  const x = rect.left + scroll.scrollLeft - offsets.x - htmlOffset.x;
+  const y = rect.top + scroll.scrollTop - offsets.y - htmlOffset.y;
+  return {
+    x,
+    y,
+    width: rect.width,
+    height: rect.height
+  };
+}
+function isStaticPositioned(element) {
+  return getComputedStyle2(element).position === "static";
+}
+function getTrueOffsetParent(element, polyfill) {
+  if (!isHTMLElement(element) || getComputedStyle2(element).position === "fixed") {
+    return null;
+  }
+  if (polyfill) {
+    return polyfill(element);
+  }
+  let rawOffsetParent = element.offsetParent;
+  if (getDocumentElement(element) === rawOffsetParent) {
+    rawOffsetParent = rawOffsetParent.ownerDocument.body;
+  }
+  return rawOffsetParent;
+}
+function getOffsetParent(element, polyfill) {
+  const win = getWindow(element);
+  if (isTopLayer(element)) {
+    return win;
+  }
+  if (!isHTMLElement(element)) {
+    let svgOffsetParent = getParentNode(element);
+    while (svgOffsetParent && !isLastTraversableNode(svgOffsetParent)) {
+      if (isElement(svgOffsetParent) && !isStaticPositioned(svgOffsetParent)) {
+        return svgOffsetParent;
+      }
+      svgOffsetParent = getParentNode(svgOffsetParent);
+    }
+    return win;
+  }
+  let offsetParent = getTrueOffsetParent(element, polyfill);
+  while (offsetParent && isTableElement(offsetParent) && isStaticPositioned(offsetParent)) {
+    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
+  }
+  if (offsetParent && isLastTraversableNode(offsetParent) && isStaticPositioned(offsetParent) && !isContainingBlock(offsetParent)) {
+    return win;
+  }
+  return offsetParent || getContainingBlock(element) || win;
+}
+var getElementRects = async function(data2) {
+  const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
+  const getDimensionsFn = this.getDimensions;
+  const floatingDimensions = await getDimensionsFn(data2.floating);
+  return {
+    reference: getRectRelativeToOffsetParent(data2.reference, await getOffsetParentFn(data2.floating), data2.strategy),
+    floating: {
+      x: 0,
+      y: 0,
+      width: floatingDimensions.width,
+      height: floatingDimensions.height
+    }
+  };
+};
+function isRTL(element) {
+  return getComputedStyle2(element).direction === "rtl";
+}
+var platform = {
+  convertOffsetParentRelativeRectToViewportRelativeRect,
+  getDocumentElement,
+  getClippingRect,
+  getOffsetParent,
+  getElementRects,
+  getClientRects,
+  getDimensions,
+  getScale,
+  isElement,
+  isRTL
+};
+function rectsAreEqual(a, b) {
+  return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+}
+function observeMove(element, onMove, ancestorResize) {
+  let io = null;
+  let timeoutId;
+  const root = getDocumentElement(element);
+  function cleanup() {
+    var _io;
+    clearTimeout(timeoutId);
+    (_io = io) == null || _io.disconnect();
+    io = null;
+  }
+  function refresh(skip, threshold) {
+    if (skip === void 0) {
+      skip = false;
+    }
+    if (threshold === void 0) {
+      threshold = 1;
+    }
+    cleanup();
+    const elementRectForRootMargin = element.getBoundingClientRect();
+    const {
+      left,
+      top: top2,
+      width,
+      height
+    } = elementRectForRootMargin;
+    if (!skip) {
+      onMove();
+    }
+    if (!width || !height) {
+      return;
+    }
+    const insetTop = floor(top2);
+    const insetRight = floor(root.clientWidth - (left + width));
+    const insetBottom = floor(root.clientHeight - (top2 + height));
+    const insetLeft = floor(left);
+    const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
+    const options = {
+      rootMargin,
+      threshold: max(0, min(1, threshold)) || 1
+    };
+    let isFirstUpdate = true;
+    function handleObserve(entries2) {
+      const ratio = entries2[0].intersectionRatio;
+      if (!rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
+        return refresh();
+      }
+      if (ratio !== threshold) {
+        if (!isFirstUpdate) {
+          return refresh();
+        }
+        if (!ratio) {
+          timeoutId = setTimeout(() => {
+            refresh(false, 1e-7);
+          }, 1e3);
+        } else {
+          refresh(false, ratio);
+        }
+      }
+      isFirstUpdate = false;
+    }
+    try {
+      io = new IntersectionObserver(handleObserve, {
+        ...options,
+        // Handle <iframe>s
+        root: root.ownerDocument
+      });
+    } catch (_e) {
+      io = new IntersectionObserver(handleObserve, options);
+    }
+    io.observe(element);
+  }
+  const win = getWindow(element);
+  const handleResize = () => refresh(ancestorResize);
+  win.addEventListener("resize", handleResize);
+  refresh(true);
+  return () => {
+    win.removeEventListener("resize", handleResize);
+    cleanup();
+  };
+}
+function autoUpdate(reference, floating, update, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    ancestorScroll = true,
+    ancestorResize = true,
+    elementResize = typeof ResizeObserver === "function",
+    layoutShift = typeof IntersectionObserver === "function",
+    animationFrame = false
+  } = options;
+  const referenceEl = unwrapElement(reference);
+  const ancestors = ancestorScroll || ancestorResize ? [...referenceEl ? getOverflowAncestors(referenceEl) : [], ...floating ? getOverflowAncestors(floating) : []] : [];
+  ancestors.forEach((ancestor) => {
+    ancestorScroll && ancestor.addEventListener("scroll", update);
+    ancestorResize && ancestor.addEventListener("resize", update);
+  });
+  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update, ancestorResize) : null;
+  let reobserveFrame = -1;
+  let resizeObserver = null;
+  if (elementResize) {
+    resizeObserver = new ResizeObserver((_ref) => {
+      let [firstEntry] = _ref;
+      if (firstEntry && firstEntry.target === referenceEl && resizeObserver && floating) {
+        resizeObserver.unobserve(floating);
+        cancelAnimationFrame(reobserveFrame);
+        reobserveFrame = requestAnimationFrame(() => {
+          var _resizeObserver;
+          (_resizeObserver = resizeObserver) == null || _resizeObserver.observe(floating);
+        });
+      }
+      update();
+    });
+    if (referenceEl && !animationFrame) {
+      resizeObserver.observe(referenceEl);
+    }
+    if (floating) {
+      resizeObserver.observe(floating);
+    }
+  }
+  let frameId;
+  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
+  if (animationFrame) {
+    frameLoop();
+  }
+  function frameLoop() {
+    const nextRefRect = getBoundingClientRect(reference);
+    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
+      update();
+    }
+    prevRefRect = nextRefRect;
+    frameId = requestAnimationFrame(frameLoop);
+  }
+  update();
+  return () => {
+    var _resizeObserver2;
+    ancestors.forEach((ancestor) => {
+      ancestorScroll && ancestor.removeEventListener("scroll", update);
+      ancestorResize && ancestor.removeEventListener("resize", update);
+    });
+    cleanupIo == null || cleanupIo();
+    (_resizeObserver2 = resizeObserver) == null || _resizeObserver2.disconnect();
+    resizeObserver = null;
+    if (animationFrame) {
+      cancelAnimationFrame(frameId);
+    }
+  };
+}
+var offset2 = offset;
+var shift2 = shift;
+var flip2 = flip;
+var size2 = size;
+var computePosition2 = (reference, floating, options) => {
+  const cache3 = /* @__PURE__ */ new Map();
+  const mergedOptions = options != null ? options : {};
+  const platformWithCache = {
+    ...platform,
+    ...mergedOptions.platform,
+    _c: cache3
+  };
+  return computePosition(reference, floating, {
+    ...mergedOptions,
+    platform: platformWithCache
+  });
+};
+
+// node_modules/.pnpm/@floating-ui+react-dom@2.1.9_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
+var React2 = __toESM(require("react"), 1);
 var import_react2 = require("react");
+var ReactDOM = __toESM(require("react-dom"), 1);
+var isClient2 = typeof document !== "undefined";
+var noop3 = function noop4() {
+};
+var index2 = isClient2 ? import_react2.useLayoutEffect : noop3;
+function deepEqual(a, b) {
+  if (a === b) {
+    return true;
+  }
+  if (typeof a !== typeof b) {
+    return false;
+  }
+  if (typeof a === "function" && a.toString() === b.toString()) {
+    return true;
+  }
+  let length;
+  let i2;
+  let keys2;
+  if (a && b && typeof a === "object") {
+    if (Array.isArray(a)) {
+      length = a.length;
+      if (length !== b.length) return false;
+      for (i2 = length; i2-- !== 0; ) {
+        if (!deepEqual(a[i2], b[i2])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    keys2 = Object.keys(a);
+    length = keys2.length;
+    if (length !== Object.keys(b).length) {
+      return false;
+    }
+    for (i2 = length; i2-- !== 0; ) {
+      if (!{}.hasOwnProperty.call(b, keys2[i2])) {
+        return false;
+      }
+    }
+    for (i2 = length; i2-- !== 0; ) {
+      const key = keys2[i2];
+      if (key === "_owner" && a.$$typeof) {
+        continue;
+      }
+      if (!deepEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return a !== a && b !== b;
+}
+function getDPR(element) {
+  if (typeof window === "undefined") {
+    return 1;
+  }
+  const win = element.ownerDocument.defaultView || window;
+  return win.devicePixelRatio || 1;
+}
+function roundByDPR(element, value) {
+  const dpr = getDPR(element);
+  return Math.round(value * dpr) / dpr;
+}
+function useLatestRef(value) {
+  const ref = React2.useRef(value);
+  index2(() => {
+    ref.current = value;
+  });
+  return ref;
+}
+function useFloating(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    placement = "bottom",
+    strategy = "absolute",
+    middleware = [],
+    platform: platform2,
+    elements: {
+      reference: externalReference,
+      floating: externalFloating
+    } = {},
+    transform = true,
+    whileElementsMounted,
+    open
+  } = options;
+  const [data2, setData] = React2.useState({
+    x: 0,
+    y: 0,
+    strategy,
+    placement,
+    middlewareData: {},
+    isPositioned: false
+  });
+  const [latestMiddleware, setLatestMiddleware] = React2.useState(middleware);
+  if (!deepEqual(latestMiddleware, middleware)) {
+    setLatestMiddleware(middleware);
+  }
+  const [_reference, _setReference] = React2.useState(null);
+  const [_floating, _setFloating] = React2.useState(null);
+  const setReference = React2.useCallback((node) => {
+    if (node !== referenceRef.current) {
+      referenceRef.current = node;
+      _setReference(node);
+    }
+  }, []);
+  const setFloating = React2.useCallback((node) => {
+    if (node !== floatingRef.current) {
+      floatingRef.current = node;
+      _setFloating(node);
+    }
+  }, []);
+  const referenceEl = externalReference || _reference;
+  const floatingEl = externalFloating || _floating;
+  const referenceRef = React2.useRef(null);
+  const floatingRef = React2.useRef(null);
+  const dataRef = React2.useRef(data2);
+  const hasWhileElementsMounted = whileElementsMounted != null;
+  const whileElementsMountedRef = useLatestRef(whileElementsMounted);
+  const platformRef = useLatestRef(platform2);
+  const openRef = useLatestRef(open);
+  const update = React2.useCallback(() => {
+    if (!referenceRef.current || !floatingRef.current) {
+      return;
+    }
+    const config2 = {
+      placement,
+      strategy,
+      middleware: latestMiddleware
+    };
+    if (platformRef.current) {
+      config2.platform = platformRef.current;
+    }
+    computePosition2(referenceRef.current, floatingRef.current, config2).then((data3) => {
+      const fullData = {
+        ...data3,
+        // The floating element's position may be recomputed while it's closed
+        // but still mounted (such as when transitioning out). To ensure
+        // `isPositioned` will be `false` initially on the next open, avoid
+        // setting it to `true` when `open === false` (must be specified).
+        isPositioned: openRef.current !== false
+      };
+      if (isMountedRef.current && !deepEqual(dataRef.current, fullData)) {
+        dataRef.current = fullData;
+        ReactDOM.flushSync(() => {
+          setData(fullData);
+        });
+      }
+    });
+  }, [latestMiddleware, placement, strategy, platformRef, openRef]);
+  index2(() => {
+    if (open === false && dataRef.current.isPositioned) {
+      dataRef.current.isPositioned = false;
+      setData((data3) => ({
+        ...data3,
+        isPositioned: false
+      }));
+    }
+  }, [open]);
+  const isMountedRef = React2.useRef(false);
+  index2(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+  index2(() => {
+    if (referenceEl) referenceRef.current = referenceEl;
+    if (floatingEl) floatingRef.current = floatingEl;
+    if (referenceEl && floatingEl) {
+      if (whileElementsMountedRef.current) {
+        return whileElementsMountedRef.current(referenceEl, floatingEl, update);
+      }
+      update();
+    }
+  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted]);
+  const refs = React2.useMemo(() => ({
+    reference: referenceRef,
+    floating: floatingRef,
+    setReference,
+    setFloating
+  }), [setReference, setFloating]);
+  const elements = React2.useMemo(() => ({
+    reference: referenceEl,
+    floating: floatingEl
+  }), [referenceEl, floatingEl]);
+  const floatingStyles = React2.useMemo(() => {
+    const initialStyles = {
+      position: strategy,
+      left: 0,
+      top: 0
+    };
+    if (!elements.floating) {
+      return initialStyles;
+    }
+    const x = roundByDPR(elements.floating, data2.x);
+    const y = roundByDPR(elements.floating, data2.y);
+    if (transform) {
+      return {
+        ...initialStyles,
+        transform: "translate(" + x + "px, " + y + "px)",
+        ...getDPR(elements.floating) >= 1.5 && {
+          willChange: "transform"
+        }
+      };
+    }
+    return {
+      position: strategy,
+      left: x,
+      top: y
+    };
+  }, [strategy, transform, elements.floating, data2.x, data2.y]);
+  return React2.useMemo(() => ({
+    ...data2,
+    update,
+    refs,
+    elements,
+    floatingStyles
+  }), [data2, update, refs, elements, floatingStyles]);
+}
+var offset3 = (options, deps) => {
+  const result = offset2(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+var shift3 = (options, deps) => {
+  const result = shift2(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+var flip3 = (options, deps) => {
+  const result = flip2(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+var size3 = (options, deps) => {
+  const result = size2(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+// node_modules/.pnpm/@floating-ui+react@0.27.20_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react/dist/floating-ui.react.mjs
+var ARROW_LEFT = "ArrowLeft";
+var ARROW_RIGHT = "ArrowRight";
+var ARROW_UP = "ArrowUp";
+var ARROW_DOWN = "ArrowDown";
+var horizontalKeys = [ARROW_LEFT, ARROW_RIGHT];
+var verticalKeys = [ARROW_UP, ARROW_DOWN];
+var allKeys = [...horizontalKeys, ...verticalKeys];
+var SafeReact2 = {
+  ...React3
+};
+var serverHandoffComplete = false;
+var count = 0;
+var genId = () => (
+  // Ensure the id is unique with multiple independent versions of Floating UI
+  // on <React 18
+  "floating-ui-" + Math.random().toString(36).slice(2, 6) + count++
+);
+function useFloatingId() {
+  const [id3, setId] = React3.useState(() => serverHandoffComplete ? genId() : void 0);
+  index(() => {
+    if (id3 == null) {
+      setId(genId());
+    }
+  }, []);
+  React3.useEffect(() => {
+    serverHandoffComplete = true;
+  }, []);
+  return id3;
+}
+var useReactId = SafeReact2.useId;
+var useId = useReactId || useFloatingId;
+if (false) {
+  devMessageSet = /* @__PURE__ */ new Set();
+}
+function createEventEmitter() {
+  const map = /* @__PURE__ */ new Map();
+  return {
+    emit(event, data2) {
+      var _map$get;
+      (_map$get = map.get(event)) == null || _map$get.forEach((listener) => listener(data2));
+    },
+    on(event, listener) {
+      if (!map.has(event)) {
+        map.set(event, /* @__PURE__ */ new Set());
+      }
+      map.get(event).add(listener);
+    },
+    off(event, listener) {
+      var _map$get2;
+      (_map$get2 = map.get(event)) == null || _map$get2.delete(listener);
+    }
+  };
+}
+var FloatingNodeContext = /* @__PURE__ */ React3.createContext(null);
+var FloatingTreeContext = /* @__PURE__ */ React3.createContext(null);
+var useFloatingParentNodeId = () => {
+  var _React$useContext;
+  return ((_React$useContext = React3.useContext(FloatingNodeContext)) == null ? void 0 : _React$useContext.id) || null;
+};
+var useFloatingTree = () => React3.useContext(FloatingTreeContext);
+function createAttribute(name2) {
+  return "data-floating-ui-" + name2;
+}
+var HIDDEN_STYLES = {
+  border: 0,
+  clip: "rect(0 0 0 0)",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  padding: 0,
+  position: "fixed",
+  whiteSpace: "nowrap",
+  width: "1px",
+  top: 0,
+  left: 0
+};
+var FocusGuard = /* @__PURE__ */ React3.forwardRef(function FocusGuard2(props, ref) {
+  const [role, setRole] = React3.useState();
+  index(() => {
+    if (isSafari()) {
+      setRole("button");
+    }
+  }, []);
+  const restProps = {
+    ref,
+    tabIndex: 0,
+    // Role is only for VoiceOver
+    role,
+    "aria-hidden": role ? void 0 : true,
+    [createAttribute("focus-guard")]: "",
+    style: HIDDEN_STYLES
+  };
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+    ...props,
+    ...restProps
+  });
+});
+var HIDDEN_OWNER_STYLES = {
+  clipPath: "inset(50%)",
+  position: "fixed",
+  top: 0,
+  left: 0
+};
+var PortalContext = /* @__PURE__ */ React3.createContext(null);
+var attr = /* @__PURE__ */ createAttribute("portal");
+function useFloatingPortalNode(props) {
+  if (props === void 0) {
+    props = {};
+  }
+  const {
+    id: id3,
+    root
+  } = props;
+  const uniqueId = useId();
+  const portalContext = usePortalContext();
+  const [portalNode, setPortalNode] = React3.useState(null);
+  const portalNodeRef = React3.useRef(null);
+  index(() => {
+    return () => {
+      portalNode == null || portalNode.remove();
+      queueMicrotask(() => {
+        portalNodeRef.current = null;
+      });
+    };
+  }, [portalNode]);
+  index(() => {
+    if (!uniqueId) return;
+    if (portalNodeRef.current) return;
+    const existingIdRoot = id3 ? document.getElementById(id3) : null;
+    if (!existingIdRoot) return;
+    const subRoot = document.createElement("div");
+    subRoot.id = uniqueId;
+    subRoot.setAttribute(attr, "");
+    existingIdRoot.appendChild(subRoot);
+    portalNodeRef.current = subRoot;
+    setPortalNode(subRoot);
+  }, [id3, uniqueId]);
+  index(() => {
+    if (root === null) return;
+    if (!uniqueId) return;
+    if (portalNodeRef.current) return;
+    let container = root || (portalContext == null ? void 0 : portalContext.portalNode);
+    if (container && !isNode(container)) container = container.current;
+    container = container || document.body;
+    let idWrapper = null;
+    if (id3) {
+      idWrapper = document.createElement("div");
+      idWrapper.id = id3;
+      container.appendChild(idWrapper);
+    }
+    const subRoot = document.createElement("div");
+    subRoot.id = uniqueId;
+    subRoot.setAttribute(attr, "");
+    container = idWrapper || container;
+    container.appendChild(subRoot);
+    portalNodeRef.current = subRoot;
+    setPortalNode(subRoot);
+  }, [id3, root, uniqueId, portalContext]);
+  return portalNode;
+}
+function FloatingPortal(props) {
+  const {
+    children,
+    id: id3,
+    root,
+    preserveTabOrder = true
+  } = props;
+  const portalNode = useFloatingPortalNode({
+    id: id3,
+    root
+  });
+  const [focusManagerState, setFocusManagerState] = React3.useState(null);
+  const beforeOutsideRef = React3.useRef(null);
+  const afterOutsideRef = React3.useRef(null);
+  const beforeInsideRef = React3.useRef(null);
+  const afterInsideRef = React3.useRef(null);
+  const modal = focusManagerState == null ? void 0 : focusManagerState.modal;
+  const open = focusManagerState == null ? void 0 : focusManagerState.open;
+  const shouldRenderGuards = (
+    // The FocusManager and therefore floating element are currently open/
+    // rendered.
+    !!focusManagerState && // Guards are only for non-modal focus management.
+    !focusManagerState.modal && // Don't render if unmount is transitioning.
+    focusManagerState.open && preserveTabOrder && !!(root || portalNode)
+  );
+  React3.useEffect(() => {
+    if (!portalNode || !preserveTabOrder || modal) {
+      return;
+    }
+    function onFocus(event) {
+      if (portalNode && isOutsideEvent(event)) {
+        const focusing = event.type === "focusin";
+        const manageFocus = focusing ? enableFocusInside : disableFocusInside;
+        manageFocus(portalNode);
+      }
+    }
+    portalNode.addEventListener("focusin", onFocus, true);
+    portalNode.addEventListener("focusout", onFocus, true);
+    return () => {
+      portalNode.removeEventListener("focusin", onFocus, true);
+      portalNode.removeEventListener("focusout", onFocus, true);
+    };
+  }, [portalNode, preserveTabOrder, modal]);
+  React3.useEffect(() => {
+    if (!portalNode) return;
+    if (open) return;
+    enableFocusInside(portalNode);
+  }, [open, portalNode]);
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PortalContext.Provider, {
+    value: React3.useMemo(() => ({
+      preserveTabOrder,
+      beforeOutsideRef,
+      afterOutsideRef,
+      beforeInsideRef,
+      afterInsideRef,
+      portalNode,
+      setFocusManagerState
+    }), [preserveTabOrder, portalNode]),
+    children: [shouldRenderGuards && portalNode && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FocusGuard, {
+      "data-type": "outside",
+      ref: beforeOutsideRef,
+      onFocus: (event) => {
+        if (isOutsideEvent(event, portalNode)) {
+          var _beforeInsideRef$curr;
+          (_beforeInsideRef$curr = beforeInsideRef.current) == null || _beforeInsideRef$curr.focus();
+        } else {
+          const domReference = focusManagerState ? focusManagerState.domReference : null;
+          const prevTabbable = getPreviousTabbable(domReference);
+          prevTabbable == null || prevTabbable.focus();
+        }
+      }
+    }), shouldRenderGuards && portalNode && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+      "aria-owns": portalNode.id,
+      style: HIDDEN_OWNER_STYLES
+    }), portalNode && /* @__PURE__ */ ReactDOM2.createPortal(children, portalNode), shouldRenderGuards && portalNode && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FocusGuard, {
+      "data-type": "outside",
+      ref: afterOutsideRef,
+      onFocus: (event) => {
+        if (isOutsideEvent(event, portalNode)) {
+          var _afterInsideRef$curre;
+          (_afterInsideRef$curre = afterInsideRef.current) == null || _afterInsideRef$curre.focus();
+        } else {
+          const domReference = focusManagerState ? focusManagerState.domReference : null;
+          const nextTabbable = getNextTabbable(domReference);
+          nextTabbable == null || nextTabbable.focus();
+          (focusManagerState == null ? void 0 : focusManagerState.closeOnFocusOut) && (focusManagerState == null ? void 0 : focusManagerState.onOpenChange(false, event.nativeEvent, "focus-out"));
+        }
+      }
+    })]
+  });
+}
+var usePortalContext = () => React3.useContext(PortalContext);
+function useFloatingRootContext(options) {
+  const {
+    open = false,
+    onOpenChange: onOpenChangeProp,
+    elements: elementsProp
+  } = options;
+  const floatingId = useId();
+  const dataRef = React3.useRef({});
+  const [events] = React3.useState(() => createEventEmitter());
+  const nested = useFloatingParentNodeId() != null;
+  if (false) {
+    const optionDomReference = elementsProp.reference;
+    if (optionDomReference && !isElement(optionDomReference)) {
+      error("Cannot pass a virtual element to the `elements.reference` option,", "as it must be a real DOM element. Use `refs.setPositionReference()`", "instead.");
+    }
+  }
+  const [positionReference, setPositionReference] = React3.useState(elementsProp.reference);
+  const onOpenChange = useEffectEvent((open2, event, reason) => {
+    dataRef.current.openEvent = open2 ? event : void 0;
+    events.emit("openchange", {
+      open: open2,
+      event,
+      reason,
+      nested
+    });
+    onOpenChangeProp == null || onOpenChangeProp(open2, event, reason);
+  });
+  const refs = React3.useMemo(() => ({
+    setPositionReference
+  }), []);
+  const elements = React3.useMemo(() => ({
+    reference: positionReference || elementsProp.reference || null,
+    floating: elementsProp.floating || null,
+    domReference: elementsProp.reference
+  }), [positionReference, elementsProp.reference, elementsProp.floating]);
+  return React3.useMemo(() => ({
+    dataRef,
+    open,
+    onOpenChange,
+    elements,
+    events,
+    floatingId,
+    refs
+  }), [open, onOpenChange, elements, events, floatingId, refs]);
+}
+function useFloating2(_temp) {
+  var _elementsOption$refer, _elementsOption$float;
+  let {
+    elements: elementsOption,
+    ...options
+  } = _temp === void 0 ? {} : _temp;
+  const {
+    nodeId
+  } = options;
+  const internalRootContext = useFloatingRootContext({
+    ...options,
+    elements: {
+      reference: (_elementsOption$refer = elementsOption == null ? void 0 : elementsOption.reference) != null ? _elementsOption$refer : null,
+      floating: (_elementsOption$float = elementsOption == null ? void 0 : elementsOption.floating) != null ? _elementsOption$float : null
+    }
+  });
+  const rootContext = options.rootContext || internalRootContext;
+  const computedElements = rootContext.elements;
+  const [_domReference, setDomReference] = React3.useState(null);
+  const [positionReference, _setPositionReference] = React3.useState(null);
+  const optionDomReference = computedElements == null ? void 0 : computedElements.domReference;
+  const domReference = optionDomReference || _domReference;
+  const domReferenceRef = React3.useRef(null);
+  const tree = useFloatingTree();
+  index(() => {
+    if (domReference) {
+      domReferenceRef.current = domReference;
+    }
+  }, [domReference]);
+  const position = useFloating({
+    ...options,
+    elements: {
+      ...computedElements,
+      ...positionReference && {
+        reference: positionReference
+      }
+    }
+  });
+  const setPositionReference = React3.useCallback((node) => {
+    const computedPositionReference = isElement(node) ? {
+      getBoundingClientRect: () => node.getBoundingClientRect(),
+      getClientRects: () => node.getClientRects(),
+      contextElement: node
+    } : node;
+    _setPositionReference(computedPositionReference);
+    position.refs.setReference(computedPositionReference);
+  }, [position.refs]);
+  const setReference = React3.useCallback((node) => {
+    if (isElement(node) || node === null) {
+      domReferenceRef.current = node;
+      setDomReference(node);
+    }
+    if (isElement(position.refs.reference.current) || position.refs.reference.current === null || // Don't allow setting virtual elements using the old technique back to
+    // `null` to support `positionReference` + an unstable `reference`
+    // callback ref.
+    node !== null && !isElement(node)) {
+      position.refs.setReference(node);
+    }
+  }, [position.refs]);
+  const refs = React3.useMemo(() => ({
+    ...position.refs,
+    setReference,
+    setPositionReference,
+    domReference: domReferenceRef
+  }), [position.refs, setReference, setPositionReference]);
+  const elements = React3.useMemo(() => ({
+    ...position.elements,
+    domReference
+  }), [position.elements, domReference]);
+  const context = React3.useMemo(() => ({
+    ...position,
+    ...rootContext,
+    refs,
+    elements,
+    nodeId
+  }), [position, refs, elements, nodeId, rootContext]);
+  index(() => {
+    rootContext.dataRef.current.floatingContext = context;
+    const node = tree == null ? void 0 : tree.nodesRef.current.find((node2) => node2.id === nodeId);
+    if (node) {
+      node.context = context;
+    }
+  });
+  return React3.useMemo(() => ({
+    ...position,
+    context,
+    refs,
+    elements
+  }), [position, refs, elements, context]);
+}
 
 // dist/utils/i18n.js
 var DICT = {
@@ -494,11 +2973,11 @@ function getTooltipRenderer() {
 }
 
 // dist/ui/FieldHint.js
-var import_react = require("react");
+var import_react3 = require("react");
 function FieldHint(props) {
   ensureControls();
   const { text: text2, side, align, maxWidth, className: className2, style: style2 } = props;
-  const anchor = (0, import_react.createElement)("span", {
+  const anchor = (0, import_react3.createElement)("span", {
     className: `dshpc-hint${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: style2,
     tabIndex: 0,
@@ -522,40 +3001,64 @@ function Picker(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const mode = props.mode ?? "single";
-  const size = props.size ?? "md";
+  const size4 = props.size ?? "md";
   const placement = props.placement ?? "down";
   const clearable = props.clearable === true;
   const showLabels = props.showLabels !== false;
-  const groups = (0, import_react2.useMemo)(() => toGroups(props.groups, props.options), [props.groups, props.options]);
+  const groups = (0, import_react4.useMemo)(() => toGroups(props.groups, props.options), [props.groups, props.options]);
   const controlled = props.value !== void 0;
-  const [inner, setInner] = (0, import_react2.useState)(() => toArray(props.defaultValue));
+  const [inner, setInner] = (0, import_react4.useState)(() => toArray(props.defaultValue));
   const selected = controlled ? toArray(props.value) : inner;
   const emit = (next) => {
     if (!controlled)
       setInner(next);
     props.onChange?.(mode === "single" ? next[0] ?? "" : next);
   };
-  const [open, setOpen] = (0, import_react2.useState)(false);
-  const [query, setQuery] = (0, import_react2.useState)("");
-  const [active, setActive2] = (0, import_react2.useState)(-1);
-  const rootRef = (0, import_react2.useRef)(null);
-  const searchRef = (0, import_react2.useRef)(null);
-  (0, import_react2.useEffect)(() => {
+  const [open, setOpen] = (0, import_react4.useState)(false);
+  const [query, setQuery] = (0, import_react4.useState)("");
+  const [active, setActive2] = (0, import_react4.useState)(-1);
+  const rootRef = (0, import_react4.useRef)(null);
+  const searchRef = (0, import_react4.useRef)(null);
+  const { refs, floatingStyles } = useFloating2({
+    open,
+    onOpenChange: setOpen,
+    placement: placement === "up" ? "top-start" : "bottom-start",
+    middleware: [
+      offset3(4),
+      flip3(),
+      shift3({ padding: 8 }),
+      size3({
+        apply({ elements, rects, availableHeight }) {
+          Object.assign(elements.floating.style, {
+            width: `${rects.reference.width}px`,
+            maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`
+          });
+        }
+      })
+    ],
+    whileElementsMounted: autoUpdate,
+    strategy: "fixed"
+  });
+  (0, import_react4.useEffect)(() => {
     if (open && props.searchable === true)
       searchRef.current?.focus();
   }, [open, props.searchable]);
-  (0, import_react2.useEffect)(() => {
+  (0, import_react4.useEffect)(() => {
     if (!open)
       return;
     const onDown = (e) => {
       const root = rootRef.current;
-      if (root !== null && !root.contains(e.target))
-        setOpen(false);
+      const floatingEl = refs.floating.current;
+      if (root !== null && root.contains(e.target))
+        return;
+      if (floatingEl !== null && floatingEl.contains(e.target))
+        return;
+      setOpen(false);
     };
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
-  (0, import_react2.useEffect)(() => {
+  (0, import_react4.useEffect)(() => {
     if (open)
       return;
     setQuery("");
@@ -601,30 +3104,31 @@ function Picker(props) {
         pick2(hit.value);
     }
   };
-  const trigger = (0, import_react2.createElement)(
+  const trigger = (0, import_react4.createElement)(
     "button",
     {
       type: "button",
       "aria-label": props.ariaLabel,
       "aria-expanded": open,
-      className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === "center" ? " dshpc-picker__trigger--center" : ""}`,
+      ref: refs.setReference,
+      className: `dshpc-picker__trigger dshpc-picker__trigger--${size4}${props.align === "center" ? " dshpc-picker__trigger--center" : ""}`,
       disabled: props.disabled === true,
       onClick: () => {
         if (props.disabled !== true)
           setOpen(!open);
       }
     },
-    props.icon !== void 0 && props.icon !== null ? (0, import_react2.createElement)("span", { className: "dshpc-picker__icon" }, props.icon) : null,
+    props.icon !== void 0 && props.icon !== null ? (0, import_react4.createElement)("span", { className: "dshpc-picker__icon" }, props.icon) : null,
     // 文字吃掉剩余宽度并靠左（默认）：否则 space-between 会把短文案推到中间
-    (0, import_react2.createElement)("span", { className: "dshpc-picker__label" }, summary),
-    (0, import_react2.createElement)("svg", {
+    (0, import_react4.createElement)("span", { className: "dshpc-picker__label" }, summary),
+    (0, import_react4.createElement)("svg", {
       className: "dshpc-picker__caret",
       width: 12,
       height: 12,
       viewBox: "0 0 16 16",
       fill: "none",
       "aria-hidden": true
-    }, (0, import_react2.createElement)("path", {
+    }, (0, import_react4.createElement)("path", {
       d: "M4 6l4 4 4-4",
       stroke: "currentColor",
       "stroke-width": 1.5,
@@ -632,26 +3136,28 @@ function Picker(props) {
       "stroke-linejoin": "round"
     }))
   );
-  const triggerRow = props.hint === void 0 ? trigger : (0, import_react2.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react2.createElement)(FieldHint, { text: props.hint }));
-  return (0, import_react2.createElement)("div", {
+  const triggerRow = props.hint === void 0 ? trigger : (0, import_react4.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react4.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react4.createElement)("div", {
     className: `dshpc-picker${props.className === void 0 ? "" : ` ${props.className}`}`,
     ref: rootRef,
     onKeyDown
-  }, triggerRow, open ? (0, import_react2.createElement)("div", {
-    className: placement === "up" ? "dshpc-picker__menu dshpc-picker__menu--up" : "dshpc-picker__menu"
-  }, props.degraded === true ? (0, import_react2.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react2.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react2.createElement)("input", {
+  }, triggerRow, open ? (0, import_react4.createElement)(FloatingPortal, null, (0, import_react4.createElement)("div", {
+    className: "dshpc-picker__menu",
+    ref: refs.setFloating,
+    style: floatingStyles
+  }, props.degraded === true ? (0, import_react4.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react4.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react4.createElement)("input", {
     ref: searchRef,
     className: "dshpc-picker__search",
     placeholder: tt("pickerSearch"),
     value: query,
     onChange: (e) => setQuery(e.target.value)
-  }) : null, flat.length === 0 && groups.length === 0 ? (0, import_react2.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerEmpty")) : flat.length === 0 ? (0, import_react2.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerNoMatch")) : [
-    clearable && mode === "single" && selected.length > 0 ? (0, import_react2.createElement)("div", {
+  }) : null, flat.length === 0 && groups.length === 0 ? (0, import_react4.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerEmpty")) : flat.length === 0 ? (0, import_react4.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerNoMatch")) : [
+    clearable && mode === "single" && selected.length > 0 ? (0, import_react4.createElement)("div", {
       key: "__clear__",
       className: "dshpc-picker__option dshpc-picker__option--clear",
       onClick: clear
     }, tt("pickerClear")) : null,
-    ...shown.map((g) => (0, import_react2.createElement)("div", { key: g.value || "_" }, g.label === "" ? null : (0, import_react2.createElement)("div", { className: "dshpc-picker__group-label" }, g.label), g.options.map((o) => {
+    ...shown.map((g) => (0, import_react4.createElement)("div", { key: g.value || "_" }, g.label === "" ? null : (0, import_react4.createElement)("div", { className: "dshpc-picker__group-label" }, g.label), g.options.map((o) => {
       const blocked = o.disabled === true || atMax && !selected.includes(o.value);
       const activeCls = [
         "dshpc-picker__option",
@@ -659,7 +3165,7 @@ function Picker(props) {
         blocked ? "dshpc-picker__option--disabled" : ""
       ].filter((s) => s !== "").join(" ");
       const idx = flat.indexOf(o);
-      return (0, import_react2.createElement)("div", {
+      return (0, import_react4.createElement)("div", {
         key: o.value,
         className: activeCls,
         "data-active": idx === active ? "true" : void 0,
@@ -667,9 +3173,9 @@ function Picker(props) {
           if (!blocked)
             pick2(o.value);
         }
-      }, mode === "multiple" ? (0, import_react2.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null, o.icon !== void 0 && o.icon !== null ? (0, import_react2.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null, (0, import_react2.createElement)("span", null, o.label));
+      }, mode === "multiple" ? (0, import_react4.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null, o.icon !== void 0 && o.icon !== null ? (0, import_react4.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null, (0, import_react4.createElement)("span", null, o.label));
     })))
-  ]) : null);
+  ])) : null);
 }
 function toArray(v) {
   if (v === void 0)
@@ -678,7 +3184,7 @@ function toArray(v) {
 }
 
 // dist/ui/ModelPicker.js
-var import_react4 = require("react");
+var import_react7 = require("react");
 
 // dist/ui/host-data.js
 var ModelCatalogStore = class {
@@ -757,12 +3263,12 @@ function connectHost(ctx, options = {}) {
 }
 
 // dist/ui/picker-icons.js
-var import_react3 = require("react");
+var import_react6 = require("react");
 function glyph(path) {
-  return (0, import_react3.createElement)("svg", { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, path);
+  return (0, import_react6.createElement)("svg", { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, path);
 }
 function folderIcon() {
-  return glyph((0, import_react3.createElement)("path", {
+  return glyph((0, import_react6.createElement)("path", {
     d: "M2 4.5A1.5 1.5 0 0 1 3.5 3h2.6l1.2 1.5h5.2A1.5 1.5 0 0 1 14 6v5.5A1.5 1.5 0 0 1 12.5 13h-9A1.5 1.5 0 0 1 2 11.5z",
     stroke: "currentColor",
     "stroke-width": 1.3,
@@ -770,7 +3276,7 @@ function folderIcon() {
   }));
 }
 function sparkleIcon() {
-  return glyph((0, import_react3.createElement)("path", {
+  return glyph((0, import_react6.createElement)("path", {
     d: "M8 1.8l1.6 4.1 4.1 1.6-4.1 1.6L8 13.2 6.4 9.1 2.3 7.5l4.1-1.6z",
     stroke: "currentColor",
     "stroke-width": 1.2,
@@ -786,7 +3292,7 @@ function ModelPicker(props) {
   const variant = props.variant ?? "grouped";
   const searchable = props.searchable ?? true;
   const defaultOption = props.allowDefault === false ? void 0 : { value: "", label: props.defaultLabel ?? tt("modelDefault") };
-  const catalog = (0, import_react4.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot);
+  const catalog = (0, import_react7.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot);
   const groups = props.groups ?? (catalog.status === "ready" ? catalog.routes.map((route) => ({
     value: route.provider,
     label: route.displayName,
@@ -800,15 +3306,15 @@ function ModelPicker(props) {
   const emitModel = (v) => {
     props.onChange?.(typeof v === "string" ? v : v[0] ?? "");
   };
-  const [pickedProvider, setPickedProvider] = (0, import_react4.useState)("");
+  const [pickedProvider, setPickedProvider] = (0, import_react7.useState)("");
   const curGroup = groupOf(groups, value ?? "");
   const provider = pickedProvider !== "" && groups.some((g) => g.value === pickedProvider) ? pickedProvider : curGroup?.value ?? "";
-  (0, import_react4.useEffect)(() => {
+  (0, import_react7.useEffect)(() => {
     if (value !== void 0 && value !== "")
       setPickedProvider("");
   }, [value]);
   if (variant === "grouped") {
-    return (0, import_react4.createElement)(Picker, {
+    return (0, import_react7.createElement)(Picker, {
       // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
       groups: defaultOption === void 0 ? groups : [{ value: "", label: "", options: [defaultOption] }, ...groups],
       value,
@@ -828,7 +3334,7 @@ function ModelPicker(props) {
   }
   const group = groups.find((g) => g.value === provider);
   const options = group === void 0 ? [] : flattenOptions([group]);
-  return (0, import_react4.createElement)("div", { className: "dshpc-picker__row" }, (0, import_react4.createElement)(Picker, {
+  return (0, import_react7.createElement)("div", { className: "dshpc-picker__row" }, (0, import_react7.createElement)(Picker, {
     options: groups.map((g) => ({ value: g.value, label: g.label })),
     value: provider === "" ? void 0 : provider,
     placeholder: tt("modelProvider"),
@@ -839,7 +3345,7 @@ function ModelPicker(props) {
       setPickedProvider(typeof v === "string" ? v : v[0] ?? "");
       props.onChange?.("");
     }
-  }), (0, import_react4.createElement)(Picker, {
+  }), (0, import_react7.createElement)(Picker, {
     options: defaultOption === void 0 ? options : [defaultOption, ...options],
     value,
     defaultValue: props.defaultValue,
@@ -858,14 +3364,14 @@ function ModelPicker(props) {
 }
 
 // dist/ui/WorkspacePicker.js
-var import_react5 = require("react");
+var import_react8 = require("react");
 function WorkspacePicker(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const items = (0, import_react5.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const items = (0, import_react8.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const options = items.map((w) => ({ value: w.workspaceId, label: w.title }));
   const allOption = props.allowDefault !== false && props.mode !== "multiple" ? { value: "", label: props.defaultLabel ?? tt("workspaceAll") } : void 0;
-  return (0, import_react5.createElement)(Picker, {
+  return (0, import_react8.createElement)(Picker, {
     options: allOption === void 0 ? options : [allOption, ...options],
     value: props.value,
     defaultValue: props.defaultValue,
@@ -885,13 +3391,13 @@ function WorkspacePicker(props) {
 }
 
 // dist/ui/Modal.js
-var import_react6 = require("react");
+var import_react9 = require("react");
 function Modal(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const closeOnMask = props.closeOnMask !== false;
   const escClose = props.escClose !== false;
-  (0, import_react6.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     if (!escClose || props.onClose === void 0)
       return;
     const onKey = (e) => {
@@ -909,13 +3415,13 @@ function Modal(props) {
   const s = sizeStyle[props.size ?? "md"];
   const showClose = props.closable !== false && props.onClose !== void 0;
   const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
-  return (0, import_react6.createElement)("div", {
+  return (0, import_react9.createElement)("div", {
     className: "dshpc-modal-mask",
     onClick: () => {
       if (closeOnMask)
         props.onClose?.();
     }
-  }, (0, import_react6.createElement)("div", {
+  }, (0, import_react9.createElement)("div", {
     className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}`,
     style: {
       width: props.width ?? s.width,
@@ -924,19 +3430,19 @@ function Modal(props) {
       height: props.height ?? s.height
     },
     onClick: (e) => e.stopPropagation()
-  }, showHeader ? (0, import_react6.createElement)("div", { className: "dshpc-modal__head" }, (0, import_react6.createElement)("div", { className: "dshpc-modal__heading" }, props.icon === void 0 ? null : (0, import_react6.createElement)("span", { className: "dshpc-modal__lead" }, props.icon), (0, import_react6.createElement)("div", { className: "dshpc-modal__title" }, props.title ?? ""), props.headerExtra === void 0 ? null : (0, import_react6.createElement)("div", { className: "dshpc-modal__extra" }, props.headerExtra)), (0, import_react6.createElement)("div", { className: "dshpc-modal__spacer" }), props.headerActions === void 0 ? null : (0, import_react6.createElement)("div", { className: "dshpc-modal__actions" }, props.headerActions), showClose ? (0, import_react6.createElement)("button", {
+  }, showHeader ? (0, import_react9.createElement)("div", { className: "dshpc-modal__head" }, (0, import_react9.createElement)("div", { className: "dshpc-modal__heading" }, props.icon === void 0 ? null : (0, import_react9.createElement)("span", { className: "dshpc-modal__lead" }, props.icon), (0, import_react9.createElement)("div", { className: "dshpc-modal__title" }, props.title ?? ""), props.headerExtra === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__extra" }, props.headerExtra)), (0, import_react9.createElement)("div", { className: "dshpc-modal__spacer" }), props.headerActions === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__actions" }, props.headerActions), showClose ? (0, import_react9.createElement)("button", {
     type: "button",
     className: "dshpc-modal__close",
     "aria-label": tt("modalClose"),
     onClick: () => props.onClose?.()
-  }, "\u2715") : null) : null, (0, import_react6.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react6.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)));
+  }, "\u2715") : null) : null, (0, import_react9.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)));
 }
 
 // dist/ui/AlertModal.js
-var import_react8 = require("react");
+var import_react11 = require("react");
 
 // dist/ui/Button.js
-var import_react7 = require("react");
+var import_react10 = require("react");
 var SOLID_VARIANTS = ["primary", "secondary", "danger", "success", "warning", "info"];
 function colorVars(variant, color) {
   if (color === void 0 || color === "")
@@ -957,26 +3463,26 @@ function colorVars(variant, color) {
     "--btn-bg-active": `color-mix(in srgb, ${color} 18%, transparent)`
   };
 }
-function buttonClass(variant, size, block2, hasIcon, extra) {
-  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}${block2 ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
+function buttonClass(variant, size4, block2, hasIcon, extra) {
+  return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size4}${block2 ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
 }
 function Button(props) {
   ensureControls();
-  const { variant = "outline", size = "lg", icon, iconRight, color, loading = false, block: block2 = false, className: className2, style: style2, children, ...rest } = props;
+  const { variant = "outline", size: size4 = "lg", icon, iconRight, color, loading = false, block: block2 = false, className: className2, style: style2, children, ...rest } = props;
   const attrs2 = {
     ...rest,
     type: rest.type ?? "button",
     disabled: rest.disabled === true || loading,
-    className: buttonClass(variant, size, block2, icon !== void 0 && icon !== null && !loading, className2),
+    className: buttonClass(variant, size4, block2, icon !== void 0 && icon !== null && !loading, className2),
     style: { ...colorVars(variant, color), ...style2 }
   };
-  return (0, import_react7.createElement)("button", attrs2, loading ? (0, import_react7.createElement)("svg", {
+  return (0, import_react10.createElement)("button", attrs2, loading ? (0, import_react10.createElement)("svg", {
     className: "dshpc-btn__spinner",
     viewBox: "0 0 12 12",
     width: 12,
     height: 12,
     "aria-hidden": true
-  }, (0, import_react7.createElement)("circle", {
+  }, (0, import_react10.createElement)("circle", {
     cx: 6,
     cy: 6,
     r: 4.75,
@@ -986,20 +3492,20 @@ function Button(props) {
     strokeLinecap: "round",
     // 周长 ≈ 29.85，画 22 的弧 + 足够长的空缺 ⇒ 一个约 270° 的开口环
     strokeDasharray: "22 30"
-  })) : icon !== void 0 && icon !== null ? (0, import_react7.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null, children, iconRight !== void 0 && iconRight !== null ? (0, import_react7.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
+  })) : icon !== void 0 && icon !== null ? (0, import_react10.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null, children, iconRight !== void 0 && iconRight !== null ? (0, import_react10.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
 }
 function IconButton(props) {
   ensureControls();
-  const { variant = "plain", size = "lg", icon, label, className: className2, style: style2, ...rest } = props;
+  const { variant = "plain", size: size4 = "lg", icon, label, className: className2, style: style2, ...rest } = props;
   const attrs2 = {
     ...rest,
     type: rest.type ?? "button",
     title: rest.title ?? label,
     "aria-label": rest["aria-label"] ?? label,
-    className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
+    className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size4}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: style2
   };
-  return (0, import_react7.createElement)("button", attrs2, icon);
+  return (0, import_react10.createElement)("button", attrs2, icon);
 }
 
 // dist/ui/AlertModal.js
@@ -1012,37 +3518,37 @@ var SEVERITY_GLYPH = {
 function AlertModal(props) {
   const tt = props.translate ?? t;
   const severity = props.severity ?? "info";
-  return (0, import_react8.createElement)(Modal, {
-    icon: (0, import_react8.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
+  return (0, import_react11.createElement)(Modal, {
+    icon: (0, import_react11.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
     closeOnMask: props.closeOnMask,
     onClose: props.onConfirm,
-    footer: (0, import_react8.createElement)(Button, { variant: "primary", onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
+    footer: (0, import_react11.createElement)(Button, { variant: "primary", onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
   }, props.message ?? null);
 }
 
 // dist/ui/ConfirmModal.js
-var import_react9 = require("react");
+var import_react12 = require("react");
 function ConfirmModal(props) {
   const tt = props.translate ?? t;
   const tone = props.tone ?? "primary";
   const confirmVariant = tone === "danger" ? "danger" : tone === "warning" ? "warning" : "primary";
-  return (0, import_react9.createElement)(Modal, {
+  return (0, import_react12.createElement)(Modal, {
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
     closeOnMask: props.closeOnMask,
     onClose: props.onCancel,
-    footer: (0, import_react9.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react9.createElement)(Button, { variant: "outline", onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react9.createElement)(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
+    footer: (0, import_react12.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react12.createElement)(Button, { variant: "outline", onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react12.createElement)(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
   }, props.message ?? null);
 }
 
 // dist/ui/modal-host.js
-var import_react10 = require("react");
+var import_react13 = require("react");
 var import_client = require("react-dom/client");
 var hostRoot = null;
 var hostContainer = null;
@@ -1071,7 +3577,7 @@ function flush() {
     hostContainer = null;
     return;
   }
-  root.render((0, import_react10.createElement)(import_react10.Fragment, null, entries.map((e) => e.node)));
+  root.render((0, import_react13.createElement)(import_react13.Fragment, null, entries.map((e) => e.node)));
 }
 function dismiss(id3) {
   entries = entries.filter((e) => e.id !== id3);
@@ -1104,7 +3610,7 @@ function confirmModal(opts) {
     };
     entries.push({
       id: id3,
-      node: (0, import_react10.createElement)(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) })
+      node: (0, import_react13.createElement)(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) })
     });
     flush();
   });
@@ -1128,13 +3634,13 @@ function alertModal(opts) {
       dismiss(id3);
       resolve();
     };
-    entries.push({ id: id3, node: (0, import_react10.createElement)(AlertModal, { ...core, onConfirm: close }) });
+    entries.push({ id: id3, node: (0, import_react13.createElement)(AlertModal, { ...core, onConfirm: close }) });
     flush();
   });
 }
 
 // dist/ui/Card.js
-var import_react11 = require("react");
+var import_react14 = require("react");
 var CARD_ACCENTS = ["business", "success", "warning", "danger", "neutral"];
 function CardShell(kind, props) {
   ensureControls();
@@ -1148,20 +3654,20 @@ function CardShell(kind, props) {
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
   const style2 = isPreset ? props.style : { ...props.style, ["--card-accent"]: accent };
-  return (0, import_react11.createElement)("div", { className: classes, style: style2 }, (0, import_react11.createElement)(
+  return (0, import_react14.createElement)("div", { className: classes, style: style2 }, (0, import_react14.createElement)(
     "div",
     { className: "dshpc-card__head" },
     // 色条是头部第一个子元素：strip 外观 = 绝对定位 4px 通高贴左缘；bordered 外观 = 行内 6px 圆角短条（高度跟随内容，最小一行，左移 3px）。
-    (0, import_react11.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
-    (0, import_react11.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null),
-    props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react11.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react11.createElement)("button", {
+    (0, import_react14.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
+    (0, import_react14.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null),
+    props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react14.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react14.createElement)("button", {
       type: "button",
       className: "dshpc-card__toggle",
       "aria-label": tt("cardToggle"),
       "aria-expanded": props.expanded === true,
       onClick: props.onToggle
-    }, (0, import_react11.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, "\u25BE")))
-  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react11.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
+    }, (0, import_react14.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, "\u25BE")))
+  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react14.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
 }
 function Card(props) {
   return CardShell("bordered", props);
@@ -1171,26 +3677,26 @@ function StripCard(props) {
 }
 
 // dist/ui/Chip.js
-var import_react12 = require("react");
+var import_react15 = require("react");
 function Chip(props) {
   ensureControls();
   const clickable = props.onClick !== void 0;
   const tone = props.tone ?? "neutral";
-  const size = props.size ?? "sm";
-  return (0, import_react12.createElement)(clickable ? "button" : "span", {
+  const size4 = props.size ?? "sm";
+  return (0, import_react15.createElement)(clickable ? "button" : "span", {
     type: clickable ? "button" : void 0,
-    className: `dshpc-chip${tone !== "neutral" ? ` dshpc-chip--${tone}` : ""}${size !== "sm" ? ` dshpc-chip--${size}` : ""}${clickable ? " dshpc-chip--clickable" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`,
+    className: `dshpc-chip${tone !== "neutral" ? ` dshpc-chip--${tone}` : ""}${size4 !== "sm" ? ` dshpc-chip--${size4}` : ""}${clickable ? " dshpc-chip--clickable" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`,
     onClick: props.onClick
   }, props.children ?? null);
 }
 
 // dist/ui/Toast.js
-var import_react14 = require("react");
+var import_react17 = require("react");
 var import_client2 = require("react-dom/client");
 
 // node_modules/.pnpm/sonner@2.0.8_@types+react@18.3.31_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/sonner/dist/index.mjs
-var import_react13 = __toESM(require("react"), 1);
-var import_react_dom = __toESM(require("react-dom"), 1);
+var import_react16 = __toESM(require("react"), 1);
+var import_react_dom3 = __toESM(require("react-dom"), 1);
 function __insertCSS(code3) {
   if (!code3 || typeof document == "undefined") return;
   let head = document.head || document.getElementsByTagName("head")[0];
@@ -1215,68 +3721,68 @@ var getAsset = (type3) => {
 };
 var bars = Array(12).fill(0);
 var Loader = ({ visible, className: className2 }) => {
-  return /* @__PURE__ */ import_react13.default.createElement("div", {
+  return /* @__PURE__ */ import_react16.default.createElement("div", {
     className: [
       "sonner-loading-wrapper",
       className2
     ].filter(Boolean).join(" "),
     "data-visible": visible
-  }, /* @__PURE__ */ import_react13.default.createElement("div", {
+  }, /* @__PURE__ */ import_react16.default.createElement("div", {
     className: "sonner-spinner"
-  }, bars.map((_, i2) => /* @__PURE__ */ import_react13.default.createElement("div", {
+  }, bars.map((_, i2) => /* @__PURE__ */ import_react16.default.createElement("div", {
     className: "sonner-loading-bar",
     key: `spinner-bar-${i2}`
   }))));
 };
-var SuccessIcon = /* @__PURE__ */ import_react13.default.createElement("svg", {
+var SuccessIcon = /* @__PURE__ */ import_react16.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react13.default.createElement("path", {
+}, /* @__PURE__ */ import_react16.default.createElement("path", {
   fillRule: "evenodd",
   d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z",
   clipRule: "evenodd"
 }));
-var WarningIcon = /* @__PURE__ */ import_react13.default.createElement("svg", {
+var WarningIcon = /* @__PURE__ */ import_react16.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react13.default.createElement("path", {
+}, /* @__PURE__ */ import_react16.default.createElement("path", {
   fillRule: "evenodd",
   d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z",
   clipRule: "evenodd"
 }));
-var InfoIcon = /* @__PURE__ */ import_react13.default.createElement("svg", {
+var InfoIcon = /* @__PURE__ */ import_react16.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react13.default.createElement("path", {
+}, /* @__PURE__ */ import_react16.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z",
   clipRule: "evenodd"
 }));
-var ErrorIcon = /* @__PURE__ */ import_react13.default.createElement("svg", {
+var ErrorIcon = /* @__PURE__ */ import_react16.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react13.default.createElement("path", {
+}, /* @__PURE__ */ import_react16.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z",
   clipRule: "evenodd"
 }));
-var CloseIcon = /* @__PURE__ */ import_react13.default.createElement("svg", {
+var CloseIcon = /* @__PURE__ */ import_react16.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "12",
   height: "12",
@@ -1287,20 +3793,20 @@ var CloseIcon = /* @__PURE__ */ import_react13.default.createElement("svg", {
   strokeLinecap: "round",
   strokeLinejoin: "round",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react13.default.createElement("line", {
+}, /* @__PURE__ */ import_react16.default.createElement("line", {
   x1: "18",
   y1: "6",
   x2: "6",
   y2: "18"
-}), /* @__PURE__ */ import_react13.default.createElement("line", {
+}), /* @__PURE__ */ import_react16.default.createElement("line", {
   x1: "6",
   y1: "6",
   x2: "18",
   y2: "18"
 }));
 var useIsDocumentHidden = () => {
-  const [isDocumentHidden, setIsDocumentHidden] = import_react13.default.useState(document.hidden);
-  import_react13.default.useEffect(() => {
+  const [isDocumentHidden, setIsDocumentHidden] = import_react16.default.useState(document.hidden);
+  import_react16.default.useEffect(() => {
     const callback = () => {
       setIsDocumentHidden(document.hidden);
     };
@@ -1321,8 +3827,8 @@ var Observer = class {
       this.subscribers.push(subscriber);
       this.getActiveToasts().forEach((toast2) => subscriber(toast2));
       return () => {
-        const index = this.subscribers.indexOf(subscriber);
-        this.subscribers.splice(index, 1);
+        const index3 = this.subscribers.indexOf(subscriber);
+        this.subscribers.splice(index3, 1);
       };
     };
     this.publish = (data2) => {
@@ -1484,7 +3990,7 @@ var Observer = class {
           "resolve",
           response
         ];
-        const isReactElementResponse = import_react13.default.isValidElement(response);
+        const isReactElementResponse = import_react16.default.isValidElement(response);
         if (isReactElementResponse) {
           shouldDismiss = false;
           this.create({
@@ -1496,7 +4002,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(`HTTP error! status: ${response.status}`) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(`HTTP error! status: ${response.status}`) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react13.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react16.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -1510,7 +4016,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(response) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react13.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react16.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -1524,7 +4030,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.success === "function" ? await data2.success(response) : data2.success;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react13.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react16.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -1544,7 +4050,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(error) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(error) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react13.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react16.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -1573,11 +4079,11 @@ var Observer = class {
         });
       }
     };
-    this.custom = (jsx2, data2) => {
+    this.custom = (jsx3, data2) => {
       const id3 = getToastId(data2);
       this.create({
         ...data2,
-        jsx: jsx2(id3),
+        jsx: jsx3(id3),
         id: id3,
         type: void 0
       });
@@ -1644,47 +4150,47 @@ function getDefaultSwipeDirections(position) {
 }
 var Toast = (props) => {
   var _toast_classNames, _toast_classNames1, _toast_classNames2, _toast_classNames3, _toast_classNames4, _toast_classNames5, _toast_classNames6, _toast_classNames7, _toast_classNames8;
-  const { invert: ToasterInvert, toast: toast2, unstyled, interacting, setHeights, visibleToasts, heights, index, toasts, expanded, removeToast, defaultRichColors, closeButton: closeButtonFromToaster, style: style2, cancelButtonStyle, actionButtonStyle, className: className2 = "", descriptionClassName = "", duration: durationFromToaster, position, gap, expandByDefault, classNames, icons, closeButtonAriaLabel = "Close toast" } = props;
-  const [swipeDirection, setSwipeDirection] = import_react13.default.useState(null);
-  const [swipeOutDirection, setSwipeOutDirection] = import_react13.default.useState(null);
-  const [mounted, setMounted] = import_react13.default.useState(false);
-  const [removed, setRemoved] = import_react13.default.useState(false);
-  const [swiping, setSwiping] = import_react13.default.useState(false);
-  const [swipeOut, setSwipeOut] = import_react13.default.useState(false);
-  const [isSwiped, setIsSwiped] = import_react13.default.useState(false);
-  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react13.default.useState(0);
-  const [initialHeight, setInitialHeight] = import_react13.default.useState(0);
-  const remainingTime = import_react13.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
-  const dragStartTime = import_react13.default.useRef(null);
-  const toastRef = import_react13.default.useRef(null);
-  const isFront = index === 0;
-  const isVisible = index + 1 <= visibleToasts;
+  const { invert: ToasterInvert, toast: toast2, unstyled, interacting, setHeights, visibleToasts, heights, index: index3, toasts, expanded, removeToast, defaultRichColors, closeButton: closeButtonFromToaster, style: style2, cancelButtonStyle, actionButtonStyle, className: className2 = "", descriptionClassName = "", duration: durationFromToaster, position, gap, expandByDefault, classNames, icons, closeButtonAriaLabel = "Close toast" } = props;
+  const [swipeDirection, setSwipeDirection] = import_react16.default.useState(null);
+  const [swipeOutDirection, setSwipeOutDirection] = import_react16.default.useState(null);
+  const [mounted, setMounted] = import_react16.default.useState(false);
+  const [removed, setRemoved] = import_react16.default.useState(false);
+  const [swiping, setSwiping] = import_react16.default.useState(false);
+  const [swipeOut, setSwipeOut] = import_react16.default.useState(false);
+  const [isSwiped, setIsSwiped] = import_react16.default.useState(false);
+  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react16.default.useState(0);
+  const [initialHeight, setInitialHeight] = import_react16.default.useState(0);
+  const remainingTime = import_react16.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
+  const dragStartTime = import_react16.default.useRef(null);
+  const toastRef = import_react16.default.useRef(null);
+  const isFront = index3 === 0;
+  const isVisible = index3 + 1 <= visibleToasts;
   const toastType = toast2.type;
   const toastTypeKey = toastType != null ? toastType : "default";
   const dismissible = toast2.dismissible !== false;
   const toastClassname = toast2.className || "";
   const toastDescriptionClassname = toast2.descriptionClassName || "";
-  const heightIndex = import_react13.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
+  const heightIndex = import_react16.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
     heights,
     toast2.id
   ]);
-  const closeButton = import_react13.default.useMemo(() => {
+  const closeButton = import_react16.default.useMemo(() => {
     var _toast_closeButton;
     return (_toast_closeButton = toast2.closeButton) != null ? _toast_closeButton : closeButtonFromToaster;
   }, [
     toast2.closeButton,
     closeButtonFromToaster
   ]);
-  const duration = import_react13.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
+  const duration = import_react16.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
     toast2.duration,
     durationFromToaster
   ]);
-  const closeTimerStartTimeRef = import_react13.default.useRef(0);
-  const offset = import_react13.default.useRef(0);
-  const lastCloseTimerStartTimeRef = import_react13.default.useRef(0);
-  const pointerStartRef = import_react13.default.useRef(null);
+  const closeTimerStartTimeRef = import_react16.default.useRef(0);
+  const offset4 = import_react16.default.useRef(0);
+  const lastCloseTimerStartTimeRef = import_react16.default.useRef(0);
+  const pointerStartRef = import_react16.default.useRef(null);
   const [y, x] = position.split("-");
-  const toastsHeightBefore = import_react13.default.useMemo(() => {
+  const toastsHeightBefore = import_react16.default.useMemo(() => {
     return heights.reduce((prev, curr, reducerIndex) => {
       if (reducerIndex >= heightIndex) {
         return prev;
@@ -1696,7 +4202,7 @@ var Toast = (props) => {
     heightIndex
   ]);
   const isDocumentHidden = useIsDocumentHidden();
-  const swipeDirections = import_react13.default.useMemo(() => {
+  const swipeDirections = import_react16.default.useMemo(() => {
     var _props_swipeDirections;
     return (_props_swipeDirections = props.swipeDirections) != null ? _props_swipeDirections : getDefaultSwipeDirections(position);
   }, [
@@ -1705,19 +4211,19 @@ var Toast = (props) => {
   ]);
   const invert = toast2.invert || ToasterInvert;
   const disabled = toastType === "loading";
-  offset.current = import_react13.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
+  offset4.current = import_react16.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
     heightIndex,
     toastsHeightBefore
   ]);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     remainingTime.current = duration;
   }, [
     duration
   ]);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     setMounted(true);
   }, []);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     const toastNode = toastRef.current;
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
@@ -1736,7 +4242,7 @@ var Toast = (props) => {
     setHeights,
     toast2.id
   ]);
-  import_react13.default.useLayoutEffect(() => {
+  import_react16.default.useLayoutEffect(() => {
     if (!mounted) return;
     const toastNode = toastRef.current;
     const originalHeight = toastNode.style.height;
@@ -1772,9 +4278,9 @@ var Toast = (props) => {
     toast2.action,
     toast2.cancel
   ]);
-  const deleteToast = import_react13.default.useCallback(() => {
+  const deleteToast = import_react16.default.useCallback(() => {
     setRemoved(true);
-    setOffsetBeforeRemove(offset.current);
+    setOffsetBeforeRemove(offset4.current);
     setHeights((h44) => h44.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
@@ -1783,9 +4289,9 @@ var Toast = (props) => {
     toast2,
     removeToast,
     setHeights,
-    offset
+    offset4
   ]);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     if (toast2.promise && toastType === "loading" || toast2.duration === Infinity || toast2.type === "loading") return;
     let timeoutId;
     const pauseTimer = () => {
@@ -1817,7 +4323,7 @@ var Toast = (props) => {
     isDocumentHidden,
     deleteToast
   ]);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     if (toast2.delete) {
       deleteToast();
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
@@ -1830,19 +4336,19 @@ var Toast = (props) => {
     var _toast_classNames9;
     if (icons == null ? void 0 : icons.loading) {
       var _toast_classNames12;
-      return /* @__PURE__ */ import_react13.default.createElement("div", {
+      return /* @__PURE__ */ import_react16.default.createElement("div", {
         className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames12 = toast2.classNames) == null ? void 0 : _toast_classNames12.loader, "sonner-loader"),
         "data-visible": toastType === "loading"
       }, icons.loading);
     }
-    return /* @__PURE__ */ import_react13.default.createElement(Loader, {
+    return /* @__PURE__ */ import_react16.default.createElement(Loader, {
       className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames9 = toast2.classNames) == null ? void 0 : _toast_classNames9.loader),
       visible: toastType === "loading"
     });
   }
   const icon = toast2.icon || (icons == null ? void 0 : icons[toastType]) || getAsset(toastType);
   var _toast_richColors, _icons_close;
-  return /* @__PURE__ */ import_react13.default.createElement("li", {
+  return /* @__PURE__ */ import_react16.default.createElement("li", {
     tabIndex: 0,
     ref: toastRef,
     className: cn(className2, toastClassname, classNames == null ? void 0 : classNames.toast, toast2 == null ? void 0 : (_toast_classNames = toast2.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames[toastTypeKey], toast2 == null ? void 0 : (_toast_classNames1 = toast2.classNames) == null ? void 0 : _toast_classNames1[toastTypeKey]),
@@ -1856,7 +4362,7 @@ var Toast = (props) => {
     "data-visible": isVisible,
     "data-y-position": y,
     "data-x-position": x,
-    "data-index": index,
+    "data-index": index3,
     "data-front": isFront,
     "data-swiping": swiping,
     "data-dismissible": dismissible,
@@ -1867,10 +4373,10 @@ var Toast = (props) => {
     "data-expanded": Boolean(expanded || expandByDefault && mounted),
     "data-testid": toast2.testId,
     style: {
-      "--index": index,
-      "--toasts-before": index,
-      "--z-index": toasts.length - index,
-      "--offset": `${removed ? offsetBeforeRemove : offset.current}px`,
+      "--index": index3,
+      "--toasts-before": index3,
+      "--z-index": toasts.length - index3,
+      "--offset": `${removed ? offsetBeforeRemove : offset4.current}px`,
       "--initial-height": expandByDefault ? "auto" : `${initialHeight}px`,
       ...style2,
       ...toast2.style
@@ -1884,7 +4390,7 @@ var Toast = (props) => {
       if (event.button === 2) return;
       if (disabled || !dismissible) return;
       dragStartTime.current = /* @__PURE__ */ new Date();
-      setOffsetBeforeRemove(offset.current);
+      setOffsetBeforeRemove(offset4.current);
       event.target.setPointerCapture(event.pointerId);
       if (event.target.tagName === "BUTTON") return;
       setSwiping(true);
@@ -1904,7 +4410,7 @@ var Toast = (props) => {
       const velocity = Math.abs(swipeAmount) / timeTaken;
       const isAllowedDirection = swipeDirection === "x" ? swipeDirections.includes(swipeAmountX > 0 ? "right" : "left") : swipeDirections.includes(swipeAmountY > 0 ? "bottom" : "top");
       if (isAllowedDirection && (Math.abs(swipeAmount) >= SWIPE_THRESHOLD || velocity > 0.11)) {
-        setOffsetBeforeRemove(offset.current);
+        setOffsetBeforeRemove(offset4.current);
         toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
         if (swipeDirection === "x") {
           setSwipeOutDirection(swipeAmountX > 0 ? "right" : "left");
@@ -1966,7 +4472,7 @@ var Toast = (props) => {
       (_toastRef_current = toastRef.current) == null ? void 0 : _toastRef_current.style.setProperty("--swipe-amount-x", `${swipeAmount.x}px`);
       (_toastRef_current1 = toastRef.current) == null ? void 0 : _toastRef_current1.style.setProperty("--swipe-amount-y", `${swipeAmount.y}px`);
     }
-  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react13.default.createElement("button", {
+  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react16.default.createElement("button", {
     "aria-label": closeButtonAriaLabel,
     "data-disabled": disabled,
     "data-close-button": true,
@@ -1976,19 +4482,19 @@ var Toast = (props) => {
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
     },
     className: cn(classNames == null ? void 0 : classNames.closeButton, toast2 == null ? void 0 : (_toast_classNames2 = toast2.classNames) == null ? void 0 : _toast_classNames2.closeButton)
-  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react13.default.createElement("div", {
+  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react16.default.createElement("div", {
     "data-icon": "",
     className: cn(classNames == null ? void 0 : classNames.icon, toast2 == null ? void 0 : (_toast_classNames3 = toast2.classNames) == null ? void 0 : _toast_classNames3.icon)
-  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon : null) : null, /* @__PURE__ */ import_react13.default.createElement("div", {
+  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon : null) : null, /* @__PURE__ */ import_react16.default.createElement("div", {
     "data-content": "",
     className: cn(classNames == null ? void 0 : classNames.content, toast2 == null ? void 0 : (_toast_classNames4 = toast2.classNames) == null ? void 0 : _toast_classNames4.content)
-  }, /* @__PURE__ */ import_react13.default.createElement("div", {
+  }, /* @__PURE__ */ import_react16.default.createElement("div", {
     "data-title": "",
     className: cn(classNames == null ? void 0 : classNames.title, toast2 == null ? void 0 : (_toast_classNames5 = toast2.classNames) == null ? void 0 : _toast_classNames5.title)
-  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react13.default.createElement("div", {
+  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react16.default.createElement("div", {
     "data-description": "",
     className: cn(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast2 == null ? void 0 : (_toast_classNames6 = toast2.classNames) == null ? void 0 : _toast_classNames6.description)
-  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react13.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react13.default.createElement("button", {
+  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react16.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react16.default.createElement("button", {
     "data-button": true,
     "data-cancel": true,
     style: toast2.cancelButtonStyle || cancelButtonStyle,
@@ -1999,7 +4505,7 @@ var Toast = (props) => {
       deleteToast();
     },
     className: cn(classNames == null ? void 0 : classNames.cancelButton, toast2 == null ? void 0 : (_toast_classNames7 = toast2.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
-  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react13.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react13.default.createElement("button", {
+  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react16.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react16.default.createElement("button", {
     "data-button": true,
     "data-action": true,
     style: toast2.actionButtonStyle || actionButtonStyle,
@@ -2026,33 +4532,33 @@ function assignOffset(defaultOffset, mobileOffset) {
   [
     defaultOffset,
     mobileOffset
-  ].forEach((offset, index) => {
-    const isMobile = index === 1;
+  ].forEach((offset4, index3) => {
+    const isMobile = index3 === 1;
     const prefix2 = isMobile ? "--mobile-offset" : "--offset";
     const defaultValue = isMobile ? MOBILE_VIEWPORT_OFFSET : VIEWPORT_OFFSET;
-    function assignAll(offset2) {
+    function assignAll(offset5) {
       [
         "top",
         "right",
         "bottom",
         "left"
       ].forEach((key) => {
-        styles[`${prefix2}-${key}`] = typeof offset2 === "number" ? `${offset2}px` : offset2;
+        styles[`${prefix2}-${key}`] = typeof offset5 === "number" ? `${offset5}px` : offset5;
       });
     }
-    if (typeof offset === "number" || typeof offset === "string") {
-      assignAll(offset);
-    } else if (typeof offset === "object") {
+    if (typeof offset4 === "number" || typeof offset4 === "string") {
+      assignAll(offset4);
+    } else if (typeof offset4 === "object") {
       [
         "top",
         "right",
         "bottom",
         "left"
       ].forEach((key) => {
-        if (offset[key] === void 0) {
+        if (offset4[key] === void 0) {
           styles[`${prefix2}-${key}`] = defaultValue;
         } else {
-          styles[`${prefix2}-${key}`] = typeof offset[key] === "number" ? `${offset[key]}px` : offset[key];
+          styles[`${prefix2}-${key}`] = typeof offset4[key] === "number" ? `${offset4[key]}px` : offset4[key];
         }
       });
     } else {
@@ -2061,13 +4567,13 @@ function assignOffset(defaultOffset, mobileOffset) {
   });
   return styles;
 }
-var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster2(props, ref) {
+var Toaster = /* @__PURE__ */ import_react16.default.forwardRef(function Toaster2(props, ref) {
   const { id: id3, invert, position = "bottom-right", hotkey = [
     "altKey",
     "KeyT"
-  ], expand, closeButton, className: className2, offset, mobileOffset, theme: theme2 = "light", richColors, duration, style: style2, visibleToasts = VISIBLE_TOASTS_AMOUNT, toastOptions, dir = getDocumentDirection(), gap = GAP, icons, customAriaLabel, containerAriaLabel = "Notifications" } = props;
-  const [toasts, setToasts] = import_react13.default.useState([]);
-  const filteredToasts = import_react13.default.useMemo(() => {
+  ], expand, closeButton, className: className2, offset: offset4, mobileOffset, theme: theme2 = "light", richColors, duration, style: style2, visibleToasts = VISIBLE_TOASTS_AMOUNT, toastOptions, dir = getDocumentDirection(), gap = GAP, icons, customAriaLabel, containerAriaLabel = "Notifications" } = props;
+  const [toasts, setToasts] = import_react16.default.useState([]);
+  const filteredToasts = import_react16.default.useMemo(() => {
     if (id3) {
       return toasts.filter((toast2) => toast2.toasterId === id3);
     }
@@ -2076,7 +4582,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
     toasts,
     id3
   ]);
-  const possiblePositions = import_react13.default.useMemo(() => {
+  const possiblePositions = import_react16.default.useMemo(() => {
     return Array.from(new Set([
       position
     ].concat(filteredToasts.filter((toast2) => toast2.position).map((toast2) => toast2.position))));
@@ -2084,15 +4590,15 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
     filteredToasts,
     position
   ]);
-  const [heights, setHeights] = import_react13.default.useState([]);
-  const [expanded, setExpanded] = import_react13.default.useState(false);
-  const [interacting, setInteracting] = import_react13.default.useState(false);
-  const [actualTheme, setActualTheme] = import_react13.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
-  const listRef = import_react13.default.useRef(null);
+  const [heights, setHeights] = import_react16.default.useState([]);
+  const [expanded, setExpanded] = import_react16.default.useState(false);
+  const [interacting, setInteracting] = import_react16.default.useState(false);
+  const [actualTheme, setActualTheme] = import_react16.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
+  const listRef = import_react16.default.useRef(null);
   const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "");
-  const lastFocusedElementRef = import_react13.default.useRef(null);
-  const isFocusWithinRef = import_react13.default.useRef(false);
-  const removeToast = import_react13.default.useCallback((toastToRemove) => {
+  const lastFocusedElementRef = import_react16.default.useRef(null);
+  const isFocusWithinRef = import_react16.default.useRef(false);
+  const removeToast = import_react16.default.useCallback((toastToRemove) => {
     setToasts((toasts2) => {
       var _toasts_find;
       if (!((_toasts_find = toasts2.find((toast2) => toast2.id === toastToRemove.id)) == null ? void 0 : _toasts_find.delete)) {
@@ -2101,7 +4607,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
       return toasts2.filter(({ id: id4 }) => id4 !== toastToRemove.id);
     });
   }, []);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     return ToastState.subscribe((toast2) => {
       if (toast2.dismiss) {
         requestAnimationFrame(() => {
@@ -2113,7 +4619,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
         return;
       }
       setTimeout(() => {
-        import_react_dom.default.flushSync(() => {
+        import_react_dom3.default.flushSync(() => {
           setToasts((toasts2) => {
             const indexOfExistingToast = toasts2.findIndex((t4) => t4.id === toast2.id);
             if (indexOfExistingToast !== -1) {
@@ -2135,7 +4641,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
       });
     });
   }, []);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     if (theme2 !== "system") {
       setActualTheme(theme2);
       return;
@@ -2150,17 +4656,17 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
     if (typeof window === "undefined") return;
     const darkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     try {
-      darkMediaQuery.addEventListener("change", ({ matches }) => {
-        if (matches) {
+      darkMediaQuery.addEventListener("change", ({ matches: matches2 }) => {
+        if (matches2) {
           setActualTheme("dark");
         } else {
           setActualTheme("light");
         }
       });
     } catch (error) {
-      darkMediaQuery.addListener(({ matches }) => {
+      darkMediaQuery.addListener(({ matches: matches2 }) => {
         try {
-          if (matches) {
+          if (matches2) {
             setActualTheme("dark");
           } else {
             setActualTheme("light");
@@ -2173,14 +4679,14 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
   }, [
     theme2
   ]);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     if (toasts.length <= 1) {
       setExpanded(false);
     }
   }, [
     toasts
   ]);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     const handleKeyDown = (event) => {
       var _listRef_current;
       const isHotkeyPressed = hotkey.length > 0 && hotkey.every((key) => event[key] || event.code === key);
@@ -2198,7 +4704,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
   }, [
     hotkey
   ]);
-  import_react13.default.useEffect(() => {
+  import_react16.default.useEffect(() => {
     if (listRef.current) {
       return () => {
         if (lastFocusedElementRef.current) {
@@ -2215,7 +4721,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
   ]);
   return (
     // Remove item from normal navigation flow, only available via hotkey
-    /* @__PURE__ */ import_react13.default.createElement("section", {
+    /* @__PURE__ */ import_react16.default.createElement("section", {
       ref,
       "aria-label": customAriaLabel != null ? customAriaLabel : `${containerAriaLabel} ${hotkeyLabel}`,
       tabIndex: -1,
@@ -2224,11 +4730,11 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
       "aria-atomic": "false",
       suppressHydrationWarning: true,
       "data-react-aria-top-layer": true
-    }, possiblePositions.map((position2, index) => {
+    }, possiblePositions.map((position2, index3) => {
       var _heights_;
       const [y, x] = position2.split("-");
       if (!filteredToasts.length) return null;
-      return /* @__PURE__ */ import_react13.default.createElement("ol", {
+      return /* @__PURE__ */ import_react16.default.createElement("ol", {
         key: position2,
         dir: dir === "auto" ? getDocumentDirection() : dir,
         tabIndex: -1,
@@ -2243,7 +4749,7 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
           "--width": `${TOAST_WIDTH}px`,
           "--gap": `${gap}px`,
           ...style2,
-          ...assignOffset(offset, mobileOffset)
+          ...assignOffset(offset4, mobileOffset)
         },
         onBlur: (event) => {
           if (isFocusWithinRef.current && !event.currentTarget.contains(event.relatedTarget)) {
@@ -2278,12 +4784,12 @@ var Toaster = /* @__PURE__ */ import_react13.default.forwardRef(function Toaster
           setInteracting(true);
         },
         onPointerUp: () => setInteracting(false)
-      }, filteredToasts.filter((toast2) => !toast2.position && index === 0 || toast2.position === position2).map((toast2, index2) => {
+      }, filteredToasts.filter((toast2) => !toast2.position && index3 === 0 || toast2.position === position2).map((toast2, index4) => {
         var _toastOptions_duration, _toastOptions_closeButton;
-        return /* @__PURE__ */ import_react13.default.createElement(Toast, {
+        return /* @__PURE__ */ import_react16.default.createElement(Toast, {
           key: toast2.id,
           icons,
-          index: index2,
+          index: index4,
           toast: toast2,
           defaultRichColors: richColors,
           duration: (_toastOptions_duration = toastOptions == null ? void 0 : toastOptions.duration) != null ? _toastOptions_duration : duration,
@@ -2348,7 +4854,7 @@ function createToasterHost() {
   function renderToaster() {
     if (root === null)
       return;
-    root.render((0, import_react14.createElement)(Toaster, {
+    root.render((0, import_react17.createElement)(Toaster, {
       theme: currentTheme(),
       position,
       // richColors：success=绿整条 / error=红整条 / warning=黄整条（Sonner 自带）；
@@ -2414,7 +4920,7 @@ function createToasterHost() {
     const palette = notifyPalette(payload.variant, currentTheme());
     const duration = payload.durationMs;
     const actions = payload.actions;
-    const id3 = toast.custom(() => (0, import_react14.createElement)("div", {
+    const id3 = toast.custom(() => (0, import_react17.createElement)("div", {
       style: {
         display: "flex",
         alignItems: "center",
@@ -2430,7 +4936,7 @@ function createToasterHost() {
         fontSize: "14px",
         lineHeight: "20px"
       }
-    }, (0, import_react14.createElement)("span", {
+    }, (0, import_react17.createElement)("span", {
       style: {
         flexShrink: 0,
         width: "20px",
@@ -2443,7 +4949,7 @@ function createToasterHost() {
         fontSize: "13px",
         fontWeight: 700
       }
-    }, palette.glyph), (0, import_react14.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react14.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react14.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react14.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react14.createElement)(Button, {
+    }, palette.glyph), (0, import_react17.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react17.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react17.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react17.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react17.createElement)(Button, {
       variant: a.variant ?? "outline",
       size: "md",
       onClick: () => {
@@ -2517,29 +5023,29 @@ function notify(message, opts) {
 }
 
 // dist/ui/EmptyState.js
-var import_react15 = require("react");
+var import_react18 = require("react");
 function EmptyState(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  return (0, import_react15.createElement)("div", { className: "dshpc-empty" }, props.icon ?? null, (0, import_react15.createElement)("div", null, props.text ?? tt("emptyText")), props.action ?? null);
+  return (0, import_react18.createElement)("div", { className: "dshpc-empty" }, props.icon ?? null, (0, import_react18.createElement)("div", null, props.text ?? tt("emptyText")), props.action ?? null);
 }
 
 // dist/ui/Segmented.js
-var import_react16 = require("react");
+var import_react19 = require("react");
 function Segmented(props) {
   ensureControls();
   ensureControls();
-  const size = props.size ?? "lg";
+  const size4 = props.size ?? "lg";
   const variant = props.variant ?? "default";
   const multiple = props.multiple === true;
   const value = props.value;
   const onChange = props.onChange;
-  return (0, import_react16.createElement)("div", {
+  return (0, import_react19.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
     // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
-    className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size}${props.block === true ? " dshpc-seg--block" : ""}${props.bordered === true ? " dshpc-seg--bordered" : ""}${props.className !== void 0 ? ` ${props.className}` : ""}`,
+    className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size4}${props.block === true ? " dshpc-seg--block" : ""}${props.bordered === true ? " dshpc-seg--bordered" : ""}${props.className !== void 0 ? ` ${props.className}` : ""}`,
     style: props.style
   }, props.items.map((item) => {
     const on = multiple ? value.includes(item.value) : value === item.value;
@@ -2556,7 +5062,7 @@ function Segmented(props) {
         onChange(item.value);
       }
     };
-    return (0, import_react16.createElement)("button", {
+    return (0, import_react19.createElement)("button", {
       key: item.value,
       type: "button",
       className: "dshpc-seg__item",
@@ -2564,16 +5070,16 @@ function Segmented(props) {
       "aria-pressed": on,
       disabled,
       onClick: handle
-    }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react16.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react16.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
+    }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react19.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react19.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
   }));
 }
 
 // dist/ui/Textarea.js
-var import_react17 = require("react");
+var import_react20 = require("react");
 function Textarea(props) {
   ensureControls();
   const { value, onChange, placeholder: placeholder2, error, disabled, id: id3, rows, spellCheck, className: className2, style: style2 } = props;
-  const box = (0, import_react17.createElement)("textarea", {
+  const box = (0, import_react20.createElement)("textarea", {
     id: id3,
     rows,
     value,
@@ -2589,14 +5095,14 @@ function Textarea(props) {
   });
   if (props.hint === void 0)
     return box;
-  return (0, import_react17.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react17.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react20.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react20.createElement)(FieldHint, { text: props.hint }));
 }
 
 // dist/ui/Checkbox.js
-var import_react18 = require("react");
+var import_react21 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className: className2 } = props;
-  return (0, import_react18.createElement)("label", {
+  return (0, import_react21.createElement)("label", {
     className: `dshpc-checkbox${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: {
       display: "flex",
@@ -2606,7 +5112,7 @@ function Checkbox(props) {
       lineHeight: "var(--dshpc-line-md)",
       cursor: disabled === true ? "default" : "pointer"
     }
-  }, (0, import_react18.createElement)("input", {
+  }, (0, import_react21.createElement)("input", {
     type: "checkbox",
     checked,
     disabled,
@@ -2621,23 +5127,23 @@ function Checkbox(props) {
     onChange: (event) => {
       onChange(event.target.checked);
     }
-  }), label !== void 0 ? (0, import_react18.createElement)("span", null, label) : null);
+  }), label !== void 0 ? (0, import_react21.createElement)("span", null, label) : null);
 }
 
 // dist/ui/MarqueeText.js
-var import_react19 = require("react");
+var import_react22 = require("react");
 function MarqueeText(props) {
-  const outerRef = (0, import_react19.useRef)(null);
-  const innerRef = (0, import_react19.useRef)(null);
-  const [dist2, setDist] = (0, import_react19.useState)(0);
-  const measure = (0, import_react19.useCallback)(() => {
+  const outerRef = (0, import_react22.useRef)(null);
+  const innerRef = (0, import_react22.useRef)(null);
+  const [dist2, setDist] = (0, import_react22.useState)(0);
+  const measure = (0, import_react22.useCallback)(() => {
     const outer = outerRef.current;
     const inner = innerRef.current;
     if (outer === null || inner === null)
       return;
     setDist(Math.max(0, Math.ceil(inner.scrollWidth - outer.clientWidth)));
   }, []);
-  (0, import_react19.useLayoutEffect)(() => {
+  (0, import_react22.useLayoutEffect)(() => {
     const outer = outerRef.current;
     if (outer === null)
       return;
@@ -2648,16 +5154,16 @@ function MarqueeText(props) {
       ro.disconnect();
     };
   }, [measure]);
-  (0, import_react19.useEffect)(() => {
+  (0, import_react22.useEffect)(() => {
     measure();
   }, [props.text, measure]);
   const run = dist2 > 0;
-  return (0, import_react19.createElement)("span", {
+  return (0, import_react22.createElement)("span", {
     ref: outerRef,
     className: (run ? "dshpc-mq dshpc-mq-run" : "dshpc-mq") + (props.className === void 0 ? "" : ` ${props.className}`),
     title: props.title,
     style: props.style
-  }, (0, import_react19.createElement)("span", {
+  }, (0, import_react22.createElement)("span", {
     ref: innerRef,
     className: "dshpc-mq-in",
     style: {
@@ -2667,18 +5173,18 @@ function MarqueeText(props) {
 }
 
 // dist/ui/SectionHead.js
-var import_react20 = require("react");
+var import_react23 = require("react");
 function SectionHead(props) {
-  return (0, import_react20.createElement)("div", {
+  return (0, import_react23.createElement)("div", {
     style: { display: "flex", alignItems: "center", gap: "var(--dshpc-space-2)", marginBottom: "var(--dshpc-space-3)" }
-  }, (0, import_react20.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", lineHeight: "var(--dshpc-line-lg)", color: "var(--dshpc-fg-3)" } }, props.icon), (0, import_react20.createElement)("span", { style: { fontSize: "var(--dshpc-font-lg)", lineHeight: "var(--dshpc-line-lg)", fontWeight: 600, color: "var(--dshpc-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react20.createElement)("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--dshpc-space-2)", minWidth: 0 } }, props.right));
+  }, (0, import_react23.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", lineHeight: "var(--dshpc-line-lg)", color: "var(--dshpc-fg-3)" } }, props.icon), (0, import_react23.createElement)("span", { style: { fontSize: "var(--dshpc-font-lg)", lineHeight: "var(--dshpc-line-lg)", fontWeight: 600, color: "var(--dshpc-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react23.createElement)("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--dshpc-space-2)", minWidth: 0 } }, props.right));
 }
 
 // dist/ui/LiveText.js
-var import_react22 = require("react");
+var import_react25 = require("react");
 
 // dist/ui/ticker.js
-var import_react21 = require("react");
+var import_react24 = require("react");
 var tickerListeners = /* @__PURE__ */ new Set();
 var tickerTimer = null;
 var onVisibilityChange = () => {
@@ -2709,11 +5215,11 @@ function subscribeTicker(cb) {
 
 // dist/ui/LiveText.js
 function LiveText(props) {
-  const [, force] = (0, import_react22.useState)(0);
-  const renderRef = (0, import_react22.useRef)(props.render);
+  const [, force] = (0, import_react25.useState)(0);
+  const renderRef = (0, import_react25.useRef)(props.render);
   renderRef.current = props.render;
-  (0, import_react22.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
-  return (0, import_react22.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
+  (0, import_react25.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
+  return (0, import_react25.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
 }
 
 // dist/ui/resizer.js
@@ -2761,17 +5267,17 @@ function startResizeLayoutWidth(opts) {
 }
 
 // dist/ui/PanelDock.js
-var import_react23 = require("react");
+var import_react26 = require("react");
 
 // dist/ui/panel-dock-logic.js
 var DEFAULT_PANEL_ID = "default";
 function emptyDock() {
   return { ids: [], widths: {} };
 }
-function clampWidth(value, min, max) {
-  const wide = Number.isFinite(value) ? value : min;
-  const capped = max === void 0 || !Number.isFinite(max) ? wide : Math.min(wide, max);
-  return Math.max(min, Math.round(capped));
+function clampWidth(value, min2, max2) {
+  const wide = Number.isFinite(value) ? value : min2;
+  const capped = max2 === void 0 || !Number.isFinite(max2) ? wide : Math.min(wide, max2);
+  return Math.max(min2, Math.round(capped));
 }
 function isOpen(state, id3) {
   return state.ids.includes(id3);
@@ -2904,8 +5410,8 @@ function createPanelDock(options = {}) {
 }
 function panesOf(children) {
   const out = [];
-  import_react23.Children.forEach(children, (child) => {
-    if ((0, import_react23.isValidElement)(child) && child.type === DockPanel)
+  import_react26.Children.forEach(children, (child) => {
+    if ((0, import_react26.isValidElement)(child) && child.type === DockPanel)
       out.push(child.props);
   });
   return out;
@@ -2913,9 +5419,9 @@ function panesOf(children) {
 function PanelDock(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const state = (0, import_react23.useSyncExternalStore)(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
-  const rootRef = (0, import_react23.useRef)(null);
-  const panelRefs = (0, import_react23.useRef)(/* @__PURE__ */ new Map());
+  const state = (0, import_react26.useSyncExternalStore)(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
+  const rootRef = (0, import_react26.useRef)(null);
+  const panelRefs = (0, import_react26.useRef)(/* @__PURE__ */ new Map());
   const panes = panesOf(props.children);
   const { defaultWidth, minWidth: fallbackMin } = props.dock.defaults;
   const widthOf = (pane) => state.widths[pane.id] ?? clampWidth(pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth);
@@ -2930,7 +5436,7 @@ function PanelDock(props) {
       return;
     const startX = event.clientX;
     const startWidth = widthOf(pane);
-    const min = pane.minWidth ?? fallbackMin;
+    const min2 = pane.minWidth ?? fallbackMin;
     const mainMin = props.mainMinWidth ?? 480;
     startResizeLayoutWidth({
       startEvent: event,
@@ -2944,8 +5450,8 @@ function PanelDock(props) {
         });
         const viewportMax = window.innerWidth - others2 - mainMin;
         const businessMax = pane.maxWidth ?? Number.POSITIVE_INFINITY;
-        const max = Math.min(viewportMax, businessMax);
-        return clampWidth(startWidth + (startX - clientX), min, Math.max(min, max));
+        const max2 = Math.min(viewportMax, businessMax);
+        return clampWidth(startWidth + (startX - clientX), min2, Math.max(min2, max2));
       },
       onMove: (width) => {
         element.style.width = `${width}px`;
@@ -2961,7 +5467,7 @@ function PanelDock(props) {
     const hasHeader = pane.header !== null;
     if (!closable || !(mode === "header" || mode === "auto" && hasHeader))
       return null;
-    return (0, import_react23.createElement)("button", {
+    return (0, import_react26.createElement)("button", {
       type: "button",
       className: "dshpc-dock__close dshpc-dock__close--abs",
       "aria-label": tt("dockClose"),
@@ -2972,9 +5478,9 @@ function PanelDock(props) {
     if (pane.header === null)
       return null;
     if (pane.header !== void 0) {
-      return (0, import_react23.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, pane.header);
+      return (0, import_react26.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, pane.header);
     }
-    return (0, import_react23.createElement)("div", { className: "dshpc-dock__head" }, pane.icon === void 0 ? null : (0, import_react23.createElement)("div", { className: "dshpc-dock__lead" }, pane.icon), (0, import_react23.createElement)("div", { className: "dshpc-dock__title" }, pane.title), pane.extra === void 0 ? null : (0, import_react23.createElement)("div", { className: "dshpc-dock__extra" }, pane.extra));
+    return (0, import_react26.createElement)("div", { className: "dshpc-dock__head" }, pane.icon === void 0 ? null : (0, import_react26.createElement)("div", { className: "dshpc-dock__lead" }, pane.icon), (0, import_react26.createElement)("div", { className: "dshpc-dock__title" }, pane.title), pane.extra === void 0 ? null : (0, import_react26.createElement)("div", { className: "dshpc-dock__extra" }, pane.extra));
   };
   const floatingCloseOf = (pane) => {
     if (pane.closable === false)
@@ -2983,17 +5489,17 @@ function PanelDock(props) {
     const hasHeader = pane.header !== null;
     if (mode !== "floating" && !(mode === "auto" && !hasHeader))
       return null;
-    return (0, import_react23.createElement)("button", {
+    return (0, import_react26.createElement)("button", {
       type: "button",
       className: "dshpc-dock__close dshpc-dock__close--floating",
       "aria-label": tt("dockClose"),
       onClick: () => props.dock.close(pane.id, "button")
     }, pane.closeIcon ?? "\u2715");
   };
-  return (0, import_react23.createElement)("div", {
+  return (0, import_react26.createElement)("div", {
     ref: rootRef,
     className: props.className === void 0 ? "dshpc-dock" : `dshpc-dock ${props.className}`
-  }, panes.filter((pane) => state.ids.includes(pane.id)).map((pane) => (0, import_react23.createElement)("section", {
+  }, panes.filter((pane) => state.ids.includes(pane.id)).map((pane) => (0, import_react26.createElement)("section", {
     key: pane.id,
     ref: (element) => {
       if (element === null)
@@ -3005,7 +5511,7 @@ function PanelDock(props) {
     style: { width: `${widthOf(pane)}px` },
     "data-panel": pane.id,
     "aria-label": pane.ariaLabel ?? (typeof pane.title === "string" ? pane.title : pane.id)
-  }, (0, import_react23.createElement)("div", {
+  }, (0, import_react26.createElement)("div", {
     className: "dshpc-dock__resizer",
     role: "separator",
     "aria-orientation": "vertical",
@@ -3013,23 +5519,23 @@ function PanelDock(props) {
     onPointerDown: (event) => {
       beginResize(pane, event);
     }
-  }), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), (0, import_react23.createElement)("div", { className: "dshpc-dock__body" }, pane.children ?? null))));
+  }), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), (0, import_react26.createElement)("div", { className: "dshpc-dock__body" }, pane.children ?? null))));
 }
 
 // dist/ui/Field.js
-var import_react24 = require("react");
+var import_react27 = require("react");
 function withHint(control, hint) {
   if (hint === void 0)
     return control;
-  return (0, import_react24.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react24.createElement)(FieldHint, { text: hint }));
+  return (0, import_react27.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react27.createElement)(FieldHint, { text: hint }));
 }
-function sizeClass(size) {
-  return size === "lg" ? "--lg" : size === "md" ? "--md" : "--sm";
+function sizeClass(size4) {
+  return size4 === "lg" ? "--lg" : size4 === "md" ? "--md" : "--sm";
 }
 function Input(props) {
   ensureControls();
-  const { value, onChange, placeholder: placeholder2, size = "lg", error, disabled, type: type3, className: className2, style: style2 } = props;
-  return withHint((0, import_react24.createElement)("input", {
+  const { value, onChange, placeholder: placeholder2, size: size4 = "lg", error, disabled, type: type3, className: className2, style: style2 } = props;
+  return withHint((0, import_react27.createElement)("input", {
     ref: props.inputRef,
     type: type3 ?? "text",
     value,
@@ -3037,7 +5543,7 @@ function Input(props) {
     disabled,
     "aria-label": props["aria-label"],
     title: props.title,
-    className: `dshpc-input dshpc-input${sizeClass(size)}${error === true ? " dshpc-input--error" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
+    className: `dshpc-input dshpc-input${sizeClass(size4)}${error === true ? " dshpc-input--error" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: style2,
     onChange: (event) => {
       onChange(event.target.value);
@@ -3048,12 +5554,12 @@ function Input(props) {
 }
 function NumberInput(props) {
   ensureControls();
-  const { value, onChange, min = -Infinity, max = Infinity, step = 1, size = "lg", inputWidth, disabled, suffix: suffix2, label, decreaseLabel = "\u51CF\u5C11", increaseLabel = "\u589E\u52A0", className: className2, style: style2 } = props;
-  const [text2, setText] = (0, import_react24.useState)(String(value));
-  (0, import_react24.useEffect)(() => {
+  const { value, onChange, min: min2 = -Infinity, max: max2 = Infinity, step = 1, size: size4 = "lg", inputWidth, disabled, suffix: suffix2, label, decreaseLabel = "\u51CF\u5C11", increaseLabel = "\u589E\u52A0", className: className2, style: style2 } = props;
+  const [text2, setText] = (0, import_react27.useState)(String(value));
+  (0, import_react27.useEffect)(() => {
     setText(String(value));
   }, [value]);
-  const clamp = (n) => Math.min(max, Math.max(min, n));
+  const clamp2 = (n) => Math.min(max2, Math.max(min2, n));
   const commit = (raw) => {
     if (raw.trim() === "") {
       setText(String(value));
@@ -3064,30 +5570,30 @@ function NumberInput(props) {
       setText(String(value));
       return;
     }
-    const next = clamp(n);
+    const next = clamp2(n);
     setText(String(next));
     if (next !== value)
       onChange(next);
   };
   const bump = (dir) => {
     const base3 = Number.isFinite(Number(text2)) ? Number(text2) : value;
-    const next = clamp(base3 + dir * step);
+    const next = clamp2(base3 + dir * step);
     setText(String(next));
     if (next !== value)
       onChange(next);
   };
-  return withHint((0, import_react24.createElement)(
+  return withHint((0, import_react27.createElement)(
     "div",
     {
-      className: `dshpc-num dshpc-num${sizeClass(size)}${disabled === true ? " dshpc-num--disabled" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
+      className: `dshpc-num dshpc-num${sizeClass(size4)}${disabled === true ? " dshpc-num--disabled" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
       style: style2
     },
-    (0, import_react24.createElement)(IconButton, { variant: "plain", size, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
+    (0, import_react27.createElement)(IconButton, { variant: "plain", size: size4, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
       bump(-1);
     } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
-    (0, import_react24.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react24.createElement)("input", {
+    (0, import_react27.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react27.createElement)("input", {
       className: "dshpc-num__input",
       ...inputWidth === void 0 ? {} : { style: { width: `${inputWidth}px` } },
       value: text2,
@@ -3104,8 +5610,8 @@ function NumberInput(props) {
         if (event.key === "Enter")
           commit(text2);
       }
-    }), suffix2 !== void 0 ? (0, import_react24.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
-    (0, import_react24.createElement)(IconButton, { variant: "plain", size, icon: "+", label: increaseLabel, disabled, onClick: () => {
+    }), suffix2 !== void 0 ? (0, import_react27.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
+    (0, import_react27.createElement)(IconButton, { variant: "plain", size: size4, icon: "+", label: increaseLabel, disabled, onClick: () => {
       bump(1);
     } })
   ), props.hint);
@@ -3156,7 +5662,7 @@ function connectFileServices(ctx) {
 }
 
 // packages/demo/src/dock.ts
-var import_react25 = require("react");
+var import_react28 = require("react");
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/utils/date.js
@@ -3464,7 +5970,7 @@ var DICT2 = {
     roadmapHint: "\u4E0B\u9762\u662F\u300C\u660E\u786E\u4E0D\u63D0\u4F9B\u300D\u7684\u90E8\u5206\u2014\u2014\u5199\u5728\u8FD9\u91CC\u662F\u4E3A\u4E86\u8BA9\u4F60\u4E0D\u7528\u731C\uFF0C\u4E5F\u8BA9\u540E\u6765\u4EBA\u77E5\u9053\u8FB9\u754C\u5728\u54EA\u3002",
     roadmapOut: "\u8BBE\u7F6E\u9875\u9AA8\u67B6\u3001i18n \u6846\u67B6\uFF08\u63D2\u4EF6\u6587\u6848\u63D2\u4EF6\u81EA\u7BA1\uFF09\u3001host \u5BBF\u4E3B\u7C7B\u578B\u9762",
     roadmapMirror: "\u5B98\u65B9\u4F1A\u8BDD UI \u7684\u5B8C\u6574\u955C\u50CF\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\uFF09\u2014\u2014session \u76EE\u524D\u53EA\u6709\u6700\u7B80\u6E32\u67D3\uFF0C\u5BCC\u5185\u5BB9\u8D70 renderMessage \u6269\u5C55\u70B9",
-    roadmapPreview: "\uFF08\u5DF2\u843D\u5730\uFF09md \u6E32\u67D3\uFF08\u5B98\u65B9 MarkdownText\uFF09/ \u4EE3\u7801\u9AD8\u4EAE\uFF08\u5B98\u65B9 CodeBlock\uFF09/ HTML / PDF / Office \u9884\u89C8",
+    roadmapPreview: "\uFF08\u5DF2\u843D\u5730\uFF09md \u6E32\u67D3\uFF08\u5B98\u65B9 MarkdownText\uFF09/ \u4EE3\u7801\u9AD8\u4EAE\uFF08\u6838\u5FC3 CodeViewer\uFF09/ HTML / PDF / Office \u9884\u89C8",
     roadmapSkeleton: "\uFF08\u5DF2\u843D\u5730\uFF09PanelDock\u2014\u2014\u53EF\u505C\u9760\u5206\u680F\uFF1A\u591A\u9762\u677F\u3001\u6309\u540D\u8986\u76D6\u3001\u4E0A\u9650 3",
     roadmapLayout: "\u7EA2\u7EBF\uFF1A\u6574\u5408\u4EE5\u524D\u7684.share(plugins/demo)",
     buildDesc: "\u7248\u672C\u53F7\u4E0D bump \u65F6\uFF0C\u5224\u65AD\u5BBF\u4E3B\u91CC\u8DD1\u7684\u662F\u4E0D\u662F\u6700\u65B0\u4EA7\u7269\uFF0C\u9760\u7684\u662F build \u7F16\u7801\u2014\u2014\u6BCF\u6B21\u6784\u5EFA\u90FD\u53D8\u3002",
@@ -3496,8 +6002,6 @@ var DICT2 = {
     docApiType: "\u7C7B\u578B",
     docApiDefault: "\u9ED8\u8BA4\u503C",
     docApiDesc: "\u8BF4\u660E",
-    docCopy: "\u590D\u5236",
-    docCopied: "\u5DF2\u590D\u5236",
     pluginTitle: "\u7EC4\u4EF6\u9884\u89C8",
     pluginCardDesc: "\u6253\u5F00 dsh-plugin-core \u7684\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u5C55\u793A\u9875",
     pluginCardOpen: "\u6253\u5F00 \u203A"
@@ -3658,7 +6162,7 @@ var DICT2 = {
     roadmapHint: "The list below is what this package explicitly does NOT provide \u2014 written down so nobody has to guess, and so the boundary stays visible.",
     roadmapOut: "A settings-page skeleton, an i18n framework (plugin copy is the plugin\u2019s own job), a host typings surface",
     roadmapMirror: "A full mirror of the official session UI (tool cards / code blocks / reasoning rows) \u2014 session renders only the minimal shape today; rich content goes through the renderMessage hook",
-    roadmapPreview: "(shipped) md render (official MarkdownText) / code highlight (official CodeBlock) / HTML / PDF / Office preview",
+    roadmapPreview: "(shipped) md render (official MarkdownText) / code highlight (core CodeViewer) / HTML / PDF / Office preview",
     roadmapSkeleton: "(shipped) PanelDock \u2014 dockable split panes: multi-panel, replace-by-name, limit 3",
     roadmapLayout: "Red line: consolidation of the old packages/demo",
     buildDesc: "When the version number does not change, the build stamp is what tells you whether the host is running the newest bundle \u2014 it changes on every build.",
@@ -3690,8 +6194,6 @@ var DICT2 = {
     docApiType: "Type",
     docApiDefault: "Default",
     docApiDesc: "Description",
-    docCopy: "Copy",
-    docCopied: "Copied",
     pluginTitle: "Component preview",
     pluginCardDesc: "Open the showcase of dsh-plugin-core controls and business components",
     pluginCardOpen: "Open \u203A"
@@ -3714,24 +6216,24 @@ function t2(key, vars) {
 // packages/demo/src/dock.ts
 var demoDock = createPanelDock({ maxPanels: 3 });
 function Body(props) {
-  return (0, import_react25.createElement)(
+  return (0, import_react28.createElement)(
     "div",
     { style: { padding: "12px 14px", fontSize: "13px", lineHeight: "1.9" } },
-    (0, import_react25.createElement)("div", { style: { fontWeight: 600 } }, props.id),
-    (0, import_react25.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t2("dockPanelBody"))
+    (0, import_react28.createElement)("div", { style: { fontWeight: 600 } }, props.id),
+    (0, import_react28.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t2("dockPanelBody"))
   );
 }
 function CustomHead() {
-  return (0, import_react25.createElement)(
+  return (0, import_react28.createElement)(
     "div",
     { style: { padding: "10px 12px", borderBottom: "1px solid var(--dshpc-border-faint)" } },
-    (0, import_react25.createElement)(
+    (0, import_react28.createElement)(
       "div",
       { style: { display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600 } },
-      (0, import_react25.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react28.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
       t2("dockCustomHeadTitle")
     ),
-    (0, import_react25.createElement)(
+    (0, import_react28.createElement)(
       "div",
       { style: { marginTop: "6px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
       t2("dockCustomHeadHint")
@@ -3742,20 +6244,20 @@ var PANELS = [
   {
     id: "A",
     title: t2("dockPanelA"),
-    icon: (0, import_react25.createElement)(
+    icon: (0, import_react28.createElement)(
       "span",
       { style: { display: "inline-flex", gap: "4px" } },
-      (0, import_react25.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
-      (0, import_react25.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
+      (0, import_react28.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react28.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
     ),
     // 标题右侧：任意内容，不只按钮。
-    extra: (0, import_react25.createElement)(Chip, { tone: "business", size: "sm" }, t2("dockPanelATag")),
+    extra: (0, import_react28.createElement)(Chip, { tone: "business", size: "sm" }, t2("dockPanelATag")),
     minWidth: 300,
     maxWidth: 620
   },
   {
     id: "B",
-    header: (0, import_react25.createElement)(CustomHead, null),
+    header: (0, import_react28.createElement)(CustomHead, null),
     minWidth: 320
   },
   {
@@ -3768,7 +6270,7 @@ var PANELS = [
 ];
 function demoPanels() {
   return PANELS.map(
-    (pane) => (0, import_react25.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react25.createElement)(Body, { id: pane.id }))
+    (pane) => (0, import_react28.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react28.createElement)(Body, { id: pane.id }))
   );
 }
 
@@ -3776,4152 +6278,16 @@ function demoPanels() {
 var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
-var import_react46 = require("react");
+var import_react49 = require("react");
 
 // packages/demo/src/sections/start.tsx
-var import_react27 = require("react");
+var import_react34 = require("react");
 
 // packages/demo/src/doc.tsx
-var import_react26 = require("react");
-var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
-
-// packages/demo/src/doc-data.generated.ts
-var docData = {
-  "explorer": {
-    "id": "explorer",
-    "heading": {
-      "zh": "\u6982\u89C8",
-      "en": "Overview"
-    },
-    "prose": [
-      {
-        "zh": "explorer \u63D0\u4F9B\u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u4E0E\u9009\u62E9\u80FD\u529B\uFF0C\u4F9D\u8D56\u5BBF\u4E3B\u63D0\u4F9B\u7684\u5DE5\u4F5C\u533A\u6587\u4EF6\u5FEB\u7167\u3002",
-        "en": "explorer provides workspace file browsing and picking, driven by the host-provided workspace file snapshot."
-      },
-      {
-        "zh": "\u6D4F\u89C8\u6001\u505C\u9760\u662F\u5E03\u5C40\u6210\u5458\uFF08\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF09\uFF0C\u4E0D\u8981\u6302\u5728 document.body \u4E0A\u81EA\u5DF1\u5957 fixed\u3002",
-        "en": "The browse dock is a layout member (takes width, narrows the main area); do not mount it on document.body with your own fixed positioning."
-      }
-    ]
-  },
-  "explorer-install": {
-    "id": "explorer-install",
-    "heading": {
-      "zh": "0. \u88C5\u5305",
-      "en": "0. Install"
-    },
-    "code": [
-      {
-        "id": "explorer-install-code",
-        "lang": "bash",
-        "src": "pnpm add dsh-plugin-core"
-      }
-    ]
-  },
-  "explorer-usage": {
-    "id": "explorer-usage",
-    "heading": {
-      "zh": "1. \u63A5\u5165\u793A\u4F8B",
-      "en": "1. Usage"
-    },
-    "prose": [
-      {
-        "zh": "\u4ECE ctx \u53D6\u51FA\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF0C\u4F20\u7ED9\u80FD\u529B\u63A5\u53E3\uFF1B\u4E0D\u8981\u4F20\u6574\u4E2A ctx\u3002",
-        "en": "Pull the workspace snapshot out of ctx and pass it to the capability APIs; do not pass the whole ctx."
-      }
-    ],
-    "code": [
-      {
-        "id": "explorer-usage-code",
-        "lang": "tsx",
-        "src": `import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
-import { SessionPreview } from 'dsh-plugin-core/session'
-
-// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09
-openFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })
-
-// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09
-const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })
-
-// \u4F1A\u8BDD\u9884\u89C8
-<SessionPreview sessionId="..." source={source} variant="modal" />`
-      }
-    ]
-  },
-  "explorer-api": {
-    "id": "explorer-api",
-    "heading": {
-      "zh": "API",
-      "en": "API"
-    },
-    "api": [
-      {
-        "id": "explorer-api-table",
-        "rows": [
-          {
-            "name": "openFilePreview",
-            "type": "({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u53F3\u4FA7\u5206\u680F\u9884\u89C8\u6587\u4EF6/\u6587\u4EF6\u5939\uFF0Cmount \u4E3A\u5FC5\u586B\u7684 flex \u884C",
-              "en": "Preview a file/folder in a right-side dock; mount is the required flex row"
-            }
-          },
-          {
-            "name": "pickWorkspaceFile",
-            "type": "({ workspaceFiles, sessionId, anchor, filter? }) => Promise<{ path, isDir }>",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\u9009\u6587\u4EF6\uFF0CPromise \u8FD4\u56DE\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84",
-              "en": "Open a modal anchored to a button and resolve with the workspace-relative path"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "foundation": {
-    "id": "foundation",
-    "heading": {
-      "zh": "\u6982\u89C8",
-      "en": "Overview"
-    },
-    "prose": [
-      {
-        "zh": "\u96F6 React\u3001\u65E0\u7EC4\u4EF6\u3002\u88C5\u7684\u662F\u300C\u503C + \u6CE8\u5165\u673A\u5236\u300D\uFF1Atoken \u53D8\u91CF\u8868\u3001\u6CE8\u5165\u5668\u5DE5\u5382\u3001\u4E3B\u9898\u5224\u636E\u3002",
-        "en": "Zero React, no components. It ships values plus an injection mechanism: the token variable table, the injector factory, and the theme predicate."
-      },
-      {
-        "zh": "\u53EA\u60F3\u7EDF\u4E00\u914D\u8272/\u5C3A\u5BF8\u4F46\u81EA\u5DF1\u5199\u7EC4\u4EF6\u7684\u63D2\u4EF6\uFF0C\u53EA\u5F15\u8FD9\u4E00\u4E2A\u5C31\u591F\u3002",
-        "en": "A plugin that wants unified color/size but writes its own components needs only this subpath."
-      }
-    ]
-  },
-  "foundation-exports": {
-    "id": "foundation-exports",
-    "heading": {
-      "zh": "\u5BFC\u51FA",
-      "en": "Exports"
-    },
-    "api": [
-      {
-        "id": "design-exports",
-        "rows": [
-          {
-            "name": "createStyleKit(options)",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u9886\u4E00\u5957\u672C\u63D2\u4EF6\u4E13\u5C5E\u7684\u6837\u5F0F\u8BBE\u65BD\uFF08\u5FC5\u8C03\uFF09",
-              "en": "Acquire a plugin-scoped styling kit (must call)"
-            }
-          },
-          {
-            "name": "DARK_THEME_SELECTOR",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u660E\u6697\u5224\u636E\u9009\u62E9\u5668\u5E38\u91CF `body[data-ds-dark-theme]`",
-              "en": "Dark-mode predicate selector constant `body[data-ds-dark-theme]`"
-            }
-          },
-          {
-            "name": "type StyleKit / StyleKitOptions",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u7C7B\u578B",
-              "en": "Types"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "foundation-createStyleKit": {
-    "id": "foundation-createStyleKit",
-    "heading": {
-      "zh": "createStyleKit(options)",
-      "en": "createStyleKit(options)"
-    },
-    "api": [
-      {
-        "id": "createStyleKit-params",
-        "rows": [
-          {
-            "name": "id",
-            "type": "string",
-            "required": "\u662F",
-            "def": "\u2014",
-            "desc": {
-              "zh": "`<style>` \u6807\u7B7E id\uFF0C\u591A\u63D2\u4EF6\u540C\u9875\u9760\u5B83\u4E92\u4E0D\u8986\u76D6\uFF0C\u5FC5\u987B\u63D2\u4EF6\u5185\u552F\u4E00\u3002\u7A7A\u4E32\u629B\u9519",
-              "en": "The `<style>` tag id; on a page with multiple plugins it prevents overlaps and must be unique within the plugin. Empty string throws"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "foundation-styleKit": {
-    "id": "foundation-styleKit",
-    "heading": {
-      "zh": "\u8FD4\u56DE\u7684 StyleKit",
-      "en": "Returned StyleKit"
-    },
-    "api": [
-      {
-        "id": "styleKit-members",
-        "rows": [
-          {
-            "name": "id",
-            "type": "string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u56DE\u663E",
-              "en": "Echoed back"
-            }
-          },
-          {
-            "name": "tokensCss",
-            "type": "string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5DF2\u66FF\u6362\u524D\u7F00\u7684 token CSS \u6587\u672C",
-              "en": "Token CSS text with the prefix already substituted"
-            }
-          },
-          {
-            "name": "cssVar(name)",
-            "type": "(name: string) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u62FC\u53D8\u91CF\u540D\uFF1A`cssVar('fg')` \u21D2 `--acme-fg`",
-              "en": "Build a var name: `cssVar('fg')` \u21D2 `--acme-fg`"
-            }
-          },
-          {
-            "name": "registerStyle(domain, css)",
-            "type": "(domain: string, css: string) => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u767B\u8BB0\u4E00\u4E2A\u57DF\u7684 CSS\uFF1B\u540C\u540D\u91CD\u590D\u767B\u8BB0 = \u8986\u76D6",
-              "en": "Register a domain\u2019s CSS; re-registering the same domain overwrites"
-            }
-          },
-          {
-            "name": "ensureStyles()",
-            "type": "() => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u786E\u4FDD\u6807\u7B7E\u5DF2\u6302\u8F7D\u4E14\u5185\u5BB9\u6700\u65B0\uFF08\u5E42\u7B49\uFF1B\u65E0 document \u9759\u9ED8\u8DF3\u8FC7\uFF09",
-              "en": "Ensure the tag is mounted and current (idempotent; silently skips without document)"
-            }
-          },
-          {
-            "name": "applyStyle(domain, css)",
-            "type": "(domain: string, css: string) => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u767B\u8BB0 + \u7ACB\u523B\u6302\u8F7D",
-              "en": "Register and mount immediately"
-            }
-          },
-          {
-            "name": "dispose()",
-            "type": "() => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u64A4\u6389\u6807\u7B7E\u5E76\u6E05\u7A7A\u767B\u8BB0\u57DF\uFF08\u63D2\u4EF6\u5378\u8F7D / HMR \u65F6\u7528\uFF09",
-              "en": "Remove the tag and clear registered domains (on plugin unload / HMR)"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "foundation-minimal": {
-    "id": "foundation-minimal",
-    "heading": {
-      "zh": "\u6700\u5C0F\u53EF\u7528",
-      "en": "Minimal usage"
-    },
-    "code": [
-      {
-        "id": "design-minimal",
-        "lang": "ts",
-        "src": "import { createStyleKit } from 'dsh-plugin-core/design'\n\nconst kit = createStyleKit({ id: 'dsh-task-reminder-ui' })\nkit.applyStyle('tokens', kit.tokensCss)\n// \u4E4B\u540E\u81EA\u5DF1\u7684\u6837\u5F0F\u57DF\uFF1A\nkit.applyStyle('widget', '.widget{color:var(--dshpc-fg)}')"
-      }
-    ]
-  },
-  "foundation-tokens": {
-    "id": "foundation-tokens",
-    "heading": {
-      "zh": "token \u53E3\u5F84",
-      "en": "Token conventions"
-    },
-    "prose": [
-      {
-        "zh": "token \u6765\u81EA `dsh-task-dispatch-table/src/client/ui/tokens.ts` \u7684\u6574\u6BB5\u63D0\u53D6\uFF08\u989C\u8272 / \u5C3A\u5BF8 / \u5B57\u53F7 / \u5C42\u7EA7\uFF09\uFF0C**\u542B\u6DF1\u8272\u8986\u76D6\u6BB5**\u3002\u53D6\u503C\u4E00\u5F8B\u8D70 `var(--<prefix>-*)`\uFF0C\u4E0D\u5728\u89C4\u5219\u91CC\u5199\u6B7B\u989C\u8272\u503C\u3002",
-        "en": "Tokens are extracted wholesale from `dsh-task-dispatch-table/src/client/ui/tokens.ts` (color / size / font-size / elevation), **including the dark-mode override block**. Always read values via `var(--<prefix>-*)`, never hard-code colors in rules."
-      },
-      {
-        "zh": "\u5B8C\u6574\u6E05\u5355\u4E0E\u547D\u540D\u53E3\u5F84\u89C1 [`../style.md`](../style.md)\u3002",
-        "en": "Full list and naming conventions: [`../style.md`](../style.md)."
-      }
-    ]
-  },
-  "foundation-customize": {
-    "id": "foundation-customize",
-    "heading": {
-      "zh": "\u5B9A\u5236\u8FB9\u754C",
-      "en": "Customization boundary"
-    },
-    "prose": [
-      {
-        "zh": "token \u7684**\u524D\u7F00\u56FA\u5B9A `dshpc`**\uFF08\u4E0D\u53C2\u6570\u5316\u3001\u4E0D\u6309\u63D2\u4EF6\u6539\u540D\uFF09\uFF1Btoken \u7684**\u5185\u5BB9**\uFF08\u6709\u54EA\u4E9B\u53D8\u91CF\u3001\u503C\u662F\u4EC0\u4E48\uFF09\u662F\u672C\u5305\u5B9A\u7684\u5BA1\u7F8E\u6807\u51C6\uFF0C\u6D88\u8D39\u65B9\u901A\u8FC7\u8986\u76D6\u53D8\u91CF\u503C\u6765\u9002\u914D\uFF0C\u4E0D\u8981\u6539\u672C\u5305\u6E90\u7801\u3002",
-        "en": "The token **prefix is fixed to `dshpc`** (not parameterized, not renamed per plugin); the token **content** (which variables exist, what values) is this package\u2019s aesthetic standard \u2014 consumers adapt by overriding variable values, not by editing this package\u2019s source."
-      },
-      {
-        "zh": "\u8981\u6574\u5957\u6362\u80A4\uFF1A\u7ED9\u540C\u4E00\u6279\u53D8\u91CF\u540D\u8D4B\u65B0\u503C\u5373\u53EF\uFF0C\u4E0D\u9700\u8981 fork\u3002",
-        "en": "To reskin entirely: assign new values to the same variable names; no fork needed."
-      }
-    ]
-  },
-  "session": {
-    "id": "session",
-    "heading": {
-      "zh": "\u4F1A\u8BDD\u9884\u89C8",
-      "en": "Session preview"
-    },
-    "prose": [
-      {
-        "zh": "\u4F9D\u8D56 ui\u3002\u628A\u300C\u770B\u4E00\u773C\u67D0\u4E2A\u4F1A\u8BDD\u3001\u770B\u5B8C\u5373\u5173\u300D\u8FD9\u4EF6\u4E8B\u5C01\u88C5\u8D77\u6765\uFF1A\u81EA\u52A8\u6267\u884C\u7684\u4EFB\u52A1\u60F3\u56DE\u770B\u8FD9\u6B21\u4F1A\u8BDD\uFF0C\u4E0D\u60F3\u5F00\u65B0\u7A97\u53E3\uFF08\u56DE\u6765\u8FD8\u5F97\u627E\uFF09\u3002",
-        "en": 'Depends on ui. Wraps the "peek at a session and close when done" flow: for auto-run tasks you want to review this run without opening a new window.'
-      },
-      {
-        "zh": "\u5F39\u7A97\u53EA\u662F\u5F53\u524D\u7684\u5448\u73B0\u65B9\u5F0F\uFF0C\u4E0D\u662F\u8FD9\u4E2A\u5305\u7684\u5B9A\u4E49\u3002\u5C06\u6765\u4E5F\u53EF\u80FD\u662F\u4FA7\u8FB9\u680F\u6216\u6574\u9875 \u21D2 \u7528 variant \u5207\u6362\u3002\u300C\u7EAF Modal \u63A7\u4EF6\u300D\u5728 ui \u91CC\uFF0C\u8FD9\u91CC\u88C5\u7684\u662F\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\u8FD9\u4E2A\u529F\u80FD\u3002",
-        "en": 'A modal is only the current presentation; the package is defined by the feature, not the chrome. Future forms (sidebar, full page) switch via `variant`. The bare Modal lives in ui; this package owns the "session preview" feature.'
-      },
-      {
-        "zh": "\u6570\u636E\u5F62\u72B6\uFF08SessionMessage\uFF09\uFF1B\u4E3A\u4EC0\u4E48\u6CE8\u5165\u80FD\u529B\u800C\u4E0D\u662F\u4F20\u9759\u6001\u6570\u636E\uFF1A\u4F1A\u8BDD\u9884\u89C8\u5185\u90E8\u6709\u4EA4\u4E92\uFF08\u9644\u4EF6\u4E0B\u8F7D / \u6253\u5F00\u6587\u4EF6\uFF09\uFF0C\u5149\u6709\u6D88\u606F\u6D41\u4E0D\u591F\u7528\uFF0C\u5B83\u5FC5\u987B\u80FD\u56DE\u8C03\u5BBF\u4E3B\u3002",
-        "en": "Data shape (SessionMessage); why inject capability instead of passing static data: the preview has interactions (attachment download / open file), so the message stream alone is insufficient \u2014 it must be able to call back into the host."
-      },
-      {
-        "zh": "\u4E09\u6001\u9F50\u5907\uFF1A\u52A0\u8F7D\u4E2D / \u5931\u8D25\uFF08\u5E26\u91CD\u8BD5\uFF09/ \u7A7A\u3002",
-        "en": "All three states covered: loading / failure (with retry) / empty."
-      },
-      {
-        "zh": "\u5DF2\u77E5\u9650\u5236\uFF08\u91CD\u8981\uFF09\uFF1A\u9ED8\u8BA4\u6E32\u67D3\u53EA\u6709\u300C\u89D2\u8272 + \u7EAF\u6587\u672C + \u9644\u4EF6\u300D\u2014\u2014\u5B98\u65B9\u4F1A\u8BDD UI \u7684\u5B8C\u6574\u955C\u50CF\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\u7B49\uFF09\u8FD8\u6CA1\u642C\u8FDB\u672C\u5305\u3002\u8981\u957F\u5F97\u50CF\u5B98\u65B9\u4F1A\u8BDD\uFF0C\u8BF7\u7528 renderMessage \u81EA\u5DF1\u6E32\u67D3\uFF0C\u6216\u7B49\u540E\u7EED\u7248\u672C\u3002\u65E0\u6D88\u606F\u5206\u9875 / \u589E\u91CF\u52A0\u8F7D\uFF0C\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\u3002",
-        "en": 'Known limits (important): the default renderer only does "role + plain text + attachments" \u2014 the full mirror of the official session UI (tool cards / code blocks / reasoning rows) is not yet ported. To look like the official session, render via renderMessage yourself, or wait for a later version. No message pagination / incremental loading; long sessions render all at once.'
-      },
-      {
-        "zh": "\u5B9A\u5236\u8FB9\u754C\uFF1ArenderMessage \u5C31\u662F\u4E3A\u300C\u7279\u6B8A\u5B9A\u5236\u300D\u7559\u7684\u53E3\u5B50\uFF0C\u6362\u6E32\u67D3\u5668\u4E0D\u7528 fork \u9762\u677F\uFF1B\u6362\u627F\u8F7D\u65B9\u5F0F\u7528 variant\uFF0C\u4E0D\u7528\u6539\u8C03\u7528\u65B9\u7ED3\u6784\uFF1BSessionSource \u7684\u65B9\u6CD5\u7B7E\u540D\u82E5\u4E0E\u5BBF\u4E3B\u5BF9\u4E0D\u4E0A\uFF0C\u5728\u63D2\u4EF6\u4FA7\u505A\u9002\u914D\u5C42\u2014\u2014\u4E0D\u8981\u6539\u672C\u5305\u63A5\u53E3\u53BB\u8D34\u67D0\u4E2A\u5BBF\u4E3B\u5BFC\u51FA\u7248\u672C\u3002",
-        "en": "Customization: renderMessage is the slot for special rendering \u2014 swap the renderer without forking the panel; switch presentation with variant without changing caller structure; if SessionSource\u2019s signatures don\u2019t match the host, build an adapter on the plugin side \u2014 do not bend this package\u2019s interface to a specific host version."
-      }
-    ],
-    "api": [
-      {
-        "id": "session-source",
-        "rows": [
-          {
-            "name": "listMessages",
-            "type": "(sessionId, signal?) => Promise<SessionMessage[]>",
-            "def": "\u2014",
-            "required": "\u662F",
-            "desc": {
-              "zh": "\u6309\u4F1A\u8BDD\u53D6\u6D88\u606F\u5217\u8868",
-              "en": "Fetch the message list for a session"
-            }
-          },
-          {
-            "name": "download?",
-            "type": "(sessionId, path, signal?) => Promise<Uint8Array>",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u4E0B\u8F7D\u9644\u4EF6\uFF1B\u5BBF\u4E3B\u6CA1\u8FD9\u80FD\u529B\u5C31\u4E0D\u663E\u793A\u4E0B\u8F7D\u94AE",
-              "en": "Download an attachment; if the host lacks it, no download button shows"
-            }
-          }
-        ]
-      },
-      {
-        "id": "session-preview",
-        "rows": [
-          {
-            "name": "sessionId",
-            "type": "string",
-            "def": "\u2014",
-            "required": "\u662F",
-            "desc": {
-              "zh": "\u5FC5\u586B",
-              "en": "Required"
-            }
-          },
-          {
-            "name": "source",
-            "type": "SessionSource",
-            "def": "\u2014",
-            "required": "\u662F",
-            "desc": {
-              "zh": "\u5FC5\u586B\uFF0C\u6CE8\u5165\u7684\u53D6\u6570\u80FD\u529B",
-              "en": "Required; the injected data capability"
-            }
-          },
-          {
-            "name": "variant",
-            "type": "'modal' | 'sidebar' | 'page'",
-            "def": "'modal'",
-            "desc": {
-              "zh": "\u627F\u8F7D\u65B9\u5F0F",
-              "en": "Presentation"
-            }
-          },
-          {
-            "name": "title",
-            "type": "ReactNode",
-            "def": "sessionId",
-            "desc": {
-              "zh": "modal \u5F62\u6001\u7684\u6807\u9898",
-              "en": "Title of the modal form"
-            }
-          },
-          {
-            "name": "onClose",
-            "type": "() => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5173\u95ED\u56DE\u8C03",
-              "en": "Close callback"
-            }
-          },
-          {
-            "name": "renderMessage",
-            "type": "(m: SessionMessage) => ReactNode",
-            "def": "\u5185\u7F6E\u6700\u7B80\u6E32\u67D3",
-            "desc": {
-              "zh": "\u2605 \u5B9A\u5236\u6269\u5C55\u70B9\uFF1A\u5BCC\u5185\u5BB9\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\uFF09\u8D70\u8FD9\u91CC",
-              "en": "\u2605 Extension point: rich content (tool cards / code blocks / reasoning rows) goes here"
-            }
-          },
-          {
-            "name": "onOpenFile",
-            "type": "(path: string) => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u70B9\u9644\u4EF6\u300C\u6253\u5F00\u300D\uFF08\u901A\u5E38\u4EA4\u7ED9 explorer\uFF09",
-              "en": 'Attachment "open" handler (usually delegated to explorer)'
-            }
-          },
-          {
-            "name": "translate",
-            "type": "Translate",
-            "def": "\u5185\u7F6E",
-            "desc": {
-              "zh": "\u8986\u76D6\u6587\u6848",
-              "en": "Override copy"
-            }
-          }
-        ]
-      }
-    ],
-    "code": [
-      {
-        "id": "session-source-shape",
-        "lang": "ts",
-        "src": "interface SessionMessage {\n  id: string\n  role: 'user' | 'assistant' | 'tool' | 'system'\n  text: string                 // \u7EAF\u6587\u672C\u6B63\u6587\n  createdAt?: string\n  attachments?: { name: string; path: string; bytes?: number }[]\n}"
-      },
-      {
-        "id": "session-usage",
-        "lang": "tsx",
-        "src": "import { SessionPreview } from 'dsh-plugin-core/session'\n\nh(SessionPreview, {\n  sessionId,\n  source,                    // \u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\n  variant: 'modal',\n  onClose: () => setOpen(false),\n  renderMessage: (m) => h(RichMessage, { message: m }),  // \u53EF\u9009\n})"
-      }
-    ]
-  },
-  "utils-overview": {
-    "id": "utils-overview",
-    "heading": {
-      "zh": "\u6982\u89C8",
-      "en": "Overview"
-    },
-    "prose": [
-      {
-        "zh": "\u96F6 React\u3001\u96F6 DOM\u3001\u96F6 design \u4F9D\u8D56\u3002\u88C5\u7684\u662F\u300C\u548C\u754C\u9762\u65E0\u5173\u7684\u7EAF\u65B9\u6CD5\u300D\u3002",
-        "en": "Zero React, zero DOM, zero design dependency. Pure, UI-agnostic helpers."
-      }
-    ]
-  },
-  "date": {
-    "id": "date",
-    "heading": {
-      "zh": "\u65E5\u671F",
-      "en": "Date"
-    },
-    "prose": [
-      {
-        "zh": "\u5168\u90E8\u8D70\u672C\u673A\u65F6\u533A\uFF1B\u89E3\u6790\u5931\u8D25\u4E00\u5F8B\u4E0D\u629B\u9519\u3001\u6309\u515C\u5E95\u8FD4\u56DE\uFF0C\u4E0D\u7F16\u9020\u65F6\u95F4\u3002",
-        "en": "All use the local timezone; parse failures never throw \u2014 they fall back as specified, never inventing a time."
-      },
-      {
-        "zh": "relativePast \u4E0E relativeFuture \u662F\u5BF9\u5076\u7684\uFF1A\u8C03\u5EA6\u8868\u8FD9\u7C7B\u5C55\u793A\u672A\u6765\u65F6\u95F4\u7684\u573A\u666F\u5FC5\u987B\u7528 relativeFuture\u2014\u2014\u7528 relativePast \u4F1A\u628A\u300C3 \u5206\u949F\u540E\u300D\u663E\u793A\u6210\u300C\u521A\u521A\u300D\uFF0C\u76F4\u63A5\u4E22\u8BED\u4E49\u3002",
-        "en": '`relativePast` and `relativeFuture` are duals: for future times (e.g. a schedule) you must use `relativeFuture`; using `relativePast` would render "in 3 minutes" as "just now", losing meaning.'
-      }
-    ],
-    "api": [
-      {
-        "id": "utils-date",
-        "rows": [
-          {
-            "name": "pad2",
-            "type": "(value: number | string) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "`9` \u21D2 `'09'`",
-              "en": "`9` \u21D2 `'09'`"
-            }
-          },
-          {
-            "name": "formatDateTime",
-            "type": "(iso, opts?: { seconds?, fallback? }) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u89E3\u6790\u5931\u8D25 \u21D2 opts.fallback\uFF0C\u7F3A\u7701\u539F\u4E32\uFF1Bseconds:true \u8865 :ss",
-              "en": "On parse failure \u21D2 opts.fallback (default: the original string); seconds:true appends :ss"
-            }
-          },
-          {
-            "name": "formatYmd",
-            "type": "(iso, opts?: { fallback? }) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u89E3\u6790\u5931\u8D25 \u21D2 opts.fallback\uFF0C\u7F3A\u7701 \u2014",
-              "en": "On parse failure \u21D2 opts.fallback (default \u2014)"
-            }
-          },
-          {
-            "name": "formatClock",
-            "type": "(iso: string | null | undefined, opts?: { fallback? }) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u7A7A\u503C/\u89E3\u6790\u5931\u8D25 \u21D2 opts.fallback\uFF0C\u7F3A\u7701 -",
-              "en": "Null/parse failure \u21D2 opts.fallback (default -)"
-            }
-          },
-          {
-            "name": "formatDurationHms",
-            "type": "(ms: number) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6709\u5C0F\u65F6 \u21D2 H:MM:SS\uFF0C\u5426\u5219 MM:SS\uFF1B\u8D1F\u6570/NaN \u21D2 -",
-              "en": "Has hours \u21D2 H:MM:SS, else MM:SS; negative/NaN \u21D2 -"
-            }
-          },
-          {
-            "name": "sameCalendarDay",
-            "type": "(a: Date, b: Date) => boolean",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u672C\u673A\u65F6\u533A\u6BD4\u5E74\u6708\u65E5",
-              "en": "Compares year/month/day in local tz"
-            }
-          },
-          {
-            "name": "relativePast",
-            "type": "(iso, nowMs, translate?) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u8FC7\u53BB\u65F6\u95F4 \u21D2 \u300C3 \u5206\u949F\u524D\u300D\uFF1B\u672A\u6765/\u89E3\u6790\u5931\u8D25 \u21D2 \u300C\u521A\u521A\u300D",
-              "en": 'Past \u21D2 "3 minutes ago"; future/parse failure \u21D2 "just now"'
-            }
-          },
-          {
-            "name": "relativeFuture",
-            "type": "(iso, nowMs, translate?) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u672A\u6765\u65F6\u95F4 \u21D2 \u300C3 \u5206\u949F\u540E\u300D\uFF1B\u89E3\u6790\u5931\u8D25\u56DE\u9000 formatYmd",
-              "en": 'Future \u21D2 "in 3 minutes"; parse failure falls back to formatYmd'
-            }
-          },
-          {
-            "name": "formatRange",
-            "type": "(fromIso, toIso, opts?: { seconds? }) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u540C\u5929 \u21D2 09:00 \u2013 10:30\uFF1B\u8DE8\u5929\u4E24\u7AEF\u5E26\u65E5\u671F",
-              "en": "Same day \u21D2 09:00 \u2013 10:30; across days both ends show dates"
-            }
-          },
-          {
-            "name": "overlaps",
-            "type": "(aFrom, aTo, bFrom, bTo) => boolean",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u534A\u5F00\u533A\u95F4 [from, to)\uFF1BNaN \u21D2 \u4E0D\u91CD\u53E0",
-              "en": "Half-open [from, to); NaN \u21D2 no overlap"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "text": {
-    "id": "text",
-    "heading": {
-      "zh": "\u5B57\u7B26\u4E32",
-      "en": "String"
-    },
-    "api": [
-      {
-        "id": "utils-text",
-        "rows": [
-          {
-            "name": "baseNameOf",
-            "type": "(path: string) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u53D6\u672B\u6BB5\uFF1B\u76EE\u5F55\u5C3E\u659C\u6760\u4E0D\u4F1A\u53D6\u6210\u7A7A\u4E32",
-              "en": "Last segment; a trailing slash never yields empty"
-            }
-          },
-          {
-            "name": "safeTrim",
-            "type": "(s: string) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u53BB\u9996\u5C3E\u7A7A\u767D",
-              "en": "Trim surrounding whitespace"
-            }
-          },
-          {
-            "name": "truncateBytes",
-            "type": "(s: string, maxBytes: number) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6309 UTF-8 \u5B57\u8282\u622A\u65AD\uFF0C\u4E0D\u5207\u534A\u4E2A\u5B57",
-              "en": "Truncate by UTF-8 bytes without splitting a char"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "number": {
-    "id": "number",
-    "heading": {
-      "zh": "\u6570\u5B57",
-      "en": "Number"
-    },
-    "api": [
-      {
-        "id": "utils-number",
-        "rows": [
-          {
-            "name": "formatBytes",
-            "type": "(bytes: number) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "`12 KB` / `3.4 MB`\uFF1B0 \u4E0E\u8D1F\u6570 \u21D2 \u2014",
-              "en": "`12 KB` / `3.4 MB`; 0 and negatives \u21D2 \u2014"
-            }
-          },
-          {
-            "name": "formatCount",
-            "type": "(n: number) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5343\u5206\u4F4D",
-              "en": "Thousands separator"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "http": {
-    "id": "http",
-    "heading": {
-      "zh": "HTTP",
-      "en": "HTTP"
-    },
-    "api": [
-      {
-        "id": "utils-http",
-        "rows": [
-          {
-            "name": "request",
-            "type": "(url, opts?: RequestOptions) => Promise<Response>",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5E26\u8D85\u65F6\uFF08\u9ED8\u8BA4 10s\uFF09\u4E0E AbortSignal",
-              "en": "With timeout (default 10s) and AbortSignal"
-            }
-          },
-          {
-            "name": "requestJson",
-            "type": "<T>(url, opts?) => Promise<T>",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u81EA\u52A8\u89E3\u6790 JSON",
-              "en": "Parses JSON automatically"
-            }
-          },
-          {
-            "name": "HttpError",
-            "type": "class extends Error",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5E26 status\uFF1B\u8D85\u65F6\u629B AbortError",
-              "en": "Carries status; timeout throws AbortError"
-            }
-          }
-        ]
-      }
-    ],
-    "prose": [
-      {
-        "zh": "RequestOptions\uFF1A{ timeoutMs?, signal?, method?, body?, headers? }\u3002",
-        "en": "`RequestOptions`: { timeoutMs?, signal?, method?, body?, headers? }."
-      }
-    ]
-  },
-  "i18n": {
-    "id": "i18n",
-    "heading": {
-      "zh": "\u591A\u8BED\u8A00",
-      "en": "i18n"
-    },
-    "prose": [
-      {
-        "zh": "\u6838\u5FC3\u63D0\u4F9B\u7684\u56FA\u5B9A\u63D0\u793A\u8BED\uFF08\u63A7\u4EF6\u9519\u8BEF\u3001\u52A0\u8F7D\u4E2D\u3001\u7A7A\u6001\u2026\uFF09\u7531\u672C\u5305\u5185\u7F6E\u4E2D\u82F1\u5B57\u5178\u7BA1\u3002",
-        "en": "The fixed copy the core ships (control errors, loading, empty states\u2026) is managed by this package\u2019s built-in zh/en dictionary."
-      },
-      {
-        "zh": "\u8FB9\u754C\uFF1A\u63D2\u4EF6\u81EA\u5DF1\u754C\u9762\u7684\u6587\u6848\u7531\u63D2\u4EF6\u81EA\u5DF1\u7BA1\uFF0C\u672C\u5305\u4E0D\u63D0\u4F9B\u63D2\u4EF6\u7EA7 i18n \u6846\u67B6\u3002\u60F3\u8986\u76D6\u67D0\u6761\u6587\u6848\uFF1A\u7ED9\u7EC4\u4EF6\u4F20 translate prop\uFF0C\u6216\u7ED9\u81EA\u5DF1\u7684\u573A\u666F\u76F4\u63A5\u7528 t + \u81EA\u5B9A\u4E49\u5B57\u5178\u3002",
-        "en": "Boundary: a plugin\u2019s own UI copy is the plugin\u2019s responsibility; this package offers no plugin-level i18n framework. To override a string: pass a `translate` prop, or use `t` with your own dictionary."
-      },
-      {
-        "zh": "\u53EF\u7528 key \u5168\u96C6\u89C1 src/utils/i18n.ts \u7684 UtilMessageKey\u3002",
-        "en": "Full key list: `UtilMessageKey` in `src/utils/i18n.ts`."
-      }
-    ],
-    "api": [
-      {
-        "id": "utils-i18n",
-        "rows": [
-          {
-            "name": "setLocale(locale)",
-            "type": "('zh' | 'en') => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "'zh'\uFF08\u9ED8\u8BA4\uFF09/ 'en'",
-              "en": "'zh' (default) / 'en'"
-            }
-          },
-          {
-            "name": "getLocale()",
-            "type": "() => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5F53\u524D\u8BED\u8A00",
-              "en": "Current locale"
-            }
-          },
-          {
-            "name": "t(key, vars?)",
-            "type": "(key, vars?) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u53D6\u6587\u6848\uFF1B{n} \u5360\u4F4D\u7531 vars \u586B",
-              "en": "Get copy; {n} placeholders filled by vars"
-            }
-          },
-          {
-            "name": "type Translate",
-            "type": "(key, vars?) => string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u7EC4\u4EF6\u90FD\u6536\u8FD9\u4E2A\u53C2\u6570\u4F9B\u8986\u76D6",
-              "en": "Components accept this to override copy"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "quickstart": {
-    "id": "quickstart",
-    "heading": {
-      "zh": "\u4ECE\u96F6\u63A5\u5165",
-      "en": "Integrate from scratch"
-    },
-    "prose": [
-      {
-        "zh": "\u4E00\u4E2A\u63D2\u4EF6\u4ECE\u88C5\u5305\u5230\u7528\u4E0A\u5404\u5B50\u5305\u7684\u5B8C\u6574\u8DEF\u5F84\u3002\u590D\u5236\u7C98\u8D34\u7EA7\u522B\u7684\u6700\u5C0F\u53EF\u7528\u793A\u4F8B\u3002",
-        "en": "The full path from installing the package to using each subpackage. Copy-paste-level minimal example."
-      },
-      {
-        "zh": "\xA70 \u88C5\u5305\uFF1Areact \u662F optional peer\u2014\u2014\u53EA\u7528 utils / design \u7684\u63D2\u4EF6\u4E0D\u5FC5\u88C5\u3002\u5305\u91CC\u5E26\u9884\u7F16\u8BD1 dist\uFF08\u5BBF\u4E3B\u4EE5 git/npm \u88C5\u63D2\u4EF6\u4E0D\u8DD1\u6784\u5EFA\u811A\u672C\uFF0C\u4EA7\u7269\u5FC5\u987B\u968F\u5305\u53D1\u5E03\uFF09\u3002",
-        "en": "\xA70 Install: `react` is an optional peer \u2014 plugins using only utils/design need not install it. The package ships prebuilt dist (hosts install plugins without running build scripts, so artifacts must be published)."
-      },
-      {
-        "zh": "\xA71 \u521D\u59CB\u5316\u6837\u5F0F\uFF08\u4E00\u6B21\uFF09\uFF1Aid \u5FC5\u987B\u63D2\u4EF6\u5185\u552F\u4E00\uFF08\u591A\u63D2\u4EF6\u540C\u9875\u9760\u5B83\u4E92\u4E0D\u8986\u76D6\uFF09\uFF1B\u53D8\u91CF\u4E0E\u7C7B\u540D\u7EDF\u4E00\u4F7F\u7528 dshpc \u524D\u7F00\uFF0C\u4E0D\u9700\u8981\u4F20\u53C2\u3002",
-        "en": "\xA71 Initialize styles (once): `id` must be unique within the plugin (multiple plugins on one page rely on it to avoid clobbering); variables and class names uniformly use the `dshpc` prefix, no param needed."
-      },
-      {
-        "zh": "\xA72 \u7528\u4E00\u4E2A\u63A7\u4EF6",
-        "en": "\xA72 Use a control"
-      },
-      {
-        "zh": "\xA73 \u7528\u901A\u7528\u65B9\u6CD5",
-        "en": "\xA73 Use helpers"
-      },
-      {
-        "zh": "\xA74 \u63A5\u5DE5\u4F5C\u533A\u6D4F\u89C8\uFF08\u8981\u5BBF\u4E3B\u80FD\u529B\uFF09\uFF1Amount \u662F\u5FC5\u586B\u2014\u2014PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF09\uFF0C\u6CA1\u6709\u5E03\u5C40\u4F4D\u7F6E\u5C31\u53EA\u80FD\u906E\u76D6\uFF0C\u6240\u4EE5\u8981\u4F20\u4F60\u9875\u9762\u91CC\u90A3\u4E00\u5C42 flex \u884C\uFF0C\u4E0D\u8981\u4F20 document.body \u518D\u81EA\u5DF1\u5957 fixed\u3002\u6D4F\u89C8\u6001\u505C\u9760\u5C31\u662F FileBrowser \u5957\u5728\u6838\u5FC3 PanelDock \u91CC\uFF08openFilePreview \u5DF2\u7ECF\u8FD9\u4E48\u505A\u4E86\uFF0C\u9762\u677F\u7528 header={null}\uFF1A\u6CA1\u6709\u5934\u90E8\u90A3\u6761\u7EBF\uFF0C\u2715 \u6D6E\u5728\u53F3\u4E0A\u89D2\uFF09\u3002",
-        "en": "\xA74 Wire workspace browsing (needs host capability): `mount` is required \u2014 PanelDock is a layout member (takes width, narrows the main area), so without a layout slot it can only overlay; pass your page\u2019s flex row, not `document.body` with your own fixed positioning. Browse-dock is FileBrowser inside the core PanelDock (openFilePreview already does this, with header={null}: no header line, \u2715 floats top-right)."
-      },
-      {
-        "zh": "sessionId \u4E0D\u662F\u968F\u4FBF\u586B\u7684\uFF1AworkspaceFiles \u662F\u4F1A\u8BDD\u4F5C\u7528\u57DF\u670D\u52A1\uFF0C\u5FC5\u987B\u7ED9\u5C5E\u4E8E\u8BE5\u5DE5\u4F5C\u533A\u7684\u771F\u5B9E\u4F1A\u8BDD id\u3002\u4ECE\u5BBF\u4E3B\u5DE5\u4F5C\u533A\u5FEB\u7167\u6311\u951A\u70B9\u7528 pickWorkspaceAnchor(items)\uFF08ui \u7684 workspaceList \u5FEB\u7167\u53EF\u76F4\u63A5\u5582\u8FDB\u53BB\uFF09\u3002",
-        "en": "`sessionId` is not arbitrary: workspaceFiles is a session-scoped service, so you must pass a real session id belonging to that workspace. Pick an anchor from the host workspace snapshot via pickWorkspaceAnchor(items) (ui\u2019s workspaceList snapshot feeds in directly)."
-      },
-      {
-        "zh": "\xA75 \u63A5\u4F1A\u8BDD\u9884\u89C8",
-        "en": "\xA75 Wire session preview"
-      },
-      {
-        "zh": "\xA76 \u5378\u8F7D\u6E05\u7406\uFF08\u53EF\u9009\uFF09",
-        "en": "\xA76 Teardown (optional)"
-      }
-    ],
-    "code": [
-      {
-        "id": "integration-install",
-        "lang": "bash",
-        "src": "pnpm add dsh-plugin-core"
-      },
-      {
-        "id": "integration-init-style",
-        "lang": "ts",
-        "src": "// \u63D2\u4EF6 client \u5165\u53E3\nimport { createStyleKit } from 'dsh-plugin-core/design'\nimport { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'\n\nconst kit = createStyleKit({ id: 'dsh-task-reminder-ui' })\nsetStyleKit(kit)\nensureControls()"
-      },
-      {
-        "id": "integration-use-control",
-        "lang": "tsx",
-        "src": "import { Button, Input, Picker, showToast } from 'dsh-plugin-core/ui'\n\nh(Input, { value: name, onChange: setName, placeholder: '\u4EFB\u52A1\u540D', error: nameError })\nh(Button, { variant: 'primary', onClick: save }, '\u4FDD\u5B58')\nh(Picker, {\n  options: models,                 // [{ value, label }]\n  value: current,\n  onChange: (v) => setCurrent(v as string),\n  searchable: true,\n  clearable: true,\n})\nshowToast('\u5DF2\u4FDD\u5B58', { variant: 'success' })"
-      },
-      {
-        "id": "integration-use-utils",
-        "lang": "ts",
-        "src": "import { formatDateTime, relativeFuture, formatBytes } from 'dsh-plugin-core/utils'\n\nformatDateTime(task.runAt, { seconds: true })   // 2026-10-18 09:30:05\nrelativeFuture(task.runAt, Date.now())          // 3 \u5206\u949F\u540E\uFF08\u672A\u6765\u65F6\u95F4\u7528\u8FD9\u4E2A\uFF09\nformatBytes(file.size)                          // 12 KB"
-      },
-      {
-        "id": "integration-use-explorer",
-        "lang": "tsx",
-        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// \u4ECE ctx \u53D6\u51FA\u8FD9\u4E00\u5C0F\u5757\uFF08\u4E0D\u8981\u4F20\u6574\u4E2A ctx\uFF09\nconst workspaceFiles = ctx.remote.workspaceFiles\n\n// \u9884\u89C8\u67D0\u6587\u4EF6/\u6587\u4EF6\u5939\uFF1A\u53F3\u4FA7\u5206\u680F\uFF08\u6324\u7A84 row \u5DE6\u8FB9\u7684\u4E3B\u533A\uFF0C\u4E0D\u662F\u6D6E\u5728\u4E0A\u9762\uFF09\nopenFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })\n\n// \u8BA9\u7528\u6237\u9009\u6587\u4EF6\uFF1A\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path, isDir }\uFF08\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\nconst picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })"
-      },
-      {
-        "id": "integration-use-session",
-        "lang": "tsx",
-        "src": "import { SessionPreview } from 'dsh-plugin-core/session'\n\nconst source = {\n  listMessages: async (id) => (await api.get(`/sessions/${id}/messages`)).data,\n  download: async (id, path) => api.getBytes(`/sessions/${id}/file?path=${path}`),\n}\n\nh(SessionPreview, { sessionId, source, variant: 'modal', onClose: close })"
-      },
-      {
-        "id": "integration-cleanup",
-        "lang": "ts",
-        "src": "kit.dispose()   // \u64A4\u6389 <style> \u6807\u7B7E\u5E76\u6E05\u7A7A\u767B\u8BB0\u57DF\uFF08\u63D2\u4EF6\u5378\u8F7D / HMR\uFF09"
-      }
-    ]
-  },
-  "reference": {
-    "id": "reference",
-    "heading": {
-      "zh": "\u63A5\u5165\u5751",
-      "en": "Pitfalls"
-    },
-    "prose": [
-      {
-        "zh": "\u6309\u8E29\u9891\u6392\u5E8F\u7684\u5E38\u72AF\u9519\u8BEF\uFF1A",
-        "en": "Common mistakes, ranked by frequency:"
-      }
-    ],
-    "api": [
-      {
-        "id": "integration-pitfalls",
-        "rows": [
-          {
-            "name": "\u5FD8\u4E86 setStyleKit \u5C31\u6E32\u67D3\u63A7\u4EF6",
-            "type": "\u73B0\u8C61\uFF1A\u6837\u5F0F\u665A\u4E00\u5E27\u6216\u843D\u5230\u9ED8\u8BA4 style id",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5165\u53E3\u5904\u5148\u8C03\uFF0C\u518D\u6E32\u67D3",
-              "en": "Call it at entry, then render"
-            }
-          },
-          {
-            "name": "\u76F4\u63A5 import \u5B98\u65B9 @deepseek-ai/* \u5E76\u6307\u671B\u672C\u5305\u5E2E\u4F60\u5F15",
-            "type": "\u73B0\u8C61\uFF1ANode \u4E0B ERR_MODULE_NOT_FOUND",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u672C\u5305 ui \u5DF2\u96F6\u5B98\u65B9\u4F9D\u8D56\uFF1B\u8981\u7528\u5B98\u65B9\u4EF6\u5C31\u5728\u63D2\u4EF6\u4FA7\u81EA\u5DF1\u5904\u7406\u5E73\u53F0\u6A21\u5757",
-              "en": "Our ui has zero official deps; handle platform modules on the plugin side"
-            }
-          },
-          {
-            "name": "\u7ED9 read \u5C11\u4F20\u7B2C\u4E09\u53C2 range",
-            "type": "\u73B0\u8C61\uFF1A\u8FDC\u7AEF\u62D2\uFF1Aexpected 3 business argument(s) \u2026 got 2",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u4E00\u5F8B\u663E\u5F0F\u4F20 {}",
-              "en": "Always pass {} explicitly"
-            }
-          },
-          {
-            "name": "\u7528 relativePast \u663E\u793A\u672A\u6765\u65F6\u95F4",
-            "type": "\u73B0\u8C61\uFF1A\u300C3 \u5206\u949F\u540E\u300D\u663E\u793A\u6210\u300C\u521A\u521A\u300D",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u7528 relativeFuture",
-              "en": "Use relativeFuture"
-            }
-          },
-          {
-            "name": "\u60F3\u8BA9\u7EC4\u4EF6\u81EA\u5DF1\u53D6\u5DE5\u4F5C\u533A / \u6A21\u578B\u5217\u8868",
-            "type": "\u73B0\u8C61\uFF1A\u53D6\u4E0D\u5230\uFF08\u901A\u9053\u662F\u63D2\u4EF6\u79C1\u6709\u7684\uFF09",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6570\u636E\u7ECF props \u7ED9\uFF0C\u5BBF\u4E3B\u80FD\u529B\u7ECF\u63A5\u53E3\u6CE8\u5165",
-              "en": "Data via props, host capability via injected interface"
-            }
-          },
-          {
-            "name": "\u6697\u8272\u4E0D\u8DDF\u968F\u5BBF\u4E3B",
-            "type": "\u73B0\u8C61\uFF1A\u63D2\u4EF6\u56FA\u5B88\u4E00\u79CD\u660E\u6697",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5224\u636E\u662F body[data-ds-dark-theme]\uFF0C\u522B\u7528 prefers-color-scheme",
-              "en": "Predicate is body[data-ds-dark-theme], not prefers-color-scheme"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "ui-overview": {
-    "id": "ui-overview",
-    "heading": {
-      "zh": "\u6982\u89C8",
-      "en": "Overview"
-    },
-    "prose": [
-      {
-        "zh": "\u4F9D\u8D56 design\u3002\u88C5\u7684\u662F\u300C\u7528 token \u642D\u51FA\u6765\u7684\u96F6\u4EF6\u300D\u2014\u2014\u76F4\u63A5\u7528\uFF0C\u4E0D\u518D\u81EA\u5DF1\u5199\u539F\u751F\u63A7\u4EF6\u3002\u7EAF\u96F6\u4EF6\uFF0C\u4E0D\u81EA\u5DF1\u53D6\u6570\uFF1A\u9009\u9879\u3001\u5F53\u524D\u503C\u90FD\u7ECF props \u7ED9\uFF08\u6570\u636E\u8981\u8DE8 host\u2194client \u8FB9\u754C\uFF0C\u901A\u9053\u662F\u63D2\u4EF6\u79C1\u6709\u7684\uFF09\u3002",
-        "en": 'Depends on design. Ships "parts built from tokens" \u2014 use them directly instead of writing native controls. Pure parts, no self-fetching: options and current value come via props (data crosses the host\u2194client boundary over the plugin\u2019s private channel).'
-      },
-      {
-        "zh": "\u5B98\u65B9\u4EF6\u901A\u8DEF\uFF1Aui \u5165\u53E3\u4FDD\u6301\u96F6 @deepseek-ai/* \u4F9D\u8D56\uFF08Node \u5355\u6D4B / \u975E\u5BBF\u4E3B\u73AF\u5883 import \u4E0D\u5D29\uFF09\uFF1B\u5B98\u65B9 primitives \u7ECF src/ui/official.ts \u4EE5\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/ui/official \u900F\u51FA\u3002\u8981\u6D88\u8D39\u5B98\u65B9\u4EF6\uFF08FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip \u2026\uFF09\u7684\u5C01\u88C5\u4ECE\u8FD9\u6761\u901A\u8DEF\u5F15\uFF0C\u4E0D\u8BB8\u5728\u522B\u5904 import \u5E73\u53F0\u6A21\u5757\u3002",
-        "en": "Official-component path: the ui entry stays free of @deepseek-ai/* deps (so Node unit tests / non-host imports don\u2019t crash); official primitives are exposed via src/ui/official.ts through the separate subpath dsh-plugin-core/ui/official. Wrappers that consume official parts (FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip \u2026) must import from this path \u2014 never import platform modules elsewhere."
-      },
-      {
-        "zh": "\u5B9A\u5236\u8FB9\u754C\uFF1Aprops \u5C31\u662F\u5B9A\u5236\u9762\uFF0C\u8981\u6539\u884C\u4E3A\u8BF7\u7EC4\u5408 props\uFF0C\u4E0D\u8981 fork \u6E90\u7801\uFF1B\u300C\u8FFD\u52A0 class/style\u300D\u53EA\u5141\u8BB8\u8865\u5E03\u5C40\uFF0C\u76AE\u80A4\u4E00\u5F8B\u8D70 token \u8986\u76D6\uFF1B\u7F3A\u63A7\u4EF6\u65F6\u5148\u63D0\u9700\u6C42\uFF0C\u5B9E\u5728\u8981\u81EA\u5DF1\u5199\u8BF7\u6309 style.md \u53E3\u5F84\u7528\u540C\u4E00\u5957 token\uFF0C\u5E76\u8003\u8651\u63D0\u5230\u672C\u5305\u3002",
-        "en": 'Customization: props are the customization surface \u2014 compose props to change behavior, don\u2019t fork; "append class/style" may only patch layout, skins always go through token overrides; if a control is missing, raise a request first; if you must write your own, follow style.md with the same tokens and consider upstreaming it.'
-      }
-    ],
-    "code": [
-      {
-        "id": "ui-setup",
-        "lang": "ts",
-        "src": "import { createStyleKit } from 'dsh-plugin-core/design'\nimport { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'\n\nsetStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))\nensureControls()"
-      }
-    ]
-  },
-  "button": {
-    "id": "button",
-    "heading": {
-      "zh": "Button / IconButton / Segmented",
-      "en": "Button / IconButton / Segmented"
-    },
-    "prose": [
-      {
-        "zh": "Button 10 \u6863\u5916\u89C2\uFF08\u5B9E\u5FC3 / \u7EBF\u6846 / \u65E0\u5E95\uFF09\u3002hover / active \u8D70 token \u6D3E\u751F\u8272\uFF08\u4E0D\u7528 opacity\uFF09\u3002",
-        "en": "Button offers 10 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity)."
-      },
-      {
-        "zh": "IconButton\uFF1Avariant: plain|outline|danger\uFF08\u9ED8\u8BA4 plain\uFF09\u3001size\uFF08\u9ED8\u8BA4 lg\uFF09\u3001icon\uFF08\u5FC5\u586B\uFF09\u3001label\uFF08\u5FC5\u586B\uFF0C\u65E0\u969C\u788D\u540D\u517C title\uFF09\u3002",
-        "en": "IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title)."
-      },
-      {
-        "zh": "Segmented\uFF1Aitems\uFF08\u5FC5\u586B\uFF09+ \u5355\u9009\u6216\u591A\u9009\uFF1B\u53E6\u6709 size\uFF08\u9ED8\u8BA4 lg\uFF09\u3001variant: default|inset\u3001block\u3001label\u3001id\u3001disabled\u3002\u9009\u4E2D\u7247 = --dshpc-surface-raised + 1px \u63CF\u8FB9 + \u6D6E\u8D77\u9634\u5F71\u3002",
-        "en": "Segmented: items (required) + single or multiple selection; also size (default lg), variant default|inset, block, label, id, disabled. Selected segment = --dshpc-surface-raised + 1px border + lift shadow."
-      }
-    ],
-    "api": [
-      {
-        "id": "ui-button",
-        "rows": [
-          {
-            "name": "variant",
-            "type": "\u4E0A\u8868 10 \u6863\uFF08primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link\uFF09",
-            "def": "'outline'",
-            "desc": {
-              "zh": "\u5916\u89C2\u6863",
-              "en": "Appearance tier"
-            }
-          },
-          {
-            "name": "size",
-            "type": "'sm' | 'md' | 'lg'",
-            "def": "'lg'",
-            "desc": {
-              "zh": "\u9AD8\u5EA6\u6863\uFF0824 / 28 / 32\uFF0C\u6709\u8FB9\u65E0\u8FB9\u540C\u9AD8\uFF09",
-              "en": "Height tier (24 / 28 / 32, same height with or without border)"
-            }
-          },
-          {
-            "name": "icon",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u524D\u7F6E\u56FE\u6807\uFF08\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u5B57\u7B26\u4E32\u5747\u53EF\uFF09",
-              "en": "Leading icon (official icon component or string)"
-            }
-          },
-          {
-            "name": "iconRight",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u540E\u7F6E\u56FE\u6807\uFF08\u5C55\u5F00\u7BAD\u5934\u3001\u5916\u94FE\uFF09",
-              "en": "Trailing icon (expand arrow, external link)"
-            }
-          },
-          {
-            "name": "color",
-            "type": "string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u81EA\u5B9A\u4E49\u4E3B\u8272\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\uFF0C\u7EBF\u6846 / \u65E0\u5E95\u6863\u4F5C\u4E3B\u8272",
-              "en": "Custom main color: background for solid tiers, main color for outline/bare"
-            }
-          },
-          {
-            "name": "loading",
-            "type": "boolean",
-            "def": "'false'",
-            "desc": {
-              "zh": "\u6587\u6848\u524D\u663E\u793A\u540C\u8272\u5C0F\u5708\uFF0C\u5E76\u81EA\u52A8 disabled",
-              "en": "Shows a same-color spinner before the label and auto-disables"
-            }
-          },
-          {
-            "name": "block",
-            "type": "boolean",
-            "def": "'false'",
-            "desc": {
-              "zh": "\u6491\u6EE1\u7236\u5BBD",
-              "en": "Fill parent width"
-            }
-          },
-          {
-            "name": "children",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6587\u6848\uFF08\u7531\u8C03\u7528\u65B9\u6309\u8BED\u8A00\u7ED9\uFF1A\u4E2D\u6587\u51FA\u4E2D\u6587\u3001\u82F1\u6587\u51FA\u82F1\u6587\uFF0C\u4E2D\u82F1\u6DF7\u6392\u4E5F\u652F\u6301\uFF09",
-              "en": "Label (caller supplies per locale: zh shows zh, en shows en, mixed is supported)"
-            }
-          },
-          {
-            "name": "\u2026rest",
-            "type": "\u539F\u751F button \u5C5E\u6027",
-            "def": "\u2014",
-            "desc": {
-              "zh": "type / disabled / title / aria-* / onClick \u539F\u6837\u900F\u4F20",
-              "en": "type / disabled / title / aria-* / onClick passed through"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "input": {
-    "id": "input",
-    "heading": {
-      "zh": "Input \u5BB6\u65CF\uFF08Field.ts\uFF09",
-      "en": "Input family (Field.ts)"
-    },
-    "api": [
-      {
-        "id": "ui-input",
-        "rows": [
-          {
-            "name": "Input",
-            "type": "value onChange(v) size(\u9ED8\u8BA4 sm) error disabled type placeholder inputRef onKeyDown onBlur aria-label title hint",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u57FA\u7840\u8F93\u5165\u6846\uFF1Berror \u63CF\u7EA2\uFF1Bhint \u7ED9\u5B57\u7B26\u4E32\u5373\u81EA\u52A8\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A",
-              "en": "Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint"
-            }
-          },
-          {
-            "name": "PrefixedInput",
-            "type": "\u540C Input + prefix: string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u524D\u7F6E\u6587\u6848\uFF08https:// / C:\\\uFF09",
-              "en": "Leading text (https:// / C:\\)"
-            }
-          },
-          {
-            "name": "NumberInput",
-            "type": "value: number onChange(v) min max step(\u9ED8\u8BA4 1) inputWidth suffix label decreaseLabel increaseLabel hint",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5DF2 clamp\uFF1B\u5931\u7126\u56DE\u5F39\u8349\u7A3F",
-              "en": "Already clamped; reverts to draft on blur"
-            }
-          },
-          {
-            "name": "Textarea",
-            "type": "value onChange(v) placeholder error disabled rows spellCheck(\u9ED8\u8BA4\u5173) aria-label hint",
-            "def": "\u2014",
-            "desc": {
-              "zh": "hint \u7684\u95EE\u53F7\u9489\u5728\u53F3\u4E0B\u89D2\uFF08\u5355\u884C\u63A7\u4EF6\u5219\u5728\u884C\u5C3E\u5782\u76F4\u5C45\u4E2D\uFF09",
-              "en": "hint\u2019s question mark pins to the bottom-right (for single-line controls it centers at the row end)"
-            }
-          },
-          {
-            "name": "Checkbox",
-            "type": "checked onChange(next) label accentColor disabled",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u2014",
-              "en": "\u2014"
-            }
-          },
-          {
-            "name": "fieldMetricsOf(size)",
-            "type": "\u2192 { height, font, line, icon, gap }",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u81EA\u5DF1\u642D\u540C\u6B3E\u8F93\u5165\u6846\u65F6\u5BF9\u9F50\u5C3A\u5BF8",
-              "en": "Match dimensions when building your own same-style input"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "picker": {
-    "id": "picker",
-    "heading": {
-      "zh": "Picker / WorkspacePicker / ModelPicker",
-      "en": "Picker / WorkspacePicker / ModelPicker"
-    },
-    "prose": [
-      {
-        "zh": "Picker\uFF1A\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\uFF0C\u81EA\u7ED8\uFF08\u4E0D\u4F9D\u8D56\u5B98\u65B9 Menu\uFF09\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u4E5F\u53EF\u5355\u7528\uFF1AtoGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf\u3002",
-        "en": "Picker: single/multiple/max/search/grouping/empty/degrade, self-drawn (no official Menu). Keyboard: Esc closes, \u2191\u2193 move cursor, Enter selects. Pure logic is also usable standalone: toGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf."
-      },
-      {
-        "zh": "WorkspacePicker\uFF1A\u9886\u57DF\u9009\u62E9\u5668\uFF0C\u6570\u636E\u81EA\u5E26\u7684\u73B0\u6210\u7EC4\u4EF6\uFF08FilePicker \u5DF2\u5220\uFF09\u3002\u6570\u636E\u81EA\u52A8\u6765\u81EA\u5BBF\u4E3B\uFF1A\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 connectHost(ctx)\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u4F4F\u5B98\u65B9 workspaces \u670D\u52A1\u7684\u5FEB\u7167\u3002\u4E0D\u63A5\u7EBF = \u7A7A\u6001\uFF08\u5982\u5B9E\uFF0C\u4E0D\u7F16\u6570\u636E\uFF09\u3002",
-        "en": "WorkspacePicker: a domain picker, a ready-made data-backed component (FilePicker removed). Data comes automatically from the host: call connectHost(ctx) once in the plugin apply, and the component subscribes to the official workspaces service snapshot. No wiring = empty state (honest, no fabricated data)."
-      },
-      {
-        "zh": "ModelPicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u73B0\u6210\u7EC4\u4EF6 + variant: grouped|cascade\uFF08\u9ED8\u8BA4 grouped\uFF09\u3002\u4E24\u79CD\u5F62\u6001\u8FD4\u56DE\u53E3\u5F84\u4E00\u81F4\uFF1AonChange \u90FD\u53D1\u6700\u7EC8\u6A21\u578B value\uFF08${provider}/${id}\uFF09\u3002\u76EE\u5F55\u81EA\u52A8\u6765\u81EA\u5BBF\u4E3B\uFF08serveModelCatalog + connectHost\uFF09\u3002",
-        "en": "ModelPicker: a ready-made data-backed component + variant grouped|cascade (default grouped). Both forms return consistently: onChange emits the final model value (${provider}/${id}). Catalog comes automatically from the host (serveModelCatalog + connectHost)."
-      }
-    ],
-    "api": [
-      {
-        "id": "ui-picker",
-        "rows": [
-          {
-            "name": "groups / options",
-            "type": "PickerGroup[] / PickerOption[]",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u4E8C\u9009\u4E00\uFF1Boptions \u4F1A\u88AB\u5F53\u6210\u4E00\u4E2A\u65E0\u6807\u9898\u7EC4",
-              "en": "One of the two; options is treated as a single untitled group"
-            }
-          },
-          {
-            "name": "value / defaultValue",
-            "type": "string | string[]",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u7ED9\u4E86 value \u5373\u53D7\u63A7\uFF1B\u5426\u5219\u5185\u90E8\u7BA1",
-              "en": "Passing value makes it controlled; otherwise it manages internally"
-            }
-          },
-          {
-            "name": "onChange",
-            "type": "(v: string | string[]) => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5355\u9009\u56DE string\uFF0C\u591A\u9009\u56DE string[]",
-              "en": "Single returns string, multiple returns string[]"
-            }
-          },
-          {
-            "name": "mode",
-            "type": "'single' | 'multiple'",
-            "def": "'single'",
-            "desc": {
-              "zh": "\u2014",
-              "en": "\u2014"
-            }
-          },
-          {
-            "name": "max",
-            "type": "number",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u591A\u9009\u4E0A\u9650\uFF1B\u5230\u4E0A\u9650\u5176\u4F59\u9879\u7F6E\u7070 + \u63D0\u793A\uFF08\u4E0D\u9759\u9ED8\u622A\u65AD\uFF09",
-              "en": "Multiple-select cap; at cap others grey out + a hint (no silent truncation)"
-            }
-          },
-          {
-            "name": "searchable",
-            "type": "boolean",
-            "def": "'false'",
-            "desc": {
-              "zh": "\u663E\u793A\u641C\u7D22\u6846\uFF1B\u5C55\u5F00\u83DC\u5355\u65F6\u81EA\u52A8\u805A\u7126\u641C\u7D22\u6846",
-              "en": "Shows a search box; auto-focuses it when the menu opens"
-            }
-          },
-          {
-            "name": "align",
-            "type": "'left' | 'center'",
-            "def": "'left'",
-            "desc": {
-              "zh": "\u89E6\u53D1\u5668\u6587\u5B57\u5BF9\u9F50",
-              "en": "Trigger text alignment"
-            }
-          },
-          {
-            "name": "clearable",
-            "type": "boolean",
-            "def": "'false'",
-            "desc": {
-              "zh": "\u5355\u9009\u65F6\u5217\u8868\u9876\u90E8\u591A\u4E00\u9879\u300C\u4E0D\u9009\u300D",
-              "en": 'In single mode, adds a "none" item at the top of the list'
-            }
-          },
-          {
-            "name": "placeholder",
-            "type": "string",
-            "def": "\u5185\u7F6E\u300C\u8BF7\u9009\u62E9\u300D",
-            "desc": {
-              "zh": "\u2014",
-              "en": "\u2014"
-            }
-          },
-          {
-            "name": "degraded",
-            "type": "boolean",
-            "def": "'false'",
-            "desc": {
-              "zh": "\u5019\u9009\u53EF\u80FD\u4E0D\u5B8C\u6574 \u21D2 \u9876\u90E8\u5982\u5B9E\u63D0\u793A\uFF0C\u4E0D\u7F16\u9020",
-              "en": "Candidates may be incomplete \u21D2 honest top hint, no fabrication"
-            }
-          },
-          {
-            "name": "size",
-            "type": "'sm' | 'md' | 'lg'",
-            "def": "'md'",
-            "desc": {
-              "zh": "\u2014",
-              "en": "\u2014"
-            }
-          },
-          {
-            "name": "placement",
-            "type": "'down' | 'up'",
-            "def": "'down'",
-            "desc": {
-              "zh": "\u89E6\u53D1\u5668\u9760\u8FD1\u89C6\u53E3\u5E95\u90E8\u65F6\u7528 up",
-              "en": "Use up when the trigger is near the viewport bottom"
-            }
-          },
-          {
-            "name": "closeOnSelect",
-            "type": "boolean",
-            "def": "\u591A\u9009 false / \u5355\u9009\u6052\u5173",
-            "desc": {
-              "zh": "\u9009\u4E2D\u540E\u662F\u5426\u6536\u8D77",
-              "en": "Whether to collapse after selection"
-            }
-          },
-          {
-            "name": "showLabels",
-            "type": "boolean",
-            "def": "'true'",
-            "desc": {
-              "zh": "\u591A\u9009\u65F6\u89E6\u53D1\u5668\u5217\u51FA\u5DF2\u9009\u9879\uFF0C\u800C\u975E\u53EA\u663E\u793A\u300C\u5DF2\u9009 N \u9879\u300D",
-              "en": 'In multiple mode the trigger lists selected items instead of just "N selected"'
-            }
-          },
-          {
-            "name": "icon",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u89E6\u53D1\u5668\u6587\u5B57\u524D\u7684\u56FE\u6807",
-              "en": "Icon before the trigger text"
-            }
-          },
-          {
-            "name": "hint",
-            "type": "string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u95EE\u53F7\u63D0\u793A\u6587\u5B57\uFF1A\u81EA\u52A8\u5728\u89E6\u53D1\u5668\u540E\u6302\u6807\u51C6 FieldHint",
-              "en": "Hint text: auto-attaches a standard FieldHint after the trigger"
-            }
-          },
-          {
-            "name": "className",
-            "type": "string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5B9A\u5236\u5BBD\u5EA6 / \u5916\u8FB9\u8DDD",
-              "en": "Custom width / margin"
-            }
-          },
-          {
-            "name": "ariaLabel",
-            "type": "string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u65E0\u969C\u788D\u540D",
-              "en": "Accessible name"
-            }
-          },
-          {
-            "name": "translate",
-            "type": "Translate",
-            "def": "\u5185\u7F6E",
-            "desc": {
-              "zh": "\u8986\u76D6\u6587\u6848",
-              "en": "Override copy"
-            }
-          }
-        ]
-      },
-      {
-        "id": "ui-workspace-picker",
-        "rows": [
-          {
-            "name": "value / defaultValue / onChange",
-            "type": "\u9009\u4E2D\u503C\u4E3A workspaceId\uFF08\u4E0D\u662F title\uFF09\uFF1B'' = \u300C\u6240\u6709\u5DE5\u4F5C\u533A\u300D",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u4E0D\u7B5B",
-              "en": "No filter"
-            }
-          },
-          {
-            "name": "allowDefault / defaultLabel",
-            "type": "\u300C\u6240\u6709\u5DE5\u4F5C\u533A\u300D\u9ED8\u8BA4\u9879\uFF1A\u9ED8\u8BA4\u63D0\u4F9B\u3001\u7F6E\u9876\u3001\u53EA\u5728\u5355\u9009\u51FA\u73B0\uFF1B\u9009\u4E2D\u53D1 ''\uFF1Bfalse \u5173\u6389",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6587\u6848\u53EF\u6539",
-              "en": "Text is customizable"
-            }
-          },
-          {
-            "name": "mode / max",
-            "type": "\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650\uFF08\u5230\u4E0A\u9650\u5DF2\u9009\u9879\u4ECD\u53EF\u53CD\u9009\uFF09",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u2014",
-              "en": "\u2014"
-            }
-          },
-          {
-            "name": "placeholder",
-            "type": "string",
-            "def": "\u9ED8\u8BA4\u300C\u5DE5\u4F5C\u533A\u300D",
-            "desc": {
-              "zh": "\u60F3\u53EB\u300C\u9009\u62E9\u5DE5\u4F5C\u533A\u300D\u5C31\u4F20\u5B83",
-              "en": 'Pass it if you want "\u9009\u62E9\u5DE5\u4F5C\u533A"'
-            }
-          },
-          {
-            "name": "icon",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u89E6\u53D1\u5668\u524D\u7F6E\u56FE\u6807\uFF1A\u4E0D\u4F20 = \u9ED8\u8BA4\u6587\u4EF6\u5939\uFF1Bnull = \u4E0D\u663E\u793A\uFF1B\u4F20\u5143\u7D20 = \u81EA\u5B9A\u4E49",
-              "en": "Leading trigger icon: omitted = default folder; null = hidden; element = custom"
-            }
-          }
-        ]
-      },
-      {
-        "id": "ui-model-picker",
-        "rows": [
-          {
-            "name": "variant",
-            "type": "'grouped' | 'cascade'",
-            "def": "'grouped'",
-            "desc": {
-              "zh": "grouped = \u4E00\u4E2A\u4E0B\u62C9\u5B8C\u5168\u72EC\u7ACB\uFF1Bcascade = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF08\u5148\u9009\u4F9B\u5E94\u5546\uFF0C\u6A21\u578B\u5217\u8868\u8DDF\u7740\u7B5B\uFF1B\u6362\u4F9B\u5E94\u5546\u6E05\u7A7A\u5DF2\u9009\uFF09",
-              "en": "grouped = one standalone dropdown; cascade = two linked dropdowns (pick provider first, model list filters; switching provider clears selection)"
-            }
-          },
-          {
-            "name": "allowDefault / defaultLabel",
-            "type": "\u300C\u9ED8\u8BA4\u6A21\u578B\u300D\u9009\u9879\uFF1A\u9ED8\u8BA4\u63D0\u4F9B\uFF1Bfalse \u5173\u95ED\uFF1B\u9009\u4E2D\u53D1 ''",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6587\u6848\u53EF\u4F20 defaultLabel",
-              "en": "Pass defaultLabel for the text"
-            }
-          },
-          {
-            "name": "placeholder",
-            "type": "string",
-            "def": "\u9ED8\u8BA4\u300C\u6A21\u578B\u300D",
-            "desc": {
-              "zh": "icon\uFF1A\u4E0D\u4F20 = \u9ED8\u8BA4\u661F\u5F62\uFF1Bnull = \u4E0D\u663E\u793A\uFF1B\u4F20\u5143\u7D20 = \u81EA\u5B9A\u4E49",
-              "en": "icon: omitted = default star; null = hidden; element = custom"
-            }
-          },
-          {
-            "name": "\u900F\u4F20 Picker",
-            "type": "value / defaultValue / onChange / clearable / searchable / hint / size / placement / className / disabled / degraded / translate",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u540C Picker \u540C\u540D\u53C2\u6570",
-              "en": "Same-named params as Picker"
-            }
-          }
-        ]
-      }
-    ],
-    "code": [
-      {
-        "id": "ui-workspacepicker-example",
-        "lang": "tsx",
-        "src": "import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'\n\n// apply(ctx) \u91CC\uFF1AconnectHost(ctx)\nh(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })"
-      }
-    ]
-  },
-  "tooltip": {
-    "id": "tooltip",
-    "heading": {
-      "zh": "FieldHint\uFF08\u95EE\u53F7\u63D0\u793A\uFF09",
-      "en": "FieldHint (hint)"
-    },
-    "prose": [
-      {
-        "zh": "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u4E0D\u5C5E\u4E8E Input \u5BB6\u65CF\u2014\u2014\u6807\u9898\u540E\u3001\u6309\u94AE\u540E\u3001\u6587\u5B57\u540E\u3001\u8F93\u5165\u6846\u540E\u968F\u5904\u53EF\u6302\u3002\u6C14\u6CE1 = \u5B98\u65B9 Tooltip \u672C\u4F53\uFF1A\u63D2\u4EF6\u542F\u52A8\u65F6 setTooltipRenderer((props) => h(OfficialTooltip, props)) \u628A\u5B98\u65B9\u7EC4\u4EF6\u4EA4\u7ED9 core\uFF0Cside / align / maxWidth \u53EF\u900F\u4F20\u3002\u4E0D\u505A\u964D\u7EA7\u515C\u5E95\u2014\u2014\u672A\u6CE8\u5165 renderer \u7684\u975E\u5BBF\u4E3B\u73AF\u5883\uFF08node \u81EA\u68C0\uFF09\u53EA\u51FA\u95EE\u53F7\u56FE\u6807\u3001\u6CA1\u6709\u6C14\u6CE1\u3002",
-        "en": "A standalone component, not part of the Input family \u2014 attachable after titles, buttons, text, or inputs anywhere. The bubble IS the official Tooltip: at plugin startup, setTooltipRenderer((props) => h(OfficialTooltip, props)) hands the official component to core; side / align / maxWidth pass through. No fallback \u2014 a non-host environment that didn\u2019t inject a renderer (node self-check) shows only the question-mark icon, no bubble."
-      }
-    ]
-  },
-  "card": {
-    "id": "card",
-    "heading": {
-      "zh": "Card / StripCard",
-      "en": "Card / StripCard"
-    },
-    "prose": [
-      {
-        "zh": "\u4E24\u79CD\u5361\u7247\u5916\u89C2\uFF0C\u4E24\u4E2A\u72EC\u7ACB\u7EC4\u4EF6\uFF1ACard = surface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF0Cpadding 14px\uFF08\u5DE6 12 \u4F7F\u7AD6\u6761\u8D34\u8FB9\uFF09\uFF1BStripCard = \u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2\u3002\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\uFF0C\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5782\u76F4\u5C45\u4E2D\u3002\u989C\u8272\u5168\u8D70 token \u21D2 \u4EAE\u6697\u81EA\u52A8\u8DDF\u968F\u5BBF\u4E3B\u3002",
-        "en": "Two card appearances, two separate components: Card = surface background + 1px border + rounded corners, padding 14px (left 12 so the strip hugs the edge); StripCard = same-hue light background + 1px invisible placeholder border + square corners. The header is vertically centered as a whole; drop a bare element in action and it centers. Colors come from tokens \u21D2 light/dark follows the host automatically."
-      }
-    ],
-    "api": [
-      {
-        "id": "ui-card",
-        "rows": [
-          {
-            "name": "accent",
-            "type": "5 \u6863 or \u4EFB\u610F CSS \u8272\u503C\uFF08business/success/warning/danger/neutral\uFF09",
-            "def": "'business'",
-            "desc": {
-              "zh": "\u6863\u4F4D\u6620\u5C04\u5230 design \u7684 token\uFF1B\u4E5F\u53EF\u4F20 '#f59e0b' \u8FD9\u7C7B\u81EA\u5B9A\u4E49\u503C",
-              "en": "Tiers map to design tokens; also accepts custom values like '#f59e0b'"
-            }
-          },
-          {
-            "name": "expanded",
-            "type": "boolean",
-            "def": "'false'",
-            "desc": {
-              "zh": "\u5C55\u5F00\u6001\uFF08\u7BAD\u5934\u671D\u5411 + panel \u663E\u9690\uFF09",
-              "en": "Expanded state (arrow direction + panel show/hide)"
-            }
-          },
-          {
-            "name": "onToggle",
-            "type": "() => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u4F20\u4E86\u624D\u663E\u793A\u53F3\u4FA7\u6298\u53E0\u7BAD\u5934\uFF1B\u5C55\u5F00\u72B6\u6001\u7531\u8C03\u7528\u65B9\u7BA1",
-              "en": "Only shows the right collapse arrow if provided; caller owns the expanded state"
-            }
-          },
-          {
-            "name": "action",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u53F3\u4E0A\u89D2\u64CD\u4F5C\u533A",
-              "en": "Top-right action area"
-            }
-          },
-          {
-            "name": "children",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u4E3B\u5185\u5BB9\uFF0C\u6392\u7248\u968F\u4F60",
-              "en": "Main content, layout is yours"
-            }
-          },
-          {
-            "name": "panel",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5C55\u5F00\u540E\u624D\u663E\u793A\u7684\u989D\u5916\u5185\u5BB9",
-              "en": "Extra content shown only when expanded"
-            }
-          },
-          {
-            "name": "className / style",
-            "type": "\u2014",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u8FFD\u52A0\u7C7B / \u6837\u5F0F",
-              "en": "Append class / style"
-            }
-          }
-        ]
-      }
-    ],
-    "code": [
-      {
-        "id": "ui-card-example",
-        "lang": "tsx",
-        "src": "import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'\n\nh(Card, {\n  accent: 'warning',\n  action: h(Button, { size: 'sm', variant: 'ghost' }, '\u8DF3\u8FC7'),\n},\n  h('div', null, '\u6807\u9898'),\n  h(Chip, null, '#npm'),\n)\n\nh(StripCard, {\n  accent: 'success',\n  expanded: open, onToggle: () => setOpen(!open),\n  panel: h('div', null, '\u5C55\u5F00\u8BE6\u60C5'),\n}, h('div', null, '\u6807\u9898 + \u5143\u4FE1\u606F'))"
-      }
-    ]
-  },
-  "chip": {
-    "id": "chip",
-    "heading": {
-      "zh": "Chip",
-      "en": "Chip"
-    },
-    "prose": [
-      {
-        "zh": "\u5C0F\u6807\u7B7E\u3002\u4E24\u6761\u53EF\u9009\u8F74\uFF1Atone\uFF08neutral \u9ED8\u8BA4\u7070\u9762 / business / success / warning / danger\u2014\u2014\u975E neutral \u4E3A\u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09\uFF1Bsize\uFF08sm \u9ED8\u8BA4 / md = font-size:12px\uFF0C\u5361\u7247\u5143\u4FE1\u606F\u884C\u7528\uFF09\u3002\u4F20 onClick \u624D\u662F\u53EF\u70B9\u7684\u3002\u8BED\u4E49\u8FB9\u754C\uFF1AChip \u53EA\u7BA1\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u8FD9\u4E00\u4EF6\u4E8B\uFF1B\u53EA\u7ED9\u56FE\u6807\u7684\u5C0F\u6309\u94AE\u8BF7\u7528 IconButton\uFF0C\u4E0D\u8981\u62FF Chip \u5F53\u56FE\u6807\u5E95\u677F\uFF08\u540C\u4E00\u4E2A\u7C7B\u540D\u4E24\u5957\u76AE\u80A4\u4F1A\u4E92\u76F8\u8986\u76D6\uFF09\u3002",
-        "en": 'A small tag. Two optional axes: tone (neutral default gray / business / success / warning / danger \u2014 non-neutral is a solid signal surface); size (sm default / md = font-size:12px, for card meta rows). Pass onClick to make it clickable. Boundary: Chip only does "pill tag"; for an icon-only small button use IconButton \u2014 don\u2019t use Chip as an icon baseplate (one class name with two skins would overwrite each other).'
-      }
-    ]
-  },
-  "feedback": {
-    "id": "feedback",
-    "heading": {
-      "zh": "\u53CD\u9988\u4EF6",
-      "en": "Feedback"
-    },
-    "prose": [
-      {
-        "zh": "showToast / notify \u7B49\u5E95\u5C42\u4ECD\u662F Sonner\uFF08\u52A8\u753B/\u5B9A\u4F4D/\u5806\u53E0\uFF09\u3002\u8DE8\u526F\u672C toast \u5BBF\u4E3B\uFF1Acore \u88AB\u6253\u8FDB\u6BCF\u4E2A\u63D2\u4EF6 bundle\uFF0C\u65E7\u5B9E\u73B0 N \u4E2A\u63D2\u4EF6\u540C\u9875\u4F1A\u6302 N \u4E2A\u540C id \u5BB9\u5668\uFF1B\u73B0\u6539\u4E3A globalThis \u4E0A Symbol.for('dsh-plugin-core/toast-host') \u5355\u4F8B\uFF0C\u5148\u5230\u573A\u7684\u526F\u672C\u5EFA\u552F\u4E00\u5BB9\u5668\u4E0E Toaster\uFF0C\u5176\u4F59\u526F\u672C\u628A ToastPayload \u4EA4\u7ED9\u5BBF\u4E3B\u6E32\u67D3\u3002",
-        "en": "showToast / notify etc. are still backed by Sonner (animation/positioning/stacking). Cross-bundle toast host: core is bundled into every plugin, and the old impl would mount N same-id containers on one page; now a globalThis Symbol.for('dsh-plugin-core/toast-host') singleton makes the first bundle create the unique container and Toaster, and later bundles hand their ToastPayload to the host for rendering."
-      },
-      {
-        "zh": '\u4E09\u6761\u53D6\u820D\uFF08\u7528\u6237\u62CD\u677F\u63A5\u53D7\uFF0C\u4E0D\u8981\u81EA\u884C"\u4F18\u5316"\uFF09\uFF1A\u2460 \u6837\u5F0F\u7531\u7B2C\u4E00\u4E2A\u526F\u672C\u51B3\u5B9A\uFF1B\u2461 position \u5168\u5C40\u5171\u4EAB\uFF08\u4E00\u4E2A\u5C4F\u5E55\u4E00\u4E2A\u533A\uFF09\uFF1B\u2462 \u4E0D\u505A\u5378\u8F7D\u56DE\u6536 / \u5F15\u7528\u8BA1\u6570\u3002\u65E0 document \u7684\u73AF\u5883\u9759\u9ED8\u8DF3\u8FC7\u3001\u4E0D\u6CE8\u518C\u3002',
-        "en": 'Three trade-offs (accepted by the user, don\u2019t "optimize"): \u2460 styling is decided by the first bundle; \u2461 position is shared globally (one zone per screen); \u2462 no unload reclamation / ref counting. Environments without document silently skip and don\u2019t register.'
-      },
-      {
-        "zh": "Modal\uFF1A\u81EA\u7ED8 overlay\uFF0C\u4E0D\u7528 react-dom \u7684 portal\uFF08\u907F\u514D\u591A\u4E00\u4E2A\u5FC5\u9700\u4F9D\u8D56\uFF09\u3002",
-        "en": "Modal: self-drawn overlay, not react-dom\u2019s portal (avoids an extra required dependency)."
-      }
-    ],
-    "api": [
-      {
-        "id": "ui-feedback",
-        "rows": [
-          {
-            "name": "showToast(message, opts?)",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u5B98\u65B9 Sonner \u539F\u751F\uFF08\u5BF9\u6BD4 / demo \u7528\uFF09\u3002opts: { variant?, durationMs?, color?, onDismiss?, position? }\uFF1Bcolor \u6574\u6761\u81EA\u5B9A\u4E49\u80CC\u666F\u8272\uFF1Bposition 6 \u5411\uFF08\u9ED8\u8BA4 bottom-center\uFF09\uFF1B\u6697\u8272\u8DDF\u968F\u5BBF\u4E3B",
-              "en": "Raw official Sonner (for comparison / demo). opts: { variant?, durationMs?, color?, onDismiss?, position? }; color sets the whole background; position 6-way (default bottom-center); dark follows host"
-            }
-          },
-          {
-            "name": "notify(message, opts?)",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u9879\u76EE\u5185\u63A8\u8350\uFF1A\u6211\u4EEC\u5C01\u88C5\u597D\u7684\u63D0\u793A\u3002opts: { variant?, description?, durationMs?, position?, actions? }\uFF1B\u53F3\u4FA7 actions?: { text, variant?, onClick }[]\uFF081\u20132 \u4E2A\uFF0C\u7528\u6211\u4EEC\u81EA\u5DF1\u7684 Button\uFF09\uFF1B\u5E95\u5C42\u4ECD\u662F Sonner",
-              "en": "Recommended in-project: our wrapped toast. opts: { variant?, description?, durationMs?, position?, actions? }; right-side actions?: { text, variant?, onClick }[] (1\u20132, using our own Button); still Sonner underneath"
-            }
-          },
-          {
-            "name": "showHostToast(message, opts?)",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u5BBF\u4E3B\u539F\u751F Toast\uFF08\u5B50\u8DEF\u5F84 dsh-plugin-core/ui/host\uFF09\u3002opts: { tone?, holdMs?, actions?, onDismiss? }\uFF1B\u72EC\u7ACB\u5B50\u8DEF\u5F84\u5BFC\u51FA\uFF0C\u9694\u79BB\u5E73\u53F0\u6A21\u5757",
-              "en": "Host-native Toast (subpath dsh-plugin-core/ui/host). opts: { tone?, holdMs?, actions?, onDismiss? }; exported via a separate subpath to isolate platform modules"
-            }
-          },
-          {
-            "name": "Loading({ anchorId? })",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u8D34\u5230\u4E3B\u5185\u5BB9\u5BB9\u5668\u53F3\u4E0B\u89D2\u7684\u52A0\u8F7D\u6307\u793A\uFF1BanchorId \u9ED8\u8BA4 dshpc-main",
-              "en": "Loading indicator pinned to the main container\u2019s bottom-right; anchorId defaults to dshpc-main"
-            }
-          },
-          {
-            "name": "RunningBlocks()",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u8FD0\u884C\u4E2D\u7684\u5360\u4F4D\u5757",
-              "en": "Placeholder blocks while running"
-            }
-          },
-          {
-            "name": "EmptyState({ text?, icon?, action?, translate? })",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u7EDF\u4E00\u7A7A\u6001",
-              "en": "Unified empty state"
-            }
-          },
-          {
-            "name": "SectionHead({ icon, title, right? })",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u5206\u533A\u6807\u9898",
-              "en": "Section heading"
-            }
-          },
-          {
-            "name": "MarqueeText({ text, style?, title?, className? })",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u8D85\u957F\u7701\u7565\u3001hover \u6EDA\u52A8",
-              "en": "Ellipsis on overflow, scroll on hover"
-            }
-          },
-          {
-            "name": "LiveText({ render, style? })",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u5B9A\u65F6\u91CD\u6E32\u67D3\uFF08\u76F8\u5BF9\u65F6\u95F4\u8FD9\u7C7B\uFF09",
-              "en": "Periodic re-render (for relative time etc.)"
-            }
-          },
-          {
-            "name": "BackToTop({ anchorId? })",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u56DE\u5230\u9876\u90E8\uFF0C\u8D34\u4E3B\u5BB9\u5668\u53F3\u7F18\u5916\u4FA7",
-              "en": "Back-to-top, outside the main container\u2019s right edge"
-            }
-          },
-          {
-            "name": "startResizeLayoutWidth(opts)",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "\u62D6\u62FD\u8C03\u6574\u5E03\u5C40\u5BBD\u5EA6\uFF08root \u4E0D\u4F20\u5219\u56DE\u843D #dshpc-root\uFF09",
-              "en": "Drag to resize layout width (falls back to #dshpc-root if root omitted)"
-            }
-          }
-        ]
-      },
-      {
-        "id": "ui-modal",
-        "rows": [
-          {
-            "name": "title",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6807\u9898",
-              "en": "Title"
-            }
-          },
-          {
-            "name": "onClose",
-            "type": "() => void",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u4E0D\u4F20\u5219\u4E0D\u663E\u793A\u5173\u95ED\u94AE",
-              "en": "No close button if omitted"
-            }
-          },
-          {
-            "name": "closeOnMask",
-            "type": "boolean",
-            "def": "'true'",
-            "desc": {
-              "zh": "\u70B9\u906E\u7F69\u5173\u95ED\uFF1B\u8BEF\u89E6\u4EE3\u4EF7\u5927\u7684\u573A\u666F\u8BBE false",
-              "en": "Close on mask click; set false where mis-clicks are costly"
-            }
-          },
-          {
-            "name": "escClose",
-            "type": "boolean",
-            "def": "'true'",
-            "desc": {
-              "zh": "Esc \u5173\u95ED",
-              "en": "Close on Esc"
-            }
-          },
-          {
-            "name": "maxWidth",
-            "type": "string",
-            "def": "min(960px, 92vw)",
-            "desc": {
-              "zh": "\u2014",
-              "en": "\u2014"
-            }
-          },
-          {
-            "name": "hideHeader",
-            "type": "boolean",
-            "def": "'false'",
-            "desc": {
-              "zh": "\u4E0D\u6E32\u67D3\u5934\u90E8\uFF08\u6C89\u6D78\u5F0F\uFF09",
-              "en": "Skip header (immersive)"
-            }
-          },
-          {
-            "name": "footer",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5E95\u680F\uFF08\u6309\u94AE\u533A\uFF09",
-              "en": "Footer (button area)"
-            }
-          },
-          {
-            "name": "children",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u4E3B\u4F53",
-              "en": "Body"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "layout": {
-    "id": "layout",
-    "heading": {
-      "zh": "PanelDock\uFF08\u505C\u9760\u5206\u680F\uFF09",
-      "en": "PanelDock (dock)"
-    },
-    "prose": [
-      {
-        "zh": "\u300C\u53F3\u4FA7\u5206\u680F\u300D\u4ECE\u4E1A\u52A1\u91CC\u5265\u51FA\u6765\u7684\u901A\u7528\u58F3\u3002\u5B83\u662F\u5E03\u5C40\u6210\u5458\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u3002\u56E0\u6B64\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002\u5206\u5DE5\u7167\u6210\u719F\u7EC4\u4EF6\u5E93\u7684\u901A\u884C\u505A\u6CD5\uFF1A\u7ED3\u6784\u5199\u5728\u8C03\u7528\u70B9\uFF08children\uFF09\uFF0C\u663E\u9690\u5F52\u72B6\u6001\uFF08open/close \u53EA\u4F20 id\uFF09\u3002",
-        "en": 'A generic shell extracted from the business layer for "right-side panels". It is a layout member, not an overlay: it takes width and narrows the main area, not covering it. So the caller must place it inside its own flex root. Following common component-library practice: structure is written at the call site (children), visibility is state (open/close only passes an id).'
-      },
-      {
-        "zh": "\u9762\u677F\u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\u3002\u4E0D\u505A\u7684\u4E8B\uFF08\u62CD\u677F\u7559\u6863\uFF09\uFF1A\u591A\u4EFD\u540C\u540D\uFF08multi\uFF09\u3001tab \u5207\u6362\u6761\u3001\u81EA\u52A8\u6DD8\u6C70\u3001\u6D6E\u52A8\u5C42\u2014\u2014\u6807\u7B7E\u5207\u6362\u7531\u6D88\u8D39\u65B9\u5728\u81EA\u5DF1\u7684\u9762\u677F\u5185\u5BB9\u91CC\u5B9E\u73B0\u3002\u4E24\u6761\u5B9E\u73B0\u7EA6\u675F\uFF1A\u9762\u677F\u662F position:sticky + height:100vh \u7684 flex \u6210\u5458\uFF0C\u523B\u610F\u4E0D\u8BBE z-index\uFF1B\u62D6\u52A8\u671F\u7ED9 iframe \u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\u3002",
-        "en": "Panel height defaults to viewport height; when nested in a fixed-height container, the caller sets --dshpc-dock-h. Deliberately not done (on record): multi same-name, tab-switch bar, auto-eviction, floating layer \u2014 tab switching is the consumer\u2019s job inside their own panel content. Two impl constraints: panels are position:sticky + height:100vh flex members with no z-index; during drag, yield pointer events to iframes."
-      }
-    ],
-    "api": [
-      {
-        "id": "ui-paneldock-create",
-        "rows": [
-          {
-            "name": "maxPanels",
-            "type": "number",
-            "def": "3",
-            "desc": {
-              "zh": "\u540C\u65F6\u5B58\u5728\u7684\u680F\u6570\u4E0A\u9650",
-              "en": "Max simultaneous panels"
-            }
-          },
-          {
-            "name": "defaultWidth / minWidth",
-            "type": "number",
-            "def": "460 / 320",
-            "desc": {
-              "zh": "\u515C\u5E95\u5BBD\u5EA6\u4E0E\u4E0B\u9650\uFF08\u9762\u677F\u81EA\u5DF1\u7ED9\u4E86\u5C31\u4EE5\u9762\u677F\u4E3A\u51C6\uFF09",
-              "en": "Fallback width and floor (panel\u2019s own value wins if given)"
-            }
-          },
-          {
-            "name": "storageKey",
-            "type": "string",
-            "def": "'dshpc-dock'",
-            "desc": {
-              "zh": "\u5BBD\u5EA6\u8BB0\u5FC6\u524D\u7F00\uFF1B\u4F20 false \u5173\u95ED",
-              "en": "Width-memory prefix; false disables"
-            }
-          }
-        ]
-      },
-      {
-        "id": "ui-paneldock-panel",
-        "rows": [
-          {
-            "name": "id",
-            "type": "string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u7EC4\u540D\uFF08\u5BFB\u5740\u952E\uFF09\uFF0C\u540C\u540D\u552F\u4E00",
-              "en": "Group name (address key), unique per name"
-            }
-          },
-          {
-            "name": "title / icon",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5185\u7F6E\u5934\u7684\u6807\u9898\u4E0E\u6807\u9898\u524D\u56FE\u6807",
-              "en": "Built-in header title and icon before it"
-            }
-          },
-          {
-            "name": "extra",
-            "type": "ReactNode",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6807\u9898\u53F3\u4FA7\u7684\u4EFB\u610F\u5185\u5BB9\uFF08\u4E0D\u53EA\u662F\u6309\u94AE\uFF09",
-              "en": "Any content to the right of the title (not just buttons)"
-            }
-          },
-          {
-            "name": "header",
-            "type": "ReactNode | null",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u6574\u5757\u66FF\u6362\u5934\u90E8\uFF1A\u4E0D\u4F20 = \u5185\u7F6E\u5934\uFF1Bnull = \u4E0D\u8981\u5934\u90E8\uFF1B\u5176\u4ED6 = \u4F60\u7684\u5934",
-              "en": "Whole-header replacement: omitted = built-in; null = no header; else = your header"
-            }
-          },
-          {
-            "name": "closable / closeButton / closeIcon",
-            "type": "\u2014",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5173\u94AE\u5F00\u5173\uFF1B\u4F4D\u7F6E auto/header/floating/none",
-              "en": "Close-button toggle; position auto/header/floating/none"
-            }
-          },
-          {
-            "name": "width / minWidth / maxWidth",
-            "type": "number",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5BBD\u5EA6\u4E0E\u53EF\u62D6\u52A8\u533A\u95F4",
-              "en": "Width and draggable range"
-            }
-          },
-          {
-            "name": "ariaLabel",
-            "type": "string",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u65E0\u5934\u90E8\u65F6\u7684\u65E0\u969C\u788D\u540D",
-              "en": "A11y name when no header"
-            }
-          }
-        ]
-      },
-      {
-        "id": "ui-paneldock-events",
-        "rows": [
-          {
-            "name": "onOpen",
-            "type": "({ id, created: true })",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u9996\u6B21\u6253\u5F00",
-              "en": "First open"
-            }
-          },
-          {
-            "name": "onBeforeClose",
-            "type": "({ id, reason: 'button' | 'api' }) => false?",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5173\u95ED\u4E4B\u524D\uFF0C\u8FD4\u56DE false \u53EF\u53D6\u6D88",
-              "en": "Before close; returning false cancels"
-            }
-          },
-          {
-            "name": "onClose",
-            "type": "({ id, reason })",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5DF2\u5173\u95ED",
-              "en": "Closed"
-            }
-          },
-          {
-            "name": "onResize",
-            "type": "({ id, width })",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u62D6\u5BBD\u677E\u624B",
-              "en": "Drag released"
-            }
-          },
-          {
-            "name": "onLimitReached",
-            "type": "({ id })",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u5230\u4E0A\u9650\u88AB\u62D2",
-              "en": "Rejected at cap"
-            }
-          }
-        ]
-      }
-    ],
-    "code": [
-      {
-        "id": "ui-paneldock-example",
-        "lang": "ts",
-        "src": "const dock = createPanelDock({ maxPanels: 3 })   // \u4E00\u6B21\uFF0C\u6302\u5728\u63D2\u4EF6\u7EA7\n\n// \u9875\u9762\u91CC\uFF1A\u7ED3\u6784\u5C31\u5728\u8FD9\u513F\u5199\uFF0C\u4E0D\u585E\u8FDB\u4EFB\u4F55\u8C03\u7528\u53C2\u6570\nh('div', { style: { display: 'flex' } },\n  h(Main, null),                                  // flex:1 1 auto; min-width:0\n  h(PanelDock, { dock },\n    h(DockPanel, { id: 'files', title: '\u5DE5\u4F5C\u533A' }, h(FilePanel)),\n    h(DockPanel, { id: 'preview', header: h(PreviewBar) }, h(PreviewBody)),\n    h(DockPanel, { id: 'raw', header: null, closeButton: 'floating' }, h(RawBody)),\n  ),\n)\n// \u4E4B\u540E\u4EFB\u4F55\u5730\u65B9\uFF1Adock.open('files') / dock.close('files')"
-      }
-    ]
-  }
-};
-
-// packages/demo/src/doc.tsx
-var DOC_DATA = docData;
-function locale() {
-  return getLocale() === "en" ? "en" : "zh";
-}
-function Note(props) {
-  return (0, import_react26.createElement)(
-    StripCard,
-    { accent: "business", className: "dshpc-doc-note" },
-    (0, import_react26.createElement)(
-      "div",
-      { className: "dshpc-doc-note__body" },
-      (0, import_react26.createElement)("span", { className: "dshpc-doc-note__mark" }, t2("docNote")),
-      props.children ?? (0, import_react26.createElement)("span", null, props.text ?? "")
-    )
-  );
-}
-function CodeOnly(props) {
-  const label = props.label ?? (props.labelKey !== void 0 ? t2(props.labelKey) : t2("docCode"));
-  return (0, import_react26.createElement)(
-    "div",
-    { className: "dshpc-doc-block" },
-    (0, import_react26.createElement)("div", { className: "dshpc-doc-label" }, label),
-    (0, import_react26.createElement)(import_dsh_client_ui_primitives2.CodeBlock, {
-      code: props.code,
-      lang: props.lang ?? "tsx",
-      showHeader: true,
-      copyLabel: t2("docCopy"),
-      copiedLabel: t2("docCopied")
-    })
-  );
-}
-function Example(props) {
-  return (0, import_react26.createElement)(
-    "section",
-    { className: "dshpc-doc-example" },
-    (0, import_react26.createElement)(
-      "div",
-      { className: "dshpc-doc-example__head" },
-      (0, import_react26.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
-      props.hint === void 0 ? null : (0, import_react26.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
-    ),
-    (0, import_react26.createElement)(
-      "div",
-      { className: "dshpc-doc-example__body" },
-      (0, import_react26.createElement)(
-        "div",
-        { className: "dshpc-doc-example__demo" },
-        (0, import_react26.createElement)("div", { className: "dshpc-doc-label" }, t2("docPreview")),
-        props.children ?? null
-      ),
-      props.code === void 0 ? null : (0, import_react26.createElement)(
-        "div",
-        { className: "dshpc-doc-example__code" },
-        (0, import_react26.createElement)("div", { className: "dshpc-doc-label" }, t2("docCode")),
-        (0, import_react26.createElement)(
-          "div",
-          { className: "dshpc-doc-example__scroll" },
-          (0, import_react26.createElement)(import_dsh_client_ui_primitives2.CodeBlock, {
-            code: props.code,
-            lang: "tsx",
-            showHeader: true,
-            copyLabel: t2("docCopy"),
-            copiedLabel: t2("docCopied")
-          })
-        )
-      )
-    )
-  );
-}
-function ApiTable(props) {
-  return (0, import_react26.createElement)(
-    "div",
-    { className: "dshpc-doc-block" },
-    (0, import_react26.createElement)(
-      "div",
-      { className: "dshpc-doc-label", style: props.title === void 0 ? void 0 : { textTransform: "none" } },
-      props.title ?? t2("docApi")
-    ),
-    (0, import_react26.createElement)(
-      "table",
-      { className: "dshpc-doc-api" },
-      (0, import_react26.createElement)(
-        "thead",
-        null,
-        (0, import_react26.createElement)(
-          "tr",
-          null,
-          (0, import_react26.createElement)("th", null, t2("docApiName")),
-          (0, import_react26.createElement)("th", null, t2("docApiType")),
-          (0, import_react26.createElement)("th", null, t2("docApiDefault")),
-          (0, import_react26.createElement)("th", null, t2("docApiDesc"))
-        )
-      ),
-      (0, import_react26.createElement)(
-        "tbody",
-        null,
-        props.rows.map(
-          (row) => (0, import_react26.createElement)(
-            "tr",
-            { key: row.name },
-            (0, import_react26.createElement)("td", null, row.name),
-            (0, import_react26.createElement)("td", null, row.type),
-            (0, import_react26.createElement)("td", null, row.def),
-            (0, import_react26.createElement)("td", null, row.desc ?? t2(row.descKey ?? "docApiDesc"))
-          )
-        )
-      )
-    )
-  );
-}
-function DocProse(props) {
-  const section = DOC_DATA[props.id];
-  if (section?.prose === void 0) return null;
-  const l = locale();
-  return (0, import_react26.createElement)(
-    Note,
-    null,
-    (0, import_react26.createElement)(
-      "div",
-      { className: "dshpc-doc-note__content" },
-      ...section.prose.map((p, i2) => (0, import_react26.createElement)("div", { key: i2, className: "dshpc-doc-note__p" }, p[l]))
-    )
-  );
-}
-function DocApi(props) {
-  const section = DOC_DATA[props.id];
-  if (section?.api === void 0) return null;
-  const l = locale();
-  return (0, import_react26.createElement)(
-    import_react26.Fragment,
-    null,
-    ...section.api.map(
-      (table, i2) => (0, import_react26.createElement)(ApiTable, {
-        key: i2,
-        rows: table.rows.map((r2) => ({
-          name: r2.name,
-          type: r2.type,
-          def: r2.def,
-          required: r2.required,
-          desc: r2.desc[l]
-        }))
-      })
-    )
-  );
-}
-function DocCode(props) {
-  const section = DOC_DATA[props.id];
-  if (section?.code === void 0) return null;
-  return (0, import_react26.createElement)(
-    import_react26.Fragment,
-    null,
-    ...section.code.map((c2, i2) => (0, import_react26.createElement)(CodeOnly, { key: i2, code: c2.src, lang: c2.lang }))
-  );
-}
-function DocContent(props) {
-  return (0, import_react26.createElement)(
-    import_react26.Fragment,
-    null,
-    (0, import_react26.createElement)(DocProse, { id: props.id }),
-    (0, import_react26.createElement)(DocApi, { id: props.id }),
-    (0, import_react26.createElement)(DocCode, { id: props.id })
-  );
-}
-
-// packages/demo/src/sections/start.tsx
-function QuickstartPage() {
-  return (0, import_react27.createElement)(DocContent, { id: "quickstart" });
-}
-
-// packages/demo/src/sections/foundation.tsx
-var import_react28 = require("react");
-var TOKENS = [
-  { label: "business", cssVar: "--dshpc-business" },
-  { label: "success", cssVar: "--dshpc-success" },
-  { label: "warning", cssVar: "--dshpc-warning" },
-  { label: "danger", cssVar: "--dshpc-danger" },
-  { label: "surface-1", cssVar: "--dshpc-surface-1" },
-  { label: "surface-2", cssVar: "--dshpc-surface-2" },
-  { label: "surface-sunken", cssVar: "--dshpc-surface-sunken" },
-  { label: "border", cssVar: "--dshpc-border" },
-  { label: "fg", cssVar: "--dshpc-fg" },
-  { label: "fg-3", cssVar: "--dshpc-fg-3" },
-  { label: "fg-4", cssVar: "--dshpc-fg-4" }
-];
-function FoundationPage() {
-  return (0, import_react28.createElement)(
-    "div",
-    null,
-    (0, import_react28.createElement)(DocProse, { id: "foundation" }),
-    // Token 色板：颜色全部来自 design 的 token。
-    (0, import_react28.createElement)(
-      Example,
-      { title: t2("demoTokenPalette"), hint: t2("tokensHint") },
-      (0, import_react28.createElement)(
-        "div",
-        { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
-        TOKENS.map(
-          (item) => (0, import_react28.createElement)(
-            "div",
-            { key: item.cssVar, style: { width: "104px" } },
-            (0, import_react28.createElement)("div", {
-              style: {
-                height: "40px",
-                borderRadius: "6px",
-                background: `var(${item.cssVar})`,
-                border: "1px solid var(--dshpc-border-faint)"
-              }
-            }),
-            (0, import_react28.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
-            (0, import_react28.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
-          )
-        )
-      )
-    ),
-    // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
-    (0, import_react28.createElement)(
-      Example,
-      { title: "body[data-ds-dark-theme]", hint: t2("darkHint") },
-      (0, import_react28.createElement)(
-        "div",
-        { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react28.createElement)(
-          "span",
-          { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
-          t2("darkNow")
-        ),
-        (0, import_react28.createElement)("code", {
-          style: {
-            fontFamily: "var(--dshpc-font-mono)",
-            fontSize: "13px",
-            padding: "3px 10px",
-            borderRadius: "6px",
-            background: "var(--dshpc-open-bg)",
-            color: typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "var(--dshpc-success)" : "var(--dshpc-fg-2)"
-          }
-        }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
-      )
-    ),
-    (0, import_react28.createElement)(
-      Example,
-      {
-        title: t2("demoStyleInject"),
-        hint: t2("injectHint"),
-        code: `import { createStyleKit } from 'dsh-plugin-core/design'
-import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
-
-setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
-ensureControls()`
-      },
-      (0, import_react28.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
-    ),
-    // 命名契约（原「命名与前缀契约」页）的 API 表 —— 直接吃 docData['foundation'] 的 api 段。
-    (0, import_react28.createElement)(DocApi, { id: "foundation" })
-  );
-}
-
-// packages/demo/src/sections/controls.tsx
-var import_react31 = require("react");
-
-// dist/ui/official.js
-var official_exports = {};
-__export(official_exports, {
-  Official: () => Official,
-  pickOfficial: () => pickOfficial
-});
-var Official = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
-__reExport(official_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
-var import_react29 = require("react");
-var import_client3 = require("react-dom/client");
-var warned = /* @__PURE__ */ new Set();
-var officialRegistry = Official;
-function pickOfficial(name2, fallback) {
-  const value = officialRegistry[name2];
-  if (value === void 0) {
-    if (!warned.has(name2)) {
-      warned.add(name2);
-      console.warn(`[dsh-plugin-core:official] \u5B98\u65B9 primitive "${String(name2)}" \u7F3A\u5931\uFF0C\u56DE\u843D\u5230\u672C\u5730\u515C\u5E95`);
-    }
-    return fallback;
-  }
-  return value;
-}
-function mountHostModal(render) {
-  if (typeof document === "undefined")
-    return;
-  const container = document.createElement("div");
-  document.body.appendChild(container);
-  const root = (0, import_client3.createRoot)(container);
-  const close = () => {
-    root.unmount();
-    container.remove();
-  };
-  root.render(render(close));
-}
-var hostConfirm = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react29.createElement)(Official.Modal, {
-    open: true,
-    onClose: () => {
-      close();
-      resolve(false);
-    },
-    title: opts.title ?? "",
-    closeLabel: t("modalClose"),
-    description: opts.description,
-    footer: (0, import_react29.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react29.createElement)(Button, { variant: "outline", onClick: () => {
-      close();
-      resolve(false);
-    } }, opts.cancelText ?? t("cancel")), (0, import_react29.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
-      close();
-      resolve(true);
-    } }, opts.confirmText ?? t("confirm")))
-  }));
-});
-var hostAlert = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react29.createElement)(Official.Modal, {
-    open: true,
-    onClose: () => {
-      close();
-      resolve();
-    },
-    title: opts.title ?? "",
-    closeLabel: t("modalClose"),
-    description: opts.description,
-    footer: (0, import_react29.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react29.createElement)(Button, { variant: "primary", onClick: () => {
-      close();
-      resolve();
-    } }, opts.confirmText ?? t("dialogOk")))
-  }));
-});
-registerHostDialog({ confirm: hostConfirm, alert: hostAlert });
-
-// dist/ui/host-toast.js
-var import_react30 = require("react");
-var import_client4 = require("react-dom/client");
-function showHostToast(message, opts) {
-  if (typeof document === "undefined")
-    return;
-  const container = document.createElement("div");
-  document.body.appendChild(container);
-  const root = (0, import_client4.createRoot)(container);
-  const close = () => {
-    root.unmount();
-    container.remove();
-  };
-  root.render((0, import_react30.createElement)(Official.Toast, {
-    text: message,
-    tone: opts?.tone,
-    holdMs: opts?.holdMs ?? 3e3,
-    actions: opts?.actions !== void 0 ? opts.actions.map((a) => ({ label: a.text, onClick: a.onClick })) : void 0,
-    onDone: () => {
-      close();
-      opts?.onDismiss?.();
-    }
-  }));
-}
-
-// packages/demo/src/sections/controls.tsx
-var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
-var BUTTON_ICONS = [
-  { name: "plus", Icon: import_dsh_client_ui_primitives3.IconPlusOutlineRegular },
-  { name: "check", Icon: import_dsh_client_ui_primitives3.IconCheckOutlineRegular },
-  { name: "close", Icon: import_dsh_client_ui_primitives3.IconCloseOutlineRegular },
-  { name: "refresh", Icon: import_dsh_client_ui_primitives3.IconRefreshOutlineRegular },
-  { name: "copy", Icon: import_dsh_client_ui_primitives3.IconCopyOutlineRegular },
-  { name: "search", Icon: import_dsh_client_ui_primitives3.IconSearchOutlineRegular },
-  { name: "edit", Icon: import_dsh_client_ui_primitives3.IconEditOutlineRegular },
-  { name: "play", Icon: import_dsh_client_ui_primitives3.IconPlayOutlineRegular },
-  { name: "send", Icon: import_dsh_client_ui_primitives3.IconPaperPlaneOutlineRegular },
-  { name: "clock", Icon: import_dsh_client_ui_primitives3.IconClockOutlineRegular },
-  { name: "sparkle", Icon: import_dsh_client_ui_primitives3.IconSparkleRegular },
-  { name: "chevron", Icon: import_dsh_client_ui_primitives3.IconChevronDownOutlineRegular }
-];
-function iconOf(name2, size = 14) {
-  const found = BUTTON_ICONS.find((item) => item.name === name2);
-  return found === void 0 ? null : (0, import_react31.createElement)(found.Icon, { size });
-}
-function StarSvg() {
-  return (0, import_react31.createElement)(
-    "svg",
-    { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-    (0, import_react31.createElement)("path", {
-      d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
-      stroke: "currentColor",
-      strokeWidth: 1.2,
-      strokeLinejoin: "round"
-    })
-  );
-}
-var ICON_SIZE = { sm: 12, md: 14, lg: 16 };
-var VARIANT_ICON = {
-  primary: "check",
-  secondary: "copy",
-  outline: "edit",
-  ghost: "refresh",
-  danger: "close",
-  success: "play",
-  warning: "clock",
-  info: "send",
-  "danger-outline": "close",
-  link: "search"
-};
-var VARIANT_GROUPS = [
-  { label: "\u4E3B\u884C\u52A8", items: ["primary", "secondary"] },
-  { label: "\u4E2D\u6027", items: ["outline", "ghost"] },
-  { label: "\u8BED\u4E49\u8272", items: ["danger", "success", "warning", "info"] },
-  { label: "\u5F31\u5316 / \u884C\u5185", items: ["danger-outline", "link"] }
-];
-var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
-function tipAnchor(text2, side, align) {
-  const props = { label: text2, side };
-  if (align !== void 0) props.align = align;
-  return (0, import_react31.createElement)(import_dsh_client_ui_primitives3.Tooltip, props, (0, import_react31.createElement)("button", {
-    type: "button",
-    style: {
-      padding: "4px 10px",
-      border: "1px solid var(--dshpc-border)",
-      borderRadius: "6px",
-      background: "var(--dshpc-surface-1)",
-      color: "var(--dshpc-fg)",
-      fontSize: "12px",
-      cursor: "pointer"
-    }
-  }, text2));
-}
-function Row(props) {
-  return (0, import_react31.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
-}
-function Labeled(props) {
-  return (0, import_react31.createElement)(
-    "div",
-    { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react31.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
-    props.children
-  );
-}
-var CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>\u4FDD\u5B58</Button>
-<Button variant="outline">\u53D6\u6D88</Button>
-<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>\u5220\u9664</Button>`;
-var CODE_BTN_VARIANT = `// \u4E3B\u884C\u52A8
-<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>primary</Button>
-<Button variant="secondary" icon={<IconCopyOutlineRegular size={16} />}>secondary</Button>
-
-// \u4E2D\u6027
-<Button variant="outline" icon={<IconEditOutlineRegular size={16} />}>outline</Button>
-<Button variant="ghost" icon={<IconRefreshOutlineRegular size={16} />}>ghost</Button>
-
-// \u8BED\u4E49\u8272
-<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>danger</Button>
-<Button variant="success" icon={<IconPlayOutlineRegular size={16} />}>success</Button>
-<Button variant="warning" icon={<IconClockOutlineRegular size={16} />}>warning</Button>
-<Button variant="info" icon={<IconPaperPlaneOutlineRegular size={16} />}>info</Button>
-
-// \u5F31\u5316 / \u884C\u5185
-<Button variant="danger-outline" icon={<IconCloseOutlineRegular size={16} />}>danger-outline</Button>
-<Button variant="link" icon={<IconSearchOutlineRegular size={16} />}>link</Button>
-
-// \u4EFB\u610F\u4E00\u6863\u90FD\u80FD\u518D\u7ED9 size\uFF08\u8FD9\u91CC sm 24 \u9AD8\uFF09
-<Button variant="danger" size="sm" icon={<IconCloseOutlineRegular size={12} />}>danger</Button>`;
-var CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
-<Button size="md" variant="outline">md</Button>
-<Button size="lg" variant="outline">lg</Button>
-
-// icon \u6536\u7684\u662F ReactNode\uFF1A\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u81EA\u7ED8 SVG / \u4E00\u4E2A\u5B57\u7B26\uFF0C\u4E09\u79CD\u90FD\u80FD\u8FDB
-<Button variant="primary" icon={<IconSendOutlineRegular size={16} />}>\u5B98\u65B9\u56FE\u6807</Button>
-<Button variant="outline" icon={<StarSvg />}>\u81EA\u7ED8 SVG</Button>
-<Button variant="ghost" icon="+">\u4E00\u4E2A\u5B57\u7B26</Button>
-
-// iconRight \u540E\u7F6E\uFF1Bblock \u6491\u6EE1\u7236\u5BBD\uFF08\u6709\u524D\u7F6E\u56FE\u6807\u65F6\u6587\u5B57\u4ECD\u5728\u89C6\u89C9\u4E2D\u5FC3\uFF09
-<Button variant="outline" iconRight={<IconChevronDownOutlineRegular size={16} />}>\u66F4\u591A</Button>
-<Button variant="primary" block icon={<IconCheckOutlineRegular size={16} />}>\u6491\u6EE1\u7236\u5BBD</Button>
-
-// \u7EAF\u56FE\u6807\u94AE\uFF1Alabel \u662F\u5FC5\u586B\u7684\u65E0\u969C\u788D\u540D\uFF08\u540C\u65F6\u4F5C title\uFF09
-<IconButton icon={<IconPlusOutlineRegular size={16} />} label="plus" />`;
-var CODE_BTN_STATE = `<Button variant="primary">\u9ED8\u8BA4</Button>
-<Button variant="primary" disabled>\u7981\u7528</Button>
-<Button variant="danger" disabled icon={<IconCloseOutlineRegular size={16} />}>\u7981\u7528</Button>
-<Button variant="outline" loading>\u52A0\u8F7D\u4E2D</Button>
-<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>\u63D0\u4EA4\u4E2D</Button>`;
-var CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
-<Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`;
-function ButtonPage() {
-  return (0, import_react31.createElement)(
-    "div",
-    null,
-    (0, import_react31.createElement)(DocProse, { id: "button" }),
-    // 文案与语言
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("btnTextTitle"), hint: t2("btnTextHint"), code: CODE_BTN_TEXT },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "locale" },
-          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
-          (0, import_react31.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
-          (0, import_react31.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
-        ),
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "en" },
-          (0, import_react31.createElement)(Button, { variant: "primary" }, "Save"),
-          (0, import_react31.createElement)(Button, { variant: "outline" }, "Cancel"),
-          (0, import_react31.createElement)(Button, { variant: "ghost" }, "Learn more")
-        ),
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "zh" },
-          (0, import_react31.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
-          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
-          (0, import_react31.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
-        ),
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "zh + en" },
-          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
-          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
-          (0, import_react31.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
-        )
-      )
-    ),
-    // 10 档外观
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("btnVariantTitle"), hint: t2("btnVariantHint"), code: CODE_BTN_VARIANT },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        VARIANT_GROUPS.map((group) => (0, import_react31.createElement)(
-          Labeled,
-          { key: group.label, label: group.label },
-          (0, import_react31.createElement)(
-            "div",
-            { style: { display: "flex", flexDirection: "column", gap: "6px", alignItems: "flex-start" } },
-            (0, import_react31.createElement)(Row, null, group.items.map((variant) => (0, import_react31.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
-            (0, import_react31.createElement)(Row, null, group.items.map((variant) => (0, import_react31.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
-          )
-        ))
-      )
-    ),
-    // 尺寸 / 图标位置 / block
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("btnSizeTitle"), hint: t2("btnSizeHint"), code: CODE_BTN_SIZE },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "size" },
-          ["sm", "md", "lg"].map((size) => (0, import_react31.createElement)(Button, { key: size, size, variant: "outline", icon: iconOf("plus", ICON_SIZE[size]) }, size))
-        ),
-        // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "icon" },
-          (0, import_react31.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
-          (0, import_react31.createElement)(Button, { variant: "outline", icon: (0, import_react31.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
-          (0, import_react31.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
-        ),
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "iconRight" },
-          (0, import_react31.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
-          (0, import_react31.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
-        ),
-        // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "block" },
-          (0, import_react31.createElement)(
-            "div",
-            { style: { width: "260px" } },
-            (0, import_react31.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
-            (0, import_react31.createElement)("div", { style: { height: "8px" } }),
-            (0, import_react31.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
-          )
-        ),
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: t2("btnIconOnly") },
-          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react31.createElement)(IconButton, { key: item.name, icon: (0, import_react31.createElement)(item.Icon, { size: 16 }), label: item.name }))
-        )
-      )
-    ),
-    // 状态
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("btnStateTitle"), hint: t2("btnStateHint"), code: CODE_BTN_STATE },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "\u7981\u7528" },
-          (0, import_react31.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-          (0, import_react31.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-          (0, import_react31.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
-        ),
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "loading" },
-          (0, import_react31.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-          (0, import_react31.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
-        )
-      )
-    ),
-    // 自定义颜色
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("btnColorTitle"), hint: t2("btnColorHint"), code: CODE_BTN_COLOR },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "\u5B9E\u5FC3" },
-          (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
-        ),
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: "\u63CF\u8FB9" },
-          (0, import_react31.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react31.createElement)(Button, { key: color, variant: "outline", color }, color)))
-        )
-      )
-    ),
-    (0, import_react31.createElement)(DocCode, { id: "button" }),
-    (0, import_react31.createElement)(DocApi, { id: "button" })
-  );
-}
-var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
-const [num, setNum] = useState(3)
-
-// hint \u53C2\u6570\u7248\uFF1A\u95EE\u53F7\u63D0\u793A\u7531\u7EC4\u4EF6\u81EA\u5DF1\u6302\uFF0C\u4E0D\u7528\u624B\u52A8\u62FC FieldHint
-<Input value={text} onChange={setText} placeholder="\u9009\u62E9\u65E5\u671F" hint="\u9009\u62E9\u4EFB\u52A1\u7684\u5F00\u59CB\u65F6\u95F4" />
-// \u6821\u9A8C\u5931\u8D25\u6001\uFF1A\u63CF\u7EA2
-<Input value={text} onChange={setText} error placeholder="\u6821\u9A8C\u5931\u8D25\u6001" />
-// \u6570\u5B57\u6846\uFF1A\u8D85\u51FA min / max \u81EA\u52A8\u6536\u56DE\u5230\u8FB9\u754C
-<NumberInput value={num} onChange={setNum} min={0} max={10} suffix="\u6B21" hint="\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" />
-// \u591A\u884C\u8F93\u5165\uFF1A\u95EE\u53F7\u7F6E\u53F3\u4E0B\u89D2
-<Textarea value={text} onChange={setText} placeholder="\u591A\u884C\u8F93\u5165" hint="\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" />`;
-var CODE_FIELD_HINT = `// \u95EE\u53F7\u63D0\u793A\u662F\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF0814px \u5185\u8054\u5143\u7D20\uFF09
-<h3>\u4E00\u4E2A\u6807\u9898</h3>
-<FieldHint text="\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" side="top" />
-
-<Button variant="outline">\u4E00\u4E2A\u6309\u94AE</Button>
-<FieldHint text="\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" side="right" />
-
-<span>\u4E00\u6BB5\u666E\u901A\u6587\u5B57</span>
-<FieldHint text="\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\u3002" />`;
-var CODE_SWITCH_SEG = `// \u5F00\u5173\u8BED\u4E49\u7528\u5B98\u65B9 Switch\uFF1Alabel \u53EA\u662F\u65E0\u969C\u788D\u540D\uFF0C\u53EF\u89C1\u6587\u6848\u81EA\u5DF1\u753B\u5728\u65C1\u8FB9
-<Switch checked={checked} onChange={setChecked} label="\u542F\u7528" />
-<Checkbox checked={checked} onChange={setChecked} label="\u591A\u9009" />
-
-// \u5206\u6BB5\uFF1Aitems = { value, label, count?, badge?, disabled? }\uFF1Bvariant \u9ED8\u8BA4 default\uFF0Cinset \u662F\u7070\u5E95\u6B3E
-<Segmented
-  variant="inset"
-  items={[{ value: 'day', label: '\u65E5' }, { value: 'week', label: '\u5468' }, { value: 'month', label: '\u6708' }]}
-  value={seg}
-  onChange={setSeg}
-/>
-// bordered\uFF1A\u9009\u4E2D\u6BB5\u53D8\u63CF\u8FB9\u5757\uFF1Bsize \u4E09\u6863
-<Segmented variant="inset" bordered size="sm" items={...} value={seg} onChange={setSeg} />
-
-// \u7B5B\u9009\u6761\uFF1Acount \u7ED9\u4E2D\u6027\u8BA1\u6570\uFF0Cbadge \u7ED9\u7EA2\u89D2\u6807
-<Segmented
-  variant="inset"
-  items={[{ value: 'all', label: '\u5168\u90E8', count: 11 }, { value: 'doing', label: '\u8FDB\u884C\u4E2D', count: 5 }]}
-  value={filter}
-  onChange={setFilter}
-/>
-
-// \u661F\u671F\u591A\u9009\uFF1Amultiple + value \u662F\u6570\u7EC4
-<Segmented
-  multiple
-  label="\u661F\u671F"
-  items={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: String(n), label: '\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5'[n - 1] }))}
-  value={multi}
-  onChange={setMulti}
-/>`;
-function InputPage() {
-  const [text2, setText] = (0, import_react31.useState)("");
-  const [num, setNum] = (0, import_react31.useState)(3);
-  const [checked, setChecked] = (0, import_react31.useState)(true);
-  const [seg, setSeg] = (0, import_react31.useState)("week");
-  const [filter2, setFilter] = (0, import_react31.useState)("all");
-  const [multi, setMulti] = (0, import_react31.useState)(["1"]);
-  return (0, import_react31.createElement)(
-    "div",
-    null,
-    (0, import_react31.createElement)(DocProse, { id: "input" }),
-    // Input 家族
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("demoInputFamily"), hint: t2("inputHint"), code: CODE_INPUT_FAMILY },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react31.createElement)(
-          "div",
-          { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
-          // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
-          (0, import_react31.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F", hint: t2("fieldHintDate") })
-        ),
-        (0, import_react31.createElement)(Input, { value: "bad value", onChange: () => {
-        }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
-        // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
-        //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        (0, import_react31.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
-        (0, import_react31.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
-      )
-    ),
-    // 问号提示：证明它不属于 Input 家族，随处可挂
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("btnHintTitle"), hint: t2("btnHintHint"), code: CODE_FIELD_HINT },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react31.createElement)(
-          Row,
-          null,
-          (0, import_react31.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
-          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
-        ),
-        (0, import_react31.createElement)(
-          Row,
-          null,
-          (0, import_react31.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
-          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
-        ),
-        (0, import_react31.createElement)(
-          Row,
-          null,
-          (0, import_react31.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
-          (0, import_react31.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
-        )
-      )
-    ),
-    // Switch / Checkbox / Segmented
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("switchTip"), hint: t2("checkboxHint"), code: CODE_SWITCH_SEG },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react31.createElement)(
-          "div",
-          { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
-          // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
-          // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
-          // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
-          (0, import_react31.createElement)(
-            "span",
-            { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
-            (0, import_react31.createElement)(import_dsh_client_ui_primitives3.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-            (0, import_react31.createElement)("span", {
-              style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
-              onClick: () => {
-                setChecked(!checked);
-              }
-            }, "\u542F\u7528")
-          ),
-          (0, import_react31.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
-        ),
-        (0, import_react31.createElement)(
-          "div",
-          { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
-          (0, import_react31.createElement)(Segmented, {
-            variant: "inset",
-            items: [
-              { value: "day", label: "\u65E5" },
-              { value: "week", label: "\u5468" },
-              { value: "month", label: "\u6708" }
-            ],
-            value: seg,
-            onChange: setSeg
-          }),
-          (0, import_react31.createElement)(Segmented, {
-            variant: "inset",
-            bordered: true,
-            items: [
-              { value: "day", label: "\u65E5" },
-              { value: "week", label: "\u5468" },
-              { value: "month", label: "\u6708" }
-            ],
-            value: seg,
-            onChange: setSeg
-          }),
-          (0, import_react31.createElement)(Segmented, {
-            variant: "inset",
-            size: "sm",
-            items: [
-              { value: "day", label: "\u65E5" },
-              { value: "week", label: "\u5468" },
-              { value: "month", label: "\u6708" }
-            ],
-            value: seg,
-            onChange: setSeg
-          }),
-          (0, import_react31.createElement)(Segmented, {
-            variant: "inset",
-            size: "sm",
-            bordered: true,
-            items: [
-              { value: "day", label: "\u65E5" },
-              { value: "week", label: "\u5468" },
-              { value: "month", label: "\u6708" }
-            ],
-            value: seg,
-            onChange: setSeg
-          })
-        ),
-        // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
-        (0, import_react31.createElement)(Segmented, {
-          variant: "inset",
-          items: [
-            { value: "all", label: t2("segAll"), count: 11 },
-            { value: "doing", label: t2("segDoing"), count: 5 },
-            { value: "claimed", label: t2("segClaimed"), count: 11 },
-            { value: "blocked", label: t2("segBlocked") },
-            { value: "stalled", label: t2("segStalled") }
-          ],
-          value: filter2,
-          onChange: setFilter
-        }),
-        (0, import_react31.createElement)(Segmented, {
-          variant: "inset",
-          bordered: true,
-          items: [
-            { value: "all", label: t2("segAll"), count: 11 },
-            { value: "doing", label: t2("segDoing"), count: 5 },
-            { value: "claimed", label: t2("segClaimed"), count: 11 },
-            { value: "blocked", label: t2("segBlocked") },
-            { value: "stalled", label: t2("segStalled") }
-          ],
-          value: filter2,
-          onChange: setFilter
-        }),
-        // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react31.createElement)(Segmented, {
-          multiple: true,
-          className: "dshpc-seg--weekday",
-          label: "\u661F\u671F",
-          items: [1, 2, 3, 4, 5, 6, 7].map((n) => ({
-            value: String(n),
-            label: t2(`weekday${n}`)
-          })),
-          value: multi,
-          onChange: setMulti
-        }),
-        (0, import_react31.createElement)(Segmented, {
-          multiple: true,
-          className: "dshpc-seg--weekday",
-          bordered: true,
-          label: "\u661F\u671F\uFF08\u5E26\u5916\u6846\uFF09",
-          items: [1, 2, 3, 4, 5, 6, 7].map((n) => ({
-            value: String(n),
-            label: t2(`weekday${n}`)
-          })),
-          value: multi,
-          onChange: setMulti
-        })
-      )
-    ),
-    (0, import_react31.createElement)(DocCode, { id: "input" }),
-    (0, import_react31.createElement)(DocApi, { id: "input" }),
-    (0, import_react31.createElement)(Placeholder, { descKey: "inputMissingDesc" })
-  );
-}
-var ICON_OPTIONS = [
-  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconSparkleRegular, { size: 14 }) },
-  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconClockOutlineRegular, { size: 14 }) },
-  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconPlayOutlineRegular, { size: 14 }) }
-];
-var CODE_PICKER = `// \u5355\u9009\uFF1Aicon + \u53EF\u641C\u7D22 / \u53EF\u6E05\u9664
-<Picker
-  options={[{ value: 'a', label: '\u9009\u9879 A' }, { value: 'b', label: '\u9009\u9879 B' }]}
-  value={single}
-  onChange={setSingle}
-  searchable
-  clearable
-  placeholder="\u5355\u9009"
-/>
-// \u5206\u7EC4 + \u591A\u9009\uFF1Agroups \u4E0E options \u4E8C\u9009\u4E00\uFF1Bmax \u7ED9\u4E0A\u9650\uFF0C\u53EF\u53CD\u9009
-<Picker
-  groups={[{ value: 'g1', label: '\u7EC4\u4E00', options }, { value: 'g2', label: '\u7EC4\u4E8C', options }]}
-  value={multi}
-  mode="multiple"
-  max={2}
-  onChange={setMulti}
-  searchable
-/>
-// hint \u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\uFF0C\u4E0D\u7528\u518D\u624B\u52A8\u62FC FieldHint
-<Picker options={options} value={v} onChange={setV} hint="\u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\u7684\u95EE\u53F7\u63D0\u793A" />`;
-var CODE_MODEL_PICKER = `// \u6570\u636E\u6765\u81EA\u5BBF\u4E3B\u6A21\u578B\u76EE\u5F55\uFF08\u5BBF\u4E3B\u4FA7 connectHost(ctx, { modelsPath }) \u6CE8\u5165\uFF09\uFF0C\u4E0D\u80FD\u51ED\u7A7A\u9020
-// \u5206\u7EC4\u5F62\u6001\uFF1A\u4E00\u4E2A\u4E0B\u62C9\uFF0C\u4F9B\u5E94\u5546\u505A\u7EC4\u5934
-<ModelPicker value={model} onChange={setModel} variant="grouped" />
-// \u8054\u52A8\u5F62\u6001\uFF1A\u4E24\u4E2A\u4E0B\u62C9\uFF0C\u5148\u9009\u4F9B\u5E94\u5546\u3001\u6A21\u578B\u5217\u8868\u8DDF\u7740\u7B5B
-<ModelPicker value={model} onChange={setModel} variant="cascade" placeholder="\u9009\u62E9\u6A21\u578B" />`;
-var CODE_WORKSPACE_PICKER = `// \u9ED8\u8BA4\u5373\u300C\u5DE5\u4F5C\u533A\u300D\u6587\u6848\u4E0E\u6587\u4EF6\u5939\u56FE\u6807\uFF1Bclearable / searchable \u662F\u53EF\u9009\u80FD\u529B
-<WorkspacePicker value={ws} onChange={setWs} clearable searchable />`;
-function PickerPage() {
-  const [single, setSingle] = (0, import_react31.useState)(void 0);
-  const [multi, setMulti] = (0, import_react31.useState)([]);
-  const [model, setModel] = (0, import_react31.useState)("");
-  const [model2, setModel2] = (0, import_react31.useState)("");
-  const [ws, setWs] = (0, import_react31.useState)(void 0);
-  return (0, import_react31.createElement)(
-    "div",
-    null,
-    (0, import_react31.createElement)(DocProse, { id: "picker" }),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "Picker", hint: t2("pickerHint"), code: CODE_PICKER },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react31.createElement)(Picker, {
-          options: ICON_OPTIONS,
-          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconSparkleRegular, { size: 14 }),
-          value: single,
-          onChange: (v) => setSingle(v),
-          searchable: true,
-          clearable: true,
-          placeholder: "\u5355\u9009\uFF08icon + \u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
-        }),
-        (0, import_react31.createElement)(Picker, {
-          options: ICON_OPTIONS,
-          value: single,
-          onChange: (v) => setSingle(v),
-          placeholder: "\u5355\u9009\uFF08\u65E0\u641C\u7D22\u6846\uFF09"
-        }),
-        (0, import_react31.createElement)(Picker, {
-          groups: [
-            { value: "g1", label: "\u7EC4\u4E00", options: ICON_OPTIONS },
-            {
-              value: "g2",
-              label: "\u7EC4\u4E8C",
-              options: [
-                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconRefreshOutlineRegular, { size: 14 }) },
-                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconPlusOutlineRegular, { size: 14 }) }
-              ]
-            }
-          ],
-          value: multi,
-          mode: "multiple",
-          max: 2,
-          onChange: (v) => setMulti(v),
-          searchable: true,
-          placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF0C\u53EF\u53CD\u9009\uFF09"
-        }),
-        (0, import_react31.createElement)(Picker, {
-          options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
-          degraded: true,
-          disabled: true,
-          placeholder: "\u964D\u7EA7 + \u7981\u7528"
-        }),
-        (0, import_react31.createElement)(Picker, {
-          options: ICON_OPTIONS,
-          value: single,
-          onChange: (v) => setSingle(v),
-          hint: "\u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\u7684\u95EE\u53F7\u63D0\u793A\uFF0C\u4E0D\u7528\u518D\u624B\u52A8\u62FC FieldHint\u3002",
-          placeholder: "\u5355\u9009\uFF08\u5E26 hint\uFF09"
-        })
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09", hint: t2("modelPickerHint"), code: CODE_MODEL_PICKER },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-        // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
-        (0, import_react31.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
-        // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
-        (0, import_react31.createElement)(ModelPicker, {
-          value: model2,
-          onChange: setModel2,
-          variant: "cascade",
-          placeholder: "\u9009\u62E9\u6A21\u578B"
-        })
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09", hint: t2("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
-        // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
-        (0, import_react31.createElement)(WorkspacePicker, {
-          value: ws,
-          onChange: (v) => setWs(v),
-          clearable: true,
-          searchable: true
-        })
-      )
-    ),
-    (0, import_react31.createElement)(DocCode, { id: "picker" }),
-    (0, import_react31.createElement)(DocApi, { id: "picker" }),
-    (0, import_react31.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
-  );
-}
-var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM\uFF08\u51FD\u6570\u7EC4\u4EF6\u6302\u4E0D\u4E0A \u21D2 \u65E0\u6C14\u6CE1\uFF09
-<Tooltip label="top \xB7 center" side="top" align="center">
-  <button type="button">\u60AC\u505C\u6211</button>
-</Tooltip>
-<Tooltip label="\u5F88\u957F\u7684\u4E00\u6BB5\u8BF4\u660E\uFF0C\u653E\u4E0D\u4E0B\u65F6\u6309 maxWidth \u6298\u884C" side="bottom" maxWidth={240}>
-  <span>\u60AC\u505C\u6211</span>
-</Tooltip>
-
-// \u4E24\u6BB5\u5F0F\uFF1Alabel \u91CC\u76F4\u63A5\u5199\u6362\u884C
-<Tooltip label={'\u4EFB\u52A1\u540D' + String.fromCharCode(10) + '\u4EFB\u52A1\u6B63\u6587'} side="top" maxWidth={260}>
-  <span>\u4EFB\u52A1\u540D</span>
-</Tooltip>
-
-// \u5BCC\u5361\u7247\uFF1A\u5B98\u65B9 HoverCard\uFF0Ccontent \u6536\u4EFB\u610F ReactNode\uFF1Bcompact \u53D8\u4F53\u80CC\u666F\u6052\u6DF1\uFF0C\u5185\u5BB9\u8272\u81EA\u5DF1\u7ED9
-<HoverCard
-  variant="compact"
-  openDelayMs={200}
-  anchor={<span>\u4EFB\u52A1\u540D</span>}
-  content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>\u2026</div>}
-/>`;
-function TooltipPage() {
-  return (0, import_react31.createElement)(
-    "div",
-    null,
-    (0, import_react31.createElement)(DocProse, { id: "tooltip" }),
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("tooltipTitle"), hint: t2("tooltipHint"), code: CODE_TOOLTIP },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: t2("tooltipAnchorButton") },
-          tipAnchor("top \xB7 center", "top", "center"),
-          tipAnchor("top \xB7 end", "top", "end"),
-          tipAnchor("bottom \xB7 center", "bottom", "center"),
-          tipAnchor("bottom \xB7 end", "bottom", "end"),
-          tipAnchor("right", "right")
-        ),
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: t2("tooltipAnchorText") },
-          (0, import_react31.createElement)(
-            import_dsh_client_ui_primitives3.Tooltip,
-            { label: t2("tooltipHint"), side: "top" },
-            (0, import_react31.createElement)("span", {
-              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
-            }, t2("tooltipAnchorText"))
-          ),
-          (0, import_react31.createElement)(
-            import_dsh_client_ui_primitives3.Tooltip,
-            { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
-            (0, import_react31.createElement)("span", {
-              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
-            }, t2("tooltipLong"))
-          )
-        ),
-        // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: t2("tooltipMultiline") },
-          (0, import_react31.createElement)(
-            import_dsh_client_ui_primitives3.Tooltip,
-            { label: `${t2("tooltipName")}
-${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
-            (0, import_react31.createElement)("span", {
-              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
-            }, t2("tooltipName"))
-          )
-        ),
-        // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-        (0, import_react31.createElement)(
-          Labeled,
-          { label: t2("tooltipRich") },
-          (0, import_react31.createElement)(import_dsh_client_ui_primitives3.HoverCard, {
-            variant: "compact",
-            openDelayMs: 200,
-            anchor: (0, import_react31.createElement)("span", {
-              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
-            }, t2("tooltipName")),
-            // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
-            // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
-            // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
-            // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-            content: (0, import_react31.createElement)(
-              "div",
-              {
-                style: {
-                  padding: "4px 2px",
-                  minWidth: "220px",
-                  color: "var(--dsw-static-neutral-bluish-00,#fff)"
-                }
-              },
-              (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
-              (0, import_react31.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
-            )
-          })
-        )
-      )
-    ),
-    (0, import_react31.createElement)(DocCode, { id: "tooltip" }),
-    (0, import_react31.createElement)(DocApi, { id: "tooltip" })
-  );
-}
-var CODE_CARD = `// Card\uFF1Asurface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF1Baction \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u4E5F\u5782\u76F4\u5C45\u4E2D
-<Card
-  accent="business"
-  action={<span style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>2026-10-18 \u521B\u5EFA</span>}
->
-  <div style={{ fontWeight: 600 }}>\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM</div>
-  <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
-    <Chip>#npm</Chip>
-    <Chip>#\u8FC1\u79FB</Chip>
-  </div>
-</Card>
-
-// accent \u4E94\u6863\uFF1Abusiness / success / warning / danger / neutral\uFF08\u6216\u4EFB\u610F CSS \u8272\u503C\uFF09
-<Card accent="warning"><div>\u2026</div></Card>`;
-var CODE_STRIP_CARD = `// StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + \u65B9\u89D2 + \u5DE6\u7F18 4px \u901A\u9AD8\u8272\u6761\uFF08\u5907\u6CE8\u6846\u3001\u6267\u884C\u8BB0\u5F55\u6761\u540C\u6B3E\uFF09
-<StripCard
-  accent="success"
-  action={<Button size="sm" variant="outline">Cancel</Button>}
->
-  <div style={{ fontWeight: 600 }}>\u6267\u884C\u6210\u529F</div>
-  <div style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4</div>
-</StripCard>`;
-var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\uFF1B\u6807\u9898\u540E\u7F00\u53EF\u4EE5\u662F\u8BA1\u6570 / \u5F69\u8272\u6807\u7B7E / \u5C0F\u5B57\u8BF4\u660E
-<SectionHead
-  icon={<IconSparkleRegular size={16} />}
-  title={<span>\u5168\u90E8\u5F85\u529E <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
-  right={[
-    <Segmented variant="inset" items={[{ value: 'all', label: '\u5168\u90E8', count: 22 }]} value={seg} onChange={setSeg} />,
-    <div style={{ width: 192 }}><Input value={kw} onChange={setKw} placeholder="\u641C\u7D22" /></div>,
-  ]}
-/>`;
-function CardPage() {
-  const [seg, setSeg] = (0, import_react31.useState)("all");
-  const [kw, setKw] = (0, import_react31.useState)("");
-  return (0, import_react31.createElement)(
-    "div",
-    null,
-    (0, import_react31.createElement)(DocProse, { id: "card" }),
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("demoCardTitle"), hint: t2("cardHint"), code: CODE_CARD },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
-        // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
-        (0, import_react31.createElement)(
-          Card,
-          {
-            accent: "business",
-            action: (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
-          },
-          (0, import_react31.createElement)(
-            "div",
-            { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
-            "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
-          ),
-          (0, import_react31.createElement)(
-            "div",
-            { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react31.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react31.createElement)(Chip, null, "#npm"),
-            (0, import_react31.createElement)(Chip, null, "#pnpm"),
-            (0, import_react31.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react31.createElement)(Chip, null, "#\u8FC1\u79FB")
-          )
-        ),
-        // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
-        (0, import_react31.createElement)(
-          Card,
-          {
-            accent: "business",
-            action: (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
-          },
-          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react31.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
-        ),
-        // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react31.createElement)(
-          "div",
-          { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
-          ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react31.createElement)(
-              Card,
-              { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react31.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
-            )
-          )
-        )
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("demoStripTitle"), hint: t2("stripHint"), code: CODE_STRIP_CARD },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
-        (0, import_react31.createElement)(
-          StripCard,
-          {
-            accent: "business",
-            action: (0, import_react31.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
-          },
-          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react31.createElement)(
-            "div",
-            { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react31.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react31.createElement)(
-              "span",
-              { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
-              "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
-            )
-          )
-        ),
-        (0, import_react31.createElement)(
-          StripCard,
-          {
-            accent: "success",
-            // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
-            action: (0, import_react31.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
-          },
-          (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react31.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
-        ),
-        // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
-        (0, import_react31.createElement)(
-          "div",
-          { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
-          ["business", "success", "warning", "danger", "neutral"].map(
-            (a) => (0, import_react31.createElement)(
-              StripCard,
-              { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
-              (0, import_react31.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
-            )
-          )
-        )
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408", code: CODE_SECTION_HEAD },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "8px" } },
-        // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
-        (0, import_react31.createElement)(SectionHead, {
-          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconSparkleRegular, { size: 16 }),
-          title: (0, import_react31.createElement)(
-            "span",
-            { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
-            "\u5168\u90E8\u5F85\u529E",
-            (0, import_react31.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
-          ),
-          right: [
-            (0, import_react31.createElement)(Segmented, {
-              variant: "inset",
-              items: [
-                { value: "all", label: t2("segAll"), count: 22 },
-                { value: "doing", label: t2("segDoing"), count: 11 },
-                { value: "claimed", label: t2("segClaimed"), count: 11 }
-              ],
-              value: seg,
-              onChange: setSeg
-            }),
-            // 搜索框 140px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
-            (0, import_react31.createElement)(
-              "div",
-              { style: { width: "140px", flex: "none" } },
-              (0, import_react31.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
-            )
-          ]
-        }),
-        // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
-        (0, import_react31.createElement)(SectionHead, {
-          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconClockOutlineRegular, { size: 16 }),
-          title: (0, import_react31.createElement)(
-            "span",
-            { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
-            "\u6211\u7684\u5F85\u529E",
-            (0, import_react31.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
-          ),
-          right: (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
-        }),
-        // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
-        (0, import_react31.createElement)(SectionHead, {
-          icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconRefreshOutlineRegular, { size: 16 }),
-          title: (0, import_react31.createElement)(
-            "span",
-            { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
-            "\u5DF2\u5F52\u6863",
-            (0, import_react31.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
-          ),
-          right: [
-            (0, import_react31.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
-            (0, import_react31.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
-          ]
-        })
-      )
-    ),
-    (0, import_react31.createElement)(DocCode, { id: "card" }),
-    (0, import_react31.createElement)(DocApi, { id: "card" })
-  );
-}
-var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884C\u56FA\u5B9A\u7531\u5927\u5230\u5C0F\uFF08md \u2192 sm \u2192 xs\uFF09\uFF0C\u540C\u6863\u6587\u6848\u4E0D\u6DF7\u6392
-<Chip size="md" tone="warning">\u903E\u671F</Chip>
-<Chip size="sm" tone="danger">\u505C\u6EDE</Chip>
-<Chip size="xs" tone="success">\u5B8C\u6210</Chip>
-
-// \u4E2D\u6027 # \u6807\u7B7E\uFF08\u8BED\u8A00\u65E0\u5173\uFF09\uFF1B\u4F20 onClick \u624D\u6E32\u67D3\u6210 button
-<Chip>#npm</Chip>
-<Chip onClick={() => showToast('\u70B9\u4E86 chip')}>#\u53EF\u70B9</Chip>`;
-var CODE_MARQUEE = `// \u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1A\u653E\u4E0D\u4E0B\u624D\u6EDA\uFF0Chover \u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7
-<MarqueeText text="\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" />`;
-var CODE_LIVE = `// \u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6\u5185\u5BB9\u8C03\u7528\u65B9\u6E32\u67D3
-<LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`;
-var CODE_EMPTY = `// \u4E1A\u52A1\u7A7A\u6001\uFF1A\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE
-<EmptyState text="\u6682\u65E0\u6570\u636E" action={<Button size="sm" variant="outline">\u91CD\u8BD5</Button>} />`;
-function ChipPage() {
-  return (0, import_react31.createElement)(
-    "div",
-    null,
-    (0, import_react31.createElement)(DocProse, { id: "chip" }),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "Chip", hint: t2("chipHint"), code: CODE_CHIP },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        ...["md", "sm", "xs"].map(
-          (sz) => (0, import_react31.createElement)(
-            "div",
-            { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-            (0, import_react31.createElement)(Chip, { size: sz, tone: "warning" }, t2("chipOverdue")),
-            (0, import_react31.createElement)(Chip, { size: sz, tone: "danger" }, t2("chipStalled")),
-            (0, import_react31.createElement)(Chip, { size: sz, tone: "success" }, t2("chipDone")),
-            (0, import_react31.createElement)(Chip, { size: sz, tone: "business" }, t2("chipDoing")),
-            (0, import_react31.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
-          )
-        ),
-        // 中性 # 标签（语言无关）+ 长文字回归样
-        (0, import_react31.createElement)(
-          "div",
-          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react31.createElement)(Chip, null, "#npm"),
-          (0, import_react31.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react31.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react31.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
-        )
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("marqueeTitle"), hint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7", code: CODE_MARQUEE },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { maxWidth: "200px" } },
-        (0, import_react31.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("liveTitle"), hint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3", code: CODE_LIVE },
-      (0, import_react31.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: t2("emptyStateTitle"), hint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE", code: CODE_EMPTY },
-      (0, import_react31.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
-    ),
-    (0, import_react31.createElement)(DocCode, { id: "chip" }),
-    (0, import_react31.createElement)(DocApi, { id: "chip" })
-  );
-}
-var CODE_HOST_MODAL = `// \u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u76F4\u63A5\u7528\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF09
-import { Modal } from '@deepseek-ai/dsh-client-ui-primitives'
-
-<Modal
-  open={open}
-  onClose={() => setOpen(false)}
-  title="\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97"
-  closeLabel="\u5173\u95ED"
-  description="\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002"
-  footer={
-    <>
-      <Button variant="outline">\u53D6\u6D88</Button>
-      <Button variant="danger">\u5220\u9664</Button>
-    </>
-  }
->
-  <Input value={text} onChange={setText} placeholder="\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" />
-</Modal>
-
-// \u547D\u4EE4\u5F0F\uFF1A\u52A0 skin:"host" \u8D70\u540C\u4E00\u4E2A\u5B98\u65B9 Modal\uFF0C\u8FD4\u56DE Promise
-const ok = await confirmModal({
-  title: '\u5BBF\u4E3B\u786E\u8BA4\u6846', message: '\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09',
-  tone: 'danger', confirmText: '\u5220\u9664', cancelText: '\u518D\u60F3\u60F3', skin: 'host',
-})
-await alertModal({ title: '\u5BBF\u4E3B\u63D0\u793A', message: '\u5173\u95ED\u5373\u786E\u8BA4', skin: 'host' })`;
-var CODE_SMALL_MODAL = `// \u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1A\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F
-<AlertModal
-  severity="warning"
-  title="\u64CD\u4F5C\u7ED3\u679C"
-  message="\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002"
-  onConfirm={() => setOpen(false)}
-/>
-<ConfirmModal
-  title="\u5220\u9664\u4EFB\u52A1"
-  message="\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F"
-  tone="danger"
-  confirmText="\u5220\u9664"
-  cancelText="\u518D\u60F3\u60F3"
-  onConfirm={() => {}}
-  onCancel={() => {}}
-/>
-
-// \u547D\u4EE4\u5F0F\uFF08Promise\uFF0C\u4E0D\u7528\u7BA1\u5F00\u5173\u72B6\u6001\uFF09
-if (await confirmModal({ title: '\u786E\u8BA4\u63D0\u4EA4', message: '\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500', tone: 'danger' })) {
-  // \u7528\u6237\u70B9\u4E86\u786E\u8BA4
-}
-await alertModal({ title: '\u63D0\u793A', message: '\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' })`;
-var CODE_LARGE_MODAL = `// \u5185\u5BB9\u5F39\u7A97\uFF1Asize md / lg\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF08\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\uFF09
-<Modal title="\u4EFB\u52A1\u8BE6\u60C5" onClose={close} footer={<Button variant="primary">\u77E5\u9053\u4E86</Button>}>
-  <div>\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002</div>
-</Modal>
-
-// lg + headerActions\uFF08\u53F3\u4E0A\u89D2\uFF09+ \u53EF\u6EDA\u52A8\u5185\u5BB9
-<Modal
-  size="lg"
-  title="\u4F1A\u8BDD\u8BB0\u5F55"
-  headerActions={<Button variant="outline" size="sm">\u66F4\u591A</Button>}
-  onClose={close}
-  footer={<><Button variant="outline">\u5173\u95ED</Button><Button variant="primary">\u5B8C\u6210</Button></>}
->
-  {items.map((it) => <div key={it.id}>{it.title}</div>)}
-</Modal>
-
-// \u65E0 footer\u3001\u5934\u90E8\u81EA\u5B9A\u4E49\u6392\u6CD5\uFF1Atitle \u6536 ReactNode
-<Modal
-  size="lg"
-  title={<><b>\u4EFB\u52A1\u8BE6\u60C5</b><span className="dshpc-modal__sid">sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4</span></>}
-  onClose={close}
->
-  <div>\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\u3002</div>
-</Modal>`;
-var CODE_TOAST_NATIVE = `// showToast\uFF1ASonner \u539F\u5473\uFF08\u5BF9\u6BD4\u7528\uFF09
-showToast('\u5DF2\u4FDD\u5B58')
-showToast('\u4FDD\u5B58\u6210\u529F', { variant: 'success' })
-showToast('\u4FDD\u5B58\u5931\u8D25', { variant: 'error' })
-showToast('\u6574\u6761\u81EA\u5B9A\u4E49\u8272', { color: '#7c3aed' })
-showToast('\u6D88\u5931\u540E\u56DE\u8C03', { onDismiss: () => {} })
-showToast('\u9876\u90E8-\u5DE6', { position: 'top-left' })`;
-var CODE_TOAST_HOST = `// showHostToast\uFF1A\u76F4\u63A5\u5305\u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09
-showHostToast('\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A')
-showHostToast('\u64CD\u4F5C\u6210\u529F', { tone: 'success' })
-showHostToast('\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A', { actions: [{ text: '\u67E5\u770B', onClick: () => {} }] })`;
-var CODE_TOAST_NOTIFY = `// notify\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE\uFF08\u9879\u76EE\u5185\u63A8\u8350\uFF09
-notify('\u5DF2\u4FDD\u5B58\u8349\u7A3F')
-notify('\u4FDD\u5B58\u6210\u529F', { variant: 'success' })
-notify('\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3', { variant: 'warning', description: '\u6E05\u7406\u540E\u91CD\u8BD5' })
-notify('\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6', {
-  variant: 'success',
-  description: '\u53EF\u5728 10 \u79D2\u5185\u64A4\u9500',
-  actions: [{ text: '\u64A4\u9500', variant: 'outline', onClick: () => {} }],
-})
-notify('\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F', {
-  description: '\u63D0\u4EA4\u540E\u5C06\u901A\u77E5\u76F8\u5173\u6210\u5458',
-  actions: [
-    { text: '\u53D6\u6D88', variant: 'outline', onClick: () => {} },
-    { text: '\u63D0\u4EA4', variant: 'primary', onClick: () => {} },
-  ],
-})`;
-function FeedbackPage() {
-  const [open, setOpen] = (0, import_react31.useState)(false);
-  const [openNative, setOpenNative] = (0, import_react31.useState)(false);
-  const [alertState, setAlertState] = (0, import_react31.useState)(null);
-  const [confirmCfg, setConfirmCfg] = (0, import_react31.useState)(null);
-  const [confirmResult, setConfirmResult] = (0, import_react31.useState)("");
-  const [largeOpen, setLargeOpen] = (0, import_react31.useState)(false);
-  const [largeOpenB, setLargeOpenB] = (0, import_react31.useState)(false);
-  const [nativeText, setNativeText] = (0, import_react31.useState)("");
-  return (0, import_react31.createElement)(
-    "div",
-    null,
-    (0, import_react31.createElement)(DocProse, { id: "feedback" }),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002", code: CODE_SMALL_MODAL },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react31.createElement)(
-          "div",
-          null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react31.createElement)(
-            "div",
-            { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
-            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
-            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
-            (0, import_react31.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
-            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
-          ),
-          alertState !== null ? (0, import_react31.createElement)(AlertModal, {
-            severity: alertState.sev,
-            title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
-            message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
-            onConfirm: () => setAlertState(null)
-          }) : null
-        ),
-        (0, import_react31.createElement)(
-          "div",
-          null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react31.createElement)(
-            "div",
-            { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
-            (0, import_react31.createElement)(Button, { onClick: () => {
-              setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
-              setConfirmResult("");
-            } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
-            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => {
-              setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
-              setConfirmResult("");
-            } }, "danger \u53D8\u4F53"),
-            (0, import_react31.createElement)(Button, { variant: "ghost", onClick: () => {
-              setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
-              setConfirmResult("");
-            } }, "\u6539\u6587\u6848"),
-            confirmResult ? (0, import_react31.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
-          ),
-          confirmCfg !== null ? (0, import_react31.createElement)(ConfirmModal, {
-            title: "\u5220\u9664\u4EFB\u52A1",
-            message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
-            tone: confirmCfg.tone,
-            confirmText: confirmCfg.confirmText,
-            cancelText: confirmCfg.cancelText,
-            onConfirm: () => {
-              setConfirmCfg(null);
-              setConfirmResult(`\u4F60\u70B9\u4E86\uFF1A${confirmCfg.confirmText}\uFF08\u786E\u8BA4\uFF09`);
-            },
-            onCancel: () => {
-              setConfirmCfg(null);
-              setConfirmResult(`\u4F60\u70B9\u4E86\uFF1A${confirmCfg.cancelText}\uFF08\u53D6\u6D88\uFF09`);
-            }
-          }) : null
-        ),
-        (0, import_react31.createElement)(
-          "div",
-          null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
-          (0, import_react31.createElement)(
-            "div",
-            { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => {
-              alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => showToast("alert \u5DF2\u5173\u95ED"));
-            } }, "alertModal()"),
-            (0, import_react31.createElement)(Button, { onClick: async () => {
-              const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
-              showToast(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
-            } }, "confirmModal()")
-          )
-        )
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002", code: CODE_LARGE_MODAL },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react31.createElement)(
-          "div",
-          null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
-          (0, import_react31.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
-          open ? (0, import_react31.createElement)(Modal, {
-            title: "\u4EFB\u52A1\u8BE6\u60C5",
-            onClose: () => setOpen(false),
-            footer: (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-          }, (0, import_react31.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
-        ),
-        (0, import_react31.createElement)(
-          "div",
-          null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
-          (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
-          largeOpen ? (0, import_react31.createElement)(
-            Modal,
-            {
-              size: "lg",
-              title: "\u4F1A\u8BDD\u8BB0\u5F55",
-              headerActions: (0, import_react31.createElement)(
-                Button,
-                { variant: "outline", size: "sm", icon: iconOf("chevron", 14) },
-                "\u66F4\u591A"
-              ),
-              onClose: () => setLargeOpen(false),
-              footer: (0, import_react31.createElement)(
-                "div",
-                { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-                (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
-                (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
-              )
-            },
-            (0, import_react31.createElement)(
-              "div",
-              null,
-              Array.from(
-                { length: 40 },
-                (_, i2) => (0, import_react31.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
-              ),
-              (0, import_react31.createElement)("div", { className: "dshpc-modal__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
-            )
-          ) : null
-        ),
-        (0, import_react31.createElement)(
-          "div",
-          null,
-          (0, import_react31.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
-          (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
-          largeOpenB ? (0, import_react31.createElement)(
-            Modal,
-            {
-              size: "lg",
-              title: (0, import_react31.createElement)(
-                "div",
-                null,
-                (0, import_react31.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
-                (0, import_react31.createElement)("div", { className: "dshpc-modal__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
-              ),
-              onClose: () => setLargeOpenB(false)
-            },
-            (0, import_react31.createElement)(
-              "div",
-              null,
-              (0, import_react31.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
-              (0, import_react31.createElement)("div", { style: { marginTop: "12px", border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
-            )
-          ) : null
-        )
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002', code: CODE_HOST_MODAL },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
-        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: () => {
-          void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
-        } }, 'alertModal({skin:"host"})'),
-        (0, import_react31.createElement)(Button, { variant: "ghost", onClick: async () => {
-          const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
-          showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
-        } }, 'confirmModal({skin:"host"})'),
-        openNative ? (0, import_react31.createElement)(
-          Official.Modal,
-          {
-            open: openNative,
-            onClose: () => setOpenNative(false),
-            title: "\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97",
-            closeLabel: "\u5173\u95ED",
-            description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
-            contentClassName: "dshpc-native-demo-content",
-            footer: (0, import_react31.createElement)(
-              "div",
-              { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-              (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
-              (0, import_react31.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
-              (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
-            )
-          },
-          (0, import_react31.createElement)(
-            "div",
-            { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-            (0, import_react31.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
-            (0, import_react31.createElement)(
-              "label",
-              { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
-              (0, import_react31.createElement)(Checkbox, { checked: false, onChange: () => {
-              } }),
-              "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
-            )
-          )
-        ) : null
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify", hint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE", code: CODE_TOAST_NOTIFY },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
-        (0, import_react31.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react31.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react31.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react31.createElement)(
-          Button,
-          {
-            onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
-              variant: "success",
-              description: "\u53EF\u5728 10 \u79D2\u5185\u64A4\u9500",
-              actions: [{ text: "\u64A4\u9500", variant: "outline", onClick: () => notify("\u5DF2\u64A4\u9500") }]
-            })
-          },
-          "\u5355\u6309\u94AE+\u63CF\u8FF0"
-        ),
-        (0, import_react31.createElement)(
-          Button,
-          {
-            onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
-              description: "\u63D0\u4EA4\u540E\u5C06\u901A\u77E5\u76F8\u5173\u6210\u5458",
-              actions: [
-                { text: "\u53D6\u6D88", variant: "outline", onClick: () => notify("\u5DF2\u53D6\u6D88") },
-                { text: "\u63D0\u4EA4", variant: "primary", onClick: () => notify("\u5DF2\u63D0\u4EA4", { variant: "success" }) }
-              ]
-            })
-          },
-          "\u53CC\u6309\u94AE"
-        )
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09", code: CODE_TOAST_HOST },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
-        (0, import_react31.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
-        (0, import_react31.createElement)(
-          Button,
-          {
-            onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
-              actions: [{ text: "\u67E5\u770B", onClick: () => showToast("\u70B9\u4E86\u300C\u67E5\u770B\u300D") }]
-            })
-          },
-          "\u5E26\u52A8\u4F5C"
-        )
-      )
-    ),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528", code: CODE_TOAST_NATIVE },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
-        (0, import_react31.createElement)(
-          Button,
-          {
-            onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
-              onDismiss: () => showToast("\u4E0A\u4E00\u6761\u6D88\u5931\u4E86")
-            })
-          },
-          "\u5E26\u56DE\u8C03"
-        )
-      ),
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
-        (0, import_react31.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
-      )
-    ),
-    (0, import_react31.createElement)(DocCode, { id: "feedback" }),
-    (0, import_react31.createElement)(DocApi, { id: "feedback" })
-  );
-}
-var CODE_DOCK = `// 1) \u5EFA\u4E00\u4E2A dock \u63A7\u5236\u5668\uFF08\u5E94\u7528\u7EA7\u5355\u4F8B\uFF1BmaxPanels \u9ED8\u8BA4 3\uFF09
-const dock = createPanelDock({ maxPanels: 3 })
-
-// 2) \u6E32\u67D3\uFF1A\u7ED3\u6784\u5199\u5728\u8C03\u7528\u70B9 \u2014\u2014 PanelDock \u8BFB children \u91CC DockPanel \u7684 props \u7EDF\u4E00\u753B
-<div style={{ display: 'flex', height: '100%' }}>
-  <main style={{ flex: 1, minWidth: 0 }}>\u4E3B\u533A\u5185\u5BB9</main>
-  <PanelDock dock={dock}>
-    <DockPanel id="files" title="\u6587\u4EF6" icon={<FolderIcon />}>
-      <FileBrowser />
-    </DockPanel>
-    <DockPanel id="preview" title="\u9884\u89C8" width={520} closeButton="floating">
-      <FilePreview />
-    </DockPanel>
-  </PanelDock>
-</div>
-
-// 3) \u663E\u9690\u5F52\u72B6\u6001\uFF1A\u53EA\u4F20 id\uFF0C\u4E0D\u4F20\u5185\u5BB9
-const result = dock.open('files')   // { ok, reason }\uFF1B\u5230\u4E0A\u9650\u65F6 ok=false
-if (!result.ok) showToast('\u6700\u591A\u540C\u65F6\u5F00 3 \u680F')
-dock.close('files')
-dock.toggle('preview')
-dock.isOpen('files')
-
-// 4) \u8BA2\u9605\u72B6\u6001\u9A71\u52A8 UI\uFF08React\uFF09
-const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`;
-function LayoutPage() {
-  const state = (0, import_react31.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
-  const [notice, setNotice] = (0, import_react31.useState)(null);
-  const open = (id3) => {
-    const result = demoDock.open(id3);
-    setNotice(result.ok ? null : t2("dockLimitWarn"));
-  };
-  const close = (id3) => {
-    demoDock.close(id3);
-    setNotice(null);
-  };
-  const opened = state.ids;
-  return (0, import_react31.createElement)(
-    "div",
-    null,
-    (0, import_react31.createElement)(DocProse, { id: "layout" }),
-    (0, import_react31.createElement)(
-      Example,
-      { title: "PanelDock", hint: t2("dockHint"), code: CODE_DOCK },
-      (0, import_react31.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("A") }, t2("dockBtnOpenA")),
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("B") }, t2("dockBtnOpenB")),
-        (0, import_react31.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t2("dockBtnOpenA2")),
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => close("A") }, t2("dockBtnCloseA")),
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("default") }, t2("dockBtnDefault")),
-        (0, import_react31.createElement)(Button, { size: "sm", onClick: () => open("C") }, t2("dockBtnOpenC")),
-        (0, import_react31.createElement)(
-          Button,
-          {
-            size: "sm",
-            variant: "ghost",
-            onClick: () => {
-              for (const id3 of demoDock.ids()) demoDock.close(id3);
-              setNotice(null);
-            }
-          },
-          t2("dockBtnReset")
-        )
-      ),
-      (0, import_react31.createElement)(
-        "div",
-        { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } },
-        `${t2("dockOpened")}${opened.length === 0 ? "\u2014" : opened.join(", ")}`,
-        notice === null ? "" : `\u3000${notice}`
-      ),
-      (0, import_react31.createElement)(
-        "div",
-        { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
-        t2("dockMainText")
-      )
-    ),
-    (0, import_react31.createElement)(DocCode, { id: "layout" }),
-    (0, import_react31.createElement)(DocApi, { id: "layout" })
-  );
-}
-
-// packages/demo/src/sections/blocks.tsx
-var import_react43 = require("react");
-
-// dist/explorer/FileBrowser.js
-var import_react40 = require("react");
-
-// dist/explorer/preview/index.js
-var import_react39 = require("react");
-
-// dist/explorer/types.js
-var HTML_KINDS = ["html", "htm"];
-var OFFICE_KINDS = ["doc", "docx", "ppt", "pptx"];
-var SOURCE_MAX_BYTES = 256 * 1024;
-function previewInfoOf(path) {
-  const ext = extOf(path);
-  const mime = mimeOf(path);
-  if (mime !== void 0)
-    return { kind: "image", ext, mime };
-  if (ext === "pdf")
-    return { kind: "pdf", ext, mime: "application/pdf" };
-  if (ext === "md" || ext === "markdown")
-    return { kind: "md", ext };
-  if (HTML_KINDS.includes(ext))
-    return { kind: "html", ext };
-  if (OFFICE_KINDS.includes(ext))
-    return { kind: "office", ext, mime: "application/pdf" };
-  return { kind: "text", ext };
-}
-function unwrapEnvelope(result) {
-  if (typeof result === "object" && result !== null) {
-    const r2 = result;
-    if (r2.ok === false)
-      return { kind: "error", error: r2.error };
-    if (r2.ok === true && "value" in r2)
-      return { kind: "ok", payload: r2.value };
-  }
-  return { kind: "ok", payload: result };
-}
-function isFailed(value) {
-  return typeof value === "object" && value !== null && "failed" in value;
-}
-function listingOf(result) {
-  const envelope = unwrapEnvelope(result);
-  if (envelope.kind === "error")
-    return { failed: envelope.error };
-  const raw = envelope.payload;
-  if (typeof raw !== "object" || raw === null) {
-    console.warn("[dsh-plugin-core:explorer] list \u8FD4\u56DE\u975E\u5BF9\u8C61");
-    return null;
-  }
-  const r2 = raw;
-  if (typeof r2.path !== "string" || !Array.isArray(r2.entries) || typeof r2.truncated !== "boolean") {
-    console.warn("[dsh-plugin-core:explorer] list \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6");
-    return null;
-  }
-  return { path: r2.path, entries: r2.entries, truncated: r2.truncated };
-}
-function textPageOf(result) {
-  const envelope = unwrapEnvelope(result);
-  if (envelope.kind === "error")
-    return { failed: envelope.error };
-  const raw = envelope.payload;
-  if (typeof raw !== "object" || raw === null) {
-    console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u975E\u5BF9\u8C61");
-    return null;
-  }
-  const r2 = raw;
-  if (typeof r2.text !== "string") {
-    console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6\uFF08\u65E0 text \u5B57\u6BB5\uFF09");
-    return null;
-  }
-  const offset = typeof r2.offset === "number" ? r2.offset : 0;
-  const lines = typeof r2.lines === "number" ? r2.lines : r2.text === "" ? 0 : r2.text.split("\n").length;
-  return { text: r2.text, offset, lines, eof: r2.eof !== false };
-}
-function bytesOf(result) {
-  const envelope = unwrapEnvelope(result);
-  if (envelope.kind === "error")
-    return { failed: envelope.error };
-  const data2 = envelope.payload?.data;
-  if (data2 instanceof Uint8Array)
-    return data2;
-  console.warn("[dsh-plugin-core:explorer] readBytes \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6");
-  return null;
-}
-function absolutePathOf(result) {
-  const envelope = unwrapEnvelope(result);
-  if (envelope.kind === "error")
-    return null;
-  const raw = envelope.payload;
-  if (typeof raw !== "object" || raw === null)
-    return null;
-  const abs = raw.absolutePath;
-  return typeof abs === "string" && abs !== "" ? abs : null;
-}
-function bareCode(raw) {
-  if (typeof raw === "string") {
-    const slash3 = raw.lastIndexOf("/");
-    return slash3 >= 0 ? raw.slice(slash3 + 1) : raw;
-  }
-  if (typeof raw === "object" && raw !== null) {
-    const code3 = raw.code;
-    if (typeof code3 === "string")
-      return bareCode(code3);
-  }
-  return "";
-}
-function errView(error) {
-  const code3 = bareCode(error);
-  switch (code3) {
-    case "outside-workspace":
-      return { key: "previewOutside" };
-    case "not-found":
-    case "lookup-not-found":
-      return { key: "previewNotFound" };
-    case "not-directory":
-      return { key: "previewNotDirectory" };
-    case "not-regular-file":
-      return { key: "previewNotDirectory" };
-    case "too-large":
-      return { key: "previewTooLarge" };
-    case "not-text":
-      return { key: "previewNotText" };
-    case "invocation-unavailable":
-    case "service-unavailable":
-      return { key: "previewOfficeUnavailable" };
-    default:
-      console.warn("[dsh-plugin-core:explorer] \u9884\u89C8\u5931\u8D25\uFF1A\u672A\u6620\u5C04\u7684\u8FDC\u7AEF\u9519\u8BEF\u7801", code3, error);
-      return { key: "previewFailedCode", params: { code: code3 } };
-  }
-}
-function sortEntries(entries2) {
-  return [...entries2].sort((a, b) => {
-    const ad = a.type === "directory" ? 0 : 1;
-    const bd = b.type === "directory" ? 0 : 1;
-    if (ad !== bd)
-      return ad - bd;
-    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-  });
-}
-function listPathOf(dir) {
-  return dir === "" ? "." : dir;
-}
-function createRootCache() {
-  const map = /* @__PURE__ */ new Map();
-  return {
-    get: (sessionId) => map.get(sessionId),
-    set: (sessionId, root) => {
-      map.set(sessionId, root);
-    }
-  };
-}
-function isAbsoluteish(p) {
-  return p.startsWith("/") || p.startsWith("\\") || /^[a-zA-Z]:[\\/]/.test(p);
-}
-function relJoin(dir, name2) {
-  return dir.replace(/\/+$/, "") === "" ? name2 : `${dir.replace(/\/+$/, "")}/${name2}`;
-}
-function learnRoot(cache3, sessionId, relativePath, absolutePath) {
-  const rel = relativePath.replace(/^\/+/, "").replace(/\/+$/, "");
-  if (rel === "" || !absolutePath.endsWith(`/${rel}`))
-    return null;
-  const root = absolutePath.slice(0, absolutePath.length - rel.length - 1);
-  cache3.set(sessionId, root);
-  return root;
-}
-function relativizeToRoot(cache3, sessionId, dir) {
-  if (!isAbsoluteish(dir))
-    return dir;
-  const root = cache3.get(sessionId);
-  if (root === void 0)
-    return dir;
-  const norm = root.replace(/\/+$/, "");
-  if (dir === norm)
-    return "";
-  if (dir.startsWith(`${norm}/`))
-    return dir.slice(norm.length + 1);
-  return dir;
-}
-async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
-  const stat = workspaceFiles.stat;
-  if (stat === void 0)
-    return null;
-  let frontier = [startDir];
-  for (let depth = 0; depth < 3 && frontier.length > 0; depth++) {
-    const nextDirs = [];
-    for (const dir of frontier.slice(0, 5)) {
-      let entries2;
-      try {
-        const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir)));
-        if (parsed === null || isFailed(parsed))
-          continue;
-        entries2 = parsed.entries;
-      } catch {
-        continue;
-      }
-      const file = entries2.find((entry) => entry.type === "file");
-      if (file !== void 0) {
-        const rel = relJoin(dir, file.name);
-        try {
-          const abs = absolutePathOf(await stat(sessionId, rel));
-          if (abs !== null)
-            return { absolutePath: abs, relativePath: rel };
-        } catch {
-        }
-      }
-      for (const entry of entries2) {
-        if (entry.type === "directory" && nextDirs.length < 5)
-          nextDirs.push(relJoin(dir, entry.name));
-      }
-    }
-    frontier = nextDirs;
-  }
-  return null;
-}
-async function absolutizeDir(cache3, workspaceFiles, sessionId, dir, canonical, entries2) {
-  if (isAbsoluteish(dir))
-    return dir;
-  const rel = canonical !== "" ? canonical : dir;
-  const cached = cache3.get(sessionId);
-  if (cached !== void 0)
-    return `${cached}/${rel}`;
-  const stat = workspaceFiles.stat;
-  if (stat === void 0)
-    return dir;
-  const file = entries2.find((entry) => entry.type === "file");
-  if (file !== void 0) {
-    try {
-      const sub = relJoin(rel, file.name);
-      const abs = absolutePathOf(await stat(sessionId, sub));
-      if (abs?.endsWith(`/${file.name}`) === true && learnRoot(cache3, sessionId, sub, abs) !== null) {
-        return abs.slice(0, abs.length - file.name.length - 1);
-      }
-    } catch {
-    }
-  }
-  const found = await findAnyFileAbs(workspaceFiles, sessionId, rel);
-  if (found === null)
-    return dir;
-  const root = learnRoot(cache3, sessionId, found.relativePath, found.absolutePath);
-  return root === null ? dir : `${root}/${rel}`;
-}
-function matchesFilter(path, isDir, filter2) {
-  if (filter2 === void 0)
-    return true;
-  if (filter2.dirs === true)
-    return isDir;
-  if (filter2.exts === void 0 || filter2.exts.length === 0)
-    return true;
-  if (isDir)
-    return true;
-  return filter2.exts.includes(extOf(path));
-}
-function crumbsOfDir(dir) {
-  const isAbs = isAbsoluteish(dir);
-  const segs = dir.split("/").filter((s) => s.length > 0);
-  const out = [];
-  let acc = "";
-  for (const seg of segs) {
-    acc = acc === "" ? isAbs ? `/${seg}` : seg : `${acc}/${seg}`;
-    out.push({ label: seg, path: acc });
-  }
-  return out;
-}
-function baseNameOfPath(p) {
-  const i2 = Math.max(p.lastIndexOf("/"), p.lastIndexOf("\\"));
-  return i2 < 0 ? p : p.slice(i2 + 1);
-}
-function dirnameOf(p) {
-  return parentOf(p);
-}
-function pickWorkspaceAnchor(items) {
-  let best = null;
-  let bestAt = Number.NEGATIVE_INFINITY;
-  for (const item of items) {
-    const sessionId = item.sessionIds?.[item.sessionIds.length - 1];
-    if (typeof item.title !== "string" || item.title === "" || typeof sessionId !== "string" || sessionId === "")
-      continue;
-    const at = typeof item.updatedAt === "number" && Number.isFinite(item.updatedAt) ? item.updatedAt : Number.NEGATIVE_INFINITY;
-    if (best !== null && at <= bestAt)
-      continue;
-    best = { title: item.title, sessionId };
-    bestAt = at;
-  }
-  return best;
-}
-
-// dist/explorer/preview/BytesPreview.js
-var import_react32 = require("react");
-function BytesPreview(props) {
-  ensureControls();
-  const tt = props.translate ?? t;
-  const [url, setUrl] = (0, import_react32.useState)(null);
-  const [failed, setFailed] = (0, import_react32.useState)(null);
-  (0, import_react32.useEffect)(() => {
-    let alive = true;
-    let objectUrl = null;
-    setUrl(null);
-    setFailed(null);
-    props.workspaceFiles.readBytes(props.sessionId, props.path, {}).then((res) => {
-      const data2 = bytesOf(res);
-      if (!alive)
-        return;
-      if (data2 === null) {
-        console.warn("[dsh-plugin-core:explorer] readBytes \u8FD4\u56DE\u4F53\u65E0\u6CD5\u89E3\u6790\u4E3A\u5B57\u8282", props.path, res);
-        setFailed({ key: "previewBadPayload" });
-        return;
-      }
-      if ("failed" in data2) {
-        setFailed(errView(data2.failed));
-        return;
-      }
-      const blob = new Blob([new Uint8Array(data2)], { type: props.mime });
-      objectUrl = URL.createObjectURL(blob);
-      setUrl(objectUrl);
-    }).catch((error) => {
-      if (alive)
-        setFailed(errView(error));
-    });
-    return () => {
-      alive = false;
-      if (objectUrl !== null)
-        URL.revokeObjectURL(objectUrl);
-    };
-  }, [props.workspaceFiles, props.sessionId, props.path, props.mime]);
-  if (failed !== null)
-    return (0, import_react32.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
-  if (url === null)
-    return (0, import_react32.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  if (props.kind === "image") {
-    return (0, import_react32.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
-  }
-  return (0, import_react32.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react32.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path }));
-}
-
-// dist/explorer/preview/HtmlPreview.js
-var import_react37 = require("react");
-
-// dist/explorer/preview/TextPreview.js
-var import_react36 = require("react");
+var import_react33 = require("react");
 
 // dist/ui/CodeViewer.js
-var import_react35 = require("react");
+var import_react32 = require("react");
 
 // node_modules/.pnpm/@babel+runtime@8.0.7/node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
@@ -7946,10 +6312,10 @@ function _objectWithoutPropertiesLoose(r2, e) {
 }
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/index.js
-var import_react34 = __toESM(require("react"), 1);
+var import_react30 = __toESM(require("react"), 1);
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/useCodeMirror.js
-var import_react33 = require("react");
+var import_react29 = require("react");
 
 // node_modules/.pnpm/@marijn+find-cluster-break@1.0.4/node_modules/@marijn/find-cluster-break/src/index.js
 var rangeFrom = [];
@@ -8187,12 +6553,12 @@ var TextLeaf = class _TextLeaf extends Text {
   get children() {
     return null;
   }
-  lineInner(target, isLine, line, offset) {
+  lineInner(target, isLine, line, offset4) {
     for (let i2 = 0; ; i2++) {
-      let string3 = this.text[i2], end = offset + string3.length;
+      let string3 = this.text[i2], end = offset4 + string3.length;
       if ((isLine ? line : end) >= target)
-        return new Line(offset, end, line, string3);
-      offset = end + 1;
+        return new Line(offset4, end, line, string3);
+      offset4 = end + 1;
       line++;
     }
   }
@@ -8266,12 +6632,12 @@ var TextNode = class _TextNode extends Text {
     for (let child of children)
       this.lines += child.lines;
   }
-  lineInner(target, isLine, line, offset) {
+  lineInner(target, isLine, line, offset4) {
     for (let i2 = 0; ; i2++) {
-      let child = this.children[i2], end = offset + child.length, endLine = line + child.lines - 1;
+      let child = this.children[i2], end = offset4 + child.length, endLine = line + child.lines - 1;
       if ((isLine ? endLine : end) >= target)
-        return child.lineInner(target, isLine, line, offset);
-      offset = end + 1;
+        return child.lineInner(target, isLine, line, offset4);
+      offset4 = end + 1;
       line = endLine + 1;
     }
   }
@@ -8428,9 +6794,9 @@ var RawTextCursor = class {
     this.done = this.lineBreak = false;
     for (; ; ) {
       let last2 = this.nodes.length - 1;
-      let top2 = this.nodes[last2], offsetValue = this.offsets[last2], offset = offsetValue >> 1;
-      let size = top2 instanceof TextLeaf ? top2.text.length : top2.children.length;
-      if (offset == (dir > 0 ? size : 0)) {
+      let top2 = this.nodes[last2], offsetValue = this.offsets[last2], offset4 = offsetValue >> 1;
+      let size4 = top2 instanceof TextLeaf ? top2.text.length : top2.children.length;
+      if (offset4 == (dir > 0 ? size4 : 0)) {
         if (last2 == 0) {
           this.done = true;
           this.value = "";
@@ -8449,7 +6815,7 @@ var RawTextCursor = class {
         }
         skip--;
       } else if (top2 instanceof TextLeaf) {
-        let next = top2.text[offset + (dir < 0 ? -1 : 0)];
+        let next = top2.text[offset4 + (dir < 0 ? -1 : 0)];
         this.offsets[last2] += dir;
         if (next.length > Math.max(0, skip)) {
           this.value = skip == 0 ? next : dir > 0 ? next.slice(skip) : next.slice(0, next.length - skip);
@@ -8457,7 +6823,7 @@ var RawTextCursor = class {
         }
         skip -= next.length;
       } else {
-        let next = top2.children[offset + (dir < 0 ? -1 : 0)];
+        let next = top2.children[offset4 + (dir < 0 ? -1 : 0)];
         if (skip > next.length) {
           skip -= next.length;
           this.offsets[last2] += dir;
@@ -8811,8 +7177,8 @@ var ChangeSet = class _ChangeSet extends ChangeDesc {
       if (ins >= 0) {
         sections[i2] = ins;
         sections[i2 + 1] = len;
-        let index = i2 >> 1;
-        while (inserted.length < index)
+        let index3 = i2 >> 1;
+        while (inserted.length < index3)
           inserted.push(Text.empty);
         inserted.push(len ? doc2.slice(pos, pos + len) : Text.empty);
       }
@@ -9019,11 +7385,11 @@ function addSection(sections, len, ins, forceJoin = false) {
 function addInsert(values2, sections, value) {
   if (value.length == 0)
     return;
-  let index = sections.length - 2 >> 1;
-  if (index < values2.length) {
+  let index3 = sections.length - 2 >> 1;
+  if (index3 < values2.length) {
     values2[values2.length - 1] = values2[values2.length - 1].append(value);
   } else {
-    while (values2.length < index)
+    while (values2.length < index3)
       values2.push(Text.empty);
     values2.push(value);
   }
@@ -9169,12 +7535,12 @@ var SectionIter = class {
     return this.ins < 0 ? this.len : this.ins;
   }
   get text() {
-    let { inserted } = this.set, index = this.i - 2 >> 1;
-    return index >= inserted.length ? Text.empty : inserted[index];
+    let { inserted } = this.set, index3 = this.i - 2 >> 1;
+    return index3 >= inserted.length ? Text.empty : inserted[index3];
   }
   textBit(len) {
-    let { inserted } = this.set, index = this.i - 2 >> 1;
-    return index >= inserted.length && !len ? Text.empty : inserted[index].slice(this.off, len == null ? void 0 : this.off + len);
+    let { inserted } = this.set, index3 = this.i - 2 >> 1;
+    return index3 >= inserted.length && !len ? Text.empty : inserted[index3].slice(this.off, len == null ? void 0 : this.off + len);
   }
   forward(len) {
     if (len == this.len)
@@ -10667,15 +9033,15 @@ var Chunk = class _Chunk {
         lo = mid + 1;
     }
   }
-  between(offset, from2, to, f) {
+  between(offset4, from2, to, f) {
     for (let i2 = this.findIndex(from2, -1e9, true), e = this.findIndex(to, 1e9, false, i2); i2 < e; i2++)
-      if (f(this.from[i2] + offset, this.to[i2] + offset, this.value[i2]) === false)
+      if (f(this.from[i2] + offset4, this.to[i2] + offset4, this.value[i2]) === false)
         return false;
   }
-  map(offset, changes, basePos, baseSide, spill) {
+  map(offset4, changes, basePos, baseSide, spill) {
     let value = [], from2 = [], to = [], newPos = -1, maxPoint = -1;
     iter: for (let i2 = 0; i2 < this.value.length; i2++) {
-      let val = this.value[i2], curFrom = this.from[i2] + offset, curTo = this.to[i2] + offset, newFrom, newTo;
+      let val = this.value[i2], curFrom = this.from[i2] + offset4, curTo = this.to[i2] + offset4, newFrom, newTo;
       if (curFrom == curTo) {
         let mapped = changes.mapPos(curFrom, val.startSide, val.mapMode);
         if (mapped == null)
@@ -10749,16 +9115,16 @@ var RangeSet = class _RangeSet {
   get size() {
     if (this.isEmpty)
       return 0;
-    let size = this.nextLayer.size;
+    let size4 = this.nextLayer.size;
     for (let chunk of this.chunk)
-      size += chunk.value.length;
-    return size;
+      size4 += chunk.value.length;
+    return size4;
   }
   /**
   @internal
   */
-  chunkEnd(index) {
-    return this.chunkPos[index] + this.chunk[index].length;
+  chunkEnd(index3) {
+    return this.chunkPos[index3] + this.chunk[index3].length;
   }
   /**
   Update the range set, optionally adding new ranges or filtering
@@ -11149,8 +9515,8 @@ var LayerCursor = class {
       }
     }
   }
-  setRangeIndex(index) {
-    if (index == this.layer.chunk[this.chunkIndex].value.length) {
+  setRangeIndex(index3) {
+    if (index3 == this.layer.chunk[this.chunkIndex].value.length) {
       this.chunkIndex++;
       if (this.skip) {
         while (this.chunkIndex < this.layer.chunk.length && this.skip.has(this.layer.chunk[this.chunkIndex]))
@@ -11158,7 +9524,7 @@ var LayerCursor = class {
       }
       this.rangeIndex = 0;
     } else {
-      this.rangeIndex = index;
+      this.rangeIndex = index3;
     }
   }
   nextChunk() {
@@ -11220,9 +9586,9 @@ var HeapCursor = class _HeapCursor {
     }
   }
 };
-function heapBubble(heap, index) {
-  for (let cur2 = heap[index]; ; ) {
-    let childIndex = (index << 1) + 1;
+function heapBubble(heap, index3) {
+  for (let cur2 = heap[index3]; ; ) {
+    let childIndex = (index3 << 1) + 1;
     if (childIndex >= heap.length)
       break;
     let child = heap[childIndex];
@@ -11233,8 +9599,8 @@ function heapBubble(heap, index) {
     if (cur2.compare(child) < 0)
       break;
     heap[childIndex] = cur2;
-    heap[index] = child;
-    index = childIndex;
+    heap[index3] = child;
+    index3 = childIndex;
   }
 }
 var SpanCursor = class {
@@ -11267,10 +9633,10 @@ var SpanCursor = class {
       this.removeActive(this.minActive);
     this.cursor.forward(pos, side);
   }
-  removeActive(index) {
-    remove(this.active, index);
-    remove(this.activeTo, index);
-    remove(this.activeRank, index);
+  removeActive(index3) {
+    remove(this.active, index3);
+    remove(this.activeTo, index3);
+    remove(this.activeRank, index3);
     this.minActive = findMinIndex(this.active, this.activeTo);
   }
   addActive(trackOpen) {
@@ -11393,15 +9759,15 @@ function sameValues(a, b) {
       return false;
   return true;
 }
-function remove(array, index) {
-  for (let i2 = index, e = array.length - 1; i2 < e; i2++)
+function remove(array, index3) {
+  for (let i2 = index3, e = array.length - 1; i2 < e; i2++)
     array[i2] = array[i2 + 1];
   array.pop();
 }
-function insert(array, index, value) {
-  for (let i2 = array.length - 1; i2 >= index; i2--)
+function insert(array, index3, value) {
+  for (let i2 = array.length - 1; i2 >= index3; i2--)
     array[i2 + 1] = array[i2];
-  array[index] = value;
+  array[index3] = value;
 }
 function findMinIndex(value, array) {
   let found = -1, foundPos = 1e9;
@@ -11534,20 +9900,20 @@ var StyleSet = class {
     let pos = 0, j = 0;
     let changed = false;
     for (let i2 = 0; i2 < modules.length; i2++) {
-      let mod = modules[i2], index = this.modules.indexOf(mod);
-      if (index < j && index > -1) {
-        this.modules.splice(index, 1);
+      let mod = modules[i2], index3 = this.modules.indexOf(mod);
+      if (index3 < j && index3 > -1) {
+        this.modules.splice(index3, 1);
         changed = true;
         j--;
-        index = -1;
+        index3 = -1;
       }
-      if (index == -1) {
+      if (index3 == -1) {
         this.modules.splice(j++, 0, mod);
         changed = true;
         if (sheet) for (let k = 0; k < mod.rules.length; k++)
           sheet.insertRule(mod.rules[k], pos++);
       } else {
-        while (j < index) pos += this.modules[j++].rules.length;
+        while (j < index3) pos += this.modules[j++].rules.length;
         pos += mod.rules.length;
         j++;
       }
@@ -11628,7 +9994,7 @@ var base = {
   221: "]",
   222: "'"
 };
-var shift = {
+var shift4 = {
   48: ")",
   49: "!",
   50: "@",
@@ -11662,14 +10028,14 @@ for (i = 1; i <= 24; i++) base[i + 111] = "F" + i;
 var i;
 for (i = 65; i <= 90; i++) {
   base[i] = String.fromCharCode(i + 32);
-  shift[i] = String.fromCharCode(i);
+  shift4[i] = String.fromCharCode(i);
 }
 var i;
-for (code in base) if (!shift.hasOwnProperty(code)) shift[code] = base[code];
+for (code in base) if (!shift4.hasOwnProperty(code)) shift4[code] = base[code];
 var code;
 function keyName(event) {
   var ignoreKey = mac && event.metaKey && event.shiftKey && !event.ctrlKey && !event.altKey || ie && event.shiftKey && event.key && event.key.length == 1 || event.key == "Unidentified";
-  var name2 = !ignoreKey && event.key || (event.shiftKey ? shift : base)[event.keyCode] || event.key || "Unidentified";
+  var name2 = !ignoreKey && event.key || (event.shiftKey ? shift4 : base)[event.keyCode] || event.key || "Unidentified";
   if (name2 == "Esc") name2 = "Escape";
   if (name2 == "Del") name2 = "Delete";
   if (name2 == "Left") name2 = "ArrowLeft";
@@ -11807,8 +10173,8 @@ function updateAttrs(dom, prev, attrs2) {
 function getAttrs(dom) {
   let attrs2 = /* @__PURE__ */ Object.create(null);
   for (let i2 = 0; i2 < dom.attributes.length; i2++) {
-    let attr = dom.attributes[i2];
-    attrs2[attr.name] = attr.value;
+    let attr2 = dom.attributes[i2];
+    attrs2[attr2.name] = attr2.value;
   }
   return attrs2;
 }
@@ -12089,14 +10455,14 @@ function getSelection(root) {
   }
   return target.getSelection();
 }
-function contains(dom, node) {
+function contains2(dom, node) {
   return node ? dom == node || dom.contains(node.nodeType != 1 ? node.parentNode : node) : false;
 }
 function hasSelection(dom, selection2) {
   if (!selection2.anchorNode)
     return false;
   try {
-    return contains(dom, selection2.anchorNode);
+    return contains2(dom, selection2.anchorNode);
   } catch (_) {
     return false;
   }
@@ -12113,10 +10479,10 @@ function isEquivalentPosition(node, off, targetNode, targetOff) {
   return targetNode ? scanFor(node, off, targetNode, targetOff, -1) || scanFor(node, off, targetNode, targetOff, 1) : false;
 }
 function domIndex(node) {
-  for (var index = 0; ; index++) {
+  for (var index3 = 0; ; index3++) {
     node = node.previousSibling;
     if (!node)
-      return index;
+      return index3;
   }
 }
 function isBlockElement(node) {
@@ -12170,7 +10536,7 @@ function windowRect(win) {
     bottom: win.innerHeight
   };
 }
-function getScale(elt2, rect) {
+function getScale2(elt2, rect) {
   let scaleX = rect.width / elt2.offsetWidth;
   let scaleY = rect.height / elt2.offsetHeight;
   if (scaleX > 0.995 && scaleX < 1.005 || !isFinite(scaleX) || Math.abs(rect.width - elt2.offsetWidth) < 1)
@@ -12200,7 +10566,7 @@ function scrollRectIntoView(dom, rect, side, x, y, xMargin, yMargin, ltr) {
           continue;
         }
         let rect2 = cur2.getBoundingClientRect();
-        ({ scaleX, scaleY } = getScale(cur2, rect2));
+        ({ scaleX, scaleY } = getScale2(cur2, rect2));
         bounding = {
           left: rect2.left,
           right: rect2.left + cur2.clientWidth * scaleX,
@@ -12388,25 +10754,25 @@ function getRoot(node) {
   return null;
 }
 function atElementStart(doc2, selection2) {
-  let node = selection2.focusNode, offset = selection2.focusOffset;
-  if (!node || selection2.anchorNode != node || selection2.anchorOffset != offset)
+  let node = selection2.focusNode, offset4 = selection2.focusOffset;
+  if (!node || selection2.anchorNode != node || selection2.anchorOffset != offset4)
     return false;
-  offset = Math.min(offset, maxOffset(node));
+  offset4 = Math.min(offset4, maxOffset(node));
   for (; ; ) {
-    if (offset) {
+    if (offset4) {
       if (!isElt(node))
         return false;
-      let prev = node.childNodes[offset - 1];
+      let prev = node.childNodes[offset4 - 1];
       if (prev.contentEditable == "false")
-        offset--;
+        offset4--;
       else {
         node = prev;
-        offset = maxOffset(node);
+        offset4 = maxOffset(node);
       }
     } else if (node == doc2) {
       return true;
     } else {
-      offset = domIndex(node);
+      offset4 = domIndex(node);
       node = node.parentNode;
     }
   }
@@ -12417,16 +10783,16 @@ function isScrolledToBottom(elt2) {
   return elt2.scrollTop > Math.max(1, elt2.scrollHeight - elt2.clientHeight - 4);
 }
 function textNodeBefore(startNode, startOffset) {
-  for (let node = startNode, offset = startOffset; ; ) {
-    if (isText(node) && offset > 0) {
-      return { node, offset };
-    } else if (isElt(node) && offset > 0) {
+  for (let node = startNode, offset4 = startOffset; ; ) {
+    if (isText(node) && offset4 > 0) {
+      return { node, offset: offset4 };
+    } else if (isElt(node) && offset4 > 0) {
       if (node.contentEditable == "false")
         return null;
-      node = node.childNodes[offset - 1];
-      offset = maxOffset(node);
+      node = node.childNodes[offset4 - 1];
+      offset4 = maxOffset(node);
     } else if (node.parentNode && !isBlockElement(node)) {
-      offset = domIndex(node);
+      offset4 = domIndex(node);
       node = node.parentNode;
     } else {
       return null;
@@ -12434,16 +10800,16 @@ function textNodeBefore(startNode, startOffset) {
   }
 }
 function textNodeAfter(startNode, startOffset) {
-  for (let node = startNode, offset = startOffset; ; ) {
-    if (isText(node) && offset < node.nodeValue.length) {
-      return { node, offset };
-    } else if (isElt(node) && offset < node.childNodes.length) {
+  for (let node = startNode, offset4 = startOffset; ; ) {
+    if (isText(node) && offset4 < node.nodeValue.length) {
+      return { node, offset: offset4 };
+    } else if (isElt(node) && offset4 < node.childNodes.length) {
       if (node.contentEditable == "false")
         return null;
-      node = node.childNodes[offset];
-      offset = 0;
+      node = node.childNodes[offset4];
+      offset4 = 0;
     } else if (node.parentNode && !isBlockElement(node)) {
-      offset = domIndex(node) + 1;
+      offset4 = domIndex(node) + 1;
       node = node.parentNode;
     } else {
       return null;
@@ -12451,9 +10817,9 @@ function textNodeAfter(startNode, startOffset) {
   }
 }
 var DOMPos = class _DOMPos {
-  constructor(node, offset, precise = true) {
+  constructor(node, offset4, precise = true) {
     this.node = node;
-    this.offset = offset;
+    this.offset = offset4;
     this.precise = precise;
   }
   static before(dom, precise) {
@@ -12519,14 +10885,14 @@ var BidiSpan = class {
   /**
   @internal
   */
-  static find(order, index, level, assoc) {
+  static find(order, index3, level, assoc) {
     let maybe = -1;
     for (let i2 = 0; i2 < order.length; i2++) {
       let span = order[i2];
-      if (span.from <= index && span.to >= index) {
+      if (span.from <= index3 && span.to >= index3) {
         if (span.level == level)
           return i2;
-        if (maybe < 0 || (assoc != 0 ? assoc < 0 ? span.from < index : span.to > index : order[maybe].level > span.level))
+        if (maybe < 0 || (assoc != 0 ? assoc < 0 ? span.from < index3 : span.to > index3 : order[maybe].level > span.level))
           maybe = i2;
       }
     }
@@ -13283,9 +11649,9 @@ var Tile = class {
     return null;
   }
   domPosFor(off, side) {
-    let index = domIndex(this.dom);
+    let index3 = domIndex(this.dom);
     let after = this.length ? off > 0 : side > 0;
-    return new DOMPos(this.parent.dom, index + (after ? 1 : 0), off == 0 || off == this.length);
+    return new DOMPos(this.parent.dom, index3 + (after ? 1 : 0), off == 0 || off == this.length);
   }
   markDirty(attrs2) {
     this.flags &= -3;
@@ -13514,11 +11880,11 @@ var LineTile = class _LineTile extends CompositeTile {
   domIn(pos, side) {
     let found = this.resolveInline(pos, side);
     if (found) {
-      let { tile, offset } = found;
+      let { tile, offset: offset4 } = found;
       if (this.dom.contains(tile.dom)) {
         if (tile.isText())
-          return new DOMPos(tile.dom, Math.min(tile.dom.nodeValue.length, offset));
-        return tile.domPosFor(offset, tile.flags & 16 ? 1 : tile.flags & 32 ? -1 : side);
+          return new DOMPos(tile.dom, Math.min(tile.dom.nodeValue.length, offset4));
+        return tile.domPosFor(offset4, tile.flags & 16 ? 1 : tile.flags & 32 ? -1 : side);
       }
       let parent = found.tile.parent, saw = false;
       for (let ch2 of parent.children) {
@@ -13705,21 +12071,21 @@ var TilePointer = class {
   // has been traversed. When side is 1, leave, enter, or skip
   // everything at the end position.
   advance(dist2, side, walker) {
-    let { tile, index, beforeBreak, parents } = this;
+    let { tile, index: index3, beforeBreak, parents } = this;
     while (dist2 || side > 0) {
       if (!tile.isComposite()) {
         let len = tile.length;
-        if (index < len && dist2) {
-          let take = Math.min(dist2, len - index);
+        if (index3 < len && dist2) {
+          let take = Math.min(dist2, len - index3);
           if (walker)
-            walker.skip(tile, index, index + take);
+            walker.skip(tile, index3, index3 + take);
           dist2 -= take;
-          index += take;
+          index3 += take;
         }
-        if (index == len) {
+        if (index3 == len) {
           beforeBreak = !!tile.breakAfter;
-          ({ tile, index } = parents.pop());
-          index++;
+          ({ tile, index: index3 } = parents.pop());
+          index3++;
         } else if (!dist2) {
           break;
         }
@@ -13730,31 +12096,31 @@ var TilePointer = class {
           walker.break();
         dist2--;
         beforeBreak = false;
-      } else if (index == tile.children.length) {
+      } else if (index3 == tile.children.length) {
         if (!dist2 && !parents.length)
           break;
         if (walker)
           walker.leave(tile);
         beforeBreak = !!tile.breakAfter;
-        ({ tile, index } = parents.pop());
-        index++;
+        ({ tile, index: index3 } = parents.pop());
+        index3++;
       } else {
-        let next = tile.children[index], brk = next.breakAfter;
+        let next = tile.children[index3], brk = next.breakAfter;
         if ((side > 0 ? next.length <= dist2 : next.length < dist2) && (!walker || walker.skip(next, 0, next.length) !== false || !next.isComposite)) {
           beforeBreak = !!brk;
-          index++;
+          index3++;
           dist2 -= next.length;
         } else {
-          parents.push({ tile, index });
+          parents.push({ tile, index: index3 });
           tile = next;
-          index = 0;
+          index3 = 0;
           if (walker && next.isComposite())
             walker.enter(next);
         }
       }
     }
     this.tile = tile;
-    this.index = index;
+    this.index = index3;
     this.beforeBreak = beforeBreak;
     return this;
   }
@@ -14054,10 +12420,10 @@ var TileCache = class {
     let i2 = cls.bucket;
     let bucket = this.buckets[i2], off = this.index[i2];
     for (let j = 0; j < bucket.length; j++) {
-      let index = (j + off) % bucket.length, tile = bucket[index];
+      let index3 = (j + off) % bucket.length, tile = bucket[index3];
       if ((!test || test(tile)) && !this.reused.has(tile)) {
-        bucket.splice(index, 1);
-        if (index < off)
+        bucket.splice(index3, 1);
+        if (index3 < off)
           this.index[i2]--;
         this.reused.set(tile, type3);
         return tile;
@@ -14260,9 +12626,9 @@ var TileUpdate = class {
     let pendingLineAttrs = null;
     let b = this.builder, markCount = -1;
     let openEnd = RangeSet.spans(this.decorations, from2, to, {
-      point: (from3, to2, deco, active, openStart, index) => {
+      point: (from3, to2, deco, active, openStart, index3) => {
         if (deco instanceof PointDecoration) {
-          if (this.disallowBlockEffectsFor[index]) {
+          if (this.disallowBlockEffectsFor[index3]) {
             if (deco.block)
               throw new RangeError("Block decorations may not be specified via plugins");
             if (to2 > this.view.state.doc.lineAt(from3).to)
@@ -14631,7 +12997,7 @@ var DocView = class {
     if (view.docView.posFromDOM(newRange.anchorNode, newRange.anchorOffset) != cursor2.from)
       sel.collapse(anchorNode, anchorOffset);
   }
-  posFromDOM(node, offset) {
+  posFromDOM(node, offset4) {
     let tile = this.tile.nearest(node);
     if (!tile)
       return this.tile.dom.compareDocumentPosition(node) & 2 ? 0 : this.view.state.doc.length;
@@ -14639,9 +13005,9 @@ var DocView = class {
     if (tile.isComposite()) {
       let after;
       if (node == tile.dom) {
-        after = tile.dom.childNodes[offset];
+        after = tile.dom.childNodes[offset4];
       } else {
-        let bias = maxOffset(node) == 0 ? 0 : offset == 0 ? -1 : 1;
+        let bias = maxOffset(node) == 0 ? 0 : offset4 == 0 ? -1 : 1;
         for (; ; ) {
           let parent = node.parentNode;
           if (parent == tile.dom)
@@ -14672,16 +13038,16 @@ var DocView = class {
         pos += child.length + child.breakAfter;
       }
     } else if (tile.isText()) {
-      return node == tile.dom ? start + offset : start + (offset ? tile.length : 0);
+      return node == tile.dom ? start + offset4 : start + (offset4 ? tile.length : 0);
     } else {
       return start;
     }
   }
   domAtPos(pos, side) {
-    let { tile, offset } = this.tile.resolveBlock(pos, side);
+    let { tile, offset: offset4 } = this.tile.resolveBlock(pos, side);
     if (tile.isWidget())
-      return tile.domPosFor(offset, side);
-    return tile.domIn(offset, side);
+      return tile.domPosFor(offset4, side);
+    return tile.domIn(offset4, side);
   }
   inlineDOMNearPos(pos, side) {
     let before, beforeOff = -1, beforeBad = false;
@@ -14719,39 +13085,39 @@ var DocView = class {
   // Get the coord of the element at the given side of the given
   // position. If rtl is given, flatten it using that text direction.
   coordsAt(pos, side, rtl) {
-    let { tile, offset } = this.tile.resolveBlock(pos, side);
+    let { tile, offset: offset4 } = this.tile.resolveBlock(pos, side);
     if (tile.isWidget()) {
       if (tile.widget instanceof BlockGapWidget)
         return null;
-      return tile.coordsInWidget(offset, side, true);
+      return tile.coordsInWidget(offset4, side, true);
     }
-    return tile.coordsIn(offset, side, rtl);
+    return tile.coordsIn(offset4, side, rtl);
   }
   lineAt(pos, side) {
     let { tile } = this.tile.resolveBlock(pos, side);
     return tile.isLine() ? tile : null;
   }
   coordsForChar(pos) {
-    let { tile, offset } = this.tile.resolveBlock(pos, 1);
+    let { tile, offset: offset4 } = this.tile.resolveBlock(pos, 1);
     if (!tile.isLine())
       return null;
-    function scan(tile2, offset2) {
+    function scan(tile2, offset5) {
       if (tile2.isComposite()) {
         for (let ch2 of tile2.children) {
-          if (ch2.length >= offset2) {
-            let found = scan(ch2, offset2);
+          if (ch2.length >= offset5) {
+            let found = scan(ch2, offset5);
             if (found)
               return found;
           }
-          offset2 -= ch2.length;
-          if (offset2 < 0)
+          offset5 -= ch2.length;
+          if (offset5 < 0)
             break;
         }
-      } else if (tile2.isText() && offset2 < tile2.length) {
-        let end = findClusterBreak2(tile2.text, offset2);
-        if (end == offset2)
+      } else if (tile2.isText() && offset5 < tile2.length) {
+        let end = findClusterBreak2(tile2.text, offset5);
+        if (end == offset5)
           return null;
-        let rects = textRange(tile2.dom, offset2, end).getClientRects();
+        let rects = textRange(tile2.dom, offset5, end).getClientRects();
         for (let i2 = 0; i2 < rects.length; i2++) {
           let rect = rects[i2];
           if (i2 == rects.length - 1 || rect.top < rect.bottom && rect.left < rect.right)
@@ -14760,7 +13126,7 @@ var DocView = class {
       }
       return null;
     }
-    return scan(tile, offset);
+    return scan(tile, offset4);
   }
   measureVisibleLineHeights(viewport) {
     let result = [], { from: from2, to } = viewport;
@@ -14994,10 +13360,10 @@ function findCompositionRange(view, changes, headPos) {
   let inv = changes.invertedDesc;
   return { range: new ChangedRange(inv.mapPos(from2), inv.mapPos(to), from2, to), text: textNode };
 }
-function nextToUneditable(node, offset) {
+function nextToUneditable(node, offset4) {
   if (!isElt(node))
     return 0;
-  return (offset && node.childNodes[offset - 1].contentEditable == "false" ? 1 : 0) | (offset < node.childNodes.length && node.childNodes[offset].contentEditable == "false" ? 2 : 0);
+  return (offset4 && node.childNodes[offset4 - 1].contentEditable == "false" ? 1 : 0) | (offset4 < node.childNodes.length && node.childNodes[offset4].contentEditable == "false" ? 2 : 0);
 }
 var DecorationComparator$1 = class DecorationComparator {
   constructor() {
@@ -15416,29 +13782,29 @@ var InlineCoordsScan = class {
       after: this.x > (closestRect.left + closestRect.right) / 2 == ltr
     };
   }
-  scanText(tile, offset) {
+  scanText(tile, offset4) {
     let positions = [];
     for (let i2 = 0; i2 < tile.length; i2 = findClusterBreak2(tile.text, i2))
-      positions.push(offset + i2);
-    positions.push(offset + tile.length);
+      positions.push(offset4 + i2);
+    positions.push(offset4 + tile.length);
     let scan = this.scan(positions, (i2) => {
-      let off = positions[i2] - offset, end = positions[i2 + 1] - offset;
+      let off = positions[i2] - offset4, end = positions[i2 + 1] - offset4;
       return textRange(tile.dom, off, end).getClientRects();
     });
     return scan.after ? new PosAssoc(positions[scan.i + 1], -1) : new PosAssoc(positions[scan.i], 1);
   }
-  scanTile(tile, offset) {
+  scanTile(tile, offset4) {
     if (!tile.length)
-      return new PosAssoc(offset, 1);
+      return new PosAssoc(offset4, 1);
     if (tile.children.length == 1) {
       let child2 = tile.children[0];
       if (child2.isText())
-        return this.scanText(child2, offset);
+        return this.scanText(child2, offset4);
       else if (child2.isComposite())
-        return this.scanTile(child2, offset);
+        return this.scanTile(child2, offset4);
     }
-    let positions = [offset];
-    for (let i2 = 0, pos2 = offset; i2 < tile.children.length; i2++)
+    let positions = [offset4];
+    for (let i2 = 0, pos2 = offset4; i2 < tile.children.length; i2++)
       positions.push(pos2 += tile.children[i2].length);
     let scan = this.scan(positions, (i2) => {
       let child2 = tile.children[i2];
@@ -15547,13 +13913,13 @@ var DOMReader = class {
         point.pos = this.text.length + (isAtEnd(node, point.node, point.offset) ? length : 0);
   }
 };
-function isAtEnd(parent, node, offset) {
+function isAtEnd(parent, node, offset4) {
   for (; ; ) {
-    if (!node || offset < maxOffset(node))
+    if (!node || offset4 < maxOffset(node))
       return false;
     if (node == parent)
       return true;
-    offset = domIndex(node) + 1;
+    offset4 = domIndex(node) + 1;
     node = node.parentNode;
   }
 }
@@ -15577,9 +13943,9 @@ function isEmptyToEnd(node, end) {
   return true;
 }
 var DOMPoint = class {
-  constructor(node, offset) {
+  constructor(node, offset4) {
     this.node = node;
-    this.offset = offset;
+    this.offset = offset4;
     this.pos = -1;
   }
 };
@@ -15600,8 +13966,8 @@ var DOMChange = class {
       this.newSel = selectionFromPoints(selPoints, this.bounds.from);
     } else {
       let domSel = view.observer.selectionRange;
-      let head = iHead && iHead.node == domSel.focusNode && iHead.offset == domSel.focusOffset || !contains(view.contentDOM, domSel.focusNode) ? curSel.main.head : view.docView.posFromDOM(domSel.focusNode, domSel.focusOffset);
-      let anchor = iAnchor && iAnchor.node == domSel.anchorNode && iAnchor.offset == domSel.anchorOffset || !contains(view.contentDOM, domSel.anchorNode) ? curSel.main.anchor : view.docView.posFromDOM(domSel.anchorNode, domSel.anchorOffset);
+      let head = iHead && iHead.node == domSel.focusNode && iHead.offset == domSel.focusOffset || !contains2(view.contentDOM, domSel.focusNode) ? curSel.main.head : view.docView.posFromDOM(domSel.focusNode, domSel.focusOffset);
+      let anchor = iAnchor && iAnchor.node == domSel.anchorNode && iAnchor.offset == domSel.anchorOffset || !contains2(view.contentDOM, domSel.anchorNode) ? curSel.main.anchor : view.docView.posFromDOM(domSel.anchorNode, domSel.anchorOffset);
       let vp = view.viewport;
       if ((browser.ios || browser.chrome) && head != anchor && Math.min(head, anchor) <= curSel.main.from && Math.max(head, anchor) >= curSel.main.to && (vp.from > 0 || vp.to < view.state.doc.length)) {
         let from2 = Math.min(head, anchor), to = Math.max(head, anchor);
@@ -15624,10 +13990,10 @@ var DOMChange = class {
     }
   }
 };
-function domBoundsAround(tile, from2, to, offset) {
+function domBoundsAround(tile, from2, to, offset4) {
   if (tile.isComposite()) {
     let fromI = -1, fromStart = -1, toI = -1, toEnd = -1;
-    for (let i2 = 0, pos = offset, prevEnd = offset; i2 < tile.children.length; i2++) {
+    for (let i2 = 0, pos = offset4, prevEnd = offset4; i2 < tile.children.length; i2++) {
       let child = tile.children[i2], end = pos + child.length;
       if (pos < from2 && end > to)
         return domBoundsAround(child, from2, to, pos);
@@ -15645,12 +14011,12 @@ function domBoundsAround(tile, from2, to, offset) {
     }
     return {
       from: fromStart,
-      to: toEnd < 0 ? offset + tile.length : toEnd,
+      to: toEnd < 0 ? offset4 + tile.length : toEnd,
       startDOM: (fromI ? tile.children[fromI - 1].dom.nextSibling : null) || tile.dom.firstChild,
       endDOM: toI < tile.children.length && toI >= 0 ? tile.children[toI].dom : null
     };
   } else if (tile.isText()) {
-    return { from: offset, to: offset + tile.length, startDOM: tile.dom, endDOM: tile.dom.nextSibling };
+    return { from: offset4, to: offset4 + tile.length, startDOM: tile.dom, endDOM: tile.dom.nextSibling };
   } else {
     return null;
   }
@@ -15765,11 +14131,11 @@ function applyDefaultInsert(view, change, newSel) {
       } else {
         compositionRange = view.state.doc.lineAt(sel.head);
       }
-      let offset = sel.to - change.to;
+      let offset4 = sel.to - change.to;
       tr = startState2.changeByRange((range) => {
         if (range.from == sel.from && range.to == sel.to)
           return { changes, range: mainSel || range.map(changes) };
-        let to = range.to - offset, from2 = to - replaced.length;
+        let to = range.to - offset4, from2 = to - replaced.length;
         if (view.state.sliceDoc(from2, to) != replaced || // Unfortunately, there's no way to make multiple
         // changes in the same node work without aborting
         // composition, so cursors in the composition range are
@@ -16892,19 +15258,19 @@ var HeightMapBlock = class extends HeightMap {
     this.deco = deco;
     this.spaceAbove = 0;
   }
-  mainBlock(top2, offset) {
-    return new BlockInfo(offset, this.length, top2 + this.spaceAbove, this.height - this.spaceAbove, this.deco || 0);
+  mainBlock(top2, offset4) {
+    return new BlockInfo(offset4, this.length, top2 + this.spaceAbove, this.height - this.spaceAbove, this.deco || 0);
   }
-  blockAt(height, _oracle, top2, offset) {
-    return this.spaceAbove && height < top2 + this.spaceAbove ? new BlockInfo(offset, 0, top2, this.spaceAbove, SpaceDeco) : this.mainBlock(top2, offset);
+  blockAt(height, _oracle, top2, offset4) {
+    return this.spaceAbove && height < top2 + this.spaceAbove ? new BlockInfo(offset4, 0, top2, this.spaceAbove, SpaceDeco) : this.mainBlock(top2, offset4);
   }
-  lineAt(_value, _type, oracle, top2, offset) {
-    let main = this.mainBlock(top2, offset);
-    return this.spaceAbove ? this.blockAt(0, oracle, top2, offset).join(main) : main;
+  lineAt(_value, _type, oracle, top2, offset4) {
+    let main = this.mainBlock(top2, offset4);
+    return this.spaceAbove ? this.blockAt(0, oracle, top2, offset4).join(main) : main;
   }
-  forEachLine(from2, to, oracle, top2, offset, f) {
-    if (from2 <= offset + this.length && to >= offset)
-      f(this.lineAt(0, QueryType.ByPos, oracle, top2, offset));
+  forEachLine(from2, to, oracle, top2, offset4, f) {
+    if (from2 <= offset4 + this.length && to >= offset4)
+      f(this.lineAt(0, QueryType.ByPos, oracle, top2, offset4));
   }
   setMeasuredHeight(measured) {
     let next = measured.heights[measured.index++];
@@ -16916,8 +15282,8 @@ var HeightMapBlock = class extends HeightMap {
     }
     this.setHeight(next);
   }
-  updateHeight(oracle, offset = 0, _force = false, measured) {
-    if (measured && measured.from <= offset && measured.more)
+  updateHeight(oracle, offset4 = 0, _force = false, measured) {
+    if (measured && measured.from <= offset4 && measured.more)
       this.setMeasuredHeight(measured);
     this.outdated = false;
     return this;
@@ -16934,8 +15300,8 @@ var HeightMapText = class _HeightMapText extends HeightMapBlock {
     this.breaks = 0;
     this.spaceAbove = above;
   }
-  mainBlock(top2, offset) {
-    return new BlockInfo(offset, this.length, top2 + this.spaceAbove, this.height - this.spaceAbove, this.breaks);
+  mainBlock(top2, offset4) {
+    return new BlockInfo(offset4, this.length, top2 + this.spaceAbove, this.height - this.spaceAbove, this.breaks);
   }
   replace(_from, _to, nodes) {
     let node = nodes[0];
@@ -16951,8 +15317,8 @@ var HeightMapText = class _HeightMapText extends HeightMapBlock {
       return HeightMap.of(nodes);
     }
   }
-  updateHeight(oracle, offset = 0, force = false, measured) {
-    if (measured && measured.from <= offset && measured.more) {
+  updateHeight(oracle, offset4 = 0, force = false, measured) {
+    if (measured && measured.from <= offset4 && measured.more) {
       this.setMeasuredHeight(measured);
     } else if (force || this.outdated) {
       this.spaceAbove = 0;
@@ -16969,8 +15335,8 @@ var HeightMapGap = class _HeightMapGap extends HeightMap {
   constructor(length) {
     super(length, 0);
   }
-  heightMetrics(oracle, offset) {
-    let firstLine = oracle.doc.lineAt(offset).number, lastLine = oracle.doc.lineAt(offset + this.length).number;
+  heightMetrics(oracle, offset4) {
+    let firstLine = oracle.doc.lineAt(offset4).number, lastLine = oracle.doc.lineAt(offset4 + this.length).number;
     let lines = lastLine - firstLine + 1;
     let perLine, perChar = 0;
     if (oracle.lineWrapping) {
@@ -16983,10 +15349,10 @@ var HeightMapGap = class _HeightMapGap extends HeightMap {
     }
     return { firstLine, lastLine, perLine, perChar };
   }
-  blockAt(height, oracle, top2, offset) {
-    let { firstLine, lastLine, perLine, perChar } = this.heightMetrics(oracle, offset);
+  blockAt(height, oracle, top2, offset4) {
+    let { firstLine, lastLine, perLine, perChar } = this.heightMetrics(oracle, offset4);
     if (oracle.lineWrapping) {
-      let guess = offset + (height < oracle.lineHeight ? 0 : Math.round(Math.max(0, Math.min(1, (height - top2) / this.height)) * this.length));
+      let guess = offset4 + (height < oracle.lineHeight ? 0 : Math.round(Math.max(0, Math.min(1, (height - top2) / this.height)) * this.length));
       let line = oracle.doc.lineAt(guess), lineHeight = perLine + line.length * perChar;
       let lineTop = Math.max(top2, height - lineHeight / 2);
       return new BlockInfo(line.from, line.length, lineTop, lineHeight, 0);
@@ -16996,28 +15362,28 @@ var HeightMapGap = class _HeightMapGap extends HeightMap {
       return new BlockInfo(from2, length, top2 + perLine * line, perLine, 0);
     }
   }
-  lineAt(value, type3, oracle, top2, offset) {
+  lineAt(value, type3, oracle, top2, offset4) {
     if (type3 == QueryType.ByHeight)
-      return this.blockAt(value, oracle, top2, offset);
+      return this.blockAt(value, oracle, top2, offset4);
     if (type3 == QueryType.ByPosNoHeight) {
       let { from: from2, to } = oracle.doc.lineAt(value);
       return new BlockInfo(from2, to - from2, 0, 0, 0);
     }
-    let { firstLine, perLine, perChar } = this.heightMetrics(oracle, offset);
+    let { firstLine, perLine, perChar } = this.heightMetrics(oracle, offset4);
     let line = oracle.doc.lineAt(value), lineHeight = perLine + line.length * perChar;
     let linesAbove = line.number - firstLine;
-    let lineTop = top2 + perLine * linesAbove + perChar * (line.from - offset - linesAbove);
+    let lineTop = top2 + perLine * linesAbove + perChar * (line.from - offset4 - linesAbove);
     return new BlockInfo(line.from, line.length, Math.max(top2, Math.min(lineTop, top2 + this.height - lineHeight)), lineHeight, 0);
   }
-  forEachLine(from2, to, oracle, top2, offset, f) {
-    from2 = Math.max(from2, offset);
-    to = Math.min(to, offset + this.length);
-    let { firstLine, perLine, perChar } = this.heightMetrics(oracle, offset);
+  forEachLine(from2, to, oracle, top2, offset4, f) {
+    from2 = Math.max(from2, offset4);
+    to = Math.min(to, offset4 + this.length);
+    let { firstLine, perLine, perChar } = this.heightMetrics(oracle, offset4);
     for (let pos = from2, lineTop = top2; pos <= to; ) {
       let line = oracle.doc.lineAt(pos);
       if (pos == from2) {
         let linesAbove = line.number - firstLine;
-        lineTop += perLine * linesAbove + perChar * (from2 - offset - linesAbove);
+        lineTop += perLine * linesAbove + perChar * (from2 - offset4 - linesAbove);
       }
       let lineHeight = perLine + perChar * line.length;
       f(new BlockInfo(line.from, line.length, lineTop, lineHeight, 0));
@@ -17049,12 +15415,12 @@ var HeightMapGap = class _HeightMapGap extends HeightMap {
   decomposeRight(from2, result) {
     result.push(null, new _HeightMapGap(this.length - from2 - 1));
   }
-  updateHeight(oracle, offset = 0, force = false, measured) {
-    let end = offset + this.length;
-    if (measured && measured.from <= offset + this.length && measured.more) {
-      let nodes = [], pos = Math.max(offset, measured.from), singleHeight = -1;
-      if (measured.from > offset)
-        nodes.push(new _HeightMapGap(measured.from - offset - 1).updateHeight(oracle, offset));
+  updateHeight(oracle, offset4 = 0, force = false, measured) {
+    let end = offset4 + this.length;
+    if (measured && measured.from <= offset4 + this.length && measured.more) {
+      let nodes = [], pos = Math.max(offset4, measured.from), singleHeight = -1;
+      if (measured.from > offset4)
+        nodes.push(new _HeightMapGap(measured.from - offset4 - 1).updateHeight(oracle, offset4));
       while (pos <= end && measured.more) {
         let len = oracle.doc.lineAt(pos).length;
         if (nodes.length)
@@ -17076,11 +15442,11 @@ var HeightMapGap = class _HeightMapGap extends HeightMap {
       if (pos <= end)
         nodes.push(null, new _HeightMapGap(end - pos).updateHeight(oracle, pos));
       let result = HeightMap.of(nodes);
-      if (singleHeight < 0 || Math.abs(result.height - this.height) >= Epsilon || Math.abs(singleHeight - this.heightMetrics(oracle, offset).perLine) >= Epsilon)
+      if (singleHeight < 0 || Math.abs(result.height - this.height) >= Epsilon || Math.abs(singleHeight - this.heightMetrics(oracle, offset4).perLine) >= Epsilon)
         heightChangeFlag = true;
       return replace(this, result);
     } else if (force || this.outdated) {
-      this.setHeight(oracle.heightForGap(offset, offset + this.length));
+      this.setHeight(oracle.heightForGap(offset4, offset4 + this.length));
       this.outdated = false;
     }
     return this;
@@ -17101,33 +15467,33 @@ var HeightMapBranch = class extends HeightMap {
   get break() {
     return this.flags & 1;
   }
-  blockAt(height, oracle, top2, offset) {
+  blockAt(height, oracle, top2, offset4) {
     let mid = top2 + this.left.height;
-    return height < mid ? this.left.blockAt(height, oracle, top2, offset) : this.right.blockAt(height, oracle, mid, offset + this.left.length + this.break);
+    return height < mid ? this.left.blockAt(height, oracle, top2, offset4) : this.right.blockAt(height, oracle, mid, offset4 + this.left.length + this.break);
   }
-  lineAt(value, type3, oracle, top2, offset) {
-    let rightTop = top2 + this.left.height, rightOffset = offset + this.left.length + this.break;
+  lineAt(value, type3, oracle, top2, offset4) {
+    let rightTop = top2 + this.left.height, rightOffset = offset4 + this.left.length + this.break;
     let left = type3 == QueryType.ByHeight ? value < rightTop : value < rightOffset;
-    let base3 = left ? this.left.lineAt(value, type3, oracle, top2, offset) : this.right.lineAt(value, type3, oracle, rightTop, rightOffset);
+    let base3 = left ? this.left.lineAt(value, type3, oracle, top2, offset4) : this.right.lineAt(value, type3, oracle, rightTop, rightOffset);
     if (this.break || (left ? base3.to < rightOffset : base3.from > rightOffset))
       return base3;
     let subQuery = type3 == QueryType.ByPosNoHeight ? QueryType.ByPosNoHeight : QueryType.ByPos;
     if (left)
       return base3.join(this.right.lineAt(rightOffset, subQuery, oracle, rightTop, rightOffset));
     else
-      return this.left.lineAt(rightOffset, subQuery, oracle, top2, offset).join(base3);
+      return this.left.lineAt(rightOffset, subQuery, oracle, top2, offset4).join(base3);
   }
-  forEachLine(from2, to, oracle, top2, offset, f) {
-    let rightTop = top2 + this.left.height, rightOffset = offset + this.left.length + this.break;
+  forEachLine(from2, to, oracle, top2, offset4, f) {
+    let rightTop = top2 + this.left.height, rightOffset = offset4 + this.left.length + this.break;
     if (this.break) {
       if (from2 < rightOffset)
-        this.left.forEachLine(from2, to, oracle, top2, offset, f);
+        this.left.forEachLine(from2, to, oracle, top2, offset4, f);
       if (to >= rightOffset)
         this.right.forEachLine(from2, to, oracle, rightTop, rightOffset, f);
     } else {
-      let mid = this.lineAt(rightOffset, QueryType.ByPos, oracle, top2, offset);
+      let mid = this.lineAt(rightOffset, QueryType.ByPos, oracle, top2, offset4);
       if (from2 < mid.from)
-        this.left.forEachLine(from2, Math.min(to, mid.from - 1), oracle, top2, offset, f);
+        this.left.forEachLine(from2, Math.min(to, mid.from - 1), oracle, top2, offset4, f);
       if (mid.to >= from2 && mid.from <= to)
         f(mid);
       if (to > mid.to)
@@ -17189,12 +15555,12 @@ var HeightMapBranch = class extends HeightMap {
     this.length = left.length + this.break + right.length;
     return this;
   }
-  updateHeight(oracle, offset = 0, force = false, measured) {
-    let { left, right } = this, rightStart = offset + left.length + this.break, rebalance = null;
-    if (measured && measured.from <= offset + left.length && measured.more)
-      rebalance = left = left.updateHeight(oracle, offset, force, measured);
+  updateHeight(oracle, offset4 = 0, force = false, measured) {
+    let { left, right } = this, rightStart = offset4 + left.length + this.break, rebalance = null;
+    if (measured && measured.from <= offset4 + left.length && measured.more)
+      rebalance = left = left.updateHeight(oracle, offset4, force, measured);
     else
-      left.updateHeight(oracle, offset, force);
+      left.updateHeight(oracle, offset4, force);
     if (measured && measured.from <= rightStart + right.length && measured.more)
       rebalance = right = right.updateHeight(oracle, rightStart, force, measured);
     else
@@ -17394,10 +15760,10 @@ function fullPixelRange(dom, paddingTop) {
   };
 }
 var LineGap = class {
-  constructor(from2, to, size, displaySize) {
+  constructor(from2, to, size4, displaySize) {
     this.from = from2;
     this.to = to;
-    this.size = size;
+    this.size = size4;
     this.displaySize = displaySize;
   }
   static same(a, b) {
@@ -17417,9 +15783,9 @@ var LineGap = class {
   }
 };
 var LineGapWidget = class extends WidgetType {
-  constructor(size, vertical) {
+  constructor(size4, vertical) {
     super();
-    this.size = size;
+    this.size = size4;
     this.vertical = vertical;
   }
   eq(other) {
@@ -17550,7 +15916,7 @@ var ViewState = class {
     this.mustMeasureContent = false;
     let result = 0, bias = 0;
     if (domRect.width && domRect.height) {
-      let { scaleX, scaleY } = getScale(dom, domRect);
+      let { scaleX, scaleY } = getScale2(dom, domRect);
       if (scaleX > 5e-3 && Math.abs(this.scaleX - scaleX) > 5e-3 || scaleY > 5e-3 && Math.abs(this.scaleY - scaleY) > 5e-3) {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
@@ -17733,9 +16099,9 @@ var ViewState = class {
           if (lineStart > from2)
             to = lineStart;
         }
-        let size = this.gapSize(line, from2, to, structure);
-        let displaySize = wrapping || size < 2e6 ? size : 2e6;
-        gap = new LineGap(from2, to, size, displaySize);
+        let size4 = this.gapSize(line, from2, to, structure);
+        let displaySize = wrapping || size4 < 2e6 ? size4 : 2e6;
+        gap = new LineGap(from2, to, size4, displaySize);
       }
       gaps.push(gap);
     };
@@ -17894,10 +16260,10 @@ function findPosition({ total, ranges }, ratio) {
     return ranges[ranges.length - 1].to;
   let dist2 = Math.floor(total * ratio);
   for (let i2 = 0; ; i2++) {
-    let { from: from2, to } = ranges[i2], size = to - from2;
-    if (dist2 <= size)
+    let { from: from2, to } = ranges[i2], size4 = to - from2;
+    if (dist2 <= size4)
       return from2 + dist2;
-    dist2 -= size;
+    dist2 -= size4;
   }
 }
 function findFraction(structure, pos) {
@@ -19607,8 +17973,8 @@ var EditorView = class _EditorView {
   for associating positions with DOM events. Will raise an error
   when `node` isn't part of the editor content.
   */
-  posAtDOM(node, offset = 0) {
-    return this.docView.posFromDOM(node, offset);
+  posAtDOM(node, offset4 = 0) {
+    return this.docView.posFromDOM(node, offset4);
   }
   posAtCoords(coords, precise = true) {
     this.readMeasured();
@@ -19956,12 +18322,12 @@ function attrsFromFacet(view, facet, base3) {
   return base3;
 }
 var currentPlatform = browser.mac ? "mac" : browser.windows ? "win" : browser.linux ? "linux" : "key";
-function normalizeKeyName(name2, platform) {
+function normalizeKeyName(name2, platform2) {
   const parts = name2.split(/-(?!$)/);
   let result = parts[parts.length - 1];
   if (result == "Space")
     result = " ";
-  let alt, ctrl, shift2, meta2;
+  let alt, ctrl, shift5, meta2;
   for (let i2 = 0; i2 < parts.length - 1; ++i2) {
     const mod = parts[i2];
     if (/^(cmd|meta|m)$/i.test(mod))
@@ -19971,9 +18337,9 @@ function normalizeKeyName(name2, platform) {
     else if (/^(c|ctrl|control)$/i.test(mod))
       ctrl = true;
     else if (/^s(hift)?$/i.test(mod))
-      shift2 = true;
+      shift5 = true;
     else if (/^mod$/i.test(mod)) {
-      if (platform == "mac")
+      if (platform2 == "mac")
         meta2 = true;
       else
         ctrl = true;
@@ -19986,18 +18352,18 @@ function normalizeKeyName(name2, platform) {
     result = "Ctrl-" + result;
   if (meta2)
     result = "Meta-" + result;
-  if (shift2)
+  if (shift5)
     result = "Shift-" + result;
   return result;
 }
-function modifiers(name2, event, shift2) {
+function modifiers(name2, event, shift5) {
   if (event.altKey)
     name2 = "Alt-" + name2;
   if (event.ctrlKey)
     name2 = "Ctrl-" + name2;
   if (event.metaKey)
     name2 = "Meta-" + name2;
-  if (shift2 !== false && event.shiftKey)
+  if (shift5 !== false && event.shiftKey)
     name2 = "Shift-" + name2;
   return name2;
 }
@@ -20020,7 +18386,7 @@ function runScopeHandlers(view, event, scope) {
 }
 var storedPrefix = null;
 var PrefixTimeout = 4e3;
-function buildKeymap(bindings, platform = currentPlatform) {
+function buildKeymap(bindings, platform2 = currentPlatform) {
   let bound = /* @__PURE__ */ Object.create(null);
   let isPrefix = /* @__PURE__ */ Object.create(null);
   let checkPrefix = (name2, is2) => {
@@ -20033,7 +18399,7 @@ function buildKeymap(bindings, platform = currentPlatform) {
   let add2 = (scope, key, command2, preventDefault, stopPropagation) => {
     var _a2, _b;
     let scopeObj = bound[scope] || (bound[scope] = /* @__PURE__ */ Object.create(null));
-    let parts = key.split(/ (?!$)/).map((k) => normalizeKeyName(k, platform));
+    let parts = key.split(/ (?!$)/).map((k) => normalizeKeyName(k, platform2));
     for (let i2 = 1; i2 < parts.length; i2++) {
       let prefix2 = parts.slice(0, i2).join(" ");
       checkPrefix(prefix2, true);
@@ -20076,7 +18442,7 @@ function buildKeymap(bindings, platform = currentPlatform) {
         for (let key in scopeObj)
           scopeObj[key].run.push((view) => any(view, currentKeyEvent));
       }
-    let name2 = b[platform] || b.key;
+    let name2 = b[platform2] || b.key;
     if (!name2)
       continue;
     for (let scope of scopes) {
@@ -20129,7 +18495,7 @@ function runHandlers(map, event, view, scope) {
     !(browser.mac && event.altKey && !(event.ctrlKey || event.metaKey)) && (baseName = base[event.keyCode]) && baseName != name2) {
       if (runFor(scopeObj[prefix2 + modifiers(baseName, event, true)])) {
         handled = true;
-      } else if (event.shiftKey && (shiftName = shift[event.keyCode]) != name2 && shiftName != baseName && runFor(scopeObj[prefix2 + modifiers(shiftName, event, false)])) {
+      } else if (event.shiftKey && (shiftName = shift4[event.keyCode]) != name2 && shiftName != baseName && runFor(scopeObj[prefix2 + modifiers(shiftName, event, false)])) {
         handled = true;
       }
     } else if (isChar && event.shiftKey && runFor(scopeObj[prefix2 + modifiers(name2, event, true)])) {
@@ -20750,9 +19116,9 @@ function specialCharPlugin() {
           let code3 = codePointAt2(m[0], 0);
           if (code3 == 9) {
             let line = doc2.lineAt(pos);
-            let size = view.state.tabSize, col = countColumn(line.text, size, pos - line.from);
+            let size4 = view.state.tabSize, col = countColumn(line.text, size4, pos - line.from);
             return Decoration.replace({
-              widget: new TabWidget((size - col % size) * this.view.defaultCharacterWidth / this.view.scaleX)
+              widget: new TabWidget((size4 - col % size4) * this.view.defaultCharacterWidth / this.view.scaleX)
             });
           }
           return this.decorationCache[code3] || (this.decorationCache[code3] = Decoration.replace({ widget: new SpecialCharWidget(conf, code3) }));
@@ -20852,7 +19218,7 @@ var activeLineHighlighter = /* @__PURE__ */ ViewPlugin.fromClass(class {
 }, {
   decorations: (v) => v.decorations
 });
-var Placeholder2 = class extends WidgetType {
+var Placeholder = class extends WidgetType {
   constructor(content2) {
     super();
     this.content = content2;
@@ -20884,7 +19250,7 @@ function placeholder(content2) {
   let plugin = ViewPlugin.fromClass(class {
     constructor(view) {
       this.view = view;
-      this.placeholder = content2 ? Decoration.set([Decoration.widget({ widget: new Placeholder2(content2), side: 1 }).range(0)]) : Decoration.none;
+      this.placeholder = content2 ? Decoration.set([Decoration.widget({ widget: new Placeholder(content2), side: 1 }).range(0)]) : Decoration.none;
     }
     get decorations() {
       return this.view.state.doc.length ? Decoration.none : this.placeholder;
@@ -20926,9 +19292,9 @@ function absoluteColumn(view, x) {
   return ref ? Math.round(Math.abs((ref.left - x) / view.defaultCharacterWidth)) : -1;
 }
 function getPos(view, event) {
-  let offset = view.posAtCoords({ x: event.clientX, y: event.clientY }, false);
-  let line = view.state.doc.lineAt(offset), off = offset - line.from;
-  let col = off > MaxOff ? -1 : off == line.length ? absoluteColumn(view, event.clientX) : countColumn(line.text, view.state.tabSize, offset - line.from);
+  let offset4 = view.posAtCoords({ x: event.clientX, y: event.clientY }, false);
+  let line = view.state.doc.lineAt(offset4), off = offset4 - line.from;
+  let col = off > MaxOff ? -1 : off == line.length ? absoluteColumn(view, event.clientX) : countColumn(line.text, view.state.tabSize, offset4 - line.from);
   return { line: line.number, col, off };
 }
 function rectangleSelectionStyle(view, event) {
@@ -21174,9 +19540,9 @@ var tooltipPlugin = /* @__PURE__ */ ViewPlugin.fromClass(class {
     let before = prev ? prev.dom : null;
     tooltipView.dom.classList.add("cm-tooltip");
     if (tooltip.arrow && !tooltipView.dom.querySelector(".cm-tooltip > .cm-tooltip-arrow")) {
-      let arrow = document.createElement("div");
-      arrow.className = "cm-tooltip-arrow";
-      tooltipView.dom.appendChild(arrow);
+      let arrow4 = document.createElement("div");
+      arrow4.className = "cm-tooltip-arrow";
+      tooltipView.dom.appendChild(arrow4);
     }
     tooltipView.dom.style.position = this.position;
     tooltipView.dom.style.top = Outside;
@@ -21258,18 +19624,18 @@ var tooltipPlugin = /* @__PURE__ */ ViewPlugin.fromClass(class {
     let others2 = [];
     for (let i2 = 0; i2 < this.manager.tooltips.length; i2++) {
       let tooltip = this.manager.tooltips[i2], tView = this.manager.tooltipViews[i2], { dom } = tView;
-      let pos = measured.pos[i2], size = measured.size[i2];
+      let pos = measured.pos[i2], size4 = measured.size[i2];
       if (!pos || tooltip.clip !== false && (pos.bottom <= Math.max(visible.top, space5.top) || pos.top >= Math.min(visible.bottom, space5.bottom) || pos.right < Math.max(visible.left, space5.left) - 0.1 || pos.left > Math.min(visible.right, space5.right) + 0.1)) {
         dom.style.top = Outside;
         continue;
       }
-      let arrow = tooltip.arrow ? tView.dom.querySelector(".cm-tooltip-arrow") : null;
-      let arrowHeight = arrow ? 7 : 0;
-      let width = size.right - size.left, height = (_a2 = knownHeight.get(tView)) !== null && _a2 !== void 0 ? _a2 : size.bottom - size.top;
-      let offset = tView.offset || noOffset, ltr = this.view.textDirection == Direction.LTR;
-      let left = size.width > space5.right - space5.left ? ltr ? space5.left : space5.right - size.width : ltr ? Math.max(space5.left, Math.min(pos.left - (arrow ? 14 : 0) + offset.x, space5.right - width)) : Math.min(Math.max(space5.left, pos.left - width + (arrow ? 14 : 0) - offset.x), space5.right - width);
+      let arrow4 = tooltip.arrow ? tView.dom.querySelector(".cm-tooltip-arrow") : null;
+      let arrowHeight = arrow4 ? 7 : 0;
+      let width = size4.right - size4.left, height = (_a2 = knownHeight.get(tView)) !== null && _a2 !== void 0 ? _a2 : size4.bottom - size4.top;
+      let offset4 = tView.offset || noOffset, ltr = this.view.textDirection == Direction.LTR;
+      let left = size4.width > space5.right - space5.left ? ltr ? space5.left : space5.right - size4.width : ltr ? Math.max(space5.left, Math.min(pos.left - (arrow4 ? 14 : 0) + offset4.x, space5.right - width)) : Math.min(Math.max(space5.left, pos.left - width + (arrow4 ? 14 : 0) - offset4.x), space5.right - width);
       let above = this.above[i2];
-      if (!tooltip.strictSide && (above ? pos.top - height - arrowHeight - offset.y < space5.top : pos.bottom + height + arrowHeight + offset.y > space5.bottom) && above == space5.bottom - pos.bottom > pos.top - space5.top)
+      if (!tooltip.strictSide && (above ? pos.top - height - arrowHeight - offset4.y < space5.top : pos.bottom + height + arrowHeight + offset4.y > space5.bottom) && above == space5.bottom - pos.bottom > pos.top - space5.top)
         above = this.above[i2] = !above;
       let spaceVert = (above ? pos.top - space5.top : space5.bottom - pos.bottom) - arrowHeight;
       if (spaceVert < height && tView.resize !== false) {
@@ -21282,7 +19648,7 @@ var tooltipPlugin = /* @__PURE__ */ ViewPlugin.fromClass(class {
       } else if (dom.style.height) {
         dom.style.height = "";
       }
-      let top2 = above ? pos.top - height - arrowHeight - offset.y : pos.bottom + arrowHeight + offset.y;
+      let top2 = above ? pos.top - height - arrowHeight - offset4.y : pos.bottom + arrowHeight + offset4.y;
       let right = left + width;
       if (tView.overlap !== true) {
         for (let r2 of others2)
@@ -21296,9 +19662,9 @@ var tooltipPlugin = /* @__PURE__ */ ViewPlugin.fromClass(class {
         dom.style.top = top2 / scaleY + "px";
         setLeftStyle(dom, (left - measured.fixedLeft) / scaleX);
       }
-      if (arrow) {
-        let arrowLeft = pos.left + (ltr ? offset.x : -offset.x) - (left + 14 - 7);
-        arrow.style.left = arrowLeft / scaleX + "px";
+      if (arrow4) {
+        let arrowLeft = pos.left + (ltr ? offset4.x : -offset4.x) - (left + 14 - 7);
+        arrow4.style.left = arrowLeft / scaleX + "px";
       }
       if (tView.overlap !== true)
         others2.push({ left, top: top2, right, bottom: top2 + height });
@@ -21566,8 +19932,8 @@ var HoverPlugin = class {
   }
   get tooltip() {
     let plugin = this.view.plugin(tooltipPlugin);
-    let index = plugin ? plugin.manager.tooltips.findIndex((t4) => t4.create == HoverTooltipHost.create) : -1;
-    return index > -1 ? plugin.manager.tooltipViews[index] : null;
+    let index3 = plugin ? plugin.manager.tooltips.findIndex((t4) => t4.create == HoverTooltipHost.create) : -1;
+    return index3 > -1 ? plugin.manager.tooltipViews[index3] : null;
   }
   mousemove(event) {
     var _a2, _b;
@@ -21614,9 +19980,9 @@ var HoverPlugin = class {
 };
 var tooltipMargin = 4;
 function isInTooltip(tooltip, event) {
-  let { left, right, top: top2, bottom } = tooltip.getBoundingClientRect(), arrow;
-  if (arrow = tooltip.querySelector(".cm-tooltip-arrow")) {
-    let arrowRect = arrow.getBoundingClientRect();
+  let { left, right, top: top2, bottom } = tooltip.getBoundingClientRect(), arrow4;
+  if (arrow4 = tooltip.querySelector(".cm-tooltip-arrow")) {
+    let arrowRect = arrow4.getBoundingClientRect();
     top2 = Math.min(arrowRect.top, top2);
     bottom = Math.max(arrowRect.bottom, bottom);
   }
@@ -21725,8 +20091,8 @@ var panelConfig = /* @__PURE__ */ Facet.define({
 });
 function getPanel(view, panel) {
   let plugin = view.plugin(panelPlugin);
-  let index = plugin ? plugin.specs.indexOf(panel) : -1;
-  return index > -1 ? plugin.panels[index] : null;
+  let index3 = plugin ? plugin.specs.indexOf(panel) : -1;
+  return index3 > -1 ? plugin.panels[index3] : null;
 }
 var panelPlugin = /* @__PURE__ */ ViewPlugin.fromClass(class {
   constructor(view) {
@@ -22068,10 +20434,10 @@ var gutterView = /* @__PURE__ */ ViewPlugin.fromClass(class {
       this.syncGutters(vpOverlap < (vpB.to - vpB.from) * 0.8);
     }
     if (update.geometryChanged) {
-      let min = this.view.contentHeight / this.view.scaleY + "px";
-      this.dom.style.minHeight = min;
+      let min2 = this.view.contentHeight / this.view.scaleY + "px";
+      this.dom.style.minHeight = min2;
       if (this.domAfter)
-        this.domAfter.style.minHeight = min;
+        this.domAfter.style.minHeight = min2;
     }
     if (this.view.state.facet(unfixGutters) != !this.fixed) {
       this.fixed = !this.fixed;
@@ -22408,8 +20774,8 @@ var lineNumberGutter = /* @__PURE__ */ activeGutters.compute([lineNumberConfig],
     return new NumberMarker(formatNumber(view, maxLineNumber(view.state.doc.lines)));
   },
   updateSpacer(spacer, update) {
-    let max = formatNumber(update.view, maxLineNumber(update.view.state.doc.lines));
-    return max == spacer.number ? spacer : new NumberMarker(max);
+    let max2 = formatNumber(update.view, maxLineNumber(update.view.state.doc.lines));
+    return max2 == spacer.number ? spacer : new NumberMarker(max2);
   },
   domEventHandlers: state.facet(lineNumberConfig).domEventHandlers,
   side: "before"
@@ -22828,9 +21194,9 @@ var Tree = class _Tree {
 };
 Tree.empty = new Tree(NodeType.none, [], [], 0);
 var FlatBufferCursor = class _FlatBufferCursor {
-  constructor(buffer, index) {
+  constructor(buffer, index3) {
     this.buffer = buffer;
-    this.index = index;
+    this.index = index3;
   }
   get id() {
     return this.buffer[this.index - 4];
@@ -22874,27 +21240,27 @@ var TreeBuffer = class _TreeBuffer {
   */
   toString() {
     let result = [];
-    for (let index = 0; index < this.buffer.length; ) {
-      result.push(this.childString(index));
-      index = this.buffer[index + 3];
+    for (let index3 = 0; index3 < this.buffer.length; ) {
+      result.push(this.childString(index3));
+      index3 = this.buffer[index3 + 3];
     }
     return result.join(",");
   }
   /**
   @internal
   */
-  childString(index) {
-    let id3 = this.buffer[index], endIndex = this.buffer[index + 3];
+  childString(index3) {
+    let id3 = this.buffer[index3], endIndex = this.buffer[index3 + 3];
     let type3 = this.set.types[id3], result = type3.name;
     if (/\W/.test(result) && !type3.isError)
       result = JSON.stringify(result);
-    index += 4;
-    if (endIndex == index)
+    index3 += 4;
+    if (endIndex == index3)
       return result;
     let children = [];
-    while (index < endIndex) {
-      children.push(this.childString(index));
-      index = this.buffer[index + 3];
+    while (index3 < endIndex) {
+      children.push(this.childString(index3));
+      index3 = this.buffer[index3 + 3];
     }
     return result + "(" + children.join(",") + ")";
   }
@@ -23008,11 +21374,11 @@ var BaseNode = class {
   }
 };
 var TreeNode = class _TreeNode extends BaseNode {
-  constructor(_tree, from2, index, _parent) {
+  constructor(_tree, from2, index3, _parent) {
     super();
     this._tree = _tree;
     this.from = from2;
-    this.index = index;
+    this.index = index3;
     this._parent = _parent;
   }
   get type() {
@@ -23033,9 +21399,9 @@ var TreeNode = class _TreeNode extends BaseNode {
         if (next instanceof TreeBuffer) {
           if (mode & IterMode.ExcludeBuffers)
             continue;
-          let index = next.findChild(0, next.buffer.length, dir, pos - start, side);
-          if (index > -1)
-            return new BufferNode(new BufferContext(parent, next, i2, start), null, index);
+          let index3 = next.findChild(0, next.buffer.length, dir, pos - start, side);
+          if (index3 > -1)
+            return new BufferNode(new BufferContext(parent, next, i2, start), null, index3);
         } else if (mode & IterMode.IncludeAnonymous || (!next.type.isAnonymous || hasChild(next))) {
           let mounted2;
           if (!(mode & IterMode.IgnoreMounts) && (mounted2 = MountedTree.get(next)) && !mounted2.overlay)
@@ -23177,10 +21543,10 @@ function matchNodeContext(node, context, i2 = context.length - 1) {
   return true;
 }
 var BufferContext = class {
-  constructor(parent, buffer, index, start) {
+  constructor(parent, buffer, index3, start) {
     this.parent = parent;
     this.buffer = buffer;
-    this.index = index;
+    this.index = index3;
     this.start = start;
   }
 };
@@ -23194,17 +21560,17 @@ var BufferNode = class _BufferNode extends BaseNode {
   get to() {
     return this.context.start + this.context.buffer.buffer[this.index + 2];
   }
-  constructor(context, _parent, index) {
+  constructor(context, _parent, index3) {
     super();
     this.context = context;
     this._parent = _parent;
-    this.index = index;
-    this.type = context.buffer.set.types[context.buffer.buffer[index]];
+    this.index = index3;
+    this.type = context.buffer.set.types[context.buffer.buffer[index3]];
   }
   child(dir, pos, side) {
     let { buffer } = this.context;
-    let index = buffer.findChild(this.index + 4, buffer.buffer[this.index + 3], dir, pos - this.context.start, side);
-    return index < 0 ? null : new _BufferNode(this.context, this, index);
+    let index3 = buffer.findChild(this.index + 4, buffer.buffer[this.index + 3], dir, pos - this.context.start, side);
+    return index3 < 0 ? null : new _BufferNode(this.context, this, index3);
   }
   get firstChild() {
     return this.child(
@@ -23245,8 +21611,8 @@ var BufferNode = class _BufferNode extends BaseNode {
     if (mode & IterMode.ExcludeBuffers)
       return null;
     let { buffer } = this.context;
-    let index = buffer.findChild(this.index + 4, buffer.buffer[this.index + 3], side > 0 ? 1 : -1, pos - this.context.start, side);
-    return index < 0 ? null : new _BufferNode(this.context, this, index);
+    let index3 = buffer.findChild(this.index + 4, buffer.buffer[this.index + 3], side > 0 ? 1 : -1, pos - this.context.start, side);
+    return index3 < 0 ? null : new _BufferNode(this.context, this, index3);
   }
   get parent() {
     return this._parent || this.context.parent.nextSignificantParent();
@@ -23383,12 +21749,12 @@ var TreeCursor = class {
     this.to = node.to;
     return true;
   }
-  yieldBuf(index, type3) {
-    this.index = index;
+  yieldBuf(index3, type3) {
+    this.index = index3;
     let { start, buffer } = this.buffer;
-    this.type = type3 || buffer.set.types[buffer.buffer[index]];
-    this.from = start + buffer.buffer[index + 1];
-    this.to = start + buffer.buffer[index + 2];
+    this.type = type3 || buffer.set.types[buffer.buffer[index3]];
+    this.from = start + buffer.buffer[index3 + 1];
+    this.to = start + buffer.buffer[index3 + 2];
     return true;
   }
   /**
@@ -23417,11 +21783,11 @@ var TreeCursor = class {
     if (!this.buffer)
       return this.yield(this._tree.nextChild(dir < 0 ? this._tree._tree.children.length - 1 : 0, dir, pos, side, this.mode));
     let { buffer } = this.buffer;
-    let index = buffer.findChild(this.index + 4, buffer.buffer[this.index + 3], dir, pos - this.buffer.start, side);
-    if (index < 0)
+    let index3 = buffer.findChild(this.index + 4, buffer.buffer[this.index + 3], dir, pos - this.buffer.start, side);
+    if (index3 < 0)
       return false;
     this.stack.push(this.index);
-    return this.yieldBuf(index);
+    return this.yieldBuf(index3);
   }
   /**
   Move the cursor to this node's first child. When this returns
@@ -23530,7 +21896,7 @@ var TreeCursor = class {
     return this.sibling(-1);
   }
   atLastNode(dir) {
-    let index, parent, { buffer } = this;
+    let index3, parent, { buffer } = this;
     if (buffer) {
       if (dir > 0) {
         if (this.index < buffer.buffer.buffer.length)
@@ -23540,13 +21906,13 @@ var TreeCursor = class {
           if (buffer.buffer.buffer[i2 + 3] < this.index)
             return false;
       }
-      ({ index, parent } = buffer);
+      ({ index: index3, parent } = buffer);
     } else {
-      ({ index, _parent: parent } = this._tree);
+      ({ index: index3, _parent: parent } = this._tree);
     }
-    for (; parent; { index, _parent: parent } = parent) {
-      if (index > -1)
-        for (let i2 = index + dir, e = dir < 0 ? -1 : parent._tree.children.length; i2 != e; i2 += dir) {
+    for (; parent; { index: index3, _parent: parent } = parent) {
+      if (index3 > -1)
+        for (let i2 = index3 + dir, e = dir < 0 ? -1 : parent._tree.children.length; i2 != e; i2 += dir) {
           let child = parent._tree.children[i2];
           if (this.mode & IterMode.IncludeAnonymous || child instanceof TreeBuffer || !child.type.isAnonymous || hasChild(child))
             return false;
@@ -23610,16 +21976,16 @@ var TreeCursor = class {
       return this._tree;
     let cache3 = this.bufferNode, result = null, depth = 0;
     if (cache3 && cache3.context == this.buffer) {
-      scan: for (let index = this.index, d2 = this.stack.length; d2 >= 0; ) {
+      scan: for (let index3 = this.index, d2 = this.stack.length; d2 >= 0; ) {
         for (let c2 = cache3; c2; c2 = c2._parent)
-          if (c2.index == index) {
-            if (index == this.index)
+          if (c2.index == index3) {
+            if (index3 == this.index)
               return c2;
             result = c2;
             depth = d2 + 1;
             break scan;
           }
-        index = this.stack[--d2];
+        index3 = this.stack[--d2];
       }
     }
     for (let i2 = depth; i2 < this.stack.length; i2++)
@@ -23697,36 +22063,36 @@ function buildTree(data2) {
   let types4 = nodeSet2.types;
   let contextHash = 0, lookAhead = 0;
   function takeNode(parentStart, minPos, children2, positions2, inRepeat, depth) {
-    let { id: id3, start, end, size } = cursor2;
+    let { id: id3, start, end, size: size4 } = cursor2;
     let lookAheadAtStart = lookAhead, contextAtStart = contextHash;
-    if (size < 0) {
+    if (size4 < 0) {
       cursor2.next();
-      if (size == -1) {
+      if (size4 == -1) {
         let node2 = reused[id3];
         children2.push(node2);
         positions2.push(start - parentStart);
         return;
-      } else if (size == -3) {
+      } else if (size4 == -3) {
         contextHash = id3;
         return;
-      } else if (size == -4) {
+      } else if (size4 == -4) {
         lookAhead = id3;
         return;
       } else {
-        throw new RangeError(`Unrecognized record size: ${size}`);
+        throw new RangeError(`Unrecognized record size: ${size4}`);
       }
     }
     let type3 = types4[id3], node, buffer2;
     let startPos = start - parentStart;
     if (end - start <= maxBufferLength && (buffer2 = findBufferSize(cursor2.pos - minPos, inRepeat))) {
       let data3 = new Uint16Array(buffer2.size - buffer2.skip);
-      let endPos = cursor2.pos - buffer2.size, index = data3.length;
+      let endPos = cursor2.pos - buffer2.size, index3 = data3.length;
       while (cursor2.pos > endPos)
-        index = copyToBuffer(buffer2.start, data3, index);
+        index3 = copyToBuffer(buffer2.start, data3, index3);
       node = new TreeBuffer(data3, end - buffer2.start, nodeSet2);
       startPos = buffer2.start - parentStart;
     } else {
-      let endPos = cursor2.pos - size;
+      let endPos = cursor2.pos - size4;
       cursor2.next();
       let localChildren = [], localPositions = [];
       let localInRepeat = id3 >= minRepeatType ? id3 : -1;
@@ -23763,8 +22129,8 @@ function buildTree(data2) {
     let nodes = [];
     let nodeCount = 0, stopAt = -1;
     while (cursor2.pos > minPos) {
-      let { id: id3, start, end, size } = cursor2;
-      if (size > 4) {
+      let { id: id3, start, end, size: size4 } = cursor2;
+      if (size4 > 4) {
         cursor2.next();
       } else if (stopAt > -1 && start < stopAt) {
         break;
@@ -23823,16 +22189,16 @@ function buildTree(data2) {
   }
   function findBufferSize(maxSize, inRepeat) {
     let fork = cursor2.fork();
-    let size = 0, start = 0, skip = 0, minStart = fork.end - maxBufferLength;
+    let size4 = 0, start = 0, skip = 0, minStart = fork.end - maxBufferLength;
     let result = { size: 0, start: 0, skip: 0 };
     scan: for (let minPos = fork.pos - maxSize; fork.pos > minPos; ) {
       let nodeSize2 = fork.size;
       if (fork.id == inRepeat && nodeSize2 >= 0) {
-        result.size = size;
+        result.size = size4;
         result.start = start;
         result.skip = skip;
         skip += 4;
-        size += 4;
+        size4 += 4;
         fork.next();
         continue;
       }
@@ -23854,36 +22220,36 @@ function buildTree(data2) {
         fork.next();
       }
       start = nodeStart2;
-      size += nodeSize2;
+      size4 += nodeSize2;
       skip += localSkipped;
     }
-    if (inRepeat < 0 || size == maxSize) {
-      result.size = size;
+    if (inRepeat < 0 || size4 == maxSize) {
+      result.size = size4;
       result.start = start;
       result.skip = skip;
     }
     return result.size > 4 ? result : void 0;
   }
-  function copyToBuffer(bufferStart, buffer2, index) {
-    let { id: id3, start, end, size } = cursor2;
+  function copyToBuffer(bufferStart, buffer2, index3) {
+    let { id: id3, start, end, size: size4 } = cursor2;
     cursor2.next();
-    if (size >= 0 && id3 < minRepeatType) {
-      let startIndex = index;
-      if (size > 4) {
-        let endPos = cursor2.pos - (size - 4);
+    if (size4 >= 0 && id3 < minRepeatType) {
+      let startIndex = index3;
+      if (size4 > 4) {
+        let endPos = cursor2.pos - (size4 - 4);
         while (cursor2.pos > endPos)
-          index = copyToBuffer(bufferStart, buffer2, index);
+          index3 = copyToBuffer(bufferStart, buffer2, index3);
       }
-      buffer2[--index] = startIndex;
-      buffer2[--index] = end - bufferStart;
-      buffer2[--index] = start - bufferStart;
-      buffer2[--index] = id3;
-    } else if (size == -3) {
+      buffer2[--index3] = startIndex;
+      buffer2[--index3] = end - bufferStart;
+      buffer2[--index3] = start - bufferStart;
+      buffer2[--index3] = id3;
+    } else if (size4 == -3) {
       contextHash = id3;
-    } else if (size == -4) {
+    } else if (size4 == -4) {
       lookAhead = id3;
     }
-    return index;
+    return index3;
   }
   let children = [], positions = [];
   while (cursor2.pos > 0)
@@ -23895,19 +22261,19 @@ var nodeSizeCache = /* @__PURE__ */ new WeakMap();
 function nodeSize(balanceType, node) {
   if (!balanceType.isAnonymous || node instanceof TreeBuffer || node.type != balanceType)
     return 1;
-  let size = nodeSizeCache.get(node);
-  if (size == null) {
-    size = 1;
+  let size4 = nodeSizeCache.get(node);
+  if (size4 == null) {
+    size4 = 1;
     for (let child of node.children) {
       if (child.type != balanceType || !(child instanceof Tree)) {
-        size = 1;
+        size4 = 1;
         break;
       }
-      size += nodeSize(balanceType, child);
+      size4 += nodeSize(balanceType, child);
     }
-    nodeSizeCache.set(node, size);
+    nodeSizeCache.set(node, size4);
   }
-  return size;
+  return size4;
 }
 function balanceRange(balanceType, children, positions, from2, to, start, length, mkTop, mkTree) {
   let total = 0;
@@ -23918,7 +22284,7 @@ function balanceRange(balanceType, children, positions, from2, to, start, length
     /* Balance.BranchFactor */
   );
   let localChildren = [], localPositions = [];
-  function divide(children2, positions2, from3, to2, offset) {
+  function divide(children2, positions2, from3, to2, offset4) {
     for (let i2 = from3; i2 < to2; ) {
       let groupFrom = i2, groupStart = positions2[i2], groupSize = nodeSize(balanceType, children2[i2]);
       i2++;
@@ -23931,7 +22297,7 @@ function balanceRange(balanceType, children, positions, from2, to, start, length
       if (i2 == groupFrom + 1) {
         if (groupSize > maxChild) {
           let only = children2[groupFrom];
-          divide(only.children, only.positions, 0, only.children.length, positions2[groupFrom] + offset);
+          divide(only.children, only.positions, 0, only.children.length, positions2[groupFrom] + offset4);
           continue;
         }
         localChildren.push(children2[groupFrom]);
@@ -23939,7 +22305,7 @@ function balanceRange(balanceType, children, positions, from2, to, start, length
         let length2 = positions2[i2 - 1] + children2[i2 - 1].length - groupStart;
         localChildren.push(balanceRange(balanceType, children2, positions2, groupFrom, i2, groupStart, length2, null, mkTree));
       }
-      localPositions.push(groupStart + offset - start);
+      localPositions.push(groupStart + offset4 - start);
     }
   }
   divide(children, positions, from2, to, 0);
@@ -23949,15 +22315,15 @@ var NodeWeakMap = class {
   constructor() {
     this.map = /* @__PURE__ */ new WeakMap();
   }
-  setBuffer(buffer, index, value) {
+  setBuffer(buffer, index3, value) {
     let inner = this.map.get(buffer);
     if (!inner)
       this.map.set(buffer, inner = /* @__PURE__ */ new Map());
-    inner.set(index, value);
+    inner.set(index3, value);
   }
-  getBuffer(buffer, index) {
+  getBuffer(buffer, index3) {
     let inner = this.map.get(buffer);
-    return inner && inner.get(index);
+    return inner && inner.get(index3);
   }
   /**
   Set the value for this syntax node.
@@ -23998,11 +22364,11 @@ var TreeFragment = class _TreeFragment {
   [`applyChanges`](#common.TreeFragment^applyChanges) instead of
   calling this directly.
   */
-  constructor(from2, to, tree, offset, openStart = false, openEnd = false) {
+  constructor(from2, to, tree, offset4, openStart = false, openEnd = false) {
     this.from = from2;
     this.to = to;
     this.tree = tree;
-    this.offset = offset;
+    this.offset = offset4;
     this.open = (openStart ? 1 : 0) | (openEnd ? 2 : 0);
   }
   /**
@@ -24134,11 +22500,11 @@ function checkRanges(ranges) {
     throw new RangeError("Invalid inner parse ranges given: " + JSON.stringify(ranges));
 }
 var ActiveOverlay = class {
-  constructor(parser9, predicate, mounts, index, start, bracketed3, target, prev) {
+  constructor(parser9, predicate, mounts, index3, start, bracketed3, target, prev) {
     this.parser = parser9;
     this.predicate = predicate;
     this.mounts = mounts;
-    this.index = index;
+    this.index = index3;
     this.start = start;
     this.bracketed = bracketed3;
     this.target = target;
@@ -24324,14 +22690,14 @@ function materialize(cursor2) {
     return new Tree(type3, children, positions, length);
   }
   base3.children[i2] = split(0, b.length, NodeType.none, 0, buf.length, stack.length - 1);
-  for (let index of newStack) {
-    let tree = cursor2.tree.children[index], pos = cursor2.tree.positions[index];
-    cursor2.yield(new TreeNode(tree, pos + cursor2.from, index, cursor2._tree));
+  for (let index3 of newStack) {
+    let tree = cursor2.tree.children[index3], pos = cursor2.tree.positions[index3];
+    cursor2.yield(new TreeNode(tree, pos + cursor2.from, index3, cursor2._tree));
   }
 }
 var StructureCursor = class {
-  constructor(root, offset) {
-    this.offset = offset;
+  constructor(root, offset4) {
+    this.offset = offset4;
     this.done = false;
     this.cursor = root.cursor(IterMode.IncludeAnonymous | IterMode.IgnoreMounts | IterMode.ExcludeBuffers);
   }
@@ -25471,9 +23837,9 @@ var Language = class {
             result.push({ from: from2, to: from2 + tree.length });
           return;
         } else if (mount.overlay) {
-          let size = result.length;
+          let size4 = result.length;
           explore(mount.tree, mount.overlay[0].from + from2);
-          if (result.length > size)
+          if (result.length > size4)
             return;
         }
       }
@@ -26889,9 +25255,9 @@ function matchingNodes(node, dir, brackets) {
   if (byProp)
     return byProp;
   if (node.name.length == 1) {
-    let index = brackets.indexOf(node.name);
-    if (index > -1 && index % 2 == (dir < 0 ? 1 : 0))
-      return [brackets[index + dir]];
+    let index3 = brackets.indexOf(node.name);
+    if (index3 > -1 && index3 % 2 == (dir < 0 ? 1 : 0))
+      return [brackets[index3 + dir]];
   }
   return null;
 }
@@ -26903,11 +25269,11 @@ function matchBrackets(state, pos, dir, config2 = {}) {
   let maxScanDistance = config2.maxScanDistance || DefaultScanDist, brackets = config2.brackets || DefaultBrackets;
   let tree = syntaxTree(state), node = tree.resolveInner(pos, dir);
   for (let cur2 = node; cur2; cur2 = cur2.parent) {
-    let matches = matchingNodes(cur2.type, dir, brackets);
-    if (matches && cur2.from < cur2.to) {
+    let matches2 = matchingNodes(cur2.type, dir, brackets);
+    if (matches2 && cur2.from < cur2.to) {
       let handle = findHandle(cur2);
       if (handle && (dir > 0 ? pos >= handle.from && pos < handle.to : pos > handle.from && pos <= handle.to))
-        return matchMarkedBrackets(state, pos, dir, cur2, handle, matches, brackets);
+        return matchMarkedBrackets(state, pos, dir, cur2, handle, matches2, brackets);
     }
   }
   return matchPlainBrackets(state, pos, dir, tree, node.type, maxScanDistance, brackets);
@@ -27162,54 +25528,54 @@ var Parse = class {
   }
   nextLine() {
     let from2 = this.parsedPos, line = this.lineAfter(from2), end = from2 + line.length;
-    for (let index = this.rangeIndex; ; ) {
-      let rangeEnd2 = this.ranges[index].to;
+    for (let index3 = this.rangeIndex; ; ) {
+      let rangeEnd2 = this.ranges[index3].to;
       if (rangeEnd2 >= end)
         break;
       line = line.slice(0, rangeEnd2 - (end - line.length));
-      index++;
-      if (index == this.ranges.length)
+      index3++;
+      if (index3 == this.ranges.length)
         break;
-      let rangeStart = this.ranges[index].from;
+      let rangeStart = this.ranges[index3].from;
       let after = this.lineAfter(rangeStart);
       line += after;
       end = rangeStart + after.length;
     }
     return { line, end };
   }
-  skipGapsTo(pos, offset, side) {
+  skipGapsTo(pos, offset4, side) {
     for (; ; ) {
-      let end = this.ranges[this.rangeIndex].to, offPos = pos + offset;
+      let end = this.ranges[this.rangeIndex].to, offPos = pos + offset4;
       if (side > 0 ? end > offPos : end >= offPos)
         break;
       let start = this.ranges[++this.rangeIndex].from;
-      offset += start - end;
+      offset4 += start - end;
     }
-    return offset;
+    return offset4;
   }
   moveRangeIndex() {
     while (this.ranges[this.rangeIndex].to < this.parsedPos)
       this.rangeIndex++;
   }
-  emitToken(id3, from2, to, offset) {
-    let size = 4;
+  emitToken(id3, from2, to, offset4) {
+    let size4 = 4;
     if (this.ranges.length > 1) {
-      offset = this.skipGapsTo(from2, offset, 1);
-      from2 += offset;
+      offset4 = this.skipGapsTo(from2, offset4, 1);
+      from2 += offset4;
       let len0 = this.chunk.length;
-      offset = this.skipGapsTo(to, offset, -1);
-      to += offset;
-      size += this.chunk.length - len0;
+      offset4 = this.skipGapsTo(to, offset4, -1);
+      to += offset4;
+      size4 += this.chunk.length - len0;
     }
     let last2 = this.chunk.length - 4;
-    if (this.lang.streamParser.mergeTokens && size == 4 && last2 >= 0 && this.chunk[last2] == id3 && this.chunk[last2 + 2] == from2)
+    if (this.lang.streamParser.mergeTokens && size4 == 4 && last2 >= 0 && this.chunk[last2] == id3 && this.chunk[last2 + 2] == from2)
       this.chunk[last2 + 2] = to;
     else
-      this.chunk.push(id3, from2, to, size);
-    return offset;
+      this.chunk.push(id3, from2, to, size4);
+    return offset4;
   }
   parseLine(context) {
-    let { line, end } = this.nextLine(), offset = 0, { streamParser } = this.lang;
+    let { line, end } = this.nextLine(), offset4 = 0, { streamParser } = this.lang;
     let stream = new StringStream(line, context ? context.state.tabSize : 4, context ? getIndentUnit(context.state) : 2);
     if (stream.eol()) {
       streamParser.blankLine(this.state, stream.indentUnit);
@@ -27217,7 +25583,7 @@ var Parse = class {
       while (!stream.eol()) {
         let token = readToken(streamParser.token, stream, this.state);
         if (token)
-          offset = this.emitToken(this.lang.tokenTable.resolve(token), this.parsedPos + stream.start, this.parsedPos + stream.pos, offset);
+          offset4 = this.emitToken(this.lang.tokenTable.resolve(token), this.parsedPos + stream.start, this.parsedPos + stream.pos, offset4);
         if (stream.start > 1e4)
           break;
       }
@@ -27260,7 +25626,7 @@ function readToken(token, stream, state) {
 var noTokens = /* @__PURE__ */ Object.create(null);
 var typeArray = [NodeType.none];
 var nodeSet = /* @__PURE__ */ new NodeSet(typeArray);
-var warned2 = [];
+var warned = [];
 var byTag = /* @__PURE__ */ Object.create(null);
 var defaultTable = /* @__PURE__ */ Object.create(null);
 for (let [legacyName, name2] of [
@@ -27289,9 +25655,9 @@ var TokenTable = class {
 };
 var defaultTokenTable = /* @__PURE__ */ new TokenTable(noTokens);
 function warnForPart(part, msg) {
-  if (warned2.indexOf(part) > -1)
+  if (warned.indexOf(part) > -1)
     return;
-  warned2.push(part);
+  warned.push(part);
   console.warn(msg);
 }
 function createTokenType(extra, tagStr) {
@@ -28194,15 +26560,15 @@ function moveLine(state, dispatch, forward) {
     if (forward ? block2.to == state.doc.length : block2.from == 0)
       continue;
     let nextLine = state.doc.lineAt(forward ? block2.to + 1 : block2.from - 1);
-    let size = nextLine.length + 1;
+    let size4 = nextLine.length + 1;
     if (forward) {
       changes.push({ from: block2.to, to: nextLine.to }, { from: block2.from, insert: nextLine.text + state.lineBreak });
       for (let r2 of block2.ranges)
-        ranges.push(EditorSelection.range(Math.min(state.doc.length, r2.anchor + size), Math.min(state.doc.length, r2.head + size)));
+        ranges.push(EditorSelection.range(Math.min(state.doc.length, r2.anchor + size4), Math.min(state.doc.length, r2.head + size4)));
     } else {
       changes.push({ from: nextLine.from, to: block2.from }, { from: block2.to, insert: state.lineBreak + nextLine.text });
       for (let r2 of block2.ranges)
-        ranges.push(EditorSelection.range(r2.anchor - size, r2.head - size));
+        ranges.push(EditorSelection.range(r2.anchor - size4, r2.head - size4));
     }
   }
   if (!changes.length)
@@ -29045,11 +27411,11 @@ function regexpCursor(spec, state, from2, to) {
     test = wrapRegexpTest(spec.test, state, test);
   return new RegExpCursor(state.doc, spec.search, { ignoreCase: !spec.caseSensitive, test }, from2, to);
 }
-function charBefore(str, index) {
-  return str.slice(findClusterBreak2(str, index, false), index);
+function charBefore(str, index3) {
+  return str.slice(findClusterBreak2(str, index3, false), index3);
 }
-function charAfter(str, index) {
-  return str.slice(index, findClusterBreak2(str, index));
+function charAfter(str, index3) {
+  return str.slice(index3, findClusterBreak2(str, index3));
 }
 function regexpWordTest(categorizer) {
   return (_from, _to, match) => !match[0].length || (categorizer(charBefore(match.input, match.index)) != CharCategory.Word || categorizer(charAfter(match.input, match.index)) != CharCategory.Word) && (categorizer(charAfter(match.input, match.index + match[0].length)) != CharCategory.Word || categorizer(charBefore(match.input, match.index + match[0].length)) != CharCategory.Word);
@@ -29062,10 +27428,10 @@ var RegExpQuery = class extends QueryType2 {
     return cursor2.done ? null : cursor2.value;
   }
   prevMatchInRange(state, from2, to) {
-    for (let size = 1; ; size++) {
+    for (let size4 = 1; ; size4++) {
       let start = Math.max(
         from2,
-        to - size * 1e4
+        to - size4 * 1e4
         /* FindPrev.ChunkSize */
       );
       let cursor2 = regexpCursor(this.spec, state, start, to), range = null;
@@ -29693,11 +28059,11 @@ var FuzzyMatcher = class {
     this.score = 0;
     this.matched = [];
     for (let p = 0; p < pattern.length; ) {
-      let char = codePointAt2(pattern, p), size = codePointSize2(char);
+      let char = codePointAt2(pattern, p), size4 = codePointSize2(char);
       this.chars.push(char);
-      let part = pattern.slice(p, p + size), upper = part.toUpperCase();
+      let part = pattern.slice(p, p + size4), upper = part.toUpperCase();
       this.folded.push(codePointAt2(upper == part ? part.toLowerCase() : upper, 0));
-      p += size;
+      p += size4;
     }
     this.astral = pattern.length != this.chars.length;
   }
@@ -29855,7 +28221,7 @@ function joinClass(a, b) {
 }
 function defaultPositionInfo(view, list, option, info, space5, tooltip) {
   let rtl = view.textDirection == Direction.RTL, left = rtl, narrow = false;
-  let side = "top", offset, maxWidth;
+  let side = "top", offset4, maxWidth;
   let spaceLeft = list.left - space5.left, spaceRight = space5.right - list.right;
   let infoWidth = info.right - info.left, infoHeight = info.bottom - info.top;
   if (left && spaceLeft < Math.min(infoWidth, spaceRight))
@@ -29863,7 +28229,7 @@ function defaultPositionInfo(view, list, option, info, space5, tooltip) {
   else if (!left && spaceRight < Math.min(infoWidth, spaceLeft))
     left = true;
   if (infoWidth <= (left ? spaceLeft : spaceRight)) {
-    offset = Math.max(space5.top, Math.min(option.top, space5.bottom - infoHeight)) - list.top;
+    offset4 = Math.max(space5.top, Math.min(option.top, space5.bottom - infoHeight)) - list.top;
     maxWidth = Math.min(400, left ? spaceLeft : spaceRight);
   } else {
     narrow = true;
@@ -29874,16 +28240,16 @@ function defaultPositionInfo(view, list, option, info, space5, tooltip) {
     );
     let spaceBelow = space5.bottom - list.bottom;
     if (spaceBelow >= infoHeight || spaceBelow > list.top) {
-      offset = option.bottom - list.top;
+      offset4 = option.bottom - list.top;
     } else {
       side = "bottom";
-      offset = list.bottom - option.top;
+      offset4 = list.bottom - option.top;
     }
   }
   let scaleY = (list.bottom - list.top) / tooltip.offsetHeight;
   let scaleX = (list.right - list.left) / tooltip.offsetWidth;
   return {
-    style: `${side}: ${offset / scaleY}px; max-width: ${maxWidth / scaleX}px`,
+    style: `${side}: ${offset4 / scaleY}px; max-width: ${maxWidth / scaleX}px`,
     class: "cm-completionInfo-" + (narrow ? rtl ? "left-narrow" : "right-narrow" : left ? "left" : "right")
   };
 }
@@ -29934,17 +28300,17 @@ function optionContent(config2) {
   });
   return content2.sort((a, b) => a.position - b.position).map((a) => a.render);
 }
-function rangeAroundSelected(total, selected, max) {
-  if (total <= max)
+function rangeAroundSelected(total, selected, max2) {
+  if (total <= max2)
     return { from: 0, to: total };
   if (selected < 0)
     selected = 0;
   if (selected <= total >> 1) {
-    let off2 = Math.floor(selected / max);
-    return { from: off2 * max, to: (off2 + 1) * max };
+    let off2 = Math.floor(selected / max2);
+    return { from: off2 * max2, to: (off2 + 1) * max2 };
   }
-  let off = Math.ceil((total - selected) / max);
-  return { from: total - off * max, to: total - (off - 1) * max };
+  let off = Math.ceil((total - selected) / max2);
+  return { from: total - off * max2, to: total - (off - 1) * max2 };
 }
 var CompletionTooltip = class {
   constructor(view, stateField, applyCompletion2) {
@@ -30950,9 +29316,9 @@ var Snippet = class _Snippet {
         positions.push(new FieldPos(found, lines.length, m.index, m.index + name2.length));
         line = line.slice(0, m.index) + rawName + line.slice(m.index + m[0].length);
       }
-      line = line.replace(/\\([{}])/g, (_, brace, index) => {
+      line = line.replace(/\\([{}])/g, (_, brace, index3) => {
         for (let pos of positions)
-          if (pos.line == lines.length && pos.from > index) {
+          if (pos.line == lines.length && pos.from > index3) {
             pos.from--;
             pos.to--;
           }
@@ -32351,13 +30717,13 @@ var TYPING_TIMOUT = 200;
 var emptyExtensions = [];
 function useCodeMirror(props) {
   var value = props.value, selection2 = props.selection, onChange = props.onChange, onStatistics = props.onStatistics, onCreateEditor = props.onCreateEditor, onUpdate = props.onUpdate, _props$extensions = props.extensions, extensions = _props$extensions === void 0 ? emptyExtensions : _props$extensions, autoFocus = props.autoFocus, _props$theme = props.theme, theme2 = _props$theme === void 0 ? "light" : _props$theme, _props$height = props.height, height = _props$height === void 0 ? null : _props$height, _props$minHeight = props.minHeight, minHeight = _props$minHeight === void 0 ? null : _props$minHeight, _props$maxHeight = props.maxHeight, maxHeight = _props$maxHeight === void 0 ? null : _props$maxHeight, _props$width = props.width, width = _props$width === void 0 ? null : _props$width, _props$minWidth = props.minWidth, minWidth = _props$minWidth === void 0 ? null : _props$minWidth, _props$maxWidth = props.maxWidth, maxWidth = _props$maxWidth === void 0 ? null : _props$maxWidth, _props$placeholder = props.placeholder, placeholderStr = _props$placeholder === void 0 ? "" : _props$placeholder, _props$editable = props.editable, editable2 = _props$editable === void 0 ? true : _props$editable, _props$readOnly = props.readOnly, readOnly2 = _props$readOnly === void 0 ? false : _props$readOnly, _props$indentWithTab = props.indentWithTab, defaultIndentWithTab = _props$indentWithTab === void 0 ? true : _props$indentWithTab, _props$basicSetup = props.basicSetup, defaultBasicSetup = _props$basicSetup === void 0 ? true : _props$basicSetup, root = props.root, initialState = props.initialState;
-  var _useState = (0, import_react33.useState)(), container = _useState[0], setContainer = _useState[1];
-  var _useState2 = (0, import_react33.useState)(), view = _useState2[0], setView = _useState2[1];
-  var _useState3 = (0, import_react33.useState)(), state = _useState3[0], setState = _useState3[1];
-  var typingLatch = (0, import_react33.useState)(() => ({
+  var _useState = (0, import_react29.useState)(), container = _useState[0], setContainer = _useState[1];
+  var _useState2 = (0, import_react29.useState)(), view = _useState2[0], setView = _useState2[1];
+  var _useState3 = (0, import_react29.useState)(), state = _useState3[0], setState = _useState3[1];
+  var typingLatch = (0, import_react29.useState)(() => ({
     current: null
   }))[0];
-  var pendingUpdate = (0, import_react33.useState)(() => ({
+  var pendingUpdate = (0, import_react29.useState)(() => ({
     current: null
   }))[0];
   var defaultThemeOption = getDimensionTheme(height, minHeight, maxHeight, width, minWidth, maxWidth);
@@ -32397,7 +30763,7 @@ function useCodeMirror(props) {
     getExtensions.push(EditorView.updateListener.of(onUpdate));
   }
   getExtensions = getExtensions.concat(extensions);
-  (0, import_react33.useLayoutEffect)(() => {
+  (0, import_react29.useLayoutEffect)(() => {
     if (container && !state) {
       var config2 = {
         doc: value,
@@ -32423,12 +30789,12 @@ function useCodeMirror(props) {
       }
     };
   }, [container, state]);
-  (0, import_react33.useEffect)(() => {
+  (0, import_react29.useEffect)(() => {
     if (props.container) {
       setContainer(props.container);
     }
   }, [props.container]);
-  (0, import_react33.useEffect)(() => () => {
+  (0, import_react29.useEffect)(() => () => {
     if (view) {
       view.destroy();
       setView(void 0);
@@ -32438,19 +30804,19 @@ function useCodeMirror(props) {
       typingLatch.current = null;
     }
   }, [view]);
-  (0, import_react33.useEffect)(() => {
+  (0, import_react29.useEffect)(() => {
     if (autoFocus && view) {
       view.focus();
     }
   }, [autoFocus, view]);
-  (0, import_react33.useEffect)(() => {
+  (0, import_react29.useEffect)(() => {
     if (view) {
       view.dispatch({
         effects: StateEffect.reconfigure.of(getExtensions)
       });
     }
   }, [theme2, extensions, height, minHeight, maxHeight, width, minWidth, maxWidth, placeholderStr, editable2, readOnly2, defaultIndentWithTab, defaultBasicSetup, onChange, onUpdate]);
-  (0, import_react33.useEffect)(() => {
+  (0, import_react29.useEffect)(() => {
     if (value === void 0) {
       return;
     }
@@ -32487,11 +30853,11 @@ function useCodeMirror(props) {
 }
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/index.js
-var import_jsx_runtime = require("react/jsx-runtime");
+var import_jsx_runtime2 = require("react/jsx-runtime");
 var _excluded = ["className", "value", "selection", "extensions", "onChange", "onStatistics", "onCreateEditor", "onUpdate", "autoFocus", "theme", "height", "minHeight", "maxHeight", "width", "minWidth", "maxWidth", "basicSetup", "placeholder", "indentWithTab", "editable", "readOnly", "root", "initialState"];
-var ReactCodeMirror = /* @__PURE__ */ (0, import_react34.forwardRef)((props, ref) => {
+var ReactCodeMirror = /* @__PURE__ */ (0, import_react30.forwardRef)((props, ref) => {
   var className2 = props.className, _props$value = props.value, value = _props$value === void 0 ? "" : _props$value, selection2 = props.selection, _props$extensions = props.extensions, extensions = _props$extensions === void 0 ? [] : _props$extensions, onChange = props.onChange, onStatistics = props.onStatistics, onCreateEditor = props.onCreateEditor, onUpdate = props.onUpdate, autoFocus = props.autoFocus, _props$theme = props.theme, theme2 = _props$theme === void 0 ? "light" : _props$theme, height = props.height, minHeight = props.minHeight, maxHeight = props.maxHeight, width = props.width, minWidth = props.minWidth, maxWidth = props.maxWidth, basicSetup3 = props.basicSetup, placeholder2 = props.placeholder, indentWithTab2 = props.indentWithTab, editable2 = props.editable, readOnly2 = props.readOnly, root = props.root, initialState = props.initialState, other = _objectWithoutPropertiesLoose(props, _excluded);
-  var editor = (0, import_react34.useRef)(null);
+  var editor = (0, import_react30.useRef)(null);
   var _useCodeMirror = useCodeMirror({
     root,
     value,
@@ -32516,12 +30882,12 @@ var ReactCodeMirror = /* @__PURE__ */ (0, import_react34.forwardRef)((props, ref
     extensions,
     initialState
   }), state = _useCodeMirror.state, view = _useCodeMirror.view, container = _useCodeMirror.container, setContainer = _useCodeMirror.setContainer;
-  (0, import_react34.useImperativeHandle)(ref, () => ({
+  (0, import_react30.useImperativeHandle)(ref, () => ({
     editor: editor.current,
     state,
     view
   }), [editor, container, state, view]);
-  var setEditorRef = (0, import_react34.useCallback)((el) => {
+  var setEditorRef = (0, import_react30.useCallback)((el) => {
     editor.current = el;
     setContainer(el);
   }, [setContainer]);
@@ -32529,13 +30895,85 @@ var ReactCodeMirror = /* @__PURE__ */ (0, import_react34.forwardRef)((props, ref
     throw new Error("value must be typeof string but got " + typeof value);
   }
   var defaultClassNames = typeof theme2 === "string" ? "cm-theme-" + theme2 : "cm-theme";
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", _extends({
+  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", _extends({
     ref: setEditorRef,
     className: "" + defaultClassNames + (className2 ? " " + className2 : "")
   }, other));
 });
 ReactCodeMirror.displayName = "CodeMirror";
 var esm_default = ReactCodeMirror;
+
+// dist/ui/official.js
+var official_exports = {};
+__export(official_exports, {
+  Official: () => Official,
+  pickOfficial: () => pickOfficial
+});
+var Official = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
+__reExport(official_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
+var import_react31 = require("react");
+var import_client3 = require("react-dom/client");
+var warned2 = /* @__PURE__ */ new Set();
+var officialRegistry = Official;
+function pickOfficial(name2, fallback) {
+  const value = officialRegistry[name2];
+  if (value === void 0) {
+    if (!warned2.has(name2)) {
+      warned2.add(name2);
+      console.warn(`[dsh-plugin-core:official] \u5B98\u65B9 primitive "${String(name2)}" \u7F3A\u5931\uFF0C\u56DE\u843D\u5230\u672C\u5730\u515C\u5E95`);
+    }
+    return fallback;
+  }
+  return value;
+}
+function mountHostModal(render) {
+  if (typeof document === "undefined")
+    return;
+  const container = document.createElement("div");
+  document.body.appendChild(container);
+  const root = (0, import_client3.createRoot)(container);
+  const close = () => {
+    root.unmount();
+    container.remove();
+  };
+  root.render(render(close));
+}
+var hostConfirm = (opts) => new Promise((resolve) => {
+  mountHostModal((close) => (0, import_react31.createElement)(Official.Modal, {
+    open: true,
+    onClose: () => {
+      close();
+      resolve(false);
+    },
+    title: opts.title ?? "",
+    closeLabel: t("modalClose"),
+    description: opts.description,
+    footer: (0, import_react31.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react31.createElement)(Button, { variant: "outline", onClick: () => {
+      close();
+      resolve(false);
+    } }, opts.cancelText ?? t("cancel")), (0, import_react31.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
+      close();
+      resolve(true);
+    } }, opts.confirmText ?? t("confirm")))
+  }));
+});
+var hostAlert = (opts) => new Promise((resolve) => {
+  mountHostModal((close) => (0, import_react31.createElement)(Official.Modal, {
+    open: true,
+    onClose: () => {
+      close();
+      resolve();
+    },
+    title: opts.title ?? "",
+    closeLabel: t("modalClose"),
+    description: opts.description,
+    footer: (0, import_react31.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react31.createElement)(Button, { variant: "primary", onClick: () => {
+      close();
+      resolve();
+    } }, opts.confirmText ?? t("dialogOk")))
+  }));
+});
+registerHostDialog({ confirm: hostConfirm, alert: hostAlert });
 
 // node_modules/.pnpm/@lezer+lr@1.4.11/node_modules/@lezer/lr/dist/index.js
 var Stack = class _Stack {
@@ -32612,25 +31050,25 @@ var Stack = class _Stack {
     let start = base3 ? this.stack[base3 - 2] : this.p.ranges[0].from;
     if (type3 < parser9.minRepeatTerm && start == this.reducePos && this.reducePos < this.pos)
       this.reducePos = this.pos;
-    let size = this.reducePos - start;
-    if (size >= 2e3 && !((_a2 = this.p.parser.nodeSet.types[type3]) === null || _a2 === void 0 ? void 0 : _a2.isAnonymous)) {
+    let size4 = this.reducePos - start;
+    if (size4 >= 2e3 && !((_a2 = this.p.parser.nodeSet.types[type3]) === null || _a2 === void 0 ? void 0 : _a2.isAnonymous)) {
       if (start == this.p.lastBigReductionStart) {
         this.p.bigReductionCount++;
-        this.p.lastBigReductionSize = size;
-      } else if (this.p.lastBigReductionSize < size) {
+        this.p.lastBigReductionSize = size4;
+      } else if (this.p.lastBigReductionSize < size4) {
         this.p.bigReductionCount = 1;
         this.p.lastBigReductionStart = start;
-        this.p.lastBigReductionSize = size;
+        this.p.lastBigReductionSize = size4;
       }
     }
-    let bufferBase = base3 ? this.stack[base3 - 1] : 0, count2 = this.bufferBase + this.buffer.length - bufferBase;
+    let bufferBase = base3 ? this.stack[base3 - 1] : 0, count3 = this.bufferBase + this.buffer.length - bufferBase;
     if (type3 < parser9.minRepeatTerm || action & 131072) {
       let pos = parser9.stateFlag(
         this.state,
         1
         /* StateFlag.Skipped */
       ) ? this.pos : this.reducePos;
-      this.storeNode(type3, start, pos, count2 + 4, true);
+      this.storeNode(type3, start, pos, count3 + 4, true);
     }
     if (action & 262144) {
       this.state = this.stack[base3];
@@ -32646,7 +31084,7 @@ var Stack = class _Stack {
   /**
   @internal
   */
-  storeNode(term, start, end, size = 4, mustSink = false) {
+  storeNode(term, start, end, size4 = 4, mustSink = false) {
     if (term == 0 && (!this.stack.length || this.stack[this.stack.length - 1] < this.buffer.length + this.bufferBase)) {
       let top2 = this.buffer.length;
       if (top2 > 0 && this.buffer[top2 - 4] == 0 && this.buffer[top2 - 1] > -1) {
@@ -32659,32 +31097,32 @@ var Stack = class _Stack {
       }
     }
     if (!mustSink || this.pos == end) {
-      this.buffer.push(term, start, end, size);
+      this.buffer.push(term, start, end, size4);
     } else {
-      let index = this.buffer.length;
-      if (index > 0 && (this.buffer[index - 4] != 0 || this.buffer[index - 1] < 0)) {
+      let index3 = this.buffer.length;
+      if (index3 > 0 && (this.buffer[index3 - 4] != 0 || this.buffer[index3 - 1] < 0)) {
         let mustMove = false;
-        for (let scan = index; scan > 0 && this.buffer[scan - 2] > end; scan -= 4) {
+        for (let scan = index3; scan > 0 && this.buffer[scan - 2] > end; scan -= 4) {
           if (this.buffer[scan - 1] >= 0) {
             mustMove = true;
             break;
           }
         }
         if (mustMove)
-          while (index > 0 && this.buffer[index - 2] > end) {
-            this.buffer[index] = this.buffer[index - 4];
-            this.buffer[index + 1] = this.buffer[index - 3];
-            this.buffer[index + 2] = this.buffer[index - 2];
-            this.buffer[index + 3] = this.buffer[index - 1];
-            index -= 4;
-            if (size > 4)
-              size -= 4;
+          while (index3 > 0 && this.buffer[index3 - 2] > end) {
+            this.buffer[index3] = this.buffer[index3 - 4];
+            this.buffer[index3 + 1] = this.buffer[index3 - 3];
+            this.buffer[index3 + 2] = this.buffer[index3 - 2];
+            this.buffer[index3 + 3] = this.buffer[index3 - 1];
+            index3 -= 4;
+            if (size4 > 4)
+              size4 -= 4;
           }
       }
-      this.buffer[index] = term;
-      this.buffer[index + 1] = start;
-      this.buffer[index + 2] = end;
-      this.buffer[index + 3] = size;
+      this.buffer[index3] = term;
+      this.buffer[index3 + 1] = start;
+      this.buffer[index3 + 2] = end;
+      this.buffer[index3 + 3] = size4;
     }
   }
   // Apply a shift action
@@ -32730,15 +31168,15 @@ var Stack = class _Stack {
   @internal
   */
   useNode(value, next, start) {
-    let index = this.p.reused.length - 1;
-    if (index < 0 || this.p.reused[index] != value) {
+    let index3 = this.p.reused.length - 1;
+    if (index3 < 0 || this.p.reused[index3] != value) {
       this.p.reused.push(value);
-      index++;
+      index3++;
     }
     let end = this.reducePos = this.pos = start + value.length;
     this.pushState(next, start);
     this.buffer.push(
-      index,
+      index3,
       start,
       end,
       -1
@@ -32770,10 +31208,10 @@ var Stack = class _Stack {
   @internal
   */
   recoverByDelete(next, nextEnd) {
-    let isNode = next <= this.p.parser.maxNode;
-    if (isNode)
+    let isNode2 = next <= this.p.parser.maxNode;
+    if (isNode2)
       this.storeNode(next, this.pos, nextEnd, 4);
-    this.storeNode(0, this.pos, nextEnd, isNode ? 8 : 4);
+    this.storeNode(0, this.pos, nextEnd, isNode2 ? 8 : 4);
     this.pos = this.reducePos = nextEnd;
     this.score -= 190;
   }
@@ -33044,10 +31482,10 @@ var SimulatedStack = class {
   }
 };
 var StackBufferCursor = class _StackBufferCursor {
-  constructor(stack, pos, index) {
+  constructor(stack, pos, index3) {
     this.stack = stack;
     this.pos = pos;
-    this.index = index;
+    this.index = index3;
     this.buffer = stack.buffer;
     if (this.index == 0)
       this.maybeNext();
@@ -33152,20 +31590,20 @@ var InputStream = class {
   /**
   @internal
   */
-  resolveOffset(offset, assoc) {
-    let range = this.range, index = this.rangeIndex;
-    let pos = this.pos + offset;
+  resolveOffset(offset4, assoc) {
+    let range = this.range, index3 = this.rangeIndex;
+    let pos = this.pos + offset4;
     while (pos < range.from) {
-      if (!index)
+      if (!index3)
         return null;
-      let next = this.ranges[--index];
+      let next = this.ranges[--index3];
       pos -= range.from - next.to;
       range = next;
     }
     while (assoc < 0 ? pos > range.to : pos >= range.to) {
-      if (index == this.ranges.length - 1)
+      if (index3 == this.ranges.length - 1)
         return null;
-      let next = this.ranges[++index];
+      let next = this.ranges[++index3];
       pos += next.from - range.to;
       range = next;
     }
@@ -33193,13 +31631,13 @@ var InputStream = class {
   cause invalid reparses when looking backward more than 25 code
   units, since the library does not track lookbehind.
   */
-  peek(offset) {
-    let idx = this.chunkOff + offset, pos, result;
+  peek(offset4) {
+    let idx = this.chunkOff + offset4, pos, result;
     if (idx >= 0 && idx < this.chunk.length) {
-      pos = this.pos + offset;
+      pos = this.pos + offset4;
       result = this.chunk.charCodeAt(idx);
     } else {
-      let resolved = this.resolveOffset(offset, 1);
+      let resolved = this.resolveOffset(offset4, 1);
       if (resolved == null)
         return -1;
       pos = resolved;
@@ -33415,14 +31853,14 @@ function readToken2(data2, input, stack, group, precTable, precOffset) {
     }
     for (; low < high; ) {
       let mid = low + high >> 1;
-      let index = accEnd + mid + (mid << 1);
-      let from2 = data2[index], to = data2[index + 1] || 65536;
+      let index3 = accEnd + mid + (mid << 1);
+      let from2 = data2[index3], to = data2[index3 + 1] || 65536;
       if (next < from2)
         high = mid;
       else if (next >= to)
         low = mid + 1;
       else {
-        state = data2[index + 2];
+        state = data2[index3 + 2];
         input.advance();
         continue scan;
       }
@@ -33512,15 +31950,15 @@ var FragmentCursor2 = class {
         this.nextFragment();
         return null;
       }
-      let top2 = this.trees[last2], index = this.index[last2];
-      if (index == top2.children.length) {
+      let top2 = this.trees[last2], index3 = this.index[last2];
+      if (index3 == top2.children.length) {
         this.trees.pop();
         this.start.pop();
         this.index.pop();
         continue;
       }
-      let next = top2.children[index];
-      let start = this.start[last2] + top2.positions[index];
+      let next = top2.children[index3];
+      let start = this.start[last2] + top2.positions[index3];
       if (start > pos) {
         this.nextStart = start;
         return null;
@@ -33640,16 +32078,16 @@ var TokenCache = class {
       token.end = this.stream.clipPos(start + 1);
     }
   }
-  putAction(action, token, end, index) {
-    for (let i2 = 0; i2 < index; i2 += 3)
+  putAction(action, token, end, index3) {
+    for (let i2 = 0; i2 < index3; i2 += 3)
       if (this.actions[i2] == action)
-        return index;
-    this.actions[index++] = action;
-    this.actions[index++] = token;
-    this.actions[index++] = end;
-    return index;
+        return index3;
+    this.actions[index3++] = action;
+    this.actions[index3++] = token;
+    this.actions[index3++] = end;
+    return index3;
   }
-  addActions(stack, token, end, index) {
+  addActions(stack, token, end, index3) {
     let { state } = stack, { parser: parser9 } = stack.p, { data: data2 } = parser9;
     for (let set = 0; set < 2; set++) {
       for (let i2 = parser9.stateSlot(
@@ -33661,16 +32099,16 @@ var TokenCache = class {
           if (data2[i2 + 1] == 1) {
             i2 = pair(data2, i2 + 2);
           } else {
-            if (index == 0 && data2[i2 + 1] == 2)
-              index = this.putAction(pair(data2, i2 + 2), token, end, index);
+            if (index3 == 0 && data2[i2 + 1] == 2)
+              index3 = this.putAction(pair(data2, i2 + 2), token, end, index3);
             break;
           }
         }
         if (data2[i2] == token)
-          index = this.putAction(pair(data2, i2 + 1), token, end, index);
+          index3 = this.putAction(pair(data2, i2 + 1), token, end, index3);
       }
     }
-    return index;
+    return index3;
   }
 };
 var Parse2 = class {
@@ -34407,7 +32845,7 @@ var operatorToken = new ExternalTokenizer((input, stack) => {
 function identifierChar(ch2, start) {
   return ch2 >= 65 && ch2 <= 90 || ch2 >= 97 && ch2 <= 122 || ch2 == 95 || ch2 >= 192 || !start && ch2 >= 48 && ch2 <= 57;
 }
-var jsx = new ExternalTokenizer((input, stack) => {
+var jsx2 = new ExternalTokenizer((input, stack) => {
   if (input.next != lt || !stack.dialectEnabled(Dialect_jsx)) return;
   input.advance();
   if (input.next == slash) return;
@@ -34519,7 +32957,7 @@ var parser = LRParser.deserialize({
   skippedNodes: [0, 5, 6, 279],
   repeatNodeCount: 37,
   tokenData: "$Fq07[R!bOX%ZXY+gYZ-yZ[+g[]%Z]^.c^p%Zpq+gqr/mrs3cst:_tuEruvJSvwLkwx! Yxy!'iyz!(sz{!)}{|!,q|}!.O}!O!,q!O!P!/Y!P!Q!9j!Q!R#:O!R![#<_![!]#I_!]!^#Jk!^!_#Ku!_!`$![!`!a$$v!a!b$*T!b!c$,r!c!}Er!}#O$-|#O#P$/W#P#Q$4o#Q#R$5y#R#SEr#S#T$7W#T#o$8b#o#p$<r#p#q$=h#q#r$>x#r#s$@U#s$f%Z$f$g+g$g#BYEr#BY#BZ$A`#BZ$ISEr$IS$I_$A`$I_$I|Er$I|$I}$Dk$I}$JO$Dk$JO$JTEr$JT$JU$A`$JU$KVEr$KV$KW$A`$KW&FUEr&FU&FV$A`&FV;'SEr;'S;=`I|<%l?HTEr?HT?HU$A`?HUOEr(n%d_$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z&j&hT$j&jO!^&c!_#o&c#p;'S&c;'S;=`&w<%lO&c&j&zP;=`<%l&c'|'U]$j&j([!bOY&}YZ&cZw&}wx&cx!^&}!^!_'}!_#O&}#O#P&c#P#o&}#o#p'}#p;'S&};'S;=`(l<%lO&}!b(SU([!bOY'}Zw'}x#O'}#P;'S'};'S;=`(f<%lO'}!b(iP;=`<%l'}'|(oP;=`<%l&}'[(y]$j&j(XpOY(rYZ&cZr(rrs&cs!^(r!^!_)r!_#O(r#O#P&c#P#o(r#o#p)r#p;'S(r;'S;=`*a<%lO(rp)wU(XpOY)rZr)rs#O)r#P;'S)r;'S;=`*Z<%lO)rp*^P;=`<%l)r'[*dP;=`<%l(r#S*nX(Xp([!bOY*gZr*grs'}sw*gwx)rx#O*g#P;'S*g;'S;=`+Z<%lO*g#S+^P;=`<%l*g(n+dP;=`<%l%Z07[+rq$j&j(Xp([!b'}0/lOX%ZXY+gYZ&cZ[+g[p%Zpq+gqr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p$f%Z$f$g+g$g#BY%Z#BY#BZ+g#BZ$IS%Z$IS$I_+g$I_$JT%Z$JT$JU+g$JU$KV%Z$KV$KW+g$KW&FU%Z&FU&FV+g&FV;'S%Z;'S;=`+a<%l?HT%Z?HT?HU+g?HUO%Z07[.ST(Y#S$j&j(O0/lO!^&c!_#o&c#p;'S&c;'S;=`&w<%lO&c07[.n_$j&j(Xp([!b(O0/lOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z)3p/x`$j&j!p),Q(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`0z!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KW1V`#w(Ch$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`2X!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KW2d_#w(Ch$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'At3l_(W':f$j&j([!bOY4kYZ5qZr4krs7nsw4kwx5qx!^4k!^!_8p!_#O4k#O#P5q#P#o4k#o#p8p#p;'S4k;'S;=`:X<%lO4k(^4r_$j&j([!bOY4kYZ5qZr4krs7nsw4kwx5qx!^4k!^!_8p!_#O4k#O#P5q#P#o4k#o#p8p#p;'S4k;'S;=`:X<%lO4k&z5vX$j&jOr5qrs6cs!^5q!^!_6y!_#o5q#o#p6y#p;'S5q;'S;=`7h<%lO5q&z6jT$e`$j&jO!^&c!_#o&c#p;'S&c;'S;=`&w<%lO&c`6|TOr6yrs7]s;'S6y;'S;=`7b<%lO6y`7bO$e``7eP;=`<%l6y&z7kP;=`<%l5q(^7w]$e`$j&j([!bOY&}YZ&cZw&}wx&cx!^&}!^!_'}!_#O&}#O#P&c#P#o&}#o#p'}#p;'S&};'S;=`(l<%lO&}!r8uZ([!bOY8pYZ6yZr8prs9hsw8pwx6yx#O8p#O#P6y#P;'S8p;'S;=`:R<%lO8p!r9oU$e`([!bOY'}Zw'}x#O'}#P;'S'};'S;=`(f<%lO'}!r:UP;=`<%l8p(^:[P;=`<%l4k%9[:hh$j&j(Xp([!bOY%ZYZ&cZq%Zqr<Srs&}st%ZtuCruw%Zwx(rx!^%Z!^!_*g!_!c%Z!c!}Cr!}#O%Z#O#P&c#P#R%Z#R#SCr#S#T%Z#T#oCr#o#p*g#p$g%Z$g;'SCr;'S;=`El<%lOCr(r<__WS$j&j(Xp([!bOY<SYZ&cZr<Srs=^sw<Swx@nx!^<S!^!_Bm!_#O<S#O#P>`#P#o<S#o#pBm#p;'S<S;'S;=`Cl<%lO<S(Q=g]WS$j&j([!bOY=^YZ&cZw=^wx>`x!^=^!^!_?q!_#O=^#O#P>`#P#o=^#o#p?q#p;'S=^;'S;=`@h<%lO=^&n>gXWS$j&jOY>`YZ&cZ!^>`!^!_?S!_#o>`#o#p?S#p;'S>`;'S;=`?k<%lO>`S?XSWSOY?SZ;'S?S;'S;=`?e<%lO?SS?hP;=`<%l?S&n?nP;=`<%l>`!f?xWWS([!bOY?qZw?qwx?Sx#O?q#O#P?S#P;'S?q;'S;=`@b<%lO?q!f@eP;=`<%l?q(Q@kP;=`<%l=^'`@w]WS$j&j(XpOY@nYZ&cZr@nrs>`s!^@n!^!_Ap!_#O@n#O#P>`#P#o@n#o#pAp#p;'S@n;'S;=`Bg<%lO@ntAwWWS(XpOYApZrAprs?Ss#OAp#O#P?S#P;'SAp;'S;=`Ba<%lOAptBdP;=`<%lAp'`BjP;=`<%l@n#WBvYWS(Xp([!bOYBmZrBmrs?qswBmwxApx#OBm#O#P?S#P;'SBm;'S;=`Cf<%lOBm#WCiP;=`<%lBm(rCoP;=`<%l<S%9[C}i$j&j(p%1l(Xp([!bOY%ZYZ&cZr%Zrs&}st%ZtuCruw%Zwx(rx!Q%Z!Q![Cr![!^%Z!^!_*g!_!c%Z!c!}Cr!}#O%Z#O#P&c#P#R%Z#R#SCr#S#T%Z#T#oCr#o#p*g#p$g%Z$g;'SCr;'S;=`El<%lOCr%9[EoP;=`<%lCr07[FRk$j&j(Xp([!b$^#t(U,2j(f$I[OY%ZYZ&cZr%Zrs&}st%ZtuEruw%Zwx(rx}%Z}!OGv!O!Q%Z!Q![Er![!^%Z!^!_*g!_!c%Z!c!}Er!}#O%Z#O#P&c#P#R%Z#R#SEr#S#T%Z#T#oEr#o#p*g#p$g%Z$g;'SEr;'S;=`I|<%lOEr+dHRk$j&j(Xp([!b$^#tOY%ZYZ&cZr%Zrs&}st%ZtuGvuw%Zwx(rx}%Z}!OGv!O!Q%Z!Q![Gv![!^%Z!^!_*g!_!c%Z!c!}Gv!}#O%Z#O#P&c#P#R%Z#R#SGv#S#T%Z#T#oGv#o#p*g#p$g%Z$g;'SGv;'S;=`Iv<%lOGv+dIyP;=`<%lGv07[JPP;=`<%lEr(KWJ_`$j&j(Xp([!b#q(ChOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KWKl_$j&j$R(Ch(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z,#xLva({+JY$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sv%ZvwM{wx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KWNW`$j&j#{(Ch(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'At! c_(Z';W$j&j(XpOY!!bYZ!#hZr!!brs!#hsw!!bwx!$xx!^!!b!^!_!%z!_#O!!b#O#P!#h#P#o!!b#o#p!%z#p;'S!!b;'S;=`!'c<%lO!!b'l!!i_$j&j(XpOY!!bYZ!#hZr!!brs!#hsw!!bwx!$xx!^!!b!^!_!%z!_#O!!b#O#P!#h#P#o!!b#o#p!%z#p;'S!!b;'S;=`!'c<%lO!!b&z!#mX$j&jOw!#hwx6cx!^!#h!^!_!$Y!_#o!#h#o#p!$Y#p;'S!#h;'S;=`!$r<%lO!#h`!$]TOw!$Ywx7]x;'S!$Y;'S;=`!$l<%lO!$Y`!$oP;=`<%l!$Y&z!$uP;=`<%l!#h'l!%R]$e`$j&j(XpOY(rYZ&cZr(rrs&cs!^(r!^!_)r!_#O(r#O#P&c#P#o(r#o#p)r#p;'S(r;'S;=`*a<%lO(r!Q!&PZ(XpOY!%zYZ!$YZr!%zrs!$Ysw!%zwx!&rx#O!%z#O#P!$Y#P;'S!%z;'S;=`!']<%lO!%z!Q!&yU$e`(XpOY)rZr)rs#O)r#P;'S)r;'S;=`*Z<%lO)r!Q!'`P;=`<%l!%z'l!'fP;=`<%l!!b/5|!'t_!l/.^$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z#&U!)O_!k!Lf$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z-!n!*[b$j&j(Xp([!b(V%&f#r(ChOY%ZYZ&cZr%Zrs&}sw%Zwx(rxz%Zz{!+d{!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KW!+o`$j&j(Xp([!b#o(ChOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z+;x!,|`$j&j(Xp([!br+4YOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z,$U!.Z_!]+Jf$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z07[!/ec$j&j(Xp([!b!Q.2^OY%ZYZ&cZr%Zrs&}sw%Zwx(rx!O%Z!O!P!0p!P!Q%Z!Q![!3Y![!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z#%|!0ya$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!O%Z!O!P!2O!P!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z#%|!2Z_![!L^$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad!3eg$j&j(Xp([!bs'9tOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q![!3Y![!^%Z!^!_*g!_!g%Z!g!h!4|!h#O%Z#O#P&c#P#R%Z#R#S!3Y#S#X%Z#X#Y!4|#Y#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad!5Vg$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx{%Z{|!6n|}%Z}!O!6n!O!Q%Z!Q![!8S![!^%Z!^!_*g!_#O%Z#O#P&c#P#R%Z#R#S!8S#S#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad!6wc$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q![!8S![!^%Z!^!_*g!_#O%Z#O#P&c#P#R%Z#R#S!8S#S#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad!8_c$j&j(Xp([!bs'9tOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q![!8S![!^%Z!^!_*g!_#O%Z#O#P&c#P#R%Z#R#S!8S#S#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z07[!9uf$j&j(Xp([!b#p(ChOY!;ZYZ&cZr!;Zrs!<nsw!;Zwx!Lcxz!;Zz{#-}{!P!;Z!P!Q#/d!Q!^!;Z!^!_#(i!_!`#7S!`!a#8i!a!}!;Z!}#O#,f#O#P!Dy#P#o!;Z#o#p#(i#p;'S!;Z;'S;=`#-w<%lO!;Z?O!;fb$j&j(Xp([!b!X7`OY!;ZYZ&cZr!;Zrs!<nsw!;Zwx!Lcx!P!;Z!P!Q#&`!Q!^!;Z!^!_#(i!_!}!;Z!}#O#,f#O#P!Dy#P#o!;Z#o#p#(i#p;'S!;Z;'S;=`#-w<%lO!;Z>^!<w`$j&j([!b!X7`OY!<nYZ&cZw!<nwx!=yx!P!<n!P!Q!Eq!Q!^!<n!^!_!Gr!_!}!<n!}#O!KS#O#P!Dy#P#o!<n#o#p!Gr#p;'S!<n;'S;=`!L]<%lO!<n<z!>Q^$j&j!X7`OY!=yYZ&cZ!P!=y!P!Q!>|!Q!^!=y!^!_!@c!_!}!=y!}#O!CW#O#P!Dy#P#o!=y#o#p!@c#p;'S!=y;'S;=`!Ek<%lO!=y<z!?Td$j&j!X7`O!^&c!_#W&c#W#X!>|#X#Z&c#Z#[!>|#[#]&c#]#^!>|#^#a&c#a#b!>|#b#g&c#g#h!>|#h#i&c#i#j!>|#j#k!>|#k#m&c#m#n!>|#n#o&c#p;'S&c;'S;=`&w<%lO&c7`!@hX!X7`OY!@cZ!P!@c!P!Q!AT!Q!}!@c!}#O!Ar#O#P!Bq#P;'S!@c;'S;=`!CQ<%lO!@c7`!AYW!X7`#W#X!AT#Z#[!AT#]#^!AT#a#b!AT#g#h!AT#i#j!AT#j#k!AT#m#n!AT7`!AuVOY!ArZ#O!Ar#O#P!B[#P#Q!@c#Q;'S!Ar;'S;=`!Bk<%lO!Ar7`!B_SOY!ArZ;'S!Ar;'S;=`!Bk<%lO!Ar7`!BnP;=`<%l!Ar7`!BtSOY!@cZ;'S!@c;'S;=`!CQ<%lO!@c7`!CTP;=`<%l!@c<z!C][$j&jOY!CWYZ&cZ!^!CW!^!_!Ar!_#O!CW#O#P!DR#P#Q!=y#Q#o!CW#o#p!Ar#p;'S!CW;'S;=`!Ds<%lO!CW<z!DWX$j&jOY!CWYZ&cZ!^!CW!^!_!Ar!_#o!CW#o#p!Ar#p;'S!CW;'S;=`!Ds<%lO!CW<z!DvP;=`<%l!CW<z!EOX$j&jOY!=yYZ&cZ!^!=y!^!_!@c!_#o!=y#o#p!@c#p;'S!=y;'S;=`!Ek<%lO!=y<z!EnP;=`<%l!=y>^!Ezl$j&j([!b!X7`OY&}YZ&cZw&}wx&cx!^&}!^!_'}!_#O&}#O#P&c#P#W&}#W#X!Eq#X#Z&}#Z#[!Eq#[#]&}#]#^!Eq#^#a&}#a#b!Eq#b#g&}#g#h!Eq#h#i&}#i#j!Eq#j#k!Eq#k#m&}#m#n!Eq#n#o&}#o#p'}#p;'S&};'S;=`(l<%lO&}8r!GyZ([!b!X7`OY!GrZw!Grwx!@cx!P!Gr!P!Q!Hl!Q!}!Gr!}#O!JU#O#P!Bq#P;'S!Gr;'S;=`!J|<%lO!Gr8r!Hse([!b!X7`OY'}Zw'}x#O'}#P#W'}#W#X!Hl#X#Z'}#Z#[!Hl#[#]'}#]#^!Hl#^#a'}#a#b!Hl#b#g'}#g#h!Hl#h#i'}#i#j!Hl#j#k!Hl#k#m'}#m#n!Hl#n;'S'};'S;=`(f<%lO'}8r!JZX([!bOY!JUZw!JUwx!Arx#O!JU#O#P!B[#P#Q!Gr#Q;'S!JU;'S;=`!Jv<%lO!JU8r!JyP;=`<%l!JU8r!KPP;=`<%l!Gr>^!KZ^$j&j([!bOY!KSYZ&cZw!KSwx!CWx!^!KS!^!_!JU!_#O!KS#O#P!DR#P#Q!<n#Q#o!KS#o#p!JU#p;'S!KS;'S;=`!LV<%lO!KS>^!LYP;=`<%l!KS>^!L`P;=`<%l!<n=l!Ll`$j&j(Xp!X7`OY!LcYZ&cZr!Lcrs!=ys!P!Lc!P!Q!Mn!Q!^!Lc!^!_# o!_!}!Lc!}#O#%P#O#P!Dy#P#o!Lc#o#p# o#p;'S!Lc;'S;=`#&Y<%lO!Lc=l!Mwl$j&j(Xp!X7`OY(rYZ&cZr(rrs&cs!^(r!^!_)r!_#O(r#O#P&c#P#W(r#W#X!Mn#X#Z(r#Z#[!Mn#[#](r#]#^!Mn#^#a(r#a#b!Mn#b#g(r#g#h!Mn#h#i(r#i#j!Mn#j#k!Mn#k#m(r#m#n!Mn#n#o(r#o#p)r#p;'S(r;'S;=`*a<%lO(r8Q# vZ(Xp!X7`OY# oZr# ors!@cs!P# o!P!Q#!i!Q!}# o!}#O#$R#O#P!Bq#P;'S# o;'S;=`#$y<%lO# o8Q#!pe(Xp!X7`OY)rZr)rs#O)r#P#W)r#W#X#!i#X#Z)r#Z#[#!i#[#])r#]#^#!i#^#a)r#a#b#!i#b#g)r#g#h#!i#h#i)r#i#j#!i#j#k#!i#k#m)r#m#n#!i#n;'S)r;'S;=`*Z<%lO)r8Q#$WX(XpOY#$RZr#$Rrs!Ars#O#$R#O#P!B[#P#Q# o#Q;'S#$R;'S;=`#$s<%lO#$R8Q#$vP;=`<%l#$R8Q#$|P;=`<%l# o=l#%W^$j&j(XpOY#%PYZ&cZr#%Prs!CWs!^#%P!^!_#$R!_#O#%P#O#P!DR#P#Q!Lc#Q#o#%P#o#p#$R#p;'S#%P;'S;=`#&S<%lO#%P=l#&VP;=`<%l#%P=l#&]P;=`<%l!Lc?O#&kn$j&j(Xp([!b!X7`OY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#W%Z#W#X#&`#X#Z%Z#Z#[#&`#[#]%Z#]#^#&`#^#a%Z#a#b#&`#b#g%Z#g#h#&`#h#i%Z#i#j#&`#j#k#&`#k#m%Z#m#n#&`#n#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z9d#(r](Xp([!b!X7`OY#(iZr#(irs!Grsw#(iwx# ox!P#(i!P!Q#)k!Q!}#(i!}#O#+`#O#P!Bq#P;'S#(i;'S;=`#,`<%lO#(i9d#)th(Xp([!b!X7`OY*gZr*grs'}sw*gwx)rx#O*g#P#W*g#W#X#)k#X#Z*g#Z#[#)k#[#]*g#]#^#)k#^#a*g#a#b#)k#b#g*g#g#h#)k#h#i*g#i#j#)k#j#k#)k#k#m*g#m#n#)k#n;'S*g;'S;=`+Z<%lO*g9d#+gZ(Xp([!bOY#+`Zr#+`rs!JUsw#+`wx#$Rx#O#+`#O#P!B[#P#Q#(i#Q;'S#+`;'S;=`#,Y<%lO#+`9d#,]P;=`<%l#+`9d#,cP;=`<%l#(i?O#,o`$j&j(Xp([!bOY#,fYZ&cZr#,frs!KSsw#,fwx#%Px!^#,f!^!_#+`!_#O#,f#O#P!DR#P#Q!;Z#Q#o#,f#o#p#+`#p;'S#,f;'S;=`#-q<%lO#,f?O#-tP;=`<%l#,f?O#-zP;=`<%l!;Z07[#.[b$j&j(Xp([!b(P0/l!X7`OY!;ZYZ&cZr!;Zrs!<nsw!;Zwx!Lcx!P!;Z!P!Q#&`!Q!^!;Z!^!_#(i!_!}!;Z!}#O#,f#O#P!Dy#P#o!;Z#o#p#(i#p;'S!;Z;'S;=`#-w<%lO!;Z07[#/o_$j&j(Xp([!bT0/lOY#/dYZ&cZr#/drs#0nsw#/dwx#4Ox!^#/d!^!_#5}!_#O#/d#O#P#1p#P#o#/d#o#p#5}#p;'S#/d;'S;=`#6|<%lO#/d06j#0w]$j&j([!bT0/lOY#0nYZ&cZw#0nwx#1px!^#0n!^!_#3R!_#O#0n#O#P#1p#P#o#0n#o#p#3R#p;'S#0n;'S;=`#3x<%lO#0n05W#1wX$j&jT0/lOY#1pYZ&cZ!^#1p!^!_#2d!_#o#1p#o#p#2d#p;'S#1p;'S;=`#2{<%lO#1p0/l#2iST0/lOY#2dZ;'S#2d;'S;=`#2u<%lO#2d0/l#2xP;=`<%l#2d05W#3OP;=`<%l#1p01O#3YW([!bT0/lOY#3RZw#3Rwx#2dx#O#3R#O#P#2d#P;'S#3R;'S;=`#3r<%lO#3R01O#3uP;=`<%l#3R06j#3{P;=`<%l#0n05x#4X]$j&j(XpT0/lOY#4OYZ&cZr#4Ors#1ps!^#4O!^!_#5Q!_#O#4O#O#P#1p#P#o#4O#o#p#5Q#p;'S#4O;'S;=`#5w<%lO#4O00^#5XW(XpT0/lOY#5QZr#5Qrs#2ds#O#5Q#O#P#2d#P;'S#5Q;'S;=`#5q<%lO#5Q00^#5tP;=`<%l#5Q05x#5zP;=`<%l#4O01p#6WY(Xp([!bT0/lOY#5}Zr#5}rs#3Rsw#5}wx#5Qx#O#5}#O#P#2d#P;'S#5};'S;=`#6v<%lO#5}01p#6yP;=`<%l#5}07[#7PP;=`<%l#/d)3h#7ab$j&j$R(Ch(Xp([!b!X7`OY!;ZYZ&cZr!;Zrs!<nsw!;Zwx!Lcx!P!;Z!P!Q#&`!Q!^!;Z!^!_#(i!_!}!;Z!}#O#,f#O#P!Dy#P#o!;Z#o#p#(i#p;'S!;Z;'S;=`#-w<%lO!;ZAt#8vb$[#t$j&j(Xp([!b!X7`OY!;ZYZ&cZr!;Zrs!<nsw!;Zwx!Lcx!P!;Z!P!Q#&`!Q!^!;Z!^!_#(i!_!}!;Z!}#O#,f#O#P!Dy#P#o!;Z#o#p#(i#p;'S!;Z;'S;=`#-w<%lO!;Z'Ad#:Zp$j&j(Xp([!bs'9tOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!O%Z!O!P!3Y!P!Q%Z!Q![#<_![!^%Z!^!_*g!_!g%Z!g!h!4|!h#O%Z#O#P&c#P#R%Z#R#S#<_#S#U%Z#U#V#?i#V#X%Z#X#Y!4|#Y#b%Z#b#c#>_#c#d#Bq#d#l%Z#l#m#Es#m#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad#<jk$j&j(Xp([!bs'9tOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!O%Z!O!P!3Y!P!Q%Z!Q![#<_![!^%Z!^!_*g!_!g%Z!g!h!4|!h#O%Z#O#P&c#P#R%Z#R#S#<_#S#X%Z#X#Y!4|#Y#b%Z#b#c#>_#c#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad#>j_$j&j(Xp([!bs'9tOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad#?rd$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q!R#AQ!R!S#AQ!S!^%Z!^!_*g!_#O%Z#O#P&c#P#R%Z#R#S#AQ#S#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad#A]f$j&j(Xp([!bs'9tOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q!R#AQ!R!S#AQ!S!^%Z!^!_*g!_#O%Z#O#P&c#P#R%Z#R#S#AQ#S#b%Z#b#c#>_#c#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad#Bzc$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q!Y#DV!Y!^%Z!^!_*g!_#O%Z#O#P&c#P#R%Z#R#S#DV#S#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad#Dbe$j&j(Xp([!bs'9tOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q!Y#DV!Y!^%Z!^!_*g!_#O%Z#O#P&c#P#R%Z#R#S#DV#S#b%Z#b#c#>_#c#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad#E|g$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q![#Ge![!^%Z!^!_*g!_!c%Z!c!i#Ge!i#O%Z#O#P&c#P#R%Z#R#S#Ge#S#T%Z#T#Z#Ge#Z#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z'Ad#Gpi$j&j(Xp([!bs'9tOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!Q%Z!Q![#Ge![!^%Z!^!_*g!_!c%Z!c!i#Ge!i#O%Z#O#P&c#P#R%Z#R#S#Ge#S#T%Z#T#Z#Ge#Z#b%Z#b#c#>_#c#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z*)x#Il_!g$b$j&j$P)Lv(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z)[#Jv_al$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z04f#LS^h#)`#R-<U(Xp([!b$o7`OY*gZr*grs'}sw*gwx)rx!P*g!P!Q#MO!Q!^*g!^!_#Mt!_!`$ f!`#O*g#P;'S*g;'S;=`+Z<%lO*g(n#MXX$l&j(Xp([!bOY*gZr*grs'}sw*gwx)rx#O*g#P;'S*g;'S;=`+Z<%lO*g(El#M}Z#s(Ch(Xp([!bOY*gZr*grs'}sw*gwx)rx!_*g!_!`#Np!`#O*g#P;'S*g;'S;=`+Z<%lO*g(El#NyX$R(Ch(Xp([!bOY*gZr*grs'}sw*gwx)rx#O*g#P;'S*g;'S;=`+Z<%lO*g(El$ oX#t(Ch(Xp([!bOY*gZr*grs'}sw*gwx)rx#O*g#P;'S*g;'S;=`+Z<%lO*g*)x$!ga#`*!Y$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`0z!`!a$#l!a#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(K[$#w_#l(Cl$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z*)x$%Vag!*r#t(Ch$g#|$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`$&[!`!a$'f!a#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KW$&g_#t(Ch$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KW$'qa#s(Ch$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`!a$(v!a#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KW$)R`#s(Ch$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(Kd$*`a(s(Ct$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!a%Z!a!b$+e!b#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KW$+p`$j&j#|(Ch(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z%#`$,}_!|$Ip$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z04f$.X_!S0,v$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(n$/]Z$j&jO!^$0O!^!_$0f!_#i$0O#i#j$0k#j#l$0O#l#m$2^#m#o$0O#o#p$0f#p;'S$0O;'S;=`$4i<%lO$0O(n$0VT_#S$j&jO!^&c!_#o&c#p;'S&c;'S;=`&w<%lO&c#S$0kO_#S(n$0p[$j&jO!Q&c!Q![$1f![!^&c!_!c&c!c!i$1f!i#T&c#T#Z$1f#Z#o&c#o#p$3|#p;'S&c;'S;=`&w<%lO&c(n$1kZ$j&jO!Q&c!Q![$2^![!^&c!_!c&c!c!i$2^!i#T&c#T#Z$2^#Z#o&c#p;'S&c;'S;=`&w<%lO&c(n$2cZ$j&jO!Q&c!Q![$3U![!^&c!_!c&c!c!i$3U!i#T&c#T#Z$3U#Z#o&c#p;'S&c;'S;=`&w<%lO&c(n$3ZZ$j&jO!Q&c!Q![$0O![!^&c!_!c&c!c!i$0O!i#T&c#T#Z$0O#Z#o&c#p;'S&c;'S;=`&w<%lO&c#S$4PR!Q![$4Y!c!i$4Y#T#Z$4Y#S$4]S!Q![$4Y!c!i$4Y#T#Z$4Y#q#r$0f(n$4lP;=`<%l$0O#1[$4z_!Y#)l$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z(KW$6U`#y(Ch$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z+;p$7c_$j&j(Xp([!b(b+4QOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z07[$8qk$j&j(Xp([!b(U,2j$`#t(f$I[OY%ZYZ&cZr%Zrs&}st%Ztu$8buw%Zwx(rx}%Z}!O$:f!O!Q%Z!Q![$8b![!^%Z!^!_*g!_!c%Z!c!}$8b!}#O%Z#O#P&c#P#R%Z#R#S$8b#S#T%Z#T#o$8b#o#p*g#p$g%Z$g;'S$8b;'S;=`$<l<%lO$8b+d$:qk$j&j(Xp([!b$`#tOY%ZYZ&cZr%Zrs&}st%Ztu$:fuw%Zwx(rx}%Z}!O$:f!O!Q%Z!Q![$:f![!^%Z!^!_*g!_!c%Z!c!}$:f!}#O%Z#O#P&c#P#R%Z#R#S$:f#S#T%Z#T#o$:f#o#p*g#p$g%Z$g;'S$:f;'S;=`$<f<%lO$:f+d$<iP;=`<%l$:f07[$<oP;=`<%l$8b#Jf$<{X!_#Hb(Xp([!bOY*gZr*grs'}sw*gwx)rx#O*g#P;'S*g;'S;=`+Z<%lO*g,#x$=sa(z+JY$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_!`Ka!`#O%Z#O#P&c#P#o%Z#o#p*g#p#q$+e#q;'S%Z;'S;=`+a<%lO%Z)>v$?V_!^(CdvBr$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z?O$@a_!q7`$j&j(Xp([!bOY%ZYZ&cZr%Zrs&}sw%Zwx(rx!^%Z!^!_*g!_#O%Z#O#P&c#P#o%Z#o#p*g#p;'S%Z;'S;=`+a<%lO%Z07[$Aq|$j&j(Xp([!b'}0/l$^#t(U,2j(f$I[OX%ZXY+gYZ&cZ[+g[p%Zpq+gqr%Zrs&}st%ZtuEruw%Zwx(rx}%Z}!OGv!O!Q%Z!Q![Er![!^%Z!^!_*g!_!c%Z!c!}Er!}#O%Z#O#P&c#P#R%Z#R#SEr#S#T%Z#T#oEr#o#p*g#p$f%Z$f$g+g$g#BYEr#BY#BZ$A`#BZ$ISEr$IS$I_$A`$I_$JTEr$JT$JU$A`$JU$KVEr$KV$KW$A`$KW&FUEr&FU&FV$A`&FV;'SEr;'S;=`I|<%l?HTEr?HT?HU$A`?HUOEr07[$D|k$j&j(Xp([!b(O0/l$^#t(U,2j(f$I[OY%ZYZ&cZr%Zrs&}st%ZtuEruw%Zwx(rx}%Z}!OGv!O!Q%Z!Q![Er![!^%Z!^!_*g!_!c%Z!c!}Er!}#O%Z#O#P&c#P#R%Z#R#SEr#S#T%Z#T#oEr#o#p*g#p$g%Z$g;'SEr;'S;=`I|<%lOEr",
-  tokenizers: [noSemicolon, noSemicolonType, operatorToken, jsx, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, insertSemicolon, new LocalTokenGroup("$S~RRtu[#O#Pg#S#T#|~_P#o#pb~gOx~~jVO#i!P#i#j!U#j#l!P#l#m!q#m;'S!P;'S;=`#v<%lO!P~!UO!U~~!XS!Q![!e!c!i!e#T#Z!e#o#p#Z~!hR!Q![!q!c!i!q#T#Z!q~!tR!Q![!}!c!i!}#T#Z!}~#QR!Q![!P!c!i!P#T#Z!P~#^R!Q![#g!c!i#g#T#Z#g~#jS!Q![#g!c!i#g#T#Z#g#q#r!P~#yP;=`<%l!P~$RO(d~~", 141, 341), new LocalTokenGroup("j~RQYZXz{^~^O(R~~aP!P!Qd~iO(S~~", 25, 324)],
+  tokenizers: [noSemicolon, noSemicolonType, operatorToken, jsx2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, insertSemicolon, new LocalTokenGroup("$S~RRtu[#O#Pg#S#T#|~_P#o#pb~gOx~~jVO#i!P#i#j!U#j#l!P#l#m!q#m;'S!P;'S;=`#v<%lO!P~!UO!U~~!XS!Q![!e!c!i!e#T#Z!e#o#p#Z~!hR!Q![!q!c!i!q#T#Z!q~!tR!Q![!}!c!i!}#T#Z!}~#QR!Q![!P!c!i!P#T#Z!P~#^R!Q![#g!c!i#g#T#Z#g~#jS!Q![#g!c!i#g#T#Z#g#q#r!P~#yP;=`<%l!P~$RO(d~~", 141, 341), new LocalTokenGroup("j~RQYZXz{^~^O(R~~aP!P!Qd~iO(S~~", 25, 324)],
   topRules: { "Script": [0, 7], "SingleExpression": [1, 277], "SingleClassItem": [2, 278] },
   dialects: { jsx: 0, ts: 15179 },
   dynamicPrecedences: { "80": 1, "82": 1, "94": 1, "170": 1, "200": 1 },
@@ -34797,10 +33235,10 @@ function findOpenTag(node) {
     node = node.parent;
   }
 }
-function elementName(doc2, tree, max = doc2.length) {
+function elementName(doc2, tree, max2 = doc2.length) {
   for (let ch2 = tree === null || tree === void 0 ? void 0 : tree.firstChild; ch2; ch2 = ch2.nextSibling) {
     if (ch2.name == "JSXIdentifier" || ch2.name == "JSXBuiltin" || ch2.name == "JSXNamespacedName" || ch2.name == "JSXMemberExpression")
-      return doc2.sliceString(ch2.from, Math.min(ch2.to, max));
+      return doc2.sliceString(ch2.from, Math.min(ch2.to, max2));
   }
   return "";
 }
@@ -35090,8 +33528,8 @@ function skipForList(bl, cx, line) {
     return true;
   if (line.indent >= line.baseIndent + 4)
     return false;
-  let size = (bl.type == Type.OrderedList ? isOrderedList : isBulletList)(line, cx, false);
-  return size > 0 && (bl.type != Type.BulletList || isHorizontalRule(line, cx, false) < 0) && line.text.charCodeAt(line.pos + size - 1) == bl.value;
+  let size4 = (bl.type == Type.OrderedList ? isOrderedList : isBulletList)(line, cx, false);
+  return size4 > 0 && (bl.type != Type.BulletList || isHorizontalRule(line, cx, false) < 0) && line.text.charCodeAt(line.pos + size4 - 1) == bl.value;
 }
 var DefaultSkipMarkup = {
   [Type.Blockquote](bl, cx, line) {
@@ -35148,17 +33586,17 @@ function isBlockquote(line) {
 function isHorizontalRule(line, cx, breaking) {
   if (line.next != 42 && line.next != 45 && line.next != 95)
     return -1;
-  let count2 = 1;
+  let count3 = 1;
   for (let pos = line.pos + 1; pos < line.text.length; pos++) {
     let ch2 = line.text.charCodeAt(pos);
     if (ch2 == line.next)
-      count2++;
+      count3++;
     else if (!space2(ch2))
       return -1;
   }
   if (breaking && line.next == 45 && isSetextUnderline(line) > -1 && line.depth == cx.stack.length && cx.parser.leafBlockParsers.indexOf(DefaultLeafBlocks.SetextHeading) > -1)
     return -1;
-  return count2 < 3 ? -1 : 1;
+  return count3 < 3 ? -1 : 1;
 }
 function inList(cx, type3) {
   for (let i2 = cx.stack.length - 1; i2 >= 0; i2--)
@@ -35192,8 +33630,8 @@ function isAtxHeading(line) {
     pos++;
   if (pos < line.text.length && !space2(line.text.charCodeAt(pos)))
     return -1;
-  let size = pos - line.pos;
-  return size > 6 ? -1 : size;
+  let size4 = pos - line.pos;
+  return size4 > 6 ? -1 : size4;
 }
 function isSetextUnderline(line) {
   if (line.next != 45 && line.next != 61 || line.indent >= line.baseIndent + 4)
@@ -35325,12 +33763,12 @@ var DefaultBlockParsers = {
     return true;
   },
   Blockquote(cx, line) {
-    let size = isBlockquote(line);
-    if (size < 0)
+    let size4 = isBlockquote(line);
+    if (size4 < 0)
       return false;
     cx.startContext(Type.Blockquote, line.pos);
     cx.addNode(Type.QuoteMark, cx.lineStart + line.pos, cx.lineStart + line.pos + 1);
-    line.moveBase(line.pos + size);
+    line.moveBase(line.pos + size4);
     return null;
   },
   HorizontalRule(cx, line) {
@@ -35342,34 +33780,34 @@ var DefaultBlockParsers = {
     return true;
   },
   BulletList(cx, line) {
-    let size = isBulletList(line, cx, false);
-    if (size < 0)
+    let size4 = isBulletList(line, cx, false);
+    if (size4 < 0)
       return false;
     if (cx.block.type != Type.BulletList)
       cx.startContext(Type.BulletList, line.basePos, line.next);
     let newBase = getListIndent(line, line.pos + 1);
     cx.startContext(Type.ListItem, line.basePos, newBase - line.baseIndent);
-    cx.addNode(Type.ListMark, cx.lineStart + line.pos, cx.lineStart + line.pos + size);
+    cx.addNode(Type.ListMark, cx.lineStart + line.pos, cx.lineStart + line.pos + size4);
     line.moveBaseColumn(newBase);
     cx.block.blankFirstLine = newBase >= line.text.length;
     return null;
   },
   OrderedList(cx, line) {
-    let size = isOrderedList(line, cx, false);
-    if (size < 0)
+    let size4 = isOrderedList(line, cx, false);
+    if (size4 < 0)
       return false;
     if (cx.block.type != Type.OrderedList)
-      cx.startContext(Type.OrderedList, line.basePos, line.text.charCodeAt(line.pos + size - 1));
-    let newBase = getListIndent(line, line.pos + size);
+      cx.startContext(Type.OrderedList, line.basePos, line.text.charCodeAt(line.pos + size4 - 1));
+    let newBase = getListIndent(line, line.pos + size4);
     cx.startContext(Type.ListItem, line.basePos, newBase - line.baseIndent);
-    cx.addNode(Type.ListMark, cx.lineStart + line.pos, cx.lineStart + line.pos + size);
+    cx.addNode(Type.ListMark, cx.lineStart + line.pos, cx.lineStart + line.pos + size4);
     line.moveBaseColumn(newBase);
     cx.block.blankFirstLine = newBase == line.text.length;
     return null;
   },
   ATXHeading(cx, line) {
-    let size = isAtxHeading(line);
-    if (size < 0)
+    let size4 = isAtxHeading(line);
+    if (size4 < 0)
       return false;
     let off = line.pos, from2 = cx.lineStart + off;
     let endOfSpace = skipSpaceBack(line.text, line.text.length, off), after = endOfSpace;
@@ -35377,10 +33815,10 @@ var DefaultBlockParsers = {
       after--;
     if (after == endOfSpace || after == off || !space2(line.text.charCodeAt(after - 1)))
       after = line.text.length;
-    let buf = cx.buffer.write(Type.HeaderMark, 0, size).writeElements(cx.parser.parseInline(line.text.slice(off + size + 1, after), from2 + size + 1), -from2);
+    let buf = cx.buffer.write(Type.HeaderMark, 0, size4).writeElements(cx.parser.parseInline(line.text.slice(off + size4 + 1, after), from2 + size4 + 1), -from2);
     if (after < line.text.length)
       buf.write(Type.HeaderMark, after - off, endOfSpace - off);
-    let node = buf.finish(Type.ATXHeading1 - 1 + size, line.text.length - off);
+    let node = buf.finish(Type.ATXHeading1 - 1 + size4, line.text.length - off);
     cx.nextLine();
     cx.addNode(node, from2);
     return true;
@@ -35810,8 +34248,8 @@ var BlockContext = class {
     for (let parser9 of leaf.parsers)
       if (parser9.finish(this, leaf))
         return;
-    let inline = injectMarks(this.parser.parseInline(leaf.content, leaf.start), leaf.marks);
-    this.addNode(this.buffer.writeElements(inline, -leaf.start).finish(Type.Paragraph, leaf.content.length), leaf.start);
+    let inline4 = injectMarks(this.parser.parseInline(leaf.content, leaf.start), leaf.marks);
+    this.addNode(this.buffer.writeElements(inline4, -leaf.start).finish(Type.Paragraph, leaf.content.length), leaf.start);
   }
   elt(type3, from2, to, children) {
     if (typeof type3 == "string")
@@ -35825,34 +34263,34 @@ var BlockContext = class {
     return new Buffer2(this.parser.nodeSet);
   }
 };
-function injectGaps(ranges, rangeI, tree, offset, dummies) {
+function injectGaps(ranges, rangeI, tree, offset4, dummies) {
   let rangeEnd2 = ranges[rangeI].to;
-  let children = [], positions = [], start = tree.from + offset;
+  let children = [], positions = [], start = tree.from + offset4;
   function movePastNext(upto, inclusive) {
     while (inclusive ? upto >= rangeEnd2 : upto > rangeEnd2) {
-      let size = ranges[rangeI + 1].from - rangeEnd2;
-      offset += size;
-      upto += size;
+      let size4 = ranges[rangeI + 1].from - rangeEnd2;
+      offset4 += size4;
+      upto += size4;
       rangeI++;
       rangeEnd2 = ranges[rangeI].to;
     }
   }
   for (let ch2 = tree.firstChild; ch2; ch2 = ch2.nextSibling) {
-    movePastNext(ch2.from + offset, true);
-    let from2 = ch2.from + offset, node, reuse = dummies.get(ch2.tree);
+    movePastNext(ch2.from + offset4, true);
+    let from2 = ch2.from + offset4, node, reuse = dummies.get(ch2.tree);
     if (reuse) {
       node = reuse;
-    } else if (ch2.to + offset > rangeEnd2) {
-      node = injectGaps(ranges, rangeI, ch2, offset, dummies);
-      movePastNext(ch2.to + offset, false);
+    } else if (ch2.to + offset4 > rangeEnd2) {
+      node = injectGaps(ranges, rangeI, ch2, offset4, dummies);
+      movePastNext(ch2.to + offset4, false);
     } else {
       node = ch2.toTree();
     }
     children.push(node);
     positions.push(from2 - start);
   }
-  movePastNext(tree.to + offset, false);
-  return new Tree(tree.type, children, positions, tree.to + offset - start, tree.tree ? tree.tree.propValues : void 0);
+  movePastNext(tree.to + offset4, false);
+  return new Tree(tree.type, children, positions, tree.to + offset4 - start, tree.tree ? tree.tree.propValues : void 0);
 }
 var MarkdownParser = class _MarkdownParser extends Parser {
   /**
@@ -35921,11 +34359,11 @@ var MarkdownParser = class _MarkdownParser extends Parser {
       nodeSet2 = nodeSet2.extend(...config2.props);
     if (nonEmpty(config2.remove)) {
       for (let rm2 of config2.remove) {
-        let block2 = this.blockNames.indexOf(rm2), inline = this.inlineNames.indexOf(rm2);
+        let block2 = this.blockNames.indexOf(rm2), inline4 = this.inlineNames.indexOf(rm2);
         if (block2 > -1)
           blockParsers[block2] = leafBlockParsers[block2] = void 0;
-        if (inline > -1)
-          inlineParsers[inline] = void 0;
+        if (inline4 > -1)
+          inlineParsers[inline4] = void 0;
       }
     }
     if (nonEmpty(config2.parseBlock)) {
@@ -35974,9 +34412,9 @@ var MarkdownParser = class _MarkdownParser extends Parser {
   returning an array of [`Element`](#Element) objects representing
   the inline content.
   */
-  parseInline(text2, offset) {
-    let cx = new InlineContext(this, text2, offset);
-    outer: for (let pos = offset; pos < cx.end; ) {
+  parseInline(text2, offset4) {
+    let cx = new InlineContext(this, text2, offset4);
+    outer: for (let pos = offset4; pos < cx.end; ) {
       let next = cx.char(pos);
       for (let token of this.inlineParsers)
         if (token) {
@@ -36042,9 +34480,9 @@ var Buffer2 = class {
     this.content.push(type3, from2, to, 4 + children * 4);
     return this;
   }
-  writeElements(elts, offset = 0) {
+  writeElements(elts, offset4 = 0) {
     for (let e of elts)
-      e.writeTo(this, offset);
+      e.writeTo(this, offset4);
     return this;
   }
   finish(type3, length) {
@@ -36057,7 +34495,7 @@ var Buffer2 = class {
     });
   }
 };
-var Element = class {
+var Element2 = class {
   /**
   @internal
   */
@@ -36070,10 +34508,10 @@ var Element = class {
   /**
   @internal
   */
-  writeTo(buf, offset) {
+  writeTo(buf, offset4) {
     let startOff = buf.content.length;
-    buf.writeElements(this.children, offset);
-    buf.content.push(this.type, this.from + offset, this.to + offset, buf.content.length + 4 - startOff);
+    buf.writeElements(this.children, offset4);
+    buf.content.push(this.type, this.from + offset4, this.to + offset4, buf.content.length + 4 - startOff);
   }
   /**
   @internal
@@ -36096,28 +34534,28 @@ var TreeElement = class {
   get children() {
     return none4;
   }
-  writeTo(buf, offset) {
+  writeTo(buf, offset4) {
     buf.nodes.push(this.tree);
-    buf.content.push(buf.nodes.length - 1, this.from + offset, this.to + offset, -1);
+    buf.content.push(buf.nodes.length - 1, this.from + offset4, this.to + offset4, -1);
   }
   toTree() {
     return this.tree;
   }
 };
 function elt(type3, from2, to, children) {
-  return new Element(type3, from2, to, children);
+  return new Element2(type3, from2, to, children);
 }
 var EmphasisUnderscore = { resolve: "Emphasis", mark: "EmphasisMark" };
 var EmphasisAsterisk = { resolve: "Emphasis", mark: "EmphasisMark" };
 var LinkStart = {};
 var ImageStart = {};
 var InlineDelimiter = class {
-  constructor(type3, from2, to, side, size = to - from2) {
+  constructor(type3, from2, to, side, size4 = to - from2) {
     this.type = type3;
     this.from = from2;
     this.to = to;
     this.side = side;
-    this.size = size;
+    this.size = size4;
   }
 };
 var Escapable = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
@@ -36148,14 +34586,14 @@ var DefaultInline = {
     let pos = start + 1;
     while (pos < cx.end && cx.char(pos) == 96)
       pos++;
-    let size = pos - start, curSize = 0;
+    let size4 = pos - start, curSize = 0;
     for (; pos < cx.end; pos++) {
       if (cx.char(pos) == 96) {
         curSize++;
-        if (curSize == size && cx.char(pos + 1) != 96)
+        if (curSize == size4 && cx.char(pos + 1) != 96)
           return cx.append(elt(Type.InlineCode, start, pos + 1, [
-            elt(Type.CodeMark, start, start + size),
-            elt(Type.CodeMark, pos + 1 - size, pos + 1)
+            elt(Type.CodeMark, start, start + size4),
+            elt(Type.CodeMark, pos + 1 - size4, pos + 1)
           ]));
       } else {
         curSize = 0;
@@ -36289,13 +34727,13 @@ function finishLink(cx, content2, type3, start, startPos) {
   }
   return elt(type3, start, endPos, content2);
 }
-function parseURL(text2, start, offset) {
+function parseURL(text2, start, offset4) {
   let next = text2.charCodeAt(start);
   if (next == 60) {
     for (let pos = start + 1, esc = false; pos < text2.length; pos++) {
       let ch2 = text2.charCodeAt(pos);
       if (ch2 == 62 && !esc)
-        return elt(Type.URL, start + offset, pos + 1 + offset);
+        return elt(Type.URL, start + offset4, pos + 1 + offset4);
       if (ch2 == 60 && !esc || ch2 == 10)
         return false;
       esc = ch2 == 92;
@@ -36319,10 +34757,10 @@ function parseURL(text2, start, offset) {
         escaped = true;
       }
     }
-    return pos > start ? elt(Type.URL, start + offset, pos + offset) : pos == text2.length ? null : false;
+    return pos > start ? elt(Type.URL, start + offset4, pos + offset4) : pos == text2.length ? null : false;
   }
 }
-function parseLinkTitle(text2, start, offset) {
+function parseLinkTitle(text2, start, offset4) {
   let next = text2.charCodeAt(start);
   if (next != 39 && next != 34 && next != 40)
     return false;
@@ -36332,19 +34770,19 @@ function parseLinkTitle(text2, start, offset) {
     if (escaped)
       escaped = false;
     else if (ch2 == end)
-      return elt(Type.LinkTitle, start + offset, pos + 1 + offset);
+      return elt(Type.LinkTitle, start + offset4, pos + 1 + offset4);
     else if (ch2 == 92)
       escaped = true;
   }
   return null;
 }
-function parseLinkLabel(text2, start, offset, requireNonWS) {
+function parseLinkLabel(text2, start, offset4, requireNonWS) {
   for (let escaped = false, pos = start + 1, end = Math.min(text2.length, pos + 999); pos < end; pos++) {
     let ch2 = text2.charCodeAt(pos);
     if (escaped)
       escaped = false;
     else if (ch2 == 93)
-      return requireNonWS ? false : elt(Type.LinkLabel, start + offset, pos + 1 + offset);
+      return requireNonWS ? false : elt(Type.LinkLabel, start + offset4, pos + 1 + offset4);
     else {
       if (requireNonWS && !space2(ch2))
         requireNonWS = false;
@@ -36360,10 +34798,10 @@ var InlineContext = class {
   /**
   @internal
   */
-  constructor(parser9, text2, offset) {
+  constructor(parser9, text2, offset4) {
     this.parser = parser9;
     this.text = text2;
-    this.offset = offset;
+    this.offset = offset4;
     this.parts = [];
   }
   /**
@@ -36445,15 +34883,15 @@ var InlineContext = class {
       let type3 = close.type.resolve, content2 = [];
       let start = open.from, end = close.to;
       if (emp) {
-        let size = Math.min(2, open.to - open.from, closeSize);
-        start = open.to - size;
-        end = close.from + size;
-        type3 = size == 1 ? "Emphasis" : "StrongEmphasis";
+        let size4 = Math.min(2, open.to - open.from, closeSize);
+        start = open.to - size4;
+        end = close.from + size4;
+        type3 = size4 == 1 ? "Emphasis" : "StrongEmphasis";
       }
       if (open.type.mark)
         content2.push(this.elt(open.type.mark, start, open.to));
       for (let k = j + 1; k < i2; k++) {
-        if (this.parts[k] instanceof Element)
+        if (this.parts[k] instanceof Element2)
           content2.push(this.parts[k]);
         this.parts[k] = null;
       }
@@ -36470,7 +34908,7 @@ var InlineContext = class {
     let result = [];
     for (let i2 = from2; i2 < this.parts.length; i2++) {
       let part = this.parts[i2];
-      if (part instanceof Element)
+      if (part instanceof Element2)
         result.push(part);
     }
     return result;
@@ -36506,8 +34944,8 @@ var InlineContext = class {
   [`findOpeningDelimiter`](#InlineContext.findOpeningDelimiter).
   Returns null if there is no delimiter at this index.
   */
-  getDelimiterAt(index) {
-    let part = this.parts[index];
+  getDelimiterAt(index3) {
+    let part = this.parts[index3];
     return part instanceof InlineDelimiter ? part : null;
   }
   /**
@@ -36539,8 +34977,8 @@ function injectMarks(elements, marks2) {
       eI++;
     if (eI < elts.length && elts[eI].from < mark.from) {
       let e = elts[eI];
-      if (e instanceof Element)
-        elts[eI] = new Element(e.type, e.from, e.to, injectMarks(e.children, [mark]));
+      if (e instanceof Element2)
+        elts[eI] = new Element2(e.type, e.from, e.to, injectMarks(e.children, [mark]));
     } else {
       elts.splice(eI++, 0, mark);
     }
@@ -36740,21 +35178,21 @@ var Strikethrough = {
     after: "Emphasis"
   }]
 };
-function parseRow(cx, line, startI = 0, elts, offset = 0) {
-  let count2 = 0, first = true, cellStart = -1, cellEnd = -1, esc = false;
+function parseRow(cx, line, startI = 0, elts, offset4 = 0) {
+  let count3 = 0, first = true, cellStart = -1, cellEnd = -1, esc = false;
   let parseCell = () => {
-    elts.push(cx.elt("TableCell", offset + cellStart, offset + cellEnd, cx.parser.parseInline(line.slice(cellStart, cellEnd), offset + cellStart)));
+    elts.push(cx.elt("TableCell", offset4 + cellStart, offset4 + cellEnd, cx.parser.parseInline(line.slice(cellStart, cellEnd), offset4 + cellStart)));
   };
   for (let i2 = startI; i2 < line.length; i2++) {
     let next = line.charCodeAt(i2);
     if (next == 124 && !esc) {
       if (!first || cellStart > -1)
-        count2++;
+        count3++;
       first = false;
       if (elts) {
         if (cellStart > -1)
           parseCell();
-        elts.push(cx.elt("TableDelimiter", i2 + offset, i2 + offset + 1));
+        elts.push(cx.elt("TableDelimiter", i2 + offset4, i2 + offset4 + 1));
       }
       cellStart = cellEnd = -1;
     } else if (esc || next != 32 && next != 9) {
@@ -36765,11 +35203,11 @@ function parseRow(cx, line, startI = 0, elts, offset = 0) {
     esc = !esc && next == 92;
   }
   if (cellStart > -1) {
-    count2++;
+    count3++;
     if (elts)
       parseCell();
   }
-  return count2;
+  return count3;
 }
 function hasPipe(str, start) {
   for (let i2 = start; i2 < str.length; i2++) {
@@ -36864,7 +35302,7 @@ var urlRE = /[\w-]+(\.[\w-]+)+(:\d+)?(\/[^\s<]*)?/gy;
 var lastTwoDomainWords = /[\w-]+\.[\w-]+($|[/:])/;
 var emailRE = /[\w.+-]+@[\w-]+(\.[\w.-]+)+/gy;
 var xmppResourceRE = /\/[a-zA-Z\d@.]+/gy;
-function count(str, from2, to, ch2) {
+function count2(str, from2, to, ch2) {
   let result = 0;
   for (let i2 = from2; i2 < to; i2++)
     if (str[i2] == ch2)
@@ -36879,7 +35317,7 @@ function autolinkURLEnd(text2, from2) {
   let end = from2 + m[0].length;
   for (; ; ) {
     let last2 = text2[end - 1], m2;
-    if (/[?!.,:*_~]/.test(last2) || last2 == ")" && count(text2, from2, end, ")") > count(text2, from2, end, "("))
+    if (/[?!.,:*_~]/.test(last2) || last2 == ")" && count2(text2, from2, end, ")") > count2(text2, from2, end, "("))
       end--;
     else if (last2 == ";" && (m2 = /&(?:#\d+|#x[a-f\d]+|\w+);$/.exec(text2.slice(from2, end))))
       end = from2 + m2.index;
@@ -37003,7 +35441,7 @@ var missingCloseTag = 58;
 var IncompleteTag = 14;
 var IncompleteCloseTag = 15;
 var commentContent$1 = 59;
-var Element2 = 21;
+var Element3 = 21;
 var TagName = 23;
 var Attribute = 24;
 var AttributeName = 25;
@@ -37100,14 +35538,14 @@ function nameChar(ch2) {
 var cachedName = null;
 var cachedInput = null;
 var cachedPos = 0;
-function tagNameAfter(input, offset) {
-  let pos = input.pos + offset;
+function tagNameAfter(input, offset4) {
+  let pos = input.pos + offset4;
   if (cachedPos == pos && cachedInput == input) return cachedName;
-  let next = input.peek(offset), name2 = "";
+  let next = input.peek(offset4), name2 = "";
   for (; ; ) {
     if (!nameChar(next)) break;
     name2 += String.fromCharCode(next);
-    next = input.peek(++offset);
+    next = input.peek(++offset4);
   }
   cachedInput = input;
   cachedPos = pos;
@@ -37130,7 +35568,7 @@ var elementContext = new ContextTracker({
     return startTagTerms.indexOf(term) > -1 ? new ElementContext(tagNameAfter(input, 1) || "", context) : context;
   },
   reduce(context, term) {
-    return term == Element2 && context ? context.parent : context;
+    return term == Element3 && context ? context.parent : context;
   },
   reuse(context, node, stack, input) {
     let type3 = node.type.id;
@@ -37288,13 +35726,13 @@ function configureNesting(tags3 = [], attributes = []) {
     array.push(tag2);
   }
   let attrs2 = attributes.length ? /* @__PURE__ */ Object.create(null) : null;
-  for (let attr of attributes) (attrs2[attr.name] || (attrs2[attr.name] = [])).push(attr);
+  for (let attr2 of attributes) (attrs2[attr2.name] || (attrs2[attr2.name] = [])).push(attr2);
   return parseMixed((node, input) => {
     let id3 = node.type.id;
     if (id3 == ScriptText) return maybeNest(node, input, script);
     if (id3 == StyleText) return maybeNest(node, input, style2);
     if (id3 == TextareaText) return maybeNest(node, input, textarea);
-    if (id3 == Element2 && other.length) {
+    if (id3 == Element3 && other.length) {
       let n = node.node, open = n.firstChild, tagName = open && findTagName(open, input), attrs3;
       if (tagName) for (let tag2 of other) {
         if (tag2.tag == tagName && (!tag2.attrs || tag2.attrs(attrs3 || (attrs3 = getAttrs2(open, input))))) {
@@ -37308,16 +35746,16 @@ function configureNesting(tags3 = [], attributes = []) {
     if (attrs2 && id3 == Attribute) {
       let n = node.node, nameNode;
       if (nameNode = n.firstChild) {
-        let matches = attrs2[input.read(nameNode.from, nameNode.to)];
-        if (matches) for (let attr of matches) {
-          if (attr.tagName && attr.tagName != findTagName(n.parent, input)) continue;
+        let matches2 = attrs2[input.read(nameNode.from, nameNode.to)];
+        if (matches2) for (let attr2 of matches2) {
+          if (attr2.tagName && attr2.tagName != findTagName(n.parent, input)) continue;
           let value = n.lastChild;
           if (value.type.id == AttributeValue) {
             let from2 = value.from + 1;
             let last2 = value.lastChild, to = value.to - (last2 && last2.isError ? 0 : 1);
-            if (to > from2) return { parser: attr.parser, overlay: [{ from: from2, to }], bracketed: true };
+            if (to > from2) return { parser: attr2.parser, overlay: [{ from: from2, to }], bracketed: true };
           } else if (value.type.id == UnquotedAttributeValue) {
-            return { parser: attr.parser, overlay: [{ from: value.from, to: value.to }] };
+            return { parser: attr2.parser, overlay: [{ from: value.from, to: value.to }] };
           }
         }
       }
@@ -38806,12 +37244,12 @@ var Schema = class {
   }
 };
 Schema.default = /* @__PURE__ */ new Schema();
-function elementName2(doc2, tree, max = doc2.length) {
+function elementName2(doc2, tree, max2 = doc2.length) {
   if (!tree)
     return "";
   let tag2 = tree.firstChild;
   let name2 = tag2 && tag2.getChild("TagName");
-  return name2 ? doc2.sliceString(name2.from, Math.min(name2.to, max)) : "";
+  return name2 ? doc2.sliceString(name2.from, Math.min(name2.to, max2)) : "";
 }
 function findParentElement(tree, skip = false) {
   for (; tree; tree = tree.parent)
@@ -39247,7 +37685,7 @@ function getContext(node, doc2) {
 function itemNumber(item, doc2) {
   return /^(\s*)(\d+)(?=[.)])/.exec(doc2.sliceString(item.from, item.from + 10));
 }
-function renumberList(after, doc2, changes, offset = 0) {
+function renumberList(after, doc2, changes, offset4 = 0) {
   for (let prev = -1, node = after; ; ) {
     if (node.name == "ListItem") {
       let m = itemNumber(node, doc2);
@@ -39255,7 +37693,7 @@ function renumberList(after, doc2, changes, offset = 0) {
       if (prev >= 0) {
         if (number2 != prev + 1)
           return;
-        changes.push({ from: node.from + m[1].length, to: node.from + m[0].length, insert: String(prev + 2 + offset) });
+        changes.push({ from: node.from + m[1].length, to: node.from + m[0].length, insert: String(prev + 2 + offset4) });
       }
       prev = number2;
     }
@@ -41212,8 +39650,8 @@ function tokenFunction(states2) {
     var curState = states2[state.state];
     for (var i2 = 0; i2 < curState.length; i2++) {
       var rule = curState[i2];
-      var matches = (!rule.data.sol || stream.sol()) && stream.match(rule.regex);
-      if (matches) {
+      var matches2 = (!rule.data.sol || stream.sol()) && stream.match(rule.regex);
+      if (matches2) {
         if (rule.data.next) {
           state.state = rule.data.next;
         } else if (rule.data.push) {
@@ -41227,13 +39665,13 @@ function tokenFunction(states2) {
         if (rule.data.dedent)
           state.indent.pop();
         var token = rule.token;
-        if (token && token.apply) token = token(matches);
-        if (matches.length > 2 && rule.token && typeof rule.token != "string") {
+        if (token && token.apply) token = token(matches2);
+        if (matches2.length > 2 && rule.token && typeof rule.token != "string") {
           state.pending = [];
-          for (var j = 2; j < matches.length; j++)
-            if (matches[j])
-              state.pending.push({ text: matches[j], token: rule.token[j - 1] });
-          stream.backUp(matches[0].length - (matches[1] ? matches[1].length : 0));
+          for (var j = 2; j < matches2.length; j++)
+            if (matches2[j])
+              state.pending.push({ text: matches2[j], token: rule.token[j - 1] });
+          stream.backUp(matches2[0].length - (matches2[1] ? matches2[1].length : 0));
           return token[0];
         } else if (token && token.join) {
           return token[0];
@@ -41603,17 +40041,17 @@ function clike(parserConfig) {
     if (namespaceSeparator) while (stream.match(namespaceSeparator))
       stream.eatWhile(isIdentifierChar);
     var cur2 = stream.current();
-    if (contains2(keywords17, cur2)) {
-      if (contains2(blockKeywords4, cur2)) curPunc5 = "newstatement";
-      if (contains2(defKeywords, cur2)) isDefKeyword = true;
+    if (contains3(keywords17, cur2)) {
+      if (contains3(blockKeywords4, cur2)) curPunc5 = "newstatement";
+      if (contains3(defKeywords, cur2)) isDefKeyword = true;
       return "keyword";
     }
-    if (contains2(types4, cur2)) return "type";
-    if (contains2(builtin, cur2) || isReservedIdentifier && isReservedIdentifier(cur2)) {
-      if (contains2(blockKeywords4, cur2)) curPunc5 = "newstatement";
+    if (contains3(types4, cur2)) return "type";
+    if (contains3(builtin, cur2) || isReservedIdentifier && isReservedIdentifier(cur2)) {
+      if (contains3(blockKeywords4, cur2)) curPunc5 = "newstatement";
       return "builtin";
     }
-    if (contains2(atoms7, cur2)) return "atom";
+    if (contains3(atoms7, cur2)) return "atom";
     return "variable";
   }
   function tokenString10(quote2) {
@@ -41736,7 +40174,7 @@ function words3(str) {
   for (var i2 = 0; i2 < words7.length; ++i2) obj[words7[i2]] = true;
   return obj;
 }
-function contains2(words7, word2) {
+function contains3(words7, word2) {
   if (typeof words7 === "function") {
     return words7(word2);
   } else {
@@ -41750,10 +40188,10 @@ var objCBuiltins = "FOUNDATION_EXPORT FOUNDATION_EXTERN NS_INLINE NS_FORMAT_FUNC
 var basicCTypes = words3("int long char short double float unsigned signed void bool");
 var basicObjCTypes = words3("SEL instancetype id Class Protocol BOOL");
 function cTypes(identifier5) {
-  return contains2(basicCTypes, identifier5) || /.+_t$/.test(identifier5);
+  return contains3(basicCTypes, identifier5) || /.+_t$/.test(identifier5);
 }
 function objCTypes(identifier5) {
-  return cTypes(identifier5) || contains2(basicObjCTypes, identifier5);
+  return cTypes(identifier5) || contains3(basicObjCTypes, identifier5);
 }
 var cBlockKeywords = "case do else for if switch while struct enum union";
 var cDefKeywords = "struct enum union";
@@ -42614,7 +41052,7 @@ var swift = {
 // node_modules/.pnpm/@codemirror+legacy-modes@6.5.5/node_modules/@codemirror/legacy-modes/mode/css.js
 function mkCSS(parserConfig) {
   parserConfig = { ...defaults3, ...parserConfig };
-  var inline = parserConfig.inline;
+  var inline4 = parserConfig.inline;
   var tokenHooks = parserConfig.tokenHooks, documentTypes3 = parserConfig.documentTypes || {}, mediaTypes3 = parserConfig.mediaTypes || {}, mediaFeatures3 = parserConfig.mediaFeatures || {}, mediaValueKeywords2 = parserConfig.mediaValueKeywords || {}, propertyKeywords4 = parserConfig.propertyKeywords || {}, nonStandardPropertyKeywords3 = parserConfig.nonStandardPropertyKeywords || {}, fontProperties4 = parserConfig.fontProperties || {}, counterDescriptors2 = parserConfig.counterDescriptors || {}, colorKeywords4 = parserConfig.colorKeywords || {}, valueKeywords4 = parserConfig.valueKeywords || {}, allowNested = parserConfig.allowNested, lineComment = parserConfig.lineComment, supportsAtComponent = parserConfig.supportsAtComponent === true, highlightNonStandardPropertyKeywords = parserConfig.highlightNonStandardPropertyKeywords !== false;
   var type3, override2;
   function ret2(style2, tp) {
@@ -42928,9 +41366,9 @@ function mkCSS(parserConfig) {
     startState: function() {
       return {
         tokenize: null,
-        state: inline ? "block" : "top",
+        state: inline4 ? "block" : "top",
         stateArg: null,
-        context: new Context9(inline ? "block" : "top", 0, null)
+        context: new Context9(inline4 ? "block" : "top", 0, null)
       };
     },
     token: function(stream, state) {
@@ -48124,14 +46562,14 @@ function mkJavaScript(parserConfig) {
   var brackets = "([{}])";
   function findFatArrow(stream, state) {
     if (state.fatArrowAt) state.fatArrowAt = null;
-    var arrow = stream.string.indexOf("=>", stream.start);
-    if (arrow < 0) return;
+    var arrow4 = stream.string.indexOf("=>", stream.start);
+    if (arrow4 < 0) return;
     if (isTS) {
-      var m = /:\s*(?:\w+(?:<[^>]*>|\[\])?|\{[^}]*\})\s*$/.exec(stream.string.slice(stream.start, arrow));
-      if (m) arrow = m.index;
+      var m = /:\s*(?:\w+(?:<[^>]*>|\[\])?|\{[^}]*\})\s*$/.exec(stream.string.slice(stream.start, arrow4));
+      if (m) arrow4 = m.index;
     }
     var depth = 0, sawSomething = false;
-    for (var pos = arrow - 1; pos >= 0; --pos) {
+    for (var pos = arrow4 - 1; pos >= 0; --pos) {
       var ch2 = stream.string.charAt(pos);
       var bracket2 = brackets.indexOf(ch2);
       if (bracket2 >= 0 && bracket2 < 3) {
@@ -50660,8 +49098,8 @@ function base2(stream, state) {
     return ["space", "comment"];
   }
   if (stream.eat(/^[#'@^`~]/)) return [null, "meta"];
-  var matches = stream.match(qualifiedSymbol);
-  var symbol2 = matches && matches[0];
+  var matches2 = stream.match(qualifiedSymbol);
+  var symbol2 = matches2 && matches2[0];
   if (!symbol2) {
     stream.next();
     stream.eatWhile(function(c2) {
@@ -52854,9 +51292,9 @@ function hostDark() {
 }
 function CodeViewer(props) {
   const { text: text2, path, t: t4, className: className2, style: style2, height = "100%" } = props;
-  const [copied, setCopied] = (0, import_react35.useState)(false);
-  const [dark, setDark] = (0, import_react35.useState)(hostDark);
-  (0, import_react35.useEffect)(() => {
+  const [copied, setCopied] = (0, import_react32.useState)(false);
+  const [dark, setDark] = (0, import_react32.useState)(hostDark);
+  (0, import_react32.useEffect)(() => {
     if (typeof document === "undefined" || typeof MutationObserver !== "function")
       return;
     const body = document.body;
@@ -52872,8 +51310,8 @@ function CodeViewer(props) {
       observer.disconnect();
     };
   }, []);
-  const language2 = (0, import_react35.useMemo)(() => languageForPath(path), [path]);
-  const extensions = (0, import_react35.useMemo)(() => [
+  const language2 = (0, import_react32.useMemo)(() => languageForPath(path), [path]);
+  const extensions = (0, import_react32.useMemo)(() => [
     ...codeMirrorTheme(dark),
     EditorView.lineWrapping,
     // 默认全换行，避免横向滚动条
@@ -52887,13 +51325,13 @@ function CodeViewer(props) {
       }
     });
   };
-  return (0, import_react35.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, (0, import_react35.createElement)("button", {
+  return (0, import_react32.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, (0, import_react32.createElement)("button", {
     type: "button",
     className: "dshpc-cv__copy",
     onClick: copy,
     title: copied ? t4("codeCopied") : t4("codeCopy"),
     "aria-label": copied ? t4("codeCopied") : t4("codeCopy")
-  }, copied ? (0, import_react35.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react35.createElement)(official_exports.IconCopyOutlineRegular)), (0, import_react35.createElement)(esm_default, {
+  }, copied ? (0, import_react32.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react32.createElement)(official_exports.IconCopyOutlineRegular)), (0, import_react32.createElement)(esm_default, {
     value: text2,
     className: "dshpc-cv__editor",
     theme: "none",
@@ -52915,6 +51353,4071 @@ function CodeViewer(props) {
   }));
 }
 
+// packages/demo/src/doc-data.generated.ts
+var docData = {
+  "explorer": {
+    "id": "explorer",
+    "heading": {
+      "zh": "\u6982\u89C8",
+      "en": "Overview"
+    },
+    "prose": [
+      {
+        "zh": "explorer \u63D0\u4F9B\u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u4E0E\u9009\u62E9\u80FD\u529B\uFF0C\u4F9D\u8D56\u5BBF\u4E3B\u63D0\u4F9B\u7684\u5DE5\u4F5C\u533A\u6587\u4EF6\u5FEB\u7167\u3002",
+        "en": "explorer provides workspace file browsing and picking, driven by the host-provided workspace file snapshot."
+      },
+      {
+        "zh": "\u6D4F\u89C8\u6001\u505C\u9760\u662F\u5E03\u5C40\u6210\u5458\uFF08\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF09\uFF0C\u4E0D\u8981\u6302\u5728 document.body \u4E0A\u81EA\u5DF1\u5957 fixed\u3002",
+        "en": "The browse dock is a layout member (takes width, narrows the main area); do not mount it on document.body with your own fixed positioning."
+      }
+    ]
+  },
+  "explorer-install": {
+    "id": "explorer-install",
+    "heading": {
+      "zh": "0. \u88C5\u5305",
+      "en": "0. Install"
+    },
+    "code": [
+      {
+        "id": "explorer-install-code",
+        "lang": "bash",
+        "src": "pnpm add dsh-plugin-core"
+      }
+    ]
+  },
+  "explorer-usage": {
+    "id": "explorer-usage",
+    "heading": {
+      "zh": "1. \u63A5\u5165\u793A\u4F8B",
+      "en": "1. Usage"
+    },
+    "prose": [
+      {
+        "zh": "\u4ECE ctx \u53D6\u51FA\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF0C\u4F20\u7ED9\u80FD\u529B\u63A5\u53E3\uFF1B\u4E0D\u8981\u4F20\u6574\u4E2A ctx\u3002",
+        "en": "Pull the workspace snapshot out of ctx and pass it to the capability APIs; do not pass the whole ctx."
+      }
+    ],
+    "code": [
+      {
+        "id": "explorer-usage-code",
+        "lang": "tsx",
+        "src": `import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+import { SessionPreview } from 'dsh-plugin-core/session'
+
+// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09
+openFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })
+
+// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09
+const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })
+
+// \u4F1A\u8BDD\u9884\u89C8
+<SessionPreview sessionId="..." source={source} variant="modal" />`
+      }
+    ]
+  },
+  "explorer-api": {
+    "id": "explorer-api",
+    "heading": {
+      "zh": "API",
+      "en": "API"
+    },
+    "api": [
+      {
+        "id": "explorer-api-table",
+        "rows": [
+          {
+            "name": "openFilePreview",
+            "type": "({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53F3\u4FA7\u5206\u680F\u9884\u89C8\u6587\u4EF6/\u6587\u4EF6\u5939\uFF0Cmount \u4E3A\u5FC5\u586B\u7684 flex \u884C",
+              "en": "Preview a file/folder in a right-side dock; mount is the required flex row"
+            }
+          },
+          {
+            "name": "pickWorkspaceFile",
+            "type": "({ workspaceFiles, sessionId, anchor, filter? }) => Promise<{ path, isDir }>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\u9009\u6587\u4EF6\uFF0CPromise \u8FD4\u56DE\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84",
+              "en": "Open a modal anchored to a button and resolve with the workspace-relative path"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "foundation": {
+    "id": "foundation",
+    "heading": {
+      "zh": "\u6982\u89C8",
+      "en": "Overview"
+    },
+    "prose": [
+      {
+        "zh": "\u96F6 React\u3001\u65E0\u7EC4\u4EF6\u3002\u88C5\u7684\u662F\u300C\u503C + \u6CE8\u5165\u673A\u5236\u300D\uFF1Atoken \u53D8\u91CF\u8868\u3001\u6CE8\u5165\u5668\u5DE5\u5382\u3001\u4E3B\u9898\u5224\u636E\u3002",
+        "en": "Zero React, no components. It ships values plus an injection mechanism: the token variable table, the injector factory, and the theme predicate."
+      },
+      {
+        "zh": "\u53EA\u60F3\u7EDF\u4E00\u914D\u8272/\u5C3A\u5BF8\u4F46\u81EA\u5DF1\u5199\u7EC4\u4EF6\u7684\u63D2\u4EF6\uFF0C\u53EA\u5F15\u8FD9\u4E00\u4E2A\u5C31\u591F\u3002",
+        "en": "A plugin that wants unified color/size but writes its own components needs only this subpath."
+      }
+    ]
+  },
+  "foundation-exports": {
+    "id": "foundation-exports",
+    "heading": {
+      "zh": "\u5BFC\u51FA",
+      "en": "Exports"
+    },
+    "api": [
+      {
+        "id": "design-exports",
+        "rows": [
+          {
+            "name": "createStyleKit(options)",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u9886\u4E00\u5957\u672C\u63D2\u4EF6\u4E13\u5C5E\u7684\u6837\u5F0F\u8BBE\u65BD\uFF08\u5FC5\u8C03\uFF09",
+              "en": "Acquire a plugin-scoped styling kit (must call)"
+            }
+          },
+          {
+            "name": "DARK_THEME_SELECTOR",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u660E\u6697\u5224\u636E\u9009\u62E9\u5668\u5E38\u91CF `body[data-ds-dark-theme]`",
+              "en": "Dark-mode predicate selector constant `body[data-ds-dark-theme]`"
+            }
+          },
+          {
+            "name": "type StyleKit / StyleKitOptions",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u7C7B\u578B",
+              "en": "Types"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "foundation-createStyleKit": {
+    "id": "foundation-createStyleKit",
+    "heading": {
+      "zh": "createStyleKit(options)",
+      "en": "createStyleKit(options)"
+    },
+    "api": [
+      {
+        "id": "createStyleKit-params",
+        "rows": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": "\u662F",
+            "def": "\u2014",
+            "desc": {
+              "zh": "`<style>` \u6807\u7B7E id\uFF0C\u591A\u63D2\u4EF6\u540C\u9875\u9760\u5B83\u4E92\u4E0D\u8986\u76D6\uFF0C\u5FC5\u987B\u63D2\u4EF6\u5185\u552F\u4E00\u3002\u7A7A\u4E32\u629B\u9519",
+              "en": "The `<style>` tag id; on a page with multiple plugins it prevents overlaps and must be unique within the plugin. Empty string throws"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "foundation-styleKit": {
+    "id": "foundation-styleKit",
+    "heading": {
+      "zh": "\u8FD4\u56DE\u7684 StyleKit",
+      "en": "Returned StyleKit"
+    },
+    "api": [
+      {
+        "id": "styleKit-members",
+        "rows": [
+          {
+            "name": "id",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u56DE\u663E",
+              "en": "Echoed back"
+            }
+          },
+          {
+            "name": "tokensCss",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5DF2\u66FF\u6362\u524D\u7F00\u7684 token CSS \u6587\u672C",
+              "en": "Token CSS text with the prefix already substituted"
+            }
+          },
+          {
+            "name": "cssVar(name)",
+            "type": "(name: string) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u62FC\u53D8\u91CF\u540D\uFF1A`cssVar('fg')` \u21D2 `--acme-fg`",
+              "en": "Build a var name: `cssVar('fg')` \u21D2 `--acme-fg`"
+            }
+          },
+          {
+            "name": "registerStyle(domain, css)",
+            "type": "(domain: string, css: string) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u767B\u8BB0\u4E00\u4E2A\u57DF\u7684 CSS\uFF1B\u540C\u540D\u91CD\u590D\u767B\u8BB0 = \u8986\u76D6",
+              "en": "Register a domain\u2019s CSS; re-registering the same domain overwrites"
+            }
+          },
+          {
+            "name": "ensureStyles()",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u786E\u4FDD\u6807\u7B7E\u5DF2\u6302\u8F7D\u4E14\u5185\u5BB9\u6700\u65B0\uFF08\u5E42\u7B49\uFF1B\u65E0 document \u9759\u9ED8\u8DF3\u8FC7\uFF09",
+              "en": "Ensure the tag is mounted and current (idempotent; silently skips without document)"
+            }
+          },
+          {
+            "name": "applyStyle(domain, css)",
+            "type": "(domain: string, css: string) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u767B\u8BB0 + \u7ACB\u523B\u6302\u8F7D",
+              "en": "Register and mount immediately"
+            }
+          },
+          {
+            "name": "dispose()",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u64A4\u6389\u6807\u7B7E\u5E76\u6E05\u7A7A\u767B\u8BB0\u57DF\uFF08\u63D2\u4EF6\u5378\u8F7D / HMR \u65F6\u7528\uFF09",
+              "en": "Remove the tag and clear registered domains (on plugin unload / HMR)"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "foundation-minimal": {
+    "id": "foundation-minimal",
+    "heading": {
+      "zh": "\u6700\u5C0F\u53EF\u7528",
+      "en": "Minimal usage"
+    },
+    "code": [
+      {
+        "id": "design-minimal",
+        "lang": "ts",
+        "src": "import { createStyleKit } from 'dsh-plugin-core/design'\n\nconst kit = createStyleKit({ id: 'dsh-task-reminder-ui' })\nkit.applyStyle('tokens', kit.tokensCss)\n// \u4E4B\u540E\u81EA\u5DF1\u7684\u6837\u5F0F\u57DF\uFF1A\nkit.applyStyle('widget', '.widget{color:var(--dshpc-fg)}')"
+      }
+    ]
+  },
+  "foundation-tokens": {
+    "id": "foundation-tokens",
+    "heading": {
+      "zh": "token \u53E3\u5F84",
+      "en": "Token conventions"
+    },
+    "prose": [
+      {
+        "zh": "token \u6765\u81EA `dsh-task-dispatch-table/src/client/ui/tokens.ts` \u7684\u6574\u6BB5\u63D0\u53D6\uFF08\u989C\u8272 / \u5C3A\u5BF8 / \u5B57\u53F7 / \u5C42\u7EA7\uFF09\uFF0C**\u542B\u6DF1\u8272\u8986\u76D6\u6BB5**\u3002\u53D6\u503C\u4E00\u5F8B\u8D70 `var(--<prefix>-*)`\uFF0C\u4E0D\u5728\u89C4\u5219\u91CC\u5199\u6B7B\u989C\u8272\u503C\u3002",
+        "en": "Tokens are extracted wholesale from `dsh-task-dispatch-table/src/client/ui/tokens.ts` (color / size / font-size / elevation), **including the dark-mode override block**. Always read values via `var(--<prefix>-*)`, never hard-code colors in rules."
+      },
+      {
+        "zh": "\u5B8C\u6574\u6E05\u5355\u4E0E\u547D\u540D\u53E3\u5F84\u89C1 [`../style.md`](../style.md)\u3002",
+        "en": "Full list and naming conventions: [`../style.md`](../style.md)."
+      }
+    ]
+  },
+  "foundation-customize": {
+    "id": "foundation-customize",
+    "heading": {
+      "zh": "\u5B9A\u5236\u8FB9\u754C",
+      "en": "Customization boundary"
+    },
+    "prose": [
+      {
+        "zh": "token \u7684**\u524D\u7F00\u56FA\u5B9A `dshpc`**\uFF08\u4E0D\u53C2\u6570\u5316\u3001\u4E0D\u6309\u63D2\u4EF6\u6539\u540D\uFF09\uFF1Btoken \u7684**\u5185\u5BB9**\uFF08\u6709\u54EA\u4E9B\u53D8\u91CF\u3001\u503C\u662F\u4EC0\u4E48\uFF09\u662F\u672C\u5305\u5B9A\u7684\u5BA1\u7F8E\u6807\u51C6\uFF0C\u6D88\u8D39\u65B9\u901A\u8FC7\u8986\u76D6\u53D8\u91CF\u503C\u6765\u9002\u914D\uFF0C\u4E0D\u8981\u6539\u672C\u5305\u6E90\u7801\u3002",
+        "en": "The token **prefix is fixed to `dshpc`** (not parameterized, not renamed per plugin); the token **content** (which variables exist, what values) is this package\u2019s aesthetic standard \u2014 consumers adapt by overriding variable values, not by editing this package\u2019s source."
+      },
+      {
+        "zh": "\u8981\u6574\u5957\u6362\u80A4\uFF1A\u7ED9\u540C\u4E00\u6279\u53D8\u91CF\u540D\u8D4B\u65B0\u503C\u5373\u53EF\uFF0C\u4E0D\u9700\u8981 fork\u3002",
+        "en": "To reskin entirely: assign new values to the same variable names; no fork needed."
+      }
+    ]
+  },
+  "session": {
+    "id": "session",
+    "heading": {
+      "zh": "\u4F1A\u8BDD\u9884\u89C8",
+      "en": "Session preview"
+    },
+    "prose": [
+      {
+        "zh": "\u4F9D\u8D56 ui\u3002\u628A\u300C\u770B\u4E00\u773C\u67D0\u4E2A\u4F1A\u8BDD\u3001\u770B\u5B8C\u5373\u5173\u300D\u8FD9\u4EF6\u4E8B\u5C01\u88C5\u8D77\u6765\uFF1A\u81EA\u52A8\u6267\u884C\u7684\u4EFB\u52A1\u60F3\u56DE\u770B\u8FD9\u6B21\u4F1A\u8BDD\uFF0C\u4E0D\u60F3\u5F00\u65B0\u7A97\u53E3\uFF08\u56DE\u6765\u8FD8\u5F97\u627E\uFF09\u3002",
+        "en": 'Depends on ui. Wraps the "peek at a session and close when done" flow: for auto-run tasks you want to review this run without opening a new window.'
+      },
+      {
+        "zh": "\u5F39\u7A97\u53EA\u662F\u5F53\u524D\u7684\u5448\u73B0\u65B9\u5F0F\uFF0C\u4E0D\u662F\u8FD9\u4E2A\u5305\u7684\u5B9A\u4E49\u3002\u5C06\u6765\u4E5F\u53EF\u80FD\u662F\u4FA7\u8FB9\u680F\u6216\u6574\u9875 \u21D2 \u7528 variant \u5207\u6362\u3002\u300C\u7EAF Modal \u63A7\u4EF6\u300D\u5728 ui \u91CC\uFF0C\u8FD9\u91CC\u88C5\u7684\u662F\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\u8FD9\u4E2A\u529F\u80FD\u3002",
+        "en": 'A modal is only the current presentation; the package is defined by the feature, not the chrome. Future forms (sidebar, full page) switch via `variant`. The bare Modal lives in ui; this package owns the "session preview" feature.'
+      },
+      {
+        "zh": "\u6570\u636E\u5F62\u72B6\uFF08SessionMessage\uFF09\uFF1B\u4E3A\u4EC0\u4E48\u6CE8\u5165\u80FD\u529B\u800C\u4E0D\u662F\u4F20\u9759\u6001\u6570\u636E\uFF1A\u4F1A\u8BDD\u9884\u89C8\u5185\u90E8\u6709\u4EA4\u4E92\uFF08\u9644\u4EF6\u4E0B\u8F7D / \u6253\u5F00\u6587\u4EF6\uFF09\uFF0C\u5149\u6709\u6D88\u606F\u6D41\u4E0D\u591F\u7528\uFF0C\u5B83\u5FC5\u987B\u80FD\u56DE\u8C03\u5BBF\u4E3B\u3002",
+        "en": "Data shape (SessionMessage); why inject capability instead of passing static data: the preview has interactions (attachment download / open file), so the message stream alone is insufficient \u2014 it must be able to call back into the host."
+      },
+      {
+        "zh": "\u4E09\u6001\u9F50\u5907\uFF1A\u52A0\u8F7D\u4E2D / \u5931\u8D25\uFF08\u5E26\u91CD\u8BD5\uFF09/ \u7A7A\u3002",
+        "en": "All three states covered: loading / failure (with retry) / empty."
+      },
+      {
+        "zh": "\u5DF2\u77E5\u9650\u5236\uFF08\u91CD\u8981\uFF09\uFF1A\u9ED8\u8BA4\u6E32\u67D3\u53EA\u6709\u300C\u89D2\u8272 + \u7EAF\u6587\u672C + \u9644\u4EF6\u300D\u2014\u2014\u5B98\u65B9\u4F1A\u8BDD UI \u7684\u5B8C\u6574\u955C\u50CF\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\u7B49\uFF09\u8FD8\u6CA1\u642C\u8FDB\u672C\u5305\u3002\u8981\u957F\u5F97\u50CF\u5B98\u65B9\u4F1A\u8BDD\uFF0C\u8BF7\u7528 renderMessage \u81EA\u5DF1\u6E32\u67D3\uFF0C\u6216\u7B49\u540E\u7EED\u7248\u672C\u3002\u65E0\u6D88\u606F\u5206\u9875 / \u589E\u91CF\u52A0\u8F7D\uFF0C\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\u3002",
+        "en": 'Known limits (important): the default renderer only does "role + plain text + attachments" \u2014 the full mirror of the official session UI (tool cards / code blocks / reasoning rows) is not yet ported. To look like the official session, render via renderMessage yourself, or wait for a later version. No message pagination / incremental loading; long sessions render all at once.'
+      },
+      {
+        "zh": "\u5B9A\u5236\u8FB9\u754C\uFF1ArenderMessage \u5C31\u662F\u4E3A\u300C\u7279\u6B8A\u5B9A\u5236\u300D\u7559\u7684\u53E3\u5B50\uFF0C\u6362\u6E32\u67D3\u5668\u4E0D\u7528 fork \u9762\u677F\uFF1B\u6362\u627F\u8F7D\u65B9\u5F0F\u7528 variant\uFF0C\u4E0D\u7528\u6539\u8C03\u7528\u65B9\u7ED3\u6784\uFF1BSessionSource \u7684\u65B9\u6CD5\u7B7E\u540D\u82E5\u4E0E\u5BBF\u4E3B\u5BF9\u4E0D\u4E0A\uFF0C\u5728\u63D2\u4EF6\u4FA7\u505A\u9002\u914D\u5C42\u2014\u2014\u4E0D\u8981\u6539\u672C\u5305\u63A5\u53E3\u53BB\u8D34\u67D0\u4E2A\u5BBF\u4E3B\u5BFC\u51FA\u7248\u672C\u3002",
+        "en": "Customization: renderMessage is the slot for special rendering \u2014 swap the renderer without forking the panel; switch presentation with variant without changing caller structure; if SessionSource\u2019s signatures don\u2019t match the host, build an adapter on the plugin side \u2014 do not bend this package\u2019s interface to a specific host version."
+      }
+    ],
+    "api": [
+      {
+        "id": "session-source",
+        "rows": [
+          {
+            "name": "listMessages",
+            "type": "(sessionId, signal?) => Promise<SessionMessage[]>",
+            "def": "\u2014",
+            "required": "\u662F",
+            "desc": {
+              "zh": "\u6309\u4F1A\u8BDD\u53D6\u6D88\u606F\u5217\u8868",
+              "en": "Fetch the message list for a session"
+            }
+          },
+          {
+            "name": "download?",
+            "type": "(sessionId, path, signal?) => Promise<Uint8Array>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E0B\u8F7D\u9644\u4EF6\uFF1B\u5BBF\u4E3B\u6CA1\u8FD9\u80FD\u529B\u5C31\u4E0D\u663E\u793A\u4E0B\u8F7D\u94AE",
+              "en": "Download an attachment; if the host lacks it, no download button shows"
+            }
+          }
+        ]
+      },
+      {
+        "id": "session-preview",
+        "rows": [
+          {
+            "name": "sessionId",
+            "type": "string",
+            "def": "\u2014",
+            "required": "\u662F",
+            "desc": {
+              "zh": "\u5FC5\u586B",
+              "en": "Required"
+            }
+          },
+          {
+            "name": "source",
+            "type": "SessionSource",
+            "def": "\u2014",
+            "required": "\u662F",
+            "desc": {
+              "zh": "\u5FC5\u586B\uFF0C\u6CE8\u5165\u7684\u53D6\u6570\u80FD\u529B",
+              "en": "Required; the injected data capability"
+            }
+          },
+          {
+            "name": "variant",
+            "type": "'modal' | 'sidebar' | 'page'",
+            "def": "'modal'",
+            "desc": {
+              "zh": "\u627F\u8F7D\u65B9\u5F0F",
+              "en": "Presentation"
+            }
+          },
+          {
+            "name": "title",
+            "type": "ReactNode",
+            "def": "sessionId",
+            "desc": {
+              "zh": "modal \u5F62\u6001\u7684\u6807\u9898",
+              "en": "Title of the modal form"
+            }
+          },
+          {
+            "name": "onClose",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5173\u95ED\u56DE\u8C03",
+              "en": "Close callback"
+            }
+          },
+          {
+            "name": "renderMessage",
+            "type": "(m: SessionMessage) => ReactNode",
+            "def": "\u5185\u7F6E\u6700\u7B80\u6E32\u67D3",
+            "desc": {
+              "zh": "\u2605 \u5B9A\u5236\u6269\u5C55\u70B9\uFF1A\u5BCC\u5185\u5BB9\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\uFF09\u8D70\u8FD9\u91CC",
+              "en": "\u2605 Extension point: rich content (tool cards / code blocks / reasoning rows) goes here"
+            }
+          },
+          {
+            "name": "onOpenFile",
+            "type": "(path: string) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u70B9\u9644\u4EF6\u300C\u6253\u5F00\u300D\uFF08\u901A\u5E38\u4EA4\u7ED9 explorer\uFF09",
+              "en": 'Attachment "open" handler (usually delegated to explorer)'
+            }
+          },
+          {
+            "name": "translate",
+            "type": "Translate",
+            "def": "\u5185\u7F6E",
+            "desc": {
+              "zh": "\u8986\u76D6\u6587\u6848",
+              "en": "Override copy"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "session-source-shape",
+        "lang": "ts",
+        "src": "interface SessionMessage {\n  id: string\n  role: 'user' | 'assistant' | 'tool' | 'system'\n  text: string                 // \u7EAF\u6587\u672C\u6B63\u6587\n  createdAt?: string\n  attachments?: { name: string; path: string; bytes?: number }[]\n}"
+      },
+      {
+        "id": "session-usage",
+        "lang": "tsx",
+        "src": "import { SessionPreview } from 'dsh-plugin-core/session'\n\nh(SessionPreview, {\n  sessionId,\n  source,                    // \u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\n  variant: 'modal',\n  onClose: () => setOpen(false),\n  renderMessage: (m) => h(RichMessage, { message: m }),  // \u53EF\u9009\n})"
+      }
+    ]
+  },
+  "utils-overview": {
+    "id": "utils-overview",
+    "heading": {
+      "zh": "\u6982\u89C8",
+      "en": "Overview"
+    },
+    "prose": [
+      {
+        "zh": "\u96F6 React\u3001\u96F6 DOM\u3001\u96F6 design \u4F9D\u8D56\u3002\u88C5\u7684\u662F\u300C\u548C\u754C\u9762\u65E0\u5173\u7684\u7EAF\u65B9\u6CD5\u300D\u3002",
+        "en": "Zero React, zero DOM, zero design dependency. Pure, UI-agnostic helpers."
+      }
+    ]
+  },
+  "date": {
+    "id": "date",
+    "heading": {
+      "zh": "\u65E5\u671F",
+      "en": "Date"
+    },
+    "prose": [
+      {
+        "zh": "\u5168\u90E8\u8D70\u672C\u673A\u65F6\u533A\uFF1B\u89E3\u6790\u5931\u8D25\u4E00\u5F8B\u4E0D\u629B\u9519\u3001\u6309\u515C\u5E95\u8FD4\u56DE\uFF0C\u4E0D\u7F16\u9020\u65F6\u95F4\u3002",
+        "en": "All use the local timezone; parse failures never throw \u2014 they fall back as specified, never inventing a time."
+      },
+      {
+        "zh": "relativePast \u4E0E relativeFuture \u662F\u5BF9\u5076\u7684\uFF1A\u8C03\u5EA6\u8868\u8FD9\u7C7B\u5C55\u793A\u672A\u6765\u65F6\u95F4\u7684\u573A\u666F\u5FC5\u987B\u7528 relativeFuture\u2014\u2014\u7528 relativePast \u4F1A\u628A\u300C3 \u5206\u949F\u540E\u300D\u663E\u793A\u6210\u300C\u521A\u521A\u300D\uFF0C\u76F4\u63A5\u4E22\u8BED\u4E49\u3002",
+        "en": '`relativePast` and `relativeFuture` are duals: for future times (e.g. a schedule) you must use `relativeFuture`; using `relativePast` would render "in 3 minutes" as "just now", losing meaning.'
+      }
+    ],
+    "api": [
+      {
+        "id": "utils-date",
+        "rows": [
+          {
+            "name": "pad2",
+            "type": "(value: number | string) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "`9` \u21D2 `'09'`",
+              "en": "`9` \u21D2 `'09'`"
+            }
+          },
+          {
+            "name": "formatDateTime",
+            "type": "(iso, opts?: { seconds?, fallback? }) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u89E3\u6790\u5931\u8D25 \u21D2 opts.fallback\uFF0C\u7F3A\u7701\u539F\u4E32\uFF1Bseconds:true \u8865 :ss",
+              "en": "On parse failure \u21D2 opts.fallback (default: the original string); seconds:true appends :ss"
+            }
+          },
+          {
+            "name": "formatYmd",
+            "type": "(iso, opts?: { fallback? }) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u89E3\u6790\u5931\u8D25 \u21D2 opts.fallback\uFF0C\u7F3A\u7701 \u2014",
+              "en": "On parse failure \u21D2 opts.fallback (default \u2014)"
+            }
+          },
+          {
+            "name": "formatClock",
+            "type": "(iso: string | null | undefined, opts?: { fallback? }) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7A7A\u503C/\u89E3\u6790\u5931\u8D25 \u21D2 opts.fallback\uFF0C\u7F3A\u7701 -",
+              "en": "Null/parse failure \u21D2 opts.fallback (default -)"
+            }
+          },
+          {
+            "name": "formatDurationHms",
+            "type": "(ms: number) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6709\u5C0F\u65F6 \u21D2 H:MM:SS\uFF0C\u5426\u5219 MM:SS\uFF1B\u8D1F\u6570/NaN \u21D2 -",
+              "en": "Has hours \u21D2 H:MM:SS, else MM:SS; negative/NaN \u21D2 -"
+            }
+          },
+          {
+            "name": "sameCalendarDay",
+            "type": "(a: Date, b: Date) => boolean",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u672C\u673A\u65F6\u533A\u6BD4\u5E74\u6708\u65E5",
+              "en": "Compares year/month/day in local tz"
+            }
+          },
+          {
+            "name": "relativePast",
+            "type": "(iso, nowMs, translate?) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u8FC7\u53BB\u65F6\u95F4 \u21D2 \u300C3 \u5206\u949F\u524D\u300D\uFF1B\u672A\u6765/\u89E3\u6790\u5931\u8D25 \u21D2 \u300C\u521A\u521A\u300D",
+              "en": 'Past \u21D2 "3 minutes ago"; future/parse failure \u21D2 "just now"'
+            }
+          },
+          {
+            "name": "relativeFuture",
+            "type": "(iso, nowMs, translate?) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u672A\u6765\u65F6\u95F4 \u21D2 \u300C3 \u5206\u949F\u540E\u300D\uFF1B\u89E3\u6790\u5931\u8D25\u56DE\u9000 formatYmd",
+              "en": 'Future \u21D2 "in 3 minutes"; parse failure falls back to formatYmd'
+            }
+          },
+          {
+            "name": "formatRange",
+            "type": "(fromIso, toIso, opts?: { seconds? }) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u540C\u5929 \u21D2 09:00 \u2013 10:30\uFF1B\u8DE8\u5929\u4E24\u7AEF\u5E26\u65E5\u671F",
+              "en": "Same day \u21D2 09:00 \u2013 10:30; across days both ends show dates"
+            }
+          },
+          {
+            "name": "overlaps",
+            "type": "(aFrom, aTo, bFrom, bTo) => boolean",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u534A\u5F00\u533A\u95F4 [from, to)\uFF1BNaN \u21D2 \u4E0D\u91CD\u53E0",
+              "en": "Half-open [from, to); NaN \u21D2 no overlap"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "text": {
+    "id": "text",
+    "heading": {
+      "zh": "\u5B57\u7B26\u4E32",
+      "en": "String"
+    },
+    "api": [
+      {
+        "id": "utils-text",
+        "rows": [
+          {
+            "name": "baseNameOf",
+            "type": "(path: string) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53D6\u672B\u6BB5\uFF1B\u76EE\u5F55\u5C3E\u659C\u6760\u4E0D\u4F1A\u53D6\u6210\u7A7A\u4E32",
+              "en": "Last segment; a trailing slash never yields empty"
+            }
+          },
+          {
+            "name": "safeTrim",
+            "type": "(s: string) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53BB\u9996\u5C3E\u7A7A\u767D",
+              "en": "Trim surrounding whitespace"
+            }
+          },
+          {
+            "name": "truncateBytes",
+            "type": "(s: string, maxBytes: number) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6309 UTF-8 \u5B57\u8282\u622A\u65AD\uFF0C\u4E0D\u5207\u534A\u4E2A\u5B57",
+              "en": "Truncate by UTF-8 bytes without splitting a char"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "number": {
+    "id": "number",
+    "heading": {
+      "zh": "\u6570\u5B57",
+      "en": "Number"
+    },
+    "api": [
+      {
+        "id": "utils-number",
+        "rows": [
+          {
+            "name": "formatBytes",
+            "type": "(bytes: number) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "`12 KB` / `3.4 MB`\uFF1B0 \u4E0E\u8D1F\u6570 \u21D2 \u2014",
+              "en": "`12 KB` / `3.4 MB`; 0 and negatives \u21D2 \u2014"
+            }
+          },
+          {
+            "name": "formatCount",
+            "type": "(n: number) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5343\u5206\u4F4D",
+              "en": "Thousands separator"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "http": {
+    "id": "http",
+    "heading": {
+      "zh": "HTTP",
+      "en": "HTTP"
+    },
+    "api": [
+      {
+        "id": "utils-http",
+        "rows": [
+          {
+            "name": "request",
+            "type": "(url, opts?: RequestOptions) => Promise<Response>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5E26\u8D85\u65F6\uFF08\u9ED8\u8BA4 10s\uFF09\u4E0E AbortSignal",
+              "en": "With timeout (default 10s) and AbortSignal"
+            }
+          },
+          {
+            "name": "requestJson",
+            "type": "<T>(url, opts?) => Promise<T>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u81EA\u52A8\u89E3\u6790 JSON",
+              "en": "Parses JSON automatically"
+            }
+          },
+          {
+            "name": "HttpError",
+            "type": "class extends Error",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5E26 status\uFF1B\u8D85\u65F6\u629B AbortError",
+              "en": "Carries status; timeout throws AbortError"
+            }
+          }
+        ]
+      }
+    ],
+    "prose": [
+      {
+        "zh": "RequestOptions\uFF1A{ timeoutMs?, signal?, method?, body?, headers? }\u3002",
+        "en": "`RequestOptions`: { timeoutMs?, signal?, method?, body?, headers? }."
+      }
+    ]
+  },
+  "i18n": {
+    "id": "i18n",
+    "heading": {
+      "zh": "\u591A\u8BED\u8A00",
+      "en": "i18n"
+    },
+    "prose": [
+      {
+        "zh": "\u6838\u5FC3\u63D0\u4F9B\u7684\u56FA\u5B9A\u63D0\u793A\u8BED\uFF08\u63A7\u4EF6\u9519\u8BEF\u3001\u52A0\u8F7D\u4E2D\u3001\u7A7A\u6001\u2026\uFF09\u7531\u672C\u5305\u5185\u7F6E\u4E2D\u82F1\u5B57\u5178\u7BA1\u3002",
+        "en": "The fixed copy the core ships (control errors, loading, empty states\u2026) is managed by this package\u2019s built-in zh/en dictionary."
+      },
+      {
+        "zh": "\u8FB9\u754C\uFF1A\u63D2\u4EF6\u81EA\u5DF1\u754C\u9762\u7684\u6587\u6848\u7531\u63D2\u4EF6\u81EA\u5DF1\u7BA1\uFF0C\u672C\u5305\u4E0D\u63D0\u4F9B\u63D2\u4EF6\u7EA7 i18n \u6846\u67B6\u3002\u60F3\u8986\u76D6\u67D0\u6761\u6587\u6848\uFF1A\u7ED9\u7EC4\u4EF6\u4F20 translate prop\uFF0C\u6216\u7ED9\u81EA\u5DF1\u7684\u573A\u666F\u76F4\u63A5\u7528 t + \u81EA\u5B9A\u4E49\u5B57\u5178\u3002",
+        "en": "Boundary: a plugin\u2019s own UI copy is the plugin\u2019s responsibility; this package offers no plugin-level i18n framework. To override a string: pass a `translate` prop, or use `t` with your own dictionary."
+      },
+      {
+        "zh": "\u53EF\u7528 key \u5168\u96C6\u89C1 src/utils/i18n.ts \u7684 UtilMessageKey\u3002",
+        "en": "Full key list: `UtilMessageKey` in `src/utils/i18n.ts`."
+      }
+    ],
+    "api": [
+      {
+        "id": "utils-i18n",
+        "rows": [
+          {
+            "name": "setLocale(locale)",
+            "type": "('zh' | 'en') => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "'zh'\uFF08\u9ED8\u8BA4\uFF09/ 'en'",
+              "en": "'zh' (default) / 'en'"
+            }
+          },
+          {
+            "name": "getLocale()",
+            "type": "() => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5F53\u524D\u8BED\u8A00",
+              "en": "Current locale"
+            }
+          },
+          {
+            "name": "t(key, vars?)",
+            "type": "(key, vars?) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53D6\u6587\u6848\uFF1B{n} \u5360\u4F4D\u7531 vars \u586B",
+              "en": "Get copy; {n} placeholders filled by vars"
+            }
+          },
+          {
+            "name": "type Translate",
+            "type": "(key, vars?) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7EC4\u4EF6\u90FD\u6536\u8FD9\u4E2A\u53C2\u6570\u4F9B\u8986\u76D6",
+              "en": "Components accept this to override copy"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "quickstart": {
+    "id": "quickstart",
+    "heading": {
+      "zh": "\u4ECE\u96F6\u63A5\u5165",
+      "en": "Integrate from scratch"
+    },
+    "prose": [
+      {
+        "zh": "\u4E00\u4E2A\u63D2\u4EF6\u4ECE\u88C5\u5305\u5230\u7528\u4E0A\u5404\u5B50\u5305\u7684\u5B8C\u6574\u8DEF\u5F84\u3002\u590D\u5236\u7C98\u8D34\u7EA7\u522B\u7684\u6700\u5C0F\u53EF\u7528\u793A\u4F8B\u3002",
+        "en": "The full path from installing the package to using each subpackage. Copy-paste-level minimal example."
+      },
+      {
+        "zh": "\xA70 \u88C5\u5305\uFF1Areact \u662F optional peer\u2014\u2014\u53EA\u7528 utils / design \u7684\u63D2\u4EF6\u4E0D\u5FC5\u88C5\u3002\u5305\u91CC\u5E26\u9884\u7F16\u8BD1 dist\uFF08\u5BBF\u4E3B\u4EE5 git/npm \u88C5\u63D2\u4EF6\u4E0D\u8DD1\u6784\u5EFA\u811A\u672C\uFF0C\u4EA7\u7269\u5FC5\u987B\u968F\u5305\u53D1\u5E03\uFF09\u3002",
+        "en": "\xA70 Install: `react` is an optional peer \u2014 plugins using only utils/design need not install it. The package ships prebuilt dist (hosts install plugins without running build scripts, so artifacts must be published)."
+      },
+      {
+        "zh": "\xA71 \u521D\u59CB\u5316\u6837\u5F0F\uFF08\u4E00\u6B21\uFF09\uFF1Aid \u5FC5\u987B\u63D2\u4EF6\u5185\u552F\u4E00\uFF08\u591A\u63D2\u4EF6\u540C\u9875\u9760\u5B83\u4E92\u4E0D\u8986\u76D6\uFF09\uFF1B\u53D8\u91CF\u4E0E\u7C7B\u540D\u7EDF\u4E00\u4F7F\u7528 dshpc \u524D\u7F00\uFF0C\u4E0D\u9700\u8981\u4F20\u53C2\u3002",
+        "en": "\xA71 Initialize styles (once): `id` must be unique within the plugin (multiple plugins on one page rely on it to avoid clobbering); variables and class names uniformly use the `dshpc` prefix, no param needed."
+      },
+      {
+        "zh": "\xA72 \u7528\u4E00\u4E2A\u63A7\u4EF6",
+        "en": "\xA72 Use a control"
+      },
+      {
+        "zh": "\xA73 \u7528\u901A\u7528\u65B9\u6CD5",
+        "en": "\xA73 Use helpers"
+      },
+      {
+        "zh": "\xA74 \u63A5\u5DE5\u4F5C\u533A\u6D4F\u89C8\uFF08\u8981\u5BBF\u4E3B\u80FD\u529B\uFF09\uFF1Amount \u662F\u5FC5\u586B\u2014\u2014PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF09\uFF0C\u6CA1\u6709\u5E03\u5C40\u4F4D\u7F6E\u5C31\u53EA\u80FD\u906E\u76D6\uFF0C\u6240\u4EE5\u8981\u4F20\u4F60\u9875\u9762\u91CC\u90A3\u4E00\u5C42 flex \u884C\uFF0C\u4E0D\u8981\u4F20 document.body \u518D\u81EA\u5DF1\u5957 fixed\u3002\u6D4F\u89C8\u6001\u505C\u9760\u5C31\u662F FileBrowser \u5957\u5728\u6838\u5FC3 PanelDock \u91CC\uFF08openFilePreview \u5DF2\u7ECF\u8FD9\u4E48\u505A\u4E86\uFF0C\u9762\u677F\u7528 header={null}\uFF1A\u6CA1\u6709\u5934\u90E8\u90A3\u6761\u7EBF\uFF0C\u2715 \u6D6E\u5728\u53F3\u4E0A\u89D2\uFF09\u3002",
+        "en": "\xA74 Wire workspace browsing (needs host capability): `mount` is required \u2014 PanelDock is a layout member (takes width, narrows the main area), so without a layout slot it can only overlay; pass your page\u2019s flex row, not `document.body` with your own fixed positioning. Browse-dock is FileBrowser inside the core PanelDock (openFilePreview already does this, with header={null}: no header line, \u2715 floats top-right)."
+      },
+      {
+        "zh": "sessionId \u4E0D\u662F\u968F\u4FBF\u586B\u7684\uFF1AworkspaceFiles \u662F\u4F1A\u8BDD\u4F5C\u7528\u57DF\u670D\u52A1\uFF0C\u5FC5\u987B\u7ED9\u5C5E\u4E8E\u8BE5\u5DE5\u4F5C\u533A\u7684\u771F\u5B9E\u4F1A\u8BDD id\u3002\u4ECE\u5BBF\u4E3B\u5DE5\u4F5C\u533A\u5FEB\u7167\u6311\u951A\u70B9\u7528 pickWorkspaceAnchor(items)\uFF08ui \u7684 workspaceList \u5FEB\u7167\u53EF\u76F4\u63A5\u5582\u8FDB\u53BB\uFF09\u3002",
+        "en": "`sessionId` is not arbitrary: workspaceFiles is a session-scoped service, so you must pass a real session id belonging to that workspace. Pick an anchor from the host workspace snapshot via pickWorkspaceAnchor(items) (ui\u2019s workspaceList snapshot feeds in directly)."
+      },
+      {
+        "zh": "\xA75 \u63A5\u4F1A\u8BDD\u9884\u89C8",
+        "en": "\xA75 Wire session preview"
+      },
+      {
+        "zh": "\xA76 \u5378\u8F7D\u6E05\u7406\uFF08\u53EF\u9009\uFF09",
+        "en": "\xA76 Teardown (optional)"
+      }
+    ],
+    "code": [
+      {
+        "id": "integration-install",
+        "lang": "bash",
+        "src": "pnpm add dsh-plugin-core"
+      },
+      {
+        "id": "integration-init-style",
+        "lang": "ts",
+        "src": "// \u63D2\u4EF6 client \u5165\u53E3\nimport { createStyleKit } from 'dsh-plugin-core/design'\nimport { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'\n\nconst kit = createStyleKit({ id: 'dsh-task-reminder-ui' })\nsetStyleKit(kit)\nensureControls()"
+      },
+      {
+        "id": "integration-use-control",
+        "lang": "tsx",
+        "src": "import { Button, Input, Picker, showToast } from 'dsh-plugin-core/ui'\n\nh(Input, { value: name, onChange: setName, placeholder: '\u4EFB\u52A1\u540D', error: nameError })\nh(Button, { variant: 'primary', onClick: save }, '\u4FDD\u5B58')\nh(Picker, {\n  options: models,                 // [{ value, label }]\n  value: current,\n  onChange: (v) => setCurrent(v as string),\n  searchable: true,\n  clearable: true,\n})\nshowToast('\u5DF2\u4FDD\u5B58', { variant: 'success' })"
+      },
+      {
+        "id": "integration-use-utils",
+        "lang": "ts",
+        "src": "import { formatDateTime, relativeFuture, formatBytes } from 'dsh-plugin-core/utils'\n\nformatDateTime(task.runAt, { seconds: true })   // 2026-10-18 09:30:05\nrelativeFuture(task.runAt, Date.now())          // 3 \u5206\u949F\u540E\uFF08\u672A\u6765\u65F6\u95F4\u7528\u8FD9\u4E2A\uFF09\nformatBytes(file.size)                          // 12 KB"
+      },
+      {
+        "id": "integration-use-explorer",
+        "lang": "tsx",
+        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// \u4ECE ctx \u53D6\u51FA\u8FD9\u4E00\u5C0F\u5757\uFF08\u4E0D\u8981\u4F20\u6574\u4E2A ctx\uFF09\nconst workspaceFiles = ctx.remote.workspaceFiles\n\n// \u9884\u89C8\u67D0\u6587\u4EF6/\u6587\u4EF6\u5939\uFF1A\u53F3\u4FA7\u5206\u680F\uFF08\u6324\u7A84 row \u5DE6\u8FB9\u7684\u4E3B\u533A\uFF0C\u4E0D\u662F\u6D6E\u5728\u4E0A\u9762\uFF09\nopenFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })\n\n// \u8BA9\u7528\u6237\u9009\u6587\u4EF6\uFF1A\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path, isDir }\uFF08\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\nconst picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })"
+      },
+      {
+        "id": "integration-use-session",
+        "lang": "tsx",
+        "src": "import { SessionPreview } from 'dsh-plugin-core/session'\n\nconst source = {\n  listMessages: async (id) => (await api.get(`/sessions/${id}/messages`)).data,\n  download: async (id, path) => api.getBytes(`/sessions/${id}/file?path=${path}`),\n}\n\nh(SessionPreview, { sessionId, source, variant: 'modal', onClose: close })"
+      },
+      {
+        "id": "integration-cleanup",
+        "lang": "ts",
+        "src": "kit.dispose()   // \u64A4\u6389 <style> \u6807\u7B7E\u5E76\u6E05\u7A7A\u767B\u8BB0\u57DF\uFF08\u63D2\u4EF6\u5378\u8F7D / HMR\uFF09"
+      }
+    ]
+  },
+  "reference": {
+    "id": "reference",
+    "heading": {
+      "zh": "\u63A5\u5165\u5751",
+      "en": "Pitfalls"
+    },
+    "prose": [
+      {
+        "zh": "\u6309\u8E29\u9891\u6392\u5E8F\u7684\u5E38\u72AF\u9519\u8BEF\uFF1A",
+        "en": "Common mistakes, ranked by frequency:"
+      }
+    ],
+    "api": [
+      {
+        "id": "integration-pitfalls",
+        "rows": [
+          {
+            "name": "\u5FD8\u4E86 setStyleKit \u5C31\u6E32\u67D3\u63A7\u4EF6",
+            "type": "\u73B0\u8C61\uFF1A\u6837\u5F0F\u665A\u4E00\u5E27\u6216\u843D\u5230\u9ED8\u8BA4 style id",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5165\u53E3\u5904\u5148\u8C03\uFF0C\u518D\u6E32\u67D3",
+              "en": "Call it at entry, then render"
+            }
+          },
+          {
+            "name": "\u76F4\u63A5 import \u5B98\u65B9 @deepseek-ai/* \u5E76\u6307\u671B\u672C\u5305\u5E2E\u4F60\u5F15",
+            "type": "\u73B0\u8C61\uFF1ANode \u4E0B ERR_MODULE_NOT_FOUND",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u672C\u5305 ui \u5DF2\u96F6\u5B98\u65B9\u4F9D\u8D56\uFF1B\u8981\u7528\u5B98\u65B9\u4EF6\u5C31\u5728\u63D2\u4EF6\u4FA7\u81EA\u5DF1\u5904\u7406\u5E73\u53F0\u6A21\u5757",
+              "en": "Our ui has zero official deps; handle platform modules on the plugin side"
+            }
+          },
+          {
+            "name": "\u7ED9 read \u5C11\u4F20\u7B2C\u4E09\u53C2 range",
+            "type": "\u73B0\u8C61\uFF1A\u8FDC\u7AEF\u62D2\uFF1Aexpected 3 business argument(s) \u2026 got 2",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E00\u5F8B\u663E\u5F0F\u4F20 {}",
+              "en": "Always pass {} explicitly"
+            }
+          },
+          {
+            "name": "\u7528 relativePast \u663E\u793A\u672A\u6765\u65F6\u95F4",
+            "type": "\u73B0\u8C61\uFF1A\u300C3 \u5206\u949F\u540E\u300D\u663E\u793A\u6210\u300C\u521A\u521A\u300D",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7528 relativeFuture",
+              "en": "Use relativeFuture"
+            }
+          },
+          {
+            "name": "\u60F3\u8BA9\u7EC4\u4EF6\u81EA\u5DF1\u53D6\u5DE5\u4F5C\u533A / \u6A21\u578B\u5217\u8868",
+            "type": "\u73B0\u8C61\uFF1A\u53D6\u4E0D\u5230\uFF08\u901A\u9053\u662F\u63D2\u4EF6\u79C1\u6709\u7684\uFF09",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6570\u636E\u7ECF props \u7ED9\uFF0C\u5BBF\u4E3B\u80FD\u529B\u7ECF\u63A5\u53E3\u6CE8\u5165",
+              "en": "Data via props, host capability via injected interface"
+            }
+          },
+          {
+            "name": "\u6697\u8272\u4E0D\u8DDF\u968F\u5BBF\u4E3B",
+            "type": "\u73B0\u8C61\uFF1A\u63D2\u4EF6\u56FA\u5B88\u4E00\u79CD\u660E\u6697",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5224\u636E\u662F body[data-ds-dark-theme]\uFF0C\u522B\u7528 prefers-color-scheme",
+              "en": "Predicate is body[data-ds-dark-theme], not prefers-color-scheme"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "ui-overview": {
+    "id": "ui-overview",
+    "heading": {
+      "zh": "\u6982\u89C8",
+      "en": "Overview"
+    },
+    "prose": [
+      {
+        "zh": "\u4F9D\u8D56 design\u3002\u88C5\u7684\u662F\u300C\u7528 token \u642D\u51FA\u6765\u7684\u96F6\u4EF6\u300D\u2014\u2014\u76F4\u63A5\u7528\uFF0C\u4E0D\u518D\u81EA\u5DF1\u5199\u539F\u751F\u63A7\u4EF6\u3002\u7EAF\u96F6\u4EF6\uFF0C\u4E0D\u81EA\u5DF1\u53D6\u6570\uFF1A\u9009\u9879\u3001\u5F53\u524D\u503C\u90FD\u7ECF props \u7ED9\uFF08\u6570\u636E\u8981\u8DE8 host\u2194client \u8FB9\u754C\uFF0C\u901A\u9053\u662F\u63D2\u4EF6\u79C1\u6709\u7684\uFF09\u3002",
+        "en": 'Depends on design. Ships "parts built from tokens" \u2014 use them directly instead of writing native controls. Pure parts, no self-fetching: options and current value come via props (data crosses the host\u2194client boundary over the plugin\u2019s private channel).'
+      },
+      {
+        "zh": "\u5B98\u65B9\u4EF6\u901A\u8DEF\uFF1Aui \u5165\u53E3\u4FDD\u6301\u96F6 @deepseek-ai/* \u4F9D\u8D56\uFF08Node \u5355\u6D4B / \u975E\u5BBF\u4E3B\u73AF\u5883 import \u4E0D\u5D29\uFF09\uFF1B\u5B98\u65B9 primitives \u7ECF src/ui/official.ts \u4EE5\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/ui/official \u900F\u51FA\u3002\u8981\u6D88\u8D39\u5B98\u65B9\u4EF6\uFF08FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip \u2026\uFF09\u7684\u5C01\u88C5\u4ECE\u8FD9\u6761\u901A\u8DEF\u5F15\uFF0C\u4E0D\u8BB8\u5728\u522B\u5904 import \u5E73\u53F0\u6A21\u5757\u3002",
+        "en": "Official-component path: the ui entry stays free of @deepseek-ai/* deps (so Node unit tests / non-host imports don\u2019t crash); official primitives are exposed via src/ui/official.ts through the separate subpath dsh-plugin-core/ui/official. Wrappers that consume official parts (FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip \u2026) must import from this path \u2014 never import platform modules elsewhere."
+      },
+      {
+        "zh": "\u5B9A\u5236\u8FB9\u754C\uFF1Aprops \u5C31\u662F\u5B9A\u5236\u9762\uFF0C\u8981\u6539\u884C\u4E3A\u8BF7\u7EC4\u5408 props\uFF0C\u4E0D\u8981 fork \u6E90\u7801\uFF1B\u300C\u8FFD\u52A0 class/style\u300D\u53EA\u5141\u8BB8\u8865\u5E03\u5C40\uFF0C\u76AE\u80A4\u4E00\u5F8B\u8D70 token \u8986\u76D6\uFF1B\u7F3A\u63A7\u4EF6\u65F6\u5148\u63D0\u9700\u6C42\uFF0C\u5B9E\u5728\u8981\u81EA\u5DF1\u5199\u8BF7\u6309 style.md \u53E3\u5F84\u7528\u540C\u4E00\u5957 token\uFF0C\u5E76\u8003\u8651\u63D0\u5230\u672C\u5305\u3002",
+        "en": 'Customization: props are the customization surface \u2014 compose props to change behavior, don\u2019t fork; "append class/style" may only patch layout, skins always go through token overrides; if a control is missing, raise a request first; if you must write your own, follow style.md with the same tokens and consider upstreaming it.'
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-setup",
+        "lang": "ts",
+        "src": "import { createStyleKit } from 'dsh-plugin-core/design'\nimport { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'\n\nsetStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))\nensureControls()"
+      }
+    ]
+  },
+  "button": {
+    "id": "button",
+    "heading": {
+      "zh": "Button / IconButton / Segmented",
+      "en": "Button / IconButton / Segmented"
+    },
+    "prose": [
+      {
+        "zh": "Button 10 \u6863\u5916\u89C2\uFF08\u5B9E\u5FC3 / \u7EBF\u6846 / \u65E0\u5E95\uFF09\u3002hover / active \u8D70 token \u6D3E\u751F\u8272\uFF08\u4E0D\u7528 opacity\uFF09\u3002",
+        "en": "Button offers 10 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity)."
+      },
+      {
+        "zh": "IconButton\uFF1Avariant: plain|outline|danger\uFF08\u9ED8\u8BA4 plain\uFF09\u3001size\uFF08\u9ED8\u8BA4 lg\uFF09\u3001icon\uFF08\u5FC5\u586B\uFF09\u3001label\uFF08\u5FC5\u586B\uFF0C\u65E0\u969C\u788D\u540D\u517C title\uFF09\u3002",
+        "en": "IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title)."
+      },
+      {
+        "zh": "Segmented\uFF1Aitems\uFF08\u5FC5\u586B\uFF09+ \u5355\u9009\u6216\u591A\u9009\uFF1B\u53E6\u6709 size\uFF08\u9ED8\u8BA4 lg\uFF09\u3001variant: default|inset\u3001block\u3001label\u3001id\u3001disabled\u3002\u9009\u4E2D\u7247 = --dshpc-surface-raised + 1px \u63CF\u8FB9 + \u6D6E\u8D77\u9634\u5F71\u3002",
+        "en": "Segmented: items (required) + single or multiple selection; also size (default lg), variant default|inset, block, label, id, disabled. Selected segment = --dshpc-surface-raised + 1px border + lift shadow."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-button",
+        "rows": [
+          {
+            "name": "variant",
+            "type": "\u4E0A\u8868 10 \u6863\uFF08primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link\uFF09",
+            "def": "'outline'",
+            "desc": {
+              "zh": "\u5916\u89C2\u6863",
+              "en": "Appearance tier"
+            }
+          },
+          {
+            "name": "size",
+            "type": "'sm' | 'md' | 'lg'",
+            "def": "'lg'",
+            "desc": {
+              "zh": "\u9AD8\u5EA6\u6863\uFF0824 / 28 / 32\uFF0C\u6709\u8FB9\u65E0\u8FB9\u540C\u9AD8\uFF09",
+              "en": "Height tier (24 / 28 / 32, same height with or without border)"
+            }
+          },
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u524D\u7F6E\u56FE\u6807\uFF08\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u5B57\u7B26\u4E32\u5747\u53EF\uFF09",
+              "en": "Leading icon (official icon component or string)"
+            }
+          },
+          {
+            "name": "iconRight",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u540E\u7F6E\u56FE\u6807\uFF08\u5C55\u5F00\u7BAD\u5934\u3001\u5916\u94FE\uFF09",
+              "en": "Trailing icon (expand arrow, external link)"
+            }
+          },
+          {
+            "name": "color",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u81EA\u5B9A\u4E49\u4E3B\u8272\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\uFF0C\u7EBF\u6846 / \u65E0\u5E95\u6863\u4F5C\u4E3B\u8272",
+              "en": "Custom main color: background for solid tiers, main color for outline/bare"
+            }
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u6587\u6848\u524D\u663E\u793A\u540C\u8272\u5C0F\u5708\uFF0C\u5E76\u81EA\u52A8 disabled",
+              "en": "Shows a same-color spinner before the label and auto-disables"
+            }
+          },
+          {
+            "name": "block",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u6491\u6EE1\u7236\u5BBD",
+              "en": "Fill parent width"
+            }
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6587\u6848\uFF08\u7531\u8C03\u7528\u65B9\u6309\u8BED\u8A00\u7ED9\uFF1A\u4E2D\u6587\u51FA\u4E2D\u6587\u3001\u82F1\u6587\u51FA\u82F1\u6587\uFF0C\u4E2D\u82F1\u6DF7\u6392\u4E5F\u652F\u6301\uFF09",
+              "en": "Label (caller supplies per locale: zh shows zh, en shows en, mixed is supported)"
+            }
+          },
+          {
+            "name": "\u2026rest",
+            "type": "\u539F\u751F button \u5C5E\u6027",
+            "def": "\u2014",
+            "desc": {
+              "zh": "type / disabled / title / aria-* / onClick \u539F\u6837\u900F\u4F20",
+              "en": "type / disabled / title / aria-* / onClick passed through"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "input": {
+    "id": "input",
+    "heading": {
+      "zh": "Input \u5BB6\u65CF\uFF08Field.ts\uFF09",
+      "en": "Input family (Field.ts)"
+    },
+    "api": [
+      {
+        "id": "ui-input",
+        "rows": [
+          {
+            "name": "Input",
+            "type": "value onChange(v) size(\u9ED8\u8BA4 sm) error disabled type placeholder inputRef onKeyDown onBlur aria-label title hint",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u57FA\u7840\u8F93\u5165\u6846\uFF1Berror \u63CF\u7EA2\uFF1Bhint \u7ED9\u5B57\u7B26\u4E32\u5373\u81EA\u52A8\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A",
+              "en": "Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint"
+            }
+          },
+          {
+            "name": "PrefixedInput",
+            "type": "\u540C Input + prefix: string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u524D\u7F6E\u6587\u6848\uFF08https:// / C:\\\uFF09",
+              "en": "Leading text (https:// / C:\\)"
+            }
+          },
+          {
+            "name": "NumberInput",
+            "type": "value: number onChange(v) min max step(\u9ED8\u8BA4 1) inputWidth suffix label decreaseLabel increaseLabel hint",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5DF2 clamp\uFF1B\u5931\u7126\u56DE\u5F39\u8349\u7A3F",
+              "en": "Already clamped; reverts to draft on blur"
+            }
+          },
+          {
+            "name": "Textarea",
+            "type": "value onChange(v) placeholder error disabled rows spellCheck(\u9ED8\u8BA4\u5173) aria-label hint",
+            "def": "\u2014",
+            "desc": {
+              "zh": "hint \u7684\u95EE\u53F7\u9489\u5728\u53F3\u4E0B\u89D2\uFF08\u5355\u884C\u63A7\u4EF6\u5219\u5728\u884C\u5C3E\u5782\u76F4\u5C45\u4E2D\uFF09",
+              "en": "hint\u2019s question mark pins to the bottom-right (for single-line controls it centers at the row end)"
+            }
+          },
+          {
+            "name": "Checkbox",
+            "type": "checked onChange(next) label accentColor disabled",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u2014",
+              "en": "\u2014"
+            }
+          },
+          {
+            "name": "fieldMetricsOf(size)",
+            "type": "\u2192 { height, font, line, icon, gap }",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u81EA\u5DF1\u642D\u540C\u6B3E\u8F93\u5165\u6846\u65F6\u5BF9\u9F50\u5C3A\u5BF8",
+              "en": "Match dimensions when building your own same-style input"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "picker": {
+    "id": "picker",
+    "heading": {
+      "zh": "Picker / WorkspacePicker / ModelPicker",
+      "en": "Picker / WorkspacePicker / ModelPicker"
+    },
+    "prose": [
+      {
+        "zh": "Picker\uFF1A\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\uFF0C\u81EA\u7ED8\uFF08\u4E0D\u4F9D\u8D56\u5B98\u65B9 Menu\uFF09\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u4E5F\u53EF\u5355\u7528\uFF1AtoGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf\u3002",
+        "en": "Picker: single/multiple/max/search/grouping/empty/degrade, self-drawn (no official Menu). Keyboard: Esc closes, \u2191\u2193 move cursor, Enter selects. Pure logic is also usable standalone: toGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf."
+      },
+      {
+        "zh": "WorkspacePicker\uFF1A\u9886\u57DF\u9009\u62E9\u5668\uFF0C\u6570\u636E\u81EA\u5E26\u7684\u73B0\u6210\u7EC4\u4EF6\uFF08FilePicker \u5DF2\u5220\uFF09\u3002\u6570\u636E\u81EA\u52A8\u6765\u81EA\u5BBF\u4E3B\uFF1A\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 connectHost(ctx)\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u4F4F\u5B98\u65B9 workspaces \u670D\u52A1\u7684\u5FEB\u7167\u3002\u4E0D\u63A5\u7EBF = \u7A7A\u6001\uFF08\u5982\u5B9E\uFF0C\u4E0D\u7F16\u6570\u636E\uFF09\u3002",
+        "en": "WorkspacePicker: a domain picker, a ready-made data-backed component (FilePicker removed). Data comes automatically from the host: call connectHost(ctx) once in the plugin apply, and the component subscribes to the official workspaces service snapshot. No wiring = empty state (honest, no fabricated data)."
+      },
+      {
+        "zh": "ModelPicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u73B0\u6210\u7EC4\u4EF6 + variant: grouped|cascade\uFF08\u9ED8\u8BA4 grouped\uFF09\u3002\u4E24\u79CD\u5F62\u6001\u8FD4\u56DE\u53E3\u5F84\u4E00\u81F4\uFF1AonChange \u90FD\u53D1\u6700\u7EC8\u6A21\u578B value\uFF08${provider}/${id}\uFF09\u3002\u76EE\u5F55\u81EA\u52A8\u6765\u81EA\u5BBF\u4E3B\uFF08serveModelCatalog + connectHost\uFF09\u3002",
+        "en": "ModelPicker: a ready-made data-backed component + variant grouped|cascade (default grouped). Both forms return consistently: onChange emits the final model value (${provider}/${id}). Catalog comes automatically from the host (serveModelCatalog + connectHost)."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-picker",
+        "rows": [
+          {
+            "name": "groups / options",
+            "type": "PickerGroup[] / PickerOption[]",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E8C\u9009\u4E00\uFF1Boptions \u4F1A\u88AB\u5F53\u6210\u4E00\u4E2A\u65E0\u6807\u9898\u7EC4",
+              "en": "One of the two; options is treated as a single untitled group"
+            }
+          },
+          {
+            "name": "value / defaultValue",
+            "type": "string | string[]",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7ED9\u4E86 value \u5373\u53D7\u63A7\uFF1B\u5426\u5219\u5185\u90E8\u7BA1",
+              "en": "Passing value makes it controlled; otherwise it manages internally"
+            }
+          },
+          {
+            "name": "onChange",
+            "type": "(v: string | string[]) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5355\u9009\u56DE string\uFF0C\u591A\u9009\u56DE string[]",
+              "en": "Single returns string, multiple returns string[]"
+            }
+          },
+          {
+            "name": "mode",
+            "type": "'single' | 'multiple'",
+            "def": "'single'",
+            "desc": {
+              "zh": "\u2014",
+              "en": "\u2014"
+            }
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u591A\u9009\u4E0A\u9650\uFF1B\u5230\u4E0A\u9650\u5176\u4F59\u9879\u7F6E\u7070 + \u63D0\u793A\uFF08\u4E0D\u9759\u9ED8\u622A\u65AD\uFF09",
+              "en": "Multiple-select cap; at cap others grey out + a hint (no silent truncation)"
+            }
+          },
+          {
+            "name": "searchable",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u663E\u793A\u641C\u7D22\u6846\uFF1B\u5C55\u5F00\u83DC\u5355\u65F6\u81EA\u52A8\u805A\u7126\u641C\u7D22\u6846",
+              "en": "Shows a search box; auto-focuses it when the menu opens"
+            }
+          },
+          {
+            "name": "align",
+            "type": "'left' | 'center'",
+            "def": "'left'",
+            "desc": {
+              "zh": "\u89E6\u53D1\u5668\u6587\u5B57\u5BF9\u9F50",
+              "en": "Trigger text alignment"
+            }
+          },
+          {
+            "name": "clearable",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u5355\u9009\u65F6\u5217\u8868\u9876\u90E8\u591A\u4E00\u9879\u300C\u4E0D\u9009\u300D",
+              "en": 'In single mode, adds a "none" item at the top of the list'
+            }
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "def": "\u5185\u7F6E\u300C\u8BF7\u9009\u62E9\u300D",
+            "desc": {
+              "zh": "\u2014",
+              "en": "\u2014"
+            }
+          },
+          {
+            "name": "degraded",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u5019\u9009\u53EF\u80FD\u4E0D\u5B8C\u6574 \u21D2 \u9876\u90E8\u5982\u5B9E\u63D0\u793A\uFF0C\u4E0D\u7F16\u9020",
+              "en": "Candidates may be incomplete \u21D2 honest top hint, no fabrication"
+            }
+          },
+          {
+            "name": "size",
+            "type": "'sm' | 'md' | 'lg'",
+            "def": "'md'",
+            "desc": {
+              "zh": "\u2014",
+              "en": "\u2014"
+            }
+          },
+          {
+            "name": "placement",
+            "type": "'down' | 'up'",
+            "def": "'down'",
+            "desc": {
+              "zh": "\u89E6\u53D1\u5668\u9760\u8FD1\u89C6\u53E3\u5E95\u90E8\u65F6\u7528 up",
+              "en": "Use up when the trigger is near the viewport bottom"
+            }
+          },
+          {
+            "name": "closeOnSelect",
+            "type": "boolean",
+            "def": "\u591A\u9009 false / \u5355\u9009\u6052\u5173",
+            "desc": {
+              "zh": "\u9009\u4E2D\u540E\u662F\u5426\u6536\u8D77",
+              "en": "Whether to collapse after selection"
+            }
+          },
+          {
+            "name": "showLabels",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "\u591A\u9009\u65F6\u89E6\u53D1\u5668\u5217\u51FA\u5DF2\u9009\u9879\uFF0C\u800C\u975E\u53EA\u663E\u793A\u300C\u5DF2\u9009 N \u9879\u300D",
+              "en": 'In multiple mode the trigger lists selected items instead of just "N selected"'
+            }
+          },
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u89E6\u53D1\u5668\u6587\u5B57\u524D\u7684\u56FE\u6807",
+              "en": "Icon before the trigger text"
+            }
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u95EE\u53F7\u63D0\u793A\u6587\u5B57\uFF1A\u81EA\u52A8\u5728\u89E6\u53D1\u5668\u540E\u6302\u6807\u51C6 FieldHint",
+              "en": "Hint text: auto-attaches a standard FieldHint after the trigger"
+            }
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5B9A\u5236\u5BBD\u5EA6 / \u5916\u8FB9\u8DDD",
+              "en": "Custom width / margin"
+            }
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u65E0\u969C\u788D\u540D",
+              "en": "Accessible name"
+            }
+          },
+          {
+            "name": "translate",
+            "type": "Translate",
+            "def": "\u5185\u7F6E",
+            "desc": {
+              "zh": "\u8986\u76D6\u6587\u6848",
+              "en": "Override copy"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-workspace-picker",
+        "rows": [
+          {
+            "name": "value / defaultValue / onChange",
+            "type": "\u9009\u4E2D\u503C\u4E3A workspaceId\uFF08\u4E0D\u662F title\uFF09\uFF1B'' = \u300C\u6240\u6709\u5DE5\u4F5C\u533A\u300D",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E0D\u7B5B",
+              "en": "No filter"
+            }
+          },
+          {
+            "name": "allowDefault / defaultLabel",
+            "type": "\u300C\u6240\u6709\u5DE5\u4F5C\u533A\u300D\u9ED8\u8BA4\u9879\uFF1A\u9ED8\u8BA4\u63D0\u4F9B\u3001\u7F6E\u9876\u3001\u53EA\u5728\u5355\u9009\u51FA\u73B0\uFF1B\u9009\u4E2D\u53D1 ''\uFF1Bfalse \u5173\u6389",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6587\u6848\u53EF\u6539",
+              "en": "Text is customizable"
+            }
+          },
+          {
+            "name": "mode / max",
+            "type": "\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650\uFF08\u5230\u4E0A\u9650\u5DF2\u9009\u9879\u4ECD\u53EF\u53CD\u9009\uFF09",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u2014",
+              "en": "\u2014"
+            }
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "def": "\u9ED8\u8BA4\u300C\u5DE5\u4F5C\u533A\u300D",
+            "desc": {
+              "zh": "\u60F3\u53EB\u300C\u9009\u62E9\u5DE5\u4F5C\u533A\u300D\u5C31\u4F20\u5B83",
+              "en": 'Pass it if you want "\u9009\u62E9\u5DE5\u4F5C\u533A"'
+            }
+          },
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u89E6\u53D1\u5668\u524D\u7F6E\u56FE\u6807\uFF1A\u4E0D\u4F20 = \u9ED8\u8BA4\u6587\u4EF6\u5939\uFF1Bnull = \u4E0D\u663E\u793A\uFF1B\u4F20\u5143\u7D20 = \u81EA\u5B9A\u4E49",
+              "en": "Leading trigger icon: omitted = default folder; null = hidden; element = custom"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-model-picker",
+        "rows": [
+          {
+            "name": "variant",
+            "type": "'grouped' | 'cascade'",
+            "def": "'grouped'",
+            "desc": {
+              "zh": "grouped = \u4E00\u4E2A\u4E0B\u62C9\u5B8C\u5168\u72EC\u7ACB\uFF1Bcascade = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF08\u5148\u9009\u4F9B\u5E94\u5546\uFF0C\u6A21\u578B\u5217\u8868\u8DDF\u7740\u7B5B\uFF1B\u6362\u4F9B\u5E94\u5546\u6E05\u7A7A\u5DF2\u9009\uFF09",
+              "en": "grouped = one standalone dropdown; cascade = two linked dropdowns (pick provider first, model list filters; switching provider clears selection)"
+            }
+          },
+          {
+            "name": "allowDefault / defaultLabel",
+            "type": "\u300C\u9ED8\u8BA4\u6A21\u578B\u300D\u9009\u9879\uFF1A\u9ED8\u8BA4\u63D0\u4F9B\uFF1Bfalse \u5173\u95ED\uFF1B\u9009\u4E2D\u53D1 ''",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6587\u6848\u53EF\u4F20 defaultLabel",
+              "en": "Pass defaultLabel for the text"
+            }
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "def": "\u9ED8\u8BA4\u300C\u6A21\u578B\u300D",
+            "desc": {
+              "zh": "icon\uFF1A\u4E0D\u4F20 = \u9ED8\u8BA4\u661F\u5F62\uFF1Bnull = \u4E0D\u663E\u793A\uFF1B\u4F20\u5143\u7D20 = \u81EA\u5B9A\u4E49",
+              "en": "icon: omitted = default star; null = hidden; element = custom"
+            }
+          },
+          {
+            "name": "\u900F\u4F20 Picker",
+            "type": "value / defaultValue / onChange / clearable / searchable / hint / size / placement / className / disabled / degraded / translate",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u540C Picker \u540C\u540D\u53C2\u6570",
+              "en": "Same-named params as Picker"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-workspacepicker-example",
+        "lang": "tsx",
+        "src": "import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'\n\n// apply(ctx) \u91CC\uFF1AconnectHost(ctx)\nh(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })"
+      }
+    ]
+  },
+  "tooltip": {
+    "id": "tooltip",
+    "heading": {
+      "zh": "FieldHint\uFF08\u95EE\u53F7\u63D0\u793A\uFF09",
+      "en": "FieldHint (hint)"
+    },
+    "prose": [
+      {
+        "zh": "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u4E0D\u5C5E\u4E8E Input \u5BB6\u65CF\u2014\u2014\u6807\u9898\u540E\u3001\u6309\u94AE\u540E\u3001\u6587\u5B57\u540E\u3001\u8F93\u5165\u6846\u540E\u968F\u5904\u53EF\u6302\u3002\u6C14\u6CE1 = \u5B98\u65B9 Tooltip \u672C\u4F53\uFF1A\u63D2\u4EF6\u542F\u52A8\u65F6 setTooltipRenderer((props) => h(OfficialTooltip, props)) \u628A\u5B98\u65B9\u7EC4\u4EF6\u4EA4\u7ED9 core\uFF0Cside / align / maxWidth \u53EF\u900F\u4F20\u3002\u4E0D\u505A\u964D\u7EA7\u515C\u5E95\u2014\u2014\u672A\u6CE8\u5165 renderer \u7684\u975E\u5BBF\u4E3B\u73AF\u5883\uFF08node \u81EA\u68C0\uFF09\u53EA\u51FA\u95EE\u53F7\u56FE\u6807\u3001\u6CA1\u6709\u6C14\u6CE1\u3002",
+        "en": "A standalone component, not part of the Input family \u2014 attachable after titles, buttons, text, or inputs anywhere. The bubble IS the official Tooltip: at plugin startup, setTooltipRenderer((props) => h(OfficialTooltip, props)) hands the official component to core; side / align / maxWidth pass through. No fallback \u2014 a non-host environment that didn\u2019t inject a renderer (node self-check) shows only the question-mark icon, no bubble."
+      }
+    ]
+  },
+  "card": {
+    "id": "card",
+    "heading": {
+      "zh": "Card / StripCard",
+      "en": "Card / StripCard"
+    },
+    "prose": [
+      {
+        "zh": "\u4E24\u79CD\u5361\u7247\u5916\u89C2\uFF0C\u4E24\u4E2A\u72EC\u7ACB\u7EC4\u4EF6\uFF1ACard = surface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF0Cpadding 14px\uFF08\u5DE6 12 \u4F7F\u7AD6\u6761\u8D34\u8FB9\uFF09\uFF1BStripCard = \u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2\u3002\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\uFF0C\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5782\u76F4\u5C45\u4E2D\u3002\u989C\u8272\u5168\u8D70 token \u21D2 \u4EAE\u6697\u81EA\u52A8\u8DDF\u968F\u5BBF\u4E3B\u3002",
+        "en": "Two card appearances, two separate components: Card = surface background + 1px border + rounded corners, padding 14px (left 12 so the strip hugs the edge); StripCard = same-hue light background + 1px invisible placeholder border + square corners. The header is vertically centered as a whole; drop a bare element in action and it centers. Colors come from tokens \u21D2 light/dark follows the host automatically."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-card",
+        "rows": [
+          {
+            "name": "accent",
+            "type": "5 \u6863 or \u4EFB\u610F CSS \u8272\u503C\uFF08business/success/warning/danger/neutral\uFF09",
+            "def": "'business'",
+            "desc": {
+              "zh": "\u6863\u4F4D\u6620\u5C04\u5230 design \u7684 token\uFF1B\u4E5F\u53EF\u4F20 '#f59e0b' \u8FD9\u7C7B\u81EA\u5B9A\u4E49\u503C",
+              "en": "Tiers map to design tokens; also accepts custom values like '#f59e0b'"
+            }
+          },
+          {
+            "name": "expanded",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u5C55\u5F00\u6001\uFF08\u7BAD\u5934\u671D\u5411 + panel \u663E\u9690\uFF09",
+              "en": "Expanded state (arrow direction + panel show/hide)"
+            }
+          },
+          {
+            "name": "onToggle",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4F20\u4E86\u624D\u663E\u793A\u53F3\u4FA7\u6298\u53E0\u7BAD\u5934\uFF1B\u5C55\u5F00\u72B6\u6001\u7531\u8C03\u7528\u65B9\u7BA1",
+              "en": "Only shows the right collapse arrow if provided; caller owns the expanded state"
+            }
+          },
+          {
+            "name": "action",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53F3\u4E0A\u89D2\u64CD\u4F5C\u533A",
+              "en": "Top-right action area"
+            }
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E3B\u5185\u5BB9\uFF0C\u6392\u7248\u968F\u4F60",
+              "en": "Main content, layout is yours"
+            }
+          },
+          {
+            "name": "panel",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5C55\u5F00\u540E\u624D\u663E\u793A\u7684\u989D\u5916\u5185\u5BB9",
+              "en": "Extra content shown only when expanded"
+            }
+          },
+          {
+            "name": "className / style",
+            "type": "\u2014",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u8FFD\u52A0\u7C7B / \u6837\u5F0F",
+              "en": "Append class / style"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-card-example",
+        "lang": "tsx",
+        "src": "import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'\n\nh(Card, {\n  accent: 'warning',\n  action: h(Button, { size: 'sm', variant: 'ghost' }, '\u8DF3\u8FC7'),\n},\n  h('div', null, '\u6807\u9898'),\n  h(Chip, null, '#npm'),\n)\n\nh(StripCard, {\n  accent: 'success',\n  expanded: open, onToggle: () => setOpen(!open),\n  panel: h('div', null, '\u5C55\u5F00\u8BE6\u60C5'),\n}, h('div', null, '\u6807\u9898 + \u5143\u4FE1\u606F'))"
+      }
+    ]
+  },
+  "chip": {
+    "id": "chip",
+    "heading": {
+      "zh": "Chip",
+      "en": "Chip"
+    },
+    "prose": [
+      {
+        "zh": "\u5C0F\u6807\u7B7E\u3002\u4E24\u6761\u53EF\u9009\u8F74\uFF1Atone\uFF08neutral \u9ED8\u8BA4\u7070\u9762 / business / success / warning / danger\u2014\u2014\u975E neutral \u4E3A\u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09\uFF1Bsize\uFF08sm \u9ED8\u8BA4 / md = font-size:12px\uFF0C\u5361\u7247\u5143\u4FE1\u606F\u884C\u7528\uFF09\u3002\u4F20 onClick \u624D\u662F\u53EF\u70B9\u7684\u3002\u8BED\u4E49\u8FB9\u754C\uFF1AChip \u53EA\u7BA1\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u8FD9\u4E00\u4EF6\u4E8B\uFF1B\u53EA\u7ED9\u56FE\u6807\u7684\u5C0F\u6309\u94AE\u8BF7\u7528 IconButton\uFF0C\u4E0D\u8981\u62FF Chip \u5F53\u56FE\u6807\u5E95\u677F\uFF08\u540C\u4E00\u4E2A\u7C7B\u540D\u4E24\u5957\u76AE\u80A4\u4F1A\u4E92\u76F8\u8986\u76D6\uFF09\u3002",
+        "en": 'A small tag. Two optional axes: tone (neutral default gray / business / success / warning / danger \u2014 non-neutral is a solid signal surface); size (sm default / md = font-size:12px, for card meta rows). Pass onClick to make it clickable. Boundary: Chip only does "pill tag"; for an icon-only small button use IconButton \u2014 don\u2019t use Chip as an icon baseplate (one class name with two skins would overwrite each other).'
+      }
+    ]
+  },
+  "feedback": {
+    "id": "feedback",
+    "heading": {
+      "zh": "\u53CD\u9988\u4EF6",
+      "en": "Feedback"
+    },
+    "prose": [
+      {
+        "zh": "showToast / notify \u7B49\u5E95\u5C42\u4ECD\u662F Sonner\uFF08\u52A8\u753B/\u5B9A\u4F4D/\u5806\u53E0\uFF09\u3002\u8DE8\u526F\u672C toast \u5BBF\u4E3B\uFF1Acore \u88AB\u6253\u8FDB\u6BCF\u4E2A\u63D2\u4EF6 bundle\uFF0C\u65E7\u5B9E\u73B0 N \u4E2A\u63D2\u4EF6\u540C\u9875\u4F1A\u6302 N \u4E2A\u540C id \u5BB9\u5668\uFF1B\u73B0\u6539\u4E3A globalThis \u4E0A Symbol.for('dsh-plugin-core/toast-host') \u5355\u4F8B\uFF0C\u5148\u5230\u573A\u7684\u526F\u672C\u5EFA\u552F\u4E00\u5BB9\u5668\u4E0E Toaster\uFF0C\u5176\u4F59\u526F\u672C\u628A ToastPayload \u4EA4\u7ED9\u5BBF\u4E3B\u6E32\u67D3\u3002",
+        "en": "showToast / notify etc. are still backed by Sonner (animation/positioning/stacking). Cross-bundle toast host: core is bundled into every plugin, and the old impl would mount N same-id containers on one page; now a globalThis Symbol.for('dsh-plugin-core/toast-host') singleton makes the first bundle create the unique container and Toaster, and later bundles hand their ToastPayload to the host for rendering."
+      },
+      {
+        "zh": '\u4E09\u6761\u53D6\u820D\uFF08\u7528\u6237\u62CD\u677F\u63A5\u53D7\uFF0C\u4E0D\u8981\u81EA\u884C"\u4F18\u5316"\uFF09\uFF1A\u2460 \u6837\u5F0F\u7531\u7B2C\u4E00\u4E2A\u526F\u672C\u51B3\u5B9A\uFF1B\u2461 position \u5168\u5C40\u5171\u4EAB\uFF08\u4E00\u4E2A\u5C4F\u5E55\u4E00\u4E2A\u533A\uFF09\uFF1B\u2462 \u4E0D\u505A\u5378\u8F7D\u56DE\u6536 / \u5F15\u7528\u8BA1\u6570\u3002\u65E0 document \u7684\u73AF\u5883\u9759\u9ED8\u8DF3\u8FC7\u3001\u4E0D\u6CE8\u518C\u3002',
+        "en": 'Three trade-offs (accepted by the user, don\u2019t "optimize"): \u2460 styling is decided by the first bundle; \u2461 position is shared globally (one zone per screen); \u2462 no unload reclamation / ref counting. Environments without document silently skip and don\u2019t register.'
+      },
+      {
+        "zh": "Modal\uFF1A\u81EA\u7ED8 overlay\uFF0C\u4E0D\u7528 react-dom \u7684 portal\uFF08\u907F\u514D\u591A\u4E00\u4E2A\u5FC5\u9700\u4F9D\u8D56\uFF09\u3002",
+        "en": "Modal: self-drawn overlay, not react-dom\u2019s portal (avoids an extra required dependency)."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-feedback",
+        "rows": [
+          {
+            "name": "showToast(message, opts?)",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u5B98\u65B9 Sonner \u539F\u751F\uFF08\u5BF9\u6BD4 / demo \u7528\uFF09\u3002opts: { variant?, durationMs?, color?, onDismiss?, position? }\uFF1Bcolor \u6574\u6761\u81EA\u5B9A\u4E49\u80CC\u666F\u8272\uFF1Bposition 6 \u5411\uFF08\u9ED8\u8BA4 bottom-center\uFF09\uFF1B\u6697\u8272\u8DDF\u968F\u5BBF\u4E3B",
+              "en": "Raw official Sonner (for comparison / demo). opts: { variant?, durationMs?, color?, onDismiss?, position? }; color sets the whole background; position 6-way (default bottom-center); dark follows host"
+            }
+          },
+          {
+            "name": "notify(message, opts?)",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u9879\u76EE\u5185\u63A8\u8350\uFF1A\u6211\u4EEC\u5C01\u88C5\u597D\u7684\u63D0\u793A\u3002opts: { variant?, description?, durationMs?, position?, actions? }\uFF1B\u53F3\u4FA7 actions?: { text, variant?, onClick }[]\uFF081\u20132 \u4E2A\uFF0C\u7528\u6211\u4EEC\u81EA\u5DF1\u7684 Button\uFF09\uFF1B\u5E95\u5C42\u4ECD\u662F Sonner",
+              "en": "Recommended in-project: our wrapped toast. opts: { variant?, description?, durationMs?, position?, actions? }; right-side actions?: { text, variant?, onClick }[] (1\u20132, using our own Button); still Sonner underneath"
+            }
+          },
+          {
+            "name": "showHostToast(message, opts?)",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u5BBF\u4E3B\u539F\u751F Toast\uFF08\u5B50\u8DEF\u5F84 dsh-plugin-core/ui/host\uFF09\u3002opts: { tone?, holdMs?, actions?, onDismiss? }\uFF1B\u72EC\u7ACB\u5B50\u8DEF\u5F84\u5BFC\u51FA\uFF0C\u9694\u79BB\u5E73\u53F0\u6A21\u5757",
+              "en": "Host-native Toast (subpath dsh-plugin-core/ui/host). opts: { tone?, holdMs?, actions?, onDismiss? }; exported via a separate subpath to isolate platform modules"
+            }
+          },
+          {
+            "name": "Loading({ anchorId? })",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u8D34\u5230\u4E3B\u5185\u5BB9\u5BB9\u5668\u53F3\u4E0B\u89D2\u7684\u52A0\u8F7D\u6307\u793A\uFF1BanchorId \u9ED8\u8BA4 dshpc-main",
+              "en": "Loading indicator pinned to the main container\u2019s bottom-right; anchorId defaults to dshpc-main"
+            }
+          },
+          {
+            "name": "RunningBlocks()",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u8FD0\u884C\u4E2D\u7684\u5360\u4F4D\u5757",
+              "en": "Placeholder blocks while running"
+            }
+          },
+          {
+            "name": "EmptyState({ text?, icon?, action?, translate? })",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u7EDF\u4E00\u7A7A\u6001",
+              "en": "Unified empty state"
+            }
+          },
+          {
+            "name": "SectionHead({ icon, title, right? })",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u5206\u533A\u6807\u9898",
+              "en": "Section heading"
+            }
+          },
+          {
+            "name": "MarqueeText({ text, style?, title?, className? })",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u8D85\u957F\u7701\u7565\u3001hover \u6EDA\u52A8",
+              "en": "Ellipsis on overflow, scroll on hover"
+            }
+          },
+          {
+            "name": "LiveText({ render, style? })",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u5B9A\u65F6\u91CD\u6E32\u67D3\uFF08\u76F8\u5BF9\u65F6\u95F4\u8FD9\u7C7B\uFF09",
+              "en": "Periodic re-render (for relative time etc.)"
+            }
+          },
+          {
+            "name": "BackToTop({ anchorId? })",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u56DE\u5230\u9876\u90E8\uFF0C\u8D34\u4E3B\u5BB9\u5668\u53F3\u7F18\u5916\u4FA7",
+              "en": "Back-to-top, outside the main container\u2019s right edge"
+            }
+          },
+          {
+            "name": "startResizeLayoutWidth(opts)",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u62D6\u62FD\u8C03\u6574\u5E03\u5C40\u5BBD\u5EA6\uFF08root \u4E0D\u4F20\u5219\u56DE\u843D #dshpc-root\uFF09",
+              "en": "Drag to resize layout width (falls back to #dshpc-root if root omitted)"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-modal",
+        "rows": [
+          {
+            "name": "title",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6807\u9898",
+              "en": "Title"
+            }
+          },
+          {
+            "name": "onClose",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E0D\u4F20\u5219\u4E0D\u663E\u793A\u5173\u95ED\u94AE",
+              "en": "No close button if omitted"
+            }
+          },
+          {
+            "name": "closeOnMask",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "\u70B9\u906E\u7F69\u5173\u95ED\uFF1B\u8BEF\u89E6\u4EE3\u4EF7\u5927\u7684\u573A\u666F\u8BBE false",
+              "en": "Close on mask click; set false where mis-clicks are costly"
+            }
+          },
+          {
+            "name": "escClose",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "Esc \u5173\u95ED",
+              "en": "Close on Esc"
+            }
+          },
+          {
+            "name": "maxWidth",
+            "type": "string",
+            "def": "min(960px, 92vw)",
+            "desc": {
+              "zh": "\u2014",
+              "en": "\u2014"
+            }
+          },
+          {
+            "name": "hideHeader",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u4E0D\u6E32\u67D3\u5934\u90E8\uFF08\u6C89\u6D78\u5F0F\uFF09",
+              "en": "Skip header (immersive)"
+            }
+          },
+          {
+            "name": "footer",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5E95\u680F\uFF08\u6309\u94AE\u533A\uFF09",
+              "en": "Footer (button area)"
+            }
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E3B\u4F53",
+              "en": "Body"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "layout": {
+    "id": "layout",
+    "heading": {
+      "zh": "PanelDock\uFF08\u505C\u9760\u5206\u680F\uFF09",
+      "en": "PanelDock (dock)"
+    },
+    "prose": [
+      {
+        "zh": "\u300C\u53F3\u4FA7\u5206\u680F\u300D\u4ECE\u4E1A\u52A1\u91CC\u5265\u51FA\u6765\u7684\u901A\u7528\u58F3\u3002\u5B83\u662F\u5E03\u5C40\u6210\u5458\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u3002\u56E0\u6B64\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002\u5206\u5DE5\u7167\u6210\u719F\u7EC4\u4EF6\u5E93\u7684\u901A\u884C\u505A\u6CD5\uFF1A\u7ED3\u6784\u5199\u5728\u8C03\u7528\u70B9\uFF08children\uFF09\uFF0C\u663E\u9690\u5F52\u72B6\u6001\uFF08open/close \u53EA\u4F20 id\uFF09\u3002",
+        "en": 'A generic shell extracted from the business layer for "right-side panels". It is a layout member, not an overlay: it takes width and narrows the main area, not covering it. So the caller must place it inside its own flex root. Following common component-library practice: structure is written at the call site (children), visibility is state (open/close only passes an id).'
+      },
+      {
+        "zh": "\u9762\u677F\u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\u3002\u4E0D\u505A\u7684\u4E8B\uFF08\u62CD\u677F\u7559\u6863\uFF09\uFF1A\u591A\u4EFD\u540C\u540D\uFF08multi\uFF09\u3001tab \u5207\u6362\u6761\u3001\u81EA\u52A8\u6DD8\u6C70\u3001\u6D6E\u52A8\u5C42\u2014\u2014\u6807\u7B7E\u5207\u6362\u7531\u6D88\u8D39\u65B9\u5728\u81EA\u5DF1\u7684\u9762\u677F\u5185\u5BB9\u91CC\u5B9E\u73B0\u3002\u4E24\u6761\u5B9E\u73B0\u7EA6\u675F\uFF1A\u9762\u677F\u662F position:sticky + height:100vh \u7684 flex \u6210\u5458\uFF0C\u523B\u610F\u4E0D\u8BBE z-index\uFF1B\u62D6\u52A8\u671F\u7ED9 iframe \u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\u3002",
+        "en": "Panel height defaults to viewport height; when nested in a fixed-height container, the caller sets --dshpc-dock-h. Deliberately not done (on record): multi same-name, tab-switch bar, auto-eviction, floating layer \u2014 tab switching is the consumer\u2019s job inside their own panel content. Two impl constraints: panels are position:sticky + height:100vh flex members with no z-index; during drag, yield pointer events to iframes."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-paneldock-create",
+        "rows": [
+          {
+            "name": "maxPanels",
+            "type": "number",
+            "def": "3",
+            "desc": {
+              "zh": "\u540C\u65F6\u5B58\u5728\u7684\u680F\u6570\u4E0A\u9650",
+              "en": "Max simultaneous panels"
+            }
+          },
+          {
+            "name": "defaultWidth / minWidth",
+            "type": "number",
+            "def": "460 / 320",
+            "desc": {
+              "zh": "\u515C\u5E95\u5BBD\u5EA6\u4E0E\u4E0B\u9650\uFF08\u9762\u677F\u81EA\u5DF1\u7ED9\u4E86\u5C31\u4EE5\u9762\u677F\u4E3A\u51C6\uFF09",
+              "en": "Fallback width and floor (panel\u2019s own value wins if given)"
+            }
+          },
+          {
+            "name": "storageKey",
+            "type": "string",
+            "def": "'dshpc-dock'",
+            "desc": {
+              "zh": "\u5BBD\u5EA6\u8BB0\u5FC6\u524D\u7F00\uFF1B\u4F20 false \u5173\u95ED",
+              "en": "Width-memory prefix; false disables"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-paneldock-panel",
+        "rows": [
+          {
+            "name": "id",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7EC4\u540D\uFF08\u5BFB\u5740\u952E\uFF09\uFF0C\u540C\u540D\u552F\u4E00",
+              "en": "Group name (address key), unique per name"
+            }
+          },
+          {
+            "name": "title / icon",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5185\u7F6E\u5934\u7684\u6807\u9898\u4E0E\u6807\u9898\u524D\u56FE\u6807",
+              "en": "Built-in header title and icon before it"
+            }
+          },
+          {
+            "name": "extra",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6807\u9898\u53F3\u4FA7\u7684\u4EFB\u610F\u5185\u5BB9\uFF08\u4E0D\u53EA\u662F\u6309\u94AE\uFF09",
+              "en": "Any content to the right of the title (not just buttons)"
+            }
+          },
+          {
+            "name": "header",
+            "type": "ReactNode | null",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6574\u5757\u66FF\u6362\u5934\u90E8\uFF1A\u4E0D\u4F20 = \u5185\u7F6E\u5934\uFF1Bnull = \u4E0D\u8981\u5934\u90E8\uFF1B\u5176\u4ED6 = \u4F60\u7684\u5934",
+              "en": "Whole-header replacement: omitted = built-in; null = no header; else = your header"
+            }
+          },
+          {
+            "name": "closable / closeButton / closeIcon",
+            "type": "\u2014",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5173\u94AE\u5F00\u5173\uFF1B\u4F4D\u7F6E auto/header/floating/none",
+              "en": "Close-button toggle; position auto/header/floating/none"
+            }
+          },
+          {
+            "name": "width / minWidth / maxWidth",
+            "type": "number",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5BBD\u5EA6\u4E0E\u53EF\u62D6\u52A8\u533A\u95F4",
+              "en": "Width and draggable range"
+            }
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u65E0\u5934\u90E8\u65F6\u7684\u65E0\u969C\u788D\u540D",
+              "en": "A11y name when no header"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-paneldock-events",
+        "rows": [
+          {
+            "name": "onOpen",
+            "type": "({ id, created: true })",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u9996\u6B21\u6253\u5F00",
+              "en": "First open"
+            }
+          },
+          {
+            "name": "onBeforeClose",
+            "type": "({ id, reason: 'button' | 'api' }) => false?",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5173\u95ED\u4E4B\u524D\uFF0C\u8FD4\u56DE false \u53EF\u53D6\u6D88",
+              "en": "Before close; returning false cancels"
+            }
+          },
+          {
+            "name": "onClose",
+            "type": "({ id, reason })",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5DF2\u5173\u95ED",
+              "en": "Closed"
+            }
+          },
+          {
+            "name": "onResize",
+            "type": "({ id, width })",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u62D6\u5BBD\u677E\u624B",
+              "en": "Drag released"
+            }
+          },
+          {
+            "name": "onLimitReached",
+            "type": "({ id })",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5230\u4E0A\u9650\u88AB\u62D2",
+              "en": "Rejected at cap"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-paneldock-example",
+        "lang": "ts",
+        "src": "const dock = createPanelDock({ maxPanels: 3 })   // \u4E00\u6B21\uFF0C\u6302\u5728\u63D2\u4EF6\u7EA7\n\n// \u9875\u9762\u91CC\uFF1A\u7ED3\u6784\u5C31\u5728\u8FD9\u513F\u5199\uFF0C\u4E0D\u585E\u8FDB\u4EFB\u4F55\u8C03\u7528\u53C2\u6570\nh('div', { style: { display: 'flex' } },\n  h(Main, null),                                  // flex:1 1 auto; min-width:0\n  h(PanelDock, { dock },\n    h(DockPanel, { id: 'files', title: '\u5DE5\u4F5C\u533A' }, h(FilePanel)),\n    h(DockPanel, { id: 'preview', header: h(PreviewBar) }, h(PreviewBody)),\n    h(DockPanel, { id: 'raw', header: null, closeButton: 'floating' }, h(RawBody)),\n  ),\n)\n// \u4E4B\u540E\u4EFB\u4F55\u5730\u65B9\uFF1Adock.open('files') / dock.close('files')"
+      }
+    ]
+  }
+};
+
+// packages/demo/src/doc.tsx
+var DOC_DATA = docData;
+function locale() {
+  return getLocale() === "en" ? "en" : "zh";
+}
+function Note(props) {
+  return (0, import_react33.createElement)(
+    StripCard,
+    { accent: "business", className: "dshpc-doc-note" },
+    (0, import_react33.createElement)(
+      "div",
+      { className: "dshpc-doc-note__body" },
+      (0, import_react33.createElement)("span", { className: "dshpc-doc-note__mark" }, t2("docNote")),
+      props.children ?? (0, import_react33.createElement)("span", null, props.text ?? "")
+    )
+  );
+}
+function snippetPath(lang) {
+  return `snippet.${lang}`;
+}
+function CodeOnly(props) {
+  const label = props.label ?? (props.labelKey !== void 0 ? t2(props.labelKey) : t2("docCode"));
+  return (0, import_react33.createElement)(
+    "div",
+    { className: "dshpc-doc-block" },
+    (0, import_react33.createElement)("div", { className: "dshpc-doc-label" }, label),
+    (0, import_react33.createElement)(CodeViewer, {
+      text: props.code,
+      path: snippetPath(props.lang ?? "tsx"),
+      t,
+      // 卡片里没有确定高度上下文 ⇒ 随内容撑高，由外层滚。
+      height: "auto"
+    })
+  );
+}
+function Example(props) {
+  return (0, import_react33.createElement)(
+    "section",
+    { className: "dshpc-doc-example" },
+    (0, import_react33.createElement)(
+      "div",
+      { className: "dshpc-doc-example__head" },
+      (0, import_react33.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
+      props.hint === void 0 ? null : (0, import_react33.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
+    ),
+    (0, import_react33.createElement)(
+      "div",
+      { className: "dshpc-doc-example__body" },
+      (0, import_react33.createElement)(
+        "div",
+        { className: "dshpc-doc-example__demo" },
+        (0, import_react33.createElement)("div", { className: "dshpc-doc-label" }, t2("docPreview")),
+        props.children ?? null
+      ),
+      props.code === void 0 ? null : (0, import_react33.createElement)(
+        "div",
+        { className: "dshpc-doc-example__code" },
+        (0, import_react33.createElement)("div", { className: "dshpc-doc-label" }, t2("docCode")),
+        (0, import_react33.createElement)(
+          "div",
+          { className: "dshpc-doc-example__scroll" },
+          (0, import_react33.createElement)(CodeViewer, {
+            text: props.code,
+            path: snippetPath("tsx"),
+            t,
+            height: "auto"
+          })
+        )
+      )
+    )
+  );
+}
+function ApiTable(props) {
+  return (0, import_react33.createElement)(
+    "div",
+    { className: "dshpc-doc-block" },
+    (0, import_react33.createElement)(
+      "div",
+      { className: "dshpc-doc-label", style: props.title === void 0 ? void 0 : { textTransform: "none" } },
+      props.title ?? t2("docApi")
+    ),
+    (0, import_react33.createElement)(
+      "table",
+      { className: "dshpc-doc-api" },
+      (0, import_react33.createElement)(
+        "thead",
+        null,
+        (0, import_react33.createElement)(
+          "tr",
+          null,
+          (0, import_react33.createElement)("th", null, t2("docApiName")),
+          (0, import_react33.createElement)("th", null, t2("docApiType")),
+          (0, import_react33.createElement)("th", null, t2("docApiDefault")),
+          (0, import_react33.createElement)("th", null, t2("docApiDesc"))
+        )
+      ),
+      (0, import_react33.createElement)(
+        "tbody",
+        null,
+        props.rows.map(
+          (row) => (0, import_react33.createElement)(
+            "tr",
+            { key: row.name },
+            (0, import_react33.createElement)("td", null, row.name),
+            (0, import_react33.createElement)("td", null, row.type),
+            (0, import_react33.createElement)("td", null, row.def),
+            (0, import_react33.createElement)("td", null, row.desc ?? t2(row.descKey ?? "docApiDesc"))
+          )
+        )
+      )
+    )
+  );
+}
+function DocProse(props) {
+  const section = DOC_DATA[props.id];
+  if (section?.prose === void 0) return null;
+  const l = locale();
+  return (0, import_react33.createElement)(
+    Note,
+    null,
+    (0, import_react33.createElement)(
+      "div",
+      { className: "dshpc-doc-note__content" },
+      ...section.prose.map((p, i2) => (0, import_react33.createElement)("div", { key: i2, className: "dshpc-doc-note__p" }, p[l]))
+    )
+  );
+}
+function DocApi(props) {
+  const section = DOC_DATA[props.id];
+  if (section?.api === void 0) return null;
+  const l = locale();
+  return (0, import_react33.createElement)(
+    import_react33.Fragment,
+    null,
+    ...section.api.map(
+      (table, i2) => (0, import_react33.createElement)(ApiTable, {
+        key: i2,
+        rows: table.rows.map((r2) => ({
+          name: r2.name,
+          type: r2.type,
+          def: r2.def,
+          required: r2.required,
+          desc: r2.desc[l]
+        }))
+      })
+    )
+  );
+}
+function DocCode(props) {
+  const section = DOC_DATA[props.id];
+  if (section?.code === void 0) return null;
+  return (0, import_react33.createElement)(
+    import_react33.Fragment,
+    null,
+    ...section.code.map((c2, i2) => (0, import_react33.createElement)(CodeOnly, { key: i2, code: c2.src, lang: c2.lang }))
+  );
+}
+function DocContent(props) {
+  return (0, import_react33.createElement)(
+    import_react33.Fragment,
+    null,
+    (0, import_react33.createElement)(DocProse, { id: props.id }),
+    (0, import_react33.createElement)(DocApi, { id: props.id }),
+    (0, import_react33.createElement)(DocCode, { id: props.id })
+  );
+}
+
+// packages/demo/src/sections/start.tsx
+function QuickstartPage() {
+  return (0, import_react34.createElement)(DocContent, { id: "quickstart" });
+}
+
+// packages/demo/src/sections/foundation.tsx
+var import_react35 = require("react");
+var TOKENS = [
+  { label: "business", cssVar: "--dshpc-business" },
+  { label: "success", cssVar: "--dshpc-success" },
+  { label: "warning", cssVar: "--dshpc-warning" },
+  { label: "danger", cssVar: "--dshpc-danger" },
+  { label: "surface-1", cssVar: "--dshpc-surface-1" },
+  { label: "surface-2", cssVar: "--dshpc-surface-2" },
+  { label: "surface-sunken", cssVar: "--dshpc-surface-sunken" },
+  { label: "border", cssVar: "--dshpc-border" },
+  { label: "fg", cssVar: "--dshpc-fg" },
+  { label: "fg-3", cssVar: "--dshpc-fg-3" },
+  { label: "fg-4", cssVar: "--dshpc-fg-4" }
+];
+function FoundationPage() {
+  return (0, import_react35.createElement)(
+    "div",
+    null,
+    (0, import_react35.createElement)(DocProse, { id: "foundation" }),
+    // Token 色板：颜色全部来自 design 的 token。
+    (0, import_react35.createElement)(
+      Example,
+      { title: t2("demoTokenPalette"), hint: t2("tokensHint") },
+      (0, import_react35.createElement)(
+        "div",
+        { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
+        TOKENS.map(
+          (item) => (0, import_react35.createElement)(
+            "div",
+            { key: item.cssVar, style: { width: "104px" } },
+            (0, import_react35.createElement)("div", {
+              style: {
+                height: "40px",
+                borderRadius: "6px",
+                background: `var(${item.cssVar})`,
+                border: "1px solid var(--dshpc-border-faint)"
+              }
+            }),
+            (0, import_react35.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
+            (0, import_react35.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+          )
+        )
+      )
+    ),
+    // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
+    (0, import_react35.createElement)(
+      Example,
+      { title: "body[data-ds-dark-theme]", hint: t2("darkHint") },
+      (0, import_react35.createElement)(
+        "div",
+        { style: { display: "flex", alignItems: "center", gap: "10px" } },
+        (0, import_react35.createElement)(
+          "span",
+          { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
+          t2("darkNow")
+        ),
+        (0, import_react35.createElement)("code", {
+          style: {
+            fontFamily: "var(--dshpc-font-mono)",
+            fontSize: "13px",
+            padding: "3px 10px",
+            borderRadius: "6px",
+            background: "var(--dshpc-open-bg)",
+            color: typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "var(--dshpc-success)" : "var(--dshpc-fg-2)"
+          }
+        }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
+      )
+    ),
+    (0, import_react35.createElement)(
+      Example,
+      {
+        title: t2("demoStyleInject"),
+        hint: t2("injectHint"),
+        code: `import { createStyleKit } from 'dsh-plugin-core/design'
+import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
+
+setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
+ensureControls()`
+      },
+      (0, import_react35.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
+    ),
+    // 命名契约（原「命名与前缀契约」页）的 API 表 —— 直接吃 docData['foundation'] 的 api 段。
+    (0, import_react35.createElement)(DocApi, { id: "foundation" })
+  );
+}
+
+// packages/demo/src/sections/controls.tsx
+var import_react37 = require("react");
+
+// dist/ui/host-toast.js
+var import_react36 = require("react");
+var import_client4 = require("react-dom/client");
+function showHostToast(message, opts) {
+  if (typeof document === "undefined")
+    return;
+  const container = document.createElement("div");
+  document.body.appendChild(container);
+  const root = (0, import_client4.createRoot)(container);
+  const close = () => {
+    root.unmount();
+    container.remove();
+  };
+  root.render((0, import_react36.createElement)(Official.Toast, {
+    text: message,
+    tone: opts?.tone,
+    holdMs: opts?.holdMs ?? 3e3,
+    actions: opts?.actions !== void 0 ? opts.actions.map((a) => ({ label: a.text, onClick: a.onClick })) : void 0,
+    onDone: () => {
+      close();
+      opts?.onDismiss?.();
+    }
+  }));
+}
+
+// packages/demo/src/sections/controls.tsx
+var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
+var BUTTON_ICONS = [
+  { name: "plus", Icon: import_dsh_client_ui_primitives2.IconPlusOutlineRegular },
+  { name: "check", Icon: import_dsh_client_ui_primitives2.IconCheckOutlineRegular },
+  { name: "close", Icon: import_dsh_client_ui_primitives2.IconCloseOutlineRegular },
+  { name: "refresh", Icon: import_dsh_client_ui_primitives2.IconRefreshOutlineRegular },
+  { name: "copy", Icon: import_dsh_client_ui_primitives2.IconCopyOutlineRegular },
+  { name: "search", Icon: import_dsh_client_ui_primitives2.IconSearchOutlineRegular },
+  { name: "edit", Icon: import_dsh_client_ui_primitives2.IconEditOutlineRegular },
+  { name: "play", Icon: import_dsh_client_ui_primitives2.IconPlayOutlineRegular },
+  { name: "send", Icon: import_dsh_client_ui_primitives2.IconPaperPlaneOutlineRegular },
+  { name: "clock", Icon: import_dsh_client_ui_primitives2.IconClockOutlineRegular },
+  { name: "sparkle", Icon: import_dsh_client_ui_primitives2.IconSparkleRegular },
+  { name: "chevron", Icon: import_dsh_client_ui_primitives2.IconChevronDownOutlineRegular }
+];
+function iconOf(name2, size4 = 14) {
+  const found = BUTTON_ICONS.find((item) => item.name === name2);
+  return found === void 0 ? null : (0, import_react37.createElement)(found.Icon, { size: size4 });
+}
+function StarSvg() {
+  return (0, import_react37.createElement)(
+    "svg",
+    { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
+    (0, import_react37.createElement)("path", {
+      d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
+      stroke: "currentColor",
+      strokeWidth: 1.2,
+      strokeLinejoin: "round"
+    })
+  );
+}
+var ICON_SIZE = { sm: 12, md: 14, lg: 16 };
+var VARIANT_ICON = {
+  primary: "check",
+  secondary: "copy",
+  outline: "edit",
+  ghost: "refresh",
+  danger: "close",
+  success: "play",
+  warning: "clock",
+  info: "send",
+  "danger-outline": "close",
+  link: "search"
+};
+var VARIANT_GROUPS = [
+  { label: "\u4E3B\u884C\u52A8", items: ["primary", "secondary"] },
+  { label: "\u4E2D\u6027", items: ["outline", "ghost"] },
+  { label: "\u8BED\u4E49\u8272", items: ["danger", "success", "warning", "info"] },
+  { label: "\u5F31\u5316 / \u884C\u5185", items: ["danger-outline", "link"] }
+];
+var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
+function tipAnchor(text2, side, align) {
+  const props = { label: text2, side };
+  if (align !== void 0) props.align = align;
+  return (0, import_react37.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react37.createElement)("button", {
+    type: "button",
+    style: {
+      padding: "4px 10px",
+      border: "1px solid var(--dshpc-border)",
+      borderRadius: "6px",
+      background: "var(--dshpc-surface-1)",
+      color: "var(--dshpc-fg)",
+      fontSize: "12px",
+      cursor: "pointer"
+    }
+  }, text2));
+}
+function Row(props) {
+  return (0, import_react37.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+}
+function Labeled(props) {
+  return (0, import_react37.createElement)(
+    "div",
+    { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
+    (0, import_react37.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    props.children
+  );
+}
+var CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>\u4FDD\u5B58</Button>
+<Button variant="outline">\u53D6\u6D88</Button>
+<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>\u5220\u9664</Button>`;
+var CODE_BTN_VARIANT = `// \u4E3B\u884C\u52A8
+<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>primary</Button>
+<Button variant="secondary" icon={<IconCopyOutlineRegular size={16} />}>secondary</Button>
+
+// \u4E2D\u6027
+<Button variant="outline" icon={<IconEditOutlineRegular size={16} />}>outline</Button>
+<Button variant="ghost" icon={<IconRefreshOutlineRegular size={16} />}>ghost</Button>
+
+// \u8BED\u4E49\u8272
+<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>danger</Button>
+<Button variant="success" icon={<IconPlayOutlineRegular size={16} />}>success</Button>
+<Button variant="warning" icon={<IconClockOutlineRegular size={16} />}>warning</Button>
+<Button variant="info" icon={<IconPaperPlaneOutlineRegular size={16} />}>info</Button>
+
+// \u5F31\u5316 / \u884C\u5185
+<Button variant="danger-outline" icon={<IconCloseOutlineRegular size={16} />}>danger-outline</Button>
+<Button variant="link" icon={<IconSearchOutlineRegular size={16} />}>link</Button>
+
+// \u4EFB\u610F\u4E00\u6863\u90FD\u80FD\u518D\u7ED9 size\uFF08\u8FD9\u91CC sm 24 \u9AD8\uFF09
+<Button variant="danger" size="sm" icon={<IconCloseOutlineRegular size={12} />}>danger</Button>`;
+var CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
+<Button size="md" variant="outline">md</Button>
+<Button size="lg" variant="outline">lg</Button>
+
+// icon \u6536\u7684\u662F ReactNode\uFF1A\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u81EA\u7ED8 SVG / \u4E00\u4E2A\u5B57\u7B26\uFF0C\u4E09\u79CD\u90FD\u80FD\u8FDB
+<Button variant="primary" icon={<IconSendOutlineRegular size={16} />}>\u5B98\u65B9\u56FE\u6807</Button>
+<Button variant="outline" icon={<StarSvg />}>\u81EA\u7ED8 SVG</Button>
+<Button variant="ghost" icon="+">\u4E00\u4E2A\u5B57\u7B26</Button>
+
+// iconRight \u540E\u7F6E\uFF1Bblock \u6491\u6EE1\u7236\u5BBD\uFF08\u6709\u524D\u7F6E\u56FE\u6807\u65F6\u6587\u5B57\u4ECD\u5728\u89C6\u89C9\u4E2D\u5FC3\uFF09
+<Button variant="outline" iconRight={<IconChevronDownOutlineRegular size={16} />}>\u66F4\u591A</Button>
+<Button variant="primary" block icon={<IconCheckOutlineRegular size={16} />}>\u6491\u6EE1\u7236\u5BBD</Button>
+
+// \u7EAF\u56FE\u6807\u94AE\uFF1Alabel \u662F\u5FC5\u586B\u7684\u65E0\u969C\u788D\u540D\uFF08\u540C\u65F6\u4F5C title\uFF09
+<IconButton icon={<IconPlusOutlineRegular size={16} />} label="plus" />`;
+var CODE_BTN_STATE = `<Button variant="primary">\u9ED8\u8BA4</Button>
+<Button variant="primary" disabled>\u7981\u7528</Button>
+<Button variant="danger" disabled icon={<IconCloseOutlineRegular size={16} />}>\u7981\u7528</Button>
+<Button variant="outline" loading>\u52A0\u8F7D\u4E2D</Button>
+<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>\u63D0\u4EA4\u4E2D</Button>`;
+var CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
+<Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`;
+function ButtonPage() {
+  return (0, import_react37.createElement)(
+    "div",
+    null,
+    (0, import_react37.createElement)(DocProse, { id: "button" }),
+    // 文案与语言
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("btnTextTitle"), hint: t2("btnTextHint"), code: CODE_BTN_TEXT },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "locale" },
+          (0, import_react37.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t2("btnLabelSave")),
+          (0, import_react37.createElement)(Button, { variant: "outline" }, t2("btnLabelCancel")),
+          (0, import_react37.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t2("btnLabelDelete"))
+        ),
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "en" },
+          (0, import_react37.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react37.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react37.createElement)(Button, { variant: "ghost" }, "Learn more")
+        ),
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "zh" },
+          (0, import_react37.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react37.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react37.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+        ),
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "zh + en" },
+          (0, import_react37.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t2("btnLabelMixed")),
+          (0, import_react37.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react37.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+        )
+      )
+    ),
+    // 10 档外观
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("btnVariantTitle"), hint: t2("btnVariantHint"), code: CODE_BTN_VARIANT },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        VARIANT_GROUPS.map((group) => (0, import_react37.createElement)(
+          Labeled,
+          { key: group.label, label: group.label },
+          (0, import_react37.createElement)(
+            "div",
+            { style: { display: "flex", flexDirection: "column", gap: "6px", alignItems: "flex-start" } },
+            (0, import_react37.createElement)(Row, null, group.items.map((variant) => (0, import_react37.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
+            (0, import_react37.createElement)(Row, null, group.items.map((variant) => (0, import_react37.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
+          )
+        ))
+      )
+    ),
+    // 尺寸 / 图标位置 / block
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("btnSizeTitle"), hint: t2("btnSizeHint"), code: CODE_BTN_SIZE },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "size" },
+          ["sm", "md", "lg"].map((size4) => (0, import_react37.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus", ICON_SIZE[size4]) }, size4))
+        ),
+        // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "icon" },
+          (0, import_react37.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react37.createElement)(Button, { variant: "outline", icon: (0, import_react37.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react37.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
+        ),
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "iconRight" },
+          (0, import_react37.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
+          (0, import_react37.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+        ),
+        // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "block" },
+          (0, import_react37.createElement)(
+            "div",
+            { style: { width: "260px" } },
+            (0, import_react37.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react37.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react37.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
+          )
+        ),
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: t2("btnIconOnly") },
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react37.createElement)(IconButton, { key: item.name, icon: (0, import_react37.createElement)(item.Icon, { size: 16 }), label: item.name }))
+        )
+      )
+    ),
+    // 状态
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("btnStateTitle"), hint: t2("btnStateHint"), code: CODE_BTN_STATE },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "\u7981\u7528" },
+          (0, import_react37.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+          (0, import_react37.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+          (0, import_react37.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
+        ),
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "loading" },
+          (0, import_react37.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+          (0, import_react37.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+        )
+      )
+    ),
+    // 自定义颜色
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("btnColorTitle"), hint: t2("btnColorHint"), code: CODE_BTN_COLOR },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "\u5B9E\u5FC3" },
+          (0, import_react37.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react37.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
+        ),
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: "\u63CF\u8FB9" },
+          (0, import_react37.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react37.createElement)(Button, { key: color, variant: "outline", color }, color)))
+        )
+      )
+    ),
+    (0, import_react37.createElement)(DocCode, { id: "button" }),
+    (0, import_react37.createElement)(DocApi, { id: "button" })
+  );
+}
+var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
+const [num, setNum] = useState(3)
+
+// hint \u53C2\u6570\u7248\uFF1A\u95EE\u53F7\u63D0\u793A\u7531\u7EC4\u4EF6\u81EA\u5DF1\u6302\uFF0C\u4E0D\u7528\u624B\u52A8\u62FC FieldHint
+<Input value={text} onChange={setText} placeholder="\u9009\u62E9\u65E5\u671F" hint="\u9009\u62E9\u4EFB\u52A1\u7684\u5F00\u59CB\u65F6\u95F4" />
+// \u6821\u9A8C\u5931\u8D25\u6001\uFF1A\u63CF\u7EA2
+<Input value={text} onChange={setText} error placeholder="\u6821\u9A8C\u5931\u8D25\u6001" />
+// \u6570\u5B57\u6846\uFF1A\u8D85\u51FA min / max \u81EA\u52A8\u6536\u56DE\u5230\u8FB9\u754C
+<NumberInput value={num} onChange={setNum} min={0} max={10} suffix="\u6B21" hint="\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" />
+// \u591A\u884C\u8F93\u5165\uFF1A\u95EE\u53F7\u7F6E\u53F3\u4E0B\u89D2
+<Textarea value={text} onChange={setText} placeholder="\u591A\u884C\u8F93\u5165" hint="\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" />`;
+var CODE_FIELD_HINT = `// \u95EE\u53F7\u63D0\u793A\u662F\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF0814px \u5185\u8054\u5143\u7D20\uFF09
+<h3>\u4E00\u4E2A\u6807\u9898</h3>
+<FieldHint text="\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" side="top" />
+
+<Button variant="outline">\u4E00\u4E2A\u6309\u94AE</Button>
+<FieldHint text="\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" side="right" />
+
+<span>\u4E00\u6BB5\u666E\u901A\u6587\u5B57</span>
+<FieldHint text="\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\u3002" />`;
+var CODE_SWITCH_SEG = `// \u5F00\u5173\u8BED\u4E49\u7528\u5B98\u65B9 Switch\uFF1Alabel \u53EA\u662F\u65E0\u969C\u788D\u540D\uFF0C\u53EF\u89C1\u6587\u6848\u81EA\u5DF1\u753B\u5728\u65C1\u8FB9
+<Switch checked={checked} onChange={setChecked} label="\u542F\u7528" />
+<Checkbox checked={checked} onChange={setChecked} label="\u591A\u9009" />
+
+// \u5206\u6BB5\uFF1Aitems = { value, label, count?, badge?, disabled? }\uFF1Bvariant \u9ED8\u8BA4 default\uFF0Cinset \u662F\u7070\u5E95\u6B3E
+<Segmented
+  variant="inset"
+  items={[{ value: 'day', label: '\u65E5' }, { value: 'week', label: '\u5468' }, { value: 'month', label: '\u6708' }]}
+  value={seg}
+  onChange={setSeg}
+/>
+// bordered\uFF1A\u9009\u4E2D\u6BB5\u53D8\u63CF\u8FB9\u5757\uFF1Bsize \u4E09\u6863
+<Segmented variant="inset" bordered size="sm" items={...} value={seg} onChange={setSeg} />
+
+// \u7B5B\u9009\u6761\uFF1Acount \u7ED9\u4E2D\u6027\u8BA1\u6570\uFF0Cbadge \u7ED9\u7EA2\u89D2\u6807
+<Segmented
+  variant="inset"
+  items={[{ value: 'all', label: '\u5168\u90E8', count: 11 }, { value: 'doing', label: '\u8FDB\u884C\u4E2D', count: 5 }]}
+  value={filter}
+  onChange={setFilter}
+/>
+
+// \u661F\u671F\u591A\u9009\uFF1Amultiple + value \u662F\u6570\u7EC4
+<Segmented
+  multiple
+  label="\u661F\u671F"
+  items={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: String(n), label: '\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5'[n - 1] }))}
+  value={multi}
+  onChange={setMulti}
+/>`;
+function InputPage() {
+  const [text2, setText] = (0, import_react37.useState)("");
+  const [num, setNum] = (0, import_react37.useState)(3);
+  const [checked, setChecked] = (0, import_react37.useState)(true);
+  const [seg, setSeg] = (0, import_react37.useState)("week");
+  const [filter2, setFilter] = (0, import_react37.useState)("all");
+  const [multi, setMulti] = (0, import_react37.useState)(["1"]);
+  return (0, import_react37.createElement)(
+    "div",
+    null,
+    (0, import_react37.createElement)(DocProse, { id: "input" }),
+    // Input 家族
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("demoInputFamily"), hint: t2("inputHint"), code: CODE_INPUT_FAMILY },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
+        (0, import_react37.createElement)(
+          "div",
+          { style: { display: "flex", alignItems: "center", gap: "6px" } },
+          (0, import_react37.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u5F00\u59CB\u65F6\u95F4"),
+          // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
+          (0, import_react37.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u9009\u62E9\u65E5\u671F", hint: t2("fieldHintDate") })
+        ),
+        (0, import_react37.createElement)(Input, { value: "bad value", onChange: () => {
+        }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
+        // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
+        //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
+        (0, import_react37.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
+        (0, import_react37.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
+      )
+    ),
+    // 问号提示：证明它不属于 Input 家族，随处可挂
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("btnHintTitle"), hint: t2("btnHintHint"), code: CODE_FIELD_HINT },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px" } },
+        (0, import_react37.createElement)(
+          Row,
+          null,
+          (0, import_react37.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react37.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+        ),
+        (0, import_react37.createElement)(
+          Row,
+          null,
+          (0, import_react37.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react37.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+        ),
+        (0, import_react37.createElement)(
+          Row,
+          null,
+          (0, import_react37.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react37.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
+        )
+      )
+    ),
+    // Switch / Checkbox / Segmented
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("switchTip"), hint: t2("checkboxHint"), code: CODE_SWITCH_SEG },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
+        (0, import_react37.createElement)(
+          "div",
+          { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
+          // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
+          // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
+          // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
+          (0, import_react37.createElement)(
+            "span",
+            { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
+            (0, import_react37.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+            (0, import_react37.createElement)("span", {
+              style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
+              onClick: () => {
+                setChecked(!checked);
+              }
+            }, "\u542F\u7528")
+          ),
+          (0, import_react37.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
+        ),
+        (0, import_react37.createElement)(
+          "div",
+          { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
+          (0, import_react37.createElement)(Segmented, {
+            variant: "inset",
+            items: [
+              { value: "day", label: "\u65E5" },
+              { value: "week", label: "\u5468" },
+              { value: "month", label: "\u6708" }
+            ],
+            value: seg,
+            onChange: setSeg
+          }),
+          (0, import_react37.createElement)(Segmented, {
+            variant: "inset",
+            bordered: true,
+            items: [
+              { value: "day", label: "\u65E5" },
+              { value: "week", label: "\u5468" },
+              { value: "month", label: "\u6708" }
+            ],
+            value: seg,
+            onChange: setSeg
+          }),
+          (0, import_react37.createElement)(Segmented, {
+            variant: "inset",
+            size: "sm",
+            items: [
+              { value: "day", label: "\u65E5" },
+              { value: "week", label: "\u5468" },
+              { value: "month", label: "\u6708" }
+            ],
+            value: seg,
+            onChange: setSeg
+          }),
+          (0, import_react37.createElement)(Segmented, {
+            variant: "inset",
+            size: "sm",
+            bordered: true,
+            items: [
+              { value: "day", label: "\u65E5" },
+              { value: "week", label: "\u5468" },
+              { value: "month", label: "\u6708" }
+            ],
+            value: seg,
+            onChange: setSeg
+          })
+        ),
+        // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
+        (0, import_react37.createElement)(Segmented, {
+          variant: "inset",
+          items: [
+            { value: "all", label: t2("segAll"), count: 11 },
+            { value: "doing", label: t2("segDoing"), count: 5 },
+            { value: "claimed", label: t2("segClaimed"), count: 11 },
+            { value: "blocked", label: t2("segBlocked") },
+            { value: "stalled", label: t2("segStalled") }
+          ],
+          value: filter2,
+          onChange: setFilter
+        }),
+        (0, import_react37.createElement)(Segmented, {
+          variant: "inset",
+          bordered: true,
+          items: [
+            { value: "all", label: t2("segAll"), count: 11 },
+            { value: "doing", label: t2("segDoing"), count: 5 },
+            { value: "claimed", label: t2("segClaimed"), count: 11 },
+            { value: "blocked", label: t2("segBlocked") },
+            { value: "stalled", label: t2("segStalled") }
+          ],
+          value: filter2,
+          onChange: setFilter
+        }),
+        // 星期多选方块（蓝底选中、近似方形）
+        (0, import_react37.createElement)(Segmented, {
+          multiple: true,
+          className: "dshpc-seg--weekday",
+          label: "\u661F\u671F",
+          items: [1, 2, 3, 4, 5, 6, 7].map((n) => ({
+            value: String(n),
+            label: t2(`weekday${n}`)
+          })),
+          value: multi,
+          onChange: setMulti
+        }),
+        (0, import_react37.createElement)(Segmented, {
+          multiple: true,
+          className: "dshpc-seg--weekday",
+          bordered: true,
+          label: "\u661F\u671F\uFF08\u5E26\u5916\u6846\uFF09",
+          items: [1, 2, 3, 4, 5, 6, 7].map((n) => ({
+            value: String(n),
+            label: t2(`weekday${n}`)
+          })),
+          value: multi,
+          onChange: setMulti
+        })
+      )
+    ),
+    (0, import_react37.createElement)(DocCode, { id: "input" }),
+    (0, import_react37.createElement)(DocApi, { id: "input" }),
+    (0, import_react37.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
+  );
+}
+var ICON_OPTIONS = [
+  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
+  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
+  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
+];
+var CODE_PICKER = `// \u5355\u9009\uFF1Aicon + \u53EF\u641C\u7D22 / \u53EF\u6E05\u9664
+<Picker
+  options={[{ value: 'a', label: '\u9009\u9879 A' }, { value: 'b', label: '\u9009\u9879 B' }]}
+  value={single}
+  onChange={setSingle}
+  searchable
+  clearable
+  placeholder="\u5355\u9009"
+/>
+// \u5206\u7EC4 + \u591A\u9009\uFF1Agroups \u4E0E options \u4E8C\u9009\u4E00\uFF1Bmax \u7ED9\u4E0A\u9650\uFF0C\u53EF\u53CD\u9009
+<Picker
+  groups={[{ value: 'g1', label: '\u7EC4\u4E00', options }, { value: 'g2', label: '\u7EC4\u4E8C', options }]}
+  value={multi}
+  mode="multiple"
+  max={2}
+  onChange={setMulti}
+  searchable
+/>
+// hint \u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\uFF0C\u4E0D\u7528\u518D\u624B\u52A8\u62FC FieldHint
+<Picker options={options} value={v} onChange={setV} hint="\u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\u7684\u95EE\u53F7\u63D0\u793A" />`;
+var CODE_MODEL_PICKER = `// \u6570\u636E\u6765\u81EA\u5BBF\u4E3B\u6A21\u578B\u76EE\u5F55\uFF08\u5BBF\u4E3B\u4FA7 connectHost(ctx, { modelsPath }) \u6CE8\u5165\uFF09\uFF0C\u4E0D\u80FD\u51ED\u7A7A\u9020
+// \u5206\u7EC4\u5F62\u6001\uFF1A\u4E00\u4E2A\u4E0B\u62C9\uFF0C\u4F9B\u5E94\u5546\u505A\u7EC4\u5934
+<ModelPicker value={model} onChange={setModel} variant="grouped" />
+// \u8054\u52A8\u5F62\u6001\uFF1A\u4E24\u4E2A\u4E0B\u62C9\uFF0C\u5148\u9009\u4F9B\u5E94\u5546\u3001\u6A21\u578B\u5217\u8868\u8DDF\u7740\u7B5B
+<ModelPicker value={model} onChange={setModel} variant="cascade" placeholder="\u9009\u62E9\u6A21\u578B" />`;
+var CODE_WORKSPACE_PICKER = `// \u9ED8\u8BA4\u5373\u300C\u5DE5\u4F5C\u533A\u300D\u6587\u6848\u4E0E\u6587\u4EF6\u5939\u56FE\u6807\uFF1Bclearable / searchable \u662F\u53EF\u9009\u80FD\u529B
+<WorkspacePicker value={ws} onChange={setWs} clearable searchable />`;
+function PickerPage() {
+  const [single, setSingle] = (0, import_react37.useState)(void 0);
+  const [multi, setMulti] = (0, import_react37.useState)([]);
+  const [model, setModel] = (0, import_react37.useState)("");
+  const [model2, setModel2] = (0, import_react37.useState)("");
+  const [ws, setWs] = (0, import_react37.useState)(void 0);
+  return (0, import_react37.createElement)(
+    "div",
+    null,
+    (0, import_react37.createElement)(DocProse, { id: "picker" }),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "Picker", hint: t2("pickerHint"), code: CODE_PICKER },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
+        (0, import_react37.createElement)(Picker, {
+          options: ICON_OPTIONS,
+          icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
+          value: single,
+          onChange: (v) => setSingle(v),
+          searchable: true,
+          clearable: true,
+          placeholder: "\u5355\u9009\uFF08icon + \u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
+        }),
+        (0, import_react37.createElement)(Picker, {
+          options: ICON_OPTIONS,
+          value: single,
+          onChange: (v) => setSingle(v),
+          placeholder: "\u5355\u9009\uFF08\u65E0\u641C\u7D22\u6846\uFF09"
+        }),
+        (0, import_react37.createElement)(Picker, {
+          groups: [
+            { value: "g1", label: "\u7EC4\u4E00", options: ICON_OPTIONS },
+            {
+              value: "g2",
+              label: "\u7EC4\u4E8C",
+              options: [
+                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
+                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
+              ]
+            }
+          ],
+          value: multi,
+          mode: "multiple",
+          max: 2,
+          onChange: (v) => setMulti(v),
+          searchable: true,
+          placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF0C\u53EF\u53CD\u9009\uFF09"
+        }),
+        (0, import_react37.createElement)(Picker, {
+          options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
+          degraded: true,
+          disabled: true,
+          placeholder: "\u964D\u7EA7 + \u7981\u7528"
+        }),
+        (0, import_react37.createElement)(Picker, {
+          options: ICON_OPTIONS,
+          value: single,
+          onChange: (v) => setSingle(v),
+          hint: "\u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\u7684\u95EE\u53F7\u63D0\u793A\uFF0C\u4E0D\u7528\u518D\u624B\u52A8\u62FC FieldHint\u3002",
+          placeholder: "\u5355\u9009\uFF08\u5E26 hint\uFF09"
+        })
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09", hint: t2("modelPickerHint"), code: CODE_MODEL_PICKER },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
+        // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
+        (0, import_react37.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
+        // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
+        (0, import_react37.createElement)(ModelPicker, {
+          value: model2,
+          onChange: setModel2,
+          variant: "cascade",
+          placeholder: "\u9009\u62E9\u6A21\u578B"
+        })
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09", hint: t2("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
+        // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
+        (0, import_react37.createElement)(WorkspacePicker, {
+          value: ws,
+          onChange: (v) => setWs(v),
+          clearable: true,
+          searchable: true
+        })
+      )
+    ),
+    (0, import_react37.createElement)(DocCode, { id: "picker" }),
+    (0, import_react37.createElement)(DocApi, { id: "picker" }),
+    (0, import_react37.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
+  );
+}
+var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM\uFF08\u51FD\u6570\u7EC4\u4EF6\u6302\u4E0D\u4E0A \u21D2 \u65E0\u6C14\u6CE1\uFF09
+<Tooltip label="top \xB7 center" side="top" align="center">
+  <button type="button">\u60AC\u505C\u6211</button>
+</Tooltip>
+<Tooltip label="\u5F88\u957F\u7684\u4E00\u6BB5\u8BF4\u660E\uFF0C\u653E\u4E0D\u4E0B\u65F6\u6309 maxWidth \u6298\u884C" side="bottom" maxWidth={240}>
+  <span>\u60AC\u505C\u6211</span>
+</Tooltip>
+
+// \u4E24\u6BB5\u5F0F\uFF1Alabel \u91CC\u76F4\u63A5\u5199\u6362\u884C
+<Tooltip label={'\u4EFB\u52A1\u540D' + String.fromCharCode(10) + '\u4EFB\u52A1\u6B63\u6587'} side="top" maxWidth={260}>
+  <span>\u4EFB\u52A1\u540D</span>
+</Tooltip>
+
+// \u5BCC\u5361\u7247\uFF1A\u5B98\u65B9 HoverCard\uFF0Ccontent \u6536\u4EFB\u610F ReactNode\uFF1Bcompact \u53D8\u4F53\u80CC\u666F\u6052\u6DF1\uFF0C\u5185\u5BB9\u8272\u81EA\u5DF1\u7ED9
+<HoverCard
+  variant="compact"
+  openDelayMs={200}
+  anchor={<span>\u4EFB\u52A1\u540D</span>}
+  content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>\u2026</div>}
+/>`;
+function TooltipPage() {
+  return (0, import_react37.createElement)(
+    "div",
+    null,
+    (0, import_react37.createElement)(DocProse, { id: "tooltip" }),
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("tooltipTitle"), hint: t2("tooltipHint"), code: CODE_TOOLTIP },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: t2("tooltipAnchorButton") },
+          tipAnchor("top \xB7 center", "top", "center"),
+          tipAnchor("top \xB7 end", "top", "end"),
+          tipAnchor("bottom \xB7 center", "bottom", "center"),
+          tipAnchor("bottom \xB7 end", "bottom", "end"),
+          tipAnchor("right", "right")
+        ),
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: t2("tooltipAnchorText") },
+          (0, import_react37.createElement)(
+            import_dsh_client_ui_primitives2.Tooltip,
+            { label: t2("tooltipHint"), side: "top" },
+            (0, import_react37.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
+            }, t2("tooltipAnchorText"))
+          ),
+          (0, import_react37.createElement)(
+            import_dsh_client_ui_primitives2.Tooltip,
+            { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
+            (0, import_react37.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
+            }, t2("tooltipLong"))
+          )
+        ),
+        // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: t2("tooltipMultiline") },
+          (0, import_react37.createElement)(
+            import_dsh_client_ui_primitives2.Tooltip,
+            { label: `${t2("tooltipName")}
+${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
+            (0, import_react37.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
+            }, t2("tooltipName"))
+          )
+        ),
+        // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
+        (0, import_react37.createElement)(
+          Labeled,
+          { label: t2("tooltipRich") },
+          (0, import_react37.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
+            variant: "compact",
+            openDelayMs: 200,
+            anchor: (0, import_react37.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
+            }, t2("tooltipName")),
+            // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
+            // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
+            // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
+            // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
+            content: (0, import_react37.createElement)(
+              "div",
+              {
+                style: {
+                  padding: "4px 2px",
+                  minWidth: "220px",
+                  color: "var(--dsw-static-neutral-bluish-00,#fff)"
+                }
+              },
+              (0, import_react37.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
+              (0, import_react37.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
+            )
+          })
+        )
+      )
+    ),
+    (0, import_react37.createElement)(DocCode, { id: "tooltip" }),
+    (0, import_react37.createElement)(DocApi, { id: "tooltip" })
+  );
+}
+var CODE_CARD = `// Card\uFF1Asurface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF1Baction \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u4E5F\u5782\u76F4\u5C45\u4E2D
+<Card
+  accent="business"
+  action={<span style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>2026-10-18 \u521B\u5EFA</span>}
+>
+  <div style={{ fontWeight: 600 }}>\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM</div>
+  <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+    <Chip>#npm</Chip>
+    <Chip>#\u8FC1\u79FB</Chip>
+  </div>
+</Card>
+
+// accent \u4E94\u6863\uFF1Abusiness / success / warning / danger / neutral\uFF08\u6216\u4EFB\u610F CSS \u8272\u503C\uFF09
+<Card accent="warning"><div>\u2026</div></Card>`;
+var CODE_STRIP_CARD = `// StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + \u65B9\u89D2 + \u5DE6\u7F18 4px \u901A\u9AD8\u8272\u6761\uFF08\u5907\u6CE8\u6846\u3001\u6267\u884C\u8BB0\u5F55\u6761\u540C\u6B3E\uFF09
+<StripCard
+  accent="success"
+  action={<Button size="sm" variant="outline">Cancel</Button>}
+>
+  <div style={{ fontWeight: 600 }}>\u6267\u884C\u6210\u529F</div>
+  <div style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4</div>
+</StripCard>`;
+var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\uFF1B\u6807\u9898\u540E\u7F00\u53EF\u4EE5\u662F\u8BA1\u6570 / \u5F69\u8272\u6807\u7B7E / \u5C0F\u5B57\u8BF4\u660E
+<SectionHead
+  icon={<IconSparkleRegular size={16} />}
+  title={<span>\u5168\u90E8\u5F85\u529E <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
+  right={[
+    <Segmented variant="inset" items={[{ value: 'all', label: '\u5168\u90E8', count: 22 }]} value={seg} onChange={setSeg} />,
+    <div style={{ width: 192 }}><Input value={kw} onChange={setKw} placeholder="\u641C\u7D22" /></div>,
+  ]}
+/>`;
+function CardPage() {
+  const [seg, setSeg] = (0, import_react37.useState)("all");
+  const [kw, setKw] = (0, import_react37.useState)("");
+  return (0, import_react37.createElement)(
+    "div",
+    null,
+    (0, import_react37.createElement)(DocProse, { id: "card" }),
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("demoCardTitle"), hint: t2("cardHint"), code: CODE_CARD },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
+        // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
+        (0, import_react37.createElement)(
+          Card,
+          {
+            accent: "business",
+            action: (0, import_react37.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+          },
+          (0, import_react37.createElement)(
+            "div",
+            { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
+            "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
+          ),
+          (0, import_react37.createElement)(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
+            (0, import_react37.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react37.createElement)(Chip, null, "#npm"),
+            (0, import_react37.createElement)(Chip, null, "#pnpm"),
+            (0, import_react37.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react37.createElement)(Chip, null, "#\u8FC1\u79FB")
+          )
+        ),
+        // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
+        (0, import_react37.createElement)(
+          Card,
+          {
+            accent: "business",
+            action: (0, import_react37.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+          },
+          (0, import_react37.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react37.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
+        ),
+        // accent 速览：单行紧凑卡，只看色条档位
+        (0, import_react37.createElement)(
+          "div",
+          { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
+          ["business", "success", "warning", "danger", "neutral"].map(
+            (a) => (0, import_react37.createElement)(
+              Card,
+              { key: a, accent: a, style: { padding: "8px 12px" } },
+              (0, import_react37.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+            )
+          )
+        )
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("demoStripTitle"), hint: t2("stripHint"), code: CODE_STRIP_CARD },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
+        (0, import_react37.createElement)(
+          StripCard,
+          {
+            accent: "business",
+            action: (0, import_react37.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+          },
+          (0, import_react37.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react37.createElement)(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
+            (0, import_react37.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react37.createElement)(
+              "span",
+              { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
+              "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
+            )
+          )
+        ),
+        (0, import_react37.createElement)(
+          StripCard,
+          {
+            accent: "success",
+            // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
+            action: (0, import_react37.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+          },
+          (0, import_react37.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react37.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+        ),
+        // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
+        (0, import_react37.createElement)(
+          "div",
+          { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
+          ["business", "success", "warning", "danger", "neutral"].map(
+            (a) => (0, import_react37.createElement)(
+              StripCard,
+              { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
+              (0, import_react37.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+            )
+          )
+        )
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408", code: CODE_SECTION_HEAD },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "8px" } },
+        // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
+        (0, import_react37.createElement)(SectionHead, {
+          icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
+          title: (0, import_react37.createElement)(
+            "span",
+            { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
+            "\u5168\u90E8\u5F85\u529E",
+            (0, import_react37.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
+          ),
+          right: [
+            (0, import_react37.createElement)(Segmented, {
+              variant: "inset",
+              items: [
+                { value: "all", label: t2("segAll"), count: 22 },
+                { value: "doing", label: t2("segDoing"), count: 11 },
+                { value: "claimed", label: t2("segClaimed"), count: 11 }
+              ],
+              value: seg,
+              onChange: setSeg
+            }),
+            // 搜索框 140px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
+            (0, import_react37.createElement)(
+              "div",
+              { style: { width: "140px", flex: "none" } },
+              (0, import_react37.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+            )
+          ]
+        }),
+        // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
+        (0, import_react37.createElement)(SectionHead, {
+          icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
+          title: (0, import_react37.createElement)(
+            "span",
+            { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
+            "\u6211\u7684\u5F85\u529E",
+            (0, import_react37.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
+          ),
+          right: (0, import_react37.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
+        }),
+        // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
+        (0, import_react37.createElement)(SectionHead, {
+          icon: (0, import_react37.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
+          title: (0, import_react37.createElement)(
+            "span",
+            { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
+            "\u5DF2\u5F52\u6863",
+            (0, import_react37.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
+          ),
+          right: [
+            (0, import_react37.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
+            (0, import_react37.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
+          ]
+        })
+      )
+    ),
+    (0, import_react37.createElement)(DocCode, { id: "card" }),
+    (0, import_react37.createElement)(DocApi, { id: "card" })
+  );
+}
+var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884C\u56FA\u5B9A\u7531\u5927\u5230\u5C0F\uFF08md \u2192 sm \u2192 xs\uFF09\uFF0C\u540C\u6863\u6587\u6848\u4E0D\u6DF7\u6392
+<Chip size="md" tone="warning">\u903E\u671F</Chip>
+<Chip size="sm" tone="danger">\u505C\u6EDE</Chip>
+<Chip size="xs" tone="success">\u5B8C\u6210</Chip>
+
+// \u4E2D\u6027 # \u6807\u7B7E\uFF08\u8BED\u8A00\u65E0\u5173\uFF09\uFF1B\u4F20 onClick \u624D\u6E32\u67D3\u6210 button
+<Chip>#npm</Chip>
+<Chip onClick={() => showToast('\u70B9\u4E86 chip')}>#\u53EF\u70B9</Chip>`;
+var CODE_MARQUEE = `// \u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1A\u653E\u4E0D\u4E0B\u624D\u6EDA\uFF0Chover \u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7
+<MarqueeText text="\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" />`;
+var CODE_LIVE = `// \u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6\u5185\u5BB9\u8C03\u7528\u65B9\u6E32\u67D3
+<LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`;
+var CODE_EMPTY = `// \u4E1A\u52A1\u7A7A\u6001\uFF1A\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE
+<EmptyState text="\u6682\u65E0\u6570\u636E" action={<Button size="sm" variant="outline">\u91CD\u8BD5</Button>} />`;
+function ChipPage() {
+  return (0, import_react37.createElement)(
+    "div",
+    null,
+    (0, import_react37.createElement)(DocProse, { id: "chip" }),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "Chip", hint: t2("chipHint"), code: CODE_CHIP },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        ...["md", "sm", "xs"].map(
+          (sz) => (0, import_react37.createElement)(
+            "div",
+            { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
+            (0, import_react37.createElement)(Chip, { size: sz, tone: "warning" }, t2("chipOverdue")),
+            (0, import_react37.createElement)(Chip, { size: sz, tone: "danger" }, t2("chipStalled")),
+            (0, import_react37.createElement)(Chip, { size: sz, tone: "success" }, t2("chipDone")),
+            (0, import_react37.createElement)(Chip, { size: sz, tone: "business" }, t2("chipDoing")),
+            (0, import_react37.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
+          )
+        ),
+        // 中性 # 标签（语言无关）+ 长文字回归样
+        (0, import_react37.createElement)(
+          "div",
+          { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
+          (0, import_react37.createElement)(Chip, null, "#npm"),
+          (0, import_react37.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react37.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react37.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+        )
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("marqueeTitle"), hint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7", code: CODE_MARQUEE },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { maxWidth: "200px" } },
+        (0, import_react37.createElement)(MarqueeText, { text: "\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" })
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("liveTitle"), hint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3", code: CODE_LIVE },
+      (0, import_react37.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: t2("emptyStateTitle"), hint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE", code: CODE_EMPTY },
+      (0, import_react37.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
+    ),
+    (0, import_react37.createElement)(DocCode, { id: "chip" }),
+    (0, import_react37.createElement)(DocApi, { id: "chip" })
+  );
+}
+var CODE_HOST_MODAL = `// \u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u76F4\u63A5\u7528\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF09
+import { Modal } from '@deepseek-ai/dsh-client-ui-primitives'
+
+<Modal
+  open={open}
+  onClose={() => setOpen(false)}
+  title="\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97"
+  closeLabel="\u5173\u95ED"
+  description="\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002"
+  footer={
+    <>
+      <Button variant="outline">\u53D6\u6D88</Button>
+      <Button variant="danger">\u5220\u9664</Button>
+    </>
+  }
+>
+  <Input value={text} onChange={setText} placeholder="\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" />
+</Modal>
+
+// \u547D\u4EE4\u5F0F\uFF1A\u52A0 skin:"host" \u8D70\u540C\u4E00\u4E2A\u5B98\u65B9 Modal\uFF0C\u8FD4\u56DE Promise
+const ok = await confirmModal({
+  title: '\u5BBF\u4E3B\u786E\u8BA4\u6846', message: '\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09',
+  tone: 'danger', confirmText: '\u5220\u9664', cancelText: '\u518D\u60F3\u60F3', skin: 'host',
+})
+await alertModal({ title: '\u5BBF\u4E3B\u63D0\u793A', message: '\u5173\u95ED\u5373\u786E\u8BA4', skin: 'host' })`;
+var CODE_SMALL_MODAL = `// \u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1A\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F
+<AlertModal
+  severity="warning"
+  title="\u64CD\u4F5C\u7ED3\u679C"
+  message="\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002"
+  onConfirm={() => setOpen(false)}
+/>
+<ConfirmModal
+  title="\u5220\u9664\u4EFB\u52A1"
+  message="\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F"
+  tone="danger"
+  confirmText="\u5220\u9664"
+  cancelText="\u518D\u60F3\u60F3"
+  onConfirm={() => {}}
+  onCancel={() => {}}
+/>
+
+// \u547D\u4EE4\u5F0F\uFF08Promise\uFF0C\u4E0D\u7528\u7BA1\u5F00\u5173\u72B6\u6001\uFF09
+if (await confirmModal({ title: '\u786E\u8BA4\u63D0\u4EA4', message: '\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500', tone: 'danger' })) {
+  // \u7528\u6237\u70B9\u4E86\u786E\u8BA4
+}
+await alertModal({ title: '\u63D0\u793A', message: '\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' })`;
+var CODE_LARGE_MODAL = `// \u5185\u5BB9\u5F39\u7A97\uFF1Asize md / lg\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF08\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\uFF09
+<Modal title="\u4EFB\u52A1\u8BE6\u60C5" onClose={close} footer={<Button variant="primary">\u77E5\u9053\u4E86</Button>}>
+  <div>\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002</div>
+</Modal>
+
+// lg + headerActions\uFF08\u53F3\u4E0A\u89D2\uFF09+ \u53EF\u6EDA\u52A8\u5185\u5BB9
+<Modal
+  size="lg"
+  title="\u4F1A\u8BDD\u8BB0\u5F55"
+  headerActions={<Button variant="outline" size="sm">\u66F4\u591A</Button>}
+  onClose={close}
+  footer={<><Button variant="outline">\u5173\u95ED</Button><Button variant="primary">\u5B8C\u6210</Button></>}
+>
+  {items.map((it) => <div key={it.id}>{it.title}</div>)}
+</Modal>
+
+// \u65E0 footer\u3001\u5934\u90E8\u81EA\u5B9A\u4E49\u6392\u6CD5\uFF1Atitle \u6536 ReactNode
+<Modal
+  size="lg"
+  title={<><b>\u4EFB\u52A1\u8BE6\u60C5</b><span className="dshpc-modal__sid">sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4</span></>}
+  onClose={close}
+>
+  <div>\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\u3002</div>
+</Modal>`;
+var CODE_TOAST_NATIVE = `// showToast\uFF1ASonner \u539F\u5473\uFF08\u5BF9\u6BD4\u7528\uFF09
+showToast('\u5DF2\u4FDD\u5B58')
+showToast('\u4FDD\u5B58\u6210\u529F', { variant: 'success' })
+showToast('\u4FDD\u5B58\u5931\u8D25', { variant: 'error' })
+showToast('\u6574\u6761\u81EA\u5B9A\u4E49\u8272', { color: '#7c3aed' })
+showToast('\u6D88\u5931\u540E\u56DE\u8C03', { onDismiss: () => {} })
+showToast('\u9876\u90E8-\u5DE6', { position: 'top-left' })`;
+var CODE_TOAST_HOST = `// showHostToast\uFF1A\u76F4\u63A5\u5305\u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09
+showHostToast('\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A')
+showHostToast('\u64CD\u4F5C\u6210\u529F', { tone: 'success' })
+showHostToast('\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A', { actions: [{ text: '\u67E5\u770B', onClick: () => {} }] })`;
+var CODE_TOAST_NOTIFY = `// notify\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE\uFF08\u9879\u76EE\u5185\u63A8\u8350\uFF09
+notify('\u5DF2\u4FDD\u5B58\u8349\u7A3F')
+notify('\u4FDD\u5B58\u6210\u529F', { variant: 'success' })
+notify('\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3', { variant: 'warning', description: '\u6E05\u7406\u540E\u91CD\u8BD5' })
+notify('\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6', {
+  variant: 'success',
+  description: '\u53EF\u5728 10 \u79D2\u5185\u64A4\u9500',
+  actions: [{ text: '\u64A4\u9500', variant: 'outline', onClick: () => {} }],
+})
+notify('\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F', {
+  description: '\u63D0\u4EA4\u540E\u5C06\u901A\u77E5\u76F8\u5173\u6210\u5458',
+  actions: [
+    { text: '\u53D6\u6D88', variant: 'outline', onClick: () => {} },
+    { text: '\u63D0\u4EA4', variant: 'primary', onClick: () => {} },
+  ],
+})`;
+function FeedbackPage() {
+  const [open, setOpen] = (0, import_react37.useState)(false);
+  const [openNative, setOpenNative] = (0, import_react37.useState)(false);
+  const [alertState, setAlertState] = (0, import_react37.useState)(null);
+  const [confirmCfg, setConfirmCfg] = (0, import_react37.useState)(null);
+  const [confirmResult, setConfirmResult] = (0, import_react37.useState)("");
+  const [largeOpen, setLargeOpen] = (0, import_react37.useState)(false);
+  const [largeOpenB, setLargeOpenB] = (0, import_react37.useState)(false);
+  const [nativeText, setNativeText] = (0, import_react37.useState)("");
+  return (0, import_react37.createElement)(
+    "div",
+    null,
+    (0, import_react37.createElement)(DocProse, { id: "feedback" }),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002", code: CODE_SMALL_MODAL },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "16px" } },
+        (0, import_react37.createElement)(
+          "div",
+          null,
+          (0, import_react37.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react37.createElement)(
+            "div",
+            { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
+            (0, import_react37.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
+            (0, import_react37.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
+            (0, import_react37.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
+            (0, import_react37.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
+            (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
+          ),
+          alertState !== null ? (0, import_react37.createElement)(AlertModal, {
+            severity: alertState.sev,
+            title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
+            message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
+            onConfirm: () => setAlertState(null)
+          }) : null
+        ),
+        (0, import_react37.createElement)(
+          "div",
+          null,
+          (0, import_react37.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react37.createElement)(
+            "div",
+            { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
+            (0, import_react37.createElement)(Button, { onClick: () => {
+              setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
+              setConfirmResult("");
+            } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
+            (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => {
+              setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
+              setConfirmResult("");
+            } }, "danger \u53D8\u4F53"),
+            (0, import_react37.createElement)(Button, { variant: "ghost", onClick: () => {
+              setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
+              setConfirmResult("");
+            } }, "\u6539\u6587\u6848"),
+            confirmResult ? (0, import_react37.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
+          ),
+          confirmCfg !== null ? (0, import_react37.createElement)(ConfirmModal, {
+            title: "\u5220\u9664\u4EFB\u52A1",
+            message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
+            tone: confirmCfg.tone,
+            confirmText: confirmCfg.confirmText,
+            cancelText: confirmCfg.cancelText,
+            onConfirm: () => {
+              setConfirmCfg(null);
+              setConfirmResult(`\u4F60\u70B9\u4E86\uFF1A${confirmCfg.confirmText}\uFF08\u786E\u8BA4\uFF09`);
+            },
+            onCancel: () => {
+              setConfirmCfg(null);
+              setConfirmResult(`\u4F60\u70B9\u4E86\uFF1A${confirmCfg.cancelText}\uFF08\u53D6\u6D88\uFF09`);
+            }
+          }) : null
+        ),
+        (0, import_react37.createElement)(
+          "div",
+          null,
+          (0, import_react37.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
+          (0, import_react37.createElement)(
+            "div",
+            { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
+            (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => {
+              alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => showToast("alert \u5DF2\u5173\u95ED"));
+            } }, "alertModal()"),
+            (0, import_react37.createElement)(Button, { onClick: async () => {
+              const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
+              showToast(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
+            } }, "confirmModal()")
+          )
+        )
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002", code: CODE_LARGE_MODAL },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "16px" } },
+        (0, import_react37.createElement)(
+          "div",
+          null,
+          (0, import_react37.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
+          (0, import_react37.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
+          open ? (0, import_react37.createElement)(Modal, {
+            title: "\u4EFB\u52A1\u8BE6\u60C5",
+            onClose: () => setOpen(false),
+            footer: (0, import_react37.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+          }, (0, import_react37.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+        ),
+        (0, import_react37.createElement)(
+          "div",
+          null,
+          (0, import_react37.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
+          (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
+          largeOpen ? (0, import_react37.createElement)(
+            Modal,
+            {
+              size: "lg",
+              title: "\u4F1A\u8BDD\u8BB0\u5F55",
+              headerActions: (0, import_react37.createElement)(
+                Button,
+                { variant: "outline", size: "sm", icon: iconOf("chevron", 14) },
+                "\u66F4\u591A"
+              ),
+              onClose: () => setLargeOpen(false),
+              footer: (0, import_react37.createElement)(
+                "div",
+                { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
+                (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
+                (0, import_react37.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
+              )
+            },
+            (0, import_react37.createElement)(
+              "div",
+              null,
+              Array.from(
+                { length: 40 },
+                (_, i2) => (0, import_react37.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
+              ),
+              (0, import_react37.createElement)("div", { className: "dshpc-modal__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
+            )
+          ) : null
+        ),
+        (0, import_react37.createElement)(
+          "div",
+          null,
+          (0, import_react37.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
+          (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
+          largeOpenB ? (0, import_react37.createElement)(
+            Modal,
+            {
+              size: "lg",
+              title: (0, import_react37.createElement)(
+                "div",
+                null,
+                (0, import_react37.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
+                (0, import_react37.createElement)("div", { className: "dshpc-modal__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
+              ),
+              onClose: () => setLargeOpenB(false)
+            },
+            (0, import_react37.createElement)(
+              "div",
+              null,
+              (0, import_react37.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
+              (0, import_react37.createElement)("div", { style: { marginTop: "12px", border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
+            )
+          ) : null
+        )
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002', code: CODE_HOST_MODAL },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
+        (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
+        (0, import_react37.createElement)(Button, { variant: "ghost", onClick: () => {
+          void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
+        } }, 'alertModal({skin:"host"})'),
+        (0, import_react37.createElement)(Button, { variant: "ghost", onClick: async () => {
+          const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
+          showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
+        } }, 'confirmModal({skin:"host"})'),
+        openNative ? (0, import_react37.createElement)(
+          Official.Modal,
+          {
+            open: openNative,
+            onClose: () => setOpenNative(false),
+            title: "\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97",
+            closeLabel: "\u5173\u95ED",
+            description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
+            contentClassName: "dshpc-native-demo-content",
+            footer: (0, import_react37.createElement)(
+              "div",
+              { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
+              (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react37.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react37.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+            )
+          },
+          (0, import_react37.createElement)(
+            "div",
+            { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+            (0, import_react37.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react37.createElement)(
+              "label",
+              { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
+              (0, import_react37.createElement)(Checkbox, { checked: false, onChange: () => {
+              } }),
+              "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
+            )
+          )
+        ) : null
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify", hint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE", code: CODE_TOAST_NOTIFY },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
+        (0, import_react37.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
+        (0, import_react37.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react37.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react37.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react37.createElement)(
+          Button,
+          {
+            onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
+              variant: "success",
+              description: "\u53EF\u5728 10 \u79D2\u5185\u64A4\u9500",
+              actions: [{ text: "\u64A4\u9500", variant: "outline", onClick: () => notify("\u5DF2\u64A4\u9500") }]
+            })
+          },
+          "\u5355\u6309\u94AE+\u63CF\u8FF0"
+        ),
+        (0, import_react37.createElement)(
+          Button,
+          {
+            onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
+              description: "\u63D0\u4EA4\u540E\u5C06\u901A\u77E5\u76F8\u5173\u6210\u5458",
+              actions: [
+                { text: "\u53D6\u6D88", variant: "outline", onClick: () => notify("\u5DF2\u53D6\u6D88") },
+                { text: "\u63D0\u4EA4", variant: "primary", onClick: () => notify("\u5DF2\u63D0\u4EA4", { variant: "success" }) }
+              ]
+            })
+          },
+          "\u53CC\u6309\u94AE"
+        )
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09", code: CODE_TOAST_HOST },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
+        (0, import_react37.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
+        (0, import_react37.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
+        (0, import_react37.createElement)(
+          Button,
+          {
+            onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
+              actions: [{ text: "\u67E5\u770B", onClick: () => showToast("\u70B9\u4E86\u300C\u67E5\u770B\u300D") }]
+            })
+          },
+          "\u5E26\u52A8\u4F5C"
+        )
+      )
+    ),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528", code: CODE_TOAST_NATIVE },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" } },
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
+        (0, import_react37.createElement)(
+          Button,
+          {
+            onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
+              onDismiss: () => showToast("\u4E0A\u4E00\u6761\u6D88\u5931\u4E86")
+            })
+          },
+          "\u5E26\u56DE\u8C03"
+        )
+      ),
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
+        (0, import_react37.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
+      )
+    ),
+    (0, import_react37.createElement)(DocCode, { id: "feedback" }),
+    (0, import_react37.createElement)(DocApi, { id: "feedback" })
+  );
+}
+var CODE_DOCK = `// 1) \u5EFA\u4E00\u4E2A dock \u63A7\u5236\u5668\uFF08\u5E94\u7528\u7EA7\u5355\u4F8B\uFF1BmaxPanels \u9ED8\u8BA4 3\uFF09
+const dock = createPanelDock({ maxPanels: 3 })
+
+// 2) \u6E32\u67D3\uFF1A\u7ED3\u6784\u5199\u5728\u8C03\u7528\u70B9 \u2014\u2014 PanelDock \u8BFB children \u91CC DockPanel \u7684 props \u7EDF\u4E00\u753B
+<div style={{ display: 'flex', height: '100%' }}>
+  <main style={{ flex: 1, minWidth: 0 }}>\u4E3B\u533A\u5185\u5BB9</main>
+  <PanelDock dock={dock}>
+    <DockPanel id="files" title="\u6587\u4EF6" icon={<FolderIcon />}>
+      <FileBrowser />
+    </DockPanel>
+    <DockPanel id="preview" title="\u9884\u89C8" width={520} closeButton="floating">
+      <FilePreview />
+    </DockPanel>
+  </PanelDock>
+</div>
+
+// 3) \u663E\u9690\u5F52\u72B6\u6001\uFF1A\u53EA\u4F20 id\uFF0C\u4E0D\u4F20\u5185\u5BB9
+const result = dock.open('files')   // { ok, reason }\uFF1B\u5230\u4E0A\u9650\u65F6 ok=false
+if (!result.ok) showToast('\u6700\u591A\u540C\u65F6\u5F00 3 \u680F')
+dock.close('files')
+dock.toggle('preview')
+dock.isOpen('files')
+
+// 4) \u8BA2\u9605\u72B6\u6001\u9A71\u52A8 UI\uFF08React\uFF09
+const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`;
+function LayoutPage() {
+  const state = (0, import_react37.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
+  const [notice, setNotice] = (0, import_react37.useState)(null);
+  const open = (id3) => {
+    const result = demoDock.open(id3);
+    setNotice(result.ok ? null : t2("dockLimitWarn"));
+  };
+  const close = (id3) => {
+    demoDock.close(id3);
+    setNotice(null);
+  };
+  const opened = state.ids;
+  return (0, import_react37.createElement)(
+    "div",
+    null,
+    (0, import_react37.createElement)(DocProse, { id: "layout" }),
+    (0, import_react37.createElement)(
+      Example,
+      { title: "PanelDock", hint: t2("dockHint"), code: CODE_DOCK },
+      (0, import_react37.createElement)(
+        "div",
+        { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
+        (0, import_react37.createElement)(Button, { size: "sm", onClick: () => open("A") }, t2("dockBtnOpenA")),
+        (0, import_react37.createElement)(Button, { size: "sm", onClick: () => open("B") }, t2("dockBtnOpenB")),
+        (0, import_react37.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t2("dockBtnOpenA2")),
+        (0, import_react37.createElement)(Button, { size: "sm", onClick: () => close("A") }, t2("dockBtnCloseA")),
+        (0, import_react37.createElement)(Button, { size: "sm", onClick: () => open("default") }, t2("dockBtnDefault")),
+        (0, import_react37.createElement)(Button, { size: "sm", onClick: () => open("C") }, t2("dockBtnOpenC")),
+        (0, import_react37.createElement)(
+          Button,
+          {
+            size: "sm",
+            variant: "ghost",
+            onClick: () => {
+              for (const id3 of demoDock.ids()) demoDock.close(id3);
+              setNotice(null);
+            }
+          },
+          t2("dockBtnReset")
+        )
+      ),
+      (0, import_react37.createElement)(
+        "div",
+        { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } },
+        `${t2("dockOpened")}${opened.length === 0 ? "\u2014" : opened.join(", ")}`,
+        notice === null ? "" : `\u3000${notice}`
+      ),
+      (0, import_react37.createElement)(
+        "div",
+        { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
+        t2("dockMainText")
+      )
+    ),
+    (0, import_react37.createElement)(DocCode, { id: "layout" }),
+    (0, import_react37.createElement)(DocApi, { id: "layout" })
+  );
+}
+
+// packages/demo/src/sections/blocks.tsx
+var import_react46 = require("react");
+
+// dist/explorer/FileBrowser.js
+var import_react43 = require("react");
+
+// dist/explorer/preview/index.js
+var import_react42 = require("react");
+
+// dist/explorer/types.js
+var HTML_KINDS = ["html", "htm"];
+var OFFICE_KINDS = ["doc", "docx", "ppt", "pptx"];
+var SOURCE_MAX_BYTES = 256 * 1024;
+function previewInfoOf(path) {
+  const ext = extOf(path);
+  const mime = mimeOf(path);
+  if (mime !== void 0)
+    return { kind: "image", ext, mime };
+  if (ext === "pdf")
+    return { kind: "pdf", ext, mime: "application/pdf" };
+  if (ext === "md" || ext === "markdown")
+    return { kind: "md", ext };
+  if (HTML_KINDS.includes(ext))
+    return { kind: "html", ext };
+  if (OFFICE_KINDS.includes(ext))
+    return { kind: "office", ext, mime: "application/pdf" };
+  return { kind: "text", ext };
+}
+function unwrapEnvelope(result) {
+  if (typeof result === "object" && result !== null) {
+    const r2 = result;
+    if (r2.ok === false)
+      return { kind: "error", error: r2.error };
+    if (r2.ok === true && "value" in r2)
+      return { kind: "ok", payload: r2.value };
+  }
+  return { kind: "ok", payload: result };
+}
+function isFailed(value) {
+  return typeof value === "object" && value !== null && "failed" in value;
+}
+function listingOf(result) {
+  const envelope = unwrapEnvelope(result);
+  if (envelope.kind === "error")
+    return { failed: envelope.error };
+  const raw = envelope.payload;
+  if (typeof raw !== "object" || raw === null) {
+    console.warn("[dsh-plugin-core:explorer] list \u8FD4\u56DE\u975E\u5BF9\u8C61");
+    return null;
+  }
+  const r2 = raw;
+  if (typeof r2.path !== "string" || !Array.isArray(r2.entries) || typeof r2.truncated !== "boolean") {
+    console.warn("[dsh-plugin-core:explorer] list \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6");
+    return null;
+  }
+  return { path: r2.path, entries: r2.entries, truncated: r2.truncated };
+}
+function textPageOf(result) {
+  const envelope = unwrapEnvelope(result);
+  if (envelope.kind === "error")
+    return { failed: envelope.error };
+  const raw = envelope.payload;
+  if (typeof raw !== "object" || raw === null) {
+    console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u975E\u5BF9\u8C61");
+    return null;
+  }
+  const r2 = raw;
+  if (typeof r2.text !== "string") {
+    console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6\uFF08\u65E0 text \u5B57\u6BB5\uFF09");
+    return null;
+  }
+  const offset4 = typeof r2.offset === "number" ? r2.offset : 0;
+  const lines = typeof r2.lines === "number" ? r2.lines : r2.text === "" ? 0 : r2.text.split("\n").length;
+  return { text: r2.text, offset: offset4, lines, eof: r2.eof !== false };
+}
+function bytesOf(result) {
+  const envelope = unwrapEnvelope(result);
+  if (envelope.kind === "error")
+    return { failed: envelope.error };
+  const data2 = envelope.payload?.data;
+  if (data2 instanceof Uint8Array)
+    return data2;
+  console.warn("[dsh-plugin-core:explorer] readBytes \u8FD4\u56DE\u5F62\u72B6\u4E0D\u7B26\u5951\u7EA6");
+  return null;
+}
+function absolutePathOf(result) {
+  const envelope = unwrapEnvelope(result);
+  if (envelope.kind === "error")
+    return null;
+  const raw = envelope.payload;
+  if (typeof raw !== "object" || raw === null)
+    return null;
+  const abs = raw.absolutePath;
+  return typeof abs === "string" && abs !== "" ? abs : null;
+}
+function bareCode(raw) {
+  if (typeof raw === "string") {
+    const slash3 = raw.lastIndexOf("/");
+    return slash3 >= 0 ? raw.slice(slash3 + 1) : raw;
+  }
+  if (typeof raw === "object" && raw !== null) {
+    const code3 = raw.code;
+    if (typeof code3 === "string")
+      return bareCode(code3);
+  }
+  return "";
+}
+function errView(error) {
+  const code3 = bareCode(error);
+  switch (code3) {
+    case "outside-workspace":
+      return { key: "previewOutside" };
+    case "not-found":
+    case "lookup-not-found":
+      return { key: "previewNotFound" };
+    case "not-directory":
+      return { key: "previewNotDirectory" };
+    case "not-regular-file":
+      return { key: "previewNotDirectory" };
+    case "too-large":
+      return { key: "previewTooLarge" };
+    case "not-text":
+      return { key: "previewNotText" };
+    case "invocation-unavailable":
+    case "service-unavailable":
+      return { key: "previewOfficeUnavailable" };
+    default:
+      console.warn("[dsh-plugin-core:explorer] \u9884\u89C8\u5931\u8D25\uFF1A\u672A\u6620\u5C04\u7684\u8FDC\u7AEF\u9519\u8BEF\u7801", code3, error);
+      return { key: "previewFailedCode", params: { code: code3 } };
+  }
+}
+function sortEntries(entries2) {
+  return [...entries2].sort((a, b) => {
+    const ad = a.type === "directory" ? 0 : 1;
+    const bd = b.type === "directory" ? 0 : 1;
+    if (ad !== bd)
+      return ad - bd;
+    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+  });
+}
+function listPathOf(dir) {
+  return dir === "" ? "." : dir;
+}
+function createRootCache() {
+  const map = /* @__PURE__ */ new Map();
+  return {
+    get: (sessionId) => map.get(sessionId),
+    set: (sessionId, root) => {
+      map.set(sessionId, root);
+    }
+  };
+}
+function isAbsoluteish(p) {
+  return p.startsWith("/") || p.startsWith("\\") || /^[a-zA-Z]:[\\/]/.test(p);
+}
+function relJoin(dir, name2) {
+  return dir.replace(/\/+$/, "") === "" ? name2 : `${dir.replace(/\/+$/, "")}/${name2}`;
+}
+function learnRoot(cache3, sessionId, relativePath, absolutePath) {
+  const rel = relativePath.replace(/^\/+/, "").replace(/\/+$/, "");
+  if (rel === "" || !absolutePath.endsWith(`/${rel}`))
+    return null;
+  const root = absolutePath.slice(0, absolutePath.length - rel.length - 1);
+  cache3.set(sessionId, root);
+  return root;
+}
+function relativizeToRoot(cache3, sessionId, dir) {
+  if (!isAbsoluteish(dir))
+    return dir;
+  const root = cache3.get(sessionId);
+  if (root === void 0)
+    return dir;
+  const norm = root.replace(/\/+$/, "");
+  if (dir === norm)
+    return "";
+  if (dir.startsWith(`${norm}/`))
+    return dir.slice(norm.length + 1);
+  return dir;
+}
+async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
+  const stat = workspaceFiles.stat;
+  if (stat === void 0)
+    return null;
+  let frontier = [startDir];
+  for (let depth = 0; depth < 3 && frontier.length > 0; depth++) {
+    const nextDirs = [];
+    for (const dir of frontier.slice(0, 5)) {
+      let entries2;
+      try {
+        const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir)));
+        if (parsed === null || isFailed(parsed))
+          continue;
+        entries2 = parsed.entries;
+      } catch {
+        continue;
+      }
+      const file = entries2.find((entry) => entry.type === "file");
+      if (file !== void 0) {
+        const rel = relJoin(dir, file.name);
+        try {
+          const abs = absolutePathOf(await stat(sessionId, rel));
+          if (abs !== null)
+            return { absolutePath: abs, relativePath: rel };
+        } catch {
+        }
+      }
+      for (const entry of entries2) {
+        if (entry.type === "directory" && nextDirs.length < 5)
+          nextDirs.push(relJoin(dir, entry.name));
+      }
+    }
+    frontier = nextDirs;
+  }
+  return null;
+}
+async function absolutizeDir(cache3, workspaceFiles, sessionId, dir, canonical, entries2) {
+  if (isAbsoluteish(dir))
+    return dir;
+  const rel = canonical !== "" ? canonical : dir;
+  const cached = cache3.get(sessionId);
+  if (cached !== void 0)
+    return `${cached}/${rel}`;
+  const stat = workspaceFiles.stat;
+  if (stat === void 0)
+    return dir;
+  const file = entries2.find((entry) => entry.type === "file");
+  if (file !== void 0) {
+    try {
+      const sub = relJoin(rel, file.name);
+      const abs = absolutePathOf(await stat(sessionId, sub));
+      if (abs?.endsWith(`/${file.name}`) === true && learnRoot(cache3, sessionId, sub, abs) !== null) {
+        return abs.slice(0, abs.length - file.name.length - 1);
+      }
+    } catch {
+    }
+  }
+  const found = await findAnyFileAbs(workspaceFiles, sessionId, rel);
+  if (found === null)
+    return dir;
+  const root = learnRoot(cache3, sessionId, found.relativePath, found.absolutePath);
+  return root === null ? dir : `${root}/${rel}`;
+}
+function matchesFilter(path, isDir, filter2) {
+  if (filter2 === void 0)
+    return true;
+  if (filter2.dirs === true)
+    return isDir;
+  if (filter2.exts === void 0 || filter2.exts.length === 0)
+    return true;
+  if (isDir)
+    return true;
+  return filter2.exts.includes(extOf(path));
+}
+function crumbsOfDir(dir) {
+  const isAbs = isAbsoluteish(dir);
+  const segs = dir.split("/").filter((s) => s.length > 0);
+  const out = [];
+  let acc = "";
+  for (const seg of segs) {
+    acc = acc === "" ? isAbs ? `/${seg}` : seg : `${acc}/${seg}`;
+    out.push({ label: seg, path: acc });
+  }
+  return out;
+}
+function baseNameOfPath(p) {
+  const i2 = Math.max(p.lastIndexOf("/"), p.lastIndexOf("\\"));
+  return i2 < 0 ? p : p.slice(i2 + 1);
+}
+function dirnameOf(p) {
+  return parentOf(p);
+}
+function pickWorkspaceAnchor(items) {
+  let best = null;
+  let bestAt = Number.NEGATIVE_INFINITY;
+  for (const item of items) {
+    const sessionId = item.sessionIds?.[item.sessionIds.length - 1];
+    if (typeof item.title !== "string" || item.title === "" || typeof sessionId !== "string" || sessionId === "")
+      continue;
+    const at = typeof item.updatedAt === "number" && Number.isFinite(item.updatedAt) ? item.updatedAt : Number.NEGATIVE_INFINITY;
+    if (best !== null && at <= bestAt)
+      continue;
+    best = { title: item.title, sessionId };
+    bestAt = at;
+  }
+  return best;
+}
+
+// dist/explorer/preview/BytesPreview.js
+var import_react38 = require("react");
+function BytesPreview(props) {
+  ensureControls();
+  const tt = props.translate ?? t;
+  const [url, setUrl] = (0, import_react38.useState)(null);
+  const [failed, setFailed] = (0, import_react38.useState)(null);
+  (0, import_react38.useEffect)(() => {
+    let alive = true;
+    let objectUrl = null;
+    setUrl(null);
+    setFailed(null);
+    props.workspaceFiles.readBytes(props.sessionId, props.path, {}).then((res) => {
+      const data2 = bytesOf(res);
+      if (!alive)
+        return;
+      if (data2 === null) {
+        console.warn("[dsh-plugin-core:explorer] readBytes \u8FD4\u56DE\u4F53\u65E0\u6CD5\u89E3\u6790\u4E3A\u5B57\u8282", props.path, res);
+        setFailed({ key: "previewBadPayload" });
+        return;
+      }
+      if ("failed" in data2) {
+        setFailed(errView(data2.failed));
+        return;
+      }
+      const blob = new Blob([new Uint8Array(data2)], { type: props.mime });
+      objectUrl = URL.createObjectURL(blob);
+      setUrl(objectUrl);
+    }).catch((error) => {
+      if (alive)
+        setFailed(errView(error));
+    });
+    return () => {
+      alive = false;
+      if (objectUrl !== null)
+        URL.revokeObjectURL(objectUrl);
+    };
+  }, [props.workspaceFiles, props.sessionId, props.path, props.mime]);
+  if (failed !== null)
+    return (0, import_react38.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+  if (url === null)
+    return (0, import_react38.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  if (props.kind === "image") {
+    return (0, import_react38.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
+  }
+  return (0, import_react38.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react38.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path }));
+}
+
+// dist/explorer/preview/HtmlPreview.js
+var import_react40 = require("react");
+
+// dist/explorer/preview/TextPreview.js
+var import_react39 = require("react");
+
 // dist/explorer/preview/md-labels.js
 function markdownLabels() {
   return {
@@ -52931,16 +55434,16 @@ function markdownLabels() {
 function TextPreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const [text2, setText] = (0, import_react36.useState)("");
-  const [truncated, setTruncated] = (0, import_react36.useState)(false);
-  const [nextOffset, setNextOffset] = (0, import_react36.useState)(null);
-  const [loading, setLoading] = (0, import_react36.useState)(false);
-  const [failed, setFailed] = (0, import_react36.useState)(null);
-  const accRef = (0, import_react36.useRef)("");
-  const load = (0, import_react36.useCallback)(async (offset, append2) => {
+  const [text2, setText] = (0, import_react39.useState)("");
+  const [truncated, setTruncated] = (0, import_react39.useState)(false);
+  const [nextOffset, setNextOffset] = (0, import_react39.useState)(null);
+  const [loading, setLoading] = (0, import_react39.useState)(false);
+  const [failed, setFailed] = (0, import_react39.useState)(null);
+  const accRef = (0, import_react39.useRef)("");
+  const load = (0, import_react39.useCallback)(async (offset4, append2) => {
     setLoading(true);
     try {
-      const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset > 0 ? { offset } : {}));
+      const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset4 > 0 ? { offset: offset4 } : {}));
       if (parsed === null) {
         console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u4F53\u65E0\u6CD5\u89E3\u6790\u4E3A\u6587\u672C\u9875", props.path);
         setFailed({ key: "previewBadPayload" });
@@ -52972,7 +55475,7 @@ function TextPreview(props) {
       setLoading(false);
     }
   }, [props.workspaceFiles, props.sessionId, props.path, props.maxBytes]);
-  (0, import_react36.useEffect)(() => {
+  (0, import_react39.useEffect)(() => {
     accRef.current = "";
     setText("");
     setTruncated(false);
@@ -52981,11 +55484,11 @@ function TextPreview(props) {
     void load(0, false);
   }, [load]);
   if (failed !== null)
-    return (0, import_react36.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+    return (0, import_react39.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
   if (text2 === "" && loading)
-    return (0, import_react36.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+    return (0, import_react39.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   const rendered = props.markdown && !props.sourceView;
-  return (0, import_react36.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "12px 14px" } : {} } }, truncated ? (0, import_react36.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react36.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react36.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react36.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react36.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react36.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
+  return (0, import_react39.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "12px 14px" } : {} } }, truncated ? (0, import_react39.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react39.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react39.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react39.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react39.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react39.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
 }
 
 // dist/explorer/preview/HtmlPreview.js
@@ -53012,8 +55515,8 @@ function buildStaticHtml(data2) {
       el.remove();
   }
   for (const el of Array.from(doc2.querySelectorAll("*"))) {
-    for (const attr of HTML_FORBID_ATTRS)
-      el.removeAttribute(attr);
+    for (const attr2 of HTML_FORBID_ATTRS)
+      el.removeAttribute(attr2);
   }
   const csp = doc2.createElement("meta");
   csp.setAttribute("http-equiv", "Content-Security-Policy");
@@ -53026,9 +55529,9 @@ ${doc2.documentElement.outerHTML}`;
 function HtmlPreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const [doc2, setDoc] = (0, import_react37.useState)(null);
-  const [failed, setFailed] = (0, import_react37.useState)(null);
-  (0, import_react37.useEffect)(() => {
+  const [doc2, setDoc] = (0, import_react40.useState)(null);
+  const [failed, setFailed] = (0, import_react40.useState)(null);
+  (0, import_react40.useEffect)(() => {
     if (props.sourceView)
       return;
     let alive = true;
@@ -53062,7 +55565,7 @@ function HtmlPreview(props) {
     };
   }, [props.workspaceFiles, props.sessionId, props.path, props.sourceView]);
   if (props.sourceView) {
-    return (0, import_react37.createElement)(TextPreview, {
+    return (0, import_react40.createElement)(TextPreview, {
       workspaceFiles: props.workspaceFiles,
       sessionId: props.sessionId,
       path: props.path,
@@ -53073,20 +55576,20 @@ function HtmlPreview(props) {
     });
   }
   if (failed !== null)
-    return (0, import_react37.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+    return (0, import_react40.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
   if (doc2 === null)
-    return (0, import_react37.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react37.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react37.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2, title: props.path }));
+    return (0, import_react40.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react40.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react40.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2, title: props.path }));
 }
 
 // dist/explorer/preview/OfficePreview.js
-var import_react38 = require("react");
+var import_react41 = require("react");
 function OfficePreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const [url, setUrl] = (0, import_react38.useState)(null);
-  const [failed, setFailed] = (0, import_react38.useState)(null);
-  (0, import_react38.useEffect)(() => {
+  const [url, setUrl] = (0, import_react41.useState)(null);
+  const [failed, setFailed] = (0, import_react41.useState)(null);
+  (0, import_react41.useEffect)(() => {
     let alive = true;
     let objectUrl = null;
     setUrl(null);
@@ -53116,13 +55619,13 @@ function OfficePreview(props) {
     };
   }, [props.officeToPdf, props.sessionId, props.path]);
   if (props.officeToPdf === null) {
-    return (0, import_react38.createElement)(EmptyState, { text: tt("previewOfficeUnavailable"), translate: tt });
+    return (0, import_react41.createElement)(EmptyState, { text: tt("previewOfficeUnavailable"), translate: tt });
   }
   if (failed !== null)
-    return (0, import_react38.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
+    return (0, import_react41.createElement)(EmptyState, { text: tt(failed.key, failed.params), translate: tt });
   if (url === null)
-    return (0, import_react38.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react38.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
+    return (0, import_react41.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react41.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
 }
 
 // dist/explorer/preview/index.js
@@ -53134,7 +55637,7 @@ function FilePreview(props) {
   switch (info.kind) {
     case "image":
     case "pdf":
-      return (0, import_react39.createElement)(BytesPreview, {
+      return (0, import_react42.createElement)(BytesPreview, {
         workspaceFiles: props.workspaceFiles,
         sessionId: props.sessionId,
         path: props.path,
@@ -53143,14 +55646,14 @@ function FilePreview(props) {
         translate: tt
       });
     case "office":
-      return (0, import_react39.createElement)(OfficePreview, {
+      return (0, import_react42.createElement)(OfficePreview, {
         officeToPdf: props.officeToPdf ?? null,
         sessionId: props.sessionId,
         path: props.path,
         translate: tt
       });
     case "html":
-      return (0, import_react39.createElement)(HtmlPreview, {
+      return (0, import_react42.createElement)(HtmlPreview, {
         workspaceFiles: props.workspaceFiles,
         sessionId: props.sessionId,
         path: props.path,
@@ -53159,7 +55662,7 @@ function FilePreview(props) {
       });
     case "md":
     case "text":
-      return (0, import_react39.createElement)(TextPreview, {
+      return (0, import_react42.createElement)(TextPreview, {
         workspaceFiles: props.workspaceFiles,
         sessionId: props.sessionId,
         path: props.path,
@@ -53175,7 +55678,7 @@ function FilePreview(props) {
 function crumbsMenuEntries(params) {
   const { workspaces, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
   const out = [];
-  const wsEntry = (ws, current3) => (0, import_react40.createElement)("button", {
+  const wsEntry = (ws, current3) => (0, import_react43.createElement)("button", {
     key: `ws:${ws}`,
     type: "button",
     role: "menuitem",
@@ -53190,8 +55693,8 @@ function crumbsMenuEntries(params) {
       else
         onPickWorkspace?.(ws);
     }
-  }, (0, import_react40.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react40.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react40.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current3 ? 600 : 400 } }, ws));
-  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react40.createElement)("button", {
+  }, (0, import_react43.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react43.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react43.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current3 ? 600 : 400 } }, ws));
+  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react43.createElement)("button", {
     key: `dir:${crumb.path}`,
     type: "button",
     role: "menuitem",
@@ -53201,11 +55704,11 @@ function crumbsMenuEntries(params) {
     onClick: () => {
       onLoadDir?.(crumb.path);
     }
-  }, withArrow ? (0, import_react40.createElement)(import_react40.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react40.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react40.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react40.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react40.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
+  }, withArrow ? (0, import_react43.createElement)(import_react43.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react43.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react43.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react43.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react43.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
   if (workspaces === void 0) {
     if (crumbs.length === 0)
-      return [(0, import_react40.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
-    return crumbs.map((crumb, index) => pathEntry(crumb, index === 0 ? 0 : index - 1, index !== 0));
+      return [(0, import_react43.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
+    return crumbs.map((crumb, index3) => pathEntry(crumb, index3 === 0 ? 0 : index3 - 1, index3 !== 0));
   }
   const segments = rootName !== "" && crumbs.length > 0 && crumbs[0]?.path === "" ? crumbs.slice(1) : crumbs;
   if (rootName !== "" && workspaces.includes(rootName)) {
@@ -53230,27 +55733,27 @@ function FileBrowser(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const picker = props.picker === true;
-  const cacheRef = (0, import_react40.useRef)(null);
+  const cacheRef = (0, import_react43.useRef)(null);
   if (cacheRef.current === null)
     cacheRef.current = props.rootCache ?? createRootCache();
   const rootCache = props.rootCache ?? cacheRef.current;
-  const [mode, setMode] = (0, import_react40.useState)("loading");
-  const [dir, setDir] = (0, import_react40.useState)("");
-  const [listing, setListing] = (0, import_react40.useState)(null);
-  const [truncated, setTruncated] = (0, import_react40.useState)(false);
-  const [viewing, setViewing] = (0, import_react40.useState)(null);
-  const [listErr, setListErr] = (0, import_react40.useState)(null);
-  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react40.useState)(false);
-  const [menuOpen, setMenuOpen] = (0, import_react40.useState)(false);
-  const regionRef = (0, import_react40.useRef)(null);
-  const measureRef = (0, import_react40.useRef)(null);
-  const [sourceView, setSourceView] = (0, import_react40.useState)(false);
-  const [reloadNonce, setReloadNonce] = (0, import_react40.useState)(0);
-  const [copied, setCopied] = (0, import_react40.useState)(false);
-  const [openDirs, setOpenDirs] = (0, import_react40.useState)(/* @__PURE__ */ new Set());
-  const [childCache, setChildCache] = (0, import_react40.useState)({});
-  const [, setRootNonce] = (0, import_react40.useState)(0);
-  const [outside, setOutside] = (0, import_react40.useState)(false);
+  const [mode, setMode] = (0, import_react43.useState)("loading");
+  const [dir, setDir] = (0, import_react43.useState)("");
+  const [listing, setListing] = (0, import_react43.useState)(null);
+  const [truncated, setTruncated] = (0, import_react43.useState)(false);
+  const [viewing, setViewing] = (0, import_react43.useState)(null);
+  const [listErr, setListErr] = (0, import_react43.useState)(null);
+  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react43.useState)(false);
+  const [menuOpen, setMenuOpen] = (0, import_react43.useState)(false);
+  const regionRef = (0, import_react43.useRef)(null);
+  const measureRef = (0, import_react43.useRef)(null);
+  const [sourceView, setSourceView] = (0, import_react43.useState)(false);
+  const [reloadNonce, setReloadNonce] = (0, import_react43.useState)(0);
+  const [copied, setCopied] = (0, import_react43.useState)(false);
+  const [openDirs, setOpenDirs] = (0, import_react43.useState)(/* @__PURE__ */ new Set());
+  const [childCache, setChildCache] = (0, import_react43.useState)({});
+  const [, setRootNonce] = (0, import_react43.useState)(0);
+  const [outside, setOutside] = (0, import_react43.useState)(false);
   const noteOutside = (parsed) => {
     if (parsed === null || parsed === void 0)
       return;
@@ -53262,7 +55765,7 @@ function FileBrowser(props) {
     if (code3 === "outside-workspace" || code3 === "not-found" || code3 === "lookup-not-found")
       setOutside(true);
   };
-  const fetchDir = (0, import_react40.useCallback)((targetDir) => {
+  const fetchDir = (0, import_react43.useCallback)((targetDir) => {
     setDir(targetDir);
     setViewing(null);
     setListErr(null);
@@ -53291,14 +55794,14 @@ function FileBrowser(props) {
       setMode("error");
     });
   }, [props.workspaceFiles, props.sessionId]);
-  const loadDir = (0, import_react40.useCallback)((targetDir) => {
+  const loadDir = (0, import_react43.useCallback)((targetDir) => {
     if (targetDir === dir) {
       fetchDir(targetDir);
       return;
     }
     fetchDir(targetDir);
   }, [dir, fetchDir]);
-  (0, import_react40.useEffect)(() => {
+  (0, import_react43.useEffect)(() => {
     let alive = true;
     setMode("loading");
     setListErr(null);
@@ -53399,7 +55902,7 @@ function FileBrowser(props) {
       alive = false;
     };
   }, [props.workspaceFiles, props.sessionId, props.path, rootCache]);
-  (0, import_react40.useLayoutEffect)(() => {
+  (0, import_react43.useLayoutEffect)(() => {
     const region = regionRef.current;
     const measure = measureRef.current;
     if (region === null || measure === null)
@@ -53412,14 +55915,14 @@ function FileBrowser(props) {
     ro.observe(region);
     return () => ro.disconnect();
   }, [dir, viewing, mode, listing]);
-  const reload = (0, import_react40.useCallback)(() => {
+  const reload = (0, import_react43.useCallback)(() => {
     if (viewing !== null) {
       setReloadNonce((n) => n + 1);
       return;
     }
     loadDir(dir);
   }, [viewing, dir, loadDir]);
-  const copyPath = (0, import_react40.useCallback)(() => {
+  const copyPath = (0, import_react43.useCallback)(() => {
     const target = viewing ?? dir;
     if (target === "")
       return;
@@ -53432,7 +55935,7 @@ function FileBrowser(props) {
     }).catch(() => {
     });
   }, [viewing, dir, rootCache, props.sessionId]);
-  const toggleDir = (0, import_react40.useCallback)((path) => {
+  const toggleDir = (0, import_react43.useCallback)((path) => {
     setOpenDirs((prev) => {
       const next = new Set(prev);
       if (next.has(path))
@@ -53456,7 +55959,7 @@ function FileBrowser(props) {
   }, [childCache, props.workspaceFiles, props.sessionId]);
   const extsOnly = picker && props.filter !== void 0 && props.filter.dirs !== true && (props.filter.exts?.length ?? 0) > 0;
   const dirPickable = picker && props.onPick !== void 0 && !extsOnly;
-  const renderTree = (0, import_react40.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
+  const renderTree = (0, import_react43.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
     const childPath = joinPath(baseDir, entry.name);
     const isDir = entry.type === "directory";
     if (!isDir && picker && !matchesFilter(childPath, false, props.filter))
@@ -53474,7 +55977,7 @@ function FileBrowser(props) {
         setReloadNonce(0);
         setSourceView(false);
       };
-      return (0, import_react40.createElement)(
+      return (0, import_react43.createElement)(
         "div",
         {
           key: childPath,
@@ -53488,11 +55991,11 @@ function FileBrowser(props) {
               pick2();
           }
         },
-        (0, import_react40.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react40.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })),
-        (0, import_react40.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+        (0, import_react43.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react43.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })),
+        (0, import_react43.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
         // 选择器里文件行也给一枚「选择」钮，与目录行的操作位对齐（目录没有时它仍在，
         // 「点行 = 选中」的旧默契保持不变，外显入口不再缺）。
-        picker && props.onPick !== void 0 ? (0, import_react40.createElement)(Button, {
+        picker && props.onPick !== void 0 ? (0, import_react43.createElement)(Button, {
           variant: "outline",
           size: "sm",
           className: "dshpc-fb__row-act",
@@ -53518,7 +56021,7 @@ function FileBrowser(props) {
       }
       loadDir(childPath);
     };
-    return (0, import_react40.createElement)(import_react40.Fragment, { key: childPath }, (0, import_react40.createElement)(
+    return (0, import_react43.createElement)(import_react43.Fragment, { key: childPath }, (0, import_react43.createElement)(
       "div",
       {
         className: "dshpc-fb__row",
@@ -53532,11 +56035,11 @@ function FileBrowser(props) {
         }
       },
       // 展开 / 收起：核心 IconButton，20×20 命中位 + 展开时转 90°（与兄弟 .dsh-tdt-sv-tree-toggle 同款）。
-      (0, import_react40.createElement)(IconButton, {
+      (0, import_react43.createElement)(IconButton, {
         variant: "plain",
         size: "sm",
         className: `dshpc-fb__row-toggle${isOpen2 ? " dshpc-fb__row-toggle--open" : ""}`,
-        icon: (0, import_react40.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 16 }),
+        icon: (0, import_react43.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 16 }),
         label: isOpen2 ? tt("explorerCollapse") : tt("explorerExpand"),
         "aria-expanded": isOpen2,
         onClick: (event) => {
@@ -53544,27 +56047,27 @@ function FileBrowser(props) {
           toggleDir(childPath);
         }
       }),
-      (0, import_react40.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+      (0, import_react43.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
       // picker：仅目录可选时才出「选择」（扩展名过滤下没有，目录只作导航）；
       // 浏览态：出「进入」。
-      picker ? dirPickable ? (0, import_react40.createElement)(Button, {
+      picker ? dirPickable ? (0, import_react43.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
         "aria-label": tt("explorerPickDirAria"),
         onClick: actThisDir
-      }, tt("explorerPickDir")) : null : (0, import_react40.createElement)(Button, {
+      }, tt("explorerPickDir")) : null : (0, import_react43.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
         "aria-label": tt("explorerEnter"),
         onClick: actThisDir
       }, tt("explorerEnter"))
-    ), isOpen2 ? (0, import_react40.createElement)(
+    ), isOpen2 ? (0, import_react43.createElement)(
       "div",
       { className: "dshpc-fb__row-children" },
       // 硬性规定：不新建 Loading、不写加载文案 ⇒ 还在拉就空着（源实现用户 2026-10-05）。
-      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react40.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react40.createElement)(import_react40.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react40.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
+      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react43.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react43.createElement)(import_react43.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react43.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
     ) : null);
   }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, props.sessionId, rootCache, dir, loadDir, tt]);
   const rootAbs = rootCache.get(props.sessionId);
@@ -53581,63 +56084,63 @@ function FileBrowser(props) {
     onPickWorkspace: props.onSelectWorkspace,
     onLoadDir: loadDir
   });
-  const crumbButton = (label, onClick, current3 = false) => (0, import_react40.createElement)(Button, {
+  const crumbButton = (label, onClick, current3 = false) => (0, import_react43.createElement)(Button, {
     variant: "ghost",
     size: "sm",
     className: `dshpc-fb__crumb${current3 ? " dshpc-fb__crumb--current" : ""}`,
     disabled: onClick === void 0,
     tabIndex: onClick === void 0 ? -1 : 0,
     onClick
-  }, (0, import_react40.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
-  const crumbBar = (0, import_react40.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react40.createElement)(
+  }, (0, import_react43.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
+  const crumbBar = (0, import_react43.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react43.createElement)(
     "div",
     { className: "dshpc-fb__menu-wrap" },
-    (0, import_react40.createElement)(IconButton, {
+    (0, import_react43.createElement)(IconButton, {
       variant: "plain",
       size: "md",
-      icon: (0, import_react40.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
+      icon: (0, import_react43.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
       label: tt("explorerLevels"),
       "aria-expanded": menuOpen,
       onClick: () => setMenuOpen((v) => !v)
     }),
     // 选层下拉 = 自写浮层（抄兄弟 .dsh-tdt-sv-crumbs-*）：透明遮罩点一下即收，
     // 遮罩层序高于 picker 面板（1100）⇒ 菜单开着时点面板也算「点外部」。
-    menuOpen ? (0, import_react40.createElement)(import_react40.Fragment, null, (0, import_react40.createElement)("div", {
+    menuOpen ? (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("div", {
       className: "dshpc-fb__crumbs-backdrop",
       onClick: () => setMenuOpen(false)
-    }), (0, import_react40.createElement)("div", { className: "dshpc-fb__crumbs-menu", role: "menu" }, menuItems)) : null
-  ), (0, import_react40.createElement)(
+    }), (0, import_react43.createElement)("div", { className: "dshpc-fb__crumbs-menu", role: "menu" }, menuItems)) : null
+  ), (0, import_react43.createElement)(
     "div",
     { ref: regionRef, className: "dshpc-fb__crumbs" },
     // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
-    (0, import_react40.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index) => (0, import_react40.createElement)(import_react40.Fragment, { key: crumb.path }, index > 0 ? (0, import_react40.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
+    (0, import_react43.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index3) => (0, import_react43.createElement)(import_react43.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react43.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
     // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
-    crumbsOverflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index) => (0, import_react40.createElement)(import_react40.Fragment, { key: crumb.path }, index > 0 ? (0, import_react40.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))
-  ), (0, import_react40.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react40.createElement)(IconButton, {
+    crumbsOverflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index3) => (0, import_react43.createElement)(import_react43.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react43.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))
+  ), (0, import_react43.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react43.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react40.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+    icon: (0, import_react43.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
     label: tt("previewClose"),
     onClick: props.onClose
   })));
-  const crumbBarPlain = (0, import_react40.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react40.createElement)(MarqueeText, {
+  const crumbBarPlain = (0, import_react43.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react43.createElement)(MarqueeText, {
     text: dir,
     title: dir,
     className: "dshpc-fb__bar-plain",
     style: { flex: "1 1 auto", minWidth: 0 }
-  }), (0, import_react40.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react40.createElement)(IconButton, {
+  }), (0, import_react43.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react43.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react40.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+    icon: (0, import_react43.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
     label: tt("previewClose"),
     onClick: props.onClose
   })));
-  const titleBar = viewing === null ? null : (0, import_react40.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react40.createElement)(MarqueeText, {
+  const titleBar = viewing === null ? null : (0, import_react43.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react43.createElement)(MarqueeText, {
     text: baseNameOfPath(viewing),
     title: viewing,
     className: "dshpc-fb__title-inner",
     style: { flex: "1 1 auto", minWidth: 0 }
-  }), (0, import_react40.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react40.createElement)(Segmented, {
+  }), (0, import_react43.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react43.createElement)(Segmented, {
     size: "sm",
     variant: "default",
     label: viewingIsMd ? tt("previewMdSwitchAria") : tt("previewHtmlSwitchAria"),
@@ -53647,22 +56150,22 @@ function FileBrowser(props) {
       { value: "source", label: tt("previewSource") }
     ],
     onChange: (next) => setSourceView(next === "source")
-  }) : null, (0, import_react40.createElement)(IconButton, {
+  }) : null, (0, import_react43.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: copied ? (0, import_react40.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react40.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
+    icon: copied ? (0, import_react43.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react43.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
     label: tt("previewCopyPath"),
     onClick: copyPath
-  }), (0, import_react40.createElement)(IconButton, {
+  }), (0, import_react43.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react40.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
+    icon: (0, import_react43.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
     label: tt("previewRefresh"),
     onClick: reload
   })));
   let body;
   if (viewing !== null) {
-    body = (0, import_react40.createElement)(FilePreview, {
+    body = (0, import_react43.createElement)(FilePreview, {
       key: `${viewing}:${reloadNonce}`,
       workspaceFiles: props.workspaceFiles,
       officeToPdf: props.officeToPdf ?? null,
@@ -53672,21 +56175,21 @@ function FileBrowser(props) {
       translate: tt
     });
   } else if (mode === "error" && listErr !== null) {
-    body = (0, import_react40.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react40.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
+    body = (0, import_react43.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react43.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
   } else if (listing !== null) {
     const visible = listing.filter((entry) => entry.type === "directory" || matchesFilter(joinPath(dir, entry.name), false, picker ? props.filter : void 0));
-    body = visible.length === 0 ? (0, import_react40.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react40.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react40.createElement)("div", { className: "dshpc-fb__tree" }, renderTree(visible, dir), truncated ? (0, import_react40.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
+    body = visible.length === 0 ? (0, import_react43.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react43.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react43.createElement)("div", { className: "dshpc-fb__tree" }, renderTree(visible, dir), truncated ? (0, import_react43.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
   } else {
-    body = (0, import_react40.createElement)("div", { className: "dshpc-fb__body" });
+    body = (0, import_react43.createElement)("div", { className: "dshpc-fb__body" });
   }
-  return (0, import_react40.createElement)("div", {
+  return (0, import_react43.createElement)("div", {
     className: "dshpc-fb",
     style: props.style ?? void 0
   }, outside ? crumbBarPlain : crumbBar, titleBar, body);
 }
 
 // dist/explorer/open.js
-var import_react41 = require("react");
+var import_react44 = require("react");
 var import_client5 = require("react-dom/client");
 var PREVIEW_HOST_ID = "dshpc-file-preview-host";
 var PREVIEW_PANEL_ID = "file-preview";
@@ -53736,11 +56239,11 @@ function openFilePreview(options) {
   };
   window.addEventListener("keydown", onKeyDown);
   ensureControls(getStyleKit());
-  root.render((0, import_react41.createElement)(
+  root.render((0, import_react44.createElement)(
     "div",
     // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
     { style: { display: "contents", ["--dshpc-dock-h"]: "100%" } },
-    (0, import_react41.createElement)(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, (0, import_react41.createElement)(DockPanel, {
+    (0, import_react44.createElement)(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, (0, import_react44.createElement)(DockPanel, {
       id: PREVIEW_PANEL_ID,
       // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
       header: null,
@@ -53751,7 +56254,7 @@ function openFilePreview(options) {
       width: options.width ?? 460,
       minWidth: options.minWidth ?? 320,
       maxWidth: options.maxWidth
-    }, (0, import_react41.createElement)(FileBrowser, {
+    }, (0, import_react44.createElement)(FileBrowser, {
       workspaceFiles: options.workspaceFiles,
       officeToPdf: options.officeToPdf ?? null,
       sessionId: options.sessionId,
@@ -53825,7 +56328,7 @@ function pickWorkspaceFile(options) {
     document.body.appendChild(panel);
     ensureControls(getStyleKit());
     const root = (0, import_client5.createRoot)(panel);
-    root.render((0, import_react41.createElement)(FileBrowser, {
+    root.render((0, import_react44.createElement)(FileBrowser, {
       workspaceFiles: options.workspaceFiles,
       officeToPdf: options.officeToPdf ?? null,
       sessionId: options.sessionId,
@@ -53845,7 +56348,7 @@ function pickWorkspaceFile(options) {
 }
 
 // dist/session/index.js
-var import_react42 = require("react");
+var import_react45 = require("react");
 
 // dist/session/types.js
 var ROLE_LABEL_KEY = {
@@ -53860,11 +56363,11 @@ function SessionPreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const variant = props.variant ?? "modal";
-  const [messages, setMessages] = (0, import_react42.useState)([]);
-  const [loading, setLoading] = (0, import_react42.useState)(true);
-  const [failed, setFailed] = (0, import_react42.useState)(false);
-  const [nonce, setNonce] = (0, import_react42.useState)(0);
-  (0, import_react42.useEffect)(() => {
+  const [messages, setMessages] = (0, import_react45.useState)([]);
+  const [loading, setLoading] = (0, import_react45.useState)(true);
+  const [failed, setFailed] = (0, import_react45.useState)(false);
+  const [nonce, setNonce] = (0, import_react45.useState)(0);
+  (0, import_react45.useEffect)(() => {
     let alive = true;
     setLoading(true);
     setFailed(false);
@@ -53884,24 +56387,24 @@ function SessionPreview(props) {
       alive = false;
     };
   }, [props.sessionId, props.source, nonce]);
-  const body = loading ? (0, import_react42.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react42.createElement)(EmptyState, {
+  const body = loading ? (0, import_react45.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react45.createElement)(EmptyState, {
     text: tt("sessionFailed"),
     translate: tt,
-    action: (0, import_react42.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
-  }) : messages.length === 0 ? (0, import_react42.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react42.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react42.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react42.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react42.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react42.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react42.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react42.createElement)("button", {
+    action: (0, import_react45.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
+  }) : messages.length === 0 ? (0, import_react45.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react45.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react45.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react45.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react45.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react45.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react45.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react45.createElement)("button", {
     key: a.path,
     type: "button",
     className: "dshpc-ses__att",
     onClick: () => props.onOpenFile?.(a.path)
   }, a.name, a.bytes === void 0 ? null : ` ${formatBytes(a.bytes)}`))))));
   if (variant === "modal") {
-    return (0, import_react42.createElement)(Modal, {
+    return (0, import_react45.createElement)(Modal, {
       title: props.title ?? props.sessionId,
       onClose: props.onClose,
-      children: (0, import_react42.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
+      children: (0, import_react45.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
     });
   }
-  return (0, import_react42.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react42.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react42.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
+  return (0, import_react45.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react45.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react45.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
 }
 
 // packages/demo/src/samples.ts
@@ -53985,13 +56488,13 @@ var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 import { SessionPreview } from 'dsh-plugin-core/session'`;
 function useExplorerHost() {
-  const { workspaceFiles, officeToPdf } = (0, import_react43.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react43.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const { workspaceFiles, officeToPdf } = (0, import_react46.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react46.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
   return { workspaceFiles, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
 }
 function NotReady(props) {
-  return (0, import_react43.createElement)(
+  return (0, import_react46.createElement)(
     "div",
     { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } },
     t2(props.which === "files" ? "explorerFilesNone" : "explorerAnchorNone")
@@ -53999,12 +56502,12 @@ function NotReady(props) {
 }
 function OpenPreviewDemo() {
   const { workspaceFiles, anchor, workspaceNames } = useExplorerHost();
-  const [samples, setSamples] = (0, import_react43.useState)(null);
-  const [phase, setPhase] = (0, import_react43.useState)("idle");
-  const [last2, setLast] = (0, import_react43.useState)(null);
-  const pending = (0, import_react43.useRef)(null);
+  const [samples, setSamples] = (0, import_react46.useState)(null);
+  const [phase, setPhase] = (0, import_react46.useState)("idle");
+  const [last2, setLast] = (0, import_react46.useState)(null);
+  const pending = (0, import_react46.useRef)(null);
   const sessionId = anchor === null ? null : anchor.sessionId;
-  (0, import_react43.useEffect)(() => {
+  (0, import_react46.useEffect)(() => {
     if (workspaceFiles === null || sessionId === null) return;
     if (pending.current !== null) return;
     setPhase("probing");
@@ -54014,8 +56517,8 @@ function OpenPreviewDemo() {
       return s;
     });
   }, [workspaceFiles, sessionId]);
-  if (workspaceFiles === null) return (0, import_react43.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react43.createElement)(NotReady, { which: "anchor" });
+  if (workspaceFiles === null) return (0, import_react46.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react46.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
     const mount = pageRow.element;
     if (mount === null) {
@@ -54031,14 +56534,14 @@ function OpenPreviewDemo() {
       if (s !== null) open(pick2(s), anchor.title);
     });
   };
-  return (0, import_react43.createElement)(
+  return (0, import_react46.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react43.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t2("openRootPreview")),
-    (0, import_react43.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
-    (0, import_react43.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
-    last2 === null ? null : (0, import_react43.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
-    (0, import_react43.createElement)(
+    (0, import_react46.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t2("openRootPreview")),
+    (0, import_react46.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
+    (0, import_react46.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
+    last2 === null ? null : (0, import_react46.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
+    (0, import_react46.createElement)(
       "div",
       { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", width: "100%" } },
       `${t2("explorerAnchorLabel")}${anchor.title} \xB7 ${t2("explorerSessionLabel")}${anchor.sessionId} \xB7 ${t2("explorerWorkspaces")}${String(workspaceNames.length)}`
@@ -54047,9 +56550,9 @@ function OpenPreviewDemo() {
 }
 function PickFileDemo() {
   const { workspaceFiles, anchor } = useExplorerHost();
-  const [picked, setPicked] = (0, import_react43.useState)(null);
-  if (workspaceFiles === null) return (0, import_react43.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react43.createElement)(NotReady, { which: "anchor" });
+  const [picked, setPicked] = (0, import_react46.useState)(null);
+  if (workspaceFiles === null) return (0, import_react46.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react46.createElement)(NotReady, { which: "anchor" });
   const pick2 = (anchorBtn, filter2) => {
     void pickWorkspaceFile({
       workspaceFiles,
@@ -54059,10 +56562,10 @@ function PickFileDemo() {
       filter: filter2
     }).then((r2) => setPicked(r2 === null ? null : r2.path + (r2.isDir ? "/" : "")));
   };
-  return (0, import_react43.createElement)(
+  return (0, import_react46.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react43.createElement)(
+    (0, import_react46.createElement)(
       Button,
       {
         variant: "primary",
@@ -54070,7 +56573,7 @@ function PickFileDemo() {
       },
       t2("pickAny")
     ),
-    (0, import_react43.createElement)(
+    (0, import_react46.createElement)(
       Button,
       {
         variant: "secondary",
@@ -54078,11 +56581,11 @@ function PickFileDemo() {
       },
       "\u4EC5 JS/MD"
     ),
-    (0, import_react43.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t2("pickNone") : `${t2("pickResult")}${picked}`)
+    (0, import_react46.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t2("pickNone") : `${t2("pickResult")}${picked}`)
   );
 }
 function SessionPreviewDemo() {
-  const [open, setOpen] = (0, import_react43.useState)(false);
+  const [open, setOpen] = (0, import_react46.useState)(false);
   const source = {
     listMessages: async () => [
       { id: "1", role: "user", text: "\u5E2E\u6211\u628A\u8FD9\u4E2A\u4EFB\u52A1\u8BBE\u4E2A\u63D0\u9192" },
@@ -54090,12 +56593,12 @@ function SessionPreviewDemo() {
     ],
     download: async () => new TextEncoder().encode("\uFF08\u793A\u4F8B\u9644\u4EF6\u5185\u5BB9\uFF09")
   };
-  return (0, import_react43.createElement)(
+  return (0, import_react46.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", alignItems: "center" } },
-    (0, import_react43.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, t2("sessionOpenModal")),
-    (0, import_react43.createElement)(Button, { variant: "ghost", onClick: () => setOpen(false) }, t2("sessionClose")),
-    open ? (0, import_react43.createElement)(SessionPreview, {
+    (0, import_react46.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, t2("sessionOpenModal")),
+    (0, import_react46.createElement)(Button, { variant: "ghost", onClick: () => setOpen(false) }, t2("sessionClose")),
+    open ? (0, import_react46.createElement)(SessionPreview, {
       sessionId: "demo-session",
       source,
       variant: "modal",
@@ -54104,40 +56607,40 @@ function SessionPreviewDemo() {
   );
 }
 function ExplorerPage() {
-  return (0, import_react43.createElement)(
+  return (0, import_react46.createElement)(
     "div",
     null,
-    (0, import_react43.createElement)(DocProse, { id: "explorer" }),
-    (0, import_react43.createElement)(
+    (0, import_react46.createElement)(DocProse, { id: "explorer" }),
+    (0, import_react46.createElement)(
       Example,
       { title: t2("methodATitle"), hint: t2("methodAHint"), code: CODE_OPEN },
-      (0, import_react43.createElement)(OpenPreviewDemo, null)
+      (0, import_react46.createElement)(OpenPreviewDemo, null)
     ),
-    (0, import_react43.createElement)(
+    (0, import_react46.createElement)(
       Example,
       { title: t2("methodBTitle"), hint: t2("methodBHint"), code: CODE_PICK },
-      (0, import_react43.createElement)(PickFileDemo, null)
+      (0, import_react46.createElement)(PickFileDemo, null)
     ),
-    (0, import_react43.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
-    (0, import_react43.createElement)(DocApi, { id: "explorer" })
+    (0, import_react46.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
+    (0, import_react46.createElement)(DocApi, { id: "explorer" })
   );
 }
 function SessionPage() {
-  return (0, import_react43.createElement)(
+  return (0, import_react46.createElement)(
     "div",
     null,
-    (0, import_react43.createElement)(DocProse, { id: "session" }),
-    (0, import_react43.createElement)(
+    (0, import_react46.createElement)(DocProse, { id: "session" }),
+    (0, import_react46.createElement)(
       Example,
       { title: "SessionPreview", hint: t2("sessionHint"), code: CODE_SESSION },
-      (0, import_react43.createElement)(SessionPreviewDemo, null)
+      (0, import_react46.createElement)(SessionPreviewDemo, null)
     ),
-    (0, import_react43.createElement)(DocApi, { id: "session" })
+    (0, import_react46.createElement)(DocApi, { id: "session" })
   );
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react44 = require("react");
+var import_react47 = require("react");
 var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
@@ -54172,28 +56675,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react44.createElement)(
+  return (0, import_react47.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react44.createElement)(
+    (0, import_react47.createElement)(
       "thead",
       null,
-      (0, import_react44.createElement)(
+      (0, import_react47.createElement)(
         "tr",
         null,
-        (0, import_react44.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react44.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react47.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react47.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react44.createElement)(
+    (0, import_react47.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react44.createElement)(
+        ([fn, out]) => (0, import_react47.createElement)(
           "tr",
           { key: fn },
-          (0, import_react44.createElement)("td", { style: td }, fn),
-          (0, import_react44.createElement)("td", { style: td }, out)
+          (0, import_react47.createElement)("td", { style: td }, fn),
+          (0, import_react47.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -54202,44 +56705,44 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react44.createElement)(
+  return (0, import_react47.createElement)(
     "div",
     null,
-    (0, import_react44.createElement)(DocProse, { id: "date" }),
-    (0, import_react44.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react44.createElement)(FnTable, { rows: DATE_ROWS })),
-    (0, import_react44.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react44.createElement)(DocApi, { id: "date" })
+    (0, import_react47.createElement)(DocProse, { id: "date" }),
+    (0, import_react47.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react47.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react47.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react47.createElement)(DocApi, { id: "date" })
   );
 }
 function NumberPage() {
-  return (0, import_react44.createElement)(
+  return (0, import_react47.createElement)(
     "div",
     null,
-    (0, import_react44.createElement)(DocProse, { id: "number" }),
-    (0, import_react44.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react44.createElement)(FnTable, { rows: NUMBER_ROWS })),
-    (0, import_react44.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react44.createElement)(DocApi, { id: "number" })
+    (0, import_react47.createElement)(DocProse, { id: "number" }),
+    (0, import_react47.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react47.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react47.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react47.createElement)(DocApi, { id: "number" })
   );
 }
 function TextPage() {
-  return (0, import_react44.createElement)(DocContent, { id: "text" });
+  return (0, import_react47.createElement)(DocContent, { id: "text" });
 }
 function HttpPage() {
-  return (0, import_react44.createElement)(DocContent, { id: "http" });
+  return (0, import_react47.createElement)(DocContent, { id: "http" });
 }
 function I18nPage() {
-  return (0, import_react44.createElement)(
+  return (0, import_react47.createElement)(
     "div",
     null,
-    (0, import_react44.createElement)(DocProse, { id: "i18n" }),
-    (0, import_react44.createElement)(
+    (0, import_react47.createElement)(DocProse, { id: "i18n" }),
+    (0, import_react47.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
-      (0, import_react44.createElement)(
+      (0, import_react47.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react44.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
-        (0, import_react44.createElement)("code", {
+        (0, import_react47.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
+        (0, import_react47.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -54251,60 +56754,60 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react44.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react44.createElement)(DocApi, { id: "i18n" })
+    (0, import_react47.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react47.createElement)(DocApi, { id: "i18n" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react45 = require("react");
+var import_react48 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react45.createElement)(
+  return (0, import_react48.createElement)(
     "div",
     null,
-    (0, import_react45.createElement)(Note, { text: t2("referenceNote") }),
-    (0, import_react45.createElement)(Example, { title: t2("secA11y") }, (0, import_react45.createElement)(Placeholder, { descKey: "a11yDesc" })),
-    (0, import_react45.createElement)(
+    (0, import_react48.createElement)(Note, { text: t2("referenceNote") }),
+    (0, import_react48.createElement)(Example, { title: t2("secA11y") }, (0, import_react48.createElement)(Placeholder2, { descKey: "a11yDesc" })),
+    (0, import_react48.createElement)(
       Example,
       { title: t2("secRoadmap"), hint: t2("roadmapHint") },
-      (0, import_react45.createElement)(
+      (0, import_react48.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react45.createElement)(
+          (key) => (0, import_react48.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react45.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react45.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
+            (0, import_react48.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react48.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
           )
         ),
-        (0, import_react45.createElement)(
+        (0, import_react48.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t2("roadmapLayout")
         )
       )
     ),
-    (0, import_react45.createElement)(
+    (0, import_react48.createElement)(
       Example,
       { title: t2("secBuild"), hint: t2("buildDesc") },
-      (0, import_react45.createElement)(
+      (0, import_react48.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react45.createElement)(
+        (0, import_react48.createElement)(
           "tbody",
           null,
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1022-0043-egx9"]
+            [t2("buildStamp"), "1022-0112-opbp"]
           ].map(
-            ([label, value]) => (0, import_react45.createElement)(
+            ([label, value]) => (0, import_react48.createElement)(
               "tr",
               { key: label },
-              (0, import_react45.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react45.createElement)("td", {
+              (0, import_react48.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react48.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -54330,28 +56833,28 @@ var SECTION_GROUPS = [
 ];
 var ALL_SECTIONS = [
   // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react46.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react46.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react46.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react46.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react46.createElement)(PickerPage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react46.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react46.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react46.createElement)(ChipPage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react46.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react46.createElement)(LayoutPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react46.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react46.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react46.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react46.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react46.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react46.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react46.createElement)(I18nPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react49.createElement)(QuickstartPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react49.createElement)(FoundationPage, null) },
+  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react49.createElement)(ButtonPage, null) },
+  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react49.createElement)(InputPage, null) },
+  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react49.createElement)(PickerPage, null) },
+  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react49.createElement)(TooltipPage, null) },
+  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react49.createElement)(CardPage, null) },
+  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react49.createElement)(ChipPage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react49.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react49.createElement)(LayoutPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react49.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react49.createElement)(SessionPage, null) },
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react49.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react49.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react49.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react49.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react49.createElement)(I18nPage, null) },
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react46.createElement)(ReferencePage, null) }
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react49.createElement)(ReferencePage, null) }
 ];
-function Placeholder(props) {
-  return (0, import_react46.createElement)(
+function Placeholder2(props) {
+  return (0, import_react49.createElement)(
     "div",
     {
       style: {
@@ -54363,7 +56866,7 @@ function Placeholder(props) {
         color: "var(--dshpc-fg-3)"
       }
     },
-    (0, import_react46.createElement)("div", {
+    (0, import_react49.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -54373,23 +56876,23 @@ function Placeholder(props) {
         marginBottom: "10px"
       }
     }, t2("phTodo")),
-    (0, import_react46.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
+    (0, import_react49.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react46.createElement)(
+  return (0, import_react49.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react46.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react46.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
+    (0, import_react49.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react49.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react46.createElement)(
+  return (0, import_react49.createElement)(
     "div",
     null,
-    (0, import_react46.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
+    (0, import_react49.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
     current3.render()
   );
 }
@@ -54404,8 +56907,8 @@ var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 var PANEL_ID = "dsh-plugin-core-demo";
 var localeRuntime;
 function useLocaleTick() {
-  const [, setTick] = (0, import_react47.useState)(0);
-  (0, import_react47.useEffect)(() => {
+  const [, setTick] = (0, import_react50.useState)(0);
+  (0, import_react50.useEffect)(() => {
     const rt = localeRuntime;
     if (rt === void 0) return;
     return rt.subscribe(() => {
@@ -54415,11 +56918,11 @@ function useLocaleTick() {
 }
 function DemoPage() {
   useLocaleTick();
-  const [active, setActive2] = (0, import_react47.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive2] = (0, import_react50.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav2.push(
-      (0, import_react47.createElement)(
+      (0, import_react50.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -54437,7 +56940,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav2.push(
-        (0, import_react47.createElement)(
+        (0, import_react50.createElement)(
           "button",
           {
             key: section.id,
@@ -54464,7 +56967,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react47.createElement)(
+  return (0, import_react50.createElement)(
     "div",
     {
       // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
@@ -54481,7 +56984,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react47.createElement)(
+    (0, import_react50.createElement)(
       "aside",
       {
         style: {
@@ -54497,18 +57000,18 @@ function DemoPage() {
       },
       nav2
     ),
-    (0, import_react47.createElement)(
+    (0, import_react50.createElement)(
       "main",
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
-      (0, import_react47.createElement)(Sections, { active })
+      (0, import_react50.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react47.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react50.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function OpenPreviewCard(props) {
-  return (0, import_react47.createElement)(
+  return (0, import_react50.createElement)(
     "div",
     {
       role: "button",
@@ -54526,21 +57029,21 @@ function OpenPreviewCard(props) {
         background: "var(--dshpc-surface-1)"
       }
     },
-    (0, import_react47.createElement)(
+    (0, import_react50.createElement)(
       "div",
       null,
-      (0, import_react47.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
-      (0, import_react47.createElement)(
+      (0, import_react50.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
+      (0, import_react50.createElement)(
         "div",
         { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
         t2("pluginCardDesc")
       )
     ),
-    (0, import_react47.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
+    (0, import_react50.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
   );
 }
 function PanelIcon() {
-  return (0, import_react47.createElement)(
+  return (0, import_react50.createElement)(
     "span",
     { style: { display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "13px" } },
     "\u25E7"
@@ -54552,7 +57055,7 @@ function apply(ctx) {
   ensureControls(kit);
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react47.createElement)(import_dsh_client_ui_primitives4.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react50.createElement)(import_dsh_client_ui_primitives3.Tooltip, props));
   let jump = () => {
   };
   ctx.inject(["layout"], (sub) => {
@@ -54601,13 +57104,21 @@ function apply(ctx) {
             jump(PANEL_ID);
           } })
         },
-        (props) => (0, import_react47.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
+        (props) => (0, import_react50.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
           jump(PANEL_ID);
         }) })
       );
     });
   });
 }
+/*! Bundled license information:
+
+tabbable/dist/index.esm.js:
+  (*!
+  * tabbable 6.5.0
+  * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
+  *)
+*/
 
 return module.exports; } });
 

@@ -3,16 +3,17 @@
  *
  * 只管「页面怎么摆」，不进库 —— 库里没有也不该有「文档站外壳」这种东西。
  * 样式真源在 demo.css（由 scripts/gen-css.mjs 生成本包内的 demo-css.generated.ts）。
- * 代码高亮与复制按钮一律走官方 CodeBlock，不自绘（官方件优先，见 docs/requirements.md）。
+ * 代码高亮与复制按钮一律走**核心 CodeViewer**（`dist/ui/CodeViewer`，与文件预览源码态同一个件）：
+ * 官方 CodeBlock 把整篇 tokenize 成巨型 DOM、拖宽重排会卡；CodeViewer 是行级视图 + 增量高亮。
  *
  * 文档体（prose / api / code）现在直接吃 packages/demo/src/doc-data.generated.ts ——
  * 那份由 scripts/gen-docs.mjs 从 docs 下的 doc.ts 扁平聚合生成，零解析。
  * 因此「重分类 / 改文档」只动 doc.ts，本层一行不动。
  */
 import { createElement as h, Fragment, type ReactNode } from 'react'
-import { CodeBlock } from '@deepseek-ai/dsh-client-ui-primitives'
+import { CodeViewer } from '../../../dist/ui/CodeViewer.js'
 import { StripCard } from '../../../dist/ui/index.js'
-import { getLocale } from '../../../dist/utils/index.js'
+import { getLocale, t as coreT } from '../../../dist/utils/index.js'
 import { t, type DemoMessageKey } from './i18n.js'
 import { docData as RAW_DOC_DATA } from './doc-data.generated.js'
 
@@ -64,6 +65,11 @@ export function Note(props: { text?: string; children?: ReactNode }): ReturnType
   )
 }
 
+/** CodeViewer 按 path 的扩展名选语法 ⇒ 把代码块的语言直接当扩展名喂进去（bash/ts/tsx 都有对应）。 */
+function snippetPath(lang: string): string {
+  return `snippet.${lang}`
+}
+
 /** 一段代码（用法 / 安装这类没有实时渲染的块）。 */
 export function CodeOnly(props: {
   labelKey?: DemoMessageKey
@@ -76,12 +82,12 @@ export function CodeOnly(props: {
     'div',
     { className: 'dshpc-doc-block' },
     h('div', { className: 'dshpc-doc-label' }, label),
-    h(CodeBlock, {
-      code: props.code,
-      lang: props.lang ?? 'tsx',
-      showHeader: true,
-      copyLabel: t('docCopy'),
-      copiedLabel: t('docCopied'),
+    h(CodeViewer, {
+      text: props.code,
+      path: snippetPath(props.lang ?? 'tsx'),
+      t: coreT,
+      // 卡片里没有确定高度上下文 ⇒ 随内容撑高，由外层滚。
+      height: 'auto',
     }),
   )
 }
@@ -126,12 +132,11 @@ export function Example(props: {
             h(
               'div',
               { className: 'dshpc-doc-example__scroll' },
-              h(CodeBlock, {
-                code: props.code,
-                lang: 'tsx',
-                showHeader: true,
-                copyLabel: t('docCopy'),
-                copiedLabel: t('docCopied'),
+              h(CodeViewer, {
+                text: props.code,
+                path: snippetPath('tsx'),
+                t: coreT,
+                height: 'auto',
               }),
             ),
           ),

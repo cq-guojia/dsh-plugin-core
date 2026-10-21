@@ -13,7 +13,7 @@ import { Example, CodeOnly, DocProse, DocApi } from '../doc.js'
 import { pageRow } from '../layout-mount.js'
 import { fileServices } from '../host-files.js'
 import { findSamples, type SampleSet } from '../samples.js'
-import { t } from '../i18n.js'
+import { t, type DemoMessageKey } from '../i18n.js'
 
 const CODE_OPEN = `// 右侧分栏预览（占宽度、挤窄主区；不是浮层）
 import { openFilePreview } from 'dsh-plugin-core/explorer'
@@ -103,7 +103,7 @@ function OpenPreviewDemo(): ReturnType<typeof h> {
     setLast(path === '' ? `${rootName}（根）` : path)
   }
   // 只在**确认没有**时才改文案；还在找就保持正常按钮文案（点了会等同一个 Promise）。
-  const sampleLabel = (normal: string): string => (phase === 'missing' ? t('samplesNotFound') : t(normal))
+  const sampleLabel = (normal: DemoMessageKey): string => (phase === 'missing' ? t('samplesNotFound') : t(normal))
   const openSamples = (pick: (s: SampleSet) => string): void => {
     void (pending.current ?? Promise.resolve(samples)).then((s) => {
       if (s !== null) open(pick(s), anchor.title)
