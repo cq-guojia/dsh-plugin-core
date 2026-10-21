@@ -1,5 +1,6 @@
 import { createElement as h } from 'react'
-import { Demo, Placeholder } from './index.js'
+import { Placeholder } from './index.js'
+import { Example, Note } from '../doc.js'
 import { t, type DemoMessageKey } from '../i18n.js'
 
 // 构建时由 packages/demo/build.mjs 的 define 注入（读两份 package.json）。
@@ -19,9 +20,10 @@ export function ReferencePage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(Demo, { title: t('secA11y') }, h(Placeholder, { descKey: 'a11yDesc' })),
+    h(Note, { text: t('referenceNote') }),
+    h(Example, { title: t('secA11y') }, h(Placeholder, { descKey: 'a11yDesc' })),
     h(
-      Demo,
+      Example,
       { title: t('secRoadmap'), hint: t('roadmapHint') },
       h(
         'div',
@@ -42,7 +44,7 @@ export function ReferencePage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
+      Example,
       { title: t('secBuild'), hint: t('buildDesc') },
       h(
         'table',

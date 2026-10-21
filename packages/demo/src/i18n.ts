@@ -277,6 +277,23 @@ export type DemoMessageKey =
   | 'apiSessionVariant'
   | 'apiSessionTitle'
   | 'apiSessionCallbacks'
+  // 工具页（utils）
+  | 'utilsNote'
+  | 'apiDateDateTime'
+  | 'apiDateYmd'
+  | 'apiDateClock'
+  | 'apiDateDuration'
+  | 'apiDateRange'
+  | 'apiDatePast'
+  | 'apiDateFuture'
+  | 'apiNumberBytes'
+  | 'apiI18nGet'
+  | 'apiI18nSet'
+  | 'apiI18nT'
+  // 起始/基础/参考页
+  | 'startNote'
+  | 'foundationNote'
+  | 'referenceNote'
   | 'docNote'
   | 'docPreview'
   | 'docCode'
@@ -490,6 +507,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiSessionVariant: "渲染形态：'modal'（弹窗）｜'inline'（内联块）",
     apiSessionTitle: '弹窗标题（variant=modal 时）',
     apiSessionCallbacks: 'onClose：关闭；onOpenFile：点开文件时触发',
+
+    utilsNote: 'utils 组是纯函数工具：日期时间格式化、数字/体积格式化、多语言。全部走当前 locale（由宿主驱动，切宿主语言即变）。',
+
+    apiDateDateTime: 'ISO 字符串 → 本地日期时间；opts.seconds 控制是否带秒',
+    apiDateYmd: 'ISO → 年月日',
+    apiDateClock: 'ISO → 时分秒',
+    apiDateDuration: '毫秒 → 时:分:秒',
+    apiDateRange: '两个 ISO → 区间文本（起 – 止）',
+    apiDatePast: '(iso, now) → 「N 分钟/小时/天前」',
+    apiDateFuture: '(iso, now) → 「N 分钟/小时后」',
+    apiNumberBytes: '(bytes) → 人类可读体积（B / KB / MB / GB …）',
+    apiI18nGet: '() => 当前 locale 字符串（由宿主驱动）',
+    apiI18nSet: '(locale) => void：切语言（宿主覆盖时以此为准）',
+    apiI18nT: '(key) => 当前语言的文案',
+
+    startNote: '快速开始：原「概览 / 安装与初始化 / 写一个插件」三条并成一页，每块仍是独立卡片。先看一眼能从本包拿到什么，再照安装与样式注入两段把环境搭起来。',
+    foundationNote: '设计基础：Token 色板（全部消费 --dshpc-* 变量，明暗交给 token）、暗色主题判据（渲染时读 body[data-ds-dark-theme]）、样式注入（createStyleKit + setStyleKit，每个插件用固定 id）、命名契约（dshpc- 前缀）。',
+    referenceNote: '参考与约定：无障碍要点、明确不做的部分（与 docs/design/features.md 同源）、版本与构建产物信息。',
     btnLabelSave: '保存修改',
     btnLabelCancel: '取消',
     btnLabelDelete: '删除',
@@ -823,6 +858,24 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiSessionVariant: "Render form: 'modal' (dialog) | 'inline' (in-page block)",
     apiSessionTitle: 'Dialog title (when variant=modal)',
     apiSessionCallbacks: 'onClose: closes; onOpenFile: fires when a file is opened',
+
+    utilsNote: 'The utils group is pure-function tooling: date/time formatting, number/byte formatting, and i18n. All honor the current locale (driven by the host; switch host language and it changes).',
+
+    apiDateDateTime: 'ISO string → local date-time; opts.seconds controls whether seconds show',
+    apiDateYmd: 'ISO → year-month-day',
+    apiDateClock: 'ISO → hours:minutes:seconds',
+    apiDateDuration: 'milliseconds → hours:minutes:seconds',
+    apiDateRange: 'two ISO → range text (start – end)',
+    apiDatePast: '(iso, now) → "N minutes/hours/days ago"',
+    apiDateFuture: '(iso, now) → "in N minutes/hours/days"',
+    apiNumberBytes: '(bytes) → human-readable size (B / KB / MB / GB …)',
+    apiI18nGet: '() => current locale string (driven by the host)',
+    apiI18nSet: '(locale) => void: switch language (the host override wins)',
+    apiI18nT: '(key) => the current-locale copy',
+
+    startNote: 'Quick start: the original three (overview / install & init / write a plugin) are merged into one page, each still an independent card. First see what this package gives you, then set up the environment with the install and style-injection snippets.',
+    foundationNote: 'Design foundations: the Token palette (all consume --dshpc-* variables; light/dark is the token’s job), the dark-theme predicate (read body[data-ds-dark-theme] at render time), style injection (createStyleKit + setStyleKit, each plugin uses a fixed id), and the naming contract (dshpc- prefix).',
+    referenceNote: 'Reference & conventions: accessibility notes, what is explicitly out of scope (same source as docs/design/features.md), and version/build artifact info.',
 
     btnLabelSave: 'Save changes',
     btnLabelCancel: 'Cancel',

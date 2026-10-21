@@ -3464,6 +3464,21 @@ var DICT2 = {
     apiSessionVariant: "\u6E32\u67D3\u5F62\u6001\uFF1A'modal'\uFF08\u5F39\u7A97\uFF09\uFF5C'inline'\uFF08\u5185\u8054\u5757\uFF09",
     apiSessionTitle: "\u5F39\u7A97\u6807\u9898\uFF08variant=modal \u65F6\uFF09",
     apiSessionCallbacks: "onClose\uFF1A\u5173\u95ED\uFF1BonOpenFile\uFF1A\u70B9\u5F00\u6587\u4EF6\u65F6\u89E6\u53D1",
+    utilsNote: "utils \u7EC4\u662F\u7EAF\u51FD\u6570\u5DE5\u5177\uFF1A\u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\u3001\u6570\u5B57/\u4F53\u79EF\u683C\u5F0F\u5316\u3001\u591A\u8BED\u8A00\u3002\u5168\u90E8\u8D70\u5F53\u524D locale\uFF08\u7531\u5BBF\u4E3B\u9A71\u52A8\uFF0C\u5207\u5BBF\u4E3B\u8BED\u8A00\u5373\u53D8\uFF09\u3002",
+    apiDateDateTime: "ISO \u5B57\u7B26\u4E32 \u2192 \u672C\u5730\u65E5\u671F\u65F6\u95F4\uFF1Bopts.seconds \u63A7\u5236\u662F\u5426\u5E26\u79D2",
+    apiDateYmd: "ISO \u2192 \u5E74\u6708\u65E5",
+    apiDateClock: "ISO \u2192 \u65F6\u5206\u79D2",
+    apiDateDuration: "\u6BEB\u79D2 \u2192 \u65F6:\u5206:\u79D2",
+    apiDateRange: "\u4E24\u4E2A ISO \u2192 \u533A\u95F4\u6587\u672C\uFF08\u8D77 \u2013 \u6B62\uFF09",
+    apiDatePast: "(iso, now) \u2192 \u300CN \u5206\u949F/\u5C0F\u65F6/\u5929\u524D\u300D",
+    apiDateFuture: "(iso, now) \u2192 \u300CN \u5206\u949F/\u5C0F\u65F6\u540E\u300D",
+    apiNumberBytes: "(bytes) \u2192 \u4EBA\u7C7B\u53EF\u8BFB\u4F53\u79EF\uFF08B / KB / MB / GB \u2026\uFF09",
+    apiI18nGet: "() => \u5F53\u524D locale \u5B57\u7B26\u4E32\uFF08\u7531\u5BBF\u4E3B\u9A71\u52A8\uFF09",
+    apiI18nSet: "(locale) => void\uFF1A\u5207\u8BED\u8A00\uFF08\u5BBF\u4E3B\u8986\u76D6\u65F6\u4EE5\u6B64\u4E3A\u51C6\uFF09",
+    apiI18nT: "(key) => \u5F53\u524D\u8BED\u8A00\u7684\u6587\u6848",
+    startNote: "\u5FEB\u901F\u5F00\u59CB\uFF1A\u539F\u300C\u6982\u89C8 / \u5B89\u88C5\u4E0E\u521D\u59CB\u5316 / \u5199\u4E00\u4E2A\u63D2\u4EF6\u300D\u4E09\u6761\u5E76\u6210\u4E00\u9875\uFF0C\u6BCF\u5757\u4ECD\u662F\u72EC\u7ACB\u5361\u7247\u3002\u5148\u770B\u4E00\u773C\u80FD\u4ECE\u672C\u5305\u62FF\u5230\u4EC0\u4E48\uFF0C\u518D\u7167\u5B89\u88C5\u4E0E\u6837\u5F0F\u6CE8\u5165\u4E24\u6BB5\u628A\u73AF\u5883\u642D\u8D77\u6765\u3002",
+    foundationNote: "\u8BBE\u8BA1\u57FA\u7840\uFF1AToken \u8272\u677F\uFF08\u5168\u90E8\u6D88\u8D39 --dshpc-* \u53D8\u91CF\uFF0C\u660E\u6697\u4EA4\u7ED9 token\uFF09\u3001\u6697\u8272\u4E3B\u9898\u5224\u636E\uFF08\u6E32\u67D3\u65F6\u8BFB body[data-ds-dark-theme]\uFF09\u3001\u6837\u5F0F\u6CE8\u5165\uFF08createStyleKit + setStyleKit\uFF0C\u6BCF\u4E2A\u63D2\u4EF6\u7528\u56FA\u5B9A id\uFF09\u3001\u547D\u540D\u5951\u7EA6\uFF08dshpc- \u524D\u7F00\uFF09\u3002",
+    referenceNote: "\u53C2\u8003\u4E0E\u7EA6\u5B9A\uFF1A\u65E0\u969C\u788D\u8981\u70B9\u3001\u660E\u786E\u4E0D\u505A\u7684\u90E8\u5206\uFF08\u4E0E docs/design/features.md \u540C\u6E90\uFF09\u3001\u7248\u672C\u4E0E\u6784\u5EFA\u4EA7\u7269\u4FE1\u606F\u3002",
     btnLabelSave: "\u4FDD\u5B58\u4FEE\u6539",
     btnLabelCancel: "\u53D6\u6D88",
     btnLabelDelete: "\u5220\u9664",
@@ -3752,6 +3767,21 @@ var DICT2 = {
     apiSessionVariant: "Render form: 'modal' (dialog) | 'inline' (in-page block)",
     apiSessionTitle: "Dialog title (when variant=modal)",
     apiSessionCallbacks: "onClose: closes; onOpenFile: fires when a file is opened",
+    utilsNote: "The utils group is pure-function tooling: date/time formatting, number/byte formatting, and i18n. All honor the current locale (driven by the host; switch host language and it changes).",
+    apiDateDateTime: "ISO string \u2192 local date-time; opts.seconds controls whether seconds show",
+    apiDateYmd: "ISO \u2192 year-month-day",
+    apiDateClock: "ISO \u2192 hours:minutes:seconds",
+    apiDateDuration: "milliseconds \u2192 hours:minutes:seconds",
+    apiDateRange: "two ISO \u2192 range text (start \u2013 end)",
+    apiDatePast: '(iso, now) \u2192 "N minutes/hours/days ago"',
+    apiDateFuture: '(iso, now) \u2192 "in N minutes/hours/days"',
+    apiNumberBytes: "(bytes) \u2192 human-readable size (B / KB / MB / GB \u2026)",
+    apiI18nGet: "() => current locale string (driven by the host)",
+    apiI18nSet: "(locale) => void: switch language (the host override wins)",
+    apiI18nT: "(key) => the current-locale copy",
+    startNote: "Quick start: the original three (overview / install & init / write a plugin) are merged into one page, each still an independent card. First see what this package gives you, then set up the environment with the install and style-injection snippets.",
+    foundationNote: "Design foundations: the Token palette (all consume --dshpc-* variables; light/dark is the token\u2019s job), the dark-theme predicate (read body[data-ds-dark-theme] at render time), style injection (createStyleKit + setStyleKit, each plugin uses a fixed id), and the naming contract (dshpc- prefix).",
+    referenceNote: "Reference & conventions: accessibility notes, what is explicitly out of scope (same source as docs/design/features.md), and version/build artifact info.",
     btnLabelSave: "Save changes",
     btnLabelCancel: "Cancel",
     btnLabelDelete: "Delete",
@@ -3957,19 +3987,138 @@ var pageRow = { element: null };
 var import_react43 = require("react");
 
 // packages/demo/src/sections/start.tsx
+var import_react27 = require("react");
+
+// packages/demo/src/doc.tsx
 var import_react26 = require("react");
-function QuickstartPage() {
+var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
+function Note(props) {
+  return (0, import_react26.createElement)(
+    StripCard,
+    { accent: "business", className: "dshpc-doc-note" },
+    (0, import_react26.createElement)(
+      "div",
+      { className: "dshpc-doc-note__body" },
+      (0, import_react26.createElement)("span", { className: "dshpc-doc-note__mark" }, t2("docNote")),
+      (0, import_react26.createElement)("span", null, props.text)
+    )
+  );
+}
+function CodeOnly(props) {
   return (0, import_react26.createElement)(
     "div",
+    { className: "dshpc-doc-block" },
+    (0, import_react26.createElement)("div", { className: "dshpc-doc-label" }, t2(props.labelKey)),
+    (0, import_react26.createElement)(import_dsh_client_ui_primitives2.CodeBlock, {
+      code: props.code,
+      lang: props.lang ?? "tsx",
+      showHeader: true,
+      copyLabel: t2("docCopy"),
+      copiedLabel: t2("docCopied")
+    })
+  );
+}
+function Example(props) {
+  return (0, import_react26.createElement)(
+    "section",
+    { className: "dshpc-doc-example" },
+    (0, import_react26.createElement)(
+      "div",
+      { className: "dshpc-doc-example__head" },
+      (0, import_react26.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
+      props.hint === void 0 ? null : (0, import_react26.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
+    ),
+    (0, import_react26.createElement)(
+      "div",
+      { className: "dshpc-doc-example__body" },
+      (0, import_react26.createElement)(
+        "div",
+        { className: "dshpc-doc-example__demo" },
+        (0, import_react26.createElement)("div", { className: "dshpc-doc-label" }, t2("docPreview")),
+        props.children ?? null
+      ),
+      props.code === void 0 ? null : (0, import_react26.createElement)(
+        "div",
+        { className: "dshpc-doc-example__code" },
+        (0, import_react26.createElement)("div", { className: "dshpc-doc-label" }, t2("docCode")),
+        (0, import_react26.createElement)(
+          "div",
+          { className: "dshpc-doc-example__scroll" },
+          (0, import_react26.createElement)(import_dsh_client_ui_primitives2.CodeBlock, {
+            code: props.code,
+            lang: "tsx",
+            showHeader: true,
+            copyLabel: t2("docCopy"),
+            copiedLabel: t2("docCopied")
+          })
+        )
+      )
+    )
+  );
+}
+function ApiTable(props) {
+  return (0, import_react26.createElement)(
+    "div",
+    { className: "dshpc-doc-block" },
+    (0, import_react26.createElement)("div", { className: "dshpc-doc-label" }, t2("docApi")),
+    (0, import_react26.createElement)(
+      "table",
+      { className: "dshpc-doc-api" },
+      (0, import_react26.createElement)(
+        "thead",
+        null,
+        (0, import_react26.createElement)(
+          "tr",
+          null,
+          (0, import_react26.createElement)("th", null, t2("docApiName")),
+          (0, import_react26.createElement)("th", null, t2("docApiType")),
+          (0, import_react26.createElement)("th", null, t2("docApiDefault")),
+          (0, import_react26.createElement)("th", null, t2("docApiDesc"))
+        )
+      ),
+      (0, import_react26.createElement)(
+        "tbody",
+        null,
+        props.rows.map(
+          (row) => (0, import_react26.createElement)(
+            "tr",
+            { key: row.name },
+            (0, import_react26.createElement)("td", null, row.name),
+            (0, import_react26.createElement)("td", null, row.type),
+            (0, import_react26.createElement)("td", null, row.def),
+            (0, import_react26.createElement)("td", null, t2(row.descKey))
+          )
+        )
+      )
+    )
+  );
+}
+
+// packages/demo/src/sections/start.tsx
+var CODE_START_USAGE = `pnpm add dsh-plugin-core
+
+// \u5F15\u5165\u6837\u5F0F\u5DE5\u5177\u4E0E\u63A7\u4EF6
+import { createStyleKit } from 'dsh-plugin-core/design'
+import { Button, Modal, notify } from 'dsh-plugin-core/ui'
+
+// \u4E00\u6B21\u6027\u6CE8\u5165\u6837\u5F0F\uFF08\u6BCF\u4E2A\u63D2\u4EF6\u7528\u81EA\u5DF1\u7684\u56FA\u5B9A id\uFF09
+import { setStyleKit, ensureControls } from 'dsh-plugin-core/ui'
+setStyleKit(createStyleKit({ id: 'your-plugin-id' }))
+ensureControls()`;
+function QuickstartPage() {
+  return (0, import_react27.createElement)(
+    "div",
     null,
-    (0, import_react26.createElement)(Demo, { title: t2("secOverview") }, (0, import_react26.createElement)(Placeholder, { descKey: "overviewDesc" })),
-    (0, import_react26.createElement)(Demo, { title: t2("secInstall") }, (0, import_react26.createElement)(Placeholder, { descKey: "installDesc" })),
-    (0, import_react26.createElement)(Demo, { title: t2("secWritePlugin") }, (0, import_react26.createElement)(Placeholder, { descKey: "quickstartDesc" }))
+    (0, import_react27.createElement)(Note, { text: t2("startNote") }),
+    (0, import_react27.createElement)(Example, { title: t2("secOverview") }, (0, import_react27.createElement)(Placeholder, { descKey: "overviewDesc" })),
+    (0, import_react27.createElement)(Example, { title: t2("secInstall") }, (0, import_react27.createElement)(Placeholder, { descKey: "installDesc" })),
+    (0, import_react27.createElement)(Example, { title: t2("secWritePlugin") }, (0, import_react27.createElement)(Placeholder, { descKey: "quickstartDesc" })),
+    (0, import_react27.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_START_USAGE })
   );
 }
 
 // packages/demo/src/sections/foundation.tsx
-var import_react27 = require("react");
+var import_react28 = require("react");
 var TOKENS = [
   { label: "business", cssVar: "--dshpc-business" },
   { label: "success", cssVar: "--dshpc-success" },
@@ -3984,20 +4133,21 @@ var TOKENS = [
   { label: "fg-4", cssVar: "--dshpc-fg-4" }
 ];
 function FoundationPage() {
-  return (0, import_react27.createElement)(
+  return (0, import_react28.createElement)(
     "div",
     null,
-    (0, import_react27.createElement)(
-      Demo,
+    (0, import_react28.createElement)(Note, { text: t2("foundationNote") }),
+    (0, import_react28.createElement)(
+      Example,
       { title: t2("demoTokenPalette"), hint: t2("tokensHint") },
-      (0, import_react27.createElement)(
+      (0, import_react28.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
         TOKENS.map(
-          (item) => (0, import_react27.createElement)(
+          (item) => (0, import_react28.createElement)(
             "div",
             { key: item.cssVar, style: { width: "104px" } },
-            (0, import_react27.createElement)("div", {
+            (0, import_react28.createElement)("div", {
               style: {
                 height: "40px",
                 borderRadius: "6px",
@@ -4005,25 +4155,25 @@ function FoundationPage() {
                 border: "1px solid var(--dshpc-border-faint)"
               }
             }),
-            (0, import_react27.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
-            (0, import_react27.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+            (0, import_react28.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
+            (0, import_react28.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
           )
         )
       )
     ),
     // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
-    (0, import_react27.createElement)(
-      Demo,
+    (0, import_react28.createElement)(
+      Example,
       { title: "body[data-ds-dark-theme]", hint: t2("darkHint") },
-      (0, import_react27.createElement)(
+      (0, import_react28.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react27.createElement)(
+        (0, import_react28.createElement)(
           "span",
           { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t2("darkNow")
         ),
-        (0, import_react27.createElement)("code", {
+        (0, import_react28.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -4035,8 +4185,8 @@ function FoundationPage() {
         }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
       )
     ),
-    (0, import_react27.createElement)(
-      Demo,
+    (0, import_react28.createElement)(
+      Example,
       {
         title: t2("demoStyleInject"),
         hint: t2("injectHint"),
@@ -4046,9 +4196,9 @@ import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
 ensureControls()`
       },
-      (0, import_react27.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
+      (0, import_react28.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t2("designInjectNote"))
     ),
-    (0, import_react27.createElement)(Demo, { title: t2("secNaming") }, (0, import_react27.createElement)(Placeholder, { descKey: "namingDesc" }))
+    (0, import_react28.createElement)(Example, { title: t2("secNaming") }, (0, import_react28.createElement)(Placeholder, { descKey: "namingDesc" }))
   );
 }
 
@@ -4063,7 +4213,7 @@ __export(official_exports, {
 });
 var Official = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
 __reExport(official_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
-var import_react28 = require("react");
+var import_react29 = require("react");
 var import_client3 = require("react-dom/client");
 var warned = /* @__PURE__ */ new Set();
 var officialRegistry = Official;
@@ -4091,7 +4241,7 @@ function mountHostModal(render) {
   root.render(render(close));
 }
 var hostConfirm = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react28.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react29.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -4100,17 +4250,17 @@ var hostConfirm = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react28.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react28.createElement)(Button, { variant: "outline", onClick: () => {
+    footer: (0, import_react29.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react29.createElement)(Button, { variant: "outline", onClick: () => {
       close();
       resolve(false);
-    } }, opts.cancelText ?? t("cancel")), (0, import_react28.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
+    } }, opts.cancelText ?? t("cancel")), (0, import_react29.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
       close();
       resolve(true);
     } }, opts.confirmText ?? t("confirm")))
   }));
 });
 var hostAlert = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react28.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react29.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -4119,7 +4269,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react28.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react28.createElement)(Button, { variant: "primary", onClick: () => {
+    footer: (0, import_react29.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react29.createElement)(Button, { variant: "primary", onClick: () => {
       close();
       resolve();
     } }, opts.confirmText ?? t("dialogOk")))
@@ -4128,7 +4278,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
 registerHostDialog({ confirm: hostConfirm, alert: hostAlert });
 
 // dist/ui/host-toast.js
-var import_react29 = require("react");
+var import_react30 = require("react");
 var import_client4 = require("react-dom/client");
 function showHostToast(message, opts) {
   if (typeof document === "undefined")
@@ -4140,7 +4290,7 @@ function showHostToast(message, opts) {
     root.unmount();
     container.remove();
   };
-  root.render((0, import_react29.createElement)(Official.Toast, {
+  root.render((0, import_react30.createElement)(Official.Toast, {
     text: message,
     tone: opts?.tone,
     holdMs: opts?.holdMs ?? 3e3,
@@ -4154,113 +4304,6 @@ function showHostToast(message, opts) {
 
 // packages/demo/src/sections/controls.tsx
 var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
-
-// packages/demo/src/doc.tsx
-var import_react30 = require("react");
-var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
-function Note(props) {
-  return (0, import_react30.createElement)(
-    StripCard,
-    { accent: "business", className: "dshpc-doc-note" },
-    (0, import_react30.createElement)(
-      "div",
-      { className: "dshpc-doc-note__body" },
-      (0, import_react30.createElement)("span", { className: "dshpc-doc-note__mark" }, t2("docNote")),
-      (0, import_react30.createElement)("span", null, props.text)
-    )
-  );
-}
-function CodeOnly(props) {
-  return (0, import_react30.createElement)(
-    "div",
-    { className: "dshpc-doc-block" },
-    (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2(props.labelKey)),
-    (0, import_react30.createElement)(import_dsh_client_ui_primitives2.CodeBlock, {
-      code: props.code,
-      lang: props.lang ?? "tsx",
-      showHeader: true,
-      copyLabel: t2("docCopy"),
-      copiedLabel: t2("docCopied")
-    })
-  );
-}
-function Example(props) {
-  return (0, import_react30.createElement)(
-    "section",
-    { className: "dshpc-doc-example" },
-    (0, import_react30.createElement)(
-      "div",
-      { className: "dshpc-doc-example__head" },
-      (0, import_react30.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
-      props.hint === void 0 ? null : (0, import_react30.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
-    ),
-    (0, import_react30.createElement)(
-      "div",
-      { className: "dshpc-doc-example__body" },
-      (0, import_react30.createElement)(
-        "div",
-        { className: "dshpc-doc-example__demo" },
-        (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2("docPreview")),
-        props.children ?? null
-      ),
-      props.code === void 0 ? null : (0, import_react30.createElement)(
-        "div",
-        { className: "dshpc-doc-example__code" },
-        (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2("docCode")),
-        (0, import_react30.createElement)(
-          "div",
-          { className: "dshpc-doc-example__scroll" },
-          (0, import_react30.createElement)(import_dsh_client_ui_primitives2.CodeBlock, {
-            code: props.code,
-            lang: "tsx",
-            showHeader: true,
-            copyLabel: t2("docCopy"),
-            copiedLabel: t2("docCopied")
-          })
-        )
-      )
-    )
-  );
-}
-function ApiTable(props) {
-  return (0, import_react30.createElement)(
-    "div",
-    { className: "dshpc-doc-block" },
-    (0, import_react30.createElement)("div", { className: "dshpc-doc-label" }, t2("docApi")),
-    (0, import_react30.createElement)(
-      "table",
-      { className: "dshpc-doc-api" },
-      (0, import_react30.createElement)(
-        "thead",
-        null,
-        (0, import_react30.createElement)(
-          "tr",
-          null,
-          (0, import_react30.createElement)("th", null, t2("docApiName")),
-          (0, import_react30.createElement)("th", null, t2("docApiType")),
-          (0, import_react30.createElement)("th", null, t2("docApiDefault")),
-          (0, import_react30.createElement)("th", null, t2("docApiDesc"))
-        )
-      ),
-      (0, import_react30.createElement)(
-        "tbody",
-        null,
-        props.rows.map(
-          (row) => (0, import_react30.createElement)(
-            "tr",
-            { key: row.name },
-            (0, import_react30.createElement)("td", null, row.name),
-            (0, import_react30.createElement)("td", null, row.type),
-            (0, import_react30.createElement)("td", null, row.def),
-            (0, import_react30.createElement)("td", null, t2(row.descKey))
-          )
-        )
-      )
-    )
-  );
-}
-
-// packages/demo/src/sections/controls.tsx
 var BUTTON_ICONS = [
   { name: "plus", Icon: import_dsh_client_ui_primitives3.IconPlusOutlineRegular },
   { name: "check", Icon: import_dsh_client_ui_primitives3.IconCheckOutlineRegular },
@@ -7619,6 +7662,43 @@ function SessionPage() {
 
 // packages/demo/src/sections/utils.tsx
 var import_react41 = require("react");
+var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
+formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
+formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
+formatClock('2026-10-18T09:30:05.000Z')                        // 09:30:05
+formatDurationHms(3_725_000)                                   // 1:02:05
+formatRange('2026-10-18T09:00', '2026-10-18T10:30')            // 09:00 \u2013 10:30
+relativePast('2026-10-18T11:57', now)                          // 3 \u5206\u949F\u524D
+relativeFuture('2026-10-18T12:03', now)                        // 3 \u5206\u949F\u540E`;
+var CODE_NUMBER = `formatBytes(125_829)   // 123 KB`;
+var CODE_I18N = `import { getLocale, setLocale, t } from 'dsh-plugin-core/utils'
+
+getLocale()     // \u5F53\u524D locale\uFF08\u7531\u5BBF\u4E3B\u9A71\u52A8\uFF09
+setLocale('en') // \u5207\u8BED\u8A00\uFF08\u5BBF\u4E3B\u8986\u76D6\u65F6\u4EE5\u6B64\u4E3A\u51C6\uFF09
+t('someKey')    // \u53D6\u5F53\u524D\u8BED\u8A00\u7684\u6587\u6848`;
+var CODE_UTILS_USAGE = `pnpm add dsh-plugin-core
+
+import {
+  formatDateTime, formatYmd, formatClock, formatDurationHms, formatRange,
+  relativePast, relativeFuture, formatBytes, getLocale, setLocale, t,
+} from 'dsh-plugin-core/utils'`;
+var DATE_API = [
+  { name: "formatDateTime", type: "(iso, opts?) => string", def: "\u2014", descKey: "apiDateDateTime" },
+  { name: "formatYmd", type: "(iso) => string", def: "\u2014", descKey: "apiDateYmd" },
+  { name: "formatClock", type: "(iso) => string", def: "\u2014", descKey: "apiDateClock" },
+  { name: "formatDurationHms", type: "(ms) => string", def: "\u2014", descKey: "apiDateDuration" },
+  { name: "formatRange", type: "(from, to) => string", def: "\u2014", descKey: "apiDateRange" },
+  { name: "relativePast", type: "(iso, now) => string", def: "\u2014", descKey: "apiDatePast" },
+  { name: "relativeFuture", type: "(iso, now) => string", def: "\u2014", descKey: "apiDateFuture" }
+];
+var NUMBER_API2 = [
+  { name: "formatBytes", type: "(bytes) => string", def: "\u2014", descKey: "apiNumberBytes" }
+];
+var I18N_API = [
+  { name: "getLocale", type: "() => string", def: "\u2014", descKey: "apiI18nGet" },
+  { name: "setLocale", type: "(locale) => void", def: "\u2014", descKey: "apiI18nSet" },
+  { name: "t", type: "(key) => string", def: "\u2014", descKey: "apiI18nT" }
+];
 var NOW = Date.parse("2026-10-18T12:00:00.000Z");
 var DATE_ROWS = [
   ["formatDateTime", formatDateTime("2026-10-18T09:30:05.000Z", { seconds: true })],
@@ -7663,10 +7743,24 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react41.createElement)(Demo, { title: "date / time", hint: t2("dateHint") }, (0, import_react41.createElement)(FnTable, { rows: DATE_ROWS }));
+  return (0, import_react41.createElement)(
+    "div",
+    null,
+    (0, import_react41.createElement)(Note, { text: t2("utilsNote") }),
+    (0, import_react41.createElement)(Example, { title: "date / time", hint: t2("dateHint"), code: CODE_DATE }, (0, import_react41.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react41.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react41.createElement)(ApiTable, { rows: DATE_API })
+  );
 }
 function NumberPage() {
-  return (0, import_react41.createElement)(Demo, { title: "number / bytes", hint: t2("numberHint") }, (0, import_react41.createElement)(FnTable, { rows: NUMBER_ROWS }));
+  return (0, import_react41.createElement)(
+    "div",
+    null,
+    (0, import_react41.createElement)(Note, { text: t2("utilsNote") }),
+    (0, import_react41.createElement)(Example, { title: "number / bytes", hint: t2("numberHint"), code: CODE_NUMBER }, (0, import_react41.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react41.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react41.createElement)(ApiTable, { rows: NUMBER_API2 })
+  );
 }
 function TextPage() {
   return (0, import_react41.createElement)(Placeholder, { descKey: "textDesc" });
@@ -7678,9 +7772,10 @@ function I18nPage() {
   return (0, import_react41.createElement)(
     "div",
     null,
+    (0, import_react41.createElement)(Note, { text: t2("utilsNote") }),
     (0, import_react41.createElement)(
-      Demo,
-      { title: "getLocale / setLocale", hint: t2("i18nDesc") },
+      Example,
+      { title: "getLocale / setLocale", hint: t2("i18nDesc"), code: CODE_I18N },
       (0, import_react41.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
@@ -7697,7 +7792,8 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react41.createElement)(Placeholder, { descKey: "i18nDesc" })
+    (0, import_react41.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react41.createElement)(ApiTable, { rows: I18N_API })
   );
 }
 
@@ -7708,9 +7804,10 @@ function ReferencePage() {
   return (0, import_react42.createElement)(
     "div",
     null,
-    (0, import_react42.createElement)(Demo, { title: t2("secA11y") }, (0, import_react42.createElement)(Placeholder, { descKey: "a11yDesc" })),
+    (0, import_react42.createElement)(Note, { text: t2("referenceNote") }),
+    (0, import_react42.createElement)(Example, { title: t2("secA11y") }, (0, import_react42.createElement)(Placeholder, { descKey: "a11yDesc" })),
     (0, import_react42.createElement)(
-      Demo,
+      Example,
       { title: t2("secRoadmap"), hint: t2("roadmapHint") },
       (0, import_react42.createElement)(
         "div",
@@ -7731,7 +7828,7 @@ function ReferencePage() {
       )
     ),
     (0, import_react42.createElement)(
-      Demo,
+      Example,
       { title: t2("secBuild"), hint: t2("buildDesc") },
       (0, import_react42.createElement)(
         "table",
@@ -7742,7 +7839,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0933-0of2"]
+            [t2("buildStamp"), "1021-0937-ols3"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",
@@ -7794,9 +7891,6 @@ var ALL_SECTIONS = [
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
   { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react43.createElement)(ReferencePage, null) }
 ];
-function Demo(props) {
-  return (0, import_react43.createElement)(Example, props);
-}
 function Placeholder(props) {
   return (0, import_react43.createElement)(
     "div",

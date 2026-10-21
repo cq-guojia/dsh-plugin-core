@@ -1,5 +1,6 @@
 import { createElement as h } from 'react'
-import { Demo, Placeholder } from './index.js'
+import { Placeholder } from './index.js'
+import { Example, Note } from '../doc.js'
 import { t } from '../i18n.js'
 
 const TOKENS: { label: string; cssVar: string }[] = [
@@ -24,8 +25,9 @@ export function FoundationPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(Note, { text: t('foundationNote') }),
     h(
-      Demo,
+      Example,
       { title: t('demoTokenPalette'), hint: t('tokensHint') },
       h(
         'div',
@@ -49,7 +51,7 @@ export function FoundationPage(): ReturnType<typeof h> {
     ),
     // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
     h(
-      Demo,
+      Example,
       { title: 'body[data-ds-dark-theme]', hint: t('darkHint') },
       h(
         'div',
@@ -68,7 +70,7 @@ export function FoundationPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
+      Example,
       {
         title: t('demoStyleInject'),
         hint: t('injectHint'),
@@ -80,6 +82,6 @@ ensureControls()`,
       },
       h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px' } }, t('designInjectNote')),
     ),
-    h(Demo, { title: t('secNaming') }, h(Placeholder, { descKey: 'namingDesc' })),
+    h(Example, { title: t('secNaming') }, h(Placeholder, { descKey: 'namingDesc' })),
   )
 }
