@@ -30,3 +30,4 @@
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-21 09:23:59 · new · @GuoJia-Agent · 创建任务（open）
+- 2026-10-21 09:25:40 · claim · @GuoJia-Agent · 认领 → doing

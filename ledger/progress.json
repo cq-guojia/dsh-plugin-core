@@ -76,9 +76,9 @@
       "created": "2026-10-21 09:23:59",
       "creator": "GuoJia-Agent",
       "finished": null,
-      "owner": null,
-      "started": null,
-      "status": "open",
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-21 09:25:40",
+      "status": "doing",
       "tags": [
         "CodeViewer",
         "CodeMirror",
@@ -86,7 +86,7 @@
         "预览"
       ],
       "title": "核心引入 CodeMirror 只读 CodeViewer（替代官方 CodeBlock）",
-      "updated": "2026-10-21 09:23:59",
+      "updated": "2026-10-21 09:25:40",
       "worklog": "worklog/202610/21-0923-核心引入-codemirror-只读-codeviewer-替代官方-codeb-8b99.md"
     }
   }
