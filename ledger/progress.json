@@ -53,6 +53,23 @@
       "title": "demo 预览站界面重做（照抄 Bootstrap 文档站布局）",
       "updated": "2026-10-21 08:27:42",
       "worklog": "worklog/202610/20-2317-demo-预览站界面重做-照抄-bootstrap-文档站布局-8427.md"
+    },
+    "20261021-0855-toast-改全局共享宿主-多插件同页只留一个提示区-9a8a": {
+      "category": "功能",
+      "created": "2026-10-21 08:55:12",
+      "creator": "GuoJia-Agent",
+      "finished": null,
+      "owner": "GuoJia-Agent",
+      "started": "2026-10-21 08:55:12",
+      "status": "doing",
+      "tags": [
+        "toast",
+        "多插件",
+        "单例"
+      ],
+      "title": "toast 改全局共享宿主：多插件同页只留一个提示区",
+      "updated": "2026-10-21 08:55:12",
+      "worklog": "worklog/202610/21-0855-toast-改全局共享宿主-多插件同页只留一个提示区-9a8a.md"
     }
   }
 }
