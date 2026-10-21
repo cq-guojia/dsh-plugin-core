@@ -30,3 +30,4 @@
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-21 11:51:26 · new · @GuoJia-Agent · 创建任务（doing）
+- 2026-10-21 11:52:29 · log · @GuoJia-Agent · 三专家调研完成：docs 已在 npm files 内且 bundler 不吃 md（产物不带文档已成立）；demo 13 处写死内容与 docs 同源；docs 零 frontmatter 无机器可读索引；demo 双语 vs docs 纯中文有冲突。已产出 A/B/C 三方案待用户选型（推荐 B：MD 真源 + frontmatter 索引 + gen-docs.mjs 生成 + --check 闸）。
