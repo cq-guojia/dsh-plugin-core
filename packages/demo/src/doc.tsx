@@ -88,6 +88,8 @@ export function CodeOnly(props: {
       t: coreT,
       // 卡片里没有确定高度上下文 ⇒ 随内容撑高，由外层滚。
       height: 'auto',
+      // 文档片段不要行号（行号是「看整个文件」时才需要的坐标，片段有了反而干扰）。
+      lineNumbers: false,
     }),
   )
 }
@@ -137,6 +139,7 @@ export function Example(props: {
                 path: snippetPath('tsx'),
                 t: coreT,
                 height: 'auto',
+                lineNumbers: false,
               }),
             ),
           ),

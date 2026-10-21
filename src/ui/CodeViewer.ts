@@ -45,10 +45,12 @@ export interface CodeViewerProps {
   style?: CSSProperties
   /** 可选：编辑器高度，默认 "100%"（填满父容器）；无确定高度上下文（如工具卡代码）传 "auto" 随内容撑高。 */
   height?: string
+  /** 可选：是否显示行号，默认 true（文件预览要行号；文档里的代码片段一般不要）。 */
+  lineNumbers?: boolean
 }
 
 export function CodeViewer(props: CodeViewerProps): ReactElement {
-  const { text, path, t, className, style, height = '100%' } = props
+  const { text, path, t, className, style, height = '100%', lineNumbers = true } = props
   const [copied, setCopied] = useState(false)
   const [dark, setDark] = useState<boolean>(hostDark)
 
@@ -105,7 +107,7 @@ export function CodeViewer(props: CodeViewerProps): ReactElement {
       height,
       style: { flex: '1 1 auto', minHeight: 0, overflow: 'hidden' },
       basicSetup: {
-        lineNumbers: true,
+        lineNumbers,
         foldGutter: false,
         highlightActiveLine: false,
         highlightActiveLineGutter: false,

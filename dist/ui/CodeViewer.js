@@ -29,7 +29,7 @@ function hostDark() {
     return body === null ? false : body.hasAttribute(DARK_ATTR);
 }
 export function CodeViewer(props) {
-    const { text, path, t, className, style, height = '100%' } = props;
+    const { text, path, t, className, style, height = '100%', lineNumbers = true } = props;
     const [copied, setCopied] = useState(false);
     const [dark, setDark] = useState(hostDark);
     // 用户切主题 = 宿主 toggleAttribute 写 body[data-ds-dark-theme] ⇒ 用 MutationObserver 跟。
@@ -75,7 +75,7 @@ export function CodeViewer(props) {
         height,
         style: { flex: '1 1 auto', minHeight: 0, overflow: 'hidden' },
         basicSetup: {
-            lineNumbers: true,
+            lineNumbers,
             foldGutter: false,
             highlightActiveLine: false,
             highlightActiveLineGutter: false,

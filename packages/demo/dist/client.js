@@ -3028,9 +3028,11 @@ function Picker(props) {
       flip3(),
       shift3({ padding: 8 }),
       size3({
-        apply({ elements, rects, availableHeight }) {
+        apply({ elements, rects, availableWidth, availableHeight }) {
           Object.assign(elements.floating.style, {
-            width: `${rects.reference.width}px`,
+            // 触发器可以限宽，菜单不能跟着限：至少与触发器同宽，随内容变宽，封顶 480 免得太夸张
+            minWidth: `${rects.reference.width}px`,
+            maxWidth: `${Math.min(480, availableWidth ?? 480)}px`,
             maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`
           });
         }
@@ -51291,7 +51293,7 @@ function hostDark() {
   return body === null ? false : body.hasAttribute(DARK_ATTR);
 }
 function CodeViewer(props) {
-  const { text: text2, path, t: t4, className: className2, style: style2, height = "100%" } = props;
+  const { text: text2, path, t: t4, className: className2, style: style2, height = "100%", lineNumbers: lineNumbers2 = true } = props;
   const [copied, setCopied] = (0, import_react32.useState)(false);
   const [dark, setDark] = (0, import_react32.useState)(hostDark);
   (0, import_react32.useEffect)(() => {
@@ -51340,7 +51342,7 @@ function CodeViewer(props) {
     height,
     style: { flex: "1 1 auto", minHeight: 0, overflow: "hidden" },
     basicSetup: {
-      lineNumbers: true,
+      lineNumbers: lineNumbers2,
       foldGutter: false,
       highlightActiveLine: false,
       highlightActiveLineGutter: false,
@@ -53303,7 +53305,9 @@ function CodeOnly(props) {
       path: snippetPath(props.lang ?? "tsx"),
       t,
       // 卡片里没有确定高度上下文 ⇒ 随内容撑高，由外层滚。
-      height: "auto"
+      height: "auto",
+      // 文档片段不要行号（行号是「看整个文件」时才需要的坐标，片段有了反而干扰）。
+      lineNumbers: false
     })
   );
 }
@@ -53337,7 +53341,8 @@ function Example(props) {
             text: props.code,
             path: snippetPath("tsx"),
             t,
-            height: "auto"
+            height: "auto",
+            lineNumbers: false
           })
         )
       )
@@ -56801,7 +56806,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1022-0112-opbp"]
+            [t2("buildStamp"), "1022-0120-w13v"]
           ].map(
             ([label, value]) => (0, import_react48.createElement)(
               "tr",
