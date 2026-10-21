@@ -11,7 +11,7 @@
 
 ## 待办
 
-- [ ] 用户最终拍板：TS 数据模块真源方案（2026-10-21 下午定稿，见过程 8）
+- [x] 用户拍板 TS 数据模块真源方案（2026-10-21 下午定稿，见过程 8）；样板已跑通（explorer，见过程 9），待用户确认边界
 - [ ] 实施第一批：docs/design/doc-format.md（格式规范 + schema，登记进 docs/README.md 槽位表）→ tsconfig.docs.json（--noEmit 守 .doc.ts）→ scripts/gen-docs.mjs（MAP + esbuild 读取 + 渲染 md/demo 数据 + --check）
 - [ ] 实施第二批：demo 改纯渲染器（删 src/i18n.ts DICT、*_API/CODE_* 硬编码，改读 doc-data.generated.ts）——13 处接线，最重
 - [ ] test/doc-contract.test.mjs：生成同步 + MAP⇄磁盘 + demo 源码零硬编码文案
@@ -20,7 +20,7 @@
 
 ## 下一步
 
-等用户对 TS 真源方案拍板；通过后先写 docs/design/doc-format.md + tsconfig.docs.json + scripts/gen-docs.mjs（照 scripts/gen-css.mjs:29-47,94-104,135-142 三件套），跑通一个样板主题（features/ui.doc.ts → ui.md + doc-data.generated.ts）再批量迁移。
+样板已出（explorer，见过程 9），等用户确认边界对；通过后：① 把 features 五份 + integration + style/design 的 API/token 全转 .doc.ts（照 explorer 样板填全内容）；② demo 接线——删 src/i18n.ts DICT 与 sections/* 的 *_API/CODE_* 硬编码、改读 docData（ApiTable/CodeOnly 直接吃生成物，locale 接 zh/en）；③ test/doc-contract.test.mjs 守生成同步 + demo 源码零硬编码；④ 消费方标准指引句写进 docs/README.md。requirements/architecture/external 保持手写 md。
 
 ## 过程
 
@@ -34,10 +34,11 @@
 6. **ledger 机制坑**：progress.py 写前会拉远端并覆盖未提交的 worklog 正文（2026-10-21 上午实际发生两次，执行记录不丢、正文回骨架；同日下午复测未复现——疑与远端有无新提交有关）。规避：正文放在本轮最后一次 log 之后改；根治需提交 ledger 文件（待用户「提交」指令）。
 7. **解析可行性实测（2026-10-21 下午，node 内联原型跑全 docs）**：42 个表格全部列数表内自洽 + 第二行均为分隔行；单元格内 `\|`（如 features/ui.md:44 `'sm' \| 'md' \| 'lg'`）按转义正确切分；25 个代码围栏全部闭合；0 个多行单元格；frontmatter 现状 0 个无冲突。demo 侧数据形状与文档表格 1:1：`ApiRow{name,type,def,descKey}`（packages/demo/src/doc.tsx:13-18）← 表格 参数/类型/默认/说明；`CodeOnly{labelKey,code}`（doc.tsx:38）← 围栏块。**发现真实漂移实证**：Button 表 docs 侧（features/ui.md:41-51）有 `…rest` 无 `disabled`，demo 侧（controls.tsx:210-220）有 `disabled` 无 `…rest`——正是单一真源要消的东西。
 8. **方案转向（2026-10-21 下午晚些，用户质疑「md 不算太好」并问 JSON 类是否更易读）**：重评后否掉 md 真源，定稿 **TS 数据模块真源**。真因：md 方案做的是「困难方向」——解析 md→数据永远缺斤少甲、无 schema、双语笨拙；而「数据→md」是渲染，容易且完备。JSON 被否（prose 满篇转义）、YAML 被否（要引解析器依赖或手搓子集，重回 fragile）；TS 两头占：机器侧同 JSON 之强且带类型（tsc 即 schema 闸），人侧 prose 走模板字符串（src/utils/i18n.ts 59KB 同款先例），零新依赖。架构：`docs/**/*.doc.ts` 手写 typed 真源（一主题一文件；根 tsconfig.json:23 只含 src/**，需独立 tsconfig.docs.json --noEmit 守 schema）→ scripts/gen-docs.mjs（esbuild 打包 .doc.ts → data: URL import → 渲染；显式 MAP；--check 闸）生成双投影：docs/**/*.md（给 Agent/人读，随包发布，勿手改头）+ packages/demo/src/doc-data.generated.ts（demo import 零解析；对齐 gen-css.mjs:46 把 demo-css.generated.ts 写进 demo/src 的先例）。范围：只转 demo 消费的文档（features 五份 + integration + style/design 的 API/token）；requirements/architecture/external 保持手写 md（demo 不展示、无漂移风险）。demo 仍要改 13 处接线（最重的活，躲不掉）。
+9. **样板跑通（2026-10-21 晚，用户「做个样板我看一眼」）**：端到端验证 TS 真源方案可行。新建 docs/design/doc-format.ts（DocTopic 类型 schema）+ docs/design/features/explorer.doc.ts（真源，含 openFilePreview/pickWorkspaceFile/SessionPreview 接入代码与 API 表，双语 {zh,en}）+ scripts/gen-docs.mjs（esbuild 打包 .doc.ts → 临时文件 import → 渲染双投影）+ tsconfig.docs.json（--noEmit 类型闸）+ package.json 加 gen:docs / typecheck:docs 脚本。运行结果：生成 docs/design/features/explorer.generated.md 与 packages/demo/src/doc-data.generated.ts 两份投影；`pnpm typecheck:docs`（tsc -p tsconfig.docs.json）通过（首跑因 NodeNext 要求相对导入显式 .js 扩展名报 TS2835，已修）。证明链路成立：真源改一处 → 两投影自动跟随，demo 零解析。demo 尚未接线（纯渲染改造留全量阶段）。
 
 ## 结论
 
-设计定稿（待用户最终确认后实施）：**TS 数据模块唯一真源**——`docs/**/*.doc.ts` 手写 typed（tsconfig.docs.json 守 schema），gen-docs.mjs 生成双投影（docs md 给 Agent/人读 + demo/src/doc-data.generated.ts 给 demo 零解析），demo 纯渲染、DICT 与硬编码全删。只转 demo 消费的文档。未实施。
+设计定稿 + **样板已跑通（端到端验证）**：**TS 数据模块唯一真源**——`docs/**/*.doc.ts` 手写 typed（tsconfig.docs.json 守 schema），gen-docs.mjs 生成双投影（explorer.generated.md 给 Agent/人读 + demo/src/doc-data.generated.ts 给 demo 零解析），`pnpm typecheck:docs` 通过。下一步：用户确认样板边界后全量迁移 + demo 接线（删 DICT 与 *_API/CODE_* 硬编码，改读 docData），仅转 demo 消费的文档。
 
 ## 执行记录
 
@@ -49,3 +50,4 @@
 - 2026-10-21 16:30:14 · log · @GuoJia-Agent · 原型解析实测（node 内联跑全 docs）：42 个表全部列数自洽+分隔行齐全、转义管道 \| 正确切分、25 个代码围栏全闭合、0 个多行单元格；demo ApiRow(name/type/def/descKey) 与文档表格 1:1；发现真实漂移：Button 表 docs 有 …rest 无 disabled、demo 反之。定规范：demo 消费的表用前置标记注释定位（不按行号），围栏加 id。
 - 2026-10-21 16:38:56 · log · @GuoJia-Agent · 用户质疑 md 真源方案，重评定稿 TS 数据模块真源：docs/**/*.doc.ts 手写 typed（tsconfig.docs.json --noEmit 守 schema，根 tsconfig 只含 src/** 需独立配置），gen-docs.mjs 生成双投影（docs md 给 Agent 读 + packages/demo/src/doc-data.generated.ts 给 demo 零解析消费，对齐 gen-css 把生成物写进 demo/src 的先例）。md 被否真因：解析是困难方向且无 schema、双语笨拙；data→md 渲染是容易方向。只转 demo 消费的文档，requirements/architecture/external 保持手写 md。
 - 2026-10-21 16:52:47 · log · @GuoJia-Agent · 样板跑通（端到端验证 TS 真源方案可行）：docs/design/doc-format.ts(类型 schema) + features/explorer.doc.ts(真源) → scripts/gen-docs.mjs(esbuild 打包 .doc.ts→import→渲染) 生成双投影 docs/design/features/explorer.generated.md + packages/demo/src/doc-data.generated.ts；tsc -p tsconfig.docs.json 类型闸通过。新增 tsconfig.docs.json、gen:docs/typecheck:docs 脚本。待用户看样板后决定全量迁移 + demo 接线。
+- 2026-10-21 17:05:05 · log · @GuoJia-Agent · 讨论澄清分类与发布（用户问 demo 分类 + Q1-Q3）：demo 页面 SectionId(button/input/...) 即文档 section.id，gen-docs 聚合为按 id 扁平 docData、demo 按 id 取与文件无关，重分类只改 MAP/文件、demo 不动，--check 校验 id 契约；Q1 区分 gen-docs.mjs(工具在 scripts/) 与 .doc.ts(内容真源在 docs/)；Q2 沿用仓库惯例——生成物入库、build 含 gen:docs、pretest 加 gen:docs --check，发包前/release CI 编译不靠 push 自动发；Q3 core 包 docs/ 发 md+.doc.ts(可选 npmignore 仅 md)，生成器与 demo 的 .generated.ts 不在 core 包内。
