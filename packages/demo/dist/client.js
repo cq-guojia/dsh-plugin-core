@@ -7839,7 +7839,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0937-ols3"]
+            [t2("buildStamp"), "1021-0939-iwdf"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",
