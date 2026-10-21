@@ -34,11 +34,14 @@ export function buildStaticHtml(data) {
         return undefined;
     }
     for (const tag of HTML_FORBID_TAGS) {
-        for (const el of Array.from(doc.getElementsByTagName(tag)))
+        for (const el of Array.from(doc.querySelectorAll(tag)))
             el.remove();
     }
-    for (const attr of HTML_FORBID_ATTRS) {
-        for (const el of Array.from(doc.querySelectorAll(`[${attr}]`)))
+    // ⚠️ 禁用属性只能「遍历元素逐个 removeAttribute」，不能拼 `[${attr}]` 选择器：
+    // `xlink:href` 带命名空间冒号，不是合法 CSS 选择器 —— querySelectorAll 会直接抛
+    // SyntaxError（真机 2026-10-22：源码能读出来、预览区却报「加载失败」，就是它）。
+    for (const el of Array.from(doc.querySelectorAll('*'))) {
+        for (const attr of HTML_FORBID_ATTRS)
             el.removeAttribute(attr);
     }
     const csp = doc.createElement('meta');

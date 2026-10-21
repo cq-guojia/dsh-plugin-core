@@ -53002,11 +53002,11 @@ function buildStaticHtml(data2) {
     return void 0;
   }
   for (const tag2 of HTML_FORBID_TAGS) {
-    for (const el of Array.from(doc2.getElementsByTagName(tag2)))
+    for (const el of Array.from(doc2.querySelectorAll(tag2)))
       el.remove();
   }
-  for (const attr of HTML_FORBID_ATTRS) {
-    for (const el of Array.from(doc2.querySelectorAll(`[${attr}]`)))
+  for (const el of Array.from(doc2.querySelectorAll("*"))) {
+    for (const attr of HTML_FORBID_ATTRS)
       el.removeAttribute(attr);
   }
   const csp = doc2.createElement("meta");
@@ -54295,7 +54295,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-2354-mazk"]
+            [t2("buildStamp"), "1022-0014-9fe7"]
           ].map(
             ([label, value]) => (0, import_react45.createElement)(
               "tr",
