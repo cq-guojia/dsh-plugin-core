@@ -15,13 +15,10 @@
 .dshpc-picker__icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
 .dshpc-picker__option-icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
 .dshpc-picker__menu{
-  position:absolute;z-index:60;top:calc(100% + 4px);left:0;min-width:100%;
-  max-height:280px;overflow:auto;padding:4px;
+  z-index:60;max-height:280px;overflow:auto;padding:4px;
   background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);
   border-radius:var(--dshpc-radius-md);box-shadow:0 8px 24px rgba(15,23,42,.12);
 }
-/* 向上展开（触发器靠近视口底部时用 placement="up"）。 */
-.dshpc-picker__menu--up{top:auto;bottom:calc(100% + 4px)}
 /* 尺寸档（与 Field 的 sm/md/lg 对应）。 */
 .dshpc-picker__trigger--sm{height:24px;font-size:12px}
 .dshpc-picker__trigger--lg{height:32px}

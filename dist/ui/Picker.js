@@ -1,4 +1,5 @@
 import { createElement as h, useEffect, useMemo, useRef, useState } from 'react';
+import { useFloating, FloatingPortal, flip, shift, offset, autoUpdate, size as floatingSize } from '@floating-ui/react';
 import { ensureControls } from './css.js';
 import { t } from '../utils/i18n.js';
 import { FieldHint } from './FieldHint.js';
@@ -33,19 +34,45 @@ export function Picker(props) {
     const [active, setActive] = useState(-1);
     const rootRef = useRef(null);
     const searchRef = useRef(null);
+    // 浮层定位：portal 到 body + viewport 相对 + 滚动/缩放自动跟随 + 贴边自动翻转，
+    // 彻底避开祖先 overflow/transform 裁剪（核心缺陷修复）。宽度/最大高由 size 中间件内联设置。
+    const { refs, floatingStyles } = useFloating({
+        open,
+        onOpenChange: setOpen,
+        placement: placement === 'up' ? 'top-start' : 'bottom-start',
+        middleware: [
+            offset(4),
+            flip(),
+            shift({ padding: 8 }),
+            floatingSize({
+                apply({ elements, rects, availableHeight }) {
+                    Object.assign(elements.floating.style, {
+                        width: `${rects.reference.width}px`,
+                        maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`,
+                    });
+                },
+            }),
+        ],
+        whileElementsMounted: autoUpdate,
+        strategy: 'fixed',
+    });
     // 展开即聚焦搜索框（2026-10-20 用户：点开就能直接打字，不用再点一下）
     useEffect(() => {
         if (open && props.searchable === true)
             searchRef.current?.focus();
     }, [open, props.searchable]);
-    // 点外面收起
+    // 点外面收起（同时认 root 与浮层两个 DOM 子树：菜单 portal 到 body 后不在 root 内）
     useEffect(() => {
         if (!open)
             return;
         const onDown = (e) => {
             const root = rootRef.current;
-            if (root !== null && !root.contains(e.target))
-                setOpen(false);
+            const floatingEl = refs.floating.current;
+            if (root !== null && root.contains(e.target))
+                return;
+            if (floatingEl !== null && floatingEl.contains(e.target))
+                return;
+            setOpen(false);
         };
         document.addEventListener('mousedown', onDown);
         return () => document.removeEventListener('mousedown', onDown);
@@ -107,6 +134,7 @@ export function Picker(props) {
         type: 'button',
         'aria-label': props.ariaLabel,
         'aria-expanded': open,
+        ref: refs.setReference,
         className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === 'center' ? ' dshpc-picker__trigger--center' : ''}`,
         disabled: props.disabled === true,
         onClick: () => {
@@ -140,10 +168,10 @@ export function Picker(props) {
         ref: rootRef,
         onKeyDown,
     }, triggerRow, open
-        ? h('div', {
-            className: placement === 'up'
-                ? 'dshpc-picker__menu dshpc-picker__menu--up'
-                : 'dshpc-picker__menu',
+        ? h(FloatingPortal, null, h('div', {
+            className: 'dshpc-picker__menu',
+            ref: refs.setFloating,
+            style: floatingStyles,
         }, props.degraded === true
             ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerDegraded'))
             : null, atMax ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerMaxReached', { n: props.max ?? 0 })) : null, props.searchable === true
@@ -193,7 +221,7 @@ export function Picker(props) {
                             ? h('span', { className: 'dshpc-picker__option-icon' }, o.icon)
                             : null, h('span', null, o.label));
                     }))),
-                ])
+                ]))
         : null);
 }
 function toArray(v) {

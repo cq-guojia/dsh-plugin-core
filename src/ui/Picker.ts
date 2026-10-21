@@ -1,4 +1,5 @@
 import { createElement as h, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useFloating, FloatingPortal, flip, shift, offset, autoUpdate, size as floatingSize } from '@floating-ui/react'
 import { ensureControls } from './css.js'
 import { t, type Translate } from '../utils/i18n.js'
 import { FieldHint } from './FieldHint.js'
@@ -37,7 +38,7 @@ export interface PickerProps {
   degraded?: boolean
   disabled?: boolean
   size?: PickerSize
-  /** 菜单展开方向：靠近视口底部时用 `up`。 */
+  /** 菜单首选展开方向：靠近视口底部时传 `up`；实际会按可用空间自动翻转（flip）。 */
   placement?: 'down' | 'up'
   /** 选中后是否收起菜单；多选默认**不收起**（方便连续选）。 */
   closeOnSelect?: boolean
@@ -91,17 +92,43 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
   const rootRef = useRef<HTMLDivElement | null>(null)
   const searchRef = useRef<HTMLInputElement | null>(null)
 
+  // 浮层定位：portal 到 body + viewport 相对 + 滚动/缩放自动跟随 + 贴边自动翻转，
+  // 彻底避开祖先 overflow/transform 裁剪（核心缺陷修复）。宽度/最大高由 size 中间件内联设置。
+  const { refs, floatingStyles } = useFloating({
+    open,
+    onOpenChange: setOpen,
+    placement: placement === 'up' ? 'top-start' : 'bottom-start',
+    middleware: [
+      offset(4),
+      flip(),
+      shift({ padding: 8 }),
+      floatingSize({
+        apply({ elements, rects, availableHeight }) {
+          Object.assign(elements.floating.style, {
+            width: `${rects.reference.width}px`,
+            maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`,
+          })
+        },
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+    strategy: 'fixed',
+  })
+
   // 展开即聚焦搜索框（2026-10-20 用户：点开就能直接打字，不用再点一下）
   useEffect(() => {
     if (open && props.searchable === true) searchRef.current?.focus()
   }, [open, props.searchable])
 
-  // 点外面收起
+  // 点外面收起（同时认 root 与浮层两个 DOM 子树：菜单 portal 到 body 后不在 root 内）
   useEffect(() => {
     if (!open) return
     const onDown = (e: MouseEvent): void => {
       const root = rootRef.current
-      if (root !== null && !root.contains(e.target as Node)) setOpen(false)
+      const floatingEl = refs.floating.current
+      if (root !== null && root.contains(e.target as Node)) return
+      if (floatingEl !== null && floatingEl.contains(e.target as Node)) return
+      setOpen(false)
     }
     document.addEventListener('mousedown', onDown)
     return () => document.removeEventListener('mousedown', onDown)
@@ -167,6 +194,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
       type: 'button',
       'aria-label': props.ariaLabel,
       'aria-expanded': open,
+      ref: refs.setReference,
       className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === 'center' ? ' dshpc-picker__trigger--center' : ''}`,
       disabled: props.disabled === true,
       onClick: () => {
@@ -218,13 +246,15 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
     triggerRow,
     open
       ? h(
-          'div',
-          {
-            className:
-              placement === 'up'
-                ? 'dshpc-picker__menu dshpc-picker__menu--up'
-                : 'dshpc-picker__menu',
-          },
+          FloatingPortal,
+          null,
+          h(
+            'div',
+            {
+              className: 'dshpc-picker__menu',
+              ref: refs.setFloating,
+              style: floatingStyles,
+            },
           props.degraded === true
             ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerDegraded'))
             : null,
@@ -298,7 +328,8 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                     ),
                   ),
                 ],
-        )
+          ),
+      )
       : null,
   )
 }

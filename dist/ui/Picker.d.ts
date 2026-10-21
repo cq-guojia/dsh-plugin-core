@@ -24,7 +24,7 @@ export interface PickerProps {
     degraded?: boolean;
     disabled?: boolean;
     size?: PickerSize;
-    /** 菜单展开方向：靠近视口底部时用 `up`。 */
+    /** 菜单首选展开方向：靠近视口底部时传 `up`；实际会按可用空间自动翻转（flip）。 */
     placement?: 'down' | 'up';
     /** 选中后是否收起菜单；多选默认**不收起**（方便连续选）。 */
     closeOnSelect?: boolean;
