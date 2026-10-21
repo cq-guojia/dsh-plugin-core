@@ -323,6 +323,117 @@ export function ButtonPage(): ReturnType<typeof h> {
 
 // ── 录入 ────────────────────────────────────────────────────────────────
 
+// 示例右侧的代码：与左边渲染逐条一致（改内容必须两边一起改）。
+const CODE_INPUT_FAMILY = `const [text, setText] = useState('')
+const [num, setNum] = useState(3)
+
+// hint 参数版：问号提示由组件自己挂，不用手动拼 FieldHint
+<Input value={text} onChange={setText} placeholder="选择日期" hint="选择任务的开始时间" />
+// 校验失败态：描红
+<Input value={text} onChange={setText} error placeholder="校验失败态" />
+// 数字框：超出 min / max 自动收回到边界
+<NumberInput value={num} onChange={setNum} min={0} max={10} suffix="次" hint="超出范围会自动收回到 min / max。" />
+// 多行输入：问号置右下角
+<Textarea value={text} onChange={setText} placeholder="多行输入" hint="多行输入也支持 hint 参数。" />`
+
+const CODE_FIELD_HINT = `// 问号提示是独立组件，放哪都行（14px 内联元素）
+<h3>一个标题</h3>
+<FieldHint text="说明这一块是干什么的。" side="top" />
+
+<Button variant="outline">一个按钮</Button>
+<FieldHint text="解释这个操作会发生什么。" side="right" />
+
+<span>一段普通文字</span>
+<FieldHint text="挂在任何文字后面都行。" />`
+
+const CODE_SWITCH_SEG = `// 开关语义用官方 Switch：label 只是无障碍名，可见文案自己画在旁边
+<Switch checked={checked} onChange={setChecked} label="启用" />
+<Checkbox checked={checked} onChange={setChecked} label="多选" />
+
+// 分段：items = { value, label, count?, badge?, disabled? }；variant 默认 default，inset 是灰底款
+<Segmented
+  variant="inset"
+  items={[{ value: 'day', label: '日' }, { value: 'week', label: '周' }, { value: 'month', label: '月' }]}
+  value={seg}
+  onChange={setSeg}
+/>
+// bordered：选中段变描边块；size 三档
+<Segmented variant="inset" bordered size="sm" items={...} value={seg} onChange={setSeg} />
+
+// 筛选条：count 给中性计数，badge 给红角标
+<Segmented
+  variant="inset"
+  items={[{ value: 'all', label: '全部', count: 11 }, { value: 'doing', label: '进行中', count: 5 }]}
+  value={filter}
+  onChange={setFilter}
+/>
+
+// 星期多选：multiple + value 是数组
+<Segmented
+  multiple
+  label="星期"
+  items={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: String(n), label: '一二三四五六日'[n - 1] }))}
+  value={multi}
+  onChange={setMulti}
+/>`
+
+const CODE_INPUT_USAGE = `pnpm add dsh-plugin-core
+
+import { Input, NumberInput, Textarea, Checkbox, Segmented, FieldHint } from 'dsh-plugin-core/ui'
+
+const [text, setText] = useState('')
+
+<Input value={text} onChange={setText} placeholder="选择日期" hint="开始时间" />
+<Textarea value={text} onChange={setText} placeholder="多行输入" rows={4} />
+<NumberInput value={3} onChange={setNum} min={0} max={10} suffix="次" />
+
+<Segmented
+  variant="inset"
+  items={[{ value: 'day', label: '日' }, { value: 'week', label: '周' }]}
+  value={seg}
+  onChange={setSeg}
+/>
+
+// 「启用」是开关语义：用官方 Switch，不要用勾选框
+import { Switch } from '@deepseek-ai/dsh-client-ui-primitives'
+<Switch checked={checked} onChange={setChecked} label="启用" />`
+
+/** Input 家族对外参数（与 src/ui/Field.ts 的 InputProps / NumberInputProps 逐条对齐）。 */
+const INPUT_API: readonly ApiRow[] = [
+  { name: 'value', type: 'string', def: '—', descKey: 'apiValue' },
+  { name: 'onChange', type: '(value: string) => void', def: '—', descKey: 'apiOnChange' },
+  { name: 'placeholder', type: 'string', def: '—', descKey: 'apiPlaceholder' },
+  { name: 'hint', type: 'string', def: '—', descKey: 'apiHint' },
+  { name: 'error', type: 'boolean', def: 'false', descKey: 'apiError' },
+  { name: 'disabled', type: 'boolean', def: 'false', descKey: 'apiDisabled' },
+  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: 'apiSize' },
+]
+
+/** NumberInput 在 InputProps 之上多出的参数（与 src/ui/Field.ts 的 NumberInputProps 对齐）。 */
+const NUMBER_API: readonly ApiRow[] = [
+  { name: 'value', type: 'number', def: '—', descKey: 'apiValue' },
+  { name: 'onChange', type: '(value: number) => void', def: '—', descKey: 'apiOnChange' },
+  { name: 'min / max', type: 'number', def: '±Infinity', descKey: 'apiMin' },
+  { name: 'suffix', type: 'string', def: '—', descKey: 'apiSuffix' },
+]
+
+/** Textarea 在 InputProps 之上多出的参数（与 src/ui/Textarea.ts 的 TextareaProps 对齐）。 */
+const TEXTAREA_API: readonly ApiRow[] = [
+  { name: 'rows', type: 'number', def: '—', descKey: 'apiRows' },
+]
+
+/** Segmented 对外参数（与 src/ui/Segmented.ts 的 SegmentedProps 对齐；单选 / 多选共用基座）。 */
+const SEGMENTED_API: readonly ApiRow[] = [
+  { name: 'items', type: 'readonly SegmentedItem[]', def: '—', descKey: 'apiItems' },
+  { name: 'value', type: 'T | T[]', def: '—', descKey: 'apiValue' },
+  { name: 'onChange', type: '(value: T | T[]) => void', def: '—', descKey: 'apiOnChange' },
+  { name: 'multiple', type: 'boolean', def: 'false', descKey: 'apiMultiple' },
+  { name: 'variant', type: "'default' | 'inset'", def: "'default'", descKey: 'apiVariant' },
+  { name: 'bordered', type: 'boolean', def: 'false', descKey: 'apiBordered' },
+  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: 'apiSize' },
+  { name: 'label', type: 'string', def: '—', descKey: 'apiLabel' },
+]
+
 export function InputPage(): ReturnType<typeof h> {
   const [text, setText] = useState('')
   const [num, setNum] = useState(3)
@@ -334,10 +445,12 @@ export function InputPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(Note, { text: t('inputNote') }),
+
     // Input 家族
     h(
-      Demo,
-      { title: t('demoInputFamily'), hint: t('inputHint') },
+      Example,
+      { title: t('demoInputFamily'), hint: t('inputHint'), code: CODE_INPUT_FAMILY },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '380px' } },
@@ -358,8 +471,8 @@ export function InputPage(): ReturnType<typeof h> {
 
     // 问号提示：证明它不属于 Input 家族，随处可挂
     h(
-      Demo,
-      { title: t('btnHintTitle'), hint: t('btnHintHint') },
+      Example,
+      { title: t('btnHintTitle'), hint: t('btnHintHint'), code: CODE_FIELD_HINT },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
         h(Row, null,
           h('b', { style: { fontSize: '13px' } }, '一个标题'),
@@ -374,8 +487,8 @@ export function InputPage(): ReturnType<typeof h> {
 
     // Switch / Checkbox / Segmented
     h(
-      Demo,
-      { title: t('switchTip'), hint: t('checkboxHint') },
+      Example,
+      { title: t('switchTip'), hint: t('checkboxHint'), code: CODE_SWITCH_SEG },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'flex-start' } },
@@ -492,6 +605,11 @@ export function InputPage(): ReturnType<typeof h> {
         }),
       ),
     ),
+    h(CodeOnly, { labelKey: 'docUsage', code: CODE_INPUT_USAGE }),
+    h(ApiTable, { rows: INPUT_API }),
+    h(ApiTable, { rows: NUMBER_API }),
+    h(ApiTable, { rows: TEXTAREA_API }),
+    h(ApiTable, { rows: SEGMENTED_API }),
     h(Placeholder, { descKey: 'inputMissingDesc' }),
   )
 }
@@ -505,6 +623,75 @@ const ICON_OPTIONS = [
   { value: 'c', label: '选项 C', icon: h(IconPlayOutlineRegular, { size: 14 }) },
 ]
 
+const CODE_PICKER = `// 单选：icon + 可搜索 / 可清除
+<Picker
+  options={[{ value: 'a', label: '选项 A' }, { value: 'b', label: '选项 B' }]}
+  value={single}
+  onChange={setSingle}
+  searchable
+  clearable
+  placeholder="单选"
+/>
+// 分组 + 多选：groups 与 options 二选一；max 给上限，可反选
+<Picker
+  groups={[{ value: 'g1', label: '组一', options }, { value: 'g2', label: '组二', options }]}
+  value={multi}
+  mode="multiple"
+  max={2}
+  onChange={setMulti}
+  searchable
+/>
+// hint 挂在触发器后面，不用再手动拼 FieldHint
+<Picker options={options} value={v} onChange={setV} hint="挂在触发器后面的问号提示" />`
+
+const CODE_MODEL_PICKER = `// 数据来自宿主模型目录（宿主侧 connectHost(ctx, { modelsPath }) 注入），不能凭空造
+// 分组形态：一个下拉，供应商做组头
+<ModelPicker value={model} onChange={setModel} variant="grouped" />
+// 联动形态：两个下拉，先选供应商、模型列表跟着筛
+<ModelPicker value={model} onChange={setModel} variant="cascade" placeholder="选择模型" />`
+
+const CODE_WORKSPACE_PICKER = `// 默认即「工作区」文案与文件夹图标；clearable / searchable 是可选能力
+<WorkspacePicker value={ws} onChange={setWs} clearable searchable />`
+
+const CODE_PICKER_USAGE = `pnpm add dsh-plugin-core
+
+import { Picker, ModelPicker, WorkspacePicker } from 'dsh-plugin-core/ui'
+
+<Picker
+  options={[{ value: 'a', label: '选项 A' }, { value: 'b', label: '选项 B' }]}
+  value={single}
+  onChange={setSingle}
+  searchable
+  clearable
+  placeholder="请选择"
+/>
+
+// ModelPicker / WorkspacePicker 要真实数据：
+// 宿主侧 connectHost(ctx, { modelsPath }) 注入连接，客户端只管渲染`
+
+/** Picker 对外参数（与 src/ui/Picker.ts 的 PickerProps 逐条对齐）。 */
+const PICKER_API: readonly ApiRow[] = [
+  { name: 'options', type: 'readonly PickerOption[]', def: '—', descKey: 'apiOptions' },
+  { name: 'groups', type: 'readonly PickerGroup[]', def: '—', descKey: 'apiGroups' },
+  { name: 'value', type: 'string | string[]', def: '—', descKey: 'apiValue' },
+  { name: 'onChange', type: '(value: string | string[]) => void', def: '—', descKey: 'apiOnChange' },
+  { name: 'mode', type: "'single' | 'multiple'", def: "'single'", descKey: 'apiMode' },
+  { name: 'max', type: 'number', def: '—', descKey: 'apiMax' },
+  { name: 'searchable', type: 'boolean', def: 'false', descKey: 'apiSearchable' },
+  { name: 'clearable', type: 'boolean', def: 'false', descKey: 'apiClearable' },
+  { name: 'hint', type: 'string', def: '—', descKey: 'apiHint' },
+  { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'md'", descKey: 'apiSize' },
+]
+
+/** ModelPicker / WorkspacePicker：业务封装，props 与 Picker 同族（数据由宿主给）。 */
+const HOST_PICKER_API: readonly ApiRow[] = [
+  { name: 'value', type: 'string | string[]', def: '—', descKey: 'apiValue' },
+  { name: 'onChange', type: '(value: string | string[]) => void', def: '—', descKey: 'apiOnChange' },
+  { name: 'variant', type: "'grouped' | 'cascade'", def: "'grouped'", descKey: 'apiVariant' },
+  { name: 'placeholder', type: 'string', def: '—', descKey: 'apiPlaceholder' },
+  { name: 'clearable / searchable', type: 'boolean', def: 'false', descKey: 'apiClearable' },
+]
+
 export function PickerPage(): ReturnType<typeof h> {
   const [single, setSingle] = useState<string | undefined>(undefined)
   const [multi, setMulti] = useState<string[]>([])
@@ -516,9 +703,10 @@ export function PickerPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(Note, { text: t('pickerNote') }),
     h(
-      Demo,
-      { title: 'Picker', hint: t('pickerHint') },
+      Example,
+      { title: 'Picker', hint: t('pickerHint'), code: CODE_PICKER },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start' } },
@@ -572,8 +760,8 @@ export function PickerPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: 'ModelPicker（真实目录）', hint: t('modelPickerHint') },
+      Example,
+      { title: 'ModelPicker（真实目录）', hint: t('modelPickerHint'), code: CODE_MODEL_PICKER },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
@@ -589,8 +777,8 @@ export function PickerPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: 'WorkspacePicker（真实列表）', hint: t('workspacePickerHint') },
+      Example,
+      { title: 'WorkspacePicker（真实列表）', hint: t('workspacePickerHint'), code: CODE_WORKSPACE_PICKER },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
@@ -603,16 +791,74 @@ export function PickerPage(): ReturnType<typeof h> {
         }),
       ),
     ),
+    h(CodeOnly, { labelKey: 'docUsage', code: CODE_PICKER_USAGE }),
+    h(ApiTable, { rows: PICKER_API }),
+    h(ApiTable, { rows: HOST_PICKER_API }),
     h(Placeholder, { descKey: 'pickerLogicDesc' }),
   )
 }
 
 // ── 提示 ────────────────────────────────────────────────────────────────
 
+const CODE_TOOLTIP = `// label + side / align；children 必须是能挂 ref 的真实 DOM（函数组件挂不上 ⇒ 无气泡）
+<Tooltip label="top · center" side="top" align="center">
+  <button type="button">悬停我</button>
+</Tooltip>
+<Tooltip label="很长的一段说明，放不下时按 maxWidth 折行" side="bottom" maxWidth={240}>
+  <span>悬停我</span>
+</Tooltip>
+
+// 两段式：label 里直接写换行
+<Tooltip label={'任务名' + String.fromCharCode(10) + '任务正文'} side="top" maxWidth={260}>
+  <span>任务名</span>
+</Tooltip>
+
+// 富卡片：官方 HoverCard，content 收任意 ReactNode；compact 变体背景恒深，内容色自己给
+<HoverCard
+  variant="compact"
+  openDelayMs={200}
+  anchor={<span>任务名</span>}
+  content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>…</div>}
+/>`
+
+const CODE_TOOLTIP_USAGE = `pnpm add dsh-plugin-core
+
+import { Tooltip, HoverCard } from '@deepseek-ai/dsh-client-ui-primitives'
+
+<Tooltip label="解释这个操作会发生什么" side="right">
+  <Button variant="outline">一个按钮</Button>
+</Tooltip>
+
+// 问号提示（FieldHint）用的是同一个官方 Tooltip 本体：
+// 宿主侧 setTooltipRenderer((props) => h(Tooltip, props))，之后所有问号气泡都是它`
+
+/** Tooltip 对外参数（官方 primitive，宿主内核提供）。 */
+const TOOLTIP_API: readonly ApiRow[] = [
+  { name: 'label', type: 'string', def: '—', descKey: 'apiText' },
+  { name: 'side', type: "'top' | 'bottom' | 'right'", def: "'top'", descKey: 'apiSide' },
+  { name: 'align', type: "'center' | 'end'", def: "'center'", descKey: 'apiAlign' },
+  { name: 'maxWidth', type: 'number', def: '—', descKey: 'apiMaxWidth' },
+  { name: 'delayMs', type: 'number', def: '—', descKey: 'apiDelayMs' },
+  { name: 'portal', type: 'boolean', def: 'false', descKey: 'apiPortal' },
+  { name: 'children', type: 'ReactElement', def: '—', descKey: 'apiAnchor' },
+]
+
+/** HoverCard：另一种悬停富卡片（宿主工作区列表那种「标题 + 正文」卡就是它）。 */
+const HOVERCARD_API: readonly ApiRow[] = [
+  { name: 'anchor', type: 'ReactNode', def: '—', descKey: 'apiAnchor' },
+  { name: 'content', type: 'ReactNode', def: '—', descKey: 'apiChildren' },
+  { name: 'variant', type: "'compact' | 'preview'", def: "'compact'", descKey: 'apiVariant' },
+  { name: 'openDelayMs', type: 'number', def: '—', descKey: 'apiDelayMs' },
+]
+
 export function TooltipPage(): ReturnType<typeof h> {
   return h(
-    Demo,
-    { title: t('tooltipTitle'), hint: t('tooltipHint') },
+    'div',
+    null,
+    h(Note, { text: t('tooltipNote') }),
+    h(
+      Example,
+      { title: t('tooltipTitle'), hint: t('tooltipHint'), code: CODE_TOOLTIP },
     h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
       h(Labeled, { label: t('tooltipAnchorButton') },
         tipAnchor('top · center', 'top', 'center'),
@@ -656,10 +902,77 @@ export function TooltipPage(): ReturnType<typeof h> {
             h('div', { style: { fontWeight: 600, fontSize: '14px', marginBottom: '4px' } }, t('tooltipName')),
             h('div', { style: { fontSize: '12px', lineHeight: 1.6, whiteSpace: 'pre-line', opacity: .78 } }, t('tooltipLongText'))),
         }))),
+    ),
+    h(CodeOnly, { labelKey: 'docUsage', code: CODE_TOOLTIP_USAGE }),
+    h(ApiTable, { rows: TOOLTIP_API }),
+    h(ApiTable, { rows: HOVERCARD_API }),
   )
 }
 
 // ── 卡片与容器 ──────────────────────────────────────────────────────────
+
+const CODE_CARD = `// Card：surface 底 + 1px 边框 + 圆角；action 里裸放一个元素也垂直居中
+<Card
+  accent="business"
+  action={<span style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>2026-10-18 创建</span>}
+>
+  <div style={{ fontWeight: 600 }}>将 OpenSSH 上所有 NPM 安装迁移到 PNPM</div>
+  <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+    <Chip>#npm</Chip>
+    <Chip>#迁移</Chip>
+  </div>
+</Card>
+
+// accent 五档：business / success / warning / danger / neutral（或任意 CSS 色值）
+<Card accent="warning"><div>…</div></Card>`
+
+const CODE_STRIP_CARD = `// StripCard：同色系浅底 + 方角 + 左缘 4px 通高色条（备注框、执行记录条同款）
+<StripCard
+  accent="success"
+  action={<Button size="sm" variant="outline">Cancel</Button>}
+>
+  <div style={{ fontWeight: 600 }}>执行成功</div>
+  <div style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>耗时 12s · 3 个文件变更</div>
+</StripCard>`
+
+const CODE_SECTION_HEAD = `// 分区标题：icon + 标题 + 右侧操作区三段式；标题后缀可以是计数 / 彩色标签 / 小字说明
+<SectionHead
+  icon={<IconSparkleRegular size={16} />}
+  title={<span>全部待办 <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
+  right={[
+    <Segmented variant="inset" items={[{ value: 'all', label: '全部', count: 22 }]} value={seg} onChange={setSeg} />,
+    <div style={{ width: 192 }}><Input value={kw} onChange={setKw} placeholder="搜索" /></div>,
+  ]}
+/>`
+
+const CODE_CARD_USAGE = `pnpm add dsh-plugin-core
+
+import { Card, StripCard, SectionHead } from 'dsh-plugin-core/ui'
+
+// 备注框、执行记录条：StripCard（浅底 + 左色条）
+<StripCard accent="business"><div>标题 + 内容</div></StripCard>
+
+// 普通卡片：Card（surface 底 + 边框 + 圆角）
+<Card accent="business" action={<Button size="sm" variant="ghost">查看会话</Button>}>
+  <div>标题 + 内容</div>
+</Card>`
+
+/** Card / StripCard 共用同一份 props（与 src/ui/Card.ts 的 CardSharedProps 逐条对齐）。 */
+const CARD_API: readonly ApiRow[] = [
+  { name: 'accent', type: "CardAccent | string", def: "'business'", descKey: 'apiAccent' },
+  { name: 'expanded', type: 'boolean', def: 'false', descKey: 'apiExpanded' },
+  { name: 'onToggle', type: '() => void', def: '—', descKey: 'apiOnToggle' },
+  { name: 'action', type: 'ReactNode', def: '—', descKey: 'apiAction' },
+  { name: 'panel', type: 'ReactNode', def: '—', descKey: 'apiPanel' },
+  { name: 'children', type: 'ReactNode', def: '—', descKey: 'apiChildren' },
+]
+
+/** SectionHead：纯排版壳，三段都由调用方给。 */
+const SECTION_HEAD_API: readonly ApiRow[] = [
+  { name: 'icon', type: 'ReactNode', def: '—', descKey: 'apiIcon' },
+  { name: 'title', type: 'ReactNode', def: '—', descKey: 'apiText' },
+  { name: 'right', type: 'ReactNode | ReactNode[]', def: '—', descKey: 'apiAction' },
+]
 
 export function CardPage(): ReturnType<typeof h> {
   const [seg, setSeg] = useState('all')
@@ -667,9 +980,10 @@ export function CardPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(Note, { text: t('cardNote') }),
     h(
-      Demo,
-      { title: t('demoCardTitle'), hint: t('cardHint') },
+      Example,
+      { title: t('demoCardTitle'), hint: t('cardHint'), code: CODE_CARD },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '640px' } },
@@ -709,8 +1023,8 @@ export function CardPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: t('demoStripTitle'), hint: t('stripHint') },
+      Example,
+      { title: t('demoStripTitle'), hint: t('stripHint'), code: CODE_STRIP_CARD },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '4px', maxWidth: '640px' } },
@@ -746,8 +1060,8 @@ export function CardPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: t('sectionHeadTitle'), hint: '分区标题：icon + 标题 + 右侧操作区三段式——纯排版壳，icon/标题/右侧都调用方自定；下示 3 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合' },
+      Example,
+      { title: t('sectionHeadTitle'), hint: '分区标题：icon + 标题 + 右侧操作区三段式——纯排版壳，icon/标题/右侧都调用方自定；下示 3 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合', code: CODE_SECTION_HEAD },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
         h(SectionHead, {
@@ -792,24 +1106,70 @@ export function CardPage(): ReturnType<typeof h> {
             h('span', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', fontWeight: 400 } }, '共 8 条'),
           ),
           right: [
-            h(Button, { size: 'sm', variant: 'ghost' }, '操作'),
-            h(Button, { size: 'sm', variant: 'secondary' }, '设置'),
+          h(Button, { size: 'sm', variant: 'ghost' }, '操作'),
+          h(Button, { size: 'sm', variant: 'secondary' }, '设置'),
           ],
-        }),
-      ),
-    ),
-  )
-}
+          }),
+          ),
+          ),
+          h(CodeOnly, { labelKey: 'docUsage', code: CODE_CARD_USAGE }),
+          h(ApiTable, { rows: CARD_API }),
+          h(ApiTable, { rows: SECTION_HEAD_API }),
+          )
+          }
 
-// ── 标签 · 文本 · 状态 ──────────────────────────────────────────────────
+          // ── 标签 · 文本 · 状态 ──────────────────────────────────────────────────
+
+const CODE_CHIP = `// tone 五档 + size 三档；尺寸行固定由大到小（md → sm → xs），同档文案不混排
+<Chip size="md" tone="warning">逾期</Chip>
+<Chip size="sm" tone="danger">停滞</Chip>
+<Chip size="xs" tone="success">完成</Chip>
+
+// 中性 # 标签（语言无关）；传 onClick 才渲染成 button
+<Chip>#npm</Chip>
+<Chip onClick={() => showToast('点了 chip')}>#可点</Chip>`
+
+const CODE_MARQUEE = `// 外层裁剪、内层滚动：放不下才滚，hover 一遍停在尾字，移开复位成省略号
+<MarqueeText text="这是一段很长的文字，放不下时 hover 会滚动展示全名" />`
+
+const CODE_LIVE = `// 订阅内部节拍器，走时内容调用方渲染
+<LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`
+
+const CODE_EMPTY = `// 业务空态：可挂一个操作按钮
+<EmptyState text="暂无数据" action={<Button size="sm" variant="outline">重试</Button>} />`
+
+const CODE_CHIP_USAGE = `pnpm add dsh-plugin-core
+
+import { Chip, MarqueeText, LiveText, EmptyState } from 'dsh-plugin-core/ui'
+
+<Chip tone="success">完成</Chip>
+<Chip onClick={openTask}>#可点</Chip>
+<MarqueeText text={taskTitle} />`
+
+/** Chip 对外参数（与 src/ui/Chip.ts 的 ChipProps 逐条对齐）。 */
+const CHIP_API: readonly ApiRow[] = [
+  { name: 'children', type: 'ReactNode', def: '—', descKey: 'apiChildren' },
+  { name: 'tone', type: "'neutral' | 'business' | 'success' | 'warning' | 'danger'", def: "'neutral'", descKey: 'apiTone' },
+  { name: 'size', type: "'xs' | 'sm' | 'md'", def: "'sm'", descKey: 'apiSize' },
+  { name: 'onClick', type: '() => void', def: '—', descKey: 'apiOnClick' },
+]
+
+/** MarqueeText / LiveText / EmptyState：三个小件各一行。 */
+const TEXT_KIT_API: readonly ApiRow[] = [
+  { name: 'MarqueeText · text', type: 'string', def: '—', descKey: 'apiText' },
+  { name: 'LiveText · render', type: '(nowMs: number) => ReactNode', def: '—', descKey: 'apiRender' },
+  { name: 'EmptyState · text', type: 'ReactNode', def: '「暂无数据」', descKey: 'apiText' },
+  { name: 'EmptyState · action', type: 'ReactNode', def: '—', descKey: 'apiAction' },
+]
 
 export function ChipPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(Note, { text: t('chipNote') }),
     h(
-      Demo,
-      { title: 'Chip', hint: t('chipHint') },
+      Example,
+      { title: 'Chip', hint: t('chipHint'), code: CODE_CHIP },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
@@ -835,21 +1195,24 @@ export function ChipPage(): ReturnType<typeof h> {
       ),
     ),
     h(
-      Demo,
-      { title: t('marqueeTitle'), hint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号' },
+      Example,
+      { title: t('marqueeTitle'), hint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号', code: CODE_MARQUEE },
       h('div', { style: { maxWidth: '200px' } },
         h(MarqueeText, { text: '这是一段很长的文字，放不下时 hover 会滚动展示全名' })),
     ),
     h(
-      Demo,
-      { title: t('liveTitle'), hint: '订阅内部节拍器，走时 Ui 由调用方渲染' },
+      Example,
+      { title: t('liveTitle'), hint: '订阅内部节拍器，走时 Ui 由调用方渲染', code: CODE_LIVE },
       h(LiveText, { render: (nowMs: number) => new Date(nowMs).toLocaleTimeString() }),
     ),
     h(
-      Demo,
-      { title: t('emptyStateTitle'), hint: '业务空态：无数据时的占位，可挂一个操作按钮' },
+      Example,
+      { title: t('emptyStateTitle'), hint: '业务空态：无数据时的占位，可挂一个操作按钮', code: CODE_EMPTY },
       h(EmptyState, { text: '暂无数据' }),
     ),
+    h(CodeOnly, { labelKey: 'docUsage', code: CODE_CHIP_USAGE }),
+    h(ApiTable, { rows: CHIP_API }),
+    h(ApiTable, { rows: TEXT_KIT_API }),
   )
 }
 

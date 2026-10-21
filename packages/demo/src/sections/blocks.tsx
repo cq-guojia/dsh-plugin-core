@@ -64,8 +64,8 @@ export function ExplorerPage(): ReturnType<typeof h> {
     }
   }, [files, sessionId])
 
-  const open = (path: string): void => {
-    if (files === null || anchor === null) return
+  const openPreview = (sessionId: string, rootName: string, path: string): void => {
+    if (files === null) return
     const mount = pageRow.element
     if (mount === null) return
     openFilePreview({
@@ -73,10 +73,22 @@ export function ExplorerPage(): ReturnType<typeof h> {
       mount,
       workspaceFiles: files,
       officeToPdf,
-      sessionId: anchor.sessionId,
+      sessionId,
       path,
-      rootName: anchor.title,
+      rootName,
+      // ▾ 选层下拉要列全部工作区（当前工作区展开 + 其余罗列，与兄弟项目一致）。
+      workspaces: workspaces.map((item) => item.title),
+      // ▾ 里点其他工作区 = 换会话重开预览（dock 是命令式挂载 ⇒ 再 open 一次，旧的自动回收）。
+      onSelectWorkspace: (name) => {
+        const sid = workspaces.find((item) => item.title === name)?.sessionIds?.[0]
+        if (sid !== undefined) openPreview(sid, name, '')
+      },
     })
+  }
+
+  const open = (path: string): void => {
+    if (files === null || anchor === null) return
+    openPreview(anchor.sessionId, anchor.title, path)
   }
 
   const pick = (event: { currentTarget: HTMLElement }, filter?: PickFilter): void => {

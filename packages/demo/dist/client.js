@@ -3319,6 +3319,44 @@ var DICT2 = {
     btnColorTitle: "\u81EA\u5B9A\u4E49\u989C\u8272",
     btnColorHint: "color \u4F20\u4EFB\u610F CSS \u8272\u503C\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\u3001\u7EBF\u6846\u4E0E\u6587\u5B57\u6863\u4F5C\u4E3B\u8272\uFF1Bhover / \u6309\u4E0B\u81EA\u52A8\u6309\u8BE5\u8272\u6DF7\u51FA",
     btnNote: "\u5B98\u65B9 primitives \u6CA1\u6709 danger / lg \u8FD9\u4E24\u6761\u8F74\uFF0CButton \u7531\u672C\u5E93\u81EA\u7ED8\uFF1B\u5916\u89C2\u5168\u8D70 --dshpc-* token\uFF0C\u8DDF\u7740\u5BBF\u4E3B\u660E\u6697\u4E3B\u9898\u8D70\u3002",
+    inputNote: "\u5F55\u5165\u5BB6\u65CF\u4E09\u6863\u9AD8\u5EA6\u5403 --dshpc-control-h-*\uFF1Bhint \u53C2\u6570\u7531\u7EC4\u4EF6\u81EA\u5DF1\u6302 FieldHint\uFF0C\u4E0D\u7528\u624B\u52A8\u62FC\u3002\u300C\u542F\u7528\u300D\u662F\u5F00\u5173\u8BED\u4E49\uFF1A\u7528\u5B98\u65B9 Switch\uFF08label \u53EA\u662F\u65E0\u969C\u788D\u540D\uFF0C\u53EF\u89C1\u6587\u6848\u81EA\u5DF1\u753B\u5728\u65C1\u8FB9\uFF09\uFF0C\u4E0D\u7528\u52FE\u9009\u6846\u3002",
+    apiValue: "\u5F53\u524D\u503C\uFF08\u53D7\u63A7\uFF09",
+    apiOnChange: "\u503C\u53D8\u5316\u56DE\u8C03",
+    apiPlaceholder: "\u5360\u4F4D\u6587\u6848",
+    apiHint: "\u6846\u540E\u6302\u95EE\u53F7\u63D0\u793A\uFF08FieldHint \u672C\u4F53\uFF09",
+    apiError: "\u63CF\u7EA2\uFF08\u6821\u9A8C\u5931\u8D25\u6001\uFF09",
+    apiMin: "\u4E0B\u9650\uFF0C\u8D85\u51FA\u81EA\u52A8\u6536\u56DE",
+    apiMax: "\u4E0A\u9650\uFF0C\u8D85\u51FA\u81EA\u52A8\u6536\u56DE",
+    apiSuffix: "\u6570\u5B57\u540E\u7F00\uFF08\u5982\u300C\u6B21\u300D\uFF09",
+    apiRows: "\u521D\u59CB\u884C\u6570",
+    apiItems: "\u5206\u6BB5\u9879\uFF1A{ value, label, count?, badge?, disabled? }",
+    apiMultiple: "\u591A\u9009\uFF1Avalue \u4E0E onChange \u90FD\u662F\u6570\u7EC4",
+    apiBordered: "\u9009\u4E2D\u6BB5\u53D8\u63CF\u8FB9\u5757",
+    apiLabel: "aria \u7EC4\u540D\uFF08\u65E0\u969C\u788D\uFF0C\u4E0D\u53EF\u89C1\uFF09",
+    pickerNote: "\u9009\u62E9\u5668\u4E00\u4E2A\u7EC4\u4EF6\u8986\u76D6\u5355\u9009\u3001\u5206\u7EC4\u3001\u591A\u9009\u4E09\u79CD\u5F62\u6001\uFF1B\u9009\u9879 icon \u6536 ReactNode\uFF0Chint \u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\u3002ModelPicker / WorkspacePicker \u662F\u5B83\u7684\u4E1A\u52A1\u5C01\u88C5\uFF1A\u6570\u636E\u7531\u5BBF\u4E3B\u7ED9\uFF08connectHost \u6CE8\u5165\uFF09\uFF0C\u4E0D\u80FD\u51ED\u7A7A\u9020\u3002",
+    tooltipNote: "Tooltip \u662F\u5B98\u65B9 primitive\uFF1Alabel + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM\uFF08\u51FD\u6570\u7EC4\u4EF6\u6302\u4E0D\u4E0A \u21D2 \u60AC\u505C\u65E0\u6C14\u6CE1\uFF0C\u5144\u5F1F\u4ED3\u8E29\u8FC7\uFF09\u3002HoverCard \u662F\u53E6\u4E00\u79CD\u60AC\u505C\u5BCC\u5361\u7247\uFF0Ccompact \u53D8\u4F53\u80CC\u666F\u6052\u6DF1\uFF0C\u5185\u5BB9\u8272\u8981\u8C03\u7528\u65B9\u81EA\u5DF1\u7ED9\u3002",
+    cardNote: "Card \u4E0E StripCard \u5171\u7528\u540C\u4E00\u4EFD props\uFF0C\u5DEE\u7684\u662F\u5916\u89C2\uFF1ACard \u662F surface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF1BStripCard \u662F\u540C\u8272\u7CFB\u6D45\u5E95 + \u65B9\u89D2 + \u5DE6\u7F18 4px \u901A\u9AD8\u8272\u6761 \u2014\u2014 \u5907\u6CE8\u6846\u3001\u6267\u884C\u8BB0\u5F55\u6761\u90FD\u662F\u5B83\u3002",
+    chipNote: "Chip \u662F\u884C\u5185\u6807\u7B7E\uFF1Atone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u4F20 onClick \u624D\u6E32\u67D3\u6210 button\u3002\u4E2D\u6027 # \u6807\u7B7E\u4E0E\u8BED\u8A00\u65E0\u5173\uFF0C\u957F\u6587\u5B57\u5BBD\u5EA6\u8DDF\u7740\u6587\u5B57\u8D70\u3002",
+    apiOptions: "\u6241\u5E73\u9009\u9879\uFF1A[{ value, label, icon?, disabled? }]",
+    apiGroups: "\u5206\u7EC4\u9009\u9879\uFF1A[{ value, label, options }]\uFF08\u4E0E options \u4E8C\u9009\u4E00\uFF09",
+    apiMode: "'single' | 'multiple'",
+    apiSearchable: "\u89E6\u53D1\u5668\u5185\u5E26\u641C\u7D22\u6846",
+    apiClearable: "\u5DF2\u9009\u540E\u53EF\u4E00\u952E\u6E05\u9664",
+    apiSide: "\u6C14\u6CE1\u65B9\u4F4D\uFF1A'top' | 'bottom' | 'right'",
+    apiAlign: "\u5BF9\u9F50\uFF1A'center' | 'end'",
+    apiMaxWidth: "\u6C14\u6CE1\u6700\u5927\u5BBD\u5EA6\uFF08\u50CF\u7D20\uFF09",
+    apiDelayMs: "\u60AC\u505C\u591A\u4E45\u51FA\u6C14\u6CE1\uFF08\u6BEB\u79D2\uFF09",
+    apiPortal: "\u6302\u5230 document.body\uFF0C\u907F\u5F00\u7956\u5148\u6EA2\u51FA\u88C1\u526A",
+    apiAnchor: "\u951A\u70B9\u5B50\u5143\u7D20\uFF1A\u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM",
+    apiAccent: "\u8272\u6761\u6863\u4F4D business / success / warning / danger / neutral\uFF0C\u6216\u4EFB\u610F CSS \u8272\u503C",
+    apiExpanded: "\u5C55\u5F00\u6001\uFF1A\u51B3\u5B9A\u7BAD\u5934\u671D\u5411\u4E0E panel \u663E\u9690",
+    apiOnToggle: "\u4F20\u4E86\u624D\u663E\u793A\u6298\u53E0\u7BAD\u5934\uFF1B\u5C55\u5F00\u72B6\u6001\u7531\u8C03\u7528\u65B9\u7BA1",
+    apiAction: "\u53F3\u4E0A\u89D2\u64CD\u4F5C\u533A\uFF08\u6309\u94AE / \u6587\u5B57\u90FD\u884C\uFF0C\u81EA\u52A8\u5782\u76F4\u5C45\u4E2D\uFF09",
+    apiPanel: "\u5C55\u5F00\u5185\u5BB9\uFF08expanded \u4E3A true \u65F6\u663E\u793A\uFF09",
+    apiTone: "\u8BED\u4E49\u8272\u6863\uFF1Aneutral / business / success / warning / danger",
+    apiOnClick: "\u4F20\u4E86\u624D\u6E32\u67D3\u6210 button",
+    apiText: "\u6587\u5B57",
+    apiRender: "\u8D70\u65F6\u6E32\u67D3\u51FD\u6570\uFF1A\u53C2\u6570\u662F\u5F53\u524D\u6BEB\u79D2\u6570\uFF0C\u8FD4\u56DE\u4EFB\u610F ReactNode",
     btnLabelSave: "\u4FDD\u5B58\u4FEE\u6539",
     btnLabelCancel: "\u53D6\u6D88",
     btnLabelDelete: "\u5220\u9664",
@@ -3429,13 +3467,13 @@ var DICT2 = {
     docCopy: "\u590D\u5236",
     docCopied: "\u5DF2\u590D\u5236",
     apiVariant: "\u5916\u89C2\u5341\u6863\uFF1Aprimary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link",
-    apiSize: "\u9AD8\u5EA6\u4E09\u6863\uFF1Asm 24 / md 28 / lg 32\uFF0C\u6709\u8FB9\u4E0E\u65E0\u8FB9\u540C\u9AD8",
+    apiSize: "\u5C3A\u5BF8\u4E09\u6863\uFF1Asm 24 / md 28 / lg 32\uFF08\u9AD8\u5EA6\u6863\uFF1B\u6709\u8FB9\u65E0\u8FB9\u540C\u9AD8\uFF09",
     apiIcon: "\u524D\u7F6E\u56FE\u6807\uFF1A\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6\u3001\u81EA\u7ED8 SVG\u3001\u4E00\u4E2A\u5B57\u7B26\u90FD\u884C\uFF08\u6536\u7684\u662F ReactNode\uFF09",
     apiIconRight: "\u540E\u7F6E\u56FE\u6807\uFF08\u5C55\u5F00\u7BAD\u5934\u3001\u5916\u94FE\u7B49\uFF09",
     apiColor: "\u81EA\u5B9A\u4E49\u4E3B\u8272\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\uFF0C\u63CF\u8FB9\u4E0E\u6587\u5B57\u6863\u4F5C\u5B57\u8272\u548C\u63CF\u8FB9\u8272",
     apiLoading: "\u8F6C\u5708\u5E76\u81EA\u52A8\u7981\u7528\u70B9\u51FB",
     apiBlock: "\u6491\u6EE1\u7236\u5BBD\uFF1B\u6709\u524D\u7F6E\u56FE\u6807\u65F6\u6587\u5B57\u4ECD\u5728\u89C6\u89C9\u4E2D\u5FC3",
-    apiDisabled: "\u900F\u4F20\u539F\u751F disabled",
+    apiDisabled: "\u900F\u4F20\u539F\u751F disabled\uFF08\u7981\u7528\uFF09",
     apiChildren: "\u6309\u94AE\u6587\u6848 / \u5185\u5BB9",
     pluginTitle: "\u7EC4\u4EF6\u9884\u89C8",
     pluginCardDesc: "\u6253\u5F00 dsh-plugin-core \u7684\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u5C55\u793A\u9875",
@@ -3519,6 +3557,44 @@ var DICT2 = {
     btnColorTitle: "Custom colors",
     btnColorHint: "Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it",
     btnNote: "The official primitives have no danger / lg axis, so Button is drawn in this library; it consumes --dshpc-* tokens only and follows the host light/dark theme.",
+    inputNote: "The field family takes its three heights from --dshpc-control-h-*; hint is attached by the component itself (FieldHint), no manual wiring. Enabling is switch semantics: use the official Switch (label is the accessible name only; draw the visible text yourself) \u2014 not a checkbox.",
+    apiValue: "Current value (controlled)",
+    apiOnChange: "Change callback",
+    apiPlaceholder: "Placeholder",
+    apiHint: "Attaches a question-mark hint (FieldHint) after the field",
+    apiError: "Marks the field red (validation failed)",
+    apiMin: "Lower bound; out-of-range values are clamped",
+    apiMax: "Upper bound; out-of-range values are clamped",
+    apiSuffix: 'Numeric suffix (e.g. "times")',
+    apiRows: "Initial rows",
+    apiItems: "Segments: { value, label, count?, badge?, disabled? }",
+    apiMultiple: "Multi-select: value and onChange are both arrays",
+    apiBordered: "Makes the selected segment a bordered block",
+    apiLabel: "Accessible group name (not visible)",
+    pickerNote: "One Picker covers single, grouped and multiple modes; option icons take ReactNode and hint attaches behind the trigger. ModelPicker / WorkspacePicker are business wrappers of it: their data comes from the host (connectHost), it cannot be fabricated.",
+    tooltipNote: "Tooltip is an official primitive: label plus side / align; children must be a real DOM node that can hold a ref (a function component cannot \u2014 no bubble on hover, hit in the sibling repo). HoverCard is a different, richer hover card; its compact variant has a permanently dark background, so the content color must be supplied by the caller.",
+    cardNote: "Card and StripCard share one prop set and differ only in appearance: Card is a surface fill with a 1px border and rounded corners; StripCard is a same-family soft fill with square corners and a 4px full-height bar on the left edge \u2014 notes and execution-record rows both use it.",
+    chipNote: "Chip is an inline label: five tones and three sizes; pass onClick to render it as a button. Neutral # tags are language-agnostic, and long text keeps its natural width.",
+    apiOptions: "Flat options: [{ value, label, icon?, disabled? }]",
+    apiGroups: "Grouped options: [{ value, label, options }] (either this or options)",
+    apiMode: "'single' | 'multiple'",
+    apiSearchable: "Search box inside the trigger",
+    apiClearable: "One-click clear once something is selected",
+    apiSide: "Bubble side: 'top' | 'bottom' | 'right'",
+    apiAlign: "Alignment: 'center' | 'end'",
+    apiMaxWidth: "Max bubble width (pixels)",
+    apiDelayMs: "Hover delay before the bubble shows (ms)",
+    apiPortal: "Mount on document.body to escape ancestor overflow clipping",
+    apiAnchor: "Anchor child: must be a real DOM node that can hold a ref",
+    apiAccent: "Bar tier business / success / warning / danger / neutral, or any CSS color",
+    apiExpanded: "Expanded state: drives the caret direction and panel visibility",
+    apiOnToggle: "The caret only shows when this is passed; the caller owns the state",
+    apiAction: "Top-right action area (a button or text is fine; auto-vertically centered)",
+    apiPanel: "Expanded content (shown when expanded is true)",
+    apiTone: "Semantic tier: neutral / business / success / warning / danger",
+    apiOnClick: "Renders as a button only when passed",
+    apiText: "Text",
+    apiRender: "Ticker render function: takes the current timestamp in ms, returns any ReactNode",
     btnLabelSave: "Save changes",
     btnLabelCancel: "Cancel",
     btnLabelDelete: "Delete",
@@ -3629,13 +3705,13 @@ var DICT2 = {
     docCopy: "Copy",
     docCopied: "Copied",
     apiVariant: "Ten appearances: primary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link",
-    apiSize: "Three heights: sm 24 / md 28 / lg 32; bordered and borderless are the same height",
+    apiSize: "Three heights: sm 24 / md 28 / lg 32 (bordered and borderless are the same height)",
     apiIcon: "Leading icon: an official icon component, your own SVG, or even a single character (it takes a ReactNode)",
     apiIconRight: "Trailing icon (expand chevron, external link, ...)",
     apiColor: "Custom accent: solid variants use it as fill, outlined and text variants use it for text and border",
     apiLoading: "Spins and disables clicks by itself",
     apiBlock: "Fills the parent width; with a leading icon the label stays optically centered",
-    apiDisabled: "Passed through to the native disabled",
+    apiDisabled: "Passed through to the native disabled (disabled)",
     apiChildren: "Button label / content",
     pluginTitle: "Component preview",
     pluginCardDesc: "Open the showcase of dsh-plugin-core controls and business components",
@@ -4320,6 +4396,104 @@ function ButtonPage() {
     (0, import_react31.createElement)(ApiTable, { rows: BUTTON_API })
   );
 }
+var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
+const [num, setNum] = useState(3)
+
+// hint \u53C2\u6570\u7248\uFF1A\u95EE\u53F7\u63D0\u793A\u7531\u7EC4\u4EF6\u81EA\u5DF1\u6302\uFF0C\u4E0D\u7528\u624B\u52A8\u62FC FieldHint
+<Input value={text} onChange={setText} placeholder="\u9009\u62E9\u65E5\u671F" hint="\u9009\u62E9\u4EFB\u52A1\u7684\u5F00\u59CB\u65F6\u95F4" />
+// \u6821\u9A8C\u5931\u8D25\u6001\uFF1A\u63CF\u7EA2
+<Input value={text} onChange={setText} error placeholder="\u6821\u9A8C\u5931\u8D25\u6001" />
+// \u6570\u5B57\u6846\uFF1A\u8D85\u51FA min / max \u81EA\u52A8\u6536\u56DE\u5230\u8FB9\u754C
+<NumberInput value={num} onChange={setNum} min={0} max={10} suffix="\u6B21" hint="\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" />
+// \u591A\u884C\u8F93\u5165\uFF1A\u95EE\u53F7\u7F6E\u53F3\u4E0B\u89D2
+<Textarea value={text} onChange={setText} placeholder="\u591A\u884C\u8F93\u5165" hint="\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" />`;
+var CODE_FIELD_HINT = `// \u95EE\u53F7\u63D0\u793A\u662F\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF0814px \u5185\u8054\u5143\u7D20\uFF09
+<h3>\u4E00\u4E2A\u6807\u9898</h3>
+<FieldHint text="\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" side="top" />
+
+<Button variant="outline">\u4E00\u4E2A\u6309\u94AE</Button>
+<FieldHint text="\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" side="right" />
+
+<span>\u4E00\u6BB5\u666E\u901A\u6587\u5B57</span>
+<FieldHint text="\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\u3002" />`;
+var CODE_SWITCH_SEG = `// \u5F00\u5173\u8BED\u4E49\u7528\u5B98\u65B9 Switch\uFF1Alabel \u53EA\u662F\u65E0\u969C\u788D\u540D\uFF0C\u53EF\u89C1\u6587\u6848\u81EA\u5DF1\u753B\u5728\u65C1\u8FB9
+<Switch checked={checked} onChange={setChecked} label="\u542F\u7528" />
+<Checkbox checked={checked} onChange={setChecked} label="\u591A\u9009" />
+
+// \u5206\u6BB5\uFF1Aitems = { value, label, count?, badge?, disabled? }\uFF1Bvariant \u9ED8\u8BA4 default\uFF0Cinset \u662F\u7070\u5E95\u6B3E
+<Segmented
+  variant="inset"
+  items={[{ value: 'day', label: '\u65E5' }, { value: 'week', label: '\u5468' }, { value: 'month', label: '\u6708' }]}
+  value={seg}
+  onChange={setSeg}
+/>
+// bordered\uFF1A\u9009\u4E2D\u6BB5\u53D8\u63CF\u8FB9\u5757\uFF1Bsize \u4E09\u6863
+<Segmented variant="inset" bordered size="sm" items={...} value={seg} onChange={setSeg} />
+
+// \u7B5B\u9009\u6761\uFF1Acount \u7ED9\u4E2D\u6027\u8BA1\u6570\uFF0Cbadge \u7ED9\u7EA2\u89D2\u6807
+<Segmented
+  variant="inset"
+  items={[{ value: 'all', label: '\u5168\u90E8', count: 11 }, { value: 'doing', label: '\u8FDB\u884C\u4E2D', count: 5 }]}
+  value={filter}
+  onChange={setFilter}
+/>
+
+// \u661F\u671F\u591A\u9009\uFF1Amultiple + value \u662F\u6570\u7EC4
+<Segmented
+  multiple
+  label="\u661F\u671F"
+  items={[1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: String(n), label: '\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u65E5'[n - 1] }))}
+  value={multi}
+  onChange={setMulti}
+/>`;
+var CODE_INPUT_USAGE = `pnpm add dsh-plugin-core
+
+import { Input, NumberInput, Textarea, Checkbox, Segmented, FieldHint } from 'dsh-plugin-core/ui'
+
+const [text, setText] = useState('')
+
+<Input value={text} onChange={setText} placeholder="\u9009\u62E9\u65E5\u671F" hint="\u5F00\u59CB\u65F6\u95F4" />
+<Textarea value={text} onChange={setText} placeholder="\u591A\u884C\u8F93\u5165" rows={4} />
+<NumberInput value={3} onChange={setNum} min={0} max={10} suffix="\u6B21" />
+
+<Segmented
+  variant="inset"
+  items={[{ value: 'day', label: '\u65E5' }, { value: 'week', label: '\u5468' }]}
+  value={seg}
+  onChange={setSeg}
+/>
+
+// \u300C\u542F\u7528\u300D\u662F\u5F00\u5173\u8BED\u4E49\uFF1A\u7528\u5B98\u65B9 Switch\uFF0C\u4E0D\u8981\u7528\u52FE\u9009\u6846
+import { Switch } from '@deepseek-ai/dsh-client-ui-primitives'
+<Switch checked={checked} onChange={setChecked} label="\u542F\u7528" />`;
+var INPUT_API = [
+  { name: "value", type: "string", def: "\u2014", descKey: "apiValue" },
+  { name: "onChange", type: "(value: string) => void", def: "\u2014", descKey: "apiOnChange" },
+  { name: "placeholder", type: "string", def: "\u2014", descKey: "apiPlaceholder" },
+  { name: "hint", type: "string", def: "\u2014", descKey: "apiHint" },
+  { name: "error", type: "boolean", def: "false", descKey: "apiError" },
+  { name: "disabled", type: "boolean", def: "false", descKey: "apiDisabled" },
+  { name: "size", type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: "apiSize" }
+];
+var NUMBER_API = [
+  { name: "value", type: "number", def: "\u2014", descKey: "apiValue" },
+  { name: "onChange", type: "(value: number) => void", def: "\u2014", descKey: "apiOnChange" },
+  { name: "min / max", type: "number", def: "\xB1Infinity", descKey: "apiMin" },
+  { name: "suffix", type: "string", def: "\u2014", descKey: "apiSuffix" }
+];
+var TEXTAREA_API = [
+  { name: "rows", type: "number", def: "\u2014", descKey: "apiRows" }
+];
+var SEGMENTED_API = [
+  { name: "items", type: "readonly SegmentedItem[]", def: "\u2014", descKey: "apiItems" },
+  { name: "value", type: "T | T[]", def: "\u2014", descKey: "apiValue" },
+  { name: "onChange", type: "(value: T | T[]) => void", def: "\u2014", descKey: "apiOnChange" },
+  { name: "multiple", type: "boolean", def: "false", descKey: "apiMultiple" },
+  { name: "variant", type: "'default' | 'inset'", def: "'default'", descKey: "apiVariant" },
+  { name: "bordered", type: "boolean", def: "false", descKey: "apiBordered" },
+  { name: "size", type: "'sm' | 'md' | 'lg'", def: "'lg'", descKey: "apiSize" },
+  { name: "label", type: "string", def: "\u2014", descKey: "apiLabel" }
+];
 function InputPage() {
   const [text, setText] = (0, import_react31.useState)("");
   const [num, setNum] = (0, import_react31.useState)(3);
@@ -4330,10 +4504,11 @@ function InputPage() {
   return (0, import_react31.createElement)(
     "div",
     null,
+    (0, import_react31.createElement)(Note, { text: t2("inputNote") }),
     // Input 家族
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("demoInputFamily"), hint: t2("inputHint") },
+      Example,
+      { title: t2("demoInputFamily"), hint: t2("inputHint"), code: CODE_INPUT_FAMILY },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
@@ -4354,8 +4529,8 @@ function InputPage() {
     ),
     // 问号提示：证明它不属于 Input 家族，随处可挂
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("btnHintTitle"), hint: t2("btnHintHint") },
+      Example,
+      { title: t2("btnHintTitle"), hint: t2("btnHintHint"), code: CODE_FIELD_HINT },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
@@ -4381,8 +4556,8 @@ function InputPage() {
     ),
     // Switch / Checkbox / Segmented
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("switchTip"), hint: t2("checkboxHint") },
+      Example,
+      { title: t2("switchTip"), hint: t2("checkboxHint"), code: CODE_SWITCH_SEG },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
@@ -4501,6 +4676,11 @@ function InputPage() {
         })
       )
     ),
+    (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_INPUT_USAGE }),
+    (0, import_react31.createElement)(ApiTable, { rows: INPUT_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: NUMBER_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: TEXTAREA_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: SEGMENTED_API }),
     (0, import_react31.createElement)(Placeholder, { descKey: "inputMissingDesc" })
   );
 }
@@ -4508,6 +4688,67 @@ var ICON_OPTIONS = [
   { value: "a", label: "\u9009\u9879 A", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconSparkleRegular, { size: 14 }) },
   { value: "b", label: "\u9009\u9879 B", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconClockOutlineRegular, { size: 14 }) },
   { value: "c", label: "\u9009\u9879 C", icon: (0, import_react31.createElement)(import_dsh_client_ui_primitives3.IconPlayOutlineRegular, { size: 14 }) }
+];
+var CODE_PICKER = `// \u5355\u9009\uFF1Aicon + \u53EF\u641C\u7D22 / \u53EF\u6E05\u9664
+<Picker
+  options={[{ value: 'a', label: '\u9009\u9879 A' }, { value: 'b', label: '\u9009\u9879 B' }]}
+  value={single}
+  onChange={setSingle}
+  searchable
+  clearable
+  placeholder="\u5355\u9009"
+/>
+// \u5206\u7EC4 + \u591A\u9009\uFF1Agroups \u4E0E options \u4E8C\u9009\u4E00\uFF1Bmax \u7ED9\u4E0A\u9650\uFF0C\u53EF\u53CD\u9009
+<Picker
+  groups={[{ value: 'g1', label: '\u7EC4\u4E00', options }, { value: 'g2', label: '\u7EC4\u4E8C', options }]}
+  value={multi}
+  mode="multiple"
+  max={2}
+  onChange={setMulti}
+  searchable
+/>
+// hint \u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\uFF0C\u4E0D\u7528\u518D\u624B\u52A8\u62FC FieldHint
+<Picker options={options} value={v} onChange={setV} hint="\u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\u7684\u95EE\u53F7\u63D0\u793A" />`;
+var CODE_MODEL_PICKER = `// \u6570\u636E\u6765\u81EA\u5BBF\u4E3B\u6A21\u578B\u76EE\u5F55\uFF08\u5BBF\u4E3B\u4FA7 connectHost(ctx, { modelsPath }) \u6CE8\u5165\uFF09\uFF0C\u4E0D\u80FD\u51ED\u7A7A\u9020
+// \u5206\u7EC4\u5F62\u6001\uFF1A\u4E00\u4E2A\u4E0B\u62C9\uFF0C\u4F9B\u5E94\u5546\u505A\u7EC4\u5934
+<ModelPicker value={model} onChange={setModel} variant="grouped" />
+// \u8054\u52A8\u5F62\u6001\uFF1A\u4E24\u4E2A\u4E0B\u62C9\uFF0C\u5148\u9009\u4F9B\u5E94\u5546\u3001\u6A21\u578B\u5217\u8868\u8DDF\u7740\u7B5B
+<ModelPicker value={model} onChange={setModel} variant="cascade" placeholder="\u9009\u62E9\u6A21\u578B" />`;
+var CODE_WORKSPACE_PICKER = `// \u9ED8\u8BA4\u5373\u300C\u5DE5\u4F5C\u533A\u300D\u6587\u6848\u4E0E\u6587\u4EF6\u5939\u56FE\u6807\uFF1Bclearable / searchable \u662F\u53EF\u9009\u80FD\u529B
+<WorkspacePicker value={ws} onChange={setWs} clearable searchable />`;
+var CODE_PICKER_USAGE = `pnpm add dsh-plugin-core
+
+import { Picker, ModelPicker, WorkspacePicker } from 'dsh-plugin-core/ui'
+
+<Picker
+  options={[{ value: 'a', label: '\u9009\u9879 A' }, { value: 'b', label: '\u9009\u9879 B' }]}
+  value={single}
+  onChange={setSingle}
+  searchable
+  clearable
+  placeholder="\u8BF7\u9009\u62E9"
+/>
+
+// ModelPicker / WorkspacePicker \u8981\u771F\u5B9E\u6570\u636E\uFF1A
+// \u5BBF\u4E3B\u4FA7 connectHost(ctx, { modelsPath }) \u6CE8\u5165\u8FDE\u63A5\uFF0C\u5BA2\u6237\u7AEF\u53EA\u7BA1\u6E32\u67D3`;
+var PICKER_API = [
+  { name: "options", type: "readonly PickerOption[]", def: "\u2014", descKey: "apiOptions" },
+  { name: "groups", type: "readonly PickerGroup[]", def: "\u2014", descKey: "apiGroups" },
+  { name: "value", type: "string | string[]", def: "\u2014", descKey: "apiValue" },
+  { name: "onChange", type: "(value: string | string[]) => void", def: "\u2014", descKey: "apiOnChange" },
+  { name: "mode", type: "'single' | 'multiple'", def: "'single'", descKey: "apiMode" },
+  { name: "max", type: "number", def: "\u2014", descKey: "apiMax" },
+  { name: "searchable", type: "boolean", def: "false", descKey: "apiSearchable" },
+  { name: "clearable", type: "boolean", def: "false", descKey: "apiClearable" },
+  { name: "hint", type: "string", def: "\u2014", descKey: "apiHint" },
+  { name: "size", type: "'sm' | 'md' | 'lg'", def: "'md'", descKey: "apiSize" }
+];
+var HOST_PICKER_API = [
+  { name: "value", type: "string | string[]", def: "\u2014", descKey: "apiValue" },
+  { name: "onChange", type: "(value: string | string[]) => void", def: "\u2014", descKey: "apiOnChange" },
+  { name: "variant", type: "'grouped' | 'cascade'", def: "'grouped'", descKey: "apiVariant" },
+  { name: "placeholder", type: "string", def: "\u2014", descKey: "apiPlaceholder" },
+  { name: "clearable / searchable", type: "boolean", def: "false", descKey: "apiClearable" }
 ];
 function PickerPage() {
   const [single, setSingle] = (0, import_react31.useState)(void 0);
@@ -4518,9 +4759,10 @@ function PickerPage() {
   return (0, import_react31.createElement)(
     "div",
     null,
+    (0, import_react31.createElement)(Note, { text: t2("pickerNote") }),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "Picker", hint: t2("pickerHint") },
+      Example,
+      { title: "Picker", hint: t2("pickerHint"), code: CODE_PICKER },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
@@ -4574,8 +4816,8 @@ function PickerPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09", hint: t2("modelPickerHint") },
+      Example,
+      { title: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09", hint: t2("modelPickerHint"), code: CODE_MODEL_PICKER },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
@@ -4591,8 +4833,8 @@ function PickerPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09", hint: t2("workspacePickerHint") },
+      Example,
+      { title: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09", hint: t2("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
@@ -4605,96 +4847,208 @@ function PickerPage() {
         })
       )
     ),
+    (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_PICKER_USAGE }),
+    (0, import_react31.createElement)(ApiTable, { rows: PICKER_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: HOST_PICKER_API }),
     (0, import_react31.createElement)(Placeholder, { descKey: "pickerLogicDesc" })
   );
 }
+var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM\uFF08\u51FD\u6570\u7EC4\u4EF6\u6302\u4E0D\u4E0A \u21D2 \u65E0\u6C14\u6CE1\uFF09
+<Tooltip label="top \xB7 center" side="top" align="center">
+  <button type="button">\u60AC\u505C\u6211</button>
+</Tooltip>
+<Tooltip label="\u5F88\u957F\u7684\u4E00\u6BB5\u8BF4\u660E\uFF0C\u653E\u4E0D\u4E0B\u65F6\u6309 maxWidth \u6298\u884C" side="bottom" maxWidth={240}>
+  <span>\u60AC\u505C\u6211</span>
+</Tooltip>
+
+// \u4E24\u6BB5\u5F0F\uFF1Alabel \u91CC\u76F4\u63A5\u5199\u6362\u884C
+<Tooltip label={'\u4EFB\u52A1\u540D' + String.fromCharCode(10) + '\u4EFB\u52A1\u6B63\u6587'} side="top" maxWidth={260}>
+  <span>\u4EFB\u52A1\u540D</span>
+</Tooltip>
+
+// \u5BCC\u5361\u7247\uFF1A\u5B98\u65B9 HoverCard\uFF0Ccontent \u6536\u4EFB\u610F ReactNode\uFF1Bcompact \u53D8\u4F53\u80CC\u666F\u6052\u6DF1\uFF0C\u5185\u5BB9\u8272\u81EA\u5DF1\u7ED9
+<HoverCard
+  variant="compact"
+  openDelayMs={200}
+  anchor={<span>\u4EFB\u52A1\u540D</span>}
+  content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>\u2026</div>}
+/>`;
+var CODE_TOOLTIP_USAGE = `pnpm add dsh-plugin-core
+
+import { Tooltip, HoverCard } from '@deepseek-ai/dsh-client-ui-primitives'
+
+<Tooltip label="\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48" side="right">
+  <Button variant="outline">\u4E00\u4E2A\u6309\u94AE</Button>
+</Tooltip>
+
+// \u95EE\u53F7\u63D0\u793A\uFF08FieldHint\uFF09\u7528\u7684\u662F\u540C\u4E00\u4E2A\u5B98\u65B9 Tooltip \u672C\u4F53\uFF1A
+// \u5BBF\u4E3B\u4FA7 setTooltipRenderer((props) => h(Tooltip, props))\uFF0C\u4E4B\u540E\u6240\u6709\u95EE\u53F7\u6C14\u6CE1\u90FD\u662F\u5B83`;
+var TOOLTIP_API = [
+  { name: "label", type: "string", def: "\u2014", descKey: "apiText" },
+  { name: "side", type: "'top' | 'bottom' | 'right'", def: "'top'", descKey: "apiSide" },
+  { name: "align", type: "'center' | 'end'", def: "'center'", descKey: "apiAlign" },
+  { name: "maxWidth", type: "number", def: "\u2014", descKey: "apiMaxWidth" },
+  { name: "delayMs", type: "number", def: "\u2014", descKey: "apiDelayMs" },
+  { name: "portal", type: "boolean", def: "false", descKey: "apiPortal" },
+  { name: "children", type: "ReactElement", def: "\u2014", descKey: "apiAnchor" }
+];
+var HOVERCARD_API = [
+  { name: "anchor", type: "ReactNode", def: "\u2014", descKey: "apiAnchor" },
+  { name: "content", type: "ReactNode", def: "\u2014", descKey: "apiChildren" },
+  { name: "variant", type: "'compact' | 'preview'", def: "'compact'", descKey: "apiVariant" },
+  { name: "openDelayMs", type: "number", def: "\u2014", descKey: "apiDelayMs" }
+];
 function TooltipPage() {
   return (0, import_react31.createElement)(
-    Demo,
-    { title: t2("tooltipTitle"), hint: t2("tooltipHint") },
+    "div",
+    null,
+    (0, import_react31.createElement)(Note, { text: t2("tooltipNote") }),
     (0, import_react31.createElement)(
-      "div",
-      { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+      Example,
+      { title: t2("tooltipTitle"), hint: t2("tooltipHint"), code: CODE_TOOLTIP },
       (0, import_react31.createElement)(
-        Labeled,
-        { label: t2("tooltipAnchorButton") },
-        tipAnchor("top \xB7 center", "top", "center"),
-        tipAnchor("top \xB7 end", "top", "end"),
-        tipAnchor("bottom \xB7 center", "bottom", "center"),
-        tipAnchor("bottom \xB7 end", "bottom", "end"),
-        tipAnchor("right", "right")
-      ),
-      (0, import_react31.createElement)(
-        Labeled,
-        { label: t2("tooltipAnchorText") },
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
         (0, import_react31.createElement)(
-          import_dsh_client_ui_primitives3.Tooltip,
-          { label: t2("tooltipHint"), side: "top" },
-          (0, import_react31.createElement)("span", {
-            style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
-          }, t2("tooltipAnchorText"))
+          Labeled,
+          { label: t2("tooltipAnchorButton") },
+          tipAnchor("top \xB7 center", "top", "center"),
+          tipAnchor("top \xB7 end", "top", "end"),
+          tipAnchor("bottom \xB7 center", "bottom", "center"),
+          tipAnchor("bottom \xB7 end", "bottom", "end"),
+          tipAnchor("right", "right")
         ),
         (0, import_react31.createElement)(
-          import_dsh_client_ui_primitives3.Tooltip,
-          { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
-          (0, import_react31.createElement)("span", {
-            style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
-          }, t2("tooltipLong"))
-        )
-      ),
-      // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-      (0, import_react31.createElement)(
-        Labeled,
-        { label: t2("tooltipMultiline") },
-        (0, import_react31.createElement)(
-          import_dsh_client_ui_primitives3.Tooltip,
-          { label: `${t2("tooltipName")}
-${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
-          (0, import_react31.createElement)("span", {
-            style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
-          }, t2("tooltipName"))
-        )
-      ),
-      // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-      (0, import_react31.createElement)(
-        Labeled,
-        { label: t2("tooltipRich") },
-        (0, import_react31.createElement)(import_dsh_client_ui_primitives3.HoverCard, {
-          variant: "compact",
-          openDelayMs: 200,
-          anchor: (0, import_react31.createElement)("span", {
-            style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
-          }, t2("tooltipName")),
-          // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
-          // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
-          // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
-          // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-          content: (0, import_react31.createElement)(
-            "div",
-            {
-              style: {
-                padding: "4px 2px",
-                minWidth: "220px",
-                color: "var(--dsw-static-neutral-bluish-00,#fff)"
-              }
-            },
-            (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
-            (0, import_react31.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
+          Labeled,
+          { label: t2("tooltipAnchorText") },
+          (0, import_react31.createElement)(
+            import_dsh_client_ui_primitives3.Tooltip,
+            { label: t2("tooltipHint"), side: "top" },
+            (0, import_react31.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
+            }, t2("tooltipAnchorText"))
+          ),
+          (0, import_react31.createElement)(
+            import_dsh_client_ui_primitives3.Tooltip,
+            { label: t2("tooltipLongText"), side: "bottom", maxWidth: 240 },
+            (0, import_react31.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
+            }, t2("tooltipLong"))
           )
-        })
+        ),
+        // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
+        (0, import_react31.createElement)(
+          Labeled,
+          { label: t2("tooltipMultiline") },
+          (0, import_react31.createElement)(
+            import_dsh_client_ui_primitives3.Tooltip,
+            { label: `${t2("tooltipName")}
+${t2("tooltipLongText")}`, side: "top", maxWidth: 260 },
+            (0, import_react31.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
+            }, t2("tooltipName"))
+          )
+        ),
+        // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
+        (0, import_react31.createElement)(
+          Labeled,
+          { label: t2("tooltipRich") },
+          (0, import_react31.createElement)(import_dsh_client_ui_primitives3.HoverCard, {
+            variant: "compact",
+            openDelayMs: 200,
+            anchor: (0, import_react31.createElement)("span", {
+              style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
+            }, t2("tooltipName")),
+            // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
+            // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
+            // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
+            // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
+            content: (0, import_react31.createElement)(
+              "div",
+              {
+                style: {
+                  padding: "4px 2px",
+                  minWidth: "220px",
+                  color: "var(--dsw-static-neutral-bluish-00,#fff)"
+                }
+              },
+              (0, import_react31.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t2("tooltipName")),
+              (0, import_react31.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t2("tooltipLongText"))
+            )
+          })
+        )
       )
-    )
+    ),
+    (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_TOOLTIP_USAGE }),
+    (0, import_react31.createElement)(ApiTable, { rows: TOOLTIP_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: HOVERCARD_API })
   );
 }
+var CODE_CARD = `// Card\uFF1Asurface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF1Baction \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u4E5F\u5782\u76F4\u5C45\u4E2D
+<Card
+  accent="business"
+  action={<span style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>2026-10-18 \u521B\u5EFA</span>}
+>
+  <div style={{ fontWeight: 600 }}>\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM</div>
+  <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+    <Chip>#npm</Chip>
+    <Chip>#\u8FC1\u79FB</Chip>
+  </div>
+</Card>
+
+// accent \u4E94\u6863\uFF1Abusiness / success / warning / danger / neutral\uFF08\u6216\u4EFB\u610F CSS \u8272\u503C\uFF09
+<Card accent="warning"><div>\u2026</div></Card>`;
+var CODE_STRIP_CARD = `// StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + \u65B9\u89D2 + \u5DE6\u7F18 4px \u901A\u9AD8\u8272\u6761\uFF08\u5907\u6CE8\u6846\u3001\u6267\u884C\u8BB0\u5F55\u6761\u540C\u6B3E\uFF09
+<StripCard
+  accent="success"
+  action={<Button size="sm" variant="outline">Cancel</Button>}
+>
+  <div style={{ fontWeight: 600 }}>\u6267\u884C\u6210\u529F</div>
+  <div style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4</div>
+</StripCard>`;
+var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\uFF1B\u6807\u9898\u540E\u7F00\u53EF\u4EE5\u662F\u8BA1\u6570 / \u5F69\u8272\u6807\u7B7E / \u5C0F\u5B57\u8BF4\u660E
+<SectionHead
+  icon={<IconSparkleRegular size={16} />}
+  title={<span>\u5168\u90E8\u5F85\u529E <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
+  right={[
+    <Segmented variant="inset" items={[{ value: 'all', label: '\u5168\u90E8', count: 22 }]} value={seg} onChange={setSeg} />,
+    <div style={{ width: 192 }}><Input value={kw} onChange={setKw} placeholder="\u641C\u7D22" /></div>,
+  ]}
+/>`;
+var CODE_CARD_USAGE = `pnpm add dsh-plugin-core
+
+import { Card, StripCard, SectionHead } from 'dsh-plugin-core/ui'
+
+// \u5907\u6CE8\u6846\u3001\u6267\u884C\u8BB0\u5F55\u6761\uFF1AStripCard\uFF08\u6D45\u5E95 + \u5DE6\u8272\u6761\uFF09
+<StripCard accent="business"><div>\u6807\u9898 + \u5185\u5BB9</div></StripCard>
+
+// \u666E\u901A\u5361\u7247\uFF1ACard\uFF08surface \u5E95 + \u8FB9\u6846 + \u5706\u89D2\uFF09
+<Card accent="business" action={<Button size="sm" variant="ghost">\u67E5\u770B\u4F1A\u8BDD</Button>}>
+  <div>\u6807\u9898 + \u5185\u5BB9</div>
+</Card>`;
+var CARD_API = [
+  { name: "accent", type: "CardAccent | string", def: "'business'", descKey: "apiAccent" },
+  { name: "expanded", type: "boolean", def: "false", descKey: "apiExpanded" },
+  { name: "onToggle", type: "() => void", def: "\u2014", descKey: "apiOnToggle" },
+  { name: "action", type: "ReactNode", def: "\u2014", descKey: "apiAction" },
+  { name: "panel", type: "ReactNode", def: "\u2014", descKey: "apiPanel" },
+  { name: "children", type: "ReactNode", def: "\u2014", descKey: "apiChildren" }
+];
+var SECTION_HEAD_API = [
+  { name: "icon", type: "ReactNode", def: "\u2014", descKey: "apiIcon" },
+  { name: "title", type: "ReactNode", def: "\u2014", descKey: "apiText" },
+  { name: "right", type: "ReactNode | ReactNode[]", def: "\u2014", descKey: "apiAction" }
+];
 function CardPage() {
   const [seg, setSeg] = (0, import_react31.useState)("all");
   const [kw, setKw] = (0, import_react31.useState)("");
   return (0, import_react31.createElement)(
     "div",
     null,
+    (0, import_react31.createElement)(Note, { text: t2("cardNote") }),
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("demoCardTitle"), hint: t2("cardHint") },
+      Example,
+      { title: t2("demoCardTitle"), hint: t2("cardHint"), code: CODE_CARD },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
@@ -4745,8 +5099,8 @@ function CardPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("demoStripTitle"), hint: t2("stripHint") },
+      Example,
+      { title: t2("demoStripTitle"), hint: t2("stripHint"), code: CODE_STRIP_CARD },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
@@ -4793,8 +5147,8 @@ function CardPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408" },
+      Example,
+      { title: t2("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408", code: CODE_SECTION_HEAD },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "8px" } },
@@ -4855,16 +5209,53 @@ function CardPage() {
           ]
         })
       )
-    )
+    ),
+    (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_CARD_USAGE }),
+    (0, import_react31.createElement)(ApiTable, { rows: CARD_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: SECTION_HEAD_API })
   );
 }
+var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884C\u56FA\u5B9A\u7531\u5927\u5230\u5C0F\uFF08md \u2192 sm \u2192 xs\uFF09\uFF0C\u540C\u6863\u6587\u6848\u4E0D\u6DF7\u6392
+<Chip size="md" tone="warning">\u903E\u671F</Chip>
+<Chip size="sm" tone="danger">\u505C\u6EDE</Chip>
+<Chip size="xs" tone="success">\u5B8C\u6210</Chip>
+
+// \u4E2D\u6027 # \u6807\u7B7E\uFF08\u8BED\u8A00\u65E0\u5173\uFF09\uFF1B\u4F20 onClick \u624D\u6E32\u67D3\u6210 button
+<Chip>#npm</Chip>
+<Chip onClick={() => showToast('\u70B9\u4E86 chip')}>#\u53EF\u70B9</Chip>`;
+var CODE_MARQUEE = `// \u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1A\u653E\u4E0D\u4E0B\u624D\u6EDA\uFF0Chover \u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7
+<MarqueeText text="\u8FD9\u662F\u4E00\u6BB5\u5F88\u957F\u7684\u6587\u5B57\uFF0C\u653E\u4E0D\u4E0B\u65F6 hover \u4F1A\u6EDA\u52A8\u5C55\u793A\u5168\u540D" />`;
+var CODE_LIVE = `// \u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6\u5185\u5BB9\u8C03\u7528\u65B9\u6E32\u67D3
+<LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`;
+var CODE_EMPTY = `// \u4E1A\u52A1\u7A7A\u6001\uFF1A\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE
+<EmptyState text="\u6682\u65E0\u6570\u636E" action={<Button size="sm" variant="outline">\u91CD\u8BD5</Button>} />`;
+var CODE_CHIP_USAGE = `pnpm add dsh-plugin-core
+
+import { Chip, MarqueeText, LiveText, EmptyState } from 'dsh-plugin-core/ui'
+
+<Chip tone="success">\u5B8C\u6210</Chip>
+<Chip onClick={openTask}>#\u53EF\u70B9</Chip>
+<MarqueeText text={taskTitle} />`;
+var CHIP_API = [
+  { name: "children", type: "ReactNode", def: "\u2014", descKey: "apiChildren" },
+  { name: "tone", type: "'neutral' | 'business' | 'success' | 'warning' | 'danger'", def: "'neutral'", descKey: "apiTone" },
+  { name: "size", type: "'xs' | 'sm' | 'md'", def: "'sm'", descKey: "apiSize" },
+  { name: "onClick", type: "() => void", def: "\u2014", descKey: "apiOnClick" }
+];
+var TEXT_KIT_API = [
+  { name: "MarqueeText \xB7 text", type: "string", def: "\u2014", descKey: "apiText" },
+  { name: "LiveText \xB7 render", type: "(nowMs: number) => ReactNode", def: "\u2014", descKey: "apiRender" },
+  { name: "EmptyState \xB7 text", type: "ReactNode", def: "\u300C\u6682\u65E0\u6570\u636E\u300D", descKey: "apiText" },
+  { name: "EmptyState \xB7 action", type: "ReactNode", def: "\u2014", descKey: "apiAction" }
+];
 function ChipPage() {
   return (0, import_react31.createElement)(
     "div",
     null,
+    (0, import_react31.createElement)(Note, { text: t2("chipNote") }),
     (0, import_react31.createElement)(
-      Demo,
-      { title: "Chip", hint: t2("chipHint") },
+      Example,
+      { title: "Chip", hint: t2("chipHint"), code: CODE_CHIP },
       (0, import_react31.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
@@ -4891,8 +5282,8 @@ function ChipPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("marqueeTitle"), hint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7" },
+      Example,
+      { title: t2("marqueeTitle"), hint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7", code: CODE_MARQUEE },
       (0, import_react31.createElement)(
         "div",
         { style: { maxWidth: "200px" } },
@@ -4900,15 +5291,18 @@ function ChipPage() {
       )
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("liveTitle"), hint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3" },
+      Example,
+      { title: t2("liveTitle"), hint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3", code: CODE_LIVE },
       (0, import_react31.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
     (0, import_react31.createElement)(
-      Demo,
-      { title: t2("emptyStateTitle"), hint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE" },
+      Example,
+      { title: t2("emptyStateTitle"), hint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE", code: CODE_EMPTY },
       (0, import_react31.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
-    )
+    ),
+    (0, import_react31.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_CHIP_USAGE }),
+    (0, import_react31.createElement)(ApiTable, { rows: CHIP_API }),
+    (0, import_react31.createElement)(ApiTable, { rows: TEXT_KIT_API })
   );
 }
 function FeedbackPage() {
@@ -5868,10 +6262,15 @@ function crumbsMenuEntries(params) {
     type: "button",
     role: "menuitem",
     className: "dshpc-fb__menu-item",
+    style: { paddingLeft: 8, display: "flex", alignItems: "center", gap: "6px" },
     title: ws,
-    // 当前工作区也可点（源实现用户 2026-10-10）：点它 = 回到该工作区根目录（浏览深处时唯一的「回根」入口）。
+    // 点当前工作区 = 回到该工作区根目录（浏览深处时唯一的「回根」入口，兄弟 2026-10-10）；
+    // 点其他工作区才走 onPickWorkspace（换会话）。
     onClick: () => {
-      onPickWorkspace?.(ws);
+      if (current3)
+        onLoadDir?.("");
+      else
+        onPickWorkspace?.(ws);
     }
   }, (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react37.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react37.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current3 ? 600 : 400 } }, ws));
   const pathEntry = (crumb, depth, withArrow = true) => (0, import_react37.createElement)("button", {
@@ -5879,6 +6278,7 @@ function crumbsMenuEntries(params) {
     type: "button",
     role: "menuitem",
     className: "dshpc-fb__menu-item",
+    style: { paddingLeft: 8 },
     title: crumb.path,
     onClick: () => {
       onLoadDir?.(crumb.path);
@@ -6071,9 +6471,11 @@ function FileBrowser(props) {
     }).catch(() => {
       if (!alive)
         return;
-      setDir(dirnameOf(props.path));
+      const parent = dirnameOf(props.path);
+      setDir(parent);
       setViewing(props.path);
       setMode("file");
+      ensureRootLearned(parent);
     });
     return () => {
       alive = false;
@@ -6404,6 +6806,8 @@ function openFilePreview(options) {
       sessionId: options.sessionId,
       path: options.path,
       rootName: options.rootName,
+      workspaces: options.workspaces,
+      onSelectWorkspace: options.onSelectWorkspace,
       rootCache: options.rootCache,
       translate: options.translate,
       // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
@@ -6648,8 +7052,8 @@ function ExplorerPage() {
       alive = false;
     };
   }, [files, sessionId]);
-  const open = (path) => {
-    if (files === null || anchor === null) return;
+  const openPreview = (sessionId2, rootName, path) => {
+    if (files === null) return;
     const mount = pageRow.element;
     if (mount === null) return;
     openFilePreview({
@@ -6657,10 +7061,21 @@ function ExplorerPage() {
       mount,
       workspaceFiles: files,
       officeToPdf,
-      sessionId: anchor.sessionId,
+      sessionId: sessionId2,
       path,
-      rootName: anchor.title
+      rootName,
+      // ▾ 选层下拉要列全部工作区（当前工作区展开 + 其余罗列，与兄弟项目一致）。
+      workspaces: workspaces.map((item) => item.title),
+      // ▾ 里点其他工作区 = 换会话重开预览（dock 是命令式挂载 ⇒ 再 open 一次，旧的自动回收）。
+      onSelectWorkspace: (name) => {
+        const sid = workspaces.find((item) => item.title === name)?.sessionIds?.[0];
+        if (sid !== void 0) openPreview(sid, name, "");
+      }
     });
+  };
+  const open = (path) => {
+    if (files === null || anchor === null) return;
+    openPreview(anchor.sessionId, anchor.title, path);
   };
   const pick2 = (event, filter) => {
     if (files === null || anchor === null) return;
@@ -6892,7 +7307,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1021-0819-82r2"]
+            [t2("buildStamp"), "1021-0832-iy1b"]
           ].map(
             ([label, value]) => (0, import_react42.createElement)(
               "tr",

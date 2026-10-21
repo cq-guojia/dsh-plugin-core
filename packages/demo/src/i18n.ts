@@ -190,7 +190,6 @@ export type DemoMessageKey =
   | 'apiPlaceholder'
   | 'apiHint'
   | 'apiError'
-  | 'apiDisabled'
   | 'apiSize'
   | 'apiMin'
   | 'apiMax'
@@ -200,6 +199,31 @@ export type DemoMessageKey =
   | 'apiMultiple'
   | 'apiBordered'
   | 'apiLabel'
+  // 选择器 / 提示 / 卡片 / 标签四页
+  | 'pickerNote'
+  | 'tooltipNote'
+  | 'cardNote'
+  | 'chipNote'
+  | 'apiOptions'
+  | 'apiGroups'
+  | 'apiMode'
+  | 'apiSearchable'
+  | 'apiClearable'
+  | 'apiSide'
+  | 'apiAlign'
+  | 'apiMaxWidth'
+  | 'apiDelayMs'
+  | 'apiPortal'
+  | 'apiAnchor'
+  | 'apiAccent'
+  | 'apiExpanded'
+  | 'apiOnToggle'
+  | 'apiAction'
+  | 'apiPanel'
+  | 'apiTone'
+  | 'apiOnClick'
+  | 'apiText'
+  | 'apiRender'
   | 'docNote'
   | 'docPreview'
   | 'docCode'
@@ -212,7 +236,6 @@ export type DemoMessageKey =
   | 'docCopy'
   | 'docCopied'
   | 'apiVariant'
-  | 'apiSize'
   | 'apiIcon'
   | 'apiIconRight'
   | 'apiColor'
@@ -324,8 +347,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiPlaceholder: '占位文案',
     apiHint: '框后挂问号提示（FieldHint 本体）',
     apiError: '描红（校验失败态）',
-    apiDisabled: '禁用',
-    apiSize: '尺寸档：sm / md / lg',
     apiMin: '下限，超出自动收回',
     apiMax: '上限，超出自动收回',
     apiSuffix: '数字后缀（如「次」）',
@@ -334,6 +355,32 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiMultiple: '多选：value 与 onChange 都是数组',
     apiBordered: '选中段变描边块',
     apiLabel: 'aria 组名（无障碍，不可见）',
+
+    pickerNote: '选择器一个组件覆盖单选、分组、多选三种形态；选项 icon 收 ReactNode，hint 挂在触发器后面。ModelPicker / WorkspacePicker 是它的业务封装：数据由宿主给（connectHost 注入），不能凭空造。',
+    tooltipNote: 'Tooltip 是官方 primitive：label + side / align；children 必须是能挂 ref 的真实 DOM（函数组件挂不上 ⇒ 悬停无气泡，兄弟仓踩过）。HoverCard 是另一种悬停富卡片，compact 变体背景恒深，内容色要调用方自己给。',
+    cardNote: 'Card 与 StripCard 共用同一份 props，差的是外观：Card 是 surface 底 + 1px 边框 + 圆角；StripCard 是同色系浅底 + 方角 + 左缘 4px 通高色条 —— 备注框、执行记录条都是它。',
+    chipNote: 'Chip 是行内标签：tone 五档 + size 三档；传 onClick 才渲染成 button。中性 # 标签与语言无关，长文字宽度跟着文字走。',
+
+    apiOptions: '扁平选项：[{ value, label, icon?, disabled? }]',
+    apiGroups: '分组选项：[{ value, label, options }]（与 options 二选一）',
+    apiMode: "'single' | 'multiple'",
+    apiSearchable: '触发器内带搜索框',
+    apiClearable: '已选后可一键清除',
+    apiSide: "气泡方位：'top' | 'bottom' | 'right'",
+    apiAlign: "对齐：'center' | 'end'",
+    apiMaxWidth: '气泡最大宽度（像素）',
+    apiDelayMs: '悬停多久出气泡（毫秒）',
+    apiPortal: '挂到 document.body，避开祖先溢出裁剪',
+    apiAnchor: '锚点子元素：必须是能挂 ref 的真实 DOM',
+    apiAccent: '色条档位 business / success / warning / danger / neutral，或任意 CSS 色值',
+    apiExpanded: '展开态：决定箭头朝向与 panel 显隐',
+    apiOnToggle: '传了才显示折叠箭头；展开状态由调用方管',
+    apiAction: '右上角操作区（按钮 / 文字都行，自动垂直居中）',
+    apiPanel: '展开内容（expanded 为 true 时显示）',
+    apiTone: '语义色档：neutral / business / success / warning / danger',
+    apiOnClick: '传了才渲染成 button',
+    apiText: '文字',
+    apiRender: '走时渲染函数：参数是当前毫秒数，返回任意 ReactNode',
     btnLabelSave: '保存修改',
     btnLabelCancel: '取消',
     btnLabelDelete: '删除',
@@ -462,13 +509,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docCopied: '已复制',
 
     apiVariant: '外观十档：primary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link',
-    apiSize: '高度三档：sm 24 / md 28 / lg 32，有边与无边同高',
+    apiSize: '尺寸三档：sm 24 / md 28 / lg 32（高度档；有边无边同高）',
     apiIcon: '前置图标：官方图标组件、自绘 SVG、一个字符都行（收的是 ReactNode）',
     apiIconRight: '后置图标（展开箭头、外链等）',
     apiColor: '自定义主色：实心档作底色，描边与文字档作字色和描边色',
     apiLoading: '转圈并自动禁用点击',
     apiBlock: '撑满父宽；有前置图标时文字仍在视觉中心',
-    apiDisabled: '透传原生 disabled',
+    apiDisabled: '透传原生 disabled（禁用）',
     apiChildren: '按钮文案 / 内容',
 
     pluginTitle: '组件预览',
@@ -577,8 +624,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiPlaceholder: 'Placeholder',
     apiHint: 'Attaches a question-mark hint (FieldHint) after the field',
     apiError: 'Marks the field red (validation failed)',
-    apiDisabled: 'Disabled',
-    apiSize: 'Size tier: sm / md / lg',
     apiMin: 'Lower bound; out-of-range values are clamped',
     apiMax: 'Upper bound; out-of-range values are clamped',
     apiSuffix: 'Numeric suffix (e.g. "times")',
@@ -587,6 +632,32 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     apiMultiple: 'Multi-select: value and onChange are both arrays',
     apiBordered: 'Makes the selected segment a bordered block',
     apiLabel: 'Accessible group name (not visible)',
+
+    pickerNote: 'One Picker covers single, grouped and multiple modes; option icons take ReactNode and hint attaches behind the trigger. ModelPicker / WorkspacePicker are business wrappers of it: their data comes from the host (connectHost), it cannot be fabricated.',
+    tooltipNote: 'Tooltip is an official primitive: label plus side / align; children must be a real DOM node that can hold a ref (a function component cannot — no bubble on hover, hit in the sibling repo). HoverCard is a different, richer hover card; its compact variant has a permanently dark background, so the content color must be supplied by the caller.',
+    cardNote: 'Card and StripCard share one prop set and differ only in appearance: Card is a surface fill with a 1px border and rounded corners; StripCard is a same-family soft fill with square corners and a 4px full-height bar on the left edge — notes and execution-record rows both use it.',
+    chipNote: 'Chip is an inline label: five tones and three sizes; pass onClick to render it as a button. Neutral # tags are language-agnostic, and long text keeps its natural width.',
+
+    apiOptions: 'Flat options: [{ value, label, icon?, disabled? }]',
+    apiGroups: 'Grouped options: [{ value, label, options }] (either this or options)',
+    apiMode: "'single' | 'multiple'",
+    apiSearchable: 'Search box inside the trigger',
+    apiClearable: 'One-click clear once something is selected',
+    apiSide: "Bubble side: 'top' | 'bottom' | 'right'",
+    apiAlign: "Alignment: 'center' | 'end'",
+    apiMaxWidth: 'Max bubble width (pixels)',
+    apiDelayMs: 'Hover delay before the bubble shows (ms)',
+    apiPortal: 'Mount on document.body to escape ancestor overflow clipping',
+    apiAnchor: 'Anchor child: must be a real DOM node that can hold a ref',
+    apiAccent: 'Bar tier business / success / warning / danger / neutral, or any CSS color',
+    apiExpanded: 'Expanded state: drives the caret direction and panel visibility',
+    apiOnToggle: 'The caret only shows when this is passed; the caller owns the state',
+    apiAction: 'Top-right action area (a button or text is fine; auto-vertically centered)',
+    apiPanel: 'Expanded content (shown when expanded is true)',
+    apiTone: 'Semantic tier: neutral / business / success / warning / danger',
+    apiOnClick: 'Renders as a button only when passed',
+    apiText: 'Text',
+    apiRender: 'Ticker render function: takes the current timestamp in ms, returns any ReactNode',
     btnLabelSave: 'Save changes',
     btnLabelCancel: 'Cancel',
     btnLabelDelete: 'Delete',
@@ -715,13 +786,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docCopied: 'Copied',
 
     apiVariant: 'Ten appearances: primary / secondary / outline / ghost / danger / success / warning / info / danger-outline / link',
-    apiSize: 'Three heights: sm 24 / md 28 / lg 32; bordered and borderless are the same height',
+    apiSize: 'Three heights: sm 24 / md 28 / lg 32 (bordered and borderless are the same height)',
     apiIcon: 'Leading icon: an official icon component, your own SVG, or even a single character (it takes a ReactNode)',
     apiIconRight: 'Trailing icon (expand chevron, external link, ...)',
     apiColor: 'Custom accent: solid variants use it as fill, outlined and text variants use it for text and border',
     apiLoading: 'Spins and disables clicks by itself',
     apiBlock: 'Fills the parent width; with a leading icon the label stays optically centered',
-    apiDisabled: 'Passed through to the native disabled',
+    apiDisabled: 'Passed through to the native disabled (disabled)',
     apiChildren: 'Button label / content',
 
     pluginTitle: 'Component preview',
