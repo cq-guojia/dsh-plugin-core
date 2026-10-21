@@ -1,5 +1,6 @@
 # 20261020-2254-explorer-子包-工作区文件浏览与预览-dock-预览-选择弹窗两能力-6152：explorer 子包：工作区文件浏览与预览（dock 预览 + 选择弹窗两能力）
 
+> **✅ 完成封卷**：2026-10-22 00:45:06（@GuoJia-Agent）
 > **创建**：2026-10-20 22:54:32（@GuoJia-Agent）
 > **分类**：功能 ｜ **标签**：explorer、文件预览、dock、picker、官方件
 
@@ -76,3 +77,4 @@
 - 2026-10-21 07:44:21 · log · @GuoJia-Agent · 分栏纠偏：openFilePreview 新增必填 mount，dock 用 DockPanel header=null 挂进调用方 flex 行（不再 body+fixed 浮层）；explorer.css 按兄弟 .dsh-tdt-sv-* 逐条重抄；行尾文案改「选择」；picker 补 translate 注入
 - 2026-10-21 08:32:26 · log · @GuoJia-Agent · ▾ 下拉对齐兄弟：点当前工作区=回根（原误走 onPickWorkspace）、图标间距6px/条目左距8px 照抄；OpenFilePreviewOptions 补 workspaces/onSelectWorkspace 透传，demo 方法A 传工作区清单（原来只有方法B有）；越界文件逻辑核对=与兄弟一致（三个错误码→只读全路径+✕、预览照常），catch 分支补 ensureRootLearned
 - 2026-10-22 00:44:50 · log · @GuoJia-Agent · 补结论：四条真机验收点随 0a67 于 2026-10-22 全部通过；遗留（类名跨版本隔离 / 零渲染测试 / SessionPreview mock）用户拍板另议，不属于本任务
+- 2026-10-22 00:45:06 · close · @GuoJia-Agent · 结案：真机验收通过（2026-10-22）：分栏挤窄主区非浮层、header=null 顶部不多线、树行/面包屑/▾ 对齐兄弟、行尾文案「选择」。dock 预览与选择弹窗共用同一个 FileBrowser，差异只在承载与 picker 形态。遗留（类名跨版本隔离 / 零渲染测试 / demo SessionPreview 仍 mock）不在本任务范围，用户拍板另议
