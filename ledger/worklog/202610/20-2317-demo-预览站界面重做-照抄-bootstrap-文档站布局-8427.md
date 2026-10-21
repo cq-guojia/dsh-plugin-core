@@ -63,3 +63,4 @@ Button 页已按 Bootstrap 文档站式布局改造完成（备注框 + 示例/�
 - 2026-10-20 23:33:39 · log · @GuoJia-Agent · Button 页试点完成：新增 demo.css 真源+生成链路、doc.tsx 四件套、Note/5 示例/用法/API 表；typecheck+73 测试+codelint 全绿，产物已 build；等用户在宿主验收
 - 2026-10-21 00:43:54 · log · @GuoJia-Agent · 第二轮调整：备注框改核心 StripCard（方角+左4px通高色条+浅底，删自绘边框盒）；外观档按主行动/中性/语义色/弱化四组分行，状态与颜色块同步分层
 - 2026-10-21 08:27:42 · log · @GuoJia-Agent · 第三轮：Demo 块整体迁到 Example 骨架（17 页即时生效）；Input/Picker/Tooltip/Card/Chip 五页补齐备注+代码+用法+API 表；74 测试全绿
+- 2026-10-21 09:04:47 · log · @GuoJia-Agent · 第四轮：feedback/layout 两页补齐（备注+代码+用法+API 表）；components 组 8 页全部完成；74 测试+codelint 全绿
