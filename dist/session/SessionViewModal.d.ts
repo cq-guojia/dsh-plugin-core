@@ -9,12 +9,6 @@ export interface SessionViewModalProps {
     view: SessionViewTarget;
     onClose: () => void;
     /**
-     * 页面右侧分栏的宽度（px，可选）：点文件链接时页面右边会多出一列（文件预览 dock），
-     * 弹窗据此在**左边剩下的区域**里居中、并去掉遮罩（否则遮罩会盖住分栏、也吃不掉点击）。
-     * 不传 / 0 = 普通模态。分栏本身在页面层，不在弹窗里（用户 2026-10-22 定的）。
-     */
-    insetRight?: number;
-    /**
      * 会话是否已归档（由调用方注入：官方 client 服务 `workspaces` 的快照字段 `archivedSessionIds`，
      * registry-global、随 follow 流实时更新，见 docs/design/external/dsh-host.md §11）。
      * 分化「继续对话」行为：已归档 = 开分支图标 + 确认框（fork 后跳官方区）；

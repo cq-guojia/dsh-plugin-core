@@ -225,3 +225,11 @@ test('pickWorkspaceAnchor 取「最近更新且有会话」的工作区', () => 
     { title: 'has-time', sessionId: 'b' },
   )
 })
+// 2026-10-22 真机：重复打开预览时直接 `remove()` 挂载体，会连 React 根的卸载清理一起跳过 ——
+// PanelDock 回收不了它发布的占宽，遮罩从此永久停在让位状态。这条钉死「先关旧的再开新的」。
+test('重复打开预览先卸载旧根，不直接移除挂载体', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/explorer/open.js', import.meta.url), 'utf8')
+  assert.ok(src.includes('activePreviewClose'), 'openFilePreview 没有走 close 关掉旧预览')
+  assert.ok(!/previous\.remove\(\)/.test(src), '又回到直接 remove 挂载体的老路（卸载清理会被跳过）')
+})

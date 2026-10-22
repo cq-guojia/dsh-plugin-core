@@ -10,11 +10,40 @@
  *   · **头部可控** —— `title` / `icon` / `extra` 三件套；要更自由就 `header` 整块替换，`header={null}` 表示不要头部；
  *   · **关闭钮可退让** —— `closable={false}` 不出；`closeButton="floating"` 浮在右上角，不占头部布局。
  */
-import { Children, createElement as h, isValidElement, useRef, useSyncExternalStore } from 'react';
+import { Children, createElement as h, isValidElement, useEffect, useRef, useSyncExternalStore } from 'react';
 import { ensureControls } from './css.js';
 import { t } from '../utils/i18n.js';
 import { startResizeLayoutWidth } from './resizer.js';
 import { DEFAULT_PANEL_ID, clampWidth, closePanel, emptyDock, isOpen, openPanel, othersWidth, setPanelWidth, } from './panel-dock-logic.js';
+// ── 分栏占宽契约（用户 2026-10-22 拍板）──
+// 遮罩必须知道「页面右侧被分栏占掉多少」，否则它会把 dock 一起压暗、还吃掉点击
+// （`.dshpc-modal-mask` 的 right inset 读的就是这个变量）。挂在根元素上，是因为遮罩不保证
+// 是本 dock 那个 flex 行的后代；同页多个 dock 按实例求和，全部关掉即移除变量。
+const INSET_VAR = '--dshpc-page-inset-right';
+const dockInsets = new Map();
+let dockSeq = 0;
+function publishInset(key, width, el) {
+    // 先摘掉「元素已离开文档」的条目：有人绕过 close 直接 remove 挂载体时，React 的卸载
+    // 清理不会跑，这份残留宽度会把遮罩永久卡在让位状态（2026-10-22 真机踩过）。
+    for (const [stale, entry] of dockInsets) {
+        if (entry.el !== null && !entry.el.isConnected)
+            dockInsets.delete(stale);
+    }
+    if (width > 0)
+        dockInsets.set(key, { width, el });
+    else
+        dockInsets.delete(key);
+    if (typeof document === 'undefined')
+        return;
+    let total = 0;
+    for (const entry of dockInsets.values())
+        total += entry.width;
+    const style = document.documentElement.style;
+    if (total > 0)
+        style.setProperty(INSET_VAR, `${Math.round(total)}px`);
+    else
+        style.removeProperty(INSET_VAR);
+}
 /**
  * 声明一个面板。**它自己不渲染任何东西**——由父级 `<PanelDock>` 读它的 props 后统一画。
  * 因此必须作为 `<PanelDock>` 的**直接子元素**（可以条件渲染成 `null`）。
@@ -145,6 +174,24 @@ export function PanelDock(props) {
     const panes = panesOf(props.children);
     const { defaultWidth, minWidth: fallbackMin } = props.dock.defaults;
     const widthOf = (pane) => state.widths[pane.id] ?? clampWidth(pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth);
+    // 本 dock 在「页面右侧占宽」里的那一份：实例唯一键，拖拽期也用它实时更新。
+    const insetKey = useRef('');
+    if (insetKey.current === '')
+        insetKey.current = `dock-${++dockSeq}`;
+    const restWidth = (paneId) => othersWidth(state, paneId, (id) => {
+        const other = panes.find((item) => item.id === id);
+        return other === undefined ? defaultWidth : widthOf(other);
+    });
+    const totalWidth = panes
+        .filter((pane) => state.ids.includes(pane.id))
+        .reduce((sum, pane) => sum + widthOf(pane), 0);
+    // 开合 / 拖宽松手后同步一次（拖拽中的实时值由 onMove 写）；卸载归零，别把变量留给下一个人。
+    useEffect(() => {
+        publishInset(insetKey.current, totalWidth, rootRef.current);
+    });
+    useEffect(() => () => {
+        publishInset(insetKey.current, 0, null);
+    }, []);
     // 打开但没声明的 id 得说出来，否则用户只会看到一个永远空白的面板。
     for (const id of state.ids) {
         if (!panes.some((pane) => pane.id === id)) {
@@ -165,17 +212,15 @@ export function PanelDock(props) {
             rootClass: 'dshpc-dock--resizing',
             rafThrottle: true,
             compute: (clientX) => {
-                const others = othersWidth(state, pane.id, (id) => {
-                    const other = panes.find((item) => item.id === id);
-                    return other === undefined ? defaultWidth : widthOf(other);
-                });
-                const viewportMax = window.innerWidth - others - mainMin;
+                const viewportMax = window.innerWidth - restWidth(pane.id) - mainMin;
                 const businessMax = pane.maxWidth ?? Number.POSITIVE_INFINITY;
                 const max = Math.min(viewportMax, businessMax);
                 return clampWidth(startWidth + (startX - clientX), min, Math.max(min, max));
             },
             onMove: (width) => {
                 element.style.width = `${width}px`;
+                // 遮罩的右边界跟着走，否则拖出去的那条缝会被遮罩压住（用户 2026-10-22）。
+                publishInset(insetKey.current, restWidth(pane.id) + width, rootRef.current);
             },
             onCommit: (width) => {
                 props.dock.setWidth(pane.id, width);

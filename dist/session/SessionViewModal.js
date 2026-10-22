@@ -584,7 +584,7 @@ function makeFileMentions(paths, open) {
 export function SessionViewModal(props) {
     ensureControls();
     const tt = props.t ?? defaultT;
-    const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile, insetRight } = props;
+    const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
     const subscribe = useMemo(() => (onChange) => view.target.subscribe(onChange), [view]);
     const getSnapshot = useMemo(() => () => view.target.getSnapshot(), [view]);
     const chat = useSyncExternalStore(subscribe, getSnapshot);
@@ -772,9 +772,6 @@ export function SessionViewModal(props) {
     // 会话中间部分 = mirror/ 官方 1:1 复刻（ChatViewFrame：官方类优先，缺失回退自绘）。
     return h(Fragment, null, h(Modal, {
         size: 'lg',
-        // 右侧有分栏（文件预览）时：弹窗在左边剩余区域居中，且不画遮罩（否则遮罩盖住分栏）。
-        mask: insetRight === undefined || insetRight <= 0,
-        maskInsetRight: insetRight,
         // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
         // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
         title: heading ?? tt('sessionHeading'),

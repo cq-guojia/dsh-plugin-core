@@ -338,8 +338,8 @@ export const docData = {
         "en": "Scrolling and padding belong to the core (decided 2026-10-22): the Modal body is the **only scroll container**, and it owns the padding — this module just lays out flow content, never `height:100%`, never its own scrollbar. That is why the inner ChatView.frame / scroll `overflow`, height and padding are all zeroed (see the double-class hooks in session.css). If two panes must scroll independently, do not let the content manage height — put the right column at the **page level** (next item)."
       },
       {
-        "zh": "文件链接（工具卡 fileLink / md 行内引用 / 交付卡）统一走 `onOpenFile`。接法（用户 2026-10-22 定）：预览开在**页面右侧**（核心 `openFilePreview` 的 dock，挤窄主区），不在弹窗里分栏；弹窗用 `insetRight` 让出那列的实测宽度 ⇒ 它在左边剩余区域居中，且自动去掉遮罩（否则遮罩盖住右侧那列、还吃掉它的点击）。工作区文件服务缺席时不给 `onOpenFile`，链接自然是纯文本，不假装能点。",
-        "en": "Every file link (tool-card fileLink / md mentions / delivered cards) exits through `onOpenFile`. Wiring (decided 2026-10-22): the preview opens as a **page-level right column** (the core `openFilePreview` dock, squeezing the main area) — never as a split inside the dialog. The dialog takes `insetRight` = that column’s measured width, so it centers in the remaining left area and drops its mask (otherwise the mask would cover the column and eat its clicks). When the workspace file service is absent, pass no `onOpenFile` so links stay plain text instead of pretending to be clickable."
+        "zh": "文件链接（工具卡 fileLink / md 行内引用 / 交付卡）统一走 `onOpenFile`。接法（用户 2026-10-22 定）：预览开在**页面右侧**（核心 `openFilePreview` 的 dock，挤窄主区），不在弹窗里分栏。弹窗这边**什么都不用传**：dock 把占宽发布成 `--dshpc-page-inset-right`，遮罩按它让位 ⇒ 分栏不被压暗、照常可点，弹窗在左边剩余区域居中（用户 2026-10-22 二次拍板，撤掉了 `insetRight` 那条量宽度的路子）。工作区文件服务缺席时不给 `onOpenFile`，链接自然是纯文本，不假装能点。",
+        "en": "Every file link (tool-card fileLink / md mentions / delivered cards) exits through `onOpenFile`. Wiring (decided 2026-10-22): the preview opens as a **page-level right column** (the core `openFilePreview` dock, squeezing the main area) — never as a split inside the dialog. The dialog passes **nothing** for this: the dock publishes its occupied width as `--dshpc-page-inset-right` and the mask yields by it, so the column stays bright and clickable while the dialog centers in the remaining left area (re-decided 2026-10-22, dropping the width-measuring `insetRight` route). When the workspace file service is absent, pass no `onOpenFile` so links stay plain text instead of pretending to be clickable."
       },
       {
         "zh": "已知限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染（翻页靠「加载更早记录」按钮，官方 loadOlder）；系统提示 / 上下文注入行按决策 28 过滤（官方 ContextInjectionRow 待实施）；👍👎 反馈按钮官方走 slots，弹窗无该插槽。",
@@ -424,15 +424,6 @@ export const docData = {
             "desc": {
               "zh": "弹窗标题 = 会话自己的标题（宿主 sessions.list 的 displayTitle，可自定义）；会话 id 是标识，固定显示在标题下方副标题行（等宽小字），不占正文",
               "en": "Dialog title = the session’s own title (host sessions.list displayTitle — fully customisable); the session id is an identifier and always sits on the subtitle line **under** the title (monospace caption), never in the body"
-            }
-          },
-          {
-            "name": "insetRight",
-            "type": "number",
-            "def": "—",
-            "desc": {
-              "zh": "页面右侧分栏（文件预览 dock）的实测宽度：弹窗在左边剩余区域居中、并去掉遮罩（分栏在页面层，不在弹窗里）",
-              "en": "Measured width of the page-level right column (file preview dock): the dialog centers in the remaining left area and drops its mask (the column lives on the page, not inside the dialog)"
             }
           },
           {
@@ -1618,6 +1609,10 @@ export const docData = {
       {
         "zh": "Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依赖）。",
         "en": "Modal: self-drawn overlay, not react-dom’s portal (avoids an extra required dependency)."
+      },
+      {
+        "zh": "遮罩自动让位页面级分栏（用户 2026-10-22 拍板）：Mask 的右边界读 `--dshpc-page-inset-right`（由 PanelDock 发布，多 dock 求和），所以分栏不被压暗、照常可点，弹窗在**剩下那块区域**里居中。弹窗因此**不需要任何遮罩参数**，调用方也不用去量分栏宽度——量宽度那一版已删（异步挂载导致恒为 0，且属越界）。",
+        "en": "The mask yields to a page-level right column automatically (decided 2026-10-22): its right edge reads `--dshpc-page-inset-right` (published by PanelDock, summed across docks), so the column stays bright and clickable and the dialog centers in the **remaining** area. The dialog therefore needs **no mask props**, and callers no longer measure the column — the measuring version was deleted (it read 0 because mounting is async, and it was the content deciding the mask’s geometry)."
       }
     ],
     "api": [
@@ -1794,10 +1789,10 @@ export const docData = {
           {
             "name": "maxWidth",
             "type": "string",
-            "def": "min(960px, 92vw)",
+            "def": "sm: calc(100% - 48px)；md/lg 不设",
             "desc": {
-              "zh": "—",
-              "en": "—"
+              "zh": "宽度用 `100%`（相对遮罩盒）而非 `100vw`：右侧分栏在场时遮罩已让位，`100vw` 会溢出到分栏上",
+              "en": "Widths are `100%` of the mask box, not `100vw`: with a right column present the mask has already yielded, and `100vw` would spill onto it"
             }
           },
           {
@@ -1807,24 +1802,6 @@ export const docData = {
             "desc": {
               "zh": "不渲染头部（沉浸式）",
               "en": "Skip header (immersive)"
-            }
-          },
-          {
-            "name": "mask",
-            "type": "boolean",
-            "def": "'true'",
-            "desc": {
-              "zh": "是否画遮罩；`false` = 透明层且不吃点击（弹窗变成页面上的普通浮层，旁边区域照常可点）—— 与页面右侧分栏并排时用",
-              "en": "Whether to draw the mask; `false` = transparent layer that does not eat clicks (the dialog becomes a normal floating panel and the surrounding page stays clickable) — for sitting side by side with a page-level right column"
-            }
-          },
-          {
-            "name": "maskInsetRight",
-            "type": "number",
-            "def": "0",
-            "desc": {
-              "zh": "遮罩右侧留出的宽度（px）：弹窗在**剩下的那块区域**里居中，不被右侧分栏压住",
-              "en": "Width (px) reserved on the mask’s right: the dialog centers in the **remaining** area instead of being covered by the right column"
             }
           },
           {
@@ -1863,6 +1840,10 @@ export const docData = {
       {
         "zh": "面板高度默认视口高；嵌在定高容器里时由调用方给 --dshpc-dock-h。不做的事（拍板留档）：多份同名（multi）、tab 切换条、自动淘汰、浮动层——标签切换由消费方在自己的面板内容里实现。两条实现约束：面板是 position:sticky + height:100vh 的 flex 成员，刻意不设 z-index；拖动期给 iframe 让出指针事件。",
         "en": "Panel height defaults to viewport height; when nested in a fixed-height container, the caller sets --dshpc-dock-h. Deliberately not done (on record): multi same-name, tab-switch bar, auto-eviction, floating layer — tab switching is the consumer’s job inside their own panel content. Two impl constraints: panels are position:sticky + height:100vh flex members with no z-index; during drag, yield pointer events to iframes."
+      },
+      {
+        "zh": "占宽契约（用户 2026-10-22 拍板）：dock 把「所有开着的栏宽之和」实时发布到根元素的 `--dshpc-page-inset-right`（拖拽中逐帧更新，全关/卸载即移除），全屏遮罩据此让位。同页多个 dock 按实例求和 —— 这不是可选优化：demo 自己就有「整页 dock + 文件预览 dock」两个，各写同一个变量会互相覆盖。之所以挂在根元素而不是 mount 上，是因为遮罩不保证是那块 flex 行的后代。",
+        "en": "Width contract (decided 2026-10-22): the dock publishes the sum of its open panel widths to `--dshpc-page-inset-right` on the root element (updated every frame while dragging, removed when all panels close / on unmount), and full-screen masks yield by it. Multiple docks on one page are summed per instance — not an optional nicety: the demo itself has two (page dock + file-preview dock) and a single shared variable would let them overwrite each other. It lives on the root element rather than on the mount because the mask is not guaranteed to be a descendant of that flex row."
       }
     ],
     "api": [

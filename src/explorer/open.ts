@@ -67,6 +67,8 @@ export interface OpenFilePreviewOptions {
 const PREVIEW_HOST_ID = 'dshpc-file-preview-host'
 /** dock 里的面板 id（本 container 里只有一个）。 */
 const PREVIEW_PANEL_ID = 'file-preview'
+/** 当前打开着的预览的 close（重复打开时走它，保证 React 根被真正卸载）。 */
+let activePreviewClose: (() => void) | null = null
 
 /**
  * 打开工作区文件/文件夹的**停靠**预览（分栏：挤窄 `mount` 左边的兄弟，不是盖上去）。
@@ -86,9 +88,10 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
       )
     }
   }
-  // 同位置只允许一个预览：先关旧的
-  const previous = document.getElementById(PREVIEW_HOST_ID)
-  if (previous !== null) previous.remove()
+  // 同位置只允许一个预览：先**关**旧的（不是 remove 掉挂载体）。
+  // 直接 remove 会把 React 根的卸载清理一起跳过 ⇒ PanelDock 永远不回收它发布的宽度，
+  // 遮罩从此卡在让位状态（2026-10-22 真机：点第二个文件链接后再关，遮罩不回弹）。
+  activePreviewClose?.()
 
   const container = document.createElement('div')
   container.id = PREVIEW_HOST_ID
@@ -116,6 +119,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
   const close = (): void => {
     if (closed) return
     closed = true
+    if (activePreviewClose === close) activePreviewClose = null
     window.removeEventListener('keydown', onKeyDown)
     root.unmount()
     container.remove()
@@ -167,6 +171,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
       ),
     ),
   )
+  activePreviewClose = close
   return { close, path: options.path }
 }
 

@@ -149,6 +149,18 @@ test('Modal 关闭按钮用专属类名，不借 Picker 触发器皮肤', async 
   assert.ok(!modal.includes('dshpc-picker__trigger'), 'Modal 仍在借 dshpc-picker__trigger')
 })
 
+// 遮罩让位分栏（2026-10-22）：契约是「PanelDock 写变量 / 遮罩读变量」，两边改名走散了
+// 不会报错，只会静默回到「遮罩盖住 dock」，所以由测试钉住同一个变量名。
+test('遮罩让位分栏：写的与读的是同一个 CSS 变量', async () => {
+  assert.ok(
+    FEEDBACK_CSS.includes('inset:0 var(--dshpc-page-inset-right'),
+    '遮罩没用 --dshpc-page-inset-right 让位（右边界会让到全屏）',
+  )
+  const dock = await readFile(new URL('../dist/ui/PanelDock.js', import.meta.url), 'utf8')
+  assert.ok(dock.includes('--dshpc-page-inset-right'), 'PanelDock 没有发布 --dshpc-page-inset-right')
+  assert.ok(!FEEDBACK_CSS.includes('dshpc-modal-mask--plain'), 'mask={false} 的旁路样式已删，勿回潮')
+})
+
 // ── 真源 → 生成物 这一跳的闸 ──────────────────────────────────────────────
 // 样式真源是 src/**/*.css，由 scripts/gen-css.mjs 转成 *.generated.ts。
 // 中间多了一跳，就多了「生成物被手改」和「改了 .css 忘了重新生成」两种静默失败，必须钉死。

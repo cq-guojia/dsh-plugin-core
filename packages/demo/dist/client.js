@@ -194,7 +194,7 @@ var PICKER_CSS = `
 `;
 
 // dist/ui/feedback-css.generated.js
-var FEEDBACK_CSS = "\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;\n  background:var(--dshpc-mask);\n}\n/* \u65E0\u906E\u7F69\u6863\uFF08Modal mask={false}\uFF09\uFF1A\u900F\u660E\u5C42\u3001\u4E0D\u5403\u70B9\u51FB \u2014\u2014 \u5F39\u7A97\u53D8\u6210\u9875\u9762\u4E0A\u7684\u666E\u901A\u6D6E\u5C42\uFF0C\n   \u65C1\u8FB9\u7684\u9875\u9762\u533A\u57DF\uFF08\u5982\u53F3\u4FA7\u6587\u4EF6\u9884\u89C8 dock\uFF09\u7167\u5E38\u53EF\u89C1\u3001\u53EF\u70B9\uFF1B\u9762\u677F\u672C\u8EAB\u4ECD\u5403\u70B9\u51FB\u3002 */\n.dshpc-modal-mask--plain{background:transparent;pointer-events:none}\n.dshpc-modal-mask--plain .dshpc-modal{pointer-events:auto}\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:18px 31px 12px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-modal__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-modal__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-modal__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-modal__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 31px}\n.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 31px 18px}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* Modal \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002 */\n.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-modal__head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0}\n";
+var FEEDBACK_CSS = "\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u5F39\u7A97\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u5C45\u4E2D\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-modal-mask{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;z-index:1070;\n  display:flex;align-items:center;justify-content:center;\n  background:var(--dshpc-mask);\n}\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:18px 31px 12px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-modal__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-modal__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-modal__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-modal__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 31px}\n.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 31px 18px}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* Modal \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002 */\n.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-modal__head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0}\n";
 
 // dist/ui/card-css.generated.js
 var CARD_CSS = "\n.dshpc-card{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n\n/* \u5934\u90E8\u4E00\u884C = \u8272\u6761 + \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500 */\n.dshpc-card--strip{\n  padding:12px 12px 12px 20px;border:1px solid transparent;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002 */\n.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--card-accent)}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1Asurface \u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185\u5706\u89D2\u77ED\u6761 \u2500\u2500 */\n.dshpc-card--bordered{\n  /* \u5DE6\u5185\u8FB9\u8DDD 12\uFF08\u6BD4\u4E0A/\u53F3/\u4E0B 14 \u5C11 2\uFF09\uFF1A\u7AD6\u6761\u8D34\u8FD1\u8FB9\u6846\uFF1B\u5934\u90E8\u5185\u7F29 2px \u21D2 \u4E3B\u5185\u5BB9\u8DDF\u7740\u5DE6\u79FB 2px\uFF0C\n     \u7AD6\u6761\u2194\u5185\u5BB9\u7684 12px \u95F4\u8DDD\u4E0D\u53D8\u2014\u2014\u6BD4\u300C\u6761\u5B50 left:-2 \u800C\u5185\u5BB9\u4E0D\u52A8\u300D\u66F4\u6B63\u89C4\uFF08\u4E0D\u9760\u76F8\u5BF9\u5B9A\u4F4D\u786C\u8865\uFF09\u3002 */\n  padding:14px 14px 14px 12px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  background:var(--dshpc-surface-1);\n}\n.dshpc-card--bordered .dshpc-card__head{gap:12px}\n/* \u77ED\u6761\uFF1A\u884C\u5185 flex \u9879\uFF0C**\u9AD8\u5EA6\u8DDF\u7740\u5185\u5BB9\u8D70**\uFF08stretch\uFF09\uFF0C\u6700\u5C0F\u4E00\u884C\u6587\u5B57\uFF08--dshpc-line-md\uFF09\u2014\u2014\n   \u4E00\u884C\u6587\u5B57\u65F6\u6761\u5B50\u4E0E\u6587\u5B57\u9F50\u9AD8\uFF0C\u4E0D\u4F1A\u628A\u5361\u6491\u9AD8\uFF1B\u7AD6\u6761\u8DDD\u5DE6 12\uFF08= \u5DE6\u5185\u8FB9\u8DDD\uFF09\uFF0C\u8DDD\u4E0A/\u53F3/\u4E0B 14\u3002 */\n.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
@@ -3689,19 +3689,17 @@ function Modal(props) {
     return () => document.removeEventListener("keydown", onKey);
   }, [escClose, props.onClose]);
   const sizeStyle = {
-    sm: { width: "360px", maxWidth: "calc(100vw - 48px)" },
-    md: { width: "min(720px, calc(100vw - 32px))", maxHeight: "86vh" },
-    lg: { width: "min(1120px, calc(100vw - 32px))", height: "calc(100% - 80px)" }
+    sm: { width: "360px", maxWidth: "calc(100% - 48px)" },
+    md: { width: "min(720px, calc(100% - 32px))", maxHeight: "86vh" },
+    lg: { width: "min(1120px, calc(100% - 32px))", height: "calc(100% - 80px)" }
   };
   const s = sizeStyle[props.size ?? "md"];
   const showClose = props.closable !== false && props.onClose !== void 0;
   const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
-  const plainMask = props.mask === false;
   return (0, import_react9.createElement)("div", {
-    className: plainMask ? "dshpc-modal-mask dshpc-modal-mask--plain" : "dshpc-modal-mask",
-    style: plainMask && props.maskInsetRight !== void 0 && props.maskInsetRight > 0 ? { paddingRight: `${props.maskInsetRight}px` } : void 0,
+    className: "dshpc-modal-mask",
     onClick: () => {
-      if (closeOnMask && !plainMask)
+      if (closeOnMask)
         props.onClose?.();
     }
   }, (0, import_react9.createElement)(
@@ -5610,6 +5608,29 @@ function othersWidth(state, id3, fallbackOf) {
 }
 
 // dist/ui/PanelDock.js
+var INSET_VAR = "--dshpc-page-inset-right";
+var dockInsets = /* @__PURE__ */ new Map();
+var dockSeq = 0;
+function publishInset(key, width, el) {
+  for (const [stale, entry] of dockInsets) {
+    if (entry.el !== null && !entry.el.isConnected)
+      dockInsets.delete(stale);
+  }
+  if (width > 0)
+    dockInsets.set(key, { width, el });
+  else
+    dockInsets.delete(key);
+  if (typeof document === "undefined")
+    return;
+  let total = 0;
+  for (const entry of dockInsets.values())
+    total += entry.width;
+  const style2 = document.documentElement.style;
+  if (total > 0)
+    style2.setProperty(INSET_VAR, `${Math.round(total)}px`);
+  else
+    style2.removeProperty(INSET_VAR);
+}
 function DockPanel(_props) {
   return null;
 }
@@ -5723,6 +5744,20 @@ function PanelDock(props) {
   const panes = panesOf(props.children);
   const { defaultWidth, minWidth: fallbackMin } = props.dock.defaults;
   const widthOf = (pane) => state.widths[pane.id] ?? clampWidth(pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth);
+  const insetKey = (0, import_react26.useRef)("");
+  if (insetKey.current === "")
+    insetKey.current = `dock-${++dockSeq}`;
+  const restWidth = (paneId) => othersWidth(state, paneId, (id3) => {
+    const other = panes.find((item) => item.id === id3);
+    return other === void 0 ? defaultWidth : widthOf(other);
+  });
+  const totalWidth = panes.filter((pane) => state.ids.includes(pane.id)).reduce((sum, pane) => sum + widthOf(pane), 0);
+  (0, import_react26.useEffect)(() => {
+    publishInset(insetKey.current, totalWidth, rootRef.current);
+  });
+  (0, import_react26.useEffect)(() => () => {
+    publishInset(insetKey.current, 0, null);
+  }, []);
   for (const id3 of state.ids) {
     if (!panes.some((pane) => pane.id === id3)) {
       console.warn(`[dsh-plugin-core] PanelDock: \u9762\u677F "${id3}" \u5DF2\u6253\u5F00\u4F46\u6CA1\u6709\u5BF9\u5E94\u7684 <DockPanel id="${id3}"> \u58F0\u660E`);
@@ -5742,17 +5777,14 @@ function PanelDock(props) {
       rootClass: "dshpc-dock--resizing",
       rafThrottle: true,
       compute: (clientX) => {
-        const others2 = othersWidth(state, pane.id, (id3) => {
-          const other = panes.find((item) => item.id === id3);
-          return other === void 0 ? defaultWidth : widthOf(other);
-        });
-        const viewportMax = window.innerWidth - others2 - mainMin;
+        const viewportMax = window.innerWidth - restWidth(pane.id) - mainMin;
         const businessMax = pane.maxWidth ?? Number.POSITIVE_INFINITY;
         const max2 = Math.min(viewportMax, businessMax);
         return clampWidth(startWidth + (startX - clientX), min2, Math.max(min2, max2));
       },
       onMove: (width) => {
         element.style.width = `${width}px`;
+        publishInset(insetKey.current, restWidth(pane.id) + width, rootRef.current);
       },
       onCommit: (width) => {
         props.dock.setWidth(pane.id, width);
@@ -53234,7 +53266,7 @@ function makeFileMentions(paths, open) {
 function SessionViewModal(props) {
   ensureControls();
   const tt = props.t ?? t;
-  const { heading: heading2, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile, insetRight } = props;
+  const { heading: heading2, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
   const subscribe = (0, import_react46.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
   const getSnapshot = (0, import_react46.useMemo)(() => () => view.target.getSnapshot(), [view]);
   const chat = (0, import_react46.useSyncExternalStore)(subscribe, getSnapshot);
@@ -53400,9 +53432,6 @@ function SessionViewModal(props) {
     null,
     (0, import_react46.createElement)(Modal, {
       size: "lg",
-      // 右侧有分栏（文件预览）时：弹窗在左边剩余区域居中，且不画遮罩（否则遮罩盖住分栏）。
-      mask: insetRight === void 0 || insetRight <= 0,
-      maskInsetRight: insetRight,
       // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
       // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
       title: heading2 ?? tt("sessionHeading"),
@@ -54592,8 +54621,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
         "en": "Scrolling and padding belong to the core (decided 2026-10-22): the Modal body is the **only scroll container**, and it owns the padding \u2014 this module just lays out flow content, never `height:100%`, never its own scrollbar. That is why the inner ChatView.frame / scroll `overflow`, height and padding are all zeroed (see the double-class hooks in session.css). If two panes must scroll independently, do not let the content manage height \u2014 put the right column at the **page level** (next item)."
       },
       {
-        "zh": "\u6587\u4EF6\u94FE\u63A5\uFF08\u5DE5\u5177\u5361 fileLink / md \u884C\u5185\u5F15\u7528 / \u4EA4\u4ED8\u5361\uFF09\u7EDF\u4E00\u8D70 `onOpenFile`\u3002\u63A5\u6CD5\uFF08\u7528\u6237 2026-10-22 \u5B9A\uFF09\uFF1A\u9884\u89C8\u5F00\u5728**\u9875\u9762\u53F3\u4FA7**\uFF08\u6838\u5FC3 `openFilePreview` \u7684 dock\uFF0C\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4E0D\u5728\u5F39\u7A97\u91CC\u5206\u680F\uFF1B\u5F39\u7A97\u7528 `insetRight` \u8BA9\u51FA\u90A3\u5217\u7684\u5B9E\u6D4B\u5BBD\u5EA6 \u21D2 \u5B83\u5728\u5DE6\u8FB9\u5269\u4F59\u533A\u57DF\u5C45\u4E2D\uFF0C\u4E14\u81EA\u52A8\u53BB\u6389\u906E\u7F69\uFF08\u5426\u5219\u906E\u7F69\u76D6\u4F4F\u53F3\u4FA7\u90A3\u5217\u3001\u8FD8\u5403\u6389\u5B83\u7684\u70B9\u51FB\uFF09\u3002\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\u7F3A\u5E2D\u65F6\u4E0D\u7ED9 `onOpenFile`\uFF0C\u94FE\u63A5\u81EA\u7136\u662F\u7EAF\u6587\u672C\uFF0C\u4E0D\u5047\u88C5\u80FD\u70B9\u3002",
-        "en": "Every file link (tool-card fileLink / md mentions / delivered cards) exits through `onOpenFile`. Wiring (decided 2026-10-22): the preview opens as a **page-level right column** (the core `openFilePreview` dock, squeezing the main area) \u2014 never as a split inside the dialog. The dialog takes `insetRight` = that column\u2019s measured width, so it centers in the remaining left area and drops its mask (otherwise the mask would cover the column and eat its clicks). When the workspace file service is absent, pass no `onOpenFile` so links stay plain text instead of pretending to be clickable."
+        "zh": "\u6587\u4EF6\u94FE\u63A5\uFF08\u5DE5\u5177\u5361 fileLink / md \u884C\u5185\u5F15\u7528 / \u4EA4\u4ED8\u5361\uFF09\u7EDF\u4E00\u8D70 `onOpenFile`\u3002\u63A5\u6CD5\uFF08\u7528\u6237 2026-10-22 \u5B9A\uFF09\uFF1A\u9884\u89C8\u5F00\u5728**\u9875\u9762\u53F3\u4FA7**\uFF08\u6838\u5FC3 `openFilePreview` \u7684 dock\uFF0C\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4E0D\u5728\u5F39\u7A97\u91CC\u5206\u680F\u3002\u5F39\u7A97\u8FD9\u8FB9**\u4EC0\u4E48\u90FD\u4E0D\u7528\u4F20**\uFF1Adock \u628A\u5360\u5BBD\u53D1\u5E03\u6210 `--dshpc-page-inset-right`\uFF0C\u906E\u7F69\u6309\u5B83\u8BA9\u4F4D \u21D2 \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF0C\u5F39\u7A97\u5728\u5DE6\u8FB9\u5269\u4F59\u533A\u57DF\u5C45\u4E2D\uFF08\u7528\u6237 2026-10-22 \u4E8C\u6B21\u62CD\u677F\uFF0C\u64A4\u6389\u4E86 `insetRight` \u90A3\u6761\u91CF\u5BBD\u5EA6\u7684\u8DEF\u5B50\uFF09\u3002\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\u7F3A\u5E2D\u65F6\u4E0D\u7ED9 `onOpenFile`\uFF0C\u94FE\u63A5\u81EA\u7136\u662F\u7EAF\u6587\u672C\uFF0C\u4E0D\u5047\u88C5\u80FD\u70B9\u3002",
+        "en": "Every file link (tool-card fileLink / md mentions / delivered cards) exits through `onOpenFile`. Wiring (decided 2026-10-22): the preview opens as a **page-level right column** (the core `openFilePreview` dock, squeezing the main area) \u2014 never as a split inside the dialog. The dialog passes **nothing** for this: the dock publishes its occupied width as `--dshpc-page-inset-right` and the mask yields by it, so the column stays bright and clickable while the dialog centers in the remaining left area (re-decided 2026-10-22, dropping the width-measuring `insetRight` route). When the workspace file service is absent, pass no `onOpenFile` so links stay plain text instead of pretending to be clickable."
       },
       {
         "zh": "\u5DF2\u77E5\u9650\u5236\uFF1A\u5B98\u65B9\u6837\u5F0F\u672A\u6CE8\u5165\u65F6\u56DE\u9000\u81EA\u7ED8\u89C2\u611F\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\uFF1B\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\uFF08\u7FFB\u9875\u9760\u300C\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55\u300D\u6309\u94AE\uFF0C\u5B98\u65B9 loadOlder\uFF09\uFF1B\u7CFB\u7EDF\u63D0\u793A / \u4E0A\u4E0B\u6587\u6CE8\u5165\u884C\u6309\u51B3\u7B56 28 \u8FC7\u6EE4\uFF08\u5B98\u65B9 ContextInjectionRow \u5F85\u5B9E\u65BD\uFF09\uFF1B\u{1F44D}\u{1F44E} \u53CD\u9988\u6309\u94AE\u5B98\u65B9\u8D70 slots\uFF0C\u5F39\u7A97\u65E0\u8BE5\u63D2\u69FD\u3002",
@@ -54678,15 +54707,6 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "desc": {
               "zh": "\u5F39\u7A97\u6807\u9898 = \u4F1A\u8BDD\u81EA\u5DF1\u7684\u6807\u9898\uFF08\u5BBF\u4E3B sessions.list \u7684 displayTitle\uFF0C\u53EF\u81EA\u5B9A\u4E49\uFF09\uFF1B\u4F1A\u8BDD id \u662F\u6807\u8BC6\uFF0C\u56FA\u5B9A\u663E\u793A\u5728\u6807\u9898\u4E0B\u65B9\u526F\u6807\u9898\u884C\uFF08\u7B49\u5BBD\u5C0F\u5B57\uFF09\uFF0C\u4E0D\u5360\u6B63\u6587",
               "en": "Dialog title = the session\u2019s own title (host sessions.list displayTitle \u2014 fully customisable); the session id is an identifier and always sits on the subtitle line **under** the title (monospace caption), never in the body"
-            }
-          },
-          {
-            "name": "insetRight",
-            "type": "number",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u9875\u9762\u53F3\u4FA7\u5206\u680F\uFF08\u6587\u4EF6\u9884\u89C8 dock\uFF09\u7684\u5B9E\u6D4B\u5BBD\u5EA6\uFF1A\u5F39\u7A97\u5728\u5DE6\u8FB9\u5269\u4F59\u533A\u57DF\u5C45\u4E2D\u3001\u5E76\u53BB\u6389\u906E\u7F69\uFF08\u5206\u680F\u5728\u9875\u9762\u5C42\uFF0C\u4E0D\u5728\u5F39\u7A97\u91CC\uFF09",
-              "en": "Measured width of the page-level right column (file preview dock): the dialog centers in the remaining left area and drops its mask (the column lives on the page, not inside the dialog)"
             }
           },
           {
@@ -55872,6 +55892,10 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
       {
         "zh": "Modal\uFF1A\u81EA\u7ED8 overlay\uFF0C\u4E0D\u7528 react-dom \u7684 portal\uFF08\u907F\u514D\u591A\u4E00\u4E2A\u5FC5\u9700\u4F9D\u8D56\uFF09\u3002",
         "en": "Modal: self-drawn overlay, not react-dom\u2019s portal (avoids an extra required dependency)."
+      },
+      {
+        "zh": "\u906E\u7F69\u81EA\u52A8\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08\u7528\u6237 2026-10-22 \u62CD\u677F\uFF09\uFF1AMask \u7684\u53F3\u8FB9\u754C\u8BFB `--dshpc-page-inset-right`\uFF08\u7531 PanelDock \u53D1\u5E03\uFF0C\u591A dock \u6C42\u548C\uFF09\uFF0C\u6240\u4EE5\u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF0C\u5F39\u7A97\u5728**\u5269\u4E0B\u90A3\u5757\u533A\u57DF**\u91CC\u5C45\u4E2D\u3002\u5F39\u7A97\u56E0\u6B64**\u4E0D\u9700\u8981\u4EFB\u4F55\u906E\u7F69\u53C2\u6570**\uFF0C\u8C03\u7528\u65B9\u4E5F\u4E0D\u7528\u53BB\u91CF\u5206\u680F\u5BBD\u5EA6\u2014\u2014\u91CF\u5BBD\u5EA6\u90A3\u4E00\u7248\u5DF2\u5220\uFF08\u5F02\u6B65\u6302\u8F7D\u5BFC\u81F4\u6052\u4E3A 0\uFF0C\u4E14\u5C5E\u8D8A\u754C\uFF09\u3002",
+        "en": "The mask yields to a page-level right column automatically (decided 2026-10-22): its right edge reads `--dshpc-page-inset-right` (published by PanelDock, summed across docks), so the column stays bright and clickable and the dialog centers in the **remaining** area. The dialog therefore needs **no mask props**, and callers no longer measure the column \u2014 the measuring version was deleted (it read 0 because mounting is async, and it was the content deciding the mask\u2019s geometry)."
       }
     ],
     "api": [
@@ -56048,10 +56072,10 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
           {
             "name": "maxWidth",
             "type": "string",
-            "def": "min(960px, 92vw)",
+            "def": "sm: calc(100% - 48px)\uFF1Bmd/lg \u4E0D\u8BBE",
             "desc": {
-              "zh": "\u2014",
-              "en": "\u2014"
+              "zh": "\u5BBD\u5EA6\u7528 `100%`\uFF08\u76F8\u5BF9\u906E\u7F69\u76D2\uFF09\u800C\u975E `100vw`\uFF1A\u53F3\u4FA7\u5206\u680F\u5728\u573A\u65F6\u906E\u7F69\u5DF2\u8BA9\u4F4D\uFF0C`100vw` \u4F1A\u6EA2\u51FA\u5230\u5206\u680F\u4E0A",
+              "en": "Widths are `100%` of the mask box, not `100vw`: with a right column present the mask has already yielded, and `100vw` would spill onto it"
             }
           },
           {
@@ -56061,24 +56085,6 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "desc": {
               "zh": "\u4E0D\u6E32\u67D3\u5934\u90E8\uFF08\u6C89\u6D78\u5F0F\uFF09",
               "en": "Skip header (immersive)"
-            }
-          },
-          {
-            "name": "mask",
-            "type": "boolean",
-            "def": "'true'",
-            "desc": {
-              "zh": "\u662F\u5426\u753B\u906E\u7F69\uFF1B`false` = \u900F\u660E\u5C42\u4E14\u4E0D\u5403\u70B9\u51FB\uFF08\u5F39\u7A97\u53D8\u6210\u9875\u9762\u4E0A\u7684\u666E\u901A\u6D6E\u5C42\uFF0C\u65C1\u8FB9\u533A\u57DF\u7167\u5E38\u53EF\u70B9\uFF09\u2014\u2014 \u4E0E\u9875\u9762\u53F3\u4FA7\u5206\u680F\u5E76\u6392\u65F6\u7528",
-              "en": "Whether to draw the mask; `false` = transparent layer that does not eat clicks (the dialog becomes a normal floating panel and the surrounding page stays clickable) \u2014 for sitting side by side with a page-level right column"
-            }
-          },
-          {
-            "name": "maskInsetRight",
-            "type": "number",
-            "def": "0",
-            "desc": {
-              "zh": "\u906E\u7F69\u53F3\u4FA7\u7559\u51FA\u7684\u5BBD\u5EA6\uFF08px\uFF09\uFF1A\u5F39\u7A97\u5728**\u5269\u4E0B\u7684\u90A3\u5757\u533A\u57DF**\u91CC\u5C45\u4E2D\uFF0C\u4E0D\u88AB\u53F3\u4FA7\u5206\u680F\u538B\u4F4F",
-              "en": "Width (px) reserved on the mask\u2019s right: the dialog centers in the **remaining** area instead of being covered by the right column"
             }
           },
           {
@@ -56117,6 +56123,10 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
       {
         "zh": "\u9762\u677F\u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\u3002\u4E0D\u505A\u7684\u4E8B\uFF08\u62CD\u677F\u7559\u6863\uFF09\uFF1A\u591A\u4EFD\u540C\u540D\uFF08multi\uFF09\u3001tab \u5207\u6362\u6761\u3001\u81EA\u52A8\u6DD8\u6C70\u3001\u6D6E\u52A8\u5C42\u2014\u2014\u6807\u7B7E\u5207\u6362\u7531\u6D88\u8D39\u65B9\u5728\u81EA\u5DF1\u7684\u9762\u677F\u5185\u5BB9\u91CC\u5B9E\u73B0\u3002\u4E24\u6761\u5B9E\u73B0\u7EA6\u675F\uFF1A\u9762\u677F\u662F position:sticky + height:100vh \u7684 flex \u6210\u5458\uFF0C\u523B\u610F\u4E0D\u8BBE z-index\uFF1B\u62D6\u52A8\u671F\u7ED9 iframe \u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\u3002",
         "en": "Panel height defaults to viewport height; when nested in a fixed-height container, the caller sets --dshpc-dock-h. Deliberately not done (on record): multi same-name, tab-switch bar, auto-eviction, floating layer \u2014 tab switching is the consumer\u2019s job inside their own panel content. Two impl constraints: panels are position:sticky + height:100vh flex members with no z-index; during drag, yield pointer events to iframes."
+      },
+      {
+        "zh": "\u5360\u5BBD\u5951\u7EA6\uFF08\u7528\u6237 2026-10-22 \u62CD\u677F\uFF09\uFF1Adock \u628A\u300C\u6240\u6709\u5F00\u7740\u7684\u680F\u5BBD\u4E4B\u548C\u300D\u5B9E\u65F6\u53D1\u5E03\u5230\u6839\u5143\u7D20\u7684 `--dshpc-page-inset-right`\uFF08\u62D6\u62FD\u4E2D\u9010\u5E27\u66F4\u65B0\uFF0C\u5168\u5173/\u5378\u8F7D\u5373\u79FB\u9664\uFF09\uFF0C\u5168\u5C4F\u906E\u7F69\u636E\u6B64\u8BA9\u4F4D\u3002\u540C\u9875\u591A\u4E2A dock \u6309\u5B9E\u4F8B\u6C42\u548C \u2014\u2014 \u8FD9\u4E0D\u662F\u53EF\u9009\u4F18\u5316\uFF1Ademo \u81EA\u5DF1\u5C31\u6709\u300C\u6574\u9875 dock + \u6587\u4EF6\u9884\u89C8 dock\u300D\u4E24\u4E2A\uFF0C\u5404\u5199\u540C\u4E00\u4E2A\u53D8\u91CF\u4F1A\u4E92\u76F8\u8986\u76D6\u3002\u4E4B\u6240\u4EE5\u6302\u5728\u6839\u5143\u7D20\u800C\u4E0D\u662F mount \u4E0A\uFF0C\u662F\u56E0\u4E3A\u906E\u7F69\u4E0D\u4FDD\u8BC1\u662F\u90A3\u5757 flex \u884C\u7684\u540E\u4EE3\u3002",
+        "en": "Width contract (decided 2026-10-22): the dock publishes the sum of its open panel widths to `--dshpc-page-inset-right` on the root element (updated every frame while dragging, removed when all panels close / on unmount), and full-screen masks yield by it. Multiple docks on one page are summed per instance \u2014 not an optional nicety: the demo itself has two (page dock + file-preview dock) and a single shared variable would let them overwrite each other. It lives on the root element rather than on the mount because the mask is not guaranteed to be a descendant of that flex row."
       }
     ],
     "api": [
@@ -59192,6 +59202,7 @@ var import_react59 = require("react");
 var import_client5 = require("react-dom/client");
 var PREVIEW_HOST_ID = "dshpc-file-preview-host";
 var PREVIEW_PANEL_ID = "file-preview";
+var activePreviewClose = null;
 function openFilePreview(options) {
   if (typeof document === "undefined")
     return null;
@@ -59201,9 +59212,7 @@ function openFilePreview(options) {
       console.warn("[dsh-plugin-core/explorer] openFilePreview: mount \u4E0D\u662F flex \u884C \u2014\u2014 PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u505C\u9760\u53F3\u4FA7 + \u6324\u7A84\u4E3B\u533A\uFF09\u3002\u8BF7\u4F20\u4F60\u9875\u9762\u300C\u4E3B\u533A + \u4FA7\u680F\u300D\u90A3\u4E00\u5C42 flex \u5BB9\u5668\uFF0C\u4E0D\u8981\u4F20 document.body \u6216\u65E0\u5B9A\u9AD8\u7684\u7A84\u5BB9\u5668\u3002");
     }
   }
-  const previous = document.getElementById(PREVIEW_HOST_ID);
-  if (previous !== null)
-    previous.remove();
+  activePreviewClose?.();
   const container = document.createElement("div");
   container.id = PREVIEW_HOST_ID;
   container.setAttribute("data-dshpc-file-preview", "");
@@ -59227,6 +59236,8 @@ function openFilePreview(options) {
     if (closed)
       return;
     closed = true;
+    if (activePreviewClose === close)
+      activePreviewClose = null;
     window.removeEventListener("keydown", onKeyDown);
     root.unmount();
     container.remove();
@@ -59268,6 +59279,7 @@ function openFilePreview(options) {
       style: { height: "100%", minHeight: 0 }
     })))
   ));
+  activePreviewClose = close;
   return { close, path: options.path };
 }
 var PICKER_WIDTH = 480;
@@ -59434,9 +59446,9 @@ h(SessionViewModal, {
   onClose: () => { view.dispose(); setOpenId(null) },
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
   openHostSession: (id) => uiWorkspace.openSession(id),
-  // \u6587\u4EF6\u94FE\u63A5 \u2192 **\u9875\u9762\u53F3\u4FA7**\u5F00\u6838\u5FC3\u6587\u4EF6\u9884\u89C8 dock\uFF08\u6324\u7A84\u4E3B\u533A\uFF0C\u5F39\u7A97\u8BA9\u51FA\u8FD9\u6BB5\u5BBD\u5EA6\uFF09
+  // \u6587\u4EF6\u94FE\u63A5 \u2192 **\u9875\u9762\u53F3\u4FA7**\u5F00\u6838\u5FC3\u6587\u4EF6\u9884\u89C8 dock\uFF08\u6324\u7A84\u4E3B\u533A\uFF09
   onOpenFile: (path) => openFilePreview({ mount: pageRow.element, workspaceFiles, path, ... }),
-  insetRight: dockWidth + 16,     // = \u53F3\u4FA7\u90A3\u5217\u5B9E\u6D4B\u5BBD\u5EA6\uFF1A\u5F39\u7A97\u5728\u5DE6\u8FB9\u5269\u4F59\u533A\u57DF\u5C45\u4E2D\uFF0C\u4E14\u4E0D\u753B\u906E\u7F69
+  // \u4E0D\u7528\u7ED9\u5F39\u7A97\u4EFB\u4F55\u5BBD\u5EA6\u53C2\u6570\uFF1Adock \u628A\u5360\u5BBD\u53D1\u5E03\u6210 CSS \u53D8\u91CF\uFF0C\u906E\u7F69\u81EA\u5DF1\u8BA9\u4F4D\uFF08\u7528\u6237 2026-10-22\uFF09
 })`;
 var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 
@@ -59545,26 +59557,9 @@ function RealSessionListDemo() {
   const wsItems = (0, import_react60.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
   const [openId, setOpenId] = (0, import_react60.useState)(null);
-  const [dockOpen, setDockOpen] = (0, import_react60.useState)(false);
-  const [dockWidth, setDockWidth] = (0, import_react60.useState)(0);
   const view = (0, import_react60.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles = files.workspaceFiles;
   const canOpenFile = workspaceFiles !== null && anchor !== null;
-  (0, import_react60.useEffect)(() => {
-    if (!dockOpen) return;
-    const mount = pageRow.element;
-    const dock = mount === null ? null : mount.querySelector(".dshpc-dock");
-    if (dock === null) return;
-    const read = () => {
-      setDockWidth(Math.round(dock.getBoundingClientRect().width));
-    };
-    read();
-    const ro = new ResizeObserver(read);
-    ro.observe(dock);
-    return () => {
-      ro.disconnect();
-    };
-  }, [dockOpen]);
   const openLinkedFile = (path) => {
     const mount = pageRow.element;
     if (mount === null || workspaceFiles === null || anchor === null) return;
@@ -59576,13 +59571,8 @@ function RealSessionListDemo() {
       sessionId: anchor.sessionId,
       path,
       rootName: anchor.title,
-      workspaces: wsItems.map((w) => w.title),
-      onClose: () => {
-        setDockOpen(false);
-        setDockWidth(0);
-      }
+      workspaces: wsItems.map((w) => w.title)
     });
-    setDockOpen(true);
   };
   if (state.status !== "ready") {
     return (0, import_react60.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
@@ -59651,9 +59641,8 @@ function RealSessionListDemo() {
         realOpenHostSession(id3);
       },
       // 文件链接（工具卡路径 / md 行内引用 / 交付卡）→ **页面右侧**开核心文件预览 dock，
-      // 弹窗被挤到左边（insetRight = dock 实测宽度），不在弹窗里面分栏。
-      onOpenFile: canOpenFile ? openLinkedFile : void 0,
-      insetRight: dockOpen && dockWidth > 0 ? dockWidth + 16 : void 0
+      // 不在弹窗里面分栏；遮罩让位由核心自己处理，这里不量宽度、不传参数。
+      onOpenFile: canOpenFile ? openLinkedFile : void 0
     }) : null
   );
 }
@@ -59852,7 +59841,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1022-1618-0yxa"]
+            [t3("buildStamp"), "1022-1644-53hc"]
           ].map(
             ([label, value]) => (0, import_react62.createElement)(
               "tr",

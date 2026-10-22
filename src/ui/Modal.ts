@@ -37,16 +37,6 @@ export interface ModalProps {
   maxHeight?: string
   /** 不渲染头部（沉浸式 / 无标题场景）。 */
   hideHeader?: boolean
-  /**
-   * 是否画遮罩（默认 true）。`false` = 透明遮罩层且**不吃点击**（弹窗变成浮在页面上的普通面板，
-   * 旁边的页面区域照常可点）—— 与页面右侧分栏（文件预览 dock）并排时用。
-   */
-  mask?: boolean
-  /**
-   * 遮罩右侧留出的宽度（px）：弹窗整体在**剩下那块区域**里居中，不被右侧分栏压住。
-   * 只在 `mask` 为 `false`（分栏并排）时有意义；默认 0。
-   */
-  maskInsetRight?: number
   footer?: ReactNode
   children?: ReactNode
   translate?: Translate
@@ -73,10 +63,12 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
   }, [escClose, props.onClose])
 
   // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
+  // 宽度用 `100%`（相对遮罩盒）而不是 `100vw`：遮罩已按右侧分栏让位（见 feedback.css），
+  // 用 `100vw` 算出来的宽在分栏在场时会溢出到分栏上，等于白让（用户 2026-10-22）。
   const sizeStyle: Record<ModalSize, { width: string; maxWidth?: string; maxHeight?: string; height?: string }> = {
-    sm: { width: '360px', maxWidth: 'calc(100vw - 48px)' },
-    md: { width: 'min(720px, calc(100vw - 32px))', maxHeight: '86vh' },
-    lg: { width: 'min(1120px, calc(100vw - 32px))', height: 'calc(100% - 80px)' },
+    sm: { width: '360px', maxWidth: 'calc(100% - 48px)' },
+    md: { width: 'min(720px, calc(100% - 32px))', maxHeight: '86vh' },
+    lg: { width: 'min(1120px, calc(100% - 32px))', height: 'calc(100% - 80px)' },
   }
   const s = sizeStyle[props.size ?? 'md']
   const showClose = props.closable !== false && props.onClose !== undefined
@@ -89,17 +81,12 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
       props.headerActions !== undefined ||
       showClose)
 
-  // mask=false：透明 + 不吃点击（弹窗成为页面上的普通浮层，旁边的 dock 照常可交互）。
-  const plainMask = props.mask === false
   return h(
     'div',
     {
-      className: plainMask ? 'dshpc-modal-mask dshpc-modal-mask--plain' : 'dshpc-modal-mask',
-      style: plainMask && props.maskInsetRight !== undefined && props.maskInsetRight > 0
-        ? { paddingRight: `${props.maskInsetRight}px` }
-        : undefined,
+      className: 'dshpc-modal-mask',
       onClick: () => {
-        if (closeOnMask && !plainMask) props.onClose?.()
+        if (closeOnMask) props.onClose?.()
       },
     },
     h(

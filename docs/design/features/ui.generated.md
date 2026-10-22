@@ -199,6 +199,10 @@ Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依�
 
 > EN: Modal: self-drawn overlay, not react-dom’s portal (avoids an extra required dependency).
 
+遮罩自动让位页面级分栏（用户 2026-10-22 拍板）：Mask 的右边界读 `--dshpc-page-inset-right`（由 PanelDock 发布，多 dock 求和），所以分栏不被压暗、照常可点，弹窗在**剩下那块区域**里居中。弹窗因此**不需要任何遮罩参数**，调用方也不用去量分栏宽度——量宽度那一版已删（异步挂载导致恒为 0，且属越界）。
+
+> EN: The mask yields to a page-level right column automatically (decided 2026-10-22): its right edge reads `--dshpc-page-inset-right` (published by PanelDock, summed across docks), so the column stays bright and clickable and the dialog centers in the **remaining** area. The dialog therefore needs **no mask props**, and callers no longer measure the column — the measuring version was deleted (it read 0 because mounting is async, and it was the content deciding the mask’s geometry).
+
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `showToast(message, opts?)` | `` |  | 官方 Sonner 原生（对比 / demo 用）。opts: { variant?, durationMs?, color?, onDismiss?, position? }；color 整条自定义背景色；position 6 向（默认 bottom-center）；暗色跟随宿主 | Raw official Sonner (for comparison / demo). opts: { variant?, durationMs?, color?, onDismiss?, position? }; color sets the whole background; position 6-way (default bottom-center); dark follows host |
@@ -222,10 +226,8 @@ Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依�
 | `onClose` | `() => void` | — | 不传则不显示关闭钮 | No close button if omitted |
 | `closeOnMask` | `boolean` | 'true' | 点遮罩关闭；误触代价大的场景设 false | Close on mask click; set false where mis-clicks are costly |
 | `escClose` | `boolean` | 'true' | Esc 关闭 | Close on Esc |
-| `maxWidth` | `string` | min(960px, 92vw) | — | — |
+| `maxWidth` | `string` | sm: calc(100% - 48px)；md/lg 不设 | 宽度用 `100%`（相对遮罩盒）而非 `100vw`：右侧分栏在场时遮罩已让位，`100vw` 会溢出到分栏上 | Widths are `100%` of the mask box, not `100vw`: with a right column present the mask has already yielded, and `100vw` would spill onto it |
 | `hideHeader` | `boolean` | 'false' | 不渲染头部（沉浸式） | Skip header (immersive) |
-| `mask` | `boolean` | 'true' | 是否画遮罩；`false` = 透明层且不吃点击（弹窗变成页面上的普通浮层，旁边区域照常可点）—— 与页面右侧分栏并排时用 | Whether to draw the mask; `false` = transparent layer that does not eat clicks (the dialog becomes a normal floating panel and the surrounding page stays clickable) — for sitting side by side with a page-level right column |
-| `maskInsetRight` | `number` | 0 | 遮罩右侧留出的宽度（px）：弹窗在**剩下的那块区域**里居中，不被右侧分栏压住 | Width (px) reserved on the mask’s right: the dialog centers in the **remaining** area instead of being covered by the right column |
 | `footer` | `ReactNode` | — | 底栏（按钮区） | Footer (button area) |
 | `children` | `ReactNode` | — | 主体 | Body |
 
@@ -240,6 +242,10 @@ Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依�
 面板高度默认视口高；嵌在定高容器里时由调用方给 --dshpc-dock-h。不做的事（拍板留档）：多份同名（multi）、tab 切换条、自动淘汰、浮动层——标签切换由消费方在自己的面板内容里实现。两条实现约束：面板是 position:sticky + height:100vh 的 flex 成员，刻意不设 z-index；拖动期给 iframe 让出指针事件。
 
 > EN: Panel height defaults to viewport height; when nested in a fixed-height container, the caller sets --dshpc-dock-h. Deliberately not done (on record): multi same-name, tab-switch bar, auto-eviction, floating layer — tab switching is the consumer’s job inside their own panel content. Two impl constraints: panels are position:sticky + height:100vh flex members with no z-index; during drag, yield pointer events to iframes.
+
+占宽契约（用户 2026-10-22 拍板）：dock 把「所有开着的栏宽之和」实时发布到根元素的 `--dshpc-page-inset-right`（拖拽中逐帧更新，全关/卸载即移除），全屏遮罩据此让位。同页多个 dock 按实例求和 —— 这不是可选优化：demo 自己就有「整页 dock + 文件预览 dock」两个，各写同一个变量会互相覆盖。之所以挂在根元素而不是 mount 上，是因为遮罩不保证是那块 flex 行的后代。
+
+> EN: Width contract (decided 2026-10-22): the dock publishes the sum of its open panel widths to `--dshpc-page-inset-right` on the root element (updated every frame while dragging, removed when all panels close / on unmount), and full-screen masks yield by it. Multiple docks on one page are summed per instance — not an optional nicety: the demo itself has two (page dock + file-preview dock) and a single shared variable would let them overwrite each other. It lives on the root element rather than on the mount because the mask is not guaranteed to be a descendant of that flex row.
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|

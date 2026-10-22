@@ -56,9 +56,9 @@ h(SessionViewModal, {
   onClose: () => { view.dispose(); setOpenId(null) },
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
   openHostSession: (id) => uiWorkspace.openSession(id),
-  // 文件链接 → **页面右侧**开核心文件预览 dock（挤窄主区，弹窗让出这段宽度）
+  // 文件链接 → **页面右侧**开核心文件预览 dock（挤窄主区）
   onOpenFile: (path) => openFilePreview({ mount: pageRow.element, workspaceFiles, path, ... }),
-  insetRight: dockWidth + 16,     // = 右侧那列实测宽度：弹窗在左边剩余区域居中，且不画遮罩
+  // 不用给弹窗任何宽度参数：dock 把占宽发布成 CSS 变量，遮罩自己让位（用户 2026-10-22）
 })`
 
 const CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
@@ -194,27 +194,13 @@ function RealSessionListDemo(): ReturnType<typeof h> {
   const wsItems = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
   const anchor = pickWorkspaceAnchor(wsItems)
   const [openId, setOpenId] = useState<string | null>(null)
-  // 文件链接在**页面右侧**开核心文件预览 dock（不在弹窗里）；弹窗据此让出 dock 的宽度。
-  const [dockOpen, setDockOpen] = useState(false)
-  const [dockWidth, setDockWidth] = useState(0)
   const view = useMemo(() => (openId === null ? null : openRealSessionView(openId)), [openId])
   const workspaceFiles = files.workspaceFiles
   // 链接只在「工作区文件服务就位 + 有可用会话锚点」时可点；否则保持纯文本，不假装能点。
   const canOpenFile = workspaceFiles !== null && anchor !== null
 
-  // dock 宽度实测（拖动改变宽度也跟着变）：弹窗在**左边剩下的区域**里居中，不被压住。
-  useEffect(() => {
-    if (!dockOpen) return
-    const mount = pageRow.element
-    const dock = mount === null ? null : mount.querySelector<HTMLElement>('.dshpc-dock')
-    if (dock === null) return
-    const read = (): void => { setDockWidth(Math.round(dock.getBoundingClientRect().width)) }
-    read()
-    const ro = new ResizeObserver(read)
-    ro.observe(dock)
-    return () => { ro.disconnect() }
-  }, [dockOpen])
-
+  // 文件链接在**页面右侧**开核心文件预览 dock（不在弹窗里）。弹窗不用知道它的宽度：
+  // dock 自己把占宽发布成 CSS 变量，遮罩让位、弹窗在左边剩余区域居中（用户 2026-10-22）。
   const openLinkedFile = (path: string): void => {
     const mount = pageRow.element
     if (mount === null || workspaceFiles === null || anchor === null) return
@@ -227,9 +213,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
       path,
       rootName: anchor.title,
       workspaces: wsItems.map((w) => w.title),
-      onClose: () => { setDockOpen(false); setDockWidth(0) },
     })
-    setDockOpen(true)
   }
   if (state.status !== 'ready') {
     return h('p', { style: { fontSize: '13px', opacity: .8 } }, t('sessionListUnavailable'))
@@ -280,9 +264,8 @@ function RealSessionListDemo(): ReturnType<typeof h> {
           },
           openHostSession: (id) => { realOpenHostSession(id) },
           // 文件链接（工具卡路径 / md 行内引用 / 交付卡）→ **页面右侧**开核心文件预览 dock，
-          // 弹窗被挤到左边（insetRight = dock 实测宽度），不在弹窗里面分栏。
+          // 不在弹窗里面分栏；遮罩让位由核心自己处理，这里不量宽度、不传参数。
           onOpenFile: canOpenFile ? openLinkedFile : undefined,
-          insetRight: dockOpen && dockWidth > 0 ? dockWidth + 16 : undefined,
         })
       : null,
   )

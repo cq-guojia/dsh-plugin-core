@@ -237,12 +237,16 @@ h(StripCard, {
 | `onClose` | `() => void` | — | 不传则不显示关闭钮 |
 | `closeOnMask` | `boolean` | `true` | 点遮罩关闭；误触代价大的场景设 `false` |
 | `escClose` | `boolean` | `true` | Esc 关闭 |
-| `maxWidth` | `string` | `min(960px, 92vw)` | — |
+| `maxWidth` | `string` | sm: `calc(100% - 48px)`；md/lg 不设 | 宽度按遮罩盒的 `100%` 算，不用 `100vw` |
 | `hideHeader` | `boolean` | `false` | 不渲染头部（沉浸式） |
 | `footer` | `ReactNode` | — | 底栏（按钮区） |
 | `children` | `ReactNode` | — | 主体 |
 
 自绘 overlay，**不用 react-dom 的 portal**（避免多一个必需依赖）。
+
+**遮罩自动让位页面级分栏**（2026-10-22 拍板）：遮罩右边界读 `--dshpc-page-inset-right`
+（由 `PanelDock` 发布，多个 dock 求和），所以右侧分栏不被压暗、照常可点，弹窗在剩下那块区域里居中。
+弹窗**不需要任何遮罩参数**，调用方也不用去量分栏宽度。
 
 ### 反馈件
 
@@ -363,6 +367,11 @@ h('div', { style: { display: 'flex' } },
 两条实现约束：面板是 `position:sticky` + `height:100vh` 的 flex 成员，**刻意不设 z-index**
 （布局成员一旦有正 z-index 会盖过宿主 portal 的弹窗）；拖动期给 `iframe` 让出指针事件，
 否则拖进 PDF/HTML 预览会卡死。
+
+**占宽契约**（2026-10-22 拍板）：dock 把「开着的栏宽之和」实时发布到根元素的
+`--dshpc-page-inset-right`（拖拽中逐帧更新；全关 / 卸载即移除），全屏遮罩按它让位。
+同页多个 dock 按实例求和——demo 自己就有「整页 dock + 文件预览 dock」两个。挂在根元素而不是
+mount 上，是因为遮罩不保证是那块 flex 行的后代。
 
 ## 定制边界
 

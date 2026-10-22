@@ -100,8 +100,9 @@ host 半侧 `agents.create + agent.send(msg, 'next-turn', true)` 起轮次 + 跳
 `overflow`、高度、内距一律归零）。
 
 **文件链接**：工具卡 fileLink / md 行内引用 / 交付卡统一走 `onOpenFile`。接法 = 预览开在
-**页面右侧**（核心 `openFilePreview` 的 dock，挤窄主区），不在弹窗里分栏；弹窗用 `insetRight`
-让出那列实测宽度 ⇒ 在左边剩余区域居中、并自动去掉遮罩（否则遮罩盖住它、还吃掉点击）。
+**页面右侧**（核心 `openFilePreview` 的 dock，挤窄主区），不在弹窗里分栏。弹窗这边**不用传任何
+参数**：dock 把占宽发布成 `--dshpc-page-inset-right`，遮罩按它让位 ⇒ 分栏不被压暗、照常可点，
+弹窗在左边剩余区域居中（2026-10-22 二次拍板，撤掉了 `insetRight` 量宽度那条路）。
 工作区文件服务缺席则不给 `onOpenFile`，链接保持纯文本。
 
 ## 定制边界

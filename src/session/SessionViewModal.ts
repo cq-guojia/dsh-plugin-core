@@ -611,12 +611,6 @@ export interface SessionViewModalProps {
   view: SessionViewTarget
   onClose: () => void
   /**
-   * 页面右侧分栏的宽度（px，可选）：点文件链接时页面右边会多出一列（文件预览 dock），
-   * 弹窗据此在**左边剩下的区域**里居中、并去掉遮罩（否则遮罩会盖住分栏、也吃不掉点击）。
-   * 不传 / 0 = 普通模态。分栏本身在页面层，不在弹窗里（用户 2026-10-22 定的）。
-   */
-  insetRight?: number
-  /**
    * 会话是否已归档（由调用方注入：官方 client 服务 `workspaces` 的快照字段 `archivedSessionIds`，
    * registry-global、随 follow 流实时更新，见 docs/design/external/dsh-host.md §11）。
    * 分化「继续对话」行为：已归档 = 开分支图标 + 确认框（fork 后跳官方区）；
@@ -644,7 +638,7 @@ export interface SessionViewModalProps {
 export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeof h> {
   ensureControls()
   const tt = props.t ?? defaultT
-  const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile, insetRight } = props
+  const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props
   const subscribe = useMemo(() => (onChange: () => void): (() => void) => view.target.subscribe(onChange), [view])
   const getSnapshot = useMemo(() => (): ChatViewFace | undefined => view.target.getSnapshot(), [view])
   const chat = useSyncExternalStore(subscribe, getSnapshot)
@@ -829,9 +823,6 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   return h(Fragment, null,
     h(Modal, {
       size: 'lg',
-      // 右侧有分栏（文件预览）时：弹窗在左边剩余区域居中，且不画遮罩（否则遮罩盖住分栏）。
-      mask: insetRight === undefined || insetRight <= 0,
-      maskInsetRight: insetRight,
       // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
       // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
       title: heading ?? tt('sessionHeading'),
