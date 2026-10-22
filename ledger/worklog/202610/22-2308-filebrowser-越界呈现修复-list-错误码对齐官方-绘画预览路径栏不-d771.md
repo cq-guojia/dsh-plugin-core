@@ -123,3 +123,4 @@ list / rootCache 键 / learnRoot / stat / absolutizeDir / 相对化 / copyPath /
 - 2026-10-23 00:04:22 · log · @GuoJia-Agent · 第四轮（真机截图）：匹配生效但学根/相对化仍按 props.sessionId ⇒ 面包屑露区外层；anchorMatch 统一驱动全部会话键（list/rootCache/learnRoot/stat/absolutizeDir/相对化/copyPath/onPick/FilePreview），根标签优先匹配工作区名；98/98、typecheck、build:demo 全绿
 - 2026-10-23 00:16:32 · log · @GuoJia-Agent · session 样式防护（真机截图：多变 deliverables 卡时左下角变更卡竖排变形）：changes 卡加 align-self:flex-start+flex:none、stat nowrap、endinfo 改 margin-left:auto；根因待 DOM 取证
 - 2026-10-23 00:18:41 · log · @GuoJia-Agent · 回退未经同意的越界 hint：删 FileBrowser crumbBarPlain hint span + explorerOutsideHint 中英 key + bar-hint CSS（源码与产物均已清零，死 key 自检过）
+- 2026-10-23 00:24:48 · log · @GuoJia-Agent · session 变更卡结构对齐官方（解包 ui-deliverables 0.2.1-rc.2 核实）：从 tail 之后挪进 tailSlot、置于网格之前（官方 Fragment>[ChangedFiles, 网格]）；全绿待真机验收
