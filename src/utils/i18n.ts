@@ -215,6 +215,16 @@ export type UtilMessageKey =
   | 'changesAll'
   | 'changesCollapse'
   | 'changesOversized'
+  | 'diffLoading'
+  | 'diffMissing'
+  | 'diffError'
+  | 'diffBinary'
+  | 'diffOversized'
+  | 'diffCreated'
+  | 'diffDeleted'
+  | 'diffUnchanged'
+  | 'diffCoarse'
+  | 'diffTruncated'
   | 'continueBranch'
   | 'forkConfirmTitle'
   | 'forkConfirmText'
@@ -446,6 +456,17 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     changesAll: '全部 {count} 个文件',
     changesCollapse: '收起',
     changesOversized: '文件过大',
+    // ── 单文件改动预览（官方 ui-deliverables diff.* 词典逐条对应）──
+    diffLoading: '正在读取改动…',
+    diffMissing: '这轮改动的内容已不可用',
+    diffError: '无法读取改动',
+    diffBinary: '二进制文件，无法显示改动',
+    diffOversized: '文件过大，无法显示改动',
+    diffCreated: '本轮新建的文件',
+    diffDeleted: '本轮删除的文件',
+    diffUnchanged: '两侧内容相同',
+    diffCoarse: '逐行对比超时，按整个文件替换显示',
+    diffTruncated: '只显示前 {count} 行',
     continueBranch: '继续对话',
     forkConfirmTitle: '开分支继续对话',
     forkConfirmText: '是否需要基于此会话开一个新分支继续对话？原会话保持只读留档，新分支复制本会话内容并可继续对话。',
@@ -673,6 +694,16 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     changesAll: 'All {count} files',
     changesCollapse: 'Collapse',
     changesOversized: 'File too large',
+    diffLoading: 'Reading changes…',
+    diffMissing: 'The contents of this turn’s changes are no longer available',
+    diffError: 'Could not read the changes',
+    diffBinary: 'Binary file; changes cannot be shown',
+    diffOversized: 'File too large; changes cannot be shown',
+    diffCreated: 'Created in this turn',
+    diffDeleted: 'Deleted in this turn',
+    diffUnchanged: 'Both sides hold the same lines',
+    diffCoarse: 'Line comparison timed out; shown as a whole-file replacement',
+    diffTruncated: 'Showing the first {count} lines',
     continueBranch: 'Continue conversation',
     forkConfirmTitle: 'Fork to continue',
     forkConfirmText: 'Start a new branch from this session to continue the conversation? The original stays read-only; the branch copies this conversation and can continue.',

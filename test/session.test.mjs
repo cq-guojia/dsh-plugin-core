@@ -9,7 +9,18 @@ import assert from 'node:assert/strict'
 import { parseOfficialCss, ocOr, officialModuleCount } from '../dist/session/official-classes.js'
 import { openSessionView, DEFAULT_RETAIN_SOURCE } from '../dist/session/open-session-view.js'
 import { buildProcessGroups, toolActivity, processTitle } from '../dist/session/mirror/process-groups.js'
-import { changesSummaryUrl, parseChangesSummary, turnDeliverablesChangesSeq, turnDeliverablesValue } from '../dist/session/changes.js'
+import {
+  changesSummaryUrl,
+  parseChangesSummary,
+  turnDeliverablesChangesSeq,
+  turnDeliverablesValue,
+  changesDiffUrl,
+  parseChangesDiff,
+  hunkRows,
+  hunkHeader,
+  diffNoteKey,
+  DIFF_MAX_RENDERED_LINES,
+} from '../dist/session/changes.js'
 import { formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/session/mirror/message-chrome.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
@@ -260,6 +271,72 @@ test('turnDeliverablesChangesSeq：读 turn.data 的 deliverables.changes（stor
   assert.equal(turnDeliverablesChangesSeq(undefined), null)
 })
 
+// ── 单文件改动预览（changes.ts：api/changes.diff 契约，官方 FileDiff 逐值）──
+
+test('changesDiffUrl：官方文档相对路由 + 查询参数（client.js:15/103-110）', () => {
+  assert.equal(
+    changesDiffUrl('session-abc', 42, 3),
+    'api/changes.diff?sessionId=session-abc&seq=42&index=3',
+  )
+})
+
+test('parseChangesDiff：text 载荷逐字段校验，binary / oversized 只认 kind', () => {
+  const text = {
+    kind: 'text',
+    path: '/w/timestamp.md',
+    display: 'timestamp.md',
+    before: true,
+    after: true,
+    coarse: false,
+    hunks: [{ oldStart: 1, oldLines: 3, newStart: 1, newLines: 3, lines: [' a', '-b', '+B'] }],
+  }
+  assert.deepEqual(parseChangesDiff(text), text)
+  assert.deepEqual(parseChangesDiff({ kind: 'binary', path: 'a.png', display: 'a.png' }), {
+    kind: 'binary', path: 'a.png', display: 'a.png',
+  })
+  assert.deepEqual(parseChangesDiff({ kind: 'oversized', path: 'b.csv', display: 'b.csv' }), {
+    kind: 'oversized', path: 'b.csv', display: 'b.csv',
+  })
+  for (const bad of [
+    null,
+    {},
+    { ...text, path: '' },
+    { ...text, kind: 'nope' },
+    { ...text, before: undefined },
+    { ...text, hunks: [{ ...text.hunks[0], lines: ['a'] }] }, // 行必须以 + / - / 空格 开头
+    { ...text, hunks: [{ ...text.hunks[0], oldStart: -1 }] },
+    { kind: 'text', path: 'x', display: 'x' },
+  ]) assert.equal(parseChangesDiff(bad), null, JSON.stringify(bad))
+})
+
+test('hunkRows：上下文双边计数，删计旧边，增计新边（官方行号口径）', () => {
+  const rows = hunkRows({ oldStart: 10, oldLines: 3, newStart: 8, newLines: 3, lines: [' ctx', '-old', '+new', ' tail'] })
+  assert.deepEqual(rows, [
+    { kind: 'context', old: 10, new: 8, text: 'ctx' },
+    { kind: 'del', old: 11, new: undefined, text: 'old' },
+    { kind: 'add', old: undefined, new: 9, text: 'new' },
+    { kind: 'context', old: 12, new: 10, text: 'tail' },
+  ])
+})
+
+test('hunkHeader：`@@ -a,b +c,d @@`（官方格式）', () => {
+  assert.equal(
+    hunkHeader({ oldStart: 10, oldLines: 3, newStart: 8, newLines: 4, lines: [] }),
+    '@@ -10,3 +8,4 @@',
+  )
+})
+
+test('diffNoteKey：新建 / 删除 / 无变化，正常改动无提示', () => {
+  assert.equal(diffNoteKey({ kind: 'text', path: 'a', display: 'a', before: false, after: true, coarse: false, hunks: [] }), 'diffCreated')
+  assert.equal(diffNoteKey({ kind: 'text', path: 'a', display: 'a', before: true, after: false, coarse: false, hunks: [] }), 'diffDeleted')
+  assert.equal(diffNoteKey({ kind: 'text', path: 'a', display: 'a', before: true, after: true, coarse: false, hunks: [] }), 'diffUnchanged')
+  assert.equal(diffNoteKey({ kind: 'text', path: 'a', display: 'a', before: true, after: true, coarse: true, hunks: [{ oldStart: 0, oldLines: 0, newStart: 0, newLines: 0, lines: ['+x'] }] }), undefined)
+})
+
+test('DIFF_MAX_RENDERED_LINES = 5000（官方截断阈值，超出出 diff.truncated）', () => {
+  assert.equal(DIFF_MAX_RENDERED_LINES, 5000)
+})
+
 // ── 文案：会话预览新增键中英齐全 ──
 
 test('会话预览文案中英齐全（镜像官方词典的新增键）', () => {
@@ -271,6 +348,8 @@ test('会话预览文案中英齐全（镜像官方词典的新增键）', () =>
     'readWindow', 'terminalExitCode', 'diffWrapLabel', 'deliverRowTitle', 'deliverAll',
     'branchLabel', 'composerPlaceholder', 'composerHint', 'forkFailed',
     'changesSingle', 'changesMulti', 'changesBinary', 'changesOversized',
+    'diffLoading', 'diffMissing', 'diffError', 'diffBinary', 'diffOversized',
+    'diffCreated', 'diffDeleted', 'diffUnchanged', 'diffCoarse', 'diffTruncated',
   ]
   for (const key of keys) {
     setLocale('zh')

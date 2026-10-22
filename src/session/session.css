@@ -46,6 +46,30 @@ button.dshpc-sv-changes-header:hover,button.dshpc-sv-changes-header:focus-visibl
 .dshpc-sv-changes-toggle{box-sizing:border-box;width:100%;color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;font:inherit;text-align:left;background:0 0;border:0;justify-content:flex-start;align-items:center;gap:4px;margin:0;padding:10px 18px 10px 14px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);display:inline-flex}
 .dshpc-sv-changes-toggle:hover{background:var(--dshpc-hover,rgba(38,49,72,.06))}
 .dshpc-sv-changes-toggle svg{flex:none;width:14px;height:14px}
+/* ChangedFiles 的 hover 预览壳（官方 ChangedFiles.module.css .preview / .previewPath 逐值）：
+   限高 + 溢出隐藏；预览里隐掉 metadata note 与 hunk 头（官方同，正文才是重点）。 */
+.dshpc-sv-changes-preview{max-height:100%;overflow:hidden}
+.dshpc-sv-changes-previewpath{min-width:0;color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);white-space:nowrap;flex:auto;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);overflow:auto hidden}
+.dshpc-sv-changes-preview [data-diff-note=metadata],.dshpc-sv-changes-preview [data-diff-hunk-header]{display:none}
+/* 官方 FileDiff.module.css 逐值镜像（unified 单列：旧号 / 新号 / 符号 / 文本）。 */
+.dshpc-sv-diff{--diff-empty-fill:var(--dshpc-plate,rgba(128,128,128,.08));box-sizing:border-box;width:100%;min-height:0;color:var(--dshpc-fg);flex-direction:column;display:flex}
+.dshpc-sv-diff-header{box-sizing:border-box;border-bottom:.5px solid var(--dshpc-border-faint,#0000000a);flex:none;align-items:center;gap:6px;height:38px;padding:0 6px 0 8px;display:flex}
+.dshpc-sv-diff-status{color:var(--dshpc-fg-2,rgba(128,128,128,.95));align-items:center;gap:12px;margin:0;padding:16px;font-size:var(--dshpc-font-md);display:flex}
+.dshpc-sv-diff-body{min-height:0;font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));flex-direction:column;flex:auto;padding:8px 0 16px;display:flex;overflow:auto}
+.dshpc-sv-diff-body[data-review-view=unified]:not([data-review-wrap]){grid-template-columns:minmax(max-content,100%);align-content:start;display:grid}
+.dshpc-sv-diff-note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));margin:0;padding:4px 16px 8px}
+.dshpc-sv-diff-hunk{margin-bottom:8px}
+.dshpc-sv-diff-hunkheader{color:var(--dshpc-fg-3,rgba(128,128,128,.8));white-space:pre;padding:4px 16px}
+.dshpc-sv-diff-line{box-sizing:border-box;white-space:pre;grid-template-columns:3.5em 3.5em 1.2em minmax(0,1fr);min-height:22px;line-height:22px;display:grid}
+.dshpc-sv-diff-number{color:var(--dshpc-fg-3,rgba(128,128,128,.8));text-align:right;user-select:none;padding-right:8px}
+.dshpc-sv-diff-sign{text-align:center;user-select:none}
+.dshpc-sv-diff-text{padding-right:16px}
+.dshpc-sv-diff-add{--diff-gutter-fill:var(--dsw-alias-file-diff-added-gutter,rgba(46,160,67,.10));--diff-marker:var(--dsw-alias-file-diff-added-marker,#1a7f37);background:var(--dsw-alias-file-diff-added-bg,rgba(46,160,67,.15))}
+.dshpc-sv-diff-del{--diff-gutter-fill:var(--dsw-alias-file-diff-deleted-gutter,rgba(255,129,130,.12));--diff-marker:var(--dsw-alias-file-diff-deleted-marker,#cf222e);background:var(--dsw-alias-file-diff-deleted-bg,rgba(255,129,130,.15))}
+.dshpc-sv-diff-add .dshpc-sv-diff-number,.dshpc-sv-diff-del .dshpc-sv-diff-number{background:var(--diff-gutter-fill);color:var(--diff-marker)}
+.dshpc-sv-diff-add .dshpc-sv-diff-number:first-child,.dshpc-sv-diff-del .dshpc-sv-diff-number:first-child{box-shadow:inset 3px 0 0 var(--diff-marker)}
+.dshpc-sv-diff-add .dshpc-sv-diff-sign,.dshpc-sv-diff-del .dshpc-sv-diff-sign{color:var(--diff-marker)}
+.dshpc-sv-diff-context .dshpc-sv-diff-text{color:var(--dshpc-fg-2,rgba(128,128,128,.95))}
 .dshpc-sv-actions{display:flex;align-items:center;gap:8px;}
 /* 兜底 frame（官方 ChatView.frame 未命中时挂在同一层）：不滚、不涨，左右内距交给 Modal body。 */
 .dshpc-sv-body{flex:none;min-height:0;overflow:visible;padding:0}

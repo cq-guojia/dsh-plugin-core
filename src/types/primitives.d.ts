@@ -395,4 +395,39 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
 
   /** 官方 diff 统计（+新增 / -删除）。 */
   export function diffTotals(diffs: ReadonlyArray<{ oldText: string | null; newText: string }>): { added: number; removed: number }
+
+  // ── 悬停预览卡与语法高亮（0.2.1-rc.2 lib/types/{HoverCard,code-highlighting}.d.ts 核实）──
+
+  /**
+   * 官方悬停预览卡：anchor 就地渲染，指针停留 openDelayMs（默认 500）后把 content
+   * portal 到 document.body。**content 只在 open 那一刻挂载**（lib/index.js:
+   * `const card = open && pos !== null && jsx(...)`）⇒ 里面的取数天然惰性，不用自己延迟。
+   */
+  export function HoverCard(props: {
+    anchor: ReactNode
+    content: ReactNode
+    openDelayMs?: number
+    disabled?: boolean
+    grouped?: boolean
+    /** preview = 上下浮动大卡（左右各 24px 内收、最高 420px）；compact = 贴锚点小卡。 */
+    variant?: 'compact' | 'preview'
+    /** 取该元素的宽度与横坐标来定 preview 的尺寸（官方 ChangedFiles 传整卡的 ref）。 */
+    widthAnchorRef?: import('react').RefObject<HTMLElement | null>
+    inline?: boolean
+  } & (
+    | { copyText?: string | undefined; copyLabel: string; copiedLabel: string }
+    | { copyText?: undefined; copyLabel?: string; copiedLabel?: string }
+  )): import('react').JSX.Element
+
+  /** 官方高亮的一段 run（颜色是 `--shiki-*` 自定义属性，明暗随主题）。 */
+  export interface HighlightSpan {
+    text: string
+    style: import('react').CSSProperties
+  }
+
+  /** 官方片段高亮器：一行一个 run 列表；语法未知 / 未加载返回 undefined = 纯文本回落。 */
+  export type CodeHighlighter = (code: string) => HighlightSpan[][] | undefined
+
+  /** 把共享的惰性高亮器绑到一门语言；语法加载完成后自己触发重渲染。 */
+  export function useCodeHighlighter(language: string | undefined): CodeHighlighter
 }
