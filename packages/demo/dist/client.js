@@ -157,6 +157,8 @@ var PICKER_CSS = `
 .dshpc-picker__option-icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
 .dshpc-picker__menu{
   z-index:60;max-height:280px;overflow:auto;padding:4px;
+  /* \u83DC\u5355\u7ECF FloatingPortal \u6302\u5230 body\uFF0C\u8131\u79BB .dshpc-picker\uFF0C\u987B\u663E\u5F0F\u5B57\u53F7\uFF0C\u5426\u5219\u7EE7\u627F body \u7684\u5927\u5B57\u53F7 */
+  font-size:13px;line-height:20px;
   background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);
   border-radius:var(--dshpc-radius-md);box-shadow:0 8px 24px rgba(15,23,42,.12);
 }
@@ -56809,7 +56811,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1022-0845-rah8"]
+            [t2("buildStamp"), "1022-1046-o9rg"]
           ].map(
             ([label, value]) => (0, import_react48.createElement)(
               "tr",
