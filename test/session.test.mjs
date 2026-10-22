@@ -203,7 +203,7 @@ test('formatCacheHitPercent：部分命中不四舍五入成 100%', () => {
 
 test('会话预览文案中英齐全（镜像官方词典的新增键）', () => {
   const keys = [
-    'sessionViewerTitle', 'sessionLoadOlder', 'sessionProcess', 'continueBranch', 'forkConfirmTitle',
+    'sessionLoadOlder', 'sessionProcess', 'sessionArchived', 'continueBranch', 'forkConfirmTitle',
     'turnProcessTook', 'chatDeepDiving', 'thinkLabel', 'durationSeconds', 'retryStatus', 'turnErrorTitle',
     'clockDate', 'turnUsageTitle', 'turnUsageCount', 'numberThousand', 'stepProcessDoneRead',
     'stepProcessJoinTwo', 'toolTitleRead', 'toolTitleGeneric', 'toolInputLabel', 'rowRunning',

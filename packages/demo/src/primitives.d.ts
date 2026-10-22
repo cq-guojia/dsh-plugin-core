@@ -16,6 +16,8 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   export const IconChevronDownOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconClockOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconSparkleRegular: ComponentType<{ size?: number; className?: string }>
+  /** 归档标识（官方 ui-workspace 行数据同款；0.2.0-rc.2 icons/index.d.ts:310）。 */
+  export const IconArchiveOutlineRegular: ComponentType<{ size?: number; className?: string }>
 
   /** 官方悬停富卡片：anchor 原位渲染，content 任意 ReactNode（compact 紧凑卡）。 */
   export const HoverCard: ComponentType<{

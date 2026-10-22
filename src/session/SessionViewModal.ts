@@ -9,7 +9,7 @@
 //     由调用方完成 fork + host 侧 agent.send 起轮次 + 跳官方视图（官方能力，无歪门邪道）。
 //   · retain source 参数化在 open-session-view.ts。
 import { Fragment, createElement as h, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import { Button, IconBranchOutlineRegular, IconCloseOutlineRegular, Modal } from '../ui/official.js'
+import { Button, IconArchiveOutlineRegular, IconBranchOutlineRegular, IconCloseOutlineRegular, IconNewChatOutlineRegular, Modal } from '../ui/official.js'
 import { ensureControls } from '../ui/css.js'
 import type { Translate } from '../utils/i18n.js'
 import type {
@@ -603,11 +603,17 @@ function makeFileMentions(paths: readonly string[], open: (path: string) => void
 
 export interface SessionViewModalProps {
   t?: Translate
-  /** 弹窗标题（默认 sessionId）。 */
+  /** 弹窗标题：**会话自己的标题**（宿主 sessions.list 的 displayTitle）；缺省退 sessionId。 */
   heading?: string
   sessionId: string
   view: SessionViewTarget
   onClose: () => void
+  /**
+   * 会话是否已归档（宿主 workspaceRegistry.archivedSessionIds，client 读不到，由调用方注入）。
+   * 分化「继续对话」行为：已归档 = 开分支图标 + 确认框（fork 后跳官方区）；
+   * 未归档 / 未提供 = 会话图标，点击直跳官方会话页。undefined = 调用方不知道，按未归档处理。
+   */
+  archived?: boolean
   /** fork 源会话：`sessions.fork({ sessionId, increaseTitle: true })`，解析为子会话 id。 */
   forkSession?: (sessionId: string, atSeq?: number) => Promise<string>
   /** 官方导航跳转：`uiWorkspace.openSession(id)`（会话区打开目标会话）。 */
@@ -629,7 +635,7 @@ export interface SessionViewModalProps {
 export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeof h> {
   ensureControls()
   const tt = props.t ?? defaultT
-  const { heading, sessionId, view, onClose, forkSession, openHostSession, onContinue, onOpenFile } = props
+  const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props
   const subscribe = useMemo(() => (onChange: () => void): (() => void) => view.target.subscribe(onChange), [view])
   const getSnapshot = useMemo(() => (): ChatViewFace | undefined => view.target.getSnapshot(), [view])
   const chat = useSyncExternalStore(subscribe, getSnapshot)
@@ -652,7 +658,13 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
 
   // 开分支：确认框显隐 + fork 进行中 + 失败原因。aliveRef 防「fork 在途时用户关弹窗」
   // 后仍跳转（await 回来时弹窗已卸载 ⇒ 放弃跳转，不 setState）。
+  // 「继续对话」按归档状态分化（用户 2026-10-22 拍板）：
+  //   已归档   ⇒ 开分支图标 + 确认框（fork 出子会话再跳官方区；官方策略归档会话不进主视图）
+  //   未归档   ⇒ 会话图标，点击直跳官方会话页（uiWorkspace.openSession，无确认）
+  const isArchived = archived === true
   const canFork = forkSession !== undefined && openHostSession !== undefined
+  const canDirectOpen = openHostSession !== undefined
+  const showContinue = isArchived ? canFork : canDirectOpen
   const [forkTarget, setForkTarget] = useState<{ atSeq?: number } | null>(null)
   const [forking, setForking] = useState(false)
   const [forkErr, setForkErr] = useState<string | null>(null)
@@ -809,8 +821,21 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
         h('div', { className: 'dshpc-sv-header' },
           h('div', { className: 'dshpc-sv-heading' },
             h('div', { className: 'dshpc-sv-title' },
-              tt('sessionViewerTitle'),
-              heading === undefined ? '' : ` · ${heading}`,
+              heading ?? sessionId,
+              // 归档标识（官方归档图标 + 「已归档」）。
+              isArchived
+                ? h('span', {
+                    style: {
+                      display: 'inline-flex', alignItems: 'center', gap: '4px',
+                      marginLeft: '8px', fontSize: 'var(--dshpc-font-xs)',
+                      color: 'var(--dshpc-fg-3)', fontWeight: 400,
+                    },
+                    title: tt('sessionArchived'),
+                  },
+                    h(IconArchiveOutlineRegular, { size: 12 }),
+                    tt('sessionArchived'),
+                  )
+                : null,
             ),
             h('div', { className: 'dshpc-sv-sid' }, sessionId),
             // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
@@ -822,14 +847,19 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
               : null,
           ),
           h('div', { className: 'dshpc-sv-headerbtns' },
-            canFork
+            showContinue
               ? h(Button, {
                   variant: 'outline',
                   size: 'sm',
                   disabled: forking,
                   title: tt('continueBranch'),
-                  icon: h(IconBranchOutlineRegular, { size: 14 }),
-                  onClick: () => { setForkErr(null); setForkTarget({}) },
+                  icon: isArchived
+                    ? h(IconBranchOutlineRegular, { size: 14 })
+                    : h(IconNewChatOutlineRegular, { size: 14 }),
+                  onClick: () => {
+                    if (isArchived) { setForkErr(null); setForkTarget({}) }
+                    else if (openHostSession !== undefined) { onClose(); openHostSession(sessionId) }
+                  },
                 }, tt('continueBranch'))
               : null,
             h('button', {

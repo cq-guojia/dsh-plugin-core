@@ -57,4 +57,40 @@ export function serveModelCatalog(ctx, options) {
         });
     });
 }
+/** 全部工作区的归档会话 id 合并去重（宿主没给 archivedSessionIds 时为空数组）。 */
+export function collectArchivedSessionIds(registry) {
+    const out = new Set();
+    for (const entity of registry.list()) {
+        for (const id of entity.archivedSessionIds ?? [])
+            out.add(id);
+    }
+    return [...out];
+}
+/**
+ * 注册「已归档会话 id 集合」路由（插件宿主 `apply` 里调一次）。
+ *
+ * 为什么走宿主：client 侧读不到归档集合（见 HostWorkspaceRegistryLike 注释）⇒ 与模型
+ * 目录同模式，宿主取数挂只读路由，client fetch。会话预览据此分化「继续对话」行为：
+ * 已归档 = 开分支确认框；未归档 = 直跳官方会话页。
+ *
+ * @param ctx 插件宿主 ctx（`workspaceRegistry` / `webServer` 两条注入线，缺任一就不注册）。
+ * @param options.path 路由路径，客户端要用**同一个常量**去 fetch（如 `/api/x/archived-sessions`）。
+ */
+export function serveArchivedSessions(ctx, options) {
+    ctx.inject(['workspaceRegistry', 'webServer'], (services) => {
+        const registry = services.workspaceRegistry;
+        const webServer = services.webServer;
+        if (registry === undefined || typeof registry.list !== 'function' || webServer === undefined)
+            return;
+        webServer.register({
+            kind: 'exact',
+            path: options.path,
+            handler: (_req, res) => {
+                const archived = collectArchivedSessionIds(registry);
+                res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ archived }));
+            },
+        });
+    });
+}
 //# sourceMappingURL=index.js.map

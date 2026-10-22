@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { buildModelRoutes } from '../dist/host/index.js'
+import { buildModelRoutes, collectArchivedSessionIds } from '../dist/host/index.js'
 import { modelCatalog, workspaceList } from '../dist/ui/index.js'
 
 /** 最小 llm face：按脚本返回 provider 与各自模型。 */
@@ -60,4 +60,16 @@ test('workspaceList 换源即镜像新快照并转发通知', () => {
   workspaceList.setSource(source) // 旧订阅已解，不叠加
   assert.equal(listeners, 1)
   off()
+})
+
+test('collectArchivedSessionIds：多工作区归档 id 合并去重；缺字段 / 空列表为空数组', () => {
+  assert.deepEqual(collectArchivedSessionIds({
+    list: () => [
+      { id: 'w1', archivedSessionIds: ['s1', 's2'] },
+      { id: 'w2', archivedSessionIds: ['s2', 's3'] },
+      { id: 'w3' },
+    ],
+  }), ['s1', 's2', 's3'])
+  assert.deepEqual(collectArchivedSessionIds({ list: () => [] }), [])
+  assert.deepEqual(collectArchivedSessionIds({ list: () => [{ id: 'w1', archivedSessionIds: [] }] }), [])
 })

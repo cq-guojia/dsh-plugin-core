@@ -1,4 +1,5 @@
 import { createElement as h, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { IconArchiveOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitives'
 import {
   openFilePreview,
   pickWorkspaceAnchor,
@@ -7,6 +8,7 @@ import {
   type WorkspaceFilesFace,
 } from '../../../../dist/explorer/index.js'
 import { workspaceList } from '../../../../dist/ui/index.js'
+import { Chip } from '../../../../dist/ui/index.js'
 import { SessionViewModal } from '../../../../dist/session/index.js'
 import { formatDateTime } from '../../../../dist/utils/index.js'
 import { Button } from '../../../../dist/ui/index.js'
@@ -251,15 +253,16 @@ function RealSessionListDemo(): ReturnType<typeof h> {
           font: 'inherit', fontSize: '13px', textAlign: 'left', cursor: 'pointer',
         },
       },
-        h('span', {
-          style: {
-            flex: 'none', width: '8px', height: '8px', borderRadius: '999px',
-            background: row.running ? 'var(--dshpc-warning)' : 'var(--dshpc-fg-4)',
-          },
-          title: row.running ? t('sessionListRunning') : '',
-          'aria-label': row.running ? t('sessionListRunning') : undefined,
-        }),
         h('span', { style: { flex: '1', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, row.displayTitle),
+        row.running ? h(Chip, { size: 'xs', tone: 'warning' }, t('sessionListRunning')) : null,
+        row.archived
+          ? h(Chip, { size: 'xs' },
+              h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '4px' } },
+                h(IconArchiveOutlineRegular, { size: 12 }),
+                t('sessionListArchived'),
+              ),
+            )
+          : null,
         h('span', { style: { flex: 'none', fontSize: '12px', color: 'var(--dshpc-fg-3)' } }, formatDateTime(new Date(row.updatedAt).toISOString())),
       ),
     ),
@@ -267,6 +270,9 @@ function RealSessionListDemo(): ReturnType<typeof h> {
       ? h(SessionViewModal, {
           sessionId: openId,
           view,
+          // 标题 = 会话自己的标题；归档态分化「继续对话」行为（开分支确认 vs 直跳官方）。
+          heading: state.rows.find((row) => row.sessionId === openId)?.displayTitle,
+          archived: state.rows.find((row) => row.sessionId === openId)?.archived,
           onClose: () => { view.dispose(); setOpenId(null) },
           // 真宿主服务：fork 与跳转都是官方口子（预览弹窗里不可打字续聊，走开分支）。
           forkSession: (id, atSeq) => {

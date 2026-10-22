@@ -322,6 +322,14 @@ export const docData = {
         "en": "The sanctioned way to continue (important): the underlying keyed array (order + nodes) is a read-only snapshot; the host exposes no write surface for sending into a preview binding ⇒ you cannot type inside the dialog. The sanctioned path = fork a branch (sessions.fork) → uiWorkspace.openSession to jump into the official session area; the bottom staging input’s \"Confirm\" goes through onContinue, where the caller forks + sends the first turn via host-side agent.send + navigates (the same official dispatch path — no hacks)."
       },
       {
+        "zh": "「继续对话」按钮按归档状态分化（调用方经 `archived` prop 注入）：已归档 ⇒ 开分支图标 + 确认框（fork 出子会话再跳官方区；官方策略归档会话不进主视图）；未归档 / 未提供 ⇒ 会话图标，点击直跳官方会话页。弹窗标题 = 会话自己的标题（`heading`，通常传宿主 sessions.list 的 displayTitle），已归档时标题旁带官方归档图标 + 「已归档」。",
+        "en": "The \"Continue\" button forks by archive state (injected by the caller via the `archived` prop): archived ⇒ branch icon + confirmation (fork a child, then jump to the official area — official policy keeps archived sessions out of the main view); not archived / not provided ⇒ session icon, one click jumps straight to the official session page. The dialog title is the session’s own title (`heading`, usually the host sessions.list displayTitle); when archived, the official archive icon + \"Archived\" appears beside it."
+      },
+      {
+        "zh": "归档状态客户端读不到（官方 UiWorkspace 公开面只有导航 / 归档 / 解归档写操作，归档 id 集合在官方 UI 内部注入 shares 里）⇒ 与本包 `./host` 的模型目录同模式：宿主侧 `serveArchivedSessions` 读 workspaceRegistry.archivedSessionIds 挂只读路由，client fetch 后传给 `archived`。",
+        "en": "Archive state is not readable client-side (the official UiWorkspace public surface only has navigation / archive / unarchive writes; the archived-id set lives in the official UI’s internal injection shares) ⇒ same pattern as this package’s ./host model catalog: the host-side serveArchivedSessions reads workspaceRegistry.archivedSessionIds and mounts a read-only route; the client fetches it and passes `archived`."
+      },
+      {
         "zh": "已知限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染（翻页靠「加载更早记录」按钮，官方 loadOlder）；系统提示 / 上下文注入行按决策 28 过滤（官方 ContextInjectionRow 待实施）；👍👎 反馈按钮官方走 slots，弹窗无该插槽。",
         "en": "Known limits: when official styles are not injected, the self-drawn look applies (functionality unaffected); long sessions render all at once (paging via the \"load earlier\" button, official loadOlder); system-prompt / context-injection rows are filtered per decision 28 (official ContextInjectionRow pending); thumbs up/down go through official slots, which the dialog does not have."
       },
@@ -399,10 +407,19 @@ export const docData = {
           {
             "name": "heading",
             "type": "string",
+            "def": "sessionId",
+            "desc": {
+              "zh": "弹窗标题 = 会话自己的标题（宿主 sessions.list 的 displayTitle）",
+              "en": "Dialog title = the session’s own title (host sessions.list displayTitle)"
+            }
+          },
+          {
+            "name": "archived",
+            "type": "boolean",
             "def": "—",
             "desc": {
-              "zh": "可选标题（拼在「会话记录（只读）」后）",
-              "en": "Optional title (appended after \"Session transcript (read-only)\")"
+              "zh": "是否已归档（client 读不到，经宿主路由注入）；分化「继续对话」：归档=开分支确认框，未归档=直跳官方会话页",
+              "en": "Whether archived (not readable client-side; injected via a host route); differentiates \"Continue\": archived = fork confirmation, not archived = direct jump to the official session page"
             }
           },
           {

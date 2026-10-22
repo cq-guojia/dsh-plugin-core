@@ -76,13 +76,21 @@ if (view !== null) {
 ## 续聊（正道）
 
 底层 keyed 数组（`order` + `nodes`）是**只读快照**，官方没有「往预览 binding 发消息」的写面
-⇒ 框内不可打字续聊。两条正道：
+⇒ 框内不可打字续聊。「继续对话」按钮**按归档状态分化**（`archived` prop 注入）：
 
-1. 头部「继续对话（开分支）」/ 消息行分支 icon：确认框 → `sessions.fork` → 关弹窗释放 →
-   `uiWorkspace.openSession` 跳官方会话区。
-2. 底部暂存输入框：打字 → 确定 → `onContinue(message)`，由调用方完成 fork +
-   host 半侧 `agents.create + agent.send(msg, 'next-turn', true)` 起轮次 + 跳转。
-   （client→host remote 通道为新增能力，实现期第一验证项。）
+- **已归档**：开分支图标 + 确认框 → `sessions.fork` → 关弹窗释放 → `uiWorkspace.openSession`
+  跳官方会话区（官方策略：归档会话不进主视图）。
+- **未归档**：会话图标，点击**直跳**官方会话页（`uiWorkspace.openSession`，无确认）。
+
+底部暂存输入框：打字 → 确定 → `onContinue(message)`，由调用方完成 fork +
+host 半侧 `agents.create + agent.send(msg, 'next-turn', true)` 起轮次 + 跳转。
+（client→host remote 通道为新增能力，实现期第一验证项。）
+
+**标题与归档标识**：弹窗标题 = 会话自己的标题（`heading`，宿主 `sessions.list` 的
+`displayTitle`），不再带固定前缀；已归档时标题旁显示官方归档图标 + 「已归档」。
+归档状态 client 读不到（官方 UiWorkspace 公开面无此读口）⇒ 与本包 `./host` 模型目录同模式：
+宿主 `serveArchivedSessions` 读 `workspaceRegistry.archivedSessionIds` 挂只读路由，
+client fetch 后传入 `archived`。
 
 ## 定制边界
 

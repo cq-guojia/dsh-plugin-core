@@ -34,15 +34,42 @@ function serveModelCatalog(ctx, options) {
     });
   });
 }
+function collectArchivedSessionIds(registry) {
+  const out = /* @__PURE__ */ new Set();
+  for (const entity of registry.list()) {
+    for (const id of entity.archivedSessionIds ?? [])
+      out.add(id);
+  }
+  return [...out];
+}
+function serveArchivedSessions(ctx, options) {
+  ctx.inject(["workspaceRegistry", "webServer"], (services) => {
+    const registry = services.workspaceRegistry;
+    const webServer = services.webServer;
+    if (registry === void 0 || typeof registry.list !== "function" || webServer === void 0)
+      return;
+    webServer.register({
+      kind: "exact",
+      path: options.path,
+      handler: (_req, res) => {
+        const archived = collectArchivedSessionIds(registry);
+        res.writeHead(200, { "content-type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ archived }));
+      }
+    });
+  });
+}
 
 // packages/demo/src/paths.ts
 var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
+var ARCHIVED_SESSIONS_PATH = "/api/dsh-plugin-core-demo/archived-sessions";
 
 // packages/demo/src/index.ts
 var name = "dsh-plugin-core-demo";
 var inject = [];
 function apply(ctx) {
   serveModelCatalog(ctx, { path: MODELS_PATH });
+  serveArchivedSessions(ctx, { path: ARCHIVED_SESSIONS_PATH });
 }
 export {
   apply,

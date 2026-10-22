@@ -89,7 +89,6 @@ export type UtilMessageKey =
   | 'codeCopy'
   | 'codeCopied'
   // ── 会话预览（mirror/ 官方会话 UI；文案逐字对齐官方 ui-chat / ui-tool / ui-deliverables 词典）──
-  | 'sessionViewerTitle'
   | 'sessionUnknownKind'
   | 'sessionLoadOlder'
   | 'sessionProcess'
@@ -208,6 +207,7 @@ export type UtilMessageKey =
   | 'diffCollapseAria'
   | 'diffExpandAria'
   | 'diffExpandRest'
+  | 'sessionArchived'
   | 'continueBranch'
   | 'forkConfirmTitle'
   | 'forkConfirmText'
@@ -313,7 +313,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     relYearsAgo: '{n} 年前',
     codeCopy: '复制',
     codeCopied: '已复制',
-    sessionViewerTitle: '会话记录（只读）',
     sessionUnknownKind: '未支持的节点类型：',
     sessionLoadOlder: '加载更早记录',
     sessionProcess: '过程',
@@ -432,6 +431,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     diffCollapseAria: '收起差异',
     diffExpandAria: '展开其余 {count} 行差异',
     diffExpandRest: '… 其余 {count} 行',
+    sessionArchived: '已归档',
     continueBranch: '继续对话',
     forkConfirmTitle: '开分支继续对话',
     forkConfirmText: '是否需要基于此会话开一个新分支继续对话？原会话保持只读留档，新分支复制本会话内容并可继续对话。',
@@ -533,7 +533,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     relYearsAgo: '{n}y ago',
     codeCopy: 'Copy',
     codeCopied: 'Copied',
-    sessionViewerTitle: 'Session transcript (read-only)',
     sessionUnknownKind: 'Unsupported node kind: ',
     sessionLoadOlder: 'Load earlier messages',
     sessionProcess: 'Process',
@@ -652,6 +651,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     diffCollapseAria: 'Collapse diff',
     diffExpandAria: 'Expand {count} more diff lines',
     diffExpandRest: '… {count} more lines',
+    sessionArchived: 'Archived',
     continueBranch: 'Continue conversation',
     forkConfirmTitle: 'Fork to continue',
     forkConfirmText: 'Start a new branch from this session to continue the conversation? The original stays read-only; the branch copies this conversation and can continue.',

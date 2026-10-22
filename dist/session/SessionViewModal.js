@@ -9,7 +9,7 @@
 //     由调用方完成 fork + host 侧 agent.send 起轮次 + 跳官方视图（官方能力，无歪门邪道）。
 //   · retain source 参数化在 open-session-view.ts。
 import { Fragment, createElement as h, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import { Button, IconBranchOutlineRegular, IconCloseOutlineRegular, Modal } from '../ui/official.js';
+import { Button, IconArchiveOutlineRegular, IconBranchOutlineRegular, IconCloseOutlineRegular, IconNewChatOutlineRegular, Modal } from '../ui/official.js';
 import { ensureControls } from '../ui/css.js';
 import { ChatHint, ChatNodeListMirror, ChatOlderButton, ChatViewFrame } from './mirror/ChatView.js';
 import { GenericCommandCard } from './mirror/GenericCommandCard.js';
@@ -582,7 +582,7 @@ function makeFileMentions(paths, open) {
 export function SessionViewModal(props) {
     ensureControls();
     const tt = props.t ?? defaultT;
-    const { heading, sessionId, view, onClose, forkSession, openHostSession, onContinue, onOpenFile } = props;
+    const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
     const subscribe = useMemo(() => (onChange) => view.target.subscribe(onChange), [view]);
     const getSnapshot = useMemo(() => () => view.target.getSnapshot(), [view]);
     const chat = useSyncExternalStore(subscribe, getSnapshot);
@@ -604,7 +604,13 @@ export function SessionViewModal(props) {
     }, []);
     // 开分支：确认框显隐 + fork 进行中 + 失败原因。aliveRef 防「fork 在途时用户关弹窗」
     // 后仍跳转（await 回来时弹窗已卸载 ⇒ 放弃跳转，不 setState）。
+    // 「继续对话」按归档状态分化（用户 2026-10-22 拍板）：
+    //   已归档   ⇒ 开分支图标 + 确认框（fork 出子会话再跳官方区；官方策略归档会话不进主视图）
+    //   未归档   ⇒ 会话图标，点击直跳官方会话页（uiWorkspace.openSession，无确认）
+    const isArchived = archived === true;
     const canFork = forkSession !== undefined && openHostSession !== undefined;
+    const canDirectOpen = openHostSession !== undefined;
+    const showContinue = isArchived ? canFork : canDirectOpen;
     const [forkTarget, setForkTarget] = useState(null);
     const [forking, setForking] = useState(false);
     const [forkErr, setForkErr] = useState(null);
@@ -760,21 +766,43 @@ export function SessionViewModal(props) {
             ...rendered,
         ];
     // 关闭途径：右上角关闭按钮 / 点遮罩（主面板同款，不监听 document）。
-    return h(Fragment, null, h('div', { className: 'dshpc-sv-overlay', onClick: onClose }, h('div', { className: 'dshpc-sv-panel', onClick: (event) => { event.stopPropagation(); } }, h('div', { className: 'dshpc-sv-header' }, h('div', { className: 'dshpc-sv-heading' }, h('div', { className: 'dshpc-sv-title' }, tt('sessionViewerTitle'), heading === undefined ? '' : ` · ${heading}`), h('div', { className: 'dshpc-sv-sid' }, sessionId), 
+    return h(Fragment, null, h('div', { className: 'dshpc-sv-overlay', onClick: onClose }, h('div', { className: 'dshpc-sv-panel', onClick: (event) => { event.stopPropagation(); } }, h('div', { className: 'dshpc-sv-header' }, h('div', { className: 'dshpc-sv-heading' }, h('div', { className: 'dshpc-sv-title' }, heading ?? sessionId, 
+    // 归档标识（官方归档图标 + 「已归档」）。
+    isArchived
+        ? h('span', {
+            style: {
+                display: 'inline-flex', alignItems: 'center', gap: '4px',
+                marginLeft: '8px', fontSize: 'var(--dshpc-font-xs)',
+                color: 'var(--dshpc-fg-3)', fontWeight: 400,
+            },
+            title: tt('sessionArchived'),
+        }, h(IconArchiveOutlineRegular, { size: 12 }), tt('sessionArchived'))
+        : null), h('div', { className: 'dshpc-sv-sid' }, sessionId), 
     // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
     officialCount === 0
         ? h('div', {
             className: 'dshpc-sv-sid',
             style: { color: 'var(--dshpc-warning, #b7791f)' },
         }, '⚠ 官方样式未命中（当前为自绘回退）')
-        : null), h('div', { className: 'dshpc-sv-headerbtns' }, canFork
+        : null), h('div', { className: 'dshpc-sv-headerbtns' }, showContinue
         ? h(Button, {
             variant: 'outline',
             size: 'sm',
             disabled: forking,
             title: tt('continueBranch'),
-            icon: h(IconBranchOutlineRegular, { size: 14 }),
-            onClick: () => { setForkErr(null); setForkTarget({}); },
+            icon: isArchived
+                ? h(IconBranchOutlineRegular, { size: 14 })
+                : h(IconNewChatOutlineRegular, { size: 14 }),
+            onClick: () => {
+                if (isArchived) {
+                    setForkErr(null);
+                    setForkTarget({});
+                }
+                else if (openHostSession !== undefined) {
+                    onClose();
+                    openHostSession(sessionId);
+                }
+            },
         }, tt('continueBranch'))
         : null, h('button', {
         type: 'button',
