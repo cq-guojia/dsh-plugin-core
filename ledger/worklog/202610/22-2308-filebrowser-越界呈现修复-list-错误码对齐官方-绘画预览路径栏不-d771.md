@@ -122,3 +122,4 @@ list / rootCache 键 / learnRoot / stat / absolutizeDir / 相对化 / copyPath /
 - 2026-10-22 23:55:28 · log · @GuoJia-Agent · 第三轮（用户拍板：底座不甩锅调用方）：FileBrowser/PreviewBody 兜底自动读 workspaceList 快照（connectHost 注入），零传参即匹配+可切；HostWorkspaceItem 加 path；demo 改零传参示范；98/98、typecheck、build:demo 全绿
 - 2026-10-23 00:04:22 · log · @GuoJia-Agent · 第四轮（真机截图）：匹配生效但学根/相对化仍按 props.sessionId ⇒ 面包屑露区外层；anchorMatch 统一驱动全部会话键（list/rootCache/learnRoot/stat/absolutizeDir/相对化/copyPath/onPick/FilePreview），根标签优先匹配工作区名；98/98、typecheck、build:demo 全绿
 - 2026-10-23 00:16:32 · log · @GuoJia-Agent · session 样式防护（真机截图：多变 deliverables 卡时左下角变更卡竖排变形）：changes 卡加 align-self:flex-start+flex:none、stat nowrap、endinfo 改 margin-left:auto；根因待 DOM 取证
+- 2026-10-23 00:18:41 · log · @GuoJia-Agent · 回退未经同意的越界 hint：删 FileBrowser crumbBarPlain hint span + explorerOutsideHint 中英 key + bar-hint CSS（源码与产物均已清零，死 key 自检过）
