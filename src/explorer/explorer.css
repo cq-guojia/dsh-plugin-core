@@ -137,8 +137,11 @@
 .dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}
 .dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}
 
-/* 预览体内部容器（仅本仓预览组件用；兄弟对应 preview-fill / preview-body-code 一类） */
-.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%}
+/* 预览体内部容器（仅本仓预览组件用；兄弟对应 preview-fill / preview-body-code 一类）。
+   必须 border-box：渲染态 inline 加了 padding:12px 14px，content-box 下 width:100%+padding
+   会溢出父层 28px（父 .dshpc-fb 无 overflow 裁切）→ 恒多一条横滚条；border-box 把 padding
+   算进 100%，从根消除该溢出。 */
+.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box}
 .dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}
 .dshpc-fb__more{display:flex;justify-content:center;padding:10px}
 .dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}
