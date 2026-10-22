@@ -324,6 +324,10 @@ export const docData = {
       {
         "zh": "已知限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染（翻页靠「加载更早记录」按钮，官方 loadOlder）；系统提示 / 上下文注入行按决策 28 过滤（官方 ContextInjectionRow 待实施）；👍👎 反馈按钮官方走 slots，弹窗无该插槽。",
         "en": "Known limits: when official styles are not injected, the self-drawn look applies (functionality unaffected); long sessions render all at once (paging via the \"load earlier\" button, official loadOlder); system-prompt / context-injection rows are filtered per decision 28 (official ContextInjectionRow pending); thumbs up/down go through official slots, which the dialog does not have."
+      },
+      {
+        "zh": "配套的官方会话列表（demo 预览站「真实会话列表」在用）：宿主 client 服务 `sessions`（@deepseek-ai/dsh-api-session-controller client 半侧，0.2.0-rc.2 解包核实）暴露 `list` 快照存储——`{ ids, byId, phase }`，每行带 `displayTitle`（durable title → 项目 basename → session id 三级回落）/ `updatedAt` / `running` / `blank`；数据来自宿主 `session/list` RPC（ApiSessionList.list：「Read every visible attached and persisted Session without activating an Agent」，按活动序）⇒ **列会话 ≠ 打开会话，冷安全，归档会话也在列**。demo 页面按 updatedAt 降序取前 20 条，点行 → openSessionView 真预览。",
+        "en": "The companion official session list (used by the demo preview site’s \"real session list\"): the host client service `sessions` (the client half of @deepseek-ai/dsh-api-session-controller, verified by unpacking 0.2.0-rc.2) exposes a `list` snapshot store — `{ ids, byId, phase }`, each row carrying `displayTitle` (durable title → project basename → session id, three-level fallback) / `updatedAt` / `running` / `blank`; the data comes from the host `session/list` RPC (ApiSessionList.list: \"Read every visible attached and persisted Session without activating an Agent\", ordered by activity) ⇒ listing sessions ≠ opening them — cold-safe, and archived sessions are listed too. The demo page takes the 20 most recent by updatedAt; clicking a row → openSessionView for a real preview."
       }
     ],
     "api": [

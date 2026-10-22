@@ -8,8 +8,10 @@ import {
 } from '../../../../dist/explorer/index.js'
 import { workspaceList } from '../../../../dist/ui/index.js'
 import { SessionViewModal } from '../../../../dist/session/index.js'
+import { formatDateTime } from '../../../../dist/utils/index.js'
 import { Button } from '../../../../dist/ui/index.js'
 import { mockSessionView } from '../mock-session.js'
+import { openRealSessionView, realForkSession, realOpenHostSession, realSessions } from '../real-sessions.js'
 import { Example, CodeOnly, DocProse, DocApi } from '../doc.js'
 import { pageRow } from '../layout-mount.js'
 import { fileServices } from '../host-files.js'
@@ -32,6 +34,26 @@ import { pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 
 const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['js', 'md'] } })
 // r = { path, isDir }`
+
+const CODE_SESSION_REAL = `// 真实宿主：sessions.list 快照（冷安全，不激活 Agent）→ 点开真预览
+// 服务来自 package.json dsh.client.inject 的三个官方包：
+//   dsh-api-session-controller（sessions）/ dsh-client-ui-conversation（uiConversation）
+//   / dsh-client-ui-workspace（uiWorkspace）
+import { useSyncExternalStore } from 'react'
+import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
+
+const state = useSyncExternalStore(realSessions.subscribe, realSessions.getSnapshot)
+// state.rows：宿主 sessions.list 的 displayTitle / updatedAt / running（按活动降序前 20）
+
+const view = openRealSessionView(row.sessionId)   // retain → binding → target('chat')
+h(SessionViewModal, {
+  sessionId: row.sessionId,
+  view,
+  onClose: () => { view.dispose(); setOpenId(null) },
+  forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
+  openHostSession: (id) => uiWorkspace.openSession(id),
+  onOpenFile: (path) => openFilePreview(path),
+})`
 
 const CODE_SESSION = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
 
@@ -202,6 +224,62 @@ function SessionPreviewDemo(): ReturnType<typeof h> {
   )
 }
 
+/** 真实会话列表演示：宿主 `sessions.list` 快照（冷安全，不激活 Agent）→ 点开真预览。 */
+function RealSessionListDemo(): ReturnType<typeof h> {
+  const state = useSyncExternalStore(realSessions.subscribe, realSessions.getSnapshot)
+  const [openId, setOpenId] = useState<string | null>(null)
+  const [note, setNote] = useState<string | null>(null)
+  const view = useMemo(() => (openId === null ? null : openRealSessionView(openId)), [openId])
+  if (state.status !== 'ready') {
+    return h('p', { style: { fontSize: '13px', opacity: .8 } }, t('sessionListUnavailable'))
+  }
+  if (state.rows.length === 0) {
+    return h('p', { style: { fontSize: '13px', opacity: .8 } }, t('sessionListEmpty'))
+  }
+  return h(
+    'div',
+    { style: { display: 'flex', flexDirection: 'column', gap: '6px', maxWidth: '720px' } },
+    ...state.rows.map((row) =>
+      h('button', {
+        key: row.sessionId,
+        type: 'button',
+        onClick: () => { setOpenId(row.sessionId) },
+        style: {
+          display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px',
+          border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px',
+          background: 'var(--dshpc-surface-2)', color: 'var(--dshpc-fg)',
+          font: 'inherit', fontSize: '13px', textAlign: 'left', cursor: 'pointer',
+        },
+      },
+        h('span', {
+          style: {
+            flex: 'none', width: '8px', height: '8px', borderRadius: '999px',
+            background: row.running ? 'var(--dshpc-warning)' : 'var(--dshpc-fg-4)',
+          },
+          title: row.running ? t('sessionListRunning') : '',
+          'aria-label': row.running ? t('sessionListRunning') : undefined,
+        }),
+        h('span', { style: { flex: '1', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, row.displayTitle),
+        h('span', { style: { flex: 'none', fontSize: '12px', color: 'var(--dshpc-fg-3)' } }, formatDateTime(new Date(row.updatedAt).toISOString())),
+      ),
+    ),
+    openId !== null && view !== null
+      ? h(SessionViewModal, {
+          sessionId: openId,
+          view,
+          onClose: () => { view.dispose(); setOpenId(null) },
+          // 真宿主服务：fork 与跳转都是官方口子（预览弹窗里不可打字续聊，走开分支）。
+          forkSession: (id, atSeq) => {
+            const p = realForkSession(id, atSeq)
+            return p ?? Promise.reject(new Error('sessions.fork 未就位'))
+          },
+          openHostSession: (id) => { realOpenHostSession(id) },
+          onOpenFile: (path) => { setNote(`${t('sessionOpenedFile')} ${path}`) },
+        })
+      : null,
+  )
+}
+
 export function ExplorerPage(): ReturnType<typeof h> {
   return h(
     'div',
@@ -229,7 +307,12 @@ export function SessionPage(): ReturnType<typeof h> {
     h(DocProse, { id: 'session' }),
     h(
       Example,
-      { title: 'SessionPreview', hint: t('sessionHint'), code: CODE_SESSION },
+      { title: '真实会话列表', hint: t('sessionRealHint'), code: CODE_SESSION_REAL },
+      h(RealSessionListDemo, null),
+    ),
+    h(
+      Example,
+      { title: 'SessionViewModal（离线假数据）', hint: t('sessionHint'), code: CODE_SESSION },
       h(SessionPreviewDemo, null),
     ),
     h(DocApi, { id: 'session' }),

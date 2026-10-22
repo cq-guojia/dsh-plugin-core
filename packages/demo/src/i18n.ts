@@ -140,6 +140,10 @@ export type DemoMessageKey =
   | 'sessionOpenModal'
   | 'sessionClose'
   | 'sessionPreviewTitle'
+  | 'sessionRealHint'
+  | 'sessionListUnavailable'
+  | 'sessionListEmpty'
+  | 'sessionListRunning'
   | 'sessionForked'
   | 'sessionOpenedHost'
   | 'sessionContinued'
@@ -401,6 +405,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sessionOpenModal: '打开会话预览',
     sessionClose: '关闭',
     sessionPreviewTitle: '会话预览（假数据）',
+    sessionRealHint: '宿主 sessions.list 快照（冷安全，不激活 Agent）→ 点开真预览；fork 与跳转都是官方口子',
+    sessionListUnavailable: '宿主会话服务未就位（sessions / uiConversation / uiWorkspace 缺席）——在真实 dsh profile 里安装本插件即可用；下方为离线假数据演示',
+    sessionListEmpty: '宿主当前没有可显示的会话',
+    sessionListRunning: '运行中',
     sessionForked: '已开分支（演示回声）：',
     sessionOpenedHost: '已跳转官方会话区（演示回声）：',
     sessionContinued: '暂存消息已受理（演示回声）：',
@@ -646,6 +654,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sessionOpenModal: 'Open session preview',
     sessionClose: 'Close',
     sessionPreviewTitle: 'Session preview (mock data)',
+    sessionRealHint: 'Host sessions.list snapshot (cold-safe, no Agent activation) → click for a real preview; fork and navigation are official APIs',
+    sessionListUnavailable: 'Host session services not ready (sessions / uiConversation / uiWorkspace absent) — install this plugin into a real dsh profile to use it; the offline mock demo is below',
+    sessionListEmpty: 'The host has no visible sessions right now',
+    sessionListRunning: 'Running',
     sessionForked: 'Forked (demo echo): ',
     sessionOpenedHost: 'Jumped to the official session area (demo echo): ',
     sessionContinued: 'Staged message accepted (demo echo): ',

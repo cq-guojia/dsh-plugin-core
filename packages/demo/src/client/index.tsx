@@ -15,6 +15,7 @@ import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 import { createStyleKit } from '../../../../dist/design/index.js'
 import { PanelDock, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { connectFileServices } from '../host-files.js'
+import { connectRealSessions } from '../real-sessions.js'
 import { demoDock, demoPanels } from '../dock.js'
 import { pageRow } from '../layout-mount.js'
 import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
@@ -197,6 +198,7 @@ export function apply(ctx: {
   connectHost(ctx, { modelsPath: MODELS_PATH })
   // explorer 的数据面（remote.workspaceFiles / remote.officeToPdf）：同样是真服务，缺席即停在未就位态。
   connectFileServices(ctx)
+  connectRealSessions(ctx)
 
   // 宿主语言：注册本插件字典 + 绑定 t；切换时同步核心 setLocale，内置组件随之切换
   ctx.inject(['locale'], (sub: unknown) => {

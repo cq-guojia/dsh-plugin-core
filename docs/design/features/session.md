@@ -91,6 +91,18 @@ if (view !== null) {
 - `retainSource` 参数化：写进宿主 `retainedBy` 的键，默认 `'dsh-plugin-core'`。
 - 官方类名 / 词典逐字镜像；宿主升级后按兄弟项目 ui-map §〇 流程 diff 复核。
 
+## 配套：官方会话列表（冷安全）
+
+宿主 client 服务 `sessions`（`@deepseek-ai/dsh-api-session-controller` client 半侧，0.2.0-rc.2
+解包核实）暴露 `list` 快照存储：`{ ids, byId, phase }`，每行带 `displayTitle`
+（durable title → 项目 basename → session id 三级回落）/ `updatedAt` / `running` / `blank`。
+数据来自宿主 `session/list` RPC（「Read every visible attached and persisted Session
+**without activating an Agent**」，按活动序）⇒ **列会话 ≠ 打开会话，冷安全，归档会话也在列**。
+
+demo 预览站「真实会话列表」即此实现：按 `updatedAt` 降序取前 20 条，点行 →
+`openSessionView` 真预览；fork 与跳转都是官方口子。服务缺席（根预览站）时如实说
+「未就位」并回退离线假数据演示，不造假数据。
+
 ## 已知限制
 
 - 官方样式未注入时回退自绘观感（功能不受影响，控制台 + 面板内可见探针提示）。
