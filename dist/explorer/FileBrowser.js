@@ -575,14 +575,12 @@ export function FileBrowser(props) {
             onClick: props.onClose,
         })));
     // 越界（outside-workspace）：第一排整条换成只读完整路径，不给任何会失败的入口。
-    // hint = 把「为什么不能点」说破：官方 list 的目录 containment 只放行会话工作区内的目录
-    // （read 允许工作区外文件 ⇒ 预览体照常工作，仅目录列举/导航不可用）。
     const crumbBarPlain = h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h(MarqueeText, {
         text: dir,
         title: dir,
         className: 'dshpc-fb__bar-plain',
         style: { flex: '1 1 auto', minWidth: 0 },
-    }), h('span', { className: 'dshpc-fb__bar-hint' }, tt('explorerOutsideHint')), h('div', { className: 'dshpc-fb__actions' }, props.onClose === undefined
+    }), h('div', { className: 'dshpc-fb__actions' }, props.onClose === undefined
         ? null
         : h(IconButton, {
             variant: 'plain',

@@ -196,27 +196,28 @@ sessionId) {
                 t,
             });
         case 'turn-tail': {
-            // 官方 turnTail 插槽（DeliverablesTail 同位）：交付卡网格渲染在 TurnTailNodeView 的
-            // tailSlot 里，即在 MessageIconActions（复制/分支/用量/时钟行）之前。
+            // 官方 turnTail 插槽（DeliverablesTail 同位）：变更卡 + 交付卡网格都渲染在
+            // TurnTailNodeView 的 tailSlot 里（操作行之前）——**顺序与官方 Deliverables 一致：
+            // ChangedFiles 卡在前、presented 网格在后**（官方 lib/client.js：Fragment >
+            // [ChangedFiles, Deliverables.root(网格)]）。曾把变更卡挂到 tail 之后（操作行下方），
+            // 与官方结构漂移且触发展示异常（真机 2026-10-23：卡内标题被切、计数拆行）。
             // 数据 = 快照 turn 级 deliverables.presented 同源推导，只挂最后一轮 tail。
             const data = node.data;
             const turn = data?.turn ?? turnLocationOf(node)?.turn;
             const atLastTail = turn !== undefined && lastTailTurn !== undefined && turn === lastTailTurn;
             const showGrid = deliverFiles !== undefined && deliverFiles.length > 0 && atLastTail;
-            const tailSlot = showGrid
-                ? h(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t })
-                : null;
-            const tail = data === undefined || data.closing === null || data.closing === undefined
-                ? null
-                : h(TurnTailNodeViewMirror, { data, onBranchAt, tailSlot, t });
-            if (tail === null)
-                return null;
             // 官方 ChangedFiles 卡（ui-deliverables）：`workspace/changes` 公告 + 宿主
             // api/changes.summary ⇒ 「已编辑 x.md / +N -M」。数据不在快照里，单独拉（见 changes.ts）。
             const changesCard = atLastTail && changesSeq !== undefined && sessionId !== undefined
                 ? h(ChangedFilesCard, { sessionId, seq: changesSeq, onOpen: fileOpen?.open, t })
                 : null;
-            return changesCard === null ? tail : h(Fragment, null, tail, changesCard);
+            const tailSlot = changesCard === null && !showGrid
+                ? null
+                : h(Fragment, null, changesCard, showGrid ? h(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t }) : null);
+            const tail = data === undefined || data.closing === null || data.closing === undefined
+                ? null
+                : h(TurnTailNodeViewMirror, { data, onBranchAt, tailSlot, t });
+            return tail;
         }
         case 'assistant-step': {
             // 官方块渲染器（lib/client.js:5818-5871）：

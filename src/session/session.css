@@ -17,18 +17,35 @@
 /* 会话区保底：高度由内容决定（撑开由 Modal body 滚）。 */
 .dshpc-sv-chat{flex:none;min-height:0;}
 
-/* 官方 ChangedFiles 卡（ui-deliverables，2026-10-22 接上）：单文件 = 文件类型图标 +
-   「已编辑 x.md」+ 计数（+N -M，hover 才上色，同官方）。数据走宿主 api/changes.summary。 */
-.dshpc-sv-changes{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint,#0000000a);border-radius:var(--dshpc-radius-md);background:var(--dshpc-plate,rgba(128,128,128,.08));align-items:center;gap:10px;width:fit-content;max-width:100%;min-height:44px;margin-top:4px;padding:6px 12px;font:inherit;color:inherit;text-align:left;display:flex}
-.dshpc-sv-changes--open{cursor:pointer}
-.dshpc-sv-changes--open:hover{background:var(--dshpc-hover,rgba(38,49,72,.06))}
-.dshpc-sv-changes-icon{width:20px;height:20px;flex:none;color:var(--dshpc-link,#3b5bdb);align-items:center;justify-content:center;display:inline-flex}
-.dshpc-sv-changes-body{flex-direction:column;gap:1px;min-width:0;display:flex}
-.dshpc-sv-changes-title{color:var(--dshpc-fg);text-overflow:ellipsis;white-space:nowrap;overflow:hidden;font-size:var(--dshpc-font-sm);font-weight:500;line-height:var(--dshpc-line-sm)}
-.dshpc-sv-changes-stat{font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));line-height:var(--dshpc-line-sm)}
-.dshpc-sv-changes-counts{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace)}
-.dshpc-sv-changes:hover .dshpc-sv-changes-added{color:var(--dshpc-success,#2da44e)}
-.dshpc-sv-changes:hover .dshpc-sv-changes-removed{color:var(--dshpc-danger,#cf222e)}
+/* 官方 ChangedFiles 卡（@deepseek-ai/dsh-client-ui-deliverables 0.2.1-rc.2，
+   client.js:1351-1476 + ChangedFiles.module.css.mjs 逐值对应）：
+   card > header（60px：40×40 tile + 标题 + 计数，hover 换显「预览」）
+        > ul.list > li > row（路径 + 每文件计数；COLLAPSED_ROWS=4 起折叠）
+        > toggle（「全部 N 个文件 / 收起」+ chevron）。
+   计数颜色常显（官方 added=success / deleted=error，不靠 hover）。 */
+.dshpc-sv-changes{--changes-fill:var(--dshpc-plate,rgba(128,128,128,.08));--changes-hover:var(--dshpc-plate-hover,rgba(38,49,72,.06));box-sizing:border-box;border:.5px solid var(--dshpc-border-faint,#0000000a);border-radius:var(--dshpc-radius-lg);background:var(--dshpc-surface-1);min-width:0;color:var(--dshpc-fg);flex-direction:column;margin-top:4px;display:flex;overflow:hidden}
+.dshpc-sv-changes[data-single=true]{border-color:var(--dshpc-border,rgba(128,128,128,.35))}
+.dshpc-sv-changes-header{box-sizing:border-box;background:var(--changes-fill);width:100%;min-width:0;min-height:60px;color:inherit;font:inherit;text-align:left;border:0;align-items:center;gap:10px;margin:0;padding:8px 10px;display:flex}
+button.dshpc-sv-changes-header{cursor:pointer;transition:background-color .12s}
+button.dshpc-sv-changes-header:hover,button.dshpc-sv-changes-header:focus-visible{background:var(--changes-hover)}
+.dshpc-sv-changes-tile{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-md);background:var(--dshpc-icon-plate,rgba(128,128,128,.12));flex:none;place-items:center;width:40px;height:40px;display:grid}
+.dshpc-sv-changes-titles{flex-direction:column;flex:1;min-width:0;display:flex}
+.dshpc-sv-changes-title{text-overflow:ellipsis;white-space:nowrap;overflow:hidden;font-size:var(--dshpc-font-sm);font-weight:500;line-height:var(--dshpc-line-sm)}
+.dshpc-sv-changes-stat{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);display:inline-flex}
+.dshpc-sv-changes-statcounts{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);gap:6px;display:inline-flex}
+.dshpc-sv-changes-previewhint{display:none}
+.dshpc-sv-changes-header:hover .dshpc-sv-changes-statcounts,.dshpc-sv-changes-header:focus-visible .dshpc-sv-changes-statcounts{display:none}
+.dshpc-sv-changes-header:hover .dshpc-sv-changes-previewhint,.dshpc-sv-changes-header:focus-visible .dshpc-sv-changes-previewhint{display:inline}
+.dshpc-sv-changes-added{color:var(--dshpc-success,#2da44e)}
+.dshpc-sv-changes-deleted{color:var(--dshpc-danger,#cf222e)}
+.dshpc-sv-changes-list{border-top:.5px solid var(--dshpc-border-faint);margin:0;padding:0;list-style:none}
+.dshpc-sv-changes-row{box-sizing:border-box;width:100%;min-width:0;min-height:24px;color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);text-align:left;background:0 0;border:0;justify-content:space-between;align-items:center;gap:10px;margin:0;padding:7px 18px 7px 14px;font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);display:flex}
+.dshpc-sv-changes-row:hover,.dshpc-sv-changes-row:focus-visible{background:var(--dshpc-hover,rgba(38,49,72,.06))}
+.dshpc-sv-changes-path{min-width:0;font-family:var(--dshpc-font,inherit);text-overflow:ellipsis;white-space:nowrap;overflow:hidden;font-size:var(--dshpc-font-sm)}
+.dshpc-sv-changes-counts{white-space:nowrap;color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;gap:6px;display:inline-flex}
+.dshpc-sv-changes-toggle{box-sizing:border-box;width:100%;color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;font:inherit;text-align:left;background:0 0;border:0;justify-content:flex-start;align-items:center;gap:4px;margin:0;padding:10px 18px 10px 14px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);display:inline-flex}
+.dshpc-sv-changes-toggle:hover{background:var(--dshpc-hover,rgba(38,49,72,.06))}
+.dshpc-sv-changes-toggle svg{flex:none;width:14px;height:14px}
 .dshpc-sv-actions{display:flex;align-items:center;gap:8px;}
 /* 兜底 frame（官方 ChatView.frame 未命中时挂在同一层）：不滚、不涨，左右内距交给 Modal body。 */
 .dshpc-sv-body{flex:none;min-height:0;overflow:visible;padding:0}
@@ -131,7 +148,7 @@
 .dshpc-sv-tail{display:flex;flex-direction:column;gap:16px;}
 .dshpc-sv-tail-actions{margin-top:4px;margin-left:-6px;}
 .dshpc-sv-clock{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));white-space:nowrap;}
-.dshpc-sv-endinfo{display:inline-flex;align-items:center;gap:8px;margin-left:8px;}
+.dshpc-sv-endinfo{display:inline-flex;align-items:center;gap:8px;margin-left:auto;}
 .dshpc-sv-usage{display:inline-flex;align-items:center;}
 .dshpc-sv-usage-trigger{display:inline-flex;align-items:center;gap:4px;appearance:none;background:0 0;border:none;cursor:pointer;padding:0 4px;font:inherit;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));}
 .dshpc-sv-usage-trigger:hover{color:var(--dshpc-fg,#1f2328);}
