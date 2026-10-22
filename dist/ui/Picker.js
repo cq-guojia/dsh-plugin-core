@@ -1,4 +1,4 @@
-import { createElement as h, useEffect, useMemo, useRef, useState } from 'react';
+import { createElement as h, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFloating, FloatingPortal, flip, shift, offset, autoUpdate, size as floatingSize } from '@floating-ui/react';
 import { ensureControls } from './css.js';
 import { t } from '../utils/i18n.js';
@@ -45,9 +45,11 @@ export function Picker(props) {
             flip(),
             shift({ padding: 8 }),
             floatingSize({
-                apply({ elements, rects, availableHeight }) {
+                apply({ elements, rects, availableWidth, availableHeight }) {
                     Object.assign(elements.floating.style, {
-                        width: `${rects.reference.width}px`,
+                        // 触发器可以限宽，菜单不能跟着限：至少与触发器同宽，随内容变宽，封顶 480 免得太夸张
+                        minWidth: `${rects.reference.width}px`,
+                        maxWidth: `${Math.min(480, availableWidth ?? 480)}px`,
                         maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`,
                     });
                 },
@@ -56,11 +58,14 @@ export function Picker(props) {
         whileElementsMounted: autoUpdate,
         strategy: 'fixed',
     });
-    // 展开即聚焦搜索框（2026-10-20 用户：点开就能直接打字，不用再点一下）
-    useEffect(() => {
-        if (open && props.searchable === true)
-            searchRef.current?.focus();
-    }, [open, props.searchable]);
+    // 展开即聚焦搜索框（2026-10-20 用户：点开就能直接打字，不用再点一下）。
+    // 用回调 ref 在搜索框「真正挂载」时聚焦：菜单经 FloatingPortal 延后挂载，
+    // 普通 useEffect(open) 会在输入框还没挂上时跑（searchRef 仍为 null），导致失效。
+    const setSearchRef = useCallback((el) => {
+        searchRef.current = el;
+        if (el !== null && open)
+            el.focus();
+    }, [open]);
     // 点外面收起（同时认 root 与浮层两个 DOM 子树：菜单 portal 到 body 后不在 root 内）
     useEffect(() => {
         if (!open)
@@ -176,7 +181,7 @@ export function Picker(props) {
             ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerDegraded'))
             : null, atMax ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerMaxReached', { n: props.max ?? 0 })) : null, props.searchable === true
             ? h('input', {
-                ref: searchRef,
+                ref: setSearchRef,
                 className: 'dshpc-picker__search',
                 placeholder: tt('pickerSearch'),
                 value: query,

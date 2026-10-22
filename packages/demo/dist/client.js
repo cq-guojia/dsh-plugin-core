@@ -146,6 +146,8 @@ var PICKER_CSS = `
   border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);cursor:pointer;
 }
 .dshpc-picker__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}
+/* \u805A\u7126\uFF08\u952E\u76D8\u6216\u70B9\u51FB\u9009\u4E2D\uFF09\u65F6\u4E0E\u5168\u7AD9\u4E00\u81F4\u7684\u84DD\u8272\u63CF\u8FB9\uFF1B\u83DC\u5355\u6253\u5F00\u540E\u7126\u70B9\u4F1A\u8FDB\u53BB\uFF0C\u89E6\u53D1\u5668\u81EA\u7136\u5931\u53BB\u7126\u70B9\u3002 */
+.dshpc-picker__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
 /* \u6587\u5B57\u9ED8\u8BA4\u9760\u5DE6\uFF08\u5403\u6389\u5269\u4F59\u5BBD\u5EA6\uFF09\uFF0C\u4E0D\u7ED9 space-between \u628A\u77ED\u6587\u6848\u63A8\u5230\u4E2D\u95F4\u7684\u673A\u4F1A\uFF1B
    \u786E\u5B9E\u8981\u5C45\u4E2D\u5C31\u663E\u5F0F\u4F20 align="center"\u3002 */
 .dshpc-picker__label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
@@ -3041,10 +3043,11 @@ function Picker(props) {
     whileElementsMounted: autoUpdate,
     strategy: "fixed"
   });
-  (0, import_react4.useEffect)(() => {
-    if (open && props.searchable === true)
-      searchRef.current?.focus();
-  }, [open, props.searchable]);
+  const setSearchRef = (0, import_react4.useCallback)((el) => {
+    searchRef.current = el;
+    if (el !== null && open)
+      el.focus();
+  }, [open]);
   (0, import_react4.useEffect)(() => {
     if (!open)
       return;
@@ -3148,7 +3151,7 @@ function Picker(props) {
     ref: refs.setFloating,
     style: floatingStyles
   }, props.degraded === true ? (0, import_react4.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react4.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react4.createElement)("input", {
-    ref: searchRef,
+    ref: setSearchRef,
     className: "dshpc-picker__search",
     placeholder: tt("pickerSearch"),
     value: query,
@@ -56806,7 +56809,7 @@ function ReferencePage() {
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1022-0120-w13v"]
+            [t2("buildStamp"), "1022-0845-rah8"]
           ].map(
             ([label, value]) => (0, import_react48.createElement)(
               "tr",
