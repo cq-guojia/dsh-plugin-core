@@ -22,6 +22,8 @@ import { TurnProcessNodeViewMirror } from './mirror/TurnProcessNodeView.js';
 import { TurnTailNodeViewMirror } from './mirror/TurnTailNodeView.js';
 import { TurnTriggerNodeViewMirror } from './mirror/TurnTriggerNodeView.js';
 import { DeliverablesGridMirror, PresentRowMirror } from './mirror/Deliverables.js';
+import { ChangedFilesCard } from './mirror/ChangedFilesCard.js';
+import { turnDeliverablesChangesSeq, turnDeliverablesValue } from './changes.js';
 import { buildProcessGroups } from './mirror/process-groups.js';
 import { officialClass, officialModuleCount, ocOr } from './official-classes.js';
 import { t as defaultT } from '../utils/i18n.js';
@@ -179,7 +181,11 @@ function renderKeyedNode(node, turnProcess, t, onBranchAt, fileOpen, groupPart,
 /** 交付文件（快照 turn 级 deliverables.presented 同源推导）；undefined/空 = 不渲染网格。 */
 deliverFiles, 
 /** 最后一轮 turn-tail 的 turn 号：交付卡只挂在这里（官方 DeliverablesTail 位置 = 每轮收尾之后）。 */
-lastTailTurn) {
+lastTailTurn, 
+/** 最后一轮 `workspace/changes` 公告 seq：官方 ChangedFiles 卡挂这里；undefined = 本轮没改文件。 */
+changesSeq, 
+/** 会话 id（ChangedFiles 卡拉宿主 changes.summary 路由要用）。 */
+sessionId) {
     switch (node.kind) {
         case 'turn-trigger':
             return h(TurnTriggerNodeViewMirror, { data: node.data, t });
@@ -203,7 +209,14 @@ lastTailTurn) {
             const tail = data === undefined || data.closing === null || data.closing === undefined
                 ? null
                 : h(TurnTailNodeViewMirror, { data, onBranchAt, tailSlot, t });
-            return tail;
+            if (tail === null)
+                return null;
+            // 官方 ChangedFiles 卡（ui-deliverables）：`workspace/changes` 公告 + 宿主
+            // api/changes.summary ⇒ 「已编辑 x.md / +N -M」。数据不在快照里，单独拉（见 changes.ts）。
+            const changesCard = atLastTail && changesSeq !== undefined && sessionId !== undefined
+                ? h(ChangedFilesCard, { sessionId, seq: changesSeq, onOpen: fileOpen?.open, t })
+                : null;
+            return changesCard === null ? tail : h(Fragment, null, tail, changesCard);
         }
         case 'assistant-step': {
             // 官方块渲染器（lib/client.js:5818-5871）：
@@ -438,18 +451,9 @@ function normalizeFilePath(p) {
         s = s.slice(2);
     return s;
 }
-/**
- * 取某 turn 的交付文件清单（官方 `DeliverablesTail` 同源数据）。
- * ⚠️ 官方 `turn.data` 是 **Map**（见 @deepseek-ai/dsh-client-ui-deliverables
- * `owner.turn.data.get('deliverables')`），不是普通对象——对象式 `data.deliverables`
- * 访问对 Map 必为 undefined。这里兼容 Map 与纯对象两种形态。
- */
+/** 交付文件词表 / 每轮交付卡的数据读取（真源 = 官方 TurnLocation.data，见 changes.ts）。 */
 function turnDeliverablesPresented(face) {
-    const data = face?.data;
-    const delivered = data instanceof Map
-        ? data.get('deliverables')
-        : data?.deliverables;
-    const presented = delivered?.presented;
+    const presented = turnDeliverablesValue(face, 'deliverables')?.presented;
     return Array.isArray(presented) ? presented : [];
 }
 /**
@@ -724,7 +728,13 @@ export function SessionViewModal(props) {
         }
         return undefined;
     }, [keyed, order, store]);
-    const renderNode = useCallback((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn]);
+    // 最后一轮的 `workspace/changes` 公告 seq（官方 changesForClosing 同源）⇒ 挂 ChangedFiles 卡。
+    const lastTailChangesSeq = useMemo(() => {
+        if (lastTailTurn === undefined || turns === null || turns === undefined)
+            return undefined;
+        return turnDeliverablesChangesSeq(turns.get(lastTailTurn)) ?? undefined;
+    }, [lastTailTurn, turns]);
+    const renderNode = useCallback((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId]);
     // 官方 grouped('chat')：把 keyed 流切成「独立条目 + 过程分组」（二级收折）。
     const isTurnClosed = useCallback((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== 'open', [turns]);
     const groupedView = useMemo(() => keyed ? buildProcessGroups(order, key => store?.get(key), isTurnClosed) : undefined, [keyed, order, store, isTurnClosed]);

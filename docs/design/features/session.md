@@ -99,6 +99,16 @@ host 半侧 `agents.create + agent.send(msg, 'next-turn', true)` 起轮次 + 跳
 内容只按流排版，不写 `height:100%`、不自己开滚动条（会话区里官方 ChatView.frame / scroll 的
 `overflow`、高度、内距一律归零）。
 
+**turn 级业务值的读法**（2026-10-22 修）：官方 `TurnLocation.data` 是
+`ConversationLocationDataStore`，用 `.get('deliverables')` 读 —— **不是 Map、也不是普通对象**。
+曾按 Map 读，导致交付卡网格（presented）和「已编辑文件」卡都从来没渲染出来（用户截图对比
+官方才发现）。读取收口在 `src/session/changes.ts` 的 `turnDeliverablesValue`。
+
+**「已编辑文件」卡**（2026-10-22 接上）：`workspace/changes` 公告 → turn 级
+`deliverables.changes = { seq }` → 宿主只读路由 `api/changes.summary?sessionId&seq` 拉卡内容
+（官方 `isChangesSummary` 逐字段校验，不合规 = 不渲染）。观感 = 文件类型图标、「已编辑 x.md」
+标题与 `+N -M` 计数（hover 上色）；单文件可点，走 `onOpenFile`。
+
 **文件链接**：工具卡 fileLink / md 行内引用 / 交付卡统一走 `onOpenFile`。接法 = 预览开在
 **页面右侧**（核心 `openFilePreview` 的 dock，挤窄主区），不在弹窗里分栏。弹窗这边**不用传任何
 参数**：dock 把占宽发布成 `--dshpc-page-inset-right`，遮罩按它让位 ⇒ 分栏不被压暗、照常可点，

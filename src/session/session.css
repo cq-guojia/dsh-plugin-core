@@ -17,6 +17,18 @@
 /* 会话区保底：高度由内容决定（撑开由 Modal body 滚）。 */
 .dshpc-sv-chat{flex:none;min-height:0;}
 
+/* 官方 ChangedFiles 卡（ui-deliverables，2026-10-22 接上）：单文件 = 文件类型图标 +
+   「已编辑 x.md」+ 计数（+N -M，hover 才上色，同官方）。数据走宿主 api/changes.summary。 */
+.dshpc-sv-changes{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint,#0000000a);border-radius:var(--dshpc-radius-md);background:var(--dshpc-plate,rgba(128,128,128,.08));align-items:center;gap:10px;width:fit-content;max-width:100%;min-height:44px;margin-top:4px;padding:6px 12px;font:inherit;color:inherit;text-align:left;display:flex}
+.dshpc-sv-changes--open{cursor:pointer}
+.dshpc-sv-changes--open:hover{background:var(--dshpc-hover,rgba(38,49,72,.06))}
+.dshpc-sv-changes-icon{width:20px;height:20px;flex:none;color:var(--dshpc-link,#3b5bdb);align-items:center;justify-content:center;display:inline-flex}
+.dshpc-sv-changes-body{flex-direction:column;gap:1px;min-width:0;display:flex}
+.dshpc-sv-changes-title{color:var(--dshpc-fg);text-overflow:ellipsis;white-space:nowrap;overflow:hidden;font-size:var(--dshpc-font-sm);font-weight:500;line-height:var(--dshpc-line-sm)}
+.dshpc-sv-changes-stat{font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));line-height:var(--dshpc-line-sm)}
+.dshpc-sv-changes-counts{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace)}
+.dshpc-sv-changes:hover .dshpc-sv-changes-added{color:var(--dshpc-success,#2da44e)}
+.dshpc-sv-changes:hover .dshpc-sv-changes-removed{color:var(--dshpc-danger,#cf222e)}
 .dshpc-sv-actions{display:flex;align-items:center;gap:8px;}
 /* 兜底 frame（官方 ChatView.frame 未命中时挂在同一层）：不滚、不涨，左右内距交给 Modal body。 */
 .dshpc-sv-body{flex:none;min-height:0;overflow:visible;padding:0}

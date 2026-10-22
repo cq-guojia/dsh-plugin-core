@@ -147,8 +147,10 @@ function DeliveredFileCard(props: {
 }
 
 /**
- * 官方 DeliverablesTail 的 presented 网格（改动文件卡 ChangedFiles 依赖 Host git 摘要路由，
- * 本弹窗无该通道 ⇒ 不渲染，与官方「summary 未就绪时不画」同态）。
+ * 官方 DeliverablesTail 的 presented 网格（FileTypeIcon + 文件名 + 简介，整卡可点 → 预览）。
+ * 「已编辑文件」卡（ChangedFiles）不在这里：它走宿主 api/changes.summary，见
+ * mirror/ChangedFilesCard.ts。数据真源 = turn 级 `deliverables.presented`
+ * （官方 TurnLocation.data.get('deliverables')，见 changes.ts）。
  */
 export function DeliverablesGridMirror(props: {
   files: readonly DeliveredFileFace[]

@@ -9,6 +9,7 @@ import assert from 'node:assert/strict'
 import { parseOfficialCss, ocOr, officialModuleCount } from '../dist/session/official-classes.js'
 import { openSessionView, DEFAULT_RETAIN_SOURCE } from '../dist/session/open-session-view.js'
 import { buildProcessGroups, toolActivity, processTitle } from '../dist/session/mirror/process-groups.js'
+import { changesSummaryUrl, parseChangesSummary, turnDeliverablesChangesSeq, turnDeliverablesValue } from '../dist/session/changes.js'
 import { formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/session/mirror/message-chrome.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
@@ -67,10 +68,10 @@ function fakeHost(options = {}) {
       if (options.retainThrows === true) throw new Error('unknown session')
       return { release() { released = true; calls.release += 1 } }
     },
-    binding(id) { return options.bindingUndefined === true ? undefined : binding },
+    binding(_id) { return options.bindingUndefined === true ? undefined : binding },
   }
   const uiConversation = {
-    binding(b) {
+    binding(_b) {
       if (options.uiThrows === true) throw new Error('inactive session')
       return { target: (name) => { if (name !== 'chat') throw new Error('bad target'); return target } }
     },
@@ -199,6 +200,66 @@ test('formatCacheHitPercent：部分命中不四舍五入成 100%', () => {
   assert.equal(formatCacheHitPercent(50, 0, 0), null, 'promptTokens 为 0 才 null')
 })
 
+// ── 官方「已编辑文件」卡（changes.ts：api/changes.summary 契约） ──
+
+test('changesSummaryUrl：官方文档相对路由 + 查询参数', () => {
+  assert.equal(
+    changesSummaryUrl('session-abc', 42),
+    'api/changes.summary?sessionId=session-abc&seq=42',
+  )
+})
+
+test('parseChangesSummary：官方 isChangesSummary 逐字段校验', () => {
+  const ok = {
+    turn: 3,
+    total: 1,
+    added: 3,
+    deleted: 8,
+    files: [{ path: '/w/timestamp.md', display: 'timestamp.md', added: 3, deleted: 8 }],
+  }
+  assert.deepEqual(parseChangesSummary(ok), ok)
+  // 二进制 / 超限是合法可选标记
+  assert.ok(parseChangesSummary({
+    turn: 1, total: 1, added: 0, deleted: 0,
+    files: [{ path: 'a.bin', display: 'a.bin', added: 0, deleted: 0, binary: true }],
+  }) !== null)
+  // 缺字段 / 类型错 / 空路径一律 null（官方按 missing 处理，不渲染）
+  for (const bad of [
+    null,
+    {},
+    { ...ok, turn: 0 },
+    { ...ok, total: 1.5 },
+    { ...ok, files: [{ path: '', display: 'x', added: 0, deleted: 0 }] },
+    { ...ok, files: [{ path: 'x', display: 'x', added: '3', deleted: 8 }] },
+    { ...ok, files: 'nope' },
+  ]) assert.equal(parseChangesSummary(bad), null, JSON.stringify(bad))
+})
+
+test('turnDeliverablesValue：官方 TurnLocation.data 是 store（.get(key)），不是 Map / 普通对象', () => {
+  // 官方契约（conversation.d.ts:87-95）：ConversationLocationDataStore.get(key)
+  const store = { get: (key) => (key === 'deliverables' ? { presented: [{ path: 'a.md' }] } : undefined) }
+  assert.deepEqual(turnDeliverablesValue({ data: store }, 'deliverables'), { presented: [{ path: 'a.md' }] })
+  assert.equal(turnDeliverablesValue({ data: store }, 'other'), undefined)
+  // 兼容形态：Map / 纯对象（容忍宿主改版）
+  assert.deepEqual(turnDeliverablesValue({ data: new Map([['deliverables', { x: 1 }]]) }, 'deliverables'), { x: 1 })
+  assert.deepEqual(turnDeliverablesValue({ data: { deliverables: { y: 2 } } }, 'deliverables'), { y: 2 })
+  assert.equal(turnDeliverablesValue({}, 'deliverables'), undefined)
+  assert.equal(turnDeliverablesValue(undefined, 'deliverables'), undefined)
+})
+
+test('turnDeliverablesChangesSeq：读 turn.data 的 deliverables.changes（store / Map / 对象）', () => {
+  const store = (value) => ({ get: (key) => (key === 'deliverables' ? value : undefined) })
+  assert.equal(turnDeliverablesChangesSeq({ data: store({ changes: { seq: 7 } }) }), 7)
+  assert.equal(turnDeliverablesChangesSeq({ data: new Map([['deliverables', { changes: { seq: 7 } }]]) }), 7)
+  assert.equal(turnDeliverablesChangesSeq({ data: { deliverables: { changes: { seq: 9 } } } }), 9)
+  // 没有公告 / 没这个键 / seq 不是整数 ⇒ null（官方此时不挂卡）
+  assert.equal(turnDeliverablesChangesSeq({ data: store(undefined) }), null)
+  assert.equal(turnDeliverablesChangesSeq({ data: new Map() }), null)
+  assert.equal(turnDeliverablesChangesSeq({ data: { deliverables: {} } }), null)
+  assert.equal(turnDeliverablesChangesSeq({ data: { deliverables: { changes: { seq: 1.5 } } } }), null)
+  assert.equal(turnDeliverablesChangesSeq(undefined), null)
+})
+
 // ── 文案：会话预览新增键中英齐全 ──
 
 test('会话预览文案中英齐全（镜像官方词典的新增键）', () => {
@@ -209,6 +270,7 @@ test('会话预览文案中英齐全（镜像官方词典的新增键）', () =>
     'stepProcessJoinTwo', 'toolTitleRead', 'toolTitleGeneric', 'toolInputLabel', 'rowRunning',
     'readWindow', 'terminalExitCode', 'diffWrapLabel', 'deliverRowTitle', 'deliverAll',
     'branchLabel', 'composerPlaceholder', 'composerHint', 'forkFailed',
+    'changesSingle', 'changesMulti', 'changesBinary', 'changesOversized',
   ]
   for (const key of keys) {
     setLocale('zh')
