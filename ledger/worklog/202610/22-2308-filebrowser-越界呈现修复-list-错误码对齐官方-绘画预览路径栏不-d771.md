@@ -28,7 +28,7 @@
 ## 待办
 
 - 真机验收：宿主装本版后，绘画预览场景传 `workspaceAnchors`（宿主 workspaces 快照原样）⇒ 路径栏恢复
-  面包屑、目录树可展开；不传 ⇒ 维持现状 + hint 文案。
+  面包屑、目录树可展开、▾ 下拉可切工作区；不传 ⇒ 维持现状 + hint 文案。
 - 调用方（绘画预览所在插件）按 `workspaceAnchors` 接线（demo `blocks.tsx` 已是范本）。
 
 ## 下一步
@@ -40,9 +40,14 @@
 设计讨论（用户逐轮拍板）：
 1. 初判"换对 sessionId"被用户否决——调用方手里只有路径，没有"哪个工作区"的概念；
 2. 用户定调：**核心库自己判断**（消费方可能传任何绝对路径），路径→工作区→会话的解析收敛到核心；
-3. 用户确认匹配思路：工作区列表拿出来前缀匹配，命中取其会话；该工作区没会话就没办法。
+3. 用户确认匹配思路：工作区列表拿出来前缀匹配，命中取其会话；该工作区没会话就没办法；
+4. 读兄弟项目 `dsh-task-dispatch-table` 后修正认知：它"每个文件都能弹"是靠**数据层配套**
+   （`GET /options` 下发 `Record<title, 会话id>`；`previewTargetOf` 逐文件算锚点；
+   `onOpenFile(anchorSessionId, path)` 双参配套），不是随便一个 session；
+5. 用户拍板产品边界：**切工作区是预览文档（openFilePreview）自己的事**，picker 不掺和 ⇒
+   核心内置接管（调用方传 workspaceAnchors 且没自接 onSelectWorkspace 时）。
 
-落地：
+落地（第一轮）：
 - `src/explorer/types.ts`：`WorkspaceAnchorItem` 加 `path?`；新增纯函数 `workspaceAnchorForPath`
   （最长前缀赢、尾斜杠归一、取 `sessionIds` 最后一个=追加序最近、相对路径不匹配）；
   `errView` 移除 `lookup-not-found`（官方 0.2.1-rc.2 无此码，来源为初版 commit eca3f25）。
@@ -59,7 +64,18 @@
 - 文档：`docs/design/external/dsh-host.md` §12 记录官方 list/read 路径语义、越界判定、错误码全集、
   better-sidebar 对照、本仓处置（写入时误删 §11.1 来源两行，已恢复）。
 
-验证：`pnpm run build` ✓；`node --test test/*.test.mjs` 97/97 ✓（含新测试）；
+落地（第二轮：内置切工作区）：
+- `src/explorer/types.ts`：新增 `anchorSessionForTitle`（按 title 取该工作区最近会话，
+  与路径匹配互补——调用方有 title 归属时用它，无歧义）。
+- `src/explorer/open.ts`：新增内部组件 `PreviewBody`——`openFilePreview` 在「调用方没自接
+  onSelectWorkspace 且传了 workspaceAnchors」时启用：▾ 下拉只列有会话的工作区；点选 ⇒
+  换该工作区锚点会话 + key 重挂载 + path 回根（机制同兄弟项目
+  `task-editor.tsx:2496-2508`：list 的根来自 sessionId，必须换会话+重挂载，只换 rootName 等于没切）。
+  无会话的工作区不进列表、点了不切（不给假入口）。
+- `docs/design/features/explorer.doc.ts`：接入示例补 workspaceAnchors + 内置切工作区说明。
+- demo 零改动即获得切换能力（已传 workspaceAnchors、未传 onSelectWorkspace ⇒ 自动接管）。
+
+验证：`pnpm run build` ✓；`node --test test/*.test.mjs` **98/98** ✓（含两个新单测）；
 `pnpm run typecheck` ✓；`pnpm run build:demo` ✓。
 
 ## 结论
@@ -78,3 +94,4 @@
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-22 23:08:11 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-22 23:23:04 · log · @GuoJia-Agent · 落码完成：workspaceAnchorForPath 纯函数+单测、FileBrowser 五处 list 换解析 sessionId、crumbBarPlain hint、移除 lookup-not-found、demo 接线、dsh-host.md §12；build/test 97 过/typecheck/build:demo 全绿
+- 2026-10-22 23:46:22 · log · @GuoJia-Agent · 第二轮：openFilePreview 内置切工作区（PreviewBody：anchors 驱动、换会话+key 重挂载+回根、无会话不进列表）；anchorSessionForTitle 纯函数+单测；explorer.doc.ts 示例；98/98、typecheck、build:demo 全绿
