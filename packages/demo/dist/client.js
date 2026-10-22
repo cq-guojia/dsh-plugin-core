@@ -194,7 +194,7 @@ var PICKER_CSS = `
 `;
 
 // dist/ui/feedback-css.generated.js
-var FEEDBACK_CSS = "\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;\n  background:var(--dshpc-mask);\n}\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:18px 31px 12px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-modal__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-modal__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 31px}\n.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 31px 18px}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* Modal \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002 */\n.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-modal__head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0}\n";
+var FEEDBACK_CSS = "\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n.dshpc-modal-mask{\n  position:fixed;inset:0;z-index:1070;display:flex;align-items:center;justify-content:center;\n  background:var(--dshpc-mask);\n}\n/* \u65E0\u906E\u7F69\u6863\uFF08Modal mask={false}\uFF09\uFF1A\u900F\u660E\u5C42\u3001\u4E0D\u5403\u70B9\u51FB \u2014\u2014 \u5F39\u7A97\u53D8\u6210\u9875\u9762\u4E0A\u7684\u666E\u901A\u6D6E\u5C42\uFF0C\n   \u65C1\u8FB9\u7684\u9875\u9762\u533A\u57DF\uFF08\u5982\u53F3\u4FA7\u6587\u4EF6\u9884\u89C8 dock\uFF09\u7167\u5E38\u53EF\u89C1\u3001\u53EF\u70B9\uFF1B\u9762\u677F\u672C\u8EAB\u4ECD\u5403\u70B9\u51FB\u3002 */\n.dshpc-modal-mask--plain{background:transparent;pointer-events:none}\n.dshpc-modal-mask--plain .dshpc-modal{pointer-events:auto}\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n.dshpc-modal__head{\n  display:flex;align-items:center;gap:8px;padding:18px 31px 12px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-modal__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-modal__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-modal__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-modal__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n/* \u5173\u95ED\u6309\u94AE\uFF1A24\xD724 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-modal__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 31px}\n.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 31px 18px}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-empty{\n  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;\n  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;\n}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* Modal \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002 */\n.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-modal__head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0}\n";
 
 // dist/ui/card-css.generated.js
 var CARD_CSS = "\n.dshpc-card{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n\n/* \u5934\u90E8\u4E00\u884C = \u8272\u6761 + \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500 */\n.dshpc-card--strip{\n  padding:12px 12px 12px 20px;border:1px solid transparent;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002 */\n.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--card-accent)}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1Asurface \u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185\u5706\u89D2\u77ED\u6761 \u2500\u2500 */\n.dshpc-card--bordered{\n  /* \u5DE6\u5185\u8FB9\u8DDD 12\uFF08\u6BD4\u4E0A/\u53F3/\u4E0B 14 \u5C11 2\uFF09\uFF1A\u7AD6\u6761\u8D34\u8FD1\u8FB9\u6846\uFF1B\u5934\u90E8\u5185\u7F29 2px \u21D2 \u4E3B\u5185\u5BB9\u8DDF\u7740\u5DE6\u79FB 2px\uFF0C\n     \u7AD6\u6761\u2194\u5185\u5BB9\u7684 12px \u95F4\u8DDD\u4E0D\u53D8\u2014\u2014\u6BD4\u300C\u6761\u5B50 left:-2 \u800C\u5185\u5BB9\u4E0D\u52A8\u300D\u66F4\u6B63\u89C4\uFF08\u4E0D\u9760\u76F8\u5BF9\u5B9A\u4F4D\u786C\u8865\uFF09\u3002 */\n  padding:14px 14px 14px 12px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  background:var(--dshpc-surface-1);\n}\n.dshpc-card--bordered .dshpc-card__head{gap:12px}\n/* \u77ED\u6761\uFF1A\u884C\u5185 flex \u9879\uFF0C**\u9AD8\u5EA6\u8DDF\u7740\u5185\u5BB9\u8D70**\uFF08stretch\uFF09\uFF0C\u6700\u5C0F\u4E00\u884C\u6587\u5B57\uFF08--dshpc-line-md\uFF09\u2014\u2014\n   \u4E00\u884C\u6587\u5B57\u65F6\u6761\u5B50\u4E0E\u6587\u5B57\u9F50\u9AD8\uFF0C\u4E0D\u4F1A\u628A\u5361\u6491\u9AD8\uFF1B\u7AD6\u6761\u8DDD\u5DE6 12\uFF08= \u5DE6\u5185\u8FB9\u8DDD\uFF09\uFF0C\u8DDD\u4E0A/\u53F3/\u4E0B 14\u3002 */\n.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
@@ -212,7 +212,7 @@ var PANEL_DOCK_CSS = "\n/* \u505C\u9760\u680F = **\u5E03\u5C40\u6210\u5458**\uFF
 var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  padding:4px 10px;border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbs-*\uFF09\u3002\n   \u5C42\u5E8F\uFF1A\u5144\u5F1F\u662F 30/31\uFF1B\u672C\u4ED3 picker \u9762\u677F\u662F 1100\uFF0C\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E\u5B83\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  box-shadow:0 4px 16px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:8px 14px;border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6838\u5FC3 outline \u94AE\uFF0C\u76AE\u80A4\u53D6\u5144\u5F1F .dsh-tdt-sv-tree-act\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF09\u3002\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;appearance:none;background:0 0;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  height:auto;padding:2px 8px;font-size:var(--dshpc-font-sm);line-height:1.4;\n  color:var(--dshpc-fg-2);cursor:pointer;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n.dshpc-fb .dshpc-fb__row-act:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09\u3002\n   \u5FC5\u987B border-box\uFF1A\u6E32\u67D3\u6001 inline \u52A0\u4E86 padding:12px 14px\uFF0Ccontent-box \u4E0B width:100%+padding\n   \u4F1A\u6EA2\u51FA\u7236\u5C42 28px\uFF08\u7236 .dshpc-fb \u65E0 overflow \u88C1\u5207\uFF09\u2192 \u6052\u591A\u4E00\u6761\u6A2A\u6EDA\u6761\uFF1Bborder-box \u628A padding\n   \u7B97\u8FDB 100%\uFF0C\u4ECE\u6839\u6D88\u9664\u8BE5\u6EA2\u51FA\u3002 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n/* iframe \u7684\u5916\u58F3\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-fill\uFF09\uFF1Aiframe \u5FC5\u987B\u5305\u5728\u8FD9\u4E00\u5C42\u91CC\u624D\u62FF\u5F97\u5230\u9AD8\u5EA6\u2014\u2014\n   \u88F8\u6302 iframe \u65F6\u66FF\u6362\u5143\u7D20\u7684\u81EA\u52A8\u6700\u5C0F\u5C3A\u5BF8\u4F1A\u8BA9\u9AD8\u5EA6\u7B97\u4E0D\u51FA\u6765\uFF08\u8868\u73B0\u4E3A\u9884\u89C8\u533A\u6574\u7247\u7A7A\u767D\u3001\u50CF\u6CA1\u53CD\u5E94\uFF09\u3002 */\n.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}\n.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
 
 // dist/session/session-css.generated.js
-var SESSION_CSS = '\n/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u515C\u5E95\u6837\u5F0F\uFF1A\u5B98\u65B9 CSS module \u7C7B\u540D\u672A\u547D\u4E2D\u65F6\u751F\u6548\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\uFF0C\n   \u5E03\u5C40 token \u53D6\u5B98\u65B9\u804A\u5929\u4E13\u5C5E --dsh-chat-* / --dsh-content-font-*\uFF08\u5E26\u515C\u5E95\uFF09\u3002 */\n/* \u5F39\u7A97\u906E\u7F69\uFF1A\u6EE1\u5C4F\uFF08core \u4E0D\u505A\u9875\u9762\u7EA7\u9884\u89C8 dock\uFF0C\u6587\u4EF6\u9884\u89C8\u8D70\u5BBF\u4E3B\u53F3\u680F / explorer\uFF09\u3002 */\n.dshpc-sv-overlay{position:fixed;top:0;left:0;bottom:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:var(--dshpc-mask,rgba(0,0,0,.45));transition:right .12s var(--dshpc-ease,ease);}\n/* \u9762\u677F\u5E95\u8272 = \u5B98\u65B9\u4F1A\u8BDD\u9762 --dshpc-surface-base\uFF08\u5B98\u65B9 chat \u9875\u5373\u6B64\u8272\uFF09\uFF1B\n   \u5C3A\u5BF8\u7167\u5BBF\u4E3B\u300C\u5DE6\u4E0B\u89D2\u5F39\u7A97\u300D\u5361\u7247\uFF1Awidth min(1120px,100vw-32px)\u3001height 100%-80px\u3001radius 12px\u3002 */\n.dshpc-sv-panel{--dsh-composer-side-clearance:18px;--dsh-chat-content-width:100%;--dsh-chat-flow-gap:16px;background:var(--dshpc-surface-base,#fff);color:var(--dshpc-fg,#1f2328);border:1px solid var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-md);box-shadow:var(--dshpc-shadow-2,0 12px 32px rgba(0,0,0,.4));width:min(1120px,calc(100vw - 32px));height:calc(100% - 80px);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;}\n.dshpc-sv-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 34px 12px;border-bottom:1px solid var(--dshpc-border,rgba(128,128,128,.35));flex-wrap:wrap;}\n/* \u7EB5\u5411\u5355\u4E00\u771F\u6E90 = .dshpc-sv-frame\uFF1A\u5B98\u65B9 scroll \u547D\u4E2D\u65F6\u81EA\u5E26\u7EB5\u5411 16px\uFF0C\u5B98\u65B9 frame \u7684\u7EB5\u5411\u53C8\u4E0D\u786E\u5B9A\uFF1B\n   \u7EDF\u4E00\u6536\u53E3 \u2014\u2014 scroll \u94A9\u5B50\u628A\u5B98\u65B9\u7EB5\u5411\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\uFF0C\n   frame \u94A9\u5B50\u72EC\u5360\u4E0A\u4E0B\uFF08\u7528\u957F\u5199\uFF0C\u4E0D\u78B0\u5DE6\u53F3 \u21D2 \u547D\u4E2D\u65F6\u5DE6\u53F3\u4ECD\u8D70\u5B98\u65B9 scroll \u7684 16+clearance\uFF09\u3002\n   \u4E0A / \u4E0B = 17px \u4E14\u5FC5\u987B\u76F8\u7B49\uFF08\u5426\u5219\u6EDA\u5230\u9876 / \u5230\u5E95\u65F6\u4E00\u8FB9\u7A7A\u4E00\u5927\u7247\uFF09\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:17px;padding-bottom:17px;}\n.dshpc-sv-scroll.dshpc-sv-scroll{padding-top:0;padding-bottom:0;}\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9876\u90E8\u6682\u5B58\u8F93\u5165\u533A\u518D\u9AD8\u4E5F\u538B\u4E0D\u6CA1\u5B83\u3002\n   \u26A0\uFE0F \u7528 flex:1 1 auto \u800C\u4E0D\u662F flex:1\uFF08\u540E\u8005 basis=0\uFF09\uFF1A\u5B98\u65B9 ChatView.frame \u662F flex:auto\uFF0C\n   \u672C\u5305\u4E0E\u5B98\u65B9\u6CE8\u5165\u987A\u5E8F\u4E0D\u5B9A \u21D2 \u53D6 auto \u8FD9\u4E2A\u5171\u540C\u503C\uFF0C\u4E24\u8FB9\u987A\u5E8F\u98A0\u5012\u4E5F\u4E0D\u4F1A\u6539\u53D8\u5E03\u5C40\u3002 */\n.dshpc-sv-chat{flex:1 1 auto;min-height:0;}\n.dshpc-sv-heading{min-width:0;}\n.dshpc-sv-title{font-size:var(--dshpc-font-lg);font-weight:600;color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-sid{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));word-break:break-all;}\n.dshpc-sv-actions{display:flex;align-items:center;gap:8px;}\n/* \u4F1A\u8BDD\u533A\u5DE6\u53F3\u8FB9\u8DDD = \u5B98\u65B9 ChatView.scroll\uFF1A16px + --dsh-composer-side-clearance(18px) \u21D2 \u5DE6\u53F3\u5404 34px\u3002\n   \u7EB5\u5411\u4E0D\u5728\u8FD9\u91CC\uFF08\u5B98\u65B9\u7C7B\u547D\u4E2D\u4E0E\u5426\u4F1A\u6253\u67B6\uFF0C\u89C1\u4E0A\u9762 frame / scroll \u4E24\u6761\u94A9\u5B50\uFF09\u21D2 \u672C\u7C7B\u53EA\u5199\u5DE6\u53F3\u3002 */\n.dshpc-sv-body{flex:1;min-height:0;overflow:auto;padding-left:calc(var(--dsh-composer-side-clearance,16px) + 16px);padding-right:calc(var(--dsh-composer-side-clearance,16px) + 16px);}\n.dshpc-sv-col{width:100%;max-width:var(--dsh-chat-content-width,920px);margin:0 auto;display:flex;flex-direction:column;gap:var(--dsh-chat-flow-gap,16px);}\n/* \u5B98\u65B9 ChatView.column \u7684\u5144\u5F1F\u95F4\u8DDD\uFF08:not([hidden]) \u624D\u5360\u4F4D\uFF1B\u6298\u53E0\u6389\u7684\u8FC7\u7A0B\u8282\u70B9\u4E0D\u7559\u7A7A\u6863\uFF09\u3002 */\n.dshpc-sv-col>:not([hidden]):not(.dshpc-sv-flowitem:empty)~:not([hidden]):not(.dshpc-sv-flowitem:empty){margin-top:var(--dsh-chat-flow-gap,16px);}\n.dshpc-sv-visuallyhidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}\n.dshpc-sv-flowitem{min-width:0;}\n.dshpc-sv-older{display:flex;justify-content:center;}\n.dshpc-sv-older button{appearance:none;font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);cursor:pointer;color:var(--dshpc-fg-2,rgba(128,128,128,.9));background:var(--dshpc-surface-sunken,rgba(128,128,128,.2));border:none;border-radius:var(--dshpc-radius-sm,6px);padding:4px 12px;}\n.dshpc-sv-older button:disabled{cursor:default;opacity:.6;}\n/* \u8FC7\u7A0B\u884C\uFF08\u5B98\u65B9 TurnProcessNodeView.root \u7167\u6284\uFF1A\u9AD8 33px + .5px \u4E0B\u8FB9\u6846 + padding 0 0 8px\uFF09\u3002 */\n.dshpc-sv-process{box-sizing:border-box;width:100%;min-width:0;height:calc(33px + var(--dsh-content-font-delta,0px));border:none;border-bottom:.5px solid var(--dshpc-border,rgba(128,128,128,.35));color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;text-align:left;background:0 0;align-items:center;padding:0 0 8px;transition:color .1s;display:flex;}\n.dshpc-sv-process:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-process:not([data-open]){margin-bottom:8px;}\n.dshpc-sv-process:disabled{cursor:default;}\n.dshpc-sv-process-label{min-width:0;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}\n.dshpc-sv-process-chevron{width:14px;height:14px;color:var(--dshpc-fg-4,rgba(128,128,128,.6));flex:none;margin-left:4px;transition:transform .1s;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-sv-process[data-open] .dshpc-sv-process-chevron{transform:rotate(180deg);}\n/* turn \u5C3E\u90E8\u64CD\u4F5C\u884C\uFF08\u5B98\u65B9 MessageIconActions.actions\uFF1A\u9AD8 28px + hover \u663E\u9690\u7531\u7EC4\u4EF6 data-actions-reveal \u63A7\u5236\uFF09\u3002 */\n.dshpc-sv-actions{height:calc(28px + var(--dsh-content-font-delta,0px));align-items:center;gap:8px;display:flex;margin-top:4px;}\n.dshpc-sv-action{display:inline-flex;align-items:center;justify-content:center;width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));background:0 0;border:none;cursor:pointer;}\n.dshpc-sv-action:hover{color:var(--dshpc-fg,#1f2328);}\n/* \u7528\u6237\u6C14\u6CE1\uFF08\u5B98\u65B9 MessageItem.bubble \u9010\u503C\uFF1A\u53F3\u5BF9\u9F50\u3001surface-2 \u5E95\u3001radius-xl\uFF09\u3002 */\n.dshpc-sv-user{align-self:flex-start;max-width:100%;background:var(--dshpc-surface-2,rgba(128,128,128,.14));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:10px 14px;font-size:var(--dshpc-font-lg);line-height:1.6;word-break:break-word;}\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));border:1px dashed var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n/* \u52A9\u624B\u6B63\u6587 markdown \u515C\u5E95\uFF08\u5B98\u65B9 AssistantMarkdown / MarkdownText \u672A\u547D\u4E2D\u65F6\uFF09\u3002 */\n.dshpc-sv-md>*:first-child{margin-top:0;}\n.dshpc-sv-md>*:last-child{margin-bottom:0;}\n.dshpc-sv-md p{margin:.5em 0;}\n.dshpc-sv-md h1,.dshpc-sv-md h2,.dshpc-sv-md h3,.dshpc-sv-md h4,.dshpc-sv-md h5,.dshpc-sv-md h6{margin:.9em 0 .4em;font-weight:600;line-height:1.3;}\n.dshpc-sv-md h1{font-size:1.4em;}\n.dshpc-sv-md h2{font-size:1.25em;}\n.dshpc-sv-md h3{font-size:1.1em;}\n.dshpc-sv-md ul,.dshpc-sv-md ol{margin:.5em 0;padding-left:1.4em;}\n.dshpc-sv-md li{margin:.2em 0;}\n.dshpc-sv-md code{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:.9em;background:var(--dshpc-surface-2,rgba(128,128,128,.14));padding:.1em .35em;border-radius:var(--dshpc-radius-xs);}\n.dshpc-sv-md pre{margin:.6em 0;background:var(--dshpc-surface-2,rgba(128,128,128,.14));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-sm);padding:10px 12px;overflow:auto;font-size:var(--dshpc-font-sm);line-height:1.5;}\n.dshpc-sv-md pre code{background:none;padding:0;font-size:inherit;}\n.dshpc-sv-md blockquote{margin:.5em 0;padding:.2em .9em;border-left:3px solid var(--dshpc-border,rgba(128,128,128,.35));color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-md a{color:var(--dshpc-link,#2f6feb);text-decoration:none;}\n.dshpc-sv-md a:hover{text-decoration:underline;}\n.dshpc-sv-md table{border-collapse:collapse;font-size:var(--dshpc-font-sm);margin:.6em 0;display:block;overflow:auto;}\n.dshpc-sv-md th,.dshpc-sv-md td{border:1px solid var(--dshpc-border,rgba(128,128,128,.35));padding:4px 8px;text-align:left;}\n.dshpc-sv-md hr{border:none;border-top:1px solid var(--dshpc-border,rgba(128,128,128,.35));margin:1em 0;}\n.dshpc-sv-md img{max-width:100%;}\n/* \u601D\u8003\u884C\uFF08\u5B98\u65B9 ReasoningRow.module.css \u7167\u6284\uFF1Aroot/row/leading/chevron/title/separator/summary/thinkBody\uFF09\u3002 */\n.dshpc-sv-reasoning{flex-direction:column;display:flex;}\n.dshpc-sv-reasoning:not([data-expanded]){contain:size layout;height:calc(24px + var(--dsh-content-font-delta,0px));}\n.dshpc-sv-reasoning-row{position:relative;overflow:hidden;}\n.dshpc-sv-reasoning-leading{flex-shrink:0;}\n.dshpc-sv-reasoning-chevron{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-reasoning-title{font-weight:400;}\n.dshpc-sv-reasoning-sep{background:var(--dshpc-fg-4,rgba(128,128,128,.7));border-radius:1px;flex:none;width:2px;height:2px;margin:0 8px;}\n.dshpc-sv-reasoning-preview{min-width:0;color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));white-space:nowrap;flex:auto;overflow:hidden;}\n.dshpc-sv-reasoning-preview-text{text-overflow:ellipsis;display:block;overflow:hidden;}\n.dshpc-sv-reasoning:not([data-preview]) .dshpc-sv-reasoning-sep,.dshpc-sv-reasoning:not([data-preview]) .dshpc-sv-reasoning-preview{display:none;}\n.dshpc-sv-reasoning-body{padding:4px 0 4px calc(22px + var(--dsh-content-font-delta,0px));min-width:0;}\n/* \u2500\u2500 \u5DE5\u5177\u5361\uFF08\u5B98\u65B9 ui-tool ToolRow.module.css \u515C\u5E95\u955C\u50CF\uFF0C\u5B98\u65B9\u7C7B\u547D\u4E2D\u65F6 ocOr \u8D70\u5B98\u65B9\uFF09\u2500\u2500\n   \u5B98\u65B9\u884C\u5916\u89C2 = \u65E0\u8FB9\u6846\u88F8\u884C\uFF08root \u4EC5 flex column\uFF09\uFF1B\u5C55\u5F00\u4F53\u5206\u53D1\u94FE\uFF1A\n   TerminalBlock(\u221E) \u2192 DiffBlock(9) \u2192 ReadBlock(8) \u2192 ioCard \u7070\u6846\uFF08\u8F93\u5165/\u5206\u9694/\u8F93\u51FA\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n.dshpc-sv-tool-row:hover .dshpc-sv-tool-title,.dshpc-sv-tool-row:hover .dshpc-sv-tool-summary,.dshpc-sv-tool-row:hover .dshpc-sv-tool-suffix{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-tool-title{font-weight:400;transition:color .1s;}\n.dshpc-sv-tool-chevron{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-tool-sep{background:var(--dshpc-fg-4,rgba(128,128,128,.7));border-radius:1px;flex:none;width:2px;height:2px;margin:0 8px;}\n.dshpc-sv-tool-summary{text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:auto;transition:color .1s;overflow:hidden;}\n.dshpc-sv-tool-suffix{white-space:nowrap;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;margin-left:4px;transition:color .1s;}\n.dshpc-sv-tool-diffstat{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:calc(var(--dsh-content-font-size-secondary,13px) - 2px);color:var(--dshpc-fg-4,rgba(128,128,128,.7));margin-left:10px;transform:translateY(.5px);}\n/* read/write/edit \u6458\u8981\u8DEF\u5F84 = fileLink\uFF08\u4E0B\u5212\u7EBF\u865A\u7EBF\uFF0C\u70B9\u51FB openFile\uFF09\u3002 */\n.dshpc-sv-tool-filelink{text-overflow:ellipsis;white-space:nowrap;min-width:0;font:inherit;text-align:left;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-2,rgba(128,128,128,.95));text-decoration:underline dotted;text-decoration-color:var(--dshpc-fg-3,rgba(128,128,128,.8));text-underline-offset:3px;cursor:pointer;background:0 0;border:none;flex:0 auto;margin:0;padding:0;text-decoration-thickness:1px;transition:color .1s;overflow:hidden;}\n.dshpc-sv-tool-filelink:hover{color:var(--dshpc-fg,#1f2328);text-decoration-color:currentColor;}\n.dshpc-sv-tool-errmark{color:var(--dshpc-danger,#e5484d);}\n.dshpc-sv-tool-stopmark{color:var(--dshpc-warning-label,#f5a623);}\n.dshpc-sv-tool-bodywrap{flex-direction:column;display:flex;}\n/* ioCard \u7070\u6846\uFF08\u5B98\u65B9 ToolRow \u515C\u5E95\u5C55\u5F00\u4F53\uFF1A\u8F93\u5165 / \u5206\u9694 / \u8F93\u51FA[data-error]\uFF09\u3002 */\n.dshpc-sv-io-card{border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));border-radius:var(--dshpc-radius-lg,10px);background:var(--dshpc-code-surface,rgba(128,128,128,.10));font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));flex-direction:column;margin:4px 0 4px 4px;display:flex;}\n.dshpc-sv-io-section{grid-template-columns:max-content 1fr;align-items:baseline;column-gap:14px;max-height:150px;padding:12px 16px;display:grid;overflow-y:auto;}\n.dshpc-sv-io-label{color:var(--dshpc-fg-4,rgba(128,128,128,.7));align-self:start;position:sticky;top:0;}\n.dshpc-sv-io-divider{background:var(--dshpc-border,rgba(128,128,128,.35));flex:none;height:.5px;}\n.dshpc-sv-io-text{white-space:pre-wrap;word-break:break-word;min-width:0;color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-io-text[data-error]{color:var(--dshpc-danger,#e5484d);}\n.dshpc-sv-tool-block{margin:4px 0 4px 4px;}\n.dshpc-sv-tool-terminal{--dsl-terminal-font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));--dsl-terminal-line-height:var(--dshpc-line-sm);--dsl-terminal-output-max-height:224px;border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));margin:4px 0 4px 4px;}\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding:2px 8px;}\n.dshpc-sv-hint{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2,rgba(128,128,128,.95));text-align:center;padding:12px 0;}\n/* \u2500\u2500 \u89E6\u53D1\u884C / \u5C3E\u90E8\u884C / \u7528\u91CF pill / \u660E\u7EC6\u5F39\u5C42\uFF08\u5B98\u65B9\u7C7B\u7F3A\u5931\u65F6\u7684\u515C\u5E95\uFF09\u2500\u2500 */\n.dshpc-sv-trigger{align-self:stretch;background:var(--dshpc-code-surface,rgba(128,128,128,.10));border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));border-radius:var(--dshpc-radius-xl,12px);transition:background .1s;}\n.dshpc-sv-trigger:hover{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n.dshpc-sv-trigger-header{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:0 0;border:none;cursor:pointer;color:inherit;font:inherit;text-align:left;}\n.dshpc-sv-trigger-icon{display:inline-flex;align-items:center;color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;}\n.dshpc-sv-trigger-title{font-size:var(--dshpc-font-md,13px);color:var(--dshpc-fg,#1f2328);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}\n.dshpc-sv-trigger-time{margin-left:auto;font-size:var(--dshpc-font-sm,12px);color:var(--dshpc-fg-4,rgba(128,128,128,.7));white-space:nowrap;}\n.dshpc-sv-trigger-chevron{flex:none;color:var(--dshpc-fg-4,rgba(128,128,128,.7));transition:transform .1s;}\n.dshpc-sv-trigger-chevron-open{flex:none;color:var(--dshpc-fg-4,rgba(128,128,128,.7));transform:rotate(180deg);}\n.dshpc-sv-trigger-body{padding:0 16px 12px 40px;}\n.dshpc-sv-trigger-explanation{margin:8px 0 0;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-trigger-content{margin-top:6px;font-size:var(--dshpc-font-md);line-height:1.6;color:var(--dshpc-fg-2,rgba(128,128,128,.95));white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;}\n.dshpc-sv-tail{display:flex;flex-direction:column;gap:16px;}\n.dshpc-sv-tail-actions{margin-top:4px;margin-left:-6px;}\n.dshpc-sv-clock{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));white-space:nowrap;}\n.dshpc-sv-endinfo{display:inline-flex;align-items:center;gap:8px;margin-left:8px;}\n.dshpc-sv-usage{display:inline-flex;align-items:center;}\n.dshpc-sv-usage-trigger{display:inline-flex;align-items:center;gap:4px;appearance:none;background:0 0;border:none;cursor:pointer;padding:0 4px;font:inherit;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-usage-trigger:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-stats{position:fixed;z-index:1200;min-width:200px;max-width:min(440px,calc(100vw - 24px));background:var(--dshpc-surface-1,rgba(30,30,30,.98));border:1px solid var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-md);box-shadow:var(--dshpc-shadow-2,0 12px 32px rgba(0,0,0,.4));padding:12px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-stats-title{display:flex;align-items:center;justify-content:space-between;gap:12px;}\n.dshpc-sv-stats-titlelabel{display:inline-flex;align-items:center;gap:6px;color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-stats-titlevalue{font-variant-numeric:tabular-nums;}\n.dshpc-sv-stats-rule{height:1px;background:var(--dshpc-border,rgba(128,128,128,.35));margin:8px 0;}\n.dshpc-sv-stats-details{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;}\n.dshpc-sv-stats-details dt{color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-stats-details dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;}\n.dshpc-sv-stats-route{word-break:break-all;}\n.dshpc-sv-stats-reasoning{color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n/* \u2500\u2500 \u8FC7\u7A0B\u5206\u7EC4\uFF08\u4E8C\u7EA7\u6536\u6298\uFF0C\u5B98\u65B9 ChatGroupSeat.module.css \u7167\u6284\uFF09\u2500\u2500 */\n.dshpc-sv-group{min-width:0;}\n.dshpc-sv-group-title{max-width:100%;color:var(--dshpc-fg-2,rgba(128,128,128,.95));font:inherit;font-size:var(--dsh-content-font-size,14px);text-align:left;cursor:pointer;background:0 0;border:0;align-items:center;gap:6px;padding:0;transition:color .1s;display:flex;}\n.dshpc-sv-group-title:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-group-leading{width:16px;height:16px;color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;justify-content:center;align-items:center;display:inline-flex;position:relative;}\n.dshpc-sv-group-icon,.dshpc-sv-group-chevron{justify-content:center;align-items:center;transition:opacity .1s;display:inline-flex;position:absolute;inset:0;}\n.dshpc-sv-group-icon{opacity:1;}\n.dshpc-sv-group-chevron{opacity:0;}\n.dshpc-sv-group-title:hover .dshpc-sv-group-icon,.dshpc-sv-group-title:focus-visible .dshpc-sv-group-icon{opacity:0;}\n.dshpc-sv-group-title:hover .dshpc-sv-group-chevron,.dshpc-sv-group-title:focus-visible .dshpc-sv-group-chevron{opacity:1;}\n.dshpc-sv-group-title[aria-expanded=true] .dshpc-sv-group-icon{opacity:0;}\n.dshpc-sv-group-title[aria-expanded=true] .dshpc-sv-group-chevron{opacity:1;}\n.dshpc-sv-group-title[aria-expanded=true]{padding-bottom:16px;}\n.dshpc-sv-group-body{--dsh-chat-flow-gap:8px;overscroll-behavior-y:auto;scrollbar-gutter:stable;max-height:min(400px,50vh);overflow-y:auto;}\n.dshpc-sv-group-label{text-overflow:ellipsis;white-space:nowrap;min-width:0;overflow:hidden;}\n.dshpc-sv-group-fade-top{mask-image:linear-gradient(#0000 0,#000 24px 100%);}\n.dshpc-sv-group-fade-bottom{mask-image:linear-gradient(#000 0 calc(100% - 24px),#0000 100%);}\n.dshpc-sv-group-fade-top.dshpc-sv-group-fade-bottom{mask-image:linear-gradient(#0000 0,#000 24px calc(100% - 24px),#0000 100%);}\n.dshpc-sv-group-content{flex-direction:column;display:flex;}\n.dshpc-sv-group-content>*{flex-shrink:0;}\n.dshpc-sv-group-content>:not([hidden]):not(:empty)~:not([hidden]):not(:empty){margin-top:var(--dsh-chat-flow-gap,8px);}\n.dshpc-sv-group-expanded{--dsh-chat-flow-gap:16px;scrollbar-gutter:auto;max-height:none;overflow:visible;}\n/* \u300C\u7EE7\u7EED\u5BF9\u8BDD\uFF08\u5F00\u5206\u652F\uFF09\u300D\u5934\u90E8\u6309\u94AE\u7EC4 + \u786E\u8BA4\u6846\uFF08\u786E\u8BA4\u6846 = \u5B98\u65B9 primitives Modal\uFF0C\u6B64\u5904\u53EA\u7559\u89C4\u683C\u4E0E\u9519\u8BEF\u884C\uFF09\u3002 */\n.dshpc-sv-headerbtns{display:flex;align-items:center;gap:8px;flex:none;}\n.dshpc-sv-forkmodal{width:min(440px,100%);}\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger,#e5484d);word-break:break-word;}\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:none;display:flex;align-items:flex-end;gap:8px;padding:10px 0 14px;}\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg,#1f2328);background:var(--dshpc-surface-2,rgba(128,128,128,.10));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus,#3b5bdb);outline-offset:-1px;}\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding-bottom:10px;white-space:nowrap;}\n/* \u2500\u2500 \u91CD\u8BD5 / \u8F6E\u6B21\u5931\u8D25 / \u9650\u957F\u4E09\u4EF6\u5957\u515C\u5E95\uFF08\u5B98\u65B9 MessageItem.module.css \u9010\u503C\u7167\u6284\uFF09\u2500\u2500 */\n.dshpc-sv-retry{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));}\n.dshpc-sv-retry-summary{border-radius:var(--dshpc-radius-sm,6px);width:fit-content;color:inherit;cursor:pointer;user-select:none;align-items:center;gap:7px;padding:2px 0;list-style:none;display:inline-flex;}\n.dshpc-sv-retry-summary::-webkit-details-marker{display:none;}\n.dshpc-sv-retry-summary:after{content:"";opacity:.8;border-bottom:1.5px solid;border-right:1.5px solid;width:6px;height:6px;transition:transform .12s;transform:rotate(-45deg);}\n.dshpc-sv-retry-summary:hover{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-retry-summary:focus-visible{outline:1.5px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-sv-retry-text{color:inherit;}\n.dshpc-sv-retry[data-active] .dshpc-sv-retry-text{background:linear-gradient(90deg,var(--dshpc-fg-3,rgba(128,128,128,.8)) 0%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 40%,var(--dshpc-fg-2,rgba(128,128,128,.95)) 50%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 60%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 100%);color:#0000;background-position:100%;background-size:200% 100%;background-clip:text;animation:1.6s ease-in-out infinite dshpc-sv-retry-shimmer;}\n@keyframes dshpc-sv-retry-shimmer{0%{background-position:100%}to{background-position:0}}\n@media (prefers-reduced-motion:reduce){.dshpc-sv-retry[data-active] .dshpc-sv-retry-text{color:inherit;background:0 0;animation:none;}}\n.dshpc-sv-retry[open] .dshpc-sv-retry-summary:after{transform:rotate(45deg);}\n.dshpc-sv-retry-details{overflow-wrap:anywhere;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(18px + var(--dsh-content-font-delta-secondary,0px));gap:2px;margin-top:3px;padding-left:14px;display:grid;}\n.dshpc-sv-retry-label{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-turnerr{font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));grid-template-columns:10px minmax(0,1fr) auto;align-items:start;gap:8px;padding:2px 0;display:grid;}\n.dshpc-sv-turnerr-dot{margin-top:5px;}\n.dshpc-sv-turnerr-copy{overflow-wrap:anywhere;min-width:0;}\n.dshpc-sv-turnerr-title{color:var(--dshpc-danger,#e5484d);margin-right:6px;font-weight:600;}\n.dshpc-sv-turnerr-msg{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-turnerr-code{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));}\n.dshpc-sv-turnerr-warn{color:var(--dshpc-warning,#f5a623);margin-right:6px;font-weight:600;}\n/* \u2500\u2500 \u4EA4\u4ED8\u6587\u4EF6\uFF08\u5B98\u65B9 ui-deliverables PresentRow / Deliverables \u9010\u503C\u515C\u5E95\u955C\u50CF\uFF09\u2500\u2500 */\n.dshpc-sv-deliv-rowsummary{min-width:0;color:var(--dshpc-fg-2,rgba(128,128,128,.95));align-items:center;gap:8px;margin-left:8px;font-size:var(--dshpc-font-sm);display:flex;}\n.dshpc-sv-deliv-rowsummary>:first-child{flex-shrink:0;}\n.dshpc-sv-deliv-rowpaths{text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}\n.dshpc-sv-deliv-rowoutput{border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg-2);white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0;padding:12px;font-size:var(--dshpc-font-sm);}\n/* \u4EA4\u4ED8\u6587\u4EF6\u5361\u7F51\u683C\uFF1Aauto-fit \u81EA\u9002\u5E94\u5217\u5BBD\uFF08\u7A84\u5BB9\u5668\u81EA\u7136\u964D\u5217\uFF0C\u514D @container\uFF09\u3002 */\n.dshpc-sv-deliv{--deliverable-fill:var(--dshpc-plate);--deliverable-hover:var(--dshpc-plate-hover);flex-direction:column;gap:16px;min-width:0;margin-top:4px;display:flex;}\n.dshpc-sv-deliv-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;min-width:0;display:grid;}\n.dshpc-sv-deliv-file{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-md);background:var(--deliverable-fill);min-width:0;height:60px;color:var(--dshpc-fg);align-items:center;gap:10px;padding:8px 10px;transition:background-color .12s;display:flex;position:relative;overflow:hidden;}\n.dshpc-sv-deliv-file:hover{background:var(--deliverable-hover);}\n.dshpc-sv-deliv-cardpreview{z-index:1;border-radius:inherit;cursor:pointer;background:0 0;border:0;width:100%;padding:0;position:absolute;inset:0;}\n.dshpc-sv-deliv-cardpreview:focus-visible{box-shadow:inset 0 0 0 2px var(--dshpc-focus,#3b5bdb);outline:none;}\n.dshpc-sv-deliv-icon{z-index:2;box-sizing:border-box;pointer-events:none;border:.5px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-md);background:var(--dshpc-icon-plate);width:40px;height:40px;color:var(--dshpc-link);flex:none;place-items:center;display:grid;position:relative;overflow:hidden;}\n.dshpc-sv-deliv-body{z-index:2;pointer-events:none;flex:1;justify-content:space-between;align-items:center;gap:12px;min-width:0;display:flex;position:relative;}\n.dshpc-sv-deliv-details{flex-direction:column;flex:1;justify-content:center;gap:2px;min-width:0;display:flex;}\n.dshpc-sv-deliv-name{text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-md);font-weight:500;line-height:var(--dshpc-line-md);overflow:hidden;}\n.dshpc-sv-deliv-desc{color:var(--dshpc-fg-3,rgba(128,128,128,.8));text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-xs);font-weight:400;line-height:var(--dshpc-line-sm);overflow:hidden;}\n.dshpc-sv-deliv-hint,.dshpc-sv-deliv-file:hover .dshpc-sv-deliv-desc .dshpc-sv-deliv-secondary{display:none;}\n.dshpc-sv-deliv-file:hover .dshpc-sv-deliv-desc .dshpc-sv-deliv-hint{display:inline;}\n.dshpc-sv-deliv-toggle{border-radius:var(--dshpc-radius-sm,6px);min-width:0;color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;font:inherit;background:0 0;border:0;align-self:center;align-items:center;gap:4px;padding:1px 11px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);display:inline-flex;}\n.dshpc-sv-deliv-toggle:hover{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n.dshpc-sv-deliv-toggle svg{flex:none;width:14px;height:14px;}\n/* \u7528\u6237\u6D88\u606F\u91CC\u7684\u968F\u9644\u6587\u4EF6\u5361\uFF08\u5B98\u65B9 MessageItem attachmentRow / fileCard\uFF09\uFF1A\n   \u6C14\u6CE1\u4E0B\u65B9\u4E00\u884C\uFF0C\u5C0F\u5361 = \u56FE\u6807 + \u6587\u4EF6\u540D + \u5927\u5C0F\u3002\u5B98\u65B9\u9644\u4EF6\u5F15\u7528\u6CA1\u6709\u8DEF\u5F84 \u21D2 \u4E0D\u53EF\u70B9\u5F00\uFF0C\u4E5F\u4E0D\u4F2A\u88C5\u6210\u53EF\u70B9\u3002 */\n.dshpc-sv-attrow{flex-wrap:wrap;gap:6px;min-width:0;justify-content:flex-end;display:flex;}\n.dshpc-sv-attcard{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint,#0000000a);border-radius:var(--dshpc-radius-md);background:var(--dshpc-plate,rgba(128,128,128,.08));max-width:100%;height:44px;align-items:center;gap:8px;padding:6px 10px;display:flex;}\n.dshpc-sv-att-icon{width:16px;height:16px;color:var(--dshpc-link,#3b5bdb);flex:none;align-items:center;justify-content:center;display:inline-flex;}\n.dshpc-sv-att-body{flex-direction:column;gap:1px;min-width:0;display:flex;}\n.dshpc-sv-att-name{color:var(--dshpc-fg);text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-sm);font-weight:500;line-height:var(--dshpc-line-sm);overflow:hidden;}\n.dshpc-sv-att-meta{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);}\n';
+var SESSION_CSS = '/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u515C\u5E95\u6837\u5F0F\uFF1A\u5B98\u65B9 CSS module \u7C7B\u540D\u672A\u547D\u4E2D\u65F6\u751F\u6548\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\uFF0C\n   \u5E03\u5C40 token \u53D6\u5B98\u65B9\u804A\u5929\u4E13\u5C5E --dsh-chat-* / --dsh-content-font-*\uFF08\u5E26\u515C\u5E95\uFF09\u3002\n   \u5916\u58F3\uFF08\u906E\u7F69 / \u9762\u677F / \u5934\u90E8 / \u5173\u95ED\u94AE\uFF09= \u6838\u5FC3 Modal\uFF08size lg\uFF09\uFF0C\u672C\u6587\u4EF6\u53EA\u88C5\u4F1A\u8BDD\u533A\u81EA\u8EAB\u3002 */\n/* \u4F1A\u8BDD\u533A = \u666E\u901A\u7EB5\u5411\u6D41\uFF1A\u4E0D\u8BBE\u9AD8\u5EA6\u3001\u4E0D\u81EA\u5DF1\u6EDA\uFF08\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3 Modal body\uFF0C\u7528\u6237 2026-10-22 \u53E3\u5F84\uFF09\u3002 */\n.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}\n/* \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\u65F6\u7684\u53EF\u89C1\u63A2\u9488\uFF08\u6302\u5728\u5934\u90E8\u526F\u6807\u9898\u884C\uFF0C\u4E0D\u5360\u6B63\u6587\uFF09\u3002 */\n.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning,#b7791f)}\n/* \u5934\u90E8\u5F52\u6863\u6807\u8BC6\uFF08\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\uFF09\u3002 */\n.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}\n/* \u5185\u8DDD\u4E0E\u6EDA\u52A8\u5168\u90E8\u8BA9\u7ED9\u6838\u5FC3 Modal body \u21D2 \u8FD9\u91CC\u628A\u5B98\u65B9 ChatView.frame / scroll \u7684\u5185\u8DDD\u3001\n   overflow\u3001\u9AD8\u5EA6\u4E00\u5F8B\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\u3002\n   \u26A0\uFE0F \u5FC5\u987B\u540C\u65F6\u628A flex \u6536\u6389\uFF1A\u5B98\u65B9 scroll \u662F flex:1\uFF08basis=0\uFF09\uFF0C\u5728**\u81EA\u52A8\u9AD8**\u7684\u5BB9\u5668\u91CC\u4F1A\u628A\n   \u4F1A\u8BDD\u533A\u538B\u6210 0 \u9AD8 \u2014\u2014 \u8FD9\u6B63\u662F\u300C\u5185\u5BB9\u81EA\u7BA1\u9AD8\u5EA6\u300D\u7684\u8001\u6BDB\u75C5\uFF0C\u522B\u518D\u653E\u56DE\u6765\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}\n.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9AD8\u5EA6\u7531\u5185\u5BB9\u51B3\u5B9A\uFF08\u6491\u5F00\u7531 Modal body \u6EDA\uFF09\u3002 */\n.dshpc-sv-chat{flex:none;min-height:0;}\n\n.dshpc-sv-actions{display:flex;align-items:center;gap:8px;}\n/* \u515C\u5E95 frame\uFF08\u5B98\u65B9 ChatView.frame \u672A\u547D\u4E2D\u65F6\u6302\u5728\u540C\u4E00\u5C42\uFF09\uFF1A\u4E0D\u6EDA\u3001\u4E0D\u6DA8\uFF0C\u5DE6\u53F3\u5185\u8DDD\u4EA4\u7ED9 Modal body\u3002 */\n.dshpc-sv-body{flex:none;min-height:0;overflow:visible;padding:0}\n.dshpc-sv-col{width:100%;max-width:var(--dsh-chat-content-width,920px);margin:0 auto;display:flex;flex-direction:column;gap:var(--dsh-chat-flow-gap,16px);}\n/* \u5B98\u65B9 ChatView.column \u7684\u5144\u5F1F\u95F4\u8DDD\uFF08:not([hidden]) \u624D\u5360\u4F4D\uFF1B\u6298\u53E0\u6389\u7684\u8FC7\u7A0B\u8282\u70B9\u4E0D\u7559\u7A7A\u6863\uFF09\u3002 */\n.dshpc-sv-col>:not([hidden]):not(.dshpc-sv-flowitem:empty)~:not([hidden]):not(.dshpc-sv-flowitem:empty){margin-top:var(--dsh-chat-flow-gap,16px);}\n.dshpc-sv-visuallyhidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}\n.dshpc-sv-flowitem{min-width:0;}\n.dshpc-sv-older{display:flex;justify-content:center;}\n.dshpc-sv-older button{appearance:none;font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);cursor:pointer;color:var(--dshpc-fg-2,rgba(128,128,128,.9));background:var(--dshpc-surface-sunken,rgba(128,128,128,.2));border:none;border-radius:var(--dshpc-radius-sm,6px);padding:4px 12px;}\n.dshpc-sv-older button:disabled{cursor:default;opacity:.6;}\n/* \u8FC7\u7A0B\u884C\uFF08\u5B98\u65B9 TurnProcessNodeView.root \u7167\u6284\uFF1A\u9AD8 33px + .5px \u4E0B\u8FB9\u6846 + padding 0 0 8px\uFF09\u3002 */\n.dshpc-sv-process{box-sizing:border-box;width:100%;min-width:0;height:calc(33px + var(--dsh-content-font-delta,0px));border:none;border-bottom:.5px solid var(--dshpc-border,rgba(128,128,128,.35));color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;text-align:left;background:0 0;align-items:center;padding:0 0 8px;transition:color .1s;display:flex;}\n.dshpc-sv-process:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-process:not([data-open]){margin-bottom:8px;}\n.dshpc-sv-process:disabled{cursor:default;}\n.dshpc-sv-process-label{min-width:0;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}\n.dshpc-sv-process-chevron{width:14px;height:14px;color:var(--dshpc-fg-4,rgba(128,128,128,.6));flex:none;margin-left:4px;transition:transform .1s;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-sv-process[data-open] .dshpc-sv-process-chevron{transform:rotate(180deg);}\n/* turn \u5C3E\u90E8\u64CD\u4F5C\u884C\uFF08\u5B98\u65B9 MessageIconActions.actions\uFF1A\u9AD8 28px + hover \u663E\u9690\u7531\u7EC4\u4EF6 data-actions-reveal \u63A7\u5236\uFF09\u3002 */\n.dshpc-sv-actions{height:calc(28px + var(--dsh-content-font-delta,0px));align-items:center;gap:8px;display:flex;margin-top:4px;}\n.dshpc-sv-action{display:inline-flex;align-items:center;justify-content:center;width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));background:0 0;border:none;cursor:pointer;}\n.dshpc-sv-action:hover{color:var(--dshpc-fg,#1f2328);}\n/* \u7528\u6237\u6C14\u6CE1\uFF08\u5B98\u65B9 MessageItem.bubble \u9010\u503C\uFF1A\u53F3\u5BF9\u9F50\u3001surface-2 \u5E95\u3001radius-xl\uFF09\u3002 */\n.dshpc-sv-user{align-self:flex-start;max-width:100%;background:var(--dshpc-surface-2,rgba(128,128,128,.14));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:10px 14px;font-size:var(--dshpc-font-lg);line-height:1.6;word-break:break-word;}\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));border:1px dashed var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n/* \u52A9\u624B\u6B63\u6587 markdown \u515C\u5E95\uFF08\u5B98\u65B9 AssistantMarkdown / MarkdownText \u672A\u547D\u4E2D\u65F6\uFF09\u3002 */\n.dshpc-sv-md>*:first-child{margin-top:0;}\n.dshpc-sv-md>*:last-child{margin-bottom:0;}\n.dshpc-sv-md p{margin:.5em 0;}\n.dshpc-sv-md h1,.dshpc-sv-md h2,.dshpc-sv-md h3,.dshpc-sv-md h4,.dshpc-sv-md h5,.dshpc-sv-md h6{margin:.9em 0 .4em;font-weight:600;line-height:1.3;}\n.dshpc-sv-md h1{font-size:1.4em;}\n.dshpc-sv-md h2{font-size:1.25em;}\n.dshpc-sv-md h3{font-size:1.1em;}\n.dshpc-sv-md ul,.dshpc-sv-md ol{margin:.5em 0;padding-left:1.4em;}\n.dshpc-sv-md li{margin:.2em 0;}\n.dshpc-sv-md code{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:.9em;background:var(--dshpc-surface-2,rgba(128,128,128,.14));padding:.1em .35em;border-radius:var(--dshpc-radius-xs);}\n.dshpc-sv-md pre{margin:.6em 0;background:var(--dshpc-surface-2,rgba(128,128,128,.14));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-sm);padding:10px 12px;overflow:auto;font-size:var(--dshpc-font-sm);line-height:1.5;}\n.dshpc-sv-md pre code{background:none;padding:0;font-size:inherit;}\n.dshpc-sv-md blockquote{margin:.5em 0;padding:.2em .9em;border-left:3px solid var(--dshpc-border,rgba(128,128,128,.35));color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-md a{color:var(--dshpc-link,#2f6feb);text-decoration:none;}\n.dshpc-sv-md a:hover{text-decoration:underline;}\n.dshpc-sv-md table{border-collapse:collapse;font-size:var(--dshpc-font-sm);margin:.6em 0;display:block;overflow:auto;}\n.dshpc-sv-md th,.dshpc-sv-md td{border:1px solid var(--dshpc-border,rgba(128,128,128,.35));padding:4px 8px;text-align:left;}\n.dshpc-sv-md hr{border:none;border-top:1px solid var(--dshpc-border,rgba(128,128,128,.35));margin:1em 0;}\n.dshpc-sv-md img{max-width:100%;}\n/* \u601D\u8003\u884C\uFF08\u5B98\u65B9 ReasoningRow.module.css \u7167\u6284\uFF1Aroot/row/leading/chevron/title/separator/summary/thinkBody\uFF09\u3002 */\n.dshpc-sv-reasoning{flex-direction:column;display:flex;}\n.dshpc-sv-reasoning:not([data-expanded]){contain:size layout;height:calc(24px + var(--dsh-content-font-delta,0px));}\n.dshpc-sv-reasoning-row{position:relative;overflow:hidden;}\n.dshpc-sv-reasoning-leading{flex-shrink:0;}\n.dshpc-sv-reasoning-chevron{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-reasoning-title{font-weight:400;}\n.dshpc-sv-reasoning-sep{background:var(--dshpc-fg-4,rgba(128,128,128,.7));border-radius:1px;flex:none;width:2px;height:2px;margin:0 8px;}\n.dshpc-sv-reasoning-preview{min-width:0;color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));white-space:nowrap;flex:auto;overflow:hidden;}\n.dshpc-sv-reasoning-preview-text{text-overflow:ellipsis;display:block;overflow:hidden;}\n.dshpc-sv-reasoning:not([data-preview]) .dshpc-sv-reasoning-sep,.dshpc-sv-reasoning:not([data-preview]) .dshpc-sv-reasoning-preview{display:none;}\n.dshpc-sv-reasoning-body{padding:4px 0 4px calc(22px + var(--dsh-content-font-delta,0px));min-width:0;}\n/* \u2500\u2500 \u5DE5\u5177\u5361\uFF08\u5B98\u65B9 ui-tool ToolRow.module.css \u515C\u5E95\u955C\u50CF\uFF0C\u5B98\u65B9\u7C7B\u547D\u4E2D\u65F6 ocOr \u8D70\u5B98\u65B9\uFF09\u2500\u2500\n   \u5B98\u65B9\u884C\u5916\u89C2 = \u65E0\u8FB9\u6846\u88F8\u884C\uFF08root \u4EC5 flex column\uFF09\uFF1B\u5C55\u5F00\u4F53\u5206\u53D1\u94FE\uFF1A\n   TerminalBlock(\u221E) \u2192 DiffBlock(9) \u2192 ReadBlock(8) \u2192 ioCard \u7070\u6846\uFF08\u8F93\u5165/\u5206\u9694/\u8F93\u51FA\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n.dshpc-sv-tool-row:hover .dshpc-sv-tool-title,.dshpc-sv-tool-row:hover .dshpc-sv-tool-summary,.dshpc-sv-tool-row:hover .dshpc-sv-tool-suffix{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-tool-title{font-weight:400;transition:color .1s;}\n.dshpc-sv-tool-chevron{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-tool-sep{background:var(--dshpc-fg-4,rgba(128,128,128,.7));border-radius:1px;flex:none;width:2px;height:2px;margin:0 8px;}\n.dshpc-sv-tool-summary{text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:auto;transition:color .1s;overflow:hidden;}\n.dshpc-sv-tool-suffix{white-space:nowrap;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;margin-left:4px;transition:color .1s;}\n.dshpc-sv-tool-diffstat{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:calc(var(--dsh-content-font-size-secondary,13px) - 2px);color:var(--dshpc-fg-4,rgba(128,128,128,.7));margin-left:10px;transform:translateY(.5px);}\n/* read/write/edit \u6458\u8981\u8DEF\u5F84 = fileLink\uFF08\u4E0B\u5212\u7EBF\u865A\u7EBF\uFF0C\u70B9\u51FB openFile\uFF09\u3002 */\n.dshpc-sv-tool-filelink{text-overflow:ellipsis;white-space:nowrap;min-width:0;font:inherit;text-align:left;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-2,rgba(128,128,128,.95));text-decoration:underline dotted;text-decoration-color:var(--dshpc-fg-3,rgba(128,128,128,.8));text-underline-offset:3px;cursor:pointer;background:0 0;border:none;flex:0 auto;margin:0;padding:0;text-decoration-thickness:1px;transition:color .1s;overflow:hidden;}\n.dshpc-sv-tool-filelink:hover{color:var(--dshpc-fg,#1f2328);text-decoration-color:currentColor;}\n.dshpc-sv-tool-errmark{color:var(--dshpc-danger,#e5484d);}\n.dshpc-sv-tool-stopmark{color:var(--dshpc-warning-label,#f5a623);}\n.dshpc-sv-tool-bodywrap{flex-direction:column;display:flex;}\n/* ioCard \u7070\u6846\uFF08\u5B98\u65B9 ToolRow \u515C\u5E95\u5C55\u5F00\u4F53\uFF1A\u8F93\u5165 / \u5206\u9694 / \u8F93\u51FA[data-error]\uFF09\u3002 */\n.dshpc-sv-io-card{border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));border-radius:var(--dshpc-radius-lg,10px);background:var(--dshpc-code-surface,rgba(128,128,128,.10));font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));flex-direction:column;margin:4px 0 4px 4px;display:flex;}\n.dshpc-sv-io-section{grid-template-columns:max-content 1fr;align-items:baseline;column-gap:14px;max-height:150px;padding:12px 16px;display:grid;overflow-y:auto;}\n.dshpc-sv-io-label{color:var(--dshpc-fg-4,rgba(128,128,128,.7));align-self:start;position:sticky;top:0;}\n.dshpc-sv-io-divider{background:var(--dshpc-border,rgba(128,128,128,.35));flex:none;height:.5px;}\n.dshpc-sv-io-text{white-space:pre-wrap;word-break:break-word;min-width:0;color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-io-text[data-error]{color:var(--dshpc-danger,#e5484d);}\n.dshpc-sv-tool-block{margin:4px 0 4px 4px;}\n.dshpc-sv-tool-terminal{--dsl-terminal-font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));--dsl-terminal-line-height:var(--dshpc-line-sm);--dsl-terminal-output-max-height:224px;border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));margin:4px 0 4px 4px;}\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding:2px 8px;}\n.dshpc-sv-hint{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2,rgba(128,128,128,.95));text-align:center;padding:12px 0;}\n/* \u2500\u2500 \u89E6\u53D1\u884C / \u5C3E\u90E8\u884C / \u7528\u91CF pill / \u660E\u7EC6\u5F39\u5C42\uFF08\u5B98\u65B9\u7C7B\u7F3A\u5931\u65F6\u7684\u515C\u5E95\uFF09\u2500\u2500 */\n.dshpc-sv-trigger{align-self:stretch;background:var(--dshpc-code-surface,rgba(128,128,128,.10));border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));border-radius:var(--dshpc-radius-xl,12px);transition:background .1s;}\n.dshpc-sv-trigger:hover{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n.dshpc-sv-trigger-header{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:0 0;border:none;cursor:pointer;color:inherit;font:inherit;text-align:left;}\n.dshpc-sv-trigger-icon{display:inline-flex;align-items:center;color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;}\n.dshpc-sv-trigger-title{font-size:var(--dshpc-font-md,13px);color:var(--dshpc-fg,#1f2328);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}\n.dshpc-sv-trigger-time{margin-left:auto;font-size:var(--dshpc-font-sm,12px);color:var(--dshpc-fg-4,rgba(128,128,128,.7));white-space:nowrap;}\n.dshpc-sv-trigger-chevron{flex:none;color:var(--dshpc-fg-4,rgba(128,128,128,.7));transition:transform .1s;}\n.dshpc-sv-trigger-chevron-open{flex:none;color:var(--dshpc-fg-4,rgba(128,128,128,.7));transform:rotate(180deg);}\n.dshpc-sv-trigger-body{padding:0 16px 12px 40px;}\n.dshpc-sv-trigger-explanation{margin:8px 0 0;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-trigger-content{margin-top:6px;font-size:var(--dshpc-font-md);line-height:1.6;color:var(--dshpc-fg-2,rgba(128,128,128,.95));white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;}\n.dshpc-sv-tail{display:flex;flex-direction:column;gap:16px;}\n.dshpc-sv-tail-actions{margin-top:4px;margin-left:-6px;}\n.dshpc-sv-clock{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));white-space:nowrap;}\n.dshpc-sv-endinfo{display:inline-flex;align-items:center;gap:8px;margin-left:8px;}\n.dshpc-sv-usage{display:inline-flex;align-items:center;}\n.dshpc-sv-usage-trigger{display:inline-flex;align-items:center;gap:4px;appearance:none;background:0 0;border:none;cursor:pointer;padding:0 4px;font:inherit;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-usage-trigger:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-stats{position:fixed;z-index:1200;min-width:200px;max-width:min(440px,calc(100vw - 24px));background:var(--dshpc-surface-1,rgba(30,30,30,.98));border:1px solid var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-md);box-shadow:var(--dshpc-shadow-2,0 12px 32px rgba(0,0,0,.4));padding:12px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-stats-title{display:flex;align-items:center;justify-content:space-between;gap:12px;}\n.dshpc-sv-stats-titlelabel{display:inline-flex;align-items:center;gap:6px;color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-stats-titlevalue{font-variant-numeric:tabular-nums;}\n.dshpc-sv-stats-rule{height:1px;background:var(--dshpc-border,rgba(128,128,128,.35));margin:8px 0;}\n.dshpc-sv-stats-details{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;}\n.dshpc-sv-stats-details dt{color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-stats-details dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;}\n.dshpc-sv-stats-route{word-break:break-all;}\n.dshpc-sv-stats-reasoning{color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n/* \u2500\u2500 \u8FC7\u7A0B\u5206\u7EC4\uFF08\u4E8C\u7EA7\u6536\u6298\uFF0C\u5B98\u65B9 ChatGroupSeat.module.css \u7167\u6284\uFF09\u2500\u2500 */\n.dshpc-sv-group{min-width:0;}\n.dshpc-sv-group-title{max-width:100%;color:var(--dshpc-fg-2,rgba(128,128,128,.95));font:inherit;font-size:var(--dsh-content-font-size,14px);text-align:left;cursor:pointer;background:0 0;border:0;align-items:center;gap:6px;padding:0;transition:color .1s;display:flex;}\n.dshpc-sv-group-title:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-group-leading{width:16px;height:16px;color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;justify-content:center;align-items:center;display:inline-flex;position:relative;}\n.dshpc-sv-group-icon,.dshpc-sv-group-chevron{justify-content:center;align-items:center;transition:opacity .1s;display:inline-flex;position:absolute;inset:0;}\n.dshpc-sv-group-icon{opacity:1;}\n.dshpc-sv-group-chevron{opacity:0;}\n.dshpc-sv-group-title:hover .dshpc-sv-group-icon,.dshpc-sv-group-title:focus-visible .dshpc-sv-group-icon{opacity:0;}\n.dshpc-sv-group-title:hover .dshpc-sv-group-chevron,.dshpc-sv-group-title:focus-visible .dshpc-sv-group-chevron{opacity:1;}\n.dshpc-sv-group-title[aria-expanded=true] .dshpc-sv-group-icon{opacity:0;}\n.dshpc-sv-group-title[aria-expanded=true] .dshpc-sv-group-chevron{opacity:1;}\n.dshpc-sv-group-title[aria-expanded=true]{padding-bottom:16px;}\n.dshpc-sv-group-body{--dsh-chat-flow-gap:8px;overscroll-behavior-y:auto;scrollbar-gutter:stable;max-height:min(400px,50vh);overflow-y:auto;}\n.dshpc-sv-group-label{text-overflow:ellipsis;white-space:nowrap;min-width:0;overflow:hidden;}\n.dshpc-sv-group-fade-top{mask-image:linear-gradient(#0000 0,#000 24px 100%);}\n.dshpc-sv-group-fade-bottom{mask-image:linear-gradient(#000 0 calc(100% - 24px),#0000 100%);}\n.dshpc-sv-group-fade-top.dshpc-sv-group-fade-bottom{mask-image:linear-gradient(#0000 0,#000 24px calc(100% - 24px),#0000 100%);}\n.dshpc-sv-group-content{flex-direction:column;display:flex;}\n.dshpc-sv-group-content>*{flex-shrink:0;}\n.dshpc-sv-group-content>:not([hidden]):not(:empty)~:not([hidden]):not(:empty){margin-top:var(--dsh-chat-flow-gap,8px);}\n.dshpc-sv-group-expanded{--dsh-chat-flow-gap:16px;scrollbar-gutter:auto;max-height:none;overflow:visible;}\n\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger,#e5484d);word-break:break-word;}\n.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg,#1f2328);background:var(--dshpc-surface-2,rgba(128,128,128,.10));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus,#3b5bdb);outline-offset:-1px;}\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding-bottom:10px;white-space:nowrap;}\n/* \u2500\u2500 \u91CD\u8BD5 / \u8F6E\u6B21\u5931\u8D25 / \u9650\u957F\u4E09\u4EF6\u5957\u515C\u5E95\uFF08\u5B98\u65B9 MessageItem.module.css \u9010\u503C\u7167\u6284\uFF09\u2500\u2500 */\n.dshpc-sv-retry{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));}\n.dshpc-sv-retry-summary{border-radius:var(--dshpc-radius-sm,6px);width:fit-content;color:inherit;cursor:pointer;user-select:none;align-items:center;gap:7px;padding:2px 0;list-style:none;display:inline-flex;}\n.dshpc-sv-retry-summary::-webkit-details-marker{display:none;}\n.dshpc-sv-retry-summary:after{content:"";opacity:.8;border-bottom:1.5px solid;border-right:1.5px solid;width:6px;height:6px;transition:transform .12s;transform:rotate(-45deg);}\n.dshpc-sv-retry-summary:hover{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-retry-summary:focus-visible{outline:1.5px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-sv-retry-text{color:inherit;}\n.dshpc-sv-retry[data-active] .dshpc-sv-retry-text{background:linear-gradient(90deg,var(--dshpc-fg-3,rgba(128,128,128,.8)) 0%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 40%,var(--dshpc-fg-2,rgba(128,128,128,.95)) 50%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 60%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 100%);color:#0000;background-position:100%;background-size:200% 100%;background-clip:text;animation:1.6s ease-in-out infinite dshpc-sv-retry-shimmer;}\n@keyframes dshpc-sv-retry-shimmer{0%{background-position:100%}to{background-position:0}}\n@media (prefers-reduced-motion:reduce){.dshpc-sv-retry[data-active] .dshpc-sv-retry-text{color:inherit;background:0 0;animation:none;}}\n.dshpc-sv-retry[open] .dshpc-sv-retry-summary:after{transform:rotate(45deg);}\n.dshpc-sv-retry-details{overflow-wrap:anywhere;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(18px + var(--dsh-content-font-delta-secondary,0px));gap:2px;margin-top:3px;padding-left:14px;display:grid;}\n.dshpc-sv-retry-label{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-turnerr{font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));grid-template-columns:10px minmax(0,1fr) auto;align-items:start;gap:8px;padding:2px 0;display:grid;}\n.dshpc-sv-turnerr-dot{margin-top:5px;}\n.dshpc-sv-turnerr-copy{overflow-wrap:anywhere;min-width:0;}\n.dshpc-sv-turnerr-title{color:var(--dshpc-danger,#e5484d);margin-right:6px;font-weight:600;}\n.dshpc-sv-turnerr-msg{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-turnerr-code{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));}\n.dshpc-sv-turnerr-warn{color:var(--dshpc-warning,#f5a623);margin-right:6px;font-weight:600;}\n/* \u2500\u2500 \u4EA4\u4ED8\u6587\u4EF6\uFF08\u5B98\u65B9 ui-deliverables PresentRow / Deliverables \u9010\u503C\u515C\u5E95\u955C\u50CF\uFF09\u2500\u2500 */\n.dshpc-sv-deliv-rowsummary{min-width:0;color:var(--dshpc-fg-2,rgba(128,128,128,.95));align-items:center;gap:8px;margin-left:8px;font-size:var(--dshpc-font-sm);display:flex;}\n.dshpc-sv-deliv-rowsummary>:first-child{flex-shrink:0;}\n.dshpc-sv-deliv-rowpaths{text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}\n.dshpc-sv-deliv-rowoutput{border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg-2);white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0;padding:12px;font-size:var(--dshpc-font-sm);}\n/* \u4EA4\u4ED8\u6587\u4EF6\u5361\u7F51\u683C\uFF1Aauto-fit \u81EA\u9002\u5E94\u5217\u5BBD\uFF08\u7A84\u5BB9\u5668\u81EA\u7136\u964D\u5217\uFF0C\u514D @container\uFF09\u3002 */\n.dshpc-sv-deliv{--deliverable-fill:var(--dshpc-plate);--deliverable-hover:var(--dshpc-plate-hover);flex-direction:column;gap:16px;min-width:0;margin-top:4px;display:flex;}\n.dshpc-sv-deliv-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;min-width:0;display:grid;}\n.dshpc-sv-deliv-file{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-md);background:var(--deliverable-fill);min-width:0;height:60px;color:var(--dshpc-fg);align-items:center;gap:10px;padding:8px 10px;transition:background-color .12s;display:flex;position:relative;overflow:hidden;}\n.dshpc-sv-deliv-file:hover{background:var(--deliverable-hover);}\n.dshpc-sv-deliv-cardpreview{z-index:1;border-radius:inherit;cursor:pointer;background:0 0;border:0;width:100%;padding:0;position:absolute;inset:0;}\n.dshpc-sv-deliv-cardpreview:focus-visible{box-shadow:inset 0 0 0 2px var(--dshpc-focus,#3b5bdb);outline:none;}\n.dshpc-sv-deliv-icon{z-index:2;box-sizing:border-box;pointer-events:none;border:.5px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-md);background:var(--dshpc-icon-plate);width:40px;height:40px;color:var(--dshpc-link);flex:none;place-items:center;display:grid;position:relative;overflow:hidden;}\n.dshpc-sv-deliv-body{z-index:2;pointer-events:none;flex:1;justify-content:space-between;align-items:center;gap:12px;min-width:0;display:flex;position:relative;}\n.dshpc-sv-deliv-details{flex-direction:column;flex:1;justify-content:center;gap:2px;min-width:0;display:flex;}\n.dshpc-sv-deliv-name{text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-md);font-weight:500;line-height:var(--dshpc-line-md);overflow:hidden;}\n.dshpc-sv-deliv-desc{color:var(--dshpc-fg-3,rgba(128,128,128,.8));text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-xs);font-weight:400;line-height:var(--dshpc-line-sm);overflow:hidden;}\n.dshpc-sv-deliv-hint,.dshpc-sv-deliv-file:hover .dshpc-sv-deliv-desc .dshpc-sv-deliv-secondary{display:none;}\n.dshpc-sv-deliv-file:hover .dshpc-sv-deliv-desc .dshpc-sv-deliv-hint{display:inline;}\n.dshpc-sv-deliv-toggle{border-radius:var(--dshpc-radius-sm,6px);min-width:0;color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;font:inherit;background:0 0;border:0;align-self:center;align-items:center;gap:4px;padding:1px 11px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);display:inline-flex;}\n.dshpc-sv-deliv-toggle:hover{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n.dshpc-sv-deliv-toggle svg{flex:none;width:14px;height:14px;}\n/* \u7528\u6237\u6D88\u606F\u91CC\u7684\u968F\u9644\u6587\u4EF6\u5361\uFF08\u5B98\u65B9 MessageItem attachmentRow / fileCard\uFF09\uFF1A\n   \u6C14\u6CE1\u4E0B\u65B9\u4E00\u884C\uFF0C\u5C0F\u5361 = \u56FE\u6807 + \u6587\u4EF6\u540D + \u5927\u5C0F\u3002\u5B98\u65B9\u9644\u4EF6\u5F15\u7528\u6CA1\u6709\u8DEF\u5F84 \u21D2 \u4E0D\u53EF\u70B9\u5F00\uFF0C\u4E5F\u4E0D\u4F2A\u88C5\u6210\u53EF\u70B9\u3002 */\n.dshpc-sv-attrow{flex-wrap:wrap;gap:6px;min-width:0;justify-content:flex-end;display:flex;}\n.dshpc-sv-attcard{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint,#0000000a);border-radius:var(--dshpc-radius-md);background:var(--dshpc-plate,rgba(128,128,128,.08));max-width:100%;height:44px;align-items:center;gap:8px;padding:6px 10px;display:flex;}\n.dshpc-sv-att-icon{width:16px;height:16px;color:var(--dshpc-link,#3b5bdb);flex:none;align-items:center;justify-content:center;display:inline-flex;}\n.dshpc-sv-att-body{flex-direction:column;gap:1px;min-width:0;display:flex;}\n.dshpc-sv-att-name{color:var(--dshpc-fg);text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-sm);font-weight:500;line-height:var(--dshpc-line-sm);overflow:hidden;}\n.dshpc-sv-att-meta{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);}\n';
 
 // dist/ui/css.js
 var CONTROLS_DOMAIN = "controls";
@@ -2979,6 +2979,7 @@ var DICT = {
     diffExpandAria: "\u5C55\u5F00\u5176\u4F59 {count} \u884C\u5DEE\u5F02",
     diffExpandRest: "\u2026 \u5176\u4F59 {count} \u884C",
     sessionArchived: "\u5DF2\u5F52\u6863",
+    sessionHeading: "\u4F1A\u8BDD\u9884\u89C8",
     continueBranch: "\u7EE7\u7EED\u5BF9\u8BDD",
     forkConfirmTitle: "\u5F00\u5206\u652F\u7EE7\u7EED\u5BF9\u8BDD",
     forkConfirmText: "\u662F\u5426\u9700\u8981\u57FA\u4E8E\u6B64\u4F1A\u8BDD\u5F00\u4E00\u4E2A\u65B0\u5206\u652F\u7EE7\u7EED\u5BF9\u8BDD\uFF1F\u539F\u4F1A\u8BDD\u4FDD\u6301\u53EA\u8BFB\u7559\u6863\uFF0C\u65B0\u5206\u652F\u590D\u5236\u672C\u4F1A\u8BDD\u5185\u5BB9\u5E76\u53EF\u7EE7\u7EED\u5BF9\u8BDD\u3002",
@@ -3199,6 +3200,7 @@ var DICT = {
     diffExpandAria: "Expand {count} more diff lines",
     diffExpandRest: "\u2026 {count} more lines",
     sessionArchived: "Archived",
+    sessionHeading: "Session preview",
     continueBranch: "Continue conversation",
     forkConfirmTitle: "Fork to continue",
     forkConfirmText: "Start a new branch from this session to continue the conversation? The original stays read-only; the branch copies this conversation and can continue.",
@@ -3693,28 +3695,45 @@ function Modal(props) {
   };
   const s = sizeStyle[props.size ?? "md"];
   const showClose = props.closable !== false && props.onClose !== void 0;
-  const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
+  const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
+  const plainMask = props.mask === false;
   return (0, import_react9.createElement)("div", {
-    className: "dshpc-modal-mask",
+    className: plainMask ? "dshpc-modal-mask dshpc-modal-mask--plain" : "dshpc-modal-mask",
+    style: plainMask && props.maskInsetRight !== void 0 && props.maskInsetRight > 0 ? { paddingRight: `${props.maskInsetRight}px` } : void 0,
     onClick: () => {
-      if (closeOnMask)
+      if (closeOnMask && !plainMask)
         props.onClose?.();
     }
-  }, (0, import_react9.createElement)("div", {
-    className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}`,
-    style: {
-      width: props.width ?? s.width,
-      maxWidth: props.maxWidth ?? s.maxWidth,
-      maxHeight: props.maxHeight ?? s.maxHeight,
-      height: props.height ?? s.height
+  }, (0, import_react9.createElement)(
+    "div",
+    {
+      className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}`,
+      style: {
+        width: props.width ?? s.width,
+        maxWidth: props.maxWidth ?? s.maxWidth,
+        maxHeight: props.maxHeight ?? s.maxHeight,
+        height: props.height ?? s.height
+      },
+      onClick: (e) => e.stopPropagation()
     },
-    onClick: (e) => e.stopPropagation()
-  }, showHeader ? (0, import_react9.createElement)("div", { className: "dshpc-modal__head" }, (0, import_react9.createElement)("div", { className: "dshpc-modal__heading" }, props.icon === void 0 ? null : (0, import_react9.createElement)("span", { className: "dshpc-modal__lead" }, props.icon), (0, import_react9.createElement)("div", { className: "dshpc-modal__title" }, props.title ?? ""), props.headerExtra === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__extra" }, props.headerExtra)), (0, import_react9.createElement)("div", { className: "dshpc-modal__spacer" }), props.headerActions === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__actions" }, props.headerActions), showClose ? (0, import_react9.createElement)("button", {
-    type: "button",
-    className: "dshpc-modal__close",
-    "aria-label": tt("modalClose"),
-    onClick: () => props.onClose?.()
-  }, "\u2715") : null) : null, (0, import_react9.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)));
+    showHeader ? (0, import_react9.createElement)("div", { className: "dshpc-modal__head" }, (0, import_react9.createElement)(
+      "div",
+      { className: "dshpc-modal__heading" },
+      props.icon === void 0 ? null : (0, import_react9.createElement)("span", { className: "dshpc-modal__lead" }, props.icon),
+      // 标题组：第一行 = 标题 + 右侧小块（徽标**紧跟标题**，不跨两行居中），
+      // 第二行 = 副标题（会话 id 这类标识）。
+      (0, import_react9.createElement)("div", { className: "dshpc-modal__titlegroup" }, (0, import_react9.createElement)("div", { className: "dshpc-modal__titlerow" }, (0, import_react9.createElement)("div", { className: "dshpc-modal__title" }, props.title ?? ""), props.headerExtra === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__extra" }, props.headerExtra)), props.subtitle === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__sid" }, props.subtitle))
+    ), (0, import_react9.createElement)("div", { className: "dshpc-modal__spacer" }), props.headerActions === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__actions" }, props.headerActions), showClose ? (0, import_react9.createElement)("button", {
+      type: "button",
+      className: "dshpc-modal__close",
+      "aria-label": tt("modalClose"),
+      onClick: () => props.onClose?.()
+    }, "\u2715") : null) : null,
+    // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
+    // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
+    (0, import_react9.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null),
+    props.footer === void 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)
+  ));
 }
 
 // dist/ui/AlertModal.js
@@ -24493,9 +24512,9 @@ var parseWorker = /* @__PURE__ */ ViewPlugin.fromClass(class ParseWorker {
   }
   work(deadline) {
     this.working = null;
-    let now2 = Date.now();
-    if (this.chunkEnd < now2 && (this.chunkEnd < 0 || this.view.hasFocus)) {
-      this.chunkEnd = now2 + 3e4;
+    let now = Date.now();
+    if (this.chunkEnd < now && (this.chunkEnd < 0 || this.view.hasFocus)) {
+      this.chunkEnd = now + 3e4;
       this.chunkBudget = 3e3;
     }
     if (this.chunkBudget <= 0)
@@ -24511,7 +24530,7 @@ var parseWorker = /* @__PURE__ */ ViewPlugin.fromClass(class ParseWorker {
     let done = field.context.work(() => {
       return isInputPending && isInputPending() || Date.now() > endTime;
     }, vpTo + (viewportFirst ? 0 : 1e5));
-    this.chunkBudget -= Date.now() - now2;
+    this.chunkBudget -= Date.now() - now;
     if (done || this.chunkBudget <= 0) {
       field.context.takeTree();
       this.view.dispatch({ effects: Language.setState.of(new LanguageState(field.context)) });
@@ -52164,9 +52183,9 @@ function formatLiveRunDuration(ms, tt) {
     return tt("durationHours", { hours, minutes: pad2(minutes), seconds });
   return minutes > 0 ? tt("durationMinutes", { minutes, seconds }) : tt("durationSeconds", { seconds });
 }
-function formatMessageClock(time, tt, now2 = Date.now()) {
+function formatMessageClock(time, tt, now = Date.now()) {
   const d2 = new Date(time);
-  const n = new Date(now2);
+  const n = new Date(now);
   const clock = `${pad2(d2.getHours())}:${pad2(d2.getMinutes())}`;
   if (d2.getFullYear() === n.getFullYear() && d2.getMonth() === n.getMonth() && d2.getDate() === n.getDate())
     return clock;
@@ -52461,7 +52480,7 @@ var LIVE_RUN_CLOCK_INTERVAL_MS = 1e3;
 function TurnProcessNodeViewMirror(props) {
   const { turn, turnProcess, t: t4 } = props;
   const open = !turnProcess.foldable || turnProcess.open;
-  const [now2, setNow] = (0, import_react40.useState)(() => Date.now());
+  const [now, setNow] = (0, import_react40.useState)(() => Date.now());
   const ticking = turn?.status === "open" && turn.start !== void 0;
   (0, import_react40.useEffect)(() => {
     if (!ticking)
@@ -52479,7 +52498,7 @@ function TurnProcessNodeViewMirror(props) {
   const canCollapse = turnProcess.foldable && turnProcess.hasContent && !turnProcess.alwaysOpen;
   const running = turn.status === "open";
   const reason = turn.end?.data?.reason?.kind;
-  const elapsedMs = turn.start === void 0 ? void 0 : Math.max(1e3, (turn.end?.time ?? now2) - turn.start.time);
+  const elapsedMs = turn.start === void 0 ? void 0 : Math.max(1e3, (turn.end?.time ?? now) - turn.start.time);
   const duration = elapsedMs === void 0 ? void 0 : running ? formatLiveRunDuration(elapsedMs, t4) : formatRunDuration(elapsedMs, t4);
   const label = running ? duration === void 0 ? t4("chatDeepDiving") : t4("turnProcessDeepDiving", { duration }) : reason === "aborted" ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : duration === void 0 ? t4("turnProcessWorked") : t4("turnProcessTook", { duration });
   const announcement = running ? t4("chatDeepDiving") : reason === "aborted" ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : t4("turnProcessWorked");
@@ -52806,7 +52825,7 @@ function contentFiles(blocks, exclude) {
       continue;
     hadFiles = true;
     const name2 = typeof attachment.name === "string" && attachment.name !== "" ? attachment.name : "file";
-    if (exclude !== void 0 && exclude.has(name2))
+    if (exclude?.has(name2) === true)
       continue;
     out.push({ name: name2, bytes: typeof attachment.bytes === "number" ? attachment.bytes : 0 });
   }
@@ -53215,7 +53234,7 @@ function makeFileMentions(paths, open) {
 function SessionViewModal(props) {
   ensureControls();
   const tt = props.t ?? t;
-  const { heading: heading2, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
+  const { heading: heading2, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile, insetRight } = props;
   const subscribe = (0, import_react46.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
   const getSnapshot = (0, import_react46.useMemo)(() => () => view.target.getSnapshot(), [view]);
   const chat = (0, import_react46.useSyncExternalStore)(subscribe, getSnapshot);
@@ -53379,39 +53398,25 @@ function SessionViewModal(props) {
   return (0, import_react46.createElement)(
     import_react46.Fragment,
     null,
-    (0, import_react46.createElement)("div", { className: "dshpc-sv-overlay", onClick: onClose }, (0, import_react46.createElement)(
-      "div",
-      { className: "dshpc-sv-panel", onClick: (event) => {
-        event.stopPropagation();
-      } },
-      (0, import_react46.createElement)("div", { className: "dshpc-sv-header" }, (0, import_react46.createElement)(
-        "div",
-        { className: "dshpc-sv-heading" },
-        (0, import_react46.createElement)(
-          "div",
-          { className: "dshpc-sv-title" },
-          heading2 ?? sessionId,
-          // 归档标识（官方归档图标 + 「已归档」）。
-          isArchived ? (0, import_react46.createElement)("span", {
-            style: {
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "4px",
-              marginLeft: "8px",
-              fontSize: "var(--dshpc-font-xs)",
-              color: "var(--dshpc-fg-3)",
-              fontWeight: 400
-            },
-            title: tt("sessionArchived")
-          }, (0, import_react46.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : null
-        ),
-        (0, import_react46.createElement)("div", { className: "dshpc-sv-sid" }, sessionId),
+    (0, import_react46.createElement)(Modal, {
+      size: "lg",
+      // 右侧有分栏（文件预览）时：弹窗在左边剩余区域居中，且不画遮罩（否则遮罩盖住分栏）。
+      mask: insetRight === void 0 || insetRight <= 0,
+      maskInsetRight: insetRight,
+      // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
+      // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
+      title: heading2 ?? tt("sessionHeading"),
+      subtitle: (0, import_react46.createElement)(
+        import_react46.Fragment,
+        null,
+        (0, import_react46.createElement)("span", null, sessionId),
         // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
-        officialCount === 0 ? (0, import_react46.createElement)("div", {
-          className: "dshpc-sv-sid",
-          style: { color: "var(--dshpc-warning, #b7791f)" }
-        }, "\u26A0 \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\uFF08\u5F53\u524D\u4E3A\u81EA\u7ED8\u56DE\u9000\uFF09") : null
-      ), (0, import_react46.createElement)("div", { className: "dshpc-sv-headerbtns" }, showContinue ? (0, import_react46.createElement)(official_exports.Button, {
+        officialCount === 0 ? (0, import_react46.createElement)("span", { className: "dshpc-sv-probe" }, " \u26A0 \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\uFF08\u5F53\u524D\u4E3A\u81EA\u7ED8\u56DE\u9000\uFF09") : null
+      ),
+      // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块。
+      headerExtra: isArchived ? (0, import_react46.createElement)("span", { className: "dshpc-sv-archived", title: tt("sessionArchived") }, (0, import_react46.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0,
+      // 「继续对话」：已归档 = 开分支图标 + 确认框；未归档 = 会话图标直跳官方会话页。
+      headerActions: showContinue ? (0, import_react46.createElement)(Button, {
         variant: "outline",
         size: "sm",
         disabled: forking,
@@ -53426,21 +53431,11 @@ function SessionViewModal(props) {
             openHostSession(sessionId);
           }
         }
-      }, tt("continueBranch")) : null, (0, import_react46.createElement)("button", {
-        type: "button",
-        className: "dshpc-sv-action",
-        "aria-label": tt("modalClose"),
-        title: tt("modalClose"),
-        onClick: onClose
-      }, (0, import_react46.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 })))),
-      // 会话区 = mirror/ChatView（frame > root > scroll > column > flowItem*，官方类优先）。
-      (0, import_react46.createElement)(ChatViewFrame, {
-        children: [
-          ...Array.isArray(body) ? body : [body]
-        ]
-      }),
-      // 底部暂存输入框（期4）：flex:none 不随会话区滚动；确定后带话开分支跳官方视图。
-      onContinue === void 0 ? null : (0, import_react46.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react46.createElement)("textarea", {
+      }, tt("continueBranch")) : void 0,
+      onClose,
+      translate: tt,
+      // 底部暂存输入框走 footer（不随会话区滚动）：打字 → 确定 → onContinue 带话开分支跳官方视图。
+      footer: onContinue === void 0 ? void 0 : (0, import_react46.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react46.createElement)("textarea", {
         value: draft,
         placeholder: tt("composerPlaceholder"),
         disabled: sending,
@@ -53453,33 +53448,38 @@ function SessionViewModal(props) {
             onSend();
           }
         }
-      }), (0, import_react46.createElement)(official_exports.Button, {
+      }), (0, import_react46.createElement)(Button, {
         variant: "primary",
         size: "sm",
         disabled: sending || draft.trim() === "",
         onClick: onSend
-      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react46.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5")),
-      sendErr !== null ? (0, import_react46.createElement)("div", { className: "dshpc-sv-forkerr", style: { padding: "0 34px 10px" } }, sendErr) : null
+      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react46.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react46.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
+    }, (0, import_react46.createElement)(
+      "div",
+      { className: "dshpc-sv" },
+      // 会话区 = mirror/ChatView（frame > root > scroll > column > flowItem*，官方类优先）。
+      (0, import_react46.createElement)(ChatViewFrame, {
+        children: [
+          ...Array.isArray(body) ? body : [body]
+        ]
+      })
     )),
-    // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——官方 Modal + Button
-    // （portal 到 body，与本弹窗同 z-index 层、后挂载居上；Escape / 遮罩点击 / 头部叉均触发 onClose）。
-    (0, import_react46.createElement)(official_exports.Modal, {
-      open: forkTarget !== null,
+    // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——核心 Modal + Button。
+    forkTarget === null ? null : (0, import_react46.createElement)(Modal, {
+      size: "sm",
       onClose: () => {
         if (!forking)
           setForkTarget(null);
       },
       title: tt("forkConfirmTitle"),
-      closeLabel: tt("modalClose"),
-      description: tt("forkConfirmText"),
-      className: "dshpc-sv-forkmodal",
+      translate: tt,
       footer: [
-        (0, import_react46.createElement)(official_exports.Button, { key: "cancel", variant: "outline", disabled: forking, onClick: () => {
+        (0, import_react46.createElement)(Button, { key: "cancel", variant: "outline", disabled: forking, onClick: () => {
           setForkTarget(null);
         } }, tt("cancel")),
-        (0, import_react46.createElement)(official_exports.Button, { key: "accept", variant: "primary", disabled: forking, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
+        (0, import_react46.createElement)(Button, { key: "accept", variant: "primary", disabled: forking, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
       ]
-    }, forkErr !== null ? (0, import_react46.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
+    }, (0, import_react46.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), forkErr !== null ? (0, import_react46.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
   );
 }
 
@@ -53582,10 +53582,6 @@ function openSessionView(sessions, uiConversation, id3, retainSource = DEFAULT_R
   };
 }
 
-// packages/demo/src/paths.ts
-var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
-var ARCHIVED_SESSIONS_PATH = "/api/dsh-plugin-core-demo/archived-sessions";
-
 // packages/demo/src/real-sessions.ts
 var MAX_ROWS = 20;
 var RealSessionsStore = class {
@@ -53613,18 +53609,10 @@ var RealSessionsStore = class {
   }
 };
 var realSessions = new RealSessionsStore();
-var archivedIds = /* @__PURE__ */ new Set();
-async function refreshArchived() {
-  try {
-    const res = await fetch(ARCHIVED_SESSIONS_PATH, { cache: "no-store" });
-    if (!res.ok) return;
-    const value = await res.json();
-    const archived = value?.archived;
-    if (!Array.isArray(archived)) return;
-    archivedIds = new Set(archived.filter((id3) => typeof id3 === "string"));
-  } catch {
-  }
-  repullRows();
+var workspacesService = null;
+function archivedSet() {
+  const ids = workspacesService?.list?.getSnapshot().archivedSessionIds;
+  return ids === void 0 ? /* @__PURE__ */ new Set() : new Set(ids);
 }
 function repullRows() {
   const list = sessionsService?.list;
@@ -53634,6 +53622,7 @@ function repullRows() {
     realSessions.markReady();
     return;
   }
+  const archived = archivedSet();
   const rows = [];
   for (const id3 of snap.ids) {
     const row = snap.byId[id3];
@@ -53644,7 +53633,7 @@ function repullRows() {
       updatedAt: row.updatedAt,
       running: row.running,
       blank: row.blank,
-      archived: archivedIds.has(id3)
+      archived: archived.has(id3)
     });
   }
   rows.sort((left, right) => right.updatedAt - left.updatedAt);
@@ -53689,7 +53678,16 @@ function connectRealSessions(ctx) {
     };
     pull();
     list.subscribe(pull);
-    void refreshArchived();
+  });
+  ctx.inject(["workspaces"], (sub) => {
+    const workspaces = sub.workspaces;
+    const list = workspaces?.list;
+    if (workspaces === void 0 || list === void 0 || typeof list.getSnapshot !== "function") return;
+    workspacesService = workspaces;
+    repullRows();
+    if (typeof list.subscribe === "function") list.subscribe(() => {
+      repullRows();
+    });
   });
 }
 
@@ -53872,22 +53870,35 @@ var DICT2 = {
     pickDir: "\u53EA\u8981\u6587\u4EF6\u5939",
     pickFolder: "\u6587\u4EF6\u5939",
     pickNone: "\u8FD8\u6CA1\u9009",
+    pickJsMd: "\u4EC5 JS/MD",
+    openedPath: "\u5DF2\u6253\u5F00\uFF1A",
     pickResult: "\u5DF2\u9009\u62E9",
     previewBodyTitle: "FilePreview \u9884\u89C8\u4F53\uFF08\u53EF\u5355\u72EC\u7528\uFF09",
     previewBodyHint: "\u4E0A\u9762\u90A3\u5757\u5DF2\u7ECF\u5305\u542B\u5B83\u2014\u2014FileBrowser \u5185\u90E8\u6E32\u67D3\u7684\u5C31\u662F FilePreview\u3002\n\u5B83\u540C\u65F6\u4E5F\u662F\u4E00\u6761\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/explorer/preview\uFF1A\u53EA\u6709\u4E00\u4E2A\u6587\u4EF6\u8981\u663E\u793A\u65F6\uFF08\u4F1A\u8BDD\u9644\u4EF6\u3001\u5DE5\u5177\u8F93\u51FA\uFF09\u4E0D\u5FC5\u642C\u51FA\u6574\u4E2A\u9762\u677F\u3002",
-    sessionHint: "\u955C\u50CF\u5B98\u65B9\u4F1A\u8BDD UI \u7684\u53EA\u8BFB\u5F39\u7A97\uFF08\u5047\u5FEB\u7167\u9A71\u52A8\uFF09\uFF1B\u5F52\u6863\u4F1A\u8BDD\u53EF\u8BFB\uFF1B\u7EED\u804A\u8D70 fork \u5F00\u5206\u652F\uFF0C\u6846\u5185\u4E0D\u53EF\u6253\u5B57",
-    sessionOpenModal: "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8",
-    sessionClose: "\u5173\u95ED",
-    sessionPreviewTitle: "\u4F1A\u8BDD\u9884\u89C8\uFF08\u5047\u6570\u636E\uFF09",
+    sessionRealTitle: "\u771F\u5B9E\u4F1A\u8BDD\u5217\u8868",
+    exModelPickerTitle: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09",
+    exWorkspacePickerTitle: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09",
+    exSectionHeadHint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408",
+    exMarqueeHint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7",
+    exLiveHint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3",
+    exEmptyHint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE",
+    exSmallModalTitle: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09",
+    exSmallModalHint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002",
+    exLargeModalTitle: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09",
+    exLargeModalHint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002",
+    exHostModalTitle: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09",
+    exHostModalHint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002',
+    exToastNotifyTitle: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify",
+    exToastNotifyHint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE",
+    exToastHostTitle: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F",
+    exToastHostHint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09",
+    exToastSonnerTitle: "Toast \xB7 \u5B98\u65B9 Sonner",
+    exToastSonnerHint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528",
     sessionRealHint: "\u5BBF\u4E3B sessions.list \u5FEB\u7167\uFF08\u51B7\u5B89\u5168\uFF0C\u4E0D\u6FC0\u6D3B Agent\uFF09\u2192 \u70B9\u5F00\u771F\u9884\u89C8\uFF1Bfork \u4E0E\u8DF3\u8F6C\u90FD\u662F\u5B98\u65B9\u53E3\u5B50",
-    sessionListUnavailable: "\u5BBF\u4E3B\u4F1A\u8BDD\u670D\u52A1\u672A\u5C31\u4F4D\uFF08sessions / uiConversation / uiWorkspace \u7F3A\u5E2D\uFF09\u2014\u2014\u5728\u771F\u5B9E dsh profile \u91CC\u5B89\u88C5\u672C\u63D2\u4EF6\u5373\u53EF\u7528\uFF1B\u4E0B\u65B9\u4E3A\u79BB\u7EBF\u5047\u6570\u636E\u6F14\u793A",
+    sessionListUnavailable: "\u5BBF\u4E3B\u4F1A\u8BDD\u670D\u52A1\u672A\u5C31\u4F4D\uFF08sessions / uiConversation / uiWorkspace \u7F3A\u5E2D\uFF09\u2014\u2014\u5728\u771F\u5B9E dsh profile \u91CC\u5B89\u88C5\u672C\u63D2\u4EF6\u5373\u53EF\u8BFB\u5230\u672C\u673A\u4F1A\u8BDD",
     sessionListEmpty: "\u5BBF\u4E3B\u5F53\u524D\u6CA1\u6709\u53EF\u663E\u793A\u7684\u4F1A\u8BDD",
     sessionListRunning: "\u8FD0\u884C\u4E2D",
     sessionListArchived: "\u5DF2\u5F52\u6863",
-    sessionForked: "\u5DF2\u5F00\u5206\u652F\uFF08\u6F14\u793A\u56DE\u58F0\uFF09\uFF1A",
-    sessionOpenedHost: "\u5DF2\u8DF3\u8F6C\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF08\u6F14\u793A\u56DE\u58F0\uFF09\uFF1A",
-    sessionContinued: "\u6682\u5B58\u6D88\u606F\u5DF2\u53D7\u7406\uFF08\u6F14\u793A\u56DE\u58F0\uFF09\uFF1A",
-    sessionOpenedFile: "\u5DF2\u6253\u5F00\u6587\u4EF6\uFF08\u6F14\u793A\u56DE\u58F0\uFF09\uFF1A",
     dateHint: "\u89E3\u6790\u5931\u8D25\u4E0D\u629B\u9519\u3001\u7ED9\u515C\u5E95\u3001\u4E0D\u7F16\u9020\uFF1B\u6240\u6709\u51FD\u6570\u65E0 UI \u4F9D\u8D56\uFF0CNode \u91CC\u4E5F\u80FD\u8DD1",
     numberHint: "formatBytes \u6309 1024 \u8FDB\u5236\u3001\u5355\u4F4D\u81EA\u52A8\u8FDB\u4F4D\uFF1BformatCount \u7ED9\u5927\u6570\u52A0\u5343\u5206\u4F4D",
     roadmapHint: "\u4E0B\u9762\u662F\u300C\u660E\u786E\u4E0D\u63D0\u4F9B\u300D\u7684\u90E8\u5206\u2014\u2014\u5199\u5728\u8FD9\u91CC\u662F\u4E3A\u4E86\u8BA9\u4F60\u4E0D\u7528\u731C\uFF0C\u4E5F\u8BA9\u540E\u6765\u4EBA\u77E5\u9053\u8FB9\u754C\u5728\u54EA\u3002",
@@ -54073,22 +54084,35 @@ var DICT2 = {
     pickDir: "Folders only",
     pickFolder: "folder",
     pickNone: "Nothing picked yet",
+    pickJsMd: "JS/MD only",
+    openedPath: "Opened: ",
     pickResult: "Picked",
     previewBodyTitle: "FilePreview (usable on its own)",
     previewBodyHint: "The block above already includes it \u2014 FileBrowser renders FilePreview inside.\nIt is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.",
-    sessionHint: "Read-only dialog mirroring the official session UI (driven by a fake snapshot); archived sessions are readable; continuing goes through fork \u2014 no typing inside the dialog",
-    sessionOpenModal: "Open session preview",
-    sessionClose: "Close",
-    sessionPreviewTitle: "Session preview (mock data)",
+    sessionRealTitle: "Real session list",
+    exModelPickerTitle: "ModelPicker (real catalog)",
+    exWorkspacePickerTitle: "WorkspacePicker (real list)",
+    exSectionHeadHint: "Section header: icon + title + right-side actions in three slots \u2014 a pure layout shell; icon, title and right side are all caller-defined. Three groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos",
+    exMarqueeHint: "Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis",
+    exLiveHint: "Subscribes to an internal ticker; the running clock UI is rendered by the caller",
+    exEmptyHint: "Business empty state: a placeholder when there is no data, optionally with one action button",
+    exSmallModalTitle: "Small dialogs (custom)",
+    exSmallModalHint: "Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host\u2019s own.",
+    exLargeModalTitle: "Large dialogs (custom)",
+    exLargeModalHint: "Our content dialog: Modal (size md/lg) carrying arbitrary content \u2014 not a confirm/cancel primitive. Three samples: default md / with footer / without footer (custom content); the header layout may differ.",
+    exHostModalTitle: "Native dialogs (host)",
+    exHostModalHint: 'The host kernel\u2019s own Modal: mask, header and close button all belong to the host; the body takes arbitrary content and the footer any button set. Imperative use goes through confirmModal/alertModal with skin:"host"; neither shadows the other.',
+    exToastNotifyTitle: "Toast \xB7 our notify wrapper",
+    exToastNotifyHint: "notify(): uniform grey/green/red/yellow plus our own button on the right",
+    exToastHostTitle: "Toast \xB7 host native",
+    exToastHostHint: "showHostToast(): wraps the official @deepseek-ai Toast (top banner)",
+    exToastSonnerTitle: "Toast \xB7 Sonner",
+    exToastSonnerHint: "showToast(): the third-party library as-is, for comparison",
     sessionRealHint: "Host sessions.list snapshot (cold-safe, no Agent activation) \u2192 click for a real preview; fork and navigation are official APIs",
-    sessionListUnavailable: "Host session services not ready (sessions / uiConversation / uiWorkspace absent) \u2014 install this plugin into a real dsh profile to use it; the offline mock demo is below",
+    sessionListUnavailable: "Host session services not ready (sessions / uiConversation / uiWorkspace absent) \u2014 install this plugin into a real dsh profile to list and preview your sessions",
     sessionListEmpty: "The host has no visible sessions right now",
     sessionListRunning: "Running",
     sessionListArchived: "Archived",
-    sessionForked: "Forked (demo echo): ",
-    sessionOpenedHost: "Jumped to the official session area (demo echo): ",
-    sessionContinued: "Staged message accepted (demo echo): ",
-    sessionOpenedFile: "Opened file (demo echo): ",
     dateHint: "No throw on parse failure \u2014 falls back gracefully and never fabricates; all functions are UI-free and run in Node too",
     numberHint: "formatBytes is 1024-based with automatic unit scaling; formatCount adds thousands separators",
     roadmapHint: "The list below is what this package explicitly does NOT provide \u2014 written down so nobody has to guess, and so the boundary stays visible.",
@@ -54556,8 +54580,20 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
         "en": 'The "Continue" button forks by archive state (injected by the caller via the `archived` prop): archived \u21D2 branch icon + confirmation (fork a child, then jump to the official area \u2014 official policy keeps archived sessions out of the main view); not archived / not provided \u21D2 session icon, one click jumps straight to the official session page. The dialog title is the session\u2019s own title (`heading`, usually the host sessions.list displayTitle); when archived, the official archive icon + "Archived" appears beside it.'
       },
       {
-        "zh": "\u5F52\u6863\u72B6\u6001\u5BA2\u6237\u7AEF\u8BFB\u4E0D\u5230\uFF08\u5B98\u65B9 UiWorkspace \u516C\u5F00\u9762\u53EA\u6709\u5BFC\u822A / \u5F52\u6863 / \u89E3\u5F52\u6863\u5199\u64CD\u4F5C\uFF0C\u5F52\u6863 id \u96C6\u5408\u5728\u5B98\u65B9 UI \u5185\u90E8\u6CE8\u5165 shares \u91CC\uFF09\u21D2 \u4E0E\u672C\u5305 `./host` \u7684\u6A21\u578B\u76EE\u5F55\u540C\u6A21\u5F0F\uFF1A\u5BBF\u4E3B\u4FA7 `serveArchivedSessions` \u8BFB workspaceRegistry.archivedSessionIds \u6302\u53EA\u8BFB\u8DEF\u7531\uFF0Cclient fetch \u540E\u4F20\u7ED9 `archived`\u3002",
-        "en": "Archive state is not readable client-side (the official UiWorkspace public surface only has navigation / archive / unarchive writes; the archived-id set lives in the official UI\u2019s internal injection shares) \u21D2 same pattern as this package\u2019s ./host model catalog: the host-side serveArchivedSessions reads workspaceRegistry.archivedSessionIds and mounts a read-only route; the client fetches it and passes `archived`."
+        "zh": "\u5F52\u6863\u72B6\u6001**\u5BA2\u6237\u7AEF\u8BFB\u5F97\u5230**\uFF082026-10-22 \u89E3\u5305 @deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2 \u6838\u5B9E\uFF0C\u63A8\u7FFB\u6B64\u524D\u300C\u53EA\u6709\u5BBF\u4E3B\u4FA7\u8BFB\u5F97\u5230\u3001\u8981\u8D70 serveArchivedSessions \u8DEF\u7531\u300D\u7684\u7ED3\u8BBA\uFF09\uFF1A\u5B98\u65B9 client \u670D\u52A1 `workspaces` \u7684 `list` \u5FEB\u7167\u5E26 `archivedSessionIds`\uFF0C\u662F **registry-global \u5F52\u6863\u96C6\u5408**\uFF08\u4E0D\u662F\u6BCF\u5DE5\u4F5C\u533A\u4E00\u4EFD\uFF09\uFF0C\u7531\u5BBF\u4E3B follow \u6D41 baseline / `archived` \u589E\u91CF\u6301\u7EED\u66FF\u6362 \u21D2 \u6CE8\u5165 `workspaces` \u2192 `list.getSnapshot().archivedSessionIds` + `list.subscribe` \u5B9E\u65F6\u5237\u65B0\uFF0C\u4F20\u7ED9 `archived`\u3002\u65E0\u9700\u5BBF\u4E3B\u8DEF\u7531\u3002",
+        "en": "Archive state IS readable client-side (verified 2026-10-22 by unpacking @deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2 \u2014 overturns the earlier conclusion that only the host could read it, via a serveArchivedSessions route): the official client service `workspaces` exposes a `list` snapshot carrying `archivedSessionIds` \u2014 the registry-global archive set (not one per workspace), continuously replaced by the host follow stream\u2019s baseline / `archived` increments \u21D2 inject `workspaces` \u2192 `list.getSnapshot().archivedSessionIds` + `list.subscribe` for live refresh, then pass it as `archived`. No host route needed."
+      },
+      {
+        "zh": "\u6807\u9898\u533A\u4E09\u6BB5\u56FA\u5B9A\uFF08\u7528\u6237 2026-10-22 \u62CD\u677F\uFF09\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898\uFF08\u8C03\u7528\u65B9\u7ED9\u7684\u4EBA\u8BDD\u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\uFF09+ \u300C\u5DF2\u5F52\u6863\u300D\u5FBD\u6807\uFF08**\u7D27\u8DDF\u6807\u9898**\uFF0C\u4E0D\u8DE8\u4E24\u884C\u5C45\u4E2D\uFF09\uFF1B\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\uFF08\u4F1A\u8BDD id\uFF0C\u7B49\u5BBD\u5C0F\u5B57\uFF0C\u8D70 Modal \u7684 `subtitle`\uFF09\uFF1B\u53F3\u4FA7 = \u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D/ \u5173\u95ED\u3002\u4F1A\u8BDD id \u662F\u6807\u8BC6\uFF0C\u4E0D\u8FDB\u6B63\u6587\u3002",
+        "en": 'The header has three fixed parts (decided 2026-10-22): line 1 = the title (caller-supplied human title, default "Session preview") plus the **Archived** badge directly after the title (not centered across both lines); line 2 = the subtitle (session id, monospace caption, via the Modal `subtitle` prop); right side = "Continue" / close. The session id is an identifier and never goes into the body.'
+      },
+      {
+        "zh": "\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3\uFF08\u7528\u6237 2026-10-22 \u62CD\u677F\uFF09\uFF1AModal \u7684 body \u662F**\u552F\u4E00\u6EDA\u52A8\u5BB9\u5668**\uFF0C\u5185\u8DDD\u4E5F\u5F52\u5B83 \u2014\u2014 \u5185\u5BB9\uFF08\u672C\u6A21\u5757\uFF09\u53EA\u6309\u6D41\u6392\u7248\uFF0C\u4E0D\u5199 `height:100%`\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\u6240\u4EE5\u4F1A\u8BDD\u533A\u91CC\u7684\u5B98\u65B9 ChatView.frame / scroll \u7684 `overflow` / \u9AD8\u5EA6 / \u5185\u8DDD\u4E00\u5F8B\u5F52\u96F6\uFF08\u89C1 session.css \u7684\u53CC\u7C7B\u540D\u94A9\u5B50\uFF09\uFF1B\u771F\u9700\u8981\u300C\u5DE6\u53F3\u4E24\u680F\u5404\u81EA\u6EDA\u300D\u65F6\u4E0D\u7528\u5185\u5BB9\u81EA\u7BA1\uFF0C\u800C\u662F\u628A\u53F3\u4FA7\u90A3\u5217\u653E\u5230**\u9875\u9762\u5C42**\uFF08\u89C1\u4E0B\u6761\uFF09\u3002",
+        "en": "Scrolling and padding belong to the core (decided 2026-10-22): the Modal body is the **only scroll container**, and it owns the padding \u2014 this module just lays out flow content, never `height:100%`, never its own scrollbar. That is why the inner ChatView.frame / scroll `overflow`, height and padding are all zeroed (see the double-class hooks in session.css). If two panes must scroll independently, do not let the content manage height \u2014 put the right column at the **page level** (next item)."
+      },
+      {
+        "zh": "\u6587\u4EF6\u94FE\u63A5\uFF08\u5DE5\u5177\u5361 fileLink / md \u884C\u5185\u5F15\u7528 / \u4EA4\u4ED8\u5361\uFF09\u7EDF\u4E00\u8D70 `onOpenFile`\u3002\u63A5\u6CD5\uFF08\u7528\u6237 2026-10-22 \u5B9A\uFF09\uFF1A\u9884\u89C8\u5F00\u5728**\u9875\u9762\u53F3\u4FA7**\uFF08\u6838\u5FC3 `openFilePreview` \u7684 dock\uFF0C\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4E0D\u5728\u5F39\u7A97\u91CC\u5206\u680F\uFF1B\u5F39\u7A97\u7528 `insetRight` \u8BA9\u51FA\u90A3\u5217\u7684\u5B9E\u6D4B\u5BBD\u5EA6 \u21D2 \u5B83\u5728\u5DE6\u8FB9\u5269\u4F59\u533A\u57DF\u5C45\u4E2D\uFF0C\u4E14\u81EA\u52A8\u53BB\u6389\u906E\u7F69\uFF08\u5426\u5219\u906E\u7F69\u76D6\u4F4F\u53F3\u4FA7\u90A3\u5217\u3001\u8FD8\u5403\u6389\u5B83\u7684\u70B9\u51FB\uFF09\u3002\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\u7F3A\u5E2D\u65F6\u4E0D\u7ED9 `onOpenFile`\uFF0C\u94FE\u63A5\u81EA\u7136\u662F\u7EAF\u6587\u672C\uFF0C\u4E0D\u5047\u88C5\u80FD\u70B9\u3002",
+        "en": "Every file link (tool-card fileLink / md mentions / delivered cards) exits through `onOpenFile`. Wiring (decided 2026-10-22): the preview opens as a **page-level right column** (the core `openFilePreview` dock, squeezing the main area) \u2014 never as a split inside the dialog. The dialog takes `insetRight` = that column\u2019s measured width, so it centers in the remaining left area and drops its mask (otherwise the mask would cover the column and eat its clicks). When the workspace file service is absent, pass no `onOpenFile` so links stay plain text instead of pretending to be clickable."
       },
       {
         "zh": "\u5DF2\u77E5\u9650\u5236\uFF1A\u5B98\u65B9\u6837\u5F0F\u672A\u6CE8\u5165\u65F6\u56DE\u9000\u81EA\u7ED8\u89C2\u611F\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\uFF1B\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\uFF08\u7FFB\u9875\u9760\u300C\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55\u300D\u6309\u94AE\uFF0C\u5B98\u65B9 loadOlder\uFF09\uFF1B\u7CFB\u7EDF\u63D0\u793A / \u4E0A\u4E0B\u6587\u6CE8\u5165\u884C\u6309\u51B3\u7B56 28 \u8FC7\u6EE4\uFF08\u5B98\u65B9 ContextInjectionRow \u5F85\u5B9E\u65BD\uFF09\uFF1B\u{1F44D}\u{1F44E} \u53CD\u9988\u6309\u94AE\u5B98\u65B9\u8D70 slots\uFF0C\u5F39\u7A97\u65E0\u8BE5\u63D2\u69FD\u3002",
@@ -54637,10 +54673,20 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
           {
             "name": "heading",
             "type": "string",
-            "def": "sessionId",
+            "def": "sessionHeading\uFF08\u4F1A\u8BDD\u9884\u89C8\uFF09",
+            "required": "\u5426",
             "desc": {
-              "zh": "\u5F39\u7A97\u6807\u9898 = \u4F1A\u8BDD\u81EA\u5DF1\u7684\u6807\u9898\uFF08\u5BBF\u4E3B sessions.list \u7684 displayTitle\uFF09",
-              "en": "Dialog title = the session\u2019s own title (host sessions.list displayTitle)"
+              "zh": "\u5F39\u7A97\u6807\u9898 = \u4F1A\u8BDD\u81EA\u5DF1\u7684\u6807\u9898\uFF08\u5BBF\u4E3B sessions.list \u7684 displayTitle\uFF0C\u53EF\u81EA\u5B9A\u4E49\uFF09\uFF1B\u4F1A\u8BDD id \u662F\u6807\u8BC6\uFF0C\u56FA\u5B9A\u663E\u793A\u5728\u6807\u9898\u4E0B\u65B9\u526F\u6807\u9898\u884C\uFF08\u7B49\u5BBD\u5C0F\u5B57\uFF09\uFF0C\u4E0D\u5360\u6B63\u6587",
+              "en": "Dialog title = the session\u2019s own title (host sessions.list displayTitle \u2014 fully customisable); the session id is an identifier and always sits on the subtitle line **under** the title (monospace caption), never in the body"
+            }
+          },
+          {
+            "name": "insetRight",
+            "type": "number",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u9875\u9762\u53F3\u4FA7\u5206\u680F\uFF08\u6587\u4EF6\u9884\u89C8 dock\uFF09\u7684\u5B9E\u6D4B\u5BBD\u5EA6\uFF1A\u5F39\u7A97\u5728\u5DE6\u8FB9\u5269\u4F59\u533A\u57DF\u5C45\u4E2D\u3001\u5E76\u53BB\u6389\u906E\u7F69\uFF08\u5206\u680F\u5728\u9875\u9762\u5C42\uFF0C\u4E0D\u5728\u5F39\u7A97\u91CC\uFF09",
+              "en": "Measured width of the page-level right column (file preview dock): the dialog centers in the remaining left area and drops its mask (the column lives on the page, not inside the dialog)"
             }
           },
           {
@@ -54648,8 +54694,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "boolean",
             "def": "\u2014",
             "desc": {
-              "zh": "\u662F\u5426\u5DF2\u5F52\u6863\uFF08client \u8BFB\u4E0D\u5230\uFF0C\u7ECF\u5BBF\u4E3B\u8DEF\u7531\u6CE8\u5165\uFF09\uFF1B\u5206\u5316\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\uFF1A\u5F52\u6863=\u5F00\u5206\u652F\u786E\u8BA4\u6846\uFF0C\u672A\u5F52\u6863=\u76F4\u8DF3\u5B98\u65B9\u4F1A\u8BDD\u9875",
-              "en": 'Whether archived (not readable client-side; injected via a host route); differentiates "Continue": archived = fork confirmation, not archived = direct jump to the official session page'
+              "zh": "\u662F\u5426\u5DF2\u5F52\u6863\uFF08\u8C03\u7528\u65B9\u4ECE\u5B98\u65B9 client \u670D\u52A1 `workspaces` \u5FEB\u7167\u7684 `archivedSessionIds` \u53D6\uFF09\uFF1B\u5206\u5316\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\uFF1A\u5F52\u6863=\u5F00\u5206\u652F\u786E\u8BA4\u6846\uFF0C\u672A\u5F52\u6863=\u76F4\u8DF3\u5B98\u65B9\u4F1A\u8BDD\u9875",
+              "en": 'Whether archived (caller reads it from the official client service `workspaces` snapshot field `archivedSessionIds`); differentiates "Continue": archived = fork confirmation, not archived = direct jump to the official session page'
             }
           },
           {
@@ -55946,6 +55992,33 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             }
           },
           {
+            "name": "subtitle",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6807\u9898**\u4E0B\u65B9**\u7684\u526F\u6807\u9898\u884C\uFF08\u7B49\u5BBD\u5C0F\u5B57\uFF1B\u4F1A\u8BDD id \u8FD9\u7C7B\u6807\u8BC6\u653E\u8FD9\u91CC\uFF0C\u522B\u585E\u6B63\u6587\uFF09",
+              "en": "Subtitle line **under** the title (monospace caption; put identifiers such as a session id here, not in the body)"
+            }
+          },
+          {
+            "name": "headerExtra",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6807\u9898**\u540C\u4E00\u884C**\u53F3\u4FA7\u7684\u5C0F\u5757\uFF08\u5FBD\u6807 / \u8BA1\u6570\uFF09\uFF1A\u7D27\u8DDF\u6807\u9898\uFF0C\u4E0D\u8DE8\u6807\u9898\u4E0E\u526F\u6807\u9898\u4E24\u884C\u5C45\u4E2D",
+              "en": "Small block (badge / count) on the **same line** as the title: it sits right after the title, never centered across the title and subtitle lines"
+            }
+          },
+          {
+            "name": "headerActions",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5934\u90E8\u53F3\u4FA7\u52A8\u4F5C\u533A\uFF08\u5173\u95ED\u94AE\u4E4B\u5916\uFF09",
+              "en": "Header actions area (besides the close button)"
+            }
+          },
+          {
             "name": "onClose",
             "type": "() => void",
             "def": "\u2014",
@@ -55988,6 +56061,24 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "desc": {
               "zh": "\u4E0D\u6E32\u67D3\u5934\u90E8\uFF08\u6C89\u6D78\u5F0F\uFF09",
               "en": "Skip header (immersive)"
+            }
+          },
+          {
+            "name": "mask",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "\u662F\u5426\u753B\u906E\u7F69\uFF1B`false` = \u900F\u660E\u5C42\u4E14\u4E0D\u5403\u70B9\u51FB\uFF08\u5F39\u7A97\u53D8\u6210\u9875\u9762\u4E0A\u7684\u666E\u901A\u6D6E\u5C42\uFF0C\u65C1\u8FB9\u533A\u57DF\u7167\u5E38\u53EF\u70B9\uFF09\u2014\u2014 \u4E0E\u9875\u9762\u53F3\u4FA7\u5206\u680F\u5E76\u6392\u65F6\u7528",
+              "en": "Whether to draw the mask; `false` = transparent layer that does not eat clicks (the dialog becomes a normal floating panel and the surrounding page stays clickable) \u2014 for sitting side by side with a page-level right column"
+            }
+          },
+          {
+            "name": "maskInsetRight",
+            "type": "number",
+            "def": "0",
+            "desc": {
+              "zh": "\u906E\u7F69\u53F3\u4FA7\u7559\u51FA\u7684\u5BBD\u5EA6\uFF08px\uFF09\uFF1A\u5F39\u7A97\u5728**\u5269\u4E0B\u7684\u90A3\u5757\u533A\u57DF**\u91CC\u5C45\u4E2D\uFF0C\u4E0D\u88AB\u53F3\u4FA7\u5206\u680F\u538B\u4F4F",
+              "en": "Width (px) reserved on the mask\u2019s right: the dialog centers in the **remaining** area instead of being covered by the right column"
             }
           },
           {
@@ -57095,7 +57186,7 @@ function PickerPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09", hint: t3("modelPickerHint"), code: CODE_MODEL_PICKER },
+      { title: t3("exModelPickerTitle"), hint: t3("modelPickerHint"), code: CODE_MODEL_PICKER },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
@@ -57112,7 +57203,7 @@ function PickerPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09", hint: t3("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
+      { title: t3("exWorkspacePickerTitle"), hint: t3("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
@@ -57375,7 +57466,7 @@ function CardPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: t3("sectionHeadTitle"), hint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408", code: CODE_SECTION_HEAD },
+      { title: t3("sectionHeadTitle"), hint: t3("exSectionHeadHint"), code: CODE_SECTION_HEAD },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "8px" } },
@@ -57487,7 +57578,7 @@ function ChipPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: t3("marqueeTitle"), hint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7", code: CODE_MARQUEE },
+      { title: t3("marqueeTitle"), hint: t3("exMarqueeHint"), code: CODE_MARQUEE },
       (0, import_react52.createElement)(
         "div",
         { style: { maxWidth: "200px" } },
@@ -57496,12 +57587,12 @@ function ChipPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: t3("liveTitle"), hint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3", code: CODE_LIVE },
+      { title: t3("liveTitle"), hint: t3("exLiveHint"), code: CODE_LIVE },
       (0, import_react52.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: t3("emptyStateTitle"), hint: "\u4E1A\u52A1\u7A7A\u6001\uFF1A\u65E0\u6570\u636E\u65F6\u7684\u5360\u4F4D\uFF0C\u53EF\u6302\u4E00\u4E2A\u64CD\u4F5C\u6309\u94AE", code: CODE_EMPTY },
+      { title: t3("emptyStateTitle"), hint: t3("exEmptyHint"), code: CODE_EMPTY },
       (0, import_react52.createElement)(EmptyState, { text: "\u6682\u65E0\u6570\u636E" })
     ),
     (0, import_react52.createElement)(DocCode, { id: "chip" }),
@@ -57621,7 +57712,7 @@ function FeedbackPage() {
     (0, import_react52.createElement)(DocProse, { id: "feedback" }),
     (0, import_react52.createElement)(
       Example,
-      { title: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002", code: CODE_SMALL_MODAL },
+      { title: t3("exSmallModalTitle"), hint: t3("exSmallModalHint"), code: CODE_SMALL_MODAL },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
@@ -57702,7 +57793,7 @@ function FeedbackPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09", hint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002", code: CODE_LARGE_MODAL },
+      { title: t3("exLargeModalTitle"), hint: t3("exLargeModalHint"), code: CODE_LARGE_MODAL },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
@@ -57780,7 +57871,7 @@ function FeedbackPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09", hint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002', code: CODE_HOST_MODAL },
+      { title: t3("exHostModalTitle"), hint: t3("exHostModalHint"), code: CODE_HOST_MODAL },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
@@ -57826,7 +57917,7 @@ function FeedbackPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify", hint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE", code: CODE_TOAST_NOTIFY },
+      { title: t3("exToastNotifyTitle"), hint: t3("exToastNotifyHint"), code: CODE_TOAST_NOTIFY },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
@@ -57862,7 +57953,7 @@ function FeedbackPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F", hint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09", code: CODE_TOAST_HOST },
+      { title: t3("exToastHostTitle"), hint: t3("exToastHostHint"), code: CODE_TOAST_HOST },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
@@ -57881,7 +57972,7 @@ function FeedbackPage() {
     ),
     (0, import_react52.createElement)(
       Example,
-      { title: "Toast \xB7 \u5B98\u65B9 Sonner", hint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528", code: CODE_TOAST_NATIVE },
+      { title: t3("exToastSonnerTitle"), hint: t3("exToastSonnerHint"), code: CODE_TOAST_NATIVE },
       (0, import_react52.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" } },
@@ -59255,248 +59346,6 @@ function pickWorkspaceFile(options) {
   });
 }
 
-// packages/demo/src/mock-session.ts
-var now = Date.now();
-var minute = 6e4;
-var TURN1_SPEC = {
-  turn: 1,
-  controlAnchorSeq: 3,
-  processStartSeq: 4,
-  answerAnchorSeq: 8,
-  answerStep: 1,
-  inlineReasoning: true,
-  messageCount: 2,
-  toolCallCount: 4,
-  subagentCount: 0
-};
-var NODES = [
-  {
-    key: "trig1",
-    kind: "turn-trigger",
-    anchorSeq: 1,
-    data: {
-      source: { kind: "schedule" },
-      time: now - 42 * minute,
-      content: [{ type: "text", text: "\u5B9A\u65F6\u89E6\u53D1\uFF1A\u6BCF\u65E5 09:30 \u6784\u5EFA\u955C\u50CF\u5347\u7EA7\u65E5\u62A5" }]
-    },
-    location: { kind: "turn", turn: { turn: 1, status: "closed", start: { time: now - 42 * minute } } }
-  },
-  {
-    key: "u1",
-    kind: "user",
-    anchorSeq: 2,
-    data: {
-      content: [
-        { type: "text", text: "\u628A\u8FD9\u4E2A\u5305\u7684\u6784\u5EFA\u8DD1\u4E00\u4E0B\uFF0C\u987A\u4FBF\u770B\u770B\u6709\u6CA1\u6709\u8B66\u544A" },
-        { type: "file", attachment: { attachmentId: "att-1", name: "AGENTS.md", bytes: 2048 } }
-      ]
-    },
-    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
-  },
-  {
-    key: "tp1",
-    kind: "turn-process",
-    anchorSeq: 3,
-    data: TURN1_SPEC,
-    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
-  },
-  {
-    key: "a1",
-    kind: "assistant-step",
-    anchorSeq: 4,
-    data: {
-      step: 1,
-      blocks: [
-        { kind: "reasoning", text: "\u5148\u8DD1\u7C7B\u578B\u68C0\u67E5\uFF0C\u518D\u770B\u6784\u5EFA\u4EA7\u7269\u3002\n**\u6CE8\u610F**\uFF1A\u81EA\u68C0\u4E0D\u8FC7\u5C31\u505C\u3002" },
-        { kind: "text", text: "\u597D\u7684\uFF0C\u6211\u5148\u770B\u4E00\u773C\u4F9D\u8D56\u6E05\u5355\uFF0C\u518D\u8DD1\u7C7B\u578B\u68C0\u67E5\u548C\u81EA\u68C0\u3002" },
-        { kind: "tool-call", callId: "c1", name: "read", argsRaw: "{}" }
-      ]
-    },
-    location: { kind: "step", turn: { turn: 1, status: "closed" } }
-  },
-  {
-    key: "tc-read",
-    kind: "tool-call",
-    anchorSeq: 5,
-    data: {
-      root: {
-        kind: "tool-result",
-        call: { name: "read", argsRaw: '{"file_path":"package.json"}' },
-        content: [{ type: "text", text: '<path>package.json</path>\n<type>file</type>\n<content>\n{\n  "name": "dsh-plugin-core"\n}\n</content>' }],
-        meta: {
-          path: "package.json",
-          offset: 1,
-          lines: [
-            { number: 1, text: "{" },
-            { number: 2, text: '  "name": "dsh-plugin-core"' },
-            { number: 3, text: "}" }
-          ],
-          totalLines: 3
-        }
-      }
-    },
-    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
-  },
-  {
-    key: "tc-write",
-    kind: "tool-call",
-    anchorSeq: 6,
-    data: {
-      root: {
-        kind: "tool-result",
-        call: { name: "write", argsRaw: '{"file_path":"docs/\u65E5\u62A5.md","content":"# \u955C\u50CF\u5347\u7EA7\u65E5\u62A5\\n"}' },
-        content: [{ type: "text", text: "written 24 bytes" }],
-        meta: { diffs: [{ path: "docs/\u65E5\u62A5.md", oldText: null, newText: "# \u955C\u50CF\u5347\u7EA7\u65E5\u62A5\n" }] }
-      }
-    },
-    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
-  },
-  {
-    key: "tc-bash",
-    kind: "tool-call",
-    anchorSeq: 7,
-    data: {
-      root: {
-        kind: "tool-result",
-        call: { name: "bash", argsRaw: '{"command":"pnpm test","description":"\u8DD1\u81EA\u68C0"}' },
-        content: [{ type: "text", text: "\u2139 tests 90\n\u2139 pass 90\n\u2139 fail 0\n[exit code: 0]" }]
-      }
-    },
-    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
-  },
-  {
-    key: "tc-run",
-    kind: "tool-call",
-    anchorSeq: 8,
-    data: {
-      root: { name: "bash", argsRaw: '{"command":"pnpm build","description":"\u6784\u5EFA"}', phase: "start" }
-    },
-    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
-  },
-  {
-    key: "tc-present",
-    kind: "tool-call",
-    anchorSeq: 9,
-    data: {
-      root: {
-        kind: "tool-result",
-        call: {
-          name: "present",
-          argsRaw: '{"files":[{"path":"docs/\u955C\u50CF\u5347\u7EA7\u65E5\u62A5.md","description":"\u672C\u6B21\u4EA4\u4ED8\u7684\u65E5\u62A5\uFF08\u542B\u622A\u56FE\uFF09"},{"path":"dist/bundle.js"}]}'
-        },
-        content: [{ type: "text", text: "presented 2 files" }]
-      }
-    },
-    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
-  },
-  {
-    key: "tail1",
-    kind: "turn-tail",
-    anchorSeq: 10,
-    data: {
-      turn: 1,
-      seq: 10,
-      closing: { time: now - 8 * minute, blocks: [{ kind: "text", text: "\u6784\u5EFA\u5B8C\u6210\uFF0C90 \u6761\u81EA\u68C0\u5168\u8FC7\uFF0C\u4EA4\u4ED8\u6587\u4EF6\u5DF2\u5217\u51FA\u3002" }] },
-      tokenUsage: {
-        totalTokens: 91500,
-        uncachedInputTokens: 12e3,
-        cacheReadTokens: 7e4,
-        cacheWriteTokens: 5e3,
-        outputTokens: 4500,
-        reasoningTokens: 1200,
-        routes: [{ provider: "deepseek", model: "deepseek-chat" }]
-      }
-    },
-    location: { kind: "turn", turn: { turn: 1, status: "closed", end: { time: now - 8 * minute } } }
-  },
-  {
-    key: "u2",
-    kind: "user",
-    anchorSeq: 11,
-    data: { content: [{ type: "text", text: "\u7EE7\u7EED\uFF1A\u628A\u8FD9\u4EFD\u65E5\u62A5\u4E5F\u5F52\u6863\u6389" }] },
-    location: { kind: "turn", turn: { turn: 2, status: "closed", start: { time: now - 7 * minute } } }
-  },
-  {
-    key: "a2",
-    kind: "assistant-step",
-    anchorSeq: 12,
-    data: { step: 1, blocks: [{ kind: "text", text: "\u597D\u7684\uFF0C\u6211\u6765\u5F52\u6863\u3002" }] },
-    location: { kind: "step", turn: { turn: 2, status: "closed" } }
-  },
-  {
-    key: "retry1",
-    kind: "model-retry",
-    anchorSeq: 13,
-    data: { retryState: "started", retry: 2, maxRetries: 5, delayMs: 1868, mode: "normal", failure: { message: "503 upstream", code: "SERVER" } },
-    location: { kind: "turn", turn: { turn: 2, status: "closed" } }
-  },
-  {
-    key: "err1",
-    kind: "turn-error",
-    anchorSeq: 14,
-    data: { message: "\u6A21\u578B\u670D\u52A1\u6682\u65F6\u4E0D\u53EF\u7528", code: "SERVER", turn: 2 },
-    location: { kind: "turn", turn: { turn: 2, status: "closed", end: { time: now - 1 * minute, data: { reason: { kind: "error" } } } } }
-  },
-  {
-    key: "tail2",
-    kind: "turn-tail",
-    anchorSeq: 15,
-    data: { turn: 2, seq: 15, closing: null },
-    location: { kind: "turn", turn: { turn: 2, status: "closed", end: { time: now - 1 * minute } } }
-  }
-];
-var ORDER = NODES.map((n) => n.key);
-function buildTurns() {
-  const deliverables = /* @__PURE__ */ new Map([
-    ["deliverables", {
-      presented: [
-        { path: "docs/\u955C\u50CF\u5347\u7EA7\u65E5\u62A5.md", description: "\u672C\u6B21\u4EA4\u4ED8\u7684\u65E5\u62A5\uFF08\u542B\u622A\u56FE\uFF09" },
-        { path: "dist/bundle.js" }
-      ]
-    }]
-  ]);
-  const turns = /* @__PURE__ */ new Map();
-  turns.set(1, { status: "closed", data: deliverables });
-  turns.set(2, { status: "closed", data: /* @__PURE__ */ new Map() });
-  return turns;
-}
-function buildStore(nodes) {
-  const byKey = new Map(nodes.map((n) => [n.key, n]));
-  return {
-    get(key) {
-      return byKey.get(key);
-    },
-    processSource(key) {
-      return {
-        getSnapshot() {
-          if (key !== "tp1") return void 0;
-          return {
-            turn: 1,
-            spec: TURN1_SPEC,
-            turnStarted: true,
-            turnClosed: true,
-            hasExternalProcess: true
-          };
-        }
-      };
-    }
-  };
-}
-function mockSessionView() {
-  const chatSnap = { order: ORDER, nodes: buildStore(NODES), timeline: { turnOrder: [1, 2], turns: buildTurns() } };
-  const sessionSnap = { openState: "open", hasMore: false };
-  return {
-    target: { getSnapshot: () => chatSnap, subscribe: () => () => {
-    } },
-    session: { getSnapshot: () => sessionSnap, subscribe: () => () => {
-    } },
-    loadOlder: () => {
-    },
-    dispose: () => {
-    }
-  };
-}
-
 // packages/demo/src/samples.ts
 var SAMPLE_NAMES = ["README.md", "demo.html", "sample.js", "sample.css"];
 var MAX_DIRS_PER_LEVEL = 6;
@@ -59571,6 +59420,7 @@ var CODE_SESSION_REAL = `// \u771F\u5B9E\u5BBF\u4E3B\uFF1Asessions.list \u5FEB\u
 //   / dsh-client-ui-workspace\uFF08uiWorkspace\uFF09
 import { useSyncExternalStore } from 'react'
 import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
+import { openFilePreview } from 'dsh-plugin-core/explorer'
 
 const state = useSyncExternalStore(realSessions.subscribe, realSessions.getSnapshot)
 // state.rows\uFF1A\u5BBF\u4E3B sessions.list \u7684 displayTitle / updatedAt / running\uFF08\u6309\u6D3B\u52A8\u964D\u5E8F\u524D 20\uFF09
@@ -59579,29 +59429,15 @@ const view = openRealSessionView(row.sessionId)   // retain \u2192 binding \u219
 h(SessionViewModal, {
   sessionId: row.sessionId,
   view,
+  heading: row.displayTitle,      // \u6807\u9898\u53EF\u81EA\u5B9A\u4E49\uFF1B\u4F1A\u8BDD id \u81EA\u52A8\u663E\u793A\u5728\u6807\u9898\u4E0B\u65B9\uFF08\u526F\u6807\u9898\u884C\uFF09
+  archived: row.archived,         // \u6765\u81EA workspaces \u5FEB\u7167\u7684 archivedSessionIds
   onClose: () => { view.dispose(); setOpenId(null) },
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
   openHostSession: (id) => uiWorkspace.openSession(id),
-  onOpenFile: (path) => openFilePreview(path),
+  // \u6587\u4EF6\u94FE\u63A5 \u2192 **\u9875\u9762\u53F3\u4FA7**\u5F00\u6838\u5FC3\u6587\u4EF6\u9884\u89C8 dock\uFF08\u6324\u7A84\u4E3B\u533A\uFF0C\u5F39\u7A97\u8BA9\u51FA\u8FD9\u6BB5\u5BBD\u5EA6\uFF09
+  onOpenFile: (path) => openFilePreview({ mount: pageRow.element, workspaceFiles, path, ... }),
+  insetRight: dockWidth + 16,     // = \u53F3\u4FA7\u90A3\u5217\u5B9E\u6D4B\u5BBD\u5EA6\uFF1A\u5F39\u7A97\u5728\u5DE6\u8FB9\u5269\u4F59\u533A\u57DF\u5C45\u4E2D\uFF0C\u4E14\u4E0D\u753B\u906E\u7F69
 })`;
-var CODE_SESSION = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
-
-// \u6570\u636E\u94FE\uFF1Aretain \u7269\u5316 \u2192 binding \u2192 open \u62C9\u5C3E\u9875 \u2192 target('chat')\uFF08\u5F52\u6863\u4F1A\u8BDD\u540C\u6837\u53EF\u8BFB\uFF09
-const view = openSessionView(sessions, uiConversation, sessionId, 'my-plugin')
-if (view !== null) {
-  h(SessionViewModal, {
-    sessionId,
-    view,
-    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',
-    onClose: () => { view.dispose(); setOpen(false) },
-    // \u7EED\u804A\u6B63\u9053\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF08\u5E95\u5C42 keyed \u6570\u7EC4\u53EA\u8BFB\uFF0C\u6846\u5185\u4E0D\u80FD\u6253\u5B57\uFF09
-    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
-    openHostSession: (id) => uiWorkspace.openSession(id),
-    // \u6682\u5B58\u8F93\u5165\u6846\uFF1A\u786E\u5B9A\u540E\u7531\u8C03\u7528\u65B9 fork + host \u4FA7 agent.send \u8D77\u8F6E\u6B21 + \u8DF3\u8F6C
-    onContinue: async (message) => { /* fork \u2192 host send \u2192 openSession */ },
-    onOpenFile: (path) => openFilePreview(path),
-  })
-}`;
 var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
@@ -59698,48 +59534,56 @@ function PickFileDemo() {
         variant: "secondary",
         onClick: (event) => pick2(event.currentTarget, { exts: ["js", "md"] })
       },
-      "\u4EC5 JS/MD"
+      t3("pickJsMd")
     ),
     (0, import_react60.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
   );
 }
-function SessionPreviewDemo() {
-  const [open, setOpen] = (0, import_react60.useState)(false);
-  const [note, setNote] = (0, import_react60.useState)(null);
-  const view = (0, import_react60.useMemo)(() => mockSessionView(), []);
-  return (0, import_react60.createElement)(
-    "div",
-    { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react60.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, t3("sessionOpenModal")),
-    (0, import_react60.createElement)(Button, { variant: "ghost", onClick: () => setOpen(false) }, t3("sessionClose")),
-    note === null ? null : (0, import_react60.createElement)("code", { style: { fontSize: "12px" } }, note),
-    open ? (0, import_react60.createElement)(SessionViewModal, {
-      sessionId: "demo-session",
-      view,
-      heading: "\u955C\u50CF\u5347\u7EA7\u65E5\u62A5",
-      onClose: () => setOpen(false),
-      // 宿主服务在预览站里缺席 ⇒ 三个续聊 / 文件出口都是本地回声（演示交互，不真跳转）。
-      forkSession: async () => {
-        setNote(`${t3("sessionForked")} demo-session(1)`);
-        return "demo-session(1)";
-      },
-      openHostSession: (id3) => {
-        setNote(`${t3("sessionOpenedHost")} ${id3}`);
-      },
-      onContinue: async (message) => {
-        setNote(`${t3("sessionContinued")} ${message}`);
-      },
-      onOpenFile: (path) => {
-        setNote(`${t3("sessionOpenedFile")} ${path}`);
-      }
-    }) : null
-  );
-}
 function RealSessionListDemo() {
   const state = (0, import_react60.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
+  const files = (0, import_react60.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react60.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const anchor = pickWorkspaceAnchor(wsItems);
   const [openId, setOpenId] = (0, import_react60.useState)(null);
-  const [note, setNote] = (0, import_react60.useState)(null);
+  const [dockOpen, setDockOpen] = (0, import_react60.useState)(false);
+  const [dockWidth, setDockWidth] = (0, import_react60.useState)(0);
   const view = (0, import_react60.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
+  const workspaceFiles = files.workspaceFiles;
+  const canOpenFile = workspaceFiles !== null && anchor !== null;
+  (0, import_react60.useEffect)(() => {
+    if (!dockOpen) return;
+    const mount = pageRow.element;
+    const dock = mount === null ? null : mount.querySelector(".dshpc-dock");
+    if (dock === null) return;
+    const read = () => {
+      setDockWidth(Math.round(dock.getBoundingClientRect().width));
+    };
+    read();
+    const ro = new ResizeObserver(read);
+    ro.observe(dock);
+    return () => {
+      ro.disconnect();
+    };
+  }, [dockOpen]);
+  const openLinkedFile = (path) => {
+    const mount = pageRow.element;
+    if (mount === null || workspaceFiles === null || anchor === null) return;
+    openFilePreview({
+      mount,
+      workspaceFiles,
+      officeToPdf: files.officeToPdf,
+      // 文件 RPC 按会话作用域取工作区：用当前工作区锚点的会话（与 explorer 页同一口径）。
+      sessionId: anchor.sessionId,
+      path,
+      rootName: anchor.title,
+      workspaces: wsItems.map((w) => w.title),
+      onClose: () => {
+        setDockOpen(false);
+        setDockWidth(0);
+      }
+    });
+    setDockOpen(true);
+  };
   if (state.status !== "ready") {
     return (0, import_react60.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
   }
@@ -59806,9 +59650,10 @@ function RealSessionListDemo() {
       openHostSession: (id3) => {
         realOpenHostSession(id3);
       },
-      onOpenFile: (path) => {
-        setNote(`${t3("sessionOpenedFile")} ${path}`);
-      }
+      // 文件链接（工具卡路径 / md 行内引用 / 交付卡）→ **页面右侧**开核心文件预览 dock，
+      // 弹窗被挤到左边（insetRight = dock 实测宽度），不在弹窗里面分栏。
+      onOpenFile: canOpenFile ? openLinkedFile : void 0,
+      insetRight: dockOpen && dockWidth > 0 ? dockWidth + 16 : void 0
     }) : null
   );
 }
@@ -59838,13 +59683,8 @@ function SessionPage() {
     (0, import_react60.createElement)(DocProse, { id: "session" }),
     (0, import_react60.createElement)(
       Example,
-      { title: "\u771F\u5B9E\u4F1A\u8BDD\u5217\u8868", hint: t3("sessionRealHint"), code: CODE_SESSION_REAL },
+      { title: t3("sessionRealTitle"), hint: t3("sessionRealHint"), code: CODE_SESSION_REAL },
       (0, import_react60.createElement)(RealSessionListDemo, null)
-    ),
-    (0, import_react60.createElement)(
-      Example,
-      { title: "SessionViewModal\uFF08\u79BB\u7EBF\u5047\u6570\u636E\uFF09", hint: t3("sessionHint"), code: CODE_SESSION },
-      (0, import_react60.createElement)(SessionPreviewDemo, null)
     ),
     (0, import_react60.createElement)(DocApi, { id: "session" })
   );
@@ -60012,7 +59852,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1022-1447-hkba"]
+            [t3("buildStamp"), "1022-1618-0yxa"]
           ].map(
             ([label, value]) => (0, import_react62.createElement)(
               "tr",
@@ -60109,7 +59949,10 @@ function Sections(props) {
 }
 
 // packages/demo/src/demo-css.generated.ts
-var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n/* \u5907\u6CE8\u6846\u672C\u4F53\u662F\u6838\u5FC3 StripCard\uFF08\u65B9\u89D2 + \u5DE6 4px \u901A\u9AD8\u8272\u6761 + \u540C\u8272\u7CFB\u6D45\u5E95\uFF09\uFF0C\u8FD9\u91CC\u53EA\u8865\u884C\u5185\u6392\u7248\u3002 */\n.dshpc-doc-note {\n  margin-bottom: 16px;\n}\n\n.dshpc-doc-note__body {\n  display: flex;\n  gap: 8px;\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u4E00\u4E2A Note \u6846\u5185\u627F\u8F7D\u591A\u6BB5\u8BF4\u660E\uFF1Amark \u662F\u5DE6\u4FA7\u6807\u7B7E\uFF0Ccontent \u662F\u53F3\u4FA7\u7AD6\u6392\u6BB5\u843D\u5217\u3002 */\n.dshpc-doc-note__content {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n.dshpc-doc-note__p {\n  line-height: var(--dshpc-line-md);\n}\n\n/* \u8FB9\u6846\u76D2\uFF1A\u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3 */\n.dshpc-doc-block {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  padding: 12px 14px;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n.dshpc-doc-example {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  padding: 14px;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n}\n\n/* \u4EE3\u7801\u53EA\u5728\u5185\u5C42\u6EDA\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70 */\n.dshpc-doc-example__scroll {\n  max-height: 320px;\n  overflow: auto;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n\n/* \u6700\u540E\u4E00\u884C\u4E0D\u7559\u5E95\u8FB9\u6846\uFF1A\u8868\u683C\u5E95\u90E8\u4E0D\u518D\u591A\u51FA\u4E00\u6761\u60AC\u7A7A\u6A2A\u7EBF */\n.dshpc-doc-api tbody tr:last-child td {\n  border-bottom: none;\n}\n";
+var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n/* \u5907\u6CE8\u6846\u672C\u4F53\u662F\u6838\u5FC3 StripCard\uFF08\u65B9\u89D2 + \u5DE6 4px \u901A\u9AD8\u8272\u6761 + \u540C\u8272\u7CFB\u6D45\u5E95\uFF09\uFF0C\u8FD9\u91CC\u53EA\u8865\u884C\u5185\u6392\u7248\u3002 */\n.dshpc-doc-note {\n  margin-bottom: 16px;\n}\n\n.dshpc-doc-note__body {\n  display: flex;\n  gap: 8px;\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u4E00\u4E2A Note \u6846\u5185\u627F\u8F7D\u591A\u6BB5\u8BF4\u660E\uFF1Amark \u662F\u5DE6\u4FA7\u6807\u7B7E\uFF0Ccontent \u662F\u53F3\u4FA7\u7AD6\u6392\u6BB5\u843D\u5217\u3002 */\n.dshpc-doc-note__content {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n.dshpc-doc-note__p {\n  line-height: var(--dshpc-line-md);\n}\n\n/* \u8FB9\u6846\u76D2\uFF1A\u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3 */\n.dshpc-doc-block {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  padding: 12px 14px;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n.dshpc-doc-example {\n  border: 1px solid var(--dshpc-border-faint);\n  border-radius: var(--dshpc-radius-md);\n  background: var(--dshpc-surface-1);\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002\n   \u884C\u9AD8 = \u4E24\u680F\u91CC\u8F83\u9AD8\u7684\u90A3\u4E00\u680F\uFF08grid \u9ED8\u8BA4 stretch\uFF09\u21D2 \u77EE\u7684\u4E00\u680F\u88AB\u62C9\u9F50\uFF0C\u4E0D\u518D\u51FA\u73B0\u300C\u5DE6\u8FB9\u5F88\u9AD8\u3001\u53F3\u8FB9\u4E00\u6761\u5C0F\u6EDA\u52A8\u6761\u300D\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  align-items: stretch;\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  min-height: 0;\n  padding: 14px;\n  display: flex;\n  flex-direction: column;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  min-height: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n  display: flex;\n  flex-direction: column;\n}\n\n/* \u4EE3\u7801\u533A\u5403\u6389\u6574\u680F\u5269\u4F59\u9AD8\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70\uFF0C\u4EE3\u7801\u672C\u8EAB\u6309\u884C\u9AD8\u81EA\u9002\u5E94\n   \uFF08\u4E0D\u5199\u6B7B max-height \u2014\u2014 \u90A3\u4F1A\u5728\u793A\u4F8B\u5F88\u9AD8\u65F6\u4EE3\u7801\u680F\u91CC\u6324\u51FA\u4E00\u6761\u5C0F\u6EDA\u52A8\u6761\uFF09\u3002 */\n.dshpc-doc-example__scroll {\n  flex: 1 1 auto;\n  min-height: 0;\n  overflow: auto;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n\n/* \u6700\u540E\u4E00\u884C\u4E0D\u7559\u5E95\u8FB9\u6846\uFF1A\u8868\u683C\u5E95\u90E8\u4E0D\u518D\u591A\u51FA\u4E00\u6761\u60AC\u7A7A\u6A2A\u7EBF */\n.dshpc-doc-api tbody tr:last-child td {\n  border-bottom: none;\n}\n";
+
+// packages/demo/src/paths.ts
+var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 
 // packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";

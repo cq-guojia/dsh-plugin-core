@@ -1,30 +1,25 @@
-
 /* 会话预览（SessionViewModal）兜底样式：官方 CSS module 类名未命中时生效。
    类名固定 dshpc-sv-*；颜色一律走 --dshpc-* token（明暗自适应），
-   布局 token 取官方聊天专属 --dsh-chat-* / --dsh-content-font-*（带兜底）。 */
-/* 弹窗遮罩：满屏（core 不做页面级预览 dock，文件预览走宿主右栏 / explorer）。 */
-.dshpc-sv-overlay{position:fixed;top:0;left:0;bottom:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:var(--dshpc-mask,rgba(0,0,0,.45));transition:right .12s var(--dshpc-ease,ease);}
-/* 面板底色 = 官方会话面 --dshpc-surface-base（官方 chat 页即此色）；
-   尺寸照宿主「左下角弹窗」卡片：width min(1120px,100vw-32px)、height 100%-80px、radius 12px。 */
-.dshpc-sv-panel{--dsh-composer-side-clearance:18px;--dsh-chat-content-width:100%;--dsh-chat-flow-gap:16px;background:var(--dshpc-surface-base,#fff);color:var(--dshpc-fg,#1f2328);border:1px solid var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-md);box-shadow:var(--dshpc-shadow-2,0 12px 32px rgba(0,0,0,.4));width:min(1120px,calc(100vw - 32px));height:calc(100% - 80px);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;}
-.dshpc-sv-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 34px 12px;border-bottom:1px solid var(--dshpc-border,rgba(128,128,128,.35));flex-wrap:wrap;}
-/* 纵向单一真源 = .dshpc-sv-frame：官方 scroll 命中时自带纵向 16px，官方 frame 的纵向又不确定；
-   统一收口 —— scroll 钩子把官方纵向归零（双类名 0,2,0 压过 CSS module，不靠注入顺序），
-   frame 钩子独占上下（用长写，不碰左右 ⇒ 命中时左右仍走官方 scroll 的 16+clearance）。
-   上 / 下 = 17px 且必须相等（否则滚到顶 / 到底时一边空一大片）。 */
-.dshpc-sv-frame.dshpc-sv-frame{padding-top:17px;padding-bottom:17px;}
-.dshpc-sv-scroll.dshpc-sv-scroll{padding-top:0;padding-bottom:0;}
-/* 会话区保底：顶部暂存输入区再高也压不没它。
-   ⚠️ 用 flex:1 1 auto 而不是 flex:1（后者 basis=0）：官方 ChatView.frame 是 flex:auto，
-   本包与官方注入顺序不定 ⇒ 取 auto 这个共同值，两边顺序颠倒也不会改变布局。 */
-.dshpc-sv-chat{flex:1 1 auto;min-height:0;}
-.dshpc-sv-heading{min-width:0;}
-.dshpc-sv-title{font-size:var(--dshpc-font-lg);font-weight:600;color:var(--dshpc-fg,#1f2328);}
-.dshpc-sv-sid{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));word-break:break-all;}
+   布局 token 取官方聊天专属 --dsh-chat-* / --dsh-content-font-*（带兜底）。
+   外壳（遮罩 / 面板 / 头部 / 关闭钮）= 核心 Modal（size lg），本文件只装会话区自身。 */
+/* 会话区 = 普通纵向流：不设高度、不自己滚（滚动与内距归核心 Modal body，用户 2026-10-22 口径）。 */
+.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}
+/* 官方样式未命中时的可见探针（挂在头部副标题行，不占正文）。 */
+.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning,#b7791f)}
+/* 头部归档标识（官方归档图标 + 「已归档」）。 */
+.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}
+/* 内距与滚动全部让给核心 Modal body ⇒ 这里把官方 ChatView.frame / scroll 的内距、
+   overflow、高度一律归零（双类名 0,2,0 压过 CSS module，不靠注入顺序）。
+   ⚠️ 必须同时把 flex 收掉：官方 scroll 是 flex:1（basis=0），在**自动高**的容器里会把
+   会话区压成 0 高 —— 这正是「内容自管高度」的老毛病，别再放回来。 */
+.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}
+.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}
+/* 会话区保底：高度由内容决定（撑开由 Modal body 滚）。 */
+.dshpc-sv-chat{flex:none;min-height:0;}
+
 .dshpc-sv-actions{display:flex;align-items:center;gap:8px;}
-/* 会话区左右边距 = 官方 ChatView.scroll：16px + --dsh-composer-side-clearance(18px) ⇒ 左右各 34px。
-   纵向不在这里（官方类命中与否会打架，见上面 frame / scroll 两条钩子）⇒ 本类只写左右。 */
-.dshpc-sv-body{flex:1;min-height:0;overflow:auto;padding-left:calc(var(--dsh-composer-side-clearance,16px) + 16px);padding-right:calc(var(--dsh-composer-side-clearance,16px) + 16px);}
+/* 兜底 frame（官方 ChatView.frame 未命中时挂在同一层）：不滚、不涨，左右内距交给 Modal body。 */
+.dshpc-sv-body{flex:none;min-height:0;overflow:visible;padding:0}
 .dshpc-sv-col{width:100%;max-width:var(--dsh-chat-content-width,920px);margin:0 auto;display:flex;flex-direction:column;gap:var(--dsh-chat-flow-gap,16px);}
 /* 官方 ChatView.column 的兄弟间距（:not([hidden]) 才占位；折叠掉的过程节点不留空档）。 */
 .dshpc-sv-col>:not([hidden]):not(.dshpc-sv-flowitem:empty)~:not([hidden]):not(.dshpc-sv-flowitem:empty){margin-top:var(--dsh-chat-flow-gap,16px);}
@@ -160,12 +155,11 @@
 .dshpc-sv-group-content>*{flex-shrink:0;}
 .dshpc-sv-group-content>:not([hidden]):not(:empty)~:not([hidden]):not(:empty){margin-top:var(--dsh-chat-flow-gap,8px);}
 .dshpc-sv-group-expanded{--dsh-chat-flow-gap:16px;scrollbar-gutter:auto;max-height:none;overflow:visible;}
-/* 「继续对话（开分支）」头部按钮组 + 确认框（确认框 = 官方 primitives Modal，此处只留规格与错误行）。 */
-.dshpc-sv-headerbtns{display:flex;align-items:center;gap:8px;flex:none;}
-.dshpc-sv-forkmodal{width:min(440px,100%);}
+
 .dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger,#e5484d);word-break:break-word;}
+.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}
 /* ── 暂存输入区（期4：打字 → 确定 → fork 带话跳官方视图）── */
-.dshpc-sv-composer{flex:none;display:flex;align-items:flex-end;gap:8px;padding:10px 0 14px;}
+.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}
 .dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg,#1f2328);background:var(--dshpc-surface-2,rgba(128,128,128,.10));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}
 .dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus,#3b5bdb);outline-offset:-1px;}
 .dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding-bottom:10px;white-space:nowrap;}

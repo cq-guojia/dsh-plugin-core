@@ -32,12 +32,15 @@ async function loadDoc(relPath) {
   const out = join(tmpdir(), `dsh-doc-${process.pid}-${Math.random().toString(36).slice(2)}.mjs`)
   await build({ entryPoints: [abs], bundle: true, format: 'esm', platform: 'node', write: true, outfile: out, logLevel: 'silent' })
   try {
-    const mod = await import(pathToFileURL(out).href + '?t=' + Date.now())
+    const mod = await import(`${pathToFileURL(out).href}?t=${Date.now()}`)
     return mod.default
   } finally {
     rmSync(out, { force: true })
   }
 }
+
+/** 表格单元格转义：类型里的联合类型 `A | B` 不转义会把 Markdown 表格撑破（MD056）。 */
+const cell = (text) => String(text).replaceAll('|', '\\|')
 
 function renderMd(doc) {
   const lines = []
@@ -65,23 +68,23 @@ function renderMd(doc) {
     for (const tbl of sec.api ?? []) {
       const hasReq = tbl.rows.some((r) => r.required != null)
       const head = ['参数', '类型', ...(hasReq ? ['必填'] : []), '默认', '说明(zh)', '说明(en)']
-      lines.push('| ' + head.join(' | ') + ' |')
-      lines.push('|' + head.map(() => '---').join('|') + '|')
+      lines.push(`| ${head.join(' | ')} |`)
+      lines.push(`|${head.map(() => '---').join('|')}|`)
       for (const r of tbl.rows) {
         const cells = [
-          `\`${r.name}\``,
-          `\`${r.type}\``,
-          ...(hasReq ? [r.required ?? '—'] : []),
-          r.def,
-          r.desc.zh,
-          r.desc.en,
+          `\`${cell(r.name)}\``,
+          `\`${cell(r.type)}\``,
+          ...(hasReq ? [cell(r.required ?? '—')] : []),
+          cell(r.def),
+          cell(r.desc.zh),
+          cell(r.desc.en),
         ]
-        lines.push('| ' + cells.join(' | ') + ' |')
+        lines.push(`| ${cells.join(' | ')} |`)
       }
       lines.push('')
     }
     for (const c of sec.code ?? []) {
-      lines.push('```' + c.lang + ` id="${c.id}"`)
+      lines.push(`\`\`\`${c.lang} id="${c.id}"`)
       lines.push(c.src)
       lines.push('```')
       lines.push('')
@@ -95,7 +98,7 @@ function aggregate(docs) {
   const flat = {}
   for (const doc of docs) {
     for (const sec of doc.sections) {
-      if (Object.prototype.hasOwnProperty.call(flat, sec.id)) {
+      if (Object.hasOwn(flat, sec.id)) {
         throw new Error(`section.id 重复：${sec.id}（${doc.title.zh} 与已有冲突）`)
       }
       flat[sec.id] = sec

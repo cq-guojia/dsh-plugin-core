@@ -9,7 +9,9 @@
 //     由调用方完成 fork + host 侧 agent.send 起轮次 + 跳官方视图（官方能力，无歪门邪道）。
 //   · retain source 参数化在 open-session-view.ts。
 import { Fragment, createElement as h, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import { Button, IconArchiveOutlineRegular, IconBranchOutlineRegular, IconCloseOutlineRegular, IconNewChatOutlineRegular, Modal } from '../ui/official.js';
+import { IconArchiveOutlineRegular, IconBranchOutlineRegular, IconNewChatOutlineRegular } from '../ui/official.js';
+import { Modal } from '../ui/Modal.js';
+import { Button } from '../ui/Button.js';
 import { ensureControls } from '../ui/css.js';
 import { ChatHint, ChatNodeListMirror, ChatOlderButton, ChatViewFrame } from './mirror/ChatView.js';
 import { GenericCommandCard } from './mirror/GenericCommandCard.js';
@@ -73,7 +75,7 @@ exclude) {
             continue;
         hadFiles = true;
         const name = typeof attachment.name === 'string' && attachment.name !== '' ? attachment.name : 'file';
-        if (exclude !== undefined && exclude.has(name))
+        if (exclude?.has(name) === true)
             continue;
         out.push({ name, bytes: typeof attachment.bytes === 'number' ? attachment.bytes : 0 });
     }
@@ -582,7 +584,7 @@ function makeFileMentions(paths, open) {
 export function SessionViewModal(props) {
     ensureControls();
     const tt = props.t ?? defaultT;
-    const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
+    const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile, insetRight } = props;
     const subscribe = useMemo(() => (onChange) => view.target.subscribe(onChange), [view]);
     const getSnapshot = useMemo(() => () => view.target.getSnapshot(), [view]);
     const chat = useSyncExternalStore(subscribe, getSnapshot);
@@ -765,62 +767,52 @@ export function SessionViewModal(props) {
                 : null,
             ...rendered,
         ];
-    // 关闭途径：右上角关闭按钮 / 点遮罩（主面板同款，不监听 document）。
-    return h(Fragment, null, h('div', { className: 'dshpc-sv-overlay', onClick: onClose }, h('div', { className: 'dshpc-sv-panel', onClick: (event) => { event.stopPropagation(); } }, h('div', { className: 'dshpc-sv-header' }, h('div', { className: 'dshpc-sv-heading' }, h('div', { className: 'dshpc-sv-title' }, heading ?? sessionId, 
-    // 归档标识（官方归档图标 + 「已归档」）。
-    isArchived
-        ? h('span', {
-            style: {
-                display: 'inline-flex', alignItems: 'center', gap: '4px',
-                marginLeft: '8px', fontSize: 'var(--dshpc-font-xs)',
-                color: 'var(--dshpc-fg-3)', fontWeight: 400,
-            },
-            title: tt('sessionArchived'),
-        }, h(IconArchiveOutlineRegular, { size: 12 }), tt('sessionArchived'))
-        : null), h('div', { className: 'dshpc-sv-sid' }, sessionId), 
-    // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
-    officialCount === 0
-        ? h('div', {
-            className: 'dshpc-sv-sid',
-            style: { color: 'var(--dshpc-warning, #b7791f)' },
-        }, '⚠ 官方样式未命中（当前为自绘回退）')
-        : null), h('div', { className: 'dshpc-sv-headerbtns' }, showContinue
-        ? h(Button, {
-            variant: 'outline',
-            size: 'sm',
-            disabled: forking,
-            title: tt('continueBranch'),
-            icon: isArchived
-                ? h(IconBranchOutlineRegular, { size: 14 })
-                : h(IconNewChatOutlineRegular, { size: 14 }),
-            onClick: () => {
-                if (isArchived) {
-                    setForkErr(null);
-                    setForkTarget({});
-                }
-                else if (openHostSession !== undefined) {
-                    onClose();
-                    openHostSession(sessionId);
-                }
-            },
-        }, tt('continueBranch'))
-        : null, h('button', {
-        type: 'button',
-        className: 'dshpc-sv-action',
-        'aria-label': tt('modalClose'),
-        title: tt('modalClose'),
-        onClick: onClose,
-    }, h(IconCloseOutlineRegular, { size: 14 })))), 
-    // 会话区 = mirror/ChatView（frame > root > scroll > column > flowItem*，官方类优先）。
-    h(ChatViewFrame, {
-        children: [
-            ...(Array.isArray(body) ? body : [body]),
-        ],
-    }), 
-    // 底部暂存输入框（期4）：flex:none 不随会话区滚动；确定后带话开分支跳官方视图。
-    onContinue === undefined
-        ? null
-        : h('div', { className: 'dshpc-sv-composer' }, h('textarea', {
+    // 外壳 = **核心 Modal**（size lg：min(1120px,100vw-32px) × calc(100%-80px)，兄弟项目大弹窗同值）；
+    // 「继续对话」与确认框按钮一律**核心 Button**，不就地自绘（用户 2026-10-22 拍板）。
+    // 会话中间部分 = mirror/ 官方 1:1 复刻（ChatViewFrame：官方类优先，缺失回退自绘）。
+    return h(Fragment, null, h(Modal, {
+        size: 'lg',
+        // 右侧有分栏（文件预览）时：弹窗在左边剩余区域居中，且不画遮罩（否则遮罩盖住分栏）。
+        mask: insetRight === undefined || insetRight <= 0,
+        maskInsetRight: insetRight,
+        // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
+        // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
+        title: heading ?? tt('sessionHeading'),
+        subtitle: h(Fragment, null, h('span', null, sessionId), 
+        // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
+        officialCount === 0
+            ? h('span', { className: 'dshpc-sv-probe' }, ' ⚠ 官方样式未命中（当前为自绘回退）')
+            : null),
+        // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块。
+        headerExtra: isArchived
+            ? h('span', { className: 'dshpc-sv-archived', title: tt('sessionArchived') }, h(IconArchiveOutlineRegular, { size: 12 }), tt('sessionArchived'))
+            : undefined,
+        // 「继续对话」：已归档 = 开分支图标 + 确认框；未归档 = 会话图标直跳官方会话页。
+        headerActions: showContinue
+            ? h(Button, {
+                variant: 'outline',
+                size: 'sm',
+                disabled: forking,
+                title: tt('continueBranch'),
+                icon: isArchived
+                    ? h(IconBranchOutlineRegular, { size: 14 })
+                    : h(IconNewChatOutlineRegular, { size: 14 }),
+                onClick: () => {
+                    if (isArchived) {
+                        setForkErr(null);
+                        setForkTarget({});
+                    }
+                    else if (openHostSession !== undefined) {
+                        onClose();
+                        openHostSession(sessionId);
+                    }
+                },
+            }, tt('continueBranch'))
+            : undefined,
+        onClose,
+        translate: tt,
+        // 底部暂存输入框走 footer（不随会话区滚动）：打字 → 确定 → onContinue 带话开分支跳官方视图。
+        footer: onContinue === undefined ? undefined : h('div', { className: 'dshpc-sv-composer' }, h('textarea', {
             value: draft,
             placeholder: tt('composerPlaceholder'),
             disabled: sending,
@@ -836,23 +828,25 @@ export function SessionViewModal(props) {
             size: 'sm',
             disabled: sending || draft.trim() === '',
             onClick: onSend,
-        }, sending ? tt('forkWorking') : tt('confirm')), h('span', { className: 'dshpc-sv-composer-hint', title: tt('composerHint') }, '⌘/Ctrl + ↵')), sendErr !== null
-        ? h('div', { className: 'dshpc-sv-forkerr', style: { padding: '0 34px 10px' } }, sendErr)
-        : null)), 
-    // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——官方 Modal + Button
-    // （portal 到 body，与本弹窗同 z-index 层、后挂载居上；Escape / 遮罩点击 / 头部叉均触发 onClose）。
-    h(Modal, {
-        open: forkTarget !== null,
+        }, sending ? tt('forkWorking') : tt('confirm')), h('span', { className: 'dshpc-sv-composer-hint', title: tt('composerHint') }, '⌘/Ctrl + ↵'), sendErr !== null ? h('div', { className: 'dshpc-sv-forkerr' }, sendErr) : null),
+    }, h('div', { className: 'dshpc-sv' }, 
+    // 会话区 = mirror/ChatView（frame > root > scroll > column > flowItem*，官方类优先）。
+    h(ChatViewFrame, {
+        children: [
+            ...(Array.isArray(body) ? body : [body]),
+        ],
+    }))), 
+    // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——核心 Modal + Button。
+    forkTarget === null ? null : h(Modal, {
+        size: 'sm',
         onClose: () => { if (!forking)
             setForkTarget(null); },
         title: tt('forkConfirmTitle'),
-        closeLabel: tt('modalClose'),
-        description: tt('forkConfirmText'),
-        className: 'dshpc-sv-forkmodal',
+        translate: tt,
         footer: [
             h(Button, { key: 'cancel', variant: 'outline', disabled: forking, onClick: () => { setForkTarget(null); } }, tt('cancel')),
             h(Button, { key: 'accept', variant: 'primary', disabled: forking, onClick: onForkAccept }, forking ? tt('forkWorking') : tt('forkConfirmAccept')),
         ],
-    }, forkErr !== null ? h('p', { className: 'dshpc-sv-forkerr' }, tt('forkFailed', { error: forkErr })) : null));
+    }, h('p', { className: 'dshpc-sv-forktext' }, tt('forkConfirmText')), forkErr !== null ? h('p', { className: 'dshpc-sv-forkerr' }, tt('forkFailed', { error: forkErr })) : null));
 }
 //# sourceMappingURL=SessionViewModal.js.map

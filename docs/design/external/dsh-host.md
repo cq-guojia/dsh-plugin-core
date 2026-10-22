@@ -158,6 +158,16 @@
   `settingsPath`）。**各 provider 的已配模型不在 remote 里**——要读设置镜像
   （`configForms.describe()`）里该 provider profile 的 `models` 数组，且只认用户层
   真正写过的（空壳 profile 不算）。写法照 `dsh-session-title-pattern` 的 DirectoryStore。
+- 事实 3（归档集合，2026-10-22 解包 `0.2.0-rc.2` 核实）：`workspaces.list` 快照**还带**
+  `archivedSessionIds: readonly SessionId[]` —— **registry-global** 归档集合（宿主
+  `workspaceRegistry.archivedSessionIds` 那一份，**不是每工作区一份**），由 follow 流的
+  baseline / `archived` 增量整体替换（`client/model.js` `installArchived`、
+  `client/index.js` `accept.replaceArchived`）。某会话是否已归档 = `archivedSessionIds` 里有它。
+  - ⚠️ **推翻的旧结论（2026-10-22）**：曾以为「归档集合 client 读不到，只能宿主侧读
+    `workspaceRegistry` 挂只读路由」，且误按**每个工作区实体**的 `archivedSessionIds` 取数
+    （实体的这个字段根本不存在；`types.d.ts` 里它只出现在 `WorkspaceArchiveValue` /
+    `WorkspaceBaseline` / follow 增量上）⇒ 集合恒为空，已归档会话一个都标不出来。
+    那条宿主路由（`serveArchivedSessions`）已删除，改走 `workspaces` 快照。
 - 后果：工作区在 client 侧 `ctx.inject(['workspaces'])` 即可自取（本包 `workspaceList` 就是它的镜像）。
 - ⚠️ **模型不能只靠 client**：`remote.llm` 只有 `listProviders` / `listConfigurableProviders` /
   `discoverModels`，**没有「某 provider 的模型列表」**；模型只能宿主侧

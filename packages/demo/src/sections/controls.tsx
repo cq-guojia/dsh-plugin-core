@@ -661,7 +661,7 @@ export function PickerPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: 'ModelPicker（真实目录）', hint: t('modelPickerHint'), code: CODE_MODEL_PICKER },
+      { title: t('exModelPickerTitle'), hint: t('modelPickerHint'), code: CODE_MODEL_PICKER },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
@@ -678,7 +678,7 @@ export function PickerPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: 'WorkspacePicker（真实列表）', hint: t('workspacePickerHint'), code: CODE_WORKSPACE_PICKER },
+      { title: t('exWorkspacePickerTitle'), hint: t('workspacePickerHint'), code: CODE_WORKSPACE_PICKER },
       h(
         'div',
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
@@ -910,7 +910,7 @@ export function CardPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: t('sectionHeadTitle'), hint: '分区标题：icon + 标题 + 右侧操作区三段式——纯排版壳，icon/标题/右侧都调用方自定；下示 3 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合', code: CODE_SECTION_HEAD },
+      { title: t('sectionHeadTitle'), hint: t('exSectionHeadHint'), code: CODE_SECTION_HEAD },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
         h(SectionHead, {
@@ -1022,18 +1022,18 @@ export function ChipPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: t('marqueeTitle'), hint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号', code: CODE_MARQUEE },
+      { title: t('marqueeTitle'), hint: t('exMarqueeHint'), code: CODE_MARQUEE },
       h('div', { style: { maxWidth: '200px' } },
         h(MarqueeText, { text: '这是一段很长的文字，放不下时 hover 会滚动展示全名' })),
     ),
     h(
       Example,
-      { title: t('liveTitle'), hint: '订阅内部节拍器，走时 Ui 由调用方渲染', code: CODE_LIVE },
+      { title: t('liveTitle'), hint: t('exLiveHint'), code: CODE_LIVE },
       h(LiveText, { render: (nowMs: number) => new Date(nowMs).toLocaleTimeString() }),
     ),
     h(
       Example,
-      { title: t('emptyStateTitle'), hint: '业务空态：无数据时的占位，可挂一个操作按钮', code: CODE_EMPTY },
+      { title: t('emptyStateTitle'), hint: t('exEmptyHint'), code: CODE_EMPTY },
       h(EmptyState, { text: '暂无数据' }),
     ),
     h(DocCode, { id: 'chip' }),
@@ -1167,7 +1167,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
     h(DocProse, { id: 'feedback' }),
     h(
       Example,
-      { title: '小型弹窗（自定义）', hint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。', code: CODE_SMALL_MODAL },
+      { title: t('exSmallModalTitle'), hint: t('exSmallModalHint'), code: CODE_SMALL_MODAL },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
@@ -1235,7 +1235,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: '大型弹窗（自定义）', hint: '我们的内容弹窗：Modal（size md/lg），承载任意内容，不是「确定/取消」命令式。三张示例：默认 md / 带 footer / 无 footer（内容自定义），头部排法可不同。', code: CODE_LARGE_MODAL },
+      { title: t('exLargeModalTitle'), hint: t('exLargeModalHint'), code: CODE_LARGE_MODAL },
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
@@ -1318,7 +1318,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: '原生弹窗（宿主）', hint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。', code: CODE_HOST_MODAL },
+      { title: t('exHostModalTitle'), hint: t('exHostModalHint'), code: CODE_HOST_MODAL },
       h(
         'div',
         { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
@@ -1363,7 +1363,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: 'Toast · 我们封装 notify', hint: 'notify()：统一灰/绿/红/黄 + 右侧我们自己的按钮', code: CODE_TOAST_NOTIFY },
+      { title: t('exToastNotifyTitle'), hint: t('exToastNotifyHint'), code: CODE_TOAST_NOTIFY },
       h(
         'div',
         { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
@@ -1401,7 +1401,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: 'Toast · 宿主原生', hint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）', code: CODE_TOAST_HOST },
+      { title: t('exToastHostTitle'), hint: t('exToastHostHint'), code: CODE_TOAST_HOST },
       h(
         'div',
         { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
@@ -1421,7 +1421,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
-      { title: 'Toast · 官方 Sonner', hint: 'showToast()：第三方库原味，对比用', code: CODE_TOAST_NATIVE },
+      { title: t('exToastSonnerTitle'), hint: t('exToastSonnerHint'), code: CODE_TOAST_NATIVE },
       h(
         'div',
         { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' } },

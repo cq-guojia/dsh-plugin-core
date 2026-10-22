@@ -11,13 +11,15 @@
  *  · 预览数据链与本仓 `dist/session` 的 openSessionView 同一条：retain → binding →
  *    uiConversation.target('chat')（归档会话同样可读）。
  *  · fork = 官方 ISessions.fork；跳转 = 官方 uiWorkspace.openSession。
+ *  · 归档集合 = 官方 client 服务 `workspaces` 的快照字段 `archivedSessionIds`（registry-global，
+ *    由宿主 follow 流 baseline / archived 增量持续推送）。2026-10-22 解包核实：归档集合**客户端
+ *    读得到**（此前「client 读不到、要走宿主路由」的结论是错的），且是实时的。
  *
  * 服务缺席时保持 unavailable，界面如实说「未就位」，绝不造假数据顶替（与文件数据面同口径）。
  */
 import type { SessionViewTarget } from '../../../dist/session/index.js'
 import { openSessionView } from '../../../dist/session/index.js'
 import type { SessionsFace, UiConversationFace } from '../../../dist/session/index.js'
-import { ARCHIVED_SESSIONS_PATH } from './paths.js'
 
 // ── 本地结构化消费面（不引官方包类型；官方改契约时改这一处）──
 
@@ -30,7 +32,7 @@ export interface RealSessionRow {
   running: boolean
   /** 空会话（还没说过话）⇒ 列表隐藏，过滤责任在消费方。 */
   blank: boolean
-  /** 已归档（宿主 workspaceRegistry.archivedSessionIds，经宿主路由取；取不到时 false）。 */
+  /** 已归档（官方 client `workspaces.list` 快照的 archivedSessionIds；服务未就位时 false）。 */
   archived: boolean
 }
 
@@ -71,6 +73,19 @@ interface UiWorkspaceLike {
   openSession?(id: string): void
 }
 
+/**
+ * 宿主 client 服务 `workspaces`（@deepseek-ai/dsh-api-workspace-controller 的 client 半侧）最小面。
+ * 事实（0.2.0-rc.2 解包核实）：`WorkspaceController` 以 `workspaces` 名注册，`list` = ClientWorkspaceModel，
+ * 快照 `{ items, archivedSessionIds, pinnedSessionIds, state, phase, error }` — `archivedSessionIds`
+ * 是 **registry-global** 归档集合（不是每工作区一份），由 follow 流持续替换。
+ */
+interface WorkspacesServiceLike {
+  list?: {
+    getSnapshot(): { archivedSessionIds?: readonly string[] }
+    subscribe(fn: () => void): () => void
+  }
+}
+
 // ── observable store（useSyncExternalStore 直接消费）──
 
 class RealSessionsStore {
@@ -101,22 +116,13 @@ class RealSessionsStore {
 
 export const realSessions = new RealSessionsStore()
 
-/** 已归档会话 id 集合（宿主路由取；路由缺席 /  fetch 失败 = 空集合，界面按「无归档」呈现）。 */
-let archivedIds: ReadonlySet<string> = new Set()
+/** 宿主 client 服务 `workspaces`（归档集合的唯一来源；未就位 = 空集合，界面按「无归档」呈现）。 */
+let workspacesService: WorkspacesServiceLike | null = null
 
-/** 拉一遍归档集合并刷新行（list 快照每次变化也跟着刷新，保持两者一致）。 */
-async function refreshArchived(): Promise<void> {
-  try {
-    const res = await fetch(ARCHIVED_SESSIONS_PATH, { cache: 'no-store' })
-    if (!res.ok) return
-    const value = await res.json() as unknown
-    const archived = (value as { archived?: unknown } | null)?.archived
-    if (!Array.isArray(archived)) return
-    archivedIds = new Set(archived.filter((id): id is string => typeof id === 'string'))
-  } catch {
-    // 宿主路由未注册（根预览站 / 老宿主）：保持空集合，不造假
-  }
-  repullRows()
+/** 当前归档集合：官方 `workspaces.list` 快照直接带，无需宿主路由。 */
+function archivedSet(): ReadonlySet<string> {
+  const ids = workspacesService?.list?.getSnapshot().archivedSessionIds
+  return ids === undefined ? new Set<string>() : new Set(ids)
 }
 
 /** 用当前 list 快照 + 归档集合重算行（pull 的复用体）。 */
@@ -125,6 +131,7 @@ function repullRows(): void {
   if (list === undefined || typeof list.getSnapshot !== 'function') return
   const snap = list.getSnapshot()
   if (snap.phase !== 'ready') { realSessions.markReady(); return }
+  const archived = archivedSet()
   const rows: RealSessionRow[] = []
   for (const id of snap.ids) {
     const row = snap.byId[id]
@@ -135,7 +142,7 @@ function repullRows(): void {
       updatedAt: row.updatedAt,
       running: row.running,
       blank: row.blank,
-      archived: archivedIds.has(id),
+      archived: archived.has(id),
     })
   }
   rows.sort((left, right) => right.updatedAt - left.updatedAt)
@@ -200,7 +207,16 @@ export function connectRealSessions(ctx: SessionHostContext): void {
     const pull = (): void => { repullRows() }
     pull()
     list.subscribe(pull)
-    // 归档集合走宿主路由（client 读不到）；拉完再重算一次行。
-    void refreshArchived()
+  })
+  // 归档集合单独一条注入线：`workspaces` 缺席时整段不生效（行照常出，只是不带归档标识），
+  // 不与上面 sessions / uiConversation 的可用性绑死。
+  ctx.inject(['workspaces'], (sub: unknown) => {
+    const workspaces = (sub as Record<string, unknown>).workspaces as WorkspacesServiceLike | undefined
+    const list = workspaces?.list
+    if (workspaces === undefined || list === undefined || typeof list.getSnapshot !== 'function') return
+    workspacesService = workspaces
+    repullRows()
+    // 宿主 follow 流推新归档集合 ⇒ 行上的「已归档」跟着变（无需重进页面）。
+    if (typeof list.subscribe === 'function') list.subscribe(() => { repullRows() })
   })
 }

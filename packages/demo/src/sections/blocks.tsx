@@ -12,7 +12,6 @@ import { Chip } from '../../../../dist/ui/index.js'
 import { SessionViewModal } from '../../../../dist/session/index.js'
 import { formatDateTime } from '../../../../dist/utils/index.js'
 import { Button } from '../../../../dist/ui/index.js'
-import { mockSessionView } from '../mock-session.js'
 import { openRealSessionView, realForkSession, realOpenHostSession, realSessions } from '../real-sessions.js'
 import { Example, CodeOnly, DocProse, DocApi } from '../doc.js'
 import { pageRow } from '../layout-mount.js'
@@ -43,6 +42,7 @@ const CODE_SESSION_REAL = `// 真实宿主：sessions.list 快照（冷安全，
 //   / dsh-client-ui-workspace（uiWorkspace）
 import { useSyncExternalStore } from 'react'
 import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
+import { openFilePreview } from 'dsh-plugin-core/explorer'
 
 const state = useSyncExternalStore(realSessions.subscribe, realSessions.getSnapshot)
 // state.rows：宿主 sessions.list 的 displayTitle / updatedAt / running（按活动降序前 20）
@@ -51,30 +51,15 @@ const view = openRealSessionView(row.sessionId)   // retain → binding → targ
 h(SessionViewModal, {
   sessionId: row.sessionId,
   view,
+  heading: row.displayTitle,      // 标题可自定义；会话 id 自动显示在标题下方（副标题行）
+  archived: row.archived,         // 来自 workspaces 快照的 archivedSessionIds
   onClose: () => { view.dispose(); setOpenId(null) },
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
   openHostSession: (id) => uiWorkspace.openSession(id),
-  onOpenFile: (path) => openFilePreview(path),
+  // 文件链接 → **页面右侧**开核心文件预览 dock（挤窄主区，弹窗让出这段宽度）
+  onOpenFile: (path) => openFilePreview({ mount: pageRow.element, workspaceFiles, path, ... }),
+  insetRight: dockWidth + 16,     // = 右侧那列实测宽度：弹窗在左边剩余区域居中，且不画遮罩
 })`
-
-const CODE_SESSION = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
-
-// 数据链：retain 物化 → binding → open 拉尾页 → target('chat')（归档会话同样可读）
-const view = openSessionView(sessions, uiConversation, sessionId, 'my-plugin')
-if (view !== null) {
-  h(SessionViewModal, {
-    sessionId,
-    view,
-    heading: '镜像升级日报',
-    onClose: () => { view.dispose(); setOpen(false) },
-    // 续聊正道：fork 开分支 → 跳官方会话区（底层 keyed 数组只读，框内不能打字）
-    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
-    openHostSession: (id) => uiWorkspace.openSession(id),
-    // 暂存输入框：确定后由调用方 fork + host 侧 agent.send 起轮次 + 跳转
-    onContinue: async (message) => { /* fork → host send → openSession */ },
-    onOpenFile: (path) => openFilePreview(path),
-  })
-}`
 
 const CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 
@@ -195,43 +180,57 @@ function PickFileDemo(): ReturnType<typeof h> {
         variant: 'secondary',
         onClick: (event: { currentTarget: EventTarget | null }) => pick(event.currentTarget as HTMLElement, { exts: ['js', 'md'] }),
       },
-      '仅 JS/MD',
+      t('pickJsMd'),
     ),
     h('code', { style: { fontSize: '12px' } }, picked === null ? t('pickNone') : `${t('pickResult')}${picked}`),
   )
 }
 
-function SessionPreviewDemo(): ReturnType<typeof h> {
-  const [open, setOpen] = useState(false)
-  const [note, setNote] = useState<string | null>(null)
-  // 预览站离线演示：假 ChatSnapshot 驱动镜像渲染（真数据链只在宿主里活着）。
-  const view = useMemo(() => mockSessionView(), [])
-  return h(
-    'div',
-    { style: { display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' } },
-    h(Button, { variant: 'primary', onClick: () => setOpen(true) }, t('sessionOpenModal')),
-    h(Button, { variant: 'ghost', onClick: () => setOpen(false) }, t('sessionClose')),
-    note === null ? null : h('code', { style: { fontSize: '12px' } }, note),
-    open ? h(SessionViewModal, {
-      sessionId: 'demo-session',
-      view,
-      heading: '镜像升级日报',
-      onClose: () => setOpen(false),
-      // 宿主服务在预览站里缺席 ⇒ 三个续聊 / 文件出口都是本地回声（演示交互，不真跳转）。
-      forkSession: async () => { setNote(`${t('sessionForked')} demo-session(1)`); return 'demo-session(1)' },
-      openHostSession: (id) => { setNote(`${t('sessionOpenedHost')} ${id}`) },
-      onContinue: async (message) => { setNote(`${t('sessionContinued')} ${message}`) },
-      onOpenFile: (path) => { setNote(`${t('sessionOpenedFile')} ${path}`) },
-    }) : null,
-  )
-}
 
 /** 真实会话列表演示：宿主 `sessions.list` 快照（冷安全，不激活 Agent）→ 点开真预览。 */
 function RealSessionListDemo(): ReturnType<typeof h> {
   const state = useSyncExternalStore(realSessions.subscribe, realSessions.getSnapshot)
+  const files = useSyncExternalStore(fileServices.subscribe, fileServices.getSnapshot)
+  const wsItems = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
+  const anchor = pickWorkspaceAnchor(wsItems)
   const [openId, setOpenId] = useState<string | null>(null)
-  const [note, setNote] = useState<string | null>(null)
+  // 文件链接在**页面右侧**开核心文件预览 dock（不在弹窗里）；弹窗据此让出 dock 的宽度。
+  const [dockOpen, setDockOpen] = useState(false)
+  const [dockWidth, setDockWidth] = useState(0)
   const view = useMemo(() => (openId === null ? null : openRealSessionView(openId)), [openId])
+  const workspaceFiles = files.workspaceFiles
+  // 链接只在「工作区文件服务就位 + 有可用会话锚点」时可点；否则保持纯文本，不假装能点。
+  const canOpenFile = workspaceFiles !== null && anchor !== null
+
+  // dock 宽度实测（拖动改变宽度也跟着变）：弹窗在**左边剩下的区域**里居中，不被压住。
+  useEffect(() => {
+    if (!dockOpen) return
+    const mount = pageRow.element
+    const dock = mount === null ? null : mount.querySelector<HTMLElement>('.dshpc-dock')
+    if (dock === null) return
+    const read = (): void => { setDockWidth(Math.round(dock.getBoundingClientRect().width)) }
+    read()
+    const ro = new ResizeObserver(read)
+    ro.observe(dock)
+    return () => { ro.disconnect() }
+  }, [dockOpen])
+
+  const openLinkedFile = (path: string): void => {
+    const mount = pageRow.element
+    if (mount === null || workspaceFiles === null || anchor === null) return
+    openFilePreview({
+      mount,
+      workspaceFiles,
+      officeToPdf: files.officeToPdf,
+      // 文件 RPC 按会话作用域取工作区：用当前工作区锚点的会话（与 explorer 页同一口径）。
+      sessionId: anchor.sessionId,
+      path,
+      rootName: anchor.title,
+      workspaces: wsItems.map((w) => w.title),
+      onClose: () => { setDockOpen(false); setDockWidth(0) },
+    })
+    setDockOpen(true)
+  }
   if (state.status !== 'ready') {
     return h('p', { style: { fontSize: '13px', opacity: .8 } }, t('sessionListUnavailable'))
   }
@@ -280,7 +279,10 @@ function RealSessionListDemo(): ReturnType<typeof h> {
             return p ?? Promise.reject(new Error('sessions.fork 未就位'))
           },
           openHostSession: (id) => { realOpenHostSession(id) },
-          onOpenFile: (path) => { setNote(`${t('sessionOpenedFile')} ${path}`) },
+          // 文件链接（工具卡路径 / md 行内引用 / 交付卡）→ **页面右侧**开核心文件预览 dock，
+          // 弹窗被挤到左边（insetRight = dock 实测宽度），不在弹窗里面分栏。
+          onOpenFile: canOpenFile ? openLinkedFile : undefined,
+          insetRight: dockOpen && dockWidth > 0 ? dockWidth + 16 : undefined,
         })
       : null,
   )
@@ -313,13 +315,8 @@ export function SessionPage(): ReturnType<typeof h> {
     h(DocProse, { id: 'session' }),
     h(
       Example,
-      { title: '真实会话列表', hint: t('sessionRealHint'), code: CODE_SESSION_REAL },
+      { title: t('sessionRealTitle'), hint: t('sessionRealHint'), code: CODE_SESSION_REAL },
       h(RealSessionListDemo, null),
-    ),
-    h(
-      Example,
-      { title: 'SessionViewModal（离线假数据）', hint: t('sessionHint'), code: CODE_SESSION },
-      h(SessionPreviewDemo, null),
     ),
     h(DocApi, { id: 'session' }),
   )

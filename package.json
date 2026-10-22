@@ -68,8 +68,9 @@
   "scripts": {
     "gen:css": "node scripts/gen-css.mjs",
     "build": "node scripts/gen-css.mjs && node scripts/gen-docs.mjs && tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "pretest": "node scripts/gen-css.mjs --check && node scripts/gen-docs.mjs --check && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.demo.json --noEmit",
+    "typecheck:demo": "tsc -p tsconfig.demo.json --noEmit",
+    "pretest": "node scripts/gen-css.mjs --check && node scripts/gen-docs.mjs --check && tsc -p tsconfig.json && tsc -p tsconfig.demo.json --noEmit",
     "test": "node --test test/*.test.mjs",
     "prepublishOnly": "pnpm run build && pnpm test",
     "typecheck:docs": "tsc -p tsconfig.docs.json",

@@ -86,11 +86,23 @@ if (view !== null) {
 host 半侧 `agents.create + agent.send(msg, 'next-turn', true)` 起轮次 + 跳转。
 （client→host remote 通道为新增能力，实现期第一验证项。）
 
-**标题与归档标识**：弹窗标题 = 会话自己的标题（`heading`，宿主 `sessions.list` 的
-`displayTitle`），不再带固定前缀；已归档时标题旁显示官方归档图标 + 「已归档」。
-归档状态 client 读不到（官方 UiWorkspace 公开面无此读口）⇒ 与本包 `./host` 模型目录同模式：
-宿主 `serveArchivedSessions` 读 `workspaceRegistry.archivedSessionIds` 挂只读路由，
-client fetch 后传入 `archived`。
+**标题与归档标识**：标题区三段固定（用户 2026-10-22）：第一行 = 标题（`heading`，宿主
+`sessions.list` 的 `displayTitle`，可自定义，缺省「会话预览」）**+ 「已归档」徽标紧跟标题**
+（同一行，不跨两行居中）；第二行 = 副标题（会话 id，等宽小字，走 Modal 的 `subtitle`）；
+右侧 = 「继续对话」/ 关闭。**会话 id 不进正文**。
+归档状态 **client 读得到**（2026-10-22 解包 `@deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2`
+核实）：官方 client 服务 `workspaces` 的 `list` 快照带 `archivedSessionIds`，是 registry-global
+归档集合（不是每工作区一份），随宿主 follow 流实时替换 ⇒ `ctx.inject(['workspaces'])` →
+`list.getSnapshot().archivedSessionIds` + `list.subscribe` 刷新，传入 `archived`；无需宿主路由。
+
+**滚动与内距归核心**（用户 2026-10-22 拍板）：Modal 的 body 是**唯一滚动容器**，内距也归它；
+内容只按流排版，不写 `height:100%`、不自己开滚动条（会话区里官方 ChatView.frame / scroll 的
+`overflow`、高度、内距一律归零）。
+
+**文件链接**：工具卡 fileLink / md 行内引用 / 交付卡统一走 `onOpenFile`。接法 = 预览开在
+**页面右侧**（核心 `openFilePreview` 的 dock，挤窄主区），不在弹窗里分栏；弹窗用 `insetRight`
+让出那列实测宽度 ⇒ 在左边剩余区域居中、并自动去掉遮罩（否则遮罩盖住它、还吃掉点击）。
+工作区文件服务缺席则不给 `onOpenFile`，链接保持纯文本。
 
 ## 定制边界
 

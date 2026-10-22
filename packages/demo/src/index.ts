@@ -9,8 +9,8 @@
  *
  * 全部展示逻辑在 client 侧（settings.plugin.item 入口卡片 + sidebar.panellist / main 整页）。
  */
-import { serveArchivedSessions, serveModelCatalog, type HostContextLike } from '../../../dist/host/index.js'
-import { ARCHIVED_SESSIONS_PATH, MODELS_PATH } from './paths.js'
+import { serveModelCatalog, type HostContextLike } from '../../../dist/host/index.js'
+import { MODELS_PATH } from './paths.js'
 
 export const name = 'dsh-plugin-core-demo'
 
@@ -20,6 +20,4 @@ export const inject: readonly string[] = []
 export function apply(ctx: HostContextLike): void {
   // 模型目录（供应商 → 模型）只有宿主侧 llm.listModels 拿得到，挂成只读路由给 client fetch。
   serveModelCatalog(ctx, { path: MODELS_PATH })
-  // 已归档会话 id 集合：client 读不到（官方 UiWorkspace 公开面无此读口），宿主侧取数挂路由。
-  serveArchivedSessions(ctx, { path: ARCHIVED_SESSIONS_PATH })
 }

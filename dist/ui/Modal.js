@@ -32,13 +32,19 @@ export function Modal(props) {
     const showHeader = props.hideHeader !== true &&
         (props.icon !== undefined ||
             props.title !== undefined ||
+            props.subtitle !== undefined ||
             props.headerExtra !== undefined ||
             props.headerActions !== undefined ||
             showClose);
+    // mask=false：透明 + 不吃点击（弹窗成为页面上的普通浮层，旁边的 dock 照常可交互）。
+    const plainMask = props.mask === false;
     return h('div', {
-        className: 'dshpc-modal-mask',
+        className: plainMask ? 'dshpc-modal-mask dshpc-modal-mask--plain' : 'dshpc-modal-mask',
+        style: plainMask && props.maskInsetRight !== undefined && props.maskInsetRight > 0
+            ? { paddingRight: `${props.maskInsetRight}px` }
+            : undefined,
         onClick: () => {
-            if (closeOnMask)
+            if (closeOnMask && !plainMask)
                 props.onClose?.();
         },
     }, h('div', {
@@ -51,9 +57,14 @@ export function Modal(props) {
         },
         onClick: (e) => e.stopPropagation(),
     }, showHeader
-        ? h('div', { className: 'dshpc-modal__head' }, h('div', { className: 'dshpc-modal__heading' }, props.icon === undefined ? null : h('span', { className: 'dshpc-modal__lead' }, props.icon), h('div', { className: 'dshpc-modal__title' }, props.title ?? ''), props.headerExtra === undefined
+        ? h('div', { className: 'dshpc-modal__head' }, h('div', { className: 'dshpc-modal__heading' }, props.icon === undefined ? null : h('span', { className: 'dshpc-modal__lead' }, props.icon), 
+        // 标题组：第一行 = 标题 + 右侧小块（徽标**紧跟标题**，不跨两行居中），
+        // 第二行 = 副标题（会话 id 这类标识）。
+        h('div', { className: 'dshpc-modal__titlegroup' }, h('div', { className: 'dshpc-modal__titlerow' }, h('div', { className: 'dshpc-modal__title' }, props.title ?? ''), props.headerExtra === undefined
             ? null
-            : h('div', { className: 'dshpc-modal__extra' }, props.headerExtra)), h('div', { className: 'dshpc-modal__spacer' }), props.headerActions === undefined
+            : h('div', { className: 'dshpc-modal__extra' }, props.headerExtra)), props.subtitle === undefined
+            ? null
+            : h('div', { className: 'dshpc-modal__sid' }, props.subtitle))), h('div', { className: 'dshpc-modal__spacer' }), props.headerActions === undefined
             ? null
             : h('div', { className: 'dshpc-modal__actions' }, props.headerActions), showClose
             ? h('button', {
@@ -63,6 +74,9 @@ export function Modal(props) {
                 onClick: () => props.onClose?.(),
             }, '✕')
             : null)
-        : null, h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dshpc-modal__foot' }, props.footer)));
+        : null, 
+    // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
+    // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
+    h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dshpc-modal__foot' }, props.footer)));
 }
 //# sourceMappingURL=Modal.js.map

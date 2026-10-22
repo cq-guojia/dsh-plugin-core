@@ -208,6 +208,7 @@ export type UtilMessageKey =
   | 'diffExpandAria'
   | 'diffExpandRest'
   | 'sessionArchived'
+  | 'sessionHeading'
   | 'continueBranch'
   | 'forkConfirmTitle'
   | 'forkConfirmText'
@@ -432,6 +433,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     diffExpandAria: '展开其余 {count} 行差异',
     diffExpandRest: '… 其余 {count} 行',
     sessionArchived: '已归档',
+    sessionHeading: '会话预览',
     continueBranch: '继续对话',
     forkConfirmTitle: '开分支继续对话',
     forkConfirmText: '是否需要基于此会话开一个新分支继续对话？原会话保持只读留档，新分支复制本会话内容并可继续对话。',
@@ -652,6 +654,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     diffExpandAria: 'Expand {count} more diff lines',
     diffExpandRest: '… {count} more lines',
     sessionArchived: 'Archived',
+    sessionHeading: 'Session preview',
     continueBranch: 'Continue conversation',
     forkConfirmTitle: 'Fork to continue',
     forkConfirmText: 'Start a new branch from this session to continue the conversation? The original stays read-only; the branch copies this conversation and can continue.',

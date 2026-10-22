@@ -75,27 +75,37 @@
   color: var(--dshpc-fg-3);
 }
 
-/* 两栏；容器窄到放不下两列 300px 时自动塌成一列（代码落到示例下方）。 */
+/* 两栏；容器窄到放不下两列 300px 时自动塌成一列（代码落到示例下方）。
+   行高 = 两栏里较高的那一栏（grid 默认 stretch）⇒ 矮的一栏被拉齐，不再出现「左边很高、右边一条小滚动条」。 */
 .dshpc-doc-example__body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  align-items: stretch;
 }
 
 .dshpc-doc-example__demo {
   min-width: 0;
+  min-height: 0;
   padding: 14px;
+  display: flex;
+  flex-direction: column;
 }
 
 .dshpc-doc-example__code {
   min-width: 0;
+  min-height: 0;
   padding: 14px;
   border-left: 1px solid var(--dshpc-border-faint);
   background: var(--dshpc-code-surface);
+  display: flex;
+  flex-direction: column;
 }
 
-/* 代码只在内层滚：表头「代码」两个字不被滚走 */
+/* 代码区吃掉整栏剩余高：表头「代码」两个字不被滚走，代码本身按行高自适应
+   （不写死 max-height —— 那会在示例很高时代码栏里挤出一条小滚动条）。 */
 .dshpc-doc-example__scroll {
-  max-height: 320px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
 }
 

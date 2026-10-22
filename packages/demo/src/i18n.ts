@@ -136,19 +136,33 @@ export type DemoMessageKey =
   | 'pickResult'
   | 'previewBodyTitle'
   | 'previewBodyHint'
-  | 'sessionHint'
-  | 'sessionOpenModal'
-  | 'sessionClose'
-  | 'sessionPreviewTitle'
+  | 'pickJsMd'
+  | 'openedPath'
+  | 'sessionRealTitle'
   | 'sessionRealHint'
+  // 示例框架的标题 / 说明（原来硬编码中文，切英文不变 ⇒ 必须走字典）
+  | 'exModelPickerTitle'
+  | 'exWorkspacePickerTitle'
+  | 'exSectionHeadHint'
+  | 'exMarqueeHint'
+  | 'exLiveHint'
+  | 'exEmptyHint'
+  | 'exSmallModalTitle'
+  | 'exSmallModalHint'
+  | 'exLargeModalTitle'
+  | 'exLargeModalHint'
+  | 'exHostModalTitle'
+  | 'exHostModalHint'
+  | 'exToastNotifyTitle'
+  | 'exToastNotifyHint'
+  | 'exToastHostTitle'
+  | 'exToastHostHint'
+  | 'exToastSonnerTitle'
+  | 'exToastSonnerHint'
   | 'sessionListUnavailable'
   | 'sessionListEmpty'
   | 'sessionListRunning'
   | 'sessionListArchived'
-  | 'sessionForked'
-  | 'sessionOpenedHost'
-  | 'sessionContinued'
-  | 'sessionOpenedFile'
   | 'dateHint'
   | 'numberHint'
   | 'textDesc'
@@ -397,24 +411,37 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     pickDir: '只要文件夹',
     pickFolder: '文件夹',
     pickNone: '还没选',
+    pickJsMd: '仅 JS/MD',
+    openedPath: '已打开：',
     pickResult: '已选择',
     previewBodyTitle: 'FilePreview 预览体（可单独用）',
     previewBodyHint:
       '上面那块已经包含它——FileBrowser 内部渲染的就是 FilePreview。\n' +
       '它同时也是一条独立子路径 dsh-plugin-core/explorer/preview：只有一个文件要显示时（会话附件、工具输出）不必搬出整个面板。',
-    sessionHint: '镜像官方会话 UI 的只读弹窗（假快照驱动）；归档会话可读；续聊走 fork 开分支，框内不可打字',
-    sessionOpenModal: '打开会话预览',
-    sessionClose: '关闭',
-    sessionPreviewTitle: '会话预览（假数据）',
+    sessionRealTitle: '真实会话列表',
+    exModelPickerTitle: 'ModelPicker（真实目录）',
+    exWorkspacePickerTitle: 'WorkspacePicker（真实列表）',
+    exSectionHeadHint: '分区标题：icon + 标题 + 右侧操作区三段式——纯排版壳，icon/标题/右侧都调用方自定；下示 3 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合',
+    exMarqueeHint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号',
+    exLiveHint: '订阅内部节拍器，走时 Ui 由调用方渲染',
+    exEmptyHint: '业务空态：无数据时的占位，可挂一个操作按钮',
+    exSmallModalTitle: '小型弹窗（自定义）',
+    exSmallModalHint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。',
+    exLargeModalTitle: '大型弹窗（自定义）',
+    exLargeModalHint: '我们的内容弹窗：Modal（size md/lg），承载任意内容，不是「确定/取消」命令式。三张示例：默认 md / 带 footer / 无 footer（内容自定义），头部排法可不同。',
+    exHostModalTitle: '原生弹窗（宿主）',
+    exHostModalHint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。',
+    exToastNotifyTitle: 'Toast · 我们封装 notify',
+    exToastNotifyHint: 'notify()：统一灰/绿/红/黄 + 右侧我们自己的按钮',
+    exToastHostTitle: 'Toast · 宿主原生',
+    exToastHostHint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）',
+    exToastSonnerTitle: 'Toast · 官方 Sonner',
+    exToastSonnerHint: 'showToast()：第三方库原味，对比用',
     sessionRealHint: '宿主 sessions.list 快照（冷安全，不激活 Agent）→ 点开真预览；fork 与跳转都是官方口子',
-    sessionListUnavailable: '宿主会话服务未就位（sessions / uiConversation / uiWorkspace 缺席）——在真实 dsh profile 里安装本插件即可用；下方为离线假数据演示',
+    sessionListUnavailable: '宿主会话服务未就位（sessions / uiConversation / uiWorkspace 缺席）——在真实 dsh profile 里安装本插件即可读到本机会话',
     sessionListEmpty: '宿主当前没有可显示的会话',
     sessionListRunning: '运行中',
     sessionListArchived: '已归档',
-    sessionForked: '已开分支（演示回声）：',
-    sessionOpenedHost: '已跳转官方会话区（演示回声）：',
-    sessionContinued: '暂存消息已受理（演示回声）：',
-    sessionOpenedFile: '已打开文件（演示回声）：',
 
     dateHint: '解析失败不抛错、给兜底、不编造；所有函数无 UI 依赖，Node 里也能跑',
     numberHint: 'formatBytes 按 1024 进制、单位自动进位；formatCount 给大数加千分位',
@@ -647,24 +674,37 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     pickDir: 'Folders only',
     pickFolder: 'folder',
     pickNone: 'Nothing picked yet',
+    pickJsMd: 'JS/MD only',
+    openedPath: 'Opened: ',
     pickResult: 'Picked',
     previewBodyTitle: 'FilePreview (usable on its own)',
     previewBodyHint:
       'The block above already includes it — FileBrowser renders FilePreview inside.\n' +
       'It is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.',
-    sessionHint: 'Read-only dialog mirroring the official session UI (driven by a fake snapshot); archived sessions are readable; continuing goes through fork — no typing inside the dialog',
-    sessionOpenModal: 'Open session preview',
-    sessionClose: 'Close',
-    sessionPreviewTitle: 'Session preview (mock data)',
+    sessionRealTitle: 'Real session list',
+    exModelPickerTitle: 'ModelPicker (real catalog)',
+    exWorkspacePickerTitle: 'WorkspacePicker (real list)',
+    exSectionHeadHint: 'Section header: icon + title + right-side actions in three slots — a pure layout shell; icon, title and right side are all caller-defined. Three groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos',
+    exMarqueeHint: 'Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis',
+    exLiveHint: 'Subscribes to an internal ticker; the running clock UI is rendered by the caller',
+    exEmptyHint: 'Business empty state: a placeholder when there is no data, optionally with one action button',
+    exSmallModalTitle: 'Small dialogs (custom)',
+    exSmallModalHint: 'Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host’s own.',
+    exLargeModalTitle: 'Large dialogs (custom)',
+    exLargeModalHint: 'Our content dialog: Modal (size md/lg) carrying arbitrary content — not a confirm/cancel primitive. Three samples: default md / with footer / without footer (custom content); the header layout may differ.',
+    exHostModalTitle: 'Native dialogs (host)',
+    exHostModalHint: 'The host kernel’s own Modal: mask, header and close button all belong to the host; the body takes arbitrary content and the footer any button set. Imperative use goes through confirmModal/alertModal with skin:"host"; neither shadows the other.',
+    exToastNotifyTitle: 'Toast · our notify wrapper',
+    exToastNotifyHint: 'notify(): uniform grey/green/red/yellow plus our own button on the right',
+    exToastHostTitle: 'Toast · host native',
+    exToastHostHint: 'showHostToast(): wraps the official @deepseek-ai Toast (top banner)',
+    exToastSonnerTitle: 'Toast · Sonner',
+    exToastSonnerHint: 'showToast(): the third-party library as-is, for comparison',
     sessionRealHint: 'Host sessions.list snapshot (cold-safe, no Agent activation) → click for a real preview; fork and navigation are official APIs',
-    sessionListUnavailable: 'Host session services not ready (sessions / uiConversation / uiWorkspace absent) — install this plugin into a real dsh profile to use it; the offline mock demo is below',
+    sessionListUnavailable: 'Host session services not ready (sessions / uiConversation / uiWorkspace absent) — install this plugin into a real dsh profile to list and preview your sessions',
     sessionListEmpty: 'The host has no visible sessions right now',
     sessionListRunning: 'Running',
     sessionListArchived: 'Archived',
-    sessionForked: 'Forked (demo echo): ',
-    sessionOpenedHost: 'Jumped to the official session area (demo echo): ',
-    sessionContinued: 'Staged message accepted (demo echo): ',
-    sessionOpenedFile: 'Opened file (demo echo): ',
 
     dateHint: 'No throw on parse failure — falls back gracefully and never fabricates; all functions are UI-free and run in Node too',
     numberHint: 'formatBytes is 1024-based with automatic unit scaling; formatCount adds thousands separators',

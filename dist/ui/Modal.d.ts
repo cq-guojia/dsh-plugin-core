@@ -6,6 +6,11 @@ export interface ModalProps {
     /** 头部左侧图标位（可不传）。 */
     icon?: ReactNode;
     title?: ReactNode;
+    /**
+     * 标题**下方**的副标题行（等宽小字；会话预览的 sessionId 就放这里 —— 用户 2026-10-22：
+     * 标识属于标题区，不占正文）。与标题同宽、可换行。
+     */
+    subtitle?: ReactNode;
     /** 标题右侧小块：数字 / 标签（ReactNode；demo 用 Chip 演示）。 */
     headerExtra?: ReactNode;
     /** 头部右侧动作区：关闭钮之外的更多按钮（ReactNode）。 */
@@ -29,6 +34,16 @@ export interface ModalProps {
     maxHeight?: string;
     /** 不渲染头部（沉浸式 / 无标题场景）。 */
     hideHeader?: boolean;
+    /**
+     * 是否画遮罩（默认 true）。`false` = 透明遮罩层且**不吃点击**（弹窗变成浮在页面上的普通面板，
+     * 旁边的页面区域照常可点）—— 与页面右侧分栏（文件预览 dock）并排时用。
+     */
+    mask?: boolean;
+    /**
+     * 遮罩右侧留出的宽度（px）：弹窗整体在**剩下那块区域**里居中，不被右侧分栏压住。
+     * 只在 `mask` 为 `false`（分栏并排）时有意义；默认 0。
+     */
+    maskInsetRight?: number;
     footer?: ReactNode;
     children?: ReactNode;
     translate?: Translate;

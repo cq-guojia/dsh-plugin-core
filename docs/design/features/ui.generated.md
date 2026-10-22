@@ -49,7 +49,7 @@ Segmented：items（必填）+ 单选或多选；另有 size（默认 lg）、va
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `variant` | `上表 10 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link）` | 'outline' | 外观档 | Appearance tier |
-| `size` | `'sm' | 'md' | 'lg'` | 'lg' | 高度档（24 / 28 / 32，有边无边同高） | Height tier (24 / 28 / 32, same height with or without border) |
+| `size` | `'sm' \| 'md' \| 'lg'` | 'lg' | 高度档（24 / 28 / 32，有边无边同高） | Height tier (24 / 28 / 32, same height with or without border) |
 | `icon` | `ReactNode` | — | 前置图标（官方图标组件 / 字符串均可） | Leading icon (official icon component or string) |
 | `iconRight` | `ReactNode` | — | 后置图标（展开箭头、外链） | Trailing icon (expand arrow, external link) |
 | `color` | `string` | — | 自定义主色：实心档作底色，线框 / 无底档作主色 | Custom main color: background for solid tiers, main color for outline/bare |
@@ -90,17 +90,17 @@ ModelPicker：数据自带的现成组件 + variant: grouped|cascade（默认 gr
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `groups / options` | `PickerGroup[] / PickerOption[]` | — | 二选一；options 会被当成一个无标题组 | One of the two; options is treated as a single untitled group |
-| `value / defaultValue` | `string | string[]` | — | 给了 value 即受控；否则内部管 | Passing value makes it controlled; otherwise it manages internally |
-| `onChange` | `(v: string | string[]) => void` | — | 单选回 string，多选回 string[] | Single returns string, multiple returns string[] |
-| `mode` | `'single' | 'multiple'` | 'single' | — | — |
+| `value / defaultValue` | `string \| string[]` | — | 给了 value 即受控；否则内部管 | Passing value makes it controlled; otherwise it manages internally |
+| `onChange` | `(v: string \| string[]) => void` | — | 单选回 string，多选回 string[] | Single returns string, multiple returns string[] |
+| `mode` | `'single' \| 'multiple'` | 'single' | — | — |
 | `max` | `number` | — | 多选上限；到上限其余项置灰 + 提示（不静默截断） | Multiple-select cap; at cap others grey out + a hint (no silent truncation) |
 | `searchable` | `boolean` | 'false' | 显示搜索框；展开菜单时自动聚焦搜索框 | Shows a search box; auto-focuses it when the menu opens |
-| `align` | `'left' | 'center'` | 'left' | 触发器文字对齐 | Trigger text alignment |
+| `align` | `'left' \| 'center'` | 'left' | 触发器文字对齐 | Trigger text alignment |
 | `clearable` | `boolean` | 'false' | 单选时列表顶部多一项「不选」 | In single mode, adds a "none" item at the top of the list |
 | `placeholder` | `string` | 内置「请选择」 | — | — |
 | `degraded` | `boolean` | 'false' | 候选可能不完整 ⇒ 顶部如实提示，不编造 | Candidates may be incomplete ⇒ honest top hint, no fabrication |
-| `size` | `'sm' | 'md' | 'lg'` | 'md' | — | — |
-| `placement` | `'down' | 'up'` | 'down' | 触发器靠近视口底部时用 up | Use up when the trigger is near the viewport bottom |
+| `size` | `'sm' \| 'md' \| 'lg'` | 'md' | — | — |
+| `placement` | `'down' \| 'up'` | 'down' | 触发器靠近视口底部时用 up | Use up when the trigger is near the viewport bottom |
 | `closeOnSelect` | `boolean` | 多选 false / 单选恒关 | 选中后是否收起 | Whether to collapse after selection |
 | `showLabels` | `boolean` | 'true' | 多选时触发器列出已选项，而非只显示「已选 N 项」 | In multiple mode the trigger lists selected items instead of just "N selected" |
 | `icon` | `ReactNode` | — | 触发器文字前的图标 | Icon before the trigger text |
@@ -119,7 +119,7 @@ ModelPicker：数据自带的现成组件 + variant: grouped|cascade（默认 gr
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `variant` | `'grouped' | 'cascade'` | 'grouped' | grouped = 一个下拉完全独立；cascade = 两个下拉联动（先选供应商，模型列表跟着筛；换供应商清空已选） | grouped = one standalone dropdown; cascade = two linked dropdowns (pick provider first, model list filters; switching provider clears selection) |
+| `variant` | `'grouped' \| 'cascade'` | 'grouped' | grouped = 一个下拉完全独立；cascade = 两个下拉联动（先选供应商，模型列表跟着筛；换供应商清空已选） | grouped = one standalone dropdown; cascade = two linked dropdowns (pick provider first, model list filters; switching provider clears selection) |
 | `allowDefault / defaultLabel` | `「默认模型」选项：默认提供；false 关闭；选中发 ''` | — | 文案可传 defaultLabel | Pass defaultLabel for the text |
 | `placeholder` | `string` | 默认「模型」 | icon：不传 = 默认星形；null = 不显示；传元素 = 自定义 | icon: omitted = default star; null = hidden; element = custom |
 | `透传 Picker` | `value / defaultValue / onChange / clearable / searchable / hint / size / placement / className / disabled / degraded / translate` | — | 同 Picker 同名参数 | Same-named params as Picker |
@@ -216,11 +216,16 @@ Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依�
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `title` | `ReactNode` | — | 标题 | Title |
+| `subtitle` | `ReactNode` | — | 标题**下方**的副标题行（等宽小字；会话 id 这类标识放这里，别塞正文） | Subtitle line **under** the title (monospace caption; put identifiers such as a session id here, not in the body) |
+| `headerExtra` | `ReactNode` | — | 标题**同一行**右侧的小块（徽标 / 计数）：紧跟标题，不跨标题与副标题两行居中 | Small block (badge / count) on the **same line** as the title: it sits right after the title, never centered across the title and subtitle lines |
+| `headerActions` | `ReactNode` | — | 头部右侧动作区（关闭钮之外） | Header actions area (besides the close button) |
 | `onClose` | `() => void` | — | 不传则不显示关闭钮 | No close button if omitted |
 | `closeOnMask` | `boolean` | 'true' | 点遮罩关闭；误触代价大的场景设 false | Close on mask click; set false where mis-clicks are costly |
 | `escClose` | `boolean` | 'true' | Esc 关闭 | Close on Esc |
 | `maxWidth` | `string` | min(960px, 92vw) | — | — |
 | `hideHeader` | `boolean` | 'false' | 不渲染头部（沉浸式） | Skip header (immersive) |
+| `mask` | `boolean` | 'true' | 是否画遮罩；`false` = 透明层且不吃点击（弹窗变成页面上的普通浮层，旁边区域照常可点）—— 与页面右侧分栏并排时用 | Whether to draw the mask; `false` = transparent layer that does not eat clicks (the dialog becomes a normal floating panel and the surrounding page stays clickable) — for sitting side by side with a page-level right column |
+| `maskInsetRight` | `number` | 0 | 遮罩右侧留出的宽度（px）：弹窗在**剩下的那块区域**里居中，不被右侧分栏压住 | Width (px) reserved on the mask’s right: the dialog centers in the **remaining** area instead of being covered by the right column |
 | `footer` | `ReactNode` | — | 底栏（按钮区） | Footer (button area) |
 | `children` | `ReactNode` | — | 主体 | Body |
 
@@ -247,7 +252,7 @@ Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依�
 | `id` | `string` | — | 组名（寻址键），同名唯一 | Group name (address key), unique per name |
 | `title / icon` | `ReactNode` | — | 内置头的标题与标题前图标 | Built-in header title and icon before it |
 | `extra` | `ReactNode` | — | 标题右侧的任意内容（不只是按钮） | Any content to the right of the title (not just buttons) |
-| `header` | `ReactNode | null` | — | 整块替换头部：不传 = 内置头；null = 不要头部；其他 = 你的头 | Whole-header replacement: omitted = built-in; null = no header; else = your header |
+| `header` | `ReactNode \| null` | — | 整块替换头部：不传 = 内置头；null = 不要头部；其他 = 你的头 | Whole-header replacement: omitted = built-in; null = no header; else = your header |
 | `closable / closeButton / closeIcon` | `—` | — | 关钮开关；位置 auto/header/floating/none | Close-button toggle; position auto/header/floating/none |
 | `width / minWidth / maxWidth` | `number` | — | 宽度与可拖动区间 | Width and draggable range |
 | `ariaLabel` | `string` | — | 无头部时的无障碍名 | A11y name when no header |
@@ -255,7 +260,7 @@ Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依�
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `onOpen` | `({ id, created: true })` | — | 首次打开 | First open |
-| `onBeforeClose` | `({ id, reason: 'button' | 'api' }) => false?` | — | 关闭之前，返回 false 可取消 | Before close; returning false cancels |
+| `onBeforeClose` | `({ id, reason: 'button' \| 'api' }) => false?` | — | 关闭之前，返回 false 可取消 | Before close; returning false cancels |
 | `onClose` | `({ id, reason })` | — | 已关闭 | Closed |
 | `onResize` | `({ id, width })` | — | 拖宽松手 | Drag released |
 | `onLimitReached` | `({ id })` | — | 到上限被拒 | Rejected at cap |

@@ -9,6 +9,11 @@ export interface ModalProps {
   /** 头部左侧图标位（可不传）。 */
   icon?: ReactNode
   title?: ReactNode
+  /**
+   * 标题**下方**的副标题行（等宽小字；会话预览的 sessionId 就放这里 —— 用户 2026-10-22：
+   * 标识属于标题区，不占正文）。与标题同宽、可换行。
+   */
+  subtitle?: ReactNode
   /** 标题右侧小块：数字 / 标签（ReactNode；demo 用 Chip 演示）。 */
   headerExtra?: ReactNode
   /** 头部右侧动作区：关闭钮之外的更多按钮（ReactNode）。 */
@@ -32,6 +37,16 @@ export interface ModalProps {
   maxHeight?: string
   /** 不渲染头部（沉浸式 / 无标题场景）。 */
   hideHeader?: boolean
+  /**
+   * 是否画遮罩（默认 true）。`false` = 透明遮罩层且**不吃点击**（弹窗变成浮在页面上的普通面板，
+   * 旁边的页面区域照常可点）—— 与页面右侧分栏（文件预览 dock）并排时用。
+   */
+  mask?: boolean
+  /**
+   * 遮罩右侧留出的宽度（px）：弹窗整体在**剩下那块区域**里居中，不被右侧分栏压住。
+   * 只在 `mask` 为 `false`（分栏并排）时有意义；默认 0。
+   */
+  maskInsetRight?: number
   footer?: ReactNode
   children?: ReactNode
   translate?: Translate
@@ -69,16 +84,22 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
     props.hideHeader !== true &&
     (props.icon !== undefined ||
       props.title !== undefined ||
+      props.subtitle !== undefined ||
       props.headerExtra !== undefined ||
       props.headerActions !== undefined ||
       showClose)
 
+  // mask=false：透明 + 不吃点击（弹窗成为页面上的普通浮层，旁边的 dock 照常可交互）。
+  const plainMask = props.mask === false
   return h(
     'div',
     {
-      className: 'dshpc-modal-mask',
+      className: plainMask ? 'dshpc-modal-mask dshpc-modal-mask--plain' : 'dshpc-modal-mask',
+      style: plainMask && props.maskInsetRight !== undefined && props.maskInsetRight > 0
+        ? { paddingRight: `${props.maskInsetRight}px` }
+        : undefined,
       onClick: () => {
-        if (closeOnMask) props.onClose?.()
+        if (closeOnMask && !plainMask) props.onClose?.()
       },
     },
     h(
@@ -101,10 +122,23 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
               'div',
               { className: 'dshpc-modal__heading' },
               props.icon === undefined ? null : h('span', { className: 'dshpc-modal__lead' }, props.icon),
-              h('div', { className: 'dshpc-modal__title' }, props.title ?? ''),
-              props.headerExtra === undefined
-                ? null
-                : h('div', { className: 'dshpc-modal__extra' }, props.headerExtra),
+              // 标题组：第一行 = 标题 + 右侧小块（徽标**紧跟标题**，不跨两行居中），
+              // 第二行 = 副标题（会话 id 这类标识）。
+              h(
+                'div',
+                { className: 'dshpc-modal__titlegroup' },
+                h(
+                  'div',
+                  { className: 'dshpc-modal__titlerow' },
+                  h('div', { className: 'dshpc-modal__title' }, props.title ?? ''),
+                  props.headerExtra === undefined
+                    ? null
+                    : h('div', { className: 'dshpc-modal__extra' }, props.headerExtra),
+                ),
+                props.subtitle === undefined
+                  ? null
+                  : h('div', { className: 'dshpc-modal__sid' }, props.subtitle),
+              ),
             ),
             h('div', { className: 'dshpc-modal__spacer' }),
             props.headerActions === undefined
@@ -124,6 +158,8 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
               : null,
           )
         : null,
+      // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
+      // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
       h('div', { className: 'dshpc-modal__body' }, props.children ?? null),
       props.footer === undefined ? null : h('div', { className: 'dshpc-modal__foot' }, props.footer),
     ),
