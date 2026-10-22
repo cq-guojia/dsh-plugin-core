@@ -1,5 +1,6 @@
 # 20261022-0057-核心-picker-下拉-portal-到-body-修复祖先-overflow-20a8：核心 Picker 下拉 portal 到 body，修复祖先 overflow 裁剪
 
+> **✅ 完成封卷**：2026-10-22 10:39:24（@GuoJia-Agent）
 > **创建**：2026-10-22 00:57:10（@GuoJia-Agent）
 > **分类**：缺陷 ｜ **标签**：Picker、浮层、裁剪
 
@@ -40,12 +41,18 @@
   - 踩坑：`size` 中间件与局部 `const size = props.size ?? 'md'`（PickerSize）重名 → 导入改名 `floatingSize`。
 - `src/ui/picker.css`：菜单去掉 `position:absolute / top / left / min-width`（改由 Floating UI 内联控制），删除已废弃的 `--up` 变体（翻转交给 `flip`）。
 - `gen-css` 已重生成 `picker-css.generated.ts`，`build:demo` 已重打 `dist/client.js`。
+- 用户浏览器验证暴露三处问题，均在核心修复并随 `b084b40` 提交：
+  - 菜单被写死成触发器宽度（`size.apply` 原设 `width:触发器宽`），长选项被裁 + 横向滚动 → 改为 `minWidth:触发器宽` + `maxWidth:min(480,视口)`（触发器可限宽、菜单随内容变宽、封顶 480）。
+  - 搜索框自动聚焦丢失：`FloatingPortal` 经 `useFloatingPortalNode` 在 `useEffect` 里延后建节点，原 `useEffect(open)` 聚焦在输入框挂载前跑（`searchRef` 仍 null）失效 → 改用回调 ref（`useCallback`）在输入框**真正挂载**时聚焦。
+  - 触发器缺聚焦蓝边：补 `.dshpc-picker__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}`，与全站 chip/modal/dock 一致。
+- 注：demo 把核心 `dist/` 直接打进 `dist/client.js`（`build.mjs` 注释明示），故修复核心后必须重打 demo bundle 才能生效；纯视觉现象需真实浏览器核对 build stamp。
 
 ## 结论
 
 - 核心 Picker 下拉从「根节点内联绝对定位」改为「`FloatingPortal` 到 `document.body` + 工业级浮层定位」，祖先后裔的 `overflow`/`transform`/固定高度不再裁它；这是 Radix/MUI 同款最健壮做法。
-- `pnpm run build` + `build:demo` 通过，`pnpm test` 77/77 绿，无 tsc/lint 错误。
-- 待办/边界：① 视觉裁剪属布局现象，仓库内无独立 demo 运行环境，需真实浏览器（或 CI 视觉）确认；② 极端场景「Picker 嵌在 Modal 内」时菜单 z-index(60) 可能被宿主弹窗层盖住，属已知边角、不在本次裁剪缺陷范围内；③ 如需更进一步 a11y，可接 Floating UI `useListNavigation`/`useRole`（当前键盘/外部点击已可用，非阻塞）。
+- 浏览器验证暴露两处 portal 引入的回归（菜单限宽、搜索框自动聚焦丢失）与一处体验缺口（触发器无聚焦蓝边），均已修复：菜单改 `minWidth`/`maxWidth`（封顶 480）、搜索框改回调 ref 聚焦、触发器补 `:focus-visible` 蓝边。
+- `build` + `build:demo` 通过，`test` 77/77 绿，无 tsc/lint 错误；已 commit + push（`b084b40`），调试期不 bump/tag。
+- 已知边角：① Picker 嵌 Modal 时菜单 `z-index:60` 可能被宿主弹窗层盖住；② a11y 可接 Floating UI `useListNavigation`/`useRole`（当前键盘/外部点击已可用，非阻塞）。
 
 ## 执行记录
 
@@ -54,3 +61,4 @@
 - 2026-10-22 00:57:10 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-22 01:08:57 · log · @GuoJia-Agent · 实施：Picker 菜单 FloatingPortal 到 body + Floating UI 定位（flip/shift/offset/autoUpdate/size）；build/typecheck/test 77 绿；视觉裁剪待浏览器确认
 - 2026-10-22 01:14:09 · log · @GuoJia-Agent · 已 commit + push 到 main（调试期不 bump/tag）：核心 Picker 菜单 portal 到 body + Floating UI 定位，build/test 77 绿
+- 2026-10-22 10:39:24 · close · @GuoJia-Agent · 结案：Picker 下拉 portal 到 body 根治祖先裁剪；顺带修复 portal 引入的两处回归(菜单限宽、搜索框自动聚焦)与触发器聚焦蓝边；已 commit+push b084b40，build/test 77 绿
