@@ -82,11 +82,20 @@
 
 - 不是判断逻辑写错码，是**官方 API 不对称 + 调用方只给路径不给工作区**：read 允许区外文件、
   list 限区内目录、list 按 sessionId 派生根。三方事实叠加才有该现象。
-- 根治落在核心库：`workspaceAnchorForPath` + `workspaceAnchors` prop，路径→工作区→会话解析对
-  **所有调用方**生效，不绑架调用方先算 sessionId；匹配不到不劣化（回落 + hint 说破）。
-- 遗留坑（有意不扩张）：① 只解析入口 path 一次，不跟踪 dir 切换（跨工作区跳转走调用方
-  onSelectWorkspace）；② 前缀匹配字面大小写，Windows 跨形态归一归调用方；③ 调用方不传
-  anchors 时场景依旧（提示在 hint 文案和文档里）。
+- 根治落在核心库，且**不绑架调用方**（用户 2026-10-22 拍板：底座是第三方工具，调用方可能只甩
+  一个路径；sessionId 口子保留，能传就传，不传/传错核心自己匹配）：
+  工作区清单来源 = `props.workspaceAnchors`（可选覆盖）> **workspaceList 快照**
+  （`connectHost` 一次性注入的宿主 `workspaces` 服务镜像，官方 `WorkspaceView` 自带
+  path + sessionIds）> 都没有 ⇒ 回落 `props.sessionId`。调用方零传参即生效。
+- `workspaceAnchorForPath`（最长前缀）+ `anchorSessionForTitle`（title→最近会话）两个纯函数；
+  FileBrowser 5 处 list 全走解析后的 sessionId；`openFilePreview` 的 PreviewBody 内置切工作区
+  （anchors 驱动、换会话 + key 重挂载 + 回根、无会话不进列表）；快照异步到达时经
+  listSessionId 依赖自愈重跑。
+- 遗留坑（有意不扩张）：① 只解析入口 path 一次，不跟踪 dir 切换（跨工作区跳转走 ▾ 下拉）；
+  ② 前缀匹配字面大小写，Windows 跨形态归一归调用方；③ 内置兜底依赖插件 apply 调过
+  `connectHost(ctx)`（一次性接线，demo 已示范）；没接过 ⇒ 回落 props.sessionId + hint 说破。
+- 外部修复项（不属本仓）：绘画预览调用方确认已 `connectHost` 接线 + 传绝对路径即可，
+  无需其他改动。
 
 ## 执行记录
 
@@ -95,3 +104,4 @@
 - 2026-10-22 23:08:11 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-22 23:23:04 · log · @GuoJia-Agent · 落码完成：workspaceAnchorForPath 纯函数+单测、FileBrowser 五处 list 换解析 sessionId、crumbBarPlain hint、移除 lookup-not-found、demo 接线、dsh-host.md §12；build/test 97 过/typecheck/build:demo 全绿
 - 2026-10-22 23:46:22 · log · @GuoJia-Agent · 第二轮：openFilePreview 内置切工作区（PreviewBody：anchors 驱动、换会话+key 重挂载+回根、无会话不进列表）；anchorSessionForTitle 纯函数+单测；explorer.doc.ts 示例；98/98、typecheck、build:demo 全绿
+- 2026-10-22 23:55:28 · log · @GuoJia-Agent · 第三轮（用户拍板：底座不甩锅调用方）：FileBrowser/PreviewBody 兜底自动读 workspaceList 快照（connectHost 注入），零传参即匹配+可切；HostWorkspaceItem 加 path；demo 改零传参示范；98/98、typecheck、build:demo 全绿
