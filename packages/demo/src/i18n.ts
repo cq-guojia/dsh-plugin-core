@@ -140,6 +140,10 @@ export type DemoMessageKey =
   | 'sessionOpenModal'
   | 'sessionClose'
   | 'sessionPreviewTitle'
+  | 'sessionForked'
+  | 'sessionOpenedHost'
+  | 'sessionContinued'
+  | 'sessionOpenedFile'
   | 'dateHint'
   | 'numberHint'
   | 'textDesc'
@@ -393,17 +397,21 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     previewBodyHint:
       '上面那块已经包含它——FileBrowser 内部渲染的就是 FilePreview。\n' +
       '它同时也是一条独立子路径 dsh-plugin-core/explorer/preview：只有一个文件要显示时（会话附件、工具输出）不必搬出整个面板。',
-    sessionHint: '三种承载：modal / sidebar / page；source 是 mock 的；renderMessage 可接管富内容',
-    sessionOpenModal: '打开会话预览（modal）',
+    sessionHint: '镜像官方会话 UI 的只读弹窗（假快照驱动）；归档会话可读；续聊走 fork 开分支，框内不可打字',
+    sessionOpenModal: '打开会话预览',
     sessionClose: '关闭',
     sessionPreviewTitle: '会话预览（假数据）',
+    sessionForked: '已开分支（演示回声）：',
+    sessionOpenedHost: '已跳转官方会话区（演示回声）：',
+    sessionContinued: '暂存消息已受理（演示回声）：',
+    sessionOpenedFile: '已打开文件（演示回声）：',
 
     dateHint: '解析失败不抛错、给兜底、不编造；所有函数无 UI 依赖，Node 里也能跑',
     numberHint: 'formatBytes 按 1024 进制、单位自动进位；formatCount 给大数加千分位',
 
     roadmapHint: '下面是「明确不提供」的部分——写在这里是为了让你不用猜，也让后来人知道边界在哪。',
     roadmapOut: '设置页骨架、i18n 框架（插件文案插件自管）、host 宿主类型面',
-    roadmapMirror: '官方会话 UI 的完整镜像（工具卡 / 代码块 / 推理行）——session 目前只有最简渲染，富内容走 renderMessage 扩展点',
+    roadmapMirror: '官方会话 UI 完整镜像（工具卡 / 代码块 / 推理行 / 折叠关系）——已于 2026-10-22 搬入 session 子包',
     roadmapPreview: '（已落地）md 渲染（官方 MarkdownText）/ 代码高亮（核心 CodeViewer）/ HTML / PDF / Office 预览',
     roadmapSkeleton: '（已落地）PanelDock——可停靠分栏：多面板、按名覆盖、上限 3',
     roadmapLayout: '红线：整合以前的.share(plugins/demo)',
@@ -634,17 +642,21 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     previewBodyHint:
       'The block above already includes it — FileBrowser renders FilePreview inside.\n' +
       'It is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.',
-    sessionHint: 'Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content',
-    sessionOpenModal: 'Open session preview (modal)',
+    sessionHint: 'Read-only dialog mirroring the official session UI (driven by a fake snapshot); archived sessions are readable; continuing goes through fork — no typing inside the dialog',
+    sessionOpenModal: 'Open session preview',
     sessionClose: 'Close',
     sessionPreviewTitle: 'Session preview (mock data)',
+    sessionForked: 'Forked (demo echo): ',
+    sessionOpenedHost: 'Jumped to the official session area (demo echo): ',
+    sessionContinued: 'Staged message accepted (demo echo): ',
+    sessionOpenedFile: 'Opened file (demo echo): ',
 
     dateHint: 'No throw on parse failure — falls back gracefully and never fabricates; all functions are UI-free and run in Node too',
     numberHint: 'formatBytes is 1024-based with automatic unit scaling; formatCount adds thousands separators',
 
     roadmapHint: 'The list below is what this package explicitly does NOT provide — written down so nobody has to guess, and so the boundary stays visible.',
     roadmapOut: 'A settings-page skeleton, an i18n framework (plugin copy is the plugin’s own job), a host typings surface',
-    roadmapMirror: 'A full mirror of the official session UI (tool cards / code blocks / reasoning rows) — session renders only the minimal shape today; rich content goes through the renderMessage hook',
+    roadmapMirror: 'Full mirror of the official session UI (tool cards / code blocks / reasoning rows / fold relations) — ported into the session subpackage on 2026-10-22',
     roadmapPreview: '(shipped) md render (official MarkdownText) / code highlight (core CodeViewer) / HTML / PDF / Office preview',
     roadmapSkeleton: '(shipped) PanelDock — dockable split panes: multi-panel, replace-by-name, limit 3',
     roadmapLayout: 'Red line: consolidation of the old packages/demo',

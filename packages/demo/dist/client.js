@@ -37,7 +37,7 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react50 = require("react");
+var import_react64 = require("react");
 var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
@@ -212,7 +212,7 @@ var PANEL_DOCK_CSS = "\n/* \u505C\u9760\u680F = **\u5E03\u5C40\u6210\u5458**\uFF
 var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  padding:4px 10px;border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbs-*\uFF09\u3002\n   \u5C42\u5E8F\uFF1A\u5144\u5F1F\u662F 30/31\uFF1B\u672C\u4ED3 picker \u9762\u677F\u662F 1100\uFF0C\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E\u5B83\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  box-shadow:0 4px 16px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:8px 14px;border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6838\u5FC3 outline \u94AE\uFF0C\u76AE\u80A4\u53D6\u5144\u5F1F .dsh-tdt-sv-tree-act\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF09\u3002\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;appearance:none;background:0 0;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  height:auto;padding:2px 8px;font-size:var(--dshpc-font-sm);line-height:1.4;\n  color:var(--dshpc-fg-2);cursor:pointer;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n.dshpc-fb .dshpc-fb__row-act:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09\u3002\n   \u5FC5\u987B border-box\uFF1A\u6E32\u67D3\u6001 inline \u52A0\u4E86 padding:12px 14px\uFF0Ccontent-box \u4E0B width:100%+padding\n   \u4F1A\u6EA2\u51FA\u7236\u5C42 28px\uFF08\u7236 .dshpc-fb \u65E0 overflow \u88C1\u5207\uFF09\u2192 \u6052\u591A\u4E00\u6761\u6A2A\u6EDA\u6761\uFF1Bborder-box \u628A padding\n   \u7B97\u8FDB 100%\uFF0C\u4ECE\u6839\u6D88\u9664\u8BE5\u6EA2\u51FA\u3002 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n/* iframe \u7684\u5916\u58F3\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-fill\uFF09\uFF1Aiframe \u5FC5\u987B\u5305\u5728\u8FD9\u4E00\u5C42\u91CC\u624D\u62FF\u5F97\u5230\u9AD8\u5EA6\u2014\u2014\n   \u88F8\u6302 iframe \u65F6\u66FF\u6362\u5143\u7D20\u7684\u81EA\u52A8\u6700\u5C0F\u5C3A\u5BF8\u4F1A\u8BA9\u9AD8\u5EA6\u7B97\u4E0D\u51FA\u6765\uFF08\u8868\u73B0\u4E3A\u9884\u89C8\u533A\u6574\u7247\u7A7A\u767D\u3001\u50CF\u6CA1\u53CD\u5E94\uFF09\u3002 */\n.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}\n.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
 
 // dist/session/session-css.generated.js
-var SESSION_CSS = "\n.dshpc-ses{display:flex;flex-direction:column;min-height:0;color:var(--dshpc-fg);font-size:13px}\n.dshpc-ses--sidebar{height:100%;border-left:1px solid var(--dshpc-border-faint);background:var(--dshpc-surface-base)}\n.dshpc-ses--page{height:100%;background:var(--dshpc-surface-base)}\n.dshpc-ses__list{flex:1;min-height:0;overflow:auto;padding:8px 12px;display:flex;flex-direction:column;gap:10px}\n.dshpc-ses__msg{padding:8px 10px;border-radius:8px;background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border-faint)}\n.dshpc-ses__msg--user{background:var(--dshpc-open-bg-soft)}\n.dshpc-ses__head{display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--dshpc-fg-3);font-size:11px}\n.dshpc-ses__text{margin:0;white-space:pre-wrap;word-break:break-word;line-height:1.6}\n.dshpc-ses__atts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}\n.dshpc-ses__att{\n  display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;\n  background:var(--dshpc-chip-bg);color:var(--dshpc-fg);cursor:pointer;border:none;font:inherit;font-size:12px;\n}\n.dshpc-ses__att:hover{background:var(--dshpc-chip-bg-hover)}\n.dshpc-ses__note{padding:12px;color:var(--dshpc-fg-3);text-align:center}\n";
+var SESSION_CSS = '\n/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u515C\u5E95\u6837\u5F0F\uFF1A\u5B98\u65B9 CSS module \u7C7B\u540D\u672A\u547D\u4E2D\u65F6\u751F\u6548\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\uFF0C\n   \u5E03\u5C40 token \u53D6\u5B98\u65B9\u804A\u5929\u4E13\u5C5E --dsh-chat-* / --dsh-content-font-*\uFF08\u5E26\u515C\u5E95\uFF09\u3002 */\n/* \u5F39\u7A97\u906E\u7F69\uFF1A\u6EE1\u5C4F\uFF08core \u4E0D\u505A\u9875\u9762\u7EA7\u9884\u89C8 dock\uFF0C\u6587\u4EF6\u9884\u89C8\u8D70\u5BBF\u4E3B\u53F3\u680F / explorer\uFF09\u3002 */\n.dshpc-sv-overlay{position:fixed;top:0;left:0;bottom:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:var(--dshpc-mask,rgba(0,0,0,.45));transition:right .12s var(--dshpc-ease,ease);}\n/* \u9762\u677F\u5E95\u8272 = \u5B98\u65B9\u4F1A\u8BDD\u9762 --dshpc-surface-base\uFF08\u5B98\u65B9 chat \u9875\u5373\u6B64\u8272\uFF09\uFF1B\n   \u5C3A\u5BF8\u7167\u5BBF\u4E3B\u300C\u5DE6\u4E0B\u89D2\u5F39\u7A97\u300D\u5361\u7247\uFF1Awidth min(1120px,100vw-32px)\u3001height 100%-80px\u3001radius 12px\u3002 */\n.dshpc-sv-panel{--dsh-composer-side-clearance:18px;--dsh-chat-content-width:100%;--dsh-chat-flow-gap:16px;background:var(--dshpc-surface-base,#fff);color:var(--dshpc-fg,#1f2328);border:1px solid var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-md);box-shadow:var(--dshpc-shadow-2,0 12px 32px rgba(0,0,0,.4));width:min(1120px,calc(100vw - 32px));height:calc(100% - 80px);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;}\n.dshpc-sv-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 34px 12px;border-bottom:1px solid var(--dshpc-border,rgba(128,128,128,.35));flex-wrap:wrap;}\n/* \u7EB5\u5411\u5355\u4E00\u771F\u6E90 = .dshpc-sv-frame\uFF1A\u5B98\u65B9 scroll \u547D\u4E2D\u65F6\u81EA\u5E26\u7EB5\u5411 16px\uFF0C\u5B98\u65B9 frame \u7684\u7EB5\u5411\u53C8\u4E0D\u786E\u5B9A\uFF1B\n   \u7EDF\u4E00\u6536\u53E3 \u2014\u2014 scroll \u94A9\u5B50\u628A\u5B98\u65B9\u7EB5\u5411\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\uFF0C\n   frame \u94A9\u5B50\u72EC\u5360\u4E0A\u4E0B\uFF08\u7528\u957F\u5199\uFF0C\u4E0D\u78B0\u5DE6\u53F3 \u21D2 \u547D\u4E2D\u65F6\u5DE6\u53F3\u4ECD\u8D70\u5B98\u65B9 scroll \u7684 16+clearance\uFF09\u3002\n   \u4E0A / \u4E0B = 17px \u4E14\u5FC5\u987B\u76F8\u7B49\uFF08\u5426\u5219\u6EDA\u5230\u9876 / \u5230\u5E95\u65F6\u4E00\u8FB9\u7A7A\u4E00\u5927\u7247\uFF09\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:17px;padding-bottom:17px;}\n.dshpc-sv-scroll.dshpc-sv-scroll{padding-top:0;padding-bottom:0;}\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9876\u90E8\u6682\u5B58\u8F93\u5165\u533A\u518D\u9AD8\u4E5F\u538B\u4E0D\u6CA1\u5B83\u3002\n   \u26A0\uFE0F \u7528 flex:1 1 auto \u800C\u4E0D\u662F flex:1\uFF08\u540E\u8005 basis=0\uFF09\uFF1A\u5B98\u65B9 ChatView.frame \u662F flex:auto\uFF0C\n   \u672C\u5305\u4E0E\u5B98\u65B9\u6CE8\u5165\u987A\u5E8F\u4E0D\u5B9A \u21D2 \u53D6 auto \u8FD9\u4E2A\u5171\u540C\u503C\uFF0C\u4E24\u8FB9\u987A\u5E8F\u98A0\u5012\u4E5F\u4E0D\u4F1A\u6539\u53D8\u5E03\u5C40\u3002 */\n.dshpc-sv-chat{flex:1 1 auto;min-height:0;}\n.dshpc-sv-heading{min-width:0;}\n.dshpc-sv-title{font-size:var(--dshpc-font-lg);font-weight:600;color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-sid{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));word-break:break-all;}\n.dshpc-sv-actions{display:flex;align-items:center;gap:8px;}\n/* \u4F1A\u8BDD\u533A\u5DE6\u53F3\u8FB9\u8DDD = \u5B98\u65B9 ChatView.scroll\uFF1A16px + --dsh-composer-side-clearance(18px) \u21D2 \u5DE6\u53F3\u5404 34px\u3002\n   \u7EB5\u5411\u4E0D\u5728\u8FD9\u91CC\uFF08\u5B98\u65B9\u7C7B\u547D\u4E2D\u4E0E\u5426\u4F1A\u6253\u67B6\uFF0C\u89C1\u4E0A\u9762 frame / scroll \u4E24\u6761\u94A9\u5B50\uFF09\u21D2 \u672C\u7C7B\u53EA\u5199\u5DE6\u53F3\u3002 */\n.dshpc-sv-body{flex:1;min-height:0;overflow:auto;padding-left:calc(var(--dsh-composer-side-clearance,16px) + 16px);padding-right:calc(var(--dsh-composer-side-clearance,16px) + 16px);}\n.dshpc-sv-col{width:100%;max-width:var(--dsh-chat-content-width,920px);margin:0 auto;display:flex;flex-direction:column;gap:var(--dsh-chat-flow-gap,16px);}\n/* \u5B98\u65B9 ChatView.column \u7684\u5144\u5F1F\u95F4\u8DDD\uFF08:not([hidden]) \u624D\u5360\u4F4D\uFF1B\u6298\u53E0\u6389\u7684\u8FC7\u7A0B\u8282\u70B9\u4E0D\u7559\u7A7A\u6863\uFF09\u3002 */\n.dshpc-sv-col>:not([hidden]):not(.dshpc-sv-flowitem:empty)~:not([hidden]):not(.dshpc-sv-flowitem:empty){margin-top:var(--dsh-chat-flow-gap,16px);}\n.dshpc-sv-visuallyhidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}\n.dshpc-sv-flowitem{min-width:0;}\n.dshpc-sv-older{display:flex;justify-content:center;}\n.dshpc-sv-older button{appearance:none;font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);cursor:pointer;color:var(--dshpc-fg-2,rgba(128,128,128,.9));background:var(--dshpc-surface-sunken,rgba(128,128,128,.2));border:none;border-radius:var(--dshpc-radius-sm,6px);padding:4px 12px;}\n.dshpc-sv-older button:disabled{cursor:default;opacity:.6;}\n/* \u8FC7\u7A0B\u884C\uFF08\u5B98\u65B9 TurnProcessNodeView.root \u7167\u6284\uFF1A\u9AD8 33px + .5px \u4E0B\u8FB9\u6846 + padding 0 0 8px\uFF09\u3002 */\n.dshpc-sv-process{box-sizing:border-box;width:100%;min-width:0;height:calc(33px + var(--dsh-content-font-delta,0px));border:none;border-bottom:.5px solid var(--dshpc-border,rgba(128,128,128,.35));color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;text-align:left;background:0 0;align-items:center;padding:0 0 8px;transition:color .1s;display:flex;}\n.dshpc-sv-process:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-process:not([data-open]){margin-bottom:8px;}\n.dshpc-sv-process:disabled{cursor:default;}\n.dshpc-sv-process-label{min-width:0;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}\n.dshpc-sv-process-chevron{width:14px;height:14px;color:var(--dshpc-fg-4,rgba(128,128,128,.6));flex:none;margin-left:4px;transition:transform .1s;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-sv-process[data-open] .dshpc-sv-process-chevron{transform:rotate(180deg);}\n/* turn \u5C3E\u90E8\u64CD\u4F5C\u884C\uFF08\u5B98\u65B9 MessageIconActions.actions\uFF1A\u9AD8 28px + hover \u663E\u9690\u7531\u7EC4\u4EF6 data-actions-reveal \u63A7\u5236\uFF09\u3002 */\n.dshpc-sv-actions{height:calc(28px + var(--dsh-content-font-delta,0px));align-items:center;gap:8px;display:flex;margin-top:4px;}\n.dshpc-sv-action{display:inline-flex;align-items:center;justify-content:center;width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));background:0 0;border:none;cursor:pointer;}\n.dshpc-sv-action:hover{color:var(--dshpc-fg,#1f2328);}\n/* \u7528\u6237\u6C14\u6CE1\uFF08\u5B98\u65B9 MessageItem.bubble \u9010\u503C\uFF1A\u53F3\u5BF9\u9F50\u3001surface-2 \u5E95\u3001radius-xl\uFF09\u3002 */\n.dshpc-sv-user{align-self:flex-start;max-width:100%;background:var(--dshpc-surface-2,rgba(128,128,128,.14));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:10px 14px;font-size:var(--dshpc-font-lg);line-height:1.6;word-break:break-word;}\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));border:1px dashed var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n/* \u52A9\u624B\u6B63\u6587 markdown \u515C\u5E95\uFF08\u5B98\u65B9 AssistantMarkdown / MarkdownText \u672A\u547D\u4E2D\u65F6\uFF09\u3002 */\n.dshpc-sv-md>*:first-child{margin-top:0;}\n.dshpc-sv-md>*:last-child{margin-bottom:0;}\n.dshpc-sv-md p{margin:.5em 0;}\n.dshpc-sv-md h1,.dshpc-sv-md h2,.dshpc-sv-md h3,.dshpc-sv-md h4,.dshpc-sv-md h5,.dshpc-sv-md h6{margin:.9em 0 .4em;font-weight:600;line-height:1.3;}\n.dshpc-sv-md h1{font-size:1.4em;}\n.dshpc-sv-md h2{font-size:1.25em;}\n.dshpc-sv-md h3{font-size:1.1em;}\n.dshpc-sv-md ul,.dshpc-sv-md ol{margin:.5em 0;padding-left:1.4em;}\n.dshpc-sv-md li{margin:.2em 0;}\n.dshpc-sv-md code{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:.9em;background:var(--dshpc-surface-2,rgba(128,128,128,.14));padding:.1em .35em;border-radius:var(--dshpc-radius-xs);}\n.dshpc-sv-md pre{margin:.6em 0;background:var(--dshpc-surface-2,rgba(128,128,128,.14));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-sm);padding:10px 12px;overflow:auto;font-size:var(--dshpc-font-sm);line-height:1.5;}\n.dshpc-sv-md pre code{background:none;padding:0;font-size:inherit;}\n.dshpc-sv-md blockquote{margin:.5em 0;padding:.2em .9em;border-left:3px solid var(--dshpc-border,rgba(128,128,128,.35));color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-md a{color:var(--dshpc-link,#2f6feb);text-decoration:none;}\n.dshpc-sv-md a:hover{text-decoration:underline;}\n.dshpc-sv-md table{border-collapse:collapse;font-size:var(--dshpc-font-sm);margin:.6em 0;display:block;overflow:auto;}\n.dshpc-sv-md th,.dshpc-sv-md td{border:1px solid var(--dshpc-border,rgba(128,128,128,.35));padding:4px 8px;text-align:left;}\n.dshpc-sv-md hr{border:none;border-top:1px solid var(--dshpc-border,rgba(128,128,128,.35));margin:1em 0;}\n.dshpc-sv-md img{max-width:100%;}\n/* \u601D\u8003\u884C\uFF08\u5B98\u65B9 ReasoningRow.module.css \u7167\u6284\uFF1Aroot/row/leading/chevron/title/separator/summary/thinkBody\uFF09\u3002 */\n.dshpc-sv-reasoning{flex-direction:column;display:flex;}\n.dshpc-sv-reasoning:not([data-expanded]){contain:size layout;height:calc(24px + var(--dsh-content-font-delta,0px));}\n.dshpc-sv-reasoning-row{position:relative;overflow:hidden;}\n.dshpc-sv-reasoning-leading{flex-shrink:0;}\n.dshpc-sv-reasoning-chevron{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-reasoning-title{font-weight:400;}\n.dshpc-sv-reasoning-sep{background:var(--dshpc-fg-4,rgba(128,128,128,.7));border-radius:1px;flex:none;width:2px;height:2px;margin:0 8px;}\n.dshpc-sv-reasoning-preview{min-width:0;color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));white-space:nowrap;flex:auto;overflow:hidden;}\n.dshpc-sv-reasoning-preview-text{text-overflow:ellipsis;display:block;overflow:hidden;}\n.dshpc-sv-reasoning:not([data-preview]) .dshpc-sv-reasoning-sep,.dshpc-sv-reasoning:not([data-preview]) .dshpc-sv-reasoning-preview{display:none;}\n.dshpc-sv-reasoning-body{padding:4px 0 4px calc(22px + var(--dsh-content-font-delta,0px));min-width:0;}\n/* \u2500\u2500 \u5DE5\u5177\u5361\uFF08\u5B98\u65B9 ui-tool ToolRow.module.css \u515C\u5E95\u955C\u50CF\uFF0C\u5B98\u65B9\u7C7B\u547D\u4E2D\u65F6 ocOr \u8D70\u5B98\u65B9\uFF09\u2500\u2500\n   \u5B98\u65B9\u884C\u5916\u89C2 = \u65E0\u8FB9\u6846\u88F8\u884C\uFF08root \u4EC5 flex column\uFF09\uFF1B\u5C55\u5F00\u4F53\u5206\u53D1\u94FE\uFF1A\n   TerminalBlock(\u221E) \u2192 DiffBlock(9) \u2192 ReadBlock(8) \u2192 ioCard \u7070\u6846\uFF08\u8F93\u5165/\u5206\u9694/\u8F93\u51FA\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n.dshpc-sv-tool-row:hover .dshpc-sv-tool-title,.dshpc-sv-tool-row:hover .dshpc-sv-tool-summary,.dshpc-sv-tool-row:hover .dshpc-sv-tool-suffix{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-tool-title{font-weight:400;transition:color .1s;}\n.dshpc-sv-tool-chevron{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-tool-sep{background:var(--dshpc-fg-4,rgba(128,128,128,.7));border-radius:1px;flex:none;width:2px;height:2px;margin:0 8px;}\n.dshpc-sv-tool-summary{text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:auto;transition:color .1s;overflow:hidden;}\n.dshpc-sv-tool-suffix{white-space:nowrap;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;margin-left:4px;transition:color .1s;}\n.dshpc-sv-tool-diffstat{font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);font-size:calc(var(--dsh-content-font-size-secondary,13px) - 2px);color:var(--dshpc-fg-4,rgba(128,128,128,.7));margin-left:10px;transform:translateY(.5px);}\n/* read/write/edit \u6458\u8981\u8DEF\u5F84 = fileLink\uFF08\u4E0B\u5212\u7EBF\u865A\u7EBF\uFF0C\u70B9\u51FB openFile\uFF09\u3002 */\n.dshpc-sv-tool-filelink{text-overflow:ellipsis;white-space:nowrap;min-width:0;font:inherit;text-align:left;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(24px + var(--dsh-content-font-delta,0px));color:var(--dshpc-fg-2,rgba(128,128,128,.95));text-decoration:underline dotted;text-decoration-color:var(--dshpc-fg-3,rgba(128,128,128,.8));text-underline-offset:3px;cursor:pointer;background:0 0;border:none;flex:0 auto;margin:0;padding:0;text-decoration-thickness:1px;transition:color .1s;overflow:hidden;}\n.dshpc-sv-tool-filelink:hover{color:var(--dshpc-fg,#1f2328);text-decoration-color:currentColor;}\n.dshpc-sv-tool-errmark{color:var(--dshpc-danger,#e5484d);}\n.dshpc-sv-tool-stopmark{color:var(--dshpc-warning-label,#f5a623);}\n.dshpc-sv-tool-bodywrap{flex-direction:column;display:flex;}\n/* ioCard \u7070\u6846\uFF08\u5B98\u65B9 ToolRow \u515C\u5E95\u5C55\u5F00\u4F53\uFF1A\u8F93\u5165 / \u5206\u9694 / \u8F93\u51FA[data-error]\uFF09\u3002 */\n.dshpc-sv-io-card{border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));border-radius:var(--dshpc-radius-lg,10px);background:var(--dshpc-code-surface,rgba(128,128,128,.10));font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));flex-direction:column;margin:4px 0 4px 4px;display:flex;}\n.dshpc-sv-io-section{grid-template-columns:max-content 1fr;align-items:baseline;column-gap:14px;max-height:150px;padding:12px 16px;display:grid;overflow-y:auto;}\n.dshpc-sv-io-label{color:var(--dshpc-fg-4,rgba(128,128,128,.7));align-self:start;position:sticky;top:0;}\n.dshpc-sv-io-divider{background:var(--dshpc-border,rgba(128,128,128,.35));flex:none;height:.5px;}\n.dshpc-sv-io-text{white-space:pre-wrap;word-break:break-word;min-width:0;color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-io-text[data-error]{color:var(--dshpc-danger,#e5484d);}\n.dshpc-sv-tool-block{margin:4px 0 4px 4px;}\n.dshpc-sv-tool-terminal{--dsl-terminal-font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));--dsl-terminal-line-height:var(--dshpc-line-sm);--dsl-terminal-output-max-height:224px;border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));margin:4px 0 4px 4px;}\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding:2px 8px;}\n.dshpc-sv-hint{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2,rgba(128,128,128,.95));text-align:center;padding:12px 0;}\n/* \u2500\u2500 \u89E6\u53D1\u884C / \u5C3E\u90E8\u884C / \u7528\u91CF pill / \u660E\u7EC6\u5F39\u5C42\uFF08\u5B98\u65B9\u7C7B\u7F3A\u5931\u65F6\u7684\u515C\u5E95\uFF09\u2500\u2500 */\n.dshpc-sv-trigger{align-self:stretch;background:var(--dshpc-code-surface,rgba(128,128,128,.10));border:.5px solid var(--dshpc-border-faint,rgba(128,128,128,.24));border-radius:var(--dshpc-radius-xl,12px);transition:background .1s;}\n.dshpc-sv-trigger:hover{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n.dshpc-sv-trigger-header{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:0 0;border:none;cursor:pointer;color:inherit;font:inherit;text-align:left;}\n.dshpc-sv-trigger-icon{display:inline-flex;align-items:center;color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;}\n.dshpc-sv-trigger-title{font-size:var(--dshpc-font-md,13px);color:var(--dshpc-fg,#1f2328);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}\n.dshpc-sv-trigger-time{margin-left:auto;font-size:var(--dshpc-font-sm,12px);color:var(--dshpc-fg-4,rgba(128,128,128,.7));white-space:nowrap;}\n.dshpc-sv-trigger-chevron{flex:none;color:var(--dshpc-fg-4,rgba(128,128,128,.7));transition:transform .1s;}\n.dshpc-sv-trigger-chevron-open{flex:none;color:var(--dshpc-fg-4,rgba(128,128,128,.7));transform:rotate(180deg);}\n.dshpc-sv-trigger-body{padding:0 16px 12px 40px;}\n.dshpc-sv-trigger-explanation{margin:8px 0 0;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-trigger-content{margin-top:6px;font-size:var(--dshpc-font-md);line-height:1.6;color:var(--dshpc-fg-2,rgba(128,128,128,.95));white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;}\n.dshpc-sv-tail{display:flex;flex-direction:column;gap:16px;}\n.dshpc-sv-tail-actions{margin-top:4px;margin-left:-6px;}\n.dshpc-sv-clock{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));white-space:nowrap;}\n.dshpc-sv-endinfo{display:inline-flex;align-items:center;gap:8px;margin-left:8px;}\n.dshpc-sv-usage{display:inline-flex;align-items:center;}\n.dshpc-sv-usage-trigger{display:inline-flex;align-items:center;gap:4px;appearance:none;background:0 0;border:none;cursor:pointer;padding:0 4px;font:inherit;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-usage-trigger:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-stats{position:fixed;z-index:1200;min-width:200px;max-width:min(440px,calc(100vw - 24px));background:var(--dshpc-surface-1,rgba(30,30,30,.98));border:1px solid var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-md);box-shadow:var(--dshpc-shadow-2,0 12px 32px rgba(0,0,0,.4));padding:12px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-stats-title{display:flex;align-items:center;justify-content:space-between;gap:12px;}\n.dshpc-sv-stats-titlelabel{display:inline-flex;align-items:center;gap:6px;color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-stats-titlevalue{font-variant-numeric:tabular-nums;}\n.dshpc-sv-stats-rule{height:1px;background:var(--dshpc-border,rgba(128,128,128,.35));margin:8px 0;}\n.dshpc-sv-stats-details{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;}\n.dshpc-sv-stats-details dt{color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n.dshpc-sv-stats-details dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;}\n.dshpc-sv-stats-route{word-break:break-all;}\n.dshpc-sv-stats-reasoning{color:var(--dshpc-fg-3,rgba(128,128,128,.8));}\n/* \u2500\u2500 \u8FC7\u7A0B\u5206\u7EC4\uFF08\u4E8C\u7EA7\u6536\u6298\uFF0C\u5B98\u65B9 ChatGroupSeat.module.css \u7167\u6284\uFF09\u2500\u2500 */\n.dshpc-sv-group{min-width:0;}\n.dshpc-sv-group-title{max-width:100%;color:var(--dshpc-fg-2,rgba(128,128,128,.95));font:inherit;font-size:var(--dsh-content-font-size,14px);text-align:left;cursor:pointer;background:0 0;border:0;align-items:center;gap:6px;padding:0;transition:color .1s;display:flex;}\n.dshpc-sv-group-title:hover{color:var(--dshpc-fg,#1f2328);}\n.dshpc-sv-group-leading{width:16px;height:16px;color:var(--dshpc-fg-3,rgba(128,128,128,.8));flex:none;justify-content:center;align-items:center;display:inline-flex;position:relative;}\n.dshpc-sv-group-icon,.dshpc-sv-group-chevron{justify-content:center;align-items:center;transition:opacity .1s;display:inline-flex;position:absolute;inset:0;}\n.dshpc-sv-group-icon{opacity:1;}\n.dshpc-sv-group-chevron{opacity:0;}\n.dshpc-sv-group-title:hover .dshpc-sv-group-icon,.dshpc-sv-group-title:focus-visible .dshpc-sv-group-icon{opacity:0;}\n.dshpc-sv-group-title:hover .dshpc-sv-group-chevron,.dshpc-sv-group-title:focus-visible .dshpc-sv-group-chevron{opacity:1;}\n.dshpc-sv-group-title[aria-expanded=true] .dshpc-sv-group-icon{opacity:0;}\n.dshpc-sv-group-title[aria-expanded=true] .dshpc-sv-group-chevron{opacity:1;}\n.dshpc-sv-group-title[aria-expanded=true]{padding-bottom:16px;}\n.dshpc-sv-group-body{--dsh-chat-flow-gap:8px;overscroll-behavior-y:auto;scrollbar-gutter:stable;max-height:min(400px,50vh);overflow-y:auto;}\n.dshpc-sv-group-label{text-overflow:ellipsis;white-space:nowrap;min-width:0;overflow:hidden;}\n.dshpc-sv-group-fade-top{mask-image:linear-gradient(#0000 0,#000 24px 100%);}\n.dshpc-sv-group-fade-bottom{mask-image:linear-gradient(#000 0 calc(100% - 24px),#0000 100%);}\n.dshpc-sv-group-fade-top.dshpc-sv-group-fade-bottom{mask-image:linear-gradient(#0000 0,#000 24px calc(100% - 24px),#0000 100%);}\n.dshpc-sv-group-content{flex-direction:column;display:flex;}\n.dshpc-sv-group-content>*{flex-shrink:0;}\n.dshpc-sv-group-content>:not([hidden]):not(:empty)~:not([hidden]):not(:empty){margin-top:var(--dsh-chat-flow-gap,8px);}\n.dshpc-sv-group-expanded{--dsh-chat-flow-gap:16px;scrollbar-gutter:auto;max-height:none;overflow:visible;}\n/* \u300C\u7EE7\u7EED\u5BF9\u8BDD\uFF08\u5F00\u5206\u652F\uFF09\u300D\u5934\u90E8\u6309\u94AE\u7EC4 + \u786E\u8BA4\u6846\uFF08\u786E\u8BA4\u6846 = \u5B98\u65B9 primitives Modal\uFF0C\u6B64\u5904\u53EA\u7559\u89C4\u683C\u4E0E\u9519\u8BEF\u884C\uFF09\u3002 */\n.dshpc-sv-headerbtns{display:flex;align-items:center;gap:8px;flex:none;}\n.dshpc-sv-forkmodal{width:min(440px,100%);}\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger,#e5484d);word-break:break-word;}\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:none;display:flex;align-items:flex-end;gap:8px;padding:10px 0 14px;}\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg,#1f2328);background:var(--dshpc-surface-2,rgba(128,128,128,.10));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus,#3b5bdb);outline-offset:-1px;}\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding-bottom:10px;white-space:nowrap;}\n/* \u2500\u2500 \u91CD\u8BD5 / \u8F6E\u6B21\u5931\u8D25 / \u9650\u957F\u4E09\u4EF6\u5957\u515C\u5E95\uFF08\u5B98\u65B9 MessageItem.module.css \u9010\u503C\u7167\u6284\uFF09\u2500\u2500 */\n.dshpc-sv-retry{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));}\n.dshpc-sv-retry-summary{border-radius:var(--dshpc-radius-sm,6px);width:fit-content;color:inherit;cursor:pointer;user-select:none;align-items:center;gap:7px;padding:2px 0;list-style:none;display:inline-flex;}\n.dshpc-sv-retry-summary::-webkit-details-marker{display:none;}\n.dshpc-sv-retry-summary:after{content:"";opacity:.8;border-bottom:1.5px solid;border-right:1.5px solid;width:6px;height:6px;transition:transform .12s;transform:rotate(-45deg);}\n.dshpc-sv-retry-summary:hover{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-retry-summary:focus-visible{outline:1.5px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-sv-retry-text{color:inherit;}\n.dshpc-sv-retry[data-active] .dshpc-sv-retry-text{background:linear-gradient(90deg,var(--dshpc-fg-3,rgba(128,128,128,.8)) 0%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 40%,var(--dshpc-fg-2,rgba(128,128,128,.95)) 50%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 60%,var(--dshpc-fg-3,rgba(128,128,128,.8)) 100%);color:#0000;background-position:100%;background-size:200% 100%;background-clip:text;animation:1.6s ease-in-out infinite dshpc-sv-retry-shimmer;}\n@keyframes dshpc-sv-retry-shimmer{0%{background-position:100%}to{background-position:0}}\n@media (prefers-reduced-motion:reduce){.dshpc-sv-retry[data-active] .dshpc-sv-retry-text{color:inherit;background:0 0;animation:none;}}\n.dshpc-sv-retry[open] .dshpc-sv-retry-summary:after{transform:rotate(45deg);}\n.dshpc-sv-retry-details{overflow-wrap:anywhere;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(18px + var(--dsh-content-font-delta-secondary,0px));gap:2px;margin-top:3px;padding-left:14px;display:grid;}\n.dshpc-sv-retry-label{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-turnerr{font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));grid-template-columns:10px minmax(0,1fr) auto;align-items:start;gap:8px;padding:2px 0;display:grid;}\n.dshpc-sv-turnerr-dot{margin-top:5px;}\n.dshpc-sv-turnerr-copy{overflow-wrap:anywhere;min-width:0;}\n.dshpc-sv-turnerr-title{color:var(--dshpc-danger,#e5484d);margin-right:6px;font-weight:600;}\n.dshpc-sv-turnerr-msg{color:var(--dshpc-fg-2,rgba(128,128,128,.95));}\n.dshpc-sv-turnerr-code{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));}\n.dshpc-sv-turnerr-warn{color:var(--dshpc-warning,#f5a623);margin-right:6px;font-weight:600;}\n/* \u2500\u2500 \u4EA4\u4ED8\u6587\u4EF6\uFF08\u5B98\u65B9 ui-deliverables PresentRow / Deliverables \u9010\u503C\u515C\u5E95\u955C\u50CF\uFF09\u2500\u2500 */\n.dshpc-sv-deliv-rowsummary{min-width:0;color:var(--dshpc-fg-2,rgba(128,128,128,.95));align-items:center;gap:8px;margin-left:8px;font-size:var(--dshpc-font-sm);display:flex;}\n.dshpc-sv-deliv-rowsummary>:first-child{flex-shrink:0;}\n.dshpc-sv-deliv-rowpaths{text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}\n.dshpc-sv-deliv-rowoutput{border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg-2);white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0;padding:12px;font-size:var(--dshpc-font-sm);}\n/* \u4EA4\u4ED8\u6587\u4EF6\u5361\u7F51\u683C\uFF1Aauto-fit \u81EA\u9002\u5E94\u5217\u5BBD\uFF08\u7A84\u5BB9\u5668\u81EA\u7136\u964D\u5217\uFF0C\u514D @container\uFF09\u3002 */\n.dshpc-sv-deliv{--deliverable-fill:var(--dshpc-plate);--deliverable-hover:var(--dshpc-plate-hover);flex-direction:column;gap:16px;min-width:0;margin-top:4px;display:flex;}\n.dshpc-sv-deliv-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;min-width:0;display:grid;}\n.dshpc-sv-deliv-file{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-md);background:var(--deliverable-fill);min-width:0;height:60px;color:var(--dshpc-fg);align-items:center;gap:10px;padding:8px 10px;transition:background-color .12s;display:flex;position:relative;overflow:hidden;}\n.dshpc-sv-deliv-file:hover{background:var(--deliverable-hover);}\n.dshpc-sv-deliv-cardpreview{z-index:1;border-radius:inherit;cursor:pointer;background:0 0;border:0;width:100%;padding:0;position:absolute;inset:0;}\n.dshpc-sv-deliv-cardpreview:focus-visible{box-shadow:inset 0 0 0 2px var(--dshpc-focus,#3b5bdb);outline:none;}\n.dshpc-sv-deliv-icon{z-index:2;box-sizing:border-box;pointer-events:none;border:.5px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-md);background:var(--dshpc-icon-plate);width:40px;height:40px;color:var(--dshpc-link);flex:none;place-items:center;display:grid;position:relative;overflow:hidden;}\n.dshpc-sv-deliv-body{z-index:2;pointer-events:none;flex:1;justify-content:space-between;align-items:center;gap:12px;min-width:0;display:flex;position:relative;}\n.dshpc-sv-deliv-details{flex-direction:column;flex:1;justify-content:center;gap:2px;min-width:0;display:flex;}\n.dshpc-sv-deliv-name{text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-md);font-weight:500;line-height:var(--dshpc-line-md);overflow:hidden;}\n.dshpc-sv-deliv-desc{color:var(--dshpc-fg-3,rgba(128,128,128,.8));text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-xs);font-weight:400;line-height:var(--dshpc-line-sm);overflow:hidden;}\n.dshpc-sv-deliv-hint,.dshpc-sv-deliv-file:hover .dshpc-sv-deliv-desc .dshpc-sv-deliv-secondary{display:none;}\n.dshpc-sv-deliv-file:hover .dshpc-sv-deliv-desc .dshpc-sv-deliv-hint{display:inline;}\n.dshpc-sv-deliv-toggle{border-radius:var(--dshpc-radius-sm,6px);min-width:0;color:var(--dshpc-fg-3,rgba(128,128,128,.8));cursor:pointer;font:inherit;background:0 0;border:0;align-self:center;align-items:center;gap:4px;padding:1px 11px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);display:inline-flex;}\n.dshpc-sv-deliv-toggle:hover{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n.dshpc-sv-deliv-toggle svg{flex:none;width:14px;height:14px;}\n/* \u7528\u6237\u6D88\u606F\u91CC\u7684\u968F\u9644\u6587\u4EF6\u5361\uFF08\u5B98\u65B9 MessageItem attachmentRow / fileCard\uFF09\uFF1A\n   \u6C14\u6CE1\u4E0B\u65B9\u4E00\u884C\uFF0C\u5C0F\u5361 = \u56FE\u6807 + \u6587\u4EF6\u540D + \u5927\u5C0F\u3002\u5B98\u65B9\u9644\u4EF6\u5F15\u7528\u6CA1\u6709\u8DEF\u5F84 \u21D2 \u4E0D\u53EF\u70B9\u5F00\uFF0C\u4E5F\u4E0D\u4F2A\u88C5\u6210\u53EF\u70B9\u3002 */\n.dshpc-sv-attrow{flex-wrap:wrap;gap:6px;min-width:0;justify-content:flex-end;display:flex;}\n.dshpc-sv-attcard{box-sizing:border-box;border:.5px solid var(--dshpc-border-faint,#0000000a);border-radius:var(--dshpc-radius-md);background:var(--dshpc-plate,rgba(128,128,128,.08));max-width:100%;height:44px;align-items:center;gap:8px;padding:6px 10px;display:flex;}\n.dshpc-sv-att-icon{width:16px;height:16px;color:var(--dshpc-link,#3b5bdb);flex:none;align-items:center;justify-content:center;display:inline-flex;}\n.dshpc-sv-att-body{flex-direction:column;gap:1px;min-width:0;display:flex;}\n.dshpc-sv-att-name{color:var(--dshpc-fg);text-overflow:ellipsis;white-space:nowrap;font-size:var(--dshpc-font-sm);font-weight:500;line-height:var(--dshpc-line-sm);overflow:hidden;}\n.dshpc-sv-att-meta{color:var(--dshpc-fg-3,rgba(128,128,128,.8));font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);}\n';
 
 // dist/ui/css.js
 var CONTROLS_DOMAIN = "controls";
@@ -2785,10 +2785,6 @@ var DICT = {
     sessionLoading: "\u52A0\u8F7D\u4F1A\u8BDD\u2026",
     sessionFailed: "\u4F1A\u8BDD\u52A0\u8F7D\u5931\u8D25",
     sessionEmpty: "\u8BE5\u4F1A\u8BDD\u6682\u65E0\u5185\u5BB9",
-    sessionAttachments: "\u9644\u4EF6",
-    sessionRoleUser: "\u7528\u6237",
-    sessionRoleAssistant: "\u52A9\u624B",
-    sessionRoleTool: "\u5DE5\u5177",
     explorerLoading: "\u52A0\u8F7D\u4E2D\u2026",
     explorerFailed: "\u52A0\u8F7D\u5931\u8D25",
     explorerRoot: "\u5DE5\u4F5C\u533A",
@@ -2863,16 +2859,152 @@ var DICT = {
     relMonthsAgo: "{n} \u4E2A\u6708\u524D",
     relYearsAgo: "{n} \u5E74\u524D",
     codeCopy: "\u590D\u5236",
-    codeCopied: "\u5DF2\u590D\u5236"
+    codeCopied: "\u5DF2\u590D\u5236",
+    sessionViewerTitle: "\u4F1A\u8BDD\u8BB0\u5F55\uFF08\u53EA\u8BFB\uFF09",
+    sessionUnknownKind: "\u672A\u652F\u6301\u7684\u8282\u70B9\u7C7B\u578B\uFF1A",
+    sessionLoadOlder: "\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55",
+    sessionProcess: "\u8FC7\u7A0B",
+    triggerRequest: "\u6536\u5230\u6267\u884C\u8BF7\u6C42",
+    triggerGoal: "\u7EE7\u7EED\u6267\u884C\u76EE\u6807",
+    triggerAgent: "\u6536\u5230\u4EFB\u52A1\u6D88\u606F",
+    triggerTeam: "\u6536\u5230\u56E2\u961F\u6D88\u606F",
+    triggerSubagent: "\u5B50\u4EFB\u52A1\u72B6\u6001\u66F4\u65B0",
+    triggerGithub: "\u6536\u5230 GitHub \u4E8B\u4EF6",
+    triggerWebhook: "\u6536\u5230\u5916\u90E8\u4E8B\u4EF6",
+    triggerSchedule: "\u5B9A\u65F6\u4EFB\u52A1",
+    triggerJob: "\u540E\u53F0\u4EFB\u52A1\u72B6\u6001\u66F4\u65B0",
+    triggerPlugin: "\u63D2\u4EF6\u72B6\u6001\u66F4\u65B0",
+    triggerExplanation: "\u8FD9\u6761\u901A\u77E5\u89E6\u53D1\u4E86\u672C\u8F6E\u56DE\u590D\u3002",
+    turnProcessTook: "\u7528\u65F6 {duration}",
+    turnProcessDeepDiving: "\u6DF1\u5EA6\u6C42\u7D22\u4E2D\uFF0C\u7528\u65F6{duration}",
+    turnProcessWorked: "\u5DF2\u5B8C\u6210\u5DE5\u4F5C",
+    turnProcessFailed: "\u5904\u7406\u5931\u8D25",
+    turnStopped: "\u5DF2\u505C\u6B62",
+    chatDeepDiving: "\u6DF1\u5EA6\u6C42\u7D22\u4E2D",
+    thinkLabel: "\u601D\u8003",
+    durationSeconds: "{seconds}\u79D2",
+    durationMinutes: "{minutes}\u5206{seconds}\u79D2",
+    durationHours: "{hours}\u5C0F\u65F6{minutes}\u5206{seconds}\u79D2",
+    durationMilliseconds: "{milliseconds}\u6BEB\u79D2",
+    retryActive: "\u6B63\u5728\u91CD\u8BD5\u6A21\u578B\u8BF7\u6C42",
+    retryCancelled: "\u6A21\u578B\u8BF7\u6C42\u91CD\u8BD5\u5DF2\u53D6\u6D88",
+    retryStarted: "\u5DF2\u91CD\u8BD5\u6A21\u578B\u8BF7\u6C42",
+    retryScheduled: "\u7B49\u5F85\u91CD\u8BD5\u6A21\u578B\u8BF7\u6C42",
+    retryStatus: "{label}\uFF08{retry}/{maximum}\uFF09 \xB7 {seconds}s",
+    retryDelay: "\u91CD\u8BD5\u5EF6\u8FDF\uFF1A",
+    retryFailure: "\u5931\u8D25\u539F\u56E0\uFF1A",
+    turnErrorTitle: "\u672C\u8F6E\u8FD0\u884C\u5931\u8D25",
+    accountStopped: "\u4EFB\u52A1\u5DF2\u505C\u6B62",
+    maxTokensTitle: "\u5DF2\u8FBE\u5230\u8F93\u51FA token \u4E0A\u9650",
+    maxTokensHint: "\u56DE\u7B54\u88AB\u622A\u65AD\uFF0C\u5DF2\u6709\u8F93\u51FA\u4FDD\u7559\u5728\u5BF9\u8BDD\u4E2D\u3002\u53D1\u9001\u201C\u7EE7\u7EED\u201D\u53EF\u8BA9\u6A21\u578B\u63A5\u7740\u8F93\u51FA\u3002",
+    failureAuth: "API \u5BC6\u94A5\u65E0\u6548",
+    failureQuota: "\u5F53\u524D\u8BF7\u6C42\u7684\u989D\u5EA6\u5DF2\u7528\u5C3D",
+    failureAccountSignedOut: "\u4EFB\u52A1\u5DF2\u56E0\u9000\u51FA DeepSeek \u767B\u5F55\u800C\u505C\u6B62\u3002",
+    failureAccountSignInRequired: "\u8BF7\u5148\u767B\u5F55 DeepSeek\uFF0C\u5E76\u786E\u8BA4\u8BF7\u6C42\u5730\u5740\u652F\u6301\u8D26\u53F7\u8BA4\u8BC1\u3002",
+    clockDate: "{m}\u6708{d}\u65E5",
+    clockDateYear: "{y}\u5E74{m}\u6708{d}\u65E5",
+    copyLabel: "\u590D\u5236",
+    copiedLabel: "\u5DF2\u590D\u5236",
+    branchLabel: "\u5728\u65B0\u5BF9\u8BDD\u4E2D\u5206\u652F",
+    branchUnavailableLabel: "\u53EA\u8BFB\u4F1A\u8BDD\u8BB0\u5F55\u4E0D\u53EF\u5206\u652F",
+    turnUsageTitle: "\u672C\u8F6E\u7528\u91CF",
+    turnUsageModel: "\u63D0\u4F9B\u65B9 / \u6A21\u578B",
+    turnUsageCacheHit: "\u7F13\u5B58\u547D\u4E2D",
+    turnUsageInput: "\u672A\u7F13\u5B58\u8F93\u5165",
+    turnUsageCacheRead: "\u7F13\u5B58\u8BFB\u53D6",
+    turnUsageCacheWrite: "\u7F13\u5B58\u5199\u5165",
+    turnUsageOutput: "\u8F93\u51FA",
+    turnUsageReasoning: "\uFF08\u5176\u4E2D\u63A8\u7406 {tokens}\uFF09",
+    turnUsageConsumed: "\u7528\u91CF {total}",
+    turnUsageCount: "{count} tok",
+    numberThousand: "{value}K",
+    numberMillion: "{value}M",
+    numberGroupSeparator: ",",
+    stepProcessDoneThinking: "\u5DF2\u5B8C\u6210\u5206\u6790",
+    stepProcessDoneRead: "\u5DF2\u8BFB\u53D6\u6587\u4EF6",
+    stepProcessDoneReadImage: "\u5DF2\u8BFB\u53D6\u56FE\u7247",
+    stepProcessDoneWrite: "\u5DF2\u5199\u5165\u6587\u4EF6",
+    stepProcessDoneSearch: "\u5DF2\u641C\u7D22\u4EE3\u7801",
+    stepProcessDoneEdit: "\u4FEE\u6539\u4E86\u6587\u4EF6",
+    stepProcessDoneCommands: "\u6267\u884C\u4E86\u547D\u4EE4",
+    stepProcessDoneCode: "\u8FD0\u884C\u4E86\u4EE3\u7801",
+    stepProcessDoneWebSearch: "\u5DF2\u641C\u7D22\u7F51\u9875",
+    stepProcessDoneWebFetch: "\u5DF2\u8BBF\u95EE\u7F51\u9875",
+    stepProcessDoneSubagents: "\u5DF2\u534F\u8C03\u5B50\u667A\u80FD\u4F53",
+    stepProcessDonePlan: "\u66F4\u65B0\u4E86\u8BA1\u5212",
+    stepProcessDoneQuestions: "\u5411\u7528\u6237\u63D0\u51FA\u4E86\u95EE\u9898",
+    stepProcessDoneTools: "\u5DF2\u8C03\u7528\u5DE5\u5177",
+    stepProcessJoinTwo: "{first}\u5E76{second}",
+    stepProcessComma: "\uFF0C",
+    stepProcessSharedPrefix: "\u5DF2",
+    stepProcessMore: "{title}\u7B49",
+    toolTitleRead: "\u8BFB\u53D6",
+    toolTitleReadImage: "\u8BFB\u53D6\u56FE\u7247",
+    toolTitleGrep: "\u641C\u7D22\u6587\u4EF6\u5185\u5BB9",
+    toolTitleGlob: "\u67E5\u627E\u6587\u4EF6",
+    toolTitleBash: "\u8FD0\u884C\u547D\u4EE4",
+    toolTitleWrite: "\u5199\u5165",
+    toolTitleEdit: "\u7F16\u8F91",
+    toolTitleCode: "\u4EE3\u7801",
+    toolTitleWebSearch: "\u7F51\u9875\u641C\u7D22",
+    toolTitleWebFetch: "\u7F51\u9875\u83B7\u53D6",
+    toolTitleGeneric: "\u5DE5\u5177\u8C03\u7528",
+    toolTitleSearch: "\u641C\u7D22",
+    toolInputLabel: "\u8F93\u5165",
+    toolOutputLabel: "\u8F93\u51FA",
+    rowPreparing: "\u6B63\u5728\u51C6\u5907\u8C03\u7528",
+    rowRunning: "\u8FD0\u884C\u4E2D",
+    rowFailed: "\u5931\u8D25",
+    rowStopped: "\u5DF2\u505C\u6B62",
+    collapseLabel: "\u6536\u8D77",
+    readWindow: "\u663E\u793A {shown} / {total} \u884C",
+    readCollapseAria: "\u6536\u8D77\u5185\u5BB9",
+    readExpandAria: "\u5C55\u5F00\u5176\u4F59 {count} \u884C",
+    readExpandRest: "\u2026 \u5176\u4F59 {count} \u884C",
+    terminalSignal: "\u4FE1\u53F7 {signal}",
+    terminalExitCode: "\u9000\u51FA\u7801 {code}",
+    terminalNoExitCode: "\u672A\u6B63\u5E38\u9000\u51FA",
+    terminalRunning: "\u8FD0\u884C\u4E2D",
+    terminalFailed: "\u5931\u8D25",
+    terminalDone: "\u5DF2\u5B8C\u6210",
+    terminalNoOutput: "\u65E0\u8F93\u51FA",
+    terminalCollapseAria: "\u6536\u8D77\u8F93\u51FA",
+    terminalExpandAria: "\u5C55\u5F00\u5176\u4F59 {n} \u884C\u8F93\u51FA",
+    terminalExpandRest: "\u2026 \u5176\u4F59 {n} \u884C",
+    terminalSendInput: "\uFF08\u53D1\u9001\u8F93\u5165\uFF09",
+    terminalSession: "\u7EC8\u7AEF {sessionId}",
+    codeBlockLabel: "\u4EE3\u7801\u5757",
+    diffWrapLabel: "\u81EA\u52A8\u6362\u884C",
+    diffUnwrapLabel: "\u53D6\u6D88\u6362\u884C",
+    diffCollapseAria: "\u6536\u8D77\u5DEE\u5F02",
+    diffExpandAria: "\u5C55\u5F00\u5176\u4F59 {count} \u884C\u5DEE\u5F02",
+    diffExpandRest: "\u2026 \u5176\u4F59 {count} \u884C",
+    continueBranch: "\u7EE7\u7EED\u5BF9\u8BDD",
+    forkConfirmTitle: "\u5F00\u5206\u652F\u7EE7\u7EED\u5BF9\u8BDD",
+    forkConfirmText: "\u662F\u5426\u9700\u8981\u57FA\u4E8E\u6B64\u4F1A\u8BDD\u5F00\u4E00\u4E2A\u65B0\u5206\u652F\u7EE7\u7EED\u5BF9\u8BDD\uFF1F\u539F\u4F1A\u8BDD\u4FDD\u6301\u53EA\u8BFB\u7559\u6863\uFF0C\u65B0\u5206\u652F\u590D\u5236\u672C\u4F1A\u8BDD\u5185\u5BB9\u5E76\u53EF\u7EE7\u7EED\u5BF9\u8BDD\u3002",
+    forkConfirmAccept: "\u5F00\u5206\u652F\u5E76\u8DF3\u8F6C",
+    forkWorking: "\u6B63\u5728\u5F00\u5206\u652F\u2026",
+    forkFailed: "\u5F00\u5206\u652F\u5931\u8D25\uFF1A{error}",
+    deliverRowTitle: "\u4EA4\u4ED8\u6587\u4EF6",
+    deliverRowPreparing: "\u51C6\u5907\u4EA4\u4ED8",
+    deliverRowRunning: "\u6B63\u5728\u4EA4\u4ED8",
+    deliverRowOk: "\u5DF2\u4EA4\u4ED8",
+    deliverRowError: "\u4EA4\u4ED8\u5931\u8D25",
+    deliverRowStopped: "\u5DF2\u4E2D\u65AD",
+    deliverFileLabel: "\u6587\u4EF6",
+    deliverPreviewHint: "\u9884\u89C8",
+    deliverPreviewCard: "\u9884\u89C8 {name}",
+    deliverAll: "\u5168\u90E8 {count} \u4E2A\u6587\u4EF6",
+    deliverCollapse: "\u6536\u8D77",
+    deliverExpandAria: "\u5C55\u5F00\u5168\u90E8 {count} \u4E2A\u4EA4\u4ED8\u6587\u4EF6",
+    deliverCollapseAria: "\u6536\u8D77\u4EA4\u4ED8\u6587\u4EF6\u5217\u8868",
+    composerPlaceholder: "\u7EE7\u7EED\u8BF4\u70B9\u4EC0\u4E48\u2026",
+    composerHint: "\u70B9\u300C\u786E\u5B9A\u300D\u540E\u57FA\u4E8E\u672C\u4F1A\u8BDD\u5F00\u5206\u652F\uFF0C\u5E76\u5728\u5B98\u65B9\u4F1A\u8BDD\u4E2D\u5F00\u59CB\u8FD9\u8F6E\u5BF9\u8BDD"
   },
   en: {
     sessionLoading: "Loading session\u2026",
     sessionFailed: "Failed to load session",
     sessionEmpty: "No content in this session",
-    sessionAttachments: "Attachments",
-    sessionRoleUser: "User",
-    sessionRoleAssistant: "Assistant",
-    sessionRoleTool: "Tool",
     explorerLoading: "Loading\u2026",
     explorerFailed: "Failed to load",
     explorerRoot: "Workspace",
@@ -2947,7 +3079,147 @@ var DICT = {
     relMonthsAgo: "{n}mo ago",
     relYearsAgo: "{n}y ago",
     codeCopy: "Copy",
-    codeCopied: "Copied"
+    codeCopied: "Copied",
+    sessionViewerTitle: "Session transcript (read-only)",
+    sessionUnknownKind: "Unsupported node kind: ",
+    sessionLoadOlder: "Load earlier messages",
+    sessionProcess: "Process",
+    triggerRequest: "Execution request received",
+    triggerGoal: "Continuing the goal",
+    triggerAgent: "Task message received",
+    triggerTeam: "Team message received",
+    triggerSubagent: "Subagent status update",
+    triggerGithub: "GitHub event received",
+    triggerWebhook: "External event received",
+    triggerSchedule: "Scheduled task",
+    triggerJob: "Background task status update",
+    triggerPlugin: "Plugin status update",
+    triggerExplanation: "This notification triggered the reply below.",
+    turnProcessTook: "Took {duration}",
+    turnProcessDeepDiving: "Thinking, {duration}",
+    turnProcessWorked: "Work completed",
+    turnProcessFailed: "Failed",
+    turnStopped: "Stopped",
+    chatDeepDiving: "Thinking",
+    thinkLabel: "Think",
+    durationSeconds: "{seconds}s",
+    durationMinutes: "{minutes}m {seconds}s",
+    durationHours: "{hours}h {minutes}m {seconds}s",
+    durationMilliseconds: "{milliseconds}ms",
+    retryActive: "Retrying model request",
+    retryCancelled: "Model request retry cancelled",
+    retryStarted: "Retried model request",
+    retryScheduled: "Waiting to retry model request",
+    retryStatus: "{label} ({retry}/{maximum}) \xB7 {seconds}s",
+    retryDelay: "Retry delay: ",
+    retryFailure: "Failure reason: ",
+    turnErrorTitle: "This turn failed",
+    accountStopped: "Task stopped",
+    maxTokensTitle: "Output token limit reached",
+    maxTokensHint: 'The reply was cut off; earlier output is preserved in the conversation. Send "continue" to let the model resume.',
+    failureAuth: "API key is invalid",
+    failureQuota: "Request quota exhausted.",
+    failureAccountSignedOut: "Stopped because you signed out of DeepSeek.",
+    failureAccountSignInRequired: "Sign in to DeepSeek and ensure the request destination supports account authentication.",
+    clockDate: "{m}/{d}",
+    clockDateYear: "{y}/{m}/{d}",
+    copyLabel: "Copy",
+    copiedLabel: "Copied",
+    branchLabel: "Branch into a new conversation",
+    branchUnavailableLabel: "A read-only transcript cannot be branched",
+    turnUsageTitle: "Turn usage",
+    turnUsageModel: "Provider / model",
+    turnUsageCacheHit: "Cache hit",
+    turnUsageInput: "Uncached input",
+    turnUsageCacheRead: "Cached input",
+    turnUsageCacheWrite: "Cache write",
+    turnUsageOutput: "Output",
+    turnUsageReasoning: " ({tokens} reasoning)",
+    turnUsageConsumed: "Usage {total}",
+    turnUsageCount: "{count} tok",
+    numberThousand: "{value}K",
+    numberMillion: "{value}M",
+    numberGroupSeparator: ",",
+    stepProcessDoneThinking: "Analysis completed",
+    stepProcessDoneRead: "Read files",
+    stepProcessDoneReadImage: "Read images",
+    stepProcessDoneWrite: "Wrote files",
+    stepProcessDoneSearch: "Searched code",
+    stepProcessDoneEdit: "Edited files",
+    stepProcessDoneCommands: "Ran commands",
+    stepProcessDoneCode: "Ran code",
+    stepProcessDoneWebSearch: "Searched the web",
+    stepProcessDoneWebFetch: "Fetched web pages",
+    stepProcessDoneSubagents: "Coordinated subagents",
+    stepProcessDonePlan: "Updated the plan",
+    stepProcessDoneQuestions: "Asked you questions",
+    stepProcessDoneTools: "Called tools",
+    stepProcessJoinTwo: "{first} and {second}",
+    stepProcessComma: ", ",
+    stepProcessSharedPrefix: "",
+    stepProcessMore: "{title}, etc.",
+    toolTitleRead: "Read",
+    toolTitleReadImage: "Read image",
+    toolTitleGrep: "Grep",
+    toolTitleGlob: "Glob",
+    toolTitleBash: "Bash",
+    toolTitleWrite: "Write",
+    toolTitleEdit: "Edit",
+    toolTitleCode: "Code",
+    toolTitleWebSearch: "Search",
+    toolTitleWebFetch: "Fetch",
+    toolTitleGeneric: "Tool call",
+    toolTitleSearch: "Search",
+    toolInputLabel: "IN",
+    toolOutputLabel: "OUT",
+    rowPreparing: "Preparing tool call",
+    rowRunning: "Running",
+    rowFailed: "Failed",
+    rowStopped: "Stopped",
+    collapseLabel: "Collapse",
+    readWindow: "Showing {shown} of {total} lines",
+    readCollapseAria: "Collapse content",
+    readExpandAria: "Expand {count} more lines",
+    readExpandRest: "\u2026 {count} more lines",
+    terminalSignal: "signal {signal}",
+    terminalExitCode: "exit code {code}",
+    terminalNoExitCode: "no exit code",
+    terminalRunning: "Running",
+    terminalFailed: "Failed",
+    terminalDone: "Done",
+    terminalNoOutput: "No output",
+    terminalCollapseAria: "Collapse output",
+    terminalExpandAria: "Expand the remaining {n} output lines",
+    terminalExpandRest: "\u2026 {n} more lines",
+    terminalSendInput: "(send input)",
+    terminalSession: "Terminal {sessionId}",
+    codeBlockLabel: "Code",
+    diffWrapLabel: "Wrap lines",
+    diffUnwrapLabel: "Unwrap lines",
+    diffCollapseAria: "Collapse diff",
+    diffExpandAria: "Expand {count} more diff lines",
+    diffExpandRest: "\u2026 {count} more lines",
+    continueBranch: "Continue conversation",
+    forkConfirmTitle: "Fork to continue",
+    forkConfirmText: "Start a new branch from this session to continue the conversation? The original stays read-only; the branch copies this conversation and can continue.",
+    forkConfirmAccept: "Fork & open",
+    forkWorking: "Forking\u2026",
+    forkFailed: "Fork failed: {error}",
+    deliverRowTitle: "Deliver files",
+    deliverRowPreparing: "Preparing delivery",
+    deliverRowRunning: "Delivering",
+    deliverRowOk: "Delivered",
+    deliverRowError: "Delivery failed",
+    deliverRowStopped: "Interrupted",
+    deliverFileLabel: "File",
+    deliverPreviewHint: "Preview",
+    deliverPreviewCard: "Preview {name}",
+    deliverAll: "All {count} files",
+    deliverCollapse: "Collapse",
+    deliverExpandAria: "Expand all {count} delivered files",
+    deliverCollapseAria: "Collapse the delivered-files list",
+    composerPlaceholder: "Say something to continue\u2026",
+    composerHint: "Confirm forks a branch from this session and starts this turn in the official chat"
   }
 };
 var current2 = "zh";
@@ -4235,15 +4507,15 @@ var Toast = (props) => {
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h44) => [
+      setHeights((h56) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h44
+        ...h56
       ]);
-      return () => setHeights((h44) => h44.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h56) => h56.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
@@ -4288,7 +4560,7 @@ var Toast = (props) => {
   const deleteToast = import_react16.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
-    setHeights((h44) => h44.filter((height) => height.toastId !== toast2.id));
+    setHeights((h56) => h56.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -4815,7 +5087,7 @@ var Toaster = /* @__PURE__ */ import_react16.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t4) => t4.position == toast2.position),
-          heights: heights.filter((h44) => h44.position == toast2.position),
+          heights: heights.filter((h56) => h56.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -5706,10 +5978,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h44 = Math.floor(totalSec / 3600);
+  const h56 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h44 > 0 ? `${h44}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h56 > 0 ? `${h56}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -5968,15 +6240,19 @@ var DICT2 = {
     pickResult: "\u5DF2\u9009\u62E9",
     previewBodyTitle: "FilePreview \u9884\u89C8\u4F53\uFF08\u53EF\u5355\u72EC\u7528\uFF09",
     previewBodyHint: "\u4E0A\u9762\u90A3\u5757\u5DF2\u7ECF\u5305\u542B\u5B83\u2014\u2014FileBrowser \u5185\u90E8\u6E32\u67D3\u7684\u5C31\u662F FilePreview\u3002\n\u5B83\u540C\u65F6\u4E5F\u662F\u4E00\u6761\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/explorer/preview\uFF1A\u53EA\u6709\u4E00\u4E2A\u6587\u4EF6\u8981\u663E\u793A\u65F6\uFF08\u4F1A\u8BDD\u9644\u4EF6\u3001\u5DE5\u5177\u8F93\u51FA\uFF09\u4E0D\u5FC5\u642C\u51FA\u6574\u4E2A\u9762\u677F\u3002",
-    sessionHint: "\u4E09\u79CD\u627F\u8F7D\uFF1Amodal / sidebar / page\uFF1Bsource \u662F mock \u7684\uFF1BrenderMessage \u53EF\u63A5\u7BA1\u5BCC\u5185\u5BB9",
-    sessionOpenModal: "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8\uFF08modal\uFF09",
+    sessionHint: "\u955C\u50CF\u5B98\u65B9\u4F1A\u8BDD UI \u7684\u53EA\u8BFB\u5F39\u7A97\uFF08\u5047\u5FEB\u7167\u9A71\u52A8\uFF09\uFF1B\u5F52\u6863\u4F1A\u8BDD\u53EF\u8BFB\uFF1B\u7EED\u804A\u8D70 fork \u5F00\u5206\u652F\uFF0C\u6846\u5185\u4E0D\u53EF\u6253\u5B57",
+    sessionOpenModal: "\u6253\u5F00\u4F1A\u8BDD\u9884\u89C8",
     sessionClose: "\u5173\u95ED",
     sessionPreviewTitle: "\u4F1A\u8BDD\u9884\u89C8\uFF08\u5047\u6570\u636E\uFF09",
+    sessionForked: "\u5DF2\u5F00\u5206\u652F\uFF08\u6F14\u793A\u56DE\u58F0\uFF09\uFF1A",
+    sessionOpenedHost: "\u5DF2\u8DF3\u8F6C\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF08\u6F14\u793A\u56DE\u58F0\uFF09\uFF1A",
+    sessionContinued: "\u6682\u5B58\u6D88\u606F\u5DF2\u53D7\u7406\uFF08\u6F14\u793A\u56DE\u58F0\uFF09\uFF1A",
+    sessionOpenedFile: "\u5DF2\u6253\u5F00\u6587\u4EF6\uFF08\u6F14\u793A\u56DE\u58F0\uFF09\uFF1A",
     dateHint: "\u89E3\u6790\u5931\u8D25\u4E0D\u629B\u9519\u3001\u7ED9\u515C\u5E95\u3001\u4E0D\u7F16\u9020\uFF1B\u6240\u6709\u51FD\u6570\u65E0 UI \u4F9D\u8D56\uFF0CNode \u91CC\u4E5F\u80FD\u8DD1",
     numberHint: "formatBytes \u6309 1024 \u8FDB\u5236\u3001\u5355\u4F4D\u81EA\u52A8\u8FDB\u4F4D\uFF1BformatCount \u7ED9\u5927\u6570\u52A0\u5343\u5206\u4F4D",
     roadmapHint: "\u4E0B\u9762\u662F\u300C\u660E\u786E\u4E0D\u63D0\u4F9B\u300D\u7684\u90E8\u5206\u2014\u2014\u5199\u5728\u8FD9\u91CC\u662F\u4E3A\u4E86\u8BA9\u4F60\u4E0D\u7528\u731C\uFF0C\u4E5F\u8BA9\u540E\u6765\u4EBA\u77E5\u9053\u8FB9\u754C\u5728\u54EA\u3002",
     roadmapOut: "\u8BBE\u7F6E\u9875\u9AA8\u67B6\u3001i18n \u6846\u67B6\uFF08\u63D2\u4EF6\u6587\u6848\u63D2\u4EF6\u81EA\u7BA1\uFF09\u3001host \u5BBF\u4E3B\u7C7B\u578B\u9762",
-    roadmapMirror: "\u5B98\u65B9\u4F1A\u8BDD UI \u7684\u5B8C\u6574\u955C\u50CF\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\uFF09\u2014\u2014session \u76EE\u524D\u53EA\u6709\u6700\u7B80\u6E32\u67D3\uFF0C\u5BCC\u5185\u5BB9\u8D70 renderMessage \u6269\u5C55\u70B9",
+    roadmapMirror: "\u5B98\u65B9\u4F1A\u8BDD UI \u5B8C\u6574\u955C\u50CF\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C / \u6298\u53E0\u5173\u7CFB\uFF09\u2014\u2014\u5DF2\u4E8E 2026-10-22 \u642C\u5165 session \u5B50\u5305",
     roadmapPreview: "\uFF08\u5DF2\u843D\u5730\uFF09md \u6E32\u67D3\uFF08\u5B98\u65B9 MarkdownText\uFF09/ \u4EE3\u7801\u9AD8\u4EAE\uFF08\u6838\u5FC3 CodeViewer\uFF09/ HTML / PDF / Office \u9884\u89C8",
     roadmapSkeleton: "\uFF08\u5DF2\u843D\u5730\uFF09PanelDock\u2014\u2014\u53EF\u505C\u9760\u5206\u680F\uFF1A\u591A\u9762\u677F\u3001\u6309\u540D\u8986\u76D6\u3001\u4E0A\u9650 3",
     roadmapLayout: "\u7EA2\u7EBF\uFF1A\u6574\u5408\u4EE5\u524D\u7684.share(plugins/demo)",
@@ -6160,15 +6436,19 @@ var DICT2 = {
     pickResult: "Picked",
     previewBodyTitle: "FilePreview (usable on its own)",
     previewBodyHint: "The block above already includes it \u2014 FileBrowser renders FilePreview inside.\nIt is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.",
-    sessionHint: "Three carriers: modal / sidebar / page; source is mocked; renderMessage can take over rich content",
-    sessionOpenModal: "Open session preview (modal)",
+    sessionHint: "Read-only dialog mirroring the official session UI (driven by a fake snapshot); archived sessions are readable; continuing goes through fork \u2014 no typing inside the dialog",
+    sessionOpenModal: "Open session preview",
     sessionClose: "Close",
     sessionPreviewTitle: "Session preview (mock data)",
+    sessionForked: "Forked (demo echo): ",
+    sessionOpenedHost: "Jumped to the official session area (demo echo): ",
+    sessionContinued: "Staged message accepted (demo echo): ",
+    sessionOpenedFile: "Opened file (demo echo): ",
     dateHint: "No throw on parse failure \u2014 falls back gracefully and never fabricates; all functions are UI-free and run in Node too",
     numberHint: "formatBytes is 1024-based with automatic unit scaling; formatCount adds thousands separators",
     roadmapHint: "The list below is what this package explicitly does NOT provide \u2014 written down so nobody has to guess, and so the boundary stays visible.",
     roadmapOut: "A settings-page skeleton, an i18n framework (plugin copy is the plugin\u2019s own job), a host typings surface",
-    roadmapMirror: "A full mirror of the official session UI (tool cards / code blocks / reasoning rows) \u2014 session renders only the minimal shape today; rich content goes through the renderMessage hook",
+    roadmapMirror: "Full mirror of the official session UI (tool cards / code blocks / reasoning rows / fold relations) \u2014 ported into the session subpackage on 2026-10-22",
     roadmapPreview: "(shipped) md render (official MarkdownText) / code highlight (core CodeViewer) / HTML / PDF / Office preview",
     roadmapSkeleton: "(shipped) PanelDock \u2014 dockable split panes: multi-panel, replace-by-name, limit 3",
     roadmapLayout: "Red line: consolidation of the old packages/demo",
@@ -6285,7 +6565,7 @@ function demoPanels() {
 var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
-var import_react49 = require("react");
+var import_react63 = require("react");
 
 // packages/demo/src/sections/start.tsx
 var import_react34 = require("react");
@@ -14105,7 +14385,7 @@ function applyDOMChangeInner(view, change, newSel, lastKey = -1) {
     view.inputState.composing++;
   let defaultTr;
   let defaultInsert = () => defaultTr || (defaultTr = applyDefaultInsert(view, change, newSel));
-  if (!view.state.facet(inputHandler).some((h44) => h44(view, change.from, change.to, text2, defaultInsert)))
+  if (!view.state.facet(inputHandler).some((h56) => h56(view, change.from, change.to, text2, defaultInsert)))
     view.dispatch(defaultInsert());
   return true;
 }
@@ -15043,12 +15323,12 @@ var HeightOracle = class {
   mustRefreshForHeights(lineHeights) {
     let newHeight = false;
     for (let i2 = 0; i2 < lineHeights.length; i2++) {
-      let h44 = lineHeights[i2];
-      if (h44 < 0) {
+      let h56 = lineHeights[i2];
+      if (h56 < 0) {
         i2++;
-      } else if (!this.heightSamples[Math.floor(h44 * 10)]) {
+      } else if (!this.heightSamples[Math.floor(h56 * 10)]) {
         newHeight = true;
-        this.heightSamples[Math.floor(h44 * 10)] = true;
+        this.heightSamples[Math.floor(h56 * 10)] = true;
       }
     }
     return newHeight;
@@ -15064,11 +15344,11 @@ var HeightOracle = class {
     if (changed) {
       this.heightSamples = {};
       for (let i2 = 0; i2 < knownHeights.length; i2++) {
-        let h44 = knownHeights[i2];
-        if (h44 < 0)
+        let h56 = knownHeights[i2];
+        if (h56 < 0)
           i2++;
         else
-          this.heightSamples[Math.floor(h44 * 10)] = true;
+          this.heightSamples[Math.floor(h56 * 10)] = true;
       }
     }
     return changed;
@@ -15343,8 +15623,8 @@ var HeightMapGap = class _HeightMapGap extends HeightMap {
     super(length, 0);
   }
   heightMetrics(oracle, offset4) {
-    let firstLine = oracle.doc.lineAt(offset4).number, lastLine = oracle.doc.lineAt(offset4 + this.length).number;
-    let lines = lastLine - firstLine + 1;
+    let firstLine3 = oracle.doc.lineAt(offset4).number, lastLine = oracle.doc.lineAt(offset4 + this.length).number;
+    let lines = lastLine - firstLine3 + 1;
     let perLine, perChar = 0;
     if (oracle.lineWrapping) {
       let totalPerLine = Math.min(this.height, oracle.lineHeight * lines);
@@ -15354,18 +15634,18 @@ var HeightMapGap = class _HeightMapGap extends HeightMap {
     } else {
       perLine = this.height / lines;
     }
-    return { firstLine, lastLine, perLine, perChar };
+    return { firstLine: firstLine3, lastLine, perLine, perChar };
   }
   blockAt(height, oracle, top2, offset4) {
-    let { firstLine, lastLine, perLine, perChar } = this.heightMetrics(oracle, offset4);
+    let { firstLine: firstLine3, lastLine, perLine, perChar } = this.heightMetrics(oracle, offset4);
     if (oracle.lineWrapping) {
       let guess = offset4 + (height < oracle.lineHeight ? 0 : Math.round(Math.max(0, Math.min(1, (height - top2) / this.height)) * this.length));
       let line = oracle.doc.lineAt(guess), lineHeight = perLine + line.length * perChar;
       let lineTop = Math.max(top2, height - lineHeight / 2);
       return new BlockInfo(line.from, line.length, lineTop, lineHeight, 0);
     } else {
-      let line = Math.max(0, Math.min(lastLine - firstLine, Math.floor((height - top2) / perLine)));
-      let { from: from2, length } = oracle.doc.line(firstLine + line);
+      let line = Math.max(0, Math.min(lastLine - firstLine3, Math.floor((height - top2) / perLine)));
+      let { from: from2, length } = oracle.doc.line(firstLine3 + line);
       return new BlockInfo(from2, length, top2 + perLine * line, perLine, 0);
     }
   }
@@ -15376,20 +15656,20 @@ var HeightMapGap = class _HeightMapGap extends HeightMap {
       let { from: from2, to } = oracle.doc.lineAt(value);
       return new BlockInfo(from2, to - from2, 0, 0, 0);
     }
-    let { firstLine, perLine, perChar } = this.heightMetrics(oracle, offset4);
+    let { firstLine: firstLine3, perLine, perChar } = this.heightMetrics(oracle, offset4);
     let line = oracle.doc.lineAt(value), lineHeight = perLine + line.length * perChar;
-    let linesAbove = line.number - firstLine;
+    let linesAbove = line.number - firstLine3;
     let lineTop = top2 + perLine * linesAbove + perChar * (line.from - offset4 - linesAbove);
     return new BlockInfo(line.from, line.length, Math.max(top2, Math.min(lineTop, top2 + this.height - lineHeight)), lineHeight, 0);
   }
   forEachLine(from2, to, oracle, top2, offset4, f) {
     from2 = Math.max(from2, offset4);
     to = Math.min(to, offset4 + this.length);
-    let { firstLine, perLine, perChar } = this.heightMetrics(oracle, offset4);
+    let { firstLine: firstLine3, perLine, perChar } = this.heightMetrics(oracle, offset4);
     for (let pos = from2, lineTop = top2; pos <= to; ) {
       let line = oracle.doc.lineAt(pos);
       if (pos == from2) {
-        let linesAbove = line.number - firstLine;
+        let linesAbove = line.number - firstLine3;
         lineTop += perLine * linesAbove + perChar * (from2 - offset4 - linesAbove);
       }
       let lineHeight = perLine + perChar * line.length;
@@ -23115,7 +23395,7 @@ var HighlightBuilder = class {
     if (start >= to || end <= from2)
       return;
     if (type3.isTop)
-      highlighters = this.highlighters.filter((h44) => !h44.scope || h44.scope(type3));
+      highlighters = this.highlighters.filter((h56) => !h56.scope || h56.scope(type3));
     let cls = inheritedClass;
     let rule = getStyleTags(cursor2) || Rule.empty;
     let tagCls = highlightTags(highlighters, rule.tags);
@@ -23132,7 +23412,7 @@ var HighlightBuilder = class {
     let mounted = cursor2.tree && cursor2.tree.prop(NodeProp.mounted);
     if (mounted && mounted.overlay) {
       let inner = cursor2.node.enter(mounted.overlay[0].from + start, 1);
-      let innerHighlighters = this.highlighters.filter((h44) => !h44.scope || h44.scope(mounted.tree.type));
+      let innerHighlighters = this.highlighters.filter((h56) => !h56.scope || h56.scope(mounted.tree.type));
       let hasChild2 = cursor2.firstChild();
       for (let i2 = 0, pos = start; ; i2++) {
         let next = i2 < mounted.overlay.length ? mounted.overlay[i2] : null;
@@ -24231,9 +24511,9 @@ var parseWorker = /* @__PURE__ */ ViewPlugin.fromClass(class ParseWorker {
   }
   work(deadline) {
     this.working = null;
-    let now = Date.now();
-    if (this.chunkEnd < now && (this.chunkEnd < 0 || this.view.hasFocus)) {
-      this.chunkEnd = now + 3e4;
+    let now2 = Date.now();
+    if (this.chunkEnd < now2 && (this.chunkEnd < 0 || this.view.hasFocus)) {
+      this.chunkEnd = now2 + 3e4;
       this.chunkBudget = 3e3;
     }
     if (this.chunkBudget <= 0)
@@ -24249,7 +24529,7 @@ var parseWorker = /* @__PURE__ */ ViewPlugin.fromClass(class ParseWorker {
     let done = field.context.work(() => {
       return isInputPending && isInputPending() || Date.now() > endTime;
     }, vpTo + (viewportFirst ? 0 : 1e5));
-    this.chunkBudget -= Date.now() - now;
+    this.chunkBudget -= Date.now() - now2;
     if (done || this.chunkBudget <= 0) {
       field.context.takeTree();
       this.view.dispatch({ effects: Language.setState.of(new LanguageState(field.context)) });
@@ -51670,57 +51950,79 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "\u4F9D\u8D56 ui\u3002\u628A\u300C\u770B\u4E00\u773C\u67D0\u4E2A\u4F1A\u8BDD\u3001\u770B\u5B8C\u5373\u5173\u300D\u8FD9\u4EF6\u4E8B\u5C01\u88C5\u8D77\u6765\uFF1A\u81EA\u52A8\u6267\u884C\u7684\u4EFB\u52A1\u60F3\u56DE\u770B\u8FD9\u6B21\u4F1A\u8BDD\uFF0C\u4E0D\u60F3\u5F00\u65B0\u7A97\u53E3\uFF08\u56DE\u6765\u8FD8\u5F97\u627E\uFF09\u3002",
-        "en": 'Depends on ui. Wraps the "peek at a session and close when done" flow: for auto-run tasks you want to review this run without opening a new window.'
+        "zh": "\u4F9D\u8D56 ui\u3002\u628A\u300C\u770B\u4E00\u773C\u67D0\u4E2A\u4F1A\u8BDD\u3001\u770B\u5B8C\u5373\u5173\u300D\u5C01\u88C5\u6210\u4E0E\u5B98\u65B9\u4F1A\u8BDD\u9875\u540C\u6784\u7684\u53EA\u8BFB\u5F39\u7A97\uFF1A\u81EA\u52A8\u6267\u884C\u7684\u4EFB\u52A1\u60F3\u56DE\u770B\u8FD9\u6B21\u4F1A\u8BDD\uFF0C\u4E0D\u60F3\u5F00\u65B0\u7A97\u53E3\uFF08\u56DE\u6765\u8FD8\u5F97\u627E\uFF09\u3002",
+        "en": 'Depends on ui. Wraps the "peek at a session and close when done" flow into a read-only dialog isomorphic to the official session page: for auto-run tasks you want to review this run without opening a new window.'
       },
       {
-        "zh": "\u5F39\u7A97\u53EA\u662F\u5F53\u524D\u7684\u5448\u73B0\u65B9\u5F0F\uFF0C\u4E0D\u662F\u8FD9\u4E2A\u5305\u7684\u5B9A\u4E49\u3002\u5C06\u6765\u4E5F\u53EF\u80FD\u662F\u4FA7\u8FB9\u680F\u6216\u6574\u9875 \u21D2 \u7528 variant \u5207\u6362\u3002\u300C\u7EAF Modal \u63A7\u4EF6\u300D\u5728 ui \u91CC\uFF0C\u8FD9\u91CC\u88C5\u7684\u662F\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\u8FD9\u4E2A\u529F\u80FD\u3002",
-        "en": 'A modal is only the current presentation; the package is defined by the feature, not the chrome. Future forms (sidebar, full page) switch via `variant`. The bare Modal lives in ui; this package owns the "session preview" feature.'
+        "zh": "\u5F39\u7A97\u53EA\u662F\u5F53\u524D\u7684\u5448\u73B0\u65B9\u5F0F\uFF0C\u4E0D\u662F\u8FD9\u4E2A\u5305\u7684\u5B9A\u4E49\u3002\u300C\u7EAF Modal \u63A7\u4EF6\u300D\u5728 ui \u91CC\uFF0C\u8FD9\u91CC\u88C5\u7684\u662F\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\u8FD9\u4E2A\u529F\u80FD\u3002",
+        "en": 'A modal is only the current presentation, not the definition of the package. The bare Modal lives in ui; this package owns the "session preview" feature.'
       },
       {
-        "zh": "\u6570\u636E\u5F62\u72B6\uFF08SessionMessage\uFF09\uFF1B\u4E3A\u4EC0\u4E48\u6CE8\u5165\u80FD\u529B\u800C\u4E0D\u662F\u4F20\u9759\u6001\u6570\u636E\uFF1A\u4F1A\u8BDD\u9884\u89C8\u5185\u90E8\u6709\u4EA4\u4E92\uFF08\u9644\u4EF6\u4E0B\u8F7D / \u6253\u5F00\u6587\u4EF6\uFF09\uFF0C\u5149\u6709\u6D88\u606F\u6D41\u4E0D\u591F\u7528\uFF0C\u5B83\u5FC5\u987B\u80FD\u56DE\u8C03\u5BBF\u4E3B\u3002",
-        "en": "Data shape (SessionMessage); why inject capability instead of passing static data: the preview has interactions (attachment download / open file), so the message stream alone is insufficient \u2014 it must be able to call back into the host."
+        "zh": "\u6E32\u67D3 = \u300C\u5B98\u65B9\u96F6\u4EF6 + \u81EA\u7ED8\u5BB9\u5668\u300D\uFF1Amirror/ \u4E0B 15 \u4E2A\u7EC4\u4EF6\u6309\u5B98\u65B9\u6587\u4EF6\u540D\u4E00\u4E00\u5BF9\u5E94\uFF08ChatView / ChatNodeSeat / MessageItem / GenericCommandCard / ReasoningRow / Turn\xD7NodeView / MessageIconActions / TurnUsagePanel / StatDialog / Deliverables / ChatGroupSeat\u2026\uFF09\uFF0C\u9010\u503C\u955C\u50CF\u5B98\u65B9 UI\uFF1B\u5B98\u65B9 CSS module \u7C7B\u540D\u8FD0\u884C\u65F6\u53D1\u73B0\uFF08official-classes.ts\uFF09\uFF0C\u672A\u547D\u4E2D\u56DE\u9000\u81EA\u7ED8\u6837\u5F0F\uFF08session.css\uFF09\uFF0C\u4E0D\u5D29\u4E0D\u767D\u5C4F\u3002",
+        "en": 'Rendering = "official parts + self-drawn chrome": the 15 components under mirror/ map one-to-one to official file names (ChatView / ChatNodeSeat / MessageItem / GenericCommandCard / ReasoningRow / Turn\xD7NodeView / MessageIconActions / TurnUsagePanel / StatDialog / Deliverables / ChatGroupSeat\u2026), mirroring the official UI value-by-value. Official CSS-module class names are discovered at runtime (official-classes.ts); on a miss, self-drawn fallback styles apply (session.css) \u2014 no crash, no blank screen.'
       },
       {
-        "zh": "\u4E09\u6001\u9F50\u5907\uFF1A\u52A0\u8F7D\u4E2D / \u5931\u8D25\uFF08\u5E26\u91CD\u8BD5\uFF09/ \u7A7A\u3002",
-        "en": "All three states covered: loading / failure (with retry) / empty."
+        "zh": "\u5F52\u6863\u4F1A\u8BDD\u540C\u6837\u53EF\u8BFB\uFF1AarchiveSession \u53EA\u628A\u4F1A\u8BDD\u85CF\u51FA\u663E\u793A\u9762\u3001\u4E0D\u52A8\u5B58\u50A8\uFF1Bsessions.retain \u7269\u5316 scope \u4E0E\u5F52\u6863\u6B63\u4EA4 \u21D2 \u9884\u89C8\u5F52\u6863\u4F1A\u8BDD\u8D70\u7684\u662F\u540C\u4E00\u6761\u6570\u636E\u94FE\uFF0C\u65E0\u989D\u5916\u5F00\u53D1\u3002",
+        "en": "Archived sessions are readable too: archiveSession only hides a session from grouping surfaces and never touches storage; sessions.retain materializes the scope regardless of archive status \u21D2 previewing an archived session uses the same data chain, with no extra work."
       },
       {
-        "zh": "\u5DF2\u77E5\u9650\u5236\uFF08\u91CD\u8981\uFF09\uFF1A\u9ED8\u8BA4\u6E32\u67D3\u53EA\u6709\u300C\u89D2\u8272 + \u7EAF\u6587\u672C + \u9644\u4EF6\u300D\u2014\u2014\u5B98\u65B9\u4F1A\u8BDD UI \u7684\u5B8C\u6574\u955C\u50CF\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\u7B49\uFF09\u8FD8\u6CA1\u642C\u8FDB\u672C\u5305\u3002\u8981\u957F\u5F97\u50CF\u5B98\u65B9\u4F1A\u8BDD\uFF0C\u8BF7\u7528 renderMessage \u81EA\u5DF1\u6E32\u67D3\uFF0C\u6216\u7B49\u540E\u7EED\u7248\u672C\u3002\u65E0\u6D88\u606F\u5206\u9875 / \u589E\u91CF\u52A0\u8F7D\uFF0C\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\u3002",
-        "en": 'Known limits (important): the default renderer only does "role + plain text + attachments" \u2014 the full mirror of the official session UI (tool cards / code blocks / reasoning rows) is not yet ported. To look like the official session, render via renderMessage yourself, or wait for a later version. No message pagination / incremental loading; long sessions render all at once.'
+        "zh": "\u6587\u4EF6\u663E\u793A\u903B\u8F91\u5168\u91CF\u79FB\u690D\uFF1A\u7528\u6237\u6D88\u606F\u5B98\u65B9 file \u5757 \u2192 \u9644\u4EF6\u5361\uFF1B\u5DE5\u5177\u5361 read/write/edit \u6458\u8981\u8DEF\u5F84 = \u53EF\u70B9 fileLink\uFF1Btool-fs meta.diffs \u8DEF\u5F84\u8FDB\u8BCD\u8868\uFF1Bmarkdown \u884C\u5185\u6587\u4EF6\u5F15\u7528 \u2192 fileMentions \u89E3\u6790\u6210\u94FE\u63A5\uFF08resolve \u4E0D\u51FA\u4FDD\u6301\u60F0\u6027 code\uFF0C\u6C38\u4E0D\u731C\uFF09\uFF1B\u4EA4\u4ED8\u6587\u4EF6\uFF08present / turn \u7EA7 deliverables.presented \u540C\u6E90\uFF09\u2192 \u6574\u5361\u53EF\u70B9\u9884\u89C8\u3002\u7EDF\u4E00\u51FA\u53E3 = onOpenFile\u3002",
+        "en": "File display logic is fully ported: official file blocks in user messages \u2192 attachment cards; read/write/edit tool-card summary paths are clickable fileLinks; tool-fs meta.diffs paths feed the mention vocabulary; inline markdown file references resolve through fileMentions (unresolved stays inert code \u2014 never guessed); delivered files (present / turn-level deliverables.presented, same source) \u2192 whole-card clickable preview. Single exit = onOpenFile."
       },
       {
-        "zh": "\u5B9A\u5236\u8FB9\u754C\uFF1ArenderMessage \u5C31\u662F\u4E3A\u300C\u7279\u6B8A\u5B9A\u5236\u300D\u7559\u7684\u53E3\u5B50\uFF0C\u6362\u6E32\u67D3\u5668\u4E0D\u7528 fork \u9762\u677F\uFF1B\u6362\u627F\u8F7D\u65B9\u5F0F\u7528 variant\uFF0C\u4E0D\u7528\u6539\u8C03\u7528\u65B9\u7ED3\u6784\uFF1BSessionSource \u7684\u65B9\u6CD5\u7B7E\u540D\u82E5\u4E0E\u5BBF\u4E3B\u5BF9\u4E0D\u4E0A\uFF0C\u5728\u63D2\u4EF6\u4FA7\u505A\u9002\u914D\u5C42\u2014\u2014\u4E0D\u8981\u6539\u672C\u5305\u63A5\u53E3\u53BB\u8D34\u67D0\u4E2A\u5BBF\u4E3B\u5BFC\u51FA\u7248\u672C\u3002",
-        "en": "Customization: renderMessage is the slot for special rendering \u2014 swap the renderer without forking the panel; switch presentation with variant without changing caller structure; if SessionSource\u2019s signatures don\u2019t match the host, build an adapter on the plugin side \u2014 do not bend this package\u2019s interface to a specific host version."
+        "zh": "\u7EED\u804A\u6B63\u9053\uFF08\u91CD\u8981\uFF09\uFF1A\u5E95\u5C42 keyed \u6570\u7EC4\uFF08order + nodes\uFF09\u662F\u53EA\u8BFB\u5FEB\u7167\uFF0C\u5B98\u65B9\u6CA1\u6709\u300C\u5F80\u9884\u89C8 binding \u53D1\u6D88\u606F\u300D\u7684\u5199\u9762 \u21D2 \u6846\u5185\u4E0D\u53EF\u6253\u5B57\u7EED\u804A\u3002\u6B63\u9053 = fork \u5F00\u5206\u652F\uFF08sessions.fork\uFF09\u2192 uiWorkspace.openSession \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u5E95\u90E8\u6682\u5B58\u8F93\u5165\u6846\u7684\u300C\u786E\u5B9A\u300D\u7ECF onContinue \u7531\u8C03\u7528\u65B9\u5B8C\u6210 fork + host \u4FA7 agent.send \u8D77\u8F6E\u6B21 + \u8DF3\u8F6C\uFF08\u5B98\u65B9\u6D3E\u53D1\u540C\u6B3E\u8DEF\uFF0C\u65E0\u6B6A\u95E8\u90AA\u9053\uFF09\u3002",
+        "en": 'The sanctioned way to continue (important): the underlying keyed array (order + nodes) is a read-only snapshot; the host exposes no write surface for sending into a preview binding \u21D2 you cannot type inside the dialog. The sanctioned path = fork a branch (sessions.fork) \u2192 uiWorkspace.openSession to jump into the official session area; the bottom staging input\u2019s "Confirm" goes through onContinue, where the caller forks + sends the first turn via host-side agent.send + navigates (the same official dispatch path \u2014 no hacks).'
+      },
+      {
+        "zh": "\u5DF2\u77E5\u9650\u5236\uFF1A\u5B98\u65B9\u6837\u5F0F\u672A\u6CE8\u5165\u65F6\u56DE\u9000\u81EA\u7ED8\u89C2\u611F\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\uFF1B\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\uFF08\u7FFB\u9875\u9760\u300C\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55\u300D\u6309\u94AE\uFF0C\u5B98\u65B9 loadOlder\uFF09\uFF1B\u7CFB\u7EDF\u63D0\u793A / \u4E0A\u4E0B\u6587\u6CE8\u5165\u884C\u6309\u51B3\u7B56 28 \u8FC7\u6EE4\uFF08\u5B98\u65B9 ContextInjectionRow \u5F85\u5B9E\u65BD\uFF09\uFF1B\u{1F44D}\u{1F44E} \u53CD\u9988\u6309\u94AE\u5B98\u65B9\u8D70 slots\uFF0C\u5F39\u7A97\u65E0\u8BE5\u63D2\u69FD\u3002",
+        "en": 'Known limits: when official styles are not injected, the self-drawn look applies (functionality unaffected); long sessions render all at once (paging via the "load earlier" button, official loadOlder); system-prompt / context-injection rows are filtered per decision 28 (official ContextInjectionRow pending); thumbs up/down go through official slots, which the dialog does not have.'
       }
     ],
     "api": [
       {
-        "id": "session-source",
+        "id": "session-view-target",
         "rows": [
           {
-            "name": "listMessages",
-            "type": "(sessionId, signal?) => Promise<SessionMessage[]>",
+            "name": "openSessionView",
+            "type": "(sessions, uiConversation, id, retainSource?) => SessionViewTarget | null",
             "def": "\u2014",
             "required": "\u662F",
             "desc": {
-              "zh": "\u6309\u4F1A\u8BDD\u53D6\u6D88\u606F\u5217\u8868",
-              "en": "Fetch the message list for a session"
+              "zh": "\u5EFA\u6570\u636E\u94FE\uFF1Aretain \u7269\u5316 \u2192 binding \u2192 open \u62C9\u5C3E\u9875 \u2192 target(chat)\uFF1B\u4E0D\u53EF\u89E3\u6790\u8FD4\u56DE null",
+              "en": "Builds the data chain: retain materialize \u2192 binding \u2192 open tail \u2192 target(chat); null when unresolvable"
             }
           },
           {
-            "name": "download?",
-            "type": "(sessionId, path, signal?) => Promise<Uint8Array>",
+            "name": "target",
+            "type": "SnapshotFace<ChatViewFace | undefined>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u4E0B\u8F7D\u9644\u4EF6\uFF1B\u5BBF\u4E3B\u6CA1\u8FD9\u80FD\u529B\u5C31\u4E0D\u663E\u793A\u4E0B\u8F7D\u94AE",
-              "en": "Download an attachment; if the host lacks it, no download button shows"
+              "zh": "chat \u5FEB\u7167\u8BA2\u9605\u9762\uFF08useSyncExternalStore \u7528\uFF09",
+              "en": "Chat snapshot subscription surface (for useSyncExternalStore)"
+            }
+          },
+          {
+            "name": "loadOlder",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5411\u524D\u7FFB\u4E00\u9875\u66F4\u65E9\u7684\u5386\u53F2\uFF08\u5B98\u65B9 loadOlder\uFF09",
+              "en": "Page backward through older history (official loadOlder)"
+            }
+          },
+          {
+            "name": "dispose",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u91CA\u653E retain \u5F15\u7528\uFF1B\u5F39\u7A97\u5173\u95ED\u5FC5\u8C03",
+              "en": "Release the retain reference; must be called when the dialog closes"
             }
           }
         ]
       },
       {
-        "id": "session-preview",
+        "id": "session-view-modal",
         "rows": [
           {
             "name": "sessionId",
@@ -51728,54 +52030,64 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "def": "\u2014",
             "required": "\u662F",
             "desc": {
-              "zh": "\u5FC5\u586B",
-              "en": "Required"
+              "zh": "\u8981\u9884\u89C8\u7684\u4F1A\u8BDD",
+              "en": "The session to preview"
             }
           },
           {
-            "name": "source",
-            "type": "SessionSource",
+            "name": "view",
+            "type": "SessionViewTarget",
             "def": "\u2014",
             "required": "\u662F",
             "desc": {
-              "zh": "\u5FC5\u586B\uFF0C\u6CE8\u5165\u7684\u53D6\u6570\u80FD\u529B",
-              "en": "Required; the injected data capability"
+              "zh": "openSessionView \u7684\u4EA7\u7269",
+              "en": "The result of openSessionView"
             }
           },
           {
-            "name": "variant",
-            "type": "'modal' | 'sidebar' | 'page'",
-            "def": "'modal'",
+            "name": "heading",
+            "type": "string",
+            "def": "\u2014",
             "desc": {
-              "zh": "\u627F\u8F7D\u65B9\u5F0F",
-              "en": "Presentation"
-            }
-          },
-          {
-            "name": "title",
-            "type": "ReactNode",
-            "def": "sessionId",
-            "desc": {
-              "zh": "modal \u5F62\u6001\u7684\u6807\u9898",
-              "en": "Title of the modal form"
+              "zh": "\u53EF\u9009\u6807\u9898\uFF08\u62FC\u5728\u300C\u4F1A\u8BDD\u8BB0\u5F55\uFF08\u53EA\u8BFB\uFF09\u300D\u540E\uFF09",
+              "en": 'Optional title (appended after "Session transcript (read-only)")'
             }
           },
           {
             "name": "onClose",
             "type": "() => void",
             "def": "\u2014",
+            "required": "\u662F",
             "desc": {
-              "zh": "\u5173\u95ED\u56DE\u8C03",
-              "en": "Close callback"
+              "zh": "\u5173\u95ED\u56DE\u8C03\uFF08\u8C03\u7528\u65B9\u8D1F\u8D23 view.dispose()\uFF09",
+              "en": "Close callback (the caller owns view.dispose())"
             }
           },
           {
-            "name": "renderMessage",
-            "type": "(m: SessionMessage) => ReactNode",
-            "def": "\u5185\u7F6E\u6700\u7B80\u6E32\u67D3",
+            "name": "forkSession",
+            "type": "(sessionId, atSeq?) => Promise<string>",
+            "def": "\u2014",
             "desc": {
-              "zh": "\u2605 \u5B9A\u5236\u6269\u5C55\u70B9\uFF1A\u5BCC\u5185\u5BB9\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C\uFF09\u8D70\u8FD9\u91CC",
-              "en": "\u2605 Extension point: rich content (tool cards / code blocks / reasoning rows) goes here"
+              "zh": "fork \u6E90\u4F1A\u8BDD\uFF08\u5B98\u65B9 ISessions.fork\uFF09\uFF1B\u4E0E openHostSession \u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D",
+              "en": 'Fork the source session (official ISessions.fork); without openHostSession the "Continue" button does not render'
+            }
+          },
+          {
+            "name": "openHostSession",
+            "type": "(sessionId: string) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5B98\u65B9\u5BFC\u822A\u8DF3\u8F6C\uFF08uiWorkspace.openSession\uFF09",
+              "en": "Official navigation jump (uiWorkspace.openSession)"
+            }
+          },
+          {
+            "name": "onContinue",
+            "type": "(message: string) => Promise<void>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6682\u5B58\u8F93\u5165\u6846\u300C\u786E\u5B9A\u300D\uFF1A\u8C03\u7528\u65B9\u5B8C\u6210 fork + host \u4FA7 agent.send \u8D77\u8F6E\u6B21 + \u8DF3\u8F6C\uFF1B\u7F3A\u7701 = \u4E0D\u6E32\u67D3\u8F93\u5165\u6846",
+              "en": 'Staging input "Confirm": the caller forks + sends the first turn via host-side agent.send + navigates; absent = the input is not rendered'
             }
           },
           {
@@ -51783,17 +52095,17 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "(path: string) => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u70B9\u9644\u4EF6\u300C\u6253\u5F00\u300D\uFF08\u901A\u5E38\u4EA4\u7ED9 explorer\uFF09",
-              "en": 'Attachment "open" handler (usually delegated to explorer)'
+              "zh": "\u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF08\u5DE5\u5177\u5361 fileLink / md mention / \u4EA4\u4ED8\u5361\u5171\u7528\uFF09\uFF1B\u7F3A\u7701 = \u94FE\u63A5\u964D\u7EA7\u7EAF\u6587\u672C",
+              "en": "File-open exit (shared by tool-card fileLink / md mentions / delivered cards); absent = links degrade to plain text"
             }
           },
           {
-            "name": "translate",
+            "name": "t",
             "type": "Translate",
             "def": "\u5185\u7F6E",
             "desc": {
-              "zh": "\u8986\u76D6\u6587\u6848",
-              "en": "Override copy"
+              "zh": "\u8986\u76D6\u6587\u6848\uFF08\u6838\u5FC3\u5B57\u5178\u81EA\u5E26\u5168\u90E8\u4F1A\u8BDD\u6587\u6848\uFF0C\u4E2D\u82F1\uFF09",
+              "en": "Override copy (the built-in dictionary carries all session copy, zh+en)"
             }
           }
         ]
@@ -51801,14 +52113,14 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     ],
     "code": [
       {
-        "id": "session-source-shape",
-        "lang": "ts",
-        "src": "interface SessionMessage {\n  id: string\n  role: 'user' | 'assistant' | 'tool' | 'system'\n  text: string                 // \u7EAF\u6587\u672C\u6B63\u6587\n  createdAt?: string\n  attachments?: { name: string; path: string; bytes?: number }[]\n}"
-      },
-      {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { SessionPreview } from 'dsh-plugin-core/session'\n\nh(SessionPreview, {\n  sessionId,\n  source,                    // \u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\n  variant: 'modal',\n  onClose: () => setOpen(false),\n  renderMessage: (m) => h(RichMessage, { message: m }),  // \u53EF\u9009\n})"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 1. \u5BBF\u4E3B\u670D\u52A1\uFF08\u63D2\u4EF6\u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF1Bsessions \u2190 dsh-api-session-controller\u3001\n//    uiConversation \u2190 dsh-client-ui-conversation\uFF0Cinject \u8FB9\u51B3\u5B9A\u88C5\u914D\u987A\u5E8F\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'my-plugin')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',              // \u53EF\u9009\u6807\u9898\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    // \u7EED\u804A\uFF08\u53EF\u9009\u670D\u52A1\uFF09\uFF1Afork \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u786E\u5B9A\u540E\u7531\u8C03\u7528\u65B9 fork + host \u4FA7 agent.send \u8D77\u8F6E\u6B21 + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)   // \u63D2\u4EF6 host \u534A\u4FA7\uFF1Aagents.create + agent.send\n      openHostSession(child)\n    },\n    onOpenFile: (path) => openFilePreview(path),   // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\n    t,                                        // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
+      },
+      {
+        "id": "session-data-chain",
+        "lang": "ts",
+        "src": "// \u6570\u636E\u94FE\uFF08\u51B3\u7B56 28\uFF0C\u5168\u90E8\u7ECF\u5B98\u65B9\u6E90\u7801\u6838\u5B9E\uFF09\uFF1A\n//   sessions.retain(id, { source })  \u7269\u5316 scope\uFF08\u5F52\u6863 / \u4E45\u672A\u6253\u5F00\u7684\u4F1A\u8BDD\u4E5F\u80FD\u8BFB\uFF09\n//     \u2192 sessions.binding(id)         \u53D6\u7ED1\u5B9A\n//     \u2192 session.open()               \u5E42\u7B49\u62C9\u5386\u53F2\u5C3E\u9875\n//     \u2192 uiConversation.binding(binding).target('chat')\n//                                     \u62FF ChatSnapshot\uFF1Aorder + nodes\uFF08keyed \u6D41\uFF09\n// \u7528\u5B8C view.dispose() \u91CA\u653E\u5F15\u7528\uFF08\u5426\u5219\u4F1A\u8BDD scope \u6C38\u4E0D\u56DE\u6536\uFF09\u3002\n//\n// \u5DF2\u8BC1\u4F2A\u3001\u52FF\u518D\u5C1D\u8BD5\uFF1A\u5F39\u7A97\u5185\u6302\u5B98\u65B9 ChatView\uFF08renderSlot \u53EA\u8BA4 key='root'\uFF09\uFF1B\n//    \u81EA\u5DF1 retain('mainView')\uFF08\u9501\u6B7B\u5BBF\u4E3B\u4F1A\u8BDD\u5BFC\u822A\uFF09\uFF1B\u51B7\u8BFB RPC session/follow\uFF08\u65E0\u6D3B\u52A8\u901A\u9053\uFF09\u3002"
       }
     ]
   },
@@ -55088,7 +55400,7 @@ function LayoutPage() {
 }
 
 // packages/demo/src/sections/blocks.tsx
-var import_react46 = require("react");
+var import_react60 = require("react");
 
 // dist/explorer/FileBrowser.js
 var import_react43 = require("react");
@@ -56357,64 +56669,2561 @@ function pickWorkspaceFile(options) {
   });
 }
 
-// dist/session/index.js
+// dist/session/SessionViewModal.js
+var import_react59 = require("react");
+
+// dist/session/mirror/ChatView.js
+var import_react47 = require("react");
+
+// dist/session/official-classes.js
+var CSS_PKG_PREFIXES = [
+  "@deepseek-ai/dsh-client-ui-chat/",
+  "@deepseek-ai/dsh-client-ui-tool/",
+  "@deepseek-ai/dsh-client-ui-deliverables/",
+  "@deepseek-ai/dsh-client-ui-sidebar-documentpreview/"
+];
+function parseOfficialCss(css3) {
+  const out = /* @__PURE__ */ new Map();
+  const tokens = [];
+  const tokenRe = /\.([A-Za-z0-9_-]+)/g;
+  let m = tokenRe.exec(css3);
+  while (m !== null) {
+    const token = m[1];
+    if (token !== void 0)
+      tokens.push(token);
+    m = tokenRe.exec(css3);
+  }
+  const counts = /* @__PURE__ */ new Map();
+  for (const token of tokens) {
+    const at = token.lastIndexOf("_");
+    if (at <= 0 || at === token.length - 1)
+      continue;
+    const prefix3 = token.slice(0, at);
+    counts.set(prefix3, (counts.get(prefix3) ?? 0) + 1);
+  }
+  let prefix2 = "";
+  let best = 0;
+  counts.forEach((count3, key) => {
+    if (count3 > best) {
+      best = count3;
+      prefix2 = key;
+    }
+  });
+  if (prefix2 === "")
+    return out;
+  for (const token of tokens) {
+    if (!token.startsWith(prefix2 + "_"))
+      continue;
+    const semantic = token.slice(prefix2.length + 1);
+    if (semantic === "" || semantic.includes("_"))
+      continue;
+    if (!out.has(semantic))
+      out.set(semantic, token);
+  }
+  return out;
+}
+var discovered = null;
+function discoverOfficialClasses() {
+  if (discovered !== null)
+    return discovered;
+  const result = /* @__PURE__ */ new Map();
+  if (typeof document !== "undefined") {
+    const tags3 = document.querySelectorAll("style[data-plugin-css]");
+    for (let i2 = 0; i2 < tags3.length; i2++) {
+      const tag2 = tags3[i2];
+      const id3 = tag2.dataset.pluginCss ?? "";
+      const prefix2 = CSS_PKG_PREFIXES.find((candidate) => id3.startsWith(candidate));
+      if (prefix2 === void 0)
+        continue;
+      const module2 = id3.slice(prefix2.length).replace(/\.module\.css$/, "");
+      const parsed = parseOfficialCss(tag2.textContent ?? "");
+      if (parsed.size === 0 && (tag2.textContent ?? "").includes(".")) {
+        console.warn(`[dsh-plugin-core:session] \u5B98\u65B9\u6A21\u5757 ${module2} \u7C7B\u540D\u89E3\u6790\u4E3A\u7A7A\uFF08\u683C\u5F0F\u53EF\u80FD\u53D8\u4E86\uFF09`);
+      }
+      result.set(module2, parsed);
+    }
+  }
+  if (result.size > 0)
+    discovered = result;
+  return result;
+}
+function officialModuleCount() {
+  return discoverOfficialClasses().size;
+}
+function officialClass(module2, semantic) {
+  return discoverOfficialClasses().get(module2)?.get(semantic) ?? null;
+}
+function ocOr(module2, semantic, fallback) {
+  return officialClass(module2, semantic) ?? fallback;
+}
+
+// dist/session/mirror/ChatGroupSeat.js
+var import_react46 = require("react");
+
+// dist/session/mirror/ChatNodeSeat.js
 var import_react45 = require("react");
+var TURN_PROCESS_INDEPENDENT_KINDS = /* @__PURE__ */ new Set([
+  "system-prompt",
+  "user",
+  "steering",
+  "turn-trigger",
+  "turn-process",
+  "turn-error",
+  "turn-max-tokens",
+  "turn-tail"
+]);
+function readPresentation(store, key) {
+  if (store === void 0)
+    return void 0;
+  try {
+    const source = store.processSource;
+    if (typeof source !== "function")
+      return void 0;
+    return source.call(store, key)?.getSnapshot();
+  } catch {
+    return void 0;
+  }
+}
+function turnOf(node) {
+  const location = node?.location;
+  return location?.kind === "turn" || location?.kind === "step" ? location.turn?.turn : void 0;
+}
+function turnProcessAlwaysOpen(node) {
+  const location = node?.location;
+  if (location?.kind !== "turn" && location?.kind !== "step")
+    return false;
+  const reason = location.turn?.end?.data?.reason?.kind;
+  return location.turn?.status === "open" || reason === "aborted" || reason === "error";
+}
+function ChatNodeSeatMirror(props) {
+  const { node, groupPart, store, openState, onSetOpen, foldCompleted, renderNode } = props;
+  const turn = turnOf(node);
+  const presentation = readPresentation(store, node.key);
+  const spec = presentation?.spec ?? void 0 ?? (node.kind === "turn-process" ? node.data : void 0);
+  const liveProcess = presentation !== void 0 && presentation.turnClosed !== true;
+  const interleavedInput = presentation?.hasInterleavedInput === true;
+  const alwaysOpen = liveProcess || interleavedInput || turnProcessAlwaysOpen(node);
+  const storedAnswerStep = turn === void 0 ? void 0 : openState.get(turn);
+  const processOpen = alwaysOpen || spec !== void 0 && storedAnswerStep === (spec.answerStep ?? 0);
+  const setOpen = (open) => {
+    if (spec !== void 0 && !alwaysOpen && turn !== void 0)
+      onSetOpen(turn, spec.answerStep ?? 0, open);
+  };
+  const processWindowReady = spec !== void 0 && presentation !== void 0 && foldCompleted && presentation.turn === spec.turn && (presentation.turnStarted === true || presentation.turnClosed === true);
+  const dataStep = typeof node.data?.step === "number" ? node.data.step : void 0;
+  const processMember = processWindowReady && spec !== void 0 && !TURN_PROCESS_INDEPENDENT_KINDS.has(node.kind) && node.anchorSeq >= spec.processStartSeq && (liveProcess || spec.answerAnchorSeq === null || node.anchorSeq < spec.answerAnchorSeq || groupPart === "reasoning" && node.kind === "assistant-step" && dataStep === spec.answerStep);
+  const processAnswer = processWindowReady && spec !== void 0 && !liveProcess && groupPart !== "reasoning" && node.kind === "assistant-step" && dataStep === spec.answerStep;
+  const ownsDisclosure = node.kind === "turn-process" || processAnswer;
+  const foldable2 = processWindowReady && (liveProcess || processMember || ownsDisclosure);
+  const turnProcess = spec === void 0 ? void 0 : {
+    spec,
+    foldable: foldable2,
+    hasContent: !interleavedInput && (presentation?.hasExternalProcess === true || spec.inlineReasoning),
+    open: processOpen,
+    alwaysOpen,
+    setOpen
+  };
+  const controllerInactive = node.kind === "turn-process" && foldCompleted && !foldable2;
+  const compactAnswer = processAnswer && foldable2 && presentation?.compactAnswer === true && !processOpen;
+  const processHidden = controllerInactive || foldable2 && processMember && !processOpen;
+  const inner = renderNode(node, turnProcess, groupPart);
+  if (inner === null || inner === void 0)
+    return null;
+  const flowKey = groupPart === void 0 || groupPart === "response" ? node.key : JSON.stringify([node.key, groupPart]);
+  return (0, import_react45.createElement)("div", {
+    className: ocOr("ChatView", "flowItem", "dshpc-sv-flowitem"),
+    "data-chat-anchor-key": flowKey,
+    "data-chat-flow-key": flowKey,
+    "data-chat-paging-anchor": node.kind !== "turn-process" || void 0,
+    "data-chat-node-key": node.key,
+    "data-chat-group-part": groupPart,
+    "data-chat-flow-kind": node.kind,
+    "data-chat-turn": turn,
+    "data-turn-process-member": processMember || void 0,
+    "data-turn-process-hidden": processHidden || void 0,
+    "data-turn-process-answer": compactAnswer || void 0,
+    hidden: processHidden || void 0
+  }, inner);
+}
 
-// dist/session/types.js
-var ROLE_LABEL_KEY = {
-  user: "sessionRoleUser",
-  assistant: "sessionRoleAssistant",
-  tool: "sessionRoleTool",
-  system: "sessionRoleTool"
-};
-
-// dist/session/index.js
-function SessionPreview(props) {
-  ensureControls();
-  const tt = props.translate ?? t;
-  const variant = props.variant ?? "modal";
-  const [messages, setMessages] = (0, import_react45.useState)([]);
-  const [loading, setLoading] = (0, import_react45.useState)(true);
-  const [failed, setFailed] = (0, import_react45.useState)(false);
-  const [nonce, setNonce] = (0, import_react45.useState)(0);
-  (0, import_react45.useEffect)(() => {
-    let alive = true;
-    setLoading(true);
-    setFailed(false);
-    props.source.listMessages(props.sessionId).then((list) => {
-      if (alive) {
-        setMessages(list);
-        setLoading(false);
-      }
-    }).catch(() => {
-      if (alive) {
-        setMessages([]);
-        setFailed(true);
-        setLoading(false);
-      }
+// dist/session/mirror/process-groups.js
+var INDEPENDENT = /* @__PURE__ */ new Set([
+  "user",
+  "steering",
+  "turn-trigger",
+  "model-retry",
+  "turn-error",
+  "turn-max-tokens",
+  "turn-tail"
+]);
+function turnOfNode(node) {
+  const location = node.location;
+  return location?.kind === "turn" || location?.kind === "step" ? location.turn?.turn : void 0;
+}
+function hasReasoning(node) {
+  if (node.kind !== "assistant-step" || !Array.isArray(node.data?.blocks))
+    return false;
+  return (node.data?.blocks).some((block2) => block2?.kind === "reasoning" && (block2.text ?? "").trim() !== "");
+}
+function hasReply(node) {
+  if (node.kind !== "assistant-step" || !Array.isArray(node.data?.blocks))
+    return false;
+  return (node.data?.blocks).some((block2) => {
+    if (block2 === null || typeof block2 !== "object")
+      return false;
+    if (block2.kind === "reasoning" || block2.kind === "tool-call")
+      return false;
+    if (block2.kind === "text")
+      return (block2.text ?? "").trim() !== "";
+    return true;
+  });
+}
+function toolActivity(name2) {
+  if (name2 === "read")
+    return "read";
+  if (name2 === "read_image")
+    return "readImage";
+  if (name2 === "grep" || name2 === "glob" || name2.endsWith("_inspect"))
+    return "search";
+  if (name2 === "write")
+    return "write";
+  if (name2 === "edit" || name2 === "apply_patch")
+    return "edit";
+  if (["bash", "pwsh", "exec_command", "write_stdin"].includes(name2) || name2.startsWith("terminal_"))
+    return "commands";
+  if (name2 === "run_code")
+    return "code";
+  if (name2 === "web_search")
+    return "webSearch";
+  if (name2 === "web_fetch")
+    return "webFetch";
+  if (name2 === "subagent" || name2.startsWith("subagent_"))
+    return "subagents";
+  if (["todo_write", "create_goal", "update_goal", "get_goal"].includes(name2))
+    return "plan";
+  if (name2 === "ask_user_question" || name2 === "request_user_input")
+    return "questions";
+  return "tools";
+}
+function toolCallFace(root) {
+  const callId = typeof root.callId === "string" ? root.callId : "";
+  if (root.kind === "tool-result") {
+    const name3 = typeof root.call?.name === "string" ? root.call.name : "";
+    return callId === "" || name3 === "" ? null : { callId, name: name3 };
+  }
+  const name2 = typeof root.name === "string" ? root.name : "";
+  return callId === "" || name2 === "" ? null : { callId, name: name2 };
+}
+function processActivity(nodes) {
+  const counts = /* @__PURE__ */ new Map();
+  const seen = /* @__PURE__ */ new Set();
+  const visit = (tool) => {
+    const face = toolCallFace(tool);
+    if (face !== null && !seen.has(face.callId)) {
+      seen.add(face.callId);
+      const kind = toolActivity(face.name);
+      counts.set(kind, (counts.get(kind) ?? 0) + 1);
+    }
+    for (const child of tool.subCalls ?? [])
+      visit(child);
+  };
+  for (const node of nodes) {
+    if (node.kind !== "tool-call")
+      continue;
+    const root = node.data?.root;
+    if (root !== void 0 && root !== null)
+      visit(root);
+  }
+  return [...counts].map(([kind, count3]) => ({ kind, count: count3 })).sort((left, right) => right.count - left.count);
+}
+function buildProcessGroups(order, readNode, isTurnClosed) {
+  const entries2 = [];
+  const groups = /* @__PURE__ */ new Map();
+  let pending = [];
+  let currentTurn;
+  const flush2 = (closed) => {
+    const first = pending[0];
+    if (first === void 0)
+      return;
+    const turn = currentTurn;
+    const ended = closed || turn !== void 0 && isTurnClosed(turn);
+    const members = pending;
+    const nodes = members.map((member) => readNode(member.key)).filter((node) => node !== void 0);
+    const groupKey = JSON.stringify(["process", first.key, first.groupPart ?? null]);
+    groups.set(groupKey, {
+      key: groupKey,
+      members,
+      data: { turn: turn ?? -1, closed: ended, summary: { counts: processActivity(nodes) } }
     });
-    return () => {
-      alive = false;
-    };
-  }, [props.sessionId, props.source, nonce]);
-  const body = loading ? (0, import_react45.createElement)("div", { className: "dshpc-ses__note" }, tt("sessionLoading")) : failed ? (0, import_react45.createElement)(EmptyState, {
-    text: tt("sessionFailed"),
-    translate: tt,
-    action: (0, import_react45.createElement)("button", { type: "button", className: "dshpc-error__retry", onClick: () => setNonce(nonce + 1) }, tt("errorRetry"))
-  }) : messages.length === 0 ? (0, import_react45.createElement)(EmptyState, { text: tt("sessionEmpty"), translate: tt }) : (0, import_react45.createElement)("div", { className: "dshpc-ses__list" }, messages.map((m) => props.renderMessage !== void 0 ? (0, import_react45.createElement)("div", { key: m.id }, props.renderMessage(m)) : (0, import_react45.createElement)("div", { key: m.id, className: `dshpc-ses__msg dshpc-ses__msg--${m.role}` }, (0, import_react45.createElement)("div", { className: "dshpc-ses__head" }, tt(ROLE_LABEL_KEY[m.role])), (0, import_react45.createElement)("pre", { className: "dshpc-ses__text" }, m.text), (m.attachments ?? []).length === 0 ? null : (0, import_react45.createElement)("div", { className: "dshpc-ses__atts" }, (m.attachments ?? []).map((a) => (0, import_react45.createElement)("button", {
-    key: a.path,
-    type: "button",
-    className: "dshpc-ses__att",
-    onClick: () => props.onOpenFile?.(a.path)
-  }, a.name, a.bytes === void 0 ? null : ` ${formatBytes(a.bytes)}`))))));
-  if (variant === "modal") {
-    return (0, import_react45.createElement)(Modal, {
-      title: props.title ?? props.sessionId,
-      onClose: props.onClose,
-      children: (0, import_react45.createElement)("div", { className: "dshpc-ses", style: { minWidth: "min(720px, 88vw)" } }, body)
+    entries2.push({ kind: "group", key: groupKey });
+    pending = [];
+  };
+  for (const key of order) {
+    const node = readNode(key);
+    if (node === void 0)
+      continue;
+    const turn = turnOfNode(node);
+    if (turn !== currentTurn) {
+      flush2(true);
+      currentTurn = turn;
+    }
+    if (INDEPENDENT.has(node.kind)) {
+      flush2(true);
+      entries2.push({ kind: "node", key });
+    } else if (node.kind === "turn-process") {
+      entries2.push({ kind: "node", key });
+    } else if (node.kind === "assistant-step") {
+      if (hasReasoning(node))
+        pending.push({ key, groupPart: "reasoning" });
+      if (hasReply(node)) {
+        flush2(true);
+        entries2.push({ kind: "node", key, groupPart: "response" });
+      }
+    } else {
+      pending.push({ key });
+    }
+  }
+  flush2(currentTurn === void 0 ? true : isTurnClosed(currentTurn));
+  return { entries: entries2, groups };
+}
+var STEP_DONE_KEYS = {
+  thinking: "stepProcessDoneThinking",
+  read: "stepProcessDoneRead",
+  readImage: "stepProcessDoneReadImage",
+  write: "stepProcessDoneWrite",
+  search: "stepProcessDoneSearch",
+  edit: "stepProcessDoneEdit",
+  commands: "stepProcessDoneCommands",
+  code: "stepProcessDoneCode",
+  webSearch: "stepProcessDoneWebSearch",
+  webFetch: "stepProcessDoneWebFetch",
+  subagents: "stepProcessDoneSubagents",
+  plan: "stepProcessDonePlan",
+  questions: "stepProcessDoneQuestions",
+  tools: "stepProcessDoneTools"
+};
+function processTitle(summary, t4) {
+  const labels = summary.counts.slice(0, 3).map(({ kind }) => t4(STEP_DONE_KEYS[kind]));
+  const first = labels[0];
+  if (first === void 0)
+    return t4("stepProcessDoneThinking");
+  const continuation = (label) => label.charAt(0).toLowerCase() + label.slice(1);
+  const second = labels[1];
+  if (second === void 0)
+    return first;
+  if (labels.length === 2) {
+    const prefix2 = t4("stepProcessSharedPrefix");
+    return t4("stepProcessJoinTwo", {
+      first,
+      second: continuation(prefix2 !== "" && first.startsWith(prefix2) && second.startsWith(prefix2) ? second.slice(prefix2.length) : second)
     });
   }
-  return (0, import_react45.createElement)("div", { className: `dshpc-ses dshpc-ses--${variant}` }, props.onClose === void 0 ? null : (0, import_react45.createElement)("div", { className: "dshpc-ses__head" }, (0, import_react45.createElement)("button", { type: "button", className: "dshpc-exp__crumb", onClick: props.onClose }, "\u2715")), body);
+  const title = [first, ...labels.slice(1).map(continuation)].join(t4("stepProcessComma"));
+  return summary.counts.length > 3 ? t4("stepProcessMore", { title }) : title;
+}
+
+// dist/session/mirror/ChatGroupSeat.js
+var PROCESS_ICONS = {
+  thinking: official_exports.IconThinkOutlineRegular,
+  read: official_exports.IconBrowseOutlineRegular,
+  readImage: official_exports.IconBrowseOutlineRegular,
+  search: official_exports.IconSearchOutlineRegular,
+  edit: official_exports.IconEditOutlineRegular,
+  write: official_exports.IconEditOutlineRegular,
+  commands: official_exports.IconApiOutlineRegular,
+  code: official_exports.IconCodeOutlineRegular,
+  webSearch: official_exports.IconGlobeOutlineRegular,
+  webFetch: official_exports.IconBrowseOutlineRegular,
+  subagents: official_exports.IconAgentPresetOutlineRegular,
+  plan: official_exports.IconPlanOutlineRegular,
+  questions: official_exports.IconQuestionOutlineRegular,
+  tools: official_exports.IconSparkleRegular
+};
+var SMALL_ICONS = /* @__PURE__ */ new Set([
+  "read",
+  "readImage",
+  "search",
+  "edit",
+  "write",
+  "code",
+  "webFetch",
+  "subagents",
+  "tools"
+]);
+function ChatGroupSeatMirror(props) {
+  const { group, grouped, store, openState, onSetOpen, foldCompleted, renderNode, t: t4 } = props;
+  const [open, setOpen] = (0, import_react46.useState)(false);
+  const first = group.members[0];
+  const firstNode = first === void 0 ? void 0 : store?.get(first.key);
+  const presentation = first === void 0 ? void 0 : readPresentation(store, first.key);
+  const spec = presentation?.spec ?? void 0;
+  const location = firstNode?.location;
+  const reason = location?.kind === "turn" || location?.kind === "step" ? location.turn?.end?.data?.reason?.kind : void 0;
+  const alwaysOpen = presentation?.turnClosed === false || presentation?.hasInterleavedInput === true || reason === "aborted" || reason === "error";
+  const storedAnswerStep = openState.get(group.data.turn);
+  const outerHidden = foldCompleted && presentation?.turnClosed === true && spec !== void 0 && !alwaysOpen && storedAnswerStep !== (spec.answerStep ?? 0);
+  (0, import_react46.useEffect)(() => {
+    if (outerHidden)
+      setOpen(false);
+  }, [outerHidden]);
+  const bodyRef = (0, import_react46.useRef)(null);
+  const [edges, setEdges] = (0, import_react46.useState)({ up: false, down: false });
+  const measure = (0, import_react46.useCallback)(() => {
+    const el = bodyRef.current;
+    if (el === null)
+      return;
+    setEdges({
+      up: el.scrollTop > 1,
+      down: el.scrollTop + el.clientHeight < el.scrollHeight - 1
+    });
+  }, []);
+  (0, import_react46.useEffect)(() => {
+    if (grouped && open)
+      measure();
+  }, [grouped, open, measure]);
+  if (first === void 0 || firstNode === void 0)
+    return null;
+  const label = group.data.closed ? processTitle(group.data.summary, t4) : t4("stepProcessDoneThinking");
+  const activity = group.data.summary.counts[0]?.kind ?? "thinking";
+  const ActivityIcon = PROCESS_ICONS[activity] ?? official_exports.IconThinkOutlineRegular;
+  const bodyClass = [
+    ocOr("ChatGroupSeat", "body", "dshpc-sv-group-body"),
+    grouped ? "" : ocOr("ChatGroupSeat", "expandedBody", "dshpc-sv-group-expanded"),
+    grouped && edges.up ? ocOr("ChatGroupSeat", "fadeTop", "dshpc-sv-group-fade-top") : "",
+    grouped && edges.down ? ocOr("ChatGroupSeat", "fadeBottom", "dshpc-sv-group-fade-bottom") : ""
+  ].filter((part) => part !== "").join(" ");
+  return (0, import_react46.createElement)("div", {
+    className: ocOr("ChatGroupSeat", "root", "dshpc-sv-group"),
+    "data-chat-group-key": group.key,
+    "data-chat-flow-key": group.key,
+    "data-chat-anchor-key": `group:${group.key}`,
+    "data-chat-turn": group.data.turn,
+    "data-step-process": true,
+    "data-group-expanded-mode": !grouped || void 0,
+    hidden: outerHidden || void 0
+  }, grouped ? (0, import_react46.createElement)("button", {
+    type: "button",
+    className: ocOr("ChatGroupSeat", "title", "dshpc-sv-group-title"),
+    "aria-expanded": open,
+    onClick: () => {
+      setOpen((value) => !value);
+    }
+  }, (0, import_react46.createElement)("span", {
+    className: ocOr("ChatGroupSeat", "leading", "dshpc-sv-group-leading"),
+    "aria-hidden": true
+  }, (0, import_react46.createElement)("span", {
+    className: ocOr("ChatGroupSeat", "activityIcon", "dshpc-sv-group-icon"),
+    "data-step-process-icon": true
+  }, (0, import_react46.createElement)(ActivityIcon, SMALL_ICONS.has(activity) ? { size: 14 } : {})), open ? (0, import_react46.createElement)(official_exports.IconChevronUpOutlineRegular, { className: ocOr("ChatGroupSeat", "chevron", "dshpc-sv-group-chevron") }) : (0, import_react46.createElement)(official_exports.IconChevronDownOutlineRegular, { className: ocOr("ChatGroupSeat", "chevron", "dshpc-sv-group-chevron") })), (0, import_react46.createElement)("span", { className: ocOr("ChatGroupSeat", "label", "dshpc-sv-group-label") }, label)) : null, (0, import_react46.createElement)("div", {
+    ref: bodyRef,
+    className: bodyClass,
+    "data-step-process-body": true,
+    "data-scroll-up": edges.up || void 0,
+    "data-scroll-down": edges.down || void 0,
+    onScroll: measure,
+    hidden: grouped && !open || void 0
+  }, (0, import_react46.createElement)("div", {
+    className: ocOr("ChatGroupSeat", "content", "dshpc-sv-group-content"),
+    "data-step-process-content": true,
+    "data-chat-flow": ""
+  }, group.members.map((member) => (0, import_react46.createElement)(ChatNodeSeatMirror, {
+    key: JSON.stringify([member.key, member.groupPart ?? null]),
+    node: store?.get(member.key) ?? { key: member.key, kind: "", anchorSeq: 0 },
+    groupPart: member.groupPart,
+    store,
+    openState,
+    onSetOpen,
+    foldCompleted,
+    renderNode
+  })))));
+}
+
+// dist/session/mirror/ChatView.js
+function ChatViewFrame(props) {
+  return (0, import_react47.createElement)("div", { className: `${ocOr("ChatView", "frame", "dshpc-sv-body")} dshpc-sv-frame dshpc-sv-chat` }, (0, import_react47.createElement)("div", { className: ocOr("ChatView", "root", "") }, (0, import_react47.createElement)("div", { className: `${ocOr("ChatView", "scroll", "")} dshpc-sv-scroll` }, (0, import_react47.createElement)("div", { className: ocOr("ChatView", "column", "dshpc-sv-col"), "data-chat-flow": "" }, props.children))));
+}
+function ChatNodeListMirror(props) {
+  const { order, store, entries: entries2, groups, turns, openState, onSetOpen, foldCompleted, renderNode, t: t4 } = props;
+  const rows = [];
+  const read = store === void 0 ? void 0 : store.get;
+  if (typeof read !== "function" || store === void 0)
+    return rows;
+  const readSafe = (key) => {
+    try {
+      return read.call(store, key);
+    } catch {
+      return void 0;
+    }
+  };
+  if (entries2 !== void 0 && groups !== void 0) {
+    for (const entry of entries2) {
+      if (entry.kind === "group") {
+        const group = groups.get(entry.key);
+        if (group === void 0)
+          continue;
+        rows.push((0, import_react47.createElement)(ChatGroupSeatMirror, {
+          key: entry.key,
+          group,
+          grouped: turnStatus(turns, group.data.turn) !== "open",
+          store,
+          openState,
+          onSetOpen,
+          foldCompleted,
+          renderNode,
+          t: t4
+        }));
+      } else {
+        const node = readSafe(entry.key);
+        if (node === void 0)
+          continue;
+        rows.push((0, import_react47.createElement)(ChatNodeSeatMirror, {
+          key: JSON.stringify([entry.key, entry.groupPart ?? null]),
+          node,
+          groupPart: entry.groupPart,
+          store,
+          openState,
+          onSetOpen,
+          foldCompleted,
+          renderNode
+        }));
+      }
+    }
+    return rows;
+  }
+  for (const key of order) {
+    const node = readSafe(key);
+    if (node === void 0)
+      continue;
+    rows.push((0, import_react47.createElement)(ChatNodeSeatMirror, { key, node, store, openState, onSetOpen, foldCompleted, renderNode }));
+  }
+  return rows;
+}
+function turnStatus(turns, turn) {
+  const row = turns?.get(turn) ?? turns?.get(String(turn));
+  return row?.status;
+}
+function ChatHint(props) {
+  return (0, import_react47.createElement)("div", { className: ocOr("ChatView", "hint", "dshpc-sv-hint") }, props.text);
+}
+function ChatOlderButton(props) {
+  return (0, import_react47.createElement)("div", { className: ocOr("ChatView", "older", "dshpc-sv-older") }, (0, import_react47.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
+}
+
+// dist/session/mirror/GenericCommandCard.js
+var import_react48 = require("react");
+var TOOL_VARIANTS = {
+  bash: "bash",
+  pwsh: "bash",
+  read: "read",
+  read_image: "read",
+  web_fetch: "read",
+  web_search: "search",
+  grep: "search",
+  glob: "search",
+  write: "write",
+  edit: "edit",
+  run_code: "code",
+  cordis_package_inspect: "read",
+  cordis_runtime_inspect: "read",
+  cordis_run: "others",
+  cordis_stop: "others",
+  cordis_undefine: "others"
+};
+var classifyTool = (name2) => TOOL_VARIANTS[name2] ?? "others";
+var VARIANT_TITLE_KEYS = {
+  search: "toolTitleSearch",
+  read: "toolTitleRead",
+  bash: "toolTitleBash",
+  write: "toolTitleWrite",
+  edit: "toolTitleEdit",
+  code: "toolTitleCode",
+  others: "toolTitleGeneric"
+};
+var TOOL_TITLE_KEYS = {
+  pwsh: "toolTitleBash",
+  read_image: "toolTitleReadImage",
+  grep: "toolTitleGrep",
+  glob: "toolTitleGlob",
+  web_search: "toolTitleWebSearch",
+  web_fetch: "toolTitleWebFetch"
+};
+var toolTitleKey = (name2) => TOOL_TITLE_KEYS[name2] ?? VARIANT_TITLE_KEYS[classifyTool(name2)];
+var VARIANT_ICONS = {
+  search: (0, import_react48.createElement)(official_exports.IconSearchOutlineRegular, { size: 14 }),
+  read: (0, import_react48.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
+  bash: (0, import_react48.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
+  write: (0, import_react48.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
+  edit: (0, import_react48.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
+  code: (0, import_react48.createElement)(official_exports.IconCodeOutlineRegular, { size: 14 }),
+  others: (0, import_react48.createElement)(official_exports.IconSparkleRegular, { size: 14 })
+};
+var SUMMARY_KEYS = {
+  bash: ["description", "command"],
+  read: ["path", "file_path", "url"],
+  search: ["query", "pattern", "url"],
+  write: ["path", "file_path"],
+  edit: ["path", "file_path"],
+  code: ["description"],
+  others: []
+};
+var FILE_PATH_VARIANTS = /* @__PURE__ */ new Set(["read", "write", "edit"]);
+var firstLine = (text2) => {
+  const nl = text2.indexOf("\n");
+  return nl === -1 ? text2 : text2.slice(0, nl);
+};
+var parseArgs = (raw) => {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return void 0;
+  }
+};
+var pickString = (args, keys2) => {
+  for (const key of keys2) {
+    const value = args[key];
+    if (typeof value === "string" && value !== "")
+      return value;
+  }
+  return void 0;
+};
+function deriveSummary(variant, argsRaw) {
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return firstLine(argsRaw);
+  const args = parsed;
+  if (variant === "search" && Array.isArray(args.queries)) {
+    const queries = args.queries.filter((query) => typeof query === "string" && query !== "");
+    if (queries.length > 0)
+      return queries.map(firstLine).join(", ");
+  }
+  const picked = pickString(args, SUMMARY_KEYS[variant]);
+  if (picked !== void 0)
+    return firstLine(picked);
+  for (const value of Object.values(args))
+    if (typeof value === "string" && value !== "")
+      return firstLine(value);
+  return firstLine(argsRaw);
+}
+function deriveFilePath(variant, argsRaw) {
+  if (!FILE_PATH_VARIANTS.has(variant))
+    return void 0;
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return void 0;
+  const picked = pickString(parsed, ["path", "file_path"]);
+  return picked === void 0 ? void 0 : firstLine(picked);
+}
+function formatToolBody(variant, argsRaw) {
+  if (argsRaw === "")
+    return null;
+  const parsed = parseArgs(argsRaw);
+  if (parsed === void 0)
+    return argsRaw;
+  if (variant === "code" && typeof parsed === "object" && parsed !== null) {
+    const code3 = parsed.code;
+    if (typeof code3 === "string" && code3 !== "")
+      return code3;
+  }
+  return JSON.stringify(parsed, null, 2);
+}
+function validEscalationFields(args) {
+  const permission = args.sandbox_permissions;
+  const justification = args.justification;
+  if (permission === void 0 && justification === void 0)
+    return true;
+  if (permission !== "workspace-write" && permission !== "danger-full-access")
+    return false;
+  return typeof justification === "string" && justification.trim() !== "";
+}
+function intendedDiff(name2, argsRaw) {
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return null;
+  const args = parsed;
+  if (name2 === "str_replace_editor") {
+    const { command: command2, path: path2, file_text: fileText, old_str: oldText2, new_str: newText2 } = args;
+    if (typeof path2 !== "string" || path2.trim() === "")
+      return null;
+    if (command2 === "create") {
+      if (fileText !== void 0 && typeof fileText !== "string")
+        return null;
+      return { tool: name2, diff: { path: path2, oldText: null, newText: typeof fileText === "string" ? fileText : "" } };
+    }
+    if (command2 === "str_replace") {
+      if (oldText2 !== void 0 && typeof oldText2 !== "string")
+        return null;
+      if (newText2 !== void 0 && typeof newText2 !== "string")
+        return null;
+      return { tool: name2, diff: { path: path2, oldText: typeof oldText2 === "string" ? oldText2 : null, newText: typeof newText2 === "string" ? newText2 : "" } };
+    }
+    return null;
+  }
+  const { file_path: path } = args;
+  if (typeof path !== "string" || path.trim() === "")
+    return null;
+  if (!validEscalationFields(args))
+    return null;
+  if (name2 === "write") {
+    const { content: content2 } = args;
+    return typeof content2 === "string" ? { tool: name2, diff: { path, oldText: null, newText: content2 } } : null;
+  }
+  if (name2 !== "edit")
+    return null;
+  const { old_string: oldText, new_string: newText, replace_all: replaceAll2 } = args;
+  if (typeof oldText !== "string" || typeof newText !== "string")
+    return null;
+  if (replaceAll2 !== void 0 && typeof replaceAll2 !== "boolean")
+    return null;
+  return { tool: name2, diff: { path, oldText: oldText || null, newText } };
+}
+function narrowDiffs(diffs) {
+  if (!Array.isArray(diffs) || diffs.length === 0)
+    return null;
+  const out = [];
+  for (const hunk of diffs) {
+    if (typeof hunk !== "object" || hunk === null || Array.isArray(hunk))
+      return null;
+    const { path, oldText, newText } = hunk;
+    if (typeof path !== "string")
+      return null;
+    if (oldText !== null && typeof oldText !== "string")
+      return null;
+    if (typeof newText !== "string")
+      return null;
+    out.push({ path, oldText, newText });
+  }
+  return out;
+}
+function appliedDiffs(meta2) {
+  if (typeof meta2 !== "object" || meta2 === null || Array.isArray(meta2))
+    return null;
+  const diffs = meta2.diffs;
+  if (!Array.isArray(diffs))
+    return null;
+  if (diffs.length === 0)
+    return "empty";
+  return narrowDiffs(diffs);
+}
+function diffCardModel(name2, argsRaw, meta2, isError, settled) {
+  const intended = intendedDiff(name2, argsRaw);
+  if (intended === null)
+    return null;
+  if (!settled)
+    return [intended.diff];
+  if (name2 === "str_replace_editor")
+    return null;
+  if (isError)
+    return null;
+  const applied = appliedDiffs(meta2);
+  if (applied === null || applied === "empty")
+    return name2 === "write" ? [intended.diff] : null;
+  return applied;
+}
+var positiveInteger = (value) => typeof value === "number" && Number.isInteger(value) && value >= 1;
+function readMeta(meta2) {
+  if (typeof meta2 !== "object" || meta2 === null || Array.isArray(meta2))
+    return null;
+  const { path, offset: offset4, lines, totalLines, lang } = meta2;
+  if (typeof path !== "string" || typeof offset4 !== "number" || !Number.isInteger(offset4) || offset4 < 1)
+    return null;
+  if (typeof totalLines !== "number" || !Number.isInteger(totalLines) || totalLines < 0 || !Array.isArray(lines))
+    return null;
+  if (lang !== void 0 && typeof lang !== "string")
+    return null;
+  const narrowed = [];
+  let previous = offset4 - 1;
+  for (const line of lines) {
+    if (typeof line !== "object" || line === null || Array.isArray(line))
+      return null;
+    const { number: number2, text: text2 } = line;
+    if (typeof number2 !== "number" || !Number.isInteger(number2) || number2 < 1 || number2 <= previous)
+      return null;
+    if (number2 > totalLines || typeof text2 !== "string")
+      return null;
+    previous = number2;
+    narrowed.push({ number: number2, text: text2 });
+  }
+  return { label: path, lines: narrowed, totalLines, ...lang === void 0 ? {} : { lang } };
+}
+function readCardModel(name2, argsRaw, output, meta2, isError, settled) {
+  if (!settled || isError || name2 !== "read")
+    return null;
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return null;
+  const { file_path: path, offset: offset4, limit } = parsed;
+  if (typeof path !== "string" || path.trim() === "")
+    return null;
+  if (offset4 !== void 0 && !positiveInteger(offset4))
+    return null;
+  if (limit !== void 0 && !positiveInteger(limit))
+    return null;
+  const face = readMeta(meta2);
+  if (face === null)
+    return null;
+  if (/^<path>[^\n]*<\/path>\n<type>file<\/type>\n<content>\n([\s\S]*)\n<\/content>$/u.exec(output)?.[1] === void 0)
+    return null;
+  return face;
+}
+function shellCall(name2, args) {
+  if (name2 !== "bash" && name2 !== "pwsh")
+    return null;
+  const { command: command2, description, timeoutMs, workdir, run_in_background: background2 } = args;
+  if (typeof command2 !== "string" || command2.trim() === "")
+    return null;
+  if (timeoutMs !== void 0 && (typeof timeoutMs !== "number" || !Number.isFinite(timeoutMs) || timeoutMs <= 0))
+    return null;
+  if (workdir !== void 0 && typeof workdir !== "string")
+    return null;
+  if (background2 !== void 0 && typeof background2 !== "boolean")
+    return null;
+  if (!validEscalationFields(args))
+    return null;
+  if (description === void 0)
+    return { command: command2, description: "", workdir: void 0, persistent: true, background: false };
+  if (typeof description !== "string" || description.trim() === "")
+    return null;
+  return { command: command2, description, workdir, persistent: false, background: background2 === true };
+}
+function terminalSendCall(name2, args) {
+  if (name2 !== "terminal_send")
+    return null;
+  const { sessionId, text: text2, run_in_background: background2 } = args;
+  if (typeof sessionId !== "string" || sessionId === "" || typeof text2 !== "string")
+    return null;
+  if (background2 !== void 0 && typeof background2 !== "boolean")
+    return null;
+  return { text: text2, sessionId, background: background2 === true };
+}
+function parseExitStatus(text2) {
+  const signal = /\n\[killed by signal: ([^\]\n]+)\]$/.exec(text2);
+  if (signal?.[1] !== void 0)
+    return { output: text2.slice(0, signal.index), signal: signal[1] };
+  const exit = /\n\[exit code: (\d+)\]$/.exec(text2);
+  if (exit?.[1] !== void 0)
+    return { output: text2.slice(0, exit.index), exitCode: Number(exit[1]) };
+  return { output: text2, exitCode: 0 };
+}
+function hasSpillNotice(text2) {
+  if (!text2.endsWith(")"))
+    return false;
+  return text2.includes("\n\n( Full formatted result stored at: ");
+}
+function normalizeSegments(path) {
+  if (!/(?:^|[/\\])\.\.?(?:[/\\]|$)/.test(path))
+    return path;
+  const out = [];
+  for (const segment of path.split(/[/\\]+/)) {
+    if (segment === "" || segment === ".")
+      continue;
+    if (segment === "..") {
+      out.pop();
+      continue;
+    }
+    out.push(segment);
+  }
+  return out.join("/");
+}
+function terminalCardModel(name2, argsRaw, output, isError, settled) {
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return null;
+  const args = parsed;
+  const shell2 = shellCall(name2, args);
+  const send = shell2 === null ? terminalSendCall(name2, args) : null;
+  if (shell2 === null && send === null)
+    return null;
+  if (shell2 !== null && shell2.background || send !== null && send.background)
+    return null;
+  if (!settled) {
+    return shell2 !== null ? { command: shell2.command, cwd: shell2.workdir === void 0 ? void 0 : normalizeSegments(shell2.workdir), running: true } : { command: send.text, running: true, sessionId: send.sessionId };
+  }
+  if (isError || shell2 !== null && shell2.persistent || hasSpillNotice(output))
+    return null;
+  if (send !== null)
+    return { command: send.text, running: false, sessionId: send.sessionId };
+  const shellCmd = shell2;
+  const status = parseExitStatus(output);
+  return {
+    command: shellCmd.command,
+    cwd: shellCmd.workdir === void 0 ? void 0 : normalizeSegments(shellCmd.workdir),
+    output: status.output,
+    exitCode: status.exitCode,
+    signal: status.signal,
+    running: false
+  };
+}
+var codeToolbarLabels = (t4) => ({
+  codeLabel: t4("codeBlockLabel"),
+  wrapLabel: t4("diffWrapLabel"),
+  unwrapLabel: t4("diffUnwrapLabel")
+});
+var diffLabels = (t4) => ({
+  ...codeToolbarLabels(t4),
+  copy: t4("copyLabel"),
+  copied: t4("copiedLabel"),
+  collapseAria: t4("diffCollapseAria"),
+  expandAria: (count3) => t4("diffExpandAria", { count: count3 }),
+  collapse: t4("collapseLabel"),
+  expand: (count3) => t4("diffExpandRest", { count: count3 })
+});
+var readLabels = (t4) => ({
+  ...codeToolbarLabels(t4),
+  window: (shown, total) => t4("readWindow", { shown, total }),
+  copy: t4("copyLabel"),
+  copied: t4("copiedLabel"),
+  collapseAria: t4("readCollapseAria"),
+  expandAria: (count3) => t4("readExpandAria", { count: count3 }),
+  collapse: t4("collapseLabel"),
+  expand: (count3) => t4("readExpandRest", { count: count3 })
+});
+var terminalLabels = (t4) => ({
+  signal: (signal) => t4("terminalSignal", { signal }),
+  exitCode: (code3) => t4("terminalExitCode", { code: code3 }),
+  noExitCode: t4("terminalNoExitCode"),
+  running: t4("terminalRunning"),
+  failed: t4("terminalFailed"),
+  done: t4("terminalDone"),
+  copy: t4("copyLabel"),
+  copied: t4("copiedLabel"),
+  noOutput: t4("terminalNoOutput"),
+  collapseAria: t4("terminalCollapseAria"),
+  collapse: t4("collapseLabel"),
+  expandAria: (hidden) => t4("terminalExpandAria", { n: hidden }),
+  expand: (hidden) => t4("terminalExpandRest", { n: hidden })
+});
+var stopLinkClick = (event) => {
+  event.stopPropagation();
+};
+function GenericCommandCard(props) {
+  const { name: name2, argsRaw, output, isError, meta: meta2, settled = true, phase, interrupted, onOpenFile, t: t4 } = props;
+  const [expanded, setExpanded] = (0, import_react48.useState)(false);
+  const variant = classifyTool(name2);
+  const titleKey = toolTitleKey(name2);
+  const state = !settled ? phase === "preparing" ? "preparing" : "running" : interrupted ? "stopped" : isError ? "error" : "ok";
+  const terminalFace = (0, import_react48.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
+  const read = (0, import_react48.useMemo)(() => readCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
+  const diffs = (0, import_react48.useMemo)(() => diffCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
+  const terminal = (0, import_react48.useMemo)(() => {
+    if (terminalFace === null)
+      return null;
+    return terminalFace.sessionId !== void 0 ? { ...terminalFace, command: terminalFace.command === "" ? t4("terminalSendInput") : terminalFace.command, description: t4("terminalSession", { sessionId: terminalFace.sessionId }) } : terminalFace;
+  }, [terminalFace, t4]);
+  const failedTerminal = terminal !== null && terminal.running !== true && (terminal.exitCode !== void 0 && terminal.exitCode !== 0 || terminal.signal !== void 0);
+  const rowState = state === "ok" && failedTerminal ? "error" : state;
+  const running = rowState === "running" || rowState === "preparing";
+  const generic = titleKey === "toolTitleGeneric";
+  const base3 = argsRaw === "" ? "" : deriveSummary(variant, argsRaw);
+  const plainSummary = [generic ? name2 : "", base3].filter(Boolean).join(" \xB7 ");
+  const errorSummary = rowState === "error" && output !== "" ? firstLine(output) : null;
+  const summaryText = (rowState === "error" ? errorSummary ?? (terminal?.description ?? plainSummary) : null) ?? terminal?.description ?? plainSummary;
+  const totals = diffs === null ? null : (0, official_exports.diffTotals)(diffs);
+  const diffStat = totals === null ? null : `+${totals.added} -${totals.removed}`;
+  const settledWithCue = rowState === "error" || rowState === "stopped";
+  const suffix2 = settledWithCue ? null : diffStat;
+  const filePath = argsRaw === "" ? void 0 : deriveFilePath(variant, argsRaw);
+  const openFile = filePath !== void 0 && onOpenFile !== void 0 && !settledWithCue ? () => {
+    onOpenFile(filePath);
+  } : void 0;
+  const inputRaw = argsRaw === "" ? null : argsRaw;
+  const outputText = output === "" ? null : output;
+  const card = terminal !== null ? "terminal" : diffs !== null ? "diff" : read !== null ? "read" : null;
+  const bodyText = expanded && card === null && inputRaw !== null ? formatToolBody(variant, inputRaw) : null;
+  const cardBody = variant === "code" ? null : bodyText;
+  const expandable = rowState !== "preparing" && (inputRaw !== null || outputText !== null || card !== null);
+  const open = expanded && expandable;
+  const blockLabels = (0, import_react48.useMemo)(() => ({ diff: diffLabels(t4), read: readLabels(t4), terminal: terminalLabels(t4) }), [t4]);
+  const statusText = rowState === "preparing" ? t4("rowPreparing") : rowState === "running" ? t4("rowRunning") : rowState === "error" ? t4("rowFailed") : rowState === "stopped" ? t4("rowStopped") : null;
+  const summaryClassName = `${ocOr("ToolRow", "summary", "dshpc-sv-tool-summary")}${rowState === "error" ? ` ${ocOr("ToolRow", "errorSummary", "dshpc-sv-tool-errmark")}` : ""}${rowState === "stopped" ? ` ${ocOr("ToolRow", "stoppedSummary", "dshpc-sv-tool-stopmark")}` : ""}`;
+  const collapsedContent = summaryText === "" ? void 0 : (0, import_react48.createElement)(import_react48.Fragment, null, (0, import_react48.createElement)("span", { className: ocOr("ToolRow", "sep", "dshpc-sv-tool-sep"), "aria-hidden": true }), openFile !== void 0 ? (0, import_react48.createElement)("button", {
+    type: "button",
+    className: ocOr("ToolRow", "fileLink", "dshpc-sv-tool-filelink"),
+    onClick: (event) => {
+      stopLinkClick(event);
+      openFile();
+    }
+  }, (0, import_react48.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : (0, import_react48.createElement)("span", { className: summaryClassName }, (0, import_react48.createElement)(official_exports.TextShimmer, { active: running }, summaryText)), suffix2 !== null ? (0, import_react48.createElement)(official_exports.TextShimmer, {
+    className: `${ocOr("ToolRow", "summarySuffix", "dshpc-sv-tool-suffix")} ${ocOr("ToolRow", "diffStat", "dshpc-sv-tool-diffstat")}`,
+    active: running
+  }, suffix2) : null);
+  const expandedContent = open ? (0, import_react48.createElement)("div", { className: ocOr("ToolRow", "bodyWrap", "dshpc-sv-tool-bodywrap") }, terminal !== null ? (0, import_react48.createElement)(official_exports.TerminalBlock, {
+    command: terminal.command,
+    cwd: terminal.cwd,
+    output: terminal.output,
+    exitCode: terminal.exitCode,
+    signal: terminal.signal,
+    running: terminal.running,
+    maxLines: Infinity,
+    labels: blockLabels.terminal,
+    className: ocOr("ToolRow", "terminalBody", "dshpc-sv-tool-terminal")
+  }) : diffs !== null ? (0, import_react48.createElement)(official_exports.DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: ocOr("ToolRow", "diffBody", "dshpc-sv-tool-block") }) : read !== null ? (0, import_react48.createElement)(official_exports.ReadBlock, {
+    label: read.label,
+    lines: read.lines,
+    totalLines: read.totalLines,
+    lang: read.lang,
+    labels: blockLabels.read,
+    maxLines: 8,
+    className: ocOr("ToolRow", "readBody", "dshpc-sv-tool-block")
+  }) : (0, import_react48.createElement)(import_react48.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react48.createElement)("div", { className: ocOr("ToolRow", "bodyScroll", "dshpc-sv-tool-block") }, (0, import_react48.createElement)(CodeViewer, {
+    text: bodyText,
+    path: "tool-code.ts",
+    t: t4,
+    className: ocOr("ToolRow", "codeBody", "dshpc-sv-tool-block"),
+    height: "auto",
+    style: { height: "auto" }
+  })) : null, (cardBody !== null || outputText !== null) && (0, import_react48.createElement)("div", { className: ocOr("ToolRow", "ioCard", "dshpc-sv-io-card") }, cardBody !== null && (0, import_react48.createElement)("div", { className: ocOr("ToolRow", "ioSection", "dshpc-sv-io-section") }, (0, import_react48.createElement)("span", { className: ocOr("ToolRow", "ioLabel", "dshpc-sv-io-label") }, t4("toolInputLabel")), (0, import_react48.createElement)("span", { className: ocOr("ToolRow", "ioText", "dshpc-sv-io-text") }, cardBody)), cardBody !== null && outputText !== null && (0, import_react48.createElement)("span", { className: ocOr("ToolRow", "ioDivider", "dshpc-sv-io-divider"), "aria-hidden": true }), outputText !== null && (0, import_react48.createElement)("div", { className: ocOr("ToolRow", "ioSection", "dshpc-sv-io-section") }, (0, import_react48.createElement)("span", { className: ocOr("ToolRow", "ioLabel", "dshpc-sv-io-label") }, t4("toolOutputLabel")), (0, import_react48.createElement)("span", { className: ocOr("ToolRow", "ioText", "dshpc-sv-io-text"), "data-error": rowState === "error" || void 0 }, outputText))))) : void 0;
+  return (0, import_react48.createElement)("div", {
+    className: ocOr("ToolRow", "root", "dshpc-sv-tool"),
+    "data-variant": variant,
+    "data-tool": name2,
+    "data-state": rowState
+  }, statusText !== null ? (0, import_react48.createElement)("span", { className: ocOr("ToolRow", "visuallyHidden", "dshpc-sv-visuallyhidden") }, statusText) : null, (0, import_react48.createElement)(official_exports.DisclosureRow, {
+    rowClassName: ocOr("ToolRow", "row", "dshpc-sv-tool-row"),
+    leadingClassName: ocOr("ToolRow", "leading", "dshpc-sv-tool-leading"),
+    titleClassName: ocOr("ToolRow", "title", "dshpc-sv-tool-title"),
+    chevronClassName: ocOr("ToolRow", "chevron", "dshpc-sv-tool-chevron"),
+    icon: VARIANT_ICONS[variant],
+    title: t4(titleKey),
+    running,
+    open,
+    expandable,
+    expandOnRowClick: true,
+    keepContentWhenOpen: true,
+    onToggle: () => {
+      setExpanded((value) => !value);
+    },
+    collapsedContent,
+    children: expandedContent
+  }));
+}
+
+// dist/session/mirror/MessageIconActions.js
+var import_react50 = require("react");
+
+// dist/session/mirror/message-chrome.js
+var import_react49 = require("react");
+function formatRunDuration(ms, tt) {
+  const total = Math.max(0, Math.floor(ms / 1e3));
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor(total / 60) % 60;
+  const seconds = total % 60;
+  if (hours > 0)
+    return tt("durationHours", { hours, minutes: pad2(minutes), seconds: pad2(seconds) });
+  return minutes > 0 ? tt("durationMinutes", { minutes, seconds: pad2(seconds) }) : tt("durationSeconds", { seconds });
+}
+function formatLiveRunDuration(ms, tt) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1e3));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor(totalSeconds / 60) % 60;
+  const seconds = String(totalSeconds % 60);
+  if (hours > 0)
+    return tt("durationHours", { hours, minutes: pad2(minutes), seconds });
+  return minutes > 0 ? tt("durationMinutes", { minutes, seconds }) : tt("durationSeconds", { seconds });
+}
+function formatMessageClock(time, tt, now2 = Date.now()) {
+  const d2 = new Date(time);
+  const n = new Date(now2);
+  const clock = `${pad2(d2.getHours())}:${pad2(d2.getMinutes())}`;
+  if (d2.getFullYear() === n.getFullYear() && d2.getMonth() === n.getMonth() && d2.getDate() === n.getDate())
+    return clock;
+  const params = { y: d2.getFullYear(), m: d2.getMonth() + 1, d: d2.getDate() };
+  const template = d2.getFullYear() === n.getFullYear() ? tt("clockDate", params) : tt("clockDateYear", params);
+  return `${template} ${clock}`;
+}
+function formatTokens(value, tt) {
+  const scaled = (candidate) => candidate >= 100 ? String(Math.round(candidate)) : String(Math.round(candidate * 10) / 10);
+  if (value < 1e3)
+    return String(value);
+  if (value < 1e6)
+    return tt("numberThousand", { value: scaled(value / 1e3) });
+  return tt("numberMillion", { value: scaled(value / 1e6) });
+}
+function formatCompactCount(value, tt) {
+  return tt("turnUsageCount", { count: formatTokens(value, tt) });
+}
+function formatExactTokens(value, tt) {
+  const digits = String(value);
+  const groups = [];
+  for (let end = digits.length; end > 0; end -= 3)
+    groups.unshift(digits.slice(Math.max(0, end - 3), end));
+  return groups.join(tt("numberGroupSeparator"));
+}
+function formatExactCount(value, tt) {
+  return tt("turnUsageCount", { count: formatExactTokens(value, tt) });
+}
+function roundedPercentUnits(cacheReadTokens, denominator, decimalPlaces) {
+  const scale = (decimalPlaces === 0 ? 1 : 10) * 100;
+  const doubledScale = scale * 2;
+  const denominatorQuotient = Math.floor(denominator / doubledScale);
+  const denominatorRemainder = denominator % doubledScale;
+  let lower = 0;
+  let upper = scale;
+  while (lower < upper) {
+    const candidate = Math.floor((lower + upper + 1) / 2);
+    const factor = candidate * 2 - 1;
+    if (cacheReadTokens >= factor * denominatorQuotient + Math.ceil(factor * denominatorRemainder / doubledScale))
+      lower = candidate;
+    else
+      upper = candidate - 1;
+  }
+  return lower;
+}
+function displayPercentUnits(units, decimalPlaces) {
+  if (decimalPlaces === 0)
+    return String(units);
+  const whole = Math.floor(units / 10);
+  const tenths = units % 10;
+  return tenths === 0 ? String(whole) : `${whole}.${tenths}`;
+}
+function formatCacheHitPercent(cacheReadTokens, promptTokens, decimalPlaces = 0) {
+  if (promptTokens === 0)
+    return null;
+  const missedInputTokens = promptTokens - cacheReadTokens;
+  if (missedInputTokens === 0)
+    return "100";
+  const roundedUnits = roundedPercentUnits(cacheReadTokens, promptTokens, decimalPlaces);
+  if (roundedUnits < (decimalPlaces === 0 ? 100 : 1e3))
+    return displayPercentUnits(roundedUnits, decimalPlaces);
+  let distinguishingPlaces = 1;
+  let scaledDoubleGap = missedInputTokens * 200;
+  const denominatorTens = Math.floor(promptTokens / 10);
+  while (scaledDoubleGap <= denominatorTens) {
+    scaledDoubleGap *= 10;
+    distinguishingPlaces += 1;
+  }
+  const denominatorOnes = promptTokens % 10;
+  let roundedLoss = 5;
+  for (let loss = 1; loss < 5; loss += 1) {
+    const factor = loss * 2 + 1;
+    const threshold = factor * denominatorTens + Math.floor(factor * denominatorOnes / 10);
+    if (scaledDoubleGap <= threshold) {
+      roundedLoss = loss;
+      break;
+    }
+  }
+  return `99.${"9".repeat(distinguishingPlaces - 1)}${10 - roundedLoss}`;
+}
+
+// dist/session/mirror/MessageIconActions.js
+var COPIED_RESET_MS = 1e3;
+function MessageIconActionsMirror(props) {
+  const { text: text2, time, clock, onBranch, branchUnavailable = false, className: className2, extraActions, usageAction, t: t4 } = props;
+  const [copied, setCopied] = (0, import_react50.useState)(false);
+  const [pending, setPending] = (0, import_react50.useState)(false);
+  const timerRef = (0, import_react50.useRef)(void 0);
+  (0, import_react50.useEffect)(() => () => {
+    if (timerRef.current !== void 0)
+      clearTimeout(timerRef.current);
+  }, []);
+  const copyLabel = copied ? t4("copiedLabel") : t4("copyLabel");
+  const onCopy = () => {
+    if (copied || pending)
+      return;
+    setPending(true);
+    void (0, official_exports.writeClipboard)(text2).then((ok) => {
+      setPending(false);
+      if (!ok)
+        return;
+      setCopied(true);
+      timerRef.current = setTimeout(() => {
+        setCopied(false);
+      }, COPIED_RESET_MS);
+    });
+  };
+  const clockEl = time === void 0 ? null : (0, import_react50.createElement)("time", {
+    className: ocOr("MessageIconActions", "clock", "dshpc-sv-clock"),
+    dateTime: new Date(time).toISOString()
+  }, formatMessageClock(time, t4));
+  const reasonId = "dshpc-sv-branch-unavailable";
+  return (0, import_react50.createElement)("div", {
+    className: `${ocOr("MessageIconActions", "actions", "dshpc-sv-actions")}${className2 === void 0 ? "" : ` ${className2}`}`,
+    "data-clock": clock
+  }, clock === "start" ? clockEl : null, (0, import_react50.createElement)(official_exports.Tooltip, { label: copyLabel, side: "bottom" }, (0, import_react50.createElement)("button", {
+    type: "button",
+    className: ocOr("MessageIconActions", "action", "dshpc-sv-action"),
+    "aria-label": copyLabel,
+    onClick: onCopy
+  }, copied ? (0, import_react50.createElement)(official_exports.IconCheckOutlineRegular, null) : (0, import_react50.createElement)(official_exports.IconCopyOutlineRegular, null))), extraActions, onBranch === void 0 ? null : (0, import_react50.createElement)(official_exports.Tooltip, { label: branchUnavailable ? t4("branchUnavailableLabel") : t4("branchLabel"), side: "bottom" }, (0, import_react50.createElement)("button", {
+    type: "button",
+    className: ocOr("MessageIconActions", "action", "dshpc-sv-action"),
+    "aria-label": t4("branchLabel"),
+    "aria-disabled": branchUnavailable || void 0,
+    "aria-describedby": branchUnavailable ? reasonId : void 0,
+    "data-unavailable": branchUnavailable || void 0,
+    onClick: branchUnavailable ? void 0 : onBranch
+  }, (0, import_react50.createElement)(official_exports.IconBranchOutlineRegular, null))), onBranch === void 0 || !branchUnavailable ? null : (0, import_react50.createElement)("span", { id: reasonId, className: ocOr("accessibility", "visuallyHidden", "dshpc-sv-visuallyhidden") }, t4("branchUnavailableLabel")), clock === "end" ? (0, import_react50.createElement)("span", { className: ocOr("MessageIconActions", "endInfo", "dshpc-sv-endinfo") }, usageAction, clockEl) : usageAction);
+}
+
+// dist/session/mirror/MessageItem.js
+var import_react51 = require("react");
+function AssistantMarkdown(props) {
+  if (props.text.trim() === "")
+    return (0, import_react51.createElement)("span", null);
+  return (0, import_react51.createElement)("div", { className: ocOr("AssistantMarkdown", "root", "dshpc-sv-md") }, (0, import_react51.createElement)(official_exports.MarkdownText, {
+    text: props.text,
+    labels: markdownLabels(),
+    fileMentions: props.fileMentions
+  }));
+}
+function UserMessage(props) {
+  const { text: text2, files } = props;
+  const chips = files ?? [];
+  return (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "userRow", "") }, (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "userStack", "") }, text2 === "" ? null : (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "bubble", "dshpc-sv-user") }, (0, import_react51.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() })), chips.length === 0 ? null : (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "attachmentRow", "dshpc-sv-attrow") }, chips.map((file, index3) => (0, import_react51.createElement)("div", {
+    key: `${file.name}:${index3}`,
+    className: ocOr("MessageItem", "fileCard", "dshpc-sv-attcard"),
+    title: file.name
+  }, (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "fileIcon", "dshpc-sv-att-icon") }, (0, import_react51.createElement)(official_exports.FileTypeIcon, { path: file.name, size: 16 })), (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "fileContent", "dshpc-sv-att-body") }, (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "fileName", "dshpc-sv-att-name") }, file.name), (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "fileMeta", "dshpc-sv-att-meta") }, formatBytes(file.bytes))))))));
+}
+function retrySeconds(milliseconds) {
+  return Math.max(1, Math.ceil(milliseconds / 1e3));
+}
+function failureMessage(message, code3, t4) {
+  if (code3 === "ACCOUNT_SIGNED_OUT")
+    return t4("failureAccountSignedOut");
+  if (code3 === "ACCOUNT_SIGN_IN_REQUIRED")
+    return t4("failureAccountSignInRequired");
+  if (code3 === "QUOTA" || code3 === "ACCOUNT_QUOTA")
+    return t4("failureQuota");
+  return code3 === "AUTH" ? t4("failureAuth") : message ?? "";
+}
+function ModelRetryItemMirror(props) {
+  const { active, t: t4 } = props;
+  const node = props.node;
+  const delayMs = typeof node.delayMs === "number" ? node.delayMs : 0;
+  const maximum = node.mode === "normal" && typeof node.maxRetries === "number" ? node.maxRetries : "\u221E";
+  const deadline = (0, import_react51.useMemo)(() => Date.now() + delayMs, [delayMs, node.retryState]);
+  const scheduledSeconds = retrySeconds(delayMs);
+  const [countdown, setCountdown] = (0, import_react51.useState)(() => ({ deadline, seconds: retrySeconds(deadline - Date.now()) }));
+  const remainingSeconds = countdown.deadline === deadline ? countdown.seconds : retrySeconds(deadline - Date.now());
+  (0, import_react51.useEffect)(() => {
+    if (!active)
+      return;
+    const updateCountdown = () => {
+      const next = retrySeconds(deadline - Date.now());
+      setCountdown((current3) => current3.deadline === deadline && current3.seconds === next ? current3 : { deadline, seconds: next });
+      return next;
+    };
+    if (updateCountdown() === 1)
+      return;
+    const timer = window.setInterval(() => {
+      if (updateCountdown() === 1)
+        window.clearInterval(timer);
+    }, 250);
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [active, deadline]);
+  const label = active ? t4("retryActive") : node.retryState === "cancelled" ? t4("retryCancelled") : node.retryState === "started" ? t4("retryStarted") : t4("retryScheduled");
+  const seconds = active ? remainingSeconds : scheduledSeconds;
+  const failure = node.failure;
+  return (0, import_react51.createElement)("details", {
+    className: ocOr("MessageItem", "retryRow", "dshpc-sv-retry"),
+    "data-active": active || void 0
+  }, (0, import_react51.createElement)("summary", { className: ocOr("MessageItem", "retrySummary", "dshpc-sv-retry-summary") }, (0, import_react51.createElement)("span", {
+    className: ocOr("MessageItem", "retryText", "dshpc-sv-retry-text"),
+    role: "status"
+  }, t4("retryStatus", { label, retry: node.retry ?? 0, maximum, seconds }))), (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "retryDetails", "dshpc-sv-retry-details") }, (0, import_react51.createElement)("div", null, (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "retryDetailLabel", "dshpc-sv-retry-label") }, t4("retryDelay")), t4("durationMilliseconds", { milliseconds: Math.round(delayMs) })), (0, import_react51.createElement)("div", null, (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "retryDetailLabel", "dshpc-sv-retry-label") }, t4("retryFailure")), failureMessage(failure?.message, failure?.code, t4))));
+}
+function TurnErrorItemMirror(props) {
+  const { node, t: t4 } = props;
+  return (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "turnErrorRow", "dshpc-sv-turnerr"), role: "status" }, (0, import_react51.createElement)(official_exports.StateDot, {
+    state: "error",
+    className: ocOr("MessageItem", "turnErrorDot", "dshpc-sv-turnerr-dot")
+  }), (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "turnErrorCopy", "dshpc-sv-turnerr-copy") }, (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "turnErrorTitle", "dshpc-sv-turnerr-title") }, node.code === "ACCOUNT_SIGNED_OUT" ? t4("accountStopped") : t4("turnErrorTitle")), (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "turnErrorMessage", "dshpc-sv-turnerr-msg") }, failureMessage(node.message, node.code, t4))), node.code !== void 0 && node.code !== "" ? (0, import_react51.createElement)("code", { className: ocOr("MessageItem", "turnErrorCode", "dshpc-sv-turnerr-code") }, node.code) : null);
+}
+function TurnMaxTokensItemMirror(props) {
+  const { t: t4 } = props;
+  return (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "turnErrorRow", "dshpc-sv-turnerr"), role: "status" }, (0, import_react51.createElement)(official_exports.StateDot, {
+    state: "warning",
+    className: ocOr("MessageItem", "turnErrorDot", "dshpc-sv-turnerr-dot")
+  }), (0, import_react51.createElement)("div", { className: ocOr("MessageItem", "turnErrorCopy", "dshpc-sv-turnerr-copy") }, (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "maxTokensTitle", "dshpc-sv-turnerr-warn") }, t4("maxTokensTitle")), (0, import_react51.createElement)("span", { className: ocOr("MessageItem", "turnErrorMessage", "dshpc-sv-turnerr-msg") }, t4("maxTokensHint"))));
+}
+
+// dist/session/mirror/ReasoningRow.js
+var import_react52 = require("react");
+function firstLine2(text2) {
+  const newline4 = text2.indexOf("\n");
+  return newline4 === -1 ? text2 : text2.slice(0, newline4);
+}
+function ReasoningRowMirror(props) {
+  const { text: text2, running = false, preview = true, t: t4 } = props;
+  const [open, setOpen] = (0, import_react52.useState)(false);
+  if (text2.trim() === "")
+    return null;
+  const summary = firstLine2(text2).split("**").join("");
+  return (0, import_react52.createElement)("div", {
+    className: ocOr("ReasoningRow", "root", "dshpc-sv-reasoning"),
+    "data-variant": "think",
+    "data-state": running ? "running" : "ok",
+    "data-expanded": open || void 0,
+    "data-preview": preview && summary !== "" || void 0
+  }, (0, import_react52.createElement)(official_exports.DisclosureRow, {
+    icon: (0, import_react52.createElement)(official_exports.IconThinkOutlineRegular, { size: 14 }),
+    title: t4("thinkLabel"),
+    open,
+    expandable: true,
+    expandOnRowClick: true,
+    onToggle: () => {
+      setOpen((value) => !value);
+    },
+    rowClassName: ocOr("ReasoningRow", "row", "dshpc-sv-reasoning-row"),
+    leadingClassName: ocOr("ReasoningRow", "leading", "dshpc-sv-reasoning-leading"),
+    titleClassName: ocOr("ReasoningRow", "title", "dshpc-sv-reasoning-title"),
+    chevronClassName: ocOr("ReasoningRow", "chevron", "dshpc-sv-reasoning-chevron"),
+    collapsedContent: (0, import_react52.createElement)(
+      import_react52.Fragment,
+      null,
+      (0, import_react52.createElement)("span", { className: ocOr("ReasoningRow", "separator", "dshpc-sv-reasoning-sep"), "aria-hidden": true }),
+      // 官方是 summary > summaryText 两层：外层 nowrap 截断、内层 text-overflow:ellipsis（省略号）。
+      (0, import_react52.createElement)("span", { className: ocOr("ReasoningRow", "summary", "dshpc-sv-reasoning-preview") }, (0, import_react52.createElement)("span", { className: ocOr("ReasoningRow", "summaryText", "dshpc-sv-reasoning-preview-text") }, summary))
+    ),
+    children: open ? (0, import_react52.createElement)("div", { className: ocOr("ReasoningRow", "thinkBody", "dshpc-sv-reasoning-body") }, (0, import_react52.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels(), variant: "compact" })) : void 0
+  }));
+}
+
+// dist/session/mirror/TurnProcessNodeView.js
+var import_react53 = require("react");
+var LIVE_RUN_CLOCK_INTERVAL_MS = 1e3;
+function TurnProcessNodeViewMirror(props) {
+  const { turn, turnProcess, t: t4 } = props;
+  const open = !turnProcess.foldable || turnProcess.open;
+  const [now2, setNow] = (0, import_react53.useState)(() => Date.now());
+  const ticking = turn?.status === "open" && turn.start !== void 0;
+  (0, import_react53.useEffect)(() => {
+    if (!ticking)
+      return;
+    setNow(Date.now());
+    const timer = setInterval(() => {
+      setNow(Date.now());
+    }, LIVE_RUN_CLOCK_INTERVAL_MS);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [ticking]);
+  if (turn === void 0 || turn.start === void 0 && turn.status !== "closed")
+    return null;
+  const canCollapse = turnProcess.foldable && turnProcess.hasContent && !turnProcess.alwaysOpen;
+  const running = turn.status === "open";
+  const reason = turn.end?.data?.reason?.kind;
+  const elapsedMs = turn.start === void 0 ? void 0 : Math.max(1e3, (turn.end?.time ?? now2) - turn.start.time);
+  const duration = elapsedMs === void 0 ? void 0 : running ? formatLiveRunDuration(elapsedMs, t4) : formatRunDuration(elapsedMs, t4);
+  const label = running ? duration === void 0 ? t4("chatDeepDiving") : t4("turnProcessDeepDiving", { duration }) : reason === "aborted" ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : duration === void 0 ? t4("turnProcessWorked") : t4("turnProcessTook", { duration });
+  const announcement = running ? t4("chatDeepDiving") : reason === "aborted" ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : t4("turnProcessWorked");
+  const spec = turnProcess.spec;
+  return (0, import_react53.createElement)(import_react53.Fragment, null, (0, import_react53.createElement)("span", {
+    className: ocOr("accessibility", "visuallyHidden", "dshpc-sv-visuallyhidden"),
+    role: "status",
+    "aria-live": "polite",
+    "aria-atomic": "true"
+  }, announcement), (0, import_react53.createElement)("button", {
+    type: "button",
+    className: ocOr("TurnProcessNodeView", "root", "dshpc-sv-process"),
+    "data-open": open || void 0,
+    "data-turn-process": spec?.turn,
+    "data-turn-process-messages": spec?.messageCount,
+    "data-turn-process-tool-calls": spec?.toolCallCount,
+    "data-turn-process-subagents": spec?.subagentCount,
+    disabled: !canCollapse,
+    "aria-expanded": turnProcess.hasContent ? open : void 0,
+    onClick: () => {
+      turnProcess.setOpen(!open);
+    }
+  }, (0, import_react53.createElement)("span", { className: ocOr("TurnProcessNodeView", "label", "dshpc-sv-process-label") }, label), canCollapse ? (0, import_react53.createElement)(official_exports.IconChevronDownOutlineRegular, { className: ocOr("TurnProcessNodeView", "chevron", "dshpc-sv-process-chevron") }) : null));
+}
+
+// dist/session/mirror/TurnTailNodeView.js
+var import_react56 = require("react");
+
+// dist/session/mirror/TurnUsagePanel.js
+var import_react55 = require("react");
+var import_react_dom4 = require("react-dom");
+
+// dist/session/mirror/StatDialog.js
+var import_react54 = require("react");
+var PANEL_MARGIN = 12;
+var PANEL_GAP = 8;
+function useStatDialog(controlled) {
+  const [ownOpen, setOwnOpen] = (0, import_react54.useState)(false);
+  const open = controlled?.open ?? ownOpen;
+  const setOpen = controlled?.setOpen ?? setOwnOpen;
+  const rootRef = (0, import_react54.useRef)(null);
+  const panelRef = (0, import_react54.useRef)(null);
+  const pos = (0, official_exports.useAnchoredPosition)({ open, anchorRef: rootRef, panelRef, side: "top", gap: PANEL_GAP, margin: PANEL_MARGIN });
+  (0, official_exports.useDismissOnOutsidePointer)(rootRef, open, setOpen, panelRef);
+  (0, import_react54.useEffect)(() => {
+    if (!open)
+      return;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape")
+        setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, setOpen]);
+  return { open, setOpen, rootRef, panelRef, pos };
+}
+
+// dist/session/mirror/TurnUsagePanel.js
+function TurnUsagePanelMirror(props) {
+  const { usage, t: t4 } = props;
+  const { open, setOpen, rootRef, panelRef, pos } = useStatDialog();
+  const cacheHit = usage.cacheReadTokens === void 0 ? null : formatCacheHitPercent(usage.cacheReadTokens, usage.totalTokens - usage.outputTokens, 1);
+  const total = formatCompactCount(usage.totalTokens, t4);
+  const routes = usage.routes?.map((route) => `${route.provider}/${route.model}`).join(", ") ?? "";
+  return (0, import_react55.createElement)("span", { ref: rootRef, className: ocOr("TurnUsagePanel", "root", "dshpc-sv-usage") }, (0, import_react55.createElement)("button", {
+    type: "button",
+    className: ocOr("TurnUsagePanel", "trigger", "dshpc-sv-usage-trigger"),
+    "aria-haspopup": "dialog",
+    "aria-expanded": open,
+    onClick: () => {
+      setOpen(!open);
+    }
+  }, (0, import_react55.createElement)(official_exports.IconDatabaseOutlineRegular, null), (0, import_react55.createElement)("span", { className: ocOr("TurnUsagePanel", "label", "dshpc-sv-usage-label") }, t4("turnUsageConsumed", { total }))), open ? (0, import_react_dom4.createPortal)((0, import_react55.createElement)("div", {
+    ref: panelRef,
+    className: ocOr("statDialog", "panel", "dshpc-sv-stats"),
+    role: "dialog",
+    "aria-label": t4("turnUsageTitle"),
+    style: pos
+  }, (0, import_react55.createElement)("div", { className: ocOr("statDialog", "title", "dshpc-sv-stats-title") }, (0, import_react55.createElement)("span", { className: ocOr("statDialog", "titleLabel", "dshpc-sv-stats-titlelabel") }, (0, import_react55.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react55.createElement)("span", { className: ocOr("statDialog", "titleValue", "dshpc-sv-stats-titlevalue") }, formatExactCount(usage.totalTokens, t4))), (0, import_react55.createElement)("div", { className: ocOr("statDialog", "titleRule", "dshpc-sv-stats-rule"), "aria-hidden": true }), (0, import_react55.createElement)("dl", { className: ocOr("statDialog", "details", "dshpc-sv-stats-details"), "data-turn-usage-details": true }, routes === "" ? null : (0, import_react55.createElement)(import_react55.Fragment, null, (0, import_react55.createElement)("dt", null, t4("turnUsageModel")), (0, import_react55.createElement)("dd", { className: ocOr("statDialog", "route", "dshpc-sv-stats-route") }, routes)), cacheHit === null ? null : (0, import_react55.createElement)(import_react55.Fragment, null, (0, import_react55.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react55.createElement)("dd", null, `${cacheHit}%`)), (0, import_react55.createElement)("dt", null, t4("turnUsageInput")), (0, import_react55.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react55.createElement)(import_react55.Fragment, null, (0, import_react55.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react55.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react55.createElement)(import_react55.Fragment, null, (0, import_react55.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react55.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react55.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react55.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react55.createElement)("span", {
+    className: ocOr("statDialog", "reasoning", "dshpc-sv-stats-reasoning")
+  }, t4("turnUsageReasoning", { tokens: formatExactCount(usage.reasoningTokens, t4) }))))), document.body) : null);
+}
+
+// dist/session/mirror/TurnTailNodeView.js
+function assistantText(blocks) {
+  return blocks.flatMap((block2) => block2.kind === "text" ? [block2.text ?? ""] : []).join("");
+}
+function TurnTailNodeViewMirror(props) {
+  const { data: data2, onBranchAt, tailSlot, t: t4 } = props;
+  const closing4 = data2.closing;
+  if (closing4 === null || closing4 === void 0)
+    return null;
+  const text2 = assistantText(closing4.blocks);
+  return (0, import_react56.createElement)("div", {
+    className: ocOr("TurnTailNodeView", "root", "dshpc-sv-tail"),
+    "data-turn-tail": data2.turn,
+    "data-actions-reveal": "always"
+  }, tailSlot === void 0 || tailSlot === null ? null : tailSlot, (0, import_react56.createElement)(MessageIconActionsMirror, {
+    text: text2,
+    time: closing4.time,
+    clock: "end",
+    // 分支：点分支 = 确认框 → fork({ atSeq: 该轮 tail seq })——从这条消息位置截断开分支；
+    // 头部按钮 = 省略 atSeq（最新已完成 turn 前缀）。
+    onBranch: onBranchAt === void 0 ? void 0 : () => {
+      onBranchAt(data2.seq);
+    },
+    className: ocOr("TurnTailNodeView", "actions", "dshpc-sv-tail-actions"),
+    usageAction: data2.tokenUsage === void 0 ? void 0 : (0, import_react56.createElement)(TurnUsagePanelMirror, { usage: data2.tokenUsage, t: t4 }),
+    t: t4
+  }));
+}
+
+// dist/session/mirror/TurnTriggerNodeView.js
+var import_react57 = require("react");
+var TRIGGER_ICONS = {
+  request: official_exports.IconContextInjectionOutlineRegular,
+  goal: official_exports.IconGoalOutlineRegular,
+  agent: official_exports.IconPaperPlaneOutlineRegular,
+  team: official_exports.IconAgentPresetOutlineRegular,
+  subagent: official_exports.IconAgentPresetOutlineRegular,
+  github: official_exports.IconBranchOutlineRegular,
+  webhook: official_exports.IconGlobeOutlineRegular,
+  schedule: official_exports.IconAlarmClockOutlineRegular,
+  job: official_exports.IconQueueOutlineRegular,
+  plugin: official_exports.IconCordisPluginOutlineRegular
+};
+function turnTriggerDetails(source) {
+  const record = (value) => typeof value === "object" && value !== null && !Array.isArray(value) ? value : {};
+  const src = record(source);
+  const kind = typeof src.kind === "string" ? src.kind : "";
+  switch (kind) {
+    case "goal":
+      return { title: "triggerGoal", icon: "goal" };
+    case "agent-message":
+      return { title: "triggerAgent", icon: "agent" };
+    case "team-message":
+      return { title: "triggerTeam", icon: "team" };
+    case "subagent-settled":
+      return { title: "triggerSubagent", icon: "subagent" };
+    case "webhook": {
+      const github = src.provider === "github";
+      return github ? { title: "triggerGithub", icon: "github" } : { title: "triggerWebhook", icon: "webhook" };
+    }
+    case "schedule":
+      return { title: "triggerSchedule", icon: "schedule" };
+    case "tool-jobs":
+      return { title: "triggerJob", icon: "job" };
+    case "cordis-host-runner":
+      return { title: "triggerPlugin", icon: "plugin" };
+    default:
+      return { title: "triggerRequest", icon: "request" };
+  }
+}
+function TurnTriggerNodeViewMirror(props) {
+  const { data: data2, t: t4 } = props;
+  const [open, setOpen] = (0, import_react57.useState)(false);
+  const details = turnTriggerDetails(data2?.source);
+  const TriggerIcon = TRIGGER_ICONS[details.icon] ?? official_exports.IconContextInjectionOutlineRegular;
+  const time = typeof data2?.time === "number" ? data2.time : void 0;
+  const content2 = triggerContent(data2?.content);
+  return (0, import_react57.createElement)("section", {
+    className: ocOr("TurnTriggerNodeView", "root", "dshpc-sv-trigger"),
+    "data-turn-trigger": true
+  }, (0, import_react57.createElement)("button", {
+    type: "button",
+    className: ocOr("TurnTriggerNodeView", "header", "dshpc-sv-trigger-header"),
+    "aria-expanded": open,
+    onClick: () => {
+      setOpen((value) => !value);
+    }
+  }, (0, import_react57.createElement)("span", { className: ocOr("TurnTriggerNodeView", "icon", "dshpc-sv-trigger-icon"), "aria-hidden": true }, (0, import_react57.createElement)(TriggerIcon, { size: 14 })), (0, import_react57.createElement)("span", { className: ocOr("TurnTriggerNodeView", "title", "dshpc-sv-trigger-title") }, t4(details.title)), time === void 0 ? null : (0, import_react57.createElement)("time", {
+    className: ocOr("TurnTriggerNodeView", "time", "dshpc-sv-trigger-time"),
+    dateTime: new Date(time).toISOString()
+  }, formatMessageClock(time, t4)), (0, import_react57.createElement)(official_exports.IconChevronDownOutlineRegular, {
+    size: 12,
+    className: open ? ocOr("TurnTriggerNodeView", "openChevron", "dshpc-sv-trigger-chevron-open") : ocOr("TurnTriggerNodeView", "chevron", "dshpc-sv-trigger-chevron")
+  })), open ? (0, import_react57.createElement)("div", { className: ocOr("TurnTriggerNodeView", "body", "dshpc-sv-trigger-body") }, (0, import_react57.createElement)("p", { className: ocOr("TurnTriggerNodeView", "explanation", "dshpc-sv-trigger-explanation") }, t4("triggerExplanation")), (0, import_react57.createElement)("div", { className: ocOr("TurnTriggerNodeView", "content", "dshpc-sv-trigger-content") }, content2 === "" ? t4("sessionEmpty") : content2)) : null);
+}
+function triggerContent(content2) {
+  if (!Array.isArray(content2))
+    return "";
+  return content2.map((block2) => {
+    const b = block2;
+    if (b !== null && typeof b === "object" && b.type === "text" && typeof b.text === "string")
+      return b.text;
+    return "";
+  }).filter((part) => part !== "").join("\n");
+}
+
+// dist/session/mirror/Deliverables.js
+var import_react58 = require("react");
+var basename = (path) => path.slice(Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\")) + 1);
+function fileNames(raw) {
+  let args;
+  try {
+    args = JSON.parse(raw);
+  } catch {
+    return raw;
+  }
+  if (typeof args !== "object" || args === null || !("files" in args) || !Array.isArray(args.files))
+    return raw;
+  return args.files.flatMap((file) => typeof file === "object" && file !== null && "path" in file && typeof file.path === "string" ? [file.path] : []).join(", ");
+}
+function PresentRowMirror(props) {
+  const { block: block2, t: t4 } = props;
+  const b = block2 ?? {};
+  const settled = typeof b.kind === "string";
+  const state = !settled ? b.phase === "preparing" ? "preparing" : "running" : b.error?.code === "interrupted" ? "stopped" : b.isError ? "error" : "ok";
+  const argsRaw = (settled ? b.call?.argsRaw : b.argsRaw) ?? "";
+  const details = settled ? (b.content ?? []).map((item) => item.type === "text" ? item.text ?? "" : JSON.stringify(item)).join("\n") || (b.error ? `${b.error.name ?? ""}: ${b.error.code ?? ""}` : "") : "";
+  const [expanded, setExpanded] = (0, import_react58.useState)(false);
+  const statusKey = state === "preparing" ? "deliverRowPreparing" : state === "running" ? "deliverRowRunning" : state === "error" ? "deliverRowError" : state === "stopped" ? "deliverRowStopped" : "deliverRowOk";
+  return (0, import_react58.createElement)("div", {
+    className: ocOr("ToolRow", "root", "dshpc-sv-tool"),
+    "data-tool": "present",
+    "data-state": state
+  }, (0, import_react58.createElement)(official_exports.DisclosureRow, {
+    icon: (0, import_react58.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
+    title: t4("deliverRowTitle"),
+    open: expanded && details !== "",
+    expandable: details !== "",
+    expandOnRowClick: true,
+    keepContentWhenOpen: true,
+    onToggle: () => {
+      setExpanded((value) => !value);
+    },
+    running: state === "running" || state === "preparing",
+    rowClassName: ocOr("ToolRow", "row", "dshpc-sv-tool-row"),
+    leadingClassName: ocOr("ToolRow", "leading", "dshpc-sv-tool-leading"),
+    titleClassName: ocOr("ToolRow", "title", "dshpc-sv-tool-title"),
+    chevronClassName: ocOr("ToolRow", "chevron", "dshpc-sv-tool-chevron"),
+    collapsedContent: (0, import_react58.createElement)("span", { className: ocOr("PresentRow", "summary", "dshpc-sv-deliv-rowsummary") }, (0, import_react58.createElement)("span", null, t4(statusKey)), (0, import_react58.createElement)("span", { className: ocOr("PresentRow", "paths", "dshpc-sv-deliv-rowpaths") }, fileNames(argsRaw))),
+    children: details !== "" && expanded ? (0, import_react58.createElement)("pre", { className: ocOr("PresentRow", "output", "dshpc-sv-deliv-rowoutput") }, details) : null
+  }));
+}
+var COLLAPSED_DELIVERED_COUNT = 4;
+function cardDescription(description, fallback) {
+  const trimmed = description?.replace(/\s*(?:\([^()]*\)|（[^（）]*）)\s*$/u, "").trim();
+  return trimmed === void 0 || trimmed === "" ? fallback : trimmed;
+}
+function DeliveredFileCard(props) {
+  const { file, onPreview, t: t4 } = props;
+  const name2 = basename(file.path);
+  const metadata = (0, official_exports.fileExtension)(name2).toUpperCase() || t4("deliverFileLabel");
+  return (0, import_react58.createElement)("div", {
+    className: ocOr("Deliverables", "file", "dshpc-sv-deliv-file"),
+    "data-presented-file": true
+  }, onPreview !== void 0 ? (0, import_react58.createElement)("button", {
+    type: "button",
+    className: ocOr("Deliverables", "cardPreview", "dshpc-sv-deliv-cardpreview"),
+    title: file.path,
+    "aria-label": t4("deliverPreviewCard", { name: file.path }),
+    onClick: (event) => {
+      event.stopPropagation();
+      onPreview();
+    }
+  }) : null, (0, import_react58.createElement)("span", { className: ocOr("Deliverables", "fileIcon", "dshpc-sv-deliv-icon") }, (0, import_react58.createElement)(official_exports.FileTypeIcon, { path: file.path, size: 20 })), (0, import_react58.createElement)("div", { className: ocOr("Deliverables", "fileBody", "dshpc-sv-deliv-body") }, (0, import_react58.createElement)("div", { className: ocOr("Deliverables", "details", "dshpc-sv-deliv-details") }, (0, import_react58.createElement)("span", { className: ocOr("Deliverables", "fileName", "dshpc-sv-deliv-name") }, name2), (0, import_react58.createElement)("span", { className: ocOr("Deliverables", "description", "dshpc-sv-deliv-desc"), "data-presented-description": true }, (0, import_react58.createElement)("span", { className: ocOr("Deliverables", "secondaryText", "dshpc-sv-deliv-secondary") }, cardDescription(file.description, metadata)), onPreview !== void 0 ? (0, import_react58.createElement)("span", { className: ocOr("Deliverables", "previewHint", "dshpc-sv-deliv-hint") }, t4("deliverPreviewHint")) : null))));
+}
+function DeliverablesGridMirror(props) {
+  const { files, onOpen, t: t4 } = props;
+  const [expanded, setExpanded] = (0, import_react58.useState)(false);
+  if (files.length === 0)
+    return null;
+  const collapsible = files.length > COLLAPSED_DELIVERED_COUNT;
+  const shown = collapsible && !expanded ? files.slice(0, COLLAPSED_DELIVERED_COUNT) : files;
+  return (0, import_react58.createElement)("div", {
+    className: ocOr("Deliverables", "root", "dshpc-sv-deliv"),
+    "data-presented-files-grid": true
+  }, (0, import_react58.createElement)("div", {
+    className: ocOr("Deliverables", "presented", "dshpc-sv-deliv-grid"),
+    "data-presented-files-row": true
+  }, shown.map((file, index3) => (0, import_react58.createElement)(DeliveredFileCard, {
+    key: `${file.path}:${index3}`,
+    file,
+    onPreview: onOpen === void 0 ? void 0 : () => {
+      onOpen(file.path);
+    },
+    t: t4
+  }))), collapsible ? (0, import_react58.createElement)("button", {
+    type: "button",
+    className: ocOr("Deliverables", "toggle", "dshpc-sv-deliv-toggle"),
+    "aria-expanded": expanded,
+    "aria-label": t4(expanded ? "deliverCollapseAria" : "deliverExpandAria", { count: files.length }),
+    onClick: () => {
+      setExpanded((value) => !value);
+    }
+  }, (0, import_react58.createElement)("span", null, t4(expanded ? "deliverCollapse" : "deliverAll", { count: files.length })), expanded ? (0, import_react58.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react58.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null);
+}
+
+// dist/session/SessionViewModal.js
+var EMPTY_ORDER = [];
+var officialWarned = false;
+function safeJson(value) {
+  try {
+    return JSON.stringify(value, null, 2) ?? String(value);
+  } catch {
+    return String(value);
+  }
+}
+function contentText(blocks) {
+  if (blocks === void 0)
+    return "";
+  const parts = blocks.map((block2) => {
+    if (block2 !== null && typeof block2 === "object" && block2.type === "text" && typeof block2.text === "string")
+      return block2.text;
+    if (block2 !== null && typeof block2 === "object" && block2.type === "image")
+      return "[\u56FE\u7247]";
+    return "";
+  }).filter((part) => part !== "");
+  return parts.join("\n");
+}
+function contentFiles(blocks, exclude) {
+  if (blocks === void 0)
+    return { files: [], hadFiles: false };
+  const out = [];
+  let hadFiles = false;
+  for (const block2 of blocks) {
+    if (block2 === null || typeof block2 !== "object" || block2.type !== "file")
+      continue;
+    const attachment = block2.attachment;
+    if (typeof attachment !== "object" || attachment === null)
+      continue;
+    hadFiles = true;
+    const name2 = typeof attachment.name === "string" && attachment.name !== "" ? attachment.name : "file";
+    if (exclude !== void 0 && exclude.has(name2))
+      continue;
+    out.push({ name: name2, bytes: typeof attachment.bytes === "number" ? attachment.bytes : 0 });
+  }
+  return { files: out, hadFiles };
+}
+function assistantText2(node) {
+  return (node.blocks ?? []).map((block2) => block2.kind === "text" ? block2.text : "").join("");
+}
+function dataOf(node) {
+  return node.data ?? {};
+}
+function turnLocationOf(node) {
+  const location = node.location;
+  return location?.kind === "turn" || location?.kind === "step" ? location.turn : void 0;
+}
+function blocksOf(value) {
+  return Array.isArray(value) ? value : void 0;
+}
+function toolCallCard(node, t4, onOpenFile) {
+  const root = dataOf(node).root;
+  if (root === void 0 || root === null)
+    return null;
+  const settled = root.kind === "tool-result";
+  const call2 = settled ? root.call : root;
+  const error = root.error;
+  return {
+    name: typeof call2?.name === "string" ? call2.name : "tool",
+    argsRaw: typeof call2?.argsRaw === "string" ? call2.argsRaw : "",
+    output: settled ? contentText(root.content) : "",
+    isError: root.isError === true,
+    errorName: error?.name,
+    meta: root.meta,
+    settled,
+    phase: settled ? void 0 : root.phase === "preparing" ? "preparing" : "start",
+    interrupted: error?.code === "interrupted",
+    onOpenFile,
+    t: t4
+  };
+}
+function isPresentRoot(root) {
+  if (typeof root !== "object" || root === null)
+    return false;
+  const r2 = root;
+  if (r2.name === "present")
+    return true;
+  return r2.kind === "tool-result" && r2.call !== null && typeof r2.call === "object" && r2.call.name === "present";
+}
+function presentFiles(root) {
+  if (typeof root !== "object" || root === null)
+    return [];
+  const r2 = root;
+  const settled = r2.kind === "tool-result";
+  if (r2.isError === true)
+    return [];
+  const raw = settled ? r2.call?.argsRaw : r2.argsRaw;
+  if (typeof raw !== "string")
+    return [];
+  try {
+    const parsed = JSON.parse(raw);
+    const files = parsed?.files;
+    if (!Array.isArray(files))
+      return [];
+    const out = [];
+    for (const file of files) {
+      if (typeof file !== "object" || file === null)
+        continue;
+      const path = file.path;
+      if (typeof path !== "string" || path.trim() === "")
+        continue;
+      const description = file.description;
+      out.push(typeof description === "string" && description.trim() !== "" ? { path, description } : { path });
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn) {
+  switch (node.kind) {
+    case "turn-trigger":
+      return (0, import_react59.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
+    case "turn-process":
+      return turnProcess === void 0 ? null : (0, import_react59.createElement)(TurnProcessNodeViewMirror, {
+        turn: turnLocationOf(node),
+        turnProcess,
+        t: t4
+      });
+    case "turn-tail": {
+      const data2 = node.data;
+      const turn = data2?.turn ?? turnLocationOf(node)?.turn;
+      const atLastTail = turn !== void 0 && lastTailTurn !== void 0 && turn === lastTailTurn;
+      const showGrid = deliverFiles !== void 0 && deliverFiles.length > 0 && atLastTail;
+      const tailSlot = showGrid ? (0, import_react59.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null;
+      const tail = data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react59.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, t: t4 });
+      return tail;
+    }
+    case "assistant-step": {
+      const blocks = blocksOf(dataOf(node).blocks) ?? [];
+      const contentBlocks = blocks.filter((block2) => block2.kind !== "tool-call");
+      if (blocks.length > 0 && contentBlocks.length === 0)
+        return null;
+      const visible = groupPart === "reasoning" ? contentBlocks.filter((block2) => block2.kind === "reasoning") : groupPart === "response" ? contentBlocks.filter((block2) => block2.kind !== "reasoning") : contentBlocks;
+      const parts = assistantBlocks(visible, t4, fileOpen?.mentions);
+      return parts.length === 0 ? null : (0, import_react59.createElement)("div", { className: "dshpc-sv-assistant" }, parts);
+    }
+    case "tool-call": {
+      const root = dataOf(node).root;
+      if (isPresentRoot(root))
+        return (0, import_react59.createElement)(PresentRowMirror, { block: root, t: t4 });
+      const card = toolCallCard(node, t4, fileOpen?.open);
+      return card === null ? null : (0, import_react59.createElement)(GenericCommandCard, card);
+    }
+    case "user":
+    case "steering": {
+      const blocks = dataOf(node).content;
+      const text2 = contentText(blocks);
+      const { files, hadFiles } = contentFiles(blocks);
+      if (text2 === "" && !hadFiles)
+        return null;
+      return (0, import_react59.createElement)(UserMessage, { text: text2, files });
+    }
+    case "turn-error":
+      return (0, import_react59.createElement)(TurnErrorItemMirror, { node: dataOf(node), t: t4 });
+    case "turn-max-tokens":
+      return (0, import_react59.createElement)(TurnMaxTokensItemMirror, { t: t4 });
+    case "model-retry": {
+      const data2 = dataOf(node);
+      const attempts = Array.isArray(data2.attempts) ? data2.attempts : [];
+      const current3 = typeof data2.current === "object" && data2.current !== null ? data2.current : attempts[attempts.length - 1];
+      if (current3 === void 0)
+        return null;
+      return (0, import_react59.createElement)(ModelRetryItemMirror, { node: current3, active: current3.retryState === "scheduled", t: t4 });
+    }
+    // 决策 28：context（系统注入）/ compaction / unknown 仍默认过滤；
+    // ⚠ ui-map §十一-B：官方 ContextInjectionRow / SystemPromptRow 待实施——届时从这里放行。
+    case "context":
+    case "compaction":
+    case "manual-compaction":
+    case "unknown":
+      return null;
+    default:
+      return (0, import_react59.createElement)("details", { className: "dshpc-sv-tool" }, (0, import_react59.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react59.createElement)("pre", null, safeJson(node.data)));
+  }
+}
+function assistantBlocks(blocks, t4, fileMentions) {
+  if (blocks === void 0)
+    return [];
+  const parts = [];
+  blocks.forEach((block2, index3) => {
+    switch (block2.kind) {
+      case "text":
+        if (block2.text.trim() !== "")
+          parts.push((0, import_react59.createElement)(AssistantMarkdown, { key: `t${index3}`, text: block2.text, fileMentions }));
+        break;
+      case "reasoning":
+        if (block2.text.trim() !== "")
+          parts.push((0, import_react59.createElement)(ReasoningRowMirror, { key: `r${index3}`, text: block2.text, t: t4 }));
+        break;
+      case "image":
+        parts.push((0, import_react59.createElement)("div", { key: `i${index3}`, className: "dshpc-sv-image" }, "[\u56FE\u7247]"));
+        break;
+      case "tool-call":
+        break;
+      default:
+        parts.push((0, import_react59.createElement)("details", { key: `o${index3}`, className: "dshpc-sv-tool" }, (0, import_react59.createElement)("summary", null, t4("sessionUnknownKind")), (0, import_react59.createElement)("pre", null, safeJson(block2.block))));
+    }
+  });
+  return parts;
+}
+function renderLegacyNode(node, t4, fileOpen) {
+  switch (node.kind) {
+    case "user":
+    case "steering": {
+      const text2 = contentText(node.content);
+      const { files, hadFiles } = contentFiles(node.content);
+      if (text2 === "" && !hadFiles)
+        return null;
+      return (0, import_react59.createElement)(UserMessage, { key: node.seq, text: text2, files });
+    }
+    case "assistant": {
+      const parts = assistantBlocks(node.blocks, t4, fileOpen?.mentions);
+      return parts.length === 0 ? null : (0, import_react59.createElement)("div", { key: node.seq, className: "dshpc-sv-assistant" }, parts);
+    }
+    case "tool-result": {
+      if (node.call?.name === "present")
+        return (0, import_react59.createElement)(PresentRowMirror, { key: node.seq, block: node, t: t4 });
+      return (0, import_react59.createElement)(GenericCommandCard, {
+        key: node.seq,
+        name: node.call?.name ?? "tool",
+        argsRaw: node.call?.argsRaw ?? "",
+        output: contentText(node.content),
+        isError: node.isError === true,
+        errorName: node.error?.name,
+        meta: node.meta,
+        settled: true,
+        interrupted: node.error?.code === "interrupted",
+        onOpenFile: fileOpen?.open,
+        t: t4
+      });
+    }
+    case "command": {
+      return (0, import_react59.createElement)(GenericCommandCard, {
+        key: node.seq,
+        name: `/${node.name ?? "?"}`,
+        argsRaw: node.args ?? "",
+        output: node.outcome?.text ?? "",
+        isError: node.outcome?.kind === "error",
+        t: t4
+      });
+    }
+    case "turn-error":
+      return (0, import_react59.createElement)(TurnErrorItemMirror, { key: node.seq, node, t: t4 });
+    case "turn-max-tokens":
+      return (0, import_react59.createElement)(TurnMaxTokensItemMirror, { key: node.seq, t: t4 });
+    case "model-retry":
+      return (0, import_react59.createElement)(ModelRetryItemMirror, { key: node.seq, node, active: node.retryState === "scheduled", t: t4 });
+    // 决策 28：默认过滤的噪音 kind —— context（系统注入）、compaction（压缩标记）、
+    // unknown（未知事件面）。assistant 里的 reasoning 由 mirror/ReasoningRow 折叠渲染。
+    // ⚠ ui-map §十一-B：系统提示/上下文注入行（官方 ContextInjectionRow）待实施——届时从这里放行。
+    case "context":
+    case "compaction":
+    case "unknown":
+      return null;
+    default:
+      return (0, import_react59.createElement)("details", { key: node.seq, className: "dshpc-sv-tool" }, (0, import_react59.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react59.createElement)("pre", null, safeJson(node)));
+  }
+}
+function groupNodes(list) {
+  const out = [];
+  let run = [];
+  const flush2 = () => {
+    if (run.length === 0)
+      return;
+    const only = run[0];
+    if (only === void 0) {
+      run = [];
+      return;
+    }
+    if (run.length >= 2)
+      out.push({ kind: "process", nodes: run });
+    else
+      out.push({ kind: "node", node: only });
+    run = [];
+  };
+  for (const node of list) {
+    if (node.kind === "tool-result" || node.kind === "command") {
+      run.push(node);
+      continue;
+    }
+    flush2();
+    out.push({ kind: "node", node });
+  }
+  flush2();
+  return out;
+}
+function renderLegacyRows(nodes, t4, fileOpen) {
+  const items = groupNodes(nodes);
+  const rows = [];
+  items.forEach((entry, index3) => {
+    const parts = [];
+    if (entry.kind === "process") {
+      parts.push((0, import_react59.createElement)("div", { key: "lead", className: "dshpc-sv-notice" }, `${t4("sessionProcess")} \xB7 ${entry.nodes.length}`));
+      entry.nodes.forEach((node, i2) => {
+        const rendered = renderLegacyNode(node, t4, fileOpen);
+        if (rendered !== null)
+          parts.push((0, import_react59.createElement)("div", { key: `p${i2}` }, rendered));
+      });
+    } else {
+      const inner = renderLegacyNode(entry.node, t4, fileOpen);
+      if (inner !== null)
+        parts.push(inner);
+      if (entry.node.kind === "assistant") {
+        const next = items[index3 + 1];
+        const isTurnEnd = next === void 0 || !(next.kind === "node" && next.node.kind === "assistant");
+        if (isTurnEnd)
+          parts.push((0, import_react59.createElement)(MessageIconActionsMirror, { key: "act", text: assistantText2(entry.node), clock: "end", t: t4 }));
+      }
+    }
+    if (parts.length === 0)
+      return;
+    rows.push((0, import_react59.createElement)("div", { key: `lg${index3}`, className: ocOr("ChatView", "flowItem", "dshpc-sv-flowitem") }, parts));
+  });
+  return rows;
+}
+function normalizeFilePath(p) {
+  let s = p.trim();
+  while (s.startsWith("./"))
+    s = s.slice(2);
+  return s;
+}
+function turnDeliverablesPresented(face) {
+  const data2 = face?.data;
+  const delivered = data2 instanceof Map ? data2.get("deliverables") : data2?.deliverables;
+  const presented = delivered?.presented;
+  return Array.isArray(presented) ? presented : [];
+}
+function collectFilePaths(order, store, turns) {
+  if (store === void 0)
+    return [];
+  const out = /* @__PURE__ */ new Set();
+  if (turns !== null && turns !== void 0) {
+    const map = turns;
+    for (const [, face] of map) {
+      const presented = turnDeliverablesPresented(face);
+      for (const file of presented) {
+        const path = typeof file?.path === "string" ? file.path : void 0;
+        if (path !== void 0 && path.trim() !== "")
+          out.add(normalizeFilePath(path));
+      }
+    }
+  }
+  for (const key of order) {
+    const node = store.get(key);
+    if (node === void 0 || node.kind !== "tool-call")
+      continue;
+    const root = node.data?.root;
+    if (root === void 0 || root === null || typeof root !== "object")
+      continue;
+    if (isPresentRoot(root)) {
+      for (const file of presentFiles(root))
+        out.add(normalizeFilePath(file.path));
+      continue;
+    }
+    const call2 = root.kind === "tool-result" ? root.call : root;
+    if (call2 === null || typeof call2 !== "object")
+      continue;
+    const raw = typeof call2.argsRaw === "string" ? call2.argsRaw.trim() : "";
+    if (raw.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(raw);
+        for (const field of ["file_path", "path"]) {
+          const value = parsed[field];
+          if (typeof value === "string" && value.trim() !== "")
+            out.add(normalizeFilePath(value));
+        }
+      } catch {
+      }
+    }
+    const meta2 = root.meta;
+    if (typeof meta2 === "object" && meta2 !== null) {
+      const diffs = meta2.diffs;
+      if (Array.isArray(diffs)) {
+        for (const diff2 of diffs) {
+          const p = diff2?.path;
+          if (typeof p === "string" && p.trim() !== "")
+            out.add(normalizeFilePath(p));
+        }
+      }
+    }
+  }
+  return [...out];
+}
+function collectPresentedByTurn(turns) {
+  const out = /* @__PURE__ */ new Map();
+  if (turns === null || turns === void 0)
+    return out;
+  const map = turns;
+  for (const [key, face] of map) {
+    const turn = typeof key === "number" ? key : Number(key);
+    if (!Number.isInteger(turn) || turn < 1)
+      continue;
+    const presented = turnDeliverablesPresented(face);
+    if (presented.length === 0)
+      continue;
+    const files = [];
+    for (const file of presented) {
+      const path = typeof file?.path === "string" ? file.path : void 0;
+      if (path === void 0 || path.trim() === "")
+        continue;
+      const description = typeof file?.description === "string" && file.description.trim() !== "" ? file.description : void 0;
+      files.push(description === void 0 ? { path } : { path, description });
+    }
+    if (files.length > 0)
+      out.set(turn, files);
+  }
+  return out;
+}
+function makeFileMentions(paths, open) {
+  const exact = /* @__PURE__ */ new Map();
+  const byBase = /* @__PURE__ */ new Map();
+  for (const p of paths) {
+    exact.set(p, p);
+    const base3 = p.includes("/") ? p.slice(p.lastIndexOf("/") + 1) : p;
+    const bucket = byBase.get(base3);
+    if (bucket === void 0)
+      byBase.set(base3, [p]);
+    else
+      bucket.push(p);
+  }
+  return {
+    resolve(value) {
+      const norm = normalizeFilePath(value);
+      const hit = exact.get(norm) ?? (() => {
+        const base3 = norm.includes("/") ? norm.slice(norm.lastIndexOf("/") + 1) : norm;
+        const bucket = byBase.get(base3);
+        return bucket !== void 0 && bucket.length === 1 ? bucket[0] : void 0;
+      })();
+      if (hit === void 0)
+        return void 0;
+      return { label: value, title: hit, open: () => {
+        open(hit);
+      } };
+    }
+  };
+}
+function SessionViewModal(props) {
+  ensureControls();
+  const tt = props.t ?? t;
+  const { heading: heading2, sessionId, view, onClose, forkSession, openHostSession, onContinue, onOpenFile } = props;
+  const subscribe = (0, import_react59.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
+  const getSnapshot = (0, import_react59.useMemo)(() => () => view.target.getSnapshot(), [view]);
+  const chat = (0, import_react59.useSyncExternalStore)(subscribe, getSnapshot);
+  const sessionSub = (0, import_react59.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
+  const sessionGet = (0, import_react59.useMemo)(() => () => view.session.getSnapshot(), [view]);
+  const sessionSnap = (0, import_react59.useSyncExternalStore)(sessionSub, sessionGet);
+  const [openTurns, setOpenTurns] = (0, import_react59.useState)(() => /* @__PURE__ */ new Map());
+  const onSetOpen = (0, import_react59.useCallback)((turn, answerStep, open) => {
+    setOpenTurns((prev) => {
+      const next = new Map(prev);
+      if (open)
+        next.set(turn, answerStep);
+      else
+        next.delete(turn);
+      return next;
+    });
+  }, []);
+  const canFork = forkSession !== void 0 && openHostSession !== void 0;
+  const [forkTarget, setForkTarget] = (0, import_react59.useState)(null);
+  const [forking, setForking] = (0, import_react59.useState)(false);
+  const [forkErr, setForkErr] = (0, import_react59.useState)(null);
+  const aliveRef = (0, import_react59.useRef)(true);
+  (0, import_react59.useEffect)(() => () => {
+    aliveRef.current = false;
+  }, []);
+  const onForkAccept = (0, import_react59.useCallback)(() => {
+    if (forking || forkSession === void 0 || openHostSession === void 0)
+      return;
+    setForking(true);
+    setForkErr(null);
+    void (async () => {
+      try {
+        const child = await forkSession(sessionId, forkTarget?.atSeq);
+        if (!aliveRef.current)
+          return;
+        onClose();
+        openHostSession(child);
+      } catch (error) {
+        if (!aliveRef.current)
+          return;
+        setForkErr(error instanceof Error ? error.message : String(error));
+      } finally {
+        if (aliveRef.current)
+          setForking(false);
+      }
+    })();
+  }, [forking, forkSession, openHostSession, sessionId, forkTarget, onClose]);
+  const onBranchAt = (0, import_react59.useCallback)((seq) => {
+    setForkErr(null);
+    setForkTarget({ atSeq: seq });
+  }, []);
+  const [draft, setDraft] = (0, import_react59.useState)("");
+  const [sending, setSending] = (0, import_react59.useState)(false);
+  const [sendErr, setSendErr] = (0, import_react59.useState)(null);
+  const onSend = (0, import_react59.useCallback)(() => {
+    const message = draft.trim();
+    if (sending || message === "" || onContinue === void 0)
+      return;
+    setSending(true);
+    setSendErr(null);
+    void (async () => {
+      try {
+        await onContinue(message);
+        if (!aliveRef.current)
+          return;
+        setDraft("");
+      } catch (error) {
+        if (!aliveRef.current)
+          return;
+        setSendErr(error instanceof Error ? error.message : String(error));
+      } finally {
+        if (aliveRef.current)
+          setSending(false);
+      }
+    })();
+  }, [draft, sending, onContinue]);
+  const openFile = (0, import_react59.useCallback)((path) => {
+    onOpenFile?.(path);
+  }, [onOpenFile]);
+  const order = chat?.order ?? EMPTY_ORDER;
+  const store = chat?.nodes;
+  const keyed = order.length > 0 && store !== void 0;
+  const turns = chat?.timeline?.turns;
+  const fileOpen = (0, import_react59.useMemo)(() => {
+    if (onOpenFile === void 0)
+      return void 0;
+    return {
+      open: openFile,
+      mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile)
+    };
+  }, [onOpenFile, openFile, order, store, turns]);
+  const deliveredByTurn = (0, import_react59.useMemo)(() => collectPresentedByTurn(turns), [turns]);
+  const deliverFiles = (0, import_react59.useMemo)(() => {
+    const byPath = /* @__PURE__ */ new Map();
+    const add2 = (file) => {
+      const key = file.path.trim();
+      if (key === "" || byPath.has(key))
+        return;
+      byPath.set(key, file);
+    };
+    for (const files of deliveredByTurn.values())
+      for (const file of files)
+        add2(file);
+    return [...byPath.values()];
+  }, [deliveredByTurn]);
+  const lastTailTurn = (0, import_react59.useMemo)(() => {
+    if (!keyed || store === void 0)
+      return void 0;
+    for (let i2 = order.length - 1; i2 >= 0; i2--) {
+      const key = order[i2];
+      if (key === void 0)
+        continue;
+      const node = store.get(key);
+      if (node?.kind !== "turn-tail")
+        continue;
+      const data2 = node.data;
+      const turn = data2?.turn ?? turnLocationOf(node)?.turn;
+      if (typeof turn === "number")
+        return turn;
+    }
+    return void 0;
+  }, [keyed, order, store]);
+  const renderNode = (0, import_react59.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn]);
+  const isTurnClosed = (0, import_react59.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
+  const groupedView = (0, import_react59.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed) : void 0, [keyed, order, store, isTurnClosed]);
+  const rows = keyed ? ChatNodeListMirror({
+    order,
+    store,
+    entries: groupedView?.entries,
+    groups: groupedView?.groups,
+    turns,
+    openState: openTurns,
+    onSetOpen,
+    // 官方 usePresentation(policy => policy.foldCompletedTurns)：只读历史视图按「折叠已完成轮次」处理。
+    foldCompleted: true,
+    renderNode,
+    t: tt
+  }) : renderLegacyRows(chat?.legacy?.nodes ?? [], tt, fileOpen);
+  const rendered = rows.filter((row) => row !== null && row !== void 0);
+  const officialCount = officialModuleCount();
+  if (!officialWarned) {
+    officialWarned = true;
+    console.info(`[dsh-plugin-core:session] \u5B98\u65B9 ui-chat \u6A21\u5757\u6570=${officialCount}\uFF1B\u7C7B\u540D\u6837\u4F8B frame=${officialClass("ChatView", "frame")} flowItem=${officialClass("ChatView", "flowItem")} trigger=${officialClass("TurnTriggerNodeView", "root")} turnProcess=${officialClass("TurnProcessNodeView", "root")} tail=${officialClass("TurnTailNodeView", "root")}`);
+    if (officialCount === 0) {
+      console.warn("[dsh-plugin-core:session] \u672A\u53D1\u73B0\u5B98\u65B9 ui-chat \u6837\u5F0F\u6A21\u5757 \u21D2 \u5F39\u7A97\u89C2\u611F\u9000\u56DE\u81EA\u7ED8\u6837\u5F0F\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09");
+    }
+  }
+  const openState = sessionSnap?.openState;
+  const showLoadOlder = sessionSnap?.hasMore !== false;
+  const body = rendered.length === 0 ? (0, import_react59.createElement)(ChatHint, {
+    text: openState === "error" ? tt("sessionFailed") : openState === "loading" || openState === "cold" ? tt("sessionLoading") : tt("sessionEmpty")
+  }) : [
+    showLoadOlder ? (0, import_react59.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
+      view.loadOlder();
+    } }) : null,
+    ...rendered
+  ];
+  return (0, import_react59.createElement)(
+    import_react59.Fragment,
+    null,
+    (0, import_react59.createElement)("div", { className: "dshpc-sv-overlay", onClick: onClose }, (0, import_react59.createElement)(
+      "div",
+      { className: "dshpc-sv-panel", onClick: (event) => {
+        event.stopPropagation();
+      } },
+      (0, import_react59.createElement)("div", { className: "dshpc-sv-header" }, (0, import_react59.createElement)(
+        "div",
+        { className: "dshpc-sv-heading" },
+        (0, import_react59.createElement)("div", { className: "dshpc-sv-title" }, tt("sessionViewerTitle"), heading2 === void 0 ? "" : ` \xB7 ${heading2}`),
+        (0, import_react59.createElement)("div", { className: "dshpc-sv-sid" }, sessionId),
+        // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
+        officialCount === 0 ? (0, import_react59.createElement)("div", {
+          className: "dshpc-sv-sid",
+          style: { color: "var(--dshpc-warning, #b7791f)" }
+        }, "\u26A0 \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\uFF08\u5F53\u524D\u4E3A\u81EA\u7ED8\u56DE\u9000\uFF09") : null
+      ), (0, import_react59.createElement)("div", { className: "dshpc-sv-headerbtns" }, canFork ? (0, import_react59.createElement)(official_exports.Button, {
+        variant: "outline",
+        size: "sm",
+        disabled: forking,
+        title: tt("continueBranch"),
+        icon: (0, import_react59.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }),
+        onClick: () => {
+          setForkErr(null);
+          setForkTarget({});
+        }
+      }, tt("continueBranch")) : null, (0, import_react59.createElement)("button", {
+        type: "button",
+        className: "dshpc-sv-action",
+        "aria-label": tt("modalClose"),
+        title: tt("modalClose"),
+        onClick: onClose
+      }, (0, import_react59.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 })))),
+      // 会话区 = mirror/ChatView（frame > root > scroll > column > flowItem*，官方类优先）。
+      (0, import_react59.createElement)(ChatViewFrame, {
+        children: [
+          ...Array.isArray(body) ? body : [body]
+        ]
+      }),
+      // 底部暂存输入框（期4）：flex:none 不随会话区滚动；确定后带话开分支跳官方视图。
+      onContinue === void 0 ? null : (0, import_react59.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react59.createElement)("textarea", {
+        value: draft,
+        placeholder: tt("composerPlaceholder"),
+        disabled: sending,
+        onChange: (event) => {
+          setDraft(event.target.value);
+        },
+        onKeyDown: (event) => {
+          if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault();
+            onSend();
+          }
+        }
+      }), (0, import_react59.createElement)(official_exports.Button, {
+        variant: "primary",
+        size: "sm",
+        disabled: sending || draft.trim() === "",
+        onClick: onSend
+      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react59.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5")),
+      sendErr !== null ? (0, import_react59.createElement)("div", { className: "dshpc-sv-forkerr", style: { padding: "0 34px 10px" } }, sendErr) : null
+    )),
+    // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——官方 Modal + Button
+    // （portal 到 body，与本弹窗同 z-index 层、后挂载居上；Escape / 遮罩点击 / 头部叉均触发 onClose）。
+    (0, import_react59.createElement)(official_exports.Modal, {
+      open: forkTarget !== null,
+      onClose: () => {
+        if (!forking)
+          setForkTarget(null);
+      },
+      title: tt("forkConfirmTitle"),
+      closeLabel: tt("modalClose"),
+      description: tt("forkConfirmText"),
+      className: "dshpc-sv-forkmodal",
+      footer: [
+        (0, import_react59.createElement)(official_exports.Button, { key: "cancel", variant: "outline", disabled: forking, onClick: () => {
+          setForkTarget(null);
+        } }, tt("cancel")),
+        (0, import_react59.createElement)(official_exports.Button, { key: "accept", variant: "primary", disabled: forking, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
+      ]
+    }, forkErr !== null ? (0, import_react59.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
+  );
+}
+
+// packages/demo/src/mock-session.ts
+var now = Date.now();
+var minute = 6e4;
+var TURN1_SPEC = {
+  turn: 1,
+  controlAnchorSeq: 3,
+  processStartSeq: 4,
+  answerAnchorSeq: 8,
+  answerStep: 1,
+  inlineReasoning: true,
+  messageCount: 2,
+  toolCallCount: 4,
+  subagentCount: 0
+};
+var NODES = [
+  {
+    key: "trig1",
+    kind: "turn-trigger",
+    anchorSeq: 1,
+    data: {
+      source: { kind: "schedule" },
+      time: now - 42 * minute,
+      content: [{ type: "text", text: "\u5B9A\u65F6\u89E6\u53D1\uFF1A\u6BCF\u65E5 09:30 \u6784\u5EFA\u955C\u50CF\u5347\u7EA7\u65E5\u62A5" }]
+    },
+    location: { kind: "turn", turn: { turn: 1, status: "closed", start: { time: now - 42 * minute } } }
+  },
+  {
+    key: "u1",
+    kind: "user",
+    anchorSeq: 2,
+    data: {
+      content: [
+        { type: "text", text: "\u628A\u8FD9\u4E2A\u5305\u7684\u6784\u5EFA\u8DD1\u4E00\u4E0B\uFF0C\u987A\u4FBF\u770B\u770B\u6709\u6CA1\u6709\u8B66\u544A" },
+        { type: "file", attachment: { attachmentId: "att-1", name: "AGENTS.md", bytes: 2048 } }
+      ]
+    },
+    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
+  },
+  {
+    key: "tp1",
+    kind: "turn-process",
+    anchorSeq: 3,
+    data: TURN1_SPEC,
+    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
+  },
+  {
+    key: "a1",
+    kind: "assistant-step",
+    anchorSeq: 4,
+    data: {
+      step: 1,
+      blocks: [
+        { kind: "reasoning", text: "\u5148\u8DD1\u7C7B\u578B\u68C0\u67E5\uFF0C\u518D\u770B\u6784\u5EFA\u4EA7\u7269\u3002\n**\u6CE8\u610F**\uFF1A\u81EA\u68C0\u4E0D\u8FC7\u5C31\u505C\u3002" },
+        { kind: "text", text: "\u597D\u7684\uFF0C\u6211\u5148\u770B\u4E00\u773C\u4F9D\u8D56\u6E05\u5355\uFF0C\u518D\u8DD1\u7C7B\u578B\u68C0\u67E5\u548C\u81EA\u68C0\u3002" },
+        { kind: "tool-call", callId: "c1", name: "read", argsRaw: "{}" }
+      ]
+    },
+    location: { kind: "step", turn: { turn: 1, status: "closed" } }
+  },
+  {
+    key: "tc-read",
+    kind: "tool-call",
+    anchorSeq: 5,
+    data: {
+      root: {
+        kind: "tool-result",
+        call: { name: "read", argsRaw: '{"file_path":"package.json"}' },
+        content: [{ type: "text", text: '<path>package.json</path>\n<type>file</type>\n<content>\n{\n  "name": "dsh-plugin-core"\n}\n</content>' }],
+        meta: {
+          path: "package.json",
+          offset: 1,
+          lines: [
+            { number: 1, text: "{" },
+            { number: 2, text: '  "name": "dsh-plugin-core"' },
+            { number: 3, text: "}" }
+          ],
+          totalLines: 3
+        }
+      }
+    },
+    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
+  },
+  {
+    key: "tc-write",
+    kind: "tool-call",
+    anchorSeq: 6,
+    data: {
+      root: {
+        kind: "tool-result",
+        call: { name: "write", argsRaw: '{"file_path":"docs/\u65E5\u62A5.md","content":"# \u955C\u50CF\u5347\u7EA7\u65E5\u62A5\\n"}' },
+        content: [{ type: "text", text: "written 24 bytes" }],
+        meta: { diffs: [{ path: "docs/\u65E5\u62A5.md", oldText: null, newText: "# \u955C\u50CF\u5347\u7EA7\u65E5\u62A5\n" }] }
+      }
+    },
+    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
+  },
+  {
+    key: "tc-bash",
+    kind: "tool-call",
+    anchorSeq: 7,
+    data: {
+      root: {
+        kind: "tool-result",
+        call: { name: "bash", argsRaw: '{"command":"pnpm test","description":"\u8DD1\u81EA\u68C0"}' },
+        content: [{ type: "text", text: "\u2139 tests 90\n\u2139 pass 90\n\u2139 fail 0\n[exit code: 0]" }]
+      }
+    },
+    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
+  },
+  {
+    key: "tc-run",
+    kind: "tool-call",
+    anchorSeq: 8,
+    data: {
+      root: { name: "bash", argsRaw: '{"command":"pnpm build","description":"\u6784\u5EFA"}', phase: "start" }
+    },
+    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
+  },
+  {
+    key: "tc-present",
+    kind: "tool-call",
+    anchorSeq: 9,
+    data: {
+      root: {
+        kind: "tool-result",
+        call: {
+          name: "present",
+          argsRaw: '{"files":[{"path":"docs/\u955C\u50CF\u5347\u7EA7\u65E5\u62A5.md","description":"\u672C\u6B21\u4EA4\u4ED8\u7684\u65E5\u62A5\uFF08\u542B\u622A\u56FE\uFF09"},{"path":"dist/bundle.js"}]}'
+        },
+        content: [{ type: "text", text: "presented 2 files" }]
+      }
+    },
+    location: { kind: "turn", turn: { turn: 1, status: "closed" } }
+  },
+  {
+    key: "tail1",
+    kind: "turn-tail",
+    anchorSeq: 10,
+    data: {
+      turn: 1,
+      seq: 10,
+      closing: { time: now - 8 * minute, blocks: [{ kind: "text", text: "\u6784\u5EFA\u5B8C\u6210\uFF0C90 \u6761\u81EA\u68C0\u5168\u8FC7\uFF0C\u4EA4\u4ED8\u6587\u4EF6\u5DF2\u5217\u51FA\u3002" }] },
+      tokenUsage: {
+        totalTokens: 91500,
+        uncachedInputTokens: 12e3,
+        cacheReadTokens: 7e4,
+        cacheWriteTokens: 5e3,
+        outputTokens: 4500,
+        reasoningTokens: 1200,
+        routes: [{ provider: "deepseek", model: "deepseek-chat" }]
+      }
+    },
+    location: { kind: "turn", turn: { turn: 1, status: "closed", end: { time: now - 8 * minute } } }
+  },
+  {
+    key: "u2",
+    kind: "user",
+    anchorSeq: 11,
+    data: { content: [{ type: "text", text: "\u7EE7\u7EED\uFF1A\u628A\u8FD9\u4EFD\u65E5\u62A5\u4E5F\u5F52\u6863\u6389" }] },
+    location: { kind: "turn", turn: { turn: 2, status: "closed", start: { time: now - 7 * minute } } }
+  },
+  {
+    key: "a2",
+    kind: "assistant-step",
+    anchorSeq: 12,
+    data: { step: 1, blocks: [{ kind: "text", text: "\u597D\u7684\uFF0C\u6211\u6765\u5F52\u6863\u3002" }] },
+    location: { kind: "step", turn: { turn: 2, status: "closed" } }
+  },
+  {
+    key: "retry1",
+    kind: "model-retry",
+    anchorSeq: 13,
+    data: { retryState: "started", retry: 2, maxRetries: 5, delayMs: 1868, mode: "normal", failure: { message: "503 upstream", code: "SERVER" } },
+    location: { kind: "turn", turn: { turn: 2, status: "closed" } }
+  },
+  {
+    key: "err1",
+    kind: "turn-error",
+    anchorSeq: 14,
+    data: { message: "\u6A21\u578B\u670D\u52A1\u6682\u65F6\u4E0D\u53EF\u7528", code: "SERVER", turn: 2 },
+    location: { kind: "turn", turn: { turn: 2, status: "closed", end: { time: now - 1 * minute, data: { reason: { kind: "error" } } } } }
+  },
+  {
+    key: "tail2",
+    kind: "turn-tail",
+    anchorSeq: 15,
+    data: { turn: 2, seq: 15, closing: null },
+    location: { kind: "turn", turn: { turn: 2, status: "closed", end: { time: now - 1 * minute } } }
+  }
+];
+var ORDER = NODES.map((n) => n.key);
+function buildTurns() {
+  const deliverables = /* @__PURE__ */ new Map([
+    ["deliverables", {
+      presented: [
+        { path: "docs/\u955C\u50CF\u5347\u7EA7\u65E5\u62A5.md", description: "\u672C\u6B21\u4EA4\u4ED8\u7684\u65E5\u62A5\uFF08\u542B\u622A\u56FE\uFF09" },
+        { path: "dist/bundle.js" }
+      ]
+    }]
+  ]);
+  const turns = /* @__PURE__ */ new Map();
+  turns.set(1, { status: "closed", data: deliverables });
+  turns.set(2, { status: "closed", data: /* @__PURE__ */ new Map() });
+  return turns;
+}
+function buildStore(nodes) {
+  const byKey = new Map(nodes.map((n) => [n.key, n]));
+  return {
+    get(key) {
+      return byKey.get(key);
+    },
+    processSource(key) {
+      return {
+        getSnapshot() {
+          if (key !== "tp1") return void 0;
+          return {
+            turn: 1,
+            spec: TURN1_SPEC,
+            turnStarted: true,
+            turnClosed: true,
+            hasExternalProcess: true
+          };
+        }
+      };
+    }
+  };
+}
+function mockSessionView() {
+  const chatSnap = { order: ORDER, nodes: buildStore(NODES), timeline: { turnOrder: [1, 2], turns: buildTurns() } };
+  const sessionSnap = { openState: "open", hasMore: false };
+  return {
+    target: { getSnapshot: () => chatSnap, subscribe: () => () => {
+    } },
+    session: { getSnapshot: () => sessionSnap, subscribe: () => () => {
+    } },
+    loadOlder: () => {
+    },
+    dispose: () => {
+    }
+  };
 }
 
 // packages/demo/src/samples.ts
@@ -56485,26 +59294,36 @@ import { pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 
 const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['js', 'md'] } })
 // r = { path, isDir }`;
-var CODE_SESSION = `import { SessionPreview } from 'dsh-plugin-core/session'
+var CODE_SESSION = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
 
-h(SessionPreview, {
-  sessionId,
-  source: { listMessages, download }, // \u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF08host \u80FD\u529B\uFF09
-  variant: 'modal',
-  onClose: () => setOpen(false),
-})`;
+// \u6570\u636E\u94FE\uFF1Aretain \u7269\u5316 \u2192 binding \u2192 open \u62C9\u5C3E\u9875 \u2192 target('chat')\uFF08\u5F52\u6863\u4F1A\u8BDD\u540C\u6837\u53EF\u8BFB\uFF09
+const view = openSessionView(sessions, uiConversation, sessionId, 'my-plugin')
+if (view !== null) {
+  h(SessionViewModal, {
+    sessionId,
+    view,
+    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',
+    onClose: () => { view.dispose(); setOpen(false) },
+    // \u7EED\u804A\u6B63\u9053\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF08\u5E95\u5C42 keyed \u6570\u7EC4\u53EA\u8BFB\uFF0C\u6846\u5185\u4E0D\u80FD\u6253\u5B57\uFF09
+    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
+    openHostSession: (id) => uiWorkspace.openSession(id),
+    // \u6682\u5B58\u8F93\u5165\u6846\uFF1A\u786E\u5B9A\u540E\u7531\u8C03\u7528\u65B9 fork + host \u4FA7 agent.send \u8D77\u8F6E\u6B21 + \u8DF3\u8F6C
+    onContinue: async (message) => { /* fork \u2192 host send \u2192 openSession */ },
+    onOpenFile: (path) => openFilePreview(path),
+  })
+}`;
 var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
-import { SessionPreview } from 'dsh-plugin-core/session'`;
+import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'`;
 function useExplorerHost() {
-  const { workspaceFiles, officeToPdf } = (0, import_react46.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react46.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const { workspaceFiles, officeToPdf } = (0, import_react60.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react60.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
   return { workspaceFiles, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
 }
 function NotReady(props) {
-  return (0, import_react46.createElement)(
+  return (0, import_react60.createElement)(
     "div",
     { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } },
     t2(props.which === "files" ? "explorerFilesNone" : "explorerAnchorNone")
@@ -56512,12 +59331,12 @@ function NotReady(props) {
 }
 function OpenPreviewDemo() {
   const { workspaceFiles, anchor, workspaceNames } = useExplorerHost();
-  const [samples, setSamples] = (0, import_react46.useState)(null);
-  const [phase, setPhase] = (0, import_react46.useState)("idle");
-  const [last2, setLast] = (0, import_react46.useState)(null);
-  const pending = (0, import_react46.useRef)(null);
+  const [samples, setSamples] = (0, import_react60.useState)(null);
+  const [phase, setPhase] = (0, import_react60.useState)("idle");
+  const [last2, setLast] = (0, import_react60.useState)(null);
+  const pending = (0, import_react60.useRef)(null);
   const sessionId = anchor === null ? null : anchor.sessionId;
-  (0, import_react46.useEffect)(() => {
+  (0, import_react60.useEffect)(() => {
     if (workspaceFiles === null || sessionId === null) return;
     if (pending.current !== null) return;
     setPhase("probing");
@@ -56527,8 +59346,8 @@ function OpenPreviewDemo() {
       return s;
     });
   }, [workspaceFiles, sessionId]);
-  if (workspaceFiles === null) return (0, import_react46.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react46.createElement)(NotReady, { which: "anchor" });
+  if (workspaceFiles === null) return (0, import_react60.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react60.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
     const mount = pageRow.element;
     if (mount === null) {
@@ -56544,14 +59363,14 @@ function OpenPreviewDemo() {
       if (s !== null) open(pick2(s), anchor.title);
     });
   };
-  return (0, import_react46.createElement)(
+  return (0, import_react60.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react46.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t2("openRootPreview")),
-    (0, import_react46.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
-    (0, import_react46.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
-    last2 === null ? null : (0, import_react46.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
-    (0, import_react46.createElement)(
+    (0, import_react60.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t2("openRootPreview")),
+    (0, import_react60.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
+    (0, import_react60.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
+    last2 === null ? null : (0, import_react60.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
+    (0, import_react60.createElement)(
       "div",
       { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", width: "100%" } },
       `${t2("explorerAnchorLabel")}${anchor.title} \xB7 ${t2("explorerSessionLabel")}${anchor.sessionId} \xB7 ${t2("explorerWorkspaces")}${String(workspaceNames.length)}`
@@ -56560,9 +59379,9 @@ function OpenPreviewDemo() {
 }
 function PickFileDemo() {
   const { workspaceFiles, anchor } = useExplorerHost();
-  const [picked, setPicked] = (0, import_react46.useState)(null);
-  if (workspaceFiles === null) return (0, import_react46.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react46.createElement)(NotReady, { which: "anchor" });
+  const [picked, setPicked] = (0, import_react60.useState)(null);
+  if (workspaceFiles === null) return (0, import_react60.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react60.createElement)(NotReady, { which: "anchor" });
   const pick2 = (anchorBtn, filter2) => {
     void pickWorkspaceFile({
       workspaceFiles,
@@ -56572,10 +59391,10 @@ function PickFileDemo() {
       filter: filter2
     }).then((r2) => setPicked(r2 === null ? null : r2.path + (r2.isDir ? "/" : "")));
   };
-  return (0, import_react46.createElement)(
+  return (0, import_react60.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react46.createElement)(
+    (0, import_react60.createElement)(
       Button,
       {
         variant: "primary",
@@ -56583,7 +59402,7 @@ function PickFileDemo() {
       },
       t2("pickAny")
     ),
-    (0, import_react46.createElement)(
+    (0, import_react60.createElement)(
       Button,
       {
         variant: "secondary",
@@ -56591,66 +59410,76 @@ function PickFileDemo() {
       },
       "\u4EC5 JS/MD"
     ),
-    (0, import_react46.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t2("pickNone") : `${t2("pickResult")}${picked}`)
+    (0, import_react60.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t2("pickNone") : `${t2("pickResult")}${picked}`)
   );
 }
 function SessionPreviewDemo() {
-  const [open, setOpen] = (0, import_react46.useState)(false);
-  const source = {
-    listMessages: async () => [
-      { id: "1", role: "user", text: "\u5E2E\u6211\u628A\u8FD9\u4E2A\u4EFB\u52A1\u8BBE\u4E2A\u63D0\u9192" },
-      { id: "2", role: "assistant", text: "\u5DF2\u4E3A\u4F60\u521B\u5EFA\u6BCF\u65E5 09:30 \u7684\u63D0\u9192\u3002" }
-    ],
-    download: async () => new TextEncoder().encode("\uFF08\u793A\u4F8B\u9644\u4EF6\u5185\u5BB9\uFF09")
-  };
-  return (0, import_react46.createElement)(
+  const [open, setOpen] = (0, import_react60.useState)(false);
+  const [note, setNote] = (0, import_react60.useState)(null);
+  const view = (0, import_react60.useMemo)(() => mockSessionView(), []);
+  return (0, import_react60.createElement)(
     "div",
-    { style: { display: "flex", gap: "12px", alignItems: "center" } },
-    (0, import_react46.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, t2("sessionOpenModal")),
-    (0, import_react46.createElement)(Button, { variant: "ghost", onClick: () => setOpen(false) }, t2("sessionClose")),
-    open ? (0, import_react46.createElement)(SessionPreview, {
+    { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
+    (0, import_react60.createElement)(Button, { variant: "primary", onClick: () => setOpen(true) }, t2("sessionOpenModal")),
+    (0, import_react60.createElement)(Button, { variant: "ghost", onClick: () => setOpen(false) }, t2("sessionClose")),
+    note === null ? null : (0, import_react60.createElement)("code", { style: { fontSize: "12px" } }, note),
+    open ? (0, import_react60.createElement)(SessionViewModal, {
       sessionId: "demo-session",
-      source,
-      variant: "modal",
-      onClose: () => setOpen(false)
+      view,
+      heading: "\u955C\u50CF\u5347\u7EA7\u65E5\u62A5",
+      onClose: () => setOpen(false),
+      // 宿主服务在预览站里缺席 ⇒ 三个续聊 / 文件出口都是本地回声（演示交互，不真跳转）。
+      forkSession: async () => {
+        setNote(`${t2("sessionForked")} demo-session(1)`);
+        return "demo-session(1)";
+      },
+      openHostSession: (id3) => {
+        setNote(`${t2("sessionOpenedHost")} ${id3}`);
+      },
+      onContinue: async (message) => {
+        setNote(`${t2("sessionContinued")} ${message}`);
+      },
+      onOpenFile: (path) => {
+        setNote(`${t2("sessionOpenedFile")} ${path}`);
+      }
     }) : null
   );
 }
 function ExplorerPage() {
-  return (0, import_react46.createElement)(
+  return (0, import_react60.createElement)(
     "div",
     null,
-    (0, import_react46.createElement)(DocProse, { id: "explorer" }),
-    (0, import_react46.createElement)(
+    (0, import_react60.createElement)(DocProse, { id: "explorer" }),
+    (0, import_react60.createElement)(
       Example,
       { title: t2("methodATitle"), hint: t2("methodAHint"), code: CODE_OPEN },
-      (0, import_react46.createElement)(OpenPreviewDemo, null)
+      (0, import_react60.createElement)(OpenPreviewDemo, null)
     ),
-    (0, import_react46.createElement)(
+    (0, import_react60.createElement)(
       Example,
       { title: t2("methodBTitle"), hint: t2("methodBHint"), code: CODE_PICK },
-      (0, import_react46.createElement)(PickFileDemo, null)
+      (0, import_react60.createElement)(PickFileDemo, null)
     ),
-    (0, import_react46.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
-    (0, import_react46.createElement)(DocApi, { id: "explorer" })
+    (0, import_react60.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
+    (0, import_react60.createElement)(DocApi, { id: "explorer" })
   );
 }
 function SessionPage() {
-  return (0, import_react46.createElement)(
+  return (0, import_react60.createElement)(
     "div",
     null,
-    (0, import_react46.createElement)(DocProse, { id: "session" }),
-    (0, import_react46.createElement)(
+    (0, import_react60.createElement)(DocProse, { id: "session" }),
+    (0, import_react60.createElement)(
       Example,
       { title: "SessionPreview", hint: t2("sessionHint"), code: CODE_SESSION },
-      (0, import_react46.createElement)(SessionPreviewDemo, null)
+      (0, import_react60.createElement)(SessionPreviewDemo, null)
     ),
-    (0, import_react46.createElement)(DocApi, { id: "session" })
+    (0, import_react60.createElement)(DocApi, { id: "session" })
   );
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react47 = require("react");
+var import_react61 = require("react");
 var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
@@ -56685,28 +59514,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react47.createElement)(
+  return (0, import_react61.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react47.createElement)(
+    (0, import_react61.createElement)(
       "thead",
       null,
-      (0, import_react47.createElement)(
+      (0, import_react61.createElement)(
         "tr",
         null,
-        (0, import_react47.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react47.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react61.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react61.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react47.createElement)(
+    (0, import_react61.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react47.createElement)(
+        ([fn, out]) => (0, import_react61.createElement)(
           "tr",
           { key: fn },
-          (0, import_react47.createElement)("td", { style: td }, fn),
-          (0, import_react47.createElement)("td", { style: td }, out)
+          (0, import_react61.createElement)("td", { style: td }, fn),
+          (0, import_react61.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -56715,44 +59544,44 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react47.createElement)(
+  return (0, import_react61.createElement)(
     "div",
     null,
-    (0, import_react47.createElement)(DocProse, { id: "date" }),
-    (0, import_react47.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react47.createElement)(FnTable, { rows: DATE_ROWS })),
-    (0, import_react47.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react47.createElement)(DocApi, { id: "date" })
+    (0, import_react61.createElement)(DocProse, { id: "date" }),
+    (0, import_react61.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react61.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react61.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react61.createElement)(DocApi, { id: "date" })
   );
 }
 function NumberPage() {
-  return (0, import_react47.createElement)(
+  return (0, import_react61.createElement)(
     "div",
     null,
-    (0, import_react47.createElement)(DocProse, { id: "number" }),
-    (0, import_react47.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react47.createElement)(FnTable, { rows: NUMBER_ROWS })),
-    (0, import_react47.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react47.createElement)(DocApi, { id: "number" })
+    (0, import_react61.createElement)(DocProse, { id: "number" }),
+    (0, import_react61.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react61.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react61.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react61.createElement)(DocApi, { id: "number" })
   );
 }
 function TextPage() {
-  return (0, import_react47.createElement)(DocContent, { id: "text" });
+  return (0, import_react61.createElement)(DocContent, { id: "text" });
 }
 function HttpPage() {
-  return (0, import_react47.createElement)(DocContent, { id: "http" });
+  return (0, import_react61.createElement)(DocContent, { id: "http" });
 }
 function I18nPage() {
-  return (0, import_react47.createElement)(
+  return (0, import_react61.createElement)(
     "div",
     null,
-    (0, import_react47.createElement)(DocProse, { id: "i18n" }),
-    (0, import_react47.createElement)(
+    (0, import_react61.createElement)(DocProse, { id: "i18n" }),
+    (0, import_react61.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
-      (0, import_react47.createElement)(
+      (0, import_react61.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react47.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
-        (0, import_react47.createElement)("code", {
+        (0, import_react61.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t2("i18nNow")),
+        (0, import_react61.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -56764,60 +59593,60 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react47.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react47.createElement)(DocApi, { id: "i18n" })
+    (0, import_react61.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react61.createElement)(DocApi, { id: "i18n" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react48 = require("react");
+var import_react62 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react48.createElement)(
+  return (0, import_react62.createElement)(
     "div",
     null,
-    (0, import_react48.createElement)(Note, { text: t2("referenceNote") }),
-    (0, import_react48.createElement)(Example, { title: t2("secA11y") }, (0, import_react48.createElement)(Placeholder2, { descKey: "a11yDesc" })),
-    (0, import_react48.createElement)(
+    (0, import_react62.createElement)(Note, { text: t2("referenceNote") }),
+    (0, import_react62.createElement)(Example, { title: t2("secA11y") }, (0, import_react62.createElement)(Placeholder2, { descKey: "a11yDesc" })),
+    (0, import_react62.createElement)(
       Example,
       { title: t2("secRoadmap"), hint: t2("roadmapHint") },
-      (0, import_react48.createElement)(
+      (0, import_react62.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react48.createElement)(
+          (key) => (0, import_react62.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react48.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react48.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
+            (0, import_react62.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react62.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t2(key))
           )
         ),
-        (0, import_react48.createElement)(
+        (0, import_react62.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t2("roadmapLayout")
         )
       )
     ),
-    (0, import_react48.createElement)(
+    (0, import_react62.createElement)(
       Example,
       { title: t2("secBuild"), hint: t2("buildDesc") },
-      (0, import_react48.createElement)(
+      (0, import_react62.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react48.createElement)(
+        (0, import_react62.createElement)(
           "tbody",
           null,
           [
             [t2("buildCore"), `v${"0.2.14"}`],
             [t2("buildDemo"), `v${"0.2.14"}`],
-            [t2("buildStamp"), "1022-1121-2w8b"]
+            [t2("buildStamp"), "1022-1401-yck4"]
           ].map(
-            ([label, value]) => (0, import_react48.createElement)(
+            ([label, value]) => (0, import_react62.createElement)(
               "tr",
               { key: label },
-              (0, import_react48.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react48.createElement)("td", {
+              (0, import_react62.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react62.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -56843,28 +59672,28 @@ var SECTION_GROUPS = [
 ];
 var ALL_SECTIONS = [
   // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react49.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react49.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react49.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react49.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react49.createElement)(PickerPage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react49.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react49.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react49.createElement)(ChipPage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react49.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react49.createElement)(LayoutPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react49.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react49.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react49.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react49.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react49.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react49.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react49.createElement)(I18nPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react63.createElement)(QuickstartPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react63.createElement)(FoundationPage, null) },
+  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react63.createElement)(ButtonPage, null) },
+  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react63.createElement)(InputPage, null) },
+  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react63.createElement)(PickerPage, null) },
+  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react63.createElement)(TooltipPage, null) },
+  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react63.createElement)(CardPage, null) },
+  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react63.createElement)(ChipPage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react63.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react63.createElement)(LayoutPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react63.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react63.createElement)(SessionPage, null) },
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react63.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react63.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react63.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react63.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react63.createElement)(I18nPage, null) },
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react49.createElement)(ReferencePage, null) }
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react63.createElement)(ReferencePage, null) }
 ];
 function Placeholder2(props) {
-  return (0, import_react49.createElement)(
+  return (0, import_react63.createElement)(
     "div",
     {
       style: {
@@ -56876,7 +59705,7 @@ function Placeholder2(props) {
         color: "var(--dshpc-fg-3)"
       }
     },
-    (0, import_react49.createElement)("div", {
+    (0, import_react63.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -56886,23 +59715,23 @@ function Placeholder2(props) {
         marginBottom: "10px"
       }
     }, t2("phTodo")),
-    (0, import_react49.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
+    (0, import_react63.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t2(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react49.createElement)(
+  return (0, import_react63.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react49.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react49.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
+    (0, import_react63.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react63.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react49.createElement)(
+  return (0, import_react63.createElement)(
     "div",
     null,
-    (0, import_react49.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
+    (0, import_react63.createElement)(SectionHead2, { id: current3.id, title: t2(current3.titleKey) }),
     current3.render()
   );
 }
@@ -56917,8 +59746,8 @@ var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 var PANEL_ID = "dsh-plugin-core-demo";
 var localeRuntime;
 function useLocaleTick() {
-  const [, setTick] = (0, import_react50.useState)(0);
-  (0, import_react50.useEffect)(() => {
+  const [, setTick] = (0, import_react64.useState)(0);
+  (0, import_react64.useEffect)(() => {
     const rt = localeRuntime;
     if (rt === void 0) return;
     return rt.subscribe(() => {
@@ -56928,11 +59757,11 @@ function useLocaleTick() {
 }
 function DemoPage() {
   useLocaleTick();
-  const [active, setActive2] = (0, import_react50.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive2] = (0, import_react64.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav2.push(
-      (0, import_react50.createElement)(
+      (0, import_react64.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -56950,7 +59779,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav2.push(
-        (0, import_react50.createElement)(
+        (0, import_react64.createElement)(
           "button",
           {
             key: section.id,
@@ -56977,7 +59806,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react50.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     {
       // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
@@ -56994,7 +59823,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react50.createElement)(
+    (0, import_react64.createElement)(
       "aside",
       {
         style: {
@@ -57010,18 +59839,18 @@ function DemoPage() {
       },
       nav2
     ),
-    (0, import_react50.createElement)(
+    (0, import_react64.createElement)(
       "main",
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
-      (0, import_react50.createElement)(Sections, { active })
+      (0, import_react64.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react50.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react64.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function OpenPreviewCard(props) {
-  return (0, import_react50.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     {
       role: "button",
@@ -57039,21 +59868,21 @@ function OpenPreviewCard(props) {
         background: "var(--dshpc-surface-1)"
       }
     },
-    (0, import_react50.createElement)(
+    (0, import_react64.createElement)(
       "div",
       null,
-      (0, import_react50.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
-      (0, import_react50.createElement)(
+      (0, import_react64.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t2("pluginTitle")),
+      (0, import_react64.createElement)(
         "div",
         { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
         t2("pluginCardDesc")
       )
     ),
-    (0, import_react50.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
+    (0, import_react64.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t2("pluginCardOpen"))
   );
 }
 function PanelIcon() {
-  return (0, import_react50.createElement)(
+  return (0, import_react64.createElement)(
     "span",
     { style: { display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "13px" } },
     "\u25E7"
@@ -57065,7 +59894,7 @@ function apply(ctx) {
   ensureControls(kit);
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react50.createElement)(import_dsh_client_ui_primitives3.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react64.createElement)(import_dsh_client_ui_primitives3.Tooltip, props));
   let jump = () => {
   };
   ctx.inject(["layout"], (sub) => {
@@ -57114,7 +59943,7 @@ function apply(ctx) {
             jump(PANEL_ID);
           } })
         },
-        (props) => (0, import_react50.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
+        (props) => (0, import_react64.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
           jump(PANEL_ID);
         }) })
       );

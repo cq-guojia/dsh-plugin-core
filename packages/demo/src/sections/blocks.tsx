@@ -1,4 +1,4 @@
-import { createElement as h, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { createElement as h, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import {
   openFilePreview,
   pickWorkspaceAnchor,
@@ -7,8 +7,9 @@ import {
   type WorkspaceFilesFace,
 } from '../../../../dist/explorer/index.js'
 import { workspaceList } from '../../../../dist/ui/index.js'
-import { SessionPreview } from '../../../../dist/session/index.js'
+import { SessionViewModal } from '../../../../dist/session/index.js'
 import { Button } from '../../../../dist/ui/index.js'
+import { mockSessionView } from '../mock-session.js'
 import { Example, CodeOnly, DocProse, DocApi } from '../doc.js'
 import { pageRow } from '../layout-mount.js'
 import { fileServices } from '../host-files.js'
@@ -32,19 +33,29 @@ import { pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['js', 'md'] } })
 // r = { path, isDir }`
 
-const CODE_SESSION = `import { SessionPreview } from 'dsh-plugin-core/session'
+const CODE_SESSION = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
 
-h(SessionPreview, {
-  sessionId,
-  source: { listMessages, download }, // 从 ctx 取出后注入（host 能力）
-  variant: 'modal',
-  onClose: () => setOpen(false),
-})`
+// 数据链：retain 物化 → binding → open 拉尾页 → target('chat')（归档会话同样可读）
+const view = openSessionView(sessions, uiConversation, sessionId, 'my-plugin')
+if (view !== null) {
+  h(SessionViewModal, {
+    sessionId,
+    view,
+    heading: '镜像升级日报',
+    onClose: () => { view.dispose(); setOpen(false) },
+    // 续聊正道：fork 开分支 → 跳官方会话区（底层 keyed 数组只读，框内不能打字）
+    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
+    openHostSession: (id) => uiWorkspace.openSession(id),
+    // 暂存输入框：确定后由调用方 fork + host 侧 agent.send 起轮次 + 跳转
+    onContinue: async (message) => { /* fork → host send → openSession */ },
+    onOpenFile: (path) => openFilePreview(path),
+  })
+}`
 
 const CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
-import { SessionPreview } from 'dsh-plugin-core/session'`
+import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'`
 
 /** 真实数据面：remote.workspaceFiles + 官方 workspaces 快照 + 真会话锚点。
  *  服务/会话缺席即如实说「未就位」，绝不造假数据顶替（与原页口径一致）。 */
@@ -168,22 +179,25 @@ function PickFileDemo(): ReturnType<typeof h> {
 
 function SessionPreviewDemo(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
-  const source = {
-    listMessages: async () =>
-      [{ id: '1', role: 'user' as const, text: '帮我把这个任务设个提醒' },
-       { id: '2', role: 'assistant' as const, text: '已为你创建每日 09:30 的提醒。' }],
-    download: async () => new TextEncoder().encode('（示例附件内容）'),
-  }
+  const [note, setNote] = useState<string | null>(null)
+  // 预览站离线演示：假 ChatSnapshot 驱动镜像渲染（真数据链只在宿主里活着）。
+  const view = useMemo(() => mockSessionView(), [])
   return h(
     'div',
-    { style: { display: 'flex', gap: '12px', alignItems: 'center' } },
+    { style: { display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' } },
     h(Button, { variant: 'primary', onClick: () => setOpen(true) }, t('sessionOpenModal')),
     h(Button, { variant: 'ghost', onClick: () => setOpen(false) }, t('sessionClose')),
-    open ? h(SessionPreview, {
+    note === null ? null : h('code', { style: { fontSize: '12px' } }, note),
+    open ? h(SessionViewModal, {
       sessionId: 'demo-session',
-      source,
-      variant: 'modal',
+      view,
+      heading: '镜像升级日报',
       onClose: () => setOpen(false),
+      // 宿主服务在预览站里缺席 ⇒ 三个续聊 / 文件出口都是本地回声（演示交互，不真跳转）。
+      forkSession: async () => { setNote(`${t('sessionForked')} demo-session(1)`); return 'demo-session(1)' },
+      openHostSession: (id) => { setNote(`${t('sessionOpenedHost')} ${id}`) },
+      onContinue: async (message) => { setNote(`${t('sessionContinued')} ${message}`) },
+      onOpenFile: (path) => { setNote(`${t('sessionOpenedFile')} ${path}`) },
     }) : null,
   )
 }
