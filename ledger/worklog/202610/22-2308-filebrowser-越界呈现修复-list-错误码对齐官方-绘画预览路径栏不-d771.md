@@ -97,6 +97,21 @@
 - 外部修复项（不属本仓）：绘画预览调用方确认已 `connectHost` 接线 + 传绝对路径即可，
   无需其他改动。
 
+### 第四轮：面包屑没跟着匹配（真机截图复现，用户 2026-10-22）
+
+现象：list 匹配生效（目录/预览正常）但面包屑显示 `C.dsh-plugin-core > workspace > Temp > …`
+全绝对层级、根段是"默认文件夹"、▾ 下拉把当前路径当路径段树而非"当前工作区"。
+
+根因：只换了 list 的 sessionId，**学根/相对化全家还在按调用方 `props.sessionId`**
+（`rootCache.get/learnRoot/relativizeToRoot/stat/findAnyFileAbs/absolutizeDir`），学出的根是
+别的会话的根 ⇒ 相对化失败 ⇒ 露出工作区外层级；且 rootLabel 走调用方写死的 `props.rootName`。
+
+修正（`src/explorer/FileBrowser.ts`）：`anchorMatch`（路径匹配结果，含 title）统一驱动——
+list / rootCache 键 / learnRoot / stat / absolutizeDir / 相对化 / copyPath / onPick / FilePreview
+**全部换 `listSessionId`**；根标签优先级改为 **匹配出的工作区名 > props.rootName > 学根末段**。
+效果：面包屑 = `[匹配到的工作区] > [区内相对层级]`，工作区之外的段一律不出现；匹配不到 ⇒
+回落 props.sessionId（学根与 list 同键，仍能相对化）或越界只读态。
+
 ## 执行记录
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
@@ -105,3 +120,4 @@
 - 2026-10-22 23:23:04 · log · @GuoJia-Agent · 落码完成：workspaceAnchorForPath 纯函数+单测、FileBrowser 五处 list 换解析 sessionId、crumbBarPlain hint、移除 lookup-not-found、demo 接线、dsh-host.md §12；build/test 97 过/typecheck/build:demo 全绿
 - 2026-10-22 23:46:22 · log · @GuoJia-Agent · 第二轮：openFilePreview 内置切工作区（PreviewBody：anchors 驱动、换会话+key 重挂载+回根、无会话不进列表）；anchorSessionForTitle 纯函数+单测；explorer.doc.ts 示例；98/98、typecheck、build:demo 全绿
 - 2026-10-22 23:55:28 · log · @GuoJia-Agent · 第三轮（用户拍板：底座不甩锅调用方）：FileBrowser/PreviewBody 兜底自动读 workspaceList 快照（connectHost 注入），零传参即匹配+可切；HostWorkspaceItem 加 path；demo 改零传参示范；98/98、typecheck、build:demo 全绿
+- 2026-10-23 00:04:22 · log · @GuoJia-Agent · 第四轮（真机截图）：匹配生效但学根/相对化仍按 props.sessionId ⇒ 面包屑露区外层；anchorMatch 统一驱动全部会话键（list/rootCache/learnRoot/stat/absolutizeDir/相对化/copyPath/onPick/FilePreview），根标签优先匹配工作区名；98/98、typecheck、build:demo 全绿
