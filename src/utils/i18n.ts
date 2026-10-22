@@ -24,6 +24,7 @@ export type UtilMessageKey =
   | 'explorerEnter'
   | 'explorerRootName'
   | 'explorerCrumbsAria'
+  | 'explorerOutsideHint'
   | 'explorerPickFile'
   | 'explorerPickDir'
   | 'explorerPickDirAria'
@@ -254,6 +255,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerEnter: '进入',
     explorerRootName: '（工作区根目录）',
     explorerCrumbsAria: '目录路径',
+    explorerOutsideHint: '此目录不在此会话的工作区内，宿主禁止列举目录（文件仍可预览）',
     explorerPickFile: '选择此文件',
     explorerPickDir: '选择',
     explorerPickDirAria: '选择此目录（连带其下所有文件）',
@@ -479,6 +481,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerEnter: 'Open',
     explorerRootName: '(workspace root)',
     explorerCrumbsAria: 'Breadcrumb',
+    explorerOutsideHint: "Outside this session's workspace — the host refuses to list directories (files remain previewable)",
     explorerPickFile: 'Pick this file',
     explorerPickDir: 'Select',
     explorerPickDirAria: 'Pick this folder (with everything under it)',

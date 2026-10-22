@@ -25,6 +25,8 @@ export {
   previewKindOf,
   relativizeToRoot,
   sortEntries,
+  workspaceAnchorForPath,
+  anchorSessionForTitle,
   type DirEntry,
   type ErrView,
   type Listing,

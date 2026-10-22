@@ -194,3 +194,31 @@
   在 client 侧 fetch 同一个 path。
 - 来源：`dsh-task-dispatch-table/src/host.ts:214-232`（`HostLlm` 面）、`src/dispatch.ts:81-88`（listModels 用法）、
   `dsh-task-ledger/packages/plugin/src/host/routes.ts:20-44`（webServer.register + sendJson）。
+
+## 12. workspaceFiles.list / read 的路径语义与越界判定（2026-10-22 解包核实）
+
+- 版本：`@deepseek-ai/dsh-api-workspace-files@0.2.1-rc.2`（npm 拉包读 `lib/index.js`；0.2.0-rc.2 / 0.2.1-rc.1 的 confine 逻辑一致）。
+- **list 的 path 绝对/相对都收**（jsDoc `index.js:491` "absolute or relative to the workspace root"）：`inspect`
+  用 `lstat(path, { cwd: workspaceRoot })`（`index.js:563-571`），空 path 抛 `gateway/bad-request`
+  （本仓 `listPathOf('') → '.'` 的由来），不存在抛 `workspace-file/not-found`，非目录抛 `not-directory`。
+- **目录列举限会话工作区内**：`confine`（`index.js:576-583`）`resolve` 后
+  `contains(root, target)` 为假 ⇒ 抛 `workspace-file/outside-workspace`。**这是 list 专属**。
+- **read / readBytes 允许工作区外文件**（jsDoc `index.js:421` / `480` "files outside it are allowed"），
+  无 contains 检查 ⇒ 绝对路径直读任何 OS 可达文件。**后果**：同一绝对路径，read 成功而 list(父目录)
+  被拒是官方设计的不对称，不是 bug——表现为「文件预览正常、路径栏/目录树退化成只读」。
+- **list 是会话作用域服务**：`workspaceFileScope.workspaceRoot` 按 sessionId 派生（`index.js:563`；
+  兄弟项目 `dsh-task-dispatch-table/src/host.ts:177` 注释同结论：「list 以 sessionId 解析工作区根，
+  必须有属于该工作区的会话才能列其文件」）。⇒ 调用方只给绝对路径时，默认 sessionId 的根未必含它。
+- **错误码全集（0.2.1-rc.2）**：`gateway/bad-request`、`workspace-file/not-found`、`not-directory`、
+  `not-regular-file`、`outside-workspace`、`too-large`、`not-text`、`invocation-unavailable`、
+  `service-unavailable`。⚠️ **没有 `lookup-not-found`**（本仓 `errView` / `noteOutside` 曾误引，
+  2026-10-22 移除，来源为初版 commit eca3f25，无官方依据）。
+- **对照**（`github.com/omdsh-dev/DSH-better-sidebar`，2026-10-22 读）：它的文件树**不走**官方
+  `workspaceFiles.list`，走自建 host 路由 `fs.tree`（host 直接 fs）；且 v0.23.0 起删掉了自己的
+  workspace fence（README 原话：「fs 路由不做 workspace 包含检查……调用方不得把这些路由当作有栅栏的」）
+  ⇒ 它那里「跨工作区随便逛」是绕开官方 confinement 的结果，**不代表官方 API 贯通**。
+- 处置（本仓）：`workspaceAnchorForPath`（`src/explorer/types.ts`）按最长前缀把绝对路径解析到
+  宿主工作区清单里的所属工作区，list 换该工作区名下的会话 id；`openFilePreview({ workspaceAnchors })`
+  透传；匹配不到 ⇒ 回落 `props.sessionId` + `crumbBarPlain` 的 hint 说破原因。
+- 来源：官方包 `lib/index.js:489-512 / 563-583 / 421 / 480`；`dsh-task-dispatch-table/src/host.ts:174-187`；
+  `dsh-better-sidebar` README + `docs/plans/2026-08-29-workspace-fence-toggle-design.md` + `src/client/use-session-root.ts`。

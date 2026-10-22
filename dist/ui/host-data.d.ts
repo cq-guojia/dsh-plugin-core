@@ -47,6 +47,12 @@ export declare const modelCatalog: ModelCatalogStore;
 export interface HostWorkspaceItem {
     workspaceId: string;
     title: string;
+    /**
+     * 工作区绝对路径（官方 `WorkspaceView.path`，realpath 归一形态）——**路径 → 工作区匹配用**
+     * （`workspaceAnchorForPath` 最长前缀）。宿主没给时 undefined ⇒ 该工作区不参与路径匹配
+     * （仍可靠 title 进 `anchorSessionForTitle`）。
+     */
+    path?: string;
     /** 本工作区名下的会话 id（追加序）；文件浏览的 sessionId 只能从这来。 */
     sessionIds?: readonly string[];
     /** 更新时间戳；「最近打开的工作区」排序用。 */

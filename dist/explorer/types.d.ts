@@ -187,6 +187,12 @@ export { extOf, mimeOf };
 export interface WorkspaceAnchorItem {
     /** 工作区显示名（面包屑首段 / 传给 FileBrowser 的 rootName）。 */
     title: string;
+    /**
+     * 工作区绝对路径（宿主 registry / `workspaces` 快照的 `path`，realpath 归一形态）。
+     * **按路径匹配的必需字段**：不传 = 该工作区不参与 `workspaceAnchorForPath` 匹配
+     * （仍可被 `pickWorkspaceAnchor` 按更新时间挑中）。
+     */
+    path?: string;
     /** 本工作区名下的会话 id（追加序）；没有一个会话的工作区无法浏览。 */
     sessionIds?: readonly string[];
     /** 更新时间戳（毫秒/数字口径由宿主给）；用于「最近打开」排序。 */
@@ -208,4 +214,27 @@ export interface WorkspaceAnchor {
  * @returns 锚点；清单为空 / 都没有会话则返回 null。
  */
 export declare function pickWorkspaceAnchor(items: readonly WorkspaceAnchorItem[]): WorkspaceAnchor | null;
+/**
+ * 按**工作区 title** 取浏览锚点会话（`workspaceAnchors` 里该 title 最近一个会话）。
+ *
+ * 与 `workspaceAnchorForPath`（按路径匹配）互补：调用方有 title 归属信息时用这个
+ * （兄弟项目 `GET /options` 的 `Record<title, 会话id>` 同口径，无歧义）；
+ * 只有裸绝对路径时才走路径匹配。没有该 title / 没有会话 ⇒ null。
+ */
+export declare function anchorSessionForTitle(items: readonly WorkspaceAnchorItem[], title: string): string | null;
+/**
+ * 目标**绝对路径**落在哪个工作区 ⇒ 该工作区最近一个会话 id（list 的 sessionId）。
+ *
+ * 为什么需要：`workspaceFiles.list` 是会话作用域服务（按 sessionId 解析工作区根，目录 confinement
+ * 检查 `contains(root, target)`，官方 `lib/index.js:576-583`）。调用方只甩一个绝对路径进来时，
+ * 默认 sessionId 的工作区根未必含它 ⇒ 官方报 `outside-workspace` ⇒ 面板整条退化成只读。
+ * 这里把「路径 → 工作区 → 会话」的解析收敛到核心，调用方只需把宿主工作区清单（带 path）传进来。
+ *
+ * 口径：**最长前缀**赢（嵌套工作区取最具体的）；尾斜杠归一；字面大小写（宿主 path 与调用方
+ * 路径同源，不做大小写折叠——Windows 跨形态比较是调用方归一的责任）。
+ * shortcut: 只解一次（入口 path），不跟踪 dir 切换；跨工作区跳转由调用方经 onSelectWorkspace 处理。
+ *
+ * @returns 锚点；无 path 字段 / 都不匹配 / 命中工作区没有会话 ⇒ null（调用方回落默认 sessionId）。
+ */
+export declare function workspaceAnchorForPath(path: string, items: readonly WorkspaceAnchorItem[]): WorkspaceAnchor | null;
 //# sourceMappingURL=types.d.ts.map

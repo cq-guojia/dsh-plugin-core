@@ -9,13 +9,15 @@
 // ⚠️ 方法 A 的**侧边栏本体是核心 PanelDock**（用户 2026-10-21 拍板：不许自绘制外壳 + 拖拽条）。
 // PanelDock 是布局成员（占宽度、挤窄主区），同 ui/modal-host.ts 的做法：自建 container 挂 + createRoot，
 // 关闭即卸载回收，不残留空根；拖宽与关闭交给 PanelDock 自己的 resizer / header 关钮。
-import { createElement as h, type ReactNode } from 'react'
+import { createElement as h, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { ensureControls, getStyleKit } from '../ui/css.js'
+import { workspaceList } from '../ui/host-data.js'
 import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js'
 import { type Translate } from '../utils/i18n.js'
 import { FileBrowser } from './FileBrowser.js'
-import type { OfficeToPdfFace, PickFilter, RootCache, WorkspaceFilesFace } from './types.js'
+import { anchorSessionForTitle } from './types.js'
+import type { OfficeToPdfFace, PickFilter, RootCache, WorkspaceAnchorItem, WorkspaceFilesFace } from './types.js'
 
 // ── 方法 A：侧边栏预览 ──
 
@@ -36,6 +38,13 @@ export interface OpenFilePreviewOptions {
   rootName?: string
   /** ▾ 下拉顶部的工作区清单（当前工作区展开 + 其余罗列；不传 = 下拉只有路径层）。 */
   workspaces?: readonly string[]
+  /**
+   * 宿主工作区清单（带绝对 path）：**可选覆盖**。path 为绝对路径时核心按最长前缀匹配所属
+   * 工作区、list 换该工作区的会话 id；▾ 下拉「切工作区」也由它驱动。
+   * **不传 = 自动用宿主 workspaces 快照**（connectHost 注入的 workspaceList）——
+   * 调用方零传参也能匹配、能切。仅在「覆盖快照 / 宿主未接线」时才需要显式传。
+   */
+  workspaceAnchors?: readonly WorkspaceAnchorItem[]
   /** 从 ▾ 下拉选择其他工作区（点当前工作区 = 回其根目录，不走这里）。 */
   onSelectWorkspace?: (name: string) => void
   /** 关闭后回调（✕ / Esc / handle.close 都触发）。 */
@@ -61,6 +70,49 @@ export interface OpenFilePreviewOptions {
    * —— 那是浮层，不是分栏（用户 2026-10-21 明确否决）。
    */
   mount: HTMLElement
+}
+
+/**
+ * 预览体：`openFilePreview` 的 FileBrowser 包裹层。职责只有一个——**切工作区**：
+ * ▾ 下拉点其他工作区 ⇒ 换该工作区的锚点会话、key 重挂载、path 回根。
+ * 机制同兄弟项目 `dsh-task-dispatch-table/src/client/task-editor.tsx:2496-2508`：
+ * list 的根来自 sessionId ⇒ 必须换会话 + 重挂载，只换 rootName 等于没切。
+ * 没会话的工作区不进 ▾ 列表、点了也不切（宿主列不出文件，不给假入口）。
+ *
+ * 工作区清单：调用方显式传的 `workspaceAnchors` 优先；否则用宿主 workspaces 快照
+ * （connectHost 注入的 workspaceList）——**调用方什么都不传也照常能切**。
+ */
+function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => void }): ReactNode {
+  const options = props.options
+  const hostWorkspaces = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
+  // HostWorkspaceItem 结构兼容 WorkspaceAnchorItem（多一个 workspaceId 无害）⇒ 统一注解收敛联合类型。
+  const anchors: readonly WorkspaceAnchorItem[] = options.workspaceAnchors ?? hostWorkspaces
+  const initialTitle = options.rootName ?? ''
+  const [wsTitle, setWsTitle] = useState(initialTitle)
+  // 切到别的工作区后从它的根开始列（原 path 属于旧工作区，带着只会 404）。
+  const switched = wsTitle !== initialTitle
+  const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId
+  const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title)
+  return h(FileBrowser, {
+    // key 带工作区+会话 ⇒ 切换即重挂载（FileBrowser 的 dir/listing/学根全属于旧工作区）。
+    key: `${wsTitle}:${sessionId}`,
+    workspaceFiles: options.workspaceFiles,
+    officeToPdf: options.officeToPdf ?? null,
+    sessionId,
+    path: switched ? '' : options.path,
+    rootName: wsTitle === '' ? options.rootName : wsTitle,
+    workspaces: switchable.length > 0 ? switchable : options.workspaces,
+    onSelectWorkspace: (name: string) => {
+      if (anchorSessionForTitle(anchors, name) !== null) setWsTitle(name)
+    },
+    // 空数组别传：会把 FileBrowser 内部「回落快照」的兜底挡住（空 ≠ 未传）。
+    workspaceAnchors: anchors.length > 0 ? anchors : undefined,
+    rootCache: options.rootCache,
+    translate: options.translate,
+    // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+    onClose: props.onClose,
+    style: { height: '100%', minHeight: 0 },
+  })
 }
 
 /** 预览侧边栏的挂载容器 id（全站唯一，重复打开先关旧的）。 */
@@ -131,6 +183,9 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
   window.addEventListener('keydown', onKeyDown)
 
   ensureControls(getStyleKit())
+  // 总是走 PreviewBody：调用方没自接 onSelectWorkspace 时，▾ 下拉「切工作区」由核心接管
+  // （anchors 为空 ⇒ 回调空转，行为与旧版一致）。自接了 ⇒ 原样透传给 FileBrowser。
+  const internalSwitch = options.onSelectWorkspace === undefined
   root.render(
     h(
       'div',
@@ -153,20 +208,23 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
             minWidth: options.minWidth ?? 320,
             maxWidth: options.maxWidth,
           },
-          h(FileBrowser, {
-            workspaceFiles: options.workspaceFiles,
-            officeToPdf: options.officeToPdf ?? null,
-            sessionId: options.sessionId,
-            path: options.path,
-            rootName: options.rootName,
-            workspaces: options.workspaces,
-            onSelectWorkspace: options.onSelectWorkspace,
-            rootCache: options.rootCache,
-            translate: options.translate,
-            // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
-            onClose: close,
-            style: { height: '100%', minHeight: 0 },
-          }) as ReactNode,
+          internalSwitch
+            ? h(PreviewBody, { options, onClose: close })
+            : h(FileBrowser, {
+                workspaceFiles: options.workspaceFiles,
+                officeToPdf: options.officeToPdf ?? null,
+                sessionId: options.sessionId,
+                path: options.path,
+                rootName: options.rootName,
+                workspaces: options.workspaces,
+                workspaceAnchors: options.workspaceAnchors,
+                onSelectWorkspace: options.onSelectWorkspace,
+                rootCache: options.rootCache,
+                translate: options.translate,
+                // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+                onClose: close,
+                style: { height: '100%', minHeight: 0 },
+              }),
         ),
       ),
     ),

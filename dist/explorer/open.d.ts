@@ -1,5 +1,5 @@
 import { type Translate } from '../utils/i18n.js';
-import type { OfficeToPdfFace, PickFilter, RootCache, WorkspaceFilesFace } from './types.js';
+import type { OfficeToPdfFace, PickFilter, RootCache, WorkspaceAnchorItem, WorkspaceFilesFace } from './types.js';
 export interface FilePreviewHandle {
     /** 关闭预览（幂等）。 */
     close(): void;
@@ -16,6 +16,13 @@ export interface OpenFilePreviewOptions {
     rootName?: string;
     /** ▾ 下拉顶部的工作区清单（当前工作区展开 + 其余罗列；不传 = 下拉只有路径层）。 */
     workspaces?: readonly string[];
+    /**
+     * 宿主工作区清单（带绝对 path）：**可选覆盖**。path 为绝对路径时核心按最长前缀匹配所属
+     * 工作区、list 换该工作区的会话 id；▾ 下拉「切工作区」也由它驱动。
+     * **不传 = 自动用宿主 workspaces 快照**（connectHost 注入的 workspaceList）——
+     * 调用方零传参也能匹配、能切。仅在「覆盖快照 / 宿主未接线」时才需要显式传。
+     */
+    workspaceAnchors?: readonly WorkspaceAnchorItem[];
     /** 从 ▾ 下拉选择其他工作区（点当前工作区 = 回其根目录，不走这里）。 */
     onSelectWorkspace?: (name: string) => void;
     /** 关闭后回调（✕ / Esc / handle.close 都触发）。 */

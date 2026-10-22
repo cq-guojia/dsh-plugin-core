@@ -9,11 +9,56 @@
 // ⚠️ 方法 A 的**侧边栏本体是核心 PanelDock**（用户 2026-10-21 拍板：不许自绘制外壳 + 拖拽条）。
 // PanelDock 是布局成员（占宽度、挤窄主区），同 ui/modal-host.ts 的做法：自建 container 挂 + createRoot，
 // 关闭即卸载回收，不残留空根；拖宽与关闭交给 PanelDock 自己的 resizer / header 关钮。
-import { createElement as h } from 'react';
+import { createElement as h, useState, useSyncExternalStore } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ensureControls, getStyleKit } from '../ui/css.js';
+import { workspaceList } from '../ui/host-data.js';
 import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js';
 import { FileBrowser } from './FileBrowser.js';
+import { anchorSessionForTitle } from './types.js';
+/**
+ * 预览体：`openFilePreview` 的 FileBrowser 包裹层。职责只有一个——**切工作区**：
+ * ▾ 下拉点其他工作区 ⇒ 换该工作区的锚点会话、key 重挂载、path 回根。
+ * 机制同兄弟项目 `dsh-task-dispatch-table/src/client/task-editor.tsx:2496-2508`：
+ * list 的根来自 sessionId ⇒ 必须换会话 + 重挂载，只换 rootName 等于没切。
+ * 没会话的工作区不进 ▾ 列表、点了也不切（宿主列不出文件，不给假入口）。
+ *
+ * 工作区清单：调用方显式传的 `workspaceAnchors` 优先；否则用宿主 workspaces 快照
+ * （connectHost 注入的 workspaceList）——**调用方什么都不传也照常能切**。
+ */
+function PreviewBody(props) {
+    const options = props.options;
+    const hostWorkspaces = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot);
+    // HostWorkspaceItem 结构兼容 WorkspaceAnchorItem（多一个 workspaceId 无害）⇒ 统一注解收敛联合类型。
+    const anchors = options.workspaceAnchors ?? hostWorkspaces;
+    const initialTitle = options.rootName ?? '';
+    const [wsTitle, setWsTitle] = useState(initialTitle);
+    // 切到别的工作区后从它的根开始列（原 path 属于旧工作区，带着只会 404）。
+    const switched = wsTitle !== initialTitle;
+    const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId;
+    const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title);
+    return h(FileBrowser, {
+        // key 带工作区+会话 ⇒ 切换即重挂载（FileBrowser 的 dir/listing/学根全属于旧工作区）。
+        key: `${wsTitle}:${sessionId}`,
+        workspaceFiles: options.workspaceFiles,
+        officeToPdf: options.officeToPdf ?? null,
+        sessionId,
+        path: switched ? '' : options.path,
+        rootName: wsTitle === '' ? options.rootName : wsTitle,
+        workspaces: switchable.length > 0 ? switchable : options.workspaces,
+        onSelectWorkspace: (name) => {
+            if (anchorSessionForTitle(anchors, name) !== null)
+                setWsTitle(name);
+        },
+        // 空数组别传：会把 FileBrowser 内部「回落快照」的兜底挡住（空 ≠ 未传）。
+        workspaceAnchors: anchors.length > 0 ? anchors : undefined,
+        rootCache: options.rootCache,
+        translate: options.translate,
+        // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+        onClose: props.onClose,
+        style: { height: '100%', minHeight: 0 },
+    });
+}
 /** 预览侧边栏的挂载容器 id（全站唯一，重复打开先关旧的）。 */
 const PREVIEW_HOST_ID = 'dshpc-file-preview-host';
 /** dock 里的面板 id（本 container 里只有一个）。 */
@@ -79,6 +124,9 @@ export function openFilePreview(options) {
     };
     window.addEventListener('keydown', onKeyDown);
     ensureControls(getStyleKit());
+    // 总是走 PreviewBody：调用方没自接 onSelectWorkspace 时，▾ 下拉「切工作区」由核心接管
+    // （anchors 为空 ⇒ 回调空转，行为与旧版一致）。自接了 ⇒ 原样透传给 FileBrowser。
+    const internalSwitch = options.onSelectWorkspace === undefined;
     root.render(h('div', 
     // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
     { style: { display: 'contents', ['--dshpc-dock-h']: '100%' } }, h(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, h(DockPanel, {
@@ -92,20 +140,23 @@ export function openFilePreview(options) {
         width: options.width ?? 460,
         minWidth: options.minWidth ?? 320,
         maxWidth: options.maxWidth,
-    }, h(FileBrowser, {
-        workspaceFiles: options.workspaceFiles,
-        officeToPdf: options.officeToPdf ?? null,
-        sessionId: options.sessionId,
-        path: options.path,
-        rootName: options.rootName,
-        workspaces: options.workspaces,
-        onSelectWorkspace: options.onSelectWorkspace,
-        rootCache: options.rootCache,
-        translate: options.translate,
-        // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
-        onClose: close,
-        style: { height: '100%', minHeight: 0 },
-    })))));
+    }, internalSwitch
+        ? h(PreviewBody, { options, onClose: close })
+        : h(FileBrowser, {
+            workspaceFiles: options.workspaceFiles,
+            officeToPdf: options.officeToPdf ?? null,
+            sessionId: options.sessionId,
+            path: options.path,
+            rootName: options.rootName,
+            workspaces: options.workspaces,
+            workspaceAnchors: options.workspaceAnchors,
+            onSelectWorkspace: options.onSelectWorkspace,
+            rootCache: options.rootCache,
+            translate: options.translate,
+            // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+            onClose: close,
+            style: { height: '100%', minHeight: 0 },
+        })))));
     activePreviewClose = close;
     return { close, path: options.path };
 }

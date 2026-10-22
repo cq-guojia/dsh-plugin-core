@@ -25,10 +25,14 @@ import { openFilePreview } from 'dsh-plugin-core/explorer'
 openFilePreview({
   mount,                 // 你页面里那一层 flex 行，不要传 document.body 再自己套 fixed
   workspaceFiles,        // 从 ctx 取出后注入（host 能力）
-  sessionId,             // 会话作用域
-  path: p,
+  sessionId,             // 会话作用域（默认锚点）
+  path: p,               // 绝对路径也可以
   rootName: '我的项目',
-})`
+})
+// path 是绝对路径时：核心自动读宿主 workspaces 快照（插件 apply 里 connectHost 注入过），
+// 按最长前缀匹配所属工作区、list 换该工作区的会话 ⇒ 面包屑/目录树正常；
+// ▾ 下拉「切工作区」同样自动可用（无会话的工作区不进列表）。
+// 要覆盖快照才显式传 workspaceAnchors（宿主 workspaces 快照原样）。`
 
 const CODE_PICK = `// 锚定按钮旁弹模态选文件（Promise 返回工作区相对路径，不自己挂 dock）
 import { pickWorkspaceFile } from 'dsh-plugin-core/explorer'
@@ -119,6 +123,8 @@ function OpenPreviewDemo(): ReturnType<typeof h> {
       console.warn('[demo] pageRow 未就绪，无法停靠预览')
       return
     }
+    // 不传 workspaceAnchors：核心自动用宿主 workspaces 快照（connectHost 注入）——
+    // 绝对路径自动匹配所属工作区换会话、▾ 下拉可切工作区（无会话的不进列表）。
     openFilePreview({ mount, workspaceFiles, sessionId: anchor.sessionId, path, rootName, workspaces })
     setLast(path === '' ? `${rootName}（根）` : path)
   }

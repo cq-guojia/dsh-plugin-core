@@ -48,6 +48,11 @@
   font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;
 }
+/* 越界原因说明（为什么不能点）：贴路径右侧，弱化小字，不参与挤压。 */
+.dshpc-fb__bar-hint{
+  flex:none;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3,var(--dshpc-fg-2));
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:50%;user-select:none;
+}
 .dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}
 
 /* ▾ 选层浮层（兄弟 .dsh-tdt-sv-crumbs-*）。

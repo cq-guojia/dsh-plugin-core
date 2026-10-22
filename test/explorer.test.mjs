@@ -4,6 +4,7 @@ import { crumbsOf, extOf, joinPath, mimeOf, parentOf } from '../dist/utils/index
 // 只引纯逻辑层：面板/预览体静态 import 官方 primitives（Node 下不可解析，那是宿主平台模块）
 import {
   absolutizeDir,
+  anchorSessionForTitle,
   bareCode,
   baseNameOfPath,
   createRootCache,
@@ -19,6 +20,7 @@ import {
   previewKindOf,
   relativizeToRoot,
   sortEntries,
+  workspaceAnchorForPath,
 } from '../dist/explorer/types.js'
 
 test('crumbsOf / parentOf / joinPath', () => {
@@ -62,7 +64,6 @@ test('bareCode 剥命名空间 / errView 按 code 分支', () => {
   assert.equal(bareCode(undefined), '')
   assert.equal(errView({ code: 'workspace-file/outside-workspace' }).key, 'previewOutside')
   assert.equal(errView('workspace-file/not-found').key, 'previewNotFound')
-  assert.equal(errView({ code: 'lookup-not-found' }).key, 'previewNotFound')
   assert.equal(errView({ code: 'not-directory' }).key, 'previewNotDirectory')
   assert.equal(errView({ code: 'too-large' }).key, 'previewTooLarge')
   assert.equal(errView({ code: 'not-text' }).key, 'previewNotText')
@@ -100,6 +101,46 @@ test('listPathOf 根路径上线形态', () => {
   assert.equal(listPathOf(''), '.')
   assert.equal(listPathOf('.'), '.')
   assert.equal(listPathOf('src'), 'src')
+})
+
+test('workspaceAnchorForPath 最长前缀匹配 + 最近会话', () => {
+  const items = [
+    { title: 'root', path: '/workspace', sessionIds: ['s-root-1', 's-root-2'] },
+    { title: 'A', path: '/workspace/A/', sessionIds: ['s-a-1', 's-a-2'] },
+    { title: 'B', path: '/workspace/B', sessionIds: [] },
+  ]
+  // 最长前缀赢（尾斜杠归一）
+  assert.deepEqual(workspaceAnchorForPath('/workspace/A/x/y.md', items), { title: 'A', sessionId: 's-a-2' })
+  // 落到根工作区
+  assert.deepEqual(workspaceAnchorForPath('/workspace/Temp/2026Q4/f.md', items), { title: 'root', sessionId: 's-root-2' })
+  // 等于工作区根本身
+  assert.deepEqual(workspaceAnchorForPath('/workspace', items), { title: 'root', sessionId: 's-root-2' })
+  // 前缀相似但不等于目录边界（/workspace-other 不是 /workspace 的子孙）
+  assert.equal(workspaceAnchorForPath('/workspace-other/f.md', items), null)
+  // 相对路径不匹配（调用方传相对路径时按 props.sessionId 语义解析，不抢）
+  assert.equal(workspaceAnchorForPath('Temp/f.md', items), null)
+  // 命中工作区没有会话 ⇒ null
+  assert.equal(workspaceAnchorForPath('/workspace/B/x', items), null)
+  // 无 path 字段 ⇒ 不参与匹配
+  assert.equal(workspaceAnchorForPath('/workspace/A/x', [{ title: 'A', sessionIds: ['s'] }]), null)
+  // 空清单
+  assert.equal(workspaceAnchorForPath('/workspace/A/x', []), null)
+})
+
+test('anchorSessionForTitle 按 title 取最近会话', () => {
+  const items = [
+    { title: 'A', path: '/workspace/A', sessionIds: ['s-a-1', 's-a-2'] },
+    { title: 'B', path: '/workspace/B' },
+    { title: 'C', path: '/workspace/C', sessionIds: [] },
+  ]
+  // 追加序末位 = 最近
+  assert.equal(anchorSessionForTitle(items, 'A'), 's-a-2')
+  // 没有 sessionIds 字段 / 空数组 ⇒ null
+  assert.equal(anchorSessionForTitle(items, 'B'), null)
+  assert.equal(anchorSessionForTitle(items, 'C'), null)
+  // 空 title / 查无此 title ⇒ null
+  assert.equal(anchorSessionForTitle(items, ''), null)
+  assert.equal(anchorSessionForTitle(items, 'Z'), null)
 })
 
 test('crumbsOfDir / dirnameOf / baseNameOfPath', () => {

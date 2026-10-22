@@ -41,6 +41,13 @@ import { SessionPreview } from 'dsh-plugin-core/session'
 // 右侧分栏预览（占宽度、挤窄主区）
 openFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })
 
+// path 传绝对路径时：核心自动读宿主 workspaces 快照（connectHost 注入），按最长前缀
+// 匹配所属工作区、list 换该工作区的会话 ⇒ 面包屑/目录树正常；▾ 下拉「切工作区」同样
+// 自动可用（无会话的工作区不进列表）。零传参即生效，无需调用方做任何事。
+openFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md' })
+// 要覆盖快照才显式传：workspaceAnchors（宿主 workspaces 快照原样，带 path + sessionIds）
+openFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md', workspaceAnchors })
+
 // 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）
 const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })
 
