@@ -184,6 +184,10 @@ export type UtilMessageKey =
   | 'rowRunning'
   | 'rowFailed'
   | 'rowStopped'
+  | 'commandRunning'
+  | 'commandFailed'
+  | 'commandDone'
+  | 'commandTitle'
   | 'collapseLabel'
   | 'readWindow'
   | 'readCollapseAria'
@@ -425,6 +429,10 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     rowRunning: '运行中',
     rowFailed: '失败',
     rowStopped: '已停止',
+    commandRunning: '执行中…',
+    commandFailed: '指令失败',
+    commandDone: '已完成',
+    commandTitle: '指令',
     collapseLabel: '收起',
     readWindow: '显示 {shown} / {total} 行',
     readCollapseAria: '收起内容',
@@ -663,6 +671,10 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     rowRunning: 'Running',
     rowFailed: 'Failed',
     rowStopped: 'Stopped',
+    commandRunning: 'Running…',
+    commandFailed: 'Command failed',
+    commandDone: 'Completed',
+    commandTitle: 'Command',
     collapseLabel: 'Collapse',
     readWindow: 'Showing {shown} of {total} lines',
     readCollapseAria: 'Collapse content',

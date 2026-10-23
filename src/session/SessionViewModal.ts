@@ -27,6 +27,7 @@ import type { SessionViewTarget } from './open-session-view.js'
 import { ChatHint, ChatNodeListMirror, ChatOlderButton, ChatViewFrame } from './mirror/ChatView.js'
 import { type NodeRenderer, type TurnProcessHandle, type TurnLocationFace } from './mirror/ChatNodeSeat.js'
 import { GenericCommandCard } from './mirror/GenericCommandCard.js'
+import { CommandCard, type CommandNodeFace } from './mirror/CommandCard.js'
 import { MessageIconActionsMirror } from './mirror/MessageIconActions.js'
 import { AssistantMarkdown, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage, type RetryAttemptFace, type TurnErrorFace } from './mirror/MessageItem.js'
 import { ReasoningRowMirror } from './mirror/ReasoningRow.js'
@@ -267,6 +268,12 @@ function renderKeyedNode(
       if (isPresentRoot(root)) return h(PresentRowMirror, { block: root, t })
       const card = toolCallCard(node, t, fileOpen?.open)
       return card === null ? null : h(GenericCommandCard, card)
+    }
+    case 'command': {
+      // 官方 CommandNodeView → GenericCommandCard（ui-chat/chat/GenericCommandCard.tsx 原样复刻）。
+      // 斜杠命令生命周期节点（records.d.ts：name/args/outcome）；走 CommandCard：标题=裸命令名、
+      // 摘要=outcome 落定 text、仅多行才展开。之前漏接 ⇒ 落 default 显示「未支持的节点类型： command」。
+      return h(CommandCard, { node: dataOf(node) as unknown as CommandNodeFace, t })
     }
     case 'user':
     case 'steering': {
