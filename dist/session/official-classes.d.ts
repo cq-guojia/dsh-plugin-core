@@ -25,8 +25,4 @@ export declare function officialClass(module: string, semantic: string): string 
  * @param pairs - [模块名, 语义名] 列表。
  */
 export declare function officialClasses(...pairs: Array<[string, string]>): string;
-/** className 拼接：官方类优先，缺失时回退自绘类（两者只取其一，避免样式打架）。 */
-export declare function ocOr(module: string, semantic: string, fallback: string): string;
-/** 拼接非空类名片段。 */
-export declare function cx(...parts: Array<string | null | undefined>): string;
 //# sourceMappingURL=official-classes.d.ts.map

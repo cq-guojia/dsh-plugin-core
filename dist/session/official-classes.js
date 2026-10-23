@@ -143,12 +143,4 @@ export function officialClasses(...pairs) {
     }
     return out.join(' ');
 }
-/** className 拼接：官方类优先，缺失时回退自绘类（两者只取其一，避免样式打架）。 */
-export function ocOr(module, semantic, fallback) {
-    return officialClass(module, semantic) ?? fallback;
-}
-/** 拼接非空类名片段。 */
-export function cx(...parts) {
-    return parts.filter((part) => typeof part === 'string' && part !== '').join(' ');
-}
 //# sourceMappingURL=official-classes.js.map

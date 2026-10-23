@@ -10,7 +10,7 @@
 // （用户 2026-10-23 定）。取不到官方类时退化为空类（裸结构、不白屏）；读屏 visually-hidden 复用 ToolRow 同名工具类。
 import { Fragment, createElement as h, useCallback, useState, type ReactNode } from 'react'
 import { DisclosureRow, IconApiOutlineRegular, TextShimmer } from '../../ui/official.js'
-import { ocOr, officialClass } from '../official-classes.js'
+import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../utils/i18n.js'
 
 /** 官方 CommandNode（conversation-nodes/command.ts / records.d.ts）：斜杠命令生命周期节点。 */
@@ -54,7 +54,7 @@ export function CommandCard(props: {
   const open = expanded && body !== null
   const toggle = useCallback(() => { setExpanded((value) => !value) }, [])
   // 读屏 visually-hidden：复用 ToolRow 同名工具类（既有，非新写兜底）。
-  const hidden = ocOr('ToolRow', 'visuallyHidden', 'dshpc-sv-visuallyhidden')
+  const hidden = officialClass('ToolRow', 'visuallyHidden') ?? ''
   return h('div', { className: gcc('root'), 'data-state': state },
     // 官方 a11y：running/error 的读屏状态词（visually-hidden，不占可见空间）。
     state === 'running'

@@ -23,7 +23,7 @@ import {
   IconSparkleRegular,
   IconThinkOutlineRegular,
 } from '../../ui/official.js'
-import { ocOr } from '../official-classes.js'
+import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../utils/i18n.js'
 import type { ChatNodeStoreFace, TurnProcessPresentationFace } from '../faces.js'
 import { ChatNodeSeatMirror, readPresentation, type NodeRenderer } from './ChatNodeSeat.js'
@@ -105,13 +105,13 @@ export function ChatGroupSeatMirror(props: {
   const activity = group.data.summary.counts[0]?.kind ?? 'thinking'
   const ActivityIcon = PROCESS_ICONS[activity] ?? IconThinkOutlineRegular
   const bodyClass = [
-    ocOr('ChatGroupSeat', 'body', 'dshpc-sv-group-body'),
-    grouped ? '' : ocOr('ChatGroupSeat', 'expandedBody', 'dshpc-sv-group-expanded'),
-    grouped && edges.up ? ocOr('ChatGroupSeat', 'fadeTop', 'dshpc-sv-group-fade-top') : '',
-    grouped && edges.down ? ocOr('ChatGroupSeat', 'fadeBottom', 'dshpc-sv-group-fade-bottom') : '',
+    officialClass('ChatGroupSeat', 'body') ?? '',
+    grouped ? '' : officialClass('ChatGroupSeat', 'expandedBody') ?? '',
+    grouped && edges.up ? officialClass('ChatGroupSeat', 'fadeTop') ?? '' : '',
+    grouped && edges.down ? officialClass('ChatGroupSeat', 'fadeBottom') ?? '' : '',
   ].filter(part => part !== '').join(' ')
   return h('div', {
-    className: ocOr('ChatGroupSeat', 'root', 'dshpc-sv-group'),
+    className: officialClass('ChatGroupSeat', 'root') ?? '',
     'data-chat-group-key': group.key,
     'data-chat-flow-key': group.key,
     'data-chat-anchor-key': `group:${group.key}`,
@@ -123,23 +123,23 @@ export function ChatGroupSeatMirror(props: {
     grouped
       ? h('button', {
           type: 'button',
-          className: ocOr('ChatGroupSeat', 'title', 'dshpc-sv-group-title'),
+          className: officialClass('ChatGroupSeat', 'title') ?? '',
           'aria-expanded': open,
           onClick: () => { setOpen(value => !value) },
         },
           h('span', {
-            className: ocOr('ChatGroupSeat', 'leading', 'dshpc-sv-group-leading'),
+            className: officialClass('ChatGroupSeat', 'leading') ?? '',
             'aria-hidden': true,
           },
             h('span', {
-              className: ocOr('ChatGroupSeat', 'activityIcon', 'dshpc-sv-group-icon'),
+              className: officialClass('ChatGroupSeat', 'activityIcon') ?? '',
               'data-step-process-icon': true,
             }, h(ActivityIcon, SMALL_ICONS.has(activity) ? { size: 14 } : {})),
             open
-              ? h(IconChevronUpOutlineRegular, { className: ocOr('ChatGroupSeat', 'chevron', 'dshpc-sv-group-chevron') })
-              : h(IconChevronDownOutlineRegular, { className: ocOr('ChatGroupSeat', 'chevron', 'dshpc-sv-group-chevron') }),
+              ? h(IconChevronUpOutlineRegular, { className: officialClass('ChatGroupSeat', 'chevron') ?? '' })
+              : h(IconChevronDownOutlineRegular, { className: officialClass('ChatGroupSeat', 'chevron') ?? '' }),
           ),
-          h('span', { className: ocOr('ChatGroupSeat', 'label', 'dshpc-sv-group-label') }, label),
+          h('span', { className: officialClass('ChatGroupSeat', 'label') ?? '' }, label),
         )
       : null,
     h('div', {
@@ -152,7 +152,7 @@ export function ChatGroupSeatMirror(props: {
       hidden: grouped && !open || undefined,
     },
       h('div', {
-        className: ocOr('ChatGroupSeat', 'content', 'dshpc-sv-group-content'),
+        className: officialClass('ChatGroupSeat', 'content') ?? '',
         'data-step-process-content': true,
         'data-chat-flow': '',
       },

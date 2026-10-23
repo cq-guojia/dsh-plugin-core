@@ -19,7 +19,7 @@ import {
   IconDeliverDocRegular,
   fileExtension,
 } from '../../ui/official.js'
-import { ocOr } from '../official-classes.js'
+import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../utils/i18n.js'
 
 /** 官方 PresentedFile 的消费面（presented.d.ts：path 必有，description 可选）。 */
@@ -71,7 +71,7 @@ export function PresentRowMirror(props: { block: unknown; t: Translate }): Retur
         : state === 'stopped' ? 'deliverRowStopped'
           : 'deliverRowOk'
   return h('div', {
-    className: ocOr('ToolRow', 'root', 'dshpc-sv-tool'),
+    className: officialClass('ToolRow', 'root') ?? '',
     'data-tool': 'present',
     'data-state': state,
   },
@@ -84,16 +84,16 @@ export function PresentRowMirror(props: { block: unknown; t: Translate }): Retur
       keepContentWhenOpen: true,
       onToggle: () => { setExpanded((value) => !value) },
       running: state === 'running' || state === 'preparing',
-      rowClassName: ocOr('ToolRow', 'row', 'dshpc-sv-tool-row'),
-      leadingClassName: ocOr('ToolRow', 'leading', 'dshpc-sv-tool-leading'),
-      titleClassName: ocOr('ToolRow', 'title', 'dshpc-sv-tool-title'),
-      chevronClassName: ocOr('ToolRow', 'chevron', 'dshpc-sv-tool-chevron'),
-      collapsedContent: h('span', { className: ocOr('PresentRow', 'summary', 'dshpc-sv-deliv-rowsummary') },
+      rowClassName: officialClass('ToolRow', 'row') ?? '',
+      leadingClassName: officialClass('ToolRow', 'leading') ?? '',
+      titleClassName: officialClass('ToolRow', 'title') ?? '',
+      chevronClassName: officialClass('ToolRow', 'chevron') ?? '',
+      collapsedContent: h('span', { className: officialClass('PresentRow', 'summary') ?? '' },
         h('span', null, t(statusKey)),
-        h('span', { className: ocOr('PresentRow', 'paths', 'dshpc-sv-deliv-rowpaths') }, fileNames(argsRaw)),
+        h('span', { className: officialClass('PresentRow', 'paths') ?? '' }, fileNames(argsRaw)),
       ),
       children: details !== '' && expanded
-        ? h('pre', { className: ocOr('PresentRow', 'output', 'dshpc-sv-deliv-rowoutput') }, details)
+        ? h('pre', { className: officialClass('PresentRow', 'output') ?? '' }, details)
         : null,
     }),
   )
@@ -118,27 +118,27 @@ function DeliveredFileCard(props: {
   const name = basename(file.path)
   const metadata = fileExtension(name).toUpperCase() || t('deliverFileLabel')
   return h('div', {
-    className: ocOr('Deliverables', 'file', 'dshpc-sv-deliv-file'),
+    className: officialClass('Deliverables', 'file') ?? '',
     'data-presented-file': true,
   },
     onPreview !== undefined
       ? h('button', {
           type: 'button',
-          className: ocOr('Deliverables', 'cardPreview', 'dshpc-sv-deliv-cardpreview'),
+          className: officialClass('Deliverables', 'cardPreview') ?? '',
           title: file.path,
           'aria-label': t('deliverPreviewCard', { name: file.path }),
           onClick: (event: ReactMouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onPreview() },
         })
       : null,
-    h('span', { className: ocOr('Deliverables', 'fileIcon', 'dshpc-sv-deliv-icon') },
+    h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' },
       h(FileTypeIcon, { path: file.path, size: 20 })),
-    h('div', { className: ocOr('Deliverables', 'fileBody', 'dshpc-sv-deliv-body') },
-      h('div', { className: ocOr('Deliverables', 'details', 'dshpc-sv-deliv-details') },
-        h('span', { className: ocOr('Deliverables', 'fileName', 'dshpc-sv-deliv-name') }, name),
-        h('span', { className: ocOr('Deliverables', 'description', 'dshpc-sv-deliv-desc'), 'data-presented-description': true },
-          h('span', { className: ocOr('Deliverables', 'secondaryText', 'dshpc-sv-deliv-secondary') }, cardDescription(file.description, metadata)),
+    h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' },
+      h('div', { className: officialClass('Deliverables', 'details') ?? '' },
+        h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name),
+        h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true },
+          h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)),
           onPreview !== undefined
-            ? h('span', { className: ocOr('Deliverables', 'previewHint', 'dshpc-sv-deliv-hint') }, t('deliverPreviewHint'))
+            ? h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint'))
             : null,
         ),
       ),
@@ -163,11 +163,11 @@ export function DeliverablesGridMirror(props: {
   const collapsible = files.length > COLLAPSED_DELIVERED_COUNT
   const shown = collapsible && !expanded ? files.slice(0, COLLAPSED_DELIVERED_COUNT) : files
   return h('div', {
-    className: ocOr('Deliverables', 'root', 'dshpc-sv-deliv'),
+    className: officialClass('Deliverables', 'root') ?? '',
     'data-presented-files-grid': true,
   },
     h('div', {
-      className: ocOr('Deliverables', 'presented', 'dshpc-sv-deliv-grid'),
+      className: officialClass('Deliverables', 'presented') ?? '',
       'data-presented-files-row': true,
     },
       shown.map((file, index) => h(DeliveredFileCard, {
@@ -180,7 +180,7 @@ export function DeliverablesGridMirror(props: {
     collapsible
       ? h('button', {
           type: 'button',
-          className: ocOr('Deliverables', 'toggle', 'dshpc-sv-deliv-toggle'),
+          className: officialClass('Deliverables', 'toggle') ?? '',
           'aria-expanded': expanded,
           'aria-label': t(expanded ? 'deliverCollapseAria' : 'deliverExpandAria', { count: files.length }),
           onClick: () => { setExpanded((value) => !value) },

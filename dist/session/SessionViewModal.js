@@ -26,7 +26,7 @@ import { DeliverablesGridMirror, PresentRowMirror } from './mirror/Deliverables.
 import { ChangedFilesCard } from './mirror/ChangedFilesCard.js';
 import { turnDeliverablesChangesSeq, turnDeliverablesValue } from './changes.js';
 import { buildProcessGroups } from './mirror/process-groups.js';
-import { officialClass, officialModuleCount, ocOr } from './official-classes.js';
+import { officialClass, officialModuleCount } from './official-classes.js';
 import { t as defaultT } from '../utils/i18n.js';
 /** 稳定的空序列（避免默认值每次新建数组）。 */
 const EMPTY_ORDER = [];
@@ -450,7 +450,7 @@ function renderLegacyRows(nodes, t, fileOpen) {
         }
         if (parts.length === 0)
             return;
-        rows.push(h('div', { key: `lg${index}`, className: ocOr('ChatView', 'flowItem', 'dshpc-sv-flowitem') }, parts));
+        rows.push(h('div', { key: `lg${index}`, className: officialClass('ChatView', 'flowItem') ?? '' }, parts));
     });
     return rows;
 }

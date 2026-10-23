@@ -5,7 +5,7 @@
 //   closing === null（本轮没有回复）⇒ 只留 turnTail 插槽；弹窗无插槽 ⇒ 整块不渲染。
 // hasAssistantReplyContent（lib/client.js:6466）：reasoning / tool-call 不算回复，空文本不算。
 import { createElement as h } from 'react';
-import { ocOr } from '../official-classes.js';
+import { officialClass } from '../official-classes.js';
 import { MessageIconActionsMirror } from './MessageIconActions.js';
 import { TurnUsagePanelMirror } from './TurnUsagePanel.js';
 /** 官方 hasAssistantReplyContent。 */
@@ -30,7 +30,7 @@ export function TurnTailNodeViewMirror(props) {
         return null;
     const text = assistantText(closing.blocks);
     return h('div', {
-        className: ocOr('TurnTailNodeView', 'root', 'dshpc-sv-tail'),
+        className: officialClass('TurnTailNodeView', 'root') ?? '',
         'data-turn-tail': data.turn,
         'data-actions-reveal': 'always',
     }, tailSlot === undefined || tailSlot === null ? null : tailSlot, h(MessageIconActionsMirror, {
@@ -40,7 +40,7 @@ export function TurnTailNodeViewMirror(props) {
         // 分支：点分支 = 确认框 → fork({ atSeq: 该轮 tail seq })——从这条消息位置截断开分支；
         // 头部按钮 = 省略 atSeq（最新已完成 turn 前缀）。
         onBranch: onBranchAt === undefined ? undefined : () => { onBranchAt(data.seq); },
-        className: ocOr('TurnTailNodeView', 'actions', 'dshpc-sv-tail-actions'),
+        className: officialClass('TurnTailNodeView', 'actions') ?? '',
         usageAction: data.tokenUsage === undefined ? undefined : h(TurnUsagePanelMirror, { usage: data.tokenUsage, t }),
         t,
     }));

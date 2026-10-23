@@ -10,7 +10,7 @@
 // （用户 2026-10-23 定）。取不到官方类时退化为空类（裸结构、不白屏）；读屏 visually-hidden 复用 ToolRow 同名工具类。
 import { Fragment, createElement as h, useCallback, useState } from 'react';
 import { DisclosureRow, IconApiOutlineRegular, TextShimmer } from '../../ui/official.js';
-import { ocOr, officialClass } from '../official-classes.js';
+import { officialClass } from '../official-classes.js';
 /** 官方 GenericCommandCard 模块类（宿主必注入；缺席 = 空串，裸结构不白屏，不写自绘兜底）。 */
 const gcc = (semantic) => officialClass('GenericCommandCard', semantic) ?? '';
 /** 官方 stateOf：未决 = running；outcome.kind==='error' = error；否则 ok。 */
@@ -36,7 +36,7 @@ export function CommandCard(props) {
     const open = expanded && body !== null;
     const toggle = useCallback(() => { setExpanded((value) => !value); }, []);
     // 读屏 visually-hidden：复用 ToolRow 同名工具类（既有，非新写兜底）。
-    const hidden = ocOr('ToolRow', 'visuallyHidden', 'dshpc-sv-visuallyhidden');
+    const hidden = officialClass('ToolRow', 'visuallyHidden') ?? '';
     return h('div', { className: gcc('root'), 'data-state': state }, 
     // 官方 a11y：running/error 的读屏状态词（visually-hidden，不占可见空间）。
     state === 'running'

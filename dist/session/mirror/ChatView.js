@@ -4,19 +4,19 @@
 // root 内另有 toBottomSlot（官方按「是否贴尾」显隐，弹窗恒贴尾 ⇒ 不渲染）。
 // ChatNodeList：entries → seat；官方 entries 优先取 grouped('chat')，取不到时 = order.map(key)。
 import { createElement as h } from 'react';
-import { ocOr } from '../official-classes.js';
+import { officialClass } from '../official-classes.js';
 import { ChatGroupSeatMirror } from './ChatGroupSeat.js';
 import { ChatNodeSeatMirror } from './ChatNodeSeat.js';
-/** 会话区骨架：frame > root > scroll > column（类名取官方 ChatView.module.css，缺失回退自绘）。
+/** 会话区骨架：frame > root > scroll > column（类名一律取官方 ChatView.module.css，取不到 = 空类）。
  *
- *  `dshpc-sv-frame` / `dshpc-sv-scroll` = 本包**稳定钩子类**（不参与 ocOr，官方类命中时也挂）：
+ *  `dshpc-sv-frame` / `dshpc-sv-scroll` = 本包**稳定钩子类**（不走 officialClass 发现，官方类命中时也照样挂）：
  * 会话区**纵向间距的唯一真源**。官方 scroll 自带纵向 16px、官方 frame 的纵向值又不确定，
  * 归一方案（移植自兄弟项目 2026-10-03 定尺）：**scroll 钩子把官方纵向 16px 归零，
  * frame 钩子独自定 17/17**，两条钩子都用双类名提高特异性压过官方 CSS module（0,2,0 > 0,1,0），
  * 不依赖注入顺序 ⇒ 命中 / 未命中两条路径纵向完全一致。
  */
 export function ChatViewFrame(props) {
-    return h('div', { className: `${ocOr('ChatView', 'frame', 'dshpc-sv-body')} dshpc-sv-frame dshpc-sv-chat` }, h('div', { className: ocOr('ChatView', 'root', '') }, h('div', { className: `${ocOr('ChatView', 'scroll', '')} dshpc-sv-scroll` }, h('div', { className: ocOr('ChatView', 'column', 'dshpc-sv-col'), 'data-chat-flow': '' }, props.children))));
+    return h('div', { className: `${officialClass('ChatView', 'frame') ?? ''} dshpc-sv-frame dshpc-sv-chat` }, h('div', { className: officialClass('ChatView', 'root') ?? '' }, h('div', { className: `${officialClass('ChatView', 'scroll') ?? ''} dshpc-sv-scroll` }, h('div', { className: officialClass('ChatView', 'column') ?? '', 'data-chat-flow': '' }, props.children))));
 }
 /** 官方 ChatNodeList：order → seat 列表（grouped 视图 = entries + groups 路径）。 */
 export function ChatNodeListMirror(props) {
@@ -110,14 +110,14 @@ function turnStatus(turns, turn) {
 }
 /** 加载 / 空态提示行（13px tertiary）。 */
 export function ChatHint(props) {
-    return h('div', { className: ocOr('ChatView', 'hint', 'dshpc-sv-hint') }, props.text);
+    return h('div', { className: officialClass('ChatView', 'hint') ?? '' }, props.text);
 }
 /** 「加载更早记录」按钮（官方 older：按钮 4px 12px / 12px 字号 / radius-sm / 底色 interactive-bg-hover-solid）。 */
 export function ChatOlderButton(props) {
-    return h('div', { className: ocOr('ChatView', 'older', 'dshpc-sv-older') }, h('button', { type: 'button', onClick: props.onClick }, props.label));
+    return h('div', { className: officialClass('ChatView', 'older') ?? '' }, h('button', { type: 'button', onClick: props.onClick }, props.label));
 }
 /** 「到底部」悬浮钮（官方 toBottom：34×34 圆形悬浮，仅在有更多历史时显示）。 */
 export function ChatToBottom(props) {
-    return h('div', { className: ocOr('ChatView', 'toBottomSlot', 'dshpc-sv-tobottom') }, h('button', { type: 'button', className: ocOr('ChatView', 'toBottom', ''), onClick: props.onClick, 'aria-label': props.label }, '↓'));
+    return h('div', { className: officialClass('ChatView', 'toBottomSlot') ?? '' }, h('button', { type: 'button', className: officialClass('ChatView', 'toBottom') ?? '', onClick: props.onClick, 'aria-label': props.label }, '↓'));
 }
 //# sourceMappingURL=ChatView.js.map

@@ -12,7 +12,7 @@
 // 文案逐字抄官方词典（message.retry.* / message.turnError / message.maxTokens*，zh+en）。
 import { createElement as h, useEffect, useMemo, useState } from 'react'
 import { FileTypeIcon, MarkdownText, StateDot } from '../../ui/official.js'
-import { ocOr } from '../official-classes.js'
+import { officialClass } from '../official-classes.js'
 import { markdownLabels } from '../../explorer/preview/md-labels.js'
 import { formatBytes } from '../../utils/number.js'
 import type { Translate } from '../../utils/i18n.js'
@@ -24,7 +24,7 @@ export function AssistantMarkdown(props: {
   fileMentions?: { resolve(value: string): { open(): void; label: string; title: string } | undefined }
 }): ReturnType<typeof h> {
   if (props.text.trim() === '') return h('span', null)
-  return h('div', { className: ocOr('AssistantMarkdown', 'root', 'dshpc-sv-md') },
+  return h('div', { className: officialClass('AssistantMarkdown', 'root') ?? '' },
     h(MarkdownText, {
       text: props.text,
       labels: markdownLabels(),
@@ -49,25 +49,25 @@ export interface UserFileFace {
 export function UserMessage(props: { text: string; files?: readonly UserFileFace[] }): ReturnType<typeof h> {
   const { text, files } = props
   const chips = files ?? []
-  return h('div', { className: ocOr('MessageItem', 'userRow', '') },
-    h('div', { className: ocOr('MessageItem', 'userStack', '') },
+  return h('div', { className: officialClass('MessageItem', 'userRow') ?? '' },
+    h('div', { className: officialClass('MessageItem', 'userStack') ?? '' },
       text === ''
         ? null
-        : h('div', { className: ocOr('MessageItem', 'bubble', 'dshpc-sv-user') },
+        : h('div', { className: officialClass('MessageItem', 'bubble') ?? '' },
             h(MarkdownText, { text, labels: markdownLabels() })),
       chips.length === 0
         ? null
-        : h('div', { className: ocOr('MessageItem', 'attachmentRow', 'dshpc-sv-attrow') },
+        : h('div', { className: officialClass('MessageItem', 'attachmentRow') ?? '' },
             chips.map((file, index) => h('div', {
               key: `${file.name}:${index}`,
-              className: ocOr('MessageItem', 'fileCard', 'dshpc-sv-attcard'),
+              className: officialClass('MessageItem', 'fileCard') ?? '',
               title: file.name,
             },
-              h('span', { className: ocOr('MessageItem', 'fileIcon', 'dshpc-sv-att-icon') },
+              h('span', { className: officialClass('MessageItem', 'fileIcon') ?? '' },
                 h(FileTypeIcon, { path: file.name, size: 16 })),
-              h('span', { className: ocOr('MessageItem', 'fileContent', 'dshpc-sv-att-body') },
-                h('span', { className: ocOr('MessageItem', 'fileName', 'dshpc-sv-att-name') }, file.name),
-                h('span', { className: ocOr('MessageItem', 'fileMeta', 'dshpc-sv-att-meta') }, formatBytes(file.bytes)),
+              h('span', { className: officialClass('MessageItem', 'fileContent') ?? '' },
+                h('span', { className: officialClass('MessageItem', 'fileName') ?? '' }, file.name),
+                h('span', { className: officialClass('MessageItem', 'fileMeta') ?? '' }, formatBytes(file.bytes)),
               ),
             )),
           ),
@@ -150,22 +150,22 @@ export function ModelRetryItemMirror(props: { node: RetryAttemptFace; active: bo
   const seconds = active ? remainingSeconds : scheduledSeconds
   const failure = node.failure
   return h('details', {
-    className: ocOr('MessageItem', 'retryRow', 'dshpc-sv-retry'),
+    className: officialClass('MessageItem', 'retryRow') ?? '',
     'data-active': active || undefined,
   },
-    h('summary', { className: ocOr('MessageItem', 'retrySummary', 'dshpc-sv-retry-summary') },
+    h('summary', { className: officialClass('MessageItem', 'retrySummary') ?? '' },
       h('span', {
-        className: ocOr('MessageItem', 'retryText', 'dshpc-sv-retry-text'),
+        className: officialClass('MessageItem', 'retryText') ?? '',
         role: 'status',
       }, t('retryStatus', { label, retry: node.retry ?? 0, maximum, seconds })),
     ),
-    h('div', { className: ocOr('MessageItem', 'retryDetails', 'dshpc-sv-retry-details') },
+    h('div', { className: officialClass('MessageItem', 'retryDetails') ?? '' },
       h('div', null,
-        h('span', { className: ocOr('MessageItem', 'retryDetailLabel', 'dshpc-sv-retry-label') }, t('retryDelay')),
+        h('span', { className: officialClass('MessageItem', 'retryDetailLabel') ?? '' }, t('retryDelay')),
         t('durationMilliseconds', { milliseconds: Math.round(delayMs) }),
       ),
       h('div', null,
-        h('span', { className: ocOr('MessageItem', 'retryDetailLabel', 'dshpc-sv-retry-label') }, t('retryFailure')),
+        h('span', { className: officialClass('MessageItem', 'retryDetailLabel') ?? '' }, t('retryFailure')),
         failureMessage(failure?.message, failure?.code, t),
       ),
     ),
@@ -175,21 +175,21 @@ export function ModelRetryItemMirror(props: { node: RetryAttemptFace; active: bo
 /** 轮次失败行（官方 TurnErrorItem）：红点 + 红标题「本轮运行失败」+ 灰原因 + 右侧机器码标签。 */
 export function TurnErrorItemMirror(props: { node: TurnErrorFace; t: Translate }): ReturnType<typeof h> {
   const { node, t } = props
-  return h('div', { className: ocOr('MessageItem', 'turnErrorRow', 'dshpc-sv-turnerr'), role: 'status' },
+  return h('div', { className: officialClass('MessageItem', 'turnErrorRow') ?? '', role: 'status' },
     h(StateDot, {
       state: 'error',
-      className: ocOr('MessageItem', 'turnErrorDot', 'dshpc-sv-turnerr-dot'),
+      className: officialClass('MessageItem', 'turnErrorDot') ?? '',
     }),
-    h('div', { className: ocOr('MessageItem', 'turnErrorCopy', 'dshpc-sv-turnerr-copy') },
-      h('span', { className: ocOr('MessageItem', 'turnErrorTitle', 'dshpc-sv-turnerr-title') },
+    h('div', { className: officialClass('MessageItem', 'turnErrorCopy') ?? '' },
+      h('span', { className: officialClass('MessageItem', 'turnErrorTitle') ?? '' },
         node.code === 'ACCOUNT_SIGNED_OUT' ? t('accountStopped') : t('turnErrorTitle'),
       ),
-      h('span', { className: ocOr('MessageItem', 'turnErrorMessage', 'dshpc-sv-turnerr-msg') },
+      h('span', { className: officialClass('MessageItem', 'turnErrorMessage') ?? '' },
         failureMessage(node.message, node.code, t),
       ),
     ),
     node.code !== undefined && node.code !== ''
-      ? h('code', { className: ocOr('MessageItem', 'turnErrorCode', 'dshpc-sv-turnerr-code') }, node.code)
+      ? h('code', { className: officialClass('MessageItem', 'turnErrorCode') ?? '' }, node.code)
       : null,
   )
 }
@@ -197,14 +197,14 @@ export function TurnErrorItemMirror(props: { node: TurnErrorFace; t: Translate }
 /** 限长行（官方 TurnMaxTokensItem）：黄点 + 警示标题 + 截断提示。 */
 export function TurnMaxTokensItemMirror(props: { t: Translate }): ReturnType<typeof h> {
   const { t } = props
-  return h('div', { className: ocOr('MessageItem', 'turnErrorRow', 'dshpc-sv-turnerr'), role: 'status' },
+  return h('div', { className: officialClass('MessageItem', 'turnErrorRow') ?? '', role: 'status' },
     h(StateDot, {
       state: 'warning',
-      className: ocOr('MessageItem', 'turnErrorDot', 'dshpc-sv-turnerr-dot'),
+      className: officialClass('MessageItem', 'turnErrorDot') ?? '',
     }),
-    h('div', { className: ocOr('MessageItem', 'turnErrorCopy', 'dshpc-sv-turnerr-copy') },
-      h('span', { className: ocOr('MessageItem', 'maxTokensTitle', 'dshpc-sv-turnerr-warn') }, t('maxTokensTitle')),
-      h('span', { className: ocOr('MessageItem', 'turnErrorMessage', 'dshpc-sv-turnerr-msg') }, t('maxTokensHint')),
+    h('div', { className: officialClass('MessageItem', 'turnErrorCopy') ?? '' },
+      h('span', { className: officialClass('MessageItem', 'maxTokensTitle') ?? '' }, t('maxTokensTitle')),
+      h('span', { className: officialClass('MessageItem', 'turnErrorMessage') ?? '' }, t('maxTokensHint')),
     ),
   )
 }

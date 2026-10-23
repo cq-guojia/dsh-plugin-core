@@ -4,9 +4,9 @@ import type { Translate } from '../../utils/i18n.js';
 import type { ChatNodeStoreFace, TurnsFace } from '../faces.js';
 import type { NodeRenderer } from './ChatNodeSeat.js';
 import type { ChatEntry, ProcessGroupSnapshot } from './process-groups.js';
-/** 会话区骨架：frame > root > scroll > column（类名取官方 ChatView.module.css，缺失回退自绘）。
+/** 会话区骨架：frame > root > scroll > column（类名一律取官方 ChatView.module.css，取不到 = 空类）。
  *
- *  `dshpc-sv-frame` / `dshpc-sv-scroll` = 本包**稳定钩子类**（不参与 ocOr，官方类命中时也挂）：
+ *  `dshpc-sv-frame` / `dshpc-sv-scroll` = 本包**稳定钩子类**（不走 officialClass 发现，官方类命中时也照样挂）：
  * 会话区**纵向间距的唯一真源**。官方 scroll 自带纵向 16px、官方 frame 的纵向值又不确定，
  * 归一方案（移植自兄弟项目 2026-10-03 定尺）：**scroll 钩子把官方纵向 16px 归零，
  * frame 钩子独自定 17/17**，两条钩子都用双类名提高特异性压过官方 CSS module（0,2,0 > 0,1,0），

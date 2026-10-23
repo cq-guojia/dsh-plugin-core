@@ -6,7 +6,7 @@
 import { Fragment, createElement as h } from 'react'
 import { createPortal } from 'react-dom'
 import { IconDatabaseOutlineRegular } from '../../ui/official.js'
-import { ocOr } from '../official-classes.js'
+import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../utils/i18n.js'
 import { useStatDialog } from './StatDialog.js'
 import { formatCacheHitPercent, formatCompactCount, formatExactCount } from './message-chrome.js'
@@ -34,38 +34,38 @@ export function TurnUsagePanelMirror(props: {
     : formatCacheHitPercent(usage.cacheReadTokens, usage.totalTokens - usage.outputTokens, 1)
   const total = formatCompactCount(usage.totalTokens, t)
   const routes = usage.routes?.map(route => `${route.provider}/${route.model}`).join(', ') ?? ''
-  return h('span', { ref: rootRef, className: ocOr('TurnUsagePanel', 'root', 'dshpc-sv-usage') },
+  return h('span', { ref: rootRef, className: officialClass('TurnUsagePanel', 'root') ?? '' },
     h('button', {
       type: 'button',
-      className: ocOr('TurnUsagePanel', 'trigger', 'dshpc-sv-usage-trigger'),
+      className: officialClass('TurnUsagePanel', 'trigger') ?? '',
       'aria-haspopup': 'dialog',
       'aria-expanded': open,
       onClick: (): void => { setOpen(!open) },
     },
       h(IconDatabaseOutlineRegular, null),
-      h('span', { className: ocOr('TurnUsagePanel', 'label', 'dshpc-sv-usage-label') }, t('turnUsageConsumed', { total })),
+      h('span', { className: officialClass('TurnUsagePanel', 'label') ?? '' }, t('turnUsageConsumed', { total })),
     ),
     open
       ? createPortal(h('div', {
           ref: panelRef,
-          className: ocOr('statDialog', 'panel', 'dshpc-sv-stats'),
+          className: officialClass('statDialog', 'panel') ?? '',
           role: 'dialog',
           'aria-label': t('turnUsageTitle'),
           style: pos,
         },
-          h('div', { className: ocOr('statDialog', 'title', 'dshpc-sv-stats-title') },
-            h('span', { className: ocOr('statDialog', 'titleLabel', 'dshpc-sv-stats-titlelabel') },
+          h('div', { className: officialClass('statDialog', 'title') ?? '' },
+            h('span', { className: officialClass('statDialog', 'titleLabel') ?? '' },
               h(IconDatabaseOutlineRegular, null),
               t('turnUsageTitle'),
             ),
-            h('span', { className: ocOr('statDialog', 'titleValue', 'dshpc-sv-stats-titlevalue') },
+            h('span', { className: officialClass('statDialog', 'titleValue') ?? '' },
               formatExactCount(usage.totalTokens, t)),
           ),
-          h('div', { className: ocOr('statDialog', 'titleRule', 'dshpc-sv-stats-rule'), 'aria-hidden': true }),
-          h('dl', { className: ocOr('statDialog', 'details', 'dshpc-sv-stats-details'), 'data-turn-usage-details': true },
+          h('div', { className: officialClass('statDialog', 'titleRule') ?? '', 'aria-hidden': true }),
+          h('dl', { className: officialClass('statDialog', 'details') ?? '', 'data-turn-usage-details': true },
             routes === '' ? null : h(Fragment, null,
               h('dt', null, t('turnUsageModel')),
-              h('dd', { className: ocOr('statDialog', 'route', 'dshpc-sv-stats-route') }, routes),
+              h('dd', { className: officialClass('statDialog', 'route') ?? '' }, routes),
             ),
             cacheHit === null ? null : h(Fragment, null,
               h('dt', null, t('turnUsageCacheHit')),
@@ -87,7 +87,7 @@ export function TurnUsagePanelMirror(props: {
               usage.reasoningTokens === undefined
                 ? null
                 : h('span', {
-                    className: ocOr('statDialog', 'reasoning', 'dshpc-sv-stats-reasoning'),
+                    className: officialClass('statDialog', 'reasoning') ?? '',
                   }, t('turnUsageReasoning', { tokens: formatExactCount(usage.reasoningTokens, t) })),
             ),
           ),

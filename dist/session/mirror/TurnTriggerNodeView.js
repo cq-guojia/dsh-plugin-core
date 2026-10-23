@@ -8,7 +8,7 @@
 // 「非人类触发的 turn」就以这一行开头——官方原图里那句「收到执行请求 9月26日 01:35」就是它。
 import { createElement as h, useState } from 'react';
 import { IconAgentPresetOutlineRegular, IconAlarmClockOutlineRegular, IconBranchOutlineRegular, IconChevronDownOutlineRegular, IconContextInjectionOutlineRegular, IconCordisPluginOutlineRegular, IconGlobeOutlineRegular, IconGoalOutlineRegular, IconPaperPlaneOutlineRegular, IconQueueOutlineRegular, } from '../../ui/official.js';
-import { ocOr } from '../official-classes.js';
+import { officialClass } from '../official-classes.js';
 import { formatMessageClock } from './message-chrome.js';
 /** 官方 TRIGGER_ICONS（lib/client.js:6634）。 */
 const TRIGGER_ICONS = {
@@ -52,25 +52,25 @@ export function TurnTriggerNodeViewMirror(props) {
     const time = typeof data?.time === 'number' ? data.time : undefined;
     const content = triggerContent(data?.content);
     return h('section', {
-        className: ocOr('TurnTriggerNodeView', 'root', 'dshpc-sv-trigger'),
+        className: officialClass('TurnTriggerNodeView', 'root') ?? '',
         'data-turn-trigger': true,
     }, h('button', {
         type: 'button',
-        className: ocOr('TurnTriggerNodeView', 'header', 'dshpc-sv-trigger-header'),
+        className: officialClass('TurnTriggerNodeView', 'header') ?? '',
         'aria-expanded': open,
         onClick: () => { setOpen(value => !value); },
-    }, h('span', { className: ocOr('TurnTriggerNodeView', 'icon', 'dshpc-sv-trigger-icon'), 'aria-hidden': true }, h(TriggerIcon, { size: 14 })), h('span', { className: ocOr('TurnTriggerNodeView', 'title', 'dshpc-sv-trigger-title') }, t(details.title)), time === undefined
+    }, h('span', { className: officialClass('TurnTriggerNodeView', 'icon') ?? '', 'aria-hidden': true }, h(TriggerIcon, { size: 14 })), h('span', { className: officialClass('TurnTriggerNodeView', 'title') ?? '' }, t(details.title)), time === undefined
         ? null
         : h('time', {
-            className: ocOr('TurnTriggerNodeView', 'time', 'dshpc-sv-trigger-time'),
+            className: officialClass('TurnTriggerNodeView', 'time') ?? '',
             dateTime: new Date(time).toISOString(),
         }, formatMessageClock(time, t)), h(IconChevronDownOutlineRegular, {
         size: 12,
         className: open
-            ? ocOr('TurnTriggerNodeView', 'openChevron', 'dshpc-sv-trigger-chevron-open')
-            : ocOr('TurnTriggerNodeView', 'chevron', 'dshpc-sv-trigger-chevron'),
+            ? officialClass('TurnTriggerNodeView', 'openChevron') ?? ''
+            : officialClass('TurnTriggerNodeView', 'chevron') ?? '',
     })), open
-        ? h('div', { className: ocOr('TurnTriggerNodeView', 'body', 'dshpc-sv-trigger-body') }, h('p', { className: ocOr('TurnTriggerNodeView', 'explanation', 'dshpc-sv-trigger-explanation') }, t('triggerExplanation')), h('div', { className: ocOr('TurnTriggerNodeView', 'content', 'dshpc-sv-trigger-content') }, content === '' ? t('sessionEmpty') : content))
+        ? h('div', { className: officialClass('TurnTriggerNodeView', 'body') ?? '' }, h('p', { className: officialClass('TurnTriggerNodeView', 'explanation') ?? '' }, t('triggerExplanation')), h('div', { className: officialClass('TurnTriggerNodeView', 'content') ?? '' }, content === '' ? t('sessionEmpty') : content))
         : null);
 }
 /** 注入原文：content 块的 text 拼接（官方 NoticeBody 的文本消费面）。 */

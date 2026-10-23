@@ -11,7 +11,7 @@
 // 数据真源 = 会话 keyed 流里的 present 工具调用 / turn 级 deliverables.presented（真实取数，禁模拟）。
 import { createElement as h, useState } from 'react';
 import { DisclosureRow, FileTypeIcon, IconChevronDownOutlineRegular, IconChevronUpOutlineRegular, IconDeliverDocRegular, fileExtension, } from '../../ui/official.js';
-import { ocOr } from '../official-classes.js';
+import { officialClass } from '../official-classes.js';
 const basename = (path) => path.slice(Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\')) + 1);
 /** 官方 fileNames（PresentRow.tsx）：argsRaw.files[].path 逗号连接；解析不出回原样。 */
 function fileNames(raw) {
@@ -48,7 +48,7 @@ export function PresentRowMirror(props) {
                 : state === 'stopped' ? 'deliverRowStopped'
                     : 'deliverRowOk';
     return h('div', {
-        className: ocOr('ToolRow', 'root', 'dshpc-sv-tool'),
+        className: officialClass('ToolRow', 'root') ?? '',
         'data-tool': 'present',
         'data-state': state,
     }, h(DisclosureRow, {
@@ -60,13 +60,13 @@ export function PresentRowMirror(props) {
         keepContentWhenOpen: true,
         onToggle: () => { setExpanded((value) => !value); },
         running: state === 'running' || state === 'preparing',
-        rowClassName: ocOr('ToolRow', 'row', 'dshpc-sv-tool-row'),
-        leadingClassName: ocOr('ToolRow', 'leading', 'dshpc-sv-tool-leading'),
-        titleClassName: ocOr('ToolRow', 'title', 'dshpc-sv-tool-title'),
-        chevronClassName: ocOr('ToolRow', 'chevron', 'dshpc-sv-tool-chevron'),
-        collapsedContent: h('span', { className: ocOr('PresentRow', 'summary', 'dshpc-sv-deliv-rowsummary') }, h('span', null, t(statusKey)), h('span', { className: ocOr('PresentRow', 'paths', 'dshpc-sv-deliv-rowpaths') }, fileNames(argsRaw))),
+        rowClassName: officialClass('ToolRow', 'row') ?? '',
+        leadingClassName: officialClass('ToolRow', 'leading') ?? '',
+        titleClassName: officialClass('ToolRow', 'title') ?? '',
+        chevronClassName: officialClass('ToolRow', 'chevron') ?? '',
+        collapsedContent: h('span', { className: officialClass('PresentRow', 'summary') ?? '' }, h('span', null, t(statusKey)), h('span', { className: officialClass('PresentRow', 'paths') ?? '' }, fileNames(argsRaw))),
         children: details !== '' && expanded
-            ? h('pre', { className: ocOr('PresentRow', 'output', 'dshpc-sv-deliv-rowoutput') }, details)
+            ? h('pre', { className: officialClass('PresentRow', 'output') ?? '' }, details)
             : null,
     }));
 }
@@ -83,18 +83,18 @@ function DeliveredFileCard(props) {
     const name = basename(file.path);
     const metadata = fileExtension(name).toUpperCase() || t('deliverFileLabel');
     return h('div', {
-        className: ocOr('Deliverables', 'file', 'dshpc-sv-deliv-file'),
+        className: officialClass('Deliverables', 'file') ?? '',
         'data-presented-file': true,
     }, onPreview !== undefined
         ? h('button', {
             type: 'button',
-            className: ocOr('Deliverables', 'cardPreview', 'dshpc-sv-deliv-cardpreview'),
+            className: officialClass('Deliverables', 'cardPreview') ?? '',
             title: file.path,
             'aria-label': t('deliverPreviewCard', { name: file.path }),
             onClick: (event) => { event.stopPropagation(); onPreview(); },
         })
-        : null, h('span', { className: ocOr('Deliverables', 'fileIcon', 'dshpc-sv-deliv-icon') }, h(FileTypeIcon, { path: file.path, size: 20 })), h('div', { className: ocOr('Deliverables', 'fileBody', 'dshpc-sv-deliv-body') }, h('div', { className: ocOr('Deliverables', 'details', 'dshpc-sv-deliv-details') }, h('span', { className: ocOr('Deliverables', 'fileName', 'dshpc-sv-deliv-name') }, name), h('span', { className: ocOr('Deliverables', 'description', 'dshpc-sv-deliv-desc'), 'data-presented-description': true }, h('span', { className: ocOr('Deliverables', 'secondaryText', 'dshpc-sv-deliv-secondary') }, cardDescription(file.description, metadata)), onPreview !== undefined
-        ? h('span', { className: ocOr('Deliverables', 'previewHint', 'dshpc-sv-deliv-hint') }, t('deliverPreviewHint'))
+        : null, h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' }, h(FileTypeIcon, { path: file.path, size: 20 })), h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' }, h('div', { className: officialClass('Deliverables', 'details') ?? '' }, h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name), h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true }, h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)), onPreview !== undefined
+        ? h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint'))
         : null))));
 }
 /**
@@ -111,10 +111,10 @@ export function DeliverablesGridMirror(props) {
     const collapsible = files.length > COLLAPSED_DELIVERED_COUNT;
     const shown = collapsible && !expanded ? files.slice(0, COLLAPSED_DELIVERED_COUNT) : files;
     return h('div', {
-        className: ocOr('Deliverables', 'root', 'dshpc-sv-deliv'),
+        className: officialClass('Deliverables', 'root') ?? '',
         'data-presented-files-grid': true,
     }, h('div', {
-        className: ocOr('Deliverables', 'presented', 'dshpc-sv-deliv-grid'),
+        className: officialClass('Deliverables', 'presented') ?? '',
         'data-presented-files-row': true,
     }, shown.map((file, index) => h(DeliveredFileCard, {
         key: `${file.path}:${index}`,
@@ -124,7 +124,7 @@ export function DeliverablesGridMirror(props) {
     }))), collapsible
         ? h('button', {
             type: 'button',
-            className: ocOr('Deliverables', 'toggle', 'dshpc-sv-deliv-toggle'),
+            className: officialClass('Deliverables', 'toggle') ?? '',
             'aria-expanded': expanded,
             'aria-label': t(expanded ? 'deliverCollapseAria' : 'deliverExpandAria', { count: files.length }),
             onClick: () => { setExpanded((value) => !value); },

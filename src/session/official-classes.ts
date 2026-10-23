@@ -140,13 +140,3 @@ export function officialClasses(...pairs: Array<[string, string]>): string {
   }
   return out.join(' ')
 }
-
-/** className 拼接：官方类优先，缺失时回退自绘类（两者只取其一，避免样式打架）。 */
-export function ocOr(module: string, semantic: string, fallback: string): string {
-  return officialClass(module, semantic) ?? fallback
-}
-
-/** 拼接非空类名片段。 */
-export function cx(...parts: Array<string | null | undefined>): string {
-  return parts.filter((part): part is string => typeof part === 'string' && part !== '').join(' ')
-}

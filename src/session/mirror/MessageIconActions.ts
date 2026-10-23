@@ -13,7 +13,7 @@ import {
   Tooltip,
   writeClipboard,
 } from '../../ui/official.js'
-import { ocOr } from '../official-classes.js'
+import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../utils/i18n.js'
 import { formatMessageClock } from './message-chrome.js'
 
@@ -49,19 +49,19 @@ export function MessageIconActionsMirror(props: {
     })
   }
   const clockEl = time === undefined ? null : h('time', {
-    className: ocOr('MessageIconActions', 'clock', 'dshpc-sv-clock'),
+    className: officialClass('MessageIconActions', 'clock') ?? '',
     dateTime: new Date(time).toISOString(),
   }, formatMessageClock(time, t))
   const reasonId = 'dshpc-sv-branch-unavailable'
   return h('div', {
-    className: `${ocOr('MessageIconActions', 'actions', 'dshpc-sv-actions')}${className === undefined ? '' : ` ${className}`}`,
+    className: `${officialClass('MessageIconActions', 'actions') ?? ''}${className === undefined ? '' : ` ${className}`}`,
     'data-clock': clock,
   },
     clock === 'start' ? clockEl : null,
     h(Tooltip, { label: copyLabel, side: 'bottom' },
       h('button', {
         type: 'button',
-        className: ocOr('MessageIconActions', 'action', 'dshpc-sv-action'),
+        className: officialClass('MessageIconActions', 'action') ?? '',
         'aria-label': copyLabel,
         onClick: onCopy,
       }, copied
@@ -74,7 +74,7 @@ export function MessageIconActionsMirror(props: {
       : h(Tooltip, { label: branchUnavailable ? t('branchUnavailableLabel') : t('branchLabel'), side: 'bottom' },
           h('button', {
             type: 'button',
-            className: ocOr('MessageIconActions', 'action', 'dshpc-sv-action'),
+            className: officialClass('MessageIconActions', 'action') ?? '',
             'aria-label': t('branchLabel'),
             'aria-disabled': branchUnavailable || undefined,
             'aria-describedby': branchUnavailable ? reasonId : undefined,
@@ -84,10 +84,10 @@ export function MessageIconActionsMirror(props: {
         ),
     onBranch === undefined || !branchUnavailable
       ? null
-      : h('span', { id: reasonId, className: ocOr('accessibility', 'visuallyHidden', 'dshpc-sv-visuallyhidden') },
+      : h('span', { id: reasonId, className: officialClass('accessibility', 'visuallyHidden') ?? '' },
           t('branchUnavailableLabel')),
     clock === 'end'
-      ? h('span', { className: ocOr('MessageIconActions', 'endInfo', 'dshpc-sv-endinfo') }, usageAction, clockEl)
+      ? h('span', { className: officialClass('MessageIconActions', 'endInfo') ?? '' }, usageAction, clockEl)
       : usageAction,
   )
 }

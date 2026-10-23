@@ -8,7 +8,7 @@
 // 这就是官方原图里那行「用时 34 秒 ⌄」——它把整个 turn 的过程（工具调用 / 中间文本 / 思考）折在下面。
 import { Fragment, createElement as h, useEffect, useState } from 'react';
 import { IconChevronDownOutlineRegular } from '../../ui/official.js';
-import { ocOr } from '../official-classes.js';
+import { officialClass } from '../official-classes.js';
 import { formatLiveRunDuration, formatRunDuration } from './message-chrome.js';
 /** 官方 LIVE_RUN_CLOCK_INTERVAL_MS（lib/client.js:979）。 */
 const LIVE_RUN_CLOCK_INTERVAL_MS = 1000;
@@ -46,13 +46,13 @@ export function TurnProcessNodeViewMirror(props) {
                 : t('turnProcessWorked');
     const spec = turnProcess.spec;
     return h(Fragment, null, h('span', {
-        className: ocOr('accessibility', 'visuallyHidden', 'dshpc-sv-visuallyhidden'),
+        className: officialClass('accessibility', 'visuallyHidden') ?? '',
         role: 'status',
         'aria-live': 'polite',
         'aria-atomic': 'true',
     }, announcement), h('button', {
         type: 'button',
-        className: ocOr('TurnProcessNodeView', 'root', 'dshpc-sv-process'),
+        className: officialClass('TurnProcessNodeView', 'root') ?? '',
         'data-open': open || undefined,
         'data-turn-process': spec?.turn,
         'data-turn-process-messages': spec?.messageCount,
@@ -61,8 +61,8 @@ export function TurnProcessNodeViewMirror(props) {
         disabled: !canCollapse,
         'aria-expanded': turnProcess.hasContent ? open : undefined,
         onClick: () => { turnProcess.setOpen(!open); },
-    }, h('span', { className: ocOr('TurnProcessNodeView', 'label', 'dshpc-sv-process-label') }, label), canCollapse
-        ? h(IconChevronDownOutlineRegular, { className: ocOr('TurnProcessNodeView', 'chevron', 'dshpc-sv-process-chevron') })
+    }, h('span', { className: officialClass('TurnProcessNodeView', 'label') ?? '' }, label), canCollapse
+        ? h(IconChevronDownOutlineRegular, { className: officialClass('TurnProcessNodeView', 'chevron') ?? '' })
         : null));
 }
 //# sourceMappingURL=TurnProcessNodeView.js.map

@@ -21,7 +21,7 @@
 //   2. 官方 grouped('chat') 的分组项（ChatGroupSeat）由 process-groups.ts 算法移植补齐。
 import { createElement as h } from 'react'
 import type { ReactNode } from 'react'
-import { ocOr } from '../official-classes.js'
+import { officialClass } from '../official-classes.js'
 import type {
   ChatNodeFace,
   ChatNodeStoreFace,
@@ -154,7 +154,7 @@ export function ChatNodeSeatMirror(props: {
   if (inner === null || inner === undefined) return null
   const flowKey = groupPart === undefined || groupPart === 'response' ? node.key : JSON.stringify([node.key, groupPart])
   return h('div', {
-    className: ocOr('ChatView', 'flowItem', 'dshpc-sv-flowitem'),
+    className: officialClass('ChatView', 'flowItem') ?? '',
     'data-chat-anchor-key': flowKey,
     'data-chat-flow-key': flowKey,
     'data-chat-paging-anchor': node.kind !== 'turn-process' || undefined,

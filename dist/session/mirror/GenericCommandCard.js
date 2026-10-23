@@ -10,7 +10,7 @@
 //   summary = [generic? 工具名, deriveSummary]，终端卡优先 description；error 态摘要 = 输出首行。
 import { Fragment, createElement as h, useMemo, useState } from 'react';
 import { DiffBlock, DisclosureRow, IconApiOutlineRegular, IconBrowseOutlineRegular, IconCodeOutlineRegular, IconEditOutlineRegular, IconSearchOutlineRegular, IconSparkleRegular, ReadBlock, TerminalBlock, TextShimmer, diffTotals, } from '../../ui/official.js';
-import { ocOr } from '../official-classes.js';
+import { officialClass } from '../official-classes.js';
 import { CodeViewer } from '../../ui/CodeViewer.js';
 /** 官方 TOOL_VARIANTS（tool client.js:83-100，cordis_* 一并保留）。 */
 const TOOL_VARIANTS = {
@@ -489,20 +489,20 @@ export function GenericCommandCard(props) {
             : rowState === 'error' ? t('rowFailed')
                 : rowState === 'stopped' ? t('rowStopped')
                     : null;
-    const summaryClassName = `${ocOr('ToolRow', 'summary', 'dshpc-sv-tool-summary')}${rowState === 'error' ? ` ${ocOr('ToolRow', 'errorSummary', 'dshpc-sv-tool-errmark')}` : ''}${rowState === 'stopped' ? ` ${ocOr('ToolRow', 'stoppedSummary', 'dshpc-sv-tool-stopmark')}` : ''}`;
-    const collapsedContent = summaryText === '' ? undefined : h(Fragment, null, h('span', { className: ocOr('ToolRow', 'sep', 'dshpc-sv-tool-sep'), 'aria-hidden': true }), openFile !== undefined
+    const summaryClassName = `${officialClass('ToolRow', 'summary') ?? ''}${rowState === 'error' ? ` ${officialClass('ToolRow', 'errorSummary') ?? ''}` : ''}${rowState === 'stopped' ? ` ${officialClass('ToolRow', 'stoppedSummary') ?? ''}` : ''}`;
+    const collapsedContent = summaryText === '' ? undefined : h(Fragment, null, h('span', { className: officialClass('ToolRow', 'sep') ?? '', 'aria-hidden': true }), openFile !== undefined
         ? h('button', {
             type: 'button',
-            className: ocOr('ToolRow', 'fileLink', 'dshpc-sv-tool-filelink'),
+            className: officialClass('ToolRow', 'fileLink') ?? '',
             onClick: (event) => { stopLinkClick(event); openFile(); },
         }, h(TextShimmer, { active: running }, summaryText))
         : h('span', { className: summaryClassName }, h(TextShimmer, { active: running }, summaryText)), suffix !== null
         ? h(TextShimmer, {
-            className: `${ocOr('ToolRow', 'summarySuffix', 'dshpc-sv-tool-suffix')} ${ocOr('ToolRow', 'diffStat', 'dshpc-sv-tool-diffstat')}`,
+            className: `${officialClass('ToolRow', 'summarySuffix') ?? ''} ${officialClass('ToolRow', 'diffStat') ?? ''}`,
             active: running,
         }, suffix)
         : null);
-    const expandedContent = open ? h('div', { className: ocOr('ToolRow', 'bodyWrap', 'dshpc-sv-tool-bodywrap') }, terminal !== null
+    const expandedContent = open ? h('div', { className: officialClass('ToolRow', 'bodyWrap') ?? '' }, terminal !== null
         ? h(TerminalBlock, {
             command: terminal.command,
             cwd: terminal.cwd,
@@ -512,10 +512,10 @@ export function GenericCommandCard(props) {
             running: terminal.running,
             maxLines: Infinity,
             labels: blockLabels.terminal,
-            className: ocOr('ToolRow', 'terminalBody', 'dshpc-sv-tool-terminal'),
+            className: officialClass('ToolRow', 'terminalBody') ?? '',
         })
         : diffs !== null
-            ? h(DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: ocOr('ToolRow', 'diffBody', 'dshpc-sv-tool-block') })
+            ? h(DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass('ToolRow', 'diffBody') ?? '' })
             : read !== null
                 ? h(ReadBlock, {
                     label: read.label,
@@ -524,31 +524,31 @@ export function GenericCommandCard(props) {
                     lang: read.lang,
                     labels: blockLabels.read,
                     maxLines: 8,
-                    className: ocOr('ToolRow', 'readBody', 'dshpc-sv-tool-block'),
+                    className: officialClass('ToolRow', 'readBody') ?? '',
                 })
                 : h(Fragment, null, variant === 'code' && bodyText !== null
-                    ? h('div', { className: ocOr('ToolRow', 'bodyScroll', 'dshpc-sv-tool-block') }, h(CodeViewer, {
+                    ? h('div', { className: officialClass('ToolRow', 'bodyScroll') ?? '' }, h(CodeViewer, {
                         text: bodyText,
                         path: 'tool-code.ts',
                         t,
-                        className: ocOr('ToolRow', 'codeBody', 'dshpc-sv-tool-block'),
+                        className: officialClass('ToolRow', 'codeBody') ?? '',
                         height: 'auto',
                         style: { height: 'auto' },
                     }))
-                    : null, (cardBody !== null || outputText !== null) && h('div', { className: ocOr('ToolRow', 'ioCard', 'dshpc-sv-io-card') }, cardBody !== null && h('div', { className: ocOr('ToolRow', 'ioSection', 'dshpc-sv-io-section') }, h('span', { className: ocOr('ToolRow', 'ioLabel', 'dshpc-sv-io-label') }, t('toolInputLabel')), h('span', { className: ocOr('ToolRow', 'ioText', 'dshpc-sv-io-text') }, cardBody)), cardBody !== null && outputText !== null
-                    && h('span', { className: ocOr('ToolRow', 'ioDivider', 'dshpc-sv-io-divider'), 'aria-hidden': true }), outputText !== null && h('div', { className: ocOr('ToolRow', 'ioSection', 'dshpc-sv-io-section') }, h('span', { className: ocOr('ToolRow', 'ioLabel', 'dshpc-sv-io-label') }, t('toolOutputLabel')), h('span', { className: ocOr('ToolRow', 'ioText', 'dshpc-sv-io-text'), 'data-error': rowState === 'error' || undefined }, outputText))))) : undefined;
+                    : null, (cardBody !== null || outputText !== null) && h('div', { className: officialClass('ToolRow', 'ioCard') ?? '' }, cardBody !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolInputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '' }, cardBody)), cardBody !== null && outputText !== null
+                    && h('span', { className: officialClass('ToolRow', 'ioDivider') ?? '', 'aria-hidden': true }), outputText !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolOutputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '', 'data-error': rowState === 'error' || undefined }, outputText))))) : undefined;
     return h('div', {
-        className: ocOr('ToolRow', 'root', 'dshpc-sv-tool'),
+        className: officialClass('ToolRow', 'root') ?? '',
         'data-variant': variant,
         'data-tool': name,
         'data-state': rowState,
     }, statusText !== null
-        ? h('span', { className: ocOr('ToolRow', 'visuallyHidden', 'dshpc-sv-visuallyhidden') }, statusText)
+        ? h('span', { className: officialClass('ToolRow', 'visuallyHidden') ?? '' }, statusText)
         : null, h(DisclosureRow, {
-        rowClassName: ocOr('ToolRow', 'row', 'dshpc-sv-tool-row'),
-        leadingClassName: ocOr('ToolRow', 'leading', 'dshpc-sv-tool-leading'),
-        titleClassName: ocOr('ToolRow', 'title', 'dshpc-sv-tool-title'),
-        chevronClassName: ocOr('ToolRow', 'chevron', 'dshpc-sv-tool-chevron'),
+        rowClassName: officialClass('ToolRow', 'row') ?? '',
+        leadingClassName: officialClass('ToolRow', 'leading') ?? '',
+        titleClassName: officialClass('ToolRow', 'title') ?? '',
+        chevronClassName: officialClass('ToolRow', 'chevron') ?? '',
         icon: VARIANT_ICONS[variant],
         title: t(titleKey),
         running,

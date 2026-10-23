@@ -6,7 +6,7 @@
 // 这里钉纯函数与数据链（open-session-view 只 import 类型，编译后零依赖）。
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { parseOfficialCss, ocOr, officialModuleCount } from '../dist/session/official-classes.js'
+import { parseOfficialCss, officialClass, officialModuleCount } from '../dist/session/official-classes.js'
 import { openSessionView, DEFAULT_RETAIN_SOURCE } from '../dist/session/open-session-view.js'
 import { buildProcessGroups, toolActivity, processTitle } from '../dist/session/mirror/process-groups.js'
 import {
@@ -41,8 +41,9 @@ test('parseOfficialCss：解析不出哈希前缀时返回空表', () => {
   assert.equal(parseOfficialCss('').size, 0)
 })
 
-test('ocOr：官方类缺失回退自绘类；无 document 时模块数为 0', () => {
-  assert.equal(ocOr('ChatView', 'frame', 'dshpc-sv-body'), 'dshpc-sv-body')
+test('officialClass：官方模块缺席时返回 null（调用方退化空类，不白屏）；无 document 时模块数为 0', () => {
+  // 2026-10-23 起不再自绘兜底（本包只跑 DSH 宿主、官方样式必在场）：取不到 ⇒ null ⇒ `?? ''`。
+  assert.equal(officialClass('ChatView', 'frame'), null)
   assert.equal(officialModuleCount(), 0)
 })
 
