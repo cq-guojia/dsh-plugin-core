@@ -34,16 +34,41 @@ export function ChatNodeListMirror(props) {
         }
     };
     if (entries !== undefined && groups !== undefined) {
+        // 官方 deferCollapse：最新已完成轮次保持 flat——直接平铺组内条目、不画「已完成分析」过程分组头，
+        // 直到下一条输入进来（官方 ChatGroupSeat：deferCollapse = bottom && 策略，bottom = 流末尾那个组）。
+        // 锚点取「或」：① order 末尾节点所属轮（= 最新轮）；② entries 里最后一个过程分组（= 流最末的组）。
+        // ② 必须要有：command 节点无 turn location ⇒ turnOfNode=undefined ⇒ 该组 data.turn 落到 -1
+        // （process-groups.ts:176 `turn ?? -1`），且常排在 turn-tail 之后；只按轮号判断会整组漏掉、
+        // 依旧收折成「已完成分析」（真机 2026-10-23）。
+        let lastGroupKey;
+        for (const entry of entries) {
+            if (entry.kind === 'group')
+                lastGroupKey = entry.key;
+        }
+        const lastTurn = (() => {
+            for (let i = order.length - 1; i >= 0; i--) {
+                const key = order[i];
+                if (key === undefined)
+                    continue;
+                const node = readSafe(key);
+                const loc = node?.location;
+                if ((loc?.kind === 'turn' || loc?.kind === 'step') && typeof loc.turn?.turn === 'number') {
+                    return loc.turn.turn;
+                }
+            }
+            return undefined;
+        })();
         // 官方 ChatNodeList 的 entries 路径：group 条目 → ChatGroupSeat（二级收折）。
         for (const entry of entries) {
             if (entry.kind === 'group') {
                 const group = groups.get(entry.key);
                 if (group === undefined)
                     continue;
+                const latest = group.data.turn === lastTurn || group.key === lastGroupKey;
                 rows.push(h(ChatGroupSeatMirror, {
                     key: entry.key,
                     group,
-                    grouped: turnStatus(turns, group.data.turn) !== 'open',
+                    grouped: turnStatus(turns, group.data.turn) !== 'open' && !latest,
                     store,
                     openState,
                     onSetOpen,

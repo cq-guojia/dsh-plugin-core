@@ -6591,15 +6591,34 @@ function ChatNodeListMirror(props) {
     }
   };
   if (entries2 !== void 0 && groups !== void 0) {
+    let lastGroupKey;
+    for (const entry of entries2) {
+      if (entry.kind === "group")
+        lastGroupKey = entry.key;
+    }
+    const lastTurn = (() => {
+      for (let i2 = order.length - 1; i2 >= 0; i2--) {
+        const key = order[i2];
+        if (key === void 0)
+          continue;
+        const node = readSafe(key);
+        const loc = node?.location;
+        if ((loc?.kind === "turn" || loc?.kind === "step") && typeof loc.turn?.turn === "number") {
+          return loc.turn.turn;
+        }
+      }
+      return void 0;
+    })();
     for (const entry of entries2) {
       if (entry.kind === "group") {
         const group = groups.get(entry.key);
         if (group === void 0)
           continue;
+        const latest = group.data.turn === lastTurn || group.key === lastGroupKey;
         rows.push((0, import_react31.createElement)(ChatGroupSeatMirror, {
           key: entry.key,
           group,
-          grouped: turnStatus(turns, group.data.turn) !== "open",
+          grouped: turnStatus(turns, group.data.turn) !== "open" && !latest,
           store,
           openState,
           onSetOpen,
@@ -60470,7 +60489,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1023-2045-b7i2"]
+            [t3("buildStamp"), "1023-2138-qwcm"]
           ].map(
             ([label, value]) => (0, import_react65.createElement)(
               "tr",
