@@ -29,10 +29,19 @@ export interface FilePreviewHandle {
 }
 
 export interface OpenFilePreviewOptions {
-  workspaceFiles: WorkspaceFilesFace
-  sessionId: string
-  /** 文件或文件夹路径。 */
-  path: string
+  /**
+   * 工作区文件服务（文件预览要用）。传了 `content` 时（自定义审阅内容，例如变更 diff），
+   * 这一组文件定位参数都可省略——核心只负责把 `content` 渲染进同一个右侧 dock，不解析路径。
+   */
+  workspaceFiles?: WorkspaceFilesFace
+  sessionId?: string
+  /** 文件或文件夹路径。与 `content` 二选一：传 `content` 时本字段可省略。 */
+  path?: string
+  /**
+   * 自定义审阅内容：传入则核心渲染它进右侧 dock，**替代**内置 FileBrowser（解耦用途——
+   * 例如把「某次改动的 diff」当内容塞进来，核心本身不认识 changes）。与 `path` 二选一。
+   */
+  content?: () => ReactNode
   officeToPdf?: OfficeToPdfFace | null
   /** 工作区根显示名（面包屑首段）。 */
   rootName?: string
@@ -94,20 +103,20 @@ function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => vo
   // HostWorkspaceItem 结构兼容 WorkspaceAnchorItem（多一个 workspaceId 无害）⇒ 统一注解收敛联合类型。
   const anchors: readonly WorkspaceAnchorItem[] = options.workspaceAnchors ?? hostWorkspaces
   // 入口工作区：与 FileBrowser 的面包屑根名同源（两边口径必须一致，见上方注释）。
-  const entryTitle = workspaceAnchorForPath(options.path, anchors)?.title ?? options.rootName ?? ''
+  const entryTitle = workspaceAnchorForPath(options.path ?? '', anchors)?.title ?? options.rootName ?? ''
   // null = 还在入口态（path 用调用方给的那个文件）；非 null = 用户点过工作区，从它的根开始列。
   const [picked, setPicked] = useState<string | null>(null)
   const wsTitle = picked ?? entryTitle
-  const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId
+  const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId!
   const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title)
   return h(FileBrowser, {
     // key 带工作区+会话 ⇒ 切换即重挂载（FileBrowser 的 dir/listing/学根全属于旧工作区）。
     key: `${wsTitle}:${sessionId}`,
-    workspaceFiles: options.workspaceFiles,
+    workspaceFiles: options.workspaceFiles!,
     officeToPdf: options.officeToPdf ?? null,
     sessionId,
     // 点过工作区就从它的根列（原 path 属于旧工作区，带着只会 404 / 跳回入口文件）。
-    path: picked === null ? options.path : '',
+    path: picked === null ? options.path! : '',
     rootName: wsTitle === '' ? options.rootName : wsTitle,
     workspaces: switchable.length > 0 ? switchable : options.workspaces,
     onSelectWorkspace: (name: string) => {
@@ -218,13 +227,15 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
             minWidth: options.minWidth ?? 320,
             maxWidth: options.maxWidth,
           },
-          internalSwitch
-            ? h(PreviewBody, { options, onClose: close })
-            : h(FileBrowser, {
-                workspaceFiles: options.workspaceFiles,
+          options.content !== undefined
+            ? options.content()
+            : internalSwitch
+              ? h(PreviewBody, { options, onClose: close })
+              : h(FileBrowser, {
+                workspaceFiles: options.workspaceFiles!,
                 officeToPdf: options.officeToPdf ?? null,
-                sessionId: options.sessionId,
-                path: options.path,
+                sessionId: options.sessionId!,
+                path: options.path!,
                 rootName: options.rootName,
                 workspaces: options.workspaces,
                 workspaceAnchors: options.workspaceAnchors,
@@ -240,7 +251,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     ),
   )
   activePreviewClose = close
-  return { close, path: options.path }
+  return { close, path: options.path ?? '' }
 }
 
 // ── 方法 B：弹窗选择文件 ──

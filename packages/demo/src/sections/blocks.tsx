@@ -9,7 +9,7 @@ import {
 } from '../../../../dist/explorer/index.js'
 import { workspaceList } from '../../../../dist/ui/index.js'
 import { Chip } from '../../../../dist/ui/index.js'
-import { SessionViewModal } from '../../../../dist/session/index.js'
+import { ChangedFileDiff, SessionViewModal, type ChangedFileReviewLocator } from '../../../../dist/session/index.js'
 import { formatDateTime } from '../../../../dist/utils/index.js'
 import { Button } from '../../../../dist/ui/index.js'
 import { openRealSessionView, realForkSession, realOpenHostSession, realSessions } from '../real-sessions.js'
@@ -207,18 +207,34 @@ function RealSessionListDemo(): ReturnType<typeof h> {
 
   // 文件链接在**页面右侧**开核心文件预览 dock（不在弹窗里）。弹窗不用知道它的宽度：
   // dock 自己把占宽发布成 CSS 变量，遮罩让位、弹窗在左边剩余区域居中（用户 2026-10-22）。
-  const openLinkedFile = (path: string): void => {
+  const openLinkedFile = (path: string, sessionId?: string): void => {
+    // debug（临时）：确认预览收到的真实路径——判断是否带 Temp / 是否相对路径
+    console.log('[preview] openLinkedFile path=', JSON.stringify(path), 'sessionId=', sessionId, 'anchorSessionId=', anchor?.sessionId)
     const mount = pageRow.element
     if (mount === null || workspaceFiles === null || anchor === null) return
     openFilePreview({
       mount,
       workspaceFiles,
       officeToPdf: files.officeToPdf,
-      // 文件 RPC 按会话作用域取工作区：用当前工作区锚点的会话（与 explorer 页同一口径）。
-      sessionId: anchor.sessionId,
+      // 文件 RPC 按会话作用域取工作区：优先用调用方透传的「文件所属会话」，
+      // 兜底才用当前工作区锚点会话（explorer 页那种没上下文的入口）。
+      sessionId: sessionId ?? anchor.sessionId,
       path,
       rootName: anchor.title,
       workspaces: wsItems.map((w) => w.title),
+    })
+  }
+  // 变更文件点击：开「文件预览」同一个右侧 dock，但内容是那次改动的 diff（content 槽——核心不认识 changes）。
+  // 不传 t：核心 defaultT 认识 changes/diff 这组 key，demo 字典只认自己的 key。
+  const openReviewFile = (loc: ChangedFileReviewLocator): void => {
+    const mount = pageRow.element
+    if (mount === null) return
+    openFilePreview({
+      mount,
+      workspaceFiles: workspaceFiles ?? undefined,
+      sessionId: loc.sessionId,
+      path: '',
+      content: () => h(ChangedFileDiff, { sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display }),
     })
   }
   if (state.status !== 'ready') {
@@ -271,7 +287,8 @@ function RealSessionListDemo(): ReturnType<typeof h> {
           openHostSession: (id) => { realOpenHostSession(id) },
           // 文件链接（工具卡路径 / md 行内引用 / 交付卡）→ **页面右侧**开核心文件预览 dock，
           // 不在弹窗里面分栏；遮罩让位由核心自己处理，这里不量宽度、不传参数。
-          onOpenFile: canOpenFile ? openLinkedFile : undefined,
+          onOpenFile: canOpenFile ? (path, sid) => openLinkedFile(path, sid) : undefined,
+          onOpenReview: openReviewFile,
         })
       : null,
   )

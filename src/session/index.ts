@@ -21,6 +21,8 @@
 //     })
 //   }
 export { SessionViewModal, type SessionViewModalProps } from './SessionViewModal.js'
+export { ChangedFileDiff } from './mirror/ChangedFileDiff.js'
+export type { ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js'
 export {
   DEFAULT_RETAIN_SOURCE,
   openSessionView,

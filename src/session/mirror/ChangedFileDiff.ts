@@ -22,7 +22,7 @@ import {
   type DiffHunk,
   type DiffRow,
 } from '../changes.js'
-import type { Translate } from '../../utils/i18n.js'
+import { t as defaultT, type Translate } from '../../utils/i18n.js'
 
 /** 会话级缓存：同一 (sessionId, seq, index) 只拉一次（官方 ChangesDiffStore 同语义）。 */
 const cache = new Map<string, ChangesDiff | null>()
@@ -69,9 +69,10 @@ export function ChangedFileDiff(props: {
   index: number
   /** 官方 display（工作区相对路径，作卡头）。 */
   display: string
-  t: Translate
+  /** 文案翻译；缺省用核心字典（demo 自带字典不认 changes/diff 这些 key）。 */
+  t?: Translate
 }): ReactNode {
-  const { sessionId, seq, index, display, t } = props
+  const { sessionId, seq, index, display, t = defaultT } = props
   const url = changesDiffUrl(sessionId, seq, index)
   const [state, setState] = useState<ChangesDiff | null | undefined | 'error'>(undefined)
   const [attempt, setAttempt] = useState(0)

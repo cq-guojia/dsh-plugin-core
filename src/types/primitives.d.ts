@@ -145,8 +145,8 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   export const IconFolderCloseRegular: ComponentType<{ size?: number; className?: string }>
   export const IconSparkleRegular: ComponentType<{ size?: number; className?: string }>
   export const IconChevronUpOutlineRegular: ComponentType<{ size?: number; className?: string }>
-  /** 官方文件类型图标（按路径分类着色 SVG；交付文件卡同款）。 */
-  export const FileTypeIcon: ComponentType<{ path: string; size?: number; className?: string }>
+  /** 官方文件类型图标（按路径分类着色 SVG；多文件变更头用 kind:'code' 出「文件带尖括号」代码图标）。 */
+  export const FileTypeIcon: ComponentType<{ path?: string; kind?: string; size?: number; className?: string }>
   /** 官方交付图标（present 工具行 / 交付文件行）。 */
   export const IconDeliverDocRegular: ComponentType<{ size?: number; className?: string }>
   /** 官方「新建对话 / 打开会话」图标（会话记录列入口用；0.2.0-rc.2 核实存在于 icons/index.d.ts）。 */

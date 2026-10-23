@@ -7,9 +7,11 @@
 //    ├─ ul.list > li > HoverCard > button.row（仅多文件）：路径（ellipsis）+ 每文件计数；
 //    │    hover 500ms 出该文件的 diff 预览卡，点行 = 打开该文件
 //    └─ button.toggle（files > COLLAPSED_ROWS=4 才出）：「全部 N 个文件 / 收起」+  Chevron
-//  官方差异（有意）：① 官方点击 = openReview 开右侧 review 标签页，本包没有这个槽 ⇒ 走
-//  调用方给的 onOpen（文件预览）；② hover 预览的 diff 数据走宿主只读路由 `api/changes.diff`
-//  （官方走注入的 useChangesDiff 服务，本包拿同一个路由自己拉，见 ChangedFileDiff.ts）。
+//  官方差异（有意）：① 图标单文件 = FileTypeIcon(path)，多文件 = FileTypeIcon(kind:'code')
+//  （渲染成「文件带尖括号」代码图标）；② 官方点击 = openReview 开右侧 review 标签页（宿主
+//  ctx.sidebarRight.openResource），本包无该槽 ⇒ 点击改走调用方给的 onOpen（文件预览核心入口，
+//  见 SessionViewModal 的 onOpenFile → openFilePreview），不在本卡里自绘弹窗；③ hover 预览的 diff
+//  数据走宿主只读路由 `api/changes.diff`（官方走注入的 useChangesDiff 服务，本包拿同一路由自己拉）。
 //  二进制 / 超限文件不显示计数，只出状态词（官方同）。
 import { createElement as h, Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
 import { HoverCard } from '../../ui/official.js'
@@ -46,14 +48,23 @@ function countsOf(file: { added: number; deleted: number; binary?: true; oversiz
   return h(Counts, { added: file.added, deleted: file.deleted })
 }
 
+/** 点变更文件出去的出口载荷：带「改动身份」，调用方据此开审阅（本包走文件预览 dock 的 content 槽）。 */
+export interface ChangedFileReviewLocator {
+  readonly sessionId: string
+  readonly seq: number
+  readonly index: number
+  /** 工作区相对路径（作审阅头）。 */
+  readonly display: string
+}
+
 export function ChangedFilesCard(props: {
   sessionId: string
   seq: number
-  /** 单文件卡的打开出口（调用方的文件预览口子）。 */
-  onOpen?: (path: string) => void
+  /** 点击出口：官方 openReview(index) 的等价物，带改动身份。无则整张卡不可点。 */
+  onOpenReview?: (locator: ChangedFileReviewLocator) => void
   t: Translate
 }): ReturnType<typeof h> | null {
-  const { sessionId, seq, onOpen, t } = props
+  const { sessionId, seq, onOpenReview, t } = props
   const url = changesSummaryUrl(sessionId, seq)
   const [summary, setSummary] = useState<ChangesSummary | null | undefined>(undefined)
   const [expanded, setExpanded] = useState(false)
@@ -80,12 +91,10 @@ export function ChangedFilesCard(props: {
   }, [url])
   if (summary === undefined || summary === null || summary.total === 0 || summary.files.length === 0) return null
   const single = summary.total === 1 ? summary.files[0] : undefined
-  // 图标：单文件取该文件路径；多文件取第一个（官方此处用 kind:'code'，但宿主安装的
-  // primitives 版本 FileTypeIconProps 只有 path 形态，别为一个小图标引版本风险）。
-  const [firstFile] = summary.files
-  const icon = firstFile === undefined
-    ? null
-    : h(FileTypeIcon, { path: single?.path ?? firstFile.path, size: 20 })
+  // 图标：单文件 = FileTypeIcon(path)；多文件 = FileTypeIcon(kind:'code')（官方渲染「文件带尖括号」）。
+  const icon = single !== undefined
+    ? h(FileTypeIcon, { path: single.path, size: 20 })
+    : h(FileTypeIcon, { kind: 'code', size: 20 })
   const title = single === undefined
     ? t('changesMulti', { count: String(summary.total) })
     : t('changesSingle', { name: baseNameOf(single.path) })
@@ -103,16 +112,22 @@ export function ChangedFilesCard(props: {
       ),
     ),
   )
-  // 单文件 + 有打开出口 = 可点头（官方单文件点头也开 review）；多文件头静态（官方开 review 页，
-  // 本包无此槽 ⇒ 不给假入口）。都没有 ⇒ 整行不可点。
-  const headerNode = single !== undefined && onOpen !== undefined
-    ? h('button', {
+  // 官方 header 永远是 button → openReview(0)；本包无 review 槽 ⇒ 走 onOpenReview（带改动身份）。
+  // 多文件头代表整组变更，官方 openReview(0) 开第一份 ⇒ 这里传 index 0。无 onOpenReview 则不可点。
+  const headerLocator: ChangedFileReviewLocator = {
+    sessionId,
+    seq,
+    index: 0,
+    display: single?.display ?? summary.files[0]!.display,
+  }
+  const headerNode = onOpenReview === undefined
+    ? h('div', { className: 'dshpc-sv-changes-header' }, headerBody)
+    : h('button', {
         type: 'button',
         className: 'dshpc-sv-changes-header',
-        title: single.path,
-        onClick: () => { onOpen(single.path) },
+        title: headerLocator.display,
+        onClick: () => { onOpenReview(headerLocator) },
       }, headerBody)
-    : h('div', { className: 'dshpc-sv-changes-header' }, headerBody)
 
   /** 官方 hover 预览卡（variant preview + dwell 500 + 宽度跟整卡）；content 挂上才取数。 */
   const previewOf = (index: number, display: string): ReactNode =>
@@ -123,13 +138,15 @@ export function ChangedFilesCard(props: {
       h('span', { className: 'dshpc-sv-changes-path' }, file.display),
       h('span', { className: 'dshpc-sv-changes-counts' }, countsOf(file, t)),
     )
-    const row = onOpen === undefined
+    // 官方行点击 = openReview(index)：带改动身份出去，调用方开审阅。无 onOpenReview 则不可点。
+    const locator: ChangedFileReviewLocator = { sessionId, seq, index, display: file.display }
+    const row = onOpenReview === undefined
       ? h('div', { className: 'dshpc-sv-changes-row', title: file.path }, body)
       : h('button', {
           type: 'button',
           className: 'dshpc-sv-changes-row',
           title: file.path,
-          onClick: () => { onOpen(file.path) },
+          onClick: () => { onOpenReview(locator) },
         }, body)
     return h(HoverCard, {
       key: file.display,
@@ -141,7 +158,12 @@ export function ChangedFilesCard(props: {
     })
   }
   const list = single === undefined
-    ? h('ul', { className: 'dshpc-sv-changes-list' }, rows.map((file, index) => h('li', { key: file.display }, rowOf(file, index))))
+    ? h('ul', { className: 'dshpc-sv-changes-list' },
+        rows.map((file) => {
+          // 折叠视图下 rows 是子集，必须用 summary.files 的真实下标（changes.diff 的 index 语义）。
+          const index = summary.files.indexOf(file)
+          return h('li', { key: file.display }, rowOf(file, index))
+        }))
     : null
   const toggle = foldable
     ? h('button', {

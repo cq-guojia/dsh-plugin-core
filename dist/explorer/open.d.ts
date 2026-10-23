@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { type Translate } from '../utils/i18n.js';
 import type { OfficeToPdfFace, PickFilter, RootCache, WorkspaceAnchorItem, WorkspaceFilesFace } from './types.js';
 export interface FilePreviewHandle {
@@ -7,10 +8,19 @@ export interface FilePreviewHandle {
     readonly path: string;
 }
 export interface OpenFilePreviewOptions {
-    workspaceFiles: WorkspaceFilesFace;
-    sessionId: string;
-    /** 文件或文件夹路径。 */
-    path: string;
+    /**
+     * 工作区文件服务（文件预览要用）。传了 `content` 时（自定义审阅内容，例如变更 diff），
+     * 这一组文件定位参数都可省略——核心只负责把 `content` 渲染进同一个右侧 dock，不解析路径。
+     */
+    workspaceFiles?: WorkspaceFilesFace;
+    sessionId?: string;
+    /** 文件或文件夹路径。与 `content` 二选一：传 `content` 时本字段可省略。 */
+    path?: string;
+    /**
+     * 自定义审阅内容：传入则核心渲染它进右侧 dock，**替代**内置 FileBrowser（解耦用途——
+     * 例如把「某次改动的 diff」当内容塞进来，核心本身不认识 changes）。与 `path` 二选一。
+     */
+    content?: () => ReactNode;
     officeToPdf?: OfficeToPdfFace | null;
     /** 工作区根显示名（面包屑首段）。 */
     rootName?: string;

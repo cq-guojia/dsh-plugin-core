@@ -38,7 +38,7 @@ function PreviewBody(props) {
     // HostWorkspaceItem 结构兼容 WorkspaceAnchorItem（多一个 workspaceId 无害）⇒ 统一注解收敛联合类型。
     const anchors = options.workspaceAnchors ?? hostWorkspaces;
     // 入口工作区：与 FileBrowser 的面包屑根名同源（两边口径必须一致，见上方注释）。
-    const entryTitle = workspaceAnchorForPath(options.path, anchors)?.title ?? options.rootName ?? '';
+    const entryTitle = workspaceAnchorForPath(options.path ?? '', anchors)?.title ?? options.rootName ?? '';
     // null = 还在入口态（path 用调用方给的那个文件）；非 null = 用户点过工作区，从它的根开始列。
     const [picked, setPicked] = useState(null);
     const wsTitle = picked ?? entryTitle;
@@ -150,25 +150,27 @@ export function openFilePreview(options) {
         width: options.width ?? 460,
         minWidth: options.minWidth ?? 320,
         maxWidth: options.maxWidth,
-    }, internalSwitch
-        ? h(PreviewBody, { options, onClose: close })
-        : h(FileBrowser, {
-            workspaceFiles: options.workspaceFiles,
-            officeToPdf: options.officeToPdf ?? null,
-            sessionId: options.sessionId,
-            path: options.path,
-            rootName: options.rootName,
-            workspaces: options.workspaces,
-            workspaceAnchors: options.workspaceAnchors,
-            onSelectWorkspace: options.onSelectWorkspace,
-            rootCache: options.rootCache,
-            translate: options.translate,
-            // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
-            onClose: close,
-            style: { height: '100%', minHeight: 0 },
-        })))));
+    }, options.content !== undefined
+        ? options.content()
+        : internalSwitch
+            ? h(PreviewBody, { options, onClose: close })
+            : h(FileBrowser, {
+                workspaceFiles: options.workspaceFiles,
+                officeToPdf: options.officeToPdf ?? null,
+                sessionId: options.sessionId,
+                path: options.path,
+                rootName: options.rootName,
+                workspaces: options.workspaces,
+                workspaceAnchors: options.workspaceAnchors,
+                onSelectWorkspace: options.onSelectWorkspace,
+                rootCache: options.rootCache,
+                translate: options.translate,
+                // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+                onClose: close,
+                style: { height: '100%', minHeight: 0 },
+            })))));
     activePreviewClose = close;
-    return { close, path: options.path };
+    return { close, path: options.path ?? '' };
 }
 /** 弹窗宽度（源实现 480，用户 2026-09-29 微调定值）。 */
 const PICKER_WIDTH = 480;

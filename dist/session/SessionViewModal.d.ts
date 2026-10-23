@@ -1,6 +1,7 @@
 import { createElement as h } from 'react';
 import type { Translate } from '../utils/i18n.js';
 import type { SessionViewTarget } from './open-session-view.js';
+import { type ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js';
 export interface SessionViewModalProps {
     t?: Translate;
     /** 弹窗标题：**会话自己的标题**（宿主 sessions.list 的 displayTitle）；缺省用「会话预览」。 */
@@ -24,8 +25,13 @@ export interface SessionViewModalProps {
      * 缺省 = 不渲染暂存输入框（插件未接线续聊能力时功能降级，不影响预览）。
      */
     onContinue?: (message: string) => Promise<void>;
-    /** 文件打开出口（工具卡 fileLink / md 行内 mention / 交付卡共用）；缺省 = 链接降级纯文本。 */
-    onOpenFile?: (path: string) => void;
+    /** 文件打开出口（工具卡 fileLink / md 行内 mention / 交付卡共用）；缺省 = 链接降级纯文本。
+     *  第二个参数带「文件所属的会话 id」（本视图自己在 props.sessionId 上，自动透传），
+     *  消费方据此在正确的工作区会话作用域里定位文件，避免用错会话导致 not-found。 */
+    onOpenFile?: (path: string, sessionId: string) => void;
+    /** 变更文件点击出口（官方 openReview 等价）：带「改动身份」(sessionId+seq+index)，
+     *  消费方据此开审阅（本包走 openFilePreview 的 content 槽）。缺省 = 变更卡整张不可点。 */
+    onOpenReview?: (locator: ChangedFileReviewLocator) => void;
 }
 /**
  * 面板内只读会话弹窗：只读、不可在框内续聊（底层 keyed 数组是只读快照，官方无写面）。

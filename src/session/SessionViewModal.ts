@@ -34,7 +34,7 @@ import { TurnProcessNodeViewMirror } from './mirror/TurnProcessNodeView.js'
 import { TurnTailNodeViewMirror, type TurnTailDataFace } from './mirror/TurnTailNodeView.js'
 import { TurnTriggerNodeViewMirror } from './mirror/TurnTriggerNodeView.js'
 import { DeliverablesGridMirror, PresentRowMirror, type DeliveredFileFace } from './mirror/Deliverables.js'
-import { ChangedFilesCard } from './mirror/ChangedFilesCard.js'
+import { ChangedFilesCard, type ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js'
 import { turnDeliverablesChangesSeq, turnDeliverablesValue } from './changes.js'
 import { buildProcessGroups } from './mirror/process-groups.js'
 import { officialClass, officialModuleCount, ocOr } from './official-classes.js'
@@ -203,6 +203,8 @@ function renderKeyedNode(
   changesSeq?: number,
   /** 会话 id（ChangedFiles 卡拉宿主 changes.summary 路由要用）。 */
   sessionId?: string,
+  /** 变更文件点击出口（官方 openReview 等价）：带改动身份；undefined = 变更卡不可点。 */
+  onOpenReview?: (locator: ChangedFileReviewLocator) => void,
 ): ReturnType<typeof h> | null {
   switch (node.kind) {
     case 'turn-trigger':
@@ -227,7 +229,7 @@ function renderKeyedNode(
       // 官方 ChangedFiles 卡（ui-deliverables）：`workspace/changes` 公告 + 宿主
       // api/changes.summary ⇒ 「已编辑 x.md / +N -M」。数据不在快照里，单独拉（见 changes.ts）。
       const changesCard = atLastTail && changesSeq !== undefined && sessionId !== undefined
-        ? h(ChangedFilesCard, { sessionId, seq: changesSeq, onOpen: fileOpen?.open, t })
+        ? h(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t })
         : null
       const tailSlot = changesCard === null && !showGrid
         ? null
@@ -501,6 +503,21 @@ function turnDeliverablesPresented(face: unknown): ReadonlyArray<{ path?: unknow
   return Array.isArray(presented) ? (presented as ReadonlyArray<{ path?: unknown; description?: unknown }>) : []
 }
 
+/** 与 turnDeliverablesPresented 对称：读 turn 级 deliverables.produced（工具产出的文件）。
+ * 官方 chatFileMentions = produced + presented；我们原先只收 presented，导致「只有 produced
+ * 没有 present/get 参数」的会话里行内文件链接词表为空 —— 这里补齐（字段容错 path/name）。 */
+function turnDeliverablesProducedPaths(face: unknown): string[] {
+  const produced = (turnDeliverablesValue(face, 'deliverables') as { produced?: unknown } | undefined)?.produced
+  if (!Array.isArray(produced)) return []
+  const out: string[] = []
+  for (const item of produced) {
+    const p = typeof item === 'string' ? item
+      : (item !== null && typeof item === 'object' ? ((item as Record<string, unknown>).path ?? (item as Record<string, unknown>).name) : undefined)
+    if (typeof p === 'string' && p.trim() !== '') out.push(p)
+  }
+  return out
+}
+
 /**
  * 从 keyed 节点流收集真实文件词表（禁模拟：全部来自工具调用参数 / meta.diffs）：
  * tool-call 节点 argsRaw 的 file_path/path 字段（read/grep/glob/write/edit…）与
@@ -519,6 +536,8 @@ function collectFilePaths(order: readonly string[], store: ChatNodeStoreFace | u
         const path = typeof file?.path === 'string' ? file.path : undefined
         if (path !== undefined && path.trim() !== '') out.add(normalizeFilePath(path))
       }
+      // 工具产出的文件（deliverables.produced）也进词表：官方 chatFileMentions = produced + presented。
+      for (const p of turnDeliverablesProducedPaths(face)) out.add(normalizeFilePath(p))
     }
   }
   for (const key of order) {
@@ -636,8 +655,13 @@ export interface SessionViewModalProps {
    * 缺省 = 不渲染暂存输入框（插件未接线续聊能力时功能降级，不影响预览）。
    */
   onContinue?: (message: string) => Promise<void>
-  /** 文件打开出口（工具卡 fileLink / md 行内 mention / 交付卡共用）；缺省 = 链接降级纯文本。 */
-  onOpenFile?: (path: string) => void
+  /** 文件打开出口（工具卡 fileLink / md 行内 mention / 交付卡共用）；缺省 = 链接降级纯文本。
+   *  第二个参数带「文件所属的会话 id」（本视图自己在 props.sessionId 上，自动透传），
+   *  消费方据此在正确的工作区会话作用域里定位文件，避免用错会话导致 not-found。 */
+  onOpenFile?: (path: string, sessionId: string) => void
+  /** 变更文件点击出口（官方 openReview 等价）：带「改动身份」(sessionId+seq+index)，
+   *  消费方据此开审阅（本包走 openFilePreview 的 content 槽）。缺省 = 变更卡整张不可点。 */
+  onOpenReview?: (locator: ChangedFileReviewLocator) => void
 }
 
 /**
@@ -732,7 +756,8 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   }, [draft, sending, onContinue])
 
   // 文件打开上下文：onOpenFile 就位即启用（工具卡 fileLink + md 行内 mention 共用单一入口）。
-  const openFile = useCallback((path: string): void => { onOpenFile?.(path) }, [onOpenFile])
+  // 透传本视图的 sessionId，使消费方在「文件所属会话」的正确作用域里打开，而非默认/全局锚点。
+  const openFile = useCallback((path: string): void => { onOpenFile?.(path, sessionId) }, [onOpenFile, sessionId])
 
   const order = chat?.order ?? EMPTY_ORDER
   const store = chat?.nodes
@@ -772,17 +797,73 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
     }
     return undefined
   }, [keyed, order, store])
-  // 最后一轮的 `workspace/changes` 公告 seq（官方 changesForClosing 同源）⇒ 挂 ChangedFiles 卡。
+  // 全 turn 扫描 `workspace/changes` 公告 seq（取最高 turn 的，官方 changesForClosing 同源）⇒ 挂 ChangedFiles 卡。
+  // 不再只看最后一轮 turn-tail：changes 事件往往写在"编辑那轮"，而 turn-tail 落在更后面的收尾轮，
+  // 只盯 lastTailTurn 会漏掉（真机「又没了」）。卡仍渲染在最后 turn-tail 位置（见 renderKeyedNode）。
   const lastTailChangesSeq = useMemo(() => {
-    if (lastTailTurn === undefined || turns === null || turns === undefined) return undefined
-    return turnDeliverablesChangesSeq((turns as ReadonlyMap<unknown, unknown>).get(lastTailTurn)) ?? undefined
-  }, [lastTailTurn, turns])
+    if (turns === null || turns === undefined) return undefined
+    const map = turns as ReadonlyMap<unknown, unknown>
+    let best: number | null = null
+    let bestTurn = -Infinity
+    for (const [key, face] of map) {
+      const seq = turnDeliverablesChangesSeq(face)
+      if (seq === null) continue
+      const t = typeof key === 'number' ? key : Number(key)
+      if (!Number.isFinite(t) || t <= bestTurn) continue
+      bestTurn = t
+      best = seq
+    }
+    return best ?? undefined
+  }, [turns])
+  // debug（临时）：诊断变化卡 / 交付卡 / 行内链接的数据链到底缺在哪一环
+  const diagChatRef = useRef<unknown>(undefined)
+  useEffect(() => {
+    if (diagChatRef.current === chat) return
+    diagChatRef.current = chat
+    const turnsMap = turns as ReadonlyMap<unknown, unknown> | undefined
+    const face = turnsMap === undefined ? undefined : (turnsMap.get(lastTailTurn as never) ?? turnsMap.get(String(lastTailTurn)))
+    const deliverables = face === undefined ? undefined : (turnDeliverablesValue(face, 'deliverables') as Record<string, unknown> | undefined)
+    const mentionPaths = fileOpen === undefined ? undefined : collectFilePaths(order, store, turns)
+    // 逐 turn 安全展开（不触碰 data.keys/get 内部：宿主 data 可能是带 get 方法的普通对象，
+    // 调 .keys() 会崩；这里只走 turnDeliverablesValue 读 deliverables，逐条 try/catch 兜底）。
+    const turnsDetail = turnsMap === undefined ? [] : [...turnsMap.entries()].map(([k, f]) => {
+      try {
+        const dv = f === undefined ? undefined : (turnDeliverablesValue(f, 'deliverables') as Record<string, unknown> | undefined)
+        const changes = dv === undefined ? undefined : (dv as { changes?: { seq?: unknown } }).changes
+        const produced = dv === undefined ? undefined : (dv as { produced?: unknown[] }).produced
+        const presented = dv === undefined ? undefined : (dv as { presented?: unknown[] }).presented
+        return {
+          turn: k,
+          deliverKeys: dv === undefined ? 'none' : (typeof dv === 'object' && !Array.isArray(dv) ? Object.keys(dv) : Array.isArray(dv) ? 'array' : 'non-object'),
+          changesSeq: changes && typeof changes === 'object' && 'seq' in changes ? (changes as { seq: number }).seq : undefined,
+          producedLen: Array.isArray(produced) ? produced.length : undefined,
+          presentedLen: Array.isArray(presented) ? presented.length : undefined,
+        }
+      } catch {
+        return { turn: k, error: true }
+      }
+    })
+    console.log('[preview] diag', {
+      hasChat: chat !== undefined,
+      orderLen: order.length,
+      turns: turnsMap === undefined ? 'undefined' : `Map(${turnsMap.size})`,
+      turnKeySample: turnsMap === undefined ? [] : [...turnsMap.keys()].slice(0, 6),
+      lastTailTurn,
+      lastTailChangesSeq,
+      deliverablesKeys: deliverables === undefined ? 'none' : Object.keys(deliverables),
+      deliverFiles: deliverFiles.length,
+      onOpenFile: onOpenFile !== undefined,
+      mentionCount: mentionPaths === undefined ? 'no-fileOpen' : mentionPaths.length,
+      mentionSample: mentionPaths === undefined ? [] : mentionPaths.slice(0, 6),
+    })
+    console.log('[preview] turnsDetail', turnsDetail)
+  }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store])
   const renderNode = useCallback<NodeRenderer>(
     (node, turnProcess, groupPart) => renderKeyedNode(
       node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn,
-      lastTailChangesSeq, sessionId,
+      lastTailChangesSeq, sessionId, props.onOpenReview,
     ),
-    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId],
+    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview],
   )
   // 官方 grouped('chat')：把 keyed 流切成「独立条目 + 过程分组」（二级收折）。
   const isTurnClosed = useCallback((turn: number): boolean =>

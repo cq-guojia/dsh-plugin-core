@@ -12,6 +12,7 @@
 import { createElement as h, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, languageForPath, useCodeHighlighter } from '../../ui/official.js';
 import { DIFF_MAX_RENDERED_LINES, changesDiffUrl, diffNoteKey, hunkHeader, hunkRows, parseChangesDiff, } from '../changes.js';
+import { t as defaultT } from '../../utils/i18n.js';
 /** 会话级缓存：同一 (sessionId, seq, index) 只拉一次（官方 ChangesDiffStore 同语义）。 */
 const cache = new Map();
 /** 官方 highlightedSide：一侧收集 → 整段高亮 → 按行号回表。 */
@@ -40,7 +41,7 @@ function DiffLine(props) {
 }
 /** 一个变更文件的 diff 体（状态机 + unified 行渲染）。 */
 export function ChangedFileDiff(props) {
-    const { sessionId, seq, index, display, t } = props;
+    const { sessionId, seq, index, display, t = defaultT } = props;
     const url = changesDiffUrl(sessionId, seq, index);
     const [state, setState] = useState(undefined);
     const [attempt, setAttempt] = useState(0);

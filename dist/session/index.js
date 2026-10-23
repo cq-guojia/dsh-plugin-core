@@ -21,5 +21,6 @@
 //     })
 //   }
 export { SessionViewModal } from './SessionViewModal.js';
+export { ChangedFileDiff } from './mirror/ChangedFileDiff.js';
 export { DEFAULT_RETAIN_SOURCE, openSessionView, } from './open-session-view.js';
 //# sourceMappingURL=index.js.map

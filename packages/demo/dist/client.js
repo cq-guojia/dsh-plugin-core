@@ -53014,7 +53014,7 @@ function DiffLine(props) {
   return (0, import_react46.createElement)("div", { className: `dshpc-sv-diff-line ${kindClass}`, "data-diff-line": row.kind }, (0, import_react46.createElement)("span", { className: "dshpc-sv-diff-number" }, row.old ?? ""), (0, import_react46.createElement)("span", { className: "dshpc-sv-diff-number" }, row.new ?? ""), (0, import_react46.createElement)("span", { className: "dshpc-sv-diff-sign" }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react46.createElement)(DiffText, { text: row.text, spans }));
 }
 function ChangedFileDiff(props) {
-  const { sessionId, seq, index: index3, display, t: t4 } = props;
+  const { sessionId, seq, index: index3, display, t: t4 = t } = props;
   const url = changesDiffUrl(sessionId, seq, index3);
   const [state, setState] = (0, import_react46.useState)(void 0);
   const [attempt, setAttempt] = (0, import_react46.useState)(0);
@@ -53117,7 +53117,7 @@ function countsOf(file, t4) {
   return (0, import_react47.createElement)(Counts, { added: file.added, deleted: file.deleted });
 }
 function ChangedFilesCard(props) {
-  const { sessionId, seq, onOpen, t: t4 } = props;
+  const { sessionId, seq, onOpenReview, t: t4 } = props;
   const url = changesSummaryUrl(sessionId, seq);
   const [summary, setSummary] = (0, import_react47.useState)(void 0);
   const [expanded, setExpanded] = (0, import_react47.useState)(false);
@@ -53147,8 +53147,7 @@ function ChangedFilesCard(props) {
   if (summary === void 0 || summary === null || summary.total === 0 || summary.files.length === 0)
     return null;
   const single = summary.total === 1 ? summary.files[0] : void 0;
-  const [firstFile] = summary.files;
-  const icon = firstFile === void 0 ? null : (0, import_react47.createElement)(official_exports.FileTypeIcon, { path: single?.path ?? firstFile.path, size: 20 });
+  const icon = single !== void 0 ? (0, import_react47.createElement)(official_exports.FileTypeIcon, { path: single.path, size: 20 }) : (0, import_react47.createElement)(official_exports.FileTypeIcon, { kind: "code", size: 20 });
   const title = single === void 0 ? t4("changesMulti", { count: String(summary.total) }) : t4("changesSingle", { name: baseNameOf(single.path) });
   const foldable2 = summary.files.length > COLLAPSED_ROWS;
   const rows = foldable2 && !expanded ? summary.files.slice(0, COLLAPSED_ROWS) : summary.files;
@@ -53159,23 +53158,30 @@ function ChangedFilesCard(props) {
     // 官方 previewHint：hover/focus 时替换计数显示（提示这张卡可以 hover 出 diff 预览）。
     (0, import_react47.createElement)("span", { className: "dshpc-sv-changes-previewhint" }, t4("deliverPreviewHint"))
   )));
-  const headerNode = single !== void 0 && onOpen !== void 0 ? (0, import_react47.createElement)("button", {
+  const headerLocator = {
+    sessionId,
+    seq,
+    index: 0,
+    display: single?.display ?? summary.files[0].display
+  };
+  const headerNode = onOpenReview === void 0 ? (0, import_react47.createElement)("div", { className: "dshpc-sv-changes-header" }, headerBody) : (0, import_react47.createElement)("button", {
     type: "button",
     className: "dshpc-sv-changes-header",
-    title: single.path,
+    title: headerLocator.display,
     onClick: () => {
-      onOpen(single.path);
+      onOpenReview(headerLocator);
     }
-  }, headerBody) : (0, import_react47.createElement)("div", { className: "dshpc-sv-changes-header" }, headerBody);
+  }, headerBody);
   const previewOf = (index3, display) => (0, import_react47.createElement)(ChangedFileDiff, { sessionId, seq, index: index3, display, t: t4 });
   const rowOf = (file, index3) => {
     const body = (0, import_react47.createElement)(import_react47.Fragment, null, (0, import_react47.createElement)("span", { className: "dshpc-sv-changes-path" }, file.display), (0, import_react47.createElement)("span", { className: "dshpc-sv-changes-counts" }, countsOf(file, t4)));
-    const row = onOpen === void 0 ? (0, import_react47.createElement)("div", { className: "dshpc-sv-changes-row", title: file.path }, body) : (0, import_react47.createElement)("button", {
+    const locator = { sessionId, seq, index: index3, display: file.display };
+    const row = onOpenReview === void 0 ? (0, import_react47.createElement)("div", { className: "dshpc-sv-changes-row", title: file.path }, body) : (0, import_react47.createElement)("button", {
       type: "button",
       className: "dshpc-sv-changes-row",
       title: file.path,
       onClick: () => {
-        onOpen(file.path);
+        onOpenReview(locator);
       }
     }, body);
     return (0, import_react47.createElement)(official_exports.HoverCard, {
@@ -53187,7 +53193,10 @@ function ChangedFilesCard(props) {
       content: previewOf(index3, file.display)
     });
   };
-  const list = single === void 0 ? (0, import_react47.createElement)("ul", { className: "dshpc-sv-changes-list" }, rows.map((file, index3) => (0, import_react47.createElement)("li", { key: file.display }, rowOf(file, index3)))) : null;
+  const list = single === void 0 ? (0, import_react47.createElement)("ul", { className: "dshpc-sv-changes-list" }, rows.map((file) => {
+    const index3 = summary.files.indexOf(file);
+    return (0, import_react47.createElement)("li", { key: file.display }, rowOf(file, index3));
+  })) : null;
   const toggle = foldable2 ? (0, import_react47.createElement)("button", {
     type: "button",
     className: "dshpc-sv-changes-toggle",
@@ -53325,7 +53334,7 @@ function presentFiles(root) {
     return [];
   }
 }
-function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, changesSeq, sessionId) {
+function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, changesSeq, sessionId, onOpenReview) {
   switch (node.kind) {
     case "turn-trigger":
       return (0, import_react48.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
@@ -53340,7 +53349,7 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const turn = data2?.turn ?? turnLocationOf(node)?.turn;
       const atLastTail = turn !== void 0 && lastTailTurn !== void 0 && turn === lastTailTurn;
       const showGrid = deliverFiles !== void 0 && deliverFiles.length > 0 && atLastTail;
-      const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react48.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpen: fileOpen?.open, t: t4 }) : null;
+      const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react48.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t: t4 }) : null;
       const tailSlot = changesCard === null && !showGrid ? null : (0, import_react48.createElement)(import_react48.Fragment, null, changesCard, showGrid ? (0, import_react48.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null);
       const tail = data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react48.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, t: t4 });
       return tail;
@@ -53543,6 +53552,18 @@ function turnDeliverablesPresented(face) {
   const presented = turnDeliverablesValue(face, "deliverables")?.presented;
   return Array.isArray(presented) ? presented : [];
 }
+function turnDeliverablesProducedPaths(face) {
+  const produced = turnDeliverablesValue(face, "deliverables")?.produced;
+  if (!Array.isArray(produced))
+    return [];
+  const out = [];
+  for (const item of produced) {
+    const p = typeof item === "string" ? item : item !== null && typeof item === "object" ? item.path ?? item.name : void 0;
+    if (typeof p === "string" && p.trim() !== "")
+      out.push(p);
+  }
+  return out;
+}
 function collectFilePaths(order, store, turns) {
   if (store === void 0)
     return [];
@@ -53556,6 +53577,8 @@ function collectFilePaths(order, store, turns) {
         if (path !== void 0 && path.trim() !== "")
           out.add(normalizeFilePath(path));
       }
+      for (const p of turnDeliverablesProducedPaths(face))
+        out.add(normalizeFilePath(p));
     }
   }
   for (const key of order) {
@@ -53736,8 +53759,8 @@ function SessionViewModal(props) {
     })();
   }, [draft, sending, onContinue]);
   const openFile = (0, import_react48.useCallback)((path) => {
-    onOpenFile?.(path);
-  }, [onOpenFile]);
+    onOpenFile?.(path, sessionId);
+  }, [onOpenFile, sessionId]);
   const order = chat?.order ?? EMPTY_ORDER;
   const store = chat?.nodes;
   const keyed = order.length > 0 && store !== void 0;
@@ -53782,11 +53805,65 @@ function SessionViewModal(props) {
     return void 0;
   }, [keyed, order, store]);
   const lastTailChangesSeq = (0, import_react48.useMemo)(() => {
-    if (lastTailTurn === void 0 || turns === null || turns === void 0)
+    if (turns === null || turns === void 0)
       return void 0;
-    return turnDeliverablesChangesSeq(turns.get(lastTailTurn)) ?? void 0;
-  }, [lastTailTurn, turns]);
-  const renderNode = (0, import_react48.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId]);
+    const map = turns;
+    let best = null;
+    let bestTurn = -Infinity;
+    for (const [key, face] of map) {
+      const seq = turnDeliverablesChangesSeq(face);
+      if (seq === null)
+        continue;
+      const t4 = typeof key === "number" ? key : Number(key);
+      if (!Number.isFinite(t4) || t4 <= bestTurn)
+        continue;
+      bestTurn = t4;
+      best = seq;
+    }
+    return best ?? void 0;
+  }, [turns]);
+  const diagChatRef = (0, import_react48.useRef)(void 0);
+  (0, import_react48.useEffect)(() => {
+    if (diagChatRef.current === chat)
+      return;
+    diagChatRef.current = chat;
+    const turnsMap = turns;
+    const face = turnsMap === void 0 ? void 0 : turnsMap.get(lastTailTurn) ?? turnsMap.get(String(lastTailTurn));
+    const deliverables = face === void 0 ? void 0 : turnDeliverablesValue(face, "deliverables");
+    const mentionPaths = fileOpen === void 0 ? void 0 : collectFilePaths(order, store, turns);
+    const turnsDetail = turnsMap === void 0 ? [] : [...turnsMap.entries()].map(([k, f]) => {
+      try {
+        const dv = f === void 0 ? void 0 : turnDeliverablesValue(f, "deliverables");
+        const changes = dv === void 0 ? void 0 : dv.changes;
+        const produced = dv === void 0 ? void 0 : dv.produced;
+        const presented = dv === void 0 ? void 0 : dv.presented;
+        return {
+          turn: k,
+          deliverKeys: dv === void 0 ? "none" : typeof dv === "object" && !Array.isArray(dv) ? Object.keys(dv) : Array.isArray(dv) ? "array" : "non-object",
+          changesSeq: changes && typeof changes === "object" && "seq" in changes ? changes.seq : void 0,
+          producedLen: Array.isArray(produced) ? produced.length : void 0,
+          presentedLen: Array.isArray(presented) ? presented.length : void 0
+        };
+      } catch {
+        return { turn: k, error: true };
+      }
+    });
+    console.log("[preview] diag", {
+      hasChat: chat !== void 0,
+      orderLen: order.length,
+      turns: turnsMap === void 0 ? "undefined" : `Map(${turnsMap.size})`,
+      turnKeySample: turnsMap === void 0 ? [] : [...turnsMap.keys()].slice(0, 6),
+      lastTailTurn,
+      lastTailChangesSeq,
+      deliverablesKeys: deliverables === void 0 ? "none" : Object.keys(deliverables),
+      deliverFiles: deliverFiles.length,
+      onOpenFile: onOpenFile !== void 0,
+      mentionCount: mentionPaths === void 0 ? "no-fileOpen" : mentionPaths.length,
+      mentionSample: mentionPaths === void 0 ? [] : mentionPaths.slice(0, 6)
+    });
+    console.log("[preview] turnsDetail", turnsDetail);
+  }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store]);
+  const renderNode = (0, import_react48.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview]);
   const isTurnClosed = (0, import_react48.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
   const groupedView = (0, import_react48.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed) : void 0, [keyed, order, store, isTurnClosed]);
   const rows = keyed ? ChatNodeListMirror({
@@ -59615,7 +59692,7 @@ function PreviewBody(props) {
   const options = props.options;
   const hostWorkspaces = (0, import_react61.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = options.workspaceAnchors ?? hostWorkspaces;
-  const entryTitle = workspaceAnchorForPath(options.path, anchors)?.title ?? options.rootName ?? "";
+  const entryTitle = workspaceAnchorForPath(options.path ?? "", anchors)?.title ?? options.rootName ?? "";
   const [picked, setPicked] = (0, import_react61.useState)(null);
   const wsTitle = picked ?? entryTitle;
   const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId;
@@ -59709,7 +59786,7 @@ function openFilePreview(options) {
       width: options.width ?? 460,
       minWidth: options.minWidth ?? 320,
       maxWidth: options.maxWidth
-    }, internalSwitch ? (0, import_react61.createElement)(PreviewBody, { options, onClose: close }) : (0, import_react61.createElement)(FileBrowser, {
+    }, options.content !== void 0 ? options.content() : internalSwitch ? (0, import_react61.createElement)(PreviewBody, { options, onClose: close }) : (0, import_react61.createElement)(FileBrowser, {
       workspaceFiles: options.workspaceFiles,
       officeToPdf: options.officeToPdf ?? null,
       sessionId: options.sessionId,
@@ -59726,7 +59803,7 @@ function openFilePreview(options) {
     })))
   ));
   activePreviewClose = close;
-  return { close, path: options.path };
+  return { close, path: options.path ?? "" };
 }
 var PICKER_WIDTH = 480;
 var PICKER_MAX_H = 660;
@@ -60010,18 +60087,31 @@ function RealSessionListDemo() {
   const view = (0, import_react62.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles = files.workspaceFiles;
   const canOpenFile = workspaceFiles !== null && anchor !== null;
-  const openLinkedFile = (path) => {
+  const openLinkedFile = (path, sessionId) => {
+    console.log("[preview] openLinkedFile path=", JSON.stringify(path), "sessionId=", sessionId, "anchorSessionId=", anchor?.sessionId);
     const mount = pageRow.element;
     if (mount === null || workspaceFiles === null || anchor === null) return;
     openFilePreview({
       mount,
       workspaceFiles,
       officeToPdf: files.officeToPdf,
-      // 文件 RPC 按会话作用域取工作区：用当前工作区锚点的会话（与 explorer 页同一口径）。
-      sessionId: anchor.sessionId,
+      // 文件 RPC 按会话作用域取工作区：优先用调用方透传的「文件所属会话」，
+      // 兜底才用当前工作区锚点会话（explorer 页那种没上下文的入口）。
+      sessionId: sessionId ?? anchor.sessionId,
       path,
       rootName: anchor.title,
       workspaces: wsItems.map((w) => w.title)
+    });
+  };
+  const openReviewFile = (loc) => {
+    const mount = pageRow.element;
+    if (mount === null) return;
+    openFilePreview({
+      mount,
+      workspaceFiles: workspaceFiles ?? void 0,
+      sessionId: loc.sessionId,
+      path: "",
+      content: () => (0, import_react62.createElement)(ChangedFileDiff, { sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display })
     });
   };
   if (state.status !== "ready") {
@@ -60092,7 +60182,8 @@ function RealSessionListDemo() {
       },
       // 文件链接（工具卡路径 / md 行内引用 / 交付卡）→ **页面右侧**开核心文件预览 dock，
       // 不在弹窗里面分栏；遮罩让位由核心自己处理，这里不量宽度、不传参数。
-      onOpenFile: canOpenFile ? openLinkedFile : void 0
+      onOpenFile: canOpenFile ? (path, sid) => openLinkedFile(path, sid) : void 0,
+      onOpenReview: openReviewFile
     }) : null
   );
 }
@@ -60291,7 +60382,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1023-0851-gfnx"]
+            [t3("buildStamp"), "1023-1544-68ym"]
           ].map(
             ([label, value]) => (0, import_react64.createElement)(
               "tr",
