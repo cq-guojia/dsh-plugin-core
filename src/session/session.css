@@ -53,7 +53,7 @@ button.dshpc-sv-changes-header:hover,button.dshpc-sv-changes-header:focus-visibl
 .dshpc-sv-changes-preview [data-diff-note=metadata],.dshpc-sv-changes-preview [data-diff-hunk-header]{display:none}
 /* 官方 FileDiff.module.css 逐值镜像（unified 单列：旧号 / 新号 / 符号 / 文本）。 */
 .dshpc-sv-diff{--diff-empty-fill:var(--dshpc-plate,rgba(128,128,128,.08));box-sizing:border-box;width:100%;min-height:0;color:var(--dshpc-fg);flex-direction:column;display:flex}
-.dshpc-sv-diff-header{box-sizing:border-box;border-bottom:.5px solid var(--dshpc-border-faint,#0000000a);flex:none;align-items:center;gap:6px;height:38px;padding:0 6px 0 8px;display:flex}
+.dshpc-sv-diff-header{box-sizing:border-box;border-bottom:1px solid var(--dshpc-border);flex:none;align-items:center;gap:6px;height:38px;padding:0 6px 0 8px;display:flex}
 .dshpc-sv-diff-status{color:var(--dshpc-fg-2,rgba(128,128,128,.95));align-items:center;gap:12px;margin:0;padding:16px;font-size:var(--dshpc-font-md);display:flex}
 .dshpc-sv-diff-body{min-height:0;font:var(--dshpc-code-font,12px/18px var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace));flex-direction:column;flex:auto;padding:8px 0 16px;display:flex;overflow:auto}
 .dshpc-sv-diff-body[data-review-view=unified]:not([data-review-wrap]){grid-template-columns:minmax(max-content,100%);align-content:start;display:grid}

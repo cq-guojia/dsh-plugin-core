@@ -7,7 +7,7 @@
    ⚠️ **本条刻意不设 z-index**：布局成员一旦带正 z-index，就会无条件压过宿主 portal 到 body 的
    弹窗（兄弟项目 2026-10-05 真机事故「侧边栏盖住宿主设置弹窗」）。层序交给 DOM 顺序裁决。 */
 .dshpc-dock__panel{
-  position:sticky;top:0;align-self:stretch;
+  box-sizing:border-box;position:sticky;top:0;align-self:stretch;
   display:flex;flex-direction:column;flex:0 0 auto;
   /* 高度默认视口高（整页场景）；嵌在定高容器里时由调用方给 --dshpc-dock-h（如 420px / 100%）。 */
   height:var(--dshpc-dock-h,100vh);max-height:var(--dshpc-dock-h,100vh);min-width:0;

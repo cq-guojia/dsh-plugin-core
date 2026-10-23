@@ -10,7 +10,8 @@
 // 高亮：官方 `useCodeHighlighter`（primitive hook）+ 官方 highlightedSide 映射口径
 // （按一侧收集文本 → 整段高亮 → 按行号回表）；语法未知 / 语法树未加载返回 undefined ⇒ 纯文本回落。
 import { createElement as h, useCallback, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
-import { Button, languageForPath, useCodeHighlighter, type HighlightSpan } from '../../ui/official.js'
+import { Button, IconCloseOutlineRegular, languageForPath, useCodeHighlighter, type HighlightSpan } from '../../ui/official.js'
+import { IconButton } from '../../ui/Button.js'
 import {
   DIFF_MAX_RENDERED_LINES,
   changesDiffUrl,
@@ -78,8 +79,10 @@ export function ChangedFileDiff(props: {
    * 之前一律用 preview 壳，导致审阅视图里 hunk 头被 CSS 隐掉（用户截图对照官方）。
    */
   variant?: 'preview' | 'review'
+  /** 审阅态右上角 ✕ 关闭（hover 预览态不传 = 不显示；复用 FileBrowser 行尾同一个 IconButton + 官方 ✕）。 */
+  onClose?: () => void
 }): ReactNode {
-  const { sessionId, seq, index, display, t = defaultT, variant = 'preview' } = props
+  const { sessionId, seq, index, display, t = defaultT, variant = 'preview', onClose } = props
   const url = changesDiffUrl(sessionId, seq, index)
   const [state, setState] = useState<ChangesDiff | null | undefined | 'error'>(undefined)
   const [attempt, setAttempt] = useState(0)
@@ -184,6 +187,16 @@ export function ChangedFileDiff(props: {
   },
     h('div', { className: 'dshpc-sv-diff-header' },
       h('span', { className: 'dshpc-sv-changes-previewpath', 'data-changes-preview-path': true }, display),
+      // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
+      preview || onClose === undefined
+        ? null
+        : h(IconButton, {
+            variant: 'plain',
+            size: 'md',
+            icon: h(IconCloseOutlineRegular, { size: 14 }),
+            label: t('previewClose'),
+            onClick: onClose,
+          }),
     ),
     body,
   )

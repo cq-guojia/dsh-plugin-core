@@ -16,5 +16,7 @@ export declare function ChangedFileDiff(props: {
      * 之前一律用 preview 壳，导致审阅视图里 hunk 头被 CSS 隐掉（用户截图对照官方）。
      */
     variant?: 'preview' | 'review';
+    /** 审阅态右上角 ✕ 关闭（hover 预览态不传 = 不显示；复用 FileBrowser 行尾同一个 IconButton + 官方 ✕）。 */
+    onClose?: () => void;
 }): ReactNode;
 //# sourceMappingURL=ChangedFileDiff.d.ts.map

@@ -10,7 +10,8 @@
 // 高亮：官方 `useCodeHighlighter`（primitive hook）+ 官方 highlightedSide 映射口径
 // （按一侧收集文本 → 整段高亮 → 按行号回表）；语法未知 / 语法树未加载返回 undefined ⇒ 纯文本回落。
 import { createElement as h, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, languageForPath, useCodeHighlighter } from '../../ui/official.js';
+import { Button, IconCloseOutlineRegular, languageForPath, useCodeHighlighter } from '../../ui/official.js';
+import { IconButton } from '../../ui/Button.js';
 import { DIFF_MAX_RENDERED_LINES, changesDiffUrl, diffNoteKey, hunkHeader, hunkRows, parseChangesDiff, } from '../changes.js';
 import { t as defaultT } from '../../utils/i18n.js';
 /** 会话级缓存：同一 (sessionId, seq, index) 只拉一次（官方 ChangesDiffStore 同语义）。 */
@@ -41,7 +42,7 @@ function DiffLine(props) {
 }
 /** 一个变更文件的 diff 体（状态机 + unified 行渲染）。 */
 export function ChangedFileDiff(props) {
-    const { sessionId, seq, index, display, t = defaultT, variant = 'preview' } = props;
+    const { sessionId, seq, index, display, t = defaultT, variant = 'preview', onClose } = props;
     const url = changesDiffUrl(sessionId, seq, index);
     const [state, setState] = useState(undefined);
     const [attempt, setAttempt] = useState(0);
@@ -137,6 +138,16 @@ export function ChangedFileDiff(props) {
     return h('div', {
         className: preview ? 'dshpc-sv-diff dshpc-sv-changes-preview' : 'dshpc-sv-diff',
         'data-changes-hover-preview': preview ? true : undefined,
-    }, h('div', { className: 'dshpc-sv-diff-header' }, h('span', { className: 'dshpc-sv-changes-previewpath', 'data-changes-preview-path': true }, display)), body);
+    }, h('div', { className: 'dshpc-sv-diff-header' }, h('span', { className: 'dshpc-sv-changes-previewpath', 'data-changes-preview-path': true }, display), 
+    // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
+    preview || onClose === undefined
+        ? null
+        : h(IconButton, {
+            variant: 'plain',
+            size: 'md',
+            icon: h(IconCloseOutlineRegular, { size: 14 }),
+            label: t('previewClose'),
+            onClick: onClose,
+        })), body);
 }
 //# sourceMappingURL=ChangedFileDiff.js.map

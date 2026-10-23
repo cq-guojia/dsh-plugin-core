@@ -196,7 +196,9 @@ export function pickWorkspaceFile(options) {
         let settled = false;
         const backdrop = document.createElement('div');
         backdrop.setAttribute('data-dshpc-picker-backdrop', '');
-        backdrop.style.cssText = 'position:fixed;inset:0;z-index:1099;background:rgba(0,0,0,0.28)';
+        // 右边界读 PanelDock 发布的 --dshpc-page-inset-right，与 .dshpc-modal-mask 同款：
+        // 不把右侧分栏（openFilePreview 的 dock）连同它的分隔线一起压暗（2026-10-23 真机）。
+        backdrop.style.cssText = 'position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;z-index:1099;background:rgba(0,0,0,0.28)';
         const panel = document.createElement('div');
         panel.setAttribute('data-dshpc-picker-panel', '');
         panel.setAttribute('role', 'dialog');

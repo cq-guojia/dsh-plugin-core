@@ -4,6 +4,7 @@ import {
   openFilePreview,
   pickWorkspaceAnchor,
   pickWorkspaceFile,
+  type FilePreviewHandle,
   type OfficeToPdfFace,
   type WorkspaceFilesFace,
 } from '../../../../dist/explorer/index.js'
@@ -229,12 +230,18 @@ function RealSessionListDemo(): ReturnType<typeof h> {
   const openReviewFile = (loc: ChangedFileReviewLocator): void => {
     const mount = pageRow.element
     if (mount === null) return
-    openFilePreview({
+    // 记住本次预览的 handle，好让 diff 审阅头行尾那枚 ✕ 能关掉这个 dock（与 FileBrowser 同一钮）。
+    let handle: FilePreviewHandle | null = null
+    handle = openFilePreview({
       mount,
       workspaceFiles: workspaceFiles ?? undefined,
       sessionId: loc.sessionId,
       path: '',
-      content: () => h(ChangedFileDiff, { sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display, variant: 'review' }),
+      content: () => h(ChangedFileDiff, {
+        sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display,
+        variant: 'review',
+        onClose: () => { handle?.close() },
+      }),
     })
   }
   if (state.status !== 'ready') {
