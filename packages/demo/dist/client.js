@@ -54860,12 +54860,12 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "explorer \u63D0\u4F9B\u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u4E0E\u9009\u62E9\u80FD\u529B\uFF0C\u4F9D\u8D56\u5BBF\u4E3B\u63D0\u4F9B\u7684\u5DE5\u4F5C\u533A\u6587\u4EF6\u5FEB\u7167\u3002",
-        "en": "explorer provides workspace file browsing and picking, driven by the host-provided workspace file snapshot."
+        "zh": "\u63D0\u4F9B\u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u4E0E\u9009\u62E9\uFF0C\u6570\u636E\u6765\u81EA\u5BBF\u4E3B\u63D0\u4F9B\u7684\u5DE5\u4F5C\u533A\u6587\u4EF6\u5FEB\u7167\u3002",
+        "en": "Workspace file browsing and picking, driven by the host-provided workspace file snapshot."
       },
       {
-        "zh": "\u6D4F\u89C8\u6001\u505C\u9760\u662F\u5E03\u5C40\u6210\u5458\uFF08\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF09\uFF0C\u4E0D\u8981\u6302\u5728 document.body \u4E0A\u81EA\u5DF1\u5957 fixed\u3002",
-        "en": "The browse dock is a layout member (takes width, narrows the main area); do not mount it on document.body with your own fixed positioning."
+        "zh": "\u6D4F\u89C8\u6001\u505C\u9760\u662F\u5E03\u5C40\u6210\u5458\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4E0D\u8981\u6302 `document.body` \u518D\u81EA\u5DF1\u5957 fixed\u3002",
+        "en": "The browse dock is a layout member (takes width, narrows the main area); never mount it on `document.body` with your own fixed positioning."
       }
     ]
   },
@@ -54891,32 +54891,15 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "\u4ECE ctx \u53D6\u51FA\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF0C\u4F20\u7ED9\u80FD\u529B\u63A5\u53E3\uFF1B\u4E0D\u8981\u4F20\u6574\u4E2A ctx\u3002",
-        "en": "Pull the workspace snapshot out of ctx and pass it to the capability APIs; do not pass the whole ctx."
+        "zh": "\u4ECE ctx \u53D6\u51FA\u5DE5\u4F5C\u533A\u5FEB\u7167\u518D\u4F20\u7ED9\u80FD\u529B\u63A5\u53E3\uFF0C\u4E0D\u8981\u4F20\u6574\u4E2A ctx\u3002",
+        "en": "Pull the workspace snapshot out of ctx and hand it to the capability APIs; do not pass the whole ctx."
       }
     ],
     "code": [
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": `import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
-import { SessionPreview } from 'dsh-plugin-core/session'
-
-// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09
-openFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })
-
-// path \u4F20\u7EDD\u5BF9\u8DEF\u5F84\u65F6\uFF1A\u6838\u5FC3\u81EA\u52A8\u8BFB\u5BBF\u4E3B workspaces \u5FEB\u7167\uFF08connectHost \u6CE8\u5165\uFF09\uFF0C\u6309\u6700\u957F\u524D\u7F00
-// \u5339\u914D\u6240\u5C5E\u5DE5\u4F5C\u533A\u3001list \u6362\u8BE5\u5DE5\u4F5C\u533A\u7684\u4F1A\u8BDD \u21D2 \u9762\u5305\u5C51/\u76EE\u5F55\u6811\u6B63\u5E38\uFF1B\u25BE \u4E0B\u62C9\u300C\u5207\u5DE5\u4F5C\u533A\u300D\u540C\u6837
-// \u81EA\u52A8\u53EF\u7528\uFF08\u65E0\u4F1A\u8BDD\u7684\u5DE5\u4F5C\u533A\u4E0D\u8FDB\u5217\u8868\uFF09\u3002\u96F6\u4F20\u53C2\u5373\u751F\u6548\uFF0C\u65E0\u9700\u8C03\u7528\u65B9\u505A\u4EFB\u4F55\u4E8B\u3002
-openFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md' })
-// \u8981\u8986\u76D6\u5FEB\u7167\u624D\u663E\u5F0F\u4F20\uFF1AworkspaceAnchors\uFF08\u5BBF\u4E3B workspaces \u5FEB\u7167\u539F\u6837\uFF0C\u5E26 path + sessionIds\uFF09
-openFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md', workspaceAnchors })
-
-// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09
-const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })
-
-// \u4F1A\u8BDD\u9884\u89C8
-<SessionPreview sessionId="..." source={source} variant="modal" />`
+        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\nopenFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })\n\n// path \u4F20\u7EDD\u5BF9\u8DEF\u5F84\u65F6\uFF1A\u6309\u6700\u957F\u524D\u7F00\u5339\u914D\u6240\u5C5E\u5DE5\u4F5C\u533A\uFF0C\u9762\u5305\u5C51 / \u76EE\u5F55\u6811\u4E0E \u25BE\u300C\u5207\u5DE5\u4F5C\u533A\u300D\u81EA\u52A8\u53EF\u7528\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md' })\n// \u8981\u8986\u76D6\u5BBF\u4E3B\u5FEB\u7167\u624D\u663E\u5F0F\u4F20 workspaceAnchors\uFF08\u5E26 path + sessionIds\uFF09\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md', workspaceAnchors })\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })"
       }
     ]
   },
@@ -54931,21 +54914,104 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
         "id": "explorer-api-table",
         "rows": [
           {
-            "name": "openFilePreview",
-            "type": "({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle",
+            "name": "openFilePreview(opts)",
+            "type": "OpenFilePreviewOptions => FilePreviewHandle",
             "def": "\u2014",
             "desc": {
-              "zh": "\u53F3\u4FA7\u5206\u680F\u9884\u89C8\u6587\u4EF6/\u6587\u4EF6\u5939\uFF0Cmount \u4E3A\u5FC5\u586B\u7684 flex \u884C\uFF1B\u25BE \u5207\u5DE5\u4F5C\u533A\u7684\u300C\u5F53\u524D\u533A\u300D\u6309\u8DEF\u5F84\u5339\u914D\u5B9A\uFF08rootName \u6B21\u4E4B\uFF09\uFF0C\u70B9\u4EFB\u4F55\u5DE5\u4F5C\u533A\uFF08\u542B\u5165\u53E3\u90A3\u4E2A\uFF09\u90FD\u4ECE\u8BE5\u5DE5\u4F5C\u533A\u7684\u6839\u5F00\u59CB\u5217",
-              "en": "Preview a file/folder in a right-side dock; mount is the required flex row. The \u25BE workspace switch resolves the current workspace by path match (rootName as fallback), and picking any workspace \u2014 the entry one included \u2014 starts from that workspace\u2019s root"
+              "zh": "\u5728\u53F3\u4FA7\u5206\u680F\u6253\u5F00\u6587\u4EF6 / \u6587\u4EF6\u5939\u9884\u89C8\uFF0C\u8FD4\u56DE\u53EF\u5173\u95ED\u5B83\u7684\u53E5\u67C4\u3002\u9884\u89C8\u5185\u5BB9\u4E8C\u9009\u4E00\uFF1A`path`\uFF08\u6838\u5FC3\u89E3\u6790\u5E76\u6E32\u67D3\uFF09\u6216 `content`\uFF08\u7531\u8C03\u7528\u65B9\u7ED9\u5185\u5BB9\uFF09",
+              "en": "Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node)"
             }
           },
           {
-            "name": "pickWorkspaceFile",
-            "type": "({ workspaceFiles, sessionId, anchor, filter? }) => Promise<{ path, isDir }>",
+            "name": "opts.mount",
+            "type": "HTMLElement",
+            "def": "\u2014",
+            "required": "\u662F",
+            "desc": {
+              "zh": "\u9875\u9762\u91CC\u7684 flex \u884C\uFF1B\u9884\u89C8\u9760\u5B83\u5360\u5BBD\u800C\u4E0D\u662F\u6D6E\u5728\u9875\u9762\u4E0A\u65B9",
+              "en": "The page\u2019s flex row; the preview takes width there instead of floating"
+            }
+          },
+          {
+            "name": "opts.workspaceFiles",
+            "type": "WorkspaceFilesFace",
             "def": "\u2014",
             "desc": {
-              "zh": "\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\u9009\u6587\u4EF6\uFF0CPromise \u8FD4\u56DE\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84",
-              "en": "Open a modal anchored to a button and resolve with the workspace-relative path"
+              "zh": "\u4ECE ctx \u53D6\u51FA\u7684\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\uFF1B\u4F20 `content` \u65F6\u53EF\u7701",
+              "en": "Workspace file service taken from ctx; optional when passing `content`"
+            }
+          },
+          {
+            "name": "opts.sessionId",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u8BE5\u5DE5\u4F5C\u533A\u7684\u771F\u5B9E\u4F1A\u8BDD id\uFF08\u670D\u52A1\u662F\u4F1A\u8BDD\u4F5C\u7528\u57DF\u7684\uFF09\uFF1B\u4F20 `content` \u65F6\u53EF\u7701",
+              "en": "A real session id of that workspace (the service is session-scoped); optional when passing `content`"
+            }
+          },
+          {
+            "name": "opts.path",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF1B\u7EDD\u5BF9\u8DEF\u5F84\u4F1A\u81EA\u52A8\u6309\u6700\u957F\u524D\u7F00\u5339\u914D\u6240\u5C5E\u5DE5\u4F5C\u533A\u3002\u4E0E `content` \u4E8C\u9009\u4E00",
+              "en": "Workspace-relative path; absolute paths are matched to their workspace by longest prefix. Mutually exclusive with `content`"
+            }
+          },
+          {
+            "name": "opts.content",
+            "type": "() => ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u81EA\u5B9A\u4E49\u9884\u89C8\u5185\u5BB9\uFF0C\u585E\u8FDB\u540C\u4E00\u4E2A\u53F3\u4FA7 dock\uFF1B\u4F20\u5B83\u65F6\u4E0D\u9700\u8981 `path`",
+              "en": "Custom preview body rendered in the same dock; no `path` needed when set"
+            }
+          },
+          {
+            "name": "opts.officeToPdf",
+            "type": "OfficeToPdfFace",
+            "def": "\u2014",
+            "desc": {
+              "zh": "Office \u8F6C PDF \u80FD\u529B\uFF1B\u7F3A\u5931\u5219\u8BE5\u683C\u5F0F\u8D70\u300C\u4E0D\u652F\u6301\u300D\u800C\u4E0D\u662F\u62A5\u9519",
+              "en": 'Office\u2192PDF capability; without it that format shows "unsupported" instead of erroring'
+            }
+          },
+          {
+            "name": "opts.rootName",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u515C\u5E95\u663E\u793A\u540D\uFF08\u8DEF\u5F84\u5339\u914D\u4E0D\u51FA\u5DE5\u4F5C\u533A\u65F6\u7528\uFF09",
+              "en": "Fallback display name, used when no workspace matches the path"
+            }
+          },
+          {
+            "name": "pickWorkspaceFile(opts)",
+            "type": "PickWorkspaceFileOptions => Promise<PickedFile>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u951A\u5B9A\u6309\u94AE\u5F39\u51FA\u6A21\u6001\u9009\u6587\u4EF6\uFF0C\u89E3\u6790\u51FA `{ path, isDir }`",
+              "en": "Anchored modal picker that resolves `{ path, isDir }`"
+            }
+          },
+          {
+            "name": "opts.anchor",
+            "type": "HTMLElement",
+            "def": "\u2014",
+            "required": "\u662F",
+            "desc": {
+              "zh": "\u6A21\u6001\u8D34\u7740\u5B83\u5F39",
+              "en": "The modal anchors next to it"
+            }
+          },
+          {
+            "name": "opts.filter",
+            "type": "PickFilter",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6309\u6269\u5C55\u540D\u8FC7\u6EE4 `{ exts: ['md'] }`\uFF1B`dirs: true` \u5219\u53EA\u5141\u8BB8\u9009\u6587\u4EF6\u5939",
+              "en": "Filter by extension `{ exts: ['md'] }`; `dirs: true` restricts picking to folders"
             }
           }
         ]
@@ -55133,8 +55199,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "token \u6765\u81EA `dsh-task-dispatch-table/src/client/ui/tokens.ts` \u7684\u6574\u6BB5\u63D0\u53D6\uFF08\u989C\u8272 / \u5C3A\u5BF8 / \u5B57\u53F7 / \u5C42\u7EA7\uFF09\uFF0C**\u542B\u6DF1\u8272\u8986\u76D6\u6BB5**\u3002\u53D6\u503C\u4E00\u5F8B\u8D70 `var(--<prefix>-*)`\uFF0C\u4E0D\u5728\u89C4\u5219\u91CC\u5199\u6B7B\u989C\u8272\u503C\u3002",
-        "en": "Tokens are extracted wholesale from `dsh-task-dispatch-table/src/client/ui/tokens.ts` (color / size / font-size / elevation), **including the dark-mode override block**. Always read values via `var(--<prefix>-*)`, never hard-code colors in rules."
+        "zh": "token \u8986\u76D6\u989C\u8272 / \u5C3A\u5BF8 / \u5B57\u53F7 / \u5C42\u7EA7\uFF0C**\u542B\u6DF1\u8272\u8986\u76D6\u6BB5**\u3002\u53D6\u503C\u4E00\u5F8B\u8D70 `var(--dshpc-*)`\uFF0C\u4E0D\u5728\u89C4\u5219\u91CC\u5199\u6B7B\u989C\u8272\u503C\u3002",
+        "en": "Tokens cover color / size / font-size / elevation, **including the dark-mode override block**. Always read values via `var(--dshpc-*)`, never hard-code colors in rules."
       },
       {
         "zh": "\u5B8C\u6574\u6E05\u5355\u4E0E\u547D\u540D\u53E3\u5F84\u89C1 [`../style.md`](../style.md)\u3002",
@@ -55167,60 +55233,24 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "\u4F9D\u8D56 ui\u3002\u628A\u300C\u770B\u4E00\u773C\u67D0\u4E2A\u4F1A\u8BDD\u3001\u770B\u5B8C\u5373\u5173\u300D\u5C01\u88C5\u6210\u4E0E\u5B98\u65B9\u4F1A\u8BDD\u9875\u540C\u6784\u7684\u53EA\u8BFB\u5F39\u7A97\uFF1A\u81EA\u52A8\u6267\u884C\u7684\u4EFB\u52A1\u60F3\u56DE\u770B\u8FD9\u6B21\u4F1A\u8BDD\uFF0C\u4E0D\u60F3\u5F00\u65B0\u7A97\u53E3\uFF08\u56DE\u6765\u8FD8\u5F97\u627E\uFF09\u3002",
-        "en": 'Depends on ui. Wraps the "peek at a session and close when done" flow into a read-only dialog isomorphic to the official session page: for auto-run tasks you want to review this run without opening a new window.'
+        "zh": "\u628A\u4E00\u6B21\u4F1A\u8BDD\u6E32\u67D3\u6210**\u53EA\u8BFB\u5F39\u7A97**\uFF0C\u89C2\u611F\u4E0E\u5B98\u65B9\u4F1A\u8BDD\u9875\u4E00\u81F4\u3002\u5148\u7528 `openSessionView` \u5EFA\u6570\u636E\u94FE\u5F97\u5230 `view`\uFF08\u4E0D\u53EF\u89E3\u6790\u8FD4\u56DE `null`\uFF09\uFF0C\u518D\u4EA4\u7ED9 `SessionViewModal`\uFF1B**\u5173\u95ED\u65F6\u5FC5\u987B `view.dispose()`**\u3002",
+        "en": "Renders one session as a **read-only dialog** that looks like the official session page. First `openSessionView` builds the chain and returns a `view` (`null` when unresolvable), then hand it to `SessionViewModal`; **call `view.dispose()` on close**."
       },
       {
-        "zh": "\u5F39\u7A97\u53EA\u662F\u5F53\u524D\u7684\u5448\u73B0\u65B9\u5F0F\uFF0C\u4E0D\u662F\u8FD9\u4E2A\u5305\u7684\u5B9A\u4E49\u3002\u300C\u7EAF Modal \u63A7\u4EF6\u300D\u5728 ui \u91CC\uFF0C\u8FD9\u91CC\u88C5\u7684\u662F\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\u8FD9\u4E2A\u529F\u80FD\u3002",
-        "en": 'A modal is only the current presentation, not the definition of the package. The bare Modal lives in ui; this package owns the "session preview" feature.'
+        "zh": "\u6570\u636E\u5168\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF0C\u7EC4\u4EF6\u4E0D\u81EA\u5DF1\u53D6\u3002`archived` \u4ECE\u5B98\u65B9 `workspaces` \u5FEB\u7167\u7684 `archivedSessionIds` \u8BFB\u53D6\u5E76\u8BA2\u9605\u5237\u65B0\u3002\u5F52\u6863\u4F1A\u8BDD\u8D70\u540C\u4E00\u6761\u94FE\uFF0C\u540C\u6837\u53EF\u8BFB\u3002",
+        "en": "All data is injected by the caller; the component fetches nothing. Read `archived` from `archivedSessionIds` on the official `workspaces` snapshot and keep it subscribed. Archived sessions travel the same chain and read fine."
       },
       {
-        "zh": "\u6E32\u67D3 = \u300C\u5B98\u65B9\u96F6\u4EF6 + \u81EA\u7ED8\u5BB9\u5668\u300D\uFF1Amirror/ \u4E0B 15 \u4E2A\u7EC4\u4EF6\u6309\u5B98\u65B9\u6587\u4EF6\u540D\u4E00\u4E00\u5BF9\u5E94\uFF08ChatView / ChatNodeSeat / MessageItem / GenericCommandCard / ReasoningRow / Turn\xD7NodeView / MessageIconActions / TurnUsagePanel / StatDialog / Deliverables / ChatGroupSeat\u2026\uFF09\uFF0C\u9010\u503C\u955C\u50CF\u5B98\u65B9 UI\uFF1B\u5B98\u65B9 CSS module \u7C7B\u540D\u8FD0\u884C\u65F6\u53D1\u73B0\uFF08official-classes.ts\uFF09\uFF0C\u672A\u547D\u4E2D\u56DE\u9000\u81EA\u7ED8\u6837\u5F0F\uFF08session.css\uFF09\uFF0C\u4E0D\u5D29\u4E0D\u767D\u5C4F\u3002",
-        "en": 'Rendering = "official parts + self-drawn chrome": the 15 components under mirror/ map one-to-one to official file names (ChatView / ChatNodeSeat / MessageItem / GenericCommandCard / ReasoningRow / Turn\xD7NodeView / MessageIconActions / TurnUsagePanel / StatDialog / Deliverables / ChatGroupSeat\u2026), mirroring the official UI value-by-value. Official CSS-module class names are discovered at runtime (official-classes.ts); on a miss, self-drawn fallback styles apply (session.css) \u2014 no crash, no blank screen.'
+        "zh": "\u5FEB\u7167\u53EA\u8BFB\uFF0C\u6846\u5185\u4E0D\u80FD\u6253\u5B57\u7EED\u804A\u3002\u7EED\u804A = `forkSession` \u5F00\u5206\u652F + `openHostSession` \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u6682\u5B58\u8F93\u5165\u6846\u7684\u786E\u5B9A\u8D70 `onContinue`\uFF08fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\uFF09\u3002",
+        "en": "The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input\u2019s confirm goes through `onContinue` (fork + first turn + navigate)."
       },
       {
-        "zh": "\u5F52\u6863\u4F1A\u8BDD\u540C\u6837\u53EF\u8BFB\uFF1AarchiveSession \u53EA\u628A\u4F1A\u8BDD\u85CF\u51FA\u663E\u793A\u9762\u3001\u4E0D\u52A8\u5B58\u50A8\uFF1Bsessions.retain \u7269\u5316 scope \u4E0E\u5F52\u6863\u6B63\u4EA4 \u21D2 \u9884\u89C8\u5F52\u6863\u4F1A\u8BDD\u8D70\u7684\u662F\u540C\u4E00\u6761\u6570\u636E\u94FE\uFF0C\u65E0\u989D\u5916\u5F00\u53D1\u3002",
-        "en": "Archived sessions are readable too: archiveSession only hides a session from grouping surfaces and never touches storage; sessions.retain materializes the scope regardless of archive status \u21D2 previewing an archived session uses the same data chain, with no extra work."
+        "zh": "\u6587\u4EF6\u51FA\u53E3\u53EA\u6709\u4E00\u4E2A\uFF1A\u5DE5\u5177\u5361\u8DEF\u5F84\u3001\u884C\u5185\u5F15\u7528\u3001\u4EA4\u4ED8\u5361\u90FD\u8D70 `onOpenFile`\uFF1B\u4E0D\u4F20\u5219\u94FE\u63A5\u964D\u7EA7\u4E3A\u7EAF\u6587\u672C\u3002\u9884\u89C8\u7531\u8C03\u7528\u65B9\u5F00\u5728**\u9875\u9762\u53F3\u4FA7**\uFF08`openFilePreview` \u7684 dock\uFF09\uFF0C\u5F39\u7A97\u4E0D\u9700\u8981\u4EFB\u4F55\u906E\u7F69\u53C2\u6570\u3002",
+        "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text. The caller opens the preview as a **page-level right column** (the `openFilePreview` dock) \u2014 the dialog takes no mask props."
       },
       {
-        "zh": "\u6587\u4EF6\u663E\u793A\u903B\u8F91\u5168\u91CF\u79FB\u690D\uFF1A\u7528\u6237\u6D88\u606F\u5B98\u65B9 file \u5757 \u2192 \u9644\u4EF6\u5361\uFF1B\u5DE5\u5177\u5361 read/write/edit \u6458\u8981\u8DEF\u5F84 = \u53EF\u70B9 fileLink\uFF1Btool-fs meta.diffs \u8DEF\u5F84\u8FDB\u8BCD\u8868\uFF1Bmarkdown \u884C\u5185\u6587\u4EF6\u5F15\u7528 \u2192 fileMentions \u89E3\u6790\u6210\u94FE\u63A5\uFF08resolve \u4E0D\u51FA\u4FDD\u6301\u60F0\u6027 code\uFF0C\u6C38\u4E0D\u731C\uFF09\uFF1B\u4EA4\u4ED8\u6587\u4EF6\uFF08present / turn \u7EA7 deliverables.presented \u540C\u6E90\uFF09\u2192 \u6574\u5361\u53EF\u70B9\u9884\u89C8\u3002\u7EDF\u4E00\u51FA\u53E3 = onOpenFile\u3002",
-        "en": "File display logic is fully ported: official file blocks in user messages \u2192 attachment cards; read/write/edit tool-card summary paths are clickable fileLinks; tool-fs meta.diffs paths feed the mention vocabulary; inline markdown file references resolve through fileMentions (unresolved stays inert code \u2014 never guessed); delivered files (present / turn-level deliverables.presented, same source) \u2192 whole-card clickable preview. Single exit = onOpenFile."
-      },
-      {
-        "zh": "\u7EED\u804A\u6B63\u9053\uFF08\u91CD\u8981\uFF09\uFF1A\u5E95\u5C42 keyed \u6570\u7EC4\uFF08order + nodes\uFF09\u662F\u53EA\u8BFB\u5FEB\u7167\uFF0C\u5B98\u65B9\u6CA1\u6709\u300C\u5F80\u9884\u89C8 binding \u53D1\u6D88\u606F\u300D\u7684\u5199\u9762 \u21D2 \u6846\u5185\u4E0D\u53EF\u6253\u5B57\u7EED\u804A\u3002\u6B63\u9053 = fork \u5F00\u5206\u652F\uFF08sessions.fork\uFF09\u2192 uiWorkspace.openSession \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u5E95\u90E8\u6682\u5B58\u8F93\u5165\u6846\u7684\u300C\u786E\u5B9A\u300D\u7ECF onContinue \u7531\u8C03\u7528\u65B9\u5B8C\u6210 fork + host \u4FA7 agent.send \u8D77\u8F6E\u6B21 + \u8DF3\u8F6C\uFF08\u5B98\u65B9\u6D3E\u53D1\u540C\u6B3E\u8DEF\uFF0C\u65E0\u6B6A\u95E8\u90AA\u9053\uFF09\u3002",
-        "en": 'The sanctioned way to continue (important): the underlying keyed array (order + nodes) is a read-only snapshot; the host exposes no write surface for sending into a preview binding \u21D2 you cannot type inside the dialog. The sanctioned path = fork a branch (sessions.fork) \u2192 uiWorkspace.openSession to jump into the official session area; the bottom staging input\u2019s "Confirm" goes through onContinue, where the caller forks + sends the first turn via host-side agent.send + navigates (the same official dispatch path \u2014 no hacks).'
-      },
-      {
-        "zh": "\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u6309\u94AE\u6309\u5F52\u6863\u72B6\u6001\u5206\u5316\uFF08\u8C03\u7528\u65B9\u7ECF `archived` prop \u6CE8\u5165\uFF09\uFF1A\u5DF2\u5F52\u6863 \u21D2 \u5F00\u5206\u652F\u56FE\u6807 + \u786E\u8BA4\u6846\uFF08fork \u51FA\u5B50\u4F1A\u8BDD\u518D\u8DF3\u5B98\u65B9\u533A\uFF1B\u5B98\u65B9\u7B56\u7565\u5F52\u6863\u4F1A\u8BDD\u4E0D\u8FDB\u4E3B\u89C6\u56FE\uFF09\uFF1B\u672A\u5F52\u6863 / \u672A\u63D0\u4F9B \u21D2 \u4F1A\u8BDD\u56FE\u6807\uFF0C\u70B9\u51FB\u76F4\u8DF3\u5B98\u65B9\u4F1A\u8BDD\u9875\u3002\u5F39\u7A97\u6807\u9898 = \u4F1A\u8BDD\u81EA\u5DF1\u7684\u6807\u9898\uFF08`heading`\uFF0C\u901A\u5E38\u4F20\u5BBF\u4E3B sessions.list \u7684 displayTitle\uFF09\uFF0C\u5DF2\u5F52\u6863\u65F6\u6807\u9898\u65C1\u5E26\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\u3002",
-        "en": 'The "Continue" button forks by archive state (injected by the caller via the `archived` prop): archived \u21D2 branch icon + confirmation (fork a child, then jump to the official area \u2014 official policy keeps archived sessions out of the main view); not archived / not provided \u21D2 session icon, one click jumps straight to the official session page. The dialog title is the session\u2019s own title (`heading`, usually the host sessions.list displayTitle); when archived, the official archive icon + "Archived" appears beside it.'
-      },
-      {
-        "zh": "\u5F52\u6863\u72B6\u6001**\u5BA2\u6237\u7AEF\u8BFB\u5F97\u5230**\uFF082026-10-22 \u89E3\u5305 @deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2 \u6838\u5B9E\uFF0C\u63A8\u7FFB\u6B64\u524D\u300C\u53EA\u6709\u5BBF\u4E3B\u4FA7\u8BFB\u5F97\u5230\u3001\u8981\u8D70 serveArchivedSessions \u8DEF\u7531\u300D\u7684\u7ED3\u8BBA\uFF09\uFF1A\u5B98\u65B9 client \u670D\u52A1 `workspaces` \u7684 `list` \u5FEB\u7167\u5E26 `archivedSessionIds`\uFF0C\u662F **registry-global \u5F52\u6863\u96C6\u5408**\uFF08\u4E0D\u662F\u6BCF\u5DE5\u4F5C\u533A\u4E00\u4EFD\uFF09\uFF0C\u7531\u5BBF\u4E3B follow \u6D41 baseline / `archived` \u589E\u91CF\u6301\u7EED\u66FF\u6362 \u21D2 \u6CE8\u5165 `workspaces` \u2192 `list.getSnapshot().archivedSessionIds` + `list.subscribe` \u5B9E\u65F6\u5237\u65B0\uFF0C\u4F20\u7ED9 `archived`\u3002\u65E0\u9700\u5BBF\u4E3B\u8DEF\u7531\u3002",
-        "en": "Archive state IS readable client-side (verified 2026-10-22 by unpacking @deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2 \u2014 overturns the earlier conclusion that only the host could read it, via a serveArchivedSessions route): the official client service `workspaces` exposes a `list` snapshot carrying `archivedSessionIds` \u2014 the registry-global archive set (not one per workspace), continuously replaced by the host follow stream\u2019s baseline / `archived` increments \u21D2 inject `workspaces` \u2192 `list.getSnapshot().archivedSessionIds` + `list.subscribe` for live refresh, then pass it as `archived`. No host route needed."
-      },
-      {
-        "zh": "\u6807\u9898\u533A\u4E09\u6BB5\u56FA\u5B9A\uFF08\u7528\u6237 2026-10-22 \u62CD\u677F\uFF09\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898\uFF08\u8C03\u7528\u65B9\u7ED9\u7684\u4EBA\u8BDD\u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\uFF09+ \u300C\u5DF2\u5F52\u6863\u300D\u5FBD\u6807\uFF08**\u7D27\u8DDF\u6807\u9898**\uFF0C\u4E0D\u8DE8\u4E24\u884C\u5C45\u4E2D\uFF09\uFF1B\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\uFF08\u4F1A\u8BDD id\uFF0C\u7B49\u5BBD\u5C0F\u5B57\uFF0C\u8D70 Modal \u7684 `subtitle`\uFF09\uFF1B\u53F3\u4FA7 = \u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D/ \u5173\u95ED\u3002\u4F1A\u8BDD id \u662F\u6807\u8BC6\uFF0C\u4E0D\u8FDB\u6B63\u6587\u3002",
-        "en": 'The header has three fixed parts (decided 2026-10-22): line 1 = the title (caller-supplied human title, default "Session preview") plus the **Archived** badge directly after the title (not centered across both lines); line 2 = the subtitle (session id, monospace caption, via the Modal `subtitle` prop); right side = "Continue" / close. The session id is an identifier and never goes into the body.'
-      },
-      {
-        "zh": "\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3\uFF08\u7528\u6237 2026-10-22 \u62CD\u677F\uFF09\uFF1AModal \u7684 body \u662F**\u552F\u4E00\u6EDA\u52A8\u5BB9\u5668**\uFF0C\u5185\u8DDD\u4E5F\u5F52\u5B83 \u2014\u2014 \u5185\u5BB9\uFF08\u672C\u6A21\u5757\uFF09\u53EA\u6309\u6D41\u6392\u7248\uFF0C\u4E0D\u5199 `height:100%`\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\u6240\u4EE5\u4F1A\u8BDD\u533A\u91CC\u7684\u5B98\u65B9 ChatView.frame / scroll \u7684 `overflow` / \u9AD8\u5EA6 / \u5185\u8DDD\u4E00\u5F8B\u5F52\u96F6\uFF08\u89C1 session.css \u7684\u53CC\u7C7B\u540D\u94A9\u5B50\uFF09\uFF1B\u771F\u9700\u8981\u300C\u5DE6\u53F3\u4E24\u680F\u5404\u81EA\u6EDA\u300D\u65F6\u4E0D\u7528\u5185\u5BB9\u81EA\u7BA1\uFF0C\u800C\u662F\u628A\u53F3\u4FA7\u90A3\u5217\u653E\u5230**\u9875\u9762\u5C42**\uFF08\u89C1\u4E0B\u6761\uFF09\u3002",
-        "en": "Scrolling and padding belong to the core (decided 2026-10-22): the Modal body is the **only scroll container**, and it owns the padding \u2014 this module just lays out flow content, never `height:100%`, never its own scrollbar. That is why the inner ChatView.frame / scroll `overflow`, height and padding are all zeroed (see the double-class hooks in session.css). If two panes must scroll independently, do not let the content manage height \u2014 put the right column at the **page level** (next item)."
-      },
-      {
-        "zh": "\u6587\u4EF6\u94FE\u63A5\uFF08\u5DE5\u5177\u5361 fileLink / md \u884C\u5185\u5F15\u7528 / \u4EA4\u4ED8\u5361\uFF09\u7EDF\u4E00\u8D70 `onOpenFile`\u3002\u63A5\u6CD5\uFF08\u7528\u6237 2026-10-22 \u5B9A\uFF09\uFF1A\u9884\u89C8\u5F00\u5728**\u9875\u9762\u53F3\u4FA7**\uFF08\u6838\u5FC3 `openFilePreview` \u7684 dock\uFF0C\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4E0D\u5728\u5F39\u7A97\u91CC\u5206\u680F\u3002\u5F39\u7A97\u8FD9\u8FB9**\u4EC0\u4E48\u90FD\u4E0D\u7528\u4F20**\uFF1Adock \u628A\u5360\u5BBD\u53D1\u5E03\u6210 `--dshpc-page-inset-right`\uFF0C\u906E\u7F69\u6309\u5B83\u8BA9\u4F4D \u21D2 \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF0C\u5F39\u7A97\u5728\u5DE6\u8FB9\u5269\u4F59\u533A\u57DF\u5C45\u4E2D\uFF08\u7528\u6237 2026-10-22 \u4E8C\u6B21\u62CD\u677F\uFF0C\u64A4\u6389\u4E86 `insetRight` \u90A3\u6761\u91CF\u5BBD\u5EA6\u7684\u8DEF\u5B50\uFF09\u3002\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\u7F3A\u5E2D\u65F6\u4E0D\u7ED9 `onOpenFile`\uFF0C\u94FE\u63A5\u81EA\u7136\u662F\u7EAF\u6587\u672C\uFF0C\u4E0D\u5047\u88C5\u80FD\u70B9\u3002",
-        "en": "Every file link (tool-card fileLink / md mentions / delivered cards) exits through `onOpenFile`. Wiring (decided 2026-10-22): the preview opens as a **page-level right column** (the core `openFilePreview` dock, squeezing the main area) \u2014 never as a split inside the dialog. The dialog passes **nothing** for this: the dock publishes its occupied width as `--dshpc-page-inset-right` and the mask yields by it, so the column stays bright and clickable while the dialog centers in the remaining left area (re-decided 2026-10-22, dropping the width-measuring `insetRight` route). When the workspace file service is absent, pass no `onOpenFile` so links stay plain text instead of pretending to be clickable."
-      },
-      {
-        "zh": '\u300C\u5DF2\u7F16\u8F91\u6587\u4EF6\u300D\u5361\uFF08\u5B98\u65B9 ChangedFiles\uFF0Cui-deliverables 2026-10-22 \u63A5\u4E0A\u30012026-10-23 \u5BF9\u9F50\u5B98\u65B9\u7ED3\u6784\uFF09\uFF1A\u67D0\u8F6E\u51FA\u73B0 `workspace/changes` \u516C\u544A\u65F6\uFF0Cturn \u7EA7 `deliverables.changes = { seq }` \u843D\u8FDB\u540C\u4E00\u4EFD turn.data\uFF1B\u5361\u7247\u5185\u5BB9\u8D70\u5BBF\u4E3B\u53EA\u8BFB\u8DEF\u7531 `GET api/changes.summary?sessionId&seq`\uFF08\u88F8 fetch\uFF0C\u9274\u6743\u968F\u5BBF\u4E3B\u4F1A\u8BDD\uFF09\uFF0C\u8F7D\u8377\u6309\u5B98\u65B9 `isChangesSummary` \u9010\u5B57\u6BB5\u6821\u9A8C\uFF0C\u4E0D\u5408\u89C4 / 404 = \u4E0D\u6E32\u67D3\uFF08\u4E0D\u731C\u6570\u636E\uFF09\u3002\u89C2\u611F\u9010\u503C\u955C\u50CF\u5B98\u65B9\uFF1A40\xD740 \u56FE\u6807\u5757 + \u300C\u5DF2\u7F16\u8F91 x.md\u300D\uFF08\u591A\u6587\u4EF6 = \u300C\u5DF2\u7F16\u8F91 N \u4E2A\u6587\u4EF6\u300D\uFF09+ \u8BA1\u6570 `+N -M`\uFF08\u5E38\u663E\u4E0A\u8272\uFF0Chover \u6362\u663E\u300C\u9884\u89C8\u300D\uFF09+ \u6587\u4EF6\u884C\u5217\u8868\uFF08\u8D85 4 \u884C\u6298\u53E0\uFF0C\u51FA\u300C\u5168\u90E8 N \u4E2A\u6587\u4EF6 / \u6536\u8D77\u300D\uFF09\uFF1B\u5355\u6587\u4EF6\u70B9\u5934\u3001\u591A\u6587\u4EF6\u70B9\u884C\u90FD\u8D70 `onOpenFile`\uFF08\u5B98\u65B9\u5F00\u53F3\u4FA7 review \u6807\u7B7E\u9875\uFF0C\u672C\u5305\u53EA\u6709\u6587\u4EF6\u6253\u5F00\u8FD9\u4E00\u4E2A\u53E3\u5B50\uFF09\u3002\u60AC\u505C 500ms \u51FA\u5B98\u65B9\u540C\u6B3E diff \u9884\u89C8\u5361\uFF08\u5B98\u65B9 `HoverCard` `variant="preview"`\uFF0C\u5BBD\u5EA6\u8DDF\u6574\u5361\uFF09\uFF1A\u6570\u636E\u8D70 `GET api/changes.diff?sessionId&seq&index`\uFF0C\u9884\u89C8\u4F53\u9010\u503C\u955C\u50CF\u5B98\u65B9 `FileDiff`\uFF08hunk \u5934 + \u65E7/\u65B0\u884C\u53F7 + \u7B26\u53F7 + \u6587\u672C\u56DB\u5217 grid\u3001\u5B98\u65B9 `useCodeHighlighter` \u9AD8\u4EAE\u3001\u8D85 5000 \u884C\u622A\u65AD\uFF09\uFF0Cbinary / oversized / missing / error \u5404\u6709\u5B98\u65B9\u6587\u6848\uFF0Cerror \u5E26\u5B98\u65B9 sm \u91CD\u8BD5\u94AE\uFF1Bcontent \u53EA\u5728 hover \u6253\u5F00\u65F6\u6302\u8F7D \u21D2 \u4E0D\u4F1A\u6BCF\u884C\u9884\u5148\u53D1\u8BF7\u6C42\u3002',
-        "en": '"Edited files" card (official ChangedFiles, ui-deliverables \u2014 wired 2026-10-22, structurally aligned 2026-10-23): when a turn announces `workspace/changes`, the turn-level `deliverables.changes = { seq }` lands in the same turn.data; the card body comes from the host read-only route `GET api/changes.summary?sessionId&seq` (bare fetch, host session auth), validated field-by-field against the official `isChangesSummary` \u2014 invalid / 404 renders nothing (no guessing). The look mirrors the official value-by-value: a 40\xD740 icon tile + "Edited x.md" ("Edited N files" for many) + counts `+N -M` (always coloured, swapped for the "Preview" hint on hover) + a file-row list (folds past 4 rows with an "All N files / Collapse" toggle); the single-file header and every multi-file row open through `onOpenFile` (the official one opens a right-sidebar review tab \u2014 this package only has the file-open hatch). Hovering for 500ms shows the official-style diff preview card (official `HoverCard`, `variant="preview"`, sized from the whole card): data comes from `GET api/changes.diff?sessionId&seq&index`, and the body mirrors the official `FileDiff` value-by-value (hunk headers + a four-column grid of old/new line numbers, sign and text, highlighted by the official `useCodeHighlighter`, truncated past 5000 lines); binary / oversized / missing / error each carry the official copy and error ships the official small retry button. Content mounts only once the hover opens, so no row fetches up front.'
-      },
-      {
-        "zh": "\u5DF2\u77E5\u9650\u5236\uFF1A\u5B98\u65B9\u6837\u5F0F\u672A\u6CE8\u5165\u65F6\u56DE\u9000\u81EA\u7ED8\u89C2\u611F\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\uFF1B\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\uFF08\u7FFB\u9875\u9760\u300C\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55\u300D\u6309\u94AE\uFF0C\u5B98\u65B9 loadOlder\uFF09\uFF1B\u7CFB\u7EDF\u63D0\u793A / \u4E0A\u4E0B\u6587\u6CE8\u5165\u884C\u6309\u51B3\u7B56 28 \u8FC7\u6EE4\uFF08\u5B98\u65B9 ContextInjectionRow \u5F85\u5B9E\u65BD\uFF09\uFF1B\u{1F44D}\u{1F44E} \u53CD\u9988\u6309\u94AE\u5B98\u65B9\u8D70 slots\uFF0C\u5F39\u7A97\u65E0\u8BE5\u63D2\u69FD\u3002",
-        "en": 'Known limits: when official styles are not injected, the self-drawn look applies (functionality unaffected); long sessions render all at once (paging via the "load earlier" button, official loadOlder); system-prompt / context-injection rows are filtered per decision 28 (official ContextInjectionRow pending); thumbs up/down go through official slots, which the dialog does not have.'
-      },
-      {
-        "zh": "\u914D\u5957\u7684\u5B98\u65B9\u4F1A\u8BDD\u5217\u8868\uFF08demo \u9884\u89C8\u7AD9\u300C\u771F\u5B9E\u4F1A\u8BDD\u5217\u8868\u300D\u5728\u7528\uFF09\uFF1A\u5BBF\u4E3B client \u670D\u52A1 `sessions`\uFF08@deepseek-ai/dsh-api-session-controller client \u534A\u4FA7\uFF0C0.2.0-rc.2 \u89E3\u5305\u6838\u5B9E\uFF09\u66B4\u9732 `list` \u5FEB\u7167\u5B58\u50A8\u2014\u2014`{ ids, byId, phase }`\uFF0C\u6BCF\u884C\u5E26 `displayTitle`\uFF08durable title \u2192 \u9879\u76EE basename \u2192 session id \u4E09\u7EA7\u56DE\u843D\uFF09/ `updatedAt` / `running` / `blank`\uFF1B\u6570\u636E\u6765\u81EA\u5BBF\u4E3B `session/list` RPC\uFF08ApiSessionList.list\uFF1A\u300CRead every visible attached and persisted Session without activating an Agent\u300D\uFF0C\u6309\u6D3B\u52A8\u5E8F\uFF09\u21D2 **\u5217\u4F1A\u8BDD \u2260 \u6253\u5F00\u4F1A\u8BDD\uFF0C\u51B7\u5B89\u5168\uFF0C\u5F52\u6863\u4F1A\u8BDD\u4E5F\u5728\u5217**\u3002demo \u9875\u9762\u6309 updatedAt \u964D\u5E8F\u53D6\u524D 20 \u6761\uFF0C\u70B9\u884C \u2192 openSessionView \u771F\u9884\u89C8\u3002",
-        "en": 'The companion official session list (used by the demo preview site\u2019s "real session list"): the host client service `sessions` (the client half of @deepseek-ai/dsh-api-session-controller, verified by unpacking 0.2.0-rc.2) exposes a `list` snapshot store \u2014 `{ ids, byId, phase }`, each row carrying `displayTitle` (durable title \u2192 project basename \u2192 session id, three-level fallback) / `updatedAt` / `running` / `blank`; the data comes from the host `session/list` RPC (ApiSessionList.list: "Read every visible attached and persisted Session without activating an Agent", ordered by activity) \u21D2 listing sessions \u2260 opening them \u2014 cold-safe, and archived sessions are listed too. The demo page takes the 20 most recent by updatedAt; clicking a row \u2192 openSessionView for a real preview.'
+        "zh": "\u9650\u5236\uFF1A\u5B98\u65B9\u6837\u5F0F\u672A\u6CE8\u5165\u65F6\u56DE\u9000\u81EA\u7ED8\u89C2\u611F\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\uFF1B\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\uFF0C\u7528\u300C\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55\u300D\u5411\u524D\u7FFB\u9875\uFF1B\u{1F44D}\u{1F44E} \u53CD\u9988\u8D70\u5B98\u65B9 slots\uFF0C\u5F39\u7A97\u6CA1\u6709\u8BE5\u63D2\u69FD\u3002",
+        "en": 'Limits: without official styles injected, the self-drawn look applies (functionality unaffected); long sessions render whole, paged backward via "load earlier"; \u{1F44D}\u{1F44E} feedback goes through official slots, which this dialog lacks.'
       }
     ],
     "api": [
@@ -55233,8 +55263,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "def": "\u2014",
             "required": "\u662F",
             "desc": {
-              "zh": "\u5EFA\u6570\u636E\u94FE\uFF1Aretain \u7269\u5316 \u2192 binding \u2192 open \u62C9\u5C3E\u9875 \u2192 target(chat)\uFF1B\u4E0D\u53EF\u89E3\u6790\u8FD4\u56DE null",
-              "en": "Builds the data chain: retain materialize \u2192 binding \u2192 open tail \u2192 target(chat); null when unresolvable"
+              "zh": "\u5EFA\u6570\u636E\u94FE\uFF1Aretain \u2192 binding \u2192 open \u2192 target(chat)\uFF1B\u4E0D\u53EF\u89E3\u6790\u8FD4\u56DE null",
+              "en": "Builds the chain retain \u2192 binding \u2192 open \u2192 target(chat); null when unresolvable"
             }
           },
           {
@@ -55242,8 +55272,17 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "SnapshotFace<ChatViewFace | undefined>",
             "def": "\u2014",
             "desc": {
-              "zh": "chat \u5FEB\u7167\u8BA2\u9605\u9762\uFF08useSyncExternalStore \u7528\uFF09",
-              "en": "Chat snapshot subscription surface (for useSyncExternalStore)"
+              "zh": "chat \u5FEB\u7167\u8BA2\u9605\u9762\uFF08\u4F9B useSyncExternalStore\uFF09",
+              "en": "Chat snapshot surface (for useSyncExternalStore)"
+            }
+          },
+          {
+            "name": "session",
+            "type": "SnapshotFace<SessionSnapshotFace>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4F1A\u8BDD\u81EA\u8EAB\u5FEB\u7167\uFF08\u52A0\u8F7D\u6001 / \u662F\u5426\u7FFB\u5C3D\uFF09",
+              "en": "Snapshot of the session itself (loading state, paged-out)"
             }
           },
           {
@@ -55251,8 +55290,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "() => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5411\u524D\u7FFB\u4E00\u9875\u66F4\u65E9\u7684\u5386\u53F2\uFF08\u5B98\u65B9 loadOlder\uFF09",
-              "en": "Page backward through older history (official loadOlder)"
+              "zh": "\u5411\u524D\u7FFB\u4E00\u9875\u66F4\u65E9\u7684\u5386\u53F2",
+              "en": "Page backward through older history"
             }
           },
           {
@@ -55261,7 +55300,7 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "def": "\u2014",
             "desc": {
               "zh": "\u91CA\u653E retain \u5F15\u7528\uFF1B\u5F39\u7A97\u5173\u95ED\u5FC5\u8C03",
-              "en": "Release the retain reference; must be called when the dialog closes"
+              "en": "Release the retain reference; call on close"
             }
           }
         ]
@@ -55285,27 +55324,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "def": "\u2014",
             "required": "\u662F",
             "desc": {
-              "zh": "openSessionView \u7684\u4EA7\u7269",
-              "en": "The result of openSessionView"
-            }
-          },
-          {
-            "name": "heading",
-            "type": "string",
-            "def": "sessionHeading\uFF08\u4F1A\u8BDD\u9884\u89C8\uFF09",
-            "required": "\u5426",
-            "desc": {
-              "zh": "\u5F39\u7A97\u6807\u9898 = \u4F1A\u8BDD\u81EA\u5DF1\u7684\u6807\u9898\uFF08\u5BBF\u4E3B sessions.list \u7684 displayTitle\uFF0C\u53EF\u81EA\u5B9A\u4E49\uFF09\uFF1B\u4F1A\u8BDD id \u662F\u6807\u8BC6\uFF0C\u56FA\u5B9A\u663E\u793A\u5728\u6807\u9898\u4E0B\u65B9\u526F\u6807\u9898\u884C\uFF08\u7B49\u5BBD\u5C0F\u5B57\uFF09\uFF0C\u4E0D\u5360\u6B63\u6587",
-              "en": "Dialog title = the session\u2019s own title (host sessions.list displayTitle \u2014 fully customisable); the session id is an identifier and always sits on the subtitle line **under** the title (monospace caption), never in the body"
-            }
-          },
-          {
-            "name": "archived",
-            "type": "boolean",
-            "def": "\u2014",
-            "desc": {
-              "zh": "\u662F\u5426\u5DF2\u5F52\u6863\uFF08\u8C03\u7528\u65B9\u4ECE\u5B98\u65B9 client \u670D\u52A1 `workspaces` \u5FEB\u7167\u7684 `archivedSessionIds` \u53D6\uFF09\uFF1B\u5206\u5316\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\uFF1A\u5F52\u6863=\u5F00\u5206\u652F\u786E\u8BA4\u6846\uFF0C\u672A\u5F52\u6863=\u76F4\u8DF3\u5B98\u65B9\u4F1A\u8BDD\u9875",
-              "en": 'Whether archived (caller reads it from the official client service `workspaces` snapshot field `archivedSessionIds`); differentiates "Continue": archived = fork confirmation, not archived = direct jump to the official session page'
+              "zh": "openSessionView \u7684\u8FD4\u56DE\u503C",
+              "en": "What openSessionView returned"
             }
           },
           {
@@ -55314,8 +55334,28 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "def": "\u2014",
             "required": "\u662F",
             "desc": {
-              "zh": "\u5173\u95ED\u56DE\u8C03\uFF08\u8C03\u7528\u65B9\u8D1F\u8D23 view.dispose()\uFF09",
-              "en": "Close callback (the caller owns view.dispose())"
+              "zh": "\u5173\u95ED\u56DE\u8C03\uFF1B\u7531\u8C03\u7528\u65B9\u5728\u91CC\u9762\u8C03 view.dispose()",
+              "en": "Close callback; the caller calls view.dispose() inside it"
+            }
+          },
+          {
+            "name": "heading",
+            "type": "string",
+            "def": "\u300C\u4F1A\u8BDD\u9884\u89C8\u300D",
+            "required": "\u5426",
+            "desc": {
+              "zh": "\u5F39\u7A97\u6807\u9898\uFF0C\u901A\u5E38\u4F20\u5BBF\u4E3B sessions.list \u7684 displayTitle\uFF1B\u4F1A\u8BDD id \u663E\u793A\u5728\u6807\u9898\u4E0B\u65B9\u526F\u6807\u9898\u884C\uFF08\u7B49\u5BBD\u5C0F\u5B57\uFF09",
+              "en": "Dialog title, usually the displayTitle from the host sessions.list; the session id sits on the monospace subtitle line below it"
+            }
+          },
+          {
+            "name": "archived",
+            "type": "boolean",
+            "def": "false",
+            "required": "\u5426",
+            "desc": {
+              "zh": "\u5DF2\u5F52\u6863\u65F6\u6807\u9898\u65C1\u663E\u793A\u5F52\u6863\u5FBD\u6807\uFF0C\u4E14\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u5148\u5F39 fork \u786E\u8BA4\u6846\uFF1B\u672A\u5F52\u6863\u5219\u76F4\u8DF3\u5B98\u65B9\u4F1A\u8BDD\u9875",
+              "en": 'When true an archive badge appears beside the title and "Continue" asks to fork first; when false it jumps straight to the official session page'
             }
           },
           {
@@ -55323,8 +55363,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "(sessionId, atSeq?) => Promise<string>",
             "def": "\u2014",
             "desc": {
-              "zh": "fork \u6E90\u4F1A\u8BDD\uFF08\u5B98\u65B9 ISessions.fork\uFF09\uFF1B\u4E0E openHostSession \u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D",
-              "en": 'Fork the source session (official ISessions.fork); without openHostSession the "Continue" button does not render'
+              "zh": "\u5F00\u5206\u652F\u5E76\u8FD4\u56DE\u5B50\u4F1A\u8BDD id\uFF1B\u7F3A openHostSession \u5219\u4E0D\u6E32\u67D3\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D",
+              "en": 'Fork and resolve the child session id; without openHostSession "Continue" does not render'
             }
           },
           {
@@ -55332,8 +55372,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "(sessionId: string) => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5B98\u65B9\u5BFC\u822A\u8DF3\u8F6C\uFF08uiWorkspace.openSession\uFF09",
-              "en": "Official navigation jump (uiWorkspace.openSession)"
+              "zh": "\u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF08uiWorkspace.openSession\uFF09",
+              "en": "Jump into the official session area (uiWorkspace.openSession)"
             }
           },
           {
@@ -55341,17 +55381,26 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "(message: string) => Promise<void>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6682\u5B58\u8F93\u5165\u6846\u300C\u786E\u5B9A\u300D\uFF1A\u8C03\u7528\u65B9\u5B8C\u6210 fork + host \u4FA7 agent.send \u8D77\u8F6E\u6B21 + \u8DF3\u8F6C\uFF1B\u7F3A\u7701 = \u4E0D\u6E32\u67D3\u8F93\u5165\u6846",
-              "en": 'Staging input "Confirm": the caller forks + sends the first turn via host-side agent.send + navigates; absent = the input is not rendered'
+              "zh": "\u6682\u5B58\u8F93\u5165\u6846\u7684\u786E\u5B9A\uFF1A\u8C03\u7528\u65B9\u5B8C\u6210 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\uFF1B\u7F3A\u7701 = \u4E0D\u6E32\u67D3\u8F93\u5165\u6846",
+              "en": "Staging input confirm: caller forks, sends the first turn, navigates; absent = no input rendered"
             }
           },
           {
             "name": "onOpenFile",
-            "type": "(path: string) => void",
+            "type": "(path: string, sessionId: string) => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF08\u5DE5\u5177\u5361 fileLink / md mention / \u4EA4\u4ED8\u5361\u5171\u7528\uFF09\uFF1B\u7F3A\u7701 = \u94FE\u63A5\u964D\u7EA7\u7EAF\u6587\u672C",
-              "en": "File-open exit (shared by tool-card fileLink / md mentions / delivered cards); absent = links degrade to plain text"
+              "zh": "\u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF08\u5DE5\u5177\u5361 fileLink / \u884C\u5185\u5F15\u7528 / \u4EA4\u4ED8\u5361\u5171\u7528\uFF09\uFF1B\u7B2C\u4E8C\u53C2\u662F\u6587\u4EF6\u6240\u5C5E\u4F1A\u8BDD id\uFF0C\u522B\u62FF\u522B\u7684\u4F1A\u8BDD\u53BB\u5B9A\u4F4D\uFF1B\u7F3A\u7701 = \u94FE\u63A5\u7EAF\u6587\u672C",
+              "en": "File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id \u2014 locate the file there, not elsewhere; absent = plain text"
+            }
+          },
+          {
+            "name": "onOpenReview",
+            "type": "(locator: ChangedFileReviewLocator) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53D8\u66F4\u6587\u4EF6\u7684\u5BA1\u9605\u51FA\u53E3\uFF08\u7B49\u4EF7\u5B98\u65B9 openReview\uFF09\uFF1B\u7F3A\u7701 = \u53D8\u66F4\u5361\u6574\u5F20\u4E0D\u53EF\u70B9",
+              "en": "Review exit for changed files (equals official openReview); absent = the change card is not clickable"
             }
           },
           {
@@ -55359,8 +55408,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "Translate",
             "def": "\u5185\u7F6E",
             "desc": {
-              "zh": "\u8986\u76D6\u6587\u6848\uFF08\u6838\u5FC3\u5B57\u5178\u81EA\u5E26\u5168\u90E8\u4F1A\u8BDD\u6587\u6848\uFF0C\u4E2D\u82F1\uFF09",
-              "en": "Override copy (the built-in dictionary carries all session copy, zh+en)"
+              "zh": "\u8986\u76D6\u6587\u6848\uFF08\u5185\u7F6E\u5B57\u5178\u5DF2\u542B\u5168\u90E8\u4F1A\u8BDD\u6587\u6848\uFF0C\u4E2D\u82F1\uFF09",
+              "en": "Override copy (the built-in dictionary has all session copy, zh+en)"
             }
           }
         ]
@@ -55370,12 +55419,12 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 1. \u5BBF\u4E3B\u670D\u52A1\uFF08\u63D2\u4EF6\u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF1Bsessions \u2190 dsh-api-session-controller\u3001\n//    uiConversation \u2190 dsh-client-ui-conversation\uFF0Cinject \u8FB9\u51B3\u5B9A\u88C5\u914D\u987A\u5E8F\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'my-plugin')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',              // \u53EF\u9009\u6807\u9898\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    // \u7EED\u804A\uFF08\u53EF\u9009\u670D\u52A1\uFF09\uFF1Afork \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u786E\u5B9A\u540E\u7531\u8C03\u7528\u65B9 fork + host \u4FA7 agent.send \u8D77\u8F6E\u6B21 + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)   // \u63D2\u4EF6 host \u534A\u4FA7\uFF1Aagents.create + agent.send\n      openHostSession(child)\n    },\n    onOpenFile: (path) => openFilePreview(path),   // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\n    t,                                        // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u4E24\u8005\u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    onOpenFile: (path) => openFilePreview(path), // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\n    archived,                                   // \u662F\u5426\u5DF2\u5F52\u6863\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
       },
       {
         "id": "session-data-chain",
         "lang": "ts",
-        "src": "// \u6570\u636E\u94FE\uFF08\u51B3\u7B56 28\uFF0C\u5168\u90E8\u7ECF\u5B98\u65B9\u6E90\u7801\u6838\u5B9E\uFF09\uFF1A\n//   sessions.retain(id, { source })  \u7269\u5316 scope\uFF08\u5F52\u6863 / \u4E45\u672A\u6253\u5F00\u7684\u4F1A\u8BDD\u4E5F\u80FD\u8BFB\uFF09\n//     \u2192 sessions.binding(id)         \u53D6\u7ED1\u5B9A\n//     \u2192 session.open()               \u5E42\u7B49\u62C9\u5386\u53F2\u5C3E\u9875\n//     \u2192 uiConversation.binding(binding).target('chat')\n//                                     \u62FF ChatSnapshot\uFF1Aorder + nodes\uFF08keyed \u6D41\uFF09\n// \u7528\u5B8C view.dispose() \u91CA\u653E\u5F15\u7528\uFF08\u5426\u5219\u4F1A\u8BDD scope \u6C38\u4E0D\u56DE\u6536\uFF09\u3002\n//\n// \u5DF2\u8BC1\u4F2A\u3001\u52FF\u518D\u5C1D\u8BD5\uFF1A\u5F39\u7A97\u5185\u6302\u5B98\u65B9 ChatView\uFF08renderSlot \u53EA\u8BA4 key='root'\uFF09\uFF1B\n//    \u81EA\u5DF1 retain('mainView')\uFF08\u9501\u6B7B\u5BBF\u4E3B\u4F1A\u8BDD\u5BFC\u822A\uFF09\uFF1B\u51B7\u8BFB RPC session/follow\uFF08\u65E0\u6D3B\u52A8\u901A\u9053\uFF09\u3002"
+        "src": "// \u6570\u636E\u94FE\uFF08\u8D8A\u5F80\u4E0A\u8D8A\u65E9\uFF09\uFF1A\n//   sessions.retain(id, { source })  \u7269\u5316 scope\n//     \u2192 sessions.binding(id)         \u53D6\u7ED1\u5B9A\n//     \u2192 session.open()               \u5E42\u7B49\u62C9\u5386\u53F2\u5C3E\u9875\n//     \u2192 uiConversation.binding(binding).target('chat')\n//                                     \u62FF ChatSnapshot\uFF1Aorder + nodes\uFF08keyed \u6D41\uFF09\n// \u7528\u5B8C\u5FC5\u987B view.dispose()\uFF0C\u5426\u5219\u4F1A\u8BDD scope \u4E0D\u56DE\u6536\u3002"
       }
     ]
   },
@@ -55698,16 +55747,16 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "\u4E00\u4E2A\u63D2\u4EF6\u4ECE\u88C5\u5305\u5230\u7528\u4E0A\u5404\u5B50\u5305\u7684\u5B8C\u6574\u8DEF\u5F84\u3002\u590D\u5236\u7C98\u8D34\u7EA7\u522B\u7684\u6700\u5C0F\u53EF\u7528\u793A\u4F8B\u3002",
-        "en": "The full path from installing the package to using each subpackage. Copy-paste-level minimal example."
+        "zh": "\u4ECE\u88C5\u5305\u5230\u7528\u4E0A\u5404\u5B50\u5305\u7684\u5B8C\u6574\u8DEF\u5F84\uFF0C\u793A\u4F8B\u90FD\u662F\u53EF\u76F4\u63A5\u7C98\u8D34\u7684\u6700\u5C0F\u53EF\u7528\u7248\u3002",
+        "en": "The full path from install to every subpackage, with copy-paste-ready minimal examples."
       },
       {
-        "zh": "\xA70 \u88C5\u5305\uFF1Areact \u662F optional peer\u2014\u2014\u53EA\u7528 utils / design \u7684\u63D2\u4EF6\u4E0D\u5FC5\u88C5\u3002\u5305\u91CC\u5E26\u9884\u7F16\u8BD1 dist\uFF08\u5BBF\u4E3B\u4EE5 git/npm \u88C5\u63D2\u4EF6\u4E0D\u8DD1\u6784\u5EFA\u811A\u672C\uFF0C\u4EA7\u7269\u5FC5\u987B\u968F\u5305\u53D1\u5E03\uFF09\u3002",
-        "en": "\xA70 Install: `react` is an optional peer \u2014 plugins using only utils/design need not install it. The package ships prebuilt dist (hosts install plugins without running build scripts, so artifacts must be published)."
+        "zh": "\xA70 \u88C5\u5305\uFF1A`react` \u662F optional peer\uFF0C\u53EA\u7528 `utils` / `design` \u7684\u63D2\u4EF6\u4E0D\u5FC5\u88C5\u3002",
+        "en": "\xA70 Install: `react` is an optional peer \u2014 plugins using only `utils`/`design` need not install it."
       },
       {
-        "zh": "\xA71 \u521D\u59CB\u5316\u6837\u5F0F\uFF08\u4E00\u6B21\uFF09\uFF1Aid \u5FC5\u987B\u63D2\u4EF6\u5185\u552F\u4E00\uFF08\u591A\u63D2\u4EF6\u540C\u9875\u9760\u5B83\u4E92\u4E0D\u8986\u76D6\uFF09\uFF1B\u53D8\u91CF\u4E0E\u7C7B\u540D\u7EDF\u4E00\u4F7F\u7528 dshpc \u524D\u7F00\uFF0C\u4E0D\u9700\u8981\u4F20\u53C2\u3002",
-        "en": "\xA71 Initialize styles (once): `id` must be unique within the plugin (multiple plugins on one page rely on it to avoid clobbering); variables and class names uniformly use the `dshpc` prefix, no param needed."
+        "zh": "\xA71 \u521D\u59CB\u5316\u6837\u5F0F\uFF08\u5165\u53E3\u4E00\u6B21\uFF09\uFF1A`id` \u5FC5\u987B\u63D2\u4EF6\u5185\u552F\u4E00\uFF0C\u591A\u63D2\u4EF6\u540C\u9875\u9760\u5B83\u4E92\u4E0D\u8986\u76D6\uFF1B\u53D8\u91CF\u4E0E\u7C7B\u540D\u56FA\u5B9A `dshpc` \u524D\u7F00\uFF0C\u4E0D\u9700\u4F20\u53C2\u3002",
+        "en": "\xA71 Initialize styles (once at entry): `id` must be unique within the plugin so co-mounted plugins don\u2019t clobber; vars and classes use the fixed `dshpc` prefix, no parameter."
       },
       {
         "zh": "\xA72 \u7528\u4E00\u4E2A\u63A7\u4EF6",
@@ -55718,16 +55767,12 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
         "en": "\xA73 Use helpers"
       },
       {
-        "zh": "\xA74 \u63A5\u5DE5\u4F5C\u533A\u6D4F\u89C8\uFF08\u8981\u5BBF\u4E3B\u80FD\u529B\uFF09\uFF1Amount \u662F\u5FC5\u586B\u2014\u2014PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF09\uFF0C\u6CA1\u6709\u5E03\u5C40\u4F4D\u7F6E\u5C31\u53EA\u80FD\u906E\u76D6\uFF0C\u6240\u4EE5\u8981\u4F20\u4F60\u9875\u9762\u91CC\u90A3\u4E00\u5C42 flex \u884C\uFF0C\u4E0D\u8981\u4F20 document.body \u518D\u81EA\u5DF1\u5957 fixed\u3002\u6D4F\u89C8\u6001\u505C\u9760\u5C31\u662F FileBrowser \u5957\u5728\u6838\u5FC3 PanelDock \u91CC\uFF08openFilePreview \u5DF2\u7ECF\u8FD9\u4E48\u505A\u4E86\uFF0C\u9762\u677F\u7528 header={null}\uFF1A\u6CA1\u6709\u5934\u90E8\u90A3\u6761\u7EBF\uFF0C\u2715 \u6D6E\u5728\u53F3\u4E0A\u89D2\uFF09\u3002",
-        "en": "\xA74 Wire workspace browsing (needs host capability): `mount` is required \u2014 PanelDock is a layout member (takes width, narrows the main area), so without a layout slot it can only overlay; pass your page\u2019s flex row, not `document.body` with your own fixed positioning. Browse-dock is FileBrowser inside the core PanelDock (openFilePreview already does this, with header={null}: no header line, \u2715 floats top-right)."
+        "zh": "\xA74 \u63A5\u5DE5\u4F5C\u533A\u6D4F\u89C8\uFF1A`mount` \u5FC5\u586B\uFF08\u9884\u89C8\u9762\u677F\u662F\u5E03\u5C40\u6210\u5458\uFF0C\u5360\u5BBD\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4F20\u9875\u9762\u90A3\u5C42 flex \u884C\u3002`sessionId` \u5FC5\u987B\u5C5E\u4E8E\u8BE5\u5DE5\u4F5C\u533A\u3002",
+        "en": "\xA74 Wire workspace browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page\u2019s flex row. `sessionId` must belong to that workspace."
       },
       {
-        "zh": "sessionId \u4E0D\u662F\u968F\u4FBF\u586B\u7684\uFF1AworkspaceFiles \u662F\u4F1A\u8BDD\u4F5C\u7528\u57DF\u670D\u52A1\uFF0C\u5FC5\u987B\u7ED9\u5C5E\u4E8E\u8BE5\u5DE5\u4F5C\u533A\u7684\u771F\u5B9E\u4F1A\u8BDD id\u3002\u4ECE\u5BBF\u4E3B\u5DE5\u4F5C\u533A\u5FEB\u7167\u6311\u951A\u70B9\u7528 pickWorkspaceAnchor(items)\uFF08ui \u7684 workspaceList \u5FEB\u7167\u53EF\u76F4\u63A5\u5582\u8FDB\u53BB\uFF09\u3002",
-        "en": "`sessionId` is not arbitrary: workspaceFiles is a session-scoped service, so you must pass a real session id belonging to that workspace. Pick an anchor from the host workspace snapshot via pickWorkspaceAnchor(items) (ui\u2019s workspaceList snapshot feeds in directly)."
-      },
-      {
-        "zh": "\xA75 \u63A5\u4F1A\u8BDD\u9884\u89C8",
-        "en": "\xA75 Wire session preview"
+        "zh": "\xA75 \u63A5\u4F1A\u8BDD\u9884\u89C8\uFF1A`openSessionView` \u8FD4\u56DE `null` \u8868\u793A\u8BE5\u4F1A\u8BDD\u4E0D\u53EF\u89E3\u6790\uFF1B\u62FF\u5230 view \u540E\u4EA4\u7ED9 `SessionViewModal`\uFF0C\u5173\u95ED\u65F6\u8BB0\u5F97 `dispose()`\u3002",
+        "en": "\xA75 Wire session preview: `openSessionView` returns `null` when the session cannot be resolved; hand the view to `SessionViewModal` and remember `dispose()` on close."
       },
       {
         "zh": "\xA76 \u5378\u8F7D\u6E05\u7406\uFF08\u53EF\u9009\uFF09",
@@ -55758,12 +55803,12 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
       {
         "id": "integration-use-explorer",
         "lang": "tsx",
-        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// \u4ECE ctx \u53D6\u51FA\u8FD9\u4E00\u5C0F\u5757\uFF08\u4E0D\u8981\u4F20\u6574\u4E2A ctx\uFF09\nconst workspaceFiles = ctx.remote.workspaceFiles\n\n// \u9884\u89C8\u67D0\u6587\u4EF6/\u6587\u4EF6\u5939\uFF1A\u53F3\u4FA7\u5206\u680F\uFF08\u6324\u7A84 row \u5DE6\u8FB9\u7684\u4E3B\u533A\uFF0C\u4E0D\u662F\u6D6E\u5728\u4E0A\u9762\uFF09\nopenFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })\n\n// \u8BA9\u7528\u6237\u9009\u6587\u4EF6\uFF1A\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path, isDir }\uFF08\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\nconst picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })"
+        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// \u4ECE ctx \u53D6\u51FA\u8FD9\u4E00\u5C0F\u5757\uFF08\u4E0D\u8981\u4F20\u6574\u4E2A ctx\uFF09\nconst workspaceFiles = ctx.remote.workspaceFiles\n\n// \u9884\u89C8\u67D0\u6587\u4EF6\uFF1A\u53F3\u4FA7\u5206\u680F\uFF08\u6324\u7A84 row \u5DE6\u8FB9\u7684\u4E3B\u533A\uFF0C\u4E0D\u662F\u6D6E\u5728\u4E0A\u9762\uFF09\nopenFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })\n\n// \u8BA9\u7528\u6237\u9009\u6587\u4EF6\uFF1A\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path, isDir }\uFF08\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\nconst picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })"
       },
       {
         "id": "integration-use-session",
         "lang": "tsx",
-        "src": "import { SessionPreview } from 'dsh-plugin-core/session'\n\nconst source = {\n  listMessages: async (id) => (await api.get(`/sessions/${id}/messages`)).data,\n  download: async (id, path) => api.getBytes(`/sessions/${id}/file?path=${path}`),\n}\n\nh(SessionPreview, { sessionId, source, variant: 'modal', onClose: close })"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation \u540C\u6837\u4ECE ctx \u53D6\u51FA\uFF08\u61D2\u5F97\u53D6\u5C31\u7528\u5B98\u65B9 client \u670D\u52A1\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    onClose: () => { view.dispose(); setOpen(false) },\n    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path }),\n  })\n}"
       },
       {
         "id": "integration-cleanup",
@@ -55798,12 +55843,12 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             }
           },
           {
-            "name": "\u76F4\u63A5 import \u5B98\u65B9 @deepseek-ai/* \u5E76\u6307\u671B\u672C\u5305\u5E2E\u4F60\u5F15",
+            "name": "\u6307\u671B\u672C\u5305\u5E2E\u4F60\u5F15\u5B98\u65B9 @deepseek-ai/*",
             "type": "\u73B0\u8C61\uFF1ANode \u4E0B ERR_MODULE_NOT_FOUND",
             "def": "\u2014",
             "desc": {
-              "zh": "\u672C\u5305 ui \u5DF2\u96F6\u5B98\u65B9\u4F9D\u8D56\uFF1B\u8981\u7528\u5B98\u65B9\u4EF6\u5C31\u5728\u63D2\u4EF6\u4FA7\u81EA\u5DF1\u5904\u7406\u5E73\u53F0\u6A21\u5757",
-              "en": "Our ui has zero official deps; handle platform modules on the plugin side"
+              "zh": "\u672C\u5305 ui \u96F6\u5B98\u65B9\u4F9D\u8D56\uFF1B\u8981\u7528\u5B98\u65B9\u4EF6\u8BF7\u81EA\u884C\u5904\u7406\u5E73\u53F0\u6A21\u5757",
+              "en": "Our ui has zero official deps; handle platform modules yourself"
             }
           },
           {
@@ -55854,16 +55899,16 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "\u4F9D\u8D56 design\u3002\u88C5\u7684\u662F\u300C\u7528 token \u642D\u51FA\u6765\u7684\u96F6\u4EF6\u300D\u2014\u2014\u76F4\u63A5\u7528\uFF0C\u4E0D\u518D\u81EA\u5DF1\u5199\u539F\u751F\u63A7\u4EF6\u3002\u7EAF\u96F6\u4EF6\uFF0C\u4E0D\u81EA\u5DF1\u53D6\u6570\uFF1A\u9009\u9879\u3001\u5F53\u524D\u503C\u90FD\u7ECF props \u7ED9\uFF08\u6570\u636E\u8981\u8DE8 host\u2194client \u8FB9\u754C\uFF0C\u901A\u9053\u662F\u63D2\u4EF6\u79C1\u6709\u7684\uFF09\u3002",
-        "en": 'Depends on design. Ships "parts built from tokens" \u2014 use them directly instead of writing native controls. Pure parts, no self-fetching: options and current value come via props (data crosses the host\u2194client boundary over the plugin\u2019s private channel).'
+        "zh": "\u4F9D\u8D56 design\u3002\u88C5\u7684\u662F\u300C\u7528 token \u642D\u51FA\u6765\u7684\u96F6\u4EF6\u300D\uFF0C\u76F4\u63A5\u7528\uFF0C\u4E0D\u518D\u81EA\u5DF1\u5199\u539F\u751F\u63A7\u4EF6\u3002\u7EAF\u96F6\u4EF6\u4E0D\u81EA\u5DF1\u53D6\u6570\uFF1A\u9009\u9879\u3001\u5F53\u524D\u503C\u90FD\u7ECF props \u7ED9\uFF08\u6570\u636E\u901A\u9053\u662F\u63D2\u4EF6\u79C1\u6709\u7684\uFF09\u3002",
+        "en": 'Depends on design. "Parts built from tokens" \u2014 use them instead of writing native controls. No self-fetching: options and value come via props (the data channel is plugin-private).'
       },
       {
-        "zh": "\u5B98\u65B9\u4EF6\u901A\u8DEF\uFF1Aui \u5165\u53E3\u4FDD\u6301\u96F6 @deepseek-ai/* \u4F9D\u8D56\uFF08Node \u5355\u6D4B / \u975E\u5BBF\u4E3B\u73AF\u5883 import \u4E0D\u5D29\uFF09\uFF1B\u5B98\u65B9 primitives \u7ECF src/ui/official.ts \u4EE5\u72EC\u7ACB\u5B50\u8DEF\u5F84 dsh-plugin-core/ui/official \u900F\u51FA\u3002\u8981\u6D88\u8D39\u5B98\u65B9\u4EF6\uFF08FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip \u2026\uFF09\u7684\u5C01\u88C5\u4ECE\u8FD9\u6761\u901A\u8DEF\u5F15\uFF0C\u4E0D\u8BB8\u5728\u522B\u5904 import \u5E73\u53F0\u6A21\u5757\u3002",
-        "en": "Official-component path: the ui entry stays free of @deepseek-ai/* deps (so Node unit tests / non-host imports don\u2019t crash); official primitives are exposed via src/ui/official.ts through the separate subpath dsh-plugin-core/ui/official. Wrappers that consume official parts (FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip \u2026) must import from this path \u2014 never import platform modules elsewhere."
+        "zh": "\u5165\u53E3\u96F6 `@deepseek-ai/*` \u4F9D\u8D56\uFF08\u975E\u5BBF\u4E3B\u73AF\u5883 import \u4E0D\u5D29\uFF09\u3002\u5B98\u65B9 primitives \u8D70\u72EC\u7ACB\u5B50\u8DEF\u5F84 `dsh-plugin-core/ui/official`\uFF0C\u5C01\u88C5\u4E00\u5F8B\u4ECE\u8FD9\u6761\u901A\u8DEF\u5F15\u3002",
+        "en": "The entry keeps zero `@deepseek-ai/*` deps (imports never crash outside the host). Official primitives come through the separate subpath `dsh-plugin-core/ui/official`; import them only from there."
       },
       {
-        "zh": "\u5B9A\u5236\u8FB9\u754C\uFF1Aprops \u5C31\u662F\u5B9A\u5236\u9762\uFF0C\u8981\u6539\u884C\u4E3A\u8BF7\u7EC4\u5408 props\uFF0C\u4E0D\u8981 fork \u6E90\u7801\uFF1B\u300C\u8FFD\u52A0 class/style\u300D\u53EA\u5141\u8BB8\u8865\u5E03\u5C40\uFF0C\u76AE\u80A4\u4E00\u5F8B\u8D70 token \u8986\u76D6\uFF1B\u7F3A\u63A7\u4EF6\u65F6\u5148\u63D0\u9700\u6C42\uFF0C\u5B9E\u5728\u8981\u81EA\u5DF1\u5199\u8BF7\u6309 style.md \u53E3\u5F84\u7528\u540C\u4E00\u5957 token\uFF0C\u5E76\u8003\u8651\u63D0\u5230\u672C\u5305\u3002",
-        "en": 'Customization: props are the customization surface \u2014 compose props to change behavior, don\u2019t fork; "append class/style" may only patch layout, skins always go through token overrides; if a control is missing, raise a request first; if you must write your own, follow style.md with the same tokens and consider upstreaming it.'
+        "zh": "\u5B9A\u5236\u8FB9\u754C\uFF1Aprops \u5C31\u662F\u5B9A\u5236\u9762\uFF0C\u8981\u6539\u884C\u4E3A\u8BF7\u7EC4\u5408 props\uFF0C\u4E0D\u8981 fork \u6E90\u7801\uFF1B\u8FFD\u52A0 class/style \u53EA\u5141\u8BB8\u8865\u5E03\u5C40\uFF0C\u76AE\u80A4\u8D70 token \u8986\u76D6\uFF1B\u7F3A\u63A7\u4EF6\u8BF7\u5148\u63D0\u9700\u6C42\u3002",
+        "en": "Customization: props are the surface \u2014 compose them instead of forking source; appended class/style may only patch layout, skins go through token overrides; raise a request before writing a missing control yourself."
       }
     ],
     "code": [
@@ -55890,8 +55935,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
         "en": "IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title)."
       },
       {
-        "zh": "Segmented\uFF1Aitems\uFF08\u5FC5\u586B\uFF09+ \u5355\u9009\u6216\u591A\u9009\uFF1B\u53E6\u6709 size\uFF08\u9ED8\u8BA4 lg\uFF09\u3001variant: default|inset\u3001block\u3001label\u3001id\u3001disabled\u3002\u9009\u4E2D\u7247 = --dshpc-surface-raised + 1px \u63CF\u8FB9 + \u6D6E\u8D77\u9634\u5F71\u3002",
-        "en": "Segmented: items (required) + single or multiple selection; also size (default lg), variant default|inset, block, label, id, disabled. Selected segment = --dshpc-surface-raised + 1px border + lift shadow."
+        "zh": "Segmented\uFF1A`items`\uFF08\u5FC5\u586B\uFF09\u652F\u6301\u5355\u9009 / \u591A\u9009\uFF0C\u53E6\u6709 `size`\uFF08\u9ED8\u8BA4 lg\uFF09\u3001`variant`\uFF08default / inset\uFF09\u3002\u9009\u4E2D\u7247 = \u62AC\u8D77\u5E95\u8272 + 1px \u63CF\u8FB9 + \u6D6E\u8D77\u9634\u5F71\u3002",
+        "en": "Segmented: `items` (required) supports single or multiple selection, plus `size` (default lg) and `variant` (default / inset). Selected = raised background + 1px border + lift shadow."
       }
     ],
     "api": [
@@ -56059,16 +56104,16 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "Picker\uFF1A\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\uFF0C\u81EA\u7ED8\uFF08\u4E0D\u4F9D\u8D56\u5B98\u65B9 Menu\uFF09\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u4E5F\u53EF\u5355\u7528\uFF1AtoGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf\u3002",
-        "en": "Picker: single/multiple/max/search/grouping/empty/degrade, self-drawn (no official Menu). Keyboard: Esc closes, \u2191\u2193 move cursor, Enter selects. Pure logic is also usable standalone: toGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf."
+        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue`\u3002",
+        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`."
       },
       {
-        "zh": "WorkspacePicker\uFF1A\u9886\u57DF\u9009\u62E9\u5668\uFF0C\u6570\u636E\u81EA\u5E26\u7684\u73B0\u6210\u7EC4\u4EF6\uFF08FilePicker \u5DF2\u5220\uFF09\u3002\u6570\u636E\u81EA\u52A8\u6765\u81EA\u5BBF\u4E3B\uFF1A\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 connectHost(ctx)\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u4F4F\u5B98\u65B9 workspaces \u670D\u52A1\u7684\u5FEB\u7167\u3002\u4E0D\u63A5\u7EBF = \u7A7A\u6001\uFF08\u5982\u5B9E\uFF0C\u4E0D\u7F16\u6570\u636E\uFF09\u3002",
-        "en": "WorkspacePicker: a domain picker, a ready-made data-backed component (FilePicker removed). Data comes automatically from the host: call connectHost(ctx) once in the plugin apply, and the component subscribes to the official workspaces service snapshot. No wiring = empty state (honest, no fabricated data)."
+        "zh": "WorkspacePicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u9886\u57DF\u9009\u62E9\u5668\u3002\u5728\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 `connectHost(ctx)`\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u9605\u5B98\u65B9 `workspaces` \u5FEB\u7167\u3002\u672A\u63A5\u7EBF = \u7A7A\u6001\uFF0C\u4E0D\u7F16\u9020\u6570\u636E\u3002",
+        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data."
       },
       {
-        "zh": "ModelPicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u73B0\u6210\u7EC4\u4EF6 + variant: grouped|cascade\uFF08\u9ED8\u8BA4 grouped\uFF09\u3002\u4E24\u79CD\u5F62\u6001\u8FD4\u56DE\u53E3\u5F84\u4E00\u81F4\uFF1AonChange \u90FD\u53D1\u6700\u7EC8\u6A21\u578B value\uFF08${provider}/${id}\uFF09\u3002\u76EE\u5F55\u81EA\u52A8\u6765\u81EA\u5BBF\u4E3B\uFF08serveModelCatalog + connectHost\uFF09\u3002",
-        "en": "ModelPicker: a ready-made data-backed component + variant grouped|cascade (default grouped). Both forms return consistently: onChange emits the final model value (${provider}/${id}). Catalog comes automatically from the host (serveModelCatalog + connectHost)."
+        "zh": "ModelPicker\uFF1A\u6570\u636E\u81EA\u5E26\uFF0C`variant` \u4E3A `grouped`\uFF08\u9ED8\u8BA4\uFF09/ `cascade`\uFF1B`onChange` \u4E00\u5F8B\u53D1 `provider/id` \u5F62\u5F0F\u7684\u6A21\u578B value\u3002\u76EE\u5F55\u6765\u81EA\u5BBF\u4E3B `serveModelCatalog`\u3002",
+        "en": "ModelPicker: brings its own data; `variant` is `grouped` (default) or `cascade`; `onChange` always emits the model value as `provider/id`. Catalog comes from the host `serveModelCatalog`."
       }
     ],
     "api": [
@@ -56356,8 +56401,12 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u4E0D\u5C5E\u4E8E Input \u5BB6\u65CF\u2014\u2014\u6807\u9898\u540E\u3001\u6309\u94AE\u540E\u3001\u6587\u5B57\u540E\u3001\u8F93\u5165\u6846\u540E\u968F\u5904\u53EF\u6302\u3002\u6C14\u6CE1 = \u5B98\u65B9 Tooltip \u672C\u4F53\uFF1A\u63D2\u4EF6\u542F\u52A8\u65F6 setTooltipRenderer((props) => h(OfficialTooltip, props)) \u628A\u5B98\u65B9\u7EC4\u4EF6\u4EA4\u7ED9 core\uFF0Cside / align / maxWidth \u53EF\u900F\u4F20\u3002\u4E0D\u505A\u964D\u7EA7\u515C\u5E95\u2014\u2014\u672A\u6CE8\u5165 renderer \u7684\u975E\u5BBF\u4E3B\u73AF\u5883\uFF08node \u81EA\u68C0\uFF09\u53EA\u51FA\u95EE\u53F7\u56FE\u6807\u3001\u6CA1\u6709\u6C14\u6CE1\u3002",
-        "en": "A standalone component, not part of the Input family \u2014 attachable after titles, buttons, text, or inputs anywhere. The bubble IS the official Tooltip: at plugin startup, setTooltipRenderer((props) => h(OfficialTooltip, props)) hands the official component to core; side / align / maxWidth pass through. No fallback \u2014 a non-host environment that didn\u2019t inject a renderer (node self-check) shows only the question-mark icon, no bubble."
+        "zh": "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u6807\u9898 / \u8F93\u5165\u6846\u540E\u968F\u5904\u53EF\u6302\u3002\u6C14\u6CE1\u662F\u5B98\u65B9 Tooltip \u672C\u4F53\uFF0C\u542F\u52A8\u65F6\u7528 `setTooltipRenderer((p) => h(OfficialTooltip, p))` \u6CE8\u5165\uFF0C\u5176\u4F59 props \u900F\u4F20\u3002",
+        "en": "Standalone \u2014 hang it after a title or input. The bubble is the official Tooltip, injected at startup via `setTooltipRenderer((p) => h(OfficialTooltip, p))`; other props pass through."
+      },
+      {
+        "zh": "\u672A\u6CE8\u5165 renderer \u7684\u73AF\u5883\u53EA\u663E\u793A\u95EE\u53F7\u56FE\u6807\uFF0C\u4E0D\u51FA\u6C14\u6CE1\u3002",
+        "en": "Without a renderer only the question-mark icon shows, no bubble."
       }
     ]
   },
@@ -56369,8 +56418,12 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "\u4E24\u79CD\u5361\u7247\u5916\u89C2\uFF0C\u4E24\u4E2A\u72EC\u7ACB\u7EC4\u4EF6\uFF1ACard = surface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF0Cpadding 14px\uFF08\u5DE6 12 \u4F7F\u7AD6\u6761\u8D34\u8FB9\uFF09\uFF1BStripCard = \u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2\u3002\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\uFF0C\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5782\u76F4\u5C45\u4E2D\u3002\u989C\u8272\u5168\u8D70 token \u21D2 \u4EAE\u6697\u81EA\u52A8\u8DDF\u968F\u5BBF\u4E3B\u3002",
-        "en": "Two card appearances, two separate components: Card = surface background + 1px border + rounded corners, padding 14px (left 12 so the strip hugs the edge); StripCard = same-hue light background + 1px invisible placeholder border + square corners. The header is vertically centered as a whole; drop a bare element in action and it centers. Colors come from tokens \u21D2 light/dark follows the host automatically."
+        "zh": "\u4E24\u79CD\u5916\u89C2\uFF0C\u4E24\u4E2A\u7EC4\u4EF6\uFF1ACard = surface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF08padding 14px\uFF0C\u5DE6 12 \u4F7F\u7AD6\u6761\u8D34\u8FB9\uFF09\uFF1BStripCard = \u540C\u8272\u6D45\u5E95 + \u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2\u3002",
+        "en": "Two appearances, two components: Card = surface background + 1px border + rounded corners (padding 14px, left 12 so the strip hugs the edge); StripCard = same-hue light background + placeholder border + square corners."
+      },
+      {
+        "zh": "\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\uFF0C`action` \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5C45\u4E2D\u3002\u989C\u8272\u5168\u8D70 token\uFF0C\u660E\u6697\u8DDF\u968F\u5BBF\u4E3B\u3002",
+        "en": "The header centers vertically as a whole; drop a bare element into `action` and it centers. Colors come from tokens, so light/dark follows the host."
       }
     ],
     "api": [
@@ -56459,8 +56512,12 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "\u5C0F\u6807\u7B7E\u3002\u4E24\u6761\u53EF\u9009\u8F74\uFF1Atone\uFF08neutral \u9ED8\u8BA4\u7070\u9762 / business / success / warning / danger\u2014\u2014\u975E neutral \u4E3A\u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09\uFF1Bsize\uFF08sm \u9ED8\u8BA4 / md = font-size:12px\uFF0C\u5361\u7247\u5143\u4FE1\u606F\u884C\u7528\uFF09\u3002\u4F20 onClick \u624D\u662F\u53EF\u70B9\u7684\u3002\u8BED\u4E49\u8FB9\u754C\uFF1AChip \u53EA\u7BA1\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u8FD9\u4E00\u4EF6\u4E8B\uFF1B\u53EA\u7ED9\u56FE\u6807\u7684\u5C0F\u6309\u94AE\u8BF7\u7528 IconButton\uFF0C\u4E0D\u8981\u62FF Chip \u5F53\u56FE\u6807\u5E95\u677F\uFF08\u540C\u4E00\u4E2A\u7C7B\u540D\u4E24\u5957\u76AE\u80A4\u4F1A\u4E92\u76F8\u8986\u76D6\uFF09\u3002",
-        "en": 'A small tag. Two optional axes: tone (neutral default gray / business / success / warning / danger \u2014 non-neutral is a solid signal surface); size (sm default / md = font-size:12px, for card meta rows). Pass onClick to make it clickable. Boundary: Chip only does "pill tag"; for an icon-only small button use IconButton \u2014 don\u2019t use Chip as an icon baseplate (one class name with two skins would overwrite each other).'
+        "zh": "\u5C0F\u6807\u7B7E\u3002`tone`\uFF1Aneutral\uFF08\u9ED8\u8BA4\uFF09/ business / success / warning / danger\uFF1B`size`\uFF1Asm\uFF08\u9ED8\u8BA4\uFF09/ md\uFF0812px\uFF09\u3002\u4F20 `onClick` \u624D\u53EF\u70B9\u3002",
+        "en": "A small tag. `tone`: neutral (default) / business / success / warning / danger; `size`: sm (default) / md (12px). Pass `onClick` to make it clickable."
+      },
+      {
+        "zh": "\u8FB9\u754C\uFF1A\u53EA\u505A\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u3002\u7EAF\u56FE\u6807\u7684\u5C0F\u6309\u94AE\u8BF7\u7528 IconButton\uFF0C\u522B\u62FF Chip \u5F53\u56FE\u6807\u5E95\u677F\u3002",
+        "en": "Boundary: pill tags only. For an icon-only button use IconButton; never use Chip as an icon baseplate."
       }
     ]
   },
@@ -56472,20 +56529,20 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "showToast / notify \u7B49\u5E95\u5C42\u4ECD\u662F Sonner\uFF08\u52A8\u753B/\u5B9A\u4F4D/\u5806\u53E0\uFF09\u3002\u8DE8\u526F\u672C toast \u5BBF\u4E3B\uFF1Acore \u88AB\u6253\u8FDB\u6BCF\u4E2A\u63D2\u4EF6 bundle\uFF0C\u65E7\u5B9E\u73B0 N \u4E2A\u63D2\u4EF6\u540C\u9875\u4F1A\u6302 N \u4E2A\u540C id \u5BB9\u5668\uFF1B\u73B0\u6539\u4E3A globalThis \u4E0A Symbol.for('dsh-plugin-core/toast-host') \u5355\u4F8B\uFF0C\u5148\u5230\u573A\u7684\u526F\u672C\u5EFA\u552F\u4E00\u5BB9\u5668\u4E0E Toaster\uFF0C\u5176\u4F59\u526F\u672C\u628A ToastPayload \u4EA4\u7ED9\u5BBF\u4E3B\u6E32\u67D3\u3002",
-        "en": "showToast / notify etc. are still backed by Sonner (animation/positioning/stacking). Cross-bundle toast host: core is bundled into every plugin, and the old impl would mount N same-id containers on one page; now a globalThis Symbol.for('dsh-plugin-core/toast-host') singleton makes the first bundle create the unique container and Toaster, and later bundles hand their ToastPayload to the host for rendering."
+        "zh": "\u5E95\u5C42\u662F Sonner\u3002toast \u5BBF\u4E3B\u662F globalThis \u5355\u4F8B\uFF08`Symbol.for('dsh-plugin-core/toast-host')`\uFF09\uFF1A\u9996\u4E2A\u526F\u672C\u5EFA\u5BB9\u5668\uFF0C\u5176\u4F59\u628A payload \u4EA4\u5B83\u6E32\u67D3\u3002",
+        "en": "Backed by Sonner. The toast host is a singleton on globalThis (`Symbol.for('dsh-plugin-core/toast-host')`): the first copy mounts the container, the rest hand their payload to it."
       },
       {
-        "zh": '\u4E09\u6761\u53D6\u820D\uFF08\u7528\u6237\u62CD\u677F\u63A5\u53D7\uFF0C\u4E0D\u8981\u81EA\u884C"\u4F18\u5316"\uFF09\uFF1A\u2460 \u6837\u5F0F\u7531\u7B2C\u4E00\u4E2A\u526F\u672C\u51B3\u5B9A\uFF1B\u2461 position \u5168\u5C40\u5171\u4EAB\uFF08\u4E00\u4E2A\u5C4F\u5E55\u4E00\u4E2A\u533A\uFF09\uFF1B\u2462 \u4E0D\u505A\u5378\u8F7D\u56DE\u6536 / \u5F15\u7528\u8BA1\u6570\u3002\u65E0 document \u7684\u73AF\u5883\u9759\u9ED8\u8DF3\u8FC7\u3001\u4E0D\u6CE8\u518C\u3002',
-        "en": 'Three trade-offs (accepted by the user, don\u2019t "optimize"): \u2460 styling is decided by the first bundle; \u2461 position is shared globally (one zone per screen); \u2462 no unload reclamation / ref counting. Environments without document silently skip and don\u2019t register.'
+        "zh": "\u4E09\u6761\u53D6\u820D\uFF08\u7167\u7528\u522B\u6539\uFF09\uFF1A\u2460 \u6837\u5F0F\u53D6\u9996\u4E2A\u526F\u672C\uFF1B\u2461 position \u5168\u5C40\u5171\u4EAB\uFF1B\u2462 \u4E0D\u505A\u5378\u8F7D\u56DE\u6536\u3002\u65E0 document \u7684\u73AF\u5883\u9759\u9ED8\u8DF3\u8FC7\u3002",
+        "en": "Three trade-offs (accept them): \u2460 styling comes from the first copy; \u2461 position is shared per screen; \u2462 no unload reclamation. Environments without document skip silently."
       },
       {
-        "zh": "Modal\uFF1A\u81EA\u7ED8 overlay\uFF0C\u4E0D\u7528 react-dom \u7684 portal\uFF08\u907F\u514D\u591A\u4E00\u4E2A\u5FC5\u9700\u4F9D\u8D56\uFF09\u3002",
-        "en": "Modal: self-drawn overlay, not react-dom\u2019s portal (avoids an extra required dependency)."
+        "zh": "Modal \u662F\u81EA\u7ED8 overlay\uFF0C\u4E0D\u8D70 react-dom portal\u3002",
+        "en": "Modal is a self-drawn overlay, not a react-dom portal."
       },
       {
-        "zh": "\u906E\u7F69\u81EA\u52A8\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08\u7528\u6237 2026-10-22 \u62CD\u677F\uFF09\uFF1AMask \u7684\u53F3\u8FB9\u754C\u8BFB `--dshpc-page-inset-right`\uFF08\u7531 PanelDock \u53D1\u5E03\uFF0C\u591A dock \u6C42\u548C\uFF09\uFF0C\u6240\u4EE5\u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF0C\u5F39\u7A97\u5728**\u5269\u4E0B\u90A3\u5757\u533A\u57DF**\u91CC\u5C45\u4E2D\u3002\u5F39\u7A97\u56E0\u6B64**\u4E0D\u9700\u8981\u4EFB\u4F55\u906E\u7F69\u53C2\u6570**\uFF0C\u8C03\u7528\u65B9\u4E5F\u4E0D\u7528\u53BB\u91CF\u5206\u680F\u5BBD\u5EA6\u2014\u2014\u91CF\u5BBD\u5EA6\u90A3\u4E00\u7248\u5DF2\u5220\uFF08\u5F02\u6B65\u6302\u8F7D\u5BFC\u81F4\u6052\u4E3A 0\uFF0C\u4E14\u5C5E\u8D8A\u754C\uFF09\u3002",
-        "en": "The mask yields to a page-level right column automatically (decided 2026-10-22): its right edge reads `--dshpc-page-inset-right` (published by PanelDock, summed across docks), so the column stays bright and clickable and the dialog centers in the **remaining** area. The dialog therefore needs **no mask props**, and callers no longer measure the column \u2014 the measuring version was deleted (it read 0 because mounting is async, and it was the content deciding the mask\u2019s geometry)."
+        "zh": "\u906E\u7F69\u53F3\u8FB9\u754C\u8BFB `--dshpc-page-inset-right`\uFF08\u591A\u4E2A dock \u6C42\u548C\uFF09\uFF0C\u81EA\u52A8\u8BA9\u5F00\u53F3\u4FA7\u5206\u680F\uFF0C\u5F39\u7A97\u5728**\u5269\u4F59\u533A\u57DF**\u5C45\u4E2D\u3002\u5F39\u7A97\u65E0\u9700\u4EFB\u4F55\u906E\u7F69\u53C2\u6570\uFF1B\u4E5F\u522B\u81EA\u5DF1\u91CF\u5206\u680F\u5BBD\u5EA6\uFF08\u6302\u8F7D\u5F02\u6B65\uFF0C\u6052\u4E3A 0\uFF09\u3002",
+        "en": "The mask\u2019s right edge reads `--dshpc-page-inset-right` (summed across docks) and yields to the right column, centering the dialog in the **remaining** area. The dialog needs no mask props; never measure the column yourself (mounting is async, it always reads 0)."
       }
     ],
     "api": [
@@ -56497,8 +56554,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "",
             "def": "",
             "desc": {
-              "zh": "\u5B98\u65B9 Sonner \u539F\u751F\uFF08\u5BF9\u6BD4 / demo \u7528\uFF09\u3002opts: { variant?, durationMs?, color?, onDismiss?, position? }\uFF1Bcolor \u6574\u6761\u81EA\u5B9A\u4E49\u80CC\u666F\u8272\uFF1Bposition 6 \u5411\uFF08\u9ED8\u8BA4 bottom-center\uFF09\uFF1B\u6697\u8272\u8DDF\u968F\u5BBF\u4E3B",
-              "en": "Raw official Sonner (for comparison / demo). opts: { variant?, durationMs?, color?, onDismiss?, position? }; color sets the whole background; position 6-way (default bottom-center); dark follows host"
+              "zh": "\u5B98\u65B9 Sonner \u539F\u751F\uFF08\u5BF9\u6BD4 / demo \u7528\uFF09\u3002opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`\uFF0C6 \u5411\u5B9A\u4F4D\uFF0C\u660E\u6697\u8DDF\u968F\u5BBF\u4E3B",
+              "en": "Raw official Sonner (comparison / demo). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host"
             }
           },
           {
@@ -56506,8 +56563,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "",
             "def": "",
             "desc": {
-              "zh": "\u9879\u76EE\u5185\u63A8\u8350\uFF1A\u6211\u4EEC\u5C01\u88C5\u597D\u7684\u63D0\u793A\u3002opts: { variant?, description?, durationMs?, position?, actions? }\uFF1B\u53F3\u4FA7 actions?: { text, variant?, onClick }[]\uFF081\u20132 \u4E2A\uFF0C\u7528\u6211\u4EEC\u81EA\u5DF1\u7684 Button\uFF09\uFF1B\u5E95\u5C42\u4ECD\u662F Sonner",
-              "en": "Recommended in-project: our wrapped toast. opts: { variant?, description?, durationMs?, position?, actions? }; right-side actions?: { text, variant?, onClick }[] (1\u20132, using our own Button); still Sonner underneath"
+              "zh": "\u9ED8\u8BA4\u7528\u8FD9\u4E2A\u3002opts: `{ variant?, description?, durationMs?, position?, actions? }`\uFF0Cactions \u7528\u81EA\u5E26 Button\uFF081\u20132 \u4E2A\uFF09",
+              "en": "Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1\u20132)"
             }
           },
           {
@@ -56515,8 +56572,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "",
             "def": "",
             "desc": {
-              "zh": "\u5BBF\u4E3B\u539F\u751F Toast\uFF08\u5B50\u8DEF\u5F84 dsh-plugin-core/ui/host\uFF09\u3002opts: { tone?, holdMs?, actions?, onDismiss? }\uFF1B\u72EC\u7ACB\u5B50\u8DEF\u5F84\u5BFC\u51FA\uFF0C\u9694\u79BB\u5E73\u53F0\u6A21\u5757",
-              "en": "Host-native Toast (subpath dsh-plugin-core/ui/host). opts: { tone?, holdMs?, actions?, onDismiss? }; exported via a separate subpath to isolate platform modules"
+              "zh": "\u5BBF\u4E3B\u539F\u751F Toast\uFF0C\u8D70 `dsh-plugin-core/ui/host` \u5B50\u8DEF\u5F84\u3002opts: `{ tone?, holdMs?, actions?, onDismiss? }`",
+              "en": "Host-native Toast from the `dsh-plugin-core/ui/host` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }`"
             }
           },
           {
@@ -56662,10 +56719,10 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
           {
             "name": "maxWidth",
             "type": "string",
-            "def": "sm: calc(100% - 48px)\uFF1Bmd/lg \u4E0D\u8BBE",
+            "def": "\u6309 size",
             "desc": {
-              "zh": "\u5BBD\u5EA6\u7528 `100%`\uFF08\u76F8\u5BF9\u906E\u7F69\u76D2\uFF09\u800C\u975E `100vw`\uFF1A\u53F3\u4FA7\u5206\u680F\u5728\u573A\u65F6\u906E\u7F69\u5DF2\u8BA9\u4F4D\uFF0C`100vw` \u4F1A\u6EA2\u51FA\u5230\u5206\u680F\u4E0A",
-              "en": "Widths are `100%` of the mask box, not `100vw`: with a right column present the mask has already yielded, and `100vw` would spill onto it"
+              "zh": "\u4EFB\u610F CSS \u503C\uFF0C\u8986\u76D6 size \u7684\u5BBD\u5EA6\u4E0A\u9650\uFF1B\u4E0D\u8981\u7528 vw\uFF08\u906E\u7F69\u5DF2\u6309\u53F3\u4FA7\u5206\u680F\u8BA9\u4F4D\uFF09",
+              "en": "Any CSS value, overriding the size\u2019s max width; avoid vw (the mask already yielded to the right column)"
             }
           },
           {
@@ -56707,16 +56764,16 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
     },
     "prose": [
       {
-        "zh": "\u300C\u53F3\u4FA7\u5206\u680F\u300D\u4ECE\u4E1A\u52A1\u91CC\u5265\u51FA\u6765\u7684\u901A\u7528\u58F3\u3002\u5B83\u662F\u5E03\u5C40\u6210\u5458\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u3002\u56E0\u6B64\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002\u5206\u5DE5\u7167\u6210\u719F\u7EC4\u4EF6\u5E93\u7684\u901A\u884C\u505A\u6CD5\uFF1A\u7ED3\u6784\u5199\u5728\u8C03\u7528\u70B9\uFF08children\uFF09\uFF0C\u663E\u9690\u5F52\u72B6\u6001\uFF08open/close \u53EA\u4F20 id\uFF09\u3002",
-        "en": 'A generic shell extracted from the business layer for "right-side panels". It is a layout member, not an overlay: it takes width and narrows the main area, not covering it. So the caller must place it inside its own flex root. Following common component-library practice: structure is written at the call site (children), visibility is state (open/close only passes an id).'
+        "zh": "\u53F3\u4FA7\u5206\u680F\u7684\u901A\u7528\u58F3\uFF0C\u662F**\u5E03\u5C40\u6210\u5458**\u800C\u975E\u6D6E\u5C42\uFF1A\u5360\u5BBD\u6324\u7A84\u4E3B\u533A\uFF0C\u8981\u7531\u8C03\u7528\u65B9\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u3002\u5206\u5DE5\uFF1A\u7ED3\u6784\u5199\u5728\u8C03\u7528\u70B9\uFF08children\uFF09\uFF0C\u663E\u9690\u5F52\u72B6\u6001\uFF08`open` / `close` \u53EA\u4F20 id\uFF09\u3002",
+        "en": "A generic shell for right-side columns \u2014 a **layout member**, not an overlay: it takes width and narrows the main area, so the caller puts it in their own flex root. Split of work: structure at the call site (children), visibility in state (`open`/`close` take only an id)."
       },
       {
-        "zh": "\u9762\u677F\u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\u3002\u4E0D\u505A\u7684\u4E8B\uFF08\u62CD\u677F\u7559\u6863\uFF09\uFF1A\u591A\u4EFD\u540C\u540D\uFF08multi\uFF09\u3001tab \u5207\u6362\u6761\u3001\u81EA\u52A8\u6DD8\u6C70\u3001\u6D6E\u52A8\u5C42\u2014\u2014\u6807\u7B7E\u5207\u6362\u7531\u6D88\u8D39\u65B9\u5728\u81EA\u5DF1\u7684\u9762\u677F\u5185\u5BB9\u91CC\u5B9E\u73B0\u3002\u4E24\u6761\u5B9E\u73B0\u7EA6\u675F\uFF1A\u9762\u677F\u662F position:sticky + height:100vh \u7684 flex \u6210\u5458\uFF0C\u523B\u610F\u4E0D\u8BBE z-index\uFF1B\u62D6\u52A8\u671F\u7ED9 iframe \u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\u3002",
-        "en": "Panel height defaults to viewport height; when nested in a fixed-height container, the caller sets --dshpc-dock-h. Deliberately not done (on record): multi same-name, tab-switch bar, auto-eviction, floating layer \u2014 tab switching is the consumer\u2019s job inside their own panel content. Two impl constraints: panels are position:sticky + height:100vh flex members with no z-index; during drag, yield pointer events to iframes."
+        "zh": "\u9762\u677F\u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 `--dshpc-dock-h`\u3002\u4E0D\u652F\u6301\uFF1A\u540C\u540D\u591A\u5B9E\u4F8B\u3001tab \u5207\u6362\u6761\u3001\u81EA\u52A8\u6DD8\u6C70\u3001\u6D6E\u5C42\u2014\u2014\u6807\u7B7E\u5207\u6362\u8BF7\u6D88\u8D39\u65B9\u5728\u81EA\u5DF1\u7684\u9762\u677F\u5185\u5BB9\u91CC\u5B9E\u73B0\u3002",
+        "en": "Panel height defaults to viewport height; in a fixed-height container the caller sets `--dshpc-dock-h`. Not supported: same-name duplicates, tab bars, auto-eviction, floating layers \u2014 tab switching belongs in the consumer\u2019s own panel content."
       },
       {
-        "zh": "\u5360\u5BBD\u5951\u7EA6\uFF08\u7528\u6237 2026-10-22 \u62CD\u677F\uFF09\uFF1Adock \u628A\u300C\u6240\u6709\u5F00\u7740\u7684\u680F\u5BBD\u4E4B\u548C\u300D\u5B9E\u65F6\u53D1\u5E03\u5230\u6839\u5143\u7D20\u7684 `--dshpc-page-inset-right`\uFF08\u62D6\u62FD\u4E2D\u9010\u5E27\u66F4\u65B0\uFF0C\u5168\u5173/\u5378\u8F7D\u5373\u79FB\u9664\uFF09\uFF0C\u5168\u5C4F\u906E\u7F69\u636E\u6B64\u8BA9\u4F4D\u3002\u540C\u9875\u591A\u4E2A dock \u6309\u5B9E\u4F8B\u6C42\u548C \u2014\u2014 \u8FD9\u4E0D\u662F\u53EF\u9009\u4F18\u5316\uFF1Ademo \u81EA\u5DF1\u5C31\u6709\u300C\u6574\u9875 dock + \u6587\u4EF6\u9884\u89C8 dock\u300D\u4E24\u4E2A\uFF0C\u5404\u5199\u540C\u4E00\u4E2A\u53D8\u91CF\u4F1A\u4E92\u76F8\u8986\u76D6\u3002\u4E4B\u6240\u4EE5\u6302\u5728\u6839\u5143\u7D20\u800C\u4E0D\u662F mount \u4E0A\uFF0C\u662F\u56E0\u4E3A\u906E\u7F69\u4E0D\u4FDD\u8BC1\u662F\u90A3\u5757 flex \u884C\u7684\u540E\u4EE3\u3002",
-        "en": "Width contract (decided 2026-10-22): the dock publishes the sum of its open panel widths to `--dshpc-page-inset-right` on the root element (updated every frame while dragging, removed when all panels close / on unmount), and full-screen masks yield by it. Multiple docks on one page are summed per instance \u2014 not an optional nicety: the demo itself has two (page dock + file-preview dock) and a single shared variable would let them overwrite each other. It lives on the root element rather than on the mount because the mask is not guaranteed to be a descendant of that flex row."
+        "zh": "\u5360\u5BBD\u5951\u7EA6\uFF1A\u5DF2\u5F00\u680F\u5BBD\u4E4B\u548C\u5B9E\u65F6\u5199\u8FDB\u6839\u5143\u7D20 `--dshpc-page-inset-right`\uFF08\u62D6\u62FD\u9010\u5E27\u66F4\u65B0\uFF0C\u5168\u5173\u5373\u79FB\u9664\uFF09\uFF0C\u5168\u5C4F\u906E\u7F69\u636E\u6B64\u8BA9\u4F4D\uFF1B\u540C\u9875\u591A\u4E2A dock \u6C42\u548C\u3002",
+        "en": "Width contract: the sum of open widths goes to `--dshpc-page-inset-right` on the root element (every frame while dragging, removed when all close), and full-screen masks yield to it; multiple docks on one page are summed."
       }
     ],
     "api": [
@@ -60529,7 +60586,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1024-0219-eqlw"]
+            [t3("buildStamp"), "1024-0308-tvex"]
           ].map(
             ([label, value]) => (0, import_react65.createElement)(
               "tr",

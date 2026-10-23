@@ -17,12 +17,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
 
 const MAP = [
-  { doc: 'docs/design/features/explorer.doc.ts', md: 'docs/design/features/explorer.generated.md', name: 'explorer' },
-  { doc: 'docs/design/features/design.doc.ts', md: 'docs/design/features/design.generated.md', name: 'design' },
-  { doc: 'docs/design/features/session.doc.ts', md: 'docs/design/features/session.generated.md', name: 'session' },
-  { doc: 'docs/design/features/utils.doc.ts', md: 'docs/design/features/utils.generated.md', name: 'utils' },
-  { doc: 'docs/examples/integration.doc.ts', md: 'docs/examples/integration.generated.md', name: 'integration' },
-  { doc: 'docs/design/features/ui.doc.ts', md: 'docs/design/features/ui.generated.md', name: 'ui' },
+  { doc: 'docs/design/features/explorer.doc.ts', md: 'docs/design/features/explorer.md', name: 'explorer' },
+  { doc: 'docs/design/features/design.doc.ts', md: 'docs/design/features/design.md', name: 'design' },
+  { doc: 'docs/design/features/session.doc.ts', md: 'docs/design/features/session.md', name: 'session' },
+  { doc: 'docs/design/features/utils.doc.ts', md: 'docs/design/features/utils.md', name: 'utils' },
+  { doc: 'docs/examples/integration.doc.ts', md: 'docs/examples/integration.md', name: 'integration' },
+  { doc: 'docs/design/features/ui.doc.ts', md: 'docs/design/features/ui.md', name: 'ui' },
 ]
 
 const CHECK = process.argv.includes('--check')

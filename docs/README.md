@@ -28,6 +28,7 @@
 | 数据库说明 | **不适用**（本包无数据库） | 保留行说明原因，不删行 |
 | 样式规范 | `docs/design/style.md` | token 清单口径、`createStyleKit`、暗色判据、定制边界 |
 | 方法规范 | `docs/design/methods.md` | 日期 / 字符串 / 字节 / HTTP 的边界行为与兜底口径 |
+| 文案撰写规范（追加槽位） | `docs/design/copywriting.md` | 给 Agent 看的文案标准：禁过程叙事、段落与表格口径、双语对等、格式冻结 |
 | 样例 | `docs/examples/integration.md` | 从零接入一个插件的完整示例 |
 | 需求与决策（追加槽位） | `docs/requirements.md` | 需求范围、拍板结论、遗留问题 |
 

@@ -89,8 +89,8 @@ const doc: DocTopic = {
       heading: { zh: 'token 口径', en: 'Token conventions' },
       prose: [
         {
-          zh: 'token 来自 `dsh-task-dispatch-table/src/client/ui/tokens.ts` 的整段提取（颜色 / 尺寸 / 字号 / 层级），**含深色覆盖段**。取值一律走 `var(--<prefix>-*)`，不在规则里写死颜色值。',
-          en: 'Tokens are extracted wholesale from `dsh-task-dispatch-table/src/client/ui/tokens.ts` (color / size / font-size / elevation), **including the dark-mode override block**. Always read values via `var(--<prefix>-*)`, never hard-code colors in rules.',
+          zh: 'token 覆盖颜色 / 尺寸 / 字号 / 层级，**含深色覆盖段**。取值一律走 `var(--dshpc-*)`，不在规则里写死颜色值。',
+          en: 'Tokens cover color / size / font-size / elevation, **including the dark-mode override block**. Always read values via `var(--dshpc-*)`, never hard-code colors in rules.',
         },
         { zh: '完整清单与命名口径见 [`../style.md`](../style.md)。', en: 'Full list and naming conventions: [`../style.md`](../style.md).' },
       ],

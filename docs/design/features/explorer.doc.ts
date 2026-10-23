@@ -2,39 +2,33 @@
 import type { DocTopic } from '../doc-format.js'
 
 const explorerUsage = `import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
-import { SessionPreview } from 'dsh-plugin-core/session'
 
 // 右侧分栏预览（占宽度、挤窄主区）
 openFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })
 
-// path 传绝对路径时：核心自动读宿主 workspaces 快照（connectHost 注入），按最长前缀
-// 匹配所属工作区、list 换该工作区的会话 ⇒ 面包屑/目录树正常；▾ 下拉「切工作区」同样
-// 自动可用（无会话的工作区不进列表）。零传参即生效，无需调用方做任何事。
+// path 传绝对路径时：按最长前缀匹配所属工作区，面包屑 / 目录树与 ▾「切工作区」自动可用
 openFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md' })
-// 要覆盖快照才显式传：workspaceAnchors（宿主 workspaces 快照原样，带 path + sessionIds）
+// 要覆盖宿主快照才显式传 workspaceAnchors（带 path + sessionIds）
 openFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md', workspaceAnchors })
 
 // 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）
-const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })
-
-// 会话预览
-<SessionPreview sessionId="..." source={source} variant="modal" />`
+const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })`
 
 const doc: DocTopic = {
   title: { zh: 'explorer —— 工作区浏览', en: 'explorer — Workspace browsing' },
-  exports: ['openFilePreview', 'pickWorkspaceFile', 'WorkspacePicker'],
+  exports: ['openFilePreview', 'pickWorkspaceFile', 'FileBrowser', 'FilePreview'],
   sections: [
     {
       id: 'explorer',
       heading: { zh: '概览', en: 'Overview' },
       prose: [
         {
-          zh: 'explorer 提供工作区文件浏览与选择能力，依赖宿主提供的工作区文件快照。',
-          en: 'explorer provides workspace file browsing and picking, driven by the host-provided workspace file snapshot.',
+          zh: '提供工作区文件浏览与选择，数据来自宿主提供的工作区文件快照。',
+          en: 'Workspace file browsing and picking, driven by the host-provided workspace file snapshot.',
         },
         {
-          zh: '浏览态停靠是布局成员（占宽度、把主区挤窄），不要挂在 document.body 上自己套 fixed。',
-          en: 'The browse dock is a layout member (takes width, narrows the main area); do not mount it on document.body with your own fixed positioning.',
+          zh: '浏览态停靠是布局成员（占宽度、挤窄主区），不要挂 `document.body` 再自己套 fixed。',
+          en: 'The browse dock is a layout member (takes width, narrows the main area); never mount it on `document.body` with your own fixed positioning.',
         },
       ],
     },
@@ -48,8 +42,8 @@ const doc: DocTopic = {
       heading: { zh: '1. 接入示例', en: '1. Usage' },
       prose: [
         {
-          zh: '从 ctx 取出工作区快照，传给能力接口；不要传整个 ctx。',
-          en: 'Pull the workspace snapshot out of ctx and pass it to the capability APIs; do not pass the whole ctx.',
+          zh: '从 ctx 取出工作区快照再传给能力接口，不要传整个 ctx。',
+          en: 'Pull the workspace snapshot out of ctx and hand it to the capability APIs; do not pass the whole ctx.',
         },
       ],
       code: [{ id: 'explorer-usage-code', lang: 'tsx', src: explorerUsage }],
@@ -62,22 +56,75 @@ const doc: DocTopic = {
           id: 'explorer-api-table',
           rows: [
             {
-              name: 'openFilePreview',
-              type: '({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle',
+              name: 'openFilePreview(opts)',
+              type: 'OpenFilePreviewOptions => FilePreviewHandle',
               def: '—',
               desc: {
-                zh: '右侧分栏预览文件/文件夹，mount 为必填的 flex 行；▾ 切工作区的「当前区」按路径匹配定（rootName 次之），点任何工作区（含入口那个）都从该工作区的根开始列',
-                en: 'Preview a file/folder in a right-side dock; mount is the required flex row. The ▾ workspace switch resolves the current workspace by path match (rootName as fallback), and picking any workspace — the entry one included — starts from that workspace’s root',
+                zh: '在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容）',
+                en: 'Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node)',
               },
             },
             {
-              name: 'pickWorkspaceFile',
-              type: '({ workspaceFiles, sessionId, anchor, filter? }) => Promise<{ path, isDir }>',
+              name: 'opts.mount',
+              type: 'HTMLElement',
               def: '—',
-              desc: {
-                zh: '锚定按钮旁弹模态选文件，Promise 返回工作区相对路径',
-                en: 'Open a modal anchored to a button and resolve with the workspace-relative path',
-              },
+              required: '是',
+              desc: { zh: '页面里的 flex 行；预览靠它占宽而不是浮在页面上方', en: 'The page’s flex row; the preview takes width there instead of floating' },
+            },
+            {
+              name: 'opts.workspaceFiles',
+              type: 'WorkspaceFilesFace',
+              def: '—',
+              desc: { zh: '从 ctx 取出的工作区文件服务；传 `content` 时可省', en: 'Workspace file service taken from ctx; optional when passing `content`' },
+            },
+            {
+              name: 'opts.sessionId',
+              type: 'string',
+              def: '—',
+              desc: { zh: '该工作区的真实会话 id（服务是会话作用域的）；传 `content` 时可省', en: 'A real session id of that workspace (the service is session-scoped); optional when passing `content`' },
+            },
+            {
+              name: 'opts.path',
+              type: 'string',
+              def: '—',
+              desc: { zh: '工作区相对路径；绝对路径会自动按最长前缀匹配所属工作区。与 `content` 二选一', en: 'Workspace-relative path; absolute paths are matched to their workspace by longest prefix. Mutually exclusive with `content`' },
+            },
+            {
+              name: 'opts.content',
+              type: '() => ReactNode',
+              def: '—',
+              desc: { zh: '自定义预览内容，塞进同一个右侧 dock；传它时不需要 `path`', en: 'Custom preview body rendered in the same dock; no `path` needed when set' },
+            },
+            {
+              name: 'opts.officeToPdf',
+              type: 'OfficeToPdfFace',
+              def: '—',
+              desc: { zh: 'Office 转 PDF 能力；缺失则该格式走「不支持」而不是报错', en: 'Office→PDF capability; without it that format shows "unsupported" instead of erroring' },
+            },
+            {
+              name: 'opts.rootName',
+              type: 'string',
+              def: '—',
+              desc: { zh: '兜底显示名（路径匹配不出工作区时用）', en: 'Fallback display name, used when no workspace matches the path' },
+            },
+            {
+              name: 'pickWorkspaceFile(opts)',
+              type: 'PickWorkspaceFileOptions => Promise<PickedFile>',
+              def: '—',
+              desc: { zh: '锚定按钮弹出模态选文件，解析出 `{ path, isDir }`', en: 'Anchored modal picker that resolves `{ path, isDir }`' },
+            },
+            {
+              name: 'opts.anchor',
+              type: 'HTMLElement',
+              def: '—',
+              required: '是',
+              desc: { zh: '模态贴着它弹', en: 'The modal anchors next to it' },
+            },
+            {
+              name: 'opts.filter',
+              type: 'PickFilter',
+              def: '—',
+              desc: { zh: '按扩展名过滤 `{ exts: [\'md\'] }`；`dirs: true` 则只允许选文件夹', en: 'Filter by extension `{ exts: [\'md\'] }`; `dirs: true` restricts picking to folders' },
             },
           ],
         },

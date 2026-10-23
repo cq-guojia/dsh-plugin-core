@@ -57,16 +57,16 @@ const doc: DocTopic = {
       heading: { zh: '概览', en: 'Overview' },
       prose: [
         {
-          zh: '依赖 design。装的是「用 token 搭出来的零件」——直接用，不再自己写原生控件。纯零件，不自己取数：选项、当前值都经 props 给（数据要跨 host↔client 边界，通道是插件私有的）。',
-          en: 'Depends on design. Ships "parts built from tokens" — use them directly instead of writing native controls. Pure parts, no self-fetching: options and current value come via props (data crosses the host↔client boundary over the plugin’s private channel).',
+          zh: '依赖 design。装的是「用 token 搭出来的零件」，直接用，不再自己写原生控件。纯零件不自己取数：选项、当前值都经 props 给（数据通道是插件私有的）。',
+          en: 'Depends on design. "Parts built from tokens" — use them instead of writing native controls. No self-fetching: options and value come via props (the data channel is plugin-private).',
         },
         {
-          zh: '官方件通路：ui 入口保持零 @deepseek-ai/* 依赖（Node 单测 / 非宿主环境 import 不崩）；官方 primitives 经 src/ui/official.ts 以独立子路径 dsh-plugin-core/ui/official 透出。要消费官方件（FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip …）的封装从这条通路引，不许在别处 import 平台模块。',
-          en: 'Official-component path: the ui entry stays free of @deepseek-ai/* deps (so Node unit tests / non-host imports don’t crash); official primitives are exposed via src/ui/official.ts through the separate subpath dsh-plugin-core/ui/official. Wrappers that consume official parts (FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip …) must import from this path — never import platform modules elsewhere.',
+          zh: '入口零 `@deepseek-ai/*` 依赖（非宿主环境 import 不崩）。官方 primitives 走独立子路径 `dsh-plugin-core/ui/official`，封装一律从这条通路引。',
+          en: 'The entry keeps zero `@deepseek-ai/*` deps (imports never crash outside the host). Official primitives come through the separate subpath `dsh-plugin-core/ui/official`; import them only from there.',
         },
         {
-          zh: '定制边界：props 就是定制面，要改行为请组合 props，不要 fork 源码；「追加 class/style」只允许补布局，皮肤一律走 token 覆盖；缺控件时先提需求，实在要自己写请按 style.md 口径用同一套 token，并考虑提到本包。',
-          en: 'Customization: props are the customization surface — compose props to change behavior, don’t fork; "append class/style" may only patch layout, skins always go through token overrides; if a control is missing, raise a request first; if you must write your own, follow style.md with the same tokens and consider upstreaming it.',
+          zh: '定制边界：props 就是定制面，要改行为请组合 props，不要 fork 源码；追加 class/style 只允许补布局，皮肤走 token 覆盖；缺控件请先提需求。',
+          en: 'Customization: props are the surface — compose them instead of forking source; appended class/style may only patch layout, skins go through token overrides; raise a request before writing a missing control yourself.',
         },
       ],
       code: [{ id: 'ui-setup', lang: 'ts', src: setup }],
@@ -84,8 +84,8 @@ const doc: DocTopic = {
           en: 'IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title).',
         },
         {
-          zh: 'Segmented：items（必填）+ 单选或多选；另有 size（默认 lg）、variant: default|inset、block、label、id、disabled。选中片 = --dshpc-surface-raised + 1px 描边 + 浮起阴影。',
-          en: 'Segmented: items (required) + single or multiple selection; also size (default lg), variant default|inset, block, label, id, disabled. Selected segment = --dshpc-surface-raised + 1px border + lift shadow.',
+          zh: 'Segmented：`items`（必填）支持单选 / 多选，另有 `size`（默认 lg）、`variant`（default / inset）。选中片 = 抬起底色 + 1px 描边 + 浮起阴影。',
+          en: 'Segmented: `items` (required) supports single or multiple selection, plus `size` (default lg) and `variant` (default / inset). Selected = raised background + 1px border + lift shadow.',
         },
       ],
       api: [
@@ -127,16 +127,16 @@ const doc: DocTopic = {
       heading: { zh: 'Picker / WorkspacePicker / ModelPicker', en: 'Picker / WorkspacePicker / ModelPicker' },
       prose: [
         {
-          zh: 'Picker：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级，自绘（不依赖官方 Menu）。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑也可单用：toGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf。',
-          en: 'Picker: single/multiple/max/search/grouping/empty/degrade, self-drawn (no official Menu). Keyboard: Esc closes, ↑↓ move cursor, Enter selects. Pure logic is also usable standalone: toGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf.',
+          zh: 'Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue`。',
+          en: 'Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`.',
         },
         {
-          zh: 'WorkspacePicker：领域选择器，数据自带的现成组件（FilePicker 已删）。数据自动来自宿主：插件 apply 里调一次 connectHost(ctx)，组件即订住官方 workspaces 服务的快照。不接线 = 空态（如实，不编数据）。',
-          en: 'WorkspacePicker: a domain picker, a ready-made data-backed component (FilePicker removed). Data comes automatically from the host: call connectHost(ctx) once in the plugin apply, and the component subscribes to the official workspaces service snapshot. No wiring = empty state (honest, no fabricated data).',
+          zh: 'WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。',
+          en: 'WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data.',
         },
         {
-          zh: 'ModelPicker：数据自带的现成组件 + variant: grouped|cascade（默认 grouped）。两种形态返回口径一致：onChange 都发最终模型 value（${provider}/${id}）。目录自动来自宿主（serveModelCatalog + connectHost）。',
-          en: 'ModelPicker: a ready-made data-backed component + variant grouped|cascade (default grouped). Both forms return consistently: onChange emits the final model value (${provider}/${id}). Catalog comes automatically from the host (serveModelCatalog + connectHost).',
+          zh: 'ModelPicker：数据自带，`variant` 为 `grouped`（默认）/ `cascade`；`onChange` 一律发 `provider/id` 形式的模型 value。目录来自宿主 `serveModelCatalog`。',
+          en: 'ModelPicker: brings its own data; `variant` is `grouped` (default) or `cascade`; `onChange` always emits the model value as `provider/id`. Catalog comes from the host `serveModelCatalog`.',
         },
       ],
       api: [
@@ -191,8 +191,12 @@ const doc: DocTopic = {
       heading: { zh: 'FieldHint（问号提示）', en: 'FieldHint (hint)' },
       prose: [
         {
-          zh: '独立组件，不属于 Input 家族——标题后、按钮后、文字后、输入框后随处可挂。气泡 = 官方 Tooltip 本体：插件启动时 setTooltipRenderer((props) => h(OfficialTooltip, props)) 把官方组件交给 core，side / align / maxWidth 可透传。不做降级兜底——未注入 renderer 的非宿主环境（node 自检）只出问号图标、没有气泡。',
-          en: 'A standalone component, not part of the Input family — attachable after titles, buttons, text, or inputs anywhere. The bubble IS the official Tooltip: at plugin startup, setTooltipRenderer((props) => h(OfficialTooltip, props)) hands the official component to core; side / align / maxWidth pass through. No fallback — a non-host environment that didn’t inject a renderer (node self-check) shows only the question-mark icon, no bubble.',
+          zh: '独立组件，标题 / 输入框后随处可挂。气泡是官方 Tooltip 本体，启动时用 `setTooltipRenderer((p) => h(OfficialTooltip, p))` 注入，其余 props 透传。',
+          en: 'Standalone — hang it after a title or input. The bubble is the official Tooltip, injected at startup via `setTooltipRenderer((p) => h(OfficialTooltip, p))`; other props pass through.',
+        },
+        {
+          zh: '未注入 renderer 的环境只显示问号图标，不出气泡。',
+          en: 'Without a renderer only the question-mark icon shows, no bubble.',
         },
       ],
     },
@@ -201,8 +205,12 @@ const doc: DocTopic = {
       heading: { zh: 'Card / StripCard', en: 'Card / StripCard' },
       prose: [
         {
-          zh: '两种卡片外观，两个独立组件：Card = surface 底 + 1px 边框 + 圆角，padding 14px（左 12 使竖条贴边）；StripCard = 同色系浅底 + 1px 不可见占位边框 + 方角。头部整体垂直居中，调用方在 action 里裸放一个元素即垂直居中。颜色全走 token ⇒ 亮暗自动跟随宿主。',
-          en: 'Two card appearances, two separate components: Card = surface background + 1px border + rounded corners, padding 14px (left 12 so the strip hugs the edge); StripCard = same-hue light background + 1px invisible placeholder border + square corners. The header is vertically centered as a whole; drop a bare element in action and it centers. Colors come from tokens ⇒ light/dark follows the host automatically.',
+          zh: '两种外观，两个组件：Card = surface 底 + 1px 边框 + 圆角（padding 14px，左 12 使竖条贴边）；StripCard = 同色浅底 + 占位边框 + 方角。',
+          en: 'Two appearances, two components: Card = surface background + 1px border + rounded corners (padding 14px, left 12 so the strip hugs the edge); StripCard = same-hue light background + placeholder border + square corners.',
+        },
+        {
+          zh: '头部整体垂直居中，`action` 里裸放一个元素即居中。颜色全走 token，明暗跟随宿主。',
+          en: 'The header centers vertically as a whole; drop a bare element into `action` and it centers. Colors come from tokens, so light/dark follows the host.',
         },
       ],
       api: [
@@ -226,8 +234,12 @@ const doc: DocTopic = {
       heading: { zh: 'Chip', en: 'Chip' },
       prose: [
         {
-          zh: '小标签。两条可选轴：tone（neutral 默认灰面 / business / success / warning / danger——非 neutral 为实心信号面）；size（sm 默认 / md = font-size:12px，卡片元信息行用）。传 onClick 才是可点的。语义边界：Chip 只管「胶囊标签」这一件事；只给图标的小按钮请用 IconButton，不要拿 Chip 当图标底板（同一个类名两套皮肤会互相覆盖）。',
-          en: 'A small tag. Two optional axes: tone (neutral default gray / business / success / warning / danger — non-neutral is a solid signal surface); size (sm default / md = font-size:12px, for card meta rows). Pass onClick to make it clickable. Boundary: Chip only does "pill tag"; for an icon-only small button use IconButton — don’t use Chip as an icon baseplate (one class name with two skins would overwrite each other).',
+          zh: '小标签。`tone`：neutral（默认）/ business / success / warning / danger；`size`：sm（默认）/ md（12px）。传 `onClick` 才可点。',
+          en: 'A small tag. `tone`: neutral (default) / business / success / warning / danger; `size`: sm (default) / md (12px). Pass `onClick` to make it clickable.',
+        },
+        {
+          zh: '边界：只做「胶囊标签」。纯图标的小按钮请用 IconButton，别拿 Chip 当图标底板。',
+          en: 'Boundary: pill tags only. For an icon-only button use IconButton; never use Chip as an icon baseplate.',
         },
       ],
     },
@@ -236,29 +248,29 @@ const doc: DocTopic = {
       heading: { zh: '反馈件', en: 'Feedback' },
       prose: [
         {
-          zh: 'showToast / notify 等底层仍是 Sonner（动画/定位/堆叠）。跨副本 toast 宿主：core 被打进每个插件 bundle，旧实现 N 个插件同页会挂 N 个同 id 容器；现改为 globalThis 上 Symbol.for(\'dsh-plugin-core/toast-host\') 单例，先到场的副本建唯一容器与 Toaster，其余副本把 ToastPayload 交给宿主渲染。',
-          en: 'showToast / notify etc. are still backed by Sonner (animation/positioning/stacking). Cross-bundle toast host: core is bundled into every plugin, and the old impl would mount N same-id containers on one page; now a globalThis Symbol.for(\'dsh-plugin-core/toast-host\') singleton makes the first bundle create the unique container and Toaster, and later bundles hand their ToastPayload to the host for rendering.',
+          zh: '底层是 Sonner。toast 宿主是 globalThis 单例（`Symbol.for(\'dsh-plugin-core/toast-host\')`）：首个副本建容器，其余把 payload 交它渲染。',
+          en: 'Backed by Sonner. The toast host is a singleton on globalThis (`Symbol.for(\'dsh-plugin-core/toast-host\')`): the first copy mounts the container, the rest hand their payload to it.',
         },
         {
-          zh: '三条取舍（用户拍板接受，不要自行"优化"）：① 样式由第一个副本决定；② position 全局共享（一个屏幕一个区）；③ 不做卸载回收 / 引用计数。无 document 的环境静默跳过、不注册。',
-          en: 'Three trade-offs (accepted by the user, don’t "optimize"): ① styling is decided by the first bundle; ② position is shared globally (one zone per screen); ③ no unload reclamation / ref counting. Environments without document silently skip and don’t register.',
+          zh: '三条取舍（照用别改）：① 样式取首个副本；② position 全局共享；③ 不做卸载回收。无 document 的环境静默跳过。',
+          en: 'Three trade-offs (accept them): ① styling comes from the first copy; ② position is shared per screen; ③ no unload reclamation. Environments without document skip silently.',
         },
         {
-          zh: 'Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依赖）。',
-          en: 'Modal: self-drawn overlay, not react-dom’s portal (avoids an extra required dependency).',
+          zh: 'Modal 是自绘 overlay，不走 react-dom portal。',
+          en: 'Modal is a self-drawn overlay, not a react-dom portal.',
         },
         {
-          zh: '遮罩自动让位页面级分栏（用户 2026-10-22 拍板）：Mask 的右边界读 `--dshpc-page-inset-right`（由 PanelDock 发布，多 dock 求和），所以分栏不被压暗、照常可点，弹窗在**剩下那块区域**里居中。弹窗因此**不需要任何遮罩参数**，调用方也不用去量分栏宽度——量宽度那一版已删（异步挂载导致恒为 0，且属越界）。',
-          en: 'The mask yields to a page-level right column automatically (decided 2026-10-22): its right edge reads `--dshpc-page-inset-right` (published by PanelDock, summed across docks), so the column stays bright and clickable and the dialog centers in the **remaining** area. The dialog therefore needs **no mask props**, and callers no longer measure the column — the measuring version was deleted (it read 0 because mounting is async, and it was the content deciding the mask’s geometry).',
+          zh: '遮罩右边界读 `--dshpc-page-inset-right`（多个 dock 求和），自动让开右侧分栏，弹窗在**剩余区域**居中。弹窗无需任何遮罩参数；也别自己量分栏宽度（挂载异步，恒为 0）。',
+          en: 'The mask’s right edge reads `--dshpc-page-inset-right` (summed across docks) and yields to the right column, centering the dialog in the **remaining** area. The dialog needs no mask props; never measure the column yourself (mounting is async, it always reads 0).',
         },
       ],
       api: [
         {
           id: 'ui-feedback',
           rows: [
-            { name: 'showToast(message, opts?)', type: '', def: '', desc: { zh: '官方 Sonner 原生（对比 / demo 用）。opts: { variant?, durationMs?, color?, onDismiss?, position? }；color 整条自定义背景色；position 6 向（默认 bottom-center）；暗色跟随宿主', en: 'Raw official Sonner (for comparison / demo). opts: { variant?, durationMs?, color?, onDismiss?, position? }; color sets the whole background; position 6-way (default bottom-center); dark follows host' } },
-            { name: 'notify(message, opts?)', type: '', def: '', desc: { zh: '项目内推荐：我们封装好的提示。opts: { variant?, description?, durationMs?, position?, actions? }；右侧 actions?: { text, variant?, onClick }[]（1–2 个，用我们自己的 Button）；底层仍是 Sonner', en: 'Recommended in-project: our wrapped toast. opts: { variant?, description?, durationMs?, position?, actions? }; right-side actions?: { text, variant?, onClick }[] (1–2, using our own Button); still Sonner underneath' } },
-            { name: 'showHostToast(message, opts?)', type: '', def: '', desc: { zh: '宿主原生 Toast（子路径 dsh-plugin-core/ui/host）。opts: { tone?, holdMs?, actions?, onDismiss? }；独立子路径导出，隔离平台模块', en: 'Host-native Toast (subpath dsh-plugin-core/ui/host). opts: { tone?, holdMs?, actions?, onDismiss? }; exported via a separate subpath to isolate platform modules' } },
+            { name: 'showToast(message, opts?)', type: '', def: '', desc: { zh: '官方 Sonner 原生（对比 / demo 用）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主', en: 'Raw official Sonner (comparison / demo). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host' } },
+            { name: 'notify(message, opts?)', type: '', def: '', desc: { zh: '默认用这个。opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个）', en: 'Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2)' } },
+            { name: 'showHostToast(message, opts?)', type: '', def: '', desc: { zh: '宿主原生 Toast，走 `dsh-plugin-core/ui/host` 子路径。opts: `{ tone?, holdMs?, actions?, onDismiss? }`', en: 'Host-native Toast from the `dsh-plugin-core/ui/host` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }`' } },
             { name: 'Loading({ anchorId? })', type: '', def: '', desc: { zh: '贴到主内容容器右下角的加载指示；anchorId 默认 dshpc-main', en: 'Loading indicator pinned to the main container’s bottom-right; anchorId defaults to dshpc-main' } },
             { name: 'RunningBlocks()', type: '', def: '', desc: { zh: '运行中的占位块', en: 'Placeholder blocks while running' } },
             { name: 'EmptyState({ text?, icon?, action?, translate? })', type: '', def: '', desc: { zh: '统一空态', en: 'Unified empty state' } },
@@ -279,7 +291,7 @@ const doc: DocTopic = {
             { name: 'onClose', type: '() => void', def: '—', desc: { zh: '不传则不显示关闭钮', en: 'No close button if omitted' } },
             { name: 'closeOnMask', type: 'boolean', def: "'true'", desc: { zh: '点遮罩关闭；误触代价大的场景设 false', en: 'Close on mask click; set false where mis-clicks are costly' } },
             { name: 'escClose', type: 'boolean', def: "'true'", desc: { zh: 'Esc 关闭', en: 'Close on Esc' } },
-            { name: 'maxWidth', type: 'string', def: 'sm: calc(100% - 48px)；md/lg 不设', desc: { zh: '宽度用 `100%`（相对遮罩盒）而非 `100vw`：右侧分栏在场时遮罩已让位，`100vw` 会溢出到分栏上', en: 'Widths are `100%` of the mask box, not `100vw`: with a right column present the mask has already yielded, and `100vw` would spill onto it' } },
+            { name: 'maxWidth', type: 'string', def: '按 size', desc: { zh: '任意 CSS 值，覆盖 size 的宽度上限；不要用 vw（遮罩已按右侧分栏让位）', en: 'Any CSS value, overriding the size’s max width; avoid vw (the mask already yielded to the right column)' } },
             { name: 'hideHeader', type: 'boolean', def: "'false'", desc: { zh: '不渲染头部（沉浸式）', en: 'Skip header (immersive)' } },
             { name: 'footer', type: 'ReactNode', def: '—', desc: { zh: '底栏（按钮区）', en: 'Footer (button area)' } },
             { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '主体', en: 'Body' } },
@@ -292,16 +304,16 @@ const doc: DocTopic = {
       heading: { zh: 'PanelDock（停靠分栏）', en: 'PanelDock (dock)' },
       prose: [
         {
-          zh: '「右侧分栏」从业务里剥出来的通用壳。它是布局成员，不是浮层：占宽度、把主区挤窄，不是盖上去。因此必须由调用方放进自己的 flex 根里。分工照成熟组件库的通行做法：结构写在调用点（children），显隐归状态（open/close 只传 id）。',
-          en: 'A generic shell extracted from the business layer for "right-side panels". It is a layout member, not an overlay: it takes width and narrows the main area, not covering it. So the caller must place it inside its own flex root. Following common component-library practice: structure is written at the call site (children), visibility is state (open/close only passes an id).',
+          zh: '右侧分栏的通用壳，是**布局成员**而非浮层：占宽挤窄主区，要由调用方放进自己的 flex 根。分工：结构写在调用点（children），显隐归状态（`open` / `close` 只传 id）。',
+          en: 'A generic shell for right-side columns — a **layout member**, not an overlay: it takes width and narrows the main area, so the caller puts it in their own flex root. Split of work: structure at the call site (children), visibility in state (`open`/`close` take only an id).',
         },
         {
-          zh: '面板高度默认视口高；嵌在定高容器里时由调用方给 --dshpc-dock-h。不做的事（拍板留档）：多份同名（multi）、tab 切换条、自动淘汰、浮动层——标签切换由消费方在自己的面板内容里实现。两条实现约束：面板是 position:sticky + height:100vh 的 flex 成员，刻意不设 z-index；拖动期给 iframe 让出指针事件。',
-          en: 'Panel height defaults to viewport height; when nested in a fixed-height container, the caller sets --dshpc-dock-h. Deliberately not done (on record): multi same-name, tab-switch bar, auto-eviction, floating layer — tab switching is the consumer’s job inside their own panel content. Two impl constraints: panels are position:sticky + height:100vh flex members with no z-index; during drag, yield pointer events to iframes.',
+          zh: '面板高度默认视口高；嵌在定高容器里时由调用方给 `--dshpc-dock-h`。不支持：同名多实例、tab 切换条、自动淘汰、浮层——标签切换请消费方在自己的面板内容里实现。',
+          en: 'Panel height defaults to viewport height; in a fixed-height container the caller sets `--dshpc-dock-h`. Not supported: same-name duplicates, tab bars, auto-eviction, floating layers — tab switching belongs in the consumer’s own panel content.',
         },
         {
-          zh: '占宽契约（用户 2026-10-22 拍板）：dock 把「所有开着的栏宽之和」实时发布到根元素的 `--dshpc-page-inset-right`（拖拽中逐帧更新，全关/卸载即移除），全屏遮罩据此让位。同页多个 dock 按实例求和 —— 这不是可选优化：demo 自己就有「整页 dock + 文件预览 dock」两个，各写同一个变量会互相覆盖。之所以挂在根元素而不是 mount 上，是因为遮罩不保证是那块 flex 行的后代。',
-          en: 'Width contract (decided 2026-10-22): the dock publishes the sum of its open panel widths to `--dshpc-page-inset-right` on the root element (updated every frame while dragging, removed when all panels close / on unmount), and full-screen masks yield by it. Multiple docks on one page are summed per instance — not an optional nicety: the demo itself has two (page dock + file-preview dock) and a single shared variable would let them overwrite each other. It lives on the root element rather than on the mount because the mask is not guaranteed to be a descendant of that flex row.',
+          zh: '占宽契约：已开栏宽之和实时写进根元素 `--dshpc-page-inset-right`（拖拽逐帧更新，全关即移除），全屏遮罩据此让位；同页多个 dock 求和。',
+          en: 'Width contract: the sum of open widths goes to `--dshpc-page-inset-right` on the root element (every frame while dragging, removed when all close), and full-screen masks yield to it; multiple docks on one page are summed.',
         },
       ],
       api: [

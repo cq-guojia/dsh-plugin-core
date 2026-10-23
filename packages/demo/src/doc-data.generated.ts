@@ -8,12 +8,12 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "explorer 提供工作区文件浏览与选择能力，依赖宿主提供的工作区文件快照。",
-        "en": "explorer provides workspace file browsing and picking, driven by the host-provided workspace file snapshot."
+        "zh": "提供工作区文件浏览与选择，数据来自宿主提供的工作区文件快照。",
+        "en": "Workspace file browsing and picking, driven by the host-provided workspace file snapshot."
       },
       {
-        "zh": "浏览态停靠是布局成员（占宽度、把主区挤窄），不要挂在 document.body 上自己套 fixed。",
-        "en": "The browse dock is a layout member (takes width, narrows the main area); do not mount it on document.body with your own fixed positioning."
+        "zh": "浏览态停靠是布局成员（占宽度、挤窄主区），不要挂 `document.body` 再自己套 fixed。",
+        "en": "The browse dock is a layout member (takes width, narrows the main area); never mount it on `document.body` with your own fixed positioning."
       }
     ]
   },
@@ -39,15 +39,15 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "从 ctx 取出工作区快照，传给能力接口；不要传整个 ctx。",
-        "en": "Pull the workspace snapshot out of ctx and pass it to the capability APIs; do not pass the whole ctx."
+        "zh": "从 ctx 取出工作区快照再传给能力接口，不要传整个 ctx。",
+        "en": "Pull the workspace snapshot out of ctx and hand it to the capability APIs; do not pass the whole ctx."
       }
     ],
     "code": [
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { SessionPreview } from 'dsh-plugin-core/session'\n\n// 右侧分栏预览（占宽度、挤窄主区）\nopenFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })\n\n// path 传绝对路径时：核心自动读宿主 workspaces 快照（connectHost 注入），按最长前缀\n// 匹配所属工作区、list 换该工作区的会话 ⇒ 面包屑/目录树正常；▾ 下拉「切工作区」同样\n// 自动可用（无会话的工作区不进列表）。零传参即生效，无需调用方做任何事。\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md' })\n// 要覆盖快照才显式传：workspaceAnchors（宿主 workspaces 快照原样，带 path + sessionIds）\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md', workspaceAnchors })\n\n// 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）\nconst r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })\n\n// 会话预览\n<SessionPreview sessionId=\"...\" source={source} variant=\"modal\" />"
+        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// 右侧分栏预览（占宽度、挤窄主区）\nopenFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })\n\n// path 传绝对路径时：按最长前缀匹配所属工作区，面包屑 / 目录树与 ▾「切工作区」自动可用\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md' })\n// 要覆盖宿主快照才显式传 workspaceAnchors（带 path + sessionIds）\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md', workspaceAnchors })\n\n// 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）\nconst r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })"
       }
     ]
   },
@@ -62,21 +62,104 @@ export const docData = {
         "id": "explorer-api-table",
         "rows": [
           {
-            "name": "openFilePreview",
-            "type": "({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle",
+            "name": "openFilePreview(opts)",
+            "type": "OpenFilePreviewOptions => FilePreviewHandle",
             "def": "—",
             "desc": {
-              "zh": "右侧分栏预览文件/文件夹，mount 为必填的 flex 行；▾ 切工作区的「当前区」按路径匹配定（rootName 次之），点任何工作区（含入口那个）都从该工作区的根开始列",
-              "en": "Preview a file/folder in a right-side dock; mount is the required flex row. The ▾ workspace switch resolves the current workspace by path match (rootName as fallback), and picking any workspace — the entry one included — starts from that workspace’s root"
+              "zh": "在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容）",
+              "en": "Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node)"
             }
           },
           {
-            "name": "pickWorkspaceFile",
-            "type": "({ workspaceFiles, sessionId, anchor, filter? }) => Promise<{ path, isDir }>",
+            "name": "opts.mount",
+            "type": "HTMLElement",
+            "def": "—",
+            "required": "是",
+            "desc": {
+              "zh": "页面里的 flex 行；预览靠它占宽而不是浮在页面上方",
+              "en": "The page’s flex row; the preview takes width there instead of floating"
+            }
+          },
+          {
+            "name": "opts.workspaceFiles",
+            "type": "WorkspaceFilesFace",
             "def": "—",
             "desc": {
-              "zh": "锚定按钮旁弹模态选文件，Promise 返回工作区相对路径",
-              "en": "Open a modal anchored to a button and resolve with the workspace-relative path"
+              "zh": "从 ctx 取出的工作区文件服务；传 `content` 时可省",
+              "en": "Workspace file service taken from ctx; optional when passing `content`"
+            }
+          },
+          {
+            "name": "opts.sessionId",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "该工作区的真实会话 id（服务是会话作用域的）；传 `content` 时可省",
+              "en": "A real session id of that workspace (the service is session-scoped); optional when passing `content`"
+            }
+          },
+          {
+            "name": "opts.path",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "工作区相对路径；绝对路径会自动按最长前缀匹配所属工作区。与 `content` 二选一",
+              "en": "Workspace-relative path; absolute paths are matched to their workspace by longest prefix. Mutually exclusive with `content`"
+            }
+          },
+          {
+            "name": "opts.content",
+            "type": "() => ReactNode",
+            "def": "—",
+            "desc": {
+              "zh": "自定义预览内容，塞进同一个右侧 dock；传它时不需要 `path`",
+              "en": "Custom preview body rendered in the same dock; no `path` needed when set"
+            }
+          },
+          {
+            "name": "opts.officeToPdf",
+            "type": "OfficeToPdfFace",
+            "def": "—",
+            "desc": {
+              "zh": "Office 转 PDF 能力；缺失则该格式走「不支持」而不是报错",
+              "en": "Office→PDF capability; without it that format shows \"unsupported\" instead of erroring"
+            }
+          },
+          {
+            "name": "opts.rootName",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "兜底显示名（路径匹配不出工作区时用）",
+              "en": "Fallback display name, used when no workspace matches the path"
+            }
+          },
+          {
+            "name": "pickWorkspaceFile(opts)",
+            "type": "PickWorkspaceFileOptions => Promise<PickedFile>",
+            "def": "—",
+            "desc": {
+              "zh": "锚定按钮弹出模态选文件，解析出 `{ path, isDir }`",
+              "en": "Anchored modal picker that resolves `{ path, isDir }`"
+            }
+          },
+          {
+            "name": "opts.anchor",
+            "type": "HTMLElement",
+            "def": "—",
+            "required": "是",
+            "desc": {
+              "zh": "模态贴着它弹",
+              "en": "The modal anchors next to it"
+            }
+          },
+          {
+            "name": "opts.filter",
+            "type": "PickFilter",
+            "def": "—",
+            "desc": {
+              "zh": "按扩展名过滤 `{ exts: ['md'] }`；`dirs: true` 则只允许选文件夹",
+              "en": "Filter by extension `{ exts: ['md'] }`; `dirs: true` restricts picking to folders"
             }
           }
         ]
@@ -264,8 +347,8 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "token 来自 `dsh-task-dispatch-table/src/client/ui/tokens.ts` 的整段提取（颜色 / 尺寸 / 字号 / 层级），**含深色覆盖段**。取值一律走 `var(--<prefix>-*)`，不在规则里写死颜色值。",
-        "en": "Tokens are extracted wholesale from `dsh-task-dispatch-table/src/client/ui/tokens.ts` (color / size / font-size / elevation), **including the dark-mode override block**. Always read values via `var(--<prefix>-*)`, never hard-code colors in rules."
+        "zh": "token 覆盖颜色 / 尺寸 / 字号 / 层级，**含深色覆盖段**。取值一律走 `var(--dshpc-*)`，不在规则里写死颜色值。",
+        "en": "Tokens cover color / size / font-size / elevation, **including the dark-mode override block**. Always read values via `var(--dshpc-*)`, never hard-code colors in rules."
       },
       {
         "zh": "完整清单与命名口径见 [`../style.md`](../style.md)。",
@@ -298,60 +381,24 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "依赖 ui。把「看一眼某个会话、看完即关」封装成与官方会话页同构的只读弹窗：自动执行的任务想回看这次会话，不想开新窗口（回来还得找）。",
-        "en": "Depends on ui. Wraps the \"peek at a session and close when done\" flow into a read-only dialog isomorphic to the official session page: for auto-run tasks you want to review this run without opening a new window."
+        "zh": "把一次会话渲染成**只读弹窗**，观感与官方会话页一致。先用 `openSessionView` 建数据链得到 `view`（不可解析返回 `null`），再交给 `SessionViewModal`；**关闭时必须 `view.dispose()`**。",
+        "en": "Renders one session as a **read-only dialog** that looks like the official session page. First `openSessionView` builds the chain and returns a `view` (`null` when unresolvable), then hand it to `SessionViewModal`; **call `view.dispose()` on close**."
       },
       {
-        "zh": "弹窗只是当前的呈现方式，不是这个包的定义。「纯 Modal 控件」在 ui 里，这里装的是「会话预览」这个功能。",
-        "en": "A modal is only the current presentation, not the definition of the package. The bare Modal lives in ui; this package owns the \"session preview\" feature."
+        "zh": "数据全由调用方注入，组件不自己取。`archived` 从官方 `workspaces` 快照的 `archivedSessionIds` 读取并订阅刷新。归档会话走同一条链，同样可读。",
+        "en": "All data is injected by the caller; the component fetches nothing. Read `archived` from `archivedSessionIds` on the official `workspaces` snapshot and keep it subscribed. Archived sessions travel the same chain and read fine."
       },
       {
-        "zh": "渲染 = 「官方零件 + 自绘容器」：mirror/ 下 15 个组件按官方文件名一一对应（ChatView / ChatNodeSeat / MessageItem / GenericCommandCard / ReasoningRow / Turn×NodeView / MessageIconActions / TurnUsagePanel / StatDialog / Deliverables / ChatGroupSeat…），逐值镜像官方 UI；官方 CSS module 类名运行时发现（official-classes.ts），未命中回退自绘样式（session.css），不崩不白屏。",
-        "en": "Rendering = \"official parts + self-drawn chrome\": the 15 components under mirror/ map one-to-one to official file names (ChatView / ChatNodeSeat / MessageItem / GenericCommandCard / ReasoningRow / Turn×NodeView / MessageIconActions / TurnUsagePanel / StatDialog / Deliverables / ChatGroupSeat…), mirroring the official UI value-by-value. Official CSS-module class names are discovered at runtime (official-classes.ts); on a miss, self-drawn fallback styles apply (session.css) — no crash, no blank screen."
+        "zh": "快照只读，框内不能打字续聊。续聊 = `forkSession` 开分支 + `openHostSession` 跳官方会话区；暂存输入框的确定走 `onContinue`（fork + 发首轮 + 跳转）。",
+        "en": "The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input’s confirm goes through `onContinue` (fork + first turn + navigate)."
       },
       {
-        "zh": "归档会话同样可读：archiveSession 只把会话藏出显示面、不动存储；sessions.retain 物化 scope 与归档正交 ⇒ 预览归档会话走的是同一条数据链，无额外开发。",
-        "en": "Archived sessions are readable too: archiveSession only hides a session from grouping surfaces and never touches storage; sessions.retain materializes the scope regardless of archive status ⇒ previewing an archived session uses the same data chain, with no extra work."
+        "zh": "文件出口只有一个：工具卡路径、行内引用、交付卡都走 `onOpenFile`；不传则链接降级为纯文本。预览由调用方开在**页面右侧**（`openFilePreview` 的 dock），弹窗不需要任何遮罩参数。",
+        "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text. The caller opens the preview as a **page-level right column** (the `openFilePreview` dock) — the dialog takes no mask props."
       },
       {
-        "zh": "文件显示逻辑全量移植：用户消息官方 file 块 → 附件卡；工具卡 read/write/edit 摘要路径 = 可点 fileLink；tool-fs meta.diffs 路径进词表；markdown 行内文件引用 → fileMentions 解析成链接（resolve 不出保持惰性 code，永不猜）；交付文件（present / turn 级 deliverables.presented 同源）→ 整卡可点预览。统一出口 = onOpenFile。",
-        "en": "File display logic is fully ported: official file blocks in user messages → attachment cards; read/write/edit tool-card summary paths are clickable fileLinks; tool-fs meta.diffs paths feed the mention vocabulary; inline markdown file references resolve through fileMentions (unresolved stays inert code — never guessed); delivered files (present / turn-level deliverables.presented, same source) → whole-card clickable preview. Single exit = onOpenFile."
-      },
-      {
-        "zh": "续聊正道（重要）：底层 keyed 数组（order + nodes）是只读快照，官方没有「往预览 binding 发消息」的写面 ⇒ 框内不可打字续聊。正道 = fork 开分支（sessions.fork）→ uiWorkspace.openSession 跳官方会话区；底部暂存输入框的「确定」经 onContinue 由调用方完成 fork + host 侧 agent.send 起轮次 + 跳转（官方派发同款路，无歪门邪道）。",
-        "en": "The sanctioned way to continue (important): the underlying keyed array (order + nodes) is a read-only snapshot; the host exposes no write surface for sending into a preview binding ⇒ you cannot type inside the dialog. The sanctioned path = fork a branch (sessions.fork) → uiWorkspace.openSession to jump into the official session area; the bottom staging input’s \"Confirm\" goes through onContinue, where the caller forks + sends the first turn via host-side agent.send + navigates (the same official dispatch path — no hacks)."
-      },
-      {
-        "zh": "「继续对话」按钮按归档状态分化（调用方经 `archived` prop 注入）：已归档 ⇒ 开分支图标 + 确认框（fork 出子会话再跳官方区；官方策略归档会话不进主视图）；未归档 / 未提供 ⇒ 会话图标，点击直跳官方会话页。弹窗标题 = 会话自己的标题（`heading`，通常传宿主 sessions.list 的 displayTitle），已归档时标题旁带官方归档图标 + 「已归档」。",
-        "en": "The \"Continue\" button forks by archive state (injected by the caller via the `archived` prop): archived ⇒ branch icon + confirmation (fork a child, then jump to the official area — official policy keeps archived sessions out of the main view); not archived / not provided ⇒ session icon, one click jumps straight to the official session page. The dialog title is the session’s own title (`heading`, usually the host sessions.list displayTitle); when archived, the official archive icon + \"Archived\" appears beside it."
-      },
-      {
-        "zh": "归档状态**客户端读得到**（2026-10-22 解包 @deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2 核实，推翻此前「只有宿主侧读得到、要走 serveArchivedSessions 路由」的结论）：官方 client 服务 `workspaces` 的 `list` 快照带 `archivedSessionIds`，是 **registry-global 归档集合**（不是每工作区一份），由宿主 follow 流 baseline / `archived` 增量持续替换 ⇒ 注入 `workspaces` → `list.getSnapshot().archivedSessionIds` + `list.subscribe` 实时刷新，传给 `archived`。无需宿主路由。",
-        "en": "Archive state IS readable client-side (verified 2026-10-22 by unpacking @deepseek-ai/dsh-api-workspace-controller@0.2.0-rc.2 — overturns the earlier conclusion that only the host could read it, via a serveArchivedSessions route): the official client service `workspaces` exposes a `list` snapshot carrying `archivedSessionIds` — the registry-global archive set (not one per workspace), continuously replaced by the host follow stream’s baseline / `archived` increments ⇒ inject `workspaces` → `list.getSnapshot().archivedSessionIds` + `list.subscribe` for live refresh, then pass it as `archived`. No host route needed."
-      },
-      {
-        "zh": "标题区三段固定（用户 2026-10-22 拍板）：第一行 = 标题（调用方给的人话标题，缺省「会话预览」）+ 「已归档」徽标（**紧跟标题**，不跨两行居中）；第二行 = 副标题（会话 id，等宽小字，走 Modal 的 `subtitle`）；右侧 = 「继续对话」/ 关闭。会话 id 是标识，不进正文。",
-        "en": "The header has three fixed parts (decided 2026-10-22): line 1 = the title (caller-supplied human title, default \"Session preview\") plus the **Archived** badge directly after the title (not centered across both lines); line 2 = the subtitle (session id, monospace caption, via the Modal `subtitle` prop); right side = \"Continue\" / close. The session id is an identifier and never goes into the body."
-      },
-      {
-        "zh": "滚动与内距归核心（用户 2026-10-22 拍板）：Modal 的 body 是**唯一滚动容器**，内距也归它 —— 内容（本模块）只按流排版，不写 `height:100%`、不自己开滚动条。所以会话区里的官方 ChatView.frame / scroll 的 `overflow` / 高度 / 内距一律归零（见 session.css 的双类名钩子）；真需要「左右两栏各自滚」时不用内容自管，而是把右侧那列放到**页面层**（见下条）。",
-        "en": "Scrolling and padding belong to the core (decided 2026-10-22): the Modal body is the **only scroll container**, and it owns the padding — this module just lays out flow content, never `height:100%`, never its own scrollbar. That is why the inner ChatView.frame / scroll `overflow`, height and padding are all zeroed (see the double-class hooks in session.css). If two panes must scroll independently, do not let the content manage height — put the right column at the **page level** (next item)."
-      },
-      {
-        "zh": "文件链接（工具卡 fileLink / md 行内引用 / 交付卡）统一走 `onOpenFile`。接法（用户 2026-10-22 定）：预览开在**页面右侧**（核心 `openFilePreview` 的 dock，挤窄主区），不在弹窗里分栏。弹窗这边**什么都不用传**：dock 把占宽发布成 `--dshpc-page-inset-right`，遮罩按它让位 ⇒ 分栏不被压暗、照常可点，弹窗在左边剩余区域居中（用户 2026-10-22 二次拍板，撤掉了 `insetRight` 那条量宽度的路子）。工作区文件服务缺席时不给 `onOpenFile`，链接自然是纯文本，不假装能点。",
-        "en": "Every file link (tool-card fileLink / md mentions / delivered cards) exits through `onOpenFile`. Wiring (decided 2026-10-22): the preview opens as a **page-level right column** (the core `openFilePreview` dock, squeezing the main area) — never as a split inside the dialog. The dialog passes **nothing** for this: the dock publishes its occupied width as `--dshpc-page-inset-right` and the mask yields by it, so the column stays bright and clickable while the dialog centers in the remaining left area (re-decided 2026-10-22, dropping the width-measuring `insetRight` route). When the workspace file service is absent, pass no `onOpenFile` so links stay plain text instead of pretending to be clickable."
-      },
-      {
-        "zh": "「已编辑文件」卡（官方 ChangedFiles，ui-deliverables 2026-10-22 接上、2026-10-23 对齐官方结构）：某轮出现 `workspace/changes` 公告时，turn 级 `deliverables.changes = { seq }` 落进同一份 turn.data；卡片内容走宿主只读路由 `GET api/changes.summary?sessionId&seq`（裸 fetch，鉴权随宿主会话），载荷按官方 `isChangesSummary` 逐字段校验，不合规 / 404 = 不渲染（不猜数据）。观感逐值镜像官方：40×40 图标块 + 「已编辑 x.md」（多文件 = 「已编辑 N 个文件」）+ 计数 `+N -M`（常显上色，hover 换显「预览」）+ 文件行列表（超 4 行折叠，出「全部 N 个文件 / 收起」）；单文件点头、多文件点行都走 `onOpenFile`（官方开右侧 review 标签页，本包只有文件打开这一个口子）。悬停 500ms 出官方同款 diff 预览卡（官方 `HoverCard` `variant=\"preview\"`，宽度跟整卡）：数据走 `GET api/changes.diff?sessionId&seq&index`，预览体逐值镜像官方 `FileDiff`（hunk 头 + 旧/新行号 + 符号 + 文本四列 grid、官方 `useCodeHighlighter` 高亮、超 5000 行截断），binary / oversized / missing / error 各有官方文案，error 带官方 sm 重试钮；content 只在 hover 打开时挂载 ⇒ 不会每行预先发请求。",
-        "en": "\"Edited files\" card (official ChangedFiles, ui-deliverables — wired 2026-10-22, structurally aligned 2026-10-23): when a turn announces `workspace/changes`, the turn-level `deliverables.changes = { seq }` lands in the same turn.data; the card body comes from the host read-only route `GET api/changes.summary?sessionId&seq` (bare fetch, host session auth), validated field-by-field against the official `isChangesSummary` — invalid / 404 renders nothing (no guessing). The look mirrors the official value-by-value: a 40×40 icon tile + \"Edited x.md\" (\"Edited N files\" for many) + counts `+N -M` (always coloured, swapped for the \"Preview\" hint on hover) + a file-row list (folds past 4 rows with an \"All N files / Collapse\" toggle); the single-file header and every multi-file row open through `onOpenFile` (the official one opens a right-sidebar review tab — this package only has the file-open hatch). Hovering for 500ms shows the official-style diff preview card (official `HoverCard`, `variant=\"preview\"`, sized from the whole card): data comes from `GET api/changes.diff?sessionId&seq&index`, and the body mirrors the official `FileDiff` value-by-value (hunk headers + a four-column grid of old/new line numbers, sign and text, highlighted by the official `useCodeHighlighter`, truncated past 5000 lines); binary / oversized / missing / error each carry the official copy and error ships the official small retry button. Content mounts only once the hover opens, so no row fetches up front."
-      },
-      {
-        "zh": "已知限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染（翻页靠「加载更早记录」按钮，官方 loadOlder）；系统提示 / 上下文注入行按决策 28 过滤（官方 ContextInjectionRow 待实施）；👍👎 反馈按钮官方走 slots，弹窗无该插槽。",
-        "en": "Known limits: when official styles are not injected, the self-drawn look applies (functionality unaffected); long sessions render all at once (paging via the \"load earlier\" button, official loadOlder); system-prompt / context-injection rows are filtered per decision 28 (official ContextInjectionRow pending); thumbs up/down go through official slots, which the dialog does not have."
-      },
-      {
-        "zh": "配套的官方会话列表（demo 预览站「真实会话列表」在用）：宿主 client 服务 `sessions`（@deepseek-ai/dsh-api-session-controller client 半侧，0.2.0-rc.2 解包核实）暴露 `list` 快照存储——`{ ids, byId, phase }`，每行带 `displayTitle`（durable title → 项目 basename → session id 三级回落）/ `updatedAt` / `running` / `blank`；数据来自宿主 `session/list` RPC（ApiSessionList.list：「Read every visible attached and persisted Session without activating an Agent」，按活动序）⇒ **列会话 ≠ 打开会话，冷安全，归档会话也在列**。demo 页面按 updatedAt 降序取前 20 条，点行 → openSessionView 真预览。",
-        "en": "The companion official session list (used by the demo preview site’s \"real session list\"): the host client service `sessions` (the client half of @deepseek-ai/dsh-api-session-controller, verified by unpacking 0.2.0-rc.2) exposes a `list` snapshot store — `{ ids, byId, phase }`, each row carrying `displayTitle` (durable title → project basename → session id, three-level fallback) / `updatedAt` / `running` / `blank`; the data comes from the host `session/list` RPC (ApiSessionList.list: \"Read every visible attached and persisted Session without activating an Agent\", ordered by activity) ⇒ listing sessions ≠ opening them — cold-safe, and archived sessions are listed too. The demo page takes the 20 most recent by updatedAt; clicking a row → openSessionView for a real preview."
+        "zh": "限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染，用「加载更早记录」向前翻页；👍👎 反馈走官方 slots，弹窗没有该插槽。",
+        "en": "Limits: without official styles injected, the self-drawn look applies (functionality unaffected); long sessions render whole, paged backward via \"load earlier\"; 👍👎 feedback goes through official slots, which this dialog lacks."
       }
     ],
     "api": [
@@ -364,8 +411,8 @@ export const docData = {
             "def": "—",
             "required": "是",
             "desc": {
-              "zh": "建数据链：retain 物化 → binding → open 拉尾页 → target(chat)；不可解析返回 null",
-              "en": "Builds the data chain: retain materialize → binding → open tail → target(chat); null when unresolvable"
+              "zh": "建数据链：retain → binding → open → target(chat)；不可解析返回 null",
+              "en": "Builds the chain retain → binding → open → target(chat); null when unresolvable"
             }
           },
           {
@@ -373,8 +420,17 @@ export const docData = {
             "type": "SnapshotFace<ChatViewFace | undefined>",
             "def": "—",
             "desc": {
-              "zh": "chat 快照订阅面（useSyncExternalStore 用）",
-              "en": "Chat snapshot subscription surface (for useSyncExternalStore)"
+              "zh": "chat 快照订阅面（供 useSyncExternalStore）",
+              "en": "Chat snapshot surface (for useSyncExternalStore)"
+            }
+          },
+          {
+            "name": "session",
+            "type": "SnapshotFace<SessionSnapshotFace>",
+            "def": "—",
+            "desc": {
+              "zh": "会话自身快照（加载态 / 是否翻尽）",
+              "en": "Snapshot of the session itself (loading state, paged-out)"
             }
           },
           {
@@ -382,8 +438,8 @@ export const docData = {
             "type": "() => void",
             "def": "—",
             "desc": {
-              "zh": "向前翻一页更早的历史（官方 loadOlder）",
-              "en": "Page backward through older history (official loadOlder)"
+              "zh": "向前翻一页更早的历史",
+              "en": "Page backward through older history"
             }
           },
           {
@@ -392,7 +448,7 @@ export const docData = {
             "def": "—",
             "desc": {
               "zh": "释放 retain 引用；弹窗关闭必调",
-              "en": "Release the retain reference; must be called when the dialog closes"
+              "en": "Release the retain reference; call on close"
             }
           }
         ]
@@ -416,27 +472,8 @@ export const docData = {
             "def": "—",
             "required": "是",
             "desc": {
-              "zh": "openSessionView 的产物",
-              "en": "The result of openSessionView"
-            }
-          },
-          {
-            "name": "heading",
-            "type": "string",
-            "def": "sessionHeading（会话预览）",
-            "required": "否",
-            "desc": {
-              "zh": "弹窗标题 = 会话自己的标题（宿主 sessions.list 的 displayTitle，可自定义）；会话 id 是标识，固定显示在标题下方副标题行（等宽小字），不占正文",
-              "en": "Dialog title = the session’s own title (host sessions.list displayTitle — fully customisable); the session id is an identifier and always sits on the subtitle line **under** the title (monospace caption), never in the body"
-            }
-          },
-          {
-            "name": "archived",
-            "type": "boolean",
-            "def": "—",
-            "desc": {
-              "zh": "是否已归档（调用方从官方 client 服务 `workspaces` 快照的 `archivedSessionIds` 取）；分化「继续对话」：归档=开分支确认框，未归档=直跳官方会话页",
-              "en": "Whether archived (caller reads it from the official client service `workspaces` snapshot field `archivedSessionIds`); differentiates \"Continue\": archived = fork confirmation, not archived = direct jump to the official session page"
+              "zh": "openSessionView 的返回值",
+              "en": "What openSessionView returned"
             }
           },
           {
@@ -445,8 +482,28 @@ export const docData = {
             "def": "—",
             "required": "是",
             "desc": {
-              "zh": "关闭回调（调用方负责 view.dispose()）",
-              "en": "Close callback (the caller owns view.dispose())"
+              "zh": "关闭回调；由调用方在里面调 view.dispose()",
+              "en": "Close callback; the caller calls view.dispose() inside it"
+            }
+          },
+          {
+            "name": "heading",
+            "type": "string",
+            "def": "「会话预览」",
+            "required": "否",
+            "desc": {
+              "zh": "弹窗标题，通常传宿主 sessions.list 的 displayTitle；会话 id 显示在标题下方副标题行（等宽小字）",
+              "en": "Dialog title, usually the displayTitle from the host sessions.list; the session id sits on the monospace subtitle line below it"
+            }
+          },
+          {
+            "name": "archived",
+            "type": "boolean",
+            "def": "false",
+            "required": "否",
+            "desc": {
+              "zh": "已归档时标题旁显示归档徽标，且「继续对话」先弹 fork 确认框；未归档则直跳官方会话页",
+              "en": "When true an archive badge appears beside the title and \"Continue\" asks to fork first; when false it jumps straight to the official session page"
             }
           },
           {
@@ -454,8 +511,8 @@ export const docData = {
             "type": "(sessionId, atSeq?) => Promise<string>",
             "def": "—",
             "desc": {
-              "zh": "fork 源会话（官方 ISessions.fork）；与 openHostSession 缺一即不渲染「继续对话」",
-              "en": "Fork the source session (official ISessions.fork); without openHostSession the \"Continue\" button does not render"
+              "zh": "开分支并返回子会话 id；缺 openHostSession 则不渲染「继续对话」",
+              "en": "Fork and resolve the child session id; without openHostSession \"Continue\" does not render"
             }
           },
           {
@@ -463,8 +520,8 @@ export const docData = {
             "type": "(sessionId: string) => void",
             "def": "—",
             "desc": {
-              "zh": "官方导航跳转（uiWorkspace.openSession）",
-              "en": "Official navigation jump (uiWorkspace.openSession)"
+              "zh": "跳官方会话区（uiWorkspace.openSession）",
+              "en": "Jump into the official session area (uiWorkspace.openSession)"
             }
           },
           {
@@ -472,17 +529,26 @@ export const docData = {
             "type": "(message: string) => Promise<void>",
             "def": "—",
             "desc": {
-              "zh": "暂存输入框「确定」：调用方完成 fork + host 侧 agent.send 起轮次 + 跳转；缺省 = 不渲染输入框",
-              "en": "Staging input \"Confirm\": the caller forks + sends the first turn via host-side agent.send + navigates; absent = the input is not rendered"
+              "zh": "暂存输入框的确定：调用方完成 fork + 发首轮 + 跳转；缺省 = 不渲染输入框",
+              "en": "Staging input confirm: caller forks, sends the first turn, navigates; absent = no input rendered"
             }
           },
           {
             "name": "onOpenFile",
-            "type": "(path: string) => void",
+            "type": "(path: string, sessionId: string) => void",
             "def": "—",
             "desc": {
-              "zh": "文件打开出口（工具卡 fileLink / md mention / 交付卡共用）；缺省 = 链接降级纯文本",
-              "en": "File-open exit (shared by tool-card fileLink / md mentions / delivered cards); absent = links degrade to plain text"
+              "zh": "文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；缺省 = 链接纯文本",
+              "en": "File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; absent = plain text"
+            }
+          },
+          {
+            "name": "onOpenReview",
+            "type": "(locator: ChangedFileReviewLocator) => void",
+            "def": "—",
+            "desc": {
+              "zh": "变更文件的审阅出口（等价官方 openReview）；缺省 = 变更卡整张不可点",
+              "en": "Review exit for changed files (equals official openReview); absent = the change card is not clickable"
             }
           },
           {
@@ -490,8 +556,8 @@ export const docData = {
             "type": "Translate",
             "def": "内置",
             "desc": {
-              "zh": "覆盖文案（核心字典自带全部会话文案，中英）",
-              "en": "Override copy (the built-in dictionary carries all session copy, zh+en)"
+              "zh": "覆盖文案（内置字典已含全部会话文案，中英）",
+              "en": "Override copy (the built-in dictionary has all session copy, zh+en)"
             }
           }
         ]
@@ -501,12 +567,12 @@ export const docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 1. 宿主服务（插件从 ctx 取出后注入；sessions ← dsh-api-session-controller、\n//    uiConversation ← dsh-client-ui-conversation，inject 边决定装配顺序）\nconst view = openSessionView(sessions, uiConversation, sessionId, 'my-plugin')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',              // 可选标题\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须释放 retain 引用\n    // 续聊（可选服务）：fork → 跳官方会话区\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：确定后由调用方 fork + host 侧 agent.send 起轮次 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)   // 插件 host 半侧：agents.create + agent.send\n      openHostSession(child)\n    },\n    onOpenFile: (path) => openFilePreview(path),   // 文件打开出口\n    t,                                        // 可选，覆盖文案\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    onOpenFile: (path) => openFilePreview(path), // 文件打开出口\n    archived,                                   // 是否已归档\n    t,                                          // 可选，覆盖文案\n  })\n}"
       },
       {
         "id": "session-data-chain",
         "lang": "ts",
-        "src": "// 数据链（决策 28，全部经官方源码核实）：\n//   sessions.retain(id, { source })  物化 scope（归档 / 久未打开的会话也能读）\n//     → sessions.binding(id)         取绑定\n//     → session.open()               幂等拉历史尾页\n//     → uiConversation.binding(binding).target('chat')\n//                                     拿 ChatSnapshot：order + nodes（keyed 流）\n// 用完 view.dispose() 释放引用（否则会话 scope 永不回收）。\n//\n// 已证伪、勿再尝试：弹窗内挂官方 ChatView（renderSlot 只认 key='root'）；\n//    自己 retain('mainView')（锁死宿主会话导航）；冷读 RPC session/follow（无活动通道）。"
+        "src": "// 数据链（越往上越早）：\n//   sessions.retain(id, { source })  物化 scope\n//     → sessions.binding(id)         取绑定\n//     → session.open()               幂等拉历史尾页\n//     → uiConversation.binding(binding).target('chat')\n//                                     拿 ChatSnapshot：order + nodes（keyed 流）\n// 用完必须 view.dispose()，否则会话 scope 不回收。"
       }
     ]
   },
@@ -829,16 +895,16 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "一个插件从装包到用上各子包的完整路径。复制粘贴级别的最小可用示例。",
-        "en": "The full path from installing the package to using each subpackage. Copy-paste-level minimal example."
+        "zh": "从装包到用上各子包的完整路径，示例都是可直接粘贴的最小可用版。",
+        "en": "The full path from install to every subpackage, with copy-paste-ready minimal examples."
       },
       {
-        "zh": "§0 装包：react 是 optional peer——只用 utils / design 的插件不必装。包里带预编译 dist（宿主以 git/npm 装插件不跑构建脚本，产物必须随包发布）。",
-        "en": "§0 Install: `react` is an optional peer — plugins using only utils/design need not install it. The package ships prebuilt dist (hosts install plugins without running build scripts, so artifacts must be published)."
+        "zh": "§0 装包：`react` 是 optional peer，只用 `utils` / `design` 的插件不必装。",
+        "en": "§0 Install: `react` is an optional peer — plugins using only `utils`/`design` need not install it."
       },
       {
-        "zh": "§1 初始化样式（一次）：id 必须插件内唯一（多插件同页靠它互不覆盖）；变量与类名统一使用 dshpc 前缀，不需要传参。",
-        "en": "§1 Initialize styles (once): `id` must be unique within the plugin (multiple plugins on one page rely on it to avoid clobbering); variables and class names uniformly use the `dshpc` prefix, no param needed."
+        "zh": "§1 初始化样式（入口一次）：`id` 必须插件内唯一，多插件同页靠它互不覆盖；变量与类名固定 `dshpc` 前缀，不需传参。",
+        "en": "§1 Initialize styles (once at entry): `id` must be unique within the plugin so co-mounted plugins don’t clobber; vars and classes use the fixed `dshpc` prefix, no parameter."
       },
       {
         "zh": "§2 用一个控件",
@@ -849,16 +915,12 @@ export const docData = {
         "en": "§3 Use helpers"
       },
       {
-        "zh": "§4 接工作区浏览（要宿主能力）：mount 是必填——PanelDock 是布局成员（占宽度、把主区挤窄），没有布局位置就只能遮盖，所以要传你页面里那一层 flex 行，不要传 document.body 再自己套 fixed。浏览态停靠就是 FileBrowser 套在核心 PanelDock 里（openFilePreview 已经这么做了，面板用 header={null}：没有头部那条线，✕ 浮在右上角）。",
-        "en": "§4 Wire workspace browsing (needs host capability): `mount` is required — PanelDock is a layout member (takes width, narrows the main area), so without a layout slot it can only overlay; pass your page’s flex row, not `document.body` with your own fixed positioning. Browse-dock is FileBrowser inside the core PanelDock (openFilePreview already does this, with header={null}: no header line, ✕ floats top-right)."
+        "zh": "§4 接工作区浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行。`sessionId` 必须属于该工作区。",
+        "en": "§4 Wire workspace browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row. `sessionId` must belong to that workspace."
       },
       {
-        "zh": "sessionId 不是随便填的：workspaceFiles 是会话作用域服务，必须给属于该工作区的真实会话 id。从宿主工作区快照挑锚点用 pickWorkspaceAnchor(items)（ui 的 workspaceList 快照可直接喂进去）。",
-        "en": "`sessionId` is not arbitrary: workspaceFiles is a session-scoped service, so you must pass a real session id belonging to that workspace. Pick an anchor from the host workspace snapshot via pickWorkspaceAnchor(items) (ui’s workspaceList snapshot feeds in directly)."
-      },
-      {
-        "zh": "§5 接会话预览",
-        "en": "§5 Wire session preview"
+        "zh": "§5 接会话预览：`openSessionView` 返回 `null` 表示该会话不可解析；拿到 view 后交给 `SessionViewModal`，关闭时记得 `dispose()`。",
+        "en": "§5 Wire session preview: `openSessionView` returns `null` when the session cannot be resolved; hand the view to `SessionViewModal` and remember `dispose()` on close."
       },
       {
         "zh": "§6 卸载清理（可选）",
@@ -889,12 +951,12 @@ export const docData = {
       {
         "id": "integration-use-explorer",
         "lang": "tsx",
-        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// 从 ctx 取出这一小块（不要传整个 ctx）\nconst workspaceFiles = ctx.remote.workspaceFiles\n\n// 预览某文件/文件夹：右侧分栏（挤窄 row 左边的主区，不是浮在上面）\nopenFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })\n\n// 让用户选文件：锚定按钮旁弹模态，Promise 返回 { path, isDir }（工作区相对路径）\nconst picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })"
+        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// 从 ctx 取出这一小块（不要传整个 ctx）\nconst workspaceFiles = ctx.remote.workspaceFiles\n\n// 预览某文件：右侧分栏（挤窄 row 左边的主区，不是浮在上面）\nopenFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })\n\n// 让用户选文件：锚定按钮旁弹模态，Promise 返回 { path, isDir }（工作区相对路径）\nconst picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })"
       },
       {
         "id": "integration-use-session",
         "lang": "tsx",
-        "src": "import { SessionPreview } from 'dsh-plugin-core/session'\n\nconst source = {\n  listMessages: async (id) => (await api.get(`/sessions/${id}/messages`)).data,\n  download: async (id, path) => api.getBytes(`/sessions/${id}/file?path=${path}`),\n}\n\nh(SessionPreview, { sessionId, source, variant: 'modal', onClose: close })"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // 关闭必须释放 retain 引用\n    onClose: () => { view.dispose(); setOpen(false) },\n    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path }),\n  })\n}"
       },
       {
         "id": "integration-cleanup",
@@ -929,12 +991,12 @@ export const docData = {
             }
           },
           {
-            "name": "直接 import 官方 @deepseek-ai/* 并指望本包帮你引",
+            "name": "指望本包帮你引官方 @deepseek-ai/*",
             "type": "现象：Node 下 ERR_MODULE_NOT_FOUND",
             "def": "—",
             "desc": {
-              "zh": "本包 ui 已零官方依赖；要用官方件就在插件侧自己处理平台模块",
-              "en": "Our ui has zero official deps; handle platform modules on the plugin side"
+              "zh": "本包 ui 零官方依赖；要用官方件请自行处理平台模块",
+              "en": "Our ui has zero official deps; handle platform modules yourself"
             }
           },
           {
@@ -985,16 +1047,16 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "依赖 design。装的是「用 token 搭出来的零件」——直接用，不再自己写原生控件。纯零件，不自己取数：选项、当前值都经 props 给（数据要跨 host↔client 边界，通道是插件私有的）。",
-        "en": "Depends on design. Ships \"parts built from tokens\" — use them directly instead of writing native controls. Pure parts, no self-fetching: options and current value come via props (data crosses the host↔client boundary over the plugin’s private channel)."
+        "zh": "依赖 design。装的是「用 token 搭出来的零件」，直接用，不再自己写原生控件。纯零件不自己取数：选项、当前值都经 props 给（数据通道是插件私有的）。",
+        "en": "Depends on design. \"Parts built from tokens\" — use them instead of writing native controls. No self-fetching: options and value come via props (the data channel is plugin-private)."
       },
       {
-        "zh": "官方件通路：ui 入口保持零 @deepseek-ai/* 依赖（Node 单测 / 非宿主环境 import 不崩）；官方 primitives 经 src/ui/official.ts 以独立子路径 dsh-plugin-core/ui/official 透出。要消费官方件（FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip …）的封装从这条通路引，不许在别处 import 平台模块。",
-        "en": "Official-component path: the ui entry stays free of @deepseek-ai/* deps (so Node unit tests / non-host imports don’t crash); official primitives are exposed via src/ui/official.ts through the separate subpath dsh-plugin-core/ui/official. Wrappers that consume official parts (FileTypeIcon / MarkdownText / CodeBlock / Menu / writeClipboard / Tooltip …) must import from this path — never import platform modules elsewhere."
+        "zh": "入口零 `@deepseek-ai/*` 依赖（非宿主环境 import 不崩）。官方 primitives 走独立子路径 `dsh-plugin-core/ui/official`，封装一律从这条通路引。",
+        "en": "The entry keeps zero `@deepseek-ai/*` deps (imports never crash outside the host). Official primitives come through the separate subpath `dsh-plugin-core/ui/official`; import them only from there."
       },
       {
-        "zh": "定制边界：props 就是定制面，要改行为请组合 props，不要 fork 源码；「追加 class/style」只允许补布局，皮肤一律走 token 覆盖；缺控件时先提需求，实在要自己写请按 style.md 口径用同一套 token，并考虑提到本包。",
-        "en": "Customization: props are the customization surface — compose props to change behavior, don’t fork; \"append class/style\" may only patch layout, skins always go through token overrides; if a control is missing, raise a request first; if you must write your own, follow style.md with the same tokens and consider upstreaming it."
+        "zh": "定制边界：props 就是定制面，要改行为请组合 props，不要 fork 源码；追加 class/style 只允许补布局，皮肤走 token 覆盖；缺控件请先提需求。",
+        "en": "Customization: props are the surface — compose them instead of forking source; appended class/style may only patch layout, skins go through token overrides; raise a request before writing a missing control yourself."
       }
     ],
     "code": [
@@ -1021,8 +1083,8 @@ export const docData = {
         "en": "IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title)."
       },
       {
-        "zh": "Segmented：items（必填）+ 单选或多选；另有 size（默认 lg）、variant: default|inset、block、label、id、disabled。选中片 = --dshpc-surface-raised + 1px 描边 + 浮起阴影。",
-        "en": "Segmented: items (required) + single or multiple selection; also size (default lg), variant default|inset, block, label, id, disabled. Selected segment = --dshpc-surface-raised + 1px border + lift shadow."
+        "zh": "Segmented：`items`（必填）支持单选 / 多选，另有 `size`（默认 lg）、`variant`（default / inset）。选中片 = 抬起底色 + 1px 描边 + 浮起阴影。",
+        "en": "Segmented: `items` (required) supports single or multiple selection, plus `size` (default lg) and `variant` (default / inset). Selected = raised background + 1px border + lift shadow."
       }
     ],
     "api": [
@@ -1190,16 +1252,16 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "Picker：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级，自绘（不依赖官方 Menu）。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑也可单用：toGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf。",
-        "en": "Picker: single/multiple/max/search/grouping/empty/degrade, self-drawn (no official Menu). Keyboard: Esc closes, ↑↓ move cursor, Enter selects. Pure logic is also usable standalone: toGroups / flattenOptions / filterGroups / toggleValue / labelsOf / groupOf."
+        "zh": "Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue`。",
+        "en": "Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`."
       },
       {
-        "zh": "WorkspacePicker：领域选择器，数据自带的现成组件（FilePicker 已删）。数据自动来自宿主：插件 apply 里调一次 connectHost(ctx)，组件即订住官方 workspaces 服务的快照。不接线 = 空态（如实，不编数据）。",
-        "en": "WorkspacePicker: a domain picker, a ready-made data-backed component (FilePicker removed). Data comes automatically from the host: call connectHost(ctx) once in the plugin apply, and the component subscribes to the official workspaces service snapshot. No wiring = empty state (honest, no fabricated data)."
+        "zh": "WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。",
+        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data."
       },
       {
-        "zh": "ModelPicker：数据自带的现成组件 + variant: grouped|cascade（默认 grouped）。两种形态返回口径一致：onChange 都发最终模型 value（${provider}/${id}）。目录自动来自宿主（serveModelCatalog + connectHost）。",
-        "en": "ModelPicker: a ready-made data-backed component + variant grouped|cascade (default grouped). Both forms return consistently: onChange emits the final model value (${provider}/${id}). Catalog comes automatically from the host (serveModelCatalog + connectHost)."
+        "zh": "ModelPicker：数据自带，`variant` 为 `grouped`（默认）/ `cascade`；`onChange` 一律发 `provider/id` 形式的模型 value。目录来自宿主 `serveModelCatalog`。",
+        "en": "ModelPicker: brings its own data; `variant` is `grouped` (default) or `cascade`; `onChange` always emits the model value as `provider/id`. Catalog comes from the host `serveModelCatalog`."
       }
     ],
     "api": [
@@ -1487,8 +1549,12 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "独立组件，不属于 Input 家族——标题后、按钮后、文字后、输入框后随处可挂。气泡 = 官方 Tooltip 本体：插件启动时 setTooltipRenderer((props) => h(OfficialTooltip, props)) 把官方组件交给 core，side / align / maxWidth 可透传。不做降级兜底——未注入 renderer 的非宿主环境（node 自检）只出问号图标、没有气泡。",
-        "en": "A standalone component, not part of the Input family — attachable after titles, buttons, text, or inputs anywhere. The bubble IS the official Tooltip: at plugin startup, setTooltipRenderer((props) => h(OfficialTooltip, props)) hands the official component to core; side / align / maxWidth pass through. No fallback — a non-host environment that didn’t inject a renderer (node self-check) shows only the question-mark icon, no bubble."
+        "zh": "独立组件，标题 / 输入框后随处可挂。气泡是官方 Tooltip 本体，启动时用 `setTooltipRenderer((p) => h(OfficialTooltip, p))` 注入，其余 props 透传。",
+        "en": "Standalone — hang it after a title or input. The bubble is the official Tooltip, injected at startup via `setTooltipRenderer((p) => h(OfficialTooltip, p))`; other props pass through."
+      },
+      {
+        "zh": "未注入 renderer 的环境只显示问号图标，不出气泡。",
+        "en": "Without a renderer only the question-mark icon shows, no bubble."
       }
     ]
   },
@@ -1500,8 +1566,12 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "两种卡片外观，两个独立组件：Card = surface 底 + 1px 边框 + 圆角，padding 14px（左 12 使竖条贴边）；StripCard = 同色系浅底 + 1px 不可见占位边框 + 方角。头部整体垂直居中，调用方在 action 里裸放一个元素即垂直居中。颜色全走 token ⇒ 亮暗自动跟随宿主。",
-        "en": "Two card appearances, two separate components: Card = surface background + 1px border + rounded corners, padding 14px (left 12 so the strip hugs the edge); StripCard = same-hue light background + 1px invisible placeholder border + square corners. The header is vertically centered as a whole; drop a bare element in action and it centers. Colors come from tokens ⇒ light/dark follows the host automatically."
+        "zh": "两种外观，两个组件：Card = surface 底 + 1px 边框 + 圆角（padding 14px，左 12 使竖条贴边）；StripCard = 同色浅底 + 占位边框 + 方角。",
+        "en": "Two appearances, two components: Card = surface background + 1px border + rounded corners (padding 14px, left 12 so the strip hugs the edge); StripCard = same-hue light background + placeholder border + square corners."
+      },
+      {
+        "zh": "头部整体垂直居中，`action` 里裸放一个元素即居中。颜色全走 token，明暗跟随宿主。",
+        "en": "The header centers vertically as a whole; drop a bare element into `action` and it centers. Colors come from tokens, so light/dark follows the host."
       }
     ],
     "api": [
@@ -1590,8 +1660,12 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "小标签。两条可选轴：tone（neutral 默认灰面 / business / success / warning / danger——非 neutral 为实心信号面）；size（sm 默认 / md = font-size:12px，卡片元信息行用）。传 onClick 才是可点的。语义边界：Chip 只管「胶囊标签」这一件事；只给图标的小按钮请用 IconButton，不要拿 Chip 当图标底板（同一个类名两套皮肤会互相覆盖）。",
-        "en": "A small tag. Two optional axes: tone (neutral default gray / business / success / warning / danger — non-neutral is a solid signal surface); size (sm default / md = font-size:12px, for card meta rows). Pass onClick to make it clickable. Boundary: Chip only does \"pill tag\"; for an icon-only small button use IconButton — don’t use Chip as an icon baseplate (one class name with two skins would overwrite each other)."
+        "zh": "小标签。`tone`：neutral（默认）/ business / success / warning / danger；`size`：sm（默认）/ md（12px）。传 `onClick` 才可点。",
+        "en": "A small tag. `tone`: neutral (default) / business / success / warning / danger; `size`: sm (default) / md (12px). Pass `onClick` to make it clickable."
+      },
+      {
+        "zh": "边界：只做「胶囊标签」。纯图标的小按钮请用 IconButton，别拿 Chip 当图标底板。",
+        "en": "Boundary: pill tags only. For an icon-only button use IconButton; never use Chip as an icon baseplate."
       }
     ]
   },
@@ -1603,20 +1677,20 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "showToast / notify 等底层仍是 Sonner（动画/定位/堆叠）。跨副本 toast 宿主：core 被打进每个插件 bundle，旧实现 N 个插件同页会挂 N 个同 id 容器；现改为 globalThis 上 Symbol.for('dsh-plugin-core/toast-host') 单例，先到场的副本建唯一容器与 Toaster，其余副本把 ToastPayload 交给宿主渲染。",
-        "en": "showToast / notify etc. are still backed by Sonner (animation/positioning/stacking). Cross-bundle toast host: core is bundled into every plugin, and the old impl would mount N same-id containers on one page; now a globalThis Symbol.for('dsh-plugin-core/toast-host') singleton makes the first bundle create the unique container and Toaster, and later bundles hand their ToastPayload to the host for rendering."
+        "zh": "底层是 Sonner。toast 宿主是 globalThis 单例（`Symbol.for('dsh-plugin-core/toast-host')`）：首个副本建容器，其余把 payload 交它渲染。",
+        "en": "Backed by Sonner. The toast host is a singleton on globalThis (`Symbol.for('dsh-plugin-core/toast-host')`): the first copy mounts the container, the rest hand their payload to it."
       },
       {
-        "zh": "三条取舍（用户拍板接受，不要自行\"优化\"）：① 样式由第一个副本决定；② position 全局共享（一个屏幕一个区）；③ 不做卸载回收 / 引用计数。无 document 的环境静默跳过、不注册。",
-        "en": "Three trade-offs (accepted by the user, don’t \"optimize\"): ① styling is decided by the first bundle; ② position is shared globally (one zone per screen); ③ no unload reclamation / ref counting. Environments without document silently skip and don’t register."
+        "zh": "三条取舍（照用别改）：① 样式取首个副本；② position 全局共享；③ 不做卸载回收。无 document 的环境静默跳过。",
+        "en": "Three trade-offs (accept them): ① styling comes from the first copy; ② position is shared per screen; ③ no unload reclamation. Environments without document skip silently."
       },
       {
-        "zh": "Modal：自绘 overlay，不用 react-dom 的 portal（避免多一个必需依赖）。",
-        "en": "Modal: self-drawn overlay, not react-dom’s portal (avoids an extra required dependency)."
+        "zh": "Modal 是自绘 overlay，不走 react-dom portal。",
+        "en": "Modal is a self-drawn overlay, not a react-dom portal."
       },
       {
-        "zh": "遮罩自动让位页面级分栏（用户 2026-10-22 拍板）：Mask 的右边界读 `--dshpc-page-inset-right`（由 PanelDock 发布，多 dock 求和），所以分栏不被压暗、照常可点，弹窗在**剩下那块区域**里居中。弹窗因此**不需要任何遮罩参数**，调用方也不用去量分栏宽度——量宽度那一版已删（异步挂载导致恒为 0，且属越界）。",
-        "en": "The mask yields to a page-level right column automatically (decided 2026-10-22): its right edge reads `--dshpc-page-inset-right` (published by PanelDock, summed across docks), so the column stays bright and clickable and the dialog centers in the **remaining** area. The dialog therefore needs **no mask props**, and callers no longer measure the column — the measuring version was deleted (it read 0 because mounting is async, and it was the content deciding the mask’s geometry)."
+        "zh": "遮罩右边界读 `--dshpc-page-inset-right`（多个 dock 求和），自动让开右侧分栏，弹窗在**剩余区域**居中。弹窗无需任何遮罩参数；也别自己量分栏宽度（挂载异步，恒为 0）。",
+        "en": "The mask’s right edge reads `--dshpc-page-inset-right` (summed across docks) and yields to the right column, centering the dialog in the **remaining** area. The dialog needs no mask props; never measure the column yourself (mounting is async, it always reads 0)."
       }
     ],
     "api": [
@@ -1628,8 +1702,8 @@ export const docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "官方 Sonner 原生（对比 / demo 用）。opts: { variant?, durationMs?, color?, onDismiss?, position? }；color 整条自定义背景色；position 6 向（默认 bottom-center）；暗色跟随宿主",
-              "en": "Raw official Sonner (for comparison / demo). opts: { variant?, durationMs?, color?, onDismiss?, position? }; color sets the whole background; position 6-way (default bottom-center); dark follows host"
+              "zh": "官方 Sonner 原生（对比 / demo 用）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主",
+              "en": "Raw official Sonner (comparison / demo). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host"
             }
           },
           {
@@ -1637,8 +1711,8 @@ export const docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "项目内推荐：我们封装好的提示。opts: { variant?, description?, durationMs?, position?, actions? }；右侧 actions?: { text, variant?, onClick }[]（1–2 个，用我们自己的 Button）；底层仍是 Sonner",
-              "en": "Recommended in-project: our wrapped toast. opts: { variant?, description?, durationMs?, position?, actions? }; right-side actions?: { text, variant?, onClick }[] (1–2, using our own Button); still Sonner underneath"
+              "zh": "默认用这个。opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个）",
+              "en": "Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2)"
             }
           },
           {
@@ -1646,8 +1720,8 @@ export const docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "宿主原生 Toast（子路径 dsh-plugin-core/ui/host）。opts: { tone?, holdMs?, actions?, onDismiss? }；独立子路径导出，隔离平台模块",
-              "en": "Host-native Toast (subpath dsh-plugin-core/ui/host). opts: { tone?, holdMs?, actions?, onDismiss? }; exported via a separate subpath to isolate platform modules"
+              "zh": "宿主原生 Toast，走 `dsh-plugin-core/ui/host` 子路径。opts: `{ tone?, holdMs?, actions?, onDismiss? }`",
+              "en": "Host-native Toast from the `dsh-plugin-core/ui/host` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }`"
             }
           },
           {
@@ -1793,10 +1867,10 @@ export const docData = {
           {
             "name": "maxWidth",
             "type": "string",
-            "def": "sm: calc(100% - 48px)；md/lg 不设",
+            "def": "按 size",
             "desc": {
-              "zh": "宽度用 `100%`（相对遮罩盒）而非 `100vw`：右侧分栏在场时遮罩已让位，`100vw` 会溢出到分栏上",
-              "en": "Widths are `100%` of the mask box, not `100vw`: with a right column present the mask has already yielded, and `100vw` would spill onto it"
+              "zh": "任意 CSS 值，覆盖 size 的宽度上限；不要用 vw（遮罩已按右侧分栏让位）",
+              "en": "Any CSS value, overriding the size’s max width; avoid vw (the mask already yielded to the right column)"
             }
           },
           {
@@ -1838,16 +1912,16 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "「右侧分栏」从业务里剥出来的通用壳。它是布局成员，不是浮层：占宽度、把主区挤窄，不是盖上去。因此必须由调用方放进自己的 flex 根里。分工照成熟组件库的通行做法：结构写在调用点（children），显隐归状态（open/close 只传 id）。",
-        "en": "A generic shell extracted from the business layer for \"right-side panels\". It is a layout member, not an overlay: it takes width and narrows the main area, not covering it. So the caller must place it inside its own flex root. Following common component-library practice: structure is written at the call site (children), visibility is state (open/close only passes an id)."
+        "zh": "右侧分栏的通用壳，是**布局成员**而非浮层：占宽挤窄主区，要由调用方放进自己的 flex 根。分工：结构写在调用点（children），显隐归状态（`open` / `close` 只传 id）。",
+        "en": "A generic shell for right-side columns — a **layout member**, not an overlay: it takes width and narrows the main area, so the caller puts it in their own flex root. Split of work: structure at the call site (children), visibility in state (`open`/`close` take only an id)."
       },
       {
-        "zh": "面板高度默认视口高；嵌在定高容器里时由调用方给 --dshpc-dock-h。不做的事（拍板留档）：多份同名（multi）、tab 切换条、自动淘汰、浮动层——标签切换由消费方在自己的面板内容里实现。两条实现约束：面板是 position:sticky + height:100vh 的 flex 成员，刻意不设 z-index；拖动期给 iframe 让出指针事件。",
-        "en": "Panel height defaults to viewport height; when nested in a fixed-height container, the caller sets --dshpc-dock-h. Deliberately not done (on record): multi same-name, tab-switch bar, auto-eviction, floating layer — tab switching is the consumer’s job inside their own panel content. Two impl constraints: panels are position:sticky + height:100vh flex members with no z-index; during drag, yield pointer events to iframes."
+        "zh": "面板高度默认视口高；嵌在定高容器里时由调用方给 `--dshpc-dock-h`。不支持：同名多实例、tab 切换条、自动淘汰、浮层——标签切换请消费方在自己的面板内容里实现。",
+        "en": "Panel height defaults to viewport height; in a fixed-height container the caller sets `--dshpc-dock-h`. Not supported: same-name duplicates, tab bars, auto-eviction, floating layers — tab switching belongs in the consumer’s own panel content."
       },
       {
-        "zh": "占宽契约（用户 2026-10-22 拍板）：dock 把「所有开着的栏宽之和」实时发布到根元素的 `--dshpc-page-inset-right`（拖拽中逐帧更新，全关/卸载即移除），全屏遮罩据此让位。同页多个 dock 按实例求和 —— 这不是可选优化：demo 自己就有「整页 dock + 文件预览 dock」两个，各写同一个变量会互相覆盖。之所以挂在根元素而不是 mount 上，是因为遮罩不保证是那块 flex 行的后代。",
-        "en": "Width contract (decided 2026-10-22): the dock publishes the sum of its open panel widths to `--dshpc-page-inset-right` on the root element (updated every frame while dragging, removed when all panels close / on unmount), and full-screen masks yield by it. Multiple docks on one page are summed per instance — not an optional nicety: the demo itself has two (page dock + file-preview dock) and a single shared variable would let them overwrite each other. It lives on the root element rather than on the mount because the mask is not guaranteed to be a descendant of that flex row."
+        "zh": "占宽契约：已开栏宽之和实时写进根元素 `--dshpc-page-inset-right`（拖拽逐帧更新，全关即移除），全屏遮罩据此让位；同页多个 dock 求和。",
+        "en": "Width contract: the sum of open widths goes to `--dshpc-page-inset-right` on the root element (every frame while dragging, removed when all close), and full-screen masks yield to it; multiple docks on one page are summed."
       }
     ],
     "api": [

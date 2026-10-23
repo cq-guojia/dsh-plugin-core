@@ -11,7 +11,7 @@
 // 经 onContinue 由调用方完成 fork + host 侧 agent.send 起轮次 + 跳转。
 //
 // 使用：
-//   const view = openSessionView(sessions, uiConversation, sessionId, 'my-plugin')
+//   const view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')
 //   if (view !== null) {
 //     h(SessionViewModal, {
 //       sessionId, view, onClose: () => { view.dispose(); setOpen(false) },
