@@ -1,5 +1,6 @@
 # 20261021-1151-core-文档随包分发-agent-可读文档机制-demo-与-docs-真源统-ebe3：core 文档随包分发：Agent 可读文档机制 + demo 与 docs 真源统一
 
+> **✅ 完成封卷**：2026-10-23 09:08:24（@GuoJia-Agent）
 > **创建**：2026-10-21 11:51:26（@GuoJia-Agent）
 > **分类**：基建 ｜ **标签**：文档、分发、demo、Agent、真源
 
@@ -58,3 +59,4 @@
 - 2026-10-21 17:21:58 · log · @GuoJia-Agent · 阶段1 启动（design 转换）：design.md → design.doc.ts；schema 的 ApiRow 加可选 required? 以忠实表达源表「必填」列，gen-docs 按是否有 required 条件加列。--check 闸当场拦下 explorer/design 的 overview 撞 id，改全局唯一稳定 id（页面主段=SectionId、子段加前缀）后通过——证明 id 契约有效且能防漂移。design 为 6 份中第 1 份；手写的 design.md 暂保留，阶段1 收尾再覆盖。验证：gen+check+typecheck 全绿。
 - 2026-10-21 17:41:22 · log · @GuoJia-Agent · 阶段1 续：转完 session/utils/integration 三份 .doc.ts（共 5/6，剩 ui）。schema 把 api 从单表改为 ApiTable[]（一个 section 可多张表，如 session 的 SessionSource+SessionPreview）；renderMd 按数组顺序渲染；MAP 增 session/utils/integration；integration 在 docs/examples/ 导入路径修正为 ../design/doc-format.js。验证：gen+check+typecheck 全绿。手写的 session.md/utils.md/integration.md 暂保留，阶段1 收尾再覆盖生成物。
 - 2026-10-21 17:49:04 · log · @GuoJia-Agent · 阶段1 收尾 + 阶段2 完成：ui.doc.ts 转完（8 组件页+概览+Modal，共 6/6）。schema 把 api 改 ApiTable[] 支持一个 section 多张表；gen-docs 按 section.id 扁平聚合，18 个 demo SectionId 全覆盖，无 id 冲突。阶段2：package.json 的 build 串入 gen:docs（gen:css && gen:docs && tsc），pretest 加 gen:docs --check 双闸，补 prepublishOnly=build&&test。验证 pnpm build 跑通且 gen:docs --check / gen-css --check 全绿。手写的 explorer/design/session/utils/integration.md 暂保留，阶段1 收尾再删（改 docData 消费前 demo 仍读旧硬编码）。
+- 2026-10-23 09:08:24 · close · @GuoJia-Agent · 结案：文档随包分发落地：6 份 docs/**/*.doc.ts 为唯一真源，gen-docs 生成 md（Agent 读）+ demo doc-data.generated.ts 双投影，pretest 双 --check 与 typecheck:docs 守门，package files=[dist,docs] ⇒ 装包即带文档
