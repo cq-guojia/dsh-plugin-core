@@ -61,7 +61,11 @@
   z-index:7;cursor:col-resize;background:transparent;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);
 }
-.dshpc-dock__resizer:hover,.dshpc-dock__resizer:active{background:var(--dshpc-hover)}
+/* hover/按住：不填灰带，改为官方 work 区指示条样式 —— 左缘 2px 蓝竖条、上下渐隐
+   （颜色走 business 蓝的官方 alias，明暗自动跟随宿主；命中区仍是 6px 不变）。 */
+.dshpc-dock__resizer:hover,.dshpc-dock__resizer:active{
+  background:linear-gradient(180deg,transparent,var(--dshpc-business) 30%,var(--dshpc-business) 70%,transparent) left center / 1px 100% no-repeat;
+}
 
 /* 拖动期：① <iframe>（PDF / HTML 预览）是独立文档，会吞掉父文档的 pointermove，
    向右拖进 iframe 就卡死 —— 整片让出指针事件；② contain 把重排隔离在栏内，
