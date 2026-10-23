@@ -203,6 +203,7 @@ export type UtilMessageKey =
   | 'terminalCollapseAria'
   | 'terminalExpandAria'
   | 'terminalExpandRest'
+  | 'terminalCommandLine'
   | 'terminalSendInput'
   | 'terminalSession'
   | 'codeBlockLabel'
@@ -448,6 +449,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     terminalCollapseAria: '收起输出',
     terminalExpandAria: '展开其余 {n} 行输出',
     terminalExpandRest: '… 其余 {n} 行',
+    terminalCommandLine: '第 {n} 行',
     terminalSendInput: '（发送输入）',
     terminalSession: '终端 {sessionId}',
     codeBlockLabel: '代码块',
@@ -690,6 +692,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     terminalCollapseAria: 'Collapse output',
     terminalExpandAria: 'Expand the remaining {n} output lines',
     terminalExpandRest: '… {n} more lines',
+    terminalCommandLine: 'line {n}',
     terminalSendInput: '(send input)',
     terminalSession: 'Terminal {sessionId}',
     codeBlockLabel: 'Code',

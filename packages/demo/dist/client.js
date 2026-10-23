@@ -2974,6 +2974,7 @@ var DICT = {
     terminalCollapseAria: "\u6536\u8D77\u8F93\u51FA",
     terminalExpandAria: "\u5C55\u5F00\u5176\u4F59 {n} \u884C\u8F93\u51FA",
     terminalExpandRest: "\u2026 \u5176\u4F59 {n} \u884C",
+    terminalCommandLine: "\u7B2C {n} \u884C",
     terminalSendInput: "\uFF08\u53D1\u9001\u8F93\u5165\uFF09",
     terminalSession: "\u7EC8\u7AEF {sessionId}",
     codeBlockLabel: "\u4EE3\u7801\u5757",
@@ -3216,6 +3217,7 @@ var DICT = {
     terminalCollapseAria: "Collapse output",
     terminalExpandAria: "Expand the remaining {n} output lines",
     terminalExpandRest: "\u2026 {n} more lines",
+    terminalCommandLine: "line {n}",
     terminalSendInput: "(send input)",
     terminalSession: "Terminal {sessionId}",
     codeBlockLabel: "Code",
@@ -52026,6 +52028,9 @@ var readLabels = (t4) => ({
   expand: (count3) => t4("readExpandRest", { count: count3 })
 });
 var terminalLabels = (t4) => ({
+  // 官方 terminalBlockLabels（ui-tool terminal-card-model.ts）：commandLine 是**函数**，
+  // TerminalBlock 会调它给输出行编号。缺它就抛 `w.commandLine is not a function`（真机 2026-10-23 崩溃）。
+  commandLine: (line) => t4("terminalCommandLine", { n: line }),
   signal: (signal) => t4("terminalSignal", { signal }),
   exitCode: (code3) => t4("terminalExitCode", { code: code3 }),
   noExitCode: t4("terminalNoExitCode"),
@@ -52433,8 +52438,9 @@ function MessageIconActionsMirror(props) {
       }, COPIED_RESET_MS);
     });
   };
+  const clockClass = (clock === "end" ? officialClass("MessageIconActions", "timeEnd") ?? officialClass("MessageIconActions", "clock") : officialClass("MessageIconActions", "timeStart") ?? officialClass("MessageIconActions", "clock")) ?? "";
   const clockEl = time === void 0 ? null : (0, import_react38.createElement)("time", {
-    className: officialClass("MessageIconActions", "clock") ?? "",
+    className: clockClass,
     dateTime: new Date(time).toISOString()
   }, formatMessageClock(time, t4));
   const reasonId = "dshpc-sv-branch-unavailable";
@@ -52675,6 +52681,7 @@ var import_react_dom4 = require("react-dom");
 var import_react42 = require("react");
 var PANEL_MARGIN = 12;
 var PANEL_GAP = 8;
+var STAT_MEASURE_STYLE = { visibility: "hidden", left: 0, top: 0 };
 function useStatDialog(controlled) {
   const [ownOpen, setOwnOpen] = (0, import_react42.useState)(false);
   const open = controlled?.open ?? ownOpen;
@@ -52715,12 +52722,12 @@ function TurnUsagePanelMirror(props) {
     }
   }, (0, import_react43.createElement)(official_exports.IconDatabaseOutlineRegular, null), (0, import_react43.createElement)("span", { className: officialClass("TurnUsagePanel", "label") ?? "" }, t4("turnUsageConsumed", { total }))), open ? (0, import_react_dom4.createPortal)((0, import_react43.createElement)("div", {
     ref: panelRef,
-    className: officialClass("statDialog", "panel") ?? "",
+    className: officialClass("stat-dialog", "panel") ?? "",
     role: "dialog",
     "aria-label": t4("turnUsageTitle"),
-    style: pos
-  }, (0, import_react43.createElement)("div", { className: officialClass("statDialog", "title") ?? "" }, (0, import_react43.createElement)("span", { className: officialClass("statDialog", "titleLabel") ?? "" }, (0, import_react43.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react43.createElement)("span", { className: officialClass("statDialog", "titleValue") ?? "" }, formatExactCount(usage.totalTokens, t4))), (0, import_react43.createElement)("div", { className: officialClass("statDialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react43.createElement)("dl", { className: officialClass("statDialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("dt", null, t4("turnUsageModel")), (0, import_react43.createElement)("dd", { className: officialClass("statDialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react43.createElement)("dd", null, `${cacheHit}%`)), (0, import_react43.createElement)("dt", null, t4("turnUsageInput")), (0, import_react43.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react43.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react43.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react43.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react43.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react43.createElement)("span", {
-    className: officialClass("statDialog", "reasoning") ?? ""
+    style: pos ?? STAT_MEASURE_STYLE
+  }, (0, import_react43.createElement)("div", { className: officialClass("stat-dialog", "title") ?? "" }, (0, import_react43.createElement)("span", { className: officialClass("stat-dialog", "titleLabel") ?? "" }, (0, import_react43.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react43.createElement)("span", { className: officialClass("stat-dialog", "titleValue") ?? "" }, formatExactCount(usage.totalTokens, t4))), (0, import_react43.createElement)("div", { className: officialClass("stat-dialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react43.createElement)("dl", { className: officialClass("stat-dialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("dt", null, t4("turnUsageModel")), (0, import_react43.createElement)("dd", { className: officialClass("stat-dialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react43.createElement)("dd", null, `${cacheHit}%`)), (0, import_react43.createElement)("dt", null, t4("turnUsageInput")), (0, import_react43.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react43.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react43.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react43.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react43.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react43.createElement)("span", {
+    className: officialClass("stat-dialog", "reasoning") ?? ""
   }, t4("turnUsageReasoning", { tokens: formatExactCount(usage.reasoningTokens, t4) }))))), document.body) : null);
 }
 
@@ -60486,7 +60493,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1023-2226-9h8q"]
+            [t3("buildStamp"), "1023-2311-lcm7"]
           ].map(
             ([label, value]) => (0, import_react65.createElement)(
               "tr",

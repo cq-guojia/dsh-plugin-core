@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom'
 import { IconDatabaseOutlineRegular } from '../../ui/official.js'
 import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../utils/i18n.js'
-import { useStatDialog } from './StatDialog.js'
+import { STAT_MEASURE_STYLE, useStatDialog } from './StatDialog.js'
 import { formatCacheHitPercent, formatCompactCount, formatExactCount } from './message-chrome.js'
 
 /** 官方 TurnTokenUsage 的消费面。 */
@@ -48,24 +48,24 @@ export function TurnUsagePanelMirror(props: {
     open
       ? createPortal(h('div', {
           ref: panelRef,
-          className: officialClass('statDialog', 'panel') ?? '',
+          className: officialClass('stat-dialog', 'panel') ?? '',
           role: 'dialog',
           'aria-label': t('turnUsageTitle'),
-          style: pos,
+          style: pos ?? STAT_MEASURE_STYLE,
         },
-          h('div', { className: officialClass('statDialog', 'title') ?? '' },
-            h('span', { className: officialClass('statDialog', 'titleLabel') ?? '' },
+          h('div', { className: officialClass('stat-dialog', 'title') ?? '' },
+            h('span', { className: officialClass('stat-dialog', 'titleLabel') ?? '' },
               h(IconDatabaseOutlineRegular, null),
               t('turnUsageTitle'),
             ),
-            h('span', { className: officialClass('statDialog', 'titleValue') ?? '' },
+            h('span', { className: officialClass('stat-dialog', 'titleValue') ?? '' },
               formatExactCount(usage.totalTokens, t)),
           ),
-          h('div', { className: officialClass('statDialog', 'titleRule') ?? '', 'aria-hidden': true }),
-          h('dl', { className: officialClass('statDialog', 'details') ?? '', 'data-turn-usage-details': true },
+          h('div', { className: officialClass('stat-dialog', 'titleRule') ?? '', 'aria-hidden': true }),
+          h('dl', { className: officialClass('stat-dialog', 'details') ?? '', 'data-turn-usage-details': true },
             routes === '' ? null : h(Fragment, null,
               h('dt', null, t('turnUsageModel')),
-              h('dd', { className: officialClass('statDialog', 'route') ?? '' }, routes),
+              h('dd', { className: officialClass('stat-dialog', 'route') ?? '' }, routes),
             ),
             cacheHit === null ? null : h(Fragment, null,
               h('dt', null, t('turnUsageCacheHit')),
@@ -87,7 +87,7 @@ export function TurnUsagePanelMirror(props: {
               usage.reasoningTokens === undefined
                 ? null
                 : h('span', {
-                    className: officialClass('statDialog', 'reasoning') ?? '',
+                    className: officialClass('stat-dialog', 'reasoning') ?? '',
                   }, t('turnUsageReasoning', { tokens: formatExactCount(usage.reasoningTokens, t) })),
             ),
           ),

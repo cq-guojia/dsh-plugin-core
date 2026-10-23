@@ -48,8 +48,14 @@ export function MessageIconActionsMirror(props: {
       timerRef.current = setTimeout(() => { setCopied(false) }, COPIED_RESET_MS)
     })
   }
+  // 官方语义名是 timeStart / timeEnd（assistant 尾部 = timeEnd，字号 13px-1px）——**没有 .clock**。
+  // 之前写 'clock' 恒取不到 ⇒ 空类 ⇒ 时间吃浏览器默认 16px（真机 2026-10-23「时间偏大」）。
+  // 老版本若叫 clock 也做候选兼容（都是官方语义名，不是自绘样式）。
+  const clockClass = (clock === 'end'
+    ? officialClass('MessageIconActions', 'timeEnd') ?? officialClass('MessageIconActions', 'clock')
+    : officialClass('MessageIconActions', 'timeStart') ?? officialClass('MessageIconActions', 'clock')) ?? ''
   const clockEl = time === undefined ? null : h('time', {
-    className: officialClass('MessageIconActions', 'clock') ?? '',
+    className: clockClass,
     dateTime: new Date(time).toISOString(),
   }, formatMessageClock(time, t))
   const reasonId = 'dshpc-sv-branch-unavailable'

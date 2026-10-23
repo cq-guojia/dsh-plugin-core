@@ -7,7 +7,7 @@ import { Fragment, createElement as h } from 'react';
 import { createPortal } from 'react-dom';
 import { IconDatabaseOutlineRegular } from '../../ui/official.js';
 import { officialClass } from '../official-classes.js';
-import { useStatDialog } from './StatDialog.js';
+import { STAT_MEASURE_STYLE, useStatDialog } from './StatDialog.js';
 import { formatCacheHitPercent, formatCompactCount, formatExactCount } from './message-chrome.js';
 /** 本轮用量 pill + 明细弹层。 */
 export function TurnUsagePanelMirror(props) {
@@ -27,14 +27,14 @@ export function TurnUsagePanelMirror(props) {
     }, h(IconDatabaseOutlineRegular, null), h('span', { className: officialClass('TurnUsagePanel', 'label') ?? '' }, t('turnUsageConsumed', { total }))), open
         ? createPortal(h('div', {
             ref: panelRef,
-            className: officialClass('statDialog', 'panel') ?? '',
+            className: officialClass('stat-dialog', 'panel') ?? '',
             role: 'dialog',
             'aria-label': t('turnUsageTitle'),
-            style: pos,
-        }, h('div', { className: officialClass('statDialog', 'title') ?? '' }, h('span', { className: officialClass('statDialog', 'titleLabel') ?? '' }, h(IconDatabaseOutlineRegular, null), t('turnUsageTitle')), h('span', { className: officialClass('statDialog', 'titleValue') ?? '' }, formatExactCount(usage.totalTokens, t))), h('div', { className: officialClass('statDialog', 'titleRule') ?? '', 'aria-hidden': true }), h('dl', { className: officialClass('statDialog', 'details') ?? '', 'data-turn-usage-details': true }, routes === '' ? null : h(Fragment, null, h('dt', null, t('turnUsageModel')), h('dd', { className: officialClass('statDialog', 'route') ?? '' }, routes)), cacheHit === null ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheHit')), h('dd', null, `${cacheHit}%`)), h('dt', null, t('turnUsageInput')), h('dd', null, formatExactCount(usage.uncachedInputTokens, t)), usage.cacheReadTokens === undefined ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheRead')), h('dd', null, formatExactCount(usage.cacheReadTokens, t))), usage.cacheWriteTokens === undefined ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheWrite')), h('dd', null, formatExactCount(usage.cacheWriteTokens, t))), h('dt', null, t('turnUsageOutput')), h('dd', null, formatExactCount(usage.outputTokens, t), usage.reasoningTokens === undefined
+            style: pos ?? STAT_MEASURE_STYLE,
+        }, h('div', { className: officialClass('stat-dialog', 'title') ?? '' }, h('span', { className: officialClass('stat-dialog', 'titleLabel') ?? '' }, h(IconDatabaseOutlineRegular, null), t('turnUsageTitle')), h('span', { className: officialClass('stat-dialog', 'titleValue') ?? '' }, formatExactCount(usage.totalTokens, t))), h('div', { className: officialClass('stat-dialog', 'titleRule') ?? '', 'aria-hidden': true }), h('dl', { className: officialClass('stat-dialog', 'details') ?? '', 'data-turn-usage-details': true }, routes === '' ? null : h(Fragment, null, h('dt', null, t('turnUsageModel')), h('dd', { className: officialClass('stat-dialog', 'route') ?? '' }, routes)), cacheHit === null ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheHit')), h('dd', null, `${cacheHit}%`)), h('dt', null, t('turnUsageInput')), h('dd', null, formatExactCount(usage.uncachedInputTokens, t)), usage.cacheReadTokens === undefined ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheRead')), h('dd', null, formatExactCount(usage.cacheReadTokens, t))), usage.cacheWriteTokens === undefined ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheWrite')), h('dd', null, formatExactCount(usage.cacheWriteTokens, t))), h('dt', null, t('turnUsageOutput')), h('dd', null, formatExactCount(usage.outputTokens, t), usage.reasoningTokens === undefined
             ? null
             : h('span', {
-                className: officialClass('statDialog', 'reasoning') ?? '',
+                className: officialClass('stat-dialog', 'reasoning') ?? '',
             }, t('turnUsageReasoning', { tokens: formatExactCount(usage.reasoningTokens, t) }))))), document.body)
         : null);
 }

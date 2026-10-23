@@ -9,6 +9,13 @@ import { useAnchoredPosition, useDismissOnOutsidePointer } from '../../ui/offici
 const PANEL_MARGIN = 12
 const PANEL_GAP = 8
 
+/**
+ * 官方 stat-dialog.ts 的 MEASURE_STYLE：首趟（pos 未定）时面板「隐藏但仍布局」，
+ * 好让 useAnchoredPosition 量到真实尺寸。官方要求面板铺 `pos ?? MEASURE_STYLE`；
+ * 漏了它 ⇒ 首趟完全无定位、面板落进文档流撑长页面（真机 2026-10-23：点用量无反应 + 滚动条变长）。
+ */
+export const STAT_MEASURE_STYLE: CSSProperties = { visibility: 'hidden', left: 0, top: 0 }
+
 export interface StatDialogSeat {
   open: boolean
   setOpen(open: boolean): void

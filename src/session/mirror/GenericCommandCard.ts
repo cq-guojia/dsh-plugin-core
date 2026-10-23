@@ -395,6 +395,9 @@ const readLabels = (t: Translate) => ({
 })
 /** 官方 terminalBlockLabels（tool client.js:708-737 的键面）。 */
 const terminalLabels = (t: Translate) => ({
+  // 官方 terminalBlockLabels（ui-tool terminal-card-model.ts）：commandLine 是**函数**，
+  // TerminalBlock 会调它给输出行编号。缺它就抛 `w.commandLine is not a function`（真机 2026-10-23 崩溃）。
+  commandLine: (line: number) => t('terminalCommandLine', { n: line }),
   signal: (signal: string) => t('terminalSignal', { signal }),
   exitCode: (code: number) => t('terminalExitCode', { code }),
   noExitCode: t('terminalNoExitCode'),
