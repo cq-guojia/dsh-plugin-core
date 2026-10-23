@@ -234,7 +234,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
       workspaceFiles: workspaceFiles ?? undefined,
       sessionId: loc.sessionId,
       path: '',
-      content: () => h(ChangedFileDiff, { sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display }),
+      content: () => h(ChangedFileDiff, { sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display, variant: 'review' }),
     })
   }
   if (state.status !== 'ready') {

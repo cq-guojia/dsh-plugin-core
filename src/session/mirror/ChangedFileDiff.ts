@@ -71,8 +71,15 @@ export function ChangedFileDiff(props: {
   display: string
   /** 文案翻译；缺省用核心字典（demo 自带字典不认 changes/diff 这些 key）。 */
   t?: Translate
+  /**
+   * 渲染变体（官方两套壳）：
+   * - `preview`（默认）= hover 预览，`ChangedFiles.preview` 紧凑壳：限高、隐 note / hunk 头；
+   * - `review` = 点开后的完整 FileDiff：hunk 头（`@@ -a,b +c,d @@`）与 note 正常显示。
+   * 之前一律用 preview 壳，导致审阅视图里 hunk 头被 CSS 隐掉（用户截图对照官方）。
+   */
+  variant?: 'preview' | 'review'
 }): ReactNode {
-  const { sessionId, seq, index, display, t = defaultT } = props
+  const { sessionId, seq, index, display, t = defaultT, variant = 'preview' } = props
   const url = changesDiffUrl(sessionId, seq, index)
   const [state, setState] = useState<ChangesDiff | null | undefined | 'error'>(undefined)
   const [attempt, setAttempt] = useState(0)
@@ -168,8 +175,13 @@ export function ChangedFileDiff(props: {
     )
   }, [state, highlighter, t, retry])
 
-  // 官方：FileDiff.root + ChangedFiles.preview（后者限高并在预览里隐掉 note / hunk 头）。
-  return h('div', { className: 'dshpc-sv-diff dshpc-sv-changes-preview', 'data-changes-hover-preview': true },
+  // 官方两套壳：hover 预览 = ChangedFiles.preview（限高、隐 note / hunk 头）；
+  // 审阅视图 = 完整 FileDiff.root（hunk 头 + note 正常渲染）。
+  const preview = variant !== 'review'
+  return h('div', {
+    className: preview ? 'dshpc-sv-diff dshpc-sv-changes-preview' : 'dshpc-sv-diff',
+    'data-changes-hover-preview': preview ? true : undefined,
+  },
     h('div', { className: 'dshpc-sv-diff-header' },
       h('span', { className: 'dshpc-sv-changes-previewpath', 'data-changes-preview-path': true }, display),
     ),

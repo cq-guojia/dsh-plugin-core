@@ -41,7 +41,7 @@ function DiffLine(props) {
 }
 /** 一个变更文件的 diff 体（状态机 + unified 行渲染）。 */
 export function ChangedFileDiff(props) {
-    const { sessionId, seq, index, display, t = defaultT } = props;
+    const { sessionId, seq, index, display, t = defaultT, variant = 'preview' } = props;
     const url = changesDiffUrl(sessionId, seq, index);
     const [state, setState] = useState(undefined);
     const [attempt, setAttempt] = useState(0);
@@ -131,7 +131,12 @@ export function ChangedFileDiff(props) {
             })));
         }));
     }, [state, highlighter, t, retry]);
-    // 官方：FileDiff.root + ChangedFiles.preview（后者限高并在预览里隐掉 note / hunk 头）。
-    return h('div', { className: 'dshpc-sv-diff dshpc-sv-changes-preview', 'data-changes-hover-preview': true }, h('div', { className: 'dshpc-sv-diff-header' }, h('span', { className: 'dshpc-sv-changes-previewpath', 'data-changes-preview-path': true }, display)), body);
+    // 官方两套壳：hover 预览 = ChangedFiles.preview（限高、隐 note / hunk 头）；
+    // 审阅视图 = 完整 FileDiff.root（hunk 头 + note 正常渲染）。
+    const preview = variant !== 'review';
+    return h('div', {
+        className: preview ? 'dshpc-sv-diff dshpc-sv-changes-preview' : 'dshpc-sv-diff',
+        'data-changes-hover-preview': preview ? true : undefined,
+    }, h('div', { className: 'dshpc-sv-diff-header' }, h('span', { className: 'dshpc-sv-changes-previewpath', 'data-changes-preview-path': true }, display)), body);
 }
 //# sourceMappingURL=ChangedFileDiff.js.map

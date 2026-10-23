@@ -53014,7 +53014,7 @@ function DiffLine(props) {
   return (0, import_react46.createElement)("div", { className: `dshpc-sv-diff-line ${kindClass}`, "data-diff-line": row.kind }, (0, import_react46.createElement)("span", { className: "dshpc-sv-diff-number" }, row.old ?? ""), (0, import_react46.createElement)("span", { className: "dshpc-sv-diff-number" }, row.new ?? ""), (0, import_react46.createElement)("span", { className: "dshpc-sv-diff-sign" }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react46.createElement)(DiffText, { text: row.text, spans }));
 }
 function ChangedFileDiff(props) {
-  const { sessionId, seq, index: index3, display, t: t4 = t } = props;
+  const { sessionId, seq, index: index3, display, t: t4 = t, variant = "preview" } = props;
   const url = changesDiffUrl(sessionId, seq, index3);
   const [state, setState] = (0, import_react46.useState)(void 0);
   const [attempt, setAttempt] = (0, import_react46.useState)(0);
@@ -53099,7 +53099,11 @@ function ChangedFileDiff(props) {
       })));
     }));
   }, [state, highlighter, t4, retry]);
-  return (0, import_react46.createElement)("div", { className: "dshpc-sv-diff dshpc-sv-changes-preview", "data-changes-hover-preview": true }, (0, import_react46.createElement)("div", { className: "dshpc-sv-diff-header" }, (0, import_react46.createElement)("span", { className: "dshpc-sv-changes-previewpath", "data-changes-preview-path": true }, display)), body);
+  const preview = variant !== "review";
+  return (0, import_react46.createElement)("div", {
+    className: preview ? "dshpc-sv-diff dshpc-sv-changes-preview" : "dshpc-sv-diff",
+    "data-changes-hover-preview": preview ? true : void 0
+  }, (0, import_react46.createElement)("div", { className: "dshpc-sv-diff-header" }, (0, import_react46.createElement)("span", { className: "dshpc-sv-changes-previewpath", "data-changes-preview-path": true }, display)), body);
 }
 
 // dist/session/mirror/ChangedFilesCard.js
@@ -60111,7 +60115,7 @@ function RealSessionListDemo() {
       workspaceFiles: workspaceFiles ?? void 0,
       sessionId: loc.sessionId,
       path: "",
-      content: () => (0, import_react62.createElement)(ChangedFileDiff, { sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display })
+      content: () => (0, import_react62.createElement)(ChangedFileDiff, { sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display, variant: "review" })
     });
   };
   if (state.status !== "ready") {
@@ -60382,7 +60386,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1023-1544-68ym"]
+            [t3("buildStamp"), "1023-1727-y04q"]
           ].map(
             ([label, value]) => (0, import_react64.createElement)(
               "tr",
