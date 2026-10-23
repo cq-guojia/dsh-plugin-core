@@ -21,9 +21,13 @@ import {
 } from '../../ui/official.js'
 import { FileTypeIcon } from '../../ui/official.js'
 import { baseNameOf } from '../../utils/index.js'
+import { officialClass } from '../official-classes.js'
 import { changesSummaryUrl, parseChangesSummary, type ChangesSummary } from '../changes.js'
 import { ChangedFileDiff } from './ChangedFileDiff.js'
 import type { Translate } from '../../utils/i18n.js'
+
+/** 官方 ChangedFiles 模块类（ui-deliverables；取不到 = 空类，不白屏）。 */
+const C = (semantic: string): string => officialClass('ChangedFiles', semantic) ?? ''
 
 /** 会话级缓存：同一 (sessionId, seq) 只拉一次（官方 ChangesSummaryStore 同语义）。 */
 const cache = new Map<string, ChangesSummary | null>()
@@ -35,9 +39,9 @@ const COLLAPSED_ROWS = 4
 function Counts(props: { added: number; deleted: number }): ReactNode {
   const grouped = new Intl.NumberFormat('en-US')
   return h(Fragment, null,
-    h('span', { className: 'dshpc-sv-changes-added' }, `+${grouped.format(props.added)}`),
+    h('span', { className: C('added') }, `+${grouped.format(props.added)}`),
     ' ',
-    h('span', { className: 'dshpc-sv-changes-deleted' }, `-${grouped.format(props.deleted)}`),
+    h('span', { className: C('deleted') }, `-${grouped.format(props.deleted)}`),
   )
 }
 
@@ -102,13 +106,13 @@ export function ChangedFilesCard(props: {
   const rows = foldable && !expanded ? summary.files.slice(0, COLLAPSED_ROWS) : summary.files
 
   const headerBody = h(Fragment, null,
-    h('span', { className: 'dshpc-sv-changes-tile' }, icon),
-    h('span', { className: 'dshpc-sv-changes-titles' },
-      h('span', { className: 'dshpc-sv-changes-title' }, title),
-      h('span', { className: 'dshpc-sv-changes-stat' },
-        h('span', { className: 'dshpc-sv-changes-statcounts' }, countsOf(single ?? summary, t)),
+    h('span', { className: C('tile') }, icon),
+    h('span', { className: C('titles') },
+      h('span', { className: C('title') }, title),
+      h('span', { className: C('stat') },
+        h('span', { className: C('statCounts') }, countsOf(single ?? summary, t)),
         // 官方 previewHint：hover/focus 时替换计数显示（提示这张卡可以 hover 出 diff 预览）。
-        h('span', { className: 'dshpc-sv-changes-previewhint' }, t('deliverPreviewHint')),
+        h('span', { className: C('previewHint') }, t('deliverPreviewHint')),
       ),
     ),
   )
@@ -121,10 +125,10 @@ export function ChangedFilesCard(props: {
     display: single?.display ?? summary.files[0]!.display,
   }
   const headerNode = onOpenReview === undefined
-    ? h('div', { className: 'dshpc-sv-changes-header' }, headerBody)
+    ? h('div', { className: C('header') }, headerBody)
     : h('button', {
         type: 'button',
-        className: 'dshpc-sv-changes-header',
+        className: C('header'),
         title: headerLocator.display,
         onClick: () => { onOpenReview(headerLocator) },
       }, headerBody)
@@ -135,16 +139,16 @@ export function ChangedFilesCard(props: {
 
   const rowOf = (file: (typeof summary.files)[number], index: number): ReactNode => {
     const body = h(Fragment, null,
-      h('span', { className: 'dshpc-sv-changes-path' }, file.display),
-      h('span', { className: 'dshpc-sv-changes-counts' }, countsOf(file, t)),
+      h('span', { className: C('path') }, file.display),
+      h('span', { className: C('counts') }, countsOf(file, t)),
     )
     // 官方行点击 = openReview(index)：带改动身份出去，调用方开审阅。无 onOpenReview 则不可点。
     const locator: ChangedFileReviewLocator = { sessionId, seq, index, display: file.display }
     const row = onOpenReview === undefined
-      ? h('div', { className: 'dshpc-sv-changes-row', title: file.path }, body)
+      ? h('div', { className: C('row'), title: file.path }, body)
       : h('button', {
           type: 'button',
-          className: 'dshpc-sv-changes-row',
+          className: C('row'),
           title: file.path,
           onClick: () => { onOpenReview(locator) },
         }, body)
@@ -158,7 +162,7 @@ export function ChangedFilesCard(props: {
     })
   }
   const list = single === undefined
-    ? h('ul', { className: 'dshpc-sv-changes-list' },
+    ? h('ul', { className: C('list') },
         rows.map((file) => {
           // 折叠视图下 rows 是子集，必须用 summary.files 的真实下标（changes.diff 的 index 语义）。
           const index = summary.files.indexOf(file)
@@ -168,7 +172,7 @@ export function ChangedFilesCard(props: {
   const toggle = foldable
     ? h('button', {
         type: 'button',
-        className: 'dshpc-sv-changes-toggle',
+        className: C('toggle'),
         'aria-expanded': expanded,
         'aria-label': t(expanded ? 'deliverCollapseAria' : 'deliverExpandAria', { count: summary.files.length }),
         onClick: () => { setExpanded((value) => !value) },
@@ -189,7 +193,7 @@ export function ChangedFilesCard(props: {
       })
   return h('div', {
     ref: cardRef,
-    className: 'dshpc-sv-changes',
+    className: C('card'),
     'data-changed-files': true,
     'data-single': single !== undefined || undefined,
   }, header, list, toggle)

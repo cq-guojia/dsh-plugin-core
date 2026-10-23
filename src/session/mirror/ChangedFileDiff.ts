@@ -12,6 +12,7 @@
 import { createElement as h, useCallback, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
 import { Button, IconCloseOutlineRegular, languageForPath, useCodeHighlighter, type HighlightSpan } from '../../ui/official.js'
 import { IconButton } from '../../ui/Button.js'
+import { officialClass } from '../official-classes.js'
 import {
   DIFF_MAX_RENDERED_LINES,
   changesDiffUrl,
@@ -24,6 +25,10 @@ import {
   type DiffRow,
 } from '../changes.js'
 import { t as defaultT, type Translate } from '../../utils/i18n.js'
+
+/** 官方 ChangedFiles / FileDiff 模块类（ui-deliverables；取不到 = 空类，不白屏）。 */
+const C = (semantic: string): string => officialClass('ChangedFiles', semantic) ?? ''
+const D = (semantic: string): string => officialClass('FileDiff', semantic) ?? ''
 
 /** 会话级缓存：同一 (sessionId, seq, index) 只拉一次（官方 ChangesDiffStore 同语义）。 */
 const cache = new Map<string, ChangesDiff | null>()
@@ -44,7 +49,7 @@ function highlightedSide(
 /** 官方 DiffText：有高亮 spans 就逐段上色，否则纯文本。 */
 function DiffText(props: { text: string; spans: readonly HighlightSpan[] | undefined }): ReactNode {
   const { text, spans } = props
-  return h('span', { className: 'dshpc-sv-diff-text', 'data-diff-code': spans === undefined ? undefined : '' },
+  return h('span', { className: D('text'), 'data-diff-code': spans === undefined ? undefined : '' },
     spans === undefined
       ? text
       : spans.map((span, index) => h('span', { key: index, style: span.style as CSSProperties }, span.text)))
@@ -53,12 +58,12 @@ function DiffText(props: { text: string; spans: readonly HighlightSpan[] | undef
 /** 官方 FileDiff 的行：grid 四列（旧号 / 新号 / 符号 / 文本）。 */
 function DiffLine(props: { row: DiffRow; oldSpans?: readonly HighlightSpan[]; newSpans?: readonly HighlightSpan[] }): ReactNode {
   const { row } = props
-  const kindClass = row.kind === 'add' ? 'dshpc-sv-diff-add' : row.kind === 'del' ? 'dshpc-sv-diff-del' : 'dshpc-sv-diff-context'
+  const kindClass = row.kind === 'add' ? D('add') : row.kind === 'del' ? D('del') : D('context')
   const spans = row.kind === 'del' ? props.oldSpans : props.newSpans
-  return h('div', { className: `dshpc-sv-diff-line ${kindClass}`, 'data-diff-line': row.kind },
-    h('span', { className: 'dshpc-sv-diff-number' }, row.old ?? ''),
-    h('span', { className: 'dshpc-sv-diff-number' }, row.new ?? ''),
-    h('span', { className: 'dshpc-sv-diff-sign' }, row.kind === 'add' ? '+' : row.kind === 'del' ? '-' : ' '),
+  return h('div', { className: `${D('line')} ${kindClass}`, 'data-diff-line': row.kind },
+    h('span', { className: D('number') }, row.old ?? ''),
+    h('span', { className: D('number') }, row.new ?? ''),
+    h('span', { className: D('sign') }, row.kind === 'add' ? '+' : row.kind === 'del' ? '-' : ' '),
     h(DiffText, { text: row.text, spans }),
   )
 }
@@ -117,17 +122,17 @@ export function ChangedFileDiff(props: {
   const highlighter = useCodeHighlighter(path === undefined ? undefined : languageForPath(path))
 
   const body = useMemo((): ReactNode => {
-    if (state === undefined) return h('p', { className: 'dshpc-sv-diff-status', role: 'status' }, t('diffLoading'))
+    if (state === undefined) return h('p', { className: D('status'), role: 'status' }, t('diffLoading'))
     if (state === 'error') {
       // 官方 error 态 = 文案 + 官方 sm 按钮重试（client.js:837-845）。
-      return h('div', { className: 'dshpc-sv-diff-status' },
+      return h('div', { className: D('status') },
         h('span', null, t('diffError')),
         h(Button, { size: 'sm', onClick: retry }, t('errorRetry')),
       )
     }
-    if (state === null) return h('p', { className: 'dshpc-sv-diff-status' }, t('diffMissing'))
-    if (state.kind === 'binary') return h('p', { className: 'dshpc-sv-diff-status' }, t('diffBinary'))
-    if (state.kind === 'oversized') return h('p', { className: 'dshpc-sv-diff-status' }, t('diffOversized'))
+    if (state === null) return h('p', { className: D('status') }, t('diffMissing'))
+    if (state.kind === 'binary') return h('p', { className: D('status') }, t('diffBinary'))
+    if (state.kind === 'oversized') return h('p', { className: D('status') }, t('diffOversized'))
 
     const note = diffNoteKey(state)
     const hunks = state.hunks ?? []
@@ -149,24 +154,24 @@ export function ChangedFileDiff(props: {
       kept.push(hunk)
       budget -= hunk.lines.length
     }
-    return h('div', { className: 'dshpc-sv-diff-body', 'data-review-view': 'unified' },
+    return h('div', { className: D('body'), 'data-review-view': 'unified' },
       note === undefined ? null : h('p', {
-        className: 'dshpc-sv-diff-note',
+        className: D('note'),
         'data-diff-note': hunks.length === 0 ? 'empty' : 'metadata',
       }, t(note)),
       state.coarse === true
-        ? h('p', { className: 'dshpc-sv-diff-note', 'data-diff-coarse': true }, t('diffCoarse'))
+        ? h('p', { className: D('note'), 'data-diff-coarse': true }, t('diffCoarse'))
         : null,
       truncated
-        ? h('p', { className: 'dshpc-sv-diff-note', 'data-diff-truncated': true },
+        ? h('p', { className: D('note'), 'data-diff-truncated': true },
             t('diffTruncated', { count: String(DIFF_MAX_RENDERED_LINES) }))
         : null,
       kept.map((hunk, position) => {
         const rows = hunkRows(hunk)
         const oldSpans = highlightedSide(rows, 'old', highlighter)
         const newSpans = highlightedSide(rows, 'new', highlighter)
-        return h('section', { key: position, className: 'dshpc-sv-diff-hunk' },
-          h('div', { className: 'dshpc-sv-diff-hunkheader', 'data-diff-hunk-header': true }, hunkHeader(hunk)),
+        return h('section', { key: position, className: D('hunk') },
+          h('div', { className: D('hunkHeader'), 'data-diff-hunk-header': true }, hunkHeader(hunk)),
           rows.map((row, at) => h(DiffLine, {
             key: at,
             row,
@@ -182,11 +187,11 @@ export function ChangedFileDiff(props: {
   // 审阅视图 = 完整 FileDiff.root（hunk 头 + note 正常渲染）。
   const preview = variant !== 'review'
   return h('div', {
-    className: preview ? 'dshpc-sv-diff dshpc-sv-changes-preview' : 'dshpc-sv-diff',
+    className: preview ? `${D('root')} ${C('preview')}` : D('root'),
     'data-changes-hover-preview': preview ? true : undefined,
   },
-    h('div', { className: 'dshpc-sv-diff-header' },
-      h('span', { className: 'dshpc-sv-changes-previewpath', 'data-changes-preview-path': true }, display),
+    h('div', { className: D('header') },
+      h('span', { className: C('previewPath'), 'data-changes-preview-path': true }, display),
       // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
       preview || onClose === undefined
         ? null

@@ -46695,7 +46695,7 @@ function mkJavaScript(parserConfig) {
     function kw(type4) {
       return { type: type4, style: "keyword" };
     }
-    var A = kw("keyword a"), B = kw("keyword b"), C2 = kw("keyword c"), D = kw("keyword d");
+    var A = kw("keyword a"), B = kw("keyword b"), C4 = kw("keyword c"), D2 = kw("keyword d");
     var operator2 = kw("operator"), atom2 = { type: "atom", style: "atom" };
     return {
       "if": kw("if"),
@@ -46705,13 +46705,13 @@ function mkJavaScript(parserConfig) {
       "do": B,
       "try": B,
       "finally": B,
-      "return": D,
-      "break": D,
-      "continue": D,
+      "return": D2,
+      "break": D2,
+      "continue": D2,
       "new": kw("new"),
-      "delete": C2,
-      "void": C2,
-      "throw": C2,
+      "delete": C4,
+      "void": C4,
+      "throw": C4,
       "debugger": kw("debugger"),
       "var": kw("var"),
       "const": kw("var"),
@@ -46734,11 +46734,11 @@ function mkJavaScript(parserConfig) {
       "this": kw("this"),
       "class": kw("class"),
       "super": kw("atom"),
-      "yield": C2,
+      "yield": C4,
       "export": kw("export"),
       "import": kw("import"),
-      "extends": C2,
-      "await": C2
+      "extends": C4,
+      "await": C4
     };
   })();
   var isOperatorChar4 = /[+\-*&%=<>!?|~^@]/;
@@ -53075,6 +53075,8 @@ function turnDeliverablesChangesSeq(face) {
 
 // dist/session/mirror/ChangedFileDiff.js
 var import_react47 = require("react");
+var C2 = (semantic) => officialClass("ChangedFiles", semantic) ?? "";
+var D = (semantic) => officialClass("FileDiff", semantic) ?? "";
 var cache3 = /* @__PURE__ */ new Map();
 function highlightedSide(rows, side, highlighter) {
   const source = rows.flatMap((row) => row[side] === void 0 ? [] : [{ no: row[side], text: row.text }]);
@@ -53087,13 +53089,13 @@ function highlightedSide(rows, side, highlighter) {
 }
 function DiffText(props) {
   const { text: text2, spans } = props;
-  return (0, import_react47.createElement)("span", { className: "dshpc-sv-diff-text", "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react47.createElement)("span", { key: index3, style: span.style }, span.text)));
+  return (0, import_react47.createElement)("span", { className: D("text"), "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react47.createElement)("span", { key: index3, style: span.style }, span.text)));
 }
 function DiffLine(props) {
   const { row } = props;
-  const kindClass = row.kind === "add" ? "dshpc-sv-diff-add" : row.kind === "del" ? "dshpc-sv-diff-del" : "dshpc-sv-diff-context";
+  const kindClass = row.kind === "add" ? D("add") : row.kind === "del" ? D("del") : D("context");
   const spans = row.kind === "del" ? props.oldSpans : props.newSpans;
-  return (0, import_react47.createElement)("div", { className: `dshpc-sv-diff-line ${kindClass}`, "data-diff-line": row.kind }, (0, import_react47.createElement)("span", { className: "dshpc-sv-diff-number" }, row.old ?? ""), (0, import_react47.createElement)("span", { className: "dshpc-sv-diff-number" }, row.new ?? ""), (0, import_react47.createElement)("span", { className: "dshpc-sv-diff-sign" }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react47.createElement)(DiffText, { text: row.text, spans }));
+  return (0, import_react47.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row.kind }, (0, import_react47.createElement)("span", { className: D("number") }, row.old ?? ""), (0, import_react47.createElement)("span", { className: D("number") }, row.new ?? ""), (0, import_react47.createElement)("span", { className: D("sign") }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react47.createElement)(DiffText, { text: row.text, spans }));
 }
 function ChangedFileDiff(props) {
   const { sessionId, seq, index: index3, display, t: t4 = t, variant = "preview", onClose } = props;
@@ -53137,16 +53139,16 @@ function ChangedFileDiff(props) {
   const highlighter = (0, official_exports.useCodeHighlighter)(path === void 0 ? void 0 : (0, official_exports.languageForPath)(path));
   const body = (0, import_react47.useMemo)(() => {
     if (state === void 0)
-      return (0, import_react47.createElement)("p", { className: "dshpc-sv-diff-status", role: "status" }, t4("diffLoading"));
+      return (0, import_react47.createElement)("p", { className: D("status"), role: "status" }, t4("diffLoading"));
     if (state === "error") {
-      return (0, import_react47.createElement)("div", { className: "dshpc-sv-diff-status" }, (0, import_react47.createElement)("span", null, t4("diffError")), (0, import_react47.createElement)(official_exports.Button, { size: "sm", onClick: retry }, t4("errorRetry")));
+      return (0, import_react47.createElement)("div", { className: D("status") }, (0, import_react47.createElement)("span", null, t4("diffError")), (0, import_react47.createElement)(official_exports.Button, { size: "sm", onClick: retry }, t4("errorRetry")));
     }
     if (state === null)
-      return (0, import_react47.createElement)("p", { className: "dshpc-sv-diff-status" }, t4("diffMissing"));
+      return (0, import_react47.createElement)("p", { className: D("status") }, t4("diffMissing"));
     if (state.kind === "binary")
-      return (0, import_react47.createElement)("p", { className: "dshpc-sv-diff-status" }, t4("diffBinary"));
+      return (0, import_react47.createElement)("p", { className: D("status") }, t4("diffBinary"));
     if (state.kind === "oversized")
-      return (0, import_react47.createElement)("p", { className: "dshpc-sv-diff-status" }, t4("diffOversized"));
+      return (0, import_react47.createElement)("p", { className: D("status") }, t4("diffOversized"));
     const note = diffNoteKey(state);
     const hunks = state.hunks ?? [];
     let budget = DIFF_MAX_RENDERED_LINES;
@@ -53166,14 +53168,14 @@ function ChangedFileDiff(props) {
       kept.push(hunk);
       budget -= hunk.lines.length;
     }
-    return (0, import_react47.createElement)("div", { className: "dshpc-sv-diff-body", "data-review-view": "unified" }, note === void 0 ? null : (0, import_react47.createElement)("p", {
-      className: "dshpc-sv-diff-note",
+    return (0, import_react47.createElement)("div", { className: D("body"), "data-review-view": "unified" }, note === void 0 ? null : (0, import_react47.createElement)("p", {
+      className: D("note"),
       "data-diff-note": hunks.length === 0 ? "empty" : "metadata"
-    }, t4(note)), state.coarse === true ? (0, import_react47.createElement)("p", { className: "dshpc-sv-diff-note", "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react47.createElement)("p", { className: "dshpc-sv-diff-note", "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
+    }, t4(note)), state.coarse === true ? (0, import_react47.createElement)("p", { className: D("note"), "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react47.createElement)("p", { className: D("note"), "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
       const rows = hunkRows(hunk);
       const oldSpans = highlightedSide(rows, "old", highlighter);
       const newSpans = highlightedSide(rows, "new", highlighter);
-      return (0, import_react47.createElement)("section", { key: position, className: "dshpc-sv-diff-hunk" }, (0, import_react47.createElement)("div", { className: "dshpc-sv-diff-hunkheader", "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row, at) => (0, import_react47.createElement)(DiffLine, {
+      return (0, import_react47.createElement)("section", { key: position, className: D("hunk") }, (0, import_react47.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row, at) => (0, import_react47.createElement)(DiffLine, {
         key: at,
         row,
         oldSpans: oldSpans?.get(row.old ?? -1),
@@ -53183,12 +53185,12 @@ function ChangedFileDiff(props) {
   }, [state, highlighter, t4, retry]);
   const preview = variant !== "review";
   return (0, import_react47.createElement)("div", {
-    className: preview ? "dshpc-sv-diff dshpc-sv-changes-preview" : "dshpc-sv-diff",
+    className: preview ? `${D("root")} ${C2("preview")}` : D("root"),
     "data-changes-hover-preview": preview ? true : void 0
   }, (0, import_react47.createElement)(
     "div",
-    { className: "dshpc-sv-diff-header" },
-    (0, import_react47.createElement)("span", { className: "dshpc-sv-changes-previewpath", "data-changes-preview-path": true }, display),
+    { className: D("header") },
+    (0, import_react47.createElement)("span", { className: C2("previewPath"), "data-changes-preview-path": true }, display),
     // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
     preview || onClose === void 0 ? null : (0, import_react47.createElement)(IconButton, {
       variant: "plain",
@@ -53201,11 +53203,12 @@ function ChangedFileDiff(props) {
 }
 
 // dist/session/mirror/ChangedFilesCard.js
+var C3 = (semantic) => officialClass("ChangedFiles", semantic) ?? "";
 var cache4 = /* @__PURE__ */ new Map();
 var COLLAPSED_ROWS = 4;
 function Counts(props) {
   const grouped = new Intl.NumberFormat("en-US");
-  return (0, import_react48.createElement)(import_react48.Fragment, null, (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-added" }, `+${grouped.format(props.added)}`), " ", (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-deleted" }, `-${grouped.format(props.deleted)}`));
+  return (0, import_react48.createElement)(import_react48.Fragment, null, (0, import_react48.createElement)("span", { className: C3("added") }, `+${grouped.format(props.added)}`), " ", (0, import_react48.createElement)("span", { className: C3("deleted") }, `-${grouped.format(props.deleted)}`));
 }
 function countsOf(file, t4) {
   if (file.binary === true)
@@ -53249,12 +53252,12 @@ function ChangedFilesCard(props) {
   const title = single === void 0 ? t4("changesMulti", { count: String(summary.total) }) : t4("changesSingle", { name: baseNameOf(single.path) });
   const foldable2 = summary.files.length > COLLAPSED_ROWS;
   const rows = foldable2 && !expanded ? summary.files.slice(0, COLLAPSED_ROWS) : summary.files;
-  const headerBody = (0, import_react48.createElement)(import_react48.Fragment, null, (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-tile" }, icon), (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-titles" }, (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-title" }, title), (0, import_react48.createElement)(
+  const headerBody = (0, import_react48.createElement)(import_react48.Fragment, null, (0, import_react48.createElement)("span", { className: C3("tile") }, icon), (0, import_react48.createElement)("span", { className: C3("titles") }, (0, import_react48.createElement)("span", { className: C3("title") }, title), (0, import_react48.createElement)(
     "span",
-    { className: "dshpc-sv-changes-stat" },
-    (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-statcounts" }, countsOf(single ?? summary, t4)),
+    { className: C3("stat") },
+    (0, import_react48.createElement)("span", { className: C3("statCounts") }, countsOf(single ?? summary, t4)),
     // 官方 previewHint：hover/focus 时替换计数显示（提示这张卡可以 hover 出 diff 预览）。
-    (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-previewhint" }, t4("deliverPreviewHint"))
+    (0, import_react48.createElement)("span", { className: C3("previewHint") }, t4("deliverPreviewHint"))
   )));
   const headerLocator = {
     sessionId,
@@ -53262,9 +53265,9 @@ function ChangedFilesCard(props) {
     index: 0,
     display: single?.display ?? summary.files[0].display
   };
-  const headerNode = onOpenReview === void 0 ? (0, import_react48.createElement)("div", { className: "dshpc-sv-changes-header" }, headerBody) : (0, import_react48.createElement)("button", {
+  const headerNode = onOpenReview === void 0 ? (0, import_react48.createElement)("div", { className: C3("header") }, headerBody) : (0, import_react48.createElement)("button", {
     type: "button",
-    className: "dshpc-sv-changes-header",
+    className: C3("header"),
     title: headerLocator.display,
     onClick: () => {
       onOpenReview(headerLocator);
@@ -53272,11 +53275,11 @@ function ChangedFilesCard(props) {
   }, headerBody);
   const previewOf = (index3, display) => (0, import_react48.createElement)(ChangedFileDiff, { sessionId, seq, index: index3, display, t: t4 });
   const rowOf = (file, index3) => {
-    const body = (0, import_react48.createElement)(import_react48.Fragment, null, (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-path" }, file.display), (0, import_react48.createElement)("span", { className: "dshpc-sv-changes-counts" }, countsOf(file, t4)));
+    const body = (0, import_react48.createElement)(import_react48.Fragment, null, (0, import_react48.createElement)("span", { className: C3("path") }, file.display), (0, import_react48.createElement)("span", { className: C3("counts") }, countsOf(file, t4)));
     const locator = { sessionId, seq, index: index3, display: file.display };
-    const row = onOpenReview === void 0 ? (0, import_react48.createElement)("div", { className: "dshpc-sv-changes-row", title: file.path }, body) : (0, import_react48.createElement)("button", {
+    const row = onOpenReview === void 0 ? (0, import_react48.createElement)("div", { className: C3("row"), title: file.path }, body) : (0, import_react48.createElement)("button", {
       type: "button",
-      className: "dshpc-sv-changes-row",
+      className: C3("row"),
       title: file.path,
       onClick: () => {
         onOpenReview(locator);
@@ -53291,13 +53294,13 @@ function ChangedFilesCard(props) {
       content: previewOf(index3, file.display)
     });
   };
-  const list = single === void 0 ? (0, import_react48.createElement)("ul", { className: "dshpc-sv-changes-list" }, rows.map((file) => {
+  const list = single === void 0 ? (0, import_react48.createElement)("ul", { className: C3("list") }, rows.map((file) => {
     const index3 = summary.files.indexOf(file);
     return (0, import_react48.createElement)("li", { key: file.display }, rowOf(file, index3));
   })) : null;
   const toggle = foldable2 ? (0, import_react48.createElement)("button", {
     type: "button",
-    className: "dshpc-sv-changes-toggle",
+    className: C3("toggle"),
     "aria-expanded": expanded,
     "aria-label": t4(expanded ? "deliverCollapseAria" : "deliverExpandAria", { count: summary.files.length }),
     onClick: () => {
@@ -53313,7 +53316,7 @@ function ChangedFilesCard(props) {
   });
   return (0, import_react48.createElement)("div", {
     ref: cardRef,
-    className: "dshpc-sv-changes",
+    className: C3("card"),
     "data-changed-files": true,
     "data-single": single !== void 0 || void 0
   }, header, list, toggle);
@@ -53748,28 +53751,45 @@ function collectPresentedByTurn(turns) {
   }
   return out;
 }
+var mentionLog = /* @__PURE__ */ new Set();
+function logMentionHit(value, hit) {
+  const key = `${value}\0${hit}`;
+  if (mentionLog.has(key) || mentionLog.size >= 40)
+    return;
+  mentionLog.add(key);
+  console.log("[preview] mention hit:", value, `\u2192 ${hit}`);
+}
+function pickPath(candidates) {
+  if (candidates === void 0 || candidates.length === 0)
+    return void 0;
+  let longest = candidates[0];
+  for (const p of candidates)
+    if (p.length > longest.length)
+      longest = p;
+  const sameFile = candidates.every((p) => p === longest || longest.endsWith(`/${p}`));
+  return sameFile ? longest : candidates.length === 1 ? longest : void 0;
+}
 function makeFileMentions(paths, open) {
-  const exact = /* @__PURE__ */ new Map();
-  const byBase = /* @__PURE__ */ new Map();
+  const bySuffix = /* @__PURE__ */ new Map();
   for (const p of paths) {
-    exact.set(p, p);
-    const base3 = p.includes("/") ? p.slice(p.lastIndexOf("/") + 1) : p;
-    const bucket = byBase.get(base3);
-    if (bucket === void 0)
-      byBase.set(base3, [p]);
-    else
-      bucket.push(p);
+    const norm = p.replace(/\\/g, "/");
+    const parts = norm.split("/");
+    for (let at = 0; at < parts.length; at++) {
+      const key = parts.slice(at).join("/");
+      const bucket = bySuffix.get(key);
+      if (bucket === void 0)
+        bySuffix.set(key, [norm]);
+      else if (!bucket.includes(norm))
+        bucket.push(norm);
+    }
   }
   return {
     resolve(value) {
-      const norm = normalizeFilePath(value);
-      const hit = exact.get(norm) ?? (() => {
-        const base3 = norm.includes("/") ? norm.slice(norm.lastIndexOf("/") + 1) : norm;
-        const bucket = byBase.get(base3);
-        return bucket !== void 0 && bucket.length === 1 ? bucket[0] : void 0;
-      })();
+      const norm = normalizeFilePath(value).replace(/\\/g, "/");
+      const hit = pickPath(bySuffix.get(norm));
       if (hit === void 0)
         return void 0;
+      logMentionHit(value, hit);
       return { label: value, title: hit, open: () => {
         open(hit);
       } };
@@ -53874,6 +53894,19 @@ function SessionViewModal(props) {
       mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile)
     };
   }, [onOpenFile, openFile, order, store, turns]);
+  const openDelegatedFile = (0, import_react49.useMemo)(() => {
+    if (fileOpen === void 0)
+      return () => {
+      };
+    return (path) => {
+      const hit = fileOpen.mentions.resolve(path);
+      if (hit === void 0) {
+        fileOpen.open(path);
+        return;
+      }
+      hit.open();
+    };
+  }, [fileOpen]);
   const deliveredByTurn = (0, import_react49.useMemo)(() => collectPresentedByTurn(turns), [turns]);
   const deliverFiles = (0, import_react49.useMemo)(() => {
     const byPath = /* @__PURE__ */ new Map();
@@ -53999,6 +54032,7 @@ function SessionViewModal(props) {
     } }) : null,
     ...rendered
   ];
+  const flowChildren = Array.isArray(body) ? body : [body];
   return (0, import_react49.createElement)(
     import_react49.Fragment,
     null,
@@ -54058,12 +54092,9 @@ function SessionViewModal(props) {
     }, (0, import_react49.createElement)(
       "div",
       { className: "dshpc-sv" },
-      // 会话区 = mirror/ChatView（frame > root > scroll > column > flowItem*，官方类优先）。
-      (0, import_react49.createElement)(ChatViewFrame, {
-        children: [
-          ...Array.isArray(body) ? body : [body]
-        ]
-      })
+      // markdown 导航委托：挂上 openFile 后，正文里的本地文件链接才渲成官方
+      // `fileMention fileLink` 按钮（不挂 ⇒ 官方自己退回纯文本）。
+      fileOpen === void 0 ? (0, import_react49.createElement)(ChatViewFrame, { children: flowChildren }) : (0, import_react49.createElement)(official_exports.MarkdownDelegateProvider, { openFile: openDelegatedFile }, (0, import_react49.createElement)(ChatViewFrame, { children: flowChildren }))
     )),
     // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——核心 Modal + Button。
     forkTarget === null ? null : (0, import_react49.createElement)(Modal, {
@@ -60493,7 +60524,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1023-2311-lcm7"]
+            [t3("buildStamp"), "1024-0020-tmko"]
           ].map(
             ([label, value]) => (0, import_react65.createElement)(
               "tr",

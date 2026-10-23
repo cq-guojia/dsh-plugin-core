@@ -26,6 +26,20 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
     footnotes: string
   }
 
+  /**
+   * markdown 导航委托（官方 MarkdownDelegateProvider，lib/types/markdown/MarkdownDelegate.js）。
+   * **只有挂了 openFile，markdown 里的本地文件链接才会渲成 `fileMention fileLink` 按钮**
+   * （MarkdownFileLink 源码：openFile === undefined ⇒ 直接退回纯文本 children）。
+   * 注意：这条管的是 `[名](<路径>)` **链接**，与 `fileMentions`（管行内 code）是两条独立的路。
+   */
+  export const MarkdownDelegateProvider: ComponentType<{
+    children?: ReactNode
+    /** 外链（http/https）打开出口；不给 = 走浏览器默认的 target=_blank。 */
+    openExternalLink?: (href: string) => void
+    /** 本地文件链接出口：`parseFileLink(href)` 命中后回调，带可选行号（`#L12`）。 */
+    openFile?: (path: string, options?: { line?: number }) => void
+  }>
+
   /** 官方 markdown 渲染器（mdast 管线 + KaTeX；labels 需引用稳定）。 */
   export const MarkdownText: ComponentType<{
     text: string

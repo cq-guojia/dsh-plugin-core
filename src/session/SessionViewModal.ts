@@ -9,7 +9,7 @@
 //     由调用方完成 fork + host 侧 agent.send 起轮次 + 跳官方视图（官方能力，无歪门邪道）。
 //   · retain source 参数化在 open-session-view.ts。
 import { Fragment, createElement as h, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import { IconArchiveOutlineRegular, IconBranchOutlineRegular, IconNewChatOutlineRegular } from '../ui/official.js'
+import { IconArchiveOutlineRegular, IconBranchOutlineRegular, IconNewChatOutlineRegular, MarkdownDelegateProvider } from '../ui/official.js'
 import { Modal } from '../ui/Modal.js'
 import { Button } from '../ui/Button.js'
 import { ensureControls } from '../ui/css.js'
@@ -609,29 +609,56 @@ function collectPresentedByTurn(turns: unknown): ReadonlyMap<number, readonly De
   return out
 }
 
+/** 诊断：行内 code 命中真文件时记一行（去重 + 上限），确认 fileMentions 链路活着。 */
+const mentionLog = new Set<string>()
+function logMentionHit(value: string, hit: string): void {
+  const key = `${value}\u0000${hit}`
+  if (mentionLog.has(key) || mentionLog.size >= 40) return
+  mentionLog.add(key)
+  console.log('[preview] mention hit:', value, `→ ${hit}`)
+}
+
 /**
- * 构建 fileMentions：归一化精确匹配优先、唯一 basename 兜底（官方 fileMentions 语义：
- * 词表外一律 undefined ⇒ MarkdownText 保持惰性 code，renderer never guesses）。
+ * 从候选里挑一条真路径：同一个文件在词表里常有**多种写法**（工具参数是相对式
+ * `2026Q4/1023/x.txt`，fs 改动事件是绝对式 `/workspace/Temp/2026Q4/1023/x.txt`）。
+ * 判定 = 候选之间是否互为「尾段」（`longest.endsWith('/' + other)`）⇒ 是同一文件的两种写法，
+ * 取**最长那条**（工作区根在 Temp，拿相对式去解析会落错根 ⇒ 必须给最完整的，否则预览报「文件不存在」）；
+ * 不是同一文件且不止一条 ⇒ 不可判定，返回 undefined（永不猜）。
+ */
+function pickPath(candidates: readonly string[] | undefined): string | undefined {
+  if (candidates === undefined || candidates.length === 0) return undefined
+  let longest = candidates[0] as string
+  for (const p of candidates) if (p.length > longest.length) longest = p
+  const sameFile = candidates.every((p) => p === longest || longest.endsWith(`/${p}`))
+  return sameFile ? longest : (candidates.length === 1 ? longest : undefined)
+}
+
+/**
+ * 构建 fileMentions：按「路径尾段」匹配（词表里是绝对路径、markdown 里写的是工作区相对路径时，
+ * 靠尾段对齐）；同一文件的多种写法取最长那条（见 pickPath）；不可判定 ⇒ undefined
+ * ⇒ MarkdownText 保持惰性 code，永不猜。
  */
 function makeFileMentions(paths: readonly string[], open: (path: string) => void): FileMentionsFace {
-  const exact = new Map<string, string>()
-  const byBase = new Map<string, string[]>()
+  // 尾段索引："a/b/c.txt" 同时登记 "a/b/c.txt" / "b/c.txt" / "c.txt"
+  const bySuffix = new Map<string, string[]>()
   for (const p of paths) {
-    exact.set(p, p)
-    const base = p.includes('/') ? p.slice(p.lastIndexOf('/') + 1) : p
-    const bucket = byBase.get(base)
-    if (bucket === undefined) byBase.set(base, [p])
-    else bucket.push(p)
+    const norm = p.replace(/\\/g, '/')
+    const parts = norm.split('/')
+    for (let at = 0; at < parts.length; at++) {
+      const key = parts.slice(at).join('/')
+      const bucket = bySuffix.get(key)
+      if (bucket === undefined) bySuffix.set(key, [norm])
+      else if (!bucket.includes(norm)) bucket.push(norm)
+    }
   }
   return {
     resolve(value: string): { open(): void; label: string; title: string } | undefined {
-      const norm = normalizeFilePath(value)
-      const hit = exact.get(norm) ?? (() => {
-        const base = norm.includes('/') ? norm.slice(norm.lastIndexOf('/') + 1) : norm
-        const bucket = byBase.get(base)
-        return bucket !== undefined && bucket.length === 1 ? bucket[0] : undefined
-      })()
+      const norm = normalizeFilePath(value).replace(/\\/g, '/')
+      // 全路径本身也登记在尾段索引里（at=0），故只查一张表即可。
+      const hit = pickPath(bySuffix.get(norm))
+      // 未命中不打日志：官方对每个行内 code 都会问一次 resolve（含 `2026-10` 这类非文件值），全是噪音。
       if (hit === undefined) return undefined
+      logMentionHit(value, hit)
       return { label: value, title: hit, open: () => { open(hit) } }
     },
   }
@@ -778,6 +805,21 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
       mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile),
     }
   }, [onOpenFile, openFile, order, store, turns])
+  /**
+   * 官方 markdown **链接**的打开出口（`[名](<路径>)` ⇒ 官方 MarkdownFileLink）。
+   * 与 `fileMentions`（管行内 code）是两条独立的路：官方只有 `openFile` 就位才把链接渲成
+   * `fileMention fileLink` 按钮（lib/index.js:11819），否则退回纯文本。
+   * markdown 里常写工作区相对路径（如 `2026Q4/1023/x.txt`），词表里是 `/workspace/…` 前缀的真路径，
+   * 故先用同一个词表归一到真路径再交给调用方；词表里没有就原样给（不猜）。
+   */
+  const openDelegatedFile = useMemo<(path: string) => void>(() => {
+    if (fileOpen === undefined) return () => { /* 未接线：官方已退回纯文本，不会走到这里 */ }
+    return (path: string): void => {
+      const hit = fileOpen.mentions.resolve(path)
+      if (hit === undefined) { fileOpen.open(path); return }
+      hit.open()
+    }
+  }, [fileOpen])
   // 每轮交付文件（会话 turn 级 deliverables.presented 同源推导）。
   const deliveredByTurn = useMemo(() => collectPresentedByTurn(turns), [turns])
   const deliverFiles = useMemo<readonly DeliveredFileFace[]>(() => {
@@ -920,6 +962,7 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
           : null,
         ...rendered,
       ]
+  const flowChildren = Array.isArray(body) ? body : [body]
 
   // 外壳 = **核心 Modal**（size lg：min(1120px,100vw-32px) × calc(100%-80px)，兄弟项目大弹窗同值）；
   // 「继续对话」与确认框按钮一律**核心 Button**，不就地自绘（用户 2026-10-22 拍板）。
@@ -984,12 +1027,13 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
       ),
     },
       h('div', { className: 'dshpc-sv' },
-        // 会话区 = mirror/ChatView（frame > root > scroll > column > flowItem*，官方类优先）。
-        h(ChatViewFrame, {
-          children: [
-            ...(Array.isArray(body) ? body : [body]),
-          ],
-        }),
+        // markdown 导航委托：挂上 openFile 后，正文里的本地文件链接才渲成官方
+        // `fileMention fileLink` 按钮（不挂 ⇒ 官方自己退回纯文本）。
+        fileOpen === undefined
+          ? h(ChatViewFrame, { children: flowChildren })
+          : h(MarkdownDelegateProvider, { openFile: openDelegatedFile },
+            h(ChatViewFrame, { children: flowChildren }),
+          ),
       ),
     ),
     // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——核心 Modal + Button。
