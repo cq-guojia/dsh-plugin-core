@@ -54721,8 +54721,8 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
             "type": "({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle",
             "def": "\u2014",
             "desc": {
-              "zh": "\u53F3\u4FA7\u5206\u680F\u9884\u89C8\u6587\u4EF6/\u6587\u4EF6\u5939\uFF0Cmount \u4E3A\u5FC5\u586B\u7684 flex \u884C",
-              "en": "Preview a file/folder in a right-side dock; mount is the required flex row"
+              "zh": "\u53F3\u4FA7\u5206\u680F\u9884\u89C8\u6587\u4EF6/\u6587\u4EF6\u5939\uFF0Cmount \u4E3A\u5FC5\u586B\u7684 flex \u884C\uFF1B\u25BE \u5207\u5DE5\u4F5C\u533A\u7684\u300C\u5F53\u524D\u533A\u300D\u6309\u8DEF\u5F84\u5339\u914D\u5B9A\uFF08rootName \u6B21\u4E4B\uFF09\uFF0C\u70B9\u4EFB\u4F55\u5DE5\u4F5C\u533A\uFF08\u542B\u5165\u53E3\u90A3\u4E2A\uFF09\u90FD\u4ECE\u8BE5\u5DE5\u4F5C\u533A\u7684\u6839\u5F00\u59CB\u5217",
+              "en": "Preview a file/folder in a right-side dock; mount is the required flex row. The \u25BE workspace switch resolves the current workspace by path match (rootName as fallback), and picking any workspace \u2014 the entry one included \u2014 starts from that workspace\u2019s root"
             }
           },
           {
@@ -59615,9 +59615,9 @@ function PreviewBody(props) {
   const options = props.options;
   const hostWorkspaces = (0, import_react61.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = options.workspaceAnchors ?? hostWorkspaces;
-  const initialTitle = options.rootName ?? "";
-  const [wsTitle, setWsTitle] = (0, import_react61.useState)(initialTitle);
-  const switched = wsTitle !== initialTitle;
+  const entryTitle = workspaceAnchorForPath(options.path, anchors)?.title ?? options.rootName ?? "";
+  const [picked, setPicked] = (0, import_react61.useState)(null);
+  const wsTitle = picked ?? entryTitle;
   const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId;
   const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title);
   return (0, import_react61.createElement)(FileBrowser, {
@@ -59626,12 +59626,14 @@ function PreviewBody(props) {
     workspaceFiles: options.workspaceFiles,
     officeToPdf: options.officeToPdf ?? null,
     sessionId,
-    path: switched ? "" : options.path,
+    // 点过工作区就从它的根列（原 path 属于旧工作区，带着只会 404 / 跳回入口文件）。
+    path: picked === null ? options.path : "",
     rootName: wsTitle === "" ? options.rootName : wsTitle,
     workspaces: switchable.length > 0 ? switchable : options.workspaces,
     onSelectWorkspace: (name2) => {
-      if (anchorSessionForTitle(anchors, name2) !== null)
-        setWsTitle(name2);
+      if (anchorSessionForTitle(anchors, name2) === null)
+        return;
+      setPicked(name2);
     },
     // 空数组别传：会把 FileBrowser 内部「回落快照」的兜底挡住（空 ≠ 未传）。
     workspaceAnchors: anchors.length > 0 ? anchors : void 0,
@@ -60289,7 +60291,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1023-0724-t8pk"]
+            [t3("buildStamp"), "1023-0851-gfnx"]
           ].map(
             ([label, value]) => (0, import_react64.createElement)(
               "tr",

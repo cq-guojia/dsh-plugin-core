@@ -61,5 +61,5 @@ const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName 
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `openFilePreview` | `({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle` | — | 右侧分栏预览文件/文件夹，mount 为必填的 flex 行 | Preview a file/folder in a right-side dock; mount is the required flex row |
+| `openFilePreview` | `({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle` | — | 右侧分栏预览文件/文件夹，mount 为必填的 flex 行；▾ 切工作区的「当前区」按路径匹配定（rootName 次之），点任何工作区（含入口那个）都从该工作区的根开始列 | Preview a file/folder in a right-side dock; mount is the required flex row. The ▾ workspace switch resolves the current workspace by path match (rootName as fallback), and picking any workspace — the entry one included — starts from that workspace’s root |
 | `pickWorkspaceFile` | `({ workspaceFiles, sessionId, anchor, filter? }) => Promise<{ path, isDir }>` | — | 锚定按钮旁弹模态选文件，Promise 返回工作区相对路径 | Open a modal anchored to a button and resolve with the workspace-relative path |

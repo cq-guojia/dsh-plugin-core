@@ -16,7 +16,7 @@ import { workspaceList } from '../ui/host-data.js'
 import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js'
 import { type Translate } from '../utils/i18n.js'
 import { FileBrowser } from './FileBrowser.js'
-import { anchorSessionForTitle } from './types.js'
+import { anchorSessionForTitle, workspaceAnchorForPath } from './types.js'
 import type { OfficeToPdfFace, PickFilter, RootCache, WorkspaceAnchorItem, WorkspaceFilesFace } from './types.js'
 
 // ── 方法 A：侧边栏预览 ──
@@ -74,23 +74,30 @@ export interface OpenFilePreviewOptions {
 
 /**
  * 预览体：`openFilePreview` 的 FileBrowser 包裹层。职责只有一个——**切工作区**：
- * ▾ 下拉点其他工作区 ⇒ 换该工作区的锚点会话、key 重挂载、path 回根。
+ * ▾ 下拉点工作区 ⇒ 换该工作区的锚点会话、key 重挂载、path 回根。
  * 机制同兄弟项目 `dsh-task-dispatch-table/src/client/task-editor.tsx:2496-2508`：
  * list 的根来自 sessionId ⇒ 必须换会话 + 重挂载，只换 rootName 等于没切。
  * 没会话的工作区不进 ▾ 列表、点了也不切（宿主列不出文件，不给假入口）。
  *
  * 工作区清单：调用方显式传的 `workspaceAnchors` 优先；否则用宿主 workspaces 快照
  * （connectHost 注入的 workspaceList）——**调用方什么都不传也照常能切**。
+ *
+ * 「当前工作区」必须与面包屑根名同源（`workspaceAnchorForPath` 匹配优先，其次 rootName）：
+ * 曾经这里直接拿 `rootName` 当初始状态，而 ▾ 菜单把 anchorMatch.title 当当前区；两者不一致时
+ * 点 rootName 那个工作区 = setState 成同一个值 ⇒ React bail out ⇒ **点了完全没反应**（2026-10-23 真机）。
+ * 同理「切没切」不能用「名字变没变」判断：点回入口工作区会把 path 又还原成入口文件，
+ * 看起来就是「跳回第一个工作区」。现在改成「点过 = 进浏览态」，任何工作区（含入口那个）都回根。
  */
 function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => void }): ReactNode {
   const options = props.options
   const hostWorkspaces = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
   // HostWorkspaceItem 结构兼容 WorkspaceAnchorItem（多一个 workspaceId 无害）⇒ 统一注解收敛联合类型。
   const anchors: readonly WorkspaceAnchorItem[] = options.workspaceAnchors ?? hostWorkspaces
-  const initialTitle = options.rootName ?? ''
-  const [wsTitle, setWsTitle] = useState(initialTitle)
-  // 切到别的工作区后从它的根开始列（原 path 属于旧工作区，带着只会 404）。
-  const switched = wsTitle !== initialTitle
+  // 入口工作区：与 FileBrowser 的面包屑根名同源（两边口径必须一致，见上方注释）。
+  const entryTitle = workspaceAnchorForPath(options.path, anchors)?.title ?? options.rootName ?? ''
+  // null = 还在入口态（path 用调用方给的那个文件）；非 null = 用户点过工作区，从它的根开始列。
+  const [picked, setPicked] = useState<string | null>(null)
+  const wsTitle = picked ?? entryTitle
   const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId
   const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title)
   return h(FileBrowser, {
@@ -99,11 +106,14 @@ function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => vo
     workspaceFiles: options.workspaceFiles,
     officeToPdf: options.officeToPdf ?? null,
     sessionId,
-    path: switched ? '' : options.path,
+    // 点过工作区就从它的根列（原 path 属于旧工作区，带着只会 404 / 跳回入口文件）。
+    path: picked === null ? options.path : '',
     rootName: wsTitle === '' ? options.rootName : wsTitle,
     workspaces: switchable.length > 0 ? switchable : options.workspaces,
     onSelectWorkspace: (name: string) => {
-      if (anchorSessionForTitle(anchors, name) !== null) setWsTitle(name)
+      // 没会话的工作区列不出文件 ⇒ 不切（宿主能力边界，不给假入口）。
+      if (anchorSessionForTitle(anchors, name) === null) return
+      setPicked(name)
     },
     // 空数组别传：会把 FileBrowser 内部「回落快照」的兜底挡住（空 ≠ 未传）。
     workspaceAnchors: anchors.length > 0 ? anchors : undefined,

@@ -66,8 +66,8 @@ export const docData = {
             "type": "({ mount, workspaceFiles, sessionId, path, rootName, officeToPdf? }) => PreviewHandle",
             "def": "—",
             "desc": {
-              "zh": "右侧分栏预览文件/文件夹，mount 为必填的 flex 行",
-              "en": "Preview a file/folder in a right-side dock; mount is the required flex row"
+              "zh": "右侧分栏预览文件/文件夹，mount 为必填的 flex 行；▾ 切工作区的「当前区」按路径匹配定（rootName 次之），点任何工作区（含入口那个）都从该工作区的根开始列",
+              "en": "Preview a file/folder in a right-side dock; mount is the required flex row. The ▾ workspace switch resolves the current workspace by path match (rootName as fallback), and picking any workspace — the entry one included — starts from that workspace’s root"
             }
           },
           {
