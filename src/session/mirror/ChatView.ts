@@ -58,34 +58,37 @@ export function ChatNodeListMirror(props: {
     }
   }
   if (entries !== undefined && groups !== undefined) {
-    // 官方 deferCollapse：最新已完成轮次保持 flat——直接平铺组内条目、不画「已完成分析」过程分组头，
-    // 直到下一条输入进来（官方 ChatGroupSeat：deferCollapse = bottom && 策略，bottom = 流末尾那个组）。
-    // 锚点取「或」：① order 末尾节点所属轮（= 最新轮）；② entries 里最后一个过程分组（= 流最末的组）。
-    // ② 必须要有：command 节点无 turn location ⇒ turnOfNode=undefined ⇒ 该组 data.turn 落到 -1
-    // （process-groups.ts:176 `turn ?? -1`），且常排在 turn-tail 之后；只按轮号判断会整组漏掉、
-    // 依旧收折成「已完成分析」（真机 2026-10-23）。
-    let lastGroupKey: string | undefined
-    for (const entry of entries) {
-      if (entry.kind === 'group') lastGroupKey = entry.key
-    }
-    const lastTurn = ((): number | undefined => {
-      for (let i = order.length - 1; i >= 0; i--) {
-        const key = order[i]
-        if (key === undefined) continue
-        const node = readSafe(key)
-        const loc = (node as { location?: { kind?: string; turn?: { turn?: number } } } | undefined)?.location
-        if ((loc?.kind === 'turn' || loc?.kind === 'step') && typeof loc.turn?.turn === 'number') {
-          return loc.turn.turn
-        }
+    // 官方 deferCollapse：**每一轮（turn）的最后那一个过程组**保持 flat
+    // （不画「已完成分析…」头、组内条目直接铺开），该轮其余组照常收折。
+    // 例：turn 1 切出 2 组 ⇒ 前 1 组收折、最后 1 组平铺；turn 3 切出 5 组 ⇒ 前 4 组收折、最后 1 组平铺。
+    // ⚠️ turn = -1 的组（command 节点无 turn location，process-groups.ts:176 `turn ?? -1`）
+    // **不开新轮**，并入它前面那一轮 —— 否则会被单独当成一轮、多平铺一处（真机 2026-10-23）。
+    const flatKeys = new Set<string>()
+    {
+      let bucket: string[] = []
+      let bucketTurn: number | undefined
+      const closeBucket = (): void => {
+        const last = bucket[bucket.length - 1]
+        if (last !== undefined) flatKeys.add(last)
+        bucket = []
       }
-      return undefined
-    })()
+      for (const entry of entries) {
+        if (entry.kind !== 'group') continue
+        const turn = groups.get(entry.key)?.data.turn ?? -1
+        if (turn >= 1) {
+          if (bucketTurn !== undefined && turn !== bucketTurn) closeBucket()
+          bucketTurn = turn
+        }
+        bucket.push(entry.key)
+      }
+      closeBucket()
+    }
     // 官方 ChatNodeList 的 entries 路径：group 条目 → ChatGroupSeat（二级收折）。
     for (const entry of entries) {
       if (entry.kind === 'group') {
         const group = groups.get(entry.key)
         if (group === undefined) continue
-        const latest = group.data.turn === lastTurn || group.key === lastGroupKey
+        const latest = flatKeys.has(group.key)
         rows.push(h(ChatGroupSeatMirror, {
           key: entry.key,
           group,
