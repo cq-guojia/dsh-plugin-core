@@ -13,12 +13,13 @@
 
 ## 待办
 
-待用户验收（demo「日期时间」页）：
+待用户验收（demo「日期时间」页，2026-10-24 晚按用户反馈改过一轮后）：
 - 四种用法：单值 day / 单值 minute / 区间 day / 区间 second，外加禁用态
-- 弹层内：两端框点击切换、日历点选（不自动切端）、时:分[:秒] 步进（▲▼ / 键入 / ↑↓）
+- range 弹层 = 左右两块独立日历（左开始、右结束，各选各的、无跨度标记）
+- 时分秒步进不强制先选日期：没选日期也能调，点「确定」没日期就不传数据（确定置灰）
+- 快捷键：day 精度叫「今天」（只置日期）；带时分秒叫「现在」（日期 + 时间一起置）
 - 键盘：方向键移日、PageUp/Down 换月、Home/End 月内首尾、Enter 选、Esc 丢弃草稿
-- 「今天 / 清除 / 取消 / 确定」；区间起止颠倒时确定置灰 + 提示
-- day 精度触发器显示「起 – 止」，结束端补到 23:59:59.999
+- 区间起止颠倒时确定置灰 + 提示；day 精度结束端补 23:59:59.999
 
 ## 下一步
 
@@ -26,17 +27,19 @@
 
 ## 过程
 
-- `src/ui/datetime-logic.ts`：纯逻辑——本地 ISO 解析（Date 反向校验挡 2026-02-30）、6×7 周一起排月历（`buildMonthCells`）、`floorToPrecision` / `ceilToPrecision` 补全、`stepUnit` 循环步进、`rangeIsValid`
-- `test/datetime-logic.test.mjs`：10 条全绿（闰月/补全规则/往返/键入收拢）
-- `src/ui/DateTimePicker.ts`：组件。floating-ui 浮层复用 Picker 模式（portal + flip/shift + 点外关、无遮罩）；range = 双端框 + 单月历 + 步进行，编辑对象 = 当前亮着的端；草稿态，「确定」才 onChange，Esc/点外丢弃
+- `src/ui/datetime-logic.ts`：纯逻辑——本地 ISO 解析（Date 反向校验挡 2026-02-30）、6×7 周一起排月历（`buildMonthCells`）、`floorToPrecision` / `ceilToPrecision` 补全、`stepUnit` 循环步进、`rangeIsValid`；二轮加入草稿模型 `toEndDraft` / `partsOf`（没日期 ⇒ null）/ `nowTimeFor`
+- `test/datetime-logic.test.mjs`：12 条全绿（闰月/补全规则/往返/键入收拢/草稿模型/nowTimeFor）
+- `src/ui/DateTimePicker.ts`：组件。floating-ui 浮层复用 Picker 模式（portal + flip/shift + 点外关、无遮罩）；草稿态，「确定」才 onChange，Esc/点外丢弃
 - `src/ui/controls/datetime.css` → `scripts/gen-css.mjs` MAP 接线 → `controls-css.ts` / `css.ts` 入 CONTROLS_CSS（置于 PICKER_CSS 后）
-- `src/utils/i18n.ts`：13 个 key 中英（dtPlaceholder/dtStart/dtEnd/dtToday/dtClear/dtHour/dtMinute/dtSecond/dtPrev*/dtNext*/dtInvalidRange）
+- `src/utils/i18n.ts`：14 个 key 中英（dtPlaceholder/dtStart/dtEnd/dtToday/dtNow/dtClear/dtHour/dtMinute/dtSecond/dtPrev*/dtNext*/dtInvalidRange）
 - demo：`packages/demo/src/sections/controls.tsx` 加 `DateTimePage`，index.tsx 注册 `datetime` 小节；`docs/help/ui.doc.ts` 加 `datetime-picker` 章节（prose + api + 示例）
-- 验证：`pnpm test` 114/114、`pnpm run build:demo` OK、koc-codelint 六层全过（修掉 2 条 biome 可选链警告：`root !== null && root.contains(...)` → `root?.contains(...)`）
+- 二轮（用户反馈）：① 时分秒步进不再要求先选日期（原 `disabled: activeParts === null` 删除，校验移到「确定」）；② 快捷键按精度改名（day「今天」/ 时分秒「现在」，`nowTimeFor` 按精度截断）；③ range 弹层由「单月历 + 亮端」改为两块独立日历（`views`/`focus`/`gridRefs` 按端各一份，去掉 `--in` 跨度浅底）；④ demo 录入页「开始时间/选择日期」示例改名「用户名」（顺带删掉 demo i18n 死 key `fieldHintDate`）
+- 验证：`pnpm test` 116/116、`pnpm run build:demo` OK、koc-codelint 六层全过
+- 踩坑（方法教训）：同一文件在一轮里并行发多个 `replace_in_file` 会互相覆盖（datetime-logic.ts 丢过一轮函数，tsc 报 no exported member 才发现）——同文件的多处编辑必须串行，一把一确认
 
 ## 结论
 
-DateTimePicker 落地，`mode × precision` 覆盖全部诉求；补全规则泛化为「起 floor / 止 ceil 到精度单位边界」（hour ⇒ 止 `H:59:59.999`、minute ⇒ `H:M:59.999`、second 不动）——泛化部分待用户确认。区间内日子的浅底（`--dshpc-cal-cell-bg`）是只读观感、非拖选交互，用户不认可可去。遗留：未做 min/max 夹取、命令式 Promise API（YAGNI，用户未要求）。
+DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「起 floor / 止 ceil 到精度单位边界」（hour ⇒ 止 `H:59:59.999`、minute ⇒ `H:M:59.999`、second 不动），毫秒恒三位、数据库截断优雅退化。交互按用户 10-24 反馈定稿：时间不强制先选日期、快捷键「今天/现在」双态、range 双独立日历不标跨度。遗留：未做 min/max 夹取、命令式 Promise API（YAGNI，用户未要求）。
 
 ## 执行记录
 
@@ -44,3 +47,4 @@ DateTimePicker 落地，`mode × precision` 覆盖全部诉求；补全规则泛
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
 - 2026-10-24 15:38:20 · new · @GuoJia-Agent · 创建任务（doing）
 - 2026-10-24 15:59:33 · log · @GuoJia-Agent · DateTimePicker 落地：logic+组件+css+i18n 13key+demo 页+ui.doc.ts 章节；pnpm test 114/114、codelint 六层过、build:demo OK；待用户 demo 验收
+- 2026-10-24 16:23:28 · log · @GuoJia-Agent · 按用户反馈改：时分秒不强制先选日期（确定时没日期不传数据）、快捷键 day「今天」/时分秒「现在」、range 弹层改两块独立日历不标跨度、demo 录入页示例改名「用户名」；草稿模型纯函数化并补 2 条测试；pnpm test 116/116、codelint 六层过
