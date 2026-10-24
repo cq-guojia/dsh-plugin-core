@@ -413,19 +413,18 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
   }
 
   // ── 触发器 ──
+  // range = 一个整条（不是两个框）：两个日期区 + 中间样式画出来的灰隔条（左右两条竖边），
+  // 视觉上把两个日期隔开；点整条都展开同一个浮层。
   const currentDraft = draftOf(current)
-  const triggerText = ((): string => {
-    if (rangeMode) {
-      const s = partsOf(currentDraft.start)
-      const e = partsOf(currentDraft.end)
-      if (s === null && e === null) return placeholder
-      return `${s === null ? placeholder : fmtParts(s, precision)} – ${e === null ? placeholder : fmtParts(e, precision)}`
-    }
-    const s = partsOf(currentDraft.start)
-    return s === null ? placeholder : fmtParts(s, precision)
-  })()
-  const triggerEmpty = partsOf(currentDraft.start) === null && (rangeMode ? partsOf(currentDraft.end) === null : true)
-
+  const startValue = partsOf(currentDraft.start)
+  const endValue = rangeMode ? partsOf(currentDraft.end) : null
+  const dateZone = (key: string, value: DateTimeParts | null): ReturnType<typeof h> =>
+    h(
+      'span',
+      { key, className: `dshpc-dt__pair-date${value === null ? ' dshpc-dt__pair-date--empty' : ''}` },
+      value === null ? placeholder : fmtParts(value, precision),
+    )
+  const calIcon = h('span', { className: 'dshpc-dt__cal' }, ICON_CAL)
   const trigger = h(
     'button',
     {
@@ -437,12 +436,23 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
       className: `dshpc-dt__trigger ${SIZE_CLASS[size]}`.trim(),
       onClick: openPop,
     },
-    h(
-      'span',
-      { className: `dshpc-dt__trigger-label${triggerEmpty ? ' dshpc-dt__trigger-label--empty' : ''}` },
-      triggerText,
-    ),
-    h('span', { className: 'dshpc-dt__cal' }, ICON_CAL),
+    rangeMode
+      ? h(
+          'span',
+          { key: 'group', className: 'dshpc-dt__pair-group' },
+          dateZone('start', startValue),
+          h('span', { key: 'sep', className: 'dshpc-dt__pair-sep', 'aria-hidden': true }, '~'),
+          dateZone('end', endValue),
+        )
+      : h(
+          'span',
+          {
+            key: 'label',
+            className: `dshpc-dt__trigger-label${startValue === null ? ' dshpc-dt__trigger-label--empty' : ''}`,
+          },
+          startValue === null ? placeholder : fmtParts(startValue, precision),
+        ),
+    calIcon,
   )
   const triggerRow =
     props.hint === undefined

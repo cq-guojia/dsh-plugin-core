@@ -1,5 +1,6 @@
 /* 日期时间选择器（DateTimePicker）。类名 dshpc-dt-*；配色只吃 token，明暗随 token 切换。
-   结构：触发器（单条，显示「起 – 止」）→ 浮层（两个独立端框 + 单月历 + 时分秒步进 + 底部动作）。
+   结构：触发器（range = 一个整条：两个日期区 + 样式画的灰隔条；single = 单日期）→ 浮层
+   （两个独立端框 + 两块独立日历 + 底部动作）。
    浮层行为与 Picker 一致：portal 到 body、贴边翻转、点外关闭、无遮罩。 */
 .dshpc-dt{position:relative;display:inline-block;font-size:13px;line-height:20px}
 .dshpc-dt__trigger{
@@ -11,10 +12,24 @@
 .dshpc-dt__trigger--sm{height:var(--dshpc-control-h-sm);font-size:12px}
 .dshpc-dt__trigger--lg{height:var(--dshpc-control-h-lg)}
 .dshpc-dt__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}
-.dshpc-dt__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
+/* 焦点与基础 Input 完全同款（点击即蓝描边 + 1px 光环）。 */
+.dshpc-dt__trigger:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}
 .dshpc-dt__trigger-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-variant-numeric:tabular-nums}
 .dshpc-dt__trigger-label--empty{color:var(--dshpc-fg-dim)}
 .dshpc-dt__cal{flex:none;color:var(--dshpc-fg-3)}
+/* range 触发器：一个整条里两个日期区 + 样式画出来的灰隔条（左右两条竖边），点整条都展开。 */
+.dshpc-dt__pair-group{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:8px}
+.dshpc-dt__pair-date{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dshpc-dt__pair-date--empty{color:var(--dshpc-fg-dim)}
+/* 隔条：上下顶到触发器 border（与边框连起来），中间隔出一块；块里放「到」的符号（~）。
+   用 ~ 不用 -：紧挨日期时 - 会被看成日期本身的一段。 */
+.dshpc-dt__pair-sep{
+  flex:none;align-self:stretch;width:22px;margin:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--dshpc-surface-sunken);
+  border-left:1px solid var(--dshpc-border);border-right:1px solid var(--dshpc-border);
+  color:var(--dshpc-fg-3);font-size:12px;line-height:1;
+}
 
 .dshpc-dt__pop{
   z-index:60;padding:10px;user-select:none;
