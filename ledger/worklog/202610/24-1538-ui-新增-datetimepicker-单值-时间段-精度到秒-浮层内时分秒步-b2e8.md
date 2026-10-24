@@ -53,3 +53,4 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 18:09:38 · log · @GuoJia-Agent · 按用户重申的需求补两针（不动布局）：① 显示改走 formatDateTimePrecision——day 只出日期不出 00:00、hour/minute 到分、second 出秒，触发器与 range 两个端框同步，数据仍完整 ISO；② 端框纵排改横排「开始：值｜结束：值」一行；pnpm test 117/117、codelint 六层过
 - 2026-10-24 18:28:45 · log · @GuoJia-Agent · range 触发器改一个整条：两个日期区 + CSS 灰隔条（左右竖边）取代文本横杠与双按钮；点整条展开行为不变；恢复 Input 同款 :focus 蓝边（回退时弄丢的）；先提交了上一轮显示精度+端框横排（2215229）
 - 2026-10-24 18:36:51 · log · @GuoJia-Agent · range 隔条改上下顶满 border（与边框连起、中间隔出一块），块内放「到」符号 ~（不选 -：紧挨日期会被看成日期一段）；pnpm test 117/117、codelint 六层过
+- 2026-10-24 18:45:18 · log · @GuoJia-Agent · 隔条顶满修复（pair-group 加 align-self:stretch，此前组高=行高导致上下差 4px）；默认宽改按精度 ch 计算（day 10ch/时分 16ch/秒 19ch，range 乘 2 + 隔条图标间距），删掉拍脑袋的 min-width:220px；调用方 className 更宽仍自然撑开；pnpm test 117/117、codelint 六层过
