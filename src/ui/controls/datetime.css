@@ -5,7 +5,7 @@
 .dshpc-dt{position:relative;display:inline-block;font-size:13px;line-height:20px}
 .dshpc-dt__trigger{
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
-  min-width:220px;max-width:100%;height:var(--dshpc-control-h-md);padding:0 8px;
+  max-width:100%;height:var(--dshpc-control-h-md);padding:0 8px;
   color:var(--dshpc-fg);background:var(--dshpc-surface-1);
   border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);cursor:pointer;
 }
@@ -18,11 +18,12 @@
 .dshpc-dt__trigger-label--empty{color:var(--dshpc-fg-dim)}
 .dshpc-dt__cal{flex:none;color:var(--dshpc-fg-3)}
 /* range 触发器：一个整条里两个日期区 + 样式画出来的灰隔条（左右两条竖边），点整条都展开。 */
-.dshpc-dt__pair-group{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:8px}
-.dshpc-dt__pair-date{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
+/* 组撑满触发器内容高度，隔条才能上下顶到 border。 */
+.dshpc-dt__pair-group{flex:1 1 auto;min-width:0;align-self:stretch;display:flex;align-items:center;gap:8px}
+/* 两个日期区平分（flex:1 1 0）：开始 / 结束永远一样宽，不随内容偏袒。 */
+.dshpc-dt__pair-date{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
 .dshpc-dt__pair-date--empty{color:var(--dshpc-fg-dim)}
-/* 隔条：上下顶到触发器 border（与边框连起来），中间隔出一块；块里放「到」的符号（~）。
-   用 ~ 不用 -：紧挨日期时 - 会被看成日期本身的一段。 */
+/* 隔条：上下顶到触发器 border（与边框连起来），中间隔出一块；块里放「到」的符号（-，用户 2026-10-24 拍板）。 */
 .dshpc-dt__pair-sep{
   flex:none;align-self:stretch;width:22px;margin:0;
   display:inline-flex;align-items:center;justify-content:center;
@@ -30,6 +31,17 @@
   border-left:1px solid var(--dshpc-border);border-right:1px solid var(--dshpc-border);
   color:var(--dshpc-fg-3);font-size:12px;line-height:1;
 }
+/* 默认宽：**固定**（选中前后不变），数值对照参考图实测（2x 屏，换算 CSS px）后
+   统一 -6px（用户 2026-10-24：实测值留得偏多）：
+   单值 day 128 / 时·分 153.2 / 秒 174.8；区间 day 269 / 分 341.4 / 秒 377.6。
+   ch = 字体里 "0" 的宽（日期 tabular-nums 等宽）⇒ 写成 Nch + 常数；常数同时兜住
+   默认占位「请选择日期时间」（7 汉字）不省略。调用方要另给宽：className 传 width。 */
+.dshpc-dt__trigger--w-day{width:calc(10ch + 56px)}
+.dshpc-dt__trigger--w-minute{width:calc(16ch + 38px)}
+.dshpc-dt__trigger--w-second{width:calc(19ch + 38px)}
+.dshpc-dt__trigger--wr-day{width:calc(20ch + 125px)}
+.dshpc-dt__trigger--wr-minute{width:calc(32ch + 111px)}
+.dshpc-dt__trigger--wr-second{width:calc(38ch + 104px)}
 
 .dshpc-dt__pop{
   z-index:60;padding:10px;user-select:none;

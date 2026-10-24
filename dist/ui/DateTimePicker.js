@@ -21,6 +21,23 @@ const SIZE_CLASS = {
     md: '',
     lg: 'dshpc-dt__trigger--lg',
 };
+/**
+ * 默认宽度类：宽**固定**（选中前后不跳），数值对照参考图实测（2x 屏换算 CSS px）
+ * 后统一 -6px（用户 2026-10-24：实测值留得偏多）：
+ * 单值 day 128 / 时·分 153.2 / 秒 174.8；区间 day 269 / 分 341.4 / 秒 377.6。
+ * 日期数字 tabular-nums 等宽，ch 即 "0" 宽，故写成 Nch + 常数；常数同时兜住默认占位不省略。
+ * 调用方传更宽的 className 会自然撑开。
+ */
+const WIDTH_CLASS = (rangeMode, precision) => {
+    if (rangeMode) {
+        if (precision === 'day')
+            return 'dshpc-dt__trigger--wr-day';
+        return precision === 'second' ? 'dshpc-dt__trigger--wr-second' : 'dshpc-dt__trigger--wr-minute';
+    }
+    if (precision === 'day')
+        return 'dshpc-dt__trigger--w-day';
+    return precision === 'second' ? 'dshpc-dt__trigger--w-second' : 'dshpc-dt__trigger--w-minute';
+};
 function draftOf(value) {
     const empty = { day: null, time: { hour: 0, minute: 0, second: 0, ms: 0 } };
     if (value === null || value === undefined)
@@ -315,10 +332,10 @@ export function DateTimePicker(props) {
         'aria-expanded': open,
         ref: refs.setReference,
         disabled: props.disabled === true,
-        className: `dshpc-dt__trigger ${SIZE_CLASS[size]}`.trim(),
+        className: `dshpc-dt__trigger ${SIZE_CLASS[size]} ${WIDTH_CLASS(rangeMode, precision)}`.trim(),
         onClick: openPop,
     }, rangeMode
-        ? h('span', { key: 'group', className: 'dshpc-dt__pair-group' }, dateZone('start', startValue), h('span', { key: 'sep', className: 'dshpc-dt__pair-sep', 'aria-hidden': true }, '~'), dateZone('end', endValue))
+        ? h('span', { key: 'group', className: 'dshpc-dt__pair-group' }, dateZone('start', startValue), h('span', { key: 'sep', className: 'dshpc-dt__pair-sep', 'aria-hidden': true }, '-'), dateZone('end', endValue))
         : h('span', {
             key: 'label',
             className: `dshpc-dt__trigger-label${startValue === null ? ' dshpc-dt__trigger-label--empty' : ''}`,
