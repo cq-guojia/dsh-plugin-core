@@ -60,3 +60,4 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 19:42:03 · log · @GuoJia-Agent · 收尾：宽度 -6px 与文档同步分两笔提交推送（1f02ba9/d52c6ee）；修文档三处——ui.doc 触发器描述改整条、requirements §2.2+§6 登记、structure 控件树补项；pnpm test 117/117、codelint 六层过
 - 2026-10-24 19:50:09 · log · @GuoJia-Agent · demo 五个 DateTimePicker 示例去掉自定义 placeholder，统一走默认「请选择日期时间」（dtPlaceholder，可传 placeholder prop 覆盖）；已提交推送 47e7f91；测试/lint 全过
 - 2026-10-24 20:01:25 · log · @GuoJia-Agent · demo 侧栏重构：底部固定栏（不随滚动）放明暗切换（翻 body data-ds-dark-theme + MutationObserver 同步）+ 版本号 + 编译码；编译码改时间戳 YYMMDD-HHmmss-SSS（261024-200021-098 实测）；提交推送 5ad335f
+- 2026-10-24 20:07:52 · log · @GuoJia-Agent · 侧栏底栏修正：版本号拆 core/demo 两行（180px 一行放不下）、明暗切换手写 button 改核心 Button；提交推送；测试/lint 全过
