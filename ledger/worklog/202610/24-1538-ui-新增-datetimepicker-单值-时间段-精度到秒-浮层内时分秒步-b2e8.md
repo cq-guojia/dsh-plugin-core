@@ -52,3 +52,4 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 17:24:35 · log · @GuoJia-Agent · 回退第三轮全部改动（用户验收样式被改坏）：DateTimePicker.ts/datetime.css 还原到第二轮状态；根因是重写时单值模式漏挂 refs.setReference 导致浮层跑左上角；顺带撤掉 formatDateTimePrecision 及其测试/doc；pnpm test 116/116、codelint 六层过
 - 2026-10-24 18:09:38 · log · @GuoJia-Agent · 按用户重申的需求补两针（不动布局）：① 显示改走 formatDateTimePrecision——day 只出日期不出 00:00、hour/minute 到分、second 出秒，触发器与 range 两个端框同步，数据仍完整 ISO；② 端框纵排改横排「开始：值｜结束：值」一行；pnpm test 117/117、codelint 六层过
 - 2026-10-24 18:28:45 · log · @GuoJia-Agent · range 触发器改一个整条：两个日期区 + CSS 灰隔条（左右竖边）取代文本横杠与双按钮；点整条展开行为不变；恢复 Input 同款 :focus 蓝边（回退时弄丢的）；先提交了上一轮显示精度+端框横排（2215229）
+- 2026-10-24 18:36:51 · log · @GuoJia-Agent · range 隔条改上下顶满 border（与边框连起、中间隔出一块），块内放「到」符号 ~（不选 -：紧挨日期会被看成日期一段）；pnpm test 117/117、codelint 六层过
