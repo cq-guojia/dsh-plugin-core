@@ -71,9 +71,9 @@ token 覆盖颜色 / 尺寸 / 字号 / 层级，**含深色覆盖段**。取值�
 
 > EN: Tokens cover color / size / font-size / elevation, **including the dark-mode override block**. Always read values via `var(--dshpc-*)`, never hard-code colors in rules.
 
-完整清单与命名口径见 [`../style.md`](../style.md)。
+完整清单与命名口径见 [`style.md`](style.md)。
 
-> EN: Full list and naming conventions: [`../style.md`](../style.md).
+> EN: Full list and naming conventions: [`style.md`](style.md).
 
 ## 定制边界
 

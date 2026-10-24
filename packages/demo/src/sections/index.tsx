@@ -1,7 +1,7 @@
 import { createElement as h, type ReactNode } from 'react'
 import type { DemoMessageKey } from '../i18n.js'
 import { t } from '../i18n.js'
-import { QuickstartPage } from './start.js'
+import { QuickstartPage, HelpIndexPage } from './start.js'
 import { FoundationPage } from './foundation.js'
 import {
   ButtonPage,
@@ -25,6 +25,7 @@ import { Example } from '../doc.js'
 export type SectionGroup = 'start' | 'components' | 'blocks' | 'utils' | 'reference'
 
 export type SectionId =
+  | 'help-index'
   | 'quickstart'
   | 'foundation'
   | 'button'
@@ -67,7 +68,8 @@ export const SECTION_GROUPS: { id: SectionGroup; titleKey: DemoMessageKey }[] = 
 //   说明性 / 元信息             → start / reference
 /** 全部二级页（顺序即组内顺序）；侧栏与右侧渲染共用同一份目录（单一事实源）。 */
 export const ALL_SECTIONS: SectionDef[] = [
-  // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
+  // 入门：帮助索引（读哪一份）在前，然后是快速开始与设计基础
+  { id: 'help-index', group: 'start', titleKey: 'secHelpIndex', render: () => h(HelpIndexPage, null) },
   { id: 'quickstart', group: 'start', titleKey: 'secQuickstart', render: () => h(QuickstartPage, null) },
   { id: 'foundation', group: 'start', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
 

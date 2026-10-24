@@ -1,7 +1,8 @@
 // 文档真源 → 双投影。
-//   真源 = docs/**/*.doc.ts（typed 数据模块，手写）
-//   投影1 = docs/**/*.md（给 Agent / 人读，随包发布，勿手改头）
-//   投影2 = packages/demo/src/doc-data.generated.ts（demo import，按 section.id 扁平聚合，零解析）
+//   真源          = docs/help/*.doc.ts（typed 数据模块，手写；帮助文档区）
+//   投影1（发布）  = docs/help/*.md（给引用方 / Agent 读，随包发布，勿手改）
+//   * demo 侧投影        = packages/demo/src/doc-data.generated.ts
+// 本脚本只读取真源、写出投影，绝不修改 .doc.ts。
 // 本脚本只读取真源、写出投影，绝不修改 .doc.ts。
 //
 // 链路：esbuild 把 .doc.ts 打成 ESM → 临时文件 → import 取 default → 渲染两份投影。
@@ -17,12 +18,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
 
 const MAP = [
-  { doc: 'docs/design/features/explorer.doc.ts', md: 'docs/design/features/explorer.md', name: 'explorer' },
-  { doc: 'docs/design/features/design.doc.ts', md: 'docs/design/features/design.md', name: 'design' },
-  { doc: 'docs/design/features/session.doc.ts', md: 'docs/design/features/session.md', name: 'session' },
-  { doc: 'docs/design/features/utils.doc.ts', md: 'docs/design/features/utils.md', name: 'utils' },
-  { doc: 'docs/examples/integration.doc.ts', md: 'docs/examples/integration.md', name: 'integration' },
-  { doc: 'docs/design/features/ui.doc.ts', md: 'docs/design/features/ui.md', name: 'ui' },
+  { doc: 'docs/help/index.doc.ts', md: 'docs/help/index.md', name: 'index' },
+  { doc: 'docs/help/explorer.doc.ts', md: 'docs/help/explorer.md', name: 'explorer' },
+  { doc: 'docs/help/design.doc.ts', md: 'docs/help/design.md', name: 'design' },
+  { doc: 'docs/help/session.doc.ts', md: 'docs/help/session.md', name: 'session' },
+  { doc: 'docs/help/utils.doc.ts', md: 'docs/help/utils.md', name: 'utils' },
+  { doc: 'docs/help/integration.doc.ts', md: 'docs/help/integration.md', name: 'integration' },
+  { doc: 'docs/help/ui.doc.ts', md: 'docs/help/ui.md', name: 'ui' },
 ]
 
 const CHECK = process.argv.includes('--check')

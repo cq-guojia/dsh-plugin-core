@@ -1,5 +1,5 @@
 // ui 子包的使用帮助 —— 真源（TS 数据模块）。内容全在此一处，demo 与 md 都从这份派生。
-import type { DocTopic } from '../doc-format.js'
+import type { DocTopic } from '../design/doc-format.js'
 
 const setup = `import { createStyleKit } from 'dsh-plugin-core/design'
 import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'

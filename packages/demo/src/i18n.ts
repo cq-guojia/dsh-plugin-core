@@ -13,6 +13,7 @@ export type DemoMessageKey =
   | 'grpReference'
   | 'secOverview'
   | 'secInstall'
+  | 'secHelpIndex'
   | 'secQuickstart'
   | 'secFoundation'
   | 'secWritePlugin'
@@ -235,6 +236,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     grpReference: '参考',
 
     secOverview: '概览',
+    secHelpIndex: '帮助索引',
     secInstall: '安装与初始化',
     secQuickstart: '快速开始',
     secFoundation: '设计基础',
@@ -497,6 +499,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     grpReference: 'Reference',
 
     secOverview: 'Overview',
+    secHelpIndex: 'Help index',
     secInstall: 'Install & init',
     secQuickstart: 'Quick start',
     secFoundation: 'Foundations',

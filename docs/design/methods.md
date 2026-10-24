@@ -1,43 +1,22 @@
-# 方法规范
+# 方法规范（本仓内部）
 
-`utils` 的口径：**解析失败不抛错、给兜底、不编造**。这是全包统一的方法论，
-新增方法时按这一页的口径来，别自创一套。
+> EN: Helper conventions (internal)
 
-## 总口径
-
-| 情形 | 统一行为 |
-|---|---|
-| 输入解析失败（日期 / 数字） | **不抛错**，返回调用方兜底；兜底可传则传，不可传用固定占位 |
-| 固定占位 | 日期类 `—`，时刻类 `-`，体积类 `—`；调用方可用 `opts.fallback` 覆盖 |
-| 空值（`null` / `undefined` / 空串） | 与解析失败同口径，不特殊崩 |
-| 边界值（0 / 负数 / NaN） | 明确处理并写进注释，不静默通过 |
-| 时区 | 一律**本机时区**（沿用三家现有口径）；要显式时区请在调用方转换后再传 |
-
-## 为什么解析失败不抛错
-
-这些函数大量用在渲染路径上（列表每一行都调）。一个坏数据让整页崩 vs 显示一个占位符——
-后者明显是我们要的。**但兜底不能编造**：不知道就不显示，不要猜一个时间。
-
-## 分模块口径
-
-- **日期**：见 [`features/utils.md`](features/utils.md) 的表格，每个函数的失败返回都列了。
-  `relativePast` / `relativeFuture` 对偶，别用错。
-- **字符串**：`truncateBytes` 按 **UTF-8 字节**截断，不切半个字（中文场景必须）。
-  `baseNameOf` 处理目录尾斜杠，不会取成空串。
-- **数字**：`formatBytes` 对 0 与负数返回 `—`，不显示「0 B」这种假精确。
-- **HTTP**：默认 10s 超时；超时抛 `AbortError`，非 2xx 抛带 `status` 的 `HttpError`。
-
-## 多语言口径
-
-- 核心提供的固定提示语 ⇒ 本包内置中英（`setLocale` 切）。
-- 需要文案的 API 一律可传 `translate: Translate` 覆盖，默认走内置。
-- 插件自己界面的文案 ⇒ 插件自己管，本包不提供插件级 i18n 框架。
-- 新增 key 必须被真正使用（`test/no-dead-keys.test.mjs` 盯着，死 key 会让测试红）。
+引用方应该看的那一半在 `docs/help/methods.md`（统一口径与返回值约定）。
+本文件只留**往 `utils` 里加方法时**要守的东西。
+EN: The caller-facing half lives in `docs/help/methods.md` (shared contract and return values). What stays
+here is only what you must honour when **adding a helper to `utils`**.
 
 ## 新增一个方法的 checklist
+
+> EN: Checklist for a new helper
 
 - [ ] 失败路径有明确兜底，且兜底可覆盖
 - [ ] 边界值（空 / 0 / 负 / NaN）有测试
 - [ ] 进了 `src/utils/index.ts` 出口（曾漏过 `relativeFuture`）
 - [ ] 需要文案的走 `t()` + `translate` 参数
-- [ ] 在 [`features/utils.md`](features/utils.md) 的表格里登记一行
+- [ ] 在 [`docs/help/utils.md`](../help/utils.md) 的表格里登记一行
+
+EN: Failure path has a clear, overridable fallback; edge cases (empty / 0 / negative / NaN) covered by tests;
+exported from `src/utils/index.ts`; text goes through `t()` + `translate`; registered as a row in
+`docs/help/utils.md`.

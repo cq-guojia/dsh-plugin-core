@@ -17,19 +17,23 @@
 | 槽位 | 落位 | 说明 |
 |---|---|---|
 | 文档规范 | `docs/README.md`（本文件，路径固定） | 槽位表 + 阅读顺序 |
+| **帮助文档区（追加槽位）** | **`docs/help/`** | **给引用方 / Agent，随包发布；`.doc.ts` 真源 + `.md` 投影同目录** |
+| 帮助索引（入口） | `docs/help/index.md`（← `index.doc.ts`） | 引用方与 Agent 的唯一入口：按任务挑一份 |
+| 接入样例 | `docs/help/integration.md`（← `integration.doc.ts`） | 从零接入一个插件 |
+| 各功能帮助 | `docs/help/<包名>.md`（← 同名 `.doc.ts`） | `ui` / `design` / `utils` / `explorer` / `session` 各一份 |
+| 方法 / 样式的使用侧 | `docs/help/methods.md`、`docs/help/style.md` | 手写 md（无对应 demo 页，不进投影） |
 | 任务进度（在办 / 已结案 / 过程叙事） | **不入 `docs/`** —— 由 `task-ledger` skill 管理（`ledger/`） | 不得在 docs 内另建进度文档 |
-| 文档格式规范（.doc.ts 真源 + 双投影） | `docs/design/doc-format.md` | schema、section.id 契约、Bilingual、生成与类型闸 |
+| 文档格式规范（帮助文档真源 + 双投影） | `docs/design/doc-format.md` | schema、section.id 契约、Bilingual、生成与类型闸 |
+| 各功能真源（旧落位） | **不适用**（已迁入 `docs/help/<包名>.doc.ts`） | 保留行说明去向，不删行 |
+| 样例（旧落位） | **不适用**（已迁入 `docs/help/integration.*`） | 同上 |
 | 运行逻辑 | `docs/design/architecture.md`（路径固定） | 五子包分层、依赖方向、样式注入机制、不变量 |
 | 结构规范（运行逻辑拆分） | `docs/design/structure.md` | 代码分层树（目标态）+ demo 展示分区 + 做/暂缓标注 |
 | 功能总索引 | `docs/design/features.md`（路径固定） | 每个包提供什么、对应哪个导出 |
-| 各功能（真源） | `docs/design/features/<包名>.doc.ts` | `design` / `ui` / `utils` / `explorer` / `session` 各一份；typed 数据模块，单一真源 |
-| 各功能（生成） | `docs/design/features/<包名>.md` | 由 gen-docs 从 .doc.ts 生成，勿手改 |
 | 外部事实 | `docs/design/external/dsh-host.md` | 宿主 API 契约、官方 primitives、CSS 类名发现、暗色判据来源 |
 | 数据库说明 | **不适用**（本包无数据库） | 保留行说明原因，不删行 |
-| 样式规范 | `docs/design/style.md` | token 清单口径、`createStyleKit`、暗色判据、定制边界 |
-| 方法规范 | `docs/design/methods.md` | 日期 / 字符串 / 字节 / HTTP 的边界行为与兜底口径 |
-| 文案撰写规范（追加槽位） | `docs/design/copywriting.md` | 给 Agent 看的文案标准：禁过程叙事、段落与表格口径、双语对等、格式冻结 |
-| 样例 | `docs/examples/integration.md` | 从零接入一个插件的完整示例 |
+| 样式规范（本仓内部） | `docs/design/style.md` | 注入机制 why、派生色口径、三条硬规矩（使用侧在 `docs/help/style.md`） |
+| 方法规范（本仓内部） | `docs/design/methods.md` | 新增 utils 方法的 checklist（使用侧在 `docs/help/methods.md`） |
+| 文案撰写规范 | `docs/design/copywriting.md` | 帮助文档文案标准：禁过程叙事、段落与表格口径、双语对等、格式冻结 |
 | 需求与决策（追加槽位） | `docs/requirements.md` | 需求范围、拍板结论、遗留问题 |
 
 ## 三条硬约定

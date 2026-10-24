@@ -20,11 +20,13 @@
 
 | 角色 | 落位 | 说明 |
 |---|---|---|
-| 真源（手写） | `docs/design/features/<包名>.doc.ts`、`docs/examples/integration.doc.ts` | 一主题一文件，对齐现有 `features/<包名>.md` 拆分 |
-| 生成（Agent/人读） | `docs/design/features/<包名>.md` | 由 gen-docs 从 `.doc.ts` 生成，覆盖同名手写文件；**勿手改** |
+| 真源（手写） | `docs/help/<主题>.doc.ts` | 一主题一文件（`index` / `integration` / `ui` / `design` / `utils` / `explorer` / `session`）；帮助侧唯一的输入 |
+| 生成（引用方 / Agent 读） | `docs/help/<主题>.md` | 由 gen-docs 从 `.doc.ts` 生成，覆盖同名手写文件；**勿手改** |
 | 生成（demo 消费） | `packages/demo/src/doc-data.generated.ts` | 按 `section.id` 扁平聚合；**勿手改** |
 
-**不转**：`requirements.md` / `architecture.md` / `external/**` 保持手写 md（demo 不展示、无漂移风险）。
+真源只放**帮助侧**（`docs/help/`）：开发侧文档（`requirements.md` / `architecture.md` / `structure.md` /
+`external/**` / 本文件 / `copywriting.md`）保持手写 md，不进投影——demo 不展示、无漂移风险。
+手写的 `.doc.ts` 若写在别处，必须在 `gen-docs.mjs` 的 `MAP` 里登记才会被处理。
 
 ## schema（权威定义在 `docs/design/doc-format.ts`）
 
@@ -72,6 +74,7 @@ export type DocTopic = {
 
 ## 随包与 Agent 读取
 
-- core 包 `files: ["dist","docs"]` 同时发 `.md` 与 `.doc.ts`；Agent 读 `node_modules/dsh-plugin-core/docs/*.md`（或 `.doc.ts` 结构化真源）。
+- core 包 `files: ["dist","docs"]` 同时发 `.md` 与 `.doc.ts`；Agent 的入口是
+  `node_modules/dsh-plugin-core/docs/help/index.md`（按任务挑一份，不必全读）。
 - 插件产物不含文档：bundler 不吃 `.md`/`.ts` 文档（无 md/text loader），文档不进 bundle。
 - 消费方指引句（抄进各插件项目 `AGENTS.md`）见本仓 `docs/README.md` 阶段5 行。

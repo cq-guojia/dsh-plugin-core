@@ -54341,6 +54341,7 @@ var DICT2 = {
     grpUtils: "\u901A\u7528\u65B9\u6CD5",
     grpReference: "\u53C2\u8003",
     secOverview: "\u6982\u89C8",
+    secHelpIndex: "\u5E2E\u52A9\u7D22\u5F15",
     secInstall: "\u5B89\u88C5\u4E0E\u521D\u59CB\u5316",
     secQuickstart: "\u5FEB\u901F\u5F00\u59CB",
     secFoundation: "\u8BBE\u8BA1\u57FA\u7840",
@@ -54555,6 +54556,7 @@ var DICT2 = {
     grpUtils: "Utilities",
     grpReference: "Reference",
     secOverview: "Overview",
+    secHelpIndex: "Help index",
     secInstall: "Install & init",
     secQuickstart: "Quick start",
     secFoundation: "Foundations",
@@ -54852,6 +54854,102 @@ var import_react51 = require("react");
 
 // packages/demo/src/doc-data.generated.ts
 var docData = {
+  "help-index": {
+    "id": "help-index",
+    "heading": {
+      "zh": "\u6309\u4F60\u8981\u505A\u7684\u4E8B\u6311\u4E00\u4EFD",
+      "en": "Pick the one you need"
+    },
+    "prose": [
+      {
+        "zh": "\u672C\u7D22\u5F15\u53EA\u56DE\u7B54\u300C\u8BFB\u54EA\u4E00\u4EFD\u300D\u3002\u6309\u4F60\u8981\u505A\u7684\u4E8B\u6311\u4E00\u884C\uFF0C\u8DF3\u8FC7\u53BB\u8BFB\u5B8C\u5C31\u80FD\u5199\u4EE3\u7801\u3002",
+        "en": "This index answers one question: which document to read. Pick the row matching your task."
+      },
+      {
+        "zh": "\u6587\u4EF6\u90FD\u5728\u540C\u4E00\u76EE\u5F55\uFF08`docs/help/`\uFF09\uFF1A`<\u4E3B\u9898>.md` \u7ED9\u4EBA\u8BFB\uFF0C\u540C\u540D\u7684 `.doc.ts` \u662F\u771F\u6E90\u3002\u6539\u5185\u5BB9\u8BF7\u6539\u771F\u6E90\u540E\u91CD\u8DD1 `node scripts/gen-docs.mjs`\uFF0C`.md` \u7531\u5B83\u751F\u6210\u3002",
+        "en": "Everything lives in `docs/help/`: `<topic>.md` is what you read, the `<topic>.doc.ts` beside it is the source. Edit the source, then rerun `node scripts/gen-docs.mjs` \u2014 the `.md` is generated."
+      }
+    ],
+    "api": [
+      {
+        "id": "help-index-table",
+        "rows": [
+          {
+            "name": "\u628A\u8FD9\u4E2A\u5305\u63A5\u8FDB\u6211\u7684\u63D2\u4EF6",
+            "type": "integration.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u88C5\u5305\u3001\u521D\u59CB\u5316\u6837\u5F0F\u3001\u6700\u5C0F\u53EF\u7528\u63A7\u4EF6\u4E0E\u5DE5\u5177\u51FD\u6570\u3001\u6E05\u7406\uFF0C\u4E00\u6761\u9F99\u793A\u4F8B",
+              "en": "Install, style init, minimal working controls and helpers, teardown \u2014 end to end"
+            }
+          },
+          {
+            "name": "\u7528\u63A7\u4EF6\uFF08\u6309\u94AE / \u8F93\u5165 / \u9009\u62E9\u5668 / \u5F39\u7A97 / \u53F3\u4FA7\u5206\u680F\uFF09",
+            "type": "ui.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u63A7\u4EF6\u6E05\u5355\u4E0E\u5168\u90E8 props\uFF1B\u5F39\u7A97\u4E0E PanelDock \u7684\u5E03\u5C40\u7EA6\u5B9A\u5728\u6B64",
+              "en": "Control inventory and every prop; dialog and PanelDock layout contracts are here"
+            }
+          },
+          {
+            "name": "\u5EFA style kit\u3001\u8986\u76D6 token\u3001\u591A\u63D2\u4EF6\u540C\u9875\u9694\u79BB",
+            "type": "design.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "design \u5B50\u5305\u7684 API\uFF1A`createStyleKit` / `registerStyle` / \u6CE8\u5165\u673A\u5236",
+              "en": "The `design` subpackage API: `createStyleKit` / `registerStyle` / how injection works"
+            }
+          },
+          {
+            "name": "\u5904\u7406\u65E5\u671F\u3001\u5B57\u7B26\u4E32\u3001\u5B57\u8282\u3001HTTP",
+            "type": "utils.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7EAF\u51FD\u6570\u6E05\u5355\u4E0E\u53C2\u6570\uFF0C\u542B\u6BCF\u4E2A\u51FD\u6570\u7684\u5931\u8D25\u8FD4\u56DE\u503C",
+              "en": "Pure helpers and their arguments, including each one\u2019s failure return"
+            }
+          },
+          {
+            "name": "\u52A0\u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u4E0E\u9884\u89C8",
+            "type": "explorer.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53F3\u4FA7\u5206\u680F\u9884\u89C8\u4E0E\u6587\u4EF6\u9009\u62E9\u5668\uFF1B\u90FD\u8981\u5BBF\u4E3B\u63D0\u4F9B\u7684\u5DE5\u4F5C\u533A\u5FEB\u7167",
+              "en": "Right-dock preview and file picker; both need the host workspace snapshot"
+            }
+          },
+          {
+            "name": "\u628A\u4E00\u6B21\u4F1A\u8BDD\u6E32\u67D3\u6210\u53EA\u8BFB\u9884\u89C8",
+            "type": "session.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4F1A\u8BDD\u6570\u636E\u94FE\u4E0E\u5F39\u7A97 props\uFF1B\u5F52\u6863\u4F1A\u8BDD\u540C\u6837\u53EF\u8BFB",
+              "en": "The session data chain and dialog props; archived sessions read fine too"
+            }
+          },
+          {
+            "name": "\u67E5\u65B9\u6CD5\u7684\u7EDF\u4E00\u53E3\u5F84\uFF08\u5931\u8D25\u4E0D\u629B\u9519\u3001\u515C\u5E95\u4E0D\u7F16\u9020\uFF09",
+            "type": "methods.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6240\u6709 utils \u65B9\u6CD5\u7684\u5171\u540C\u884C\u4E3A\u7EA6\u5B9A\uFF0C\u5199\u8C03\u7528\u4EE3\u7801\u524D\u5148\u770B\u5B83",
+              "en": "Shared behavior contract of every utils helper \u2014 read before writing call sites"
+            }
+          },
+          {
+            "name": "\u7528 token\u3001\u914D\u8272\u6216\u5B9A\u5236\u76AE\u80A4",
+            "type": "style.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "token \u6E05\u5355\u3001\u660E\u6697\u5224\u636E\u3001\u80FD\u6539\u4EC0\u4E48\u6539\u5230\u54EA\u4E3A\u6B62",
+              "en": "Token inventory, dark-mode predicate, and how far customization goes"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "explorer": {
     "id": "explorer",
     "heading": {
@@ -55203,8 +55301,8 @@ var docData = {
         "en": "Tokens cover color / size / font-size / elevation, **including the dark-mode override block**. Always read values via `var(--dshpc-*)`, never hard-code colors in rules."
       },
       {
-        "zh": "\u5B8C\u6574\u6E05\u5355\u4E0E\u547D\u540D\u53E3\u5F84\u89C1 [`../style.md`](../style.md)\u3002",
-        "en": "Full list and naming conventions: [`../style.md`](../style.md)."
+        "zh": "\u5B8C\u6574\u6E05\u5355\u4E0E\u547D\u540D\u53E3\u5F84\u89C1 [`style.md`](style.md)\u3002",
+        "en": "Full list and naming conventions: [`style.md`](style.md)."
       }
     ]
   },
@@ -57109,6 +57207,9 @@ function DocContent(props) {
 }
 
 // packages/demo/src/sections/start.tsx
+function HelpIndexPage() {
+  return (0, import_react52.createElement)(DocContent, { id: "help-index" });
+}
 function QuickstartPage() {
   return (0, import_react52.createElement)(DocContent, { id: "quickstart" });
 }
@@ -60586,7 +60687,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1024-0319-z6rd"]
+            [t3("buildStamp"), "1024-1408-uc19"]
           ].map(
             ([label, value]) => (0, import_react65.createElement)(
               "tr",
@@ -60617,7 +60718,8 @@ var SECTION_GROUPS = [
   { id: "reference", titleKey: "grpReference" }
 ];
 var ALL_SECTIONS = [
-  // 入门：原来的「开始」与「设计基础」两组并成一级，各占一页
+  // 入门：帮助索引（读哪一份）在前，然后是快速开始与设计基础
+  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react66.createElement)(HelpIndexPage, null) },
   { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react66.createElement)(QuickstartPage, null) },
   { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react66.createElement)(FoundationPage, null) },
   { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react66.createElement)(ButtonPage, null) },

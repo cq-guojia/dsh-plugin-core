@@ -17,10 +17,13 @@ DSH（DeepSeek Harness）插件共享底座：把跨插件复用的样式、控�
 
 | 我想… | 看哪 |
 |---|---|
-| 知道每个包提供什么、怎么用 | [`docs/README.md`](docs/README.md)（槽位表）→ [`docs/design/features.md`](docs/design/features.md) |
-| 从零接入一个插件 | [`docs/examples/integration.md`](docs/examples/integration.md) |
-| 改这个仓库本身 | `AGENTS.md` |
+| **用这个包写插件** | [`docs/help/index.md`](docs/help/index.md)（**帮助索引**：按任务挑一份读） |
+| 知道每个包提供什么导出 | [`docs/design/features.md`](docs/design/features.md) |
+| 从零接入一个插件 | [`docs/help/integration.md`](docs/help/integration.md) |
+| 改这个仓库本身 | `AGENTS.md` → [`docs/README.md`](docs/README.md)（槽位表） |
 | 查为什么这么设计 | [`docs/requirements.md`](docs/requirements.md) |
+
+文档分两区：**帮助侧** `docs/help/`（引用方看，随包发布）／**开发侧** `docs/design/`、`AGENTS.md`（维护者看）。
 
 ## 安装
 
