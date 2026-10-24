@@ -54,3 +54,4 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 18:28:45 · log · @GuoJia-Agent · range 触发器改一个整条：两个日期区 + CSS 灰隔条（左右竖边）取代文本横杠与双按钮；点整条展开行为不变；恢复 Input 同款 :focus 蓝边（回退时弄丢的）；先提交了上一轮显示精度+端框横排（2215229）
 - 2026-10-24 18:36:51 · log · @GuoJia-Agent · range 隔条改上下顶满 border（与边框连起、中间隔出一块），块内放「到」符号 ~（不选 -：紧挨日期会被看成日期一段）；pnpm test 117/117、codelint 六层过
 - 2026-10-24 18:45:18 · log · @GuoJia-Agent · 隔条顶满修复（pair-group 加 align-self:stretch，此前组高=行高导致上下差 4px）；默认宽改按精度 ch 计算（day 10ch/时分 16ch/秒 19ch，range 乘 2 + 隔条图标间距），删掉拍脑袋的 min-width:220px；调用方 className 更宽仍自然撑开；pnpm test 117/117、codelint 六层过
+- 2026-10-24 18:57:17 · log · @GuoJia-Agent · 隔条符号按用户拍板改 -；默认宽 min-width 改 width 固定（选中前后不跳，day 按占位 7 汉字 13ch 取大、range day 25ch 容两个占位）；两个日期区 flex:1 1 0 平分；pnpm test 117/117、codelint 六层过
