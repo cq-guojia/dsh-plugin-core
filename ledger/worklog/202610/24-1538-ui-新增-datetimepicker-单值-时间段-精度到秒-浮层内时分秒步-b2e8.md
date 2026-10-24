@@ -57,3 +57,4 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 18:57:17 · log · @GuoJia-Agent · 隔条符号按用户拍板改 -；默认宽 min-width 改 width 固定（选中前后不跳，day 按占位 7 汉字 13ch 取大、range day 25ch 容两个占位）；两个日期区 flex:1 1 0 平分；pnpm test 117/117、codelint 六层过
 - 2026-10-24 19:23:14 · log · @GuoJia-Agent · 宽度对标参考图实测值（纯 Python 解 PNG 量边框，2x 屏换算）：单值 day 134/时分 159.5、区间 day 275/秒 384，单值秒 180.8 与区间分 347.4 按同斜率插值；原实现四档全部偏窄 2~32px；占位 7 汉字仍不省略；pnpm test 117/117、codelint 六层过
 - 2026-10-24 19:28:23 · log · @GuoJia-Agent · 六档宽度统一 -6px（用户：实测值留得偏多）：单值 128/153.2/174.8、区间 269/341.4/377.6；占位 7 汉字仍有 1px 余量不省略；pnpm test 117/117、codelint 六层过
+- 2026-10-24 19:42:03 · log · @GuoJia-Agent · 收尾：宽度 -6px 与文档同步分两笔提交推送（1f02ba9/d52c6ee）；修文档三处——ui.doc 触发器描述改整条、requirements §2.2+§6 登记、structure 控件树补项；pnpm test 117/117、codelint 六层过
