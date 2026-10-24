@@ -38,7 +38,8 @@ dsh-plugin-core/
 ├── ui/                  ② 基础控件 —— 纯零件 + 可复用基础能力（依赖 design）
 │   ├── official.ts         ✅ 全仓唯一 import 官方 primitives 的入口（L1）
 │   ├── 表单                ✅ Input / NumberInput / PrefixedInput / Textarea /
-│   │                          Checkbox / Segmented / Picker（下拉选择）
+│   │                          Checkbox / Segmented / Picker（下拉选择）/
+│   │                          DateTimePicker（日期时间：单值 / 时间段 × 精度到秒）
 │   ├── 动作                ✅ Button / IconButton
 │   ├── 反馈                ✅ Modal / Toast / EmptyState
 │   │   └── Loading         ⚪ 暂缓
@@ -107,7 +108,7 @@ utils（谁都不依赖，谁都可以用）
 │     （只摆值，不点交互）
 │
 ├─ ② 基础控件
-│   ├─ 表单    Input / NumberInput / PrefixedInput / Textarea / Checkbox / Segmented / Picker
+│   ├─ 表单    Input / NumberInput / PrefixedInput / Textarea / Checkbox / Segmented / Picker / DateTimePicker
 │   ├─ 动作    Button / IconButton
 │   ├─ 反馈    Modal / Toast / EmptyState
 │   ├─ 展示    Card / StripCard / Chip / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop

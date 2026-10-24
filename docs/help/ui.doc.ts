@@ -46,7 +46,7 @@ const dateTimePickerExample = `import { DateTimePicker } from 'dsh-plugin-core/u
 // 单个时刻，精确到分（起始端归零：14:30 ⇒ 14:30:00.000）
 h(DateTimePicker, { precision: 'minute', value: startAt, onChange: setStartAt })
 
-// 时间段：起止两个独立框、同时展开；day 精度下结束端补到当天最后一刻
+// 时间段：一个整条触发器（两个日期区 + 灰隔条 -），day 精度下结束端补到当天最后一刻
 h(DateTimePicker, {
   mode: 'range',
   precision: 'day',
@@ -204,8 +204,8 @@ const doc: DocTopic = {
       heading: { zh: 'DateTimePicker（日期时间选择）', en: 'DateTimePicker (date & time)' },
       prose: [
         {
-          zh: '一个控件覆盖全部诉求：`mode` 选 `single`（一个时刻）/ `range`（时间段——起止两个独立框，弹层里左右两块独立日历分别选）；`precision` 选 `day` / `hour` / `minute` / `second`。值为本地 ISO（`YYYY-MM-DDTHH:mm:ss.SSS`），毫秒恒三位。',
-          en: 'One control covers everything: `mode` picks `single` (one instant) or `range` (a span — two independent start/end boxes, with two independent calendars side by side in the popup); `precision` picks `day` / `hour` / `minute` / `second`. Values are local ISO (`YYYY-MM-DDTHH:mm:ss.SSS`), milliseconds always three digits.',
+          zh: '一个控件覆盖全部诉求：`mode` 选 `single`（一个时刻）/ `range`（时间段——触发器是**一个整条**：两个日期区 + 中间样式画的灰隔条，点整条展开；弹层里左右两块独立日历分别选）；`precision` 选 `day` / `hour` / `minute` / `second`。值为本地 ISO（`YYYY-MM-DDTHH:mm:ss.SSS`），毫秒恒三位。',
+          en: 'One control covers everything: `mode` picks `single` (one instant) or `range` (a span — the trigger is **one bar**: two date zones + a CSS-drawn grey separator, click anywhere to expand; two independent calendars side by side in the popup); `precision` picks `day` / `hour` / `minute` / `second`. Values are local ISO (`YYYY-MM-DDTHH:mm:ss.SSS`), milliseconds always three digits.',
         },
         {
           zh: '补全口径：起始端把未选单位归零（day ⇒ `00:00:00.000`），结束端拉满（day ⇒ `23:59:59.999`；hour ⇒ `H:59:59.999`；second 不动）。数据库只收到秒时 `23:59:59.999` 退化为「当天最后一秒」，语义不坏，无需特殊处理。',
@@ -224,7 +224,7 @@ const doc: DocTopic = {
         {
           id: 'ui-datetime-picker',
           rows: [
-            { name: 'mode', type: "'single' | 'range'", def: "'single'", desc: { zh: 'single = 一个时刻；range = 起止两个独立框', en: 'single = one instant; range = two independent start/end boxes' } },
+            { name: 'mode', type: "'single' | 'range'", def: "'single'", desc: { zh: 'single = 一个时刻；range = 一个整条触发器（两个日期区 + 灰隔条）', en: 'single = one instant; range = one-bar trigger (two date zones + grey separator)' } },
             { name: 'precision', type: "'day' | 'hour' | 'minute' | 'second'", def: "'day'", desc: { zh: '时间精度；day 不显示时分秒步进', en: 'Time precision; day hides the steppers' } },
             { name: 'value / defaultValue', type: 'single: string | null；range: [start, end] | null', def: '—', desc: { zh: '本地 ISO；给了 value 即受控', en: 'Local ISO; passing value makes it controlled' } },
             { name: 'onChange', type: '(v: string | [string, string] | null) => void', def: '—', desc: { zh: '「确定」时提交；「清除」发 null', en: 'Emitted on confirm; clear emits null' } },

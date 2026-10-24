@@ -135,9 +135,9 @@ h(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })
 
 > EN: DateTimePicker (date & time)
 
-一个控件覆盖全部诉求：`mode` 选 `single`（一个时刻）/ `range`（时间段——起止两个独立框，弹层里左右两块独立日历分别选）；`precision` 选 `day` / `hour` / `minute` / `second`。值为本地 ISO（`YYYY-MM-DDTHH:mm:ss.SSS`），毫秒恒三位。
+一个控件覆盖全部诉求：`mode` 选 `single`（一个时刻）/ `range`（时间段——触发器是**一个整条**：两个日期区 + 中间样式画的灰隔条，点整条展开；弹层里左右两块独立日历分别选）；`precision` 选 `day` / `hour` / `minute` / `second`。值为本地 ISO（`YYYY-MM-DDTHH:mm:ss.SSS`），毫秒恒三位。
 
-> EN: One control covers everything: `mode` picks `single` (one instant) or `range` (a span — two independent start/end boxes, with two independent calendars side by side in the popup); `precision` picks `day` / `hour` / `minute` / `second`. Values are local ISO (`YYYY-MM-DDTHH:mm:ss.SSS`), milliseconds always three digits.
+> EN: One control covers everything: `mode` picks `single` (one instant) or `range` (a span — the trigger is **one bar**: two date zones + a CSS-drawn grey separator, click anywhere to expand; two independent calendars side by side in the popup); `precision` picks `day` / `hour` / `minute` / `second`. Values are local ISO (`YYYY-MM-DDTHH:mm:ss.SSS`), milliseconds always three digits.
 
 补全口径：起始端把未选单位归零（day ⇒ `00:00:00.000`），结束端拉满（day ⇒ `23:59:59.999`；hour ⇒ `H:59:59.999`；second 不动）。数据库只收到秒时 `23:59:59.999` 退化为「当天最后一秒」，语义不坏，无需特殊处理。
 
@@ -153,7 +153,7 @@ h(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `mode` | `'single' \| 'range'` | 'single' | single = 一个时刻；range = 起止两个独立框 | single = one instant; range = two independent start/end boxes |
+| `mode` | `'single' \| 'range'` | 'single' | single = 一个时刻；range = 一个整条触发器（两个日期区 + 灰隔条） | single = one instant; range = one-bar trigger (two date zones + grey separator) |
 | `precision` | `'day' \| 'hour' \| 'minute' \| 'second'` | 'day' | 时间精度；day 不显示时分秒步进 | Time precision; day hides the steppers |
 | `value / defaultValue` | `single: string \| null；range: [start, end] \| null` | — | 本地 ISO；给了 value 即受控 | Local ISO; passing value makes it controlled |
 | `onChange` | `(v: string \| [string, string] \| null) => void` | — | 「确定」时提交；「清除」发 null | Emitted on confirm; clear emits null |
@@ -166,7 +166,7 @@ import { DateTimePicker } from 'dsh-plugin-core/ui'
 // 单个时刻，精确到分（起始端归零：14:30 ⇒ 14:30:00.000）
 h(DateTimePicker, { precision: 'minute', value: startAt, onChange: setStartAt })
 
-// 时间段：起止两个独立框、同时展开；day 精度下结束端补到当天最后一刻
+// 时间段：一个整条触发器（两个日期区 + 灰隔条 -），day 精度下结束端补到当天最后一刻
 h(DateTimePicker, {
   mode: 'range',
   precision: 'day',

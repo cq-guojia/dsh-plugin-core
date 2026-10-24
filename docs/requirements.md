@@ -49,6 +49,8 @@ dsh-plugin-core/
   MarqueeText / LiveText / Field（含错误提示）/ resizer / DateTime / TimeRange
 - 选择器：`Picker`（通用：单选/多选/上限/搜索/分组/空态/降级）、`ModelPicker`、
   `WorkspacePicker`（选工作区）；`FilePicker` 已删（2026-10-20 用户：文件选择框没有用）
+- 日期时间：`DateTimePicker`（2026-10-24 新增：单值 / 时间段 × 精度 day/hour/minute/second；
+  数据恒完整本地 ISO 到毫秒、**显示只到精度**；起始端 floor、结束端 ceil）
 - 「统一某类元素」的控件：`SectionHead` 等
 - 反馈件：`Modal` / `Loading` / `toast` / 空态
 - 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 浮动层 / 多份同名。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
@@ -149,6 +151,7 @@ dsh-plugin-core/
 | design | `createStyleKit({ id })` → `{ registerStyle, ensureStyles, applyStyle }` |
 | ui / ModelPicker | `variant: 'grouped' \| 'cascade'`（分组：一个下拉、完全独立 / 联动：供应商与模型两个下拉联动；2026-10-20 用户拍板两形态都要）；**两种形态 onChange 都发最终模型 value**；「默认模型」选项默认提供（`allowDefault:false` 关），选中发 `''`。默认读 connectHost 喂入的真实目录，`groups` 仅作覆盖。**禁止用数字或无意义名** |
 | ui / Picker | `mode: 'single' \| 'multiple'`、`max`（到上限已选项仍可反选）、`searchable`（搜索框开关）、`icon`（触发器前置 icon）、选项级 `icon`、`hint`（问号提示内置）、分组、空态、降级 |
+| ui / DateTimePicker | `mode: 'single' \| 'range'`、`precision: 'day' \| 'hour' \| 'minute' \| 'second'`（同时管弹层步进、显示截断与默认宽度）；single 传 `string \| null`、range 传 `[start, end] \| null`（本地 ISO 到毫秒）；草稿态「确定」才 onChange，没选日期不传数据；起端补零 / 止端补满（day ⇒ 止 `23:59:59.999`） |
 | explorer | `WorkspaceFilesFace` 由插件注入（`list` / `stat` / `read` 最小面），组件不抓宿主全局；对外 = 两命令式能力 `openFilePreview`（侧边栏预览）+ `pickWorkspaceFile`（Promise 选文件，回传工作区相对路径），共用同一 `FileBrowser` 面板（2026-10-20 拍板） |
 | explorer / WorkspacePicker | `WorkspacePicker({ mode, max, onChange, allowDefault, defaultLabel, … })` —— **无数据参数**：connectHost 接线后自动订官方 `workspaces` 服务快照，选中值为 `workspaceId`；「所有工作区」默认项默认提供、选中发 `''`（2026-10-20） |
 | session | `SessionPreview({ sessionId, source, variant })` —— `source` = 取数能力接口（会话预览内部有交互：传输文件等，光有静态消息流不够） |

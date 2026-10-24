@@ -1645,8 +1645,8 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "一个控件覆盖全部诉求：`mode` 选 `single`（一个时刻）/ `range`（时间段——起止两个独立框，弹层里左右两块独立日历分别选）；`precision` 选 `day` / `hour` / `minute` / `second`。值为本地 ISO（`YYYY-MM-DDTHH:mm:ss.SSS`），毫秒恒三位。",
-        "en": "One control covers everything: `mode` picks `single` (one instant) or `range` (a span — two independent start/end boxes, with two independent calendars side by side in the popup); `precision` picks `day` / `hour` / `minute` / `second`. Values are local ISO (`YYYY-MM-DDTHH:mm:ss.SSS`), milliseconds always three digits."
+        "zh": "一个控件覆盖全部诉求：`mode` 选 `single`（一个时刻）/ `range`（时间段——触发器是**一个整条**：两个日期区 + 中间样式画的灰隔条，点整条展开；弹层里左右两块独立日历分别选）；`precision` 选 `day` / `hour` / `minute` / `second`。值为本地 ISO（`YYYY-MM-DDTHH:mm:ss.SSS`），毫秒恒三位。",
+        "en": "One control covers everything: `mode` picks `single` (one instant) or `range` (a span — the trigger is **one bar**: two date zones + a CSS-drawn grey separator, click anywhere to expand; two independent calendars side by side in the popup); `precision` picks `day` / `hour` / `minute` / `second`. Values are local ISO (`YYYY-MM-DDTHH:mm:ss.SSS`), milliseconds always three digits."
       },
       {
         "zh": "补全口径：起始端把未选单位归零（day ⇒ `00:00:00.000`），结束端拉满（day ⇒ `23:59:59.999`；hour ⇒ `H:59:59.999`；second 不动）。数据库只收到秒时 `23:59:59.999` 退化为「当天最后一秒」，语义不坏，无需特殊处理。",
@@ -1670,8 +1670,8 @@ export const docData = {
             "type": "'single' | 'range'",
             "def": "'single'",
             "desc": {
-              "zh": "single = 一个时刻；range = 起止两个独立框",
-              "en": "single = one instant; range = two independent start/end boxes"
+              "zh": "single = 一个时刻；range = 一个整条触发器（两个日期区 + 灰隔条）",
+              "en": "single = one instant; range = one-bar trigger (two date zones + grey separator)"
             }
           },
           {
@@ -1726,7 +1726,7 @@ export const docData = {
       {
         "id": "ui-datetimepicker-example",
         "lang": "tsx",
-        "src": "import { DateTimePicker } from 'dsh-plugin-core/ui'\n\n// 单个时刻，精确到分（起始端归零：14:30 ⇒ 14:30:00.000）\nh(DateTimePicker, { precision: 'minute', value: startAt, onChange: setStartAt })\n\n// 时间段：起止两个独立框、同时展开；day 精度下结束端补到当天最后一刻\nh(DateTimePicker, {\n  mode: 'range',\n  precision: 'day',\n  value: range,\n  onChange: setRange, // → ['2026-10-24T00:00:00.000', '2026-10-24T23:59:59.999']\n})"
+        "src": "import { DateTimePicker } from 'dsh-plugin-core/ui'\n\n// 单个时刻，精确到分（起始端归零：14:30 ⇒ 14:30:00.000）\nh(DateTimePicker, { precision: 'minute', value: startAt, onChange: setStartAt })\n\n// 时间段：一个整条触发器（两个日期区 + 灰隔条 -），day 精度下结束端补到当天最后一刻\nh(DateTimePicker, {\n  mode: 'range',\n  precision: 'day',\n  value: range,\n  onChange: setRange, // → ['2026-10-24T00:00:00.000', '2026-10-24T23:59:59.999']\n})"
       }
     ]
   },
