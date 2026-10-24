@@ -974,8 +974,15 @@ const CODE_CHIP = `// tone 五档 + size 三档；尺寸行固定由大到小（
 <Chip>#npm</Chip>
 <Chip onClick={() => showToast('点了 chip')}>#可点</Chip>`
 
-const CODE_MARQUEE = `// 外层裁剪、内层滚动：放不下才滚，hover 一遍停在尾字，移开复位成省略号
-<MarqueeText text="这是一段很长的文字，放不下时 hover 会滚动展示全名" />`
+const CODE_MARQUEE = `// 定宽小容器（标签大小）：放不下才滚，hover 一遍停在尾字，移开复位成省略号
+<div style={{ maxWidth: 148 }}>
+  <MarqueeText text="一条很长的任务标题：定宽显示不下，hover 开始跑马灯" />
+</div>
+
+// 标签里滚动：Chip 无 style prop，用 MarqueeText 自己的 style 限宽（block 外层不限宽会被文字撑开）
+<Chip tone="business" size="md">
+  <MarqueeText style={{ maxWidth: 148 }} text="标签里滚动：一条很长的任务标题，hover 跑马灯" />
+</Chip>`
 
 const CODE_LIVE = `// 订阅内部节拍器，走时内容调用方渲染
 <LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`
@@ -1019,8 +1026,12 @@ export function ChipPage(): ReturnType<typeof h> {
     h(
       Example,
       { title: t('marqueeTitle'), hint: t('exMarqueeHint'), code: CODE_MARQUEE },
-      h('div', { style: { maxWidth: '200px' } },
-        h(MarqueeText, { text: '这是一段很长的文字，放不下时 hover 会滚动展示全名' })),
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-start' } },
+        h('div', { style: { maxWidth: '148px' } },
+          h(MarqueeText, { text: '一条很长的任务标题：定宽显示不下，hover 开始跑马灯' })),
+        h(Chip, { tone: 'business', size: 'md' },
+          h(MarqueeText, { style: { maxWidth: '148px' }, text: '标签里滚动：一条很长的任务标题，hover 跑马灯' })),
+      ),
     ),
     h(
       Example,

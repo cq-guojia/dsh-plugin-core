@@ -31,10 +31,12 @@ export function MarqueeText(props: {
   }, [])
   useLayoutEffect(() => {
     const outer = outerRef.current
-    if (outer === null) return
+    const inner = innerRef.current
+    if (outer === null || inner === null) return
     measure()
     const ro = new ResizeObserver(measure) // 抽屉拖宽变窄 / 字体就绪都会改 clientWidth ⇒ 重测
     ro.observe(outer)
+    ro.observe(inner) // webfont 就绪只改 inner.scrollWidth 不改 outer.clientWidth，不观察就漏测（官方 PathLabel 同款双观察）
     return () => { ro.disconnect() }
   }, [measure])
   useEffect(() => { measure() }, [props.text, measure])
