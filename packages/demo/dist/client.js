@@ -55090,6 +55090,8 @@ var DICT2 = {
     buildDemo: "demo \u7248\u672C",
     buildStamp: "\u672C\u6B21 build \u7F16\u7801",
     themeToggle: "\u660E\u6697\u5207\u6362",
+    themeLight: "\u4EAE",
+    themeDark: "\u6697",
     segDay: "\u65E5",
     segWeek: "\u5468",
     segMonth: "\u6708",
@@ -55307,6 +55309,8 @@ var DICT2 = {
     buildDemo: "demo version",
     buildStamp: "build stamp",
     themeToggle: "Light / dark",
+    themeLight: "Light",
+    themeDark: "Dark",
     segDay: "Day",
     segWeek: "Week",
     segMonth: "Month",
@@ -61406,7 +61410,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "261024-200722-797"]
+            [t3("buildStamp"), "261024-201421-277"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -61641,20 +61645,21 @@ function DemoPage() {
             gap: "8px"
           }
         },
-        // 明暗切换：一律用核心 Button（不手写按钮），状态符号挂 iconRight
-        (0, import_react69.createElement)(
-          Button,
-          {
-            variant: "outline",
-            size: "sm",
-            block: true,
-            onClick: toggle,
-            "aria-label": t3("themeToggle"),
-            iconRight: (0, import_react69.createElement)("span", { style: { fontSize: "13px" } }, dark ? "\u263E" : "\u2600")
+        // 明暗切换：核心 Segmented 滑动分段（左亮右暗，图标进 label），不手写按钮
+        (0, import_react69.createElement)(Segmented, {
+          items: [
+            { value: "light", label: `\u2600 ${t3("themeLight")}` },
+            { value: "dark", label: `\u263E ${t3("themeDark")}` }
+          ],
+          value: dark ? "dark" : "light",
+          onChange: (v) => {
+            if (v === "dark" !== dark) toggle();
           },
-          t3("themeToggle")
-        ),
-        // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行，编译码再一行
+          size: "sm",
+          block: true,
+          label: t3("themeToggle")
+        }),
+        // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行；编译码小一号、与上面隔开
         (0, import_react69.createElement)(
           "div",
           {
@@ -61671,7 +61676,7 @@ function DemoPage() {
           },
           (0, import_react69.createElement)("span", null, `core v${"0.2.14"}`),
           (0, import_react69.createElement)("span", null, `demo v${"0.2.14"}`),
-          (0, import_react69.createElement)("span", null, "261024-200722-797")
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261024-201421-277")
         )
       )
     ),

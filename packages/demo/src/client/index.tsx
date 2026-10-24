@@ -13,7 +13,7 @@ import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { Button, PanelDock, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { PanelDock, Segmented, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { connectFileServices } from '../host-files.js'
 import { connectRealSessions } from '../real-sessions.js'
 import { demoDock, demoPanels } from '../dock.js'
@@ -161,20 +161,19 @@ function DemoPage(): ReturnType<typeof h> {
             display: 'flex', flexDirection: 'column', gap: '8px',
           },
         },
-        // 明暗切换：一律用核心 Button（不手写按钮），状态符号挂 iconRight
-        h(
-          Button,
-          {
-            variant: 'outline',
-            size: 'sm',
-            block: true,
-            onClick: toggle,
-            'aria-label': t('themeToggle'),
-            iconRight: h('span', { style: { fontSize: '13px' } }, dark ? '☾' : '☀'),
-          },
-          t('themeToggle'),
-        ),
-        // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行，编译码再一行
+        // 明暗切换：核心 Segmented 滑动分段（左亮右暗，图标进 label），不手写按钮
+        h(Segmented<'light' | 'dark'>, {
+          items: [
+            { value: 'light', label: `☀ ${t('themeLight')}` },
+            { value: 'dark', label: `☾ ${t('themeDark')}` },
+          ],
+          value: dark ? 'dark' : 'light',
+          onChange: (v: 'light' | 'dark') => { if ((v === 'dark') !== dark) toggle() },
+          size: 'sm',
+          block: true,
+          label: t('themeToggle'),
+        }),
+        // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行；编译码小一号、与上面隔开
         h(
           'div',
           {
@@ -185,7 +184,7 @@ function DemoPage(): ReturnType<typeof h> {
           },
           h('span', null, `core v${__CORE_VERSION__}`),
           h('span', null, `demo v${__DEMO_VERSION__}`),
-          h('span', null, __BUILD_STAMP__),
+          h('span', { style: { marginTop: '4px', fontSize: '9px' } }, __BUILD_STAMP__),
         ),
       ),
     ),
