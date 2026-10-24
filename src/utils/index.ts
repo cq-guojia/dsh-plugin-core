@@ -2,6 +2,7 @@ export { getLocale, setLocale, t, type Locale, type Translate, type UtilMessageK
 export {
   formatClock,
   formatDateTime,
+  formatDateTimePrecision,
   formatDurationHms,
   formatRange,
   formatYmd,

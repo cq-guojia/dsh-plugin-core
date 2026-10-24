@@ -6,6 +6,7 @@ import {
   formatClock,
   formatCount,
   formatDateTime,
+  formatDateTimePrecision,
   formatDurationHms,
   formatRange,
   formatYmd,
@@ -27,6 +28,15 @@ test('pad2 / formatDateTime / formatYmd', () => {
   assert.equal(formatDateTime('2026-03-05T10:30:00', { seconds: true }), '2026-03-05 10:30:00')
   assert.equal(formatDateTime('not-a-date', { fallback: '—' }), '—')
   assert.equal(formatYmd('not-a-date'), '—')
+})
+
+test('formatDateTimePrecision：显示只到精度，day 不出现时分秒', () => {
+  assert.equal(formatDateTimePrecision('2026-03-05T10:30:45.123', 'day'), '2026-03-05')
+  assert.equal(formatDateTimePrecision('2026-03-05T10:30:45.123', 'hour'), '2026-03-05 10:30')
+  assert.equal(formatDateTimePrecision('2026-03-05T10:30:45.123', 'minute'), '2026-03-05 10:30')
+  assert.equal(formatDateTimePrecision('2026-03-05T10:30:45.123', 'second'), '2026-03-05 10:30:45')
+  assert.equal(formatDateTimePrecision('bad', 'day', { fallback: '—' }), '—')
+  assert.equal(formatDateTimePrecision('bad', 'day'), 'bad')
 })
 
 test('formatClock / formatDurationHms', () => {

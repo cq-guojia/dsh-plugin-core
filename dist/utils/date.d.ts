@@ -9,6 +9,14 @@ export declare function formatDateTime(iso: string, opts?: {
     seconds?: boolean;
     fallback?: string;
 }): string;
+/**
+ * 按精度显示：day ⇒ `YYYY-MM-DD`；hour / minute ⇒ `YYYY-MM-DD HH:mm`；second ⇒ 补 `:ss`。
+ * 「数据补全到毫秒、显示只到精度」——不该显示的时分秒不出现（DateTimePicker 的显示口径）。
+ * 解析失败 ⇒ `opts.fallback`，缺省返回原串。
+ */
+export declare function formatDateTimePrecision(iso: string, precision: 'day' | 'hour' | 'minute' | 'second', opts?: {
+    fallback?: string;
+}): string;
 /** `YYYY-MM-DD`（带年份，跨年也能看懂）。解析失败 ⇒ `opts.fallback`，缺省 `—`。 */
 export declare function formatYmd(iso: string, opts?: {
     fallback?: string;

@@ -4,7 +4,7 @@ import { ensureControls } from './css.js';
 import { Button } from './Button.js';
 import { FieldHint } from './FieldHint.js';
 import { getLocale, t } from '../utils/i18n.js';
-import { formatDateTime } from '../utils/date.js';
+import { formatDateTimePrecision } from '../utils/date.js';
 import { buildMonthCells, ceilToPrecision, clampUnit, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
 const UNIT_LABEL = {
     hour: 'dtHour',
@@ -32,8 +32,9 @@ function draftOf(value) {
 function dayIso(d) {
     return `${String(d.year).padStart(4, '0')}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
 }
+/** 显示一律按精度截断：day 只出日期，hour/minute 到分，second 才出秒（数据侧仍是完整 ISO）。 */
 function fmtParts(p, precision) {
-    return formatDateTime(formatDateTimeIso(p), { seconds: precision === 'second' });
+    return formatDateTimePrecision(formatDateTimeIso(p), precision);
 }
 /** 内联 SVG 图标（ui 零官方依赖，与 Picker 的 caret 同口径自绘）。 */
 function icon(paths, size) {
@@ -335,7 +336,7 @@ export function DateTimePicker(props) {
             className: `dshpc-dt__end${active === side ? ' dshpc-dt__end--active' : ''}`,
             'aria-pressed': active === side,
             onClick: () => setActive(side),
-        }, h('span', { className: 'dshpc-dt__end-label' }, label), h('span', { className: `dshpc-dt__end-value${p === null ? ' dshpc-dt__end-value--empty' : ''}` }, p === null ? placeholder : fmtParts(p, precision)));
+        }, h('span', { className: 'dshpc-dt__end-label' }, `${label}：`), h('span', { className: `dshpc-dt__end-value${p === null ? ' dshpc-dt__end-value--empty' : ''}` }, p === null ? placeholder : fmtParts(p, precision)));
     };
     /** 一块日历面板：导航 + 月历 + 时:分[:秒] 步进（该端自己的，互不影响）。 */
     const panel = (side) => {

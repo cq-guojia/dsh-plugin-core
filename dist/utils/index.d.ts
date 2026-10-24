@@ -1,5 +1,5 @@
 export { getLocale, setLocale, t, type Locale, type Translate, type UtilMessageKey } from './i18n.js';
-export { formatClock, formatDateTime, formatDurationHms, formatRange, formatYmd, overlaps, pad2, relativeFuture, relativePast, sameCalendarDay, } from './date.js';
+export { formatClock, formatDateTime, formatDateTimePrecision, formatDurationHms, formatRange, formatYmd, overlaps, pad2, relativeFuture, relativePast, sameCalendarDay, } from './date.js';
 export { baseNameOf, safeTrim, truncateBytes } from './string.js';
 export { formatBytes, formatCount } from './number.js';
 export { HttpError, request, requestJson, type RequestOptions } from './http.js';

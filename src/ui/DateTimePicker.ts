@@ -18,7 +18,7 @@ import { ensureControls } from './css.js'
 import { Button } from './Button.js'
 import { FieldHint } from './FieldHint.js'
 import { getLocale, t, type Translate } from '../utils/i18n.js'
-import { formatDateTime } from '../utils/date.js'
+import { formatDateTimePrecision } from '../utils/date.js'
 import {
   buildMonthCells,
   ceilToPrecision,
@@ -115,8 +115,9 @@ function dayIso(d: { year: number; month: number; day: number }): string {
   return `${String(d.year).padStart(4, '0')}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`
 }
 
+/** 显示一律按精度截断：day 只出日期，hour/minute 到分，second 才出秒（数据侧仍是完整 ISO）。 */
 function fmtParts(p: DateTimeParts, precision: DateTimePrecision): string {
-  return formatDateTime(formatDateTimeIso(p), { seconds: precision === 'second' })
+  return formatDateTimePrecision(formatDateTimeIso(p), precision)
 }
 
 /** 内联 SVG 图标（ui 零官方依赖，与 Picker 的 caret 同口径自绘）。 */
@@ -465,7 +466,7 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
         'aria-pressed': active === side,
         onClick: () => setActive(side),
       },
-      h('span', { className: 'dshpc-dt__end-label' }, label),
+      h('span', { className: 'dshpc-dt__end-label' }, `${label}：`),
       h(
         'span',
         { className: `dshpc-dt__end-value${p === null ? ' dshpc-dt__end-value--empty' : ''}` },

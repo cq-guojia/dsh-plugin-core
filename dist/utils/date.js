@@ -18,6 +18,22 @@ export function formatDateTime(iso, opts) {
     const base = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
     return opts?.seconds === true ? `${base}:${pad2(d.getSeconds())}` : base;
 }
+/**
+ * 按精度显示：day ⇒ `YYYY-MM-DD`；hour / minute ⇒ `YYYY-MM-DD HH:mm`；second ⇒ 补 `:ss`。
+ * 「数据补全到毫秒、显示只到精度」——不该显示的时分秒不出现（DateTimePicker 的显示口径）。
+ * 解析失败 ⇒ `opts.fallback`，缺省返回原串。
+ */
+export function formatDateTimePrecision(iso, precision, opts) {
+    const ms = Date.parse(iso);
+    if (Number.isNaN(ms))
+        return opts?.fallback ?? iso;
+    const d = new Date(ms);
+    const day = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+    if (precision === 'day')
+        return day;
+    const clock = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    return precision === 'second' ? `${day} ${clock}:${pad2(d.getSeconds())}` : `${day} ${clock}`;
+}
 /** `YYYY-MM-DD`（带年份，跨年也能看懂）。解析失败 ⇒ `opts.fallback`，缺省 `—`。 */
 export function formatYmd(iso, opts) {
     const ms = Date.parse(iso);
