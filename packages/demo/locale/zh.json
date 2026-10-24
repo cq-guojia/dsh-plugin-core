@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "蜗牛组件库(dsh-plugin-core-demo)",
+    "description": "DSH 插件的共享 UI 底座 + 组件预览：样式 token、通用控件、工作区浏览与通知统一维护，装进宿主即可在真实环境预览全部组件。"
+  }
+}

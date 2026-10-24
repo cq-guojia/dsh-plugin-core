@@ -223,12 +223,23 @@ function OpenPreviewCard(props: { open?: () => void }): ReturnType<typeof h> {
   )
 }
 
-/** 侧栏图标（纯字符，避免引入图标依赖）。 */
-function PanelIcon(): ReturnType<typeof h> {
+/**
+ * 侧栏图标：用户 2026-10-24 给的「子表控件」SVG 原样移植（5 个 path 一字未改，
+ * 源文件存 assets/icon-components.svg 供 package.json icon 字段用）。
+ * 「黑白反色」= 两档色都走 currentColor（辅档 38% 透明度）——亮主题显黑、暗主题显白，
+ * 且跟随侧栏行的选中态（兄弟项目 tdt TaskPanelIcon 同款口径）。
+ * size 由侧栏传入：宽栏 16 / 折叠栏 18。
+ */
+function PanelIcon(props: { size?: number }): ReturnType<typeof h> {
+  const size = props.size ?? 18
   return h(
-    'span',
-    { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px' } },
-    '◧',
+    'svg',
+    { width: size, height: size, viewBox: '0 0 1024 1024', 'aria-hidden': true },
+    h('path', { d: 'M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z', fill: 'currentColor' }),
+    h('path', { d: 'M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z', fill: 'currentColor', opacity: 0.38 }),
+    h('path', { d: 'M640 268.8h192v96h-192z', fill: 'currentColor' }),
+    h('path', { d: 'M832 563.2h-192V460.8h192v102.4z', fill: 'currentColor', opacity: 0.38 }),
+    h('path', { d: 'M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z', fill: 'currentColor' }),
   )
 }
 

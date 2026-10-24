@@ -491,8 +491,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docApiDesc: '说明',
 
 
-    pluginTitle: '组件预览',
-    pluginCardDesc: '打开 dsh-plugin-core 的控件与业务组件展示页',
+    pluginTitle: '蜗牛组件库',
+    pluginCardDesc: '打开蜗牛组件库的控件与业务组件展示页',
     pluginCardOpen: '打开 ›',
   },
   en: {
@@ -757,8 +757,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docApiDesc: 'Description',
 
 
-    pluginTitle: 'Component preview',
-    pluginCardDesc: 'Open the showcase of dsh-plugin-core controls and business components',
+    pluginTitle: 'Snail Component Library',
+    pluginCardDesc: 'Open the showcase of Snail Component Library controls and business components',
     pluginCardOpen: 'Open ›',
   },
 }

@@ -1,7 +1,8 @@
 {
   "name": "dsh-plugin-core-demo",
   "version": "0.2.14",
-  "description": "dsh-plugin-core 的组件预览插件：装进 DSH 宿主后，在真实宿主环境里预览控件与业务组件",
+  "description": "The shared UI foundation for DSH plugins, with a live component preview: design tokens, common controls, workspace browsing and notifications maintained in one place — install it to preview every component in a real host.",
+  "icon": "./assets/icon-components.svg",
   "keywords": ["deepseek", "harness", "dsh", "dsh-plugin", "dsh-plugin-core"],
   "homepage": "https://github.com/cq-guojia/dsh-plugin-core/tree/main/packages/demo",
   "repository": {
@@ -16,6 +17,7 @@
   "exports": {
     ".": "./dist/index.js",
     "./client": "./dist/client.js",
+    "./locale/*.json": "./locale/*.json",
     "./package.json": "./package.json"
   },
   "dsh": {
@@ -37,7 +39,7 @@
       ]
     }
   },
-  "files": ["dist", "cordis.patch.yml"],
+  "files": ["dist", "cordis.patch.yml", "assets", "locale"],
   "scripts": {
     "build": "node build.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"

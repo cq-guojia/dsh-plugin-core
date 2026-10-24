@@ -55107,8 +55107,8 @@ var DICT2 = {
     docApiType: "\u7C7B\u578B",
     docApiDefault: "\u9ED8\u8BA4\u503C",
     docApiDesc: "\u8BF4\u660E",
-    pluginTitle: "\u7EC4\u4EF6\u9884\u89C8",
-    pluginCardDesc: "\u6253\u5F00 dsh-plugin-core \u7684\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u5C55\u793A\u9875",
+    pluginTitle: "\u8717\u725B\u7EC4\u4EF6\u5E93",
+    pluginCardDesc: "\u6253\u5F00\u8717\u725B\u7EC4\u4EF6\u5E93\u7684\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u5C55\u793A\u9875",
     pluginCardOpen: "\u6253\u5F00 \u203A"
   },
   en: {
@@ -55324,8 +55324,8 @@ var DICT2 = {
     docApiType: "Type",
     docApiDefault: "Default",
     docApiDesc: "Description",
-    pluginTitle: "Component preview",
-    pluginCardDesc: "Open the showcase of dsh-plugin-core controls and business components",
+    pluginTitle: "Snail Component Library",
+    pluginCardDesc: "Open the showcase of Snail Component Library controls and business components",
     pluginCardOpen: "Open \u203A"
   }
 };
@@ -61398,7 +61398,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "261024-212524-667"]
+            [t3("buildStamp"), "261024-234246-993"]
           ].map(
             ([label, value]) => (0, import_react66.createElement)(
               "tr",
@@ -61664,7 +61664,7 @@ function DemoPage() {
           },
           (0, import_react68.createElement)("span", null, `core v${"0.2.14"}`),
           (0, import_react68.createElement)("span", null, `demo v${"0.2.14"}`),
-          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261024-212524-667")
+          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261024-234246-993")
         )
       )
     ),
@@ -61710,11 +61710,16 @@ function OpenPreviewCard(props) {
     (0, import_react68.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t3("pluginCardOpen"))
   );
 }
-function PanelIcon() {
+function PanelIcon(props) {
+  const size4 = props.size ?? 18;
   return (0, import_react68.createElement)(
-    "span",
-    { style: { display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "13px" } },
-    "\u25E7"
+    "svg",
+    { width: size4, height: size4, viewBox: "0 0 1024 1024", "aria-hidden": true },
+    (0, import_react68.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
+    (0, import_react68.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react68.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
+    (0, import_react68.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react68.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
   );
 }
 function apply(ctx) {
