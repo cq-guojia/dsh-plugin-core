@@ -251,6 +251,21 @@ export type UtilMessageKey =
   | 'deliverCollapseAria'
   | 'composerPlaceholder'
   | 'composerHint'
+  // ── 日期时间选择器（DateTimePicker）──
+  | 'dtPlaceholder'
+  | 'dtStart'
+  | 'dtEnd'
+  | 'dtToday'
+  | 'dtNow'
+  | 'dtClear'
+  | 'dtHour'
+  | 'dtMinute'
+  | 'dtSecond'
+  | 'dtPrevYear'
+  | 'dtPrevMonth'
+  | 'dtNextMonth'
+  | 'dtNextYear'
+  | 'dtInvalidRange'
 
 /** 文案函数：`vars` 用于填 `{n}` 这类占位。 */
 export type Translate = (key: UtilMessageKey, vars?: Record<string, number | string>) => string
@@ -498,6 +513,20 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverCollapseAria: '收起交付文件列表',
     composerPlaceholder: '继续说点什么…',
     composerHint: '点「确定」后基于本会话开分支，并在官方会话中开始这轮对话',
+    dtPlaceholder: '请选择日期时间',
+    dtStart: '开始',
+    dtEnd: '结束',
+    dtToday: '今天',
+    dtNow: '现在',
+    dtClear: '清除',
+    dtHour: '时',
+    dtMinute: '分',
+    dtSecond: '秒',
+    dtPrevYear: '上一年',
+    dtPrevMonth: '上一月',
+    dtNextMonth: '下一月',
+    dtNextYear: '下一年',
+    dtInvalidRange: '结束时间早于开始时间',
   },
   en: {
     sessionLoading: 'Loading session…',
@@ -740,6 +769,20 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverCollapseAria: 'Collapse the delivered-files list',
     composerPlaceholder: 'Say something to continue…',
     composerHint: 'Confirm forks a branch from this session and starts this turn in the official chat',
+    dtPlaceholder: 'Select date & time',
+    dtStart: 'Start',
+    dtEnd: 'End',
+    dtToday: 'Today',
+    dtNow: 'Now',
+    dtClear: 'Clear',
+    dtHour: 'h',
+    dtMinute: 'm',
+    dtSecond: 's',
+    dtPrevYear: 'Previous year',
+    dtPrevMonth: 'Previous month',
+    dtNextMonth: 'Next month',
+    dtNextYear: 'Next year',
+    dtInvalidRange: 'End is before start',
   },
 }
 

@@ -1,5 +1,5 @@
 import { createStyleKit } from '../design/index.js';
-import { BACK_TO_TOP_CSS, BUTTON_CSS, FIELD_CSS, HINT_CSS, LOADING_CSS, SEGMENTED_CSS, } from './controls-css.js';
+import { BACK_TO_TOP_CSS, BUTTON_CSS, DATETIME_CSS, FIELD_CSS, HINT_CSS, LOADING_CSS, SEGMENTED_CSS, } from './controls-css.js';
 import { MARQUEE_CSS } from './marquee-css.js';
 import { PICKER_CSS } from './picker-css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
@@ -22,6 +22,7 @@ export const CONTROLS_CSS = [
     BACK_TO_TOP_CSS,
     HINT_CSS,
     PICKER_CSS,
+    DATETIME_CSS,
     FEEDBACK_CSS,
     EXPLORER_CSS,
     SESSION_CSS,

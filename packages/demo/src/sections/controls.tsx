@@ -14,6 +14,7 @@ import {
   Modal,
   AlertModal,
   ConfirmModal,
+  DateTimePicker,
   ModelPicker,
   NumberInput,
   Picker,
@@ -309,7 +310,7 @@ const CODE_INPUT_FAMILY = `const [text, setText] = useState('')
 const [num, setNum] = useState(3)
 
 // hint 参数版：问号提示由组件自己挂，不用手动拼 FieldHint
-<Input value={text} onChange={setText} placeholder="选择日期" hint="选择任务的开始时间" />
+<Input value={text} onChange={setText} placeholder="请输入用户名" hint="用户名只能包含字母、数字与连字符。" />
 // 校验失败态：描红
 <Input value={text} onChange={setText} error placeholder="校验失败态" />
 // 数字框：超出 min / max 自动收回到边界
@@ -390,9 +391,9 @@ export function InputPage(): ReturnType<typeof h> {
         h(
           'div',
           { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
-          h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '开始时间'),
+          h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '用户名'),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
-          h(Input, { value: text, onChange: setText, placeholder: '选择日期', hint: t('fieldHintDate') }),
+          h(Input, { value: text, onChange: setText, placeholder: '请输入用户名', hint: '用户名只能包含字母、数字与连字符。' }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
@@ -1553,3 +1554,67 @@ export function LayoutPage(): ReturnType<typeof h> {
 }
 
 
+
+// ── 日期时间选择 ──────────────────────────────────────────────────────────
+
+const CODE_DATETIME = `// 单个时刻：precision 控制精度（day / hour / minute / second）
+h(DateTimePicker, { precision: 'minute', value: at, onChange: setAt })
+
+// 时间段：起止两个独立框、同时展开；day 精度下结束端补到 23:59:59.999
+h(DateTimePicker, { mode: 'range', precision: 'day', value: range, onChange: setRange })`
+
+export function DateTimePage(): ReturnType<typeof h> {
+  const [singleDay, setSingleDay] = useState<string | null>(null)
+  const [singleMinute, setSingleMinute] = useState<string | null>(null)
+  const [rangeDay, setRangeDay] = useState<[string, string] | null>(null)
+  const [rangeSecond, setRangeSecond] = useState<[string, string] | null>(null)
+
+  return h(
+    'div',
+    null,
+    h(DocProse, { id: 'datetime-picker' }),
+    h(
+      Example,
+      { title: 'DateTimePicker', hint: t('dateTimePickerHint'), code: CODE_DATETIME },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start' } },
+        h(DateTimePicker, {
+          precision: 'day',
+          value: singleDay,
+          onChange: (v) => setSingleDay(v as string | null),
+          placeholder: '单个 · 只选日期',
+        }),
+        h(DateTimePicker, {
+          precision: 'minute',
+          value: singleMinute,
+          onChange: (v) => setSingleMinute(v as string | null),
+          placeholder: '单个 · 精确到分',
+        }),
+        h(DateTimePicker, {
+          mode: 'range',
+          precision: 'day',
+          value: rangeDay,
+          onChange: (v) => setRangeDay(v as [string, string] | null),
+          placeholder: '时间段 · 只选日期',
+        }),
+        h(DateTimePicker, {
+          mode: 'range',
+          precision: 'second',
+          value: rangeSecond,
+          onChange: (v) => setRangeSecond(v as [string, string] | null),
+          placeholder: '时间段 · 精确到秒',
+        }),
+        h(DateTimePicker, {
+          precision: 'minute',
+          value: singleMinute,
+          onChange: (v) => setSingleMinute(v as string | null),
+          disabled: true,
+          placeholder: '禁用（值与「精确到分」联动）',
+        }),
+      ),
+    ),
+    h(DocCode, { id: 'datetime-picker' }),
+    h(DocApi, { id: 'datetime-picker' }),
+  )
+}

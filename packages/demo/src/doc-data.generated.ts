@@ -1637,6 +1637,95 @@ export const docData = {
       }
     ]
   },
+  "datetime-picker": {
+    "id": "datetime-picker",
+    "heading": {
+      "zh": "DateTimePicker（日期时间选择）",
+      "en": "DateTimePicker (date & time)"
+    },
+    "prose": [
+      {
+        "zh": "一个控件覆盖全部诉求：`mode` 选 `single`（一个时刻）/ `range`（时间段——起止两个独立框，弹层里左右两块独立日历分别选）；`precision` 选 `day` / `hour` / `minute` / `second`。值为本地 ISO（`YYYY-MM-DDTHH:mm:ss.SSS`），毫秒恒三位。",
+        "en": "One control covers everything: `mode` picks `single` (one instant) or `range` (a span — two independent start/end boxes, with two independent calendars side by side in the popup); `precision` picks `day` / `hour` / `minute` / `second`. Values are local ISO (`YYYY-MM-DDTHH:mm:ss.SSS`), milliseconds always three digits."
+      },
+      {
+        "zh": "补全口径：起始端把未选单位归零（day ⇒ `00:00:00.000`），结束端拉满（day ⇒ `23:59:59.999`；hour ⇒ `H:59:59.999`；second 不动）。数据库只收到秒时 `23:59:59.999` 退化为「当天最后一秒」，语义不坏，无需特殊处理。",
+        "en": "Fill rules: the start floors unselected units (day ⇒ `00:00:00.000`), the end ceils them (day ⇒ `23:59:59.999`; hour ⇒ `H:59:59.999`; second stays exact). If a DB stores seconds only, `23:59:59.999` degrades to \"last second of the day\" — semantics intact, nothing special to do."
+      },
+      {
+        "zh": "弹层与 Picker 同机制（floating-ui 浮层、贴边翻转、点外关闭、无遮罩）：两个端框 + 两块独立月历（左开始、右结束，各选各的，不标跨度）+ 每端自己的时/分/秒步进（▲▼、直接键入、↑↓ 键——不用逐格点 60 分钟；**时间不强制先选日期**，「确定」时没选日期就不传数据）。快捷键：day 精度叫「今天」（只置日期），带时分秒的叫「现在」（日期 + 时间一起置，之后可再改）。草稿态，「确定」才 onChange；Esc / 点外 = 丢弃。日历键盘：方向键移动、PageUp/Down 换月、Home/End 月内首尾、Enter 选中。结束早于开始时「确定」置灰并提示。",
+        "en": "The popup shares Picker’s mechanics (floating-ui layer, edge flip, outside-click close, no mask): two end boxes + two independent calendars (left = start, right = end, each picks its own, no span marking) + per-end hour/minute/second steppers (▲▼, direct typing, ↑↓ keys — no clicking through 60 minutes; **time never requires picking a date first** — on confirm, no date means no data emitted). Quick button: \"Today\" at day precision (date only), \"Now\" when hours/minutes/seconds are on (sets date + time together, editable afterwards). Draft state; onChange only on confirm; Esc / outside = discard. Calendar keys: arrows move, PageUp/Down change month, Home/End jump to month bounds, Enter selects. When end precedes start, confirm greys out with a hint."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-datetime-picker",
+        "rows": [
+          {
+            "name": "mode",
+            "type": "'single' | 'range'",
+            "def": "'single'",
+            "desc": {
+              "zh": "single = 一个时刻；range = 起止两个独立框",
+              "en": "single = one instant; range = two independent start/end boxes"
+            }
+          },
+          {
+            "name": "precision",
+            "type": "'day' | 'hour' | 'minute' | 'second'",
+            "def": "'day'",
+            "desc": {
+              "zh": "时间精度；day 不显示时分秒步进",
+              "en": "Time precision; day hides the steppers"
+            }
+          },
+          {
+            "name": "value / defaultValue",
+            "type": "single: string | null；range: [start, end] | null",
+            "def": "—",
+            "desc": {
+              "zh": "本地 ISO；给了 value 即受控",
+              "en": "Local ISO; passing value makes it controlled"
+            }
+          },
+          {
+            "name": "onChange",
+            "type": "(v: string | [string, string] | null) => void",
+            "def": "—",
+            "desc": {
+              "zh": "「确定」时提交；「清除」发 null",
+              "en": "Emitted on confirm; clear emits null"
+            }
+          },
+          {
+            "name": "disabled / size / placeholder",
+            "type": "boolean / 'sm' | 'md' | 'lg' / string",
+            "def": "false / 'md' / 内置「请选择日期时间」",
+            "desc": {
+              "zh": "与 Picker 同名参数对齐",
+              "en": "Aligned with Picker’s same-named params"
+            }
+          },
+          {
+            "name": "hint / className / ariaLabel / translate",
+            "type": "string / string / string / Translate",
+            "def": "—",
+            "desc": {
+              "zh": "同 Picker 同名参数",
+              "en": "Same-named params as Picker"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-datetimepicker-example",
+        "lang": "tsx",
+        "src": "import { DateTimePicker } from 'dsh-plugin-core/ui'\n\n// 单个时刻，精确到分（起始端归零：14:30 ⇒ 14:30:00.000）\nh(DateTimePicker, { precision: 'minute', value: startAt, onChange: setStartAt })\n\n// 时间段：起止两个独立框、同时展开；day 精度下结束端补到当天最后一刻\nh(DateTimePicker, {\n  mode: 'range',\n  precision: 'day',\n  value: range,\n  onChange: setRange, // → ['2026-10-24T00:00:00.000', '2026-10-24T23:59:59.999']\n})"
+      }
+    ]
+  },
   "tooltip": {
     "id": "tooltip",
     "heading": {

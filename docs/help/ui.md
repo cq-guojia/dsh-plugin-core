@@ -4,7 +4,7 @@
 
 > EN: ui — base controls
 
-导出：Button、IconButton、Segmented、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、Card、StripCard、Chip、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loading、RunningBlocks、EmptyState、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
+导出：Button、IconButton、Segmented、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loading、RunningBlocks、EmptyState、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
 
 ## 概览
 
@@ -129,6 +129,46 @@ import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'
 
 // apply(ctx) 里：connectHost(ctx)
 h(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })
+```
+
+## DateTimePicker（日期时间选择）
+
+> EN: DateTimePicker (date & time)
+
+一个控件覆盖全部诉求：`mode` 选 `single`（一个时刻）/ `range`（时间段——起止两个独立框，弹层里左右两块独立日历分别选）；`precision` 选 `day` / `hour` / `minute` / `second`。值为本地 ISO（`YYYY-MM-DDTHH:mm:ss.SSS`），毫秒恒三位。
+
+> EN: One control covers everything: `mode` picks `single` (one instant) or `range` (a span — two independent start/end boxes, with two independent calendars side by side in the popup); `precision` picks `day` / `hour` / `minute` / `second`. Values are local ISO (`YYYY-MM-DDTHH:mm:ss.SSS`), milliseconds always three digits.
+
+补全口径：起始端把未选单位归零（day ⇒ `00:00:00.000`），结束端拉满（day ⇒ `23:59:59.999`；hour ⇒ `H:59:59.999`；second 不动）。数据库只收到秒时 `23:59:59.999` 退化为「当天最后一秒」，语义不坏，无需特殊处理。
+
+> EN: Fill rules: the start floors unselected units (day ⇒ `00:00:00.000`), the end ceils them (day ⇒ `23:59:59.999`; hour ⇒ `H:59:59.999`; second stays exact). If a DB stores seconds only, `23:59:59.999` degrades to "last second of the day" — semantics intact, nothing special to do.
+
+弹层与 Picker 同机制（floating-ui 浮层、贴边翻转、点外关闭、无遮罩）：两个端框 + 两块独立月历（左开始、右结束，各选各的，不标跨度）+ 每端自己的时/分/秒步进（▲▼、直接键入、↑↓ 键——不用逐格点 60 分钟；**时间不强制先选日期**，「确定」时没选日期就不传数据）。快捷键：day 精度叫「今天」（只置日期），带时分秒的叫「现在」（日期 + 时间一起置，之后可再改）。草稿态，「确定」才 onChange；Esc / 点外 = 丢弃。日历键盘：方向键移动、PageUp/Down 换月、Home/End 月内首尾、Enter 选中。结束早于开始时「确定」置灰并提示。
+
+> EN: The popup shares Picker’s mechanics (floating-ui layer, edge flip, outside-click close, no mask): two end boxes + two independent calendars (left = start, right = end, each picks its own, no span marking) + per-end hour/minute/second steppers (▲▼, direct typing, ↑↓ keys — no clicking through 60 minutes; **time never requires picking a date first** — on confirm, no date means no data emitted). Quick button: "Today" at day precision (date only), "Now" when hours/minutes/seconds are on (sets date + time together, editable afterwards). Draft state; onChange only on confirm; Esc / outside = discard. Calendar keys: arrows move, PageUp/Down change month, Home/End jump to month bounds, Enter selects. When end precedes start, confirm greys out with a hint.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `mode` | `'single' \| 'range'` | 'single' | single = 一个时刻；range = 起止两个独立框 | single = one instant; range = two independent start/end boxes |
+| `precision` | `'day' \| 'hour' \| 'minute' \| 'second'` | 'day' | 时间精度；day 不显示时分秒步进 | Time precision; day hides the steppers |
+| `value / defaultValue` | `single: string \| null；range: [start, end] \| null` | — | 本地 ISO；给了 value 即受控 | Local ISO; passing value makes it controlled |
+| `onChange` | `(v: string \| [string, string] \| null) => void` | — | 「确定」时提交；「清除」发 null | Emitted on confirm; clear emits null |
+| `disabled / size / placeholder` | `boolean / 'sm' \| 'md' \| 'lg' / string` | false / 'md' / 内置「请选择日期时间」 | 与 Picker 同名参数对齐 | Aligned with Picker’s same-named params |
+| `hint / className / ariaLabel / translate` | `string / string / string / Translate` | — | 同 Picker 同名参数 | Same-named params as Picker |
+
+```tsx id="ui-datetimepicker-example"
+import { DateTimePicker } from 'dsh-plugin-core/ui'
+
+// 单个时刻，精确到分（起始端归零：14:30 ⇒ 14:30:00.000）
+h(DateTimePicker, { precision: 'minute', value: startAt, onChange: setStartAt })
+
+// 时间段：起止两个独立框、同时展开；day 精度下结束端补到当天最后一刻
+h(DateTimePicker, {
+  mode: 'range',
+  precision: 'day',
+  value: range,
+  onChange: setRange, // → ['2026-10-24T00:00:00.000', '2026-10-24T23:59:59.999']
+})
 ```
 
 ## FieldHint（问号提示）

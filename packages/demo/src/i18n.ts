@@ -22,6 +22,8 @@ export type DemoMessageKey =
   | 'secButton'
   | 'secInput'
   | 'secPicker'
+  | 'secDateTime'
+  | 'dateTimePickerHint'
   | 'secTooltip'
   | 'secCard'
   | 'secChip'
@@ -66,7 +68,6 @@ export type DemoMessageKey =
   | 'btnHintTitle'
   | 'btnHintHint'
   | 'inputHint'
-  | 'fieldHintDate'
   | 'switchTip'
   | 'checkboxHint'
   | 'pickerHint'
@@ -246,6 +247,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secButton: '按钮',
     secInput: '录入',
     secPicker: '选择器',
+    secDateTime: '日期时间',
     secTooltip: '提示',
     secCard: '卡片与容器',
     secChip: '标签 · 文本 · 状态',
@@ -350,11 +352,11 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     demoInputFamily: 'Input 家族',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；传 hint 参数即自动在行尾挂标准问号提示（FieldHint 本体仍可单独用）',
-    fieldHintDate: '任务自该日起开始执行。可提前创建任务，至该日自动开跑；「每 N 周」亦自该日起算首周。',
     switchTip: '官方 Switch（启用语义，不是勾选）+ Checkbox + Segmented',
     checkboxHint: '外观对齐真实插件：灰底 inset（无外描边）；带描边的 default 仅供特殊场合（最右，可点着玩）；星期方块是多选。文案随语言切换',
 
     pickerHint: '单选 / 多选 / 上限 / 搜索（searchable 开关）/ 分组 / 空态 / 降级；触发器与选项都支持前置 icon；文字默认居左（align="center" 才居中）；多选到上限后已选项仍可点选取消',
+    dateTimePickerHint: '一个控件三种用法：single / range × precision（day / hour / minute / second）；浮层无遮罩、与 Picker 同机制；range 弹层是左右两块独立日历（左开始、右结束，各选各的）；时分秒走步进（▲▼ / 键入 / ↑↓），不用逐格点 60 分钟，也不强制先选日期；快捷键 day 精度叫「今天」、带时分秒叫「现在」；草稿态，「确定」才提交；day 精度下结束端自动补 23:59:59.999（数据库只收到秒时优雅退化）',
     modelPickerHint: 'grouped 分组（一个下拉、厂商做组头、完全独立）/ cascade 联动（供应商、模型两个下拉联动）——两种形态 onChange 都发最终模型 value；「默认模型」选项默认提供（选中发空串，关闭传 allowDefault: false）；目录自动来自宿主',
     workspacePickerHint: '工作区列表自动来自宿主快照（connectHost 接线，follow 流实时更新），选中值为 workspaceId',
 
@@ -509,6 +511,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secButton: 'Button',
     secInput: 'Inputs',
     secPicker: 'Pickers',
+    secDateTime: 'Date & time',
     secTooltip: 'Tooltip',
     secCard: 'Cards & containers',
     secChip: 'Tags · text · states',
@@ -614,11 +617,11 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     demoInputFamily: 'Input family',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone)',
-    fieldHintDate: 'The task runs starting from this date. You can create it ahead of time and it auto-starts on that day; "every N weeks" also counts its first week from this date.',
     switchTip: 'Official Switch (enable semantics, not a tick) + Checkbox + Segmented',
     checkboxHint: 'Looks match the real plugin: grey inset background (no outer border); the bordered default (rightmost, clickable) is for special cases; the weekday squares are multi-select. Labels follow the locale',
 
     pickerHint: 'Single / multi / max / search (searchable switch) / grouped / empty / degraded; trigger and options both take a leading icon; label is left-aligned by default (align="center" to center); multi-select at max still allows deselecting picked items',
+    dateTimePickerHint: 'One control, three usages: single / range × precision (day / hour / minute / second); mask-free popup sharing Picker’s mechanics; the range popup shows two independent calendars (left = start, right = end, each picks its own); hour/minute/second via steppers (▲▼ / typing / ↑↓) instead of clicking through 60 minutes, and never requires picking a date first; the quick button is "Today" at day precision, "Now" when hours/minutes/seconds are on; draft state — commits only on confirm; at day precision the end auto-fills 23:59:59.999 (degrades gracefully if the DB stores seconds only)',
     modelPickerHint: 'grouped (one dropdown, vendor headers, fully independent) / cascade (vendor and model dropdowns linked) — both emit the same final model value; a "default model" option is provided by default (emits an empty string, disable with allowDefault: false); the catalog comes from the host automatically',
     workspacePickerHint: 'Workspace list comes from the host snapshot automatically (wired via connectHost, live follow stream); selected value is the workspaceId',
 

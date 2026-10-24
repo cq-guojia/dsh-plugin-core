@@ -7,6 +7,7 @@ import {
   ButtonPage,
   CardPage,
   ChipPage,
+  DateTimePage,
   FeedbackPage,
   InputPage,
   LayoutPage,
@@ -31,6 +32,7 @@ export type SectionId =
   | 'button'
   | 'input'
   | 'picker'
+  | 'datetime'
   | 'tooltip'
   | 'card'
   | 'chip'
@@ -76,6 +78,7 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'button', group: 'components', titleKey: 'secButton', render: () => h(ButtonPage, null) },
   { id: 'input', group: 'components', titleKey: 'secInput', render: () => h(InputPage, null) },
   { id: 'picker', group: 'components', titleKey: 'secPicker', render: () => h(PickerPage, null) },
+  { id: 'datetime', group: 'components', titleKey: 'secDateTime', render: () => h(DateTimePage, null) },
   { id: 'tooltip', group: 'components', titleKey: 'secTooltip', render: () => h(TooltipPage, null) },
   { id: 'card', group: 'components', titleKey: 'secCard', render: () => h(CardPage, null) },
   { id: 'chip', group: 'components', titleKey: 'secChip', render: () => h(ChipPage, null) },

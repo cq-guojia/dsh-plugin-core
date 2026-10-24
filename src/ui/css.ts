@@ -2,6 +2,7 @@ import { createStyleKit, type StyleKit } from '../design/index.js'
 import {
   BACK_TO_TOP_CSS,
   BUTTON_CSS,
+  DATETIME_CSS,
   FIELD_CSS,
   HINT_CSS,
   LOADING_CSS,
@@ -31,6 +32,7 @@ export const CONTROLS_CSS = [
   BACK_TO_TOP_CSS,
   HINT_CSS,
   PICKER_CSS,
+  DATETIME_CSS,
   FEEDBACK_CSS,
   EXPLORER_CSS,
   SESSION_CSS,
