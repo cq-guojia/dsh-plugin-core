@@ -2,9 +2,9 @@
 
 > EN: Style conventions (internal)
 
-引用方应该看的那一半在 `docs/help/style.md`（token 清单、明暗判据、定制边界）。
+使用侧内容（token 清单、明暗判据、定制边界）在帮助文档区 `docs/help/`。
 本文件只留**改动本仓样式时要守的东西**。
-EN: The caller-facing half lives in `docs/help/style.md` (token inventory, dark predicate, customization surface).
+EN: The caller-facing material (token inventory, dark predicate, customization surface) lives in `docs/help/`.
 What stays here is what you must honour when **changing styles in this repo**.
 
 ## 为什么样式只能运行时注入

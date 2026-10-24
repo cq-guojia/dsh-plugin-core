@@ -35,16 +35,16 @@ if the value is unknown it stays blank, never a guessed time.
 
 > EN: Per-module behavior
 
-- **日期**：见 [`utils.md`](utils.md) 的表格，每个函数的失败返回都列在那里。
+- **日期**：每个函数的失败返回值都列在它自己的参数表里。
   `relativePast` / `relativeFuture` 是对偶的，别用错。
 - **字符串**：`truncateBytes` 按 **UTF-8 字节**截断，不切半个字（中文场景必须）。
   `baseNameOf` 处理目录尾斜杠，不会取成空串。
 - **数字**：`formatBytes` 对 0 与负数返回 `—`，不显示「0 B」这种假精确。
 - **HTTP**：默认 10s 超时；超时抛 `AbortError`，非 2xx 抛带 `status` 的 `HttpError`。
 
-EN: Dates: see the table in `utils.md`; `relativePast`/`relativeFuture` are duals. Strings: `truncateBytes`
-cuts by UTF-8 bytes. Numbers: `formatBytes` returns `—` for 0 and negatives. HTTP: 10s timeout,
-`AbortError` on timeout, `HttpError` with `status` on non-2xx.
+EN: Dates: each function’s failure return is listed in its own parameter table; `relativePast`/`relativeFuture`
+are duals. Strings: `truncateBytes` cuts by UTF-8 bytes. Numbers: `formatBytes` returns `—` for 0 and
+negatives. HTTP: 10s timeout, `AbortError` on timeout, `HttpError` with `status` on non-2xx.
 
 ## 多语言口径
 

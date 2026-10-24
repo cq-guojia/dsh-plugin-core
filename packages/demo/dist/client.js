@@ -55301,8 +55301,8 @@ var docData = {
         "en": "Tokens cover color / size / font-size / elevation, **including the dark-mode override block**. Always read values via `var(--dshpc-*)`, never hard-code colors in rules."
       },
       {
-        "zh": "\u5B8C\u6574\u6E05\u5355\u4E0E\u547D\u540D\u53E3\u5F84\u89C1 [`style.md`](style.md)\u3002",
-        "en": "Full list and naming conventions: [`style.md`](style.md)."
+        "zh": "\u5B8C\u6574\u6E05\u5355\u4E0E\u547D\u540D\u53E3\u5F84\uFF1A\u524D\u666F / \u80CC\u666F / \u8FB9\u6846 / \u95F4\u8DDD / \u5B57\u53F7 / \u8BED\u4E49\u8272\u4E03\u7C7B\uFF0C`--dshpc-` \u524D\u7F00\uFF0C\u542B\u6DF1\u8272\u8986\u76D6\u6BB5\u3002",
+        "en": "Full inventory and naming: seven families (foreground / surface / border / spacing / font / semantic color / semantic surface), all `--dshpc-` prefixed, with a dark-mode override block."
       }
     ]
   },
@@ -60687,7 +60687,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1024-1408-uc19"]
+            [t3("buildStamp"), "1024-1410-nrs5"]
           ].map(
             ([label, value]) => (0, import_react65.createElement)(
               "tr",

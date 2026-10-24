@@ -447,8 +447,8 @@ export const docData = {
         "en": "Tokens cover color / size / font-size / elevation, **including the dark-mode override block**. Always read values via `var(--dshpc-*)`, never hard-code colors in rules."
       },
       {
-        "zh": "完整清单与命名口径见 [`style.md`](style.md)。",
-        "en": "Full list and naming conventions: [`style.md`](style.md)."
+        "zh": "完整清单与命名口径：前景 / 背景 / 边框 / 间距 / 字号 / 语义色七类，`--dshpc-` 前缀，含深色覆盖段。",
+        "en": "Full inventory and naming: seven families (foreground / surface / border / spacing / font / semantic color / semantic surface), all `--dshpc-` prefixed, with a dark-mode override block."
       }
     ]
   },

@@ -28,7 +28,7 @@
 | 样例（旧落位） | **不适用**（已迁入 `docs/help/integration.*`） | 同上 |
 | 运行逻辑 | `docs/design/architecture.md`（路径固定） | 五子包分层、依赖方向、样式注入机制、不变量 |
 | 结构规范（运行逻辑拆分） | `docs/design/structure.md` | 代码分层树（目标态）+ demo 展示分区 + 做/暂缓标注 |
-| 功能总索引 | `docs/design/features.md`（路径固定） | 每个包提供什么、对应哪个导出 |
+| 功能总索引 | **不适用**（职责由 `docs/help/index.md` 承担，路径固定槽位保留行） | 引用方走帮助索引，本文件不再维护第二份 |
 | 外部事实 | `docs/design/external/dsh-host.md` | 宿主 API 契约、官方 primitives、CSS 类名发现、暗色判据来源 |
 | 数据库说明 | **不适用**（本包无数据库） | 保留行说明原因，不删行 |
 | 样式规范（本仓内部） | `docs/design/style.md` | 注入机制 why、派生色口径、三条硬规矩（使用侧在 `docs/help/style.md`） |
