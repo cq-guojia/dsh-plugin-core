@@ -59532,35 +59532,30 @@ function DateTimePage() {
         (0, import_react57.createElement)(DateTimePicker, {
           precision: "day",
           value: singleDay,
-          onChange: (v) => setSingleDay(v),
-          placeholder: "\u5355\u4E2A \xB7 \u53EA\u9009\u65E5\u671F"
+          onChange: (v) => setSingleDay(v)
         }),
         (0, import_react57.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
-          onChange: (v) => setSingleMinute(v),
-          placeholder: "\u5355\u4E2A \xB7 \u7CBE\u786E\u5230\u5206"
+          onChange: (v) => setSingleMinute(v)
         }),
         (0, import_react57.createElement)(DateTimePicker, {
           mode: "range",
           precision: "day",
           value: rangeDay,
-          onChange: (v) => setRangeDay(v),
-          placeholder: "\u65F6\u95F4\u6BB5 \xB7 \u53EA\u9009\u65E5\u671F"
+          onChange: (v) => setRangeDay(v)
         }),
         (0, import_react57.createElement)(DateTimePicker, {
           mode: "range",
           precision: "second",
           value: rangeSecond,
-          onChange: (v) => setRangeSecond(v),
-          placeholder: "\u65F6\u95F4\u6BB5 \xB7 \u7CBE\u786E\u5230\u79D2"
+          onChange: (v) => setRangeSecond(v)
         }),
         (0, import_react57.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v),
-          disabled: true,
-          placeholder: "\u7981\u7528\uFF08\u503C\u4E0E\u300C\u7CBE\u786E\u5230\u5206\u300D\u8054\u52A8\uFF09"
+          disabled: true
         })
       )
     ),
@@ -61409,7 +61404,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1024-1941-04y5"]
+            [t3("buildStamp"), "1024-1949-g3sx"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
