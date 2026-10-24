@@ -55089,6 +55089,7 @@ var DICT2 = {
     buildCore: "core \u7248\u672C",
     buildDemo: "demo \u7248\u672C",
     buildStamp: "\u672C\u6B21 build \u7F16\u7801",
+    themeToggle: "\u660E\u6697\u5207\u6362",
     segDay: "\u65E5",
     segWeek: "\u5468",
     segMonth: "\u6708",
@@ -55305,6 +55306,7 @@ var DICT2 = {
     buildCore: "core version",
     buildDemo: "demo version",
     buildStamp: "build stamp",
+    themeToggle: "Light / dark",
     segDay: "Day",
     segWeek: "Week",
     segMonth: "Month",
@@ -61404,7 +61406,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "1024-1949-g3sx"]
+            [t3("buildStamp"), "261024-200021-098"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -61521,8 +61523,29 @@ function useLocaleTick() {
     });
   }, []);
 }
+function useHostDark() {
+  const read = () => document.body.hasAttribute("data-ds-dark-theme");
+  const [dark, setDark] = (0, import_react69.useState)(read);
+  (0, import_react69.useEffect)(() => {
+    const obs = new MutationObserver(() => {
+      setDark(read());
+    });
+    obs.observe(document.body, { attributes: true, attributeFilter: ["data-ds-dark-theme"] });
+    return () => {
+      obs.disconnect();
+    };
+  }, []);
+  return {
+    dark,
+    toggle: () => {
+      document.body.toggleAttribute("data-ds-dark-theme");
+      setDark(read());
+    }
+  };
+}
 function DemoPage() {
   useLocaleTick();
+  const { dark, toggle } = useHostDark();
   const [active, setActive2] = (0, import_react69.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
@@ -61597,13 +61620,68 @@ function DemoPage() {
           flex: "none",
           height: "100%",
           boxSizing: "border-box",
-          padding: "14px 10px",
-          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
           borderRight: "1px solid var(--dshpc-border-faint)",
           fontFamily: "var(--dshpc-font-md)"
         }
       },
-      nav2
+      // 导航区：唯一滚动容器；底部操作/版本区固定不动
+      (0, import_react69.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px" } }, nav2),
+      // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
+      (0, import_react69.createElement)(
+        "div",
+        {
+          style: {
+            flex: "none",
+            padding: "10px",
+            borderTop: "1px solid var(--dshpc-border-faint)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px"
+          }
+        },
+        (0, import_react69.createElement)(
+          "button",
+          {
+            type: "button",
+            onClick: toggle,
+            "aria-label": t3("themeToggle"),
+            style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "6px",
+              padding: "6px 10px",
+              border: "1px solid var(--dshpc-border)",
+              borderRadius: "6px",
+              background: "var(--dshpc-surface-1)",
+              color: "var(--dshpc-fg)",
+              cursor: "pointer",
+              fontSize: "12px"
+            }
+          },
+          (0, import_react69.createElement)("span", null, t3("themeToggle")),
+          (0, import_react69.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "13px" } }, dark ? "\u263E" : "\u2600")
+        ),
+        (0, import_react69.createElement)(
+          "div",
+          {
+            style: {
+              display: "flex",
+              flexDirection: "column",
+              gap: "1px",
+              padding: "0 2px",
+              color: "var(--dshpc-fg-3)",
+              fontFamily: "var(--dshpc-font-mono)",
+              fontSize: "10px",
+              lineHeight: "14px"
+            }
+          },
+          (0, import_react69.createElement)("span", null, `core v${"0.2.14"} \xB7 demo v${"0.2.14"}`),
+          (0, import_react69.createElement)("span", null, "261024-200021-098")
+        )
+      )
     ),
     (0, import_react69.createElement)(
       "main",

@@ -23,13 +23,12 @@ const at = (p) => resolve(HERE, p)
 const CORE_VERSION = JSON.parse(readFileSync(at('../../package.json'), 'utf8')).version
 const DEMO_VERSION = JSON.parse(readFileSync(at('package.json'), 'utf8')).version
 
-// 构建唯一编码：每次 build 都变（时间 + 随机 4 位）。用户侧看侧栏左边这一串就知道
-// 「宿主里跑的是不是刚 build 的这份产物」——版本号不 bump 时唯一可辨的锚点。
+// 构建唯一编码：编译时刻的**时间戳**（两位年 + 月日 + 时分秒 + 毫秒），不用随机数——
+// 侧栏底部看这一串就知道「宿主里跑的是不是刚 build 的、什么时候编的」，不用记上次是哪串。
 const BUILD_STAMP = (() => {
   const d = new Date()
-  const p = (n) => String(n).padStart(2, '0')
-  const rand = Math.random().toString(36).slice(2, 6)
-  return `${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}-${rand}`
+  const p = (n, w = 2) => String(n).padStart(w, '0')
+  return `${p(d.getFullYear() % 100)}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}-${p(d.getMilliseconds(), 3)}`
 })()
 
 const PKG = 'dsh-plugin-core-demo'

@@ -182,6 +182,7 @@ export type DemoMessageKey =
   | 'buildCore'
   | 'buildDemo'
   | 'buildStamp'
+  | 'themeToggle'
   | 'demoInputFamily'
   | 'demoTokenPalette'
   | 'demoStyleInject'
@@ -461,6 +462,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     buildCore: 'core 版本',
     buildDemo: 'demo 版本',
     buildStamp: '本次 build 编码',
+    themeToggle: '明暗切换',
 
     segDay: '日',
     segWeek: '周',
@@ -726,6 +728,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     buildCore: 'core version',
     buildDemo: 'demo version',
     buildStamp: 'build stamp',
+    themeToggle: 'Light / dark',
 
     segDay: 'Day',
     segWeek: 'Week',

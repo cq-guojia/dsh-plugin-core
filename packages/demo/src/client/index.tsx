@@ -55,13 +55,37 @@ function useLocaleTick(): void {
   }, [])
 }
 
+/**
+ * 明暗皮肤：直接翻 body 的 `data-ds-dark-theme`（宿主亮度判据，见 docs/design/style.md）——
+ * 做界面要来回切换，去系统设置改太绕。MutationObserver 同步宿主侧自己改的主题
+ * （宿主自己的切换器 / 跟随系统），按钮状态不打架。
+ */
+function useHostDark(): { dark: boolean; toggle: () => void } {
+  const read = (): boolean => document.body.hasAttribute('data-ds-dark-theme')
+  const [dark, setDark] = useState(read)
+  useEffect(() => {
+    const obs = new MutationObserver(() => { setDark(read()) })
+    obs.observe(document.body, { attributes: true, attributeFilter: ['data-ds-dark-theme'] })
+    return () => { obs.disconnect() }
+  }, [])
+  return {
+    dark,
+    toggle: () => {
+      document.body.toggleAttribute('data-ds-dark-theme')
+      setDark(read())
+    },
+  }
+}
+
 /** 整页：左侧两级目录 + 右侧当前页（套用 demo 的展示内容）。 */
 function DemoPage(): ReturnType<typeof h> {
   useLocaleTick()
+  const { dark, toggle } = useHostDark()
   const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
 
   // 侧栏：第一层是能力域的纯标题（不可点），第二层是可点的页。
-  // 版本 / build 编码原先吊在这里，按两级 IA 它们属于「参考 · 版本与构建」一页，不再占导航。
+  // 底部固定栏（不随导航滚动）：明暗切换 + 版本号 + 编译码时间戳——2026-10-24 用户：
+  // 做界面要来回切明暗、并要一眼看出跑的是哪次 build，从「参考」页挪回侧栏底部。
   const nav: ReturnType<typeof h>[] = []
   SECTION_GROUPS.forEach((group, gi) => {
     nav.push(
@@ -121,11 +145,49 @@ function DemoPage(): ReturnType<typeof h> {
       'aside',
       {
         style: {
-          width: '180px', flex: 'none', height: '100%', boxSizing: 'border-box', padding: '14px 10px', overflowY: 'auto',
+          width: '180px', flex: 'none', height: '100%', boxSizing: 'border-box',
+          display: 'flex', flexDirection: 'column',
           borderRight: '1px solid var(--dshpc-border-faint)', fontFamily: 'var(--dshpc-font-md)',
         },
       },
-      nav,
+      // 导航区：唯一滚动容器；底部操作/版本区固定不动
+      h('div', { style: { flex: 1, minHeight: 0, overflowY: 'auto', padding: '14px 10px' } }, nav),
+      // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
+      h(
+        'div',
+        {
+          style: {
+            flex: 'none', padding: '10px', borderTop: '1px solid var(--dshpc-border-faint)',
+            display: 'flex', flexDirection: 'column', gap: '8px',
+          },
+        },
+        h(
+          'button',
+          {
+            type: 'button',
+            onClick: toggle,
+            'aria-label': t('themeToggle'),
+            style: {
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px',
+              padding: '6px 10px', border: '1px solid var(--dshpc-border)', borderRadius: '6px',
+              background: 'var(--dshpc-surface-1)', color: 'var(--dshpc-fg)', cursor: 'pointer', fontSize: '12px',
+            },
+          },
+          h('span', null, t('themeToggle')),
+          h('span', { style: { color: 'var(--dshpc-fg-3)', fontSize: '13px' } }, dark ? '☾' : '☀'),
+        ),
+        h(
+          'div',
+          {
+            style: {
+              display: 'flex', flexDirection: 'column', gap: '1px', padding: '0 2px',
+              color: 'var(--dshpc-fg-3)', fontFamily: 'var(--dshpc-font-mono)', fontSize: '10px', lineHeight: '14px',
+            },
+          },
+          h('span', null, `core v${__CORE_VERSION__} · demo v${__DEMO_VERSION__}`),
+          h('span', null, __BUILD_STAMP__),
+        ),
+      ),
     ),
     h(
       'main',
