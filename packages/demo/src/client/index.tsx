@@ -13,7 +13,7 @@ import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { PanelDock, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { Button, PanelDock, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { connectFileServices } from '../host-files.js'
 import { connectRealSessions } from '../real-sessions.js'
 import { demoDock, demoPanels } from '../dock.js'
@@ -161,21 +161,20 @@ function DemoPage(): ReturnType<typeof h> {
             display: 'flex', flexDirection: 'column', gap: '8px',
           },
         },
+        // 明暗切换：一律用核心 Button（不手写按钮），状态符号挂 iconRight
         h(
-          'button',
+          Button,
           {
-            type: 'button',
+            variant: 'outline',
+            size: 'sm',
+            block: true,
             onClick: toggle,
             'aria-label': t('themeToggle'),
-            style: {
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px',
-              padding: '6px 10px', border: '1px solid var(--dshpc-border)', borderRadius: '6px',
-              background: 'var(--dshpc-surface-1)', color: 'var(--dshpc-fg)', cursor: 'pointer', fontSize: '12px',
-            },
+            iconRight: h('span', { style: { fontSize: '13px' } }, dark ? '☾' : '☀'),
           },
-          h('span', null, t('themeToggle')),
-          h('span', { style: { color: 'var(--dshpc-fg-3)', fontSize: '13px' } }, dark ? '☾' : '☀'),
+          t('themeToggle'),
         ),
+        // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行，编译码再一行
         h(
           'div',
           {
@@ -184,7 +183,8 @@ function DemoPage(): ReturnType<typeof h> {
               color: 'var(--dshpc-fg-3)', fontFamily: 'var(--dshpc-font-mono)', fontSize: '10px', lineHeight: '14px',
             },
           },
-          h('span', null, `core v${__CORE_VERSION__} · demo v${__DEMO_VERSION__}`),
+          h('span', null, `core v${__CORE_VERSION__}`),
+          h('span', null, `demo v${__DEMO_VERSION__}`),
           h('span', null, __BUILD_STAMP__),
         ),
       ),

@@ -61406,7 +61406,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "261024-200021-098"]
+            [t3("buildStamp"), "261024-200722-797"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -61641,29 +61641,20 @@ function DemoPage() {
             gap: "8px"
           }
         },
+        // 明暗切换：一律用核心 Button（不手写按钮），状态符号挂 iconRight
         (0, import_react69.createElement)(
-          "button",
+          Button,
           {
-            type: "button",
+            variant: "outline",
+            size: "sm",
+            block: true,
             onClick: toggle,
             "aria-label": t3("themeToggle"),
-            style: {
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "6px",
-              padding: "6px 10px",
-              border: "1px solid var(--dshpc-border)",
-              borderRadius: "6px",
-              background: "var(--dshpc-surface-1)",
-              color: "var(--dshpc-fg)",
-              cursor: "pointer",
-              fontSize: "12px"
-            }
+            iconRight: (0, import_react69.createElement)("span", { style: { fontSize: "13px" } }, dark ? "\u263E" : "\u2600")
           },
-          (0, import_react69.createElement)("span", null, t3("themeToggle")),
-          (0, import_react69.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "13px" } }, dark ? "\u263E" : "\u2600")
+          t3("themeToggle")
         ),
+        // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行，编译码再一行
         (0, import_react69.createElement)(
           "div",
           {
@@ -61678,8 +61669,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react69.createElement)("span", null, `core v${"0.2.14"} \xB7 demo v${"0.2.14"}`),
-          (0, import_react69.createElement)("span", null, "261024-200021-098")
+          (0, import_react69.createElement)("span", null, `core v${"0.2.14"}`),
+          (0, import_react69.createElement)("span", null, `demo v${"0.2.14"}`),
+          (0, import_react69.createElement)("span", null, "261024-200722-797")
         )
       )
     ),
