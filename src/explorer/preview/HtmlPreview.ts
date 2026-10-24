@@ -2,7 +2,6 @@
 // 源码态走 TextPreview 并按 256K 截断。降级路径（无 DOM 能力时）直接出错误态，不猜。
 import { createElement as h, useEffect, useState } from 'react'
 import { ensureControls } from '../../ui/css.js'
-import { EmptyState } from '../../ui/EmptyState.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { bytesOf, errView, SOURCE_MAX_BYTES, type WorkspaceFilesFace } from '../types.js'
 import { TextPreview } from './TextPreview.js'
@@ -110,7 +109,7 @@ export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
       translate: tt,
     })
   }
-  if (failed !== null) return h(EmptyState, { text: tt(failed.key, failed.params), translate: tt })
+  if (failed !== null) return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params))
   if (doc === null) return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'))
   return h(
     'div',

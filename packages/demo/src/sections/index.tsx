@@ -114,7 +114,7 @@ export function Demo(props: {
 
 /**
  * 空位：这一页该有但还没有的东西，画一个灰框把清单写在里面。
- * 用意是让「还有什么没做」看得见 —— 不是 EmptyState 那种「当前无数据」的业务空态。
+ * 用意是让「还有什么没做」看得见 —— 业务空态（无数据占位）不归它管。
  */
 export function Placeholder(props: { descKey: DemoMessageKey }): ReturnType<typeof h> {
   return h(

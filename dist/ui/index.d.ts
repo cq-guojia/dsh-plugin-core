@@ -13,7 +13,6 @@ export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, } fro
 export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardSharedProps, } from './Card.js';
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js';
 export { showToast, notify, type ToastVariant, type ToastPosition, type ToastOptions, type ToastAction, type NotifyOptions, } from './Toast.js';
-export { EmptyState, type EmptyStateProps } from './EmptyState.js';
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js';
 export { Segmented, type SegmentedProps } from './Segmented.js';
 export { Textarea, type TextareaProps } from './Textarea.js';

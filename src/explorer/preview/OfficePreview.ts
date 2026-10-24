@@ -2,7 +2,6 @@
 // officeToPdf 未注入（宿主没装 dsh-office-to-pdf）⇒ 「预览不可用」空态，不发起请求、不崩。
 import { createElement as h, useEffect, useState } from 'react'
 import { ensureControls } from '../../ui/css.js'
-import { EmptyState } from '../../ui/EmptyState.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { bytesOf, errView, type OfficeToPdfFace } from '../types.js'
 
@@ -49,9 +48,9 @@ export function OfficePreview(props: OfficePreviewProps): ReturnType<typeof h> {
   }, [props.officeToPdf, props.sessionId, props.path])
 
   if (props.officeToPdf === null) {
-    return h(EmptyState, { text: tt('previewOfficeUnavailable'), translate: tt })
+    return h('div', { className: 'dshpc-fb__note' }, tt('previewOfficeUnavailable'))
   }
-  if (failed !== null) return h(EmptyState, { text: tt(failed.key, failed.params), translate: tt })
+  if (failed !== null) return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params))
   if (url === null) return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'))
   return h('iframe', { className: 'dshpc-fb__frame', src: url, title: props.path })
 }

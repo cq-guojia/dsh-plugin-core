@@ -41,7 +41,7 @@ dsh-plugin-core/
 │   │                          Checkbox / Segmented / Picker（下拉选择）/
 │   │                          DateTimePicker（日期时间：单值 / 时间段 × 精度到秒）
 │   ├── 动作                ✅ Button / IconButton
-│   ├── 反馈                ✅ Modal / Toast / EmptyState
+│   ├── 反馈                ✅ Modal / Toast
 │   │   └── Loading         ⚪ 暂缓
 │   ├── 展示                ✅ Card / StripCard / Chip / MarqueeText /
 │   │                          SectionHead / FieldHint / LiveText / BackToTop
@@ -110,7 +110,7 @@ utils（谁都不依赖，谁都可以用）
 ├─ ② 基础控件
 │   ├─ 表单    Input / NumberInput / PrefixedInput / Textarea / Checkbox / Segmented / Picker / DateTimePicker
 │   ├─ 动作    Button / IconButton
-│   ├─ 反馈    Modal / Toast / EmptyState
+│   ├─ 反馈    Modal / Toast
 │   ├─ 展示    Card / StripCard / Chip / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop
 │   └─ 布局    PanelDock / 拉栏
 │

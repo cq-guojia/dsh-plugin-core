@@ -90,7 +90,6 @@ export type DemoMessageKey =
   | 'chipStalled'
   | 'chipDone'
   | 'chipDoing'
-  | 'emptyStateTitle'
   | 'marqueeTitle'
   | 'liveTitle'
   | 'feedbackModalHint'
@@ -148,7 +147,6 @@ export type DemoMessageKey =
   | 'exSectionHeadHint'
   | 'exMarqueeHint'
   | 'exLiveHint'
-  | 'exEmptyHint'
   | 'exSmallModalTitle'
   | 'exSmallModalHint'
   | 'exLargeModalTitle'
@@ -383,7 +381,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     chipStalled: '停滞',
     chipDone: '已完成',
     chipDoing: '进行中',
-    emptyStateTitle: 'EmptyState 空态',
     marqueeTitle: 'MarqueeText 跑马灯',
     liveTitle: 'LiveText 实时文本',
 
@@ -431,7 +428,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exSectionHeadHint: '分区标题：icon + 标题 + 右侧操作区三段式——纯排版壳，icon/标题/右侧都调用方自定；下示 3 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合',
     exMarqueeHint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号',
     exLiveHint: '订阅内部节拍器，走时 Ui 由调用方渲染',
-    exEmptyHint: '业务空态：无数据时的占位，可挂一个操作按钮',
     exSmallModalTitle: '小型弹窗（自定义）',
     exSmallModalHint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。',
     exLargeModalTitle: '大型弹窗（自定义）',
@@ -651,7 +647,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     chipStalled: 'Stalled',
     chipDone: 'Done',
     chipDoing: 'In progress',
-    emptyStateTitle: 'EmptyState',
     marqueeTitle: 'MarqueeText',
     liveTitle: 'LiveText',
 
@@ -699,7 +694,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exSectionHeadHint: 'Section header: icon + title + right-side actions in three slots — a pure layout shell; icon, title and right side are all caller-defined. Three groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos',
     exMarqueeHint: 'Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis',
     exLiveHint: 'Subscribes to an internal ticker; the running clock UI is rendered by the caller',
-    exEmptyHint: 'Business empty state: a placeholder when there is no data, optionally with one action button',
     exSmallModalTitle: 'Small dialogs (custom)',
     exSmallModalHint: 'Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host’s own.',
     exLargeModalTitle: 'Large dialogs (custom)',

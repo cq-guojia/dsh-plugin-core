@@ -2,7 +2,6 @@
 // readBytes 读全量（受部署 maxFileBytes 封顶，超出抛 too-large ⇒ 错误态）。
 import { createElement as h, useEffect, useState } from 'react'
 import { ensureControls } from '../../ui/css.js'
-import { EmptyState } from '../../ui/EmptyState.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { bytesOf, errView, type WorkspaceFilesFace } from '../types.js'
 
@@ -54,7 +53,7 @@ export function BytesPreview(props: BytesPreviewProps): ReturnType<typeof h> {
     }
   }, [props.workspaceFiles, props.sessionId, props.path, props.mime])
 
-  if (failed !== null) return h(EmptyState, { text: tt(failed.key, failed.params), translate: tt })
+  if (failed !== null) return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params))
   if (url === null) return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'))
   if (props.kind === 'image') {
     return h('img', { className: 'dshpc-fb__image', src: url, alt: props.path })

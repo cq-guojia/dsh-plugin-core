@@ -48,10 +48,6 @@
 }
 .dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}
 .dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}
-.dshpc-empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-  padding:24px;color:var(--dshpc-fg-3);font-size:13px;text-align:center;
-}
 .dshpc-error__retry{
   margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;
 }

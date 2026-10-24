@@ -15,7 +15,6 @@ import { MarkdownText } from '../../ui/official.js'
 import { ensureControls } from '../../ui/css.js'
 import { CodeViewer } from '../../ui/CodeViewer.js'
 import { Button } from '../../ui/Button.js'
-import { EmptyState } from '../../ui/EmptyState.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { errView, textPageOf, type WorkspaceFilesFace } from '../types.js'
 import { formatBytes } from '../../utils/number.js'
@@ -96,7 +95,7 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
     void load(0, false)
   }, [load])
 
-  if (failed !== null) return h(EmptyState, { text: tt(failed.key, failed.params), translate: tt })
+  if (failed !== null) return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params))
   if (text === '' && loading) return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'))
 
   const rendered = props.markdown && !props.sourceView

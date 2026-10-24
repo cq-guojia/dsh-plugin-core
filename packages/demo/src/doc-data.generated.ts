@@ -1932,15 +1932,6 @@ export const docData = {
             }
           },
           {
-            "name": "EmptyState({ text?, icon?, action?, translate? })",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "统一空态",
-              "en": "Unified empty state"
-            }
-          },
-          {
             "name": "SectionHead({ icon, title, right? })",
             "type": "",
             "def": "",

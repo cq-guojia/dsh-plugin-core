@@ -12,7 +12,6 @@ test('showToast 在无 DOM 环境静默跳过，不抛', () => {
 test('反馈件文案自带中英', () => {
   setLocale('zh')
   assert.equal(t('modalClose'), '关闭')
-  assert.equal(t('emptyText'), '暂无数据')
   assert.equal(t('errorRetry'), '重试')
   setLocale('en')
   assert.equal(t('modalClose'), 'Close')

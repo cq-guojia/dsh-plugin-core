@@ -93,7 +93,6 @@ export {
   type ToastAction,
   type NotifyOptions,
 } from './Toast.js'
-export { EmptyState, type EmptyStateProps } from './EmptyState.js'
 
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js'
 export { Segmented, type SegmentedProps } from './Segmented.js'

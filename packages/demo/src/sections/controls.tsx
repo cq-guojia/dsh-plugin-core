@@ -5,7 +5,6 @@ import {
   Card,
   Checkbox,
   Chip,
-  EmptyState,
   FieldHint,
   IconButton,
   Input,
@@ -981,13 +980,9 @@ const CODE_MARQUEE = `// 外层裁剪、内层滚动：放不下才滚，hover �
 const CODE_LIVE = `// 订阅内部节拍器，走时内容调用方渲染
 <LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`
 
-const CODE_EMPTY = `// 业务空态：可挂一个操作按钮
-<EmptyState text="暂无数据" action={<Button size="sm" variant="outline">重试</Button>} />`
-
-
 /** Chip 对外参数（与 src/ui/Chip.ts 的 ChipProps 逐条对齐）。 */
 
-/** MarqueeText / LiveText / EmptyState：三个小件各一行。 */
+/** MarqueeText / LiveText：两个小件各一行。 */
 
 export function ChipPage(): ReturnType<typeof h> {
   return h(
@@ -1031,11 +1026,6 @@ export function ChipPage(): ReturnType<typeof h> {
       Example,
       { title: t('liveTitle'), hint: t('exLiveHint'), code: CODE_LIVE },
       h(LiveText, { render: (nowMs: number) => new Date(nowMs).toLocaleTimeString() }),
-    ),
-    h(
-      Example,
-      { title: t('emptyStateTitle'), hint: t('exEmptyHint'), code: CODE_EMPTY },
-      h(EmptyState, { text: '暂无数据' }),
     ),
     h(DocCode, { id: 'chip' }),
     h(DocApi, { id: 'chip' }),
