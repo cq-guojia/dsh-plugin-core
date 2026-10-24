@@ -62,3 +62,4 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 20:01:25 · log · @GuoJia-Agent · demo 侧栏重构：底部固定栏（不随滚动）放明暗切换（翻 body data-ds-dark-theme + MutationObserver 同步）+ 版本号 + 编译码；编译码改时间戳 YYMMDD-HHmmss-SSS（261024-200021-098 实测）；提交推送 5ad335f
 - 2026-10-24 20:07:52 · log · @GuoJia-Agent · 侧栏底栏修正：版本号拆 core/demo 两行（180px 一行放不下）、明暗切换手写 button 改核心 Button；提交推送；测试/lint 全过
 - 2026-10-24 20:14:53 · log · @GuoJia-Agent · 明暗切换改核心 Segmented（左亮右暗带图标，label 承载符号因 SegmentedItem 无 icon 字段）+ 编译码 9px 隔 4px；提交推送；测试/lint 全过
+- 2026-10-24 20:26:30 · log · @GuoJia-Agent · 明暗切换分段文案：亮→明（对齐明暗切换/明暗色判据用词）；英文 Light/Dark 本就是官方口径不动；官方包本机空壳无法核对宿主原文，若宿主实为「浅色/深色」再说；已提交推送
