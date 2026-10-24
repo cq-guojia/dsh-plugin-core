@@ -49,3 +49,4 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 15:59:33 · log · @GuoJia-Agent · DateTimePicker 落地：logic+组件+css+i18n 13key+demo 页+ui.doc.ts 章节；pnpm test 114/114、codelint 六层过、build:demo OK；待用户 demo 验收
 - 2026-10-24 16:23:28 · log · @GuoJia-Agent · 按用户反馈改：时分秒不强制先选日期（确定时没日期不传数据）、快捷键 day「今天」/时分秒「现在」、range 弹层改两块独立日历不标跨度、demo 录入页示例改名「用户名」；草稿模型纯函数化并补 2 条测试；pnpm test 116/116、codelint 六层过
 - 2026-10-24 16:45:14 · log · @GuoJia-Agent · 修显示精度 bug（新增 utils formatDateTimePrecision：day 不出时分秒）+ range 触发器改双框框外杠（右框微蓝底、点哪个都整体展开）+ 弹层组行端框与时分秒同排不折行 + 触发器焦点改 Input 同款蓝框；pnpm test 117/117、codelint 六层过
+- 2026-10-24 17:24:35 · log · @GuoJia-Agent · 回退第三轮全部改动（用户验收样式被改坏）：DateTimePicker.ts/datetime.css 还原到第二轮状态；根因是重写时单值模式漏挂 refs.setReference 导致浮层跑左上角；顺带撤掉 formatDateTimePrecision 及其测试/doc；pnpm test 116/116、codelint 六层过
