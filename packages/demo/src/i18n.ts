@@ -465,7 +465,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     buildDemo: 'demo 版本',
     buildStamp: '本次 build 编码',
     themeToggle: '明暗切换',
-    themeLight: '亮',
+    themeLight: '明',
     themeDark: '暗',
 
     segDay: '日',

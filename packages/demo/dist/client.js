@@ -55090,7 +55090,7 @@ var DICT2 = {
     buildDemo: "demo \u7248\u672C",
     buildStamp: "\u672C\u6B21 build \u7F16\u7801",
     themeToggle: "\u660E\u6697\u5207\u6362",
-    themeLight: "\u4EAE",
+    themeLight: "\u660E",
     themeDark: "\u6697",
     segDay: "\u65E5",
     segWeek: "\u5468",
@@ -61410,7 +61410,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "261024-201421-277"]
+            [t3("buildStamp"), "261024-202619-003"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -61676,7 +61676,7 @@ function DemoPage() {
           },
           (0, import_react69.createElement)("span", null, `core v${"0.2.14"}`),
           (0, import_react69.createElement)("span", null, `demo v${"0.2.14"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261024-201421-277")
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261024-202619-003")
         )
       )
     ),
