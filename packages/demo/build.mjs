@@ -32,7 +32,12 @@ const BUILD_STAMP = (() => {
 })()
 
 const PKG = 'dsh-plugin-core-demo'
-const EXTERNAL = ['react', 'react-dom', 'react/jsx-runtime', 'cordis', '@deepseek-ai/*']
+// server 入口：本地路径安装时插件自己的 node_modules 不被 Node 解析（realpath），
+// 故把 `@deepseek-ai/schemastery` **打进产物**（server 入口只引它一个 @deepseek-ai 包），
+// 运行时不再依赖宿主/profile 解析 —— 自包含，本地安装也稳。其余平台包仍 external。
+const EXTERNAL_SERVER = ['react', 'react-dom', 'react/jsx-runtime', 'cordis']
+// client bundle：宿主提供 `@deepseek-ai/dsh-client-ui-*` 等平台模块，保持 require 不变。
+const EXTERNAL_CLIENT = ['react', 'react-dom', 'react/jsx-runtime', 'cordis', '@deepseek-ai/*']
 const DEFINE = {
   'process.env.NODE_ENV': '"production"',
   __CORE_VERSION__: JSON.stringify(CORE_VERSION),
@@ -49,6 +54,8 @@ await build({
   platform: 'node',
   target: 'node22',
   outfile: at('dist/index.js'),
+  // `Config` schema 引官方 schemastery，但**打进产物**（见 EXTERNAL_SERVER 注释）。
+  external: EXTERNAL_SERVER,
   logLevel: 'info',
 })
 
@@ -60,7 +67,7 @@ await build({
   target: 'es2020',
   jsx: 'automatic',
   outfile: at('dist/client.js'),
-  external: EXTERNAL,
+  external: EXTERNAL_CLIENT,
   define: DEFINE,
   loader: { '.tsx': 'tsx', '.ts': 'ts' },
   banner: {

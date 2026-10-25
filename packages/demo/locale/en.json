@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Snail Component Library (dsh-plugin-core-demo)",
-    "description": "The shared UI foundation for DSH plugins, with a live component preview: design tokens, common controls, workspace browsing and notifications maintained in one place — install it to preview every component in a real host."
+    "title": "Blue Whale Component Library (dsh-plugin-core-demo)",
+    "description": "The shared UI foundation for DeepSeek Harness plugins, with a live component preview: design tokens, common controls, workspace browsing and notifications maintained in one place — install it to preview every component in a real host."
   }
 }

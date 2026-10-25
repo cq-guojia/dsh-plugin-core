@@ -9,11 +9,17 @@
  * （宿主官方）都分开；demo 展示代码里直接用 --dshpc-*，不再做任何跨前缀别名。
  */
 import { createElement as h, useEffect, useState } from 'react'
-import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
+import {
+  IconLinkOutlineRegular,
+  IconPlayOutlineRegular,
+  Switch,
+  Tooltip,
+} from '@deepseek-ai/dsh-client-ui-primitives'
+import type { SettingsFormScope } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { PanelDock, Segmented, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { Button, PanelDock, Segmented, StripCard, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { connectFileServices } from '../host-files.js'
 import { connectRealSessions } from '../real-sessions.js'
 import { demoDock, demoPanels } from '../dock.js'
@@ -24,8 +30,73 @@ import { DICT, setDemoTranslate, t } from '../i18n.js'
 import { DEMO_CSS } from '../demo-css.generated.js'
 import { MODELS_PATH } from '../paths.js'
 
-/** 侧栏条目 id / 主面板 key / 设置命名空间：三者必须逐字一致，且 = package.json 的 name。 */
+/** 侧栏条目 id / 主面板 key / 设置命名空间 / 详情页槽位 key：四者必须逐字一致，且 = package.json 的 name。
+ *  命名空间这条尤其硬：settings 服务的命名空间 = **profile entry id**（`cordis.patch.yml` 那条
+ *  insert 的 id），写岔了 `configForms.get(ns)` 拿不到任何东西。 */
 const PANEL_ID = 'dsh-plugin-core-demo'
+
+/** 插件详情页的配置区槽位（dsh 0.1.7+；旧的 `settings.plugin.item` 已随该版本删除）。 */
+const BUNDLE_CONFIG_SLOT = 'plugins.bundle.config'
+
+/** Config schema 里那个字段名（server 侧 `Config` 与这里的 spec 必须同名）。 */
+const SIDEBAR_ENTRY_FIELD = 'sidebarEntry'
+
+/** slots 服务本文件用到的切片（宿主类型本地结构化声明，不 import 宿主包）。 */
+interface SlotsLike {
+  inject: (name: string, cb: () => void) => void
+  register: (meta: unknown, comp: unknown) => (() => void)
+}
+
+/** 官方设置表单服务的最小面（`ctx.configForms`；由 @deepseek-ai/dsh-client-ui-settings 提供）。 */
+interface ConfigFormsLike {
+  get: <T>(entryId: string) => SettingsFormScope<T>
+  /** 列出宿主实际登记（served）的设置命名空间——cordis.patch.yml 的 id 未必等于宿主内部命名空间。 */
+  describe: () => { getSnapshot: () => { view?: { namespaces?: ReadonlyArray<{ ns: string }> } } }
+}
+
+/** 取宿主实际登记的本插件设置命名空间；取不到就退回包名（tdt 同款 servedEntryId 思路）。 */
+function resolveServedEntryId(forms: ConfigFormsLike): string {
+  let served: readonly string[] | undefined
+  try {
+    served = forms.describe().getSnapshot().view?.namespaces?.map((n) => n.ns)
+  } catch {
+    served = undefined
+  }
+  if (served === undefined) return PANEL_ID
+  return served.find((ns) => ns === PANEL_ID) ?? PANEL_ID
+}
+
+/** 本插件在设置里的可编辑项（server 侧 `Config` 的客户端镜像；schema 默认值兜底后一定齐全）。 */
+interface PluginConfig {
+  sidebarEntry?: boolean
+}
+
+/** slots 服务引用（apply 时赋值）：开关切换后重注册侧栏条目要用。 */
+let slotsRef: SlotsLike | null = null
+/** 当前侧栏条目的 disposer（slots.register 的返回值）：关开关即时摘除、开开关即时注册。 */
+let sidebarDisposer: (() => void) | null = null
+/** 侧栏入口的当前期望值：由官方设置文档的快照驱动（服务未就位时按默认「开」）。 */
+let sidebarEntryOn = true
+
+/**
+ * 把侧栏条目注册成 / 摘成 `sidebarEntryOn` 说的样子。
+ *
+ * ⚠️ 两个注入块的到达顺序不定（slots 与 configForms 谁先谁后没有保证），所以把「当前值」
+ * 存在模块级变量里：谁先到都按同一份值注册，后到的块只会重幂等一遍。
+ */
+function applySidebarEntry(): void {
+  const slots = slotsRef
+  if (slots === null) return
+  if (sidebarDisposer !== null) { sidebarDisposer(); sidebarDisposer = null }
+  if (!sidebarEntryOn) return
+  slots.inject('sidebar.panellist', () => {
+    if (sidebarDisposer !== null) return
+    sidebarDisposer = slots.register(
+      { name: 'sidebar.panellist', id: PANEL_ID, order: 90, label: () => t('pluginTitle') },
+      PanelIcon,
+    )
+  })
+}
 
 // 构建时由 packages/demo/build.mjs 的 define 注入（读两份 package.json）。
 // 侧栏底部常驻显示 —— 更没更新、装的是哪版，一眼可查，不靠猜。
@@ -199,27 +270,91 @@ function DemoPage(): ReturnType<typeof h> {
   )
 }
 
-/** 设置页里的入口卡片：点一下跳整页预览。 */
-function OpenPreviewCard(props: { open?: () => void }): ReturnType<typeof h> {
+/** 槽位组件收到的 props：框架按 `inject()` 的返回值给齐（这里直接给设置文档 + 跳转动作）。 */
+interface ConfigPanelProps {
+  view: 'summary' | 'page'
+  /** 宿主托管的设置文档（`configForms.get(ns)`）：读快照、原子 mutate，插件不落盘。 */
+  form: SettingsFormScope<PluginConfig>
+  openDemo: () => void
+}
+
+/**
+ * 插件详情页的配置面板（`plugins.bundle.config`）。
+ *
+ * 交互口径（用户 2026-10-25）：**没有「保存」按钮，开关一拨即写**——直接调官方
+ * `configForms` 的原子 `mutate`（带 revision 围栏），宿主持久化到 profile。
+ *
+ * 外观复用核心 `StripCard`：左缘色条「开 = 绿 / 关 = 灰」，说明在左、开关在右。
+ * ⚠️ 介绍只写「这个插件是干嘛的」，不列功能、不写代码——功能会随版本变，介绍不跟着维护。
+ */
+function ConfigPanel(props: ConfigPanelProps): ReturnType<typeof h> {
+  const form = props.form
+  const [, rerender] = useState(0)
+  // 订阅设置文档：宿主写入成功 / 外部变更后重渲（开关态与卡片色条跟着走）。
+  // ⚠️ hooks 必须在任何 return 之前调（视图可能在 page/summary 间切换，不能改动 hook 顺序）。
+  useEffect(() => form.subscribe(() => { rerender((n) => n + 1) }), [form])
+
+  // 详情页只渲染 `page` 视图；`summary`（列表摘要位）不出内容。
+  if (props.view !== 'page') return h('div', { style: { display: 'none' } })
+  const snap = form.getSnapshot()
+  const on = snap.value?.sidebarEntry !== false
+  const ready = snap.status === 'ready'
+
   return h(
     'div',
-    {
-      role: 'button',
-      onClick: () => { props.open?.() },
-      style: {
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer',
-        padding: '12px 14px', borderRadius: 'var(--dshpc-radius-md)',
-        border: '1px solid var(--dshpc-border)', background: 'var(--dshpc-surface-1)',
-      },
-    },
+    { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
+    // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
+    h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px', lineHeight: '18px' } }, t('settingsIntro')),
+    // 设置行：开关在右、说明在左；左缘色条开=绿 / 关=灰（核心 StripCard）
+    ready
+      ? h(
+          StripCard,
+          {
+            accent: on ? 'success' : 'neutral',
+            action: h(Switch, {
+              checked: on,
+              label: t('settingsSidebarEntry'),
+              disabled: !snap.writable,
+              onChange: (next: boolean) => {
+                // 拨动即写：官方原子 mutate（revision 围栏），宿主持久化，不需要「保存」
+                void form.mutate(
+                  [{ op: 'set', path: [SIDEBAR_ENTRY_FIELD], value: next }],
+                  snap.revision,
+                )
+              },
+            }),
+          },
+          h(
+            'div',
+            null,
+            h('div', { style: { fontSize: '13px', fontWeight: 500 } }, t('settingsSidebarEntry')),
+            h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px', marginTop: '2px' } },
+              t('settingsSidebarEntryHint')),
+          ),
+        )
+      : h(
+          'div',
+          { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px' } },
+          t(snap.status === 'loading' ? 'settingsLoading' : 'settingsUnavailable'),
+        ),
     h(
       'div',
-      null,
-      h('div', { style: { fontWeight: 600, fontSize: '14px' } }, t('pluginTitle')),
-      h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px', marginTop: '2px' } },
-        t('pluginCardDesc')),
+      { style: { display: 'flex', gap: '8px' } },
+      h(
+        Button,
+        { size: 'md', variant: 'primary', icon: h(IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
+        t('settingsOpenDemo'),
+      ),
+      h(
+        Button,
+        {
+          size: 'md', variant: 'outline',
+          icon: h(IconLinkOutlineRegular, { size: 16 }),
+          onClick: () => { window.open('https://github.com/cq-guojia/dsh-plugin-core', '_blank', 'noopener') },
+        },
+        t('settingsGithub'),
+      ),
     ),
-    h('span', { style: { color: 'var(--dshpc-business)', fontSize: '13px' } }, t('pluginCardOpen')),
   )
 }
 
@@ -245,6 +380,8 @@ function PanelIcon(props: { size?: number }): ReturnType<typeof h> {
 
 export function apply(ctx: {
   inject: (deps: string[], cb: (sub: unknown) => void) => void
+  /** 效果存活期 = 本插件的存活期；卸载/unload 时自动跑 disposer（可选：没有就不回收，不致命）。 */
+  effect?: (body: () => (() => void) | undefined) => void
 }): void {
   // 领一套自己的 kit 并注入 token + 控件样式（与库在宿主里的用法完全一致）
   const kit = createStyleKit({ id: 'dsh-plugin-core-plugin' })
@@ -258,11 +395,14 @@ export function apply(ctx: {
   // 与 Tooltip 展示区里的是同一个（core 零官方依赖 ⇒ 只能由插件侧注入，见 src/ui/tooltip.ts）。
   setTooltipRenderer((props) => h(Tooltip, props as never))
 
-  // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）
+  // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）。
+  // ⚠️ 必须保留 `layout` 对象再调它的方法：`selectPanel` 是 class 方法，抽出来单存会丢 this，
+  //    宿主内部 `this.hasMainPanel(...)` 直接抛 "Cannot read properties of undefined"（真机踩过）。
   let jump: (id: string) => void = () => {}
   ctx.inject(['layout'], (sub: unknown) => {
-    const select = (sub as { layout?: { selectPanel?: (id: string) => void } } | null)?.layout?.selectPanel
-    if (typeof select === 'function') jump = (id) => { select(id) }
+    const layout = (sub as { layout?: { selectPanel?: (id: string | null) => void } } | null)?.layout
+    if (layout?.selectPanel === undefined) return
+    jump = (id) => { layout.selectPanel?.(id) }
   })
 
   // 领域选择器的数据面（工作区列表 / 模型目录）：core 自己订数，这里只递一次 ctx。
@@ -291,28 +431,56 @@ export function apply(ctx: {
     loc.subscribe(sync)
   })
 
-  // ⚠️ 三块注册各自 ctx.inject、自成一块：嵌进别的注入块会无声消失（兄弟仓注释原话）
+  // ⚠️ 两块注册各自 ctx.inject、自成一块：嵌进别的注入块会无声消失（兄弟仓注释原话）
   ctx.inject(['slots'], (sub: unknown) => {
-    const slots = (sub as { slots?: { inject: (name: string, cb: () => void) => void; register: (meta: unknown, comp: unknown) => unknown } }).slots
+    const slots = (sub as { slots?: SlotsLike }).slots
     if (slots === undefined) return
-    slots.inject('sidebar.panellist', () => {
-      slots.register(
-        { name: 'sidebar.panellist', id: PANEL_ID, order: 90, label: () => t('pluginTitle') },
-        PanelIcon,
-      )
-    })
+    slotsRef = slots
+    applySidebarEntry()
     slots.inject('main', () => {
       slots.register({ name: 'main', key: PANEL_ID }, DemoPage)
     })
-    slots.inject('settings.plugin.item', () => {
+  })
+
+  // 设置：**宿主托管的插件配置**（server 侧 `Config` schema ⇒ settings 服务按 entry 自动登记命名空间）。
+  //  ─ 持久化在 profile patch 文档里，宿主负责写入与重载时的生效，插件不自己落盘；
+  //  ─ 侧栏入口跟着设置文档的快照走（订阅），所以「打开详情页之前」也按持久化值生效；
+  //  ─ `whileServed` 保证宿主没登记这个命名空间时（比如 entry 被禁用）详情页不留任何痕迹。
+  ctx.inject(['slots', 'configForms'], (sub: unknown) => {
+    const view = sub as { slots?: SlotsLike; configForms?: ConfigFormsLike }
+    const slots = view.slots
+    const forms = view.configForms
+    if (slots === undefined || forms === undefined) return
+
+    const entryId = resolveServedEntryId(forms)
+    const form = forms.get<PluginConfig>(entryId)
+
+    // 侧栏入口：设置文档一变就重算（开关一拨即写，立刻摘除/挂回入口，不需要重开插件）
+    const syncSidebar = (): void => {
+      const value = form.getSnapshot().value
+      sidebarEntryOn = value?.sidebarEntry !== false
+      applySidebarEntry()
+    }
+    syncSidebar()
+    ctx.effect?.(() => form.subscribe(syncSidebar))
+
+    // 直接注册详情页配置区（key = 包名 ⇒ 宿主 ledger.bundles.has(pkg.name) 命中、必出配置区）。
+    // 不裹 whileServed：命名空间若未按 PANEL_ID 命中（或镜像未就绪）会导致整段永远不注册、
+    // 配置区消失——tdt 也是直接注册。命名空间用宿主实际 served 的那个（resolveServedEntryId）。
+    slots.inject(BUNDLE_CONFIG_SLOT, () => {
       slots.register(
         {
-          name: 'settings.plugin.item',
+          name: BUNDLE_CONFIG_SLOT,
+          // keyed 槽位：key 必须与包名逐字相同（详情页按 `ledger.bundles.has(pkg.name)` 决定是否出配置区）。
           key: PANEL_ID,
-          // 由宿主把「跳整页」的 open 回注给卡片组件
-          inject: () => ({ open: () => { jump(PANEL_ID) } }),
+          locale: PANEL_ID,
+          // `form`（设置文档）与 `openDemo`（跳整页）作为普通 props 透传进面板组件。
+          inject: () => ({
+            form,
+            openDemo: () => { jump(PANEL_ID) },
+          }),
         },
-        (props: { open?: () => void }) => h(OpenPreviewCard, { open: props?.open ?? (() => { jump(PANEL_ID) }) }),
+        ConfigPanel,
       )
     })
   })

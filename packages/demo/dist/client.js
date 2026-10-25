@@ -54931,7 +54931,7 @@ var DICT2 = {
     inputMissingDesc: "\u672C\u9875\u5C1A\u672A\u5C55\u793A\uFF1A\n\xB7 PrefixedInput\uFF08\u5E26\u524D\u7F00\u7684\u8F93\u5165\u6846\uFF09\u2014\u2014 dem\u043E \u91CC\u8FD8\u6CA1\u6709\u6837\u4F8B\n\xB7 Loading / RunningBlocks \u867D\u5C5E\u53CD\u9988\uFF0C\u5B9E\u9645\u6E32\u67D3\u4F1A\u6302\u5728\u5BB9\u5668\u53F3\u4E0B\u89D2\uFF0C\u89C1\u300C\u53CD\u9988\u300D\u9875\u7684\u8BF4\u660E",
     pickerLogicDesc: "\u672C\u9875\u5C1A\u672A\u5C55\u793A\uFF1A\n\xB7 picker-logic \u5BFC\u51FA\u7684\u7EAF\u51FD\u6570 filterGroups / flattenOptions / groupOf / labelsOf / toGroups / toggleValue\n\u2014\u2014 \u5B83\u4EEC\u662F\u9009\u62E9\u9898\u5E95\u5C42\u7684\u53D6\u503C\u903B\u8F91\uFF0C\u6CA1\u6709 UI\uFF0C\u9700\u8981\u4E00\u5F20\u300C\u8F93\u5165 \u2192 \u8F93\u51FA\u300D\u7684\u901F\u67E5\u8868\u624D\u8BB2\u5F97\u6E05",
     overviewDesc: "\u5F85\u8865\uFF1A\n\xB7 \u5305\u7684\u4E00\u53E5\u8BDD\u5B9A\u4F4D\uFF1A\u8C01\u80FD\u7528\u3001\u89E3\u51B3\u4EC0\u4E48\n\xB7 \u4E94\u4E2A\u5B50\u5305\u5404\u81EA\u56DE\u7B54\u4EC0\u4E48\u95EE\u9898\uFF08design / ui / utils / explorer / session\uFF09\n\xB7 \u4E00\u5F20\u80FD\u529B\u5730\u56FE\uFF0C\u76F4\u63A5\u8DF3\u5230\u5BF9\u5E94\u4E8C\u7EA7\u9875\n\xB7 \u4E0D\u9002\u7528\u8FB9\u754C\uFF08\u4E0D\u662F i18n \u6846\u67B6\u3001\u4E0D\u662F\u8BBE\u7F6E\u9875\u9AA8\u67B6\uFF09",
-    installDesc: "\u5F85\u8865\uFF1A\n\xB7 \u4F9D\u8D56\u58F0\u660E\u600E\u4E48\u88C5\uFF08git \u5B89\u88C5\uFF0C\u5BBF\u4E3B\u4E0D\u8DD1\u6784\u5EFA\u811A\u672C\uFF09\n\xB7 \u5165\u53E3\u5FC5\u987B\u505A\u7684\u4E24\u884C\uFF1AsetStyleKit + ensureControls\n\xB7 \u4E3A\u4EC0\u4E48 @deepseek-ai/* \u5FC5\u987B\u6807 external\uFF08\u4E0D\u6807\u6253\u5305\u4F1A\u5931\u8D25\uFF09\n\xB7 \u5BBF\u4E3B slots \u6CE8\u518C\uFF1Asidebar.panellist / main / settings.plugin.item\n\xB7 \u88C5\u4E0D\u4E0A\u7684\u6392\u67E5\u6E05\u5355\uFF08\u5148\u770B build \u7F16\u7801\u662F\u5426\u53D8\u4E86\uFF09",
+    installDesc: "\u5F85\u8865\uFF1A\n\xB7 \u4F9D\u8D56\u58F0\u660E\u600E\u4E48\u88C5\uFF08git \u5B89\u88C5\uFF0C\u5BBF\u4E3B\u4E0D\u8DD1\u6784\u5EFA\u811A\u672C\uFF09\n\xB7 \u5165\u53E3\u5FC5\u987B\u505A\u7684\u4E24\u884C\uFF1AsetStyleKit + ensureControls\n\xB7 \u4E3A\u4EC0\u4E48 @deepseek-ai/* \u5FC5\u987B\u6807 external\uFF08\u4E0D\u6807\u6253\u5305\u4F1A\u5931\u8D25\uFF09\n\xB7 \u5BBF\u4E3B slots \u6CE8\u518C\uFF1Asidebar.panellist / main / plugins.bundle.config\uFF08\u8BBE\u7F6E\u9875\uFF09\n\xB7 \u88C5\u4E0D\u4E0A\u7684\u6392\u67E5\u6E05\u5355\uFF08\u5148\u770B build \u7F16\u7801\u662F\u5426\u53D8\u4E86\uFF09",
     quickstartDesc: "\u5F85\u8865\uFF1A\n\xB7 \u4E00\u4E2A\u6700\u5C0F\u53EF\u8DD1\u63D2\u4EF6\u7684\u5B8C\u6574\u6E90\u7801\n\xB7 \u4ECE\u5EFA\u76EE\u5F55\u5230\u5728\u5BBF\u4E3B\u91CC\u770B\u89C1\u5B83\u7684\u5206\u6B65\u8BF4\u660E\n\xB7 \u672C\u9884\u89C8\u63D2\u4EF6\u81EA\u5DF1\u5C31\u662F\u6837\u4F8B\uFF0C\u53EF\u5BF9\u7167 packages/demo/src",
     namingDesc: "\u5F85\u8865\uFF1A\n\xB7 \u53D8\u91CF\u4E0E\u7C7B\u540D\u7EDF\u4E00 dshpc \u524D\u7F00\u7684\u7406\u7531\n\xB7 \u7C7B\u540D\u5FC5\u987B\u4E0E\u7EC4\u4EF6\u91CC\u786C\u7F16\u7801\u7684 className \u9010\u5B57\u4E00\u81F4\u2014\u2014\u4E0D\u4E00\u81F4\u4F1A\u6574\u7247\u5931\u6548\n\xB7 createStyleKit({ id }) \u9694\u79BB\u5230\u4EC0\u4E48\u7C92\u5EA6\n\xB7 \u6CE8\u5165\u987A\u5E8F\uFF1A\u540C\u7279\u5F02\u6027\u65F6\u540E\u6CE8\u5165\u8005\u80DC\u51FA\n\xB7 \u660E\u6697\u5224\u636E\u4E3A\u4EC0\u4E48\u662F body[data-ds-dark-theme] \u800C\u4E0D\u662F\u7CFB\u7EDF\u8BBE\u7F6E",
     dockHint: "\u53F3\u4FA7\u505C\u9760\u5206\u680F\uFF0C\u6302\u5728\u6574\u9875\u4E0A\uFF1A\u7ED3\u6784\u5199\u5728\u9875\u9762\u91CC\uFF08DockPanel\uFF09\uFF0Copen(id) \u53EA\u7BA1\u663E\u9690\u3002\n\u8BD5\u4E00\u904D\uFF1A\u5F00 A\uFF08\u56FE\u6807 + \u6807\u9898 + \u53F3\u4FA7\u6807\u7B7E\uFF09\u2192 \u5F00 B\uFF08\u6574\u5757\u81EA\u5B9A\u4E49\u5934\u90E8\uFF09\u2192 \u5F00 C\uFF08\u65E0\u5934\u90E8\u3001\u5173\u95ED\u94AE\u6D6E\u5728\u53F3\u4E0A\u89D2\uFF09\u2192 \u5173 A \u540E\u518D\u5F00\u65B0\u7EC4\u540D \u2192 \u6EE1 3 \u680F\u518D\u5F00\u4F1A\u88AB\u62D2\u7EDD\u3002",
@@ -55107,9 +55107,14 @@ var DICT2 = {
     docApiType: "\u7C7B\u578B",
     docApiDefault: "\u9ED8\u8BA4\u503C",
     docApiDesc: "\u8BF4\u660E",
-    pluginTitle: "\u8717\u725B\u7EC4\u4EF6\u5E93",
-    pluginCardDesc: "\u6253\u5F00\u8717\u725B\u7EC4\u4EF6\u5E93\u7684\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u5C55\u793A\u9875",
-    pluginCardOpen: "\u6253\u5F00 \u203A"
+    pluginTitle: "\u84DD\u9CB8\u7EC4\u4EF6\u5E93",
+    settingsIntro: "\u84DD\u9CB8\u7EC4\u4EF6\u5E93\u662F\u4E3A DeepSeek Harness \u63D2\u4EF6\u51C6\u5907\u7684\u5171\u4EAB UI \u5E95\u5EA7\uFF0C\u672C\u5305\u662F\u5B83\u7684\u7EC4\u4EF6\u9884\u89C8\u63D2\u4EF6\uFF1A\u88C5\u8FDB DSH \u5BBF\u4E3B\u540E\uFF0C\u5728\u8BBE\u7F6E\u91CC\u5373\u53EF\u67E5\u770B\u5404\u57FA\u7840\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u7684\u771F\u5B9E\u8FD0\u884C\u8868\u73B0\u3002",
+    settingsSidebarEntry: "\u4FA7\u680F\u5165\u53E3",
+    settingsSidebarEntryHint: "\u5F00\u542F\u540E\uFF0C\u5728\u4FA7\u680F\u300C\u63D2\u4EF6\u300D\u4E0B\u65B9\u663E\u793A\u672C\u63D2\u4EF6\u5165\u53E3\uFF1B\u5173\u95ED\u540E\u4EC5\u4FDD\u7559\u672C\u8BBE\u7F6E\u9875\u5165\u53E3\u3002",
+    settingsOpenDemo: "\u67E5\u770B demo",
+    settingsGithub: "\u8BBF\u95EE GitHub",
+    settingsLoading: "\u6B63\u5728\u8BFB\u53D6\u8BBE\u7F6E\u2026",
+    settingsUnavailable: "\u5BBF\u4E3B\u5F53\u524D\u6CA1\u6709\u63D0\u4F9B\u672C\u63D2\u4EF6\u7684\u8BBE\u7F6E\u9879"
   },
   en: {
     grpStart: "Getting started",
@@ -55148,7 +55153,7 @@ var DICT2 = {
     inputMissingDesc: "Not shown on this page yet:\n\xB7 PrefixedInput \u2014 no sample in this demo\n\xB7 Loading / RunningBlocks belong to feedback; they pin to the container\u2019s bottom-right, see the note on the Feedback page",
     pickerLogicDesc: "Not shown on this page yet:\n\xB7 The pure helpers from picker-logic: filterGroups / flattenOptions / groupOf / labelsOf / toGroups / toggleValue\n\u2014 they are the value logic under the pickers, no UI of their own; they need an input \u2192 output cheat sheet to explain",
     overviewDesc: "To be added:\n\xB7 One-line positioning: who it is for, what it solves\n\xB7 What each of the five subpackages answers (design / ui / utils / explorer / session)\n\xB7 A capability map linking straight to the pages below\n\xB7 The boundary: not an i18n framework, not a settings-page skeleton",
-    installDesc: "To be added:\n\xB7 How to install (via git \u2014 the host does not run build scripts)\n\xB7 The two mandatory entry lines: setStyleKit + ensureControls\n\xB7 Why @deepseek-ai/* must stay external (otherwise bundling fails)\n\xB7 Registering host slots: sidebar.panellist / main / settings.plugin.item\n\xB7 Checklist when it does not load (start by checking the build stamp)",
+    installDesc: "To be added:\n\xB7 How to install (via git \u2014 the host does not run build scripts)\n\xB7 The two mandatory entry lines: setStyleKit + ensureControls\n\xB7 Why @deepseek-ai/* must stay external (otherwise bundling fails)\n\xB7 Registering host slots: sidebar.panellist / main / plugins.bundle.config (settings page)\n\xB7 Checklist when it does not load (start by checking the build stamp)",
     quickstartDesc: "To be added:\n\xB7 Full source of a minimal working plugin\n\xB7 Step-by-step from empty folder to visible panel\n\xB7 This preview plugin is itself the sample \u2014 see packages/demo/src",
     namingDesc: "To be added:\n\xB7 Why variables and class names share the dshpc prefix\n\xB7 Class names must match the hard-coded className character for character \u2014 any drift kills the whole block\n\xB7 How far createStyleKit({ id }) isolates\n\xB7 Injection order: at equal specificity the later one wins\n\xB7 Why the theme switch is body[data-ds-dark-theme] and not prefers-color-scheme",
     dockHint: "Right-side dock: a group name is one window; reopening the same name replaces its content in place (no extra column).\nTry it: open A \u2192 open B \u2192 reopen A (content replaced) \u2192 close A \u2192 open C (the freed slot is usable) \u2192 with 3 columns open, a new group name is rejected.",
@@ -55324,9 +55329,14 @@ var DICT2 = {
     docApiType: "Type",
     docApiDefault: "Default",
     docApiDesc: "Description",
-    pluginTitle: "Snail Component Library",
-    pluginCardDesc: "Open the showcase of Snail Component Library controls and business components",
-    pluginCardOpen: "Open \u203A"
+    pluginTitle: "Blue Whale Component Library",
+    settingsIntro: "Blue Whale Component Library is the shared UI foundation for DeepSeek Harness plugins. This package is its live preview: installed in a DSH host, it shows every base control and business component running for real.",
+    settingsSidebarEntry: "Sidebar entry",
+    settingsSidebarEntryHint: 'When on, the plugin entry appears under "Plugins" in the sidebar; when off, only this settings entry remains.',
+    settingsOpenDemo: "View demo",
+    settingsGithub: "Visit GitHub",
+    settingsLoading: "Reading settings\u2026",
+    settingsUnavailable: "The host is not serving this plugin\u2019s settings"
   }
 };
 var boundT;
@@ -61398,7 +61408,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.2.14"}`],
             [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "261024-234246-993"]
+            [t3("buildStamp"), "261025-113428-702"]
           ].map(
             ([label, value]) => (0, import_react66.createElement)(
               "tr",
@@ -61504,6 +61514,37 @@ var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 
 // packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";
+var BUNDLE_CONFIG_SLOT = "plugins.bundle.config";
+var SIDEBAR_ENTRY_FIELD = "sidebarEntry";
+function resolveServedEntryId(forms) {
+  let served;
+  try {
+    served = forms.describe().getSnapshot().view?.namespaces?.map((n) => n.ns);
+  } catch {
+    served = void 0;
+  }
+  if (served === void 0) return PANEL_ID;
+  return served.find((ns) => ns === PANEL_ID) ?? PANEL_ID;
+}
+var slotsRef = null;
+var sidebarDisposer = null;
+var sidebarEntryOn = true;
+function applySidebarEntry() {
+  const slots = slotsRef;
+  if (slots === null) return;
+  if (sidebarDisposer !== null) {
+    sidebarDisposer();
+    sidebarDisposer = null;
+  }
+  if (!sidebarEntryOn) return;
+  slots.inject("sidebar.panellist", () => {
+    if (sidebarDisposer !== null) return;
+    sidebarDisposer = slots.register(
+      { name: "sidebar.panellist", id: PANEL_ID, order: 90, label: () => t3("pluginTitle") },
+      PanelIcon
+    );
+  });
+}
 var localeRuntime;
 function useLocaleTick() {
   const [, setTick] = (0, import_react68.useState)(0);
@@ -61664,7 +61705,7 @@ function DemoPage() {
           },
           (0, import_react68.createElement)("span", null, `core v${"0.2.14"}`),
           (0, import_react68.createElement)("span", null, `demo v${"0.2.14"}`),
-          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261024-234246-993")
+          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261025-113428-702")
         )
       )
     ),
@@ -61678,36 +61719,74 @@ function DemoPage() {
     (0, import_react68.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
-function OpenPreviewCard(props) {
+function ConfigPanel(props) {
+  const form = props.form;
+  const [, rerender] = (0, import_react68.useState)(0);
+  (0, import_react68.useEffect)(() => form.subscribe(() => {
+    rerender((n) => n + 1);
+  }), [form]);
+  if (props.view !== "page") return (0, import_react68.createElement)("div", { style: { display: "none" } });
+  const snap = form.getSnapshot();
+  const on = snap.value?.sidebarEntry !== false;
+  const ready = snap.status === "ready";
   return (0, import_react68.createElement)(
     "div",
-    {
-      role: "button",
-      onClick: () => {
-        props.open?.();
+    { style: { display: "flex", flexDirection: "column", gap: "14px" } },
+    // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
+    (0, import_react68.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
+    // 设置行：开关在右、说明在左；左缘色条开=绿 / 关=灰（核心 StripCard）
+    ready ? (0, import_react68.createElement)(
+      StripCard,
+      {
+        accent: on ? "success" : "neutral",
+        action: (0, import_react68.createElement)(import_dsh_client_ui_primitives4.Switch, {
+          checked: on,
+          label: t3("settingsSidebarEntry"),
+          disabled: !snap.writable,
+          onChange: (next) => {
+            void form.mutate(
+              [{ op: "set", path: [SIDEBAR_ENTRY_FIELD], value: next }],
+              snap.revision
+            );
+          }
+        })
       },
-      style: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        cursor: "pointer",
-        padding: "12px 14px",
-        borderRadius: "var(--dshpc-radius-md)",
-        border: "1px solid var(--dshpc-border)",
-        background: "var(--dshpc-surface-1)"
-      }
-    },
-    (0, import_react68.createElement)(
-      "div",
-      null,
-      (0, import_react68.createElement)("div", { style: { fontWeight: 600, fontSize: "14px" } }, t3("pluginTitle")),
       (0, import_react68.createElement)(
         "div",
-        { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
-        t3("pluginCardDesc")
+        null,
+        (0, import_react68.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsSidebarEntry")),
+        (0, import_react68.createElement)(
+          "div",
+          { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
+          t3("settingsSidebarEntryHint")
+        )
       )
+    ) : (0, import_react68.createElement)(
+      "div",
+      { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
+      t3(snap.status === "loading" ? "settingsLoading" : "settingsUnavailable")
     ),
-    (0, import_react68.createElement)("span", { style: { color: "var(--dshpc-business)", fontSize: "13px" } }, t3("pluginCardOpen"))
+    (0, import_react68.createElement)(
+      "div",
+      { style: { display: "flex", gap: "8px" } },
+      (0, import_react68.createElement)(
+        Button,
+        { size: "md", variant: "primary", icon: (0, import_react68.createElement)(import_dsh_client_ui_primitives4.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
+        t3("settingsOpenDemo")
+      ),
+      (0, import_react68.createElement)(
+        Button,
+        {
+          size: "md",
+          variant: "outline",
+          icon: (0, import_react68.createElement)(import_dsh_client_ui_primitives4.IconLinkOutlineRegular, { size: 16 }),
+          onClick: () => {
+            window.open("https://github.com/cq-guojia/dsh-plugin-core", "_blank", "noopener");
+          }
+        },
+        t3("settingsGithub")
+      )
+    )
   );
 }
 function PanelIcon(props) {
@@ -61732,9 +61811,10 @@ function apply(ctx) {
   let jump = () => {
   };
   ctx.inject(["layout"], (sub) => {
-    const select = sub?.layout?.selectPanel;
-    if (typeof select === "function") jump = (id3) => {
-      select(id3);
+    const layout = sub?.layout;
+    if (layout?.selectPanel === void 0) return;
+    jump = (id3) => {
+      layout.selectPanel?.(id3);
     };
   });
   connectHost(ctx, { modelsPath: MODELS_PATH });
@@ -61759,28 +61839,42 @@ function apply(ctx) {
   ctx.inject(["slots"], (sub) => {
     const slots = sub.slots;
     if (slots === void 0) return;
-    slots.inject("sidebar.panellist", () => {
-      slots.register(
-        { name: "sidebar.panellist", id: PANEL_ID, order: 90, label: () => t3("pluginTitle") },
-        PanelIcon
-      );
-    });
+    slotsRef = slots;
+    applySidebarEntry();
     slots.inject("main", () => {
       slots.register({ name: "main", key: PANEL_ID }, DemoPage);
     });
-    slots.inject("settings.plugin.item", () => {
+  });
+  ctx.inject(["slots", "configForms"], (sub) => {
+    const view = sub;
+    const slots = view.slots;
+    const forms = view.configForms;
+    if (slots === void 0 || forms === void 0) return;
+    const entryId = resolveServedEntryId(forms);
+    const form = forms.get(entryId);
+    const syncSidebar = () => {
+      const value = form.getSnapshot().value;
+      sidebarEntryOn = value?.sidebarEntry !== false;
+      applySidebarEntry();
+    };
+    syncSidebar();
+    ctx.effect?.(() => form.subscribe(syncSidebar));
+    slots.inject(BUNDLE_CONFIG_SLOT, () => {
       slots.register(
         {
-          name: "settings.plugin.item",
+          name: BUNDLE_CONFIG_SLOT,
+          // keyed 槽位：key 必须与包名逐字相同（详情页按 `ledger.bundles.has(pkg.name)` 决定是否出配置区）。
           key: PANEL_ID,
-          // 由宿主把「跳整页」的 open 回注给卡片组件
-          inject: () => ({ open: () => {
-            jump(PANEL_ID);
-          } })
+          locale: PANEL_ID,
+          // `form`（设置文档）与 `openDemo`（跳整页）作为普通 props 透传进面板组件。
+          inject: () => ({
+            form,
+            openDemo: () => {
+              jump(PANEL_ID);
+            }
+          })
         },
-        (props) => (0, import_react68.createElement)(OpenPreviewCard, { open: props?.open ?? (() => {
-          jump(PANEL_ID);
-        }) })
+        ConfigPanel
       );
     });
   });

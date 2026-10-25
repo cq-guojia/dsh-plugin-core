@@ -12,6 +12,8 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   export const IconSearchOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconEditOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconPlayOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 外链（访问 GitHub 按钮前置图标）。 */
+  export const IconLinkOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconPaperPlaneOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconChevronDownOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconClockOutlineRegular: ComponentType<{ size?: number; className?: string }>
@@ -82,4 +84,83 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
     portal?: boolean
     children?: import('react').ReactElement
   }>
+
+  // —— 官方设置表单（settings-form 子系统）——
+  // 插件详情页那张配置表单就是它：草稿态 + 「保存」一次性落地，脏 / 只读 / 失败全套状态官方管，
+  // 插件不带状态机。类型照 @deepseek-ai/dsh-client-ui-primitives 0.2.0-rc.1 的
+  // `lib/types/settings-form/*.d.ts` 抄最小子集。
+
+  /** 表单整体状态（每个插件设置卡片共用的一套）。 */
+  export interface SettingsFormShell {
+    /** 命名空间还没被宿主提供时为 false —— 此时官方外壳渲染 unavailable 文案，不出控件。 */
+    available: boolean
+    writable: boolean
+    dirty: boolean
+    invalid: boolean
+    saving: boolean
+    failed: boolean
+  }
+
+  /** 一个字段的控件态：草稿文本 + 保存后是否留痕 + 该草稿是否被字段接受。 */
+  export interface SettingsFieldState {
+    text: string
+    overridden: boolean
+    invalid: boolean
+  }
+
+  /** 一次写入：落值为 set、清除为 clear（undefined = 草稿文本不是本字段接受的值，拦住保存）。 */
+  export type SettingsFieldWrite = { kind: 'set'; value: unknown } | { kind: 'clear' }
+
+  /** 字段在「存储值 ↔ 草稿文本」之间的转换契约（官方只出 number / text，布尔照此自己写 spec）。 */
+  export interface SettingsFieldSpec {
+    field: string
+    format: (value: unknown) => string
+    parse: (text: string) => SettingsFieldWrite | undefined
+  }
+
+  /** 官方的 observable store（getSnapshot / subscribe 两件套）。 */
+  export interface SnapshotStore<S> {
+    getSnapshot(): S
+    subscribe(listener: () => void): () => void
+  }
+
+  /** 一个设置命名空间的只读快照面（官方 ConfigForm 的子集，够 SettingsFormModel 用）。 */
+  export interface SettingsFormScope<T> {
+    getSnapshot(): {
+      status: 'loading' | 'ready' | 'unavailable'
+      value: T | undefined
+      writable: boolean
+      revision: number | undefined
+    }
+    subscribe(listener: () => void): () => void
+    mutate(ops: readonly unknown[], expectedRevision?: number): Promise<boolean>
+  }
+
+  /** 表单动作（槽位 entry 的 inject 把它们交给面板组件）。 */
+  export interface SettingsFormActions {
+    edit: (field: string, text: string) => void
+    resetField: (field: string) => void
+    save: () => void
+    discard: () => void
+  }
+
+  /** 官方 staged form：临时草稿、原子提交、失败保留草稿——插件侧不带状态机。 */
+  export class SettingsFormModel<T> {
+    constructor(scope: SettingsFormScope<T>, specs: SettingsFieldSpec[])
+    bind<S>(project: () => S): SnapshotStore<S>
+    shell(): SettingsFormShell
+    field(field: string): SettingsFieldState
+    actions(): SettingsFormActions
+    save(): Promise<void>
+    dispose(): void
+  }
+
+  /** 官方表单外壳：只读提示 / 保存按钮 / unavailable 分支 / 离开页面自动 discard。 */
+  export function SettingsForm(props: {
+    labels: { unavailable: string; readOnly: string; saveFailed: string; save: string; saving: string }
+    state: SettingsFormShell
+    onSave: () => void
+    onDiscard: () => void
+    children?: import('react').ReactNode
+  }): import('react').JSX.Element
 }

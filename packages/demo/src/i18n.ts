@@ -205,8 +205,13 @@ export type DemoMessageKey =
   | 'weekday6'
   | 'weekday7'
   | 'pluginTitle'
-  | 'pluginCardDesc'
-  | 'pluginCardOpen'
+  | 'settingsIntro'
+  | 'settingsSidebarEntry'
+  | 'settingsSidebarEntryHint'
+  | 'settingsOpenDemo'
+  | 'settingsGithub'
+  | 'settingsLoading'
+  | 'settingsUnavailable'
   // 文档骨架（示例 / 代码 / 用法 / API 表）与按钮页的页级备注
   // 选择器 / 提示 / 卡片 / 标签四页
   // 反馈页（弹窗 + 提示）
@@ -274,7 +279,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     overviewDesc:
       '待补：\n· 包的一句话定位：谁能用、解决什么\n· 五个子包各自回答什么问题（design / ui / utils / explorer / session）\n· 一张能力地图，直接跳到对应二级页\n· 不适用边界（不是 i18n 框架、不是设置页骨架）',
     installDesc:
-      '待补：\n· 依赖声明怎么装（git 安装，宿主不跑构建脚本）\n· 入口必须做的两行：setStyleKit + ensureControls\n· 为什么 @deepseek-ai/* 必须标 external（不标打包会失败）\n· 宿主 slots 注册：sidebar.panellist / main / settings.plugin.item\n· 装不上的排查清单（先看 build 编码是否变了）',
+      '待补：\n· 依赖声明怎么装（git 安装，宿主不跑构建脚本）\n· 入口必须做的两行：setStyleKit + ensureControls\n· 为什么 @deepseek-ai/* 必须标 external（不标打包会失败）\n· 宿主 slots 注册：sidebar.panellist / main / plugins.bundle.config（设置页）\n· 装不上的排查清单（先看 build 编码是否变了）',
     quickstartDesc:
       '待补：\n· 一个最小可跑插件的完整源码\n· 从建目录到在宿主里看见它的分步说明\n· 本预览插件自己就是样例，可对照 packages/demo/src',
     namingDesc:
@@ -491,9 +496,14 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docApiDesc: '说明',
 
 
-    pluginTitle: '蜗牛组件库',
-    pluginCardDesc: '打开蜗牛组件库的控件与业务组件展示页',
-    pluginCardOpen: '打开 ›',
+    pluginTitle: '蓝鲸组件库',
+    settingsIntro: '蓝鲸组件库是为 DeepSeek Harness 插件准备的共享 UI 底座，本包是它的组件预览插件：装进 DSH 宿主后，在设置里即可查看各基础控件与业务组件的真实运行表现。',
+    settingsSidebarEntry: '侧栏入口',
+    settingsSidebarEntryHint: '开启后，在侧栏「插件」下方显示本插件入口；关闭后仅保留本设置页入口。',
+    settingsOpenDemo: '查看 demo',
+    settingsGithub: '访问 GitHub',
+    settingsLoading: '正在读取设置…',
+    settingsUnavailable: '宿主当前没有提供本插件的设置项',
   },
   en: {
     grpStart: 'Getting started',
@@ -539,7 +549,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     overviewDesc:
       'To be added:\n· One-line positioning: who it is for, what it solves\n· What each of the five subpackages answers (design / ui / utils / explorer / session)\n· A capability map linking straight to the pages below\n· The boundary: not an i18n framework, not a settings-page skeleton',
     installDesc:
-      'To be added:\n· How to install (via git — the host does not run build scripts)\n· The two mandatory entry lines: setStyleKit + ensureControls\n· Why @deepseek-ai/* must stay external (otherwise bundling fails)\n· Registering host slots: sidebar.panellist / main / settings.plugin.item\n· Checklist when it does not load (start by checking the build stamp)',
+      'To be added:\n· How to install (via git — the host does not run build scripts)\n· The two mandatory entry lines: setStyleKit + ensureControls\n· Why @deepseek-ai/* must stay external (otherwise bundling fails)\n· Registering host slots: sidebar.panellist / main / plugins.bundle.config (settings page)\n· Checklist when it does not load (start by checking the build stamp)',
     quickstartDesc:
       'To be added:\n· Full source of a minimal working plugin\n· Step-by-step from empty folder to visible panel\n· This preview plugin is itself the sample — see packages/demo/src',
     namingDesc:
@@ -757,9 +767,14 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     docApiDesc: 'Description',
 
 
-    pluginTitle: 'Snail Component Library',
-    pluginCardDesc: 'Open the showcase of Snail Component Library controls and business components',
-    pluginCardOpen: 'Open ›',
+    pluginTitle: 'Blue Whale Component Library',
+    settingsIntro: 'Blue Whale Component Library is the shared UI foundation for DeepSeek Harness plugins. This package is its live preview: installed in a DSH host, it shows every base control and business component running for real.',
+    settingsSidebarEntry: 'Sidebar entry',
+    settingsSidebarEntryHint: 'When on, the plugin entry appears under "Plugins" in the sidebar; when off, only this settings entry remains.',
+    settingsOpenDemo: 'View demo',
+    settingsGithub: 'Visit GitHub',
+    settingsLoading: 'Reading settings…',
+    settingsUnavailable: 'The host is not serving this plugin’s settings',
   },
 }
 

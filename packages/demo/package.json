@@ -3,7 +3,13 @@
   "version": "0.2.14",
   "description": "The shared UI foundation for DSH plugins, with a live component preview: design tokens, common controls, workspace browsing and notifications maintained in one place — install it to preview every component in a real host.",
   "icon": "./assets/icon-components.svg",
-  "keywords": ["deepseek", "harness", "dsh", "dsh-plugin", "dsh-plugin-core"],
+  "keywords": [
+    "deepseek",
+    "harness",
+    "dsh",
+    "dsh-plugin",
+    "dsh-plugin-core"
+  ],
   "homepage": "https://github.com/cq-guojia/dsh-plugin-core/tree/main/packages/demo",
   "repository": {
     "type": "git",
@@ -33,24 +39,36 @@
         "@deepseek-ai/dsh-client-ui-settings-plugins",
         "@deepseek-ai/dsh-client-ui-layout",
         "@deepseek-ai/dsh-client-ui-sidebar",
-      "@deepseek-ai/dsh-api-session-controller",
-      "@deepseek-ai/dsh-client-ui-conversation",
-      "@deepseek-ai/dsh-client-ui-workspace"
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-workspace"
       ]
     }
   },
-  "files": ["dist", "cordis.patch.yml", "assets", "locale"],
+  "files": [
+    "dist",
+    "cordis.patch.yml",
+    "assets",
+    "locale"
+  ],
   "scripts": {
     "build": "node build.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@deepseek-ai/schemastery": "^3.18.5"
   },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
   },
   "peerDependenciesMeta": {
-    "react": { "optional": true },
-    "react-dom": { "optional": true }
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public"
