@@ -1,7 +1,7 @@
 # 20261018-1307-修正-pnpm-硬链接在-fuse-下不生效-撤-npmrc-4298
 
-> **✅ 完成封卷**：2026-10-18 13:08:19（@GuoJia-Agent）
-> **创建**：2026-10-18 13:07:00（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-18 13:08:19（@cqguojia@hotmail.com）
+> **创建**：2026-10-18 13:07:00（@cqguojia@hotmail.com）
 > **分类**：缺陷修复 ｜ **标签**：pnpm、环境
 
 ## 背景
@@ -64,3 +64,8 @@ node_modules/.pnpm 文件数：250
 （dispatch 101M ⇒ 约 130M）。若不能接受，唯一能压回体积的是 `node-linker=hoisted`
 （npm 式扁平结构）——但那样会**丢掉 peer 隔离，也就丢掉了 pnpm 的主菜（防幽灵依赖）**。
 要不要推广、要不要 hoisted，由用户定。
+
+## 执行记录
+
+<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
+     补记用 progress.py log --id <任务号> --note "一句话"。 -->

@@ -1,7 +1,7 @@
 # 20261018-0425-ui-选择器-picker-通用选择器-modelpicker-双形态-b6cd
 
-> **✅ 完成封卷**：2026-10-18 06:02:14（@GuoJia-Agent）
-> **创建**：2026-10-18 04:25:00（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-18 06:02:14（@cqguojia@hotmail.com）
+> **创建**：2026-10-18 04:25:00（@cqguojia@hotmail.com）
 > **分类**：建设 ｜ **标签**：ui、选择器、模型
 
 ## 背景
@@ -60,3 +60,8 @@ ui 复用 utils 那套 `setLocale` —— 保持**单一 locale 状态**，不�
   在弹窗内部滚动时可能被裁切 —— 真碰到再处理。
 - 仍**未在浏览器渲染验证**（同前几个任务）。
 - `src/types/primitives.d.ts` 现在没有使用者了（留着给后续 explorer/session 用，若最终用不上要删）。
+
+## 执行记录
+
+<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
+     补记用 progress.py log --id <任务号> --note "一句话"。 -->

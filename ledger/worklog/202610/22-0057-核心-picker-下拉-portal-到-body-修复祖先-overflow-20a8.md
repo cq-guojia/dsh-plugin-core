@@ -1,7 +1,7 @@
 # 20261022-0057-核心-picker-下拉-portal-到-body-修复祖先-overflow-20a8：核心 Picker 下拉 portal 到 body，修复祖先 overflow 裁剪
 
-> **✅ 完成封卷**：2026-10-22 10:39:24（@GuoJia-Agent）
-> **创建**：2026-10-22 00:57:10（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-22 10:39:24（@cqguojia@hotmail.com）
+> **创建**：2026-10-22 00:57:10（@cqguojia@hotmail.com）
 > **分类**：缺陷 ｜ **标签**：Picker、浮层、裁剪
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -58,7 +58,7 @@
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-22 00:57:10 · new · @GuoJia-Agent · 创建任务（doing）
-- 2026-10-22 01:08:57 · log · @GuoJia-Agent · 实施：Picker 菜单 FloatingPortal 到 body + Floating UI 定位（flip/shift/offset/autoUpdate/size）；build/typecheck/test 77 绿；视觉裁剪待浏览器确认
-- 2026-10-22 01:14:09 · log · @GuoJia-Agent · 已 commit + push 到 main（调试期不 bump/tag）：核心 Picker 菜单 portal 到 body + Floating UI 定位，build/test 77 绿
-- 2026-10-22 10:39:24 · close · @GuoJia-Agent · 结案：Picker 下拉 portal 到 body 根治祖先裁剪；顺带修复 portal 引入的两处回归(菜单限宽、搜索框自动聚焦)与触发器聚焦蓝边；已 commit+push b084b40，build/test 77 绿
+- 2026-10-22 00:57:10 · new · @cqguojia@hotmail.com · 创建任务（doing）
+- 2026-10-22 01:08:57 · log · @cqguojia@hotmail.com · 实施：Picker 菜单 FloatingPortal 到 body + Floating UI 定位（flip/shift/offset/autoUpdate/size）；build/typecheck/test 77 绿；视觉裁剪待浏览器确认
+- 2026-10-22 01:14:09 · log · @cqguojia@hotmail.com · 已 commit + push 到 main（调试期不 bump/tag）：核心 Picker 菜单 portal 到 body + Floating UI 定位，build/test 77 绿
+- 2026-10-22 10:39:24 · close · @cqguojia@hotmail.com · 结案：Picker 下拉 portal 到 body 根治祖先裁剪；顺带修复 portal 引入的两处回归(菜单限宽、搜索框自动聚焦)与触发器聚焦蓝边；已 commit+push b084b40，build/test 77 绿

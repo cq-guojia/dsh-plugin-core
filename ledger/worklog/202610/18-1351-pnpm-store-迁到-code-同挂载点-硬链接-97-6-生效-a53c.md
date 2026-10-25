@@ -1,7 +1,7 @@
 # 20261018-1351-pnpm-store-迁到-code-同挂载点-硬链接-97-6-生效-a53c
 
-> **✅ 完成封卷**：2026-10-18 13:52:04（@GuoJia-Agent）
-> **创建**：2026-10-18 13:51:00（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-18 13:52:04（@cqguojia@hotmail.com）
+> **创建**：2026-10-18 13:51:00（@cqguojia@hotmail.com）
 > **分类**：建设 ｜ **标签**：pnpm、store、硬链接
 
 ## 背景
@@ -69,3 +69,8 @@ ln <store 里的文件> <项目目录>          → Invalid cross-device link
   已写进 `AGENTS.md`「本机 pnpm 环境」节。
 - 单仓体积仍是 33M（vs npm 25M），差异来自 peer 隔离与 du 统计方式；**多仓共享后总占用才会反超 npm**。
 - 旧 store `/opt/node-persist/pnpm-store`（434M）已无人用，可清理（未擅自动，等用户确认）。
+
+## 执行记录
+
+<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
+     补记用 progress.py log --id <任务号> --note "一句话"。 -->

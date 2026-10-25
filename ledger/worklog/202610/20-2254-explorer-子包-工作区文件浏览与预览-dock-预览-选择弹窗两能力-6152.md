@@ -1,7 +1,7 @@
 # 20261020-2254-explorer-子包-工作区文件浏览与预览-dock-预览-选择弹窗两能力-6152：explorer 子包：工作区文件浏览与预览（dock 预览 + 选择弹窗两能力）
 
-> **✅ 完成封卷**：2026-10-22 00:45:06（@GuoJia-Agent）
-> **创建**：2026-10-20 22:54:32（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-22 00:45:06（@cqguojia@hotmail.com）
+> **创建**：2026-10-20 22:54:32（@cqguojia@hotmail.com）
 > **分类**：功能 ｜ **标签**：explorer、文件预览、dock、picker、官方件
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -55,26 +55,15 @@
 - 校验：`pnpm run build` / demo `tsc` / `build:demo` / `node --test`（74/74）/ koc-codelint 全过。
 - 本轮未提交（用户只要求提交上一轮）。
 
-## 结论
-
-<!-- 做成了什么、留了什么坑 -->
-
-- **真机验收通过（2026-10-22，随 `…0a67` 一并验）**：① 分栏确是挤窄主区、不是浮层；② `header={null}` 后顶部不多线、✕ 浮右上角用户接受；③ 树行 / 面包屑 / ▾ 与兄弟对齐；④ 行尾文案「选择」。
-- 验收前的最后一批修复落在 `…0a67`：`read` 传参（首页 `{}` / 翻页 `{offset}`，旧 `{offset:0,limit:5000}` 违反官方 offset≥1 且 limit≤maxLines）、HTML `buildStaticHtml` 非法属性选择器 `[xlink:href]`、扩展名过滤下目录不可选 + 文件行补「选择」、弹窗改锚在按钮下方、`errView` 带出真实错误码。
-- **留到别处的两条**（不属于本任务，用户 2026-10-22 拍板「先结，之后另行处理」）：
-  ① 类名 / 变量未跨版本隔离（`createStyleKit` 只隔离 `<style>` 标签 id，类名仍是写死 `dshpc-*`）；
-  ② 全仓零渲染测试（77 用例全是纯逻辑，无 DOM）。
-  另：demo 的 `SessionPreview` 仍走 `mock.ts`（页面提示里已明示「source 是 mock 的」），属 session 侧，不在 explorer 子包范围内。
-
 ## 执行记录
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-20 22:54:32 · new · @GuoJia-Agent · 创建任务（doing）
-- 2026-10-20 22:55:52 · log · @GuoJia-Agent · 填正文：背景=用户两能力定义+拍板口径表+兄弟项目7条问题清单；待办9项；下一步读实现依赖现状文件
-- 2026-10-20 23:27:43 · log · @GuoJia-Agent · 交付：FileBrowser 面板 + openFilePreview/pickWorkspaceFile 两能力 + 六档预览体 + ./ui/official 通路；build/build:demo/73 测试/codelint 全过；正文曾被拉取回滚已重写；待用户真机验收
-- 2026-10-21 01:18:31 · log · @GuoJia-Agent · 本轮：openFilePreview 改挂核心 PanelDock、FileBrowser 全换核心按钮并统一高度档、▾ 反转为准 兄弟度量的自写浮层、demo 改接 remote.workspaceFiles + 真样例文件 + pickWorkspaceAnchor 锚点；build/tests 74/codelint 全过，待真机验收
-- 2026-10-21 07:44:21 · log · @GuoJia-Agent · 分栏纠偏：openFilePreview 新增必填 mount，dock 用 DockPanel header=null 挂进调用方 flex 行（不再 body+fixed 浮层）；explorer.css 按兄弟 .dsh-tdt-sv-* 逐条重抄；行尾文案改「选择」；picker 补 translate 注入
-- 2026-10-21 08:32:26 · log · @GuoJia-Agent · ▾ 下拉对齐兄弟：点当前工作区=回根（原误走 onPickWorkspace）、图标间距6px/条目左距8px 照抄；OpenFilePreviewOptions 补 workspaces/onSelectWorkspace 透传，demo 方法A 传工作区清单（原来只有方法B有）；越界文件逻辑核对=与兄弟一致（三个错误码→只读全路径+✕、预览照常），catch 分支补 ensureRootLearned
-- 2026-10-22 00:44:50 · log · @GuoJia-Agent · 补结论：四条真机验收点随 0a67 于 2026-10-22 全部通过；遗留（类名跨版本隔离 / 零渲染测试 / SessionPreview mock）用户拍板另议，不属于本任务
-- 2026-10-22 00:45:06 · close · @GuoJia-Agent · 结案：真机验收通过（2026-10-22）：分栏挤窄主区非浮层、header=null 顶部不多线、树行/面包屑/▾ 对齐兄弟、行尾文案「选择」。dock 预览与选择弹窗共用同一个 FileBrowser，差异只在承载与 picker 形态。遗留（类名跨版本隔离 / 零渲染测试 / demo SessionPreview 仍 mock）不在本任务范围，用户拍板另议
+- 2026-10-20 22:54:32 · new · @cqguojia@hotmail.com · 创建任务（doing）
+- 2026-10-20 22:55:52 · log · @cqguojia@hotmail.com · 填正文：背景=用户两能力定义+拍板口径表+兄弟项目7条问题清单；待办9项；下一步读实现依赖现状文件
+- 2026-10-20 23:27:43 · log · @cqguojia@hotmail.com · 交付：FileBrowser 面板 + openFilePreview/pickWorkspaceFile 两能力 + 六档预览体 + ./ui/official 通路；build/build:demo/73 测试/codelint 全过；正文曾被拉取回滚已重写；待用户真机验收
+- 2026-10-21 01:18:31 · log · @cqguojia@hotmail.com · 本轮：openFilePreview 改挂核心 PanelDock、FileBrowser 全换核心按钮并统一高度档、▾ 反转为准 兄弟度量的自写浮层、demo 改接 remote.workspaceFiles + 真样例文件 + pickWorkspaceAnchor 锚点；build/tests 74/codelint 全过，待真机验收
+- 2026-10-21 07:44:21 · log · @cqguojia@hotmail.com · 分栏纠偏：openFilePreview 新增必填 mount，dock 用 DockPanel header=null 挂进调用方 flex 行（不再 body+fixed 浮层）；explorer.css 按兄弟 .dsh-tdt-sv-* 逐条重抄；行尾文案改「选择」；picker 补 translate 注入
+- 2026-10-21 08:32:26 · log · @cqguojia@hotmail.com · ▾ 下拉对齐兄弟：点当前工作区=回根（原误走 onPickWorkspace）、图标间距6px/条目左距8px 照抄；OpenFilePreviewOptions 补 workspaces/onSelectWorkspace 透传，demo 方法A 传工作区清单（原来只有方法B有）；越界文件逻辑核对=与兄弟一致（三个错误码→只读全路径+✕、预览照常），catch 分支补 ensureRootLearned
+- 2026-10-22 00:44:50 · log · @cqguojia@hotmail.com · 补结论：四条真机验收点随 0a67 于 2026-10-22 全部通过；遗留（类名跨版本隔离 / 零渲染测试 / SessionPreview mock）用户拍板另议，不属于本任务
+- 2026-10-22 00:45:06 · close · @cqguojia@hotmail.com · 结案：真机验收通过（2026-10-22）：分栏挤窄主区非浮层、header=null 顶部不多线、树行/面包屑/▾ 对齐兄弟、行尾文案「选择」。dock 预览与选择弹窗共用同一个 FileBrowser，差异只在承载与 picker 形态。遗留（类名跨版本隔离 / 零渲染测试 / demo SessionPreview 仍 mock）不在本任务范围，用户拍板另议

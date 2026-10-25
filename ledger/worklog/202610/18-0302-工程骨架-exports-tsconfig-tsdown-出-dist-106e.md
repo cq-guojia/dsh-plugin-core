@@ -1,7 +1,7 @@
 # 20261018-0302-工程骨架-exports-tsconfig-tsdown-出-dist-106e：工程骨架：exports + tsconfig + tsdown 出 dist
 
-> **✅ 完成封卷**：2026-10-18 03:05:19（@GuoJia-Agent）
-> **创建**：2026-10-18 03:02:52（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-18 03:05:19（@cqguojia@hotmail.com）
+> **创建**：2026-10-18 03:02:52（@cqguojia@hotmail.com）
 > **分类**：建设 ｜ **标签**：打包、tsdown、骨架
 
 ## 背景
@@ -52,3 +52,8 @@
 - 六个 `index.ts` 目前是占位（`export {}`），内容由后续子包任务逐个填充。
 - 尚未验证「消费方 bundler 能否正确 tree-shake 按子路径引入」—— 要等第一个消费者接入任务验证。
 - 还没写 smoke 测试（`npm test` 指向 `test/*.test.mjs`，目录已建但为空）。
+
+## 执行记录
+
+<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
+     补记用 progress.py log --id <任务号> --note "一句话"。 -->

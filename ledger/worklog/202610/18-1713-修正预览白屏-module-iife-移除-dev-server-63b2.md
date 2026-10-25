@@ -1,7 +1,7 @@
 # 20261018-1713-修正预览白屏-module-iife-移除-dev-server-63b2
 
-> **✅ 完成封卷**：2026-10-18 17:14:03（@GuoJia-Agent）
-> **创建**：2026-10-18 17:13:00（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-18 17:14:03（@cqguojia@hotmail.com）
+> **创建**：2026-10-18 17:13:00（@cqguojia@hotmail.com）
 > **分类**：缺陷修复 ｜ **标签**：demo、构建
 
 ## 背景
@@ -53,3 +53,8 @@ Settings → Pages → Source 选 "GitHub Actions"。
 - **未在真实浏览器里双击验证**（环境无 GUI 浏览器），只做了产物结构与语法检查。
 - `ledger` 里旧任务 worklog（`18-1625`）仍写着「pnpm run demo 起 5180」——那是当时的事实记录，
   按台账规矩不改历史；以本任务为准。
+
+## 执行记录
+
+<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
+     补记用 progress.py log --id <任务号> --note "一句话"。 -->

@@ -1,6 +1,6 @@
 # 20261022-2308-filebrowser-越界呈现修复-list-错误码对齐官方-绘画预览路径栏不-d771：FileBrowser 越界呈现修复 + list 错误码对齐官方（绘画预览路径栏不可点）
 
-> **创建**：2026-10-22 23:08:11（@GuoJia-Agent）
+> **创建**：2026-10-22 23:08:11（@cqguojia@hotmail.com）
 > **分类**：缺陷 ｜ **标签**：explorer、FileBrowser、sessionId、错误码
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -116,12 +116,12 @@ list / rootCache 键 / learnRoot / stat / absolutizeDir / 相对化 / copyPath /
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-22 23:08:11 · new · @GuoJia-Agent · 创建任务（doing）
-- 2026-10-22 23:23:04 · log · @GuoJia-Agent · 落码完成：workspaceAnchorForPath 纯函数+单测、FileBrowser 五处 list 换解析 sessionId、crumbBarPlain hint、移除 lookup-not-found、demo 接线、dsh-host.md §12；build/test 97 过/typecheck/build:demo 全绿
-- 2026-10-22 23:46:22 · log · @GuoJia-Agent · 第二轮：openFilePreview 内置切工作区（PreviewBody：anchors 驱动、换会话+key 重挂载+回根、无会话不进列表）；anchorSessionForTitle 纯函数+单测；explorer.doc.ts 示例；98/98、typecheck、build:demo 全绿
-- 2026-10-22 23:55:28 · log · @GuoJia-Agent · 第三轮（用户拍板：底座不甩锅调用方）：FileBrowser/PreviewBody 兜底自动读 workspaceList 快照（connectHost 注入），零传参即匹配+可切；HostWorkspaceItem 加 path；demo 改零传参示范；98/98、typecheck、build:demo 全绿
-- 2026-10-23 00:04:22 · log · @GuoJia-Agent · 第四轮（真机截图）：匹配生效但学根/相对化仍按 props.sessionId ⇒ 面包屑露区外层；anchorMatch 统一驱动全部会话键（list/rootCache/learnRoot/stat/absolutizeDir/相对化/copyPath/onPick/FilePreview），根标签优先匹配工作区名；98/98、typecheck、build:demo 全绿
-- 2026-10-23 00:16:32 · log · @GuoJia-Agent · session 样式防护（真机截图：多变 deliverables 卡时左下角变更卡竖排变形）：changes 卡加 align-self:flex-start+flex:none、stat nowrap、endinfo 改 margin-left:auto；根因待 DOM 取证
-- 2026-10-23 00:18:41 · log · @GuoJia-Agent · 回退未经同意的越界 hint：删 FileBrowser crumbBarPlain hint span + explorerOutsideHint 中英 key + bar-hint CSS（源码与产物均已清零，死 key 自检过）
-- 2026-10-23 00:24:48 · log · @GuoJia-Agent · session 变更卡结构对齐官方（解包 ui-deliverables 0.2.1-rc.2 核实）：从 tail 之后挪进 tailSlot、置于网格之前（官方 Fragment>[ChangedFiles, 网格]）；全绿待真机验收
-- 2026-10-23 00:47:16 · log · @GuoJia-Agent · session 变更卡补官方完整结构（0.2.1-rc.2 解包）：多文件 = header + 文件行列表（路径+每文件 +N -M 常显上色）+ COLLAPSED_ROWS=4 折叠 toggle；header 60px/tile 40×40/hover 换显预览提示；新增 changesAll/changesCollapse 文案；98/98、typecheck、build:demo 全绿
+- 2026-10-22 23:08:11 · new · @cqguojia@hotmail.com · 创建任务（doing）
+- 2026-10-22 23:23:04 · log · @cqguojia@hotmail.com · 落码完成：workspaceAnchorForPath 纯函数+单测、FileBrowser 五处 list 换解析 sessionId、crumbBarPlain hint、移除 lookup-not-found、demo 接线、dsh-host.md §12；build/test 97 过/typecheck/build:demo 全绿
+- 2026-10-22 23:46:22 · log · @cqguojia@hotmail.com · 第二轮：openFilePreview 内置切工作区（PreviewBody：anchors 驱动、换会话+key 重挂载+回根、无会话不进列表）；anchorSessionForTitle 纯函数+单测；explorer.doc.ts 示例；98/98、typecheck、build:demo 全绿
+- 2026-10-22 23:55:28 · log · @cqguojia@hotmail.com · 第三轮（用户拍板：底座不甩锅调用方）：FileBrowser/PreviewBody 兜底自动读 workspaceList 快照（connectHost 注入），零传参即匹配+可切；HostWorkspaceItem 加 path；demo 改零传参示范；98/98、typecheck、build:demo 全绿
+- 2026-10-23 00:04:22 · log · @cqguojia@hotmail.com · 第四轮（真机截图）：匹配生效但学根/相对化仍按 props.sessionId ⇒ 面包屑露区外层；anchorMatch 统一驱动全部会话键（list/rootCache/learnRoot/stat/absolutizeDir/相对化/copyPath/onPick/FilePreview），根标签优先匹配工作区名；98/98、typecheck、build:demo 全绿
+- 2026-10-23 00:16:32 · log · @cqguojia@hotmail.com · session 样式防护（真机截图：多变 deliverables 卡时左下角变更卡竖排变形）：changes 卡加 align-self:flex-start+flex:none、stat nowrap、endinfo 改 margin-left:auto；根因待 DOM 取证
+- 2026-10-23 00:18:41 · log · @cqguojia@hotmail.com · 回退未经同意的越界 hint：删 FileBrowser crumbBarPlain hint span + explorerOutsideHint 中英 key + bar-hint CSS（源码与产物均已清零，死 key 自检过）
+- 2026-10-23 00:24:48 · log · @cqguojia@hotmail.com · session 变更卡结构对齐官方（解包 ui-deliverables 0.2.1-rc.2 核实）：从 tail 之后挪进 tailSlot、置于网格之前（官方 Fragment>[ChangedFiles, 网格]）；全绿待真机验收
+- 2026-10-23 00:47:16 · log · @cqguojia@hotmail.com · session 变更卡补官方完整结构（0.2.1-rc.2 解包）：多文件 = header + 文件行列表（路径+每文件 +N -M 常显上色）+ COLLAPSED_ROWS=4 折叠 toggle；header 60px/tile 40×40/hover 换显预览提示；新增 changesAll/changesCollapse 文案；98/98、typecheck、build:demo 全绿

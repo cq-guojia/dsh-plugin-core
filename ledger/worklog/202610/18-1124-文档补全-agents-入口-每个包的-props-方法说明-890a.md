@@ -1,7 +1,7 @@
 # 20261018-1124-文档补全-agents-入口-每个包的-props-方法说明-890a
 
-> **✅ 完成封卷**：2026-10-19 11:39:21（@GuoJia-Agent）
-> **创建**：2026-10-18 11:24:00（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-19 11:39:21（@cqguojia@hotmail.com）
+> **创建**：2026-10-18 11:24:00（@cqguojia@hotmail.com）
 > **分类**：建设 ｜ **标签**：文档、AGENTS、props
 
 ## 背景
@@ -67,3 +67,8 @@ BackToTop / Field 家族），表格里的默认值逐条对照源码，不凭�
 
 **仍未验证**：文档是「照着源码写的」，但**没人照着文档接过一次插件**——
 「按 `docs/examples/integration.md` 走能不能真接上」要等第一个消费者。
+
+## 执行记录
+
+<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
+     补记用 progress.py log --id <任务号> --note "一句话"。 -->

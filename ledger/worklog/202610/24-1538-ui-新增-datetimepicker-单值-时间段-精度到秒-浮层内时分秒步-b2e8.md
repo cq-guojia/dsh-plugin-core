@@ -1,6 +1,6 @@
 # 20261024-1538-ui-新增-datetimepicker-单值-时间段-精度到秒-浮层内时分秒步-b2e8：ui 新增 DateTimePicker：单值/时间段、精度到秒、浮层内时分秒步进
 
-> **创建**：2026-10-24 15:38:20（@GuoJia-Agent）
+> **创建**：2026-10-24 15:38:20（@cqguojia@hotmail.com）
 > **分类**：新功能 ｜ **标签**：ui、控件、日期
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -45,22 +45,22 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-24 15:38:20 · new · @GuoJia-Agent · 创建任务（doing）
-- 2026-10-24 15:59:33 · log · @GuoJia-Agent · DateTimePicker 落地：logic+组件+css+i18n 13key+demo 页+ui.doc.ts 章节；pnpm test 114/114、codelint 六层过、build:demo OK；待用户 demo 验收
-- 2026-10-24 16:23:28 · log · @GuoJia-Agent · 按用户反馈改：时分秒不强制先选日期（确定时没日期不传数据）、快捷键 day「今天」/时分秒「现在」、range 弹层改两块独立日历不标跨度、demo 录入页示例改名「用户名」；草稿模型纯函数化并补 2 条测试；pnpm test 116/116、codelint 六层过
-- 2026-10-24 16:45:14 · log · @GuoJia-Agent · 修显示精度 bug（新增 utils formatDateTimePrecision：day 不出时分秒）+ range 触发器改双框框外杠（右框微蓝底、点哪个都整体展开）+ 弹层组行端框与时分秒同排不折行 + 触发器焦点改 Input 同款蓝框；pnpm test 117/117、codelint 六层过
-- 2026-10-24 17:24:35 · log · @GuoJia-Agent · 回退第三轮全部改动（用户验收样式被改坏）：DateTimePicker.ts/datetime.css 还原到第二轮状态；根因是重写时单值模式漏挂 refs.setReference 导致浮层跑左上角；顺带撤掉 formatDateTimePrecision 及其测试/doc；pnpm test 116/116、codelint 六层过
-- 2026-10-24 18:09:38 · log · @GuoJia-Agent · 按用户重申的需求补两针（不动布局）：① 显示改走 formatDateTimePrecision——day 只出日期不出 00:00、hour/minute 到分、second 出秒，触发器与 range 两个端框同步，数据仍完整 ISO；② 端框纵排改横排「开始：值｜结束：值」一行；pnpm test 117/117、codelint 六层过
-- 2026-10-24 18:28:45 · log · @GuoJia-Agent · range 触发器改一个整条：两个日期区 + CSS 灰隔条（左右竖边）取代文本横杠与双按钮；点整条展开行为不变；恢复 Input 同款 :focus 蓝边（回退时弄丢的）；先提交了上一轮显示精度+端框横排（2215229）
-- 2026-10-24 18:36:51 · log · @GuoJia-Agent · range 隔条改上下顶满 border（与边框连起、中间隔出一块），块内放「到」符号 ~（不选 -：紧挨日期会被看成日期一段）；pnpm test 117/117、codelint 六层过
-- 2026-10-24 18:45:18 · log · @GuoJia-Agent · 隔条顶满修复（pair-group 加 align-self:stretch，此前组高=行高导致上下差 4px）；默认宽改按精度 ch 计算（day 10ch/时分 16ch/秒 19ch，range 乘 2 + 隔条图标间距），删掉拍脑袋的 min-width:220px；调用方 className 更宽仍自然撑开；pnpm test 117/117、codelint 六层过
-- 2026-10-24 18:57:17 · log · @GuoJia-Agent · 隔条符号按用户拍板改 -；默认宽 min-width 改 width 固定（选中前后不跳，day 按占位 7 汉字 13ch 取大、range day 25ch 容两个占位）；两个日期区 flex:1 1 0 平分；pnpm test 117/117、codelint 六层过
-- 2026-10-24 19:23:14 · log · @GuoJia-Agent · 宽度对标参考图实测值（纯 Python 解 PNG 量边框，2x 屏换算）：单值 day 134/时分 159.5、区间 day 275/秒 384，单值秒 180.8 与区间分 347.4 按同斜率插值；原实现四档全部偏窄 2~32px；占位 7 汉字仍不省略；pnpm test 117/117、codelint 六层过
-- 2026-10-24 19:28:23 · log · @GuoJia-Agent · 六档宽度统一 -6px（用户：实测值留得偏多）：单值 128/153.2/174.8、区间 269/341.4/377.6；占位 7 汉字仍有 1px 余量不省略；pnpm test 117/117、codelint 六层过
-- 2026-10-24 19:42:03 · log · @GuoJia-Agent · 收尾：宽度 -6px 与文档同步分两笔提交推送（1f02ba9/d52c6ee）；修文档三处——ui.doc 触发器描述改整条、requirements §2.2+§6 登记、structure 控件树补项；pnpm test 117/117、codelint 六层过
-- 2026-10-24 19:50:09 · log · @GuoJia-Agent · demo 五个 DateTimePicker 示例去掉自定义 placeholder，统一走默认「请选择日期时间」（dtPlaceholder，可传 placeholder prop 覆盖）；已提交推送 47e7f91；测试/lint 全过
-- 2026-10-24 20:01:25 · log · @GuoJia-Agent · demo 侧栏重构：底部固定栏（不随滚动）放明暗切换（翻 body data-ds-dark-theme + MutationObserver 同步）+ 版本号 + 编译码；编译码改时间戳 YYMMDD-HHmmss-SSS（261024-200021-098 实测）；提交推送 5ad335f
-- 2026-10-24 20:07:52 · log · @GuoJia-Agent · 侧栏底栏修正：版本号拆 core/demo 两行（180px 一行放不下）、明暗切换手写 button 改核心 Button；提交推送；测试/lint 全过
-- 2026-10-24 20:14:53 · log · @GuoJia-Agent · 明暗切换改核心 Segmented（左亮右暗带图标，label 承载符号因 SegmentedItem 无 icon 字段）+ 编译码 9px 隔 4px；提交推送；测试/lint 全过
-- 2026-10-24 20:26:30 · log · @GuoJia-Agent · 明暗切换分段文案：亮→明（对齐明暗切换/明暗色判据用词）；英文 Light/Dark 本就是官方口径不动；官方包本机空壳无法核对宿主原文，若宿主实为「浅色/深色」再说；已提交推送
-- 2026-10-24 20:28:00 · log · @GuoJia-Agent · 明暗切换分段文案定稿：浅色/深色（用户确认的官方口径，英文 Light/Dark 不变）；已提交推送；测试/lint 全过
+- 2026-10-24 15:38:20 · new · @cqguojia@hotmail.com · 创建任务（doing）
+- 2026-10-24 15:59:33 · log · @cqguojia@hotmail.com · DateTimePicker 落地：logic+组件+css+i18n 13key+demo 页+ui.doc.ts 章节；pnpm test 114/114、codelint 六层过、build:demo OK；待用户 demo 验收
+- 2026-10-24 16:23:28 · log · @cqguojia@hotmail.com · 按用户反馈改：时分秒不强制先选日期（确定时没日期不传数据）、快捷键 day「今天」/时分秒「现在」、range 弹层改两块独立日历不标跨度、demo 录入页示例改名「用户名」；草稿模型纯函数化并补 2 条测试；pnpm test 116/116、codelint 六层过
+- 2026-10-24 16:45:14 · log · @cqguojia@hotmail.com · 修显示精度 bug（新增 utils formatDateTimePrecision：day 不出时分秒）+ range 触发器改双框框外杠（右框微蓝底、点哪个都整体展开）+ 弹层组行端框与时分秒同排不折行 + 触发器焦点改 Input 同款蓝框；pnpm test 117/117、codelint 六层过
+- 2026-10-24 17:24:35 · log · @cqguojia@hotmail.com · 回退第三轮全部改动（用户验收样式被改坏）：DateTimePicker.ts/datetime.css 还原到第二轮状态；根因是重写时单值模式漏挂 refs.setReference 导致浮层跑左上角；顺带撤掉 formatDateTimePrecision 及其测试/doc；pnpm test 116/116、codelint 六层过
+- 2026-10-24 18:09:38 · log · @cqguojia@hotmail.com · 按用户重申的需求补两针（不动布局）：① 显示改走 formatDateTimePrecision——day 只出日期不出 00:00、hour/minute 到分、second 出秒，触发器与 range 两个端框同步，数据仍完整 ISO；② 端框纵排改横排「开始：值｜结束：值」一行；pnpm test 117/117、codelint 六层过
+- 2026-10-24 18:28:45 · log · @cqguojia@hotmail.com · range 触发器改一个整条：两个日期区 + CSS 灰隔条（左右竖边）取代文本横杠与双按钮；点整条展开行为不变；恢复 Input 同款 :focus 蓝边（回退时弄丢的）；先提交了上一轮显示精度+端框横排（2215229）
+- 2026-10-24 18:36:51 · log · @cqguojia@hotmail.com · range 隔条改上下顶满 border（与边框连起、中间隔出一块），块内放「到」符号 ~（不选 -：紧挨日期会被看成日期一段）；pnpm test 117/117、codelint 六层过
+- 2026-10-24 18:45:18 · log · @cqguojia@hotmail.com · 隔条顶满修复（pair-group 加 align-self:stretch，此前组高=行高导致上下差 4px）；默认宽改按精度 ch 计算（day 10ch/时分 16ch/秒 19ch，range 乘 2 + 隔条图标间距），删掉拍脑袋的 min-width:220px；调用方 className 更宽仍自然撑开；pnpm test 117/117、codelint 六层过
+- 2026-10-24 18:57:17 · log · @cqguojia@hotmail.com · 隔条符号按用户拍板改 -；默认宽 min-width 改 width 固定（选中前后不跳，day 按占位 7 汉字 13ch 取大、range day 25ch 容两个占位）；两个日期区 flex:1 1 0 平分；pnpm test 117/117、codelint 六层过
+- 2026-10-24 19:23:14 · log · @cqguojia@hotmail.com · 宽度对标参考图实测值（纯 Python 解 PNG 量边框，2x 屏换算）：单值 day 134/时分 159.5、区间 day 275/秒 384，单值秒 180.8 与区间分 347.4 按同斜率插值；原实现四档全部偏窄 2~32px；占位 7 汉字仍不省略；pnpm test 117/117、codelint 六层过
+- 2026-10-24 19:28:23 · log · @cqguojia@hotmail.com · 六档宽度统一 -6px（用户：实测值留得偏多）：单值 128/153.2/174.8、区间 269/341.4/377.6；占位 7 汉字仍有 1px 余量不省略；pnpm test 117/117、codelint 六层过
+- 2026-10-24 19:42:03 · log · @cqguojia@hotmail.com · 收尾：宽度 -6px 与文档同步分两笔提交推送（1f02ba9/d52c6ee）；修文档三处——ui.doc 触发器描述改整条、requirements §2.2+§6 登记、structure 控件树补项；pnpm test 117/117、codelint 六层过
+- 2026-10-24 19:50:09 · log · @cqguojia@hotmail.com · demo 五个 DateTimePicker 示例去掉自定义 placeholder，统一走默认「请选择日期时间」（dtPlaceholder，可传 placeholder prop 覆盖）；已提交推送 47e7f91；测试/lint 全过
+- 2026-10-24 20:01:25 · log · @cqguojia@hotmail.com · demo 侧栏重构：底部固定栏（不随滚动）放明暗切换（翻 body data-ds-dark-theme + MutationObserver 同步）+ 版本号 + 编译码；编译码改时间戳 YYMMDD-HHmmss-SSS（261024-200021-098 实测）；提交推送 5ad335f
+- 2026-10-24 20:07:52 · log · @cqguojia@hotmail.com · 侧栏底栏修正：版本号拆 core/demo 两行（180px 一行放不下）、明暗切换手写 button 改核心 Button；提交推送；测试/lint 全过
+- 2026-10-24 20:14:53 · log · @cqguojia@hotmail.com · 明暗切换改核心 Segmented（左亮右暗带图标，label 承载符号因 SegmentedItem 无 icon 字段）+ 编译码 9px 隔 4px；提交推送；测试/lint 全过
+- 2026-10-24 20:26:30 · log · @cqguojia@hotmail.com · 明暗切换分段文案：亮→明（对齐明暗切换/明暗色判据用词）；英文 Light/Dark 本就是官方口径不动；官方包本机空壳无法核对宿主原文，若宿主实为「浅色/深色」再说；已提交推送
+- 2026-10-24 20:28:00 · log · @cqguojia@hotmail.com · 明暗切换分段文案定稿：浅色/深色（用户确认的官方口径，英文 Light/Dark 不变）；已提交推送；测试/lint 全过

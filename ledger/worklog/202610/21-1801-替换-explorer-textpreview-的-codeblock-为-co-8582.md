@@ -1,7 +1,7 @@
 # 20261021-1801-替换-explorer-textpreview-的-codeblock-为-co-8582：替换 explorer TextPreview 的 CodeBlock 为 CodeViewer（后续①）
 
-> **✅ 完成封卷**：2026-10-22 00:45:21（@GuoJia-Agent）
-> **创建**：2026-10-21 18:01:56（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-22 00:45:21（@cqguojia@hotmail.com）
+> **创建**：2026-10-21 18:01:56（@cqguojia@hotmail.com）
 > **分类**：基建 ｜ **标签**：CodeViewer、TextPreview、explorer、预览
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -43,7 +43,7 @@
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-21 18:01:56 · new · @GuoJia-Agent · 创建任务（open）
-- 2026-10-21 18:03:40 · claim · @GuoJia-Agent · 认领 → doing
-- 2026-10-21 18:03:41 · log · @GuoJia-Agent · TextPreview 切到 CodeViewer（src 层）：导入只留 MarkdownText + 相对导入 CodeViewer，CodeBlock 分支替换，flex 列摆好横幅/编辑器/加载更多；typecheck 绿；未往主桶 index.ts 导出（曾误加已回退，CodeViewer 只走子路径 ./ui/code-viewer）；未重建 dist/未 commit/未实机验证（read 阻塞）
-- 2026-10-22 00:45:21 · close · @GuoJia-Agent · 结案：TextPreview 已用自研 CodeViewer（行号 / 可框选复制 / 大文件不卡），主桶零平台依赖红线守住（只走子路径 ./ui/code-viewer）。原阻塞「demo 加载失败看不到渲染效果」已随 0a67 修掉 read 传参而解除，源码态真机验收通过（2026-10-22）
+- 2026-10-21 18:01:56 · new · @cqguojia@hotmail.com · 创建任务（open）
+- 2026-10-21 18:03:40 · claim · @cqguojia@hotmail.com · 认领 → doing
+- 2026-10-21 18:03:41 · log · @cqguojia@hotmail.com · TextPreview 切到 CodeViewer（src 层）：导入只留 MarkdownText + 相对导入 CodeViewer，CodeBlock 分支替换，flex 列摆好横幅/编辑器/加载更多；typecheck 绿；未往主桶 index.ts 导出（曾误加已回退，CodeViewer 只走子路径 ./ui/code-viewer）；未重建 dist/未 commit/未实机验证（read 阻塞）
+- 2026-10-22 00:45:21 · close · @cqguojia@hotmail.com · 结案：TextPreview 已用自研 CodeViewer（行号 / 可框选复制 / 大文件不卡），主桶零平台依赖红线守住（只走子路径 ./ui/code-viewer）。原阻塞「demo 加载失败看不到渲染效果」已随 0a67 修掉 read 传参而解除，源码态真机验收通过（2026-10-22）

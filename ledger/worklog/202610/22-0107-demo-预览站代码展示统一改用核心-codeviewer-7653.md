@@ -1,7 +1,7 @@
 # 20261022-0107-demo-预览站代码展示统一改用核心-codeviewer-7653：demo 预览站代码展示统一改用核心 CodeViewer
 
-> **✅ 完成封卷**：2026-10-22 01:23:26（@GuoJia-Agent）
-> **创建**：2026-10-22 01:07:22（@GuoJia-Agent）
+> **✅ 完成封卷**：2026-10-22 01:23:26（@cqguojia@hotmail.com）
+> **创建**：2026-10-22 01:07:22（@cqguojia@hotmail.com）
 > **分类**：界面 ｜ **标签**：demo、CodeViewer、代码展示、预览站
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -43,7 +43,7 @@
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-22 01:07:22 · new · @GuoJia-Agent · 创建任务（doing）
-- 2026-10-22 01:13:18 · log · @GuoJia-Agent · 首轮交付：doc.tsx 两处官方 CodeBlock 换成核心 CodeViewer（CodeOnly/Example，lang→snippet.<ext> 喂 path、height auto、复制文案走核心 coreT），删 docCopy/docCopied、roadmap 文案改核心 CodeViewer；顺手修 blocks.tsx sampleLabel 的 DemoMessageKey 类型。demo typecheck 干净、build:demo 重建、产物 grep 确认 dshpc-cv 进包且无官方 CodeBlock 调用；commit 54d097a 已 push。待用户真机验收
-- 2026-10-22 01:21:11 · log · @GuoJia-Agent · 二轮（用户反馈）：CodeViewer 加 lineNumbers 开关（默认 true 保持文件预览带行号），demo 的 CodeOnly/Example 传 false ⇒ 预览站代码片段不显示行号。核心 dist 与 demo dist 重建，demo typecheck + 77 用例全绿，commit 03697f4 已 push。待真机验收
-- 2026-10-22 01:23:26 · close · @GuoJia-Agent · 结案：验收通过：demo 预览站所有代码展示统一走核心 CodeViewer（CodeOnly / Example 两处，官方 CodeBlock 在 demo 侧不再使用）；按用户要求片段不显示行号（新增 lineNumbers 开关，默认 true，文件预览源码态仍带行号）。复制文案走核心字典、删 docCopy/docCopied、roadmap 文案同步。核心 dist 与 demo dist 重建，demo typecheck + 77 用例全绿。commit 54d097a / 03697f4 已 push main（未 bump、未打 tag）
+- 2026-10-22 01:07:22 · new · @cqguojia@hotmail.com · 创建任务（doing）
+- 2026-10-22 01:13:18 · log · @cqguojia@hotmail.com · 首轮交付：doc.tsx 两处官方 CodeBlock 换成核心 CodeViewer（CodeOnly/Example，lang→snippet.<ext> 喂 path、height auto、复制文案走核心 coreT），删 docCopy/docCopied、roadmap 文案改核心 CodeViewer；顺手修 blocks.tsx sampleLabel 的 DemoMessageKey 类型。demo typecheck 干净、build:demo 重建、产物 grep 确认 dshpc-cv 进包且无官方 CodeBlock 调用；commit 54d097a 已 push。待用户真机验收
+- 2026-10-22 01:21:11 · log · @cqguojia@hotmail.com · 二轮（用户反馈）：CodeViewer 加 lineNumbers 开关（默认 true 保持文件预览带行号），demo 的 CodeOnly/Example 传 false ⇒ 预览站代码片段不显示行号。核心 dist 与 demo dist 重建，demo typecheck + 77 用例全绿，commit 03697f4 已 push。待真机验收
+- 2026-10-22 01:23:26 · close · @cqguojia@hotmail.com · 结案：验收通过：demo 预览站所有代码展示统一走核心 CodeViewer（CodeOnly / Example 两处，官方 CodeBlock 在 demo 侧不再使用）；按用户要求片段不显示行号（新增 lineNumbers 开关，默认 true，文件预览源码态仍带行号）。复制文案走核心字典、删 docCopy/docCopied、roadmap 文案同步。核心 dist 与 demo dist 重建，demo typecheck + 77 用例全绿。commit 54d097a / 03697f4 已 push main（未 bump、未打 tag）
