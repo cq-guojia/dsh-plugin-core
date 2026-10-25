@@ -19,7 +19,7 @@ import type { SettingsFormScope } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { Button, PanelDock, Segmented, StripCard, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { Button, Card, PanelDock, Segmented, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
 import { connectFileServices } from '../host-files.js'
 import { connectRealSessions } from '../real-sessions.js'
 import { demoDock, demoPanels } from '../dock.js'
@@ -305,10 +305,10 @@ function ConfigPanel(props: ConfigPanelProps): ReturnType<typeof h> {
     { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
     h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px', lineHeight: '18px' } }, t('settingsIntro')),
-    // 设置行：开关在右、说明在左；左缘色条开=绿 / 关=灰（核心 StripCard）
+    // 设置行：开关在右、说明在左；左缘圆角短条开=绿 / 关=灰（核心 Card 框式）
     ready
       ? h(
-          StripCard,
+          Card,
           {
             accent: on ? 'success' : 'neutral',
             action: h(Switch, {

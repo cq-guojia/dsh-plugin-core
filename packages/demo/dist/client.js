@@ -61406,9 +61406,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.2.14"}`],
-            [t3("buildDemo"), `v${"0.2.14"}`],
-            [t3("buildStamp"), "261025-113428-702"]
+            [t3("buildCore"), `v${"0.3.0"}`],
+            [t3("buildDemo"), `v${"0.3.0"}`],
+            [t3("buildStamp"), "261025-115544-584"]
           ].map(
             ([label, value]) => (0, import_react66.createElement)(
               "tr",
@@ -61703,9 +61703,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react68.createElement)("span", null, `core v${"0.2.14"}`),
-          (0, import_react68.createElement)("span", null, `demo v${"0.2.14"}`),
-          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261025-113428-702")
+          (0, import_react68.createElement)("span", null, `core v${"0.3.0"}`),
+          (0, import_react68.createElement)("span", null, `demo v${"0.3.0"}`),
+          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261025-115544-584")
         )
       )
     ),
@@ -61734,9 +61734,9 @@ function ConfigPanel(props) {
     { style: { display: "flex", flexDirection: "column", gap: "14px" } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
     (0, import_react68.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
-    // 设置行：开关在右、说明在左；左缘色条开=绿 / 关=灰（核心 StripCard）
+    // 设置行：开关在右、说明在左；左缘圆角短条开=绿 / 关=灰（核心 Card 框式）
     ready ? (0, import_react68.createElement)(
-      StripCard,
+      Card,
       {
         accent: on ? "success" : "neutral",
         action: (0, import_react68.createElement)(import_dsh_client_ui_primitives4.Switch, {
