@@ -1,5 +1,6 @@
 import { createElement as h } from 'react';
 import { ensureControls } from './css.js';
+import { Chevron } from './chevron.js';
 import { t } from '../utils/i18n.js';
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
 export const CARD_ACCENTS = ['business', 'success', 'warning', 'danger', 'neutral'];
@@ -40,7 +41,9 @@ function CardShell(kind, props) {
                 'aria-label': tt('cardToggle'),
                 'aria-expanded': props.expanded === true,
                 onClick: props.onToggle,
-            }, h('span', { className: props.expanded === true ? 'dshpc-card__caret is-open' : 'dshpc-card__caret' }, '▾')))), props.panel === undefined || props.expanded !== true
+            }, 
+            // 箭头走全站唯一的 Chevron（不再写 ▾ 字形）；旋转由外层 .is-open 承担，动画不变。
+            h('span', { className: props.expanded === true ? 'dshpc-card__caret is-open' : 'dshpc-card__caret' }, h(Chevron, { size: 12 }))))), props.panel === undefined || props.expanded !== true
         ? null
         : h('div', { className: 'dshpc-card__panel' }, props.panel));
 }

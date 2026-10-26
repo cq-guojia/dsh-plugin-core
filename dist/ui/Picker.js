@@ -1,6 +1,7 @@
 import { createElement as h, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFloating, FloatingPortal, flip, shift, offset, autoUpdate, size as floatingSize } from '@floating-ui/react';
 import { ensureControls } from './css.js';
+import { Chevron } from './chevron.js';
 import { t } from '../utils/i18n.js';
 import { FieldHint } from './FieldHint.js';
 import { filterGroups, flattenOptions, labelsOf, toGroups, toggleValue, } from './picker-logic.js';
@@ -134,7 +135,7 @@ export function Picker(props) {
                 pick(hit.value);
         }
     };
-    // 触发器（右侧箭头 = 内联 SVG chevron，与官方 ⌄ 同形；ui 零官方依赖故自绘）。
+    // 触发器（右侧箭头 = 全站唯一的 Chevron，与官方 ⌄ 同形；ui 零官方依赖故自绘）。
     const trigger = h('button', {
         type: 'button',
         'aria-label': props.ariaLabel,
@@ -150,20 +151,7 @@ export function Picker(props) {
         ? h('span', { className: 'dshpc-picker__icon' }, props.icon)
         : null, 
     // 文字吃掉剩余宽度并靠左（默认）：否则 space-between 会把短文案推到中间
-    h('span', { className: 'dshpc-picker__label' }, summary), h('svg', {
-        className: 'dshpc-picker__caret',
-        width: 12,
-        height: 12,
-        viewBox: '0 0 16 16',
-        fill: 'none',
-        'aria-hidden': true,
-    }, h('path', {
-        d: 'M4 6l4 4 4-4',
-        stroke: 'currentColor',
-        'stroke-width': 1.5,
-        'stroke-linecap': 'round',
-        'stroke-linejoin': 'round',
-    })));
+    h('span', { className: 'dshpc-picker__label' }, summary), h(Chevron, { size: 12, className: 'dshpc-picker__caret' }));
     // hint 给了就把触发器与 FieldHint 包进同一行（间距/对齐收进组件）。
     const triggerRow = props.hint === undefined
         ? trigger

@@ -42,6 +42,7 @@
   color:var(--dshpc-fg-3);cursor:pointer;
 }
 .dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}
-.dshpc-card__caret{display:inline-block;font-size:10px;transition:transform .15s ease}
+/* 箭头是 svg（Chevron），不是字形 ⇒ 不要 font-size；inline-flex 免掉 svg 的基线留白。 */
+.dshpc-card__caret{display:inline-flex;transition:transform .15s ease}
 .dshpc-card__caret.is-open{transform:rotate(180deg)}
 .dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}

@@ -1,5 +1,6 @@
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
 import { ensureControls } from './css.js'
+import { Chevron } from './chevron.js'
 import { t, type Translate } from '../utils/i18n.js'
 
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
@@ -11,7 +12,7 @@ export interface CardSharedProps {
   accent?: CardAccent | string
   /** 展开态（决定箭头朝向与 `panel` 显隐）。 */
   expanded?: boolean
-  /** 传了才显示右侧折叠箭头；由调用方管展开状态。 */
+  /** 传了才显示右侧折叠箭头（全站唯一的 Chevron）；由调用方管展开状态。 */
   onToggle?: () => void
   /** 右上角操作区（如「跳过」「查看会话」）。 */
   action?: ReactNode
@@ -79,7 +80,8 @@ function CardShell(
                     'aria-expanded': props.expanded === true,
                     onClick: props.onToggle,
                   },
-                  h('span', { className: props.expanded === true ? 'dshpc-card__caret is-open' : 'dshpc-card__caret' }, '▾'),
+                  // 箭头走全站唯一的 Chevron（不再写 ▾ 字形）；旋转由外层 .is-open 承担，动画不变。
+                  h('span', { className: props.expanded === true ? 'dshpc-card__caret is-open' : 'dshpc-card__caret' }, h(Chevron, { size: 12 })),
                 ),
           ),
     ),

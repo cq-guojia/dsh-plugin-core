@@ -8,7 +8,7 @@ export interface CardSharedProps {
     accent?: CardAccent | string;
     /** 展开态（决定箭头朝向与 `panel` 显隐）。 */
     expanded?: boolean;
-    /** 传了才显示右侧折叠箭头；由调用方管展开状态。 */
+    /** 传了才显示右侧折叠箭头（全站唯一的 Chevron）；由调用方管展开状态。 */
     onToggle?: () => void;
     /** 右上角操作区（如「跳过」「查看会话」）。 */
     action?: ReactNode;

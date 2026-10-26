@@ -15,6 +15,7 @@ import {
   useFloating,
 } from '@floating-ui/react'
 import { ensureControls } from './css.js'
+import { Chevron } from './chevron.js'
 import { Button } from './Button.js'
 import { FieldHint } from './FieldHint.js'
 import { getLocale, t, type Translate } from '../utils/i18n.js'
@@ -166,8 +167,8 @@ const ICON_PREV_YEAR = icon(['M9 5L5.5 8 9 11', 'M12.5 5L9 8l3.5 3'], 14)
 const ICON_PREV_MONTH = icon(['M9.5 5L6 8l3.5 3'], 14)
 const ICON_NEXT_MONTH = icon(['M6.5 5L10 8l-3.5 3'], 14)
 const ICON_NEXT_YEAR = icon(['M7 5l3.5 3L7 11', 'M3.5 5L7 8l-3.5 3'], 14)
-const ICON_UP = icon(['M4 9.5L8 5.5l4 4'], 12)
-const ICON_DOWN = icon(['M4 6.5L8 10.5l4-4'], 12)
+const ICON_UP = h(Chevron, { dir: 'up', size: 12 })
+const ICON_DOWN = h(Chevron, { size: 12 })
 
 /**
  * 日期时间选择器：单值 / 时间段，精度可控（日 / 时 / 分 / 秒）。

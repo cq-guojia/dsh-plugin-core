@@ -55,6 +55,18 @@ tiers differed by 1px of padding, and `default` rendered 2px shorter than `size`
 "there is a choice", compared against the demo, and chased tokens/bundling instead. Any numeric size promise gets
 its own assertion.
 
+## 箭头只有一颗：`Chevron`
+
+> EN: There is only one arrow: `Chevron`
+
+`ui` 层零官方依赖，箭头一律走 `src/ui/chevron.ts` 的自绘 chevron（`h(Chevron, { dir, size })`，
+四向共用一条路径，靠旋转实现）。**不许再写 `'▾'` / `'↑'` 这类字形**——各系统字体下粗细、角度、
+基线都不一样，同一套界面里会冒出第二种箭头（2026-10-26：卡片折叠箭头就是这么来的）。
+有自检盯着：`test/quality.test.mjs`。
+
+EN: The `ui` layer has no official dependency, so every arrow comes from the self-drawn chevron in
+`src/ui/chevron.ts`. Never write a glyph arrow again; a test enforces it.
+
 ## 三条硬规矩
 
 > EN: Three hard rules
