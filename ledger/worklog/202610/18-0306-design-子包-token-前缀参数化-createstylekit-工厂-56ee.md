@@ -1,7 +1,7 @@
 # 20261018-0306-design-子包-token-前缀参数化-createstylekit-工厂-56ee：design 子包：token 前缀参数化 + createStyleKit 工厂
 
-> **✅ 完成封卷**：2026-10-18 04:09:14（@cqguojia@hotmail.com）
-> **创建**：2026-10-18 03:06:07（@cqguojia@hotmail.com）
+> **✅ 完成封卷**：2026-10-18 04:09:14（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> **创建**：2026-10-18 03:06:07（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：建设 ｜ **标签**：design、token、样式注入
 
 ## 背景

@@ -1,7 +1,7 @@
 # 20261020-0827-card-圆角-边框-短色条-调整-demo-预览页-card-组件样式-ae39：Card（圆角+边框+短色条）调整 demo 预览页 Card 组件样式
 
-> **✅ 完成封卷**：2026-10-20 12:35:03（@cqguojia@hotmail.com）
-> **创建**：2026-10-20 08:27:40（@cqguojia@hotmail.com）
+> **✅ 完成封卷**：2026-10-20 12:35:03（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> **创建**：2026-10-20 08:27:40（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：界面 ｜ **标签**：Card、demo、样式
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -91,19 +91,19 @@ Card 外壳提供**两种外观 + 整体垂直居中**（2026-10-20 第二轮修
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-20 08:27:40 · new · @cqguojia@hotmail.com · 创建任务（doing）
-- 2026-10-20 08:29:51 · log · @cqguojia@hotmail.com · 只读调查：Card 现状已是圆角8px+1px边框+短色条（card.css:13-14），生成物/dist/注入/token 全同步，待用户确认要调什么
-- 2026-10-20 08:30:41 · log · @cqguojia@hotmail.com · 用户确认方向：微调 Card 外观数值，目标值待给（圆角/边框/色条宽/留距）
-- 2026-10-20 08:47:31 · log · @cqguojia@hotmail.com · Card 外观统一为兄弟 rec-item 同款（浅底+透明占位边框+5px通高方角色条+方角）：改 card.css/Card.ts/demo 两文件/features-ui.md，build+49 测试+codelint 全过，待验收
-- 2026-10-20 08:47:35 · log · @cqguojia@hotmail.com · 收工三步：正文已落本轮事实，下一步=用户验收 CardPage；改动未 commit 等指示
-- 2026-10-20 09:04:58 · log · @cqguojia@hotmail.com · 第二轮修正：恢复双外观（Card=框式照 taskrow、StripCard=浅底条照 rec-item）+ 头部改 align-items:center 修右侧居顶；build+49 测试+codelint 全过，待验收
-- 2026-10-20 09:25:13 · log · @cqguojia@hotmail.com · 第三轮：框式短条改 stretch+最小一行、padding 全向 14 使左/上/下等距；日期改走 action 槽+加单按钮示例、删小箭头示例；build+49 测试+codelint 全过
-- 2026-10-20 09:30:41 · log · @cqguojia@hotmail.com · 第四轮：StripCard 节补单行五档速览+第二事例加 secondary/sm Cancel 钮；确认卡内内容归调用方；build+49 测试+codelint 全过
-- 2026-10-20 09:47:37 · log · @cqguojia@hotmail.com · 第五轮：Cancel 钮改 outline（描边档，size 仍 sm）；核对 demo 无手写控件、示例控件全来自核心 dist/ui；build+49 测试+codelint 全过
-- 2026-10-20 09:58:59 · log · @cqguojia@hotmail.com · 已 commit 740ab1d（15 文件 +176/-110）：Card 双外观 + 头部居中 + 竖条自适应 + demo 示例收口；用户说稍后继续
-- 2026-10-20 10:55:12 · log · @cqguojia@hotmail.com · 第四轮：SectionHead 示例照兄弟 board-home 全部待办段头（Segmented 计数+192 搜索，全核心控件）；框式短条 relative left:-3px；StripCard 条 5→4px（padding 20 保 16 留白）；build+49 测试+codelint 全过
-- 2026-10-20 11:24:19 · log · @cqguojia@hotmail.com · 第五轮：框式短条 -2px；SectionHead title 拓宽 ReactNode + icon 补 lineHeight 修居中；demo 三示例（sparkle/clock/refresh 图标 + 计数/彩色标签/小字 + 过滤组/单钮/双钮）；build+49 测试+codelint 全过
-- 2026-10-20 11:48:02 · log · @cqguojia@hotmail.com · 第六轮：Chip 加 xs 超小档(16px,font10)并用于最新标签；Card 左内边距12(头部整体左缩2px,弃left:-2补丁)；StripCard 单行速览内联padding修正左20与宽卡一致；build+49测试+codelint全过
-- 2026-10-20 11:57:00 · log · @cqguojia@hotmail.com · 第七轮：SectionHead 右侧槽 marginLeft:auto→flex:1+justifyContent:flex-end（搜索框始终贴右，修窄容器塌陷）；ChipPage 文本状态区补 xs 超小档行；其他控件暂不加 xs；build+49测试+codelint全过
-- 2026-10-20 12:09:55 · log · @cqguojia@hotmail.com · 第八轮：抓到搜索框没居右的真正根因——.dshpc-input 无 width 规则，input 按原生 size 内在宽渲染不铺满壳（自家 .dshpc-textarea 却是 width:100%，同体系俩口径）；核心修复 .dshpc-input 补 display:block;width:100%；ChipPage 尺寸对比改 map 生成三行固定 md→sm→xs 同组文案；build+49 测试+codelint(23文件)全过
-- 2026-10-20 12:35:03 · close · @cqguojia@hotmail.com · 结案：Card 双外观(框式/浅底通高条)+头部居中；SectionHead 右侧槽 flex:1 贴右+title ReactNode+icon 居中+三示例；Card 左内边距12(内容随竖条左移2px)；StripCard 条4px+单行速览对齐；Chip 新增 xs 超小档+三档由大到小展示；Input width:100% 修套壳空一截根因；docs/ui.md 同步。已 commit e06ffd7
+- 2026-10-20 08:27:40 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+- 2026-10-20 08:29:51 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 只读调查：Card 现状已是圆角8px+1px边框+短色条（card.css:13-14），生成物/dist/注入/token 全同步，待用户确认要调什么
+- 2026-10-20 08:30:41 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户确认方向：微调 Card 外观数值，目标值待给（圆角/边框/色条宽/留距）
+- 2026-10-20 08:47:31 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · Card 外观统一为兄弟 rec-item 同款（浅底+透明占位边框+5px通高方角色条+方角）：改 card.css/Card.ts/demo 两文件/features-ui.md，build+49 测试+codelint 全过，待验收
+- 2026-10-20 08:47:35 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 收工三步：正文已落本轮事实，下一步=用户验收 CardPage；改动未 commit 等指示
+- 2026-10-20 09:04:58 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第二轮修正：恢复双外观（Card=框式照 taskrow、StripCard=浅底条照 rec-item）+ 头部改 align-items:center 修右侧居顶；build+49 测试+codelint 全过，待验收
+- 2026-10-20 09:25:13 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第三轮：框式短条改 stretch+最小一行、padding 全向 14 使左/上/下等距；日期改走 action 槽+加单按钮示例、删小箭头示例；build+49 测试+codelint 全过
+- 2026-10-20 09:30:41 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第四轮：StripCard 节补单行五档速览+第二事例加 secondary/sm Cancel 钮；确认卡内内容归调用方；build+49 测试+codelint 全过
+- 2026-10-20 09:47:37 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第五轮：Cancel 钮改 outline（描边档，size 仍 sm）；核对 demo 无手写控件、示例控件全来自核心 dist/ui；build+49 测试+codelint 全过
+- 2026-10-20 09:58:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已 commit 740ab1d（15 文件 +176/-110）：Card 双外观 + 头部居中 + 竖条自适应 + demo 示例收口；用户说稍后继续
+- 2026-10-20 10:55:12 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第四轮：SectionHead 示例照兄弟 board-home 全部待办段头（Segmented 计数+192 搜索，全核心控件）；框式短条 relative left:-3px；StripCard 条 5→4px（padding 20 保 16 留白）；build+49 测试+codelint 全过
+- 2026-10-20 11:24:19 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第五轮：框式短条 -2px；SectionHead title 拓宽 ReactNode + icon 补 lineHeight 修居中；demo 三示例（sparkle/clock/refresh 图标 + 计数/彩色标签/小字 + 过滤组/单钮/双钮）；build+49 测试+codelint 全过
+- 2026-10-20 11:48:02 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第六轮：Chip 加 xs 超小档(16px,font10)并用于最新标签；Card 左内边距12(头部整体左缩2px,弃left:-2补丁)；StripCard 单行速览内联padding修正左20与宽卡一致；build+49测试+codelint全过
+- 2026-10-20 11:57:00 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第七轮：SectionHead 右侧槽 marginLeft:auto→flex:1+justifyContent:flex-end（搜索框始终贴右，修窄容器塌陷）；ChipPage 文本状态区补 xs 超小档行；其他控件暂不加 xs；build+49测试+codelint全过
+- 2026-10-20 12:09:55 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第八轮：抓到搜索框没居右的真正根因——.dshpc-input 无 width 规则，input 按原生 size 内在宽渲染不铺满壳（自家 .dshpc-textarea 却是 width:100%，同体系俩口径）；核心修复 .dshpc-input 补 display:block;width:100%；ChipPage 尺寸对比改 map 生成三行固定 md→sm→xs 同组文案；build+49 测试+codelint(23文件)全过
+- 2026-10-20 12:35:03 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：Card 双外观(框式/浅底通高条)+头部居中；SectionHead 右侧槽 flex:1 贴右+title ReactNode+icon 居中+三示例；Card 左内边距12(内容随竖条左移2px)；StripCard 条4px+单行速览对齐；Chip 新增 xs 超小档+三档由大到小展示；Input width:100% 修套壳空一截根因；docs/ui.md 同步。已 commit e06ffd7

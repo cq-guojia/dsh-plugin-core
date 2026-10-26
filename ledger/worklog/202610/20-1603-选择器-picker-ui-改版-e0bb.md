@@ -1,7 +1,7 @@
 # 20261020-1603-选择器-picker-ui-改版-e0bb：选择器（Picker）UI 改版
 
-> **✅ 完成封卷**：2026-10-20 17:56:40（@cqguojia@hotmail.com）
-> **创建**：2026-10-20 16:03:53（@cqguojia@hotmail.com）
+> **✅ 完成封卷**：2026-10-20 17:56:40（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> **创建**：2026-10-20 16:03:53（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：界面 ｜ **标签**：选择器、Picker、样式
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -93,14 +93,14 @@
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-20 16:03:53 · new · @cqguojia@hotmail.com · 创建任务（doing）
-- 2026-10-20 16:27:00 · log · @cqguojia@hotmail.com · 需求入库：worklog 记 8 条（chevron/icon/搜索可配/双形态/删FilePicker/多选上限bug/真实数据/hint讨论），待对齐工作区取数通路
-- 2026-10-20 16:56:38 · log · @cqguojia@hotmail.com · 交付：chevron/icon/hint内置/双形态改名grouped/多选反选bug/删FilePicker/host-data自取数(connectHost)+5项新测试；65测试+typecheck+codelint全过，产物入库待真机验收
-- 2026-10-20 17:24:35 · log · @cqguojia@hotmail.com · 第二轮：搜索自动聚焦/模型目录改按models过滤(推断user层缺失致滤空)/领域选择器默认icon+可自定义文案/Textarea问号右下/NumberInput焦点态；65测试+codelint全过
-- 2026-10-20 17:27:56 · log · @cqguojia@hotmail.com · 根因1：demo 的 dsh.client.inject 缺 @deepseek-ai/dsh-api-remotes ⇒ remote.llm 不挂载(已补)；根因2：fieldwrap 让位规则把 textarea 缩窄(已还宽度)；已记 external §11.1
-- 2026-10-20 17:39:45 · log · @cqguojia@hotmail.com · 第三轮真因：remote.llm 无模型列表，改宿主 llm.listModels + serveModelCatalog 路由(./host) + client fetch；删 configForms/remote 路径；需重装 demo 让宿主入口生效
-- 2026-10-20 17:43:35 · log · @cqguojia@hotmail.com · 第四轮：模型目录已出；修 cascade 联动(组件内自记厂商，原先靠值反推被清空后永远空) + ModelPicker 搜索框默认开；顺手清 Toast 无用 case(过 lint)
-- 2026-10-20 17:49:03 · log · @cqguojia@hotmail.com · 第五轮：去掉 cascade 改 split(两个独立下拉,互不联动)/ModelPicker 增默认模型项 allowDefault+defaultLabel(选中发空串)/Picker 增 align 默认居左(修 space-between 把短文案推中间)
-- 2026-10-20 17:53:28 · log · @cqguojia@hotmail.com · 第六轮纠偏：grouped 保留(独立) + cascade 恢复(联动)；split 撤销；demo 两形态各用独立 state，只留两组
-- 2026-10-20 17:53:53 · log · @cqguojia@hotmail.com · 第七轮：demo 去掉「无图标」与自定义文案演示，工作区只留默认形态（默认即核心给的名字+图标；自定义能力保留不演示）
-- 2026-10-20 17:56:40 · close · @cqguojia@hotmail.com · 结案：选择器 UI 改版：chevron 箭头、icon、搜索自动聚焦、grouped/cascade 双形态、默认模型项、hint 内置、多选反选修复、删 FilePicker，领域选择器改自取数（workspaces 快照 + 宿主 llm.listModels 路由）
+- 2026-10-20 16:03:53 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+- 2026-10-20 16:27:00 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 需求入库：worklog 记 8 条（chevron/icon/搜索可配/双形态/删FilePicker/多选上限bug/真实数据/hint讨论），待对齐工作区取数通路
+- 2026-10-20 16:56:38 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 交付：chevron/icon/hint内置/双形态改名grouped/多选反选bug/删FilePicker/host-data自取数(connectHost)+5项新测试；65测试+typecheck+codelint全过，产物入库待真机验收
+- 2026-10-20 17:24:35 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第二轮：搜索自动聚焦/模型目录改按models过滤(推断user层缺失致滤空)/领域选择器默认icon+可自定义文案/Textarea问号右下/NumberInput焦点态；65测试+codelint全过
+- 2026-10-20 17:27:56 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 根因1：demo 的 dsh.client.inject 缺 @deepseek-ai/dsh-api-remotes ⇒ remote.llm 不挂载(已补)；根因2：fieldwrap 让位规则把 textarea 缩窄(已还宽度)；已记 external §11.1
+- 2026-10-20 17:39:45 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第三轮真因：remote.llm 无模型列表，改宿主 llm.listModels + serveModelCatalog 路由(./host) + client fetch；删 configForms/remote 路径；需重装 demo 让宿主入口生效
+- 2026-10-20 17:43:35 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第四轮：模型目录已出；修 cascade 联动(组件内自记厂商，原先靠值反推被清空后永远空) + ModelPicker 搜索框默认开；顺手清 Toast 无用 case(过 lint)
+- 2026-10-20 17:49:03 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第五轮：去掉 cascade 改 split(两个独立下拉,互不联动)/ModelPicker 增默认模型项 allowDefault+defaultLabel(选中发空串)/Picker 增 align 默认居左(修 space-between 把短文案推中间)
+- 2026-10-20 17:53:28 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第六轮纠偏：grouped 保留(独立) + cascade 恢复(联动)；split 撤销；demo 两形态各用独立 state，只留两组
+- 2026-10-20 17:53:53 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第七轮：demo 去掉「无图标」与自定义文案演示，工作区只留默认形态（默认即核心给的名字+图标；自定义能力保留不演示）
+- 2026-10-20 17:56:40 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：选择器 UI 改版：chevron 箭头、icon、搜索自动聚焦、grouped/cascade 双形态、默认模型项、hint 内置、多选反选修复、删 FilePicker，领域选择器改自取数（workspaces 快照 + 宿主 llm.listModels 路由）

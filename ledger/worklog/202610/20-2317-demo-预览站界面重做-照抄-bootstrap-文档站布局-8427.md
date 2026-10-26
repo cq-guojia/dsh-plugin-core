@@ -1,7 +1,7 @@
 # 20261020-2317-demo-预览站界面重做-照抄-bootstrap-文档站布局-8427：demo 预览站界面重做（照抄 Bootstrap 文档站布局）
 
-> **✅ 完成封卷**：2026-10-21 11:35:24（@cqguojia@hotmail.com）
-> **创建**：2026-10-20 23:17:28（@cqguojia@hotmail.com）
+> **✅ 完成封卷**：2026-10-21 11:35:24（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> **创建**：2026-10-20 23:17:28（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：界面 ｜ **标签**：demo、样式、布局
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -103,11 +103,11 @@ toast 多插件统一方案由另一 Agent（任务 9a8a）实施，工作区改
 ## 执行记录
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。 -->
-- 2026-10-20 23:17:28 · new · @cqguojia@hotmail.com · 创建任务（doing）
-- 2026-10-20 23:33:39 · log · @cqguojia@hotmail.com · Button 页试点完成，等宿主验收
-- 2026-10-21 00:43:54 · log · @cqguojia@hotmail.com · 第二轮：备注框改核心 StripCard、外观档分组分层
-- 2026-10-21 08:27:42 · log · @cqguojia@hotmail.com · 第三轮：Demo→Example 骨架统一，5 页补齐
-- 2026-10-21 09:04:47 · log · @cqguojia@hotmail.com · 第四轮：feedback/layout 完成，components 8 页全完
-- 2026-10-21 09:35:00 · log · @cqguojia@hotmail.com · 第五轮：blocks/utils/start/foundation/reference 改造；全部 18 页完成；77 测试+codelint 全绿；demo 三批已提交推送（036903f/4b06009/836b4e6）
-- 2026-10-21 09:54:45 · log · @cqguojia@hotmail.com · 用户验收微调（bf7ae92）：反馈页示例重排为 定制→原生→官方(官方置底)；Sonner 两排按钮加竖向间隔；录入页 日/周/月 4 个 Segmented 拆到独立一行；卡片页 SectionHead 第一个示例切换菜单留 3 项+搜索框缩至 140px；Note 蓝色标签 备注→说明；会话 API 经核对已与 demo 同页共处（blocks.tsx:266），风格已统一无需改动
-- 2026-10-21 11:35:24 · close · @cqguojia@hotmail.com · 结案：预览站 18 页 bootstrap 文档站式布局全部落地并验收：Note/左示例右代码/用法/API 表齐备；反馈页重排(定制→原生→官方)、Session API 独立成块、全部 API 表命名、布局/录入页微调、Note 标签统一为「说明」；tsc/build/codelint 全过
+- 2026-10-20 23:17:28 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+- 2026-10-20 23:33:39 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · Button 页试点完成，等宿主验收
+- 2026-10-21 00:43:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第二轮：备注框改核心 StripCard、外观档分组分层
+- 2026-10-21 08:27:42 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第三轮：Demo→Example 骨架统一，5 页补齐
+- 2026-10-21 09:04:47 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第四轮：feedback/layout 完成，components 8 页全完
+- 2026-10-21 09:35:00 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第五轮：blocks/utils/start/foundation/reference 改造；全部 18 页完成；77 测试+codelint 全绿；demo 三批已提交推送（036903f/4b06009/836b4e6）
+- 2026-10-21 09:54:45 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户验收微调（bf7ae92）：反馈页示例重排为 定制→原生→官方(官方置底)；Sonner 两排按钮加竖向间隔；录入页 日/周/月 4 个 Segmented 拆到独立一行；卡片页 SectionHead 第一个示例切换菜单留 3 项+搜索框缩至 140px；Note 蓝色标签 备注→说明；会话 API 经核对已与 demo 同页共处（blocks.tsx:266），风格已统一无需改动
+- 2026-10-21 11:35:24 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：预览站 18 页 bootstrap 文档站式布局全部落地并验收：Note/左示例右代码/用法/API 表齐备；反馈页重排(定制→原生→官方)、Session API 独立成块、全部 API 表命名、布局/录入页微调、Note 标签统一为「说明」；tsc/build/codelint 全过

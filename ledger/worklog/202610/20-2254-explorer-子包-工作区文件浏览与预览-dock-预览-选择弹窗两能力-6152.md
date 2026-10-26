@@ -1,7 +1,7 @@
 # 20261020-2254-explorer-子包-工作区文件浏览与预览-dock-预览-选择弹窗两能力-6152：explorer 子包：工作区文件浏览与预览（dock 预览 + 选择弹窗两能力）
 
-> **✅ 完成封卷**：2026-10-22 00:45:06（@cqguojia@hotmail.com）
-> **创建**：2026-10-20 22:54:32（@cqguojia@hotmail.com）
+> **✅ 完成封卷**：2026-10-22 00:45:06（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> **创建**：2026-10-20 22:54:32（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：功能 ｜ **标签**：explorer、文件预览、dock、picker、官方件
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -59,11 +59,11 @@
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-20 22:54:32 · new · @cqguojia@hotmail.com · 创建任务（doing）
-- 2026-10-20 22:55:52 · log · @cqguojia@hotmail.com · 填正文：背景=用户两能力定义+拍板口径表+兄弟项目7条问题清单；待办9项；下一步读实现依赖现状文件
-- 2026-10-20 23:27:43 · log · @cqguojia@hotmail.com · 交付：FileBrowser 面板 + openFilePreview/pickWorkspaceFile 两能力 + 六档预览体 + ./ui/official 通路；build/build:demo/73 测试/codelint 全过；正文曾被拉取回滚已重写；待用户真机验收
-- 2026-10-21 01:18:31 · log · @cqguojia@hotmail.com · 本轮：openFilePreview 改挂核心 PanelDock、FileBrowser 全换核心按钮并统一高度档、▾ 反转为准 兄弟度量的自写浮层、demo 改接 remote.workspaceFiles + 真样例文件 + pickWorkspaceAnchor 锚点；build/tests 74/codelint 全过，待真机验收
-- 2026-10-21 07:44:21 · log · @cqguojia@hotmail.com · 分栏纠偏：openFilePreview 新增必填 mount，dock 用 DockPanel header=null 挂进调用方 flex 行（不再 body+fixed 浮层）；explorer.css 按兄弟 .dsh-tdt-sv-* 逐条重抄；行尾文案改「选择」；picker 补 translate 注入
-- 2026-10-21 08:32:26 · log · @cqguojia@hotmail.com · ▾ 下拉对齐兄弟：点当前工作区=回根（原误走 onPickWorkspace）、图标间距6px/条目左距8px 照抄；OpenFilePreviewOptions 补 workspaces/onSelectWorkspace 透传，demo 方法A 传工作区清单（原来只有方法B有）；越界文件逻辑核对=与兄弟一致（三个错误码→只读全路径+✕、预览照常），catch 分支补 ensureRootLearned
-- 2026-10-22 00:44:50 · log · @cqguojia@hotmail.com · 补结论：四条真机验收点随 0a67 于 2026-10-22 全部通过；遗留（类名跨版本隔离 / 零渲染测试 / SessionPreview mock）用户拍板另议，不属于本任务
-- 2026-10-22 00:45:06 · close · @cqguojia@hotmail.com · 结案：真机验收通过（2026-10-22）：分栏挤窄主区非浮层、header=null 顶部不多线、树行/面包屑/▾ 对齐兄弟、行尾文案「选择」。dock 预览与选择弹窗共用同一个 FileBrowser，差异只在承载与 picker 形态。遗留（类名跨版本隔离 / 零渲染测试 / demo SessionPreview 仍 mock）不在本任务范围，用户拍板另议
+- 2026-10-20 22:54:32 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+- 2026-10-20 22:55:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 填正文：背景=用户两能力定义+拍板口径表+兄弟项目7条问题清单；待办9项；下一步读实现依赖现状文件
+- 2026-10-20 23:27:43 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 交付：FileBrowser 面板 + openFilePreview/pickWorkspaceFile 两能力 + 六档预览体 + ./ui/official 通路；build/build:demo/73 测试/codelint 全过；正文曾被拉取回滚已重写；待用户真机验收
+- 2026-10-21 01:18:31 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 本轮：openFilePreview 改挂核心 PanelDock、FileBrowser 全换核心按钮并统一高度档、▾ 反转为准 兄弟度量的自写浮层、demo 改接 remote.workspaceFiles + 真样例文件 + pickWorkspaceAnchor 锚点；build/tests 74/codelint 全过，待真机验收
+- 2026-10-21 07:44:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 分栏纠偏：openFilePreview 新增必填 mount，dock 用 DockPanel header=null 挂进调用方 flex 行（不再 body+fixed 浮层）；explorer.css 按兄弟 .dsh-tdt-sv-* 逐条重抄；行尾文案改「选择」；picker 补 translate 注入
+- 2026-10-21 08:32:26 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · ▾ 下拉对齐兄弟：点当前工作区=回根（原误走 onPickWorkspace）、图标间距6px/条目左距8px 照抄；OpenFilePreviewOptions 补 workspaces/onSelectWorkspace 透传，demo 方法A 传工作区清单（原来只有方法B有）；越界文件逻辑核对=与兄弟一致（三个错误码→只读全路径+✕、预览照常），catch 分支补 ensureRootLearned
+- 2026-10-22 00:44:50 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 补结论：四条真机验收点随 0a67 于 2026-10-22 全部通过；遗留（类名跨版本隔离 / 零渲染测试 / SessionPreview mock）用户拍板另议，不属于本任务
+- 2026-10-22 00:45:06 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：真机验收通过（2026-10-22）：分栏挤窄主区非浮层、header=null 顶部不多线、树行/面包屑/▾ 对齐兄弟、行尾文案「选择」。dock 预览与选择弹窗共用同一个 FileBrowser，差异只在承载与 picker 形态。遗留（类名跨版本隔离 / 零渲染测试 / demo SessionPreview 仍 mock）不在本任务范围，用户拍板另议

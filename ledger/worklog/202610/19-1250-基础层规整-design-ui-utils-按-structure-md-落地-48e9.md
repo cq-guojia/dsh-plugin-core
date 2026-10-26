@@ -1,7 +1,7 @@
 # 20261019-1250-基础层规整-design-ui-utils-按-structure-md-落地-48e9：基础层规整：design/ui/utils 按 structure.md 落地（adv.* 不动）
 
-> **✅ 完成封卷**：2026-10-19 13:56:08（@cqguojia@hotmail.com）
-> **创建**：2026-10-19 12:50:25（@cqguojia@hotmail.com）
+> **✅ 完成封卷**：2026-10-19 13:56:08（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> **创建**：2026-10-19 12:50:25（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：建设 ｜ **标签**：规整、ui、结构、官方原语
 
 ## 背景
@@ -61,5 +61,5 @@
 <!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
      要补一条就跑 progress.py log --id <任务号> --note "做了什么"。 -->
 
-- 2026-10-19 13:56:05 · log · @cqguojia@hotmail.com · 第1步完成（路径方法归 utils）+ chip/Modal/Toast 同名不同皮收敛 + tag 自动发布接通（v0.1.2），第2-7步未做，按用户指令结案
-- 2026-10-19 13:56:08 · close · @cqguojia@hotmail.com · 结案：第1步路径方法归 utils 完成；chip/Modal/Toast 同名不同皮收敛并加 CSS 契约自检；tag 自动发布接通（库+demo 同版本 0.1.2）；第2-7步未做、另立任务承接
+- 2026-10-19 13:56:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第1步完成（路径方法归 utils）+ chip/Modal/Toast 同名不同皮收敛 + tag 自动发布接通（v0.1.2），第2-7步未做，按用户指令结案
+- 2026-10-19 13:56:08 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：第1步路径方法归 utils 完成；chip/Modal/Toast 同名不同皮收敛并加 CSS 契约自检；tag 自动发布接通（库+demo 同版本 0.1.2）；第2-7步未做、另立任务承接

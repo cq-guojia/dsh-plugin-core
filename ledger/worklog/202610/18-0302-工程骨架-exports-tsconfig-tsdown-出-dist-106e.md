@@ -1,7 +1,7 @@
 # 20261018-0302-工程骨架-exports-tsconfig-tsdown-出-dist-106e：工程骨架：exports + tsconfig + tsdown 出 dist
 
-> **✅ 完成封卷**：2026-10-18 03:05:19（@cqguojia@hotmail.com）
-> **创建**：2026-10-18 03:02:52（@cqguojia@hotmail.com）
+> **✅ 完成封卷**：2026-10-18 03:05:19（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> **创建**：2026-10-18 03:02:52（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：建设 ｜ **标签**：打包、tsdown、骨架
 
 ## 背景

@@ -1,7 +1,7 @@
 # 20261021-0923-核心引入-codemirror-只读-codeviewer-替代官方-codeb-8b99：核心引入 CodeMirror 只读 CodeViewer（替代官方 CodeBlock）
 
-> **✅ 完成封卷**：2026-10-21 17:41:12（@cqguojia@hotmail.com）
-> **创建**：2026-10-21 09:23:59（@cqguojia@hotmail.com）
+> **✅ 完成封卷**：2026-10-21 17:41:12（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> **创建**：2026-10-21 09:23:59（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：基建 ｜ **标签**：CodeViewer、CodeMirror、核心、预览
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -72,12 +72,12 @@
 
 <!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
      补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-21 09:23:59 · new · @cqguojia@hotmail.com · 创建任务（open）
-- 2026-10-21 09:25:40 · claim · @cqguojia@hotmail.com · 认领 → doing
-- 2026-10-21 09:25:47 · log · @cqguojia@hotmail.com · 建任务台账并填正文：核心 src/ui/CodeViewer.tsx 引入 CodeMirror 只读查看器替代官方 CodeBlock，明确不进 explorer、不动 ui/official
-- 2026-10-21 09:30:08 · log · @cqguojia@hotmail.com · 补全 worklog 前因后果：兄弟预览栈逐文件核对（仅 CodeMirror 一处第三方）、官方 CodeBlock 卡顿根因、本会话决策时间线、放核心的红线与暗色判据坑
-- 2026-10-21 09:37:05 · log · @cqguojia@hotmail.com · 补全 worklog 背景与完整讨论纪要（含完整讨论过程、兄弟项目预览栈逐文件核对、放核心的红线）
-- 2026-10-21 17:09:33 · log · @cqguojia@hotmail.com · 落主包实现完成：核心新增只读 CodeViewer(CodeMirror6)，文件 CodeViewer.ts+lang+theme+css，依赖入 package.json，导出走子路径 ./ui/code-viewer（主桶零平台依赖）；build 干净，node --test 76/77 绿（唯一红项 css-contract 既有 doc-data 孤儿，与本次无关）；未 commit（待授权），未替换 explorer 的 CodeBlock
-- 2026-10-21 17:16:12 · log · @cqguojia@hotmail.com · 已 commit+push c638149 到 main（调试期不打 tag 不 bump），38 文件含 dist；未带入 docs 生成 WIP 孤儿（doc-format.*/explorer.doc.ts/explorer.generated.md/gen-docs.mjs/tsconfig.docs.json/packages/demo/src/doc-data.generated.ts）；explorer 按用户要求未动
-- 2026-10-21 17:40:49 · log · @cqguojia@hotmail.com · 更新 worklog 结论/下一步/过程：标记落主包已 commit+push(c638149) 入库并准备结案；明确替换 explorer CodeBlock / AGENTS.md 旧约束 / doc-data 孤儿为后续独立任务
-- 2026-10-21 17:41:12 · close · @cqguojia@hotmail.com · 结案：核心引入只读 CodeViewer(CodeMirror6)：子路径 ./ui/code-viewer 导出、依赖入 package.json、样式经 createStyleKit 注入；commit c638149 推 main；explorer 未动，替换其 CodeBlock / AGENTS.md 旧约束 / doc-data 孤儿列为后续
+- 2026-10-21 09:23:59 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（open）
+- 2026-10-21 09:25:40 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领 → doing
+- 2026-10-21 09:25:47 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 建任务台账并填正文：核心 src/ui/CodeViewer.tsx 引入 CodeMirror 只读查看器替代官方 CodeBlock，明确不进 explorer、不动 ui/official
+- 2026-10-21 09:30:08 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 补全 worklog 前因后果：兄弟预览栈逐文件核对（仅 CodeMirror 一处第三方）、官方 CodeBlock 卡顿根因、本会话决策时间线、放核心的红线与暗色判据坑
+- 2026-10-21 09:37:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 补全 worklog 背景与完整讨论纪要（含完整讨论过程、兄弟项目预览栈逐文件核对、放核心的红线）
+- 2026-10-21 17:09:33 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 落主包实现完成：核心新增只读 CodeViewer(CodeMirror6)，文件 CodeViewer.ts+lang+theme+css，依赖入 package.json，导出走子路径 ./ui/code-viewer（主桶零平台依赖）；build 干净，node --test 76/77 绿（唯一红项 css-contract 既有 doc-data 孤儿，与本次无关）；未 commit（待授权），未替换 explorer 的 CodeBlock
+- 2026-10-21 17:16:12 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已 commit+push c638149 到 main（调试期不打 tag 不 bump），38 文件含 dist；未带入 docs 生成 WIP 孤儿（doc-format.*/explorer.doc.ts/explorer.generated.md/gen-docs.mjs/tsconfig.docs.json/packages/demo/src/doc-data.generated.ts）；explorer 按用户要求未动
+- 2026-10-21 17:40:49 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 更新 worklog 结论/下一步/过程：标记落主包已 commit+push(c638149) 入库并准备结案；明确替换 explorer CodeBlock / AGENTS.md 旧约束 / doc-data 孤儿为后续独立任务
+- 2026-10-21 17:41:12 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：核心引入只读 CodeViewer(CodeMirror6)：子路径 ./ui/code-viewer 导出、依赖入 package.json、样式经 createStyleKit 注入；commit c638149 推 main；explorer 未动，替换其 CodeBlock / AGENTS.md 旧约束 / doc-data 孤儿列为后续
