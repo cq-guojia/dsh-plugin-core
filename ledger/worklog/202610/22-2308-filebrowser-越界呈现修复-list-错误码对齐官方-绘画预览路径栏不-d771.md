@@ -1,6 +1,7 @@
 # 20261022-2308-filebrowser-越界呈现修复-list-错误码对齐官方-绘画预览路径栏不-d771：FileBrowser 越界呈现修复 + list 错误码对齐官方（绘画预览路径栏不可点）
 
 > **创建**：2026-10-22 23:08:11（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> ✅ 完成封卷：2026-10-26 17:18:06（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：缺陷 ｜ **标签**：explorer、FileBrowser、sessionId、错误码
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -127,3 +128,4 @@ list / rootCache 键 / learnRoot / stat / absolutizeDir / 相对化 / copyPath /
 - 2026-10-23 00:47:16 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · session 变更卡补官方完整结构（0.2.1-rc.2 解包）：多文件 = header + 文件行列表（路径+每文件 +N -M 常显上色）+ COLLAPSED_ROWS=4 折叠 toggle；header 60px/tile 40×40/hover 换显预览提示；新增 changesAll/changesCollapse 文案；98/98、typecheck、build:demo 全绿
 - 2026-10-26 16:55:46 · release · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 释放回公共池
 - 2026-10-26 17:17:41 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领 → doing
+- 2026-10-26 17:18:06 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案封卷
