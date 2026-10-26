@@ -61408,7 +61408,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.3.0"}`],
             [t3("buildDemo"), `v${"0.3.0"}`],
-            [t3("buildStamp"), "261025-115544-584"]
+            [t3("buildStamp"), "261026-122044-007"]
           ].map(
             ([label, value]) => (0, import_react66.createElement)(
               "tr",
@@ -61529,6 +61529,8 @@ function resolveServedEntryId(forms) {
 var slotsRef = null;
 var sidebarDisposer = null;
 var sidebarEntryOn = true;
+var jump = () => {
+};
 function applySidebarEntry() {
   const slots = slotsRef;
   if (slots === null) return;
@@ -61537,13 +61539,26 @@ function applySidebarEntry() {
     sidebarDisposer = null;
   }
   if (!sidebarEntryOn) return;
-  slots.inject("sidebar.panellist", () => {
+  slots.inject("sidebar.panellist.actions", () => {
     if (sidebarDisposer !== null) return;
     sidebarDisposer = slots.register(
-      { name: "sidebar.panellist", id: PANEL_ID, order: 90, label: () => t3("pluginTitle") },
-      PanelIcon
+      { name: "sidebar.panellist.actions", id: `${PANEL_ID}-more`, order: 90, locale: PANEL_ID },
+      MoreMenuRow
     );
   });
+}
+function MoreMenuRow(props) {
+  return (0, import_react68.createElement)(
+    import_dsh_client_ui_primitives4.MenuItemButton,
+    {
+      icon: (0, import_react68.createElement)(PanelIcon, { size: 16 }),
+      onSelect: () => {
+        props.onDismiss();
+        jump(PANEL_ID);
+      }
+    },
+    t3("pluginTitle")
+  );
 }
 var localeRuntime;
 function useLocaleTick() {
@@ -61705,7 +61720,7 @@ function DemoPage() {
           },
           (0, import_react68.createElement)("span", null, `core v${"0.3.0"}`),
           (0, import_react68.createElement)("span", null, `demo v${"0.3.0"}`),
-          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261025-115544-584")
+          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261026-122044-007")
         )
       )
     ),
@@ -61808,8 +61823,6 @@ function apply(ctx) {
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
   setTooltipRenderer((props) => (0, import_react68.createElement)(import_dsh_client_ui_primitives4.Tooltip, props));
-  let jump = () => {
-  };
   ctx.inject(["layout"], (sub) => {
     const layout = sub?.layout;
     if (layout?.selectPanel === void 0) return;

@@ -12,6 +12,7 @@ import { createElement as h, useEffect, useState } from 'react'
 import {
   IconLinkOutlineRegular,
   IconPlayOutlineRegular,
+  MenuItemButton,
   Switch,
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
@@ -77,6 +78,8 @@ let slotsRef: SlotsLike | null = null
 let sidebarDisposer: (() => void) | null = null
 /** 侧栏入口的当前期望值：由官方设置文档的快照驱动（服务未就位时按默认「开」）。 */
 let sidebarEntryOn = true
+/** 跳整页：宿主 layout.selectPanel（拿不到就降级为不跳转，绝不让插件起不来）。 */
+let jump: (id: string) => void = () => {}
 
 /**
  * 把侧栏条目注册成 / 摘成 `sidebarEntryOn` 说的样子。
@@ -89,13 +92,27 @@ function applySidebarEntry(): void {
   if (slots === null) return
   if (sidebarDisposer !== null) { sidebarDisposer(); sidebarDisposer = null }
   if (!sidebarEntryOn) return
-  slots.inject('sidebar.panellist', () => {
+  // 入口从第一级侧栏移到「更多」菜单（sidebar.panellist.actions）：不占第一级位置，
+  // 点开仍跳整页（复用 layout.selectPanel，与设置页「打开 demo」同一条路）。
+  slots.inject('sidebar.panellist.actions', () => {
     if (sidebarDisposer !== null) return
     sidebarDisposer = slots.register(
-      { name: 'sidebar.panellist', id: PANEL_ID, order: 90, label: () => t('pluginTitle') },
-      PanelIcon,
+      { name: 'sidebar.panellist.actions', id: `${PANEL_ID}-more`, order: 90, locale: PANEL_ID },
+      MoreMenuRow,
     )
   })
+}
+
+/** 「更多」菜单里的一行：点开跳 demo 整页，并收起菜单。 */
+function MoreMenuRow(props: { onDismiss: () => void }): ReturnType<typeof h> {
+  return h(
+    MenuItemButton,
+    {
+      icon: h(PanelIcon, { size: 16 }),
+      onSelect: () => { props.onDismiss(); jump(PANEL_ID) },
+    },
+    t('pluginTitle'),
+  )
 }
 
 // 构建时由 packages/demo/build.mjs 的 define 注入（读两份 package.json）。
@@ -398,7 +415,7 @@ export function apply(ctx: {
   // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）。
   // ⚠️ 必须保留 `layout` 对象再调它的方法：`selectPanel` 是 class 方法，抽出来单存会丢 this，
   //    宿主内部 `this.hasMainPanel(...)` 直接抛 "Cannot read properties of undefined"（真机踩过）。
-  let jump: (id: string) => void = () => {}
+  // jump 见模块级声明，这里只赋值。
   ctx.inject(['layout'], (sub: unknown) => {
     const layout = (sub as { layout?: { selectPanel?: (id: string | null) => void } } | null)?.layout
     if (layout?.selectPanel === undefined) return

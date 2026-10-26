@@ -85,6 +85,16 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
     children?: import('react').ReactElement
   }>
 
+  /** 官方菜单项按钮：在 Menu 内渲染一行（图标 + 文案），宿主统一样式与键盘导航。 */
+  export const MenuItemButton: ComponentType<{
+    icon?: import('react').ReactNode
+    onSelect: () => void
+    current?: boolean
+    separatorBefore?: boolean
+    disabled?: boolean
+    children?: import('react').ReactNode
+  }>
+
   // —— 官方设置表单（settings-form 子系统）——
   // 插件详情页那张配置表单就是它：草稿态 + 「保存」一次性落地，脏 / 只读 / 失败全套状态官方管，
   // 插件不带状态机。类型照 @deepseek-ai/dsh-client-ui-primitives 0.2.0-rc.1 的
