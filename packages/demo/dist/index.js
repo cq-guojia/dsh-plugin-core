@@ -51,7 +51,7 @@ async function loadSchemastery() {
 }
 var z = await loadSchemastery();
 var Config = z === void 0 ? void 0 : z.object({
-  sidebarEntry: z.boolean().default(true).volatile()
+  entryMode: z.string().default("more").volatile()
 });
 function apply(ctx) {
   serveModelCatalog(ctx, { path: MODELS_PATH });

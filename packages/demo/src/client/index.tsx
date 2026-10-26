@@ -13,7 +13,6 @@ import {
   IconLinkOutlineRegular,
   IconPlayOutlineRegular,
   MenuItemButton,
-  Switch,
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { SettingsFormScope } from '@deepseek-ai/dsh-client-ui-primitives'
@@ -40,7 +39,7 @@ const PANEL_ID = 'dsh-plugin-core-demo'
 const BUNDLE_CONFIG_SLOT = 'plugins.bundle.config'
 
 /** Config schema 里那个字段名（server 侧 `Config` 与这里的 spec 必须同名）。 */
-const SIDEBAR_ENTRY_FIELD = 'sidebarEntry'
+const ENTRY_MODE_FIELD = 'entryMode'
 
 /** slots 服务本文件用到的切片（宿主类型本地结构化声明，不 import 宿主包）。 */
 interface SlotsLike {
@@ -69,38 +68,59 @@ function resolveServedEntryId(forms: ConfigFormsLike): string {
 
 /** 本插件在设置里的可编辑项（server 侧 `Config` 的客户端镜像；schema 默认值兜底后一定齐全）。 */
 interface PluginConfig {
-  sidebarEntry?: boolean
+  /** 入口位置：off=不显示（仅设置中可见）/ first=左侧第一级 / more=更多菜单（默认）。 */
+  entryMode?: 'off' | 'first' | 'more'
 }
 
 /** slots 服务引用（apply 时赋值）：开关切换后重注册侧栏条目要用。 */
 let slotsRef: SlotsLike | null = null
 /** 当前侧栏条目的 disposer（slots.register 的返回值）：关开关即时摘除、开开关即时注册。 */
 let sidebarDisposer: (() => void) | null = null
-/** 侧栏入口的当前期望值：由官方设置文档的快照驱动（服务未就位时按默认「开」）。 */
-let sidebarEntryOn = true
+/** 入口位置（由官方设置文档快照驱动；服务未就位时按默认「更多」）。 */
+let entryMode: 'off' | 'first' | 'more' = 'more'
 /** 跳整页：宿主 layout.selectPanel（拿不到就降级为不跳转，绝不让插件起不来）。 */
 let jump: (id: string) => void = () => {}
 
 /**
- * 把侧栏条目注册成 / 摘成 `sidebarEntryOn` 说的样子。
+ * 把侧栏条目注册成 / 摘成 `entryMode` 说的样子。
  *
  * ⚠️ 两个注入块的到达顺序不定（slots 与 configForms 谁先谁后没有保证），所以把「当前值」
  * 存在模块级变量里：谁先到都按同一份值注册，后到的块只会重幂等一遍。
+ */
+/**
+ * 按 `entryMode` 注册侧栏入口：
+ *  - 'off'：不注册任何入口（仅「设置」里可见）；
+ *  - 'first'：注册到第一级侧栏（sidebar.panellist）；
+ *  - 'more'（默认）：注册到「更多」菜单（sidebar.panellist.actions）。
+ * 两个槽的 inject 句柄各自带「当前 mode 校验 + 已注册即跳过」双保险，
+ * 切换模式时旧槽句柄不会把已摘除的行又挂回来。
  */
 function applySidebarEntry(): void {
   const slots = slotsRef
   if (slots === null) return
   if (sidebarDisposer !== null) { sidebarDisposer(); sidebarDisposer = null }
-  if (!sidebarEntryOn) return
-  // 入口从第一级侧栏移到「更多」菜单（sidebar.panellist.actions）：不占第一级位置，
-  // 点开仍跳整页（复用 layout.selectPanel，与设置页「打开 demo」同一条路）。
-  slots.inject('sidebar.panellist.actions', () => {
-    if (sidebarDisposer !== null) return
-    sidebarDisposer = slots.register(
-      { name: 'sidebar.panellist.actions', id: `${PANEL_ID}-more`, order: 90, locale: PANEL_ID },
-      MoreMenuRow,
-    )
-  })
+  if (entryMode === 'off') return
+  if (entryMode === 'first') {
+    // 入口注册到左侧第一级侧栏（sidebar.panellist）：与官方功能并列，点开跳整页。
+    slots.inject('sidebar.panellist', () => {
+      if (sidebarDisposer !== null) return
+      if (entryMode !== 'first') return
+      sidebarDisposer = slots.register(
+        { name: 'sidebar.panellist', id: PANEL_ID, order: 90, label: () => t('pluginTitle') },
+        PanelIcon,
+      )
+    })
+  } else {
+    // 默认（more）：入口收进「更多」菜单（sidebar.panellist.actions），不占第一级位置，点开跳整页。
+    slots.inject('sidebar.panellist.actions', () => {
+      if (sidebarDisposer !== null) return
+      if (entryMode !== 'more') return
+      sidebarDisposer = slots.register(
+        { name: 'sidebar.panellist.actions', id: `${PANEL_ID}-more`, order: 90, locale: PANEL_ID },
+        MoreMenuRow,
+      )
+    })
+  }
 }
 
 /** 「更多」菜单里的一行：点开跳 demo 整页，并收起菜单。 */
@@ -298,10 +318,10 @@ interface ConfigPanelProps {
 /**
  * 插件详情页的配置面板（`plugins.bundle.config`）。
  *
- * 交互口径（用户 2026-10-25）：**没有「保存」按钮，开关一拨即写**——直接调官方
+ * 交互口径（用户 2026-10-25）：**没有「保存」按钮，选项一拨即写**——直接调官方
  * `configForms` 的原子 `mutate`（带 revision 围栏），宿主持久化到 profile。
  *
- * 外观复用核心 `StripCard`：左缘色条「开 = 绿 / 关 = 灰」，说明在左、开关在右。
+ * 入口位置用核心 `Segmented`（滑动栏，单选）控制：关闭 = 灰 / 有入口 = 绿；说明在左、控件在右。
  * ⚠️ 介绍只写「这个插件是干嘛的」，不列功能、不写代码——功能会随版本变，介绍不跟着维护。
  */
 function ConfigPanel(props: ConfigPanelProps): ReturnType<typeof h> {
@@ -314,7 +334,8 @@ function ConfigPanel(props: ConfigPanelProps): ReturnType<typeof h> {
   // 详情页只渲染 `page` 视图；`summary`（列表摘要位）不出内容。
   if (props.view !== 'page') return h('div', { style: { display: 'none' } })
   const snap = form.getSnapshot()
-  const on = snap.value?.sidebarEntry !== false
+  const storedMode = snap.value?.entryMode
+  const mode: 'off' | 'first' | 'more' = storedMode === 'off' || storedMode === 'first' || storedMode === 'more' ? storedMode : 'more'
   const ready = snap.status === 'ready'
 
   return h(
@@ -322,31 +343,36 @@ function ConfigPanel(props: ConfigPanelProps): ReturnType<typeof h> {
     { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
     h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px', lineHeight: '18px' } }, t('settingsIntro')),
-    // 设置行：开关在右、说明在左；左缘圆角短条开=绿 / 关=灰（核心 Card 框式）
+    // 设置行：滑动栏在右、说明在左；左缘圆角短条有入口=绿 / 关闭=灰（核心 Card 框式）
     ready
       ? h(
           Card,
           {
-            accent: on ? 'success' : 'neutral',
-            action: h(Switch, {
-              checked: on,
-              label: t('settingsSidebarEntry'),
+            accent: mode === 'off' ? 'neutral' : 'success',
+            action: h(Segmented<'off' | 'first' | 'more'>, {
+              size: 'sm',
+              value: mode,
               disabled: !snap.writable,
-              onChange: (next: boolean) => {
+              onChange: (next) => {
                 // 拨动即写：官方原子 mutate（revision 围栏），宿主持久化，不需要「保存」
                 void form.mutate(
-                  [{ op: 'set', path: [SIDEBAR_ENTRY_FIELD], value: next }],
+                  [{ op: 'set', path: [ENTRY_MODE_FIELD], value: next }],
                   snap.revision,
                 )
               },
+              items: ([
+                { value: 'off', label: t('settingsEntryOff'), tooltip: t('settingsEntryOffTip') },
+                { value: 'first', label: t('settingsEntryFirst'), tooltip: t('settingsEntryFirstTip') },
+                { value: 'more', label: t('settingsEntryMore'), tooltip: t('settingsEntryMoreTip') },
+              ] as const),
             }),
           },
           h(
             'div',
             null,
-            h('div', { style: { fontSize: '13px', fontWeight: 500 } }, t('settingsSidebarEntry')),
+            h('div', { style: { fontSize: '13px', fontWeight: 500 } }, t('settingsEntryTitle')),
             h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: '12px', marginTop: '2px' } },
-              t('settingsSidebarEntryHint')),
+              t('settingsEntryHint')),
           ),
         )
       : h(
@@ -472,10 +498,11 @@ export function apply(ctx: {
     const entryId = resolveServedEntryId(forms)
     const form = forms.get<PluginConfig>(entryId)
 
-    // 侧栏入口：设置文档一变就重算（开关一拨即写，立刻摘除/挂回入口，不需要重开插件）
+    // 侧栏入口：设置文档一变就重算（选项一拨即写，立刻摘除/挂回入口，不需要重开插件）
     const syncSidebar = (): void => {
       const value = form.getSnapshot().value
-      sidebarEntryOn = value?.sidebarEntry !== false
+      const stored = value?.entryMode
+      entryMode = stored === 'off' || stored === 'first' || stored === 'more' ? stored : 'more'
       applySidebarEntry()
     }
     syncSidebar()

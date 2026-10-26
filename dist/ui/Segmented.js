@@ -20,6 +20,7 @@
  */
 import { ensureControls } from './css.js';
 import { createElement as h } from 'react';
+import { getTooltipRenderer } from './tooltip.js';
 /**
  * 渲染一个分段控件（单选 / 多选同体）。
  *
@@ -35,6 +36,8 @@ export function Segmented(props) {
     const multiple = props.multiple === true;
     const value = props.value;
     const onChange = props.onChange;
+    // 核心 Tooltip 渲染器（宿主启动注入官方 Tooltip；未注入则段级提示降级为无）。
+    const renderer = getTooltipRenderer();
     return h('div', {
         role: 'group',
         'aria-label': props.label,
@@ -58,7 +61,7 @@ export function Segmented(props) {
                 onChange(item.value);
             }
         };
-        return h('button', {
+        const itemButton = h('button', {
             key: item.value,
             type: 'button',
             className: 'dshpc-seg__item',
@@ -71,6 +74,11 @@ export function Segmented(props) {
             : null, item.badge !== undefined && item.badge > 0
             ? h('span', { className: 'dshpc-seg__badge' }, String(item.badge))
             : null);
+        // 段级悬停提示：走注入的官方 Tooltip（与 FieldHint 同一条路），不破坏分段布局。
+        if (item.tooltip !== undefined && renderer !== undefined) {
+            return renderer({ label: item.tooltip, side: 'top', children: itemButton });
+        }
+        return itemButton;
     }));
 }
 //# sourceMappingURL=Segmented.js.map

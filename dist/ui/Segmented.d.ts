@@ -11,6 +11,8 @@ export interface SegmentedItem<T extends string = string> {
     count?: number;
     /** 置灰不可点。 */
     disabled?: boolean;
+    /** 段级悬停提示（核心 Tooltip 本体，官方气泡）：鼠标移入该项浮出书面化说明；需宿主注入 renderer。 */
+    tooltip?: string;
 }
 interface SegmentedBaseProps<T extends string = string> {
     /** 段定义。 */

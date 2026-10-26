@@ -20,6 +20,7 @@
  */
 import { ensureControls } from './css.js'
 import { createElement as h, type CSSProperties } from 'react'
+import { getTooltipRenderer } from './tooltip.js'
 
 /** 一段（一个可选值）。 */
 export interface SegmentedItem<T extends string = string> {
@@ -33,6 +34,8 @@ export interface SegmentedItem<T extends string = string> {
   count?: number
   /** 置灰不可点。 */
   disabled?: boolean
+  /** 段级悬停提示（核心 Tooltip 本体，官方气泡）：鼠标移入该项浮出书面化说明；需宿主注入 renderer。 */
+  tooltip?: string
 }
 
 interface SegmentedBaseProps<T extends string = string> {
@@ -90,6 +93,8 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
   const multiple = props.multiple === true
   const value = props.value
   const onChange = props.onChange
+  // 核心 Tooltip 渲染器（宿主启动注入官方 Tooltip；未注入则段级提示降级为无）。
+  const renderer = getTooltipRenderer()
   return h('div', {
     role: 'group',
     'aria-label': props.label,
@@ -110,7 +115,7 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
         ;(onChange as (v: T) => void)(item.value)
       }
     }
-    return h('button', {
+    const itemButton = h('button', {
       key: item.value,
       type: 'button',
       className: 'dshpc-seg__item',
@@ -125,5 +130,10 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
       item.badge !== undefined && item.badge > 0
         ? h('span', { className: 'dshpc-seg__badge' }, String(item.badge))
         : null)
+    // 段级悬停提示：走注入的官方 Tooltip（与 FieldHint 同一条路），不破坏分段布局。
+    if (item.tooltip !== undefined && renderer !== undefined) {
+      return renderer({ label: item.tooltip, side: 'top', children: itemButton })
+    }
+    return itemButton
   }))
 }

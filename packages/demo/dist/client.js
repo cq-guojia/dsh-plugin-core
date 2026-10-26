@@ -6041,6 +6041,7 @@ function Segmented(props) {
   const multiple = props.multiple === true;
   const value = props.value;
   const onChange = props.onChange;
+  const renderer2 = getTooltipRenderer();
   return (0, import_react20.createElement)("div", {
     role: "group",
     "aria-label": props.label,
@@ -6063,7 +6064,7 @@ function Segmented(props) {
         onChange(item.value);
       }
     };
-    return (0, import_react20.createElement)("button", {
+    const itemButton = (0, import_react20.createElement)("button", {
       key: item.value,
       type: "button",
       className: "dshpc-seg__item",
@@ -6072,6 +6073,10 @@ function Segmented(props) {
       disabled,
       onClick: handle
     }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react20.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react20.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
+    if (item.tooltip !== void 0 && renderer2 !== void 0) {
+      return renderer2({ label: item.tooltip, side: "top", children: itemButton });
+    }
+    return itemButton;
   }));
 }
 
@@ -55109,8 +55114,14 @@ var DICT2 = {
     docApiDesc: "\u8BF4\u660E",
     pluginTitle: "\u84DD\u9CB8\u7EC4\u4EF6\u5E93",
     settingsIntro: "\u84DD\u9CB8\u7EC4\u4EF6\u5E93\u662F\u4E3A DeepSeek Harness \u63D2\u4EF6\u51C6\u5907\u7684\u5171\u4EAB UI \u5E95\u5EA7\uFF0C\u672C\u5305\u662F\u5B83\u7684\u7EC4\u4EF6\u9884\u89C8\u63D2\u4EF6\uFF1A\u88C5\u8FDB DSH \u5BBF\u4E3B\u540E\uFF0C\u5728\u8BBE\u7F6E\u91CC\u5373\u53EF\u67E5\u770B\u5404\u57FA\u7840\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u7684\u771F\u5B9E\u8FD0\u884C\u8868\u73B0\u3002",
-    settingsSidebarEntry: "\u4FA7\u680F\u5165\u53E3",
-    settingsSidebarEntryHint: "\u5F00\u542F\u540E\uFF0C\u5728\u4FA7\u680F\u300C\u63D2\u4EF6\u300D\u4E0B\u65B9\u663E\u793A\u672C\u63D2\u4EF6\u5165\u53E3\uFF1B\u5173\u95ED\u540E\u4EC5\u4FDD\u7559\u672C\u8BBE\u7F6E\u9875\u5165\u53E3\u3002",
+    settingsEntryTitle: "\u63D2\u4EF6\u5165\u53E3\u8BF4\u660E",
+    settingsEntryHint: "\u9009\u62E9\u672C\u63D2\u4EF6\u5728\u5BBF\u4E3B\u4E2D\u7684\u5165\u53E3\u4F4D\u7F6E\uFF1A\u5173\u95ED\u540E\u4EC5\u5728\u300C\u8BBE\u7F6E\u300D\u4E2D\u53EF\u89C1\uFF1B\u4E00\u7EA7\u83DC\u5355\u76F4\u63A5\u663E\u793A\u5728\u5DE6\u4FA7\u5BFC\u822A\uFF1B\u66F4\u591A\u83DC\u5355\u6536\u8FDB\u300C\u66F4\u591A\u300D\u3002\u9ED8\u8BA4\u663E\u793A\u5728\u300C\u66F4\u591A\u300D\u3002",
+    settingsEntryOff: "\u5173\u95ED",
+    settingsEntryFirst: "\u4E00\u7EA7\u83DC\u5355",
+    settingsEntryMore: "\u66F4\u591A\u83DC\u5355",
+    settingsEntryOffTip: "\u5173\u95ED\u540E\uFF0C\u672C\u63D2\u4EF6\u7684\u4FA7\u680F\u5165\u53E3\u4E0E\u300C\u66F4\u591A\u300D\u83DC\u5355\u9879\u5747\u4E0D\u663E\u793A\uFF0C\u4EC5\u4FDD\u7559\u300C\u8BBE\u7F6E\u300D\u4E2D\u7684\u914D\u7F6E\u5165\u53E3\uFF0C\u53EF\u6309\u9700\u91CD\u65B0\u5F00\u542F\u3002",
+    settingsEntryFirstTip: "\u5165\u53E3\u76F4\u63A5\u663E\u793A\u5728\u5DE6\u4FA7\u5BFC\u822A\u7684\u7B2C\u4E00\u7EA7\uFF0C\u4E0E\u5B98\u65B9\u529F\u80FD\u5E76\u5217\uFF0C\u70B9\u51FB\u5373\u8FDB\u5165\u7EC4\u4EF6\u9884\u89C8\u6574\u9875\u3002",
+    settingsEntryMoreTip: "\u5165\u53E3\u6536\u8FDB\u5DE6\u4E0B\u89D2\u300C\u66F4\u591A\u300D\u83DC\u5355\uFF0C\u4E0D\u5360\u7528\u5DE6\u4FA7\u7B2C\u4E00\u7EA7\u7A7A\u95F4\uFF0C\u5C55\u5F00\u540E\u5373\u53EF\u8FDB\u5165\u7EC4\u4EF6\u9884\u89C8\u6574\u9875\u3002",
     settingsOpenDemo: "\u67E5\u770B demo",
     settingsGithub: "\u8BBF\u95EE GitHub",
     settingsLoading: "\u6B63\u5728\u8BFB\u53D6\u8BBE\u7F6E\u2026",
@@ -55331,8 +55342,14 @@ var DICT2 = {
     docApiDesc: "Description",
     pluginTitle: "Blue Whale Component Library",
     settingsIntro: "Blue Whale Component Library is the shared UI foundation for DeepSeek Harness plugins. This package is its live preview: installed in a DSH host, it shows every base control and business component running for real.",
-    settingsSidebarEntry: "Sidebar entry",
-    settingsSidebarEntryHint: 'When on, the plugin entry appears under "Plugins" in the sidebar; when off, only this settings entry remains.',
+    settingsEntryTitle: "Plugin entry",
+    settingsEntryHint: "Choose where this plugin appears in the host: off (settings only), sidebar (first level), or the More menu. Defaults to the More menu.",
+    settingsEntryOff: "Off",
+    settingsEntryFirst: "Sidebar",
+    settingsEntryMore: "More menu",
+    settingsEntryOffTip: "When off, neither the sidebar entry nor the More-menu item appears; only the settings entry remains, and can be re-enabled at any time.",
+    settingsEntryFirstTip: "The entry shows at the first level of the left navigation, alongside built-in features; click to open the component preview.",
+    settingsEntryMoreTip: "The entry is tucked into the More menu at the bottom-left, freeing the first level; expand it to open the component preview.",
     settingsOpenDemo: "View demo",
     settingsGithub: "Visit GitHub",
     settingsLoading: "Reading settings\u2026",
@@ -61408,7 +61425,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.3.0"}`],
             [t3("buildDemo"), `v${"0.3.0"}`],
-            [t3("buildStamp"), "261026-122044-007"]
+            [t3("buildStamp"), "261026-131539-034"]
           ].map(
             ([label, value]) => (0, import_react66.createElement)(
               "tr",
@@ -61515,7 +61532,7 @@ var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 // packages/demo/src/client/index.tsx
 var PANEL_ID = "dsh-plugin-core-demo";
 var BUNDLE_CONFIG_SLOT = "plugins.bundle.config";
-var SIDEBAR_ENTRY_FIELD = "sidebarEntry";
+var ENTRY_MODE_FIELD = "entryMode";
 function resolveServedEntryId(forms) {
   let served;
   try {
@@ -61528,7 +61545,7 @@ function resolveServedEntryId(forms) {
 }
 var slotsRef = null;
 var sidebarDisposer = null;
-var sidebarEntryOn = true;
+var entryMode = "more";
 var jump = () => {
 };
 function applySidebarEntry() {
@@ -61538,14 +61555,26 @@ function applySidebarEntry() {
     sidebarDisposer();
     sidebarDisposer = null;
   }
-  if (!sidebarEntryOn) return;
-  slots.inject("sidebar.panellist.actions", () => {
-    if (sidebarDisposer !== null) return;
-    sidebarDisposer = slots.register(
-      { name: "sidebar.panellist.actions", id: `${PANEL_ID}-more`, order: 90, locale: PANEL_ID },
-      MoreMenuRow
-    );
-  });
+  if (entryMode === "off") return;
+  if (entryMode === "first") {
+    slots.inject("sidebar.panellist", () => {
+      if (sidebarDisposer !== null) return;
+      if (entryMode !== "first") return;
+      sidebarDisposer = slots.register(
+        { name: "sidebar.panellist", id: PANEL_ID, order: 90, label: () => t3("pluginTitle") },
+        PanelIcon
+      );
+    });
+  } else {
+    slots.inject("sidebar.panellist.actions", () => {
+      if (sidebarDisposer !== null) return;
+      if (entryMode !== "more") return;
+      sidebarDisposer = slots.register(
+        { name: "sidebar.panellist.actions", id: `${PANEL_ID}-more`, order: 90, locale: PANEL_ID },
+        MoreMenuRow
+      );
+    });
+  }
 }
 function MoreMenuRow(props) {
   return (0, import_react68.createElement)(
@@ -61720,7 +61749,7 @@ function DemoPage() {
           },
           (0, import_react68.createElement)("span", null, `core v${"0.3.0"}`),
           (0, import_react68.createElement)("span", null, `demo v${"0.3.0"}`),
-          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261026-122044-007")
+          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261026-131539-034")
         )
       )
     ),
@@ -61742,38 +61771,44 @@ function ConfigPanel(props) {
   }), [form]);
   if (props.view !== "page") return (0, import_react68.createElement)("div", { style: { display: "none" } });
   const snap = form.getSnapshot();
-  const on = snap.value?.sidebarEntry !== false;
+  const storedMode = snap.value?.entryMode;
+  const mode = storedMode === "off" || storedMode === "first" || storedMode === "more" ? storedMode : "more";
   const ready = snap.status === "ready";
   return (0, import_react68.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "14px" } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
     (0, import_react68.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
-    // 设置行：开关在右、说明在左；左缘圆角短条开=绿 / 关=灰（核心 Card 框式）
+    // 设置行：滑动栏在右、说明在左；左缘圆角短条有入口=绿 / 关闭=灰（核心 Card 框式）
     ready ? (0, import_react68.createElement)(
       Card,
       {
-        accent: on ? "success" : "neutral",
-        action: (0, import_react68.createElement)(import_dsh_client_ui_primitives4.Switch, {
-          checked: on,
-          label: t3("settingsSidebarEntry"),
+        accent: mode === "off" ? "neutral" : "success",
+        action: (0, import_react68.createElement)(Segmented, {
+          size: "sm",
+          value: mode,
           disabled: !snap.writable,
           onChange: (next) => {
             void form.mutate(
-              [{ op: "set", path: [SIDEBAR_ENTRY_FIELD], value: next }],
+              [{ op: "set", path: [ENTRY_MODE_FIELD], value: next }],
               snap.revision
             );
-          }
+          },
+          items: [
+            { value: "off", label: t3("settingsEntryOff"), tooltip: t3("settingsEntryOffTip") },
+            { value: "first", label: t3("settingsEntryFirst"), tooltip: t3("settingsEntryFirstTip") },
+            { value: "more", label: t3("settingsEntryMore"), tooltip: t3("settingsEntryMoreTip") }
+          ]
         })
       },
       (0, import_react68.createElement)(
         "div",
         null,
-        (0, import_react68.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsSidebarEntry")),
+        (0, import_react68.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
         (0, import_react68.createElement)(
           "div",
           { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
-          t3("settingsSidebarEntryHint")
+          t3("settingsEntryHint")
         )
       )
     ) : (0, import_react68.createElement)(
@@ -61867,7 +61902,8 @@ function apply(ctx) {
     const form = forms.get(entryId);
     const syncSidebar = () => {
       const value = form.getSnapshot().value;
-      sidebarEntryOn = value?.sidebarEntry !== false;
+      const stored = value?.entryMode;
+      entryMode = stored === "off" || stored === "first" || stored === "more" ? stored : "more";
       applySidebarEntry();
     };
     syncSidebar();

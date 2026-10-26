@@ -206,8 +206,14 @@ export type DemoMessageKey =
   | 'weekday7'
   | 'pluginTitle'
   | 'settingsIntro'
-  | 'settingsSidebarEntry'
-  | 'settingsSidebarEntryHint'
+  | 'settingsEntryTitle'
+  | 'settingsEntryHint'
+  | 'settingsEntryOff'
+  | 'settingsEntryFirst'
+  | 'settingsEntryMore'
+  | 'settingsEntryOffTip'
+  | 'settingsEntryFirstTip'
+  | 'settingsEntryMoreTip'
   | 'settingsOpenDemo'
   | 'settingsGithub'
   | 'settingsLoading'
@@ -498,8 +504,14 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     pluginTitle: '蓝鲸组件库',
     settingsIntro: '蓝鲸组件库是为 DeepSeek Harness 插件准备的共享 UI 底座，本包是它的组件预览插件：装进 DSH 宿主后，在设置里即可查看各基础控件与业务组件的真实运行表现。',
-    settingsSidebarEntry: '侧栏入口',
-    settingsSidebarEntryHint: '开启后，在侧栏「插件」下方显示本插件入口；关闭后仅保留本设置页入口。',
+    settingsEntryTitle: '插件入口说明',
+    settingsEntryHint: '选择本插件在宿主中的入口位置：关闭后仅在「设置」中可见；一级菜单直接显示在左侧导航；更多菜单收进「更多」。默认显示在「更多」。',
+    settingsEntryOff: '关闭',
+    settingsEntryFirst: '一级菜单',
+    settingsEntryMore: '更多菜单',
+    settingsEntryOffTip: '关闭后，本插件的侧栏入口与「更多」菜单项均不显示，仅保留「设置」中的配置入口，可按需重新开启。',
+    settingsEntryFirstTip: '入口直接显示在左侧导航的第一级，与官方功能并列，点击即进入组件预览整页。',
+    settingsEntryMoreTip: '入口收进左下角「更多」菜单，不占用左侧第一级空间，展开后即可进入组件预览整页。',
     settingsOpenDemo: '查看 demo',
     settingsGithub: '访问 GitHub',
     settingsLoading: '正在读取设置…',
@@ -769,8 +781,14 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     pluginTitle: 'Blue Whale Component Library',
     settingsIntro: 'Blue Whale Component Library is the shared UI foundation for DeepSeek Harness plugins. This package is its live preview: installed in a DSH host, it shows every base control and business component running for real.',
-    settingsSidebarEntry: 'Sidebar entry',
-    settingsSidebarEntryHint: 'When on, the plugin entry appears under "Plugins" in the sidebar; when off, only this settings entry remains.',
+    settingsEntryTitle: 'Plugin entry',
+    settingsEntryHint: 'Choose where this plugin appears in the host: off (settings only), sidebar (first level), or the More menu. Defaults to the More menu.',
+    settingsEntryOff: 'Off',
+    settingsEntryFirst: 'Sidebar',
+    settingsEntryMore: 'More menu',
+    settingsEntryOffTip: 'When off, neither the sidebar entry nor the More-menu item appears; only the settings entry remains, and can be re-enabled at any time.',
+    settingsEntryFirstTip: 'The entry shows at the first level of the left navigation, alongside built-in features; click to open the component preview.',
+    settingsEntryMoreTip: 'The entry is tucked into the More menu at the bottom-left, freeing the first level; expand it to open the component preview.',
     settingsOpenDemo: 'View demo',
     settingsGithub: 'Visit GitHub',
     settingsLoading: 'Reading settings…',

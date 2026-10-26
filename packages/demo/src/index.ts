@@ -46,13 +46,13 @@ const z = await loadSchemastery()
  * 本插件的设置 schema（`undefined` = schema 库没就位，见上）。
  *
  * **刻意不带 `z<Config>` 类型标注**（`.volatile()` 会改推导类型，带上标注反而 TS2322）。
- * `sidebarEntry`：侧栏「插件」下方是否显示本预览插件入口，默认开。
+ * `entryMode`：入口位置（`off`=不显示 / `first`=左侧第一级 / `more`=更多菜单），默认 `more`。
  */
 export const Config =
   z === undefined
     ? undefined
     : z.object({
-        sidebarEntry: z.boolean().default(true).volatile(),
+        entryMode: z.string().default('more').volatile(),
       })
 
 export function apply(ctx: HostContextLike): void {
