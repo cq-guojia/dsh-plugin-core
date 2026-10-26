@@ -4,10 +4,12 @@
  * 它是「同一份结构 + 两个受控轴」的样板：
  *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— **离散三档**，调用点**不许**自己写高度
  *    （真不够用才允许在调用点本地覆盖 `--dshpc-control-h-*`，属例外而非常态）；
- *  - `variant`：`default`（纯黑面：轨道=第二层面 + 外描边）/ `inset`（灰底面：抄「版本」开关观感，
- *    轨道=交互灰 hover 底、无外描边）—— 两套都保留、不合并；变体只改两个颜色变量，结构 / 尺寸 / 交互规则零重复。
- *  - `bordered`（默认 false）：最外再包一圈 1px 描边，选中段相应变为描边块而非填充；
- *    总高与无框版逐像素一致（border 由 padding 抵消），两种模式整行混排不跳高。
+ *  - `bordered`（默认 false）：最外再包一圈 1px 描边；总高与无框版逐像素一致
+ *    （border 由 padding 抵消），两种模式整行混排不跳高。
+ *
+ * 外观只有一套（灰底轨道 + 白色选中片，阴影来自宿主 elevation token）。
+ * 2026-10-26 删掉 `variant` 轴（原 default / inset 两档在 CSS 里只差 1px 内距，
+ * 且 default 比 `size` 承诺矮 2px，下游照 demo 对图时反复查不出原因 —— 见 docs/design/style.md）。
  *
  * 用法：
  *   // 单选
@@ -32,7 +34,6 @@ export function Segmented(props) {
     ensureControls();
     ensureControls();
     const size = props.size ?? 'lg';
-    const variant = props.variant ?? 'default';
     const multiple = props.multiple === true;
     const value = props.value;
     const onChange = props.onChange;
@@ -66,7 +67,7 @@ export function Segmented(props) {
         const ro = new ResizeObserver(measure);
         ro.observe(root);
         return () => ro.disconnect();
-    }, [sliding, measure, value, size, variant, props.items, props.bordered, props.block]);
+    }, [sliding, measure, value, size, props.items, props.bordered, props.block]);
     // 核心 Tooltip 渲染器（宿主启动注入官方 Tooltip；未注入则段级提示降级为无）。
     const renderer = getTooltipRenderer();
     return h('div', {
@@ -75,7 +76,7 @@ export function Segmented(props) {
         id: props.id,
         ref: rootRef,
         // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
-        className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
+        className: `dshpc-seg dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
         style: props.style,
     }, [
         sliding && thumb !== null

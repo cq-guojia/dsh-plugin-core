@@ -19,11 +19,9 @@ interface SegmentedBaseProps<T extends string = string> {
     items: readonly SegmentedItem<T>[];
     /** 高度档（默认 lg = 32 标准行）。 */
     size?: 'sm' | 'md' | 'lg';
-    /** 外观档（默认 default）。 */
-    variant?: 'default' | 'inset';
     /** 撑满父宽、各段等分。 */
     block?: boolean;
-    /** 最外层 1px 描边框（默认 false）。选中段变为描边块；总高与无框版逐像素一致。 */
+    /** 最外层 1px 描边框（默认 false）。总高与无框版逐像素一致。 */
     bordered?: boolean;
     /** 无障碍组名（读屏用）。 */
     label?: string;

@@ -826,7 +826,6 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
             switchable
               ? h(Segmented, {
                   size: 'sm',
-                  variant: 'default',
                   label: viewingIsMd ? tt('previewMdSwitchAria') : tt('previewHtmlSwitchAria'),
                   value: sourceView ? 'source' : 'render',
                   items: [

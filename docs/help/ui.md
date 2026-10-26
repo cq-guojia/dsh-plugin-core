@@ -42,9 +42,9 @@ IconButton：variant: plain|outline|danger（默认 plain）、size（默认 lg�
 
 > EN: IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title).
 
-Segmented：`items`（必填）支持单选 / 多选，另有 `size`（默认 lg）、`variant`（default / inset）。选中片 = 抬起底色 + 1px 描边 + 浮起阴影。
+Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三档总高 24 / 28 / 32）、`bordered`（1px 外框，总高不变）、`multiple`（多选）。外观只有一套：灰底轨道 + 白色选中片，选中片的描边环与阴影由宿主 elevation token 提供（离线兜底值没有那圈环）。
 
-> EN: Segmented: `items` (required) supports single or multiple selection, plus `size` (default lg) and `variant` (default / inset). Selected = raised background + 1px border + lift shadow.
+> EN: Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring).
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|

@@ -601,7 +601,6 @@ export function FileBrowser(props) {
         }), h('div', { className: 'dshpc-fb__actions' }, switchable
             ? h(Segmented, {
                 size: 'sm',
-                variant: 'default',
                 label: viewingIsMd ? tt('previewMdSwitchAria') : tt('previewHtmlSwitchAria'),
                 value: sourceView ? 'source' : 'render',
                 items: [

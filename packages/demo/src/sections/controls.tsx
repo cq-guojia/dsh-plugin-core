@@ -331,19 +331,17 @@ const CODE_SWITCH_SEG = `// 开关语义用官方 Switch：label 只是无障碍
 <Switch checked={checked} onChange={setChecked} label="启用" />
 <Checkbox checked={checked} onChange={setChecked} label="多选" />
 
-// 分段：items = { value, label, count?, badge?, disabled? }；variant 默认 default，inset 是灰底款
+// 分段：items = { value, label, count?, badge?, disabled? }；size 三档（默认 lg）
 <Segmented
-  variant="inset"
   items={[{ value: 'day', label: '日' }, { value: 'week', label: '周' }, { value: 'month', label: '月' }]}
   value={seg}
   onChange={setSeg}
 />
-// bordered：选中段变描边块；size 三档
-<Segmented variant="inset" bordered size="sm" items={...} value={seg} onChange={setSeg} />
+// bordered：最外包 1px 描边（总高不变）；size 三档
+<Segmented bordered size="sm" items={...} value={seg} onChange={setSeg} />
 
 // 筛选条：count 给中性计数，badge 给红角标
 <Segmented
-  variant="inset"
   items={[{ value: 'all', label: '全部', count: 11 }, { value: 'doing', label: '进行中', count: 5 }]}
   value={filter}
   onChange={setFilter}
@@ -446,7 +444,6 @@ export function InputPage(): ReturnType<typeof h> {
           'div',
           { style: { display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' } },
           h(Segmented<'day' | 'week' | 'month'>, {
-            variant: 'inset',
             items: [
               { value: 'day', label: '日' },
               { value: 'week', label: '周' },
@@ -456,7 +453,6 @@ export function InputPage(): ReturnType<typeof h> {
             onChange: setSeg,
           }),
           h(Segmented<'day' | 'week' | 'month'>, {
-            variant: 'inset',
             bordered: true,
             items: [
               { value: 'day', label: '日' },
@@ -467,7 +463,6 @@ export function InputPage(): ReturnType<typeof h> {
             onChange: setSeg,
           }),
           h(Segmented<'day' | 'week' | 'month'>, {
-            variant: 'inset',
             size: 'sm',
             items: [
               { value: 'day', label: '日' },
@@ -478,7 +473,6 @@ export function InputPage(): ReturnType<typeof h> {
             onChange: setSeg,
           }),
           h(Segmented<'day' | 'week' | 'month'>, {
-            variant: 'inset',
             size: 'sm',
             bordered: true,
             items: [
@@ -490,9 +484,8 @@ export function InputPage(): ReturnType<typeof h> {
             onChange: setSeg,
           }),
         ),
-        // 筛选条形态（真实插件同款）：中性计数 + inset 灰底
+        // 筛选条形态（真实插件同款）：中性计数 + 灰底轨道
         h(Segmented, {
-          variant: 'inset',
           items: [
             { value: 'all', label: t('segAll'), count: 11 },
             { value: 'doing', label: t('segDoing'), count: 5 },
@@ -504,7 +497,6 @@ export function InputPage(): ReturnType<typeof h> {
           onChange: setFilter,
         }),
         h(Segmented, {
-          variant: 'inset',
           bordered: true,
           items: [
             { value: 'all', label: t('segAll'), count: 11 },
@@ -813,7 +805,7 @@ const CODE_SECTION_HEAD = `// 分区标题：icon + 标题 + 右侧操作区三�
   icon={<IconSparkleRegular size={16} />}
   title={<span>全部待办 <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
   right={[
-    <Segmented variant="inset" items={[{ value: 'all', label: '全部', count: 22 }]} value={seg} onChange={setSeg} />,
+    <Segmented items={[{ value: 'all', label: '全部', count: 22 }]} value={seg} onChange={setSeg} />,
     <div style={{ width: 192 }}><Input value={kw} onChange={setKw} placeholder="搜索" /></div>,
   ]}
 />`
@@ -921,7 +913,6 @@ export function CardPage(): ReturnType<typeof h> {
           ),
           right: [
             h(Segmented, {
-              variant: 'inset',
               items: [
                 { value: 'all', label: t('segAll'), count: 22 },
                 { value: 'doing', label: t('segDoing'), count: 11 },

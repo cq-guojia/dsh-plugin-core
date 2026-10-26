@@ -6,9 +6,10 @@
    ② 「宿主吃掉 token 块之后第一条规则」——也假，真因是 tokens 模板字符串结尾多了一个反斜杠，
    注入文本里留下字面反引号，把紧随其后的那条规则的选择器污染掉了（见 dsh-host.md §9）。
    样式照常多行书写，不必压行；也不需要任何「牺牲规则」。 */
-.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:var(--dshpc-radius-md);background:var(--dshpc-seg-track);}
-.dshpc-seg--default{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:2px;background:var(--seg-track);}
-.dshpc-seg--inset{--seg-track:var(--dshpc-seg-track);--seg-thumb:var(--dshpc-surface-raised);border:0;padding:3px;background:var(--seg-track);}
+/* 外观只有一套（2026-10-26）：原 variant 的 default / inset 两档在 CSS 里只差 1px 内距，
+   且 default 比文档承诺矮 2px，却让下游以为「有得选」而反复对图 ⇒ 整轴删除。
+   padding 3px 是尺寸契约的一部分：item 高度 = 控制高 − 6px，加起来正好 24 / 28 / 32。 */
+.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:var(--dshpc-radius-md);--seg-thumb:var(--dshpc-surface-raised);background:var(--dshpc-seg-track);}
 .dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-xs);font-weight:500;white-space:nowrap;cursor:pointer;flex:none;transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-seg--md .dshpc-seg__item{height:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item{height:calc(var(--dshpc-control-h-lg) - 6px);}
@@ -41,12 +42,11 @@
 .dshpc-seg--weekday.dshpc-seg--slide .dshpc-seg__thumb{background:var(--dshpc-business);}
 
 /* ── bordered 外框（2026-10-20 用户要的第二种模式）：**只在最外面套一圈 1px 描边**，
-   里面一概不动 —— 选中段的填充色 / 阴影 / 文字色全部保持各自变体原本的样子
-   （default 的灰面、weekday 的蓝面都照旧），这里不写任何针对 __item 的规则。
-   总高必须与无框版逐像素一致：border 1px×2 由各变体的 padding 各让 1px 抵消
-   （default 2→1、inset/weekday 3→2），所以三种变体 × bordered 的总高都与无框版相同。 */
-.dshpc-seg--bordered{border:1px solid var(--dshpc-border);padding:1px;}
-.dshpc-seg--bordered.dshpc-seg--inset{padding:2px;}
+   里面一概不动 —— 选中片的填充色 / 阴影 / 文字色全部保持原样（weekday 的蓝面照旧），
+   这里不写任何针对 __item 的规则。
+   总高必须与无框版逐像素一致：border 1px×2 由 padding 各让 1px 抵消（3 → 2）；
+   weekday 自己声明的 3px 在文件更后面，靠双类选择器压回 2px。 */
+.dshpc-seg--bordered{border:1px solid var(--dshpc-border);padding:2px;}
 .dshpc-seg--bordered.dshpc-seg--weekday{padding:2px;}
 
 @media (prefers-reduced-motion: reduce){.dshpc-seg__item{transition:none;}.dshpc-seg__thumb{transition:none;}}

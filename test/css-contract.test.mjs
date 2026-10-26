@@ -107,6 +107,41 @@ test('解析结果里关键结构规则必须完好', () => {
   )
 })
 
+// ── Segmented 的尺寸契约与「假外观轴」──────────────────────────────────────
+// 2026-10-26 两件真事故，都由下游对图对出来、都靠人眼看不出原因：
+//  ① 文档承诺 size = 24 / 28 / 32，实际渲染 22 / 26 / 30（容器 padding 与 item 的
+//     「控制高 − 6px」不匹配）⇒ 与同档 Button/Input 并排矮 2px，圆度比例肉眼可见不同；
+//  ② `variant` 的 default / inset 两档 CSS 只差 1px 内距（default 还矮 2px），
+//     注释却说「有外描边 / 无外描边」两种观感 ⇒ 下游以为有得选，拧了没反应，转去怀疑 token / 注入 / 打包。
+// 两条都必须由测试盯，不能靠人眼。
+test('Segmented 三档总高必须等于承诺的 24 / 28 / 32', () => {
+  const css = controls.SEGMENTED_CSS
+  const pad = Number(/\.dshpc-seg\{[^}]*?padding:(\d+)px/.exec(css)?.[1])
+  assert.ok(Number.isFinite(pad), '.dshpc-seg 基础规则里找不到 padding —— 闸失效')
+
+  /** 该档的 item 声明（sm 没有独立规则，沿用基础规则）。 */
+  const itemDecls = (tier) => {
+    const own = new RegExp(`\\.dshpc-seg--${tier} \\.dshpc-seg__item\\{([^}]*)\\}`).exec(css)
+    const base = /^\.dshpc-seg__item\{([^}]*)\}/m.exec(css)
+    return own?.[1] ?? base?.[1]
+  }
+
+  for (const [tier, expected] of [['sm', 24], ['md', 28], ['lg', 32]]) {
+    const decls = itemDecls(tier)
+    assert.ok(decls !== undefined, `找不到 .dshpc-seg__item 的 ${tier} 档声明`)
+    const sub = Number(/height:calc\(var\(--dshpc-control-h-\w+\) - (\d+)px\)/.exec(decls)?.[1])
+    assert.ok(Number.isFinite(sub), `${tier} 档 item 高度不是 calc(控制高 − N px)，闸失效`)
+    const h = Number(new RegExp(`--dshpc-control-h-${tier}:(\\d+)px`).exec(TOKENS_CSS_TEMPLATE)?.[1])
+    assert.ok(Number.isFinite(h), `token 层没有 --dshpc-control-h-${tier}`)
+    assert.equal(h - sub + pad * 2, expected, `Segmented ${tier} 档总高 = ${h - sub + pad * 2}px，承诺 ${expected}px`)
+  }
+})
+
+test('Segmented 不许加回视觉等价的外观档（variant 已于 2026-10-26 删除）', () => {
+  assert.ok(!controls.SEGMENTED_CSS.includes('dshpc-seg--default'), 'dshpc-seg--default 与另一档视觉等价，已删，勿回潮')
+  assert.ok(!controls.SEGMENTED_CSS.includes('dshpc-seg--inset'), 'dshpc-seg--inset 已删，勿回潮')
+})
+
 test('快速失败：注入文本不得含反引号 / 反斜杠', () => {
   const bad = ['`', '\\'].filter((ch) => INJECTED.includes(ch))
   assert.deepEqual(bad, [], `注入文本出现非法字符：${JSON.stringify(bad)}`)

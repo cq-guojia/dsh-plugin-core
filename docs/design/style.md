@@ -39,6 +39,22 @@ token colors instead.
 EN: 22% / 36% for hover / active. Mix against literal `#fff` / `#000`, not host-provided neutrals. If an old
 core ignores `color-mix`, the declaration drops and falls back to the base tier.
 
+## 外观轴：一个属性只有一套答案
+
+> EN: Appearance axes: one answer per property
+
+**不许留「视觉等价」的外观档。** 2026-10-26 删掉 `Segmented` 的 `variant`（`default` / `inset`）：
+两档在 CSS 里只差 1px 内距，而 `default` 还比 `size` 承诺矮 2px ⇒ 下游以为「有得选」，
+照 demo 对图时反复怀疑 token / 注入 / 打包，最后才发现拧的是个没接线的旋钮。
+新增任何外观轴前先自问：切到另一档，**渲染结果真看得出不同吗**？看不出就别留这个参数。
+
+尺寸类 props 承诺的数值必须有自检盯着（`test/css-contract.test.mjs`：`Segmented` 三档总高 = 24 / 28 / 32）。
+
+EN: Never ship a visually equivalent appearance tier. `Segmented`'s `variant` was removed on 2026-10-26: the two
+tiers differed by 1px of padding, and `default` rendered 2px shorter than `size` promised — downstream read it as
+"there is a choice", compared against the demo, and chased tokens/bundling instead. Any numeric size promise gets
+its own assertion.
+
 ## 三条硬规矩
 
 > EN: Three hard rules
