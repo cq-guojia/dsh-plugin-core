@@ -1,7 +1,10 @@
 # pnpm v12 起配置统一放这里（package.json 的 pnpm 字段已废弃）。
-# packages 限定为根目录，保持单包行为（不因引入 workspace 而改变 node_modules 布局）。
+# 根包 + 预览插件包：demo 是仓库内的独立可发布包，但其构建依赖（@deepseek-ai/schemastery）
+# 必须由 pnpm 安装，否则根 install 只装根包、demo 依赖缺失 → 产物缺包、设置区不渲染。
+# 故把 packages/demo 纳入 workspace，让根 install 一并装它的依赖（CI 的 build:demo 同理依赖它）。
 packages:
   - '.'
+  - 'packages/demo'
 
 # 允许 esbuild 跑安装脚本（就位原生二进制），否则 CI 报 ERR_PNPM_IGNORED_BUILDS。
 # 旧键 onlyBuiltDependencies 在 v12 已改名 allowBuilds，值为布尔：true=允许跑脚本。

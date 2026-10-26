@@ -55115,13 +55115,13 @@ var DICT2 = {
     pluginTitle: "\u84DD\u9CB8\u7EC4\u4EF6\u5E93",
     settingsIntro: "\u84DD\u9CB8\u7EC4\u4EF6\u5E93\u662F\u4E3A DeepSeek Harness \u63D2\u4EF6\u51C6\u5907\u7684\u5171\u4EAB UI \u5E95\u5EA7\uFF0C\u672C\u5305\u662F\u5B83\u7684\u7EC4\u4EF6\u9884\u89C8\u63D2\u4EF6\uFF1A\u88C5\u8FDB DSH \u5BBF\u4E3B\u540E\uFF0C\u5728\u8BBE\u7F6E\u91CC\u5373\u53EF\u67E5\u770B\u5404\u57FA\u7840\u63A7\u4EF6\u4E0E\u4E1A\u52A1\u7EC4\u4EF6\u7684\u771F\u5B9E\u8FD0\u884C\u8868\u73B0\u3002",
     settingsEntryTitle: "\u63D2\u4EF6\u5165\u53E3\u8BF4\u660E",
-    settingsEntryHint: "\u9009\u62E9\u672C\u63D2\u4EF6\u5728\u5BBF\u4E3B\u4E2D\u7684\u5165\u53E3\u4F4D\u7F6E\uFF1A\u5173\u95ED\u540E\u4EC5\u5728\u300C\u8BBE\u7F6E\u300D\u4E2D\u53EF\u89C1\uFF1B\u4E00\u7EA7\u83DC\u5355\u76F4\u63A5\u663E\u793A\u5728\u5DE6\u4FA7\u5BFC\u822A\uFF1B\u66F4\u591A\u83DC\u5355\u6536\u8FDB\u300C\u66F4\u591A\u300D\u3002\u9ED8\u8BA4\u663E\u793A\u5728\u300C\u66F4\u591A\u300D\u3002",
+    settingsEntryHint: "\u9009\u62E9\u672C\u63D2\u4EF6\u5728\u5DE6\u4FA7\u83DC\u5355\u680F\u7684\u5165\u53E3\u4F4D\u7F6E\uFF1A\u5173\u95ED\u540E\u4EC5\u80FD\u5728\u300C\u8BBE\u7F6E\u300D\u4E2D\u627E\u5230\u672C\u63D2\u4EF6\u3002\u9ED8\u8BA4\u663E\u793A\u5728\u300C\u66F4\u591A\u300D\u3002",
     settingsEntryOff: "\u5173\u95ED",
-    settingsEntryFirst: "\u4E00\u7EA7\u83DC\u5355",
-    settingsEntryMore: "\u66F4\u591A\u83DC\u5355",
-    settingsEntryOffTip: "\u5173\u95ED\u540E\uFF0C\u672C\u63D2\u4EF6\u7684\u4FA7\u680F\u5165\u53E3\u4E0E\u300C\u66F4\u591A\u300D\u83DC\u5355\u9879\u5747\u4E0D\u663E\u793A\uFF0C\u4EC5\u4FDD\u7559\u300C\u8BBE\u7F6E\u300D\u4E2D\u7684\u914D\u7F6E\u5165\u53E3\uFF0C\u53EF\u6309\u9700\u91CD\u65B0\u5F00\u542F\u3002",
-    settingsEntryFirstTip: "\u5165\u53E3\u76F4\u63A5\u663E\u793A\u5728\u5DE6\u4FA7\u5BFC\u822A\u7684\u7B2C\u4E00\u7EA7\uFF0C\u4E0E\u5B98\u65B9\u529F\u80FD\u5E76\u5217\uFF0C\u70B9\u51FB\u5373\u8FDB\u5165\u7EC4\u4EF6\u9884\u89C8\u6574\u9875\u3002",
-    settingsEntryMoreTip: "\u5165\u53E3\u6536\u8FDB\u5DE6\u4E0B\u89D2\u300C\u66F4\u591A\u300D\u83DC\u5355\uFF0C\u4E0D\u5360\u7528\u5DE6\u4FA7\u7B2C\u4E00\u7EA7\u7A7A\u95F4\uFF0C\u5C55\u5F00\u540E\u5373\u53EF\u8FDB\u5165\u7EC4\u4EF6\u9884\u89C8\u6574\u9875\u3002",
+    settingsEntryFirst: "\u4E00\u7EA7",
+    settingsEntryMore: "\u66F4\u591A",
+    settingsEntryOffTip: "\u5173\u95ED\u63D2\u4EF6\u5165\u53E3\u540E\uFF0C\u5DE6\u4FA7\u83DC\u5355\u680F\u9996\u7EA7\u4E0E\u300C\u66F4\u591A\u300D\u83DC\u5355\u5747\u4E0D\u518D\u5C55\u793A\u672C\u63D2\u4EF6\u5165\u53E3\uFF1B\u4EC5\u4FDD\u7559\u300C\u8BBE\u7F6E\u300D\u4E2D\u7684\u914D\u7F6E\u9875\uFF0C\u53EF\u968F\u65F6\u91CD\u65B0\u542F\u7528\u3002",
+    settingsEntryFirstTip: "\u5165\u53E3\u56FA\u5B9A\u5C55\u793A\u4E8E\u5DE6\u4FA7\u83DC\u5355\u680F\u9996\u7EA7\uFF0C\u4E0E\u5185\u7F6E\u529F\u80FD\u5E76\u5217\uFF1B\u70B9\u51FB\u5373\u8FDB\u5165\u7EC4\u4EF6\u9884\u89C8\u6574\u9875\u3002",
+    settingsEntryMoreTip: "\u5165\u53E3\u6536\u7EB3\u4E8E\u5DE6\u4FA7\u83DC\u5355\u680F\u7684\u300C\u66F4\u591A\u300D\u83DC\u5355\uFF0C\u4E0D\u5360\u7528\u9996\u7EA7\u5BFC\u822A\u4F4D\uFF1B\u5C55\u5F00\u300C\u66F4\u591A\u300D\u5373\u53EF\u8FDB\u5165\u7EC4\u4EF6\u9884\u89C8\u6574\u9875\u3002",
     settingsOpenDemo: "\u67E5\u770B demo",
     settingsGithub: "\u8BBF\u95EE GitHub",
     settingsLoading: "\u6B63\u5728\u8BFB\u53D6\u8BBE\u7F6E\u2026",
@@ -55343,13 +55343,13 @@ var DICT2 = {
     pluginTitle: "Blue Whale Component Library",
     settingsIntro: "Blue Whale Component Library is the shared UI foundation for DeepSeek Harness plugins. This package is its live preview: installed in a DSH host, it shows every base control and business component running for real.",
     settingsEntryTitle: "Plugin entry",
-    settingsEntryHint: "Choose where this plugin appears in the host: off (settings only), sidebar (first level), or the More menu. Defaults to the More menu.",
+    settingsEntryHint: "Choose where this plugin appears in the sidebar menu: when off, it is only reachable from Settings. Defaults to More.",
     settingsEntryOff: "Off",
-    settingsEntryFirst: "Sidebar",
-    settingsEntryMore: "More menu",
-    settingsEntryOffTip: "When off, neither the sidebar entry nor the More-menu item appears; only the settings entry remains, and can be re-enabled at any time.",
-    settingsEntryFirstTip: "The entry shows at the first level of the left navigation, alongside built-in features; click to open the component preview.",
-    settingsEntryMoreTip: "The entry is tucked into the More menu at the bottom-left, freeing the first level; expand it to open the component preview.",
+    settingsEntryFirst: "First level",
+    settingsEntryMore: "More",
+    settingsEntryOffTip: "When the entry is off, it appears neither at the first level of the sidebar nor in the More menu; only this settings page remains, and it can be re-enabled at any time.",
+    settingsEntryFirstTip: "The entry is pinned to the first level of the sidebar menu, alongside built-in features; clicking it opens the component preview page.",
+    settingsEntryMoreTip: "The entry is placed in the sidebar More menu, leaving the first level uncluttered; expanding More opens the same preview page.",
     settingsOpenDemo: "View demo",
     settingsGithub: "Visit GitHub",
     settingsLoading: "Reading settings\u2026",
@@ -61425,7 +61425,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.3.0"}`],
             [t3("buildDemo"), `v${"0.3.0"}`],
-            [t3("buildStamp"), "261026-131539-034"]
+            [t3("buildStamp"), "261026-154219-003"]
           ].map(
             ([label, value]) => (0, import_react66.createElement)(
               "tr",
@@ -61749,7 +61749,7 @@ function DemoPage() {
           },
           (0, import_react68.createElement)("span", null, `core v${"0.3.0"}`),
           (0, import_react68.createElement)("span", null, `demo v${"0.3.0"}`),
-          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261026-131539-034")
+          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261026-154219-003")
         )
       )
     ),
@@ -61796,8 +61796,8 @@ function ConfigPanel(props) {
           },
           items: [
             { value: "off", label: t3("settingsEntryOff"), tooltip: t3("settingsEntryOffTip") },
-            { value: "first", label: t3("settingsEntryFirst"), tooltip: t3("settingsEntryFirstTip") },
-            { value: "more", label: t3("settingsEntryMore"), tooltip: t3("settingsEntryMoreTip") }
+            { value: "more", label: t3("settingsEntryMore"), tooltip: t3("settingsEntryMoreTip") },
+            { value: "first", label: t3("settingsEntryFirst"), tooltip: t3("settingsEntryFirstTip") }
           ]
         })
       },

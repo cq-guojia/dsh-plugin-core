@@ -362,8 +362,8 @@ function ConfigPanel(props: ConfigPanelProps): ReturnType<typeof h> {
               },
               items: ([
                 { value: 'off', label: t('settingsEntryOff'), tooltip: t('settingsEntryOffTip') },
-                { value: 'first', label: t('settingsEntryFirst'), tooltip: t('settingsEntryFirstTip') },
                 { value: 'more', label: t('settingsEntryMore'), tooltip: t('settingsEntryMoreTip') },
+                { value: 'first', label: t('settingsEntryFirst'), tooltip: t('settingsEntryFirstTip') },
               ] as const),
             }),
           },
