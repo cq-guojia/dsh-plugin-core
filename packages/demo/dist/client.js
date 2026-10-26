@@ -61462,9 +61462,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.3.0"}`],
-            [t3("buildDemo"), `v${"0.3.0"}`],
-            [t3("buildStamp"), "261026-155740-685"]
+            [t3("buildCore"), `v${"0.4.0"}`],
+            [t3("buildDemo"), `v${"0.4.0"}`],
+            [t3("buildStamp"), "261026-172108-924"]
           ].map(
             ([label, value]) => (0, import_react66.createElement)(
               "tr",
@@ -61786,9 +61786,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react68.createElement)("span", null, `core v${"0.3.0"}`),
-          (0, import_react68.createElement)("span", null, `demo v${"0.3.0"}`),
-          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261026-155740-685")
+          (0, import_react68.createElement)("span", null, `core v${"0.4.0"}`),
+          (0, import_react68.createElement)("span", null, `demo v${"0.4.0"}`),
+          (0, import_react68.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261026-172108-924")
         )
       )
     ),
