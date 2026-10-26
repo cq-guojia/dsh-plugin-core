@@ -19,6 +19,9 @@
   "author": "cq-guojia",
   "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=22.5"
+  },
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
