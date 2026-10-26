@@ -1,6 +1,7 @@
 # 20261024-1538-ui-新增-datetimepicker-单值-时间段-精度到秒-浮层内时分秒步-b2e8：ui 新增 DateTimePicker：单值/时间段、精度到秒、浮层内时分秒步进
 
 > **创建**：2026-10-24 15:38:20（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
+> ✅ 完成封卷：2026-10-26 17:18:14（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
 > **分类**：新功能 ｜ **标签**：ui、控件、日期
 
 <!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
@@ -66,3 +67,4 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 20:28:00 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 明暗切换分段文案定稿：浅色/深色（用户确认的官方口径，英文 Light/Dark 不变）；已提交推送；测试/lint 全过
 - 2026-10-26 16:55:46 · release · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 释放回公共池
 - 2026-10-26 17:17:49 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领 → doing
+- 2026-10-26 17:18:14 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案封卷
