@@ -31,6 +31,15 @@
 .dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 8px);padding:0;justify-content:center;}
 .dshpc-seg--weekday .dshpc-seg__item[aria-pressed='true']{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);box-shadow:var(--dshpc-shadow-raised);}
 
+/* ── 单选滑动块（2026-10-26 用户：点选后选中底应「滑过去」，不是旧段消失、新段直接亮）。
+   结构 = 一块绝对定位的共用底 + 各段透明；位置/尺寸由组件量出后内联，这里只管外观与过渡。
+   --slide 只在单选挂上：多选（如星期）每段各自着色，没有唯一滑块可滑，保持原样。 */
+.dshpc-seg--slide{position:relative;}
+.dshpc-seg--slide .dshpc-seg__item{position:relative;z-index:1;}
+.dshpc-seg--slide .dshpc-seg__item[aria-pressed='true']{background:transparent;box-shadow:none;}
+.dshpc-seg__thumb{position:absolute;z-index:0;border-radius:var(--dshpc-radius-sm);background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);pointer-events:none;transition:left var(--dshpc-dur) var(--dshpc-ease),top var(--dshpc-dur) var(--dshpc-ease),width var(--dshpc-dur) var(--dshpc-ease),height var(--dshpc-dur) var(--dshpc-ease);}
+.dshpc-seg--weekday.dshpc-seg--slide .dshpc-seg__thumb{background:var(--dshpc-business);}
+
 /* ── bordered 外框（2026-10-20 用户要的第二种模式）：**只在最外面套一圈 1px 描边**，
    里面一概不动 —— 选中段的填充色 / 阴影 / 文字色全部保持各自变体原本的样子
    （default 的灰面、weekday 的蓝面都照旧），这里不写任何针对 __item 的规则。
@@ -40,4 +49,4 @@
 .dshpc-seg--bordered.dshpc-seg--inset{padding:2px;}
 .dshpc-seg--bordered.dshpc-seg--weekday{padding:2px;}
 
-@media (prefers-reduced-motion: reduce){.dshpc-seg__item{transition:none;}}
+@media (prefers-reduced-motion: reduce){.dshpc-seg__item{transition:none;}.dshpc-seg__thumb{transition:none;}}

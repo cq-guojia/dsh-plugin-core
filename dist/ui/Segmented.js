@@ -19,7 +19,7 @@
  * docs/design/ui-style-guide.md §五 的流程（改基础层，一处改全站生效）。
  */
 import { ensureControls } from './css.js';
-import { createElement as h } from 'react';
+import { createElement as h, useCallback, useLayoutEffect, useRef, useState, } from 'react';
 import { getTooltipRenderer } from './tooltip.js';
 /**
  * 渲染一个分段控件（单选 / 多选同体）。
@@ -36,49 +36,96 @@ export function Segmented(props) {
     const multiple = props.multiple === true;
     const value = props.value;
     const onChange = props.onChange;
+    // 单选：选中底由一块共用「滑动块」承担，点选后从旧段滑到新段（多选每段各自着色，没有唯一滑块可滑）。
+    const sliding = !multiple && props.items.length > 1;
+    const rootRef = useRef(null);
+    const [thumb, setThumb] = useState(null);
+    // 量选中段的位置：容器 width 由内容决定，段宽又随文案 / 角标变，只能读一次布局。
+    const measure = useCallback(() => {
+        const sel = rootRef.current?.querySelector('.dshpc-seg__item[aria-pressed="true"]');
+        if (sel === undefined || sel === null) {
+            setThumb(null);
+            return;
+        }
+        const next = { left: sel.offsetLeft, top: sel.offsetTop, width: sel.offsetWidth, height: sel.offsetHeight };
+        // 尺寸没变就不 set，免得 ResizeObserver 与渲染互相打转。
+        setThumb((cur) => cur !== null && cur.left === next.left && cur.top === next.top && cur.width === next.width && cur.height === next.height
+            ? cur
+            : next);
+    }, []);
+    useLayoutEffect(() => {
+        if (!sliding) {
+            setThumb(null);
+            return;
+        }
+        measure();
+        const root = rootRef.current;
+        // 容器被布局改宽（block / 换行 / webfont 到位）时重测；首帧 thumb 是插入的新元素，不触发过渡。
+        if (root === null || typeof ResizeObserver === 'undefined')
+            return;
+        const ro = new ResizeObserver(measure);
+        ro.observe(root);
+        return () => ro.disconnect();
+    }, [sliding, measure, value, size, variant, props.items, props.bordered, props.block]);
     // 核心 Tooltip 渲染器（宿主启动注入官方 Tooltip；未注入则段级提示降级为无）。
     const renderer = getTooltipRenderer();
     return h('div', {
         role: 'group',
         'aria-label': props.label,
         id: props.id,
+        ref: rootRef,
         // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
-        className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
+        className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
         style: props.style,
-    }, props.items.map(item => {
-        const on = multiple ? value.includes(item.value) : value === item.value;
-        const disabled = item.disabled === true || props.disabled === true;
-        const handle = () => {
-            if (disabled)
-                return;
-            if (multiple) {
-                const arr = value;
-                const next = arr.includes(item.value) ? arr.filter(v => v !== item.value) : [...arr, item.value];
-                onChange(next);
+    }, [
+        sliding && thumb !== null
+            ? h('span', {
+                key: '__thumb__',
+                className: 'dshpc-seg__thumb',
+                'aria-hidden': true,
+                style: {
+                    left: `${String(thumb.left)}px`,
+                    top: `${String(thumb.top)}px`,
+                    width: `${String(thumb.width)}px`,
+                    height: `${String(thumb.height)}px`,
+                },
+            })
+            : null,
+        ...props.items.map(item => {
+            const on = multiple ? value.includes(item.value) : value === item.value;
+            const disabled = item.disabled === true || props.disabled === true;
+            const handle = () => {
+                if (disabled)
+                    return;
+                if (multiple) {
+                    const arr = value;
+                    const next = arr.includes(item.value) ? arr.filter(v => v !== item.value) : [...arr, item.value];
+                    onChange(next);
+                }
+                else {
+                    ;
+                    onChange(item.value);
+                }
+            };
+            const itemButton = h('button', {
+                key: item.value,
+                type: 'button',
+                className: 'dshpc-seg__item',
+                // 选中态用 aria-pressed 表达 ⇒ 读屏可读，皮肤也只认这一个选择器
+                'aria-pressed': on,
+                disabled,
+                onClick: handle,
+            }, item.label, item.count !== undefined && item.count > 0
+                ? h('span', { className: 'dshpc-seg__count' }, String(item.count))
+                : null, item.badge !== undefined && item.badge > 0
+                ? h('span', { className: 'dshpc-seg__badge' }, String(item.badge))
+                : null);
+            // 段级悬停提示：走注入的官方 Tooltip（与 FieldHint 同一条路），不破坏分段布局。
+            if (item.tooltip !== undefined && renderer !== undefined) {
+                return renderer({ label: item.tooltip, side: 'top', children: itemButton });
             }
-            else {
-                ;
-                onChange(item.value);
-            }
-        };
-        const itemButton = h('button', {
-            key: item.value,
-            type: 'button',
-            className: 'dshpc-seg__item',
-            // 选中态用 aria-pressed 表达 ⇒ 读屏可读，皮肤也只认这一个选择器
-            'aria-pressed': on,
-            disabled,
-            onClick: handle,
-        }, item.label, item.count !== undefined && item.count > 0
-            ? h('span', { className: 'dshpc-seg__count' }, String(item.count))
-            : null, item.badge !== undefined && item.badge > 0
-            ? h('span', { className: 'dshpc-seg__badge' }, String(item.badge))
-            : null);
-        // 段级悬停提示：走注入的官方 Tooltip（与 FieldHint 同一条路），不破坏分段布局。
-        if (item.tooltip !== undefined && renderer !== undefined) {
-            return renderer({ label: item.tooltip, side: 'top', children: itemButton });
-        }
-        return itemButton;
-    }));
+            return itemButton;
+        }),
+    ]);
 }
 //# sourceMappingURL=Segmented.js.map

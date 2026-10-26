@@ -19,8 +19,23 @@
  * docs/design/ui-style-guide.md §五 的流程（改基础层，一处改全站生效）。
  */
 import { ensureControls } from './css.js'
-import { createElement as h, type CSSProperties } from 'react'
+import {
+  createElement as h,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react'
 import { getTooltipRenderer } from './tooltip.js'
+
+/** 单选滑动块的位置与尺寸（相对容器 padding box，px）。 */
+interface ThumbRect {
+  left: number
+  top: number
+  width: number
+  height: number
+}
 
 /** 一段（一个可选值）。 */
 export interface SegmentedItem<T extends string = string> {
@@ -93,16 +108,65 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
   const multiple = props.multiple === true
   const value = props.value
   const onChange = props.onChange
+  // 单选：选中底由一块共用「滑动块」承担，点选后从旧段滑到新段（多选每段各自着色，没有唯一滑块可滑）。
+  const sliding = !multiple && props.items.length > 1
+  const rootRef = useRef<HTMLDivElement | null>(null)
+  const [thumb, setThumb] = useState<ThumbRect | null>(null)
+
+  // 量选中段的位置：容器 width 由内容决定，段宽又随文案 / 角标变，只能读一次布局。
+  const measure = useCallback((): void => {
+    const sel = rootRef.current?.querySelector<HTMLElement>('.dshpc-seg__item[aria-pressed="true"]')
+    if (sel === undefined || sel === null) {
+      setThumb(null)
+      return
+    }
+    const next = { left: sel.offsetLeft, top: sel.offsetTop, width: sel.offsetWidth, height: sel.offsetHeight }
+    // 尺寸没变就不 set，免得 ResizeObserver 与渲染互相打转。
+    setThumb((cur) =>
+      cur !== null && cur.left === next.left && cur.top === next.top && cur.width === next.width && cur.height === next.height
+        ? cur
+        : next,
+    )
+  }, [])
+
+  useLayoutEffect(() => {
+    if (!sliding) {
+      setThumb(null)
+      return
+    }
+    measure()
+    const root = rootRef.current
+    // 容器被布局改宽（block / 换行 / webfont 到位）时重测；首帧 thumb 是插入的新元素，不触发过渡。
+    if (root === null || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(measure)
+    ro.observe(root)
+    return () => ro.disconnect()
+  }, [sliding, measure, value, size, variant, props.items, props.bordered, props.block])
   // 核心 Tooltip 渲染器（宿主启动注入官方 Tooltip；未注入则段级提示降级为无）。
   const renderer = getTooltipRenderer()
   return h('div', {
     role: 'group',
     'aria-label': props.label,
     id: props.id,
+    ref: rootRef,
     // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
-    className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
+    className: `dshpc-seg dshpc-seg--${variant} dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
     style: props.style,
-  }, props.items.map(item => {
+  }, [
+    sliding && thumb !== null
+      ? h('span', {
+          key: '__thumb__',
+          className: 'dshpc-seg__thumb',
+          'aria-hidden': true,
+          style: {
+            left: `${String(thumb.left)}px`,
+            top: `${String(thumb.top)}px`,
+            width: `${String(thumb.width)}px`,
+            height: `${String(thumb.height)}px`,
+          },
+        })
+      : null,
+    ...props.items.map(item => {
     const on = multiple ? (value as T[]).includes(item.value) : value === item.value
     const disabled = item.disabled === true || props.disabled === true
     const handle = (): void => {
@@ -135,5 +199,6 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
       return renderer({ label: item.tooltip, side: 'top', children: itemButton })
     }
     return itemButton
-  }))
+    }),
+  ])
 }
