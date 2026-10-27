@@ -1,10 +1,13 @@
 # 20261021-2212-修-demo-工作区浏览演示-2-组-pagerow-挂载-真样例内容-open-0a67：修 demo 工作区浏览演示：2 组 + pageRow 挂载 + 真样例内容 + openFilePreview 坏 mount 警告
 
-> **✅ 完成封卷**：2026-10-22 00:37:50（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
-> **创建**：2026-10-21 22:12:15（@GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6）
-> **分类**：界面 ｜ **标签**：demo、explorer、PanelDock、openFilePreview、CodeViewer
+- **标签**：界面、demo、explorer、PanelDock、openFilePreview、CodeViewer
+- **状态**：closed · 2026-10-22 00:37:50 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **创建**：2026-10-21 22:12:15 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **封卷**：2026-10-22 00:37:50 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 「> **分类**：… ｜ **标签**：…」行由脚本按 new --category / --tags 插入；两者皆空则不写。 -->
+<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
+     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
+     「- **封卷**：…」在结案时加在最后。 -->
 
 ## 背景
 
