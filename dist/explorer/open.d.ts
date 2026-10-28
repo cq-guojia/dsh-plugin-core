@@ -9,10 +9,12 @@ export interface FilePreviewHandle {
 }
 export interface OpenFilePreviewOptions {
     /**
-     * 工作区文件服务（文件预览要用）。传了 `content` 时（自定义审阅内容，例如变更 diff），
-     * 这一组文件定位参数都可省略——核心只负责把 `content` 渲染进同一个右侧 dock，不解析路径。
+     * 工作区文件服务。**一般不用传**：`connectHost(ctx)` 接线后核心自己持有
+     * （`getWorkspaceFiles()`）。传了就以传入的为准（多服务 / 覆盖场景）。
+     * 传了 `content` 时（自定义审阅内容，例如变更 diff），这一组文件定位参数都可省略。
      */
     workspaceFiles?: WorkspaceFilesFace;
+    /** 该工作区的真实会话 id。**一般不用传**：按路径匹配工作区 / 最近有会话的工作区自动解析。 */
     sessionId?: string;
     /** 文件或文件夹路径。与 `content` 二选一：传 `content` 时本字段可省略。 */
     path?: string;
@@ -62,6 +64,9 @@ export interface OpenFilePreviewOptions {
 /**
  * 打开工作区文件/文件夹的**停靠**预览（分栏：挤窄 `mount` 左边的兄弟，不是盖上去）。
  * 重复打开会关掉上一个（同侧边栏位）。
+ *
+ * 消费方最少写法（`connectHost(ctx)` 已接线）：
+ * `openFilePreview({ mount, path })` —— 文件服务、会话 id 都由核心自己解。
  */
 export declare function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHandle | null;
 export interface PickedFile {
@@ -71,8 +76,10 @@ export interface PickedFile {
     isDir: boolean;
 }
 export interface PickWorkspaceFileOptions {
-    workspaceFiles: WorkspaceFilesFace;
-    sessionId: string;
+    /** 工作区文件服务。**一般不用传**：`connectHost(ctx)` 接线后核心自己持有。 */
+    workspaceFiles?: WorkspaceFilesFace;
+    /** 该工作区的真实会话 id。**一般不用传**：缺省取「最近有会话的工作区」。 */
+    sessionId?: string;
     /** 锚点元素：弹窗左缘与之对齐、优先落在它**下方**（下方不够才翻到上方）；不传 = 屏幕居中。 */
     anchor?: HTMLElement | null;
     /** 过滤：exts = 只要这些扩展名（小写无点）；dirs = 只要文件夹；不传 = 不限。 */

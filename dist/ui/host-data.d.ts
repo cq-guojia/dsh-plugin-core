@@ -12,7 +12,11 @@
  *
  * 接线：宿主 `apply` 调 `serveModelCatalog(ctx, { path })`，客户端 `apply` 调
  * `connectHost(ctx, { modelsPath: path })`——同一个 path 常量，消费方不碰数据本身。
+ *
+ * 2026-10-28 扩一条：`connectHost` 同时接 `remote.workspaceFiles` ⇒ `openFilePreview` /
+ * `pickWorkspaceFile` 不必再由调用方传服务（explorer 的读文件通道同属「绑定宿主能力」）。
  */
+import type { WorkspaceFilesFace } from '../explorer/types.js';
 /** 一条路由：一个供应商 + 它的模型（与宿主侧 `ModelRouteData` 同形）。 */
 export interface ModelRoute {
     provider: string;
@@ -84,6 +88,8 @@ declare class WorkspaceListStore {
 }
 /** 工作区列表单例（WorkspacePicker 消费；connectHost 负责喂）。 */
 export declare const workspaceList: WorkspaceListStore;
+/** 当前接到的文件服务；宿主没这能力 / 没调 connectHost ⇒ undefined。 */
+export declare function getWorkspaceFiles(): WorkspaceFilesFace | undefined;
 /** 插件 client 的最小 ctx 形状（cordis client context 的结构化子集）。 */
 export interface HostClientContext {
     inject: (deps: string[], cb: (sub: unknown) => void) => void;

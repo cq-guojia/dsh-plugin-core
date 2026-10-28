@@ -1,18 +1,3 @@
-/**
- * 领域选择器的宿主数据面 —— ModelPicker / WorkspacePicker 的「现成数据」。
- *
- * 用户 2026-10-20 拍板：这两个领域选择器**自己取数、自己显示**，消费方不再传数组
- * （反转 requirements §6 对领域选择器的旧口径；通用 `Picker` 仍是 props 进数据的纯零件）。
- *
- * 两条数据通路（均为真机验证过的口子）：
- * - 工作区：宿主 client 服务 `workspaces` 的快照（getSnapshot + subscribe，follow 流实时更新）。
- * - 模型目录：**插件宿主侧** `llm.listModels()` 现查 → `serveModelCatalog()` 挂成只读路由 →
- *   客户端 fetch（`@deepseek-ai/*` 的 `remote.llm` 只有 listProviders，**拿不到每个供应商的
- *   模型列表**，2026-10-20 真机定位后弃用该路径）。
- *
- * 接线：宿主 `apply` 调 `serveModelCatalog(ctx, { path })`，客户端 `apply` 调
- * `connectHost(ctx, { modelsPath: path })`——同一个 path 常量，消费方不碰数据本身。
- */
 /** 模型目录的 observable store（useSyncExternalStore 直接消费）。 */
 class ModelCatalogStore {
     constructor() {
@@ -70,6 +55,19 @@ class WorkspaceListStore {
 }
 /** 工作区列表单例（WorkspacePicker 消费；connectHost 负责喂）。 */
 export const workspaceList = new WorkspaceListStore();
+// ── 工作区文件服务 ──────────────────────────────────────────────────────
+/**
+ * 宿主 `remote.workspaceFiles`（explorer 的读文件通道）单例，由 `connectHost` 喂。
+ *
+ * 为什么核心要自己存一份：消费方写 `openFilePreview({ mount, path })` 就够了 —— 服务对象
+ * 只能从插件的 ctx 里 inject 出来（库拿不到 ctx），所以它必须由**一次接线**交进来，
+ * 而不是每次调用各传一遍（用户 2026-10-28 拍板：绑定能力归核心，调用方只管要什么）。
+ */
+let workspaceFiles;
+/** 当前接到的文件服务；宿主没这能力 / 没调 connectHost ⇒ undefined。 */
+export function getWorkspaceFiles() {
+    return workspaceFiles;
+}
 function isWorkspaceSource(value) {
     if (value === null || typeof value !== 'object')
         return false;
@@ -87,6 +85,15 @@ export function connectHost(ctx, options = {}) {
         const source = sub?.workspaces?.list;
         if (isWorkspaceSource(source))
             workspaceList.setSource(source);
+    });
+    // 读文件通道：`explorer` 的预览靠它读字节，绑定归这里，调用方不必再传服务。
+    // dotted 注入值优先，退回 `remote` 上的同名属性；探针 `list` 不在 ⇒ 判为没就位。
+    ctx.inject(['remote', 'remote.workspaceFiles'], (sub) => {
+        const rec = sub;
+        const candidate = rec?.['remote.workspaceFiles'] ?? rec?.remote?.workspaceFiles;
+        if (typeof candidate?.list === 'function') {
+            workspaceFiles = candidate;
+        }
     });
     const modelsPath = options.modelsPath;
     if (modelsPath === undefined)

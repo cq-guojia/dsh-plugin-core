@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { buildModelRoutes } from '../dist/host/index.js'
-import { modelCatalog, workspaceList } from '../dist/ui/index.js'
+import { connectHost, getWorkspaceFiles, modelCatalog, workspaceList } from '../dist/ui/index.js'
 
 /** 最小 llm face：按脚本返回 provider 与各自模型。 */
 function llmFace(providers, models) {
@@ -43,6 +43,19 @@ test('modelCatalog：setRoutes / setUnavailable 推快照并通知订阅者', ()
   assert.equal(modelCatalog.getSnapshot().status, 'unavailable')
   assert.equal(notified, 2)
   off()
+})
+
+test('connectHost：接 remote.workspaceFiles ⇒ 核心自持；形状不符不认', () => {
+  const service = { list: async () => ({ path: '', entries: [], truncated: false }) }
+  const callbacks = []
+  connectHost({ inject: (_deps, cb) => { callbacks.push([_deps, cb]) } })
+  const entry = callbacks.find(([deps]) => deps.includes('remote.workspaceFiles'))
+  assert.ok(entry !== undefined, 'connectHost 必须注入 remote.workspaceFiles')
+  entry[1]({ 'remote.workspaceFiles': service })
+  assert.equal(getWorkspaceFiles(), service)
+  // 探针 list 不在（旧宿主 / 注入时机过早）⇒ 不认，保持原值，绝不把半个服务当能用
+  entry[1]({ remote: { workspaceFiles: { read: () => {} } } })
+  assert.equal(getWorkspaceFiles(), service)
 })
 
 test('workspaceList 换源即镜像新快照并转发通知', () => {

@@ -12,11 +12,11 @@
 import { createElement as h, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { ensureControls, getStyleKit } from '../ui/css.js'
-import { workspaceList } from '../ui/host-data.js'
+import { getWorkspaceFiles, workspaceList } from '../ui/host-data.js'
 import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js'
 import { type Translate } from '../utils/i18n.js'
 import { FileBrowser } from './FileBrowser.js'
-import { anchorSessionForTitle, workspaceAnchorForPath } from './types.js'
+import { anchorSessionForTitle, pickWorkspaceAnchor, workspaceAnchorForPath } from './types.js'
 import type { OfficeToPdfFace, PickFilter, RootCache, WorkspaceAnchorItem, WorkspaceFilesFace } from './types.js'
 
 // ── 方法 A：侧边栏预览 ──
@@ -30,10 +30,12 @@ export interface FilePreviewHandle {
 
 export interface OpenFilePreviewOptions {
   /**
-   * 工作区文件服务（文件预览要用）。传了 `content` 时（自定义审阅内容，例如变更 diff），
-   * 这一组文件定位参数都可省略——核心只负责把 `content` 渲染进同一个右侧 dock，不解析路径。
+   * 工作区文件服务。**一般不用传**：`connectHost(ctx)` 接线后核心自己持有
+   * （`getWorkspaceFiles()`）。传了就以传入的为准（多服务 / 覆盖场景）。
+   * 传了 `content` 时（自定义审阅内容，例如变更 diff），这一组文件定位参数都可省略。
    */
   workspaceFiles?: WorkspaceFilesFace
+  /** 该工作区的真实会话 id。**一般不用传**：按路径匹配工作区 / 最近有会话的工作区自动解析。 */
   sessionId?: string
   /** 文件或文件夹路径。与 `content` 二选一：传 `content` 时本字段可省略。 */
   path?: string
@@ -107,7 +109,10 @@ function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => vo
   // null = 还在入口态（path 用调用方给的那个文件）；非 null = 用户点过工作区，从它的根开始列。
   const [picked, setPicked] = useState<string | null>(null)
   const wsTitle = picked ?? entryTitle
-  const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId!
+  const sessionId = anchorSessionForTitle(anchors, wsTitle)
+    ?? options.sessionId
+    ?? pickWorkspaceAnchor(anchors)?.sessionId
+    ?? ''
   const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title)
   return h(FileBrowser, {
     // key 带工作区+会话 ⇒ 切换即重挂载（FileBrowser 的 dir/listing/学根全属于旧工作区）。
@@ -138,31 +143,62 @@ function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => vo
 const PREVIEW_HOST_ID = 'dshpc-file-preview-host'
 /** dock 里的面板 id（本 container 里只有一个）。 */
 const PREVIEW_PANEL_ID = 'file-preview'
+/**
+ * 挂载宿主行自动补的类：主区伸展 / 子项不收溢出的规则挂在它下面（`src/ui/panel-dock.css`）。
+ * 消费方不必自己写 —— 打开时加、关闭时摘。
+ */
+const DOCK_HOST_CLASS = 'dshpc-dock-host'
 /** 当前打开着的预览的 close（重复打开时走它，保证 React 根被真正卸载）。 */
 let activePreviewClose: (() => void) | null = null
 
 /**
  * 打开工作区文件/文件夹的**停靠**预览（分栏：挤窄 `mount` 左边的兄弟，不是盖上去）。
  * 重复打开会关掉上一个（同侧边栏位）。
+ *
+ * 消费方最少写法（`connectHost(ctx)` 已接线）：
+ * `openFilePreview({ mount, path })` —— 文件服务、会话 id 都由核心自己解。
  */
 export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHandle | null {
   if (typeof document === 'undefined') return null
-  // 布局契约自检：PanelDock 是布局成员，mount 必须是 flex 行，否则 dock 不停右侧、高度也塌。
-  // 只 dev 期警告、不改行为——消费方传错时至少留痕，别静默破相。
-  if (typeof getComputedStyle === 'function') {
-    const cs = getComputedStyle(options.mount)
-    if (cs.display !== 'flex' && cs.display !== 'inline-flex') {
-      console.warn(
-        '[dsh-plugin-core/explorer] openFilePreview: mount 不是 flex 行 —— PanelDock 是布局成员'
-        + '（停靠右侧 + 挤窄主区）。请传你页面「主区 + 侧栏」那一层 flex 容器，'
-        + '不要传 document.body 或无定高的窄容器。',
-      )
-    }
+  const custom = options.content !== undefined
+  // 接线归核心：服务来自 connectHost，会话按「路径所属工作区 → 最近有会话的工作区」解。
+  const files = options.workspaceFiles ?? getWorkspaceFiles()
+  const anchors = options.workspaceAnchors ?? workspaceList.getSnapshot()
+  const sessionId = options.sessionId
+    ?? workspaceAnchorForPath(options.path ?? '', anchors)?.sessionId
+    ?? pickWorkspaceAnchor(anchors)?.sessionId
+  if (!custom && (files === undefined || sessionId === undefined)) {
+    console.warn(
+      '[dsh-plugin-core/explorer] openFilePreview: '
+      + (files === undefined
+        ? '没有工作区文件服务（client apply 里没调 connectHost，或宿主没提供 remote.workspaceFiles）'
+        : '找不到可用的工作区会话（宿主 workspaces 里没有带会话的工作区）')
+      + ' ⇒ 不打开预览',
+    )
+    return null
   }
+  const opts: OpenFilePreviewOptions = { ...options, workspaceFiles: files, sessionId }
+
   // 同位置只允许一个预览：先**关**旧的（不是 remove 掉挂载体）。
   // 直接 remove 会把 React 根的卸载清理一起跳过 ⇒ PanelDock 永远不回收它发布的宽度，
   // 遮罩从此卡在让位状态（2026-10-22 真机：点第二个文件链接后再关，遮罩不回弹）。
   activePreviewClose?.()
+
+  // 布局自愈：那行不必自己写成 flex —— 核心补（关闭时还原），只对「本来就是别的布局」不动手。
+  // 唯一仍算错的是传 body（那是浮层，不是分栏），只留痕不改行为。
+  const mount = options.mount
+  if (mount === document.body) {
+    console.warn(
+      '[dsh-plugin-core/explorer] openFilePreview: 不要传 document.body —— PanelDock 是布局成员'
+      + '（停靠右侧 + 挤窄主区）。请传你页面里包住主区的那个元素。',
+    )
+  }
+  const mountStyle = mount.style
+  const prevDisplay = mountStyle.display
+  const hadHostClass = mount.classList.contains(DOCK_HOST_CLASS)
+  mount.classList.add(DOCK_HOST_CLASS)
+  const display = typeof getComputedStyle === 'function' ? getComputedStyle(mount).display : ''
+  if (display !== 'flex' && display !== 'inline-flex') mountStyle.display = 'flex'
 
   const container = document.createElement('div')
   container.id = PREVIEW_HOST_ID
@@ -170,7 +206,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
   // display:contents ⇒ 容器自身不产生盒子，核心 .dshpc-dock 直接成为 mount 的 flex 子项
   // （这样才「挤」得动左边的兄弟；套一层真盒子会把 dock 变成 mount 的整行块）。
   container.style.cssText = 'display:contents'
-  options.mount.appendChild(container)
+  mount.appendChild(container)
 
   const dock = createPanelDock({
     maxPanels: 1,
@@ -194,6 +230,9 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     window.removeEventListener('keydown', onKeyDown)
     root.unmount()
     container.remove()
+    // 还原 mount：只撤销我们自己加的那点，关掉后页面回到原样。
+    mountStyle.display = prevDisplay
+    if (!hadHostClass) mount.classList.remove(DOCK_HOST_CLASS)
     options.onClose?.()
   }
   const onKeyDown = (event: KeyboardEvent): void => {
@@ -227,15 +266,15 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
             minWidth: options.minWidth ?? 320,
             maxWidth: options.maxWidth,
           },
-          options.content !== undefined
-            ? options.content()
+          opts.content !== undefined
+            ? opts.content()
             : internalSwitch
-              ? h(PreviewBody, { options, onClose: close })
+              ? h(PreviewBody, { options: opts, onClose: close })
               : h(FileBrowser, {
-                workspaceFiles: options.workspaceFiles!,
-                officeToPdf: options.officeToPdf ?? null,
-                sessionId: options.sessionId!,
-                path: options.path!,
+                workspaceFiles: opts.workspaceFiles!,
+                officeToPdf: opts.officeToPdf ?? null,
+                sessionId: opts.sessionId!,
+                path: opts.path!,
                 rootName: options.rootName,
                 workspaces: options.workspaces,
                 workspaceAnchors: options.workspaceAnchors,
@@ -264,8 +303,10 @@ export interface PickedFile {
 }
 
 export interface PickWorkspaceFileOptions {
-  workspaceFiles: WorkspaceFilesFace
-  sessionId: string
+  /** 工作区文件服务。**一般不用传**：`connectHost(ctx)` 接线后核心自己持有。 */
+  workspaceFiles?: WorkspaceFilesFace
+  /** 该工作区的真实会话 id。**一般不用传**：缺省取「最近有会话的工作区」。 */
+  sessionId?: string
   /** 锚点元素：弹窗左缘与之对齐、优先落在它**下方**（下方不够才翻到上方）；不传 = 屏幕居中。 */
   anchor?: HTMLElement | null
   /** 过滤：exts = 只要这些扩展名（小写无点）；dirs = 只要文件夹；不传 = 不限。 */
@@ -305,6 +346,17 @@ const PICKER_MIN_FLOOR = 160
 export function pickWorkspaceFile(options: PickWorkspaceFileOptions): Promise<PickedFile | null> {
   return new Promise<PickedFile | null>((resolve) => {
     if (typeof document === 'undefined') {
+      resolve(null)
+      return
+    }
+    const files = options.workspaceFiles ?? getWorkspaceFiles()
+    const sessionId = options.sessionId ?? pickWorkspaceAnchor(workspaceList.getSnapshot())?.sessionId
+    if (files === undefined || sessionId === undefined) {
+      console.warn(
+        '[dsh-plugin-core/explorer] pickWorkspaceFile: '
+        + (files === undefined ? '没有工作区文件服务（client apply 里没调 connectHost）' : '找不到可用的工作区会话')
+        + ' ⇒ 不弹选择框',
+      )
       resolve(null)
       return
     }
@@ -377,9 +429,9 @@ export function pickWorkspaceFile(options: PickWorkspaceFileOptions): Promise<Pi
     const root: Root = createRoot(panel)
     root.render(
       h(FileBrowser, {
-        workspaceFiles: options.workspaceFiles,
+        workspaceFiles: files,
         officeToPdf: options.officeToPdf ?? null,
-        sessionId: options.sessionId,
+        sessionId,
         path: '',
         rootName: options.rootName,
         rootCache: options.rootCache,

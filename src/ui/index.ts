@@ -51,6 +51,7 @@ export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './M
 export { WorkspacePicker, type WorkspacePickerProps } from './WorkspacePicker.js'
 export {
   connectHost,
+  getWorkspaceFiles,
   modelCatalog,
   workspaceList,
   type ConnectHostOptions,

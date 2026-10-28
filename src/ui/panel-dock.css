@@ -7,6 +7,13 @@
    缝宽可由调用方盖 --dshpc-dock-gap；TS 侧的让位量（DOCK_GAP）要与它一致。 */
 .dshpc-dock--open{margin-left:var(--dshpc-dock-gap,1px)}
 
+/* 自动加的宿主行（openFilePreview 加 / 关闭即摘）：消费方那行不必自己写 flex。
+   只让「第一个非预览子项」当主区伸展，其余直接子项不动（页脚条、工具条不误伤）；
+   display 不在这里写死 —— 本来就是 grid 等布局的元素保持原样，由 TS 侧按计算值补 flex。 */
+.dshpc-dock-host{min-width:0;min-height:0}
+.dshpc-dock-host>:not([data-dshpc-file-preview]){min-width:0}
+.dshpc-dock-host>:first-child:not([data-dshpc-file-preview]){flex:1 1 auto}
+
 /* 单栏：sticky + 100vh 让它在页面滚动时保持可见，同时仍然占宽度。
    ⚠️ **本条刻意不设 z-index**：布局成员一旦带正 z-index，就会无条件压过宿主 portal 到 body 的
    弹窗（兄弟项目 2026-10-05 真机事故「侧边栏盖住宿主设置弹窗」）。层序交给 DOM 顺序裁决。 */

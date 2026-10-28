@@ -12,7 +12,11 @@
  *
  * 接线：宿主 `apply` 调 `serveModelCatalog(ctx, { path })`，客户端 `apply` 调
  * `connectHost(ctx, { modelsPath: path })`——同一个 path 常量，消费方不碰数据本身。
+ *
+ * 2026-10-28 扩一条：`connectHost` 同时接 `remote.workspaceFiles` ⇒ `openFilePreview` /
+ * `pickWorkspaceFile` 不必再由调用方传服务（explorer 的读文件通道同属「绑定宿主能力」）。
  */
+import type { WorkspaceFilesFace } from '../explorer/types.js'
 
 // ── 模型目录 ────────────────────────────────────────────────────────────
 
@@ -120,6 +124,22 @@ class WorkspaceListStore {
 /** 工作区列表单例（WorkspacePicker 消费；connectHost 负责喂）。 */
 export const workspaceList = new WorkspaceListStore()
 
+// ── 工作区文件服务 ──────────────────────────────────────────────────────
+
+/**
+ * 宿主 `remote.workspaceFiles`（explorer 的读文件通道）单例，由 `connectHost` 喂。
+ *
+ * 为什么核心要自己存一份：消费方写 `openFilePreview({ mount, path })` 就够了 —— 服务对象
+ * 只能从插件的 ctx 里 inject 出来（库拿不到 ctx），所以它必须由**一次接线**交进来，
+ * 而不是每次调用各传一遍（用户 2026-10-28 拍板：绑定能力归核心，调用方只管要什么）。
+ */
+let workspaceFiles: WorkspaceFilesFace | undefined
+
+/** 当前接到的文件服务；宿主没这能力 / 没调 connectHost ⇒ undefined。 */
+export function getWorkspaceFiles(): WorkspaceFilesFace | undefined {
+  return workspaceFiles
+}
+
 // ── 接线 ────────────────────────────────────────────────────────────────
 
 /** 插件 client 的最小 ctx 形状（cordis client context 的结构化子集）。 */
@@ -148,6 +168,15 @@ export function connectHost(ctx: HostClientContext, options: ConnectHostOptions 
   ctx.inject(['workspaces'], (sub) => {
     const source = (sub as { workspaces?: { list?: unknown } } | null)?.workspaces?.list
     if (isWorkspaceSource(source)) workspaceList.setSource(source)
+  })
+  // 读文件通道：`explorer` 的预览靠它读字节，绑定归这里，调用方不必再传服务。
+  // dotted 注入值优先，退回 `remote` 上的同名属性；探针 `list` 不在 ⇒ 判为没就位。
+  ctx.inject(['remote', 'remote.workspaceFiles'], (sub) => {
+    const rec = sub as { remote?: { workspaceFiles?: unknown }; 'remote.workspaceFiles'?: unknown } | null
+    const candidate = rec?.['remote.workspaceFiles'] ?? rec?.remote?.workspaceFiles
+    if (typeof (candidate as WorkspaceFilesFace | undefined)?.list === 'function') {
+      workspaceFiles = candidate as WorkspaceFilesFace
+    }
   })
   const modelsPath = options.modelsPath
   if (modelsPath === undefined) return

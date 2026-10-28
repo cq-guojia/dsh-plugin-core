@@ -80,23 +80,27 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
 
 工作区列表、模型列表、会话消息都要跨 host↔client 边界。分两条口径（2026-10-20 拍板）：
 
-- **通用控件是纯零件**：数据由调用方经 props 给，宿主能力经接口注入（`FileBrowser` /
-  `openFilePreview` / `pickWorkspaceFile`、`SessionPreview`、通用 `Picker` 都算这类）。
-- **领域选择器自带数据面**：`ModelPicker` / `WorkspacePicker` 经接线后**自己取数自己显示**，
-  消费方不再传数组。两条通路（2026-10-20 真机核实）：
+- **通用控件是纯零件**：数据由调用方经 props 给，宿主能力经接口注入（`FileBrowser`、
+  `SessionPreview`、通用 `Picker` 都算这类）。
+- **领域能力自带数据面**（2026-10-28 扩到 explorer）：`ModelPicker` / `WorkspacePicker` /
+  `openFilePreview` / `pickWorkspaceFile` 经 `connectHost(ctx)` **接线一次**后自己取数，消费方
+  不再传数组、服务、会话 id。三条通路（2026-10-20 / 2026-10-28 真机核实）：
   - 工作区：client 侧 `ctx.inject(['workspaces'])` 的快照（getSnapshot + subscribe，follow 流实时更新），
     封装在 `src/ui/host-data.ts` 的 `workspaceList`。
   - 模型目录：client 侧 remote **拿不到**每个 provider 的模型 ⇒ 插件宿主侧
     `llm.listModels()` 现查、`serveModelCatalog()`（`src/host/index.ts`，`./host` 子路径）挂成只读路由，
     client 侧 `connectHost(ctx, { modelsPath })` fetch。两侧共用同一个 path 常量。
-  任一通路缺席只影响那一块，选择器渲染空态 / 降级提示。
+  - 读文件：client 侧 `ctx.inject(['remote', 'remote.workspaceFiles'])`，封装在
+    `src/ui/host-data.ts` 的 `getWorkspaceFiles()`；会话 id 由「路径 → 工作区 → 该区会话」自己解。
+  任一通路缺席只影响那一块：选择器渲染空态 / 降级提示，`openFilePreview` 直接不打开并留痕。
 
 | 组件 | 数据从哪来 |
 |---|---|
 | `Picker` | 选项数据（props） |
 | `ModelPicker` / `WorkspacePicker` | 自取（connectHost 接线；`groups` 参数仅作覆盖） |
-| `FileBrowser` / `openFilePreview` / `pickWorkspaceFile` | `WorkspaceFilesFace`（从 ctx 取出后注入） |
-| `SessionPreview` | `SessionSource`（同上） |
+| `openFilePreview` / `pickWorkspaceFile` | 自取（connectHost 接线；`workspaceFiles` / `sessionId` 仅作覆盖） |
+| `FileBrowser` | `WorkspaceFilesFace`（props，纯零件） |
+| `SessionPreview` | `SessionSource`（props） |
 
 不传整个 `ctx`：ctx 是宿主给的整个大对象，传进来就把本包和宿主版本焊死；只传需要的那一小块，
 宿主 breaking 时改的是插件「取出」的一行。

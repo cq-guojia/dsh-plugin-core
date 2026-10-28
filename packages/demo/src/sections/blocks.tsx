@@ -23,22 +23,19 @@ import { t, type DemoMessageKey } from '../i18n.js'
 const CODE_OPEN = `// 右侧分栏预览（占宽度、挤窄主区；不是浮层）
 import { openFilePreview } from 'dsh-plugin-core/explorer'
 
+// apply 里 connectHost(ctx) 接线一次，之后只要一个容器 + 一个路径：
 openFilePreview({
-  mount,                 // 你页面里那一层 flex 行，不要传 document.body 再自己套 fixed
-  workspaceFiles,        // 从 ctx 取出后注入（host 能力）
-  sessionId,             // 会话作用域（默认锚点）
-  path: p,               // 绝对路径也可以
-  rootName: '我的项目',
+  mount,                 // 你页面里包住主区的那个元素（不必写成 flex，核心会补、关闭即还原）
+  path: p,               // 文件或文件夹都行；绝对路径也可以
 })
-// path 是绝对路径时：核心自动读宿主 workspaces 快照（插件 apply 里 connectHost 注入过），
-// 按最长前缀匹配所属工作区、list 换该工作区的会话 ⇒ 面包屑/目录树正常；
-// ▾ 下拉「切工作区」同样自动可用（无会话的工作区不进列表）。
-// 要覆盖快照才显式传 workspaceAnchors（宿主 workspaces 快照原样）。`
+// 文件服务 / 会话 / 工作区快照全由核心解：绝对路径按最长前缀匹配所属工作区（connectHost 注入的
+// 宿主 workspaces 快照）；落在工作区外 ⇒ 文件照常预览、目录树退化成只读路径栏。
+// 要覆盖快照才传 workspaceAnchors，要指定会话才传 sessionId。`
 
 const CODE_PICK = `// 锚定按钮旁弹模态选文件（Promise 返回工作区相对路径，不自己挂 dock）
 import { pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 
-const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['js', 'md'] } })
+const r = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['js', 'md'] } })
 // r = { path, isDir }`
 
 const CODE_SESSION_REAL = `// 真实宿主：sessions.list 快照（冷安全，不激活 Agent）→ 点开真预览
@@ -62,7 +59,7 @@ h(SessionViewModal, {
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
   openHostSession: (id) => uiWorkspace.openSession(id),
   // 文件链接 → **页面右侧**开核心文件预览 dock（挤窄主区）
-  onOpenFile: (path) => openFilePreview({ mount: pageRow.element, workspaceFiles, path, ... }),
+  onOpenFile: (path) => openFilePreview({ mount: pageRow.element, path, ... }),
   // 不用给弹窗任何宽度参数：dock 把占宽发布成 CSS 变量，遮罩自己让位（用户 2026-10-22）
 })`
 
@@ -126,7 +123,8 @@ function OpenPreviewDemo(): ReturnType<typeof h> {
     }
     // 不传 workspaceAnchors：核心自动用宿主 workspaces 快照（connectHost 注入）——
     // 绝对路径自动匹配所属工作区换会话、▾ 下拉可切工作区（无会话的不进列表）。
-    openFilePreview({ mount, workspaceFiles, sessionId: anchor.sessionId, path, rootName, workspaces })
+    // 服务同样不用传：connectHost 已接线，只有「另一个工作区的会话」这种上下文才显式给。
+    openFilePreview({ mount, sessionId: anchor.sessionId, path, rootName, workspaces })
     setLast(path === '' ? `${rootName}（根）` : path)
   }
   // 只在**确认没有**时才改文案；还在找就保持正常按钮文案（点了会等同一个 Promise）。
@@ -163,7 +161,6 @@ function PickFileDemo(): ReturnType<typeof h> {
 
   const pick = (anchorBtn: HTMLElement, filter?: { exts: string[] }): void => {
     void pickWorkspaceFile({
-      workspaceFiles,
       sessionId: anchor.sessionId,
       anchor: anchorBtn,
       rootName: anchor.title,
@@ -215,7 +212,6 @@ function RealSessionListDemo(): ReturnType<typeof h> {
     if (mount === null || workspaceFiles === null || anchor === null) return
     openFilePreview({
       mount,
-      workspaceFiles,
       officeToPdf: files.officeToPdf,
       // 文件 RPC 按会话作用域取工作区：优先用调用方透传的「文件所属会话」，
       // 兜底才用当前工作区锚点会话（explorer 页那种没上下文的入口）。
@@ -234,7 +230,6 @@ function RealSessionListDemo(): ReturnType<typeof h> {
     let handle: FilePreviewHandle | null = null
     handle = openFilePreview({
       mount,
-      workspaceFiles: workspaceFiles ?? undefined,
       sessionId: loc.sessionId,
       path: '',
       content: () => h(ChangedFileDiff, {

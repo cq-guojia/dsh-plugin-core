@@ -68,6 +68,14 @@ dsh-plugin-core/
 ### 2.4 adv.explorer
 
 - `FileBrowser` 面板 + 两命令式能力：`openFilePreview`（侧边栏预览，外壳 = 核心 `PanelDock`，2026-10-21 拍板不许自绘外壳 / 拖拽条）/ `pickWorkspaceFile`（锚定弹窗选文件，Promise 返回工作区相对路径），2026-10-20 移植自重做
+- **接线归核心，调用方只给容器 + 路径**（2026-10-28 用户拍板）：
+  - 读文件服务改由 `connectHost(ctx)` 一次接进来（`remote.workspaceFiles`，核心持有），
+    `openFilePreview` / `pickWorkspaceFile` 不再要求调用方传 `workspaceFiles`（传了以传入为准）；
+  - `sessionId` 缺省由「路径 → 所属工作区 → 该区最近会话」解，匹配不出退「最近有会话的工作区」；
+  - `mount` 仍是一个元素（往哪行塞只有调用方知道），但**不必自己写成 flex**：核心加 `dshpc-dock-host`
+    类并补 `display:flex`，关闭时还原；子项规则只让第一个非预览子项伸展，不要传 `document.body`；
+  - 依据：插件沙箱里没有 `fs`，读字节唯一通道是 ctx 注入的服务对象 ⇒ 服务只能「接线一次」交进来，
+    不能每次调用各传一遍（这是权限边界，不是能力缺口）。
 - 控件纪律（2026-10-21）：核心有的控件一律核心（`Button` ghost 面包屑 / `IconButton` / `Segmented` / `MarqueeText` / `PanelDock`）；核心没有的那一项（▾ 选层浮层）严格按兄弟项目度量照抄
 - 选工作区（`WorkspacePicker`）在 `ui`，不在这里；`FilePicker` 已删（2026-10-20）
 
@@ -152,7 +160,7 @@ dsh-plugin-core/
 | ui / ModelPicker | `variant: 'grouped' \| 'cascade'`（分组：一个下拉、完全独立 / 联动：供应商与模型两个下拉联动；2026-10-20 用户拍板两形态都要）；**两种形态 onChange 都发最终模型 value**；「默认模型」选项默认提供（`allowDefault:false` 关），选中发 `''`。默认读 connectHost 喂入的真实目录，`groups` 仅作覆盖。**禁止用数字或无意义名** |
 | ui / Picker | `mode: 'single' \| 'multiple'`、`max`（到上限已选项仍可反选）、`searchable`（搜索框开关）、`icon`（触发器前置 icon）、选项级 `icon`、`hint`（问号提示内置）、分组、空态、降级 |
 | ui / DateTimePicker | `mode: 'single' \| 'range'`、`precision: 'day' \| 'hour' \| 'minute' \| 'second'`（同时管弹层步进、显示截断与默认宽度）；single 传 `string \| null`、range 传 `[start, end] \| null`（本地 ISO 到毫秒）；草稿态「确定」才 onChange，没选日期不传数据；起端补零 / 止端补满（day ⇒ 止 `23:59:59.999`） |
-| explorer | `WorkspaceFilesFace` 由插件注入（`list` / `stat` / `read` 最小面），组件不抓宿主全局；对外 = 两命令式能力 `openFilePreview`（侧边栏预览）+ `pickWorkspaceFile`（Promise 选文件，回传工作区相对路径），共用同一 `FileBrowser` 面板（2026-10-20 拍板） |
+| explorer | `WorkspaceFilesFace`（`list` / `stat` / `read` 最小面）由 `connectHost(ctx)` 接线后核心自己持有，组件不抓宿主全局、调用方也不逐次传（2026-10-28 改）；对外 = 两命令式能力 `openFilePreview({ mount, path })`（侧边栏预览）+ `pickWorkspaceFile({ anchor })`（Promise 选文件，回传工作区相对路径），共用同一 `FileBrowser` 面板（2026-10-20 拍板） |
 | explorer / WorkspacePicker | `WorkspacePicker({ mode, max, onChange, allowDefault, defaultLabel, … })` —— **无数据参数**：connectHost 接线后自动订官方 `workspaces` 服务快照，选中值为 `workspaceId`；「所有工作区」默认项默认提供、选中发 `''`（2026-10-20） |
 | session | `SessionPreview({ sessionId, source, variant })` —— `source` = 取数能力接口（会话预览内部有交互：传输文件等，光有静态消息流不够） |
 

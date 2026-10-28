@@ -108,8 +108,16 @@ export const docData = {
         "en": "Workspace file browsing and picking, driven by the host-provided workspace file snapshot."
       },
       {
-        "zh": "浏览态停靠是布局成员（占宽度、挤窄主区），不要挂 `document.body` 再自己套 fixed。",
-        "en": "The browse dock is a layout member (takes width, narrows the main area); never mount it on `document.body` with your own fixed positioning."
+        "zh": "**接线归核心**：client `apply` 里调一次 `connectHost(ctx)`，读文件服务、会话 id、工作区快照都由核心自己解，调用时只给容器和路径。",
+        "en": "**Wiring belongs to core**: call `connectHost(ctx)` once in the client apply; the file service, session id and workspace snapshot are resolved by core — you only pass a container and a path."
+      },
+      {
+        "zh": "落点只给一个元素：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原），不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。",
+        "en": "Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning — that is an overlay, not a split."
+      },
+      {
+        "zh": "绝对路径按最长前缀匹配所属工作区；落在任何工作区外时，文件照样能预览（官方 read 允许工作区外文件），只有目录树退化成只读路径栏。",
+        "en": "Absolute paths are matched to their workspace by longest prefix. Outside every workspace the file still previews (official read allows it); only the directory tree degrades to a read-only path bar."
       }
     ]
   },
@@ -135,15 +143,15 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "从 ctx 取出工作区快照再传给能力接口，不要传整个 ctx。",
-        "en": "Pull the workspace snapshot out of ctx and hand it to the capability APIs; do not pass the whole ctx."
+        "zh": "`connectHost(ctx)` 只收这一小块，不把整个 ctx 传进核心。",
+        "en": "`connectHost(ctx)` takes just that one slice; the whole ctx never enters core."
       }
     ],
     "code": [
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// 右侧分栏预览（占宽度、挤窄主区）\nopenFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })\n\n// path 传绝对路径时：按最长前缀匹配所属工作区，面包屑 / 目录树与 ▾「切工作区」自动可用\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md' })\n// 要覆盖宿主快照才显式传 workspaceAnchors（带 path + sessionIds）\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md', workspaceAnchors })\n\n// 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）\nconst r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })"
+        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// 只在 client apply 里接线一次（接工作区快照 + 读文件服务），之后不用再碰服务\nconnectHost(ctx)\n\n// 右侧分栏预览（占宽度、挤窄主区）：一个容器 + 一个路径就够\nopenFilePreview({ mount, path: '/abs/ledger' })   // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览\nopenFilePreview({ mount, path: 'docs/README.md' }) // 工作区相对路径也行\n\n// 覆盖项：指定工作区快照 / 指定会话 / Office 转 PDF / 与别处共用的根缓存\nopenFilePreview({ mount, path, workspaceAnchors, sessionId, officeToPdf, rootCache })\n\n// 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })"
       }
     ]
   },
@@ -172,8 +180,8 @@ export const docData = {
             "def": "—",
             "required": "是",
             "desc": {
-              "zh": "页面里的 flex 行；预览靠它占宽而不是浮在页面上方",
-              "en": "The page’s flex row; the preview takes width there instead of floating"
+              "zh": "页面里**包住主区**的那个元素；不必自己写 flex（核心补成 flex 行并让主区伸展，关闭时还原）。不要传 `document.body`",
+              "en": "The element wrapping the main area; no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). Never `document.body`"
             }
           },
           {
@@ -181,8 +189,8 @@ export const docData = {
             "type": "WorkspaceFilesFace",
             "def": "—",
             "desc": {
-              "zh": "从 ctx 取出的工作区文件服务；传 `content` 时可省",
-              "en": "Workspace file service taken from ctx; optional when passing `content`"
+              "zh": "读文件服务。**一般不用传**：`connectHost(ctx)` 接线后核心自己持有；传了以传入为准。传 `content` 时可省",
+              "en": "File service. **Usually unnecessary**: core holds it after `connectHost(ctx)`; when passed it wins. Optional when passing `content`"
             }
           },
           {
@@ -190,8 +198,8 @@ export const docData = {
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "该工作区的真实会话 id（服务是会话作用域的）；传 `content` 时可省",
-              "en": "A real session id of that workspace (the service is session-scoped); optional when passing `content`"
+              "zh": "该工作区的真实会话 id。**一般不用传**：按路径匹配所属工作区，匹配不出就取最近有会话的工作区；传 `content` 时可省",
+              "en": "A real session id. **Usually unnecessary**: resolved from the path’s workspace, else the most recently updated workspace with a session; optional when passing `content`"
             }
           },
           {

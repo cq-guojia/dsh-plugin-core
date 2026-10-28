@@ -211,7 +211,7 @@ var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u827
 var CODE_VIEWER_CSS = "/* CodeViewer\uFF08\u53EA\u8BFB CodeMirror \u67E5\u770B\u5668\uFF09\u6837\u5F0F\u3002\u7C7B\u540D\u56FA\u5B9A dshpc-cv*\uFF1B\u989C\u8272\u5403 --dshpc-* token\uFF0C\n   \u6DF1\u8272\u7531 design \u7684 token \u6DF1\u8272\u6BB5\u81EA\u52A8\u751F\u6548\uFF08\u4E0D\u5199\u6B7B\u989C\u8272\u503C\uFF09\u3002 */\n.dshpc-cv{position:relative;display:flex;flex-direction:column;height:100%;min-height:0;}\n.dshpc-cv__copy{position:absolute;top:6px;right:6px;z-index:5;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;appearance:none;border:1px solid var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-sm,6px);background:var(--dshpc-surface-1,#fff);color:var(--dshpc-fg-2,rgba(128,128,128,.95));cursor:pointer;opacity:0;transition:opacity .12s var(--dshpc-ease,ease),background .12s,color .12s;}\n.dshpc-cv:hover .dshpc-cv__copy,.dshpc-cv__copy:focus-visible{opacity:1;}\n.dshpc-cv__copy:hover{background:var(--dshpc-hover,rgba(38,49,72,.06));color:var(--dshpc-fg,#1f2328);}\n.dshpc-cv__copy svg{width:16px;height:16px;}\n.dshpc-cv__editor{flex:1 1 auto;min-height:0;overflow:hidden;}\n.dshpc-cv__editor .cm-editor{height:100%;}\n.dshpc-cv__editor .cm-scroller{overflow:auto;}\n";
 
 // dist/ui/panel-dock-css.generated.js
-var PANEL_DOCK_CSS = "\n/* \u505C\u9760\u680F = **\u5E03\u5C40\u6210\u5458**\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5B83\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u771F\u6B63\u6324\u7A84\uFF08\u5144\u5F1F\u9879\u76EE 2026-09-28\uFF1A\n   \u300C\u5206\u680F\u538B\u8FC7\u6765\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u300D\uFF09\u3002\u6240\u4EE5\u8C03\u7528\u65B9\u5FC5\u987B\u628A\u5B83\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002 */\n.dshpc-dock{display:flex;flex:0 0 auto;align-self:stretch;min-width:0}\n/* \u5F00\u7740\u65F6\u7ED9\u4E3B\u533A\u6EDA\u52A8\u6761\u8BA9\u51FA\u4E00\u6761\u7F1D\uFF1A\u6EDA\u52A8\u6761\u8D34\u6B7B\u5206\u9694\u7EBF\u5F88\u96BE\u770B\uFF08\u7528\u6237 2026-10-28\uFF0C\u5BF9\u9F50\n   dsh-better-sidebar \u7684\u7559\u767D\uFF09\u3002\u5168\u5173\u65F6\u6574\u6761 dock \u9000\u51FA\uFF0C\u7F1D\u9699\u4E00\u8D77\u6D88\u5931\u3001\u4E0D\u7559\u767D\u8FB9\u3002\n   \u7F1D\u5BBD\u53EF\u7531\u8C03\u7528\u65B9\u76D6 --dshpc-dock-gap\uFF1BTS \u4FA7\u7684\u8BA9\u4F4D\u91CF\uFF08DOCK_GAP\uFF09\u8981\u4E0E\u5B83\u4E00\u81F4\u3002 */\n.dshpc-dock--open{margin-left:var(--dshpc-dock-gap,1px)}\n\n/* \u5355\u680F\uFF1Asticky + 100vh \u8BA9\u5B83\u5728\u9875\u9762\u6EDA\u52A8\u65F6\u4FDD\u6301\u53EF\u89C1\uFF0C\u540C\u65F6\u4ECD\u7136\u5360\u5BBD\u5EA6\u3002\n   \u26A0\uFE0F **\u672C\u6761\u523B\u610F\u4E0D\u8BBE z-index**\uFF1A\u5E03\u5C40\u6210\u5458\u4E00\u65E6\u5E26\u6B63 z-index\uFF0C\u5C31\u4F1A\u65E0\u6761\u4EF6\u538B\u8FC7\u5BBF\u4E3B portal \u5230 body \u7684\n   \u5F39\u7A97\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-05 \u771F\u673A\u4E8B\u6545\u300C\u4FA7\u8FB9\u680F\u76D6\u4F4F\u5BBF\u4E3B\u8BBE\u7F6E\u5F39\u7A97\u300D\uFF09\u3002\u5C42\u5E8F\u4EA4\u7ED9 DOM \u987A\u5E8F\u88C1\u51B3\u3002 */\n.dshpc-dock__panel{\n  box-sizing:border-box;position:sticky;top:0;align-self:stretch;\n  display:flex;flex-direction:column;flex:0 0 auto;\n  /* \u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF08\u6574\u9875\u573A\u666F\uFF09\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\uFF08\u5982 420px / 100%\uFF09\u3002 */\n  height:var(--dshpc-dock-h,100vh);max-height:var(--dshpc-dock-h,100vh);min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border-left:1px solid var(--dshpc-border);\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease);\n  box-shadow:var(--dshpc-shadow-2);\n  /* \u5165\u573A\uFF1A\u4ECE 0 \u5BBD\u6ED1\u51FA\u6765\uFF08keyframes \u53EA\u5199 from\uFF0C\u7EC8\u70B9\u53D6\u5185\u8054 width\uFF09\uFF0C\u6253\u5F00 / \u8033\u6735\u5C55\u5F00\u90FD\u8D70\u8FD9\u6761\u3002 */\n  animation:dshpc-dock-in .22s var(--dshpc-ease);\n}\n/* overflow:hidden \u53EA\u5728\u52A8\u753B\u524D\u6BB5\uFF08\u79BB\u6563\u5C5E\u6027\u5728 50% \u7FFB\u8F6C\uFF09\u2014\u2014\u5E73\u65F6\u4E0D\u80FD\u88C1\uFF0C\u5426\u5219\u6302\u5728\u5DE6\u7F18\u5916\u7684\n   \u6536\u8D77\u94AE\u4F1A\u88AB\u5207\u6389\u4E00\u534A\u3002 */\n@keyframes dshpc-dock-in{from{width:0;opacity:0;overflow:hidden}}\n/* \u6536\u8D77\u7684\u51FA\u573A\uFF1A\u5BBD\u5EA6\u6536\u5230 0\u3001\u900F\u660E\u6DE1\u51FA\uFF1B\u843D\u5B9A\u540E\u7EC4\u4EF6\u624D\u771F\u6B63\u6458\u6389\u8FD9\u4E00\u680F\uFF08JS \u5EF6\u65F6 220ms \u914D\u5408\uFF09\u3002 */\n.dshpc-dock__panel--closing{\n  width:0!important;min-width:0!important;opacity:0;border-left-width:0;\n  transition:width .2s var(--dshpc-ease),opacity .2s var(--dshpc-ease),border-left-width .2s var(--dshpc-ease);\n}\n\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  /* \u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB */\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF0C\u4F4D\u7F6E\u4E0E\u5185\u7F6E\u5934\u5B8C\u5168\u4E00\u81F4\uFF08top 10 / right 8\uFF09\uFF1B\u81EA\u5B9A\u4E49\u5934\u4E5F\u7528\u8FD9\u4E00\u4E2A\u4F4D\u7F6E\u3002\n   \u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB\uFF08position:sticky \u5373\u5B9A\u4F4D\u4E0A\u4E0B\u6587\uFF09\uFF0C\u4E0D\u5728\u6EDA\u52A8\u5185\u5BB9\u91CC\uFF0C\u6240\u4EE5\u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF1A\u9762\u677F\u9AD8\u5EA6\u9501 100vh\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u6574\u9875\u6491\u9AD8\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto}\n\n/* \u62D6\u62FD\u6761\uFF1A\u5DE6\u7F18 6px \u547D\u4E2D\u533A\uFF0C**\u81EA\u5DF1\u4E0D\u753B\u4EFB\u4F55\u7EBF**\u3002\n   hover / \u62D6\u52A8\u65F6\u628A\u9762\u677F\u81EA\u5DF1\u7684 border-left \u67D3\u6210\u84DD\uFF08\u7528\u6237 2026-10-28 \u56DB\u8F6E\uFF1A\u84DD\u7EBF\u53EA\u51C6\u6539\u539F\u7EBF\uFF0C\n   \u4E0D\u51C6\u5728\u539F\u7EBF\u65C1\u8FB9\u52A0\u4E00\u6761 \u2014\u2014 \u4E4B\u524D\u5728 padding box \u5DE6\u7F18\u753B\u6E10\u53D8\uFF0C\u6B63\u597D\u53E0\u51FA\u53CC\u7EBF\uFF09\u3002\n   \u547D\u4E2D\u533A\u5728 padding box \u4E0A\u3001border \u5728\u5B83\u5DE6\u5916\u4FA7\uFF0C\u6240\u4EE5\u53EA\u80FD\u6539\u9762\u677F\u7684 border \u8272\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n}\n.dshpc-dock__panel:has(> .dshpc-dock__resizer:hover),\n.dshpc-dock__panel--resizing{\n  /* \u539F\u7EBF\u4FDD\u7559\u300C\u4E0A\u4E0B\u6E10\u9690\u300D\u5DE5\u4F5C\u533A\u6307\u793A\u6761\u8D28\u611F\uFF1A\u628A\u9762\u677F\u81EA\u5DF1\u7684 border-left \u6362\u6210\u540C\u6B3E\u6E10\u53D8\n     \uFF08\u4E0D\u662F\u53E6\u52A0\u4E00\u6761\u7EBF\uFF09\u3002\u9762\u677F\u53EA\u6709\u8FD9\u4E00\u6761\u8FB9\u6846\u3001\u65E0\u5706\u89D2\uFF0C\u6240\u4EE5\u53EA\u4F5C\u7528\u5728\u7EBF\u4E0A\u3002 */\n  border-image:linear-gradient(180deg,transparent,var(--dshpc-business) 30% 70%,transparent) 1;\n}\n\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove\uFF0C\n   \u5411\u53F3\u62D6\u8FDB iframe \u5C31\u5361\u6B7B \u2014\u2014 \u6574\u7247\u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u680F\u5185\uFF0C\n   \u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u5EA6\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-04 \u771F\u673A\u300C\u632A\u5F88\u4E45\u624D\u52A8\u4E00\u4E0B\u300D\uFF09\u3002 */\n.dshpc-dock.dshpc-dock--resizing iframe{pointer-events:none}\n.dshpc-dock.dshpc-dock--resizing .dshpc-dock__panel{contain:layout paint;will-change:width}\n\n/* \u6536\u8D77\u94AE\uFF1A**\u5F85\u5728\u9762\u677F\u81EA\u5DF1\u7684\u6846\u91CC**\uFF08\u7528\u6237 2026-10-28 \u4E09\u8F6E\uFF1A\u5360\u9762\u677F\u5185\u90E8\u7A7A\u95F4\uFF0C\u4E0D\u4F38\u5230\u5916\u9762\u53BB\uFF09\u3002\n   left:0 \u4ECE\u5185\u4FA7\u8D34\u7740\u5206\u9694\u7EBF \u2014\u2014 \u8D34\u7EBF\u7684\u4E00\u8FB9\u4E0D\u63CF\u8FB9\uFF08\u7EBF\u662F\u9762\u677F\u81EA\u5DF1\u7684 border-left\uFF09\uFF0C\u9875\u7B7E\u4E0E\u7EBF\u4E0D\u91CD\u5408\u3002\n   20\xD744\uFF08\u7528\u6237 2026-10-28 \u56DB\u8F6E\u5B9A\u5C3A\u5BF8\uFF09\uFF1B\u5B9E\u8272\u5E95\uFF08--dshpc-plate\uFF0C\u660E\u6697\u5404\u6709\u5B9E\u503C\uFF09\uFF0Chover \u4EAE\u4E00\u6863\u3002\n   padding-right:2px \u662F**\u89C6\u89C9\u5C45\u4E2D**\uFF1A\u53F3\u4FA7\u662F\u5706\u89D2\uFF0C\u7BAD\u5934\u5F80\u76F4\u7EBF\u90A3\u8FB9\u632A 1px\uFF08\u7528\u6237 2026-10-28 \u56DB\u8F6E\uFF09\u3002 */\n.dshpc-dock__collapse{\n  position:absolute;left:0;top:50%;transform:translateY(-50%);\n  z-index:8;display:inline-flex;align-items:center;justify-content:center;\n  width:20px;height:44px;padding:0 2px 0 0;\n  border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  border-right:1px solid var(--dshpc-border);\n  border-left:none;\n  border-radius:0 var(--dshpc-radius-sm) var(--dshpc-radius-sm) 0;\n  background:var(--dshpc-plate);color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:16px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__collapse:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}\n.dshpc-dock__collapse:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n\n/* \u6536\u8D77\u540E\u7684\u6D6E\u52A8\u8033\u6735\uFF1A**fixed \u8D34\u53F3\u7F18\u3001\u5782\u76F4\u5C45\u4E2D\u3001\u72EC\u7ACB\u4E8E\u5206\u680F**\uFF08\u7528\u6237 2026-10-28 \u5B9A\u7A3F\uFF1A\n   \u5C0F\u9875\u7B7E\u6302\u4E2D\u95F4\u3001\u91CC\u9762\u653E\u9762\u677F\u56FE\u6807\u3001\u4E0D\u663E\u793A\u6587\u5B57\uFF0C\u7BAD\u5934\u4E0E\u6536\u8D77\u94AE\u53CD\u5411\uFF09\u3002\u591A\u4E2A\u6309\u6536\u8D77\u987A\u5E8F\u7EB5\u5411\u5806\u53E0\u3002\n   z \u8D70 dock \u6863\uFF08\u4F4E\u4E8E\u5BBF\u4E3B\u5F39\u7A97\uFF09\uFF0C\u907F\u514D\u76D6\u4F4F\u5BBF\u4E3B portal \u5C42\u3002 */\n.dshpc-dock__ears{\n  position:fixed;top:50%;right:0;transform:translateY(-50%);\n  z-index:var(--dshpc-z-dock,1030);\n  display:flex;flex-direction:column;gap:8px;align-items:flex-end;\n  pointer-events:none;\n}\n.dshpc-dock__ear{\n  pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;\n  /* \u4E0E\u6536\u8D77\u94AE**\u540C\u5C3A\u5BF8**\uFF0820\xD744\uFF0C\u7528\u6237 2026-10-28 \u56DB\u8F6E\uFF09\uFF1A\u4E0A/\u4E0B/\u5DE6\u63CF\u8FB9\uFF0C\u8D34\u53F3\u7F18\u7684\u4E00\u4FA7\u4E0D\u63CF\u3002\n     \u5B9E\u8272\u5E95\uFF08--dshpc-plate\uFF09\uFF0C\u4E0D\u7528\u900F\u660E\u8272 \u2014\u2014 \u900F\u660E\u5E95\u4E0B\u900F\u51FA\u4E1C\u897F\u5F88\u96BE\u770B\u3002\n     padding-left:2px \u662F**\u89C6\u89C9\u5C45\u4E2D**\uFF1A\u5DE6\u4FA7\u662F\u5706\u89D2\uFF0C\u7BAD\u5934\u5F80\u76F4\u7EBF\uFF08\u53F3\u7F18\uFF09\u90A3\u8FB9\u632A 1px\u3002 */\n  width:20px;height:44px;box-sizing:border-box;padding:0 0 0 2px;\n  border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  border-left:1px solid var(--dshpc-border);\n  border-right:none;\n  border-radius:var(--dshpc-radius-sm) 0 0 var(--dshpc-radius-sm);\n  background:var(--dshpc-plate);color:var(--dshpc-fg-2);\n  cursor:pointer;font-family:inherit;line-height:1;\n  animation:dshpc-ear-in .2s var(--dshpc-ease);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n/* \u5165\u573A\uFF1A\u4ECE\u53F3\u7F18\u5916\u6ED1\u8FDB\u6765\uFF0C\u522B\u300C\u7A81\u7136\u51FA\u73B0\u300D\uFF08\u7528\u6237 2026-10-28\uFF09\u3002 */\n@keyframes dshpc-ear-in{from{opacity:0;transform:translateX(14px)}}\n.dshpc-dock__ear:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}\n.dshpc-dock__ear:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u4E0E\u6536\u8D77\u94AE\u7684\u7BAD\u5934\u540C\u4E00\u5B57\u53F7\uFF0816px\uFF09\uFF1A\u6536\u8FDB\u53BB\u524D\u540E\u7BAD\u5934\u4E00\u6A21\u4E00\u6837\u5927\uFF08\u7528\u6237 2026-10-28\uFF09\u3002 */\n.dshpc-dock__ear-arrow{font-size:16px;color:var(--dshpc-fg-3)}\n.dshpc-dock__ear:hover .dshpc-dock__ear-arrow{color:var(--dshpc-fg)}\n/* \u52A8\u6548\u793C\u8C8C\uFF1A\u7CFB\u7EDF\u58F0\u660E\u51CF\u5C11\u52A8\u6548\u65F6\u5168\u90E8\u5173\u6389\uFF08\u4E0E Segmented \u540C\u4E00\u7EA6\u5B9A\uFF09\uFF0C\u6536\u8D77\u9000\u5316\u4E3A\u77AC\u65F6\u3001\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-dock__panel{animation:none}\n  .dshpc-dock__panel--closing{transition:none}\n  .dshpc-dock__ear{animation:none}\n}\n";
+var PANEL_DOCK_CSS = "\n/* \u505C\u9760\u680F = **\u5E03\u5C40\u6210\u5458**\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5B83\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u771F\u6B63\u6324\u7A84\uFF08\u5144\u5F1F\u9879\u76EE 2026-09-28\uFF1A\n   \u300C\u5206\u680F\u538B\u8FC7\u6765\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u300D\uFF09\u3002\u6240\u4EE5\u8C03\u7528\u65B9\u5FC5\u987B\u628A\u5B83\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002 */\n.dshpc-dock{display:flex;flex:0 0 auto;align-self:stretch;min-width:0}\n/* \u5F00\u7740\u65F6\u7ED9\u4E3B\u533A\u6EDA\u52A8\u6761\u8BA9\u51FA\u4E00\u6761\u7F1D\uFF1A\u6EDA\u52A8\u6761\u8D34\u6B7B\u5206\u9694\u7EBF\u5F88\u96BE\u770B\uFF08\u7528\u6237 2026-10-28\uFF0C\u5BF9\u9F50\n   dsh-better-sidebar \u7684\u7559\u767D\uFF09\u3002\u5168\u5173\u65F6\u6574\u6761 dock \u9000\u51FA\uFF0C\u7F1D\u9699\u4E00\u8D77\u6D88\u5931\u3001\u4E0D\u7559\u767D\u8FB9\u3002\n   \u7F1D\u5BBD\u53EF\u7531\u8C03\u7528\u65B9\u76D6 --dshpc-dock-gap\uFF1BTS \u4FA7\u7684\u8BA9\u4F4D\u91CF\uFF08DOCK_GAP\uFF09\u8981\u4E0E\u5B83\u4E00\u81F4\u3002 */\n.dshpc-dock--open{margin-left:var(--dshpc-dock-gap,1px)}\n\n/* \u81EA\u52A8\u52A0\u7684\u5BBF\u4E3B\u884C\uFF08openFilePreview \u52A0 / \u5173\u95ED\u5373\u6458\uFF09\uFF1A\u6D88\u8D39\u65B9\u90A3\u884C\u4E0D\u5FC5\u81EA\u5DF1\u5199 flex\u3002\n   \u53EA\u8BA9\u300C\u7B2C\u4E00\u4E2A\u975E\u9884\u89C8\u5B50\u9879\u300D\u5F53\u4E3B\u533A\u4F38\u5C55\uFF0C\u5176\u4F59\u76F4\u63A5\u5B50\u9879\u4E0D\u52A8\uFF08\u9875\u811A\u6761\u3001\u5DE5\u5177\u6761\u4E0D\u8BEF\u4F24\uFF09\uFF1B\n   display \u4E0D\u5728\u8FD9\u91CC\u5199\u6B7B \u2014\u2014 \u672C\u6765\u5C31\u662F grid \u7B49\u5E03\u5C40\u7684\u5143\u7D20\u4FDD\u6301\u539F\u6837\uFF0C\u7531 TS \u4FA7\u6309\u8BA1\u7B97\u503C\u8865 flex\u3002 */\n.dshpc-dock-host{min-width:0;min-height:0}\n.dshpc-dock-host>:not([data-dshpc-file-preview]){min-width:0}\n.dshpc-dock-host>:first-child:not([data-dshpc-file-preview]){flex:1 1 auto}\n\n/* \u5355\u680F\uFF1Asticky + 100vh \u8BA9\u5B83\u5728\u9875\u9762\u6EDA\u52A8\u65F6\u4FDD\u6301\u53EF\u89C1\uFF0C\u540C\u65F6\u4ECD\u7136\u5360\u5BBD\u5EA6\u3002\n   \u26A0\uFE0F **\u672C\u6761\u523B\u610F\u4E0D\u8BBE z-index**\uFF1A\u5E03\u5C40\u6210\u5458\u4E00\u65E6\u5E26\u6B63 z-index\uFF0C\u5C31\u4F1A\u65E0\u6761\u4EF6\u538B\u8FC7\u5BBF\u4E3B portal \u5230 body \u7684\n   \u5F39\u7A97\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-05 \u771F\u673A\u4E8B\u6545\u300C\u4FA7\u8FB9\u680F\u76D6\u4F4F\u5BBF\u4E3B\u8BBE\u7F6E\u5F39\u7A97\u300D\uFF09\u3002\u5C42\u5E8F\u4EA4\u7ED9 DOM \u987A\u5E8F\u88C1\u51B3\u3002 */\n.dshpc-dock__panel{\n  box-sizing:border-box;position:sticky;top:0;align-self:stretch;\n  display:flex;flex-direction:column;flex:0 0 auto;\n  /* \u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF08\u6574\u9875\u573A\u666F\uFF09\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\uFF08\u5982 420px / 100%\uFF09\u3002 */\n  height:var(--dshpc-dock-h,100vh);max-height:var(--dshpc-dock-h,100vh);min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border-left:1px solid var(--dshpc-border);\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease);\n  box-shadow:var(--dshpc-shadow-2);\n  /* \u5165\u573A\uFF1A\u4ECE 0 \u5BBD\u6ED1\u51FA\u6765\uFF08keyframes \u53EA\u5199 from\uFF0C\u7EC8\u70B9\u53D6\u5185\u8054 width\uFF09\uFF0C\u6253\u5F00 / \u8033\u6735\u5C55\u5F00\u90FD\u8D70\u8FD9\u6761\u3002 */\n  animation:dshpc-dock-in .22s var(--dshpc-ease);\n}\n/* overflow:hidden \u53EA\u5728\u52A8\u753B\u524D\u6BB5\uFF08\u79BB\u6563\u5C5E\u6027\u5728 50% \u7FFB\u8F6C\uFF09\u2014\u2014\u5E73\u65F6\u4E0D\u80FD\u88C1\uFF0C\u5426\u5219\u6302\u5728\u5DE6\u7F18\u5916\u7684\n   \u6536\u8D77\u94AE\u4F1A\u88AB\u5207\u6389\u4E00\u534A\u3002 */\n@keyframes dshpc-dock-in{from{width:0;opacity:0;overflow:hidden}}\n/* \u6536\u8D77\u7684\u51FA\u573A\uFF1A\u5BBD\u5EA6\u6536\u5230 0\u3001\u900F\u660E\u6DE1\u51FA\uFF1B\u843D\u5B9A\u540E\u7EC4\u4EF6\u624D\u771F\u6B63\u6458\u6389\u8FD9\u4E00\u680F\uFF08JS \u5EF6\u65F6 220ms \u914D\u5408\uFF09\u3002 */\n.dshpc-dock__panel--closing{\n  width:0!important;min-width:0!important;opacity:0;border-left-width:0;\n  transition:width .2s var(--dshpc-ease),opacity .2s var(--dshpc-ease),border-left-width .2s var(--dshpc-ease);\n}\n\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  /* \u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB */\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF0C\u4F4D\u7F6E\u4E0E\u5185\u7F6E\u5934\u5B8C\u5168\u4E00\u81F4\uFF08top 10 / right 8\uFF09\uFF1B\u81EA\u5B9A\u4E49\u5934\u4E5F\u7528\u8FD9\u4E00\u4E2A\u4F4D\u7F6E\u3002\n   \u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB\uFF08position:sticky \u5373\u5B9A\u4F4D\u4E0A\u4E0B\u6587\uFF09\uFF0C\u4E0D\u5728\u6EDA\u52A8\u5185\u5BB9\u91CC\uFF0C\u6240\u4EE5\u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF1A\u9762\u677F\u9AD8\u5EA6\u9501 100vh\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u6574\u9875\u6491\u9AD8\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto}\n\n/* \u62D6\u62FD\u6761\uFF1A\u5DE6\u7F18 6px \u547D\u4E2D\u533A\uFF0C**\u81EA\u5DF1\u4E0D\u753B\u4EFB\u4F55\u7EBF**\u3002\n   hover / \u62D6\u52A8\u65F6\u628A\u9762\u677F\u81EA\u5DF1\u7684 border-left \u67D3\u6210\u84DD\uFF08\u7528\u6237 2026-10-28 \u56DB\u8F6E\uFF1A\u84DD\u7EBF\u53EA\u51C6\u6539\u539F\u7EBF\uFF0C\n   \u4E0D\u51C6\u5728\u539F\u7EBF\u65C1\u8FB9\u52A0\u4E00\u6761 \u2014\u2014 \u4E4B\u524D\u5728 padding box \u5DE6\u7F18\u753B\u6E10\u53D8\uFF0C\u6B63\u597D\u53E0\u51FA\u53CC\u7EBF\uFF09\u3002\n   \u547D\u4E2D\u533A\u5728 padding box \u4E0A\u3001border \u5728\u5B83\u5DE6\u5916\u4FA7\uFF0C\u6240\u4EE5\u53EA\u80FD\u6539\u9762\u677F\u7684 border \u8272\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n}\n.dshpc-dock__panel:has(> .dshpc-dock__resizer:hover),\n.dshpc-dock__panel--resizing{\n  /* \u539F\u7EBF\u4FDD\u7559\u300C\u4E0A\u4E0B\u6E10\u9690\u300D\u5DE5\u4F5C\u533A\u6307\u793A\u6761\u8D28\u611F\uFF1A\u628A\u9762\u677F\u81EA\u5DF1\u7684 border-left \u6362\u6210\u540C\u6B3E\u6E10\u53D8\n     \uFF08\u4E0D\u662F\u53E6\u52A0\u4E00\u6761\u7EBF\uFF09\u3002\u9762\u677F\u53EA\u6709\u8FD9\u4E00\u6761\u8FB9\u6846\u3001\u65E0\u5706\u89D2\uFF0C\u6240\u4EE5\u53EA\u4F5C\u7528\u5728\u7EBF\u4E0A\u3002 */\n  border-image:linear-gradient(180deg,transparent,var(--dshpc-business) 30% 70%,transparent) 1;\n}\n\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove\uFF0C\n   \u5411\u53F3\u62D6\u8FDB iframe \u5C31\u5361\u6B7B \u2014\u2014 \u6574\u7247\u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u680F\u5185\uFF0C\n   \u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u5EA6\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-04 \u771F\u673A\u300C\u632A\u5F88\u4E45\u624D\u52A8\u4E00\u4E0B\u300D\uFF09\u3002 */\n.dshpc-dock.dshpc-dock--resizing iframe{pointer-events:none}\n.dshpc-dock.dshpc-dock--resizing .dshpc-dock__panel{contain:layout paint;will-change:width}\n\n/* \u6536\u8D77\u94AE\uFF1A**\u5F85\u5728\u9762\u677F\u81EA\u5DF1\u7684\u6846\u91CC**\uFF08\u7528\u6237 2026-10-28 \u4E09\u8F6E\uFF1A\u5360\u9762\u677F\u5185\u90E8\u7A7A\u95F4\uFF0C\u4E0D\u4F38\u5230\u5916\u9762\u53BB\uFF09\u3002\n   left:0 \u4ECE\u5185\u4FA7\u8D34\u7740\u5206\u9694\u7EBF \u2014\u2014 \u8D34\u7EBF\u7684\u4E00\u8FB9\u4E0D\u63CF\u8FB9\uFF08\u7EBF\u662F\u9762\u677F\u81EA\u5DF1\u7684 border-left\uFF09\uFF0C\u9875\u7B7E\u4E0E\u7EBF\u4E0D\u91CD\u5408\u3002\n   20\xD744\uFF08\u7528\u6237 2026-10-28 \u56DB\u8F6E\u5B9A\u5C3A\u5BF8\uFF09\uFF1B\u5B9E\u8272\u5E95\uFF08--dshpc-plate\uFF0C\u660E\u6697\u5404\u6709\u5B9E\u503C\uFF09\uFF0Chover \u4EAE\u4E00\u6863\u3002\n   padding-right:2px \u662F**\u89C6\u89C9\u5C45\u4E2D**\uFF1A\u53F3\u4FA7\u662F\u5706\u89D2\uFF0C\u7BAD\u5934\u5F80\u76F4\u7EBF\u90A3\u8FB9\u632A 1px\uFF08\u7528\u6237 2026-10-28 \u56DB\u8F6E\uFF09\u3002 */\n.dshpc-dock__collapse{\n  position:absolute;left:0;top:50%;transform:translateY(-50%);\n  z-index:8;display:inline-flex;align-items:center;justify-content:center;\n  width:20px;height:44px;padding:0 2px 0 0;\n  border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  border-right:1px solid var(--dshpc-border);\n  border-left:none;\n  border-radius:0 var(--dshpc-radius-sm) var(--dshpc-radius-sm) 0;\n  background:var(--dshpc-plate);color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:16px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__collapse:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}\n.dshpc-dock__collapse:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n\n/* \u6536\u8D77\u540E\u7684\u6D6E\u52A8\u8033\u6735\uFF1A**fixed \u8D34\u53F3\u7F18\u3001\u5782\u76F4\u5C45\u4E2D\u3001\u72EC\u7ACB\u4E8E\u5206\u680F**\uFF08\u7528\u6237 2026-10-28 \u5B9A\u7A3F\uFF1A\n   \u5C0F\u9875\u7B7E\u6302\u4E2D\u95F4\u3001\u91CC\u9762\u653E\u9762\u677F\u56FE\u6807\u3001\u4E0D\u663E\u793A\u6587\u5B57\uFF0C\u7BAD\u5934\u4E0E\u6536\u8D77\u94AE\u53CD\u5411\uFF09\u3002\u591A\u4E2A\u6309\u6536\u8D77\u987A\u5E8F\u7EB5\u5411\u5806\u53E0\u3002\n   z \u8D70 dock \u6863\uFF08\u4F4E\u4E8E\u5BBF\u4E3B\u5F39\u7A97\uFF09\uFF0C\u907F\u514D\u76D6\u4F4F\u5BBF\u4E3B portal \u5C42\u3002 */\n.dshpc-dock__ears{\n  position:fixed;top:50%;right:0;transform:translateY(-50%);\n  z-index:var(--dshpc-z-dock,1030);\n  display:flex;flex-direction:column;gap:8px;align-items:flex-end;\n  pointer-events:none;\n}\n.dshpc-dock__ear{\n  pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;\n  /* \u4E0E\u6536\u8D77\u94AE**\u540C\u5C3A\u5BF8**\uFF0820\xD744\uFF0C\u7528\u6237 2026-10-28 \u56DB\u8F6E\uFF09\uFF1A\u4E0A/\u4E0B/\u5DE6\u63CF\u8FB9\uFF0C\u8D34\u53F3\u7F18\u7684\u4E00\u4FA7\u4E0D\u63CF\u3002\n     \u5B9E\u8272\u5E95\uFF08--dshpc-plate\uFF09\uFF0C\u4E0D\u7528\u900F\u660E\u8272 \u2014\u2014 \u900F\u660E\u5E95\u4E0B\u900F\u51FA\u4E1C\u897F\u5F88\u96BE\u770B\u3002\n     padding-left:2px \u662F**\u89C6\u89C9\u5C45\u4E2D**\uFF1A\u5DE6\u4FA7\u662F\u5706\u89D2\uFF0C\u7BAD\u5934\u5F80\u76F4\u7EBF\uFF08\u53F3\u7F18\uFF09\u90A3\u8FB9\u632A 1px\u3002 */\n  width:20px;height:44px;box-sizing:border-box;padding:0 0 0 2px;\n  border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  border-left:1px solid var(--dshpc-border);\n  border-right:none;\n  border-radius:var(--dshpc-radius-sm) 0 0 var(--dshpc-radius-sm);\n  background:var(--dshpc-plate);color:var(--dshpc-fg-2);\n  cursor:pointer;font-family:inherit;line-height:1;\n  animation:dshpc-ear-in .2s var(--dshpc-ease);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n/* \u5165\u573A\uFF1A\u4ECE\u53F3\u7F18\u5916\u6ED1\u8FDB\u6765\uFF0C\u522B\u300C\u7A81\u7136\u51FA\u73B0\u300D\uFF08\u7528\u6237 2026-10-28\uFF09\u3002 */\n@keyframes dshpc-ear-in{from{opacity:0;transform:translateX(14px)}}\n.dshpc-dock__ear:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}\n.dshpc-dock__ear:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u4E0E\u6536\u8D77\u94AE\u7684\u7BAD\u5934\u540C\u4E00\u5B57\u53F7\uFF0816px\uFF09\uFF1A\u6536\u8FDB\u53BB\u524D\u540E\u7BAD\u5934\u4E00\u6A21\u4E00\u6837\u5927\uFF08\u7528\u6237 2026-10-28\uFF09\u3002 */\n.dshpc-dock__ear-arrow{font-size:16px;color:var(--dshpc-fg-3)}\n.dshpc-dock__ear:hover .dshpc-dock__ear-arrow{color:var(--dshpc-fg)}\n/* \u52A8\u6548\u793C\u8C8C\uFF1A\u7CFB\u7EDF\u58F0\u660E\u51CF\u5C11\u52A8\u6548\u65F6\u5168\u90E8\u5173\u6389\uFF08\u4E0E Segmented \u540C\u4E00\u7EA6\u5B9A\uFF09\uFF0C\u6536\u8D77\u9000\u5316\u4E3A\u77AC\u65F6\u3001\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-dock__panel{animation:none}\n  .dshpc-dock__panel--closing{transition:none}\n  .dshpc-dock__ear{animation:none}\n}\n";
 
 // dist/explorer/explorer-css.generated.js
 var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  padding:4px 10px;border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbs-*\uFF09\u3002\n   \u5C42\u5E8F\uFF1A\u5144\u5F1F\u662F 30/31\uFF1B\u672C\u4ED3 picker \u9762\u677F\u662F 1100\uFF0C\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E\u5B83\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  box-shadow:0 4px 16px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:8px 14px;border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6838\u5FC3 outline \u94AE\uFF0C\u76AE\u80A4\u53D6\u5144\u5F1F .dsh-tdt-sv-tree-act\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF09\u3002\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;appearance:none;background:0 0;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  height:auto;padding:2px 8px;font-size:var(--dshpc-font-sm);line-height:1.4;\n  color:var(--dshpc-fg-2);cursor:pointer;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n.dshpc-fb .dshpc-fb__row-act:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09\u3002\n   \u5FC5\u987B border-box\uFF1A\u6E32\u67D3\u6001 inline \u52A0\u4E86 padding:12px 14px\uFF0Ccontent-box \u4E0B width:100%+padding\n   \u4F1A\u6EA2\u51FA\u7236\u5C42 28px\uFF08\u7236 .dshpc-fb \u65E0 overflow \u88C1\u5207\uFF09\u2192 \u6052\u591A\u4E00\u6761\u6A2A\u6EDA\u6761\uFF1Bborder-box \u628A padding\n   \u7B97\u8FDB 100%\uFF0C\u4ECE\u6839\u6D88\u9664\u8BE5\u6EA2\u51FA\u3002 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n/* iframe \u7684\u5916\u58F3\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-fill\uFF09\uFF1Aiframe \u5FC5\u987B\u5305\u5728\u8FD9\u4E00\u5C42\u91CC\u624D\u62FF\u5F97\u5230\u9AD8\u5EA6\u2014\u2014\n   \u88F8\u6302 iframe \u65F6\u66FF\u6362\u5143\u7D20\u7684\u81EA\u52A8\u6700\u5C0F\u5C3A\u5BF8\u4F1A\u8BA9\u9AD8\u5EA6\u7B97\u4E0D\u51FA\u6765\uFF08\u8868\u73B0\u4E3A\u9884\u89C8\u533A\u6574\u7247\u7A7A\u767D\u3001\u50CF\u6CA1\u53CD\u5E94\uFF09\u3002 */\n.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}\n.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
@@ -4383,6 +4383,10 @@ var WorkspaceListStore = class {
   }
 };
 var workspaceList = new WorkspaceListStore();
+var workspaceFiles;
+function getWorkspaceFiles() {
+  return workspaceFiles;
+}
 function isWorkspaceSource(value) {
   if (value === null || typeof value !== "object")
     return false;
@@ -4394,6 +4398,13 @@ function connectHost(ctx, options = {}) {
     const source = sub?.workspaces?.list;
     if (isWorkspaceSource(source))
       workspaceList.setSource(source);
+  });
+  ctx.inject(["remote", "remote.workspaceFiles"], (sub) => {
+    const rec = sub;
+    const candidate = rec?.["remote.workspaceFiles"] ?? rec?.remote?.workspaceFiles;
+    if (typeof candidate?.list === "function") {
+      workspaceFiles = candidate;
+    }
   });
   const modelsPath = options.modelsPath;
   if (modelsPath === void 0)
@@ -6869,8 +6880,8 @@ var FileServicesStore = class {
     this.snapshot = { ...this.snapshot, ...patch };
     for (const listener of this.listeners) listener();
   }
-  setFiles(workspaceFiles) {
-    this.set({ workspaceFiles });
+  setFiles(workspaceFiles2) {
+    this.set({ workspaceFiles: workspaceFiles2 });
   }
   setOffice(officeToPdf) {
     this.set({ officeToPdf });
@@ -55750,8 +55761,16 @@ var docData = {
         "en": "Workspace file browsing and picking, driven by the host-provided workspace file snapshot."
       },
       {
-        "zh": "\u6D4F\u89C8\u6001\u505C\u9760\u662F\u5E03\u5C40\u6210\u5458\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4E0D\u8981\u6302 `document.body` \u518D\u81EA\u5DF1\u5957 fixed\u3002",
-        "en": "The browse dock is a layout member (takes width, narrows the main area); never mount it on `document.body` with your own fixed positioning."
+        "zh": "**\u63A5\u7EBF\u5F52\u6838\u5FC3**\uFF1Aclient `apply` \u91CC\u8C03\u4E00\u6B21 `connectHost(ctx)`\uFF0C\u8BFB\u6587\u4EF6\u670D\u52A1\u3001\u4F1A\u8BDD id\u3001\u5DE5\u4F5C\u533A\u5FEB\u7167\u90FD\u7531\u6838\u5FC3\u81EA\u5DF1\u89E3\uFF0C\u8C03\u7528\u65F6\u53EA\u7ED9\u5BB9\u5668\u548C\u8DEF\u5F84\u3002",
+        "en": "**Wiring belongs to core**: call `connectHost(ctx)` once in the client apply; the file service, session id and workspace snapshot are resolved by core \u2014 you only pass a container and a path."
+      },
+      {
+        "zh": "\u843D\u70B9\u53EA\u7ED9\u4E00\u4E2A\u5143\u7D20\uFF1A\u9875\u9762\u91CC**\u5305\u4F4F\u4E3B\u533A**\u7684\u90A3\u4E2A\uFF08\u6838\u5FC3\u4F1A\u8865\u6210 flex \u884C\u3001\u8BA9\u4E3B\u533A\u4F38\u5C55\uFF0C\u5173\u95ED\u65F6\u8FD8\u539F\uFF09\uFF0C\u4E0D\u8981\u4F20 `document.body` \u518D\u81EA\u5DF1\u5957 fixed\u2014\u2014\u90A3\u662F\u6D6E\u5C42\uFF0C\u4E0D\u662F\u5206\u680F\u3002",
+        "en": "Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning \u2014 that is an overlay, not a split."
+      },
+      {
+        "zh": "\u7EDD\u5BF9\u8DEF\u5F84\u6309\u6700\u957F\u524D\u7F00\u5339\u914D\u6240\u5C5E\u5DE5\u4F5C\u533A\uFF1B\u843D\u5728\u4EFB\u4F55\u5DE5\u4F5C\u533A\u5916\u65F6\uFF0C\u6587\u4EF6\u7167\u6837\u80FD\u9884\u89C8\uFF08\u5B98\u65B9 read \u5141\u8BB8\u5DE5\u4F5C\u533A\u5916\u6587\u4EF6\uFF09\uFF0C\u53EA\u6709\u76EE\u5F55\u6811\u9000\u5316\u6210\u53EA\u8BFB\u8DEF\u5F84\u680F\u3002",
+        "en": "Absolute paths are matched to their workspace by longest prefix. Outside every workspace the file still previews (official read allows it); only the directory tree degrades to a read-only path bar."
       }
     ]
   },
@@ -55777,15 +55796,15 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "\u4ECE ctx \u53D6\u51FA\u5DE5\u4F5C\u533A\u5FEB\u7167\u518D\u4F20\u7ED9\u80FD\u529B\u63A5\u53E3\uFF0C\u4E0D\u8981\u4F20\u6574\u4E2A ctx\u3002",
-        "en": "Pull the workspace snapshot out of ctx and hand it to the capability APIs; do not pass the whole ctx."
+        "zh": "`connectHost(ctx)` \u53EA\u6536\u8FD9\u4E00\u5C0F\u5757\uFF0C\u4E0D\u628A\u6574\u4E2A ctx \u4F20\u8FDB\u6838\u5FC3\u3002",
+        "en": "`connectHost(ctx)` takes just that one slice; the whole ctx never enters core."
       }
     ],
     "code": [
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\nopenFilePreview({ mount, workspaceFiles, officeToPdf, sessionId, path, rootName })\n\n// path \u4F20\u7EDD\u5BF9\u8DEF\u5F84\u65F6\uFF1A\u6309\u6700\u957F\u524D\u7F00\u5339\u914D\u6240\u5C5E\u5DE5\u4F5C\u533A\uFF0C\u9762\u5305\u5C51 / \u76EE\u5F55\u6811\u4E0E \u25BE\u300C\u5207\u5DE5\u4F5C\u533A\u300D\u81EA\u52A8\u53EF\u7528\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md' })\n// \u8981\u8986\u76D6\u5BBF\u4E3B\u5FEB\u7167\u624D\u663E\u5F0F\u4F20 workspaceAnchors\uFF08\u5E26 path + sessionIds\uFF09\nopenFilePreview({ mount, workspaceFiles, sessionId, path: '/abs/path.md', workspaceAnchors })\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor, rootName })"
+        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// \u53EA\u5728 client apply \u91CC\u63A5\u7EBF\u4E00\u6B21\uFF08\u63A5\u5DE5\u4F5C\u533A\u5FEB\u7167 + \u8BFB\u6587\u4EF6\u670D\u52A1\uFF09\uFF0C\u4E4B\u540E\u4E0D\u7528\u518D\u78B0\u670D\u52A1\nconnectHost(ctx)\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF1A\u4E00\u4E2A\u5BB9\u5668 + \u4E00\u4E2A\u8DEF\u5F84\u5C31\u591F\nopenFilePreview({ mount, path: '/abs/ledger' })   // \u6587\u4EF6\u5939 \u21D2 \u76EE\u5F55\u6811\uFF1B\u6587\u4EF6 \u21D2 \u76F4\u63A5\u9884\u89C8\nopenFilePreview({ mount, path: 'docs/README.md' }) // \u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\u4E5F\u884C\n\n// \u8986\u76D6\u9879\uFF1A\u6307\u5B9A\u5DE5\u4F5C\u533A\u5FEB\u7167 / \u6307\u5B9A\u4F1A\u8BDD / Office \u8F6C PDF / \u4E0E\u522B\u5904\u5171\u7528\u7684\u6839\u7F13\u5B58\nopenFilePreview({ mount, path, workspaceAnchors, sessionId, officeToPdf, rootCache })\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })"
       }
     ]
   },
@@ -55814,8 +55833,8 @@ var docData = {
             "def": "\u2014",
             "required": "\u662F",
             "desc": {
-              "zh": "\u9875\u9762\u91CC\u7684 flex \u884C\uFF1B\u9884\u89C8\u9760\u5B83\u5360\u5BBD\u800C\u4E0D\u662F\u6D6E\u5728\u9875\u9762\u4E0A\u65B9",
-              "en": "The page\u2019s flex row; the preview takes width there instead of floating"
+              "zh": "\u9875\u9762\u91CC**\u5305\u4F4F\u4E3B\u533A**\u7684\u90A3\u4E2A\u5143\u7D20\uFF1B\u4E0D\u5FC5\u81EA\u5DF1\u5199 flex\uFF08\u6838\u5FC3\u8865\u6210 flex \u884C\u5E76\u8BA9\u4E3B\u533A\u4F38\u5C55\uFF0C\u5173\u95ED\u65F6\u8FD8\u539F\uFF09\u3002\u4E0D\u8981\u4F20 `document.body`",
+              "en": "The element wrapping the main area; no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). Never `document.body`"
             }
           },
           {
@@ -55823,8 +55842,8 @@ var docData = {
             "type": "WorkspaceFilesFace",
             "def": "\u2014",
             "desc": {
-              "zh": "\u4ECE ctx \u53D6\u51FA\u7684\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\uFF1B\u4F20 `content` \u65F6\u53EF\u7701",
-              "en": "Workspace file service taken from ctx; optional when passing `content`"
+              "zh": "\u8BFB\u6587\u4EF6\u670D\u52A1\u3002**\u4E00\u822C\u4E0D\u7528\u4F20**\uFF1A`connectHost(ctx)` \u63A5\u7EBF\u540E\u6838\u5FC3\u81EA\u5DF1\u6301\u6709\uFF1B\u4F20\u4E86\u4EE5\u4F20\u5165\u4E3A\u51C6\u3002\u4F20 `content` \u65F6\u53EF\u7701",
+              "en": "File service. **Usually unnecessary**: core holds it after `connectHost(ctx)`; when passed it wins. Optional when passing `content`"
             }
           },
           {
@@ -55832,8 +55851,8 @@ var docData = {
             "type": "string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u8BE5\u5DE5\u4F5C\u533A\u7684\u771F\u5B9E\u4F1A\u8BDD id\uFF08\u670D\u52A1\u662F\u4F1A\u8BDD\u4F5C\u7528\u57DF\u7684\uFF09\uFF1B\u4F20 `content` \u65F6\u53EF\u7701",
-              "en": "A real session id of that workspace (the service is session-scoped); optional when passing `content`"
+              "zh": "\u8BE5\u5DE5\u4F5C\u533A\u7684\u771F\u5B9E\u4F1A\u8BDD id\u3002**\u4E00\u822C\u4E0D\u7528\u4F20**\uFF1A\u6309\u8DEF\u5F84\u5339\u914D\u6240\u5C5E\u5DE5\u4F5C\u533A\uFF0C\u5339\u914D\u4E0D\u51FA\u5C31\u53D6\u6700\u8FD1\u6709\u4F1A\u8BDD\u7684\u5DE5\u4F5C\u533A\uFF1B\u4F20 `content` \u65F6\u53EF\u7701",
+              "en": "A real session id. **Usually unnecessary**: resolved from the path\u2019s workspace, else the most recently updated workspace with a session; optional when passing `content`"
             }
           },
           {
@@ -59993,8 +60012,8 @@ function relativizeToRoot(cache5, sessionId, dir) {
     return dir.slice(norm.length + 1);
   return dir;
 }
-async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
-  const stat = workspaceFiles.stat;
+async function findAnyFileAbs(workspaceFiles2, sessionId, startDir) {
+  const stat = workspaceFiles2.stat;
   if (stat === void 0)
     return null;
   let frontier = [startDir];
@@ -60003,7 +60022,7 @@ async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
     for (const dir of frontier.slice(0, 5)) {
       let entries2;
       try {
-        const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir)));
+        const parsed = listingOf(await workspaceFiles2.list(sessionId, listPathOf(dir)));
         if (parsed === null || isFailed(parsed))
           continue;
         entries2 = parsed.entries;
@@ -60029,14 +60048,14 @@ async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
   }
   return null;
 }
-async function absolutizeDir(cache5, workspaceFiles, sessionId, dir, canonical, entries2) {
+async function absolutizeDir(cache5, workspaceFiles2, sessionId, dir, canonical, entries2) {
   if (isAbsoluteish(dir))
     return dir;
   const rel = canonical !== "" ? canonical : dir;
   const cached = cache5.get(sessionId);
   if (cached !== void 0)
     return `${cached}/${rel}`;
-  const stat = workspaceFiles.stat;
+  const stat = workspaceFiles2.stat;
   if (stat === void 0)
     return dir;
   const file = entries2.find((entry) => entry.type === "file");
@@ -60050,7 +60069,7 @@ async function absolutizeDir(cache5, workspaceFiles, sessionId, dir, canonical, 
     } catch {
     }
   }
-  const found = await findAnyFileAbs(workspaceFiles, sessionId, rel);
+  const found = await findAnyFileAbs(workspaceFiles2, sessionId, rel);
   if (found === null)
     return dir;
   const root = learnRoot(cache5, sessionId, found.relativePath, found.absolutePath);
@@ -60956,7 +60975,7 @@ function PreviewBody(props) {
   const entryTitle = workspaceAnchorForPath(options.path ?? "", anchors)?.title ?? options.rootName ?? "";
   const [picked, setPicked] = (0, import_react64.useState)(null);
   const wsTitle = picked ?? entryTitle;
-  const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId;
+  const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId ?? pickWorkspaceAnchor(anchors)?.sessionId ?? "";
   const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title);
   return (0, import_react64.createElement)(FileBrowser, {
     // key 带工作区+会话 ⇒ 切换即重挂载（FileBrowser 的 dir/listing/学根全属于旧工作区）。
@@ -60984,22 +61003,37 @@ function PreviewBody(props) {
 }
 var PREVIEW_HOST_ID = "dshpc-file-preview-host";
 var PREVIEW_PANEL_ID = "file-preview";
+var DOCK_HOST_CLASS = "dshpc-dock-host";
 var activePreviewClose = null;
 function openFilePreview(options) {
   if (typeof document === "undefined")
     return null;
-  if (typeof getComputedStyle === "function") {
-    const cs = getComputedStyle(options.mount);
-    if (cs.display !== "flex" && cs.display !== "inline-flex") {
-      console.warn("[dsh-plugin-core/explorer] openFilePreview: mount \u4E0D\u662F flex \u884C \u2014\u2014 PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u505C\u9760\u53F3\u4FA7 + \u6324\u7A84\u4E3B\u533A\uFF09\u3002\u8BF7\u4F20\u4F60\u9875\u9762\u300C\u4E3B\u533A + \u4FA7\u680F\u300D\u90A3\u4E00\u5C42 flex \u5BB9\u5668\uFF0C\u4E0D\u8981\u4F20 document.body \u6216\u65E0\u5B9A\u9AD8\u7684\u7A84\u5BB9\u5668\u3002");
-    }
+  const custom = options.content !== void 0;
+  const files = options.workspaceFiles ?? getWorkspaceFiles();
+  const anchors = options.workspaceAnchors ?? workspaceList.getSnapshot();
+  const sessionId = options.sessionId ?? workspaceAnchorForPath(options.path ?? "", anchors)?.sessionId ?? pickWorkspaceAnchor(anchors)?.sessionId;
+  if (!custom && (files === void 0 || sessionId === void 0)) {
+    console.warn("[dsh-plugin-core/explorer] openFilePreview: " + (files === void 0 ? "\u6CA1\u6709\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\uFF08client apply \u91CC\u6CA1\u8C03 connectHost\uFF0C\u6216\u5BBF\u4E3B\u6CA1\u63D0\u4F9B remote.workspaceFiles\uFF09" : "\u627E\u4E0D\u5230\u53EF\u7528\u7684\u5DE5\u4F5C\u533A\u4F1A\u8BDD\uFF08\u5BBF\u4E3B workspaces \u91CC\u6CA1\u6709\u5E26\u4F1A\u8BDD\u7684\u5DE5\u4F5C\u533A\uFF09") + " \u21D2 \u4E0D\u6253\u5F00\u9884\u89C8");
+    return null;
   }
+  const opts = { ...options, workspaceFiles: files, sessionId };
   activePreviewClose?.();
+  const mount = options.mount;
+  if (mount === document.body) {
+    console.warn("[dsh-plugin-core/explorer] openFilePreview: \u4E0D\u8981\u4F20 document.body \u2014\u2014 PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u505C\u9760\u53F3\u4FA7 + \u6324\u7A84\u4E3B\u533A\uFF09\u3002\u8BF7\u4F20\u4F60\u9875\u9762\u91CC\u5305\u4F4F\u4E3B\u533A\u7684\u90A3\u4E2A\u5143\u7D20\u3002");
+  }
+  const mountStyle = mount.style;
+  const prevDisplay = mountStyle.display;
+  const hadHostClass = mount.classList.contains(DOCK_HOST_CLASS);
+  mount.classList.add(DOCK_HOST_CLASS);
+  const display = typeof getComputedStyle === "function" ? getComputedStyle(mount).display : "";
+  if (display !== "flex" && display !== "inline-flex")
+    mountStyle.display = "flex";
   const container = document.createElement("div");
   container.id = PREVIEW_HOST_ID;
   container.setAttribute("data-dshpc-file-preview", "");
   container.style.cssText = "display:contents";
-  options.mount.appendChild(container);
+  mount.appendChild(container);
   const dock = createPanelDock({
     maxPanels: 1,
     defaultWidth: options.width ?? 460,
@@ -61023,6 +61057,9 @@ function openFilePreview(options) {
     window.removeEventListener("keydown", onKeyDown);
     root.unmount();
     container.remove();
+    mountStyle.display = prevDisplay;
+    if (!hadHostClass)
+      mount.classList.remove(DOCK_HOST_CLASS);
     options.onClose?.();
   };
   const onKeyDown = (event) => {
@@ -61047,11 +61084,11 @@ function openFilePreview(options) {
       width: options.width ?? 460,
       minWidth: options.minWidth ?? 320,
       maxWidth: options.maxWidth
-    }, options.content !== void 0 ? options.content() : internalSwitch ? (0, import_react64.createElement)(PreviewBody, { options, onClose: close }) : (0, import_react64.createElement)(FileBrowser, {
-      workspaceFiles: options.workspaceFiles,
-      officeToPdf: options.officeToPdf ?? null,
-      sessionId: options.sessionId,
-      path: options.path,
+    }, opts.content !== void 0 ? opts.content() : internalSwitch ? (0, import_react64.createElement)(PreviewBody, { options: opts, onClose: close }) : (0, import_react64.createElement)(FileBrowser, {
+      workspaceFiles: opts.workspaceFiles,
+      officeToPdf: opts.officeToPdf ?? null,
+      sessionId: opts.sessionId,
+      path: opts.path,
       rootName: options.rootName,
       workspaces: options.workspaces,
       workspaceAnchors: options.workspaceAnchors,
@@ -61073,6 +61110,13 @@ var PICKER_MIN_FLOOR = 160;
 function pickWorkspaceFile(options) {
   return new Promise((resolve) => {
     if (typeof document === "undefined") {
+      resolve(null);
+      return;
+    }
+    const files = options.workspaceFiles ?? getWorkspaceFiles();
+    const sessionId = options.sessionId ?? pickWorkspaceAnchor(workspaceList.getSnapshot())?.sessionId;
+    if (files === void 0 || sessionId === void 0) {
+      console.warn("[dsh-plugin-core/explorer] pickWorkspaceFile: " + (files === void 0 ? "\u6CA1\u6709\u5DE5\u4F5C\u533A\u6587\u4EF6\u670D\u52A1\uFF08client apply \u91CC\u6CA1\u8C03 connectHost\uFF09" : "\u627E\u4E0D\u5230\u53EF\u7528\u7684\u5DE5\u4F5C\u533A\u4F1A\u8BDD") + " \u21D2 \u4E0D\u5F39\u9009\u62E9\u6846");
       resolve(null);
       return;
     }
@@ -61124,9 +61168,9 @@ function pickWorkspaceFile(options) {
     ensureControls(getStyleKit());
     const root = (0, import_client5.createRoot)(panel);
     root.render((0, import_react64.createElement)(FileBrowser, {
-      workspaceFiles: options.workspaceFiles,
+      workspaceFiles: files,
       officeToPdf: options.officeToPdf ?? null,
-      sessionId: options.sessionId,
+      sessionId,
       path: "",
       rootName: options.rootName,
       rootCache: options.rootCache,
@@ -61198,21 +61242,18 @@ async function findSamples(files, sessionId) {
 var CODE_OPEN = `// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF1B\u4E0D\u662F\u6D6E\u5C42\uFF09
 import { openFilePreview } from 'dsh-plugin-core/explorer'
 
+// apply \u91CC connectHost(ctx) \u63A5\u7EBF\u4E00\u6B21\uFF0C\u4E4B\u540E\u53EA\u8981\u4E00\u4E2A\u5BB9\u5668 + \u4E00\u4E2A\u8DEF\u5F84\uFF1A
 openFilePreview({
-  mount,                 // \u4F60\u9875\u9762\u91CC\u90A3\u4E00\u5C42 flex \u884C\uFF0C\u4E0D\u8981\u4F20 document.body \u518D\u81EA\u5DF1\u5957 fixed
-  workspaceFiles,        // \u4ECE ctx \u53D6\u51FA\u540E\u6CE8\u5165\uFF08host \u80FD\u529B\uFF09
-  sessionId,             // \u4F1A\u8BDD\u4F5C\u7528\u57DF\uFF08\u9ED8\u8BA4\u951A\u70B9\uFF09
-  path: p,               // \u7EDD\u5BF9\u8DEF\u5F84\u4E5F\u53EF\u4EE5
-  rootName: '\u6211\u7684\u9879\u76EE',
+  mount,                 // \u4F60\u9875\u9762\u91CC\u5305\u4F4F\u4E3B\u533A\u7684\u90A3\u4E2A\u5143\u7D20\uFF08\u4E0D\u5FC5\u5199\u6210 flex\uFF0C\u6838\u5FC3\u4F1A\u8865\u3001\u5173\u95ED\u5373\u8FD8\u539F\uFF09
+  path: p,               // \u6587\u4EF6\u6216\u6587\u4EF6\u5939\u90FD\u884C\uFF1B\u7EDD\u5BF9\u8DEF\u5F84\u4E5F\u53EF\u4EE5
 })
-// path \u662F\u7EDD\u5BF9\u8DEF\u5F84\u65F6\uFF1A\u6838\u5FC3\u81EA\u52A8\u8BFB\u5BBF\u4E3B workspaces \u5FEB\u7167\uFF08\u63D2\u4EF6 apply \u91CC connectHost \u6CE8\u5165\u8FC7\uFF09\uFF0C
-// \u6309\u6700\u957F\u524D\u7F00\u5339\u914D\u6240\u5C5E\u5DE5\u4F5C\u533A\u3001list \u6362\u8BE5\u5DE5\u4F5C\u533A\u7684\u4F1A\u8BDD \u21D2 \u9762\u5305\u5C51/\u76EE\u5F55\u6811\u6B63\u5E38\uFF1B
-// \u25BE \u4E0B\u62C9\u300C\u5207\u5DE5\u4F5C\u533A\u300D\u540C\u6837\u81EA\u52A8\u53EF\u7528\uFF08\u65E0\u4F1A\u8BDD\u7684\u5DE5\u4F5C\u533A\u4E0D\u8FDB\u5217\u8868\uFF09\u3002
-// \u8981\u8986\u76D6\u5FEB\u7167\u624D\u663E\u5F0F\u4F20 workspaceAnchors\uFF08\u5BBF\u4E3B workspaces \u5FEB\u7167\u539F\u6837\uFF09\u3002`;
+// \u6587\u4EF6\u670D\u52A1 / \u4F1A\u8BDD / \u5DE5\u4F5C\u533A\u5FEB\u7167\u5168\u7531\u6838\u5FC3\u89E3\uFF1A\u7EDD\u5BF9\u8DEF\u5F84\u6309\u6700\u957F\u524D\u7F00\u5339\u914D\u6240\u5C5E\u5DE5\u4F5C\u533A\uFF08connectHost \u6CE8\u5165\u7684
+// \u5BBF\u4E3B workspaces \u5FEB\u7167\uFF09\uFF1B\u843D\u5728\u5DE5\u4F5C\u533A\u5916 \u21D2 \u6587\u4EF6\u7167\u5E38\u9884\u89C8\u3001\u76EE\u5F55\u6811\u9000\u5316\u6210\u53EA\u8BFB\u8DEF\u5F84\u680F\u3002
+// \u8981\u8986\u76D6\u5FEB\u7167\u624D\u4F20 workspaceAnchors\uFF0C\u8981\u6307\u5B9A\u4F1A\u8BDD\u624D\u4F20 sessionId\u3002`;
 var CODE_PICK = `// \u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09
 import { pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 
-const r = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['js', 'md'] } })
+const r = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['js', 'md'] } })
 // r = { path, isDir }`;
 var CODE_SESSION_REAL = `// \u771F\u5B9E\u5BBF\u4E3B\uFF1Asessions.list \u5FEB\u7167\uFF08\u51B7\u5B89\u5168\uFF0C\u4E0D\u6FC0\u6D3B Agent\uFF09\u2192 \u70B9\u5F00\u771F\u9884\u89C8
 // \u670D\u52A1\u6765\u81EA package.json dsh.client.inject \u7684\u4E09\u4E2A\u5B98\u65B9\u5305\uFF1A
@@ -61235,7 +61276,7 @@ h(SessionViewModal, {
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
   openHostSession: (id) => uiWorkspace.openSession(id),
   // \u6587\u4EF6\u94FE\u63A5 \u2192 **\u9875\u9762\u53F3\u4FA7**\u5F00\u6838\u5FC3\u6587\u4EF6\u9884\u89C8 dock\uFF08\u6324\u7A84\u4E3B\u533A\uFF09
-  onOpenFile: (path) => openFilePreview({ mount: pageRow.element, workspaceFiles, path, ... }),
+  onOpenFile: (path) => openFilePreview({ mount: pageRow.element, path, ... }),
   // \u4E0D\u7528\u7ED9\u5F39\u7A97\u4EFB\u4F55\u5BBD\u5EA6\u53C2\u6570\uFF1Adock \u628A\u5360\u5BBD\u53D1\u5E03\u6210 CSS \u53D8\u91CF\uFF0C\u906E\u7F69\u81EA\u5DF1\u8BA9\u4F4D\uFF08\u7528\u6237 2026-10-22\uFF09
 })`;
 var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
@@ -61243,10 +61284,10 @@ var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'`;
 function useExplorerHost() {
-  const { workspaceFiles, officeToPdf } = (0, import_react65.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react65.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
   const wsItems = (0, import_react65.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
-  return { workspaceFiles, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
+  return { workspaceFiles: workspaceFiles2, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
 }
 function NotReady(props) {
   return (0, import_react65.createElement)(
@@ -61256,23 +61297,23 @@ function NotReady(props) {
   );
 }
 function OpenPreviewDemo() {
-  const { workspaceFiles, anchor, workspaceNames } = useExplorerHost();
+  const { workspaceFiles: workspaceFiles2, anchor, workspaceNames } = useExplorerHost();
   const [samples, setSamples] = (0, import_react65.useState)(null);
   const [phase, setPhase] = (0, import_react65.useState)("idle");
   const [last2, setLast] = (0, import_react65.useState)(null);
   const pending = (0, import_react65.useRef)(null);
   const sessionId = anchor === null ? null : anchor.sessionId;
   (0, import_react65.useEffect)(() => {
-    if (workspaceFiles === null || sessionId === null) return;
+    if (workspaceFiles2 === null || sessionId === null) return;
     if (pending.current !== null) return;
     setPhase("probing");
-    pending.current = findSamples(workspaceFiles, sessionId).then((s) => {
+    pending.current = findSamples(workspaceFiles2, sessionId).then((s) => {
       setSamples(s);
       setPhase(s === null ? "missing" : "found");
       return s;
     });
-  }, [workspaceFiles, sessionId]);
-  if (workspaceFiles === null) return (0, import_react65.createElement)(NotReady, { which: "files" });
+  }, [workspaceFiles2, sessionId]);
+  if (workspaceFiles2 === null) return (0, import_react65.createElement)(NotReady, { which: "files" });
   if (anchor === null) return (0, import_react65.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
     const mount = pageRow.element;
@@ -61280,7 +61321,7 @@ function OpenPreviewDemo() {
       console.warn("[demo] pageRow \u672A\u5C31\u7EEA\uFF0C\u65E0\u6CD5\u505C\u9760\u9884\u89C8");
       return;
     }
-    openFilePreview({ mount, workspaceFiles, sessionId: anchor.sessionId, path, rootName, workspaces });
+    openFilePreview({ mount, sessionId: anchor.sessionId, path, rootName, workspaces });
     setLast(path === "" ? `${rootName}\uFF08\u6839\uFF09` : path);
   };
   const sampleLabel = (normal3) => phase === "missing" ? t3("samplesNotFound") : t3(normal3);
@@ -61304,13 +61345,12 @@ function OpenPreviewDemo() {
   );
 }
 function PickFileDemo() {
-  const { workspaceFiles, anchor } = useExplorerHost();
+  const { workspaceFiles: workspaceFiles2, anchor } = useExplorerHost();
   const [picked, setPicked] = (0, import_react65.useState)(null);
-  if (workspaceFiles === null) return (0, import_react65.createElement)(NotReady, { which: "files" });
+  if (workspaceFiles2 === null) return (0, import_react65.createElement)(NotReady, { which: "files" });
   if (anchor === null) return (0, import_react65.createElement)(NotReady, { which: "anchor" });
   const pick2 = (anchorBtn, filter2) => {
     void pickWorkspaceFile({
-      workspaceFiles,
       sessionId: anchor.sessionId,
       anchor: anchorBtn,
       rootName: anchor.title,
@@ -61346,15 +61386,14 @@ function RealSessionListDemo() {
   const anchor = pickWorkspaceAnchor(wsItems);
   const [openId, setOpenId] = (0, import_react65.useState)(null);
   const view = (0, import_react65.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
-  const workspaceFiles = files.workspaceFiles;
-  const canOpenFile = workspaceFiles !== null && anchor !== null;
+  const workspaceFiles2 = files.workspaceFiles;
+  const canOpenFile = workspaceFiles2 !== null && anchor !== null;
   const openLinkedFile = (path, sessionId) => {
     console.log("[preview] openLinkedFile path=", JSON.stringify(path), "sessionId=", sessionId, "anchorSessionId=", anchor?.sessionId);
     const mount = pageRow.element;
-    if (mount === null || workspaceFiles === null || anchor === null) return;
+    if (mount === null || workspaceFiles2 === null || anchor === null) return;
     openFilePreview({
       mount,
-      workspaceFiles,
       officeToPdf: files.officeToPdf,
       // 文件 RPC 按会话作用域取工作区：优先用调用方透传的「文件所属会话」，
       // 兜底才用当前工作区锚点会话（explorer 页那种没上下文的入口）。
@@ -61370,7 +61409,6 @@ function RealSessionListDemo() {
     let handle = null;
     handle = openFilePreview({
       mount,
-      workspaceFiles: workspaceFiles ?? void 0,
       sessionId: loc.sessionId,
       path: "",
       content: () => (0, import_react65.createElement)(ChangedFileDiff, {
@@ -61651,9 +61689,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.6.1"}`],
+            [t3("buildCore"), `v${"0.7.0"}`],
             [t3("buildDemo"), `v${"0.6.1"}`],
-            [t3("buildStamp"), "261028-145644-198"]
+            [t3("buildStamp"), "261028-153137-168"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -61975,9 +62013,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react69.createElement)("span", null, `core v${"0.6.1"}`),
+          (0, import_react69.createElement)("span", null, `core v${"0.7.0"}`),
           (0, import_react69.createElement)("span", null, `demo v${"0.6.1"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-145644-198")
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-153137-168")
         )
       )
     ),

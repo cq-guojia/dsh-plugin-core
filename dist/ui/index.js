@@ -8,7 +8,7 @@ export { DateTimePicker, } from './DateTimePicker.js';
 export { buildMonthCells, ceilToPrecision, clampUnit, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
 export { ModelPicker } from './ModelPicker.js';
 export { WorkspacePicker } from './WorkspacePicker.js';
-export { connectHost, modelCatalog, workspaceList, } from './host-data.js';
+export { connectHost, getWorkspaceFiles, modelCatalog, workspaceList, } from './host-data.js';
 export { Modal } from './Modal.js';
 export { AlertModal, } from './AlertModal.js';
 export { ConfirmModal, } from './ConfirmModal.js';
