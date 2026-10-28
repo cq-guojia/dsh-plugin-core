@@ -35,6 +35,20 @@ test('Segmented 单选挂滑动块模式，多选保持逐段着色', () => {
   assert.ok(!multi.includes('dshpc-seg--slide'), '多选不该有唯一下滑的选中块')
 })
 
+test('Segmented 的 count / badge 收字符串（如 "1K"），数字 ≤0 仍不显示', () => {
+  const html = renderToStaticMarkup(createElement(Segmented, {
+    items: [
+      { value: 'a', label: '甲', count: '1K' },
+      { value: 'b', label: '乙', count: 0, badge: '99+' },
+    ],
+    value: 'a',
+    onChange() {},
+  }))
+  assert.match(html, /dshpc-seg__count">1K</, '字符串计数被吞掉了')
+  assert.match(html, /dshpc-seg__badge">99\+</, '字符串角标被吞掉了')
+  assert.equal((html.match(/dshpc-seg__count/g) ?? []).length, 1, 'count 为 0 的那段不该渲染计数')
+})
+
 test('滑动块样式带过渡，reduced-motion 下关掉', () => {
   assert.match(SEGMENTED_CSS, /\.dshpc-seg__thumb\{[^}]*transition:/)
   assert.match(SEGMENTED_CSS, /prefers-reduced-motion[\s\S]*?\.dshpc-seg__thumb\{transition:none/)

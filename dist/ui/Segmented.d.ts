@@ -5,10 +5,10 @@ export interface SegmentedItem<T extends string = string> {
     value: T;
     /** 段内文字。 */
     label: string;
-    /** 段内角标数字（如「异常 3」）；`undefined` 或 ≤0 不显示。danger 红圆标。 */
-    badge?: number;
-    /** 段内中性计数（如筛选条「全部 11」）；`undefined` 或 ≤0 不显示。弱化灰字，不做角标。 */
-    count?: number;
+    /** 段内角标（如「异常 3」）；数字 ≤0 视为没东西可数、不显示，字符串原样显示（如 `'99+'`）。danger 红圆标。 */
+    badge?: number | string;
+    /** 段内中性计数（如筛选条「全部 11」）；口径同 badge，字符串照样显示（如 `'1K'`）。弱化灰字，不做角标。 */
+    count?: number | string;
     /** 置灰不可点。 */
     disabled?: boolean;
     /** 段级悬停提示（核心 Tooltip 本体，官方气泡）：鼠标移入该项浮出书面化说明；需宿主注入 renderer。 */

@@ -31,6 +31,16 @@ import {
 } from 'react'
 import { getTooltipRenderer } from './tooltip.js'
 
+/**
+ * 角标 / 计数要不要显示，返回要显示的文本。
+ * 数字 ≤0 是「没东西可数」的老口径；字符串（`'1K'` / `'99+'`）由调用方决定，原样显示，空串不显示。
+ */
+function countText(value: number | string | undefined): string | null {
+  if (value === undefined) return null
+  if (typeof value === 'number') return value > 0 ? String(value) : null
+  return value === '' ? null : value
+}
+
 /** 单选滑动块的位置与尺寸（相对容器 padding box，px）。 */
 interface ThumbRect {
   left: number
@@ -45,10 +55,10 @@ export interface SegmentedItem<T extends string = string> {
   value: T
   /** 段内文字。 */
   label: string
-  /** 段内角标数字（如「异常 3」）；`undefined` 或 ≤0 不显示。danger 红圆标。 */
-  badge?: number
-  /** 段内中性计数（如筛选条「全部 11」）；`undefined` 或 ≤0 不显示。弱化灰字，不做角标。 */
-  count?: number
+  /** 段内角标（如「异常 3」）；数字 ≤0 视为没东西可数、不显示，字符串原样显示（如 `'99+'`）。danger 红圆标。 */
+  badge?: number | string
+  /** 段内中性计数（如筛选条「全部 11」）；口径同 badge，字符串照样显示（如 `'1K'`）。弱化灰字，不做角标。 */
+  count?: number | string
   /** 置灰不可点。 */
   disabled?: boolean
   /** 段级悬停提示（核心 Tooltip 本体，官方气泡）：鼠标移入该项浮出书面化说明；需宿主注入 renderer。 */
@@ -178,6 +188,8 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
         ;(onChange as (v: T) => void)(item.value)
       }
     }
+    const count = countText(item.count)
+    const badge = countText(item.badge)
     const itemButton = h('button', {
       key: item.value,
       type: 'button',
@@ -187,12 +199,8 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
       disabled,
       onClick: handle,
     }, item.label,
-      item.count !== undefined && item.count > 0
-        ? h('span', { className: 'dshpc-seg__count' }, String(item.count))
-        : null,
-      item.badge !== undefined && item.badge > 0
-        ? h('span', { className: 'dshpc-seg__badge' }, String(item.badge))
-        : null)
+      count === null ? null : h('span', { className: 'dshpc-seg__count' }, count),
+      badge === null ? null : h('span', { className: 'dshpc-seg__badge' }, badge))
     // 段级悬停提示：走注入的官方 Tooltip（与 FieldHint 同一条路），不破坏分段布局。
     if (item.tooltip !== undefined && renderer !== undefined) {
       return renderer({ label: item.tooltip, side: 'top', children: itemButton })

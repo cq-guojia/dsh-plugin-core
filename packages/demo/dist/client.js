@@ -6241,6 +6241,13 @@ function notify(message, opts) {
 
 // dist/ui/Segmented.js
 var import_react22 = require("react");
+function countText(value) {
+  if (value === void 0)
+    return null;
+  if (typeof value === "number")
+    return value > 0 ? String(value) : null;
+  return value === "" ? null : value;
+}
 function Segmented(props) {
   ensureControls();
   ensureControls();
@@ -6309,6 +6316,8 @@ function Segmented(props) {
           onChange(item.value);
         }
       };
+      const count3 = countText(item.count);
+      const badge = countText(item.badge);
       const itemButton = (0, import_react22.createElement)("button", {
         key: item.value,
         type: "button",
@@ -6317,7 +6326,7 @@ function Segmented(props) {
         "aria-pressed": on,
         disabled,
         onClick: handle
-      }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react22.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react22.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
+      }, item.label, count3 === null ? null : (0, import_react22.createElement)("span", { className: "dshpc-seg__count" }, count3), badge === null ? null : (0, import_react22.createElement)("span", { className: "dshpc-seg__badge" }, badge));
       if (item.tooltip !== void 0 && renderer2 !== void 0) {
         return renderer2({ label: item.tooltip, side: "top", children: itemButton });
       }
@@ -56982,8 +56991,8 @@ var docData = {
         "en": "IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title)."
       },
       {
-        "zh": "Segmented\uFF1A`items`\uFF08\u5FC5\u586B\uFF09\u652F\u6301\u5355\u9009 / \u591A\u9009\uFF0C`size`\uFF08\u9ED8\u8BA4 lg\uFF1B\u4E09\u6863\u603B\u9AD8 24 / 28 / 32\uFF09\u3001`bordered`\uFF081px \u5916\u6846\uFF0C\u603B\u9AD8\u4E0D\u53D8\uFF09\u3001`multiple`\uFF08\u591A\u9009\uFF09\u3002\u5916\u89C2\u53EA\u6709\u4E00\u5957\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF0C\u9009\u4E2D\u7247\u7684\u63CF\u8FB9\u73AF\u4E0E\u9634\u5F71\u7531\u5BBF\u4E3B elevation token \u63D0\u4F9B\uFF08\u79BB\u7EBF\u515C\u5E95\u503C\u6CA1\u6709\u90A3\u5708\u73AF\uFF09\u3002",
-        "en": "Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring)."
+        "zh": "Segmented\uFF1A`items`\uFF08\u5FC5\u586B\uFF09\u652F\u6301\u5355\u9009 / \u591A\u9009\uFF0C`size`\uFF08\u9ED8\u8BA4 lg\uFF1B\u4E09\u6863\u603B\u9AD8 24 / 28 / 32\uFF09\u3001`bordered`\uFF081px \u5916\u6846\uFF0C\u603B\u9AD8\u4E0D\u53D8\uFF09\u3001`multiple`\uFF08\u591A\u9009\uFF09\u3002\u5916\u89C2\u53EA\u6709\u4E00\u5957\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF0C\u9009\u4E2D\u7247\u7684\u63CF\u8FB9\u73AF\u4E0E\u9634\u5F71\u7531\u5BBF\u4E3B elevation token \u63D0\u4F9B\uFF08\u79BB\u7EBF\u515C\u5E95\u503C\u6CA1\u6709\u90A3\u5708\u73AF\uFF09\u3002\u6BB5\u5185 `count`\uFF08\u5F31\u5316\u7070\u5B57\uFF09/ `badge`\uFF08\u7EA2\u89D2\u6807\uFF09\u63A5\u53D7 `number | string`\uFF1A\u6570\u5B57 \u22640 \u4E0D\u663E\u793A\uFF0C\u5B57\u7B26\u4E32\u539F\u6837\u663E\u793A\uFF08\u5982 `1K` / `99+`\uFF09\u3002",
+        "en": "Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). An item\u2019s `count` (muted text) and `badge` (red pill) take `number | string`: numbers \u22640 render nothing, strings render as given (e.g. `'1K'` / `'99+'`)."
       }
     ],
     "api": [
@@ -61886,9 +61895,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.7.3"}`],
-            [t3("buildDemo"), `v${"0.7.3"}`],
-            [t3("buildStamp"), "261028-165741-194"]
+            [t3("buildCore"), `v${"0.7.4"}`],
+            [t3("buildDemo"), `v${"0.7.4"}`],
+            [t3("buildStamp"), "261028-170454-961"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -62210,9 +62219,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react69.createElement)("span", null, `core v${"0.7.3"}`),
-          (0, import_react69.createElement)("span", null, `demo v${"0.7.3"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-165741-194")
+          (0, import_react69.createElement)("span", null, `core v${"0.7.4"}`),
+          (0, import_react69.createElement)("span", null, `demo v${"0.7.4"}`),
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-170454-961")
         )
       )
     ),

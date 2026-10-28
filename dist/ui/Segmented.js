@@ -24,6 +24,17 @@ import { ensureControls } from './css.js';
 import { createElement as h, useCallback, useLayoutEffect, useRef, useState, } from 'react';
 import { getTooltipRenderer } from './tooltip.js';
 /**
+ * 角标 / 计数要不要显示，返回要显示的文本。
+ * 数字 ≤0 是「没东西可数」的老口径；字符串（`'1K'` / `'99+'`）由调用方决定，原样显示，空串不显示。
+ */
+function countText(value) {
+    if (value === undefined)
+        return null;
+    if (typeof value === 'number')
+        return value > 0 ? String(value) : null;
+    return value === '' ? null : value;
+}
+/**
  * 渲染一个分段控件（单选 / 多选同体）。
  *
  * @param props 见 {@link SegmentedProps}。
@@ -108,6 +119,8 @@ export function Segmented(props) {
                     onChange(item.value);
                 }
             };
+            const count = countText(item.count);
+            const badge = countText(item.badge);
             const itemButton = h('button', {
                 key: item.value,
                 type: 'button',
@@ -116,11 +129,7 @@ export function Segmented(props) {
                 'aria-pressed': on,
                 disabled,
                 onClick: handle,
-            }, item.label, item.count !== undefined && item.count > 0
-                ? h('span', { className: 'dshpc-seg__count' }, String(item.count))
-                : null, item.badge !== undefined && item.badge > 0
-                ? h('span', { className: 'dshpc-seg__badge' }, String(item.badge))
-                : null);
+            }, item.label, count === null ? null : h('span', { className: 'dshpc-seg__count' }, count), badge === null ? null : h('span', { className: 'dshpc-seg__badge' }, badge));
             // 段级悬停提示：走注入的官方 Tooltip（与 FieldHint 同一条路），不破坏分段布局。
             if (item.tooltip !== undefined && renderer !== undefined) {
                 return renderer({ label: item.tooltip, side: 'top', children: itemButton });
