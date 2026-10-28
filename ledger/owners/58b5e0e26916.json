@@ -1,7 +1,6 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261028-0935-14e9-组合选择控件-滑块-下拉联动": {"category": "建设", "created": "2026-10-28 09:35:19", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-28 09:45:23", "status": "doing", "tags": ["控件", "联动", "ui"], "title": "组合选择控件（滑块+下拉联动）", "updated": "2026-10-28 11:55:31", "worklog": "worklog/202610/28-0935-14e9-组合选择控件-滑块-下拉联动.md"}
   },
   "version": "20261022000000"
 }
