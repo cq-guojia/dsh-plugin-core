@@ -267,10 +267,20 @@ test('pickWorkspaceAnchor 取「最近更新且有会话」的工作区', () => 
   )
 })
 // 2026-10-22 真机：重复打开预览时直接 `remove()` 挂载体，会连 React 根的卸载清理一起跳过 ——
-// PanelDock 回收不了它发布的占宽，遮罩从此永久停在让位状态。这条钉死「先关旧的再开新的」。
-test('重复打开预览先卸载旧根，不直接移除挂载体', async () => {
+// PanelDock 回收不了它发布的占宽，遮罩从此永久停在让位状态。关掉只走 close（卸载根再摘容器）。
+test('关预览走 close（卸载 React 根），不直接移除挂载体', async () => {
   const { readFile } = await import('node:fs/promises')
   const src = await readFile(new URL('../dist/explorer/open.js', import.meta.url), 'utf8')
-  assert.ok(src.includes('activePreviewClose'), 'openFilePreview 没有走 close 关掉旧预览')
+  assert.ok(src.includes('root.unmount()'), 'close 没有卸载 React 根')
   assert.ok(!/previous\.remove\(\)/.test(src), '又回到直接 remove 挂载体的老路（卸载清理会被跳过）')
+})
+
+// 2026-10-28 用户两条硬要求：① 侧栏已展开时点别的文件只是换内容，不许重播展开动效；
+// ② 用户自己拖好的宽度不许被重置。机制 = 再打开时复用同一份 DOM/React 根，只重画内容。
+test('再打开预览复用旧根：只重画内容、宽度先钉住', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/explorer/open.js', import.meta.url), 'utf8')
+  assert.ok(src.includes('activePreview.draw(opts)'), '复用分支没有重画内容')
+  assert.ok(src.includes('activePreview.keepWidth()'), '换内容前没钉住用户拖好的宽度')
+  assert.ok(!src.includes('activePreview?.close()'), '又变回「重开就先关旧的」（动效会重播、宽度会重置）')
 })

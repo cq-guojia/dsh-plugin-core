@@ -81,8 +81,7 @@ const PREVIEW_PANEL_ID = 'file-preview';
  * 消费方不必自己写 —— 打开时加、关闭时摘。
  */
 const DOCK_HOST_CLASS = 'dshpc-dock-host';
-/** 当前打开着的预览的 close（重复打开时走它，保证 React 根被真正卸载）。 */
-let activePreviewClose = null;
+let activePreview = null;
 /**
  * 打开工作区文件/文件夹的**停靠**预览（分栏：挤窄 `mount` 左边的兄弟，不是盖上去）。
  * 重复打开会关掉上一个（同侧边栏位）。
@@ -109,31 +108,52 @@ export function openFilePreview(options) {
         return null;
     }
     const opts = { ...options, workspaceFiles: files, sessionId };
-    // 同位置只允许一个预览：先**关**旧的（不是 remove 掉挂载体）。
-    // 直接 remove 会把 React 根的卸载清理一起跳过 ⇒ PanelDock 永远不回收它发布的宽度，
-    // 遮罩从此卡在让位状态（2026-10-22 真机：点第二个文件链接后再关，遮罩不回弹）。
-    activePreviewClose?.();
-    // 布局自愈：那行不必自己写成 flex —— 核心补（关闭时还原），只对「本来就是别的布局」不动手。
-    // 唯一仍算错的是传 body（那是浮层，不是分栏），只留痕不改行为。
-    const mount = options.mount;
-    if (mount === document.body) {
-        console.warn('[dsh-plugin-core/explorer] openFilePreview: 不要传 document.body —— PanelDock 是布局成员'
-            + '（停靠右侧 + 挤窄主区）。请传你页面里包住主区的那个元素。');
+    // 只允许一个预览。**已经开着 ⇒ 换内容**（用户 2026-10-28：侧栏已经在那了，点别的文件就该
+    // 直接切 —— 不重播展开动效、也不改用户拖好的宽度）。换页面 / 换容器就地把挂载体搬过去。
+    if (activePreview !== null) {
+        activePreview.keepWidth();
+        activePreview.adopt(opts.mount);
+        activePreview.draw(opts);
+        return { close: activePreview.close, path: opts.path ?? '' };
     }
-    const mountStyle = mount.style;
-    const prevDisplay = mountStyle.display;
-    const hadHostClass = mount.classList.contains(DOCK_HOST_CLASS);
-    mount.classList.add(DOCK_HOST_CLASS);
-    const display = typeof getComputedStyle === 'function' ? getComputedStyle(mount).display : '';
-    if (display !== 'flex' && display !== 'inline-flex')
-        mountStyle.display = 'flex';
     const container = document.createElement('div');
     container.id = PREVIEW_HOST_ID;
     container.setAttribute('data-dshpc-file-preview', '');
     // display:contents ⇒ 容器自身不产生盒子，核心 .dshpc-dock 直接成为 mount 的 flex 子项
     // （这样才「挤」得动左边的兄弟；套一层真盒子会把 dock 变成 mount 的整行块）。
     container.style.cssText = 'display:contents';
-    mount.appendChild(container);
+    // 布局自愈：那行不必自己写成 flex —— 核心补（换位置 / 关闭时还原），只对「本来就是别的布局」不动手。
+    let hostEl = null;
+    let hostPrevDisplay = '';
+    let hostHadClass = false;
+    const restoreHost = () => {
+        if (hostEl === null)
+            return;
+        hostEl.style.display = hostPrevDisplay;
+        if (!hostHadClass)
+            hostEl.classList.remove(DOCK_HOST_CLASS);
+        hostEl = null;
+    };
+    const adopt = (next) => {
+        if (next === hostEl)
+            return;
+        restoreHost();
+        // 唯一仍算错的是传 body（那是浮层，不是分栏），只留痕不改行为。
+        if (next === document.body) {
+            console.warn('[dsh-plugin-core/explorer] openFilePreview: 不要传 document.body —— PanelDock 是布局成员'
+                + '（停靠右侧 + 挤窄主区）。请传你页面里包住主区的那个元素。');
+        }
+        hostPrevDisplay = next.style.display;
+        hostHadClass = next.classList.contains(DOCK_HOST_CLASS);
+        next.classList.add(DOCK_HOST_CLASS);
+        const display = typeof getComputedStyle === 'function' ? getComputedStyle(next).display : '';
+        if (display !== 'flex' && display !== 'inline-flex')
+            next.style.display = 'flex';
+        // 已在文档里的节点 appendChild 就是「移动」，React 根不受影响。
+        next.appendChild(container);
+        hostEl = next;
+    };
+    adopt(options.mount);
     const dock = createPanelDock({
         maxPanels: 1,
         defaultWidth: options.width ?? 460,
@@ -152,15 +172,13 @@ export function openFilePreview(options) {
         if (closed)
             return;
         closed = true;
-        if (activePreviewClose === close)
-            activePreviewClose = null;
+        if (activePreview?.close === close)
+            activePreview = null;
         window.removeEventListener('keydown', onKeyDown);
         root.unmount();
         container.remove();
         // 还原 mount：只撤销我们自己加的那点，关掉后页面回到原样。
-        mountStyle.display = prevDisplay;
-        if (!hadHostClass)
-            mount.classList.remove(DOCK_HOST_CLASS);
+        restoreHost();
         options.onClose?.();
     };
     const onKeyDown = (event) => {
@@ -169,43 +187,64 @@ export function openFilePreview(options) {
     };
     window.addEventListener('keydown', onKeyDown);
     ensureControls(getStyleKit());
-    // 总是走 PreviewBody：调用方没自接 onSelectWorkspace 时，▾ 下拉「切工作区」由核心接管
-    // （anchors 为空 ⇒ 回调空转，行为与旧版一致）。自接了 ⇒ 原样透传给 FileBrowser。
-    const internalSwitch = options.onSelectWorkspace === undefined;
-    root.render(h('div', 
-    // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
-    { style: { display: 'contents', ['--dshpc-dock-h']: '100%' } }, h(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, h(DockPanel, {
-        id: PREVIEW_PANEL_ID,
-        // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
-        header: null,
-        // 关闭钮不用核心浮动的（那是 absolute 固定偏移、不垂直居中）；关掉它的，
-        // 改用 FileBrowser 自己的 ✕（和 pick 弹窗同一个 crumb-bar 钮，垂直居中）。
-        closeButton: 'none',
-        ariaLabel: options.title,
-        width: options.width ?? 460,
-        minWidth: options.minWidth ?? 320,
-        maxWidth: options.maxWidth,
-    }, opts.content !== undefined
-        ? opts.content()
-        : internalSwitch
-            ? h(PreviewBody, { options: opts, onClose: close })
-            : h(FileBrowser, {
-                workspaceFiles: opts.workspaceFiles,
-                officeToPdf: opts.officeToPdf ?? null,
-                sessionId: opts.sessionId,
-                path: opts.path,
-                rootName: options.rootName,
-                workspaces: options.workspaces,
-                workspaceAnchors: options.workspaceAnchors,
-                onSelectWorkspace: options.onSelectWorkspace,
-                rootCache: options.rootCache,
-                translate: options.translate,
-                // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
-                onClose: close,
-                style: { height: '100%', minHeight: 0 },
-            })))));
-    activePreviewClose = close;
-    return { close, path: options.path ?? '' };
+    // 宽度归用户：换内容前把当前渲染宽度钉回去（dock 状态里本该有，显式再钉一次；
+    // 入场动效期间量到的是动画中间值，低于下限一律忽略，免得把栏钉窄）。
+    let pinnedWidth = null;
+    const keepWidth = () => {
+        const panel = container.querySelector('.dshpc-dock__panel');
+        if (panel === null)
+            return;
+        const width = Math.round(panel.getBoundingClientRect().width);
+        if (width < (options.minWidth ?? 320))
+            return;
+        pinnedWidth = width;
+        dock.setWidth(PREVIEW_PANEL_ID, width);
+    };
+    // 画（可重画：同一个 dock 换内容时只重渲染，不重建 DOM ⇒ 不重播展开动效）。
+    // 内层以 path 作 key：目录 / 切过的工作区这些内部状态属于上一个文件，换文件必须重挂。
+    const draw = (o) => {
+        // 总是走 PreviewBody：调用方没自接 onSelectWorkspace 时，▾ 下拉「切工作区」由核心接管
+        // （anchors 为空 ⇒ 回调空转，行为与旧版一致）。自接了 ⇒ 原样透传给 FileBrowser。
+        const internalSwitch = o.onSelectWorkspace === undefined;
+        const contentKey = o.path ?? '';
+        root.render(h('div', 
+        // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
+        { style: { display: 'contents', ['--dshpc-dock-h']: '100%' } }, h(PanelDock, { dock, mainMinWidth: o.mainMinWidth ?? 480, translate: o.translate }, h(DockPanel, {
+            id: PREVIEW_PANEL_ID,
+            // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
+            header: null,
+            // 关闭钮不用核心浮动的（那是 absolute 固定偏移、不垂直居中）；关掉它的，
+            // 改用 FileBrowser 自己的 ✕（和 pick 弹窗同一个 crumb-bar 钮，垂直居中）。
+            closeButton: 'none',
+            ariaLabel: o.title,
+            // 重画时沿用用户拖出来的宽度（pinnedWidth），不回到默认值。
+            width: pinnedWidth ?? o.width ?? 460,
+            minWidth: o.minWidth ?? 320,
+            maxWidth: o.maxWidth,
+        }, o.content !== undefined
+            ? o.content()
+            : internalSwitch
+                ? h(PreviewBody, { key: contentKey, options: o, onClose: close })
+                : h(FileBrowser, {
+                    key: contentKey,
+                    workspaceFiles: o.workspaceFiles,
+                    officeToPdf: o.officeToPdf ?? null,
+                    sessionId: o.sessionId,
+                    path: o.path,
+                    rootName: o.rootName,
+                    workspaces: o.workspaces,
+                    workspaceAnchors: o.workspaceAnchors,
+                    onSelectWorkspace: o.onSelectWorkspace,
+                    rootCache: o.rootCache,
+                    translate: o.translate,
+                    // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+                    onClose: close,
+                    style: { height: '100%', minHeight: 0 },
+                })))));
+    };
+    draw(opts);
+    activePreview = { adopt, keepWidth, draw, close };
+    return { close, path: opts.path ?? '' };
 }
 /** 弹窗宽度（源实现 480，用户 2026-09-29 微调定值）。 */
 const PICKER_WIDTH = 480;

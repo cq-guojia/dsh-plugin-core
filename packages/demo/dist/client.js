@@ -61004,7 +61004,7 @@ function PreviewBody(props) {
 var PREVIEW_HOST_ID = "dshpc-file-preview-host";
 var PREVIEW_PANEL_ID = "file-preview";
 var DOCK_HOST_CLASS = "dshpc-dock-host";
-var activePreviewClose = null;
+var activePreview = null;
 function openFilePreview(options) {
   if (typeof document === "undefined")
     return null;
@@ -61017,23 +61017,44 @@ function openFilePreview(options) {
     return null;
   }
   const opts = { ...options, workspaceFiles: files, sessionId };
-  activePreviewClose?.();
-  const mount = options.mount;
-  if (mount === document.body) {
-    console.warn("[dsh-plugin-core/explorer] openFilePreview: \u4E0D\u8981\u4F20 document.body \u2014\u2014 PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u505C\u9760\u53F3\u4FA7 + \u6324\u7A84\u4E3B\u533A\uFF09\u3002\u8BF7\u4F20\u4F60\u9875\u9762\u91CC\u5305\u4F4F\u4E3B\u533A\u7684\u90A3\u4E2A\u5143\u7D20\u3002");
+  if (activePreview !== null) {
+    activePreview.keepWidth();
+    activePreview.adopt(opts.mount);
+    activePreview.draw(opts);
+    return { close: activePreview.close, path: opts.path ?? "" };
   }
-  const mountStyle = mount.style;
-  const prevDisplay = mountStyle.display;
-  const hadHostClass = mount.classList.contains(DOCK_HOST_CLASS);
-  mount.classList.add(DOCK_HOST_CLASS);
-  const display = typeof getComputedStyle === "function" ? getComputedStyle(mount).display : "";
-  if (display !== "flex" && display !== "inline-flex")
-    mountStyle.display = "flex";
   const container = document.createElement("div");
   container.id = PREVIEW_HOST_ID;
   container.setAttribute("data-dshpc-file-preview", "");
   container.style.cssText = "display:contents";
-  mount.appendChild(container);
+  let hostEl = null;
+  let hostPrevDisplay = "";
+  let hostHadClass = false;
+  const restoreHost = () => {
+    if (hostEl === null)
+      return;
+    hostEl.style.display = hostPrevDisplay;
+    if (!hostHadClass)
+      hostEl.classList.remove(DOCK_HOST_CLASS);
+    hostEl = null;
+  };
+  const adopt = (next) => {
+    if (next === hostEl)
+      return;
+    restoreHost();
+    if (next === document.body) {
+      console.warn("[dsh-plugin-core/explorer] openFilePreview: \u4E0D\u8981\u4F20 document.body \u2014\u2014 PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u505C\u9760\u53F3\u4FA7 + \u6324\u7A84\u4E3B\u533A\uFF09\u3002\u8BF7\u4F20\u4F60\u9875\u9762\u91CC\u5305\u4F4F\u4E3B\u533A\u7684\u90A3\u4E2A\u5143\u7D20\u3002");
+    }
+    hostPrevDisplay = next.style.display;
+    hostHadClass = next.classList.contains(DOCK_HOST_CLASS);
+    next.classList.add(DOCK_HOST_CLASS);
+    const display = typeof getComputedStyle === "function" ? getComputedStyle(next).display : "";
+    if (display !== "flex" && display !== "inline-flex")
+      next.style.display = "flex";
+    next.appendChild(container);
+    hostEl = next;
+  };
+  adopt(options.mount);
   const dock = createPanelDock({
     maxPanels: 1,
     defaultWidth: options.width ?? 460,
@@ -61052,14 +61073,12 @@ function openFilePreview(options) {
     if (closed)
       return;
     closed = true;
-    if (activePreviewClose === close)
-      activePreviewClose = null;
+    if (activePreview?.close === close)
+      activePreview = null;
     window.removeEventListener("keydown", onKeyDown);
     root.unmount();
     container.remove();
-    mountStyle.display = prevDisplay;
-    if (!hadHostClass)
-      mount.classList.remove(DOCK_HOST_CLASS);
+    restoreHost();
     options.onClose?.();
   };
   const onKeyDown = (event) => {
@@ -61068,40 +61087,57 @@ function openFilePreview(options) {
   };
   window.addEventListener("keydown", onKeyDown);
   ensureControls(getStyleKit());
-  const internalSwitch = options.onSelectWorkspace === void 0;
-  root.render((0, import_react64.createElement)(
-    "div",
-    // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
-    { style: { display: "contents", ["--dshpc-dock-h"]: "100%" } },
-    (0, import_react64.createElement)(PanelDock, { dock, mainMinWidth: options.mainMinWidth ?? 480, translate: options.translate }, (0, import_react64.createElement)(DockPanel, {
-      id: PREVIEW_PANEL_ID,
-      // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
-      header: null,
-      // 关闭钮不用核心浮动的（那是 absolute 固定偏移、不垂直居中）；关掉它的，
-      // 改用 FileBrowser 自己的 ✕（和 pick 弹窗同一个 crumb-bar 钮，垂直居中）。
-      closeButton: "none",
-      ariaLabel: options.title,
-      width: options.width ?? 460,
-      minWidth: options.minWidth ?? 320,
-      maxWidth: options.maxWidth
-    }, opts.content !== void 0 ? opts.content() : internalSwitch ? (0, import_react64.createElement)(PreviewBody, { options: opts, onClose: close }) : (0, import_react64.createElement)(FileBrowser, {
-      workspaceFiles: opts.workspaceFiles,
-      officeToPdf: opts.officeToPdf ?? null,
-      sessionId: opts.sessionId,
-      path: opts.path,
-      rootName: options.rootName,
-      workspaces: options.workspaces,
-      workspaceAnchors: options.workspaceAnchors,
-      onSelectWorkspace: options.onSelectWorkspace,
-      rootCache: options.rootCache,
-      translate: options.translate,
-      // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
-      onClose: close,
-      style: { height: "100%", minHeight: 0 }
-    })))
-  ));
-  activePreviewClose = close;
-  return { close, path: options.path ?? "" };
+  let pinnedWidth = null;
+  const keepWidth = () => {
+    const panel = container.querySelector(".dshpc-dock__panel");
+    if (panel === null)
+      return;
+    const width = Math.round(panel.getBoundingClientRect().width);
+    if (width < (options.minWidth ?? 320))
+      return;
+    pinnedWidth = width;
+    dock.setWidth(PREVIEW_PANEL_ID, width);
+  };
+  const draw = (o) => {
+    const internalSwitch = o.onSelectWorkspace === void 0;
+    const contentKey = o.path ?? "";
+    root.render((0, import_react64.createElement)(
+      "div",
+      // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
+      { style: { display: "contents", ["--dshpc-dock-h"]: "100%" } },
+      (0, import_react64.createElement)(PanelDock, { dock, mainMinWidth: o.mainMinWidth ?? 480, translate: o.translate }, (0, import_react64.createElement)(DockPanel, {
+        id: PREVIEW_PANEL_ID,
+        // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
+        header: null,
+        // 关闭钮不用核心浮动的（那是 absolute 固定偏移、不垂直居中）；关掉它的，
+        // 改用 FileBrowser 自己的 ✕（和 pick 弹窗同一个 crumb-bar 钮，垂直居中）。
+        closeButton: "none",
+        ariaLabel: o.title,
+        // 重画时沿用用户拖出来的宽度（pinnedWidth），不回到默认值。
+        width: pinnedWidth ?? o.width ?? 460,
+        minWidth: o.minWidth ?? 320,
+        maxWidth: o.maxWidth
+      }, o.content !== void 0 ? o.content() : internalSwitch ? (0, import_react64.createElement)(PreviewBody, { key: contentKey, options: o, onClose: close }) : (0, import_react64.createElement)(FileBrowser, {
+        key: contentKey,
+        workspaceFiles: o.workspaceFiles,
+        officeToPdf: o.officeToPdf ?? null,
+        sessionId: o.sessionId,
+        path: o.path,
+        rootName: o.rootName,
+        workspaces: o.workspaces,
+        workspaceAnchors: o.workspaceAnchors,
+        onSelectWorkspace: o.onSelectWorkspace,
+        rootCache: o.rootCache,
+        translate: o.translate,
+        // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
+        onClose: close,
+        style: { height: "100%", minHeight: 0 }
+      })))
+    ));
+  };
+  draw(opts);
+  activePreview = { adopt, keepWidth, draw, close };
+  return { close, path: opts.path ?? "" };
 }
 var PICKER_WIDTH = 480;
 var PICKER_MAX_H = 660;
@@ -61691,7 +61727,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.7.0"}`],
             [t3("buildDemo"), `v${"0.6.1"}`],
-            [t3("buildStamp"), "261028-153137-168"]
+            [t3("buildStamp"), "261028-154710-170"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -62015,7 +62051,7 @@ function DemoPage() {
           },
           (0, import_react69.createElement)("span", null, `core v${"0.7.0"}`),
           (0, import_react69.createElement)("span", null, `demo v${"0.6.1"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-153137-168")
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-154710-170")
         )
       )
     ),
