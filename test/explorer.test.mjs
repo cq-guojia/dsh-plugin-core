@@ -283,4 +283,6 @@ test('再打开预览复用旧根：只重画内容、宽度先钉住', async ()
   assert.ok(src.includes('activePreview.draw(opts)'), '复用分支没有重画内容')
   assert.ok(src.includes('activePreview.keepWidth()'), '换内容前没钉住用户拖好的宽度')
   assert.ok(!src.includes('activePreview?.close()'), '又变回「重开就先关旧的」（动效会重播、宽度会重置）')
+  // 收起来过就得自动弹回来，否则换文件「看不见任何变化」（2026-10-28 真机）。
+  assert.ok(src.includes('dock.expand('), '收起的预览换内容时没自动展开')
 })

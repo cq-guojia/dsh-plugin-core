@@ -61099,6 +61099,8 @@ function openFilePreview(options) {
     dock.setWidth(PREVIEW_PANEL_ID, width);
   };
   const draw = (o) => {
+    if (dock.isCollapsed(PREVIEW_PANEL_ID))
+      dock.expand(PREVIEW_PANEL_ID);
     const internalSwitch = o.onSelectWorkspace === void 0;
     const contentKey = o.path ?? "";
     root.render((0, import_react64.createElement)(
@@ -61727,7 +61729,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.7.0"}`],
             [t3("buildDemo"), `v${"0.6.1"}`],
-            [t3("buildStamp"), "261028-154710-170"]
+            [t3("buildStamp"), "261028-155057-440"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -62051,7 +62053,7 @@ function DemoPage() {
           },
           (0, import_react69.createElement)("span", null, `core v${"0.7.0"}`),
           (0, import_react69.createElement)("span", null, `demo v${"0.6.1"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-154710-170")
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-155057-440")
         )
       )
     ),
