@@ -1,7 +1,7 @@
 # 20261028-1442-e6a6-做几个-loading-样式：做几个 loading 样式
 
 - **标签**：ui、loading、控件
-- **状态**：doing · 2026-10-28 14:47:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **状态**：doing · 2026-10-28 14:53:17 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **创建**：2026-10-28 14:42:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
@@ -21,11 +21,13 @@
 
 ## 待办
 
-- 待用户验收：demo「反馈」页的两张卡与四个按钮（真机看观感 / 遮罩挡不挡点击）。
+- 待用户验收：demo「反馈」页的两张卡、遮罩与七向按钮（真机看观感 / 屏位 / 遮罩挡不挡点击）。
 
 ## 下一步
 
 待用户验收后按需微调样式数值（`src/ui/controls/loading.css` 的 min-width / padding / 遮罩浓度默认值）。
+
+
 
 ## 过程
 
@@ -36,6 +38,7 @@
 - 就地组件 `LoadingToast` / `LoadingBlock` 只收文案（不含遮罩）：它们没有自己的层叠上下文，遮罩会盖住自己，位置与遮挡归调用方。
 - 默认文案新增字典 key `loadingDefault`（`src/utils/i18n.ts`，中「数据加载中」/ 英「Loading」），死 key 自检盯得住。
 - 自检：`test/feedback.test.mjs` 新增 3 条（无 DOM 返回空句柄、宿主单例、两种卡类名与文案）。
+- 第二轮（用户验收前微调）：长条卡 min-width 200 → 250（+1/4）；全局默认屏位改 `bottom-center`（与 Toast 同屏位），`LoadingPosition` 七值（六向 + `center`）+ `loadingOverlayClass`（`src/ui/loading-host.ts`），CSS 六个 `--top-*` / `--bottom-*` 修饰类、`center` 走基础规则；同一时刻只有一个屏位，以最后一次调用为准、关掉后回落到还活着的那条（`src/ui/Loading.ts` 的 `flush`）。自检补一条「定位类名 ⇄ CSS 修饰类」对账。
 
 ## 结论
 
@@ -50,3 +53,4 @@
      补记用 progress log --id <任务号> --note "一句话"。 -->
 - 2026-10-28 14:42:39 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务并认领
 - 2026-10-28 14:47:19 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 新增 showLoading / LoadingToast / LoadingBlock（src/ui/Loading.ts、loading-host.ts、controls/loading.css），demo 反馈页与 docs/help/ui.doc.ts 已补；build + typecheck + 146 项自检 + codelint 全过，待用户验收
+- 2026-10-28 14:53:17 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按验收意见改：长条卡 200→250px、默认屏位改 bottom-center、新增 position 七向（src/ui/loading-host.ts loadingOverlayClass + loading.css 六个修饰类）；build/typecheck/147 项自检/codelint 全过
