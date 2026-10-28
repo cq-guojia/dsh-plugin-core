@@ -288,3 +288,13 @@ test('再打开预览复用旧根：只重画内容、宽度先钉住', async ()
   // 内层 key 必带「每次打开都变」的序号：同路径再点一次也要回到那个文件（用户可能在预览里翻走了）。
   assert.ok(/#\$\{\+\+openSeq\}/.test(src), '内层 key 只按 path 算 —— 同路径再点点不动内容')
 })
+
+// 2026-10-28 真机：消费方传工作区内的绝对路径打开时，根还没反推出来的那一帧会按段铺出
+// `root/.local/share/…` 十几段工作区之外的层级（点不动也没信息量），根一学成又缩回 ⇒ 闪一下。
+test('根未反推时不铺绝对路径层级，且溢出测量跟着根学成重算', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  assert.ok(src.includes('rootPending'), '缺「根未学成」占位分支 —— 绝对路径会被逐段铺开')
+  // 测量依赖缺 rootNonce/outside ⇒ 面包屑变短后不重算，折叠态卡在首帧只显示末段。
+  assert.ok(src.includes('rootNonce, outside'), '溢出测量没跟着根反推 / 越界态重算')
+})

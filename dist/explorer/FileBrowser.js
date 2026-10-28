@@ -125,7 +125,7 @@ export function FileBrowser(props) {
     const [openDirs, setOpenDirs] = useState(new Set());
     const [childCache, setChildCache] = useState({});
     // 工作区根补学完成信号（缓存非响应式，学成后 bump 触发面包屑重算）。
-    const [, setRootNonce] = useState(0);
+    const [rootNonce, setRootNonce] = useState(0);
     // 当前目录在会话工作区之外（官方 list 限工作区内，越界即报 outside-workspace）。
     // 依据 = list 的**真实错误码**，不靠缓存猜（根学不出时会误判成"在区内"）。
     const [outside, setOutside] = useState(false);
@@ -335,7 +335,10 @@ export function FileBrowser(props) {
         const ro = new ResizeObserver(recompute);
         ro.observe(region);
         return () => ro.disconnect();
-    }, [dir, viewing, mode, listing]);
+        // 依赖要带上「根反推完成」「越界态变化」：这两样会让面包屑从超长绝对路径相对化成
+        // 短路径，但若不重算，crumbsOverflow 会卡在首帧的 true（只显示末段），直到下次导航才复原
+        // （2026-10-28 真机：打开工作区内的绝对路径，面包屑只剩末段，点一下目录才恢复）。
+    }, [dir, viewing, mode, listing, rootNonce, outside]);
     const reload = useCallback(() => {
         if (viewing !== null) {
             setReloadNonce((n) => n + 1);
@@ -518,7 +521,15 @@ export function FileBrowser(props) {
     // 用调用方原始 sessionId 学根会学出别的根 ⇒ 相对化失败 ⇒ 露出工作区外层级（真机 2026-10-22）。
     const rootAbs = rootCache.get(listSessionId);
     const rootLabel = anchorMatch?.title ?? props.rootName ?? (rootAbs !== undefined ? baseNameOfPath(rootAbs.replace(/\/+$/, '')) : '');
-    const crumbs = rootLabel !== '' ? [{ label: rootLabel, path: '' }, ...crumbsOfDir(relativizeToRoot(rootCache, listSessionId, dir))] : crumbsOfDir(dir);
+    const relDir = relativizeToRoot(rootCache, listSessionId, dir);
+    // 根还没反推出来时 dir 仍是整条绝对路径：逐段铺开会露出「root/.local/share/…」十几段工作区之外的
+    // 层级（点不动、也没信息量），根一学成又整条缩回 ⇒ 中间闪一下。这里先只给「根名 + 当前层」，
+    // 根学成后由 rootNonce 触发重算，自动补全成完整层级（2026-10-28 真机：绝对路径打开时的闪段）。
+    const rootPending = rootAbs === undefined && dir !== '' && isAbsoluteish(dir);
+    const crumbs = [
+        ...(rootLabel !== '' ? [{ label: rootLabel, path: '' }] : []),
+        ...(rootPending ? [{ label: baseNameOfPath(dir), path: dir }] : crumbsOfDir(relDir)),
+    ];
     // md / html 都出「渲染 ⇄ 源码」切换（默认渲染）。
     const viewingIsMd = viewing !== null && /\.(md|markdown)$/i.test(viewing);
     const viewingIsHtml = viewing !== null && /\.(html|htm)$/i.test(viewing);
