@@ -1,8 +1,9 @@
 # 20261028-0326-253c-picker-支持宽度约束与-hover-跑马灯：Picker 支持宽度约束与 hover 跑马灯
 
 - **标签**：picker、宽度、跑马灯
-- **状态**：doing · 2026-10-28 04:11:25 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **状态**：closed · 2026-10-28 06:24:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **创建**：2026-10-28 03:26:22 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **封卷**：2026-10-28 06:24:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
      「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
@@ -41,3 +42,4 @@
 - 2026-10-28 03:42:51 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已发版 v0.6.0：核心与 demo 同号，commit 71ea053，tag v0.6.0 已推（触发 npm publish）。文档 ui.doc.ts 已同步，dist 与 demo dist 入库，test 123/123。
 - 2026-10-28 04:08:36 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修复菜单横向滚动条：选项文字改用 MarqueeText + __option-label（flex:1/min-width:0/省略号），超长选项不再撑宽菜单，出点点点 + hover 跑马灯；帮助文档同步。build + test 123/123 通过，未提交（调试期）。
 - 2026-10-28 04:11:25 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 菜单横向滚动条修复已发版 v0.6.1（补丁号）：commit 5a8cf5a，tag 已推，触发 npm publish。Picker 宽度约束 + 触发器/选项 hover 跑马灯整体可用。
+- 2026-10-28 06:24:39 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案封卷

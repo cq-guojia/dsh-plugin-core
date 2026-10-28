@@ -1,7 +1,6 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261028-0326-253c-picker-支持宽度约束与-hover-跑马灯": {"category": "控件", "created": "2026-10-28 03:26:22", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-28 03:26:22", "status": "doing", "tags": ["picker", "宽度", "跑马灯"], "title": "Picker 支持宽度约束与 hover 跑马灯", "updated": "2026-10-28 04:11:25", "worklog": "worklog/202610/28-0326-253c-picker-支持宽度约束与-hover-跑马灯.md"}
   },
   "version": "20261022000000"
 }
