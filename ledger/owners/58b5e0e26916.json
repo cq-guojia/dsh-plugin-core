@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261028-1442-e6a6-做几个-loading-样式": {"category": "功能新增", "created": "2026-10-28 14:42:39", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-28 14:42:39", "status": "doing", "tags": ["ui", "loading", "控件"], "title": "做几个 loading 样式", "updated": "2026-10-28 15:09:58", "worklog": "worklog/202610/28-1442-e6a6-做几个-loading-样式.md"}
+    "20261028-1442-e6a6-做几个-loading-样式": {"category": "功能新增", "created": "2026-10-28 14:42:39", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-28 14:42:39", "status": "doing", "tags": ["ui", "loading", "控件"], "title": "做几个 loading 样式", "updated": "2026-10-28 15:15:05", "worklog": "worklog/202610/28-1442-e6a6-做几个-loading-样式.md"}
   },
   "version": "20261022000000"
 }

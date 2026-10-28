@@ -1,7 +1,7 @@
 # 20261028-1442-e6a6-做几个-loading-样式：做几个 loading 样式
 
 - **标签**：ui、loading、控件
-- **状态**：doing · 2026-10-28 15:09:58 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **状态**：doing · 2026-10-28 15:15:05 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **创建**：2026-10-28 14:42:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
@@ -21,11 +21,11 @@
 
 ## 待办
 
-- 待用户验收：demo「反馈」页的两张卡、遮罩与七向按钮（真机看观感 / 屏位 / 遮罩挡不挡点击）。
+- 无（本条任务范围内已交付并发版 v0.8.3；真机观感再微调属新任务）。
 
 ## 下一步
 
-待用户验收后按需微调样式数值（`src/ui/controls/loading.css` 的 min-width / padding / 遮罩浓度默认值）。
+- 无（本次范围已收口）。后续若要在宿主里改观感数值，按新任务单独立：入口是 `src/ui/controls/loading.css` 的 min-width / padding / 遮罩默认值。
 
 
 
@@ -39,14 +39,17 @@
 - 默认文案新增字典 key `loadingDefault`（`src/utils/i18n.ts`，中「数据加载中」/ 英「Loading」），死 key 自检盯得住。
 - 自检：`test/feedback.test.mjs` 新增 3 条（无 DOM 返回空句柄、宿主单例、两种卡类名与文案）。
 - 第二轮（用户验收前微调）：长条卡 min-width 200 → 250（+1/4）；全局默认屏位改 `bottom-center`（与 Toast 同屏位），`LoadingPosition` 七值（六向 + `center`）+ `loadingOverlayClass`（`src/ui/loading-host.ts`），CSS 六个 `--top-*` / `--bottom-*` 修饰类、`center` 走基础规则；同一时刻只有一个屏位，以最后一次调用为准、关掉后回落到还活着的那条（`src/ui/Loading.ts` 的 `flush`）。自检补一条「定位类名 ⇄ CSS 修饰类」对账。
-- 第三轮（用户追问「为什么同时出现两个」）：根因是宿主把每次 `show` 都 push 进 entries 各自渲染一张 —— 连点 N 次就叠 N 张。改成**唯一槽位** `createLoadingSlot()`（`src/ui/loading-host.ts`，纯逻辑可测）：后一次直接顶掉前一次，被顶掉那次的句柄 `close()` 按 id 判空操作，旧定时器不会误关新卡。同时确认「不自动消失」：`showLoading` 从来没有任何计时参数，收起只能 `close()`（demo 里的 1.2s 只是演示用的定时器）。自检补一条单槽位语义（顶替 / 旧句柄无效 / 重复关无副作用）。
+- 第三轮（用户追问「为什么同时出现两个」）：根因是宿主把每次 `show` 都 push 进 entries 各自渲染一张 —— 连点 N 次就叠 N 张。改成**唯一槽位** `createLoadingSlot()`（`src/ui/loading-host.ts`，纯逻辑可测）：后一次直接顶掉前一次，被顶掉那次的句柄 `close()` 按 id 判空操作，旧定时器不会误关新卡。 同时确认「不自动消失」：`showLoading` 从来没有任何计时参数，收起只能 `close()`（demo 里的 1.2s 只是演示用的定时器）。自检补一条单槽位语义（顶替 / 旧句柄无效 / 重复关无副作用）。
+- 发版时踩到的怪事：`src/ui/loading-host.ts` 在上轮验证之后、本次构建前从磁盘消失（`dist/ui/loading-host.js` 还在）。按产物 `.d.ts` 的签名与原文逐行恢复后 `build` / `typecheck` / 148 项自检全绿、语义一致；删除原因没查到（疑外部同步 / 清理动作，已提醒用户留意）。
 
 ## 结论
 
 - 新增导出：`showLoading(opts)` → `{ close() }`、`LoadingToast`、`LoadingBlock`，及类型 `LoadingOptions` / `LoadingViewProps` / `LoadingVariant` / `LoadingPosition` / `LoadingHandle`（`src/ui/index.ts`）。全局只有一张卡，不自动消失。
 - 样式真源 `src/ui/controls/loading.css`（已生成 `loading-css.generated.ts`），产物 `dist/` 与 demo `packages/demo/dist/` 已重新构建。
 - 文档：`docs/help/ui.doc.ts` 反馈件节补两条 prose + 三行 API（投影 `docs/help/ui.md` 与 demo `doc-data.generated.ts` 已重新生成）；demo 反馈页新增「加载提示 · 两种样式」示例。
-- 验证：`pnpm run build`、`pnpm run typecheck`、`pnpm run build:demo`、`pnpm test`（146 项全过）、`koc-codelint` 全层通过。
+- 验证：`pnpm run build`、`pnpm run typecheck`、`pnpm run build:demo`、`pnpm test`（148 项全过）、`koc-codelint` 全层通过。
+- 交付：发版 `v0.8.3`（两包同号），commit `17cb877` 已推 `main`，tag `v0.8.3` 已推并触发两包自动发布。
+- 留档：真机观感（卡宽 250px / 方块 132px / 遮罩默认浓度 0）未经宿主肉眼验收，需在插件市场更新后由用户确认；若要调，改 `src/ui/controls/loading.css` 一处即可。
 
 ## 执行记录
 
@@ -57,3 +60,4 @@
 - 2026-10-28 14:53:17 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按验收意见改：长条卡 200→250px、默认屏位改 bottom-center、新增 position 七向（src/ui/loading-host.ts loadingOverlayClass + loading.css 六个修饰类）；build/typecheck/147 项自检/codelint 全过
 - 2026-10-28 15:00:08 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修「同时出现两个」：宿主 entries 改唯一槽位 createLoadingSlot（后一次顶掉前一次，旧句柄 close 按 id 空操作）；确认 showLoading 无计时参数、只能 close；新增单槽位自检，148 项全过
 - 2026-10-28 15:09:58 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 v0.8.3：两包同号 bump、build + build:demo + 148 项自检 + codelint 全过，commit 17cb877 已推 main，tag v0.8.3 已推（触发两包自动发布）
+- 2026-10-28 15:15:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结尾补：发版 v0.8.3 已推；loading-host.ts 丢失后按产物恢复一事入过程；待办清空，准备结案
