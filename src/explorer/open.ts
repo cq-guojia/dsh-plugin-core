@@ -278,14 +278,16 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     dock.setWidth(PREVIEW_PANEL_ID, width)
   }
   // 画（可重画：同一个 dock 换内容时只重渲染，不重建 DOM ⇒ 不重播展开动效）。
-  // 内层以 path 作 key：目录 / 切过的工作区这些内部状态属于上一个文件，换文件必须重挂。
+  // 内层每次打开都重挂（key 带序号）：用户可能已经在预览里翻到了别的目录 / 别的工作区，
+  // 同路径再点一次也必须回到那个文件，光比 path 会「点了没反应」（2026-10-28 真机）。
+  let openSeq = 0
   const draw = (o: OpenFilePreviewOptions): void => {
     // 用户把它收起来过 ⇒ 再点文件要自动弹回来（收着还换内容，等于点了没反应 —— 2026-10-28 真机）。
     if (dock.isCollapsed(PREVIEW_PANEL_ID)) dock.expand(PREVIEW_PANEL_ID)
     // 总是走 PreviewBody：调用方没自接 onSelectWorkspace 时，▾ 下拉「切工作区」由核心接管
     // （anchors 为空 ⇒ 回调空转，行为与旧版一致）。自接了 ⇒ 原样透传给 FileBrowser。
     const internalSwitch = o.onSelectWorkspace === undefined
-    const contentKey = o.path ?? ''
+    const contentKey = `${o.path ?? ''}#${++openSeq}`
     root.render(
       h(
         'div',

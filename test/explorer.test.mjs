@@ -285,4 +285,6 @@ test('再打开预览复用旧根：只重画内容、宽度先钉住', async ()
   assert.ok(!src.includes('activePreview?.close()'), '又变回「重开就先关旧的」（动效会重播、宽度会重置）')
   // 收起来过就得自动弹回来，否则换文件「看不见任何变化」（2026-10-28 真机）。
   assert.ok(src.includes('dock.expand('), '收起的预览换内容时没自动展开')
+  // 内层 key 必带「每次打开都变」的序号：同路径再点一次也要回到那个文件（用户可能在预览里翻走了）。
+  assert.ok(/#\$\{\+\+openSeq\}/.test(src), '内层 key 只按 path 算 —— 同路径再点点不动内容')
 })

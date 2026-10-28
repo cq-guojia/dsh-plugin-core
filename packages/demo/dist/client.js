@@ -61098,11 +61098,12 @@ function openFilePreview(options) {
     pinnedWidth = width;
     dock.setWidth(PREVIEW_PANEL_ID, width);
   };
+  let openSeq = 0;
   const draw = (o) => {
     if (dock.isCollapsed(PREVIEW_PANEL_ID))
       dock.expand(PREVIEW_PANEL_ID);
     const internalSwitch = o.onSelectWorkspace === void 0;
-    const contentKey = o.path ?? "";
+    const contentKey = `${o.path ?? ""}#${++openSeq}`;
     root.render((0, import_react64.createElement)(
       "div",
       // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
@@ -61729,7 +61730,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.7.1"}`],
             [t3("buildDemo"), `v${"0.7.1"}`],
-            [t3("buildStamp"), "261028-155612-186"]
+            [t3("buildStamp"), "261028-161552-539"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -62053,7 +62054,7 @@ function DemoPage() {
           },
           (0, import_react69.createElement)("span", null, `core v${"0.7.1"}`),
           (0, import_react69.createElement)("span", null, `demo v${"0.7.1"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-155612-186")
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-161552-539")
         )
       )
     ),
