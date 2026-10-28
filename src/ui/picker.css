@@ -44,6 +44,8 @@
 .dshpc-picker__option:hover{background:var(--dshpc-surface-sunken)}
 .dshpc-picker__option--active{background:var(--dshpc-open-bg);color:var(--dshpc-business)}
 .dshpc-picker__option--disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}
+/* 选项文字吃掉剩余宽度：超长省略号（配合 MarqueeText hover 跑马灯），不撑宽菜单。 */
+.dshpc-picker__option-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dshpc-picker__tick{width:12px;color:var(--dshpc-business)}
 .dshpc-picker__empty{padding:8px;color:var(--dshpc-fg-3);text-align:center}
 .dshpc-picker__degraded{

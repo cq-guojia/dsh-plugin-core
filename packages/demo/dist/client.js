@@ -186,6 +186,8 @@ var PICKER_CSS = `
 .dshpc-picker__option:hover{background:var(--dshpc-surface-sunken)}
 .dshpc-picker__option--active{background:var(--dshpc-open-bg);color:var(--dshpc-business)}
 .dshpc-picker__option--disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}
+/* \u9009\u9879\u6587\u5B57\u5403\u6389\u5269\u4F59\u5BBD\u5EA6\uFF1A\u8D85\u957F\u7701\u7565\u53F7\uFF08\u914D\u5408 MarqueeText hover \u8DD1\u9A6C\u706F\uFF09\uFF0C\u4E0D\u6491\u5BBD\u83DC\u5355\u3002 */
+.dshpc-picker__option-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dshpc-picker__tick{width:12px;color:var(--dshpc-business)}
 .dshpc-picker__empty{padding:8px;color:var(--dshpc-fg-3);text-align:center}
 .dshpc-picker__degraded{
@@ -3589,15 +3591,22 @@ function Picker(props) {
         blocked ? "dshpc-picker__option--disabled" : ""
       ].filter((s) => s !== "").join(" ");
       const idx = flat.indexOf(o);
-      return (0, import_react6.createElement)("div", {
-        key: o.value,
-        className: activeCls,
-        "data-active": idx === active ? "true" : void 0,
-        onClick: () => {
-          if (!blocked)
-            pick2(o.value);
-        }
-      }, mode === "multiple" ? (0, import_react6.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null, o.icon !== void 0 && o.icon !== null ? (0, import_react6.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null, (0, import_react6.createElement)("span", null, o.label));
+      return (0, import_react6.createElement)(
+        "div",
+        {
+          key: o.value,
+          className: activeCls,
+          "data-active": idx === active ? "true" : void 0,
+          onClick: () => {
+            if (!blocked)
+              pick2(o.value);
+          }
+        },
+        mode === "multiple" ? (0, import_react6.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null,
+        o.icon !== void 0 && o.icon !== null ? (0, import_react6.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null,
+        // 选项文字超长时省略号 + hover 跑马灯（与触发器同一套逻辑），不把菜单撑出横向滚动条。
+        (0, import_react6.createElement)(MarqueeText, { text: o.label, className: "dshpc-picker__option-label" })
+      );
     })))
   ])) : null);
 }
@@ -56862,7 +56871,7 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue`\u3002\u89E6\u53D1\u5668\u652F\u6301 width / minWidth / maxWidth \u7EA6\u675F\u5BBD\u5EA6\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u5185\u5BB9\u8D85\u957F\u5219\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002",
+        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue`\u3002\u89E6\u53D1\u5668\u652F\u6301 width / minWidth / maxWidth \u7EA6\u675F\u5BBD\u5EA6\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u5185\u5BB9\u8D85\u957F\u5219\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
         "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`."
       },
       {
@@ -61509,9 +61518,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.6.0"}`],
-            [t3("buildDemo"), `v${"0.6.0"}`],
-            [t3("buildStamp"), "261028-114106-083"]
+            [t3("buildCore"), `v${"0.6.1"}`],
+            [t3("buildDemo"), `v${"0.6.1"}`],
+            [t3("buildStamp"), "261028-121040-277"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -61833,9 +61842,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react69.createElement)("span", null, `core v${"0.6.0"}`),
-          (0, import_react69.createElement)("span", null, `demo v${"0.6.0"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-114106-083")
+          (0, import_react69.createElement)("span", null, `core v${"0.6.1"}`),
+          (0, import_react69.createElement)("span", null, `demo v${"0.6.1"}`),
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-121040-277")
         )
       )
     ),

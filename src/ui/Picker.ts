@@ -321,7 +321,8 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                           o.icon !== undefined && o.icon !== null
                             ? h('span', { className: 'dshpc-picker__option-icon' }, o.icon)
                             : null,
-                          h('span', null, o.label),
+                          // 选项文字超长时省略号 + hover 跑马灯（与触发器同一套逻辑），不把菜单撑出横向滚动条。
+                          h(MarqueeText, { text: o.label, className: 'dshpc-picker__option-label' }),
                         )
                       }),
                     ),

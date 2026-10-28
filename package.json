@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-core",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "packageManager": "pnpm@12.3.4",
   "description": "Shared base for DSH plugins: design tokens, UI controls, utils, workspace explorer, session preview",
   "keywords": [
