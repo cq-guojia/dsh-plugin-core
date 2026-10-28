@@ -290,8 +290,9 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
   const panes = panesOf(props.children)
   const { defaultWidth, minWidth: fallbackMin } = props.dock.defaults
 
+  // 记忆里那份宽度也过一遍夹：上次在宽屏拖到 900，换窄窗口重开会把主区挤没。
   const widthOf = (pane: DockPanelProps): number =>
-    state.widths[pane.id] ?? clampWidth(pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth)
+    clampWidth(state.widths[pane.id] ?? pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth)
 
   // 耳朵**只显示一个箭头**（用户 2026-10-28 三轮：图标也不放，那会把面板的玩意带出来）。
   // 名字只进无障碍名：优先面板标题（字符串），否则无障碍名，再退回组名。

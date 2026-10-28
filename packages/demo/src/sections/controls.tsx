@@ -311,7 +311,7 @@ const [kw, setKw] = useState('')
 
 // hint 参数版：问号提示由组件自己挂，不用手动拼 FieldHint
 <Input value={text} onChange={setText} placeholder="请输入用户名" hint="用户名只能包含字母、数字与连字符。" />
-// 搜索框：type="search" 只透传原生 input，右侧小叉是浏览器自带的清空钮（不是核心库画的）
+// 搜索框：type="search" ⇒ 聚焦且有内容时右侧才出清空钮（数字框加减号同款的 plain IconButton，原生那枚已隐掉）
 // icon 是左侧图标槽（不吃点击，点在图标上照样聚焦）；图标尺寸按档取 fieldMetricsOf(size).icon
 <Input type="search" icon={<IconSearchOutlineRegular size={16} />} value={kw} onChange={setKw} placeholder="搜索" />
 // 校验失败态：描红
@@ -401,7 +401,7 @@ export function InputPage(): ReturnType<typeof h> {
           'div',
           { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
           h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '搜索'),
-          // 左侧图标槽（icon）+ 原生清除钮（type="search" 透传，小叉由浏览器画）
+          // 左侧图标槽（icon）+ 聚焦且有内容才出的清空钮（type="search"）
           h(Input, { type: 'search', icon: h(IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: '搜索' }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),

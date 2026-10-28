@@ -198,6 +198,13 @@ test('控制器 collapse / expand / isCollapsed；开着再打开会撤销耳朵
   assert.equal(dock.isCollapsed('A'), false)
 })
 
+test('记忆里那份宽度读回时也过一遍夹（宽屏拖的值换窄窗口不越界）', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/ui/PanelDock.js', import.meta.url), 'utf8')
+  // 只有兜底宽度走 clampWidth、存下来的值直接吃 ⇒ 上次 900 换窄窗口重开就撑满。
+  assert.ok(/clampWidth\(state\.widths\[pane\.id\] \?\?/.test(src), '存下来的宽度没夹边界')
+})
+
 test('展开受数量闸约束：满栏时耳朵展开被拒并回调', () => {
   const hit = []
   const dock = createPanelDock({ maxPanels: 2, storageKey: false, onLimitReached: (event) => hit.push(event.id) })

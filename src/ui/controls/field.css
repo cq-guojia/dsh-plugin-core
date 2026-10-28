@@ -22,9 +22,9 @@
 .dshpc-input--md{height:var(--dshpc-control-h-md);padding:0 10px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 .dshpc-input--lg{height:var(--dshpc-control-h-lg);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 .dshpc-input::placeholder{color:var(--dshpc-fg-dim);}
-/* type="search" 的清空钮是浏览器 UA 画的（::-webkit-search-cancel-button），默认箭头光标：
-   看着像不可点。它是真按钮，补手型（Chromium / Safari 专属伪元素；Firefox 没有这个钮）。 */
-.dshpc-input:not(:disabled)::-webkit-search-cancel-button{cursor:pointer;}
+/* type="search"：原生清除钮（::-webkit-search-cancel-button）整个隐掉，换组件自己挂的 plain IconButton
+   —— 原生那个各子系统长相不一、还不吃 token（2026-10-28 用户：不好看，要数字框加减号那种）。 */
+.dshpc-iwrap .dshpc-input::-webkit-search-cancel-button{display:none;}
 .dshpc-input:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
 .dshpc-input--error{border-color:var(--dshpc-danger);}
 .dshpc-input:disabled{cursor:default;opacity:.5;}
@@ -38,6 +38,16 @@
 .dshpc-iwrap--md > .dshpc-input,.dshpc-iwrap--lg > .dshpc-input{padding-left:28px;}
 /* 禁用时图标跟输入框一起变淡（输入框自己已有 opacity:.5，图标不在它里面，得单独跟一下）。 */
 .dshpc-iwrap:has(> .dshpc-input:disabled) > .dshpc-iwrap__icon{opacity:.5;}
+
+/* 搜索框的清空钮（Field.ts 在「有焦点 + 有内容」时才挂出来）：**并进框里**，与数字框的 − / +
+   同形态 —— 整段同高、左直右圆、hover 底色铺满这一格（2026-10-28 用户：不要一颗悬在右边的小按钮）。
+   向内让 1px，免得底色压住输入框自己的边框。 */
+.dshpc-iwrap__clear.dshpc-iconbtn{position:absolute;right:1px;top:1px;bottom:1px;width:auto;aspect-ratio:1;
+  border-radius:0 var(--dshpc-radius-md) var(--dshpc-radius-md) 0;font-size:var(--dshpc-font-md);}
+/* 文字让开这一段（宽度 = 控件高 - 2，故按档位补）。 */
+.dshpc-iwrap--clear > .dshpc-input{padding-right:calc(var(--dshpc-control-h-md) + 3px);}
+.dshpc-iwrap--clear.dshpc-iwrap--sm > .dshpc-input{padding-right:calc(var(--dshpc-control-h-sm) + 3px);}
+.dshpc-iwrap--clear.dshpc-iwrap--lg > .dshpc-input{padding-right:calc(var(--dshpc-control-h-lg) + 3px);}
 
 .dshpc-pfx{display:inline-flex;align-items:center;box-sizing:border-box;overflow:hidden;
   border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}

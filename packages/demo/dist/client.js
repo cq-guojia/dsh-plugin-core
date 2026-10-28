@@ -146,9 +146,9 @@ var FIELD_CSS = `
 .dshpc-input--md{height:var(--dshpc-control-h-md);padding:0 10px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 .dshpc-input--lg{height:var(--dshpc-control-h-lg);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 .dshpc-input::placeholder{color:var(--dshpc-fg-dim);}
-/* type="search" \u7684\u6E05\u7A7A\u94AE\u662F\u6D4F\u89C8\u5668 UA \u753B\u7684\uFF08::-webkit-search-cancel-button\uFF09\uFF0C\u9ED8\u8BA4\u7BAD\u5934\u5149\u6807\uFF1A
-   \u770B\u7740\u50CF\u4E0D\u53EF\u70B9\u3002\u5B83\u662F\u771F\u6309\u94AE\uFF0C\u8865\u624B\u578B\uFF08Chromium / Safari \u4E13\u5C5E\u4F2A\u5143\u7D20\uFF1BFirefox \u6CA1\u6709\u8FD9\u4E2A\u94AE\uFF09\u3002 */
-.dshpc-input:not(:disabled)::-webkit-search-cancel-button{cursor:pointer;}
+/* type="search"\uFF1A\u539F\u751F\u6E05\u9664\u94AE\uFF08::-webkit-search-cancel-button\uFF09\u6574\u4E2A\u9690\u6389\uFF0C\u6362\u7EC4\u4EF6\u81EA\u5DF1\u6302\u7684 plain IconButton
+   \u2014\u2014 \u539F\u751F\u90A3\u4E2A\u5404\u5B50\u7CFB\u7EDF\u957F\u76F8\u4E0D\u4E00\u3001\u8FD8\u4E0D\u5403 token\uFF082026-10-28 \u7528\u6237\uFF1A\u4E0D\u597D\u770B\uFF0C\u8981\u6570\u5B57\u6846\u52A0\u51CF\u53F7\u90A3\u79CD\uFF09\u3002 */
+.dshpc-iwrap .dshpc-input::-webkit-search-cancel-button{display:none;}
 .dshpc-input:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
 .dshpc-input--error{border-color:var(--dshpc-danger);}
 .dshpc-input:disabled{cursor:default;opacity:.5;}
@@ -162,6 +162,16 @@ var FIELD_CSS = `
 .dshpc-iwrap--md > .dshpc-input,.dshpc-iwrap--lg > .dshpc-input{padding-left:28px;}
 /* \u7981\u7528\u65F6\u56FE\u6807\u8DDF\u8F93\u5165\u6846\u4E00\u8D77\u53D8\u6DE1\uFF08\u8F93\u5165\u6846\u81EA\u5DF1\u5DF2\u6709 opacity:.5\uFF0C\u56FE\u6807\u4E0D\u5728\u5B83\u91CC\u9762\uFF0C\u5F97\u5355\u72EC\u8DDF\u4E00\u4E0B\uFF09\u3002 */
 .dshpc-iwrap:has(> .dshpc-input:disabled) > .dshpc-iwrap__icon{opacity:.5;}
+
+/* \u641C\u7D22\u6846\u7684\u6E05\u7A7A\u94AE\uFF08Field.ts \u5728\u300C\u6709\u7126\u70B9 + \u6709\u5185\u5BB9\u300D\u65F6\u624D\u6302\u51FA\u6765\uFF09\uFF1A**\u5E76\u8FDB\u6846\u91CC**\uFF0C\u4E0E\u6570\u5B57\u6846\u7684 \u2212 / +
+   \u540C\u5F62\u6001 \u2014\u2014 \u6574\u6BB5\u540C\u9AD8\u3001\u5DE6\u76F4\u53F3\u5706\u3001hover \u5E95\u8272\u94FA\u6EE1\u8FD9\u4E00\u683C\uFF082026-10-28 \u7528\u6237\uFF1A\u4E0D\u8981\u4E00\u9897\u60AC\u5728\u53F3\u8FB9\u7684\u5C0F\u6309\u94AE\uFF09\u3002
+   \u5411\u5185\u8BA9 1px\uFF0C\u514D\u5F97\u5E95\u8272\u538B\u4F4F\u8F93\u5165\u6846\u81EA\u5DF1\u7684\u8FB9\u6846\u3002 */
+.dshpc-iwrap__clear.dshpc-iconbtn{position:absolute;right:1px;top:1px;bottom:1px;width:auto;aspect-ratio:1;
+  border-radius:0 var(--dshpc-radius-md) var(--dshpc-radius-md) 0;font-size:var(--dshpc-font-md);}
+/* \u6587\u5B57\u8BA9\u5F00\u8FD9\u4E00\u6BB5\uFF08\u5BBD\u5EA6 = \u63A7\u4EF6\u9AD8 - 2\uFF0C\u6545\u6309\u6863\u4F4D\u8865\uFF09\u3002 */
+.dshpc-iwrap--clear > .dshpc-input{padding-right:calc(var(--dshpc-control-h-md) + 3px);}
+.dshpc-iwrap--clear.dshpc-iwrap--sm > .dshpc-input{padding-right:calc(var(--dshpc-control-h-sm) + 3px);}
+.dshpc-iwrap--clear.dshpc-iwrap--lg > .dshpc-input{padding-right:calc(var(--dshpc-control-h-lg) + 3px);}
 
 .dshpc-pfx{display:inline-flex;align-items:center;box-sizing:border-box;overflow:hidden;
   border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}
@@ -6699,7 +6709,7 @@ function PanelDock(props) {
   const panelRefs = (0, import_react28.useRef)(/* @__PURE__ */ new Map());
   const panes = panesOf(props.children);
   const { defaultWidth, minWidth: fallbackMin } = props.dock.defaults;
-  const widthOf = (pane) => state.widths[pane.id] ?? clampWidth(pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth);
+  const widthOf = (pane) => clampWidth(state.widths[pane.id] ?? pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth);
   const earLabelOf = (id3) => {
     const pane = panes.find((item) => item.id === id3);
     if (pane === void 0)
@@ -6880,6 +6890,9 @@ function sizeClass(size4) {
 function Input(props) {
   ensureControls();
   const { value, onChange, placeholder: placeholder2, size: size4 = "lg", error, disabled, type: type3, icon: icon2, className: className2, style: style2 } = props;
+  const [focused, setFocused] = (0, import_react29.useState)(false);
+  const search = type3 === "search";
+  const showClear = search && value !== "" && focused && disabled !== true;
   const input = (0, import_react29.createElement)("input", {
     ref: props.inputRef,
     type: type3 ?? "text",
@@ -6894,9 +6907,38 @@ function Input(props) {
       onChange(event.target.value);
     },
     onKeyDown: props.onKeyDown,
-    onBlur: props.onBlur
+    onFocus: () => {
+      setFocused(true);
+    },
+    onBlur: () => {
+      setFocused(false);
+      if (props.onBlur !== void 0)
+        props.onBlur();
+    }
   });
-  return withHint(icon2 === void 0 || icon2 === null ? input : (0, import_react29.createElement)("span", { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size4)}` }, (0, import_react29.createElement)("span", { className: "dshpc-iwrap__icon" }, icon2), input), props.hint);
+  const hasIcon = icon2 !== void 0 && icon2 !== null;
+  if (!hasIcon && !search)
+    return withHint(input, props.hint);
+  return withHint((0, import_react29.createElement)(
+    "span",
+    { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size4)}${showClear ? " dshpc-iwrap--clear" : ""}` },
+    hasIcon ? (0, import_react29.createElement)("span", { className: "dshpc-iwrap__icon" }, icon2) : null,
+    input,
+    // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
+    showClear ? (0, import_react29.createElement)(IconButton, {
+      className: "dshpc-iwrap__clear",
+      variant: "plain",
+      size: size4,
+      icon: "\xD7",
+      label: "\u6E05\u7A7A",
+      onMouseDown: (event) => {
+        event.preventDefault();
+      },
+      onClick: () => {
+        onChange("");
+      }
+    }) : null
+  ), props.hint);
 }
 function NumberInput(props) {
   ensureControls();
@@ -57048,8 +57090,8 @@ var docData = {
             "type": "value onChange(v) size(\u9ED8\u8BA4 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label title hint",
             "def": "\u2014",
             "desc": {
-              "zh": "\u57FA\u7840\u8F93\u5165\u6846\uFF1Berror \u63CF\u7EA2\uFF1Bhint \u7ED9\u5B57\u7B26\u4E32\u5373\u81EA\u52A8\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF1Bicon \u662F\u5DE6\u4FA7\u56FE\u6807\u69FD\uFF08\u4E0D\u5403\u70B9\u51FB\uFF0C\u5C3A\u5BF8\u53D6 fieldMetricsOf(size).icon\uFF09",
-              "en": "Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint; icon is the leading icon slot (does not swallow clicks; size from fieldMetricsOf(size).icon)"
+              "zh": "\u57FA\u7840\u8F93\u5165\u6846\uFF1Berror \u63CF\u7EA2\uFF1Bhint \u7ED9\u5B57\u7B26\u4E32\u5373\u81EA\u52A8\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF1Bicon \u662F\u5DE6\u4FA7\u56FE\u6807\u69FD\uFF08\u4E0D\u5403\u70B9\u51FB\uFF0C\u5C3A\u5BF8\u53D6 fieldMetricsOf(size).icon\uFF09\uFF1Btype=search \u65F6\u805A\u7126\u4E14\u6709\u5185\u5BB9\u624D\u5728\u53F3\u4FA7\u51FA\u6E05\u7A7A\u94AE",
+              "en": "Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint; icon is the leading icon slot (does not swallow clicks; size from fieldMetricsOf(size).icon); with type=search a clear button appears on the right only while focused and non-empty"
             }
           },
           {
@@ -58632,7 +58674,7 @@ const [kw, setKw] = useState('')
 
 // hint \u53C2\u6570\u7248\uFF1A\u95EE\u53F7\u63D0\u793A\u7531\u7EC4\u4EF6\u81EA\u5DF1\u6302\uFF0C\u4E0D\u7528\u624B\u52A8\u62FC FieldHint
 <Input value={text} onChange={setText} placeholder="\u8BF7\u8F93\u5165\u7528\u6237\u540D" hint="\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" />
-// \u641C\u7D22\u6846\uFF1Atype="search" \u53EA\u900F\u4F20\u539F\u751F input\uFF0C\u53F3\u4FA7\u5C0F\u53C9\u662F\u6D4F\u89C8\u5668\u81EA\u5E26\u7684\u6E05\u7A7A\u94AE\uFF08\u4E0D\u662F\u6838\u5FC3\u5E93\u753B\u7684\uFF09
+// \u641C\u7D22\u6846\uFF1Atype="search" \u21D2 \u805A\u7126\u4E14\u6709\u5185\u5BB9\u65F6\u53F3\u4FA7\u624D\u51FA\u6E05\u7A7A\u94AE\uFF08\u6570\u5B57\u6846\u52A0\u51CF\u53F7\u540C\u6B3E\u7684 plain IconButton\uFF0C\u539F\u751F\u90A3\u679A\u5DF2\u9690\u6389\uFF09
 // icon \u662F\u5DE6\u4FA7\u56FE\u6807\u69FD\uFF08\u4E0D\u5403\u70B9\u51FB\uFF0C\u70B9\u5728\u56FE\u6807\u4E0A\u7167\u6837\u805A\u7126\uFF09\uFF1B\u56FE\u6807\u5C3A\u5BF8\u6309\u6863\u53D6 fieldMetricsOf(size).icon
 <Input type="search" icon={<IconSearchOutlineRegular size={16} />} value={kw} onChange={setKw} placeholder="\u641C\u7D22" />
 // \u6821\u9A8C\u5931\u8D25\u6001\uFF1A\u63CF\u7EA2
@@ -58708,7 +58750,7 @@ function InputPage() {
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
           (0, import_react57.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
-          // 左侧图标槽（icon）+ 原生清除钮（type="search" 透传，小叉由浏览器画）
+          // 左侧图标槽（icon）+ 聚焦且有内容才出的清空钮（type="search"）
           (0, import_react57.createElement)(Input, { type: "search", icon: (0, import_react57.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
         ),
         (0, import_react57.createElement)(Input, { value: "bad value", onChange: () => {
@@ -61176,8 +61218,7 @@ function openFilePreview(options) {
     maxPanels: 1,
     defaultWidth: options.width ?? 460,
     minWidth: options.minWidth ?? 320,
-    // 每次打开都从默认宽度起步（预览是临时面板，不继承上次的落位）。
-    storageKey: false,
+    // 宽度按面板 id 记（用户 2026-10-28：拖过一次，下次弹出还是这个宽）。
     // 关钮被点 ⇒ 整个挂载体回收（close 内部幂等，不受 onClose 回调顺序影响）。
     onClose: () => {
       close();
@@ -61847,7 +61888,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.7.3"}`],
             [t3("buildDemo"), `v${"0.7.3"}`],
-            [t3("buildStamp"), "261028-164359-327"]
+            [t3("buildStamp"), "261028-165741-194"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -62171,7 +62212,7 @@ function DemoPage() {
           },
           (0, import_react69.createElement)("span", null, `core v${"0.7.3"}`),
           (0, import_react69.createElement)("span", null, `demo v${"0.7.3"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-164359-327")
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-165741-194")
         )
       )
     ),

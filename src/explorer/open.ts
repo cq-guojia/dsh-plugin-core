@@ -238,8 +238,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     maxPanels: 1,
     defaultWidth: options.width ?? 460,
     minWidth: options.minWidth ?? 320,
-    // 每次打开都从默认宽度起步（预览是临时面板，不继承上次的落位）。
-    storageKey: false,
+    // 宽度按面板 id 记（用户 2026-10-28：拖过一次，下次弹出还是这个宽）。
     // 关钮被点 ⇒ 整个挂载体回收（close 内部幂等，不受 onClose 回调顺序影响）。
     onClose: () => {
       close()
