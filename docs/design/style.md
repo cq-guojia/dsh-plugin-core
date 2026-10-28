@@ -78,8 +78,15 @@ EN: The `ui` layer has no official dependency, so every arrow comes from the sel
 
 `SplitGroup` 用后代选择器直接压内件（`.dshpc-split .dshpc-picker__trigger` / `.dshpc-split .dshpc-seg`），
 所以**内件类名就是耦合点**：改这些类名或结构必须同步改 `src/ui/controls/split-group.css`，否则拼接
-静默失效（双边框、底色错位），没有自检能替你发现。高度不写死——内件按自己的 `size` 撑开，
-外壳跟着长；两格传同一个 `size` 才逐像素等高。
+静默失效（双边框、底色错位），没有自检能替你发现。高度不写死——内件按自己的 `size`（sm 24 /
+md 28 / lg 32）撑开，外壳跟着长；两格传同一个 `size` 才逐像素等高。**外壳绝不能用 `height:100%`
+拉满内件**：它和 `.dshpc-picker__trigger--lg` / `--sm` 同特异性（两个类）且 `split-group.css`
+注入更晚，会把三档高度全吃掉（md/lg 看起来一样大，2026-10-28 踩过）。万一两格 `size` 不一致，
+靠外壳内 `align-items:center` 居中即可。
+
+**左格统一灰底**（用户 2026-10-28 拍板）：第一格无论是滑块（保留自己的灰轨
+`--dshpc-seg-track`）还是下拉（`> :first-child .dshpc-picker__trigger` 上 `surface-sunken`），
+都呈现灰底；右格保持原样。层次感 = 左格选「档位 / 范围」，右格选「值」。
 
 EN: Welding controls into one visual unit has exactly one recipe: the shell owns border, radius,
 `overflow:hidden` and the shared `:focus-within` ring; the cells hand over border, background and radius.

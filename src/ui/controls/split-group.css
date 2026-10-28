@@ -9,20 +9,31 @@
    否则会出现双边框、双底色。
 
    高度不写死：内件自己按 size 档（sm 24 / md 28 / lg 32）撑开，外壳跟着长。
-   两格要等高，就给内件传**同一个 size**。 */
-.dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}
-/* 两格宽度都由内容给；容器再窄也让内件自己省略，不让外壳被撑破 */
-.dshpc-split > *{min-width:0;max-width:100%;}
-/* 分隔：相邻兄弟的左描边，不额外插 DOM，hover / focus 时也不会断 */
-.dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}
-/* 整体聚焦：内件自己的外圈交出来，由外壳画一整圈（内件各自画会变成格内半圈） */
-.dshpc-split:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
-/* Picker：去掉自身外框与底色；display 改成 flex，消掉 inline-block 行盒带来的基线间隙 */
-.dshpc-split .dshpc-picker{display:flex;align-items:stretch;}
-.dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}
-.dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}
-/* Segmented：去掉灰轨与外圆角；padding 保持 3px 不动 —— 它是高度契约的一部分
-   （3 + item + 3 = control-h，正好等于同档 Picker 触发器高）。bordered 那档去掉描边、
-   把让给描边的 1px 还回 padding，否则会比右边矮 2px。 */
-.dshpc-split .dshpc-seg{background:transparent;border-radius:0;border:0;}
-.dshpc-split .dshpc-seg--bordered{padding:3px;}
+   两格要等高，就给内件传**同一个 size**。万一两格 size 不一致，外壳内件用 align-items:center
+   居中（不会顶对齐露白，用户 2026-10-28 截图反馈「本月偏上」后的处理）；**别用 height:100%**，
+   它会覆盖三档高度（与 --lg/--sm 同特异性且注入更晚）。
+
+   左格统一灰底（用户 2026-10-28 拍板）：滑块保留自己的灰轨，左格下拉把底色换成
+   surface-sunken；右格保持原样。层次感 = 左格是「档位/范围」，右格是「值」。 */
+   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}
+   /* 两格宽度都由内容给；容器再窄也让内件自己省略，不让外壳被撑破 */
+   .dshpc-split > *{min-width:0;max-width:100%;}
+   /* 分隔：相邻兄弟的左描边，不额外插 DOM，hover / focus 时也不会断 */
+   .dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}
+   /* 整体聚焦：内件自己的外圈交出来，由外壳画一整圈（内件各自画会变成格内半圈） */
+   .dshpc-split:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
+   /* Picker：去掉自身外框与底色；display 改成 flex，消掉 inline-block 行盒带来的基线间隙。
+      注意**不能用 height:100%**：它会和 .dshpc-picker__trigger--lg / --sm 同特异性（都是两个类），
+      且 split-group.css 在 picker.css 之后注入，会把三档高度全吃掉（md/lg 看起来一样大）。
+      改用 align-items:center —— 同 size 时两格自然等高的同时文字垂直居中；万一两格 size 不一致，
+      较矮的格也只是居中、不会顶对齐露白。 */
+   .dshpc-split .dshpc-picker{display:flex;align-items:center;}
+   .dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}
+   .dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}
+   /* 左格下拉：灰底（滑块的灰轨是它自己的 --dshpc-seg-track，不在这里覆盖） */
+   .dshpc-split > :first-child .dshpc-picker__trigger{background:var(--dshpc-surface-sunken);}
+   /* Segmented：只去外圆角与描边，灰轨保留；padding 保持 3px 不动 —— 它是高度契约的一部分
+    （3 + item + 3 = control-h）。bordered 那档去掉描边、把让给描边的 1px 还回 padding，
+    否则会比右边矮 2px。 */
+   .dshpc-split .dshpc-seg{border-radius:0;border:0;}
+   .dshpc-split .dshpc-seg--bordered{padding:3px;}

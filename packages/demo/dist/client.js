@@ -246,7 +246,7 @@ var HINT_CSS = "\n/* \u2500\u2500 \u95EE\u53F7\u63D0\u793A P4\uFF08\u7528\u6237 
 var DATETIME_CSS = '/* \u65E5\u671F\u65F6\u95F4\u9009\u62E9\u5668\uFF08DateTimePicker\uFF09\u3002\u7C7B\u540D dshpc-dt-*\uFF1B\u914D\u8272\u53EA\u5403 token\uFF0C\u660E\u6697\u968F token \u5207\u6362\u3002\n   \u7ED3\u6784\uFF1A\u89E6\u53D1\u5668\uFF08range = \u4E00\u4E2A\u6574\u6761\uFF1A\u4E24\u4E2A\u65E5\u671F\u533A + \u6837\u5F0F\u753B\u7684\u7070\u9694\u6761\uFF1Bsingle = \u5355\u65E5\u671F\uFF09\u2192 \u6D6E\u5C42\n   \uFF08\u4E24\u4E2A\u72EC\u7ACB\u7AEF\u6846 + \u4E24\u5757\u72EC\u7ACB\u65E5\u5386 + \u5E95\u90E8\u52A8\u4F5C\uFF09\u3002\n   \u6D6E\u5C42\u884C\u4E3A\u4E0E Picker \u4E00\u81F4\uFF1Aportal \u5230 body\u3001\u8D34\u8FB9\u7FFB\u8F6C\u3001\u70B9\u5916\u5173\u95ED\u3001\u65E0\u906E\u7F69\u3002 */\n.dshpc-dt{position:relative;display:inline-block;font-size:13px;line-height:20px}\n.dshpc-dt__trigger{\n  display:inline-flex;align-items:center;justify-content:space-between;gap:6px;\n  max-width:100%;height:var(--dshpc-control-h-md);padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);cursor:pointer;\n}\n.dshpc-dt__trigger--sm{height:var(--dshpc-control-h-sm);font-size:12px}\n.dshpc-dt__trigger--lg{height:var(--dshpc-control-h-lg)}\n.dshpc-dt__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}\n/* \u7126\u70B9\u4E0E\u57FA\u7840 Input \u5B8C\u5168\u540C\u6B3E\uFF08\u70B9\u51FB\u5373\u84DD\u63CF\u8FB9 + 1px \u5149\u73AF\uFF09\u3002 */\n.dshpc-dt__trigger:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}\n.dshpc-dt__trigger-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-variant-numeric:tabular-nums}\n.dshpc-dt__trigger-label--empty{color:var(--dshpc-fg-dim)}\n.dshpc-dt__cal{flex:none;color:var(--dshpc-fg-3)}\n/* range \u89E6\u53D1\u5668\uFF1A\u4E00\u4E2A\u6574\u6761\u91CC\u4E24\u4E2A\u65E5\u671F\u533A + \u6837\u5F0F\u753B\u51FA\u6765\u7684\u7070\u9694\u6761\uFF08\u5DE6\u53F3\u4E24\u6761\u7AD6\u8FB9\uFF09\uFF0C\u70B9\u6574\u6761\u90FD\u5C55\u5F00\u3002 */\n/* \u7EC4\u6491\u6EE1\u89E6\u53D1\u5668\u5185\u5BB9\u9AD8\u5EA6\uFF0C\u9694\u6761\u624D\u80FD\u4E0A\u4E0B\u9876\u5230 border\u3002 */\n.dshpc-dt__pair-group{flex:1 1 auto;min-width:0;align-self:stretch;display:flex;align-items:center;gap:8px}\n/* \u4E24\u4E2A\u65E5\u671F\u533A\u5E73\u5206\uFF08flex:1 1 0\uFF09\uFF1A\u5F00\u59CB / \u7ED3\u675F\u6C38\u8FDC\u4E00\u6837\u5BBD\uFF0C\u4E0D\u968F\u5185\u5BB9\u504F\u8892\u3002 */\n.dshpc-dt__pair-date{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}\n.dshpc-dt__pair-date--empty{color:var(--dshpc-fg-dim)}\n/* \u9694\u6761\uFF1A\u4E0A\u4E0B\u9876\u5230\u89E6\u53D1\u5668 border\uFF08\u4E0E\u8FB9\u6846\u8FDE\u8D77\u6765\uFF09\uFF0C\u4E2D\u95F4\u9694\u51FA\u4E00\u5757\uFF1B\u5757\u91CC\u653E\u300C\u5230\u300D\u7684\u7B26\u53F7\uFF08-\uFF0C\u7528\u6237 2026-10-24 \u62CD\u677F\uFF09\u3002 */\n.dshpc-dt__pair-sep{\n  flex:none;align-self:stretch;width:22px;margin:0;\n  display:inline-flex;align-items:center;justify-content:center;\n  background:var(--dshpc-surface-sunken);\n  border-left:1px solid var(--dshpc-border);border-right:1px solid var(--dshpc-border);\n  color:var(--dshpc-fg-3);font-size:12px;line-height:1;\n}\n/* \u9ED8\u8BA4\u5BBD\uFF1A**\u56FA\u5B9A**\uFF08\u9009\u4E2D\u524D\u540E\u4E0D\u53D8\uFF09\uFF0C\u6570\u503C\u5BF9\u7167\u53C2\u8003\u56FE\u5B9E\u6D4B\uFF082x \u5C4F\uFF0C\u6362\u7B97 CSS px\uFF09\u540E\n   \u7EDF\u4E00 -6px\uFF08\u7528\u6237 2026-10-24\uFF1A\u5B9E\u6D4B\u503C\u7559\u5F97\u504F\u591A\uFF09\uFF1A\n   \u5355\u503C day 128 / \u65F6\xB7\u5206 153.2 / \u79D2 174.8\uFF1B\u533A\u95F4 day 269 / \u5206 341.4 / \u79D2 377.6\u3002\n   ch = \u5B57\u4F53\u91CC "0" \u7684\u5BBD\uFF08\u65E5\u671F tabular-nums \u7B49\u5BBD\uFF09\u21D2 \u5199\u6210 Nch + \u5E38\u6570\uFF1B\u5E38\u6570\u540C\u65F6\u515C\u4F4F\n   \u9ED8\u8BA4\u5360\u4F4D\u300C\u8BF7\u9009\u62E9\u65E5\u671F\u65F6\u95F4\u300D\uFF087 \u6C49\u5B57\uFF09\u4E0D\u7701\u7565\u3002\u8C03\u7528\u65B9\u8981\u53E6\u7ED9\u5BBD\uFF1AclassName \u4F20 width\u3002 */\n.dshpc-dt__trigger--w-day{width:calc(10ch + 56px)}\n.dshpc-dt__trigger--w-minute{width:calc(16ch + 38px)}\n.dshpc-dt__trigger--w-second{width:calc(19ch + 38px)}\n.dshpc-dt__trigger--wr-day{width:calc(20ch + 125px)}\n.dshpc-dt__trigger--wr-minute{width:calc(32ch + 111px)}\n.dshpc-dt__trigger--wr-second{width:calc(38ch + 104px)}\n\n.dshpc-dt__pop{\n  z-index:60;padding:10px;user-select:none;\n  font-size:13px;line-height:20px;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  border-radius:var(--dshpc-radius-md);box-shadow:0 8px 24px rgba(15,23,42,.12);\n}\n/* \u4E24\u4E2A\u72EC\u7ACB\u7AEF\u6846\uFF08range\uFF09\uFF1A\u70B9\u54EA\u4E2A\u54EA\u4E2A\u6210\u4E3A\u5F53\u524D\u7F16\u8F91\u7AEF\uFF0C\u4E92\u4E0D\u8054\u52A8\u3001\u53EA\u662F\u6392\u5728\u4E00\u8D77\u3002 */\n.dshpc-dt__ends{display:flex;gap:6px;margin-bottom:8px}\n.dshpc-dt__end{\n  flex:1 1 0;min-width:0;display:flex;align-items:center;gap:6px;padding:4px 8px;\n  text-align:left;background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__end--active{border-color:var(--dshpc-business);background:var(--dshpc-open-bg)}\n.dshpc-dt__end:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-dt__end-label{flex:none;font-size:11px;line-height:16px;color:var(--dshpc-fg-3);white-space:nowrap}\n.dshpc-dt__end-value{font-size:12px;line-height:18px;color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}\n.dshpc-dt__end-value--empty{color:var(--dshpc-fg-dim)}\n\n.dshpc-dt__nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}\n.dshpc-dt__nav-group{display:flex;gap:2px}\n.dshpc-dt__nav-btn{\n  display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;\n  color:var(--dshpc-fg-2);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__nav-btn:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-dt__nav-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__caption{font-size:13px;font-weight:600;color:var(--dshpc-fg);white-space:nowrap}\n\n.dshpc-dt__grid{display:grid;grid-template-columns:repeat(7,30px);gap:2px}\n.dshpc-dt__wd{height:20px;font-size:11px;line-height:20px;color:var(--dshpc-fg-3);text-align:center}\n.dshpc-dt__cell{\n  height:26px;padding:0;font-size:12px;font-variant-numeric:tabular-nums;\n  color:var(--dshpc-fg);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__cell:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-dt__cell:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__cell--out{color:var(--dshpc-fg-dim)}\n.dshpc-dt__cell--today{color:var(--dshpc-business);font-weight:600}\n/* \u8D77 / \u6B62\u7AEF\uFF1A\u54C1\u724C\u84DD\u5B9E\u9762\u53CD\u767D\uFF08\u4E0E Segmented weekday \u9009\u4E2D\u540C\u53E3\u5F84\uFF09\u3002 */\n.dshpc-dt__cell--sel{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);font-weight:600}\n.dshpc-dt__cell--sel:hover{background:var(--dshpc-business-hover)}\n\n/* \u4E24\u5757\u65E5\u5386\u9762\u677F\uFF08range\uFF1A\u5DE6\u5F00\u59CB\u3001\u53F3\u7ED3\u675F\uFF0C\u5404\u9009\u5404\u7684\uFF09\u3002 */\n.dshpc-dt__panels{display:flex;gap:14px;align-items:flex-start}\n.dshpc-dt__panel{display:flex;flex-direction:column;gap:6px}\n\n.dshpc-dt__time{display:flex;align-items:flex-end;justify-content:center;gap:4px;margin-top:2px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n.dshpc-dt__unit{display:flex;flex-direction:column;align-items:center;gap:2px}\n.dshpc-dt__unit-label{font-size:10px;line-height:14px;color:var(--dshpc-fg-3)}\n.dshpc-dt__step-btn{\n  display:inline-flex;align-items:center;justify-content:center;width:34px;height:14px;padding:0;\n  color:var(--dshpc-fg-2);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__step-btn:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-dt__step-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__step-val{\n  width:34px;height:24px;padding:0;box-sizing:border-box;text-align:center;\n  font-size:13px;font-variant-numeric:tabular-nums;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-sunken);border:1px solid var(--dshpc-border-faint);\n  border-radius:var(--dshpc-radius-sm);outline:none;\n}\n.dshpc-dt__step-val:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}\n.dshpc-dt__step-val:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}\n.dshpc-dt__sep{padding-bottom:5px;color:var(--dshpc-fg-3);font-size:12px}\n\n.dshpc-dt__foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n.dshpc-dt__foot-side{display:flex;align-items:center;gap:6px}\n.dshpc-dt__warn{font-size:11px;color:var(--dshpc-warning-label);white-space:nowrap}\n';
 
 // dist/ui/controls/split-group-css.generated.js
-var SPLIT_GROUP_CSS = "\n/* \u2500\u2500 \u62FC\u63A5\u5916\u58F3 SplitGroup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u804C\u8D23\u53EA\u6709\u4E00\u6761\uFF1A\u628A\u4E24\u4E2A\u63A7\u4EF6\u5728\u5916\u89C2\u4E0A\u710A\u6210\u4E00\u4F53\uFF08\u5916\u6846 / \u5706\u89D2 / \u4E2D\u95F4 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\uFF09\u3002\n   \u5B83**\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03** \u2014\u2014 \u9009\u4E2D\u4E0E\u8054\u52A8\u5168\u8D70\u5185\u4EF6\u81EA\u5DF1\u7684 value / onChange\n   \uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF1A\u5916\u58F3\u4E0D\u5FC5\u77E5\u9053\u53F3\u8FB9\u90A3\u4E2A\u4E0B\u62C9\u7BA1\u4EC0\u4E48\uFF09\u3002\n\n   \u26A0\uFE0F \u4E0E\u5185\u4EF6\u7C7B\u540D\u6709\u610F\u8026\u5408\uFF1A\u5185\u4EF6\u662F Picker / Segmented \u65F6\u7531\u4E0B\u9762\u51E0\u6761\u89C4\u5219\u628A\u5B83\u4EEC\u81EA\u5DF1\u7684\n   \u8FB9\u6846 / \u5E95\u8272 / \u5706\u89D2\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u7EDF\u4E00\u753B\u3002\u5185\u4EF6\u6539\u540D\u6216\u6539\u7ED3\u6784\u8981\u540C\u6B65\u6539\u8FD9\u91CC\uFF0C\n   \u5426\u5219\u4F1A\u51FA\u73B0\u53CC\u8FB9\u6846\u3001\u53CC\u5E95\u8272\u3002\n\n   \u9AD8\u5EA6\u4E0D\u5199\u6B7B\uFF1A\u5185\u4EF6\u81EA\u5DF1\u6309 size \u6863\uFF08sm 24 / md 28 / lg 32\uFF09\u6491\u5F00\uFF0C\u5916\u58F3\u8DDF\u7740\u957F\u3002\n   \u4E24\u683C\u8981\u7B49\u9AD8\uFF0C\u5C31\u7ED9\u5185\u4EF6\u4F20**\u540C\u4E00\u4E2A size**\u3002 */\n.dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}\n/* \u4E24\u683C\u5BBD\u5EA6\u90FD\u7531\u5185\u5BB9\u7ED9\uFF1B\u5BB9\u5668\u518D\u7A84\u4E5F\u8BA9\u5185\u4EF6\u81EA\u5DF1\u7701\u7565\uFF0C\u4E0D\u8BA9\u5916\u58F3\u88AB\u6491\u7834 */\n.dshpc-split > *{min-width:0;max-width:100%;}\n/* \u5206\u9694\uFF1A\u76F8\u90BB\u5144\u5F1F\u7684\u5DE6\u63CF\u8FB9\uFF0C\u4E0D\u989D\u5916\u63D2 DOM\uFF0Chover / focus \u65F6\u4E5F\u4E0D\u4F1A\u65AD */\n.dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n/* \u6574\u4F53\u805A\u7126\uFF1A\u5185\u4EF6\u81EA\u5DF1\u7684\u5916\u5708\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u753B\u4E00\u6574\u5708\uFF08\u5185\u4EF6\u5404\u81EA\u753B\u4F1A\u53D8\u6210\u683C\u5185\u534A\u5708\uFF09 */\n.dshpc-split:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n/* Picker\uFF1A\u53BB\u6389\u81EA\u8EAB\u5916\u6846\u4E0E\u5E95\u8272\uFF1Bdisplay \u6539\u6210 flex\uFF0C\u6D88\u6389 inline-block \u884C\u76D2\u5E26\u6765\u7684\u57FA\u7EBF\u95F4\u9699 */\n.dshpc-split .dshpc-picker{display:flex;align-items:stretch;}\n.dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}\n.dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}\n/* Segmented\uFF1A\u53BB\u6389\u7070\u8F68\u4E0E\u5916\u5706\u89D2\uFF1Bpadding \u4FDD\u6301 3px \u4E0D\u52A8 \u2014\u2014 \u5B83\u662F\u9AD8\u5EA6\u5951\u7EA6\u7684\u4E00\u90E8\u5206\n   \uFF083 + item + 3 = control-h\uFF0C\u6B63\u597D\u7B49\u4E8E\u540C\u6863 Picker \u89E6\u53D1\u5668\u9AD8\uFF09\u3002bordered \u90A3\u6863\u53BB\u6389\u63CF\u8FB9\u3001\n   \u628A\u8BA9\u7ED9\u63CF\u8FB9\u7684 1px \u8FD8\u56DE padding\uFF0C\u5426\u5219\u4F1A\u6BD4\u53F3\u8FB9\u77EE 2px\u3002 */\n.dshpc-split .dshpc-seg{background:transparent;border-radius:0;border:0;}\n.dshpc-split .dshpc-seg--bordered{padding:3px;}\n";
+var SPLIT_GROUP_CSS = "\n/* \u2500\u2500 \u62FC\u63A5\u5916\u58F3 SplitGroup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u804C\u8D23\u53EA\u6709\u4E00\u6761\uFF1A\u628A\u4E24\u4E2A\u63A7\u4EF6\u5728\u5916\u89C2\u4E0A\u710A\u6210\u4E00\u4F53\uFF08\u5916\u6846 / \u5706\u89D2 / \u4E2D\u95F4 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\uFF09\u3002\n   \u5B83**\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03** \u2014\u2014 \u9009\u4E2D\u4E0E\u8054\u52A8\u5168\u8D70\u5185\u4EF6\u81EA\u5DF1\u7684 value / onChange\n   \uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF1A\u5916\u58F3\u4E0D\u5FC5\u77E5\u9053\u53F3\u8FB9\u90A3\u4E2A\u4E0B\u62C9\u7BA1\u4EC0\u4E48\uFF09\u3002\n\n   \u26A0\uFE0F \u4E0E\u5185\u4EF6\u7C7B\u540D\u6709\u610F\u8026\u5408\uFF1A\u5185\u4EF6\u662F Picker / Segmented \u65F6\u7531\u4E0B\u9762\u51E0\u6761\u89C4\u5219\u628A\u5B83\u4EEC\u81EA\u5DF1\u7684\n   \u8FB9\u6846 / \u5E95\u8272 / \u5706\u89D2\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u7EDF\u4E00\u753B\u3002\u5185\u4EF6\u6539\u540D\u6216\u6539\u7ED3\u6784\u8981\u540C\u6B65\u6539\u8FD9\u91CC\uFF0C\n   \u5426\u5219\u4F1A\u51FA\u73B0\u53CC\u8FB9\u6846\u3001\u53CC\u5E95\u8272\u3002\n\n   \u9AD8\u5EA6\u4E0D\u5199\u6B7B\uFF1A\u5185\u4EF6\u81EA\u5DF1\u6309 size \u6863\uFF08sm 24 / md 28 / lg 32\uFF09\u6491\u5F00\uFF0C\u5916\u58F3\u8DDF\u7740\u957F\u3002\n   \u4E24\u683C\u8981\u7B49\u9AD8\uFF0C\u5C31\u7ED9\u5185\u4EF6\u4F20**\u540C\u4E00\u4E2A size**\u3002\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\u5916\u58F3\u5185\u4EF6\u7528 align-items:center\n   \u5C45\u4E2D\uFF08\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\uFF0C\u7528\u6237 2026-10-28 \u622A\u56FE\u53CD\u9988\u300C\u672C\u6708\u504F\u4E0A\u300D\u540E\u7684\u5904\u7406\uFF09\uFF1B**\u522B\u7528 height:100%**\uFF0C\n   \u5B83\u4F1A\u8986\u76D6\u4E09\u6863\u9AD8\u5EA6\uFF08\u4E0E --lg/--sm \u540C\u7279\u5F02\u6027\u4E14\u6CE8\u5165\u66F4\u665A\uFF09\u3002\n\n   \u5DE6\u683C\u7EDF\u4E00\u7070\u5E95\uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF09\uFF1A\u6ED1\u5757\u4FDD\u7559\u81EA\u5DF1\u7684\u7070\u8F68\uFF0C\u5DE6\u683C\u4E0B\u62C9\u628A\u5E95\u8272\u6362\u6210\n   surface-sunken\uFF1B\u53F3\u683C\u4FDD\u6301\u539F\u6837\u3002\u5C42\u6B21\u611F = \u5DE6\u683C\u662F\u300C\u6863\u4F4D/\u8303\u56F4\u300D\uFF0C\u53F3\u683C\u662F\u300C\u503C\u300D\u3002 */\n   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}\n   /* \u4E24\u683C\u5BBD\u5EA6\u90FD\u7531\u5185\u5BB9\u7ED9\uFF1B\u5BB9\u5668\u518D\u7A84\u4E5F\u8BA9\u5185\u4EF6\u81EA\u5DF1\u7701\u7565\uFF0C\u4E0D\u8BA9\u5916\u58F3\u88AB\u6491\u7834 */\n   .dshpc-split > *{min-width:0;max-width:100%;}\n   /* \u5206\u9694\uFF1A\u76F8\u90BB\u5144\u5F1F\u7684\u5DE6\u63CF\u8FB9\uFF0C\u4E0D\u989D\u5916\u63D2 DOM\uFF0Chover / focus \u65F6\u4E5F\u4E0D\u4F1A\u65AD */\n   .dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n   /* \u6574\u4F53\u805A\u7126\uFF1A\u5185\u4EF6\u81EA\u5DF1\u7684\u5916\u5708\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u753B\u4E00\u6574\u5708\uFF08\u5185\u4EF6\u5404\u81EA\u753B\u4F1A\u53D8\u6210\u683C\u5185\u534A\u5708\uFF09 */\n   .dshpc-split:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n   /* Picker\uFF1A\u53BB\u6389\u81EA\u8EAB\u5916\u6846\u4E0E\u5E95\u8272\uFF1Bdisplay \u6539\u6210 flex\uFF0C\u6D88\u6389 inline-block \u884C\u76D2\u5E26\u6765\u7684\u57FA\u7EBF\u95F4\u9699\u3002\n      \u6CE8\u610F**\u4E0D\u80FD\u7528 height:100%**\uFF1A\u5B83\u4F1A\u548C .dshpc-picker__trigger--lg / --sm \u540C\u7279\u5F02\u6027\uFF08\u90FD\u662F\u4E24\u4E2A\u7C7B\uFF09\uFF0C\n      \u4E14 split-group.css \u5728 picker.css \u4E4B\u540E\u6CE8\u5165\uFF0C\u4F1A\u628A\u4E09\u6863\u9AD8\u5EA6\u5168\u5403\u6389\uFF08md/lg \u770B\u8D77\u6765\u4E00\u6837\u5927\uFF09\u3002\n      \u6539\u7528 align-items:center \u2014\u2014 \u540C size \u65F6\u4E24\u683C\u81EA\u7136\u7B49\u9AD8\u7684\u540C\u65F6\u6587\u5B57\u5782\u76F4\u5C45\u4E2D\uFF1B\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\n      \u8F83\u77EE\u7684\u683C\u4E5F\u53EA\u662F\u5C45\u4E2D\u3001\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\u3002 */\n   .dshpc-split .dshpc-picker{display:flex;align-items:center;}\n   .dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}\n   .dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}\n   /* \u5DE6\u683C\u4E0B\u62C9\uFF1A\u7070\u5E95\uFF08\u6ED1\u5757\u7684\u7070\u8F68\u662F\u5B83\u81EA\u5DF1\u7684 --dshpc-seg-track\uFF0C\u4E0D\u5728\u8FD9\u91CC\u8986\u76D6\uFF09 */\n   .dshpc-split > :first-child .dshpc-picker__trigger{background:var(--dshpc-surface-sunken);}\n   /* Segmented\uFF1A\u53EA\u53BB\u5916\u5706\u89D2\u4E0E\u63CF\u8FB9\uFF0C\u7070\u8F68\u4FDD\u7559\uFF1Bpadding \u4FDD\u6301 3px \u4E0D\u52A8 \u2014\u2014 \u5B83\u662F\u9AD8\u5EA6\u5951\u7EA6\u7684\u4E00\u90E8\u5206\n    \uFF083 + item + 3 = control-h\uFF09\u3002bordered \u90A3\u6863\u53BB\u6389\u63CF\u8FB9\u3001\u628A\u8BA9\u7ED9\u63CF\u8FB9\u7684 1px \u8FD8\u56DE padding\uFF0C\n    \u5426\u5219\u4F1A\u6BD4\u53F3\u8FB9\u77EE 2px\u3002 */\n   .dshpc-split .dshpc-seg{border-radius:0;border:0;}\n   .dshpc-split .dshpc-seg--bordered{padding:3px;}\n";
 
 // dist/ui/marquee-css.generated.js
 var MARQUEE_CSS = "/* \u8DD1\u9A6C\u706F\uFF08MarqueeText\uFF09\uFF1A\u53CC\u5C42\u2014\u2014\u5916\u5C42\u53EA\u88C1\u526A\uFF0C\u5185\u5C42\u624D transform \u6EDA\u52A8\uFF1B\u975E hover \u5185\u5C42\u81EA\u5E26\u7701\u7565\u53F7\u3002\n   2026-10-20\uFF1A\u672C\u6587\u4EF6\u539F\u662F\u6742\u70E9\u300Cselect.css\u300D\uFF08\u4E0B\u62C9 / \u65E5\u5386 / \u65F6\u5206\u7684\u76AE\u80A4\u90FD\u88C5\u8FC7\uFF09\uFF0C\u968F\u7740\u90A3\u4E9B\u63A7\u4EF6\n   \u4E00\u4E2A\u4E2A\u5220\u5B8C\uFF0C\u6700\u540E\u53EA\u5269\u8DD1\u9A6C\u706F\uFF0C\u6545\u6309\u672C\u5305\u300C\u4E00\u4E2A css \u670D\u52A1\u4E00\u4E2A\u5BF9\u8C61\u300D\u7684\u683C\u5C40\u6539\u540D\u5F52\u6863\u3002\n   \u540C\u6279\u6E05\u6389\u7684\u8FD8\u6709\u96F6\u5F15\u7528\u7684\u7701\u7565\u53F7\u7C7B .dshpc-ellipsis \u2014\u2014 \u672C\u5305\u4E09\u4E2A\u7528\u5230\u622A\u65AD\u7684\u5730\u65B9\u90FD\u6CA1\u91C7\u7EB3\u5B83\u3002 */\n.dshpc-mq{display:block;overflow:hidden;white-space:nowrap;}\n.dshpc-mq .dshpc-mq-in{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:top;}\n/* \u26A0\uFE0F \u8DD1\u6CD5\uFF08\u7528\u6237 2026-10-03 \u62CD\u677F\uFF09\uFF1A**\u8DD1\u4E00\u904D\u3001\u505C\u5728\u5C3E\u5B57**\uFF08\u64AD\u653E 1 \u6B21 + forwards\uFF09\uFF0C\u4E0D\u6765\u56DE\u5F39\u3001\u4E0D\u65E0\u9650\u8DD1\u3002\n   \u6EDA\u8DDD = \u7CBE\u786E\u6EA2\u51FA\u91CF \u21D2 \u505C\u4E0B\u65F6\u6700\u540E\u4E00\u4E2A\u5B57\u6B63\u597D\u8D34\u53F3\u7F18\uFF0C**\u4E0D\u4F1A\u8DD1\u8FDB\u9ED1\u5757**\uFF08\u9ED1\u5757\u662F\u65E7\u624B\u5199\u7248\u628A\n   \u5185\u5C42\u76D2\u5B50\u88C1\u4E86\u3001\u6309\u300C\u534A\u622A\u6587\u672C\u300D\u5E73\u79FB\u5BFC\u81F4\u7684\uFF09\u3002\u9F20\u6807\u79FB\u5F00 \u21D2 :hover \u5931\u6548 \u21D2 \u81EA\u52A8\u590D\u4F4D\u56DE\u7701\u7565\u53F7\u6001\u3002 */\n.dshpc-mq-run:hover .dshpc-mq-in{max-width:none;overflow:visible;animation:dshpc-mq-scroll var(--dshpc-mq-dur,6s) linear .4s 1 forwards;}\n@keyframes dshpc-mq-scroll{from{transform:translateX(0)}to{transform:translateX(var(--dshpc-mq-dist,-40px))}}\n/* \u6EA2\u51FA\u6E10\u5F71\uFF08\u7528\u6237 2026-10-24 \u62CD\u677F\u300C\u5DE6\u53F3\u7A0D\u5FAE\u6709\u70B9\u6E10\u5F71\u300D\uFF1B\u5B98\u65B9\u53E3\u5F84 = dsh-client-ui-primitives@0.2.1-rc.2\n   PathLabel.module.css:13-15\uFF1Amask-image \u7EBF\u6027\u6E10\u9690 + 28px \u968F\u5B98\u65B9\uFF09\u3002\u26A0\uFE0F \u53EA\u5728 **hover \u6EDA\u52A8\u6001** \u52A0\uFF1A\n   \u9759\u6001\u6001\uFF08\u4E09\u4E2A\u70B9\uFF09\u4E0D\u8981\u6E10\u5F71\uFF08\u7528\u6237 2026-10-24 \u4E8C\u6B21\u62CD\u677F\uFF09\uFF0Chover \u6EDA\u52A8\u65F6\u4E24\u7AEF\u6E10\u5F71\u2014\u2014\u5DE6\u7F18\u67D4\u5316\u88AB\u88C1\u7684\u6587\u5B57\u5934\u3002 */\n.dshpc-mq-run:hover{mask-image:linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);}\n";
@@ -59038,10 +59038,10 @@ var CODE_MODEL_PICKER = `// \u6570\u636E\u6765\u81EA\u5BBF\u4E3B\u6A21\u578B\u76
 var CODE_WORKSPACE_PICKER = `// \u9ED8\u8BA4\u5373\u300C\u5DE5\u4F5C\u533A\u300D\u6587\u6848\u4E0E\u6587\u4EF6\u5939\u56FE\u6807\uFF1Bclearable / searchable \u662F\u53EF\u9009\u80FD\u529B
 <WorkspacePicker value={ws} onChange={setWs} clearable searchable />`;
 var CODE_SPLIT_GROUP = `// \u5916\u58F3\u53EA\u7BA1\u300C\u710A\u5728\u4E00\u8D77\u300D\uFF1A\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03\uFF0C\u4E24\u683C\u5404\u81EA\u8FD8\u662F\u539F\u6765\u7684\u63A7\u4EF6
-// \u6ED1\u5757 + \u4E0B\u62C9\uFF08left \u9009\u5B8C\uFF0C\u8054\u52A8\u5199\u5728 left \u7684 onChange \u91CC\uFF09
+// \u5355\u9009\u6ED1\u5757 + \u4E0B\u62C9\uFF08left \u9009\u5B8C\uFF0C\u8054\u52A8\u5199\u5728 left \u7684 onChange \u91CC\uFF09
 <SplitGroup>
-  <Segmented size="md" items={periods} value={period} onChange={(v) => { setPeriod(v); setBucket('') }} />
-  <Picker size="md" options={bucketsOf(period)} value={bucket} onChange={setBucket} clearable />
+  <Segmented size="md" items={singleOpts} value={single} onChange={(v) => { setSingle(v); setBucket('') }} />
+  <Picker size="md" options={targetsOf(single)} value={bucket} onChange={setBucket} clearable />
 </SplitGroup>
 
 // \u4E0B\u62C9 + \u4E0B\u62C9\uFF08\u53F3\u4FA7\u6362\u4E2A\u6570\u636E\u6E90\u800C\u5DF2\uFF0C\u5916\u58F3\u4E0D\u53D8\uFF09
@@ -59049,16 +59049,28 @@ var CODE_SPLIT_GROUP = `// \u5916\u58F3\u53EA\u7BA1\u300C\u710A\u5728\u4E00\u8D7
   <Picker size="md" options={scopes} value={scope} onChange={setScope} />
   <Picker size="md" options={membersOf(scope)} value={member} onChange={setMember} searchable />
 </SplitGroup>`;
-var SPLIT_PERIODS = [
-  { value: "day", label: "\u65E5" },
-  { value: "week", label: "\u5468" },
-  { value: "month", label: "\u6708" }
+var SPLIT_SINGLE_OPTS = [
+  { value: "formal", label: "\u6B63\u5F0F\u7EC4" },
+  { value: "test", label: "\u6D4B\u8BD5\u7EC4" }
 ];
-var SPLIT_BUCKETS = {
-  day: [{ value: "today", label: "\u4ECA\u5929" }, { value: "yesterday", label: "\u6628\u5929" }],
-  week: [{ value: "this", label: "\u672C\u5468" }, { value: "last", label: "\u4E0A\u5468" }],
-  month: [{ value: "this", label: "\u672C\u6708" }, { value: "last", label: "\u4E0A\u6708" }]
+var SPLIT_TARGETS = {
+  formal: [{ value: "f1", label: "\u6B63\u5F0F\u73AF\u5883\u4E00" }, { value: "f2", label: "\u6B63\u5F0F\u73AF\u5883\u4E8C" }],
+  test: [
+    { value: "t1", label: "\u6D4B\u8BD5\u73AF\u5883\u4E00" },
+    { value: "t2", label: "\u6D4B\u8BD5\u73AF\u5883\u4E8C" },
+    { value: "t3", label: "\u6D4B\u8BD5\u73AF\u5883\u4E09" }
+  ]
 };
+var SPLIT_GROUPS = [
+  { value: "a", label: "A \u7EC4" },
+  { value: "b", label: "B \u7EC4" },
+  { value: "c", label: "C \u7EC4" }
+];
+var SPLIT_FIXED = [
+  { value: "x", label: "\u9009\u9879\u4E00" },
+  { value: "y", label: "\u9009\u9879\u4E8C" },
+  { value: "z", label: "\u9009\u9879\u4E09" }
+];
 var SPLIT_SCOPES = [
   { value: "project", label: "\u672C\u9879\u76EE" },
   { value: "workspace", label: "\u6574\u4E2A\u5DE5\u4F5C\u533A" }
@@ -59077,11 +59089,11 @@ function PickerPage() {
   const [model, setModel] = (0, import_react58.useState)("");
   const [model2, setModel2] = (0, import_react58.useState)("");
   const [ws, setWs] = (0, import_react58.useState)(void 0);
-  const [period2, setPeriod] = (0, import_react58.useState)("day");
+  const [period2, setPeriod] = (0, import_react58.useState)("formal");
   const [bucket, setBucket] = (0, import_react58.useState)("");
   const [scope, setScope] = (0, import_react58.useState)("project");
   const [member, setMember] = (0, import_react58.useState)("");
-  const [picked, setPicked] = (0, import_react58.useState)(["1", "3"]);
+  const [groups, setGroups] = (0, import_react58.useState)(["a"]);
   const [groupValue, setGroupValue] = (0, import_react58.useState)("");
   return (0, import_react58.createElement)(
     "div",
@@ -59177,88 +59189,87 @@ function PickerPage() {
     (0, import_react58.createElement)(
       Example,
       { title: t3("exSplitGroupTitle"), hint: t3("splitGroupHint"), code: CODE_SPLIT_GROUP },
-      (0, import_react58.createElement)(
-        "div",
-        { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        // ① 滑块 + 下拉（单选）：左选完换右的候选，联动写在左边的 onChange 里
-        (0, import_react58.createElement)(
-          SplitGroup,
-          { label: "\u5468\u671F\u4E0E\u8303\u56F4" },
-          (0, import_react58.createElement)(Segmented, {
-            items: SPLIT_PERIODS,
-            value: period2,
-            onChange: (v) => {
-              setPeriod(v);
-              setBucket("");
-            }
-          }),
-          (0, import_react58.createElement)(Picker, {
-            options: SPLIT_BUCKETS[period2] ?? [],
-            value: bucket,
-            onChange: (v) => setBucket(v),
-            placeholder: "\u5168\u90E8",
-            clearable: true
-          })
-        ),
-        // ② 滑块多选 + 下拉：多选照样能拼，外壳不管选了几个
-        (0, import_react58.createElement)(
-          SplitGroup,
-          { label: "\u591A\u9009\u4E0E\u5206\u7EC4" },
-          (0, import_react58.createElement)(Segmented, {
-            multiple: true,
-            items: ["1", "2", "3", "4", "5"].map((n) => ({ value: n, label: n })),
-            value: picked,
-            onChange: setPicked
-          }),
-          (0, import_react58.createElement)(Picker, {
-            options: ICON_OPTIONS,
-            value: groupValue,
-            onChange: (v) => setGroupValue(v),
-            placeholder: "\u9009\u9879",
-            minWidth: 96
-          })
-        ),
-        // ③ 下拉 + 下拉（联动 + 可搜索）：外壳不变，只是两格都换成 Picker
-        (0, import_react58.createElement)(
-          SplitGroup,
-          { label: "\u8303\u56F4\u4E0E\u6210\u5458" },
-          (0, import_react58.createElement)(Picker, {
-            options: SPLIT_SCOPES,
-            value: scope,
-            onChange: (v) => {
-              setScope(v);
-              setMember("");
-            },
-            minWidth: 96
-          }),
-          (0, import_react58.createElement)(Picker, {
-            options: SPLIT_MEMBERS[scope] ?? [],
-            value: member,
-            onChange: (v) => setMember(v),
-            placeholder: "\u9009\u62E9\u6210\u5458",
-            searchable: true,
-            minWidth: 132
-          })
-        )
-      ),
-      // 三档尺寸：两格传同一个 size 才逐像素等高（外壳高度跟着内件长，不写死）
+      // 形态一（单选滑块 + 下拉）：左滑块选「正式组 / 测试组」，右格下拉联动换源、且略长；sm/md/lg 三档
       (0, import_react58.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
         ["sm", "md", "lg"].map(
           (sz) => (0, import_react58.createElement)(
             SplitGroup,
-            { key: sz, label: `\u5C3A\u5BF8 ${sz}` },
-            (0, import_react58.createElement)(Segmented, { size: sz, items: SPLIT_PERIODS, value: period2, onChange: setPeriod }),
+            { key: sz, label: `\u5355\u9009 \xB7 ${sz}` },
+            (0, import_react58.createElement)(Segmented, {
+              size: sz,
+              items: SPLIT_SINGLE_OPTS,
+              value: period2,
+              onChange: (v) => {
+                setPeriod(v);
+                setBucket("");
+              }
+            }),
             (0, import_react58.createElement)(Picker, {
               size: sz,
-              options: SPLIT_BUCKETS[period2] ?? [],
+              options: SPLIT_TARGETS[period2] ?? [],
               value: bucket,
               onChange: (v) => setBucket(v),
-              placeholder: "\u5168\u90E8",
-              minWidth: 88
+              placeholder: "\u9009\u62E9\u73AF\u5883",
+              clearable: true,
+              minWidth: 160
             })
           )
+        )
+      ),
+      // 形态二（下拉 + 下拉）：左格「范围」、右格「值」，三个尺寸各来一个
+      (0, import_react58.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
+        ["sm", "md", "lg"].map(
+          (sz) => (0, import_react58.createElement)(
+            SplitGroup,
+            { key: sz, label: `\u4E0B\u62C9 \xB7 ${sz}` },
+            (0, import_react58.createElement)(Picker, {
+              size: sz,
+              options: SPLIT_SCOPES,
+              value: scope,
+              onChange: (v) => {
+                setScope(v);
+                setMember("");
+              },
+              minWidth: 110
+            }),
+            (0, import_react58.createElement)(Picker, {
+              size: sz,
+              options: SPLIT_MEMBERS[scope] ?? [],
+              value: member,
+              onChange: (v) => setMember(v),
+              placeholder: "\u9009\u62E9\u6210\u5458",
+              searchable: true,
+              minWidth: 160
+            })
+          )
+        )
+      ),
+      // 多选：左滑块 A/B/C 三组可多选，右格一个下拉
+      (0, import_react58.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
+        (0, import_react58.createElement)(
+          SplitGroup,
+          { label: "\u591A\u9009" },
+          (0, import_react58.createElement)(Segmented, {
+            size: "lg",
+            multiple: true,
+            items: SPLIT_GROUPS,
+            value: groups,
+            onChange: setGroups
+          }),
+          (0, import_react58.createElement)(Picker, {
+            size: "lg",
+            options: SPLIT_FIXED,
+            value: groupValue,
+            onChange: (v) => setGroupValue(v),
+            placeholder: "\u9009\u62E9\u76EE\u6807",
+            minWidth: 120
+          })
         )
       )
     ),
@@ -62107,9 +62118,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.7.4"}`],
-            [t3("buildDemo"), `v${"0.7.4"}`],
-            [t3("buildStamp"), "261028-175039-319"]
+            [t3("buildCore"), `v${"0.8.0"}`],
+            [t3("buildDemo"), `v${"0.8.0"}`],
+            [t3("buildStamp"), "261028-201619-082"]
           ].map(
             ([label, value]) => (0, import_react68.createElement)(
               "tr",
@@ -62431,9 +62442,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react70.createElement)("span", null, `core v${"0.7.4"}`),
-          (0, import_react70.createElement)("span", null, `demo v${"0.7.4"}`),
-          (0, import_react70.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-175039-319")
+          (0, import_react70.createElement)("span", null, `core v${"0.8.0"}`),
+          (0, import_react70.createElement)("span", null, `demo v${"0.8.0"}`),
+          (0, import_react70.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-201619-082")
         )
       )
     ),
