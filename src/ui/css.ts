@@ -7,6 +7,7 @@ import {
   HINT_CSS,
   LOADING_CSS,
   SEGMENTED_CSS,
+  SPLIT_GROUP_CSS,
 } from './controls-css.js'
 import { MARQUEE_CSS } from './marquee-css.js'
 import { PICKER_CSS } from './picker-css.js'
@@ -41,6 +42,7 @@ export const CONTROLS_CSS = [
   MARQUEE_CSS,
   PANEL_DOCK_CSS,
   CODE_VIEWER_CSS,
+  SPLIT_GROUP_CSS,
 ].join('\n')
 
 /**

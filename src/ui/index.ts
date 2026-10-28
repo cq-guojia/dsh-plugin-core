@@ -98,6 +98,7 @@ export {
 
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js'
 export { Segmented, type SegmentedProps } from './Segmented.js'
+export { SplitGroup, type SplitGroupProps } from './SplitGroup.js'
 export { Textarea, type TextareaProps } from './Textarea.js'
 export { Checkbox, type CheckboxProps } from './Checkbox.js'
 export { MarqueeText } from './MarqueeText.js'

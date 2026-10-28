@@ -36,6 +36,7 @@ const MAP = [
   ['src/ui/controls/back-to-top.css', 'src/ui/controls/back-to-top-css.generated.ts', 'BACK_TO_TOP_CSS'],
   ['src/ui/controls/hint.css', 'src/ui/controls/hint-css.generated.ts', 'HINT_CSS'],
   ['src/ui/controls/datetime.css', 'src/ui/controls/datetime-css.generated.ts', 'DATETIME_CSS'],
+  ['src/ui/controls/split-group.css', 'src/ui/controls/split-group-css.generated.ts', 'SPLIT_GROUP_CSS'],
   ['src/ui/picker.css', 'src/ui/picker-css.generated.ts', 'PICKER_CSS'],
   ['src/ui/feedback.css', 'src/ui/feedback-css.generated.ts', 'FEEDBACK_CSS'],
   ['src/ui/card.css', 'src/ui/card-css.generated.ts', 'CARD_CSS'],

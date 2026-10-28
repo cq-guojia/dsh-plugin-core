@@ -73,6 +73,7 @@ export type DemoMessageKey =
   | 'pickerHint'
   | 'modelPickerHint'
   | 'workspacePickerHint'
+  | 'splitGroupHint'
   | 'tooltipTitle'
   | 'tooltipHint'
   | 'tooltipAnchorText'
@@ -146,6 +147,7 @@ export type DemoMessageKey =
   // 示例框架的标题 / 说明（原来硬编码中文，切英文不变 ⇒ 必须走字典）
   | 'exModelPickerTitle'
   | 'exWorkspacePickerTitle'
+  | 'exSplitGroupTitle'
   | 'exSectionHeadHint'
   | 'exMarqueeHint'
   | 'exLiveHint'
@@ -375,6 +377,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     dateTimePickerHint: '一个控件三种用法：single / range × precision（day / hour / minute / second）；浮层无遮罩、与 Picker 同机制；range 弹层是左右两块独立日历（左开始、右结束，各选各的）；时分秒走步进（▲▼ / 键入 / ↑↓），不用逐格点 60 分钟，也不强制先选日期；快捷键 day 精度叫「今天」、带时分秒叫「现在」；草稿态，「确定」才提交；day 精度下结束端自动补 23:59:59.999（数据库只收到秒时优雅退化）',
     modelPickerHint: 'grouped 分组（一个下拉、厂商做组头、完全独立）/ cascade 联动（供应商、模型两个下拉联动）——两种形态 onChange 都发最终模型 value；「默认模型」选项默认提供（选中发空串，关闭传 allowDefault: false）；目录自动来自宿主',
     workspacePickerHint: '工作区列表自动来自宿主快照（connectHost 接线，follow 流实时更新），选中值为 workspaceId',
+    splitGroupHint: '只做「把两个控件焊成一体」这一件事：外框 / 圆角 / 中间 1px 分隔 / 整体聚焦圈都由外壳画，内件仍是你原来的控件（它们把边框、底色交出来）；外壳不持状态、不出联动回调——联动就是两格各自绑自己的 onChange；固定两格，不做多格；两格传同一个 size 才逐像素等高',
 
     tooltipTitle: 'Tooltip（鼠标悬停提示）',
     tooltipHint: '官方 Tooltip：side 上 / 下 / 右 × align 居中 / 贴边；锚点可以是按钮或一段文字；长文本按 maxWidth 自动折行；最右一颗是「名字 + 正文」两段式——文本里的 \\n 就是真实换行',
@@ -440,6 +443,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sessionRealTitle: '真实会话列表',
     exModelPickerTitle: 'ModelPicker（真实目录）',
     exWorkspacePickerTitle: 'WorkspacePicker（真实列表）',
+    exSplitGroupTitle: 'SplitGroup（组合选择框）',
     exSectionHeadHint: '分区标题：icon + 标题 + 右侧操作区三段式——纯排版壳，icon/标题/右侧都调用方自定；下示 3 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合',
     exMarqueeHint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号',
     exLiveHint: '订阅内部节拍器，走时 Ui 由调用方渲染',
@@ -654,6 +658,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     dateTimePickerHint: 'One control, three usages: single / range × precision (day / hour / minute / second); mask-free popup sharing Picker’s mechanics; the range popup shows two independent calendars (left = start, right = end, each picks its own); hour/minute/second via steppers (▲▼ / typing / ↑↓) instead of clicking through 60 minutes, and never requires picking a date first; the quick button is "Today" at day precision, "Now" when hours/minutes/seconds are on; draft state — commits only on confirm; at day precision the end auto-fills 23:59:59.999 (degrades gracefully if the DB stores seconds only)',
     modelPickerHint: 'grouped (one dropdown, vendor headers, fully independent) / cascade (vendor and model dropdowns linked) — both emit the same final model value; a "default model" option is provided by default (emits an empty string, disable with allowDefault: false); the catalog comes from the host automatically',
     workspacePickerHint: 'Workspace list comes from the host snapshot automatically (wired via connectHost, live follow stream); selected value is the workspaceId',
+    splitGroupHint: 'Does exactly one thing — welds two controls into one: outer frame, corner radius, the 1px divider between the cells and the shared focus ring all come from the shell; the inner controls stay your own (they hand over their border and background). The shell holds no state and emits no linking callback — bind each cell own onChange. Exactly two cells, never more. Give both cells the same size for pixel-identical heights',
 
     tooltipTitle: 'Tooltip (hover hint)',
     tooltipHint: 'Official Tooltip: side top / bottom / right x align center / end; anchor can be a button or a span of text; long labels wrap at maxWidth; the rightmost one is a two-part hint (name + body) where \\n in the text is a real line break',
@@ -719,6 +724,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sessionRealTitle: 'Real session list',
     exModelPickerTitle: 'ModelPicker (real catalog)',
     exWorkspacePickerTitle: 'WorkspacePicker (real list)',
+    exSplitGroupTitle: 'SplitGroup (combined selectors)',
     exSectionHeadHint: 'Section header: icon + title + right-side actions in three slots — a pure layout shell; icon, title and right side are all caller-defined. Three groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos',
     exMarqueeHint: 'Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis',
     exLiveHint: 'Subscribes to an internal ticker; the running clock UI is rendered by the caller',

@@ -19,6 +19,7 @@ import {
   Picker,
   SectionHead,
   Segmented,
+  SplitGroup,
   StripCard,
   Textarea,
   WorkspacePicker,
@@ -591,6 +592,46 @@ const CODE_MODEL_PICKER = `// 数据来自宿主模型目录（宿主侧 connect
 const CODE_WORKSPACE_PICKER = `// 默认即「工作区」文案与文件夹图标；clearable / searchable 是可选能力
 <WorkspacePicker value={ws} onChange={setWs} clearable searchable />`
 
+const CODE_SPLIT_GROUP = `// 外壳只管「焊在一起」：不持状态、不出联动回调，两格各自还是原来的控件
+// 滑块 + 下拉（left 选完，联动写在 left 的 onChange 里）
+<SplitGroup>
+  <Segmented size="md" items={periods} value={period} onChange={(v) => { setPeriod(v); setBucket('') }} />
+  <Picker size="md" options={bucketsOf(period)} value={bucket} onChange={setBucket} clearable />
+</SplitGroup>
+
+// 下拉 + 下拉（右侧换个数据源而已，外壳不变）
+<SplitGroup>
+  <Picker size="md" options={scopes} value={scope} onChange={setScope} />
+  <Picker size="md" options={membersOf(scope)} value={member} onChange={setMember} searchable />
+</SplitGroup>`
+
+/** 组合选择框演示数据：左侧一改，右侧的候选跟着换（数据在调用方手里）。 */
+const SPLIT_PERIODS = [
+  { value: 'day', label: '日' },
+  { value: 'week', label: '周' },
+  { value: 'month', label: '月' },
+]
+
+const SPLIT_BUCKETS: Record<string, { value: string; label: string }[]> = {
+  day: [{ value: 'today', label: '今天' }, { value: 'yesterday', label: '昨天' }],
+  week: [{ value: 'this', label: '本周' }, { value: 'last', label: '上周' }],
+  month: [{ value: 'this', label: '本月' }, { value: 'last', label: '上月' }],
+}
+
+const SPLIT_SCOPES = [
+  { value: 'project', label: '本项目' },
+  { value: 'workspace', label: '整个工作区' },
+]
+
+const SPLIT_MEMBERS: Record<string, { value: string; label: string }[]> = {
+  project: [{ value: 'a', label: '选项 A' }, { value: 'b', label: '选项 B' }],
+  workspace: [
+    { value: 'c', label: '选项 C' },
+    { value: 'd', label: '选项 D' },
+    { value: 'e', label: '选项 E' },
+  ],
+}
+
 
 /** Picker 对外参数（与 src/ui/Picker.ts 的 PickerProps 逐条对齐）。 */
 
@@ -603,6 +644,13 @@ export function PickerPage(): ReturnType<typeof h> {
   // 两种形态各用各的值：演示里互不影响（共用一份 state 会误以为它们是联动的）
   const [model2, setModel2] = useState('')
   const [ws, setWs] = useState<string | undefined>(undefined)
+  // 组合选择框：外壳不持状态，联动全写在这些 state 的切换里
+  const [period, setPeriod] = useState('day')
+  const [bucket, setBucket] = useState('')
+  const [scope, setScope] = useState('project')
+  const [member, setMember] = useState('')
+  const [picked, setPicked] = useState<string[]>(['1', '3'])
+  const [groupValue, setGroupValue] = useState('')
 
   return h(
     'div',
@@ -695,6 +743,95 @@ export function PickerPage(): ReturnType<typeof h> {
         }),
       ),
     ),
+    h(
+      Example,
+      { title: t('exSplitGroupTitle'), hint: t('splitGroupHint'), code: CODE_SPLIT_GROUP },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start' } },
+        // ① 滑块 + 下拉（单选）：左选完换右的候选，联动写在左边的 onChange 里
+        h(
+          SplitGroup,
+          { label: '周期与范围' },
+          h(Segmented, {
+            items: SPLIT_PERIODS,
+            value: period,
+            onChange: (v: string) => {
+              setPeriod(v)
+              setBucket('')
+            },
+          }),
+          h(Picker, {
+            options: SPLIT_BUCKETS[period] ?? [],
+            value: bucket,
+            onChange: (v) => setBucket(v as string),
+            placeholder: '全部',
+            clearable: true,
+          }),
+        ),
+        // ② 滑块多选 + 下拉：多选照样能拼，外壳不管选了几个
+        h(
+          SplitGroup,
+          { label: '多选与分组' },
+          h(Segmented, {
+            multiple: true,
+            items: ['1', '2', '3', '4', '5'].map((n) => ({ value: n, label: n })),
+            value: picked,
+            onChange: setPicked,
+          }),
+          h(Picker, {
+            options: ICON_OPTIONS,
+            value: groupValue,
+            onChange: (v) => setGroupValue(v as string),
+            placeholder: '选项',
+            minWidth: 96,
+          }),
+        ),
+        // ③ 下拉 + 下拉（联动 + 可搜索）：外壳不变，只是两格都换成 Picker
+        h(
+          SplitGroup,
+          { label: '范围与成员' },
+          h(Picker, {
+            options: SPLIT_SCOPES,
+            value: scope,
+            onChange: (v) => {
+              setScope(v as string)
+              setMember('')
+            },
+            minWidth: 96,
+          }),
+          h(Picker, {
+            options: SPLIT_MEMBERS[scope] ?? [],
+            value: member,
+            onChange: (v) => setMember(v as string),
+            placeholder: '选择成员',
+            searchable: true,
+            minWidth: 132,
+          }),
+        ),
+      ),
+      // 三档尺寸：两格传同一个 size 才逐像素等高（外壳高度跟着内件长，不写死）
+      h(
+        'div',
+        { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start' } },
+        (['sm', 'md', 'lg'] as const).map((sz) =>
+          h(
+            SplitGroup,
+            { key: sz, label: `尺寸 ${sz}` },
+            h(Segmented, { size: sz, items: SPLIT_PERIODS, value: period, onChange: setPeriod }),
+            h(Picker, {
+              size: sz,
+              options: SPLIT_BUCKETS[period] ?? [],
+              value: bucket,
+              onChange: (v) => setBucket(v as string),
+              placeholder: '全部',
+              minWidth: 88,
+            }),
+          ),
+        ),
+      ),
+    ),
+    h(DocApi, { id: 'split-group' }),
     h(DocCode, { id: 'picker' }),
     h(DocApi, { id: 'picker' }),
     h(Placeholder, { descKey: 'pickerLogicDesc' }),

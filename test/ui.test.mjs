@@ -4,7 +4,7 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/css.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/controls/field-css.generated.js'
-import { Input, Segmented } from '../dist/ui/index.js'
+import { Input, Segmented, SplitGroup } from '../dist/ui/index.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -33,6 +33,20 @@ test('Segmented 单选挂滑动块模式，多选保持逐段着色', () => {
     createElement(Segmented, { multiple: true, items, value: ['a'], onChange() {} }),
   )
   assert.ok(!multi.includes('dshpc-seg--slide'), '多选不该有唯一下滑的选中块')
+})
+
+test('SplitGroup 只包壳：根节点带 dshpc-split，两格顺序原样、className 追加', () => {
+  const html = renderToStaticMarkup(
+    createElement(
+      SplitGroup,
+      { label: '组合', className: 'probe' },
+      createElement('span', null, 'L'),
+      createElement('span', null, 'R'),
+    ),
+  )
+  assert.match(html, /class="dshpc-split probe"/)
+  assert.match(html, /aria-label="组合"/)
+  assert.ok(html.indexOf('L') < html.indexOf('R'), '左格必须在前')
 })
 
 test('Segmented 的 count / badge 收字符串（如 "1K"），数字 ≤0 仍不显示', () => {

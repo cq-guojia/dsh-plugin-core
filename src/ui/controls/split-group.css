@@ -1,0 +1,28 @@
+
+/* ── 拼接外壳 SplitGroup ──────────────────────────────────────────────
+   职责只有一条：把两个控件在外观上焊成一体（外框 / 圆角 / 中间 1px 分隔 / 整体聚焦圈）。
+   它**不持状态、不出联动回调** —— 选中与联动全走内件自己的 value / onChange
+   （用户 2026-10-28 拍板：外壳不必知道右边那个下拉管什么）。
+
+   ⚠️ 与内件类名有意耦合：内件是 Picker / Segmented 时由下面几条规则把它们自己的
+   边框 / 底色 / 圆角交出来，由外壳统一画。内件改名或改结构要同步改这里，
+   否则会出现双边框、双底色。
+
+   高度不写死：内件自己按 size 档（sm 24 / md 28 / lg 32）撑开，外壳跟着长。
+   两格要等高，就给内件传**同一个 size**。 */
+.dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}
+/* 两格宽度都由内容给；容器再窄也让内件自己省略，不让外壳被撑破 */
+.dshpc-split > *{min-width:0;max-width:100%;}
+/* 分隔：相邻兄弟的左描边，不额外插 DOM，hover / focus 时也不会断 */
+.dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}
+/* 整体聚焦：内件自己的外圈交出来，由外壳画一整圈（内件各自画会变成格内半圈） */
+.dshpc-split:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
+/* Picker：去掉自身外框与底色；display 改成 flex，消掉 inline-block 行盒带来的基线间隙 */
+.dshpc-split .dshpc-picker{display:flex;align-items:stretch;}
+.dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}
+.dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}
+/* Segmented：去掉灰轨与外圆角；padding 保持 3px 不动 —— 它是高度契约的一部分
+   （3 + item + 3 = control-h，正好等于同档 Picker 触发器高）。bordered 那档去掉描边、
+   把让给描边的 1px 还回 padding，否则会比右边矮 2px。 */
+.dshpc-split .dshpc-seg{background:transparent;border-radius:0;border:0;}
+.dshpc-split .dshpc-seg--bordered{padding:3px;}

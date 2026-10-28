@@ -67,6 +67,25 @@ its own assertion.
 EN: The `ui` layer has no official dependency, so every arrow comes from the self-drawn chevron in
 `src/ui/chevron.ts`. Never write a glyph arrow again; a test enforces it.
 
+## 拼成一体：外壳持框，内件交边
+
+> EN: Welding controls together: the shell owns the frame, the cells hand over their borders
+
+多个控件拼成一个外观（`SplitGroup`、`PrefixedInput`、`NumberInput`、`DateTimePicker` 的 range 触发器）
+只有一种写法：**外壳持边框 + 圆角 + `overflow:hidden` + 整体 `:focus-within`；内件把边框、底色、圆角
+交出来**（`border:0; border-radius:0; background:transparent`）。不给内件再套第二个外框，也不让内件
+自己画 `:focus-visible` 圈——否则格子里会冒出半圈描边。
+
+`SplitGroup` 用后代选择器直接压内件（`.dshpc-split .dshpc-picker__trigger` / `.dshpc-split .dshpc-seg`），
+所以**内件类名就是耦合点**：改这些类名或结构必须同步改 `src/ui/controls/split-group.css`，否则拼接
+静默失效（双边框、底色错位），没有自检能替你发现。高度不写死——内件按自己的 `size` 撑开，
+外壳跟着长；两格传同一个 `size` 才逐像素等高。
+
+EN: Welding controls into one visual unit has exactly one recipe: the shell owns border, radius,
+`overflow:hidden` and the shared `:focus-within` ring; the cells hand over border, background and radius.
+`SplitGroup` overrides inner classes with descendant selectors, so those class names are the coupling point —
+rename them and you must update `src/ui/controls/split-group.css`, or the weld fails silently.
+
 ## 三条硬规矩
 
 > EN: Three hard rules

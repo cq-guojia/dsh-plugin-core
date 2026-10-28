@@ -4,7 +4,7 @@
 
 > EN: ui — base controls
 
-导出：Button、IconButton、Segmented、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
+导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
 
 ## 概览
 
@@ -132,6 +132,45 @@ import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'
 
 // apply(ctx) 里：connectHost(ctx)
 h(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })
+```
+
+## SplitGroup（组合选择框）
+
+> EN: SplitGroup (combined selectors)
+
+只做一件事：把两个控件在**外观上**焊成一体——外框、圆角、两格之间那条 1px 分隔、整体聚焦圈都由外壳画；内件仍是原来的控件（它们把边框、底色、圆角交出来）。形态随便换：滑块 + 下拉、下拉 + 下拉，外壳不变。
+
+> EN: Does one thing: welds two controls into one **visually** — outer frame, corner radius, the 1px divider between the cells and the shared focus ring all come from the shell; the inner controls stay the original ones (they hand over border, background and radius). Swap the cells freely: segmented + dropdown, dropdown + dropdown — the shell does not change.
+
+外壳**不持状态、不出联动回调**：联动就是让左格自己的 `onChange` 去改右格的数据源，两个控件原本怎么用，拼起来还怎么用。固定两格，不做多格。
+
+> EN: The shell holds **no state and emits no linking callback**: linking means the left cell’s own `onChange` updates the right cell’s data. Each control behaves exactly as it does on its own. Exactly two cells, never more.
+
+高度不写死：内件按自己的 `size`（sm 24 / md 28 / lg 32）撑开，外壳跟着长，两格传**同一个 size** 才逐像素等高。下拉菜单 portal 到 body，不受外壳 `overflow:hidden` 裁剪。
+
+> EN: Height is never hard-coded: each cell grows to its own `size` (sm 24 / md 28 / lg 32) and the shell follows; give both cells the **same size** for pixel-identical heights. Menus portal to body, so the shell’s `overflow:hidden` never clips them.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `children` | `ReactNode` | — | 两格内容（左、右）；元素顺序即布局顺序 | Two cells (left, right); order is layout order |
+| `label` | `string` | — | 无障碍组名（role=group） | Accessible group name (role=group) |
+| `id / className / style` | `string / string / CSSProperties` | — | 锚点 / 只补布局，不覆盖皮肤 | Anchor / layout-only additions, never skin overrides |
+
+```tsx id="ui-splitgroup-example"
+import { SplitGroup, Segmented, Picker } from 'dsh-plugin-core/ui'
+
+// 两格焊成一体：外框 / 圆角 / 中间 1px 分隔 / 整体聚焦圈都由外壳画
+// 联动不归外壳管 —— 左格选完，在它自己的 onChange 里改右格的数据
+h(SplitGroup, null,
+  h(Segmented, { size: 'md', items: periods, value: period, onChange: (v) => { setPeriod(v); setBucket('') } }),
+  h(Picker, { size: 'md', options: bucketsOf(period), value: bucket, onChange: setBucket, clearable: true }),
+)
+
+// 两个下拉同样只是换内件，外壳不变
+h(SplitGroup, null,
+  h(Picker, { size: 'md', options: scopes, value: scope, onChange: setScope }),
+  h(Picker, { size: 'md', options: membersOf(scope), value: member, onChange: setMember, searchable: true }),
+)
 ```
 
 ## DateTimePicker（日期时间选择）
