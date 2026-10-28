@@ -165,6 +165,8 @@ export type DemoMessageKey =
   | 'exToastNotifyHint'
   | 'exToastHostTitle'
   | 'exToastHostHint'
+  | 'exLoadingTitle'
+  | 'exLoadingHint'
   | 'exToastSonnerTitle'
   | 'exToastSonnerHint'
   | 'sessionListUnavailable'
@@ -465,6 +467,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exToastNotifyHint: 'notify()：统一灰/绿/红/黄 + 右侧我们自己的按钮',
     exToastHostTitle: 'Toast · 宿主原生',
     exToastHostHint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）',
+    exLoadingTitle: '加载提示 · 两种样式',
+    exLoadingHint: 'showLoading() 不自动消失，只能自己拿句柄 close()；屏幕上永远只有一张卡——后一次调用直接顶掉前一次（连点也只有一张）。默认屏位下方居中（与 Toast 同屏位），position 可选六向 + center；不给遮罩时后面照常可点。要放进自己的空间就直接渲染 LoadingToast / LoadingBlock。',
     exToastSonnerTitle: 'Toast · 官方 Sonner',
     exToastSonnerHint: 'showToast()：第三方库原味，对比用',
     sessionRealHint: '宿主 sessions.list 快照（冷安全，不激活 Agent）→ 点开真预览；fork 与跳转都是官方口子',
@@ -750,6 +754,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exToastNotifyHint: 'notify(): uniform grey/green/red/yellow plus our own button on the right',
     exToastHostTitle: 'Toast · host native',
     exToastHostHint: 'showHostToast(): wraps the official @deepseek-ai Toast (top banner)',
+    exLoadingTitle: 'Loading · two styles',
+    exLoadingHint: 'showLoading() never dismisses itself — you call close() on the handle. Only one card ever exists: a later call replaces the previous one (rapid clicks still show one). It sits bottom-centre by default (the Toast slot); position takes the six directions plus center. Without a mask the page stays clickable. To keep it inside your own area, render LoadingToast / LoadingBlock in place.',
     exToastSonnerTitle: 'Toast · Sonner',
     exToastSonnerHint: 'showToast(): the third-party library as-is, for comparison',
     sessionRealHint: 'Host sessions.list snapshot (cold-safe, no Agent activation) → click for a real preview; fork and navigation are official APIs',

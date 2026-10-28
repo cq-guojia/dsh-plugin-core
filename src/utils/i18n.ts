@@ -14,6 +14,7 @@ export type UtilMessageKey =
   | 'sessionFailed'
   | 'sessionEmpty'
   | 'explorerLoading'
+  | 'loadingDefault'
   | 'explorerFailed'
   | 'explorerRoot'
   | 'explorerTruncated'
@@ -277,6 +278,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     sessionFailed: '会话加载失败',
     sessionEmpty: '该会话暂无内容',
     explorerLoading: '加载中…',
+    loadingDefault: '数据加载中',
     explorerFailed: '加载失败',
     explorerRoot: '工作区',
     explorerTruncated: '条目过多，已截断',
@@ -535,6 +537,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     sessionFailed: 'Failed to load session',
     sessionEmpty: 'No content in this session',
     explorerLoading: 'Loading…',
+    loadingDefault: 'Loading',
     explorerFailed: 'Failed to load',
     explorerRoot: 'Workspace',
     explorerTruncated: 'Too many entries, truncated',

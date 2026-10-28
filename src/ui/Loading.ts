@@ -15,8 +15,20 @@
  *
  * 文档登记：docs/design/ui-foundation.md §二「唯一实现表」。
  */
-import { ensureControls } from './css.js'
+import { ensureControls, getStyleKit } from './css.js'
 import { createElement as h, useEffect, useState } from 'react'
+import { createRoot, type Root } from 'react-dom/client'
+import { t, type Translate } from '../utils/i18n.js'
+import {
+  claimLoadingHost,
+  createLoadingSlot,
+  loadingOverlayClass,
+  type LoadingHandle,
+  type LoadingHost,
+  type LoadingPosition,
+  type LoadingRequest,
+  type LoadingVariant,
+} from './loading-host.js'
 
 const pillStyle: Record<string, string | number> = {
   position: 'fixed',
@@ -77,4 +89,147 @@ export function Loading(props: LoadingProps): ReturnType<typeof h> {
 export function RunningBlocks(): ReturnType<typeof h> {
   ensureControls()
   return h('span', { className: 'dshpc-run-blocks' }, h('i', null), h('i', null), h('i', null))
+}
+
+// ── 加载提示（两种样式 + 命令式全局浮层）───────────────────────────────────
+// 与上面那个「贴右下角的 Loading pill」不是一回事：这里是**居中提示卡**，
+// 一种横排（像 notify 的 info 卡）、一种方块。样式在 controls/loading.css。
+
+/** 两种加载提示共用的 props。 */
+export interface LoadingViewProps {
+  /** 文案，默认内置字典 `loadingDefault`（数据加载中 / Loading）。 */
+  text?: string
+  /** 文案翻译函数，默认用内置字典。 */
+  translate?: Translate
+}
+
+export interface LoadingOptions extends LoadingViewProps {
+  /** `toast` = 横排卡（默认）；`block` = 方块卡。 */
+  variant?: LoadingVariant
+  /** 屏幕方位，默认 `bottom-center`（与 Toast 同屏位）；`center` 为正中。 */
+  position?: LoadingPosition
+  /** 铺全屏遮罩挡住后面的一切点击，默认 false（不挡，随点随走）。 */
+  mask?: boolean
+  /** 遮罩浓度 0–1，默认 0（全透明，但仍挡住点击）。 */
+  maskOpacity?: number
+}
+
+// 转圈同样走 SVG 矢量弧（border 圆在次像素下会被抗锯齿拉毛，见 Button.ts）。
+function spin(size: number): ReturnType<typeof h> {
+  return h(
+    'svg',
+    { className: 'dshpc-loading-spin', viewBox: '0 0 16 16', width: size, height: size, 'aria-hidden': true },
+    h('circle', {
+      cx: 8, cy: 8, r: 6.5, fill: 'none',
+      stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round',
+      // 周长 ≈ 40.8，画 30 的弧 ⇒ 约 265° 的开口环
+      strokeDasharray: '30 41',
+    }),
+  )
+}
+
+function textOf(props: LoadingViewProps): string {
+  return props.text ?? (props.translate ?? t)('loadingDefault')
+}
+
+/** 样式一：横排提示卡（转圈在左、文字在右），灰色底与 notify 的 info 卡同色。就地渲染，位置随调用方。 */
+export function LoadingToast(props: LoadingViewProps): ReturnType<typeof h> {
+  ensureControls()
+  return h(
+    'div',
+    { className: 'dshpc-loading-toast', role: 'status', 'aria-live': 'polite' },
+    spin(16),
+    h('span', null, textOf(props)),
+  )
+}
+
+/** 样式二：方块卡（转圈在上、文字在下，内距更大）。就地渲染，位置随调用方。 */
+export function LoadingBlock(props: LoadingViewProps): ReturnType<typeof h> {
+  ensureControls()
+  return h(
+    'div',
+    { className: 'dshpc-loading-block', role: 'status', 'aria-live': 'polite' },
+    spin(22),
+    h('span', null, textOf(props)),
+  )
+}
+
+// 宿主实现：唯一浮层根 + 唯一槽位（`createLoadingSlot`）。屏幕上永远最多一张卡。
+function createLoadingHost(): LoadingHost {
+  const slot = createLoadingSlot()
+  let root: Root | null = null
+  let container: HTMLDivElement | null = null
+
+  function flush(): void {
+    const state = slot.current()
+    if (state === null) {
+      root?.unmount()
+      container?.remove()
+      root = null
+      container = null
+      return
+    }
+    if (root === null) {
+      container = document.createElement('div')
+      container.setAttribute('data-dshpc-loading-host', '')
+      document.body.appendChild(container)
+      root = createRoot(container)
+    }
+    ensureControls(getStyleKit())
+    const { request } = state
+    const opacity = Math.min(1, Math.max(0, request.maskOpacity))
+    root.render(
+      h(
+        'div',
+        { className: loadingOverlayClass(request.position) },
+        request.mask
+          ? h('div', {
+              className: 'dshpc-loading-overlay__mask',
+              style: { background: `rgba(0, 0, 0, ${opacity})` },
+            })
+          : null,
+        request.variant === 'block'
+          ? h(LoadingBlock, { text: request.text, translate: request.translate })
+          : h(LoadingToast, { text: request.text, translate: request.translate }),
+      ),
+    )
+  }
+
+  return {
+    show(request: LoadingRequest): LoadingHandle {
+      const handle = slot.show(request)
+      flush()
+      return {
+        close(): void {
+          handle.close()
+          flush()
+        },
+      }
+    },
+  }
+}
+
+/**
+ * 命令式加载提示（全局唯一浮层，**不自动消失**）。所有插件、所有位置调用都落在**同一处**
+ * （默认屏幕下方居中，与 Toast 同屏位），且屏幕上永远只有一张卡 —— 后一次调用直接顶掉
+ * 前一次，被顶掉那次的句柄再 `close()` 是空操作。收起只能靠自己调 `close()`。
+ *
+ * ```ts
+ * const loading = showLoading({ text: '正在保存…', mask: true, maskOpacity: 0.3 })
+ * await save()
+ * loading.close()
+ * ```
+ *
+ * 无 `document` 时静默返回空句柄（Node 单测 / SSR 不炸）。
+ */
+export function showLoading(opts?: LoadingOptions): LoadingHandle {
+  if (typeof document === 'undefined') return { close: () => {} }
+  return claimLoadingHost(createLoadingHost).show({
+    text: opts?.text,
+    variant: opts?.variant ?? 'toast',
+    position: opts?.position ?? 'bottom-center',
+    mask: opts?.mask === true,
+    maskOpacity: opts?.maskOpacity ?? 0,
+    translate: opts?.translate,
+  })
 }

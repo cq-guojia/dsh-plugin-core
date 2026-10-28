@@ -1,5 +1,5 @@
 import { createElement as h, useState, useSyncExternalStore, type ComponentType } from 'react'
-import type { AlertSeverity, ButtonSize, ButtonVariant, ConfirmTone } from '../../../../dist/ui/index.js'
+import type { AlertSeverity, ButtonSize, ButtonVariant, ConfirmTone, LoadingOptions } from '../../../../dist/ui/index.js'
 import {
   Button,
   Card,
@@ -9,6 +9,8 @@ import {
   IconButton,
   Input,
   LiveText,
+  LoadingBlock,
+  LoadingToast,
   MarqueeText,
   Modal,
   AlertModal,
@@ -24,6 +26,7 @@ import {
   Textarea,
   WorkspacePicker,
   showToast,
+  showLoading,
   notify,
   alertModal,
   confirmModal,
@@ -1364,6 +1367,21 @@ notify('确认提交吗？', {
   ],
 })`
 
+const CODE_LOADING = `// 命令式：全局只有一张卡（后一次顶掉前一次），且不会自己消失 —— 一定要 close()
+const loading = showLoading({ text: '正在加载数据…' })
+loading.close()   // 默认屏幕下方居中，与 Toast 同屏位
+
+showLoading({ variant: 'block', text: '处理中' })   // 方块卡
+showLoading({ position: 'top-right', text: '换屏位' }) // 六向同名 + center
+
+// 需要挡住后面的点击才开遮罩；maskOpacity 默认 0（透明，但仍挡住）
+const blocked = showLoading({ mask: true, maskOpacity: 0.3 })
+blocked.close()
+
+// 要放进自己的空间（表格、卡片…）：就地渲染组件，位置随你
+<LoadingToast text="正在加载" />
+<LoadingBlock text="处理中" />`
+
 
 /** 弹窗家族公共参数（AlertModal / ConfirmModal / Modal 同源，字段按各自能力裁剪）。 */
 
@@ -1378,6 +1396,11 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [largeOpen, setLargeOpen] = useState(false)
   const [largeOpenB, setLargeOpenB] = useState(false)
   const [nativeText, setNativeText] = useState('')
+  // 全局加载提示：1.2 秒后自动关掉（演示只需看到它在正中同一处出现）。
+  const flash = (opts?: LoadingOptions): void => {
+    const handle = showLoading(opts)
+    window.setTimeout(() => handle.close(), 1200)
+  }
   return h(
     'div',
     null,
@@ -1667,6 +1690,39 @@ export function FeedbackPage(): ReturnType<typeof h> {
         h(Button, { onClick: () => showToast('底部-左', { position: 'bottom-left' }) }, 'bottom-left'),
         h(Button, { onClick: () => showToast('底部-中', { position: 'bottom-center' }) }, 'bottom-center'),
         h(Button, { onClick: () => showToast('底部-右', { position: 'bottom-right' }) }, 'bottom-right'),
+      ),
+    ),
+    h(
+      Example,
+      { title: t('exLoadingTitle'), hint: t('exLoadingHint'), code: CODE_LOADING },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
+        h(
+          'div',
+          { style: { display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' } },
+          h(LoadingToast, null),
+          h(LoadingBlock, { text: '处理中' }),
+        ),
+        h(
+          'div',
+          { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
+          h(Button, { onClick: () => flash() }, '全局 toast（1.2s）'),
+          h(Button, { variant: 'outline', onClick: () => flash({ variant: 'block', text: '处理中…' }) }, '全局 block（1.2s）'),
+          h(Button, { variant: 'ghost', onClick: () => flash({ text: '遮罩 0.3', mask: true, maskOpacity: 0.3 }) }, '遮罩 0.3'),
+          h(Button, { variant: 'ghost', onClick: () => flash({ text: '透明遮罩', mask: true }) }, '遮罩透明（仍挡住点击）'),
+        ),
+        h(
+          'div',
+          { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
+          h(Button, { variant: 'ghost', onClick: () => flash({ position: 'top-left', text: 'top-left' }) }, 'top-left'),
+          h(Button, { variant: 'ghost', onClick: () => flash({ position: 'top-center', text: 'top-center' }) }, 'top-center'),
+          h(Button, { variant: 'ghost', onClick: () => flash({ position: 'top-right', text: 'top-right' }) }, 'top-right'),
+          h(Button, { variant: 'ghost', onClick: () => flash({ position: 'center', text: 'center' }) }, 'center'),
+          h(Button, { variant: 'ghost', onClick: () => flash({ position: 'bottom-left', text: 'bottom-left' }) }, 'bottom-left'),
+          h(Button, { variant: 'ghost', onClick: () => flash({ position: 'bottom-center', text: 'bottom-center（默认）' }) }, 'bottom-center'),
+          h(Button, { variant: 'ghost', onClick: () => flash({ position: 'bottom-right', text: 'bottom-right' }) }, 'bottom-right'),
+        ),
       ),
     ),
     h(DocCode, { id: 'feedback' }),

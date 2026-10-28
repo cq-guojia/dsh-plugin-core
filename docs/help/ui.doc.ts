@@ -370,6 +370,14 @@ const doc: DocTopic = {
           en: 'Three trade-offs (accept them): ① styling comes from the first copy; ② position is shared per screen; ③ no unload reclamation. Environments without document skip silently.',
         },
         {
+          zh: '加载提示两种样式：`LoadingToast` 横排卡（转圈在左、文字在右，灰底与 notify 的 info 卡同色）、`LoadingBlock` 方块卡（转圈在上、文字在下，内距更大）。默认文案走内置字典「数据加载中」/「Loading」，传 `text` 覆盖。',
+          en: 'Two loading styles: `LoadingToast` — a horizontal card (spinner left, text right, same grey as the notify info card) — and `LoadingBlock` — a square card (spinner above text, roomier padding). The default copy comes from the built-in dictionary (“数据加载中” / “Loading”); pass `text` to override.',
+        },
+        {
+          zh: '命令式 `showLoading(opts)` 同样是 globalThis 单例（`Symbol.for(\'dsh-plugin-core/loading-host\')`）：**屏幕上永远只有一张卡**，任何插件、任何屏位、多少次调用都一样 —— 后一次直接顶掉前一次，被顶掉那次的句柄再 `close()` 是空操作。**不自动消失**，收起只能自己调 `close()`。屏位默认 `bottom-center`（与 Toast 同屏位），`position` 可选 `top-left` / `top-center` / `top-right` / `center` / `bottom-left` / `bottom-center` / `bottom-right`。`mask` 默认 false（后面照常可点）；开了遮罩 `maskOpacity` 默认 0（全透明，但仍挡住点击）。要放进自己的空间（表格、卡片…）就就地渲染 `LoadingToast` / `LoadingBlock`——它们只管外观，位置与遮罩归调用方。',
+          en: 'The imperative `showLoading(opts)` is another globalThis singleton (`Symbol.for(\'dsh-plugin-core/loading-host\')`): **only one card ever exists** — across plugins, placements and call counts alike. A later call replaces the previous one, and the superseded handle’s `close()` is a no-op. It **never dismisses itself**; only your own `close()` removes it. Placement defaults to `bottom-center` (the Toast slot); `position` takes `top-left` / `top-center` / `top-right` / `center` / `bottom-left` / `bottom-center` / `bottom-right`. `mask` defaults to false (the page stays clickable); when enabled, `maskOpacity` defaults to 0 (fully transparent, still blocking clicks). To keep it inside your own area (table cell, card…), render `LoadingToast` / `LoadingBlock` in place — they are appearance only; placement and masking belong to the caller.',
+        },
+        {
           zh: 'Modal 是自绘 overlay，不走 react-dom portal。',
           en: 'Modal is a self-drawn overlay, not a react-dom portal.',
         },
@@ -385,6 +393,9 @@ const doc: DocTopic = {
             { name: 'showToast(message, opts?)', type: '', def: '', desc: { zh: '官方 Sonner 原生（对比 / demo 用）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主', en: 'Raw official Sonner (comparison / demo). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host' } },
             { name: 'notify(message, opts?)', type: '', def: '', desc: { zh: '默认用这个。opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个）', en: 'Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2)' } },
             { name: 'showHostToast(message, opts?)', type: '', def: '', desc: { zh: '宿主原生 Toast，走 `dsh-plugin-core/ui/host` 子路径。opts: `{ tone?, holdMs?, actions?, onDismiss? }`', en: 'Host-native Toast from the `dsh-plugin-core/ui/host` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }`' } },
+            { name: 'showLoading(opts?)', type: '', def: '', desc: { zh: '全局加载提示（全局唯一一处），返回 `{ close() }`。opts: `{ text?, variant?: \'toast\' | \'block\', position?, mask?, maskOpacity?, translate? }`；position 默认 bottom-center', en: 'Global loading hint (one spot globally) returning `{ close() }`. opts `{ text?, variant?: \'toast\' | \'block\', position?, mask?, maskOpacity?, translate? }`; position defaults to bottom-center' } },
+            { name: 'LoadingToast({ text? })', type: '', def: '', desc: { zh: '就地渲染的横排加载卡（转圈在左）', en: 'In-place horizontal loading card (spinner left)' } },
+            { name: 'LoadingBlock({ text? })', type: '', def: '', desc: { zh: '就地渲染的方块加载卡（转圈在上、文字在下）', en: 'In-place square loading card (spinner above text)' } },
             { name: 'Loading({ anchorId? })', type: '', def: '', desc: { zh: '贴到主内容容器右下角的加载指示；anchorId 默认 dshpc-main', en: 'Loading indicator pinned to the main container’s bottom-right; anchorId defaults to dshpc-main' } },
             { name: 'RunningBlocks()', type: '', def: '', desc: { zh: '运行中的占位块', en: 'Placeholder blocks while running' } },
             { name: 'SectionHead({ icon, title, right? })', type: '', def: '', desc: { zh: '分区标题', en: 'Section heading' } },
