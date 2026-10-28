@@ -367,7 +367,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnHintHint: '独立组件，放哪都行：标题后 / 按钮后 / 一段文字后 / 输入框后；鼠标悬停或键盘聚焦浮出气泡',
 
     demoInputFamily: 'Input 家族',
-    inputHint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；传 hint 参数即自动在行尾挂标准问号提示（FieldHint 本体仍可单独用）',
+    inputHint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；传 hint 参数即自动在行尾挂标准问号提示（FieldHint 本体仍可单独用）；Input 传 icon 即在左侧加图标槽',
     switchTip: '官方 Switch（启用语义，不是勾选）+ Checkbox + Segmented',
     checkboxHint: '外观对齐真实插件：灰底轨道 + 白色选中片；bordered 是外框款（最右，可点着玩）；星期方块是多选。文案随语言切换',
 
@@ -646,7 +646,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnHintHint: 'Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal',
 
     demoInputFamily: 'Input family',
-    inputHint: 'Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone)',
+    inputHint: 'Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone); pass icon to Input to get a leading icon slot',
     switchTip: 'Official Switch (enable semantics, not a tick) + Checkbox + Segmented',
     checkboxHint: 'Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select. Labels follow the locale',
 

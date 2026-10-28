@@ -9,7 +9,7 @@
  * 高度一律吃 `--dshpc-control-h-*`；有边 / 无边同高（边框在内部补回）。
  */
 import { ensureControls } from './css.js'
-import { createElement as h, useEffect, useState, type CSSProperties, type ReactElement, type RefObject } from 'react'
+import { createElement as h, useEffect, useState, type CSSProperties, type ReactElement, type ReactNode, type RefObject } from 'react'
 import { IconButton } from './Button.js'
 import { FieldHint } from './FieldHint.js'
 
@@ -44,6 +44,8 @@ export interface InputProps {
   disabled?: boolean
   /** 原生 type（默认 text）。 */
   type?: string
+  /** 左侧图标（任意 ReactNode；不传就没有这一段）。图标尺寸按档取 `fieldMetricsOf(size).icon`。 */
+  icon?: ReactNode
   /** 无障碍名。 */
   'aria-label'?: string
   /** 悬停提示。 */
@@ -65,8 +67,8 @@ export interface InputProps {
 /** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export function Input(props: InputProps): ReturnType<typeof h> {
   ensureControls()
-  const { value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props
-  return withHint(h('input', {
+  const { value, onChange, placeholder, size = 'lg', error, disabled, type, icon, className, style } = props
+  const input = h('input', {
     ref: props.inputRef,
     type: type ?? 'text',
     value,
@@ -79,7 +81,15 @@ export function Input(props: InputProps): ReturnType<typeof h> {
     onChange: (event: { target: { value: string } }) => { onChange(event.target.value) },
     onKeyDown: props.onKeyDown,
     onBlur: props.onBlur,
-  } as never), props.hint)
+  } as never)
+  // 图标槽：给了 icon 才多包一层定位壳（没图标时 DOM 不变，className / style / ref 仍落在 <input> 上）。
+  return withHint(
+    icon === undefined || icon === null
+      ? input
+      : h('span', { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size)}` },
+        h('span', { className: 'dshpc-iwrap__icon' }, icon), input),
+    props.hint,
+  )
 }
 
 export interface PrefixedInputProps extends Omit<InputProps, 'className'> {

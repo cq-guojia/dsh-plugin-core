@@ -4,7 +4,7 @@
    铺满型控件（input/textarea）进包后改吃 flex 弹性，让位给问号。 */
 .dshpc-fieldwrap{display:flex;align-items:center;gap:6px;min-width:0;max-width:100%;}
 .dshpc-fieldwrap--inline{display:inline-flex;}
-.dshpc-fieldwrap > .dshpc-input,.dshpc-fieldwrap > .dshpc-textarea{flex:1 1 auto;width:auto;min-width:0;}
+.dshpc-fieldwrap > .dshpc-input,.dshpc-fieldwrap > .dshpc-textarea,.dshpc-fieldwrap > .dshpc-iwrap{flex:1 1 auto;width:auto;min-width:0;}
 /* 多行输入：问号钉在**右下角**（2026-10-20 用户：不要垂直居中），文本区底部留出它的位置。
    ⚠️ 这一档必须把 textarea 的宽度还回去（上面那条 flex 让位规则会把它缩窄）。 */
 .dshpc-fieldwrap--block{position:relative;display:block;}
@@ -22,9 +22,22 @@
 .dshpc-input--md{height:var(--dshpc-control-h-md);padding:0 10px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 .dshpc-input--lg{height:var(--dshpc-control-h-lg);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
 .dshpc-input::placeholder{color:var(--dshpc-fg-dim);}
+/* type="search" 的清空钮是浏览器 UA 画的（::-webkit-search-cancel-button），默认箭头光标：
+   看着像不可点。它是真按钮，补手型（Chromium / Safari 专属伪元素；Firefox 没有这个钮）。 */
+.dshpc-input:not(:disabled)::-webkit-search-cancel-button{cursor:pointer;}
 .dshpc-input:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
 .dshpc-input--error{border-color:var(--dshpc-danger);}
 .dshpc-input:disabled{cursor:default;opacity:.5;}
+
+/* 左侧图标槽（Input 的 icon 参数）：图标绝对定位压在输入框的左内边距上，
+   输入框自己的边框 / 焦点圈 / 描红一律不动。图标不吃点击（pointer-events:none）⇒ 点在图标上照样聚焦。
+   左内边距 = 左偏 8 + 图标宽（sm 14 / md·lg 16，见 fieldMetricsOf）+ 间距 4。 */
+.dshpc-iwrap{position:relative;display:block;width:100%;min-width:0;}
+.dshpc-iwrap__icon{position:absolute;left:8px;top:50%;transform:translateY(-50%);display:inline-flex;pointer-events:none;color:var(--dshpc-fg-2);}
+.dshpc-iwrap--sm > .dshpc-input{padding-left:26px;}
+.dshpc-iwrap--md > .dshpc-input,.dshpc-iwrap--lg > .dshpc-input{padding-left:28px;}
+/* 禁用时图标跟输入框一起变淡（输入框自己已有 opacity:.5，图标不在它里面，得单独跟一下）。 */
+.dshpc-iwrap:has(> .dshpc-input:disabled) > .dshpc-iwrap__icon{opacity:.5;}
 
 .dshpc-pfx{display:inline-flex;align-items:center;box-sizing:border-box;overflow:hidden;
   border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}

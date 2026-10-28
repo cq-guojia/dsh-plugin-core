@@ -1292,11 +1292,11 @@ export const docData = {
         "rows": [
           {
             "name": "Input",
-            "type": "value onChange(v) size(默认 sm) error disabled type placeholder inputRef onKeyDown onBlur aria-label title hint",
+            "type": "value onChange(v) size(默认 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label title hint",
             "def": "—",
             "desc": {
-              "zh": "基础输入框；error 描红；hint 给字符串即自动挂标准问号提示",
-              "en": "Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint"
+              "zh": "基础输入框；error 描红；hint 给字符串即自动挂标准问号提示；icon 是左侧图标槽（不吃点击，尺寸取 fieldMetricsOf(size).icon）",
+              "en": "Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint; icon is the leading icon slot (does not swallow clicks; size from fieldMetricsOf(size).icon)"
             }
           },
           {

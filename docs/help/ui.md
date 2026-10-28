@@ -64,7 +64,7 @@ Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三�
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `Input` | `value onChange(v) size(默认 sm) error disabled type placeholder inputRef onKeyDown onBlur aria-label title hint` | — | 基础输入框；error 描红；hint 给字符串即自动挂标准问号提示 | Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint |
+| `Input` | `value onChange(v) size(默认 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label title hint` | — | 基础输入框；error 描红；hint 给字符串即自动挂标准问号提示；icon 是左侧图标槽（不吃点击，尺寸取 fieldMetricsOf(size).icon） | Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint; icon is the leading icon slot (does not swallow clicks; size from fieldMetricsOf(size).icon) |
 | `PrefixedInput` | `同 Input + prefix: string` | — | 前置文案（https:// / C:\） | Leading text (https:// / C:\) |
 | `NumberInput` | `value: number onChange(v) min max step(默认 1) inputWidth suffix label decreaseLabel increaseLabel hint` | — | 已 clamp；失焦回弹草稿 | Already clamped; reverts to draft on blur |
 | `Textarea` | `value onChange(v) placeholder error disabled rows spellCheck(默认关) aria-label hint` | — | hint 的问号钉在右下角（单行控件则在行尾垂直居中） | hint’s question mark pins to the bottom-right (for single-line controls it centers at the row end) |

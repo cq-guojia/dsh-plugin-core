@@ -27,8 +27,8 @@ function sizeClass(size) {
 /** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export function Input(props) {
     ensureControls();
-    const { value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props;
-    return withHint(h('input', {
+    const { value, onChange, placeholder, size = 'lg', error, disabled, type, icon, className, style } = props;
+    const input = h('input', {
         ref: props.inputRef,
         type: type ?? 'text',
         value,
@@ -41,7 +41,11 @@ export function Input(props) {
         onChange: (event) => { onChange(event.target.value); },
         onKeyDown: props.onKeyDown,
         onBlur: props.onBlur,
-    }), props.hint);
+    });
+    // 图标槽：给了 icon 才多包一层定位壳（没图标时 DOM 不变，className / style / ref 仍落在 <input> 上）。
+    return withHint(icon === undefined || icon === null
+        ? input
+        : h('span', { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size)}` }, h('span', { className: 'dshpc-iwrap__icon' }, icon), input), props.hint);
 }
 /** 前缀 + 文本输入。 */
 export function PrefixedInput(props) {

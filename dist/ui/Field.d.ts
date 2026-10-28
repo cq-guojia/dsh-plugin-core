@@ -1,4 +1,4 @@
-import { createElement as h, type CSSProperties, type ReactElement, type RefObject } from 'react';
+import { createElement as h, type CSSProperties, type ReactElement, type ReactNode, type RefObject } from 'react';
 /**
  * 字段 hint 的统一包法：控件 + 问号提示同一行（间距/对齐收进组件，调用方传个
  * `hint` 字符串就行，不再手动拼排版 —— 用户 2026-10-20 拍板）。
@@ -21,6 +21,8 @@ export interface InputProps {
     disabled?: boolean;
     /** 原生 type（默认 text）。 */
     type?: string;
+    /** 左侧图标（任意 ReactNode；不传就没有这一段）。图标尺寸按档取 `fieldMetricsOf(size).icon`。 */
+    icon?: ReactNode;
     /** 无障碍名。 */
     'aria-label'?: string;
     /** 悬停提示。 */

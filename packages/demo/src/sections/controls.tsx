@@ -307,9 +307,13 @@ export function ButtonPage(): ReturnType<typeof h> {
 // 示例右侧的代码：与左边渲染逐条一致（改内容必须两边一起改）。
 const CODE_INPUT_FAMILY = `const [text, setText] = useState('')
 const [num, setNum] = useState(3)
+const [kw, setKw] = useState('')
 
 // hint 参数版：问号提示由组件自己挂，不用手动拼 FieldHint
 <Input value={text} onChange={setText} placeholder="请输入用户名" hint="用户名只能包含字母、数字与连字符。" />
+// 搜索框：type="search" 只透传原生 input，右侧小叉是浏览器自带的清空钮（不是核心库画的）
+// icon 是左侧图标槽（不吃点击，点在图标上照样聚焦）；图标尺寸按档取 fieldMetricsOf(size).icon
+<Input type="search" icon={<IconSearchOutlineRegular size={16} />} value={kw} onChange={setKw} placeholder="搜索" />
 // 校验失败态：描红
 <Input value={text} onChange={setText} error placeholder="校验失败态" />
 // 数字框：超出 min / max 自动收回到边界
@@ -372,6 +376,7 @@ export function InputPage(): ReturnType<typeof h> {
   const [seg, setSeg] = useState<'day' | 'week' | 'month'>('week')
   const [filter, setFilter] = useState('all')
   const [multi, setMulti] = useState<string[]>(['1'])
+  const [kw, setKw] = useState('')
 
   return h(
     'div',
@@ -391,6 +396,13 @@ export function InputPage(): ReturnType<typeof h> {
           h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '用户名'),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
           h(Input, { value: text, onChange: setText, placeholder: '请输入用户名', hint: '用户名只能包含字母、数字与连字符。' }),
+        ),
+        h(
+          'div',
+          { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
+          h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '搜索'),
+          // 左侧图标槽（icon）+ 原生清除钮（type="search" 透传，小叉由浏览器画）
+          h(Input, { type: 'search', icon: h(IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: '搜索' }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；

@@ -122,7 +122,106 @@ var SEGMENTED_CSS = "\n/* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6 P2 \u2500\u2500\
 var BUTTON_CSS = '\n/* \u2500\u2500 \u6309\u94AE / \u56FE\u6807\u94AE P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E0E Segmented \u540C\u4E00\u6761\u9AD8\u5EA6\u7EAA\u5F8B\uFF1A--dshpc-control-h-sm(24) / -md(28) / -lg(32)\uFF0C\n   \u6709\u8FB9\u6846\u7684 variant \u7528 1px \u771F\u8FB9\u6846 + \u5185\u90E8 padding \u8865\u56DE\uFF0C**\u6709\u8FB9 / \u65E0\u8FB9\u540C\u9AD8**\u3002\n\n   \u4E09\u6761\u53D7\u63A7\u8F74\uFF082026-10-19 \u91CD\u5199\uFF0C\u5BF9\u9F50\u4E3B\u6D41 UI \u6846\u67B6\u7684\u5206\u7C7B\u53E3\u5F84\uFF09\uFF1A\n     \xB7 variant \u2014\u2014 \u5916\u89C2\u6863 = \u5F62\u6001 + \u8BED\u4E49\u8272\uFF0C\u5171 10 \u6863\uFF1A\n         primary / secondary / outline / ghost / danger / success / warning / info /\n         danger-outline\uFF08\u7EA2\u5B57\u63CF\u8FB9\uFF09/ link\uFF08\u884C\u5185\u94FE\u63A5\uFF09\n     \xB7 size \u2014\u2014 sm / md / lg\n     \xB7 block \u2014\u2014 \u6491\u6EE1\u7236\u5BBD\n   \u6BCF\u4E00\u6863**\u53EA\u586B 5 \u4E2A\u5C40\u90E8\u53D8\u91CF**\uFF08--btn-bg / -fg / -border / -bg-hover / -bg-active\uFF09\uFF0C\n   \u7ED3\u6784\u4E0E\u4EA4\u4E92\u53EA\u6709\u4E0A\u9762\u8FD9\u4E00\u4EFD\uFF1B\u4EFB\u4F55\u6863\u4F4D\u90FD\u4E0D\u8BB8\u518D\u5199\u4E00\u904D display/height/padding\u3002\n   \u81EA\u5B9A\u4E49\u989C\u8272\uFF08Button \u7684 color \u53C2\u6570\uFF09\u540C\u6837\u53EA\u8986\u76D6\u8FD9 5 \u4E2A\u53D8\u91CF\uFF08token \u8986\u76D6\uFF0C\u4E0D\u662F\u65B0\u76AE\u80A4\uFF09\u3002\n\n   \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C\n   \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */\n.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;\n  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);\n  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}\n.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */\n.dshpc-btn--block{display:flex;width:100%;}\n/* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A\n   \u5185\u5BB9\u7EC4 [\u56FE\u6807 + \u95F4\u8DDD + \u6587\u5B57] \u6574\u4F53\u5728\u76D2\u5185\u5C45\u4E2D\u65F6\uFF0C**\u6587\u5B57**\u7684\u4E2D\u5FC3\u4F1A\u88AB\u56FE\u6807\u63A8\u53F3\u534A\u683C\u3002\n   \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002\n   \u56FE\u6807\u5BBD\u6309 1.2em \u4F30\uFF08\u5B98\u65B9\u56FE\u6807 14/16px vs \u5B57\u53F7 12/13px\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */\n.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}\n.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}\n.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;}\n/* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u4E2A\u540C\u8272\u5C0F\u5708\u3002\n   \u26A0\uFE0F 2026-10-20 \u6539\u753B\u6CD5\uFF1A\u539F\u6765\u662F border:1.5px \u52A0 border-radius:999px \u753B\u7684\u73AF \u2014\u2014 \u771F\u673A\u5B9E\u6D4B computed\n   radius \u5C31\u662F 999px\u3001\u5BBD\u9AD8\u90FD\u662F 12px\uFF08\u6CA1\u88AB\u4EFB\u4F55\u6837\u5F0F\u8986\u76D6\uFF09\uFF0C\u770B\u7740\u5374"\u50CF\u5706\u89D2\u65B9"\uFF0C\u539F\u56E0\u662F**\u6B21\u50CF\u7D20\u8FB9\u6846\n   \uFF081.5px\uFF09\u5728 12px \u8FD9\u4E48\u5C0F\u7684\u5706\u4E0A\u88AB\u6297\u952F\u9F7F\u63D2\u503C\u62C9\u6BDB**\u3002\u6539\u7528 SVG \u77E2\u91CF\u5F27\uFF1A\u4EFB\u610F DPR \u4E0B\u90FD\u662F\u771F\u5706\u3002 */\n.dshpc-btn__spinner{display:block;flex:none;width:12px;height:12px;\n  animation:dshpc-btn-spin .7s linear infinite;}\n/* shortcut: 12px \u662F\u56FA\u5B9A\u503C\uFF0C\u4E0D\u968F\u6309\u94AE\u5B57\u53F7\u7F29\u653E\uFF1B\u8981\u66F4\u5927\u5C31\u6539\u8FD9\u4E00\u5904\u3002 */\n@keyframes dshpc-btn-spin{to{transform:rotate(360deg)}}\n\n/* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */\n.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}\n.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}\n.dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-btn:disabled{cursor:default;opacity:.5;}\n\n.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);\n  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}\n/* secondary\uFF1A\u4E2D\u6027\u5B9E\u5FC3\uFF08\u7070\u9762\uFF09\uFF0C\u7528\u4E8E\u300C\u53D6\u6D88 / \u6B21\u8981\u300D\u8FD9\u7C7B\u4E0E\u4E3B\u64CD\u4F5C\u5E76\u6392\u7684\u6309\u94AE */\n.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}\n.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}\n.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);\n  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}\n.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}\n/* danger-outline\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u4FEE\u9970\u7C7B danger-ink \u4FDD\u7559\u4E3A\u522B\u540D\uFF08\u6D88\u8D39\u65B9\u53EF\u80FD\u8FD8\u5728\u6302\uFF09\uFF0C\u4E24\u8005\u540C\u4E00\u5957\u76AE\u80A4\u3002 */\n.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);\n  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}\n/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF */\n.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);\n  --btn-bg-hover:transparent;--btn-bg-active:transparent;\n  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}\n.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}\n\n/* \u56FE\u6807\u94AE\uFF1A\u7EAF\u56FE\u6807\uFF0C\u65B9\u5F62\uFF1B\u5C3A\u5BF8\u6863\u7684\u5BBD\u9AD8\u4E0E\u540C\u6863\u6587\u5B57\u6309\u94AE\u7B49\u9AD8 */\n.dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;\n  border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);\n  font-family:inherit;cursor:pointer;flex:none;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}\n.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--plain{color:var(--dshpc-fg-2);}\n.dshpc-iconbtn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border);color:var(--dshpc-fg-2);}\n.dshpc-iconbtn--danger{color:var(--dshpc-danger);}\n.dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}\n.dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}\n.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}\n\n/* \u2500\u2500 \u884C\u5F0F\u6587\u4EF6\u6309\u94AE\uFF08\u56FE\u6807 + \u6587\u4EF6\u540D\uFF09P2\uFF1A**\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7528\u9014\uFF1A\u300C\u4EA7\u51FA\u7269 / \u9644\u4EF6\u300D\u90A3\u79CD**\u4E00\u884C\u4E00\u4E2A\u6587\u4EF6**\u7684\u6E05\u5355\u9879\uFF08\u57FA\u7840\u4FE1\u606F\u53F3\u680F\u4EA7\u51FA\u7269\u6E05\u5355\u3001\u9644\u4EF6\u533A\u3001\n   \u6267\u884C\u8BB0\u5F55\u9875\u7684\u5C55\u5F00\u533A\uFF09\u3002\u5E73\u65F6\u900F\u660E\u3001**\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u51FA\u6D45\u5E95**\uFF08\u6CBF\u7528\u7528\u6237 2026-10-03 \u5B9A\u7684\u89C2\u611F\uFF09\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4FEE\u9970\u7C7B\uFF1A\n     --block   \u6491\u6EE1\u7236\u5BBD\uFF08\u6E05\u5355\u91CC\u4E00\u9879\u4E00\u884C\uFF09\n     --inline  \u5185\u5BB9\u5BBD\uFF08\u8DDF\u5728\u6587\u5B57\u540E\u5934\uFF0C\u5982\u9644\u4EF6\u884C\uFF09\n   \u6536\u7F16\u539F\u56E0\uFF1A\u8FD9\u4EFD\u76AE\u80A4\u6B64\u524D\u53EA\u5199\u5728 task-list.tsx \u7684 TASK_LIST_CSS \u91CC\uFF08\u65E7\u540D .dshpc-info-out\uFF09\uFF0C\n   \u6267\u884C\u8BB0\u5F55\u9875\u5C55\u5F00\u533A\u8981\u7528\u540C\u4E00\u79CD\u89C2\u611F \u21D2 \u4E0A\u63D0\u57FA\u7840\u5C42\uFF0C\u907F\u514D\u518D\u51FA\u73B0\u300C\u5404\u5199\u4E00\u4EFD\u5916\u89C2\u300D\uFF08\u540C\u540D\u4E0D\u540C\u76AE\u7684\u5751\u521A\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-filechip{appearance:none;-webkit-appearance:none;border:0;border-radius:var(--dshpc-radius-xs);\n  background:transparent;color:var(--dshpc-fg);font:inherit;text-align:left;cursor:pointer;min-width:0;\n  transition:background-color var(--dshpc-dur) var(--dshpc-ease);}\n.dshpc-filechip:hover:not(:disabled){background:var(--dshpc-chip-bg);}\n.dshpc-filechip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-filechip:disabled{cursor:default;background:transparent;color:var(--dshpc-fg-3);}\n.dshpc-filechip--block{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;\n  padding:4px 6px;font-size:var(--dshpc-font-xs);}\n.dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}\n\n@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}\n';
 
 // dist/ui/controls/field-css.generated.js
-var FIELD_CSS = "\n/* \u2500\u2500 \u5B57\u6BB5 + \u95EE\u53F7\u63D0\u793A\uFF08hint \u53C2\u6570\u5185\u7F6E\uFF09 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n/* \u63A7\u4EF6 + FieldHint \u540C\u4E00\u884C\uFF1Bhint \u7248\u7531\u7EC4\u4EF6\u81EA\u5DF1\u5305\uFF0C\u8C03\u7528\u65B9\u53EA\u4F20 hint \u5B57\u7B26\u4E32\u3002\n   \u94FA\u6EE1\u578B\u63A7\u4EF6\uFF08input/textarea\uFF09\u8FDB\u5305\u540E\u6539\u5403 flex \u5F39\u6027\uFF0C\u8BA9\u4F4D\u7ED9\u95EE\u53F7\u3002 */\n.dshpc-fieldwrap{display:flex;align-items:center;gap:6px;min-width:0;max-width:100%;}\n.dshpc-fieldwrap--inline{display:inline-flex;}\n.dshpc-fieldwrap > .dshpc-input,.dshpc-fieldwrap > .dshpc-textarea{flex:1 1 auto;width:auto;min-width:0;}\n/* \u591A\u884C\u8F93\u5165\uFF1A\u95EE\u53F7\u9489\u5728**\u53F3\u4E0B\u89D2**\uFF082026-10-20 \u7528\u6237\uFF1A\u4E0D\u8981\u5782\u76F4\u5C45\u4E2D\uFF09\uFF0C\u6587\u672C\u533A\u5E95\u90E8\u7559\u51FA\u5B83\u7684\u4F4D\u7F6E\u3002\n   \u26A0\uFE0F \u8FD9\u4E00\u6863\u5FC5\u987B\u628A textarea \u7684\u5BBD\u5EA6\u8FD8\u56DE\u53BB\uFF08\u4E0A\u9762\u90A3\u6761 flex \u8BA9\u4F4D\u89C4\u5219\u4F1A\u628A\u5B83\u7F29\u7A84\uFF09\u3002 */\n.dshpc-fieldwrap--block{position:relative;display:block;}\n.dshpc-fieldwrap--block > .dshpc-textarea{width:100%;padding-bottom:24px;}\n.dshpc-fieldwrap--block > .dshpc-hint{position:absolute;right:8px;bottom:6px;}\n\n/* \u2500\u2500 \u8F93\u5165\u7C7B P3 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n/* \u9ED8\u8BA4\u94FA\u6EE1\u5BB9\u5668\uFF08width:100%\uFF0C\u4E0E .dshpc-textarea \u540C\u53E3\u5F84\uFF09\uFF1Ainput \u539F\u751F\u6309 size \u5C5E\u6027\u53D6\u5185\u5728\u5BBD\uFF0C\n   \u4E0D\u94FA\u6EE1 \u21D2 \u8C03\u7528\u65B9\u5957\u5B9A\u5BBD\u58F3\u65F6\u4F1A\u300C\u53F3\u8FB9\u7A7A\u4E00\u622A\u3001\u770B\u7740\u6CA1\u8D34\u53F3\u300D\uFF082026-10-20 \u7528\u6237\u6293\u7684 bug\uFF09\u3002\n   \u8981\u5B9A\u5BBD\u7531\u8C03\u7528\u65B9\u5728\u5916\u9762\u5957\u58F3\u63A7\u5236\uFF08\u5982 192px \u641C\u7D22\u69FD\uFF09\u3002 */\n.dshpc-input{display:block;width:100%;box-sizing:border-box;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;outline:none;\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-input--sm{height:var(--dshpc-control-h-sm);padding:0 8px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}\n.dshpc-input--md{height:var(--dshpc-control-h-md);padding:0 10px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-input--lg{height:var(--dshpc-control-h-lg);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-input::placeholder{color:var(--dshpc-fg-dim);}\n.dshpc-input:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n.dshpc-input--error{border-color:var(--dshpc-danger);}\n.dshpc-input:disabled{cursor:default;opacity:.5;}\n\n.dshpc-pfx{display:inline-flex;align-items:center;box-sizing:border-box;overflow:hidden;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}\n.dshpc-pfx--sm{height:var(--dshpc-control-h-sm);}\n.dshpc-pfx--md{height:var(--dshpc-control-h-md);}\n.dshpc-pfx--lg{height:var(--dshpc-control-h-lg);}\n/* md / lg \u6863\u5B57\u53F7\u8DDF\u6863\u8D70\uFF08\u4E0E\u540C\u6863\u4E0B\u62C9\u540C\u5B57\u53F7\uFF09\uFF1A\u6B64\u524D\u5199\u6B7B sm(12px)\uFF0C\u540C\u6392\u4E0B\u62C9\u662F 13px \u21D2 \u663E\u5F97\u300Cinput \u5B57\u5C0F\u300D\u3002 */\n.dshpc-pfx--md .dshpc-pfx__label,.dshpc-pfx--lg .dshpc-pfx__label{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-pfx--md .dshpc-pfx__input,.dshpc-pfx--lg .dshpc-pfx__input{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-pfx--error{border-color:var(--dshpc-danger);}\n.dshpc-pfx:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n.dshpc-pfx__label{padding:0 8px;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);white-space:nowrap;border-right:1px solid var(--dshpc-border);}\n.dshpc-pfx__input{flex:1 1 auto;min-width:0;height:100%;padding:0 8px;border:0;background:transparent;color:var(--dshpc-fg);\n  font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);outline:none;}\n.dshpc-pfx__input::placeholder{color:var(--dshpc-fg-dim);}\n\n.dshpc-num{display:inline-flex;align-items:center;justify-content:space-between;box-sizing:border-box;overflow:hidden;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}\n/* \u4E2D\u6BB5\uFF1A\u6570\u5B57 + \u540E\u7F00\u6210\u7EC4\u5C45\u4E2D\uFF1B\u5BB9\u5668\u88AB\u6D88\u8D39\u7AEF\u62C9\u5BBD\u65F6\u5403\u6389\u5168\u90E8\u4F59\u91CF\uFF0C\u4E24\u7AEF \u2212 / + \u56E0\u6B64\u9489\u6B7B\u5728\u5DE6\u53F3\u8FB9\u7F18\u3002 */\n.dshpc-num__mid{display:flex;align-items:center;justify-content:center;flex:1 1 auto;min-width:0;}\n.dshpc-num--sm{height:var(--dshpc-control-h-sm);}\n.dshpc-num--md{height:var(--dshpc-control-h-md);}\n.dshpc-num--lg{height:var(--dshpc-control-h-lg);}\n.dshpc-num--md .dshpc-num__input,.dshpc-num--lg .dshpc-num__input{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n.dshpc-num--md .dshpc-num__suffix,.dshpc-num--lg .dshpc-num__suffix{font-size:var(--dshpc-font-md);}\n.dshpc-num--disabled{opacity:.5;}\n/* \u7126\u70B9\u6001\u4E0E Input \u540C\u6B3E\uFF082026-10-20 \u7528\u6237\uFF1A\u6570\u5B57\u6846\u91CC\u70B9\u8FDB\u53BB\u6CA1\u6709\u84DD\u6846\uFF09\uFF1A\u5185\u5C42 input \u65E0\u8FB9\u6846\uFF0C\n   \u7126\u70B9\u72B6\u6001\u753B\u5728\u6574\u4E2A\u6B65\u8FDB\u63A7\u4EF6\u5916\u6846\u4E0A\u3002 */\n.dshpc-num:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n.dshpc-num__input{width:36px;height:100%;padding:0 2px;border:0;background:transparent;color:var(--dshpc-fg);\n  font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);text-align:center;outline:none;}\n.dshpc-num__suffix{padding:0 6px;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);white-space:nowrap;}\n.dshpc-num .dshpc-iconbtn{border-radius:0;color:var(--dshpc-fg-2);flex:none;}\n\n/* \u5B98\u65B9 Switch \u5305\u88C5\u7EDF\u4E00\uFF1A\u9009\u4E2D = success \u7EFF\u3002\n   \uFF08\u5408\u5E76\u539F\u5148 task-editor-css / task-list \u4E24\u5904\u5C31\u5730\u8986\u76D6\uFF1B\u9009\u62E9\u5668\u5E26\u5305\u88C5\u7C7B + role\uFF0C\u7279\u5F02\u6027\u9AD8\u4E8E\u5B98\u65B9\u3002\uFF09 */\n.dshpc-switch button[role='switch'][aria-checked='true']{background:var(--dshpc-success);}\n\n/* \u591A\u884C\u6587\u672C\u8F93\u5165\uFF08\u63D0\u793A\u8BCD\u7B49\uFF0CP3\uFF09\uFF1A**\u8FB9\u6846 / \u5706\u89D2 / \u5E95 / \u7126\u70B9\u6001\u4E0E Input \u540C\u4E00\u5957\u53E3\u5F84**\uFF08\u7528\u6237 2026-10-20\uFF1A\n   \u300C\u591A\u884C\u8F93\u5165\u5E94\u8BE5\u548C input \u7684\u8FB9\u513F\u662F\u4E00\u4E2A\u9053\u7406\uFF0C\u5305\u62EC\u5706\u89D2\u5728\u5185\uFF0C\u90FD\u662F\u4E00\u4E2A\u4E1C\u897F\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u610F\u56FE\u300C\u5361\u5185\u65E0\u8FB9\u6846\u3001\u89C6\u89C9\u91CD\u5FC3\u5728\u6574\u5F20\u5361\u4E0A\u300D\u5DF2\u4F5C\u5E9F \u2014\u2014 \u73B0\u5728\u5B83\u5C31\u662F\u4E00\u53EA\u5E26\u6846\u7684\u591A\u884C\u8F93\u5165\u6846\u3002\n   \uFF08\u4ECE task-editor-css \u7684 .dshpc-ed-prompt \u4E0A\u63D0\u800C\u6765\uFF1B\u4E1A\u52A1\u6587\u4EF6\u4E0D\u518D\u81EA\u5199 textarea \u76AE\u80A4\u3002\uFF09 */\n.dshpc-textarea{display:block;width:100%;box-sizing:border-box;min-height:132px;padding:8px 12px;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);outline:none;\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;font-size:var(--dshpc-font-lg);line-height:1.6;resize:vertical;\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-textarea::placeholder{color:var(--dshpc-fg-dim);}\n.dshpc-textarea:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n/* \u6821\u9A8C\u4E0D\u901A\u8FC7\uFF1A\u4E0E Input \u4E00\u81F4\uFF0C\u8D70\u8FB9\u6846\u63CF\u7EA2\uFF08\u65E7\u7248\u662F box-shadow \u63CF\u7EA2\u76D2\uFF0C\u4E0E Input \u4E0D\u540C\u53E3\u5F84\uFF09 */\n.dshpc-textarea--error{border-color:var(--dshpc-danger);}\n.dshpc-textarea:disabled{cursor:default;opacity:.5;}\n@media (prefers-reduced-motion: reduce){.dshpc-textarea{transition:none;}}\n\n/* \u62D6\u62FD\u5206\u9694\u6761\uFF08\u7F16\u8F91\u5206\u680F / \u9884\u89C8 dock \u5171\u7528\uFF0CU20 #3\uFF09\uFF1A6px \u547D\u4E2D\u533A\uFF0Ccol-resize\uFF0C\u4E0D\u753B\u7EBF\uFF0Chover/\u6309\u4E0B\u6D6E\u51FA\u6D45\u5E26\u3002\n   \u5177\u4F53 z-index \u7531 .dshpc-ed-resizer / .dshpc-sv-resizer \u5404\u81EA\u8865\u3002 */\n.dshpc-resizer{position:absolute;top:0;bottom:0;left:0;width:6px;cursor:col-resize;background:0 0;touch-action:none;user-select:none;}\n.dshpc-resizer:hover,.dshpc-resizer:active{background:var(--dshpc-hover,rgba(38,49,72,.06));}\n\n@media (prefers-reduced-motion: reduce){.dshpc-input,.dshpc-pfx{transition:none;}}\n";
+var FIELD_CSS = `
+/* \u2500\u2500 \u5B57\u6BB5 + \u95EE\u53F7\u63D0\u793A\uFF08hint \u53C2\u6570\u5185\u7F6E\uFF09 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* \u63A7\u4EF6 + FieldHint \u540C\u4E00\u884C\uFF1Bhint \u7248\u7531\u7EC4\u4EF6\u81EA\u5DF1\u5305\uFF0C\u8C03\u7528\u65B9\u53EA\u4F20 hint \u5B57\u7B26\u4E32\u3002
+   \u94FA\u6EE1\u578B\u63A7\u4EF6\uFF08input/textarea\uFF09\u8FDB\u5305\u540E\u6539\u5403 flex \u5F39\u6027\uFF0C\u8BA9\u4F4D\u7ED9\u95EE\u53F7\u3002 */
+.dshpc-fieldwrap{display:flex;align-items:center;gap:6px;min-width:0;max-width:100%;}
+.dshpc-fieldwrap--inline{display:inline-flex;}
+.dshpc-fieldwrap > .dshpc-input,.dshpc-fieldwrap > .dshpc-textarea,.dshpc-fieldwrap > .dshpc-iwrap{flex:1 1 auto;width:auto;min-width:0;}
+/* \u591A\u884C\u8F93\u5165\uFF1A\u95EE\u53F7\u9489\u5728**\u53F3\u4E0B\u89D2**\uFF082026-10-20 \u7528\u6237\uFF1A\u4E0D\u8981\u5782\u76F4\u5C45\u4E2D\uFF09\uFF0C\u6587\u672C\u533A\u5E95\u90E8\u7559\u51FA\u5B83\u7684\u4F4D\u7F6E\u3002
+   \u26A0\uFE0F \u8FD9\u4E00\u6863\u5FC5\u987B\u628A textarea \u7684\u5BBD\u5EA6\u8FD8\u56DE\u53BB\uFF08\u4E0A\u9762\u90A3\u6761 flex \u8BA9\u4F4D\u89C4\u5219\u4F1A\u628A\u5B83\u7F29\u7A84\uFF09\u3002 */
+.dshpc-fieldwrap--block{position:relative;display:block;}
+.dshpc-fieldwrap--block > .dshpc-textarea{width:100%;padding-bottom:24px;}
+.dshpc-fieldwrap--block > .dshpc-hint{position:absolute;right:8px;bottom:6px;}
+
+/* \u2500\u2500 \u8F93\u5165\u7C7B P3 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* \u9ED8\u8BA4\u94FA\u6EE1\u5BB9\u5668\uFF08width:100%\uFF0C\u4E0E .dshpc-textarea \u540C\u53E3\u5F84\uFF09\uFF1Ainput \u539F\u751F\u6309 size \u5C5E\u6027\u53D6\u5185\u5728\u5BBD\uFF0C
+   \u4E0D\u94FA\u6EE1 \u21D2 \u8C03\u7528\u65B9\u5957\u5B9A\u5BBD\u58F3\u65F6\u4F1A\u300C\u53F3\u8FB9\u7A7A\u4E00\u622A\u3001\u770B\u7740\u6CA1\u8D34\u53F3\u300D\uFF082026-10-20 \u7528\u6237\u6293\u7684 bug\uFF09\u3002
+   \u8981\u5B9A\u5BBD\u7531\u8C03\u7528\u65B9\u5728\u5916\u9762\u5957\u58F3\u63A7\u5236\uFF08\u5982 192px \u641C\u7D22\u69FD\uFF09\u3002 */
+.dshpc-input{display:block;width:100%;box-sizing:border-box;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);
+  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;outline:none;
+  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-input--sm{height:var(--dshpc-control-h-sm);padding:0 8px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}
+.dshpc-input--md{height:var(--dshpc-control-h-md);padding:0 10px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-input--lg{height:var(--dshpc-control-h-lg);padding:0 12px;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-input::placeholder{color:var(--dshpc-fg-dim);}
+/* type="search" \u7684\u6E05\u7A7A\u94AE\u662F\u6D4F\u89C8\u5668 UA \u753B\u7684\uFF08::-webkit-search-cancel-button\uFF09\uFF0C\u9ED8\u8BA4\u7BAD\u5934\u5149\u6807\uFF1A
+   \u770B\u7740\u50CF\u4E0D\u53EF\u70B9\u3002\u5B83\u662F\u771F\u6309\u94AE\uFF0C\u8865\u624B\u578B\uFF08Chromium / Safari \u4E13\u5C5E\u4F2A\u5143\u7D20\uFF1BFirefox \u6CA1\u6709\u8FD9\u4E2A\u94AE\uFF09\u3002 */
+.dshpc-input:not(:disabled)::-webkit-search-cancel-button{cursor:pointer;}
+.dshpc-input:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
+.dshpc-input--error{border-color:var(--dshpc-danger);}
+.dshpc-input:disabled{cursor:default;opacity:.5;}
+
+/* \u5DE6\u4FA7\u56FE\u6807\u69FD\uFF08Input \u7684 icon \u53C2\u6570\uFF09\uFF1A\u56FE\u6807\u7EDD\u5BF9\u5B9A\u4F4D\u538B\u5728\u8F93\u5165\u6846\u7684\u5DE6\u5185\u8FB9\u8DDD\u4E0A\uFF0C
+   \u8F93\u5165\u6846\u81EA\u5DF1\u7684\u8FB9\u6846 / \u7126\u70B9\u5708 / \u63CF\u7EA2\u4E00\u5F8B\u4E0D\u52A8\u3002\u56FE\u6807\u4E0D\u5403\u70B9\u51FB\uFF08pointer-events:none\uFF09\u21D2 \u70B9\u5728\u56FE\u6807\u4E0A\u7167\u6837\u805A\u7126\u3002
+   \u5DE6\u5185\u8FB9\u8DDD = \u5DE6\u504F 8 + \u56FE\u6807\u5BBD\uFF08sm 14 / md\xB7lg 16\uFF0C\u89C1 fieldMetricsOf\uFF09+ \u95F4\u8DDD 4\u3002 */
+.dshpc-iwrap{position:relative;display:block;width:100%;min-width:0;}
+.dshpc-iwrap__icon{position:absolute;left:8px;top:50%;transform:translateY(-50%);display:inline-flex;pointer-events:none;color:var(--dshpc-fg-2);}
+.dshpc-iwrap--sm > .dshpc-input{padding-left:26px;}
+.dshpc-iwrap--md > .dshpc-input,.dshpc-iwrap--lg > .dshpc-input{padding-left:28px;}
+/* \u7981\u7528\u65F6\u56FE\u6807\u8DDF\u8F93\u5165\u6846\u4E00\u8D77\u53D8\u6DE1\uFF08\u8F93\u5165\u6846\u81EA\u5DF1\u5DF2\u6709 opacity:.5\uFF0C\u56FE\u6807\u4E0D\u5728\u5B83\u91CC\u9762\uFF0C\u5F97\u5355\u72EC\u8DDF\u4E00\u4E0B\uFF09\u3002 */
+.dshpc-iwrap:has(> .dshpc-input:disabled) > .dshpc-iwrap__icon{opacity:.5;}
+
+.dshpc-pfx{display:inline-flex;align-items:center;box-sizing:border-box;overflow:hidden;
+  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}
+.dshpc-pfx--sm{height:var(--dshpc-control-h-sm);}
+.dshpc-pfx--md{height:var(--dshpc-control-h-md);}
+.dshpc-pfx--lg{height:var(--dshpc-control-h-lg);}
+/* md / lg \u6863\u5B57\u53F7\u8DDF\u6863\u8D70\uFF08\u4E0E\u540C\u6863\u4E0B\u62C9\u540C\u5B57\u53F7\uFF09\uFF1A\u6B64\u524D\u5199\u6B7B sm(12px)\uFF0C\u540C\u6392\u4E0B\u62C9\u662F 13px \u21D2 \u663E\u5F97\u300Cinput \u5B57\u5C0F\u300D\u3002 */
+.dshpc-pfx--md .dshpc-pfx__label,.dshpc-pfx--lg .dshpc-pfx__label{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-pfx--md .dshpc-pfx__input,.dshpc-pfx--lg .dshpc-pfx__input{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-pfx--error{border-color:var(--dshpc-danger);}
+.dshpc-pfx:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
+.dshpc-pfx__label{padding:0 8px;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);white-space:nowrap;border-right:1px solid var(--dshpc-border);}
+.dshpc-pfx__input{flex:1 1 auto;min-width:0;height:100%;padding:0 8px;border:0;background:transparent;color:var(--dshpc-fg);
+  font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);outline:none;}
+.dshpc-pfx__input::placeholder{color:var(--dshpc-fg-dim);}
+
+.dshpc-num{display:inline-flex;align-items:center;justify-content:space-between;box-sizing:border-box;overflow:hidden;
+  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);color:var(--dshpc-fg);}
+/* \u4E2D\u6BB5\uFF1A\u6570\u5B57 + \u540E\u7F00\u6210\u7EC4\u5C45\u4E2D\uFF1B\u5BB9\u5668\u88AB\u6D88\u8D39\u7AEF\u62C9\u5BBD\u65F6\u5403\u6389\u5168\u90E8\u4F59\u91CF\uFF0C\u4E24\u7AEF \u2212 / + \u56E0\u6B64\u9489\u6B7B\u5728\u5DE6\u53F3\u8FB9\u7F18\u3002 */
+.dshpc-num__mid{display:flex;align-items:center;justify-content:center;flex:1 1 auto;min-width:0;}
+.dshpc-num--sm{height:var(--dshpc-control-h-sm);}
+.dshpc-num--md{height:var(--dshpc-control-h-md);}
+.dshpc-num--lg{height:var(--dshpc-control-h-lg);}
+.dshpc-num--md .dshpc-num__input,.dshpc-num--lg .dshpc-num__input{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}
+.dshpc-num--md .dshpc-num__suffix,.dshpc-num--lg .dshpc-num__suffix{font-size:var(--dshpc-font-md);}
+.dshpc-num--disabled{opacity:.5;}
+/* \u7126\u70B9\u6001\u4E0E Input \u540C\u6B3E\uFF082026-10-20 \u7528\u6237\uFF1A\u6570\u5B57\u6846\u91CC\u70B9\u8FDB\u53BB\u6CA1\u6709\u84DD\u6846\uFF09\uFF1A\u5185\u5C42 input \u65E0\u8FB9\u6846\uFF0C
+   \u7126\u70B9\u72B6\u6001\u753B\u5728\u6574\u4E2A\u6B65\u8FDB\u63A7\u4EF6\u5916\u6846\u4E0A\u3002 */
+.dshpc-num:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
+.dshpc-num__input{width:36px;height:100%;padding:0 2px;border:0;background:transparent;color:var(--dshpc-fg);
+  font-family:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);text-align:center;outline:none;}
+.dshpc-num__suffix{padding:0 6px;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm);white-space:nowrap;}
+.dshpc-num .dshpc-iconbtn{border-radius:0;color:var(--dshpc-fg-2);flex:none;}
+
+/* \u5B98\u65B9 Switch \u5305\u88C5\u7EDF\u4E00\uFF1A\u9009\u4E2D = success \u7EFF\u3002
+   \uFF08\u5408\u5E76\u539F\u5148 task-editor-css / task-list \u4E24\u5904\u5C31\u5730\u8986\u76D6\uFF1B\u9009\u62E9\u5668\u5E26\u5305\u88C5\u7C7B + role\uFF0C\u7279\u5F02\u6027\u9AD8\u4E8E\u5B98\u65B9\u3002\uFF09 */
+.dshpc-switch button[role='switch'][aria-checked='true']{background:var(--dshpc-success);}
+
+/* \u591A\u884C\u6587\u672C\u8F93\u5165\uFF08\u63D0\u793A\u8BCD\u7B49\uFF0CP3\uFF09\uFF1A**\u8FB9\u6846 / \u5706\u89D2 / \u5E95 / \u7126\u70B9\u6001\u4E0E Input \u540C\u4E00\u5957\u53E3\u5F84**\uFF08\u7528\u6237 2026-10-20\uFF1A
+   \u300C\u591A\u884C\u8F93\u5165\u5E94\u8BE5\u548C input \u7684\u8FB9\u513F\u662F\u4E00\u4E2A\u9053\u7406\uFF0C\u5305\u62EC\u5706\u89D2\u5728\u5185\uFF0C\u90FD\u662F\u4E00\u4E2A\u4E1C\u897F\u300D\uFF09\u3002
+   \u26A0\uFE0F \u65E7\u610F\u56FE\u300C\u5361\u5185\u65E0\u8FB9\u6846\u3001\u89C6\u89C9\u91CD\u5FC3\u5728\u6574\u5F20\u5361\u4E0A\u300D\u5DF2\u4F5C\u5E9F \u2014\u2014 \u73B0\u5728\u5B83\u5C31\u662F\u4E00\u53EA\u5E26\u6846\u7684\u591A\u884C\u8F93\u5165\u6846\u3002
+   \uFF08\u4ECE task-editor-css \u7684 .dshpc-ed-prompt \u4E0A\u63D0\u800C\u6765\uFF1B\u4E1A\u52A1\u6587\u4EF6\u4E0D\u518D\u81EA\u5199 textarea \u76AE\u80A4\u3002\uFF09 */
+.dshpc-textarea{display:block;width:100%;box-sizing:border-box;min-height:132px;padding:8px 12px;
+  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);outline:none;
+  background:var(--dshpc-surface-1);color:var(--dshpc-fg);font-family:inherit;font-size:var(--dshpc-font-lg);line-height:1.6;resize:vertical;
+  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
+.dshpc-textarea::placeholder{color:var(--dshpc-fg-dim);}
+.dshpc-textarea:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
+/* \u6821\u9A8C\u4E0D\u901A\u8FC7\uFF1A\u4E0E Input \u4E00\u81F4\uFF0C\u8D70\u8FB9\u6846\u63CF\u7EA2\uFF08\u65E7\u7248\u662F box-shadow \u63CF\u7EA2\u76D2\uFF0C\u4E0E Input \u4E0D\u540C\u53E3\u5F84\uFF09 */
+.dshpc-textarea--error{border-color:var(--dshpc-danger);}
+.dshpc-textarea:disabled{cursor:default;opacity:.5;}
+@media (prefers-reduced-motion: reduce){.dshpc-textarea{transition:none;}}
+
+/* \u62D6\u62FD\u5206\u9694\u6761\uFF08\u7F16\u8F91\u5206\u680F / \u9884\u89C8 dock \u5171\u7528\uFF0CU20 #3\uFF09\uFF1A6px \u547D\u4E2D\u533A\uFF0Ccol-resize\uFF0C\u4E0D\u753B\u7EBF\uFF0Chover/\u6309\u4E0B\u6D6E\u51FA\u6D45\u5E26\u3002
+   \u5177\u4F53 z-index \u7531 .dshpc-ed-resizer / .dshpc-sv-resizer \u5404\u81EA\u8865\u3002 */
+.dshpc-resizer{position:absolute;top:0;bottom:0;left:0;width:6px;cursor:col-resize;background:0 0;touch-action:none;user-select:none;}
+.dshpc-resizer:hover,.dshpc-resizer:active{background:var(--dshpc-hover,rgba(38,49,72,.06));}
+
+@media (prefers-reduced-motion: reduce){.dshpc-input,.dshpc-pfx{transition:none;}}
+`;
 
 // dist/ui/controls/loading-css.generated.js
 var LOADING_CSS = "\n/* \u8FD0\u884C\u4E2D / loading \u7684\u6D3B\u52A8\u6307\u793A\uFF1A\u4E09\u4E2A\u5C0F\u65B9\u5757\u4F9D\u6B21\u8109\u52A8\u3002 */\n@keyframes dshpc-run-block { 0%, 80%, 100% { opacity: 0.25; transform: scale(0.8) } 40% { opacity: 1; transform: scale(1) } }\n.dshpc-run-blocks { display: inline-flex; align-items: center; gap: 3px; }\n.dshpc-run-blocks > i { width: 5px; height: 5px; border-radius: 1px; background: currentColor; animation: dshpc-run-block 1.2s ease-in-out infinite; }\n.dshpc-run-blocks > i:nth-child(2) { animation-delay: 0.15s; }\n.dshpc-run-blocks > i:nth-child(3) { animation-delay: 0.3s; }\n@media (prefers-reduced-motion: reduce) { .dshpc-run-blocks > i { animation: none; opacity: 1; } }\n";
@@ -6780,8 +6879,8 @@ function sizeClass(size4) {
 }
 function Input(props) {
   ensureControls();
-  const { value, onChange, placeholder: placeholder2, size: size4 = "lg", error, disabled, type: type3, className: className2, style: style2 } = props;
-  return withHint((0, import_react29.createElement)("input", {
+  const { value, onChange, placeholder: placeholder2, size: size4 = "lg", error, disabled, type: type3, icon: icon2, className: className2, style: style2 } = props;
+  const input = (0, import_react29.createElement)("input", {
     ref: props.inputRef,
     type: type3 ?? "text",
     value,
@@ -6796,7 +6895,8 @@ function Input(props) {
     },
     onKeyDown: props.onKeyDown,
     onBlur: props.onBlur
-  }), props.hint);
+  });
+  return withHint(icon2 === void 0 || icon2 === null ? input : (0, import_react29.createElement)("span", { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size4)}` }, (0, import_react29.createElement)("span", { className: "dshpc-iwrap__icon" }, icon2), input), props.hint);
 }
 function NumberInput(props) {
   ensureControls();
@@ -55197,7 +55297,7 @@ var DICT2 = {
     btnHintTitle: "\u95EE\u53F7\u63D0\u793A\uFF08FieldHint\uFF09",
     btnHintHint: "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF1A\u6807\u9898\u540E / \u6309\u94AE\u540E / \u4E00\u6BB5\u6587\u5B57\u540E / \u8F93\u5165\u6846\u540E\uFF1B\u9F20\u6807\u60AC\u505C\u6216\u952E\u76D8\u805A\u7126\u6D6E\u51FA\u6C14\u6CE1",
     demoInputFamily: "Input \u5BB6\u65CF",
-    inputHint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u4F20 hint \u53C2\u6570\u5373\u81EA\u52A8\u5728\u884C\u5C3E\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF08FieldHint \u672C\u4F53\u4ECD\u53EF\u5355\u72EC\u7528\uFF09",
+    inputHint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u4F20 hint \u53C2\u6570\u5373\u81EA\u52A8\u5728\u884C\u5C3E\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF08FieldHint \u672C\u4F53\u4ECD\u53EF\u5355\u72EC\u7528\uFF09\uFF1BInput \u4F20 icon \u5373\u5728\u5DE6\u4FA7\u52A0\u56FE\u6807\u69FD",
     switchTip: "\u5B98\u65B9 Switch\uFF08\u542F\u7528\u8BED\u4E49\uFF0C\u4E0D\u662F\u52FE\u9009\uFF09+ Checkbox + Segmented",
     checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF1Bbordered \u662F\u5916\u6846\u6B3E\uFF08\u6700\u53F3\uFF0C\u53EF\u70B9\u7740\u73A9\uFF09\uFF1B\u661F\u671F\u65B9\u5757\u662F\u591A\u9009\u3002\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362",
     pickerHint: '\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22\uFF08searchable \u5F00\u5173\uFF09/ \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\uFF1B\u89E6\u53D1\u5668\u4E0E\u9009\u9879\u90FD\u652F\u6301\u524D\u7F6E icon\uFF1B\u6587\u5B57\u9ED8\u8BA4\u5C45\u5DE6\uFF08align="center" \u624D\u5C45\u4E2D\uFF09\uFF1B\u591A\u9009\u5230\u4E0A\u9650\u540E\u5DF2\u9009\u9879\u4ECD\u53EF\u70B9\u9009\u53D6\u6D88',
@@ -55427,7 +55527,7 @@ var DICT2 = {
     btnHintTitle: "Question-mark hint (FieldHint)",
     btnHintHint: "Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal",
     demoInputFamily: "Input family",
-    inputHint: "Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone)",
+    inputHint: "Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone); pass icon to Input to get a leading icon slot",
     switchTip: "Official Switch (enable semantics, not a tick) + Checkbox + Segmented",
     checkboxHint: "Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select. Labels follow the locale",
     pickerHint: 'Single / multi / max / search (searchable switch) / grouped / empty / degraded; trigger and options both take a leading icon; label is left-aligned by default (align="center" to center); multi-select at max still allows deselecting picked items',
@@ -56945,11 +57045,11 @@ var docData = {
         "rows": [
           {
             "name": "Input",
-            "type": "value onChange(v) size(\u9ED8\u8BA4 sm) error disabled type placeholder inputRef onKeyDown onBlur aria-label title hint",
+            "type": "value onChange(v) size(\u9ED8\u8BA4 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label title hint",
             "def": "\u2014",
             "desc": {
-              "zh": "\u57FA\u7840\u8F93\u5165\u6846\uFF1Berror \u63CF\u7EA2\uFF1Bhint \u7ED9\u5B57\u7B26\u4E32\u5373\u81EA\u52A8\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A",
-              "en": "Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint"
+              "zh": "\u57FA\u7840\u8F93\u5165\u6846\uFF1Berror \u63CF\u7EA2\uFF1Bhint \u7ED9\u5B57\u7B26\u4E32\u5373\u81EA\u52A8\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF1Bicon \u662F\u5DE6\u4FA7\u56FE\u6807\u69FD\uFF08\u4E0D\u5403\u70B9\u51FB\uFF0C\u5C3A\u5BF8\u53D6 fieldMetricsOf(size).icon\uFF09",
+              "en": "Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint; icon is the leading icon slot (does not swallow clicks; size from fieldMetricsOf(size).icon)"
             }
           },
           {
@@ -58528,9 +58628,13 @@ function ButtonPage() {
 }
 var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
 const [num, setNum] = useState(3)
+const [kw, setKw] = useState('')
 
 // hint \u53C2\u6570\u7248\uFF1A\u95EE\u53F7\u63D0\u793A\u7531\u7EC4\u4EF6\u81EA\u5DF1\u6302\uFF0C\u4E0D\u7528\u624B\u52A8\u62FC FieldHint
 <Input value={text} onChange={setText} placeholder="\u8BF7\u8F93\u5165\u7528\u6237\u540D" hint="\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" />
+// \u641C\u7D22\u6846\uFF1Atype="search" \u53EA\u900F\u4F20\u539F\u751F input\uFF0C\u53F3\u4FA7\u5C0F\u53C9\u662F\u6D4F\u89C8\u5668\u81EA\u5E26\u7684\u6E05\u7A7A\u94AE\uFF08\u4E0D\u662F\u6838\u5FC3\u5E93\u753B\u7684\uFF09
+// icon \u662F\u5DE6\u4FA7\u56FE\u6807\u69FD\uFF08\u4E0D\u5403\u70B9\u51FB\uFF0C\u70B9\u5728\u56FE\u6807\u4E0A\u7167\u6837\u805A\u7126\uFF09\uFF1B\u56FE\u6807\u5C3A\u5BF8\u6309\u6863\u53D6 fieldMetricsOf(size).icon
+<Input type="search" icon={<IconSearchOutlineRegular size={16} />} value={kw} onChange={setKw} placeholder="\u641C\u7D22" />
 // \u6821\u9A8C\u5931\u8D25\u6001\uFF1A\u63CF\u7EA2
 <Input value={text} onChange={setText} error placeholder="\u6821\u9A8C\u5931\u8D25\u6001" />
 // \u6570\u5B57\u6846\uFF1A\u8D85\u51FA min / max \u81EA\u52A8\u6536\u56DE\u5230\u8FB9\u754C
@@ -58581,6 +58685,7 @@ function InputPage() {
   const [seg, setSeg] = (0, import_react57.useState)("week");
   const [filter2, setFilter] = (0, import_react57.useState)("all");
   const [multi, setMulti] = (0, import_react57.useState)(["1"]);
+  const [kw, setKw] = (0, import_react57.useState)("");
   return (0, import_react57.createElement)(
     "div",
     null,
@@ -58598,6 +58703,13 @@ function InputPage() {
           (0, import_react57.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
           (0, import_react57.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
+        ),
+        (0, import_react57.createElement)(
+          "div",
+          { style: { display: "flex", alignItems: "center", gap: "6px" } },
+          (0, import_react57.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
+          // 左侧图标槽（icon）+ 原生清除钮（type="search" 透传，小叉由浏览器画）
+          (0, import_react57.createElement)(Input, { type: "search", icon: (0, import_react57.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
         ),
         (0, import_react57.createElement)(Input, { value: "bad value", onChange: () => {
         }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
@@ -60526,7 +60638,7 @@ function FileBrowser(props) {
   const [copied, setCopied] = (0, import_react63.useState)(false);
   const [openDirs, setOpenDirs] = (0, import_react63.useState)(/* @__PURE__ */ new Set());
   const [childCache, setChildCache] = (0, import_react63.useState)({});
-  const [, setRootNonce] = (0, import_react63.useState)(0);
+  const [rootNonce, setRootNonce] = (0, import_react63.useState)(0);
   const [outside, setOutside] = (0, import_react63.useState)(false);
   const hostWorkspaces = (0, import_react63.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = props.workspaceAnchors ?? hostWorkspaces;
@@ -60692,7 +60804,7 @@ function FileBrowser(props) {
     const ro = new ResizeObserver(recompute);
     ro.observe(region);
     return () => ro.disconnect();
-  }, [dir, viewing, mode, listing]);
+  }, [dir, viewing, mode, listing, rootNonce, outside]);
   const reload = (0, import_react63.useCallback)(() => {
     if (viewing !== null) {
       setReloadNonce((n) => n + 1);
@@ -60850,7 +60962,12 @@ function FileBrowser(props) {
   }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, listSessionId, rootCache, dir, loadDir, tt]);
   const rootAbs = rootCache.get(listSessionId);
   const rootLabel = anchorMatch?.title ?? props.rootName ?? (rootAbs !== void 0 ? baseNameOfPath(rootAbs.replace(/\/+$/, "")) : "");
-  const crumbs = rootLabel !== "" ? [{ label: rootLabel, path: "" }, ...crumbsOfDir(relativizeToRoot(rootCache, listSessionId, dir))] : crumbsOfDir(dir);
+  const relDir = relativizeToRoot(rootCache, listSessionId, dir);
+  const rootPending = rootAbs === void 0 && dir !== "" && isAbsoluteish(dir);
+  const crumbs = [
+    ...rootLabel !== "" ? [{ label: rootLabel, path: "" }] : [],
+    ...rootPending ? [{ label: baseNameOfPath(dir), path: dir }] : crumbsOfDir(relDir)
+  ];
   const viewingIsMd = viewing !== null && /\.(md|markdown)$/i.test(viewing);
   const viewingIsHtml = viewing !== null && /\.(html|htm)$/i.test(viewing);
   const switchable = viewingIsMd || viewingIsHtml;
@@ -61730,7 +61847,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.7.2"}`],
             [t3("buildDemo"), `v${"0.7.2"}`],
-            [t3("buildStamp"), "261028-162137-301"]
+            [t3("buildStamp"), "261028-164210-082"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -62054,7 +62171,7 @@ function DemoPage() {
           },
           (0, import_react69.createElement)("span", null, `core v${"0.7.2"}`),
           (0, import_react69.createElement)("span", null, `demo v${"0.7.2"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-162137-301")
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-164210-082")
         )
       )
     ),

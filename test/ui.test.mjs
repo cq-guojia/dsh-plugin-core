@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/css.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
-import { Segmented } from '../dist/ui/index.js'
+import { Input, Segmented } from '../dist/ui/index.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -37,4 +37,13 @@ test('Segmented 单选挂滑动块模式，多选保持逐段着色', () => {
 test('滑动块样式带过渡，reduced-motion 下关掉', () => {
   assert.match(SEGMENTED_CSS, /\.dshpc-seg__thumb\{[^}]*transition:/)
   assert.match(SEGMENTED_CSS, /prefers-reduced-motion[\s\S]*?\.dshpc-seg__thumb\{transition:none/)
+})
+
+test('Input 只在给了 icon 时才多包一层图标壳', () => {
+  const props = { value: '', onChange() {} }
+  const plain = renderToStaticMarkup(createElement(Input, props))
+  assert.ok(!plain.includes('dshpc-iwrap'), '没图标不该包壳')
+  const withIcon = renderToStaticMarkup(createElement(Input, { ...props, size: 'sm', icon: 'S' }))
+  assert.match(withIcon, /class="dshpc-iwrap dshpc-iwrap--sm"/)
+  assert.match(withIcon, /dshpc-iwrap__icon/)
 })
