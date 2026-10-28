@@ -2,7 +2,7 @@
 // 使用前：插件启动时 `setStyleKit(createStyleKit({ id }))` 一次，
 // 再调一次 `ensureControls()` 把 token + 控件样式挂上（幂等）。
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css.js';
-export { filterGroups, flattenOptions, groupOf, labelsOf, toGroups, toggleValue, } from './picker-logic.js';
+export { filterGroups, flattenOptions, groupOf, labelsOf, resolveTriggerSizing, toGroups, toggleValue, } from './picker-logic.js';
 export { Picker } from './Picker.js';
 export { DateTimePicker, } from './DateTimePicker.js';
 export { buildMonthCells, ceilToPrecision, clampUnit, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';

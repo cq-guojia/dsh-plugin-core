@@ -75,7 +75,7 @@ Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三�
 
 > EN: Picker / WorkspacePicker / ModelPicker
 
-Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue`。
+Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue`。触发器支持 width / minWidth / maxWidth 约束宽度：定宽忽略另两者；内容超长则省略号 + hover 跑马灯。
 
 > EN: Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`.
 
@@ -106,6 +106,9 @@ ModelPicker：数据自带，`variant` 为 `grouped`（默认）/ `cascade`；`o
 | `icon` | `ReactNode` | — | 触发器文字前的图标 | Icon before the trigger text |
 | `hint` | `string` | — | 问号提示文字：自动在触发器后挂标准 FieldHint | Hint text: auto-attaches a standard FieldHint after the trigger |
 | `className` | `string` | — | 定制宽度 / 外边距 | Custom width / margin |
+| `width` | `number \| string` | — | 定宽（px 或任意 CSS 长度）；给了即忽略 minWidth / maxWidth，触发器锁定此宽；内容超长则省略 + hover 跑马灯 | Fixed width (px or any CSS length); overrides minWidth/maxWidth and locks the trigger; overflow elides + hover marquee |
+| `minWidth` | `number \| string` | 120px（CSS 默认） | 最小宽；内容不到此宽触发器也不更窄 | Minimum width; trigger never narrower than this |
+| `maxWidth` | `number \| string` | 100%（CSS 默认） | 最大宽；内容超过此宽则省略 + hover 跑马灯 | Maximum width; overflow elides + hover marquee |
 | `ariaLabel` | `string` | — | 无障碍名 | Accessible name |
 | `translate` | `Translate` | 内置 | 覆盖文案 | Override copy |
 

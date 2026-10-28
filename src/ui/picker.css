@@ -1,5 +1,5 @@
 
-.dshpc-picker{position:relative;display:inline-block;font-size:13px;line-height:20px}
+.dshpc-picker{position:relative;display:inline-block;max-width:100%;font-size:13px;line-height:20px}
 .dshpc-picker__trigger{
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
   min-width:120px;max-width:100%;height:28px;padding:0 8px;

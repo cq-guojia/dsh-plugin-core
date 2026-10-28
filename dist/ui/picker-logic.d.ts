@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 export interface PickerOption {
     value: string;
     label: string;
@@ -22,4 +22,12 @@ export declare function toggleValue(current: readonly string[], value: string, m
 export declare function labelsOf(groups: PickerGroup[], values: readonly string[]): string[];
 /** 值落在哪个组里（按模型值反推供应商等场景）。 */
 export declare function groupOf(groups: PickerGroup[], value: string): PickerGroup | undefined;
+/** 触发器宽度解析：把 width / minWidth / maxWidth 译成内联样式。
+ * 定宽（width）忽略 min/max 并锁定三值；否则各自生效，缺省沿用 CSS 默认（min 120px、max 100%）。
+ * 数值按 px 处理，字符串原样透传。 */
+export declare function resolveTriggerSizing(opts: {
+    width?: number | string;
+    minWidth?: number | string;
+    maxWidth?: number | string;
+}): CSSProperties;
 //# sourceMappingURL=picker-logic.d.ts.map

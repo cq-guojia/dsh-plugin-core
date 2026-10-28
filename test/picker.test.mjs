@@ -5,6 +5,7 @@ import {
   flattenOptions,
   groupOf,
   labelsOf,
+  resolveTriggerSizing,
   toggleValue,
 } from '../dist/ui/index.js'
 import { setLocale, t } from '../dist/utils/index.js'
@@ -50,4 +51,14 @@ test('选择器固定提示语自带中英，且可传自定义 t 覆盖', () =>
   assert.equal(t('modelModel'), 'Model')
   setLocale('zh')
   assert.equal(t('pickerEmpty', undefined, ), '暂无可选')
+})
+
+test('resolveTriggerSizing 定宽忽略 min/max，其余各自生效', () => {
+  assert.deepEqual(resolveTriggerSizing({ width: 200 }), { width: '200px', minWidth: '200px', maxWidth: '200px' })
+  assert.deepEqual(resolveTriggerSizing({ width: '12rem' }), { width: '12rem', minWidth: '12rem', maxWidth: '12rem' })
+  assert.deepEqual(resolveTriggerSizing({ minWidth: 100, maxWidth: 300 }), { minWidth: '100px', maxWidth: '300px' })
+  assert.deepEqual(resolveTriggerSizing({ maxWidth: '50%' }), { maxWidth: '50%' })
+  assert.deepEqual(resolveTriggerSizing({}), {})
+  // 定宽优先：即便同时给了 min/max，也以定宽锁定三值
+  assert.deepEqual(resolveTriggerSizing({ width: 120, minWidth: 80, maxWidth: 200 }), { width: '120px', minWidth: '120px', maxWidth: '120px' })
 })

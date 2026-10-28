@@ -141,7 +141,7 @@ var MARQUEE_CSS = "/* \u8DD1\u9A6C\u706F\uFF08MarqueeText\uFF09\uFF1A\u53CC\u5C4
 
 // dist/ui/picker-css.generated.js
 var PICKER_CSS = `
-.dshpc-picker{position:relative;display:inline-block;font-size:13px;line-height:20px}
+.dshpc-picker{position:relative;display:inline-block;max-width:100%;font-size:13px;line-height:20px}
 .dshpc-picker__trigger{
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
   min-width:120px;max-width:100%;height:28px;padding:0 8px;
@@ -297,9 +297,22 @@ function groupOf(groups, value) {
     return void 0;
   return groups.find((g) => g.options.some((o) => o.value === value));
 }
+function resolveTriggerSizing(opts) {
+  const px = (v) => typeof v === "number" ? `${v}px` : v;
+  if (opts.width !== void 0) {
+    const w = px(opts.width);
+    return { width: w, minWidth: w, maxWidth: w };
+  }
+  const style2 = {};
+  if (opts.minWidth !== void 0)
+    style2.minWidth = px(opts.minWidth);
+  if (opts.maxWidth !== void 0)
+    style2.maxWidth = px(opts.maxWidth);
+  return style2;
+}
 
 // dist/ui/Picker.js
-var import_react5 = require("react");
+var import_react6 = require("react");
 
 // node_modules/.pnpm/@floating-ui+react@0.27.20_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react/dist/floating-ui.react.mjs
 var React3 = __toESM(require("react"), 1);
@@ -3371,6 +3384,50 @@ function FieldHint(props) {
   });
 }
 
+// dist/ui/MarqueeText.js
+var import_react5 = require("react");
+function MarqueeText(props) {
+  const outerRef = (0, import_react5.useRef)(null);
+  const innerRef = (0, import_react5.useRef)(null);
+  const [dist2, setDist] = (0, import_react5.useState)(0);
+  const measure = (0, import_react5.useCallback)(() => {
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (outer === null || inner === null)
+      return;
+    setDist(Math.max(0, Math.ceil(inner.scrollWidth - outer.clientWidth)));
+  }, []);
+  (0, import_react5.useLayoutEffect)(() => {
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (outer === null || inner === null)
+      return;
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(outer);
+    ro.observe(inner);
+    return () => {
+      ro.disconnect();
+    };
+  }, [measure]);
+  (0, import_react5.useEffect)(() => {
+    measure();
+  }, [props.text, measure]);
+  const run = dist2 > 0;
+  return (0, import_react5.createElement)("span", {
+    ref: outerRef,
+    className: (run ? "dshpc-mq dshpc-mq-run" : "dshpc-mq") + (props.className === void 0 ? "" : ` ${props.className}`),
+    title: props.title,
+    style: props.style
+  }, (0, import_react5.createElement)("span", {
+    ref: innerRef,
+    className: "dshpc-mq-in",
+    style: {
+      ...run ? { "--dshpc-mq-dist": `${-dist2}px`, "--dshpc-mq-dur": `${Math.max(3, Math.round(dist2 / 30))}s` } : null
+    }
+  }, props.text));
+}
+
 // dist/ui/Picker.js
 function Picker(props) {
   ensureControls();
@@ -3380,20 +3437,21 @@ function Picker(props) {
   const placement = props.placement ?? "down";
   const clearable = props.clearable === true;
   const showLabels = props.showLabels !== false;
-  const groups = (0, import_react5.useMemo)(() => toGroups(props.groups, props.options), [props.groups, props.options]);
+  const triggerStyle = resolveTriggerSizing(props);
+  const groups = (0, import_react6.useMemo)(() => toGroups(props.groups, props.options), [props.groups, props.options]);
   const controlled = props.value !== void 0;
-  const [inner, setInner] = (0, import_react5.useState)(() => toArray(props.defaultValue));
+  const [inner, setInner] = (0, import_react6.useState)(() => toArray(props.defaultValue));
   const selected = controlled ? toArray(props.value) : inner;
   const emit = (next) => {
     if (!controlled)
       setInner(next);
     props.onChange?.(mode === "single" ? next[0] ?? "" : next);
   };
-  const [open, setOpen] = (0, import_react5.useState)(false);
-  const [query, setQuery] = (0, import_react5.useState)("");
-  const [active, setActive2] = (0, import_react5.useState)(-1);
-  const rootRef = (0, import_react5.useRef)(null);
-  const searchRef = (0, import_react5.useRef)(null);
+  const [open, setOpen] = (0, import_react6.useState)(false);
+  const [query, setQuery] = (0, import_react6.useState)("");
+  const [active, setActive2] = (0, import_react6.useState)(-1);
+  const rootRef = (0, import_react6.useRef)(null);
+  const searchRef = (0, import_react6.useRef)(null);
   const { refs, floatingStyles } = useFloating2({
     open,
     onOpenChange: setOpen,
@@ -3416,12 +3474,12 @@ function Picker(props) {
     whileElementsMounted: autoUpdate,
     strategy: "fixed"
   });
-  const setSearchRef = (0, import_react5.useCallback)((el) => {
+  const setSearchRef = (0, import_react6.useCallback)((el) => {
     searchRef.current = el;
     if (el !== null && open)
       el.focus();
   }, [open]);
-  (0, import_react5.useEffect)(() => {
+  (0, import_react6.useEffect)(() => {
     if (!open)
       return;
     const onDown = (e) => {
@@ -3436,7 +3494,7 @@ function Picker(props) {
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
-  (0, import_react5.useEffect)(() => {
+  (0, import_react6.useEffect)(() => {
     if (open)
       return;
     setQuery("");
@@ -3482,7 +3540,7 @@ function Picker(props) {
         pick2(hit.value);
     }
   };
-  const trigger = (0, import_react5.createElement)(
+  const trigger = (0, import_react6.createElement)(
     "button",
     {
       type: "button",
@@ -3490,39 +3548,40 @@ function Picker(props) {
       "aria-expanded": open,
       ref: refs.setReference,
       className: `dshpc-picker__trigger dshpc-picker__trigger--${size4}${props.align === "center" ? " dshpc-picker__trigger--center" : ""}`,
+      style: triggerStyle,
       disabled: props.disabled === true,
       onClick: () => {
         if (props.disabled !== true)
           setOpen(!open);
       }
     },
-    props.icon !== void 0 && props.icon !== null ? (0, import_react5.createElement)("span", { className: "dshpc-picker__icon" }, props.icon) : null,
-    // 文字吃掉剩余宽度并靠左（默认）：否则 space-between 会把短文案推到中间
-    (0, import_react5.createElement)("span", { className: "dshpc-picker__label" }, summary),
-    (0, import_react5.createElement)(Chevron, { size: 12, className: "dshpc-picker__caret" })
+    props.icon !== void 0 && props.icon !== null ? (0, import_react6.createElement)("span", { className: "dshpc-picker__icon" }, props.icon) : null,
+    // 文字吃掉剩余宽度并靠左（默认）；超长时外层省略号、hover 跑马灯（MarqueeText 自带）。
+    (0, import_react6.createElement)(MarqueeText, { text: summary, className: "dshpc-picker__label" }),
+    (0, import_react6.createElement)(Chevron, { size: 12, className: "dshpc-picker__caret" })
   );
-  const triggerRow = props.hint === void 0 ? trigger : (0, import_react5.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react5.createElement)(FieldHint, { text: props.hint }));
-  return (0, import_react5.createElement)("div", {
+  const triggerRow = props.hint === void 0 ? trigger : (0, import_react6.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react6.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react6.createElement)("div", {
     className: `dshpc-picker${props.className === void 0 ? "" : ` ${props.className}`}`,
     ref: rootRef,
     onKeyDown
-  }, triggerRow, open ? (0, import_react5.createElement)(FloatingPortal, null, (0, import_react5.createElement)("div", {
+  }, triggerRow, open ? (0, import_react6.createElement)(FloatingPortal, null, (0, import_react6.createElement)("div", {
     className: "dshpc-picker__menu",
     ref: refs.setFloating,
     style: floatingStyles
-  }, props.degraded === true ? (0, import_react5.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react5.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react5.createElement)("input", {
+  }, props.degraded === true ? (0, import_react6.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react6.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react6.createElement)("input", {
     ref: setSearchRef,
     className: "dshpc-picker__search",
     placeholder: tt("pickerSearch"),
     value: query,
     onChange: (e) => setQuery(e.target.value)
-  }) : null, flat.length === 0 && groups.length === 0 ? (0, import_react5.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerEmpty")) : flat.length === 0 ? (0, import_react5.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerNoMatch")) : [
-    clearable && mode === "single" && selected.length > 0 ? (0, import_react5.createElement)("div", {
+  }) : null, flat.length === 0 && groups.length === 0 ? (0, import_react6.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerEmpty")) : flat.length === 0 ? (0, import_react6.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerNoMatch")) : [
+    clearable && mode === "single" && selected.length > 0 ? (0, import_react6.createElement)("div", {
       key: "__clear__",
       className: "dshpc-picker__option dshpc-picker__option--clear",
       onClick: clear
     }, tt("pickerClear")) : null,
-    ...shown.map((g) => (0, import_react5.createElement)("div", { key: g.value || "_" }, g.label === "" ? null : (0, import_react5.createElement)("div", { className: "dshpc-picker__group-label" }, g.label), g.options.map((o) => {
+    ...shown.map((g) => (0, import_react6.createElement)("div", { key: g.value || "_" }, g.label === "" ? null : (0, import_react6.createElement)("div", { className: "dshpc-picker__group-label" }, g.label), g.options.map((o) => {
       const blocked = o.disabled === true || atMax && !selected.includes(o.value);
       const activeCls = [
         "dshpc-picker__option",
@@ -3530,7 +3589,7 @@ function Picker(props) {
         blocked ? "dshpc-picker__option--disabled" : ""
       ].filter((s) => s !== "").join(" ");
       const idx = flat.indexOf(o);
-      return (0, import_react5.createElement)("div", {
+      return (0, import_react6.createElement)("div", {
         key: o.value,
         className: activeCls,
         "data-active": idx === active ? "true" : void 0,
@@ -3538,7 +3597,7 @@ function Picker(props) {
           if (!blocked)
             pick2(o.value);
         }
-      }, mode === "multiple" ? (0, import_react5.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null, o.icon !== void 0 && o.icon !== null ? (0, import_react5.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null, (0, import_react5.createElement)("span", null, o.label));
+      }, mode === "multiple" ? (0, import_react6.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null, o.icon !== void 0 && o.icon !== null ? (0, import_react6.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null, (0, import_react6.createElement)("span", null, o.label));
     })))
   ])) : null);
 }
@@ -3549,10 +3608,10 @@ function toArray(v) {
 }
 
 // dist/ui/DateTimePicker.js
-var import_react8 = require("react");
+var import_react9 = require("react");
 
 // dist/ui/Button.js
-var import_react7 = require("react");
+var import_react8 = require("react");
 var SOLID_VARIANTS = ["primary", "secondary", "danger", "success", "warning", "info"];
 function colorVars(variant, color) {
   if (color === void 0 || color === "")
@@ -3586,13 +3645,13 @@ function Button(props) {
     className: buttonClass(variant, size4, block2, icon2 !== void 0 && icon2 !== null && !loading, className2),
     style: { ...colorVars(variant, color), ...style2 }
   };
-  return (0, import_react7.createElement)("button", attrs2, loading ? (0, import_react7.createElement)("svg", {
+  return (0, import_react8.createElement)("button", attrs2, loading ? (0, import_react8.createElement)("svg", {
     className: "dshpc-btn__spinner",
     viewBox: "0 0 12 12",
     width: 12,
     height: 12,
     "aria-hidden": true
-  }, (0, import_react7.createElement)("circle", {
+  }, (0, import_react8.createElement)("circle", {
     cx: 6,
     cy: 6,
     r: 4.75,
@@ -3602,7 +3661,7 @@ function Button(props) {
     strokeLinecap: "round",
     // 周长 ≈ 29.85，画 22 的弧 + 足够长的空缺 ⇒ 一个约 270° 的开口环
     strokeDasharray: "22 30"
-  })) : icon2 !== void 0 && icon2 !== null ? (0, import_react7.createElement)("span", { className: "dshpc-btn__icon" }, icon2) : null, children, iconRight !== void 0 && iconRight !== null ? (0, import_react7.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
+  })) : icon2 !== void 0 && icon2 !== null ? (0, import_react8.createElement)("span", { className: "dshpc-btn__icon" }, icon2) : null, children, iconRight !== void 0 && iconRight !== null ? (0, import_react8.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
 }
 function IconButton(props) {
   ensureControls();
@@ -3615,7 +3674,7 @@ function IconButton(props) {
     className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size4}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: style2
   };
-  return (0, import_react7.createElement)("button", attrs2, icon2);
+  return (0, import_react8.createElement)("button", attrs2, icon2);
 }
 
 // dist/utils/date.js
@@ -3921,7 +3980,7 @@ function fmtParts(p, precision) {
   return formatDateTimePrecision(formatDateTimeIso(p), precision);
 }
 function icon(paths, size4) {
-  return (0, import_react8.createElement)("svg", { width: size4, height: size4, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, ...paths.map((d2) => (0, import_react8.createElement)("path", {
+  return (0, import_react9.createElement)("svg", { width: size4, height: size4, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, ...paths.map((d2) => (0, import_react9.createElement)("path", {
     d: d2,
     stroke: "currentColor",
     "stroke-width": 1.5,
@@ -3939,8 +3998,8 @@ var ICON_PREV_YEAR = icon(["M9 5L5.5 8 9 11", "M12.5 5L9 8l3.5 3"], 14);
 var ICON_PREV_MONTH = icon(["M9.5 5L6 8l3.5 3"], 14);
 var ICON_NEXT_MONTH = icon(["M6.5 5L10 8l-3.5 3"], 14);
 var ICON_NEXT_YEAR = icon(["M7 5l3.5 3L7 11", "M3.5 5L7 8l-3.5 3"], 14);
-var ICON_UP = (0, import_react8.createElement)(Chevron, { dir: "up", size: 12 });
-var ICON_DOWN = (0, import_react8.createElement)(Chevron, { size: 12 });
+var ICON_UP = (0, import_react9.createElement)(Chevron, { dir: "up", size: 12 });
+var ICON_DOWN = (0, import_react9.createElement)(Chevron, { size: 12 });
 function DateTimePicker(props) {
   ensureControls();
   const tt = props.translate ?? t;
@@ -3951,21 +4010,21 @@ function DateTimePicker(props) {
   const locale2 = getLocale();
   const placeholder2 = props.placeholder ?? tt("dtPlaceholder");
   const controlled = props.value !== void 0;
-  const [inner, setInner] = (0, import_react8.useState)(() => props.defaultValue ?? null);
+  const [inner, setInner] = (0, import_react9.useState)(() => props.defaultValue ?? null);
   const current3 = controlled ? props.value ?? null : inner;
-  const [open, setOpen] = (0, import_react8.useState)(false);
-  const [draft, setDraft] = (0, import_react8.useState)(() => draftOf(current3));
-  const [views, setViews] = (0, import_react8.useState)(() => {
+  const [open, setOpen] = (0, import_react9.useState)(false);
+  const [draft, setDraft] = (0, import_react9.useState)(() => draftOf(current3));
+  const [views, setViews] = (0, import_react9.useState)(() => {
     const d2 = draftOf(current3);
     const n = nowParts();
     const monthOf = (e) => e.day === null ? { year: n.year, month: n.month } : { year: e.day.year, month: e.day.month };
     return { start: monthOf(d2.start), end: monthOf(d2.end) };
   });
-  const [active, setActive2] = (0, import_react8.useState)("start");
-  const [focus, setFocus] = (0, import_react8.useState)({ start: null, end: null });
-  const [typing, setTyping] = (0, import_react8.useState)(null);
-  const rootRef = (0, import_react8.useRef)(null);
-  const gridRefs = (0, import_react8.useRef)({ start: null, end: null });
+  const [active, setActive2] = (0, import_react9.useState)("start");
+  const [focus, setFocus] = (0, import_react9.useState)({ start: null, end: null });
+  const [typing, setTyping] = (0, import_react9.useState)(null);
+  const rootRef = (0, import_react9.useRef)(null);
+  const gridRefs = (0, import_react9.useRef)({ start: null, end: null });
   const { refs, floatingStyles } = useFloating2({
     open,
     onOpenChange: setOpen,
@@ -3986,12 +4045,12 @@ function DateTimePicker(props) {
     whileElementsMounted: autoUpdate,
     strategy: "fixed"
   });
-  const emit = (0, import_react8.useCallback)((value) => {
+  const emit = (0, import_react9.useCallback)((value) => {
     if (!controlled)
       setInner(value);
     props.onChange?.(value);
   }, [controlled, props.onChange]);
-  const openPop = (0, import_react8.useCallback)(() => {
+  const openPop = (0, import_react9.useCallback)(() => {
     if (props.disabled === true)
       return;
     const d2 = draftOf(current3);
@@ -4004,7 +4063,7 @@ function DateTimePicker(props) {
     setTyping(null);
     setOpen(true);
   }, [current3, props.disabled]);
-  (0, import_react8.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     if (!open)
       return;
     const onDown = (e) => {
@@ -4019,7 +4078,7 @@ function DateTimePicker(props) {
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, [open, refs.floating]);
-  (0, import_react8.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     if (!open)
       return;
     const sides2 = ["start", "end"];
@@ -4160,9 +4219,9 @@ function DateTimePicker(props) {
   const currentDraft = draftOf(current3);
   const startValue = partsOf(currentDraft.start);
   const endValue = rangeMode ? partsOf(currentDraft.end) : null;
-  const dateZone = (key, value) => (0, import_react8.createElement)("span", { key, className: `dshpc-dt__pair-date${value === null ? " dshpc-dt__pair-date--empty" : ""}` }, value === null ? placeholder2 : fmtParts(value, precision));
-  const calIcon = (0, import_react8.createElement)("span", { className: "dshpc-dt__cal" }, ICON_CAL);
-  const trigger = (0, import_react8.createElement)("button", {
+  const dateZone = (key, value) => (0, import_react9.createElement)("span", { key, className: `dshpc-dt__pair-date${value === null ? " dshpc-dt__pair-date--empty" : ""}` }, value === null ? placeholder2 : fmtParts(value, precision));
+  const calIcon = (0, import_react9.createElement)("span", { className: "dshpc-dt__cal" }, ICON_CAL);
+  const trigger = (0, import_react9.createElement)("button", {
     type: "button",
     "aria-label": props.ariaLabel,
     "aria-expanded": open,
@@ -4170,20 +4229,20 @@ function DateTimePicker(props) {
     disabled: props.disabled === true,
     className: `dshpc-dt__trigger ${SIZE_CLASS[size4]} ${WIDTH_CLASS(rangeMode, precision)}`.trim(),
     onClick: openPop
-  }, rangeMode ? (0, import_react8.createElement)("span", { key: "group", className: "dshpc-dt__pair-group" }, dateZone("start", startValue), (0, import_react8.createElement)("span", { key: "sep", className: "dshpc-dt__pair-sep", "aria-hidden": true }, "-"), dateZone("end", endValue)) : (0, import_react8.createElement)("span", {
+  }, rangeMode ? (0, import_react9.createElement)("span", { key: "group", className: "dshpc-dt__pair-group" }, dateZone("start", startValue), (0, import_react9.createElement)("span", { key: "sep", className: "dshpc-dt__pair-sep", "aria-hidden": true }, "-"), dateZone("end", endValue)) : (0, import_react9.createElement)("span", {
     key: "label",
     className: `dshpc-dt__trigger-label${startValue === null ? " dshpc-dt__trigger-label--empty" : ""}`
   }, startValue === null ? placeholder2 : fmtParts(startValue, precision)), calIcon);
-  const triggerRow = props.hint === void 0 ? trigger : (0, import_react8.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react8.createElement)(FieldHint, { text: props.hint }));
+  const triggerRow = props.hint === void 0 ? trigger : (0, import_react9.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react9.createElement)(FieldHint, { text: props.hint }));
   const endBox = (side, label) => {
     const p = partsOf(draft[side]);
-    return (0, import_react8.createElement)("button", {
+    return (0, import_react9.createElement)("button", {
       key: side,
       type: "button",
       className: `dshpc-dt__end${active === side ? " dshpc-dt__end--active" : ""}`,
       "aria-pressed": active === side,
       onClick: () => setActive2(side)
-    }, (0, import_react8.createElement)("span", { className: "dshpc-dt__end-label" }, `${label}\uFF1A`), (0, import_react8.createElement)("span", { className: `dshpc-dt__end-value${p === null ? " dshpc-dt__end-value--empty" : ""}` }, p === null ? placeholder2 : fmtParts(p, precision)));
+    }, (0, import_react9.createElement)("span", { className: "dshpc-dt__end-label" }, `${label}\uFF1A`), (0, import_react9.createElement)("span", { className: `dshpc-dt__end-value${p === null ? " dshpc-dt__end-value--empty" : ""}` }, p === null ? placeholder2 : fmtParts(p, precision)));
   };
   const panel = (side) => {
     const view = views[side];
@@ -4191,7 +4250,7 @@ function DateTimePicker(props) {
     const selIso = end.day === null ? null : dayIso(end.day);
     const cells = buildMonthCells(view.year, view.month);
     const today = nowParts();
-    return (0, import_react8.createElement)("div", { className: "dshpc-dt__panel", key: side }, (0, import_react8.createElement)("div", { className: "dshpc-dt__nav" }, (0, import_react8.createElement)("div", { className: "dshpc-dt__nav-group" }, (0, import_react8.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtPrevYear"), onClick: () => shiftMonth(side, -12) }, ICON_PREV_YEAR), (0, import_react8.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtPrevMonth"), onClick: () => shiftMonth(side, -1) }, ICON_PREV_MONTH)), (0, import_react8.createElement)("span", { className: "dshpc-dt__caption" }, monthCaption(view.year, view.month, locale2)), (0, import_react8.createElement)("div", { className: "dshpc-dt__nav-group" }, (0, import_react8.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtNextMonth"), onClick: () => shiftMonth(side, 1) }, ICON_NEXT_MONTH), (0, import_react8.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtNextYear"), onClick: () => shiftMonth(side, 12) }, ICON_NEXT_YEAR))), (0, import_react8.createElement)("div", {
+    return (0, import_react9.createElement)("div", { className: "dshpc-dt__panel", key: side }, (0, import_react9.createElement)("div", { className: "dshpc-dt__nav" }, (0, import_react9.createElement)("div", { className: "dshpc-dt__nav-group" }, (0, import_react9.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtPrevYear"), onClick: () => shiftMonth(side, -12) }, ICON_PREV_YEAR), (0, import_react9.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtPrevMonth"), onClick: () => shiftMonth(side, -1) }, ICON_PREV_MONTH)), (0, import_react9.createElement)("span", { className: "dshpc-dt__caption" }, monthCaption(view.year, view.month, locale2)), (0, import_react9.createElement)("div", { className: "dshpc-dt__nav-group" }, (0, import_react9.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtNextMonth"), onClick: () => shiftMonth(side, 1) }, ICON_NEXT_MONTH), (0, import_react9.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtNextYear"), onClick: () => shiftMonth(side, 12) }, ICON_NEXT_YEAR))), (0, import_react9.createElement)("div", {
       className: "dshpc-dt__grid",
       role: "grid",
       "aria-label": monthCaption(view.year, view.month, locale2),
@@ -4199,7 +4258,7 @@ function DateTimePicker(props) {
         gridRefs.current[side] = el;
       },
       onKeyDown: (e) => onGridKeyDown(side, e)
-    }, ...weekdayLabels(locale2).map((w) => (0, import_react8.createElement)("span", { key: `wd-${w}`, className: "dshpc-dt__wd", role: "columnheader" }, w)), ...cells.map((c2) => (0, import_react8.createElement)("button", {
+    }, ...weekdayLabels(locale2).map((w) => (0, import_react9.createElement)("span", { key: `wd-${w}`, className: "dshpc-dt__wd", role: "columnheader" }, w)), ...cells.map((c2) => (0, import_react9.createElement)("button", {
       key: c2.iso,
       type: "button",
       role: "gridcell",
@@ -4209,18 +4268,18 @@ function DateTimePicker(props) {
       "aria-label": locale2 === "zh" ? `${String(c2.year)}\u5E74${String(c2.month)}\u6708${String(c2.day)}\u65E5` : `${weekdayLabels("en")[c2.weekday]}, ${String(c2.year)}-${String(c2.month).padStart(2, "0")}-${String(c2.day).padStart(2, "0")}`,
       "aria-selected": selIso !== null && c2.iso === selIso,
       onClick: () => pickDay(side, c2)
-    }, String(c2.day)))), units.length === 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-dt__time" }, ...units.flatMap((unit, i2) => {
+    }, String(c2.day)))), units.length === 0 ? null : (0, import_react9.createElement)("div", { className: "dshpc-dt__time" }, ...units.flatMap((unit, i2) => {
       const labelKey = UNIT_LABEL[unit];
       const value = end.time[unit];
       const shown = typing !== null && typing.side === side && typing.unit === unit ? typing.text : String(value).padStart(2, "0");
       return [
-        i2 > 0 ? (0, import_react8.createElement)("span", { key: `sep-${unit}`, className: "dshpc-dt__sep" }, ":") : null,
-        (0, import_react8.createElement)("div", { key: unit, className: "dshpc-dt__unit" }, (0, import_react8.createElement)("span", { className: "dshpc-dt__unit-label" }, tt(labelKey)), (0, import_react8.createElement)("button", {
+        i2 > 0 ? (0, import_react9.createElement)("span", { key: `sep-${unit}`, className: "dshpc-dt__sep" }, ":") : null,
+        (0, import_react9.createElement)("div", { key: unit, className: "dshpc-dt__unit" }, (0, import_react9.createElement)("span", { className: "dshpc-dt__unit-label" }, tt(labelKey)), (0, import_react9.createElement)("button", {
           type: "button",
           className: "dshpc-dt__step-btn",
           "aria-label": `${tt(labelKey)} +1`,
           onClick: () => shiftUnit(side, unit, 1)
-        }, ICON_UP), (0, import_react8.createElement)("input", {
+        }, ICON_UP), (0, import_react9.createElement)("input", {
           className: "dshpc-dt__step-val",
           inputMode: "numeric",
           maxLength: 2,
@@ -4239,7 +4298,7 @@ function DateTimePicker(props) {
               commitTyping(side, unit, shown);
             }
           }
-        }), (0, import_react8.createElement)("button", {
+        }), (0, import_react9.createElement)("button", {
           type: "button",
           className: "dshpc-dt__step-btn",
           "aria-label": `${tt(labelKey)} -1`,
@@ -4250,15 +4309,15 @@ function DateTimePicker(props) {
   };
   const invalidRange = rangeMode && partsOf(draft.start) !== null && partsOf(draft.end) !== null && !rangeIsValid(formatDateTimeIso(partsOf(draft.start)), formatDateTimeIso(partsOf(draft.end)));
   const canCommit = rangeMode ? partsOf(draft.start) !== null && partsOf(draft.end) !== null && !invalidRange : partsOf(draft.start) !== null;
-  const pop2 = (0, import_react8.createElement)("div", { className: "dshpc-dt__pop", ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown }, rangeMode ? (0, import_react8.createElement)("div", { className: "dshpc-dt__ends" }, endBox("start", tt("dtStart")), endBox("end", tt("dtEnd"))) : null, (0, import_react8.createElement)("div", { className: "dshpc-dt__panels" }, panel("start"), rangeMode ? panel("end") : null), (0, import_react8.createElement)("div", { className: "dshpc-dt__foot" }, (0, import_react8.createElement)("div", { className: "dshpc-dt__foot-side" }, (0, import_react8.createElement)(Button, { variant: "ghost", size: "sm", onClick: applyNow }, precision === "day" ? tt("dtToday") : tt("dtNow")), (0, import_react8.createElement)(Button, { variant: "ghost", size: "sm", onClick: clear }, tt("dtClear"))), (0, import_react8.createElement)("div", { className: "dshpc-dt__foot-side" }, invalidRange ? (0, import_react8.createElement)("span", { className: "dshpc-dt__warn" }, tt("dtInvalidRange")) : null, (0, import_react8.createElement)(Button, { variant: "outline", size: "sm", onClick: () => setOpen(false) }, tt("cancel")), (0, import_react8.createElement)(Button, { variant: "primary", size: "sm", disabled: !canCommit, onClick: commit }, tt("confirm")))));
-  return (0, import_react8.createElement)("div", {
+  const pop2 = (0, import_react9.createElement)("div", { className: "dshpc-dt__pop", ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown }, rangeMode ? (0, import_react9.createElement)("div", { className: "dshpc-dt__ends" }, endBox("start", tt("dtStart")), endBox("end", tt("dtEnd"))) : null, (0, import_react9.createElement)("div", { className: "dshpc-dt__panels" }, panel("start"), rangeMode ? panel("end") : null), (0, import_react9.createElement)("div", { className: "dshpc-dt__foot" }, (0, import_react9.createElement)("div", { className: "dshpc-dt__foot-side" }, (0, import_react9.createElement)(Button, { variant: "ghost", size: "sm", onClick: applyNow }, precision === "day" ? tt("dtToday") : tt("dtNow")), (0, import_react9.createElement)(Button, { variant: "ghost", size: "sm", onClick: clear }, tt("dtClear"))), (0, import_react9.createElement)("div", { className: "dshpc-dt__foot-side" }, invalidRange ? (0, import_react9.createElement)("span", { className: "dshpc-dt__warn" }, tt("dtInvalidRange")) : null, (0, import_react9.createElement)(Button, { variant: "outline", size: "sm", onClick: () => setOpen(false) }, tt("cancel")), (0, import_react9.createElement)(Button, { variant: "primary", size: "sm", disabled: !canCommit, onClick: commit }, tt("confirm")))));
+  return (0, import_react9.createElement)("div", {
     className: `dshpc-dt${props.className === void 0 ? "" : ` ${props.className}`}`,
     ref: rootRef
-  }, triggerRow, open ? (0, import_react8.createElement)(FloatingPortal, null, pop2) : null);
+  }, triggerRow, open ? (0, import_react9.createElement)(FloatingPortal, null, pop2) : null);
 }
 
 // dist/ui/ModelPicker.js
-var import_react11 = require("react");
+var import_react12 = require("react");
 
 // dist/ui/host-data.js
 var ModelCatalogStore = class {
@@ -4337,12 +4396,12 @@ function connectHost(ctx, options = {}) {
 }
 
 // dist/ui/picker-icons.js
-var import_react10 = require("react");
+var import_react11 = require("react");
 function glyph(path) {
-  return (0, import_react10.createElement)("svg", { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, path);
+  return (0, import_react11.createElement)("svg", { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, path);
 }
 function folderIcon() {
-  return glyph((0, import_react10.createElement)("path", {
+  return glyph((0, import_react11.createElement)("path", {
     d: "M2 4.5A1.5 1.5 0 0 1 3.5 3h2.6l1.2 1.5h5.2A1.5 1.5 0 0 1 14 6v5.5A1.5 1.5 0 0 1 12.5 13h-9A1.5 1.5 0 0 1 2 11.5z",
     stroke: "currentColor",
     "stroke-width": 1.3,
@@ -4350,7 +4409,7 @@ function folderIcon() {
   }));
 }
 function sparkleIcon() {
-  return glyph((0, import_react10.createElement)("path", {
+  return glyph((0, import_react11.createElement)("path", {
     d: "M8 1.8l1.6 4.1 4.1 1.6-4.1 1.6L8 13.2 6.4 9.1 2.3 7.5l4.1-1.6z",
     stroke: "currentColor",
     "stroke-width": 1.2,
@@ -4366,7 +4425,7 @@ function ModelPicker(props) {
   const variant = props.variant ?? "grouped";
   const searchable = props.searchable ?? true;
   const defaultOption = props.allowDefault === false ? void 0 : { value: "", label: props.defaultLabel ?? tt("modelDefault") };
-  const catalog = (0, import_react11.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot);
+  const catalog = (0, import_react12.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot);
   const groups = props.groups ?? (catalog.status === "ready" ? catalog.routes.map((route) => ({
     value: route.provider,
     label: route.displayName,
@@ -4380,15 +4439,15 @@ function ModelPicker(props) {
   const emitModel = (v) => {
     props.onChange?.(typeof v === "string" ? v : v[0] ?? "");
   };
-  const [pickedProvider, setPickedProvider] = (0, import_react11.useState)("");
+  const [pickedProvider, setPickedProvider] = (0, import_react12.useState)("");
   const curGroup = groupOf(groups, value ?? "");
   const provider = pickedProvider !== "" && groups.some((g) => g.value === pickedProvider) ? pickedProvider : curGroup?.value ?? "";
-  (0, import_react11.useEffect)(() => {
+  (0, import_react12.useEffect)(() => {
     if (value !== void 0 && value !== "")
       setPickedProvider("");
   }, [value]);
   if (variant === "grouped") {
-    return (0, import_react11.createElement)(Picker, {
+    return (0, import_react12.createElement)(Picker, {
       // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
       groups: defaultOption === void 0 ? groups : [{ value: "", label: "", options: [defaultOption] }, ...groups],
       value,
@@ -4408,7 +4467,7 @@ function ModelPicker(props) {
   }
   const group = groups.find((g) => g.value === provider);
   const options = group === void 0 ? [] : flattenOptions([group]);
-  return (0, import_react11.createElement)("div", { className: "dshpc-picker__row" }, (0, import_react11.createElement)(Picker, {
+  return (0, import_react12.createElement)("div", { className: "dshpc-picker__row" }, (0, import_react12.createElement)(Picker, {
     options: groups.map((g) => ({ value: g.value, label: g.label })),
     value: provider === "" ? void 0 : provider,
     placeholder: tt("modelProvider"),
@@ -4419,7 +4478,7 @@ function ModelPicker(props) {
       setPickedProvider(typeof v === "string" ? v : v[0] ?? "");
       props.onChange?.("");
     }
-  }), (0, import_react11.createElement)(Picker, {
+  }), (0, import_react12.createElement)(Picker, {
     options: defaultOption === void 0 ? options : [defaultOption, ...options],
     value,
     defaultValue: props.defaultValue,
@@ -4438,14 +4497,14 @@ function ModelPicker(props) {
 }
 
 // dist/ui/WorkspacePicker.js
-var import_react12 = require("react");
+var import_react13 = require("react");
 function WorkspacePicker(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const items = (0, import_react12.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const items = (0, import_react13.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const options = items.map((w) => ({ value: w.workspaceId, label: w.title }));
   const allOption = props.allowDefault !== false && props.mode !== "multiple" ? { value: "", label: props.defaultLabel ?? tt("workspaceAll") } : void 0;
-  return (0, import_react12.createElement)(Picker, {
+  return (0, import_react13.createElement)(Picker, {
     options: allOption === void 0 ? options : [allOption, ...options],
     value: props.value,
     defaultValue: props.defaultValue,
@@ -4465,13 +4524,13 @@ function WorkspacePicker(props) {
 }
 
 // dist/ui/Modal.js
-var import_react13 = require("react");
+var import_react14 = require("react");
 function Modal(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const closeOnMask = props.closeOnMask !== false;
   const escClose = props.escClose !== false;
-  (0, import_react13.useEffect)(() => {
+  (0, import_react14.useEffect)(() => {
     if (!escClose || props.onClose === void 0)
       return;
     const onKey = (e) => {
@@ -4489,13 +4548,13 @@ function Modal(props) {
   const s = sizeStyle[props.size ?? "md"];
   const showClose = props.closable !== false && props.onClose !== void 0;
   const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
-  return (0, import_react13.createElement)("div", {
+  return (0, import_react14.createElement)("div", {
     className: "dshpc-modal-mask",
     onClick: () => {
       if (closeOnMask)
         props.onClose?.();
     }
-  }, (0, import_react13.createElement)(
+  }, (0, import_react14.createElement)(
     "div",
     {
       className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}`,
@@ -4507,14 +4566,14 @@ function Modal(props) {
       },
       onClick: (e) => e.stopPropagation()
     },
-    showHeader ? (0, import_react13.createElement)("div", { className: "dshpc-modal__head" }, (0, import_react13.createElement)(
+    showHeader ? (0, import_react14.createElement)("div", { className: "dshpc-modal__head" }, (0, import_react14.createElement)(
       "div",
       { className: "dshpc-modal__heading" },
-      props.icon === void 0 ? null : (0, import_react13.createElement)("span", { className: "dshpc-modal__lead" }, props.icon),
+      props.icon === void 0 ? null : (0, import_react14.createElement)("span", { className: "dshpc-modal__lead" }, props.icon),
       // 标题组：第一行 = 标题 + 右侧小块（徽标**紧跟标题**，不跨两行居中），
       // 第二行 = 副标题（会话 id 这类标识）。
-      (0, import_react13.createElement)("div", { className: "dshpc-modal__titlegroup" }, (0, import_react13.createElement)("div", { className: "dshpc-modal__titlerow" }, (0, import_react13.createElement)("div", { className: "dshpc-modal__title" }, props.title ?? ""), props.headerExtra === void 0 ? null : (0, import_react13.createElement)("div", { className: "dshpc-modal__extra" }, props.headerExtra)), props.subtitle === void 0 ? null : (0, import_react13.createElement)("div", { className: "dshpc-modal__sid" }, props.subtitle))
-    ), (0, import_react13.createElement)("div", { className: "dshpc-modal__spacer" }), props.headerActions === void 0 ? null : (0, import_react13.createElement)("div", { className: "dshpc-modal__actions" }, props.headerActions), showClose ? (0, import_react13.createElement)("button", {
+      (0, import_react14.createElement)("div", { className: "dshpc-modal__titlegroup" }, (0, import_react14.createElement)("div", { className: "dshpc-modal__titlerow" }, (0, import_react14.createElement)("div", { className: "dshpc-modal__title" }, props.title ?? ""), props.headerExtra === void 0 ? null : (0, import_react14.createElement)("div", { className: "dshpc-modal__extra" }, props.headerExtra)), props.subtitle === void 0 ? null : (0, import_react14.createElement)("div", { className: "dshpc-modal__sid" }, props.subtitle))
+    ), (0, import_react14.createElement)("div", { className: "dshpc-modal__spacer" }), props.headerActions === void 0 ? null : (0, import_react14.createElement)("div", { className: "dshpc-modal__actions" }, props.headerActions), showClose ? (0, import_react14.createElement)("button", {
       type: "button",
       className: "dshpc-modal__close",
       "aria-label": tt("modalClose"),
@@ -4522,13 +4581,13 @@ function Modal(props) {
     }, "\u2715") : null) : null,
     // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
     // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
-    (0, import_react13.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null),
-    props.footer === void 0 ? null : (0, import_react13.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)
+    (0, import_react14.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null),
+    props.footer === void 0 ? null : (0, import_react14.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)
   ));
 }
 
 // dist/ui/AlertModal.js
-var import_react14 = require("react");
+var import_react15 = require("react");
 var SEVERITY_GLYPH = {
   info: "\u24D8",
   success: "\u2713",
@@ -4538,37 +4597,37 @@ var SEVERITY_GLYPH = {
 function AlertModal(props) {
   const tt = props.translate ?? t;
   const severity = props.severity ?? "info";
-  return (0, import_react14.createElement)(Modal, {
-    icon: (0, import_react14.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
+  return (0, import_react15.createElement)(Modal, {
+    icon: (0, import_react15.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
     closeOnMask: props.closeOnMask,
     onClose: props.onConfirm,
-    footer: (0, import_react14.createElement)(Button, { variant: "primary", onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
+    footer: (0, import_react15.createElement)(Button, { variant: "primary", onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
   }, props.message ?? null);
 }
 
 // dist/ui/ConfirmModal.js
-var import_react15 = require("react");
+var import_react16 = require("react");
 function ConfirmModal(props) {
   const tt = props.translate ?? t;
   const tone = props.tone ?? "primary";
   const confirmVariant = tone === "danger" ? "danger" : tone === "warning" ? "warning" : "primary";
-  return (0, import_react15.createElement)(Modal, {
+  return (0, import_react16.createElement)(Modal, {
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
     closeOnMask: props.closeOnMask,
     onClose: props.onCancel,
-    footer: (0, import_react15.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react15.createElement)(Button, { variant: "outline", onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react15.createElement)(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
+    footer: (0, import_react16.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react16.createElement)(Button, { variant: "outline", onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react16.createElement)(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
   }, props.message ?? null);
 }
 
 // dist/ui/modal-host.js
-var import_react16 = require("react");
+var import_react17 = require("react");
 var import_client = require("react-dom/client");
 var hostRoot = null;
 var hostContainer = null;
@@ -4597,7 +4656,7 @@ function flush() {
     hostContainer = null;
     return;
   }
-  root.render((0, import_react16.createElement)(import_react16.Fragment, null, entries.map((e) => e.node)));
+  root.render((0, import_react17.createElement)(import_react17.Fragment, null, entries.map((e) => e.node)));
 }
 function dismiss(id3) {
   entries = entries.filter((e) => e.id !== id3);
@@ -4630,7 +4689,7 @@ function confirmModal(opts) {
     };
     entries.push({
       id: id3,
-      node: (0, import_react16.createElement)(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) })
+      node: (0, import_react17.createElement)(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) })
     });
     flush();
   });
@@ -4654,13 +4713,13 @@ function alertModal(opts) {
       dismiss(id3);
       resolve();
     };
-    entries.push({ id: id3, node: (0, import_react16.createElement)(AlertModal, { ...core, onConfirm: close }) });
+    entries.push({ id: id3, node: (0, import_react17.createElement)(AlertModal, { ...core, onConfirm: close }) });
     flush();
   });
 }
 
 // dist/ui/Card.js
-var import_react17 = require("react");
+var import_react18 = require("react");
 var CARD_ACCENTS = ["business", "success", "warning", "danger", "neutral"];
 function CardShell(kind, props) {
   ensureControls();
@@ -4674,13 +4733,13 @@ function CardShell(kind, props) {
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
   const style2 = isPreset ? props.style : { ...props.style, ["--card-accent"]: accent };
-  return (0, import_react17.createElement)("div", { className: classes, style: style2 }, (0, import_react17.createElement)(
+  return (0, import_react18.createElement)("div", { className: classes, style: style2 }, (0, import_react18.createElement)(
     "div",
     { className: "dshpc-card__head" },
     // 色条是头部第一个子元素：strip 外观 = 绝对定位 4px 通高贴左缘；bordered 外观 = 行内 6px 圆角短条（高度跟随内容，最小一行，左移 3px）。
-    (0, import_react17.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
-    (0, import_react17.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null),
-    props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react17.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react17.createElement)(
+    (0, import_react18.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
+    (0, import_react18.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null),
+    props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react18.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react18.createElement)(
       "button",
       {
         type: "button",
@@ -4690,9 +4749,9 @@ function CardShell(kind, props) {
         onClick: props.onToggle
       },
       // 箭头走全站唯一的 Chevron（不再写 ▾ 字形）；旋转由外层 .is-open 承担，动画不变。
-      (0, import_react17.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, (0, import_react17.createElement)(Chevron, { size: 12 }))
+      (0, import_react18.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, (0, import_react18.createElement)(Chevron, { size: 12 }))
     ))
-  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react17.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
+  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react18.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
 }
 function Card(props) {
   return CardShell("bordered", props);
@@ -4702,13 +4761,13 @@ function StripCard(props) {
 }
 
 // dist/ui/Chip.js
-var import_react18 = require("react");
+var import_react19 = require("react");
 function Chip(props) {
   ensureControls();
   const clickable = props.onClick !== void 0;
   const tone = props.tone ?? "neutral";
   const size4 = props.size ?? "sm";
-  return (0, import_react18.createElement)(clickable ? "button" : "span", {
+  return (0, import_react19.createElement)(clickable ? "button" : "span", {
     type: clickable ? "button" : void 0,
     className: `dshpc-chip${tone !== "neutral" ? ` dshpc-chip--${tone}` : ""}${size4 !== "sm" ? ` dshpc-chip--${size4}` : ""}${clickable ? " dshpc-chip--clickable" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`,
     onClick: props.onClick
@@ -4716,11 +4775,11 @@ function Chip(props) {
 }
 
 // dist/ui/Toast.js
-var import_react20 = require("react");
+var import_react21 = require("react");
 var import_client2 = require("react-dom/client");
 
 // node_modules/.pnpm/sonner@2.0.8_@types+react@18.3.31_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/sonner/dist/index.mjs
-var import_react19 = __toESM(require("react"), 1);
+var import_react20 = __toESM(require("react"), 1);
 var import_react_dom3 = __toESM(require("react-dom"), 1);
 function __insertCSS(code3) {
   if (!code3 || typeof document == "undefined") return;
@@ -4746,68 +4805,68 @@ var getAsset = (type3) => {
 };
 var bars = Array(12).fill(0);
 var Loader = ({ visible, className: className2 }) => {
-  return /* @__PURE__ */ import_react19.default.createElement("div", {
+  return /* @__PURE__ */ import_react20.default.createElement("div", {
     className: [
       "sonner-loading-wrapper",
       className2
     ].filter(Boolean).join(" "),
     "data-visible": visible
-  }, /* @__PURE__ */ import_react19.default.createElement("div", {
+  }, /* @__PURE__ */ import_react20.default.createElement("div", {
     className: "sonner-spinner"
-  }, bars.map((_, i2) => /* @__PURE__ */ import_react19.default.createElement("div", {
+  }, bars.map((_, i2) => /* @__PURE__ */ import_react20.default.createElement("div", {
     className: "sonner-loading-bar",
     key: `spinner-bar-${i2}`
   }))));
 };
-var SuccessIcon = /* @__PURE__ */ import_react19.default.createElement("svg", {
+var SuccessIcon = /* @__PURE__ */ import_react20.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react19.default.createElement("path", {
+}, /* @__PURE__ */ import_react20.default.createElement("path", {
   fillRule: "evenodd",
   d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z",
   clipRule: "evenodd"
 }));
-var WarningIcon = /* @__PURE__ */ import_react19.default.createElement("svg", {
+var WarningIcon = /* @__PURE__ */ import_react20.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react19.default.createElement("path", {
+}, /* @__PURE__ */ import_react20.default.createElement("path", {
   fillRule: "evenodd",
   d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z",
   clipRule: "evenodd"
 }));
-var InfoIcon = /* @__PURE__ */ import_react19.default.createElement("svg", {
+var InfoIcon = /* @__PURE__ */ import_react20.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react19.default.createElement("path", {
+}, /* @__PURE__ */ import_react20.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z",
   clipRule: "evenodd"
 }));
-var ErrorIcon = /* @__PURE__ */ import_react19.default.createElement("svg", {
+var ErrorIcon = /* @__PURE__ */ import_react20.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react19.default.createElement("path", {
+}, /* @__PURE__ */ import_react20.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z",
   clipRule: "evenodd"
 }));
-var CloseIcon = /* @__PURE__ */ import_react19.default.createElement("svg", {
+var CloseIcon = /* @__PURE__ */ import_react20.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "12",
   height: "12",
@@ -4818,20 +4877,20 @@ var CloseIcon = /* @__PURE__ */ import_react19.default.createElement("svg", {
   strokeLinecap: "round",
   strokeLinejoin: "round",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react19.default.createElement("line", {
+}, /* @__PURE__ */ import_react20.default.createElement("line", {
   x1: "18",
   y1: "6",
   x2: "6",
   y2: "18"
-}), /* @__PURE__ */ import_react19.default.createElement("line", {
+}), /* @__PURE__ */ import_react20.default.createElement("line", {
   x1: "6",
   y1: "6",
   x2: "18",
   y2: "18"
 }));
 var useIsDocumentHidden = () => {
-  const [isDocumentHidden, setIsDocumentHidden] = import_react19.default.useState(document.hidden);
-  import_react19.default.useEffect(() => {
+  const [isDocumentHidden, setIsDocumentHidden] = import_react20.default.useState(document.hidden);
+  import_react20.default.useEffect(() => {
     const callback = () => {
       setIsDocumentHidden(document.hidden);
     };
@@ -5015,7 +5074,7 @@ var Observer = class {
           "resolve",
           response
         ];
-        const isReactElementResponse = import_react19.default.isValidElement(response);
+        const isReactElementResponse = import_react20.default.isValidElement(response);
         if (isReactElementResponse) {
           shouldDismiss = false;
           this.create({
@@ -5027,7 +5086,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(`HTTP error! status: ${response.status}`) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(`HTTP error! status: ${response.status}`) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react19.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react20.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -5041,7 +5100,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(response) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react19.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react20.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -5055,7 +5114,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.success === "function" ? await data2.success(response) : data2.success;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react19.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react20.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -5075,7 +5134,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(error) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(error) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react19.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react20.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -5176,18 +5235,18 @@ function getDefaultSwipeDirections(position) {
 var Toast = (props) => {
   var _toast_classNames, _toast_classNames1, _toast_classNames2, _toast_classNames3, _toast_classNames4, _toast_classNames5, _toast_classNames6, _toast_classNames7, _toast_classNames8;
   const { invert: ToasterInvert, toast: toast2, unstyled, interacting, setHeights, visibleToasts, heights, index: index3, toasts, expanded, removeToast, defaultRichColors, closeButton: closeButtonFromToaster, style: style2, cancelButtonStyle, actionButtonStyle, className: className2 = "", descriptionClassName = "", duration: durationFromToaster, position, gap, expandByDefault, classNames, icons, closeButtonAriaLabel = "Close toast" } = props;
-  const [swipeDirection, setSwipeDirection] = import_react19.default.useState(null);
-  const [swipeOutDirection, setSwipeOutDirection] = import_react19.default.useState(null);
-  const [mounted, setMounted] = import_react19.default.useState(false);
-  const [removed, setRemoved] = import_react19.default.useState(false);
-  const [swiping, setSwiping] = import_react19.default.useState(false);
-  const [swipeOut, setSwipeOut] = import_react19.default.useState(false);
-  const [isSwiped, setIsSwiped] = import_react19.default.useState(false);
-  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react19.default.useState(0);
-  const [initialHeight, setInitialHeight] = import_react19.default.useState(0);
-  const remainingTime = import_react19.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
-  const dragStartTime = import_react19.default.useRef(null);
-  const toastRef = import_react19.default.useRef(null);
+  const [swipeDirection, setSwipeDirection] = import_react20.default.useState(null);
+  const [swipeOutDirection, setSwipeOutDirection] = import_react20.default.useState(null);
+  const [mounted, setMounted] = import_react20.default.useState(false);
+  const [removed, setRemoved] = import_react20.default.useState(false);
+  const [swiping, setSwiping] = import_react20.default.useState(false);
+  const [swipeOut, setSwipeOut] = import_react20.default.useState(false);
+  const [isSwiped, setIsSwiped] = import_react20.default.useState(false);
+  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react20.default.useState(0);
+  const [initialHeight, setInitialHeight] = import_react20.default.useState(0);
+  const remainingTime = import_react20.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
+  const dragStartTime = import_react20.default.useRef(null);
+  const toastRef = import_react20.default.useRef(null);
   const isFront = index3 === 0;
   const isVisible = index3 + 1 <= visibleToasts;
   const toastType = toast2.type;
@@ -5195,27 +5254,27 @@ var Toast = (props) => {
   const dismissible = toast2.dismissible !== false;
   const toastClassname = toast2.className || "";
   const toastDescriptionClassname = toast2.descriptionClassName || "";
-  const heightIndex = import_react19.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
+  const heightIndex = import_react20.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
     heights,
     toast2.id
   ]);
-  const closeButton = import_react19.default.useMemo(() => {
+  const closeButton = import_react20.default.useMemo(() => {
     var _toast_closeButton;
     return (_toast_closeButton = toast2.closeButton) != null ? _toast_closeButton : closeButtonFromToaster;
   }, [
     toast2.closeButton,
     closeButtonFromToaster
   ]);
-  const duration = import_react19.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
+  const duration = import_react20.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
     toast2.duration,
     durationFromToaster
   ]);
-  const closeTimerStartTimeRef = import_react19.default.useRef(0);
-  const offset4 = import_react19.default.useRef(0);
-  const lastCloseTimerStartTimeRef = import_react19.default.useRef(0);
-  const pointerStartRef = import_react19.default.useRef(null);
+  const closeTimerStartTimeRef = import_react20.default.useRef(0);
+  const offset4 = import_react20.default.useRef(0);
+  const lastCloseTimerStartTimeRef = import_react20.default.useRef(0);
+  const pointerStartRef = import_react20.default.useRef(null);
   const [y, x] = position.split("-");
-  const toastsHeightBefore = import_react19.default.useMemo(() => {
+  const toastsHeightBefore = import_react20.default.useMemo(() => {
     return heights.reduce((prev, curr, reducerIndex) => {
       if (reducerIndex >= heightIndex) {
         return prev;
@@ -5227,7 +5286,7 @@ var Toast = (props) => {
     heightIndex
   ]);
   const isDocumentHidden = useIsDocumentHidden();
-  const swipeDirections = import_react19.default.useMemo(() => {
+  const swipeDirections = import_react20.default.useMemo(() => {
     var _props_swipeDirections;
     return (_props_swipeDirections = props.swipeDirections) != null ? _props_swipeDirections : getDefaultSwipeDirections(position);
   }, [
@@ -5236,19 +5295,19 @@ var Toast = (props) => {
   ]);
   const invert = toast2.invert || ToasterInvert;
   const disabled = toastType === "loading";
-  offset4.current = import_react19.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
+  offset4.current = import_react20.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
     heightIndex,
     toastsHeightBefore
   ]);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     remainingTime.current = duration;
   }, [
     duration
   ]);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     setMounted(true);
   }, []);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     const toastNode = toastRef.current;
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
@@ -5267,7 +5326,7 @@ var Toast = (props) => {
     setHeights,
     toast2.id
   ]);
-  import_react19.default.useLayoutEffect(() => {
+  import_react20.default.useLayoutEffect(() => {
     if (!mounted) return;
     const toastNode = toastRef.current;
     const originalHeight = toastNode.style.height;
@@ -5303,7 +5362,7 @@ var Toast = (props) => {
     toast2.action,
     toast2.cancel
   ]);
-  const deleteToast = import_react19.default.useCallback(() => {
+  const deleteToast = import_react20.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
     setHeights((h60) => h60.filter((height) => height.toastId !== toast2.id));
@@ -5316,7 +5375,7 @@ var Toast = (props) => {
     setHeights,
     offset4
   ]);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     if (toast2.promise && toastType === "loading" || toast2.duration === Infinity || toast2.type === "loading") return;
     let timeoutId;
     const pauseTimer = () => {
@@ -5348,7 +5407,7 @@ var Toast = (props) => {
     isDocumentHidden,
     deleteToast
   ]);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     if (toast2.delete) {
       deleteToast();
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
@@ -5361,19 +5420,19 @@ var Toast = (props) => {
     var _toast_classNames9;
     if (icons == null ? void 0 : icons.loading) {
       var _toast_classNames12;
-      return /* @__PURE__ */ import_react19.default.createElement("div", {
+      return /* @__PURE__ */ import_react20.default.createElement("div", {
         className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames12 = toast2.classNames) == null ? void 0 : _toast_classNames12.loader, "sonner-loader"),
         "data-visible": toastType === "loading"
       }, icons.loading);
     }
-    return /* @__PURE__ */ import_react19.default.createElement(Loader, {
+    return /* @__PURE__ */ import_react20.default.createElement(Loader, {
       className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames9 = toast2.classNames) == null ? void 0 : _toast_classNames9.loader),
       visible: toastType === "loading"
     });
   }
   const icon2 = toast2.icon || (icons == null ? void 0 : icons[toastType]) || getAsset(toastType);
   var _toast_richColors, _icons_close;
-  return /* @__PURE__ */ import_react19.default.createElement("li", {
+  return /* @__PURE__ */ import_react20.default.createElement("li", {
     tabIndex: 0,
     ref: toastRef,
     className: cn(className2, toastClassname, classNames == null ? void 0 : classNames.toast, toast2 == null ? void 0 : (_toast_classNames = toast2.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames[toastTypeKey], toast2 == null ? void 0 : (_toast_classNames1 = toast2.classNames) == null ? void 0 : _toast_classNames1[toastTypeKey]),
@@ -5497,7 +5556,7 @@ var Toast = (props) => {
       (_toastRef_current = toastRef.current) == null ? void 0 : _toastRef_current.style.setProperty("--swipe-amount-x", `${swipeAmount.x}px`);
       (_toastRef_current1 = toastRef.current) == null ? void 0 : _toastRef_current1.style.setProperty("--swipe-amount-y", `${swipeAmount.y}px`);
     }
-  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react19.default.createElement("button", {
+  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react20.default.createElement("button", {
     "aria-label": closeButtonAriaLabel,
     "data-disabled": disabled,
     "data-close-button": true,
@@ -5507,19 +5566,19 @@ var Toast = (props) => {
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
     },
     className: cn(classNames == null ? void 0 : classNames.closeButton, toast2 == null ? void 0 : (_toast_classNames2 = toast2.classNames) == null ? void 0 : _toast_classNames2.closeButton)
-  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react19.default.createElement("div", {
+  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react20.default.createElement("div", {
     "data-icon": "",
     className: cn(classNames == null ? void 0 : classNames.icon, toast2 == null ? void 0 : (_toast_classNames3 = toast2.classNames) == null ? void 0 : _toast_classNames3.icon)
-  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon2 : null) : null, /* @__PURE__ */ import_react19.default.createElement("div", {
+  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon2 : null) : null, /* @__PURE__ */ import_react20.default.createElement("div", {
     "data-content": "",
     className: cn(classNames == null ? void 0 : classNames.content, toast2 == null ? void 0 : (_toast_classNames4 = toast2.classNames) == null ? void 0 : _toast_classNames4.content)
-  }, /* @__PURE__ */ import_react19.default.createElement("div", {
+  }, /* @__PURE__ */ import_react20.default.createElement("div", {
     "data-title": "",
     className: cn(classNames == null ? void 0 : classNames.title, toast2 == null ? void 0 : (_toast_classNames5 = toast2.classNames) == null ? void 0 : _toast_classNames5.title)
-  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react19.default.createElement("div", {
+  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react20.default.createElement("div", {
     "data-description": "",
     className: cn(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast2 == null ? void 0 : (_toast_classNames6 = toast2.classNames) == null ? void 0 : _toast_classNames6.description)
-  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react19.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react19.default.createElement("button", {
+  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react20.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react20.default.createElement("button", {
     "data-button": true,
     "data-cancel": true,
     style: toast2.cancelButtonStyle || cancelButtonStyle,
@@ -5530,7 +5589,7 @@ var Toast = (props) => {
       deleteToast();
     },
     className: cn(classNames == null ? void 0 : classNames.cancelButton, toast2 == null ? void 0 : (_toast_classNames7 = toast2.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
-  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react19.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react19.default.createElement("button", {
+  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react20.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react20.default.createElement("button", {
     "data-button": true,
     "data-action": true,
     style: toast2.actionButtonStyle || actionButtonStyle,
@@ -5592,13 +5651,13 @@ function assignOffset(defaultOffset, mobileOffset) {
   });
   return styles;
 }
-var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster2(props, ref) {
+var Toaster = /* @__PURE__ */ import_react20.default.forwardRef(function Toaster2(props, ref) {
   const { id: id3, invert, position = "bottom-right", hotkey = [
     "altKey",
     "KeyT"
   ], expand, closeButton, className: className2, offset: offset4, mobileOffset, theme: theme2 = "light", richColors, duration, style: style2, visibleToasts = VISIBLE_TOASTS_AMOUNT, toastOptions, dir = getDocumentDirection(), gap = GAP, icons, customAriaLabel, containerAriaLabel = "Notifications" } = props;
-  const [toasts, setToasts] = import_react19.default.useState([]);
-  const filteredToasts = import_react19.default.useMemo(() => {
+  const [toasts, setToasts] = import_react20.default.useState([]);
+  const filteredToasts = import_react20.default.useMemo(() => {
     if (id3) {
       return toasts.filter((toast2) => toast2.toasterId === id3);
     }
@@ -5607,7 +5666,7 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
     toasts,
     id3
   ]);
-  const possiblePositions = import_react19.default.useMemo(() => {
+  const possiblePositions = import_react20.default.useMemo(() => {
     return Array.from(new Set([
       position
     ].concat(filteredToasts.filter((toast2) => toast2.position).map((toast2) => toast2.position))));
@@ -5615,15 +5674,15 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
     filteredToasts,
     position
   ]);
-  const [heights, setHeights] = import_react19.default.useState([]);
-  const [expanded, setExpanded] = import_react19.default.useState(false);
-  const [interacting, setInteracting] = import_react19.default.useState(false);
-  const [actualTheme, setActualTheme] = import_react19.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
-  const listRef = import_react19.default.useRef(null);
+  const [heights, setHeights] = import_react20.default.useState([]);
+  const [expanded, setExpanded] = import_react20.default.useState(false);
+  const [interacting, setInteracting] = import_react20.default.useState(false);
+  const [actualTheme, setActualTheme] = import_react20.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
+  const listRef = import_react20.default.useRef(null);
   const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "");
-  const lastFocusedElementRef = import_react19.default.useRef(null);
-  const isFocusWithinRef = import_react19.default.useRef(false);
-  const removeToast = import_react19.default.useCallback((toastToRemove) => {
+  const lastFocusedElementRef = import_react20.default.useRef(null);
+  const isFocusWithinRef = import_react20.default.useRef(false);
+  const removeToast = import_react20.default.useCallback((toastToRemove) => {
     setToasts((toasts2) => {
       var _toasts_find;
       if (!((_toasts_find = toasts2.find((toast2) => toast2.id === toastToRemove.id)) == null ? void 0 : _toasts_find.delete)) {
@@ -5632,7 +5691,7 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
       return toasts2.filter(({ id: id4 }) => id4 !== toastToRemove.id);
     });
   }, []);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     return ToastState.subscribe((toast2) => {
       if (toast2.dismiss) {
         requestAnimationFrame(() => {
@@ -5666,7 +5725,7 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
       });
     });
   }, []);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     if (theme2 !== "system") {
       setActualTheme(theme2);
       return;
@@ -5704,14 +5763,14 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
   }, [
     theme2
   ]);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     if (toasts.length <= 1) {
       setExpanded(false);
     }
   }, [
     toasts
   ]);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     const handleKeyDown = (event) => {
       var _listRef_current;
       const isHotkeyPressed = hotkey.length > 0 && hotkey.every((key) => event[key] || event.code === key);
@@ -5729,7 +5788,7 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
   }, [
     hotkey
   ]);
-  import_react19.default.useEffect(() => {
+  import_react20.default.useEffect(() => {
     if (listRef.current) {
       return () => {
         if (lastFocusedElementRef.current) {
@@ -5746,7 +5805,7 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
   ]);
   return (
     // Remove item from normal navigation flow, only available via hotkey
-    /* @__PURE__ */ import_react19.default.createElement("section", {
+    /* @__PURE__ */ import_react20.default.createElement("section", {
       ref,
       "aria-label": customAriaLabel != null ? customAriaLabel : `${containerAriaLabel} ${hotkeyLabel}`,
       tabIndex: -1,
@@ -5759,7 +5818,7 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
       var _heights_;
       const [y, x] = position2.split("-");
       if (!filteredToasts.length) return null;
-      return /* @__PURE__ */ import_react19.default.createElement("ol", {
+      return /* @__PURE__ */ import_react20.default.createElement("ol", {
         key: position2,
         dir: dir === "auto" ? getDocumentDirection() : dir,
         tabIndex: -1,
@@ -5811,7 +5870,7 @@ var Toaster = /* @__PURE__ */ import_react19.default.forwardRef(function Toaster
         onPointerUp: () => setInteracting(false)
       }, filteredToasts.filter((toast2) => !toast2.position && index3 === 0 || toast2.position === position2).map((toast2, index4) => {
         var _toastOptions_duration, _toastOptions_closeButton;
-        return /* @__PURE__ */ import_react19.default.createElement(Toast, {
+        return /* @__PURE__ */ import_react20.default.createElement(Toast, {
           key: toast2.id,
           icons,
           index: index4,
@@ -5879,7 +5938,7 @@ function createToasterHost() {
   function renderToaster() {
     if (root === null)
       return;
-    root.render((0, import_react20.createElement)(Toaster, {
+    root.render((0, import_react21.createElement)(Toaster, {
       theme: currentTheme(),
       position,
       // richColors：success=绿整条 / error=红整条 / warning=黄整条（Sonner 自带）；
@@ -5945,7 +6004,7 @@ function createToasterHost() {
     const palette = notifyPalette(payload.variant, currentTheme());
     const duration = payload.durationMs;
     const actions = payload.actions;
-    const id3 = toast.custom(() => (0, import_react20.createElement)("div", {
+    const id3 = toast.custom(() => (0, import_react21.createElement)("div", {
       style: {
         display: "flex",
         alignItems: "center",
@@ -5961,7 +6020,7 @@ function createToasterHost() {
         fontSize: "14px",
         lineHeight: "20px"
       }
-    }, (0, import_react20.createElement)("span", {
+    }, (0, import_react21.createElement)("span", {
       style: {
         flexShrink: 0,
         width: "20px",
@@ -5974,7 +6033,7 @@ function createToasterHost() {
         fontSize: "13px",
         fontWeight: 700
       }
-    }, palette.glyph), (0, import_react20.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react20.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react20.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react20.createElement)(Button, {
+    }, palette.glyph), (0, import_react21.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react21.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react21.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react21.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react21.createElement)(Button, {
       variant: a.variant ?? "outline",
       size: "md",
       onClick: () => {
@@ -6048,7 +6107,7 @@ function notify(message, opts) {
 }
 
 // dist/ui/Segmented.js
-var import_react21 = require("react");
+var import_react22 = require("react");
 function Segmented(props) {
   ensureControls();
   ensureControls();
@@ -6057,9 +6116,9 @@ function Segmented(props) {
   const value = props.value;
   const onChange = props.onChange;
   const sliding = !multiple && props.items.length > 1;
-  const rootRef = (0, import_react21.useRef)(null);
-  const [thumb, setThumb] = (0, import_react21.useState)(null);
-  const measure = (0, import_react21.useCallback)(() => {
+  const rootRef = (0, import_react22.useRef)(null);
+  const [thumb, setThumb] = (0, import_react22.useState)(null);
+  const measure = (0, import_react22.useCallback)(() => {
     const sel = rootRef.current?.querySelector('.dshpc-seg__item[aria-pressed="true"]');
     if (sel === void 0 || sel === null) {
       setThumb(null);
@@ -6068,7 +6127,7 @@ function Segmented(props) {
     const next = { left: sel.offsetLeft, top: sel.offsetTop, width: sel.offsetWidth, height: sel.offsetHeight };
     setThumb((cur2) => cur2 !== null && cur2.left === next.left && cur2.top === next.top && cur2.width === next.width && cur2.height === next.height ? cur2 : next);
   }, []);
-  (0, import_react21.useLayoutEffect)(() => {
+  (0, import_react22.useLayoutEffect)(() => {
     if (!sliding) {
       setThumb(null);
       return;
@@ -6082,7 +6141,7 @@ function Segmented(props) {
     return () => ro.disconnect();
   }, [sliding, measure, value, size4, props.items, props.bordered, props.block]);
   const renderer2 = getTooltipRenderer();
-  return (0, import_react21.createElement)("div", {
+  return (0, import_react22.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -6091,7 +6150,7 @@ function Segmented(props) {
     className: `dshpc-seg dshpc-seg--${size4}${sliding ? " dshpc-seg--slide" : ""}${props.block === true ? " dshpc-seg--block" : ""}${props.bordered === true ? " dshpc-seg--bordered" : ""}${props.className !== void 0 ? ` ${props.className}` : ""}`,
     style: props.style
   }, [
-    sliding && thumb !== null ? (0, import_react21.createElement)("span", {
+    sliding && thumb !== null ? (0, import_react22.createElement)("span", {
       key: "__thumb__",
       className: "dshpc-seg__thumb",
       "aria-hidden": true,
@@ -6117,7 +6176,7 @@ function Segmented(props) {
           onChange(item.value);
         }
       };
-      const itemButton = (0, import_react21.createElement)("button", {
+      const itemButton = (0, import_react22.createElement)("button", {
         key: item.value,
         type: "button",
         className: "dshpc-seg__item",
@@ -6125,7 +6184,7 @@ function Segmented(props) {
         "aria-pressed": on,
         disabled,
         onClick: handle
-      }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react21.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react21.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
+      }, item.label, item.count !== void 0 && item.count > 0 ? (0, import_react22.createElement)("span", { className: "dshpc-seg__count" }, String(item.count)) : null, item.badge !== void 0 && item.badge > 0 ? (0, import_react22.createElement)("span", { className: "dshpc-seg__badge" }, String(item.badge)) : null);
       if (item.tooltip !== void 0 && renderer2 !== void 0) {
         return renderer2({ label: item.tooltip, side: "top", children: itemButton });
       }
@@ -6135,11 +6194,11 @@ function Segmented(props) {
 }
 
 // dist/ui/Textarea.js
-var import_react22 = require("react");
+var import_react23 = require("react");
 function Textarea(props) {
   ensureControls();
   const { value, onChange, placeholder: placeholder2, error, disabled, id: id3, rows, spellCheck, className: className2, style: style2 } = props;
-  const box = (0, import_react22.createElement)("textarea", {
+  const box = (0, import_react23.createElement)("textarea", {
     id: id3,
     rows,
     value,
@@ -6155,14 +6214,14 @@ function Textarea(props) {
   });
   if (props.hint === void 0)
     return box;
-  return (0, import_react22.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react22.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react23.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react23.createElement)(FieldHint, { text: props.hint }));
 }
 
 // dist/ui/Checkbox.js
-var import_react23 = require("react");
+var import_react24 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className: className2 } = props;
-  return (0, import_react23.createElement)("label", {
+  return (0, import_react24.createElement)("label", {
     className: `dshpc-checkbox${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: {
       display: "flex",
@@ -6172,7 +6231,7 @@ function Checkbox(props) {
       lineHeight: "var(--dshpc-line-md)",
       cursor: disabled === true ? "default" : "pointer"
     }
-  }, (0, import_react23.createElement)("input", {
+  }, (0, import_react24.createElement)("input", {
     type: "checkbox",
     checked,
     disabled,
@@ -6187,51 +6246,7 @@ function Checkbox(props) {
     onChange: (event) => {
       onChange(event.target.checked);
     }
-  }), label !== void 0 ? (0, import_react23.createElement)("span", null, label) : null);
-}
-
-// dist/ui/MarqueeText.js
-var import_react24 = require("react");
-function MarqueeText(props) {
-  const outerRef = (0, import_react24.useRef)(null);
-  const innerRef = (0, import_react24.useRef)(null);
-  const [dist2, setDist] = (0, import_react24.useState)(0);
-  const measure = (0, import_react24.useCallback)(() => {
-    const outer = outerRef.current;
-    const inner = innerRef.current;
-    if (outer === null || inner === null)
-      return;
-    setDist(Math.max(0, Math.ceil(inner.scrollWidth - outer.clientWidth)));
-  }, []);
-  (0, import_react24.useLayoutEffect)(() => {
-    const outer = outerRef.current;
-    const inner = innerRef.current;
-    if (outer === null || inner === null)
-      return;
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(outer);
-    ro.observe(inner);
-    return () => {
-      ro.disconnect();
-    };
-  }, [measure]);
-  (0, import_react24.useEffect)(() => {
-    measure();
-  }, [props.text, measure]);
-  const run = dist2 > 0;
-  return (0, import_react24.createElement)("span", {
-    ref: outerRef,
-    className: (run ? "dshpc-mq dshpc-mq-run" : "dshpc-mq") + (props.className === void 0 ? "" : ` ${props.className}`),
-    title: props.title,
-    style: props.style
-  }, (0, import_react24.createElement)("span", {
-    ref: innerRef,
-    className: "dshpc-mq-in",
-    style: {
-      ...run ? { "--dshpc-mq-dist": `${-dist2}px`, "--dshpc-mq-dur": `${Math.max(3, Math.round(dist2 / 30))}s` } : null
-    }
-  }, props.text));
+  }), label !== void 0 ? (0, import_react24.createElement)("span", null, label) : null);
 }
 
 // dist/ui/SectionHead.js
@@ -56847,7 +56862,7 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue`\u3002",
+        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue`\u3002\u89E6\u53D1\u5668\u652F\u6301 width / minWidth / maxWidth \u7EA6\u675F\u5BBD\u5EA6\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u5185\u5BB9\u8D85\u957F\u5219\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002",
         "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`."
       },
       {
@@ -57014,6 +57029,33 @@ var docData = {
             "desc": {
               "zh": "\u5B9A\u5236\u5BBD\u5EA6 / \u5916\u8FB9\u8DDD",
               "en": "Custom width / margin"
+            }
+          },
+          {
+            "name": "width",
+            "type": "number | string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5B9A\u5BBD\uFF08px \u6216\u4EFB\u610F CSS \u957F\u5EA6\uFF09\uFF1B\u7ED9\u4E86\u5373\u5FFD\u7565 minWidth / maxWidth\uFF0C\u89E6\u53D1\u5668\u9501\u5B9A\u6B64\u5BBD\uFF1B\u5185\u5BB9\u8D85\u957F\u5219\u7701\u7565 + hover \u8DD1\u9A6C\u706F",
+              "en": "Fixed width (px or any CSS length); overrides minWidth/maxWidth and locks the trigger; overflow elides + hover marquee"
+            }
+          },
+          {
+            "name": "minWidth",
+            "type": "number | string",
+            "def": "120px\uFF08CSS \u9ED8\u8BA4\uFF09",
+            "desc": {
+              "zh": "\u6700\u5C0F\u5BBD\uFF1B\u5185\u5BB9\u4E0D\u5230\u6B64\u5BBD\u89E6\u53D1\u5668\u4E5F\u4E0D\u66F4\u7A84",
+              "en": "Minimum width; trigger never narrower than this"
+            }
+          },
+          {
+            "name": "maxWidth",
+            "type": "number | string",
+            "def": "100%\uFF08CSS \u9ED8\u8BA4\uFF09",
+            "desc": {
+              "zh": "\u6700\u5927\u5BBD\uFF1B\u5185\u5BB9\u8D85\u8FC7\u6B64\u5BBD\u5219\u7701\u7565 + hover \u8DD1\u9A6C\u706F",
+              "en": "Maximum width; overflow elides + hover marquee"
             }
           },
           {
@@ -61467,9 +61509,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.5.1"}`],
-            [t3("buildDemo"), `v${"0.5.1"}`],
-            [t3("buildStamp"), "261026-231541-958"]
+            [t3("buildCore"), `v${"0.6.0"}`],
+            [t3("buildDemo"), `v${"0.6.0"}`],
+            [t3("buildStamp"), "261028-114106-083"]
           ].map(
             ([label, value]) => (0, import_react67.createElement)(
               "tr",
@@ -61791,9 +61833,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react69.createElement)("span", null, `core v${"0.5.1"}`),
-          (0, import_react69.createElement)("span", null, `demo v${"0.5.1"}`),
-          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261026-231541-958")
+          (0, import_react69.createElement)("span", null, `core v${"0.6.0"}`),
+          (0, import_react69.createElement)("span", null, `demo v${"0.6.0"}`),
+          (0, import_react69.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-114106-083")
         )
       )
     ),

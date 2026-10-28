@@ -37,6 +37,12 @@ export interface PickerProps {
     /** 问号提示文字：给了就在触发器后面挂标准 FieldHint（排版收进组件，调用方不再手动拼）。 */
     hint?: string;
     className?: string;
+    /** 定宽（px 或任意 CSS 长度）。给了即忽略 minWidth / maxWidth，触发器固定此宽，内容超长省略 + hover 跑马灯。 */
+    width?: number | string;
+    /** 最小宽（px 或任意 CSS 长度）；内容不到此宽时触发器也不会更窄（缺省沿用 CSS 的 120px）。 */
+    minWidth?: number | string;
+    /** 最大宽（px 或任意 CSS 长度）；内容超过此宽时省略 + hover 跑马灯。 */
+    maxWidth?: number | string;
     ariaLabel?: string;
     translate?: Translate;
 }

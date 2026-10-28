@@ -49,4 +49,20 @@ export function groupOf(groups, value) {
         return undefined;
     return groups.find((g) => g.options.some((o) => o.value === value));
 }
+/** 触发器宽度解析：把 width / minWidth / maxWidth 译成内联样式。
+ * 定宽（width）忽略 min/max 并锁定三值；否则各自生效，缺省沿用 CSS 默认（min 120px、max 100%）。
+ * 数值按 px 处理，字符串原样透传。 */
+export function resolveTriggerSizing(opts) {
+    const px = (v) => (typeof v === 'number' ? `${v}px` : v);
+    if (opts.width !== undefined) {
+        const w = px(opts.width);
+        return { width: w, minWidth: w, maxWidth: w };
+    }
+    const style = {};
+    if (opts.minWidth !== undefined)
+        style.minWidth = px(opts.minWidth);
+    if (opts.maxWidth !== undefined)
+        style.maxWidth = px(opts.maxWidth);
+    return style;
+}
 //# sourceMappingURL=picker-logic.js.map

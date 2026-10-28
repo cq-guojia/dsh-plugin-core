@@ -7,6 +7,7 @@ export {
   flattenOptions,
   groupOf,
   labelsOf,
+  resolveTriggerSizing,
   toGroups,
   toggleValue,
   type PickerGroup,

@@ -140,7 +140,7 @@ const doc: DocTopic = {
       heading: { zh: 'Picker / WorkspacePicker / ModelPicker', en: 'Picker / WorkspacePicker / ModelPicker' },
       prose: [
         {
-          zh: 'Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue`。',
+          zh: 'Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue`。触发器支持 width / minWidth / maxWidth 约束宽度：定宽忽略另两者；内容超长则省略号 + hover 跑马灯。',
           en: 'Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`.',
         },
         {
@@ -173,6 +173,9 @@ const doc: DocTopic = {
             { name: 'icon', type: 'ReactNode', def: '—', desc: { zh: '触发器文字前的图标', en: 'Icon before the trigger text' } },
             { name: 'hint', type: 'string', def: '—', desc: { zh: '问号提示文字：自动在触发器后挂标准 FieldHint', en: 'Hint text: auto-attaches a standard FieldHint after the trigger' } },
             { name: 'className', type: 'string', def: '—', desc: { zh: '定制宽度 / 外边距', en: 'Custom width / margin' } },
+            { name: 'width', type: 'number | string', def: '—', desc: { zh: '定宽（px 或任意 CSS 长度）；给了即忽略 minWidth / maxWidth，触发器锁定此宽；内容超长则省略 + hover 跑马灯', en: 'Fixed width (px or any CSS length); overrides minWidth/maxWidth and locks the trigger; overflow elides + hover marquee' } },
+            { name: 'minWidth', type: 'number | string', def: '120px（CSS 默认）', desc: { zh: '最小宽；内容不到此宽触发器也不更窄', en: 'Minimum width; trigger never narrower than this' } },
+            { name: 'maxWidth', type: 'number | string', def: '100%（CSS 默认）', desc: { zh: '最大宽；内容超过此宽则省略 + hover 跑马灯', en: 'Maximum width; overflow elides + hover marquee' } },
             { name: 'ariaLabel', type: 'string', def: '—', desc: { zh: '无障碍名', en: 'Accessible name' } },
             { name: 'translate', type: 'Translate', def: '内置', desc: { zh: '覆盖文案', en: 'Override copy' } },
           ],

@@ -1,5 +1,5 @@
 // 选择器的纯逻辑（与 React 运行时无关，便于单测；React 只进类型引用，编译期擦除）。
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 export interface PickerOption {
   value: string
@@ -66,4 +66,23 @@ export function labelsOf(groups: PickerGroup[], values: readonly string[]): stri
 export function groupOf(groups: PickerGroup[], value: string): PickerGroup | undefined {
   if (value === '') return undefined
   return groups.find((g) => g.options.some((o) => o.value === value))
+}
+
+/** 触发器宽度解析：把 width / minWidth / maxWidth 译成内联样式。
+ * 定宽（width）忽略 min/max 并锁定三值；否则各自生效，缺省沿用 CSS 默认（min 120px、max 100%）。
+ * 数值按 px 处理，字符串原样透传。 */
+export function resolveTriggerSizing(opts: {
+  width?: number | string
+  minWidth?: number | string
+  maxWidth?: number | string
+}): CSSProperties {
+  const px = (v: number | string): string => (typeof v === 'number' ? `${v}px` : v)
+  if (opts.width !== undefined) {
+    const w = px(opts.width)
+    return { width: w, minWidth: w, maxWidth: w }
+  }
+  const style: CSSProperties = {}
+  if (opts.minWidth !== undefined) style.minWidth = px(opts.minWidth)
+  if (opts.maxWidth !== undefined) style.maxWidth = px(opts.maxWidth)
+  return style
 }

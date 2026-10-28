@@ -4,7 +4,8 @@ import { ensureControls } from './css.js';
 import { Chevron } from './chevron.js';
 import { t } from '../utils/i18n.js';
 import { FieldHint } from './FieldHint.js';
-import { filterGroups, flattenOptions, labelsOf, toGroups, toggleValue, } from './picker-logic.js';
+import { MarqueeText } from './MarqueeText.js';
+import { filterGroups, flattenOptions, labelsOf, resolveTriggerSizing, toGroups, toggleValue, } from './picker-logic.js';
 /**
  * 通用选择器：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级。
  *
@@ -19,6 +20,7 @@ export function Picker(props) {
     const placement = props.placement ?? 'down';
     const clearable = props.clearable === true;
     const showLabels = props.showLabels !== false;
+    const triggerStyle = resolveTriggerSizing(props);
     const groups = useMemo(() => toGroups(props.groups, props.options), [props.groups, props.options]);
     const controlled = props.value !== undefined;
     const [inner, setInner] = useState(() => toArray(props.defaultValue));
@@ -142,6 +144,7 @@ export function Picker(props) {
         'aria-expanded': open,
         ref: refs.setReference,
         className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === 'center' ? ' dshpc-picker__trigger--center' : ''}`,
+        style: triggerStyle,
         disabled: props.disabled === true,
         onClick: () => {
             if (props.disabled !== true)
@@ -150,8 +153,8 @@ export function Picker(props) {
     }, props.icon !== undefined && props.icon !== null
         ? h('span', { className: 'dshpc-picker__icon' }, props.icon)
         : null, 
-    // 文字吃掉剩余宽度并靠左（默认）：否则 space-between 会把短文案推到中间
-    h('span', { className: 'dshpc-picker__label' }, summary), h(Chevron, { size: 12, className: 'dshpc-picker__caret' }));
+    // 文字吃掉剩余宽度并靠左（默认）；超长时外层省略号、hover 跑马灯（MarqueeText 自带）。
+    h(MarqueeText, { text: summary, className: 'dshpc-picker__label' }), h(Chevron, { size: 12, className: 'dshpc-picker__caret' }));
     // hint 给了就把触发器与 FieldHint 包进同一行（间距/对齐收进组件）。
     const triggerRow = props.hint === undefined
         ? trigger
