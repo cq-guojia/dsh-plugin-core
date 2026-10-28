@@ -1,7 +1,7 @@
 # 20261028-0326-253c-picker-支持宽度约束与-hover-跑马灯：Picker 支持宽度约束与 hover 跑马灯
 
 - **标签**：picker、宽度、跑马灯
-- **状态**：doing · 2026-10-28 03:42:51 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **状态**：doing · 2026-10-28 04:08:36 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **创建**：2026-10-28 03:26:22 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
@@ -39,3 +39,4 @@
 - 2026-10-28 03:26:22 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务并认领
 - 2026-10-28 03:31:28 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 实现 width/minWidth/maxWidth（resolveTriggerSizing）+ 标签改用 MarqueeText（省略号+hover 跑马灯）；.dshpc-picker 加 max-width:100% 堵溢出根因；100 项下拉滚动为既有能力未动。build + test 123/123 通过，待用户真机验收。
 - 2026-10-28 03:42:51 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已发版 v0.6.0：核心与 demo 同号，commit 71ea053，tag v0.6.0 已推（触发 npm publish）。文档 ui.doc.ts 已同步，dist 与 demo dist 入库，test 123/123。
+- 2026-10-28 04:08:36 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修复菜单横向滚动条：选项文字改用 MarqueeText + __option-label（flex:1/min-width:0/省略号），超长选项不再撑宽菜单，出点点点 + hover 跑马灯；帮助文档同步。build + test 123/123 通过，未提交（调试期）。
