@@ -1,6 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
+    "20261028-0727-49ba-文件预览接线零配置化": {"category": "建设", "created": "2026-10-28 07:27:47", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-28 07:27:47", "status": "doing", "tags": ["explorer", "接线", "布局", "demo", "文档"], "title": "文件预览接线零配置化", "updated": "2026-10-28 07:27:47", "worklog": "worklog/202610/28-0727-49ba-文件预览接线零配置化.md"}
   },
   "version": "20261022000000"
 }
