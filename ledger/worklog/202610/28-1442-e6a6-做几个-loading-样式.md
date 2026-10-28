@@ -1,7 +1,7 @@
 # 20261028-1442-e6a6-做几个-loading-样式：做几个 loading 样式
 
 - **标签**：ui、loading、控件
-- **状态**：doing · 2026-10-28 15:00:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **状态**：doing · 2026-10-28 15:09:58 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **创建**：2026-10-28 14:42:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
@@ -56,3 +56,4 @@
 - 2026-10-28 14:47:19 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 新增 showLoading / LoadingToast / LoadingBlock（src/ui/Loading.ts、loading-host.ts、controls/loading.css），demo 反馈页与 docs/help/ui.doc.ts 已补；build + typecheck + 146 项自检 + codelint 全过，待用户验收
 - 2026-10-28 14:53:17 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按验收意见改：长条卡 200→250px、默认屏位改 bottom-center、新增 position 七向（src/ui/loading-host.ts loadingOverlayClass + loading.css 六个修饰类）；build/typecheck/147 项自检/codelint 全过
 - 2026-10-28 15:00:08 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修「同时出现两个」：宿主 entries 改唯一槽位 createLoadingSlot（后一次顶掉前一次，旧句柄 close 按 id 空操作）；确认 showLoading 无计时参数、只能 close；新增单槽位自检，148 项全过
+- 2026-10-28 15:09:58 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 v0.8.3：两包同号 bump、build + build:demo + 148 项自检 + codelint 全过，commit 17cb877 已推 main，tag v0.8.3 已推（触发两包自动发布）
