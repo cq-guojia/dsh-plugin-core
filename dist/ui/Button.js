@@ -20,6 +20,7 @@
  * ⚠️ 不许在任何使用点就地写按钮样式；要多一档外观 ⇒ 改基础层（一处改全站生效）。
  */
 import { ensureControls } from './css.js';
+import { MarqueeText } from './MarqueeText.js';
 import { createElement as h } from 'react';
 /** 实心档（color 参数按「底色」处理；其余档按「字色 + 描边色」处理）。 */
 const SOLID_VARIANTS = ['primary', 'secondary', 'danger', 'success', 'warning', 'info'];
@@ -59,13 +60,26 @@ function buttonClass(variant, size, block, hasIcon, extra) {
  */
 export function Button(props) {
     ensureControls();
-    const { variant = 'outline', size = 'lg', icon, iconRight, color, loading = false, block = false, className, style, children, ...rest } = props;
+    const { variant = 'outline', size = 'lg', icon, iconRight, color, loading = false, block = false, width, minWidth, maxWidth, className, style, children, ...rest } = props;
+    // 三轴互斥：固定宽优先，min / max 失效；否则 min / max 各自生效。
+    const widthStyle = {};
+    if (width !== undefined) {
+        widthStyle.width = width;
+    }
+    else {
+        if (minWidth !== undefined)
+            widthStyle.minWidth = minWidth;
+        if (maxWidth !== undefined)
+            widthStyle.maxWidth = maxWidth;
+    }
+    // 最大宽 + 纯文字标签 ⇒ 折叠省略号、hover 跑马灯（复用全站唯一 MarqueeText）。
+    const marqueeLabel = maxWidth !== undefined && width === undefined && typeof children === 'string';
     const attrs = {
         ...rest,
         type: rest.type ?? 'button',
         disabled: rest.disabled === true || loading,
         className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, className),
-        style: { ...colorVars(variant, color), ...style },
+        style: { ...colorVars(variant, color), ...widthStyle, ...style },
     };
     return h('button', attrs, loading
         // 转圈用 SVG 矢量弧，不用 border 画环：1.5px 的次像素边框在 12px 圆上会被抗锯齿拉毛，
@@ -84,7 +98,9 @@ export function Button(props) {
         }))
         : icon !== undefined && icon !== null
             ? h('span', { className: 'dshpc-btn__icon' }, icon)
-            : null, children, iconRight !== undefined && iconRight !== null
+            : null, marqueeLabel
+        ? h(MarqueeText, { text: children, className: 'dshpc-btn__label' })
+        : children, iconRight !== undefined && iconRight !== null
         ? h('span', { className: 'dshpc-btn__icon-end' }, iconRight)
         : null);
 }

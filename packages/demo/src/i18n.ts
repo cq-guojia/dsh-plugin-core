@@ -60,6 +60,8 @@ export type DemoMessageKey =
   | 'btnStateHint'
   | 'btnColorTitle'
   | 'btnColorHint'
+  | 'btnWidthTitle'
+  | 'btnWidthHint'
   | 'btnLabelSave'
   | 'btnLabelCancel'
   | 'btnLabelDelete'
@@ -343,6 +345,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnStateHint: 'disabled 半透明不可点；loading 前置同色小圈并自动禁用',
     btnColorTitle: '自定义颜色',
     btnColorHint: 'color 传任意 CSS 色值：实心档作底色、线框与文字档作主色；hover / 按下自动按该色混出',
+    btnWidthTitle: '宽度（固定宽 / 最小宽 / 最大宽）',
+    btnWidthHint: '三轴互斥：固定宽 width 一旦设定，最小宽 minWidth / 最大宽 maxWidth 自动失效；最大宽下文字超长折叠成省略号，hover 跑马灯展开全名',
 
 
 
@@ -623,6 +627,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnStateHint: 'disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself',
     btnColorTitle: 'Custom colors',
     btnColorHint: 'Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it',
+    btnWidthTitle: 'Width (fixed / min / max)',
+    btnWidthHint: 'Three axes are mutually exclusive: a fixed width wins and disables both minWidth and maxWidth; with maxWidth, overflowing text collapses to an ellipsis and marquees on hover',
 
 
 

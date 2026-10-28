@@ -17,6 +17,7 @@
 import { createElement as h, useEffect, useMemo, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { EditorView } from '@codemirror/view';
+import { IconButton } from './Button.js';
 import { IconCheckOutlineRegular, IconCopyOutlineRegular, writeClipboard } from './official.js';
 import { languageForPath } from './code-viewer-lang.js';
 import { codeMirrorTheme } from './code-viewer-theme.js';
@@ -60,13 +61,14 @@ export function CodeViewer(props) {
             }
         });
     };
-    return h('div', { className: `dshpc-cv${className ? ` ${className}` : ''}`, style }, h('button', {
-        type: 'button',
+    return h('div', { className: `dshpc-cv${className ? ` ${className}` : ''}`, style }, h(IconButton, {
+        variant: 'outline',
+        size: 'md',
+        icon: copied ? h(IconCheckOutlineRegular) : h(IconCopyOutlineRegular),
+        label: copied ? t('codeCopied') : t('codeCopy'),
         className: 'dshpc-cv__copy',
         onClick: copy,
-        title: copied ? t('codeCopied') : t('codeCopy'),
-        'aria-label': copied ? t('codeCopied') : t('codeCopy'),
-    }, copied ? h(IconCheckOutlineRegular) : h(IconCopyOutlineRegular)), h(CodeMirror, {
+    }), h(CodeMirror, {
         value: text,
         className: 'dshpc-cv__editor',
         theme: 'none',

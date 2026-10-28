@@ -20,6 +20,7 @@
  * ⚠️ 不许在任何使用点就地写按钮样式；要多一档外观 ⇒ 改基础层（一处改全站生效）。
  */
 import { ensureControls } from './css.js'
+import { MarqueeText } from './MarqueeText.js'
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
 
 /** 按钮外观档。 */
@@ -59,6 +60,16 @@ export interface ButtonProps {
   loading?: boolean
   /** 撑满父宽。 */
   block?: boolean
+  /**
+   * 固定宽（px 或任意 CSS 宽度值）。与 `minWidth` / `maxWidth` 互斥：一旦设定，后两者自动失效。
+   */
+  width?: number | string
+  /** 最小宽：`width` 未设时生效，内容不足此宽时以它为准。 */
+  minWidth?: number | string
+  /**
+   * 最大宽：`width` 未设时生效，文字超出时折叠成省略号，hover 以跑马灯展开全名。
+   */
+  maxWidth?: number | string
   /** 追加 class（只允许补布局、或挂本文件声明的修饰类，不许覆盖皮肤）。 */
   className?: string
   /** 追加样式（只允许补布局，不许覆盖皮肤）。 */
@@ -125,14 +136,24 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
   ensureControls()
   const {
     variant = 'outline', size = 'lg', icon, iconRight, color, loading = false,
-    block = false, className, style, children, ...rest
+    block = false, width, minWidth, maxWidth, className, style, children, ...rest
   } = props
+  // 三轴互斥：固定宽优先，min / max 失效；否则 min / max 各自生效。
+  const widthStyle: CSSProperties = {}
+  if (width !== undefined) {
+    widthStyle.width = width
+  } else {
+    if (minWidth !== undefined) widthStyle.minWidth = minWidth
+    if (maxWidth !== undefined) widthStyle.maxWidth = maxWidth
+  }
+  // 最大宽 + 纯文字标签 ⇒ 折叠省略号、hover 跑马灯（复用全站唯一 MarqueeText）。
+  const marqueeLabel = maxWidth !== undefined && width === undefined && typeof children === 'string'
   const attrs = {
     ...rest,
     type: (rest.type as string | undefined) ?? 'button',
     disabled: rest.disabled === true || loading,
     className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, className),
-    style: { ...colorVars(variant, color), ...style },
+    style: { ...colorVars(variant, color), ...widthStyle, ...style },
   }
   return h('button', attrs as never,
     loading
@@ -153,7 +174,9 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
       : icon !== undefined && icon !== null
         ? h('span', { className: 'dshpc-btn__icon' }, icon)
         : null,
-    children,
+    marqueeLabel
+      ? h(MarqueeText, { text: children, className: 'dshpc-btn__label' })
+      : children,
     iconRight !== undefined && iconRight !== null
       ? h('span', { className: 'dshpc-btn__icon-end' }, iconRight)
       : null)

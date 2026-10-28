@@ -33,6 +33,8 @@
 .dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}
 .dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}
 .dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;}
+/* maxWidth 包 MarqueeText 时：标签作为 flex 子项必须能收缩到内容以下，否则省略号 / 跑马灯测不准 */
+.dshpc-btn .dshpc-btn__label{min-width:0;}
 /* loading：不换 DOM 结构，只在文案前插一个同色小圈。
    ⚠️ 2026-10-20 改画法：原来是 border:1.5px 加 border-radius:999px 画的环 —— 真机实测 computed
    radius 就是 999px、宽高都是 12px（没被任何样式覆盖），看着却"像圆角方"，原因是**次像素边框
@@ -75,9 +77,9 @@
   height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}
 .dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}
 
-/* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高 */
+/* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高、圆角统一吃 md（与 .dshpc-btn 同款，2026-10-28 拍板） */
 .dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
-  border:1px solid transparent;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);
+  border:1px solid transparent;border-radius:var(--dshpc-radius-md);background:transparent;color:var(--dshpc-fg-2);
   font-family:inherit;cursor:pointer;flex:none;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}

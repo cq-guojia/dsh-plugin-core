@@ -1259,6 +1259,33 @@ export const docData = {
             }
           },
           {
+            "name": "width",
+            "type": "number | string",
+            "def": "—",
+            "desc": {
+              "zh": "固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效",
+              "en": "Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored"
+            }
+          },
+          {
+            "name": "minWidth",
+            "type": "number | string",
+            "def": "—",
+            "desc": {
+              "zh": "最小宽：width 未设时生效，内容不足此宽时以它为准",
+              "en": "Minimum width: applies only when width is unset; content shorter than this still takes this width"
+            }
+          },
+          {
+            "name": "maxWidth",
+            "type": "number | string",
+            "def": "—",
+            "desc": {
+              "zh": "最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开全名",
+              "en": "Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover"
+            }
+          },
+          {
             "name": "children",
             "type": "ReactNode",
             "def": "—",

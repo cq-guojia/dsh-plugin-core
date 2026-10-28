@@ -4,7 +4,7 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/css.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/controls/field-css.generated.js'
-import { Input, Segmented, SplitGroup } from '../dist/ui/index.js'
+import { Button, Input, Segmented, SplitGroup } from '../dist/ui/index.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -83,4 +83,30 @@ test('搜索框清空钮只在聚焦且有内容时出现，原生那枚由 CSS 
   assert.ok(search.includes('dshpc-iwrap'), '搜索框要包壳（清空钮挂在这个壳里）')
   assert.ok(!search.includes('dshpc-iwrap__clear'), '没焦点不该出清空钮')
   assert.match(FIELD_CSS, /\.dshpc-iwrap \.dshpc-input::-webkit-search-cancel-button\{display:none/)
+})
+
+test('Button 宽度三轴互斥：固定宽优先，min/max 自动失效', () => {
+  const fixed = renderToStaticMarkup(createElement(Button, { width: 120, minWidth: 80, maxWidth: 200 }, '标签'))
+  assert.match(fixed, /style="[^"]*width:120px/)
+  assert.ok(!/min-width/.test(fixed), '固定宽下不应带 min-width')
+  assert.ok(!/max-width/.test(fixed), '固定宽下不应带 max-width')
+
+  const minOnly = renderToStaticMarkup(createElement(Button, { minWidth: '60%' }, '标签'))
+  assert.match(minOnly, /style="[^"]*min-width:60%/)
+  assert.ok(!/max-width/.test(minOnly), '未设固定宽时 min 独立生效')
+
+  const maxOnly = renderToStaticMarkup(createElement(Button, { maxWidth: 100 }, '很长的标签文字内容'))
+  assert.match(maxOnly, /style="[^"]*max-width:100px/)
+})
+
+test('Button 最大宽 + 纯文字标签：包 MarqueeText 折叠省略号', () => {
+  const html = renderToStaticMarkup(createElement(Button, { maxWidth: 100 }, '很长的标签文字内容'))
+  assert.ok(html.includes('dshpc-mq'), '最大宽下标签应包进跑马灯容器')
+  assert.ok(html.includes('dshpc-btn__label'), '标签带可收缩的 label 类')
+  assert.ok(html.includes('很长的标签文字内容'), '文本原样传入')
+})
+
+test('Button 最大宽但非文字标签：不强行包 MarqueeText', () => {
+  const html = renderToStaticMarkup(createElement(Button, { maxWidth: 100 }, createElement('b', null, '加粗')))
+  assert.ok(!html.includes('dshpc-mq'), '非纯文字标签不应被 MarqueeText 接管')
 })

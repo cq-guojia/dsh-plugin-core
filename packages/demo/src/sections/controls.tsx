@@ -198,6 +198,19 @@ const CODE_BTN_STATE = `<Button variant="primary">默认</Button>
 const CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
 <Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`
 
+const CODE_BTN_WIDTH = `// 固定宽：写死宽度
+<Button variant="outline" width={120}>120px 固定宽</Button>
+
+// 最小宽：内容不足此宽时以它为准（短 / 长一致）
+<Button variant="outline" minWidth={120}>短</Button>
+<Button variant="outline" minWidth={120}>很长很长很长</Button>
+
+// 最大宽：文字超出折叠成省略号，hover 跑马灯展开全名
+<Button variant="outline" maxWidth={160}>这是一段会被折叠成省略号的超长按钮文字标签</Button>
+
+// 三者同设 ⇒ 固定宽优先，最小宽 / 最大宽自动失效
+<Button variant="outline" width={120} minWidth={200} maxWidth={160}>固定宽优先</Button>`
+
 
 /** Button 的对外参数（与 src/ui/Button.ts 的 ButtonProps 逐条对齐）。 */
 
@@ -296,6 +309,24 @@ export function ButtonPage(): ReturnType<typeof h> {
         h(Labeled, { label: '描边' },
           h(Row, null, CUSTOM_COLORS.map((color) =>
             h(Button, { key: color, variant: 'outline', color }, color))))),
+    ),
+
+    // 宽度三轴
+    h(
+      Example,
+      { title: t('btnWidthTitle'), hint: t('btnWidthHint'), code: CODE_BTN_WIDTH },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        h(Labeled, { label: 'width（固定宽）' },
+          h(Button, { variant: 'outline', width: 120 }, '120px 固定宽')),
+        h(Labeled, { label: 'minWidth（最小宽：短 / 长同宽）' },
+          h('div', { style: { display: 'flex', gap: '8px' } },
+            h(Button, { variant: 'outline', minWidth: 120 }, '短'),
+            h(Button, { variant: 'outline', minWidth: 120 }, '很长很长很长'))),
+        h(Labeled, { label: 'maxWidth（最大宽：省略号 + hover 跑马灯）' },
+          h('div', { style: { width: '320px' } },
+            h(Button, { variant: 'outline', maxWidth: 160 }, '这是一段会被折叠成省略号的超长按钮文字标签'))),
+        h(Labeled, { label: '三者同设 ⇒ width 优先' },
+          h(Button, { variant: 'outline', width: 120, minWidth: 200, maxWidth: 160 }, '固定宽优先'))),
     ),
 
     h(DocCode, { id: 'button' }),

@@ -21,6 +21,16 @@ export interface ButtonProps {
     loading?: boolean;
     /** 撑满父宽。 */
     block?: boolean;
+    /**
+     * 固定宽（px 或任意 CSS 宽度值）。与 `minWidth` / `maxWidth` 互斥：一旦设定，后两者自动失效。
+     */
+    width?: number | string;
+    /** 最小宽：`width` 未设时生效，内容不足此宽时以它为准。 */
+    minWidth?: number | string;
+    /**
+     * 最大宽：`width` 未设时生效，文字超出时折叠成省略号，hover 以跑马灯展开全名。
+     */
+    maxWidth?: number | string;
     /** 追加 class（只允许补布局、或挂本文件声明的修饰类，不许覆盖皮肤）。 */
     className?: string;
     /** 追加样式（只允许补布局，不许覆盖皮肤）。 */

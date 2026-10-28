@@ -55,6 +55,9 @@ Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三�
 | `color` | `string` | — | 自定义主色：实心档作底色，线框 / 无底档作主色 | Custom main color: background for solid tiers, main color for outline/bare |
 | `loading` | `boolean` | 'false' | 文案前显示同色小圈，并自动 disabled | Shows a same-color spinner before the label and auto-disables |
 | `block` | `boolean` | 'false' | 撑满父宽 | Fill parent width |
+| `width` | `number \| string` | — | 固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效 | Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored |
+| `minWidth` | `number \| string` | — | 最小宽：width 未设时生效，内容不足此宽时以它为准 | Minimum width: applies only when width is unset; content shorter than this still takes this width |
+| `maxWidth` | `number \| string` | — | 最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开全名 | Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover |
 | `children` | `ReactNode` | — | 文案（由调用方按语言给：中文出中文、英文出英文，中英混排也支持） | Label (caller supplies per locale: zh shows zh, en shows en, mixed is supported) |
 | `…rest` | `原生 button 属性` | — | type / disabled / title / aria-* / onClick 原样透传 | type / disabled / title / aria-* / onClick passed through |
 

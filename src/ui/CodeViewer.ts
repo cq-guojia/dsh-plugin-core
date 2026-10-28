@@ -18,6 +18,7 @@ import { createElement as h, useEffect, useMemo, useState, type CSSProperties, t
 import CodeMirror from '@uiw/react-codemirror'
 import { type Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
+import { IconButton } from './Button.js'
 import { IconCheckOutlineRegular, IconCopyOutlineRegular, writeClipboard } from './official.js'
 import type { Translate } from '../utils/i18n.js'
 import { languageForPath } from './code-viewer-lang.js'
@@ -87,17 +88,14 @@ export function CodeViewer(props: CodeViewerProps): ReactElement {
   return h(
     'div',
     { className: `dshpc-cv${className ? ` ${className}` : ''}`, style },
-    h(
-      'button',
-      {
-        type: 'button',
-        className: 'dshpc-cv__copy',
-        onClick: copy,
-        title: copied ? t('codeCopied') : t('codeCopy'),
-        'aria-label': copied ? t('codeCopied') : t('codeCopy'),
-      },
-      copied ? h(IconCheckOutlineRegular) : h(IconCopyOutlineRegular),
-    ),
+    h(IconButton, {
+      variant: 'outline',
+      size: 'md',
+      icon: copied ? h(IconCheckOutlineRegular) : h(IconCopyOutlineRegular),
+      label: copied ? t('codeCopied') : t('codeCopy'),
+      className: 'dshpc-cv__copy',
+      onClick: copy,
+    }),
     h(CodeMirror, {
       value: text,
       className: 'dshpc-cv__editor',
