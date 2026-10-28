@@ -98,11 +98,13 @@ export type DemoMessageKey =
   | 'dockMainText'
   | 'dockPanelBody'
   | 'dockOpened'
+  | 'dockCollapsed'
   | 'dockLimitWarn'
   | 'dockBtnOpenA'
   | 'dockBtnOpenB'
   | 'dockBtnOpenA2'
   | 'dockBtnCloseA'
+  | 'dockBtnCollapseA'
   | 'dockBtnDefault'
   | 'dockBtnOpenC'
   | 'dockBtnReset'
@@ -291,7 +293,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     namingDesc:
       '待补：\n· 变量与类名统一 dshpc 前缀的理由\n· 类名必须与组件里硬编码的 className 逐字一致——不一致会整片失效\n· createStyleKit({ id }) 隔离到什么粒度\n· 注入顺序：同特异性时后注入者胜出\n· 明暗判据为什么是 body[data-ds-dark-theme] 而不是系统设置',
     dockHint:
-      '右侧停靠分栏，挂在整页上：结构写在页面里（DockPanel），open(id) 只管显隐。\n试一遍：开 A（图标 + 标题 + 右侧标签）→ 开 B（整块自定义头部）→ 开 C（无头部、关闭钮浮在右上角）→ 关 A 后再开新组名 → 满 3 栏再开会被拒绝。',
+      '右侧停靠分栏，挂在整页上：结构写在页面里（DockPanel），open(id) 只管显隐。\n试一遍：开 A（图标 + 标题 + 右侧标签）→ 开 B（整块自定义头部）→ 开 C（无头部、关闭钮浮在右上角）→ 关 A 后再开新组名 → 满 3 栏再开会被拒绝。\n另：点分割线中间的 › 可把该栏收起成右侧耳朵（分栏消失、不占宽），点耳朵展开。',
     dockMainText: '分栏是布局成员：它把这一页的正文挤窄，而不是盖在上面。三个面板分别演示内置头、自定义头、无头 + 浮动关闭钮。',
     dockPanelA: '内置头：图标 + 标题 + 右侧内容',
     dockPanelATag: '新',
@@ -300,11 +302,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     dockCustomHeadHint: '库不加内边距、不加边框 —— 多高、几行、放什么弹层都随你',
     dockPanelBody: '这一栏的内容。再开同名面板会替换它，宽度与位置保持不变。',
     dockOpened: '当前窗口：',
+    dockCollapsed: '已收起：',
     dockLimitWarn: '已满 3 栏，新组名被拒绝（open 返回 ok:false / reason:limit）',
     dockBtnOpenA: '打开 A',
     dockBtnOpenB: '打开 B',
     dockBtnOpenA2: '再开 A（不会多开）',
     dockBtnCloseA: '关闭 A',
+    dockBtnCollapseA: '收起 A',
     dockBtnDefault: '打开默认窗口',
     dockBtnOpenC: '打开 C',
     dockBtnReset: '全部关闭',
@@ -567,7 +571,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     namingDesc:
       'To be added:\n· Why variables and class names share the dshpc prefix\n· Class names must match the hard-coded className character for character — any drift kills the whole block\n· How far createStyleKit({ id }) isolates\n· Injection order: at equal specificity the later one wins\n· Why the theme switch is body[data-ds-dark-theme] and not prefers-color-scheme',
     dockHint:
-      'Right-side dock: a group name is one window; reopening the same name replaces its content in place (no extra column).\nTry it: open A → open B → reopen A (content replaced) → close A → open C (the freed slot is usable) → with 3 columns open, a new group name is rejected.',
+      'Right-side dock: a group name is one window; reopening the same name replaces its content in place (no extra column).\nTry it: open A → open B → reopen A (content replaced) → close A → open C (the freed slot is usable) → with 3 columns open, a new group name is rejected.\nTip: click › in the middle of the splitter to collapse that column into a right-edge ear (it leaves the layout); click the ear to expand.',
     dockMainText: 'The dock is a layout member: it squeezes the page content instead of covering it. The three panels demo a built-in header, a custom header, and a header-less panel with a floating close button.',
     dockPanelA: 'Built-in header: icon + title + right-side content',
     dockPanelATag: 'new',
@@ -576,11 +580,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     dockCustomHeadHint: 'No padding, no border from the library — height, rows and popovers are up to you',
     dockPanelBody: 'Content of this column. Reopening the same name replaces it; width and position stay put.',
     dockOpened: 'Open now: ',
+    dockCollapsed: 'Collapsed: ',
     dockLimitWarn: 'All 3 columns are taken — the new group name was rejected (open returns ok:false / reason:limit)',
     dockBtnOpenA: 'Open A',
     dockBtnOpenB: 'Open B',
     dockBtnOpenA2: 'Reopen A (no duplicate)',
     dockBtnCloseA: 'Close A',
+    dockBtnCollapseA: 'Collapse A',
     dockBtnDefault: 'Open default',
     dockBtnOpenC: 'Open C',
     dockBtnReset: 'Close all',

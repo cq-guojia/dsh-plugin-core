@@ -93,6 +93,11 @@ export interface PanelDockController {
     close(id?: string, reason?: DockCloseReason): void;
     toggle(id?: string): OpenResult;
     isOpen(id?: string): boolean;
+    /** 收起：面板退出布局、变成右侧固定耳朵（宽度保留，展开还原）。 */
+    collapse(id?: string): void;
+    /** 展开：把耳朵收回、面板回到布局。已满栏时拒绝（触发 onLimitReached）。 */
+    expand(id?: string): void;
+    isCollapsed(id?: string): boolean;
     ids(): string[];
     setWidth(id: string, width: number): void;
     subscribe(listener: () => void): () => void;

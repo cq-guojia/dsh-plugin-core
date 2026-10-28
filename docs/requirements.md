@@ -53,7 +53,7 @@ dsh-plugin-core/
   数据恒完整本地 ISO 到毫秒、**显示只到精度**；起始端 floor、结束端 ceil）
 - 「统一某类元素」的控件：`SectionHead` 等
 - 反馈件：`Modal` / `Loading` / `toast` / 空态
-- 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 浮动层 / 多份同名。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
+- 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 多份同名；**面板本身始终是布局成员，不做面板浮层**（2026-10-28 补：**收起** = 面板退出布局、另出右侧一只独立的 `position: fixed` 耳朵，点耳朵展开并还原宽度；关闭不留耳朵——耳朵是独立浮层，不是把面板变浮层）。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
 - **通用控件是纯零件，数据由调用方传入**；**领域选择器例外**（2026-10-20 用户拍板反转）：
   `ModelPicker` / `WorkspacePicker` 是「现成的包」，接线后**自己取数自己显示**，消费方不再拿数组传 props。
   接线两处、共用同一 path 常量：宿主 `serveModelCatalog(ctx,{path})`（`llm.listModels` 挂只读路由，

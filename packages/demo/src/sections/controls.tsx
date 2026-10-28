@@ -1474,6 +1474,9 @@ if (!result.ok) showToast('最多同时开 3 栏')
 dock.close('files')
 dock.toggle('preview')
 dock.isOpen('files')
+dock.collapse('files')   // 收起：退出布局、变成右侧固定耳朵（宽度保留）
+dock.expand('files')     // 展开：回到布局、原宽还原
+dock.isCollapsed('files')
 
 // 4) 订阅状态驱动 UI（React）
 const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`
@@ -1496,7 +1499,12 @@ export function LayoutPage(): ReturnType<typeof h> {
     demoDock.close(id)
     setNotice(null)
   }
+  const collapse = (id: string): void => {
+    demoDock.collapse(id)
+    setNotice(null)
+  }
   const opened = state.ids
+  const collapsedIds = state.collapsed
 
 
   return h(
@@ -1513,6 +1521,7 @@ export function LayoutPage(): ReturnType<typeof h> {
         h(Button, { size: 'sm', onClick: () => open('B') }, t('dockBtnOpenB')),
         h(Button, { size: 'sm', variant: 'primary', onClick: () => open('A') }, t('dockBtnOpenA2')),
         h(Button, { size: 'sm', onClick: () => close('A') }, t('dockBtnCloseA')),
+        h(Button, { size: 'sm', onClick: () => collapse('A') }, t('dockBtnCollapseA')),
         h(Button, { size: 'sm', onClick: () => open('default') }, t('dockBtnDefault')),
         h(Button, { size: 'sm', onClick: () => open('C') }, t('dockBtnOpenC')),
         h(
@@ -1521,7 +1530,8 @@ export function LayoutPage(): ReturnType<typeof h> {
             size: 'sm',
             variant: 'ghost',
             onClick: () => {
-              for (const id of demoDock.ids()) demoDock.close(id)
+              // 关闭 = 连耳朵一起抹掉，所以已收起的一并 close
+              for (const id of [...state.ids, ...state.collapsed]) demoDock.close(id)
               setNotice(null)
             },
           },
@@ -1532,6 +1542,7 @@ export function LayoutPage(): ReturnType<typeof h> {
         'div',
         { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)' } },
         `${t('dockOpened')}${opened.length === 0 ? '—' : opened.join(', ')}`,
+        collapsedIds.length === 0 ? '' : `　${t('dockCollapsed')}${collapsedIds.join(', ')}`,
         notice === null ? '' : `　${notice}`,
       ),
       h(

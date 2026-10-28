@@ -2,6 +2,10 @@
 /* 停靠栏 = **布局成员**，不是浮层：它占宽度、把主区真正挤窄（兄弟项目 2026-09-28：
    「分栏压过来，不是盖上去」）。所以调用方必须把它放进自己的 flex 根里。 */
 .dshpc-dock{display:flex;flex:0 0 auto;align-self:stretch;min-width:0}
+/* 开着时给主区滚动条让出一条缝：滚动条贴死分隔线很难看（用户 2026-10-28，对齐
+   dsh-better-sidebar 的留白）。全关时整条 dock 退出，缝隙一起消失、不留白边。
+   缝宽可由调用方盖 --dshpc-dock-gap；TS 侧的让位量（DOCK_GAP）要与它一致。 */
+.dshpc-dock--open{margin-left:var(--dshpc-dock-gap,1px)}
 
 /* 单栏：sticky + 100vh 让它在页面滚动时保持可见，同时仍然占宽度。
    ⚠️ **本条刻意不设 z-index**：布局成员一旦带正 z-index，就会无条件压过宿主 portal 到 body 的
@@ -13,7 +17,18 @@
   height:var(--dshpc-dock-h,100vh);max-height:var(--dshpc-dock-h,100vh);min-width:0;
   background:var(--dshpc-surface-base);color:var(--dshpc-fg);
   border-left:1px solid var(--dshpc-border);
+  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease);
   box-shadow:var(--dshpc-shadow-2);
+  /* 入场：从 0 宽滑出来（keyframes 只写 from，终点取内联 width），打开 / 耳朵展开都走这条。 */
+  animation:dshpc-dock-in .22s var(--dshpc-ease);
+}
+/* overflow:hidden 只在动画前段（离散属性在 50% 翻转）——平时不能裁，否则挂在左缘外的
+   收起钮会被切掉一半。 */
+@keyframes dshpc-dock-in{from{width:0;opacity:0;overflow:hidden}}
+/* 收起的出场：宽度收到 0、透明淡出；落定后组件才真正摘掉这一栏（JS 延时 220ms 配合）。 */
+.dshpc-dock__panel--closing{
+  width:0!important;min-width:0!important;opacity:0;border-left-width:0;
+  transition:width .2s var(--dshpc-ease),opacity .2s var(--dshpc-ease),border-left-width .2s var(--dshpc-ease);
 }
 
 .dshpc-dock__head{
@@ -54,17 +69,20 @@
 /* 内容区自己滚：面板高度锁 100vh，内容不设内部滚动就会把整页撑高。 */
 .dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto}
 
-/* 拖拽条：左缘 6px 命中区，**不画线**，hover/按住时才浮出一条浅色带。
+/* 拖拽条：左缘 6px 命中区，**自己不画任何线**。
+   hover / 拖动时把面板自己的 border-left 染成蓝（用户 2026-10-28 四轮：蓝线只准改原线，
+   不准在原线旁边加一条 —— 之前在 padding box 左缘画渐变，正好叠出双线）。
+   命中区在 padding box 上、border 在它左外侧，所以只能改面板的 border 色。
    z-index 7 必须高于面板内容里的浮层（复制钮一类），否则命中区会被内容盖住。 */
 .dshpc-dock__resizer{
   position:absolute;left:0;top:0;bottom:0;width:6px;
   z-index:7;cursor:col-resize;background:transparent;
-  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);
 }
-/* hover/按住：不填灰带，改为官方 work 区指示条样式 —— 左缘 2px 蓝竖条、上下渐隐
-   （颜色走 business 蓝的官方 alias，明暗自动跟随宿主；命中区仍是 6px 不变）。 */
-.dshpc-dock__resizer:hover,.dshpc-dock__resizer:active{
-  background:linear-gradient(180deg,transparent,var(--dshpc-business) 30%,var(--dshpc-business) 70%,transparent) left center / 1px 100% no-repeat;
+.dshpc-dock__panel:has(> .dshpc-dock__resizer:hover),
+.dshpc-dock__panel--resizing{
+  /* 原线保留「上下渐隐」工作区指示条质感：把面板自己的 border-left 换成同款渐变
+     （不是另加一条线）。面板只有这一条边框、无圆角，所以只作用在线上。 */
+  border-image:linear-gradient(180deg,transparent,var(--dshpc-business) 30% 70%,transparent) 1;
 }
 
 /* 拖动期：① <iframe>（PDF / HTML 预览）是独立文档，会吞掉父文档的 pointermove，
@@ -72,3 +90,62 @@
    否则每帧改宽度都会牵动整页重排（兄弟项目 2026-10-04 真机「挪很久才动一下」）。 */
 .dshpc-dock.dshpc-dock--resizing iframe{pointer-events:none}
 .dshpc-dock.dshpc-dock--resizing .dshpc-dock__panel{contain:layout paint;will-change:width}
+
+/* 收起钮：**待在面板自己的框里**（用户 2026-10-28 三轮：占面板内部空间，不伸到外面去）。
+   left:0 从内侧贴着分隔线 —— 贴线的一边不描边（线是面板自己的 border-left），页签与线不重合。
+   20×44（用户 2026-10-28 四轮定尺寸）；实色底（--dshpc-plate，明暗各有实值），hover 亮一档。
+   padding-right:2px 是**视觉居中**：右侧是圆角，箭头往直线那边挪 1px（用户 2026-10-28 四轮）。 */
+.dshpc-dock__collapse{
+  position:absolute;left:0;top:50%;transform:translateY(-50%);
+  z-index:8;display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:44px;padding:0 2px 0 0;
+  border-top:1px solid var(--dshpc-border);
+  border-bottom:1px solid var(--dshpc-border);
+  border-right:1px solid var(--dshpc-border);
+  border-left:none;
+  border-radius:0 var(--dshpc-radius-sm) var(--dshpc-radius-sm) 0;
+  background:var(--dshpc-plate);color:var(--dshpc-fg-3);
+  font-family:inherit;font-size:16px;line-height:1;cursor:pointer;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);
+}
+.dshpc-dock__collapse:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}
+.dshpc-dock__collapse:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
+
+/* 收起后的浮动耳朵：**fixed 贴右缘、垂直居中、独立于分栏**（用户 2026-10-28 定稿：
+   小页签挂中间、里面放面板图标、不显示文字，箭头与收起钮反向）。多个按收起顺序纵向堆叠。
+   z 走 dock 档（低于宿主弹窗），避免盖住宿主 portal 层。 */
+.dshpc-dock__ears{
+  position:fixed;top:50%;right:0;transform:translateY(-50%);
+  z-index:var(--dshpc-z-dock,1030);
+  display:flex;flex-direction:column;gap:8px;align-items:flex-end;
+  pointer-events:none;
+}
+.dshpc-dock__ear{
+  pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;
+  /* 与收起钮**同尺寸**（20×44，用户 2026-10-28 四轮）：上/下/左描边，贴右缘的一侧不描。
+     实色底（--dshpc-plate），不用透明色 —— 透明底下透出东西很难看。
+     padding-left:2px 是**视觉居中**：左侧是圆角，箭头往直线（右缘）那边挪 1px。 */
+  width:20px;height:44px;box-sizing:border-box;padding:0 0 0 2px;
+  border-top:1px solid var(--dshpc-border);
+  border-bottom:1px solid var(--dshpc-border);
+  border-left:1px solid var(--dshpc-border);
+  border-right:none;
+  border-radius:var(--dshpc-radius-sm) 0 0 var(--dshpc-radius-sm);
+  background:var(--dshpc-plate);color:var(--dshpc-fg-2);
+  cursor:pointer;font-family:inherit;line-height:1;
+  animation:dshpc-ear-in .2s var(--dshpc-ease);
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);
+}
+/* 入场：从右缘外滑进来，别「突然出现」（用户 2026-10-28）。 */
+@keyframes dshpc-ear-in{from{opacity:0;transform:translateX(14px)}}
+.dshpc-dock__ear:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}
+.dshpc-dock__ear:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
+/* 与收起钮的箭头同一字号（16px）：收进去前后箭头一模一样大（用户 2026-10-28）。 */
+.dshpc-dock__ear-arrow{font-size:16px;color:var(--dshpc-fg-3)}
+.dshpc-dock__ear:hover .dshpc-dock__ear-arrow{color:var(--dshpc-fg)}
+/* 动效礼貌：系统声明减少动效时全部关掉（与 Segmented 同一约定），收起退化为瞬时、功能不受影响。 */
+@media (prefers-reduced-motion:reduce){
+  .dshpc-dock__panel{animation:none}
+  .dshpc-dock__panel--closing{transition:none}
+  .dshpc-dock__ear{animation:none}
+}

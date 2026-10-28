@@ -55,6 +55,8 @@ export type UtilMessageKey =
   | 'modalClose'
   | 'dockClose'
   | 'dockResize'
+  | 'dockCollapse'
+  | 'dockExpand'
   | 'errorRetry'
   | 'confirm'
   | 'cancel'
@@ -316,6 +318,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     modalClose: '关闭',
     dockClose: '关闭面板',
     dockResize: '拖动调整宽度',
+    dockCollapse: '收起面板',
+    dockExpand: '展开面板',
     errorRetry: '重试',
     confirm: '确定',
     cancel: '取消',
@@ -572,6 +576,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     modalClose: 'Close',
     dockClose: 'Close panel',
     dockResize: 'Drag to resize',
+    dockCollapse: 'Collapse panel',
+    dockExpand: 'Expand panel',
     errorRetry: 'Retry',
     confirm: 'Confirm',
     cancel: 'Cancel',

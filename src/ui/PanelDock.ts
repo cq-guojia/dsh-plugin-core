@@ -10,7 +10,7 @@
  *   · **头部可控** —— `title` / `icon` / `extra` 三件套；要更自由就 `header` 整块替换，`header={null}` 表示不要头部；
  *   · **关闭钮可退让** —— `closable={false}` 不出；`closeButton="floating"` 浮在右上角，不占头部布局。
  */
-import { Children, createElement as h, isValidElement, useEffect, useRef, useSyncExternalStore, type ReactNode } from 'react'
+import { Children, createElement as h, isValidElement, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { ensureControls } from './css.js'
 import { t, type Translate } from '../utils/i18n.js'
 import { startResizeLayoutWidth } from './resizer.js'
@@ -18,7 +18,10 @@ import {
   DEFAULT_PANEL_ID,
   clampWidth,
   closePanel,
+  collapsePanel,
   emptyDock,
+  expandPanel,
+  isCollapsed as isCollapsedState,
   isOpen,
   openPanel,
   othersWidth,
@@ -32,6 +35,10 @@ import {
 // （`.dshpc-modal-mask` 的 right inset 读的就是这个变量）。挂在根元素上，是因为遮罩不保证
 // 是本 dock 那个 flex 行的后代；同页多个 dock 按实例求和，全部关掉即移除变量。
 const INSET_VAR = '--dshpc-page-inset-right'
+/** 分栏开着时给主区滚动条留的缝（px）：滚动条与分隔线只留 1px（用户 2026-10-28：
+ *  「有一像素就可以了」）。缝隙也是 dock 的足迹 —— 遮罩让位量要一并计入，否则遮罩会盖住它。
+ *  调用方可用 `--dshpc-dock-gap` 盖缝宽，但 TS 这份要跟着改。 */
+const DOCK_GAP = 1
 const dockInsets = new Map<string, { width: number; el: Element | null }>()
 let dockSeq = 0
 
@@ -124,6 +131,11 @@ export interface PanelDockController {
   close(id?: string, reason?: DockCloseReason): void
   toggle(id?: string): OpenResult
   isOpen(id?: string): boolean
+  /** 收起：面板退出布局、变成右侧固定耳朵（宽度保留，展开还原）。 */
+  collapse(id?: string): void
+  /** 展开：把耳朵收回、面板回到布局。已满栏时拒绝（触发 onLimitReached）。 */
+  expand(id?: string): void
+  isCollapsed(id?: string): boolean
   ids(): string[]
   setWidth(id: string, width: number): void
   subscribe(listener: () => void): () => void
@@ -191,7 +203,8 @@ export function createPanelDock(options: PanelDockOptions = {}): PanelDockContro
       return result
     },
     close(id = DEFAULT_PANEL_ID, reason: DockCloseReason = 'api') {
-      if (!isOpen(state, id)) return
+      // 对已收起的耳朵也放行：关闭 = 连耳朵一起抹掉。
+      if (!isOpen(state, id) && !isCollapsedState(state, id)) return
       if (options.onBeforeClose?.({ id, reason }) === false) return
       emit(closePanel(state, id))
       options.onClose?.({ id, reason })
@@ -203,8 +216,24 @@ export function createPanelDock(options: PanelDockOptions = {}): PanelDockContro
       }
       return controller.open(id)
     },
+    collapse(id = DEFAULT_PANEL_ID) {
+      if (!isOpen(state, id)) return
+      emit(collapsePanel(state, id))
+    },
+    expand(id = DEFAULT_PANEL_ID) {
+      if (!isCollapsedState(state, id)) return
+      // 展开也是「多开一栏」，同样受数量闸约束；不静默超额。
+      if (state.ids.length >= maxPanels) {
+        options.onLimitReached?.({ id })
+        return
+      }
+      emit(expandPanel(state, id))
+    },
     isOpen(id = DEFAULT_PANEL_ID) {
       return isOpen(state, id)
+    },
+    isCollapsed(id = DEFAULT_PANEL_ID) {
+      return isCollapsedState(state, id)
     },
     ids() {
       return state.ids
@@ -264,6 +293,27 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
   const widthOf = (pane: DockPanelProps): number =>
     state.widths[pane.id] ?? clampWidth(pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth)
 
+  // 耳朵**只显示一个箭头**（用户 2026-10-28 三轮：图标也不放，那会把面板的玩意带出来）。
+  // 名字只进无障碍名：优先面板标题（字符串），否则无障碍名，再退回组名。
+  const earLabelOf = (id: string): string => {
+    const pane = panes.find((item) => item.id === id)
+    if (pane === undefined) return id
+    if (typeof pane.title === 'string') return pane.title
+    if (typeof pane.ariaLabel === 'string') return pane.ariaLabel
+    return id
+  }
+
+  // 收起的出场动效：先把栏宽收到 0（CSS transition），落定后再真正退出布局 ——
+  // 用户 2026-10-28：「突然就出来了，特别奇怪」。展开方向的入场走 CSS 挂载动画，不需要 JS。
+  const [closing, setClosing] = useState<string[]>([])
+  const collapseWithAnim = (id: string): void => {
+    setClosing((prev) => (prev.includes(id) ? prev : [...prev, id]))
+    window.setTimeout(() => {
+      setClosing((prev) => prev.filter((item) => item !== id))
+      props.dock.collapse(id)
+    }, 220)
+  }
+
   // 本 dock 在「页面右侧占宽」里的那一份：实例唯一键，拖拽期也用它实时更新。
   const insetKey = useRef('')
   if (insetKey.current === '') insetKey.current = `dock-${++dockSeq}`
@@ -277,8 +327,9 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
     .reduce((sum, pane) => sum + widthOf(pane), 0)
 
   // 开合 / 拖宽松手后同步一次（拖拽中的实时值由 onMove 写）；卸载归零，别把变量留给下一个人。
+  // 让位量 = 已开栏宽 + 开着时的留缝（缝隙也算 dock 足迹，遮罩边界才贴得到分隔线上）。
   useEffect(() => {
-    publishInset(insetKey.current, totalWidth, rootRef.current)
+    publishInset(insetKey.current, state.ids.length > 0 ? totalWidth + DOCK_GAP : 0, rootRef.current)
   })
   useEffect(() => () => {
     publishInset(insetKey.current, 0, null)
@@ -298,6 +349,8 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
     const startWidth = widthOf(pane)
     const min = pane.minWidth ?? fallbackMin
     const mainMin = props.mainMinWidth ?? 480
+    // 拖拽期点亮**这一栏**：染的是面板自己的 border-left，不是另画一条线（用户 2026-10-28 四轮）。
+    element.classList.add('dshpc-dock__panel--resizing')
     startResizeLayoutWidth({
       startEvent: event,
       root: rootRef.current,
@@ -311,10 +364,11 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
       },
       onMove: (width) => {
         element.style.width = `${width}px`
-        // 遮罩的右边界跟着走，否则拖出去的那条缝会被遮罩压住（用户 2026-10-22）。
-        publishInset(insetKey.current, restWidth(pane.id) + width, rootRef.current)
+        // 遮罩的右边界跟着走，否则拖出去的那条缝会被遮罩压住（用户 2026-10-22）；含留缝。
+        publishInset(insetKey.current, restWidth(pane.id) + width + DOCK_GAP, rootRef.current)
       },
       onCommit: (width) => {
+        element.classList.remove('dshpc-dock__panel--resizing')
         props.dock.setWidth(pane.id, width)
       },
     })
@@ -373,11 +427,16 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
     )
   }
 
+  // 开着时根元素带 --open：CSS 据此给主区滚动条让出一条缝（全关即无缝，不留白边）。
+  const rootClass = `dshpc-dock${state.ids.length > 0 ? ' dshpc-dock--open' : ''}${
+    props.className === undefined ? '' : ` ${props.className}`
+  }`
+
   return h(
     'div',
     {
       ref: rootRef,
-      className: props.className === undefined ? 'dshpc-dock' : `dshpc-dock ${props.className}`,
+      className: rootClass,
     },
     panes
       .filter((pane) => state.ids.includes(pane.id))
@@ -390,7 +449,8 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
               if (element === null) panelRefs.current.delete(pane.id)
               else panelRefs.current.set(pane.id, element)
             },
-            className: 'dshpc-dock__panel',
+            className:
+              closing.includes(pane.id) ? 'dshpc-dock__panel dshpc-dock__panel--closing' : 'dshpc-dock__panel',
             style: { width: `${widthOf(pane)}px` },
             'data-panel': pane.id,
             'aria-label': pane.ariaLabel ?? (typeof pane.title === 'string' ? pane.title : pane.id),
@@ -404,11 +464,47 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
               beginResize(pane, event)
             },
           }),
+          // 收起钮是 resizer 的**兄弟**，不是子元素 —— 用户 2026-10-28：鼠标停在按钮上时，
+          // 拖宽线不能亮、也不能出蓝色发光（那是在拖宽，不是点按钮）。挂在面板左缘外。
+          h(
+            'button',
+            {
+              type: 'button',
+              className: 'dshpc-dock__collapse',
+              'aria-label': tt('dockCollapse'),
+              onClick: () => collapseWithAnim(pane.id),
+            },
+            '›',
+          ),
           renderHeader(pane),
           headerCloseOf(pane),
           floatingCloseOf(pane),
           h('div', { className: 'dshpc-dock__body' }, pane.children ?? null),
         ),
       ),
+    // 收起后的耳朵：**独立的 fixed 浮层**，与分栏不是一体（用户 2026-10-28 口径）。
+    // 多个耳朵按收起顺序纵向堆叠，点一只展开回来。
+    state.collapsed.length === 0
+      ? null
+      : h(
+          'div',
+          { className: 'dshpc-dock__ears' },
+          state.collapsed.map((id) => {
+            const label = earLabelOf(id)
+            return h(
+              'button',
+              {
+                key: id,
+                type: 'button',
+                className: 'dshpc-dock__ear',
+                // 不放 title：原生 tooltip 会把面板标题弹出来，用户明确「不要显示任何标题」。
+                'aria-label': `${label} · ${tt('dockExpand')}`,
+                onClick: () => props.dock.expand(id),
+              },
+              // 只有一个箭头，与收起钮同尺寸反向：收起钮 ›（往右收），耳朵 ‹（往左拉回来）。
+              h('span', { className: 'dshpc-dock__ear-arrow', 'aria-hidden': true }, '‹'),
+            )
+          }),
+        ),
   )
 }

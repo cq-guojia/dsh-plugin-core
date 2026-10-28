@@ -26,6 +26,6 @@ export { LiveText } from './LiveText.js';
 export { BackToTop, type BackToTopProps } from './BackToTop.js';
 export { startResizeLayoutWidth, type ResizeOptions } from './resizer.js';
 export { DockPanel, PanelDock, createPanelDock, type DockCloseButton, type DockCloseReason, type DockPanelProps, type PanelDockController, type PanelDockOptions, type PanelDockProps, } from './PanelDock.js';
-export { DEFAULT_PANEL_ID, clampWidth, closePanel, emptyDock, isOpen, openPanel, othersWidth, setPanelWidth, type DockState, type OpenResult, } from './panel-dock-logic.js';
+export { DEFAULT_PANEL_ID, clampWidth, closePanel, collapsePanel, emptyDock, expandPanel, isCollapsed, isOpen, openPanel, othersWidth, setPanelWidth, type DockState, type OpenResult, } from './panel-dock-logic.js';
 export { FIELD_ANCHOR_STYLE, FIELD_LABEL_STYLE, Input, NumberInput, PrefixedInput, fieldMetricsOf, type EditorOption, type FieldSize, type InputProps, type NumberInputProps, type PrefixedInputProps, } from './Field.js';
 //# sourceMappingURL=index.d.ts.map

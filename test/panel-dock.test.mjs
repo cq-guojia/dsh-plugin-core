@@ -6,7 +6,10 @@ import {
   DEFAULT_PANEL_ID,
   clampWidth,
   closePanel,
+  collapsePanel,
   emptyDock,
+  expandPanel,
+  isCollapsed,
   isOpen,
   openPanel,
   setPanelWidth,
@@ -135,4 +138,74 @@ test('onOpen 只在首次打开触发，onResize 报最终宽度', () => {
 test('DockPanel 是「声明标记」，自身不渲染内容', () => {
   assert.equal(typeof DockPanel, 'function')
   assert.equal(DockPanel({ id: 'x' }), null)
+})
+
+// ── 收起为耳朵（2026-10-28）────────────────────────────────────────────────
+test('收起：退出布局、宽度保留、进入耳朵列表', () => {
+  let state = openPanel(emptyDock(), 'A', 3).state
+  state = setPanelWidth(state, 'A', 520)
+  const collapsed = collapsePanel(state, 'A')
+
+  assert.deepEqual(collapsed.ids, [], '收起后不再占布局')
+  assert.deepEqual(collapsed.collapsed, ['A'])
+  assert.equal(collapsed.widths.A, 520, '宽度必须保留，展开要还原')
+  assert.equal(isCollapsed(collapsed, 'A'), true)
+  assert.equal(isOpen(collapsed, 'A'), false)
+})
+
+test('展开：回到布局末尾、宽度照旧、移出耳朵', () => {
+  let state = openPanel(emptyDock(), 'A', 3).state
+  state = setPanelWidth(state, 'A', 520)
+  state = collapsePanel(state, 'A')
+  const expanded = expandPanel(state, 'A')
+
+  assert.deepEqual(expanded.ids, ['A'])
+  assert.deepEqual(expanded.collapsed, [])
+  assert.equal(expanded.widths.A, 520)
+})
+
+test('收起对未开的栏无效；展开对非耳朵无效', () => {
+  const state = openPanel(emptyDock(), 'A', 3).state
+  assert.equal(collapsePanel(state, 'nope'), state)
+  assert.equal(expandPanel(state, 'A'), state)
+})
+
+test('多面板：各收各的、按收起顺序堆叠', () => {
+  let state = emptyDock()
+  for (const id of ['A', 'B', 'C']) state = openPanel(state, id, 3).state
+  state = collapsePanel(state, 'B')
+  state = collapsePanel(state, 'A')
+  assert.deepEqual(state.ids, ['C'])
+  assert.deepEqual(state.collapsed, ['B', 'A'])
+})
+
+test('控制器 collapse / expand / isCollapsed；开着再打开会撤销耳朵', () => {
+  const dock = createPanelDock({ storageKey: false })
+  dock.open('A')
+  dock.setWidth('A', 480)
+  dock.collapse('A')
+  assert.equal(dock.isOpen('A'), false)
+  assert.equal(dock.isCollapsed('A'), true)
+  assert.equal(dock.getSnapshot().widths.A, 480, '收起保留宽度')
+
+  dock.expand('A')
+  assert.equal(dock.isOpen('A'), true)
+  assert.equal(dock.isCollapsed('A'), false)
+  assert.equal(dock.getSnapshot().widths.A, 480)
+
+  dock.collapse('A')
+  dock.open('A') // 直接 open 也应撤销耳朵，避免「既开着又留着耳朵」
+  assert.equal(dock.isCollapsed('A'), false)
+})
+
+test('展开受数量闸约束：满栏时耳朵展开被拒并回调', () => {
+  const hit = []
+  const dock = createPanelDock({ maxPanels: 2, storageKey: false, onLimitReached: (event) => hit.push(event.id) })
+  dock.open('A')
+  dock.open('B')
+  dock.collapse('A') // 现在只开着 B，A 是耳朵
+  dock.open('C') // 占掉 A 腾出的位置 → 又满 2
+  dock.expand('A') // 满栏，展开应被拒
+  assert.equal(dock.isCollapsed('A'), true)
+  assert.deepEqual(hit, ['A'])
 })
