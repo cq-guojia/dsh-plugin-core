@@ -1,8 +1,9 @@
 # 20261028-1442-e6a6-做几个-loading-样式：做几个 loading 样式
 
 - **标签**：ui、loading、控件
-- **状态**：doing · 2026-10-28 15:15:05 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **状态**：closed · 2026-10-28 15:15:20 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **创建**：2026-10-28 14:42:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **封卷**：2026-10-28 15:15:20 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
      「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
@@ -61,3 +62,4 @@
 - 2026-10-28 15:00:08 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修「同时出现两个」：宿主 entries 改唯一槽位 createLoadingSlot（后一次顶掉前一次，旧句柄 close 按 id 空操作）；确认 showLoading 无计时参数、只能 close；新增单槽位自检，148 项全过
 - 2026-10-28 15:09:58 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 v0.8.3：两包同号 bump、build + build:demo + 148 项自检 + codelint 全过，commit 17cb877 已推 main，tag v0.8.3 已推（触发两包自动发布）
 - 2026-10-28 15:15:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结尾补：发版 v0.8.3 已推；loading-host.ts 丢失后按产物恢复一事入过程；待办清空，准备结案
+- 2026-10-28 15:15:20 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案封卷
