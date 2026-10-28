@@ -90,6 +90,8 @@ export type DemoMessageKey =
   | 'sectionHeadTitle'
   | 'chipHint'
   | 'chipOverdue'
+  | 'chipWidthTitle'
+  | 'chipWidthHint'
   | 'chipStalled'
   | 'chipDone'
   | 'chipDoing'
@@ -399,6 +401,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     stripHint: '同色系浅底 + 左缘 4px 通高方角色条（照兄弟项目执行记录块）；同样整体垂直居中——流水账排版：标题 + 元信息行 + 右侧时间/操作',
     sectionHeadTitle: 'SectionHead 分区标题',
     chipHint: 'chip 两轴可选：tone 语义色（neutral 灰面 / business / success / warning / danger 实心信号面）、size（sm / md）；宽度按文字撑开、不换行；文案随语言切换（中英示例）；最后一颗长文字若被压成 28px 竖排就是又混进了图标按钮的定宽规则',
+    chipWidthTitle: '宽度（固定宽 / 最小宽 / 最大宽）',
+    chipWidthHint: '三轴互斥：固定宽 width 一旦设定，最小宽 minWidth / 最大宽 maxWidth 自动失效；最大宽下文字超长折叠成省略号，hover 跑马灯展开全名',
     chipOverdue: '逾期',
     chipStalled: '停滞',
     chipDone: '已完成',
@@ -682,6 +686,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     stripHint: 'Same-hue soft tint + 4px full-height square accent bar at the left edge (mirrors the sibling record block); equally centered as a whole — record-stream layout: title + meta row + right-side time/actions',
     sectionHeadTitle: 'SectionHead',
     chipHint: 'Two optional axes: tone (neutral grey / business / success / warning / danger solid signal) and size (sm / md); width hugs the text, no wrap; labels follow the locale (zh & en examples); if the long-text chip at the end is squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in',
+    chipWidthTitle: 'Width (fixed / min / max)',
+    chipWidthHint: 'Three axes are mutually exclusive: a fixed width wins and disables both minWidth and maxWidth; with maxWidth, overflowing text collapses to an ellipsis and marquees on hover',
     chipOverdue: 'Overdue',
     chipStalled: 'Stalled',
     chipDone: 'Done',

@@ -1158,12 +1158,27 @@ const CODE_CHIP = `// tone 五档 + size 三档；尺寸行固定由大到小（
 <Chip>#npm</Chip>
 <Chip onClick={() => showToast('点了 chip')}>#可点</Chip>`
 
-const CODE_MARQUEE = `// 定宽小容器（标签大小）：放不下才滚，hover 一遍停在尾字，移开复位成省略号
+const CODE_CHIP_WIDTH = `// 固定宽：写死宽度
+<Chip width={90}>90px 固定宽</Chip>
+
+// 最小宽：内容不足此宽时以它为准（短 / 长一致）
+<Chip minWidth={90}>短</Chip>
+<Chip minWidth={90}>很长很长很长</Chip>
+
+// 最大宽：文字超出折叠成省略号，hover 跑马灯展开全名（不用再手动包 MarqueeText）
+<Chip maxWidth={120}>这是一段会被折叠成省略号的超长标签文字</Chip>
+
+// 三者同设 ⇒ 固定宽优先，最小宽 / 最大宽自动失效
+<Chip width={90} minWidth={160} maxWidth={120}>固定宽优先</Chip>`
+
+const CODE_MARQUEE = `// 定宽小容器：放不下才滚，hover 一遍停在尾字，移开复位成省略号
 <div style={{ maxWidth: 148 }}>
   <MarqueeText text="一条很长的任务标题：定宽显示不下，hover 开始跑马灯" />
 </div>
 
-// 标签里滚动：Chip 无 style prop，用 MarqueeText 自己的 style 限宽（block 外层不限宽会被文字撑开）
+// 标签里滚动：Chip 的 maxWidth 会自动把纯文字内容包进跑马灯（等价于下面手写的写法）
+<Chip tone="business" size="md" maxWidth={148}>标签里滚动：一条很长的任务标题，hover 跑马灯</Chip>
+// 旧写法（仍可用）：手动塞 MarqueeText
 <Chip tone="business" size="md">
   <MarqueeText style={{ maxWidth: 148 }} text="标签里滚动：一条很长的任务标题，hover 跑马灯" />
 </Chip>`
@@ -1209,12 +1224,28 @@ export function ChipPage(): ReturnType<typeof h> {
     ),
     h(
       Example,
+      { title: t('chipWidthTitle'), hint: t('chipWidthHint'), code: CODE_CHIP_WIDTH },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+        h(Labeled, { label: 'width（固定宽）' },
+          h(Chip, { width: 90 }, '90px 固定宽')),
+        h(Labeled, { label: 'minWidth（最小宽：短 / 长同宽）' },
+          h('div', { style: { display: 'flex', gap: '8px' } },
+            h(Chip, { minWidth: 90 }, '短'),
+            h(Chip, { minWidth: 90 }, '很长很长很长'))),
+        h(Labeled, { label: 'maxWidth（最大宽：省略号 + hover 跑马灯）' },
+          h('div', { style: { width: '260px' } },
+            h(Chip, { maxWidth: 120 }, '这是一段会被折叠成省略号的超长标签文字'))),
+        h(Labeled, { label: '三者同设 ⇒ width 优先' },
+          h(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, '固定宽优先'))),
+    ),
+    h(
+      Example,
       { title: t('marqueeTitle'), hint: t('exMarqueeHint'), code: CODE_MARQUEE },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-start' } },
         h('div', { style: { maxWidth: '148px' } },
           h(MarqueeText, { text: '一条很长的任务标题：定宽显示不下，hover 开始跑马灯' })),
-        h(Chip, { tone: 'business', size: 'md' },
-          h(MarqueeText, { style: { maxWidth: '148px' }, text: '标签里滚动：一条很长的任务标题，hover 跑马灯' })),
+        h(Chip, { tone: 'business', size: 'md', maxWidth: 148 },
+          '标签里滚动：一条很长的任务标题，hover 跑马灯'),
       ),
     ),
     h(

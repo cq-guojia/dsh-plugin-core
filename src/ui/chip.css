@@ -23,4 +23,6 @@
 .dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}
 .dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
 .dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}
+/* maxWidth 包 MarqueeText 时：标签作为 flex 子项必须能收缩到内容以下，否则省略号 / 跑马灯测不准 */
+.dshpc-chip .dshpc-chip__label{min-width:0;}
 @media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}

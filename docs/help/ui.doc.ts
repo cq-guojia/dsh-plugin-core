@@ -341,6 +341,21 @@ const doc: DocTopic = {
           en: 'Boundary: pill tags only. For an icon-only button use IconButton; never use Chip as an icon baseplate.',
         },
       ],
+      api: [
+        {
+          id: 'ui-chip',
+          rows: [
+            { name: 'tone', type: "'neutral' | 'business' | 'success' | 'warning' | 'danger'", def: "'neutral'", desc: { zh: '语义色（neutral 灰面，其余为实心信号面）', en: 'Semantic color (neutral grey; others are solid signal faces)' } },
+            { name: 'size', type: "'sm' | 'md' | 'xs'", def: "'sm'", desc: { zh: '尺寸档', en: 'Size tier' } },
+            { name: 'width', type: 'number | string', def: '—', desc: { zh: '固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效', en: 'Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored' } },
+            { name: 'minWidth', type: 'number | string', def: '—', desc: { zh: '最小宽：width 未设时生效，内容不足此宽时以它为准', en: 'Minimum width: applies only when width is unset; content shorter than this still takes this width' } },
+            { name: 'maxWidth', type: 'number | string', def: '—', desc: { zh: '最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开全名', en: 'Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover' } },
+            { name: 'onClick', type: '() => void', def: '—', desc: { zh: '传了才渲染成 <button>（可点），否则是 <span>', en: 'When given, renders as <button> (clickable); otherwise a <span>' } },
+            { name: 'className', type: 'string', def: '—', desc: { zh: '追加 class（只允许补布局，不许覆盖皮肤）', en: 'Extra class (layout only, never overrides the skin)' } },
+            { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '标签内容（maxWidth + 纯文字时自动接跑马灯）', en: 'Tag content (auto-marqueed when maxWidth + plain text)' } },
+          ],
+        },
+      ],
     },
     {
       id: 'feedback',

@@ -4,7 +4,7 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/css.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/controls/field-css.generated.js'
-import { Button, Input, Segmented, SplitGroup } from '../dist/ui/index.js'
+import { Button, Chip, Input, Segmented, SplitGroup } from '../dist/ui/index.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -109,4 +109,31 @@ test('Button 最大宽 + 纯文字标签：包 MarqueeText 折叠省略号', () 
 test('Button 最大宽但非文字标签：不强行包 MarqueeText', () => {
   const html = renderToStaticMarkup(createElement(Button, { maxWidth: 100 }, createElement('b', null, '加粗')))
   assert.ok(!html.includes('dshpc-mq'), '非纯文字标签不应被 MarqueeText 接管')
+})
+
+test('Chip 宽度三轴互斥：固定宽优先，min/max 自动失效', () => {
+  const fixed = renderToStaticMarkup(createElement(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, '标签'))
+  assert.match(fixed, /style="[^"]*width:90px/)
+  assert.ok(!/min-width/.test(fixed), '固定宽下不应带 min-width')
+  assert.ok(!/max-width/.test(fixed), '固定宽下不应带 max-width')
+
+  const minOnly = renderToStaticMarkup(createElement(Chip, { minWidth: '60%' }, '标签'))
+  assert.match(minOnly, /style="[^"]*min-width:60%/)
+  assert.ok(!/max-width/.test(minOnly), '未设固定宽时 min 独立生效')
+
+  const maxOnly = renderToStaticMarkup(createElement(Chip, { maxWidth: 100 }, '很长的标签文字内容'))
+  assert.match(maxOnly, /style="[^"]*max-width:100px/)
+})
+
+test('Chip 最大宽 + 纯文字：包 MarqueeText 折叠省略号；无 onClick 渲染成 span', () => {
+  const html = renderToStaticMarkup(createElement(Chip, { maxWidth: 100 }, '很长的标签文字内容'))
+  assert.ok(!html.includes('<button'), '无 onClick 应是 span')
+  assert.ok(html.includes('dshpc-mq'), '最大宽下标签应包进跑马灯容器')
+  assert.ok(html.includes('dshpc-chip__label'), '标签带可收缩的 label 类')
+})
+
+test('Chip 最大宽 + onClick：渲染成 button 且仍包 MarqueeText', () => {
+  const html = renderToStaticMarkup(createElement(Chip, { maxWidth: 100, onClick: () => {} }, '很长的标签文字内容'))
+  assert.ok(html.includes('<button'), '有 onClick 应是 button')
+  assert.ok(html.includes('dshpc-mq'), '最大宽下标签仍包进跑马灯容器')
 })

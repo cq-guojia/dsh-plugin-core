@@ -319,7 +319,7 @@ var FEEDBACK_CSS = "\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --d
 var CARD_CSS = "\n.dshpc-card{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n\n/* \u5934\u90E8\u4E00\u884C = \u8272\u6761 + \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500 */\n.dshpc-card--strip{\n  padding:12px 12px 12px 20px;border:1px solid transparent;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002 */\n.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--card-accent)}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1Asurface \u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 + \u884C\u5185\u5706\u89D2\u77ED\u6761 \u2500\u2500 */\n.dshpc-card--bordered{\n  /* \u5DE6\u5185\u8FB9\u8DDD 12\uFF08\u6BD4\u4E0A/\u53F3/\u4E0B 14 \u5C11 2\uFF09\uFF1A\u7AD6\u6761\u8D34\u8FD1\u8FB9\u6846\uFF1B\u5934\u90E8\u5185\u7F29 2px \u21D2 \u4E3B\u5185\u5BB9\u8DDF\u7740\u5DE6\u79FB 2px\uFF0C\n     \u7AD6\u6761\u2194\u5185\u5BB9\u7684 12px \u95F4\u8DDD\u4E0D\u53D8\u2014\u2014\u6BD4\u300C\u6761\u5B50 left:-2 \u800C\u5185\u5BB9\u4E0D\u52A8\u300D\u66F4\u6B63\u89C4\uFF08\u4E0D\u9760\u76F8\u5BF9\u5B9A\u4F4D\u786C\u8865\uFF09\u3002 */\n  padding:14px 14px 14px 12px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  background:var(--dshpc-surface-1);\n}\n.dshpc-card--bordered .dshpc-card__head{gap:12px}\n/* \u77ED\u6761\uFF1A\u884C\u5185 flex \u9879\uFF0C**\u9AD8\u5EA6\u8DDF\u7740\u5185\u5BB9\u8D70**\uFF08stretch\uFF09\uFF0C\u6700\u5C0F\u4E00\u884C\u6587\u5B57\uFF08--dshpc-line-md\uFF09\u2014\u2014\n   \u4E00\u884C\u6587\u5B57\u65F6\u6761\u5B50\u4E0E\u6587\u5B57\u9F50\u9AD8\uFF0C\u4E0D\u4F1A\u628A\u5361\u6491\u9AD8\uFF1B\u7AD6\u6761\u8DDD\u5DE6 12\uFF08= \u5DE6\u5185\u8FB9\u8DDD\uFF09\uFF0C\u8DDD\u4E0A/\u53F3/\u4E0B 14\u3002 */\n.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n/* \u7BAD\u5934\u662F svg\uFF08Chevron\uFF09\uFF0C\u4E0D\u662F\u5B57\u5F62 \u21D2 \u4E0D\u8981 font-size\uFF1Binline-flex \u514D\u6389 svg \u7684\u57FA\u7EBF\u7559\u767D\u3002 */\n.dshpc-card__caret{display:inline-flex;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
 
 // dist/ui/chip-css.generated.js
-var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u8272\uFF1Aneutral \u8D70\u65E7\u7070\u9762\uFF1B\u8BED\u4E49\u6863\u6362\u5E95\u5B57\u914D\u5BF9\uFF082026-10-20 \u7528\u6237\u8981\u591A\u8272\u591A\u5C3A\u5BF8\u6807\u7B7E\uFF09\u3002 */\n.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--chip-bg);color:var(--chip-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* md \u6863\uFF1A\u5361\u7247\u5143\u4FE1\u606F\u884C\u7B49\u7A0D\u5927\u573A\u666F\uFF1Bsm \u5373\u65E7\u7248\u9ED8\u8BA4\uFF0C\u9010\u50CF\u7D20\u4E0D\u52A8\u3002 */\n.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}\n/* xs \u6863\uFF1A\u6807\u9898\u540E\u7F00\u7B49\u6781\u7D27\u51D1\u573A\u666F\uFF082026-10-20 \u7528\u6237\u8981\u66F4\u5C0F\u6807\u7B7E\uFF09\uFF1B16px \u9AD8\u3001font 10\u3002 */\n.dshpc-chip--xs{padding:0 6px;font-size:10px;line-height:16px;}\n/* \u8BED\u4E49\u8272\u5B9E\u5FC3\u6863\uFF1A\u5E95 / \u5B57 / hover \u914D\u5BF9\u4E0E Button \u540C\u6E90\uFF08\u9EC4\u5E95\u4E2D\u9AD8\u660E\u5EA6 \u21D2 \u5B57\u7528 --dshpc-on-warning\uFF09\u3002 */\n.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}\n.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}\n.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}\n.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
+var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u8272\uFF1Aneutral \u8D70\u65E7\u7070\u9762\uFF1B\u8BED\u4E49\u6863\u6362\u5E95\u5B57\u914D\u5BF9\uFF082026-10-20 \u7528\u6237\u8981\u591A\u8272\u591A\u5C3A\u5BF8\u6807\u7B7E\uFF09\u3002 */\n.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--chip-bg);color:var(--chip-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* md \u6863\uFF1A\u5361\u7247\u5143\u4FE1\u606F\u884C\u7B49\u7A0D\u5927\u573A\u666F\uFF1Bsm \u5373\u65E7\u7248\u9ED8\u8BA4\uFF0C\u9010\u50CF\u7D20\u4E0D\u52A8\u3002 */\n.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}\n/* xs \u6863\uFF1A\u6807\u9898\u540E\u7F00\u7B49\u6781\u7D27\u51D1\u573A\u666F\uFF082026-10-20 \u7528\u6237\u8981\u66F4\u5C0F\u6807\u7B7E\uFF09\uFF1B16px \u9AD8\u3001font 10\u3002 */\n.dshpc-chip--xs{padding:0 6px;font-size:10px;line-height:16px;}\n/* \u8BED\u4E49\u8272\u5B9E\u5FC3\u6863\uFF1A\u5E95 / \u5B57 / hover \u914D\u5BF9\u4E0E Button \u540C\u6E90\uFF08\u9EC4\u5E95\u4E2D\u9AD8\u660E\u5EA6 \u21D2 \u5B57\u7528 --dshpc-on-warning\uFF09\u3002 */\n.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}\n.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}\n.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}\n.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}\n/* maxWidth \u5305 MarqueeText \u65F6\uFF1A\u6807\u7B7E\u4F5C\u4E3A flex \u5B50\u9879\u5FC5\u987B\u80FD\u6536\u7F29\u5230\u5185\u5BB9\u4EE5\u4E0B\uFF0C\u5426\u5219\u7701\u7565\u53F7 / \u8DD1\u9A6C\u706F\u6D4B\u4E0D\u51C6 */\n.dshpc-chip .dshpc-chip__label{min-width:0;}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
 
 // dist/ui/code-viewer-css.generated.js
 var CODE_VIEWER_CSS = "/* CodeViewer\uFF08\u53EA\u8BFB CodeMirror \u67E5\u770B\u5668\uFF09\u6837\u5F0F\u3002\u7C7B\u540D\u56FA\u5B9A dshpc-cv*\uFF1B\u989C\u8272\u5403 --dshpc-* token\uFF0C\n   \u6DF1\u8272\u7531 design \u7684 token \u6DF1\u8272\u6BB5\u81EA\u52A8\u751F\u6548\uFF08\u4E0D\u5199\u6B7B\u989C\u8272\u503C\uFF09\u3002 */\n.dshpc-cv{position:relative;display:flex;flex-direction:column;height:100%;min-height:0;}\n/* \u590D\u5236\u94AE\u590D\u7528\u6838\u5FC3 IconButton\uFF08variant=outline / size=md\uFF09\uFF1A\u76D2\u578B\u3001\u63CF\u8FB9\u3001\u5706\u89D2\uFF08\u5DF2\u7EDF\u4E00 md\uFF09\u3001\u5E95\u8272\u3001hover \u5168\u7531\u6838\u5FC3\u63D0\u4F9B\uFF1B\n   \u8FD9\u91CC\u53EA\u7BA1\u300C\u7EDD\u5BF9\u5B9A\u4F4D + \u9ED8\u8BA4\u9690\u85CF\u3001hover/\u805A\u7126\u624D\u663E\u300D\uFF08overlay \u6D6E\u5728\u7F16\u8F91\u5668\u53F3\u4E0A\u89D2\uFF09\u3002 */\n.dshpc-cv__copy{position:absolute;top:6px;right:6px;z-index:5;opacity:0;}\n.dshpc-cv:hover .dshpc-cv__copy,.dshpc-cv__copy:focus-visible{opacity:1;}\n.dshpc-cv__copy svg{width:16px;height:16px;}\n.dshpc-cv__editor{flex:1 1 auto;min-height:0;overflow:hidden;}\n.dshpc-cv__editor .cm-editor{height:100%;}\n.dshpc-cv__editor .cm-scroller{overflow:auto;}\n";
@@ -4913,14 +4913,24 @@ function StripCard(props) {
 var import_react19 = require("react");
 function Chip(props) {
   ensureControls();
-  const clickable = props.onClick !== void 0;
-  const tone = props.tone ?? "neutral";
-  const size4 = props.size ?? "sm";
+  const { children, tone = "neutral", size: size4 = "sm", width, minWidth, maxWidth, onClick, className: className2 } = props;
+  const clickable = onClick !== void 0;
+  const widthStyle = {};
+  if (width !== void 0) {
+    widthStyle.width = width;
+  } else {
+    if (minWidth !== void 0)
+      widthStyle.minWidth = minWidth;
+    if (maxWidth !== void 0)
+      widthStyle.maxWidth = maxWidth;
+  }
+  const marqueeLabel = maxWidth !== void 0 && width === void 0 && typeof children === "string";
   return (0, import_react19.createElement)(clickable ? "button" : "span", {
     type: clickable ? "button" : void 0,
-    className: `dshpc-chip${tone !== "neutral" ? ` dshpc-chip--${tone}` : ""}${size4 !== "sm" ? ` dshpc-chip--${size4}` : ""}${clickable ? " dshpc-chip--clickable" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`,
-    onClick: props.onClick
-  }, props.children ?? null);
+    className: `dshpc-chip${tone !== "neutral" ? ` dshpc-chip--${tone}` : ""}${size4 !== "sm" ? ` dshpc-chip--${size4}` : ""}${clickable ? " dshpc-chip--clickable" : ""}${className2 === void 0 ? "" : ` ${className2}`}`,
+    style: widthStyle,
+    onClick
+  }, marqueeLabel ? (0, import_react19.createElement)(MarqueeText, { text: children, className: "dshpc-chip__label" }) : children ?? null);
 }
 
 // dist/ui/Toast.js
@@ -55403,6 +55413,8 @@ var DICT2 = {
     stripHint: "\u540C\u8272\u7CFB\u6D45\u5E95 + \u5DE6\u7F18 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\uFF08\u7167\u5144\u5F1F\u9879\u76EE\u6267\u884C\u8BB0\u5F55\u5757\uFF09\uFF1B\u540C\u6837\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014\u6D41\u6C34\u8D26\u6392\u7248\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C",
     sectionHeadTitle: "SectionHead \u5206\u533A\u6807\u9898",
     chipHint: "chip \u4E24\u8F74\u53EF\u9009\uFF1Atone \u8BED\u4E49\u8272\uFF08neutral \u7070\u9762 / business / success / warning / danger \u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09\u3001size\uFF08sm / md\uFF09\uFF1B\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362\uFF08\u4E2D\u82F1\u793A\u4F8B\uFF09\uFF1B\u6700\u540E\u4E00\u9897\u957F\u6587\u5B57\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219",
+    chipWidthTitle: "\u5BBD\u5EA6\uFF08\u56FA\u5B9A\u5BBD / \u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\uFF09",
+    chipWidthHint: "\u4E09\u8F74\u4E92\u65A5\uFF1A\u56FA\u5B9A\u5BBD width \u4E00\u65E6\u8BBE\u5B9A\uFF0C\u6700\u5C0F\u5BBD minWidth / \u6700\u5927\u5BBD maxWidth \u81EA\u52A8\u5931\u6548\uFF1B\u6700\u5927\u5BBD\u4E0B\u6587\u5B57\u8D85\u957F\u6298\u53E0\u6210\u7701\u7565\u53F7\uFF0Chover \u8DD1\u9A6C\u706F\u5C55\u5F00\u5168\u540D",
     chipOverdue: "\u903E\u671F",
     chipStalled: "\u505C\u6EDE",
     chipDone: "\u5DF2\u5B8C\u6210",
@@ -55637,6 +55649,8 @@ var DICT2 = {
     stripHint: "Same-hue soft tint + 4px full-height square accent bar at the left edge (mirrors the sibling record block); equally centered as a whole \u2014 record-stream layout: title + meta row + right-side time/actions",
     sectionHeadTitle: "SectionHead",
     chipHint: "Two optional axes: tone (neutral grey / business / success / warning / danger solid signal) and size (sm / md); width hugs the text, no wrap; labels follow the locale (zh & en examples); if the long-text chip at the end is squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in",
+    chipWidthTitle: "Width (fixed / min / max)",
+    chipWidthHint: "Three axes are mutually exclusive: a fixed width wins and disables both minWidth and maxWidth; with maxWidth, overflowing text collapses to an ellipsis and marquees on hover",
     chipOverdue: "Overdue",
     chipStalled: "Stalled",
     chipDone: "Done",
@@ -57822,6 +57836,85 @@ var docData = {
         "zh": "\u8FB9\u754C\uFF1A\u53EA\u505A\u300C\u80F6\u56CA\u6807\u7B7E\u300D\u3002\u7EAF\u56FE\u6807\u7684\u5C0F\u6309\u94AE\u8BF7\u7528 IconButton\uFF0C\u522B\u62FF Chip \u5F53\u56FE\u6807\u5E95\u677F\u3002",
         "en": "Boundary: pill tags only. For an icon-only button use IconButton; never use Chip as an icon baseplate."
       }
+    ],
+    "api": [
+      {
+        "id": "ui-chip",
+        "rows": [
+          {
+            "name": "tone",
+            "type": "'neutral' | 'business' | 'success' | 'warning' | 'danger'",
+            "def": "'neutral'",
+            "desc": {
+              "zh": "\u8BED\u4E49\u8272\uFF08neutral \u7070\u9762\uFF0C\u5176\u4F59\u4E3A\u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09",
+              "en": "Semantic color (neutral grey; others are solid signal faces)"
+            }
+          },
+          {
+            "name": "size",
+            "type": "'sm' | 'md' | 'xs'",
+            "def": "'sm'",
+            "desc": {
+              "zh": "\u5C3A\u5BF8\u6863",
+              "en": "Size tier"
+            }
+          },
+          {
+            "name": "width",
+            "type": "number | string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u56FA\u5B9A\u5BBD\uFF08px \u6216\u4EFB\u610F CSS \u5BBD\u5EA6\uFF09\uFF1B\u4E0E minWidth / maxWidth \u4E92\u65A5\uFF0C\u4E00\u65E6\u8BBE\u5B9A\u540E\u4E24\u8005\u81EA\u52A8\u5931\u6548",
+              "en": "Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth \u2014 once set, the other two are ignored"
+            }
+          },
+          {
+            "name": "minWidth",
+            "type": "number | string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6700\u5C0F\u5BBD\uFF1Awidth \u672A\u8BBE\u65F6\u751F\u6548\uFF0C\u5185\u5BB9\u4E0D\u8DB3\u6B64\u5BBD\u65F6\u4EE5\u5B83\u4E3A\u51C6",
+              "en": "Minimum width: applies only when width is unset; content shorter than this still takes this width"
+            }
+          },
+          {
+            "name": "maxWidth",
+            "type": "number | string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6700\u5927\u5BBD\uFF1Awidth \u672A\u8BBE\u65F6\u751F\u6548\uFF0C\u6587\u5B57\u8D85\u51FA\u6298\u53E0\u6210\u7701\u7565\u53F7\uFF0Chover \u4EE5\u8DD1\u9A6C\u706F\u5C55\u5F00\u5168\u540D",
+              "en": "Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover"
+            }
+          },
+          {
+            "name": "onClick",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4F20\u4E86\u624D\u6E32\u67D3\u6210 <button>\uFF08\u53EF\u70B9\uFF09\uFF0C\u5426\u5219\u662F <span>",
+              "en": "When given, renders as <button> (clickable); otherwise a <span>"
+            }
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u8FFD\u52A0 class\uFF08\u53EA\u5141\u8BB8\u8865\u5E03\u5C40\uFF0C\u4E0D\u8BB8\u8986\u76D6\u76AE\u80A4\uFF09",
+              "en": "Extra class (layout only, never overrides the skin)"
+            }
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6807\u7B7E\u5185\u5BB9\uFF08maxWidth + \u7EAF\u6587\u5B57\u65F6\u81EA\u52A8\u63A5\u8DD1\u9A6C\u706F\uFF09",
+              "en": "Tag content (auto-marqueed when maxWidth + plain text)"
+            }
+          }
+        ]
+      }
     ]
   },
   "feedback": {
@@ -59688,12 +59781,26 @@ var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884
 // \u4E2D\u6027 # \u6807\u7B7E\uFF08\u8BED\u8A00\u65E0\u5173\uFF09\uFF1B\u4F20 onClick \u624D\u6E32\u67D3\u6210 button
 <Chip>#npm</Chip>
 <Chip onClick={() => showToast('\u70B9\u4E86 chip')}>#\u53EF\u70B9</Chip>`;
-var CODE_MARQUEE = `// \u5B9A\u5BBD\u5C0F\u5BB9\u5668\uFF08\u6807\u7B7E\u5927\u5C0F\uFF09\uFF1A\u653E\u4E0D\u4E0B\u624D\u6EDA\uFF0Chover \u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7
+var CODE_CHIP_WIDTH = `// \u56FA\u5B9A\u5BBD\uFF1A\u5199\u6B7B\u5BBD\u5EA6
+<Chip width={90}>90px \u56FA\u5B9A\u5BBD</Chip>
+
+// \u6700\u5C0F\u5BBD\uFF1A\u5185\u5BB9\u4E0D\u8DB3\u6B64\u5BBD\u65F6\u4EE5\u5B83\u4E3A\u51C6\uFF08\u77ED / \u957F\u4E00\u81F4\uFF09
+<Chip minWidth={90}>\u77ED</Chip>
+<Chip minWidth={90}>\u5F88\u957F\u5F88\u957F\u5F88\u957F</Chip>
+
+// \u6700\u5927\u5BBD\uFF1A\u6587\u5B57\u8D85\u51FA\u6298\u53E0\u6210\u7701\u7565\u53F7\uFF0Chover \u8DD1\u9A6C\u706F\u5C55\u5F00\u5168\u540D\uFF08\u4E0D\u7528\u518D\u624B\u52A8\u5305 MarqueeText\uFF09
+<Chip maxWidth={120}>\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57</Chip>
+
+// \u4E09\u8005\u540C\u8BBE \u21D2 \u56FA\u5B9A\u5BBD\u4F18\u5148\uFF0C\u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\u81EA\u52A8\u5931\u6548
+<Chip width={90} minWidth={160} maxWidth={120}>\u56FA\u5B9A\u5BBD\u4F18\u5148</Chip>`;
+var CODE_MARQUEE = `// \u5B9A\u5BBD\u5C0F\u5BB9\u5668\uFF1A\u653E\u4E0D\u4E0B\u624D\u6EDA\uFF0Chover \u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7
 <div style={{ maxWidth: 148 }}>
   <MarqueeText text="\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" />
 </div>
 
-// \u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1AChip \u65E0 style prop\uFF0C\u7528 MarqueeText \u81EA\u5DF1\u7684 style \u9650\u5BBD\uFF08block \u5916\u5C42\u4E0D\u9650\u5BBD\u4F1A\u88AB\u6587\u5B57\u6491\u5F00\uFF09
+// \u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1AChip \u7684 maxWidth \u4F1A\u81EA\u52A8\u628A\u7EAF\u6587\u5B57\u5185\u5BB9\u5305\u8FDB\u8DD1\u9A6C\u706F\uFF08\u7B49\u4EF7\u4E8E\u4E0B\u9762\u624B\u5199\u7684\u5199\u6CD5\uFF09
+<Chip tone="business" size="md" maxWidth={148}>\u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1A\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF0Chover \u8DD1\u9A6C\u706F</Chip>
+// \u65E7\u5199\u6CD5\uFF08\u4ECD\u53EF\u7528\uFF09\uFF1A\u624B\u52A8\u585E MarqueeText
 <Chip tone="business" size="md">
   <MarqueeText style={{ maxWidth: 148 }} text="\u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1A\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF0Chover \u8DD1\u9A6C\u706F" />
 </Chip>`;
@@ -59734,6 +59841,43 @@ function ChipPage() {
     ),
     (0, import_react58.createElement)(
       Example,
+      { title: t3("chipWidthTitle"), hint: t3("chipWidthHint"), code: CODE_CHIP_WIDTH },
+      (0, import_react58.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "12px" } },
+        (0, import_react58.createElement)(
+          Labeled,
+          { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
+          (0, import_react58.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
+        ),
+        (0, import_react58.createElement)(
+          Labeled,
+          { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
+          (0, import_react58.createElement)(
+            "div",
+            { style: { display: "flex", gap: "8px" } },
+            (0, import_react58.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
+            (0, import_react58.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+          )
+        ),
+        (0, import_react58.createElement)(
+          Labeled,
+          { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
+          (0, import_react58.createElement)(
+            "div",
+            { style: { width: "260px" } },
+            (0, import_react58.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
+          )
+        ),
+        (0, import_react58.createElement)(
+          Labeled,
+          { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
+          (0, import_react58.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+        )
+      )
+    ),
+    (0, import_react58.createElement)(
+      Example,
       { title: t3("marqueeTitle"), hint: t3("exMarqueeHint"), code: CODE_MARQUEE },
       (0, import_react58.createElement)(
         "div",
@@ -59745,8 +59889,8 @@ function ChipPage() {
         ),
         (0, import_react58.createElement)(
           Chip,
-          { tone: "business", size: "md" },
-          (0, import_react58.createElement)(MarqueeText, { style: { maxWidth: "148px" }, text: "\u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1A\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF0Chover \u8DD1\u9A6C\u706F" })
+          { tone: "business", size: "md", maxWidth: 148 },
+          "\u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1A\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF0Chover \u8DD1\u9A6C\u706F"
         )
       )
     ),
@@ -62212,9 +62356,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.8.0"}`],
-            [t3("buildDemo"), `v${"0.8.0"}`],
-            [t3("buildStamp"), "261028-215910-515"]
+            [t3("buildCore"), `v${"0.8.2"}`],
+            [t3("buildDemo"), `v${"0.8.2"}`],
+            [t3("buildStamp"), "261028-223438-928"]
           ].map(
             ([label, value]) => (0, import_react68.createElement)(
               "tr",
@@ -62536,9 +62680,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react70.createElement)("span", null, `core v${"0.8.0"}`),
-          (0, import_react70.createElement)("span", null, `demo v${"0.8.0"}`),
-          (0, import_react70.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-215910-515")
+          (0, import_react70.createElement)("span", null, `core v${"0.8.2"}`),
+          (0, import_react70.createElement)("span", null, `demo v${"0.8.2"}`),
+          (0, import_react70.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-223438-928")
         )
       )
     ),
