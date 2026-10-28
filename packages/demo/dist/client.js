@@ -166,8 +166,10 @@ var FIELD_CSS = `
 /* \u641C\u7D22\u6846\u7684\u6E05\u7A7A\u94AE\uFF08Field.ts \u5728\u300C\u6709\u7126\u70B9 + \u6709\u5185\u5BB9\u300D\u65F6\u624D\u6302\u51FA\u6765\uFF09\uFF1A**\u5E76\u8FDB\u6846\u91CC**\uFF0C\u4E0E\u6570\u5B57\u6846\u7684 \u2212 / +
    \u540C\u5F62\u6001 \u2014\u2014 \u6574\u6BB5\u540C\u9AD8\u3001\u5DE6\u76F4\u53F3\u5706\u3001hover \u5E95\u8272\u94FA\u6EE1\u8FD9\u4E00\u683C\uFF082026-10-28 \u7528\u6237\uFF1A\u4E0D\u8981\u4E00\u9897\u60AC\u5728\u53F3\u8FB9\u7684\u5C0F\u6309\u94AE\uFF09\u3002
    \u5411\u5185\u8BA9 1px\uFF0C\u514D\u5F97\u5E95\u8272\u538B\u4F4F\u8F93\u5165\u6846\u81EA\u5DF1\u7684\u8FB9\u6846\u3002 */
-.dshpc-iwrap__clear.dshpc-iconbtn{position:absolute;right:1px;top:1px;bottom:1px;width:auto;aspect-ratio:1;
+.dshpc-iwrap__clear.dshpc-iconbtn{position:absolute;right:1px;top:1px;bottom:1px;height:auto;width:auto;aspect-ratio:1;
   border-radius:0 var(--dshpc-radius-md) var(--dshpc-radius-md) 0;font-size:var(--dshpc-font-md);}
+/* height:auto \u5FC5\u987B\uFF1Aiconbtn--md/lg \u7684\u56FA\u5B9A height \u4F1A\u8BA9 absolute \u7684 bottom \u88AB\u5FFD\u7565
+   \uFF08top:1 + \u56FA\u5B9A\u9AD8 \u21D2 \u6574\u94AE\u9519\u4F4D 1px\uFF0C\xD7 \u663E\u5F97\u6CA1\u5C45\u4E2D\uFF0C2026-10-28 \u7528\u6237\u622A\u56FE\u6293\u7684\uFF09\u3002 */
 /* \u6587\u5B57\u8BA9\u5F00\u8FD9\u4E00\u6BB5\uFF08\u5BBD\u5EA6 = \u63A7\u4EF6\u9AD8 - 2\uFF0C\u6545\u6309\u6863\u4F4D\u8865\uFF09\u3002 */
 .dshpc-iwrap--clear > .dshpc-input{padding-right:calc(var(--dshpc-control-h-md) + 3px);}
 .dshpc-iwrap--clear.dshpc-iwrap--sm > .dshpc-input{padding-right:calc(var(--dshpc-control-h-sm) + 3px);}
@@ -62120,7 +62122,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.8.0"}`],
             [t3("buildDemo"), `v${"0.8.0"}`],
-            [t3("buildStamp"), "261028-201619-082"]
+            [t3("buildStamp"), "261028-202155-582"]
           ].map(
             ([label, value]) => (0, import_react68.createElement)(
               "tr",
@@ -62444,7 +62446,7 @@ function DemoPage() {
           },
           (0, import_react70.createElement)("span", null, `core v${"0.8.0"}`),
           (0, import_react70.createElement)("span", null, `demo v${"0.8.0"}`),
-          (0, import_react70.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-201619-082")
+          (0, import_react70.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261028-202155-582")
         )
       )
     ),
