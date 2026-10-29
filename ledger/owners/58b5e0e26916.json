@@ -1,6 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
+    "20261029-0904-ac36-滑轨选择器选中色修正与自定义配色": {"category": "修改", "created": "2026-10-29 09:04:52", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-29 09:04:52", "status": "doing", "tags": ["Segmented", "配色", "样式"], "title": "滑轨选择器选中色修正与自定义配色", "updated": "2026-10-29 09:04:52", "worklog": "worklog/202610/29-0904-ac36-滑轨选择器选中色修正与自定义配色.md"}
   },
   "version": "20261022000000"
 }
