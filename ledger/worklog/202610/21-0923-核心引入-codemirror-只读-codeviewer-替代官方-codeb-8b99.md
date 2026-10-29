@@ -1,21 +1,22 @@
-# 20261021-0923-核心引入-codemirror-只读-codeviewer-替代官方-codeb-8b99：核心引入 CodeMirror 只读 CodeViewer（替代官方 CodeBlock）
+# 20261021-0923-核心引入-codemirror-只读-codeviewer-替代官方-codeb-8b99: 核心引入 CodeMirror 只读 CodeViewer（替代官方 CodeBlock）
 
-- **标签**：基建、CodeViewer、CodeMirror、核心、预览
-- **状态**：closed · 2026-10-21 17:41:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-21 09:23:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-21 17:41:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 基建, CodeViewer, CodeMirror, 核心, 预览
+- **Status**: done · 2026-10-21 17:41:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-21 09:23:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-21 17:41:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 - 官方 `CodeBlock`（Shiki）把整篇 tokenize 成 `<pre>` + 每 token 一个 `<span>` 的巨型 DOM，大文件拖宽会触发整棵子树重排 ⇒ 首屏与拖拽都卡；观感也差。需求：把核心的只读代码查看器换成 CodeMirror 6。
 - 兄弟项目 `dsh-task-dispatch-table` 已落地过一遍。本任务把它「抽进共享底座」（落主包），供以后所有插件复用，而不是每个插件各抄一份。
 - 早前 `src/explorer/preview/TextPreview.ts:5` 写过「不为此引 CodeMirror 全家桶进共享底座」——本任务即反转该旧决策；但按拍板红线，**本阶段不进 explorer、不动 `ui/official.ts` 既有导出**，只把可复用 `CodeViewer` 做进核心 `src/ui` 并导出，替换 `TextPreview` 里 `CodeBlock` 是后续单独任务。
 
-## 待办
+## To Do
 
 - [x] `package.json` 加 CodeMirror 依赖（与 tdt 同版本，resolve 落在 `^` 区间内）
 - [x] `src/ui/CodeViewer.ts`（`.ts` + `createElement`，`dshpc-` 类名；图标 / `writeClipboard` 经 `ui/official.ts` 单一入口取）
@@ -28,12 +29,12 @@
 - [x] `commit` + `push`：c638149 推到 `main`（调试期不打 tag、不 bump；dist 随提交入库；不含 docs 生成 WIP 孤儿）
 - [ ] **未做**：`AGENTS.md`「ui 零官方依赖」旧约束改写 + `TextPreview.ts:5`「不引 CodeMirror」旧注释反转（文档，另议）
 
-## 下一步
+## Next
 
 - 已结案（落主包范围全部完成并入库）。
 - 后续独立任务（非本任务交付）：① 替换 `explorer/TextPreview.ts:101` 的 `CodeBlock` 为 `dsh-plugin-core/ui/code-viewer`；② 处理 `doc-data` 孤儿让 `css-contract` 全绿；③ 改写 `AGENTS.md` 旧「ui 零官方依赖」约束与 `TextPreview.ts:5` 旧注释。
 
-## 过程
+## Process
 
 ### 兄弟项目分析（dsh-task-dispatch-table，2026-10-21 逐文件核对）
 
@@ -62,7 +63,7 @@
 - explorer 按用户要求未动；替换其 `CodeBlock` 列为后续独立任务。
 - 既有 `css-contract` 红项（doc-data 孤儿）非本次引入，留待该 WIP 主人处理或单独清理。
 
-## 结论
+## Conclusion
 
 - 落主包**完成并已入库**：核心新增只读 `CodeViewer`（CodeMirror 6），文件 `src/ui/CodeViewer.ts` + `code-viewer-lang.ts` + `code-viewer-theme.ts` + `code-viewer.css`，样式经 `createStyleKit` 注入（`CONTROLS_CSS`），类名 `dshpc-cv*`、吃 `--dshpc-*`；依赖 `@uiw/react-codemirror` + `@codemirror/{state,view,language,legacy-modes,lang-*}` + `@lezer/highlight` 入 `package.json`（正常 `dependencies`）。
 - **导出走子路径 `./ui/code-viewer`** 而非主桶：因 `CodeViewer` 静态依赖 `ui/official`（平台模块），主桶必须保持零 `@deepseek-ai` 静态依赖，否则 `Node` 单测 `import` 主桶即崩（旧坑，见 `official.ts` 注释）；`ui/official` / `ui/host` 同理走子路径。
@@ -71,16 +72,16 @@
 - 红线守住：未进 explorer、未动 `ui/official.ts` 既有导出。
 - **本任务范围外（已单列、非本任务交付）**：① 替换 `explorer/TextPreview.ts:101` 的官方 `CodeBlock`；② `AGENTS.md` 旧「ui 零官方依赖」约束改写 + `TextPreview.ts:5` 旧注释反转；③ 处理既有 `doc-data` 孤儿让 `css-contract` 全绿。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-21 09:23:59 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（open）
-- 2026-10-21 09:25:40 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领 → doing
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-21 09:23:59 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
+- 2026-10-21 09:25:40 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
 - 2026-10-21 09:25:47 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 建任务台账并填正文：核心 src/ui/CodeViewer.tsx 引入 CodeMirror 只读查看器替代官方 CodeBlock，明确不进 explorer、不动 ui/official
 - 2026-10-21 09:30:08 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 补全 worklog 前因后果：兄弟预览栈逐文件核对（仅 CodeMirror 一处第三方）、官方 CodeBlock 卡顿根因、本会话决策时间线、放核心的红线与暗色判据坑
 - 2026-10-21 09:37:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 补全 worklog 背景与完整讨论纪要（含完整讨论过程、兄弟项目预览栈逐文件核对、放核心的红线）
 - 2026-10-21 17:09:33 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 落主包实现完成：核心新增只读 CodeViewer(CodeMirror6)，文件 CodeViewer.ts+lang+theme+css，依赖入 package.json，导出走子路径 ./ui/code-viewer（主桶零平台依赖）；build 干净，node --test 76/77 绿（唯一红项 css-contract 既有 doc-data 孤儿，与本次无关）；未 commit（待授权），未替换 explorer 的 CodeBlock
 - 2026-10-21 17:16:12 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已 commit+push c638149 到 main（调试期不打 tag 不 bump），38 文件含 dist；未带入 docs 生成 WIP 孤儿（doc-format.*/explorer.doc.ts/explorer.generated.md/gen-docs.mjs/tsconfig.docs.json/packages/demo/src/doc-data.generated.ts）；explorer 按用户要求未动
 - 2026-10-21 17:40:49 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 更新 worklog 结论/下一步/过程：标记落主包已 commit+push(c638149) 入库并准备结案；明确替换 explorer CodeBlock / AGENTS.md 旧约束 / doc-data 孤儿为后续独立任务
-- 2026-10-21 17:41:12 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：核心引入只读 CodeViewer(CodeMirror6)：子路径 ./ui/code-viewer 导出、依赖入 package.json、样式经 createStyleKit 注入；commit c638149 推 main；explorer 未动，替换其 CodeBlock / AGENTS.md 旧约束 / doc-data 孤儿列为后续
+- 2026-10-21 17:41:12 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

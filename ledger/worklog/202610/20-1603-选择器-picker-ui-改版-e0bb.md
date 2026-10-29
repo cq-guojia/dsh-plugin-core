@@ -1,15 +1,16 @@
-# 20261020-1603-选择器-picker-ui-改版-e0bb：选择器（Picker）UI 改版
+# 20261020-1603-选择器-picker-ui-改版-e0bb: 选择器（Picker）UI 改版
 
-- **标签**：界面、选择器、Picker、样式
-- **状态**：closed · 2026-10-20 17:56:40 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-20 16:03:53 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-20 17:56:40 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 界面, 选择器, Picker, 样式
+- **Status**: done · 2026-10-20 17:56:40 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-20 16:03:53 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-20 17:56:40 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户 2026-10-20 看 demo 选择器页后提的整批需求（原话口径）：
 
@@ -22,7 +23,7 @@
 7. demo 的模型 / 工作区数据不要 mock，直接读宿主真实数组（demo 是宿主端插件）。
 8. 讨论：要不要给 Input/Select/Textarea 这类组件内置 `hint` 参数（自动挂 FieldHint 问号），还是让调用方自己组合。
 
-## 待办
+## To Do
 
 - [x] Picker 触发器箭头改内联 SVG chevron（`Picker.ts` 触发器重排为 icon/summary/svg）。
 - [x] `PickerOption.icon` + `Picker` 触发器 `icon`（CSS：`.dshpc-picker__icon` / `.dshpc-picker__option-icon`）。
@@ -37,7 +38,7 @@
 - [x] 新增 `test/host-data.test.mjs`（5 项：目录组装/空壳剔除/失败降级/两阶段幂等/换源镜像）。
 - [x] build + 产物入库（dist/ 与 demo dist/ 均已更新）；`node --test` 65 项全绿；typecheck 干净；koc-codelint 六层全过（2 轮修完 2 条 biome 警告）。
 
-## 下一步
+## Next
 
 - 用户在宿主真机更新 demo 插件验收：搜索框自动聚焦、默认图标 / 自定义初始文字、ModelPicker 真实目录、Textarea 右下角问号、NumberInput 焦点蓝框。
 - 若模型目录仍空：看选择器顶部是否有「候选可能不完整」降级条——有 = 目录读到但 0 条路由（要么 listProviders 空、要么 provider profile 无 models），无 = 注入线没到。
@@ -72,11 +73,11 @@
 - NumberInput 焦点态：`.dshpc-num:focus-within` 与 Input 同款蓝框（内层 input 无边框，状态画在外框）。
 - hint 口径确认：**单参数**（传字符串才显示，不传不显示，默认隐藏）——用户选的第二种方式，无需改 API。
 
-## 过程
+## Process
 
-<!-- 踩坑与证据：带 revision + 文件:行号 或符号名 -->
+<!-- Pitfalls and evidence: with revision + file:line or symbol names -->
 
-## 结论
+## Conclusion
 
 选择器 UI 改版落地，真机验收通过（2026-10-20）：
 
@@ -92,11 +93,11 @@
 教训：领域数据源先读兄弟仓**能跑通的那条链路**（宿主 listModels + 路由），不要从 .d.ts 方法名推测「远端能拿全」。
 未做（留给以后）：AGENTS.md 首表「组件不自己取数」一行已过时（领域选择器已反转），属注入规则文件，等用户授权再改。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-20 16:03:53 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-20 16:03:53 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-10-20 16:27:00 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 需求入库：worklog 记 8 条（chevron/icon/搜索可配/双形态/删FilePicker/多选上限bug/真实数据/hint讨论），待对齐工作区取数通路
 - 2026-10-20 16:56:38 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 交付：chevron/icon/hint内置/双形态改名grouped/多选反选bug/删FilePicker/host-data自取数(connectHost)+5项新测试；65测试+typecheck+codelint全过，产物入库待真机验收
 - 2026-10-20 17:24:35 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第二轮：搜索自动聚焦/模型目录改按models过滤(推断user层缺失致滤空)/领域选择器默认icon+可自定义文案/Textarea问号右下/NumberInput焦点态；65测试+codelint全过
@@ -106,4 +107,4 @@
 - 2026-10-20 17:49:03 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第五轮：去掉 cascade 改 split(两个独立下拉,互不联动)/ModelPicker 增默认模型项 allowDefault+defaultLabel(选中发空串)/Picker 增 align 默认居左(修 space-between 把短文案推中间)
 - 2026-10-20 17:53:28 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第六轮纠偏：grouped 保留(独立) + cascade 恢复(联动)；split 撤销；demo 两形态各用独立 state，只留两组
 - 2026-10-20 17:53:53 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第七轮：demo 去掉「无图标」与自定义文案演示，工作区只留默认形态（默认即核心给的名字+图标；自定义能力保留不演示）
-- 2026-10-20 17:56:40 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：选择器 UI 改版：chevron 箭头、icon、搜索自动聚焦、grouped/cascade 双形态、默认模型项、hint 内置、多选反选修复、删 FilePicker，领域选择器改自取数（workspaces 快照 + 宿主 llm.listModels 路由）
+- 2026-10-20 17:56:40 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

@@ -1,29 +1,30 @@
-# 20261018-0425-ui-选择器-picker-通用选择器-modelpicker-双形态-b6cd：ui 选择器：Picker 通用选择器 + ModelPicker 双形态
+# 20261018-0425-ui-选择器-picker-通用选择器-modelpicker-双形态-b6cd: ui 选择器：Picker 通用选择器 + ModelPicker 双形态
 
-- **标签**：建设、ui、选择器、模型
-- **状态**：closed · 2026-10-18 06:02:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 04:25:16 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 06:02:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, ui, 选择器, 模型
+- **Status**: done · 2026-10-18 06:02:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 04:25:16 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 06:02:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 需求文档 §2.2 + §6：ui 要有 `Picker`（通用选择器）和 `ModelPicker`（模型选择，两种形态）。
 用户明确：**很多插件都要选大模型，这就是通用需求，要抽**；且形态要两种都支持
 （有的地方先选厂商再选模型，有的地方一个下拉搞定），切换参数要用**有意义的名字**，不许 `style1` / 数字。
 
-## 待办
+## To Do
 
 无。
 
-## 下一步
+## Next
 
 `explorer` 子包：ExplorerPanel（工作区浏览 + 预览）+ WorkspacePicker + FilePicker。
 
-## 过程
+## Process
 
 **Picker**：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级，自绘（不依赖官方 Menu）。
 **纯零件不取数** —— 选项由调用方传（工作区 / 模型列表要跨 host↔client 边界，通道是插件私有的）。
@@ -55,7 +56,7 @@ ui 复用 utils 那套 `setLocale` —— 保持**单一 locale 状态**，不�
 
 **测试**：为跑通组件导入，装了 `react@18` 作 devDependency（peer 仍标 optional）。
 
-## 结论
+## Conclusion
 
 `Picker` + `ModelPicker` 可用，5 条逻辑自检 + 之前 16 条全过（共 21 条），
 `dist/ui/index.js` 直接 import 成功（31 个导出），零官方依赖。
@@ -66,7 +67,7 @@ ui 复用 utils 那套 `setLocale` —— 保持**单一 locale 状态**，不�
 - 仍**未在浏览器渲染验证**（同前几个任务）。
 - `src/types/primitives.d.ts` 现在没有使用者了（留着给后续 explorer/session 用，若最终用不上要删）。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

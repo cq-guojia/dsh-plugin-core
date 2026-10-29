@@ -1,29 +1,30 @@
-# 20261018-0605-explorer-子包-工作区浏览-预览-选工作区-文件-d32e：explorer 子包：工作区浏览 + 预览 + 选工作区/文件
+# 20261018-0605-explorer-子包-工作区浏览-预览-选工作区-文件-d32e: explorer 子包：工作区浏览 + 预览 + 选工作区/文件
 
-- **标签**：建设、explorer、工作区、预览
-- **状态**：closed · 2026-10-18 06:10:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 06:05:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 06:10:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, explorer, 工作区, 预览
+- **Status**: done · 2026-10-18 06:10:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 06:05:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 06:10:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户拍板「explorer 要抽」。源：`dsh-task-dispatch-table/src/client/file-browser.tsx`（868 行）+ 
 `file-preview.tsx`（794 行）。**只有这一家有**，另两家搜不到 —— 抽它是「把一家的形状当通用」，
 风险在 Q0 里记过； mitigations 是接口已抽象好（`WorkspaceFilesFace`）。
 
-## 待办
+## To Do
 
 无。
 
-## 下一步
+## Next
 
 `session` 子包（会话预览）。
 
-## 过程
+## Process
 
 **接口面照抄宿主契约**（`WorkspaceFilesFace`：`read` / `readBytes` / `list` / 可选 `stat`），
 两个坑沿用源注释：`read` 的 `range` **必传**（官方按位置参数个数校验）、`stat` 是可选的（宿主过旧要降级）。
@@ -48,7 +49,7 @@
 **踩坑**：`new Blob([res.data])` 在 TS 5.9 下报错（`Uint8Array<ArrayBufferLike>` 不是合法 `BlobPart`）
 ⇒ 包一层 `new Uint8Array(res.data)`。
 
-## 结论
+## Conclusion
 
 `dsh-plugin-core/explorer` + `/explorer/preview` 可用，25 条自检全过，两个入口都能直接 import。
 
@@ -59,7 +60,7 @@
 - 仍未在浏览器渲染验证（全包系统性缺口）。
 - 面包屑超宽时**没有折叠**（源实现有「折叠为当前层名 + 下拉选层」），本版是简单换行。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

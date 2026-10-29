@@ -1,38 +1,39 @@
-# 20261020-2255-删除-errorboundary-组件-宿主已有槽位错误边界-4113：删除 ErrorBoundary 组件（宿主已有槽位错误边界）
+# 20261020-2255-删除-errorboundary-组件-宿主已有槽位错误边界-4113: 删除 ErrorBoundary 组件（宿主已有槽位错误边界）
 
-- **标签**：清理、ErrorBoundary、ui、demo、文档
-- **状态**：closed · 2026-10-20 23:00:30 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-20 22:55:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-20 23:00:30 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 清理, ErrorBoundary, ui, demo, 文档
+- **Status**: done · 2026-10-20 23:00:30 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-20 22:55:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-20 23:00:30 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
-<!-- 为什么做：触发它的原话 / 现象 / 链接 -->
+<!-- What this is for: the words that triggered it / the symptom / a link -->
 
-## 待办
+## To Do
 
-<!-- 还没做的、没验证的、等别人给东西的 -->
+<!-- Not done yet, not verified, waiting on somebody -->
 
-## 下一步
+## Next
 
-<!-- 下一个具体动作（文件:行号 级别），不要写「继续推进」 -->
+<!-- The next concrete action (file:line level), never "keep going" -->
 
-## 过程
+## Process
 
-<!-- 踩坑与证据：带 revision + 文件:行号 或符号名 -->
+<!-- Pitfalls and evidence: with revision + file:line or symbol names -->
 
-## 结论
+## Conclusion
 
-<!-- 做成了什么、留了什么坑 -->
+<!-- What got done, what got left behind -->
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-20 22:55:12 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-20 22:55:12 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-10-20 22:59:57 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 删除完成：src/ui/ErrorBoundary.ts、导出、.dshpc-error CSS、errorTitle、demo 演示块、测试断言、5 处文档；build+test 64 绿，dist 残留已清
-- 2026-10-20 23:00:30 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：删除 ErrorBoundary 组件及全链路引用：宿主 dsh-client-ui-renderer 已在 slot 入口提供错误边界，底座不重复提供；build + 64 项自检全绿，dist 随提交入库
+- 2026-10-20 23:00:30 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

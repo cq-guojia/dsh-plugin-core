@@ -1,15 +1,16 @@
-# 20261019-1132-控件层重构-改继承官方-primitives-l0-l4-分层-逐控件包裹-eb12：控件层重构：改继承官方 primitives（L0-L4 分层 + 逐控件包裹）
+# 20261019-1132-控件层重构-改继承官方-primitives-l0-l4-分层-逐控件包裹-eb12: 控件层重构：改继承官方 primitives（L0-L4 分层 + 逐控件包裹）
 
-- **标签**：建设、重构、控件、官方原语、分层
-- **状态**：closed · 2026-10-19 12:50:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-19 11:32:47 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-19 12:50:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, 重构, 控件, 官方原语, 分层
+- **Status**: done · 2026-10-19 12:50:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-19 11:32:47 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-19 12:50:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户 2026-10-19 凌晨把 demo 插件装进真实宿主后反馈："界面上来了但还是不对"——自绘控件和真宿主长得不一样。定位结论（对照兄弟项目 `dsh-task-dispatch-table`）：
 
@@ -26,7 +27,7 @@
 - `8904ac4` 重构地基(P0)：删死脚本 `scripts/plugin-client-build.mjs`；`src/types/primitives.d.ts` 从 any-stub 换成版本钉死真类型；新建 `src/ui/official.ts`（L1 adapter，全仓唯一官方 import 点 + `pickOfficial` 漂移兜底）；typecheck/build/35 测试全绿
 - `5f9f378` docs：`docs/refactor-work-log.md`（模式/分层树/专家结论/待拍板）——该文件建错位置（工作日志不该入 `docs/`），2026-10-19 已全文搬入本文「过程」节并删除原文件
 
-## 待办
+## To Do
 
 **① 等用户拍板**（见本文「过程」节附录·原重构工作日志 §13，专家团遗留 3 决策）：
 1. ③「扩展空间」④「抽象方法区」接受不独立成层（③→`components/layouts` 复合控件、④→并入 `./utils`），还是坚持独立 tier？
@@ -51,11 +52,11 @@
 
 **⑤ 收尾**：每个 wrap 完成后 `pnpm run build` + `pnpm test` + 装进宿主看真实观感（用户：测试就是装进宿主看，没有 HTML 测试）。
 
-## 下一步
+## Next
 
 等用户对 §13 三件事拍板（用户回"照推荐"= ③④不独立成层、换 canonical 名、类型进 dist）。拍板后从 P0 起手：先补 Node 测试 stub loader（这是动任何控件 import `official.ts` 的前置），再拆根 `demo/`，再改文档不变量。
 
-## 过程
+## Process
 
 **2026-10-19 11:32** 补建本任务。核实：会话中断前的地基（`8904ac4`、`5f9f378`）已在 main；`src/ui/official.ts` 存在（2412B）；`docs/refactor-work-log.md` 存在，§13 三条待拍板原样未动；`ledger/progress.json` 在办任务只有过时的 `20261018-1124-文档补全`（其 worklog 自记"等用户确认后 close"，未结案）。
 
@@ -223,11 +224,11 @@ tokens/platform/utils 不依赖上层；components → tokens+platform+headless+
 
 （附录完——原 `docs/refactor-work-log.md` 全文至此结束，原文件已随本提交删除。）
 
-## 结论
+## Conclusion
 
-<!-- 收尾时填 -->
+<!-- What got done, what got left behind -->
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

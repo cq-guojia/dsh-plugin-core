@@ -1,15 +1,16 @@
-# 20261028-1442-e6a6-做几个-loading-样式：做几个 loading 样式
+# 20261028-1442-e6a6-做几个-loading-样式: 做几个 loading 样式
 
-- **标签**：ui、loading、控件
-- **状态**：closed · 2026-10-28 15:15:20 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-28 14:42:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-28 15:15:20 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: ui, loading, 控件
+- **Status**: done · 2026-10-28 15:15:20 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-28 14:42:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-28 15:15:20 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户 2026-10-28 原话要点：
 
@@ -20,17 +21,17 @@
 - 两种样式通用参数：文案、是否需要遮罩、遮罩透明度；
 - 做完补 demo 站与文档。
 
-## 待办
+## To Do
 
 - 无（本条任务范围内已交付并发版 v0.8.3；真机观感再微调属新任务）。
 
-## 下一步
+## Next
 
 - 无（本次范围已收口）。后续若要在宿主里改观感数值，按新任务单独立：入口是 `src/ui/controls/loading.css` 的 min-width / padding / 遮罩默认值。
 
 
 
-## 过程
+## Process
 
 - 跨副本单例复刻 `toast-host.ts` 的手法：新建 `src/ui/loading-host.ts`（`Symbol.for('dsh-plugin-core/loading-host')` + `claimLoadingHost`），宿主实现放在 `src/ui/Loading.ts` 的 `createLoadingHost`，entries 攒请求、每次变更重渲染唯一浮层根。
 - 位置统一在屏幕正中（`.dshpc-loading-overlay`，`inset:0 var(--dshpc-page-inset-right,0px) 0 0` 与 Modal 遮罩同一套让位口径）；浮层本身 `pointer-events:none`，只有遮罩层 `pointer-events:auto` —— 不开遮罩时页面照常可点。
@@ -43,7 +44,7 @@
 - 第三轮（用户追问「为什么同时出现两个」）：根因是宿主把每次 `show` 都 push 进 entries 各自渲染一张 —— 连点 N 次就叠 N 张。改成**唯一槽位** `createLoadingSlot()`（`src/ui/loading-host.ts`，纯逻辑可测）：后一次直接顶掉前一次，被顶掉那次的句柄 `close()` 按 id 判空操作，旧定时器不会误关新卡。 同时确认「不自动消失」：`showLoading` 从来没有任何计时参数，收起只能 `close()`（demo 里的 1.2s 只是演示用的定时器）。自检补一条单槽位语义（顶替 / 旧句柄无效 / 重复关无副作用）。
 - 发版时踩到的怪事：`src/ui/loading-host.ts` 在上轮验证之后、本次构建前从磁盘消失（`dist/ui/loading-host.js` 还在）。按产物 `.d.ts` 的签名与原文逐行恢复后 `build` / `typecheck` / 148 项自检全绿、语义一致；删除原因没查到（疑外部同步 / 清理动作，已提醒用户留意）。
 
-## 结论
+## Conclusion
 
 - 新增导出：`showLoading(opts)` → `{ close() }`、`LoadingToast`、`LoadingBlock`，及类型 `LoadingOptions` / `LoadingViewProps` / `LoadingVariant` / `LoadingPosition` / `LoadingHandle`（`src/ui/index.ts`）。全局只有一张卡，不自动消失。
 - 样式真源 `src/ui/controls/loading.css`（已生成 `loading-css.generated.ts`），产物 `dist/` 与 demo `packages/demo/dist/` 已重新构建。
@@ -52,14 +53,14 @@
 - 交付：发版 `v0.8.3`（两包同号），commit `17cb877` 已推 `main`，tag `v0.8.3` 已推并触发两包自动发布。
 - 留档：真机观感（卡宽 250px / 方块 132px / 遮罩默认浓度 0）未经宿主肉眼验收，需在插件市场更新后由用户确认；若要调，改 `src/ui/controls/loading.css` 一处即可。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress log --id <任务号> --note "一句话"。 -->
-- 2026-10-28 14:42:39 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务并认领
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-28 14:42:39 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-10-28 14:47:19 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 新增 showLoading / LoadingToast / LoadingBlock（src/ui/Loading.ts、loading-host.ts、controls/loading.css），demo 反馈页与 docs/help/ui.doc.ts 已补；build + typecheck + 146 项自检 + codelint 全过，待用户验收
 - 2026-10-28 14:53:17 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按验收意见改：长条卡 200→250px、默认屏位改 bottom-center、新增 position 七向（src/ui/loading-host.ts loadingOverlayClass + loading.css 六个修饰类）；build/typecheck/147 项自检/codelint 全过
 - 2026-10-28 15:00:08 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修「同时出现两个」：宿主 entries 改唯一槽位 createLoadingSlot（后一次顶掉前一次，旧句柄 close 按 id 空操作）；确认 showLoading 无计时参数、只能 close；新增单槽位自检，148 项全过
 - 2026-10-28 15:09:58 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 v0.8.3：两包同号 bump、build + build:demo + 148 项自检 + codelint 全过，commit 17cb877 已推 main，tag v0.8.3 已推（触发两包自动发布）
 - 2026-10-28 15:15:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结尾补：发版 v0.8.3 已推；loading-host.ts 丢失后按产物恢复一事入过程；待办清空，准备结案
-- 2026-10-28 15:15:20 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案封卷
+- 2026-10-28 15:15:20 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

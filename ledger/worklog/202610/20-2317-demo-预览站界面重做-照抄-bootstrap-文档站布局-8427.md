@@ -1,15 +1,16 @@
-# 20261020-2317-demo-预览站界面重做-照抄-bootstrap-文档站布局-8427：demo 预览站界面重做（照抄 Bootstrap 文档站布局）
+# 20261020-2317-demo-预览站界面重做-照抄-bootstrap-文档站布局-8427: demo 预览站界面重做（照抄 Bootstrap 文档站布局）
 
-- **标签**：界面、demo、样式、布局
-- **状态**：closed · 2026-10-21 11:35:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-20 23:17:28 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-21 11:35:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 界面, demo, 样式, 布局
+- **Status**: done · 2026-10-21 11:35:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-20 23:17:28 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-21 11:35:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户 2026-10-20 反馈 demo 预览站「界面丑得死人」，选定照抄 Bootstrap 文档站布局
 （https://getbootstrap.com/docs/6.0/components/dialog/）。用户原话要点：
@@ -26,7 +27,7 @@
 澄清是「给其他插件引用后打包是否冲突」，给出三层 JS 隔离论证 + CSS 跨版本覆盖限制 +
 external 打包契约。
 
-## 待办
+## To Do
 
 - [x] 布局提案拍板 + Button 页试点
 - [x] 第一轮验收改动：备注框改核心 `StripCard`；示例左栏按语义分组分层
@@ -39,7 +40,7 @@ external 打包契约。
 - [ ] 官方 `CodeBlock` 观感问题：是否引入三方高亮包，另行研究（用户要求推迟）
 - [ ] 全部验收后：version bump（按发布节奏，不主动打 tag）
 
-## 下一步
+## Next
 
 等待用户在宿主验收整体效果。可能的收尾：① 官方代码块观感（三方高亮包）另行立项；
 ② 验收通过后按发布节奏 bump 版本（不打 tag，除非用户要求）。toast 统一方案（多插件同页
@@ -47,7 +48,7 @@ external 打包契约。
 由另一个 Agent 实施，其改动（src/ui/toast-host.ts、test/toast-host.test.mjs 等）已出现在工作区
 但尚未提交，归该 Agent 负责，本任务不碰。
 
-## 过程
+## Process
 
 **勘察与提案（2026-10-20 23:17-23:23）**：外壳 `client/index.tsx` 的 `DemoPage` 为 flex 三栏
 （左 180px 两级导航 + 单页 main + 右 PanelDock），无路由无 anchor，`useState<SectionId>`
@@ -96,21 +97,22 @@ foundationNote/referenceNote）；quickstart 额外加 `CODE_START_USAGE`（安�
 - 验证：core typecheck 0 / demo typecheck 0 / `gen-css --check` 0 / `node --test` 77 全绿（原 74
   + toast 任务新增 3）/ codelint 全过（5 文件 L0-L5 全过）。demo 三批产物均已 build 并入库。
 
-## 结论
+## Conclusion
 
 demo 预览站 **全部 18 页** 完成 Bootstrap 风格改造（备注 + 左示例右代码 + 用法 + API 表），
 分三批提交推送：feedback/layout（`036903f`）、blocks（`4b06009`）、utils/start/foundation/
 reference（`836b4e6`）。验证全绿。待用户在宿主验收；官方代码块观感、版本 bump 列为后续。
 toast 多插件统一方案由另一 Agent（任务 9a8a）实施，工作区改动未提交、归它负责。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。 -->
-- 2026-10-20 23:17:28 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-20 23:17:28 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-10-20 23:33:39 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · Button 页试点完成，等宿主验收
 - 2026-10-21 00:43:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第二轮：备注框改核心 StripCard、外观档分组分层
 - 2026-10-21 08:27:42 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第三轮：Demo→Example 骨架统一，5 页补齐
 - 2026-10-21 09:04:47 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第四轮：feedback/layout 完成，components 8 页全完
 - 2026-10-21 09:35:00 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第五轮：blocks/utils/start/foundation/reference 改造；全部 18 页完成；77 测试+codelint 全绿；demo 三批已提交推送（036903f/4b06009/836b4e6）
 - 2026-10-21 09:54:45 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户验收微调（bf7ae92）：反馈页示例重排为 定制→原生→官方(官方置底)；Sonner 两排按钮加竖向间隔；录入页 日/周/月 4 个 Segmented 拆到独立一行；卡片页 SectionHead 第一个示例切换菜单留 3 项+搜索框缩至 140px；Note 蓝色标签 备注→说明；会话 API 经核对已与 demo 同页共处（blocks.tsx:266），风格已统一无需改动
-- 2026-10-21 11:35:24 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：预览站 18 页 bootstrap 文档站式布局全部落地并验收：Note/左示例右代码/用法/API 表齐备；反馈页重排(定制→原生→官方)、Session API 独立成块、全部 API 表命名、布局/录入页微调、Note 标签统一为「说明」；tsc/build/codelint 全过
+- 2026-10-21 11:35:24 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

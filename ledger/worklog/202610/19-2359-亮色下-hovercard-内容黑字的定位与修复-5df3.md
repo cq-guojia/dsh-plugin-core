@@ -1,15 +1,16 @@
-# 20261019-2359-亮色下-hovercard-内容黑字的定位与修复-5df3：亮色下 HoverCard 内容黑字的定位与修复
+# 20261019-2359-亮色下-hovercard-内容黑字的定位与修复-5df3: 亮色下 HoverCard 内容黑字的定位与修复
 
-- **标签**：HoverCard、样式、外部事实、实测
-- **状态**：closed · 2026-10-20 00:52:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-19 23:59:09 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-20 00:52:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: HoverCard, 样式, 外部事实, 实测
+- **Status**: done · 2026-10-20 00:52:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-19 23:59:09 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-20 00:52:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 现象：宿主**亮色**下，demo 里悬停弹出的「标题 + 副文本」浮层是**黑字**（压在深色底上，看不清）；
 暗色下正常。用户原话：“到底为什么？我们用不了官方的样式是吧？是不是必须我们自己写？”
@@ -20,7 +21,7 @@
 前置相关：`20261019-1604-…-823a`（分段控件样式事故，根因是 tokens 模板多一个反斜杠，已修）。
 那次踩的坑正是“现象层结论当成机制”，本任务刻意反过来做。
 
-## 待办
+## To Do
 
 - [x] 拉官方源码核实 Tooltip / HoverCard 的配色声明
 - [x] 真机读数：先证明官方 Tooltip 本身没问题
@@ -29,12 +30,12 @@
 - [x] 把官方这条未写明的行为写进 `docs/design/external/dsh-host.md` §10
 - [ ] **待用户验收**：亮色下悬停「富卡片」，副文本应为白色、不再黑字压深底
 
-## 下一步
+## Next
 
 1. 等用户验收（重装 demo → 切亮色 → 悬停「富卡片」）。
 2. 验收通过后，可考虑把这条约束做成自检或文档提示给下游插件（目前只在外部事实里记着）。
 
-## 过程
+## Process
 
 ### 第一步：先证明官方 Tooltip 没问题（避免误伤）
 
@@ -104,7 +105,7 @@
 官方自己为什么不爆：`.card` 的 `content` 收任意 ReactNode，宿主自己传的都是官方组件（自带 color）；
 本仓 demo 传的是裸 `div`（`packages/demo/src/sections/buttons.tsx`，只给了 padding / fontSize，无 color）。
 
-## 结论
+## Conclusion
 
 - **不是官方配色错，也不是“必须用不了官方样式”**。官方 Tooltip 自身完全正确（实测白字深底）。
 - 真正原因：`HoverCard` 默认 `variant='compact'` 用的 `.card` **只写背景、不写 `color`**，
@@ -118,10 +119,10 @@
 - **留的坑**：这条只在文档里。以后若 core 也封装 HoverCard 或下游插件用到，需各自记得给 content 上色
   —— 目前没有任何机制强制，只能靠 §10 那条事实。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-19 23:59:09 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-19 23:59:09 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-10-19 23:59:43 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 读数定性：黑字是 HoverCard .card(compact) 不设 color + 我们 content 裸 div 双层缺失，亮色继承近黑；改在调用方给 #fff，dsh-host §10 记官方事实，84950b9 已推
-- 2026-10-20 00:52:04 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：已修复结案：HoverCard compact 的 .card 只写背景不写 color，content 是裸 div ⇒ 亮色下文字继承近黑；修在调用方给 content 上色（--dsw-static-neutral-bluish-00），官方事实已入 dsh-host.md §10
+- 2026-10-20 00:52:04 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

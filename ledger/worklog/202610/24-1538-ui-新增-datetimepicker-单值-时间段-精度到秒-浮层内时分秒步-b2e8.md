@@ -1,21 +1,22 @@
-# 20261024-1538-ui-新增-datetimepicker-单值-时间段-精度到秒-浮层内时分秒步-b2e8：ui 新增 DateTimePicker：单值/时间段、精度到秒、浮层内时分秒步进
+# 20261024-1538-ui-新增-datetimepicker-单值-时间段-精度到秒-浮层内时分秒步-b2e8: ui 新增 DateTimePicker：单值/时间段、精度到秒、浮层内时分秒步进
 
-- **标签**：新功能、ui、控件、日期
-- **状态**：closed · 2026-10-26 09:18:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-24 15:38:20 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-26 09:18:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 新功能, ui, 控件, 日期
+- **Status**: done · 2026-10-26 09:18:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-24 15:38:20 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-26 09:18:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户要日期时间选择控件，2026-10-24 需求定版：① 单值 + 时间段（起止两个独立框、点哪个亮哪个、同时展开，不用「一个框拖红选段」）；② 精度 day/hour/minute/second；③ 补全规则——day 精度下起始端 `00:00:00.000`、结束端 `23:59:59.999`，毫秒恒三位，数据库只收到秒时优雅退化；④ 浮层无遮罩、与 select 同机制；⑤ 按钮一律用核心 Button；⑥ 时分秒不能逐格点 60 分钟。
 
 选型结论（用户拍板「自绘」）：react-day-picker 只有日期无时间；flatpickr / react-datepicker / @mui/x-date-pickers 功能全覆盖但样式体系与「运行时字符串注入 + dshpc token + body[data-ds-dark-theme]」硬约束冲突，且自带 CSS 文件宿主不加载，引入等于重画全套皮肤。蓝本：Picker.ts 浮层模式 + 兄弟项目 dsh-task-dispatch-table 的 `buildMonthCells`（DateTime.tsx:80-93，其 TimeField 的 60 项分钟列表正是「时间不好使」根因）+ flatpickr 式步进交互。
 
-## 待办
+## To Do
 
 待用户验收（demo「日期时间」页，2026-10-24 晚按用户反馈改过一轮后）：
 - 四种用法：单值 day / 单值 minute / 区间 day / 区间 second，外加禁用态
@@ -25,11 +26,11 @@
 - 键盘：方向键移日、PageUp/Down 换月、Home/End 月内首尾、Enter 选、Esc 丢弃草稿
 - 区间起止颠倒时确定置灰 + 提示；day 精度结束端补 23:59:59.999
 
-## 下一步
+## Next
 
 用户在 demo 预览站验收上述清单；有意见回到 `src/ui/DateTimePicker.ts` 改。验收通过后是否提交由用户明示（当前改动未 commit）。
 
-## 过程
+## Process
 
 - `src/ui/datetime-logic.ts`：纯逻辑——本地 ISO 解析（Date 反向校验挡 2026-02-30）、6×7 周一起排月历（`buildMonthCells`）、`floorToPrecision` / `ceilToPrecision` 补全、`stepUnit` 循环步进、`rangeIsValid`；二轮加入草稿模型 `toEndDraft` / `partsOf`（没日期 ⇒ null）/ `nowTimeFor`
 - `test/datetime-logic.test.mjs`：12 条全绿（闰月/补全规则/往返/键入收拢/草稿模型/nowTimeFor）
@@ -41,15 +42,15 @@
 - 验证：`pnpm test` 116/116、`pnpm run build:demo` OK、koc-codelint 六层全过
 - 踩坑（方法教训）：同一文件在一轮里并行发多个 `replace_in_file` 会互相覆盖（datetime-logic.ts 丢过一轮函数，tsc 报 no exported member 才发现）——同文件的多处编辑必须串行，一把一确认
 
-## 结论
+## Conclusion
 
 DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「起 floor / 止 ceil 到精度单位边界」（hour ⇒ 止 `H:59:59.999`、minute ⇒ `H:M:59.999`、second 不动），毫秒恒三位、数据库截断优雅退化。交互按用户 10-24 反馈定稿：时间不强制先选日期、快捷键「今天/现在」双态、range 双独立日历不标跨度。遗留：未做 min/max 夹取、命令式 Promise API（YAGNI，用户未要求）。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-24 15:38:20 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-24 15:38:20 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-10-24 15:59:33 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · DateTimePicker 落地：logic+组件+css+i18n 13key+demo 页+ui.doc.ts 章节；pnpm test 114/114、codelint 六层过、build:demo OK；待用户 demo 验收
 - 2026-10-24 16:23:28 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按用户反馈改：时分秒不强制先选日期（确定时没日期不传数据）、快捷键 day「今天」/时分秒「现在」、range 弹层改两块独立日历不标跨度、demo 录入页示例改名「用户名」；草稿模型纯函数化并补 2 条测试；pnpm test 116/116、codelint 六层过
 - 2026-10-24 16:45:14 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修显示精度 bug（新增 utils formatDateTimePrecision：day 不出时分秒）+ range 触发器改双框框外杠（右框微蓝底、点哪个都整体展开）+ 弹层组行端框与时分秒同排不折行 + 触发器焦点改 Input 同款蓝框；pnpm test 117/117、codelint 六层过
@@ -68,6 +69,6 @@ DateTimePicker 落地：`mode × precision` 覆盖全部诉求；补全规则「
 - 2026-10-24 20:14:53 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 明暗切换改核心 Segmented（左亮右暗带图标，label 承载符号因 SegmentedItem 无 icon 字段）+ 编译码 9px 隔 4px；提交推送；测试/lint 全过
 - 2026-10-24 20:26:30 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 明暗切换分段文案：亮→明（对齐明暗切换/明暗色判据用词）；英文 Light/Dark 本就是官方口径不动；官方包本机空壳无法核对宿主原文，若宿主实为「浅色/深色」再说；已提交推送
 - 2026-10-24 20:28:00 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 明暗切换分段文案定稿：浅色/深色（用户确认的官方口径，英文 Light/Dark 不变）；已提交推送；测试/lint 全过
-- 2026-10-26 16:55:46 · release · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 释放回公共池
-- 2026-10-26 17:17:49 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领 → doing
-- 2026-10-26 17:18:14 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案封卷
+- 2026-10-26 16:55:46 · release · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · released to pool
+- 2026-10-26 17:17:49 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
+- 2026-10-26 17:18:14 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

@@ -1,30 +1,31 @@
-# 20261018-0306-design-子包-token-前缀参数化-createstylekit-工厂-56ee：design 子包：token 前缀参数化 + createStyleKit 工厂
+# 20261018-0306-design-子包-token-前缀参数化-createstylekit-工厂-56ee: design 子包：token 前缀参数化 + createStyleKit 工厂
 
-- **标签**：建设、design、token、样式注入
-- **状态**：closed · 2026-10-18 04:09:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 03:06:11 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 04:09:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, design, token, 样式注入
+- **Status**: done · 2026-10-18 04:09:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 03:06:11 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 04:09:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 需求文档 §2.1 / §5.2 / §5.3：design 要提供前缀参数化的 token 表 + 注入器工厂。
 **根因**是 dispatch `src/client/ui/style.ts:25` 的模块级单例 + 固定 style id
 `dsh-task-dispatch-table-ui` —— 多个插件同处一页时会抢同一个 `<style>` 标签、变量互相覆盖。
 
-## 待办
+## To Do
 
 无。
 
-## 下一步
+## Next
 
 建任务做 `utils` 子包：日期 / 字符串 / 字节体积 / 时间区间。硬约束：不 import 任何其他子包、
 不依赖 React / DOM / 宿主 API。
 
-## 过程
+## Process
 
 **token 怎么搬**：`dsh-task-dispatch-table/src/client/ui/tokens.ts:29` 的 `UI_TOKENS_CSS`
 是一个 200+ 行的模板字符串（`body{ --tdt-* }` + `body[data-ds-dark-theme]{ ... }` 深色段）。
@@ -46,7 +47,7 @@
 **踩坑 2（测试自己写错）**：断言「CSS 里不得出现 `prefers-color-scheme`」失败——
 因为原文**注释里**正好写着这条禁令。改成只查真实用法：`!/@media[^{]*prefers-color-scheme/`。
 
-## 结论
+## Conclusion
 
 `dsh-plugin-core/design` 可用：`buildTokensCss(prefix)` + `createStyleKit({ id, prefix })`
 + `DARK_THEME_SELECTOR`。5 条 smoke 自检全过（前缀替换、深色段判据、prefix 校验、
@@ -58,7 +59,7 @@
 - `ensureStyles` 的真实 DOM 行为（挂载 / 幂等 / 域排序）**没有在浏览器里验过**，
   只在无 DOM 环境验了「静默跳过」。要等第一个消费者接入任务一起验。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

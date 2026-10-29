@@ -1,19 +1,20 @@
-# 20261021-1151-core-文档随包分发-agent-可读文档机制-demo-与-docs-真源统-ebe3：core 文档随包分发：Agent 可读文档机制 + demo 与 docs 真源统一
+# 20261021-1151-core-文档随包分发-agent-可读文档机制-demo-与-docs-真源统-ebe3: core 文档随包分发：Agent 可读文档机制 + demo 与 docs 真源统一
 
-- **标签**：基建、文档、分发、demo、Agent、真源
-- **状态**：closed · 2026-10-23 09:08:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-21 11:51:26 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-23 09:08:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 基建, 文档, 分发, demo, Agent, 真源
+- **Status**: done · 2026-10-23 09:08:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-21 11:51:26 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-23 09:08:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户 2026-10-21 提出：demo 是给人看的，还需要一套给 Agent 看的开发文档；希望文档随 core 包分发（插件项目引用 core 时 Agent 能读到，但插件打包产物不带文档）。想法：① 一主题一文件、Agent 按需读；② 保留原文件；③ 格式 MD 还是 TS 待定；「原数据」用途：demo 写死的文档性文案按格式从文档读取，改文档 demo 自动跟随。当天中午用户二次反馈（否决「最省」式折中）：**单一真源是硬标准**——demo 上每个字/每张表/每段示例在 demo 源码里不许有第二份；demo 只管显示不管内容；文档组织方式是核心；Agent 读取由消费方自己的规则解决（我们无法注入别人的会话）；并提出二期设想：core 包自带 skill，消费方装 core 后把 skill 交给自己的 Agent。
 
-## 待办
+## To Do
 
 - [x] 阶段0：定稿 doc-format.ts schema + gen-docs 按 section.id 扁平聚合 + --check 闸（2026-10-21 晚，见过程 11）
 - [ ] 阶段1：转 demo 消费的 6 份文档为 .doc.ts（ui/utils/session/explorer/design/integration）；requirements/architecture/external 保持手写 md
@@ -23,11 +24,11 @@
 - [ ] 阶段5：docs/README.md 写消费方标准指引句；二期 skill/ 随包分发
 - [x] 用户拍板方案 + ship md+.doc.ts（不排除 .doc.ts，Agent 能读即留包内，见过程 10）
 
-## 下一步
+## Next
 
 阶段0 已完成（doc-format.md 规范 + gen-docs 扁平聚合 + --check 闸，typecheck 通过，见过程 11）。下一动作 = 阶段1：把 features/ui、features/utils、features/session、features/explorer、features/design、examples/integration 共 6 份转成 .doc.ts（填全内容，section.id 对齐 demo SectionId），并在 gen-docs 的 MAP 登记；每转一份重跑 gen-docs 比对生成 md 与原手写无遗漏。requirements/architecture/external 保持手写 md 不动。
 
-## 过程
+## Process
 
 三专家并行调研（code-explorer，只读）关键结论：
 
@@ -43,15 +44,15 @@
 10. **用户拍板开工（2026-10-21 晚，讨论澄清 Q1-Q3 后）**：方案批准（TS 数据模块唯一真源 + 双投影 + 构建期生成入库 + pretest --check + 按 section.id 扁平聚合解耦 demo 与文件）。ship 决策：core 包 docs/ 同时发 .md 与 .doc.ts（不排除 .doc.ts，Agent 能读即留包内，用户原话「他能读增员就不用去管了，就直接放在里面就行了」）。直接进入阶段 0。
 11. **阶段0 完成（2026-10-21 晚）**：定稿 docs/design/doc-format.md（登记进 docs/README.md 槽位表，把「各功能」拆为真源/生成两行）+ doc-format.ts 补 section.id 契约注释 + gen-docs.mjs 重写为按 section.id 扁平聚合（docData[id]，重 id 报错退出）+ 加 --check 闸（比对 doc-data.generated.ts 是否最新）+ MAP 暂只列 explorer。验证：`node gen-docs.mjs` 生成双投影、`--check` 绿、`pnpm typecheck:docs` 通过；生成物确认已扁平（docData["overview"] 等按 id 取）。阶段1（转 ui/utils/session/design/integration 6 份）待启动。
 
-## 结论
+## Conclusion
 
 **实施中（阶段0 完成，阶段1 启动）**：**TS 数据模块唯一真源**——`docs/**/*.doc.ts` 手写 typed（tsconfig.docs.json 守 schema），gen-docs.mjs 按 section.id 扁平聚合生成双投影（`*.md` 给 Agent/人读 + `packages/demo/src/doc-data.generated.ts` 给 demo 零解析），`pnpm typecheck:docs` 与 `gen:docs --check` 双重闸。ship md+.doc.ts（不排除）。全量迁移 + demo 接线 + doc-contract 测试按阶段 1-5 推进。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-21 11:51:26 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-21 11:51:26 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-10-21 11:52:29 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 三专家调研完成：docs 已在 npm files 内且 bundler 不吃 md（产物不带文档已成立）；demo 13 处写死内容与 docs 同源；docs 零 frontmatter 无机器可读索引；demo 双语 vs docs 纯中文有冲突。已产出 A/B/C 三方案待用户选型（推荐 B：MD 真源 + frontmatter 索引 + gen-docs.mjs 生成 + --check 闸）。
 - 2026-10-21 12:04:55 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户否决最省式折中，定单一真源硬标准：demo 每字每表在 demo 源码无第二份、demo 只管显示。定稿方向：md 真源（frontmatter display{zh,en}+五列 API 表+带 id 代码块）→ gen-docs.mjs 生成 → demo 删 DICT 与硬编码改纯渲染；skill 列二期。注意 ledger log 前拉远端会覆盖未提交正文（本轮已被覆盖一次，已重写补回）。
 - 2026-10-21 16:30:14 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 原型解析实测（node 内联跑全 docs）：42 个表全部列数自洽+分隔行齐全、转义管道 \| 正确切分、25 个代码围栏全闭合、0 个多行单元格；demo ApiRow(name/type/def/descKey) 与文档表格 1:1；发现真实漂移：Button 表 docs 有 …rest 无 disabled、demo 反之。定规范：demo 消费的表用前置标记注释定位（不按行号），围栏加 id。
@@ -62,4 +63,4 @@
 - 2026-10-21 17:21:58 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 阶段1 启动（design 转换）：design.md → design.doc.ts；schema 的 ApiRow 加可选 required? 以忠实表达源表「必填」列，gen-docs 按是否有 required 条件加列。--check 闸当场拦下 explorer/design 的 overview 撞 id，改全局唯一稳定 id（页面主段=SectionId、子段加前缀）后通过——证明 id 契约有效且能防漂移。design 为 6 份中第 1 份；手写的 design.md 暂保留，阶段1 收尾再覆盖。验证：gen+check+typecheck 全绿。
 - 2026-10-21 17:41:22 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 阶段1 续：转完 session/utils/integration 三份 .doc.ts（共 5/6，剩 ui）。schema 把 api 从单表改为 ApiTable[]（一个 section 可多张表，如 session 的 SessionSource+SessionPreview）；renderMd 按数组顺序渲染；MAP 增 session/utils/integration；integration 在 docs/examples/ 导入路径修正为 ../design/doc-format.js。验证：gen+check+typecheck 全绿。手写的 session.md/utils.md/integration.md 暂保留，阶段1 收尾再覆盖生成物。
 - 2026-10-21 17:49:04 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 阶段1 收尾 + 阶段2 完成：ui.doc.ts 转完（8 组件页+概览+Modal，共 6/6）。schema 把 api 改 ApiTable[] 支持一个 section 多张表；gen-docs 按 section.id 扁平聚合，18 个 demo SectionId 全覆盖，无 id 冲突。阶段2：package.json 的 build 串入 gen:docs（gen:css && gen:docs && tsc），pretest 加 gen:docs --check 双闸，补 prepublishOnly=build&&test。验证 pnpm build 跑通且 gen:docs --check / gen-css --check 全绿。手写的 explorer/design/session/utils/integration.md 暂保留，阶段1 收尾再删（改 docData 消费前 demo 仍读旧硬编码）。
-- 2026-10-23 09:08:24 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：文档随包分发落地：6 份 docs/**/*.doc.ts 为唯一真源，gen-docs 生成 md（Agent 读）+ demo doc-data.generated.ts 双投影，pretest 双 --check 与 typecheck:docs 守门，package files=[dist,docs] ⇒ 装包即带文档
+- 2026-10-23 09:08:24 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

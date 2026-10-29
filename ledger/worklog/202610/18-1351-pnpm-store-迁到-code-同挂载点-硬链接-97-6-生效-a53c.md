@@ -1,28 +1,29 @@
-# 20261018-1351-pnpm-store-迁到-code-同挂载点-硬链接-97-6-生效-a53c：pnpm store 迁到 /code 同挂载点，硬链接 97.6% 生效
+# 20261018-1351-pnpm-store-迁到-code-同挂载点-硬链接-97-6-生效-a53c: pnpm store 迁到 /code 同挂载点，硬链接 97.6% 生效
 
-- **标签**：建设、pnpm、store、硬链接
-- **状态**：closed · 2026-10-18 13:52:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 13:51:16 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 13:52:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, pnpm, store, 硬链接
+- **Status**: done · 2026-10-18 13:52:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 13:51:16 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 13:52:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 上一个任务（`20261018-1307`）查清「硬链接 0% 生效」但没解决。用户追问「为什么会落空、到底应该
 什么样、成不成熟，去网上查」。本任务：查证 + 根治。
 
-## 待办
+## To Do
 
 无（已解决）。
 
-## 下一步
+## Next
 
 另两个仓（dispatch / ledger）切 pnpm 时，确认 `storeDir` 配置仍在（见 AGENTS.md）。
 
-## 过程
+## Process
 
 **网上查证（不凭记忆）**：
 
@@ -62,7 +63,7 @@ ln <store 里的文件> <项目目录>          → Invalid cross-device link
 
 非链接的那 6 个文件是 store 里没有对应项的（如 `.bin` 脚本），属正常。
 
-## 结论
+## Conclusion
 
 硬链接机制成熟，落空原因是**本机 `/code` 与 `/opt/node-persist` 是两个挂载点**（跨设备硬链接
 被内核拒绝）。store 迁到 `/code/dsh-plugins/.pnpm-store` 后 **97.6% 生效**，
@@ -75,7 +76,7 @@ ln <store 里的文件> <项目目录>          → Invalid cross-device link
 - 单仓体积仍是 33M（vs npm 25M），差异来自 peer 隔离与 du 统计方式；**多仓共享后总占用才会反超 npm**。
 - 旧 store `/opt/node-persist/pnpm-store`（434M）已无人用，可清理（未擅自动，等用户确认）。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

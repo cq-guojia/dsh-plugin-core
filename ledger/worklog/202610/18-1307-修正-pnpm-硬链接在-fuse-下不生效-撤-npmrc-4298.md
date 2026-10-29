@@ -1,29 +1,30 @@
-# 20261018-1307-修正-pnpm-硬链接在-fuse-下不生效-撤-npmrc-4298：修正：pnpm 硬链接在 FUSE 下不生效，撤 .npmrc
+# 20261018-1307-修正-pnpm-硬链接在-fuse-下不生效-撤-npmrc-4298: 修正：pnpm 硬链接在 FUSE 下不生效，撤 .npmrc
 
-- **标签**：缺陷修复、pnpm、环境
-- **状态**：closed · 2026-10-18 13:08:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 13:07:42 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 13:08:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 缺陷修复, pnpm, 环境
+- **Status**: done · 2026-10-18 13:08:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 13:07:42 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 13:08:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 上一任务（`20261018-1243` 切 pnpm）里我下了个**错误结论**：说 `.npmrc` 加
 `package-import-method=hardlink` 后「追平 npm 的 25M」。用户追问
 「`.pnpm/csstype@3.2.3` 下这么多文件是引用还是 copy」——查证后发现结论是错的，本任务修正。
 
-## 待办
+## To Do
 
 无（已修）。
 
-## 下一步
+## Next
 
 推广 pnpm 到另两个仓前，先按本任务的实测数据重新评估（见结论）。
 
-## 过程
+## Process
 
 **查证方法**：用 inode 对账——遍历 `node_modules/.pnpm` 全部文件的 inode，
 与 `pnpm-store/v11/files` 的 inode 集合求交集。
@@ -50,7 +51,7 @@ node_modules/.pnpm 文件数：250
 不是 hardlink 生效，而是第一次 `pnpm add` **失败在中途**、`node_modules` 里残留了 npm 时代的文件
 + pnpm 的副本，是脏状态；删掉重装后才得到干净的 33M。
 
-## 结论
+## Conclusion
 
 **修正后的真实数据**：
 
@@ -70,7 +71,7 @@ node_modules/.pnpm 文件数：250
 （npm 式扁平结构）——但那样会**丢掉 peer 隔离，也就丢掉了 pnpm 的主菜（防幽灵依赖）**。
 要不要推广、要不要 hoisted，由用户定。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

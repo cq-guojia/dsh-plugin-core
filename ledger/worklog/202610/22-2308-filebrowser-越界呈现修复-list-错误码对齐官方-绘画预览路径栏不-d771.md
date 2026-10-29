@@ -1,15 +1,16 @@
-# 20261022-2308-filebrowser-越界呈现修复-list-错误码对齐官方-绘画预览路径栏不-d771：FileBrowser 越界呈现修复 + list 错误码对齐官方（绘画预览路径栏不可点）
+# 20261022-2308-filebrowser-越界呈现修复-list-错误码对齐官方-绘画预览路径栏不-d771: FileBrowser 越界呈现修复 + list 错误码对齐官方（绘画预览路径栏不可点）
 
-- **标签**：缺陷、explorer、FileBrowser、sessionId、错误码
-- **状态**：closed · 2026-10-26 09:18:06 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-22 23:08:11 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-26 09:18:06 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 缺陷, explorer, FileBrowser, sessionId, 错误码
+- **Status**: done · 2026-10-26 09:18:06 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-22 23:08:11 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-26 09:18:06 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 真机现象：绘画预览空间点开 `/workspace/Temp/2026Q4/1022/192924-….md`（用户确认 `/workspace` 就是工作目录、
 路径绝对在区内），文件预览正常，但第一排路径栏退化成一条**不可点、无面包屑分隔线**的完整路径。
@@ -29,17 +30,17 @@
   ⇒ 它的"跨工作区随便逛"是绕开官方 confinement，不代表官方 API 贯通。
 - GitHub issue 区搜 `outside-workspace` / `workspaceFiles absolute` 均 0 结果 ⇒ 非已知社区问题。
 
-## 待办
+## To Do
 
 - 真机验收：宿主装本版后，绘画预览场景传 `workspaceAnchors`（宿主 workspaces 快照原样）⇒ 路径栏恢复
   面包屑、目录树可展开、▾ 下拉可切工作区；不传 ⇒ 维持现状 + hint 文案。
 - 调用方（绘画预览所在插件）按 `workspaceAnchors` 接线（demo `blocks.tsx` 已是范本）。
 
-## 下一步
+## Next
 
 等用户真机验收；验收通过后由用户决定是否提交（本会话未授权 commit）。
 
-## 过程
+## Process
 
 设计讨论（用户逐轮拍板）：
 1. 初判"换对 sessionId"被用户否决——调用方手里只有路径，没有"哪个工作区"的概念；
@@ -82,7 +83,7 @@
 验证：`pnpm run build` ✓；`node --test test/*.test.mjs` **98/98** ✓（含两个新单测）；
 `pnpm run typecheck` ✓；`pnpm run build:demo` ✓。
 
-## 结论
+## Conclusion
 
 - 不是判断逻辑写错码，是**官方 API 不对称 + 调用方只给路径不给工作区**：read 允许区外文件、
   list 限区内目录、list 按 sessionId 派生根。三方事实叠加才有该现象。
@@ -116,11 +117,11 @@ list / rootCache 键 / learnRoot / stat / absolutizeDir / 相对化 / copyPath /
 效果：面包屑 = `[匹配到的工作区] > [区内相对层级]`，工作区之外的段一律不出现；匹配不到 ⇒
 回落 props.sessionId（学根与 list 同键，仍能相对化）或越界只读态。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
-- 2026-10-22 23:08:11 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 创建任务（doing）
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
+- 2026-10-22 23:08:11 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-10-22 23:23:04 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 落码完成：workspaceAnchorForPath 纯函数+单测、FileBrowser 五处 list 换解析 sessionId、crumbBarPlain hint、移除 lookup-not-found、demo 接线、dsh-host.md §12；build/test 97 过/typecheck/build:demo 全绿
 - 2026-10-22 23:46:22 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第二轮：openFilePreview 内置切工作区（PreviewBody：anchors 驱动、换会话+key 重挂载+回根、无会话不进列表）；anchorSessionForTitle 纯函数+单测；explorer.doc.ts 示例；98/98、typecheck、build:demo 全绿
 - 2026-10-22 23:55:28 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第三轮（用户拍板：底座不甩锅调用方）：FileBrowser/PreviewBody 兜底自动读 workspaceList 快照（connectHost 注入），零传参即匹配+可切；HostWorkspaceItem 加 path；demo 改零传参示范；98/98、typecheck、build:demo 全绿
@@ -129,6 +130,6 @@ list / rootCache 键 / learnRoot / stat / absolutizeDir / 相对化 / copyPath /
 - 2026-10-23 00:18:41 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 回退未经同意的越界 hint：删 FileBrowser crumbBarPlain hint span + explorerOutsideHint 中英 key + bar-hint CSS（源码与产物均已清零，死 key 自检过）
 - 2026-10-23 00:24:48 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · session 变更卡结构对齐官方（解包 ui-deliverables 0.2.1-rc.2 核实）：从 tail 之后挪进 tailSlot、置于网格之前（官方 Fragment>[ChangedFiles, 网格]）；全绿待真机验收
 - 2026-10-23 00:47:16 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · session 变更卡补官方完整结构（0.2.1-rc.2 解包）：多文件 = header + 文件行列表（路径+每文件 +N -M 常显上色）+ COLLAPSED_ROWS=4 折叠 toggle；header 60px/tile 40×40/hover 换显预览提示；新增 changesAll/changesCollapse 文案；98/98、typecheck、build:demo 全绿
-- 2026-10-26 16:55:46 · release · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 释放回公共池
-- 2026-10-26 17:17:41 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领 → doing
-- 2026-10-26 17:18:06 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案封卷
+- 2026-10-26 16:55:46 · release · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · released to pool
+- 2026-10-26 17:17:41 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
+- 2026-10-26 17:18:06 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

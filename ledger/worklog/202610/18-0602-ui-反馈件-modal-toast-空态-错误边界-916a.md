@@ -1,29 +1,30 @@
-# 20261018-0602-ui-反馈件-modal-toast-空态-错误边界-916a：ui 反馈件：Modal + toast + 空态 + 错误边界
+# 20261018-0602-ui-反馈件-modal-toast-空态-错误边界-916a: ui 反馈件：Modal + toast + 空态 + 错误边界
 
-- **标签**：建设、ui、反馈、弹窗
-- **状态**：closed · 2026-10-18 06:05:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 06:02:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 06:05:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, ui, 反馈, 弹窗
+- **Status**: done · 2026-10-18 06:05:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 06:02:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 06:05:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 需求文档 §2.2：ui 要装反馈件（`Modal` / `Loading` / `toast` / 空态 / 错误边界），
 用户拍板「log / toast 这些最基础的 UI 都在 UI 里面」。
 另：Modal 只是**呈现方式**不是内容 —— 会话预览要用弹窗承载时用它（需求文档 §4、§6）。
 
-## 待办
+## To Do
 
 无。
 
-## 下一步
+## Next
 
 `explorer` 子包：ExplorerPanel（工作区浏览 + 文件预览）+ WorkspacePicker + FilePicker。
 
-## 过程
+## Process
 
 - **Modal**：自绘 overlay + 面板，**不用 react-dom 的 `createPortal`** —— 多一个必需依赖不划算，
   `position:fixed` 足够。标题 / 主体 / 底栏三段，点遮罩关闭、点面板不关闭（阻止冒泡）。
@@ -36,7 +37,7 @@
   兜底渲染可自定义，默认给「出错了 + 重试」。
 - 内置字典再扩 4 个 key：`modalClose` / `emptyText` / `errorTitle` / `errorRetry`（中英）。
 
-## 结论
+## Conclusion
 
 反馈件齐了，23 条自检全过，`dist/ui/index.js` 35 个导出可直接 import。
 
@@ -45,7 +46,7 @@
 - Modal 没有焦点陷阱 / Esc 关闭 / 滚动锁定 —— 真碰到再加，别提前做。
 - toast 同一时刻多条会竖排堆叠，没做上限（超过 N 条会顶出屏幕）。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

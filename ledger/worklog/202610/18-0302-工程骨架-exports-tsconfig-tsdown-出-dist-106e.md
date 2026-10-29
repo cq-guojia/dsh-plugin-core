@@ -1,29 +1,30 @@
-# 20261018-0302-工程骨架-exports-tsconfig-tsdown-出-dist-106e：工程骨架：exports + tsconfig + tsdown 出 dist
+# 20261018-0302-工程骨架-exports-tsconfig-tsdown-出-dist-106e: 工程骨架：exports + tsconfig + tsdown 出 dist
 
-- **标签**：建设、打包、tsdown、骨架
-- **状态**：closed · 2026-10-18 03:05:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 03:02:52 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 03:05:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, 打包, tsdown, 骨架
+- **Status**: done · 2026-10-18 03:05:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 03:02:52 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 03:05:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 需求文档 `docs/requirements.md` 定稿后开工的第一个实施任务。无人值守模式：用户授权自行决策 +
 自行 close。要求：一个子包一个任务，做完一个 close 一个。
 
-## 待办
+## To Do
 
 无（已做完）。后续任务见「下一步」。
 
-## 下一步
+## Next
 
 建任务做 `design` 子包：token 表（前缀参数化，含 `body[data-ds-dark-theme]` 深色段）+
 `createStyleKit({ id, prefix })` 注入器工厂。
 
-## 过程
+## Process
 
 **关键裁决：本包是「库」，不是「插件」⇒ 产物形态跟兄弟仓不一样。**
 
@@ -49,7 +50,7 @@
 
 **踩坑**：无。装 typescript 5.9.3 时本仓无 node_modules，直接 `npm i -D` 成功。
 
-## 结论
+## Conclusion
 
 骨架通了：`npm run build` 出 dist（js + d.ts + sourcemap），六个子路径导出已声明。
 
@@ -58,7 +59,7 @@
 - 尚未验证「消费方 bundler 能否正确 tree-shake 按子路径引入」—— 要等第一个消费者接入任务验证。
 - 还没写 smoke 测试（`npm test` 指向 `test/*.test.mjs`，目录已建但为空）。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

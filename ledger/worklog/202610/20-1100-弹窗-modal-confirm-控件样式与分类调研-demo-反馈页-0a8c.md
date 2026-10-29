@@ -1,15 +1,16 @@
-# 20261020-1100-弹窗-modal-confirm-控件样式与分类调研-demo-反馈页-0a8c：弹窗（Modal/Confirm）控件样式与分类调研——demo 反馈页
+# 20261020-1100-弹窗-modal-confirm-控件样式与分类调研-demo-反馈页-0a8c: 弹窗（Modal/Confirm）控件样式与分类调研——demo 反馈页
 
-- **标签**：界面、弹窗、Modal、调研、demo、样式
-- **状态**：closed · 2026-10-20 17:57:38 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-20 11:00:31 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-20 17:57:38 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 界面, 弹窗, Modal, 调研, demo, 样式
+- **Status**: done · 2026-10-20 17:57:38 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-20 11:00:31 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-20 17:57:38 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户要做 demo「反馈」页控件样式调整，先从弹窗入手。兄弟项目 dsh-task-dispatch-table 有两个确认弹窗视觉不一致（"删除任务" 360px 窄卡 / "放弃未保存的更改?" 380px 浅底卡），第三种是"会话记录"大内容弹窗。需要调研：
 
@@ -17,7 +18,7 @@
 2. 这两个弹窗是不是官方样式？能直接用官方吗？
 3. 本仓弹窗分类应该怎么定——参照开源大型项目的归类。
 
-## 待办
+## To Do
 
 - [x] 调研兄弟项目弹窗实现（几套、各用什么）
 - [x] 调研官方 primitives 提供的浮层组件清单
@@ -25,14 +26,14 @@
 - [ ] 用户基于调研结果拍板分类与开发方案（下一步）
 - [ ] 拍板后：设计并实现弹窗控件族，demo 反馈页接入
 
-## 下一步
+## Next
 
 等用户对「结论 §三 分类建议」拍板：
 1. core 弹窗分几类（建议：Modal 容器 + ConfirmDialog 确认层 + Toast）；
 2. ConfirmDialog 基于自绘 Modal 还是官方 Modal（涉及 open 受控口径与 pickOfficial 兜底取舍）；
 3. 是否提供命令式 `confirm()` 便捷 API（兄弟项目 4 处全是声明式散装，无先例）。
 
-## 过程
+## Process
 
 ### 一、官方（宿主）提供了什么
 
@@ -84,7 +85,7 @@
 3. 确认型的要素：title + description + 右下按钮组（1~3 个）+ severity（默认确认 / 危险红 / 警告黄）；
 4. 大内容弹窗 = 容器 + 自由 children，槽位（标题、关闭钮、footer）留给消费方。
 
-## 结论
+## Conclusion
 
 1. **宿主只提供通用 Modal**（title/description/footer/headless 槽位，open 受控）；无确认框变体、无 danger、无命令式 API。另提供 Toast（仅 success tone）。
 2. **用户截图的两个确认弹窗都不是官方样式**——是兄弟项目两套独立自绘（渲染方式都不同：一个 fixed 全屏、一个 absolute 挂抽屉内），样式漂移没有官方原因，纯粹是没统一控件。所以"直接用官方现成的确认框"**不存在**，需要本仓自己做 ConfirmDialog。
@@ -207,10 +208,10 @@
 
 > 注：本节九之前的 worklog（172/174/199 行）记录了早先「两套命令 *Host」的过渡方案，已被本节反转——属同一轮迭代中的方案调整，保留原记录以追溯，不单独删改。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
-     要补一条就跑 progress.py log --id <任务号> --note "做了什么"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
 
 - 2026-10-20 11:07:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 调研完成：官方仅有通用 Modal 无确认变体；兄弟项目两弹窗均为自绘且互不统一（task-list.tsx:1066 / task-editor.tsx:940）；开源共识=容器+确认语义层；结论与分类建议已写入 worklog，待用户拍板
 - 2026-10-20 11:20:10 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 反馈页加『原生弹窗（宿主）』演示：Official.Modal 展示自定义内容与三按钮 footer（controls.tsx:744+）；踩硬约束 ui 零官方依赖，撤销 index 透出改从 official.js 取，49 测试+lint 全过；可定制性结论已写入 worklog 五节
@@ -219,4 +220,4 @@
 - 2026-10-20 12:35:38 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 真机反馈三连改：①宿主示例置顶+宿主命令示例；②遮罩换宿主变量 --dshpc-mask（原写死蓝灰 rgba(15,23,42,.45)）；③三套样式严格分开——小确认框严格抄 task-list renderConfirm(360px/18px/无分隔线)、大弹窗严格抄 archive-session(min(1120px,100vw-32px)×calc(100%-80px)/18-34-12头)、Modal 补 width/height/maxHeight 默认宽高可覆盖；official.ts 新增第二套命令 confirmModalHost/alertModalHost(Promise)；build+test49/49+lint 全过
 - 2026-10-20 12:48:15 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 大弹窗示例二次修订：①128条标签移出头部、挂会话记录后用最小副标题行 __sid；②关闭叉缩到20px、更多改用outline sm带icon按钮、头部align-items居中解决歪斜；③左右内距各减3px(34→31)；④示例拆带footer/无footer两个且head排法不同；build+build:demo+test49/49+lint全过
 - 2026-10-20 13:54:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 弹窗API收敛为三块：confirmModal/alertModal加skin:'core'|'host'参数，删除重复的alertModalHost/confirmModalHost；宿主渲染经registerHostDialog注册进modal-host保持ui零官方依赖；命令名带Modal后缀不覆盖原生；Modal是大内容组件非命令；demo重组为原生弹窗(宿主)/小型弹窗(自定义)/大型弹窗(自定义)三块；清旧产物强制重建dist无Host残留+build+test49/49+lint全过
-- 2026-10-20 17:57:38 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：弹窗调研与落地完成：确认宿主只有通用 Modal；Modal 头部四槽扩展 + AlertModal/ConfirmModal + Promise 式 alertModal/confirmModal（含 skin:host），demo 反馈页示例矩阵已接入
+- 2026-10-20 17:57:38 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

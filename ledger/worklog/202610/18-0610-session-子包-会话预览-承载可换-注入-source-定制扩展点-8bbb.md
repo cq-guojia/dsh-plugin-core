@@ -1,29 +1,30 @@
-# 20261018-0610-session-子包-会话预览-承载可换-注入-source-定制扩展点-8bbb：session 子包：会话预览（承载可换 + 注入 source + 定制扩展点）
+# 20261018-0610-session-子包-会话预览-承载可换-注入-source-定制扩展点-8bbb: session 子包：会话预览（承载可换 + 注入 source + 定制扩展点）
 
-- **标签**：建设、session、会话、预览
-- **状态**：closed · 2026-10-18 06:12:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 06:10:36 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 06:12:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, session, 会话, 预览
+- **Status**: done · 2026-10-18 06:12:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 06:10:36 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 06:12:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户原话：自绘的是**官方 session 会话的界面**；「弹窗」只是**当前**呈现方式，将来也可能是侧栏或整页。
 核心动作是「把会话拿来看一眼，看完即关，关了接着浏览」（他的场景：自动执行的任务，想看这次执行的会话，
 不想开新窗口）。⇒ 叫「弹窗」方向错了，实质是**会话预览**。
 
-## 待办
+## To Do
 
 **会话渲染的完整镜像未搬**（见下，这是本任务最大的未完成项）。
 
-## 下一步
+## Next
 
 另开任务搬运 `mirror/` 的会话 UI 镜像（15 个文件）—— 那是「连渲染一起」的另一半。
 
-## 过程
+## Process
 
 **定位**：`session` 是「有实质内容、会持续长大的功能模块」，所以配独立成包（立包判据 §4）；
 而 `Modal` 只是呈现形式，留在 ui（用户拍板）。
@@ -48,7 +49,7 @@
 理由记在这里，避免明天看到「会话预览」以为已经全好了：
 **它现在能跑通契约与三种承载，但长得不像官方会话。**
 
-## 结论
+## Conclusion
 
 `dsh-plugin-core/session` 骨架可用：三种承载 + 注入 source + 定制扩展点 + 三态，
 27 条自检全过，入口可 import。
@@ -58,7 +59,7 @@
 - 没做消息分页 / 增量加载（长会话会一次全渲染）。
 - 仍未在浏览器渲染验证。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

@@ -1,15 +1,16 @@
-# 20261018-0423-缺陷修复-css-类名换了前缀但控件-classname-没换-样式对不上-d14b：缺陷修复：CSS 类名换了前缀但控件 className 没换，样式对不上
+# 20261018-0423-缺陷修复-css-类名换了前缀但控件-classname-没换-样式对不上-d14b: 缺陷修复：CSS 类名换了前缀但控件 className 没换，样式对不上
 
-- **标签**：缺陷修复、样式、前缀、控件
-- **状态**：closed · 2026-10-18 04:24:49 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 04:23:45 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 04:24:49 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 缺陷修复, 样式, 前缀, 控件
+- **Status**: done · 2026-10-18 04:24:49 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 04:23:45 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 04:24:49 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 上一个任务（`20261018-0414` ui 基础零件）里我让 `buildCss()` **同时替换两处前缀**：
 变量 `--tdt-` 和类名 `dsh-tdt-`，理由是「不换类名的话两个插件的 `.dsh-tdt-btn` 会互相覆盖」。
@@ -22,15 +23,15 @@
 上一个任务没发现，是因为**只在无 DOM 环境测了字符串替换，没在浏览器里渲染验证过**
 （它的「留坑」里写了这条，本任务就是这个坑落地）。
 
-## 待办
+## To Do
 
 无（已修）。
 
-## 下一步
+## Next
 
 继续 `ui` 的选择器任务（Picker / ModelPicker）。
 
-## 过程
+## Process
 
 修法：`buildCss()` **只换变量前缀 `--tdt-`，类名 `dsh-tdt-` 原样保留**，
 并把这个决定与理由写进函数注释（避免以后有人又"顺手"把类名也换掉）。
@@ -48,7 +49,7 @@
 
 测试同步改：断言从「类名必须换掉」改成「类名必须保留 + 变量必须换掉」，把这个 bug 钉住。
 
-## 结论
+## Conclusion
 
 已修，4 条 ui 自检全过，`buildCss` 的行为与控件 className 对齐。
 
@@ -56,7 +57,7 @@
 - **仍未在浏览器渲染验证** —— 本 bug 就是因为没渲染验证才漏的。消费者接入任务里必须补这一步。
 - 类名未隔离的限制仍在（见上）。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

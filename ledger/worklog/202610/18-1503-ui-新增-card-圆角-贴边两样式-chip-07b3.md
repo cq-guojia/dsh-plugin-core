@@ -1,15 +1,16 @@
-# 20261018-1503-ui-新增-card-圆角-贴边两样式-chip-07b3：ui 新增 Card（圆角/贴边两样式）+ Chip
+# 20261018-1503-ui-新增-card-圆角-贴边两样式-chip-07b3: ui 新增 Card（圆角/贴边两样式）+ Chip
 
-- **标签**：建设、ui、卡片、chip
-- **状态**：closed · 2026-10-18 15:09:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 15:03:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-18 15:09:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, ui, 卡片, chip
+- **Status**: done · 2026-10-18 15:09:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 15:03:12 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-18 15:09:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户给了两张截图，要把其中的「条目卡片」抽象成 UI 控件，原话要点：
 
@@ -21,15 +22,15 @@
 - 内容排版随便调用方写
 - **中英文必须支持；亮暗风格必须能跟随切换**
 
-## 待办
+## To Do
 
 无。
 
-## 下一步
+## Next
 
 等真机验证（本包仍无浏览器渲染测试）。
 
-## 过程
+## Process
 
 **按用户要求拆成两个独立组件**（不是 `Card` + `variant`）：
 
@@ -56,7 +57,7 @@
 **顺带做了 `Chip`**（截图里到处是的小标签）：token 用现成的 `--tdt-chip-bg` / `--tdt-chip-bg-hover`，
 传 `onClick` 才是可点的。
 
-## 结论
+## Conclusion
 
 `ui` 新增三个导出：`Card` / `StripCard` / `Chip`（ui 入口导出数 37 → 41），
 自检 33 → **35 条**全过，CSS 六处类名落盘确认。
@@ -66,7 +67,7 @@
   真机看了可能要微调——但那是视觉调整，不改结构。
 - 折叠箭头用「▾ + 旋转 180°」（与 Picker 的箭头统一），没用「▸ 旋转 90°」——用户没指定，我先统一了。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->

@@ -1,15 +1,16 @@
-# 20261019-1250-基础层规整-design-ui-utils-按-structure-md-落地-48e9：基础层规整：design/ui/utils 按 structure.md 落地（adv.* 不动）
+# 20261019-1250-基础层规整-design-ui-utils-按-structure-md-落地-48e9: 基础层规整：design/ui/utils 按 structure.md 落地（adv.* 不动）
 
-- **标签**：建设、规整、ui、结构、官方原语
-- **状态**：closed · 2026-10-19 13:56:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-19 12:50:25 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-19 13:56:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, 规整, ui, 结构, 官方原语
+- **Status**: done · 2026-10-19 13:56:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-19 12:50:25 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-19 13:56:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户 2026-10-19 定稿 `docs/design/structure.md` 后，要求：**除开两个高级定制（`adv.explorer` / `adv.session`），把 design / ui / utils 三个基础层按文档方式规整好**。这是上一个任务（`19-1132`，设计与结构定稿）之后的代码落地阶段。
 
@@ -20,7 +21,7 @@
 - 路径方法 `joinPath` / `parentOf` / `crumbsOf` / `extOf` / `mimeOf` 是**纯方法、与宿主无关** ⇒ 进 `utils`，**不加前缀**；`previewKindOf` 是业务判断，留 `adv.explorer` 内部。
 - 暂缓：`utils/string`、`utils/number`、`utils/http`、`ui/feedback/Loading` —— 只标注，不新建/不扩展。
 
-## 待办
+## To Do
 
 按风险从低到高，一步一验证（`pnpm run build` + `pnpm test`）：
 
@@ -32,7 +33,7 @@
 6. **平台类型进 dist**：`primitives.d.ts` 随包发布为公开契约 + 公开 API 对平台类型 opaque。
 7. **文档/样例同步**：`architecture.md` / `features.md` / `features/*.md` / `examples/integration.md` 里过时的导出与结构说明跟着改。
 
-## 下一步
+## Next
 
 本任务由用户指令结案，**第 2–7 步未开始**，需另立任务承接：
 
@@ -43,7 +44,7 @@
 - 第 6 步平台类型进 dist
 - 第 7 步文档 / 样例同步
 
-## 过程
+## Process
 
 **2026-10-19 12:50** 建任务。范围与 `structure.md` 对齐；上一任务 `19-1132` 已结案（设计/结构/地基），代码改造从本任务开始。
 
@@ -55,16 +56,16 @@
 
 **2026-10-19 13:40** 发布链路接通：`publish.yml` / `demo-publish.yml` 由 `workflow_dispatch` 改为 `push tag v*` 自动发布，去掉 `--staging`；首次 404 定位为 Node 22 自带 npm 10.x 不满足 Trusted Publishing 的 npm ≥ 11.5.1，已加 `Upgrade npm` 步骤并打印版本。版本规则落为硬约束：`tag vX.Y.Z` == 核心 version == demo version，demo 由 `0.0.2` 对齐到 `0.1.2`，`test/version-sync.test.mjs` 本地校验，规则写入 `AGENTS.md`。`v0.1.2` 已发布。
 
-## 结论
+## Conclusion
 
 已完成本任务第 1 步（路径方法归 `utils`）与 ui 层「同名不同皮」收敛（chip / Modal 关闭按钮 / Toast 清理），并额外接通 tag 自动发布链路（库 + demo 同版本 `0.1.2`）。
 
 **剩余第 2–7 步未做**，按用户 2026-10-19 指令本任务先结案，剩余内容见「下一步」，由后续任务承接。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / close / log 自动追加，请勿手改。
-     要补一条就跑 progress.py log --id <任务号> --note "做了什么"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
 
 - 2026-10-19 13:56:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第1步完成（路径方法归 utils）+ chip/Modal/Toast 同名不同皮收敛 + tag 自动发布接通（v0.1.2），第2-7步未做，按用户指令结案
-- 2026-10-19 13:56:08 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 结案：第1步路径方法归 utils 完成；chip/Modal/Toast 同名不同皮收敛并加 CSS 契约自检；tag 自动发布接通（库+demo 同版本 0.1.2）；第2-7步未做、另立任务承接
+- 2026-10-19 13:56:08 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

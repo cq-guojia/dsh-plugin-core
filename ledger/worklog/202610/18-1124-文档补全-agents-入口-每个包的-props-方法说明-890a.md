@@ -1,15 +1,16 @@
-# 20261018-1124-文档补全-agents-入口-每个包的-props-方法说明-890a：文档补全：AGENTS 入口 + 每个包的 props/方法说明
+# 20261018-1124-文档补全-agents-入口-每个包的-props-方法说明-890a: 文档补全：AGENTS 入口 + 每个包的 props/方法说明
 
-- **标签**：建设、文档、AGENTS、props
-- **状态**：closed · 2026-10-19 11:39:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **创建**：2026-10-18 11:24:47 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
-- **封卷**：2026-10-19 11:39:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 建设, 文档, AGENTS, props
+- **Status**: done · 2026-10-19 11:39:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Created**: 2026-10-18 11:24:47 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-10-19 11:39:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
-<!-- 头部四行由脚本维护，顺序固定：标签 → 状态 → 创建 → 封卷。
-     「- **标签**：…」按 new --tags 插在最上面，没有标签就不写（分类只进台账与历史，不进本文档）；
-     「- **封卷**：…」在结案时加在最后。 -->
+<!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
+     The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
+     (category goes to the ledger and history only, never into this document).
+     The `- **Sealed**: …` line is appended on close. -->
 
-## 背景
+## Background
 
 用户要求补全文档，两条硬要求：①AI / Agent 看得懂且**知道去哪看**；②人看得明白、有明确方法说明。
 另定下分工：**文档 ≠ 规则**——文档只说「有什么、怎么用、边界在哪」；「必须怎么遵守」由消费方
@@ -18,15 +19,15 @@
 用户拍板的方案：`docs/` 随 npm 包一起发（`files` 加 `docs`），插件侧只需在自己 agents 里
 写一行指向 `node_modules/dsh-plugin-core/docs/...`；**不要把所有文章都塞进去**，砍掉决策史等长文。
 
-## 待办
+## To Do
 
 等用户确认后 close（按用户给的流程：做完 → 专家检查 → 提交确认 → 用户点头才 close）。
 
-## 下一步
+## Next
 
 用户确认后结案；若指出问题则改完再确认。
 
-## 过程
+## Process
 
 **关键修正：文档落位必须符合注入规则的槽位规范**（`.codebuddy/rules/__rulemux__300.CODE.md`）。
 我最初的计划（`docs/design.md` / `docs/ui.md` / `docs/INDEX.md` …）**不合规**，按规则重排：
@@ -55,7 +56,7 @@ BackToTop / Field 家族），表格里的默认值逐条对照源码，不凭�
 打进 bundle，`.md` 永远进不去；且 DSH 插件发布物是 `dist` 而非 `node_modules`。
 `docs/` 只存在于「开发时装了依赖的机器」上，正是 agent 需要它的地方。
 
-## 结论
+## Conclusion
 
 **产出**：根 `AGENTS.md` + 10 份 `docs/` 文档 + `package.json` 的 `files` 加 `docs`
 + README 加「文档在哪」入口表。
@@ -73,7 +74,7 @@ BackToTop / Field 家族），表格里的默认值逐条对照源码，不凭�
 **仍未验证**：文档是「照着源码写的」，但**没人照着文档接过一次插件**——
 「按 `docs/examples/integration.md` 走能不能真接上」要等第一个消费者。
 
-## 执行记录
+## Execution Log
 
-<!-- 本节由脚本维护：new / claim / set / release / log / close 自动追加，请勿手改。
-     补记用 progress.py log --id <任务号> --note "一句话"。 -->
+<!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
+     Backfill with: progress log --id <id> --note "...". -->
