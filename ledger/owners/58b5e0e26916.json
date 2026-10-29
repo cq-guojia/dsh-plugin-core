@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261029-1530-a317-控件样式改为按需注入": {"category": "重构", "created": "2026-10-29 15:30:52", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-29 15:37:24", "status": "doing", "tags": ["样式注入", "按需加载", "包体优化", "tree-shaking"], "title": "控件样式改为按需注入", "updated": "2026-10-29 15:48:43", "worklog": "worklog/202610/29-1530-a317-控件样式改为按需注入.md"}
+    "20261029-1530-a317-控件样式改为按需注入": {"category": "重构", "created": "2026-10-29 15:30:52", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-29 15:37:24", "status": "doing", "tags": ["样式注入", "按需加载", "包体优化", "tree-shaking"], "title": "控件样式改为按需注入", "updated": "2026-10-29 16:01:09", "worklog": "worklog/202610/29-1530-a317-控件样式改为按需注入.md"}
   },
   "version": "20261022000000"
 }
