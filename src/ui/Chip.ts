@@ -3,7 +3,10 @@ import { ensureControls } from './css.js'
 import { MarqueeText } from './MarqueeText.js'
 
 /** 标签语义色档（非 neutral 为实心信号面，字色配对见 chip.css）。 */
-export type ChipTone = 'neutral' | 'business' | 'success' | 'warning' | 'danger'
+export type ChipTone =
+  | 'neutral'
+  | 'business' | 'success' | 'warning' | 'danger'
+  | 'purple' | 'pink' | 'cyan' | 'teal' | 'orange' | 'indigo' | 'rose' | 'slate'
 
 /** 标签尺寸档（sm 即旧版默认，逐像素不变；xs 为 2026-10-20 新增的超小档）。 */
 export type ChipSize = 'sm' | 'md' | 'xs'

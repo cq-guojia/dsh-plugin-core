@@ -99,6 +99,43 @@ body{
   --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 8%,transparent);
   --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 8%,transparent);
 
+  /* ── 扩展语义色（2026-10-29 用户拍板：分类 / 图表常用色八支）──────────────
+     宿主无对应 alias ⇒ 写死 hex（不跟随宿主换肤）；实心面字色统一走 --dshpc-on-signal（白），
+     因八支明度都低于黄 / 青柠，白字两主题均 ≥4.5:1 可读。每条自带 hover/active/soft 派生；
+     暗色段只覆盖派生（base 写死、两主题同值）。 */
+  --dshpc-purple:#9333ea;
+  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 78%,#000000);
+  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 64%,#000000);
+  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 8%,transparent);
+  --dshpc-pink:#db2777;
+  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 78%,#000000);
+  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 64%,#000000);
+  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 8%,transparent);
+  --dshpc-cyan:#0e7490;
+  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 78%,#000000);
+  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 64%,#000000);
+  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 8%,transparent);
+  --dshpc-teal:#0f766e;
+  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 78%,#000000);
+  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 64%,#000000);
+  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 8%,transparent);
+  --dshpc-orange:#c2410c;
+  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 78%,#000000);
+  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 64%,#000000);
+  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 8%,transparent);
+  --dshpc-indigo:#4f46e5;
+  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 78%,#000000);
+  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 64%,#000000);
+  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 8%,transparent);
+  --dshpc-rose:#e11d48;
+  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 78%,#000000);
+  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 64%,#000000);
+  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 8%,transparent);
+  --dshpc-slate:#475569;
+  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 78%,#000000);
+  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 64%,#000000);
+  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 8%,transparent);
+
   /* ⚠️ 2026-10-18 用户拍板：宿主 alias 的 hover（暗色白 8% / 亮色 6%）**太弱**，
      「移上去要仔细看才看得出来」⇒ 不再委托宿主 hover 别名，改为自掺中性色并加重：
      亮色掺黑 10%、暗色掺白 14%（active 再加一档）。按钮 / 分段轨道 / 各类 hover 底同时受益。
@@ -199,6 +236,12 @@ body{
    唯一明暗判据；插件禁止用 prefers-color-scheme —— 它跟的是系统、不是用户在宿主里的选择）。
    下面只放 alias 表达不了的「固定中性面」；颜色若能靠 alias 自动跟随，一律不要写在这里。 */
 body[data-ds-dark-theme]{
+  /* 深色段的蓝**刻意不跟随宿主 alias**（唯一例外）：宿主暗色 alias 给的是 #60a5fa 一档的高亮蓝，
+     实心面（Chip / Button info / 日期选中格）压白字会发糊 —— 用户 2026-10-29 实测反馈。
+     ⇒ 深色下改定向浅色状态的蓝（#3b5bdb）靠，只在明度上抬一点点，保证它在暗底上仍看得见：
+     #4c6bd8 对白字 ≈4.8:1（原亮蓝只有 ~2.3:1），对日历格底 ≈3.2:1 仍过 UI 件的 3:1 线。
+     代价：宿主换品牌色时深色不再自动跟着变，需要这里手动同步。 */
+  --dshpc-business:#4c6bd8;
   --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);
   --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);
   /* 实心按钮 hover / active（暗色版）：黑底（浅色主题的近黑 → 暗色下的近白）掺黑压深；
@@ -211,8 +254,10 @@ body[data-ds-dark-theme]{
   --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);
   --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);
   --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);
-  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);
-  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#ffffff);
+  /* 同上：掺白比例从 22% / 36% 收到 12% / 22% —— 底色已变深，照旧比例提亮会在 hover 瞬间
+     把白字对比打回 ~3:1（正是用户嫌糊的那一档）；收窄后 hover 仍可感知、字仍清晰。 */
+  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 88%,#ffffff);
+  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);
   /* 暗色 hover 掺白 14% / active 24%（对齐上面 2026-10-18 的加重拍板）。rgba 兜底行同上。 */
   --dshpc-hover:rgba(255,255,255,.14);
   --dshpc-active:rgba(255,255,255,.24);
@@ -236,6 +281,31 @@ body[data-ds-dark-theme]{
   --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 5%,transparent);
   --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 5%,transparent);
   --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 5%,transparent);
+  /* 扩展色深色派生：底色写死、hover 掺白 12%/22%（同 business，防白字发糊），soft 5%。 */
+  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 88%,#ffffff);
+  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 78%,#ffffff);
+  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 5%,transparent);
+  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 88%,#ffffff);
+  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 78%,#ffffff);
+  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 5%,transparent);
+  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 88%,#ffffff);
+  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 78%,#ffffff);
+  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 5%,transparent);
+  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 88%,#ffffff);
+  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 78%,#ffffff);
+  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 5%,transparent);
+  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 88%,#ffffff);
+  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 78%,#ffffff);
+  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 5%,transparent);
+  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 88%,#ffffff);
+  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 78%,#ffffff);
+  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 5%,transparent);
+  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 88%,#ffffff);
+  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 78%,#ffffff);
+  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 5%,transparent);
+  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 88%,#ffffff);
+  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 78%,#ffffff);
+  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 5%,transparent);
   /* 「选中面」（深色版，2026-10-06）：掺 **~40% 背景色**（--dshpc-surface-base）⇒ 无限接近页面背景的黑、
      只比背景略深一点点（用户：深色下展开区压着任务透明绿会发灰，底色要尽量贴近背景才不显灰）。
      ⚠️ 深色下不能掺文字色 —— 那是白，会变亮，选中反而比本月日期浅。 */

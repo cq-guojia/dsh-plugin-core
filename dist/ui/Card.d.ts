@@ -1,7 +1,7 @@
 import { createElement as h, type CSSProperties, type ReactNode } from 'react';
 import { type Translate } from '../utils/i18n.js';
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
-export declare const CARD_ACCENTS: readonly ["business", "success", "warning", "danger", "neutral"];
+export declare const CARD_ACCENTS: readonly ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"];
 export type CardAccent = (typeof CARD_ACCENTS)[number];
 export interface CardSharedProps {
     /** 左侧色条档位或任意 CSS 颜色值（如 `'#f59e0b'`）。 */

@@ -1179,8 +1179,8 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "Button 10 档外观（实心 / 线框 / 无底）。hover / active 走 token 派生色（不用 opacity）。",
-        "en": "Button offers 10 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity)."
+        "zh": "Button 18 档外观（实心 / 线框 / 无底）。hover / active 走 token 派生色（不用 opacity）。扩展八色（purple/pink/cyan/teal/orange/indigo/rose/slate）为实心面，与 Chip/Card 同源。",
+        "en": "Button offers 18 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity). The eight extended tiers (purple/pink/cyan/teal/orange/indigo/rose/slate) are solid faces, same source as Chip/Card."
       },
       {
         "zh": "IconButton：variant: plain|outline|danger（默认 plain）、size（默认 lg）、icon（必填）、label（必填，无障碍名兼 title）。",
@@ -1197,7 +1197,7 @@ export const docData = {
         "rows": [
           {
             "name": "variant",
-            "type": "上表 10 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link）",
+            "type": "上表 18 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）",
             "def": "'outline'",
             "desc": {
               "zh": "外观档",
@@ -1893,7 +1893,7 @@ export const docData = {
         "rows": [
           {
             "name": "accent",
-            "type": "5 档 or 任意 CSS 色值（business/success/warning/danger/neutral）",
+            "type": "13 档 or 任意 CSS 色值（business/success/warning/danger/neutral + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）",
             "def": "'business'",
             "desc": {
               "zh": "档位映射到 design 的 token；也可传 '#f59e0b' 这类自定义值",
@@ -1987,11 +1987,11 @@ export const docData = {
         "rows": [
           {
             "name": "tone",
-            "type": "'neutral' | 'business' | 'success' | 'warning' | 'danger'",
+            "type": "'neutral' | 'business' | 'success' | 'warning' | 'danger' | 'purple' | 'pink' | 'cyan' | 'teal' | 'orange' | 'indigo' | 'rose' | 'slate'",
             "def": "'neutral'",
             "desc": {
-              "zh": "语义色（neutral 灰面，其余为实心信号面）",
-              "en": "Semantic color (neutral grey; others are solid signal faces)"
+              "zh": "语义色（neutral 灰面，其余为实心信号面；扩展八色同上）",
+              "en": "Semantic color (neutral grey; others are solid signal faces; eight extended tiers as above)"
             }
           },
           {

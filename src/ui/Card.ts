@@ -4,7 +4,10 @@ import { Chevron } from './chevron.js'
 import { t, type Translate } from '../utils/i18n.js'
 
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
-export const CARD_ACCENTS = ['business', 'success', 'warning', 'danger', 'neutral'] as const
+export const CARD_ACCENTS = [
+  'business', 'success', 'warning', 'danger', 'neutral',
+  'purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate',
+] as const
 export type CardAccent = (typeof CARD_ACCENTS)[number]
 
 export interface CardSharedProps {

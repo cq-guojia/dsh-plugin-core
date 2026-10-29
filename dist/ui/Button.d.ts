@@ -1,6 +1,6 @@
 import { createElement as h, type CSSProperties, type ReactNode } from 'react';
 /** 按钮外观档。 */
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success' | 'warning' | 'info' | 'danger-outline' | 'link';
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success' | 'warning' | 'info' | 'danger-outline' | 'link' | 'purple' | 'pink' | 'cyan' | 'teal' | 'orange' | 'indigo' | 'rose' | 'slate';
 /** 按钮高度档（sm 24 / md 28 / lg 32）。 */
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export interface ButtonProps {

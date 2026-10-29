@@ -3,8 +3,12 @@ import assert from 'node:assert/strict'
 import { CARD_ACCENTS } from '../dist/ui/index.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
-test('色条档位是 5 个，且都有对应文案/语义', () => {
-  assert.deepEqual([...CARD_ACCENTS], ['business', 'success', 'warning', 'danger', 'neutral'])
+test('色条档位是 13 个，且都有对应文案/语义', () => {
+  assert.deepEqual(
+    [...CARD_ACCENTS],
+    ['business', 'success', 'warning', 'danger', 'neutral',
+      'purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate'],
+  )
 })
 
 test('卡片折叠按钮的 aria 文案中英齐全', () => {

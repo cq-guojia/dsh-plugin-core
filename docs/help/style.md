@@ -56,7 +56,7 @@ EN: Categories below; token names are stable and used as-is.
 | 边框 | `--dshpc-border` `--dshpc-border-faint` |
 | 间距 | `--dshpc-space-1` … `--dshpc-space-3` |
 | 字号 / 行高 | `--dshpc-font-sm` `--dshpc-font-lg` `--dshpc-line-sm` `--dshpc-line-md` `--dshpc-line-lg` |
-| 语义色 | `--dshpc-business` `--dshpc-success` `--dshpc-danger` `--dshpc-warning` `--dshpc-link` |
+| 语义色 | `--dshpc-business` `--dshpc-success` `--dshpc-danger` `--dshpc-warning` `--dshpc-link` `--dshpc-purple` `--dshpc-pink` `--dshpc-cyan` `--dshpc-teal` `--dshpc-orange` `--dshpc-indigo` `--dshpc-rose` `--dshpc-slate`（后八支为 2026-10-29 扩展的分类/图表常用色，宿主无 alias、写死 hex） |
 | 语义面 | `--dshpc-open-bg` `--dshpc-open-bg-soft` `--dshpc-chip-bg` `--dshpc-chip-bg-hover` |
 | 代码 | `--dshpc-code-surface` `--dshpc-code-font` |
 

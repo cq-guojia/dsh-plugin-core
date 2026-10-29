@@ -94,7 +94,7 @@ function StarSvg(): ReturnType<typeof h> {
 /** 图标尺寸随按钮档位走（24 高配 12 / 28 配 14 / 32 配 16）。 */
 const ICON_SIZE: Record<ButtonSize, number> = { sm: 12, md: 14, lg: 16 }
 
-/** 10 档外观各配一颗语义图标，一眼看出「图标在前、文字在后」。 */
+/** 18 档外观各配一颗语义图标，一眼看出「图标在前、文字在后」。 */
 const VARIANT_ICON: Record<ButtonVariant, string> = {
   primary: 'check',
   secondary: 'copy',
@@ -106,17 +106,25 @@ const VARIANT_ICON: Record<ButtonVariant, string> = {
   info: 'send',
   'danger-outline': 'close',
   link: 'search',
+  purple: 'sparkle',
+  pink: 'close',
+  cyan: 'search',
+  teal: 'check',
+  orange: 'clock',
+  indigo: 'send',
+  rose: 'close',
+  slate: 'edit',
 }
 
 /**
- * 10 档按语义分四组展示。
- * 为什么不横排：10 颗 + 缩小版再 10 颗平铺，主行动、中性、语义色、弱化混在一起，
- * 看不出层次也看不出差别（用户 2026-10-21：纯粹堆着）。分组后每组一行，同组才可比。
+ * 18 档按语义分五组展示。
+ * 为什么不横排：外观混在一起，看不出层次也看不出差别（用户 2026-10-21：纯粹堆着）。分组后每组一行，同组才可比。
  */
 const VARIANT_GROUPS: readonly { label: string; items: readonly ButtonVariant[] }[] = [
   { label: '主行动', items: ['primary', 'secondary'] },
   { label: '中性', items: ['outline', 'ghost'] },
   { label: '语义色', items: ['danger', 'success', 'warning', 'info'] },
+  { label: '扩展色', items: ['purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate'] },
   { label: '弱化 / 行内', items: ['danger-outline', 'link'] },
 ]
 
@@ -1051,7 +1059,7 @@ export function CardPage(): ReturnType<typeof h> {
         h(
           'div',
           { style: { display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' } },
-          (['business', 'success', 'warning', 'danger', 'neutral'] as const).map((a) =>
+          (['business', 'success', 'warning', 'danger', 'neutral', 'purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate'] as const).map((a) =>
             h(Card, { key: a, accent: a, style: { padding: '8px 12px' } },
               h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, `accent="${a}"`),
             ),
@@ -1088,7 +1096,7 @@ export function CardPage(): ReturnType<typeof h> {
         h(
           'div',
           { style: { display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' } },
-          (['business', 'success', 'warning', 'danger', 'neutral'] as const).map((a) =>
+          (['business', 'success', 'warning', 'danger', 'neutral', 'purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate'] as const).map((a) =>
             h(StripCard, { key: a, accent: a, style: { padding: '8px 12px 8px 20px' } },
               h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, `accent="${a}"`),
             ),

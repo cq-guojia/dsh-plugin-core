@@ -104,8 +104,8 @@ const doc: DocTopic = {
       heading: { zh: 'Button / IconButton / Segmented', en: 'Button / IconButton / Segmented' },
       prose: [
         {
-          zh: 'Button 10 档外观（实心 / 线框 / 无底）。hover / active 走 token 派生色（不用 opacity）。',
-          en: 'Button offers 10 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity).',
+          zh: 'Button 18 档外观（实心 / 线框 / 无底）。hover / active 走 token 派生色（不用 opacity）。扩展八色（purple/pink/cyan/teal/orange/indigo/rose/slate）为实心面，与 Chip/Card 同源。',
+          en: 'Button offers 18 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity). The eight extended tiers (purple/pink/cyan/teal/orange/indigo/rose/slate) are solid faces, same source as Chip/Card.',
         },
         {
           zh: 'IconButton：variant: plain|outline|danger（默认 plain）、size（默认 lg）、icon（必填）、label（必填，无障碍名兼 title）。',
@@ -120,7 +120,7 @@ const doc: DocTopic = {
         {
           id: 'ui-button',
           rows: [
-            { name: 'variant', type: "上表 10 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link）", def: "'outline'", desc: { zh: '外观档', en: 'Appearance tier' } },
+            { name: 'variant', type: "上表 18 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）", def: "'outline'", desc: { zh: '外观档', en: 'Appearance tier' } },
             { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", desc: { zh: '高度档（24 / 28 / 32，有边无边同高）', en: 'Height tier (24 / 28 / 32, same height with or without border)' } },
             { name: 'icon', type: 'ReactNode', def: '—', desc: { zh: '前置图标（官方图标组件 / 字符串均可）', en: 'Leading icon (official icon component or string)' } },
             { name: 'iconRight', type: 'ReactNode', def: '—', desc: { zh: '后置图标（展开箭头、外链）', en: 'Trailing icon (expand arrow, external link)' } },
@@ -316,7 +316,7 @@ const doc: DocTopic = {
         {
           id: 'ui-card',
           rows: [
-            { name: 'accent', type: "5 档 or 任意 CSS 色值（business/success/warning/danger/neutral）", def: "'business'", desc: { zh: '档位映射到 design 的 token；也可传 \'#f59e0b\' 这类自定义值', en: 'Tiers map to design tokens; also accepts custom values like \'#f59e0b\'' } },
+            { name: 'accent', type: "13 档 or 任意 CSS 色值（business/success/warning/danger/neutral + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）", def: "'business'", desc: { zh: '档位映射到 design 的 token；也可传 \'#f59e0b\' 这类自定义值', en: 'Tiers map to design tokens; also accepts custom values like \'#f59e0b\'' } },
             { name: 'expanded', type: 'boolean', def: "'false'", desc: { zh: '展开态（箭头朝向 + panel 显隐）', en: 'Expanded state (arrow direction + panel show/hide)' } },
             { name: 'onToggle', type: '() => void', def: '—', desc: { zh: '传了才显示右侧折叠箭头；展开状态由调用方管', en: 'Only shows the right collapse arrow if provided; caller owns the expanded state' } },
             { name: 'action', type: 'ReactNode', def: '—', desc: { zh: '右上角操作区', en: 'Top-right action area' } },
@@ -345,7 +345,7 @@ const doc: DocTopic = {
         {
           id: 'ui-chip',
           rows: [
-            { name: 'tone', type: "'neutral' | 'business' | 'success' | 'warning' | 'danger'", def: "'neutral'", desc: { zh: '语义色（neutral 灰面，其余为实心信号面）', en: 'Semantic color (neutral grey; others are solid signal faces)' } },
+            { name: 'tone', type: "'neutral' | 'business' | 'success' | 'warning' | 'danger' | 'purple' | 'pink' | 'cyan' | 'teal' | 'orange' | 'indigo' | 'rose' | 'slate'", def: "'neutral'", desc: { zh: '语义色（neutral 灰面，其余为实心信号面；扩展八色同上）', en: 'Semantic color (neutral grey; others are solid signal faces; eight extended tiers as above)' } },
             { name: 'size', type: "'sm' | 'md' | 'xs'", def: "'sm'", desc: { zh: '尺寸档', en: 'Size tier' } },
             { name: 'width', type: 'number | string', def: '—', desc: { zh: '固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效', en: 'Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored' } },
             { name: 'minWidth', type: 'number | string', def: '—', desc: { zh: '最小宽：width 未设时生效，内容不足此宽时以它为准', en: 'Minimum width: applies only when width is unset; content shorter than this still takes this width' } },

@@ -2,10 +2,11 @@
  * 按钮 / 图标钮 —— **全站唯一实现**（L2 组件皮肤，P2）
  *
  * 三轴模型：
- *  - `variant`：外观档（形态 + 语义色），共 10 档
+ *  - `variant`：外观档（形态 + 语义色），共 18 档
  *      primary（黑实心）/ secondary（灰实心）/ outline（描边）/ ghost（无底无边）
  *      danger（红实心）/ success（绿实心）/ warning（黄实心）/ info（蓝实心）
  *      danger-outline（红字描边）/ link（行内链接）
+ *      purple / pink / cyan / teal / orange / indigo / rose / slate（扩展八色实心，2026-10-29）
  *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— 高度一律吃 `--dshpc-control-h-*`，
  *    **有边 / 无边同高**（边框在内部补回）
  *  - `block`：撑满父宽
@@ -23,7 +24,10 @@ import { ensureControls } from './css.js';
 import { MarqueeText } from './MarqueeText.js';
 import { createElement as h } from 'react';
 /** 实心档（color 参数按「底色」处理；其余档按「字色 + 描边色」处理）。 */
-const SOLID_VARIANTS = ['primary', 'secondary', 'danger', 'success', 'warning', 'info'];
+const SOLID_VARIANTS = [
+    'primary', 'secondary', 'danger', 'success', 'warning', 'info',
+    'purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate',
+];
 /** 把自定义颜色翻译成 5 个局部变量（只覆盖 token，不新增皮肤）。 */
 function colorVars(variant, color) {
     if (color === undefined || color === '')

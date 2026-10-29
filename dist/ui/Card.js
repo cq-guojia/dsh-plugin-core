@@ -3,7 +3,10 @@ import { ensureControls } from './css.js';
 import { Chevron } from './chevron.js';
 import { t } from '../utils/i18n.js';
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
-export const CARD_ACCENTS = ['business', 'success', 'warning', 'danger', 'neutral'];
+export const CARD_ACCENTS = [
+    'business', 'success', 'warning', 'danger', 'neutral',
+    'purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate',
+];
 /**
  * 内部共享壳：两个公开组件（`Card` / `StripCard`）只是 `kind` 不同——
  * 一个组件一种外观，import 即表明用的是哪种。

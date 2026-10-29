@@ -34,9 +34,9 @@ ensureControls()
 
 > EN: Button / IconButton / Segmented
 
-Button 10 档外观（实心 / 线框 / 无底）。hover / active 走 token 派生色（不用 opacity）。
+Button 18 档外观（实心 / 线框 / 无底）。hover / active 走 token 派生色（不用 opacity）。扩展八色（purple/pink/cyan/teal/orange/indigo/rose/slate）为实心面，与 Chip/Card 同源。
 
-> EN: Button offers 10 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity).
+> EN: Button offers 18 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity). The eight extended tiers (purple/pink/cyan/teal/orange/indigo/rose/slate) are solid faces, same source as Chip/Card.
 
 IconButton：variant: plain|outline|danger（默认 plain）、size（默认 lg）、icon（必填）、label（必填，无障碍名兼 title）。
 
@@ -48,7 +48,7 @@ Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三�
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `variant` | `上表 10 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link）` | 'outline' | 外观档 | Appearance tier |
+| `variant` | `上表 18 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）` | 'outline' | 外观档 | Appearance tier |
 | `size` | `'sm' \| 'md' \| 'lg'` | 'lg' | 高度档（24 / 28 / 32，有边无边同高） | Height tier (24 / 28 / 32, same height with or without border) |
 | `icon` | `ReactNode` | — | 前置图标（官方图标组件 / 字符串均可） | Leading icon (official icon component or string) |
 | `iconRight` | `ReactNode` | — | 后置图标（展开箭头、外链） | Trailing icon (expand arrow, external link) |
@@ -246,7 +246,7 @@ h(DateTimePicker, {
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `accent` | `5 档 or 任意 CSS 色值（business/success/warning/danger/neutral）` | 'business' | 档位映射到 design 的 token；也可传 '#f59e0b' 这类自定义值 | Tiers map to design tokens; also accepts custom values like '#f59e0b' |
+| `accent` | `13 档 or 任意 CSS 色值（business/success/warning/danger/neutral + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）` | 'business' | 档位映射到 design 的 token；也可传 '#f59e0b' 这类自定义值 | Tiers map to design tokens; also accepts custom values like '#f59e0b' |
 | `expanded` | `boolean` | 'false' | 展开态（箭头朝向 + panel 显隐） | Expanded state (arrow direction + panel show/hide) |
 | `onToggle` | `() => void` | — | 传了才显示右侧折叠箭头；展开状态由调用方管 | Only shows the right collapse arrow if provided; caller owns the expanded state |
 | `action` | `ReactNode` | — | 右上角操作区 | Top-right action area |
@@ -286,7 +286,7 @@ h(StripCard, {
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `tone` | `'neutral' \| 'business' \| 'success' \| 'warning' \| 'danger'` | 'neutral' | 语义色（neutral 灰面，其余为实心信号面） | Semantic color (neutral grey; others are solid signal faces) |
+| `tone` | `'neutral' \| 'business' \| 'success' \| 'warning' \| 'danger' \| 'purple' \| 'pink' \| 'cyan' \| 'teal' \| 'orange' \| 'indigo' \| 'rose' \| 'slate'` | 'neutral' | 语义色（neutral 灰面，其余为实心信号面；扩展八色同上） | Semantic color (neutral grey; others are solid signal faces; eight extended tiers as above) |
 | `size` | `'sm' \| 'md' \| 'xs'` | 'sm' | 尺寸档 | Size tier |
 | `width` | `number \| string` | — | 固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效 | Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored |
 | `minWidth` | `number \| string` | — | 最小宽：width 未设时生效，内容不足此宽时以它为准 | Minimum width: applies only when width is unset; content shorter than this still takes this width |
