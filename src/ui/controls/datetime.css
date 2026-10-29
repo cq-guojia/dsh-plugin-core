@@ -82,8 +82,10 @@
 .dshpc-dt__cell:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}
 .dshpc-dt__cell--out{color:var(--dshpc-fg-dim)}
 .dshpc-dt__cell--today{color:var(--dshpc-business);font-weight:600}
-/* 起 / 止端：品牌蓝实面反白（与 Segmented weekday 选中同口径）。 */
-.dshpc-dt__cell--sel{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);font-weight:600}
+/* 起 / 止端：品牌蓝实面反白（与 Segmented weekday 选中同口径）。
+   ⚠️ 字色用常量白 --dshpc-on-signal，不用 --dshpc-fg-inverse：后者跟宿主 label-primary-foreground，
+   暗色主题下是近黑 ⇒ 蓝底黑字（与 Segmented 2026-10-29 同一事故）。 */
+.dshpc-dt__cell--sel{background:var(--dshpc-business);color:var(--dshpc-on-signal);font-weight:600}
 .dshpc-dt__cell--sel:hover{background:var(--dshpc-business-hover)}
 
 /* 两块日历面板（range：左开始、右结束，各选各的）。 */

@@ -142,6 +142,25 @@ test('Segmented 不许加回视觉等价的外观档（variant 已于 2026-10-26
   assert.ok(!controls.SEGMENTED_CSS.includes('dshpc-seg--inset'), 'dshpc-seg--inset 已删，勿回潮')
 })
 
+// 2026-10-29 用户实测：暗色主题下蓝色选中片里出现黑字。真因是彩色实面上的字用了 --dshpc-fg-inverse
+// （它跟宿主 label-primary-foreground，暗色下是近黑）。彩色实面的字只能是常量白 / 常量深色。
+test('彩色实面上的字不许用主题反色（暗色下是近黑）', () => {
+  // 注释里允许提这个名字（讲清事故原因），所以比的是剥掉注释后的规则文本。
+  for (const [name, css] of [['SEGMENTED_CSS', controls.SEGMENTED_CSS], ['DATETIME_CSS', controls.DATETIME_CSS]]) {
+    const rules = css.replace(/\/\*[\s\S]*?\*\//g, '')
+    assert.ok(!rules.includes('--dshpc-fg-inverse'), `${name} 在彩色实面上用了 --dshpc-fg-inverse`)
+  }
+  assert.match(controls.SEGMENTED_CSS, /--seg-on:var\(--dshpc-on-signal\)/, 'Segmented 蓝面字色不是常量白')
+})
+
+test('Segmented 每个内置 tone 都有底 / 字配对，黄底用 on-warning', () => {
+  for (const tone of ['business', 'success', 'warning', 'danger', 'purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate']) {
+    const rule = new RegExp(`\\.dshpc-seg--tone-${tone}\\{[^}]*--seg-thumb:var\\(--dshpc-${tone}\\)[^}]*--seg-on:`).exec(controls.SEGMENTED_CSS)
+    assert.ok(rule !== null, `tone ${tone} 缺底 / 字配对`)
+  }
+  assert.match(controls.SEGMENTED_CSS, /--tone-warning\{[^}]*--seg-on:var\(--dshpc-on-warning\)/)
+})
+
 test('快速失败：注入文本不得含反引号 / 反斜杠', () => {
   const bad = ['`', '\\'].filter((ch) => INJECTED.includes(ch))
   assert.deepEqual(bad, [], `注入文本出现非法字符：${JSON.stringify(bad)}`)

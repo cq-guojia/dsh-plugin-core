@@ -8,6 +8,8 @@
  *    （border 由 padding 抵消），两种模式整行混排不跳高。
  *
  * 外观只有一套（灰底轨道 + 白色选中片，阴影来自宿主 elevation token）。
+ * 唯一的配色入口是 `tone`（2026-10-29）：传内置色名则由核心定底 / 字（两主题各自成立），
+ * 传 `{ bg, fg }` 则两个主题都用调用方这一对颜色。
  * 2026-10-26 删掉 `variant` 轴（原 default / inset 两档在 CSS 里只差 1px 内距，
  * 且 default 比 `size` 承诺矮 2px，下游照 demo 对图时反复查不出原因 —— 见 docs/design/style.md）。
  *
@@ -81,14 +83,21 @@ export function Segmented(props) {
     }, [sliding, measure, value, size, props.items, props.bordered, props.block]);
     // 核心 Tooltip 渲染器（宿主启动注入官方 Tooltip；未注入则段级提示降级为无）。
     const renderer = getTooltipRenderer();
+    // tone：内置色名走 CSS 类（底 / 字配对在 segmented.css，两主题各自成立）；
+    // 自定义一对颜色只能内联写根节点那两条局部变量（内联恒胜，两主题同值）。
+    const tone = props.tone;
+    const toneClass = typeof tone === 'string' ? ` dshpc-seg--tone-${tone}` : '';
+    const toneStyle = tone !== undefined && typeof tone !== 'string'
+        ? { '--seg-thumb': tone.bg, '--seg-on': tone.fg }
+        : undefined;
     return h('div', {
         role: 'group',
         'aria-label': props.label,
         id: props.id,
         ref: rootRef,
         // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
-        className: `dshpc-seg dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${props.className !== undefined ? ` ${props.className}` : ''}`,
-        style: props.style,
+        className: `dshpc-seg dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${toneClass}${props.className !== undefined ? ` ${props.className}` : ''}`,
+        style: toneStyle === undefined ? props.style : { ...toneStyle, ...props.style },
     }, [
         sliding && thumb !== null
             ? h('span', {

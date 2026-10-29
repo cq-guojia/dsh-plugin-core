@@ -1,3 +1,4 @@
+import type { ChipTone } from './Chip.js';
 import { createElement as h, type CSSProperties } from 'react';
 /** 一段（一个可选值）。 */
 export interface SegmentedItem<T extends string = string> {
@@ -14,6 +15,15 @@ export interface SegmentedItem<T extends string = string> {
     /** 段级悬停提示（核心 Tooltip 本体，官方气泡）：鼠标移入该项浮出书面化说明；需宿主注入 renderer。 */
     tooltip?: string;
 }
+/**
+ * 选中片配色（默认 = 主题亮片，字跟主题走）：
+ *  - 内置色名（与 Chip 同一套）：底色 / 字色由核心定，深浅两个主题各自成立；
+ *  - `{ bg, fg }`：一组背景 + 一组文字，**两个主题都一样**（调用方自己负责对比度）。
+ */
+export type SegmentedTone = Exclude<ChipTone, 'neutral'> | {
+    bg: string;
+    fg: string;
+};
 interface SegmentedBaseProps<T extends string = string> {
     /** 段定义。 */
     items: readonly SegmentedItem<T>[];
@@ -23,6 +33,8 @@ interface SegmentedBaseProps<T extends string = string> {
     block?: boolean;
     /** 最外层 1px 描边框（默认 false）。总高与无框版逐像素一致。 */
     bordered?: boolean;
+    /** 选中片配色（默认主题亮片）。见 {@link SegmentedTone}。 */
+    tone?: SegmentedTone;
     /** 无障碍组名（读屏用）。 */
     label?: string;
     /** 根节点 id（锚点 / 自动化测试用）。 */

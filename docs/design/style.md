@@ -39,6 +39,19 @@ token colors instead.
 EN: 22% / 36% for hover / active. Mix against literal `#fff` / `#000`, not host-provided neutrals. If an old
 core ignores `color-mix`, the declaration drops and falls back to the base tier.
 
+## 彩色实面上的字：只用常量色
+
+> EN: Text on colored surfaces: constants only
+
+语义色 / 扩展色实面（选中片、日期选中格、Chip、实心钮）上的字只能用 `--dshpc-on-signal`（白）或
+`--dshpc-on-warning`（黄底深字）—— 这两条与主题无关。**不许用 `--dshpc-fg-inverse`**：它跟的是宿主
+`label-primary-foreground`，暗色主题下是近黑 ⇒ 蓝底黑字。2026-10-29 用户实测发现（`Segmented` 多选蓝底与
+`DateTimePicker` 起止格各中一次），已由 `test/css-contract.test.mjs` 盯着不再回潮。
+
+EN: Text on semantic solid faces may only use `--dshpc-on-signal` (white) or `--dshpc-on-warning` (dark on
+yellow); never `--dshpc-fg-inverse` — it follows the host's `label-primary-foreground`, which is near-black in
+the dark theme.
+
 ## 外观轴：一个属性只有一套答案
 
 > EN: Appearance axes: one answer per property

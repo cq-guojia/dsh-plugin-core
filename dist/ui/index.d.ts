@@ -14,7 +14,7 @@ export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardSharedProps, }
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js';
 export { showToast, notify, type ToastVariant, type ToastPosition, type ToastOptions, type ToastAction, type NotifyOptions, } from './Toast.js';
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js';
-export { Segmented, type SegmentedProps } from './Segmented.js';
+export { Segmented, type SegmentedProps, type SegmentedTone } from './Segmented.js';
 export { SplitGroup, type SplitGroupProps } from './SplitGroup.js';
 export { Textarea, type TextareaProps } from './Textarea.js';
 export { Checkbox, type CheckboxProps } from './Checkbox.js';

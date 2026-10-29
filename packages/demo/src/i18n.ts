@@ -72,6 +72,8 @@ export type DemoMessageKey =
   | 'inputHint'
   | 'switchTip'
   | 'checkboxHint'
+  | 'segToneTitle'
+  | 'segToneHint'
   | 'pickerHint'
   | 'modelPickerHint'
   | 'workspacePickerHint'
@@ -380,6 +382,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；传 hint 参数即自动在行尾挂标准问号提示（FieldHint 本体仍可单独用）；Input 传 icon 即在左侧加图标槽',
     switchTip: '官方 Switch（启用语义，不是勾选）+ Checkbox + Segmented',
     checkboxHint: '外观对齐真实插件：灰底轨道 + 白色选中片；bordered 是外框款（最右，可点着玩）；星期方块是多选。文案随语言切换',
+    segToneTitle: 'Segmented 选中片配色（tone）',
+    segToneHint: '不传 = 主题亮片（白片 + 正文色）。传内置色名（与 Chip 同名）时底与字由核心定、深浅两个主题各自成立（黄底自动配深字）；传 { bg, fg } 时两个主题都用这一对颜色，对比度由调用方负责；tone 也压过 weekday 的默认蓝',
 
     pickerHint: '单选 / 多选 / 上限 / 搜索（searchable 开关）/ 分组 / 空态 / 降级；触发器与选项都支持前置 icon；文字默认居左（align="center" 才居中）；多选到上限后已选项仍可点选取消',
     dateTimePickerHint: '一个控件三种用法：single / range × precision（day / hour / minute / second）；浮层无遮罩、与 Picker 同机制；range 弹层是左右两块独立日历（左开始、右结束，各选各的）；时分秒走步进（▲▼ / 键入 / ↑↓），不用逐格点 60 分钟，也不强制先选日期；快捷键 day 精度叫「今天」、带时分秒叫「现在」；草稿态，「确定」才提交；day 精度下结束端自动补 23:59:59.999（数据库只收到秒时优雅退化）',
@@ -667,6 +671,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone); pass icon to Input to get a leading icon slot',
     switchTip: 'Official Switch (enable semantics, not a tick) + Checkbox + Segmented',
     checkboxHint: 'Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select. Labels follow the locale',
+    segToneTitle: 'Segmented selected-pill colors (tone)',
+    segToneHint: 'Omitted = theme pill (white on body text). A built-in color name (same names as Chip) lets the core pick background and text per theme (yellow gets dark text); { bg, fg } uses that pair in both themes, contrast is the caller’s call; tone also overrides weekday’s default blue',
 
     pickerHint: 'Single / multi / max / search (searchable switch) / grouped / empty / degraded; trigger and options both take a leading icon; label is left-aligned by default (align="center" to center); multi-select at max still allows deselecting picked items',
     dateTimePickerHint: 'One control, three usages: single / range × precision (day / hour / minute / second); mask-free popup sharing Picker’s mechanics; the range popup shows two independent calendars (left = start, right = end, each picks its own); hour/minute/second via steppers (▲▼ / typing / ↑↓) instead of clicking through 60 minutes, and never requires picking a date first; the quick button is "Today" at day precision, "Now" when hours/minutes/seconds are on; draft state — commits only on confirm; at day precision the end auto-fills 23:59:59.999 (degrades gracefully if the DB stores seconds only)',

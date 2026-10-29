@@ -403,6 +403,17 @@ const CODE_SWITCH_SEG = `// 开关语义用官方 Switch：label 只是无障碍
   onChange={setMulti}
 />`
 
+const CODE_SEG_TONE = `// tone：选中片配色（2026-10-29）。默认不传 = 主题亮片（白片 + 正文色）
+// ① 内置色名：底 / 字由核心定，深浅两个主题各自成立（黄底自动配深字）
+<Segmented tone="teal" items={periods} value={seg} onChange={setSeg} />
+<Segmented tone="danger" items={periods} value={seg} onChange={setSeg} />
+
+// ② 一对颜色 { bg, fg }：两个主题都用这一对，对比度自己负责
+<Segmented tone={{ bg: '#0b3d2e', fg: '#d1fae5' }} items={periods} value={seg} onChange={setSeg} />
+
+// ③ tone 压过 weekday 的默认蓝（同一套变量，后写的 tone 类胜）
+<Segmented multiple tone="purple" className="dshpc-seg--weekday" items={weekdays} value={multi} onChange={setMulti} />`
+
 
 /** Input 家族对外参数（与 src/ui/Field.ts 的 InputProps / NumberInputProps 逐条对齐）。 */
 
@@ -411,6 +422,13 @@ const CODE_SWITCH_SEG = `// 开关语义用官方 Switch：label 只是无障碍
 /** Textarea 在 InputProps 之上多出的参数（与 src/ui/Textarea.ts 的 TextareaProps 对齐）。 */
 
 /** Segmented 对外参数（与 src/ui/Segmented.ts 的 SegmentedProps 对齐；单选 / 多选共用基座）。 */
+
+/** Segmented 示例共用的三档（日 / 周 / 月）。 */
+const PERIODS = [
+  { value: 'day', label: '日' },
+  { value: 'week', label: '周' },
+  { value: 'month', label: '月' },
+] as const
 
 export function InputPage(): ReturnType<typeof h> {
   const [text, setText] = useState('')
@@ -588,6 +606,38 @@ export function InputPage(): ReturnType<typeof h> {
           onChange: setMulti,
         }),
       ),
+    ),
+    // 选中片配色（tone，2026-10-29）：内置色名 / 自定义一对颜色
+    h(
+      Example,
+      { title: t('segToneTitle'), hint: t('segToneHint'), code: CODE_SEG_TONE },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-start' } },
+        h(Labeled, { label: 'tone="teal"' },
+          h(Segmented<'day' | 'week' | 'month'>, { tone: 'teal', items: PERIODS, value: seg, onChange: setSeg })),
+        h(Labeled, { label: 'tone="danger"' },
+          h(Segmented<'day' | 'week' | 'month'>, { tone: 'danger', items: PERIODS, value: seg, onChange: setSeg })),
+        h(Labeled, { label: '{ bg, fg }' },
+          h(Segmented<'day' | 'week' | 'month'>, {
+            tone: { bg: '#0b3d2e', fg: '#d1fae5' },
+            items: PERIODS,
+            value: seg,
+            onChange: setSeg,
+          })),
+        h(Labeled, { label: 'tone + weekday' },
+          h(Segmented, {
+            multiple: true,
+            tone: 'purple',
+            className: 'dshpc-seg--weekday',
+            label: '星期',
+            items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
+              value: String(n),
+              label: t(`weekday${n}` as DemoMessageKey),
+            })),
+            value: multi,
+            onChange: setMulti,
+          }))),
     ),
     h(DocCode, { id: 'input' }),
     h(DocApi, { id: 'input' }),

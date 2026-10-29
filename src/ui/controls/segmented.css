@@ -9,12 +9,14 @@
 /* 外观只有一套（2026-10-26）：原 variant 的 default / inset 两档在 CSS 里只差 1px 内距，
    且 default 比文档承诺矮 2px，却让下游以为「有得选」而反复对图 ⇒ 整轴删除。
    padding 3px 是尺寸契约的一部分：item 高度 = 控制高 − 6px，加起来正好 24 / 28 / 32。 */
-.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:var(--dshpc-radius-md);--seg-thumb:var(--dshpc-surface-raised);background:var(--dshpc-seg-track);}
+/* 选中片配色收在两条局部变量里（--seg-thumb 底 / --seg-on 字）：默认走主题亮片，
+   tone 档与自定义 {bg, fg} 都只改这两条（后者由组件内联写根节点，内联恒胜）。 */
+.dshpc-seg{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:var(--dshpc-radius-md);--seg-thumb:var(--dshpc-surface-raised);--seg-on:var(--dshpc-fg);background:var(--dshpc-seg-track);}
 .dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-xs);font-weight:500;white-space:nowrap;cursor:pointer;flex:none;transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-seg--md .dshpc-seg__item{height:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item{height:calc(var(--dshpc-control-h-lg) - 6px);}
 .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);}
-.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--dshpc-fg);font-weight:600;}
+.dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--seg-on);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
 .dshpc-seg__item:disabled{cursor:default;opacity:.4;}
 /* 段内角标（如「异常」的数量）：语义色实面 + 反白字，0 由组件侧不渲染。必须是正圆（用户 2026-10-03）。 */
@@ -30,7 +32,25 @@
    两次都是用户拍板 —— 别自作主张改回去）。 */
 .dshpc-seg--weekday{--seg-track:var(--dshpc-seg-track);gap:2px;border:0;padding:3px;background:var(--seg-track);}
 .dshpc-seg--weekday .dshpc-seg__item{width:calc(var(--dshpc-control-h-lg) - 8px);padding:0;justify-content:center;}
-.dshpc-seg--weekday .dshpc-seg__item[aria-pressed='true']{background:var(--dshpc-business);color:var(--dshpc-fg-inverse);box-shadow:var(--dshpc-shadow-raised);}
+/* 蓝底反白：字色必须是常量白（--dshpc-on-signal）。2026-10-29 用户实测：暗色主题下这里曾用
+   --dshpc-fg-inverse，而它跟随宿主 label-primary-foreground，暗色下是近黑 ⇒ 蓝底黑字看不清。 */
+.dshpc-seg--weekday{--seg-thumb:var(--dshpc-business);--seg-on:var(--dshpc-on-signal);}
+
+/* ── tone（2026-10-29 用户）：选中片传内置基础色名，底 / 字由核心给，深浅两主题各自成立。
+   放在 weekday 之后：同名变量后写者胜，tone 与 className="dshpc-seg--weekday" 同给时以 tone 为准。
+   黄底按 Chip / Button 同源口径用 on-warning（中高明度，白字看不清）。 */
+.dshpc-seg--tone-business{--seg-thumb:var(--dshpc-business);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-success{--seg-thumb:var(--dshpc-success);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-warning{--seg-thumb:var(--dshpc-warning);--seg-on:var(--dshpc-on-warning);}
+.dshpc-seg--tone-danger{--seg-thumb:var(--dshpc-danger);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-purple{--seg-thumb:var(--dshpc-purple);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-pink{--seg-thumb:var(--dshpc-pink);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-cyan{--seg-thumb:var(--dshpc-cyan);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-teal{--seg-thumb:var(--dshpc-teal);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-orange{--seg-thumb:var(--dshpc-orange);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-indigo{--seg-thumb:var(--dshpc-indigo);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-rose{--seg-thumb:var(--dshpc-rose);--seg-on:var(--dshpc-on-signal);}
+.dshpc-seg--tone-slate{--seg-thumb:var(--dshpc-slate);--seg-on:var(--dshpc-on-signal);}
 
 /* ── 单选滑动块（2026-10-26 用户：点选后选中底应「滑过去」，不是旧段消失、新段直接亮）。
    结构 = 一块绝对定位的共用底 + 各段透明；位置/尺寸由组件量出后内联，这里只管外观与过渡。
@@ -39,7 +59,6 @@
 .dshpc-seg--slide .dshpc-seg__item{position:relative;z-index:1;}
 .dshpc-seg--slide .dshpc-seg__item[aria-pressed='true']{background:transparent;box-shadow:none;}
 .dshpc-seg__thumb{position:absolute;z-index:0;border-radius:var(--dshpc-radius-sm);background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);pointer-events:none;transition:left var(--dshpc-dur) var(--dshpc-ease),top var(--dshpc-dur) var(--dshpc-ease),width var(--dshpc-dur) var(--dshpc-ease),height var(--dshpc-dur) var(--dshpc-ease);}
-.dshpc-seg--weekday.dshpc-seg--slide .dshpc-seg__thumb{background:var(--dshpc-business);}
 
 /* ── bordered 外框（2026-10-20 用户要的第二种模式）：**只在最外面套一圈 1px 描边**，
    里面一概不动 —— 选中片的填充色 / 阴影 / 文字色全部保持原样（weekday 的蓝面照旧），

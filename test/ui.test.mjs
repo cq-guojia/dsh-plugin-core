@@ -63,6 +63,19 @@ test('Segmented 的 count / badge 收字符串（如 "1K"），数字 ≤0 仍�
   assert.equal((html.match(/dshpc-seg__count/g) ?? []).length, 1, 'count 为 0 的那段不该渲染计数')
 })
 
+test('Segmented tone：内置色名走类、自定义一对颜色内联写进根节点', () => {
+  const items = [{ value: 'a', label: '甲' }]
+  const named = renderToStaticMarkup(createElement(Segmented, { items, value: 'a', tone: 'teal', onChange() {} }))
+  assert.match(named, /dshpc-seg--tone-teal/, '内置色名没挂到 tone 类上')
+  assert.ok(!named.includes('--seg-thumb'), '内置色名不该内联写颜色（配对在 CSS 里）')
+
+  const custom = renderToStaticMarkup(createElement(Segmented, {
+    items, value: 'a', tone: { bg: '#0f766e', fg: '#fff' }, onChange() {},
+  }))
+  assert.match(custom, /--seg-thumb:#0f766e/, '自定义底色没内联写进根节点')
+  assert.match(custom, /--seg-on:#fff/, '自定义字色没内联写进根节点')
+})
+
 test('滑动块样式带过渡，reduced-motion 下关掉', () => {
   assert.match(SEGMENTED_CSS, /\.dshpc-seg__thumb\{[^}]*transition:/)
   assert.match(SEGMENTED_CSS, /prefers-reduced-motion[\s\S]*?\.dshpc-seg__thumb\{transition:none/)
