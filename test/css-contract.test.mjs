@@ -153,6 +153,21 @@ test('彩色实面上的字不许用主题反色（暗色下是近黑）', () =>
   assert.match(controls.SEGMENTED_CSS, /--seg-on:var\(--dshpc-on-signal\)/, 'Segmented 蓝面字色不是常量白')
 })
 
+// 2026-10-29 用户截图「My todos 4」：选中蓝片里的计数还是主题灰（暗色下近黑）。同类：Chip 禁用态。
+// 彩色实面上的弱化字必须从实面色派生（color-mix 半透明），不许用跟主题走的 fg-3。
+test('彩色实面上的弱化字（计数 / 禁用）从实面色派生，不许用主题灰', () => {
+  assert.match(
+    controls.SEGMENTED_CSS,
+    /\.dshpc-seg__item\[aria-pressed='true'\] \.dshpc-seg__count\{[^}]*color:color-mix\(in srgb,var\(--seg-on\)/,
+    '选中段内的计数没有跟着 --seg-on 提亮',
+  )
+  assert.match(
+    CHIP_CSS,
+    /\.dshpc-chip:disabled\{[^}]*color:color-mix\(in srgb,var\(--chip-fg\)/,
+    'Chip 禁用态字色没有从 --chip-fg 派生',
+  )
+})
+
 test('Segmented 每个内置 tone 都有底 / 字配对，黄底用 on-warning', () => {
   for (const tone of ['business', 'success', 'warning', 'danger', 'purple', 'pink', 'cyan', 'teal', 'orange', 'indigo', 'rose', 'slate']) {
     const rule = new RegExp(`\\.dshpc-seg--tone-${tone}\\{[^}]*--seg-thumb:var\\(--dshpc-${tone}\\)[^}]*--seg-on:`).exec(controls.SEGMENTED_CSS)

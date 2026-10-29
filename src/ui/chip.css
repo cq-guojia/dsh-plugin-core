@@ -31,7 +31,9 @@
 .dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}
 .dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
-.dshpc-chip:disabled{cursor:default;color:var(--dshpc-fg-3)}
+/* 禁用态字色从 --chip-fg 派生（45% ≈ 旧 fg-3 的弱化观感），不许直接用 --dshpc-fg-3：
+   它跟主题走，暗色下是深灰 ⇒ 语义色实心标签（蓝 / 红底）上几乎看不见（与 Segmented 计数 2026-10-29 同类）。 */
+.dshpc-chip:disabled{cursor:default;color:color-mix(in srgb,var(--chip-fg) 45%,transparent)}
 /* maxWidth 包 MarqueeText 时：标签作为 flex 子项必须能收缩到内容以下，否则省略号 / 跑马灯测不准 */
 .dshpc-chip .dshpc-chip__label{min-width:0;}
 @media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}
