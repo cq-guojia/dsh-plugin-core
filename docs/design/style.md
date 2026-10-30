@@ -44,6 +44,29 @@ specificity, never with injection order (order = first-render order, not fixed) 
 same-name selectors across constants; (3) keep CSS as exported string constants — never go back to
 `import './x.css'`, which `sideEffects:false` would drop along with the styles.
 
+### 为什么不用 `@layer` 分层（评估过，有意不做）
+
+> EN: Why we deliberately do not use `@layer`
+
+`@layer`（CSS Cascading and Inheritance L5，Baseline 2022-03）能让层序显式固定、不受注入时机影响，
+听上去正好治「顺序不确定」。**但它在这里会适得其反**：
+
+- **未分层样式压过任何层**：层级裁决优先于特异性。一旦把 dshpc 样式包进 `@layer dshpc`，
+  宿主任何**未分层的元素级重置**（`button { font-size: 14px }` 之类）就会反过来压过我们，
+  层内特异性再高也没用 ⇒ 控件被宿主皮肤吃掉。
+- **不分层反而更稳**：现状下我们的 `.dshpc-btn`（0,1,0）靠特异性就能压过宿主的 `button`（0,0,1）。
+
+所以「不分层」是**有意为之，不是遗漏**。真要分层，必须先把宿主的元素级样式摸清楚；而且只能整套一层
+（`@layer dshpc`），**不能按组件拆层** —— 层间忽略特异性会直接打掉 `.dshpc-split .dshpc-seg` 这类
+靠特异性生效的拼接定制。
+
+EN: `@layer` would let layer order be explicit and immune to injection timing, but here it backfires:
+unlayered styles beat anything inside a layer, and layer judgement precedes specificity. Wrapping our styles
+in `@layer dshpc` would let the host's unlayered element resets (`button { font-size }`) override our rules no
+matter how specific they are. Staying unlayered is deliberate — `.dshpc-btn` (0,1,0) already beats the host's
+`button` (0,0,1) on specificity. If layering ever becomes necessary: one layer for the whole kit, never per
+control.
+
 ## 交互态颜色（hover / active）
 
 > EN: Interaction colors (hover / active)

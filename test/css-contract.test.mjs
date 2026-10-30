@@ -341,3 +341,45 @@ test('用到 dshpc 类名的源文件必须自注入 CSS（漏一个 = 该控件
   }
   assert.deepEqual(missing, [], `这些文件用了 dshpc 类名却没有自注入：\n${missing.join('\n')}`)
 })
+
+// 按需注入之后，每个控件只保证自己那份 CSS 在场。
+// 所以某个 CSS 常量里出现的 var() 必须有**确定的来源**：
+//   ① design token（tokens 域恒排最前，一定在）
+//   ② 本文件自己定义的私有变量（同批注入）
+//   ③ 由 JS 运行时发布到元素 style 上的变量（登记在下面的白名单里）
+// 三者都不是 ⇒ 它吃的是「别人的 CSS 文件」里的定义，而那份文件很可能压根没被注入
+// ⇒ 变量无值、样式静默失效，且不报任何错 —— 这是按需化之后最难查的一类问题。
+test('CSS 常量引用的每个 var() 都必须有确定来源（不得依赖别的 CSS 文件）', () => {
+  const tokens = TOKENS_CSS_TEMPLATE.replace(/\/\*[\s\S]*?\*\//g, '')
+  const tokenDefs = new Set([...tokens.matchAll(/--([\w-]+)\s*:/g)].map((m) => m[1]))
+
+  // 由组件 JS 在运行时写到元素 style 上的变量 —— CSS 里查不到定义是正常的。
+  // ⚠️ 新增这类变量必须同步登记到这里（正因如此本测试才有价值）：
+  // 「新增了一个运行时发布的变量却忘了登记」和「误用了别的文件定义的变量」都会在这里被拦住。
+  const runtimeVars = new Map([
+    ['dshpc-page-inset-right', 'PanelDock 发布，loading / feedback 遮罩读取后给 dock 让位'],
+    ['dshpc-dock-gap', 'PanelDock 自己发布'],
+    ['dshpc-dock-h', 'PanelDock 自己发布'],
+    ['dshpc-mq-dur', 'MarqueeText 测距后发布'],
+    ['dshpc-mq-dist', 'MarqueeText 测距后发布'],
+    ['ds-font-family-code', '宿主发布的等宽字体变量；取不到时回落到继承字体'],
+  ])
+
+  const orphan = []
+  for (const [name, raw] of Object.entries(CONSTANTS)) {
+    const css = raw.replace(/\/\*[\s\S]*?\*\//g, '')
+    const local = new Set([...css.matchAll(/--([\w-]+)\s*:/g)].map((m) => m[1]))
+    for (const m of css.matchAll(/var\(\s*--([\w-]+)/g)) {
+      const v = m[1]
+      if (tokenDefs.has(v) || local.has(v) || runtimeVars.has(v)) continue
+      orphan.push(
+        `${name} 用了 var(--${v}) —— 既不是 token、也不是本文件定义的、也不在运行时白名单里`,
+      )
+    }
+  }
+  assert.deepEqual(
+    orphan,
+    [],
+    `以下 var() 依赖了别人的 CSS 定义，按需注入下那份可能没被注入 ⇒ 静默失效：\n${orphan.join('\n')}`,
+  )
+})
