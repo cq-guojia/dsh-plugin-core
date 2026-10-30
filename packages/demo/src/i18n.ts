@@ -27,6 +27,10 @@ export type DemoMessageKey =
   | 'secTooltip'
   | 'secCard'
   | 'secChip'
+  | 'secTable'
+  | 'tableHint'
+  | 'tableEmptyHint'
+  | 'tableSpanHint'
   | 'secFeedback'
   | 'secLayout'
   | 'secExplorer'
@@ -277,6 +281,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secTooltip: '提示',
     secCard: '卡片与容器',
     secChip: '标签 · 文本 · 状态',
+    secTable: '表格',
+    tableHint: '外框 + 双行分组表头（Patient 蓝底、Status 绿底）；Age 列关掉竖线（divider:false）并居中；斑马纹 + 点行选中；姓名格头像 + 名字 + 编号，Modality 是色标签、Flags 多标签，这两列内距收到 8px；表格下方同一区块展示空态',
+    tableEmptyHint: '没有数据时的内置空态（文案走核心字典，也可用 emptyText 覆盖）',
+    tableSpanHint: '紧凑密度 + 去掉左右两条边（borders:y，保留上下）：Downtown 用 rowSpan 跨两行（下一行不给该列 key），North clinic 用 colSpan 跨两列',
     secFeedback: '反馈',
     secLayout: '布局与滚动',
     secExplorer: '工作区浏览',
@@ -567,6 +575,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secTooltip: 'Tooltip',
     secCard: 'Cards & containers',
     secChip: 'Tags · text · states',
+    secTable: 'Table',
+    tableHint: 'Outer border + two-row grouped header (blue Patient, green Status); the Age column has its divider turned off and is centred; zebra stripes + click-to-select; the name cell shows avatar + name + ID, Modality is a coloured chip and Flags holds multiple chips, with both columns on 8px padding; the empty state sits in the same block below',
+    tableEmptyHint: 'Built-in empty state (copy comes from the core dictionary; override with emptyText)',
+    tableSpanHint: 'Compact density with the left and right edges removed (borders:y, top and bottom kept): Downtown spans two rows via rowSpan (next row omits that key), and North clinic spans two columns via colSpan',
     secFeedback: 'Feedback',
     secLayout: 'Layout & scrolling',
     secExplorer: 'Workspace browsing',

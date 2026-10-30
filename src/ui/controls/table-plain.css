@@ -1,0 +1,62 @@
+/* ── 外观一 · Plain（第一个样式：白卡片上的轻量表格）─────────────────────
+   特征：外框 + 灰底表头（含下边线，双行分组表头也清楚）、竖向分隔线、
+   数据行只保留极淡底线（不画重横线）、行悬浮淡蓝、选中行淡蓝底 + 左侧 3px 蓝竖条。
+   选择器全部挂在 .dshpc-table--plain 下，和基础层不同名（注入顺序无关）。
+   竖分隔线按列声明（格子上的 data-divider），不用相邻兄弟选择器 —— 后者会让每行首格
+   永远没有左线（用户 2026-10-30 真机看到的 Name 左侧缺线），且单元格跨列后会画错位置。
+   后续外观照此另建：table-grid.css / table-zebra.css，各自一个组件、各自 import 自己那份。 */
+
+/* 外框四态：all 四边 / x 只有左右 / y 只有上下 / none 全不要。
+   组件总会按 borders 属性和上对应 class，故这里不存在「无 class 的裸表」。
+   「不要左右两条边」就是 borders='y'。 */
+.dshpc-table--plain.dshpc-table--borders-all{border:1px solid var(--dshpc-border);}
+.dshpc-table--plain.dshpc-table--borders-x{border-left:1px solid var(--dshpc-border);
+  border-right:1px solid var(--dshpc-border);}
+.dshpc-table--plain.dshpc-table--borders-y{border-top:1px solid var(--dshpc-border);
+  border-bottom:1px solid var(--dshpc-border);}
+.dshpc-table--plain.dshpc-table--borders-none{border:0;}
+
+/* 表头：灰底 + 下边线。灰底把「表头区」和「数据区」分开；下边线兜住分组表头的第二层。 */
+.dshpc-table--plain .dshpc-table__head-cell{
+  background:var(--dshpc-head-bg);
+  border-bottom:1px solid var(--dshpc-border);
+}
+.dshpc-table--plain .dshpc-table__head-cell--group{color:var(--dshpc-fg-3);}
+
+/* 表头多色：列级 headerTone 打到 data-header-tone，浅底 + 同色文字。
+   色值全部来自 token（soft 底 / 实色字），暗色主题自动跟随，不写死任何 hex。
+   这组规则比上方灰底规则多一个属性选择器，必然覆盖默认灰底。 */
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='business']{background:var(--dshpc-business-soft);color:var(--dshpc-business);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='success']{background:var(--dshpc-success-soft);color:var(--dshpc-success);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='warning']{background:var(--dshpc-warning-soft);color:var(--dshpc-warning);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='danger']{background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='purple']{background:var(--dshpc-purple-soft);color:var(--dshpc-purple);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='pink']{background:var(--dshpc-pink-soft);color:var(--dshpc-pink);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='cyan']{background:var(--dshpc-cyan-soft);color:var(--dshpc-cyan);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='teal']{background:var(--dshpc-teal-soft);color:var(--dshpc-teal);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='orange']{background:var(--dshpc-orange-soft);color:var(--dshpc-orange);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='indigo']{background:var(--dshpc-indigo-soft);color:var(--dshpc-indigo);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='rose']{background:var(--dshpc-rose-soft);color:var(--dshpc-rose);}
+.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='slate']{background:var(--dshpc-slate-soft);color:var(--dshpc-slate);}
+
+/* 竖分隔线：按列声明。组件给「该列左缘要画线」的格子打 data-divider='left'，
+   首列与 divider={false} 的列不打 —— 想「这几列之间不要线」就关掉那一列的 divider。 */
+.dshpc-table--plain .dshpc-table__head-cell[data-divider='left'],
+.dshpc-table--plain .dshpc-table__cell[data-divider='left']{border-left:1px solid var(--dshpc-border);}
+
+/* 数据行之间的极淡底线：只帮眼睛「分行」，不回到粗横线表格的老样子。 */
+.dshpc-table--plain .dshpc-table__row + .dshpc-table__row .dshpc-table__cell{
+  border-top:1px solid var(--dshpc-border-faint);
+}
+
+/* 行悬浮：只在可点行上给反馈，静态表格不误导用户以为能点。
+   带 __body 上下文是为了压过基础层的斑马纹（见 table.css 注释）。 */
+.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-card-hover);}
+
+/* 选中行：淡蓝底 + 左侧蓝竖条。用背景渐变画条，避免 tr 上伪元素 / 定位的兼容问题；
+   两条选择器同一份声明：悬浮态（多一个属性 + 伪类）不会盖掉选中态。
+   特异性高于斑马纹，选中行不会出现半截条纹。 */
+.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'],
+.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'][data-interactive='true']:hover{
+  background:linear-gradient(to right,var(--dshpc-business) 3px,var(--dshpc-open-bg) 3px);
+}

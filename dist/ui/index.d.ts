@@ -12,6 +12,8 @@ export { ConfirmModal, type ConfirmModalProps, type ConfirmTone, } from './Confi
 export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, } from './modal-host.js';
 export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardSharedProps, } from './Card.js';
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js';
+export { Table, type TableProps } from './Table.js';
+export { headerRows, isLeafColumn, isTableCellSpec, leafColumns, tableDepth, type TableAlign, type TableBorders, type TableCell, type TableCellSpec, type TableColumn, type TableDensity, type TableHeaderCell, type TableRow, type TableTone, } from './table-logic.js';
 export { showToast, notify, type ToastVariant, type ToastPosition, type ToastOptions, type ToastAction, type NotifyOptions, } from './Toast.js';
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js';
 export { Segmented, type SegmentedProps, type SegmentedTone } from './Segmented.js';

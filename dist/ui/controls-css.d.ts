@@ -8,4 +8,6 @@ export { BACK_TO_TOP_CSS } from './controls/back-to-top-css.generated.js';
 export { HINT_CSS } from './controls/hint-css.generated.js';
 export { DATETIME_CSS } from './controls/datetime-css.generated.js';
 export { SPLIT_GROUP_CSS } from './controls/split-group-css.generated.js';
+export { TABLE_BASE_CSS } from './controls/table-css.generated.js';
+export { TABLE_PLAIN_CSS } from './controls/table-plain-css.generated.js';
 //# sourceMappingURL=controls-css.d.ts.map

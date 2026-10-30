@@ -53,6 +53,7 @@ export type UtilMessageKey =
   | 'mdUnwrap'
   | 'mdFootnotes'
   | 'cardToggle'
+  | 'tableEmpty'
   | 'modalClose'
   | 'dockClose'
   | 'dockResize'
@@ -317,6 +318,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     mdUnwrap: '取消换行',
     mdFootnotes: '脚注',
     cardToggle: '展开/收起',
+    tableEmpty: '暂无数据',
     modalClose: '关闭',
     dockClose: '关闭面板',
     dockResize: '拖动调整宽度',
@@ -576,6 +578,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     mdUnwrap: 'Unwrap',
     mdFootnotes: 'Footnotes',
     cardToggle: 'Expand/Collapse',
+    tableEmpty: 'No data',
     modalClose: 'Close',
     dockClose: 'Close panel',
     dockResize: 'Drag to resize',

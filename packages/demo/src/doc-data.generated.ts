@@ -2061,6 +2061,154 @@ export const docData = {
       }
     ]
   },
+  "table": {
+    "id": "table",
+    "heading": {
+      "zh": "Table（表格）",
+      "en": "Table"
+    },
+    "prose": [
+      {
+        "zh": "第一档外观 Plain：白卡片上的轻量表格 —— 有外框，双行分组表头用灰底 + 下边线，列间有竖向分隔线（可按键配置关掉）；数据行只保留极淡底线（没有粗横线）。可点行悬浮淡蓝，选中行淡蓝底 + 左侧 3px 蓝条。",
+        "en": "First skin, Plain: a lightweight table on a white card — an outer border, a grey two-row grouped header with a bottom rule, and vertical dividers between columns (switchable per column); data rows keep only a very faint bottom line (no heavy rules). Clickable rows tint blue on hover, and the selected row gets a blue tint plus a 3px blue bar on the left."
+      },
+      {
+        "zh": "三个表级开关：density 三档（compact / default / comfortable，改行高与水平内距 —— default 行高 44 / 48、水平内距 12px，compact 36 / 36 与 8px，comfortable 52 / 60 与 16px）、striped（偶数行淡底斑马纹）、borders（all 四边 / x 只留左右两条 / y 只留上下两条 / none 全不要；「不要左右两条边」用 y）。不需要的就不传，默认是参考稿的样子。",
+        "en": "Three table-level switches: `density` (compact / default / comfortable — row height and horizontal padding; default is 44 / 48 rows with 12px padding, compact 36 / 36 with 8px, comfortable 52 / 60 with 16px), `striped` (a faint tint on even rows), and `borders` (all four sides / x for left+right only / y for top+bottom only / none; use y to drop the left and right edges). Omit what you do not need; defaults match the reference design."
+      },
+      {
+        "zh": "列级配置：align 居中 / 右对齐，divider=false 关掉该列左缘竖线（「这几列之间不要线」就是这么表达；首列恒不画线），padding 单独调该列水平内距（px），headerTone 给该列表头换语义色（business / success / warning / danger / 扩展八色，全部映射 token，暗色自动跟随）。",
+        "en": "Per-column config: `align` for centring / right alignment; `divider=false` removes the divider on that column’s left edge (this is how “no lines between these columns” is expressed; the first column never draws one); `padding` adjusts that column’s horizontal padding in px; `headerTone` recolours that column’s header from the semantic palette (business / success / warning / danger and the eight extended tones — all mapped to tokens, so dark mode follows automatically)."
+      },
+      {
+        "zh": "数据驱动、组件不取数：columns 可嵌套 children 形成多行分组表头（colSpan / rowSpan 由组件算）；rows 是 { key, cells }，cells 按叶子列 key 取内容。单元格有两种写法 —— 直接给任意 ReactNode（头像 + 姓名 + 编号这种多内容排版、状态胶囊、行尾按钮都由调用方塞），或给 { content, colSpan, rowSpan, align } 对象做跨列 / 跨行。跨行时下一行不要给该列 key（缺 key = 该格不渲染、让位给上一行；要空单元格请显式传 null）。传 onRowClick 才可点。",
+        "en": "Data-driven, never self-fetching: columns may nest children for a multi-row grouped header (colSpan / rowSpan are computed); rows are { key, cells } looked up by leaf-column key. A cell is either any ReactNode (multi-line layouts such as avatar + name + ID, status pills, row-end buttons are all the caller’s) or a { content, colSpan, rowSpan, align } object for column/row spanning. When spanning rows, the next row must omit that column’s key (a missing key renders nothing and yields the slot to the previous row; pass null explicitly for an empty cell). Rows are clickable only with onRowClick."
+      },
+      {
+        "zh": "外观分档 = 分组件 + 分文件，没有 variant：Table 只 import 自己那份皮肤 CSS；后续 TableGrid（网格线）/ TableZebra（斑马纹）是同族独立组件，各自 import 各自皮肤。消费方引哪个就只打包哪个 —— 引一个表格不会把另一档的 CSS 也带进包里。",
+        "en": "Skins are separate components and separate files — no variant: Table imports only its own skin CSS; future TableGrid (grid lines) / TableZebra (zebra stripes) are sibling components importing their own skins. Importing one packs only that one — choosing a table never drags the other skin into the bundle."
+      },
+      {
+        "zh": "边界：不负责取数 / 排序 / 分页 / 虚拟滚动；横向滚动容器与圆角裁剪归调用方；表头不做吸顶（分组表头是多行，统一 top:0 会在滚动时互相盖住）。没有数据时显示内置空态（emptyText 可覆盖）。",
+        "en": "Boundaries: no fetching / sorting / paging / virtual scrolling; the horizontal scroll container and rounded clipping are the caller’s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). With no rows, a built-in empty state shows (override with emptyText)."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-table",
+        "rows": [
+          {
+            "name": "columns",
+            "type": "TableColumn[]",
+            "def": "—",
+            "required": "必填",
+            "desc": {
+              "zh": "列定义；children 非空即分组表头（自动算 colSpan / rowSpan），叶子 key 用来取单元格；width 数字按 px；align 对齐；divider=false 关掉该列左竖线；padding 该列水平内距（px）；headerTone 该列表头语义色",
+              "en": "Column definitions; non-empty children makes a group header (colSpan / rowSpan computed); leaf keys select cells; numeric width means px; align sets alignment; divider=false drops that column’s left divider; padding sets its horizontal padding (px); headerTone recolours its header"
+            }
+          },
+          {
+            "name": "rows",
+            "type": "TableRow[]",
+            "def": "—",
+            "required": "必填",
+            "desc": {
+              "zh": "行数据 { key, cells }：key 兼作选中标识与 React key；cells 按叶子列 key 给内容（ReactNode 或 { content, colSpan, rowSpan, align }）；缺 key = 不渲染、给上一行 rowSpan 让位",
+              "en": "Row data { key, cells }: key doubles as selection id and React key; cells map leaf-column key to content (ReactNode or { content, colSpan, rowSpan, align }); a missing key renders nothing and yields to the previous row’s rowSpan"
+            }
+          },
+          {
+            "name": "density",
+            "type": "'compact' | 'default' | 'comfortable'",
+            "def": "'default'",
+            "desc": {
+              "zh": "行密度：行高与水平内距 —— default 44 / 48 与 12px，compact 36 / 36 与 8px，comfortable 52 / 60 与 16px",
+              "en": "Row density: height and horizontal padding — default 44 / 48 with 12px, compact 36 / 36 with 8px, comfortable 52 / 60 with 16px"
+            }
+          },
+          {
+            "name": "striped",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "偶数行淡底斑马纹（hover / 选中仍优先）",
+              "en": "Faint tint on even rows (hover / selection still win)"
+            }
+          },
+          {
+            "name": "borders",
+            "type": "'all' | 'x' | 'y' | 'none'",
+            "def": "'all'",
+            "desc": {
+              "zh": "外框范围：all 四边 / x 只左右 / y 只上下 / none 全不要（不要左右两条边用 y）",
+              "en": "Outer border: all four sides / x left+right only / y top+bottom only / none (use y to drop left and right)"
+            }
+          },
+          {
+            "name": "selectedKeys",
+            "type": "(string | number)[]",
+            "def": "—",
+            "desc": {
+              "zh": "选中行 key 列表（高亮样式由皮肤决定）",
+              "en": "Keys of selected rows (the highlight is the skin’s call)"
+            }
+          },
+          {
+            "name": "onRowClick",
+            "type": "(row, index) => void",
+            "def": "—",
+            "desc": {
+              "zh": "传了行才可点：获得指针光标与 Enter / 空格激活",
+              "en": "Only when given are rows interactive: pointer cursor plus Enter / Space activation"
+            }
+          },
+          {
+            "name": "emptyText",
+            "type": "ReactNode",
+            "def": "内置字典",
+            "desc": {
+              "zh": "空态文案；不传走核心字典（随 setLocale 中英切换）",
+              "en": "Empty-state copy; defaults to the core dictionary (follows setLocale)"
+            }
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "表格无障碍名（没有可见标题时请务必给）",
+              "en": "Accessible name for the table (give it when there is no visible caption)"
+            }
+          },
+          {
+            "name": "translate",
+            "type": "Translate",
+            "def": "—",
+            "desc": {
+              "zh": "覆盖内置文案翻译（插件自带 i18n 时用）",
+              "en": "Override built-in copy translation (for plugins with their own i18n)"
+            }
+          },
+          {
+            "name": "className / style",
+            "type": "string / CSSProperties",
+            "def": "—",
+            "desc": {
+              "zh": "只允许补布局，不许覆盖皮肤",
+              "en": "Layout only; never override the skin"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-table-example",
+        "lang": "tsx",
+        "src": "import { Table, Chip } from 'dsh-plugin-core/ui'\n\nconst columns = [\n  { key: 'id', title: 'Patient ID', width: 140 },\n  {\n    key: 'patient', title: 'Patient', headerTone: 'business',\n    children: [\n      // divider:false ⇒ 这一列左缘不画竖线（「这几列之间不要线」）\n      { key: 'name', title: 'Name', width: 200, padding: 12 },\n      { key: 'age', title: 'Age / Sex', width: 100, align: 'center', divider: false },\n    ],\n  },\n  { key: 'status', title: 'Status', width: 130, headerTone: 'success' },\n]\n\nconst rows = [{\n  key: 'S-2418',\n  cells: {\n    id: 'S-2418',\n    // 单元格可以装任意 ReactNode：头像 + 名字 + 编号的多行排版由调用方决定\n    name: h('div', null, h('strong', null, 'Chen, Wei'), h('div', null, 'MRN-88214')),\n    age: '62 / M',\n    status: h(Chip, { tone: 'success', size: 'xs' }, 'Reviewed'),\n  },\n}, {\n  // 跨列：对象写法占 id + name 两格\n  key: 'S-2420',\n  cells: { id: { content: 'S-2420 · escalated', colSpan: 2 }, age: null, status: 'Pending' },\n}]\n\nh(Table, {\n  columns, rows,\n  density: 'compact',   // compact / default / comfortable\n  striped: true,        // 偶数行淡底\n  borders: 'all',       // all 四边 / x 只左右 / none\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n})\n\n// 第二档外观是另一个组件、另一份 CSS（预留）：引 TableGrid / TableZebra 时\n// 只打包它自己那份皮肤，不会把 Table 的皮肤一起带上。"
+      }
+    ]
+  },
   "feedback": {
     "id": "feedback",
     "heading": {

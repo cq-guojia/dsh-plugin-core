@@ -16,6 +16,9 @@ export { ConfirmModal, } from './ConfirmModal.js';
 export { alertModal, confirmModal, } from './modal-host.js';
 export { CARD_ACCENTS, Card, StripCard, } from './Card.js';
 export { Chip } from './Chip.js';
+// 表格：第一档外观 = Table（后续 TableGrid / TableZebra 各自独立导出，引哪个打包哪个）。
+export { Table } from './Table.js';
+export { headerRows, isLeafColumn, isTableCellSpec, leafColumns, tableDepth, } from './table-logic.js';
 export { showToast, notify, } from './Toast.js';
 export { Button, IconButton } from './Button.js';
 export { Segmented } from './Segmented.js';

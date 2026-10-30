@@ -87,6 +87,24 @@ export {
   type CardSharedProps,
 } from './Card.js'
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js'
+// 表格：第一档外观 = Table（后续 TableGrid / TableZebra 各自独立导出，引哪个打包哪个）。
+export { Table, type TableProps } from './Table.js'
+export {
+  headerRows,
+  isLeafColumn,
+  isTableCellSpec,
+  leafColumns,
+  tableDepth,
+  type TableAlign,
+  type TableBorders,
+  type TableCell,
+  type TableCellSpec,
+  type TableColumn,
+  type TableDensity,
+  type TableHeaderCell,
+  type TableRow,
+  type TableTone,
+} from './table-logic.js'
 export {
   showToast,
   notify,

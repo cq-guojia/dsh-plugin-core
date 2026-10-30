@@ -15,6 +15,7 @@ import {
   TooltipPage,
 } from './controls.js'
 import { ExplorerPage, SessionPage } from './blocks.js'
+import { TablePage } from './tables.js'
 import { DatePage, HttpPage, I18nPage, NumberPage, TextPage } from './utils.js'
 import { ReferencePage } from './reference.js'
 import { Example } from '../doc.js'
@@ -36,6 +37,7 @@ export type SectionId =
   | 'tooltip'
   | 'card'
   | 'chip'
+  | 'table'
   | 'feedback'
   | 'layout'
   | 'explorer'
@@ -82,6 +84,7 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'tooltip', group: 'components', titleKey: 'secTooltip', render: () => h(TooltipPage, null) },
   { id: 'card', group: 'components', titleKey: 'secCard', render: () => h(CardPage, null) },
   { id: 'chip', group: 'components', titleKey: 'secChip', render: () => h(ChipPage, null) },
+  { id: 'table', group: 'components', titleKey: 'secTable', render: () => h(TablePage, null) },
   { id: 'feedback', group: 'components', titleKey: 'secFeedback', render: () => h(FeedbackPage, null) },
   { id: 'layout', group: 'components', titleKey: 'secLayout', render: () => h(LayoutPage, null) },
 

@@ -46,7 +46,10 @@ dsh-plugin-core/
 │   │   │                      两者都只画图形，无背景无定位，背景与位置归调用方
 │   │   └── Loading         ✅ 旧复合浮层（贴右下角的 pill + 两种加载卡），保留、已标 deprecated
 │   ├── 展示                ✅ Card / StripCard / Chip / MarqueeText /
-│   │                          SectionHead / FieldHint / LiveText / BackToTop
+│   │                          SectionHead / FieldHint / LiveText / BackToTop /
+│   │                          Table（第一档 Plain：外框 + 灰底表头 + 按列分隔线；
+│   │                            表级 density / striped / borders，列级 divider / padding / headerTone，
+│   │                            单元格可跨列跨行；TableGrid / TableZebra 预留同族独立组件）
 │   ├── 选择                ✅ WorkspacePicker（选工作区，自取宿主快照）
 │   │                          通用 Picker 是纯零件；领域选择器经 connectHost 自取数（2026-10-20）
 │   ├── 组合                ✅ SplitGroup（两格焊成一体：只画外框 / 分隔 / 聚焦圈，不持状态）
@@ -114,7 +117,7 @@ utils（谁都不依赖，谁都可以用）
 │   ├─ 表单    Input / NumberInput / PrefixedInput / Textarea / Checkbox / Segmented / Picker / DateTimePicker
 │   ├─ 动作    Button / IconButton
 │   ├─ 反馈    Modal / Toast
-│   ├─ 展示    Card / StripCard / Chip / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop
+│   ├─ 展示    Card / StripCard / Chip / Table / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop
 │   ├─ 组合    SplitGroup（展示在选择器页）
 │   └─ 布局    PanelDock / 拉栏
 │
@@ -154,6 +157,5 @@ utils（谁都不依赖，谁都可以用）
   `resizer` 保留为它的底层函数。
 - **暂缓项**：`utils/string`、`utils/number`、`utils/http`、`ui/feedback/Loading` —— 只标注，未删代码。
 - **库里没有的**：
-  - 表格 Table —— 待真实需求再定，不预造；
   - Switch 开关 —— 官方 primitives 有，归「包官方」批次；
   - Select 下拉 —— 用 `Picker` 代替（`SelectField` 曾因依赖官方 Menu 被删，属待反转的旧决策）。

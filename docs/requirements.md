@@ -52,6 +52,21 @@ dsh-plugin-core/
 - 日期时间：`DateTimePicker`（2026-10-24 新增：单值 / 时间段 × 精度 day/hour/minute/second；
   数据恒完整本地 ISO 到毫秒、**显示只到精度**；起始端 floor、结束端 ceil）
 - 「统一某类元素」的控件：`SectionHead` 等
+- 表格：`Table`（第一档外观 Plain，2026-10-30 新增并扩展：外框、灰底双行分组表头 + 下边线、
+  竖向分隔线、数据行只留极淡底线、可点行悬浮淡蓝、选中行淡蓝底 + 左侧蓝条）。
+  数据驱动 `columns` + `rows`，组件不取数；
+  **配置面三层**（2026-10-30 用户要求「既要有知识又要方便配置」）：
+  - 表级 `density`（compact 36/36 + 8px / default 44/48 + 12px / comfortable 52/60 + 16px，
+    前为行高、后者水平内距）、`striped`（斑马纹）、
+    `borders`（all 四边 / x 只左右 / y 只上下 / none；「不要左右两条边」用 y）；
+  - 列级 `align`、`divider`（关掉该列左竖线，首列恒不画）、`padding`（该列水平内距 px）、
+    `headerTone`（表头语义色，全映射 token）；
+  - 单元格级：值可为任意 ReactNode，或 `{ content, colSpan, rowSpan, align }` 做跨列 / 跨行；
+    缺 key = 该格不渲染、给上一行 rowSpan 让位。
+  竖分隔线按列声明（格子上的 `data-divider`），**不用相邻兄弟选择器** —— 后者会让每行首格
+  永远没有左线（即 2026-10-30 真机看到的「Name 左边没 border」），且跨列后会画错位置。
+  外观分档 = **分组件 + 分文件**（`Table` / 预留 `TableGrid` 网格线 / `TableZebra` 斑马纹），
+  消费方引哪个就只打包哪份皮肤 CSS，**不用 `variant` 汇总**
 - 反馈件：`Modal` / `Loader` 家族 / `Loading` / `toast` / 空态
   - Loader 家族按「一个前缀 + 具象名」命名（2026-10-30 用户定）：`Loader`（通用图标）/
     `LoaderBar`（胶囊不定进度）。两者的边界完全一致 —— **只画图形，不带背景、内距、定位**，
@@ -178,6 +193,7 @@ dsh-plugin-core/
 | ui / ModelPicker | `variant: 'grouped' \| 'cascade'`（分组：一个下拉、完全独立 / 联动：供应商与模型两个下拉联动；2026-10-20 用户拍板两形态都要）；**两种形态 onChange 都发最终模型 value**；「默认模型」选项默认提供（`allowDefault:false` 关），选中发 `''`。默认读 connectHost 喂入的真实目录，`groups` 仅作覆盖。**禁止用数字或无意义名** |
 | ui / Picker | `mode: 'single' \| 'multiple'`、`max`（到上限已选项仍可反选）、`searchable`（搜索框开关）、`icon`（触发器前置 icon）、选项级 `icon`、`hint`（问号提示内置）、分组、空态、降级 |
 | ui / DateTimePicker | `mode: 'single' \| 'range'`、`precision: 'day' \| 'hour' \| 'minute' \| 'second'`（同时管弹层步进、显示截断与默认宽度）；single 传 `string \| null`、range 传 `[start, end] \| null`（本地 ISO 到毫秒）；草稿态「确定」才 onChange，没选日期不传数据；起端补零 / 止端补满（day ⇒ 止 `23:59:59.999`） |
+| ui / Table | `columns`（`children` 非空 = 分组表头，组件算 colSpan / rowSpan；`width` 数字按 px、`align` 控对齐）、`rows`（`{ key, cells }`，cells 按叶子 key 给 ReactNode）、`selectedKeys`、`onRowClick`（传了才可点，Enter / 空格等价）、`emptyText`（默认核心字典）、`ariaLabel`；**外观分组件分文件**：`Table` 只 import 自皮肤 CSS，预留 `TableGrid` / `TableZebra` 各自独立，引哪个打包哪个；列宽合计超过容器时由调用方的滚动容器兜住 |
 | explorer | `WorkspaceFilesFace`（`list` / `stat` / `read` 最小面）由 `connectHost(ctx)` 接线后核心自己持有，组件不抓宿主全局、调用方也不逐次传（2026-10-28 改）；对外 = 两命令式能力 `openFilePreview({ mount, path })`（侧边栏预览）+ `pickWorkspaceFile({ anchor })`（Promise 选文件，回传工作区相对路径），共用同一 `FileBrowser` 面板（2026-10-20 拍板） |
 | explorer / WorkspacePicker | `WorkspacePicker({ mode, max, onChange, allowDefault, defaultLabel, … })` —— **无数据参数**：connectHost 接线后自动订官方 `workspaces` 服务快照，选中值为 `workspaceId`；「所有工作区」默认项默认提供、选中发 `''`（2026-10-20） |
 | session | `SessionPreview({ sessionId, source, variant })` —— `source` = 取数能力接口（会话预览内部有交互：传输文件等，光有静态消息流不够） |
@@ -194,6 +210,7 @@ dsh-plugin-core/
 | v2+ | `explorer` 重做（2026-10-20） | ✅ 已完成（FileBrowser 面板 + `openFilePreview` / `pickWorkspaceFile` 两能力 + 全量预览：md / 代码高亮 / HTML / PDF / Office；官方件经 `./ui/official` 子路径） |
 | v3 | `session` | ⚠️ **半完成**：契约与三种承载已好，**官方会话 UI 镜像未搬**（只做最简渲染） |
 | v3+ | 控件样式按需注入（2026-10-30） | ✅ 已完成（`css.ts` 停全量聚合；27 个组件各自注入自己那份；只 `import { Button }` 时 CSS 文本 71.7 KB → 9.4 KB。**不采用 `@layer`**：未分层样式压过任何层且层级裁决优先于特异性，包进层会被宿主元素级重置反压） |
+| v3+ | 表格样式（2026-10-30） | ✅ 第一档 Plain 落地（`Table`：基础层 + 皮肤分文件注入，外框 / 灰底表头 / 竖向分隔 / 极淡行线）；预留 `TableGrid` / `TableZebra` 两档同族独立组件 |
 | 文档 | README 接入指南 | ✅ 已完成 |
 
 **未做**（按重要性）：消费者插件接入 / 会话 UI 镜像 / 类名隔离 /

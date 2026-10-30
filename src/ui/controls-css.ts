@@ -17,3 +17,6 @@ export { BACK_TO_TOP_CSS } from './controls/back-to-top-css.generated.js'
 export { HINT_CSS } from './controls/hint-css.generated.js'
 export { DATETIME_CSS } from './controls/datetime-css.generated.js'
 export { SPLIT_GROUP_CSS } from './controls/split-group-css.generated.js'
+// 表格：基础层与各外观皮肤分开导出 —— 组件只 import 自己那一份（外观按需分包）。
+export { TABLE_BASE_CSS } from './controls/table-css.generated.js'
+export { TABLE_PLAIN_CSS } from './controls/table-plain-css.generated.js'
