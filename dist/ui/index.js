@@ -23,6 +23,8 @@ export { SplitGroup } from './SplitGroup.js';
 export { Textarea } from './Textarea.js';
 export { Checkbox } from './Checkbox.js';
 export { MarqueeText } from './MarqueeText.js';
+export { Loader } from './Loader.js';
+export { LoaderBar } from './LoaderBar.js';
 export { Loading, LoadingBlock, LoadingToast, RunningBlocks, showLoading, } from './Loading.js';
 export { claimLoadingHost, createLoadingSlot, loadingOverlayClass, LOADING_HOST_KEY, } from './loading-host.js';
 export { SectionHead } from './SectionHead.js';

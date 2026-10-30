@@ -33,6 +33,8 @@ const MAP = [
   ['src/ui/controls/field.css', 'src/ui/controls/field-css.generated.ts', 'FIELD_CSS'],
   ['src/ui/marquee.css', 'src/ui/marquee-css.generated.ts', 'MARQUEE_CSS'],
   ['src/ui/controls/loading.css', 'src/ui/controls/loading-css.generated.ts', 'LOADING_CSS'],
+  ['src/ui/controls/loader.css', 'src/ui/controls/loader-css.generated.ts', 'LOADER_CSS'],
+  ['src/ui/controls/loader-bar.css', 'src/ui/controls/loader-bar-css.generated.ts', 'LOADER_BAR_CSS'],
   ['src/ui/controls/back-to-top.css', 'src/ui/controls/back-to-top-css.generated.ts', 'BACK_TO_TOP_CSS'],
   ['src/ui/controls/hint.css', 'src/ui/controls/hint-css.generated.ts', 'HINT_CSS'],
   ['src/ui/controls/datetime.css', 'src/ui/controls/datetime-css.generated.ts', 'DATETIME_CSS'],

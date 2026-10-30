@@ -103,6 +103,8 @@ export { SplitGroup, type SplitGroupProps } from './SplitGroup.js'
 export { Textarea, type TextareaProps } from './Textarea.js'
 export { Checkbox, type CheckboxProps } from './Checkbox.js'
 export { MarqueeText } from './MarqueeText.js'
+export { Loader, type LoaderProps, type LoaderSize, type LoaderVariant } from './Loader.js'
+export { LoaderBar, type LoaderBarProps } from './LoaderBar.js'
 export {
   Loading,
   LoadingBlock,

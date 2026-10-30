@@ -1,0 +1,38 @@
+/* ── Loader：统一的加载动画图标（无背景 / 无定位 / 颜色跟随 currentColor）────────
+   形态 × 尺寸两轴正交：形态管几何与动画；尺寸档只改 width / height，几何按
+   viewBox="0 0 24 24" 等比缩放 —— 一套几何吃五档，12px 时描边即 1.5px、48px 时 6px，
+   视觉重量一致，不用逐个尺寸换算 calc。
+
+   边界：本控件**只管图标本身**。背景 / 圆角 / 内距 / 阴影 / 定位（fixed、居中、漂浮）
+   一律归调用方 —— 套 Chip、套 Card，或自己包一个 div。 */
+
+.dshpc-loader { display: inline-block; flex: none; vertical-align: middle; line-height: 0; color: inherit; }
+
+.dshpc-loader--xs { width: 12px; height: 12px; }
+.dshpc-loader--sm { width: 16px; height: 16px; }
+.dshpc-loader--md { width: 24px; height: 24px; }
+.dshpc-loader--lg { width: 32px; height: 32px; }
+.dshpc-loader--xl { width: 48px; height: 48px; }
+
+/* 形态一 ring：开口弧整体旋转。必须走 SVG 矢量弧 —— 次像素边框画圆在 12px 下会被
+   抗锯齿拉毛、看着像圆角方（2026-10-20 真机实测，曾被误判成 border-radius 被覆盖）。 */
+.dshpc-loader--ring { animation: dshpc-loader-rotate .8s linear infinite; }
+@keyframes dshpc-loader-rotate { to { transform: rotate(360deg) } }
+
+/* 形态二 blocks：三个方块依次脉动放大。
+   transform-box: fill-box 是 SVG 子元素做 CSS transform 的必要条件 —— 否则 origin
+   落在 viewBox 原点，节点会绕着左上角飞出去。 */
+.dshpc-loader__node { transform-box: fill-box; transform-origin: center; }
+.dshpc-loader--blocks .dshpc-loader__node { animation: dshpc-loader-blink 1.2s ease-in-out infinite; }
+.dshpc-loader__node:nth-child(2) { animation-delay: .15s; }
+.dshpc-loader__node:nth-child(3) { animation-delay: .3s; }
+@keyframes dshpc-loader-blink {
+  0%, 80%, 100% { opacity: .25; transform: scale(.8) }
+  40% { opacity: 1; transform: scale(1) }
+}
+
+/* 降低动效：停在「全部可见、实体大小」，而不是停在动画中途的半透明小点。 */
+@media (prefers-reduced-motion: reduce) {
+  .dshpc-loader--ring { animation: none; }
+  .dshpc-loader__node { animation: none; opacity: 1; transform: none; }
+}

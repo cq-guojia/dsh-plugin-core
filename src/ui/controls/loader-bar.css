@@ -1,0 +1,34 @@
+/* ── LoaderBar：胶囊不定进度 loading ───────────────────────────────────────
+   源图形是「轨道 + 蓝色段 + 斜纹」的胶囊条。与 Loader 同族（Loader 家族：
+   Loader 通用图标 / LoaderBar 胶囊不定进度），同样只画图形：不带背景、不带定位。
+
+   动的是**斜纹**，不是蓝色段：蓝色那半截固定不动，只有它上面的一道道细斜条
+   在走，看着像条纹在流动 / 转。这符合源图意图 —— 斜纹本来就是表示「进行中」。
+
+   尺寸档按**高度**给（宽固定 4:1），因为图形本身是横条，方形尺寸轴没意义。 */
+
+.dshpc-loader-bar { display: inline-block; flex: none; vertical-align: middle; line-height: 0; }
+
+.dshpc-loader-bar--xs { width: 48px; height: 12px; }
+.dshpc-loader-bar--sm { width: 64px; height: 16px; }
+.dshpc-loader-bar--md { width: 96px; height: 24px; }
+.dshpc-loader-bar--lg { width: 128px; height: 32px; }
+.dshpc-loader-bar--xl { width: 192px; height: 48px; }
+
+/* 斜纹单向循环平移。85.333 是一个条纹周期（源图相邻斜线的间距，用户单位）：
+   平移整整一个周期后与原图重合 ⇒ 循环处看不出接缝。
+   ⚠️ 这个数字必须与 LoaderBar.ts 里的 STRIPE_PERIOD 一致（组件靠它复制一份左侧补图）。
+   外层 <g clip-path> 静止、只动这一层 —— 若把 clip 与 transform 放同一层，
+   裁剪框会跟着一起移，等于没裁，条纹会露到蓝色段外面。 */
+.dshpc-loader-bar__stripe { animation: dshpc-loader-bar-flow .55s linear infinite; }
+@keyframes dshpc-loader-bar-flow {
+  from { transform: translateX(0) }
+  to { transform: translateX(85.333px) }
+}
+
+/* animated={false}：条纹停在原位。 */
+.dshpc-loader-bar--still .dshpc-loader-bar__stripe { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dshpc-loader-bar__stripe { animation: none; }
+}

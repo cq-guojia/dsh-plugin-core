@@ -1,5 +1,5 @@
 import { createElement as h, useState, useSyncExternalStore, type ComponentType } from 'react'
-import type { AlertSeverity, ButtonSize, ButtonVariant, ConfirmTone, LoadingOptions } from '../../../../dist/ui/index.js'
+import type { AlertSeverity, ButtonSize, ButtonVariant, ConfirmTone, LoaderSize, LoadingOptions } from '../../../../dist/ui/index.js'
 import {
   Button,
   Card,
@@ -9,6 +9,8 @@ import {
   IconButton,
   Input,
   LiveText,
+  Loader,
+  LoaderBar,
   LoadingBlock,
   LoadingToast,
   MarqueeText,
@@ -1425,6 +1427,32 @@ notify('确认提交吗？', {
   ],
 })`
 
+/** Loader 的两条轴：形态两档、尺寸五档（demo 只用来铺矩阵）。 */
+const LOADER_VARIANTS = ['ring', 'blocks'] as const
+const LOADER_SIZES: readonly LoaderSize[] = ['xs', 'sm', 'md', 'lg', 'xl']
+
+const CODE_LOADER = `// 只画图标：无背景、无内距、无定位。两种形态 × 五档尺寸，几何等比缩放
+<Loader />
+<Loader variant="blocks" size="sm" />
+<Loader variant="ring" size="lg" />
+
+// 背景与定位归调用方 —— 圆角底自己套（这里用内联样式举例，项目里请用 Chip / Card）
+<span style={{ display: 'inline-flex', padding: 6, borderRadius: 999, background: 'var(--dshpc-surface-sunken)' }}>
+  <Loader size="sm" />
+</span>
+
+// 漂浮：自己包一层 fixed 容器，组件不提供 position
+<div style={{ position: 'fixed', right: 24, bottom: 24 }}>
+  <Loader variant="blocks" size="xl" />
+</div>
+
+// 颜色跟 currentColor 走，不用传 color
+<span style={{ color: 'var(--dshpc-business)' }}><Loader variant="ring" /></span>
+
+// 同族的胶囊不定进度（同样只画图形；蓝色段固定，斜纹在流动）
+<LoaderBar size="md" />
+<LoaderBar size="md" animated={false} />   // 停住（截图 / 打印）`
+
 const CODE_LOADING = `// 命令式：全局只有一张卡（后一次顶掉前一次），且不会自己消失 —— 一定要 close()
 const loading = showLoading({ text: '正在加载数据…' })
 loading.close()   // 默认屏幕下方居中，与 Toast 同屏位
@@ -1748,6 +1776,64 @@ export function FeedbackPage(): ReturnType<typeof h> {
         h(Button, { onClick: () => showToast('底部-左', { position: 'bottom-left' }) }, 'bottom-left'),
         h(Button, { onClick: () => showToast('底部-中', { position: 'bottom-center' }) }, 'bottom-center'),
         h(Button, { onClick: () => showToast('底部-右', { position: 'bottom-right' }) }, 'bottom-right'),
+      ),
+    ),
+    h(
+      Example,
+      { title: t('exLoaderTitle'), hint: t('exLoaderHint'), code: CODE_LOADER },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
+        ...LOADER_VARIANTS.map((variant) =>
+          h(
+            'div',
+            { key: variant, style: { display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' } },
+            h(
+              'span',
+              { style: { width: '56px', color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' } },
+              variant,
+            ),
+            ...LOADER_SIZES.map((size) => h(Loader, { key: size, variant, size })),
+          ),
+        ),
+        // 背景 / 定位 / 颜色都由调用方配：组件本身只是裸图标
+        h(
+          'div',
+          { style: { display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' } },
+          h(
+            'span',
+            {
+              style: {
+                display: 'inline-flex', padding: '6px', borderRadius: '999px',
+                background: 'var(--dshpc-surface-sunken)',
+              },
+            },
+            h(Loader, { size: 'sm' }),
+          ),
+          h(
+            'span',
+            {
+              style: {
+                display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 10px',
+                borderRadius: 'var(--dshpc-radius-md)', background: 'var(--dshpc-surface-1)',
+                border: '1px solid var(--dshpc-border)', color: 'var(--dshpc-fg-2)',
+                fontSize: 'var(--dshpc-font-xs)',
+              },
+            },
+            h(Loader, { variant: 'blocks', size: 'sm' }),
+            '正在同步',
+          ),
+          h('span', { style: { color: 'var(--dshpc-business)' } }, h(Loader, { size: 'lg' })),
+        ),
+        // 同族的胶囊不定进度：三档尺寸 + 最右那只是停住的
+        h(
+          'div',
+          { style: { display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' } },
+          h(LoaderBar, { size: 'sm' }),
+          h(LoaderBar, { size: 'md' }),
+          h(LoaderBar, { size: 'lg' }),
+          h(LoaderBar, { size: 'lg', animated: false }),
+        ),
       ),
     ),
     h(

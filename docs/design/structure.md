@@ -41,8 +41,10 @@ dsh-plugin-core/
 │   │                          Checkbox / Segmented / Picker（下拉选择）/
 │   │                          DateTimePicker（日期时间：单值 / 时间段 × 精度到秒）
 │   ├── 动作                ✅ Button / IconButton
-│   ├── 反馈                ✅ Modal / Toast
-│   │   └── Loading         ⚪ 暂缓
+│   ├── 反馈                ✅ Modal / Toast / Loader 家族（2026-10-30）：
+│   │   │                      Loader（ring / blocks × 五档尺寸）、LoaderBar（胶囊不定进度）；
+│   │   │                      两者都只画图形，无背景无定位，背景与位置归调用方
+│   │   └── Loading         ✅ 旧复合浮层（贴右下角的 pill + 两种加载卡），保留、已标 deprecated
 │   ├── 展示                ✅ Card / StripCard / Chip / MarqueeText /
 │   │                          SectionHead / FieldHint / LiveText / BackToTop
 │   ├── 选择                ✅ WorkspacePicker（选工作区，自取宿主快照）

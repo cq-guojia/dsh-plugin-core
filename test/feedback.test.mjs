@@ -76,13 +76,14 @@ test('两种加载样式：类名正确、文案可自定义、默认走内置�
   setLocale('zh')
   const toast = renderToStaticMarkup(createElement(LoadingToast, null))
   assert.match(toast, /class="dshpc-loading-toast"/)
-  assert.match(toast, /dshpc-loading-spin/)
+  // 卡里的转圈不自绘：必须复用 Loader（sm 档 = 16px），环只有 controls/loader.css 一份
+  assert.match(toast, /class="dshpc-loader dshpc-loader--ring dshpc-loader--sm"/)
   assert.match(toast, /数据加载中/)
   assert.match(renderToStaticMarkup(createElement(LoadingToast, { text: '正在保存…' })), /正在保存…/)
 
   const block = renderToStaticMarkup(createElement(LoadingBlock, { text: '处理中' }))
   assert.match(block, /class="dshpc-loading-block"/)
-  assert.match(block, /dshpc-loading-spin/)
+  assert.match(block, /class="dshpc-loader dshpc-loader--ring dshpc-loader--md"/)
   assert.match(block, /处理中/)
   assert.doesNotMatch(block, /数据加载中/)
 

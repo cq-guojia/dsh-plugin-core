@@ -19,6 +19,8 @@ export { SplitGroup, type SplitGroupProps } from './SplitGroup.js';
 export { Textarea, type TextareaProps } from './Textarea.js';
 export { Checkbox, type CheckboxProps } from './Checkbox.js';
 export { MarqueeText } from './MarqueeText.js';
+export { Loader, type LoaderProps, type LoaderSize, type LoaderVariant } from './Loader.js';
+export { LoaderBar, type LoaderBarProps } from './LoaderBar.js';
 export { Loading, LoadingBlock, LoadingToast, RunningBlocks, showLoading, type LoadingOptions, type LoadingProps, type LoadingViewProps, } from './Loading.js';
 export { claimLoadingHost, createLoadingSlot, loadingOverlayClass, LOADING_HOST_KEY, type LoadingHandle, type LoadingPosition, type LoadingSlotState, type LoadingVariant, } from './loading-host.js';
 export { SectionHead } from './SectionHead.js';

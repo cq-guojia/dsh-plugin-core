@@ -167,6 +167,8 @@ export type DemoMessageKey =
   | 'exToastNotifyHint'
   | 'exToastHostTitle'
   | 'exToastHostHint'
+  | 'exLoaderTitle'
+  | 'exLoaderHint'
   | 'exLoadingTitle'
   | 'exLoadingHint'
   | 'exToastSonnerTitle'
@@ -471,6 +473,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exToastNotifyHint: 'notify()：统一灰/绿/红/黄 + 右侧我们自己的按钮',
     exToastHostTitle: 'Toast · 宿主原生',
     exToastHostHint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）',
+    exLoaderTitle: '加载图标 · Loader',
+    exLoaderHint: '只画图标：无背景、无内距、无定位 —— 背景与位置归你（套 Chip、套 Card，或自己包一层 fixed 容器）。variant 两种（ring / blocks）× size 五档（xs 12 / sm 16 / md 24 / lg 32 / xl 48），几何等比缩放。颜色走 currentColor，跟着所在文字自动变色。倒数第二行是「自己配背景 + 自己定位」的写法，最后一行是同族的 LoaderBar（胶囊不定进度）—— 边界一致，都只画图形。',
     exLoadingTitle: '加载提示 · 两种样式',
     exLoadingHint: 'showLoading() 不自动消失，只能自己拿句柄 close()；屏幕上永远只有一张卡——后一次调用直接顶掉前一次（连点也只有一张）。默认屏位下方居中（与 Toast 同屏位），position 可选六向 + center；不给遮罩时后面照常可点。要放进自己的空间就直接渲染 LoadingToast / LoadingBlock。',
     exToastSonnerTitle: 'Toast · 官方 Sonner',
@@ -760,6 +764,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exToastNotifyHint: 'notify(): uniform grey/green/red/yellow plus our own button on the right',
     exToastHostTitle: 'Toast · host native',
     exToastHostHint: 'showHostToast(): wraps the official @deepseek-ai Toast (top banner)',
+    exLoaderTitle: 'Loader · icon only',
+    exLoaderHint: 'Draws the icon and nothing else: no background, no padding, no positioning — those belong to you (wrap it in a Chip, a Card, or your own fixed container). Two variants (ring / blocks) × five sizes (xs 12 / sm 16 / md 24 / lg 32 / xl 48), geometry scales proportionally. Colour follows currentColor, so it inherits the surrounding text colour. The second-to-last row is the “bring your own background and position” pattern; the last row shows the same-family LoaderBar — same boundary, graphics only.',
     exLoadingTitle: 'Loading · two styles',
     exLoadingHint: 'showLoading() never dismisses itself — you call close() on the handle. Only one card ever exists: a later call replaces the previous one (rapid clicks still show one). It sits bottom-centre by default (the Toast slot); position takes the six directions plus center. Without a mask the page stays clickable. To keep it inside your own area, render LoadingToast / LoadingBlock in place.',
     exToastSonnerTitle: 'Toast · Sonner',

@@ -1,6 +1,11 @@
 /**
  * 全局浮动 Loading 指示器（UI 基础层 · P1）。
  *
+ * @deprecated 这是「自带定位 + 自带 pill 背景」的复合件，不属于通用加载图标。
+ *   只要图标请用 {@link Loader}（无背景、无定位，背景与位置归调用方）；
+ *   要居中 / 带文案的整卡请继续用 {@link LoadingToast} / {@link LoadingBlock}。
+ *   本组件保留不删（消费方可能还在用），但新代码不要再用。
+ *
  * 用法：
  *   <Loading />
  *
@@ -30,6 +35,7 @@ import {
 } from './loading-host.js'
 import { ensureComponentStyles, getStyleKit } from './css.js'
 import { LOADING_CSS } from './controls-css.js'
+import { Loader } from './Loader.js'
 
 const pillStyle: Record<string, string | number> = {
   position: 'fixed',
@@ -115,20 +121,6 @@ export interface LoadingOptions extends LoadingViewProps {
   maskOpacity?: number
 }
 
-// 转圈同样走 SVG 矢量弧（border 圆在次像素下会被抗锯齿拉毛，见 Button.ts）。
-function spin(size: number): ReturnType<typeof h> {
-  return h(
-    'svg',
-    { className: 'dshpc-loading-spin', viewBox: '0 0 16 16', width: size, height: size, 'aria-hidden': true },
-    h('circle', {
-      cx: 8, cy: 8, r: 6.5, fill: 'none',
-      stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round',
-      // 周长 ≈ 40.8，画 30 的弧 ⇒ 约 265° 的开口环
-      strokeDasharray: '30 41',
-    }),
-  )
-}
-
 function textOf(props: LoadingViewProps): string {
   return props.text ?? (props.translate ?? t)('loadingDefault')
 }
@@ -139,7 +131,7 @@ export function LoadingToast(props: LoadingViewProps): ReturnType<typeof h> {
   return h(
     'div',
     { className: 'dshpc-loading-toast', role: 'status', 'aria-live': 'polite' },
-    spin(16),
+    h(Loader, { size: 'sm' }),
     h('span', null, textOf(props)),
   )
 }
@@ -150,7 +142,7 @@ export function LoadingBlock(props: LoadingViewProps): ReturnType<typeof h> {
   return h(
     'div',
     { className: 'dshpc-loading-block', role: 'status', 'aria-live': 'polite' },
-    spin(22),
+    h(Loader, { size: 'md' }),
     h('span', null, textOf(props)),
   )
 }

@@ -8,9 +8,8 @@
 @media (prefers-reduced-motion: reduce) { .dshpc-run-blocks > i { animation: none; opacity: 1; } }
 
 /* ── 加载提示（LoadingToast / LoadingBlock / showLoading）───────────────────
-   两种样式共用一个灰色面（与 notify 的 info 卡同色），暗色走 body[data-ds-dark-theme]。 */
-.dshpc-loading-spin { display: block; flex: none; animation: dshpc-loading-rotate .8s linear infinite; }
-@keyframes dshpc-loading-rotate { to { transform: rotate(360deg) } }
+   两种样式共用一个灰色面（与 notify 的 info 卡同色），暗色走 body[data-ds-dark-theme]。
+   卡里的转圈图标不自绘：复用 Loader（size sm / md），环的画法与动画只有 controls/loader.css 一份。 */
 
 /* 样式一：横排 toast 卡（图标在左、文字在右），与 notify 的 info 卡同尺寸同色。 */
 .dshpc-loading-toast {
@@ -49,5 +48,3 @@ body[data-ds-dark-theme] .dshpc-loading-block { background: #3f3f46; color: #faf
 .dshpc-loading-overlay--bottom-center { justify-content: flex-end; }
 .dshpc-loading-overlay--bottom-right { align-items: flex-end; justify-content: flex-end; }
 .dshpc-loading-overlay__mask { position: absolute; inset: 0; pointer-events: auto; }
-
-@media (prefers-reduced-motion: reduce) { .dshpc-loading-spin { animation: none; } }

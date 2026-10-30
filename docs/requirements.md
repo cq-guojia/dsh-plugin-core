@@ -52,7 +52,19 @@ dsh-plugin-core/
 - 日期时间：`DateTimePicker`（2026-10-24 新增：单值 / 时间段 × 精度 day/hour/minute/second；
   数据恒完整本地 ISO 到毫秒、**显示只到精度**；起始端 floor、结束端 ceil）
 - 「统一某类元素」的控件：`SectionHead` 等
-- 反馈件：`Modal` / `Loading` / `toast` / 空态
+- 反馈件：`Modal` / `Loader` 家族 / `Loading` / `toast` / 空态
+  - Loader 家族按「一个前缀 + 具象名」命名（2026-10-30 用户定）：`Loader`（通用图标）/
+    `LoaderBar`（胶囊不定进度）。两者的边界完全一致 —— **只画图形，不带背景、内距、定位**，
+    背景与位置归调用方；尺寸轴共用 `LoaderSize`。
+  - `LoaderWhale`（品牌鲸鱼）同日实现后又按用户要求**删除**（2026-10-30：动效与形态都不合适）：
+    删掉的是源码、CSS、转录的路径数据与源素材 `鲸鱼.svg`，不要把鲸鱼图形再搬回来。
+  - `Loader`（2026-10-30 拍板新增）：**通用加载图标**，只画图标 —— 无背景、无内距、无定位，
+    背景（胶囊 / 圆角面）与位置（按钮内 / 标签内 / 漂浮）归调用方。两轴正交：`variant`
+    （`ring` / `blocks`）× `size`（`xs` 12 / `sm` 16 / `md` 24 / `lg` 32 / `xl` 48），
+    几何画在 24×24 viewBox 内等比缩放；颜色走 `currentColor`；默认 `aria-hidden`，传 `label` 才播报。
+    新形态加在库里（枚举 + 一段 CSS），不在插件里另造转圈。Button 的 loading 与 `LoadingToast` /
+    `LoadingBlock` 的转圈改为复用它（环的画法与 keyframes 只剩 `controls/loader.css` 一份）。
+  - `Loading` 是旧的「自带定位 + 自带 pill 背景」复合件，**保留不删**但标 `@deprecated`，新代码用 `Loader`。
 - 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 多份同名；**面板本身始终是布局成员，不做面板浮层**（2026-10-28 补：**收起** = 面板退出布局、另出右侧一只独立的 `position: fixed` 耳朵，点耳朵展开并还原宽度；关闭不留耳朵——耳朵是独立浮层，不是把面板变浮层）。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
 - **通用控件是纯零件，数据由调用方传入**；**领域选择器例外**（2026-10-20 用户拍板反转）：
   `ModelPicker` / `WorkspacePicker` 是「现成的包」，接线后**自己取数自己显示**，消费方不再拿数组传 props。

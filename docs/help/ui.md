@@ -4,7 +4,7 @@
 
 > EN: ui — base controls
 
-导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
+导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
 
 ## 概览
 
@@ -308,6 +308,14 @@ h(StripCard, {
 
 > EN: Three trade-offs (accept them): ① styling comes from the first copy; ② position is shared per screen; ③ no unload reclamation. Environments without document skip silently.
 
+`Loader` 是通用加载**图标**：只画图标，不带背景、不带内距、不带定位 —— 胶囊 / 圆角面这类背景、按钮内 / 标签内 / 漂浮这类位置，全归调用方自己包。两轴正交：`variant`（`ring` 默认开口弧旋转 / `blocks` 三块脉动）× `size`（`xs` 12 / `sm` 16 / `md` 24 / `lg` 32 / `xl` 48），几何画在 24×24 viewBox 里随尺寸等比缩放，描边与方块的视觉重量各档一致。颜色走 `currentColor`，跟着所在文字自动变色。默认 `aria-hidden`（纯装饰，语义由旁边文字或外层 `role="status"` 承担）；要它自己播报就传 `label`。新形态加在库里（枚举 + 一段 CSS），不要在插件里另造一套转圈。
+
+> EN: `Loader` is the generic loading **icon**: it draws the icon and nothing else — no background, no padding, no positioning. Pills / rounded surfaces belong to you, and so does placement (inside a button, inside a tag, floating). Two orthogonal axes: `variant` (`ring` default — a rotating open arc / `blocks` — three pulsing squares) × `size` (`xs` 12 / `sm` 16 / `md` 24 / `lg` 32 / `xl` 48). The geometry lives in a 24×24 viewBox and scales proportionally, so stroke and square weights match across tiers. Colour is `currentColor`, inheriting the surrounding text. It is `aria-hidden` by default (pure decoration — semantics come from nearby text or an outer `role="status"`); pass `label` to have it announce itself. New variants go into the library (one enum value plus one CSS block), never a second spinner built in a plugin.
+
+同族还有一个**具象** loading，边界与 `Loader` 一样（只画图形，背景与定位归调用方）：`LoaderBar` 是胶囊不定进度 —— 蓝色半截固定不动、只有它上面的细斜纹单向流动（0.55 秒走一个条纹周期），不表示任何百分比；尺寸档按**高度**给、宽固定 4:1。要停住（截图 / 打印）传 `animated={false}`。
+
+> EN: One **concrete** loader in the same family, with the same boundary as `Loader` (graphics only — background and placement belong to the caller): `LoaderBar` is a capsule indeterminate bar — the blue half stays put while the thin stripes on it flow in one direction (one stripe period every 0.55s), encoding no percentage; sizes set the **height**, width is a fixed 4:1. Pass `animated={false}` to freeze it (screenshots / print).
+
 加载提示两种样式：`LoadingToast` 横排卡（转圈在左、文字在右，灰底与 notify 的 info 卡同色）、`LoadingBlock` 方块卡（转圈在上、文字在下，内距更大）。默认文案走内置字典「数据加载中」/「Loading」，传 `text` 覆盖。
 
 > EN: Two loading styles: `LoadingToast` — a horizontal card (spinner left, text right, same grey as the notify info card) — and `LoadingBlock` — a square card (spinner above text, roomier padding). The default copy comes from the built-in dictionary (“数据加载中” / “Loading”); pass `text` to override.
@@ -330,6 +338,8 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `notify(message, opts?)` | `` |  | 默认用这个。opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个） | Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2) |
 | `showHostToast(message, opts?)` | `` |  | 宿主原生 Toast，走 `dsh-plugin-core/ui/host` 子路径。opts: `{ tone?, holdMs?, actions?, onDismiss? }` | Host-native Toast from the `dsh-plugin-core/ui/host` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }` |
 | `showLoading(opts?)` | `` |  | 全局加载提示（全局唯一一处），返回 `{ close() }`。opts: `{ text?, variant?: 'toast' \| 'block', position?, mask?, maskOpacity?, translate? }`；position 默认 bottom-center | Global loading hint (one spot globally) returning `{ close() }`. opts `{ text?, variant?: 'toast' \| 'block', position?, mask?, maskOpacity?, translate? }`; position defaults to bottom-center |
+| `Loader({ variant?, size?, label?, className? })` | `` |  | 通用加载图标：variant 两形态 × size 五档；无背景无定位，颜色走 currentColor | Generic loading icon: two variants × five sizes; no background or positioning, colour via currentColor |
+| `LoaderBar({ size?, animated?, label?, className? })` | `` |  | 胶囊不定进度：蓝色段固定、斜纹单向流动；尺寸按高度给，宽固定 4:1 | Capsule indeterminate bar: the blue segment stays put while its stripes flow; sizes set height, width is a fixed 4:1 |
 | `LoadingToast({ text? })` | `` |  | 就地渲染的横排加载卡（转圈在左） | In-place horizontal loading card (spinner left) |
 | `LoadingBlock({ text? })` | `` |  | 就地渲染的方块加载卡（转圈在上、文字在下） | In-place square loading card (spinner above text) |
 | `Loading({ anchorId? })` | `` |  | 贴到主内容容器右下角的加载指示；anchorId 默认 dshpc-main | Loading indicator pinned to the main container’s bottom-right; anchorId defaults to dshpc-main |

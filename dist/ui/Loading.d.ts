@@ -1,6 +1,11 @@
 /**
  * 全局浮动 Loading 指示器（UI 基础层 · P1）。
  *
+ * @deprecated 这是「自带定位 + 自带 pill 背景」的复合件，不属于通用加载图标。
+ *   只要图标请用 {@link Loader}（无背景、无定位，背景与位置归调用方）；
+ *   要居中 / 带文案的整卡请继续用 {@link LoadingToast} / {@link LoadingBlock}。
+ *   本组件保留不删（消费方可能还在用），但新代码不要再用。
+ *
  * 用法：
  *   <Loading />
  *
