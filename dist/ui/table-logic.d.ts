@@ -62,6 +62,16 @@ export interface TableRow {
      */
     cells: Record<string, TableCell>;
 }
+/**
+ * 一个分组（通栏段）：自带一行横跨所有列的通栏标题、自己的表头、自己的数据行。
+ * 多个分组垂直连续排布（中间没有空隙），用于「一个表格里展示多个工作区 / 多个板块」。
+ */
+export interface TableGroup {
+    key: string | number;
+    /** 通栏标题（横跨全部列）。 */
+    title: ReactNode;
+    rows: readonly TableRow[];
+}
 /** 一个表头单元格：它覆盖的列（可能跨列 / 跨行）。 */
 export interface TableHeaderCell {
     column: TableColumn;

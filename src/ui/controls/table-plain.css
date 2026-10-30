@@ -50,13 +50,15 @@
 }
 
 /* 行悬浮：只在可点行上给反馈，静态表格不误导用户以为能点。
-   带 __body 上下文是为了压过基础层的斑马纹（见 table.css 注释）。 */
-.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-card-hover);}
+   底色取最淡的一档（open-bg-soft）—— 2026-10-30 用户：原来的悬浮 / 选中「太亮了」，
+   只要一点点淡色意思到位即可。带 __body 上下文是为了压过基础层的斑马纹（见 table.css）。 */
+.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-open-bg-soft);}
 
 /* 选中行：淡蓝底 + 左侧蓝竖条。用背景渐变画条，避免 tr 上伪元素 / 定位的兼容问题；
    两条选择器同一份声明：悬浮态（多一个属性 + 伪类）不会盖掉选中态。
-   特异性高于斑马纹，选中行不会出现半截条纹。 */
+   底色用 business-soft（比悬浮再明确一档但仍是浅色），条本身才是「选中」的信号。
+   特异性 4 级，高于基础层的斑马纹（3 级）⇒ 偶数行也能正常选中。 */
 .dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'],
 .dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'][data-interactive='true']:hover{
-  background:linear-gradient(to right,var(--dshpc-business) 3px,var(--dshpc-open-bg) 3px);
+  background:linear-gradient(to right,var(--dshpc-business) 3px,var(--dshpc-business-soft) 3px);
 }

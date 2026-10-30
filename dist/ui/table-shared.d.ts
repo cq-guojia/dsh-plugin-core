@@ -1,6 +1,6 @@
 import { createElement as h, type CSSProperties, type ReactNode } from 'react';
 import { type Translate } from '../utils/i18n.js';
-import { type TableBorders, type TableColumn, type TableDensity, type TableRow } from './table-logic.js';
+import { type TableBorders, type TableColumn, type TableDensity, type TableGroup, type TableRow } from './table-logic.js';
 /**
  * 表格外观的公共 props。**对外组件各自继承它，不要直接把本接口给消费方**：
  * 消费方看到的是 `TableProps` 这类具名类型，外观由「引哪个组件」决定。
@@ -13,12 +13,17 @@ export interface TableSharedProps {
      * 值可以是任意 ReactNode，也可以是 `{ content, colSpan, rowSpan, align }` 对象；
      * 某列 key 缺省（undefined）= 该格不渲染，给上一行的 rowSpan 让位。
      */
-    rows: readonly TableRow[];
+    rows?: readonly TableRow[];
+    /**
+     * 分组数据：每组带一行通栏标题 + 自己的表头 + 自己的数据行，多组连续排布。
+     * 与 `rows` 二选一；传了 `groups` 就忽略 `rows`（用于「一个表里多个工作区 / 板块」）。
+     */
+    groups?: readonly TableGroup[];
     /** 行密度（行高 + 水平内距），默认 default。 */
     density?: TableDensity;
     /** 斑马纹（偶数行淡底），默认 false。 */
     striped?: boolean;
-    /** 外框范围：all 四边（默认）/ x 只左右两条 / none 全不要。 */
+    /** 外框范围：all 四边（默认）/ x 只左右两条 / y 只上下两条 / none 全不要。 */
     borders?: TableBorders;
     /** 选中行（高亮 + 左侧竖条由皮肤决定）。 */
     selectedKeys?: readonly (string | number)[];

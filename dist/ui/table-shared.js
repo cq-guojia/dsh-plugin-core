@@ -55,12 +55,8 @@ export function tableShell(skinClass, props) {
     ]
         .filter((s) => s !== '')
         .join(' ');
-    return h('table', { className: tableClass, style: props.style, 'aria-label': props.ariaLabel }, leaves.length === 0
-        ? null
-        : h('colgroup', null, ...leaves.map((column) => h('col', {
-            key: column.key,
-            style: widthOf(column.width) === undefined ? undefined : { width: widthOf(column.width) },
-        }))), h('thead', { className: 'dshpc-table__head' }, ...headRows.map((cells, level) => h('tr', { key: `head-${level}`, className: 'dshpc-table__head-row' }, ...cells.map((cell) => {
+    /** 表头一行：分组表头按层级逐行渲染（每组重复渲染它，分组模式也要表头）。 */
+    const headRowOf = (cells, level) => h('tr', { key: `head-${level}`, className: 'dshpc-table__head-row' }, ...cells.map((cell) => {
         const group = cell.colSpan > 1;
         const firstLeafIndex = leafIndexByKey.get(cell.leafKeys[0] ?? '');
         const className = `dshpc-table__head-cell${group ? ' dshpc-table__head-cell--group' : ''}${alignClass('dshpc-table__head-cell', cell.column.align)}`;
@@ -75,46 +71,72 @@ export function tableShell(skinClass, props) {
             'data-divider': firstLeafIndex === undefined ? undefined : dividerAttr(cell.column, firstLeafIndex),
             'data-header-tone': tone === undefined || tone === 'default' ? undefined : tone,
         }, cell.column.title);
-    })))), h('tbody', { className: 'dshpc-table__body' }, props.rows.length === 0
-        ? h('tr', { className: 'dshpc-table__row' }, h('td', { className: 'dshpc-table__empty', colSpan: leaves.length > 0 ? leaves.length : undefined }, props.emptyText ?? tt('tableEmpty')))
-        : props.rows.map((row, index) => h('tr', {
-            key: row.key,
-            className: 'dshpc-table__row',
-            'data-selected': selected.has(row.key) ? 'true' : undefined,
-            'data-interactive': onRowClick === undefined ? undefined : 'true',
-            tabIndex: onRowClick === undefined ? undefined : 0,
-            onClick: onRowClick === undefined ? undefined : () => onRowClick(row, index),
-            onKeyDown: onRowClick === undefined
-                ? undefined
-                : (event) => {
-                    if (event.key !== 'Enter' && event.key !== ' ')
-                        return;
-                    event.preventDefault();
-                    onRowClick(row, index);
-                },
-        }, ...leaves.map((column, leafIndex) => {
-            const cell = row.cells[column.key];
-            // 缺 key = 该格不渲染（上一行的 rowSpan 已经占了这个位置）；要空格请显式传 null。
-            if (cell === undefined)
-                return null;
-            let spec;
-            let content;
-            if (isTableCellSpec(cell)) {
-                spec = cell;
-                content = cell.content;
-            }
-            else {
-                content = cell;
-            }
-            const align = spec?.align ?? column.align;
-            return h('td', {
-                key: column.key,
-                className: `dshpc-table__cell${alignClass('dshpc-table__cell', align)}`,
-                style: padStyle(column),
-                colSpan: spec?.colSpan !== undefined && spec.colSpan > 1 ? spec.colSpan : undefined,
-                rowSpan: spec?.rowSpan !== undefined && spec.rowSpan > 1 ? spec.rowSpan : undefined,
-                'data-divider': dividerAttr(column, leafIndex),
-            }, content ?? null);
-        })))));
+    }));
+    /** 一组数据行（选中 / 可点 / 单元格配置都在这里落地）。 */
+    const dataRowsOf = (rows, offset = 0) => rows.map((row, index) => h('tr', {
+        key: row.key,
+        className: 'dshpc-table__row',
+        'data-selected': selected.has(row.key) ? 'true' : undefined,
+        'data-interactive': onRowClick === undefined ? undefined : 'true',
+        tabIndex: onRowClick === undefined ? undefined : 0,
+        onClick: onRowClick === undefined ? undefined : () => onRowClick(row, offset + index),
+        onKeyDown: onRowClick === undefined
+            ? undefined
+            : (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ')
+                    return;
+                event.preventDefault();
+                onRowClick(row, offset + index);
+            },
+    }, ...leaves.map((column, leafIndex) => {
+        const cell = row.cells[column.key];
+        // 缺 key = 该格不渲染（上一行的 rowSpan 已经占了这个位置）；要空格请显式传 null。
+        if (cell === undefined)
+            return null;
+        let spec;
+        let content;
+        if (isTableCellSpec(cell)) {
+            spec = cell;
+            content = cell.content;
+        }
+        else {
+            content = cell;
+        }
+        const align = spec?.align ?? column.align;
+        return h('td', {
+            key: column.key,
+            className: `dshpc-table__cell${alignClass('dshpc-table__cell', align)}`,
+            style: padStyle(column),
+            colSpan: spec?.colSpan !== undefined && spec.colSpan > 1 ? spec.colSpan : undefined,
+            rowSpan: spec?.rowSpan !== undefined && spec.rowSpan > 1 ? spec.rowSpan : undefined,
+            'data-divider': dividerAttr(column, leafIndex),
+        }, content ?? null);
+    })));
+    const groups = props.groups ?? [];
+    const body = groups.length > 0
+        ? groups.map((group, groupIndex) => h('tbody', { key: group.key, className: 'dshpc-table__body dshpc-table__group-body' }, 
+        // 通栏标题行：横跨所有列，充当这一组的「大标题」
+        h('tr', { className: 'dshpc-table__group-row' }, h('th', {
+            className: 'dshpc-table__group-cell',
+            scope: 'colgroup',
+            colSpan: leaves.length > 0 ? leaves.length : undefined,
+        }, group.title)), 
+        // 每组自带表头：分组模式不放在 <thead>（一个 table 只能有一个 thead）
+        ...headRows.map((cells, level) => headRowOf(cells, `g${groupIndex}-${level}`)), ...dataRowsOf(group.rows, 0)))
+        : [
+            h('tbody', { key: 'body', className: 'dshpc-table__body' }, props.rows !== undefined && props.rows.length > 0
+                ? dataRowsOf(props.rows)
+                : h('tr', { className: 'dshpc-table__row' }, h('td', { className: 'dshpc-table__empty', colSpan: leaves.length > 0 ? leaves.length : undefined }, props.emptyText ?? tt('tableEmpty')))),
+        ];
+    return h('table', { className: tableClass, style: props.style, 'aria-label': props.ariaLabel }, leaves.length === 0
+        ? null
+        : h('colgroup', null, ...leaves.map((column) => h('col', {
+            key: column.key,
+            style: widthOf(column.width) === undefined ? undefined : { width: widthOf(column.width) },
+        }))), 
+    // 有分组时，每组的表头在各自的 tbody 里；单一表时表头在 thead。
+    groups.length > 0
+        ? null
+        : h('thead', { className: 'dshpc-table__head' }, ...headRows.map((cells, level) => headRowOf(cells, level))), ...body);
 }
 //# sourceMappingURL=table-shared.js.map

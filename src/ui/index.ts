@@ -101,6 +101,7 @@ export {
   type TableCellSpec,
   type TableColumn,
   type TableDensity,
+  type TableGroup,
   type TableHeaderCell,
   type TableRow,
   type TableTone,

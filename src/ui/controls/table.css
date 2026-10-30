@@ -34,9 +34,19 @@
 .dshpc-table__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
 
 /* 斑马纹是通用能力（表级 striped 开关），放在基础层：底色取 token，各档皮肤不必各自实现。
-   选择器刻意只到 3 个类级别；皮肤层的行态规则带上 __body 上下文后必然压过它
-   （hover / 选中永远比斑马纹优先）。 */
-.dshpc-table--striped .dshpc-table__body .dshpc-table__row:nth-child(even){background:var(--dshpc-plate);}
+   选择器刻意只到 3 个类级别（表级 + 行 + :nth-child）；皮肤层的行态规则带 __body 上下文
+   + 属性选择器，必然是 4 级 ⇒ 与注入顺序无关地压过它。
+   2026-10-30 真机事故：这里曾写满 4 级（多了一个 __body），与选中的 4 级相同 ⇒ 基础层
+   比皮肤后注入，偶数行永远被斑马纹盖住（「单数行能选中、双数行点了没反应」）。 */
+.dshpc-table--striped .dshpc-table__row:nth-child(even){background:var(--dshpc-plate);}
+
+/* 分组通栏：一个表格里放多个板块（工作区 A / 工作区 B）时，每组先来一行横跨全部列的大标题，
+   然后才是这一组自己的表头与数据行。结构 + 底色归基础层（只用 token，各档皮肤共同成立）；
+   组与组之间用一条实线隔开，第一组顶部不画（外框已经在那儿，画了就成双线）。 */
+.dshpc-table__group-cell{height:var(--dshpc-table-head-h);padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);
+  box-sizing:border-box;background:var(--dshpc-surface-sunken);border-top:1px solid var(--dshpc-border);
+  text-align:left;vertical-align:middle;font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg);}
+.dshpc-table__group-body:first-of-type .dshpc-table__group-cell{border-top:0;}
 
 .dshpc-table__empty{height:80px;padding:0 var(--dshpc-space-4);text-align:center;
   color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}

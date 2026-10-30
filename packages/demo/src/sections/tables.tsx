@@ -1,6 +1,13 @@
 import { createElement as h, useState } from 'react'
 import { IconChevronDownOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitives'
-import { Chip, IconButton, Table, type TableColumn, type TableRow } from '../../../../dist/ui/index.js'
+import {
+  Chip,
+  IconButton,
+  Table,
+  type TableColumn,
+  type TableGroup,
+  type TableRow,
+} from '../../../../dist/ui/index.js'
 import { DocApi, DocCode, DocProse, Example } from '../doc.js'
 import { t } from '../i18n.js'
 
@@ -177,8 +184,63 @@ const SPAN_ROWS: TableRow[] = [
   },
 ]
 
+/**
+ * 通栏分组示例：一个表格里并排展示多个工作区的任务。
+ * 每组自带一行横跨全部列的通栏标题 + 自己的表头 + 自己的任务行，多组垂直连续排布。
+ */
+const GROUP_COLUMNS: TableColumn[] = [
+  { key: 'task', title: 'Task', width: 280 },
+  { key: 'owner', title: 'Owner', width: 140 },
+  { key: 'state', title: 'Status', width: 120, align: 'center' },
+  { key: 'updated', title: 'Updated', width: 120, align: 'right' },
+]
+
+type Task = {
+  key: string
+  title: string
+  owner: string
+  state: string
+  tone: 'success' | 'warning' | 'danger'
+  updated: string
+}
+
+const WORKSPACES: readonly { key: string; title: string; tasks: readonly Task[] }[] = [
+  {
+    key: 'ws-core',
+    title: 'Workspace A · dsh-plugin-core',
+    tasks: [
+      { key: 'a1', title: 'Table skin plain', owner: 'Chen, Wei', state: 'Done', tone: 'success', updated: '2026-10-30' },
+      { key: 'a2', title: 'Grouped banner rows', owner: 'Liu, Yan', state: 'Doing', tone: 'warning', updated: '2026-10-30' },
+      { key: 'a3', title: 'Token contrast audit', owner: 'Ma, Rui', state: 'Blocked', tone: 'danger', updated: '2026-10-29' },
+    ],
+  },
+  {
+    key: 'ws-demo',
+    title: 'Workspace B · demo preview',
+    tasks: [
+      { key: 'b1', title: 'Table section copy', owner: 'Sun, Li', state: 'Done', tone: 'success', updated: '2026-10-29' },
+      { key: 'b2', title: 'Sidebar entry setting', owner: 'Wu, Hao', state: 'Doing', tone: 'warning', updated: '2026-10-28' },
+    ],
+  },
+]
+
+const GROUPS: TableGroup[] = WORKSPACES.map((workspace) => ({
+  key: workspace.key,
+  title: workspace.title,
+  rows: workspace.tasks.map((task) => ({
+    key: task.key,
+    cells: {
+      task: task.title,
+      owner: task.owner,
+      state: h(Chip, { tone: task.tone, size: 'xs' }, task.state),
+      updated: task.updated,
+    },
+  })),
+}))
+
 export function TablePage(): ReturnType<typeof h> {
-  const [selected, setSelected] = useState<string | number>('S-2418')
+  /** null = 当前没有选中行；再点一次已选中的行就是取消（由调用方决定 toggle 语义）。 */
+  const [selected, setSelected] = useState<string | number | null>('S-2418')
   return h(
     'div',
     null,
@@ -195,8 +257,9 @@ export function TablePage(): ReturnType<typeof h> {
           columns: COLUMNS,
           rows: rowsOf(),
           striped: true,
-          selectedKeys: [selected],
-          onRowClick: (row) => setSelected(row.key),
+          selectedKeys: selected === null ? [] : [selected],
+          // 再点一次已选中的行 = 取消选中
+          onRowClick: (row) => setSelected((prev) => (prev === row.key ? null : row.key)),
           ariaLabel: 'Surveillance studies',
           style: { minWidth: 960 },
         }),
@@ -225,6 +288,20 @@ export function TablePage(): ReturnType<typeof h> {
           borders: 'y',
           ariaLabel: 'Enrollment by site',
           style: { maxWidth: '560px' },
+        }),
+      ),
+    ),
+    h(
+      Example,
+      { title: 'Groups · 通栏', hint: t('tableGroupHint') },
+      h(
+        'div',
+        { style: { overflowX: 'auto' } },
+        h(Table, {
+          columns: GROUP_COLUMNS,
+          groups: GROUPS,
+          ariaLabel: 'Tasks by workspace',
+          style: { minWidth: 660 },
         }),
       ),
     ),

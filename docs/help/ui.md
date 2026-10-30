@@ -316,6 +316,10 @@ h(StripCard, {
 
 > EN: Data-driven, never self-fetching: columns may nest children for a multi-row grouped header (colSpan / rowSpan are computed); rows are { key, cells } looked up by leaf-column key. A cell is either any ReactNode (multi-line layouts such as avatar + name + ID, status pills, row-end buttons are all the caller’s) or a { content, colSpan, rowSpan, align } object for column/row spanning. When spanning rows, the next row must omit that column’s key (a missing key renders nothing and yields the slot to the previous row; pass null explicitly for an empty cell). Rows are clickable only with onRowClick.
 
+通栏分组：传 groups（与 rows 二选一）就能在一个表格里放下多个板块 —— 每组渲染成「一行横跨所有列的通栏标题 → 这一组自己的表头 → 这一组的任务行」，组与组之间用一条实线隔开。典型场景是多个工作区的任务：仍是一张表，不会拆成两张、也不会出现两个互不相干的表头挤在一起；分组模式下没有 <thead>，表头跟着每组走。
+
+> EN: Banner groups: pass groups (instead of rows) to hold several sections in one table — each group renders as a full-width banner row spanning every column → that group’s own header → that group’s rows, with a solid rule between groups. The canonical case is tasks across several workspaces: it stays one table rather than two tables with unrelated headers. Group mode has no thead; the header travels with each group.
+
 外观分档 = 分组件 + 分文件，没有 variant：Table 只 import 自己那份皮肤 CSS；后续 TableGrid（网格线）/ TableZebra（斑马纹）是同族独立组件，各自 import 各自皮肤。消费方引哪个就只打包哪个 —— 引一个表格不会把另一档的 CSS 也带进包里。
 
 > EN: Skins are separate components and separate files — no variant: Table imports only its own skin CSS; future TableGrid (grid lines) / TableZebra (zebra stripes) are sibling components importing their own skins. Importing one packs only that one — choosing a table never drags the other skin into the bundle.
@@ -327,7 +331,8 @@ h(StripCard, {
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
 | `columns` | `TableColumn[]` | 必填 | — | 列定义；children 非空即分组表头（自动算 colSpan / rowSpan），叶子 key 用来取单元格；width 数字按 px；align 对齐；divider=false 关掉该列左竖线；padding 该列水平内距（px）；headerTone 该列表头语义色 | Column definitions; non-empty children makes a group header (colSpan / rowSpan computed); leaf keys select cells; numeric width means px; align sets alignment; divider=false drops that column’s left divider; padding sets its horizontal padding (px); headerTone recolours its header |
-| `rows` | `TableRow[]` | 必填 | — | 行数据 { key, cells }：key 兼作选中标识与 React key；cells 按叶子列 key 给内容（ReactNode 或 { content, colSpan, rowSpan, align }）；缺 key = 不渲染、给上一行 rowSpan 让位 | Row data { key, cells }: key doubles as selection id and React key; cells map leaf-column key to content (ReactNode or { content, colSpan, rowSpan, align }); a missing key renders nothing and yields to the previous row’s rowSpan |
+| `rows` | `TableRow[]` | — | — | 行数据 { key, cells }（与 groups 二选一）：key 兼作选中标识与 React key；cells 按叶子列 key 给内容（ReactNode 或 { content, colSpan, rowSpan, align }）；缺 key = 不渲染、给上一行 rowSpan 让位 | Row data { key, cells } (either this or groups): key doubles as selection id and React key; cells map leaf-column key to content (ReactNode or { content, colSpan, rowSpan, align }); a missing key renders nothing and yields to the previous row’s rowSpan |
+| `groups` | `TableGroup[]` | — | — | 分组数据 { key, title, rows }（与 rows 二选一，传了就忽略 rows）：每组 = 一行横跨全部列的通栏标题 + 自己的表头 + 自己的数据行，多组连续排布、组间一条实线；用于「一个表格展示多个工作区 / 板块」 | Group data { key, title, rows } (instead of rows; when given, rows is ignored): each group is a banner row spanning every column + its own header + its own rows, with groups stacked and separated by a solid rule — for showing several workspaces / sections in one table |
 | `density` | `'compact' \| 'default' \| 'comfortable'` | — | 'default' | 行密度：行高与水平内距 —— default 44 / 48 与 12px，compact 36 / 36 与 8px，comfortable 52 / 60 与 16px | Row density: height and horizontal padding — default 44 / 48 with 12px, compact 36 / 36 with 8px, comfortable 52 / 60 with 16px |
 | `striped` | `boolean` | — | false | 偶数行淡底斑马纹（hover / 选中仍优先） | Faint tint on even rows (hover / selection still win) |
 | `borders` | `'all' \| 'x' \| 'y' \| 'none'` | — | 'all' | 外框范围：all 四边 / x 只左右 / y 只上下 / none 全不要（不要左右两条边用 y） | Outer border: all four sides / x left+right only / y top+bottom only / none (use y to drop left and right) |
@@ -376,6 +381,24 @@ h(Table, {
   borders: 'all',       // all 四边 / x 只左右 / none
   selectedKeys: [picked],
   onRowClick: (row) => setPicked(row.key),
+})
+
+// 通栏分组：一个表格里放多个工作区（groups 与 rows 二选一）
+// 每组 = 横跨全部列的通栏标题 → 这一组自己的表头 → 这一组的任务行，组间一条实线
+h(Table, {
+  columns: [
+    { key: 'task', title: 'Task', width: 260 },
+    { key: 'state', title: 'Status', width: 120, align: 'center' },
+  ],
+  groups: [
+    { key: 'ws-a', title: '工作区 A', rows: [
+      { key: 'a1', cells: { task: '修表格斑马纹', state: '进行中' } },
+    ] },
+    { key: 'ws-b', title: '工作区 B', rows: [
+      { key: 'b1', cells: { task: '补通栏文档', state: '已完成' } },
+    ] },
+  ],
+  ariaLabel: 'Tasks by workspace',
 })
 
 // 第二档外观是另一个组件、另一份 CSS（预留）：引 TableGrid / TableZebra 时

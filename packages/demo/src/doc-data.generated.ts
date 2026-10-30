@@ -2085,6 +2085,10 @@ export const docData = {
         "en": "Data-driven, never self-fetching: columns may nest children for a multi-row grouped header (colSpan / rowSpan are computed); rows are { key, cells } looked up by leaf-column key. A cell is either any ReactNode (multi-line layouts such as avatar + name + ID, status pills, row-end buttons are all the caller’s) or a { content, colSpan, rowSpan, align } object for column/row spanning. When spanning rows, the next row must omit that column’s key (a missing key renders nothing and yields the slot to the previous row; pass null explicitly for an empty cell). Rows are clickable only with onRowClick."
       },
       {
+        "zh": "通栏分组：传 groups（与 rows 二选一）就能在一个表格里放下多个板块 —— 每组渲染成「一行横跨所有列的通栏标题 → 这一组自己的表头 → 这一组的任务行」，组与组之间用一条实线隔开。典型场景是多个工作区的任务：仍是一张表，不会拆成两张、也不会出现两个互不相干的表头挤在一起；分组模式下没有 <thead>，表头跟着每组走。",
+        "en": "Banner groups: pass groups (instead of rows) to hold several sections in one table — each group renders as a full-width banner row spanning every column → that group’s own header → that group’s rows, with a solid rule between groups. The canonical case is tasks across several workspaces: it stays one table rather than two tables with unrelated headers. Group mode has no thead; the header travels with each group."
+      },
+      {
         "zh": "外观分档 = 分组件 + 分文件，没有 variant：Table 只 import 自己那份皮肤 CSS；后续 TableGrid（网格线）/ TableZebra（斑马纹）是同族独立组件，各自 import 各自皮肤。消费方引哪个就只打包哪个 —— 引一个表格不会把另一档的 CSS 也带进包里。",
         "en": "Skins are separate components and separate files — no variant: Table imports only its own skin CSS; future TableGrid (grid lines) / TableZebra (zebra stripes) are sibling components importing their own skins. Importing one packs only that one — choosing a table never drags the other skin into the bundle."
       },
@@ -2111,10 +2115,18 @@ export const docData = {
             "name": "rows",
             "type": "TableRow[]",
             "def": "—",
-            "required": "必填",
             "desc": {
-              "zh": "行数据 { key, cells }：key 兼作选中标识与 React key；cells 按叶子列 key 给内容（ReactNode 或 { content, colSpan, rowSpan, align }）；缺 key = 不渲染、给上一行 rowSpan 让位",
-              "en": "Row data { key, cells }: key doubles as selection id and React key; cells map leaf-column key to content (ReactNode or { content, colSpan, rowSpan, align }); a missing key renders nothing and yields to the previous row’s rowSpan"
+              "zh": "行数据 { key, cells }（与 groups 二选一）：key 兼作选中标识与 React key；cells 按叶子列 key 给内容（ReactNode 或 { content, colSpan, rowSpan, align }）；缺 key = 不渲染、给上一行 rowSpan 让位",
+              "en": "Row data { key, cells } (either this or groups): key doubles as selection id and React key; cells map leaf-column key to content (ReactNode or { content, colSpan, rowSpan, align }); a missing key renders nothing and yields to the previous row’s rowSpan"
+            }
+          },
+          {
+            "name": "groups",
+            "type": "TableGroup[]",
+            "def": "—",
+            "desc": {
+              "zh": "分组数据 { key, title, rows }（与 rows 二选一，传了就忽略 rows）：每组 = 一行横跨全部列的通栏标题 + 自己的表头 + 自己的数据行，多组连续排布、组间一条实线；用于「一个表格展示多个工作区 / 板块」",
+              "en": "Group data { key, title, rows } (instead of rows; when given, rows is ignored): each group is a banner row spanning every column + its own header + its own rows, with groups stacked and separated by a solid rule — for showing several workspaces / sections in one table"
             }
           },
           {
@@ -2205,7 +2217,7 @@ export const docData = {
       {
         "id": "ui-table-example",
         "lang": "tsx",
-        "src": "import { Table, Chip } from 'dsh-plugin-core/ui'\n\nconst columns = [\n  { key: 'id', title: 'Patient ID', width: 140 },\n  {\n    key: 'patient', title: 'Patient', headerTone: 'business',\n    children: [\n      // divider:false ⇒ 这一列左缘不画竖线（「这几列之间不要线」）\n      { key: 'name', title: 'Name', width: 200, padding: 12 },\n      { key: 'age', title: 'Age / Sex', width: 100, align: 'center', divider: false },\n    ],\n  },\n  { key: 'status', title: 'Status', width: 130, headerTone: 'success' },\n]\n\nconst rows = [{\n  key: 'S-2418',\n  cells: {\n    id: 'S-2418',\n    // 单元格可以装任意 ReactNode：头像 + 名字 + 编号的多行排版由调用方决定\n    name: h('div', null, h('strong', null, 'Chen, Wei'), h('div', null, 'MRN-88214')),\n    age: '62 / M',\n    status: h(Chip, { tone: 'success', size: 'xs' }, 'Reviewed'),\n  },\n}, {\n  // 跨列：对象写法占 id + name 两格\n  key: 'S-2420',\n  cells: { id: { content: 'S-2420 · escalated', colSpan: 2 }, age: null, status: 'Pending' },\n}]\n\nh(Table, {\n  columns, rows,\n  density: 'compact',   // compact / default / comfortable\n  striped: true,        // 偶数行淡底\n  borders: 'all',       // all 四边 / x 只左右 / none\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n})\n\n// 第二档外观是另一个组件、另一份 CSS（预留）：引 TableGrid / TableZebra 时\n// 只打包它自己那份皮肤，不会把 Table 的皮肤一起带上。"
+        "src": "import { Table, Chip } from 'dsh-plugin-core/ui'\n\nconst columns = [\n  { key: 'id', title: 'Patient ID', width: 140 },\n  {\n    key: 'patient', title: 'Patient', headerTone: 'business',\n    children: [\n      // divider:false ⇒ 这一列左缘不画竖线（「这几列之间不要线」）\n      { key: 'name', title: 'Name', width: 200, padding: 12 },\n      { key: 'age', title: 'Age / Sex', width: 100, align: 'center', divider: false },\n    ],\n  },\n  { key: 'status', title: 'Status', width: 130, headerTone: 'success' },\n]\n\nconst rows = [{\n  key: 'S-2418',\n  cells: {\n    id: 'S-2418',\n    // 单元格可以装任意 ReactNode：头像 + 名字 + 编号的多行排版由调用方决定\n    name: h('div', null, h('strong', null, 'Chen, Wei'), h('div', null, 'MRN-88214')),\n    age: '62 / M',\n    status: h(Chip, { tone: 'success', size: 'xs' }, 'Reviewed'),\n  },\n}, {\n  // 跨列：对象写法占 id + name 两格\n  key: 'S-2420',\n  cells: { id: { content: 'S-2420 · escalated', colSpan: 2 }, age: null, status: 'Pending' },\n}]\n\nh(Table, {\n  columns, rows,\n  density: 'compact',   // compact / default / comfortable\n  striped: true,        // 偶数行淡底\n  borders: 'all',       // all 四边 / x 只左右 / none\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n})\n\n// 通栏分组：一个表格里放多个工作区（groups 与 rows 二选一）\n// 每组 = 横跨全部列的通栏标题 → 这一组自己的表头 → 这一组的任务行，组间一条实线\nh(Table, {\n  columns: [\n    { key: 'task', title: 'Task', width: 260 },\n    { key: 'state', title: 'Status', width: 120, align: 'center' },\n  ],\n  groups: [\n    { key: 'ws-a', title: '工作区 A', rows: [\n      { key: 'a1', cells: { task: '修表格斑马纹', state: '进行中' } },\n    ] },\n    { key: 'ws-b', title: '工作区 B', rows: [\n      { key: 'b1', cells: { task: '补通栏文档', state: '已完成' } },\n    ] },\n  ],\n  ariaLabel: 'Tasks by workspace',\n})\n\n// 第二档外观是另一个组件、另一份 CSS（预留）：引 TableGrid / TableZebra 时\n// 只打包它自己那份皮肤，不会把 Table 的皮肤一起带上。"
       }
     ]
   },
