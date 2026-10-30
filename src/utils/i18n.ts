@@ -54,6 +54,9 @@ export type UtilMessageKey =
   | 'mdFootnotes'
   | 'cardToggle'
   | 'tableEmpty'
+  | 'tableLoading'
+  | 'tableLoadingMore'
+  | 'tableNoMore'
   // ── 分页（Pagination）──
   | 'paginationAria'
   | 'paginationPrev'
@@ -328,6 +331,9 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     mdFootnotes: '脚注',
     cardToggle: '展开/收起',
     tableEmpty: '暂无数据',
+    tableLoading: '正在加载…',
+    tableLoadingMore: '加载中…',
+    tableNoMore: '没有更多数据',
     paginationAria: '分页',
     paginationPrev: '上一页',
     paginationNext: '下一页',
@@ -596,6 +602,9 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     mdFootnotes: 'Footnotes',
     cardToggle: 'Expand/Collapse',
     tableEmpty: 'No data',
+    tableLoading: 'Loading…',
+    tableLoadingMore: 'Loading more…',
+    tableNoMore: 'No more data',
     paginationAria: 'Pagination',
     paginationPrev: 'Previous',
     paginationNext: 'Next',

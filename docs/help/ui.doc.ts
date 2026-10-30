@@ -166,6 +166,20 @@ h(Table, {
 h(Table, {
   columns, rows: currentPageRows,
   pagination: { page, pageSize, total: 86, onChange },
+})
+
+// 加载态（滚动加载，与分页二选一）：onLoadMore 本身就是开关 —— 传了就监听底部
+h(Table, {
+  columns, rows: [],
+  loading: true,                  // 首屏一条数据都没有：整表高占位（默认 160px）
+  loadingHeight: 160,
+})
+
+h(Table, {
+  columns, rows,
+  loadingMore: true,              // 正在取下一页：底部一行小转圈
+  hasMore: true,                  // false ⇒ 底部「没有更多数据」；noMoreText: false 可关
+  onLoadMore: () => fetchNextPage(),   // 滚到接近底部自动触发一次
 })`
 
 const doc: DocTopic = {
@@ -485,8 +499,8 @@ const doc: DocTopic = {
           en: 'Skins are separate components and separate files — no variant: Table imports only its own skin CSS; future TableGrid (grid lines) / TableZebra (zebra stripes) are sibling components importing their own skins. Importing one packs only that one — choosing a table never drags the other skin into the bundle.',
         },
         {
-          zh: '边界：不负责取数 / 排序 / 虚拟滚动；横向滚动容器与圆角裁剪归调用方；表头不做吸顶（分组表头是多行，统一 top:0 会在滚动时互相盖住）。分页可选：给 `pagination` 就让表格自己切片并在表下摆页码（详见 Pagination 一节），不给就完全不分页。没有数据时显示内置空态（emptyText 可覆盖）。',
-          en: 'Boundaries: no fetching / sorting / virtual scrolling; the horizontal scroll container and rounded clipping are the caller’s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). Paging is optional: pass `pagination` and the table slices rows itself and renders the pager underneath (see the Pagination section); omit it and nothing pages. With no rows, a built-in empty state shows (override with emptyText).',
+          zh: '边界：不负责取数 / 排序 / 虚拟滚动；横向滚动容器与圆角裁剪归调用方；表头不做吸顶（分组表头是多行，统一 top:0 会在滚动时互相盖住）。分页可选：给 `pagination` 就让表格自己切片并在表下摆页码（详见 Pagination 一节），不给就完全不分页。没有数据时显示内置空态（emptyText 可覆盖）。加载态两种，都只放图标、不显示文案：首屏一条数据都没有时用 `loading`（居中三块加载动画、最大号，较高占位，不遮挡已有数据），已有数据翻下一页时用 `loadingMore`（底部一行、中号三块动画；整行通栏，与上方数据行之间补一条实线，左右两条在 borders=all / x 时由表级外框兜住、y / none 本来就没有，且 y / none 时状态行下方那条表底线也一起去掉，只留上方一条实线）；滚动加载由 `onLoadMore` 本身当开关 —— 传了就监听底部、滚到附近自动调一次，到底（`hasMore: false`）显示「没有更多数据」（`noMoreText` 换文案 / `false` 不渲染）。滚动加载与 `pagination` / `groups` 互斥。',
+          en: 'Boundaries: no fetching / sorting / virtual scrolling; the horizontal scroll container and rounded clipping are the caller’s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). Paging is optional: pass `pagination` and the table slices rows itself and renders the pager underneath (see the Pagination section); omit it and nothing pages. With no rows, a built-in empty state shows (override with emptyText). Two loading states, icon only with no visible copy: `loading` for a first load with no rows at all (centred three-block loader at the largest size, a taller placeholder that never covers existing rows), and `loadingMore` when appending the next page (one full-width bottom row with the middle-size three-block loader; a solid rule is added above it, while the left/right edges come from the table frame when borders=all / x and are absent for y / none — and for y / none the bottom table rule under the status row is dropped too, so only the rule above it remains). Scroll loading uses `onLoadMore` itself as the switch: pass it and the table watches the bottom and calls it once when you get near; at the end (`hasMore: false`) it shows “No more data” (`noMoreText` to change the copy / `false` to render nothing). Scroll loading is mutually exclusive with `pagination` / `groups`.',
         },
       ],
       api: [
@@ -500,10 +514,16 @@ const doc: DocTopic = {
             { name: 'density', type: "'compact' | 'default' | 'comfortable'", def: "'default'", desc: { zh: '行密度：行高与水平内距 —— default 44 / 48 与 12px，compact 36 / 36 与 8px，comfortable 52 / 60 与 16px', en: 'Row density: height and horizontal padding — default 44 / 48 with 12px, compact 36 / 36 with 8px, comfortable 52 / 60 with 16px' } },
             { name: 'striped', type: 'boolean', def: 'false', desc: { zh: '偶数行淡底斑马纹（hover / 选中仍优先）', en: 'Faint tint on even rows (hover / selection still win)' } },
             { name: 'borders', type: "'all' | 'x' | 'y' | 'none'", def: "'y'", desc: { zh: '外框范围：y 只上下（默认，左右没有边）/ all 四边全框 / x 只左右 / none 全不要', en: 'Outer border: y for top+bottom only (default, no left/right) / all for a full frame / x for left+right only / none for nothing' } },
-            { name: 'selectedKeys', type: '(string | number)[]', def: '—', desc: { zh: '选中行 key 列表（高亮样式由皮肤决定）', en: 'Keys of selected rows (the highlight is the skin’s call)' } },
+            { name: 'selectedKeys', type: '(string | number)[]', def: '—', desc: { zh: '选中行 key 列表（高亮样式由皮肤决定）；有 rowSpan 跨行时，块内任一行的 key 都让整块高亮（不用调用方自己展开）', en: 'Keys of selected rows (the highlight is the skin’s call); with a rowSpan block, a key of any row in it highlights the whole block (no expansion needed on the caller side)' } },
             { name: 'onRowClick', type: '(row, index) => void', def: '—', desc: { zh: '传了行才可点：获得指针光标与 Enter / 空格激活', en: 'Only when given are rows interactive: pointer cursor plus Enter / Space activation' } },
             { name: 'emptyText', type: 'ReactNode', def: '内置字典', desc: { zh: '空态文案；不传走核心字典（随 setLocale 中英切换）', en: 'Empty-state copy; defaults to the core dictionary (follows setLocale)' } },
             { name: 'pagination', type: 'TablePaginationConfig', def: '—', desc: { zh: '内建分页（与 Pagination 同参数，total 可省）：不传 total = 本地切片，给了 total = 服务端分页（不切片）；groups 模式忽略本项', en: 'Built-in paging (same params as Pagination, total optional): omit total to slice locally; pass total for server-side paging (no slicing); ignored in groups mode' } },
+            { name: 'loading', type: 'boolean', def: 'false', desc: { zh: '整表加载中（首屏一条数据都没有时用）：主体换成较高占位（居中三块加载动画，最大号，只有图标没有文案）；已有数据时不遮挡数据', en: 'Whole-table loading (first load with no rows): swaps the body for a taller placeholder (centred three-block loader at the largest size, icon only); never covers existing rows' } },
+            { name: 'loadingHeight', type: 'number', def: '160', desc: { zh: '整表加载占位区高度（px）', en: 'Height (px) of the whole-table loading placeholder' } },
+            { name: 'loadingMore', type: 'boolean', def: 'false', desc: { zh: '底部「加载更多」中（已有数据、正在取下一页）：数据行下方插一行中号三块加载动画（只有图标没有文案），整行通栏并在上方补一条实线；只在给了 onLoadMore 时生效', en: 'Bottom “loading more” (rows exist, fetching the next page): inserts one full-width row with the middle-size three-block loader (icon only) and a solid rule above it; only effective when onLoadMore is given' } },
+            { name: 'hasMore', type: 'boolean', def: 'true', desc: { zh: '是否还有下一页；false 时底部显示「没有更多数据」（noMoreText 可换，false 整行不渲染）。只在给了 onLoadMore 时生效', en: 'Whether another page exists; false shows “No more data” (change with noMoreText, false renders nothing). Only effective when onLoadMore is given' } },
+            { name: 'noMoreText', type: 'ReactNode', def: '内置字典', desc: { zh: '到底文案；不传走核心字典，传 false 则到底时整行不渲染', en: 'End-of-list copy; defaults to the core dictionary, false renders nothing at the end' } },
+            { name: 'onLoadMore', type: '() => void', def: '—', desc: { zh: '滚动到底自动加载下一页：这个 props 本身就是开关 —— 传了就装底部哨兵并监听，不传完全不监听；加载中 / 到底不重复触发。与 pagination / groups 互斥', en: 'Auto-load the next page when scrolled near the bottom: this prop is the switch — pass it to install the sentinel and watch, omit it and nothing listens; guarded while loading or at the end. Mutually exclusive with pagination / groups' } },
             { name: 'ariaLabel', type: 'string', def: '—', desc: { zh: '表格无障碍名（没有可见标题时请务必给）', en: 'Accessible name for the table (give it when there is no visible caption)' } },
             { name: 'translate', type: 'Translate', def: '—', desc: { zh: '覆盖内置文案翻译（插件自带 i18n 时用）', en: 'Override built-in copy translation (for plugins with their own i18n)' } },
             { name: 'className / style', type: 'string / CSSProperties', def: '—', desc: { zh: '只允许补布局，不许覆盖皮肤', en: 'Layout only; never override the skin' } },

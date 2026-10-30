@@ -3,6 +3,7 @@ import { t, type Translate } from '../utils/i18n.js'
 import { ensureComponentStyles } from './css.js'
 import { TABLE_BASE_CSS } from './controls-css.js'
 import type { TablePaginationConfig } from './Pagination.js'
+import { Loader } from './Loader.js'
 import { SectionHead, type SectionHeadAccent } from './SectionHead.js'
 import {
   headerRows,
@@ -63,6 +64,31 @@ export interface TableSharedProps {
    * （不切片）。`groups` 模式不分页 —— 传了 `groups` 就忽略本项。
    */
   pagination?: TablePaginationConfig
+  /**
+   * 整表加载中（首屏还没有任何数据时用）：表格主体换成一块较高的占位区（居中三块加载动画，最大号，无文案）。
+   * 已有数据时不遮挡数据 —— 追加下一页请用 `loadingMore`。
+   */
+  loading?: boolean
+  /** 整表加载占位区的高度（px），默认 160。 */
+  loadingHeight?: number
+  /**
+   * 底部「加载更多」中（已有数据、正在取下一页）：在数据行下方插一行中号三块加载动画（无文案）。
+   * 只在给了 `onLoadMore` 时生效。
+   */
+  loadingMore?: boolean
+  /**
+   * 是否还有下一页，默认 true。`false` 时底部显示「没有更多数据」；
+   * 文案可用 `noMoreText` 换，给 `false` 整行不渲染。只在给了 `onLoadMore` 时生效。
+   */
+  hasMore?: boolean
+  /** 到底文案；不传走内置字典（中英随 `setLocale`）。 */
+  noMoreText?: ReactNode
+  /**
+   * 滚动到底自动加载下一页：**这个 props 本身就是开关** —— 传了就装底部哨兵并监听，
+   * 不传完全不监听、也不触发。正在加载（`loading` / `loadingMore`）或已到底（`hasMore: false`）
+   * 时不会重复触发。与 `pagination` / `groups` 同时给时忽略（一个表里两套翻页说不清）。
+   */
+  onLoadMore?: () => void
   /** 追加 class（只允许补布局，不许覆盖皮肤）。 */
   className?: string
   style?: CSSProperties
@@ -95,6 +121,15 @@ function dividerAttr(leafIndex: number, wanted: boolean | undefined): 'left' | u
   return wanted === true ? 'left' : undefined
 }
 
+/** `tableShell` 的渲染选项（内部参数，不进公开 props）。 */
+interface TableShellOptions {
+  /**
+   * 底部哨兵元素的 ref：给了才渲染哨兵行（供调用方挂 IntersectionObserver）。
+   * 不给 = 不做滚动监听（`onLoadMore` 仍可透传，但不会自动触发）。
+   */
+  sentinelRef?: (node: HTMLTableRowElement | null) => void
+}
+
 /**
  * 表格共享渲染壳（**内部件，不进公开导出**）。
  *
@@ -103,7 +138,11 @@ function dividerAttr(leafIndex: number, wanted: boolean | undefined): 'left' | u
  * （`Table`、将来的 `TableGrid` / `TableZebra`）只 import 自己那份皮肤，并把自己的
  * modifier class 传进来。这样消费方引哪个就只打包哪个 —— 绝不用 `variant` 汇总多份皮肤。
  */
-export function tableShell(skinClass: string, props: TableSharedProps): ReturnType<typeof h> {
+export function tableShell(
+  skinClass: string,
+  props: TableSharedProps,
+  options: TableShellOptions = {},
+): ReturnType<typeof h> {
   ensureComponentStyles('table-core', TABLE_BASE_CSS)
   const tt = props.translate ?? t
   const headRows = headerRows(props.columns)
@@ -116,16 +155,6 @@ export function tableShell(skinClass: string, props: TableSharedProps): ReturnTy
   const onRowClick = props.onRowClick
   const density = props.density ?? 'default'
   const borders = props.borders ?? 'y'
-  const tableClass = [
-    'dshpc-table',
-    skinClass,
-    `dshpc-table--density-${density}`,
-    `dshpc-table--borders-${borders}`,
-    props.striped === true ? 'dshpc-table--striped' : '',
-    props.className ?? '',
-  ]
-    .filter((s) => s !== '')
-    .join(' ')
 
   /** 表头一行：分组表头按层级逐行渲染（每组重复渲染它，分组模式也要表头）。 */
   const headRowOf = (cells: readonly TableHeaderCell[], level: string | number): ReturnType<typeof h> =>
@@ -159,15 +188,44 @@ export function tableShell(skinClass: string, props: TableSharedProps): ReturnTy
       }),
     )
 
+  /**
+   * 跨行单元格（rowSpan）把上下几行连成一个视觉块：块里任意一行被选中，整块都算选中。
+   * 先按 rowSpan 求每行所属块的范围 [start, end]，再判断块内有没有选中行 ——
+   * 不依赖点击的是块里的哪一行，也不要求调用方自己展开。
+   */
+  const selectedBlocksOf = (rows: readonly TableRow[]): boolean[] => {
+    const blocks = rows.map((_, index) => ({ start: index, end: index }))
+    rows.forEach((row, index) => {
+      for (const cell of Object.values(row.cells)) {
+        if (!isTableCellSpec(cell) || cell.rowSpan === undefined || cell.rowSpan <= 1) continue
+        const end = Math.min(index + cell.rowSpan - 1, rows.length - 1)
+        for (let line = index; line <= end; line += 1) {
+          const block = blocks[line]
+          if (block === undefined) continue
+          block.start = Math.min(block.start, index)
+          block.end = Math.max(block.end, end)
+        }
+      }
+    })
+    return blocks.map((block) => {
+      for (let line = block.start; line <= block.end; line += 1) {
+        const row = rows[line]
+        if (row !== undefined && selected.has(row.key)) return true
+      }
+      return false
+    })
+  }
+
   /** 一组数据行（选中 / 可点 / 单元格配置都在这里落地）。 */
-  const dataRowsOf = (rows: readonly TableRow[], offset = 0): ReturnType<typeof h>[] =>
-    rows.map((row, index) =>
+  const dataRowsOf = (rows: readonly TableRow[], offset = 0): ReturnType<typeof h>[] => {
+    const selectedBlocks = selectedBlocksOf(rows)
+    return rows.map((row, index) =>
       h(
         'tr',
         {
           key: row.key,
           className: 'dshpc-table__row',
-          'data-selected': selected.has(row.key) ? 'true' : undefined,
+          'data-selected': selectedBlocks[index] === true ? 'true' : undefined,
           'data-interactive': onRowClick === undefined ? undefined : 'true',
           tabIndex: onRowClick === undefined ? undefined : 0,
           onClick: onRowClick === undefined ? undefined : () => onRowClick(row, offset + index),
@@ -208,6 +266,103 @@ export function tableShell(skinClass: string, props: TableSharedProps): ReturnTy
         }),
       ),
     )
+  }
+
+  const colSpan = leaves.length > 0 ? leaves.length : undefined
+  const emptyRow = h(
+    'tr',
+    { key: 'empty', className: 'dshpc-table__row' },
+    h('td', { className: 'dshpc-table__empty', colSpan }, props.emptyText ?? tt('tableEmpty')),
+  )
+  // 整表加载：只在一条数据都没有时占位，不遮挡已有行（追加下一页请用 loadingMore）。
+  const loadingRow = h(
+    'tr',
+    { key: 'loading', className: 'dshpc-table__state-row' },
+    h(
+      'td',
+      { className: 'dshpc-table__state-cell', colSpan },
+      h(
+        'div',
+        {
+          className: 'dshpc-table__state dshpc-table__state--full',
+          style: props.loadingHeight === undefined ? undefined : { height: `${props.loadingHeight}px` },
+        },
+        h(Loader, { variant: 'blocks', size: 'xl', label: tt('tableLoading') }),
+      ),
+    ),
+  )
+
+  // 底部加载态：只在给了 onLoadMore（开关）时渲染，且 loadingMore 优先于「没有更多」。
+  const infinite = props.onLoadMore !== undefined
+  const loadingMore = infinite && props.loadingMore === true
+  const showNoMore = infinite && !loadingMore && props.hasMore === false && props.noMoreText !== false
+  const footerRows: ReturnType<typeof h>[] = []
+  if (loadingMore) {
+    footerRows.push(
+      h(
+        'tr',
+        { key: 'more', className: 'dshpc-table__state-row dshpc-table__state-row--footer' },
+        h(
+          'td',
+          { className: 'dshpc-table__state-cell', colSpan },
+          h(
+            'div',
+            { className: 'dshpc-table__state' },
+            h(Loader, { variant: 'blocks', size: 'md', label: tt('tableLoadingMore') }),
+          ),
+        ),
+      ),
+    )
+  } else if (showNoMore) {
+    footerRows.push(
+      h(
+        'tr',
+        { key: 'end', className: 'dshpc-table__state-row dshpc-table__state-row--footer' },
+        h(
+          'td',
+          { className: 'dshpc-table__state-cell', colSpan },
+          h(
+            'div',
+            { className: 'dshpc-table__state' },
+            h(
+              'span',
+              { className: 'dshpc-table__state-text' },
+              props.noMoreText === undefined ? tt('tableNoMore') : props.noMoreText,
+            ),
+          ),
+        ),
+      ),
+    )
+  }
+  // 底部哨兵：IntersectionObserver 的落点；hasMore === false 时没有下一页，不必再监听。
+  const sentinelRow =
+    infinite && props.hasMore !== false && options.sentinelRef !== undefined
+      ? h(
+          'tr',
+          {
+            key: 'sentinel',
+            ref: options.sentinelRef,
+            className: 'dshpc-table__sentinel',
+            'aria-hidden': 'true',
+          },
+          h('td', { colSpan }),
+        )
+      : null
+
+  // 没有左右外框（y / none）且底部有状态行时，表底那条横线也去掉 ——
+  // 状态行只保留上方一条实线，否则图标下面会多出一条孤线（2026-10-31 用户定）。
+  const flatFoot = footerRows.length > 0 && (borders === 'y' || borders === 'none')
+  const tableClass = [
+    'dshpc-table',
+    skinClass,
+    `dshpc-table--density-${density}`,
+    `dshpc-table--borders-${borders}`,
+    props.striped === true ? 'dshpc-table--striped' : '',
+    flatFoot ? 'dshpc-table--foot-no-bottom' : '',
+    props.className ?? '',
+  ]
+    .filter((s) => s !== '')
+    .join(' ')
 
   const groups = props.groups ?? []
   const body = groups.length > 0
@@ -243,17 +398,13 @@ export function tableShell(skinClass: string, props: TableSharedProps): ReturnTy
         h(
           'tbody',
           { key: 'body', className: 'dshpc-table__body' },
-          props.rows !== undefined && props.rows.length > 0
-            ? dataRowsOf(props.rows)
-            : h(
-                'tr',
-                { className: 'dshpc-table__row' },
-                h(
-                  'td',
-                  { className: 'dshpc-table__empty', colSpan: leaves.length > 0 ? leaves.length : undefined },
-                  props.emptyText ?? tt('tableEmpty'),
-                ),
-              ),
+          props.loading === true && (props.rows?.length ?? 0) === 0
+            ? loadingRow
+            : props.rows !== undefined && props.rows.length > 0
+              ? dataRowsOf(props.rows)
+              : emptyRow,
+          ...footerRows,
+          sentinelRow,
         ),
       ]
 

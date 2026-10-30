@@ -34,6 +34,7 @@ export type DemoMessageKey =
   | 'tableGroupHint'
   | 'paginationHint'
   | 'tablePagerHint'
+  | 'tableLoadingHint'
   | 'secFeedback'
   | 'secLayout'
   | 'secExplorer'
@@ -285,12 +286,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secCard: '卡片与容器',
     secChip: '标签 · 文本 · 状态',
     secTable: '表格',
-    tableHint: '外观一（带全框）：borders:all + 各列 divider:true，四边与竖线都画。双行分组表头（Patient 蓝底、Status 绿底，默认档是中性灰底）；Age 列留 divider:false 示范「这两列之间不要线」并居中；斑马纹 + 点行选中（选中淡底 + 左蓝条，悬浮特别淡的中性灰）；姓名格头像 + 名字 + 编号，Modality 是色标签、Flags 多标签，这两列内距收到 8px；表格下方同一区块展示空态',
-    tableEmptyHint: '没有数据时的内置空态（文案走核心字典，也可用 emptyText 覆盖）',
-    tableSpanHint: '外观二（左右两边没有边）：borders:y 保留上下、去掉左右外框，竖线仍按列声明（这里给了 divider:true）。紧凑密度；Downtown 用 rowSpan 跨两行（下一行不给该列 key），North clinic 用 colSpan 跨两列；点行选中 / 悬浮这一张同样开着（默认预选 North clinic 那行）',
-    tableGroupHint: '外观三（默认，所有竖着的边都没有）：不传 borders 就走 y、列不写 divider 就不画竖线。一个表格里放多个工作区（groups 与 rows 二选一）：每组先是一行横跨全部列的通栏标题（工作区 A / B），紧接着是这一组自己的表头与任务行；组与组之间用一条实线隔开，组内数据行照常可配单元格内容，同样可点、可选中（默认预选 Workspace A 的 Doing 那行）',
-    paginationHint: '独立分页控件：只给 page / pageSize / total，页数与省略号窗口由控件自己算，消费方不写渲染。位置可切（上排分段切左 / 中 / 右，默认右）；下排是简洁模式（只留箭头与「2 / 36」）。总数文案与每页条数选择器都是可选开关，不传就不出现',
-    tablePagerHint: 'Table 内建分页：不传 pagination.total 就是本地分页 —— rows 是全量，Table 先按当前页切片再渲染，分页条排在表格下方右侧。若接服务端分页，给 total（并只传当前页的行），Table 就不切片、只负责摆页码',
+    tableHint: '全框外观：borders:all + 列 divider:true。双行分组表头、斑马纹、点行选中；跨行 / 跨列、头像格、Chip 也都在这一张里。',
+    tableEmptyHint: '无数据时的内置空态，可用 emptyText 覆盖',
+    tableSpanHint: '无左右外框（borders:y）的紧凑表：Downtown 跨两行、North clinic 跨两列；跨行块点任意一行，整块一起高亮。',
+    tableGroupHint: '默认外观（y、无竖线）：groups 与 rows 二选一，每组 = 通栏标题 + 自己的表头与数据行，组间一条实线。',
+    paginationHint: '独立分页：只给 page / pageSize / total；位置、简洁模式、总数文案、每页条数都是可选开关。',
+    tablePagerHint: 'Table 内建分页：不传 total 走本地切片（rows 传全量），传 total 走服务端分页；分页条在表下右侧。',
+    tableLoadingHint: '分段开关直接切四种状态。两种 loading 只用 Loader 图标（整表最大号、加载更多中号）；底部状态行通栏、上方一条实线，无左右外框时表底线也去掉。',
     secFeedback: '反馈',
     secLayout: '布局与滚动',
     secExplorer: '工作区浏览',
@@ -582,12 +584,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secCard: 'Cards & containers',
     secChip: 'Tags · text · states',
     secTable: 'Table',
-    tableHint: 'Look 1 (full frame): borders:all plus divider:true on each column, so all four edges and the vertical rules are drawn. Two-row grouped header (blue Patient, green Status; the default tone is a neutral grey); the Age column keeps divider:false to show “no line between these two” and is centred; zebra stripes + click-to-select (selected = soft tint + left blue bar, hover = an extremely faint neutral grey); the name cell shows avatar + name + ID, Modality is a coloured chip and Flags holds multiple chips, with both columns on 8px padding; the empty state sits in the same block below',
-    tableEmptyHint: 'Built-in empty state (copy comes from the core dictionary; override with emptyText)',
-    tableSpanHint: 'Look 2 (no side edges): borders:y keeps top and bottom, drops the left/right frame, while vertical rules still follow each column (divider:true here). Compact density; Downtown spans two rows via rowSpan (next row omits that key), and North clinic spans two columns via colSpan; click-to-select and hover are on here too (North clinic is preselected)',
-    tableGroupHint: 'Look 3 (the default, no vertical edges at all): omit borders and it falls back to y; omit divider on a column and no vertical rule is drawn. Several workspaces in one table (groups and rows are mutually exclusive): each group opens with a banner row spanning every column (Workspace A / B), followed by that group’s own header and task rows; groups are separated by a solid rule, cells inside each group are configured as usual, and rows are clickable/selectable too (the Doing row in Workspace A is preselected)',
-    paginationHint: 'Standalone pager: give it page / pageSize / total only — the control computes the page count and the ellipsis window itself, so you never write render code. Placement switches left / center / right (right by default); the lower row is simple mode (arrows plus "2 / 36"). The total copy and rows-per-page selector are optional switches — omit them and they disappear',
-    tablePagerHint: 'Table with built-in paging: omit pagination.total and it pages locally — rows is the full list, Table slices by the current page and renders the pager under the table, right-aligned. For server-side paging, pass total (and only the current page’s rows) so Table stops slicing and only renders the pager',
+    tableHint: 'Full-frame look: borders:all + divider:true per column. Two-row grouped header, zebra stripes, click-to-select; row/column spans, avatar cell and chips all shown here.',
+    tableEmptyHint: 'Built-in empty state when there are no rows; override with emptyText',
+    tableSpanHint: 'Compact table without side edges (borders:y): Downtown spans two rows, North clinic two columns; selecting any row in a rowSpan block highlights the whole block.',
+    tableGroupHint: 'Default look (y, no vertical rules): groups or rows, one at a time; each group = banner + its own header and rows, groups separated by a solid rule.',
+    paginationHint: 'Standalone pager: page / pageSize / total only; placement, simple mode, total copy and page-size selector are all optional switches.',
+    tablePagerHint: 'Built-in paging: omit total for local slicing (pass all rows), pass total for server-side paging; the pager sits under the table, right-aligned.',
+    tableLoadingHint: 'The segmented switch flips four states. Both loaders are icon-only (largest for the whole table, middle for loading more); the footer row spans the width with a rule above it, and without side borders the bottom rule is dropped too.',
     secFeedback: 'Feedback',
     secLayout: 'Layout & scrolling',
     secExplorer: 'Workspace browsing',

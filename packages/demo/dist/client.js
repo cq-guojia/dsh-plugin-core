@@ -2749,6 +2749,9 @@ var DICT = {
     mdFootnotes: "\u811A\u6CE8",
     cardToggle: "\u5C55\u5F00/\u6536\u8D77",
     tableEmpty: "\u6682\u65E0\u6570\u636E",
+    tableLoading: "\u6B63\u5728\u52A0\u8F7D\u2026",
+    tableLoadingMore: "\u52A0\u8F7D\u4E2D\u2026",
+    tableNoMore: "\u6CA1\u6709\u66F4\u591A\u6570\u636E",
     paginationAria: "\u5206\u9875",
     paginationPrev: "\u4E0A\u4E00\u9875",
     paginationNext: "\u4E0B\u4E00\u9875",
@@ -3017,6 +3020,9 @@ var DICT = {
     mdFootnotes: "Footnotes",
     cardToggle: "Expand/Collapse",
     tableEmpty: "No data",
+    tableLoading: "Loading\u2026",
+    tableLoadingMore: "Loading more\u2026",
+    tableNoMore: "No more data",
     paginationAria: "Pagination",
     paginationPrev: "Previous",
     paginationNext: "Next",
@@ -3482,10 +3488,10 @@ var DATETIME_CSS = '/* \u65E5\u671F\u65F6\u95F4\u9009\u62E9\u5668\uFF08DateTimeP
 var SPLIT_GROUP_CSS = "\n/* \u2500\u2500 \u62FC\u63A5\u5916\u58F3 SplitGroup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u804C\u8D23\u53EA\u6709\u4E00\u6761\uFF1A\u628A\u4E24\u4E2A\u63A7\u4EF6\u5728\u5916\u89C2\u4E0A\u710A\u6210\u4E00\u4F53\uFF08\u5916\u6846 / \u5706\u89D2 / \u4E2D\u95F4 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\uFF09\u3002\n   \u5B83**\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03** \u2014\u2014 \u9009\u4E2D\u4E0E\u8054\u52A8\u5168\u8D70\u5185\u4EF6\u81EA\u5DF1\u7684 value / onChange\n   \uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF1A\u5916\u58F3\u4E0D\u5FC5\u77E5\u9053\u53F3\u8FB9\u90A3\u4E2A\u4E0B\u62C9\u7BA1\u4EC0\u4E48\uFF09\u3002\n\n   \u26A0\uFE0F \u4E0E\u5185\u4EF6\u7C7B\u540D\u6709\u610F\u8026\u5408\uFF1A\u5185\u4EF6\u662F Picker / Segmented \u65F6\u7531\u4E0B\u9762\u51E0\u6761\u89C4\u5219\u628A\u5B83\u4EEC\u81EA\u5DF1\u7684\n   \u8FB9\u6846 / \u5E95\u8272 / \u5706\u89D2\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u7EDF\u4E00\u753B\u3002\u5185\u4EF6\u6539\u540D\u6216\u6539\u7ED3\u6784\u8981\u540C\u6B65\u6539\u8FD9\u91CC\uFF0C\n   \u5426\u5219\u4F1A\u51FA\u73B0\u53CC\u8FB9\u6846\u3001\u53CC\u5E95\u8272\u3002\n\n   \u9AD8\u5EA6\u4E0D\u5199\u6B7B\uFF1A\u5185\u4EF6\u81EA\u5DF1\u6309 size \u6863\uFF08sm 24 / md 28 / lg 32\uFF09\u6491\u5F00\uFF0C\u5916\u58F3\u8DDF\u7740\u957F\u3002\n   \u4E24\u683C\u8981\u7B49\u9AD8\uFF0C\u5C31\u7ED9\u5185\u4EF6\u4F20**\u540C\u4E00\u4E2A size**\u3002\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\u5916\u58F3\u5185\u4EF6\u7528 align-items:center\n   \u5C45\u4E2D\uFF08\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\uFF0C\u7528\u6237 2026-10-28 \u622A\u56FE\u53CD\u9988\u300C\u672C\u6708\u504F\u4E0A\u300D\u540E\u7684\u5904\u7406\uFF09\uFF1B**\u522B\u7528 height:100%**\uFF0C\n   \u5B83\u4F1A\u8986\u76D6\u4E09\u6863\u9AD8\u5EA6\uFF08\u4E0E --lg/--sm \u540C\u7279\u5F02\u6027\u4E14\u6CE8\u5165\u66F4\u665A\uFF09\u3002\n\n   \u5DE6\u683C\u7EDF\u4E00\u7070\u5E95\uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF09\uFF1A\u6ED1\u5757\u4FDD\u7559\u81EA\u5DF1\u7684\u7070\u8F68\uFF0C\u5DE6\u683C\u4E0B\u62C9\u628A\u5E95\u8272\u6362\u6210\n   surface-sunken\uFF1B\u53F3\u683C\u4FDD\u6301\u539F\u6837\u3002\u5C42\u6B21\u611F = \u5DE6\u683C\u662F\u300C\u6863\u4F4D/\u8303\u56F4\u300D\uFF0C\u53F3\u683C\u662F\u300C\u503C\u300D\u3002 */\n   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}\n   /* \u4E24\u683C\u5BBD\u5EA6\u90FD\u7531\u5185\u5BB9\u7ED9\uFF1B\u5BB9\u5668\u518D\u7A84\u4E5F\u8BA9\u5185\u4EF6\u81EA\u5DF1\u7701\u7565\uFF0C\u4E0D\u8BA9\u5916\u58F3\u88AB\u6491\u7834 */\n   .dshpc-split > *{min-width:0;max-width:100%;}\n   /* \u5206\u9694\uFF1A\u76F8\u90BB\u5144\u5F1F\u7684\u5DE6\u63CF\u8FB9\uFF0C\u4E0D\u989D\u5916\u63D2 DOM\uFF0Chover / focus \u65F6\u4E5F\u4E0D\u4F1A\u65AD */\n   .dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n   /* \u6574\u4F53\u805A\u7126\uFF1A\u5185\u4EF6\u81EA\u5DF1\u7684\u5916\u5708\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u753B\u4E00\u6574\u5708\uFF08\u5185\u4EF6\u5404\u81EA\u753B\u4F1A\u53D8\u6210\u683C\u5185\u534A\u5708\uFF09 */\n   .dshpc-split:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n   /* Picker\uFF1A\u53BB\u6389\u81EA\u8EAB\u5916\u6846\u4E0E\u5E95\u8272\uFF1Bdisplay \u6539\u6210 flex\uFF0C\u6D88\u6389 inline-block \u884C\u76D2\u5E26\u6765\u7684\u57FA\u7EBF\u95F4\u9699\u3002\n      \u6CE8\u610F**\u4E0D\u80FD\u7528 height:100%**\uFF1A\u5B83\u4F1A\u548C .dshpc-picker__trigger--lg / --sm \u540C\u7279\u5F02\u6027\uFF08\u90FD\u662F\u4E24\u4E2A\u7C7B\uFF09\uFF0C\n      \u4E14 split-group.css \u5728 picker.css \u4E4B\u540E\u6CE8\u5165\uFF0C\u4F1A\u628A\u4E09\u6863\u9AD8\u5EA6\u5168\u5403\u6389\uFF08md/lg \u770B\u8D77\u6765\u4E00\u6837\u5927\uFF09\u3002\n      \u6539\u7528 align-items:center \u2014\u2014 \u540C size \u65F6\u4E24\u683C\u81EA\u7136\u7B49\u9AD8\u7684\u540C\u65F6\u6587\u5B57\u5782\u76F4\u5C45\u4E2D\uFF1B\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\n      \u8F83\u77EE\u7684\u683C\u4E5F\u53EA\u662F\u5C45\u4E2D\u3001\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\u3002 */\n   .dshpc-split .dshpc-picker{display:flex;align-items:center;}\n   .dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}\n   .dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}\n   /* \u5DE6\u683C\u4E0B\u62C9\uFF1A\u7070\u5E95\uFF08\u6ED1\u5757\u7684\u7070\u8F68\u662F\u5B83\u81EA\u5DF1\u7684 --dshpc-seg-track\uFF0C\u4E0D\u5728\u8FD9\u91CC\u8986\u76D6\uFF09 */\n   .dshpc-split > :first-child .dshpc-picker__trigger{background:var(--dshpc-surface-sunken);}\n   /* Segmented\uFF1A\u53EA\u53BB\u5916\u5706\u89D2\u4E0E\u63CF\u8FB9\uFF0C\u7070\u8F68\u4FDD\u7559\uFF1Bpadding \u4FDD\u6301 3px \u4E0D\u52A8 \u2014\u2014 \u5B83\u662F\u9AD8\u5EA6\u5951\u7EA6\u7684\u4E00\u90E8\u5206\n    \uFF083 + item + 3 = control-h\uFF09\u3002bordered \u90A3\u6863\u53BB\u6389\u63CF\u8FB9\u3001\u628A\u8BA9\u7ED9\u63CF\u8FB9\u7684 1px \u8FD8\u56DE padding\uFF0C\n    \u5426\u5219\u4F1A\u6BD4\u53F3\u8FB9\u77EE 2px\u3002 */\n   .dshpc-split .dshpc-seg{border-radius:0;border:0;}\n   .dshpc-split .dshpc-seg--bordered{padding:3px;}\n";
 
 // dist/ui/controls/table-css.generated.js
-var TABLE_BASE_CSS = "/* \u2500\u2500 \u8868\u683C\u57FA\u7840\u5C42\uFF08\u7ED3\u6784 + \u4EA4\u4E92 + \u7A7A\u6001\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u89C2\u5206\u6863 = \u5206\u7EC4\u4EF6 + \u5206\u6587\u4EF6\uFF1A\u672C\u6587\u4EF6\u53EA\u653E\u6240\u6709\u5916\u89C2\u5171\u7528\u7684\u90E8\u5206\uFF1B\n   \u8868\u5934\u5E95\u8272\u3001\u5206\u9694\u7EBF\u3001\u60AC\u6D6E / \u9009\u4E2D\u8272\u7531\u76AE\u80A4\u6587\u4EF6\u8D1F\u8D23\uFF08table-plain.css \u662F\u7B2C\u4E00\u6863\uFF09\u3002\n   \u76AE\u80A4\u9009\u62E9\u5668\u4E00\u5F8B\u6302\u5728 .dshpc-table--<skin> \u4E0B\uFF0C\u4E0E\u57FA\u7840\u5C42\u4E0D\u540C\u540D \u2014\u2014 \u6CE8\u5165\u987A\u5E8F\u4E0D\u5F71\u54CD\u80DC\u8D1F\n   \uFF08test/css-contract.test.mjs \u7981\u6B62\u8DE8\u5E38\u91CF\u540C\u540D\u9009\u62E9\u5668\uFF09\u3002\n   \u5706\u89D2\u88C1\u526A / \u6A2A\u5411\u6EDA\u52A8\u5F52\u8C03\u7528\u65B9\u5BB9\u5668\uFF0C\u672C\u5C42\u4E0D\u8BBE overflow\uFF1B\u4E5F\u4E0D\u505A\u8868\u5934\u5438\u9876\uFF1A\n   \u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF08\u8981\u5438\u9876\u8BF7\u5728\u5916\u5C42\u5BB9\u5668\u5904\u7406\uFF09\u3002 */\n\n.dshpc-table{--dshpc-table-pad-x:var(--dshpc-space-3);--dshpc-table-head-h:44px;--dshpc-table-row-h:48px;\n  width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;box-sizing:border-box;\n  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n\n/* \u5BC6\u5EA6\u4E09\u6863\uFF1A\u53EA\u6539\u884C\u9AD8\u4E0E\u6C34\u5E73\u5185\u8DDD\uFF0C\u914D\u8272\u4E0E\u5206\u9694\u7EBF\u5F52\u76AE\u80A4\u3002compact / comfortable \u5404\u4E00\u884C\uFF0C\n   \u65B0\u589E\u6863\u4F4D\u5728\u6B64\u8FFD\u52A0\uFF1B\u5217\u7EA7 padding \u8D70\u5185\u8054 style \u8986\u76D6\uFF08\u4E0D\u5728\u8FD9\u91CC\u518D\u5F00\u4E00\u5957\u53D8\u91CF\uFF09\u3002\n   \u9ED8\u8BA4\u6C34\u5E73\u5185\u8DDD 12px\uFF08space-3\uFF09\u2014\u2014 \u53C2\u8003\u7A3F\u7684\u8272\u5757\u95F4\u8DDD\uFF0C16px \u504F\u677E\u3002 */\n.dshpc-table--density-compact{--dshpc-table-pad-x:var(--dshpc-space-2);--dshpc-table-head-h:36px;--dshpc-table-row-h:36px;}\n.dshpc-table--density-comfortable{--dshpc-table-pad-x:var(--dshpc-space-4);--dshpc-table-head-h:52px;--dshpc-table-row-h:60px;}\n\n.dshpc-table__head-cell,.dshpc-table__cell{box-sizing:border-box;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  text-align:left;vertical-align:middle;font-weight:400;}\n\n/* \u8868\u5934 44 / \u6570\u636E\u884C 48 \u662F default \u6863\uFF08\u53C2\u8003\u7A3F\u5BC6\u5EA6\uFF09\uFF1Bheight \u5728 table-cell \u4E0A\u662F\u6700\u5C0F\u9AD8\uFF0C\n   \u591A\u884C\u5185\u5BB9\u4F1A\u81EA\u52A8\u628A\u884C\u6491\u9AD8\uFF0C\u4E0D\u4F1A\u88AB\u622A\u65AD\u3002 */\n.dshpc-table__head-cell{height:var(--dshpc-table-head-h);font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg-2);}\n.dshpc-table__head-cell--group{text-align:center;}\n.dshpc-table__cell{height:var(--dshpc-table-row-h);}\n\n.dshpc-table__head-cell--center,.dshpc-table__cell--center{text-align:center;}\n.dshpc-table__head-cell--right,.dshpc-table__cell--right{text-align:right;}\n\n.dshpc-table__row{transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n/* \u53EA\u6709\u4F20\u4E86 onRowClick \u7684\u884C\u624D\u662F\u53EF\u70B9\u7684\uFF08\u6570\u636E\u5C5E\u6027\u7531\u7EC4\u4EF6\u6309\u6B64\u6253\uFF09\u3002 */\n.dshpc-table__row[data-interactive='true']{cursor:pointer;}\n.dshpc-table__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}\n\n/* \u6591\u9A6C\u7EB9\u662F\u901A\u7528\u80FD\u529B\uFF08\u8868\u7EA7 striped \u5F00\u5173\uFF09\uFF0C\u653E\u5728\u57FA\u7840\u5C42\uFF1A\u5E95\u8272\u53D6 token\uFF0C\u5404\u6863\u76AE\u80A4\u4E0D\u5FC5\u5404\u81EA\u5B9E\u73B0\u3002\n   \u9009\u62E9\u5668\u523B\u610F\u53EA\u5230 3 \u4E2A\u7C7B\u7EA7\u522B\uFF08\u8868\u7EA7 + \u884C + :nth-child\uFF09\uFF1B\u76AE\u80A4\u5C42\u7684\u884C\u6001\u89C4\u5219\u5E26 __body \u4E0A\u4E0B\u6587\n   + \u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u662F 4 \u7EA7 \u21D2 \u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u5730\u538B\u8FC7\u5B83\u3002\n   2026-10-30 \u771F\u673A\u4E8B\u6545\uFF1A\u8FD9\u91CC\u66FE\u5199\u6EE1 4 \u7EA7\uFF08\u591A\u4E86\u4E00\u4E2A __body\uFF09\uFF0C\u4E0E\u9009\u4E2D\u7684 4 \u7EA7\u76F8\u540C \u21D2 \u57FA\u7840\u5C42\n   \u6BD4\u76AE\u80A4\u540E\u6CE8\u5165\uFF0C\u5076\u6570\u884C\u6C38\u8FDC\u88AB\u6591\u9A6C\u7EB9\u76D6\u4F4F\uFF08\u300C\u5355\u6570\u884C\u80FD\u9009\u4E2D\u3001\u53CC\u6570\u884C\u70B9\u4E86\u6CA1\u53CD\u5E94\u300D\uFF09\u3002 */\n.dshpc-table--striped .dshpc-table__row:nth-child(even){background:var(--dshpc-plate);}\n\n/* \u5206\u7EC4\u901A\u680F\uFF1A\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u677F\u5757\uFF08\u5DE5\u4F5C\u533A A / \u5DE5\u4F5C\u533A B\uFF09\u65F6\uFF0C\u6BCF\u7EC4\u5148\u6765\u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u5927\u6807\u9898\uFF0C\n   \u7136\u540E\u624D\u662F\u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u6570\u636E\u884C\u3002\u7ED3\u6784 + \u5E95\u8272\u5F52\u57FA\u7840\u5C42\uFF08\u53EA\u7528 token\uFF0C\u5404\u6863\u76AE\u80A4\u5171\u540C\u6210\u7ACB\uFF09\uFF1B\n   \u901A\u680F\u5E95\u8D70 --dshpc-table-banner-bg\uFF08\u4E0E\u8868\u5934\u4E92\u6362\u7684\u90A3\u4E00\u6863\uFF0C2026-10-30 \u7528\u6237\u5B9A\uFF09\uFF1B\n   \u901A\u680F\u4E0E\u7EC4\u8868\u5934\u4E4B\u95F4\u753B\u4E00\u6761\u7EBF\uFF08\u7528\u6237 2026-10-30\uFF1A\u90A3\u4E4B\u95F4\u4E5F\u8981\u6709 border\uFF09\uFF1B\n   \u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u901A\u680F\u9876\u7EBF\u9694\u5F00\uFF0C\u7B2C\u4E00\u7EC4\u9876\u90E8\u4E0D\u753B\uFF08\u5916\u6846\u5DF2\u7ECF\u5728\u90A3\u513F\uFF0C\u753B\u4E86\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table__group-cell{height:var(--dshpc-table-head-h);padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;background:var(--dshpc-table-banner-bg);border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  text-align:left;vertical-align:middle;font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg);}\n.dshpc-table__group-body:first-of-type .dshpc-table__group-cell{border-top:0;}\n\n/* \u901A\u680F\u6807\u9898\u7684\u56FA\u5B9A\u6807\u7B7E\uFF08\u77ED\u7AD6\u7EBF\uFF09\u4E0E\u6392\u7248\u7531 SectionHead \u81EA\u5E26\uFF084px \u5706\u5934\uFF09\uFF0C\u672C\u5C42\u4E0D\u518D\u753B\u3002 */\n\n.dshpc-table__empty{height:80px;padding:0 var(--dshpc-space-4);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n\n/* \u5185\u5EFA\u5206\u9875\u7684\u5916\u58F3\uFF1A\u8868\u683C\u5728\u4E0A\u3001\u5206\u9875\u6761\u5728\u4E0B\uFF0C\u95F4\u8DDD\u8D70 space-3\uFF08\u5206\u9875\u6761\u81EA\u5DF1\u7BA1\u5DE6\u53F3\u5BF9\u9F50\uFF09\u3002 */\n.dshpc-table-frame{display:flex;flex-direction:column;gap:var(--dshpc-space-3);}\n";
+var TABLE_BASE_CSS = "/* \u2500\u2500 \u8868\u683C\u57FA\u7840\u5C42\uFF08\u7ED3\u6784 + \u4EA4\u4E92 + \u7A7A\u6001\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u89C2\u5206\u6863 = \u5206\u7EC4\u4EF6 + \u5206\u6587\u4EF6\uFF1A\u672C\u6587\u4EF6\u53EA\u653E\u6240\u6709\u5916\u89C2\u5171\u7528\u7684\u90E8\u5206\uFF1B\n   \u8868\u5934\u5E95\u8272\u3001\u5206\u9694\u7EBF\u3001\u60AC\u6D6E / \u9009\u4E2D\u8272\u7531\u76AE\u80A4\u6587\u4EF6\u8D1F\u8D23\uFF08table-plain.css \u662F\u7B2C\u4E00\u6863\uFF09\u3002\n   \u76AE\u80A4\u9009\u62E9\u5668\u4E00\u5F8B\u6302\u5728 .dshpc-table--<skin> \u4E0B\uFF0C\u4E0E\u57FA\u7840\u5C42\u4E0D\u540C\u540D \u2014\u2014 \u6CE8\u5165\u987A\u5E8F\u4E0D\u5F71\u54CD\u80DC\u8D1F\n   \uFF08test/css-contract.test.mjs \u7981\u6B62\u8DE8\u5E38\u91CF\u540C\u540D\u9009\u62E9\u5668\uFF09\u3002\n   \u5706\u89D2\u88C1\u526A / \u6A2A\u5411\u6EDA\u52A8\u5F52\u8C03\u7528\u65B9\u5BB9\u5668\uFF0C\u672C\u5C42\u4E0D\u8BBE overflow\uFF1B\u4E5F\u4E0D\u505A\u8868\u5934\u5438\u9876\uFF1A\n   \u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF08\u8981\u5438\u9876\u8BF7\u5728\u5916\u5C42\u5BB9\u5668\u5904\u7406\uFF09\u3002 */\n\n.dshpc-table{--dshpc-table-pad-x:var(--dshpc-space-3);--dshpc-table-head-h:44px;--dshpc-table-row-h:48px;\n  width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;box-sizing:border-box;\n  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n\n/* \u5BC6\u5EA6\u4E09\u6863\uFF1A\u53EA\u6539\u884C\u9AD8\u4E0E\u6C34\u5E73\u5185\u8DDD\uFF0C\u914D\u8272\u4E0E\u5206\u9694\u7EBF\u5F52\u76AE\u80A4\u3002compact / comfortable \u5404\u4E00\u884C\uFF0C\n   \u65B0\u589E\u6863\u4F4D\u5728\u6B64\u8FFD\u52A0\uFF1B\u5217\u7EA7 padding \u8D70\u5185\u8054 style \u8986\u76D6\uFF08\u4E0D\u5728\u8FD9\u91CC\u518D\u5F00\u4E00\u5957\u53D8\u91CF\uFF09\u3002\n   \u9ED8\u8BA4\u6C34\u5E73\u5185\u8DDD 12px\uFF08space-3\uFF09\u2014\u2014 \u53C2\u8003\u7A3F\u7684\u8272\u5757\u95F4\u8DDD\uFF0C16px \u504F\u677E\u3002 */\n.dshpc-table--density-compact{--dshpc-table-pad-x:var(--dshpc-space-2);--dshpc-table-head-h:36px;--dshpc-table-row-h:36px;}\n.dshpc-table--density-comfortable{--dshpc-table-pad-x:var(--dshpc-space-4);--dshpc-table-head-h:52px;--dshpc-table-row-h:60px;}\n\n.dshpc-table__head-cell,.dshpc-table__cell{box-sizing:border-box;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  text-align:left;vertical-align:middle;font-weight:400;}\n\n/* \u8868\u5934 44 / \u6570\u636E\u884C 48 \u662F default \u6863\uFF08\u53C2\u8003\u7A3F\u5BC6\u5EA6\uFF09\uFF1Bheight \u5728 table-cell \u4E0A\u662F\u6700\u5C0F\u9AD8\uFF0C\n   \u591A\u884C\u5185\u5BB9\u4F1A\u81EA\u52A8\u628A\u884C\u6491\u9AD8\uFF0C\u4E0D\u4F1A\u88AB\u622A\u65AD\u3002 */\n.dshpc-table__head-cell{height:var(--dshpc-table-head-h);font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg-2);}\n.dshpc-table__head-cell--group{text-align:center;}\n.dshpc-table__cell{height:var(--dshpc-table-row-h);}\n\n.dshpc-table__head-cell--center,.dshpc-table__cell--center{text-align:center;}\n.dshpc-table__head-cell--right,.dshpc-table__cell--right{text-align:right;}\n\n.dshpc-table__row{transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n/* \u53EA\u6709\u4F20\u4E86 onRowClick \u7684\u884C\u624D\u662F\u53EF\u70B9\u7684\uFF08\u6570\u636E\u5C5E\u6027\u7531\u7EC4\u4EF6\u6309\u6B64\u6253\uFF09\u3002 */\n.dshpc-table__row[data-interactive='true']{cursor:pointer;}\n.dshpc-table__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}\n\n/* \u6591\u9A6C\u7EB9\u662F\u901A\u7528\u80FD\u529B\uFF08\u8868\u7EA7 striped \u5F00\u5173\uFF09\uFF0C\u653E\u5728\u57FA\u7840\u5C42\uFF1A\u5E95\u8272\u53D6 token\uFF0C\u5404\u6863\u76AE\u80A4\u4E0D\u5FC5\u5404\u81EA\u5B9E\u73B0\u3002\n   \u9009\u62E9\u5668\u523B\u610F\u53EA\u5230 3 \u4E2A\u7C7B\u7EA7\u522B\uFF08\u8868\u7EA7 + \u884C + :nth-child\uFF09\uFF1B\u76AE\u80A4\u5C42\u7684\u884C\u6001\u89C4\u5219\u5E26 __body \u4E0A\u4E0B\u6587\n   + \u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u662F 4 \u7EA7 \u21D2 \u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u5730\u538B\u8FC7\u5B83\u3002\n   2026-10-30 \u771F\u673A\u4E8B\u6545\uFF1A\u8FD9\u91CC\u66FE\u5199\u6EE1 4 \u7EA7\uFF08\u591A\u4E86\u4E00\u4E2A __body\uFF09\uFF0C\u4E0E\u9009\u4E2D\u7684 4 \u7EA7\u76F8\u540C \u21D2 \u57FA\u7840\u5C42\n   \u6BD4\u76AE\u80A4\u540E\u6CE8\u5165\uFF0C\u5076\u6570\u884C\u6C38\u8FDC\u88AB\u6591\u9A6C\u7EB9\u76D6\u4F4F\uFF08\u300C\u5355\u6570\u884C\u80FD\u9009\u4E2D\u3001\u53CC\u6570\u884C\u70B9\u4E86\u6CA1\u53CD\u5E94\u300D\uFF09\u3002 */\n.dshpc-table--striped .dshpc-table__row:nth-child(even){background:var(--dshpc-plate);}\n\n/* \u5206\u7EC4\u901A\u680F\uFF1A\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u677F\u5757\uFF08\u5DE5\u4F5C\u533A A / \u5DE5\u4F5C\u533A B\uFF09\u65F6\uFF0C\u6BCF\u7EC4\u5148\u6765\u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u5927\u6807\u9898\uFF0C\n   \u7136\u540E\u624D\u662F\u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u6570\u636E\u884C\u3002\u7ED3\u6784 + \u5E95\u8272\u5F52\u57FA\u7840\u5C42\uFF08\u53EA\u7528 token\uFF0C\u5404\u6863\u76AE\u80A4\u5171\u540C\u6210\u7ACB\uFF09\uFF1B\n   \u901A\u680F\u5E95\u8D70 --dshpc-table-banner-bg\uFF08\u4E0E\u8868\u5934\u4E92\u6362\u7684\u90A3\u4E00\u6863\uFF0C2026-10-30 \u7528\u6237\u5B9A\uFF09\uFF1B\n   \u901A\u680F\u4E0E\u7EC4\u8868\u5934\u4E4B\u95F4\u753B\u4E00\u6761\u7EBF\uFF08\u7528\u6237 2026-10-30\uFF1A\u90A3\u4E4B\u95F4\u4E5F\u8981\u6709 border\uFF09\uFF1B\n   \u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u901A\u680F\u9876\u7EBF\u9694\u5F00\uFF0C\u7B2C\u4E00\u7EC4\u9876\u90E8\u4E0D\u753B\uFF08\u5916\u6846\u5DF2\u7ECF\u5728\u90A3\u513F\uFF0C\u753B\u4E86\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table__group-cell{height:var(--dshpc-table-head-h);padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;background:var(--dshpc-table-banner-bg);border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  text-align:left;vertical-align:middle;font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg);}\n.dshpc-table__group-body:first-of-type .dshpc-table__group-cell{border-top:0;}\n\n/* \u901A\u680F\u6807\u9898\u7684\u56FA\u5B9A\u6807\u7B7E\uFF08\u77ED\u7AD6\u7EBF\uFF09\u4E0E\u6392\u7248\u7531 SectionHead \u81EA\u5E26\uFF084px \u5706\u5934\uFF09\uFF0C\u672C\u5C42\u4E0D\u518D\u753B\u3002 */\n\n.dshpc-table__empty{height:80px;padding:0 var(--dshpc-space-4);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n\n/* \u52A0\u8F7D\u6001\u884C\uFF08\u52A0\u8F7D\u66F4\u591A / \u6CA1\u6709\u66F4\u591A / \u6574\u8868\u52A0\u8F7D\uFF09\uFF1A\u5355\u5143\u683C\u81EA\u8EAB\u4E0D\u753B\u8FB9\u6846\uFF08\u5E95\u90E8\u72B6\u6001\u884C\u7684\u9876\u7EBF\u7531\u76AE\u80A4\u8865\uFF09\uFF0C\u5185\u5BB9\u5C45\u4E2D\uFF1B\n   \u6574\u8868\u52A0\u8F7D\u9ED8\u8BA4\u5360\u4F4D 160px\uFF08\u53EF\u7531 loadingHeight \u8986\u76D6\uFF09\uFF0C\u5E95\u90E8\u90A3\u884C\u53EA\u5360\u4E00\u884C\u9AD8\u3002 */\n.dshpc-table__state-cell{padding:0;border:0;text-align:center;vertical-align:middle;}\n.dshpc-table__state{display:flex;align-items:center;justify-content:center;\n  gap:var(--dshpc-space-2);min-height:40px;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n.dshpc-table__state--full{flex-direction:column;min-height:160px;gap:var(--dshpc-space-3);font-size:var(--dshpc-font-sm);}\n.dshpc-table__state-text{line-height:1;}\n/* \u5E95\u90E8\u54E8\u5175\uFF1A\u96F6\u9AD8\u3001\u65E0\u8FB9\u6846\u3001\u65E0\u5185\u5BB9\uFF0C\u53EA\u7ED9 IntersectionObserver \u4E00\u4E2A\u843D\u70B9\u3002 */\n.dshpc-table__sentinel>td{height:0;padding:0;border:0;line-height:0;}\n\n/* \u5185\u5EFA\u5206\u9875\u7684\u5916\u58F3\uFF1A\u8868\u683C\u5728\u4E0A\u3001\u5206\u9875\u6761\u5728\u4E0B\uFF0C\u95F4\u8DDD\u8D70 space-3\uFF08\u5206\u9875\u6761\u81EA\u5DF1\u7BA1\u5DE6\u53F3\u5BF9\u9F50\uFF09\u3002 */\n.dshpc-table-frame{display:flex;flex-direction:column;gap:var(--dshpc-space-3);}\n";
 
 // dist/ui/controls/table-plain-css.generated.js
-var TABLE_PLAIN_CSS = "/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 Plain\uFF08\u7B2C\u4E00\u4E2A\u6837\u5F0F\uFF1A\u767D\u5361\u7247\u4E0A\u7684\u8F7B\u91CF\u8868\u683C\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7279\u5F81\uFF1A\u5916\u6846 + \u7070\u5E95\u8868\u5934\uFF08\u542B\u4E0B\u8FB9\u7EBF\uFF0C\u53CC\u884C\u5206\u7EC4\u8868\u5934\u4E5F\u6E05\u695A\uFF09\u3001\u7AD6\u5411\u5206\u9694\u7EBF\u3001\n   \u6570\u636E\u884C\u53EA\u4FDD\u7559\u6781\u6DE1\u5E95\u7EBF\uFF08\u4E0D\u753B\u91CD\u6A2A\u7EBF\uFF09\u3001\u884C\u60AC\u6D6E\u6DE1\u84DD\u3001\u9009\u4E2D\u884C\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7 3px \u84DD\u7AD6\u6761\u3002\n   \u9009\u62E9\u5668\u5168\u90E8\u6302\u5728 .dshpc-table--plain \u4E0B\uFF0C\u548C\u57FA\u7840\u5C42\u4E0D\u540C\u540D\uFF08\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\uFF09\u3002\n   \u7AD6\u5206\u9694\u7EBF\u6309\u5217\u58F0\u660E\uFF08\u683C\u5B50\u4E0A\u7684 data-divider\uFF09\uFF0C\u4E0D\u7528\u76F8\u90BB\u5144\u5F1F\u9009\u62E9\u5668 \u2014\u2014 \u540E\u8005\u4F1A\u8BA9\u6BCF\u884C\u9996\u683C\n   \u6C38\u8FDC\u6CA1\u6709\u5DE6\u7EBF\uFF08\u7528\u6237 2026-10-30 \u771F\u673A\u770B\u5230\u7684 Name \u5DE6\u4FA7\u7F3A\u7EBF\uFF09\uFF0C\u4E14\u5355\u5143\u683C\u8DE8\u5217\u540E\u4F1A\u753B\u9519\u4F4D\u7F6E\u3002\n   \u540E\u7EED\u5916\u89C2\u7167\u6B64\u53E6\u5EFA\uFF1Atable-grid.css / table-zebra.css\uFF0C\u5404\u81EA\u4E00\u4E2A\u7EC4\u4EF6\u3001\u5404\u81EA import \u81EA\u5DF1\u90A3\u4EFD\u3002 */\n\n/* \u5916\u6846\u56DB\u6001\uFF1Aall \u56DB\u8FB9 / x \u53EA\u6709\u5DE6\u53F3 / y \u53EA\u6709\u4E0A\u4E0B / none \u5168\u4E0D\u8981\u3002\n   \u7EC4\u4EF6\u603B\u4F1A\u6309 borders \u5C5E\u6027\u548C\u4E0A\u5BF9\u5E94 class\uFF0C\u6545\u8FD9\u91CC\u4E0D\u5B58\u5728\u300C\u65E0 class \u7684\u88F8\u8868\u300D\u3002\n   \u300C\u4E0D\u8981\u5DE6\u53F3\u4E24\u6761\u8FB9\u300D\u5C31\u662F borders='y'\u3002 */\n.dshpc-table--plain.dshpc-table--borders-all{border:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-x{border-left:1px solid var(--dshpc-border);\n  border-right:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-y{border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-none{border:0;}\n\n/* \u8868\u5934\uFF1A\u4E2D\u6027\u7070\u5E95 + \u4E0B\u8FB9\u7EBF\u3002\u5E95\u8272\u8D70 --dshpc-table-head-bg\uFF08= --dshpc-surface-sunken\uFF0C\n   \u4E0E\u901A\u680F\u90A3\u5C42\u7070\u540C\u6E90\uFF1B2026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934 / \u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1B\u4E0B\u8FB9\u7EBF\u515C\u4F4F\u5206\u7EC4\u8868\u5934\u7684\u7B2C\u4E8C\u5C42\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell{\n  background:var(--dshpc-table-head-bg);\n  border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-table--plain .dshpc-table__head-cell--group{color:var(--dshpc-fg-3);}\n\n/* \u8868\u5934\u591A\u8272\uFF1A\u5217\u7EA7 headerTone \u6253\u5230 data-header-tone\uFF0C\u6D45\u5E95 + \u540C\u8272\u6587\u5B57\u3002\n   \u8272\u503C\u5168\u90E8\u6765\u81EA token\uFF08soft \u5E95 / \u5B9E\u8272\u5B57\uFF09\uFF0C\u6697\u8272\u4E3B\u9898\u81EA\u52A8\u8DDF\u968F\uFF0C\u4E0D\u5199\u6B7B\u4EFB\u4F55 hex\u3002\n   \u8FD9\u7EC4\u89C4\u5219\u6BD4\u4E0A\u65B9\u7070\u5E95\u89C4\u5219\u591A\u4E00\u4E2A\u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u8986\u76D6\u9ED8\u8BA4\u7070\u5E95\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='business']{background:var(--dshpc-business-soft);color:var(--dshpc-business);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='success']{background:var(--dshpc-success-soft);color:var(--dshpc-success);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='warning']{background:var(--dshpc-warning-soft);color:var(--dshpc-warning);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='danger']{background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='purple']{background:var(--dshpc-purple-soft);color:var(--dshpc-purple);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='pink']{background:var(--dshpc-pink-soft);color:var(--dshpc-pink);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='cyan']{background:var(--dshpc-cyan-soft);color:var(--dshpc-cyan);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='teal']{background:var(--dshpc-teal-soft);color:var(--dshpc-teal);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='orange']{background:var(--dshpc-orange-soft);color:var(--dshpc-orange);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='indigo']{background:var(--dshpc-indigo-soft);color:var(--dshpc-indigo);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='rose']{background:var(--dshpc-rose-soft);color:var(--dshpc-rose);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='slate']{background:var(--dshpc-slate-soft);color:var(--dshpc-slate);}\n\n/* \u7AD6\u5206\u9694\u7EBF\uFF1A\u6309\u5217\u58F0\u660E\uFF0C**\u9ED8\u8BA4\u4E0D\u753B**\u3002\u7EC4\u4EF6\u53EA\u7ED9 divider: true \u7684\u5217\u6253 data-divider='left'\uFF0C\n   \u9996\u5217\u6052\u4E0D\u753B\uFF08\u90A3\u662F\u5916\u6846\u7684\u4F4D\u7F6E\uFF09\u3002\u9ED8\u8BA4\u8868\u683C = \u53EA\u6709\u6A2A\u7EBF\u3001\u6CA1\u6709\u4E00\u6761\u7AD6\u7EBF\uFF1B\n   \u8981\u300C\u5217\u95F4\u6709\u7EBF\u300D\u5C31\u7ED9\u5BF9\u5E94\u5217 divider:true\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-divider='left'],\n.dshpc-table--plain .dshpc-table__cell[data-divider='left']{border-left:1px solid var(--dshpc-border);}\n\n/* \u6570\u636E\u884C\u4E4B\u95F4\u7684\u6781\u6DE1\u5E95\u7EBF\uFF1A\u53EA\u5E2E\u773C\u775B\u300C\u5206\u884C\u300D\uFF0C\u4E0D\u56DE\u5230\u7C97\u6A2A\u7EBF\u8868\u683C\u7684\u8001\u6837\u5B50\u3002 */\n.dshpc-table--plain .dshpc-table__row + .dshpc-table__row .dshpc-table__cell{\n  border-top:1px solid var(--dshpc-border-faint);\n}\n\n/* \u884C\u60AC\u6D6E\uFF1A\u53EA\u5728\u53EF\u70B9\u884C\u4E0A\u7ED9\u53CD\u9988\uFF0C\u9759\u6001\u8868\u683C\u4E0D\u8BEF\u5BFC\u7528\u6237\u4EE5\u4E3A\u80FD\u70B9\u3002\n   \u5E95\u8272\u662F\u6781\u6DE1\u4E2D\u6027\u7070\uFF08--dshpc-table-row-hover\uFF1A\u4EAE\u8272\u4E00\u5C42\u6DE1\u9ED1 \u22481.5%\uFF0C\u6697\u8272\u4E00\u5C42\u6DE1\u767D \u22483%\uFF09\u2014\u2014\n   2026-10-30 \u7528\u6237\uFF1Ahover \u8981\u7279\u522B\u6DE1\u7684\u7070\u3001\u4E0D\u8981\u6DE1\u84DD\uFF08\u7B2C\u4E8C\u6B21\u53C8\u8981\u6C42\u518D\u6D45\u4E00\u534A\uFF09\u3002\u5E26 __body \u4E0A\u4E0B\u6587\u662F\u4E3A\u4E86\u538B\u8FC7\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF08\u89C1 table.css\uFF09\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-table-row-hover);}\n\n/* \u9009\u4E2D\u884C\uFF1A\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7\u84DD\u7AD6\u6761\u3002\u7528\u80CC\u666F\u6E10\u53D8\u753B\u6761\uFF0C\u907F\u514D tr \u4E0A\u4F2A\u5143\u7D20 / \u5B9A\u4F4D\u7684\u517C\u5BB9\u95EE\u9898\uFF1B\n   \u4E24\u6761\u9009\u62E9\u5668\u540C\u4E00\u4EFD\u58F0\u660E\uFF1A\u60AC\u6D6E\u6001\uFF08\u591A\u4E00\u4E2A\u5C5E\u6027 + \u4F2A\u7C7B\uFF09\u4E0D\u4F1A\u76D6\u6389\u9009\u4E2D\u6001\u3002\n   \u5E95\u8272\u7528 business-soft\uFF08\u6BD4\u60AC\u6D6E\u518D\u660E\u786E\u4E00\u6863\u4F46\u4ECD\u662F\u6D45\u8272\uFF09\uFF0C\u6761\u672C\u8EAB\u624D\u662F\u300C\u9009\u4E2D\u300D\u7684\u4FE1\u53F7\u3002\n   \u7279\u5F02\u6027 4 \u7EA7\uFF0C\u9AD8\u4E8E\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF083 \u7EA7\uFF09\u21D2 \u5076\u6570\u884C\u4E5F\u80FD\u6B63\u5E38\u9009\u4E2D\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'],\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'][data-interactive='true']:hover{\n  background:linear-gradient(to right,var(--dshpc-business) 3px,var(--dshpc-business-soft) 3px);\n}\n";
+var TABLE_PLAIN_CSS = "/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 Plain\uFF08\u7B2C\u4E00\u4E2A\u6837\u5F0F\uFF1A\u767D\u5361\u7247\u4E0A\u7684\u8F7B\u91CF\u8868\u683C\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7279\u5F81\uFF1A\u5916\u6846 + \u7070\u5E95\u8868\u5934\uFF08\u542B\u4E0B\u8FB9\u7EBF\uFF0C\u53CC\u884C\u5206\u7EC4\u8868\u5934\u4E5F\u6E05\u695A\uFF09\u3001\u7AD6\u5411\u5206\u9694\u7EBF\u3001\n   \u6570\u636E\u884C\u53EA\u4FDD\u7559\u6781\u6DE1\u5E95\u7EBF\uFF08\u4E0D\u753B\u91CD\u6A2A\u7EBF\uFF09\u3001\u884C\u60AC\u6D6E\u6DE1\u84DD\u3001\u9009\u4E2D\u884C\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7 3px \u84DD\u7AD6\u6761\u3002\n   \u9009\u62E9\u5668\u5168\u90E8\u6302\u5728 .dshpc-table--plain \u4E0B\uFF0C\u548C\u57FA\u7840\u5C42\u4E0D\u540C\u540D\uFF08\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\uFF09\u3002\n   \u7AD6\u5206\u9694\u7EBF\u6309\u5217\u58F0\u660E\uFF08\u683C\u5B50\u4E0A\u7684 data-divider\uFF09\uFF0C\u4E0D\u7528\u76F8\u90BB\u5144\u5F1F\u9009\u62E9\u5668 \u2014\u2014 \u540E\u8005\u4F1A\u8BA9\u6BCF\u884C\u9996\u683C\n   \u6C38\u8FDC\u6CA1\u6709\u5DE6\u7EBF\uFF08\u7528\u6237 2026-10-30 \u771F\u673A\u770B\u5230\u7684 Name \u5DE6\u4FA7\u7F3A\u7EBF\uFF09\uFF0C\u4E14\u5355\u5143\u683C\u8DE8\u5217\u540E\u4F1A\u753B\u9519\u4F4D\u7F6E\u3002\n   \u540E\u7EED\u5916\u89C2\u7167\u6B64\u53E6\u5EFA\uFF1Atable-grid.css / table-zebra.css\uFF0C\u5404\u81EA\u4E00\u4E2A\u7EC4\u4EF6\u3001\u5404\u81EA import \u81EA\u5DF1\u90A3\u4EFD\u3002 */\n\n/* \u5916\u6846\u56DB\u6001\uFF1Aall \u56DB\u8FB9 / x \u53EA\u6709\u5DE6\u53F3 / y \u53EA\u6709\u4E0A\u4E0B / none \u5168\u4E0D\u8981\u3002\n   \u7EC4\u4EF6\u603B\u4F1A\u6309 borders \u5C5E\u6027\u548C\u4E0A\u5BF9\u5E94 class\uFF0C\u6545\u8FD9\u91CC\u4E0D\u5B58\u5728\u300C\u65E0 class \u7684\u88F8\u8868\u300D\u3002\n   \u300C\u4E0D\u8981\u5DE6\u53F3\u4E24\u6761\u8FB9\u300D\u5C31\u662F borders='y'\u3002 */\n.dshpc-table--plain.dshpc-table--borders-all{border:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-x{border-left:1px solid var(--dshpc-border);\n  border-right:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-y{border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-none{border:0;}\n\n/* \u8868\u5934\uFF1A\u4E2D\u6027\u7070\u5E95 + \u4E0B\u8FB9\u7EBF\u3002\u5E95\u8272\u8D70 --dshpc-table-head-bg\uFF08= --dshpc-surface-sunken\uFF0C\n   \u4E0E\u901A\u680F\u90A3\u5C42\u7070\u540C\u6E90\uFF1B2026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934 / \u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1B\u4E0B\u8FB9\u7EBF\u515C\u4F4F\u5206\u7EC4\u8868\u5934\u7684\u7B2C\u4E8C\u5C42\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell{\n  background:var(--dshpc-table-head-bg);\n  border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-table--plain .dshpc-table__head-cell--group{color:var(--dshpc-fg-3);}\n\n/* \u8868\u5934\u591A\u8272\uFF1A\u5217\u7EA7 headerTone \u6253\u5230 data-header-tone\uFF0C\u6D45\u5E95 + \u540C\u8272\u6587\u5B57\u3002\n   \u8272\u503C\u5168\u90E8\u6765\u81EA token\uFF08soft \u5E95 / \u5B9E\u8272\u5B57\uFF09\uFF0C\u6697\u8272\u4E3B\u9898\u81EA\u52A8\u8DDF\u968F\uFF0C\u4E0D\u5199\u6B7B\u4EFB\u4F55 hex\u3002\n   \u8FD9\u7EC4\u89C4\u5219\u6BD4\u4E0A\u65B9\u7070\u5E95\u89C4\u5219\u591A\u4E00\u4E2A\u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u8986\u76D6\u9ED8\u8BA4\u7070\u5E95\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='business']{background:var(--dshpc-business-soft);color:var(--dshpc-business);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='success']{background:var(--dshpc-success-soft);color:var(--dshpc-success);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='warning']{background:var(--dshpc-warning-soft);color:var(--dshpc-warning);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='danger']{background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='purple']{background:var(--dshpc-purple-soft);color:var(--dshpc-purple);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='pink']{background:var(--dshpc-pink-soft);color:var(--dshpc-pink);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='cyan']{background:var(--dshpc-cyan-soft);color:var(--dshpc-cyan);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='teal']{background:var(--dshpc-teal-soft);color:var(--dshpc-teal);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='orange']{background:var(--dshpc-orange-soft);color:var(--dshpc-orange);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='indigo']{background:var(--dshpc-indigo-soft);color:var(--dshpc-indigo);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='rose']{background:var(--dshpc-rose-soft);color:var(--dshpc-rose);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='slate']{background:var(--dshpc-slate-soft);color:var(--dshpc-slate);}\n\n/* \u7AD6\u5206\u9694\u7EBF\uFF1A\u6309\u5217\u58F0\u660E\uFF0C**\u9ED8\u8BA4\u4E0D\u753B**\u3002\u7EC4\u4EF6\u53EA\u7ED9 divider: true \u7684\u5217\u6253 data-divider='left'\uFF0C\n   \u9996\u5217\u6052\u4E0D\u753B\uFF08\u90A3\u662F\u5916\u6846\u7684\u4F4D\u7F6E\uFF09\u3002\u9ED8\u8BA4\u8868\u683C = \u53EA\u6709\u6A2A\u7EBF\u3001\u6CA1\u6709\u4E00\u6761\u7AD6\u7EBF\uFF1B\n   \u8981\u300C\u5217\u95F4\u6709\u7EBF\u300D\u5C31\u7ED9\u5BF9\u5E94\u5217 divider:true\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-divider='left'],\n.dshpc-table--plain .dshpc-table__cell[data-divider='left']{border-left:1px solid var(--dshpc-border);}\n\n/* \u6570\u636E\u884C\u4E4B\u95F4\u7684\u6781\u6DE1\u5E95\u7EBF\uFF1A\u53EA\u5E2E\u773C\u775B\u300C\u5206\u884C\u300D\uFF0C\u4E0D\u56DE\u5230\u7C97\u6A2A\u7EBF\u8868\u683C\u7684\u8001\u6837\u5B50\u3002 */\n.dshpc-table--plain .dshpc-table__row + .dshpc-table__row .dshpc-table__cell{\n  border-top:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5E95\u90E8\u72B6\u6001\u884C\uFF08\u52A0\u8F7D\u66F4\u591A / \u5230\u5E95\uFF09\uFF1A\u6574\u884C\u901A\u680F\uFF0C\u4E0E\u4E0A\u65B9\u6570\u636E\u884C\u4E4B\u95F4\u8865\u4E00\u6761\u5B9E\u7EBF\u3002\n   \u53EA\u8865\u9876\u7EBF\uFF1A\u5DE6\u53F3\u4E24\u6761\u4E0D\u7531\u8FD9\u4E00\u683C\u91CD\u590D\u753B \u2014\u2014 borders=all / x \u65F6\u8868\u7EA7\u5916\u6846\u5DF2\u7ECF\u515C\u4F4F\uFF1B\n   borders=y / none \u672C\u6765\u5C31\u6CA1\u6709\u5DE6\u53F3\u8FB9\u3002\u6574\u8868\u52A0\u8F7D\u5360\u4F4D\u884C\u4E0D\u52A0\uFF08\u8868\u5934\u5DF2\u6709\u4E0B\u8FB9\u7EBF\uFF0C\u518D\u52A0\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table--plain .dshpc-table__state-row--footer .dshpc-table__state-cell{\n  border-top:1px solid var(--dshpc-border);\n}\n\n/* \u6CA1\u6709\u5DE6\u53F3\u5916\u6846\u65F6\uFF08borders=y\uFF09\u5E95\u90E8\u72B6\u6001\u884C\u4E0B\u9762\u90A3\u6761\u8868\u5E95\u7EBF\u4E5F\u53BB\u6389\uFF1A\n   \u72B6\u6001\u884C\u53EA\u7559\u4E0A\u65B9\u4E00\u6761\u5B9E\u7EBF\uFF0C\u5426\u5219\u56FE\u6807 / \u6587\u6848\u4E0B\u65B9\u8FD8\u591A\u4E00\u6761\u5B64\u7EBF\uFF082026-10-31 \u7528\u6237\u5B9A\uFF09\u3002\n   borders=none \u672C\u6765\u5C31\u6CA1\u6709\u5E95\u8FB9\uFF0C\u65E0\u9700\u5728\u6B64\u91CD\u590D\u3002 */\n.dshpc-table--plain.dshpc-table--borders-y.dshpc-table--foot-no-bottom{border-bottom:0;}\n\n/* \u884C\u60AC\u6D6E\uFF1A\u53EA\u5728\u53EF\u70B9\u884C\u4E0A\u7ED9\u53CD\u9988\uFF0C\u9759\u6001\u8868\u683C\u4E0D\u8BEF\u5BFC\u7528\u6237\u4EE5\u4E3A\u80FD\u70B9\u3002\n   \u5E95\u8272\u662F\u6781\u6DE1\u4E2D\u6027\u7070\uFF08--dshpc-table-row-hover\uFF1A\u4EAE\u8272\u4E00\u5C42\u6DE1\u9ED1 \u22481.5%\uFF0C\u6697\u8272\u4E00\u5C42\u6DE1\u767D \u22483%\uFF09\u2014\u2014\n   2026-10-30 \u7528\u6237\uFF1Ahover \u8981\u7279\u522B\u6DE1\u7684\u7070\u3001\u4E0D\u8981\u6DE1\u84DD\uFF08\u7B2C\u4E8C\u6B21\u53C8\u8981\u6C42\u518D\u6D45\u4E00\u534A\uFF09\u3002\u5E26 __body \u4E0A\u4E0B\u6587\u662F\u4E3A\u4E86\u538B\u8FC7\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF08\u89C1 table.css\uFF09\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-table-row-hover);}\n\n/* \u9009\u4E2D\u884C\uFF1A\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7\u84DD\u7AD6\u6761\u3002\u7528\u80CC\u666F\u6E10\u53D8\u753B\u6761\uFF0C\u907F\u514D tr \u4E0A\u4F2A\u5143\u7D20 / \u5B9A\u4F4D\u7684\u517C\u5BB9\u95EE\u9898\uFF1B\n   \u4E24\u6761\u9009\u62E9\u5668\u540C\u4E00\u4EFD\u58F0\u660E\uFF1A\u60AC\u6D6E\u6001\uFF08\u591A\u4E00\u4E2A\u5C5E\u6027 + \u4F2A\u7C7B\uFF09\u4E0D\u4F1A\u76D6\u6389\u9009\u4E2D\u6001\u3002\n   \u5E95\u8272\u7528 business-soft\uFF08\u6BD4\u60AC\u6D6E\u518D\u660E\u786E\u4E00\u6863\u4F46\u4ECD\u662F\u6D45\u8272\uFF09\uFF0C\u6761\u672C\u8EAB\u624D\u662F\u300C\u9009\u4E2D\u300D\u7684\u4FE1\u53F7\u3002\n   \u7279\u5F02\u6027 4 \u7EA7\uFF0C\u9AD8\u4E8E\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF083 \u7EA7\uFF09\u21D2 \u5076\u6570\u884C\u4E5F\u80FD\u6B63\u5E38\u9009\u4E2D\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'],\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'][data-interactive='true']:hover{\n  background:linear-gradient(to right,var(--dshpc-business) 3px,var(--dshpc-business-soft) 3px);\n}\n";
 
 // dist/ui/controls/pagination-css.generated.js
 var PAGINATION_CSS = "/* \u2500\u2500 \u5206\u9875\uFF08\u2039 Previous 1 2 3 \u2026 36 Next \u203A\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5F53\u524D\u9875 = \u84DD\u8272\u5706\u89D2\u65B9\u5757 + \u767D\u5B57\uFF08\u5B9E\u5FC3\u9762\u7684\u5B57\u5FC5\u987B\u8D70 --dshpc-on-signal\uFF0C\u4E0D\u8BB8\u7528\u4E3B\u9898\u53CD\u8272\uFF09\uFF1B\n   \u5176\u4F59\u9875\u7801\u662F\u7EAF\u6587\u5B57\u6309\u94AE\uFF0C\u60AC\u6D6E\u53EA\u7ED9\u6781\u6DE1\u4E2D\u6027\u5E95\u3002\u5BF9\u9F50\u7531 --left / --center / --right \u4E09\u4E2A\u4FEE\u9970\u51B3\u5B9A\uFF0C\n   \u7EC4\u4EF6\u9ED8\u8BA4 right\u3002\u989C\u8272\u5168\u90E8\u8D70 token\uFF0C\u660E\u6697\u81EA\u52A8\u8DDF\u968F\u5BBF\u4E3B\u3002 */\n\n.dshpc-pagination{display:flex;align-items:center;gap:var(--dshpc-space-2);flex-wrap:wrap;\n  font-size:var(--dshpc-font-sm);line-height:1;color:var(--dshpc-fg-2);}\n\n.dshpc-pagination--left{justify-content:flex-start;}\n.dshpc-pagination--center{justify-content:center;}\n.dshpc-pagination--right{justify-content:flex-end;}\n\n.dshpc-pagination__total{color:var(--dshpc-fg-3);margin-inline-end:var(--dshpc-space-1);}\n\n.dshpc-pagination__pages{display:flex;align-items:center;gap:2px;}\n\n/* \u9875\u7801 / \u4E0A\u4E0B\u9875 = \u6838\u5FC3 Button\uFF08\u5F53\u524D\u9875 info \u5B9E\u5FC3\u84DD\u3001\u5176\u4F59 ghost\uFF09\uFF0C\u7BAD\u5934 = \u5168\u7AD9\u552F\u4E00 Chevron\u3002\n   \u8FD9\u91CC\u53EA\u8865\u5C3A\u5BF8\u4E0E\u95F4\u8DDD\uFF0C\u4E0D\u91CD\u753B\u6309\u94AE\u76AE\u80A4\uFF1B\u4E24\u7EA7\u9009\u62E9\u5668\u538B\u8FC7 .dshpc-btn--md \u7684\u5185\u8DDD\u3002 */\n.dshpc-pagination .dshpc-pagination__page{padding:0 6px;min-width:28px;}\n.dshpc-pagination .dshpc-pagination__nav{padding:0 var(--dshpc-space-2);}\n\n.dshpc-pagination__ellipsis{display:inline-flex;align-items:center;justify-content:center;\n  min-width:28px;height:28px;color:var(--dshpc-fg-3);}\n\n.dshpc-pagination__simple{min-width:64px;text-align:center;font-variant-numeric:tabular-nums;\n  color:var(--dshpc-fg);}\n\n/* \u7B80\u6D01\u6A21\u5F0F\u53EA\u7559\u7BAD\u5934\uFF1A\u6587\u5B57\u6807\u7B7E\u9690\u85CF\uFF0C\u7BAD\u5934\u4ECD\u7136\u53EF\u89C1\uFF08\u65E0\u969C\u788D\u540D\u8FD8\u5728 aria-label \u4E0A\uFF09\u3002 */\n.dshpc-pagination--simple .dshpc-pagination__text{display:none;}\n\n/* \u6BCF\u9875\u6761\u6570\u4E0B\u62C9 = \u6838\u5FC3 Picker\uFF08\u7BAD\u5934\u662F\u5168\u7AD9\u552F\u4E00\u7684 Chevron\uFF09\uFF1A\u53EA\u6536\u7A84\u4E0D\u53C2\u4E0E\u4F38\u7F29\u3002 */\n.dshpc-pagination__size{flex:none;}\n";
@@ -5330,7 +5336,7 @@ function dividerAttr(leafIndex, wanted) {
     return void 0;
   return wanted === true ? "left" : void 0;
 }
-function tableShell(skinClass, props) {
+function tableShell(skinClass, props, options = {}) {
   ensureComponentStyles("table-core", TABLE_BASE_CSS);
   const tt = props.translate ?? t;
   const headRows = headerRows(props.columns);
@@ -5343,14 +5349,6 @@ function tableShell(skinClass, props) {
   const onRowClick = props.onRowClick;
   const density = props.density ?? "default";
   const borders = props.borders ?? "y";
-  const tableClass = [
-    "dshpc-table",
-    skinClass,
-    `dshpc-table--density-${density}`,
-    `dshpc-table--borders-${borders}`,
-    props.striped === true ? "dshpc-table--striped" : "",
-    props.className ?? ""
-  ].filter((s) => s !== "").join(" ");
   const headRowOf = (cells, level) => (0, import_react23.createElement)("tr", { key: `head-${level}`, className: "dshpc-table__head-row" }, ...cells.map((cell) => {
     const group = cell.colSpan > 1;
     const firstLeafIndex = leafIndexByKey.get(cell.leafKeys[0] ?? "");
@@ -5368,41 +5366,100 @@ function tableShell(skinClass, props) {
       "data-header-tone": tone === void 0 || tone === "default" ? void 0 : tone
     }, cell.column.title);
   }));
-  const dataRowsOf = (rows, offset4 = 0) => rows.map((row, index3) => (0, import_react23.createElement)("tr", {
-    key: row.key,
-    className: "dshpc-table__row",
-    "data-selected": selected.has(row.key) ? "true" : void 0,
-    "data-interactive": onRowClick === void 0 ? void 0 : "true",
-    tabIndex: onRowClick === void 0 ? void 0 : 0,
-    onClick: onRowClick === void 0 ? void 0 : () => onRowClick(row, offset4 + index3),
-    onKeyDown: onRowClick === void 0 ? void 0 : (event) => {
-      if (event.key !== "Enter" && event.key !== " ")
-        return;
-      event.preventDefault();
-      onRowClick(row, offset4 + index3);
-    }
-  }, ...leaves.map((column, leafIndex) => {
-    const cell = row.cells[column.key];
-    if (cell === void 0)
-      return null;
-    let spec;
-    let content2;
-    if (isTableCellSpec(cell)) {
-      spec = cell;
-      content2 = cell.content;
-    } else {
-      content2 = cell;
-    }
-    const align = spec?.align ?? column.align;
-    return (0, import_react23.createElement)("td", {
-      key: column.key,
-      className: `dshpc-table__cell${alignClass("dshpc-table__cell", align)}`,
-      style: padStyle(column),
-      colSpan: spec?.colSpan !== void 0 && spec.colSpan > 1 ? spec.colSpan : void 0,
-      rowSpan: spec?.rowSpan !== void 0 && spec.rowSpan > 1 ? spec.rowSpan : void 0,
-      "data-divider": dividerAttr(leafIndex, column.divider)
-    }, content2 ?? null);
-  })));
+  const selectedBlocksOf = (rows) => {
+    const blocks = rows.map((_, index3) => ({ start: index3, end: index3 }));
+    rows.forEach((row, index3) => {
+      for (const cell of Object.values(row.cells)) {
+        if (!isTableCellSpec(cell) || cell.rowSpan === void 0 || cell.rowSpan <= 1)
+          continue;
+        const end = Math.min(index3 + cell.rowSpan - 1, rows.length - 1);
+        for (let line = index3; line <= end; line += 1) {
+          const block2 = blocks[line];
+          if (block2 === void 0)
+            continue;
+          block2.start = Math.min(block2.start, index3);
+          block2.end = Math.max(block2.end, end);
+        }
+      }
+    });
+    return blocks.map((block2) => {
+      for (let line = block2.start; line <= block2.end; line += 1) {
+        const row = rows[line];
+        if (row !== void 0 && selected.has(row.key))
+          return true;
+      }
+      return false;
+    });
+  };
+  const dataRowsOf = (rows, offset4 = 0) => {
+    const selectedBlocks = selectedBlocksOf(rows);
+    return rows.map((row, index3) => (0, import_react23.createElement)("tr", {
+      key: row.key,
+      className: "dshpc-table__row",
+      "data-selected": selectedBlocks[index3] === true ? "true" : void 0,
+      "data-interactive": onRowClick === void 0 ? void 0 : "true",
+      tabIndex: onRowClick === void 0 ? void 0 : 0,
+      onClick: onRowClick === void 0 ? void 0 : () => onRowClick(row, offset4 + index3),
+      onKeyDown: onRowClick === void 0 ? void 0 : (event) => {
+        if (event.key !== "Enter" && event.key !== " ")
+          return;
+        event.preventDefault();
+        onRowClick(row, offset4 + index3);
+      }
+    }, ...leaves.map((column, leafIndex) => {
+      const cell = row.cells[column.key];
+      if (cell === void 0)
+        return null;
+      let spec;
+      let content2;
+      if (isTableCellSpec(cell)) {
+        spec = cell;
+        content2 = cell.content;
+      } else {
+        content2 = cell;
+      }
+      const align = spec?.align ?? column.align;
+      return (0, import_react23.createElement)("td", {
+        key: column.key,
+        className: `dshpc-table__cell${alignClass("dshpc-table__cell", align)}`,
+        style: padStyle(column),
+        colSpan: spec?.colSpan !== void 0 && spec.colSpan > 1 ? spec.colSpan : void 0,
+        rowSpan: spec?.rowSpan !== void 0 && spec.rowSpan > 1 ? spec.rowSpan : void 0,
+        "data-divider": dividerAttr(leafIndex, column.divider)
+      }, content2 ?? null);
+    })));
+  };
+  const colSpan = leaves.length > 0 ? leaves.length : void 0;
+  const emptyRow = (0, import_react23.createElement)("tr", { key: "empty", className: "dshpc-table__row" }, (0, import_react23.createElement)("td", { className: "dshpc-table__empty", colSpan }, props.emptyText ?? tt("tableEmpty")));
+  const loadingRow = (0, import_react23.createElement)("tr", { key: "loading", className: "dshpc-table__state-row" }, (0, import_react23.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react23.createElement)("div", {
+    className: "dshpc-table__state dshpc-table__state--full",
+    style: props.loadingHeight === void 0 ? void 0 : { height: `${props.loadingHeight}px` }
+  }, (0, import_react23.createElement)(Loader, { variant: "blocks", size: "xl", label: tt("tableLoading") }))));
+  const infinite = props.onLoadMore !== void 0;
+  const loadingMore = infinite && props.loadingMore === true;
+  const showNoMore = infinite && !loadingMore && props.hasMore === false && props.noMoreText !== false;
+  const footerRows = [];
+  if (loadingMore) {
+    footerRows.push((0, import_react23.createElement)("tr", { key: "more", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react23.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react23.createElement)("div", { className: "dshpc-table__state" }, (0, import_react23.createElement)(Loader, { variant: "blocks", size: "md", label: tt("tableLoadingMore") })))));
+  } else if (showNoMore) {
+    footerRows.push((0, import_react23.createElement)("tr", { key: "end", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react23.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react23.createElement)("div", { className: "dshpc-table__state" }, (0, import_react23.createElement)("span", { className: "dshpc-table__state-text" }, props.noMoreText === void 0 ? tt("tableNoMore") : props.noMoreText)))));
+  }
+  const sentinelRow = infinite && props.hasMore !== false && options.sentinelRef !== void 0 ? (0, import_react23.createElement)("tr", {
+    key: "sentinel",
+    ref: options.sentinelRef,
+    className: "dshpc-table__sentinel",
+    "aria-hidden": "true"
+  }, (0, import_react23.createElement)("td", { colSpan })) : null;
+  const flatFoot = footerRows.length > 0 && (borders === "y" || borders === "none");
+  const tableClass = [
+    "dshpc-table",
+    skinClass,
+    `dshpc-table--density-${density}`,
+    `dshpc-table--borders-${borders}`,
+    props.striped === true ? "dshpc-table--striped" : "",
+    flatFoot ? "dshpc-table--foot-no-bottom" : "",
+    props.className ?? ""
+  ].filter((s) => s !== "").join(" ");
   const groups = props.groups ?? [];
   const body = groups.length > 0 ? groups.map((group, groupIndex) => (0, import_react23.createElement)(
     "tbody",
@@ -5425,7 +5482,7 @@ function tableShell(skinClass, props) {
     ...headRows.map((cells, level) => headRowOf(cells, `g${groupIndex}-${level}`)),
     ...dataRowsOf(group.rows, 0)
   )) : [
-    (0, import_react23.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : (0, import_react23.createElement)("tr", { className: "dshpc-table__row" }, (0, import_react23.createElement)("td", { className: "dshpc-table__empty", colSpan: leaves.length > 0 ? leaves.length : void 0 }, props.emptyText ?? tt("tableEmpty"))))
+    (0, import_react23.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.loading === true && (props.rows?.length ?? 0) === 0 ? loadingRow : props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : emptyRow, ...footerRows, sentinelRow)
   ];
   return (0, import_react23.createElement)(
     "table",
@@ -5441,19 +5498,57 @@ function tableShell(skinClass, props) {
 }
 
 // dist/ui/Table.js
+function useLoadMoreSentinel(props, enabled) {
+  const nodeRef = (0, import_react24.useRef)(null);
+  const onLoadMoreRef = (0, import_react24.useRef)(props.onLoadMore);
+  const blockedRef = (0, import_react24.useRef)(true);
+  (0, import_react24.useEffect)(() => {
+    onLoadMoreRef.current = props.onLoadMore;
+    blockedRef.current = !enabled || props.onLoadMore === void 0 || props.loading === true || props.loadingMore === true || props.hasMore === false;
+  });
+  const refCallback = (0, import_react24.useRef)((node) => {
+    nodeRef.current = node;
+  }).current;
+  (0, import_react24.useEffect)(() => {
+    if (!enabled || typeof IntersectionObserver === "undefined")
+      return;
+    const node = nodeRef.current;
+    if (node === null)
+      return;
+    const observer = new IntersectionObserver((entries2) => {
+      if (entries2.some((entry) => entry.isIntersecting) && !blockedRef.current) {
+        onLoadMoreRef.current?.();
+      }
+    }, { rootMargin: "0px 0px 200px 0px" });
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+    };
+  }, [enabled]);
+  return refCallback;
+}
 function Table(props) {
   ensureComponentStyles("table-plain", TABLE_PLAIN_CSS);
   const pager = props.pagination;
   const grouped = (props.groups?.length ?? 0) > 0;
-  if (pager === void 0 || grouped)
-    return tableShell("dshpc-table--plain", props);
+  const infinite = pager === void 0 && !grouped;
+  const sentinelRef = useLoadMoreSentinel(props, infinite);
+  if (pager === void 0 || grouped) {
+    return tableShell("dshpc-table--plain", props, { sentinelRef: infinite ? sentinelRef : void 0 });
+  }
   const pageSize = Math.max(1, Math.floor(pager.pageSize ?? 10));
   const allRows = props.rows ?? [];
   const local = pager.total === void 0;
   const total = local ? allRows.length : Math.max(0, Math.floor(pager.total ?? 0));
   const page = clampPage(pager.page, pageCountOf(total, pageSize));
   const rows = local ? allRows.slice((page - 1) * pageSize, page * pageSize) : allRows;
-  return (0, import_react24.createElement)("div", { className: "dshpc-table-frame" }, tableShell("dshpc-table--plain", { ...props, rows }), (0, import_react24.createElement)(Pagination, { ...pager, page, total, align: pager.align ?? "right" }));
+  return (0, import_react24.createElement)(
+    "div",
+    { className: "dshpc-table-frame" },
+    // 分页与滚动加载二选一：分页模式下把底部加载相关 props 摘掉，避免同表两套翻页。
+    tableShell("dshpc-table--plain", { ...props, rows, onLoadMore: void 0, loadingMore: void 0, hasMore: void 0, noMoreText: void 0 }, {}),
+    (0, import_react24.createElement)(Pagination, { ...pager, page, total, align: pager.align ?? "right" })
+  );
 }
 
 // dist/ui/Toast.js
@@ -56010,12 +56105,13 @@ var DICT2 = {
     secCard: "\u5361\u7247\u4E0E\u5BB9\u5668",
     secChip: "\u6807\u7B7E \xB7 \u6587\u672C \xB7 \u72B6\u6001",
     secTable: "\u8868\u683C",
-    tableHint: "\u5916\u89C2\u4E00\uFF08\u5E26\u5168\u6846\uFF09\uFF1Aborders:all + \u5404\u5217 divider:true\uFF0C\u56DB\u8FB9\u4E0E\u7AD6\u7EBF\u90FD\u753B\u3002\u53CC\u884C\u5206\u7EC4\u8868\u5934\uFF08Patient \u84DD\u5E95\u3001Status \u7EFF\u5E95\uFF0C\u9ED8\u8BA4\u6863\u662F\u4E2D\u6027\u7070\u5E95\uFF09\uFF1BAge \u5217\u7559 divider:false \u793A\u8303\u300C\u8FD9\u4E24\u5217\u4E4B\u95F4\u4E0D\u8981\u7EBF\u300D\u5E76\u5C45\u4E2D\uFF1B\u6591\u9A6C\u7EB9 + \u70B9\u884C\u9009\u4E2D\uFF08\u9009\u4E2D\u6DE1\u5E95 + \u5DE6\u84DD\u6761\uFF0C\u60AC\u6D6E\u7279\u522B\u6DE1\u7684\u4E2D\u6027\u7070\uFF09\uFF1B\u59D3\u540D\u683C\u5934\u50CF + \u540D\u5B57 + \u7F16\u53F7\uFF0CModality \u662F\u8272\u6807\u7B7E\u3001Flags \u591A\u6807\u7B7E\uFF0C\u8FD9\u4E24\u5217\u5185\u8DDD\u6536\u5230 8px\uFF1B\u8868\u683C\u4E0B\u65B9\u540C\u4E00\u533A\u5757\u5C55\u793A\u7A7A\u6001",
-    tableEmptyHint: "\u6CA1\u6709\u6570\u636E\u65F6\u7684\u5185\u7F6E\u7A7A\u6001\uFF08\u6587\u6848\u8D70\u6838\u5FC3\u5B57\u5178\uFF0C\u4E5F\u53EF\u7528 emptyText \u8986\u76D6\uFF09",
-    tableSpanHint: "\u5916\u89C2\u4E8C\uFF08\u5DE6\u53F3\u4E24\u8FB9\u6CA1\u6709\u8FB9\uFF09\uFF1Aborders:y \u4FDD\u7559\u4E0A\u4E0B\u3001\u53BB\u6389\u5DE6\u53F3\u5916\u6846\uFF0C\u7AD6\u7EBF\u4ECD\u6309\u5217\u58F0\u660E\uFF08\u8FD9\u91CC\u7ED9\u4E86 divider:true\uFF09\u3002\u7D27\u51D1\u5BC6\u5EA6\uFF1BDowntown \u7528 rowSpan \u8DE8\u4E24\u884C\uFF08\u4E0B\u4E00\u884C\u4E0D\u7ED9\u8BE5\u5217 key\uFF09\uFF0CNorth clinic \u7528 colSpan \u8DE8\u4E24\u5217\uFF1B\u70B9\u884C\u9009\u4E2D / \u60AC\u6D6E\u8FD9\u4E00\u5F20\u540C\u6837\u5F00\u7740\uFF08\u9ED8\u8BA4\u9884\u9009 North clinic \u90A3\u884C\uFF09",
-    tableGroupHint: "\u5916\u89C2\u4E09\uFF08\u9ED8\u8BA4\uFF0C\u6240\u6709\u7AD6\u7740\u7684\u8FB9\u90FD\u6CA1\u6709\uFF09\uFF1A\u4E0D\u4F20 borders \u5C31\u8D70 y\u3001\u5217\u4E0D\u5199 divider \u5C31\u4E0D\u753B\u7AD6\u7EBF\u3002\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u5DE5\u4F5C\u533A\uFF08groups \u4E0E rows \u4E8C\u9009\u4E00\uFF09\uFF1A\u6BCF\u7EC4\u5148\u662F\u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u901A\u680F\u6807\u9898\uFF08\u5DE5\u4F5C\u533A A / B\uFF09\uFF0C\u7D27\u63A5\u7740\u662F\u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u4EFB\u52A1\u884C\uFF1B\u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u4E00\u6761\u5B9E\u7EBF\u9694\u5F00\uFF0C\u7EC4\u5185\u6570\u636E\u884C\u7167\u5E38\u53EF\u914D\u5355\u5143\u683C\u5185\u5BB9\uFF0C\u540C\u6837\u53EF\u70B9\u3001\u53EF\u9009\u4E2D\uFF08\u9ED8\u8BA4\u9884\u9009 Workspace A \u7684 Doing \u90A3\u884C\uFF09",
-    paginationHint: "\u72EC\u7ACB\u5206\u9875\u63A7\u4EF6\uFF1A\u53EA\u7ED9 page / pageSize / total\uFF0C\u9875\u6570\u4E0E\u7701\u7565\u53F7\u7A97\u53E3\u7531\u63A7\u4EF6\u81EA\u5DF1\u7B97\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5199\u6E32\u67D3\u3002\u4F4D\u7F6E\u53EF\u5207\uFF08\u4E0A\u6392\u5206\u6BB5\u5207\u5DE6 / \u4E2D / \u53F3\uFF0C\u9ED8\u8BA4\u53F3\uFF09\uFF1B\u4E0B\u6392\u662F\u7B80\u6D01\u6A21\u5F0F\uFF08\u53EA\u7559\u7BAD\u5934\u4E0E\u300C2 / 36\u300D\uFF09\u3002\u603B\u6570\u6587\u6848\u4E0E\u6BCF\u9875\u6761\u6570\u9009\u62E9\u5668\u90FD\u662F\u53EF\u9009\u5F00\u5173\uFF0C\u4E0D\u4F20\u5C31\u4E0D\u51FA\u73B0",
-    tablePagerHint: "Table \u5185\u5EFA\u5206\u9875\uFF1A\u4E0D\u4F20 pagination.total \u5C31\u662F\u672C\u5730\u5206\u9875 \u2014\u2014 rows \u662F\u5168\u91CF\uFF0CTable \u5148\u6309\u5F53\u524D\u9875\u5207\u7247\u518D\u6E32\u67D3\uFF0C\u5206\u9875\u6761\u6392\u5728\u8868\u683C\u4E0B\u65B9\u53F3\u4FA7\u3002\u82E5\u63A5\u670D\u52A1\u7AEF\u5206\u9875\uFF0C\u7ED9 total\uFF08\u5E76\u53EA\u4F20\u5F53\u524D\u9875\u7684\u884C\uFF09\uFF0CTable \u5C31\u4E0D\u5207\u7247\u3001\u53EA\u8D1F\u8D23\u6446\u9875\u7801",
+    tableHint: "\u5168\u6846\u5916\u89C2\uFF1Aborders:all + \u5217 divider:true\u3002\u53CC\u884C\u5206\u7EC4\u8868\u5934\u3001\u6591\u9A6C\u7EB9\u3001\u70B9\u884C\u9009\u4E2D\uFF1B\u8DE8\u884C / \u8DE8\u5217\u3001\u5934\u50CF\u683C\u3001Chip \u4E5F\u90FD\u5728\u8FD9\u4E00\u5F20\u91CC\u3002",
+    tableEmptyHint: "\u65E0\u6570\u636E\u65F6\u7684\u5185\u7F6E\u7A7A\u6001\uFF0C\u53EF\u7528 emptyText \u8986\u76D6",
+    tableSpanHint: "\u65E0\u5DE6\u53F3\u5916\u6846\uFF08borders:y\uFF09\u7684\u7D27\u51D1\u8868\uFF1ADowntown \u8DE8\u4E24\u884C\u3001North clinic \u8DE8\u4E24\u5217\uFF1B\u8DE8\u884C\u5757\u70B9\u4EFB\u610F\u4E00\u884C\uFF0C\u6574\u5757\u4E00\u8D77\u9AD8\u4EAE\u3002",
+    tableGroupHint: "\u9ED8\u8BA4\u5916\u89C2\uFF08y\u3001\u65E0\u7AD6\u7EBF\uFF09\uFF1Agroups \u4E0E rows \u4E8C\u9009\u4E00\uFF0C\u6BCF\u7EC4 = \u901A\u680F\u6807\u9898 + \u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u6570\u636E\u884C\uFF0C\u7EC4\u95F4\u4E00\u6761\u5B9E\u7EBF\u3002",
+    paginationHint: "\u72EC\u7ACB\u5206\u9875\uFF1A\u53EA\u7ED9 page / pageSize / total\uFF1B\u4F4D\u7F6E\u3001\u7B80\u6D01\u6A21\u5F0F\u3001\u603B\u6570\u6587\u6848\u3001\u6BCF\u9875\u6761\u6570\u90FD\u662F\u53EF\u9009\u5F00\u5173\u3002",
+    tablePagerHint: "Table \u5185\u5EFA\u5206\u9875\uFF1A\u4E0D\u4F20 total \u8D70\u672C\u5730\u5207\u7247\uFF08rows \u4F20\u5168\u91CF\uFF09\uFF0C\u4F20 total \u8D70\u670D\u52A1\u7AEF\u5206\u9875\uFF1B\u5206\u9875\u6761\u5728\u8868\u4E0B\u53F3\u4FA7\u3002",
+    tableLoadingHint: "\u5206\u6BB5\u5F00\u5173\u76F4\u63A5\u5207\u56DB\u79CD\u72B6\u6001\u3002\u4E24\u79CD loading \u53EA\u7528 Loader \u56FE\u6807\uFF08\u6574\u8868\u6700\u5927\u53F7\u3001\u52A0\u8F7D\u66F4\u591A\u4E2D\u53F7\uFF09\uFF1B\u5E95\u90E8\u72B6\u6001\u884C\u901A\u680F\u3001\u4E0A\u65B9\u4E00\u6761\u5B9E\u7EBF\uFF0C\u65E0\u5DE6\u53F3\u5916\u6846\u65F6\u8868\u5E95\u7EBF\u4E5F\u53BB\u6389\u3002",
     secFeedback: "\u53CD\u9988",
     secLayout: "\u5E03\u5C40\u4E0E\u6EDA\u52A8",
     secExplorer: "\u5DE5\u4F5C\u533A\u6D4F\u89C8",
@@ -56259,12 +56355,13 @@ var DICT2 = {
     secCard: "Cards & containers",
     secChip: "Tags \xB7 text \xB7 states",
     secTable: "Table",
-    tableHint: "Look 1 (full frame): borders:all plus divider:true on each column, so all four edges and the vertical rules are drawn. Two-row grouped header (blue Patient, green Status; the default tone is a neutral grey); the Age column keeps divider:false to show \u201Cno line between these two\u201D and is centred; zebra stripes + click-to-select (selected = soft tint + left blue bar, hover = an extremely faint neutral grey); the name cell shows avatar + name + ID, Modality is a coloured chip and Flags holds multiple chips, with both columns on 8px padding; the empty state sits in the same block below",
-    tableEmptyHint: "Built-in empty state (copy comes from the core dictionary; override with emptyText)",
-    tableSpanHint: "Look 2 (no side edges): borders:y keeps top and bottom, drops the left/right frame, while vertical rules still follow each column (divider:true here). Compact density; Downtown spans two rows via rowSpan (next row omits that key), and North clinic spans two columns via colSpan; click-to-select and hover are on here too (North clinic is preselected)",
-    tableGroupHint: "Look 3 (the default, no vertical edges at all): omit borders and it falls back to y; omit divider on a column and no vertical rule is drawn. Several workspaces in one table (groups and rows are mutually exclusive): each group opens with a banner row spanning every column (Workspace A / B), followed by that group\u2019s own header and task rows; groups are separated by a solid rule, cells inside each group are configured as usual, and rows are clickable/selectable too (the Doing row in Workspace A is preselected)",
-    paginationHint: 'Standalone pager: give it page / pageSize / total only \u2014 the control computes the page count and the ellipsis window itself, so you never write render code. Placement switches left / center / right (right by default); the lower row is simple mode (arrows plus "2 / 36"). The total copy and rows-per-page selector are optional switches \u2014 omit them and they disappear',
-    tablePagerHint: "Table with built-in paging: omit pagination.total and it pages locally \u2014 rows is the full list, Table slices by the current page and renders the pager under the table, right-aligned. For server-side paging, pass total (and only the current page\u2019s rows) so Table stops slicing and only renders the pager",
+    tableHint: "Full-frame look: borders:all + divider:true per column. Two-row grouped header, zebra stripes, click-to-select; row/column spans, avatar cell and chips all shown here.",
+    tableEmptyHint: "Built-in empty state when there are no rows; override with emptyText",
+    tableSpanHint: "Compact table without side edges (borders:y): Downtown spans two rows, North clinic two columns; selecting any row in a rowSpan block highlights the whole block.",
+    tableGroupHint: "Default look (y, no vertical rules): groups or rows, one at a time; each group = banner + its own header and rows, groups separated by a solid rule.",
+    paginationHint: "Standalone pager: page / pageSize / total only; placement, simple mode, total copy and page-size selector are all optional switches.",
+    tablePagerHint: "Built-in paging: omit total for local slicing (pass all rows), pass total for server-side paging; the pager sits under the table, right-aligned.",
+    tableLoadingHint: "The segmented switch flips four states. Both loaders are icon-only (largest for the whole table, middle for loading more); the footer row spans the width with a rule above it, and without side borders the bottom rule is dropped too.",
     secFeedback: "Feedback",
     secLayout: "Layout & scrolling",
     secExplorer: "Workspace browsing",
@@ -58669,8 +58766,8 @@ var docData = {
         "en": "Skins are separate components and separate files \u2014 no variant: Table imports only its own skin CSS; future TableGrid (grid lines) / TableZebra (zebra stripes) are sibling components importing their own skins. Importing one packs only that one \u2014 choosing a table never drags the other skin into the bundle."
       },
       {
-        "zh": "\u8FB9\u754C\uFF1A\u4E0D\u8D1F\u8D23\u53D6\u6570 / \u6392\u5E8F / \u865A\u62DF\u6EDA\u52A8\uFF1B\u6A2A\u5411\u6EDA\u52A8\u5BB9\u5668\u4E0E\u5706\u89D2\u88C1\u526A\u5F52\u8C03\u7528\u65B9\uFF1B\u8868\u5934\u4E0D\u505A\u5438\u9876\uFF08\u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF09\u3002\u5206\u9875\u53EF\u9009\uFF1A\u7ED9 `pagination` \u5C31\u8BA9\u8868\u683C\u81EA\u5DF1\u5207\u7247\u5E76\u5728\u8868\u4E0B\u6446\u9875\u7801\uFF08\u8BE6\u89C1 Pagination \u4E00\u8282\uFF09\uFF0C\u4E0D\u7ED9\u5C31\u5B8C\u5168\u4E0D\u5206\u9875\u3002\u6CA1\u6709\u6570\u636E\u65F6\u663E\u793A\u5185\u7F6E\u7A7A\u6001\uFF08emptyText \u53EF\u8986\u76D6\uFF09\u3002",
-        "en": "Boundaries: no fetching / sorting / virtual scrolling; the horizontal scroll container and rounded clipping are the caller\u2019s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). Paging is optional: pass `pagination` and the table slices rows itself and renders the pager underneath (see the Pagination section); omit it and nothing pages. With no rows, a built-in empty state shows (override with emptyText)."
+        "zh": "\u8FB9\u754C\uFF1A\u4E0D\u8D1F\u8D23\u53D6\u6570 / \u6392\u5E8F / \u865A\u62DF\u6EDA\u52A8\uFF1B\u6A2A\u5411\u6EDA\u52A8\u5BB9\u5668\u4E0E\u5706\u89D2\u88C1\u526A\u5F52\u8C03\u7528\u65B9\uFF1B\u8868\u5934\u4E0D\u505A\u5438\u9876\uFF08\u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF09\u3002\u5206\u9875\u53EF\u9009\uFF1A\u7ED9 `pagination` \u5C31\u8BA9\u8868\u683C\u81EA\u5DF1\u5207\u7247\u5E76\u5728\u8868\u4E0B\u6446\u9875\u7801\uFF08\u8BE6\u89C1 Pagination \u4E00\u8282\uFF09\uFF0C\u4E0D\u7ED9\u5C31\u5B8C\u5168\u4E0D\u5206\u9875\u3002\u6CA1\u6709\u6570\u636E\u65F6\u663E\u793A\u5185\u7F6E\u7A7A\u6001\uFF08emptyText \u53EF\u8986\u76D6\uFF09\u3002\u52A0\u8F7D\u6001\u4E24\u79CD\uFF0C\u90FD\u53EA\u653E\u56FE\u6807\u3001\u4E0D\u663E\u793A\u6587\u6848\uFF1A\u9996\u5C4F\u4E00\u6761\u6570\u636E\u90FD\u6CA1\u6709\u65F6\u7528 `loading`\uFF08\u5C45\u4E2D\u4E09\u5757\u52A0\u8F7D\u52A8\u753B\u3001\u6700\u5927\u53F7\uFF0C\u8F83\u9AD8\u5360\u4F4D\uFF0C\u4E0D\u906E\u6321\u5DF2\u6709\u6570\u636E\uFF09\uFF0C\u5DF2\u6709\u6570\u636E\u7FFB\u4E0B\u4E00\u9875\u65F6\u7528 `loadingMore`\uFF08\u5E95\u90E8\u4E00\u884C\u3001\u4E2D\u53F7\u4E09\u5757\u52A8\u753B\uFF1B\u6574\u884C\u901A\u680F\uFF0C\u4E0E\u4E0A\u65B9\u6570\u636E\u884C\u4E4B\u95F4\u8865\u4E00\u6761\u5B9E\u7EBF\uFF0C\u5DE6\u53F3\u4E24\u6761\u5728 borders=all / x \u65F6\u7531\u8868\u7EA7\u5916\u6846\u515C\u4F4F\u3001y / none \u672C\u6765\u5C31\u6CA1\u6709\uFF0C\u4E14 y / none \u65F6\u72B6\u6001\u884C\u4E0B\u65B9\u90A3\u6761\u8868\u5E95\u7EBF\u4E5F\u4E00\u8D77\u53BB\u6389\uFF0C\u53EA\u7559\u4E0A\u65B9\u4E00\u6761\u5B9E\u7EBF\uFF09\uFF1B\u6EDA\u52A8\u52A0\u8F7D\u7531 `onLoadMore` \u672C\u8EAB\u5F53\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u76D1\u542C\u5E95\u90E8\u3001\u6EDA\u5230\u9644\u8FD1\u81EA\u52A8\u8C03\u4E00\u6B21\uFF0C\u5230\u5E95\uFF08`hasMore: false`\uFF09\u663E\u793A\u300C\u6CA1\u6709\u66F4\u591A\u6570\u636E\u300D\uFF08`noMoreText` \u6362\u6587\u6848 / `false` \u4E0D\u6E32\u67D3\uFF09\u3002\u6EDA\u52A8\u52A0\u8F7D\u4E0E `pagination` / `groups` \u4E92\u65A5\u3002",
+        "en": "Boundaries: no fetching / sorting / virtual scrolling; the horizontal scroll container and rounded clipping are the caller\u2019s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). Paging is optional: pass `pagination` and the table slices rows itself and renders the pager underneath (see the Pagination section); omit it and nothing pages. With no rows, a built-in empty state shows (override with emptyText). Two loading states, icon only with no visible copy: `loading` for a first load with no rows at all (centred three-block loader at the largest size, a taller placeholder that never covers existing rows), and `loadingMore` when appending the next page (one full-width bottom row with the middle-size three-block loader; a solid rule is added above it, while the left/right edges come from the table frame when borders=all / x and are absent for y / none \u2014 and for y / none the bottom table rule under the status row is dropped too, so only the rule above it remains). Scroll loading uses `onLoadMore` itself as the switch: pass it and the table watches the bottom and calls it once when you get near; at the end (`hasMore: false`) it shows \u201CNo more data\u201D (`noMoreText` to change the copy / `false` to render nothing). Scroll loading is mutually exclusive with `pagination` / `groups`."
       }
     ],
     "api": [
@@ -58746,8 +58843,8 @@ var docData = {
             "type": "(string | number)[]",
             "def": "\u2014",
             "desc": {
-              "zh": "\u9009\u4E2D\u884C key \u5217\u8868\uFF08\u9AD8\u4EAE\u6837\u5F0F\u7531\u76AE\u80A4\u51B3\u5B9A\uFF09",
-              "en": "Keys of selected rows (the highlight is the skin\u2019s call)"
+              "zh": "\u9009\u4E2D\u884C key \u5217\u8868\uFF08\u9AD8\u4EAE\u6837\u5F0F\u7531\u76AE\u80A4\u51B3\u5B9A\uFF09\uFF1B\u6709 rowSpan \u8DE8\u884C\u65F6\uFF0C\u5757\u5185\u4EFB\u4E00\u884C\u7684 key \u90FD\u8BA9\u6574\u5757\u9AD8\u4EAE\uFF08\u4E0D\u7528\u8C03\u7528\u65B9\u81EA\u5DF1\u5C55\u5F00\uFF09",
+              "en": "Keys of selected rows (the highlight is the skin\u2019s call); with a rowSpan block, a key of any row in it highlights the whole block (no expansion needed on the caller side)"
             }
           },
           {
@@ -58775,6 +58872,60 @@ var docData = {
             "desc": {
               "zh": "\u5185\u5EFA\u5206\u9875\uFF08\u4E0E Pagination \u540C\u53C2\u6570\uFF0Ctotal \u53EF\u7701\uFF09\uFF1A\u4E0D\u4F20 total = \u672C\u5730\u5207\u7247\uFF0C\u7ED9\u4E86 total = \u670D\u52A1\u7AEF\u5206\u9875\uFF08\u4E0D\u5207\u7247\uFF09\uFF1Bgroups \u6A21\u5F0F\u5FFD\u7565\u672C\u9879",
               "en": "Built-in paging (same params as Pagination, total optional): omit total to slice locally; pass total for server-side paging (no slicing); ignored in groups mode"
+            }
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u6574\u8868\u52A0\u8F7D\u4E2D\uFF08\u9996\u5C4F\u4E00\u6761\u6570\u636E\u90FD\u6CA1\u6709\u65F6\u7528\uFF09\uFF1A\u4E3B\u4F53\u6362\u6210\u8F83\u9AD8\u5360\u4F4D\uFF08\u5C45\u4E2D\u4E09\u5757\u52A0\u8F7D\u52A8\u753B\uFF0C\u6700\u5927\u53F7\uFF0C\u53EA\u6709\u56FE\u6807\u6CA1\u6709\u6587\u6848\uFF09\uFF1B\u5DF2\u6709\u6570\u636E\u65F6\u4E0D\u906E\u6321\u6570\u636E",
+              "en": "Whole-table loading (first load with no rows): swaps the body for a taller placeholder (centred three-block loader at the largest size, icon only); never covers existing rows"
+            }
+          },
+          {
+            "name": "loadingHeight",
+            "type": "number",
+            "def": "160",
+            "desc": {
+              "zh": "\u6574\u8868\u52A0\u8F7D\u5360\u4F4D\u533A\u9AD8\u5EA6\uFF08px\uFF09",
+              "en": "Height (px) of the whole-table loading placeholder"
+            }
+          },
+          {
+            "name": "loadingMore",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u5E95\u90E8\u300C\u52A0\u8F7D\u66F4\u591A\u300D\u4E2D\uFF08\u5DF2\u6709\u6570\u636E\u3001\u6B63\u5728\u53D6\u4E0B\u4E00\u9875\uFF09\uFF1A\u6570\u636E\u884C\u4E0B\u65B9\u63D2\u4E00\u884C\u4E2D\u53F7\u4E09\u5757\u52A0\u8F7D\u52A8\u753B\uFF08\u53EA\u6709\u56FE\u6807\u6CA1\u6709\u6587\u6848\uFF09\uFF0C\u6574\u884C\u901A\u680F\u5E76\u5728\u4E0A\u65B9\u8865\u4E00\u6761\u5B9E\u7EBF\uFF1B\u53EA\u5728\u7ED9\u4E86 onLoadMore \u65F6\u751F\u6548",
+              "en": "Bottom \u201Cloading more\u201D (rows exist, fetching the next page): inserts one full-width row with the middle-size three-block loader (icon only) and a solid rule above it; only effective when onLoadMore is given"
+            }
+          },
+          {
+            "name": "hasMore",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "\u662F\u5426\u8FD8\u6709\u4E0B\u4E00\u9875\uFF1Bfalse \u65F6\u5E95\u90E8\u663E\u793A\u300C\u6CA1\u6709\u66F4\u591A\u6570\u636E\u300D\uFF08noMoreText \u53EF\u6362\uFF0Cfalse \u6574\u884C\u4E0D\u6E32\u67D3\uFF09\u3002\u53EA\u5728\u7ED9\u4E86 onLoadMore \u65F6\u751F\u6548",
+              "en": "Whether another page exists; false shows \u201CNo more data\u201D (change with noMoreText, false renders nothing). Only effective when onLoadMore is given"
+            }
+          },
+          {
+            "name": "noMoreText",
+            "type": "ReactNode",
+            "def": "\u5185\u7F6E\u5B57\u5178",
+            "desc": {
+              "zh": "\u5230\u5E95\u6587\u6848\uFF1B\u4E0D\u4F20\u8D70\u6838\u5FC3\u5B57\u5178\uFF0C\u4F20 false \u5219\u5230\u5E95\u65F6\u6574\u884C\u4E0D\u6E32\u67D3",
+              "en": "End-of-list copy; defaults to the core dictionary, false renders nothing at the end"
+            }
+          },
+          {
+            "name": "onLoadMore",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6EDA\u52A8\u5230\u5E95\u81EA\u52A8\u52A0\u8F7D\u4E0B\u4E00\u9875\uFF1A\u8FD9\u4E2A props \u672C\u8EAB\u5C31\u662F\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u88C5\u5E95\u90E8\u54E8\u5175\u5E76\u76D1\u542C\uFF0C\u4E0D\u4F20\u5B8C\u5168\u4E0D\u76D1\u542C\uFF1B\u52A0\u8F7D\u4E2D / \u5230\u5E95\u4E0D\u91CD\u590D\u89E6\u53D1\u3002\u4E0E pagination / groups \u4E92\u65A5",
+              "en": "Auto-load the next page when scrolled near the bottom: this prop is the switch \u2014 pass it to install the sentinel and watch, omit it and nothing listens; guarded while loading or at the end. Mutually exclusive with pagination / groups"
             }
           },
           {
@@ -58955,7 +59106,7 @@ var docData = {
       {
         "id": "ui-pagination-example",
         "lang": "tsx",
-        "src": "import { Pagination, Table } from 'dsh-plugin-core/ui'\n\n// \u72EC\u7ACB\u63A7\u4EF6\uFF1A\u53EA\u7ED9\u5F53\u524D\u9875 / \u6BCF\u9875\u6761\u6570 / \u603B\u6761\u6570 \u2014\u2014 \u603B\u9875\u6570\u4E0E\u7701\u7565\u7A97\u53E3\u7531\u63A7\u4EF6\u7B97\uFF0C\n// \u6D88\u8D39\u65B9\u6C38\u8FDC\u4E0D\u81EA\u5DF1\u7B97\u9875\u6570\u3001\u4E5F\u4E0D\u81EA\u5DF1\u6E32\u67D3\u9875\u7801\nh(Pagination, {\n  page, pageSize, total: 86,\n  onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },\n  align: 'right',                 // left / center / right\uFF08\u9ED8\u8BA4 right\uFF09\n  pageSizeOptions: [10, 20, 50],  // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u6BCF\u9875\u6761\u6570\u300D\u4E0B\u62C9\n  showTotal: true,                // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u7B2C 1-10 \u6761\uFF0C\u5171 86 \u6761\u300D\n  siblingCount: 1,                // \u5F53\u524D\u9875\u4E24\u4FA7\u7559\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF09\n  boundaryCount: 1,               // \u9996\u5C3E\u5404\u56FA\u5B9A\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF1B1/1 \u5408\u8BA1\u6700\u591A 7 \u4E2A\u4F4D\u7F6E\uFF09\n  hideOnSinglePage: true,         // \u53EA\u6709\u4E00\u9875\u65F6\u6574\u6761\u4E0D\u6E32\u67D3\n})\n\n// \u7B80\u6D01\u6A21\u5F0F\uFF1A\u53EA\u7559\u4E0A\u4E00\u9875 / \u4E0B\u4E00\u9875\u4E0E\u300C2 / 36\u300D\nh(Pagination, { page, pageSize, total: 86, simple: true, onChange })\n\n// Table \u5185\u5EFA\uFF1A\u4E0D\u4F20 total = \u672C\u5730\u5206\u9875\uFF08rows \u662F\u5168\u91CF\uFF0C\u8868\u683C\u81EA\u5DF1\u6309\u5F53\u524D\u9875\u5207\u7247\uFF0C\u9875\u7801\u6392\u5728\u8868\u4E0B\uFF09\nh(Table, {\n  columns, rows,\n  pagination: { page, pageSize, showTotal: true, onChange },\n})\n\n// \u670D\u52A1\u7AEF\u5206\u9875\uFF1A\u7ED9\u4E86 total \u5C31\u4E0D\u5207\u7247\uFF08rows \u53EA\u653E\u5F53\u524D\u9875\u90A3\u51E0\u6761\uFF09\uFF0C\u8868\u683C\u53EA\u8D1F\u8D23\u6446\u9875\u7801\nh(Table, {\n  columns, rows: currentPageRows,\n  pagination: { page, pageSize, total: 86, onChange },\n})"
+        "src": "import { Pagination, Table } from 'dsh-plugin-core/ui'\n\n// \u72EC\u7ACB\u63A7\u4EF6\uFF1A\u53EA\u7ED9\u5F53\u524D\u9875 / \u6BCF\u9875\u6761\u6570 / \u603B\u6761\u6570 \u2014\u2014 \u603B\u9875\u6570\u4E0E\u7701\u7565\u7A97\u53E3\u7531\u63A7\u4EF6\u7B97\uFF0C\n// \u6D88\u8D39\u65B9\u6C38\u8FDC\u4E0D\u81EA\u5DF1\u7B97\u9875\u6570\u3001\u4E5F\u4E0D\u81EA\u5DF1\u6E32\u67D3\u9875\u7801\nh(Pagination, {\n  page, pageSize, total: 86,\n  onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },\n  align: 'right',                 // left / center / right\uFF08\u9ED8\u8BA4 right\uFF09\n  pageSizeOptions: [10, 20, 50],  // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u6BCF\u9875\u6761\u6570\u300D\u4E0B\u62C9\n  showTotal: true,                // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u7B2C 1-10 \u6761\uFF0C\u5171 86 \u6761\u300D\n  siblingCount: 1,                // \u5F53\u524D\u9875\u4E24\u4FA7\u7559\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF09\n  boundaryCount: 1,               // \u9996\u5C3E\u5404\u56FA\u5B9A\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF1B1/1 \u5408\u8BA1\u6700\u591A 7 \u4E2A\u4F4D\u7F6E\uFF09\n  hideOnSinglePage: true,         // \u53EA\u6709\u4E00\u9875\u65F6\u6574\u6761\u4E0D\u6E32\u67D3\n})\n\n// \u7B80\u6D01\u6A21\u5F0F\uFF1A\u53EA\u7559\u4E0A\u4E00\u9875 / \u4E0B\u4E00\u9875\u4E0E\u300C2 / 36\u300D\nh(Pagination, { page, pageSize, total: 86, simple: true, onChange })\n\n// Table \u5185\u5EFA\uFF1A\u4E0D\u4F20 total = \u672C\u5730\u5206\u9875\uFF08rows \u662F\u5168\u91CF\uFF0C\u8868\u683C\u81EA\u5DF1\u6309\u5F53\u524D\u9875\u5207\u7247\uFF0C\u9875\u7801\u6392\u5728\u8868\u4E0B\uFF09\nh(Table, {\n  columns, rows,\n  pagination: { page, pageSize, showTotal: true, onChange },\n})\n\n// \u670D\u52A1\u7AEF\u5206\u9875\uFF1A\u7ED9\u4E86 total \u5C31\u4E0D\u5207\u7247\uFF08rows \u53EA\u653E\u5F53\u524D\u9875\u90A3\u51E0\u6761\uFF09\uFF0C\u8868\u683C\u53EA\u8D1F\u8D23\u6446\u9875\u7801\nh(Table, {\n  columns, rows: currentPageRows,\n  pagination: { page, pageSize, total: 86, onChange },\n})\n\n// \u52A0\u8F7D\u6001\uFF08\u6EDA\u52A8\u52A0\u8F7D\uFF0C\u4E0E\u5206\u9875\u4E8C\u9009\u4E00\uFF09\uFF1AonLoadMore \u672C\u8EAB\u5C31\u662F\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u76D1\u542C\u5E95\u90E8\nh(Table, {\n  columns, rows: [],\n  loading: true,                  // \u9996\u5C4F\u4E00\u6761\u6570\u636E\u90FD\u6CA1\u6709\uFF1A\u6574\u8868\u9AD8\u5360\u4F4D\uFF08\u9ED8\u8BA4 160px\uFF09\n  loadingHeight: 160,\n})\n\nh(Table, {\n  columns, rows,\n  loadingMore: true,              // \u6B63\u5728\u53D6\u4E0B\u4E00\u9875\uFF1A\u5E95\u90E8\u4E00\u884C\u5C0F\u8F6C\u5708\n  hasMore: true,                  // false \u21D2 \u5E95\u90E8\u300C\u6CA1\u6709\u66F4\u591A\u6570\u636E\u300D\uFF1BnoMoreText: false \u53EF\u5173\n  onLoadMore: () => fetchNextPage(),   // \u6EDA\u5230\u63A5\u8FD1\u5E95\u90E8\u81EA\u52A8\u89E6\u53D1\u4E00\u6B21\n})"
       }
     ]
   },
@@ -63723,6 +63874,20 @@ function TablePage() {
   const [demoSize, setDemoSize] = (0, import_react73.useState)(10);
   const [demoAlign, setDemoAlign] = (0, import_react73.useState)("right");
   const [demoShowTotal, setDemoShowTotal] = (0, import_react73.useState)(true);
+  const [loadState, setLoadState] = (0, import_react73.useState)("idle");
+  const loadColumns = [
+    { key: "name", title: "Patient", width: 240 },
+    { key: "date", title: "Date", width: 120 },
+    { key: "modality", title: "Modality", width: 110, align: "center", divider: true }
+  ];
+  const loadRows = (loadState === "done" ? PEOPLE : PEOPLE.slice(0, 3)).map((person) => ({
+    key: person.id,
+    cells: {
+      name: personCell(person),
+      date: person.date,
+      modality: (0, import_react73.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality)
+    }
+  }));
   const pagerOnChange = (page, size4) => {
     setPagerPage(page);
     setPagerSize(size4);
@@ -63731,6 +63896,20 @@ function TablePage() {
     setDemoPage(page);
     setDemoSize(size4);
   };
+  const renderLoadTable = (borders) => (0, import_react73.createElement)(Table, {
+    columns: loadColumns,
+    rows: loadState === "loading" ? [] : loadRows,
+    borders,
+    // 两种 loading 都只放图标、不带文案：整表占位最大号，加载更多中号。
+    loading: loadState === "loading",
+    loadingMore: loadState === "more",
+    hasMore: loadState !== "done",
+    // 空回调只为把「加载更多」的开关打开（onLoadMore 本身就是开关）。
+    onLoadMore: () => {
+    },
+    ariaLabel: "Patients loaded incrementally",
+    style: { maxWidth: "640px" }
+  });
   return (0, import_react73.createElement)(
     "div",
     null,
@@ -63886,6 +64065,35 @@ function TablePage() {
           ariaLabel: "Paginated surveillance studies",
           style: { minWidth: 960 }
         })
+      )
+    ),
+    (0, import_react73.createElement)(
+      Example,
+      { title: "Loading \xB7 \u52A0\u8F7D\u66F4\u591A", hint: t3("tableLoadingHint") },
+      (0, import_react73.createElement)(Segmented, {
+        size: "sm",
+        items: [
+          { value: "idle", label: "\u6B63\u5E38" },
+          { value: "more", label: "\u52A0\u8F7D\u66F4\u591A" },
+          { value: "done", label: "\u5DF2\u52A0\u8F7D\u5B8C\u6BD5" },
+          { value: "loading", label: "\u6574\u8868\u52A0\u8F7D" }
+        ],
+        value: loadState,
+        onChange: setLoadState
+      }),
+      (0, import_react73.createElement)(
+        "div",
+        {
+          style: {
+            overflowX: "auto",
+            marginTop: "12px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px"
+          }
+        },
+        renderLoadTable("all"),
+        renderLoadTable("y")
       )
     ),
     (0, import_react73.createElement)(DocApi, { id: "table" }),
@@ -64053,9 +64261,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.12.1"}`],
-            [t3("buildDemo"), `v${"0.12.1"}`],
-            [t3("buildStamp"), "261030-232856-147"]
+            [t3("buildCore"), `v${"0.13.0"}`],
+            [t3("buildDemo"), `v${"0.13.0"}`],
+            [t3("buildStamp"), "261031-010600-927"]
           ].map(
             ([label, value]) => (0, import_react75.createElement)(
               "tr",
@@ -64378,9 +64586,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react77.createElement)("span", null, `core v${"0.12.1"}`),
-          (0, import_react77.createElement)("span", null, `demo v${"0.12.1"}`),
-          (0, import_react77.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261030-232856-147")
+          (0, import_react77.createElement)("span", null, `core v${"0.13.0"}`),
+          (0, import_react77.createElement)("span", null, `demo v${"0.13.0"}`),
+          (0, import_react77.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261031-010600-927")
         )
       )
     ),

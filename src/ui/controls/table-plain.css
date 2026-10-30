@@ -51,6 +51,18 @@
   border-top:1px solid var(--dshpc-border-faint);
 }
 
+/* 底部状态行（加载更多 / 到底）：整行通栏，与上方数据行之间补一条实线。
+   只补顶线：左右两条不由这一格重复画 —— borders=all / x 时表级外框已经兜住；
+   borders=y / none 本来就没有左右边。整表加载占位行不加（表头已有下边线，再加就成双线）。 */
+.dshpc-table--plain .dshpc-table__state-row--footer .dshpc-table__state-cell{
+  border-top:1px solid var(--dshpc-border);
+}
+
+/* 没有左右外框时（borders=y）底部状态行下面那条表底线也去掉：
+   状态行只留上方一条实线，否则图标 / 文案下方还多一条孤线（2026-10-31 用户定）。
+   borders=none 本来就没有底边，无需在此重复。 */
+.dshpc-table--plain.dshpc-table--borders-y.dshpc-table--foot-no-bottom{border-bottom:0;}
+
 /* 行悬浮：只在可点行上给反馈，静态表格不误导用户以为能点。
    底色是极淡中性灰（--dshpc-table-row-hover：亮色一层淡黑 ≈1.5%，暗色一层淡白 ≈3%）——
    2026-10-30 用户：hover 要特别淡的灰、不要淡蓝（第二次又要求再浅一半）。带 __body 上下文是为了压过基础层的斑马纹（见 table.css）。 */

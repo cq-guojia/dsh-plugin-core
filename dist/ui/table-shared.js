@@ -2,6 +2,7 @@ import { createElement as h } from 'react';
 import { t } from '../utils/i18n.js';
 import { ensureComponentStyles } from './css.js';
 import { TABLE_BASE_CSS } from './controls-css.js';
+import { Loader } from './Loader.js';
 import { SectionHead } from './SectionHead.js';
 import { headerRows, isTableCellSpec, leafColumns, } from './table-logic.js';
 function widthOf(width) {
@@ -35,7 +36,7 @@ function dividerAttr(leafIndex, wanted) {
  * （`Table`、将来的 `TableGrid` / `TableZebra`）只 import 自己那份皮肤，并把自己的
  * modifier class 传进来。这样消费方引哪个就只打包哪个 —— 绝不用 `variant` 汇总多份皮肤。
  */
-export function tableShell(skinClass, props) {
+export function tableShell(skinClass, props, options = {}) {
     ensureComponentStyles('table-core', TABLE_BASE_CSS);
     const tt = props.translate ?? t;
     const headRows = headerRows(props.columns);
@@ -48,16 +49,6 @@ export function tableShell(skinClass, props) {
     const onRowClick = props.onRowClick;
     const density = props.density ?? 'default';
     const borders = props.borders ?? 'y';
-    const tableClass = [
-        'dshpc-table',
-        skinClass,
-        `dshpc-table--density-${density}`,
-        `dshpc-table--borders-${borders}`,
-        props.striped === true ? 'dshpc-table--striped' : '',
-        props.className ?? '',
-    ]
-        .filter((s) => s !== '')
-        .join(' ');
     /** 表头一行：分组表头按层级逐行渲染（每组重复渲染它，分组模式也要表头）。 */
     const headRowOf = (cells, level) => h('tr', { key: `head-${level}`, className: 'dshpc-table__head-row' }, ...cells.map((cell) => {
         const group = cell.colSpan > 1;
@@ -79,46 +70,120 @@ export function tableShell(skinClass, props) {
             'data-header-tone': tone === undefined || tone === 'default' ? undefined : tone,
         }, cell.column.title);
     }));
+    /**
+     * 跨行单元格（rowSpan）把上下几行连成一个视觉块：块里任意一行被选中，整块都算选中。
+     * 先按 rowSpan 求每行所属块的范围 [start, end]，再判断块内有没有选中行 ——
+     * 不依赖点击的是块里的哪一行，也不要求调用方自己展开。
+     */
+    const selectedBlocksOf = (rows) => {
+        const blocks = rows.map((_, index) => ({ start: index, end: index }));
+        rows.forEach((row, index) => {
+            for (const cell of Object.values(row.cells)) {
+                if (!isTableCellSpec(cell) || cell.rowSpan === undefined || cell.rowSpan <= 1)
+                    continue;
+                const end = Math.min(index + cell.rowSpan - 1, rows.length - 1);
+                for (let line = index; line <= end; line += 1) {
+                    const block = blocks[line];
+                    if (block === undefined)
+                        continue;
+                    block.start = Math.min(block.start, index);
+                    block.end = Math.max(block.end, end);
+                }
+            }
+        });
+        return blocks.map((block) => {
+            for (let line = block.start; line <= block.end; line += 1) {
+                const row = rows[line];
+                if (row !== undefined && selected.has(row.key))
+                    return true;
+            }
+            return false;
+        });
+    };
     /** 一组数据行（选中 / 可点 / 单元格配置都在这里落地）。 */
-    const dataRowsOf = (rows, offset = 0) => rows.map((row, index) => h('tr', {
-        key: row.key,
-        className: 'dshpc-table__row',
-        'data-selected': selected.has(row.key) ? 'true' : undefined,
-        'data-interactive': onRowClick === undefined ? undefined : 'true',
-        tabIndex: onRowClick === undefined ? undefined : 0,
-        onClick: onRowClick === undefined ? undefined : () => onRowClick(row, offset + index),
-        onKeyDown: onRowClick === undefined
-            ? undefined
-            : (event) => {
-                if (event.key !== 'Enter' && event.key !== ' ')
-                    return;
-                event.preventDefault();
-                onRowClick(row, offset + index);
-            },
-    }, ...leaves.map((column, leafIndex) => {
-        const cell = row.cells[column.key];
-        // 缺 key = 该格不渲染（上一行的 rowSpan 已经占了这个位置）；要空格请显式传 null。
-        if (cell === undefined)
-            return null;
-        let spec;
-        let content;
-        if (isTableCellSpec(cell)) {
-            spec = cell;
-            content = cell.content;
-        }
-        else {
-            content = cell;
-        }
-        const align = spec?.align ?? column.align;
-        return h('td', {
-            key: column.key,
-            className: `dshpc-table__cell${alignClass('dshpc-table__cell', align)}`,
-            style: padStyle(column),
-            colSpan: spec?.colSpan !== undefined && spec.colSpan > 1 ? spec.colSpan : undefined,
-            rowSpan: spec?.rowSpan !== undefined && spec.rowSpan > 1 ? spec.rowSpan : undefined,
-            'data-divider': dividerAttr(leafIndex, column.divider),
-        }, content ?? null);
-    })));
+    const dataRowsOf = (rows, offset = 0) => {
+        const selectedBlocks = selectedBlocksOf(rows);
+        return rows.map((row, index) => h('tr', {
+            key: row.key,
+            className: 'dshpc-table__row',
+            'data-selected': selectedBlocks[index] === true ? 'true' : undefined,
+            'data-interactive': onRowClick === undefined ? undefined : 'true',
+            tabIndex: onRowClick === undefined ? undefined : 0,
+            onClick: onRowClick === undefined ? undefined : () => onRowClick(row, offset + index),
+            onKeyDown: onRowClick === undefined
+                ? undefined
+                : (event) => {
+                    if (event.key !== 'Enter' && event.key !== ' ')
+                        return;
+                    event.preventDefault();
+                    onRowClick(row, offset + index);
+                },
+        }, ...leaves.map((column, leafIndex) => {
+            const cell = row.cells[column.key];
+            // 缺 key = 该格不渲染（上一行的 rowSpan 已经占了这个位置）；要空格请显式传 null。
+            if (cell === undefined)
+                return null;
+            let spec;
+            let content;
+            if (isTableCellSpec(cell)) {
+                spec = cell;
+                content = cell.content;
+            }
+            else {
+                content = cell;
+            }
+            const align = spec?.align ?? column.align;
+            return h('td', {
+                key: column.key,
+                className: `dshpc-table__cell${alignClass('dshpc-table__cell', align)}`,
+                style: padStyle(column),
+                colSpan: spec?.colSpan !== undefined && spec.colSpan > 1 ? spec.colSpan : undefined,
+                rowSpan: spec?.rowSpan !== undefined && spec.rowSpan > 1 ? spec.rowSpan : undefined,
+                'data-divider': dividerAttr(leafIndex, column.divider),
+            }, content ?? null);
+        })));
+    };
+    const colSpan = leaves.length > 0 ? leaves.length : undefined;
+    const emptyRow = h('tr', { key: 'empty', className: 'dshpc-table__row' }, h('td', { className: 'dshpc-table__empty', colSpan }, props.emptyText ?? tt('tableEmpty')));
+    // 整表加载：只在一条数据都没有时占位，不遮挡已有行（追加下一页请用 loadingMore）。
+    const loadingRow = h('tr', { key: 'loading', className: 'dshpc-table__state-row' }, h('td', { className: 'dshpc-table__state-cell', colSpan }, h('div', {
+        className: 'dshpc-table__state dshpc-table__state--full',
+        style: props.loadingHeight === undefined ? undefined : { height: `${props.loadingHeight}px` },
+    }, h(Loader, { variant: 'blocks', size: 'xl', label: tt('tableLoading') }))));
+    // 底部加载态：只在给了 onLoadMore（开关）时渲染，且 loadingMore 优先于「没有更多」。
+    const infinite = props.onLoadMore !== undefined;
+    const loadingMore = infinite && props.loadingMore === true;
+    const showNoMore = infinite && !loadingMore && props.hasMore === false && props.noMoreText !== false;
+    const footerRows = [];
+    if (loadingMore) {
+        footerRows.push(h('tr', { key: 'more', className: 'dshpc-table__state-row dshpc-table__state-row--footer' }, h('td', { className: 'dshpc-table__state-cell', colSpan }, h('div', { className: 'dshpc-table__state' }, h(Loader, { variant: 'blocks', size: 'md', label: tt('tableLoadingMore') })))));
+    }
+    else if (showNoMore) {
+        footerRows.push(h('tr', { key: 'end', className: 'dshpc-table__state-row dshpc-table__state-row--footer' }, h('td', { className: 'dshpc-table__state-cell', colSpan }, h('div', { className: 'dshpc-table__state' }, h('span', { className: 'dshpc-table__state-text' }, props.noMoreText === undefined ? tt('tableNoMore') : props.noMoreText)))));
+    }
+    // 底部哨兵：IntersectionObserver 的落点；hasMore === false 时没有下一页，不必再监听。
+    const sentinelRow = infinite && props.hasMore !== false && options.sentinelRef !== undefined
+        ? h('tr', {
+            key: 'sentinel',
+            ref: options.sentinelRef,
+            className: 'dshpc-table__sentinel',
+            'aria-hidden': 'true',
+        }, h('td', { colSpan }))
+        : null;
+    // 没有左右外框（y / none）且底部有状态行时，表底那条横线也去掉 ——
+    // 状态行只保留上方一条实线，否则图标下面会多出一条孤线（2026-10-31 用户定）。
+    const flatFoot = footerRows.length > 0 && (borders === 'y' || borders === 'none');
+    const tableClass = [
+        'dshpc-table',
+        skinClass,
+        `dshpc-table--density-${density}`,
+        `dshpc-table--borders-${borders}`,
+        props.striped === true ? 'dshpc-table--striped' : '',
+        flatFoot ? 'dshpc-table--foot-no-bottom' : '',
+        props.className ?? '',
+    ]
+        .filter((s) => s !== '')
+        .join(' ');
     const groups = props.groups ?? [];
     const body = groups.length > 0
         ? groups.map((group, groupIndex) => h('tbody', { key: group.key, className: 'dshpc-table__body dshpc-table__group-body' }, 
@@ -137,9 +202,11 @@ export function tableShell(skinClass, props) {
         // 每组自带表头：分组模式不放在 <thead>（一个 table 只能有一个 thead）
         ...headRows.map((cells, level) => headRowOf(cells, `g${groupIndex}-${level}`)), ...dataRowsOf(group.rows, 0)))
         : [
-            h('tbody', { key: 'body', className: 'dshpc-table__body' }, props.rows !== undefined && props.rows.length > 0
-                ? dataRowsOf(props.rows)
-                : h('tr', { className: 'dshpc-table__row' }, h('td', { className: 'dshpc-table__empty', colSpan: leaves.length > 0 ? leaves.length : undefined }, props.emptyText ?? tt('tableEmpty')))),
+            h('tbody', { key: 'body', className: 'dshpc-table__body' }, props.loading === true && (props.rows?.length ?? 0) === 0
+                ? loadingRow
+                : props.rows !== undefined && props.rows.length > 0
+                    ? dataRowsOf(props.rows)
+                    : emptyRow, ...footerRows, sentinelRow),
         ];
     return h('table', { className: tableClass, style: props.style, 'aria-label': props.ariaLabel }, leaves.length === 0
         ? null

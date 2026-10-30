@@ -104,6 +104,28 @@ test('列树深度与表头行数一致', () => {
   )
 })
 
+// 跨行（rowSpan）把几行连成一个视觉块：块里任意一行被选中，整块都该是选中态，
+// 不能只高亮跨行格所在的那一行（那样跨行格下半截会留在「未选中」的底色上）。
+test('跨行选中：块内任意一行被选中，整块行都标记选中', () => {
+  const columns = [
+    { key: 'site', title: 'Site' },
+    { key: 'metric', title: 'Metric' },
+  ]
+  const rows = [
+    { key: 'a', cells: { site: { content: 'Downtown', rowSpan: 2 }, metric: 'Enrollment' } },
+    { key: 'b', cells: { metric: 'Screen failures' } },
+    { key: 'c', cells: { site: 'North clinic', metric: '—' } },
+  ]
+  const renderWith = (selectedKeys) =>
+    renderToStaticMarkup(createElement(Table, { columns, rows, selectedKeys, onRowClick: () => {} }))
+  const selectedCount = (html) => (html.match(/data-selected="true"/g) ?? []).length
+  // 选中块的第一行 / 块内第二行，都是整块 2 行选中
+  assert.equal(selectedCount(renderWith(['a'])), 2)
+  assert.equal(selectedCount(renderWith(['b'])), 2)
+  // 块外的行只选中它自己
+  assert.equal(selectedCount(renderWith(['c'])), 1)
+})
+
 // 单元格既可以给任意 ReactNode，也可以给 { content, colSpan, rowSpan } 对象。
 // 判别必须把「React 元素」和「配置对象」分开 —— 否则一个普通元素会被当成配置、
 // content 取成 undefined，格子里就空了。React 元素靠 $$typeof 识别，这条钉住它。
@@ -153,4 +175,91 @@ test('通栏固定标签：groupAccent:false 整条不画；非分组表本来�
     })),
     /section-head__bar/,
   )
+})
+
+// 加载态：整表 loading（无数据时的高占位）/ 底部加载更多（一行中号图标）/ 到底文案。
+const oneColumn = [{ key: 'task', title: 'Task' }]
+const oneRow = [{ key: 'r1', cells: { task: 'x' } }]
+
+test('整表 loading：没数据时渲染高占位行（最大号三块动画、无可见文案），空态被替代', () => {
+  const html = renderToStaticMarkup(createElement(Table, { columns: oneColumn, rows: [], loading: true }))
+  assert.match(html, /dshpc-table__state--full/)
+  assert.match(html, /dshpc-loader--blocks/)
+  assert.match(html, /dshpc-loader--xl/)
+  // 文案只进无障碍名（aria-label），不渲染可见文字
+  assert.doesNotMatch(html, /dshpc-table__state-text/)
+  assert.match(html, /aria-label="正在加载/)
+  assert.doesNotMatch(html, /dshpc-table__empty/)
+})
+
+test('整表 loading：已有数据时不遮挡数据', () => {
+  const html = renderToStaticMarkup(createElement(Table, {
+    columns: oneColumn,
+    rows: oneRow,
+    loading: true,
+  }))
+  assert.doesNotMatch(html, /dshpc-table__state--full/)
+  assert.match(html, /dshpc-table__row/)
+})
+
+test('加载更多：loadingMore 在底部渲染中号三块动画（无可见文案、通栏补顶线）；没给 onLoadMore 时不渲染', () => {
+  assert.match(
+    renderToStaticMarkup(createElement(Table, { columns: oneColumn, rows: oneRow, onLoadMore: () => {}, loadingMore: true })),
+    /dshpc-table__state-row/,
+  )
+  const html = renderToStaticMarkup(createElement(Table, { columns: oneColumn, rows: oneRow, onLoadMore: () => {}, loadingMore: true }))
+  assert.match(html, /dshpc-loader--blocks/)
+  assert.match(html, /dshpc-loader--md/)
+  assert.match(html, /dshpc-table__state-row--footer/)
+  assert.doesNotMatch(html, /dshpc-table__state-text/)
+  assert.doesNotMatch(
+    renderToStaticMarkup(createElement(Table, { columns: oneColumn, rows: oneRow, loadingMore: true })),
+    /dshpc-table__state-row/,
+  )
+})
+
+test('底部状态行的外框：没有左右外框时连表底线一起去掉，有外框时保留', () => {
+  const base = { columns: oneColumn, rows: oneRow, onLoadMore: () => {} }
+  // borders 默认 y（无左右边）⇒ 底部状态行下方不再画表底线
+  assert.match(renderToStaticMarkup(createElement(Table, { ...base, hasMore: false })), /dshpc-table--foot-no-bottom/)
+  assert.match(renderToStaticMarkup(createElement(Table, { ...base, loadingMore: true })), /dshpc-table--foot-no-bottom/)
+  // 有左右外框时底边属于外框，保留
+  assert.doesNotMatch(
+    renderToStaticMarkup(createElement(Table, { ...base, borders: 'all', hasMore: false })),
+    /dshpc-table--foot-no-bottom/,
+  )
+  // 没有底部状态行（还在加载下一页）时不动表底线
+  assert.doesNotMatch(renderToStaticMarkup(createElement(Table, base)), /dshpc-table--foot-no-bottom/)
+})
+
+test('到底文案：hasMore:false 默认显示内置文案，noMoreText 可换、false 不渲染', () => {
+  const base = { columns: oneColumn, rows: oneRow, onLoadMore: () => {} }
+  assert.match(renderToStaticMarkup(createElement(Table, { ...base, hasMore: false })), /没有更多数据/)
+  assert.match(renderToStaticMarkup(createElement(Table, { ...base, hasMore: false, noMoreText: 'ALL DONE' })), /ALL DONE/)
+  assert.doesNotMatch(
+    renderToStaticMarkup(createElement(Table, { ...base, hasMore: false, noMoreText: false })),
+    /dshpc-table__state-row/,
+  )
+})
+
+test('底部哨兵：传了 onLoadMore 才渲染，到底后不再渲染', () => {
+  const base = { columns: oneColumn, rows: oneRow }
+  assert.match(renderToStaticMarkup(createElement(Table, { ...base, onLoadMore: () => {} })), /dshpc-table__sentinel/)
+  assert.doesNotMatch(
+    renderToStaticMarkup(createElement(Table, { ...base, onLoadMore: () => {}, hasMore: false })),
+    /dshpc-table__sentinel/,
+  )
+})
+
+test('分页与滚动加载互斥：分页模式下不渲染底部加载行与哨兵', () => {
+  const html = renderToStaticMarkup(createElement(Table, {
+    columns: oneColumn,
+    rows: oneRow,
+    pagination: { page: 1, pageSize: 10 },
+    onLoadMore: () => {},
+    loadingMore: true,
+    hasMore: false,
+  }))
+  assert.doesNotMatch(html, /dshpc-table__state-row/)
+  assert.doesNotMatch(html, /dshpc-table__sentinel/)
 })

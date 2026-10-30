@@ -257,6 +257,21 @@ export function TablePage(): ReturnType<typeof h> {
   const [demoAlign, setDemoAlign] = useState<'left' | 'center' | 'right'>('right')
   // 总数文案（「第 1-10 条，共 86 条」）的开关：showTotal 默认关，示例里两个分页共用这一个开关
   const [demoShowTotal, setDemoShowTotal] = useState(true)
+  // 加载态样式预览：直接切状态把三种底部 / 整表样式挂出来，不依赖滚动触发。
+  const [loadState, setLoadState] = useState<'idle' | 'more' | 'done' | 'loading'>('idle')
+  const loadColumns: TableColumn[] = [
+    { key: 'name', title: 'Patient', width: 240 },
+    { key: 'date', title: 'Date', width: 120 },
+    { key: 'modality', title: 'Modality', width: 110, align: 'center', divider: true },
+  ]
+  const loadRows: TableRow[] = (loadState === 'done' ? PEOPLE : PEOPLE.slice(0, 3)).map((person) => ({
+    key: person.id,
+    cells: {
+      name: personCell(person),
+      date: person.date,
+      modality: h(Chip, { tone: MODALITY_TONE[person.modality], size: 'xs' }, person.modality),
+    },
+  }))
   const pagerOnChange = (page: number, size: number): void => {
     setPagerPage(page)
     setPagerSize(size)
@@ -265,6 +280,21 @@ export function TablePage(): ReturnType<typeof h> {
     setDemoPage(page)
     setDemoSize(size)
   }
+  // 同一份加载态，覆盖两种外框：有左右边（borders:all）与没有左右边（borders:y）。
+  const renderLoadTable = (borders: 'all' | 'y'): ReturnType<typeof h> =>
+    h(Table, {
+      columns: loadColumns,
+      rows: loadState === 'loading' ? [] : loadRows,
+      borders,
+      // 两种 loading 都只放图标、不带文案：整表占位最大号，加载更多中号。
+      loading: loadState === 'loading',
+      loadingMore: loadState === 'more',
+      hasMore: loadState !== 'done',
+      // 空回调只为把「加载更多」的开关打开（onLoadMore 本身就是开关）。
+      onLoadMore: () => {},
+      ariaLabel: 'Patients loaded incrementally',
+      style: { maxWidth: '640px' },
+    })
   return h(
     'div',
     null,
@@ -420,6 +450,35 @@ export function TablePage(): ReturnType<typeof h> {
           ariaLabel: 'Paginated surveillance studies',
           style: { minWidth: 960 },
         }),
+      ),
+    ),
+    h(
+      Example,
+      { title: 'Loading · 加载更多', hint: t('tableLoadingHint') },
+      h(Segmented<'idle' | 'more' | 'done' | 'loading'>, {
+        size: 'sm',
+        items: [
+          { value: 'idle', label: '正常' },
+          { value: 'more', label: '加载更多' },
+          { value: 'done', label: '已加载完毕' },
+          { value: 'loading', label: '整表加载' },
+        ],
+        value: loadState,
+        onChange: setLoadState,
+      }),
+      h(
+        'div',
+        {
+          style: {
+            overflowX: 'auto',
+            marginTop: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+          },
+        },
+        renderLoadTable('all'),
+        renderLoadTable('y'),
       ),
     ),
     h(DocApi, { id: 'table' }),

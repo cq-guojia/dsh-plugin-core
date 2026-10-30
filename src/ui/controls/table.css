@@ -56,5 +56,16 @@
 .dshpc-table__empty{height:80px;padding:0 var(--dshpc-space-4);text-align:center;
   color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}
 
+/* 加载态行（加载更多 / 没有更多 / 整表加载）：单元格自身不画边框（底部状态行的顶线由皮肤补），内容居中；
+   整表加载默认占位 160px（可由 loadingHeight 覆盖），底部那行只占一行高。 */
+.dshpc-table__state-cell{padding:0;border:0;text-align:center;vertical-align:middle;}
+.dshpc-table__state{display:flex;align-items:center;justify-content:center;
+  gap:var(--dshpc-space-2);min-height:40px;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);
+  box-sizing:border-box;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}
+.dshpc-table__state--full{flex-direction:column;min-height:160px;gap:var(--dshpc-space-3);font-size:var(--dshpc-font-sm);}
+.dshpc-table__state-text{line-height:1;}
+/* 底部哨兵：零高、无边框、无内容，只给 IntersectionObserver 一个落点。 */
+.dshpc-table__sentinel>td{height:0;padding:0;border:0;line-height:0;}
+
 /* 内建分页的外壳：表格在上、分页条在下，间距走 space-3（分页条自己管左右对齐）。 */
 .dshpc-table-frame{display:flex;flex-direction:column;gap:var(--dshpc-space-3);}
