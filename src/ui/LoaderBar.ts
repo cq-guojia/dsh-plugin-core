@@ -84,12 +84,10 @@ export function LoaderBar(props: LoaderBarProps): ReturnType<typeof h> {
     h(
       'defs',
       null,
-      // 裁到「蓝色段」本身：条纹平移时不会跑到灰色轨道上
-      h(
-        'clipPath',
-        { id: clipId },
-        h('rect', { x: 128, y: 426.667, width: 554.667, height: 170.667, rx: 85.333 }),
-      ),
+      // 直接拿「蓝色段」自己的路径当裁剪区：它左端是圆的、**右端是平直的**
+      // （进度刚走到一大半，右边界是一条切面，不能带弧度）。
+      // 早先用 rect + rx 裁，四个角都是圆的 ⇒ 右端被裁成弧形，看着像走满了。
+      h('clipPath', { id: clipId }, h('path', { d: fill.d })),
     ),
     h('path', { d: track.d, fill: track.fill }),
     h('path', { d: fill.d, fill: fill.fill }),
@@ -99,12 +97,17 @@ export function LoaderBar(props: LoaderBarProps): ReturnType<typeof h> {
       h(
         'g',
         { className: 'dshpc-loader-bar__stripe' },
-        h('path', { d: stripe.d, fill: stripe.fill }),
-        // 往左再画一份同样的条纹：平移一个周期时左边界不会露空
-        h(
-          'g',
-          { transform: `translate(${String(-STRIPE_PERIOD)} 0)` },
-          h('path', { d: stripe.d, fill: stripe.fill }),
+        // 三份：原图 + 左移一个周期 + 左移两个周期。
+        // 左端圆弧区也要铺满条纹，并且平移过程中左边界不露空。
+        ...[0, 1, 2].map((step) =>
+          h(
+            'g',
+            {
+              key: step,
+              transform: step === 0 ? undefined : `translate(${String(-STRIPE_PERIOD * step)} 0)`,
+            },
+            h('path', { d: stripe.d, fill: stripe.fill }),
+          ),
         ),
       ),
     ),

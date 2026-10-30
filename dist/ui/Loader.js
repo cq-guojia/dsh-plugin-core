@@ -37,17 +37,21 @@ function ringNode() {
         strokeDasharray: '44 15.7',
     });
 }
-/** 形态二：三个圆角方块，横向三等分（6.4 + 1.1 间隔，左右各留 1.3）。 */
+/**
+ * 形态二：三个圆角短条，横向三等分。
+ * 每个 7.2×6.0 —— 正方形在 24px 档看着像「方点」，用户 2026-10-30 指出太丑。
+ * 间隔 0.6，左右各留 0.6；三块总宽 22.8，垂直居中于 24 高。
+ */
 function blockNodes() {
     const cells = [0, 1, 2];
     return cells.map((i) => h('rect', {
         key: i,
         className: 'dshpc-loader__node',
-        x: 1.3 + i * 7.5,
-        y: 8.8,
-        width: 6.4,
-        height: 6.4,
-        rx: 1.4,
+        x: 0.6 + i * 7.8,
+        y: 9,
+        width: 7.2,
+        height: 6,
+        rx: 1.5,
         fill: 'currentColor',
     }));
 }

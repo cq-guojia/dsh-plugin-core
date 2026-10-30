@@ -3804,11 +3804,11 @@ function blockNodes() {
   return cells.map((i2) => (0, import_react8.createElement)("rect", {
     key: i2,
     className: "dshpc-loader__node",
-    x: 1.3 + i2 * 7.5,
-    y: 8.8,
-    width: 6.4,
-    height: 6.4,
-    rx: 1.4,
+    x: 0.6 + i2 * 7.8,
+    y: 9,
+    width: 7.2,
+    height: 6,
+    rx: 1.5,
     fill: "currentColor"
   }));
 }
@@ -6597,14 +6597,17 @@ function LoaderBar(props) {
   }, (0, import_react27.createElement)(
     "defs",
     null,
-    // 裁到「蓝色段」本身：条纹平移时不会跑到灰色轨道上
-    (0, import_react27.createElement)("clipPath", { id: clipId }, (0, import_react27.createElement)("rect", { x: 128, y: 426.667, width: 554.667, height: 170.667, rx: 85.333 }))
+    // 直接拿「蓝色段」自己的路径当裁剪区：它左端是圆的、**右端是平直的**
+    // （进度刚走到一大半，右边界是一条切面，不能带弧度）。
+    // 早先用 rect + rx 裁，四个角都是圆的 ⇒ 右端被裁成弧形，看着像走满了。
+    (0, import_react27.createElement)("clipPath", { id: clipId }, (0, import_react27.createElement)("path", { d: fill.d }))
   ), (0, import_react27.createElement)("path", { d: track.d, fill: track.fill }), (0, import_react27.createElement)("path", { d: fill.d, fill: fill.fill }), (0, import_react27.createElement)("g", { clipPath: `url(#${clipId})` }, (0, import_react27.createElement)(
     "g",
     { className: "dshpc-loader-bar__stripe" },
-    (0, import_react27.createElement)("path", { d: stripe.d, fill: stripe.fill }),
-    // 往左再画一份同样的条纹：平移一个周期时左边界不会露空
-    (0, import_react27.createElement)("g", { transform: `translate(${String(-STRIPE_PERIOD)} 0)` }, (0, import_react27.createElement)("path", { d: stripe.d, fill: stripe.fill }))
+    ...[0, 1, 2].map((step) => (0, import_react27.createElement)("g", {
+      key: step,
+      transform: step === 0 ? void 0 : `translate(${String(-STRIPE_PERIOD * step)} 0)`
+    }, (0, import_react27.createElement)("path", { d: stripe.d, fill: stripe.fill })))
   )));
 }
 
@@ -60467,9 +60470,8 @@ var CODE_LOADER = `// \u53EA\u753B\u56FE\u6807\uFF1A\u65E0\u80CC\u666F\u3001\u65
 // \u989C\u8272\u8DDF currentColor \u8D70\uFF0C\u4E0D\u7528\u4F20 color
 <span style={{ color: 'var(--dshpc-business)' }}><Loader variant="ring" /></span>
 
-// \u540C\u65CF\u7684\u80F6\u56CA\u4E0D\u5B9A\u8FDB\u5EA6\uFF08\u540C\u6837\u53EA\u753B\u56FE\u5F62\uFF1B\u84DD\u8272\u6BB5\u56FA\u5B9A\uFF0C\u659C\u7EB9\u5728\u6D41\u52A8\uFF09
-<LoaderBar size="md" />
-<LoaderBar size="md" animated={false} />   // \u505C\u4F4F\uFF08\u622A\u56FE / \u6253\u5370\uFF09`;
+// \u540C\u65CF\u7684\u80F6\u56CA\u4E0D\u5B9A\u8FDB\u5EA6\uFF08\u540C\u6837\u53EA\u753B\u56FE\u5F62\uFF1B\u84DD\u8272\u6BB5\u56FA\u5B9A\uFF0C\u659C\u7EB9\u5411\u53F3\u6D41\u52A8\uFF09
+<LoaderBar size="md" />`;
 var CODE_LOADING = `// \u547D\u4EE4\u5F0F\uFF1A\u5168\u5C40\u53EA\u6709\u4E00\u5F20\u5361\uFF08\u540E\u4E00\u6B21\u9876\u6389\u524D\u4E00\u6B21\uFF09\uFF0C\u4E14\u4E0D\u4F1A\u81EA\u5DF1\u6D88\u5931 \u2014\u2014 \u4E00\u5B9A\u8981 close()
 const loading = showLoading({ text: '\u6B63\u5728\u52A0\u8F7D\u6570\u636E\u2026' })
 loading.close()   // \u9ED8\u8BA4\u5C4F\u5E55\u4E0B\u65B9\u5C45\u4E2D\uFF0C\u4E0E Toast \u540C\u5C4F\u4F4D
@@ -60847,14 +60849,13 @@ function FeedbackPage() {
           ),
           (0, import_react61.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react61.createElement)(Loader, { size: "lg" }))
         ),
-        // 同族的胶囊不定进度：三档尺寸 + 最右那只是停住的
+        // 同族的胶囊不定进度：三档尺寸
         (0, import_react61.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
           (0, import_react61.createElement)(LoaderBar, { size: "sm" }),
           (0, import_react61.createElement)(LoaderBar, { size: "md" }),
-          (0, import_react61.createElement)(LoaderBar, { size: "lg" }),
-          (0, import_react61.createElement)(LoaderBar, { size: "lg", animated: false })
+          (0, import_react61.createElement)(LoaderBar, { size: "lg" })
         )
       )
     ),
@@ -62948,9 +62949,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.12.0"}`],
-            [t3("buildDemo"), `v${"0.12.0"}`],
-            [t3("buildStamp"), "261030-122026-369"]
+            [t3("buildCore"), `v${"0.12.1"}`],
+            [t3("buildDemo"), `v${"0.12.1"}`],
+            [t3("buildStamp"), "261030-145559-606"]
           ].map(
             ([label, value]) => (0, import_react71.createElement)(
               "tr",
@@ -63272,9 +63273,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react73.createElement)("span", null, `core v${"0.12.0"}`),
-          (0, import_react73.createElement)("span", null, `demo v${"0.12.0"}`),
-          (0, import_react73.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261030-122026-369")
+          (0, import_react73.createElement)("span", null, `core v${"0.12.1"}`),
+          (0, import_react73.createElement)("span", null, `demo v${"0.12.1"}`),
+          (0, import_react73.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261030-145559-606")
         )
       )
     ),

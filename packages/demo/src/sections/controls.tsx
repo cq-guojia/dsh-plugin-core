@@ -1449,9 +1449,8 @@ const CODE_LOADER = `// 只画图标：无背景、无内距、无定位。两�
 // 颜色跟 currentColor 走，不用传 color
 <span style={{ color: 'var(--dshpc-business)' }}><Loader variant="ring" /></span>
 
-// 同族的胶囊不定进度（同样只画图形；蓝色段固定，斜纹在流动）
-<LoaderBar size="md" />
-<LoaderBar size="md" animated={false} />   // 停住（截图 / 打印）`
+// 同族的胶囊不定进度（同样只画图形；蓝色段固定，斜纹向右流动）
+<LoaderBar size="md" />`
 
 const CODE_LOADING = `// 命令式：全局只有一张卡（后一次顶掉前一次），且不会自己消失 —— 一定要 close()
 const loading = showLoading({ text: '正在加载数据…' })
@@ -1825,14 +1824,13 @@ export function FeedbackPage(): ReturnType<typeof h> {
           ),
           h('span', { style: { color: 'var(--dshpc-business)' } }, h(Loader, { size: 'lg' })),
         ),
-        // 同族的胶囊不定进度：三档尺寸 + 最右那只是停住的
+        // 同族的胶囊不定进度：三档尺寸
         h(
           'div',
           { style: { display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' } },
           h(LoaderBar, { size: 'sm' }),
           h(LoaderBar, { size: 'md' }),
           h(LoaderBar, { size: 'lg' }),
-          h(LoaderBar, { size: 'lg', animated: false }),
         ),
       ),
     ),

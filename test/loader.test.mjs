@@ -69,8 +69,10 @@ test('CSS：两形态都有动画，且降低动效时停在全可见态', () =>
 
 test('LoaderBar：轨道 / 蓝段 / 斜纹三层齐全，裁剪层与动画层分开', () => {
   const out = htmlOf(LoaderBar, {})
-  // 轨道 1 + 蓝段 1 + 斜纹 2（原图 + 左移一个周期的补图，保证无缝）
-  assert.equal((out.match(/<path /g) ?? []).length, 4)
+  // 轨道 1 + 蓝段 1 + 斜纹 3（原图 + 左移一周期 + 左移两周期，保证左端不露空）
+  assert.equal((out.match(/fill="#455A64"/g) ?? []).length, 1)
+  assert.equal((out.match(/fill="#2196F3"/g) ?? []).length, 1)
+  assert.equal((out.match(/fill="#42A5F5"/g) ?? []).length, 3)
   assert.match(out, /<clipPath id="dshpc-loader-bar-clip-[^"]*"/)
   assert.match(out, /clip-path="url\(#dshpc-loader-bar-clip-[^)]*\)"/)
   assert.match(out, /class="dshpc-loader-bar__stripe"/)
