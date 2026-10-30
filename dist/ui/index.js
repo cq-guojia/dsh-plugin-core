@@ -18,6 +18,9 @@ export { CARD_ACCENTS, Card, StripCard, } from './Card.js';
 export { Chip } from './Chip.js';
 // 表格：第一档外观 = Table（后续 TableGrid / TableZebra 各自独立导出，引哪个打包哪个）。
 export { Table } from './Table.js';
+// 分页：独立控件；Table 也可通过 `pagination` 内建（切片 + 表下渲染）。
+export { Pagination, } from './Pagination.js';
+export { clampPage, pageCountOf, pageItems, pageRange, } from './pagination-logic.js';
 export { headerRows, isLeafColumn, isTableCellSpec, leafColumns, tableDepth, } from './table-logic.js';
 export { showToast, notify, } from './Toast.js';
 export { Button, IconButton } from './Button.js';

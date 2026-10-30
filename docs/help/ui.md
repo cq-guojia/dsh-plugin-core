@@ -4,7 +4,7 @@
 
 > EN: ui — base controls
 
-导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Table、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
+导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Table、Pagination、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
 
 ## 概览
 
@@ -316,29 +316,31 @@ h(StripCard, {
 
 > EN: Data-driven, never self-fetching: columns may nest children for a multi-row grouped header (colSpan / rowSpan are computed); rows are { key, cells } looked up by leaf-column key. A cell is either any ReactNode (multi-line layouts such as avatar + name + ID, status pills, row-end buttons are all the caller’s) or a { content, colSpan, rowSpan, align } object for column/row spanning. When spanning rows, the next row must omit that column’s key (a missing key renders nothing and yields the slot to the previous row; pass null explicitly for an empty cell). Rows are clickable only with onRowClick.
 
-通栏分组：传 groups（与 rows 二选一）就能在一个表格里放下多个板块 —— 每组渲染成「一行横跨所有列的通栏标题 → 这一组自己的表头 → 这一组的任务行」，组与组之间用一条实线隔开。典型场景是多个工作区的任务：仍是一张表，不会拆成两张、也不会出现两个互不相干的表头挤在一起；分组模式下没有 <thead>，表头跟着每组走。组内任务行与普通表一样，给 `selectedKeys` / `onRowClick` 就有选中与悬浮（不给就是静态表）。
+通栏分组：传 groups（与 rows 二选一）就能在一个表格里放下多个板块 —— 每组渲染成「一行横跨所有列的通栏标题 → 这一组自己的表头 → 这一组的任务行」，组与组之间用一条实线隔开。典型场景是多个工作区的任务：仍是一张表，不会拆成两张、也不会出现两个互不相干的表头挤在一起；分组模式下没有 <thead>，表头跟着每组走。组内任务行与普通表一样，给 `selectedKeys` / `onRowClick` 就有选中与悬浮（不给就是静态表）。通栏标题由 `SectionHead` 装进通栏并带上它的固定标签（4px 圆头短竖线）：颜色用 `groupAccent` 换（内置语义色名映射 token、也可直接给 CSS 色值），传 `false` 整条不画。
 
-> EN: Banner groups: pass groups (instead of rows) to hold several sections in one table — each group renders as a full-width banner row spanning every column → that group’s own header → that group’s rows, with a solid rule between groups. The canonical case is tasks across several workspaces: it stays one table rather than two tables with unrelated headers. Group mode has no thead; the header travels with each group. Rows inside a group behave like ordinary rows: pass `selectedKeys` / `onRowClick` for selection and hover (omit them for a static table).
+> EN: Banner groups: pass groups (instead of rows) to hold several sections in one table — each group renders as a full-width banner row spanning every column → that group’s own header → that group’s rows, with a solid rule between groups. The canonical case is tasks across several workspaces: it stays one table rather than two tables with unrelated headers. Group mode has no thead; the header travels with each group. Rows inside a group behave like ordinary rows: pass `selectedKeys` / `onRowClick` for selection and hover (omit them for a static table). The banner title is rendered through `SectionHead`, carrying its fixed 4px rounded bar: recolour it with `groupAccent` (a built-in semantic name mapped to tokens, or a raw CSS colour), or pass `false` to drop it entirely.
 
 外观分档 = 分组件 + 分文件，没有 variant：Table 只 import 自己那份皮肤 CSS；后续 TableGrid（网格线）/ TableZebra（斑马纹）是同族独立组件，各自 import 各自皮肤。消费方引哪个就只打包哪个 —— 引一个表格不会把另一档的 CSS 也带进包里。
 
 > EN: Skins are separate components and separate files — no variant: Table imports only its own skin CSS; future TableGrid (grid lines) / TableZebra (zebra stripes) are sibling components importing their own skins. Importing one packs only that one — choosing a table never drags the other skin into the bundle.
 
-边界：不负责取数 / 排序 / 分页 / 虚拟滚动；横向滚动容器与圆角裁剪归调用方；表头不做吸顶（分组表头是多行，统一 top:0 会在滚动时互相盖住）。没有数据时显示内置空态（emptyText 可覆盖）。
+边界：不负责取数 / 排序 / 虚拟滚动；横向滚动容器与圆角裁剪归调用方；表头不做吸顶（分组表头是多行，统一 top:0 会在滚动时互相盖住）。分页可选：给 `pagination` 就让表格自己切片并在表下摆页码（详见 Pagination 一节），不给就完全不分页。没有数据时显示内置空态（emptyText 可覆盖）。
 
-> EN: Boundaries: no fetching / sorting / paging / virtual scrolling; the horizontal scroll container and rounded clipping are the caller’s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). With no rows, a built-in empty state shows (override with emptyText).
+> EN: Boundaries: no fetching / sorting / virtual scrolling; the horizontal scroll container and rounded clipping are the caller’s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). Paging is optional: pass `pagination` and the table slices rows itself and renders the pager underneath (see the Pagination section); omit it and nothing pages. With no rows, a built-in empty state shows (override with emptyText).
 
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
 | `columns` | `TableColumn[]` | 必填 | — | 列定义；children 非空即分组表头（自动算 colSpan / rowSpan），叶子 key 用来取单元格；width 数字按 px；align 对齐；divider=true 才画该列左竖线（默认不画）；padding 该列水平内距（px）；headerTone 该列表头语义色 | Column definitions; non-empty children makes a group header (colSpan / rowSpan computed); leaf keys select cells; numeric width means px; align sets alignment; divider=true draws that column’s left divider (off by default); padding sets its horizontal padding (px); headerTone recolours its header |
 | `rows` | `TableRow[]` | — | — | 行数据 { key, cells }（与 groups 二选一）：key 兼作选中标识与 React key；cells 按叶子列 key 给内容（ReactNode 或 { content, colSpan, rowSpan, align }）；缺 key = 不渲染、给上一行 rowSpan 让位 | Row data { key, cells } (either this or groups): key doubles as selection id and React key; cells map leaf-column key to content (ReactNode or { content, colSpan, rowSpan, align }); a missing key renders nothing and yields to the previous row’s rowSpan |
 | `groups` | `TableGroup[]` | — | — | 分组数据 { key, title, rows }（与 rows 二选一，传了就忽略 rows）：每组 = 一行横跨全部列的通栏标题 + 自己的表头 + 自己的数据行，多组连续排布、组间一条实线；用于「一个表格展示多个工作区 / 板块」 | Group data { key, title, rows } (instead of rows; when given, rows is ignored): each group is a banner row spanning every column + its own header + its own rows, with groups stacked and separated by a solid rule — for showing several workspaces / sections in one table |
+| `groupAccent` | `SectionHeadAccent \| false` | — | 'default' | 通栏标题前固定标签（4px 圆头短竖线，由 SectionHead 绘制）的颜色（只对 groups 生效）：内置语义色名映射 token，也可直接给 CSS 色值；不传 / default = 主题默认（浅色深灰、深色浅灰），false = 整条不画 | Colour of the fixed bar before each banner title (4px rounded, drawn by SectionHead; groups only): a built-in semantic name maps to tokens, or pass any CSS colour; omitted / default = theme default (dark grey in light, light grey in dark), false = no bar |
 | `density` | `'compact' \| 'default' \| 'comfortable'` | — | 'default' | 行密度：行高与水平内距 —— default 44 / 48 与 12px，compact 36 / 36 与 8px，comfortable 52 / 60 与 16px | Row density: height and horizontal padding — default 44 / 48 with 12px, compact 36 / 36 with 8px, comfortable 52 / 60 with 16px |
 | `striped` | `boolean` | — | false | 偶数行淡底斑马纹（hover / 选中仍优先） | Faint tint on even rows (hover / selection still win) |
 | `borders` | `'all' \| 'x' \| 'y' \| 'none'` | — | 'y' | 外框范围：y 只上下（默认，左右没有边）/ all 四边全框 / x 只左右 / none 全不要 | Outer border: y for top+bottom only (default, no left/right) / all for a full frame / x for left+right only / none for nothing |
 | `selectedKeys` | `(string \| number)[]` | — | — | 选中行 key 列表（高亮样式由皮肤决定） | Keys of selected rows (the highlight is the skin’s call) |
 | `onRowClick` | `(row, index) => void` | — | — | 传了行才可点：获得指针光标与 Enter / 空格激活 | Only when given are rows interactive: pointer cursor plus Enter / Space activation |
 | `emptyText` | `ReactNode` | — | 内置字典 | 空态文案；不传走核心字典（随 setLocale 中英切换） | Empty-state copy; defaults to the core dictionary (follows setLocale) |
+| `pagination` | `TablePaginationConfig` | — | — | 内建分页（与 Pagination 同参数，total 可省）：不传 total = 本地切片，给了 total = 服务端分页（不切片）；groups 模式忽略本项 | Built-in paging (same params as Pagination, total optional): omit total to slice locally; pass total for server-side paging (no slicing); ignored in groups mode |
 | `ariaLabel` | `string` | — | — | 表格无障碍名（没有可见标题时请务必给） | Accessible name for the table (give it when there is no visible caption) |
 | `translate` | `Translate` | — | — | 覆盖内置文案翻译（插件自带 i18n 时用） | Override built-in copy translation (for plugins with their own i18n) |
 | `className / style` | `string / CSSProperties` | — | — | 只允许补布局，不许覆盖皮肤 | Layout only; never override the skin |
@@ -399,6 +401,10 @@ h(Table, {
       { key: 'b1', cells: { task: '补通栏文档', state: '已完成' } },
     ] },
   ],
+  // 通栏标题前的固定标签（短竖线）：由 SectionHead 绘制，4px 圆头、高 ≈ 字号；
+  // 默认随主题（浅色深灰 / 深色浅灰）；groupAccent 换色（内置色名或任意色值，如 '#7c3aed'），
+  // false 整条关掉。Table 只负责把标题装进通栏，样式走 SectionHead 那一份。
+  groupAccent: 'business',
   // 组内任务行与普通表一样：给 selectedKeys / onRowClick 就有选中与悬浮
   selectedKeys: [picked],
   onRowClick: (row) => setPicked(row.key),
@@ -407,6 +413,76 @@ h(Table, {
 
 // 第二档外观是另一个组件、另一份 CSS（预留）：引 TableGrid / TableZebra 时
 // 只打包它自己那份皮肤，不会把 Table 的皮肤一起带上。
+```
+
+## Pagination（分页）
+
+> EN: Pagination
+
+通行口径（Ant Design / MUI / Element Plus 一致）：调用方只给 `page`（当前页，1 起）、`pageSize`（每页条数，默认 10）、`total`（总条数，不是总页数），总页数 `ceil(total / pageSize)` 与页码序列都由控件算 —— 消费方不自己算页数、不自己写渲染循环。受控组件：页码由调用方 state 持有，控件只发 `onChange(page, pageSize)`；越界的 page 会被夹回有效范围，不会渲染出空页。
+
+> EN: Shared convention (Ant Design / MUI / Element Plus agree): you pass `page` (1-based current page), `pageSize` (default 10) and `total` (row count, not page count), and the control derives `ceil(total / pageSize)` plus the whole page sequence — you never compute pages or write a render loop. Fully controlled: your state owns the page; the control emits `onChange(page, pageSize)` and clamps out-of-range pages so an empty page is never rendered.
+
+省略号窗口：首尾各固定 `boundaryCount` 页、当前页两侧各留 `siblingCount` 页（默认 1 / 1，最多 7 个位置，与 Element Plus 的 pager-count:7 等价）。间隔正好 1 页时直接显示那个页号、不画省略号（各家共同的细节，否则会出现「1 2 … 4」）。上一页 / 下一页恒在，到边界置灰而非隐藏。
+
+> EN: Ellipsis window: `boundaryCount` pages pinned at each end and `siblingCount` pages around the current one (default 1 / 1 — at most 7 slots, equivalent to Element Plus pager-count:7). When the gap is exactly one page the number itself is shown instead of an ellipsis (a detail every library shares, otherwise you get “1 2 … 4”). Prev / Next are always present and grey out at the ends rather than disappearing.
+
+四个可选能力都是开关（不传就不出现）：`pageSizeOptions` 出「每页条数」下拉（切换时页码回到第 1 页，与 antd / MUI 同口径）、`showTotal` 出总数文案（`true` 走内置字典，也可给函数自定义）、`hideOnSinglePage` 单页时整条不渲染、`simple` 只留「‹ 2 / 36 ›」。位置由 `align` 决定：left / center / right，**默认 right**。
+
+> EN: Four optional bits are switches (omit them and they vanish): `pageSizeOptions` adds a rows-per-page select (changing it resets to page 1, same as antd / MUI), `showTotal` adds the total copy (`true` uses the built-in dictionary, or pass a renderer), `hideOnSinglePage` drops the whole bar when there is a single page, and `simple` keeps only “‹ 2 / 36 ›”. Placement comes from `align`: left / center / right, **right by default**.
+
+无障碍：根节点是 `nav`（`aria-label` 默认走内置字典「分页」，可覆盖），当前页带 `aria-current="page"`，每个页码按钮有「第 n 页」的可读名，上一页 / 下一页的文案与禁用态都由控件负责 —— 调用方不用补 aria。
+
+> EN: Accessibility: the root is a `nav` (its `aria-label` defaults to the built-in “Pagination”, overridable), the current page carries `aria-current="page"`, every page button has a readable “Page n” name, and prev/next labels plus disabled states are the control’s job — callers add no aria.
+
+与 Table 两种接法：① 独立控件，自己摆在表格下方 / 工具栏（表格不传 `pagination`）；② 内建 —— 给 `Table` 传 `pagination`，它先按当前页切片 `rows` 再渲染，并把分页条排在表格下方（`total` 缺省 = `rows.length` 本地分页；给了 `total` 则不切片，按服务端分页只摆页码）。`groups` 通栏模式与分页互斥，传了 groups 就忽略 pagination。
+
+> EN: Two ways to wire it to Table: ① standalone — place it yourself under the table or in a toolbar (Table gets no `pagination`); ② built in — pass `pagination` to Table and it slices `rows` by the current page before rendering, with the pager placed underneath (omit `total` for local paging where total = rows.length; pass `total` for server-side paging where rows are not sliced and only the pager is rendered). The `groups` banner mode is mutually exclusive: when groups are given, pagination is ignored.
+
+| 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|---|
+| `page / total` | `number / number` | 必填 | — | 当前页（1 起，越界自动夹回）/ 总条数（不是总页数） | Current page (1-based, clamped) / row count (not page count) |
+| `pageSize` | `number` | — | 10 | 每页条数；总页数由它算出来 | Rows per page; the page count derives from it |
+| `onChange` | `(page, pageSize) => void` | 必填 | — | 切页与切每页条数都走它；切条数时页码回到 1 | Fires for page changes and rows-per-page changes; the latter resets to page 1 |
+| `align` | `'left' \| 'center' \| 'right'` | — | 'right' | 分页条位置（默认放右边） | Pager placement (right by default) |
+| `siblingCount / boundaryCount` | `number / number` | — | 1 / 1 | 当前页两侧页数 / 首尾固定页数；1/1 合计最多 7 个位置 | Pages beside the current one / pages pinned at each end; 1/1 gives at most 7 slots |
+| `pageSizeOptions` | `number[]` | — | — | 传了才出现「每页条数」下拉 | Only then does the rows-per-page select appear |
+| `showTotal` | `boolean \| (total, from, to) => ReactNode` | — | — | 总数文案：不传 = 不显示（默认关），传 true 走内置字典，传函数可自定义 | Total copy: omitted = hidden (off by default), true uses the dictionary, a renderer customises it |
+| `hideOnSinglePage` | `boolean` | — | false | 只有一页时整条不渲染 | Render nothing when there is a single page |
+| `simple` | `boolean` | — | false | 简洁模式：只留「‹ 2 / 36 ›」 | Simple mode: only “‹ 2 / 36 ›” |
+| `disabled / ariaLabel / translate` | `boolean / string / Translate` | — | false / 内置「分页」/ — | 整条禁用 / 无障碍名 / 覆盖内置文案 | Disable the bar / accessible name / override built-in copy |
+| `Table · pagination` | `TablePaginationConfig` | — | — | 同上参数，total 可省：不传 = 本地切片，给了 = 服务端分页（不切片） | Same params, total optional: omit to slice locally, pass it for server-side paging (no slicing) |
+
+```tsx id="ui-pagination-example"
+import { Pagination, Table } from 'dsh-plugin-core/ui'
+
+// 独立控件：只给当前页 / 每页条数 / 总条数 —— 总页数与省略窗口由控件算，
+// 消费方永远不自己算页数、也不自己渲染页码
+h(Pagination, {
+  page, pageSize, total: 86,
+  onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },
+  align: 'right',                 // left / center / right（默认 right）
+  pageSizeOptions: [10, 20, 50],  // 传了才出现「每页条数」下拉
+  showTotal: true,                // 传了才出现「第 1-10 条，共 86 条」
+  siblingCount: 1,                // 当前页两侧留几页（默认 1）
+  boundaryCount: 1,               // 首尾各固定几页（默认 1；1/1 合计最多 7 个位置）
+  hideOnSinglePage: true,         // 只有一页时整条不渲染
+})
+
+// 简洁模式：只留上一页 / 下一页与「2 / 36」
+h(Pagination, { page, pageSize, total: 86, simple: true, onChange })
+
+// Table 内建：不传 total = 本地分页（rows 是全量，表格自己按当前页切片，页码排在表下）
+h(Table, {
+  columns, rows,
+  pagination: { page, pageSize, showTotal: true, onChange },
+})
+
+// 服务端分页：给了 total 就不切片（rows 只放当前页那几条），表格只负责摆页码
+h(Table, {
+  columns, rows: currentPageRows,
+  pagination: { page, pageSize, total: 86, onChange },
+})
 ```
 
 ## 反馈件
@@ -457,7 +533,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `LoadingBlock({ text? })` | `` |  | 就地渲染的方块加载卡（转圈在上、文字在下） | In-place square loading card (spinner above text) |
 | `Loading({ anchorId? })` | `` |  | 贴到主内容容器右下角的加载指示；anchorId 默认 dshpc-main | Loading indicator pinned to the main container’s bottom-right; anchorId defaults to dshpc-main |
 | `RunningBlocks()` | `` |  | 运行中的占位块 | Placeholder blocks while running |
-| `SectionHead({ icon, title, right? })` | `` |  | 分区标题 | Section heading |
+| `SectionHead({ icon?, title, right?, accent?, flush? })` | `` |  | 分区标题：标签（可选，画出来的短竖线）/ icon + 标题 + 右侧控件。accent = 标签颜色（内置色名 / 任意色值 / default / false 不画）；flush = 去底边距 | Section heading: optional drawn bar / icon + title + right controls. accent = bar colour (built-in name / raw value / default / false for none); flush = no bottom margin |
 | `MarqueeText({ text, style?, title?, className? })` | `` |  | 超长省略、hover 滚动 | Ellipsis on overflow, scroll on hover |
 | `LiveText({ render, style? })` | `` |  | 定时重渲染（相对时间这类） | Periodic re-render (for relative time etc.) |
 | `BackToTop({ anchorId? })` | `` |  | 回到顶部，贴主容器右缘外侧 | Back-to-top, outside the main container’s right edge |

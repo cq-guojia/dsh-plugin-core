@@ -54,6 +54,15 @@ export type UtilMessageKey =
   | 'mdFootnotes'
   | 'cardToggle'
   | 'tableEmpty'
+  // ── 分页（Pagination）──
+  | 'paginationAria'
+  | 'paginationPrev'
+  | 'paginationNext'
+  | 'paginationPage'
+  | 'paginationTotal'
+  | 'paginationTotalZero'
+  | 'paginationPageSizeOption'
+  | 'paginationPageSizeAria'
   | 'modalClose'
   | 'dockClose'
   | 'dockResize'
@@ -319,6 +328,14 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     mdFootnotes: '脚注',
     cardToggle: '展开/收起',
     tableEmpty: '暂无数据',
+    paginationAria: '分页',
+    paginationPrev: '上一页',
+    paginationNext: '下一页',
+    paginationPage: '第 {n} 页',
+    paginationTotal: '第 {from}-{to} 条，共 {total} 条',
+    paginationTotalZero: '共 0 条',
+    paginationPageSizeOption: '{n} 条/页',
+    paginationPageSizeAria: '每页条数',
     modalClose: '关闭',
     dockClose: '关闭面板',
     dockResize: '拖动调整宽度',
@@ -579,6 +596,14 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     mdFootnotes: 'Footnotes',
     cardToggle: 'Expand/Collapse',
     tableEmpty: 'No data',
+    paginationAria: 'Pagination',
+    paginationPrev: 'Previous',
+    paginationNext: 'Next',
+    paginationPage: 'Page {n}',
+    paginationTotal: '{from}-{to} of {total}',
+    paginationTotalZero: '0 items',
+    paginationPageSizeOption: '{n} / page',
+    paginationPageSizeAria: 'Rows per page',
     modalClose: 'Close',
     dockClose: 'Close panel',
     dockResize: 'Drag to resize',

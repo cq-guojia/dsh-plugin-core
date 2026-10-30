@@ -86,7 +86,15 @@ dsh-plugin-core/
   竖分隔线按列声明（格子上的 `data-divider`），**不用相邻兄弟选择器** —— 后者会让每行首格
   永远没有左线（即 2026-10-30 真机看到的「Name 左边没 border」），且跨列后会画错位置。
   外观分档 = **分组件 + 分文件**（`Table` / 预留 `TableGrid` 网格线 / `TableZebra` 斑马纹），
-  消费方引哪个就只打包哪份皮肤 CSS，**不用 `variant` 汇总**
+  消费方引哪个就只打包哪份皮肤 CSS，**不用 `variant` 汇总**。
+  **可选内建分页**（2026-10-30 用户拍板「两者都做」）：给 `pagination` 就让表格自己按当前页切片并在表下摆页码；
+  不传 = 完全不变（不包外层 div、DOM 与旧行为一致），`groups` 模式忽略分页
+- 分页：`Pagination`（2026-10-30 新增，照通行范式：**传 `page` / `pageSize` / `total`，总页数与省略窗口由控件算**
+  ——消费方不自己算页数、不写渲染方法；受控 `onChange(page, pageSize)`）。
+  `align` 左 / 中 / 右（**默认 right**）；`siblingCount` / `boundaryCount` 控省略窗口（默认 1/1，
+  间隔恰好 1 页时直接显示页号不画省略号）；可选能力（用户拍板全要）：`hideOnSinglePage`、
+  `showTotal`（`boolean | (from,to,total)=>ReactNode`）、`pageSizeOptions`（传了才出现每页条数下拉）、
+  `simple`；`disabled` / `ariaLabel` / `translate`。a11y = `nav[aria-label]` + `aria-current="page"`。
 - 反馈件：`Modal` / `Loader` 家族 / `Loading` / `toast` / 空态
   - Loader 家族按「一个前缀 + 具象名」命名（2026-10-30 用户定）：`Loader`（通用图标）/
     `LoaderBar`（胶囊不定进度）。两者的边界完全一致 —— **只画图形，不带背景、内距、定位**，
@@ -213,7 +221,8 @@ dsh-plugin-core/
 | ui / ModelPicker | `variant: 'grouped' \| 'cascade'`（分组：一个下拉、完全独立 / 联动：供应商与模型两个下拉联动；2026-10-20 用户拍板两形态都要）；**两种形态 onChange 都发最终模型 value**；「默认模型」选项默认提供（`allowDefault:false` 关），选中发 `''`。默认读 connectHost 喂入的真实目录，`groups` 仅作覆盖。**禁止用数字或无意义名** |
 | ui / Picker | `mode: 'single' \| 'multiple'`、`max`（到上限已选项仍可反选）、`searchable`（搜索框开关）、`icon`（触发器前置 icon）、选项级 `icon`、`hint`（问号提示内置）、分组、空态、降级 |
 | ui / DateTimePicker | `mode: 'single' \| 'range'`、`precision: 'day' \| 'hour' \| 'minute' \| 'second'`（同时管弹层步进、显示截断与默认宽度）；single 传 `string \| null`、range 传 `[start, end] \| null`（本地 ISO 到毫秒）；草稿态「确定」才 onChange，没选日期不传数据；起端补零 / 止端补满（day ⇒ 止 `23:59:59.999`） |
-| ui / Table | `columns`（`children` 非空 = 分组表头，组件算 colSpan / rowSpan；`width` 数字按 px、`align` 控对齐）、`rows`（`{ key, cells }`，cells 按叶子 key 给 ReactNode）、`selectedKeys`、`onRowClick`（传了才可点，Enter / 空格等价）、`emptyText`（默认核心字典）、`ariaLabel`；**外观分组件分文件**：`Table` 只 import 自皮肤 CSS，预留 `TableGrid` / `TableZebra` 各自独立，引哪个打包哪个；列宽合计超过容器时由调用方的滚动容器兜住 |
+| ui / Table | `columns`（`children` 非空 = 分组表头，组件算 colSpan / rowSpan；`width` 数字按 px、`align` 控对齐）、`rows`（`{ key, cells }`，cells 按叶子 key 给 ReactNode）、`selectedKeys`、`onRowClick`（传了才可点，Enter / 空格等价）、`emptyText`（默认核心字典）、`ariaLabel`、`pagination`（可选内建分页，见下行）；**外观分组件分文件**：`Table` 只 import 自皮肤 CSS，预留 `TableGrid` / `TableZebra` 各自独立，引哪个打包哪个；列宽合计超过容器时由调用方的滚动容器兜住 |
+| ui / Pagination | `Pagination({ page, total, pageSize?, onChange, align?, siblingCount?, boundaryCount?, pageSizeOptions?, showTotal?, hideOnSinglePage?, simple?, disabled?, ariaLabel?, translate? })` —— 只给当前页 / 每页条数 / 总条数，**总页数 `ceil(total/pageSize)`、越界夹取、省略窗口全由控件算**；`align` 默认 `right`；`pageSizeOptions` 传了才出现下拉（改 size 时 `onChange(1, next)`）；`hideOnSinglePage` 为 `true` 且只有一页时整条不渲染。<br>`Table` 内建：`pagination?: Omit<PaginationProps,'total'> & { total?: number }` —— **不传 `total` = 本地分页**（`rows` 是全量，表格按当前页切片），**传了 `total` = 服务端分页**（`rows` 只放当前页那几条，不切片） |
 | explorer | `WorkspaceFilesFace`（`list` / `stat` / `read` 最小面）由 `connectHost(ctx)` 接线后核心自己持有，组件不抓宿主全局、调用方也不逐次传（2026-10-28 改）；对外 = 两命令式能力 `openFilePreview({ mount, path })`（侧边栏预览）+ `pickWorkspaceFile({ anchor })`（Promise 选文件，回传工作区相对路径），共用同一 `FileBrowser` 面板（2026-10-20 拍板） |
 | explorer / WorkspacePicker | `WorkspacePicker({ mode, max, onChange, allowDefault, defaultLabel, … })` —— **无数据参数**：connectHost 接线后自动订官方 `workspaces` 服务快照，选中值为 `workspaceId`；「所有工作区」默认项默认提供、选中发 `''`（2026-10-20） |
 | session | `SessionPreview({ sessionId, source, variant })` —— `source` = 取数能力接口（会话预览内部有交互：传输文件等，光有静态消息流不够） |
@@ -231,6 +240,7 @@ dsh-plugin-core/
 | v3 | `session` | ⚠️ **半完成**：契约与三种承载已好，**官方会话 UI 镜像未搬**（只做最简渲染） |
 | v3+ | 控件样式按需注入（2026-10-30） | ✅ 已完成（`css.ts` 停全量聚合；27 个组件各自注入自己那份；只 `import { Button }` 时 CSS 文本 71.7 KB → 9.4 KB。**不采用 `@layer`**：未分层样式压过任何层且层级裁决优先于特异性，包进层会被宿主元素级重置反压） |
 | v3+ | 表格样式（2026-10-30） | ✅ 第一档 Plain 落地（`Table`：基础层 + 皮肤分文件注入，中性灰表头 / 极淡行线 / 极淡中性灰 hover；表头与通栏互换底色；**默认无竖线、外框只上下**，竖线按列 opt-in；三种外观 = all+divider / y+divider / 默认）+ 通栏分组 `groups`；预留 `TableGrid` / `TableZebra` 两档同族独立组件 |
+| v3+ | 分页（2026-10-30） | ✅ 已完成（独立 `Pagination` + `Table` 内建 `pagination`；纯逻辑 `pagination-logic.ts` 可单测；默认 right、1/1 窗口、`hideOnSinglePage` / `showTotal` / `pageSizeOptions` / `simple` 全铺；本地 / 服务端分页以「传不传 `total`」分叉） |
 | 文档 | README 接入指南 | ✅ 已完成 |
 
 **未做**（按重要性）：消费者插件接入 / 会话 UI 镜像 / 类名隔离 /

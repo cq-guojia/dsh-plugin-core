@@ -1,6 +1,8 @@
 import { createElement as h } from 'react'
 import { ensureComponentStyles } from './css.js'
 import { TABLE_PLAIN_CSS } from './controls-css.js'
+import { Pagination } from './Pagination.js'
+import { clampPage, pageCountOf } from './pagination-logic.js'
 import { tableShell, type TableSharedProps } from './table-shared.js'
 
 /** `Table` 对外 props（外观由组件本身决定，没有 variant 轴）。 */
@@ -32,5 +34,23 @@ export type TableProps = TableSharedProps
  */
 export function Table(props: TableProps): ReturnType<typeof h> {
   ensureComponentStyles('table-plain', TABLE_PLAIN_CSS)
-  return tableShell('dshpc-table--plain', props)
+  const pager = props.pagination
+  // 通栏分组与分页互斥：一个表里多个板块时，页码该属于哪个板块说不清，直接不分页。
+  const grouped = (props.groups?.length ?? 0) > 0
+  if (pager === undefined || grouped) return tableShell('dshpc-table--plain', props)
+
+  const pageSize = Math.max(1, Math.floor(pager.pageSize ?? 10))
+  const allRows = props.rows ?? []
+  // total 不给 = 本地分页（全量 rows 自己切）；给了 = 服务端分页（rows 已是当前页，不再切）。
+  const local = pager.total === undefined
+  const total = local ? allRows.length : Math.max(0, Math.floor(pager.total ?? 0))
+  const page = clampPage(pager.page, pageCountOf(total, pageSize))
+  const rows = local ? allRows.slice((page - 1) * pageSize, page * pageSize) : allRows
+
+  return h(
+    'div',
+    { className: 'dshpc-table-frame' },
+    tableShell('dshpc-table--plain', { ...props, rows }),
+    h(Pagination, { ...pager, page, total, align: pager.align ?? 'right' }),
+  )
 }

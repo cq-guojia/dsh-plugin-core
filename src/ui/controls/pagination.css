@@ -1,0 +1,32 @@
+/* ── 分页（‹ Previous 1 2 3 … 36 Next ›）────────────────────────────────────
+   当前页 = 蓝色圆角方块 + 白字（实心面的字必须走 --dshpc-on-signal，不许用主题反色）；
+   其余页码是纯文字按钮，悬浮只给极淡中性底。对齐由 --left / --center / --right 三个修饰决定，
+   组件默认 right。颜色全部走 token，明暗自动跟随宿主。 */
+
+.dshpc-pagination{display:flex;align-items:center;gap:var(--dshpc-space-2);flex-wrap:wrap;
+  font-size:var(--dshpc-font-sm);line-height:1;color:var(--dshpc-fg-2);}
+
+.dshpc-pagination--left{justify-content:flex-start;}
+.dshpc-pagination--center{justify-content:center;}
+.dshpc-pagination--right{justify-content:flex-end;}
+
+.dshpc-pagination__total{color:var(--dshpc-fg-3);margin-inline-end:var(--dshpc-space-1);}
+
+.dshpc-pagination__pages{display:flex;align-items:center;gap:2px;}
+
+/* 页码 / 上下页 = 核心 Button（当前页 info 实心蓝、其余 ghost），箭头 = 全站唯一 Chevron。
+   这里只补尺寸与间距，不重画按钮皮肤；两级选择器压过 .dshpc-btn--md 的内距。 */
+.dshpc-pagination .dshpc-pagination__page{padding:0 6px;min-width:28px;}
+.dshpc-pagination .dshpc-pagination__nav{padding:0 var(--dshpc-space-2);}
+
+.dshpc-pagination__ellipsis{display:inline-flex;align-items:center;justify-content:center;
+  min-width:28px;height:28px;color:var(--dshpc-fg-3);}
+
+.dshpc-pagination__simple{min-width:64px;text-align:center;font-variant-numeric:tabular-nums;
+  color:var(--dshpc-fg);}
+
+/* 简洁模式只留箭头：文字标签隐藏，箭头仍然可见（无障碍名还在 aria-label 上）。 */
+.dshpc-pagination--simple .dshpc-pagination__text{display:none;}
+
+/* 每页条数下拉 = 核心 Picker（箭头是全站唯一的 Chevron）：只收窄不参与伸缩。 */
+.dshpc-pagination__size{flex:none;}

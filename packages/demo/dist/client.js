@@ -37,7 +37,7 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react75 = require("react");
+var import_react77 = require("react");
 var import_dsh_client_ui_primitives5 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
@@ -2749,6 +2749,14 @@ var DICT = {
     mdFootnotes: "\u811A\u6CE8",
     cardToggle: "\u5C55\u5F00/\u6536\u8D77",
     tableEmpty: "\u6682\u65E0\u6570\u636E",
+    paginationAria: "\u5206\u9875",
+    paginationPrev: "\u4E0A\u4E00\u9875",
+    paginationNext: "\u4E0B\u4E00\u9875",
+    paginationPage: "\u7B2C {n} \u9875",
+    paginationTotal: "\u7B2C {from}-{to} \u6761\uFF0C\u5171 {total} \u6761",
+    paginationTotalZero: "\u5171 0 \u6761",
+    paginationPageSizeOption: "{n} \u6761/\u9875",
+    paginationPageSizeAria: "\u6BCF\u9875\u6761\u6570",
     modalClose: "\u5173\u95ED",
     dockClose: "\u5173\u95ED\u9762\u677F",
     dockResize: "\u62D6\u52A8\u8C03\u6574\u5BBD\u5EA6",
@@ -3009,6 +3017,14 @@ var DICT = {
     mdFootnotes: "Footnotes",
     cardToggle: "Expand/Collapse",
     tableEmpty: "No data",
+    paginationAria: "Pagination",
+    paginationPrev: "Previous",
+    paginationNext: "Next",
+    paginationPage: "Page {n}",
+    paginationTotal: "{from}-{to} of {total}",
+    paginationTotalZero: "0 items",
+    paginationPageSizeOption: "{n} / page",
+    paginationPageSizeAria: "Rows per page",
     modalClose: "Close",
     dockClose: "Close panel",
     dockResize: "Drag to resize",
@@ -3466,10 +3482,16 @@ var DATETIME_CSS = '/* \u65E5\u671F\u65F6\u95F4\u9009\u62E9\u5668\uFF08DateTimeP
 var SPLIT_GROUP_CSS = "\n/* \u2500\u2500 \u62FC\u63A5\u5916\u58F3 SplitGroup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u804C\u8D23\u53EA\u6709\u4E00\u6761\uFF1A\u628A\u4E24\u4E2A\u63A7\u4EF6\u5728\u5916\u89C2\u4E0A\u710A\u6210\u4E00\u4F53\uFF08\u5916\u6846 / \u5706\u89D2 / \u4E2D\u95F4 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\uFF09\u3002\n   \u5B83**\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03** \u2014\u2014 \u9009\u4E2D\u4E0E\u8054\u52A8\u5168\u8D70\u5185\u4EF6\u81EA\u5DF1\u7684 value / onChange\n   \uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF1A\u5916\u58F3\u4E0D\u5FC5\u77E5\u9053\u53F3\u8FB9\u90A3\u4E2A\u4E0B\u62C9\u7BA1\u4EC0\u4E48\uFF09\u3002\n\n   \u26A0\uFE0F \u4E0E\u5185\u4EF6\u7C7B\u540D\u6709\u610F\u8026\u5408\uFF1A\u5185\u4EF6\u662F Picker / Segmented \u65F6\u7531\u4E0B\u9762\u51E0\u6761\u89C4\u5219\u628A\u5B83\u4EEC\u81EA\u5DF1\u7684\n   \u8FB9\u6846 / \u5E95\u8272 / \u5706\u89D2\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u7EDF\u4E00\u753B\u3002\u5185\u4EF6\u6539\u540D\u6216\u6539\u7ED3\u6784\u8981\u540C\u6B65\u6539\u8FD9\u91CC\uFF0C\n   \u5426\u5219\u4F1A\u51FA\u73B0\u53CC\u8FB9\u6846\u3001\u53CC\u5E95\u8272\u3002\n\n   \u9AD8\u5EA6\u4E0D\u5199\u6B7B\uFF1A\u5185\u4EF6\u81EA\u5DF1\u6309 size \u6863\uFF08sm 24 / md 28 / lg 32\uFF09\u6491\u5F00\uFF0C\u5916\u58F3\u8DDF\u7740\u957F\u3002\n   \u4E24\u683C\u8981\u7B49\u9AD8\uFF0C\u5C31\u7ED9\u5185\u4EF6\u4F20**\u540C\u4E00\u4E2A size**\u3002\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\u5916\u58F3\u5185\u4EF6\u7528 align-items:center\n   \u5C45\u4E2D\uFF08\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\uFF0C\u7528\u6237 2026-10-28 \u622A\u56FE\u53CD\u9988\u300C\u672C\u6708\u504F\u4E0A\u300D\u540E\u7684\u5904\u7406\uFF09\uFF1B**\u522B\u7528 height:100%**\uFF0C\n   \u5B83\u4F1A\u8986\u76D6\u4E09\u6863\u9AD8\u5EA6\uFF08\u4E0E --lg/--sm \u540C\u7279\u5F02\u6027\u4E14\u6CE8\u5165\u66F4\u665A\uFF09\u3002\n\n   \u5DE6\u683C\u7EDF\u4E00\u7070\u5E95\uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF09\uFF1A\u6ED1\u5757\u4FDD\u7559\u81EA\u5DF1\u7684\u7070\u8F68\uFF0C\u5DE6\u683C\u4E0B\u62C9\u628A\u5E95\u8272\u6362\u6210\n   surface-sunken\uFF1B\u53F3\u683C\u4FDD\u6301\u539F\u6837\u3002\u5C42\u6B21\u611F = \u5DE6\u683C\u662F\u300C\u6863\u4F4D/\u8303\u56F4\u300D\uFF0C\u53F3\u683C\u662F\u300C\u503C\u300D\u3002 */\n   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}\n   /* \u4E24\u683C\u5BBD\u5EA6\u90FD\u7531\u5185\u5BB9\u7ED9\uFF1B\u5BB9\u5668\u518D\u7A84\u4E5F\u8BA9\u5185\u4EF6\u81EA\u5DF1\u7701\u7565\uFF0C\u4E0D\u8BA9\u5916\u58F3\u88AB\u6491\u7834 */\n   .dshpc-split > *{min-width:0;max-width:100%;}\n   /* \u5206\u9694\uFF1A\u76F8\u90BB\u5144\u5F1F\u7684\u5DE6\u63CF\u8FB9\uFF0C\u4E0D\u989D\u5916\u63D2 DOM\uFF0Chover / focus \u65F6\u4E5F\u4E0D\u4F1A\u65AD */\n   .dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n   /* \u6574\u4F53\u805A\u7126\uFF1A\u5185\u4EF6\u81EA\u5DF1\u7684\u5916\u5708\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u753B\u4E00\u6574\u5708\uFF08\u5185\u4EF6\u5404\u81EA\u753B\u4F1A\u53D8\u6210\u683C\u5185\u534A\u5708\uFF09 */\n   .dshpc-split:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n   /* Picker\uFF1A\u53BB\u6389\u81EA\u8EAB\u5916\u6846\u4E0E\u5E95\u8272\uFF1Bdisplay \u6539\u6210 flex\uFF0C\u6D88\u6389 inline-block \u884C\u76D2\u5E26\u6765\u7684\u57FA\u7EBF\u95F4\u9699\u3002\n      \u6CE8\u610F**\u4E0D\u80FD\u7528 height:100%**\uFF1A\u5B83\u4F1A\u548C .dshpc-picker__trigger--lg / --sm \u540C\u7279\u5F02\u6027\uFF08\u90FD\u662F\u4E24\u4E2A\u7C7B\uFF09\uFF0C\n      \u4E14 split-group.css \u5728 picker.css \u4E4B\u540E\u6CE8\u5165\uFF0C\u4F1A\u628A\u4E09\u6863\u9AD8\u5EA6\u5168\u5403\u6389\uFF08md/lg \u770B\u8D77\u6765\u4E00\u6837\u5927\uFF09\u3002\n      \u6539\u7528 align-items:center \u2014\u2014 \u540C size \u65F6\u4E24\u683C\u81EA\u7136\u7B49\u9AD8\u7684\u540C\u65F6\u6587\u5B57\u5782\u76F4\u5C45\u4E2D\uFF1B\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\n      \u8F83\u77EE\u7684\u683C\u4E5F\u53EA\u662F\u5C45\u4E2D\u3001\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\u3002 */\n   .dshpc-split .dshpc-picker{display:flex;align-items:center;}\n   .dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}\n   .dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}\n   /* \u5DE6\u683C\u4E0B\u62C9\uFF1A\u7070\u5E95\uFF08\u6ED1\u5757\u7684\u7070\u8F68\u662F\u5B83\u81EA\u5DF1\u7684 --dshpc-seg-track\uFF0C\u4E0D\u5728\u8FD9\u91CC\u8986\u76D6\uFF09 */\n   .dshpc-split > :first-child .dshpc-picker__trigger{background:var(--dshpc-surface-sunken);}\n   /* Segmented\uFF1A\u53EA\u53BB\u5916\u5706\u89D2\u4E0E\u63CF\u8FB9\uFF0C\u7070\u8F68\u4FDD\u7559\uFF1Bpadding \u4FDD\u6301 3px \u4E0D\u52A8 \u2014\u2014 \u5B83\u662F\u9AD8\u5EA6\u5951\u7EA6\u7684\u4E00\u90E8\u5206\n    \uFF083 + item + 3 = control-h\uFF09\u3002bordered \u90A3\u6863\u53BB\u6389\u63CF\u8FB9\u3001\u628A\u8BA9\u7ED9\u63CF\u8FB9\u7684 1px \u8FD8\u56DE padding\uFF0C\n    \u5426\u5219\u4F1A\u6BD4\u53F3\u8FB9\u77EE 2px\u3002 */\n   .dshpc-split .dshpc-seg{border-radius:0;border:0;}\n   .dshpc-split .dshpc-seg--bordered{padding:3px;}\n";
 
 // dist/ui/controls/table-css.generated.js
-var TABLE_BASE_CSS = "/* \u2500\u2500 \u8868\u683C\u57FA\u7840\u5C42\uFF08\u7ED3\u6784 + \u4EA4\u4E92 + \u7A7A\u6001\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u89C2\u5206\u6863 = \u5206\u7EC4\u4EF6 + \u5206\u6587\u4EF6\uFF1A\u672C\u6587\u4EF6\u53EA\u653E\u6240\u6709\u5916\u89C2\u5171\u7528\u7684\u90E8\u5206\uFF1B\n   \u8868\u5934\u5E95\u8272\u3001\u5206\u9694\u7EBF\u3001\u60AC\u6D6E / \u9009\u4E2D\u8272\u7531\u76AE\u80A4\u6587\u4EF6\u8D1F\u8D23\uFF08table-plain.css \u662F\u7B2C\u4E00\u6863\uFF09\u3002\n   \u76AE\u80A4\u9009\u62E9\u5668\u4E00\u5F8B\u6302\u5728 .dshpc-table--<skin> \u4E0B\uFF0C\u4E0E\u57FA\u7840\u5C42\u4E0D\u540C\u540D \u2014\u2014 \u6CE8\u5165\u987A\u5E8F\u4E0D\u5F71\u54CD\u80DC\u8D1F\n   \uFF08test/css-contract.test.mjs \u7981\u6B62\u8DE8\u5E38\u91CF\u540C\u540D\u9009\u62E9\u5668\uFF09\u3002\n   \u5706\u89D2\u88C1\u526A / \u6A2A\u5411\u6EDA\u52A8\u5F52\u8C03\u7528\u65B9\u5BB9\u5668\uFF0C\u672C\u5C42\u4E0D\u8BBE overflow\uFF1B\u4E5F\u4E0D\u505A\u8868\u5934\u5438\u9876\uFF1A\n   \u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF08\u8981\u5438\u9876\u8BF7\u5728\u5916\u5C42\u5BB9\u5668\u5904\u7406\uFF09\u3002 */\n\n.dshpc-table{--dshpc-table-pad-x:var(--dshpc-space-3);--dshpc-table-head-h:44px;--dshpc-table-row-h:48px;\n  width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;box-sizing:border-box;\n  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n\n/* \u5BC6\u5EA6\u4E09\u6863\uFF1A\u53EA\u6539\u884C\u9AD8\u4E0E\u6C34\u5E73\u5185\u8DDD\uFF0C\u914D\u8272\u4E0E\u5206\u9694\u7EBF\u5F52\u76AE\u80A4\u3002compact / comfortable \u5404\u4E00\u884C\uFF0C\n   \u65B0\u589E\u6863\u4F4D\u5728\u6B64\u8FFD\u52A0\uFF1B\u5217\u7EA7 padding \u8D70\u5185\u8054 style \u8986\u76D6\uFF08\u4E0D\u5728\u8FD9\u91CC\u518D\u5F00\u4E00\u5957\u53D8\u91CF\uFF09\u3002\n   \u9ED8\u8BA4\u6C34\u5E73\u5185\u8DDD 12px\uFF08space-3\uFF09\u2014\u2014 \u53C2\u8003\u7A3F\u7684\u8272\u5757\u95F4\u8DDD\uFF0C16px \u504F\u677E\u3002 */\n.dshpc-table--density-compact{--dshpc-table-pad-x:var(--dshpc-space-2);--dshpc-table-head-h:36px;--dshpc-table-row-h:36px;}\n.dshpc-table--density-comfortable{--dshpc-table-pad-x:var(--dshpc-space-4);--dshpc-table-head-h:52px;--dshpc-table-row-h:60px;}\n\n.dshpc-table__head-cell,.dshpc-table__cell{box-sizing:border-box;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  text-align:left;vertical-align:middle;font-weight:400;}\n\n/* \u8868\u5934 44 / \u6570\u636E\u884C 48 \u662F default \u6863\uFF08\u53C2\u8003\u7A3F\u5BC6\u5EA6\uFF09\uFF1Bheight \u5728 table-cell \u4E0A\u662F\u6700\u5C0F\u9AD8\uFF0C\n   \u591A\u884C\u5185\u5BB9\u4F1A\u81EA\u52A8\u628A\u884C\u6491\u9AD8\uFF0C\u4E0D\u4F1A\u88AB\u622A\u65AD\u3002 */\n.dshpc-table__head-cell{height:var(--dshpc-table-head-h);font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg-2);}\n.dshpc-table__head-cell--group{text-align:center;}\n.dshpc-table__cell{height:var(--dshpc-table-row-h);}\n\n.dshpc-table__head-cell--center,.dshpc-table__cell--center{text-align:center;}\n.dshpc-table__head-cell--right,.dshpc-table__cell--right{text-align:right;}\n\n.dshpc-table__row{transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n/* \u53EA\u6709\u4F20\u4E86 onRowClick \u7684\u884C\u624D\u662F\u53EF\u70B9\u7684\uFF08\u6570\u636E\u5C5E\u6027\u7531\u7EC4\u4EF6\u6309\u6B64\u6253\uFF09\u3002 */\n.dshpc-table__row[data-interactive='true']{cursor:pointer;}\n.dshpc-table__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}\n\n/* \u6591\u9A6C\u7EB9\u662F\u901A\u7528\u80FD\u529B\uFF08\u8868\u7EA7 striped \u5F00\u5173\uFF09\uFF0C\u653E\u5728\u57FA\u7840\u5C42\uFF1A\u5E95\u8272\u53D6 token\uFF0C\u5404\u6863\u76AE\u80A4\u4E0D\u5FC5\u5404\u81EA\u5B9E\u73B0\u3002\n   \u9009\u62E9\u5668\u523B\u610F\u53EA\u5230 3 \u4E2A\u7C7B\u7EA7\u522B\uFF08\u8868\u7EA7 + \u884C + :nth-child\uFF09\uFF1B\u76AE\u80A4\u5C42\u7684\u884C\u6001\u89C4\u5219\u5E26 __body \u4E0A\u4E0B\u6587\n   + \u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u662F 4 \u7EA7 \u21D2 \u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u5730\u538B\u8FC7\u5B83\u3002\n   2026-10-30 \u771F\u673A\u4E8B\u6545\uFF1A\u8FD9\u91CC\u66FE\u5199\u6EE1 4 \u7EA7\uFF08\u591A\u4E86\u4E00\u4E2A __body\uFF09\uFF0C\u4E0E\u9009\u4E2D\u7684 4 \u7EA7\u76F8\u540C \u21D2 \u57FA\u7840\u5C42\n   \u6BD4\u76AE\u80A4\u540E\u6CE8\u5165\uFF0C\u5076\u6570\u884C\u6C38\u8FDC\u88AB\u6591\u9A6C\u7EB9\u76D6\u4F4F\uFF08\u300C\u5355\u6570\u884C\u80FD\u9009\u4E2D\u3001\u53CC\u6570\u884C\u70B9\u4E86\u6CA1\u53CD\u5E94\u300D\uFF09\u3002 */\n.dshpc-table--striped .dshpc-table__row:nth-child(even){background:var(--dshpc-plate);}\n\n/* \u5206\u7EC4\u901A\u680F\uFF1A\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u677F\u5757\uFF08\u5DE5\u4F5C\u533A A / \u5DE5\u4F5C\u533A B\uFF09\u65F6\uFF0C\u6BCF\u7EC4\u5148\u6765\u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u5927\u6807\u9898\uFF0C\n   \u7136\u540E\u624D\u662F\u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u6570\u636E\u884C\u3002\u7ED3\u6784 + \u5E95\u8272\u5F52\u57FA\u7840\u5C42\uFF08\u53EA\u7528 token\uFF0C\u5404\u6863\u76AE\u80A4\u5171\u540C\u6210\u7ACB\uFF09\uFF1B\n   \u901A\u680F\u5E95\u8D70 --dshpc-table-banner-bg\uFF08\u4E0E\u8868\u5934\u4E92\u6362\u7684\u90A3\u4E00\u6863\uFF0C2026-10-30 \u7528\u6237\u5B9A\uFF09\uFF1B\n   \u901A\u680F\u4E0E\u7EC4\u8868\u5934\u4E4B\u95F4\u753B\u4E00\u6761\u7EBF\uFF08\u7528\u6237 2026-10-30\uFF1A\u90A3\u4E4B\u95F4\u4E5F\u8981\u6709 border\uFF09\uFF1B\n   \u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u901A\u680F\u9876\u7EBF\u9694\u5F00\uFF0C\u7B2C\u4E00\u7EC4\u9876\u90E8\u4E0D\u753B\uFF08\u5916\u6846\u5DF2\u7ECF\u5728\u90A3\u513F\uFF0C\u753B\u4E86\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table__group-cell{height:var(--dshpc-table-head-h);padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;background:var(--dshpc-table-banner-bg);border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  text-align:left;vertical-align:middle;font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg);}\n.dshpc-table__group-body:first-of-type .dshpc-table__group-cell{border-top:0;}\n\n.dshpc-table__empty{height:80px;padding:0 var(--dshpc-space-4);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n";
+var TABLE_BASE_CSS = "/* \u2500\u2500 \u8868\u683C\u57FA\u7840\u5C42\uFF08\u7ED3\u6784 + \u4EA4\u4E92 + \u7A7A\u6001\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u89C2\u5206\u6863 = \u5206\u7EC4\u4EF6 + \u5206\u6587\u4EF6\uFF1A\u672C\u6587\u4EF6\u53EA\u653E\u6240\u6709\u5916\u89C2\u5171\u7528\u7684\u90E8\u5206\uFF1B\n   \u8868\u5934\u5E95\u8272\u3001\u5206\u9694\u7EBF\u3001\u60AC\u6D6E / \u9009\u4E2D\u8272\u7531\u76AE\u80A4\u6587\u4EF6\u8D1F\u8D23\uFF08table-plain.css \u662F\u7B2C\u4E00\u6863\uFF09\u3002\n   \u76AE\u80A4\u9009\u62E9\u5668\u4E00\u5F8B\u6302\u5728 .dshpc-table--<skin> \u4E0B\uFF0C\u4E0E\u57FA\u7840\u5C42\u4E0D\u540C\u540D \u2014\u2014 \u6CE8\u5165\u987A\u5E8F\u4E0D\u5F71\u54CD\u80DC\u8D1F\n   \uFF08test/css-contract.test.mjs \u7981\u6B62\u8DE8\u5E38\u91CF\u540C\u540D\u9009\u62E9\u5668\uFF09\u3002\n   \u5706\u89D2\u88C1\u526A / \u6A2A\u5411\u6EDA\u52A8\u5F52\u8C03\u7528\u65B9\u5BB9\u5668\uFF0C\u672C\u5C42\u4E0D\u8BBE overflow\uFF1B\u4E5F\u4E0D\u505A\u8868\u5934\u5438\u9876\uFF1A\n   \u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF08\u8981\u5438\u9876\u8BF7\u5728\u5916\u5C42\u5BB9\u5668\u5904\u7406\uFF09\u3002 */\n\n.dshpc-table{--dshpc-table-pad-x:var(--dshpc-space-3);--dshpc-table-head-h:44px;--dshpc-table-row-h:48px;\n  width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;box-sizing:border-box;\n  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n\n/* \u5BC6\u5EA6\u4E09\u6863\uFF1A\u53EA\u6539\u884C\u9AD8\u4E0E\u6C34\u5E73\u5185\u8DDD\uFF0C\u914D\u8272\u4E0E\u5206\u9694\u7EBF\u5F52\u76AE\u80A4\u3002compact / comfortable \u5404\u4E00\u884C\uFF0C\n   \u65B0\u589E\u6863\u4F4D\u5728\u6B64\u8FFD\u52A0\uFF1B\u5217\u7EA7 padding \u8D70\u5185\u8054 style \u8986\u76D6\uFF08\u4E0D\u5728\u8FD9\u91CC\u518D\u5F00\u4E00\u5957\u53D8\u91CF\uFF09\u3002\n   \u9ED8\u8BA4\u6C34\u5E73\u5185\u8DDD 12px\uFF08space-3\uFF09\u2014\u2014 \u53C2\u8003\u7A3F\u7684\u8272\u5757\u95F4\u8DDD\uFF0C16px \u504F\u677E\u3002 */\n.dshpc-table--density-compact{--dshpc-table-pad-x:var(--dshpc-space-2);--dshpc-table-head-h:36px;--dshpc-table-row-h:36px;}\n.dshpc-table--density-comfortable{--dshpc-table-pad-x:var(--dshpc-space-4);--dshpc-table-head-h:52px;--dshpc-table-row-h:60px;}\n\n.dshpc-table__head-cell,.dshpc-table__cell{box-sizing:border-box;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  text-align:left;vertical-align:middle;font-weight:400;}\n\n/* \u8868\u5934 44 / \u6570\u636E\u884C 48 \u662F default \u6863\uFF08\u53C2\u8003\u7A3F\u5BC6\u5EA6\uFF09\uFF1Bheight \u5728 table-cell \u4E0A\u662F\u6700\u5C0F\u9AD8\uFF0C\n   \u591A\u884C\u5185\u5BB9\u4F1A\u81EA\u52A8\u628A\u884C\u6491\u9AD8\uFF0C\u4E0D\u4F1A\u88AB\u622A\u65AD\u3002 */\n.dshpc-table__head-cell{height:var(--dshpc-table-head-h);font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg-2);}\n.dshpc-table__head-cell--group{text-align:center;}\n.dshpc-table__cell{height:var(--dshpc-table-row-h);}\n\n.dshpc-table__head-cell--center,.dshpc-table__cell--center{text-align:center;}\n.dshpc-table__head-cell--right,.dshpc-table__cell--right{text-align:right;}\n\n.dshpc-table__row{transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n/* \u53EA\u6709\u4F20\u4E86 onRowClick \u7684\u884C\u624D\u662F\u53EF\u70B9\u7684\uFF08\u6570\u636E\u5C5E\u6027\u7531\u7EC4\u4EF6\u6309\u6B64\u6253\uFF09\u3002 */\n.dshpc-table__row[data-interactive='true']{cursor:pointer;}\n.dshpc-table__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}\n\n/* \u6591\u9A6C\u7EB9\u662F\u901A\u7528\u80FD\u529B\uFF08\u8868\u7EA7 striped \u5F00\u5173\uFF09\uFF0C\u653E\u5728\u57FA\u7840\u5C42\uFF1A\u5E95\u8272\u53D6 token\uFF0C\u5404\u6863\u76AE\u80A4\u4E0D\u5FC5\u5404\u81EA\u5B9E\u73B0\u3002\n   \u9009\u62E9\u5668\u523B\u610F\u53EA\u5230 3 \u4E2A\u7C7B\u7EA7\u522B\uFF08\u8868\u7EA7 + \u884C + :nth-child\uFF09\uFF1B\u76AE\u80A4\u5C42\u7684\u884C\u6001\u89C4\u5219\u5E26 __body \u4E0A\u4E0B\u6587\n   + \u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u662F 4 \u7EA7 \u21D2 \u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u5730\u538B\u8FC7\u5B83\u3002\n   2026-10-30 \u771F\u673A\u4E8B\u6545\uFF1A\u8FD9\u91CC\u66FE\u5199\u6EE1 4 \u7EA7\uFF08\u591A\u4E86\u4E00\u4E2A __body\uFF09\uFF0C\u4E0E\u9009\u4E2D\u7684 4 \u7EA7\u76F8\u540C \u21D2 \u57FA\u7840\u5C42\n   \u6BD4\u76AE\u80A4\u540E\u6CE8\u5165\uFF0C\u5076\u6570\u884C\u6C38\u8FDC\u88AB\u6591\u9A6C\u7EB9\u76D6\u4F4F\uFF08\u300C\u5355\u6570\u884C\u80FD\u9009\u4E2D\u3001\u53CC\u6570\u884C\u70B9\u4E86\u6CA1\u53CD\u5E94\u300D\uFF09\u3002 */\n.dshpc-table--striped .dshpc-table__row:nth-child(even){background:var(--dshpc-plate);}\n\n/* \u5206\u7EC4\u901A\u680F\uFF1A\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u677F\u5757\uFF08\u5DE5\u4F5C\u533A A / \u5DE5\u4F5C\u533A B\uFF09\u65F6\uFF0C\u6BCF\u7EC4\u5148\u6765\u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u5927\u6807\u9898\uFF0C\n   \u7136\u540E\u624D\u662F\u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u6570\u636E\u884C\u3002\u7ED3\u6784 + \u5E95\u8272\u5F52\u57FA\u7840\u5C42\uFF08\u53EA\u7528 token\uFF0C\u5404\u6863\u76AE\u80A4\u5171\u540C\u6210\u7ACB\uFF09\uFF1B\n   \u901A\u680F\u5E95\u8D70 --dshpc-table-banner-bg\uFF08\u4E0E\u8868\u5934\u4E92\u6362\u7684\u90A3\u4E00\u6863\uFF0C2026-10-30 \u7528\u6237\u5B9A\uFF09\uFF1B\n   \u901A\u680F\u4E0E\u7EC4\u8868\u5934\u4E4B\u95F4\u753B\u4E00\u6761\u7EBF\uFF08\u7528\u6237 2026-10-30\uFF1A\u90A3\u4E4B\u95F4\u4E5F\u8981\u6709 border\uFF09\uFF1B\n   \u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u901A\u680F\u9876\u7EBF\u9694\u5F00\uFF0C\u7B2C\u4E00\u7EC4\u9876\u90E8\u4E0D\u753B\uFF08\u5916\u6846\u5DF2\u7ECF\u5728\u90A3\u513F\uFF0C\u753B\u4E86\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table__group-cell{height:var(--dshpc-table-head-h);padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;background:var(--dshpc-table-banner-bg);border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  text-align:left;vertical-align:middle;font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg);}\n.dshpc-table__group-body:first-of-type .dshpc-table__group-cell{border-top:0;}\n\n/* \u901A\u680F\u6807\u9898\u7684\u56FA\u5B9A\u6807\u7B7E\uFF08\u77ED\u7AD6\u7EBF\uFF09\u4E0E\u6392\u7248\u7531 SectionHead \u81EA\u5E26\uFF084px \u5706\u5934\uFF09\uFF0C\u672C\u5C42\u4E0D\u518D\u753B\u3002 */\n\n.dshpc-table__empty{height:80px;padding:0 var(--dshpc-space-4);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n\n/* \u5185\u5EFA\u5206\u9875\u7684\u5916\u58F3\uFF1A\u8868\u683C\u5728\u4E0A\u3001\u5206\u9875\u6761\u5728\u4E0B\uFF0C\u95F4\u8DDD\u8D70 space-3\uFF08\u5206\u9875\u6761\u81EA\u5DF1\u7BA1\u5DE6\u53F3\u5BF9\u9F50\uFF09\u3002 */\n.dshpc-table-frame{display:flex;flex-direction:column;gap:var(--dshpc-space-3);}\n";
 
 // dist/ui/controls/table-plain-css.generated.js
 var TABLE_PLAIN_CSS = "/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 Plain\uFF08\u7B2C\u4E00\u4E2A\u6837\u5F0F\uFF1A\u767D\u5361\u7247\u4E0A\u7684\u8F7B\u91CF\u8868\u683C\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7279\u5F81\uFF1A\u5916\u6846 + \u7070\u5E95\u8868\u5934\uFF08\u542B\u4E0B\u8FB9\u7EBF\uFF0C\u53CC\u884C\u5206\u7EC4\u8868\u5934\u4E5F\u6E05\u695A\uFF09\u3001\u7AD6\u5411\u5206\u9694\u7EBF\u3001\n   \u6570\u636E\u884C\u53EA\u4FDD\u7559\u6781\u6DE1\u5E95\u7EBF\uFF08\u4E0D\u753B\u91CD\u6A2A\u7EBF\uFF09\u3001\u884C\u60AC\u6D6E\u6DE1\u84DD\u3001\u9009\u4E2D\u884C\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7 3px \u84DD\u7AD6\u6761\u3002\n   \u9009\u62E9\u5668\u5168\u90E8\u6302\u5728 .dshpc-table--plain \u4E0B\uFF0C\u548C\u57FA\u7840\u5C42\u4E0D\u540C\u540D\uFF08\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\uFF09\u3002\n   \u7AD6\u5206\u9694\u7EBF\u6309\u5217\u58F0\u660E\uFF08\u683C\u5B50\u4E0A\u7684 data-divider\uFF09\uFF0C\u4E0D\u7528\u76F8\u90BB\u5144\u5F1F\u9009\u62E9\u5668 \u2014\u2014 \u540E\u8005\u4F1A\u8BA9\u6BCF\u884C\u9996\u683C\n   \u6C38\u8FDC\u6CA1\u6709\u5DE6\u7EBF\uFF08\u7528\u6237 2026-10-30 \u771F\u673A\u770B\u5230\u7684 Name \u5DE6\u4FA7\u7F3A\u7EBF\uFF09\uFF0C\u4E14\u5355\u5143\u683C\u8DE8\u5217\u540E\u4F1A\u753B\u9519\u4F4D\u7F6E\u3002\n   \u540E\u7EED\u5916\u89C2\u7167\u6B64\u53E6\u5EFA\uFF1Atable-grid.css / table-zebra.css\uFF0C\u5404\u81EA\u4E00\u4E2A\u7EC4\u4EF6\u3001\u5404\u81EA import \u81EA\u5DF1\u90A3\u4EFD\u3002 */\n\n/* \u5916\u6846\u56DB\u6001\uFF1Aall \u56DB\u8FB9 / x \u53EA\u6709\u5DE6\u53F3 / y \u53EA\u6709\u4E0A\u4E0B / none \u5168\u4E0D\u8981\u3002\n   \u7EC4\u4EF6\u603B\u4F1A\u6309 borders \u5C5E\u6027\u548C\u4E0A\u5BF9\u5E94 class\uFF0C\u6545\u8FD9\u91CC\u4E0D\u5B58\u5728\u300C\u65E0 class \u7684\u88F8\u8868\u300D\u3002\n   \u300C\u4E0D\u8981\u5DE6\u53F3\u4E24\u6761\u8FB9\u300D\u5C31\u662F borders='y'\u3002 */\n.dshpc-table--plain.dshpc-table--borders-all{border:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-x{border-left:1px solid var(--dshpc-border);\n  border-right:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-y{border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-none{border:0;}\n\n/* \u8868\u5934\uFF1A\u4E2D\u6027\u7070\u5E95 + \u4E0B\u8FB9\u7EBF\u3002\u5E95\u8272\u8D70 --dshpc-table-head-bg\uFF08= --dshpc-surface-sunken\uFF0C\n   \u4E0E\u901A\u680F\u90A3\u5C42\u7070\u540C\u6E90\uFF1B2026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934 / \u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1B\u4E0B\u8FB9\u7EBF\u515C\u4F4F\u5206\u7EC4\u8868\u5934\u7684\u7B2C\u4E8C\u5C42\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell{\n  background:var(--dshpc-table-head-bg);\n  border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-table--plain .dshpc-table__head-cell--group{color:var(--dshpc-fg-3);}\n\n/* \u8868\u5934\u591A\u8272\uFF1A\u5217\u7EA7 headerTone \u6253\u5230 data-header-tone\uFF0C\u6D45\u5E95 + \u540C\u8272\u6587\u5B57\u3002\n   \u8272\u503C\u5168\u90E8\u6765\u81EA token\uFF08soft \u5E95 / \u5B9E\u8272\u5B57\uFF09\uFF0C\u6697\u8272\u4E3B\u9898\u81EA\u52A8\u8DDF\u968F\uFF0C\u4E0D\u5199\u6B7B\u4EFB\u4F55 hex\u3002\n   \u8FD9\u7EC4\u89C4\u5219\u6BD4\u4E0A\u65B9\u7070\u5E95\u89C4\u5219\u591A\u4E00\u4E2A\u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u8986\u76D6\u9ED8\u8BA4\u7070\u5E95\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='business']{background:var(--dshpc-business-soft);color:var(--dshpc-business);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='success']{background:var(--dshpc-success-soft);color:var(--dshpc-success);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='warning']{background:var(--dshpc-warning-soft);color:var(--dshpc-warning);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='danger']{background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='purple']{background:var(--dshpc-purple-soft);color:var(--dshpc-purple);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='pink']{background:var(--dshpc-pink-soft);color:var(--dshpc-pink);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='cyan']{background:var(--dshpc-cyan-soft);color:var(--dshpc-cyan);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='teal']{background:var(--dshpc-teal-soft);color:var(--dshpc-teal);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='orange']{background:var(--dshpc-orange-soft);color:var(--dshpc-orange);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='indigo']{background:var(--dshpc-indigo-soft);color:var(--dshpc-indigo);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='rose']{background:var(--dshpc-rose-soft);color:var(--dshpc-rose);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='slate']{background:var(--dshpc-slate-soft);color:var(--dshpc-slate);}\n\n/* \u7AD6\u5206\u9694\u7EBF\uFF1A\u6309\u5217\u58F0\u660E\uFF0C**\u9ED8\u8BA4\u4E0D\u753B**\u3002\u7EC4\u4EF6\u53EA\u7ED9 divider: true \u7684\u5217\u6253 data-divider='left'\uFF0C\n   \u9996\u5217\u6052\u4E0D\u753B\uFF08\u90A3\u662F\u5916\u6846\u7684\u4F4D\u7F6E\uFF09\u3002\u9ED8\u8BA4\u8868\u683C = \u53EA\u6709\u6A2A\u7EBF\u3001\u6CA1\u6709\u4E00\u6761\u7AD6\u7EBF\uFF1B\n   \u8981\u300C\u5217\u95F4\u6709\u7EBF\u300D\u5C31\u7ED9\u5BF9\u5E94\u5217 divider:true\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-divider='left'],\n.dshpc-table--plain .dshpc-table__cell[data-divider='left']{border-left:1px solid var(--dshpc-border);}\n\n/* \u6570\u636E\u884C\u4E4B\u95F4\u7684\u6781\u6DE1\u5E95\u7EBF\uFF1A\u53EA\u5E2E\u773C\u775B\u300C\u5206\u884C\u300D\uFF0C\u4E0D\u56DE\u5230\u7C97\u6A2A\u7EBF\u8868\u683C\u7684\u8001\u6837\u5B50\u3002 */\n.dshpc-table--plain .dshpc-table__row + .dshpc-table__row .dshpc-table__cell{\n  border-top:1px solid var(--dshpc-border-faint);\n}\n\n/* \u884C\u60AC\u6D6E\uFF1A\u53EA\u5728\u53EF\u70B9\u884C\u4E0A\u7ED9\u53CD\u9988\uFF0C\u9759\u6001\u8868\u683C\u4E0D\u8BEF\u5BFC\u7528\u6237\u4EE5\u4E3A\u80FD\u70B9\u3002\n   \u5E95\u8272\u662F\u6781\u6DE1\u4E2D\u6027\u7070\uFF08--dshpc-table-row-hover\uFF1A\u4EAE\u8272\u4E00\u5C42\u6DE1\u9ED1 \u22481.5%\uFF0C\u6697\u8272\u4E00\u5C42\u6DE1\u767D \u22483%\uFF09\u2014\u2014\n   2026-10-30 \u7528\u6237\uFF1Ahover \u8981\u7279\u522B\u6DE1\u7684\u7070\u3001\u4E0D\u8981\u6DE1\u84DD\uFF08\u7B2C\u4E8C\u6B21\u53C8\u8981\u6C42\u518D\u6D45\u4E00\u534A\uFF09\u3002\u5E26 __body \u4E0A\u4E0B\u6587\u662F\u4E3A\u4E86\u538B\u8FC7\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF08\u89C1 table.css\uFF09\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-table-row-hover);}\n\n/* \u9009\u4E2D\u884C\uFF1A\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7\u84DD\u7AD6\u6761\u3002\u7528\u80CC\u666F\u6E10\u53D8\u753B\u6761\uFF0C\u907F\u514D tr \u4E0A\u4F2A\u5143\u7D20 / \u5B9A\u4F4D\u7684\u517C\u5BB9\u95EE\u9898\uFF1B\n   \u4E24\u6761\u9009\u62E9\u5668\u540C\u4E00\u4EFD\u58F0\u660E\uFF1A\u60AC\u6D6E\u6001\uFF08\u591A\u4E00\u4E2A\u5C5E\u6027 + \u4F2A\u7C7B\uFF09\u4E0D\u4F1A\u76D6\u6389\u9009\u4E2D\u6001\u3002\n   \u5E95\u8272\u7528 business-soft\uFF08\u6BD4\u60AC\u6D6E\u518D\u660E\u786E\u4E00\u6863\u4F46\u4ECD\u662F\u6D45\u8272\uFF09\uFF0C\u6761\u672C\u8EAB\u624D\u662F\u300C\u9009\u4E2D\u300D\u7684\u4FE1\u53F7\u3002\n   \u7279\u5F02\u6027 4 \u7EA7\uFF0C\u9AD8\u4E8E\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF083 \u7EA7\uFF09\u21D2 \u5076\u6570\u884C\u4E5F\u80FD\u6B63\u5E38\u9009\u4E2D\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'],\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'][data-interactive='true']:hover{\n  background:linear-gradient(to right,var(--dshpc-business) 3px,var(--dshpc-business-soft) 3px);\n}\n";
+
+// dist/ui/controls/pagination-css.generated.js
+var PAGINATION_CSS = "/* \u2500\u2500 \u5206\u9875\uFF08\u2039 Previous 1 2 3 \u2026 36 Next \u203A\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5F53\u524D\u9875 = \u84DD\u8272\u5706\u89D2\u65B9\u5757 + \u767D\u5B57\uFF08\u5B9E\u5FC3\u9762\u7684\u5B57\u5FC5\u987B\u8D70 --dshpc-on-signal\uFF0C\u4E0D\u8BB8\u7528\u4E3B\u9898\u53CD\u8272\uFF09\uFF1B\n   \u5176\u4F59\u9875\u7801\u662F\u7EAF\u6587\u5B57\u6309\u94AE\uFF0C\u60AC\u6D6E\u53EA\u7ED9\u6781\u6DE1\u4E2D\u6027\u5E95\u3002\u5BF9\u9F50\u7531 --left / --center / --right \u4E09\u4E2A\u4FEE\u9970\u51B3\u5B9A\uFF0C\n   \u7EC4\u4EF6\u9ED8\u8BA4 right\u3002\u989C\u8272\u5168\u90E8\u8D70 token\uFF0C\u660E\u6697\u81EA\u52A8\u8DDF\u968F\u5BBF\u4E3B\u3002 */\n\n.dshpc-pagination{display:flex;align-items:center;gap:var(--dshpc-space-2);flex-wrap:wrap;\n  font-size:var(--dshpc-font-sm);line-height:1;color:var(--dshpc-fg-2);}\n\n.dshpc-pagination--left{justify-content:flex-start;}\n.dshpc-pagination--center{justify-content:center;}\n.dshpc-pagination--right{justify-content:flex-end;}\n\n.dshpc-pagination__total{color:var(--dshpc-fg-3);margin-inline-end:var(--dshpc-space-1);}\n\n.dshpc-pagination__pages{display:flex;align-items:center;gap:2px;}\n\n/* \u9875\u7801 / \u4E0A\u4E0B\u9875 = \u6838\u5FC3 Button\uFF08\u5F53\u524D\u9875 info \u5B9E\u5FC3\u84DD\u3001\u5176\u4F59 ghost\uFF09\uFF0C\u7BAD\u5934 = \u5168\u7AD9\u552F\u4E00 Chevron\u3002\n   \u8FD9\u91CC\u53EA\u8865\u5C3A\u5BF8\u4E0E\u95F4\u8DDD\uFF0C\u4E0D\u91CD\u753B\u6309\u94AE\u76AE\u80A4\uFF1B\u4E24\u7EA7\u9009\u62E9\u5668\u538B\u8FC7 .dshpc-btn--md \u7684\u5185\u8DDD\u3002 */\n.dshpc-pagination .dshpc-pagination__page{padding:0 6px;min-width:28px;}\n.dshpc-pagination .dshpc-pagination__nav{padding:0 var(--dshpc-space-2);}\n\n.dshpc-pagination__ellipsis{display:inline-flex;align-items:center;justify-content:center;\n  min-width:28px;height:28px;color:var(--dshpc-fg-3);}\n\n.dshpc-pagination__simple{min-width:64px;text-align:center;font-variant-numeric:tabular-nums;\n  color:var(--dshpc-fg);}\n\n/* \u7B80\u6D01\u6A21\u5F0F\u53EA\u7559\u7BAD\u5934\uFF1A\u6587\u5B57\u6807\u7B7E\u9690\u85CF\uFF0C\u7BAD\u5934\u4ECD\u7136\u53EF\u89C1\uFF08\u65E0\u969C\u788D\u540D\u8FD8\u5728 aria-label \u4E0A\uFF09\u3002 */\n.dshpc-pagination--simple .dshpc-pagination__text{display:none;}\n\n/* \u6BCF\u9875\u6761\u6570\u4E0B\u62C9 = \u6838\u5FC3 Picker\uFF08\u7BAD\u5934\u662F\u5168\u7AD9\u552F\u4E00\u7684 Chevron\uFF09\uFF1A\u53EA\u6536\u7A84\u4E0D\u53C2\u4E0E\u4F38\u7F29\u3002 */\n.dshpc-pagination__size{flex:none;}\n";
+
+// dist/ui/controls/section-head-css.generated.js
+var SECTION_HEAD_CSS = "/* \u5206\u533A\u6807\u9898\u884C\uFF1A\u6807\u7B7E\uFF08\u53EF\u9009\uFF0C\u753B\u51FA\u6765\u7684\u77ED\u7AD6\u7EBF\uFF09/ icon + \u6807\u9898 + \u53F3\u4FA7\u63A7\u4EF6\u3002 */\n.dshpc-section-head{display:flex;align-items:center;gap:var(--dshpc-space-2);\n  margin-bottom:var(--dshpc-space-3);}\n.dshpc-section-head--flush{margin-bottom:0;}\n\n.dshpc-section-head__bar{flex:none;width:4px;height:1em;border-radius:999px;\n  font-size:var(--dshpc-font-lg);background:var(--dshpc-fg-2);}\n\n.dshpc-section-head__icon{display:inline-flex;align-items:center;flex:none;\n  line-height:var(--dshpc-line-lg);color:var(--dshpc-fg-3);}\n\n.dshpc-section-head__title{font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);\n  font-weight:600;color:var(--dshpc-fg);flex:none;}\n\n.dshpc-section-head__right{flex:1;display:flex;align-items:center;\n  justify-content:flex-end;gap:var(--dshpc-space-2);min-width:0;}\n";
 
 // dist/ui/FieldHint.js
 function FieldHint(props) {
@@ -3957,10 +3979,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h66 = Math.floor(totalSec / 3600);
+  const h68 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h66 > 0 ? `${h66}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h68 > 0 ? `${h68}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -5061,8 +5083,184 @@ function Chip(props) {
   }, marqueeLabel ? (0, import_react20.createElement)(MarqueeText, { text: children, className: "dshpc-chip__label" }) : children ?? null);
 }
 
-// dist/ui/table-shared.js
+// dist/ui/Table.js
+var import_react24 = require("react");
+
+// dist/ui/Pagination.js
 var import_react21 = require("react");
+
+// dist/ui/pagination-logic.js
+function pageCountOf(total, pageSize) {
+  const size4 = Math.max(1, Math.floor(pageSize));
+  const rows = Math.max(0, Math.floor(total));
+  return Math.max(1, Math.ceil(rows / size4));
+}
+function clampPage(page, pageCount) {
+  const count3 = Math.max(1, Math.floor(pageCount));
+  if (!Number.isFinite(page))
+    return 1;
+  return Math.min(Math.max(1, Math.floor(page)), count3);
+}
+function pageRange(page, pageSize, total) {
+  const rows = Math.max(0, Math.floor(total));
+  if (rows === 0)
+    return [0, 0];
+  const size4 = Math.max(1, Math.floor(pageSize));
+  const current3 = clampPage(page, pageCountOf(rows, size4));
+  const from2 = (current3 - 1) * size4 + 1;
+  return [from2, Math.min(rows, from2 + size4 - 1)];
+}
+function range(start, end) {
+  const out = [];
+  for (let n = start; n <= end; n += 1)
+    out.push(n);
+  return out;
+}
+function pageItems(page, pageCount, siblingCount = 1, boundaryCount = 1) {
+  const count3 = Math.max(1, Math.floor(pageCount));
+  const current3 = clampPage(page, count3);
+  const boundary = Math.max(0, Math.floor(boundaryCount));
+  const siblings = Math.max(0, Math.floor(siblingCount));
+  const startPages = range(1, Math.min(boundary, count3));
+  const endPages = range(Math.max(count3 - boundary + 1, boundary + 1), count3);
+  const siblingsStart = Math.max(Math.min(current3 - siblings, count3 - boundary - siblings * 2 - 1), boundary + 2);
+  const siblingsEnd = Math.min(Math.max(current3 + siblings, boundary + siblings * 2 + 2), endPages.length > 0 ? endPages[0] - 2 : count3 - 1);
+  const items = [...startPages];
+  if (siblingsStart > boundary + 2)
+    items.push("gap");
+  else if (boundary + 1 < count3 - boundary)
+    items.push(boundary + 1);
+  items.push(...range(siblingsStart, siblingsEnd));
+  if (siblingsEnd < count3 - boundary - 1)
+    items.push("gap");
+  else if (count3 - boundary > boundary)
+    items.push(count3 - boundary);
+  items.push(...endPages);
+  return items;
+}
+
+// dist/ui/Pagination.js
+function Pagination(props) {
+  ensureComponentStyles("pagination", PAGINATION_CSS);
+  const tt = props.translate ?? t;
+  const pageSize = Math.max(1, Math.floor(props.pageSize ?? 10));
+  const total = Math.max(0, Math.floor(props.total));
+  const count3 = pageCountOf(total, pageSize);
+  const page = clampPage(props.page, count3);
+  if (props.hideOnSinglePage === true && count3 <= 1)
+    return null;
+  const disabled = props.disabled === true;
+  const [from2, to] = pageRange(page, pageSize, total);
+  const go = (next) => {
+    if (disabled)
+      return;
+    const target = clampPage(next, count3);
+    if (target !== page)
+      props.onChange(target, pageSize);
+  };
+  const navClass = [
+    "dshpc-pagination",
+    `dshpc-pagination--${props.align ?? "right"}`,
+    props.simple === true ? "dshpc-pagination--simple" : "",
+    props.className ?? ""
+  ].filter((s) => s !== "").join(" ");
+  const totalNode = (() => {
+    const showTotal = props.showTotal;
+    if (showTotal === void 0 || showTotal === false)
+      return null;
+    if (typeof showTotal === "function")
+      return showTotal(total, from2, to);
+    return total === 0 ? tt("paginationTotalZero") : tt("paginationTotal", { from: from2, to, total });
+  })();
+  const pageButton = (n) => (0, import_react21.createElement)(Button, {
+    key: n,
+    variant: n === page ? "info" : "ghost",
+    size: "md",
+    className: "dshpc-pagination__page",
+    "aria-current": n === page ? "page" : void 0,
+    "aria-label": tt("paginationPage", { n }),
+    disabled,
+    onClick: () => go(n)
+  }, n);
+  const navButton = (direction) => {
+    const isPrev = direction === "prev";
+    const label = isPrev ? tt("paginationPrev") : tt("paginationNext");
+    return (0, import_react21.createElement)(Button, {
+      variant: "ghost",
+      size: "md",
+      className: "dshpc-pagination__nav",
+      icon: isPrev ? (0, import_react21.createElement)(Chevron, { dir: "left", size: 14 }) : void 0,
+      iconRight: isPrev ? void 0 : (0, import_react21.createElement)(Chevron, { dir: "right", size: 14 }),
+      "aria-label": label,
+      disabled: disabled || (isPrev ? page <= 1 : page >= count3),
+      onClick: () => go(isPrev ? page - 1 : page + 1)
+    }, (0, import_react21.createElement)("span", { className: "dshpc-pagination__text" }, label));
+  };
+  const middle2 = props.simple === true ? [(0, import_react21.createElement)("span", { key: "simple", className: "dshpc-pagination__simple" }, `${String(page)} / ${String(count3)}`)] : pageItems(page, count3, props.siblingCount, props.boundaryCount).map((item, index3) => item === "gap" ? (0, import_react21.createElement)("span", { key: `gap-${String(index3)}`, className: "dshpc-pagination__ellipsis", "aria-hidden": "true" }, "\u2026") : pageButton(item));
+  const options = props.pageSizeOptions ?? [];
+  const sizeNode = options.length === 0 ? null : (0, import_react21.createElement)(Picker, {
+    className: "dshpc-pagination__size",
+    minWidth: "auto",
+    mode: "single",
+    options: options.map((size4) => ({
+      value: String(size4),
+      label: tt("paginationPageSizeOption", { n: size4 })
+    })),
+    value: String(pageSize),
+    disabled,
+    ariaLabel: tt("paginationPageSizeAria"),
+    onChange: (value) => {
+      const next = Number(value);
+      if (!Number.isFinite(next) || next < 1)
+        return;
+      props.onChange(1, next);
+    }
+  });
+  return (0, import_react21.createElement)("nav", {
+    className: navClass,
+    style: props.style,
+    "aria-label": props.ariaLabel ?? tt("paginationAria")
+  }, totalNode === null ? null : (0, import_react21.createElement)("span", { className: "dshpc-pagination__total" }, totalNode), (0, import_react21.createElement)("div", { className: "dshpc-pagination__pages" }, navButton("prev"), ...middle2, navButton("next")), sizeNode);
+}
+
+// dist/ui/table-shared.js
+var import_react23 = require("react");
+
+// dist/ui/SectionHead.js
+var import_react22 = require("react");
+var ACCENT_TONES = [
+  "business",
+  "success",
+  "warning",
+  "danger",
+  "purple",
+  "pink",
+  "cyan",
+  "teal",
+  "orange",
+  "indigo",
+  "rose",
+  "slate"
+];
+function barStyleOf(accent) {
+  if (accent === "default")
+    return void 0;
+  return { background: ACCENT_TONES.includes(accent) ? `var(--dshpc-${accent})` : accent };
+}
+function SectionHead(props) {
+  ensureComponentStyles("section-head", SECTION_HEAD_CSS);
+  const accent = props.accent;
+  const className2 = [
+    "dshpc-section-head",
+    props.flush === true ? "dshpc-section-head--flush" : "",
+    props.className ?? ""
+  ].filter((s) => s !== "").join(" ");
+  return (0, import_react22.createElement)("div", { className: className2, style: props.style }, accent === false || accent === void 0 ? null : (0, import_react22.createElement)("span", {
+    className: "dshpc-section-head__bar",
+    "aria-hidden": "true",
+    style: accent === "default" ? void 0 : barStyleOf(accent)
+  }), props.icon === void 0 ? null : (0, import_react22.createElement)("span", { className: "dshpc-section-head__icon" }, props.icon), (0, import_react22.createElement)("span", { className: "dshpc-section-head__title" }, props.title), props.right === void 0 ? null : (0, import_react22.createElement)("div", { className: "dshpc-section-head__right" }, props.right));
+}
 
 // dist/ui/table-logic.js
 function isTableCellSpec(value) {
@@ -5153,13 +5351,13 @@ function tableShell(skinClass, props) {
     props.striped === true ? "dshpc-table--striped" : "",
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
-  const headRowOf = (cells, level) => (0, import_react21.createElement)("tr", { key: `head-${level}`, className: "dshpc-table__head-row" }, ...cells.map((cell) => {
+  const headRowOf = (cells, level) => (0, import_react23.createElement)("tr", { key: `head-${level}`, className: "dshpc-table__head-row" }, ...cells.map((cell) => {
     const group = cell.colSpan > 1;
     const firstLeafIndex = leafIndexByKey.get(cell.leafKeys[0] ?? "");
     const firstLeaf = firstLeafIndex === void 0 ? void 0 : leaves[firstLeafIndex];
     const className2 = `dshpc-table__head-cell${group ? " dshpc-table__head-cell--group" : ""}${alignClass("dshpc-table__head-cell", cell.column.align)}`;
     const tone = cell.column.headerTone;
-    return (0, import_react21.createElement)("th", {
+    return (0, import_react23.createElement)("th", {
       key: cell.column.key,
       scope: group ? "colgroup" : "col",
       colSpan: cell.colSpan > 1 ? cell.colSpan : void 0,
@@ -5170,7 +5368,7 @@ function tableShell(skinClass, props) {
       "data-header-tone": tone === void 0 || tone === "default" ? void 0 : tone
     }, cell.column.title);
   }));
-  const dataRowsOf = (rows, offset4 = 0) => rows.map((row, index3) => (0, import_react21.createElement)("tr", {
+  const dataRowsOf = (rows, offset4 = 0) => rows.map((row, index3) => (0, import_react23.createElement)("tr", {
     key: row.key,
     className: "dshpc-table__row",
     "data-selected": selected.has(row.key) ? "true" : void 0,
@@ -5196,7 +5394,7 @@ function tableShell(skinClass, props) {
       content2 = cell;
     }
     const align = spec?.align ?? column.align;
-    return (0, import_react21.createElement)("td", {
+    return (0, import_react23.createElement)("td", {
       key: column.key,
       className: `dshpc-table__cell${alignClass("dshpc-table__cell", align)}`,
       style: padStyle(column),
@@ -5206,29 +5404,38 @@ function tableShell(skinClass, props) {
     }, content2 ?? null);
   })));
   const groups = props.groups ?? [];
-  const body = groups.length > 0 ? groups.map((group, groupIndex) => (0, import_react21.createElement)(
+  const body = groups.length > 0 ? groups.map((group, groupIndex) => (0, import_react23.createElement)(
     "tbody",
     { key: group.key, className: "dshpc-table__body dshpc-table__group-body" },
-    // 通栏标题行：横跨所有列，充当这一组的「大标题」
-    (0, import_react21.createElement)("tr", { className: "dshpc-table__group-row" }, (0, import_react21.createElement)("th", {
-      className: "dshpc-table__group-cell",
-      scope: "colgroup",
-      colSpan: leaves.length > 0 ? leaves.length : void 0
-    }, group.title)),
+    // 通栏标题行：横跨所有列，充当这一组的「大标题」。
+    (0, import_react23.createElement)("tr", { className: "dshpc-table__group-row" }, (0, import_react23.createElement)(
+      "th",
+      {
+        className: "dshpc-table__group-cell",
+        scope: "colgroup",
+        colSpan: leaves.length > 0 ? leaves.length : void 0
+      },
+      // 标题的固定标签（短竖线）与排版归 SectionHead —— Table 只负责把标题装进通栏。
+      (0, import_react23.createElement)(SectionHead, {
+        title: group.title,
+        accent: props.groupAccent ?? "default",
+        flush: true
+      })
+    )),
     ...headRows.map((cells, level) => headRowOf(cells, `g${groupIndex}-${level}`)),
     ...dataRowsOf(group.rows, 0)
   )) : [
-    (0, import_react21.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : (0, import_react21.createElement)("tr", { className: "dshpc-table__row" }, (0, import_react21.createElement)("td", { className: "dshpc-table__empty", colSpan: leaves.length > 0 ? leaves.length : void 0 }, props.emptyText ?? tt("tableEmpty"))))
+    (0, import_react23.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : (0, import_react23.createElement)("tr", { className: "dshpc-table__row" }, (0, import_react23.createElement)("td", { className: "dshpc-table__empty", colSpan: leaves.length > 0 ? leaves.length : void 0 }, props.emptyText ?? tt("tableEmpty"))))
   ];
-  return (0, import_react21.createElement)(
+  return (0, import_react23.createElement)(
     "table",
     { className: tableClass, style: props.style, "aria-label": props.ariaLabel },
-    leaves.length === 0 ? null : (0, import_react21.createElement)("colgroup", null, ...leaves.map((column) => (0, import_react21.createElement)("col", {
+    leaves.length === 0 ? null : (0, import_react23.createElement)("colgroup", null, ...leaves.map((column) => (0, import_react23.createElement)("col", {
       key: column.key,
       style: widthOf(column.width) === void 0 ? void 0 : { width: widthOf(column.width) }
     }))),
     // 有分组时，每组的表头在各自的 tbody 里；单一表时表头在 thead。
-    groups.length > 0 ? null : (0, import_react21.createElement)("thead", { className: "dshpc-table__head" }, ...headRows.map((cells, level) => headRowOf(cells, level))),
+    groups.length > 0 ? null : (0, import_react23.createElement)("thead", { className: "dshpc-table__head" }, ...headRows.map((cells, level) => headRowOf(cells, level))),
     ...body
   );
 }
@@ -5236,15 +5443,25 @@ function tableShell(skinClass, props) {
 // dist/ui/Table.js
 function Table(props) {
   ensureComponentStyles("table-plain", TABLE_PLAIN_CSS);
-  return tableShell("dshpc-table--plain", props);
+  const pager = props.pagination;
+  const grouped = (props.groups?.length ?? 0) > 0;
+  if (pager === void 0 || grouped)
+    return tableShell("dshpc-table--plain", props);
+  const pageSize = Math.max(1, Math.floor(pager.pageSize ?? 10));
+  const allRows = props.rows ?? [];
+  const local = pager.total === void 0;
+  const total = local ? allRows.length : Math.max(0, Math.floor(pager.total ?? 0));
+  const page = clampPage(pager.page, pageCountOf(total, pageSize));
+  const rows = local ? allRows.slice((page - 1) * pageSize, page * pageSize) : allRows;
+  return (0, import_react24.createElement)("div", { className: "dshpc-table-frame" }, tableShell("dshpc-table--plain", { ...props, rows }), (0, import_react24.createElement)(Pagination, { ...pager, page, total, align: pager.align ?? "right" }));
 }
 
 // dist/ui/Toast.js
-var import_react23 = require("react");
+var import_react26 = require("react");
 var import_client2 = require("react-dom/client");
 
 // node_modules/.pnpm/sonner@2.0.8_@types+react@18.3.31_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/sonner/dist/index.mjs
-var import_react22 = __toESM(require("react"), 1);
+var import_react25 = __toESM(require("react"), 1);
 var import_react_dom3 = __toESM(require("react-dom"), 1);
 function __insertCSS(code3) {
   if (!code3 || typeof document == "undefined") return;
@@ -5270,68 +5487,68 @@ var getAsset = (type3) => {
 };
 var bars = Array(12).fill(0);
 var Loader2 = ({ visible, className: className2 }) => {
-  return /* @__PURE__ */ import_react22.default.createElement("div", {
+  return /* @__PURE__ */ import_react25.default.createElement("div", {
     className: [
       "sonner-loading-wrapper",
       className2
     ].filter(Boolean).join(" "),
     "data-visible": visible
-  }, /* @__PURE__ */ import_react22.default.createElement("div", {
+  }, /* @__PURE__ */ import_react25.default.createElement("div", {
     className: "sonner-spinner"
-  }, bars.map((_, i2) => /* @__PURE__ */ import_react22.default.createElement("div", {
+  }, bars.map((_, i2) => /* @__PURE__ */ import_react25.default.createElement("div", {
     className: "sonner-loading-bar",
     key: `spinner-bar-${i2}`
   }))));
 };
-var SuccessIcon = /* @__PURE__ */ import_react22.default.createElement("svg", {
+var SuccessIcon = /* @__PURE__ */ import_react25.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react22.default.createElement("path", {
+}, /* @__PURE__ */ import_react25.default.createElement("path", {
   fillRule: "evenodd",
   d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z",
   clipRule: "evenodd"
 }));
-var WarningIcon = /* @__PURE__ */ import_react22.default.createElement("svg", {
+var WarningIcon = /* @__PURE__ */ import_react25.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react22.default.createElement("path", {
+}, /* @__PURE__ */ import_react25.default.createElement("path", {
   fillRule: "evenodd",
   d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z",
   clipRule: "evenodd"
 }));
-var InfoIcon = /* @__PURE__ */ import_react22.default.createElement("svg", {
+var InfoIcon = /* @__PURE__ */ import_react25.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react22.default.createElement("path", {
+}, /* @__PURE__ */ import_react25.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z",
   clipRule: "evenodd"
 }));
-var ErrorIcon = /* @__PURE__ */ import_react22.default.createElement("svg", {
+var ErrorIcon = /* @__PURE__ */ import_react25.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react22.default.createElement("path", {
+}, /* @__PURE__ */ import_react25.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z",
   clipRule: "evenodd"
 }));
-var CloseIcon = /* @__PURE__ */ import_react22.default.createElement("svg", {
+var CloseIcon = /* @__PURE__ */ import_react25.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "12",
   height: "12",
@@ -5342,20 +5559,20 @@ var CloseIcon = /* @__PURE__ */ import_react22.default.createElement("svg", {
   strokeLinecap: "round",
   strokeLinejoin: "round",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react22.default.createElement("line", {
+}, /* @__PURE__ */ import_react25.default.createElement("line", {
   x1: "18",
   y1: "6",
   x2: "6",
   y2: "18"
-}), /* @__PURE__ */ import_react22.default.createElement("line", {
+}), /* @__PURE__ */ import_react25.default.createElement("line", {
   x1: "6",
   y1: "6",
   x2: "18",
   y2: "18"
 }));
 var useIsDocumentHidden = () => {
-  const [isDocumentHidden, setIsDocumentHidden] = import_react22.default.useState(document.hidden);
-  import_react22.default.useEffect(() => {
+  const [isDocumentHidden, setIsDocumentHidden] = import_react25.default.useState(document.hidden);
+  import_react25.default.useEffect(() => {
     const callback = () => {
       setIsDocumentHidden(document.hidden);
     };
@@ -5539,7 +5756,7 @@ var Observer = class {
           "resolve",
           response
         ];
-        const isReactElementResponse = import_react22.default.isValidElement(response);
+        const isReactElementResponse = import_react25.default.isValidElement(response);
         if (isReactElementResponse) {
           shouldDismiss = false;
           this.create({
@@ -5551,7 +5768,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(`HTTP error! status: ${response.status}`) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(`HTTP error! status: ${response.status}`) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react22.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react25.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -5565,7 +5782,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(response) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react22.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react25.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -5579,7 +5796,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.success === "function" ? await data2.success(response) : data2.success;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react22.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react25.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -5599,7 +5816,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(error) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(error) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react22.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react25.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -5700,18 +5917,18 @@ function getDefaultSwipeDirections(position) {
 var Toast = (props) => {
   var _toast_classNames, _toast_classNames1, _toast_classNames2, _toast_classNames3, _toast_classNames4, _toast_classNames5, _toast_classNames6, _toast_classNames7, _toast_classNames8;
   const { invert: ToasterInvert, toast: toast2, unstyled, interacting, setHeights, visibleToasts, heights, index: index3, toasts, expanded, removeToast, defaultRichColors, closeButton: closeButtonFromToaster, style: style2, cancelButtonStyle, actionButtonStyle, className: className2 = "", descriptionClassName = "", duration: durationFromToaster, position, gap, expandByDefault, classNames, icons, closeButtonAriaLabel = "Close toast" } = props;
-  const [swipeDirection, setSwipeDirection] = import_react22.default.useState(null);
-  const [swipeOutDirection, setSwipeOutDirection] = import_react22.default.useState(null);
-  const [mounted, setMounted] = import_react22.default.useState(false);
-  const [removed, setRemoved] = import_react22.default.useState(false);
-  const [swiping, setSwiping] = import_react22.default.useState(false);
-  const [swipeOut, setSwipeOut] = import_react22.default.useState(false);
-  const [isSwiped, setIsSwiped] = import_react22.default.useState(false);
-  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react22.default.useState(0);
-  const [initialHeight, setInitialHeight] = import_react22.default.useState(0);
-  const remainingTime = import_react22.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
-  const dragStartTime = import_react22.default.useRef(null);
-  const toastRef = import_react22.default.useRef(null);
+  const [swipeDirection, setSwipeDirection] = import_react25.default.useState(null);
+  const [swipeOutDirection, setSwipeOutDirection] = import_react25.default.useState(null);
+  const [mounted, setMounted] = import_react25.default.useState(false);
+  const [removed, setRemoved] = import_react25.default.useState(false);
+  const [swiping, setSwiping] = import_react25.default.useState(false);
+  const [swipeOut, setSwipeOut] = import_react25.default.useState(false);
+  const [isSwiped, setIsSwiped] = import_react25.default.useState(false);
+  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react25.default.useState(0);
+  const [initialHeight, setInitialHeight] = import_react25.default.useState(0);
+  const remainingTime = import_react25.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
+  const dragStartTime = import_react25.default.useRef(null);
+  const toastRef = import_react25.default.useRef(null);
   const isFront = index3 === 0;
   const isVisible = index3 + 1 <= visibleToasts;
   const toastType = toast2.type;
@@ -5719,27 +5936,27 @@ var Toast = (props) => {
   const dismissible = toast2.dismissible !== false;
   const toastClassname = toast2.className || "";
   const toastDescriptionClassname = toast2.descriptionClassName || "";
-  const heightIndex = import_react22.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
+  const heightIndex = import_react25.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
     heights,
     toast2.id
   ]);
-  const closeButton = import_react22.default.useMemo(() => {
+  const closeButton = import_react25.default.useMemo(() => {
     var _toast_closeButton;
     return (_toast_closeButton = toast2.closeButton) != null ? _toast_closeButton : closeButtonFromToaster;
   }, [
     toast2.closeButton,
     closeButtonFromToaster
   ]);
-  const duration = import_react22.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
+  const duration = import_react25.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
     toast2.duration,
     durationFromToaster
   ]);
-  const closeTimerStartTimeRef = import_react22.default.useRef(0);
-  const offset4 = import_react22.default.useRef(0);
-  const lastCloseTimerStartTimeRef = import_react22.default.useRef(0);
-  const pointerStartRef = import_react22.default.useRef(null);
+  const closeTimerStartTimeRef = import_react25.default.useRef(0);
+  const offset4 = import_react25.default.useRef(0);
+  const lastCloseTimerStartTimeRef = import_react25.default.useRef(0);
+  const pointerStartRef = import_react25.default.useRef(null);
   const [y, x] = position.split("-");
-  const toastsHeightBefore = import_react22.default.useMemo(() => {
+  const toastsHeightBefore = import_react25.default.useMemo(() => {
     return heights.reduce((prev, curr, reducerIndex) => {
       if (reducerIndex >= heightIndex) {
         return prev;
@@ -5751,7 +5968,7 @@ var Toast = (props) => {
     heightIndex
   ]);
   const isDocumentHidden = useIsDocumentHidden();
-  const swipeDirections = import_react22.default.useMemo(() => {
+  const swipeDirections = import_react25.default.useMemo(() => {
     var _props_swipeDirections;
     return (_props_swipeDirections = props.swipeDirections) != null ? _props_swipeDirections : getDefaultSwipeDirections(position);
   }, [
@@ -5760,38 +5977,38 @@ var Toast = (props) => {
   ]);
   const invert = toast2.invert || ToasterInvert;
   const disabled = toastType === "loading";
-  offset4.current = import_react22.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
+  offset4.current = import_react25.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
     heightIndex,
     toastsHeightBefore
   ]);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     remainingTime.current = duration;
   }, [
     duration
   ]);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     setMounted(true);
   }, []);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     const toastNode = toastRef.current;
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h66) => [
+      setHeights((h68) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h66
+        ...h68
       ]);
-      return () => setHeights((h66) => h66.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h68) => h68.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
     toast2.id
   ]);
-  import_react22.default.useLayoutEffect(() => {
+  import_react25.default.useLayoutEffect(() => {
     if (!mounted) return;
     const toastNode = toastRef.current;
     const originalHeight = toastNode.style.height;
@@ -5827,10 +6044,10 @@ var Toast = (props) => {
     toast2.action,
     toast2.cancel
   ]);
-  const deleteToast = import_react22.default.useCallback(() => {
+  const deleteToast = import_react25.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
-    setHeights((h66) => h66.filter((height) => height.toastId !== toast2.id));
+    setHeights((h68) => h68.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -5840,7 +6057,7 @@ var Toast = (props) => {
     setHeights,
     offset4
   ]);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     if (toast2.promise && toastType === "loading" || toast2.duration === Infinity || toast2.type === "loading") return;
     let timeoutId;
     const pauseTimer = () => {
@@ -5872,7 +6089,7 @@ var Toast = (props) => {
     isDocumentHidden,
     deleteToast
   ]);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     if (toast2.delete) {
       deleteToast();
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
@@ -5885,19 +6102,19 @@ var Toast = (props) => {
     var _toast_classNames9;
     if (icons == null ? void 0 : icons.loading) {
       var _toast_classNames12;
-      return /* @__PURE__ */ import_react22.default.createElement("div", {
+      return /* @__PURE__ */ import_react25.default.createElement("div", {
         className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames12 = toast2.classNames) == null ? void 0 : _toast_classNames12.loader, "sonner-loader"),
         "data-visible": toastType === "loading"
       }, icons.loading);
     }
-    return /* @__PURE__ */ import_react22.default.createElement(Loader2, {
+    return /* @__PURE__ */ import_react25.default.createElement(Loader2, {
       className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames9 = toast2.classNames) == null ? void 0 : _toast_classNames9.loader),
       visible: toastType === "loading"
     });
   }
   const icon2 = toast2.icon || (icons == null ? void 0 : icons[toastType]) || getAsset(toastType);
   var _toast_richColors, _icons_close;
-  return /* @__PURE__ */ import_react22.default.createElement("li", {
+  return /* @__PURE__ */ import_react25.default.createElement("li", {
     tabIndex: 0,
     ref: toastRef,
     className: cn(className2, toastClassname, classNames == null ? void 0 : classNames.toast, toast2 == null ? void 0 : (_toast_classNames = toast2.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames[toastTypeKey], toast2 == null ? void 0 : (_toast_classNames1 = toast2.classNames) == null ? void 0 : _toast_classNames1[toastTypeKey]),
@@ -6021,7 +6238,7 @@ var Toast = (props) => {
       (_toastRef_current = toastRef.current) == null ? void 0 : _toastRef_current.style.setProperty("--swipe-amount-x", `${swipeAmount.x}px`);
       (_toastRef_current1 = toastRef.current) == null ? void 0 : _toastRef_current1.style.setProperty("--swipe-amount-y", `${swipeAmount.y}px`);
     }
-  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react22.default.createElement("button", {
+  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react25.default.createElement("button", {
     "aria-label": closeButtonAriaLabel,
     "data-disabled": disabled,
     "data-close-button": true,
@@ -6031,19 +6248,19 @@ var Toast = (props) => {
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
     },
     className: cn(classNames == null ? void 0 : classNames.closeButton, toast2 == null ? void 0 : (_toast_classNames2 = toast2.classNames) == null ? void 0 : _toast_classNames2.closeButton)
-  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react22.default.createElement("div", {
+  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react25.default.createElement("div", {
     "data-icon": "",
     className: cn(classNames == null ? void 0 : classNames.icon, toast2 == null ? void 0 : (_toast_classNames3 = toast2.classNames) == null ? void 0 : _toast_classNames3.icon)
-  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon2 : null) : null, /* @__PURE__ */ import_react22.default.createElement("div", {
+  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon2 : null) : null, /* @__PURE__ */ import_react25.default.createElement("div", {
     "data-content": "",
     className: cn(classNames == null ? void 0 : classNames.content, toast2 == null ? void 0 : (_toast_classNames4 = toast2.classNames) == null ? void 0 : _toast_classNames4.content)
-  }, /* @__PURE__ */ import_react22.default.createElement("div", {
+  }, /* @__PURE__ */ import_react25.default.createElement("div", {
     "data-title": "",
     className: cn(classNames == null ? void 0 : classNames.title, toast2 == null ? void 0 : (_toast_classNames5 = toast2.classNames) == null ? void 0 : _toast_classNames5.title)
-  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react22.default.createElement("div", {
+  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react25.default.createElement("div", {
     "data-description": "",
     className: cn(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast2 == null ? void 0 : (_toast_classNames6 = toast2.classNames) == null ? void 0 : _toast_classNames6.description)
-  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react22.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react22.default.createElement("button", {
+  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react25.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react25.default.createElement("button", {
     "data-button": true,
     "data-cancel": true,
     style: toast2.cancelButtonStyle || cancelButtonStyle,
@@ -6054,7 +6271,7 @@ var Toast = (props) => {
       deleteToast();
     },
     className: cn(classNames == null ? void 0 : classNames.cancelButton, toast2 == null ? void 0 : (_toast_classNames7 = toast2.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
-  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react22.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react22.default.createElement("button", {
+  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react25.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react25.default.createElement("button", {
     "data-button": true,
     "data-action": true,
     style: toast2.actionButtonStyle || actionButtonStyle,
@@ -6116,13 +6333,13 @@ function assignOffset(defaultOffset, mobileOffset) {
   });
   return styles;
 }
-var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster2(props, ref) {
+var Toaster = /* @__PURE__ */ import_react25.default.forwardRef(function Toaster2(props, ref) {
   const { id: id3, invert, position = "bottom-right", hotkey = [
     "altKey",
     "KeyT"
   ], expand, closeButton, className: className2, offset: offset4, mobileOffset, theme: theme2 = "light", richColors, duration, style: style2, visibleToasts = VISIBLE_TOASTS_AMOUNT, toastOptions, dir = getDocumentDirection(), gap = GAP, icons, customAriaLabel, containerAriaLabel = "Notifications" } = props;
-  const [toasts, setToasts] = import_react22.default.useState([]);
-  const filteredToasts = import_react22.default.useMemo(() => {
+  const [toasts, setToasts] = import_react25.default.useState([]);
+  const filteredToasts = import_react25.default.useMemo(() => {
     if (id3) {
       return toasts.filter((toast2) => toast2.toasterId === id3);
     }
@@ -6131,7 +6348,7 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
     toasts,
     id3
   ]);
-  const possiblePositions = import_react22.default.useMemo(() => {
+  const possiblePositions = import_react25.default.useMemo(() => {
     return Array.from(new Set([
       position
     ].concat(filteredToasts.filter((toast2) => toast2.position).map((toast2) => toast2.position))));
@@ -6139,15 +6356,15 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
     filteredToasts,
     position
   ]);
-  const [heights, setHeights] = import_react22.default.useState([]);
-  const [expanded, setExpanded] = import_react22.default.useState(false);
-  const [interacting, setInteracting] = import_react22.default.useState(false);
-  const [actualTheme, setActualTheme] = import_react22.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
-  const listRef = import_react22.default.useRef(null);
+  const [heights, setHeights] = import_react25.default.useState([]);
+  const [expanded, setExpanded] = import_react25.default.useState(false);
+  const [interacting, setInteracting] = import_react25.default.useState(false);
+  const [actualTheme, setActualTheme] = import_react25.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
+  const listRef = import_react25.default.useRef(null);
   const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "");
-  const lastFocusedElementRef = import_react22.default.useRef(null);
-  const isFocusWithinRef = import_react22.default.useRef(false);
-  const removeToast = import_react22.default.useCallback((toastToRemove) => {
+  const lastFocusedElementRef = import_react25.default.useRef(null);
+  const isFocusWithinRef = import_react25.default.useRef(false);
+  const removeToast = import_react25.default.useCallback((toastToRemove) => {
     setToasts((toasts2) => {
       var _toasts_find;
       if (!((_toasts_find = toasts2.find((toast2) => toast2.id === toastToRemove.id)) == null ? void 0 : _toasts_find.delete)) {
@@ -6156,7 +6373,7 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
       return toasts2.filter(({ id: id4 }) => id4 !== toastToRemove.id);
     });
   }, []);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     return ToastState.subscribe((toast2) => {
       if (toast2.dismiss) {
         requestAnimationFrame(() => {
@@ -6190,7 +6407,7 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
       });
     });
   }, []);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     if (theme2 !== "system") {
       setActualTheme(theme2);
       return;
@@ -6228,14 +6445,14 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
   }, [
     theme2
   ]);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     if (toasts.length <= 1) {
       setExpanded(false);
     }
   }, [
     toasts
   ]);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     const handleKeyDown = (event) => {
       var _listRef_current;
       const isHotkeyPressed = hotkey.length > 0 && hotkey.every((key) => event[key] || event.code === key);
@@ -6253,7 +6470,7 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
   }, [
     hotkey
   ]);
-  import_react22.default.useEffect(() => {
+  import_react25.default.useEffect(() => {
     if (listRef.current) {
       return () => {
         if (lastFocusedElementRef.current) {
@@ -6270,7 +6487,7 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
   ]);
   return (
     // Remove item from normal navigation flow, only available via hotkey
-    /* @__PURE__ */ import_react22.default.createElement("section", {
+    /* @__PURE__ */ import_react25.default.createElement("section", {
       ref,
       "aria-label": customAriaLabel != null ? customAriaLabel : `${containerAriaLabel} ${hotkeyLabel}`,
       tabIndex: -1,
@@ -6283,7 +6500,7 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
       var _heights_;
       const [y, x] = position2.split("-");
       if (!filteredToasts.length) return null;
-      return /* @__PURE__ */ import_react22.default.createElement("ol", {
+      return /* @__PURE__ */ import_react25.default.createElement("ol", {
         key: position2,
         dir: dir === "auto" ? getDocumentDirection() : dir,
         tabIndex: -1,
@@ -6335,7 +6552,7 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
         onPointerUp: () => setInteracting(false)
       }, filteredToasts.filter((toast2) => !toast2.position && index3 === 0 || toast2.position === position2).map((toast2, index4) => {
         var _toastOptions_duration, _toastOptions_closeButton;
-        return /* @__PURE__ */ import_react22.default.createElement(Toast, {
+        return /* @__PURE__ */ import_react25.default.createElement(Toast, {
           key: toast2.id,
           icons,
           index: index4,
@@ -6357,7 +6574,7 @@ var Toaster = /* @__PURE__ */ import_react22.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t4) => t4.position == toast2.position),
-          heights: heights.filter((h66) => h66.position == toast2.position),
+          heights: heights.filter((h68) => h68.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -6403,7 +6620,7 @@ function createToasterHost() {
   function renderToaster() {
     if (root === null)
       return;
-    root.render((0, import_react23.createElement)(Toaster, {
+    root.render((0, import_react26.createElement)(Toaster, {
       theme: currentTheme(),
       position,
       // richColors：success=绿整条 / error=红整条 / warning=黄整条（Sonner 自带）；
@@ -6469,7 +6686,7 @@ function createToasterHost() {
     const palette = notifyPalette(payload.variant, currentTheme());
     const duration = payload.durationMs;
     const actions = payload.actions;
-    const id3 = toast.custom(() => (0, import_react23.createElement)("div", {
+    const id3 = toast.custom(() => (0, import_react26.createElement)("div", {
       style: {
         display: "flex",
         alignItems: "center",
@@ -6485,7 +6702,7 @@ function createToasterHost() {
         fontSize: "14px",
         lineHeight: "20px"
       }
-    }, (0, import_react23.createElement)("span", {
+    }, (0, import_react26.createElement)("span", {
       style: {
         flexShrink: 0,
         width: "20px",
@@ -6498,7 +6715,7 @@ function createToasterHost() {
         fontSize: "13px",
         fontWeight: 700
       }
-    }, palette.glyph), (0, import_react23.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react23.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react23.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react23.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react23.createElement)(Button, {
+    }, palette.glyph), (0, import_react26.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react26.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react26.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react26.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react26.createElement)(Button, {
       variant: a.variant ?? "outline",
       size: "md",
       onClick: () => {
@@ -6572,7 +6789,7 @@ function notify(message, opts) {
 }
 
 // dist/ui/Segmented.js
-var import_react24 = require("react");
+var import_react27 = require("react");
 function countText(value) {
   if (value === void 0)
     return null;
@@ -6588,9 +6805,9 @@ function Segmented(props) {
   const value = props.value;
   const onChange = props.onChange;
   const sliding = !multiple && props.items.length > 1;
-  const rootRef = (0, import_react24.useRef)(null);
-  const [thumb, setThumb] = (0, import_react24.useState)(null);
-  const measure = (0, import_react24.useCallback)(() => {
+  const rootRef = (0, import_react27.useRef)(null);
+  const [thumb, setThumb] = (0, import_react27.useState)(null);
+  const measure = (0, import_react27.useCallback)(() => {
     const sel = rootRef.current?.querySelector('.dshpc-seg__item[aria-pressed="true"]');
     if (sel === void 0 || sel === null) {
       setThumb(null);
@@ -6599,7 +6816,7 @@ function Segmented(props) {
     const next = { left: sel.offsetLeft, top: sel.offsetTop, width: sel.offsetWidth, height: sel.offsetHeight };
     setThumb((cur2) => cur2 !== null && cur2.left === next.left && cur2.top === next.top && cur2.width === next.width && cur2.height === next.height ? cur2 : next);
   }, []);
-  (0, import_react24.useLayoutEffect)(() => {
+  (0, import_react27.useLayoutEffect)(() => {
     if (!sliding) {
       setThumb(null);
       return;
@@ -6616,7 +6833,7 @@ function Segmented(props) {
   const tone = props.tone;
   const toneClass = typeof tone === "string" ? ` dshpc-seg--tone-${tone}` : "";
   const toneStyle = tone !== void 0 && typeof tone !== "string" ? { "--seg-thumb": tone.bg, "--seg-on": tone.fg } : void 0;
-  return (0, import_react24.createElement)("div", {
+  return (0, import_react27.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -6625,7 +6842,7 @@ function Segmented(props) {
     className: `dshpc-seg dshpc-seg--${size4}${sliding ? " dshpc-seg--slide" : ""}${props.block === true ? " dshpc-seg--block" : ""}${props.bordered === true ? " dshpc-seg--bordered" : ""}${toneClass}${props.className !== void 0 ? ` ${props.className}` : ""}`,
     style: toneStyle === void 0 ? props.style : { ...toneStyle, ...props.style }
   }, [
-    sliding && thumb !== null ? (0, import_react24.createElement)("span", {
+    sliding && thumb !== null ? (0, import_react27.createElement)("span", {
       key: "__thumb__",
       className: "dshpc-seg__thumb",
       "aria-hidden": true,
@@ -6653,7 +6870,7 @@ function Segmented(props) {
       };
       const count3 = countText(item.count);
       const badge = countText(item.badge);
-      const itemButton = (0, import_react24.createElement)("button", {
+      const itemButton = (0, import_react27.createElement)("button", {
         key: item.value,
         type: "button",
         className: "dshpc-seg__item",
@@ -6661,7 +6878,7 @@ function Segmented(props) {
         "aria-pressed": on,
         disabled,
         onClick: handle
-      }, item.label, count3 === null ? null : (0, import_react24.createElement)("span", { className: "dshpc-seg__count" }, count3), badge === null ? null : (0, import_react24.createElement)("span", { className: "dshpc-seg__badge" }, badge));
+      }, item.label, count3 === null ? null : (0, import_react27.createElement)("span", { className: "dshpc-seg__count" }, count3), badge === null ? null : (0, import_react27.createElement)("span", { className: "dshpc-seg__badge" }, badge));
       if (item.tooltip !== void 0 && renderer2 !== void 0) {
         return renderer2({ label: item.tooltip, side: "top", children: itemButton });
       }
@@ -6671,10 +6888,10 @@ function Segmented(props) {
 }
 
 // dist/ui/SplitGroup.js
-var import_react25 = require("react");
+var import_react28 = require("react");
 function SplitGroup(props) {
   ensureComponentStyles("split-group", SPLIT_GROUP_CSS);
-  return (0, import_react25.createElement)("div", {
+  return (0, import_react28.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -6684,11 +6901,11 @@ function SplitGroup(props) {
 }
 
 // dist/ui/Textarea.js
-var import_react26 = require("react");
+var import_react29 = require("react");
 function Textarea(props) {
   ensureComponentStyles("field", FIELD_CSS);
   const { value, onChange, placeholder: placeholder2, error, disabled, id: id3, rows, spellCheck, className: className2, style: style2 } = props;
-  const box = (0, import_react26.createElement)("textarea", {
+  const box = (0, import_react29.createElement)("textarea", {
     id: id3,
     rows,
     value,
@@ -6704,14 +6921,14 @@ function Textarea(props) {
   });
   if (props.hint === void 0)
     return box;
-  return (0, import_react26.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react26.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react29.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react29.createElement)(FieldHint, { text: props.hint }));
 }
 
 // dist/ui/Checkbox.js
-var import_react27 = require("react");
+var import_react30 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className: className2 } = props;
-  return (0, import_react27.createElement)("label", {
+  return (0, import_react30.createElement)("label", {
     className: `dshpc-checkbox${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: {
       display: "flex",
@@ -6721,7 +6938,7 @@ function Checkbox(props) {
       lineHeight: "var(--dshpc-line-md)",
       cursor: disabled === true ? "default" : "pointer"
     }
-  }, (0, import_react27.createElement)("input", {
+  }, (0, import_react30.createElement)("input", {
     type: "checkbox",
     checked,
     disabled,
@@ -6736,11 +6953,11 @@ function Checkbox(props) {
     onChange: (event) => {
       onChange(event.target.checked);
     }
-  }), label !== void 0 ? (0, import_react27.createElement)("span", null, label) : null);
+  }), label !== void 0 ? (0, import_react30.createElement)("span", null, label) : null);
 }
 
 // dist/ui/LoaderBar.js
-var import_react28 = require("react");
+var import_react31 = require("react");
 
 // dist/ui/loader-bar-art.js
 var BAR_PATHS = [
@@ -6764,7 +6981,7 @@ function pathAt(paths, index3) {
 function LoaderBar(props) {
   ensureComponentStyles("loader-bar", LOADER_BAR_CSS);
   const { size: size4 = "md", animated = true, label, className: className2 } = props;
-  const clipId = `dshpc-loader-bar-clip-${(0, import_react28.useId)().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const clipId = `dshpc-loader-bar-clip-${(0, import_react31.useId)().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const track = pathAt(BAR_PATHS, TRACK_INDEX);
   const fill = pathAt(BAR_PATHS, FILL_INDEX);
   const stripe = pathAt(BAR_PATHS, STRIPE_INDEX);
@@ -6773,32 +6990,32 @@ function LoaderBar(props) {
     classes.push("dshpc-loader-bar--still");
   if (className2 !== void 0 && className2 !== "")
     classes.push(className2);
-  return (0, import_react28.createElement)("svg", {
+  return (0, import_react31.createElement)("svg", {
     className: classes.join(" "),
     viewBox: "0 384 1024 256",
     role: label === void 0 ? void 0 : "status",
     "aria-label": label,
     "aria-hidden": label === void 0 ? true : void 0,
     focusable: "false"
-  }, (0, import_react28.createElement)(
+  }, (0, import_react31.createElement)(
     "defs",
     null,
     // 直接拿「蓝色段」自己的路径当裁剪区：它左端是圆的、**右端是平直的**
     // （进度刚走到一大半，右边界是一条切面，不能带弧度）。
     // 早先用 rect + rx 裁，四个角都是圆的 ⇒ 右端被裁成弧形，看着像走满了。
-    (0, import_react28.createElement)("clipPath", { id: clipId }, (0, import_react28.createElement)("path", { d: fill.d }))
-  ), (0, import_react28.createElement)("path", { d: track.d, fill: track.fill }), (0, import_react28.createElement)("path", { d: fill.d, fill: fill.fill }), (0, import_react28.createElement)("g", { clipPath: `url(#${clipId})` }, (0, import_react28.createElement)(
+    (0, import_react31.createElement)("clipPath", { id: clipId }, (0, import_react31.createElement)("path", { d: fill.d }))
+  ), (0, import_react31.createElement)("path", { d: track.d, fill: track.fill }), (0, import_react31.createElement)("path", { d: fill.d, fill: fill.fill }), (0, import_react31.createElement)("g", { clipPath: `url(#${clipId})` }, (0, import_react31.createElement)(
     "g",
     { className: "dshpc-loader-bar__stripe" },
-    ...[0, 1, 2].map((step) => (0, import_react28.createElement)("g", {
+    ...[0, 1, 2].map((step) => (0, import_react31.createElement)("g", {
       key: step,
       transform: step === 0 ? void 0 : `translate(${String(-STRIPE_PERIOD * step)} 0)`
-    }, (0, import_react28.createElement)("path", { d: stripe.d, fill: stripe.fill })))
+    }, (0, import_react31.createElement)("path", { d: stripe.d, fill: stripe.fill })))
   )));
 }
 
 // dist/ui/Loading.js
-var import_react29 = require("react");
+var import_react32 = require("react");
 var import_client3 = require("react-dom/client");
 
 // dist/ui/loading-host.js
@@ -6843,11 +7060,11 @@ function textOf(props) {
 }
 function LoadingToast(props) {
   ensureComponentStyles("loading", LOADING_CSS);
-  return (0, import_react29.createElement)("div", { className: "dshpc-loading-toast", role: "status", "aria-live": "polite" }, (0, import_react29.createElement)(Loader, { size: "sm" }), (0, import_react29.createElement)("span", null, textOf(props)));
+  return (0, import_react32.createElement)("div", { className: "dshpc-loading-toast", role: "status", "aria-live": "polite" }, (0, import_react32.createElement)(Loader, { size: "sm" }), (0, import_react32.createElement)("span", null, textOf(props)));
 }
 function LoadingBlock(props) {
   ensureComponentStyles("loading", LOADING_CSS);
-  return (0, import_react29.createElement)("div", { className: "dshpc-loading-block", role: "status", "aria-live": "polite" }, (0, import_react29.createElement)(Loader, { size: "md" }), (0, import_react29.createElement)("span", null, textOf(props)));
+  return (0, import_react32.createElement)("div", { className: "dshpc-loading-block", role: "status", "aria-live": "polite" }, (0, import_react32.createElement)(Loader, { size: "md" }), (0, import_react32.createElement)("span", null, textOf(props)));
 }
 function createLoadingHost() {
   const slot = createLoadingSlot();
@@ -6871,10 +7088,10 @@ function createLoadingHost() {
     ensureComponentStyles("loading", LOADING_CSS, getStyleKit());
     const { request } = state;
     const opacity = Math.min(1, Math.max(0, request.maskOpacity));
-    root.render((0, import_react29.createElement)("div", { className: loadingOverlayClass(request.position) }, request.mask ? (0, import_react29.createElement)("div", {
+    root.render((0, import_react32.createElement)("div", { className: loadingOverlayClass(request.position) }, request.mask ? (0, import_react32.createElement)("div", {
       className: "dshpc-loading-overlay__mask",
       style: { background: `rgba(0, 0, 0, ${opacity})` }
-    }) : null, request.variant === "block" ? (0, import_react29.createElement)(LoadingBlock, { text: request.text, translate: request.translate }) : (0, import_react29.createElement)(LoadingToast, { text: request.text, translate: request.translate })));
+    }) : null, request.variant === "block" ? (0, import_react32.createElement)(LoadingBlock, { text: request.text, translate: request.translate }) : (0, import_react32.createElement)(LoadingToast, { text: request.text, translate: request.translate })));
   }
   return {
     show(request) {
@@ -6903,19 +7120,11 @@ function showLoading(opts) {
   });
 }
 
-// dist/ui/SectionHead.js
-var import_react30 = require("react");
-function SectionHead(props) {
-  return (0, import_react30.createElement)("div", {
-    style: { display: "flex", alignItems: "center", gap: "var(--dshpc-space-2)", marginBottom: "var(--dshpc-space-3)" }
-  }, (0, import_react30.createElement)("span", { style: { display: "inline-flex", alignItems: "center", flex: "none", lineHeight: "var(--dshpc-line-lg)", color: "var(--dshpc-fg-3)" } }, props.icon), (0, import_react30.createElement)("span", { style: { fontSize: "var(--dshpc-font-lg)", lineHeight: "var(--dshpc-line-lg)", fontWeight: 600, color: "var(--dshpc-fg)", flex: "none" } }, props.title), props.right === void 0 ? null : (0, import_react30.createElement)("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--dshpc-space-2)", minWidth: 0 } }, props.right));
-}
-
 // dist/ui/LiveText.js
-var import_react32 = require("react");
+var import_react34 = require("react");
 
 // dist/ui/ticker.js
-var import_react31 = require("react");
+var import_react33 = require("react");
 var tickerListeners = /* @__PURE__ */ new Set();
 var tickerTimer = null;
 var onVisibilityChange = () => {
@@ -6946,11 +7155,11 @@ function subscribeTicker(cb) {
 
 // dist/ui/LiveText.js
 function LiveText(props) {
-  const [, force] = (0, import_react32.useState)(0);
-  const renderRef = (0, import_react32.useRef)(props.render);
+  const [, force] = (0, import_react34.useState)(0);
+  const renderRef = (0, import_react34.useRef)(props.render);
   renderRef.current = props.render;
-  (0, import_react32.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
-  return (0, import_react32.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
+  (0, import_react34.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
+  return (0, import_react34.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
 }
 
 // dist/ui/resizer.js
@@ -6998,7 +7207,7 @@ function startResizeLayoutWidth(opts) {
 }
 
 // dist/ui/PanelDock.js
-var import_react33 = require("react");
+var import_react35 = require("react");
 
 // dist/ui/panel-dock-logic.js
 var DEFAULT_PANEL_ID = "default";
@@ -7219,8 +7428,8 @@ function createPanelDock(options = {}) {
 }
 function panesOf(children) {
   const out = [];
-  import_react33.Children.forEach(children, (child) => {
-    if ((0, import_react33.isValidElement)(child) && child.type === DockPanel)
+  import_react35.Children.forEach(children, (child) => {
+    if ((0, import_react35.isValidElement)(child) && child.type === DockPanel)
       out.push(child.props);
   });
   return out;
@@ -7229,9 +7438,9 @@ function PanelDock(props) {
   ensureComponentStyles("panel-dock", PANEL_DOCK_CSS);
   ensureComponentStyles("feedback", FEEDBACK_CSS);
   const tt = props.translate ?? t;
-  const state = (0, import_react33.useSyncExternalStore)(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
-  const rootRef = (0, import_react33.useRef)(null);
-  const panelRefs = (0, import_react33.useRef)(/* @__PURE__ */ new Map());
+  const state = (0, import_react35.useSyncExternalStore)(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
+  const rootRef = (0, import_react35.useRef)(null);
+  const panelRefs = (0, import_react35.useRef)(/* @__PURE__ */ new Map());
   const panes = panesOf(props.children);
   const { defaultWidth, minWidth: fallbackMin } = props.dock.defaults;
   const widthOf2 = (pane) => clampWidth(state.widths[pane.id] ?? pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth);
@@ -7245,7 +7454,7 @@ function PanelDock(props) {
       return pane.ariaLabel;
     return id3;
   };
-  const [closing4, setClosing] = (0, import_react33.useState)([]);
+  const [closing4, setClosing] = (0, import_react35.useState)([]);
   const collapseWithAnim = (id3) => {
     setClosing((prev) => prev.includes(id3) ? prev : [...prev, id3]);
     window.setTimeout(() => {
@@ -7253,7 +7462,7 @@ function PanelDock(props) {
       props.dock.collapse(id3);
     }, 220);
   };
-  const insetKey = (0, import_react33.useRef)("");
+  const insetKey = (0, import_react35.useRef)("");
   if (insetKey.current === "")
     insetKey.current = `dock-${++dockSeq}`;
   const restWidth = (paneId) => othersWidth(state, paneId, (id3) => {
@@ -7261,10 +7470,10 @@ function PanelDock(props) {
     return other === void 0 ? defaultWidth : widthOf2(other);
   });
   const totalWidth = panes.filter((pane) => state.ids.includes(pane.id)).reduce((sum, pane) => sum + widthOf2(pane), 0);
-  (0, import_react33.useEffect)(() => {
+  (0, import_react35.useEffect)(() => {
     publishInset(insetKey.current, state.ids.length > 0 ? totalWidth + DOCK_GAP : 0, rootRef.current);
   });
-  (0, import_react33.useEffect)(() => () => {
+  (0, import_react35.useEffect)(() => () => {
     publishInset(insetKey.current, 0, null);
   }, []);
   for (const id3 of state.ids) {
@@ -7308,7 +7517,7 @@ function PanelDock(props) {
     const hasHeader = pane.header !== null;
     if (!closable || !(mode === "header" || mode === "auto" && hasHeader))
       return null;
-    return (0, import_react33.createElement)("button", {
+    return (0, import_react35.createElement)("button", {
       type: "button",
       className: "dshpc-dock__close dshpc-dock__close--abs",
       "aria-label": tt("dockClose"),
@@ -7319,9 +7528,9 @@ function PanelDock(props) {
     if (pane.header === null)
       return null;
     if (pane.header !== void 0) {
-      return (0, import_react33.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, pane.header);
+      return (0, import_react35.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, pane.header);
     }
-    return (0, import_react33.createElement)("div", { className: "dshpc-dock__head" }, pane.icon === void 0 ? null : (0, import_react33.createElement)("div", { className: "dshpc-dock__lead" }, pane.icon), (0, import_react33.createElement)("div", { className: "dshpc-dock__title" }, pane.title), pane.extra === void 0 ? null : (0, import_react33.createElement)("div", { className: "dshpc-dock__extra" }, pane.extra));
+    return (0, import_react35.createElement)("div", { className: "dshpc-dock__head" }, pane.icon === void 0 ? null : (0, import_react35.createElement)("div", { className: "dshpc-dock__lead" }, pane.icon), (0, import_react35.createElement)("div", { className: "dshpc-dock__title" }, pane.title), pane.extra === void 0 ? null : (0, import_react35.createElement)("div", { className: "dshpc-dock__extra" }, pane.extra));
   };
   const floatingCloseOf = (pane) => {
     if (pane.closable === false)
@@ -7330,7 +7539,7 @@ function PanelDock(props) {
     const hasHeader = pane.header !== null;
     if (mode !== "floating" && !(mode === "auto" && !hasHeader))
       return null;
-    return (0, import_react33.createElement)("button", {
+    return (0, import_react35.createElement)("button", {
       type: "button",
       className: "dshpc-dock__close dshpc-dock__close--floating",
       "aria-label": tt("dockClose"),
@@ -7338,13 +7547,13 @@ function PanelDock(props) {
     }, pane.closeIcon ?? "\u2715");
   };
   const rootClass = `dshpc-dock${state.ids.length > 0 ? " dshpc-dock--open" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`;
-  return (0, import_react33.createElement)(
+  return (0, import_react35.createElement)(
     "div",
     {
       ref: rootRef,
       className: rootClass
     },
-    panes.filter((pane) => state.ids.includes(pane.id)).map((pane) => (0, import_react33.createElement)(
+    panes.filter((pane) => state.ids.includes(pane.id)).map((pane) => (0, import_react35.createElement)(
       "section",
       {
         key: pane.id,
@@ -7359,7 +7568,7 @@ function PanelDock(props) {
         "data-panel": pane.id,
         "aria-label": pane.ariaLabel ?? (typeof pane.title === "string" ? pane.title : pane.id)
       },
-      (0, import_react33.createElement)("div", {
+      (0, import_react35.createElement)("div", {
         className: "dshpc-dock__resizer",
         role: "separator",
         "aria-orientation": "vertical",
@@ -7370,7 +7579,7 @@ function PanelDock(props) {
       }),
       // 收起钮是 resizer 的**兄弟**，不是子元素 —— 用户 2026-10-28：鼠标停在按钮上时，
       // 拖宽线不能亮、也不能出蓝色发光（那是在拖宽，不是点按钮）。挂在面板左缘外。
-      (0, import_react33.createElement)("button", {
+      (0, import_react35.createElement)("button", {
         type: "button",
         className: "dshpc-dock__collapse",
         "aria-label": tt("dockCollapse"),
@@ -7379,13 +7588,13 @@ function PanelDock(props) {
       renderHeader(pane),
       headerCloseOf(pane),
       floatingCloseOf(pane),
-      (0, import_react33.createElement)("div", { className: "dshpc-dock__body" }, pane.children ?? null)
+      (0, import_react35.createElement)("div", { className: "dshpc-dock__body" }, pane.children ?? null)
     )),
     // 收起后的耳朵：**独立的 fixed 浮层**，与分栏不是一体（用户 2026-10-28 口径）。
     // 多个耳朵按收起顺序纵向堆叠，点一只展开回来。
-    state.collapsed.length === 0 ? null : (0, import_react33.createElement)("div", { className: "dshpc-dock__ears" }, state.collapsed.map((id3) => {
+    state.collapsed.length === 0 ? null : (0, import_react35.createElement)("div", { className: "dshpc-dock__ears" }, state.collapsed.map((id3) => {
       const label = earLabelOf(id3);
-      return (0, import_react33.createElement)(
+      return (0, import_react35.createElement)(
         "button",
         {
           key: id3,
@@ -7396,18 +7605,18 @@ function PanelDock(props) {
           onClick: () => props.dock.expand(id3)
         },
         // 只有一个箭头，与收起钮同尺寸反向：收起钮 ›（往右收），耳朵 ‹（往左拉回来）。
-        (0, import_react33.createElement)("span", { className: "dshpc-dock__ear-arrow", "aria-hidden": true }, "\u2039")
+        (0, import_react35.createElement)("span", { className: "dshpc-dock__ear-arrow", "aria-hidden": true }, "\u2039")
       );
     }))
   );
 }
 
 // dist/ui/Field.js
-var import_react34 = require("react");
+var import_react36 = require("react");
 function withHint(control, hint) {
   if (hint === void 0)
     return control;
-  return (0, import_react34.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react34.createElement)(FieldHint, { text: hint }));
+  return (0, import_react36.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react36.createElement)(FieldHint, { text: hint }));
 }
 function sizeClass(size4) {
   return size4 === "lg" ? "--lg" : size4 === "md" ? "--md" : "--sm";
@@ -7415,10 +7624,10 @@ function sizeClass(size4) {
 function Input(props) {
   ensureComponentStyles("field", FIELD_CSS);
   const { value, onChange, placeholder: placeholder2, size: size4 = "lg", error, disabled, type: type3, icon: icon2, className: className2, style: style2 } = props;
-  const [focused, setFocused] = (0, import_react34.useState)(false);
+  const [focused, setFocused] = (0, import_react36.useState)(false);
   const search = type3 === "search";
   const showClear = search && value !== "" && focused && disabled !== true;
-  const input = (0, import_react34.createElement)("input", {
+  const input = (0, import_react36.createElement)("input", {
     ref: props.inputRef,
     type: type3 ?? "text",
     value,
@@ -7444,13 +7653,13 @@ function Input(props) {
   const hasIcon = icon2 !== void 0 && icon2 !== null;
   if (!hasIcon && !search)
     return withHint(input, props.hint);
-  return withHint((0, import_react34.createElement)(
+  return withHint((0, import_react36.createElement)(
     "span",
     { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size4)}${showClear ? " dshpc-iwrap--clear" : ""}` },
-    hasIcon ? (0, import_react34.createElement)("span", { className: "dshpc-iwrap__icon" }, icon2) : null,
+    hasIcon ? (0, import_react36.createElement)("span", { className: "dshpc-iwrap__icon" }, icon2) : null,
     input,
     // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
-    showClear ? (0, import_react34.createElement)(IconButton, {
+    showClear ? (0, import_react36.createElement)(IconButton, {
       className: "dshpc-iwrap__clear",
       variant: "plain",
       size: size4,
@@ -7468,8 +7677,8 @@ function Input(props) {
 function NumberInput(props) {
   ensureComponentStyles("field", FIELD_CSS);
   const { value, onChange, min: min2 = -Infinity, max: max2 = Infinity, step = 1, size: size4 = "lg", inputWidth, disabled, suffix: suffix2, label, decreaseLabel = "\u51CF\u5C11", increaseLabel = "\u589E\u52A0", className: className2, style: style2 } = props;
-  const [text2, setText] = (0, import_react34.useState)(String(value));
-  (0, import_react34.useEffect)(() => {
+  const [text2, setText] = (0, import_react36.useState)(String(value));
+  (0, import_react36.useEffect)(() => {
     setText(String(value));
   }, [value]);
   const clamp2 = (n) => Math.min(max2, Math.max(min2, n));
@@ -7495,18 +7704,18 @@ function NumberInput(props) {
     if (next !== value)
       onChange(next);
   };
-  return withHint((0, import_react34.createElement)(
+  return withHint((0, import_react36.createElement)(
     "div",
     {
       className: `dshpc-num dshpc-num${sizeClass(size4)}${disabled === true ? " dshpc-num--disabled" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
       style: style2
     },
-    (0, import_react34.createElement)(IconButton, { variant: "plain", size: size4, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
+    (0, import_react36.createElement)(IconButton, { variant: "plain", size: size4, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
       bump(-1);
     } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
-    (0, import_react34.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react34.createElement)("input", {
+    (0, import_react36.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react36.createElement)("input", {
       className: "dshpc-num__input",
       ...inputWidth === void 0 ? {} : { style: { width: `${inputWidth}px` } },
       value: text2,
@@ -7523,8 +7732,8 @@ function NumberInput(props) {
         if (event.key === "Enter")
           commit(text2);
       }
-    }), suffix2 !== void 0 ? (0, import_react34.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
-    (0, import_react34.createElement)(IconButton, { variant: "plain", size: size4, icon: "+", label: increaseLabel, disabled, onClick: () => {
+    }), suffix2 !== void 0 ? (0, import_react36.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
+    (0, import_react36.createElement)(IconButton, { variant: "plain", size: size4, icon: "+", label: increaseLabel, disabled, onClick: () => {
       bump(1);
     } })
   ), props.hint);
@@ -7575,7 +7784,7 @@ function connectFileServices(ctx) {
 }
 
 // dist/session/SessionViewModal.js
-var import_react56 = require("react");
+var import_react58 = require("react");
 
 // dist/ui/official.js
 var official_exports = {};
@@ -7585,7 +7794,7 @@ __export(official_exports, {
 });
 var Official = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
 __reExport(official_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
-var import_react35 = require("react");
+var import_react37 = require("react");
 var import_client4 = require("react-dom/client");
 var warned = /* @__PURE__ */ new Set();
 var officialRegistry = Official;
@@ -7613,7 +7822,7 @@ function mountHostModal(render) {
   root.render(render(close));
 }
 var hostConfirm = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react35.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react37.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -7622,17 +7831,17 @@ var hostConfirm = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react35.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react35.createElement)(Button, { variant: "outline", onClick: () => {
+    footer: (0, import_react37.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react37.createElement)(Button, { variant: "outline", onClick: () => {
       close();
       resolve(false);
-    } }, opts.cancelText ?? t("cancel")), (0, import_react35.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
+    } }, opts.cancelText ?? t("cancel")), (0, import_react37.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
       close();
       resolve(true);
     } }, opts.confirmText ?? t("confirm")))
   }));
 });
 var hostAlert = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react35.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react37.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -7641,7 +7850,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react35.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react35.createElement)(Button, { variant: "primary", onClick: () => {
+    footer: (0, import_react37.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react37.createElement)(Button, { variant: "primary", onClick: () => {
       close();
       resolve();
     } }, opts.confirmText ?? t("dialogOk")))
@@ -7650,7 +7859,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
 registerHostDialog({ confirm: hostConfirm, alert: hostAlert });
 
 // dist/session/mirror/ChatView.js
-var import_react38 = require("react");
+var import_react40 = require("react");
 
 // dist/session/official-classes.js
 var CSS_PKG_PREFIXES = [
@@ -7732,10 +7941,10 @@ function officialClass(module2, semantic) {
 }
 
 // dist/session/mirror/ChatGroupSeat.js
-var import_react37 = require("react");
+var import_react39 = require("react");
 
 // dist/session/mirror/ChatNodeSeat.js
-var import_react36 = require("react");
+var import_react38 = require("react");
 var TURN_PROCESS_INDEPENDENT_KINDS = /* @__PURE__ */ new Set([
   "system-prompt",
   "user",
@@ -7804,7 +8013,7 @@ function ChatNodeSeatMirror(props) {
   if (inner === null || inner === void 0)
     return null;
   const flowKey = groupPart === void 0 || groupPart === "response" ? node.key : JSON.stringify([node.key, groupPart]);
-  return (0, import_react36.createElement)("div", {
+  return (0, import_react38.createElement)("div", {
     className: officialClass("ChatView", "flowItem") ?? "",
     "data-chat-anchor-key": flowKey,
     "data-chat-flow-key": flowKey,
@@ -8026,7 +8235,7 @@ var SMALL_ICONS = /* @__PURE__ */ new Set([
 ]);
 function ChatGroupSeatMirror(props) {
   const { group, grouped, store, openState, onSetOpen, foldCompleted, renderNode, t: t4 } = props;
-  const [open, setOpen] = (0, import_react37.useState)(false);
+  const [open, setOpen] = (0, import_react39.useState)(false);
   const first = group.members[0];
   const firstNode = first === void 0 ? void 0 : store?.get(first.key);
   const presentation = first === void 0 ? void 0 : readPresentation(store, first.key);
@@ -8036,13 +8245,13 @@ function ChatGroupSeatMirror(props) {
   const alwaysOpen = presentation?.turnClosed === false || presentation?.hasInterleavedInput === true || reason === "aborted" || reason === "error";
   const storedAnswerStep = openState.get(group.data.turn);
   const outerHidden = foldCompleted && presentation?.turnClosed === true && spec !== void 0 && !alwaysOpen && storedAnswerStep !== (spec.answerStep ?? 0);
-  (0, import_react37.useEffect)(() => {
+  (0, import_react39.useEffect)(() => {
     if (outerHidden)
       setOpen(false);
   }, [outerHidden]);
-  const bodyRef = (0, import_react37.useRef)(null);
-  const [edges, setEdges] = (0, import_react37.useState)({ up: false, down: false });
-  const measure = (0, import_react37.useCallback)(() => {
+  const bodyRef = (0, import_react39.useRef)(null);
+  const [edges, setEdges] = (0, import_react39.useState)({ up: false, down: false });
+  const measure = (0, import_react39.useCallback)(() => {
     const el = bodyRef.current;
     if (el === null)
       return;
@@ -8051,7 +8260,7 @@ function ChatGroupSeatMirror(props) {
       down: el.scrollTop + el.clientHeight < el.scrollHeight - 1
     });
   }, []);
-  (0, import_react37.useEffect)(() => {
+  (0, import_react39.useEffect)(() => {
     if (grouped && open)
       measure();
   }, [grouped, open, measure]);
@@ -8066,7 +8275,7 @@ function ChatGroupSeatMirror(props) {
     grouped && edges.up ? officialClass("ChatGroupSeat", "fadeTop") ?? "" : "",
     grouped && edges.down ? officialClass("ChatGroupSeat", "fadeBottom") ?? "" : ""
   ].filter((part) => part !== "").join(" ");
-  return (0, import_react37.createElement)("div", {
+  return (0, import_react39.createElement)("div", {
     className: officialClass("ChatGroupSeat", "root") ?? "",
     "data-chat-group-key": group.key,
     "data-chat-flow-key": group.key,
@@ -8075,20 +8284,20 @@ function ChatGroupSeatMirror(props) {
     "data-step-process": true,
     "data-group-expanded-mode": !grouped || void 0,
     hidden: outerHidden || void 0
-  }, grouped ? (0, import_react37.createElement)("button", {
+  }, grouped ? (0, import_react39.createElement)("button", {
     type: "button",
     className: officialClass("ChatGroupSeat", "title") ?? "",
     "aria-expanded": open,
     onClick: () => {
       setOpen((value) => !value);
     }
-  }, (0, import_react37.createElement)("span", {
+  }, (0, import_react39.createElement)("span", {
     className: officialClass("ChatGroupSeat", "leading") ?? "",
     "aria-hidden": true
-  }, (0, import_react37.createElement)("span", {
+  }, (0, import_react39.createElement)("span", {
     className: officialClass("ChatGroupSeat", "activityIcon") ?? "",
     "data-step-process-icon": true
-  }, (0, import_react37.createElement)(ActivityIcon, SMALL_ICONS.has(activity) ? { size: 14 } : {})), open ? (0, import_react37.createElement)(official_exports.IconChevronUpOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" }) : (0, import_react37.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" })), (0, import_react37.createElement)("span", { className: officialClass("ChatGroupSeat", "label") ?? "" }, label)) : null, (0, import_react37.createElement)("div", {
+  }, (0, import_react39.createElement)(ActivityIcon, SMALL_ICONS.has(activity) ? { size: 14 } : {})), open ? (0, import_react39.createElement)(official_exports.IconChevronUpOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" }) : (0, import_react39.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" })), (0, import_react39.createElement)("span", { className: officialClass("ChatGroupSeat", "label") ?? "" }, label)) : null, (0, import_react39.createElement)("div", {
     ref: bodyRef,
     className: bodyClass,
     "data-step-process-body": true,
@@ -8096,11 +8305,11 @@ function ChatGroupSeatMirror(props) {
     "data-scroll-down": edges.down || void 0,
     onScroll: measure,
     hidden: grouped && !open || void 0
-  }, (0, import_react37.createElement)("div", {
+  }, (0, import_react39.createElement)("div", {
     className: officialClass("ChatGroupSeat", "content") ?? "",
     "data-step-process-content": true,
     "data-chat-flow": ""
-  }, group.members.map((member) => (0, import_react37.createElement)(ChatNodeSeatMirror, {
+  }, group.members.map((member) => (0, import_react39.createElement)(ChatNodeSeatMirror, {
     key: JSON.stringify([member.key, member.groupPart ?? null]),
     node: store?.get(member.key) ?? { key: member.key, kind: "", anchorSeq: 0 },
     groupPart: member.groupPart,
@@ -8118,7 +8327,7 @@ var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA
 // dist/session/mirror/ChatView.js
 function ChatViewFrame(props) {
   ensureComponentStyles("session", SESSION_CSS);
-  return (0, import_react38.createElement)("div", { className: `${officialClass("ChatView", "frame") ?? ""} dshpc-sv-frame dshpc-sv-chat` }, (0, import_react38.createElement)("div", { className: officialClass("ChatView", "root") ?? "" }, (0, import_react38.createElement)("div", { className: `${officialClass("ChatView", "scroll") ?? ""} dshpc-sv-scroll` }, (0, import_react38.createElement)("div", { className: officialClass("ChatView", "column") ?? "", "data-chat-flow": "" }, props.children))));
+  return (0, import_react40.createElement)("div", { className: `${officialClass("ChatView", "frame") ?? ""} dshpc-sv-frame dshpc-sv-chat` }, (0, import_react40.createElement)("div", { className: officialClass("ChatView", "root") ?? "" }, (0, import_react40.createElement)("div", { className: `${officialClass("ChatView", "scroll") ?? ""} dshpc-sv-scroll` }, (0, import_react40.createElement)("div", { className: officialClass("ChatView", "column") ?? "", "data-chat-flow": "" }, props.children))));
 }
 function ChatNodeListMirror(props) {
   const { order, store, entries: entries2, groups, turns, openState, onSetOpen, foldCompleted, renderNode, t: t4 } = props;
@@ -8163,7 +8372,7 @@ function ChatNodeListMirror(props) {
         if (group === void 0)
           continue;
         const latest = flatKeys.has(group.key);
-        rows.push((0, import_react38.createElement)(ChatGroupSeatMirror, {
+        rows.push((0, import_react40.createElement)(ChatGroupSeatMirror, {
           key: entry.key,
           group,
           grouped: turnStatus(turns, group.data.turn) !== "open" && !latest,
@@ -8178,7 +8387,7 @@ function ChatNodeListMirror(props) {
         const node = readSafe(entry.key);
         if (node === void 0)
           continue;
-        rows.push((0, import_react38.createElement)(ChatNodeSeatMirror, {
+        rows.push((0, import_react40.createElement)(ChatNodeSeatMirror, {
           key: JSON.stringify([entry.key, entry.groupPart ?? null]),
           node,
           groupPart: entry.groupPart,
@@ -8196,7 +8405,7 @@ function ChatNodeListMirror(props) {
     const node = readSafe(key);
     if (node === void 0)
       continue;
-    rows.push((0, import_react38.createElement)(ChatNodeSeatMirror, { key, node, store, openState, onSetOpen, foldCompleted, renderNode }));
+    rows.push((0, import_react40.createElement)(ChatNodeSeatMirror, { key, node, store, openState, onSetOpen, foldCompleted, renderNode }));
   }
   return rows;
 }
@@ -8205,17 +8414,17 @@ function turnStatus(turns, turn) {
   return row?.status;
 }
 function ChatHint(props) {
-  return (0, import_react38.createElement)("div", { className: officialClass("ChatView", "hint") ?? "" }, props.text);
+  return (0, import_react40.createElement)("div", { className: officialClass("ChatView", "hint") ?? "" }, props.text);
 }
 function ChatOlderButton(props) {
-  return (0, import_react38.createElement)("div", { className: officialClass("ChatView", "older") ?? "" }, (0, import_react38.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
+  return (0, import_react40.createElement)("div", { className: officialClass("ChatView", "older") ?? "" }, (0, import_react40.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
 }
 
 // dist/session/mirror/GenericCommandCard.js
-var import_react42 = require("react");
+var import_react44 = require("react");
 
 // dist/ui/CodeViewer.js
-var import_react41 = require("react");
+var import_react43 = require("react");
 
 // node_modules/.pnpm/@babel+runtime@8.0.7/node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
@@ -8240,10 +8449,10 @@ function _objectWithoutPropertiesLoose(r2, e) {
 }
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/index.js
-var import_react40 = __toESM(require("react"), 1);
+var import_react42 = __toESM(require("react"), 1);
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/useCodeMirror.js
-var import_react39 = require("react");
+var import_react41 = require("react");
 
 // node_modules/.pnpm/@marijn+find-cluster-break@1.0.4/node_modules/@marijn/find-cluster-break/src/index.js
 var rangeFrom = [];
@@ -9640,16 +9849,16 @@ var EditorSelection = class _EditorSelection {
   /**
   Extend this selection with an extra range.
   */
-  addRange(range, main = true) {
-    return _EditorSelection.create([range].concat(this.ranges), main ? 0 : this.mainIndex + 1);
+  addRange(range2, main = true) {
+    return _EditorSelection.create([range2].concat(this.ranges), main ? 0 : this.mainIndex + 1);
   }
   /**
   Replace a given range with another range, and then normalize the
   selection to merge and sort ranges if necessary.
   */
-  replaceRange(range, which = this.mainIndex) {
+  replaceRange(range2, which = this.mainIndex) {
     let ranges = this.ranges.slice();
-    ranges[which] = range;
+    ranges[which] = range2;
     return _EditorSelection.create(ranges, this.mainIndex);
   }
   /**
@@ -9681,10 +9890,10 @@ var EditorSelection = class _EditorSelection {
     if (ranges.length == 0)
       throw new RangeError("A selection needs at least one range");
     for (let pos = 0, i2 = 0; i2 < ranges.length; i2++) {
-      let range = ranges[i2];
-      if (range.empty ? range.from <= pos : range.from < pos)
+      let range2 = ranges[i2];
+      if (range2.empty ? range2.from <= pos : range2.from < pos)
         return _EditorSelection.normalized(ranges.slice(), mainIndex);
-      pos = range.to;
+      pos = range2.to;
     }
     return new _EditorSelection(ranges, mainIndex);
   }
@@ -9721,20 +9930,20 @@ var EditorSelection = class _EditorSelection {
     ranges.sort((a, b) => a.from - b.from);
     mainIndex = ranges.indexOf(main);
     for (let i2 = 1; i2 < ranges.length; i2++) {
-      let range = ranges[i2], prev = ranges[i2 - 1];
-      if (range.empty ? range.from <= prev.to : range.from < prev.to) {
-        let from2 = prev.from, to = Math.max(range.to, prev.to);
+      let range2 = ranges[i2], prev = ranges[i2 - 1];
+      if (range2.empty ? range2.from <= prev.to : range2.from < prev.to) {
+        let from2 = prev.from, to = Math.max(range2.to, prev.to);
         if (i2 <= mainIndex)
           mainIndex--;
-        ranges.splice(--i2, 2, range.anchor > range.head ? _EditorSelection.range(to, from2) : _EditorSelection.range(from2, to));
+        ranges.splice(--i2, 2, range2.anchor > range2.head ? _EditorSelection.range(to, from2) : _EditorSelection.range(from2, to));
       }
     }
     return new _EditorSelection(ranges, mainIndex);
   }
 };
 function checkSelection(selection2, docLength) {
-  for (let range of selection2.ranges)
-    if (range.to > docLength)
+  for (let range2 of selection2.ranges)
+    if (range2.to > docLength)
       throw new RangeError("Selection points outside of document");
 }
 var nextID = 0;
@@ -10620,9 +10829,9 @@ var EditorState = class _EditorState {
   replaceSelection(text2) {
     if (typeof text2 == "string")
       text2 = this.toText(text2);
-    return this.changeByRange((range) => ({
-      changes: { from: range.from, to: range.to, insert: text2 },
-      range: EditorSelection.cursor(range.from + text2.length, -1)
+    return this.changeByRange((range2) => ({
+      changes: { from: range2.from, to: range2.to, insert: text2 },
+      range: EditorSelection.cursor(range2.from + text2.length, -1)
     }));
   }
   /**
@@ -11076,9 +11285,9 @@ var RangeSet = class _RangeSet {
     let builder = new RangeSetBuilder();
     while (cur2.value || i2 < add2.length) {
       if (i2 < add2.length && (cur2.from - add2[i2].from || cur2.startSide - add2[i2].value.startSide) >= 0) {
-        let range = add2[i2++];
-        if (!builder.addInner(range.from, range.to, range.value, false))
-          spill.push(range);
+        let range2 = add2[i2++];
+        if (!builder.addInner(range2.from, range2.to, range2.value, false))
+          spill.push(range2);
       } else if (cur2.rangeIndex == 1 && cur2.chunkIndex < this.chunk.length && (i2 == add2.length || this.chunkEnd(cur2.chunkIndex) < add2[i2].from) && (!filter2 || filterFrom > this.chunkEnd(cur2.chunkIndex) || filterTo < this.chunkPos[cur2.chunkIndex]) && builder.addChunk(this.chunkPos[cur2.chunkIndex], this.chunk[cur2.chunkIndex])) {
         cur2.nextChunk();
       } else {
@@ -11236,8 +11445,8 @@ var RangeSet = class _RangeSet {
   */
   static of(ranges, sort = false) {
     let build = new RangeSetBuilder();
-    for (let range of ranges instanceof Range ? [ranges] : sort ? lazySort(ranges) : ranges)
-      build.add(range.from, range.to, range.value);
+    for (let range2 of ranges instanceof Range ? [ranges] : sort ? lazySort(ranges) : ranges)
+      build.add(range2.from, range2.to, range2.value);
     return build.finish();
   }
   /**
@@ -12607,9 +12816,9 @@ var DOMSelectionState = class {
   eq(domSel) {
     return this.anchorNode == domSel.anchorNode && this.anchorOffset == domSel.anchorOffset && this.focusNode == domSel.focusNode && this.focusOffset == domSel.focusOffset;
   }
-  setRange(range) {
-    let { anchorNode, focusNode } = range;
-    this.set(anchorNode, Math.min(range.anchorOffset, anchorNode ? maxOffset(anchorNode) : 0), focusNode, Math.min(range.focusOffset, focusNode ? maxOffset(focusNode) : 0));
+  setRange(range2) {
+    let { anchorNode, focusNode } = range2;
+    this.set(anchorNode, Math.min(range2.anchorOffset, anchorNode ? maxOffset(anchorNode) : 0), focusNode, Math.min(range2.focusOffset, focusNode ? maxOffset(focusNode) : 0));
   }
   set(anchorNode, anchorOffset, focusNode, focusOffset) {
     this.anchorNode = anchorNode;
@@ -12656,10 +12865,10 @@ function focusPreventScroll(dom) {
 }
 var scratchRange;
 function textRange(node, from2, to = from2) {
-  let range = scratchRange || (scratchRange = document.createRange());
-  range.setEnd(node, to);
-  range.setStart(node, from2);
-  return range;
+  let range2 = scratchRange || (scratchRange = document.createRange());
+  range2.setEnd(node, to);
+  range2.setStart(node, from2);
+  return range2;
 }
 function dispatchKey(elt2, name2, code3, mods) {
   let options = { key: name2, code: name2, keyCode: code3, which: code3, cancelable: true };
@@ -13153,8 +13362,8 @@ var nativeSelectionHidden = /* @__PURE__ */ Facet.define({
 });
 var scrollHandler = /* @__PURE__ */ Facet.define();
 var ScrollTarget = class _ScrollTarget {
-  constructor(range, y, x, yMargin, xMargin, isSnapshot = false) {
-    this.range = range;
+  constructor(range2, y, x, yMargin, xMargin, isSnapshot = false) {
+    this.range = range2;
     this.y = y;
     this.x = x;
     this.yMargin = yMargin;
@@ -13372,12 +13581,12 @@ var ChangedRange = class _ChangedRange {
   addToSet(set) {
     let i2 = set.length, me = this;
     for (; i2 > 0; i2--) {
-      let range = set[i2 - 1];
-      if (range.fromA > me.toA)
+      let range2 = set[i2 - 1];
+      if (range2.fromA > me.toA)
         continue;
-      if (range.toA < me.fromA)
+      if (range2.toA < me.fromA)
         break;
-      me = me.join(range);
+      me = me.join(range2);
       set.splice(i2 - 1, 1);
     }
     set.splice(i2, 0, me);
@@ -14875,13 +15084,13 @@ var DocView = class {
           } catch (_) {
           }
         } else {
-          let range = document.createRange();
+          let range2 = document.createRange();
           if (main.anchor > main.head)
             [anchor, head] = [head, anchor];
-          range.setEnd(head.node, head.offset);
-          range.setStart(anchor.node, anchor.offset);
+          range2.setEnd(head.node, head.offset);
+          range2.setStart(anchor.node, anchor.offset);
           rawSel.removeAllRanges();
-          rawSel.addRange(range);
+          rawSel.addRange(range2);
         }
         if (selectionNotFocus && this.view.root.activeElement == dom) {
           dom.blur();
@@ -15204,11 +15413,11 @@ var DocView = class {
         logException(this.view.state, e, "scroll handler");
       }
     }
-    let { range } = target;
-    let rect = this.coordsAt(range.head, range.assoc || (range.head > range.anchor ? -1 : 1)), other;
+    let { range: range2 } = target;
+    let rect = this.coordsAt(range2.head, range2.assoc || (range2.head > range2.anchor ? -1 : 1)), other;
     if (!rect)
       return;
-    if (!range.empty && (other = this.coordsAt(range.anchor, range.anchor > range.head ? -1 : 1)))
+    if (!range2.empty && (other = this.coordsAt(range2.anchor, range2.anchor > range2.head ? -1 : 1)))
       rect = {
         left: Math.min(rect.left, other.left),
         top: Math.min(rect.top, other.top),
@@ -15223,9 +15432,9 @@ var DocView = class {
       bottom: rect.bottom + margins.bottom
     };
     let { offsetWidth, offsetHeight } = this.view.scrollDOM;
-    scrollRectIntoView(this.view.scrollDOM, targetRect, range.head < range.anchor ? -1 : 1, target.x, target.y, Math.max(Math.min(target.xMargin, offsetWidth), -offsetWidth), Math.max(Math.min(target.yMargin, offsetHeight), -offsetHeight), this.view.textDirection == Direction.LTR);
+    scrollRectIntoView(this.view.scrollDOM, targetRect, range2.head < range2.anchor ? -1 : 1, target.x, target.y, Math.max(Math.min(target.xMargin, offsetWidth), -offsetWidth), Math.max(Math.min(target.yMargin, offsetHeight), -offsetHeight), this.view.textDirection == Direction.LTR);
     if (window.visualViewport && window.innerHeight - window.visualViewport.height > 1 && (rect.top > window.visualViewport.offsetTop + window.visualViewport.height || rect.bottom < window.visualViewport.offsetTop)) {
-      let line = this.view.docView.lineAt(range.head, 1);
+      let line = this.view.docView.lineAt(range2.head, 1);
       if (line) {
         let stack = getScrollStack(line.dom);
         line.dom.scrollIntoView({ block: "nearest" });
@@ -15528,19 +15737,19 @@ function skipAtomicRanges(atoms7, pos, bias) {
 function skipAtomsForSelection(atoms7, sel) {
   let ranges = null;
   for (let i2 = 0; i2 < sel.ranges.length; i2++) {
-    let range = sel.ranges[i2], updated = null;
-    if (range.empty) {
-      let pos = skipAtomicRanges(atoms7, range.from, 0);
-      if (pos != range.from)
+    let range2 = sel.ranges[i2], updated = null;
+    if (range2.empty) {
+      let pos = skipAtomicRanges(atoms7, range2.from, 0);
+      if (pos != range2.from)
         updated = EditorSelection.cursor(pos, -1);
     } else {
-      let from2 = skipAtomicRanges(atoms7, range.from, -1);
-      let to = skipAtomicRanges(atoms7, range.to, 1);
-      if (from2 != range.from || to != range.to) {
-        if (range.undirectional)
-          updated = EditorSelection.undirectionalRange(range.from, range.to);
+      let from2 = skipAtomicRanges(atoms7, range2.from, -1);
+      let to = skipAtomicRanges(atoms7, range2.to, 1);
+      if (from2 != range2.from || to != range2.to) {
+        if (range2.undirectional)
+          updated = EditorSelection.undirectionalRange(range2.from, range2.to);
         else
-          updated = EditorSelection.range(range.from == range.anchor ? from2 : to, range.from == range.head ? from2 : to);
+          updated = EditorSelection.range(range2.from == range2.anchor ? from2 : to, range2.from == range2.head ? from2 : to);
       }
     }
     if (updated) {
@@ -16026,7 +16235,7 @@ function applyDOMChangeInner(view, change, newSel, lastKey = -1) {
     view.inputState.composing++;
   let defaultTr;
   let defaultInsert = () => defaultTr || (defaultTr = applyDefaultInsert(view, change, newSel));
-  if (!view.state.facet(inputHandler).some((h66) => h66(view, change.from, change.to, text2, defaultInsert)))
+  if (!view.state.facet(inputHandler).some((h68) => h68(view, change.from, change.to, text2, defaultInsert)))
     view.dispatch(defaultInsert());
   return true;
 }
@@ -16060,20 +16269,20 @@ function applyDefaultInsert(view, change, newSel) {
         compositionRange = view.state.doc.lineAt(sel.head);
       }
       let offset4 = sel.to - change.to;
-      tr = startState2.changeByRange((range) => {
-        if (range.from == sel.from && range.to == sel.to)
-          return { changes, range: mainSel || range.map(changes) };
-        let to = range.to - offset4, from2 = to - replaced.length;
+      tr = startState2.changeByRange((range2) => {
+        if (range2.from == sel.from && range2.to == sel.to)
+          return { changes, range: mainSel || range2.map(changes) };
+        let to = range2.to - offset4, from2 = to - replaced.length;
         if (view.state.sliceDoc(from2, to) != replaced || // Unfortunately, there's no way to make multiple
         // changes in the same node work without aborting
         // composition, so cursors in the composition range are
         // ignored.
         to >= compositionRange.from && from2 <= compositionRange.to)
-          return { range };
-        let rangeChanges = startState2.changes({ from: from2, to, insert: change.insert }), selOff = range.to - sel.to;
+          return { range: range2 };
+        let rangeChanges = startState2.changes({ from: from2, to, insert: change.insert }), selOff = range2.to - sel.to;
         return {
           changes: rangeChanges,
-          range: !mainSel ? range.map(rangeChanges) : EditorSelection.range(Math.max(0, mainSel.anchor + selOff), Math.max(0, mainSel.head + selOff))
+          range: !mainSel ? range2.map(rangeChanges) : EditorSelection.range(Math.max(0, mainSel.anchor + selOff), Math.max(0, mainSel.head + selOff))
         };
       });
     } else {
@@ -16141,8 +16350,8 @@ function selectionFromPoints(points, base3) {
   let anchor = points[0].pos, head = points.length == 2 ? points[1].pos : anchor;
   return anchor < 0 || head < 0 ? null : anchor == head ? EditorSelection.create([EditorSelection.cursor(head + base3, -1)]) : EditorSelection.single(anchor + base3, head + base3);
 }
-function sameSelPos(selection2, range) {
-  return range.head == selection2.main.head && range.anchor == selection2.main.anchor;
+function sameSelPos(selection2, range2) {
+  return range2.head == selection2.main.head && range2.anchor == selection2.main.anchor;
 }
 var InputState = class {
   setSelectionOrigin(origin) {
@@ -16509,23 +16718,23 @@ function doPaste(view, input) {
   let linewise = lastLinewiseCopy != null && state.selection.ranges.every((r2) => r2.empty) && lastLinewiseCopy == text2.toString();
   if (linewise) {
     let lastLine = -1;
-    changes = state.changeByRange((range) => {
-      let line = state.doc.lineAt(range.from);
+    changes = state.changeByRange((range2) => {
+      let line = state.doc.lineAt(range2.from);
       if (line.from == lastLine)
-        return { range };
+        return { range: range2 };
       lastLine = line.from;
       let insert2 = state.toText((byLine ? text2.line(i2++).text : input) + state.lineBreak);
       return {
         changes: { from: line.from, insert: insert2 },
-        range: EditorSelection.cursor(range.from + insert2.length, -1)
+        range: EditorSelection.cursor(range2.from + insert2.length, -1)
       };
     });
   } else if (byLine) {
-    changes = state.changeByRange((range) => {
+    changes = state.changeByRange((range2) => {
       let line = text2.line(i2++);
       return {
-        changes: { from: range.from, to: range.to, insert: line.text },
-        range: EditorSelection.cursor(range.from + line.length, -1)
+        changes: { from: range2.from, to: range2.to, insert: line.text },
+        range: EditorSelection.cursor(range2.from + line.length, -1)
       };
     });
   } else {
@@ -16637,20 +16846,20 @@ function basicMouseSelection(view, event) {
     },
     get(event2, extend, multiple) {
       let cur2 = view.posAndSideAtCoords({ x: event2.clientX, y: event2.clientY }, false), removed;
-      let range = rangeForClick(view, cur2.pos, cur2.assoc, type3);
+      let range2 = rangeForClick(view, cur2.pos, cur2.assoc, type3);
       if (start.pos != cur2.pos && !extend) {
         let startRange = rangeForClick(view, start.pos, start.assoc, type3);
-        let from2 = Math.min(startRange.from, range.from), to = Math.max(startRange.to, range.to);
-        range = from2 < range.from ? EditorSelection.range(from2, to, range.assoc) : EditorSelection.range(to, from2, range.assoc);
+        let from2 = Math.min(startRange.from, range2.from), to = Math.max(startRange.to, range2.to);
+        range2 = from2 < range2.from ? EditorSelection.range(from2, to, range2.assoc) : EditorSelection.range(to, from2, range2.assoc);
       }
       if (extend)
-        return startSel.replaceRange(startSel.main.extend(range.from, range.to, range.assoc));
+        return startSel.replaceRange(startSel.main.extend(range2.from, range2.to, range2.assoc));
       else if (multiple && type3 == 1 && startSel.ranges.length > 1 && (removed = removeRangeAround(startSel, cur2.pos)))
         return removed;
       else if (multiple)
-        return startSel.addRange(range);
+        return startSel.addRange(range2);
       else
-        return EditorSelection.create([range]);
+        return EditorSelection.create([range2]);
     }
   };
 }
@@ -16663,21 +16872,21 @@ function removeRangeAround(sel, pos) {
   return null;
 }
 handlers.dragstart = (view, event) => {
-  let { selection: { main: range } } = view.state;
+  let { selection: { main: range2 } } = view.state;
   if (event.target.draggable) {
     let tile = view.docView.tile.nearest(event.target);
     if (tile && tile.isWidget()) {
       let from2 = tile.posAtStart, to = from2 + tile.length;
-      if (from2 >= range.to || to <= range.from)
-        range = EditorSelection.undirectionalRange(from2, to);
+      if (from2 >= range2.to || to <= range2.from)
+        range2 = EditorSelection.undirectionalRange(from2, to);
     }
   }
   let { inputState } = view;
   if (inputState.mouseSelection)
     inputState.mouseSelection.dragging = true;
-  inputState.draggedContent = range;
+  inputState.draggedContent = range2;
   if (event.dataTransfer) {
-    event.dataTransfer.setData("Text", textFilter(view.state, clipboardOutputFilter, view.state.sliceDoc(range.from, range.to)));
+    event.dataTransfer.setData("Text", textFilter(view.state, clipboardOutputFilter, view.state.sliceDoc(range2.from, range2.to)));
     event.dataTransfer.effectAllowed = "copyMove";
   }
   return false;
@@ -16765,10 +16974,10 @@ function captureCopy(view, text2) {
 }
 function copiedRange(state) {
   let content2 = [], ranges = [], linewise = false;
-  for (let range of state.selection.ranges)
-    if (!range.empty) {
-      content2.push(state.sliceDoc(range.from, range.to));
-      ranges.push(range);
+  for (let range2 of state.selection.ranges)
+    if (!range2.empty) {
+      content2.push(state.sliceDoc(range2.from, range2.to));
+      ranges.push(range2);
     }
   if (!content2.length) {
     let upto = -1;
@@ -16964,12 +17173,12 @@ var HeightOracle = class {
   mustRefreshForHeights(lineHeights) {
     let newHeight = false;
     for (let i2 = 0; i2 < lineHeights.length; i2++) {
-      let h66 = lineHeights[i2];
-      if (h66 < 0) {
+      let h68 = lineHeights[i2];
+      if (h68 < 0) {
         i2++;
-      } else if (!this.heightSamples[Math.floor(h66 * 10)]) {
+      } else if (!this.heightSamples[Math.floor(h68 * 10)]) {
         newHeight = true;
-        this.heightSamples[Math.floor(h66 * 10)] = true;
+        this.heightSamples[Math.floor(h68 * 10)] = true;
       }
     }
     return newHeight;
@@ -16985,11 +17194,11 @@ var HeightOracle = class {
     if (changed) {
       this.heightSamples = {};
       for (let i2 = 0; i2 < knownHeights.length; i2++) {
-        let h66 = knownHeights[i2];
-        if (h66 < 0)
+        let h68 = knownHeights[i2];
+        if (h68 < 0)
           i2++;
         else
-          this.heightSamples[Math.floor(h66 * 10)] = true;
+          this.heightSamples[Math.floor(h68 * 10)] = true;
       }
     }
     return changed;
@@ -18744,16 +18953,16 @@ var DOMObserver = class {
     let selection2 = getSelection(view.root);
     if (!selection2)
       return false;
-    let range = browser.safari && view.root.nodeType == 11 && view.root.activeElement == this.dom && safariSelectionRangeHack(this.view, selection2) || selection2;
-    if (!range || this.selectionRange.eq(range))
+    let range2 = browser.safari && view.root.nodeType == 11 && view.root.activeElement == this.dom && safariSelectionRangeHack(this.view, selection2) || selection2;
+    if (!range2 || this.selectionRange.eq(range2))
       return false;
-    let local = hasSelection(this.dom, range);
-    if (local && !this.selectionChanged && view.inputState.lastFocusTime > Date.now() - 200 && view.inputState.lastTouchTime < Date.now() - 300 && atElementStart(this.dom, range)) {
+    let local = hasSelection(this.dom, range2);
+    if (local && !this.selectionChanged && view.inputState.lastFocusTime > Date.now() - 200 && view.inputState.lastTouchTime < Date.now() - 300 && atElementStart(this.dom, range2)) {
       this.view.inputState.lastFocusTime = 0;
       view.docView.updateSelection();
       return false;
     }
-    this.selectionRange.setRange(range);
+    this.selectionRange.setRange(range2);
     if (local)
       this.selectionChanged = true;
     return true;
@@ -18890,16 +19099,16 @@ var DOMObserver = class {
       this.queue = [];
     let from2 = -1, to = -1, typeOver = false;
     for (let record of records) {
-      let range = this.readMutation(record);
-      if (!range)
+      let range2 = this.readMutation(record);
+      if (!range2)
         continue;
-      if (range.typeOver)
+      if (range2.typeOver)
         typeOver = true;
       if (from2 == -1) {
-        ({ from: from2, to } = range);
+        ({ from: from2, to } = range2);
       } else {
-        from2 = Math.min(range.from, from2);
-        to = Math.max(range.to, to);
+        from2 = Math.min(range2.from, from2);
+        to = Math.max(range2.to, to);
       }
     }
     return { from: from2, to, typeOver };
@@ -19020,9 +19229,9 @@ function findChild(tile, dom, dir) {
   }
   return null;
 }
-function buildSelectionRangeFromRange(view, range) {
-  let anchorNode = range.startContainer, anchorOffset = range.startOffset;
-  let focusNode = range.endContainer, focusOffset = range.endOffset;
+function buildSelectionRangeFromRange(view, range2) {
+  let anchorNode = range2.startContainer, anchorOffset = range2.startOffset;
+  let focusNode = range2.endContainer, focusOffset = range2.endOffset;
   let curAnchor = view.docView.domAtPos(view.state.selection.main.anchor, 1);
   if (isEquivalentPosition(curAnchor.node, curAnchor.offset, focusNode, focusOffset))
     [anchorNode, anchorOffset, focusNode, focusOffset] = [focusNode, focusOffset, anchorNode, anchorOffset];
@@ -19030,9 +19239,9 @@ function buildSelectionRangeFromRange(view, range) {
 }
 function safariSelectionRangeHack(view, selection2) {
   if (selection2.getComposedRanges) {
-    let range = selection2.getComposedRanges(view.root)[0];
-    if (range)
-      return buildSelectionRangeFromRange(view, range);
+    let range2 = selection2.getComposedRanges(view.root)[0];
+    if (range2)
+      return buildSelectionRangeFromRange(view, range2);
   }
   let found = null;
   function read(event) {
@@ -20480,15 +20689,15 @@ var RectangleMarker = class _RectangleMarker {
   rectangles covering the range's content (in a bidi-aware
   way) for non-empty ones.
   */
-  static forRange(view, className2, range) {
-    if (range.empty) {
-      let pos = view.coordsAtPos(range.head, range.assoc || 1);
+  static forRange(view, className2, range2) {
+    if (range2.empty) {
+      let pos = view.coordsAtPos(range2.head, range2.assoc || 1);
       if (!pos)
         return [];
       let base3 = getBase(view);
       return [new _RectangleMarker(className2, pos.left - base3.left, pos.top - base3.top, null, pos.bottom - pos.top)];
     } else {
-      return rectanglesForRange(view, className2, range);
+      return rectanglesForRange(view, className2, range2);
     }
   }
 };
@@ -20509,10 +20718,10 @@ function wrappedLine(view, pos, side, inside) {
     return inside;
   return { from: Math.max(inside.from, Math.min(left, right)), to: Math.min(inside.to, Math.max(left, right)) };
 }
-function rectanglesForRange(view, className2, range) {
-  if (range.to <= view.viewport.from || range.from >= view.viewport.to)
+function rectanglesForRange(view, className2, range2) {
+  if (range2.to <= view.viewport.from || range2.from >= view.viewport.to)
     return [];
-  let from2 = Math.max(range.from, view.viewport.from), to = Math.min(range.to, view.viewport.to);
+  let from2 = Math.max(range2.from, view.viewport.from), to = Math.min(range2.to, view.viewport.to);
   let ltr = view.textDirection == Direction.LTR;
   let content2 = view.contentDOM, contentRect = content2.getBoundingClientRect(), base3 = getBase(view);
   let lineElt = content2.querySelector(".cm-line"), lineStyle = lineElt && window.getComputedStyle(lineElt);
@@ -20526,10 +20735,10 @@ function rectanglesForRange(view, className2, range) {
   if (visualEnd && (view.lineWrapping || endBlock.widgetLineBreaks))
     visualEnd = wrappedLine(view, to, -1, visualEnd);
   if (visualStart && visualEnd && visualStart.from == visualEnd.from && visualStart.to == visualEnd.to) {
-    return pieces(drawForLine(range.from, range.to, visualStart));
+    return pieces(drawForLine(range2.from, range2.to, visualStart));
   } else {
-    let top2 = visualStart ? drawForLine(range.from, null, visualStart) : drawForWidget(startBlock, false);
-    let bottom = visualEnd ? drawForLine(null, range.to, visualEnd) : drawForWidget(endBlock, true);
+    let top2 = visualStart ? drawForLine(range2.from, null, visualStart) : drawForWidget(startBlock, false);
+    let bottom = visualEnd ? drawForLine(null, range2.to, visualEnd) : drawForWidget(endBlock, true);
     let between = [];
     if ((visualStart || startBlock).to < (visualEnd || endBlock).from - (visualStart && visualEnd ? 1 : 0) || startBlock.widgetLineBreaks > 1 && top2.bottom + view.defaultLineHeight / 2 < bottom.top)
       between.push(piece(leftSide, top2.bottom, rightSide, bottom.top));
@@ -22729,8 +22938,8 @@ var activeLineGutterMarker = /* @__PURE__ */ new class extends GutterMarker {
 }();
 var activeLineGutterHighlighter = /* @__PURE__ */ gutterLineClass.compute(["selection"], (state) => {
   let marks2 = [], last2 = -1;
-  for (let range of state.selection.ranges) {
-    let linePos = state.doc.lineAt(range.head).from;
+  for (let range2 of state.selection.ranges) {
+    let linePos = state.doc.lineAt(range2.head).from;
     if (linePos > last2) {
       last2 = linePos;
       marks2.push(activeLineGutterMarker.range(linePos));
@@ -24505,7 +24714,7 @@ var MixedParse = class {
     let covered = null;
     let cursor2 = new TreeCursor(new TreeNode(this.baseTree, this.ranges[0].from, 0, null), IterMode.IncludeAnonymous | IterMode.IgnoreMounts);
     scan: for (let nest, isCovered; ; ) {
-      let enter = true, range;
+      let enter = true, range2;
       if (this.stoppedAt != null && cursor2.from >= this.stoppedAt) {
         enter = false;
       } else if (fragmentCursor.hasNode(cursor2)) {
@@ -24543,15 +24752,15 @@ var MixedParse = class {
           else if (ranges.length)
             covered = { ranges, depth: 0, prev: covered };
         }
-      } else if (overlay && (range = overlay.predicate(cursor2))) {
-        if (range === true)
-          range = new Range2(cursor2.from, cursor2.to);
-        if (range.from < range.to) {
+      } else if (overlay && (range2 = overlay.predicate(cursor2))) {
+        if (range2 === true)
+          range2 = new Range2(cursor2.from, cursor2.to);
+        if (range2.from < range2.to) {
           let last2 = overlay.ranges.length - 1;
-          if (last2 >= 0 && overlay.ranges[last2].to == range.from)
-            overlay.ranges[last2] = { from: overlay.ranges[last2].from, to: range.to };
+          if (last2 >= 0 && overlay.ranges[last2].to == range2.from)
+            overlay.ranges[last2] = { from: overlay.ranges[last2].from, to: range2.to };
           else
-            overlay.ranges.push(range);
+            overlay.ranges.push(range2);
         }
       }
       if (enter && cursor2.firstChild()) {
@@ -24581,11 +24790,11 @@ var MixedParse = class {
   }
 };
 function checkCover(covered, from2, to) {
-  for (let range of covered) {
-    if (range.from >= to)
+  for (let range2 of covered) {
+    if (range2.from >= to)
       break;
-    if (range.to > from2)
-      return range.from <= from2 && range.to >= to ? 2 : 1;
+    if (range2.to > from2)
+      return range2.from <= from2 && range2.to >= to ? 2 : 1;
   }
   return 0;
 }
@@ -25036,7 +25245,7 @@ var HighlightBuilder = class {
     if (start >= to || end <= from2)
       return;
     if (type3.isTop)
-      highlighters = this.highlighters.filter((h66) => !h66.scope || h66.scope(type3));
+      highlighters = this.highlighters.filter((h68) => !h68.scope || h68.scope(type3));
     let cls = inheritedClass;
     let rule = getStyleTags(cursor2) || Rule.empty;
     let tagCls = highlightTags(highlighters, rule.tags);
@@ -25053,7 +25262,7 @@ var HighlightBuilder = class {
     let mounted = cursor2.tree && cursor2.tree.prop(NodeProp.mounted);
     if (mounted && mounted.overlay) {
       let inner = cursor2.node.enter(mounted.overlay[0].from + start, 1);
-      let innerHighlighters = this.highlighters.filter((h66) => !h66.scope || h66.scope(mounted.tree.type));
+      let innerHighlighters = this.highlighters.filter((h68) => !h68.scope || h68.scope(mounted.tree.type));
       let hasChild2 = cursor2.firstChild();
       for (let i2 = 0, pos = start; ; i2++) {
         let next = i2 < mounted.overlay.length ? mounted.overlay[i2] : null;
@@ -26628,8 +26837,8 @@ function foldable(state, lineStart, lineEnd2) {
   }
   return syntaxFolding(state, lineStart, lineEnd2);
 }
-function mapRange(range, mapping) {
-  let from2 = mapping.mapPos(range.from, 1), to = mapping.mapPos(range.to, -1);
+function mapRange(range2, mapping) {
+  let from2 = mapping.mapPos(range2.from, 1), to = mapping.mapPos(range2.to, -1);
   return from2 >= to ? void 0 : { from: from2, to };
 }
 var foldEffect = /* @__PURE__ */ StateEffect.define({ map: mapRange });
@@ -26730,9 +26939,9 @@ function maybeEnable(state, other) {
 }
 var foldCode = (view) => {
   for (let line of selectedLines(view)) {
-    let range = foldable(view.state, line.from, line.to);
-    if (range) {
-      view.dispatch({ effects: maybeEnable(view.state, [foldEffect.of(range), announceFold(view, range)]) });
+    let range2 = foldable(view.state, line.from, line.to);
+    if (range2) {
+      view.dispatch({ effects: maybeEnable(view.state, [foldEffect.of(range2), announceFold(view, range2)]) });
       return true;
     }
   }
@@ -26751,17 +26960,17 @@ var unfoldCode = (view) => {
     view.dispatch({ effects });
   return effects.length > 0;
 };
-function announceFold(view, range, fold = true) {
-  let lineFrom = view.state.doc.lineAt(range.from).number, lineTo = view.state.doc.lineAt(range.to).number;
+function announceFold(view, range2, fold = true) {
+  let lineFrom = view.state.doc.lineAt(range2.from).number, lineTo = view.state.doc.lineAt(range2.to).number;
   return EditorView.announce.of(`${view.state.phrase(fold ? "Folded lines" : "Unfolded lines")} ${lineFrom} ${view.state.phrase("to")} ${lineTo}.`);
 }
 var foldAll = (view) => {
   let { state } = view, effects = [];
   for (let pos = 0; pos < state.doc.length; ) {
-    let line = view.lineBlockAt(pos), range = foldable(state, line.from, line.to);
-    if (range)
-      effects.push(foldEffect.of(range));
-    pos = (range ? view.lineBlockAt(range.to) : line).to + 1;
+    let line = view.lineBlockAt(pos), range2 = foldable(state, line.from, line.to);
+    if (range2)
+      effects.push(foldEffect.of(range2));
+    pos = (range2 ? view.lineBlockAt(range2.to) : line).to + 1;
   }
   if (effects.length)
     view.dispatch({ effects: maybeEnable(view.state, effects) });
@@ -26905,9 +27114,9 @@ function foldGutter(config2 = {}) {
             view.dispatch({ effects: unfoldEffect.of(folded) });
             return true;
           }
-          let range = foldable(view.state, line.from, line.to);
-          if (range) {
-            view.dispatch({ effects: foldEffect.of(range) });
+          let range2 = foldable(view.state, line.from, line.to);
+          if (range2) {
+            view.dispatch({ effects: foldEffect.of(range2) });
             return true;
           }
           return false;
@@ -27142,10 +27351,10 @@ function defaultRenderMatch(match) {
 function bracketDeco(state) {
   let decorations2 = [];
   let config2 = state.facet(bracketMatchingConfig);
-  for (let range of state.selection.ranges) {
-    if (!range.empty)
+  for (let range2 of state.selection.ranges) {
+    if (!range2.empty)
       continue;
-    let match = matchBrackets(state, range.head, -1, config2) || range.head > 0 && matchBrackets(state, range.head - 1, 1, config2) || config2.afterCursor && (matchBrackets(state, range.head, 1, config2) || range.head < state.doc.length && matchBrackets(state, range.head + 1, -1, config2));
+    let match = matchBrackets(state, range2.head, -1, config2) || range2.head > 0 && matchBrackets(state, range2.head - 1, 1, config2) || config2.afterCursor && (matchBrackets(state, range2.head, 1, config2) || range2.head < state.doc.length && matchBrackets(state, range2.head + 1, -1, config2));
     if (match)
       decorations2 = decorations2.concat(config2.renderMatch(match, state));
   }
@@ -27730,10 +27939,10 @@ function changeBlockComment(option, state, ranges = state.selection.ranges) {
     return null;
   let comments = ranges.map((r2, i2) => findBlockComment(state, tokens[i2], r2.from, r2.to));
   if (option != 2 && !comments.every((c2) => c2)) {
-    return { changes: state.changes(ranges.map((range, i2) => {
+    return { changes: state.changes(ranges.map((range2, i2) => {
       if (comments[i2])
         return [];
-      return [{ from: range.from, insert: tokens[i2].open + " " }, { from: range.to, insert: " " + tokens[i2].close }];
+      return [{ from: range2.from, insert: tokens[i2].open + " " }, { from: range2.to, insert: " " + tokens[i2].close }];
     })) };
   } else if (option != 1 && comments.some((c2) => c2)) {
     let changes = [];
@@ -28076,11 +28285,11 @@ function moveSel({ state, dispatch }, how) {
   dispatch(setSel(state, selection2));
   return true;
 }
-function rangeEnd(range, forward) {
-  return EditorSelection.cursor(forward ? range.to : range.from);
+function rangeEnd(range2, forward) {
+  return EditorSelection.cursor(forward ? range2.to : range2.from);
 }
 function cursorByChar(view, forward) {
-  return moveSel(view, (range) => range.empty ? view.moveByChar(range, forward) : rangeEnd(range, forward));
+  return moveSel(view, (range2) => range2.empty ? view.moveByChar(range2, forward) : rangeEnd(range2, forward));
 }
 function ltrAtCursor(view) {
   return view.textDirectionAt(view.state.selection.main.head) == Direction.LTR;
@@ -28088,7 +28297,7 @@ function ltrAtCursor(view) {
 var cursorCharLeft = (view) => cursorByChar(view, !ltrAtCursor(view));
 var cursorCharRight = (view) => cursorByChar(view, ltrAtCursor(view));
 function cursorByGroup(view, forward) {
-  return moveSel(view, (range) => range.empty ? view.moveByGroup(range, forward) : rangeEnd(range, forward));
+  return moveSel(view, (range2) => range2.empty ? view.moveByGroup(range2, forward) : rangeEnd(range2, forward));
 }
 var cursorGroupLeft = (view) => cursorByGroup(view, !ltrAtCursor(view));
 var cursorGroupRight = (view) => cursorByGroup(view, ltrAtCursor(view));
@@ -28118,14 +28327,14 @@ function moveBySyntax(state, start, forward) {
     newPos = forward ? pos.to : pos.from;
   return EditorSelection.cursor(newPos, forward ? -1 : 1);
 }
-var cursorSyntaxLeft = (view) => moveSel(view, (range) => moveBySyntax(view.state, range, !ltrAtCursor(view)));
-var cursorSyntaxRight = (view) => moveSel(view, (range) => moveBySyntax(view.state, range, ltrAtCursor(view)));
+var cursorSyntaxLeft = (view) => moveSel(view, (range2) => moveBySyntax(view.state, range2, !ltrAtCursor(view)));
+var cursorSyntaxRight = (view) => moveSel(view, (range2) => moveBySyntax(view.state, range2, ltrAtCursor(view)));
 function cursorByLine(view, forward) {
-  return moveSel(view, (range) => {
-    if (!range.empty)
-      return rangeEnd(range, forward);
-    let moved = view.moveVertically(range, forward);
-    return moved.head != range.head ? moved : view.moveToLineBoundary(range, forward);
+  return moveSel(view, (range2) => {
+    if (!range2.empty)
+      return rangeEnd(range2, forward);
+    let moved = view.moveVertically(range2, forward);
+    return moved.head != range2.head ? moved : view.moveToLineBoundary(range2, forward);
   });
 }
 var cursorLineUp = (view) => cursorByLine(view, false);
@@ -28154,8 +28363,8 @@ function pageInfo(view) {
 }
 function cursorByPage(view, forward) {
   let page = pageInfo(view);
-  let { state } = view, selection2 = updateSel(state.selection, (range) => {
-    return range.empty ? view.moveVertically(range, forward, page.height) : rangeEnd(range, forward);
+  let { state } = view, selection2 = updateSel(state.selection, (range2) => {
+    return range2.empty ? view.moveVertically(range2, forward, page.height) : rangeEnd(range2, forward);
   });
   if (selection2.eq(state.selection))
     return false;
@@ -28183,20 +28392,20 @@ function moveByLineBoundary(view, start, forward) {
   }
   return moved;
 }
-var cursorLineBoundaryForward = (view) => moveSel(view, (range) => moveByLineBoundary(view, range, true));
-var cursorLineBoundaryBackward = (view) => moveSel(view, (range) => moveByLineBoundary(view, range, false));
-var cursorLineBoundaryLeft = (view) => moveSel(view, (range) => moveByLineBoundary(view, range, !ltrAtCursor(view)));
-var cursorLineBoundaryRight = (view) => moveSel(view, (range) => moveByLineBoundary(view, range, ltrAtCursor(view)));
-var cursorLineStart = (view) => moveSel(view, (range) => view.moveToLineBoundary(range, false, false));
-var cursorLineEnd = (view) => moveSel(view, (range) => view.moveToLineBoundary(range, true, false));
+var cursorLineBoundaryForward = (view) => moveSel(view, (range2) => moveByLineBoundary(view, range2, true));
+var cursorLineBoundaryBackward = (view) => moveSel(view, (range2) => moveByLineBoundary(view, range2, false));
+var cursorLineBoundaryLeft = (view) => moveSel(view, (range2) => moveByLineBoundary(view, range2, !ltrAtCursor(view)));
+var cursorLineBoundaryRight = (view) => moveSel(view, (range2) => moveByLineBoundary(view, range2, ltrAtCursor(view)));
+var cursorLineStart = (view) => moveSel(view, (range2) => view.moveToLineBoundary(range2, false, false));
+var cursorLineEnd = (view) => moveSel(view, (range2) => view.moveToLineBoundary(range2, true, false));
 function toMatchingBracket(state, dispatch, extend) {
-  let found = false, selection2 = updateSel(state.selection, (range) => {
-    let matching = matchBrackets(state, range.head, -1) || matchBrackets(state, range.head, 1) || range.head > 0 && matchBrackets(state, range.head - 1, 1) || range.head < state.doc.length && matchBrackets(state, range.head + 1, -1);
+  let found = false, selection2 = updateSel(state.selection, (range2) => {
+    let matching = matchBrackets(state, range2.head, -1) || matchBrackets(state, range2.head, 1) || range2.head > 0 && matchBrackets(state, range2.head - 1, 1) || range2.head < state.doc.length && matchBrackets(state, range2.head + 1, -1);
     if (!matching || !matching.end)
-      return range;
+      return range2;
     found = true;
-    let head = matching.start.from == range.head ? matching.end.to : matching.end.from;
-    return extend ? EditorSelection.range(range.anchor, head) : EditorSelection.cursor(head);
+    let head = matching.start.from == range2.head ? matching.end.to : matching.end.from;
+    return extend ? EditorSelection.range(range2.anchor, head) : EditorSelection.cursor(head);
   });
   if (!found)
     return false;
@@ -28205,11 +28414,11 @@ function toMatchingBracket(state, dispatch, extend) {
 }
 var cursorMatchingBracket = ({ state, dispatch }) => toMatchingBracket(state, dispatch, false);
 function extendSel(target, forward, how) {
-  let selection2 = updateSel(target.state.selection, (range) => {
-    if (range.undirectional && range.head >= range.anchor != forward)
-      range = EditorSelection.range(range.head, range.anchor);
-    let head = how(range);
-    return EditorSelection.range(range.anchor, head.head, head.goalColumn, head.bidiLevel || void 0, head.assoc);
+  let selection2 = updateSel(target.state.selection, (range2) => {
+    if (range2.undirectional && range2.head >= range2.anchor != forward)
+      range2 = EditorSelection.range(range2.head, range2.anchor);
+    let head = how(range2);
+    return EditorSelection.range(range2.anchor, head.head, head.goalColumn, head.bidiLevel || void 0, head.assoc);
   });
   if (selection2.eq(target.state.selection))
     return false;
@@ -28217,45 +28426,45 @@ function extendSel(target, forward, how) {
   return true;
 }
 function selectByChar(view, forward) {
-  return extendSel(view, forward, (range) => view.moveByChar(range, forward));
+  return extendSel(view, forward, (range2) => view.moveByChar(range2, forward));
 }
 var selectCharLeft = (view) => selectByChar(view, !ltrAtCursor(view));
 var selectCharRight = (view) => selectByChar(view, ltrAtCursor(view));
 function selectByGroup(view, forward) {
-  return extendSel(view, forward, (range) => view.moveByGroup(range, forward));
+  return extendSel(view, forward, (range2) => view.moveByGroup(range2, forward));
 }
 var selectGroupLeft = (view) => selectByGroup(view, !ltrAtCursor(view));
 var selectGroupRight = (view) => selectByGroup(view, ltrAtCursor(view));
 var selectSyntaxLeft = (view) => {
   let forward = !ltrAtCursor(view);
-  return extendSel(view, forward, (range) => moveBySyntax(view.state, range, forward));
+  return extendSel(view, forward, (range2) => moveBySyntax(view.state, range2, forward));
 };
 var selectSyntaxRight = (view) => {
   let forward = ltrAtCursor(view);
-  return extendSel(view, forward, (range) => moveBySyntax(view.state, range, forward));
+  return extendSel(view, forward, (range2) => moveBySyntax(view.state, range2, forward));
 };
 function selectByLine(view, forward) {
-  return extendSel(view, forward, (range) => view.moveVertically(range, forward));
+  return extendSel(view, forward, (range2) => view.moveVertically(range2, forward));
 }
 var selectLineUp = (view) => selectByLine(view, false);
 var selectLineDown = (view) => selectByLine(view, true);
 function selectByPage(view, forward) {
-  return extendSel(view, forward, (range) => view.moveVertically(range, forward, pageInfo(view).height));
+  return extendSel(view, forward, (range2) => view.moveVertically(range2, forward, pageInfo(view).height));
 }
 var selectPageUp = (view) => selectByPage(view, false);
 var selectPageDown = (view) => selectByPage(view, true);
-var selectLineBoundaryForward = (view) => extendSel(view, true, (range) => moveByLineBoundary(view, range, true));
-var selectLineBoundaryBackward = (view) => extendSel(view, false, (range) => moveByLineBoundary(view, range, false));
+var selectLineBoundaryForward = (view) => extendSel(view, true, (range2) => moveByLineBoundary(view, range2, true));
+var selectLineBoundaryBackward = (view) => extendSel(view, false, (range2) => moveByLineBoundary(view, range2, false));
 var selectLineBoundaryLeft = (view) => {
   let forward = !ltrAtCursor(view);
-  return extendSel(view, forward, (range) => moveByLineBoundary(view, range, forward));
+  return extendSel(view, forward, (range2) => moveByLineBoundary(view, range2, forward));
 };
 var selectLineBoundaryRight = (view) => {
   let forward = ltrAtCursor(view);
-  return extendSel(view, forward, (range) => moveByLineBoundary(view, range, forward));
+  return extendSel(view, forward, (range2) => moveByLineBoundary(view, range2, forward));
 };
-var selectLineStart = (view) => extendSel(view, false, (range) => EditorSelection.cursor(view.lineBlockAt(range.head).from));
-var selectLineEnd = (view) => extendSel(view, true, (range) => EditorSelection.cursor(view.lineBlockAt(range.head).to));
+var selectLineStart = (view) => extendSel(view, false, (range2) => EditorSelection.cursor(view.lineBlockAt(range2.head).from));
+var selectLineEnd = (view) => extendSel(view, true, (range2) => EditorSelection.cursor(view.lineBlockAt(range2.head).to));
 var cursorDocStart = ({ state, dispatch }) => {
   dispatch(setSel(state, { anchor: 0 }));
   return true;
@@ -28282,19 +28491,19 @@ var selectLine = ({ state, dispatch }) => {
   return true;
 };
 var selectParentSyntax = ({ state, dispatch }) => {
-  let selection2 = updateSel(state.selection, (range) => {
-    let tree = syntaxTree(state), stack = tree.resolveStack(range.from, 1);
-    if (range.empty) {
-      let stackBefore = tree.resolveStack(range.from, -1);
+  let selection2 = updateSel(state.selection, (range2) => {
+    let tree = syntaxTree(state), stack = tree.resolveStack(range2.from, 1);
+    if (range2.empty) {
+      let stackBefore = tree.resolveStack(range2.from, -1);
       if (stackBefore.node.from >= stack.node.from && stackBefore.node.to <= stack.node.to)
         stack = stackBefore;
     }
     for (let cur2 = stack; cur2; cur2 = cur2.next) {
       let { node } = cur2;
-      if ((node.from < range.from && node.to >= range.to || node.to > range.to && node.from <= range.from) && cur2.next)
+      if ((node.from < range2.from && node.to >= range2.to || node.to > range2.to && node.from <= range2.from) && cur2.next)
         return EditorSelection.undirectionalRange(node.from, node.to);
     }
-    return range;
+    return range2;
   });
   if (selection2.eq(state.selection))
     return false;
@@ -28303,10 +28512,10 @@ var selectParentSyntax = ({ state, dispatch }) => {
 };
 function addCursorVertically(view, forward) {
   let { state } = view, sel = state.selection, ranges = state.selection.ranges.slice();
-  for (let range of state.selection.ranges) {
-    let line = state.doc.lineAt(range.head);
+  for (let range2 of state.selection.ranges) {
+    let line = state.doc.lineAt(range2.head);
     if (forward ? line.to < view.state.doc.length : line.from > 0)
-      for (let cur2 = range; ; ) {
+      for (let cur2 = range2; ; ) {
         let next = view.moveVertically(cur2, forward);
         if (next.head < line.from || next.head > line.to) {
           if (!ranges.some((r2) => r2.head == next.head))
@@ -28341,10 +28550,10 @@ function deleteBy(target, by) {
   if (target.state.readOnly)
     return false;
   let event = "delete.selection", { state } = target;
-  let changes = state.changeByRange((range) => {
-    let { from: from2, to } = range;
+  let changes = state.changeByRange((range2) => {
+    let { from: from2, to } = range2;
     if (from2 == to) {
-      let towards = by(range);
+      let towards = by(range2);
       if (towards < from2) {
         event = "delete.backward";
         towards = skipAtomic(target, towards, false);
@@ -28358,7 +28567,7 @@ function deleteBy(target, by) {
       from2 = skipAtomic(target, from2, false);
       to = skipAtomic(target, to, true);
     }
-    return from2 == to ? { range } : { changes: { from: from2, to }, range: EditorSelection.cursor(from2, from2 < range.head ? -1 : 1) };
+    return from2 == to ? { range: range2 } : { changes: { from: from2, to }, range: EditorSelection.cursor(from2, from2 < range2.head ? -1 : 1) };
   });
   if (changes.changes.empty)
     return false;
@@ -28378,8 +28587,8 @@ function skipAtomic(target, pos, forward) {
       });
   return pos;
 }
-var deleteByChar = (target, forward, byIndentUnit) => deleteBy(target, (range) => {
-  let pos = range.from, { state } = target, line = state.doc.lineAt(pos), before, targetPos;
+var deleteByChar = (target, forward, byIndentUnit) => deleteBy(target, (range2) => {
+  let pos = range2.from, { state } = target, line = state.doc.lineAt(pos), before, targetPos;
   if (byIndentUnit && !forward && pos > line.from && pos < line.from + 200 && !/[^ \t]/.test(before = line.text.slice(0, pos - line.from))) {
     if (before[before.length - 1] == "	")
       return pos - 1;
@@ -28398,12 +28607,12 @@ var deleteByChar = (target, forward, byIndentUnit) => deleteBy(target, (range) =
 });
 var deleteCharBackward = (view) => deleteByChar(view, false, true);
 var deleteCharForward = (view) => deleteByChar(view, true, false);
-var deleteByGroup = (target, forward) => deleteBy(target, (range) => {
-  let pos = range.head, { state } = target, line = state.doc.lineAt(pos);
+var deleteByGroup = (target, forward) => deleteBy(target, (range2) => {
+  let pos = range2.head, { state } = target, line = state.doc.lineAt(pos);
   let categorize = state.charCategorizer(pos);
   for (let cat = null; ; ) {
     if (pos == (forward ? line.to : line.from)) {
-      if (pos == range.head && line.number != (forward ? state.doc.lines : 1))
+      if (pos == range2.head && line.number != (forward ? state.doc.lines : 1))
         pos += forward ? 1 : -1;
       break;
     }
@@ -28412,7 +28621,7 @@ var deleteByGroup = (target, forward) => deleteBy(target, (range) => {
     let nextCat = categorize(nextChar2);
     if (cat != null && nextCat != cat)
       break;
-    if (nextChar2 != " " || pos != range.head)
+    if (nextChar2 != " " || pos != range2.head)
       cat = nextCat;
     pos = next;
   }
@@ -28420,25 +28629,25 @@ var deleteByGroup = (target, forward) => deleteBy(target, (range) => {
 });
 var deleteGroupBackward = (target) => deleteByGroup(target, false);
 var deleteGroupForward = (target) => deleteByGroup(target, true);
-var deleteToLineEnd = (view) => deleteBy(view, (range) => {
-  let lineEnd2 = view.lineBlockAt(range.head).to;
-  return range.head < lineEnd2 ? lineEnd2 : Math.min(view.state.doc.length, range.head + 1);
+var deleteToLineEnd = (view) => deleteBy(view, (range2) => {
+  let lineEnd2 = view.lineBlockAt(range2.head).to;
+  return range2.head < lineEnd2 ? lineEnd2 : Math.min(view.state.doc.length, range2.head + 1);
 });
-var deleteLineBoundaryBackward = (view) => deleteBy(view, (range) => {
-  let lineStart = view.moveToLineBoundary(range, false).head;
-  return range.head > lineStart ? lineStart : Math.max(0, range.head - 1);
+var deleteLineBoundaryBackward = (view) => deleteBy(view, (range2) => {
+  let lineStart = view.moveToLineBoundary(range2, false).head;
+  return range2.head > lineStart ? lineStart : Math.max(0, range2.head - 1);
 });
-var deleteLineBoundaryForward = (view) => deleteBy(view, (range) => {
-  let lineStart = view.moveToLineBoundary(range, true).head;
-  return range.head < lineStart ? lineStart : Math.min(view.state.doc.length, range.head + 1);
+var deleteLineBoundaryForward = (view) => deleteBy(view, (range2) => {
+  let lineStart = view.moveToLineBoundary(range2, true).head;
+  return range2.head < lineStart ? lineStart : Math.min(view.state.doc.length, range2.head + 1);
 });
 var splitLine = ({ state, dispatch }) => {
   if (state.readOnly)
     return false;
-  let changes = state.changeByRange((range) => {
+  let changes = state.changeByRange((range2) => {
     return {
-      changes: { from: range.from, to: range.to, insert: Text.of(["", ""]) },
-      range: EditorSelection.cursor(range.from)
+      changes: { from: range2.from, to: range2.to, insert: Text.of(["", ""]) },
+      range: EditorSelection.cursor(range2.from)
     };
   });
   dispatch(state.update(changes, { scrollIntoView: true, userEvent: "input" }));
@@ -28447,10 +28656,10 @@ var splitLine = ({ state, dispatch }) => {
 var transposeChars = ({ state, dispatch }) => {
   if (state.readOnly)
     return false;
-  let changes = state.changeByRange((range) => {
-    if (!range.empty || range.from == 0 || range.from == state.doc.length)
-      return { range };
-    let pos = range.from, line = state.doc.lineAt(pos);
+  let changes = state.changeByRange((range2) => {
+    if (!range2.empty || range2.from == 0 || range2.from == state.doc.length)
+      return { range: range2 };
+    let pos = range2.from, line = state.doc.lineAt(pos);
     let from2 = pos == line.from ? pos - 1 : findClusterBreak2(line.text, pos - line.from, false) + line.from;
     let to = pos == line.to ? pos + 1 : findClusterBreak2(line.text, pos - line.from, true) + line.from;
     return {
@@ -28465,16 +28674,16 @@ var transposeChars = ({ state, dispatch }) => {
 };
 function selectedLineBlocks(state) {
   let blocks = [], upto = -1;
-  for (let range of state.selection.ranges) {
-    let startLine = state.doc.lineAt(range.from), endLine = state.doc.lineAt(range.to);
-    if (!range.empty && range.to == endLine.from)
-      endLine = state.doc.lineAt(range.to - 1);
+  for (let range2 of state.selection.ranges) {
+    let startLine = state.doc.lineAt(range2.from), endLine = state.doc.lineAt(range2.to);
+    if (!range2.empty && range2.to == endLine.from)
+      endLine = state.doc.lineAt(range2.to - 1);
     if (upto >= startLine.number) {
       let prev = blocks[blocks.length - 1];
       prev.to = endLine.to;
-      prev.ranges.push(range);
+      prev.ranges.push(range2);
     } else {
-      blocks.push({ from: startLine.from, to: endLine.to, ranges: [range] });
+      blocks.push({ from: startLine.from, to: endLine.to, ranges: [range2] });
     }
     upto = endLine.number + 1;
   }
@@ -28542,14 +28751,14 @@ var deleteLine = (view) => {
       to++;
     return { from: from2, to };
   }));
-  let selection2 = updateSel(state.selection, (range) => {
+  let selection2 = updateSel(state.selection, (range2) => {
     let dist2 = void 0;
     if (view.lineWrapping) {
-      let block2 = view.lineBlockAt(range.head), pos = view.coordsAtPos(range.head, range.assoc || 1);
+      let block2 = view.lineBlockAt(range2.head), pos = view.coordsAtPos(range2.head, range2.assoc || 1);
       if (pos)
         dist2 = block2.bottom + view.documentTop - pos.bottom + view.defaultLineHeight / 2;
     }
-    return view.moveVertically(range, true, dist2);
+    return view.moveVertically(range2, true, dist2);
   }).map(changes);
   view.dispatch({ changes, selection: selection2, scrollIntoView: true, userEvent: "delete.line" });
   return true;
@@ -28569,8 +28778,8 @@ function newlineAndIndent(atEof) {
   return ({ state, dispatch }) => {
     if (state.readOnly)
       return false;
-    let changes = state.changeByRange((range) => {
-      let { from: from2, to } = range, line = state.doc.lineAt(from2);
+    let changes = state.changeByRange((range2) => {
+      let { from: from2, to } = range2, line = state.doc.lineAt(from2);
       let explode = !atEof && from2 == to && isBetweenBrackets(state, from2);
       if (atEof)
         from2 = to = (to <= line.to ? line : state.doc.lineAt(to)).to;
@@ -28598,12 +28807,12 @@ function newlineAndIndent(atEof) {
 }
 function changeBySelectedLine(state, f) {
   let atLine = -1;
-  return state.changeByRange((range) => {
+  return state.changeByRange((range2) => {
     let changes = [];
-    for (let pos = range.from; pos <= range.to; ) {
+    for (let pos = range2.from; pos <= range2.to; ) {
       let line = state.doc.lineAt(pos);
-      if (line.number > atLine && (range.empty || range.to > line.from)) {
-        f(line, changes, range);
+      if (line.number > atLine && (range2.empty || range2.to > line.from)) {
+        f(line, changes, range2);
         atLine = line.number;
       }
       pos = line.to + 1;
@@ -28611,7 +28820,7 @@ function changeBySelectedLine(state, f) {
     let changeSet = state.changes(changes);
     return {
       changes,
-      range: EditorSelection.range(changeSet.mapPos(range.anchor, 1), changeSet.mapPos(range.head, 1))
+      range: EditorSelection.range(changeSet.mapPos(range2.anchor, 1), changeSet.mapPos(range2.head, 1))
     };
   });
 }
@@ -28623,7 +28832,7 @@ var indentSelection = ({ state, dispatch }) => {
     let found = updated[start];
     return found == null ? -1 : found;
   } });
-  let changes = changeBySelectedLine(state, (line, changes2, range) => {
+  let changes = changeBySelectedLine(state, (line, changes2, range2) => {
     let indent5 = getIndentation(context, line.from);
     if (indent5 == null)
       return;
@@ -28631,7 +28840,7 @@ var indentSelection = ({ state, dispatch }) => {
       indent5 = 0;
     let cur2 = /^\s*/.exec(line.text)[0];
     let norm = indentString(state, indent5);
-    if (cur2 != norm || range.from < line.from + cur2.length) {
+    if (cur2 != norm || range2.from < line.from + cur2.length) {
       updated[line.from] = indent5;
       changes2.push({ from: line.from, to: line.from + cur2.length, insert: norm });
     }
@@ -29094,26 +29303,26 @@ var matchHighlighter = /* @__PURE__ */ ViewPlugin.fromClass(class {
     let { state } = view, sel = state.selection;
     if (sel.ranges.length > 1)
       return Decoration.none;
-    let range = sel.main, query, check = null;
-    if (range.empty) {
+    let range2 = sel.main, query, check = null;
+    if (range2.empty) {
       if (!conf.highlightWordAroundCursor)
         return Decoration.none;
-      let word2 = state.wordAt(range.head);
+      let word2 = state.wordAt(range2.head);
       if (!word2)
         return Decoration.none;
-      check = state.charCategorizer(range.head);
+      check = state.charCategorizer(range2.head);
       query = state.sliceDoc(word2.from, word2.to);
     } else {
-      let len = range.to - range.from;
+      let len = range2.to - range2.from;
       if (len < conf.minSelectionLength || len > 200)
         return Decoration.none;
       if (conf.wholeWords) {
-        query = state.sliceDoc(range.from, range.to);
-        check = state.charCategorizer(range.head);
-        if (!(insideWordBoundaries(check, state, range.from, range.to) && insideWord(check, state, range.from, range.to)))
+        query = state.sliceDoc(range2.from, range2.to);
+        check = state.charCategorizer(range2.head);
+        if (!(insideWordBoundaries(check, state, range2.from, range2.to) && insideWord(check, state, range2.from, range2.to)))
           return Decoration.none;
       } else {
-        query = state.sliceDoc(range.from, range.to);
+        query = state.sliceDoc(range2.from, range2.to);
         if (!query)
           return Decoration.none;
       }
@@ -29124,9 +29333,9 @@ var matchHighlighter = /* @__PURE__ */ ViewPlugin.fromClass(class {
       while (!cursor2.next().done) {
         let { from: from2, to } = cursor2.value;
         if (!check || insideWordBoundaries(check, state, from2, to)) {
-          if (range.empty && from2 <= range.from && to >= range.to)
+          if (range2.empty && from2 <= range2.from && to >= range2.to)
             deco.push(mainMatchDeco.range(from2, to));
-          else if (from2 >= range.to || to <= range.from)
+          else if (from2 >= range2.to || to <= range2.from)
             deco.push(matchDeco.range(from2, to));
           if (deco.length > conf.maxMatches)
             return Decoration.none;
@@ -29144,7 +29353,7 @@ var defaultTheme = /* @__PURE__ */ EditorView.baseTheme({
 });
 var selectWord = ({ state, dispatch }) => {
   let { selection: selection2 } = state;
-  let newSel = EditorSelection.create(selection2.ranges.map((range) => state.wordAt(range.head) || EditorSelection.cursor(range.head)), selection2.mainIndex);
+  let newSel = EditorSelection.create(selection2.ranges.map((range2) => state.wordAt(range2.head) || EditorSelection.cursor(range2.head)), selection2.mainIndex);
   if (newSel.eq(selection2))
     return false;
   dispatch(state.update({ selection: newSel }));
@@ -29179,12 +29388,12 @@ var selectNextOccurrence = ({ state, dispatch }) => {
   let searchedText = state.sliceDoc(ranges[0].from, ranges[0].to);
   if (state.selection.ranges.some((r2) => state.sliceDoc(r2.from, r2.to) != searchedText))
     return false;
-  let range = findNextOccurrence(state, searchedText);
-  if (!range)
+  let range2 = findNextOccurrence(state, searchedText);
+  if (!range2)
     return false;
   dispatch(state.update({
-    selection: state.selection.addRange(EditorSelection.range(range.from, range.to), false),
-    effects: EditorView.scrollIntoView(range.to)
+    selection: state.selection.addRange(EditorSelection.range(range2.from, range2.to), false),
+    effects: EditorView.scrollIntoView(range2.to)
   }));
   return true;
 };
@@ -29197,7 +29406,7 @@ var searchConfigFacet = /* @__PURE__ */ Facet.define({
       regexp: false,
       wholeWord: false,
       createPanel: (view) => new SearchPanel(view),
-      scrollToMatch: (range) => EditorView.scrollIntoView(range)
+      scrollToMatch: (range2) => EditorView.scrollIntoView(range2)
     });
   }
 });
@@ -29292,11 +29501,11 @@ var StringQuery = class extends QueryType2 {
   prevMatchInRange(state, from2, to) {
     for (let pos = to; ; ) {
       let start = Math.max(from2, pos - 1e4 - this.spec.unquoted.length);
-      let cursor2 = stringCursor(this.spec, state, start, pos), range = null;
+      let cursor2 = stringCursor(this.spec, state, start, pos), range2 = null;
       while (!cursor2.nextOverlapping().done)
-        range = cursor2.value;
-      if (range)
-        return range;
+        range2 = cursor2.value;
+      if (range2)
+        return range2;
       if (start == from2)
         return null;
       pos -= 1e4;
@@ -29362,11 +29571,11 @@ var RegExpQuery = class extends QueryType2 {
         to - size4 * 1e4
         /* FindPrev.ChunkSize */
       );
-      let cursor2 = regexpCursor(this.spec, state, start, to), range = null;
+      let cursor2 = regexpCursor(this.spec, state, start, to), range2 = null;
       while (!cursor2.next().done)
-        range = cursor2.value;
-      if (range && (start == from2 || range.from > start + 10))
-        return range;
+        range2 = cursor2.value;
+      if (range2 && (start == from2 || range2.from > start + 10))
+        return range2;
       if (start == from2)
         return null;
     }
@@ -29952,13 +30161,13 @@ var pickedCompletion = /* @__PURE__ */ Annotation.define();
 function insertCompletionText(state, text2, from2, to) {
   let { main } = state.selection, fromOff = from2 - main.from, toOff = to - main.from;
   return {
-    ...state.changeByRange((range) => {
-      if (range != main && from2 != to && state.sliceDoc(range.from + fromOff, range.from + toOff) != state.sliceDoc(from2, to))
-        return { range };
+    ...state.changeByRange((range2) => {
+      if (range2 != main && from2 != to && state.sliceDoc(range2.from + fromOff, range2.from + toOff) != state.sliceDoc(from2, to))
+        return { range: range2 };
       let lines = state.toText(text2);
       return {
-        changes: { from: range.from + fromOff, to: to == main.from ? range.to : range.from + toOff, insert: lines },
-        range: EditorSelection.cursor(range.from + fromOff + lines.length)
+        changes: { from: range2.from + fromOff, to: to == main.from ? range2.to : range2.from + toOff, insert: lines },
+        range: EditorSelection.cursor(range2.from + fromOff + lines.length)
       };
     }),
     scrollIntoView: true,
@@ -30424,7 +30633,7 @@ var CompletionTooltip = class {
       }
     }
   }
-  createListBox(options, id3, range) {
+  createListBox(options, id3, range2) {
     const ul = document.createElement("ul");
     ul.id = id3;
     ul.setAttribute("role", "listbox");
@@ -30435,11 +30644,11 @@ var CompletionTooltip = class {
         e.preventDefault();
     });
     let curSection = null;
-    for (let i2 = range.from; i2 < range.to; i2++) {
+    for (let i2 = range2.from; i2 < range2.to; i2++) {
       let { completion, match } = options[i2], { section } = completion;
       if (section) {
         let name2 = typeof section == "string" ? section : section.name;
-        if (name2 != curSection && (i2 > range.from || range.from == 0)) {
+        if (name2 != curSection && (i2 > range2.from || range2.from == 0)) {
           curSection = name2;
           if (typeof section != "string" && section.header) {
             ul.appendChild(section.header(section));
@@ -30461,9 +30670,9 @@ var CompletionTooltip = class {
           li.appendChild(node);
       }
     }
-    if (range.from)
+    if (range2.from)
       ul.classList.add("cm-completionListIncompleteTop");
-    if (range.to < options.length)
+    if (range2.to < options.length)
       ul.classList.add("cm-completionListIncompleteBottom");
     return ul;
   }
@@ -31285,7 +31494,7 @@ var ActiveSnippet = class _ActiveSnippet {
     return new _ActiveSnippet(ranges, this.active);
   }
   selectionInsideField(sel) {
-    return sel.ranges.every((range) => this.ranges.some((r2) => r2.field == this.active && r2.from <= range.from && r2.to >= range.to));
+    return sel.ranges.every((range2) => this.ranges.some((r2) => r2.field == this.active && r2.from <= range2.from && r2.to >= range2.to));
   }
 };
 var setActive = /* @__PURE__ */ StateEffect.define({
@@ -31451,18 +31660,18 @@ var deleteBracketPair = ({ state, dispatch }) => {
     return false;
   let conf = config(state, state.selection.main.head);
   let tokens = conf.brackets || defaults2.brackets;
-  let dont = null, changes = state.changeByRange((range) => {
-    if (range.empty) {
-      let before = prevChar(state.doc, range.head);
+  let dont = null, changes = state.changeByRange((range2) => {
+    if (range2.empty) {
+      let before = prevChar(state.doc, range2.head);
       for (let token of tokens) {
-        if (token == before && nextChar(state.doc, range.head) == closing(codePointAt2(token, 0)))
+        if (token == before && nextChar(state.doc, range2.head) == closing(codePointAt2(token, 0)))
           return {
-            changes: { from: range.head - token.length, to: range.head + token.length },
-            range: EditorSelection.cursor(range.head - token.length)
+            changes: { from: range2.head - token.length, to: range2.head + token.length },
+            range: EditorSelection.cursor(range2.head - token.length)
           };
       }
     }
-    return { range: dont = range };
+    return { range: dont = range2 };
   });
   if (!dont)
     dispatch(state.update(changes, { scrollIntoView: true, userEvent: "delete.backward" }));
@@ -31500,21 +31709,21 @@ function prevChar(doc2, pos) {
   return codePointSize2(codePointAt2(prev, 0)) == prev.length ? prev : prev.slice(1);
 }
 function handleOpen(state, open, close, closeBefore) {
-  let dont = null, changes = state.changeByRange((range) => {
-    if (!range.empty)
+  let dont = null, changes = state.changeByRange((range2) => {
+    if (!range2.empty)
       return {
-        changes: [{ insert: open, from: range.from }, { insert: close, from: range.to }],
-        effects: closeBracketEffect.of(range.to + open.length),
-        range: EditorSelection.range(range.anchor + open.length, range.head + open.length)
+        changes: [{ insert: open, from: range2.from }, { insert: close, from: range2.to }],
+        effects: closeBracketEffect.of(range2.to + open.length),
+        range: EditorSelection.range(range2.anchor + open.length, range2.head + open.length)
       };
-    let next = nextChar(state.doc, range.head);
+    let next = nextChar(state.doc, range2.head);
     if (!next || /\s/.test(next) || closeBefore.indexOf(next) > -1)
       return {
-        changes: { insert: open + close, from: range.head },
-        effects: closeBracketEffect.of(range.head + open.length),
-        range: EditorSelection.cursor(range.head + open.length)
+        changes: { insert: open + close, from: range2.head },
+        effects: closeBracketEffect.of(range2.head + open.length),
+        range: EditorSelection.cursor(range2.head + open.length)
       };
-    return { range: dont = range };
+    return { range: dont = range2 };
   });
   return dont ? null : state.update(changes, {
     scrollIntoView: true,
@@ -31522,13 +31731,13 @@ function handleOpen(state, open, close, closeBefore) {
   });
 }
 function handleClose(state, _open, close) {
-  let dont = null, changes = state.changeByRange((range) => {
-    if (range.empty && nextChar(state.doc, range.head) == close)
+  let dont = null, changes = state.changeByRange((range2) => {
+    if (range2.empty && nextChar(state.doc, range2.head) == close)
       return {
-        changes: { from: range.head, to: range.head + close.length, insert: close },
-        range: EditorSelection.cursor(range.head + close.length)
+        changes: { from: range2.head, to: range2.head + close.length, insert: close },
+        range: EditorSelection.cursor(range2.head + close.length)
       };
-    return dont = { range };
+    return dont = { range: range2 };
   });
   return dont ? null : state.update(changes, {
     scrollIntoView: true,
@@ -31537,14 +31746,14 @@ function handleClose(state, _open, close) {
 }
 function handleSame(state, token, allowTriple, config2) {
   let stringPrefixes3 = config2.stringPrefixes || defaults2.stringPrefixes;
-  let dont = null, changes = state.changeByRange((range) => {
-    if (!range.empty)
+  let dont = null, changes = state.changeByRange((range2) => {
+    if (!range2.empty)
       return {
-        changes: [{ insert: token, from: range.from }, { insert: token, from: range.to }],
-        effects: closeBracketEffect.of(range.to + token.length),
-        range: EditorSelection.range(range.anchor + token.length, range.head + token.length)
+        changes: [{ insert: token, from: range2.from }, { insert: token, from: range2.to }],
+        effects: closeBracketEffect.of(range2.to + token.length),
+        range: EditorSelection.range(range2.anchor + token.length, range2.head + token.length)
       };
-    let pos = range.head, next = nextChar(state.doc, pos), start;
+    let pos = range2.head, next = nextChar(state.doc, pos), start;
     if (next == token) {
       if (nodeStart(state, pos)) {
         return {
@@ -31574,7 +31783,7 @@ function handleSame(state, token, allowTriple, config2) {
           range: EditorSelection.cursor(pos + token.length)
         };
     }
-    return { range: dont = range };
+    return { range: dont = range2 };
   });
   return dont ? null : state.update(changes, {
     scrollIntoView: true,
@@ -32645,13 +32854,13 @@ var TYPING_TIMOUT = 200;
 var emptyExtensions = [];
 function useCodeMirror(props) {
   var value = props.value, selection2 = props.selection, onChange = props.onChange, onStatistics = props.onStatistics, onCreateEditor = props.onCreateEditor, onUpdate = props.onUpdate, _props$extensions = props.extensions, extensions = _props$extensions === void 0 ? emptyExtensions : _props$extensions, autoFocus = props.autoFocus, _props$theme = props.theme, theme2 = _props$theme === void 0 ? "light" : _props$theme, _props$height = props.height, height = _props$height === void 0 ? null : _props$height, _props$minHeight = props.minHeight, minHeight = _props$minHeight === void 0 ? null : _props$minHeight, _props$maxHeight = props.maxHeight, maxHeight = _props$maxHeight === void 0 ? null : _props$maxHeight, _props$width = props.width, width = _props$width === void 0 ? null : _props$width, _props$minWidth = props.minWidth, minWidth = _props$minWidth === void 0 ? null : _props$minWidth, _props$maxWidth = props.maxWidth, maxWidth = _props$maxWidth === void 0 ? null : _props$maxWidth, _props$placeholder = props.placeholder, placeholderStr = _props$placeholder === void 0 ? "" : _props$placeholder, _props$editable = props.editable, editable2 = _props$editable === void 0 ? true : _props$editable, _props$readOnly = props.readOnly, readOnly2 = _props$readOnly === void 0 ? false : _props$readOnly, _props$indentWithTab = props.indentWithTab, defaultIndentWithTab = _props$indentWithTab === void 0 ? true : _props$indentWithTab, _props$basicSetup = props.basicSetup, defaultBasicSetup = _props$basicSetup === void 0 ? true : _props$basicSetup, root = props.root, initialState = props.initialState;
-  var _useState = (0, import_react39.useState)(), container = _useState[0], setContainer = _useState[1];
-  var _useState2 = (0, import_react39.useState)(), view = _useState2[0], setView = _useState2[1];
-  var _useState3 = (0, import_react39.useState)(), state = _useState3[0], setState = _useState3[1];
-  var typingLatch = (0, import_react39.useState)(() => ({
+  var _useState = (0, import_react41.useState)(), container = _useState[0], setContainer = _useState[1];
+  var _useState2 = (0, import_react41.useState)(), view = _useState2[0], setView = _useState2[1];
+  var _useState3 = (0, import_react41.useState)(), state = _useState3[0], setState = _useState3[1];
+  var typingLatch = (0, import_react41.useState)(() => ({
     current: null
   }))[0];
-  var pendingUpdate = (0, import_react39.useState)(() => ({
+  var pendingUpdate = (0, import_react41.useState)(() => ({
     current: null
   }))[0];
   var defaultThemeOption = getDimensionTheme(height, minHeight, maxHeight, width, minWidth, maxWidth);
@@ -32691,7 +32900,7 @@ function useCodeMirror(props) {
     getExtensions.push(EditorView.updateListener.of(onUpdate));
   }
   getExtensions = getExtensions.concat(extensions);
-  (0, import_react39.useLayoutEffect)(() => {
+  (0, import_react41.useLayoutEffect)(() => {
     if (container && !state) {
       var config2 = {
         doc: value,
@@ -32717,12 +32926,12 @@ function useCodeMirror(props) {
       }
     };
   }, [container, state]);
-  (0, import_react39.useEffect)(() => {
+  (0, import_react41.useEffect)(() => {
     if (props.container) {
       setContainer(props.container);
     }
   }, [props.container]);
-  (0, import_react39.useEffect)(() => () => {
+  (0, import_react41.useEffect)(() => () => {
     if (view) {
       view.destroy();
       setView(void 0);
@@ -32732,19 +32941,19 @@ function useCodeMirror(props) {
       typingLatch.current = null;
     }
   }, [view]);
-  (0, import_react39.useEffect)(() => {
+  (0, import_react41.useEffect)(() => {
     if (autoFocus && view) {
       view.focus();
     }
   }, [autoFocus, view]);
-  (0, import_react39.useEffect)(() => {
+  (0, import_react41.useEffect)(() => {
     if (view) {
       view.dispatch({
         effects: StateEffect.reconfigure.of(getExtensions)
       });
     }
   }, [theme2, extensions, height, minHeight, maxHeight, width, minWidth, maxWidth, placeholderStr, editable2, readOnly2, defaultIndentWithTab, defaultBasicSetup, onChange, onUpdate]);
-  (0, import_react39.useEffect)(() => {
+  (0, import_react41.useEffect)(() => {
     if (value === void 0) {
       return;
     }
@@ -32783,9 +32992,9 @@ function useCodeMirror(props) {
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/index.js
 var import_jsx_runtime2 = require("react/jsx-runtime");
 var _excluded = ["className", "value", "selection", "extensions", "onChange", "onStatistics", "onCreateEditor", "onUpdate", "autoFocus", "theme", "height", "minHeight", "maxHeight", "width", "minWidth", "maxWidth", "basicSetup", "placeholder", "indentWithTab", "editable", "readOnly", "root", "initialState"];
-var ReactCodeMirror = /* @__PURE__ */ (0, import_react40.forwardRef)((props, ref) => {
+var ReactCodeMirror = /* @__PURE__ */ (0, import_react42.forwardRef)((props, ref) => {
   var className2 = props.className, _props$value = props.value, value = _props$value === void 0 ? "" : _props$value, selection2 = props.selection, _props$extensions = props.extensions, extensions = _props$extensions === void 0 ? [] : _props$extensions, onChange = props.onChange, onStatistics = props.onStatistics, onCreateEditor = props.onCreateEditor, onUpdate = props.onUpdate, autoFocus = props.autoFocus, _props$theme = props.theme, theme2 = _props$theme === void 0 ? "light" : _props$theme, height = props.height, minHeight = props.minHeight, maxHeight = props.maxHeight, width = props.width, minWidth = props.minWidth, maxWidth = props.maxWidth, basicSetup3 = props.basicSetup, placeholder2 = props.placeholder, indentWithTab2 = props.indentWithTab, editable2 = props.editable, readOnly2 = props.readOnly, root = props.root, initialState = props.initialState, other = _objectWithoutPropertiesLoose(props, _excluded);
-  var editor = (0, import_react40.useRef)(null);
+  var editor = (0, import_react42.useRef)(null);
   var _useCodeMirror = useCodeMirror({
     root,
     value,
@@ -32810,12 +33019,12 @@ var ReactCodeMirror = /* @__PURE__ */ (0, import_react40.forwardRef)((props, ref
     extensions,
     initialState
   }), state = _useCodeMirror.state, view = _useCodeMirror.view, container = _useCodeMirror.container, setContainer = _useCodeMirror.setContainer;
-  (0, import_react40.useImperativeHandle)(ref, () => ({
+  (0, import_react42.useImperativeHandle)(ref, () => ({
     editor: editor.current,
     state,
     view
   }), [editor, container, state, view]);
-  var setEditorRef = (0, import_react40.useCallback)((el) => {
+  var setEditorRef = (0, import_react42.useCallback)((el) => {
     editor.current = el;
     setContainer(el);
   }, [setContainer]);
@@ -33447,21 +33656,21 @@ var InputStream = class {
   @internal
   */
   resolveOffset(offset4, assoc) {
-    let range = this.range, index3 = this.rangeIndex;
+    let range2 = this.range, index3 = this.rangeIndex;
     let pos = this.pos + offset4;
-    while (pos < range.from) {
+    while (pos < range2.from) {
       if (!index3)
         return null;
       let next = this.ranges[--index3];
-      pos -= range.from - next.to;
-      range = next;
+      pos -= range2.from - next.to;
+      range2 = next;
     }
-    while (assoc < 0 ? pos > range.to : pos >= range.to) {
+    while (assoc < 0 ? pos > range2.to : pos >= range2.to) {
       if (index3 == this.ranges.length - 1)
         return null;
       let next = this.ranges[++index3];
-      pos += next.from - range.to;
-      range = next;
+      pos += next.from - range2.to;
+      range2 = next;
     }
     return pos;
   }
@@ -33471,9 +33680,9 @@ var InputStream = class {
   clipPos(pos) {
     if (pos >= this.range.from && pos < this.range.to)
       return pos;
-    for (let range of this.ranges)
-      if (range.to > pos)
-        return Math.max(pos, range.from);
+    for (let range2 of this.ranges)
+      if (range2.to > pos)
+        return Math.max(pos, range2.from);
     return this.end;
   }
   /**
@@ -33500,12 +33709,12 @@ var InputStream = class {
       if (pos >= this.chunk2Pos && pos < this.chunk2Pos + this.chunk2.length) {
         result = this.chunk2.charCodeAt(pos - this.chunk2Pos);
       } else {
-        let i2 = this.rangeIndex, range = this.range;
-        while (range.to <= pos)
-          range = this.ranges[++i2];
+        let i2 = this.rangeIndex, range2 = this.range;
+        while (range2.to <= pos)
+          range2 = this.ranges[++i2];
         this.chunk2 = this.input.chunk(this.chunk2Pos = pos);
-        if (pos + this.chunk2.length > range.to)
-          this.chunk2 = this.chunk2.slice(0, range.to - pos);
+        if (pos + this.chunk2.length > range2.to)
+          this.chunk2 = this.chunk2.slice(0, range2.to - pos);
         result = this.chunk2.charCodeAt(0);
       }
     }
@@ -35103,14 +35312,14 @@ var autoCloseTags = /* @__PURE__ */ EditorView.inputHandler.of((view, from2, to,
   if ((android2 ? view.composing : view.compositionStarted) || view.state.readOnly || from2 != to || text2 != ">" && text2 != "/" || !javascriptLanguage.isActiveAt(view.state, from2, -1))
     return false;
   let base3 = defaultInsert(), { state } = base3;
-  let closeTags = state.changeByRange((range) => {
+  let closeTags = state.changeByRange((range2) => {
     var _a2;
-    let { head } = range, around = syntaxTree(state).resolveInner(head - 1, -1), name2;
+    let { head } = range2, around = syntaxTree(state).resolveInner(head - 1, -1), name2;
     if (around.name == "JSXStartTag")
       around = around.parent;
     if (state.doc.sliceString(head - 1, head) != text2 || around.name == "JSXAttributeValue" && around.to > head) ;
     else if (text2 == ">" && around.name == "JSXFragmentTag") {
-      return { range, changes: { from: head, insert: `</>` } };
+      return { range: range2, changes: { from: head, insert: `</>` } };
     } else if (text2 == "/" && around.name == "JSXStartCloseTag") {
       let empty2 = around.parent, base4 = empty2.parent;
       if (base4 && empty2.from == head - 2 && ((name2 = elementName(state.doc, base4.firstChild, head)) || ((_a2 = base4.firstChild) === null || _a2 === void 0 ? void 0 : _a2.name) == "JSXFragmentTag")) {
@@ -35120,9 +35329,9 @@ var autoCloseTags = /* @__PURE__ */ EditorView.inputHandler.of((view, from2, to,
     } else if (text2 == ">") {
       let openTag = findOpenTag(around);
       if (openTag && openTag.name == "JSXOpenTag" && !/^\/?>|^<\//.test(state.doc.sliceString(head, head + 2)) && (name2 = elementName(state.doc, openTag, head)))
-        return { range, changes: { from: head, insert: `</${name2}>` } };
+        return { range: range2, changes: { from: head, insert: `</${name2}>` } };
     }
-    return { range };
+    return { range: range2 };
   });
   if (closeTags.changes.empty)
     return false;
@@ -39365,16 +39574,16 @@ var autoCloseTags2 = /* @__PURE__ */ EditorView.inputHandler.of((view, from2, to
   if (view.composing || view.state.readOnly || from2 != to || text2 != ">" && text2 != "/" || !htmlLanguage.isActiveAt(view.state, from2, -1))
     return false;
   let base3 = insertTransaction(), { state } = base3;
-  let closeTags = state.changeByRange((range) => {
+  let closeTags = state.changeByRange((range2) => {
     var _a2;
-    let didType = state.doc.sliceString(range.from - 1, range.to) == text2;
-    let { head } = range, after = syntaxTree(state).resolveInner(head, -1), name2;
+    let didType = state.doc.sliceString(range2.from - 1, range2.to) == text2;
+    let { head } = range2, after = syntaxTree(state).resolveInner(head, -1), name2;
     if (didType && text2 == ">" && after.name == "EndTag") {
       let tag2 = after.parent;
       if ((name2 = elementName2(state.doc, tag2.parent, head)) && !selfClosers2.has(name2) && !isClosed(state.doc, tag2.parent, name2)) {
         let to2 = head + (state.doc.sliceString(head, head + 1) === ">" ? 1 : 0);
         let insert2 = `</${name2}>`;
-        return { range, changes: { from: head, to: to2, insert: insert2 } };
+        return { range: range2, changes: { from: head, to: to2, insert: insert2 } };
       }
     } else if (didType && text2 == "/" && after.name == "IncompleteCloseTag") {
       let tag2 = after.parent;
@@ -39387,7 +39596,7 @@ var autoCloseTags2 = /* @__PURE__ */ EditorView.inputHandler.of((view, from2, to
         };
       }
     }
-    return { range };
+    return { range: range2 };
   });
   if (closeTags.changes.empty)
     return false;
@@ -39578,22 +39787,22 @@ function normalizeIndent(content2, state) {
 }
 var insertNewlineContinueMarkupCommand = (config2 = {}) => ({ state, dispatch }) => {
   let tree = syntaxTree(state), { doc: doc2 } = state;
-  let dont = null, changes = state.changeByRange((range) => {
-    if (!range.empty || !markdownLanguage.isActiveAt(state, range.from, -1) && !markdownLanguage.isActiveAt(state, range.from, 1))
-      return dont = { range };
-    let pos = range.from, line = doc2.lineAt(pos);
+  let dont = null, changes = state.changeByRange((range2) => {
+    if (!range2.empty || !markdownLanguage.isActiveAt(state, range2.from, -1) && !markdownLanguage.isActiveAt(state, range2.from, 1))
+      return dont = { range: range2 };
+    let pos = range2.from, line = doc2.lineAt(pos);
     let context = getContext(tree.resolveInner(pos, -1), doc2);
     while (context.length && context[context.length - 1].from > pos - line.from)
       context.pop();
     if (!context.length)
-      return dont = { range };
+      return dont = { range: range2 };
     let inner = context[context.length - 1];
     if (inner.to - inner.spaceAfter.length > pos - line.from)
-      return dont = { range };
+      return dont = { range: range2 };
     let emptyLine = pos >= inner.to - inner.spaceAfter.length && !/\S/.test(line.text.slice(inner.to));
     if (inner.item && emptyLine) {
       if (inner.item.from < line.from && !/^[\s>]*$/.test(line.text.slice(0, inner.to)))
-        return dont = { range };
+        return dont = { range: range2 };
       let first = inner.node.firstChild, second = inner.node.getChild("ListItem", "ListItem");
       if (first.to >= pos || second && second.to < pos || line.from > 0 && !/[^\s>]/.test(doc2.lineAt(line.from - 1).text) || config2.nonTightLists === false) {
         let next = context.length > 1 ? context[context.length - 2] : null;
@@ -39625,7 +39834,7 @@ var insertNewlineContinueMarkupCommand = (config2 = {}) => ({ state, dispatch })
           { from: prevLine.from + quoted.index, to: prevLine.to },
           { from: line.from + inner.from, to: line.to }
         ]);
-        return { range: range.map(changes3), changes: changes3 };
+        return { range: range2.map(changes3), changes: changes3 };
       }
     }
     let changes2 = [];
@@ -39693,9 +39902,9 @@ function contextNodeForDelete(tree, pos) {
 }
 var deleteMarkupBackward = ({ state, dispatch }) => {
   let tree = syntaxTree(state);
-  let dont = null, changes = state.changeByRange((range) => {
-    let pos = range.from, { doc: doc2 } = state;
-    if (range.empty && markdownLanguage.isActiveAt(state, range.from)) {
+  let dont = null, changes = state.changeByRange((range2) => {
+    let pos = range2.from, { doc: doc2 } = state;
+    if (range2.empty && markdownLanguage.isActiveAt(state, range2.from)) {
       let line = doc2.lineAt(pos);
       let context = getContext(contextNodeForDelete(tree, pos), doc2);
       if (context.length) {
@@ -39725,7 +39934,7 @@ var deleteMarkupBackward = ({ state, dispatch }) => {
         }
       }
     }
-    return dont = { range };
+    return dont = { range: range2 };
   });
   if (dont)
     return false;
@@ -53152,9 +53361,9 @@ function hostDark() {
 function CodeViewer(props) {
   ensureComponentStyles("code-viewer", CODE_VIEWER_CSS);
   const { text: text2, path, t: t4, className: className2, style: style2, height = "100%", lineNumbers: lineNumbers2 = true } = props;
-  const [copied, setCopied] = (0, import_react41.useState)(false);
-  const [dark, setDark] = (0, import_react41.useState)(hostDark);
-  (0, import_react41.useEffect)(() => {
+  const [copied, setCopied] = (0, import_react43.useState)(false);
+  const [dark, setDark] = (0, import_react43.useState)(hostDark);
+  (0, import_react43.useEffect)(() => {
     if (typeof document === "undefined" || typeof MutationObserver !== "function")
       return;
     const body = document.body;
@@ -53170,8 +53379,8 @@ function CodeViewer(props) {
       observer.disconnect();
     };
   }, []);
-  const language2 = (0, import_react41.useMemo)(() => languageForPath(path), [path]);
-  const extensions = (0, import_react41.useMemo)(() => [
+  const language2 = (0, import_react43.useMemo)(() => languageForPath(path), [path]);
+  const extensions = (0, import_react43.useMemo)(() => [
     ...codeMirrorTheme(dark),
     EditorView.lineWrapping,
     // 默认全换行，避免横向滚动条
@@ -53185,14 +53394,14 @@ function CodeViewer(props) {
       }
     });
   };
-  return (0, import_react41.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, (0, import_react41.createElement)(IconButton, {
+  return (0, import_react43.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, (0, import_react43.createElement)(IconButton, {
     variant: "outline",
     size: "md",
-    icon: copied ? (0, import_react41.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react41.createElement)(official_exports.IconCopyOutlineRegular),
+    icon: copied ? (0, import_react43.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react43.createElement)(official_exports.IconCopyOutlineRegular),
     label: copied ? t4("codeCopied") : t4("codeCopy"),
     className: "dshpc-cv__copy",
     onClick: copy
-  }), (0, import_react41.createElement)(esm_default, {
+  }), (0, import_react43.createElement)(esm_default, {
     value: text2,
     className: "dshpc-cv__editor",
     theme: "none",
@@ -53253,13 +53462,13 @@ var TOOL_TITLE_KEYS = {
 };
 var toolTitleKey = (name2) => TOOL_TITLE_KEYS[name2] ?? VARIANT_TITLE_KEYS[classifyTool(name2)];
 var VARIANT_ICONS = {
-  search: (0, import_react42.createElement)(official_exports.IconSearchOutlineRegular, { size: 14 }),
-  read: (0, import_react42.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
-  bash: (0, import_react42.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
-  write: (0, import_react42.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
-  edit: (0, import_react42.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
-  code: (0, import_react42.createElement)(official_exports.IconCodeOutlineRegular, { size: 14 }),
-  others: (0, import_react42.createElement)(official_exports.IconSparkleRegular, { size: 14 })
+  search: (0, import_react44.createElement)(official_exports.IconSearchOutlineRegular, { size: 14 }),
+  read: (0, import_react44.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
+  bash: (0, import_react44.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
+  write: (0, import_react44.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
+  edit: (0, import_react44.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
+  code: (0, import_react44.createElement)(official_exports.IconCodeOutlineRegular, { size: 14 }),
+  others: (0, import_react44.createElement)(official_exports.IconSparkleRegular, { size: 14 })
 };
 var SUMMARY_KEYS = {
   bash: ["description", "command"],
@@ -53604,14 +53813,14 @@ var stopLinkClick = (event) => {
 };
 function GenericCommandCard(props) {
   const { name: name2, argsRaw, output, isError, meta: meta2, settled = true, phase, interrupted, onOpenFile, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react42.useState)(false);
+  const [expanded, setExpanded] = (0, import_react44.useState)(false);
   const variant = classifyTool(name2);
   const titleKey = toolTitleKey(name2);
   const state = !settled ? phase === "preparing" ? "preparing" : "running" : interrupted ? "stopped" : isError ? "error" : "ok";
-  const terminalFace = (0, import_react42.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
-  const read = (0, import_react42.useMemo)(() => readCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
-  const diffs = (0, import_react42.useMemo)(() => diffCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
-  const terminal = (0, import_react42.useMemo)(() => {
+  const terminalFace = (0, import_react44.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
+  const read = (0, import_react44.useMemo)(() => readCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
+  const diffs = (0, import_react44.useMemo)(() => diffCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
+  const terminal = (0, import_react44.useMemo)(() => {
     if (terminalFace === null)
       return null;
     return terminalFace.sessionId !== void 0 ? { ...terminalFace, command: terminalFace.command === "" ? t4("terminalSendInput") : terminalFace.command, description: t4("terminalSession", { sessionId: terminalFace.sessionId }) } : terminalFace;
@@ -53639,21 +53848,21 @@ function GenericCommandCard(props) {
   const cardBody = variant === "code" ? null : bodyText;
   const expandable = rowState !== "preparing" && (inputRaw !== null || outputText !== null || card !== null);
   const open = expanded && expandable;
-  const blockLabels = (0, import_react42.useMemo)(() => ({ diff: diffLabels(t4), read: readLabels(t4), terminal: terminalLabels(t4) }), [t4]);
+  const blockLabels = (0, import_react44.useMemo)(() => ({ diff: diffLabels(t4), read: readLabels(t4), terminal: terminalLabels(t4) }), [t4]);
   const statusText = rowState === "preparing" ? t4("rowPreparing") : rowState === "running" ? t4("rowRunning") : rowState === "error" ? t4("rowFailed") : rowState === "stopped" ? t4("rowStopped") : null;
   const summaryClassName = `${officialClass("ToolRow", "summary") ?? ""}${rowState === "error" ? ` ${officialClass("ToolRow", "errorSummary") ?? ""}` : ""}${rowState === "stopped" ? ` ${officialClass("ToolRow", "stoppedSummary") ?? ""}` : ""}`;
-  const collapsedContent = summaryText === "" ? void 0 : (0, import_react42.createElement)(import_react42.Fragment, null, (0, import_react42.createElement)("span", { className: officialClass("ToolRow", "sep") ?? "", "aria-hidden": true }), openFile !== void 0 ? (0, import_react42.createElement)("button", {
+  const collapsedContent = summaryText === "" ? void 0 : (0, import_react44.createElement)(import_react44.Fragment, null, (0, import_react44.createElement)("span", { className: officialClass("ToolRow", "sep") ?? "", "aria-hidden": true }), openFile !== void 0 ? (0, import_react44.createElement)("button", {
     type: "button",
     className: officialClass("ToolRow", "fileLink") ?? "",
     onClick: (event) => {
       stopLinkClick(event);
       openFile();
     }
-  }, (0, import_react42.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : (0, import_react42.createElement)("span", { className: summaryClassName }, (0, import_react42.createElement)(official_exports.TextShimmer, { active: running }, summaryText)), suffix2 !== null ? (0, import_react42.createElement)(official_exports.TextShimmer, {
+  }, (0, import_react44.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : (0, import_react44.createElement)("span", { className: summaryClassName }, (0, import_react44.createElement)(official_exports.TextShimmer, { active: running }, summaryText)), suffix2 !== null ? (0, import_react44.createElement)(official_exports.TextShimmer, {
     className: `${officialClass("ToolRow", "summarySuffix") ?? ""} ${officialClass("ToolRow", "diffStat") ?? ""}`,
     active: running
   }, suffix2) : null);
-  const expandedContent = open ? (0, import_react42.createElement)("div", { className: officialClass("ToolRow", "bodyWrap") ?? "" }, terminal !== null ? (0, import_react42.createElement)(official_exports.TerminalBlock, {
+  const expandedContent = open ? (0, import_react44.createElement)("div", { className: officialClass("ToolRow", "bodyWrap") ?? "" }, terminal !== null ? (0, import_react44.createElement)(official_exports.TerminalBlock, {
     command: terminal.command,
     cwd: terminal.cwd,
     output: terminal.output,
@@ -53663,7 +53872,7 @@ function GenericCommandCard(props) {
     maxLines: Infinity,
     labels: blockLabels.terminal,
     className: officialClass("ToolRow", "terminalBody") ?? ""
-  }) : diffs !== null ? (0, import_react42.createElement)(official_exports.DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass("ToolRow", "diffBody") ?? "" }) : read !== null ? (0, import_react42.createElement)(official_exports.ReadBlock, {
+  }) : diffs !== null ? (0, import_react44.createElement)(official_exports.DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass("ToolRow", "diffBody") ?? "" }) : read !== null ? (0, import_react44.createElement)(official_exports.ReadBlock, {
     label: read.label,
     lines: read.lines,
     totalLines: read.totalLines,
@@ -53671,20 +53880,20 @@ function GenericCommandCard(props) {
     labels: blockLabels.read,
     maxLines: 8,
     className: officialClass("ToolRow", "readBody") ?? ""
-  }) : (0, import_react42.createElement)(import_react42.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react42.createElement)("div", { className: officialClass("ToolRow", "bodyScroll") ?? "" }, (0, import_react42.createElement)(CodeViewer, {
+  }) : (0, import_react44.createElement)(import_react44.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react44.createElement)("div", { className: officialClass("ToolRow", "bodyScroll") ?? "" }, (0, import_react44.createElement)(CodeViewer, {
     text: bodyText,
     path: "tool-code.ts",
     t: t4,
     className: officialClass("ToolRow", "codeBody") ?? "",
     height: "auto",
     style: { height: "auto" }
-  })) : null, (cardBody !== null || outputText !== null) && (0, import_react42.createElement)("div", { className: officialClass("ToolRow", "ioCard") ?? "" }, cardBody !== null && (0, import_react42.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react42.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolInputLabel")), (0, import_react42.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "" }, cardBody)), cardBody !== null && outputText !== null && (0, import_react42.createElement)("span", { className: officialClass("ToolRow", "ioDivider") ?? "", "aria-hidden": true }), outputText !== null && (0, import_react42.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react42.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolOutputLabel")), (0, import_react42.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "", "data-error": rowState === "error" || void 0 }, outputText))))) : void 0;
-  return (0, import_react42.createElement)("div", {
+  })) : null, (cardBody !== null || outputText !== null) && (0, import_react44.createElement)("div", { className: officialClass("ToolRow", "ioCard") ?? "" }, cardBody !== null && (0, import_react44.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react44.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolInputLabel")), (0, import_react44.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "" }, cardBody)), cardBody !== null && outputText !== null && (0, import_react44.createElement)("span", { className: officialClass("ToolRow", "ioDivider") ?? "", "aria-hidden": true }), outputText !== null && (0, import_react44.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react44.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolOutputLabel")), (0, import_react44.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "", "data-error": rowState === "error" || void 0 }, outputText))))) : void 0;
+  return (0, import_react44.createElement)("div", {
     className: officialClass("ToolRow", "root") ?? "",
     "data-variant": variant,
     "data-tool": name2,
     "data-state": rowState
-  }, statusText !== null ? (0, import_react42.createElement)("span", { className: officialClass("ToolRow", "visuallyHidden") ?? "" }, statusText) : null, (0, import_react42.createElement)(official_exports.DisclosureRow, {
+  }, statusText !== null ? (0, import_react44.createElement)("span", { className: officialClass("ToolRow", "visuallyHidden") ?? "" }, statusText) : null, (0, import_react44.createElement)(official_exports.DisclosureRow, {
     rowClassName: officialClass("ToolRow", "row") ?? "",
     leadingClassName: officialClass("ToolRow", "leading") ?? "",
     titleClassName: officialClass("ToolRow", "title") ?? "",
@@ -53705,7 +53914,7 @@ function GenericCommandCard(props) {
 }
 
 // dist/session/mirror/CommandCard.js
-var import_react43 = require("react");
+var import_react45 = require("react");
 var gcc = (semantic) => officialClass("GenericCommandCard", semantic) ?? "";
 function stateOf(outcome) {
   if (outcome === null || outcome === void 0)
@@ -53714,7 +53923,7 @@ function stateOf(outcome) {
 }
 function CommandCard(props) {
   const { node, t: t4, runningSummary } = props;
-  const [expanded, setExpanded] = (0, import_react43.useState)(false);
+  const [expanded, setExpanded] = (0, import_react45.useState)(false);
   const outcome = node.outcome ?? null;
   const text2 = outcome?.text;
   const summary = outcome === null ? runningSummary ?? t4("commandRunning") : text2 ?? (outcome.kind === "error" ? t4("commandFailed") : t4("commandDone"));
@@ -53723,19 +53932,19 @@ function CommandCard(props) {
   const running = state === "running";
   const body = text2 !== void 0 && text2.includes("\n") ? text2 : null;
   const open = expanded && body !== null;
-  const toggle = (0, import_react43.useCallback)(() => {
+  const toggle = (0, import_react45.useCallback)(() => {
     setExpanded((value) => !value);
   }, []);
   const hidden = officialClass("ToolRow", "visuallyHidden") ?? "";
-  return (0, import_react43.createElement)(
+  return (0, import_react45.createElement)(
     "div",
     { className: gcc("root"), "data-state": state },
     // 官方 a11y：running/error 的读屏状态词（visually-hidden，不占可见空间）。
-    state === "running" ? (0, import_react43.createElement)("span", { className: hidden }, t4("rowRunning")) : state === "error" ? (0, import_react43.createElement)("span", { className: hidden }, t4("rowFailed")) : null,
-    (0, import_react43.createElement)(official_exports.DisclosureRow, {
+    state === "running" ? (0, import_react45.createElement)("span", { className: hidden }, t4("rowRunning")) : state === "error" ? (0, import_react45.createElement)("span", { className: hidden }, t4("rowFailed")) : null,
+    (0, import_react45.createElement)(official_exports.DisclosureRow, {
       leadingClassName: gcc("leading"),
       titleClassName: gcc("title"),
-      icon: (0, import_react43.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
+      icon: (0, import_react45.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
       title,
       running,
       open,
@@ -53743,11 +53952,11 @@ function CommandCard(props) {
       expandOnRowClick: true,
       keepContentWhenOpen: true,
       onToggle: toggle,
-      collapsedContent: (0, import_react43.createElement)(import_react43.Fragment, null, (0, import_react43.createElement)("span", { className: gcc("separator"), "aria-hidden": true }), (0, import_react43.createElement)("span", {
+      collapsedContent: (0, import_react45.createElement)(import_react45.Fragment, null, (0, import_react45.createElement)("span", { className: gcc("separator"), "aria-hidden": true }), (0, import_react45.createElement)("span", {
         className: gcc("summary"),
         "data-error": state === "error" || void 0
-      }, (0, import_react43.createElement)(official_exports.TextShimmer, { active: running }, summary))),
-      children: open && body !== null ? (0, import_react43.createElement)("div", {
+      }, (0, import_react45.createElement)(official_exports.TextShimmer, { active: running }, summary))),
+      children: open && body !== null ? (0, import_react45.createElement)("div", {
         className: gcc("body"),
         "data-error": state === "error" || void 0
       }, body) : void 0
@@ -53756,10 +53965,10 @@ function CommandCard(props) {
 }
 
 // dist/session/mirror/MessageIconActions.js
-var import_react45 = require("react");
+var import_react47 = require("react");
 
 // dist/session/mirror/message-chrome.js
-var import_react44 = require("react");
+var import_react46 = require("react");
 function formatRunDuration(ms, tt) {
   const total = Math.max(0, Math.floor(ms / 1e3));
   const hours = Math.floor(total / 3600);
@@ -53866,10 +54075,10 @@ function formatCacheHitPercent(cacheReadTokens, promptTokens, decimalPlaces = 0)
 var COPIED_RESET_MS = 1e3;
 function MessageIconActionsMirror(props) {
   const { text: text2, time, clock, onBranch, branchUnavailable = false, className: className2, extraActions, usageAction, t: t4 } = props;
-  const [copied, setCopied] = (0, import_react45.useState)(false);
-  const [pending, setPending] = (0, import_react45.useState)(false);
-  const timerRef = (0, import_react45.useRef)(void 0);
-  (0, import_react45.useEffect)(() => () => {
+  const [copied, setCopied] = (0, import_react47.useState)(false);
+  const [pending, setPending] = (0, import_react47.useState)(false);
+  const timerRef = (0, import_react47.useRef)(void 0);
+  (0, import_react47.useEffect)(() => () => {
     if (timerRef.current !== void 0)
       clearTimeout(timerRef.current);
   }, []);
@@ -53889,20 +54098,20 @@ function MessageIconActionsMirror(props) {
     });
   };
   const clockClass = (clock === "end" ? officialClass("MessageIconActions", "timeEnd") ?? officialClass("MessageIconActions", "clock") : officialClass("MessageIconActions", "timeStart") ?? officialClass("MessageIconActions", "clock")) ?? "";
-  const clockEl = time === void 0 ? null : (0, import_react45.createElement)("time", {
+  const clockEl = time === void 0 ? null : (0, import_react47.createElement)("time", {
     className: clockClass,
     dateTime: new Date(time).toISOString()
   }, formatMessageClock(time, t4));
   const reasonId = "dshpc-sv-branch-unavailable";
-  return (0, import_react45.createElement)("div", {
+  return (0, import_react47.createElement)("div", {
     className: `${officialClass("MessageIconActions", "actions") ?? ""}${className2 === void 0 ? "" : ` ${className2}`}`,
     "data-clock": clock
-  }, clock === "start" ? clockEl : null, (0, import_react45.createElement)(official_exports.Tooltip, { label: copyLabel, side: "bottom" }, (0, import_react45.createElement)("button", {
+  }, clock === "start" ? clockEl : null, (0, import_react47.createElement)(official_exports.Tooltip, { label: copyLabel, side: "bottom" }, (0, import_react47.createElement)("button", {
     type: "button",
     className: officialClass("MessageIconActions", "action") ?? "",
     "aria-label": copyLabel,
     onClick: onCopy
-  }, copied ? (0, import_react45.createElement)(official_exports.IconCheckOutlineRegular, null) : (0, import_react45.createElement)(official_exports.IconCopyOutlineRegular, null))), extraActions, onBranch === void 0 ? null : (0, import_react45.createElement)(official_exports.Tooltip, { label: branchUnavailable ? t4("branchUnavailableLabel") : t4("branchLabel"), side: "bottom" }, (0, import_react45.createElement)("button", {
+  }, copied ? (0, import_react47.createElement)(official_exports.IconCheckOutlineRegular, null) : (0, import_react47.createElement)(official_exports.IconCopyOutlineRegular, null))), extraActions, onBranch === void 0 ? null : (0, import_react47.createElement)(official_exports.Tooltip, { label: branchUnavailable ? t4("branchUnavailableLabel") : t4("branchLabel"), side: "bottom" }, (0, import_react47.createElement)("button", {
     type: "button",
     className: officialClass("MessageIconActions", "action") ?? "",
     "aria-label": t4("branchLabel"),
@@ -53910,11 +54119,11 @@ function MessageIconActionsMirror(props) {
     "aria-describedby": branchUnavailable ? reasonId : void 0,
     "data-unavailable": branchUnavailable || void 0,
     onClick: branchUnavailable ? void 0 : onBranch
-  }, (0, import_react45.createElement)(official_exports.IconBranchOutlineRegular, null))), onBranch === void 0 || !branchUnavailable ? null : (0, import_react45.createElement)("span", { id: reasonId, className: officialClass("accessibility", "visuallyHidden") ?? "" }, t4("branchUnavailableLabel")), clock === "end" ? (0, import_react45.createElement)("span", { className: officialClass("MessageIconActions", "endInfo") ?? "" }, usageAction, clockEl) : usageAction);
+  }, (0, import_react47.createElement)(official_exports.IconBranchOutlineRegular, null))), onBranch === void 0 || !branchUnavailable ? null : (0, import_react47.createElement)("span", { id: reasonId, className: officialClass("accessibility", "visuallyHidden") ?? "" }, t4("branchUnavailableLabel")), clock === "end" ? (0, import_react47.createElement)("span", { className: officialClass("MessageIconActions", "endInfo") ?? "" }, usageAction, clockEl) : usageAction);
 }
 
 // dist/session/mirror/MessageItem.js
-var import_react46 = require("react");
+var import_react48 = require("react");
 
 // dist/explorer/preview/md-labels.js
 function markdownLabels() {
@@ -53947,8 +54156,8 @@ function formatBytes(bytes) {
 // dist/session/mirror/MessageItem.js
 function AssistantMarkdown(props) {
   if (props.text.trim() === "")
-    return (0, import_react46.createElement)("span", null);
-  return (0, import_react46.createElement)("div", { className: officialClass("AssistantMarkdown", "root") ?? "" }, (0, import_react46.createElement)(official_exports.MarkdownText, {
+    return (0, import_react48.createElement)("span", null);
+  return (0, import_react48.createElement)("div", { className: officialClass("AssistantMarkdown", "root") ?? "" }, (0, import_react48.createElement)(official_exports.MarkdownText, {
     text: props.text,
     labels: markdownLabels(),
     fileMentions: props.fileMentions
@@ -53957,11 +54166,11 @@ function AssistantMarkdown(props) {
 function UserMessage(props) {
   const { text: text2, files } = props;
   const chips = files ?? [];
-  return (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "userRow") ?? "" }, (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "userStack") ?? "" }, text2 === "" ? null : (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "bubble") ?? "" }, (0, import_react46.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() })), chips.length === 0 ? null : (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "attachmentRow") ?? "" }, chips.map((file, index3) => (0, import_react46.createElement)("div", {
+  return (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "userRow") ?? "" }, (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "userStack") ?? "" }, text2 === "" ? null : (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "bubble") ?? "" }, (0, import_react48.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() })), chips.length === 0 ? null : (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "attachmentRow") ?? "" }, chips.map((file, index3) => (0, import_react48.createElement)("div", {
     key: `${file.name}:${index3}`,
     className: officialClass("MessageItem", "fileCard") ?? "",
     title: file.name
-  }, (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "fileIcon") ?? "" }, (0, import_react46.createElement)(official_exports.FileTypeIcon, { path: file.name, size: 16 })), (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "fileContent") ?? "" }, (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "fileName") ?? "" }, file.name), (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "fileMeta") ?? "" }, formatBytes(file.bytes))))))));
+  }, (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "fileIcon") ?? "" }, (0, import_react48.createElement)(official_exports.FileTypeIcon, { path: file.name, size: 16 })), (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "fileContent") ?? "" }, (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "fileName") ?? "" }, file.name), (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "fileMeta") ?? "" }, formatBytes(file.bytes))))))));
 }
 function retrySeconds(milliseconds) {
   return Math.max(1, Math.ceil(milliseconds / 1e3));
@@ -53980,11 +54189,11 @@ function ModelRetryItemMirror(props) {
   const node = props.node;
   const delayMs = typeof node.delayMs === "number" ? node.delayMs : 0;
   const maximum = node.mode === "normal" && typeof node.maxRetries === "number" ? node.maxRetries : "\u221E";
-  const deadline = (0, import_react46.useMemo)(() => Date.now() + delayMs, [delayMs, node.retryState]);
+  const deadline = (0, import_react48.useMemo)(() => Date.now() + delayMs, [delayMs, node.retryState]);
   const scheduledSeconds = retrySeconds(delayMs);
-  const [countdown, setCountdown] = (0, import_react46.useState)(() => ({ deadline, seconds: retrySeconds(deadline - Date.now()) }));
+  const [countdown, setCountdown] = (0, import_react48.useState)(() => ({ deadline, seconds: retrySeconds(deadline - Date.now()) }));
   const remainingSeconds = countdown.deadline === deadline ? countdown.seconds : retrySeconds(deadline - Date.now());
-  (0, import_react46.useEffect)(() => {
+  (0, import_react48.useEffect)(() => {
     if (!active)
       return;
     const updateCountdown = () => {
@@ -54005,49 +54214,49 @@ function ModelRetryItemMirror(props) {
   const label = active ? t4("retryActive") : node.retryState === "cancelled" ? t4("retryCancelled") : node.retryState === "started" ? t4("retryStarted") : t4("retryScheduled");
   const seconds = active ? remainingSeconds : scheduledSeconds;
   const failure = node.failure;
-  return (0, import_react46.createElement)("details", {
+  return (0, import_react48.createElement)("details", {
     className: officialClass("MessageItem", "retryRow") ?? "",
     "data-active": active || void 0
-  }, (0, import_react46.createElement)("summary", { className: officialClass("MessageItem", "retrySummary") ?? "" }, (0, import_react46.createElement)("span", {
+  }, (0, import_react48.createElement)("summary", { className: officialClass("MessageItem", "retrySummary") ?? "" }, (0, import_react48.createElement)("span", {
     className: officialClass("MessageItem", "retryText") ?? "",
     role: "status"
-  }, t4("retryStatus", { label, retry: node.retry ?? 0, maximum, seconds }))), (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "retryDetails") ?? "" }, (0, import_react46.createElement)("div", null, (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryDelay")), t4("durationMilliseconds", { milliseconds: Math.round(delayMs) })), (0, import_react46.createElement)("div", null, (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryFailure")), failureMessage(failure?.message, failure?.code, t4))));
+  }, t4("retryStatus", { label, retry: node.retry ?? 0, maximum, seconds }))), (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "retryDetails") ?? "" }, (0, import_react48.createElement)("div", null, (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryDelay")), t4("durationMilliseconds", { milliseconds: Math.round(delayMs) })), (0, import_react48.createElement)("div", null, (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryFailure")), failureMessage(failure?.message, failure?.code, t4))));
 }
 function TurnErrorItemMirror(props) {
   const { node, t: t4 } = props;
-  return (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react46.createElement)(official_exports.StateDot, {
+  return (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react48.createElement)(official_exports.StateDot, {
     state: "error",
     className: officialClass("MessageItem", "turnErrorDot") ?? ""
-  }), (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "turnErrorTitle") ?? "" }, node.code === "ACCOUNT_SIGNED_OUT" ? t4("accountStopped") : t4("turnErrorTitle")), (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, failureMessage(node.message, node.code, t4))), node.code !== void 0 && node.code !== "" ? (0, import_react46.createElement)("code", { className: officialClass("MessageItem", "turnErrorCode") ?? "" }, node.code) : null);
+  }), (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "turnErrorTitle") ?? "" }, node.code === "ACCOUNT_SIGNED_OUT" ? t4("accountStopped") : t4("turnErrorTitle")), (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, failureMessage(node.message, node.code, t4))), node.code !== void 0 && node.code !== "" ? (0, import_react48.createElement)("code", { className: officialClass("MessageItem", "turnErrorCode") ?? "" }, node.code) : null);
 }
 function TurnMaxTokensItemMirror(props) {
   const { t: t4 } = props;
-  return (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react46.createElement)(official_exports.StateDot, {
+  return (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react48.createElement)(official_exports.StateDot, {
     state: "warning",
     className: officialClass("MessageItem", "turnErrorDot") ?? ""
-  }), (0, import_react46.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "maxTokensTitle") ?? "" }, t4("maxTokensTitle")), (0, import_react46.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, t4("maxTokensHint"))));
+  }), (0, import_react48.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "maxTokensTitle") ?? "" }, t4("maxTokensTitle")), (0, import_react48.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, t4("maxTokensHint"))));
 }
 
 // dist/session/mirror/ReasoningRow.js
-var import_react47 = require("react");
+var import_react49 = require("react");
 function firstLine2(text2) {
   const newline4 = text2.indexOf("\n");
   return newline4 === -1 ? text2 : text2.slice(0, newline4);
 }
 function ReasoningRowMirror(props) {
   const { text: text2, running = false, preview = true, t: t4 } = props;
-  const [open, setOpen] = (0, import_react47.useState)(false);
+  const [open, setOpen] = (0, import_react49.useState)(false);
   if (text2.trim() === "")
     return null;
   const summary = firstLine2(text2).split("**").join("");
-  return (0, import_react47.createElement)("div", {
+  return (0, import_react49.createElement)("div", {
     className: officialClass("ReasoningRow", "root") ?? "",
     "data-variant": "think",
     "data-state": running ? "running" : "ok",
     "data-expanded": open || void 0,
     "data-preview": preview && summary !== "" || void 0
-  }, (0, import_react47.createElement)(official_exports.DisclosureRow, {
-    icon: (0, import_react47.createElement)(official_exports.IconThinkOutlineRegular, { size: 14 }),
+  }, (0, import_react49.createElement)(official_exports.DisclosureRow, {
+    icon: (0, import_react49.createElement)(official_exports.IconThinkOutlineRegular, { size: 14 }),
     title: t4("thinkLabel"),
     open,
     expandable: true,
@@ -54059,26 +54268,26 @@ function ReasoningRowMirror(props) {
     leadingClassName: officialClass("ReasoningRow", "leading") ?? "",
     titleClassName: officialClass("ReasoningRow", "title") ?? "",
     chevronClassName: officialClass("ReasoningRow", "chevron") ?? "",
-    collapsedContent: (0, import_react47.createElement)(
-      import_react47.Fragment,
+    collapsedContent: (0, import_react49.createElement)(
+      import_react49.Fragment,
       null,
-      (0, import_react47.createElement)("span", { className: officialClass("ReasoningRow", "separator") ?? "", "aria-hidden": true }),
+      (0, import_react49.createElement)("span", { className: officialClass("ReasoningRow", "separator") ?? "", "aria-hidden": true }),
       // 官方是 summary > summaryText 两层：外层 nowrap 截断、内层 text-overflow:ellipsis（省略号）。
-      (0, import_react47.createElement)("span", { className: officialClass("ReasoningRow", "summary") ?? "" }, (0, import_react47.createElement)("span", { className: officialClass("ReasoningRow", "summaryText") ?? "" }, summary))
+      (0, import_react49.createElement)("span", { className: officialClass("ReasoningRow", "summary") ?? "" }, (0, import_react49.createElement)("span", { className: officialClass("ReasoningRow", "summaryText") ?? "" }, summary))
     ),
-    children: open ? (0, import_react47.createElement)("div", { className: officialClass("ReasoningRow", "thinkBody") ?? "" }, (0, import_react47.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels(), variant: "compact" })) : void 0
+    children: open ? (0, import_react49.createElement)("div", { className: officialClass("ReasoningRow", "thinkBody") ?? "" }, (0, import_react49.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels(), variant: "compact" })) : void 0
   }));
 }
 
 // dist/session/mirror/TurnProcessNodeView.js
-var import_react48 = require("react");
+var import_react50 = require("react");
 var LIVE_RUN_CLOCK_INTERVAL_MS = 1e3;
 function TurnProcessNodeViewMirror(props) {
   const { turn, turnProcess, t: t4 } = props;
   const open = !turnProcess.foldable || turnProcess.open;
-  const [now, setNow] = (0, import_react48.useState)(() => Date.now());
+  const [now, setNow] = (0, import_react50.useState)(() => Date.now());
   const ticking = turn?.status === "open" && turn.start !== void 0;
-  (0, import_react48.useEffect)(() => {
+  (0, import_react50.useEffect)(() => {
     if (!ticking)
       return;
     setNow(Date.now());
@@ -54099,12 +54308,12 @@ function TurnProcessNodeViewMirror(props) {
   const label = running ? duration === void 0 ? t4("chatDeepDiving") : t4("turnProcessDeepDiving", { duration }) : reason === "aborted" ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : duration === void 0 ? t4("turnProcessWorked") : t4("turnProcessTook", { duration });
   const announcement = running ? t4("chatDeepDiving") : reason === "aborted" ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : t4("turnProcessWorked");
   const spec = turnProcess.spec;
-  return (0, import_react48.createElement)(import_react48.Fragment, null, (0, import_react48.createElement)("span", {
+  return (0, import_react50.createElement)(import_react50.Fragment, null, (0, import_react50.createElement)("span", {
     className: officialClass("accessibility", "visuallyHidden") ?? "",
     role: "status",
     "aria-live": "polite",
     "aria-atomic": "true"
-  }, announcement), (0, import_react48.createElement)("button", {
+  }, announcement), (0, import_react50.createElement)("button", {
     type: "button",
     className: officialClass("TurnProcessNodeView", "root") ?? "",
     "data-open": open || void 0,
@@ -54117,30 +54326,30 @@ function TurnProcessNodeViewMirror(props) {
     onClick: () => {
       turnProcess.setOpen(!open);
     }
-  }, (0, import_react48.createElement)("span", { className: officialClass("TurnProcessNodeView", "label") ?? "" }, label), canCollapse ? (0, import_react48.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("TurnProcessNodeView", "chevron") ?? "" }) : null));
+  }, (0, import_react50.createElement)("span", { className: officialClass("TurnProcessNodeView", "label") ?? "" }, label), canCollapse ? (0, import_react50.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("TurnProcessNodeView", "chevron") ?? "" }) : null));
 }
 
 // dist/session/mirror/TurnTailNodeView.js
-var import_react51 = require("react");
+var import_react53 = require("react");
 
 // dist/session/mirror/TurnUsagePanel.js
-var import_react50 = require("react");
+var import_react52 = require("react");
 var import_react_dom4 = require("react-dom");
 
 // dist/session/mirror/StatDialog.js
-var import_react49 = require("react");
+var import_react51 = require("react");
 var PANEL_MARGIN = 12;
 var PANEL_GAP = 8;
 var STAT_MEASURE_STYLE = { visibility: "hidden", left: 0, top: 0 };
 function useStatDialog(controlled) {
-  const [ownOpen, setOwnOpen] = (0, import_react49.useState)(false);
+  const [ownOpen, setOwnOpen] = (0, import_react51.useState)(false);
   const open = controlled?.open ?? ownOpen;
   const setOpen = controlled?.setOpen ?? setOwnOpen;
-  const rootRef = (0, import_react49.useRef)(null);
-  const panelRef = (0, import_react49.useRef)(null);
+  const rootRef = (0, import_react51.useRef)(null);
+  const panelRef = (0, import_react51.useRef)(null);
   const pos = (0, official_exports.useAnchoredPosition)({ open, anchorRef: rootRef, panelRef, side: "top", gap: PANEL_GAP, margin: PANEL_MARGIN });
   (0, official_exports.useDismissOnOutsidePointer)(rootRef, open, setOpen, panelRef);
-  (0, import_react49.useEffect)(() => {
+  (0, import_react51.useEffect)(() => {
     if (!open)
       return;
     const onKeyDown = (event) => {
@@ -54162,7 +54371,7 @@ function TurnUsagePanelMirror(props) {
   const cacheHit = usage.cacheReadTokens === void 0 ? null : formatCacheHitPercent(usage.cacheReadTokens, usage.totalTokens - usage.outputTokens, 1);
   const total = formatCompactCount(usage.totalTokens, t4);
   const routes = usage.routes?.map((route) => `${route.provider}/${route.model}`).join(", ") ?? "";
-  return (0, import_react50.createElement)("span", { ref: rootRef, className: officialClass("TurnUsagePanel", "root") ?? "" }, (0, import_react50.createElement)("button", {
+  return (0, import_react52.createElement)("span", { ref: rootRef, className: officialClass("TurnUsagePanel", "root") ?? "" }, (0, import_react52.createElement)("button", {
     type: "button",
     className: officialClass("TurnUsagePanel", "trigger") ?? "",
     "aria-haspopup": "dialog",
@@ -54170,13 +54379,13 @@ function TurnUsagePanelMirror(props) {
     onClick: () => {
       setOpen(!open);
     }
-  }, (0, import_react50.createElement)(official_exports.IconDatabaseOutlineRegular, null), (0, import_react50.createElement)("span", { className: officialClass("TurnUsagePanel", "label") ?? "" }, t4("turnUsageConsumed", { total }))), open ? (0, import_react_dom4.createPortal)((0, import_react50.createElement)("div", {
+  }, (0, import_react52.createElement)(official_exports.IconDatabaseOutlineRegular, null), (0, import_react52.createElement)("span", { className: officialClass("TurnUsagePanel", "label") ?? "" }, t4("turnUsageConsumed", { total }))), open ? (0, import_react_dom4.createPortal)((0, import_react52.createElement)("div", {
     ref: panelRef,
     className: officialClass("stat-dialog", "panel") ?? "",
     role: "dialog",
     "aria-label": t4("turnUsageTitle"),
     style: pos ?? STAT_MEASURE_STYLE
-  }, (0, import_react50.createElement)("div", { className: officialClass("stat-dialog", "title") ?? "" }, (0, import_react50.createElement)("span", { className: officialClass("stat-dialog", "titleLabel") ?? "" }, (0, import_react50.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react50.createElement)("span", { className: officialClass("stat-dialog", "titleValue") ?? "" }, formatExactCount(usage.totalTokens, t4))), (0, import_react50.createElement)("div", { className: officialClass("stat-dialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react50.createElement)("dl", { className: officialClass("stat-dialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react50.createElement)(import_react50.Fragment, null, (0, import_react50.createElement)("dt", null, t4("turnUsageModel")), (0, import_react50.createElement)("dd", { className: officialClass("stat-dialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react50.createElement)(import_react50.Fragment, null, (0, import_react50.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react50.createElement)("dd", null, `${cacheHit}%`)), (0, import_react50.createElement)("dt", null, t4("turnUsageInput")), (0, import_react50.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react50.createElement)(import_react50.Fragment, null, (0, import_react50.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react50.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react50.createElement)(import_react50.Fragment, null, (0, import_react50.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react50.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react50.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react50.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react50.createElement)("span", {
+  }, (0, import_react52.createElement)("div", { className: officialClass("stat-dialog", "title") ?? "" }, (0, import_react52.createElement)("span", { className: officialClass("stat-dialog", "titleLabel") ?? "" }, (0, import_react52.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react52.createElement)("span", { className: officialClass("stat-dialog", "titleValue") ?? "" }, formatExactCount(usage.totalTokens, t4))), (0, import_react52.createElement)("div", { className: officialClass("stat-dialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react52.createElement)("dl", { className: officialClass("stat-dialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react52.createElement)(import_react52.Fragment, null, (0, import_react52.createElement)("dt", null, t4("turnUsageModel")), (0, import_react52.createElement)("dd", { className: officialClass("stat-dialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react52.createElement)(import_react52.Fragment, null, (0, import_react52.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react52.createElement)("dd", null, `${cacheHit}%`)), (0, import_react52.createElement)("dt", null, t4("turnUsageInput")), (0, import_react52.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react52.createElement)(import_react52.Fragment, null, (0, import_react52.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react52.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react52.createElement)(import_react52.Fragment, null, (0, import_react52.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react52.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react52.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react52.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react52.createElement)("span", {
     className: officialClass("stat-dialog", "reasoning") ?? ""
   }, t4("turnUsageReasoning", { tokens: formatExactCount(usage.reasoningTokens, t4) }))))), document.body) : null);
 }
@@ -54191,11 +54400,11 @@ function TurnTailNodeViewMirror(props) {
   if (closing4 === null || closing4 === void 0)
     return null;
   const text2 = assistantText(closing4.blocks);
-  return (0, import_react51.createElement)("div", {
+  return (0, import_react53.createElement)("div", {
     className: officialClass("TurnTailNodeView", "root") ?? "",
     "data-turn-tail": data2.turn,
     "data-actions-reveal": "always"
-  }, tailSlot === void 0 || tailSlot === null ? null : tailSlot, (0, import_react51.createElement)(MessageIconActionsMirror, {
+  }, tailSlot === void 0 || tailSlot === null ? null : tailSlot, (0, import_react53.createElement)(MessageIconActionsMirror, {
     text: text2,
     time: closing4.time,
     clock: "end",
@@ -54205,13 +54414,13 @@ function TurnTailNodeViewMirror(props) {
       onBranchAt(data2.seq);
     },
     className: officialClass("TurnTailNodeView", "actions") ?? "",
-    usageAction: data2.tokenUsage === void 0 ? void 0 : (0, import_react51.createElement)(TurnUsagePanelMirror, { usage: data2.tokenUsage, t: t4 }),
+    usageAction: data2.tokenUsage === void 0 ? void 0 : (0, import_react53.createElement)(TurnUsagePanelMirror, { usage: data2.tokenUsage, t: t4 }),
     t: t4
   }));
 }
 
 // dist/session/mirror/TurnTriggerNodeView.js
-var import_react52 = require("react");
+var import_react54 = require("react");
 var TRIGGER_ICONS = {
   request: official_exports.IconContextInjectionOutlineRegular,
   goal: official_exports.IconGoalOutlineRegular,
@@ -54253,28 +54462,28 @@ function turnTriggerDetails(source) {
 }
 function TurnTriggerNodeViewMirror(props) {
   const { data: data2, t: t4 } = props;
-  const [open, setOpen] = (0, import_react52.useState)(false);
+  const [open, setOpen] = (0, import_react54.useState)(false);
   const details = turnTriggerDetails(data2?.source);
   const TriggerIcon = TRIGGER_ICONS[details.icon] ?? official_exports.IconContextInjectionOutlineRegular;
   const time = typeof data2?.time === "number" ? data2.time : void 0;
   const content2 = triggerContent(data2?.content);
-  return (0, import_react52.createElement)("section", {
+  return (0, import_react54.createElement)("section", {
     className: officialClass("TurnTriggerNodeView", "root") ?? "",
     "data-turn-trigger": true
-  }, (0, import_react52.createElement)("button", {
+  }, (0, import_react54.createElement)("button", {
     type: "button",
     className: officialClass("TurnTriggerNodeView", "header") ?? "",
     "aria-expanded": open,
     onClick: () => {
       setOpen((value) => !value);
     }
-  }, (0, import_react52.createElement)("span", { className: officialClass("TurnTriggerNodeView", "icon") ?? "", "aria-hidden": true }, (0, import_react52.createElement)(TriggerIcon, { size: 14 })), (0, import_react52.createElement)("span", { className: officialClass("TurnTriggerNodeView", "title") ?? "" }, t4(details.title)), time === void 0 ? null : (0, import_react52.createElement)("time", {
+  }, (0, import_react54.createElement)("span", { className: officialClass("TurnTriggerNodeView", "icon") ?? "", "aria-hidden": true }, (0, import_react54.createElement)(TriggerIcon, { size: 14 })), (0, import_react54.createElement)("span", { className: officialClass("TurnTriggerNodeView", "title") ?? "" }, t4(details.title)), time === void 0 ? null : (0, import_react54.createElement)("time", {
     className: officialClass("TurnTriggerNodeView", "time") ?? "",
     dateTime: new Date(time).toISOString()
-  }, formatMessageClock(time, t4)), (0, import_react52.createElement)(official_exports.IconChevronDownOutlineRegular, {
+  }, formatMessageClock(time, t4)), (0, import_react54.createElement)(official_exports.IconChevronDownOutlineRegular, {
     size: 12,
     className: open ? officialClass("TurnTriggerNodeView", "openChevron") ?? "" : officialClass("TurnTriggerNodeView", "chevron") ?? ""
-  })), open ? (0, import_react52.createElement)("div", { className: officialClass("TurnTriggerNodeView", "body") ?? "" }, (0, import_react52.createElement)("p", { className: officialClass("TurnTriggerNodeView", "explanation") ?? "" }, t4("triggerExplanation")), (0, import_react52.createElement)("div", { className: officialClass("TurnTriggerNodeView", "content") ?? "" }, content2 === "" ? t4("sessionEmpty") : content2)) : null);
+  })), open ? (0, import_react54.createElement)("div", { className: officialClass("TurnTriggerNodeView", "body") ?? "" }, (0, import_react54.createElement)("p", { className: officialClass("TurnTriggerNodeView", "explanation") ?? "" }, t4("triggerExplanation")), (0, import_react54.createElement)("div", { className: officialClass("TurnTriggerNodeView", "content") ?? "" }, content2 === "" ? t4("sessionEmpty") : content2)) : null);
 }
 function triggerContent(content2) {
   if (!Array.isArray(content2))
@@ -54288,7 +54497,7 @@ function triggerContent(content2) {
 }
 
 // dist/session/mirror/Deliverables.js
-var import_react53 = require("react");
+var import_react55 = require("react");
 var basename = (path) => path.slice(Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\")) + 1);
 function fileNames(raw) {
   let args;
@@ -54308,14 +54517,14 @@ function PresentRowMirror(props) {
   const state = !settled ? b.phase === "preparing" ? "preparing" : "running" : b.error?.code === "interrupted" ? "stopped" : b.isError ? "error" : "ok";
   const argsRaw = (settled ? b.call?.argsRaw : b.argsRaw) ?? "";
   const details = settled ? (b.content ?? []).map((item) => item.type === "text" ? item.text ?? "" : JSON.stringify(item)).join("\n") || (b.error ? `${b.error.name ?? ""}: ${b.error.code ?? ""}` : "") : "";
-  const [expanded, setExpanded] = (0, import_react53.useState)(false);
+  const [expanded, setExpanded] = (0, import_react55.useState)(false);
   const statusKey = state === "preparing" ? "deliverRowPreparing" : state === "running" ? "deliverRowRunning" : state === "error" ? "deliverRowError" : state === "stopped" ? "deliverRowStopped" : "deliverRowOk";
-  return (0, import_react53.createElement)("div", {
+  return (0, import_react55.createElement)("div", {
     className: officialClass("ToolRow", "root") ?? "",
     "data-tool": "present",
     "data-state": state
-  }, (0, import_react53.createElement)(official_exports.DisclosureRow, {
-    icon: (0, import_react53.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
+  }, (0, import_react55.createElement)(official_exports.DisclosureRow, {
+    icon: (0, import_react55.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
     title: t4("deliverRowTitle"),
     open: expanded && details !== "",
     expandable: details !== "",
@@ -54329,8 +54538,8 @@ function PresentRowMirror(props) {
     leadingClassName: officialClass("ToolRow", "leading") ?? "",
     titleClassName: officialClass("ToolRow", "title") ?? "",
     chevronClassName: officialClass("ToolRow", "chevron") ?? "",
-    collapsedContent: (0, import_react53.createElement)("span", { className: officialClass("PresentRow", "summary") ?? "" }, (0, import_react53.createElement)("span", null, t4(statusKey)), (0, import_react53.createElement)("span", { className: officialClass("PresentRow", "paths") ?? "" }, fileNames(argsRaw))),
-    children: details !== "" && expanded ? (0, import_react53.createElement)("pre", { className: officialClass("PresentRow", "output") ?? "" }, details) : null
+    collapsedContent: (0, import_react55.createElement)("span", { className: officialClass("PresentRow", "summary") ?? "" }, (0, import_react55.createElement)("span", null, t4(statusKey)), (0, import_react55.createElement)("span", { className: officialClass("PresentRow", "paths") ?? "" }, fileNames(argsRaw))),
+    children: details !== "" && expanded ? (0, import_react55.createElement)("pre", { className: officialClass("PresentRow", "output") ?? "" }, details) : null
   }));
 }
 var COLLAPSED_DELIVERED_COUNT = 4;
@@ -54342,10 +54551,10 @@ function DeliveredFileCard(props) {
   const { file, onPreview, t: t4 } = props;
   const name2 = basename(file.path);
   const metadata = (0, official_exports.fileExtension)(name2).toUpperCase() || t4("deliverFileLabel");
-  return (0, import_react53.createElement)("div", {
+  return (0, import_react55.createElement)("div", {
     className: officialClass("Deliverables", "file") ?? "",
     "data-presented-file": true
-  }, onPreview !== void 0 ? (0, import_react53.createElement)("button", {
+  }, onPreview !== void 0 ? (0, import_react55.createElement)("button", {
     type: "button",
     className: officialClass("Deliverables", "cardPreview") ?? "",
     title: file.path,
@@ -54354,29 +54563,29 @@ function DeliveredFileCard(props) {
       event.stopPropagation();
       onPreview();
     }
-  }) : null, (0, import_react53.createElement)("span", { className: officialClass("Deliverables", "fileIcon") ?? "" }, (0, import_react53.createElement)(official_exports.FileTypeIcon, { path: file.path, size: 20 })), (0, import_react53.createElement)("div", { className: officialClass("Deliverables", "fileBody") ?? "" }, (0, import_react53.createElement)("div", { className: officialClass("Deliverables", "details") ?? "" }, (0, import_react53.createElement)("span", { className: officialClass("Deliverables", "fileName") ?? "" }, name2), (0, import_react53.createElement)("span", { className: officialClass("Deliverables", "description") ?? "", "data-presented-description": true }, (0, import_react53.createElement)("span", { className: officialClass("Deliverables", "secondaryText") ?? "" }, cardDescription(file.description, metadata)), onPreview !== void 0 ? (0, import_react53.createElement)("span", { className: officialClass("Deliverables", "previewHint") ?? "" }, t4("deliverPreviewHint")) : null))));
+  }) : null, (0, import_react55.createElement)("span", { className: officialClass("Deliverables", "fileIcon") ?? "" }, (0, import_react55.createElement)(official_exports.FileTypeIcon, { path: file.path, size: 20 })), (0, import_react55.createElement)("div", { className: officialClass("Deliverables", "fileBody") ?? "" }, (0, import_react55.createElement)("div", { className: officialClass("Deliverables", "details") ?? "" }, (0, import_react55.createElement)("span", { className: officialClass("Deliverables", "fileName") ?? "" }, name2), (0, import_react55.createElement)("span", { className: officialClass("Deliverables", "description") ?? "", "data-presented-description": true }, (0, import_react55.createElement)("span", { className: officialClass("Deliverables", "secondaryText") ?? "" }, cardDescription(file.description, metadata)), onPreview !== void 0 ? (0, import_react55.createElement)("span", { className: officialClass("Deliverables", "previewHint") ?? "" }, t4("deliverPreviewHint")) : null))));
 }
 function DeliverablesGridMirror(props) {
   const { files, onOpen, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react53.useState)(false);
+  const [expanded, setExpanded] = (0, import_react55.useState)(false);
   if (files.length === 0)
     return null;
   const collapsible = files.length > COLLAPSED_DELIVERED_COUNT;
   const shown = collapsible && !expanded ? files.slice(0, COLLAPSED_DELIVERED_COUNT) : files;
-  return (0, import_react53.createElement)("div", {
+  return (0, import_react55.createElement)("div", {
     className: officialClass("Deliverables", "root") ?? "",
     "data-presented-files-grid": true
-  }, (0, import_react53.createElement)("div", {
+  }, (0, import_react55.createElement)("div", {
     className: officialClass("Deliverables", "presented") ?? "",
     "data-presented-files-row": true
-  }, shown.map((file, index3) => (0, import_react53.createElement)(DeliveredFileCard, {
+  }, shown.map((file, index3) => (0, import_react55.createElement)(DeliveredFileCard, {
     key: `${file.path}:${index3}`,
     file,
     onPreview: onOpen === void 0 ? void 0 : () => {
       onOpen(file.path);
     },
     t: t4
-  }))), collapsible ? (0, import_react53.createElement)("button", {
+  }))), collapsible ? (0, import_react55.createElement)("button", {
     type: "button",
     className: officialClass("Deliverables", "toggle") ?? "",
     "aria-expanded": expanded,
@@ -54384,11 +54593,11 @@ function DeliverablesGridMirror(props) {
     onClick: () => {
       setExpanded((value) => !value);
     }
-  }, (0, import_react53.createElement)("span", null, t4(expanded ? "deliverCollapse" : "deliverAll", { count: files.length })), expanded ? (0, import_react53.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react53.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null);
+  }, (0, import_react55.createElement)("span", null, t4(expanded ? "deliverCollapse" : "deliverAll", { count: files.length })), expanded ? (0, import_react55.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react55.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null);
 }
 
 // dist/session/mirror/ChangedFilesCard.js
-var import_react55 = require("react");
+var import_react57 = require("react");
 
 // dist/utils/string.js
 function baseNameOf(path) {
@@ -54524,7 +54733,7 @@ function turnDeliverablesChangesSeq(face) {
 }
 
 // dist/session/mirror/ChangedFileDiff.js
-var import_react54 = require("react");
+var import_react56 = require("react");
 var C2 = (semantic) => officialClass("ChangedFiles", semantic) ?? "";
 var D = (semantic) => officialClass("FileDiff", semantic) ?? "";
 var cache3 = /* @__PURE__ */ new Map();
@@ -54539,20 +54748,20 @@ function highlightedSide(rows, side, highlighter) {
 }
 function DiffText(props) {
   const { text: text2, spans } = props;
-  return (0, import_react54.createElement)("span", { className: D("text"), "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react54.createElement)("span", { key: index3, style: span.style }, span.text)));
+  return (0, import_react56.createElement)("span", { className: D("text"), "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react56.createElement)("span", { key: index3, style: span.style }, span.text)));
 }
 function DiffLine(props) {
   const { row } = props;
   const kindClass = row.kind === "add" ? D("add") : row.kind === "del" ? D("del") : D("context");
   const spans = row.kind === "del" ? props.oldSpans : props.newSpans;
-  return (0, import_react54.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row.kind }, (0, import_react54.createElement)("span", { className: D("number") }, row.old ?? ""), (0, import_react54.createElement)("span", { className: D("number") }, row.new ?? ""), (0, import_react54.createElement)("span", { className: D("sign") }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react54.createElement)(DiffText, { text: row.text, spans }));
+  return (0, import_react56.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row.kind }, (0, import_react56.createElement)("span", { className: D("number") }, row.old ?? ""), (0, import_react56.createElement)("span", { className: D("number") }, row.new ?? ""), (0, import_react56.createElement)("span", { className: D("sign") }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react56.createElement)(DiffText, { text: row.text, spans }));
 }
 function ChangedFileDiff(props) {
   const { sessionId, seq, index: index3, display, t: t4 = t, variant = "preview", onClose } = props;
   const url = changesDiffUrl(sessionId, seq, index3);
-  const [state, setState] = (0, import_react54.useState)(void 0);
-  const [attempt, setAttempt] = (0, import_react54.useState)(0);
-  (0, import_react54.useEffect)(() => {
+  const [state, setState] = (0, import_react56.useState)(void 0);
+  const [attempt, setAttempt] = (0, import_react56.useState)(0);
+  (0, import_react56.useEffect)(() => {
     if (cache3.has(url)) {
       setState(cache3.get(url));
       return;
@@ -54582,23 +54791,23 @@ function ChangedFileDiff(props) {
       alive = false;
     };
   }, [url, attempt]);
-  const retry = (0, import_react54.useCallback)(() => {
+  const retry = (0, import_react56.useCallback)(() => {
     setAttempt((value) => value + 1);
   }, []);
   const path = state === void 0 || state === "error" || state === null ? void 0 : state.path;
   const highlighter = (0, official_exports.useCodeHighlighter)(path === void 0 ? void 0 : (0, official_exports.languageForPath)(path));
-  const body = (0, import_react54.useMemo)(() => {
+  const body = (0, import_react56.useMemo)(() => {
     if (state === void 0)
-      return (0, import_react54.createElement)("p", { className: D("status"), role: "status" }, t4("diffLoading"));
+      return (0, import_react56.createElement)("p", { className: D("status"), role: "status" }, t4("diffLoading"));
     if (state === "error") {
-      return (0, import_react54.createElement)("div", { className: D("status") }, (0, import_react54.createElement)("span", null, t4("diffError")), (0, import_react54.createElement)(official_exports.Button, { size: "sm", onClick: retry }, t4("errorRetry")));
+      return (0, import_react56.createElement)("div", { className: D("status") }, (0, import_react56.createElement)("span", null, t4("diffError")), (0, import_react56.createElement)(official_exports.Button, { size: "sm", onClick: retry }, t4("errorRetry")));
     }
     if (state === null)
-      return (0, import_react54.createElement)("p", { className: D("status") }, t4("diffMissing"));
+      return (0, import_react56.createElement)("p", { className: D("status") }, t4("diffMissing"));
     if (state.kind === "binary")
-      return (0, import_react54.createElement)("p", { className: D("status") }, t4("diffBinary"));
+      return (0, import_react56.createElement)("p", { className: D("status") }, t4("diffBinary"));
     if (state.kind === "oversized")
-      return (0, import_react54.createElement)("p", { className: D("status") }, t4("diffOversized"));
+      return (0, import_react56.createElement)("p", { className: D("status") }, t4("diffOversized"));
     const note = diffNoteKey(state);
     const hunks = state.hunks ?? [];
     let budget = DIFF_MAX_RENDERED_LINES;
@@ -54618,14 +54827,14 @@ function ChangedFileDiff(props) {
       kept.push(hunk);
       budget -= hunk.lines.length;
     }
-    return (0, import_react54.createElement)("div", { className: D("body"), "data-review-view": "unified" }, note === void 0 ? null : (0, import_react54.createElement)("p", {
+    return (0, import_react56.createElement)("div", { className: D("body"), "data-review-view": "unified" }, note === void 0 ? null : (0, import_react56.createElement)("p", {
       className: D("note"),
       "data-diff-note": hunks.length === 0 ? "empty" : "metadata"
-    }, t4(note)), state.coarse === true ? (0, import_react54.createElement)("p", { className: D("note"), "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react54.createElement)("p", { className: D("note"), "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
+    }, t4(note)), state.coarse === true ? (0, import_react56.createElement)("p", { className: D("note"), "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react56.createElement)("p", { className: D("note"), "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
       const rows = hunkRows(hunk);
       const oldSpans = highlightedSide(rows, "old", highlighter);
       const newSpans = highlightedSide(rows, "new", highlighter);
-      return (0, import_react54.createElement)("section", { key: position, className: D("hunk") }, (0, import_react54.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row, at) => (0, import_react54.createElement)(DiffLine, {
+      return (0, import_react56.createElement)("section", { key: position, className: D("hunk") }, (0, import_react56.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row, at) => (0, import_react56.createElement)(DiffLine, {
         key: at,
         row,
         oldSpans: oldSpans?.get(row.old ?? -1),
@@ -54634,18 +54843,18 @@ function ChangedFileDiff(props) {
     }));
   }, [state, highlighter, t4, retry]);
   const preview = variant !== "review";
-  return (0, import_react54.createElement)("div", {
+  return (0, import_react56.createElement)("div", {
     className: preview ? `${D("root")} ${C2("preview")}` : D("root"),
     "data-changes-hover-preview": preview ? true : void 0
-  }, (0, import_react54.createElement)(
+  }, (0, import_react56.createElement)(
     "div",
     { className: D("header") },
-    (0, import_react54.createElement)("span", { className: C2("previewPath"), "data-changes-preview-path": true }, display),
+    (0, import_react56.createElement)("span", { className: C2("previewPath"), "data-changes-preview-path": true }, display),
     // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
-    preview || onClose === void 0 ? null : (0, import_react54.createElement)(IconButton, {
+    preview || onClose === void 0 ? null : (0, import_react56.createElement)(IconButton, {
       variant: "plain",
       size: "md",
-      icon: (0, import_react54.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+      icon: (0, import_react56.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
       label: t4("previewClose"),
       onClick: onClose
     })
@@ -54658,22 +54867,22 @@ var cache4 = /* @__PURE__ */ new Map();
 var COLLAPSED_ROWS = 4;
 function Counts(props) {
   const grouped = new Intl.NumberFormat("en-US");
-  return (0, import_react55.createElement)(import_react55.Fragment, null, (0, import_react55.createElement)("span", { className: C3("added") }, `+${grouped.format(props.added)}`), " ", (0, import_react55.createElement)("span", { className: C3("deleted") }, `-${grouped.format(props.deleted)}`));
+  return (0, import_react57.createElement)(import_react57.Fragment, null, (0, import_react57.createElement)("span", { className: C3("added") }, `+${grouped.format(props.added)}`), " ", (0, import_react57.createElement)("span", { className: C3("deleted") }, `-${grouped.format(props.deleted)}`));
 }
 function countsOf(file, t4) {
   if (file.binary === true)
     return t4("changesBinary");
   if (file.oversized === true)
     return t4("changesOversized");
-  return (0, import_react55.createElement)(Counts, { added: file.added, deleted: file.deleted });
+  return (0, import_react57.createElement)(Counts, { added: file.added, deleted: file.deleted });
 }
 function ChangedFilesCard(props) {
   const { sessionId, seq, onOpenReview, t: t4 } = props;
   const url = changesSummaryUrl(sessionId, seq);
-  const [summary, setSummary] = (0, import_react55.useState)(void 0);
-  const [expanded, setExpanded] = (0, import_react55.useState)(false);
-  const cardRef = (0, import_react55.useRef)(null);
-  (0, import_react55.useEffect)(() => {
+  const [summary, setSummary] = (0, import_react57.useState)(void 0);
+  const [expanded, setExpanded] = (0, import_react57.useState)(false);
+  const cardRef = (0, import_react57.useRef)(null);
+  (0, import_react57.useEffect)(() => {
     if (cache4.has(url)) {
       setSummary(cache4.get(url));
       return;
@@ -54698,16 +54907,16 @@ function ChangedFilesCard(props) {
   if (summary === void 0 || summary === null || summary.total === 0 || summary.files.length === 0)
     return null;
   const single = summary.total === 1 ? summary.files[0] : void 0;
-  const icon2 = single !== void 0 ? (0, import_react55.createElement)(official_exports.FileTypeIcon, { path: single.path, size: 20 }) : (0, import_react55.createElement)(official_exports.FileTypeIcon, { kind: "code", size: 20 });
+  const icon2 = single !== void 0 ? (0, import_react57.createElement)(official_exports.FileTypeIcon, { path: single.path, size: 20 }) : (0, import_react57.createElement)(official_exports.FileTypeIcon, { kind: "code", size: 20 });
   const title = single === void 0 ? t4("changesMulti", { count: String(summary.total) }) : t4("changesSingle", { name: baseNameOf(single.path) });
   const foldable2 = summary.files.length > COLLAPSED_ROWS;
   const rows = foldable2 && !expanded ? summary.files.slice(0, COLLAPSED_ROWS) : summary.files;
-  const headerBody = (0, import_react55.createElement)(import_react55.Fragment, null, (0, import_react55.createElement)("span", { className: C3("tile") }, icon2), (0, import_react55.createElement)("span", { className: C3("titles") }, (0, import_react55.createElement)("span", { className: C3("title") }, title), (0, import_react55.createElement)(
+  const headerBody = (0, import_react57.createElement)(import_react57.Fragment, null, (0, import_react57.createElement)("span", { className: C3("tile") }, icon2), (0, import_react57.createElement)("span", { className: C3("titles") }, (0, import_react57.createElement)("span", { className: C3("title") }, title), (0, import_react57.createElement)(
     "span",
     { className: C3("stat") },
-    (0, import_react55.createElement)("span", { className: C3("statCounts") }, countsOf(single ?? summary, t4)),
+    (0, import_react57.createElement)("span", { className: C3("statCounts") }, countsOf(single ?? summary, t4)),
     // 官方 previewHint：hover/focus 时替换计数显示（提示这张卡可以 hover 出 diff 预览）。
-    (0, import_react55.createElement)("span", { className: C3("previewHint") }, t4("deliverPreviewHint"))
+    (0, import_react57.createElement)("span", { className: C3("previewHint") }, t4("deliverPreviewHint"))
   )));
   const headerLocator = {
     sessionId,
@@ -54715,7 +54924,7 @@ function ChangedFilesCard(props) {
     index: 0,
     display: single?.display ?? summary.files[0].display
   };
-  const headerNode = onOpenReview === void 0 ? (0, import_react55.createElement)("div", { className: C3("header") }, headerBody) : (0, import_react55.createElement)("button", {
+  const headerNode = onOpenReview === void 0 ? (0, import_react57.createElement)("div", { className: C3("header") }, headerBody) : (0, import_react57.createElement)("button", {
     type: "button",
     className: C3("header"),
     title: headerLocator.display,
@@ -54723,11 +54932,11 @@ function ChangedFilesCard(props) {
       onOpenReview(headerLocator);
     }
   }, headerBody);
-  const previewOf = (index3, display) => (0, import_react55.createElement)(ChangedFileDiff, { sessionId, seq, index: index3, display, t: t4 });
+  const previewOf = (index3, display) => (0, import_react57.createElement)(ChangedFileDiff, { sessionId, seq, index: index3, display, t: t4 });
   const rowOf = (file, index3) => {
-    const body = (0, import_react55.createElement)(import_react55.Fragment, null, (0, import_react55.createElement)("span", { className: C3("path") }, file.display), (0, import_react55.createElement)("span", { className: C3("counts") }, countsOf(file, t4)));
+    const body = (0, import_react57.createElement)(import_react57.Fragment, null, (0, import_react57.createElement)("span", { className: C3("path") }, file.display), (0, import_react57.createElement)("span", { className: C3("counts") }, countsOf(file, t4)));
     const locator = { sessionId, seq, index: index3, display: file.display };
-    const row = onOpenReview === void 0 ? (0, import_react55.createElement)("div", { className: C3("row"), title: file.path }, body) : (0, import_react55.createElement)("button", {
+    const row = onOpenReview === void 0 ? (0, import_react57.createElement)("div", { className: C3("row"), title: file.path }, body) : (0, import_react57.createElement)("button", {
       type: "button",
       className: C3("row"),
       title: file.path,
@@ -54735,7 +54944,7 @@ function ChangedFilesCard(props) {
         onOpenReview(locator);
       }
     }, body);
-    return (0, import_react55.createElement)(official_exports.HoverCard, {
+    return (0, import_react57.createElement)(official_exports.HoverCard, {
       key: file.display,
       variant: "preview",
       widthAnchorRef: cardRef,
@@ -54744,11 +54953,11 @@ function ChangedFilesCard(props) {
       content: previewOf(index3, file.display)
     });
   };
-  const list = single === void 0 ? (0, import_react55.createElement)("ul", { className: C3("list") }, rows.map((file) => {
+  const list = single === void 0 ? (0, import_react57.createElement)("ul", { className: C3("list") }, rows.map((file) => {
     const index3 = summary.files.indexOf(file);
-    return (0, import_react55.createElement)("li", { key: file.display }, rowOf(file, index3));
+    return (0, import_react57.createElement)("li", { key: file.display }, rowOf(file, index3));
   })) : null;
-  const toggle = foldable2 ? (0, import_react55.createElement)("button", {
+  const toggle = foldable2 ? (0, import_react57.createElement)("button", {
     type: "button",
     className: C3("toggle"),
     "aria-expanded": expanded,
@@ -54756,15 +54965,15 @@ function ChangedFilesCard(props) {
     onClick: () => {
       setExpanded((value) => !value);
     }
-  }, (0, import_react55.createElement)("span", null, t4(expanded ? "changesCollapse" : "changesAll", { count: summary.files.length })), expanded ? (0, import_react55.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react55.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null;
-  const header = single === void 0 ? headerNode : (0, import_react55.createElement)(official_exports.HoverCard, {
+  }, (0, import_react57.createElement)("span", null, t4(expanded ? "changesCollapse" : "changesAll", { count: summary.files.length })), expanded ? (0, import_react57.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react57.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null;
+  const header = single === void 0 ? headerNode : (0, import_react57.createElement)(official_exports.HoverCard, {
     variant: "preview",
     widthAnchorRef: cardRef,
     openDelayMs: 500,
     anchor: headerNode,
     content: previewOf(0, single.display)
   });
-  return (0, import_react55.createElement)("div", {
+  return (0, import_react57.createElement)("div", {
     ref: cardRef,
     className: C3("card"),
     "data-changed-files": true,
@@ -54888,9 +55097,9 @@ function presentFiles(root) {
 function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, changesSeq, sessionId, onOpenReview) {
   switch (node.kind) {
     case "turn-trigger":
-      return (0, import_react56.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
+      return (0, import_react58.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
     case "turn-process":
-      return turnProcess === void 0 ? null : (0, import_react56.createElement)(TurnProcessNodeViewMirror, {
+      return turnProcess === void 0 ? null : (0, import_react58.createElement)(TurnProcessNodeViewMirror, {
         turn: turnLocationOf(node),
         turnProcess,
         t: t4
@@ -54900,9 +55109,9 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const turn = data2?.turn ?? turnLocationOf(node)?.turn;
       const atLastTail = turn !== void 0 && lastTailTurn !== void 0 && turn === lastTailTurn;
       const showGrid = deliverFiles !== void 0 && deliverFiles.length > 0 && atLastTail;
-      const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react56.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t: t4 }) : null;
-      const tailSlot = changesCard === null && !showGrid ? null : (0, import_react56.createElement)(import_react56.Fragment, null, changesCard, showGrid ? (0, import_react56.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null);
-      const tail = data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react56.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, t: t4 });
+      const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react58.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t: t4 }) : null;
+      const tailSlot = changesCard === null && !showGrid ? null : (0, import_react58.createElement)(import_react58.Fragment, null, changesCard, showGrid ? (0, import_react58.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null);
+      const tail = data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react58.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, t: t4 });
       return tail;
     }
     case "assistant-step": {
@@ -54912,17 +55121,17 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
         return null;
       const visible = groupPart === "reasoning" ? contentBlocks.filter((block2) => block2.kind === "reasoning") : groupPart === "response" ? contentBlocks.filter((block2) => block2.kind !== "reasoning") : contentBlocks;
       const parts = assistantBlocks(visible, t4, fileOpen?.mentions);
-      return parts.length === 0 ? null : (0, import_react56.createElement)("div", { className: "dshpc-sv-assistant" }, parts);
+      return parts.length === 0 ? null : (0, import_react58.createElement)("div", { className: "dshpc-sv-assistant" }, parts);
     }
     case "tool-call": {
       const root = dataOf(node).root;
       if (isPresentRoot(root))
-        return (0, import_react56.createElement)(PresentRowMirror, { block: root, t: t4 });
+        return (0, import_react58.createElement)(PresentRowMirror, { block: root, t: t4 });
       const card = toolCallCard(node, t4, fileOpen?.open);
-      return card === null ? null : (0, import_react56.createElement)(GenericCommandCard, card);
+      return card === null ? null : (0, import_react58.createElement)(GenericCommandCard, card);
     }
     case "command": {
-      return (0, import_react56.createElement)(CommandCard, { node: dataOf(node), t: t4 });
+      return (0, import_react58.createElement)(CommandCard, { node: dataOf(node), t: t4 });
     }
     case "user":
     case "steering": {
@@ -54931,19 +55140,19 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const { files, hadFiles } = contentFiles(blocks);
       if (text2 === "" && !hadFiles)
         return null;
-      return (0, import_react56.createElement)(UserMessage, { text: text2, files });
+      return (0, import_react58.createElement)(UserMessage, { text: text2, files });
     }
     case "turn-error":
-      return (0, import_react56.createElement)(TurnErrorItemMirror, { node: dataOf(node), t: t4 });
+      return (0, import_react58.createElement)(TurnErrorItemMirror, { node: dataOf(node), t: t4 });
     case "turn-max-tokens":
-      return (0, import_react56.createElement)(TurnMaxTokensItemMirror, { t: t4 });
+      return (0, import_react58.createElement)(TurnMaxTokensItemMirror, { t: t4 });
     case "model-retry": {
       const data2 = dataOf(node);
       const attempts = Array.isArray(data2.attempts) ? data2.attempts : [];
       const current3 = typeof data2.current === "object" && data2.current !== null ? data2.current : attempts[attempts.length - 1];
       if (current3 === void 0)
         return null;
-      return (0, import_react56.createElement)(ModelRetryItemMirror, { node: current3, active: current3.retryState === "scheduled", t: t4 });
+      return (0, import_react58.createElement)(ModelRetryItemMirror, { node: current3, active: current3.retryState === "scheduled", t: t4 });
     }
     // 决策 28：context（系统注入）/ compaction / unknown 仍默认过滤；
     // ⚠ ui-map §十一-B：官方 ContextInjectionRow / SystemPromptRow 待实施——届时从这里放行。
@@ -54953,7 +55162,7 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
     case "unknown":
       return null;
     default:
-      return (0, import_react56.createElement)("details", { className: "dshpc-sv-tool" }, (0, import_react56.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react56.createElement)("pre", null, safeJson(node.data)));
+      return (0, import_react58.createElement)("details", { className: "dshpc-sv-tool" }, (0, import_react58.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react58.createElement)("pre", null, safeJson(node.data)));
   }
 }
 function assistantBlocks(blocks, t4, fileMentions) {
@@ -54964,19 +55173,19 @@ function assistantBlocks(blocks, t4, fileMentions) {
     switch (block2.kind) {
       case "text":
         if (block2.text.trim() !== "")
-          parts.push((0, import_react56.createElement)(AssistantMarkdown, { key: `t${index3}`, text: block2.text, fileMentions }));
+          parts.push((0, import_react58.createElement)(AssistantMarkdown, { key: `t${index3}`, text: block2.text, fileMentions }));
         break;
       case "reasoning":
         if (block2.text.trim() !== "")
-          parts.push((0, import_react56.createElement)(ReasoningRowMirror, { key: `r${index3}`, text: block2.text, t: t4 }));
+          parts.push((0, import_react58.createElement)(ReasoningRowMirror, { key: `r${index3}`, text: block2.text, t: t4 }));
         break;
       case "image":
-        parts.push((0, import_react56.createElement)("div", { key: `i${index3}`, className: "dshpc-sv-image" }, "[\u56FE\u7247]"));
+        parts.push((0, import_react58.createElement)("div", { key: `i${index3}`, className: "dshpc-sv-image" }, "[\u56FE\u7247]"));
         break;
       case "tool-call":
         break;
       default:
-        parts.push((0, import_react56.createElement)("details", { key: `o${index3}`, className: "dshpc-sv-tool" }, (0, import_react56.createElement)("summary", null, t4("sessionUnknownKind")), (0, import_react56.createElement)("pre", null, safeJson(block2.block))));
+        parts.push((0, import_react58.createElement)("details", { key: `o${index3}`, className: "dshpc-sv-tool" }, (0, import_react58.createElement)("summary", null, t4("sessionUnknownKind")), (0, import_react58.createElement)("pre", null, safeJson(block2.block))));
     }
   });
   return parts;
@@ -54989,16 +55198,16 @@ function renderLegacyNode(node, t4, fileOpen) {
       const { files, hadFiles } = contentFiles(node.content);
       if (text2 === "" && !hadFiles)
         return null;
-      return (0, import_react56.createElement)(UserMessage, { key: node.seq, text: text2, files });
+      return (0, import_react58.createElement)(UserMessage, { key: node.seq, text: text2, files });
     }
     case "assistant": {
       const parts = assistantBlocks(node.blocks, t4, fileOpen?.mentions);
-      return parts.length === 0 ? null : (0, import_react56.createElement)("div", { key: node.seq, className: "dshpc-sv-assistant" }, parts);
+      return parts.length === 0 ? null : (0, import_react58.createElement)("div", { key: node.seq, className: "dshpc-sv-assistant" }, parts);
     }
     case "tool-result": {
       if (node.call?.name === "present")
-        return (0, import_react56.createElement)(PresentRowMirror, { key: node.seq, block: node, t: t4 });
-      return (0, import_react56.createElement)(GenericCommandCard, {
+        return (0, import_react58.createElement)(PresentRowMirror, { key: node.seq, block: node, t: t4 });
+      return (0, import_react58.createElement)(GenericCommandCard, {
         key: node.seq,
         name: node.call?.name ?? "tool",
         argsRaw: node.call?.argsRaw ?? "",
@@ -55013,7 +55222,7 @@ function renderLegacyNode(node, t4, fileOpen) {
       });
     }
     case "command": {
-      return (0, import_react56.createElement)(GenericCommandCard, {
+      return (0, import_react58.createElement)(GenericCommandCard, {
         key: node.seq,
         name: `/${node.name ?? "?"}`,
         argsRaw: node.args ?? "",
@@ -55023,11 +55232,11 @@ function renderLegacyNode(node, t4, fileOpen) {
       });
     }
     case "turn-error":
-      return (0, import_react56.createElement)(TurnErrorItemMirror, { key: node.seq, node, t: t4 });
+      return (0, import_react58.createElement)(TurnErrorItemMirror, { key: node.seq, node, t: t4 });
     case "turn-max-tokens":
-      return (0, import_react56.createElement)(TurnMaxTokensItemMirror, { key: node.seq, t: t4 });
+      return (0, import_react58.createElement)(TurnMaxTokensItemMirror, { key: node.seq, t: t4 });
     case "model-retry":
-      return (0, import_react56.createElement)(ModelRetryItemMirror, { key: node.seq, node, active: node.retryState === "scheduled", t: t4 });
+      return (0, import_react58.createElement)(ModelRetryItemMirror, { key: node.seq, node, active: node.retryState === "scheduled", t: t4 });
     // 决策 28：默认过滤的噪音 kind —— context（系统注入）、compaction（压缩标记）、
     // unknown（未知事件面）。assistant 里的 reasoning 由 mirror/ReasoningRow 折叠渲染。
     // ⚠ ui-map §十一-B：系统提示/上下文注入行（官方 ContextInjectionRow）待实施——届时从这里放行。
@@ -55036,7 +55245,7 @@ function renderLegacyNode(node, t4, fileOpen) {
     case "unknown":
       return null;
     default:
-      return (0, import_react56.createElement)("details", { key: node.seq, className: "dshpc-sv-tool" }, (0, import_react56.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react56.createElement)("pre", null, safeJson(node)));
+      return (0, import_react58.createElement)("details", { key: node.seq, className: "dshpc-sv-tool" }, (0, import_react58.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react58.createElement)("pre", null, safeJson(node)));
   }
 }
 function groupNodes(list) {
@@ -55073,11 +55282,11 @@ function renderLegacyRows(nodes, t4, fileOpen) {
   items.forEach((entry, index3) => {
     const parts = [];
     if (entry.kind === "process") {
-      parts.push((0, import_react56.createElement)("div", { key: "lead", className: "dshpc-sv-notice" }, `${t4("sessionProcess")} \xB7 ${entry.nodes.length}`));
+      parts.push((0, import_react58.createElement)("div", { key: "lead", className: "dshpc-sv-notice" }, `${t4("sessionProcess")} \xB7 ${entry.nodes.length}`));
       entry.nodes.forEach((node, i2) => {
         const rendered = renderLegacyNode(node, t4, fileOpen);
         if (rendered !== null)
-          parts.push((0, import_react56.createElement)("div", { key: `p${i2}` }, rendered));
+          parts.push((0, import_react58.createElement)("div", { key: `p${i2}` }, rendered));
       });
     } else {
       const inner = renderLegacyNode(entry.node, t4, fileOpen);
@@ -55087,12 +55296,12 @@ function renderLegacyRows(nodes, t4, fileOpen) {
         const next = items[index3 + 1];
         const isTurnEnd = next === void 0 || !(next.kind === "node" && next.node.kind === "assistant");
         if (isTurnEnd)
-          parts.push((0, import_react56.createElement)(MessageIconActionsMirror, { key: "act", text: assistantText2(entry.node), clock: "end", t: t4 }));
+          parts.push((0, import_react58.createElement)(MessageIconActionsMirror, { key: "act", text: assistantText2(entry.node), clock: "end", t: t4 }));
       }
     }
     if (parts.length === 0)
       return;
-    rows.push((0, import_react56.createElement)("div", { key: `lg${index3}`, className: officialClass("ChatView", "flowItem") ?? "" }, parts));
+    rows.push((0, import_react58.createElement)("div", { key: `lg${index3}`, className: officialClass("ChatView", "flowItem") ?? "" }, parts));
   });
   return rows;
 }
@@ -55250,14 +55459,14 @@ function SessionViewModal(props) {
   ensureComponentStyles("session", SESSION_CSS);
   const tt = props.t ?? t;
   const { heading: heading2, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
-  const subscribe = (0, import_react56.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
-  const getSnapshot = (0, import_react56.useMemo)(() => () => view.target.getSnapshot(), [view]);
-  const chat = (0, import_react56.useSyncExternalStore)(subscribe, getSnapshot);
-  const sessionSub = (0, import_react56.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
-  const sessionGet = (0, import_react56.useMemo)(() => () => view.session.getSnapshot(), [view]);
-  const sessionSnap = (0, import_react56.useSyncExternalStore)(sessionSub, sessionGet);
-  const [openTurns, setOpenTurns] = (0, import_react56.useState)(() => /* @__PURE__ */ new Map());
-  const onSetOpen = (0, import_react56.useCallback)((turn, answerStep, open) => {
+  const subscribe = (0, import_react58.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
+  const getSnapshot = (0, import_react58.useMemo)(() => () => view.target.getSnapshot(), [view]);
+  const chat = (0, import_react58.useSyncExternalStore)(subscribe, getSnapshot);
+  const sessionSub = (0, import_react58.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
+  const sessionGet = (0, import_react58.useMemo)(() => () => view.session.getSnapshot(), [view]);
+  const sessionSnap = (0, import_react58.useSyncExternalStore)(sessionSub, sessionGet);
+  const [openTurns, setOpenTurns] = (0, import_react58.useState)(() => /* @__PURE__ */ new Map());
+  const onSetOpen = (0, import_react58.useCallback)((turn, answerStep, open) => {
     setOpenTurns((prev) => {
       const next = new Map(prev);
       if (open)
@@ -55271,14 +55480,14 @@ function SessionViewModal(props) {
   const canFork = forkSession !== void 0 && openHostSession !== void 0;
   const canDirectOpen = openHostSession !== void 0;
   const showContinue = isArchived ? canFork : canDirectOpen;
-  const [forkTarget, setForkTarget] = (0, import_react56.useState)(null);
-  const [forking, setForking] = (0, import_react56.useState)(false);
-  const [forkErr, setForkErr] = (0, import_react56.useState)(null);
-  const aliveRef = (0, import_react56.useRef)(true);
-  (0, import_react56.useEffect)(() => () => {
+  const [forkTarget, setForkTarget] = (0, import_react58.useState)(null);
+  const [forking, setForking] = (0, import_react58.useState)(false);
+  const [forkErr, setForkErr] = (0, import_react58.useState)(null);
+  const aliveRef = (0, import_react58.useRef)(true);
+  (0, import_react58.useEffect)(() => () => {
     aliveRef.current = false;
   }, []);
-  const onForkAccept = (0, import_react56.useCallback)(() => {
+  const onForkAccept = (0, import_react58.useCallback)(() => {
     if (forking || forkSession === void 0 || openHostSession === void 0)
       return;
     setForking(true);
@@ -55300,14 +55509,14 @@ function SessionViewModal(props) {
       }
     })();
   }, [forking, forkSession, openHostSession, sessionId, forkTarget, onClose]);
-  const onBranchAt = (0, import_react56.useCallback)((seq) => {
+  const onBranchAt = (0, import_react58.useCallback)((seq) => {
     setForkErr(null);
     setForkTarget({ atSeq: seq });
   }, []);
-  const [draft, setDraft] = (0, import_react56.useState)("");
-  const [sending, setSending] = (0, import_react56.useState)(false);
-  const [sendErr, setSendErr] = (0, import_react56.useState)(null);
-  const onSend = (0, import_react56.useCallback)(() => {
+  const [draft, setDraft] = (0, import_react58.useState)("");
+  const [sending, setSending] = (0, import_react58.useState)(false);
+  const [sendErr, setSendErr] = (0, import_react58.useState)(null);
+  const onSend = (0, import_react58.useCallback)(() => {
     const message = draft.trim();
     if (sending || message === "" || onContinue === void 0)
       return;
@@ -55329,14 +55538,14 @@ function SessionViewModal(props) {
       }
     })();
   }, [draft, sending, onContinue]);
-  const openFile = (0, import_react56.useCallback)((path) => {
+  const openFile = (0, import_react58.useCallback)((path) => {
     onOpenFile?.(path, sessionId);
   }, [onOpenFile, sessionId]);
   const order = chat?.order ?? EMPTY_ORDER;
   const store = chat?.nodes;
   const keyed = order.length > 0 && store !== void 0;
   const turns = chat?.timeline?.turns;
-  const fileOpen = (0, import_react56.useMemo)(() => {
+  const fileOpen = (0, import_react58.useMemo)(() => {
     if (onOpenFile === void 0)
       return void 0;
     return {
@@ -55344,7 +55553,7 @@ function SessionViewModal(props) {
       mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile)
     };
   }, [onOpenFile, openFile, order, store, turns]);
-  const openDelegatedFile = (0, import_react56.useMemo)(() => {
+  const openDelegatedFile = (0, import_react58.useMemo)(() => {
     if (fileOpen === void 0)
       return () => {
       };
@@ -55357,8 +55566,8 @@ function SessionViewModal(props) {
       hit.open();
     };
   }, [fileOpen]);
-  const deliveredByTurn = (0, import_react56.useMemo)(() => collectPresentedByTurn(turns), [turns]);
-  const deliverFiles = (0, import_react56.useMemo)(() => {
+  const deliveredByTurn = (0, import_react58.useMemo)(() => collectPresentedByTurn(turns), [turns]);
+  const deliverFiles = (0, import_react58.useMemo)(() => {
     const byPath = /* @__PURE__ */ new Map();
     const add2 = (file) => {
       const key = file.path.trim();
@@ -55371,7 +55580,7 @@ function SessionViewModal(props) {
         add2(file);
     return [...byPath.values()];
   }, [deliveredByTurn]);
-  const lastTailTurn = (0, import_react56.useMemo)(() => {
+  const lastTailTurn = (0, import_react58.useMemo)(() => {
     if (!keyed || store === void 0)
       return void 0;
     for (let i2 = order.length - 1; i2 >= 0; i2--) {
@@ -55388,7 +55597,7 @@ function SessionViewModal(props) {
     }
     return void 0;
   }, [keyed, order, store]);
-  const lastTailChangesSeq = (0, import_react56.useMemo)(() => {
+  const lastTailChangesSeq = (0, import_react58.useMemo)(() => {
     if (turns === null || turns === void 0)
       return void 0;
     const map = turns;
@@ -55406,8 +55615,8 @@ function SessionViewModal(props) {
     }
     return best ?? void 0;
   }, [turns]);
-  const diagChatRef = (0, import_react56.useRef)(void 0);
-  (0, import_react56.useEffect)(() => {
+  const diagChatRef = (0, import_react58.useRef)(void 0);
+  (0, import_react58.useEffect)(() => {
     if (diagChatRef.current === chat)
       return;
     diagChatRef.current = chat;
@@ -55447,9 +55656,9 @@ function SessionViewModal(props) {
     });
     console.log("[preview] turnsDetail", turnsDetail);
   }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store]);
-  const renderNode = (0, import_react56.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview]);
-  const isTurnClosed = (0, import_react56.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
-  const groupedView = (0, import_react56.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed) : void 0, [keyed, order, store, isTurnClosed]);
+  const renderNode = (0, import_react58.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview]);
+  const isTurnClosed = (0, import_react58.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
+  const groupedView = (0, import_react58.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed) : void 0, [keyed, order, store, isTurnClosed]);
   const rows = keyed ? ChatNodeListMirror({
     order,
     store,
@@ -55474,39 +55683,39 @@ function SessionViewModal(props) {
   }
   const openState = sessionSnap?.openState;
   const showLoadOlder = sessionSnap?.hasMore !== false;
-  const body = rendered.length === 0 ? (0, import_react56.createElement)(ChatHint, {
+  const body = rendered.length === 0 ? (0, import_react58.createElement)(ChatHint, {
     text: openState === "error" ? tt("sessionFailed") : openState === "loading" || openState === "cold" ? tt("sessionLoading") : tt("sessionEmpty")
   }) : [
-    showLoadOlder ? (0, import_react56.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
+    showLoadOlder ? (0, import_react58.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
       view.loadOlder();
     } }) : null,
     ...rendered
   ];
   const flowChildren = Array.isArray(body) ? body : [body];
-  return (0, import_react56.createElement)(
-    import_react56.Fragment,
+  return (0, import_react58.createElement)(
+    import_react58.Fragment,
     null,
-    (0, import_react56.createElement)(Modal, {
+    (0, import_react58.createElement)(Modal, {
       size: "lg",
       // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
       // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
       title: heading2 ?? tt("sessionHeading"),
-      subtitle: (0, import_react56.createElement)(
-        import_react56.Fragment,
+      subtitle: (0, import_react58.createElement)(
+        import_react58.Fragment,
         null,
-        (0, import_react56.createElement)("span", null, sessionId),
+        (0, import_react58.createElement)("span", null, sessionId),
         // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
-        officialCount === 0 ? (0, import_react56.createElement)("span", { className: "dshpc-sv-probe" }, " \u26A0 \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\uFF08\u5F53\u524D\u4E3A\u81EA\u7ED8\u56DE\u9000\uFF09") : null
+        officialCount === 0 ? (0, import_react58.createElement)("span", { className: "dshpc-sv-probe" }, " \u26A0 \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\uFF08\u5F53\u524D\u4E3A\u81EA\u7ED8\u56DE\u9000\uFF09") : null
       ),
       // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块。
-      headerExtra: isArchived ? (0, import_react56.createElement)("span", { className: "dshpc-sv-archived", title: tt("sessionArchived") }, (0, import_react56.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0,
+      headerExtra: isArchived ? (0, import_react58.createElement)("span", { className: "dshpc-sv-archived", title: tt("sessionArchived") }, (0, import_react58.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0,
       // 「继续对话」：已归档 = 开分支图标 + 确认框；未归档 = 会话图标直跳官方会话页。
-      headerActions: showContinue ? (0, import_react56.createElement)(Button, {
+      headerActions: showContinue ? (0, import_react58.createElement)(Button, {
         variant: "outline",
         size: "sm",
         disabled: forking,
         title: tt("continueBranch"),
-        icon: isArchived ? (0, import_react56.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react56.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
+        icon: isArchived ? (0, import_react58.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react58.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
         onClick: () => {
           if (isArchived) {
             setForkErr(null);
@@ -55520,7 +55729,7 @@ function SessionViewModal(props) {
       onClose,
       translate: tt,
       // 底部暂存输入框走 footer（不随会话区滚动）：打字 → 确定 → onContinue 带话开分支跳官方视图。
-      footer: onContinue === void 0 ? void 0 : (0, import_react56.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react56.createElement)("textarea", {
+      footer: onContinue === void 0 ? void 0 : (0, import_react58.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react58.createElement)("textarea", {
         value: draft,
         placeholder: tt("composerPlaceholder"),
         disabled: sending,
@@ -55533,21 +55742,21 @@ function SessionViewModal(props) {
             onSend();
           }
         }
-      }), (0, import_react56.createElement)(Button, {
+      }), (0, import_react58.createElement)(Button, {
         variant: "primary",
         size: "sm",
         disabled: sending || draft.trim() === "",
         onClick: onSend
-      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react56.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react56.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
-    }, (0, import_react56.createElement)(
+      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react58.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react58.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
+    }, (0, import_react58.createElement)(
       "div",
       { className: "dshpc-sv" },
       // markdown 导航委托：挂上 openFile 后，正文里的本地文件链接才渲成官方
       // `fileMention fileLink` 按钮（不挂 ⇒ 官方自己退回纯文本）。
-      fileOpen === void 0 ? (0, import_react56.createElement)(ChatViewFrame, { children: flowChildren }) : (0, import_react56.createElement)(official_exports.MarkdownDelegateProvider, { openFile: openDelegatedFile }, (0, import_react56.createElement)(ChatViewFrame, { children: flowChildren }))
+      fileOpen === void 0 ? (0, import_react58.createElement)(ChatViewFrame, { children: flowChildren }) : (0, import_react58.createElement)(official_exports.MarkdownDelegateProvider, { openFile: openDelegatedFile }, (0, import_react58.createElement)(ChatViewFrame, { children: flowChildren }))
     )),
     // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——核心 Modal + Button。
-    forkTarget === null ? null : (0, import_react56.createElement)(Modal, {
+    forkTarget === null ? null : (0, import_react58.createElement)(Modal, {
       size: "sm",
       onClose: () => {
         if (!forking)
@@ -55556,12 +55765,12 @@ function SessionViewModal(props) {
       title: tt("forkConfirmTitle"),
       translate: tt,
       footer: [
-        (0, import_react56.createElement)(Button, { key: "cancel", variant: "outline", disabled: forking, onClick: () => {
+        (0, import_react58.createElement)(Button, { key: "cancel", variant: "outline", disabled: forking, onClick: () => {
           setForkTarget(null);
         } }, tt("cancel")),
-        (0, import_react56.createElement)(Button, { key: "accept", variant: "primary", disabled: forking, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
+        (0, import_react58.createElement)(Button, { key: "accept", variant: "primary", disabled: forking, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
       ]
-    }, (0, import_react56.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), forkErr !== null ? (0, import_react56.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
+    }, (0, import_react58.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), forkErr !== null ? (0, import_react58.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
   );
 }
 
@@ -55774,7 +55983,7 @@ function connectRealSessions(ctx) {
 }
 
 // packages/demo/src/dock.ts
-var import_react57 = require("react");
+var import_react59 = require("react");
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // packages/demo/src/i18n.ts
@@ -55805,6 +56014,8 @@ var DICT2 = {
     tableEmptyHint: "\u6CA1\u6709\u6570\u636E\u65F6\u7684\u5185\u7F6E\u7A7A\u6001\uFF08\u6587\u6848\u8D70\u6838\u5FC3\u5B57\u5178\uFF0C\u4E5F\u53EF\u7528 emptyText \u8986\u76D6\uFF09",
     tableSpanHint: "\u5916\u89C2\u4E8C\uFF08\u5DE6\u53F3\u4E24\u8FB9\u6CA1\u6709\u8FB9\uFF09\uFF1Aborders:y \u4FDD\u7559\u4E0A\u4E0B\u3001\u53BB\u6389\u5DE6\u53F3\u5916\u6846\uFF0C\u7AD6\u7EBF\u4ECD\u6309\u5217\u58F0\u660E\uFF08\u8FD9\u91CC\u7ED9\u4E86 divider:true\uFF09\u3002\u7D27\u51D1\u5BC6\u5EA6\uFF1BDowntown \u7528 rowSpan \u8DE8\u4E24\u884C\uFF08\u4E0B\u4E00\u884C\u4E0D\u7ED9\u8BE5\u5217 key\uFF09\uFF0CNorth clinic \u7528 colSpan \u8DE8\u4E24\u5217\uFF1B\u70B9\u884C\u9009\u4E2D / \u60AC\u6D6E\u8FD9\u4E00\u5F20\u540C\u6837\u5F00\u7740\uFF08\u9ED8\u8BA4\u9884\u9009 North clinic \u90A3\u884C\uFF09",
     tableGroupHint: "\u5916\u89C2\u4E09\uFF08\u9ED8\u8BA4\uFF0C\u6240\u6709\u7AD6\u7740\u7684\u8FB9\u90FD\u6CA1\u6709\uFF09\uFF1A\u4E0D\u4F20 borders \u5C31\u8D70 y\u3001\u5217\u4E0D\u5199 divider \u5C31\u4E0D\u753B\u7AD6\u7EBF\u3002\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u5DE5\u4F5C\u533A\uFF08groups \u4E0E rows \u4E8C\u9009\u4E00\uFF09\uFF1A\u6BCF\u7EC4\u5148\u662F\u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u901A\u680F\u6807\u9898\uFF08\u5DE5\u4F5C\u533A A / B\uFF09\uFF0C\u7D27\u63A5\u7740\u662F\u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u4EFB\u52A1\u884C\uFF1B\u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u4E00\u6761\u5B9E\u7EBF\u9694\u5F00\uFF0C\u7EC4\u5185\u6570\u636E\u884C\u7167\u5E38\u53EF\u914D\u5355\u5143\u683C\u5185\u5BB9\uFF0C\u540C\u6837\u53EF\u70B9\u3001\u53EF\u9009\u4E2D\uFF08\u9ED8\u8BA4\u9884\u9009 Workspace A \u7684 Doing \u90A3\u884C\uFF09",
+    paginationHint: "\u72EC\u7ACB\u5206\u9875\u63A7\u4EF6\uFF1A\u53EA\u7ED9 page / pageSize / total\uFF0C\u9875\u6570\u4E0E\u7701\u7565\u53F7\u7A97\u53E3\u7531\u63A7\u4EF6\u81EA\u5DF1\u7B97\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5199\u6E32\u67D3\u3002\u4F4D\u7F6E\u53EF\u5207\uFF08\u4E0A\u6392\u5206\u6BB5\u5207\u5DE6 / \u4E2D / \u53F3\uFF0C\u9ED8\u8BA4\u53F3\uFF09\uFF1B\u4E0B\u6392\u662F\u7B80\u6D01\u6A21\u5F0F\uFF08\u53EA\u7559\u7BAD\u5934\u4E0E\u300C2 / 36\u300D\uFF09\u3002\u603B\u6570\u6587\u6848\u4E0E\u6BCF\u9875\u6761\u6570\u9009\u62E9\u5668\u90FD\u662F\u53EF\u9009\u5F00\u5173\uFF0C\u4E0D\u4F20\u5C31\u4E0D\u51FA\u73B0",
+    tablePagerHint: "Table \u5185\u5EFA\u5206\u9875\uFF1A\u4E0D\u4F20 pagination.total \u5C31\u662F\u672C\u5730\u5206\u9875 \u2014\u2014 rows \u662F\u5168\u91CF\uFF0CTable \u5148\u6309\u5F53\u524D\u9875\u5207\u7247\u518D\u6E32\u67D3\uFF0C\u5206\u9875\u6761\u6392\u5728\u8868\u683C\u4E0B\u65B9\u53F3\u4FA7\u3002\u82E5\u63A5\u670D\u52A1\u7AEF\u5206\u9875\uFF0C\u7ED9 total\uFF08\u5E76\u53EA\u4F20\u5F53\u524D\u9875\u7684\u884C\uFF09\uFF0CTable \u5C31\u4E0D\u5207\u7247\u3001\u53EA\u8D1F\u8D23\u6446\u9875\u7801",
     secFeedback: "\u53CD\u9988",
     secLayout: "\u5E03\u5C40\u4E0E\u6EDA\u52A8",
     secExplorer: "\u5DE5\u4F5C\u533A\u6D4F\u89C8",
@@ -55947,7 +56158,7 @@ var DICT2 = {
     exModelPickerTitle: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09",
     exWorkspacePickerTitle: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09",
     exSplitGroupTitle: "SplitGroup\uFF08\u7EC4\u5408\u9009\u62E9\u6846\uFF09",
-    exSectionHeadHint: "\u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0Cicon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 3 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408",
+    exSectionHeadHint: "\u5206\u533A\u6807\u9898\uFF1A\u6807\u7B7E\uFF08\u53EF\u9009\uFF0C\u753B\u51FA\u6765\u7684\u77ED\u7AD6\u7EBF\uFF09+ icon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0C\u6807\u7B7E/icon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 4 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408 / \u56FA\u5B9A\u6807\u7B7E\u989C\u8272\u901F\u89C8\uFF08accent\uFF09",
     exMarqueeHint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7",
     exLiveHint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3",
     exSmallModalTitle: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09",
@@ -56052,6 +56263,8 @@ var DICT2 = {
     tableEmptyHint: "Built-in empty state (copy comes from the core dictionary; override with emptyText)",
     tableSpanHint: "Look 2 (no side edges): borders:y keeps top and bottom, drops the left/right frame, while vertical rules still follow each column (divider:true here). Compact density; Downtown spans two rows via rowSpan (next row omits that key), and North clinic spans two columns via colSpan; click-to-select and hover are on here too (North clinic is preselected)",
     tableGroupHint: "Look 3 (the default, no vertical edges at all): omit borders and it falls back to y; omit divider on a column and no vertical rule is drawn. Several workspaces in one table (groups and rows are mutually exclusive): each group opens with a banner row spanning every column (Workspace A / B), followed by that group\u2019s own header and task rows; groups are separated by a solid rule, cells inside each group are configured as usual, and rows are clickable/selectable too (the Doing row in Workspace A is preselected)",
+    paginationHint: 'Standalone pager: give it page / pageSize / total only \u2014 the control computes the page count and the ellipsis window itself, so you never write render code. Placement switches left / center / right (right by default); the lower row is simple mode (arrows plus "2 / 36"). The total copy and rows-per-page selector are optional switches \u2014 omit them and they disappear',
+    tablePagerHint: "Table with built-in paging: omit pagination.total and it pages locally \u2014 rows is the full list, Table slices by the current page and renders the pager under the table, right-aligned. For server-side paging, pass total (and only the current page\u2019s rows) so Table stops slicing and only renders the pager",
     secFeedback: "Feedback",
     secLayout: "Layout & scrolling",
     secExplorer: "Workspace browsing",
@@ -56194,7 +56407,7 @@ var DICT2 = {
     exModelPickerTitle: "ModelPicker (real catalog)",
     exWorkspacePickerTitle: "WorkspacePicker (real list)",
     exSplitGroupTitle: "SplitGroup (combined selectors)",
-    exSectionHeadHint: "Section header: icon + title + right-side actions in three slots \u2014 a pure layout shell; icon, title and right side are all caller-defined. Three groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos",
+    exSectionHeadHint: "Section header: optional drawn bar + icon + title + right-side actions \u2014 a pure layout shell; bar, icon, title and right side are all caller-defined. Four groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos / fixed-bar colour swatches (accent)",
     exMarqueeHint: "Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis",
     exLiveHint: "Subscribes to an internal ticker; the running clock UI is rendered by the caller",
     exSmallModalTitle: "Small dialogs (custom)",
@@ -56291,24 +56504,24 @@ function t3(key, vars) {
 // packages/demo/src/dock.ts
 var demoDock = createPanelDock({ maxPanels: 3 });
 function Body(props) {
-  return (0, import_react57.createElement)(
+  return (0, import_react59.createElement)(
     "div",
     { style: { padding: "12px 14px", fontSize: "13px", lineHeight: "1.9" } },
-    (0, import_react57.createElement)("div", { style: { fontWeight: 600 } }, props.id),
-    (0, import_react57.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t3("dockPanelBody"))
+    (0, import_react59.createElement)("div", { style: { fontWeight: 600 } }, props.id),
+    (0, import_react59.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t3("dockPanelBody"))
   );
 }
 function CustomHead() {
-  return (0, import_react57.createElement)(
+  return (0, import_react59.createElement)(
     "div",
     { style: { padding: "10px 12px", borderBottom: "1px solid var(--dshpc-border-faint)" } },
-    (0, import_react57.createElement)(
+    (0, import_react59.createElement)(
       "div",
       { style: { display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600 } },
-      (0, import_react57.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react59.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
       t3("dockCustomHeadTitle")
     ),
-    (0, import_react57.createElement)(
+    (0, import_react59.createElement)(
       "div",
       { style: { marginTop: "6px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
       t3("dockCustomHeadHint")
@@ -56319,20 +56532,20 @@ var PANELS = [
   {
     id: "A",
     title: t3("dockPanelA"),
-    icon: (0, import_react57.createElement)(
+    icon: (0, import_react59.createElement)(
       "span",
       { style: { display: "inline-flex", gap: "4px" } },
-      (0, import_react57.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
-      (0, import_react57.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
+      (0, import_react59.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react59.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
     ),
     // 标题右侧：任意内容，不只按钮。
-    extra: (0, import_react57.createElement)(Chip, { tone: "business", size: "sm" }, t3("dockPanelATag")),
+    extra: (0, import_react59.createElement)(Chip, { tone: "business", size: "sm" }, t3("dockPanelATag")),
     minWidth: 300,
     maxWidth: 620
   },
   {
     id: "B",
-    header: (0, import_react57.createElement)(CustomHead, null),
+    header: (0, import_react59.createElement)(CustomHead, null),
     minWidth: 320
   },
   {
@@ -56345,7 +56558,7 @@ var PANELS = [
 ];
 function demoPanels() {
   return PANELS.map(
-    (pane) => (0, import_react57.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react57.createElement)(Body, { id: pane.id }))
+    (pane) => (0, import_react59.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react59.createElement)(Body, { id: pane.id }))
   );
 }
 
@@ -56353,13 +56566,13 @@ function demoPanels() {
 var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
-var import_react74 = require("react");
+var import_react76 = require("react");
 
 // packages/demo/src/sections/start.tsx
-var import_react59 = require("react");
+var import_react61 = require("react");
 
 // packages/demo/src/doc.tsx
-var import_react58 = require("react");
+var import_react60 = require("react");
 
 // packages/demo/src/doc-data.generated.ts
 var docData = {
@@ -58448,16 +58661,16 @@ var docData = {
         "en": "Data-driven, never self-fetching: columns may nest children for a multi-row grouped header (colSpan / rowSpan are computed); rows are { key, cells } looked up by leaf-column key. A cell is either any ReactNode (multi-line layouts such as avatar + name + ID, status pills, row-end buttons are all the caller\u2019s) or a { content, colSpan, rowSpan, align } object for column/row spanning. When spanning rows, the next row must omit that column\u2019s key (a missing key renders nothing and yields the slot to the previous row; pass null explicitly for an empty cell). Rows are clickable only with onRowClick."
       },
       {
-        "zh": "\u901A\u680F\u5206\u7EC4\uFF1A\u4F20 groups\uFF08\u4E0E rows \u4E8C\u9009\u4E00\uFF09\u5C31\u80FD\u5728\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u4E0B\u591A\u4E2A\u677F\u5757 \u2014\u2014 \u6BCF\u7EC4\u6E32\u67D3\u6210\u300C\u4E00\u884C\u6A2A\u8DE8\u6240\u6709\u5217\u7684\u901A\u680F\u6807\u9898 \u2192 \u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934 \u2192 \u8FD9\u4E00\u7EC4\u7684\u4EFB\u52A1\u884C\u300D\uFF0C\u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u4E00\u6761\u5B9E\u7EBF\u9694\u5F00\u3002\u5178\u578B\u573A\u666F\u662F\u591A\u4E2A\u5DE5\u4F5C\u533A\u7684\u4EFB\u52A1\uFF1A\u4ECD\u662F\u4E00\u5F20\u8868\uFF0C\u4E0D\u4F1A\u62C6\u6210\u4E24\u5F20\u3001\u4E5F\u4E0D\u4F1A\u51FA\u73B0\u4E24\u4E2A\u4E92\u4E0D\u76F8\u5E72\u7684\u8868\u5934\u6324\u5728\u4E00\u8D77\uFF1B\u5206\u7EC4\u6A21\u5F0F\u4E0B\u6CA1\u6709 <thead>\uFF0C\u8868\u5934\u8DDF\u7740\u6BCF\u7EC4\u8D70\u3002\u7EC4\u5185\u4EFB\u52A1\u884C\u4E0E\u666E\u901A\u8868\u4E00\u6837\uFF0C\u7ED9 `selectedKeys` / `onRowClick` \u5C31\u6709\u9009\u4E2D\u4E0E\u60AC\u6D6E\uFF08\u4E0D\u7ED9\u5C31\u662F\u9759\u6001\u8868\uFF09\u3002",
-        "en": "Banner groups: pass groups (instead of rows) to hold several sections in one table \u2014 each group renders as a full-width banner row spanning every column \u2192 that group\u2019s own header \u2192 that group\u2019s rows, with a solid rule between groups. The canonical case is tasks across several workspaces: it stays one table rather than two tables with unrelated headers. Group mode has no thead; the header travels with each group. Rows inside a group behave like ordinary rows: pass `selectedKeys` / `onRowClick` for selection and hover (omit them for a static table)."
+        "zh": "\u901A\u680F\u5206\u7EC4\uFF1A\u4F20 groups\uFF08\u4E0E rows \u4E8C\u9009\u4E00\uFF09\u5C31\u80FD\u5728\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u4E0B\u591A\u4E2A\u677F\u5757 \u2014\u2014 \u6BCF\u7EC4\u6E32\u67D3\u6210\u300C\u4E00\u884C\u6A2A\u8DE8\u6240\u6709\u5217\u7684\u901A\u680F\u6807\u9898 \u2192 \u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934 \u2192 \u8FD9\u4E00\u7EC4\u7684\u4EFB\u52A1\u884C\u300D\uFF0C\u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u4E00\u6761\u5B9E\u7EBF\u9694\u5F00\u3002\u5178\u578B\u573A\u666F\u662F\u591A\u4E2A\u5DE5\u4F5C\u533A\u7684\u4EFB\u52A1\uFF1A\u4ECD\u662F\u4E00\u5F20\u8868\uFF0C\u4E0D\u4F1A\u62C6\u6210\u4E24\u5F20\u3001\u4E5F\u4E0D\u4F1A\u51FA\u73B0\u4E24\u4E2A\u4E92\u4E0D\u76F8\u5E72\u7684\u8868\u5934\u6324\u5728\u4E00\u8D77\uFF1B\u5206\u7EC4\u6A21\u5F0F\u4E0B\u6CA1\u6709 <thead>\uFF0C\u8868\u5934\u8DDF\u7740\u6BCF\u7EC4\u8D70\u3002\u7EC4\u5185\u4EFB\u52A1\u884C\u4E0E\u666E\u901A\u8868\u4E00\u6837\uFF0C\u7ED9 `selectedKeys` / `onRowClick` \u5C31\u6709\u9009\u4E2D\u4E0E\u60AC\u6D6E\uFF08\u4E0D\u7ED9\u5C31\u662F\u9759\u6001\u8868\uFF09\u3002\u901A\u680F\u6807\u9898\u7531 `SectionHead` \u88C5\u8FDB\u901A\u680F\u5E76\u5E26\u4E0A\u5B83\u7684\u56FA\u5B9A\u6807\u7B7E\uFF084px \u5706\u5934\u77ED\u7AD6\u7EBF\uFF09\uFF1A\u989C\u8272\u7528 `groupAccent` \u6362\uFF08\u5185\u7F6E\u8BED\u4E49\u8272\u540D\u6620\u5C04 token\u3001\u4E5F\u53EF\u76F4\u63A5\u7ED9 CSS \u8272\u503C\uFF09\uFF0C\u4F20 `false` \u6574\u6761\u4E0D\u753B\u3002",
+        "en": "Banner groups: pass groups (instead of rows) to hold several sections in one table \u2014 each group renders as a full-width banner row spanning every column \u2192 that group\u2019s own header \u2192 that group\u2019s rows, with a solid rule between groups. The canonical case is tasks across several workspaces: it stays one table rather than two tables with unrelated headers. Group mode has no thead; the header travels with each group. Rows inside a group behave like ordinary rows: pass `selectedKeys` / `onRowClick` for selection and hover (omit them for a static table). The banner title is rendered through `SectionHead`, carrying its fixed 4px rounded bar: recolour it with `groupAccent` (a built-in semantic name mapped to tokens, or a raw CSS colour), or pass `false` to drop it entirely."
       },
       {
         "zh": "\u5916\u89C2\u5206\u6863 = \u5206\u7EC4\u4EF6 + \u5206\u6587\u4EF6\uFF0C\u6CA1\u6709 variant\uFF1ATable \u53EA import \u81EA\u5DF1\u90A3\u4EFD\u76AE\u80A4 CSS\uFF1B\u540E\u7EED TableGrid\uFF08\u7F51\u683C\u7EBF\uFF09/ TableZebra\uFF08\u6591\u9A6C\u7EB9\uFF09\u662F\u540C\u65CF\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u5404\u81EA import \u5404\u81EA\u76AE\u80A4\u3002\u6D88\u8D39\u65B9\u5F15\u54EA\u4E2A\u5C31\u53EA\u6253\u5305\u54EA\u4E2A \u2014\u2014 \u5F15\u4E00\u4E2A\u8868\u683C\u4E0D\u4F1A\u628A\u53E6\u4E00\u6863\u7684 CSS \u4E5F\u5E26\u8FDB\u5305\u91CC\u3002",
         "en": "Skins are separate components and separate files \u2014 no variant: Table imports only its own skin CSS; future TableGrid (grid lines) / TableZebra (zebra stripes) are sibling components importing their own skins. Importing one packs only that one \u2014 choosing a table never drags the other skin into the bundle."
       },
       {
-        "zh": "\u8FB9\u754C\uFF1A\u4E0D\u8D1F\u8D23\u53D6\u6570 / \u6392\u5E8F / \u5206\u9875 / \u865A\u62DF\u6EDA\u52A8\uFF1B\u6A2A\u5411\u6EDA\u52A8\u5BB9\u5668\u4E0E\u5706\u89D2\u88C1\u526A\u5F52\u8C03\u7528\u65B9\uFF1B\u8868\u5934\u4E0D\u505A\u5438\u9876\uFF08\u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF09\u3002\u6CA1\u6709\u6570\u636E\u65F6\u663E\u793A\u5185\u7F6E\u7A7A\u6001\uFF08emptyText \u53EF\u8986\u76D6\uFF09\u3002",
-        "en": "Boundaries: no fetching / sorting / paging / virtual scrolling; the horizontal scroll container and rounded clipping are the caller\u2019s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). With no rows, a built-in empty state shows (override with emptyText)."
+        "zh": "\u8FB9\u754C\uFF1A\u4E0D\u8D1F\u8D23\u53D6\u6570 / \u6392\u5E8F / \u865A\u62DF\u6EDA\u52A8\uFF1B\u6A2A\u5411\u6EDA\u52A8\u5BB9\u5668\u4E0E\u5706\u89D2\u88C1\u526A\u5F52\u8C03\u7528\u65B9\uFF1B\u8868\u5934\u4E0D\u505A\u5438\u9876\uFF08\u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF09\u3002\u5206\u9875\u53EF\u9009\uFF1A\u7ED9 `pagination` \u5C31\u8BA9\u8868\u683C\u81EA\u5DF1\u5207\u7247\u5E76\u5728\u8868\u4E0B\u6446\u9875\u7801\uFF08\u8BE6\u89C1 Pagination \u4E00\u8282\uFF09\uFF0C\u4E0D\u7ED9\u5C31\u5B8C\u5168\u4E0D\u5206\u9875\u3002\u6CA1\u6709\u6570\u636E\u65F6\u663E\u793A\u5185\u7F6E\u7A7A\u6001\uFF08emptyText \u53EF\u8986\u76D6\uFF09\u3002",
+        "en": "Boundaries: no fetching / sorting / virtual scrolling; the horizontal scroll container and rounded clipping are the caller\u2019s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). Paging is optional: pass `pagination` and the table slices rows itself and renders the pager underneath (see the Pagination section); omit it and nothing pages. With no rows, a built-in empty state shows (override with emptyText)."
       }
     ],
     "api": [
@@ -58490,6 +58703,15 @@ var docData = {
             "desc": {
               "zh": "\u5206\u7EC4\u6570\u636E { key, title, rows }\uFF08\u4E0E rows \u4E8C\u9009\u4E00\uFF0C\u4F20\u4E86\u5C31\u5FFD\u7565 rows\uFF09\uFF1A\u6BCF\u7EC4 = \u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u901A\u680F\u6807\u9898 + \u81EA\u5DF1\u7684\u8868\u5934 + \u81EA\u5DF1\u7684\u6570\u636E\u884C\uFF0C\u591A\u7EC4\u8FDE\u7EED\u6392\u5E03\u3001\u7EC4\u95F4\u4E00\u6761\u5B9E\u7EBF\uFF1B\u7528\u4E8E\u300C\u4E00\u4E2A\u8868\u683C\u5C55\u793A\u591A\u4E2A\u5DE5\u4F5C\u533A / \u677F\u5757\u300D",
               "en": "Group data { key, title, rows } (instead of rows; when given, rows is ignored): each group is a banner row spanning every column + its own header + its own rows, with groups stacked and separated by a solid rule \u2014 for showing several workspaces / sections in one table"
+            }
+          },
+          {
+            "name": "groupAccent",
+            "type": "SectionHeadAccent | false",
+            "def": "'default'",
+            "desc": {
+              "zh": "\u901A\u680F\u6807\u9898\u524D\u56FA\u5B9A\u6807\u7B7E\uFF084px \u5706\u5934\u77ED\u7AD6\u7EBF\uFF0C\u7531 SectionHead \u7ED8\u5236\uFF09\u7684\u989C\u8272\uFF08\u53EA\u5BF9 groups \u751F\u6548\uFF09\uFF1A\u5185\u7F6E\u8BED\u4E49\u8272\u540D\u6620\u5C04 token\uFF0C\u4E5F\u53EF\u76F4\u63A5\u7ED9 CSS \u8272\u503C\uFF1B\u4E0D\u4F20 / default = \u4E3B\u9898\u9ED8\u8BA4\uFF08\u6D45\u8272\u6DF1\u7070\u3001\u6DF1\u8272\u6D45\u7070\uFF09\uFF0Cfalse = \u6574\u6761\u4E0D\u753B",
+              "en": "Colour of the fixed bar before each banner title (4px rounded, drawn by SectionHead; groups only): a built-in semantic name maps to tokens, or pass any CSS colour; omitted / default = theme default (dark grey in light, light grey in dark), false = no bar"
             }
           },
           {
@@ -58547,6 +58769,15 @@ var docData = {
             }
           },
           {
+            "name": "pagination",
+            "type": "TablePaginationConfig",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5185\u5EFA\u5206\u9875\uFF08\u4E0E Pagination \u540C\u53C2\u6570\uFF0Ctotal \u53EF\u7701\uFF09\uFF1A\u4E0D\u4F20 total = \u672C\u5730\u5207\u7247\uFF0C\u7ED9\u4E86 total = \u670D\u52A1\u7AEF\u5206\u9875\uFF08\u4E0D\u5207\u7247\uFF09\uFF1Bgroups \u6A21\u5F0F\u5FFD\u7565\u672C\u9879",
+              "en": "Built-in paging (same params as Pagination, total optional): omit total to slice locally; pass total for server-side paging (no slicing); ignored in groups mode"
+            }
+          },
+          {
             "name": "ariaLabel",
             "type": "string",
             "def": "\u2014",
@@ -58580,7 +58811,151 @@ var docData = {
       {
         "id": "ui-table-example",
         "lang": "tsx",
-        "src": "import { Table, Chip } from 'dsh-plugin-core/ui'\n\nconst columns = [\n  { key: 'id', title: 'Patient ID', width: 140 },\n  {\n    key: 'patient', title: 'Patient', headerTone: 'business',\n    children: [\n      // divider:true \u21D2 \u8FD9\u4E00\u5217\u5DE6\u7F18\u753B\u7AD6\u7EBF\uFF08\u9ED8\u8BA4\u4E0D\u753B \u2014\u2014 \u8868\u683C\u9ED8\u8BA4\u53EA\u6709\u6A2A\u7EBF\uFF09\n      // \u5206\u7EC4\u5217\u81EA\u5DF1\u4E0D\u5199\u65F6\u8DDF\u968F\u7B2C\u4E00\u4E2A\u5B50\u5217 \u21D2 \u7EC4\u5934\u4E0E\u5B50\u5217\u7684\u7AD6\u7EBF\u8FDE\u6210\u4E00\u6761\n      { key: 'name', title: 'Name', width: 200, padding: 12, divider: true },\n      { key: 'age', title: 'Age / Sex', width: 100, align: 'center', divider: true },\n    ],\n  },\n  { key: 'status', title: 'Status', width: 130, headerTone: 'success', divider: true },\n]\n\nconst rows = [{\n  key: 'S-2418',\n  cells: {\n    id: 'S-2418',\n    // \u5355\u5143\u683C\u53EF\u4EE5\u88C5\u4EFB\u610F ReactNode\uFF1A\u5934\u50CF + \u540D\u5B57 + \u7F16\u53F7\u7684\u591A\u884C\u6392\u7248\u7531\u8C03\u7528\u65B9\u51B3\u5B9A\n    name: h('div', null, h('strong', null, 'Chen, Wei'), h('div', null, 'MRN-88214')),\n    age: '62 / M',\n    status: h(Chip, { tone: 'success', size: 'xs' }, 'Reviewed'),\n  },\n}, {\n  // \u8DE8\u5217\uFF1A\u5BF9\u8C61\u5199\u6CD5\u5360 id + name \u4E24\u683C\n  key: 'S-2420',\n  cells: { id: { content: 'S-2420 \xB7 escalated', colSpan: 2 }, age: null, status: 'Pending' },\n}]\n\nh(Table, {\n  columns, rows,\n  density: 'compact',   // compact / default / comfortable\n  striped: true,        // \u5076\u6570\u884C\u6DE1\u5E95\n  borders: 'all',       // y \u53EA\u4E0A\u4E0B\uFF08\u9ED8\u8BA4\uFF0C\u65E0\u5DE6\u53F3\u8FB9\uFF09/ all \u56DB\u8FB9 / x \u53EA\u5DE6\u53F3 / none\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n})\n\n// \u901A\u680F\u5206\u7EC4\uFF1A\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u5DE5\u4F5C\u533A\uFF08groups \u4E0E rows \u4E8C\u9009\u4E00\uFF09\n// \u6BCF\u7EC4 = \u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u901A\u680F\u6807\u9898 \u2192 \u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934 \u2192 \u8FD9\u4E00\u7EC4\u7684\u4EFB\u52A1\u884C\uFF0C\u7EC4\u95F4\u4E00\u6761\u5B9E\u7EBF\nh(Table, {\n  columns: [\n    { key: 'task', title: 'Task', width: 260 },\n    { key: 'state', title: 'Status', width: 120, align: 'center' },\n  ],\n  groups: [\n    { key: 'ws-a', title: '\u5DE5\u4F5C\u533A A', rows: [\n      { key: 'a1', cells: { task: '\u4FEE\u8868\u683C\u6591\u9A6C\u7EB9', state: '\u8FDB\u884C\u4E2D' } },\n    ] },\n    { key: 'ws-b', title: '\u5DE5\u4F5C\u533A B', rows: [\n      { key: 'b1', cells: { task: '\u8865\u901A\u680F\u6587\u6863', state: '\u5DF2\u5B8C\u6210' } },\n    ] },\n  ],\n  // \u7EC4\u5185\u4EFB\u52A1\u884C\u4E0E\u666E\u901A\u8868\u4E00\u6837\uFF1A\u7ED9 selectedKeys / onRowClick \u5C31\u6709\u9009\u4E2D\u4E0E\u60AC\u6D6E\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n  ariaLabel: 'Tasks by workspace',\n})\n\n// \u7B2C\u4E8C\u6863\u5916\u89C2\u662F\u53E6\u4E00\u4E2A\u7EC4\u4EF6\u3001\u53E6\u4E00\u4EFD CSS\uFF08\u9884\u7559\uFF09\uFF1A\u5F15 TableGrid / TableZebra \u65F6\n// \u53EA\u6253\u5305\u5B83\u81EA\u5DF1\u90A3\u4EFD\u76AE\u80A4\uFF0C\u4E0D\u4F1A\u628A Table \u7684\u76AE\u80A4\u4E00\u8D77\u5E26\u4E0A\u3002"
+        "src": "import { Table, Chip } from 'dsh-plugin-core/ui'\n\nconst columns = [\n  { key: 'id', title: 'Patient ID', width: 140 },\n  {\n    key: 'patient', title: 'Patient', headerTone: 'business',\n    children: [\n      // divider:true \u21D2 \u8FD9\u4E00\u5217\u5DE6\u7F18\u753B\u7AD6\u7EBF\uFF08\u9ED8\u8BA4\u4E0D\u753B \u2014\u2014 \u8868\u683C\u9ED8\u8BA4\u53EA\u6709\u6A2A\u7EBF\uFF09\n      // \u5206\u7EC4\u5217\u81EA\u5DF1\u4E0D\u5199\u65F6\u8DDF\u968F\u7B2C\u4E00\u4E2A\u5B50\u5217 \u21D2 \u7EC4\u5934\u4E0E\u5B50\u5217\u7684\u7AD6\u7EBF\u8FDE\u6210\u4E00\u6761\n      { key: 'name', title: 'Name', width: 200, padding: 12, divider: true },\n      { key: 'age', title: 'Age / Sex', width: 100, align: 'center', divider: true },\n    ],\n  },\n  { key: 'status', title: 'Status', width: 130, headerTone: 'success', divider: true },\n]\n\nconst rows = [{\n  key: 'S-2418',\n  cells: {\n    id: 'S-2418',\n    // \u5355\u5143\u683C\u53EF\u4EE5\u88C5\u4EFB\u610F ReactNode\uFF1A\u5934\u50CF + \u540D\u5B57 + \u7F16\u53F7\u7684\u591A\u884C\u6392\u7248\u7531\u8C03\u7528\u65B9\u51B3\u5B9A\n    name: h('div', null, h('strong', null, 'Chen, Wei'), h('div', null, 'MRN-88214')),\n    age: '62 / M',\n    status: h(Chip, { tone: 'success', size: 'xs' }, 'Reviewed'),\n  },\n}, {\n  // \u8DE8\u5217\uFF1A\u5BF9\u8C61\u5199\u6CD5\u5360 id + name \u4E24\u683C\n  key: 'S-2420',\n  cells: { id: { content: 'S-2420 \xB7 escalated', colSpan: 2 }, age: null, status: 'Pending' },\n}]\n\nh(Table, {\n  columns, rows,\n  density: 'compact',   // compact / default / comfortable\n  striped: true,        // \u5076\u6570\u884C\u6DE1\u5E95\n  borders: 'all',       // y \u53EA\u4E0A\u4E0B\uFF08\u9ED8\u8BA4\uFF0C\u65E0\u5DE6\u53F3\u8FB9\uFF09/ all \u56DB\u8FB9 / x \u53EA\u5DE6\u53F3 / none\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n})\n\n// \u901A\u680F\u5206\u7EC4\uFF1A\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u5DE5\u4F5C\u533A\uFF08groups \u4E0E rows \u4E8C\u9009\u4E00\uFF09\n// \u6BCF\u7EC4 = \u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u901A\u680F\u6807\u9898 \u2192 \u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934 \u2192 \u8FD9\u4E00\u7EC4\u7684\u4EFB\u52A1\u884C\uFF0C\u7EC4\u95F4\u4E00\u6761\u5B9E\u7EBF\nh(Table, {\n  columns: [\n    { key: 'task', title: 'Task', width: 260 },\n    { key: 'state', title: 'Status', width: 120, align: 'center' },\n  ],\n  groups: [\n    { key: 'ws-a', title: '\u5DE5\u4F5C\u533A A', rows: [\n      { key: 'a1', cells: { task: '\u4FEE\u8868\u683C\u6591\u9A6C\u7EB9', state: '\u8FDB\u884C\u4E2D' } },\n    ] },\n    { key: 'ws-b', title: '\u5DE5\u4F5C\u533A B', rows: [\n      { key: 'b1', cells: { task: '\u8865\u901A\u680F\u6587\u6863', state: '\u5DF2\u5B8C\u6210' } },\n    ] },\n  ],\n  // \u901A\u680F\u6807\u9898\u524D\u7684\u56FA\u5B9A\u6807\u7B7E\uFF08\u77ED\u7AD6\u7EBF\uFF09\uFF1A\u7531 SectionHead \u7ED8\u5236\uFF0C4px \u5706\u5934\u3001\u9AD8 \u2248 \u5B57\u53F7\uFF1B\n  // \u9ED8\u8BA4\u968F\u4E3B\u9898\uFF08\u6D45\u8272\u6DF1\u7070 / \u6DF1\u8272\u6D45\u7070\uFF09\uFF1BgroupAccent \u6362\u8272\uFF08\u5185\u7F6E\u8272\u540D\u6216\u4EFB\u610F\u8272\u503C\uFF0C\u5982 '#7c3aed'\uFF09\uFF0C\n  // false \u6574\u6761\u5173\u6389\u3002Table \u53EA\u8D1F\u8D23\u628A\u6807\u9898\u88C5\u8FDB\u901A\u680F\uFF0C\u6837\u5F0F\u8D70 SectionHead \u90A3\u4E00\u4EFD\u3002\n  groupAccent: 'business',\n  // \u7EC4\u5185\u4EFB\u52A1\u884C\u4E0E\u666E\u901A\u8868\u4E00\u6837\uFF1A\u7ED9 selectedKeys / onRowClick \u5C31\u6709\u9009\u4E2D\u4E0E\u60AC\u6D6E\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n  ariaLabel: 'Tasks by workspace',\n})\n\n// \u7B2C\u4E8C\u6863\u5916\u89C2\u662F\u53E6\u4E00\u4E2A\u7EC4\u4EF6\u3001\u53E6\u4E00\u4EFD CSS\uFF08\u9884\u7559\uFF09\uFF1A\u5F15 TableGrid / TableZebra \u65F6\n// \u53EA\u6253\u5305\u5B83\u81EA\u5DF1\u90A3\u4EFD\u76AE\u80A4\uFF0C\u4E0D\u4F1A\u628A Table \u7684\u76AE\u80A4\u4E00\u8D77\u5E26\u4E0A\u3002"
+      }
+    ]
+  },
+  "pagination": {
+    "id": "pagination",
+    "heading": {
+      "zh": "Pagination\uFF08\u5206\u9875\uFF09",
+      "en": "Pagination"
+    },
+    "prose": [
+      {
+        "zh": "\u901A\u884C\u53E3\u5F84\uFF08Ant Design / MUI / Element Plus \u4E00\u81F4\uFF09\uFF1A\u8C03\u7528\u65B9\u53EA\u7ED9 `page`\uFF08\u5F53\u524D\u9875\uFF0C1 \u8D77\uFF09\u3001`pageSize`\uFF08\u6BCF\u9875\u6761\u6570\uFF0C\u9ED8\u8BA4 10\uFF09\u3001`total`\uFF08\u603B\u6761\u6570\uFF0C\u4E0D\u662F\u603B\u9875\u6570\uFF09\uFF0C\u603B\u9875\u6570 `ceil(total / pageSize)` \u4E0E\u9875\u7801\u5E8F\u5217\u90FD\u7531\u63A7\u4EF6\u7B97 \u2014\u2014 \u6D88\u8D39\u65B9\u4E0D\u81EA\u5DF1\u7B97\u9875\u6570\u3001\u4E0D\u81EA\u5DF1\u5199\u6E32\u67D3\u5FAA\u73AF\u3002\u53D7\u63A7\u7EC4\u4EF6\uFF1A\u9875\u7801\u7531\u8C03\u7528\u65B9 state \u6301\u6709\uFF0C\u63A7\u4EF6\u53EA\u53D1 `onChange(page, pageSize)`\uFF1B\u8D8A\u754C\u7684 page \u4F1A\u88AB\u5939\u56DE\u6709\u6548\u8303\u56F4\uFF0C\u4E0D\u4F1A\u6E32\u67D3\u51FA\u7A7A\u9875\u3002",
+        "en": "Shared convention (Ant Design / MUI / Element Plus agree): you pass `page` (1-based current page), `pageSize` (default 10) and `total` (row count, not page count), and the control derives `ceil(total / pageSize)` plus the whole page sequence \u2014 you never compute pages or write a render loop. Fully controlled: your state owns the page; the control emits `onChange(page, pageSize)` and clamps out-of-range pages so an empty page is never rendered."
+      },
+      {
+        "zh": "\u7701\u7565\u53F7\u7A97\u53E3\uFF1A\u9996\u5C3E\u5404\u56FA\u5B9A `boundaryCount` \u9875\u3001\u5F53\u524D\u9875\u4E24\u4FA7\u5404\u7559 `siblingCount` \u9875\uFF08\u9ED8\u8BA4 1 / 1\uFF0C\u6700\u591A 7 \u4E2A\u4F4D\u7F6E\uFF0C\u4E0E Element Plus \u7684 pager-count:7 \u7B49\u4EF7\uFF09\u3002\u95F4\u9694\u6B63\u597D 1 \u9875\u65F6\u76F4\u63A5\u663E\u793A\u90A3\u4E2A\u9875\u53F7\u3001\u4E0D\u753B\u7701\u7565\u53F7\uFF08\u5404\u5BB6\u5171\u540C\u7684\u7EC6\u8282\uFF0C\u5426\u5219\u4F1A\u51FA\u73B0\u300C1 2 \u2026 4\u300D\uFF09\u3002\u4E0A\u4E00\u9875 / \u4E0B\u4E00\u9875\u6052\u5728\uFF0C\u5230\u8FB9\u754C\u7F6E\u7070\u800C\u975E\u9690\u85CF\u3002",
+        "en": "Ellipsis window: `boundaryCount` pages pinned at each end and `siblingCount` pages around the current one (default 1 / 1 \u2014 at most 7 slots, equivalent to Element Plus pager-count:7). When the gap is exactly one page the number itself is shown instead of an ellipsis (a detail every library shares, otherwise you get \u201C1 2 \u2026 4\u201D). Prev / Next are always present and grey out at the ends rather than disappearing."
+      },
+      {
+        "zh": "\u56DB\u4E2A\u53EF\u9009\u80FD\u529B\u90FD\u662F\u5F00\u5173\uFF08\u4E0D\u4F20\u5C31\u4E0D\u51FA\u73B0\uFF09\uFF1A`pageSizeOptions` \u51FA\u300C\u6BCF\u9875\u6761\u6570\u300D\u4E0B\u62C9\uFF08\u5207\u6362\u65F6\u9875\u7801\u56DE\u5230\u7B2C 1 \u9875\uFF0C\u4E0E antd / MUI \u540C\u53E3\u5F84\uFF09\u3001`showTotal` \u51FA\u603B\u6570\u6587\u6848\uFF08`true` \u8D70\u5185\u7F6E\u5B57\u5178\uFF0C\u4E5F\u53EF\u7ED9\u51FD\u6570\u81EA\u5B9A\u4E49\uFF09\u3001`hideOnSinglePage` \u5355\u9875\u65F6\u6574\u6761\u4E0D\u6E32\u67D3\u3001`simple` \u53EA\u7559\u300C\u2039 2 / 36 \u203A\u300D\u3002\u4F4D\u7F6E\u7531 `align` \u51B3\u5B9A\uFF1Aleft / center / right\uFF0C**\u9ED8\u8BA4 right**\u3002",
+        "en": "Four optional bits are switches (omit them and they vanish): `pageSizeOptions` adds a rows-per-page select (changing it resets to page 1, same as antd / MUI), `showTotal` adds the total copy (`true` uses the built-in dictionary, or pass a renderer), `hideOnSinglePage` drops the whole bar when there is a single page, and `simple` keeps only \u201C\u2039 2 / 36 \u203A\u201D. Placement comes from `align`: left / center / right, **right by default**."
+      },
+      {
+        "zh": '\u65E0\u969C\u788D\uFF1A\u6839\u8282\u70B9\u662F `nav`\uFF08`aria-label` \u9ED8\u8BA4\u8D70\u5185\u7F6E\u5B57\u5178\u300C\u5206\u9875\u300D\uFF0C\u53EF\u8986\u76D6\uFF09\uFF0C\u5F53\u524D\u9875\u5E26 `aria-current="page"`\uFF0C\u6BCF\u4E2A\u9875\u7801\u6309\u94AE\u6709\u300C\u7B2C n \u9875\u300D\u7684\u53EF\u8BFB\u540D\uFF0C\u4E0A\u4E00\u9875 / \u4E0B\u4E00\u9875\u7684\u6587\u6848\u4E0E\u7981\u7528\u6001\u90FD\u7531\u63A7\u4EF6\u8D1F\u8D23 \u2014\u2014 \u8C03\u7528\u65B9\u4E0D\u7528\u8865 aria\u3002',
+        "en": 'Accessibility: the root is a `nav` (its `aria-label` defaults to the built-in \u201CPagination\u201D, overridable), the current page carries `aria-current="page"`, every page button has a readable \u201CPage n\u201D name, and prev/next labels plus disabled states are the control\u2019s job \u2014 callers add no aria.'
+      },
+      {
+        "zh": "\u4E0E Table \u4E24\u79CD\u63A5\u6CD5\uFF1A\u2460 \u72EC\u7ACB\u63A7\u4EF6\uFF0C\u81EA\u5DF1\u6446\u5728\u8868\u683C\u4E0B\u65B9 / \u5DE5\u5177\u680F\uFF08\u8868\u683C\u4E0D\u4F20 `pagination`\uFF09\uFF1B\u2461 \u5185\u5EFA \u2014\u2014 \u7ED9 `Table` \u4F20 `pagination`\uFF0C\u5B83\u5148\u6309\u5F53\u524D\u9875\u5207\u7247 `rows` \u518D\u6E32\u67D3\uFF0C\u5E76\u628A\u5206\u9875\u6761\u6392\u5728\u8868\u683C\u4E0B\u65B9\uFF08`total` \u7F3A\u7701 = `rows.length` \u672C\u5730\u5206\u9875\uFF1B\u7ED9\u4E86 `total` \u5219\u4E0D\u5207\u7247\uFF0C\u6309\u670D\u52A1\u7AEF\u5206\u9875\u53EA\u6446\u9875\u7801\uFF09\u3002`groups` \u901A\u680F\u6A21\u5F0F\u4E0E\u5206\u9875\u4E92\u65A5\uFF0C\u4F20\u4E86 groups \u5C31\u5FFD\u7565 pagination\u3002",
+        "en": "Two ways to wire it to Table: \u2460 standalone \u2014 place it yourself under the table or in a toolbar (Table gets no `pagination`); \u2461 built in \u2014 pass `pagination` to Table and it slices `rows` by the current page before rendering, with the pager placed underneath (omit `total` for local paging where total = rows.length; pass `total` for server-side paging where rows are not sliced and only the pager is rendered). The `groups` banner mode is mutually exclusive: when groups are given, pagination is ignored."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-pagination",
+        "rows": [
+          {
+            "name": "page / total",
+            "type": "number / number",
+            "def": "\u2014",
+            "required": "\u5FC5\u586B",
+            "desc": {
+              "zh": "\u5F53\u524D\u9875\uFF081 \u8D77\uFF0C\u8D8A\u754C\u81EA\u52A8\u5939\u56DE\uFF09/ \u603B\u6761\u6570\uFF08\u4E0D\u662F\u603B\u9875\u6570\uFF09",
+              "en": "Current page (1-based, clamped) / row count (not page count)"
+            }
+          },
+          {
+            "name": "pageSize",
+            "type": "number",
+            "def": "10",
+            "desc": {
+              "zh": "\u6BCF\u9875\u6761\u6570\uFF1B\u603B\u9875\u6570\u7531\u5B83\u7B97\u51FA\u6765",
+              "en": "Rows per page; the page count derives from it"
+            }
+          },
+          {
+            "name": "onChange",
+            "type": "(page, pageSize) => void",
+            "def": "\u2014",
+            "required": "\u5FC5\u586B",
+            "desc": {
+              "zh": "\u5207\u9875\u4E0E\u5207\u6BCF\u9875\u6761\u6570\u90FD\u8D70\u5B83\uFF1B\u5207\u6761\u6570\u65F6\u9875\u7801\u56DE\u5230 1",
+              "en": "Fires for page changes and rows-per-page changes; the latter resets to page 1"
+            }
+          },
+          {
+            "name": "align",
+            "type": "'left' | 'center' | 'right'",
+            "def": "'right'",
+            "desc": {
+              "zh": "\u5206\u9875\u6761\u4F4D\u7F6E\uFF08\u9ED8\u8BA4\u653E\u53F3\u8FB9\uFF09",
+              "en": "Pager placement (right by default)"
+            }
+          },
+          {
+            "name": "siblingCount / boundaryCount",
+            "type": "number / number",
+            "def": "1 / 1",
+            "desc": {
+              "zh": "\u5F53\u524D\u9875\u4E24\u4FA7\u9875\u6570 / \u9996\u5C3E\u56FA\u5B9A\u9875\u6570\uFF1B1/1 \u5408\u8BA1\u6700\u591A 7 \u4E2A\u4F4D\u7F6E",
+              "en": "Pages beside the current one / pages pinned at each end; 1/1 gives at most 7 slots"
+            }
+          },
+          {
+            "name": "pageSizeOptions",
+            "type": "number[]",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4F20\u4E86\u624D\u51FA\u73B0\u300C\u6BCF\u9875\u6761\u6570\u300D\u4E0B\u62C9",
+              "en": "Only then does the rows-per-page select appear"
+            }
+          },
+          {
+            "name": "showTotal",
+            "type": "boolean | (total, from, to) => ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u603B\u6570\u6587\u6848\uFF1A\u4E0D\u4F20 = \u4E0D\u663E\u793A\uFF08\u9ED8\u8BA4\u5173\uFF09\uFF0C\u4F20 true \u8D70\u5185\u7F6E\u5B57\u5178\uFF0C\u4F20\u51FD\u6570\u53EF\u81EA\u5B9A\u4E49",
+              "en": "Total copy: omitted = hidden (off by default), true uses the dictionary, a renderer customises it"
+            }
+          },
+          {
+            "name": "hideOnSinglePage",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u53EA\u6709\u4E00\u9875\u65F6\u6574\u6761\u4E0D\u6E32\u67D3",
+              "en": "Render nothing when there is a single page"
+            }
+          },
+          {
+            "name": "simple",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u7B80\u6D01\u6A21\u5F0F\uFF1A\u53EA\u7559\u300C\u2039 2 / 36 \u203A\u300D",
+              "en": "Simple mode: only \u201C\u2039 2 / 36 \u203A\u201D"
+            }
+          },
+          {
+            "name": "disabled / ariaLabel / translate",
+            "type": "boolean / string / Translate",
+            "def": "false / \u5185\u7F6E\u300C\u5206\u9875\u300D/ \u2014",
+            "desc": {
+              "zh": "\u6574\u6761\u7981\u7528 / \u65E0\u969C\u788D\u540D / \u8986\u76D6\u5185\u7F6E\u6587\u6848",
+              "en": "Disable the bar / accessible name / override built-in copy"
+            }
+          },
+          {
+            "name": "Table \xB7 pagination",
+            "type": "TablePaginationConfig",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u540C\u4E0A\u53C2\u6570\uFF0Ctotal \u53EF\u7701\uFF1A\u4E0D\u4F20 = \u672C\u5730\u5207\u7247\uFF0C\u7ED9\u4E86 = \u670D\u52A1\u7AEF\u5206\u9875\uFF08\u4E0D\u5207\u7247\uFF09",
+              "en": "Same params, total optional: omit to slice locally, pass it for server-side paging (no slicing)"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-pagination-example",
+        "lang": "tsx",
+        "src": "import { Pagination, Table } from 'dsh-plugin-core/ui'\n\n// \u72EC\u7ACB\u63A7\u4EF6\uFF1A\u53EA\u7ED9\u5F53\u524D\u9875 / \u6BCF\u9875\u6761\u6570 / \u603B\u6761\u6570 \u2014\u2014 \u603B\u9875\u6570\u4E0E\u7701\u7565\u7A97\u53E3\u7531\u63A7\u4EF6\u7B97\uFF0C\n// \u6D88\u8D39\u65B9\u6C38\u8FDC\u4E0D\u81EA\u5DF1\u7B97\u9875\u6570\u3001\u4E5F\u4E0D\u81EA\u5DF1\u6E32\u67D3\u9875\u7801\nh(Pagination, {\n  page, pageSize, total: 86,\n  onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },\n  align: 'right',                 // left / center / right\uFF08\u9ED8\u8BA4 right\uFF09\n  pageSizeOptions: [10, 20, 50],  // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u6BCF\u9875\u6761\u6570\u300D\u4E0B\u62C9\n  showTotal: true,                // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u7B2C 1-10 \u6761\uFF0C\u5171 86 \u6761\u300D\n  siblingCount: 1,                // \u5F53\u524D\u9875\u4E24\u4FA7\u7559\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF09\n  boundaryCount: 1,               // \u9996\u5C3E\u5404\u56FA\u5B9A\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF1B1/1 \u5408\u8BA1\u6700\u591A 7 \u4E2A\u4F4D\u7F6E\uFF09\n  hideOnSinglePage: true,         // \u53EA\u6709\u4E00\u9875\u65F6\u6574\u6761\u4E0D\u6E32\u67D3\n})\n\n// \u7B80\u6D01\u6A21\u5F0F\uFF1A\u53EA\u7559\u4E0A\u4E00\u9875 / \u4E0B\u4E00\u9875\u4E0E\u300C2 / 36\u300D\nh(Pagination, { page, pageSize, total: 86, simple: true, onChange })\n\n// Table \u5185\u5EFA\uFF1A\u4E0D\u4F20 total = \u672C\u5730\u5206\u9875\uFF08rows \u662F\u5168\u91CF\uFF0C\u8868\u683C\u81EA\u5DF1\u6309\u5F53\u524D\u9875\u5207\u7247\uFF0C\u9875\u7801\u6392\u5728\u8868\u4E0B\uFF09\nh(Table, {\n  columns, rows,\n  pagination: { page, pageSize, showTotal: true, onChange },\n})\n\n// \u670D\u52A1\u7AEF\u5206\u9875\uFF1A\u7ED9\u4E86 total \u5C31\u4E0D\u5207\u7247\uFF08rows \u53EA\u653E\u5F53\u524D\u9875\u90A3\u51E0\u6761\uFF09\uFF0C\u8868\u683C\u53EA\u8D1F\u8D23\u6446\u9875\u7801\nh(Table, {\n  columns, rows: currentPageRows,\n  pagination: { page, pageSize, total: 86, onChange },\n})"
       }
     ]
   },
@@ -58719,12 +59094,12 @@ var docData = {
             }
           },
           {
-            "name": "SectionHead({ icon, title, right? })",
+            "name": "SectionHead({ icon?, title, right?, accent?, flush? })",
             "type": "",
             "def": "",
             "desc": {
-              "zh": "\u5206\u533A\u6807\u9898",
-              "en": "Section heading"
+              "zh": "\u5206\u533A\u6807\u9898\uFF1A\u6807\u7B7E\uFF08\u53EF\u9009\uFF0C\u753B\u51FA\u6765\u7684\u77ED\u7AD6\u7EBF\uFF09/ icon + \u6807\u9898 + \u53F3\u4FA7\u63A7\u4EF6\u3002accent = \u6807\u7B7E\u989C\u8272\uFF08\u5185\u7F6E\u8272\u540D / \u4EFB\u610F\u8272\u503C / default / false \u4E0D\u753B\uFF09\uFF1Bflush = \u53BB\u5E95\u8FB9\u8DDD",
+              "en": "Section heading: optional drawn bar / icon + title + right controls. accent = bar colour (built-in name / raw value / default / false for none); flush = no bottom margin"
             }
           },
           {
@@ -59063,14 +59438,14 @@ function locale() {
   return getLocale() === "en" ? "en" : "zh";
 }
 function Note(props) {
-  return (0, import_react58.createElement)(
+  return (0, import_react60.createElement)(
     StripCard,
     { accent: "business", className: "dshpc-doc-note" },
-    (0, import_react58.createElement)(
+    (0, import_react60.createElement)(
       "div",
       { className: "dshpc-doc-note__body" },
-      (0, import_react58.createElement)("span", { className: "dshpc-doc-note__mark" }, t3("docNote")),
-      props.children ?? (0, import_react58.createElement)("span", null, props.text ?? "")
+      (0, import_react60.createElement)("span", { className: "dshpc-doc-note__mark" }, t3("docNote")),
+      props.children ?? (0, import_react60.createElement)("span", null, props.text ?? "")
     )
   );
 }
@@ -59079,11 +59454,11 @@ function snippetPath(lang) {
 }
 function CodeOnly(props) {
   const label = props.label ?? (props.labelKey !== void 0 ? t3(props.labelKey) : t3("docCode"));
-  return (0, import_react58.createElement)(
+  return (0, import_react60.createElement)(
     "div",
     { className: "dshpc-doc-block" },
-    (0, import_react58.createElement)("div", { className: "dshpc-doc-label" }, label),
-    (0, import_react58.createElement)(CodeViewer, {
+    (0, import_react60.createElement)("div", { className: "dshpc-doc-label" }, label),
+    (0, import_react60.createElement)(CodeViewer, {
       text: props.code,
       path: snippetPath(props.lang ?? "tsx"),
       t,
@@ -59095,32 +59470,32 @@ function CodeOnly(props) {
   );
 }
 function Example(props) {
-  return (0, import_react58.createElement)(
+  return (0, import_react60.createElement)(
     "section",
     { className: "dshpc-doc-example" },
-    (0, import_react58.createElement)(
+    (0, import_react60.createElement)(
       "div",
       { className: "dshpc-doc-example__head" },
-      (0, import_react58.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
-      props.hint === void 0 ? null : (0, import_react58.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
+      (0, import_react60.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
+      props.hint === void 0 ? null : (0, import_react60.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
     ),
-    (0, import_react58.createElement)(
+    (0, import_react60.createElement)(
       "div",
       { className: "dshpc-doc-example__body" },
-      (0, import_react58.createElement)(
+      (0, import_react60.createElement)(
         "div",
         { className: "dshpc-doc-example__demo" },
-        (0, import_react58.createElement)("div", { className: "dshpc-doc-label" }, t3("docPreview")),
+        (0, import_react60.createElement)("div", { className: "dshpc-doc-label" }, t3("docPreview")),
         props.children ?? null
       ),
-      props.code === void 0 ? null : (0, import_react58.createElement)(
+      props.code === void 0 ? null : (0, import_react60.createElement)(
         "div",
         { className: "dshpc-doc-example__code" },
-        (0, import_react58.createElement)("div", { className: "dshpc-doc-label" }, t3("docCode")),
-        (0, import_react58.createElement)(
+        (0, import_react60.createElement)("div", { className: "dshpc-doc-label" }, t3("docCode")),
+        (0, import_react60.createElement)(
           "div",
           { className: "dshpc-doc-example__scroll" },
-          (0, import_react58.createElement)(CodeViewer, {
+          (0, import_react60.createElement)(CodeViewer, {
             text: props.code,
             path: snippetPath("tsx"),
             t,
@@ -59133,40 +59508,40 @@ function Example(props) {
   );
 }
 function ApiTable(props) {
-  return (0, import_react58.createElement)(
+  return (0, import_react60.createElement)(
     "div",
     { className: "dshpc-doc-block" },
-    (0, import_react58.createElement)(
+    (0, import_react60.createElement)(
       "div",
       { className: "dshpc-doc-label", style: props.title === void 0 ? void 0 : { textTransform: "none" } },
       props.title ?? t3("docApi")
     ),
-    (0, import_react58.createElement)(
+    (0, import_react60.createElement)(
       "table",
       { className: "dshpc-doc-api" },
-      (0, import_react58.createElement)(
+      (0, import_react60.createElement)(
         "thead",
         null,
-        (0, import_react58.createElement)(
+        (0, import_react60.createElement)(
           "tr",
           null,
-          (0, import_react58.createElement)("th", null, t3("docApiName")),
-          (0, import_react58.createElement)("th", null, t3("docApiType")),
-          (0, import_react58.createElement)("th", null, t3("docApiDefault")),
-          (0, import_react58.createElement)("th", null, t3("docApiDesc"))
+          (0, import_react60.createElement)("th", null, t3("docApiName")),
+          (0, import_react60.createElement)("th", null, t3("docApiType")),
+          (0, import_react60.createElement)("th", null, t3("docApiDefault")),
+          (0, import_react60.createElement)("th", null, t3("docApiDesc"))
         )
       ),
-      (0, import_react58.createElement)(
+      (0, import_react60.createElement)(
         "tbody",
         null,
         props.rows.map(
-          (row) => (0, import_react58.createElement)(
+          (row) => (0, import_react60.createElement)(
             "tr",
             { key: row.name },
-            (0, import_react58.createElement)("td", null, row.name),
-            (0, import_react58.createElement)("td", null, row.type),
-            (0, import_react58.createElement)("td", null, row.def),
-            (0, import_react58.createElement)("td", null, row.desc ?? t3(row.descKey ?? "docApiDesc"))
+            (0, import_react60.createElement)("td", null, row.name),
+            (0, import_react60.createElement)("td", null, row.type),
+            (0, import_react60.createElement)("td", null, row.def),
+            (0, import_react60.createElement)("td", null, row.desc ?? t3(row.descKey ?? "docApiDesc"))
           )
         )
       )
@@ -59177,13 +59552,13 @@ function DocProse(props) {
   const section = DOC_DATA[props.id];
   if (section?.prose === void 0) return null;
   const l = locale();
-  return (0, import_react58.createElement)(
+  return (0, import_react60.createElement)(
     Note,
     null,
-    (0, import_react58.createElement)(
+    (0, import_react60.createElement)(
       "div",
       { className: "dshpc-doc-note__content" },
-      ...section.prose.map((p, i2) => (0, import_react58.createElement)("div", { key: i2, className: "dshpc-doc-note__p" }, p[l]))
+      ...section.prose.map((p, i2) => (0, import_react60.createElement)("div", { key: i2, className: "dshpc-doc-note__p" }, p[l]))
     )
   );
 }
@@ -59191,11 +59566,11 @@ function DocApi(props) {
   const section = DOC_DATA[props.id];
   if (section?.api === void 0) return null;
   const l = locale();
-  return (0, import_react58.createElement)(
-    import_react58.Fragment,
+  return (0, import_react60.createElement)(
+    import_react60.Fragment,
     null,
     ...section.api.map(
-      (table, i2) => (0, import_react58.createElement)(ApiTable, {
+      (table, i2) => (0, import_react60.createElement)(ApiTable, {
         key: i2,
         rows: table.rows.map((r2) => ({
           name: r2.name,
@@ -59211,32 +59586,32 @@ function DocApi(props) {
 function DocCode(props) {
   const section = DOC_DATA[props.id];
   if (section?.code === void 0) return null;
-  return (0, import_react58.createElement)(
-    import_react58.Fragment,
+  return (0, import_react60.createElement)(
+    import_react60.Fragment,
     null,
-    ...section.code.map((c2, i2) => (0, import_react58.createElement)(CodeOnly, { key: i2, code: c2.src, lang: c2.lang }))
+    ...section.code.map((c2, i2) => (0, import_react60.createElement)(CodeOnly, { key: i2, code: c2.src, lang: c2.lang }))
   );
 }
 function DocContent(props) {
-  return (0, import_react58.createElement)(
-    import_react58.Fragment,
+  return (0, import_react60.createElement)(
+    import_react60.Fragment,
     null,
-    (0, import_react58.createElement)(DocProse, { id: props.id }),
-    (0, import_react58.createElement)(DocApi, { id: props.id }),
-    (0, import_react58.createElement)(DocCode, { id: props.id })
+    (0, import_react60.createElement)(DocProse, { id: props.id }),
+    (0, import_react60.createElement)(DocApi, { id: props.id }),
+    (0, import_react60.createElement)(DocCode, { id: props.id })
   );
 }
 
 // packages/demo/src/sections/start.tsx
 function HelpIndexPage() {
-  return (0, import_react59.createElement)(DocContent, { id: "help-index" });
+  return (0, import_react61.createElement)(DocContent, { id: "help-index" });
 }
 function QuickstartPage() {
-  return (0, import_react59.createElement)(DocContent, { id: "quickstart" });
+  return (0, import_react61.createElement)(DocContent, { id: "quickstart" });
 }
 
 // packages/demo/src/sections/foundation.tsx
-var import_react60 = require("react");
+var import_react62 = require("react");
 var TOKENS = [
   { label: "business", cssVar: "--dshpc-business" },
   { label: "success", cssVar: "--dshpc-success" },
@@ -59259,22 +59634,22 @@ var TOKENS = [
   { label: "fg-4", cssVar: "--dshpc-fg-4" }
 ];
 function FoundationPage() {
-  return (0, import_react60.createElement)(
+  return (0, import_react62.createElement)(
     "div",
     null,
-    (0, import_react60.createElement)(DocProse, { id: "foundation" }),
+    (0, import_react62.createElement)(DocProse, { id: "foundation" }),
     // Token 色板：颜色全部来自 design 的 token。
-    (0, import_react60.createElement)(
+    (0, import_react62.createElement)(
       Example,
       { title: t3("demoTokenPalette"), hint: t3("tokensHint") },
-      (0, import_react60.createElement)(
+      (0, import_react62.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
         TOKENS.map(
-          (item) => (0, import_react60.createElement)(
+          (item) => (0, import_react62.createElement)(
             "div",
             { key: item.cssVar, style: { width: "104px" } },
-            (0, import_react60.createElement)("div", {
+            (0, import_react62.createElement)("div", {
               style: {
                 height: "40px",
                 borderRadius: "6px",
@@ -59282,25 +59657,25 @@ function FoundationPage() {
                 border: "1px solid var(--dshpc-border-faint)"
               }
             }),
-            (0, import_react60.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
-            (0, import_react60.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+            (0, import_react62.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
+            (0, import_react62.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
           )
         )
       )
     ),
     // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
-    (0, import_react60.createElement)(
+    (0, import_react62.createElement)(
       Example,
       { title: "body[data-ds-dark-theme]", hint: t3("darkHint") },
-      (0, import_react60.createElement)(
+      (0, import_react62.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react60.createElement)(
+        (0, import_react62.createElement)(
           "span",
           { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("darkNow")
         ),
-        (0, import_react60.createElement)("code", {
+        (0, import_react62.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -59312,7 +59687,7 @@ function FoundationPage() {
         }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
       )
     ),
-    (0, import_react60.createElement)(
+    (0, import_react62.createElement)(
       Example,
       {
         title: t3("demoStyleInject"),
@@ -59323,18 +59698,18 @@ import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
 ensureControls()`
       },
-      (0, import_react60.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t3("designInjectNote"))
+      (0, import_react62.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t3("designInjectNote"))
     ),
     // 命名契约（原「命名与前缀契约」页）的 API 表 —— 直接吃 docData['foundation'] 的 api 段。
-    (0, import_react60.createElement)(DocApi, { id: "foundation" })
+    (0, import_react62.createElement)(DocApi, { id: "foundation" })
   );
 }
 
 // packages/demo/src/sections/controls.tsx
-var import_react62 = require("react");
+var import_react64 = require("react");
 
 // dist/ui/host-toast.js
-var import_react61 = require("react");
+var import_react63 = require("react");
 var import_client5 = require("react-dom/client");
 function showHostToast(message, opts) {
   if (typeof document === "undefined")
@@ -59346,7 +59721,7 @@ function showHostToast(message, opts) {
     root.unmount();
     container.remove();
   };
-  root.render((0, import_react61.createElement)(Official.Toast, {
+  root.render((0, import_react63.createElement)(Official.Toast, {
     text: message,
     tone: opts?.tone,
     holdMs: opts?.holdMs ?? 3e3,
@@ -59376,13 +59751,13 @@ var BUTTON_ICONS = [
 ];
 function iconOf(name2, size4 = 14) {
   const found = BUTTON_ICONS.find((item) => item.name === name2);
-  return found === void 0 ? null : (0, import_react62.createElement)(found.Icon, { size: size4 });
+  return found === void 0 ? null : (0, import_react64.createElement)(found.Icon, { size: size4 });
 }
 function StarSvg() {
-  return (0, import_react62.createElement)(
+  return (0, import_react64.createElement)(
     "svg",
     { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-    (0, import_react62.createElement)("path", {
+    (0, import_react64.createElement)("path", {
       d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
       stroke: "currentColor",
       strokeWidth: 1.2,
@@ -59422,7 +59797,7 @@ var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
 function tipAnchor(text2, side, align) {
   const props = { label: text2, side };
   if (align !== void 0) props.align = align;
-  return (0, import_react62.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react62.createElement)("button", {
+  return (0, import_react64.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react64.createElement)("button", {
     type: "button",
     style: {
       padding: "4px 10px",
@@ -59436,13 +59811,13 @@ function tipAnchor(text2, side, align) {
   }, text2));
 }
 function Row(props) {
-  return (0, import_react62.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+  return (0, import_react64.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
 }
 function Labeled(props) {
-  return (0, import_react62.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react62.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    (0, import_react64.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
     props.children
   );
 }
@@ -59504,192 +59879,192 @@ var CODE_BTN_WIDTH = `// \u56FA\u5B9A\u5BBD\uFF1A\u5199\u6B7B\u5BBD\u5EA6
 // \u4E09\u8005\u540C\u8BBE \u21D2 \u56FA\u5B9A\u5BBD\u4F18\u5148\uFF0C\u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\u81EA\u52A8\u5931\u6548
 <Button variant="outline" width={120} minWidth={200} maxWidth={160}>\u56FA\u5B9A\u5BBD\u4F18\u5148</Button>`;
 function ButtonPage() {
-  return (0, import_react62.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "button" }),
+    (0, import_react64.createElement)(DocProse, { id: "button" }),
     // 文案与语言
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("btnTextTitle"), hint: t3("btnTextHint"), code: CODE_BTN_TEXT },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "locale" },
-          (0, import_react62.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t3("btnLabelSave")),
-          (0, import_react62.createElement)(Button, { variant: "outline" }, t3("btnLabelCancel")),
-          (0, import_react62.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t3("btnLabelDelete"))
+          (0, import_react64.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t3("btnLabelSave")),
+          (0, import_react64.createElement)(Button, { variant: "outline" }, t3("btnLabelCancel")),
+          (0, import_react64.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t3("btnLabelDelete"))
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "en" },
-          (0, import_react62.createElement)(Button, { variant: "primary" }, "Save"),
-          (0, import_react62.createElement)(Button, { variant: "outline" }, "Cancel"),
-          (0, import_react62.createElement)(Button, { variant: "ghost" }, "Learn more")
+          (0, import_react64.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react64.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react64.createElement)(Button, { variant: "ghost" }, "Learn more")
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "zh" },
-          (0, import_react62.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
-          (0, import_react62.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
-          (0, import_react62.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+          (0, import_react64.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react64.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react64.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "zh + en" },
-          (0, import_react62.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t3("btnLabelMixed")),
-          (0, import_react62.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
-          (0, import_react62.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+          (0, import_react64.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t3("btnLabelMixed")),
+          (0, import_react64.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react64.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
         )
       )
     ),
     // 10 档外观
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("btnVariantTitle"), hint: t3("btnVariantHint"), code: CODE_BTN_VARIANT },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        VARIANT_GROUPS.map((group) => (0, import_react62.createElement)(
+        VARIANT_GROUPS.map((group) => (0, import_react64.createElement)(
           Labeled,
           { key: group.label, label: group.label },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "6px", alignItems: "flex-start" } },
-            (0, import_react62.createElement)(Row, null, group.items.map((variant) => (0, import_react62.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
-            (0, import_react62.createElement)(Row, null, group.items.map((variant) => (0, import_react62.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
+            (0, import_react64.createElement)(Row, null, group.items.map((variant) => (0, import_react64.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
+            (0, import_react64.createElement)(Row, null, group.items.map((variant) => (0, import_react64.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
           )
         ))
       )
     ),
     // 尺寸 / 图标位置 / block
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("btnSizeTitle"), hint: t3("btnSizeHint"), code: CODE_BTN_SIZE },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "size" },
-          ["sm", "md", "lg"].map((size4) => (0, import_react62.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus", ICON_SIZE[size4]) }, size4))
+          ["sm", "md", "lg"].map((size4) => (0, import_react64.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus", ICON_SIZE[size4]) }, size4))
         ),
         // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "icon" },
-          (0, import_react62.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
-          (0, import_react62.createElement)(Button, { variant: "outline", icon: (0, import_react62.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
+          (0, import_react64.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react64.createElement)(Button, { variant: "outline", icon: (0, import_react64.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "iconRight" },
-          (0, import_react62.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
-          (0, import_react62.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+          (0, import_react64.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
+          (0, import_react64.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
         ),
         // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "block" },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react62.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
-            (0, import_react62.createElement)("div", { style: { height: "8px" } }),
-            (0, import_react62.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
+            (0, import_react64.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react64.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react64.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
           )
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: t3("btnIconOnly") },
-          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react62.createElement)(IconButton, { key: item.name, icon: (0, import_react62.createElement)(item.Icon, { size: 16 }), label: item.name }))
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react64.createElement)(IconButton, { key: item.name, icon: (0, import_react64.createElement)(item.Icon, { size: 16 }), label: item.name }))
         )
       )
     ),
     // 状态
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("btnStateTitle"), hint: t3("btnStateHint"), code: CODE_BTN_STATE },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "\u7981\u7528" },
-          (0, import_react62.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-          (0, import_react62.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-          (0, import_react62.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
+          (0, import_react64.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+          (0, import_react64.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+          (0, import_react64.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "loading" },
-          (0, import_react62.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-          (0, import_react62.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+          (0, import_react64.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+          (0, import_react64.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
         )
       )
     ),
     // 自定义颜色
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("btnColorTitle"), hint: t3("btnColorHint"), code: CODE_BTN_COLOR },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "\u5B9E\u5FC3" },
-          (0, import_react62.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react62.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
+          (0, import_react64.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react64.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "\u63CF\u8FB9" },
-          (0, import_react62.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react62.createElement)(Button, { key: color, variant: "outline", color }, color)))
+          (0, import_react64.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react64.createElement)(Button, { key: color, variant: "outline", color }, color)))
         )
       )
     ),
     // 宽度三轴
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("btnWidthTitle"), hint: t3("btnWidthHint"), code: CODE_BTN_WIDTH },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react62.createElement)(Button, { variant: "outline", width: 120 }, "120px \u56FA\u5B9A\u5BBD")
+          (0, import_react64.createElement)(Button, { variant: "outline", width: 120 }, "120px \u56FA\u5B9A\u5BBD")
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", gap: "8px" } },
-            (0, import_react62.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u77ED"),
-            (0, import_react62.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+            (0, import_react64.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u77ED"),
+            (0, import_react64.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
           )
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { width: "320px" } },
-            (0, import_react62.createElement)(Button, { variant: "outline", maxWidth: 160 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6309\u94AE\u6587\u5B57\u6807\u7B7E")
+            (0, import_react64.createElement)(Button, { variant: "outline", maxWidth: 160 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6309\u94AE\u6587\u5B57\u6807\u7B7E")
           )
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
-          (0, import_react62.createElement)(Button, { variant: "outline", width: 120, minWidth: 200, maxWidth: 160 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+          (0, import_react64.createElement)(Button, { variant: "outline", width: 120, minWidth: 200, maxWidth: 160 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
         )
       )
     ),
-    (0, import_react62.createElement)(DocCode, { id: "button" }),
-    (0, import_react62.createElement)(DocApi, { id: "button" })
+    (0, import_react64.createElement)(DocCode, { id: "button" }),
+    (0, import_react64.createElement)(DocApi, { id: "button" })
   );
 }
 var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
@@ -59760,103 +60135,103 @@ var PERIODS = [
   { value: "month", label: "\u6708" }
 ];
 function InputPage() {
-  const [text2, setText] = (0, import_react62.useState)("");
-  const [num, setNum] = (0, import_react62.useState)(3);
-  const [checked, setChecked] = (0, import_react62.useState)(true);
-  const [seg, setSeg] = (0, import_react62.useState)("week");
-  const [filter2, setFilter] = (0, import_react62.useState)("all");
-  const [multi, setMulti] = (0, import_react62.useState)(["1"]);
-  const [kw, setKw] = (0, import_react62.useState)("");
-  return (0, import_react62.createElement)(
+  const [text2, setText] = (0, import_react64.useState)("");
+  const [num, setNum] = (0, import_react64.useState)(3);
+  const [checked, setChecked] = (0, import_react64.useState)(true);
+  const [seg, setSeg] = (0, import_react64.useState)("week");
+  const [filter2, setFilter] = (0, import_react64.useState)("all");
+  const [multi, setMulti] = (0, import_react64.useState)(["1"]);
+  const [kw, setKw] = (0, import_react64.useState)("");
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "input" }),
+    (0, import_react64.createElement)(DocProse, { id: "input" }),
     // Input 家族
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("demoInputFamily"), hint: t3("inputHint"), code: CODE_INPUT_FAMILY },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react62.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
+          (0, import_react64.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
-          (0, import_react62.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
+          (0, import_react64.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react62.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
+          (0, import_react64.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
           // 左侧图标槽（icon）+ 聚焦且有内容才出的清空钮（type="search"）
-          (0, import_react62.createElement)(Input, { type: "search", icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+          (0, import_react64.createElement)(Input, { type: "search", icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
         ),
-        (0, import_react62.createElement)(Input, { value: "bad value", onChange: () => {
+        (0, import_react64.createElement)(Input, { value: "bad value", onChange: () => {
         }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        (0, import_react62.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
-        (0, import_react62.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
+        (0, import_react64.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
+        (0, import_react64.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
       )
     ),
     // 问号提示：证明它不属于 Input 家族，随处可挂
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("btnHintTitle"), hint: t3("btnHintHint"), code: CODE_FIELD_HINT },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Row,
           null,
-          (0, import_react62.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
-          (0, import_react62.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+          (0, import_react64.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react64.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Row,
           null,
-          (0, import_react62.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
-          (0, import_react62.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+          (0, import_react64.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react64.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Row,
           null,
-          (0, import_react62.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
-          (0, import_react62.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
+          (0, import_react64.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react64.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
         )
       )
     ),
     // Switch / Checkbox / Segmented
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("switchTip"), hint: t3("checkboxHint"), code: CODE_SWITCH_SEG },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
           // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
           // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
           // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
-            (0, import_react62.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-            (0, import_react62.createElement)("span", {
+            (0, import_react64.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+            (0, import_react64.createElement)("span", {
               style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
               onClick: () => {
                 setChecked(!checked);
               }
             }, "\u542F\u7528")
           ),
-          (0, import_react62.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
+          (0, import_react64.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
-          (0, import_react62.createElement)(Segmented, {
+          (0, import_react64.createElement)(Segmented, {
             items: [
               { value: "day", label: "\u65E5" },
               { value: "week", label: "\u5468" },
@@ -59865,7 +60240,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react62.createElement)(Segmented, {
+          (0, import_react64.createElement)(Segmented, {
             bordered: true,
             items: [
               { value: "day", label: "\u65E5" },
@@ -59875,7 +60250,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react62.createElement)(Segmented, {
+          (0, import_react64.createElement)(Segmented, {
             size: "sm",
             items: [
               { value: "day", label: "\u65E5" },
@@ -59885,7 +60260,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react62.createElement)(Segmented, {
+          (0, import_react64.createElement)(Segmented, {
             size: "sm",
             bordered: true,
             items: [
@@ -59898,7 +60273,7 @@ function InputPage() {
           })
         ),
         // 筛选条形态（真实插件同款）：中性计数 + 灰底轨道
-        (0, import_react62.createElement)(Segmented, {
+        (0, import_react64.createElement)(Segmented, {
           items: [
             { value: "all", label: t3("segAll"), count: 11 },
             { value: "doing", label: t3("segDoing"), count: 5 },
@@ -59909,7 +60284,7 @@ function InputPage() {
           value: filter2,
           onChange: setFilter
         }),
-        (0, import_react62.createElement)(Segmented, {
+        (0, import_react64.createElement)(Segmented, {
           bordered: true,
           items: [
             { value: "all", label: t3("segAll"), count: 11 },
@@ -59922,7 +60297,7 @@ function InputPage() {
           onChange: setFilter
         }),
         // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react62.createElement)(Segmented, {
+        (0, import_react64.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
@@ -59933,7 +60308,7 @@ function InputPage() {
           value: multi,
           onChange: setMulti
         }),
-        (0, import_react62.createElement)(Segmented, {
+        (0, import_react64.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           bordered: true,
@@ -59948,36 +60323,36 @@ function InputPage() {
       )
     ),
     // 选中片配色（tone，2026-10-29）：内置色名 / 自定义一对颜色
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("segToneTitle"), hint: t3("segToneHint"), code: CODE_SEG_TONE },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: 'tone="teal"' },
-          (0, import_react62.createElement)(Segmented, { tone: "teal", items: PERIODS, value: seg, onChange: setSeg })
+          (0, import_react64.createElement)(Segmented, { tone: "teal", items: PERIODS, value: seg, onChange: setSeg })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: 'tone="danger"' },
-          (0, import_react62.createElement)(Segmented, { tone: "danger", items: PERIODS, value: seg, onChange: setSeg })
+          (0, import_react64.createElement)(Segmented, { tone: "danger", items: PERIODS, value: seg, onChange: setSeg })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "{ bg, fg }" },
-          (0, import_react62.createElement)(Segmented, {
+          (0, import_react64.createElement)(Segmented, {
             tone: { bg: "#0b3d2e", fg: "#d1fae5" },
             items: PERIODS,
             value: seg,
             onChange: setSeg
           })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "tone + weekday" },
-          (0, import_react62.createElement)(Segmented, {
+          (0, import_react64.createElement)(Segmented, {
             multiple: true,
             tone: "purple",
             className: "dshpc-seg--weekday",
@@ -59992,15 +60367,15 @@ function InputPage() {
         )
       )
     ),
-    (0, import_react62.createElement)(DocCode, { id: "input" }),
-    (0, import_react62.createElement)(DocApi, { id: "input" }),
-    (0, import_react62.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
+    (0, import_react64.createElement)(DocCode, { id: "input" }),
+    (0, import_react64.createElement)(DocApi, { id: "input" }),
+    (0, import_react64.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
   );
 }
 var ICON_OPTIONS = [
-  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
-  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
-  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
+  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
+  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
+  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
 ];
 var CODE_PICKER = `// \u5355\u9009\uFF1Aicon + \u53EF\u641C\u7D22 / \u53EF\u6E05\u9664
 <Picker
@@ -60076,51 +60451,51 @@ var SPLIT_MEMBERS = {
   ]
 };
 function PickerPage() {
-  const [single, setSingle] = (0, import_react62.useState)(void 0);
-  const [multi, setMulti] = (0, import_react62.useState)([]);
-  const [model, setModel] = (0, import_react62.useState)("");
-  const [model2, setModel2] = (0, import_react62.useState)("");
-  const [ws, setWs] = (0, import_react62.useState)(void 0);
-  const [period2, setPeriod] = (0, import_react62.useState)("formal");
-  const [bucket, setBucket] = (0, import_react62.useState)("");
-  const [scope, setScope] = (0, import_react62.useState)("project");
-  const [member, setMember] = (0, import_react62.useState)("");
-  const [groups, setGroups] = (0, import_react62.useState)(["a"]);
-  const [groupValue, setGroupValue] = (0, import_react62.useState)("");
-  return (0, import_react62.createElement)(
+  const [single, setSingle] = (0, import_react64.useState)(void 0);
+  const [multi, setMulti] = (0, import_react64.useState)([]);
+  const [model, setModel] = (0, import_react64.useState)("");
+  const [model2, setModel2] = (0, import_react64.useState)("");
+  const [ws, setWs] = (0, import_react64.useState)(void 0);
+  const [period2, setPeriod] = (0, import_react64.useState)("formal");
+  const [bucket, setBucket] = (0, import_react64.useState)("");
+  const [scope, setScope] = (0, import_react64.useState)("project");
+  const [member, setMember] = (0, import_react64.useState)("");
+  const [groups, setGroups] = (0, import_react64.useState)(["a"]);
+  const [groupValue, setGroupValue] = (0, import_react64.useState)("");
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "picker" }),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(DocProse, { id: "picker" }),
+    (0, import_react64.createElement)(
       Example,
       { title: "Picker", hint: t3("pickerHint"), code: CODE_PICKER },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react62.createElement)(Picker, {
+        (0, import_react64.createElement)(Picker, {
           options: ICON_OPTIONS,
-          icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
+          icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
           value: single,
           onChange: (v) => setSingle(v),
           searchable: true,
           clearable: true,
           placeholder: "\u5355\u9009\uFF08icon + \u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
         }),
-        (0, import_react62.createElement)(Picker, {
+        (0, import_react64.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
           placeholder: "\u5355\u9009\uFF08\u65E0\u641C\u7D22\u6846\uFF09"
         }),
-        (0, import_react62.createElement)(Picker, {
+        (0, import_react64.createElement)(Picker, {
           groups: [
             { value: "g1", label: "\u7EC4\u4E00", options: ICON_OPTIONS },
             {
               value: "g2",
               label: "\u7EC4\u4E8C",
               options: [
-                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
-                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
+                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
+                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
               ]
             }
           ],
@@ -60131,13 +60506,13 @@ function PickerPage() {
           searchable: true,
           placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF0C\u53EF\u53CD\u9009\uFF09"
         }),
-        (0, import_react62.createElement)(Picker, {
+        (0, import_react64.createElement)(Picker, {
           options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
           degraded: true,
           disabled: true,
           placeholder: "\u964D\u7EA7 + \u7981\u7528"
         }),
-        (0, import_react62.createElement)(Picker, {
+        (0, import_react64.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
@@ -60146,16 +60521,16 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exModelPickerTitle"), hint: t3("modelPickerHint"), code: CODE_MODEL_PICKER },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
-        (0, import_react62.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
+        (0, import_react64.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
         // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
-        (0, import_react62.createElement)(ModelPicker, {
+        (0, import_react64.createElement)(ModelPicker, {
           value: model2,
           onChange: setModel2,
           variant: "cascade",
@@ -60163,14 +60538,14 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exWorkspacePickerTitle"), hint: t3("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
-        (0, import_react62.createElement)(WorkspacePicker, {
+        (0, import_react64.createElement)(WorkspacePicker, {
           value: ws,
           onChange: (v) => setWs(v),
           clearable: true,
@@ -60178,18 +60553,18 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exSplitGroupTitle"), hint: t3("splitGroupHint"), code: CODE_SPLIT_GROUP },
       // 形态一（单选滑块 + 下拉）：左滑块选「正式组 / 测试组」，右格下拉联动换源、且略长；sm/md/lg 三档
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
         ["sm", "md", "lg"].map(
-          (sz) => (0, import_react62.createElement)(
+          (sz) => (0, import_react64.createElement)(
             SplitGroup,
             { key: sz, label: `\u5355\u9009 \xB7 ${sz}` },
-            (0, import_react62.createElement)(Segmented, {
+            (0, import_react64.createElement)(Segmented, {
               size: sz,
               items: SPLIT_SINGLE_OPTS,
               value: period2,
@@ -60198,7 +60573,7 @@ function PickerPage() {
                 setBucket("");
               }
             }),
-            (0, import_react62.createElement)(Picker, {
+            (0, import_react64.createElement)(Picker, {
               size: sz,
               options: SPLIT_TARGETS[period2] ?? [],
               value: bucket,
@@ -60211,14 +60586,14 @@ function PickerPage() {
         )
       ),
       // 形态二（下拉 + 下拉）：左格「范围」、右格「值」，三个尺寸各来一个
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
         ["sm", "md", "lg"].map(
-          (sz) => (0, import_react62.createElement)(
+          (sz) => (0, import_react64.createElement)(
             SplitGroup,
             { key: sz, label: `\u4E0B\u62C9 \xB7 ${sz}` },
-            (0, import_react62.createElement)(Picker, {
+            (0, import_react64.createElement)(Picker, {
               size: sz,
               options: SPLIT_SCOPES,
               value: scope,
@@ -60228,7 +60603,7 @@ function PickerPage() {
               },
               minWidth: 110
             }),
-            (0, import_react62.createElement)(Picker, {
+            (0, import_react64.createElement)(Picker, {
               size: sz,
               options: SPLIT_MEMBERS[scope] ?? [],
               value: member,
@@ -60241,20 +60616,20 @@ function PickerPage() {
         )
       ),
       // 多选：左滑块 A/B/C 三组可多选，右格一个下拉
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           SplitGroup,
           { label: "\u591A\u9009" },
-          (0, import_react62.createElement)(Segmented, {
+          (0, import_react64.createElement)(Segmented, {
             size: "lg",
             multiple: true,
             items: SPLIT_GROUPS,
             value: groups,
             onChange: setGroups
           }),
-          (0, import_react62.createElement)(Picker, {
+          (0, import_react64.createElement)(Picker, {
             size: "lg",
             options: SPLIT_FIXED,
             value: groupValue,
@@ -60265,10 +60640,10 @@ function PickerPage() {
         )
       )
     ),
-    (0, import_react62.createElement)(DocApi, { id: "split-group" }),
-    (0, import_react62.createElement)(DocCode, { id: "picker" }),
-    (0, import_react62.createElement)(DocApi, { id: "picker" }),
-    (0, import_react62.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
+    (0, import_react64.createElement)(DocApi, { id: "split-group" }),
+    (0, import_react64.createElement)(DocCode, { id: "picker" }),
+    (0, import_react64.createElement)(DocApi, { id: "picker" }),
+    (0, import_react64.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
   );
 }
 var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM\uFF08\u51FD\u6570\u7EC4\u4EF6\u6302\u4E0D\u4E0A \u21D2 \u65E0\u6C14\u6CE1\uFF09
@@ -60292,17 +60667,17 @@ var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80
   content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>\u2026</div>}
 />`;
 function TooltipPage() {
-  return (0, import_react62.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "tooltip" }),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(DocProse, { id: "tooltip" }),
+    (0, import_react64.createElement)(
       Example,
       { title: t3("tooltipTitle"), hint: t3("tooltipHint"), code: CODE_TOOLTIP },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: t3("tooltipAnchorButton") },
           tipAnchor("top \xB7 center", "top", "center"),
@@ -60311,52 +60686,52 @@ function TooltipPage() {
           tipAnchor("bottom \xB7 end", "bottom", "end"),
           tipAnchor("right", "right")
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: t3("tooltipAnchorText") },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: t3("tooltipHint"), side: "top" },
-            (0, import_react62.createElement)("span", {
+            (0, import_react64.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipAnchorText"))
           ),
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: t3("tooltipLongText"), side: "bottom", maxWidth: 240 },
-            (0, import_react62.createElement)("span", {
+            (0, import_react64.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipLong"))
           )
         ),
         // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: t3("tooltipMultiline") },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: `${t3("tooltipName")}
 ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
-            (0, import_react62.createElement)("span", {
+            (0, import_react64.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName"))
           )
         ),
         // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: t3("tooltipRich") },
-          (0, import_react62.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
+          (0, import_react64.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
             variant: "compact",
             openDelayMs: 200,
-            anchor: (0, import_react62.createElement)("span", {
+            anchor: (0, import_react64.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName")),
             // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
             // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
             // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
             // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-            content: (0, import_react62.createElement)(
+            content: (0, import_react64.createElement)(
               "div",
               {
                 style: {
@@ -60365,15 +60740,15 @@ ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
                   color: "var(--dsw-static-neutral-bluish-00,#fff)"
                 }
               },
-              (0, import_react62.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t3("tooltipName")),
-              (0, import_react62.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t3("tooltipLongText"))
+              (0, import_react64.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t3("tooltipName")),
+              (0, import_react64.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t3("tooltipLongText"))
             )
           })
         )
       )
     ),
-    (0, import_react62.createElement)(DocCode, { id: "tooltip" }),
-    (0, import_react62.createElement)(DocApi, { id: "tooltip" })
+    (0, import_react64.createElement)(DocCode, { id: "tooltip" }),
+    (0, import_react64.createElement)(DocApi, { id: "tooltip" })
   );
 }
 var CODE_CARD = `// Card\uFF1Asurface \u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2\uFF1Baction \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u4E5F\u5782\u76F4\u5C45\u4E2D
@@ -60398,8 +60773,9 @@ var CODE_STRIP_CARD = `// StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + \u65B9
   <div style={{ fontWeight: 600 }}>\u6267\u884C\u6210\u529F</div>
   <div style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4</div>
 </StripCard>`;
-var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u4E09\u6BB5\u5F0F\uFF1B\u6807\u9898\u540E\u7F00\u53EF\u4EE5\u662F\u8BA1\u6570 / \u5F69\u8272\u6807\u7B7E / \u5C0F\u5B57\u8BF4\u660E
+var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1A\u6807\u7B7E\uFF08\u53EF\u9009\uFF0C\u753B\u51FA\u6765\u7684\u77ED\u7AD6\u7EBF\uFF09+ icon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A
 <SectionHead
+  accent="success"        // \u56FA\u5B9A\u6807\u7B7E\u989C\u8272\uFF1A\u5185\u7F6E\u8272\u540D / \u4EFB\u610F\u8272\u503C\uFF1Bdefault = \u4E3B\u9898\u9ED8\u8BA4\uFF1Bfalse = \u4E0D\u753B
   icon={<IconSparkleRegular size={16} />}
   title={<span>\u5168\u90E8\u5F85\u529E <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
   right={[
@@ -60408,129 +60784,129 @@ var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1Aicon + \u6807\u9898 + 
   ]}
 />`;
 function CardPage() {
-  const [seg, setSeg] = (0, import_react62.useState)("all");
-  const [kw, setKw] = (0, import_react62.useState)("");
-  return (0, import_react62.createElement)(
+  const [seg, setSeg] = (0, import_react64.useState)("all");
+  const [kw, setKw] = (0, import_react64.useState)("");
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "card" }),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(DocProse, { id: "card" }),
+    (0, import_react64.createElement)(
       Example,
       { title: t3("demoCardTitle"), hint: t3("cardHint"), code: CODE_CARD },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
         // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react62.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            action: (0, import_react64.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
           },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
             "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
           ),
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react62.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react62.createElement)(Chip, null, "#npm"),
-            (0, import_react62.createElement)(Chip, null, "#pnpm"),
-            (0, import_react62.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react62.createElement)(Chip, null, "#\u8FC1\u79FB")
+            (0, import_react64.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react64.createElement)(Chip, null, "#npm"),
+            (0, import_react64.createElement)(Chip, null, "#pnpm"),
+            (0, import_react64.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react64.createElement)(Chip, null, "#\u8FC1\u79FB")
           )
         ),
         // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react62.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+            action: (0, import_react64.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
           },
-          (0, import_react62.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react62.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
+          (0, import_react64.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react64.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
         // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"].map(
-            (a) => (0, import_react62.createElement)(
+            (a) => (0, import_react64.createElement)(
               Card,
               { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react62.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react64.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("demoStripTitle"), hint: t3("stripHint"), code: CODE_STRIP_CARD },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           StripCard,
           {
             accent: "business",
-            action: (0, import_react62.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+            action: (0, import_react64.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
           },
-          (0, import_react62.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react62.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react62.createElement)(
+            (0, import_react64.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react64.createElement)(
               "span",
               { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
             )
           )
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           StripCard,
           {
             accent: "success",
             // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
-            action: (0, import_react62.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+            action: (0, import_react64.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
           },
-          (0, import_react62.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react62.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+          (0, import_react64.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react64.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"].map(
-            (a) => (0, import_react62.createElement)(
+            (a) => (0, import_react64.createElement)(
               StripCard,
               { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
-              (0, import_react62.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react64.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("sectionHeadTitle"), hint: t3("exSectionHeadHint"), code: CODE_SECTION_HEAD },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "8px" } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
-        (0, import_react62.createElement)(SectionHead, {
-          icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
-          title: (0, import_react62.createElement)(
+        (0, import_react64.createElement)(SectionHead, {
+          icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
+          title: (0, import_react64.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5168\u90E8\u5F85\u529E",
-            (0, import_react62.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
+            (0, import_react64.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
           ),
           right: [
-            (0, import_react62.createElement)(Segmented, {
+            (0, import_react64.createElement)(Segmented, {
               items: [
                 { value: "all", label: t3("segAll"), count: 22 },
                 { value: "doing", label: t3("segDoing"), count: 11 },
@@ -60540,42 +60916,54 @@ function CardPage() {
               onChange: setSeg
             }),
             // 搜索框 140px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
-            (0, import_react62.createElement)(
+            (0, import_react64.createElement)(
               "div",
               { style: { width: "140px", flex: "none" } },
-              (0, import_react62.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+              (0, import_react64.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
             )
           ]
         }),
         // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
-        (0, import_react62.createElement)(SectionHead, {
-          icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
-          title: (0, import_react62.createElement)(
+        (0, import_react64.createElement)(SectionHead, {
+          icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
+          title: (0, import_react64.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
             "\u6211\u7684\u5F85\u529E",
-            (0, import_react62.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
+            (0, import_react64.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
           ),
-          right: (0, import_react62.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
+          right: (0, import_react64.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
         }),
         // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
-        (0, import_react62.createElement)(SectionHead, {
-          icon: (0, import_react62.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
-          title: (0, import_react62.createElement)(
+        (0, import_react64.createElement)(SectionHead, {
+          icon: (0, import_react64.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
+          title: (0, import_react64.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5DF2\u5F52\u6863",
-            (0, import_react62.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
+            (0, import_react64.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
           ),
           right: [
-            (0, import_react62.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
-            (0, import_react62.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
+            (0, import_react64.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
+            (0, import_react64.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
           ]
-        })
+        }),
+        // D：固定标签颜色速览 —— accent 内置色名 / 任意色值 / default / false
+        (0, import_react64.createElement)(
+          "div",
+          { style: { display: "flex", flexDirection: "column", gap: "4px" } },
+          [
+            ["default", "default\uFF08\u4E3B\u9898\u9ED8\u8BA4\uFF09"],
+            ["business", "business"],
+            ["success", "success"],
+            ["#7c3aed", "#7c3aed"],
+            [false, "false\uFF08\u4E0D\u753B\uFF09"]
+          ].map(([accent, label]) => (0, import_react64.createElement)(SectionHead, { key: String(accent), accent, title: label, flush: true }))
+        )
       )
     ),
-    (0, import_react62.createElement)(DocCode, { id: "card" }),
-    (0, import_react62.createElement)(DocApi, { id: "card" })
+    (0, import_react64.createElement)(DocCode, { id: "card" }),
+    (0, import_react64.createElement)(DocApi, { id: "card" })
   );
 }
 var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884C\u56FA\u5B9A\u7531\u5927\u5230\u5C0F\uFF08md \u2192 sm \u2192 xs\uFF09\uFF0C\u540C\u6863\u6587\u6848\u4E0D\u6DF7\u6392
@@ -60612,100 +61000,100 @@ var CODE_MARQUEE = `// \u5B9A\u5BBD\u5C0F\u5BB9\u5668\uFF1A\u653E\u4E0D\u4E0B\u6
 var CODE_LIVE = `// \u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6\u5185\u5BB9\u8C03\u7528\u65B9\u6E32\u67D3
 <LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`;
 function ChipPage() {
-  return (0, import_react62.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "chip" }),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(DocProse, { id: "chip" }),
+    (0, import_react64.createElement)(
       Example,
       { title: "Chip", hint: t3("chipHint"), code: CODE_CHIP },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
         ...["md", "sm", "xs"].map(
-          (sz) => (0, import_react62.createElement)(
+          (sz) => (0, import_react64.createElement)(
             "div",
             { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-            (0, import_react62.createElement)(Chip, { size: sz, tone: "warning" }, t3("chipOverdue")),
-            (0, import_react62.createElement)(Chip, { size: sz, tone: "danger" }, t3("chipStalled")),
-            (0, import_react62.createElement)(Chip, { size: sz, tone: "success" }, t3("chipDone")),
-            (0, import_react62.createElement)(Chip, { size: sz, tone: "business" }, t3("chipDoing")),
-            (0, import_react62.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
+            (0, import_react64.createElement)(Chip, { size: sz, tone: "warning" }, t3("chipOverdue")),
+            (0, import_react64.createElement)(Chip, { size: sz, tone: "danger" }, t3("chipStalled")),
+            (0, import_react64.createElement)(Chip, { size: sz, tone: "success" }, t3("chipDone")),
+            (0, import_react64.createElement)(Chip, { size: sz, tone: "business" }, t3("chipDoing")),
+            (0, import_react64.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
           )
         ),
         // 中性 # 标签（语言无关）+ 长文字回归样
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react62.createElement)(Chip, null, "#npm"),
-          (0, import_react62.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react62.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react62.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+          (0, import_react64.createElement)(Chip, null, "#npm"),
+          (0, import_react64.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react64.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react64.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("chipWidthTitle"), hint: t3("chipWidthHint"), code: CODE_CHIP_WIDTH },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react62.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
+          (0, import_react64.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", gap: "8px" } },
-            (0, import_react62.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
-            (0, import_react62.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+            (0, import_react64.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
+            (0, import_react64.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
           )
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react62.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
+            (0, import_react64.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
           )
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Labeled,
           { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
-          (0, import_react62.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+          (0, import_react64.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("marqueeTitle"), hint: t3("exMarqueeHint"), code: CODE_MARQUEE },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { maxWidth: "148px" } },
-          (0, import_react62.createElement)(MarqueeText, { text: "\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" })
+          (0, import_react64.createElement)(MarqueeText, { text: "\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Chip,
           { tone: "business", size: "md", maxWidth: 148 },
           "\u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1A\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF0Chover \u8DD1\u9A6C\u706F"
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("liveTitle"), hint: t3("exLiveHint"), code: CODE_LIVE },
-      (0, import_react62.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+      (0, import_react64.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
-    (0, import_react62.createElement)(DocCode, { id: "chip" }),
-    (0, import_react62.createElement)(DocApi, { id: "chip" })
+    (0, import_react64.createElement)(DocCode, { id: "chip" }),
+    (0, import_react64.createElement)(DocApi, { id: "chip" })
   );
 }
 var CODE_HOST_MODAL = `// \u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u76F4\u63A5\u7528\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF09
@@ -60843,70 +61231,70 @@ blocked.close()
 <LoadingToast text="\u6B63\u5728\u52A0\u8F7D" />
 <LoadingBlock text="\u5904\u7406\u4E2D" />`;
 function FeedbackPage() {
-  const [open, setOpen] = (0, import_react62.useState)(false);
-  const [openNative, setOpenNative] = (0, import_react62.useState)(false);
-  const [alertState, setAlertState] = (0, import_react62.useState)(null);
-  const [confirmCfg, setConfirmCfg] = (0, import_react62.useState)(null);
-  const [confirmResult, setConfirmResult] = (0, import_react62.useState)("");
-  const [largeOpen, setLargeOpen] = (0, import_react62.useState)(false);
-  const [largeOpenB, setLargeOpenB] = (0, import_react62.useState)(false);
-  const [nativeText, setNativeText] = (0, import_react62.useState)("");
+  const [open, setOpen] = (0, import_react64.useState)(false);
+  const [openNative, setOpenNative] = (0, import_react64.useState)(false);
+  const [alertState, setAlertState] = (0, import_react64.useState)(null);
+  const [confirmCfg, setConfirmCfg] = (0, import_react64.useState)(null);
+  const [confirmResult, setConfirmResult] = (0, import_react64.useState)("");
+  const [largeOpen, setLargeOpen] = (0, import_react64.useState)(false);
+  const [largeOpenB, setLargeOpenB] = (0, import_react64.useState)(false);
+  const [nativeText, setNativeText] = (0, import_react64.useState)("");
   const flash = (opts) => {
     const handle = showLoading(opts);
     window.setTimeout(() => handle.close(), 1200);
   };
-  return (0, import_react62.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "feedback" }),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(DocProse, { id: "feedback" }),
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exSmallModalTitle"), hint: t3("exSmallModalHint"), code: CODE_SMALL_MODAL },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           null,
-          (0, import_react62.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react62.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
-            (0, import_react62.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
-            (0, import_react62.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
-            (0, import_react62.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
-            (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
+            (0, import_react64.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
+            (0, import_react64.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
+            (0, import_react64.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
+            (0, import_react64.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
+            (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
           ),
-          alertState !== null ? (0, import_react62.createElement)(AlertModal, {
+          alertState !== null ? (0, import_react64.createElement)(AlertModal, {
             severity: alertState.sev,
             title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
             message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
             onConfirm: () => setAlertState(null)
           }) : null
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           null,
-          (0, import_react62.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
-            (0, import_react62.createElement)(Button, { onClick: () => {
+            (0, import_react64.createElement)(Button, { onClick: () => {
               setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
               setConfirmResult("");
             } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
-            (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => {
               setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
               setConfirmResult("");
             } }, "danger \u53D8\u4F53"),
-            (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => {
+            (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => {
               setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
               setConfirmResult("");
             } }, "\u6539\u6587\u6848"),
-            confirmResult ? (0, import_react62.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
+            confirmResult ? (0, import_react64.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
           ),
-          confirmCfg !== null ? (0, import_react62.createElement)(ConfirmModal, {
+          confirmCfg !== null ? (0, import_react64.createElement)(ConfirmModal, {
             title: "\u5220\u9664\u4EFB\u52A1",
             message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
             tone: confirmCfg.tone,
@@ -60922,17 +61310,17 @@ function FeedbackPage() {
             }
           }) : null
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           null,
-          (0, import_react62.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => {
               alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => showToast("alert \u5DF2\u5173\u95ED"));
             } }, "alertModal()"),
-            (0, import_react62.createElement)(Button, { onClick: async () => {
+            (0, import_react64.createElement)(Button, { onClick: async () => {
               const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
               showToast(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
             } }, "confirmModal()")
@@ -60940,99 +61328,99 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exLargeModalTitle"), hint: t3("exLargeModalHint"), code: CODE_LARGE_MODAL },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           null,
-          (0, import_react62.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
-          (0, import_react62.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
-          open ? (0, import_react62.createElement)(Modal, {
+          (0, import_react64.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
+          (0, import_react64.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
+          open ? (0, import_react64.createElement)(Modal, {
             title: "\u4EFB\u52A1\u8BE6\u60C5",
             onClose: () => setOpen(false),
-            footer: (0, import_react62.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-          }, (0, import_react62.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+            footer: (0, import_react64.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+          }, (0, import_react64.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           null,
-          (0, import_react62.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
-          (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
-          largeOpen ? (0, import_react62.createElement)(
+          (0, import_react64.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
+          (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
+          largeOpen ? (0, import_react64.createElement)(
             Modal,
             {
               size: "lg",
               title: "\u4F1A\u8BDD\u8BB0\u5F55",
-              headerActions: (0, import_react62.createElement)(
+              headerActions: (0, import_react64.createElement)(
                 Button,
                 { variant: "outline", size: "sm", icon: iconOf("chevron", 14) },
                 "\u66F4\u591A"
               ),
               onClose: () => setLargeOpen(false),
-              footer: (0, import_react62.createElement)(
+              footer: (0, import_react64.createElement)(
                 "div",
                 { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-                (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
-                (0, import_react62.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
+                (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
+                (0, import_react64.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
               )
             },
-            (0, import_react62.createElement)(
+            (0, import_react64.createElement)(
               "div",
               null,
               Array.from(
                 { length: 40 },
-                (_, i2) => (0, import_react62.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
+                (_, i2) => (0, import_react64.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
               ),
-              (0, import_react62.createElement)("div", { className: "dshpc-modal__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
+              (0, import_react64.createElement)("div", { className: "dshpc-modal__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
             )
           ) : null
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           null,
-          (0, import_react62.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
-          (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
-          largeOpenB ? (0, import_react62.createElement)(
+          (0, import_react64.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
+          (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
+          largeOpenB ? (0, import_react64.createElement)(
             Modal,
             {
               size: "lg",
-              title: (0, import_react62.createElement)(
+              title: (0, import_react64.createElement)(
                 "div",
                 null,
-                (0, import_react62.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
-                (0, import_react62.createElement)("div", { className: "dshpc-modal__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
+                (0, import_react64.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
+                (0, import_react64.createElement)("div", { className: "dshpc-modal__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
               ),
               onClose: () => setLargeOpenB(false)
             },
-            (0, import_react62.createElement)(
+            (0, import_react64.createElement)(
               "div",
               null,
-              (0, import_react62.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
-              (0, import_react62.createElement)("div", { style: { marginTop: "12px", border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
+              (0, import_react64.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
+              (0, import_react64.createElement)("div", { style: { marginTop: "12px", border: "1px solid var(--dshpc-border-faint)", borderRadius: "8px", padding: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
             )
           ) : null
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exHostModalTitle"), hint: t3("exHostModalHint"), code: CODE_HOST_MODAL },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
-        (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
+        (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => {
           void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
         } }, 'alertModal({skin:"host"})'),
-        (0, import_react62.createElement)(Button, { variant: "ghost", onClick: async () => {
+        (0, import_react64.createElement)(Button, { variant: "ghost", onClick: async () => {
           const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
           showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
         } }, 'confirmModal({skin:"host"})'),
-        openNative ? (0, import_react62.createElement)(
+        openNative ? (0, import_react64.createElement)(
           Official.Modal,
           {
             open: openNative,
@@ -61041,22 +61429,22 @@ function FeedbackPage() {
             closeLabel: "\u5173\u95ED",
             description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
             contentClassName: "dshpc-native-demo-content",
-            footer: (0, import_react62.createElement)(
+            footer: (0, import_react64.createElement)(
               "div",
               { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-              (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
-              (0, import_react62.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
-              (0, import_react62.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+              (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react64.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react64.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
             )
           },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-            (0, import_react62.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
-            (0, import_react62.createElement)(
+            (0, import_react64.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react64.createElement)(
               "label",
               { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
-              (0, import_react62.createElement)(Checkbox, { checked: false, onChange: () => {
+              (0, import_react64.createElement)(Checkbox, { checked: false, onChange: () => {
               } }),
               "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
             )
@@ -61064,17 +61452,17 @@ function FeedbackPage() {
         ) : null
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exToastNotifyTitle"), hint: t3("exToastNotifyHint"), code: CODE_TOAST_NOTIFY },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react62.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
-        (0, import_react62.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react62.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react62.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
+        (0, import_react64.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react64.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react64.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react64.createElement)(
           Button,
           {
             onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
@@ -61085,7 +61473,7 @@ function FeedbackPage() {
           },
           "\u5355\u6309\u94AE+\u63CF\u8FF0"
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           Button,
           {
             onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
@@ -61100,15 +61488,15 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exToastHostTitle"), hint: t3("exToastHostHint"), code: CODE_TOAST_HOST },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react62.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
-        (0, import_react62.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
+        (0, import_react64.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
+        (0, import_react64.createElement)(
           Button,
           {
             onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
@@ -61119,18 +61507,18 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exToastSonnerTitle"), hint: t3("exToastSonnerHint"), code: CODE_TOAST_NATIVE },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" } },
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
+        (0, import_react64.createElement)(
           Button,
           {
             onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
@@ -61140,40 +61528,40 @@ function FeedbackPage() {
           "\u5E26\u56DE\u8C03"
         )
       ),
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
-        (0, import_react62.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
+        (0, import_react64.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exLoaderTitle"), hint: t3("exLoaderHint"), code: CODE_LOADER },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
         ...LOADER_VARIANTS.map(
-          (variant) => (0, import_react62.createElement)(
+          (variant) => (0, import_react64.createElement)(
             "div",
             { key: variant, style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
-            (0, import_react62.createElement)(
+            (0, import_react64.createElement)(
               "span",
               { style: { width: "56px", color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               variant
             ),
-            ...LOADER_SIZES.map((size4) => (0, import_react62.createElement)(Loader, { key: size4, variant, size: size4 }))
+            ...LOADER_SIZES.map((size4) => (0, import_react64.createElement)(Loader, { key: size4, variant, size: size4 }))
           )
         ),
         // 背景 / 定位 / 颜色都由调用方配：组件本身只是裸图标
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" } },
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "span",
             {
               style: {
@@ -61183,9 +61571,9 @@ function FeedbackPage() {
                 background: "var(--dshpc-surface-sunken)"
               }
             },
-            (0, import_react62.createElement)(Loader, { size: "sm" })
+            (0, import_react64.createElement)(Loader, { size: "sm" })
           ),
-          (0, import_react62.createElement)(
+          (0, import_react64.createElement)(
             "span",
             {
               style: {
@@ -61200,56 +61588,56 @@ function FeedbackPage() {
                 fontSize: "var(--dshpc-font-xs)"
               }
             },
-            (0, import_react62.createElement)(Loader, { variant: "blocks", size: "sm" }),
+            (0, import_react64.createElement)(Loader, { variant: "blocks", size: "sm" }),
             "\u6B63\u5728\u540C\u6B65"
           ),
-          (0, import_react62.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react62.createElement)(Loader, { size: "lg" }))
+          (0, import_react64.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react64.createElement)(Loader, { size: "lg" }))
         ),
         // 同族的胶囊不定进度：三档尺寸
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
-          (0, import_react62.createElement)(LoaderBar, { size: "sm" }),
-          (0, import_react62.createElement)(LoaderBar, { size: "md" }),
-          (0, import_react62.createElement)(LoaderBar, { size: "lg" })
+          (0, import_react64.createElement)(LoaderBar, { size: "sm" }),
+          (0, import_react64.createElement)(LoaderBar, { size: "md" }),
+          (0, import_react64.createElement)(LoaderBar, { size: "lg" })
         )
       )
     ),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(
       Example,
       { title: t3("exLoadingTitle"), hint: t3("exLoadingHint"), code: CODE_LOADING },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" } },
-          (0, import_react62.createElement)(LoadingToast, null),
-          (0, import_react62.createElement)(LoadingBlock, { text: "\u5904\u7406\u4E2D" })
+          (0, import_react64.createElement)(LoadingToast, null),
+          (0, import_react64.createElement)(LoadingBlock, { text: "\u5904\u7406\u4E2D" })
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-          (0, import_react62.createElement)(Button, { onClick: () => flash() }, "\u5168\u5C40 toast\uFF081.2s\uFF09"),
-          (0, import_react62.createElement)(Button, { variant: "outline", onClick: () => flash({ variant: "block", text: "\u5904\u7406\u4E2D\u2026" }) }, "\u5168\u5C40 block\uFF081.2s\uFF09"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u906E\u7F69 0.3", mask: true, maskOpacity: 0.3 }) }, "\u906E\u7F69 0.3"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u900F\u660E\u906E\u7F69", mask: true }) }, "\u906E\u7F69\u900F\u660E\uFF08\u4ECD\u6321\u4F4F\u70B9\u51FB\uFF09")
+          (0, import_react64.createElement)(Button, { onClick: () => flash() }, "\u5168\u5C40 toast\uFF081.2s\uFF09"),
+          (0, import_react64.createElement)(Button, { variant: "outline", onClick: () => flash({ variant: "block", text: "\u5904\u7406\u4E2D\u2026" }) }, "\u5168\u5C40 block\uFF081.2s\uFF09"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u906E\u7F69 0.3", mask: true, maskOpacity: 0.3 }) }, "\u906E\u7F69 0.3"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u900F\u660E\u906E\u7F69", mask: true }) }, "\u906E\u7F69\u900F\u660E\uFF08\u4ECD\u6321\u4F4F\u70B9\u51FB\uFF09")
         ),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(
           "div",
           { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-left", text: "top-left" }) }, "top-left"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-center", text: "top-center" }) }, "top-center"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-right", text: "top-right" }) }, "top-right"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "center", text: "center" }) }, "center"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-left", text: "bottom-left" }) }, "bottom-left"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-center", text: "bottom-center\uFF08\u9ED8\u8BA4\uFF09" }) }, "bottom-center"),
-          (0, import_react62.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-right", text: "bottom-right" }) }, "bottom-right")
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-left", text: "top-left" }) }, "top-left"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-center", text: "top-center" }) }, "top-center"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-right", text: "top-right" }) }, "top-right"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "center", text: "center" }) }, "center"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-left", text: "bottom-left" }) }, "bottom-left"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-center", text: "bottom-center\uFF08\u9ED8\u8BA4\uFF09" }) }, "bottom-center"),
+          (0, import_react64.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-right", text: "bottom-right" }) }, "bottom-right")
         )
       )
     ),
-    (0, import_react62.createElement)(DocCode, { id: "feedback" }),
-    (0, import_react62.createElement)(DocApi, { id: "feedback" })
+    (0, import_react64.createElement)(DocCode, { id: "feedback" }),
+    (0, import_react64.createElement)(DocApi, { id: "feedback" })
   );
 }
 var CODE_DOCK = `// 1) \u5EFA\u4E00\u4E2A dock \u63A7\u5236\u5668\uFF08\u5E94\u7528\u7EA7\u5355\u4F8B\uFF1BmaxPanels \u9ED8\u8BA4 3\uFF09
@@ -61281,8 +61669,8 @@ dock.isCollapsed('files')
 // 4) \u8BA2\u9605\u72B6\u6001\u9A71\u52A8 UI\uFF08React\uFF09
 const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`;
 function LayoutPage() {
-  const state = (0, import_react62.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
-  const [notice, setNotice] = (0, import_react62.useState)(null);
+  const state = (0, import_react64.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
+  const [notice, setNotice] = (0, import_react64.useState)(null);
   const open = (id3) => {
     const result = demoDock.open(id3);
     setNotice(result.ok ? null : t3("dockLimitWarn"));
@@ -61297,24 +61685,24 @@ function LayoutPage() {
   };
   const opened = state.ids;
   const collapsedIds = state.collapsed;
-  return (0, import_react62.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "layout" }),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(DocProse, { id: "layout" }),
+    (0, import_react64.createElement)(
       Example,
       { title: "PanelDock", hint: t3("dockHint"), code: CODE_DOCK },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
-        (0, import_react62.createElement)(Button, { size: "sm", onClick: () => open("A") }, t3("dockBtnOpenA")),
-        (0, import_react62.createElement)(Button, { size: "sm", onClick: () => open("B") }, t3("dockBtnOpenB")),
-        (0, import_react62.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t3("dockBtnOpenA2")),
-        (0, import_react62.createElement)(Button, { size: "sm", onClick: () => close("A") }, t3("dockBtnCloseA")),
-        (0, import_react62.createElement)(Button, { size: "sm", onClick: () => collapse("A") }, t3("dockBtnCollapseA")),
-        (0, import_react62.createElement)(Button, { size: "sm", onClick: () => open("default") }, t3("dockBtnDefault")),
-        (0, import_react62.createElement)(Button, { size: "sm", onClick: () => open("C") }, t3("dockBtnOpenC")),
-        (0, import_react62.createElement)(
+        (0, import_react64.createElement)(Button, { size: "sm", onClick: () => open("A") }, t3("dockBtnOpenA")),
+        (0, import_react64.createElement)(Button, { size: "sm", onClick: () => open("B") }, t3("dockBtnOpenB")),
+        (0, import_react64.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t3("dockBtnOpenA2")),
+        (0, import_react64.createElement)(Button, { size: "sm", onClick: () => close("A") }, t3("dockBtnCloseA")),
+        (0, import_react64.createElement)(Button, { size: "sm", onClick: () => collapse("A") }, t3("dockBtnCollapseA")),
+        (0, import_react64.createElement)(Button, { size: "sm", onClick: () => open("default") }, t3("dockBtnDefault")),
+        (0, import_react64.createElement)(Button, { size: "sm", onClick: () => open("C") }, t3("dockBtnOpenC")),
+        (0, import_react64.createElement)(
           Button,
           {
             size: "sm",
@@ -61327,21 +61715,21 @@ function LayoutPage() {
           t3("dockBtnReset")
         )
       ),
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } },
         `${t3("dockOpened")}${opened.length === 0 ? "\u2014" : opened.join(", ")}`,
         collapsedIds.length === 0 ? "" : `\u3000${t3("dockCollapsed")}${collapsedIds.join(", ")}`,
         notice === null ? "" : `\u3000${notice}`
       ),
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
         t3("dockMainText")
       )
     ),
-    (0, import_react62.createElement)(DocCode, { id: "layout" }),
-    (0, import_react62.createElement)(DocApi, { id: "layout" })
+    (0, import_react64.createElement)(DocCode, { id: "layout" }),
+    (0, import_react64.createElement)(DocApi, { id: "layout" })
   );
 }
 var CODE_DATETIME = `// \u5355\u4E2A\u65F6\u523B\uFF1Aprecision \u63A7\u5236\u7CBE\u5EA6\uFF08day / hour / minute / second\uFF09
@@ -61350,43 +61738,43 @@ h(DateTimePicker, { precision: 'minute', value: at, onChange: setAt })
 // \u65F6\u95F4\u6BB5\uFF1A\u8D77\u6B62\u4E24\u4E2A\u72EC\u7ACB\u6846\u3001\u540C\u65F6\u5C55\u5F00\uFF1Bday \u7CBE\u5EA6\u4E0B\u7ED3\u675F\u7AEF\u8865\u5230 23:59:59.999
 h(DateTimePicker, { mode: 'range', precision: 'day', value: range, onChange: setRange })`;
 function DateTimePage() {
-  const [singleDay, setSingleDay] = (0, import_react62.useState)(null);
-  const [singleMinute, setSingleMinute] = (0, import_react62.useState)(null);
-  const [rangeDay, setRangeDay] = (0, import_react62.useState)(null);
-  const [rangeSecond, setRangeSecond] = (0, import_react62.useState)(null);
-  return (0, import_react62.createElement)(
+  const [singleDay, setSingleDay] = (0, import_react64.useState)(null);
+  const [singleMinute, setSingleMinute] = (0, import_react64.useState)(null);
+  const [rangeDay, setRangeDay] = (0, import_react64.useState)(null);
+  const [rangeSecond, setRangeSecond] = (0, import_react64.useState)(null);
+  return (0, import_react64.createElement)(
     "div",
     null,
-    (0, import_react62.createElement)(DocProse, { id: "datetime-picker" }),
-    (0, import_react62.createElement)(
+    (0, import_react64.createElement)(DocProse, { id: "datetime-picker" }),
+    (0, import_react64.createElement)(
       Example,
       { title: "DateTimePicker", hint: t3("dateTimePickerHint"), code: CODE_DATETIME },
-      (0, import_react62.createElement)(
+      (0, import_react64.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react62.createElement)(DateTimePicker, {
+        (0, import_react64.createElement)(DateTimePicker, {
           precision: "day",
           value: singleDay,
           onChange: (v) => setSingleDay(v)
         }),
-        (0, import_react62.createElement)(DateTimePicker, {
+        (0, import_react64.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v)
         }),
-        (0, import_react62.createElement)(DateTimePicker, {
+        (0, import_react64.createElement)(DateTimePicker, {
           mode: "range",
           precision: "day",
           value: rangeDay,
           onChange: (v) => setRangeDay(v)
         }),
-        (0, import_react62.createElement)(DateTimePicker, {
+        (0, import_react64.createElement)(DateTimePicker, {
           mode: "range",
           precision: "second",
           value: rangeSecond,
           onChange: (v) => setRangeSecond(v)
         }),
-        (0, import_react62.createElement)(DateTimePicker, {
+        (0, import_react64.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v),
@@ -61394,20 +61782,20 @@ function DateTimePage() {
         })
       )
     ),
-    (0, import_react62.createElement)(DocCode, { id: "datetime-picker" }),
-    (0, import_react62.createElement)(DocApi, { id: "datetime-picker" })
+    (0, import_react64.createElement)(DocCode, { id: "datetime-picker" }),
+    (0, import_react64.createElement)(DocApi, { id: "datetime-picker" })
   );
 }
 
 // packages/demo/src/sections/blocks.tsx
-var import_react70 = require("react");
+var import_react72 = require("react");
 var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/explorer/FileBrowser.js
-var import_react68 = require("react");
+var import_react70 = require("react");
 
 // dist/explorer/preview/index.js
-var import_react67 = require("react");
+var import_react69 = require("react");
 
 // dist/explorer/types.js
 var HTML_KINDS = ["html", "htm"];
@@ -61719,7 +62107,7 @@ function workspaceAnchorForPath(path, items) {
 }
 
 // dist/explorer/preview/BytesPreview.js
-var import_react63 = require("react");
+var import_react65 = require("react");
 
 // dist/explorer/explorer-css.generated.js
 var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  padding:4px 10px;border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbs-*\uFF09\u3002\n   \u5C42\u5E8F\uFF1A\u5144\u5F1F\u662F 30/31\uFF1B\u672C\u4ED3 picker \u9762\u677F\u662F 1100\uFF0C\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E\u5B83\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  box-shadow:0 4px 16px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:8px 14px;border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6838\u5FC3 outline \u94AE\uFF0C\u76AE\u80A4\u53D6\u5144\u5F1F .dsh-tdt-sv-tree-act\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF09\u3002\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;appearance:none;background:0 0;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  height:auto;padding:2px 8px;font-size:var(--dshpc-font-sm);line-height:1.4;\n  color:var(--dshpc-fg-2);cursor:pointer;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n.dshpc-fb .dshpc-fb__row-act:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09\u3002\n   \u5FC5\u987B border-box\uFF1A\u6E32\u67D3\u6001 inline \u52A0\u4E86 padding:12px 14px\uFF0Ccontent-box \u4E0B width:100%+padding\n   \u4F1A\u6EA2\u51FA\u7236\u5C42 28px\uFF08\u7236 .dshpc-fb \u65E0 overflow \u88C1\u5207\uFF09\u2192 \u6052\u591A\u4E00\u6761\u6A2A\u6EDA\u6761\uFF1Bborder-box \u628A padding\n   \u7B97\u8FDB 100%\uFF0C\u4ECE\u6839\u6D88\u9664\u8BE5\u6EA2\u51FA\u3002 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n/* iframe \u7684\u5916\u58F3\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-fill\uFF09\uFF1Aiframe \u5FC5\u987B\u5305\u5728\u8FD9\u4E00\u5C42\u91CC\u624D\u62FF\u5F97\u5230\u9AD8\u5EA6\u2014\u2014\n   \u88F8\u6302 iframe \u65F6\u66FF\u6362\u5143\u7D20\u7684\u81EA\u52A8\u6700\u5C0F\u5C3A\u5BF8\u4F1A\u8BA9\u9AD8\u5EA6\u7B97\u4E0D\u51FA\u6765\uFF08\u8868\u73B0\u4E3A\u9884\u89C8\u533A\u6574\u7247\u7A7A\u767D\u3001\u50CF\u6CA1\u53CD\u5E94\uFF09\u3002 */\n.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}\n.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
@@ -61728,9 +62116,9 @@ var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dsh
 function BytesPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [url, setUrl] = (0, import_react63.useState)(null);
-  const [failed, setFailed] = (0, import_react63.useState)(null);
-  (0, import_react63.useEffect)(() => {
+  const [url, setUrl] = (0, import_react65.useState)(null);
+  const [failed, setFailed] = (0, import_react65.useState)(null);
+  (0, import_react65.useEffect)(() => {
     let alive = true;
     let objectUrl = null;
     setUrl(null);
@@ -61762,30 +62150,30 @@ function BytesPreview(props) {
     };
   }, [props.workspaceFiles, props.sessionId, props.path, props.mime]);
   if (failed !== null)
-    return (0, import_react63.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react65.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (url === null)
-    return (0, import_react63.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+    return (0, import_react65.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   if (props.kind === "image") {
-    return (0, import_react63.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
+    return (0, import_react65.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
   }
-  return (0, import_react63.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react63.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path }));
+  return (0, import_react65.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react65.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path }));
 }
 
 // dist/explorer/preview/HtmlPreview.js
-var import_react65 = require("react");
+var import_react67 = require("react");
 
 // dist/explorer/preview/TextPreview.js
-var import_react64 = require("react");
+var import_react66 = require("react");
 function TextPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [text2, setText] = (0, import_react64.useState)("");
-  const [truncated, setTruncated] = (0, import_react64.useState)(false);
-  const [nextOffset, setNextOffset] = (0, import_react64.useState)(null);
-  const [loading, setLoading] = (0, import_react64.useState)(false);
-  const [failed, setFailed] = (0, import_react64.useState)(null);
-  const accRef = (0, import_react64.useRef)("");
-  const load = (0, import_react64.useCallback)(async (offset4, append2) => {
+  const [text2, setText] = (0, import_react66.useState)("");
+  const [truncated, setTruncated] = (0, import_react66.useState)(false);
+  const [nextOffset, setNextOffset] = (0, import_react66.useState)(null);
+  const [loading, setLoading] = (0, import_react66.useState)(false);
+  const [failed, setFailed] = (0, import_react66.useState)(null);
+  const accRef = (0, import_react66.useRef)("");
+  const load = (0, import_react66.useCallback)(async (offset4, append2) => {
     setLoading(true);
     try {
       const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset4 > 0 ? { offset: offset4 } : {}));
@@ -61820,7 +62208,7 @@ function TextPreview(props) {
       setLoading(false);
     }
   }, [props.workspaceFiles, props.sessionId, props.path, props.maxBytes]);
-  (0, import_react64.useEffect)(() => {
+  (0, import_react66.useEffect)(() => {
     accRef.current = "";
     setText("");
     setTruncated(false);
@@ -61829,11 +62217,11 @@ function TextPreview(props) {
     void load(0, false);
   }, [load]);
   if (failed !== null)
-    return (0, import_react64.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react66.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (text2 === "" && loading)
-    return (0, import_react64.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+    return (0, import_react66.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   const rendered = props.markdown && !props.sourceView;
-  return (0, import_react64.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "12px 14px" } : {} } }, truncated ? (0, import_react64.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react64.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react64.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react64.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react64.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react64.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
+  return (0, import_react66.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "12px 14px" } : {} } }, truncated ? (0, import_react66.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react66.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react66.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react66.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react66.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react66.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
 }
 
 // dist/explorer/preview/HtmlPreview.js
@@ -61874,9 +62262,9 @@ ${doc2.documentElement.outerHTML}`;
 function HtmlPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [doc2, setDoc] = (0, import_react65.useState)(null);
-  const [failed, setFailed] = (0, import_react65.useState)(null);
-  (0, import_react65.useEffect)(() => {
+  const [doc2, setDoc] = (0, import_react67.useState)(null);
+  const [failed, setFailed] = (0, import_react67.useState)(null);
+  (0, import_react67.useEffect)(() => {
     if (props.sourceView)
       return;
     let alive = true;
@@ -61910,7 +62298,7 @@ function HtmlPreview(props) {
     };
   }, [props.workspaceFiles, props.sessionId, props.path, props.sourceView]);
   if (props.sourceView) {
-    return (0, import_react65.createElement)(TextPreview, {
+    return (0, import_react67.createElement)(TextPreview, {
       workspaceFiles: props.workspaceFiles,
       sessionId: props.sessionId,
       path: props.path,
@@ -61921,20 +62309,20 @@ function HtmlPreview(props) {
     });
   }
   if (failed !== null)
-    return (0, import_react65.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react67.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (doc2 === null)
-    return (0, import_react65.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react65.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react65.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2, title: props.path }));
+    return (0, import_react67.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react67.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react67.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2, title: props.path }));
 }
 
 // dist/explorer/preview/OfficePreview.js
-var import_react66 = require("react");
+var import_react68 = require("react");
 function OfficePreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [url, setUrl] = (0, import_react66.useState)(null);
-  const [failed, setFailed] = (0, import_react66.useState)(null);
-  (0, import_react66.useEffect)(() => {
+  const [url, setUrl] = (0, import_react68.useState)(null);
+  const [failed, setFailed] = (0, import_react68.useState)(null);
+  (0, import_react68.useEffect)(() => {
     let alive = true;
     let objectUrl = null;
     setUrl(null);
@@ -61964,13 +62352,13 @@ function OfficePreview(props) {
     };
   }, [props.officeToPdf, props.sessionId, props.path]);
   if (props.officeToPdf === null) {
-    return (0, import_react66.createElement)("div", { className: "dshpc-fb__note" }, tt("previewOfficeUnavailable"));
+    return (0, import_react68.createElement)("div", { className: "dshpc-fb__note" }, tt("previewOfficeUnavailable"));
   }
   if (failed !== null)
-    return (0, import_react66.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react68.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (url === null)
-    return (0, import_react66.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react66.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
+    return (0, import_react68.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react68.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
 }
 
 // dist/explorer/preview/index.js
@@ -61982,7 +62370,7 @@ function FilePreview(props) {
   switch (info.kind) {
     case "image":
     case "pdf":
-      return (0, import_react67.createElement)(BytesPreview, {
+      return (0, import_react69.createElement)(BytesPreview, {
         workspaceFiles: props.workspaceFiles,
         sessionId: props.sessionId,
         path: props.path,
@@ -61991,14 +62379,14 @@ function FilePreview(props) {
         translate: tt
       });
     case "office":
-      return (0, import_react67.createElement)(OfficePreview, {
+      return (0, import_react69.createElement)(OfficePreview, {
         officeToPdf: props.officeToPdf ?? null,
         sessionId: props.sessionId,
         path: props.path,
         translate: tt
       });
     case "html":
-      return (0, import_react67.createElement)(HtmlPreview, {
+      return (0, import_react69.createElement)(HtmlPreview, {
         workspaceFiles: props.workspaceFiles,
         sessionId: props.sessionId,
         path: props.path,
@@ -62007,7 +62395,7 @@ function FilePreview(props) {
       });
     case "md":
     case "text":
-      return (0, import_react67.createElement)(TextPreview, {
+      return (0, import_react69.createElement)(TextPreview, {
         workspaceFiles: props.workspaceFiles,
         sessionId: props.sessionId,
         path: props.path,
@@ -62023,7 +62411,7 @@ function FilePreview(props) {
 function crumbsMenuEntries(params) {
   const { workspaces, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
   const out = [];
-  const wsEntry = (ws, current3) => (0, import_react68.createElement)("button", {
+  const wsEntry = (ws, current3) => (0, import_react70.createElement)("button", {
     key: `ws:${ws}`,
     type: "button",
     role: "menuitem",
@@ -62038,8 +62426,8 @@ function crumbsMenuEntries(params) {
       else
         onPickWorkspace?.(ws);
     }
-  }, (0, import_react68.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react68.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react68.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current3 ? 600 : 400 } }, ws));
-  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react68.createElement)("button", {
+  }, (0, import_react70.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react70.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react70.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current3 ? 600 : 400 } }, ws));
+  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react70.createElement)("button", {
     key: `dir:${crumb.path}`,
     type: "button",
     role: "menuitem",
@@ -62049,10 +62437,10 @@ function crumbsMenuEntries(params) {
     onClick: () => {
       onLoadDir?.(crumb.path);
     }
-  }, withArrow ? (0, import_react68.createElement)(import_react68.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react68.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react68.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react68.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react68.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
+  }, withArrow ? (0, import_react70.createElement)(import_react70.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react70.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react70.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react70.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react70.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
   if (workspaces === void 0) {
     if (crumbs.length === 0)
-      return [(0, import_react68.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
+      return [(0, import_react70.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
     return crumbs.map((crumb, index3) => pathEntry(crumb, index3 === 0 ? 0 : index3 - 1, index3 !== 0));
   }
   const segments = rootName !== "" && crumbs.length > 0 && crumbs[0]?.path === "" ? crumbs.slice(1) : crumbs;
@@ -62078,30 +62466,30 @@ function FileBrowser(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
   const picker = props.picker === true;
-  const cacheRef = (0, import_react68.useRef)(null);
+  const cacheRef = (0, import_react70.useRef)(null);
   if (cacheRef.current === null)
     cacheRef.current = props.rootCache ?? createRootCache();
   const rootCache = props.rootCache ?? cacheRef.current;
-  const [mode, setMode] = (0, import_react68.useState)("loading");
-  const [dir, setDir] = (0, import_react68.useState)("");
-  const [listing, setListing] = (0, import_react68.useState)(null);
-  const [truncated, setTruncated] = (0, import_react68.useState)(false);
-  const [viewing, setViewing] = (0, import_react68.useState)(null);
-  const [listErr, setListErr] = (0, import_react68.useState)(null);
-  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react68.useState)(false);
-  const [menuOpen, setMenuOpen] = (0, import_react68.useState)(false);
-  const regionRef = (0, import_react68.useRef)(null);
-  const measureRef = (0, import_react68.useRef)(null);
-  const [sourceView, setSourceView] = (0, import_react68.useState)(false);
-  const [reloadNonce, setReloadNonce] = (0, import_react68.useState)(0);
-  const [copied, setCopied] = (0, import_react68.useState)(false);
-  const [openDirs, setOpenDirs] = (0, import_react68.useState)(/* @__PURE__ */ new Set());
-  const [childCache, setChildCache] = (0, import_react68.useState)({});
-  const [rootNonce, setRootNonce] = (0, import_react68.useState)(0);
-  const [outside, setOutside] = (0, import_react68.useState)(false);
-  const hostWorkspaces = (0, import_react68.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const [mode, setMode] = (0, import_react70.useState)("loading");
+  const [dir, setDir] = (0, import_react70.useState)("");
+  const [listing, setListing] = (0, import_react70.useState)(null);
+  const [truncated, setTruncated] = (0, import_react70.useState)(false);
+  const [viewing, setViewing] = (0, import_react70.useState)(null);
+  const [listErr, setListErr] = (0, import_react70.useState)(null);
+  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react70.useState)(false);
+  const [menuOpen, setMenuOpen] = (0, import_react70.useState)(false);
+  const regionRef = (0, import_react70.useRef)(null);
+  const measureRef = (0, import_react70.useRef)(null);
+  const [sourceView, setSourceView] = (0, import_react70.useState)(false);
+  const [reloadNonce, setReloadNonce] = (0, import_react70.useState)(0);
+  const [copied, setCopied] = (0, import_react70.useState)(false);
+  const [openDirs, setOpenDirs] = (0, import_react70.useState)(/* @__PURE__ */ new Set());
+  const [childCache, setChildCache] = (0, import_react70.useState)({});
+  const [rootNonce, setRootNonce] = (0, import_react70.useState)(0);
+  const [outside, setOutside] = (0, import_react70.useState)(false);
+  const hostWorkspaces = (0, import_react70.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = props.workspaceAnchors ?? hostWorkspaces;
-  const anchorMatch = (0, import_react68.useMemo)(() => workspaceAnchorForPath(props.path, anchors), [props.path, anchors]);
+  const anchorMatch = (0, import_react70.useMemo)(() => workspaceAnchorForPath(props.path, anchors), [props.path, anchors]);
   const listSessionId = anchorMatch?.sessionId ?? props.sessionId;
   const noteOutside = (parsed) => {
     if (parsed === null || parsed === void 0)
@@ -62114,7 +62502,7 @@ function FileBrowser(props) {
     if (code3 === "outside-workspace" || code3 === "not-found")
       setOutside(true);
   };
-  const fetchDir = (0, import_react68.useCallback)((targetDir) => {
+  const fetchDir = (0, import_react70.useCallback)((targetDir) => {
     setDir(targetDir);
     setViewing(null);
     setListErr(null);
@@ -62143,14 +62531,14 @@ function FileBrowser(props) {
       setMode("error");
     });
   }, [listSessionId, props.workspaceFiles]);
-  const loadDir = (0, import_react68.useCallback)((targetDir) => {
+  const loadDir = (0, import_react70.useCallback)((targetDir) => {
     if (targetDir === dir) {
       fetchDir(targetDir);
       return;
     }
     fetchDir(targetDir);
   }, [dir, fetchDir]);
-  (0, import_react68.useEffect)(() => {
+  (0, import_react70.useEffect)(() => {
     let alive = true;
     setMode("loading");
     setListErr(null);
@@ -62251,7 +62639,7 @@ function FileBrowser(props) {
       alive = false;
     };
   }, [props.workspaceFiles, props.path, rootCache, listSessionId]);
-  (0, import_react68.useLayoutEffect)(() => {
+  (0, import_react70.useLayoutEffect)(() => {
     const region = regionRef.current;
     const measure = measureRef.current;
     if (region === null || measure === null)
@@ -62264,14 +62652,14 @@ function FileBrowser(props) {
     ro.observe(region);
     return () => ro.disconnect();
   }, [dir, viewing, mode, listing, rootNonce, outside]);
-  const reload = (0, import_react68.useCallback)(() => {
+  const reload = (0, import_react70.useCallback)(() => {
     if (viewing !== null) {
       setReloadNonce((n) => n + 1);
       return;
     }
     loadDir(dir);
   }, [viewing, dir, loadDir]);
-  const copyPath = (0, import_react68.useCallback)(() => {
+  const copyPath = (0, import_react70.useCallback)(() => {
     const target = viewing ?? dir;
     if (target === "")
       return;
@@ -62284,7 +62672,7 @@ function FileBrowser(props) {
     }).catch(() => {
     });
   }, [viewing, dir, rootCache, listSessionId]);
-  const toggleDir = (0, import_react68.useCallback)((path) => {
+  const toggleDir = (0, import_react70.useCallback)((path) => {
     setOpenDirs((prev) => {
       const next = new Set(prev);
       if (next.has(path))
@@ -62308,7 +62696,7 @@ function FileBrowser(props) {
   }, [childCache, props.workspaceFiles, listSessionId]);
   const extsOnly = picker && props.filter !== void 0 && props.filter.dirs !== true && (props.filter.exts?.length ?? 0) > 0;
   const dirPickable = picker && props.onPick !== void 0 && !extsOnly;
-  const renderTree = (0, import_react68.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
+  const renderTree = (0, import_react70.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
     const childPath = joinPath(baseDir, entry.name);
     const isDir = entry.type === "directory";
     if (!isDir && picker && !matchesFilter(childPath, false, props.filter))
@@ -62326,7 +62714,7 @@ function FileBrowser(props) {
         setReloadNonce(0);
         setSourceView(false);
       };
-      return (0, import_react68.createElement)(
+      return (0, import_react70.createElement)(
         "div",
         {
           key: childPath,
@@ -62340,11 +62728,11 @@ function FileBrowser(props) {
               pick2();
           }
         },
-        (0, import_react68.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react68.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })),
-        (0, import_react68.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+        (0, import_react70.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react70.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })),
+        (0, import_react70.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
         // 选择器里文件行也给一枚「选择」钮，与目录行的操作位对齐（目录没有时它仍在，
         // 「点行 = 选中」的旧默契保持不变，外显入口不再缺）。
-        picker && props.onPick !== void 0 ? (0, import_react68.createElement)(Button, {
+        picker && props.onPick !== void 0 ? (0, import_react70.createElement)(Button, {
           variant: "outline",
           size: "sm",
           className: "dshpc-fb__row-act",
@@ -62370,7 +62758,7 @@ function FileBrowser(props) {
       }
       loadDir(childPath);
     };
-    return (0, import_react68.createElement)(import_react68.Fragment, { key: childPath }, (0, import_react68.createElement)(
+    return (0, import_react70.createElement)(import_react70.Fragment, { key: childPath }, (0, import_react70.createElement)(
       "div",
       {
         className: "dshpc-fb__row",
@@ -62384,11 +62772,11 @@ function FileBrowser(props) {
         }
       },
       // 展开 / 收起：核心 IconButton，20×20 命中位 + 展开时转 90°（与兄弟 .dsh-tdt-sv-tree-toggle 同款）。
-      (0, import_react68.createElement)(IconButton, {
+      (0, import_react70.createElement)(IconButton, {
         variant: "plain",
         size: "sm",
         className: `dshpc-fb__row-toggle${isOpen2 ? " dshpc-fb__row-toggle--open" : ""}`,
-        icon: (0, import_react68.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 16 }),
+        icon: (0, import_react70.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 16 }),
         label: isOpen2 ? tt("explorerCollapse") : tt("explorerExpand"),
         "aria-expanded": isOpen2,
         onClick: (event) => {
@@ -62396,27 +62784,27 @@ function FileBrowser(props) {
           toggleDir(childPath);
         }
       }),
-      (0, import_react68.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+      (0, import_react70.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
       // picker：仅目录可选时才出「选择」（扩展名过滤下没有，目录只作导航）；
       // 浏览态：出「进入」。
-      picker ? dirPickable ? (0, import_react68.createElement)(Button, {
+      picker ? dirPickable ? (0, import_react70.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
         "aria-label": tt("explorerPickDirAria"),
         onClick: actThisDir
-      }, tt("explorerPickDir")) : null : (0, import_react68.createElement)(Button, {
+      }, tt("explorerPickDir")) : null : (0, import_react70.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
         "aria-label": tt("explorerEnter"),
         onClick: actThisDir
       }, tt("explorerEnter"))
-    ), isOpen2 ? (0, import_react68.createElement)(
+    ), isOpen2 ? (0, import_react70.createElement)(
       "div",
       { className: "dshpc-fb__row-children" },
       // 硬性规定：不新建 Loading、不写加载文案 ⇒ 还在拉就空着（源实现用户 2026-10-05）。
-      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react68.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react68.createElement)(import_react68.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react68.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
+      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react70.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react70.createElement)(import_react70.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react70.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
     ) : null);
   }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, listSessionId, rootCache, dir, loadDir, tt]);
   const rootAbs = rootCache.get(listSessionId);
@@ -62438,63 +62826,63 @@ function FileBrowser(props) {
     onPickWorkspace: props.onSelectWorkspace,
     onLoadDir: loadDir
   });
-  const crumbButton = (label, onClick, current3 = false) => (0, import_react68.createElement)(Button, {
+  const crumbButton = (label, onClick, current3 = false) => (0, import_react70.createElement)(Button, {
     variant: "ghost",
     size: "sm",
     className: `dshpc-fb__crumb${current3 ? " dshpc-fb__crumb--current" : ""}`,
     disabled: onClick === void 0,
     tabIndex: onClick === void 0 ? -1 : 0,
     onClick
-  }, (0, import_react68.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
-  const crumbBar = (0, import_react68.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react68.createElement)(
+  }, (0, import_react70.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
+  const crumbBar = (0, import_react70.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react70.createElement)(
     "div",
     { className: "dshpc-fb__menu-wrap" },
-    (0, import_react68.createElement)(IconButton, {
+    (0, import_react70.createElement)(IconButton, {
       variant: "plain",
       size: "md",
-      icon: (0, import_react68.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
+      icon: (0, import_react70.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
       label: tt("explorerLevels"),
       "aria-expanded": menuOpen,
       onClick: () => setMenuOpen((v) => !v)
     }),
     // 选层下拉 = 自写浮层（抄兄弟 .dsh-tdt-sv-crumbs-*）：透明遮罩点一下即收，
     // 遮罩层序高于 picker 面板（1100）⇒ 菜单开着时点面板也算「点外部」。
-    menuOpen ? (0, import_react68.createElement)(import_react68.Fragment, null, (0, import_react68.createElement)("div", {
+    menuOpen ? (0, import_react70.createElement)(import_react70.Fragment, null, (0, import_react70.createElement)("div", {
       className: "dshpc-fb__crumbs-backdrop",
       onClick: () => setMenuOpen(false)
-    }), (0, import_react68.createElement)("div", { className: "dshpc-fb__crumbs-menu", role: "menu" }, menuItems)) : null
-  ), (0, import_react68.createElement)(
+    }), (0, import_react70.createElement)("div", { className: "dshpc-fb__crumbs-menu", role: "menu" }, menuItems)) : null
+  ), (0, import_react70.createElement)(
     "div",
     { ref: regionRef, className: "dshpc-fb__crumbs" },
     // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
-    (0, import_react68.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index3) => (0, import_react68.createElement)(import_react68.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react68.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
+    (0, import_react70.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index3) => (0, import_react70.createElement)(import_react70.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react70.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
     // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
-    crumbsOverflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index3) => (0, import_react68.createElement)(import_react68.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react68.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))
-  ), (0, import_react68.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react68.createElement)(IconButton, {
+    crumbsOverflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index3) => (0, import_react70.createElement)(import_react70.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react70.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))
+  ), (0, import_react70.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react70.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react68.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+    icon: (0, import_react70.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
     label: tt("previewClose"),
     onClick: props.onClose
   })));
-  const crumbBarPlain = (0, import_react68.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react68.createElement)(MarqueeText, {
+  const crumbBarPlain = (0, import_react70.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react70.createElement)(MarqueeText, {
     text: dir,
     title: dir,
     className: "dshpc-fb__bar-plain",
     style: { flex: "1 1 auto", minWidth: 0 }
-  }), (0, import_react68.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react68.createElement)(IconButton, {
+  }), (0, import_react70.createElement)("div", { className: "dshpc-fb__actions" }, props.onClose === void 0 ? null : (0, import_react70.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react68.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+    icon: (0, import_react70.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
     label: tt("previewClose"),
     onClick: props.onClose
   })));
-  const titleBar = viewing === null ? null : (0, import_react68.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react68.createElement)(MarqueeText, {
+  const titleBar = viewing === null ? null : (0, import_react70.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react70.createElement)(MarqueeText, {
     text: baseNameOfPath(viewing),
     title: viewing,
     className: "dshpc-fb__title-inner",
     style: { flex: "1 1 auto", minWidth: 0 }
-  }), (0, import_react68.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react68.createElement)(Segmented, {
+  }), (0, import_react70.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react70.createElement)(Segmented, {
     size: "sm",
     label: viewingIsMd ? tt("previewMdSwitchAria") : tt("previewHtmlSwitchAria"),
     value: sourceView ? "source" : "render",
@@ -62503,22 +62891,22 @@ function FileBrowser(props) {
       { value: "source", label: tt("previewSource") }
     ],
     onChange: (next) => setSourceView(next === "source")
-  }) : null, (0, import_react68.createElement)(IconButton, {
+  }) : null, (0, import_react70.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: copied ? (0, import_react68.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react68.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
+    icon: copied ? (0, import_react70.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react70.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
     label: tt("previewCopyPath"),
     onClick: copyPath
-  }), (0, import_react68.createElement)(IconButton, {
+  }), (0, import_react70.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react68.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
+    icon: (0, import_react70.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
     label: tt("previewRefresh"),
     onClick: reload
   })));
   let body;
   if (viewing !== null) {
-    body = (0, import_react68.createElement)(FilePreview, {
+    body = (0, import_react70.createElement)(FilePreview, {
       key: `${viewing}:${reloadNonce}`,
       workspaceFiles: props.workspaceFiles,
       officeToPdf: props.officeToPdf ?? null,
@@ -62528,32 +62916,32 @@ function FileBrowser(props) {
       translate: tt
     });
   } else if (mode === "error" && listErr !== null) {
-    body = (0, import_react68.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react68.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
+    body = (0, import_react70.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react70.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
   } else if (listing !== null) {
     const visible = listing.filter((entry) => entry.type === "directory" || matchesFilter(joinPath(dir, entry.name), false, picker ? props.filter : void 0));
-    body = visible.length === 0 ? (0, import_react68.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react68.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react68.createElement)("div", { className: "dshpc-fb__tree" }, renderTree(visible, dir), truncated ? (0, import_react68.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
+    body = visible.length === 0 ? (0, import_react70.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react70.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react70.createElement)("div", { className: "dshpc-fb__tree" }, renderTree(visible, dir), truncated ? (0, import_react70.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
   } else {
-    body = (0, import_react68.createElement)("div", { className: "dshpc-fb__body" });
+    body = (0, import_react70.createElement)("div", { className: "dshpc-fb__body" });
   }
-  return (0, import_react68.createElement)("div", {
+  return (0, import_react70.createElement)("div", {
     className: "dshpc-fb",
     style: props.style ?? void 0
   }, outside ? crumbBarPlain : crumbBar, titleBar, body);
 }
 
 // dist/explorer/open.js
-var import_react69 = require("react");
+var import_react71 = require("react");
 var import_client6 = require("react-dom/client");
 function PreviewBody(props) {
   const options = props.options;
-  const hostWorkspaces = (0, import_react69.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const hostWorkspaces = (0, import_react71.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = options.workspaceAnchors ?? hostWorkspaces;
   const entryTitle = workspaceAnchorForPath(options.path ?? "", anchors)?.title ?? options.rootName ?? "";
-  const [picked, setPicked] = (0, import_react69.useState)(null);
+  const [picked, setPicked] = (0, import_react71.useState)(null);
   const wsTitle = picked ?? entryTitle;
   const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId ?? pickWorkspaceAnchor(anchors)?.sessionId ?? "";
   const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title);
-  return (0, import_react69.createElement)(FileBrowser, {
+  return (0, import_react71.createElement)(FileBrowser, {
     // key 带工作区+会话 ⇒ 切换即重挂载（FileBrowser 的 dir/listing/学根全属于旧工作区）。
     key: `${wsTitle}:${sessionId}`,
     workspaceFiles: options.workspaceFiles,
@@ -62680,11 +63068,11 @@ function openFilePreview(options) {
       dock.expand(PREVIEW_PANEL_ID);
     const internalSwitch = o.onSelectWorkspace === void 0;
     const contentKey = `${o.path ?? ""}#${++openSeq}`;
-    root.render((0, import_react69.createElement)(
+    root.render((0, import_react71.createElement)(
       "div",
       // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
       { style: { display: "contents", ["--dshpc-dock-h"]: "100%" } },
-      (0, import_react69.createElement)(PanelDock, { dock, mainMinWidth: o.mainMinWidth ?? 480, translate: o.translate }, (0, import_react69.createElement)(DockPanel, {
+      (0, import_react71.createElement)(PanelDock, { dock, mainMinWidth: o.mainMinWidth ?? 480, translate: o.translate }, (0, import_react71.createElement)(DockPanel, {
         id: PREVIEW_PANEL_ID,
         // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
         header: null,
@@ -62696,7 +63084,7 @@ function openFilePreview(options) {
         width: pinnedWidth ?? o.width ?? 460,
         minWidth: o.minWidth ?? 320,
         maxWidth: o.maxWidth
-      }, o.content !== void 0 ? o.content() : internalSwitch ? (0, import_react69.createElement)(PreviewBody, { key: contentKey, options: o, onClose: close }) : (0, import_react69.createElement)(FileBrowser, {
+      }, o.content !== void 0 ? o.content() : internalSwitch ? (0, import_react71.createElement)(PreviewBody, { key: contentKey, options: o, onClose: close }) : (0, import_react71.createElement)(FileBrowser, {
         key: contentKey,
         workspaceFiles: o.workspaceFiles,
         officeToPdf: o.officeToPdf ?? null,
@@ -62783,7 +63171,7 @@ function pickWorkspaceFile(options) {
     ensureComponentStyles("panel-dock", PANEL_DOCK_CSS, getStyleKit());
     ensureComponentStyles("feedback", FEEDBACK_CSS, getStyleKit());
     const root = (0, import_client6.createRoot)(panel);
-    root.render((0, import_react69.createElement)(FileBrowser, {
+    root.render((0, import_react71.createElement)(FileBrowser, {
       workspaceFiles: files,
       officeToPdf: options.officeToPdf ?? null,
       sessionId,
@@ -62900,13 +63288,13 @@ var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'`;
 function useExplorerHost() {
-  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react70.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react70.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react72.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react72.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
   return { workspaceFiles: workspaceFiles2, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
 }
 function NotReady(props) {
-  return (0, import_react70.createElement)(
+  return (0, import_react72.createElement)(
     "div",
     { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } },
     t3(props.which === "files" ? "explorerFilesNone" : "explorerAnchorNone")
@@ -62914,12 +63302,12 @@ function NotReady(props) {
 }
 function OpenPreviewDemo() {
   const { workspaceFiles: workspaceFiles2, anchor, workspaceNames } = useExplorerHost();
-  const [samples, setSamples] = (0, import_react70.useState)(null);
-  const [phase, setPhase] = (0, import_react70.useState)("idle");
-  const [last2, setLast] = (0, import_react70.useState)(null);
-  const pending = (0, import_react70.useRef)(null);
+  const [samples, setSamples] = (0, import_react72.useState)(null);
+  const [phase, setPhase] = (0, import_react72.useState)("idle");
+  const [last2, setLast] = (0, import_react72.useState)(null);
+  const pending = (0, import_react72.useRef)(null);
   const sessionId = anchor === null ? null : anchor.sessionId;
-  (0, import_react70.useEffect)(() => {
+  (0, import_react72.useEffect)(() => {
     if (workspaceFiles2 === null || sessionId === null) return;
     if (pending.current !== null) return;
     setPhase("probing");
@@ -62929,8 +63317,8 @@ function OpenPreviewDemo() {
       return s;
     });
   }, [workspaceFiles2, sessionId]);
-  if (workspaceFiles2 === null) return (0, import_react70.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react70.createElement)(NotReady, { which: "anchor" });
+  if (workspaceFiles2 === null) return (0, import_react72.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react72.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
     const mount = pageRow.element;
     if (mount === null) {
@@ -62946,14 +63334,14 @@ function OpenPreviewDemo() {
       if (s !== null) open(pick2(s), anchor.title);
     });
   };
-  return (0, import_react70.createElement)(
+  return (0, import_react72.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react70.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
-    (0, import_react70.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
-    (0, import_react70.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
-    last2 === null ? null : (0, import_react70.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
-    (0, import_react70.createElement)(
+    (0, import_react72.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
+    (0, import_react72.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
+    (0, import_react72.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
+    last2 === null ? null : (0, import_react72.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
+    (0, import_react72.createElement)(
       "div",
       { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", width: "100%" } },
       `${t3("explorerAnchorLabel")}${anchor.title} \xB7 ${t3("explorerSessionLabel")}${anchor.sessionId} \xB7 ${t3("explorerWorkspaces")}${String(workspaceNames.length)}`
@@ -62962,9 +63350,9 @@ function OpenPreviewDemo() {
 }
 function PickFileDemo() {
   const { workspaceFiles: workspaceFiles2, anchor } = useExplorerHost();
-  const [picked, setPicked] = (0, import_react70.useState)(null);
-  if (workspaceFiles2 === null) return (0, import_react70.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react70.createElement)(NotReady, { which: "anchor" });
+  const [picked, setPicked] = (0, import_react72.useState)(null);
+  if (workspaceFiles2 === null) return (0, import_react72.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react72.createElement)(NotReady, { which: "anchor" });
   const pick2 = (anchorBtn, filter2) => {
     void pickWorkspaceFile({
       sessionId: anchor.sessionId,
@@ -62973,10 +63361,10 @@ function PickFileDemo() {
       filter: filter2
     }).then((r2) => setPicked(r2 === null ? null : r2.path + (r2.isDir ? "/" : "")));
   };
-  return (0, import_react70.createElement)(
+  return (0, import_react72.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react70.createElement)(
+    (0, import_react72.createElement)(
       Button,
       {
         variant: "primary",
@@ -62984,7 +63372,7 @@ function PickFileDemo() {
       },
       t3("pickAny")
     ),
-    (0, import_react70.createElement)(
+    (0, import_react72.createElement)(
       Button,
       {
         variant: "secondary",
@@ -62992,16 +63380,16 @@ function PickFileDemo() {
       },
       t3("pickJsMd")
     ),
-    (0, import_react70.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
+    (0, import_react72.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
   );
 }
 function RealSessionListDemo() {
-  const state = (0, import_react70.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
-  const files = (0, import_react70.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react70.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const state = (0, import_react72.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
+  const files = (0, import_react72.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react72.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
-  const [openId, setOpenId] = (0, import_react70.useState)(null);
-  const view = (0, import_react70.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
+  const [openId, setOpenId] = (0, import_react72.useState)(null);
+  const view = (0, import_react72.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles2 = files.workspaceFiles;
   const canOpenFile = workspaceFiles2 !== null && anchor !== null;
   const openLinkedFile = (path, sessionId) => {
@@ -63027,7 +63415,7 @@ function RealSessionListDemo() {
       mount,
       sessionId: loc.sessionId,
       path: "",
-      content: () => (0, import_react70.createElement)(ChangedFileDiff, {
+      content: () => (0, import_react72.createElement)(ChangedFileDiff, {
         sessionId: loc.sessionId,
         seq: loc.seq,
         index: loc.index,
@@ -63040,16 +63428,16 @@ function RealSessionListDemo() {
     });
   };
   if (state.status !== "ready") {
-    return (0, import_react70.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
+    return (0, import_react72.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
   }
   if (state.rows.length === 0) {
-    return (0, import_react70.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListEmpty"));
+    return (0, import_react72.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListEmpty"));
   }
-  return (0, import_react70.createElement)(
+  return (0, import_react72.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "6px", maxWidth: "720px" } },
     ...state.rows.map(
-      (row) => (0, import_react70.createElement)(
+      (row) => (0, import_react72.createElement)(
         "button",
         {
           key: row.sessionId,
@@ -63072,22 +63460,22 @@ function RealSessionListDemo() {
             cursor: "pointer"
           }
         },
-        (0, import_react70.createElement)("span", { style: { flex: "1", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row.displayTitle),
-        row.running ? (0, import_react70.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
-        row.archived ? (0, import_react70.createElement)(
+        (0, import_react72.createElement)("span", { style: { flex: "1", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row.displayTitle),
+        row.running ? (0, import_react72.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
+        row.archived ? (0, import_react72.createElement)(
           Chip,
           { size: "xs" },
-          (0, import_react70.createElement)(
+          (0, import_react72.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "4px" } },
-            (0, import_react70.createElement)(import_dsh_client_ui_primitives3.IconArchiveOutlineRegular, { size: 12 }),
+            (0, import_react72.createElement)(import_dsh_client_ui_primitives3.IconArchiveOutlineRegular, { size: 12 }),
             t3("sessionListArchived")
           )
         ) : null,
-        (0, import_react70.createElement)("span", { style: { flex: "none", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, formatDateTime(new Date(row.updatedAt).toISOString()))
+        (0, import_react72.createElement)("span", { style: { flex: "none", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, formatDateTime(new Date(row.updatedAt).toISOString()))
       )
     ),
-    openId !== null && view !== null ? (0, import_react70.createElement)(SessionViewModal, {
+    openId !== null && view !== null ? (0, import_react72.createElement)(SessionViewModal, {
       sessionId: openId,
       view,
       // 标题 = 会话自己的标题；归档态分化「继续对话」行为（开分支确认 vs 直跳官方）。
@@ -63113,40 +63501,40 @@ function RealSessionListDemo() {
   );
 }
 function ExplorerPage() {
-  return (0, import_react70.createElement)(
+  return (0, import_react72.createElement)(
     "div",
     null,
-    (0, import_react70.createElement)(DocProse, { id: "explorer" }),
-    (0, import_react70.createElement)(
+    (0, import_react72.createElement)(DocProse, { id: "explorer" }),
+    (0, import_react72.createElement)(
       Example,
       { title: t3("methodATitle"), hint: t3("methodAHint"), code: CODE_OPEN },
-      (0, import_react70.createElement)(OpenPreviewDemo, null)
+      (0, import_react72.createElement)(OpenPreviewDemo, null)
     ),
-    (0, import_react70.createElement)(
+    (0, import_react72.createElement)(
       Example,
       { title: t3("methodBTitle"), hint: t3("methodBHint"), code: CODE_PICK },
-      (0, import_react70.createElement)(PickFileDemo, null)
+      (0, import_react72.createElement)(PickFileDemo, null)
     ),
-    (0, import_react70.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
-    (0, import_react70.createElement)(DocApi, { id: "explorer" })
+    (0, import_react72.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
+    (0, import_react72.createElement)(DocApi, { id: "explorer" })
   );
 }
 function SessionPage() {
-  return (0, import_react70.createElement)(
+  return (0, import_react72.createElement)(
     "div",
     null,
-    (0, import_react70.createElement)(DocProse, { id: "session" }),
-    (0, import_react70.createElement)(
+    (0, import_react72.createElement)(DocProse, { id: "session" }),
+    (0, import_react72.createElement)(
       Example,
       { title: t3("sessionRealTitle"), hint: t3("sessionRealHint"), code: CODE_SESSION_REAL },
-      (0, import_react70.createElement)(RealSessionListDemo, null)
+      (0, import_react72.createElement)(RealSessionListDemo, null)
     ),
-    (0, import_react70.createElement)(DocApi, { id: "session" })
+    (0, import_react72.createElement)(DocApi, { id: "session" })
   );
 }
 
 // packages/demo/src/sections/tables.tsx
-var import_react71 = require("react");
+var import_react73 = require("react");
 var import_dsh_client_ui_primitives4 = require("@deepseek-ai/dsh-client-ui-primitives");
 var COLUMNS = [
   { key: "id", title: "Patient ID", width: 120 },
@@ -63190,10 +63578,10 @@ var PEOPLE = [
   { id: "S-2429", name: "Deng, Qian", mrn: "MRN-61248", age: "33 / F", date: "2026-10-19", modality: "US", flags: [], tone: "success", state: "Reviewed" }
 ];
 function personCell(person) {
-  return (0, import_react71.createElement)(
+  return (0, import_react73.createElement)(
     "div",
     { style: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 } },
-    (0, import_react71.createElement)(
+    (0, import_react73.createElement)(
       "div",
       {
         style: {
@@ -63212,11 +63600,11 @@ function personCell(person) {
       },
       person.name.slice(0, 1)
     ),
-    (0, import_react71.createElement)(
+    (0, import_react73.createElement)(
       "div",
       { style: { display: "flex", flexDirection: "column", minWidth: 0 } },
-      (0, import_react71.createElement)("span", null, person.name),
-      (0, import_react71.createElement)(
+      (0, import_react73.createElement)("span", null, person.name),
+      (0, import_react73.createElement)(
         "span",
         { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)" } },
         person.mrn
@@ -63225,8 +63613,8 @@ function personCell(person) {
   );
 }
 function rowsOf() {
-  const actions = (0, import_react71.createElement)(IconButton, {
-    icon: (0, import_react71.createElement)(import_dsh_client_ui_primitives4.IconChevronDownOutlineRegular, { size: 16 }),
+  const actions = (0, import_react73.createElement)(IconButton, {
+    icon: (0, import_react73.createElement)(import_dsh_client_ui_primitives4.IconChevronDownOutlineRegular, { size: 16 }),
     label: "Open study"
   });
   return PEOPLE.map((person) => ({
@@ -63236,13 +63624,13 @@ function rowsOf() {
       name: personCell(person),
       age: person.age,
       date: person.date,
-      modality: (0, import_react71.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality),
+      modality: (0, import_react73.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality),
       // 多标签：标签之间的间距由调用方布局控制（这里 4px），列内距走列级 padding:8
-      flags: person.flags.length === 0 ? null : (0, import_react71.createElement)(
+      flags: person.flags.length === 0 ? null : (0, import_react73.createElement)(
         "div",
         { style: { display: "flex", gap: "4px", flexWrap: "wrap" } },
         ...person.flags.map(
-          (flag) => (0, import_react71.createElement)(
+          (flag) => (0, import_react73.createElement)(
             Chip,
             {
               key: flag,
@@ -63253,7 +63641,7 @@ function rowsOf() {
           )
         )
       ),
-      status: (0, import_react71.createElement)(Chip, { tone: person.tone, size: "xs" }, person.state),
+      status: (0, import_react73.createElement)(Chip, { tone: person.tone, size: "xs" }, person.state),
       actions
     }
   }));
@@ -63318,28 +63706,44 @@ var GROUPS = WORKSPACES.map((workspace) => ({
     cells: {
       task: task.title,
       owner: task.owner,
-      state: (0, import_react71.createElement)(Chip, { tone: task.tone, size: "xs" }, task.state),
+      state: (0, import_react73.createElement)(Chip, { tone: task.tone, size: "xs" }, task.state),
       updated: task.updated
     }
   }))
 }));
 function TablePage() {
-  const [selected, setSelected] = (0, import_react71.useState)("S-2418");
-  const [spanSelected, setSpanSelected] = (0, import_react71.useState)("c");
-  const [groupSelected, setGroupSelected] = (0, import_react71.useState)("a2");
-  return (0, import_react71.createElement)(
+  const [selected, setSelected] = (0, import_react73.useState)("S-2418");
+  const [spanSelected, setSpanSelected] = (0, import_react73.useState)("c");
+  const [groupSelected, setGroupSelected] = (0, import_react73.useState)("a2");
+  const [groupAccentOn, setGroupAccentOn] = (0, import_react73.useState)(true);
+  const [groupAccent, setGroupAccent] = (0, import_react73.useState)("default");
+  const [pagerPage, setPagerPage] = (0, import_react73.useState)(1);
+  const [pagerSize, setPagerSize] = (0, import_react73.useState)(10);
+  const [demoPage, setDemoPage] = (0, import_react73.useState)(2);
+  const [demoSize, setDemoSize] = (0, import_react73.useState)(10);
+  const [demoAlign, setDemoAlign] = (0, import_react73.useState)("right");
+  const [demoShowTotal, setDemoShowTotal] = (0, import_react73.useState)(true);
+  const pagerOnChange = (page, size4) => {
+    setPagerPage(page);
+    setPagerSize(size4);
+  };
+  const demoOnChange = (page, size4) => {
+    setDemoPage(page);
+    setDemoSize(size4);
+  };
+  return (0, import_react73.createElement)(
     "div",
     null,
-    (0, import_react71.createElement)(DocProse, { id: "table" }),
+    (0, import_react73.createElement)(DocProse, { id: "table" }),
     // 表格较宽：示例区占满整栏（代码放页面底部），并在窄屏时横向滚动。
     // 空态不放成第二个示例 —— 直接接在主表下方，同一区块里展示「有数据 / 没数据」。
-    (0, import_react71.createElement)(
+    (0, import_react73.createElement)(
       Example,
       { title: "Table", hint: t3("tableHint") },
-      (0, import_react71.createElement)(
+      (0, import_react73.createElement)(
         "div",
         { style: { overflowX: "auto" } },
-        (0, import_react71.createElement)(Table, {
+        (0, import_react73.createElement)(Table, {
           columns: COLUMNS,
           rows: rowsOf(),
           striped: true,
@@ -63351,10 +63755,10 @@ function TablePage() {
           style: { minWidth: 960 }
         })
       ),
-      (0, import_react71.createElement)(
+      (0, import_react73.createElement)(
         "div",
         { style: { overflowX: "auto", marginTop: "16px" } },
-        (0, import_react71.createElement)(Table, {
+        (0, import_react73.createElement)(Table, {
           columns: COLUMNS,
           rows: [],
           borders: "all",
@@ -63363,13 +63767,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react71.createElement)(
+    (0, import_react73.createElement)(
       Example,
       { title: "Density \xB7 borders \xB7 spans", hint: t3("tableSpanHint") },
-      (0, import_react71.createElement)(
+      (0, import_react73.createElement)(
         "div",
         { style: { overflowX: "auto" } },
-        (0, import_react71.createElement)(Table, {
+        (0, import_react73.createElement)(Table, {
           columns: SPAN_COLUMNS,
           rows: SPAN_ROWS,
           density: "compact",
@@ -63381,15 +63785,32 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react71.createElement)(
+    (0, import_react73.createElement)(
       Example,
       { title: "Groups \xB7 \u901A\u680F", hint: t3("tableGroupHint") },
-      (0, import_react71.createElement)(
+      (0, import_react73.createElement)(
         "div",
-        { style: { overflowX: "auto" } },
-        (0, import_react71.createElement)(Table, {
+        { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
+        (0, import_react73.createElement)(Segmented, {
+          size: "sm",
+          items: [
+            { value: "default", label: "\u9ED8\u8BA4" },
+            { value: "business", label: "business" },
+            { value: "success", label: "success" },
+            { value: "#7c3aed", label: "#7c3aed" }
+          ],
+          value: groupAccent,
+          onChange: setGroupAccent
+        }),
+        (0, import_react73.createElement)(Checkbox, { checked: groupAccentOn, onChange: setGroupAccentOn, label: "groupAccent" })
+      ),
+      (0, import_react73.createElement)(
+        "div",
+        { style: { overflowX: "auto", marginTop: "12px" } },
+        (0, import_react73.createElement)(Table, {
           columns: GROUP_COLUMNS,
           groups: GROUPS,
+          groupAccent: groupAccentOn ? groupAccent : false,
           selectedKeys: groupSelected === null ? [] : [groupSelected],
           onRowClick: (row) => setGroupSelected((prev) => prev === row.key ? null : row.key),
           ariaLabel: "Tasks by workspace",
@@ -63397,13 +63818,83 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react71.createElement)(DocApi, { id: "table" }),
-    (0, import_react71.createElement)(DocCode, { id: "table" })
+    (0, import_react73.createElement)(
+      Example,
+      { title: "Pagination", hint: t3("paginationHint") },
+      (0, import_react73.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
+        (0, import_react73.createElement)(Segmented, {
+          size: "sm",
+          items: [
+            { value: "left", label: "\u5DE6" },
+            { value: "center", label: "\u4E2D" },
+            { value: "right", label: "\u53F3" }
+          ],
+          value: demoAlign,
+          onChange: setDemoAlign
+        }),
+        (0, import_react73.createElement)(Checkbox, { checked: demoShowTotal, onChange: setDemoShowTotal, label: "showTotal" })
+      ),
+      (0, import_react73.createElement)(
+        "div",
+        { style: { marginTop: "12px" } },
+        (0, import_react73.createElement)(Pagination, {
+          page: demoPage,
+          pageSize: demoSize,
+          total: 86,
+          align: demoAlign,
+          pageSizeOptions: [10, 20, 50],
+          showTotal: demoShowTotal,
+          hideOnSinglePage: true,
+          onChange: demoOnChange,
+          ariaLabel: "Demo pagination"
+        })
+      ),
+      (0, import_react73.createElement)(
+        "div",
+        { style: { marginTop: "12px" } },
+        (0, import_react73.createElement)(Pagination, {
+          page: demoPage,
+          pageSize: demoSize,
+          total: 86,
+          align: demoAlign,
+          simple: true,
+          onChange: demoOnChange,
+          ariaLabel: "Demo pagination (simple)"
+        })
+      )
+    ),
+    (0, import_react73.createElement)(
+      Example,
+      { title: "Table \xB7 \u5206\u9875", hint: t3("tablePagerHint") },
+      (0, import_react73.createElement)(
+        "div",
+        { style: { overflowX: "auto" } },
+        (0, import_react73.createElement)(Table, {
+          columns: COLUMNS,
+          // 不传 pagination.total ⇒ 本地分页：这里是全量 12 行，Table 自己按当前页切片
+          rows: rowsOf(),
+          borders: "all",
+          pagination: {
+            page: pagerPage,
+            pageSize: pagerSize,
+            onChange: pagerOnChange,
+            pageSizeOptions: [5, 10, 20],
+            showTotal: demoShowTotal
+          },
+          ariaLabel: "Paginated surveillance studies",
+          style: { minWidth: 960 }
+        })
+      )
+    ),
+    (0, import_react73.createElement)(DocApi, { id: "table" }),
+    (0, import_react73.createElement)(DocCode, { id: "table" })
   );
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react72 = require("react");
+var import_react74 = require("react");
 var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
@@ -63438,28 +63929,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react72.createElement)(
+  return (0, import_react74.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react72.createElement)(
+    (0, import_react74.createElement)(
       "thead",
       null,
-      (0, import_react72.createElement)(
+      (0, import_react74.createElement)(
         "tr",
         null,
-        (0, import_react72.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react72.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react74.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react74.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react72.createElement)(
+    (0, import_react74.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react72.createElement)(
+        ([fn, out]) => (0, import_react74.createElement)(
           "tr",
           { key: fn },
-          (0, import_react72.createElement)("td", { style: td }, fn),
-          (0, import_react72.createElement)("td", { style: td }, out)
+          (0, import_react74.createElement)("td", { style: td }, fn),
+          (0, import_react74.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -63468,44 +63959,44 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react72.createElement)(
+  return (0, import_react74.createElement)(
     "div",
     null,
-    (0, import_react72.createElement)(DocProse, { id: "date" }),
-    (0, import_react72.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react72.createElement)(FnTable, { rows: DATE_ROWS })),
-    (0, import_react72.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react72.createElement)(DocApi, { id: "date" })
+    (0, import_react74.createElement)(DocProse, { id: "date" }),
+    (0, import_react74.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react74.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react74.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react74.createElement)(DocApi, { id: "date" })
   );
 }
 function NumberPage() {
-  return (0, import_react72.createElement)(
+  return (0, import_react74.createElement)(
     "div",
     null,
-    (0, import_react72.createElement)(DocProse, { id: "number" }),
-    (0, import_react72.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react72.createElement)(FnTable, { rows: NUMBER_ROWS })),
-    (0, import_react72.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react72.createElement)(DocApi, { id: "number" })
+    (0, import_react74.createElement)(DocProse, { id: "number" }),
+    (0, import_react74.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react74.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react74.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react74.createElement)(DocApi, { id: "number" })
   );
 }
 function TextPage() {
-  return (0, import_react72.createElement)(DocContent, { id: "text" });
+  return (0, import_react74.createElement)(DocContent, { id: "text" });
 }
 function HttpPage() {
-  return (0, import_react72.createElement)(DocContent, { id: "http" });
+  return (0, import_react74.createElement)(DocContent, { id: "http" });
 }
 function I18nPage() {
-  return (0, import_react72.createElement)(
+  return (0, import_react74.createElement)(
     "div",
     null,
-    (0, import_react72.createElement)(DocProse, { id: "i18n" }),
-    (0, import_react72.createElement)(
+    (0, import_react74.createElement)(DocProse, { id: "i18n" }),
+    (0, import_react74.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
-      (0, import_react72.createElement)(
+      (0, import_react74.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react72.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
-        (0, import_react72.createElement)("code", {
+        (0, import_react74.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
+        (0, import_react74.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -63517,60 +64008,60 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react72.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react72.createElement)(DocApi, { id: "i18n" })
+    (0, import_react74.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react74.createElement)(DocApi, { id: "i18n" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react73 = require("react");
+var import_react75 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react73.createElement)(
+  return (0, import_react75.createElement)(
     "div",
     null,
-    (0, import_react73.createElement)(Note, { text: t3("referenceNote") }),
-    (0, import_react73.createElement)(Example, { title: t3("secA11y") }, (0, import_react73.createElement)(Placeholder2, { descKey: "a11yDesc" })),
-    (0, import_react73.createElement)(
+    (0, import_react75.createElement)(Note, { text: t3("referenceNote") }),
+    (0, import_react75.createElement)(Example, { title: t3("secA11y") }, (0, import_react75.createElement)(Placeholder2, { descKey: "a11yDesc" })),
+    (0, import_react75.createElement)(
       Example,
       { title: t3("secRoadmap"), hint: t3("roadmapHint") },
-      (0, import_react73.createElement)(
+      (0, import_react75.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react73.createElement)(
+          (key) => (0, import_react75.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react73.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react73.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
+            (0, import_react75.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react75.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
           )
         ),
-        (0, import_react73.createElement)(
+        (0, import_react75.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("roadmapLayout")
         )
       )
     ),
-    (0, import_react73.createElement)(
+    (0, import_react75.createElement)(
       Example,
       { title: t3("secBuild"), hint: t3("buildDesc") },
-      (0, import_react73.createElement)(
+      (0, import_react75.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react73.createElement)(
+        (0, import_react75.createElement)(
           "tbody",
           null,
           [
             [t3("buildCore"), `v${"0.12.1"}`],
             [t3("buildDemo"), `v${"0.12.1"}`],
-            [t3("buildStamp"), "261030-214736-518"]
+            [t3("buildStamp"), "261030-232856-147"]
           ].map(
-            ([label, value]) => (0, import_react73.createElement)(
+            ([label, value]) => (0, import_react75.createElement)(
               "tr",
               { key: label },
-              (0, import_react73.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react73.createElement)("td", {
+              (0, import_react75.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react75.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -63596,31 +64087,31 @@ var SECTION_GROUPS = [
 ];
 var ALL_SECTIONS = [
   // 入门：帮助索引（读哪一份）在前，然后是快速开始与设计基础
-  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react74.createElement)(HelpIndexPage, null) },
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react74.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react74.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react74.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react74.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react74.createElement)(PickerPage, null) },
-  { id: "datetime", group: "components", titleKey: "secDateTime", render: () => (0, import_react74.createElement)(DateTimePage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react74.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react74.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react74.createElement)(ChipPage, null) },
-  { id: "table", group: "components", titleKey: "secTable", render: () => (0, import_react74.createElement)(TablePage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react74.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react74.createElement)(LayoutPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react74.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react74.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react74.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react74.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react74.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react74.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react74.createElement)(I18nPage, null) },
+  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react76.createElement)(HelpIndexPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react76.createElement)(QuickstartPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react76.createElement)(FoundationPage, null) },
+  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react76.createElement)(ButtonPage, null) },
+  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react76.createElement)(InputPage, null) },
+  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react76.createElement)(PickerPage, null) },
+  { id: "datetime", group: "components", titleKey: "secDateTime", render: () => (0, import_react76.createElement)(DateTimePage, null) },
+  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react76.createElement)(TooltipPage, null) },
+  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react76.createElement)(CardPage, null) },
+  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react76.createElement)(ChipPage, null) },
+  { id: "table", group: "components", titleKey: "secTable", render: () => (0, import_react76.createElement)(TablePage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react76.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react76.createElement)(LayoutPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react76.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react76.createElement)(SessionPage, null) },
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react76.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react76.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react76.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react76.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react76.createElement)(I18nPage, null) },
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react74.createElement)(ReferencePage, null) }
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react76.createElement)(ReferencePage, null) }
 ];
 function Placeholder2(props) {
-  return (0, import_react74.createElement)(
+  return (0, import_react76.createElement)(
     "div",
     {
       style: {
@@ -63632,7 +64123,7 @@ function Placeholder2(props) {
         color: "var(--dshpc-fg-3)"
       }
     },
-    (0, import_react74.createElement)("div", {
+    (0, import_react76.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -63642,23 +64133,23 @@ function Placeholder2(props) {
         marginBottom: "10px"
       }
     }, t3("phTodo")),
-    (0, import_react74.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
+    (0, import_react76.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react74.createElement)(
+  return (0, import_react76.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react74.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react74.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
+    (0, import_react76.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react76.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "2px", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react74.createElement)(
+  return (0, import_react76.createElement)(
     "div",
     null,
-    (0, import_react74.createElement)(SectionHead2, { id: current3.id, title: t3(current3.titleKey) }),
+    (0, import_react76.createElement)(SectionHead2, { id: current3.id, title: t3(current3.titleKey) }),
     current3.render()
   );
 }
@@ -63717,10 +64208,10 @@ function applySidebarEntry() {
   }
 }
 function MoreMenuRow(props) {
-  return (0, import_react75.createElement)(
+  return (0, import_react77.createElement)(
     import_dsh_client_ui_primitives5.MenuItemButton,
     {
-      icon: (0, import_react75.createElement)(PanelIcon, { size: 16 }),
+      icon: (0, import_react77.createElement)(PanelIcon, { size: 16 }),
       onSelect: () => {
         props.onDismiss();
         jump(PANEL_ID);
@@ -63731,8 +64222,8 @@ function MoreMenuRow(props) {
 }
 var localeRuntime;
 function useLocaleTick() {
-  const [, setTick] = (0, import_react75.useState)(0);
-  (0, import_react75.useEffect)(() => {
+  const [, setTick] = (0, import_react77.useState)(0);
+  (0, import_react77.useEffect)(() => {
     const rt = localeRuntime;
     if (rt === void 0) return;
     return rt.subscribe(() => {
@@ -63742,8 +64233,8 @@ function useLocaleTick() {
 }
 function useHostDark() {
   const read = () => document.body.hasAttribute("data-ds-dark-theme");
-  const [dark, setDark] = (0, import_react75.useState)(read);
-  (0, import_react75.useEffect)(() => {
+  const [dark, setDark] = (0, import_react77.useState)(read);
+  (0, import_react77.useEffect)(() => {
     const obs = new MutationObserver(() => {
       setDark(read());
     });
@@ -63763,11 +64254,11 @@ function useHostDark() {
 function DemoPage() {
   useLocaleTick();
   const { dark, toggle } = useHostDark();
-  const [active, setActive2] = (0, import_react75.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive2] = (0, import_react77.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav2.push(
-      (0, import_react75.createElement)(
+      (0, import_react77.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -63785,7 +64276,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav2.push(
-        (0, import_react75.createElement)(
+        (0, import_react77.createElement)(
           "button",
           {
             key: section.id,
@@ -63812,7 +64303,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react75.createElement)(
+  return (0, import_react77.createElement)(
     "div",
     {
       // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
@@ -63829,7 +64320,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react75.createElement)(
+    (0, import_react77.createElement)(
       "aside",
       {
         style: {
@@ -63844,9 +64335,9 @@ function DemoPage() {
         }
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
-      (0, import_react75.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px" } }, nav2),
+      (0, import_react77.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px" } }, nav2),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
-      (0, import_react75.createElement)(
+      (0, import_react77.createElement)(
         "div",
         {
           style: {
@@ -63859,7 +64350,7 @@ function DemoPage() {
           }
         },
         // 明暗切换：核心 Segmented 滑动分段（左亮右暗，图标进 label），不手写按钮
-        (0, import_react75.createElement)(Segmented, {
+        (0, import_react77.createElement)(Segmented, {
           items: [
             { value: "light", label: `\u2600 ${t3("themeLight")}` },
             { value: "dark", label: `\u263E ${t3("themeDark")}` }
@@ -63873,7 +64364,7 @@ function DemoPage() {
           label: t3("themeToggle")
         }),
         // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行；编译码小一号、与上面隔开
-        (0, import_react75.createElement)(
+        (0, import_react77.createElement)(
           "div",
           {
             style: {
@@ -63887,44 +64378,44 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react75.createElement)("span", null, `core v${"0.12.1"}`),
-          (0, import_react75.createElement)("span", null, `demo v${"0.12.1"}`),
-          (0, import_react75.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261030-214736-518")
+          (0, import_react77.createElement)("span", null, `core v${"0.12.1"}`),
+          (0, import_react77.createElement)("span", null, `demo v${"0.12.1"}`),
+          (0, import_react77.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261030-232856-147")
         )
       )
     ),
-    (0, import_react75.createElement)(
+    (0, import_react77.createElement)(
       "main",
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
-      (0, import_react75.createElement)(Sections, { active })
+      (0, import_react77.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react75.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react77.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function ConfigPanel(props) {
   const form = props.form;
-  const [, rerender] = (0, import_react75.useState)(0);
-  (0, import_react75.useEffect)(() => form.subscribe(() => {
+  const [, rerender] = (0, import_react77.useState)(0);
+  (0, import_react77.useEffect)(() => form.subscribe(() => {
     rerender((n) => n + 1);
   }), [form]);
-  if (props.view !== "page") return (0, import_react75.createElement)("div", { style: { display: "none" } });
+  if (props.view !== "page") return (0, import_react77.createElement)("div", { style: { display: "none" } });
   const snap = form.getSnapshot();
   const storedMode = snap.value?.entryMode;
   const mode = storedMode === "off" || storedMode === "first" || storedMode === "more" ? storedMode : "more";
   const ready = snap.status === "ready";
-  return (0, import_react75.createElement)(
+  return (0, import_react77.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "14px" } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
-    (0, import_react75.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
+    (0, import_react77.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
     // 设置行：滑动栏在右、说明在左；左缘圆角短条有入口=绿 / 关闭=灰（核心 Card 框式）
-    ready ? (0, import_react75.createElement)(
+    ready ? (0, import_react77.createElement)(
       Card,
       {
         accent: mode === "off" ? "neutral" : "success",
-        action: (0, import_react75.createElement)(Segmented, {
+        action: (0, import_react77.createElement)(Segmented, {
           size: "sm",
           value: mode,
           disabled: !snap.writable,
@@ -63941,35 +64432,35 @@ function ConfigPanel(props) {
           ]
         })
       },
-      (0, import_react75.createElement)(
+      (0, import_react77.createElement)(
         "div",
         null,
-        (0, import_react75.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
-        (0, import_react75.createElement)(
+        (0, import_react77.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
+        (0, import_react77.createElement)(
           "div",
           { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
           t3("settingsEntryHint")
         )
       )
-    ) : (0, import_react75.createElement)(
+    ) : (0, import_react77.createElement)(
       "div",
       { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
       t3(snap.status === "loading" ? "settingsLoading" : "settingsUnavailable")
     ),
-    (0, import_react75.createElement)(
+    (0, import_react77.createElement)(
       "div",
       { style: { display: "flex", gap: "8px" } },
-      (0, import_react75.createElement)(
+      (0, import_react77.createElement)(
         Button,
-        { size: "md", variant: "primary", icon: (0, import_react75.createElement)(import_dsh_client_ui_primitives5.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
+        { size: "md", variant: "primary", icon: (0, import_react77.createElement)(import_dsh_client_ui_primitives5.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
         t3("settingsOpenDemo")
       ),
-      (0, import_react75.createElement)(
+      (0, import_react77.createElement)(
         Button,
         {
           size: "md",
           variant: "outline",
-          icon: (0, import_react75.createElement)(import_dsh_client_ui_primitives5.IconLinkOutlineRegular, { size: 16 }),
+          icon: (0, import_react77.createElement)(import_dsh_client_ui_primitives5.IconLinkOutlineRegular, { size: 16 }),
           onClick: () => {
             window.open("https://github.com/cq-guojia/dsh-plugin-core", "_blank", "noopener");
           }
@@ -63981,14 +64472,14 @@ function ConfigPanel(props) {
 }
 function PanelIcon(props) {
   const size4 = props.size ?? 18;
-  return (0, import_react75.createElement)(
+  return (0, import_react77.createElement)(
     "svg",
     { width: size4, height: size4, viewBox: "0 0 1024 1024", "aria-hidden": true },
-    (0, import_react75.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
-    (0, import_react75.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react75.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
-    (0, import_react75.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react75.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
+    (0, import_react77.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
+    (0, import_react77.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react77.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
+    (0, import_react77.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react77.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
   );
 }
 function apply(ctx) {
@@ -63997,7 +64488,7 @@ function apply(ctx) {
   ensureControls(kit);
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react75.createElement)(import_dsh_client_ui_primitives5.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react77.createElement)(import_dsh_client_ui_primitives5.Tooltip, props));
   ctx.inject(["layout"], (sub) => {
     const layout = sub?.layout;
     if (layout?.selectPanel === void 0) return;

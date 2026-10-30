@@ -1,8 +1,11 @@
 import { createElement as h, useState } from 'react'
 import { IconChevronDownOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitives'
 import {
+  Checkbox,
   Chip,
   IconButton,
+  Pagination,
+  Segmented,
   Table,
   type TableColumn,
   type TableGroup,
@@ -243,6 +246,25 @@ export function TablePage(): ReturnType<typeof h> {
   // 第二 / 第三个表也演示行态：选中与可点由调用方给，不给就是静态表（这里三张表都开着）。
   const [spanSelected, setSpanSelected] = useState<string | number | null>('c')
   const [groupSelected, setGroupSelected] = useState<string | number | null>('a2')
+  // 通栏标题前竖线：颜色（内置色名 / 直接色值）与开关
+  const [groupAccentOn, setGroupAccentOn] = useState(true)
+  const [groupAccent, setGroupAccent] = useState<'default' | 'business' | 'success' | '#7c3aed'>('default')
+  // 分页：独立控件与 Table 内建各一份 state（页码 / 每页条数都归调用方持有）。
+  const [pagerPage, setPagerPage] = useState(1)
+  const [pagerSize, setPagerSize] = useState(10)
+  const [demoPage, setDemoPage] = useState(2)
+  const [demoSize, setDemoSize] = useState(10)
+  const [demoAlign, setDemoAlign] = useState<'left' | 'center' | 'right'>('right')
+  // 总数文案（「第 1-10 条，共 86 条」）的开关：showTotal 默认关，示例里两个分页共用这一个开关
+  const [demoShowTotal, setDemoShowTotal] = useState(true)
+  const pagerOnChange = (page: number, size: number): void => {
+    setPagerPage(page)
+    setPagerSize(size)
+  }
+  const demoOnChange = (page: number, size: number): void => {
+    setDemoPage(page)
+    setDemoSize(size)
+  }
   return h(
     'div',
     null,
@@ -302,14 +324,101 @@ export function TablePage(): ReturnType<typeof h> {
       { title: 'Groups · 通栏', hint: t('tableGroupHint') },
       h(
         'div',
-        { style: { overflowX: 'auto' } },
+        { style: { display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' } },
+        h(Segmented<'default' | 'business' | 'success' | '#7c3aed'>, {
+          size: 'sm',
+          items: [
+            { value: 'default', label: '默认' },
+            { value: 'business', label: 'business' },
+            { value: 'success', label: 'success' },
+            { value: '#7c3aed', label: '#7c3aed' },
+          ],
+          value: groupAccent,
+          onChange: setGroupAccent,
+        }),
+        h(Checkbox, { checked: groupAccentOn, onChange: setGroupAccentOn, label: 'groupAccent' }),
+      ),
+      h(
+        'div',
+        { style: { overflowX: 'auto', marginTop: '12px' } },
         h(Table, {
           columns: GROUP_COLUMNS,
           groups: GROUPS,
+          groupAccent: groupAccentOn ? groupAccent : false,
           selectedKeys: groupSelected === null ? [] : [groupSelected],
           onRowClick: (row) => setGroupSelected((prev) => (prev === row.key ? null : row.key)),
           ariaLabel: 'Tasks by workspace',
           style: { minWidth: 660 },
+        }),
+      ),
+    ),
+    h(
+      Example,
+      { title: 'Pagination', hint: t('paginationHint') },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' } },
+        h(Segmented<'left' | 'center' | 'right'>, {
+          size: 'sm',
+          items: [
+            { value: 'left', label: '左' },
+            { value: 'center', label: '中' },
+            { value: 'right', label: '右' },
+          ],
+          value: demoAlign,
+          onChange: setDemoAlign,
+        }),
+        h(Checkbox, { checked: demoShowTotal, onChange: setDemoShowTotal, label: 'showTotal' }),
+      ),
+      h(
+        'div',
+        { style: { marginTop: '12px' } },
+        h(Pagination, {
+          page: demoPage,
+          pageSize: demoSize,
+          total: 86,
+          align: demoAlign,
+          pageSizeOptions: [10, 20, 50],
+          showTotal: demoShowTotal,
+          hideOnSinglePage: true,
+          onChange: demoOnChange,
+          ariaLabel: 'Demo pagination',
+        }),
+      ),
+      h(
+        'div',
+        { style: { marginTop: '12px' } },
+        h(Pagination, {
+          page: demoPage,
+          pageSize: demoSize,
+          total: 86,
+          align: demoAlign,
+          simple: true,
+          onChange: demoOnChange,
+          ariaLabel: 'Demo pagination (simple)',
+        }),
+      ),
+    ),
+    h(
+      Example,
+      { title: 'Table · 分页', hint: t('tablePagerHint') },
+      h(
+        'div',
+        { style: { overflowX: 'auto' } },
+        h(Table, {
+          columns: COLUMNS,
+          // 不传 pagination.total ⇒ 本地分页：这里是全量 12 行，Table 自己按当前页切片
+          rows: rowsOf(),
+          borders: 'all',
+          pagination: {
+            page: pagerPage,
+            pageSize: pagerSize,
+            onChange: pagerOnChange,
+            pageSizeOptions: [5, 10, 20],
+            showTotal: demoShowTotal,
+          },
+          ariaLabel: 'Paginated surveillance studies',
+          style: { minWidth: 960 },
         }),
       ),
     ),

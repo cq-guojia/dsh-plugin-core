@@ -2,6 +2,7 @@ import { createElement as h } from 'react';
 import { t } from '../utils/i18n.js';
 import { ensureComponentStyles } from './css.js';
 import { TABLE_BASE_CSS } from './controls-css.js';
+import { SectionHead } from './SectionHead.js';
 import { headerRows, isTableCellSpec, leafColumns, } from './table-logic.js';
 function widthOf(width) {
     if (width === undefined)
@@ -121,12 +122,18 @@ export function tableShell(skinClass, props) {
     const groups = props.groups ?? [];
     const body = groups.length > 0
         ? groups.map((group, groupIndex) => h('tbody', { key: group.key, className: 'dshpc-table__body dshpc-table__group-body' }, 
-        // 通栏标题行：横跨所有列，充当这一组的「大标题」
+        // 通栏标题行：横跨所有列，充当这一组的「大标题」。
         h('tr', { className: 'dshpc-table__group-row' }, h('th', {
             className: 'dshpc-table__group-cell',
             scope: 'colgroup',
             colSpan: leaves.length > 0 ? leaves.length : undefined,
-        }, group.title)), 
+        }, 
+        // 标题的固定标签（短竖线）与排版归 SectionHead —— Table 只负责把标题装进通栏。
+        h(SectionHead, {
+            title: group.title,
+            accent: props.groupAccent ?? 'default',
+            flush: true,
+        }))), 
         // 每组自带表头：分组模式不放在 <thead>（一个 table 只能有一个 thead）
         ...headRows.map((cells, level) => headRowOf(cells, `g${groupIndex}-${level}`)), ...dataRowsOf(group.rows, 0)))
         : [

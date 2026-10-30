@@ -32,6 +32,8 @@ export type DemoMessageKey =
   | 'tableEmptyHint'
   | 'tableSpanHint'
   | 'tableGroupHint'
+  | 'paginationHint'
+  | 'tablePagerHint'
   | 'secFeedback'
   | 'secLayout'
   | 'secExplorer'
@@ -287,6 +289,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tableEmptyHint: '没有数据时的内置空态（文案走核心字典，也可用 emptyText 覆盖）',
     tableSpanHint: '外观二（左右两边没有边）：borders:y 保留上下、去掉左右外框，竖线仍按列声明（这里给了 divider:true）。紧凑密度；Downtown 用 rowSpan 跨两行（下一行不给该列 key），North clinic 用 colSpan 跨两列；点行选中 / 悬浮这一张同样开着（默认预选 North clinic 那行）',
     tableGroupHint: '外观三（默认，所有竖着的边都没有）：不传 borders 就走 y、列不写 divider 就不画竖线。一个表格里放多个工作区（groups 与 rows 二选一）：每组先是一行横跨全部列的通栏标题（工作区 A / B），紧接着是这一组自己的表头与任务行；组与组之间用一条实线隔开，组内数据行照常可配单元格内容，同样可点、可选中（默认预选 Workspace A 的 Doing 那行）',
+    paginationHint: '独立分页控件：只给 page / pageSize / total，页数与省略号窗口由控件自己算，消费方不写渲染。位置可切（上排分段切左 / 中 / 右，默认右）；下排是简洁模式（只留箭头与「2 / 36」）。总数文案与每页条数选择器都是可选开关，不传就不出现',
+    tablePagerHint: 'Table 内建分页：不传 pagination.total 就是本地分页 —— rows 是全量，Table 先按当前页切片再渲染，分页条排在表格下方右侧。若接服务端分页，给 total（并只传当前页的行），Table 就不切片、只负责摆页码',
     secFeedback: '反馈',
     secLayout: '布局与滚动',
     secExplorer: '工作区浏览',
@@ -470,7 +474,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exModelPickerTitle: 'ModelPicker（真实目录）',
     exWorkspacePickerTitle: 'WorkspacePicker（真实列表）',
     exSplitGroupTitle: 'SplitGroup（组合选择框）',
-    exSectionHeadHint: '分区标题：icon + 标题 + 右侧操作区三段式——纯排版壳，icon/标题/右侧都调用方自定；下示 3 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合',
+    exSectionHeadHint: '分区标题：标签（可选，画出来的短竖线）+ icon + 标题 + 右侧操作区——纯排版壳，标签/icon/标题/右侧都调用方自定；下示 4 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合 / 固定标签颜色速览（accent）',
     exMarqueeHint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号',
     exLiveHint: '订阅内部节拍器，走时 Ui 由调用方渲染',
     exSmallModalTitle: '小型弹窗（自定义）',
@@ -582,6 +586,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tableEmptyHint: 'Built-in empty state (copy comes from the core dictionary; override with emptyText)',
     tableSpanHint: 'Look 2 (no side edges): borders:y keeps top and bottom, drops the left/right frame, while vertical rules still follow each column (divider:true here). Compact density; Downtown spans two rows via rowSpan (next row omits that key), and North clinic spans two columns via colSpan; click-to-select and hover are on here too (North clinic is preselected)',
     tableGroupHint: 'Look 3 (the default, no vertical edges at all): omit borders and it falls back to y; omit divider on a column and no vertical rule is drawn. Several workspaces in one table (groups and rows are mutually exclusive): each group opens with a banner row spanning every column (Workspace A / B), followed by that group’s own header and task rows; groups are separated by a solid rule, cells inside each group are configured as usual, and rows are clickable/selectable too (the Doing row in Workspace A is preselected)',
+    paginationHint: 'Standalone pager: give it page / pageSize / total only — the control computes the page count and the ellipsis window itself, so you never write render code. Placement switches left / center / right (right by default); the lower row is simple mode (arrows plus "2 / 36"). The total copy and rows-per-page selector are optional switches — omit them and they disappear',
+    tablePagerHint: 'Table with built-in paging: omit pagination.total and it pages locally — rows is the full list, Table slices by the current page and renders the pager under the table, right-aligned. For server-side paging, pass total (and only the current page’s rows) so Table stops slicing and only renders the pager',
     secFeedback: 'Feedback',
     secLayout: 'Layout & scrolling',
     secExplorer: 'Workspace browsing',
@@ -766,7 +772,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exModelPickerTitle: 'ModelPicker (real catalog)',
     exWorkspacePickerTitle: 'WorkspacePicker (real list)',
     exSplitGroupTitle: 'SplitGroup (combined selectors)',
-    exSectionHeadHint: 'Section header: icon + title + right-side actions in three slots — a pure layout shell; icon, title and right side are all caller-defined. Three groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos',
+    exSectionHeadHint: 'Section header: optional drawn bar + icon + title + right-side actions — a pure layout shell; bar, icon, title and right side are all caller-defined. Four groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos / fixed-bar colour swatches (accent)',
     exMarqueeHint: 'Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis',
     exLiveHint: 'Subscribes to an internal ticker; the running clock UI is rendered by the caller',
     exSmallModalTitle: 'Small dialogs (custom)',

@@ -1056,8 +1056,9 @@ const CODE_STRIP_CARD = `// StripCard：同色系浅底 + 方角 + 左缘 4px �
   <div style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>耗时 12s · 3 个文件变更</div>
 </StripCard>`
 
-const CODE_SECTION_HEAD = `// 分区标题：icon + 标题 + 右侧操作区三段式；标题后缀可以是计数 / 彩色标签 / 小字说明
+const CODE_SECTION_HEAD = `// 分区标题：标签（可选，画出来的短竖线）+ icon + 标题 + 右侧操作区
 <SectionHead
+  accent="success"        // 固定标签颜色：内置色名 / 任意色值；default = 主题默认；false = 不画
   icon={<IconSparkleRegular size={16} />}
   title={<span>全部待办 <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
   right={[
@@ -1203,6 +1204,18 @@ export function CardPage(): ReturnType<typeof h> {
           h(Button, { size: 'sm', variant: 'secondary' }, '设置'),
           ],
           }),
+        // D：固定标签颜色速览 —— accent 内置色名 / 任意色值 / default / false
+        h('div', { style: { display: 'flex', flexDirection: 'column', gap: '4px' } },
+          (
+            [
+              ['default', 'default（主题默认）'],
+              ['business', 'business'],
+              ['success', 'success'],
+              ['#7c3aed', '#7c3aed'],
+              [false, 'false（不画）'],
+            ] as const
+          ).map(([accent, label]) => h(SectionHead, { key: String(accent), accent, title: label, flush: true })),
+        ),
           ),
           ),
           h(DocCode, { id: 'card' }),

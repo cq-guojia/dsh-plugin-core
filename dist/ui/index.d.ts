@@ -13,6 +13,8 @@ export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, } fro
 export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardSharedProps, } from './Card.js';
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js';
 export { Table, type TableProps } from './Table.js';
+export { Pagination, type PaginationProps, type TablePaginationConfig, } from './Pagination.js';
+export { clampPage, pageCountOf, pageItems, pageRange, type PageItem, type PageTotalRenderer, type PaginationAlign, } from './pagination-logic.js';
 export { headerRows, isLeafColumn, isTableCellSpec, leafColumns, tableDepth, type TableAlign, type TableBorders, type TableCell, type TableCellSpec, type TableColumn, type TableDensity, type TableGroup, type TableHeaderCell, type TableRow, type TableTone, } from './table-logic.js';
 export { showToast, notify, type ToastVariant, type ToastPosition, type ToastOptions, type ToastAction, type NotifyOptions, } from './Toast.js';
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js';
@@ -25,7 +27,7 @@ export { Loader, type LoaderProps, type LoaderSize, type LoaderVariant } from '.
 export { LoaderBar, type LoaderBarProps } from './LoaderBar.js';
 export { Loading, LoadingBlock, LoadingToast, RunningBlocks, showLoading, type LoadingOptions, type LoadingProps, type LoadingViewProps, } from './Loading.js';
 export { claimLoadingHost, createLoadingSlot, loadingOverlayClass, LOADING_HOST_KEY, type LoadingHandle, type LoadingPosition, type LoadingSlotState, type LoadingVariant, } from './loading-host.js';
-export { SectionHead } from './SectionHead.js';
+export { SectionHead, type SectionHeadAccent, type SectionHeadProps } from './SectionHead.js';
 export { FieldHint, type FieldHintProps } from './FieldHint.js';
 export { getTooltipRenderer, setTooltipRenderer, type TooltipRenderProps, type TooltipRenderer, } from './tooltip.js';
 export { LiveText } from './LiveText.js';

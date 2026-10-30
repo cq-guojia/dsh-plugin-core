@@ -42,6 +42,8 @@ const MAP = [
   // 表格：基础层 + 第一档皮肤。新外观（grid / zebra）各加一行，消费方引哪个只打包哪个。
   ['src/ui/controls/table.css', 'src/ui/controls/table-css.generated.ts', 'TABLE_BASE_CSS'],
   ['src/ui/controls/table-plain.css', 'src/ui/controls/table-plain-css.generated.ts', 'TABLE_PLAIN_CSS'],
+  ['src/ui/controls/pagination.css', 'src/ui/controls/pagination-css.generated.ts', 'PAGINATION_CSS'],
+  ['src/ui/controls/section-head.css', 'src/ui/controls/section-head-css.generated.ts', 'SECTION_HEAD_CSS'],
   ['src/ui/picker.css', 'src/ui/picker-css.generated.ts', 'PICKER_CSS'],
   ['src/ui/feedback.css', 'src/ui/feedback-css.generated.ts', 'FEEDBACK_CSS'],
   ['src/ui/card.css', 'src/ui/card-css.generated.ts', 'CARD_CSS'],

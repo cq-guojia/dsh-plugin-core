@@ -89,6 +89,21 @@ export {
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js'
 // 表格：第一档外观 = Table（后续 TableGrid / TableZebra 各自独立导出，引哪个打包哪个）。
 export { Table, type TableProps } from './Table.js'
+// 分页：独立控件；Table 也可通过 `pagination` 内建（切片 + 表下渲染）。
+export {
+  Pagination,
+  type PaginationProps,
+  type TablePaginationConfig,
+} from './Pagination.js'
+export {
+  clampPage,
+  pageCountOf,
+  pageItems,
+  pageRange,
+  type PageItem,
+  type PageTotalRenderer,
+  type PaginationAlign,
+} from './pagination-logic.js'
 export {
   headerRows,
   isLeafColumn,
@@ -144,7 +159,7 @@ export {
   type LoadingSlotState,
   type LoadingVariant,
 } from './loading-host.js'
-export { SectionHead } from './SectionHead.js'
+export { SectionHead, type SectionHeadAccent, type SectionHeadProps } from './SectionHead.js'
 export { FieldHint, type FieldHintProps } from './FieldHint.js'
 export {
   getTooltipRenderer,

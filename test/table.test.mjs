@@ -2,7 +2,10 @@
 // 浏览器不会报错，只会画出一张错位的表 —— 必须由测试盯住。
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { headerRows, isTableCellSpec, leafColumns, tableDepth } from '../dist/ui/table-logic.js'
+import { Table } from '../dist/ui/index.js'
 
 const flat = [
   { key: 'id', title: 'ID' },
@@ -113,5 +116,41 @@ test('单元格对象判别：React 元素不算配置对象', () => {
   assert.equal(
     isTableCellSpec({ $$typeof: Symbol('react.element'), type: 'span', props: { content: 'x' } }),
     false,
+  )
+})
+
+// 通栏标题前的固定标签（短竖线）：由 SectionHead 绘制（4px 圆头），默认画、颜色可换
+// （内置色名 / 直接色值）、也能整条关掉。
+const groupedTable = (extra = {}) => createElement(Table, {
+  columns: [{ key: 'task', title: 'Task' }],
+  groups: [{ key: 'g1', title: 'Workspace A', rows: [{ key: 'r1', cells: { task: 'x' } }] }],
+  ...extra,
+})
+
+test('通栏固定标签：默认画一条，颜色交给主题 token', () => {
+  const html = renderToStaticMarkup(groupedTable())
+  assert.match(html, /class="dshpc-section-head__bar"/)
+  assert.doesNotMatch(html, /section-head__bar"[^>]*style=/)
+})
+
+test('通栏固定标签：内置色名映射到对应 token', () => {
+  const html = renderToStaticMarkup(groupedTable({ groupAccent: 'success' }))
+  assert.match(html, /style="background:var\(--dshpc-success\)"/)
+})
+
+test('通栏固定标签：直接给色值原样落地', () => {
+  const html = renderToStaticMarkup(groupedTable({ groupAccent: '#7c3aed' }))
+  assert.match(html, /#7c3aed/)
+})
+
+test('通栏固定标签：groupAccent:false 整条不画；非分组表本来就没有', () => {
+  assert.doesNotMatch(renderToStaticMarkup(groupedTable({ groupAccent: false })), /section-head__bar/)
+  assert.doesNotMatch(
+    renderToStaticMarkup(createElement(Table, {
+      columns: [{ key: 'task', title: 'Task' }],
+      rows: [{ key: 'r1', cells: { task: 'x' } }],
+      groupAccent: 'success',
+    })),
+    /section-head__bar/,
   )
 })

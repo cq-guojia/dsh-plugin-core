@@ -2,6 +2,8 @@ import { createElement as h, type CSSProperties, type KeyboardEvent, type ReactN
 import { t, type Translate } from '../utils/i18n.js'
 import { ensureComponentStyles } from './css.js'
 import { TABLE_BASE_CSS } from './controls-css.js'
+import type { TablePaginationConfig } from './Pagination.js'
+import { SectionHead, type SectionHeadAccent } from './SectionHead.js'
 import {
   headerRows,
   isTableCellSpec,
@@ -34,6 +36,13 @@ export interface TableSharedProps {
    * 与 `rows` 二选一；传了 `groups` 就忽略 `rows`（用于「一个表里多个工作区 / 板块」）。
    */
   groups?: readonly TableGroup[]
+  /**
+   * 通栏标题前的固定标签（画出来的短竖线）颜色（只对 `groups` 模式生效）：内置语义色名
+   * （business / success / warning / danger / purple / pink / cyan / teal / orange / indigo /
+   * rose / slate）或任意 CSS 色值；`'default'` / 不传 = 主题默认（浅色深灰、深色浅灰）；
+   * `false` = 不画这条竖线。绘制与样式归 `SectionHead`，Table 只把标题装进通栏。
+   */
+  groupAccent?: SectionHeadAccent | false
   /** 行密度（行高 + 水平内距），默认 default。 */
   density?: TableDensity
   /** 斑马纹（偶数行淡底），默认 false。 */
@@ -48,6 +57,12 @@ export interface TableSharedProps {
   emptyText?: ReactNode
   /** 无障碍名（表格没有可见标题时请务必给）。 */
   ariaLabel?: string
+  /**
+   * 内建分页（**只在 `Table` 上生效**，`tableShell` 自己不读它）：给出即按当前页切片 `rows`
+   * 并在表格下方渲染分页条；`total` 缺省 = `rows.length`（本地分页），给了就按服务端分页处理
+   * （不切片）。`groups` 模式不分页 —— 传了 `groups` 就忽略本项。
+   */
+  pagination?: TablePaginationConfig
   /** 追加 class（只允许补布局，不许覆盖皮肤）。 */
   className?: string
   style?: CSSProperties
@@ -200,7 +215,7 @@ export function tableShell(skinClass: string, props: TableSharedProps): ReturnTy
         h(
           'tbody',
           { key: group.key, className: 'dshpc-table__body dshpc-table__group-body' },
-          // 通栏标题行：横跨所有列，充当这一组的「大标题」
+          // 通栏标题行：横跨所有列，充当这一组的「大标题」。
           h(
             'tr',
             { className: 'dshpc-table__group-row' },
@@ -211,7 +226,12 @@ export function tableShell(skinClass: string, props: TableSharedProps): ReturnTy
                 scope: 'colgroup',
                 colSpan: leaves.length > 0 ? leaves.length : undefined,
               },
-              group.title,
+              // 标题的固定标签（短竖线）与排版归 SectionHead —— Table 只负责把标题装进通栏。
+              h(SectionHead, {
+                title: group.title,
+                accent: props.groupAccent ?? 'default',
+                flush: true,
+              }),
             ),
           ),
           // 每组自带表头：分组模式不放在 <thead>（一个 table 只能有一个 thead）
