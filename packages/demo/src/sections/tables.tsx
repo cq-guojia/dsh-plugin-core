@@ -12,10 +12,9 @@ import { DocApi, DocCode, DocProse, Example } from '../doc.js'
 import { t } from '../i18n.js'
 
 /**
- * 主表示例：把「列级配置」全摆出来 —— 多色表头、无竖线列、居中 / 右对齐、
- * 头像 + 姓名 + 编号的多内容单元格、斑马纹、可点选中。
- * 「左边线缺一条」的旧问题已经由按列 data-divider 修掉，这里专门关掉 Age 列的 divider
- * 来演示「这几列之间不要线」。
+ * 主表示例（外观一：带全框）：把「列级配置」全摆出来 —— 多色表头、全框 + 列间竖线、
+ * 居中 / 右对齐、头像 + 姓名 + 编号的多内容单元格、斑马纹、可点选中。
+ * Age 列不给 divider ⇒ 演示「这两列之间不要线」。
  */
 const COLUMNS: TableColumn[] = [
   { key: 'id', title: 'Patient ID', width: 120 },
@@ -25,8 +24,8 @@ const COLUMNS: TableColumn[] = [
     headerTone: 'business',
     children: [
       // 默认水平内距 12px；这一列显式收到 8px，演示列级 padding
-      { key: 'name', title: 'Name', width: 210, padding: 8 },
-      // divider:false ⇒ Age 与 Name 之间不画竖线（「贯穿」感就是这么来的）
+      { key: 'name', title: 'Name', width: 210, padding: 8, divider: true },
+      // divider 不给 ⇒ Age 与 Name 之间不画竖线（「这几列之间不要线」）
       { key: 'age', title: 'Age / Sex', width: 100, align: 'center', divider: false },
     ],
   },
@@ -34,14 +33,14 @@ const COLUMNS: TableColumn[] = [
     key: 'study',
     title: 'Latest study',
     children: [
-      { key: 'date', title: 'Date', width: 110 },
+      { key: 'date', title: 'Date', width: 110, divider: true },
       // 标签类内容：列级 padding 收窄，标签本身贴得紧一点（space-2 = 8px）
-      { key: 'modality', title: 'Modality', width: 96, align: 'center', padding: 8 },
+      { key: 'modality', title: 'Modality', width: 96, align: 'center', padding: 8, divider: true },
     ],
   },
-  { key: 'flags', title: 'Flags', width: 132, padding: 8 },
-  { key: 'status', title: 'Status', width: 120, headerTone: 'success' },
-  { key: 'actions', title: '', width: 72, align: 'right' },
+  { key: 'flags', title: 'Flags', width: 132, padding: 8, divider: true },
+  { key: 'status', title: 'Status', width: 120, headerTone: 'success', divider: true },
+  { key: 'actions', title: '', width: 72, align: 'right', divider: true },
 ]
 
 type Modality = 'CT' | 'MR' | 'US' | 'XR'
@@ -157,9 +156,9 @@ function rowsOf(): TableRow[] {
  */
 const SPAN_COLUMNS: TableColumn[] = [
   { key: 'site', title: 'Site', width: 132 },
-  { key: 'metric', title: 'Metric', width: 148 },
-  { key: 'q1', title: 'Q1', width: 88, align: 'center' },
-  { key: 'q2', title: 'Q2', width: 88, align: 'center' },
+  { key: 'metric', title: 'Metric', width: 148, divider: true },
+  { key: 'q1', title: 'Q1', width: 88, align: 'center', divider: true },
+  { key: 'q2', title: 'Q2', width: 88, align: 'center', divider: true },
 ]
 
 const SPAN_ROWS: TableRow[] = [
@@ -241,6 +240,9 @@ const GROUPS: TableGroup[] = WORKSPACES.map((workspace) => ({
 export function TablePage(): ReturnType<typeof h> {
   /** null = 当前没有选中行；再点一次已选中的行就是取消（由调用方决定 toggle 语义）。 */
   const [selected, setSelected] = useState<string | number | null>('S-2418')
+  // 第二 / 第三个表也演示行态：选中与可点由调用方给，不给就是静态表（这里三张表都开着）。
+  const [spanSelected, setSpanSelected] = useState<string | number | null>('c')
+  const [groupSelected, setGroupSelected] = useState<string | number | null>('a2')
   return h(
     'div',
     null,
@@ -257,6 +259,7 @@ export function TablePage(): ReturnType<typeof h> {
           columns: COLUMNS,
           rows: rowsOf(),
           striped: true,
+          borders: 'all',
           selectedKeys: selected === null ? [] : [selected],
           // 再点一次已选中的行 = 取消选中
           onRowClick: (row) => setSelected((prev) => (prev === row.key ? null : row.key)),
@@ -270,6 +273,7 @@ export function TablePage(): ReturnType<typeof h> {
         h(Table, {
           columns: COLUMNS,
           rows: [],
+          borders: 'all',
           ariaLabel: 'Surveillance studies (empty)',
           style: { minWidth: 960 },
         }),
@@ -286,6 +290,8 @@ export function TablePage(): ReturnType<typeof h> {
           rows: SPAN_ROWS,
           density: 'compact',
           borders: 'y',
+          selectedKeys: spanSelected === null ? [] : [spanSelected],
+          onRowClick: (row) => setSpanSelected((prev) => (prev === row.key ? null : row.key)),
           ariaLabel: 'Enrollment by site',
           style: { maxWidth: '560px' },
         }),
@@ -300,6 +306,8 @@ export function TablePage(): ReturnType<typeof h> {
         h(Table, {
           columns: GROUP_COLUMNS,
           groups: GROUPS,
+          selectedKeys: groupSelected === null ? [] : [groupSelected],
+          onRowClick: (row) => setGroupSelected((prev) => (prev === row.key ? null : row.key)),
           ariaLabel: 'Tasks by workspace',
           style: { minWidth: 660 },
         }),

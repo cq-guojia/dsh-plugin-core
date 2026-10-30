@@ -17,12 +17,14 @@ function alignClass(prefix, align) {
 }
 /**
  * 某列在叶子序列里的位置决定画不画左竖线：
- * 首列恒不画（那是外框的位置），其余列按 `column.divider`（默认画）。
+ * 首列恒不画（那是外框的位置）；其余列只在「想要线」时画。
+ * 分组列自己不写 `divider` 时，跟随它第一个叶子列 —— 组头的左缘和第一个子列的左缘
+ * 是同一条线，否则「组头无线、下面子列有线」会断成两截（2026-10-30 用户真机指出）。
  */
-function dividerAttr(column, leafIndex) {
+function dividerAttr(leafIndex, wanted) {
     if (leafIndex === 0)
         return undefined;
-    return column.divider === false ? undefined : 'left';
+    return wanted === true ? 'left' : undefined;
 }
 /**
  * 表格共享渲染壳（**内部件，不进公开导出**）。
@@ -44,7 +46,7 @@ export function tableShell(skinClass, props) {
     const selected = new Set(props.selectedKeys ?? []);
     const onRowClick = props.onRowClick;
     const density = props.density ?? 'default';
-    const borders = props.borders ?? 'all';
+    const borders = props.borders ?? 'y';
     const tableClass = [
         'dshpc-table',
         skinClass,
@@ -59,6 +61,8 @@ export function tableShell(skinClass, props) {
     const headRowOf = (cells, level) => h('tr', { key: `head-${level}`, className: 'dshpc-table__head-row' }, ...cells.map((cell) => {
         const group = cell.colSpan > 1;
         const firstLeafIndex = leafIndexByKey.get(cell.leafKeys[0] ?? '');
+        // 分组列没写 divider ⇒ 跟第一个叶子列走（两行列的左缘是同一条线）。
+        const firstLeaf = firstLeafIndex === undefined ? undefined : leaves[firstLeafIndex];
         const className = `dshpc-table__head-cell${group ? ' dshpc-table__head-cell--group' : ''}${alignClass('dshpc-table__head-cell', cell.column.align)}`;
         const tone = cell.column.headerTone;
         return h('th', {
@@ -68,7 +72,9 @@ export function tableShell(skinClass, props) {
             rowSpan: cell.rowSpan > 1 ? cell.rowSpan : undefined,
             className,
             style: padStyle(cell.column),
-            'data-divider': firstLeafIndex === undefined ? undefined : dividerAttr(cell.column, firstLeafIndex),
+            'data-divider': firstLeafIndex === undefined
+                ? undefined
+                : dividerAttr(firstLeafIndex, cell.column.divider ?? firstLeaf?.divider),
             'data-header-tone': tone === undefined || tone === 'default' ? undefined : tone,
         }, cell.column.title);
     }));
@@ -109,7 +115,7 @@ export function tableShell(skinClass, props) {
             style: padStyle(column),
             colSpan: spec?.colSpan !== undefined && spec.colSpan > 1 ? spec.colSpan : undefined,
             rowSpan: spec?.rowSpan !== undefined && spec.rowSpan > 1 ? spec.rowSpan : undefined,
-            'data-divider': dividerAttr(column, leafIndex),
+            'data-divider': dividerAttr(leafIndex, column.divider),
         }, content ?? null);
     })));
     const groups = props.groups ?? [];

@@ -23,7 +23,7 @@ export interface TableSharedProps {
     density?: TableDensity;
     /** 斑马纹（偶数行淡底），默认 false。 */
     striped?: boolean;
-    /** 外框范围：all 四边（默认）/ x 只左右两条 / y 只上下两条 / none 全不要。 */
+    /** 外框范围：y 只上下两条（默认，无左右边）/ all 四边 / x 只左右两条 / none 全不要。 */
     borders?: TableBorders;
     /** 选中行（高亮 + 左侧竖条由皮肤决定）。 */
     selectedKeys?: readonly (string | number)[];

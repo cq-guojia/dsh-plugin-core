@@ -2069,24 +2069,24 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "第一档外观 Plain：白卡片上的轻量表格 —— 有外框，双行分组表头用灰底 + 下边线，列间有竖向分隔线（可按键配置关掉）；数据行只保留极淡底线（没有粗横线）。可点行悬浮淡蓝，选中行淡蓝底 + 左侧 3px 蓝条。",
-        "en": "First skin, Plain: a lightweight table on a white card — an outer border, a grey two-row grouped header with a bottom rule, and vertical dividers between columns (switchable per column); data rows keep only a very faint bottom line (no heavy rules). Clickable rows tint blue on hover, and the selected row gets a blue tint plus a 3px blue bar on the left."
+        "zh": "第一档外观 Plain：轻量表格 —— 表头默认是中性灰底（`--dshpc-surface-sunken`，与通栏同一层灰）+ 下边线，双行分组表头也清楚；通栏标题反而用更实的表面色（亮 #f6f8fa / 暗 #151b23）；数据行只保留极淡底线，**默认没有一条竖线**；可点行悬浮是极淡的中性灰（亮色 ≈1.5% 淡黑、暗色 ≈3% 淡白），选中行淡蓝底 + 左侧 3px 蓝条。",
+        "en": "First skin, Plain: a lightweight table — the header defaults to a neutral grey (--dshpc-surface-sunken, the same wash the banner uses) with a bottom rule that keeps two-row grouped headers legible, while the banner title uses a firmer surface tone (light #f6f8fa / dark #151b23); data rows keep only a very faint bottom line and, by default, **no vertical lines at all**; clickable rows hover to an extremely faint neutral grey (a ~1.5% light black wash in light mode, a ~3% light white wash in dark), and the selected row gets a blue tint plus a 3px blue bar on the left."
       },
       {
-        "zh": "三个表级开关：density 三档（compact / default / comfortable，改行高与水平内距 —— default 行高 44 / 48、水平内距 12px，compact 36 / 36 与 8px，comfortable 52 / 60 与 16px）、striped（偶数行淡底斑马纹）、borders（all 四边 / x 只留左右两条 / y 只留上下两条 / none 全不要；「不要左右两条边」用 y）。不需要的就不传，默认是参考稿的样子。",
-        "en": "Three table-level switches: `density` (compact / default / comfortable — row height and horizontal padding; default is 44 / 48 rows with 12px padding, compact 36 / 36 with 8px, comfortable 52 / 60 with 16px), `striped` (a faint tint on even rows), and `borders` (all four sides / x for left+right only / y for top+bottom only / none; use y to drop the left and right edges). Omit what you do not need; defaults match the reference design."
+        "zh": "三个表级开关：density 三档（compact / default / comfortable，改行高与水平内距 —— default 行高 44 / 48、水平内距 12px，compact 36 / 36 与 8px，comfortable 52 / 60 与 16px）、striped（偶数行淡底斑马纹）、borders（**默认 y**：只留上下两条、没有左右边；all 四边 = 带全框；x 只留左右两条；none 全不要）。",
+        "en": "Three table-level switches: `density` (compact / default / comfortable — row height and horizontal padding; default is 44 / 48 rows with 12px padding, compact 36 / 36 with 8px, comfortable 52 / 60 with 16px), `striped` (a faint tint on even rows), and `borders` (**y by default**: top and bottom only, no left/right edges; all for a full frame; x for left+right only; none for nothing)."
       },
       {
-        "zh": "列级配置：align 居中 / 右对齐，divider=false 关掉该列左缘竖线（「这几列之间不要线」就是这么表达；首列恒不画线），padding 单独调该列水平内距（px），headerTone 给该列表头换语义色（business / success / warning / danger / 扩展八色，全部映射 token，暗色自动跟随）。",
-        "en": "Per-column config: `align` for centring / right alignment; `divider=false` removes the divider on that column’s left edge (this is how “no lines between these columns” is expressed; the first column never draws one); `padding` adjusts that column’s horizontal padding in px; `headerTone` recolours that column’s header from the semantic palette (business / success / warning / danger and the eight extended tones — all mapped to tokens, so dark mode follows automatically)."
+        "zh": "列级配置：align 居中 / 右对齐，divider=true 才在该列左缘画竖线（**默认不画**，首列恒不画 —— 「列间不要线」是默认值，要线才开；分组列自己不写时跟随它第一个子列，组头与子列的竖线才连成一条），padding 单独调该列水平内距（px），headerTone 给该列表头换语义色（business / success / warning / danger / 扩展八色，全部映射 token，暗色自动跟随）。",
+        "en": "Per-column config: `align` for centring / right alignment; `divider=true` draws the divider on that column’s left edge (**off by default**, and the first column never draws one — “no lines between columns” is the default, opt in for lines; a group column that omits it follows its first child, so the header and child dividers line up); `padding` adjusts that column’s horizontal padding in px; `headerTone` recolours that column’s header from the semantic palette (business / success / warning / danger and the eight extended tones — all mapped to tokens, so dark mode follows automatically)."
       },
       {
         "zh": "数据驱动、组件不取数：columns 可嵌套 children 形成多行分组表头（colSpan / rowSpan 由组件算）；rows 是 { key, cells }，cells 按叶子列 key 取内容。单元格有两种写法 —— 直接给任意 ReactNode（头像 + 姓名 + 编号这种多内容排版、状态胶囊、行尾按钮都由调用方塞），或给 { content, colSpan, rowSpan, align } 对象做跨列 / 跨行。跨行时下一行不要给该列 key（缺 key = 该格不渲染、让位给上一行；要空单元格请显式传 null）。传 onRowClick 才可点。",
         "en": "Data-driven, never self-fetching: columns may nest children for a multi-row grouped header (colSpan / rowSpan are computed); rows are { key, cells } looked up by leaf-column key. A cell is either any ReactNode (multi-line layouts such as avatar + name + ID, status pills, row-end buttons are all the caller’s) or a { content, colSpan, rowSpan, align } object for column/row spanning. When spanning rows, the next row must omit that column’s key (a missing key renders nothing and yields the slot to the previous row; pass null explicitly for an empty cell). Rows are clickable only with onRowClick."
       },
       {
-        "zh": "通栏分组：传 groups（与 rows 二选一）就能在一个表格里放下多个板块 —— 每组渲染成「一行横跨所有列的通栏标题 → 这一组自己的表头 → 这一组的任务行」，组与组之间用一条实线隔开。典型场景是多个工作区的任务：仍是一张表，不会拆成两张、也不会出现两个互不相干的表头挤在一起；分组模式下没有 <thead>，表头跟着每组走。",
-        "en": "Banner groups: pass groups (instead of rows) to hold several sections in one table — each group renders as a full-width banner row spanning every column → that group’s own header → that group’s rows, with a solid rule between groups. The canonical case is tasks across several workspaces: it stays one table rather than two tables with unrelated headers. Group mode has no thead; the header travels with each group."
+        "zh": "通栏分组：传 groups（与 rows 二选一）就能在一个表格里放下多个板块 —— 每组渲染成「一行横跨所有列的通栏标题 → 这一组自己的表头 → 这一组的任务行」，组与组之间用一条实线隔开。典型场景是多个工作区的任务：仍是一张表，不会拆成两张、也不会出现两个互不相干的表头挤在一起；分组模式下没有 <thead>，表头跟着每组走。组内任务行与普通表一样，给 `selectedKeys` / `onRowClick` 就有选中与悬浮（不给就是静态表）。",
+        "en": "Banner groups: pass groups (instead of rows) to hold several sections in one table — each group renders as a full-width banner row spanning every column → that group’s own header → that group’s rows, with a solid rule between groups. The canonical case is tasks across several workspaces: it stays one table rather than two tables with unrelated headers. Group mode has no thead; the header travels with each group. Rows inside a group behave like ordinary rows: pass `selectedKeys` / `onRowClick` for selection and hover (omit them for a static table)."
       },
       {
         "zh": "外观分档 = 分组件 + 分文件，没有 variant：Table 只 import 自己那份皮肤 CSS；后续 TableGrid（网格线）/ TableZebra（斑马纹）是同族独立组件，各自 import 各自皮肤。消费方引哪个就只打包哪个 —— 引一个表格不会把另一档的 CSS 也带进包里。",
@@ -2107,8 +2107,8 @@ export const docData = {
             "def": "—",
             "required": "必填",
             "desc": {
-              "zh": "列定义；children 非空即分组表头（自动算 colSpan / rowSpan），叶子 key 用来取单元格；width 数字按 px；align 对齐；divider=false 关掉该列左竖线；padding 该列水平内距（px）；headerTone 该列表头语义色",
-              "en": "Column definitions; non-empty children makes a group header (colSpan / rowSpan computed); leaf keys select cells; numeric width means px; align sets alignment; divider=false drops that column’s left divider; padding sets its horizontal padding (px); headerTone recolours its header"
+              "zh": "列定义；children 非空即分组表头（自动算 colSpan / rowSpan），叶子 key 用来取单元格；width 数字按 px；align 对齐；divider=true 才画该列左竖线（默认不画）；padding 该列水平内距（px）；headerTone 该列表头语义色",
+              "en": "Column definitions; non-empty children makes a group header (colSpan / rowSpan computed); leaf keys select cells; numeric width means px; align sets alignment; divider=true draws that column’s left divider (off by default); padding sets its horizontal padding (px); headerTone recolours its header"
             }
           },
           {
@@ -2150,10 +2150,10 @@ export const docData = {
           {
             "name": "borders",
             "type": "'all' | 'x' | 'y' | 'none'",
-            "def": "'all'",
+            "def": "'y'",
             "desc": {
-              "zh": "外框范围：all 四边 / x 只左右 / y 只上下 / none 全不要（不要左右两条边用 y）",
-              "en": "Outer border: all four sides / x left+right only / y top+bottom only / none (use y to drop left and right)"
+              "zh": "外框范围：y 只上下（默认，左右没有边）/ all 四边全框 / x 只左右 / none 全不要",
+              "en": "Outer border: y for top+bottom only (default, no left/right) / all for a full frame / x for left+right only / none for nothing"
             }
           },
           {
@@ -2217,7 +2217,7 @@ export const docData = {
       {
         "id": "ui-table-example",
         "lang": "tsx",
-        "src": "import { Table, Chip } from 'dsh-plugin-core/ui'\n\nconst columns = [\n  { key: 'id', title: 'Patient ID', width: 140 },\n  {\n    key: 'patient', title: 'Patient', headerTone: 'business',\n    children: [\n      // divider:false ⇒ 这一列左缘不画竖线（「这几列之间不要线」）\n      { key: 'name', title: 'Name', width: 200, padding: 12 },\n      { key: 'age', title: 'Age / Sex', width: 100, align: 'center', divider: false },\n    ],\n  },\n  { key: 'status', title: 'Status', width: 130, headerTone: 'success' },\n]\n\nconst rows = [{\n  key: 'S-2418',\n  cells: {\n    id: 'S-2418',\n    // 单元格可以装任意 ReactNode：头像 + 名字 + 编号的多行排版由调用方决定\n    name: h('div', null, h('strong', null, 'Chen, Wei'), h('div', null, 'MRN-88214')),\n    age: '62 / M',\n    status: h(Chip, { tone: 'success', size: 'xs' }, 'Reviewed'),\n  },\n}, {\n  // 跨列：对象写法占 id + name 两格\n  key: 'S-2420',\n  cells: { id: { content: 'S-2420 · escalated', colSpan: 2 }, age: null, status: 'Pending' },\n}]\n\nh(Table, {\n  columns, rows,\n  density: 'compact',   // compact / default / comfortable\n  striped: true,        // 偶数行淡底\n  borders: 'all',       // all 四边 / x 只左右 / none\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n})\n\n// 通栏分组：一个表格里放多个工作区（groups 与 rows 二选一）\n// 每组 = 横跨全部列的通栏标题 → 这一组自己的表头 → 这一组的任务行，组间一条实线\nh(Table, {\n  columns: [\n    { key: 'task', title: 'Task', width: 260 },\n    { key: 'state', title: 'Status', width: 120, align: 'center' },\n  ],\n  groups: [\n    { key: 'ws-a', title: '工作区 A', rows: [\n      { key: 'a1', cells: { task: '修表格斑马纹', state: '进行中' } },\n    ] },\n    { key: 'ws-b', title: '工作区 B', rows: [\n      { key: 'b1', cells: { task: '补通栏文档', state: '已完成' } },\n    ] },\n  ],\n  ariaLabel: 'Tasks by workspace',\n})\n\n// 第二档外观是另一个组件、另一份 CSS（预留）：引 TableGrid / TableZebra 时\n// 只打包它自己那份皮肤，不会把 Table 的皮肤一起带上。"
+        "src": "import { Table, Chip } from 'dsh-plugin-core/ui'\n\nconst columns = [\n  { key: 'id', title: 'Patient ID', width: 140 },\n  {\n    key: 'patient', title: 'Patient', headerTone: 'business',\n    children: [\n      // divider:true ⇒ 这一列左缘画竖线（默认不画 —— 表格默认只有横线）\n      // 分组列自己不写时跟随第一个子列 ⇒ 组头与子列的竖线连成一条\n      { key: 'name', title: 'Name', width: 200, padding: 12, divider: true },\n      { key: 'age', title: 'Age / Sex', width: 100, align: 'center', divider: true },\n    ],\n  },\n  { key: 'status', title: 'Status', width: 130, headerTone: 'success', divider: true },\n]\n\nconst rows = [{\n  key: 'S-2418',\n  cells: {\n    id: 'S-2418',\n    // 单元格可以装任意 ReactNode：头像 + 名字 + 编号的多行排版由调用方决定\n    name: h('div', null, h('strong', null, 'Chen, Wei'), h('div', null, 'MRN-88214')),\n    age: '62 / M',\n    status: h(Chip, { tone: 'success', size: 'xs' }, 'Reviewed'),\n  },\n}, {\n  // 跨列：对象写法占 id + name 两格\n  key: 'S-2420',\n  cells: { id: { content: 'S-2420 · escalated', colSpan: 2 }, age: null, status: 'Pending' },\n}]\n\nh(Table, {\n  columns, rows,\n  density: 'compact',   // compact / default / comfortable\n  striped: true,        // 偶数行淡底\n  borders: 'all',       // y 只上下（默认，无左右边）/ all 四边 / x 只左右 / none\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n})\n\n// 通栏分组：一个表格里放多个工作区（groups 与 rows 二选一）\n// 每组 = 横跨全部列的通栏标题 → 这一组自己的表头 → 这一组的任务行，组间一条实线\nh(Table, {\n  columns: [\n    { key: 'task', title: 'Task', width: 260 },\n    { key: 'state', title: 'Status', width: 120, align: 'center' },\n  ],\n  groups: [\n    { key: 'ws-a', title: '工作区 A', rows: [\n      { key: 'a1', cells: { task: '修表格斑马纹', state: '进行中' } },\n    ] },\n    { key: 'ws-b', title: '工作区 B', rows: [\n      { key: 'b1', cells: { task: '补通栏文档', state: '已完成' } },\n    ] },\n  ],\n  // 组内任务行与普通表一样：给 selectedKeys / onRowClick 就有选中与悬浮\n  selectedKeys: [picked],\n  onRowClick: (row) => setPicked(row.key),\n  ariaLabel: 'Tasks by workspace',\n})\n\n// 第二档外观是另一个组件、另一份 CSS（预留）：引 TableGrid / TableZebra 时\n// 只打包它自己那份皮肤，不会把 Table 的皮肤一起带上。"
       }
     ]
   },

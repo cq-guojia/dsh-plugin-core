@@ -40,6 +40,13 @@ body{
   /* 表头底：浅色主题**偏深**，且必须**比斑马纹（--dshpc-plate）再深一档**——
      两者不能撞色（用户 2026-10-02：表头跟斑马纹一模一样）。 */
   --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);
+  /* 表格底 / 行 hover（2026-10-30 用户二次定案：表头与通栏**互换**底色）：
+     表头默认底 = 通栏原来那层灰（--dshpc-surface-sunken，跟着宿主交互面走）；
+     通栏默认底 = 表头原来那色（亮 #f6f8fa / 暗 #151b23，参考图实测，与深色段同源）；
+     行 hover 是「一层极淡的黑」≈1.5%（用户：再浅一半，要特别淡）。 */
+  --dshpc-table-head-bg:var(--dshpc-surface-sunken);
+  --dshpc-table-banner-bg:#f6f8fa;
+  --dshpc-table-row-hover:rgba(15,15,15,.015);
   /* 图标小底板（产出物）：浅色下要**看得见**（原先取 plate ⇒ 在白底上等于没有）；hover 加倍。 */
   --dshpc-chip-bg:rgba(15,15,15,.07);
   --dshpc-chip-bg-hover:rgba(15,15,15,.14);
@@ -268,6 +275,11 @@ body[data-ds-dark-theme]{
   --dshpc-icon-plate:rgba(255,255,255,.05);
   /* 暗色主题**反过来**：表头要比卡片面**亮**、比斑马纹再**浅一档**（用户：纯黑背景没法看）。 */
   --dshpc-head-bg:var(--dshpc-surface-2);
+  /* 表格（2026-10-30 用户二次定案：与通栏互换底色）：通栏底取表头原来那色 #151b23
+     （亮色段对应 #f6f8fa）；表头默认底沿用亮色段定义的 --dshpc-surface-sunken，不在暗色段重写；
+     行 hover 是「一层极淡的白」≈3% —— 暗底上用黑会越悬越暗，看不出「浅灰」反馈。 */
+  --dshpc-table-banner-bg:#151b23;
+  --dshpc-table-row-hover:rgba(255,255,255,.03);
   /* 暗色底板**微亮**；hover **更亮**（原先 hover 取 plate-hover 反而更淡 ⇒ 鼠标移上去就没了）。 */
   --dshpc-chip-bg:rgba(255,255,255,.08);
   --dshpc-chip-bg-hover:rgba(255,255,255,.16);

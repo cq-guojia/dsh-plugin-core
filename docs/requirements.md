@@ -52,24 +52,37 @@ dsh-plugin-core/
 - 日期时间：`DateTimePicker`（2026-10-24 新增：单值 / 时间段 × 精度 day/hour/minute/second；
   数据恒完整本地 ISO 到毫秒、**显示只到精度**；起始端 floor、结束端 ceil）
 - 「统一某类元素」的控件：`SectionHead` 等
-- 表格：`Table`（第一档外观 Plain，2026-10-30 新增并扩展：外框、灰底双行分组表头 + 下边线、
-  竖向分隔线、数据行只留极淡底线、可点行悬浮淡色、选中行淡色底 + 左侧蓝条）。
+- 表格：`Table`（第一档外观 Plain，2026-10-30 新增并扩展：外框（默认只留上下两条）、中性灰双行分组表头 + 下边线、
+  竖分隔线（列级 opt-in，默认不画）、数据行只留极淡底线、可点行悬浮极浅中性灰、选中行淡色底 + 左侧蓝条）。
+  表头 / 通栏 / 行 hover 走专有 token（2026-10-30 用户二次定案：**表头与通栏互换底色**）：
+  `--dshpc-table-head-bg` = `--dshpc-surface-sunken`（原来的通栏灰）、
+  `--dshpc-table-banner-bg` 亮 `#f6f8fa` / 暗 `#151b23`（原来的表头色）、
+  `--dshpc-table-row-hover` 亮 `rgba(15,15,15,.015)` / 暗 `rgba(255,255,255,.03)`
+  （用户两次都嫌亮：第一次要「特别浅的灰、不要淡蓝」，第二次要求「再浅一半，特别淡」，
+  暗底上用半透明白、亮底上用半透明黑）。
   数据驱动 `columns` + `rows` / `groups`，组件不取数；
   **配置面三层**（2026-10-30 用户要求「既要有知识又要方便配置」）：
   - 表级 `density`（compact 36/36 + 8px / default 44/48 + 12px / comfortable 52/60 + 16px，
     前为行高、后者水平内距）、`striped`（斑马纹）、
-    `borders`（all 四边 / x 只左右 / y 只上下 / none；「不要左右两条边」用 y）；
-  - 列级 `align`、`divider`（关掉该列左竖线，首列恒不画）、`padding`（该列水平内距 px）、
-    `headerTone`（表头语义色，全映射 token）；
+    `borders`（all 四边 / x 只左右 / y 只上下（**默认**）/ none）；
+  - 列级 `align`、`divider`（**默认 false = 不画**，给 `true` 才画该列左竖线；首列恒不画；
+    分组列自己不写时跟随它第一个叶子列，保证组头与子列的竖线连成一条 —— 2026-10-30 用户真机
+    指出「蓝底组头没有边、绿底叶子列有边」，正是漏了这条继承）、
+    `padding`（该列水平内距 px）、`headerTone`（表头语义色，全映射 token）；
   - 单元格级：值可为任意 ReactNode，或 `{ content, colSpan, rowSpan, align }` 做跨列 / 跨行；
     缺 key = 该格不渲染、给上一行 rowSpan 让位；
   - 结构级 `groups`（与 `rows` 二选一，2026-10-30 用户要的通栏样式）：
     每组 = 一行横跨全部列的**通栏标题** → 这一组自己的表头 → 这一组的数据行，
-    多组垂直连续排布、组间一条实线；用于「一个表格展示多个工作区 / 多个板块」。
+    多组垂直连续排布、组间一条实线；通栏与组表头之间也有一条线（2026-10-30 用户要求「那之间也要有 border」）。
+    用于「一个表格展示多个工作区 / 多个板块」。
     分组模式不渲染 `<thead>`（一个 table 只有一个），表头在每组自己的 `<tbody>` 里；
   - 行态优先级（2026-10-30 真机事故钉死）：斑马纹选择器只能到 3 个类级别，
     皮肤的 hover / 选中必须 4 级 —— 否则基础层后注入时偶数行永远被斑马纹盖住。
-    悬浮 / 选中的底色一律取最淡档（open-bg-soft / business-soft），不要再回到 `--dshpc-open-bg`。
+    hover 走 `--dshpc-table-row-hover`（中性灰），选中走 `business-soft` + 左侧 3px `business` 条，
+    不要再回到 `--dshpc-open-bg`（2026-10-30 用户：要浅灰不要淡蓝）。
+  - **三种外观（2026-10-30 用户定）**：①全框 = `borders:'all'` + 各列 `divider:true`；
+    ②左右无边 = `borders:'y'` + 各列 `divider:true`；③**默认** = 不传 `borders`（落 y）且列都不给 `divider`
+    —— 所有竖着的边都没有，只剩横线。
   竖分隔线按列声明（格子上的 `data-divider`），**不用相邻兄弟选择器** —— 后者会让每行首格
   永远没有左线（即 2026-10-30 真机看到的「Name 左边没 border」），且跨列后会画错位置。
   外观分档 = **分组件 + 分文件**（`Table` / 预留 `TableGrid` 网格线 / `TableZebra` 斑马纹），
@@ -217,7 +230,7 @@ dsh-plugin-core/
 | v2+ | `explorer` 重做（2026-10-20） | ✅ 已完成（FileBrowser 面板 + `openFilePreview` / `pickWorkspaceFile` 两能力 + 全量预览：md / 代码高亮 / HTML / PDF / Office；官方件经 `./ui/official` 子路径） |
 | v3 | `session` | ⚠️ **半完成**：契约与三种承载已好，**官方会话 UI 镜像未搬**（只做最简渲染） |
 | v3+ | 控件样式按需注入（2026-10-30） | ✅ 已完成（`css.ts` 停全量聚合；27 个组件各自注入自己那份；只 `import { Button }` 时 CSS 文本 71.7 KB → 9.4 KB。**不采用 `@layer`**：未分层样式压过任何层且层级裁决优先于特异性，包进层会被宿主元素级重置反压） |
-| v3+ | 表格样式（2026-10-30） | ✅ 第一档 Plain 落地（`Table`：基础层 + 皮肤分文件注入，外框 / 灰底表头 / 竖向分隔 / 极淡行线）+ 通栏分组 `groups`；预留 `TableGrid` / `TableZebra` 两档同族独立组件 |
+| v3+ | 表格样式（2026-10-30） | ✅ 第一档 Plain 落地（`Table`：基础层 + 皮肤分文件注入，中性灰表头 / 极淡行线 / 极淡中性灰 hover；表头与通栏互换底色；**默认无竖线、外框只上下**，竖线按列 opt-in；三种外观 = all+divider / y+divider / 默认）+ 通栏分组 `groups`；预留 `TableGrid` / `TableZebra` 两档同族独立组件 |
 | 文档 | README 接入指南 | ✅ 已完成 |
 
 **未做**（按重要性）：消费者插件接入 / 会话 UI 镜像 / 类名隔离 /

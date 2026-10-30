@@ -42,9 +42,12 @@
 
 /* 分组通栏：一个表格里放多个板块（工作区 A / 工作区 B）时，每组先来一行横跨全部列的大标题，
    然后才是这一组自己的表头与数据行。结构 + 底色归基础层（只用 token，各档皮肤共同成立）；
-   组与组之间用一条实线隔开，第一组顶部不画（外框已经在那儿，画了就成双线）。 */
+   通栏底走 --dshpc-table-banner-bg（与表头互换的那一档，2026-10-30 用户定）；
+   通栏与组表头之间画一条线（用户 2026-10-30：那之间也要有 border）；
+   组与组之间用通栏顶线隔开，第一组顶部不画（外框已经在那儿，画了就成双线）。 */
 .dshpc-table__group-cell{height:var(--dshpc-table-head-h);padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);
-  box-sizing:border-box;background:var(--dshpc-surface-sunken);border-top:1px solid var(--dshpc-border);
+  box-sizing:border-box;background:var(--dshpc-table-banner-bg);border-top:1px solid var(--dshpc-border);
+  border-bottom:1px solid var(--dshpc-border);
   text-align:left;vertical-align:middle;font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg);}
 .dshpc-table__group-body:first-of-type .dshpc-table__group-cell{border-top:0;}
 

@@ -16,9 +16,10 @@
   border-bottom:1px solid var(--dshpc-border);}
 .dshpc-table--plain.dshpc-table--borders-none{border:0;}
 
-/* 表头：灰底 + 下边线。灰底把「表头区」和「数据区」分开；下边线兜住分组表头的第二层。 */
+/* 表头：中性灰底 + 下边线。底色走 --dshpc-table-head-bg（= --dshpc-surface-sunken，
+   与通栏那层灰同源；2026-10-30 用户二次定案：表头 / 通栏互换底色）；下边线兜住分组表头的第二层。 */
 .dshpc-table--plain .dshpc-table__head-cell{
-  background:var(--dshpc-head-bg);
+  background:var(--dshpc-table-head-bg);
   border-bottom:1px solid var(--dshpc-border);
 }
 .dshpc-table--plain .dshpc-table__head-cell--group{color:var(--dshpc-fg-3);}
@@ -39,8 +40,9 @@
 .dshpc-table--plain .dshpc-table__head-cell[data-header-tone='rose']{background:var(--dshpc-rose-soft);color:var(--dshpc-rose);}
 .dshpc-table--plain .dshpc-table__head-cell[data-header-tone='slate']{background:var(--dshpc-slate-soft);color:var(--dshpc-slate);}
 
-/* 竖分隔线：按列声明。组件给「该列左缘要画线」的格子打 data-divider='left'，
-   首列与 divider={false} 的列不打 —— 想「这几列之间不要线」就关掉那一列的 divider。 */
+/* 竖分隔线：按列声明，**默认不画**。组件只给 divider: true 的列打 data-divider='left'，
+   首列恒不画（那是外框的位置）。默认表格 = 只有横线、没有一条竖线；
+   要「列间有线」就给对应列 divider:true。 */
 .dshpc-table--plain .dshpc-table__head-cell[data-divider='left'],
 .dshpc-table--plain .dshpc-table__cell[data-divider='left']{border-left:1px solid var(--dshpc-border);}
 
@@ -50,9 +52,9 @@
 }
 
 /* 行悬浮：只在可点行上给反馈，静态表格不误导用户以为能点。
-   底色取最淡的一档（open-bg-soft）—— 2026-10-30 用户：原来的悬浮 / 选中「太亮了」，
-   只要一点点淡色意思到位即可。带 __body 上下文是为了压过基础层的斑马纹（见 table.css）。 */
-.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-open-bg-soft);}
+   底色是极淡中性灰（--dshpc-table-row-hover：亮色一层淡黑 ≈1.5%，暗色一层淡白 ≈3%）——
+   2026-10-30 用户：hover 要特别淡的灰、不要淡蓝（第二次又要求再浅一半）。带 __body 上下文是为了压过基础层的斑马纹（见 table.css）。 */
+.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-table-row-hover);}
 
 /* 选中行：淡蓝底 + 左侧蓝竖条。用背景渐变画条，避免 tr 上伪元素 / 定位的兼容问题；
    两条选择器同一份声明：悬浮态（多一个属性 + 伪类）不会盖掉选中态。

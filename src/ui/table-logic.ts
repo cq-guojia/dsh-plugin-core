@@ -16,7 +16,7 @@ export type TableAlign = 'left' | 'center' | 'right'
 /** 行密度：决定行高与水平内距（参考稿是 default 档）。 */
 export type TableDensity = 'compact' | 'default' | 'comfortable'
 
-/** 外框范围：all 四边 / x 只有左右两条 / y 只有上下两条 / none 全不要。 */
+/** 外框范围：y 只有上下两条（组件默认，无左右边）/ all 四边 / x 只有左右两条 / none 全不要。 */
 export type TableBorders = 'all' | 'x' | 'y' | 'none'
 
 /**
@@ -50,7 +50,10 @@ export interface TableColumn {
   width?: number | string
   /** 对齐（表头与数据格同源，默认 left）。 */
   align?: TableAlign
-  /** 该列左缘是否画竖分隔线（默认 true）；首列恒不画（那是外框的位置）。 */
+  /**
+   * 该列左缘是否画竖分隔线（默认 false = 不画，表格默认只有横线）；首列恒不画（那是外框的位置）。
+   * 分组列自己不写时，跟随它第一个叶子列 —— 组头的左缘和第一个子列的左缘是同一条线。
+   */
   divider?: boolean
   /** 该列水平内距（px），覆盖 density 档；不传走密度档。 */
   padding?: number
