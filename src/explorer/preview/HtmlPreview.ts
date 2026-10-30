@@ -1,10 +1,11 @@
 // HTML 静态预览：官方同款安全处理（禁标签 / 禁属性 / CSP + sandbox=""）后 iframe 渲染；
 // 源码态走 TextPreview 并按 256K 截断。降级路径（无 DOM 能力时）直接出错误态，不猜。
 import { createElement as h, useEffect, useState } from 'react'
-import { ensureControls } from '../../ui/css.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { bytesOf, errView, SOURCE_MAX_BYTES, type WorkspaceFilesFace } from '../types.js'
 import { TextPreview } from './TextPreview.js'
+import { ensureComponentStyles } from '../../ui/css.js'
+import { EXPLORER_CSS } from '../explorer-css.js'
 
 /** 官方 CSP 原文（documentpreview lib/client.js 同款，不多开不少关）。 */
 const HTML_CSP = "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; media-src data:"
@@ -58,7 +59,7 @@ export interface HtmlPreviewProps {
 }
 
 export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('explorer', EXPLORER_CSS)
   const tt = props.translate ?? t
   const [doc, setDoc] = useState<string | null>(null)
   const [failed, setFailed] = useState<ReturnType<typeof errView> | null>(null)

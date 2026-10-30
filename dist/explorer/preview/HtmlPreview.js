@@ -1,10 +1,11 @@
 // HTML 静态预览：官方同款安全处理（禁标签 / 禁属性 / CSP + sandbox=""）后 iframe 渲染；
 // 源码态走 TextPreview 并按 256K 截断。降级路径（无 DOM 能力时）直接出错误态，不猜。
 import { createElement as h, useEffect, useState } from 'react';
-import { ensureControls } from '../../ui/css.js';
 import { t } from '../../utils/i18n.js';
 import { bytesOf, errView, SOURCE_MAX_BYTES } from '../types.js';
 import { TextPreview } from './TextPreview.js';
+import { ensureComponentStyles } from '../../ui/css.js';
+import { EXPLORER_CSS } from '../explorer-css.js';
 /** 官方 CSP 原文（documentpreview lib/client.js 同款，不多开不少关）。 */
 const HTML_CSP = "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; media-src data:";
 /** 禁用标签（官方清单）。 */
@@ -51,7 +52,7 @@ export function buildStaticHtml(data) {
     return `<!DOCTYPE html>\n${doc.documentElement.outerHTML}`;
 }
 export function HtmlPreview(props) {
-    ensureControls();
+    ensureComponentStyles('explorer', EXPLORER_CSS);
     const tt = props.translate ?? t;
     const [doc, setDoc] = useState(null);
     const [failed, setFailed] = useState(null);

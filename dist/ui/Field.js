@@ -8,10 +8,11 @@
  *
  * 高度一律吃 `--dshpc-control-h-*`；有边 / 无边同高（边框在内部补回）。
  */
-import { ensureControls } from './css.js';
 import { createElement as h, useEffect, useState } from 'react';
 import { IconButton } from './Button.js';
 import { FieldHint } from './FieldHint.js';
+import { ensureComponentStyles } from './css.js';
+import { FIELD_CSS } from './controls-css.js';
 /**
  * 字段 hint 的统一包法：控件 + 问号提示同一行（间距/对齐收进组件，调用方传个
  * `hint` 字符串就行，不再手动拼排版 —— 用户 2026-10-20 拍板）。
@@ -26,7 +27,7 @@ function sizeClass(size) {
 }
 /** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export function Input(props) {
-    ensureControls();
+    ensureComponentStyles('field', FIELD_CSS);
     const { value, onChange, placeholder, size = 'lg', error, disabled, type, icon, className, style } = props;
     const [focused, setFocused] = useState(false);
     // 搜索框的清空钮：只在「有焦点 + 有内容」时出现。原生 ::-webkit-search-cancel-button 由壳的 CSS 隐掉，
@@ -65,7 +66,7 @@ export function Input(props) {
 }
 /** 前缀 + 文本输入。 */
 export function PrefixedInput(props) {
-    ensureControls();
+    ensureComponentStyles('field', FIELD_CSS);
     const { prefix, value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props;
     return h('div', {
         className: `dshpc-pfx dshpc-pfx${sizeClass(size)}${error === true ? ' dshpc-pfx--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
@@ -88,7 +89,7 @@ export function PrefixedInput(props) {
  * @returns 数字步进控件。
  */
 export function NumberInput(props) {
-    ensureControls();
+    ensureComponentStyles('field', FIELD_CSS);
     const { value, onChange, min = -Infinity, max = Infinity, step = 1, size = 'lg', inputWidth, disabled, suffix, label, decreaseLabel = '减少', increaseLabel = '增加', className, style, } = props;
     const [text, setText] = useState(String(value));
     // 外部值变化（如切档位重置）时同步回输入框。

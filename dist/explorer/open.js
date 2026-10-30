@@ -11,11 +11,13 @@
 // 关闭即卸载回收，不残留空根；拖宽与关闭交给 PanelDock 自己的 resizer / header 关钮。
 import { createElement as h, useState, useSyncExternalStore } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ensureControls, getStyleKit } from '../ui/css.js';
 import { getWorkspaceFiles, workspaceList } from '../ui/host-data.js';
 import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js';
 import { FileBrowser } from './FileBrowser.js';
 import { anchorSessionForTitle, pickWorkspaceAnchor, workspaceAnchorForPath } from './types.js';
+import { ensureComponentStyles, getStyleKit } from '../ui/css.js';
+import { PANEL_DOCK_CSS } from '../ui/panel-dock-css.js';
+import { FEEDBACK_CSS } from '../ui/feedback-css.js';
 /**
  * 预览体：`openFilePreview` 的 FileBrowser 包裹层。职责只有一个——**切工作区**：
  * ▾ 下拉点工作区 ⇒ 换该工作区的锚点会话、key 重挂载、path 回根。
@@ -185,7 +187,8 @@ export function openFilePreview(options) {
             close();
     };
     window.addEventListener('keydown', onKeyDown);
-    ensureControls(getStyleKit());
+    ensureComponentStyles('panel-dock', PANEL_DOCK_CSS, getStyleKit());
+    ensureComponentStyles('feedback', FEEDBACK_CSS, getStyleKit());
     // 宽度归用户：换内容前把当前渲染宽度钉回去（dock 状态里本该有，显式再钉一次；
     // 入场动效期间量到的是动画中间值，低于下限一律忽略，免得把栏钉窄）。
     let pinnedWidth = null;
@@ -346,7 +349,8 @@ export function pickWorkspaceFile(options) {
         window.addEventListener('keydown', onKeyDown);
         document.body.appendChild(backdrop);
         document.body.appendChild(panel);
-        ensureControls(getStyleKit());
+        ensureComponentStyles('panel-dock', PANEL_DOCK_CSS, getStyleKit());
+        ensureComponentStyles('feedback', FEEDBACK_CSS, getStyleKit());
         const root = createRoot(panel);
         root.render(h(FileBrowser, {
             workspaceFiles: files,

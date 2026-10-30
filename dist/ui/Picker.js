@@ -1,11 +1,13 @@
 import { createElement as h, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFloating, FloatingPortal, flip, shift, offset, autoUpdate, size as floatingSize } from '@floating-ui/react';
-import { ensureControls } from './css.js';
 import { Chevron } from './chevron.js';
 import { t } from '../utils/i18n.js';
 import { FieldHint } from './FieldHint.js';
 import { MarqueeText } from './MarqueeText.js';
 import { filterGroups, flattenOptions, labelsOf, resolveTriggerSizing, toGroups, toggleValue, } from './picker-logic.js';
+import { ensureComponentStyles } from './css.js';
+import { PICKER_CSS } from './picker-css.js';
+import { FIELD_CSS } from './controls-css.js';
 /**
  * 通用选择器：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级。
  *
@@ -13,7 +15,8 @@ import { filterGroups, flattenOptions, labelsOf, resolveTriggerSizing, toGroups,
  * 边界，通道是插件私有的，组件取不到，见需求文档 §6）。
  */
 export function Picker(props) {
-    ensureControls();
+    ensureComponentStyles('picker', PICKER_CSS);
+    ensureComponentStyles('field', FIELD_CSS);
     const tt = props.translate ?? t;
     const mode = props.mode ?? 'single';
     const size = props.size ?? 'md';

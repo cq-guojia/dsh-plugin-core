@@ -1,3 +1,13 @@
+/**
+ * 输入类控件 —— **全站唯一实现**（L2 组件皮肤，P3）
+ *
+ * - `Input`：文本输入（size sm 24 / md 28 / lg 32，error 描红）；
+ * - `PrefixedInput`：前缀 + 文本输入（如路径 / 接口前缀）；
+ * - `NumberInput`：数字步进（显式 `− / +`，替换原生 `<input type="number">` 的浏览器 spinner，
+ *   支持 step / min / max、clamp、Enter 提交、失焦回弹）。
+ *
+ * 高度一律吃 `--dshpc-control-h-*`；有边 / 无边同高（边框在内部补回）。
+ */
 import { createElement as h, type CSSProperties, type ReactElement, type ReactNode, type RefObject } from 'react';
 /**
  * 字段 hint 的统一包法：控件 + 问号提示同一行（间距/对齐收进组件，调用方传个

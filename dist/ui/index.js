@@ -1,6 +1,7 @@
 // ui —— 基础控件（依赖 design）。
-// 使用前：插件启动时 `setStyleKit(createStyleKit({ id }))` 一次，
-// 再调一次 `ensureControls()` 把 token + 控件样式挂上（幂等）。
+// 使用前：插件启动时 `setStyleKit(createStyleKit({ id }))` 一次。
+// 控件样式**由各控件自注入**：每个控件只登记自己那份 CSS（幂等），用不到的控件其 CSS 不进包；
+// `ensureControls()` 退化为可选的 token 预热，不再需要调。
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css.js';
 export { filterGroups, flattenOptions, groupOf, labelsOf, resolveTriggerSizing, toGroups, toggleValue, } from './picker-logic.js';
 export { Picker } from './Picker.js';

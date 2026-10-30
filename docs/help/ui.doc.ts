@@ -2,10 +2,11 @@
 import type { DocTopic } from '../design/doc-format.js'
 
 const setup = `import { createStyleKit } from 'dsh-plugin-core/design'
-import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
+import { setStyleKit } from 'dsh-plugin-core/ui'
 
 setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))
-ensureControls()`
+// 控件样式不用你挂：每个控件首次渲染时自注入自己那份 CSS（幂等），
+// 用不到的控件其 CSS 也不会进你的包。`
 
 const cardExample = `import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'
 

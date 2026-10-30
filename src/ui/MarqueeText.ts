@@ -8,6 +8,8 @@
  * transform 滚动——文字永远在自己那一块里跑，不会压到相邻文字。皮肤在 `controls-css.ts`。
  */
 import { createElement as h, useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactElement } from 'react'
+import { ensureComponentStyles } from './css.js'
+import { MARQUEE_CSS } from './marquee-css.js'
 
 /** 跑马灯文本。 */
 export function MarqueeText(props: {
@@ -20,6 +22,7 @@ export function MarqueeText(props: {
    */
   className?: string
 }): ReactElement {
+  ensureComponentStyles('marquee', MARQUEE_CSS)
   const outerRef = useRef<HTMLSpanElement | null>(null)
   const innerRef = useRef<HTMLSpanElement | null>(null)
   const [dist, setDist] = useState(0)

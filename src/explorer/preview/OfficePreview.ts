@@ -1,9 +1,10 @@
 // Office 预览体：宿主 remote.officeToPdf 转 PDF ⇒ iframe 渲染。
 // officeToPdf 未注入（宿主没装 dsh-office-to-pdf）⇒ 「预览不可用」空态，不发起请求、不崩。
 import { createElement as h, useEffect, useState } from 'react'
-import { ensureControls } from '../../ui/css.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { bytesOf, errView, type OfficeToPdfFace } from '../types.js'
+import { ensureComponentStyles } from '../../ui/css.js'
+import { EXPLORER_CSS } from '../explorer-css.js'
 
 export interface OfficePreviewProps {
   officeToPdf: OfficeToPdfFace | null
@@ -13,7 +14,7 @@ export interface OfficePreviewProps {
 }
 
 export function OfficePreview(props: OfficePreviewProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('explorer', EXPLORER_CSS)
   const tt = props.translate ?? t
   const [url, setUrl] = useState<string | null>(null)
   const [failed, setFailed] = useState<ReturnType<typeof errView> | null>(null)

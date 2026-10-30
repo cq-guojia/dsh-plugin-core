@@ -1,6 +1,5 @@
 import { createElement as h, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useFloating, FloatingPortal, flip, shift, offset, autoUpdate, size as floatingSize } from '@floating-ui/react'
-import { ensureControls } from './css.js'
 import { Chevron } from './chevron.js'
 import { t, type Translate } from '../utils/i18n.js'
 import { FieldHint } from './FieldHint.js'
@@ -15,6 +14,9 @@ import {
   type PickerGroup,
   type PickerOption,
 } from './picker-logic.js'
+import { ensureComponentStyles } from './css.js'
+import { PICKER_CSS } from './picker-css.js'
+import { FIELD_CSS } from './controls-css.js'
 
 export type { PickerGroup, PickerOption }
 
@@ -71,7 +73,8 @@ export interface PickerProps {
  * 边界，通道是插件私有的，组件取不到，见需求文档 §6）。
  */
 export function Picker(props: PickerProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('picker', PICKER_CSS)
+  ensureComponentStyles('field', FIELD_CSS)
   const tt = props.translate ?? t
   const mode = props.mode ?? 'single'
   const size = props.size ?? 'md'

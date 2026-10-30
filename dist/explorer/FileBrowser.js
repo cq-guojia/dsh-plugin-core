@@ -15,7 +15,6 @@
 // 逐像素照抄（间距 / 圆角 / 最大高度 / 空态），不自创度量。
 import { createElement as h, Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, } from 'react';
 import { IconCheckOutlineRegular, IconChevronDownOutlineRegular, IconChevronRightOutlineRegular, IconCloseOutlineRegular, IconCopyOutlineRegular, IconFolderCloseRegular, IconFolderOpenOutlineRegular, IconRefreshOutlineRegular, writeClipboard, FileTypeIcon, } from '../ui/official.js';
-import { ensureControls } from '../ui/css.js';
 import { Button, IconButton } from '../ui/Button.js';
 import { MarqueeText } from '../ui/MarqueeText.js';
 import { Segmented } from '../ui/Segmented.js';
@@ -23,6 +22,8 @@ import { workspaceList } from '../ui/host-data.js';
 import { t } from '../utils/i18n.js';
 import { FilePreview } from './preview/index.js';
 import { absolutizeDir, bareCode, baseNameOfPath, crumbsOfDir, createRootCache, dirnameOf, errView, findAnyFileAbs, isAbsoluteish, isFailed, joinPath, learnRoot, listingOf, listPathOf, matchesFilter, relativizeToRoot, sortEntries, workspaceAnchorForPath, } from './types.js';
+import { ensureComponentStyles } from '../ui/css.js';
+import { EXPLORER_CSS } from './explorer-css.js';
 /**
  * ▾ 下拉条目构造（**picker 与 dock 共用同一段代码**，差别只在入参——源实现用户 2026-09-29
  * 点名提炼，严禁两处各写一份）：
@@ -97,7 +98,7 @@ function crumbsMenuEntries(params) {
 }
 /** 目录浏览器面板。详见 {@link FileBrowserProps}。 */
 export function FileBrowser(props) {
-    ensureControls();
+    ensureComponentStyles('explorer', EXPLORER_CSS);
     const tt = props.translate ?? t;
     const picker = props.picker === true;
     // 根缓存：调用方可注入（多实例/清理策略归调用方）；不传则内部自建、随组件废弃。

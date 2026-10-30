@@ -14,7 +14,6 @@ import {
   size as floatingSize,
   useFloating,
 } from '@floating-ui/react'
-import { ensureControls } from './css.js'
 import { Chevron } from './chevron.js'
 import { Button } from './Button.js'
 import { FieldHint } from './FieldHint.js'
@@ -43,6 +42,8 @@ import {
   type StepUnit,
   type TimeParts,
 } from './datetime-logic.js'
+import { ensureComponentStyles } from './css.js'
+import { DATETIME_CSS, FIELD_CSS } from './controls-css.js'
 
 export type { DateTimePrecision } from './datetime-logic.js'
 
@@ -184,7 +185,8 @@ const ICON_DOWN = h(Chevron, { size: 12 })
  *    毫秒恒三位输出，数据库只收到秒时优雅退化为「当天最后一秒」。
  */
 export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('datetime', DATETIME_CSS)
+  ensureComponentStyles('field', FIELD_CSS)
   const tt = props.translate ?? t
   const mode = props.mode ?? 'single'
   const rangeMode = mode === 'range'

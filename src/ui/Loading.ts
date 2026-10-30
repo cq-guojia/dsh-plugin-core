@@ -15,7 +15,6 @@
  *
  * 文档登记：docs/design/ui-foundation.md §二「唯一实现表」。
  */
-import { ensureControls, getStyleKit } from './css.js'
 import { createElement as h, useEffect, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { t, type Translate } from '../utils/i18n.js'
@@ -29,6 +28,8 @@ import {
   type LoadingRequest,
   type LoadingVariant,
 } from './loading-host.js'
+import { ensureComponentStyles, getStyleKit } from './css.js'
+import { LOADING_CSS } from './controls-css.js'
 
 const pillStyle: Record<string, string | number> = {
   position: 'fixed',
@@ -77,8 +78,8 @@ export interface LoadingProps {
 
 /** 浮动 Loading pill：三个脉动方块（无文案；基础抽象统一外观）。 */
 export function Loading(props: LoadingProps): ReturnType<typeof h> {
-  ensureControls()
-  ensureControls()
+  ensureComponentStyles('loading', LOADING_CSS)
+  ensureComponentStyles('loading', LOADING_CSS)
   const right = useContentRight(props.anchorId ?? 'dshpc-main')
   return h('div', { style: { ...pillStyle, right }, role: 'status', 'aria-live': 'polite' },
     h('span', { className: 'dshpc-run-blocks' }, h('i', null), h('i', null), h('i', null)),
@@ -87,7 +88,7 @@ export function Loading(props: LoadingProps): ReturnType<typeof h> {
 
 /** 运行中状态用的三个脉动方块（无文案），颜色跟随 `currentColor`。 */
 export function RunningBlocks(): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('loading', LOADING_CSS)
   return h('span', { className: 'dshpc-run-blocks' }, h('i', null), h('i', null), h('i', null))
 }
 
@@ -134,7 +135,7 @@ function textOf(props: LoadingViewProps): string {
 
 /** 样式一：横排提示卡（转圈在左、文字在右），灰色底与 notify 的 info 卡同色。就地渲染，位置随调用方。 */
 export function LoadingToast(props: LoadingViewProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('loading', LOADING_CSS)
   return h(
     'div',
     { className: 'dshpc-loading-toast', role: 'status', 'aria-live': 'polite' },
@@ -145,7 +146,7 @@ export function LoadingToast(props: LoadingViewProps): ReturnType<typeof h> {
 
 /** 样式二：方块卡（转圈在上、文字在下，内距更大）。就地渲染，位置随调用方。 */
 export function LoadingBlock(props: LoadingViewProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('loading', LOADING_CSS)
   return h(
     'div',
     { className: 'dshpc-loading-block', role: 'status', 'aria-live': 'polite' },
@@ -175,7 +176,7 @@ function createLoadingHost(): LoadingHost {
       document.body.appendChild(container)
       root = createRoot(container)
     }
-    ensureControls(getStyleKit())
+    ensureComponentStyles('loading', LOADING_CSS, getStyleKit())
     const { request } = state
     const opacity = Math.min(1, Math.max(0, request.maskOpacity))
     root.render(

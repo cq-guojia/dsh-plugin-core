@@ -1,13 +1,14 @@
 import { createElement as h, useEffect } from 'react';
-import { ensureControls } from './css.js';
 import { t } from '../utils/i18n.js';
+import { ensureComponentStyles } from './css.js';
+import { FEEDBACK_CSS } from './feedback-css.js';
 /**
  * 模态弹窗（自绘 overlay，**不用 react-dom 的 portal**，避免多一个必需依赖）。
  *
  * 定位：它是**呈现方式**，不是内容 —— 会话预览这类功能模块要用弹窗时用它来承载（需求文档 §4）。
  */
 export function Modal(props) {
-    ensureControls();
+    ensureComponentStyles('feedback', FEEDBACK_CSS);
     const tt = props.translate ?? t;
     const closeOnMask = props.closeOnMask !== false;
     const escClose = props.escClose !== false;

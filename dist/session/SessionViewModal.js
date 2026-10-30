@@ -12,7 +12,6 @@ import { Fragment, createElement as h, useCallback, useEffect, useMemo, useRef, 
 import { IconArchiveOutlineRegular, IconBranchOutlineRegular, IconNewChatOutlineRegular, MarkdownDelegateProvider } from '../ui/official.js';
 import { Modal } from '../ui/Modal.js';
 import { Button } from '../ui/Button.js';
-import { ensureControls } from '../ui/css.js';
 import { ChatHint, ChatNodeListMirror, ChatOlderButton, ChatViewFrame } from './mirror/ChatView.js';
 import { GenericCommandCard } from './mirror/GenericCommandCard.js';
 import { CommandCard } from './mirror/CommandCard.js';
@@ -28,6 +27,8 @@ import { turnDeliverablesChangesSeq, turnDeliverablesValue } from './changes.js'
 import { buildProcessGroups } from './mirror/process-groups.js';
 import { officialClass, officialModuleCount } from './official-classes.js';
 import { t as defaultT } from '../utils/i18n.js';
+import { ensureComponentStyles } from '../ui/css.js';
+import { SESSION_CSS } from './session-css.js';
 /** 稳定的空序列（避免默认值每次新建数组）。 */
 const EMPTY_ORDER = [];
 /** 官方样式缺失告警只打一次（避免每次渲染刷屏）。 */
@@ -644,7 +645,7 @@ function makeFileMentions(paths, open) {
  * 以及底部暂存输入框（打字 → 确定 → onContinue 带话开分支并起轮次）。
  */
 export function SessionViewModal(props) {
-    ensureControls();
+    ensureComponentStyles('session', SESSION_CSS);
     const tt = props.t ?? defaultT;
     const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
     const subscribe = useMemo(() => (onChange) => view.target.subscribe(onChange), [view]);

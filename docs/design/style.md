@@ -17,6 +17,33 @@ What stays here is what you must honour when **changing styles in this repo**.
 EN: The client bundle is a CJS closure loaded by `window.__ModuleLoader__.load`, so `import './x.css'` produces a
 separate asset the kernel never loads — CSS must be injected at runtime as a TS string.
 
+## 控件样式按需：每个控件只注入自己那份
+
+> EN: Per-control styles: every control injects only its own
+
+（2026-10-30 起）**注入是按控件的，不是一把全量**：每个控件在 render 里调
+`ensureComponentStyles('<域>', <自己那份 CSS>)`（幂等，每次 render 调都安全），用不到的控件其 CSS
+不进消费方的包 —— 实测只用 `Button` 时样式文本从 71.7 KB 降到 9.4 KB。
+
+EN: Injection is per control, not one big blob. Each control calls `ensureComponentStyles('<domain>', <its own CSS>)`
+during render (idempotent); CSS of controls you never use never reaches your bundle.
+
+新增控件照做：import 自己那份 `*_CSS` 常量 + 在组件里调一次 `ensureComponentStyles`。
+
+1. **不要顺手把别人的 CSS 一起传进去** —— 传了就退化成全量，包体省不下来。
+2. **跨控件的修饰一律用更高特异性表达**（`.dshpc-split .dshpc-seg`），由提供上下文的那个控件
+   负责它自己那份；**绝不靠注入顺序** —— 顺序 = 控件首次渲染顺序，不固定。
+   有自检盯着：`test/css-contract.test.mjs` 禁止跨常量出现同名选择器（含 `@media` 内）。
+3. **CSS 必须是 `export const X_CSS` 的字符串常量**（被显式引用的值）：`package.json` 的
+   `sideEffects: false` 既不会误删它、又能让用不到的那份被摇掉。
+   **绝不能退回 `import './x.css'`** —— 那是副作用式导入，webpack 官方点名它会在 `sideEffects:false`
+   下被连样式一起摇掉（组件渲染出来没样式）。
+
+EN: (1) never bundle someone else's CSS into your call; (2) express cross-control overrides with higher
+specificity, never with injection order (order = first-render order, not fixed) — the contract test forbids
+same-name selectors across constants; (3) keep CSS as exported string constants — never go back to
+`import './x.css'`, which `sideEffects:false` would drop along with the styles.
+
 ## 交互态颜色（hover / active）
 
 > EN: Interaction colors (hover / active)

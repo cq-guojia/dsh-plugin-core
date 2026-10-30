@@ -22,7 +22,6 @@
  * ⚠️ 不许在任何使用点就地写分段样式；要多一档高度 / 多一个外观 ⇒ 走
  * docs/design/ui-style-guide.md §五 的流程（改基础层，一处改全站生效）。
  */
-import { ensureControls } from './css.js'
 import type { ChipTone } from './Chip.js'
 import {
   createElement as h,
@@ -33,6 +32,8 @@ import {
   type CSSProperties,
 } from 'react'
 import { getTooltipRenderer } from './tooltip.js'
+import { ensureComponentStyles } from './css.js'
+import { SEGMENTED_CSS } from './controls-css.js'
 
 /**
  * 角标 / 计数要不要显示，返回要显示的文本。
@@ -123,8 +124,8 @@ export type SegmentedProps<T extends string = string> = SegmentedSingleProps<T> 
  */
 export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnType<typeof h> {
   // 幂等：token 层 + 控件皮肤（首次渲染时挂上，之后是空转）
-  ensureControls()
-  ensureControls()
+  ensureComponentStyles('segmented', SEGMENTED_CSS)
+  ensureComponentStyles('segmented', SEGMENTED_CSS)
   const size = props.size ?? 'lg'
   const multiple = props.multiple === true
   const value = props.value

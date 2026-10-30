@@ -11,10 +11,12 @@
  *   · **关闭钮可退让** —— `closable={false}` 不出；`closeButton="floating"` 浮在右上角，不占头部布局。
  */
 import { Children, createElement as h, isValidElement, useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { ensureControls } from './css.js';
 import { t } from '../utils/i18n.js';
 import { startResizeLayoutWidth } from './resizer.js';
 import { DEFAULT_PANEL_ID, clampWidth, closePanel, collapsePanel, emptyDock, expandPanel, isCollapsed as isCollapsedState, isOpen, openPanel, othersWidth, setPanelWidth, } from './panel-dock-logic.js';
+import { ensureComponentStyles } from './css.js';
+import { PANEL_DOCK_CSS } from './panel-dock-css.js';
+import { FEEDBACK_CSS } from './feedback-css.js';
 // ── 分栏占宽契约（用户 2026-10-22 拍板）──
 // 遮罩必须知道「页面右侧被分栏占掉多少」，否则它会把 dock 一起压暗、还吃掉点击
 // （`.dshpc-modal-mask` 的 right inset 读的就是这个变量）。挂在根元素上，是因为遮罩不保证
@@ -189,7 +191,8 @@ function panesOf(children) {
 }
 /** 停靠栏本体：只渲染「开着的」面板，结构取自对应的 `<DockPanel>`。 */
 export function PanelDock(props) {
-    ensureControls();
+    ensureComponentStyles('panel-dock', PANEL_DOCK_CSS);
+    ensureComponentStyles('feedback', FEEDBACK_CSS);
     const tt = props.translate ?? t;
     const state = useSyncExternalStore(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
     const rootRef = useRef(null);

@@ -1,7 +1,8 @@
 import { createElement as h } from 'react';
-import { ensureControls } from './css.js';
 import { Chevron } from './chevron.js';
 import { t } from '../utils/i18n.js';
+import { ensureComponentStyles } from './css.js';
+import { CARD_CSS } from './card-css.js';
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
 export const CARD_ACCENTS = [
     'business', 'success', 'warning', 'danger', 'neutral',
@@ -16,7 +17,7 @@ export const CARD_ACCENTS = [
  * 右侧放什么、悬停浮出的按钮，都由调用方在框内自定——外壳只提供框与居中。
  */
 function CardShell(kind, props) {
-    ensureControls();
+    ensureComponentStyles('card', CARD_CSS);
     const tt = props.translate ?? t;
     const accent = props.accent ?? 'business';
     const isPreset = CARD_ACCENTS.includes(accent);

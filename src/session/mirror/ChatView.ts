@@ -12,6 +12,8 @@ import type { NodeRenderer } from './ChatNodeSeat.js'
 import { ChatGroupSeatMirror } from './ChatGroupSeat.js'
 import { ChatNodeSeatMirror } from './ChatNodeSeat.js'
 import type { ChatEntry, ProcessGroupSnapshot } from './process-groups.js'
+import { ensureComponentStyles } from '../../ui/css.js'
+import { SESSION_CSS } from '../session-css.js'
 
 /** 会话区骨架：frame > root > scroll > column（类名一律取官方 ChatView.module.css，取不到 = 空类）。
  *
@@ -22,6 +24,7 @@ import type { ChatEntry, ProcessGroupSnapshot } from './process-groups.js'
  * 不依赖注入顺序 ⇒ 命中 / 未命中两条路径纵向完全一致。
  */
 export function ChatViewFrame(props: { children?: ReactNode }): ReturnType<typeof h> {
+  ensureComponentStyles('session', SESSION_CSS)
   return h('div', { className: `${officialClass('ChatView', 'frame') ?? ''} dshpc-sv-frame dshpc-sv-chat` },
     h('div', { className: officialClass('ChatView', 'root') ?? '' },
       h('div', { className: `${officialClass('ChatView', 'scroll') ?? ''} dshpc-sv-scroll` },

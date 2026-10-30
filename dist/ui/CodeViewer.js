@@ -21,6 +21,8 @@ import { IconButton } from './Button.js';
 import { IconCheckOutlineRegular, IconCopyOutlineRegular, writeClipboard } from './official.js';
 import { languageForPath } from './code-viewer-lang.js';
 import { codeMirrorTheme } from './code-viewer-theme.js';
+import { ensureComponentStyles } from './css.js';
+import { CODE_VIEWER_CSS } from './code-viewer-css.js';
 /** 唯一明暗判据属性名（宿主启动脚本 toggleAttribute 写入 body）。 */
 const DARK_ATTR = 'data-ds-dark-theme';
 function hostDark() {
@@ -30,6 +32,7 @@ function hostDark() {
     return body === null ? false : body.hasAttribute(DARK_ATTR);
 }
 export function CodeViewer(props) {
+    ensureComponentStyles('code-viewer', CODE_VIEWER_CSS);
     const { text, path, t, className, style, height = '100%', lineNumbers = true } = props;
     const [copied, setCopied] = useState(false);
     const [dark, setDark] = useState(hostDark);

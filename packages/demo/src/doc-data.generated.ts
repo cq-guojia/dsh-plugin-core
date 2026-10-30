@@ -1040,7 +1040,7 @@ export const docData = {
       {
         "id": "integration-init-style",
         "lang": "ts",
-        "src": "// 插件 client 入口\nimport { createStyleKit } from 'dsh-plugin-core/design'\nimport { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'\n\nconst kit = createStyleKit({ id: 'dsh-task-reminder-ui' })\nsetStyleKit(kit)\nensureControls()"
+        "src": "// 插件 client 入口\nimport { createStyleKit } from 'dsh-plugin-core/design'\nimport { setStyleKit } from 'dsh-plugin-core/ui'\n\nconst kit = createStyleKit({ id: 'dsh-task-reminder-ui' })\nsetStyleKit(kit)\n// 只需这一行：控件首次渲染时自注入自己那份 CSS，token 也一并登记。"
       },
       {
         "id": "integration-use-control",
@@ -1167,7 +1167,7 @@ export const docData = {
       {
         "id": "ui-setup",
         "lang": "ts",
-        "src": "import { createStyleKit } from 'dsh-plugin-core/design'\nimport { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'\n\nsetStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))\nensureControls()"
+        "src": "import { createStyleKit } from 'dsh-plugin-core/design'\nimport { setStyleKit } from 'dsh-plugin-core/ui'\n\nsetStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))\n// 控件样式不用你挂：每个控件首次渲染时自注入自己那份 CSS（幂等），\n// 用不到的控件其 CSS 也不会进你的包。"
       }
     ]
   },

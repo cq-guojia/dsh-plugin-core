@@ -12,15 +12,16 @@
 //   同为 `{}` + `{offset}` 两态，分页步长由远端定，不在这里猜。
 import { createElement as h, useCallback, useEffect, useRef, useState } from 'react';
 import { MarkdownText } from '../../ui/official.js';
-import { ensureControls } from '../../ui/css.js';
 import { CodeViewer } from '../../ui/CodeViewer.js';
 import { Button } from '../../ui/Button.js';
 import { t } from '../../utils/i18n.js';
 import { errView, textPageOf } from '../types.js';
 import { formatBytes } from '../../utils/number.js';
 import { markdownLabels } from './md-labels.js';
+import { ensureComponentStyles } from '../../ui/css.js';
+import { EXPLORER_CSS } from '../explorer-css.js';
 export function TextPreview(props) {
-    ensureControls();
+    ensureComponentStyles('explorer', EXPLORER_CSS);
     const tt = props.translate ?? t;
     const [text, setText] = useState('');
     const [truncated, setTruncated] = useState(false);

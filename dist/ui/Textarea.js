@@ -5,11 +5,12 @@
  * 现上提为基础层件（U20 #6，2026-10-05），业务文件只 `import { Textarea }`。
  */
 import { createElement as h } from 'react';
-import { ensureControls } from './css.js';
 import { FieldHint } from './FieldHint.js';
+import { ensureComponentStyles } from './css.js';
+import { FIELD_CSS } from './controls-css.js';
 /** 多行文本输入。 */
 export function Textarea(props) {
-    ensureControls();
+    ensureComponentStyles('field', FIELD_CSS);
     const { value, onChange, placeholder, error, disabled, id, rows, spellCheck, className, style } = props;
     const box = h('textarea', {
         id,

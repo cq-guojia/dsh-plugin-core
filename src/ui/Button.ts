@@ -20,9 +20,10 @@
  *
  * ⚠️ 不许在任何使用点就地写按钮样式；要多一档外观 ⇒ 改基础层（一处改全站生效）。
  */
-import { ensureControls } from './css.js'
 import { MarqueeText } from './MarqueeText.js'
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
+import { ensureComponentStyles } from './css.js'
+import { BUTTON_CSS } from './controls-css.js'
 
 /** 按钮外观档。 */
 export type ButtonVariant =
@@ -138,7 +139,7 @@ function buttonClass(variant: ButtonVariant, size: ButtonSize, block: boolean, h
  * @returns 按钮元素。
  */
 export function Button(props: ButtonProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('button', BUTTON_CSS)
   const {
     variant = 'outline', size = 'lg', icon, iconRight, color, loading = false,
     block = false, width, minWidth, maxWidth, className, style, children, ...rest
@@ -194,7 +195,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
  * @returns 图标按钮元素。
  */
 export function IconButton(props: IconButtonProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('button', BUTTON_CSS)
   const { variant = 'plain', size = 'lg', icon, label, className, style, ...rest } = props
   const attrs = {
     ...rest,

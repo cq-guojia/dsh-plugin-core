@@ -1,30 +1,7 @@
-/**
- * 分段控件（滑动块）—— **全站唯一实现**（L2 组件皮肤，P1）
- *
- * 它是「同一份结构 + 两个受控轴」的样板：
- *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— **离散三档**，调用点**不许**自己写高度
- *    （真不够用才允许在调用点本地覆盖 `--dshpc-control-h-*`，属例外而非常态）；
- *  - `bordered`（默认 false）：最外再包一圈 1px 描边；总高与无框版逐像素一致
- *    （border 由 padding 抵消），两种模式整行混排不跳高。
- *
- * 外观只有一套（灰底轨道 + 白色选中片，阴影来自宿主 elevation token）。
- * 唯一的配色入口是 `tone`（2026-10-29）：传内置色名则由核心定底 / 字（两主题各自成立），
- * 传 `{ bg, fg }` 则两个主题都用调用方这一对颜色。
- * 2026-10-26 删掉 `variant` 轴（原 default / inset 两档在 CSS 里只差 1px 内距，
- * 且 default 比 `size` 承诺矮 2px，下游照 demo 对图时反复查不出原因 —— 见 docs/design/style.md）。
- *
- * 用法：
- *   // 单选
- *   h(Segmented<'a' | 'b'>, { value: v, size: 'md', items: [{ value: 'a', label: '甲' }], onChange: setV })
- *   // 多选（如星期）
- *   h(Segmented<'1' | '2'>, { multiple: true, value: vs, items: [...], onChange: setVs })
- *
- * ⚠️ 不许在任何使用点就地写分段样式；要多一档高度 / 多一个外观 ⇒ 走
- * docs/design/ui-style-guide.md §五 的流程（改基础层，一处改全站生效）。
- */
-import { ensureControls } from './css.js';
 import { createElement as h, useCallback, useLayoutEffect, useRef, useState, } from 'react';
 import { getTooltipRenderer } from './tooltip.js';
+import { ensureComponentStyles } from './css.js';
+import { SEGMENTED_CSS } from './controls-css.js';
 /**
  * 角标 / 计数要不要显示，返回要显示的文本。
  * 数字 ≤0 是「没东西可数」的老口径；字符串（`'1K'` / `'99+'`）由调用方决定，原样显示，空串不显示。
@@ -44,8 +21,8 @@ function countText(value) {
  */
 export function Segmented(props) {
     // 幂等：token 层 + 控件皮肤（首次渲染时挂上，之后是空转）
-    ensureControls();
-    ensureControls();
+    ensureComponentStyles('segmented', SEGMENTED_CSS);
+    ensureComponentStyles('segmented', SEGMENTED_CSS);
     const size = props.size ?? 'lg';
     const multiple = props.multiple === true;
     const value = props.value;

@@ -1,6 +1,7 @@
 import { createElement as h, useEffect, type ReactNode } from 'react'
-import { ensureControls } from './css.js'
 import { t, type Translate } from '../utils/i18n.js'
+import { ensureComponentStyles } from './css.js'
+import { FEEDBACK_CSS } from './feedback-css.js'
 
 /** 弹窗尺寸档：sm≈确认框 / md(默认) / lg 大窗。 */
 export type ModalSize = 'sm' | 'md' | 'lg'
@@ -48,7 +49,7 @@ export interface ModalProps {
  * 定位：它是**呈现方式**，不是内容 —— 会话预览这类功能模块要用弹窗时用它来承载（需求文档 §4）。
  */
 export function Modal(props: ModalProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('feedback', FEEDBACK_CSS)
   const tt = props.translate ?? t
   const closeOnMask = props.closeOnMask !== false
   const escClose = props.escClose !== false

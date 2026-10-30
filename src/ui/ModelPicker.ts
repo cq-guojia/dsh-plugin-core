@@ -1,10 +1,11 @@
 import { createElement as h, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react'
-import { ensureControls } from './css.js'
 import { t, type Translate } from '../utils/i18n.js'
 import { Picker, type PickerSize } from './Picker.js'
 import { flattenOptions, groupOf, type PickerGroup } from './picker-logic.js'
 import { modelCatalog } from './host-data.js'
 import { sparkleIcon } from './picker-icons.js'
+import { ensureComponentStyles } from './css.js'
+import { PICKER_CSS } from './picker-css.js'
 
 /**
  * 模型选择器的两种形态（消费者自选）：
@@ -51,7 +52,7 @@ export interface ModelPickerProps {
 }
 
 export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('picker', PICKER_CSS)
   const tt = props.translate ?? t
   const value = props.value
   const variant = props.variant ?? 'grouped'

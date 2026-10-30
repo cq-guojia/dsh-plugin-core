@@ -38,7 +38,6 @@ import {
   writeClipboard,
   FileTypeIcon,
 } from '../ui/official.js'
-import { ensureControls } from '../ui/css.js'
 import { Button, IconButton } from '../ui/Button.js'
 import { MarqueeText } from '../ui/MarqueeText.js'
 import { Segmented } from '../ui/Segmented.js'
@@ -71,6 +70,8 @@ import {
   type WorkspaceAnchorItem,
   type WorkspaceFilesFace,
 } from './types.js'
+import { ensureComponentStyles } from '../ui/css.js'
+import { EXPLORER_CSS } from './explorer-css.js'
 
 /** 子项拉取状态。 */
 type ChildData =
@@ -213,7 +214,7 @@ function crumbsMenuEntries(params: {
 
 /** 目录浏览器面板。详见 {@link FileBrowserProps}。 */
 export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('explorer', EXPLORER_CSS)
   const tt = props.translate ?? t
   const picker = props.picker === true
   // 根缓存：调用方可注入（多实例/清理策略归调用方）；不传则内部自建、随组件废弃。

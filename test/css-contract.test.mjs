@@ -17,13 +17,14 @@ import { FEEDBACK_CSS } from '../dist/ui/feedback-css.js'
 import { CARD_CSS } from '../dist/ui/card-css.js'
 import { CHIP_CSS } from '../dist/ui/chip-css.js'
 import { PANEL_DOCK_CSS } from '../dist/ui/panel-dock-css.js'
+import { MARQUEE_CSS } from '../dist/ui/marquee-css.js'
+import { CODE_VIEWER_CSS } from '../dist/ui/code-viewer-css.js'
 import { EXPLORER_CSS } from '../dist/explorer/explorer-css.js'
 import { SESSION_CSS } from '../dist/session/session-css.js'
 import { transform } from 'lightningcss'
-import { CONTROLS_CSS } from '../dist/ui/css.js'
 import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
 
-/** css.ts 里参与注入的全部常量（新增 CSS 常量时同步加进来）。 */
+/** 参与注入的全部 CSS 常量（新增 CSS 常量时同步加进来）。 */
 const CONSTANTS = {
   ...Object.fromEntries(
     Object.entries(controls).filter(([key, value]) => key.endsWith('_CSS') && typeof value === 'string'),
@@ -33,32 +34,50 @@ const CONSTANTS = {
   CARD_CSS,
   CHIP_CSS,
   PANEL_DOCK_CSS,
+  MARQUEE_CSS,
+  CODE_VIEWER_CSS,
   EXPLORER_CSS,
   SESSION_CSS,
 }
 
-/** 抽出顶层选择器（`@media` 等嵌套块内部的规则不算，避免误报）。 */
+/**
+ * 抽出会参与级联的选择器：顶层规则 + `@media` 等 at-rule 块内的**第一层**规则。
+ *
+ * 只取顶层会漏：写在 `@media` 里的同名规则和顶层的同名规则一样会互相覆盖，
+ * 而 `@media` 内的规则恰恰是「改了 CSS 却看不出为什么没生效」的高发区。
+ */
 function topSelectors(css) {
   const src = css.replace(/\/\*[\s\S]*?\*\//g, '')
   const out = []
   let depth = 0
   let buf = ''
+  let inAt = false
   for (const ch of src) {
     if (ch === '{') {
-      if (depth === 0) out.push(buf.trim().replace(/\s+/g, ' '))
+      const selector = buf.trim().replace(/\s+/g, ' ')
+      if (depth === 0) {
+        if (selector.startsWith('@')) inAt = true
+        else out.push(selector)
+      } else if (depth === 1 && inAt && !selector.startsWith('@')) {
+        out.push(selector)
+      }
       buf = ''
       depth += 1
     } else if (ch === '}') {
       depth -= 1
+      if (depth === 0) inAt = false
       buf = ''
     } else if (depth === 0) {
       buf += ch
     }
   }
-  return out.filter((selector) => selector !== '' && !selector.startsWith('@'))
+  return out.filter((selector) => selector !== '')
 }
 
-test('CSS 常量之间不得有同名顶层选择器（同名不同皮会互相覆盖）', () => {
+// 两条**完全相同的选择器**分处两个常量 ⇒ 谁后注入谁赢。
+// 自注入之后注入顺序 = 控件首次渲染顺序（不再固定），所以这类「必须靠顺序才对」的规则
+// 会被判死：要么改成更高特异性的上下文写法（如 `.dshpc-split .dshpc-seg`），要么合并。
+test('CSS 常量之间不得有同名选择器（含 @media 内；否则胜负取决于注入顺序）', () => {
   const owners = new Map()
   const clashes = []
   for (const [name, css] of Object.entries(CONSTANTS)) {
@@ -88,7 +107,10 @@ test('chip 只有标签一套皮肤，图标按钮走 iconbtn', () => {
 // 主检查 = 真 CSS 解析器（lightningcss，官方构建期用的是同一个）：
 // 它对那个反引号直接抛 `Invalid empty selector` ⇒ 这类事故不可能再静默溜过去。
 // 字符黑名单只作快速失败，用来把「是哪个字符出的问题」说清楚。
-const INJECTED = `${TOKENS_CSS_TEMPLATE}\n${CONTROLS_CSS}`
+// 注入文本 = tokens + 各控件各自那份 CSS。
+// 2026-10-30 起不再有 `CONTROLS_CSS` 这个全量聚合常量：控件改为自注入之后，
+// 谁被用到才谁进包，注入文本随之为「被注册的那几份」，故这里直接由各常量拼出全集来测。
+const INJECTED = `${TOKENS_CSS_TEMPLATE}\n${Object.values(CONSTANTS).join('\n')}`
 
 test('注入文本必须通过真实 CSS 解析器（lightningcss）', () => {
   assert.doesNotThrow(
@@ -289,4 +311,33 @@ test('生成器对合法 CSS 放行（闸没误伤）', () => {
   } finally {
     rmSync(file, { force: true })
   }
+})
+
+async function sourceFiles(dir) {
+  const out = []
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name)
+    if (entry.isDirectory()) out.push(...(await sourceFiles(p)))
+    else if (/\.tsx?$/.test(entry.name) && !entry.name.endsWith('.generated.ts') && !/-css\.ts$/.test(entry.name)) {
+      out.push(p)
+    }
+  }
+  return out
+}
+
+// 控件样式是「谁用谁注入」：用了 dshpc 类名却没自注入 ⇒ 那份 CSS 既不进包也不注入 ⇒ 该控件裸奔。
+// 新增控件最容易漏这一步（改造时就抓出 5 个靠全量 blob 蹭样式的文件），由测试盯住不再回潮。
+test('用到 dshpc 类名的源文件必须自注入 CSS（漏一个 = 该控件样式丢失）', async () => {
+  const defined = new Set()
+  for (const css of Object.values(CONSTANTS)) {
+    for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/\.(dshpc-[\w-]+)/g)) defined.add(m[1])
+  }
+  const srcDir = join(new URL('../src/', import.meta.url).pathname)
+  const missing = []
+  for (const file of await sourceFiles(srcDir)) {
+    const txt = (await readFile(file, 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
+    const uses = [...txt.matchAll(/dshpc-[\w-]+/g)].map((m) => m[0]).filter((c) => defined.has(c))
+    if (uses.length > 0 && !txt.includes('ensureComponentStyles(')) missing.push(`${file}（用了 ${uses.length} 个类名）`)
+  }
+  assert.deepEqual(missing, [], `这些文件用了 dshpc 类名却没有自注入：\n${missing.join('\n')}`)
 })

@@ -1,12 +1,13 @@
 import { createElement as h, useEffect, useState, useSyncExternalStore } from 'react';
-import { ensureControls } from './css.js';
 import { t } from '../utils/i18n.js';
 import { Picker } from './Picker.js';
 import { flattenOptions, groupOf } from './picker-logic.js';
 import { modelCatalog } from './host-data.js';
 import { sparkleIcon } from './picker-icons.js';
+import { ensureComponentStyles } from './css.js';
+import { PICKER_CSS } from './picker-css.js';
 export function ModelPicker(props) {
-    ensureControls();
+    ensureComponentStyles('picker', PICKER_CSS);
     const tt = props.translate ?? t;
     const value = props.value;
     const variant = props.variant ?? 'grouped';

@@ -6,6 +6,8 @@
 // 纯逻辑、零 DOM / React 依赖 ⇒ Node 单测可直接断言单例语义。
 
 import type { Translate } from '../utils/i18n.js'
+import { ensureComponentStyles } from './css.js'
+import { LOADING_CSS } from './controls-css.js'
 
 /** 全局注册表键：Symbol.for 跨 bundle 副本天然共享同一个符号。 */
 export const LOADING_HOST_KEY = Symbol.for('dsh-plugin-core/loading-host')
@@ -34,7 +36,13 @@ export type LoadingPosition =
   | 'bottom-right'
 
 /** 浮层定位类名（`center` 走基础规则，不需要修饰类）。 */
+/**
+ * 为什么这里要自注入 `LOADING_CSS`：拿这个类名的调用方通常是**自己画**浮层
+ * （否则直接渲染 `Loading` 组件即可），那时 core 里没有任何组件被渲染 ⇒ 没人登记这份 CSS
+ * ⇒ 浮层会裸奔。类名出口处登记一次，任何拿类名自绘的路径都有样式（幂等）。
+ */
 export function loadingOverlayClass(position: LoadingPosition): string {
+  ensureComponentStyles('loading', LOADING_CSS)
   return `dshpc-loading-overlay dshpc-loading-overlay--${position}`
 }
 

@@ -1,7 +1,8 @@
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
-import { ensureControls } from './css.js'
 import { Chevron } from './chevron.js'
 import { t, type Translate } from '../utils/i18n.js'
+import { ensureComponentStyles } from './css.js'
+import { CARD_CSS } from './card-css.js'
 
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
 export const CARD_ACCENTS = [
@@ -40,7 +41,7 @@ function CardShell(
   kind: 'bordered' | 'strip',
   props: CardSharedProps,
 ): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('card', CARD_CSS)
   const tt = props.translate ?? t
   const accent = props.accent ?? 'business'
   const isPreset = (CARD_ACCENTS as readonly string[]).includes(accent)

@@ -1,9 +1,10 @@
 import { createElement as h } from 'react';
-import { ensureControls } from './css.js';
 import { MarqueeText } from './MarqueeText.js';
+import { ensureComponentStyles } from './css.js';
+import { CHIP_CSS } from './chip-css.js';
 /** 小标签（neutral 用现成的 `--dshpc-chip-bg`；传 `onClick` 才是可点的）。 */
 export function Chip(props) {
-    ensureControls();
+    ensureComponentStyles('chip', CHIP_CSS);
     const { children, tone = 'neutral', size = 'sm', width, minWidth, maxWidth, onClick, className, } = props;
     const clickable = onClick !== undefined;
     // 三轴互斥：固定宽优先，min / max 失效；否则 min / max 各自生效。

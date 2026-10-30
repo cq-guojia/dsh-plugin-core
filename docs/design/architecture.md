@@ -44,8 +44,11 @@ utils（谁都不依赖，谁都可以用）
 插件启动 ──▶ setStyleKit(createStyleKit({ id }))
                     │
                     ▼
-              ensureControls() ──▶ 往 <head> 插一个 <style id="{id}">
-                                    内容 = tokens 域 + 各控件域拼成的 CSS 文本
+        用到的控件首次渲染 ──▶ 自注入自己那份 CSS（幂等）
+                                    │
+                                    ▼
+                       往 <head> 插/更新一个 <style id="{id}">
+                       内容 = tokens 域 + 各「已用到」的控件域拼成的 CSS 文本
 ```
 
 为什么必须运行时注入：DSH 客户端产物是 `window.__ModuleLoader__.load({ id, factory })` 的
@@ -107,7 +110,8 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
 
 ## 触发关系
 
-- `setStyleKit()` / `ensureControls()`：插件启动时调一次（幂等）。
-- 控件渲染时内部会再调 `ensureControls()`，漏了初始化也不会白屏，只是样式可能晚一帧。
-- `ensureControls()` 无 `document` 时静默跳过（SSR / 单测不炸）。
+- `setStyleKit()`：插件启动时调一次；不调则走默认 kit（多插件同页会互相覆盖，务必调）。
+- 控件样式**按需**：各控件首次渲染时自注入自己那份 CSS（幂等），没用到的控件其 CSS 不进包。
+  `ensureControls()` 现只剩「登记 token」一件事，是可选预热而非必需步骤。
+- 自注入无 `document` 时静默跳过（SSR / 单测不炸）。
 - `showToast()` 无 `document` 时静默跳过。

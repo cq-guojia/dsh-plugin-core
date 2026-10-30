@@ -15,7 +15,8 @@
  * 两格要等高，就给内件传**同一个 `size`**（sm 24 / md 28 / lg 32 —— 外壳跟着内件长，不写死高度）。
  */
 import { createElement as h } from 'react';
-import { ensureControls } from './css.js';
+import { ensureComponentStyles } from './css.js';
+import { SPLIT_GROUP_CSS } from './controls-css.js';
 /**
  * 渲染一个两格拼接外壳。
  *
@@ -23,7 +24,7 @@ import { ensureControls } from './css.js';
  * @returns 外壳元素。
  */
 export function SplitGroup(props) {
-    ensureControls();
+    ensureComponentStyles('split-group', SPLIT_GROUP_CSS);
     return h('div', {
         role: 'group',
         'aria-label': props.label,

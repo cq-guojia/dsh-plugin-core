@@ -26,14 +26,15 @@ pnpm add dsh-plugin-core
 
 ```ts
 import { createStyleKit } from 'dsh-plugin-core/design'
-import { Button, ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
+import { Button, setStyleKit } from 'dsh-plugin-core/ui'
 
 setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' })) // 1) 领本插件专属样式设施（id 按插件唯一）
-ensureControls()                                          // 2) 挂 token + 控件样式（幂等）
-const view = <Button variant="primary" onClick={save}>保存</Button> // 3) 直接用控件
+const view = <Button variant="primary" onClick={save}>保存</Button> // 2) 直接用控件，样式它自己带
 ```
 
 为什么必须先 `setStyleKit`：样式只能以字符串在运行时注入 `<style>`（客户端产物是 JS 闭包，`.css` 不加载）。固定 style id 在多插件同页时会互相覆盖，所以做成工厂，每个插件领一套自己的；变量前缀统一 `dshpc`，不再按插件区分。
+
+**样式是按需的**：每个控件只带自己那份 CSS，首次渲染时自注入（幂等）——用不到的控件，其 CSS 不会被打进你的包（实测：只用 `Button` 时样式文本从 71.7 KB 降到 9.4 KB）。因此请**用具名导入**（`import { Button } from 'dsh-plugin-core/ui'`）：写成 `import * as core from …` 或 CJS `require` 会让打包器无法摇树，这一份收益会静默归零。
 
 ## 子包
 

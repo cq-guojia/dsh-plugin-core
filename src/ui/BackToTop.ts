@@ -16,9 +16,10 @@
  *
  * 横向锚定逻辑与 `<Loading />` 同源（后者贴右缘内侧），本件放在右缘**外侧**并留 16px 间隙。
  */
-import { ensureControls } from './css.js'
 import { Chevron } from './chevron.js'
 import { createElement as h, useEffect, useRef, useState } from 'react'
+import { ensureComponentStyles } from './css.js'
+import { BACK_TO_TOP_CSS } from './controls-css.js'
 
 // 主内容列 id 与 `<Loading />` 同源：必须 == ui/index.ts 的 `PANEL_CONTENT_ID`（`dshpc-main`），
 // 这里用字面量避免与 ui/index 形成循环依赖（Loading 同样如此）。
@@ -49,8 +50,8 @@ export interface BackToTopProps {
 
 /** 统一的回到顶部悬浮按钮。 */
 export function BackToTop(props: BackToTopProps): ReturnType<typeof h> {
-  ensureControls()
-  ensureControls()
+  ensureComponentStyles('back-to-top', BACK_TO_TOP_CSS)
+  ensureComponentStyles('back-to-top', BACK_TO_TOP_CSS)
   const ref = useRef<HTMLButtonElement>(null)
   const [visible, setVisible] = useState(false)
   const [left, setLeft] = useState<string>('auto')

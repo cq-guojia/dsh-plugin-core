@@ -47,11 +47,11 @@ pnpm add dsh-plugin-core
 ```ts id="integration-init-style"
 // 插件 client 入口
 import { createStyleKit } from 'dsh-plugin-core/design'
-import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
+import { setStyleKit } from 'dsh-plugin-core/ui'
 
 const kit = createStyleKit({ id: 'dsh-task-reminder-ui' })
 setStyleKit(kit)
-ensureControls()
+// 只需这一行：控件首次渲染时自注入自己那份 CSS，token 也一并登记。
 ```
 
 ```tsx id="integration-use-control"

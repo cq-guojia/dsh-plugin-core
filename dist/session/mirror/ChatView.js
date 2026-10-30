@@ -7,6 +7,8 @@ import { createElement as h } from 'react';
 import { officialClass } from '../official-classes.js';
 import { ChatGroupSeatMirror } from './ChatGroupSeat.js';
 import { ChatNodeSeatMirror } from './ChatNodeSeat.js';
+import { ensureComponentStyles } from '../../ui/css.js';
+import { SESSION_CSS } from '../session-css.js';
 /** 会话区骨架：frame > root > scroll > column（类名一律取官方 ChatView.module.css，取不到 = 空类）。
  *
  *  `dshpc-sv-frame` / `dshpc-sv-scroll` = 本包**稳定钩子类**（不走 officialClass 发现，官方类命中时也照样挂）：
@@ -16,6 +18,7 @@ import { ChatNodeSeatMirror } from './ChatNodeSeat.js';
  * 不依赖注入顺序 ⇒ 命中 / 未命中两条路径纵向完全一致。
  */
 export function ChatViewFrame(props) {
+    ensureComponentStyles('session', SESSION_CSS);
     return h('div', { className: `${officialClass('ChatView', 'frame') ?? ''} dshpc-sv-frame dshpc-sv-chat` }, h('div', { className: officialClass('ChatView', 'root') ?? '' }, h('div', { className: `${officialClass('ChatView', 'scroll') ?? ''} dshpc-sv-scroll` }, h('div', { className: officialClass('ChatView', 'column') ?? '', 'data-chat-flow': '' }, props.children))));
 }
 /** 官方 ChatNodeList：order → seat 列表（grouped 视图 = entries + groups 路径）。 */

@@ -20,9 +20,10 @@
  *
  * ⚠️ 不许在任何使用点就地写按钮样式；要多一档外观 ⇒ 改基础层（一处改全站生效）。
  */
-import { ensureControls } from './css.js';
 import { MarqueeText } from './MarqueeText.js';
 import { createElement as h } from 'react';
+import { ensureComponentStyles } from './css.js';
+import { BUTTON_CSS } from './controls-css.js';
 /** 实心档（color 参数按「底色」处理；其余档按「字色 + 描边色」处理）。 */
 const SOLID_VARIANTS = [
     'primary', 'secondary', 'danger', 'success', 'warning', 'info',
@@ -63,7 +64,7 @@ function buttonClass(variant, size, block, hasIcon, extra) {
  * @returns 按钮元素。
  */
 export function Button(props) {
-    ensureControls();
+    ensureComponentStyles('button', BUTTON_CSS);
     const { variant = 'outline', size = 'lg', icon, iconRight, color, loading = false, block = false, width, minWidth, maxWidth, className, style, children, ...rest } = props;
     // 三轴互斥：固定宽优先，min / max 失效；否则 min / max 各自生效。
     const widthStyle = {};
@@ -115,7 +116,7 @@ export function Button(props) {
  * @returns 图标按钮元素。
  */
 export function IconButton(props) {
-    ensureControls();
+    ensureComponentStyles('button', BUTTON_CSS);
     const { variant = 'plain', size = 'lg', icon, label, className, style, ...rest } = props;
     const attrs = {
         ...rest,

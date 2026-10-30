@@ -1,6 +1,7 @@
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
-import { ensureControls } from './css.js'
 import { MarqueeText } from './MarqueeText.js'
+import { ensureComponentStyles } from './css.js'
+import { CHIP_CSS } from './chip-css.js'
 
 /** 标签语义色档（非 neutral 为实心信号面，字色配对见 chip.css）。 */
 export type ChipTone =
@@ -34,7 +35,7 @@ export interface ChipProps {
 
 /** 小标签（neutral 用现成的 `--dshpc-chip-bg`；传 `onClick` 才是可点的）。 */
 export function Chip(props: ChipProps): ReturnType<typeof h> {
-  ensureControls()
+  ensureComponentStyles('chip', CHIP_CSS)
   const {
     children, tone = 'neutral', size = 'sm', width, minWidth, maxWidth, onClick, className,
   } = props

@@ -23,6 +23,8 @@ import { IconCheckOutlineRegular, IconCopyOutlineRegular, writeClipboard } from 
 import type { Translate } from '../utils/i18n.js'
 import { languageForPath } from './code-viewer-lang.js'
 import { codeMirrorTheme } from './code-viewer-theme.js'
+import { ensureComponentStyles } from './css.js'
+import { CODE_VIEWER_CSS } from './code-viewer-css.js'
 
 /** 唯一明暗判据属性名（宿主启动脚本 toggleAttribute 写入 body）。 */
 const DARK_ATTR = 'data-ds-dark-theme'
@@ -51,6 +53,7 @@ export interface CodeViewerProps {
 }
 
 export function CodeViewer(props: CodeViewerProps): ReactElement {
+  ensureComponentStyles('code-viewer', CODE_VIEWER_CSS)
   const { text, path, t, className, style, height = '100%', lineNumbers = true } = props
   const [copied, setCopied] = useState(false)
   const [dark, setDark] = useState<boolean>(hostDark)

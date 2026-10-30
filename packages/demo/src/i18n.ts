@@ -297,7 +297,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     overviewDesc:
       '待补：\n· 包的一句话定位：谁能用、解决什么\n· 五个子包各自回答什么问题（design / ui / utils / explorer / session）\n· 一张能力地图，直接跳到对应二级页\n· 不适用边界（不是 i18n 框架、不是设置页骨架）',
     installDesc:
-      '待补：\n· 依赖声明怎么装（git 安装，宿主不跑构建脚本）\n· 入口必须做的两行：setStyleKit + ensureControls\n· 为什么 @deepseek-ai/* 必须标 external（不标打包会失败）\n· 宿主 slots 注册：sidebar.panellist / main / plugins.bundle.config（设置页）\n· 装不上的排查清单（先看 build 编码是否变了）',
+      '待补：\n· 依赖声明怎么装（git 安装，宿主不跑构建脚本）\n· 入口必须做的一行：setStyleKit（控件样式按需自注入）\n· 为什么 @deepseek-ai/* 必须标 external（不标打包会失败）\n· 宿主 slots 注册：sidebar.panellist / main / plugins.bundle.config（设置页）\n· 装不上的排查清单（先看 build 编码是否变了）',
     quickstartDesc:
       '待补：\n· 一个最小可跑插件的完整源码\n· 从建目录到在宿主里看见它的分步说明\n· 本预览插件自己就是样例，可对照 packages/demo/src',
     namingDesc:
@@ -336,7 +336,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     darkHint:
       '明暗判据是写死的：宿主在 body 上挂 data-ds-dark-theme 才切暗色，不读系统的 prefers-color-scheme。插件因此不需要、也不应该自带明暗开关——下面是当前实测值，切明暗后重开本页可见变化。',
     darkNow: '当前 body[data-ds-dark-theme]',
-    injectHint: '控件渲染前调一次 setStyleKit + ensureControls，token 与控件 CSS 由 kit 注入 <head>',
+    injectHint: '入口调一次 setStyleKit；控件首次渲染时自注入自己那份 CSS（token 一并登记，幂等）',
     demoTokenPalette: 'token 色板',
     demoStyleInject: '样式注入机制',
     designInjectNote: '本预览插件自己就是这么做初始化的——预览与真实插件走同一条路。',
@@ -585,7 +585,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     overviewDesc:
       'To be added:\n· One-line positioning: who it is for, what it solves\n· What each of the five subpackages answers (design / ui / utils / explorer / session)\n· A capability map linking straight to the pages below\n· The boundary: not an i18n framework, not a settings-page skeleton',
     installDesc:
-      'To be added:\n· How to install (via git — the host does not run build scripts)\n· The two mandatory entry lines: setStyleKit + ensureControls\n· Why @deepseek-ai/* must stay external (otherwise bundling fails)\n· Registering host slots: sidebar.panellist / main / plugins.bundle.config (settings page)\n· Checklist when it does not load (start by checking the build stamp)',
+      'To be added:\n· How to install (via git — the host does not run build scripts)\n· The one mandatory entry line: setStyleKit (controls self-inject their own CSS)\n· Why @deepseek-ai/* must stay external (otherwise bundling fails)\n· Registering host slots: sidebar.panellist / main / plugins.bundle.config (settings page)\n· Checklist when it does not load (start by checking the build stamp)',
     quickstartDesc:
       'To be added:\n· Full source of a minimal working plugin\n· Step-by-step from empty folder to visible panel\n· This preview plugin is itself the sample — see packages/demo/src',
     namingDesc:
@@ -624,7 +624,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     darkHint:
       'The switch is hard-coded: dark applies only when the host sets data-ds-dark-theme on body — prefers-color-scheme is not read. A plugin therefore needs no theme toggle of its own. The value below is measured live; toggle the theme and reopen this page to see it change.',
     darkNow: 'Current body[data-ds-dark-theme]',
-    injectHint: 'Call setStyleKit + ensureControls once before controls render; the kit injects tokens and control CSS into <head>',
+    injectHint: 'Call setStyleKit once at entry; each control self-injects its own CSS on first render (tokens included, idempotent)',
     demoTokenPalette: 'Token palette',
     demoStyleInject: 'Style injection',
     designInjectNote: 'This preview plugin initializes itself exactly this way — preview and real plugin take the same path.',

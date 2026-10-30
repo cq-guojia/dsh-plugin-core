@@ -1,3 +1,20 @@
+/**
+ * 全局浮动 Loading 指示器（UI 基础层 · P1）。
+ *
+ * 用法：
+ *   <Loading />
+ *
+ * 行为：
+ * - fixed 定位在主内容容器右下角，**不占布局空间**；
+ * - 右侧贴齐主内容容器右边缘（`anchorId` 默认 `dshpc-main`），底部留 16px；
+ * - **三个小方块依次脉动，无任何文案**（基础抽象统一外观，禁止加字；用户 2026-10-06）；
+ * - 监听窗口 resize / scroll / 内容盒 resize，自动跟住内容宽度。
+ *
+ * 配套 also 导出 `<RunningBlocks />`：同样的三个脉动方块（无文案），
+ * 用于表格单元格里的「运行中」状态指示。
+ *
+ * 文档登记：docs/design/ui-foundation.md §二「唯一实现表」。
+ */
 import { createElement as h } from 'react';
 import { type Translate } from '../utils/i18n.js';
 import { type LoadingHandle, type LoadingPosition, type LoadingVariant } from './loading-host.js';

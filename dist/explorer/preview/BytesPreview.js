@@ -1,11 +1,12 @@
 // 二进制预览体：图片（<img>）/ PDF（iframe 原生渲染）。
 // readBytes 读全量（受部署 maxFileBytes 封顶，超出抛 too-large ⇒ 错误态）。
 import { createElement as h, useEffect, useState } from 'react';
-import { ensureControls } from '../../ui/css.js';
 import { t } from '../../utils/i18n.js';
 import { bytesOf, errView } from '../types.js';
+import { ensureComponentStyles } from '../../ui/css.js';
+import { EXPLORER_CSS } from '../explorer-css.js';
 export function BytesPreview(props) {
-    ensureControls();
+    ensureComponentStyles('explorer', EXPLORER_CSS);
     const tt = props.translate ?? t;
     const [url, setUrl] = useState(null);
     const [failed, setFailed] = useState(null);

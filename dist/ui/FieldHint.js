@@ -9,12 +9,13 @@
  * ⚠️ **不做降级兜底**（用户同日明确：宿主内官方包恒在；官方改版 = 我们重新适配，不另造一套）。
  * 未注入 renderer 的环境（node 自检）只出问号图标、没有气泡——那是非宿主环境，不是产品形态。
  */
-import { ensureControls } from './css.js';
 import { getTooltipRenderer } from './tooltip.js';
 import { createElement as h } from 'react';
+import { ensureComponentStyles } from './css.js';
+import { HINT_CSS } from './controls-css.js';
 /** 问号提示图标：hover / focus 浮出说明气泡（官方 Tooltip 渲染）。 */
 export function FieldHint(props) {
-    ensureControls();
+    ensureComponentStyles('hint', HINT_CSS);
     const { text, side, align, maxWidth, className, style } = props;
     // 官方往子元素挂 ref / 事件 ⇒ 锚点必须是真实 DOM 元素（兄弟仓踩过两次的坑），这里恒为原生 span。
     const anchor = h('span', {

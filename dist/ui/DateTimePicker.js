@@ -1,12 +1,13 @@
 import { createElement as h, useCallback, useEffect, useRef, useState, } from 'react';
 import { FloatingPortal, autoUpdate, flip, offset, shift, size as floatingSize, useFloating, } from '@floating-ui/react';
-import { ensureControls } from './css.js';
 import { Chevron } from './chevron.js';
 import { Button } from './Button.js';
 import { FieldHint } from './FieldHint.js';
 import { getLocale, t } from '../utils/i18n.js';
 import { formatDateTimePrecision } from '../utils/date.js';
 import { buildMonthCells, ceilToPrecision, clampUnit, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
+import { ensureComponentStyles } from './css.js';
+import { DATETIME_CSS, FIELD_CSS } from './controls-css.js';
 const UNIT_LABEL = {
     hour: 'dtHour',
     minute: 'dtMinute',
@@ -90,7 +91,8 @@ const ICON_DOWN = h(Chevron, { size: 12 });
  *    毫秒恒三位输出，数据库只收到秒时优雅退化为「当天最后一秒」。
  */
 export function DateTimePicker(props) {
-    ensureControls();
+    ensureComponentStyles('datetime', DATETIME_CSS);
+    ensureComponentStyles('field', FIELD_CSS);
     const tt = props.translate ?? t;
     const mode = props.mode ?? 'single';
     const rangeMode = mode === 'range';

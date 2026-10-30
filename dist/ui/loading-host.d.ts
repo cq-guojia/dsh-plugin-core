@@ -8,6 +8,11 @@ export type LoadingVariant = 'toast' | 'block';
 /** 七向定位：与 Toast 的六向同名，另加 `center`。默认 `bottom-center`。 */
 export type LoadingPosition = 'top-left' | 'top-center' | 'top-right' | 'center' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 /** 浮层定位类名（`center` 走基础规则，不需要修饰类）。 */
+/**
+ * 为什么这里要自注入 `LOADING_CSS`：拿这个类名的调用方通常是**自己画**浮层
+ * （否则直接渲染 `Loading` 组件即可），那时 core 里没有任何组件被渲染 ⇒ 没人登记这份 CSS
+ * ⇒ 浮层会裸奔。类名出口处登记一次，任何拿类名自绘的路径都有样式（幂等）。
+ */
 export declare function loadingOverlayClass(position: LoadingPosition): string;
 export interface LoadingRequest {
     /** 文案；不传走内置字典 `loadingDefault`（数据加载中 / Loading）。 */

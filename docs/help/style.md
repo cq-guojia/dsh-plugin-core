@@ -78,3 +78,38 @@ or by grepping `tokens-css.ts`.
 EN: Reskin by reassigning the same variables inside your own style domain (no fork needed). Add a domain with
 `kit.registerStyle('widget', css)`; re-registering a domain overwrites it. The `tokens` domain always comes
 first — core maintains that ordering. Skin lives in the caller’s domain; components only read tokens.
+
+## 怎么应用：样式是按需的
+
+> EN: How to apply it: styles are on demand
+
+（2026-10-30 起）插件入口**只需 `setStyleKit` 一行**；控件首次渲染时自注入自己那份 CSS（幂等），
+没用到的控件其 CSS 不进你的包。`ensureControls()` 现只登记 token，是**可选**预热，不必再调。
+
+```ts
+import { createStyleKit } from 'dsh-plugin-core/design'
+import { setStyleKit } from 'dsh-plugin-core/ui'
+
+setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))
+```
+
+EN: Since 2026-10-30 the entry needs only `setStyleKit`; each control self-injects its own CSS on first render,
+and CSS of controls you never use stays out of your bundle. `ensureControls()` now only registers tokens and is
+optional.
+
+## 避免什么
+
+> EN: What to avoid
+
+1. **不要 `import * as core from 'dsh-plugin-core/ui'` / `require('dsh-plugin-core/ui')`** —— 打包器无法摇树，
+   所有控件 CSS 全进你的包（实测差 62.3 KB）。一律**具名导入**。
+2. **不要把多份 CSS 自己拼起来注册成一个域** —— 那等于重建全量注入，按需收益归零。
+   要加自己的皮肤，用 `kit.registerStyle('你的域', css)` 单独注册。
+3. **不要写「靠注入顺序才对」的规则** —— 顺序 = 控件首次渲染顺序，不固定。
+   要覆盖就用更高特异性（多加一个类限定），跨来源的层次用 `@layer`。
+4. **不要退回 `import './x.css'`** —— 客户端产物是 JS 闭包，`.css` 内核不加载；且在
+   `sideEffects: false` 下会被连样式一起摇掉。
+
+EN: (1) Never namespace-import or `require` the barrel − it defeats tree-shaking (62.3 KB difference); use named
+imports. (2) Do not concatenate several CSS constants into one domain − that rebuilds full injection. (3) Never
+rely on injection order; override with higher specificity. (4) Never go back to `import './x.css'`.
