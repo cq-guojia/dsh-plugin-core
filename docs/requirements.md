@@ -120,6 +120,12 @@ dsh-plugin-core/
 
 ⇒ 必须是 `createStyleKit({ id })`：每个插件调一次领一套自己的（`<style>` 标签 id 按插件唯一）。
 
+**（2026-10-30）注入按控件粒度**：每个控件自注入自己那份 CSS（`ensureComponentStyles(domain, css)`，幂等），
+**不许再聚合成一把全量**。全量聚合会让入口模块静态依赖所有 CSS，打包器无法摇树 —— 插件只用 Button 也会
+背上全部 71.7 KB 样式文本。`ensureControls()` 因此收敛为「只登记 token」的可选预热。
+配套约束：消费方须**具名导入**（`import * as` / CJS `require` 会让按需收益归零）；跨控件修饰只许用
+更高特异性表达，不许依赖注入顺序。
+
 ### 5.3 明暗色判据（别跟错）
 
 - 判据 = **`body[data-ds-dark-theme]`**（宿主启动脚本 `toggleAttribute` 写入，
@@ -175,6 +181,7 @@ dsh-plugin-core/
 | v2 | `explorer`（用户拍板要抽） | ✅ 已完成（浏览面板 + 预览；**选择器后移至 ui**，见 §2.4） |
 | v2+ | `explorer` 重做（2026-10-20） | ✅ 已完成（FileBrowser 面板 + `openFilePreview` / `pickWorkspaceFile` 两能力 + 全量预览：md / 代码高亮 / HTML / PDF / Office；官方件经 `./ui/official` 子路径） |
 | v3 | `session` | ⚠️ **半完成**：契约与三种承载已好，**官方会话 UI 镜像未搬**（只做最简渲染） |
+| v3+ | 控件样式按需注入（2026-10-30） | ✅ 已完成（`css.ts` 停全量聚合；27 个组件各自注入自己那份；只 `import { Button }` 时 CSS 文本 71.7 KB → 9.4 KB。**不采用 `@layer`**：未分层样式压过任何层且层级裁决优先于特异性，包进层会被宿主元素级重置反压） |
 | 文档 | README 接入指南 | ✅ 已完成 |
 
 **未做**（按重要性）：消费者插件接入 / 会话 UI 镜像 / 类名隔离 /
