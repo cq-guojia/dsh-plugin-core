@@ -137,6 +137,23 @@ export interface RootCache {
     get(sessionId: string): string | undefined;
     set(sessionId: string, root: string): void;
 }
+export interface RequestToken {
+    readonly signal: AbortSignal;
+    /** true = 仍是最新一次（未被下一次 begin / abort 作废，且未被取消）。 */
+    current(): boolean;
+}
+export interface RequestGate {
+    /** 开一次新请求：先中止上一次，返回本次 token。 */
+    begin(): RequestToken;
+    /** 中止当前请求（卸载 / 关闭 / 换目标时用）。 */
+    abort(): void;
+}
+export declare function createRequestGate(): RequestGate;
+/**
+ * 这次失败是不是「我们主动取消的」。宿主两种表现都要静默：
+ * reject `AbortError`，或 resolve `{ ok:false, error }` 信封——调用方补传 signal 由这里判定。
+ */
+export declare function isAborted(signal: AbortSignal | undefined, error?: unknown): boolean;
 export declare function createRootCache(): RootCache;
 /** 宿主绝对路径形态（/ 开头或 Windows 盘符）。 */
 export declare function isAbsoluteish(p: string): boolean;
@@ -150,7 +167,7 @@ export declare function relativizeToRoot(cache: RootCache, sessionId: string, di
  * 在相对目录树里找**任意一个文件**并 stat（广度优先、有界：每层最多 5 个目录、最多 3 层）。
  * 用于目标目录本身没有文件子项（空目录 / 只有子目录）时反推工作区根。
  */
-export declare function findAnyFileAbs(workspaceFiles: WorkspaceFilesFace, sessionId: string, startDir: string): Promise<{
+export declare function findAnyFileAbs(workspaceFiles: WorkspaceFilesFace, sessionId: string, startDir: string, signal?: AbortSignal): Promise<{
     absolutePath: string;
     relativePath: string;
 } | null>;
@@ -160,7 +177,7 @@ export declare function findAnyFileAbs(workspaceFiles: WorkspaceFilesFace, sessi
  * ② 目录里有文件子项 ⇒ stat 它反推根；③ 有界 BFS 找任一文件反推根。
  * 全部失败 ⇒ 退回入参，浏览不受影响。
  */
-export declare function absolutizeDir(cache: RootCache, workspaceFiles: WorkspaceFilesFace, sessionId: string, dir: string, canonical: string, entries: readonly DirEntry[]): Promise<string>;
+export declare function absolutizeDir(cache: RootCache, workspaceFiles: WorkspaceFilesFace, sessionId: string, dir: string, canonical: string, entries: readonly DirEntry[], signal?: AbortSignal): Promise<string>;
 /** 选择器过滤：`exts` = 只要这些扩展名（小写无点）；`dirs` = 只要文件夹；都不传 = 不限。 */
 export interface PickFilter {
     exts?: readonly string[];

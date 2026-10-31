@@ -2,7 +2,7 @@
 // officeToPdf 未注入（宿主没装 dsh-office-to-pdf）⇒ 「预览不可用」空态，不发起请求、不崩。
 import { createElement as h, useEffect, useState } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
-import { bytesOf, errView, type OfficeToPdfFace } from '../types.js'
+import { bytesOf, errView, isAborted, type OfficeToPdfFace } from '../types.js'
 import { ensureComponentStyles } from '../../ui/css.js'
 import { EXPLORER_CSS } from '../explorer-css.js'
 
@@ -20,17 +20,18 @@ export function OfficePreview(props: OfficePreviewProps): ReturnType<typeof h> {
   const [failed, setFailed] = useState<ReturnType<typeof errView> | null>(null)
 
   useEffect(() => {
-    let alive = true
+    const controller = new AbortController()
     let objectUrl: string | null = null
     setUrl(null)
     setFailed(null)
     const face = props.officeToPdf
     if (face === null) return
+    // 转换慢也不能让它挡路：切文件即 abort（官方实现按「最后一个读者取消」释放共享转换）。
     face
-      .render(props.sessionId, props.path, 'foreground')
+      .render(props.sessionId, props.path, 'foreground', controller.signal)
       .then((res) => {
+        if (controller.signal.aborted) return
         const data = bytesOf(res)
-        if (!alive) return
         if (data === null || 'failed' in data) {
           setFailed(errView(data === null ? undefined : data.failed))
           return
@@ -40,10 +41,11 @@ export function OfficePreview(props: OfficePreviewProps): ReturnType<typeof h> {
         setUrl(objectUrl)
       })
       .catch((error: unknown) => {
-        if (alive) setFailed(errView(error))
+        if (isAborted(controller.signal, error)) return
+        setFailed(errView(error))
       })
     return () => {
-      alive = false
+      controller.abort()
       if (objectUrl !== null) URL.revokeObjectURL(objectUrl)
     }
   }, [props.officeToPdf, props.sessionId, props.path])

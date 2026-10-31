@@ -2,7 +2,7 @@
 // readBytes 读全量（受部署 maxFileBytes 封顶，超出抛 too-large ⇒ 错误态）。
 import { createElement as h, useEffect, useState } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
-import { bytesOf, errView, type WorkspaceFilesFace } from '../types.js'
+import { bytesOf, errView, isAborted, type WorkspaceFilesFace } from '../types.js'
 import { ensureComponentStyles } from '../../ui/css.js'
 import { EXPLORER_CSS } from '../explorer-css.js'
 
@@ -22,15 +22,17 @@ export function BytesPreview(props: BytesPreviewProps): ReturnType<typeof h> {
   const [failed, setFailed] = useState<ReturnType<typeof errView> | null>(null)
 
   useEffect(() => {
-    let alive = true
+    // 切文件 / 卸载即取消：signal 是真取消（官方 remote 声明了 cancellation 形参），
+    // 不必等它读完再丢弃；被取消的结果一律静默（不 setState、不出错误态）。
+    const controller = new AbortController()
     let objectUrl: string | null = null
     setUrl(null)
     setFailed(null)
     props.workspaceFiles
-      .readBytes(props.sessionId, props.path, {})
+      .readBytes(props.sessionId, props.path, {}, controller.signal)
       .then((res) => {
+        if (controller.signal.aborted) return
         const data = bytesOf(res)
-        if (!alive) return
         if (data === null) {
           console.warn('[dsh-plugin-core:explorer] readBytes 返回体无法解析为字节', props.path, res)
           setFailed({ key: 'previewBadPayload' })
@@ -46,10 +48,11 @@ export function BytesPreview(props: BytesPreviewProps): ReturnType<typeof h> {
         setUrl(objectUrl)
       })
       .catch((error: unknown) => {
-        if (alive) setFailed(errView(error))
+        if (isAborted(controller.signal, error)) return
+        setFailed(errView(error))
       })
     return () => {
-      alive = false
+      controller.abort()
       if (objectUrl !== null) URL.revokeObjectURL(objectUrl)
     }
   }, [props.workspaceFiles, props.sessionId, props.path, props.mime])

@@ -8,6 +8,11 @@ export interface FileBrowserProps {
     sessionId: string;
     /** 起始路径：目录 ⇒ 直接列；文件 ⇒ 预览态（dir 取父目录，面包屑保留可返回）。 */
     path: string;
+    /**
+     * 重开令牌（`openFilePreview` 每次调用递增）：**同一 path 再点一次**也要回到该文件 /
+     * 重读内容，所以初始 effect 依赖它；它只触发重跑，**不重挂组件**（目录树、展开态、滚动位置保留）。
+     */
+    revision?: number;
     /** 关闭回调（✕ 与越界只读态共用）。 */
     onClose?: () => void;
     /** 工作区根显示名（picker = 调用方选的工作区名）；不传 = 用缓存根的末段。 */

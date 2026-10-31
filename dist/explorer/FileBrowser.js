@@ -21,7 +21,7 @@ import { Segmented } from '../ui/Segmented.js';
 import { workspaceList } from '../ui/host-data.js';
 import { t } from '../utils/i18n.js';
 import { FilePreview } from './preview/index.js';
-import { absolutizeDir, bareCode, baseNameOfPath, crumbsOfDir, createRootCache, dirnameOf, errView, findAnyFileAbs, isAbsoluteish, isFailed, joinPath, learnRoot, listingOf, listPathOf, matchesFilter, relativizeToRoot, sortEntries, workspaceAnchorForPath, } from './types.js';
+import { absolutizeDir, bareCode, baseNameOfPath, crumbsOfDir, createRequestGate, createRootCache, dirnameOf, errView, findAnyFileAbs, isAborted, isAbsoluteish, isFailed, joinPath, learnRoot, listingOf, listPathOf, matchesFilter, relativizeToRoot, sortEntries, workspaceAnchorForPath, } from './types.js';
 import { ensureComponentStyles } from '../ui/css.js';
 import { EXPLORER_CSS } from './explorer-css.js';
 /**
@@ -130,6 +130,31 @@ export function FileBrowser(props) {
     // 当前目录在会话工作区之外（官方 list 限工作区内，越界即报 outside-workspace）。
     // 依据 = list 的**真实错误码**，不靠缓存猜（根学不出时会误判成"在区内"）。
     const [outside, setOutside] = useState(false);
+    const revision = props.revision ?? 0;
+    // 请求闸门（latest-wins）：顶层列举 / 补学根 各一口；内联展开每个目录一口。
+    // begin() 先 abort 上一次，回调用 token.current() 判新旧 ⇒ 连续切换只认最后一次，
+    // 旧请求在 wire 上被取消（官方 remote 的 cancellation 形参），不再白读。
+    const listGateRef = useRef(null);
+    if (listGateRef.current === null)
+        listGateRef.current = createRequestGate();
+    const listGate = listGateRef.current;
+    const rootGateRef = useRef(null);
+    if (rootGateRef.current === null)
+        rootGateRef.current = createRequestGate();
+    const rootGate = rootGateRef.current;
+    const childAbortsRef = useRef(new Map());
+    const abortChildren = useCallback(() => {
+        for (const controller of childAbortsRef.current.values())
+            controller.abort();
+        childAbortsRef.current.clear();
+    }, []);
+    // 当前已提交的 dir / listing（初始 effect 判「同目录换文件」用 ref，避免把它们加进依赖）。
+    const dirRef = useRef('');
+    const listingRef = useRef(null);
+    useLayoutEffect(() => {
+        dirRef.current = dir;
+        listingRef.current = listing;
+    }, [dir, listing]);
     // 路径 → 工作区匹配：props.path 是绝对路径时，找出它所属的工作区（最长前缀），
     // list / 学根 / 相对化**全部**换用该工作区的会话与根——官方 list 按 sessionId 解析工作区根，
     // 只换 list 的 sessionId 不换学根的键，面包屑会露出工作区之外的层级（2026-10-22 真机：
@@ -143,7 +168,7 @@ export function FileBrowser(props) {
     const anchorMatch = useMemo(() => workspaceAnchorForPath(props.path, anchors), [props.path, anchors]);
     const listSessionId = anchorMatch?.sessionId ?? props.sessionId;
     /** 记一次 list 结果的"是否越界"（outside-workspace / not-found 均视为不可浏览）。 */
-    const noteOutside = (parsed) => {
+    const noteOutside = useCallback((parsed) => {
         if (parsed === null || parsed === undefined)
             return;
         if (!isFailed(parsed)) {
@@ -153,9 +178,11 @@ export function FileBrowser(props) {
         const code = bareCode(parsed.failed);
         if (code === 'outside-workspace' || code === 'not-found')
             setOutside(true);
-    };
+    }, []);
     /** 列举某目录并展示（清空 viewing；收起下拉）。 */
     const fetchDir = useCallback((targetDir) => {
+        const token = listGate.begin();
+        abortChildren();
         setDir(targetDir);
         setViewing(null);
         setListErr(null);
@@ -165,8 +192,10 @@ export function FileBrowser(props) {
         setOpenDirs(new Set());
         setChildCache({});
         props.workspaceFiles
-            .list(listSessionId, listPathOf(targetDir))
+            .list(listSessionId, listPathOf(targetDir), token.signal)
             .then((result) => {
+            if (!token.current())
+                return;
             const parsed = listingOf(result);
             noteOutside(parsed);
             if (isFailed(parsed)) {
@@ -184,10 +213,12 @@ export function FileBrowser(props) {
             setMode('dir');
         })
             .catch((error) => {
+            if (isAborted(token.signal, error))
+                return;
             setListErr(errView(error));
             setMode('error');
         });
-    }, [listSessionId, props.workspaceFiles]);
+    }, [abortChildren, listGate, listSessionId, noteOutside, props.workspaceFiles]);
     /** 进入某目录；点到当前目录本身 = 重列本层（刷新）。 */
     const loadDir = useCallback((targetDir) => {
         if (targetDir === dir) {
@@ -202,7 +233,26 @@ export function FileBrowser(props) {
     // ⚠️ 切勿改用服务端 list 返回的 path 当面包屑：那是 workspacePathOf 的工作区**相对**形式，
     //    会丢掉根以下的前导段，面包屑只剩最近一层（源实现 2026-09-29 踩过 ⇒ 已回退为入参路径）。
     useEffect(() => {
-        let alive = true;
+        // 同目录换文件（侧栏连点 / 重开同一文件）：只换 viewing——目录树、展开态、滚动位置保留，
+        // 也不再额外触发一次 list。旧目录列举已由上一轮 effect 的清理函数 abort。
+        // 判据用 listingRef（不是 props.path 的类型）：只有「当前已列出的这一层里确实有这个文件」
+        // 才走捷径，目录路径/相对名对不上时照旧走完整初始流程（不改变既有语义）。
+        const parent = dirnameOf(props.path);
+        const name = baseNameOfPath(props.path);
+        const knownFile = listingRef.current?.some((entry) => entry.name === name && entry.type === 'file') === true;
+        if (props.path !== '' && dirRef.current !== '' && parent === dirRef.current && knownFile) {
+            setViewing(props.path);
+            setMode('file');
+            setSourceView(false);
+            // 同路径再点一次也要重读内容（对齐旧版「每次打开都重读」；不重挂只换 key）。
+            setReloadNonce((n) => n + 1);
+            setListErr(null);
+            setMenuOpen(false);
+            return;
+        }
+        const token = listGate.begin();
+        const rootToken = rootGate.begin();
+        abortChildren();
         setMode('loading');
         setListErr(null);
         setViewing(null);
@@ -217,8 +267,8 @@ export function FileBrowser(props) {
                 return;
             void (async () => {
                 try {
-                    const parsed = listingOf(await props.workspaceFiles.list(listSessionId, listPathOf(currentDir)));
-                    if (!alive || parsed === null || isFailed(parsed))
+                    const parsed = listingOf(await props.workspaceFiles.list(listSessionId, listPathOf(currentDir), rootToken.signal));
+                    if (!rootToken.current() || parsed === null || isFailed(parsed))
                         return;
                     const stat = props.workspaceFiles.stat;
                     if (stat === undefined)
@@ -227,14 +277,18 @@ export function FileBrowser(props) {
                     const file = parsed.entries.find((entry) => entry.type === 'file');
                     if (file !== undefined) {
                         const sub = rel === '' ? file.name : `${rel}/${file.name}`;
-                        const abs = (await stat(listSessionId, sub).catch(() => null));
+                        const abs = (await stat(listSessionId, sub, rootToken.signal).catch(() => null));
+                        if (!rootToken.current())
+                            return;
                         const absPath = typeof abs?.absolutePath === 'string' ? abs.absolutePath : null;
                         if (absPath !== null && learnRoot(rootCache, listSessionId, sub, absPath) !== null) {
                             setRootNonce((n) => n + 1);
                             return;
                         }
                     }
-                    const found = await findAnyFileAbs(props.workspaceFiles, listSessionId, rel);
+                    const found = await findAnyFileAbs(props.workspaceFiles, listSessionId, rel, rootToken.signal);
+                    if (!rootToken.current())
+                        return;
                     if (found !== null && learnRoot(rootCache, listSessionId, found.relativePath, found.absolutePath) !== null) {
                         setRootNonce((n) => n + 1);
                     }
@@ -245,17 +299,17 @@ export function FileBrowser(props) {
             })();
         };
         props.workspaceFiles
-            .list(listSessionId, listPathOf(props.path))
+            .list(listSessionId, listPathOf(props.path), token.signal)
             .then(async (result) => {
-            if (!alive)
+            if (!token.current())
                 return;
             const parsed = listingOf(result);
             if (!isFailed(parsed) && parsed !== null) {
                 setOutside(false);
                 // 入口可能是工作区相对名 ⇒ 用目录里任一文件子项的 stat 反推绝对路径；
                 // 解析不出（空目录/只有子目录/stat 缺失）就退回入参，不阻塞浏览。
-                const absDir = await absolutizeDir(rootCache, props.workspaceFiles, listSessionId, props.path, parsed.path, parsed.entries);
-                if (!alive)
+                const absDir = await absolutizeDir(rootCache, props.workspaceFiles, listSessionId, props.path, parsed.path, parsed.entries, token.signal);
+                if (!token.current())
                     return;
                 setDir(absDir);
                 setListing(parsed.entries);
@@ -265,17 +319,19 @@ export function FileBrowser(props) {
                 return;
             }
             // 不是目录 ⇒ 当作文件预览，dir 取父目录，尽量把父树也列出来。
-            let parent = dirnameOf(props.path);
+            let parentDir = dirnameOf(props.path);
             if (!isAbsoluteish(props.path)) {
                 const stat = props.workspaceFiles.stat;
                 if (stat !== undefined) {
                     try {
-                        const res = await stat(listSessionId, props.path);
+                        const res = await stat(listSessionId, props.path, token.signal);
+                        if (!token.current())
+                            return;
                         const abs = typeof res.absolutePath === 'string'
                             ? res.absolutePath
                             : null;
                         if (abs !== null) {
-                            parent = dirnameOf(abs);
+                            parentDir = dirnameOf(abs);
                             // 记住工作区根 ⇒ 之后同会话里相对名也能解析
                             learnRoot(rootCache, listSessionId, props.path, abs);
                         }
@@ -285,16 +341,16 @@ export function FileBrowser(props) {
                     }
                 }
             }
-            if (!alive)
+            if (!token.current())
                 return;
-            setDir(parent);
+            setDir(parentDir);
             setViewing(props.path);
             setMode('file');
-            ensureRootLearned(parent);
+            ensureRootLearned(parentDir);
             props.workspaceFiles
-                .list(listSessionId, listPathOf(parent))
+                .list(listSessionId, listPathOf(parentDir), token.signal)
                 .then((pres) => {
-                if (!alive)
+                if (!token.current())
                     return;
                 const pl = listingOf(pres);
                 noteOutside(pl);
@@ -304,23 +360,28 @@ export function FileBrowser(props) {
                 }
             })
                 .catch(() => {
-                /* 父树列不出不影响文件预览 */
+                /* 父树列不出不影响文件预览（取消同样静默） */
             });
         })
-            .catch(() => {
-            if (!alive)
+            .catch((error) => {
+            if (!token.current() || isAborted(token.signal, error))
                 return;
             // 传输层失败：仍尝试按文件预览（预览体内部会给出错误态）。
-            const parent = dirnameOf(props.path);
-            setDir(parent);
+            const parentDir = dirnameOf(props.path);
+            setDir(parentDir);
             setViewing(props.path);
             setMode('file');
-            ensureRootLearned(parent);
+            ensureRootLearned(parentDir);
         });
         return () => {
-            alive = false;
+            listGate.abort();
+            rootGate.abort();
         };
-    }, [props.workspaceFiles, props.path, rootCache, listSessionId]);
+        // ⚠️ 这里**不** abort 内联展开的子请求：同目录换文件时它们仍然有效（树也保留着）。
+        // 子请求只在「换顶层目录」（fetchDir）与卸载时取消。
+    }, [abortChildren, listGate, listSessionId, noteOutside, props.workspaceFiles, props.path, revision, rootCache, rootGate]);
+    // 卸载时把内联展开的在途请求一起取消（依赖为空 ⇒ 只有卸载才跑清理）。
+    useEffect(() => () => abortChildren(), [abortChildren]);
     // 面包屑溢出测量：隐藏测量条渲染与可见态完全相同的 crumb 按钮（含 padding/max-width），
     // 使溢出判定与真实排版一致——不超长时必定还原完整路径。ResizeObserver 同时覆盖
     // dock 宽度变化 / 初次布局。
@@ -375,10 +436,15 @@ export function FileBrowser(props) {
             return next;
         });
         if (!(path in childCache)) {
+            childAbortsRef.current.get(path)?.abort();
+            const controller = new AbortController();
+            childAbortsRef.current.set(path, controller);
             setChildCache((prev) => ({ ...prev, [path]: { status: 'loading' } }));
             props.workspaceFiles
-                .list(listSessionId, listPathOf(path))
+                .list(listSessionId, listPathOf(path), controller.signal)
                 .then((result) => {
+                if (controller.signal.aborted)
+                    return;
                 const parsed = listingOf(result);
                 setChildCache((prev) => ({
                     ...prev,
@@ -388,7 +454,13 @@ export function FileBrowser(props) {
                 }));
             })
                 .catch((error) => {
+                if (isAborted(controller.signal, error))
+                    return;
                 setChildCache((prev) => ({ ...prev, [path]: { status: 'error', error: errView(error) } }));
+            })
+                .finally(() => {
+                if (childAbortsRef.current.get(path) === controller)
+                    childAbortsRef.current.delete(path);
             });
         }
     }, [childCache, props.workspaceFiles, listSessionId]);

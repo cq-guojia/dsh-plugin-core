@@ -283,6 +283,53 @@ export interface RootCache {
   set(sessionId: string, root: string): void
 }
 
+// ── 请求闸门（latest-wins） ──
+// 预览连续切换 / 目录连点的唯一判据：同一个位置只认最后一次请求。
+// 只做两件事——`begin()` 先 abort 上一次、再给出新的 `signal`；回调用 `current()` 判断是否已作废。
+// 官方 remote 服务已声明 `cancellation: { parameter: 'signal' }`（workspace-files / office-to-pdf
+// lib/typert.remote-client.js），传 signal 是真取消；旧宿主忽略 signal 时 `current()` 仍能挡住晚到结果。
+
+export interface RequestToken {
+  readonly signal: AbortSignal
+  /** true = 仍是最新一次（未被下一次 begin / abort 作废，且未被取消）。 */
+  current(): boolean
+}
+
+export interface RequestGate {
+  /** 开一次新请求：先中止上一次，返回本次 token。 */
+  begin(): RequestToken
+  /** 中止当前请求（卸载 / 关闭 / 换目标时用）。 */
+  abort(): void
+}
+
+export function createRequestGate(): RequestGate {
+  let active: AbortController | null = null
+  return {
+    begin() {
+      active?.abort()
+      const next = new AbortController()
+      active = next
+      return {
+        signal: next.signal,
+        current: () => active === next && !next.signal.aborted,
+      }
+    },
+    abort() {
+      active?.abort()
+      active = null
+    },
+  }
+}
+
+/**
+ * 这次失败是不是「我们主动取消的」。宿主两种表现都要静默：
+ * reject `AbortError`，或 resolve `{ ok:false, error }` 信封——调用方补传 signal 由这里判定。
+ */
+export function isAborted(signal: AbortSignal | undefined, error?: unknown): boolean {
+  if (signal?.aborted === true) return true
+  return typeof error === 'object' && error !== null && (error as { name?: unknown }).name === 'AbortError'
+}
+
 export function createRootCache(): RootCache {
   const map = new Map<string, string>()
   return {
@@ -331,16 +378,19 @@ export async function findAnyFileAbs(
   workspaceFiles: WorkspaceFilesFace,
   sessionId: string,
   startDir: string,
+  signal?: AbortSignal,
 ): Promise<{ absolutePath: string; relativePath: string } | null> {
   const stat = workspaceFiles.stat
   if (stat === undefined) return null
   let frontier = [startDir]
   for (let depth = 0; depth < 3 && frontier.length > 0; depth++) {
+    if (signal?.aborted) return null
     const nextDirs: string[] = []
     for (const dir of frontier.slice(0, 5)) {
+      if (signal?.aborted) return null
       let entries: readonly DirEntry[]
       try {
-        const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir)))
+        const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir), signal))
         if (parsed === null || isFailed(parsed)) continue
         entries = parsed.entries
       } catch {
@@ -350,7 +400,7 @@ export async function findAnyFileAbs(
       if (file !== undefined) {
         const rel = relJoin(dir, file.name)
         try {
-          const abs = absolutePathOf(await stat(sessionId, rel))
+          const abs = absolutePathOf(await stat(sessionId, rel, signal))
           if (abs !== null) return { absolutePath: abs, relativePath: rel }
         } catch {
           /* 换下一个候选 */
@@ -378,6 +428,7 @@ export async function absolutizeDir(
   dir: string,
   canonical: string,
   entries: readonly DirEntry[],
+  signal?: AbortSignal,
 ): Promise<string> {
   if (isAbsoluteish(dir)) return dir
   const rel = canonical !== '' ? canonical : dir
@@ -390,7 +441,7 @@ export async function absolutizeDir(
   if (file !== undefined) {
     try {
       const sub = relJoin(rel, file.name)
-      const abs = absolutePathOf(await stat(sessionId, sub))
+      const abs = absolutePathOf(await stat(sessionId, sub, signal))
       if (abs?.endsWith(`/${file.name}`) === true && learnRoot(cache, sessionId, sub, abs) !== null) {
         return abs.slice(0, abs.length - file.name.length - 1)
       }
@@ -399,7 +450,7 @@ export async function absolutizeDir(
     }
   }
   // ③ 有界 BFS 找一个文件反推根
-  const found = await findAnyFileAbs(workspaceFiles, sessionId, rel)
+  const found = await findAnyFileAbs(workspaceFiles, sessionId, rel, signal)
   if (found === null) return dir
   const root = learnRoot(cache, sessionId, found.relativePath, found.absolutePath)
   return root === null ? dir : `${root}/${rel}`

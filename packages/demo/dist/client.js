@@ -62090,6 +62090,29 @@ function sortEntries(entries2) {
 function listPathOf(dir) {
   return dir === "" ? "." : dir;
 }
+function createRequestGate() {
+  let active = null;
+  return {
+    begin() {
+      active?.abort();
+      const next = new AbortController();
+      active = next;
+      return {
+        signal: next.signal,
+        current: () => active === next && !next.signal.aborted
+      };
+    },
+    abort() {
+      active?.abort();
+      active = null;
+    }
+  };
+}
+function isAborted(signal, error) {
+  if (signal?.aborted === true)
+    return true;
+  return typeof error === "object" && error !== null && error.name === "AbortError";
+}
 function createRootCache() {
   const map = /* @__PURE__ */ new Map();
   return {
@@ -62126,17 +62149,21 @@ function relativizeToRoot(cache5, sessionId, dir) {
     return dir.slice(norm.length + 1);
   return dir;
 }
-async function findAnyFileAbs(workspaceFiles2, sessionId, startDir) {
+async function findAnyFileAbs(workspaceFiles2, sessionId, startDir, signal) {
   const stat = workspaceFiles2.stat;
   if (stat === void 0)
     return null;
   let frontier = [startDir];
   for (let depth = 0; depth < 3 && frontier.length > 0; depth++) {
+    if (signal?.aborted)
+      return null;
     const nextDirs = [];
     for (const dir of frontier.slice(0, 5)) {
+      if (signal?.aborted)
+        return null;
       let entries2;
       try {
-        const parsed = listingOf(await workspaceFiles2.list(sessionId, listPathOf(dir)));
+        const parsed = listingOf(await workspaceFiles2.list(sessionId, listPathOf(dir), signal));
         if (parsed === null || isFailed(parsed))
           continue;
         entries2 = parsed.entries;
@@ -62147,7 +62174,7 @@ async function findAnyFileAbs(workspaceFiles2, sessionId, startDir) {
       if (file !== void 0) {
         const rel = relJoin(dir, file.name);
         try {
-          const abs = absolutePathOf(await stat(sessionId, rel));
+          const abs = absolutePathOf(await stat(sessionId, rel, signal));
           if (abs !== null)
             return { absolutePath: abs, relativePath: rel };
         } catch {
@@ -62162,7 +62189,7 @@ async function findAnyFileAbs(workspaceFiles2, sessionId, startDir) {
   }
   return null;
 }
-async function absolutizeDir(cache5, workspaceFiles2, sessionId, dir, canonical, entries2) {
+async function absolutizeDir(cache5, workspaceFiles2, sessionId, dir, canonical, entries2, signal) {
   if (isAbsoluteish(dir))
     return dir;
   const rel = canonical !== "" ? canonical : dir;
@@ -62176,14 +62203,14 @@ async function absolutizeDir(cache5, workspaceFiles2, sessionId, dir, canonical,
   if (file !== void 0) {
     try {
       const sub = relJoin(rel, file.name);
-      const abs = absolutePathOf(await stat(sessionId, sub));
+      const abs = absolutePathOf(await stat(sessionId, sub, signal));
       if (abs?.endsWith(`/${file.name}`) === true && learnRoot(cache5, sessionId, sub, abs) !== null) {
         return abs.slice(0, abs.length - file.name.length - 1);
       }
     } catch {
     }
   }
-  const found = await findAnyFileAbs(workspaceFiles2, sessionId, rel);
+  const found = await findAnyFileAbs(workspaceFiles2, sessionId, rel, signal);
   if (found === null)
     return dir;
   const root = learnRoot(cache5, sessionId, found.relativePath, found.absolutePath);
@@ -62279,14 +62306,14 @@ function BytesPreview(props) {
   const [url, setUrl] = (0, import_react65.useState)(null);
   const [failed, setFailed] = (0, import_react65.useState)(null);
   (0, import_react65.useEffect)(() => {
-    let alive = true;
+    const controller = new AbortController();
     let objectUrl = null;
     setUrl(null);
     setFailed(null);
-    props.workspaceFiles.readBytes(props.sessionId, props.path, {}).then((res) => {
-      const data2 = bytesOf(res);
-      if (!alive)
+    props.workspaceFiles.readBytes(props.sessionId, props.path, {}, controller.signal).then((res) => {
+      if (controller.signal.aborted)
         return;
+      const data2 = bytesOf(res);
       if (data2 === null) {
         console.warn("[dsh-plugin-core:explorer] readBytes \u8FD4\u56DE\u4F53\u65E0\u6CD5\u89E3\u6790\u4E3A\u5B57\u8282", props.path, res);
         setFailed({ key: "previewBadPayload" });
@@ -62300,11 +62327,12 @@ function BytesPreview(props) {
       objectUrl = URL.createObjectURL(blob);
       setUrl(objectUrl);
     }).catch((error) => {
-      if (alive)
-        setFailed(errView(error));
+      if (isAborted(controller.signal, error))
+        return;
+      setFailed(errView(error));
     });
     return () => {
-      alive = false;
+      controller.abort();
       if (objectUrl !== null)
         URL.revokeObjectURL(objectUrl);
     };
@@ -62333,10 +62361,16 @@ function TextPreview(props) {
   const [loading, setLoading] = (0, import_react66.useState)(false);
   const [failed, setFailed] = (0, import_react66.useState)(null);
   const accRef = (0, import_react66.useRef)("");
+  const abortRef = (0, import_react66.useRef)(null);
   const load = (0, import_react66.useCallback)(async (offset4, append2) => {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
     setLoading(true);
     try {
-      const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset4 > 0 ? { offset: offset4 } : {}));
+      const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset4 > 0 ? { offset: offset4 } : {}, controller.signal));
+      if (controller.signal.aborted)
+        return;
       if (parsed === null) {
         console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u4F53\u65E0\u6CD5\u89E3\u6790\u4E3A\u6587\u672C\u9875", props.path);
         setFailed({ key: "previewBadPayload" });
@@ -62363,9 +62397,12 @@ function TextPreview(props) {
       }
       setNextOffset(parsed.eof ? null : parsed.offset + parsed.lines);
     } catch (error) {
+      if (isAborted(controller.signal, error))
+        return;
       setFailed(errView(error));
     } finally {
-      setLoading(false);
+      if (!controller.signal.aborted)
+        setLoading(false);
     }
   }, [props.workspaceFiles, props.sessionId, props.path, props.maxBytes]);
   (0, import_react66.useEffect)(() => {
@@ -62375,6 +62412,9 @@ function TextPreview(props) {
     setNextOffset(null);
     setFailed(null);
     void load(0, false);
+    return () => {
+      abortRef.current?.abort();
+    };
   }, [load]);
   if (failed !== null)
     return (0, import_react66.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
@@ -62427,13 +62467,13 @@ function HtmlPreview(props) {
   (0, import_react67.useEffect)(() => {
     if (props.sourceView)
       return;
-    let alive = true;
+    const controller = new AbortController();
     setDoc(null);
     setFailed(null);
-    props.workspaceFiles.readBytes(props.sessionId, props.path, {}).then((res) => {
-      const data2 = bytesOf(res);
-      if (!alive)
+    props.workspaceFiles.readBytes(props.sessionId, props.path, {}, controller.signal).then((res) => {
+      if (controller.signal.aborted)
         return;
+      const data2 = bytesOf(res);
       if (data2 === null) {
         console.warn("[dsh-plugin-core:explorer] readBytes \u8FD4\u56DE\u4F53\u65E0\u6CD5\u89E3\u6790\u4E3A\u5B57\u8282", props.path, res);
         setFailed({ key: "previewBadPayload" });
@@ -62450,11 +62490,12 @@ function HtmlPreview(props) {
       }
       setDoc(html2);
     }).catch((error) => {
-      if (alive)
-        setFailed(errView(error));
+      if (isAborted(controller.signal, error))
+        return;
+      setFailed(errView(error));
     });
     return () => {
-      alive = false;
+      controller.abort();
     };
   }, [props.workspaceFiles, props.sessionId, props.path, props.sourceView]);
   if (props.sourceView) {
@@ -62483,17 +62524,17 @@ function OfficePreview(props) {
   const [url, setUrl] = (0, import_react68.useState)(null);
   const [failed, setFailed] = (0, import_react68.useState)(null);
   (0, import_react68.useEffect)(() => {
-    let alive = true;
+    const controller = new AbortController();
     let objectUrl = null;
     setUrl(null);
     setFailed(null);
     const face = props.officeToPdf;
     if (face === null)
       return;
-    face.render(props.sessionId, props.path, "foreground").then((res) => {
-      const data2 = bytesOf(res);
-      if (!alive)
+    face.render(props.sessionId, props.path, "foreground", controller.signal).then((res) => {
+      if (controller.signal.aborted)
         return;
+      const data2 = bytesOf(res);
       if (data2 === null || "failed" in data2) {
         setFailed(errView(data2 === null ? void 0 : data2.failed));
         return;
@@ -62502,11 +62543,12 @@ function OfficePreview(props) {
       objectUrl = URL.createObjectURL(blob);
       setUrl(objectUrl);
     }).catch((error) => {
-      if (alive)
-        setFailed(errView(error));
+      if (isAborted(controller.signal, error))
+        return;
+      setFailed(errView(error));
     });
     return () => {
-      alive = false;
+      controller.abort();
       if (objectUrl !== null)
         URL.revokeObjectURL(objectUrl);
     };
@@ -62647,11 +62689,32 @@ function FileBrowser(props) {
   const [childCache, setChildCache] = (0, import_react70.useState)({});
   const [rootNonce, setRootNonce] = (0, import_react70.useState)(0);
   const [outside, setOutside] = (0, import_react70.useState)(false);
+  const revision = props.revision ?? 0;
+  const listGateRef = (0, import_react70.useRef)(null);
+  if (listGateRef.current === null)
+    listGateRef.current = createRequestGate();
+  const listGate = listGateRef.current;
+  const rootGateRef = (0, import_react70.useRef)(null);
+  if (rootGateRef.current === null)
+    rootGateRef.current = createRequestGate();
+  const rootGate = rootGateRef.current;
+  const childAbortsRef = (0, import_react70.useRef)(/* @__PURE__ */ new Map());
+  const abortChildren = (0, import_react70.useCallback)(() => {
+    for (const controller of childAbortsRef.current.values())
+      controller.abort();
+    childAbortsRef.current.clear();
+  }, []);
+  const dirRef = (0, import_react70.useRef)("");
+  const listingRef = (0, import_react70.useRef)(null);
+  (0, import_react70.useLayoutEffect)(() => {
+    dirRef.current = dir;
+    listingRef.current = listing;
+  }, [dir, listing]);
   const hostWorkspaces = (0, import_react70.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = props.workspaceAnchors ?? hostWorkspaces;
   const anchorMatch = (0, import_react70.useMemo)(() => workspaceAnchorForPath(props.path, anchors), [props.path, anchors]);
   const listSessionId = anchorMatch?.sessionId ?? props.sessionId;
-  const noteOutside = (parsed) => {
+  const noteOutside = (0, import_react70.useCallback)((parsed) => {
     if (parsed === null || parsed === void 0)
       return;
     if (!isFailed(parsed)) {
@@ -62661,8 +62724,10 @@ function FileBrowser(props) {
     const code3 = bareCode(parsed.failed);
     if (code3 === "outside-workspace" || code3 === "not-found")
       setOutside(true);
-  };
+  }, []);
   const fetchDir = (0, import_react70.useCallback)((targetDir) => {
+    const token = listGate.begin();
+    abortChildren();
     setDir(targetDir);
     setViewing(null);
     setListErr(null);
@@ -62670,7 +62735,9 @@ function FileBrowser(props) {
     setMode("loading");
     setOpenDirs(/* @__PURE__ */ new Set());
     setChildCache({});
-    props.workspaceFiles.list(listSessionId, listPathOf(targetDir)).then((result) => {
+    props.workspaceFiles.list(listSessionId, listPathOf(targetDir), token.signal).then((result) => {
+      if (!token.current())
+        return;
       const parsed = listingOf(result);
       noteOutside(parsed);
       if (isFailed(parsed)) {
@@ -62687,10 +62754,12 @@ function FileBrowser(props) {
       setTruncated(parsed.truncated);
       setMode("dir");
     }).catch((error) => {
+      if (isAborted(token.signal, error))
+        return;
       setListErr(errView(error));
       setMode("error");
     });
-  }, [listSessionId, props.workspaceFiles]);
+  }, [abortChildren, listGate, listSessionId, noteOutside, props.workspaceFiles]);
   const loadDir = (0, import_react70.useCallback)((targetDir) => {
     if (targetDir === dir) {
       fetchDir(targetDir);
@@ -62699,7 +62768,21 @@ function FileBrowser(props) {
     fetchDir(targetDir);
   }, [dir, fetchDir]);
   (0, import_react70.useEffect)(() => {
-    let alive = true;
+    const parent = dirnameOf(props.path);
+    const name2 = baseNameOfPath(props.path);
+    const knownFile = listingRef.current?.some((entry) => entry.name === name2 && entry.type === "file") === true;
+    if (props.path !== "" && dirRef.current !== "" && parent === dirRef.current && knownFile) {
+      setViewing(props.path);
+      setMode("file");
+      setSourceView(false);
+      setReloadNonce((n) => n + 1);
+      setListErr(null);
+      setMenuOpen(false);
+      return;
+    }
+    const token = listGate.begin();
+    const rootToken = rootGate.begin();
+    abortChildren();
     setMode("loading");
     setListErr(null);
     setViewing(null);
@@ -62713,8 +62796,8 @@ function FileBrowser(props) {
         return;
       void (async () => {
         try {
-          const parsed = listingOf(await props.workspaceFiles.list(listSessionId, listPathOf(currentDir)));
-          if (!alive || parsed === null || isFailed(parsed))
+          const parsed = listingOf(await props.workspaceFiles.list(listSessionId, listPathOf(currentDir), rootToken.signal));
+          if (!rootToken.current() || parsed === null || isFailed(parsed))
             return;
           const stat = props.workspaceFiles.stat;
           if (stat === void 0)
@@ -62723,14 +62806,18 @@ function FileBrowser(props) {
           const file = parsed.entries.find((entry) => entry.type === "file");
           if (file !== void 0) {
             const sub = rel === "" ? file.name : `${rel}/${file.name}`;
-            const abs = await stat(listSessionId, sub).catch(() => null);
+            const abs = await stat(listSessionId, sub, rootToken.signal).catch(() => null);
+            if (!rootToken.current())
+              return;
             const absPath = typeof abs?.absolutePath === "string" ? abs.absolutePath : null;
             if (absPath !== null && learnRoot(rootCache, listSessionId, sub, absPath) !== null) {
               setRootNonce((n) => n + 1);
               return;
             }
           }
-          const found = await findAnyFileAbs(props.workspaceFiles, listSessionId, rel);
+          const found = await findAnyFileAbs(props.workspaceFiles, listSessionId, rel, rootToken.signal);
+          if (!rootToken.current())
+            return;
           if (found !== null && learnRoot(rootCache, listSessionId, found.relativePath, found.absolutePath) !== null) {
             setRootNonce((n) => n + 1);
           }
@@ -62738,14 +62825,14 @@ function FileBrowser(props) {
         }
       })();
     };
-    props.workspaceFiles.list(listSessionId, listPathOf(props.path)).then(async (result) => {
-      if (!alive)
+    props.workspaceFiles.list(listSessionId, listPathOf(props.path), token.signal).then(async (result) => {
+      if (!token.current())
         return;
       const parsed = listingOf(result);
       if (!isFailed(parsed) && parsed !== null) {
         setOutside(false);
-        const absDir = await absolutizeDir(rootCache, props.workspaceFiles, listSessionId, props.path, parsed.path, parsed.entries);
-        if (!alive)
+        const absDir = await absolutizeDir(rootCache, props.workspaceFiles, listSessionId, props.path, parsed.path, parsed.entries, token.signal);
+        if (!token.current())
           return;
         setDir(absDir);
         setListing(parsed.entries);
@@ -62754,29 +62841,31 @@ function FileBrowser(props) {
         ensureRootLearned(absDir);
         return;
       }
-      let parent = dirnameOf(props.path);
+      let parentDir = dirnameOf(props.path);
       if (!isAbsoluteish(props.path)) {
         const stat = props.workspaceFiles.stat;
         if (stat !== void 0) {
           try {
-            const res = await stat(listSessionId, props.path);
+            const res = await stat(listSessionId, props.path, token.signal);
+            if (!token.current())
+              return;
             const abs = typeof res.absolutePath === "string" ? res.absolutePath : null;
             if (abs !== null) {
-              parent = dirnameOf(abs);
+              parentDir = dirnameOf(abs);
               learnRoot(rootCache, listSessionId, props.path, abs);
             }
           } catch {
           }
         }
       }
-      if (!alive)
+      if (!token.current())
         return;
-      setDir(parent);
+      setDir(parentDir);
       setViewing(props.path);
       setMode("file");
-      ensureRootLearned(parent);
-      props.workspaceFiles.list(listSessionId, listPathOf(parent)).then((pres) => {
-        if (!alive)
+      ensureRootLearned(parentDir);
+      props.workspaceFiles.list(listSessionId, listPathOf(parentDir), token.signal).then((pres) => {
+        if (!token.current())
           return;
         const pl = listingOf(pres);
         noteOutside(pl);
@@ -62786,19 +62875,21 @@ function FileBrowser(props) {
         }
       }).catch(() => {
       });
-    }).catch(() => {
-      if (!alive)
+    }).catch((error) => {
+      if (!token.current() || isAborted(token.signal, error))
         return;
-      const parent = dirnameOf(props.path);
-      setDir(parent);
+      const parentDir = dirnameOf(props.path);
+      setDir(parentDir);
       setViewing(props.path);
       setMode("file");
-      ensureRootLearned(parent);
+      ensureRootLearned(parentDir);
     });
     return () => {
-      alive = false;
+      listGate.abort();
+      rootGate.abort();
     };
-  }, [props.workspaceFiles, props.path, rootCache, listSessionId]);
+  }, [abortChildren, listGate, listSessionId, noteOutside, props.workspaceFiles, props.path, revision, rootCache, rootGate]);
+  (0, import_react70.useEffect)(() => () => abortChildren(), [abortChildren]);
   (0, import_react70.useLayoutEffect)(() => {
     const region = regionRef.current;
     const measure = measureRef.current;
@@ -62842,15 +62933,25 @@ function FileBrowser(props) {
       return next;
     });
     if (!(path in childCache)) {
+      childAbortsRef.current.get(path)?.abort();
+      const controller = new AbortController();
+      childAbortsRef.current.set(path, controller);
       setChildCache((prev) => ({ ...prev, [path]: { status: "loading" } }));
-      props.workspaceFiles.list(listSessionId, listPathOf(path)).then((result) => {
+      props.workspaceFiles.list(listSessionId, listPathOf(path), controller.signal).then((result) => {
+        if (controller.signal.aborted)
+          return;
         const parsed = listingOf(result);
         setChildCache((prev) => ({
           ...prev,
           [path]: isFailed(parsed) || parsed === null ? { status: "error", error: errView(isFailed(parsed) ? parsed.failed : void 0) } : { status: "ready", entries: parsed.entries, truncated: parsed.truncated }
         }));
       }).catch((error) => {
+        if (isAborted(controller.signal, error))
+          return;
         setChildCache((prev) => ({ ...prev, [path]: { status: "error", error: errView(error) } }));
+      }).finally(() => {
+        if (childAbortsRef.current.get(path) === controller)
+          childAbortsRef.current.delete(path);
       });
     }
   }, [childCache, props.workspaceFiles, listSessionId]);
@@ -63098,6 +63199,11 @@ function PreviewBody(props) {
   const anchors = options.workspaceAnchors ?? hostWorkspaces;
   const entryTitle = workspaceAnchorForPath(options.path ?? "", anchors)?.title ?? options.rootName ?? "";
   const [picked, setPicked] = (0, import_react71.useState)(null);
+  const [seenRevision, setSeenRevision] = (0, import_react71.useState)(props.revision);
+  if (seenRevision !== props.revision) {
+    setSeenRevision(props.revision);
+    setPicked(null);
+  }
   const wsTitle = picked ?? entryTitle;
   const sessionId = anchorSessionForTitle(anchors, wsTitle) ?? options.sessionId ?? pickWorkspaceAnchor(anchors)?.sessionId ?? "";
   const switchable = anchors.filter((a) => (a.sessionIds?.length ?? 0) > 0).map((a) => a.title);
@@ -63109,6 +63215,8 @@ function PreviewBody(props) {
     sessionId,
     // 点过工作区就从它的根列（原 path 属于旧工作区，带着只会 404 / 跳回入口文件）。
     path: picked === null ? options.path : "",
+    // 重开令牌：同 path 再点一次也要回到该文件 / 重读内容（只重跑初始 effect，不重挂）。
+    revision: props.revision,
     rootName: wsTitle === "" ? options.rootName : wsTitle,
     workspaces: switchable.length > 0 ? switchable : options.workspaces,
     onSelectWorkspace: (name2) => {
@@ -63227,7 +63335,7 @@ function openFilePreview(options) {
     if (dock.isCollapsed(PREVIEW_PANEL_ID))
       dock.expand(PREVIEW_PANEL_ID);
     const internalSwitch = o.onSelectWorkspace === void 0;
-    const contentKey = `${o.path ?? ""}#${++openSeq}`;
+    const revision = ++openSeq;
     root.render((0, import_react71.createElement)(
       "div",
       // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
@@ -63244,12 +63352,12 @@ function openFilePreview(options) {
         width: pinnedWidth ?? o.width ?? 460,
         minWidth: o.minWidth ?? 320,
         maxWidth: o.maxWidth
-      }, o.content !== void 0 ? o.content() : internalSwitch ? (0, import_react71.createElement)(PreviewBody, { key: contentKey, options: o, onClose: close }) : (0, import_react71.createElement)(FileBrowser, {
-        key: contentKey,
+      }, o.content !== void 0 ? (0, import_react71.createElement)(import_react71.Fragment, { key: `custom:${revision}` }, o.content()) : internalSwitch ? (0, import_react71.createElement)(PreviewBody, { options: o, onClose: close, revision }) : (0, import_react71.createElement)(FileBrowser, {
         workspaceFiles: o.workspaceFiles,
         officeToPdf: o.officeToPdf ?? null,
         sessionId: o.sessionId,
         path: o.path,
+        revision,
         rootName: o.rootName,
         workspaces: o.workspaces,
         workspaceAnchors: o.workspaceAnchors,
@@ -64270,9 +64378,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.14.0"}`],
-            [t3("buildDemo"), `v${"0.14.0"}`],
-            [t3("buildStamp"), "261031-145605-564"]
+            [t3("buildCore"), `v${"0.14.1"}`],
+            [t3("buildDemo"), `v${"0.14.1"}`],
+            [t3("buildStamp"), "261031-182558-548"]
           ].map(
             ([label, value]) => (0, import_react75.createElement)(
               "tr",
@@ -64595,9 +64703,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react77.createElement)("span", null, `core v${"0.14.0"}`),
-          (0, import_react77.createElement)("span", null, `demo v${"0.14.0"}`),
-          (0, import_react77.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261031-145605-564")
+          (0, import_react77.createElement)("span", null, `core v${"0.14.1"}`),
+          (0, import_react77.createElement)("span", null, `demo v${"0.14.1"}`),
+          (0, import_react77.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261031-182558-548")
         )
       )
     ),

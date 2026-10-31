@@ -15,7 +15,7 @@ import { MarkdownText } from '../../ui/official.js';
 import { CodeViewer } from '../../ui/CodeViewer.js';
 import { Button } from '../../ui/Button.js';
 import { t } from '../../utils/i18n.js';
-import { errView, textPageOf } from '../types.js';
+import { errView, isAborted, textPageOf } from '../types.js';
 import { formatBytes } from '../../utils/number.js';
 import { markdownLabels } from './md-labels.js';
 import { ensureComponentStyles } from '../../ui/css.js';
@@ -30,11 +30,18 @@ export function TextPreview(props) {
     const [failed, setFailed] = useState(null);
     // 累计文本放 ref：翻页/截断判定要读「这一页加上之后的全文」，闭包 state 会是旧值。
     const accRef = useRef('');
+    // 当前这一次读（含翻页）：新的一次开始 / 换文件 / 卸载都先 abort 上一次，迟到的结果不落状态。
+    const abortRef = useRef(null);
     const load = useCallback(async (offset, append) => {
+        abortRef.current?.abort();
+        const controller = new AbortController();
+        abortRef.current = controller;
         setLoading(true);
         try {
             // range 只两态：首页 `{}`、翻页 `{offset}`（见文件头口径说明）。
-            const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset > 0 ? { offset } : {}));
+            const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset > 0 ? { offset } : {}, controller.signal));
+            if (controller.signal.aborted)
+                return;
             if (parsed === null) {
                 // 形状不对要说「返回数据不符合预期」，不能混进「加载失败」——混了就永远查不出是谁的锅。
                 console.warn('[dsh-plugin-core:explorer] read 返回体无法解析为文本页', props.path);
@@ -66,10 +73,13 @@ export function TextPreview(props) {
             setNextOffset(parsed.eof ? null : parsed.offset + parsed.lines);
         }
         catch (error) {
+            if (isAborted(controller.signal, error))
+                return;
             setFailed(errView(error));
         }
         finally {
-            setLoading(false);
+            if (!controller.signal.aborted)
+                setLoading(false);
         }
     }, [props.workspaceFiles, props.sessionId, props.path, props.maxBytes]);
     useEffect(() => {
@@ -79,6 +89,9 @@ export function TextPreview(props) {
         setNextOffset(null);
         setFailed(null);
         void load(0, false);
+        return () => {
+            abortRef.current?.abort();
+        };
     }, [load]);
     if (failed !== null)
         return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params));

@@ -169,6 +169,33 @@ export function sortEntries(entries) {
 export function listPathOf(dir) {
     return dir === '' ? '.' : dir;
 }
+export function createRequestGate() {
+    let active = null;
+    return {
+        begin() {
+            active?.abort();
+            const next = new AbortController();
+            active = next;
+            return {
+                signal: next.signal,
+                current: () => active === next && !next.signal.aborted,
+            };
+        },
+        abort() {
+            active?.abort();
+            active = null;
+        },
+    };
+}
+/**
+ * 这次失败是不是「我们主动取消的」。宿主两种表现都要静默：
+ * reject `AbortError`，或 resolve `{ ok:false, error }` 信封——调用方补传 signal 由这里判定。
+ */
+export function isAborted(signal, error) {
+    if (signal?.aborted === true)
+        return true;
+    return typeof error === 'object' && error !== null && error.name === 'AbortError';
+}
 export function createRootCache() {
     const map = new Map();
     return {
@@ -213,17 +240,21 @@ export function relativizeToRoot(cache, sessionId, dir) {
  * 在相对目录树里找**任意一个文件**并 stat（广度优先、有界：每层最多 5 个目录、最多 3 层）。
  * 用于目标目录本身没有文件子项（空目录 / 只有子目录）时反推工作区根。
  */
-export async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
+export async function findAnyFileAbs(workspaceFiles, sessionId, startDir, signal) {
     const stat = workspaceFiles.stat;
     if (stat === undefined)
         return null;
     let frontier = [startDir];
     for (let depth = 0; depth < 3 && frontier.length > 0; depth++) {
+        if (signal?.aborted)
+            return null;
         const nextDirs = [];
         for (const dir of frontier.slice(0, 5)) {
+            if (signal?.aborted)
+                return null;
             let entries;
             try {
-                const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir)));
+                const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir), signal));
                 if (parsed === null || isFailed(parsed))
                     continue;
                 entries = parsed.entries;
@@ -235,7 +266,7 @@ export async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
             if (file !== undefined) {
                 const rel = relJoin(dir, file.name);
                 try {
-                    const abs = absolutePathOf(await stat(sessionId, rel));
+                    const abs = absolutePathOf(await stat(sessionId, rel, signal));
                     if (abs !== null)
                         return { absolutePath: abs, relativePath: rel };
                 }
@@ -258,7 +289,7 @@ export async function findAnyFileAbs(workspaceFiles, sessionId, startDir) {
  * ② 目录里有文件子项 ⇒ stat 它反推根；③ 有界 BFS 找任一文件反推根。
  * 全部失败 ⇒ 退回入参，浏览不受影响。
  */
-export async function absolutizeDir(cache, workspaceFiles, sessionId, dir, canonical, entries) {
+export async function absolutizeDir(cache, workspaceFiles, sessionId, dir, canonical, entries, signal) {
     if (isAbsoluteish(dir))
         return dir;
     const rel = canonical !== '' ? canonical : dir;
@@ -273,7 +304,7 @@ export async function absolutizeDir(cache, workspaceFiles, sessionId, dir, canon
     if (file !== undefined) {
         try {
             const sub = relJoin(rel, file.name);
-            const abs = absolutePathOf(await stat(sessionId, sub));
+            const abs = absolutePathOf(await stat(sessionId, sub, signal));
             if (abs?.endsWith(`/${file.name}`) === true && learnRoot(cache, sessionId, sub, abs) !== null) {
                 return abs.slice(0, abs.length - file.name.length - 1);
             }
@@ -283,7 +314,7 @@ export async function absolutizeDir(cache, workspaceFiles, sessionId, dir, canon
         }
     }
     // ③ 有界 BFS 找一个文件反推根
-    const found = await findAnyFileAbs(workspaceFiles, sessionId, rel);
+    const found = await findAnyFileAbs(workspaceFiles, sessionId, rel, signal);
     if (found === null)
         return dir;
     const root = learnRoot(cache, sessionId, found.relativePath, found.absolutePath);

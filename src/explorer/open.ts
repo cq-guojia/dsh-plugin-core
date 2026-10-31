@@ -9,7 +9,7 @@
 // ⚠️ 方法 A 的**侧边栏本体是核心 PanelDock**（用户 2026-10-21 拍板：不许自绘制外壳 + 拖拽条）。
 // PanelDock 是布局成员（占宽度、挤窄主区），同 ui/modal-host.ts 的做法：自建 container 挂 + createRoot，
 // 关闭即卸载回收，不残留空根；拖宽与关闭交给 PanelDock 自己的 resizer / header 关钮。
-import { createElement as h, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { createElement as h, Fragment, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { getWorkspaceFiles, workspaceList } from '../ui/host-data.js'
 import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js'
@@ -101,7 +101,7 @@ export interface OpenFilePreviewOptions {
  * 同理「切没切」不能用「名字变没变」判断：点回入口工作区会把 path 又还原成入口文件，
  * 看起来就是「跳回第一个工作区」。现在改成「点过 = 进浏览态」，任何工作区（含入口那个）都回根。
  */
-function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => void }): ReactNode {
+function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => void; revision: number }): ReactNode {
   const options = props.options
   const hostWorkspaces = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
   // HostWorkspaceItem 结构兼容 WorkspaceAnchorItem（多一个 workspaceId 无害）⇒ 统一注解收敛联合类型。
@@ -110,6 +110,14 @@ function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => vo
   const entryTitle = workspaceAnchorForPath(options.path ?? '', anchors)?.title ?? options.rootName ?? ''
   // null = 还在入口态（path 用调用方给的那个文件）；非 null = 用户点过工作区，从它的根开始列。
   const [picked, setPicked] = useState<string | null>(null)
+  // 每次 openFilePreview = 一次新入口：回到入口工作区 / 入口文件（含同路径再点一次）。
+  // 渲染期就地归位（不是 effect）⇒ 不会先画一帧旧工作区再跳；且是「重跑」不是重挂，
+  // FileBrowser 实例与目录树、滚动位置都保留。
+  const [seenRevision, setSeenRevision] = useState(props.revision)
+  if (seenRevision !== props.revision) {
+    setSeenRevision(props.revision)
+    setPicked(null)
+  }
   const wsTitle = picked ?? entryTitle
   const sessionId = anchorSessionForTitle(anchors, wsTitle)
     ?? options.sessionId
@@ -124,6 +132,8 @@ function PreviewBody(props: { options: OpenFilePreviewOptions; onClose: () => vo
     sessionId,
     // 点过工作区就从它的根列（原 path 属于旧工作区，带着只会 404 / 跳回入口文件）。
     path: picked === null ? options.path! : '',
+    // 重开令牌：同 path 再点一次也要回到该文件 / 重读内容（只重跑初始 effect，不重挂）。
+    revision: props.revision,
     rootName: wsTitle === '' ? options.rootName : wsTitle,
     workspaces: switchable.length > 0 ? switchable : options.workspaces,
     onSelectWorkspace: (name: string) => {
@@ -280,8 +290,9 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     dock.setWidth(PREVIEW_PANEL_ID, width)
   }
   // 画（可重画：同一个 dock 换内容时只重渲染，不重建 DOM ⇒ 不重播展开动效）。
-  // 内层每次打开都重挂（key 带序号）：用户可能已经在预览里翻到了别的目录 / 别的工作区，
-  // 同路径再点一次也必须回到那个文件，光比 path 会「点了没反应」（2026-10-28 真机）。
+  // ⚠️ 内层**不重挂**（2026-10-31）：以前 key 带序号，点一次文件整棵 FileBrowser 重来——
+  // 目录树 / 展开态 / 滚动位置全丢，还多打一次 list，连点时中间那几次点击落在空树上「点不上」。
+  // 现在序号改走 revision prop：只重跑初始 effect，同路径再点一次仍会回到该文件（2026-10-28 真机语义不丢）。
   let openSeq = 0
   const draw = (o: OpenFilePreviewOptions): void => {
     // 用户把它收起来过 ⇒ 再点文件要自动弹回来（收着还换内容，等于点了没反应 —— 2026-10-28 真机）。
@@ -289,7 +300,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     // 总是走 PreviewBody：调用方没自接 onSelectWorkspace 时，▾ 下拉「切工作区」由核心接管
     // （anchors 为空 ⇒ 回调空转，行为与旧版一致）。自接了 ⇒ 原样透传给 FileBrowser。
     const internalSwitch = o.onSelectWorkspace === undefined
-    const contentKey = `${o.path ?? ''}#${++openSeq}`
+    const revision = ++openSeq
     root.render(
       h(
         'div',
@@ -314,15 +325,17 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
               maxWidth: o.maxWidth,
             },
             o.content !== undefined
-              ? o.content()
+              // 自定义内容保持旧语义：每次打开都重挂（内容自带状态时不会被上一次残留）。
+              ? h(Fragment, { key: `custom:${revision}` }, o.content())
               : internalSwitch
-                ? h(PreviewBody, { key: contentKey, options: o, onClose: close })
+                // 不带 key ⇒ 同一个 PreviewBody 实例换内容；工作区切换由它内部按 wsTitle:session 处理。
+                ? h(PreviewBody, { options: o, onClose: close, revision })
                 : h(FileBrowser, {
-                  key: contentKey,
                   workspaceFiles: o.workspaceFiles!,
                   officeToPdf: o.officeToPdf ?? null,
                   sessionId: o.sessionId!,
                   path: o.path!,
+                  revision,
                   rootName: o.rootName,
                   workspaces: o.workspaces,
                   workspaceAnchors: o.workspaceAnchors,

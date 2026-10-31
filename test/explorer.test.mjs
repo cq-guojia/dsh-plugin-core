@@ -7,11 +7,13 @@ import {
   anchorSessionForTitle,
   bareCode,
   baseNameOfPath,
+  createRequestGate,
   createRootCache,
   crumbsOfDir,
   dirnameOf,
   errView,
   findAnyFileAbs,
+  isAborted,
   learnRoot,
   listPathOf,
   matchesFilter,
@@ -22,6 +24,44 @@ import {
   sortEntries,
   workspaceAnchorForPath,
 } from '../dist/explorer/types.js'
+
+test('createRequestGate：latest-wins（旧 token 作废且 signal 中止）', () => {
+  const gate = createRequestGate()
+  const first = gate.begin()
+  assert.equal(first.current(), true)
+  const second = gate.begin()
+  assert.equal(first.current(), false)
+  assert.equal(first.signal.aborted, true)
+  assert.equal(second.current(), true)
+  gate.abort()
+  assert.equal(second.current(), false)
+  assert.equal(second.signal.aborted, true)
+})
+
+test('isAborted：主动取消静默，真错误不吞', () => {
+  const gate = createRequestGate()
+  const token = gate.begin()
+  gate.abort()
+  assert.equal(isAborted(token.signal), true)
+  assert.equal(isAborted(undefined, { name: 'AbortError' }), true)
+  assert.equal(isAborted(undefined, new Error('boom')), false)
+})
+
+test('findAnyFileAbs：signal 已取消 ⇒ 一个请求都不发', async () => {
+  const gate = createRequestGate()
+  const token = gate.begin()
+  gate.abort()
+  let calls = 0
+  const files = {
+    list: async () => {
+      calls += 1
+      return { path: '', entries: [{ name: 'a.txt', type: 'file' }], truncated: false }
+    },
+    stat: async () => ({ absolutePath: '/root/a.txt' }),
+  }
+  assert.equal(await findAnyFileAbs(files, 's', '', token.signal), null)
+  assert.equal(calls, 0)
+})
 
 test('crumbsOf / parentOf / joinPath', () => {
   assert.deepEqual(crumbsOf(''), [])
@@ -285,8 +325,13 @@ test('再打开预览复用旧根：只重画内容、宽度先钉住', async ()
   assert.ok(!src.includes('activePreview?.close()'), '又变回「重开就先关旧的」（动效会重播、宽度会重置）')
   // 收起来过就得自动弹回来，否则换文件「看不见任何变化」（2026-10-28 真机）。
   assert.ok(src.includes('dock.expand('), '收起的预览换内容时没自动展开')
-  // 内层 key 必带「每次打开都变」的序号：同路径再点一次也要回到那个文件（用户可能在预览里翻走了）。
-  assert.ok(/#\$\{\+\+openSeq\}/.test(src), '内层 key 只按 path 算 —— 同路径再点点不动内容')
+  // 2026-10-31：序号改走 revision prop —— 同路径再点一次仍要回到该文件，但**不许整棵重挂**
+  // （重挂会丢目录树/滚动位置、多打一次 list；连点时中间点击会落在空树上）。
+  assert.ok(src.includes('++openSeq'), '没有每次打开递增的重开令牌')
+  assert.ok(src.includes('revision'), '重开令牌没传进内层（同路径再点不会重读）')
+  assert.ok(!/#\$\{\+\+openSeq\}/.test(src), '内层又按序号整棵重挂（目录树/滚动位置会丢）')
+  const fb = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  assert.ok(fb.includes('revision'), 'FileBrowser 初始 effect 没接 revision')
 })
 
 // 2026-10-28 真机：消费方传工作区内的绝对路径打开时，根还没反推出来的那一帧会按段铺出

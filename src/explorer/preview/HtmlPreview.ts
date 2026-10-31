@@ -2,7 +2,7 @@
 // 源码态走 TextPreview 并按 256K 截断。降级路径（无 DOM 能力时）直接出错误态，不猜。
 import { createElement as h, useEffect, useState } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
-import { bytesOf, errView, SOURCE_MAX_BYTES, type WorkspaceFilesFace } from '../types.js'
+import { bytesOf, errView, isAborted, SOURCE_MAX_BYTES, type WorkspaceFilesFace } from '../types.js'
 import { TextPreview } from './TextPreview.js'
 import { ensureComponentStyles } from '../../ui/css.js'
 import { EXPLORER_CSS } from '../explorer-css.js'
@@ -66,14 +66,14 @@ export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
 
   useEffect(() => {
     if (props.sourceView) return
-    let alive = true
+    const controller = new AbortController()
     setDoc(null)
     setFailed(null)
     props.workspaceFiles
-      .readBytes(props.sessionId, props.path, {})
+      .readBytes(props.sessionId, props.path, {}, controller.signal)
       .then((res) => {
+        if (controller.signal.aborted) return
         const data = bytesOf(res)
-        if (!alive) return
         if (data === null) {
           // 形状不对要说「返回数据不符合预期」，不能混进「加载失败」——混了就永远查不出是谁的锅。
           console.warn('[dsh-plugin-core:explorer] readBytes 返回体无法解析为字节', props.path, res)
@@ -92,10 +92,11 @@ export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
         setDoc(html)
       })
       .catch((error: unknown) => {
-        if (alive) setFailed(errView(error))
+        if (isAborted(controller.signal, error)) return
+        setFailed(errView(error))
       })
     return () => {
-      alive = false
+      controller.abort()
     }
   }, [props.workspaceFiles, props.sessionId, props.path, props.sourceView])
 
