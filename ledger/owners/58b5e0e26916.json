@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261031-0942-14f8-预览切换立即终止旧请求": {"category": "缺陷修复", "created": "2026-10-31 09:42:59", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-31 09:42:59", "status": "doing", "tags": ["预览切换", "请求取消", "AbortSignal"], "title": "预览切换立即终止旧请求", "updated": "2026-10-31 12:17:25", "worklog": "worklog/202610/31-0942-14f8-预览切换立即终止旧请求.md"}
+    "20261031-0942-14f8-预览切换立即终止旧请求": {"category": "缺陷修复", "created": "2026-10-31 09:42:59", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-10-31 09:42:59", "status": "doing", "tags": ["预览切换", "请求取消", "AbortSignal"], "title": "预览切换立即终止旧请求", "updated": "2026-10-31 12:24:05", "worklog": "worklog/202610/31-0942-14f8-预览切换立即终止旧请求.md"}
   },
   "version": "20261022000000"
 }
