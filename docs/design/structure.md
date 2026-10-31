@@ -46,7 +46,7 @@ dsh-plugin-core/
 │   │   │                      两者都只画图形，无背景无定位，背景与位置归调用方
 │   │   └── Loading         ✅ 旧复合浮层（贴右下角的 pill + 两种加载卡），保留、已标 deprecated
 │   ├── 展示                ✅ Card / StripCard / Chip / MarqueeText /
-│   │                          SectionHead / FieldHint / LiveText / BackToTop /
+│   │                          SectionHead / FieldHint / LiveText /
 │   │                          Table（第一档 Plain：外框 + 灰底表头 + 按列分隔线；
 │   │                            表级 density / striped / borders，列级 divider / padding / headerTone，
 │   │                            单元格可跨列跨行；TableGrid / TableZebra 预留同族独立组件）
@@ -56,6 +56,8 @@ dsh-plugin-core/
 │   └── 布局                ✅ PanelDock / createPanelDock（可停靠分栏：多面板 + 拖拽拉栏）
 │                              组名 = 窗口一对一、同名覆盖、默认上限 3 超限拒绝；
 │                              不做 tab 切换 / 自动淘汰 / 浮动层（用户 2026-10-20 定案）
+│                           ✅ QuickToolbar（右侧浮动快捷工具栏：内置回顶部 + 自定义按钮；
+│                              纵向恒贴屏幕底边，横向默认贴屏幕右缘或指定控件右缘外侧）
 │
 ├── utils/               ③ 纯方法 —— 零 React / 零 DOM（谁都能用，它不依赖谁）
 │   ├── date                ✅ 日期 / 相对时间 / 时间区间
@@ -117,9 +119,9 @@ utils（谁都不依赖，谁都可以用）
 │   ├─ 表单    Input / NumberInput / PrefixedInput / Textarea / Checkbox / Segmented / Picker / DateTimePicker
 │   ├─ 动作    Button / IconButton
 │   ├─ 反馈    Modal / Toast
-│   ├─ 展示    Card / StripCard / Chip / Table / MarqueeText / SectionHead / FieldHint / LiveText / BackToTop
+│   ├─ 展示    Card / StripCard / Chip / Table / MarqueeText / SectionHead / FieldHint / LiveText
 │   ├─ 组合    SplitGroup（展示在选择器页）
-│   └─ 布局    PanelDock / 拉栏
+│   └─ 布局    PanelDock / 拉栏 / QuickToolbar
 │
 ├─ ③ 高级空间
 │   ├─ 文件浏览   FileBrowser + openFilePreview / pickWorkspaceFile（点文件夹、点文件看预览）
@@ -137,7 +139,8 @@ utils（谁都不依赖，谁都可以用）
 | `buttons.tsx` | ② 基础控件 · 动作 |
 | `pickers.tsx` | ② 基础控件 · 表单 |
 | `display.tsx` | ② 基础控件 · 展示 |
-| `feedback.tsx` | ② 基础控件 · 反馈 |
+| `feedback.tsx` / `controls.tsx` | ② 基础控件 · 反馈 |
+| `toolbar.tsx` | ② 基础控件 · 布局（QuickToolbar） |
 | `explorer.tsx` | ③ 高级空间 · 文件浏览 |
 | `session.tsx` | ③ 高级空间 · 会话预览 |
 | `utils.tsx` | ④ 工具方法 |

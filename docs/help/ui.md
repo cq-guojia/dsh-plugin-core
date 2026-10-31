@@ -4,7 +4,7 @@
 
 > EN: ui — base controls
 
-导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Table、Pagination、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、BackToTop、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
+导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Table、Pagination、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、QuickToolbar、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
 
 ## 概览
 
@@ -556,7 +556,6 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `SectionHead({ icon?, title, right?, accent?, flush? })` | `` |  | 分区标题：标签（可选，画出来的短竖线）/ icon + 标题 + 右侧控件。accent = 标签颜色（内置色名 / 任意色值 / default / false 不画）；flush = 去底边距 | Section heading: optional drawn bar / icon + title + right controls. accent = bar colour (built-in name / raw value / default / false for none); flush = no bottom margin |
 | `MarqueeText({ text, style?, title?, className? })` | `` |  | 超长省略、hover 滚动 | Ellipsis on overflow, scroll on hover |
 | `LiveText({ render, style? })` | `` |  | 定时重渲染（相对时间这类） | Periodic re-render (for relative time etc.) |
-| `BackToTop({ anchorId? })` | `` |  | 回到顶部，贴主容器右缘外侧 | Back-to-top, outside the main container’s right edge |
 | `startResizeLayoutWidth(opts)` | `` |  | 拖拽调整布局宽度（root 不传则回落 #dshpc-root） | Drag to resize layout width (falls back to #dshpc-root if root omitted) |
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
@@ -630,4 +629,86 @@ h('div', { style: { display: 'flex' } },
   ),
 )
 // 之后任何地方：dock.open('files') / dock.close('files')
+```
+
+## QuickToolbar（快捷工具栏）
+
+> EN: QuickToolbar (quick toolbar)
+
+右侧悬浮的一列独立圆钮：**纵向恒定**贴屏幕底边（默认 16px，从下往上排），**横向默认**贴屏幕右缘。传 `anchorId` / `anchor()` 时横向贴到那个控件的右缘外侧、同样留 16px；右侧再留 16px 后放不下就自动退回贴屏幕右缘。锚点控件找不到按「跟随窗口」处理，不报错。
+
+> EN: A right-side floating column of standalone round buttons. Vertically it **always** hugs the viewport bottom (16px by default, stacking upward); horizontally it defaults to the viewport’s right edge. Pass `anchorId` / `anchor()` to sit outside that control’s right edge with the same 16px gap; if another 16px would overflow, it falls back to the viewport edge. A missing anchor is treated as “follow the window”, no error.
+
+内置「回到顶部」默认开启：`when: 'scroll'`、阈值 320px，滚过才出现，点击平滑回顶（`prefers-reduced-motion` 下瞬时）。传 `backToTop: false` 关掉；传对象可调 `{ order, label, threshold }`。
+
+> EN: The built-in back-to-top is on by default: `when: 'scroll'`, threshold 320px — it appears after scrolling and smoothly returns to the top (instant under `prefers-reduced-motion`). Pass `backToTop: false` to remove it, or an object to tune `{ order, label, threshold }`.
+
+任意按钮显隐切换都带 0.2s 动画：出现时淡入并上移一小段，消失时先淡出再卸载（同一列的其它按钮不会瞬时跳位）；`prefers-reduced-motion` 下动画关闭。
+
+> EN: Every visibility change is animated over 0.2s: a button fades in with a slight upward slide, and fades out before being unmounted (the rest of the column never jumps); animations are off under `prefers-reduced-motion`.
+
+自定义项走 `items`：`icon` + `label` + `onClick`，单项的 `visible` / `when` / `order` / `threshold` / `color` / `fgColor` 都可配；点击后先调 `onClick`，再统一回调 `onAction(id, item)`。排序按 `order` 升序：回顶部默认 0 在最上，自定义项默认按数组下标 + 1 往下排。
+
+> EN: Custom buttons go through `items`: `icon` + `label` + `onClick`, each with optional `visible` / `when` / `order` / `threshold` / `color` / `fgColor`. A click calls `onClick` first, then the shared `onAction(id, item)`. Sorting is ascending by `order`: back-to-top defaults to 0 (topmost), custom items default to array index + 1 below it.
+
+边界：`position: fixed`，不占布局；滚动容器默认取工具栏最近的可纵向滚动祖先，也可显式给 `scrollContainer`。只做右侧；按钮尺寸 / 间距 / 贴边距离由 props 控制，样式自注入，不依赖调用方额外引 CSS。
+
+> EN: Boundary: `position: fixed`, takes no layout space. The scroll container defaults to the nearest vertically scrollable ancestor, or pass `scrollContainer` explicitly. Right side only; size / gap / edge distance are props, and the component injects its own styles — callers need no extra CSS.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `items` | `QuickToolbarItem[]` | [] | 自定义按钮列表，排在回顶部下面 | Custom buttons, listed below back-to-top by default |
+| `backToTop` | `boolean \| QuickToolbarBackToTop` | true | 内置回顶部：false 关掉；对象可调 order / label / threshold | Built-in back-to-top: false to remove; object tunes order / label / threshold |
+| `onAction` | `(id, item) => void` | — | 自定义项点击后的统一回调（在单项 onClick 之后） | Shared callback after a custom item’s own onClick |
+| `offset` | `number` | 16 | 与右缘 / 屏幕底边的距离（px） | Distance to the right edge / viewport bottom (px) |
+| `gap` | `number` | 12 | 相邻按钮的纵向间距（px） | Vertical gap between buttons (px) |
+| `size` | `number` | 44 | 按钮直径（px） | Button diameter (px) |
+| `anchorId` | `string` | — | 跟随这个 id 的控件；不传 = 跟随窗口 | Follow the control with this id; omit to follow the window |
+| `anchor` | `() => HTMLElement \| null` | — | 动态锚点（优先于 anchorId）；返回 null 按跟随窗口 | Dynamic anchor (wins over anchorId); null means follow the window |
+| `scrollContainer` | `HTMLElement \| () => HTMLElement \| null` | 最近可滚动祖先 | 显式指定滚动容器 | Explicit scroll container |
+| `ariaLabel` | `string` | 内置字典「快捷工具栏」 | 工具栏无障碍名 | Toolbar accessible name |
+| `className` | `string` | — | 追加 class（只补布局） | Extra class (layout only) |
+
+| 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|---|
+| `id` | `string` | 必填 | — | 唯一标识，onAction 原样回传 | Unique id, echoed back by onAction |
+| `icon` | `ReactNode` | 必填 | — | 按钮图标 | Button icon |
+| `label` | `string` | 必填 | — | 无障碍名，兼 title | Accessible name, doubles as title |
+| `onClick` | `() => void` | — | — | 单项点击回调 | Per-item click handler |
+| `visible` | `boolean` | — | true | false = 永久隐藏 | false hides it permanently |
+| `when` | `'always' \| 'scroll'` | — | 'always' | scroll = 滚过阈值才出现 | scroll shows it only past the threshold |
+| `order` | `number` | — | 数组下标 + 1 | 越小越靠上 | Smaller sorts higher |
+| `threshold` | `number` | — | 320 | when: scroll 的触发距离（px） | Trigger distance (px) for when: scroll |
+| `color` | `string` | — | 主题 solid | 覆盖按钮底色 | Override button background |
+| `fgColor` | `string` | — | 主题 on-solid | 覆盖图标 / 文字色 | Override icon / text colour |
+
+```tsx id="ui-quicktoolbar-example"
+import { QuickToolbar } from 'dsh-plugin-core/ui'
+
+// 默认：贴屏幕右下角（纵向恒贴屏幕底边、横向贴右缘，各留 16px）
+h(QuickToolbar, {
+  onAction: (id) => console.log('点了', id),
+  items: [
+    { id: 'search', icon: <SearchIcon />, label: '搜索' },
+    { id: 'settings', icon: <SettingsIcon />, label: '设置' },
+  ],
+  // backToTop 默认开：滚过 320px 才出现；不想要就传 false
+})
+
+// 跟随某个控件：横向贴它的右缘外侧；右侧放不下自动退回屏幕右缘
+h(QuickToolbar, {
+  anchorId: 'my-content',
+  items: [...],
+  backToTop: { order: 2 },        // 回顶部排到第 3 位；默认 0 在最上
+})
+
+// 自定义项：显隐 / 排序 / 配色
+h(QuickToolbar, {
+  items: [
+    { id: 'search', icon: <SearchIcon />, label: '搜索', when: 'scroll', threshold: 480 },
+    { id: 'wide', icon: <WideIcon />, label: '宽屏', visible: wide },
+    { id: 'brand', icon: <BrandIcon />, label: '品牌', color: '#7c3aed', fgColor: '#fff' },
+  ],
+  scrollContainer: myScrollElement,
+})
 ```

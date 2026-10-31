@@ -363,6 +363,8 @@ test('CSS 常量引用的每个 var() 都必须有确定来源（不得依赖别
     ['dshpc-mq-dur', 'MarqueeText 测距后发布'],
     ['dshpc-mq-dist', 'MarqueeText 测距后发布'],
     ['ds-font-family-code', '宿主发布的等宽字体变量；取不到时回落到继承字体'],
+    ['dshpc-quick-toolbar-bg', 'QuickToolbar 按 item.color 写到按钮 style 上，hover/active 再混色'],
+    ['dshpc-quick-toolbar-fg', 'QuickToolbar 按 item.fgColor 写到按钮 style 上'],
   ])
 
   const orphan = []

@@ -1,0 +1,56 @@
+/* 快捷工具栏：右侧悬浮的一列独立圆钮。
+   横向 left / right 与 bottom、按钮直径、纵向间距由组件按 props 实时写入 style；
+   这里只放与位置无关的皮肤。 */
+.dshpc-quick-toolbar{
+  position:fixed;
+  z-index:var(--dshpc-z-dock);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+/* 出现 / 消失：挂载即淡入，退场先播 fade-out（组件延迟卸载，见 QuickToolbar.ts）。 */
+@keyframes dshpc-quick-toolbar-in{
+  from{opacity:0;transform:translateY(6px) scale(.9);}
+  to{opacity:1;transform:none;}
+}
+@keyframes dshpc-quick-toolbar-out{
+  from{opacity:1;transform:none;}
+  to{opacity:0;transform:translateY(6px) scale(.9);}
+}
+.dshpc-quick-toolbar__item{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  margin:0;
+  box-sizing:border-box;
+  border:1px solid var(--dshpc-border);
+  border-radius:50%;
+  /* 自定义底色 / 字色只写这两个变量（见 QuickToolbar.ts），hover/active 才能跟着混色。 */
+  background:var(--dshpc-quick-toolbar-bg, var(--dshpc-solid));
+  color:var(--dshpc-quick-toolbar-fg, var(--dshpc-on-solid));
+  box-shadow:var(--dshpc-shadow-2);
+  cursor:pointer;
+  animation:dshpc-quick-toolbar-in var(--dshpc-dur) var(--dshpc-ease);
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),
+             color var(--dshpc-dur-fast) var(--dshpc-ease),
+             transform var(--dshpc-dur-fast) var(--dshpc-ease);
+}
+/* 退场期保留占位，避免同列其他按钮瞬时跳位。 */
+.dshpc-quick-toolbar__item.is-leaving{
+  animation:dshpc-quick-toolbar-out var(--dshpc-dur) var(--dshpc-ease) forwards;
+  pointer-events:none;
+}
+/* 变色与核心 Button 实心档同一套：按 --dshpc-fg 混出 hover / active 底色（自定义 color 也跟随）。 */
+.dshpc-quick-toolbar__item:hover{
+  background:color-mix(in srgb, var(--dshpc-quick-toolbar-bg, var(--dshpc-solid)) 82%, var(--dshpc-fg));
+}
+.dshpc-quick-toolbar__item:active{
+  background:color-mix(in srgb, var(--dshpc-quick-toolbar-bg, var(--dshpc-solid)) 70%, var(--dshpc-fg));
+  transform:scale(.94);
+}
+.dshpc-quick-toolbar__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){
+  .dshpc-quick-toolbar__item{transition:none;transform:none;animation:none;}
+  .dshpc-quick-toolbar__item.is-leaving{animation:none;opacity:0;}
+}

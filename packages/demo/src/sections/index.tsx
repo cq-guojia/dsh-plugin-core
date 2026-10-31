@@ -16,6 +16,7 @@ import {
 } from './controls.js'
 import { ExplorerPage, SessionPage } from './blocks.js'
 import { TablePage } from './tables.js'
+import { ToolbarPage } from './toolbar.js'
 import { DatePage, HttpPage, I18nPage, NumberPage, TextPage } from './utils.js'
 import { ReferencePage } from './reference.js'
 import { Example } from '../doc.js'
@@ -40,6 +41,7 @@ export type SectionId =
   | 'table'
   | 'feedback'
   | 'layout'
+  | 'toolbar'
   | 'explorer'
   | 'session'
   | 'date'
@@ -87,6 +89,7 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'table', group: 'components', titleKey: 'secTable', render: () => h(TablePage, null) },
   { id: 'feedback', group: 'components', titleKey: 'secFeedback', render: () => h(FeedbackPage, null) },
   { id: 'layout', group: 'components', titleKey: 'secLayout', render: () => h(LayoutPage, null) },
+  { id: 'toolbar', group: 'components', titleKey: 'secToolbar', render: () => h(ToolbarPage, null) },
 
   { id: 'explorer', group: 'blocks', titleKey: 'secExplorer', render: () => h(ExplorerPage, null) },
   { id: 'session', group: 'blocks', titleKey: 'secSession', render: () => h(SessionPage, null) },

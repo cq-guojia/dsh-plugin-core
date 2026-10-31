@@ -111,6 +111,7 @@ dsh-plugin-core/
     `LoadingBlock` 的转圈改为复用它（环的画法与 keyframes 只剩 `controls/loader.css` 一份）。
   - `Loading` 是旧的「自带定位 + 自带 pill 背景」复合件，**保留不删**但标 `@deprecated`，新代码用 `Loader`。
 - 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 多份同名；**面板本身始终是布局成员，不做面板浮层**（2026-10-28 补：**收起** = 面板退出布局、另出右侧一只独立的 `position: fixed` 耳朵，点耳朵展开并还原宽度；关闭不留耳朵——耳朵是独立浮层，不是把面板变浮层）。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
+- 浮动快捷工具栏：`QuickToolbar`（2026-10-31 用户拍板）：右侧一列独立圆钮，纵向**恒贴屏幕底边**（默认 16px）；横向默认贴屏幕右缘，传 `anchorId` / `anchor()` 时贴到指定控件右缘外侧，右侧放不下则退回屏幕右缘（控件找不到按跟随窗口处理）。内置回顶部默认 `when:'scroll'`、阈值 320，`backToTop:false` 可关掉，对象可调 `order` / `label` / `threshold`；自定义项 `items` 支持 `icon` / `label` / `onClick` / `visible` / `when` / `order` / `threshold` / `color` / `fgColor`，统一 `onAction`。旧的 `BackToTop` **全部删除**，只保留这一份，不做迁移。
 - **通用控件是纯零件，数据由调用方传入**；**领域选择器例外**（2026-10-20 用户拍板反转）：
   `ModelPicker` / `WorkspacePicker` 是「现成的包」，接线后**自己取数自己显示**，消费方不再拿数组传 props。
   接线两处、共用同一 path 常量：宿主 `serveModelCatalog(ctx,{path})`（`llm.listModels` 挂只读路由，

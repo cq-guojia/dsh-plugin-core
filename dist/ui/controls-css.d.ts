@@ -4,7 +4,7 @@ export { FIELD_CSS } from './controls/field-css.generated.js';
 export { LOADING_CSS } from './controls/loading-css.generated.js';
 export { LOADER_CSS } from './controls/loader-css.generated.js';
 export { LOADER_BAR_CSS } from './controls/loader-bar-css.generated.js';
-export { BACK_TO_TOP_CSS } from './controls/back-to-top-css.generated.js';
+export { QUICK_TOOLBAR_CSS } from './controls/quick-toolbar-css.generated.js';
 export { HINT_CSS } from './controls/hint-css.generated.js';
 export { DATETIME_CSS } from './controls/datetime-css.generated.js';
 export { SPLIT_GROUP_CSS } from './controls/split-group-css.generated.js';

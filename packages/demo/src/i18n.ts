@@ -37,6 +37,7 @@ export type DemoMessageKey =
   | 'tableLoadingHint'
   | 'secFeedback'
   | 'secLayout'
+  | 'secToolbar'
   | 'secExplorer'
   | 'secSession'
   | 'secDate'
@@ -295,6 +296,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tableLoadingHint: '分段开关直接切四种状态。两种 loading 只用 Loader 图标（整表最大号、加载更多中号）；底部状态行通栏、上方一条实线，无左右外框时表底线也去掉。',
     secFeedback: '反馈',
     secLayout: '布局与滚动',
+    secToolbar: '快捷工具栏',
     secExplorer: '工作区浏览',
     secSession: '会话预览',
     secDate: '日期与时间',
@@ -593,6 +595,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tableLoadingHint: 'The segmented switch flips four states. Both loaders are icon-only (largest for the whole table, middle for loading more); the footer row spans the width with a rule above it, and without side borders the bottom rule is dropped too.',
     secFeedback: 'Feedback',
     secLayout: 'Layout & scrolling',
+    secToolbar: 'Quick toolbar',
     secExplorer: 'Workspace browsing',
     secSession: 'Session preview',
     secDate: 'Date & time',

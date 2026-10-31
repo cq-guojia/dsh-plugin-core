@@ -26,8 +26,8 @@
   不写进插件依赖。
 - 后果：在 Node / 单测 / 任何非内核环境 `import` 它会 `ERR_MODULE_NOT_FOUND`，
   **一个控件依赖它就会让整个 `ui` 入口 import 失败**（实测过）。
-- 处置：本包 `ui` **零官方依赖**（`BackToTop` 的图标改自绘、`SelectField` 因依赖官方 `Menu` 被删，
-  由自绘 `Picker` 取代）。
+- 处置：本包 `ui` **零官方依赖**（`QuickToolbar` 的图标由调用方传入、内部回顶箭头自绘，
+  `SelectField` 因依赖官方 `Menu` 被删，由自绘 `Picker` 取代）。
 - 来源：`dsh-task-dispatch-table/src/client/primitives.d.ts` 头部注释。
 
 ## 3. 宿主 API 的位置参数校验

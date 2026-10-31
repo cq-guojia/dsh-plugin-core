@@ -168,7 +168,21 @@ export {
   type TooltipRenderer,
 } from './tooltip.js'
 export { LiveText } from './LiveText.js'
-export { BackToTop, type BackToTopProps } from './BackToTop.js'
+export {
+  QuickToolbar,
+  type QuickToolbarProps,
+} from './QuickToolbar.js'
+export {
+  DEFAULT_SCROLL_THRESHOLD,
+  isToolbarEntryVisible,
+  resolveToolbarLeft,
+  sortToolbarEntries,
+  type QuickToolbarBackToTop,
+  type QuickToolbarItem,
+  type QuickToolbarWhen,
+  type ToolbarEntry,
+  type ToolbarGeometry,
+} from './quick-toolbar-logic.js'
 export { startResizeLayoutWidth, type ResizeOptions } from './resizer.js'
 export {
   DockPanel,

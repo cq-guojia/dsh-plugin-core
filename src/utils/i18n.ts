@@ -71,6 +71,8 @@ export type UtilMessageKey =
   | 'dockResize'
   | 'dockCollapse'
   | 'dockExpand'
+  | 'backToTop'
+  | 'quickToolbarAria'
   | 'errorRetry'
   | 'confirm'
   | 'cancel'
@@ -347,6 +349,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     dockResize: '拖动调整宽度',
     dockCollapse: '收起面板',
     dockExpand: '展开面板',
+    backToTop: '回到顶部',
+    quickToolbarAria: '快捷工具栏',
     errorRetry: '重试',
     confirm: '确定',
     cancel: '取消',
@@ -618,6 +622,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     dockResize: 'Drag to resize',
     dockCollapse: 'Collapse panel',
     dockExpand: 'Expand panel',
+    backToTop: 'Back to top',
+    quickToolbarAria: 'Quick toolbar',
     errorRetry: 'Retry',
     confirm: 'Confirm',
     cancel: 'Cancel',

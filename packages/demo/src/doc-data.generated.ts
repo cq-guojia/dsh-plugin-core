@@ -2599,15 +2599,6 @@ export const docData = {
             }
           },
           {
-            "name": "BackToTop({ anchorId? })",
-            "type": "",
-            "def": "",
-            "desc": {
-              "zh": "回到顶部，贴主容器右缘外侧",
-              "en": "Back-to-top, outside the main container’s right edge"
-            }
-          },
-          {
             "name": "startResizeLayoutWidth(opts)",
             "type": "",
             "def": "",
@@ -2905,6 +2896,246 @@ export const docData = {
         "id": "ui-paneldock-example",
         "lang": "ts",
         "src": "const dock = createPanelDock({ maxPanels: 3 })   // 一次，挂在插件级\n\n// 页面里：结构就在这儿写，不塞进任何调用参数\nh('div', { style: { display: 'flex' } },\n  h(Main, null),                                  // flex:1 1 auto; min-width:0\n  h(PanelDock, { dock },\n    h(DockPanel, { id: 'files', title: '工作区' }, h(FilePanel)),\n    h(DockPanel, { id: 'preview', header: h(PreviewBar) }, h(PreviewBody)),\n    h(DockPanel, { id: 'raw', header: null, closeButton: 'floating' }, h(RawBody)),\n  ),\n)\n// 之后任何地方：dock.open('files') / dock.close('files')"
+      }
+    ]
+  },
+  "quick-toolbar": {
+    "id": "quick-toolbar",
+    "heading": {
+      "zh": "QuickToolbar（快捷工具栏）",
+      "en": "QuickToolbar (quick toolbar)"
+    },
+    "prose": [
+      {
+        "zh": "右侧悬浮的一列独立圆钮：**纵向恒定**贴屏幕底边（默认 16px，从下往上排），**横向默认**贴屏幕右缘。传 `anchorId` / `anchor()` 时横向贴到那个控件的右缘外侧、同样留 16px；右侧再留 16px 后放不下就自动退回贴屏幕右缘。锚点控件找不到按「跟随窗口」处理，不报错。",
+        "en": "A right-side floating column of standalone round buttons. Vertically it **always** hugs the viewport bottom (16px by default, stacking upward); horizontally it defaults to the viewport’s right edge. Pass `anchorId` / `anchor()` to sit outside that control’s right edge with the same 16px gap; if another 16px would overflow, it falls back to the viewport edge. A missing anchor is treated as “follow the window”, no error."
+      },
+      {
+        "zh": "内置「回到顶部」默认开启：`when: 'scroll'`、阈值 320px，滚过才出现，点击平滑回顶（`prefers-reduced-motion` 下瞬时）。传 `backToTop: false` 关掉；传对象可调 `{ order, label, threshold }`。",
+        "en": "The built-in back-to-top is on by default: `when: 'scroll'`, threshold 320px — it appears after scrolling and smoothly returns to the top (instant under `prefers-reduced-motion`). Pass `backToTop: false` to remove it, or an object to tune `{ order, label, threshold }`."
+      },
+      {
+        "zh": "任意按钮显隐切换都带 0.2s 动画：出现时淡入并上移一小段，消失时先淡出再卸载（同一列的其它按钮不会瞬时跳位）；`prefers-reduced-motion` 下动画关闭。",
+        "en": "Every visibility change is animated over 0.2s: a button fades in with a slight upward slide, and fades out before being unmounted (the rest of the column never jumps); animations are off under `prefers-reduced-motion`."
+      },
+      {
+        "zh": "自定义项走 `items`：`icon` + `label` + `onClick`，单项的 `visible` / `when` / `order` / `threshold` / `color` / `fgColor` 都可配；点击后先调 `onClick`，再统一回调 `onAction(id, item)`。排序按 `order` 升序：回顶部默认 0 在最上，自定义项默认按数组下标 + 1 往下排。",
+        "en": "Custom buttons go through `items`: `icon` + `label` + `onClick`, each with optional `visible` / `when` / `order` / `threshold` / `color` / `fgColor`. A click calls `onClick` first, then the shared `onAction(id, item)`. Sorting is ascending by `order`: back-to-top defaults to 0 (topmost), custom items default to array index + 1 below it."
+      },
+      {
+        "zh": "边界：`position: fixed`，不占布局；滚动容器默认取工具栏最近的可纵向滚动祖先，也可显式给 `scrollContainer`。只做右侧；按钮尺寸 / 间距 / 贴边距离由 props 控制，样式自注入，不依赖调用方额外引 CSS。",
+        "en": "Boundary: `position: fixed`, takes no layout space. The scroll container defaults to the nearest vertically scrollable ancestor, or pass `scrollContainer` explicitly. Right side only; size / gap / edge distance are props, and the component injects its own styles — callers need no extra CSS."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-quick-toolbar",
+        "rows": [
+          {
+            "name": "items",
+            "type": "QuickToolbarItem[]",
+            "def": "[]",
+            "desc": {
+              "zh": "自定义按钮列表，排在回顶部下面",
+              "en": "Custom buttons, listed below back-to-top by default"
+            }
+          },
+          {
+            "name": "backToTop",
+            "type": "boolean | QuickToolbarBackToTop",
+            "def": "true",
+            "desc": {
+              "zh": "内置回顶部：false 关掉；对象可调 order / label / threshold",
+              "en": "Built-in back-to-top: false to remove; object tunes order / label / threshold"
+            }
+          },
+          {
+            "name": "onAction",
+            "type": "(id, item) => void",
+            "def": "—",
+            "desc": {
+              "zh": "自定义项点击后的统一回调（在单项 onClick 之后）",
+              "en": "Shared callback after a custom item’s own onClick"
+            }
+          },
+          {
+            "name": "offset",
+            "type": "number",
+            "def": "16",
+            "desc": {
+              "zh": "与右缘 / 屏幕底边的距离（px）",
+              "en": "Distance to the right edge / viewport bottom (px)"
+            }
+          },
+          {
+            "name": "gap",
+            "type": "number",
+            "def": "12",
+            "desc": {
+              "zh": "相邻按钮的纵向间距（px）",
+              "en": "Vertical gap between buttons (px)"
+            }
+          },
+          {
+            "name": "size",
+            "type": "number",
+            "def": "44",
+            "desc": {
+              "zh": "按钮直径（px）",
+              "en": "Button diameter (px)"
+            }
+          },
+          {
+            "name": "anchorId",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "跟随这个 id 的控件；不传 = 跟随窗口",
+              "en": "Follow the control with this id; omit to follow the window"
+            }
+          },
+          {
+            "name": "anchor",
+            "type": "() => HTMLElement | null",
+            "def": "—",
+            "desc": {
+              "zh": "动态锚点（优先于 anchorId）；返回 null 按跟随窗口",
+              "en": "Dynamic anchor (wins over anchorId); null means follow the window"
+            }
+          },
+          {
+            "name": "scrollContainer",
+            "type": "HTMLElement | () => HTMLElement | null",
+            "def": "最近可滚动祖先",
+            "desc": {
+              "zh": "显式指定滚动容器",
+              "en": "Explicit scroll container"
+            }
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "def": "内置字典「快捷工具栏」",
+            "desc": {
+              "zh": "工具栏无障碍名",
+              "en": "Toolbar accessible name"
+            }
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "追加 class（只补布局）",
+              "en": "Extra class (layout only)"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-quick-toolbar-item",
+        "rows": [
+          {
+            "name": "id",
+            "type": "string",
+            "def": "—",
+            "required": "必填",
+            "desc": {
+              "zh": "唯一标识，onAction 原样回传",
+              "en": "Unique id, echoed back by onAction"
+            }
+          },
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "def": "—",
+            "required": "必填",
+            "desc": {
+              "zh": "按钮图标",
+              "en": "Button icon"
+            }
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "def": "—",
+            "required": "必填",
+            "desc": {
+              "zh": "无障碍名，兼 title",
+              "en": "Accessible name, doubles as title"
+            }
+          },
+          {
+            "name": "onClick",
+            "type": "() => void",
+            "def": "—",
+            "desc": {
+              "zh": "单项点击回调",
+              "en": "Per-item click handler"
+            }
+          },
+          {
+            "name": "visible",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "false = 永久隐藏",
+              "en": "false hides it permanently"
+            }
+          },
+          {
+            "name": "when",
+            "type": "'always' | 'scroll'",
+            "def": "'always'",
+            "desc": {
+              "zh": "scroll = 滚过阈值才出现",
+              "en": "scroll shows it only past the threshold"
+            }
+          },
+          {
+            "name": "order",
+            "type": "number",
+            "def": "数组下标 + 1",
+            "desc": {
+              "zh": "越小越靠上",
+              "en": "Smaller sorts higher"
+            }
+          },
+          {
+            "name": "threshold",
+            "type": "number",
+            "def": "320",
+            "desc": {
+              "zh": "when: scroll 的触发距离（px）",
+              "en": "Trigger distance (px) for when: scroll"
+            }
+          },
+          {
+            "name": "color",
+            "type": "string",
+            "def": "主题 solid",
+            "desc": {
+              "zh": "覆盖按钮底色",
+              "en": "Override button background"
+            }
+          },
+          {
+            "name": "fgColor",
+            "type": "string",
+            "def": "主题 on-solid",
+            "desc": {
+              "zh": "覆盖图标 / 文字色",
+              "en": "Override icon / text colour"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-quicktoolbar-example",
+        "lang": "tsx",
+        "src": "import { QuickToolbar } from 'dsh-plugin-core/ui'\n\n// 默认：贴屏幕右下角（纵向恒贴屏幕底边、横向贴右缘，各留 16px）\nh(QuickToolbar, {\n  onAction: (id) => console.log('点了', id),\n  items: [\n    { id: 'search', icon: <SearchIcon />, label: '搜索' },\n    { id: 'settings', icon: <SettingsIcon />, label: '设置' },\n  ],\n  // backToTop 默认开：滚过 320px 才出现；不想要就传 false\n})\n\n// 跟随某个控件：横向贴它的右缘外侧；右侧放不下自动退回屏幕右缘\nh(QuickToolbar, {\n  anchorId: 'my-content',\n  items: [...],\n  backToTop: { order: 2 },        // 回顶部排到第 3 位；默认 0 在最上\n})\n\n// 自定义项：显隐 / 排序 / 配色\nh(QuickToolbar, {\n  items: [\n    { id: 'search', icon: <SearchIcon />, label: '搜索', when: 'scroll', threshold: 480 },\n    { id: 'wide', icon: <WideIcon />, label: '宽屏', visible: wide },\n    { id: 'brand', icon: <BrandIcon />, label: '品牌', color: '#7c3aed', fgColor: '#fff' },\n  ],\n  scrollContainer: myScrollElement,\n})"
       }
     ]
   }

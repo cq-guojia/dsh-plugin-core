@@ -35,7 +35,7 @@ const MAP = [
   ['src/ui/controls/loading.css', 'src/ui/controls/loading-css.generated.ts', 'LOADING_CSS'],
   ['src/ui/controls/loader.css', 'src/ui/controls/loader-css.generated.ts', 'LOADER_CSS'],
   ['src/ui/controls/loader-bar.css', 'src/ui/controls/loader-bar-css.generated.ts', 'LOADER_BAR_CSS'],
-  ['src/ui/controls/back-to-top.css', 'src/ui/controls/back-to-top-css.generated.ts', 'BACK_TO_TOP_CSS'],
+  ['src/ui/controls/quick-toolbar.css', 'src/ui/controls/quick-toolbar-css.generated.ts', 'QUICK_TOOLBAR_CSS'],
   ['src/ui/controls/hint.css', 'src/ui/controls/hint-css.generated.ts', 'HINT_CSS'],
   ['src/ui/controls/datetime.css', 'src/ui/controls/datetime-css.generated.ts', 'DATETIME_CSS'],
   ['src/ui/controls/split-group.css', 'src/ui/controls/split-group-css.generated.ts', 'SPLIT_GROUP_CSS'],
