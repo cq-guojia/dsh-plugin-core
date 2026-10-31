@@ -103,6 +103,8 @@ export function QuickToolbar(props) {
             return id === undefined ? null : document.getElementById(id);
         };
         let observed = null;
+        let lastRight = null;
+        let lastViewport = -1;
         const ro = new ResizeObserver(update);
         function update() {
             const anchorEl = resolveAnchor();
@@ -114,11 +116,22 @@ export function QuickToolbar(props) {
                 observed = anchorEl;
             }
             const viewportWidth = document.documentElement.clientWidth;
-            setLeft(resolveToolbarLeft({ viewportWidth, offset, size }, anchorEl === null ? null : anchorEl.getBoundingClientRect().right));
+            const rect = anchorEl === null ? null : anchorEl.getBoundingClientRect();
+            // 锚点被隐藏 / 收起（宽高均为 0）时不跟随，按「找不到控件」退回贴视口右缘。
+            const anchorRight = rect === null || (rect.width === 0 && rect.height === 0) ? null : rect.right;
+            // 值没变就不写 state。位置另做轮询兜底：侧栏开合可能只改 clientWidth（滚动条增减）
+            // 或推动锚点位置（尺寸不变），这两种都不会触发 resize / ResizeObserver。
+            if (viewportWidth === lastViewport && anchorRight === lastRight)
+                return;
+            lastViewport = viewportWidth;
+            lastRight = anchorRight;
+            setLeft(resolveToolbarLeft({ viewportWidth, offset, size }, anchorRight));
         }
         update();
+        const poll = setInterval(update, 100);
         window.addEventListener('resize', update);
         return () => {
+            clearInterval(poll);
             window.removeEventListener('resize', update);
             ro.disconnect();
         };

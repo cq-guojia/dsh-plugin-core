@@ -7366,6 +7366,8 @@ function QuickToolbar(props) {
       return id3 === void 0 ? null : document.getElementById(id3);
     };
     let observed = null;
+    let lastRight = null;
+    let lastViewport = -1;
     const ro = new ResizeObserver(update);
     function update() {
       const anchorEl = resolveAnchor();
@@ -7377,11 +7379,19 @@ function QuickToolbar(props) {
         observed = anchorEl;
       }
       const viewportWidth = document.documentElement.clientWidth;
-      setLeft(resolveToolbarLeft({ viewportWidth, offset: offset4, size: size4 }, anchorEl === null ? null : anchorEl.getBoundingClientRect().right));
+      const rect = anchorEl === null ? null : anchorEl.getBoundingClientRect();
+      const anchorRight = rect === null || rect.width === 0 && rect.height === 0 ? null : rect.right;
+      if (viewportWidth === lastViewport && anchorRight === lastRight)
+        return;
+      lastViewport = viewportWidth;
+      lastRight = anchorRight;
+      setLeft(resolveToolbarLeft({ viewportWidth, offset: offset4, size: size4 }, anchorRight));
     }
     update();
+    const poll = setInterval(update, 100);
     window.addEventListener("resize", update);
     return () => {
+      clearInterval(poll);
       window.removeEventListener("resize", update);
       ro.disconnect();
     };
@@ -64940,9 +64950,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.15.0"}`],
-            [t3("buildDemo"), `v${"0.15.0"}`],
-            [t3("buildStamp"), "261031-233906-183"]
+            [t3("buildCore"), `v${"0.15.1"}`],
+            [t3("buildDemo"), `v${"0.15.1"}`],
+            [t3("buildStamp"), "261101-005732-944"]
           ].map(
             ([label, value]) => (0, import_react77.createElement)(
               "tr",
@@ -65266,9 +65276,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react79.createElement)("span", null, `core v${"0.15.0"}`),
-          (0, import_react79.createElement)("span", null, `demo v${"0.15.0"}`),
-          (0, import_react79.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261031-233906-183")
+          (0, import_react79.createElement)("span", null, `core v${"0.15.1"}`),
+          (0, import_react79.createElement)("span", null, `demo v${"0.15.1"}`),
+          (0, import_react79.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261101-005732-944")
         )
       )
     ),
