@@ -72,11 +72,15 @@ export function Table(props) {
     const pager = props.pagination;
     // 通栏分组与分页互斥：一个表里多个板块时，页码该属于哪个板块说不清，直接不分页。
     const grouped = (props.groups?.length ?? 0) > 0;
-    // 滚动加载同理：分页 / 分组时不装哨兵，也不渲染底部加载行。
-    const infinite = pager === undefined && !grouped;
+    // 滚动加载与分页仍互斥（同表两套翻页）；分组不挡滚动加载 —— 底部状态行排在最后一组之后。
+    const infinite = pager === undefined;
     const sentinelRef = useLoadMoreSentinel(props, infinite);
     if (pager === undefined || grouped) {
-        return tableShell('dshpc-table--plain', props, { sentinelRef: infinite ? sentinelRef : undefined });
+        return tableShell('dshpc-table--plain', 
+        // 分页模式下摘掉加载相关 props，避免同表两套翻页。
+        pager === undefined
+            ? props
+            : { ...props, onLoadMore: undefined, loadingMore: undefined, hasMore: undefined, noMoreText: undefined }, { sentinelRef: infinite ? sentinelRef : undefined });
     }
     const pageSize = Math.max(1, Math.floor(pager.pageSize ?? 10));
     const allRows = props.rows ?? [];

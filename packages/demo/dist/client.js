@@ -5460,28 +5460,32 @@ function tableShell(skinClass, props, options = {}) {
     flatFoot ? "dshpc-table--foot-no-bottom" : "",
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
+  const groupFoot = footerRows.length > 0 || sentinelRow !== null ? (0, import_react23.createElement)("tbody", { key: "group-foot", className: "dshpc-table__body" }, ...footerRows, sentinelRow) : null;
   const groups = props.groups ?? [];
-  const body = groups.length > 0 ? groups.map((group, groupIndex) => (0, import_react23.createElement)(
-    "tbody",
-    { key: group.key, className: "dshpc-table__body dshpc-table__group-body" },
-    // 通栏标题行：横跨所有列，充当这一组的「大标题」。
-    (0, import_react23.createElement)("tr", { className: "dshpc-table__group-row" }, (0, import_react23.createElement)(
-      "th",
-      {
-        className: "dshpc-table__group-cell",
-        scope: "colgroup",
-        colSpan: leaves.length > 0 ? leaves.length : void 0
-      },
-      // 标题的固定标签（短竖线）与排版归 SectionHead —— Table 只负责把标题装进通栏。
-      (0, import_react23.createElement)(SectionHead, {
-        title: group.title,
-        accent: props.groupAccent ?? "default",
-        flush: true
-      })
+  const body = groups.length > 0 ? [
+    ...groups.map((group, groupIndex) => (0, import_react23.createElement)(
+      "tbody",
+      { key: group.key, className: "dshpc-table__body dshpc-table__group-body" },
+      // 通栏标题行：横跨所有列，充当这一组的「大标题」。
+      (0, import_react23.createElement)("tr", { className: "dshpc-table__group-row" }, (0, import_react23.createElement)(
+        "th",
+        {
+          className: "dshpc-table__group-cell",
+          scope: "colgroup",
+          colSpan: leaves.length > 0 ? leaves.length : void 0
+        },
+        // 标题的固定标签（短竖线）与排版归 SectionHead —— Table 只负责把标题装进通栏。
+        (0, import_react23.createElement)(SectionHead, {
+          title: group.title,
+          accent: props.groupAccent ?? "default",
+          flush: true
+        })
+      )),
+      ...headRows.map((cells, level) => headRowOf(cells, `g${groupIndex}-${level}`)),
+      ...dataRowsOf(group.rows, 0)
     )),
-    ...headRows.map((cells, level) => headRowOf(cells, `g${groupIndex}-${level}`)),
-    ...dataRowsOf(group.rows, 0)
-  )) : [
+    ...groupFoot === null ? [] : [groupFoot]
+  ] : [
     (0, import_react23.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.loading === true && (props.rows?.length ?? 0) === 0 ? loadingRow : props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : emptyRow, ...footerRows, sentinelRow)
   ];
   return (0, import_react23.createElement)(
@@ -5531,10 +5535,15 @@ function Table(props) {
   ensureComponentStyles("table-plain", TABLE_PLAIN_CSS);
   const pager = props.pagination;
   const grouped = (props.groups?.length ?? 0) > 0;
-  const infinite = pager === void 0 && !grouped;
+  const infinite = pager === void 0;
   const sentinelRef = useLoadMoreSentinel(props, infinite);
   if (pager === void 0 || grouped) {
-    return tableShell("dshpc-table--plain", props, { sentinelRef: infinite ? sentinelRef : void 0 });
+    return tableShell(
+      "dshpc-table--plain",
+      // 分页模式下摘掉加载相关 props，避免同表两套翻页。
+      pager === void 0 ? props : { ...props, onLoadMore: void 0, loadingMore: void 0, hasMore: void 0, noMoreText: void 0 },
+      { sentinelRef: infinite ? sentinelRef : void 0 }
+    );
   }
   const pageSize = Math.max(1, Math.floor(pager.pageSize ?? 10));
   const allRows = props.rows ?? [];
@@ -58766,8 +58775,8 @@ var docData = {
         "en": "Skins are separate components and separate files \u2014 no variant: Table imports only its own skin CSS; future TableGrid (grid lines) / TableZebra (zebra stripes) are sibling components importing their own skins. Importing one packs only that one \u2014 choosing a table never drags the other skin into the bundle."
       },
       {
-        "zh": "\u8FB9\u754C\uFF1A\u4E0D\u8D1F\u8D23\u53D6\u6570 / \u6392\u5E8F / \u865A\u62DF\u6EDA\u52A8\uFF1B\u6A2A\u5411\u6EDA\u52A8\u5BB9\u5668\u4E0E\u5706\u89D2\u88C1\u526A\u5F52\u8C03\u7528\u65B9\uFF1B\u8868\u5934\u4E0D\u505A\u5438\u9876\uFF08\u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF09\u3002\u5206\u9875\u53EF\u9009\uFF1A\u7ED9 `pagination` \u5C31\u8BA9\u8868\u683C\u81EA\u5DF1\u5207\u7247\u5E76\u5728\u8868\u4E0B\u6446\u9875\u7801\uFF08\u8BE6\u89C1 Pagination \u4E00\u8282\uFF09\uFF0C\u4E0D\u7ED9\u5C31\u5B8C\u5168\u4E0D\u5206\u9875\u3002\u6CA1\u6709\u6570\u636E\u65F6\u663E\u793A\u5185\u7F6E\u7A7A\u6001\uFF08emptyText \u53EF\u8986\u76D6\uFF09\u3002\u52A0\u8F7D\u6001\u4E24\u79CD\uFF0C\u90FD\u53EA\u653E\u56FE\u6807\u3001\u4E0D\u663E\u793A\u6587\u6848\uFF1A\u9996\u5C4F\u4E00\u6761\u6570\u636E\u90FD\u6CA1\u6709\u65F6\u7528 `loading`\uFF08\u5C45\u4E2D\u4E09\u5757\u52A0\u8F7D\u52A8\u753B\u3001\u6700\u5927\u53F7\uFF0C\u8F83\u9AD8\u5360\u4F4D\uFF0C\u4E0D\u906E\u6321\u5DF2\u6709\u6570\u636E\uFF09\uFF0C\u5DF2\u6709\u6570\u636E\u7FFB\u4E0B\u4E00\u9875\u65F6\u7528 `loadingMore`\uFF08\u5E95\u90E8\u4E00\u884C\u3001\u4E2D\u53F7\u4E09\u5757\u52A8\u753B\uFF1B\u6574\u884C\u901A\u680F\uFF0C\u4E0E\u4E0A\u65B9\u6570\u636E\u884C\u4E4B\u95F4\u8865\u4E00\u6761\u5B9E\u7EBF\uFF0C\u5DE6\u53F3\u4E24\u6761\u5728 borders=all / x \u65F6\u7531\u8868\u7EA7\u5916\u6846\u515C\u4F4F\u3001y / none \u672C\u6765\u5C31\u6CA1\u6709\uFF0C\u4E14 y / none \u65F6\u72B6\u6001\u884C\u4E0B\u65B9\u90A3\u6761\u8868\u5E95\u7EBF\u4E5F\u4E00\u8D77\u53BB\u6389\uFF0C\u53EA\u7559\u4E0A\u65B9\u4E00\u6761\u5B9E\u7EBF\uFF09\uFF1B\u6EDA\u52A8\u52A0\u8F7D\u7531 `onLoadMore` \u672C\u8EAB\u5F53\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u76D1\u542C\u5E95\u90E8\u3001\u6EDA\u5230\u9644\u8FD1\u81EA\u52A8\u8C03\u4E00\u6B21\uFF0C\u5230\u5E95\uFF08`hasMore: false`\uFF09\u663E\u793A\u300C\u6CA1\u6709\u66F4\u591A\u6570\u636E\u300D\uFF08`noMoreText` \u6362\u6587\u6848 / `false` \u4E0D\u6E32\u67D3\uFF09\u3002\u6EDA\u52A8\u52A0\u8F7D\u4E0E `pagination` / `groups` \u4E92\u65A5\u3002",
-        "en": "Boundaries: no fetching / sorting / virtual scrolling; the horizontal scroll container and rounded clipping are the caller\u2019s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). Paging is optional: pass `pagination` and the table slices rows itself and renders the pager underneath (see the Pagination section); omit it and nothing pages. With no rows, a built-in empty state shows (override with emptyText). Two loading states, icon only with no visible copy: `loading` for a first load with no rows at all (centred three-block loader at the largest size, a taller placeholder that never covers existing rows), and `loadingMore` when appending the next page (one full-width bottom row with the middle-size three-block loader; a solid rule is added above it, while the left/right edges come from the table frame when borders=all / x and are absent for y / none \u2014 and for y / none the bottom table rule under the status row is dropped too, so only the rule above it remains). Scroll loading uses `onLoadMore` itself as the switch: pass it and the table watches the bottom and calls it once when you get near; at the end (`hasMore: false`) it shows \u201CNo more data\u201D (`noMoreText` to change the copy / `false` to render nothing). Scroll loading is mutually exclusive with `pagination` / `groups`."
+        "zh": "\u8FB9\u754C\uFF1A\u4E0D\u8D1F\u8D23\u53D6\u6570 / \u6392\u5E8F / \u865A\u62DF\u6EDA\u52A8\uFF1B\u6A2A\u5411\u6EDA\u52A8\u5BB9\u5668\u4E0E\u5706\u89D2\u88C1\u526A\u5F52\u8C03\u7528\u65B9\uFF1B\u8868\u5934\u4E0D\u505A\u5438\u9876\uFF08\u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF09\u3002\u5206\u9875\u53EF\u9009\uFF1A\u7ED9 `pagination` \u5C31\u8BA9\u8868\u683C\u81EA\u5DF1\u5207\u7247\u5E76\u5728\u8868\u4E0B\u6446\u9875\u7801\uFF08\u8BE6\u89C1 Pagination \u4E00\u8282\uFF09\uFF0C\u4E0D\u7ED9\u5C31\u5B8C\u5168\u4E0D\u5206\u9875\u3002\u6CA1\u6709\u6570\u636E\u65F6\u663E\u793A\u5185\u7F6E\u7A7A\u6001\uFF08emptyText \u53EF\u8986\u76D6\uFF09\u3002\u52A0\u8F7D\u6001\u4E24\u79CD\uFF0C\u90FD\u53EA\u653E\u56FE\u6807\u3001\u4E0D\u663E\u793A\u6587\u6848\uFF1A\u9996\u5C4F\u4E00\u6761\u6570\u636E\u90FD\u6CA1\u6709\u65F6\u7528 `loading`\uFF08\u5C45\u4E2D\u4E09\u5757\u52A0\u8F7D\u52A8\u753B\u3001\u6700\u5927\u53F7\uFF0C\u8F83\u9AD8\u5360\u4F4D\uFF0C\u4E0D\u906E\u6321\u5DF2\u6709\u6570\u636E\uFF09\uFF0C\u5DF2\u6709\u6570\u636E\u7FFB\u4E0B\u4E00\u9875\u65F6\u7528 `loadingMore`\uFF08\u5E95\u90E8\u4E00\u884C\u3001\u4E2D\u53F7\u4E09\u5757\u52A8\u753B\uFF1B\u6574\u884C\u901A\u680F\uFF0C\u4E0E\u4E0A\u65B9\u6570\u636E\u884C\u4E4B\u95F4\u8865\u4E00\u6761\u5B9E\u7EBF\uFF0C\u5DE6\u53F3\u4E24\u6761\u5728 borders=all / x \u65F6\u7531\u8868\u7EA7\u5916\u6846\u515C\u4F4F\u3001y / none \u672C\u6765\u5C31\u6CA1\u6709\uFF0C\u4E14 y / none \u65F6\u72B6\u6001\u884C\u4E0B\u65B9\u90A3\u6761\u8868\u5E95\u7EBF\u4E5F\u4E00\u8D77\u53BB\u6389\uFF0C\u53EA\u7559\u4E0A\u65B9\u4E00\u6761\u5B9E\u7EBF\uFF09\uFF1B\u6EDA\u52A8\u52A0\u8F7D\u7531 `onLoadMore` \u672C\u8EAB\u5F53\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u76D1\u542C\u5E95\u90E8\u3001\u6EDA\u5230\u9644\u8FD1\u81EA\u52A8\u8C03\u4E00\u6B21\uFF0C\u5230\u5E95\uFF08`hasMore: false`\uFF09\u663E\u793A\u300C\u6CA1\u6709\u66F4\u591A\u6570\u636E\u300D\uFF08`noMoreText` \u6362\u6587\u6848 / `false` \u4E0D\u6E32\u67D3\uFF09\u3002\u6EDA\u52A8\u52A0\u8F7D\u4E0E `pagination` \u4E92\u65A5\uFF1B`groups` \u6A21\u5F0F\u53EF\u7528\uFF0C\u5E95\u90E8\u72B6\u6001\u884C\u4E0E\u54E8\u5175\u6392\u5728\u6700\u540E\u4E00\u7EC4\u4E4B\u540E\u3002",
+        "en": "Boundaries: no fetching / sorting / virtual scrolling; the horizontal scroll container and rounded clipping are the caller\u2019s; headers do not stick (the grouped header spans multiple rows, and a single top:0 would overlap itself while scrolling). Paging is optional: pass `pagination` and the table slices rows itself and renders the pager underneath (see the Pagination section); omit it and nothing pages. With no rows, a built-in empty state shows (override with emptyText). Two loading states, icon only with no visible copy: `loading` for a first load with no rows at all (centred three-block loader at the largest size, a taller placeholder that never covers existing rows), and `loadingMore` when appending the next page (one full-width bottom row with the middle-size three-block loader; a solid rule is added above it, while the left/right edges come from the table frame when borders=all / x and are absent for y / none \u2014 and for y / none the bottom table rule under the status row is dropped too, so only the rule above it remains). Scroll loading uses `onLoadMore` itself as the switch: pass it and the table watches the bottom and calls it once when you get near; at the end (`hasMore: false`) it shows \u201CNo more data\u201D (`noMoreText` to change the copy / `false` to render nothing). Scroll loading is mutually exclusive with `pagination`; it works in `groups` mode, with the status row and sentinel placed after the last group."
       }
     ],
     "api": [
@@ -58924,8 +58933,8 @@ var docData = {
             "type": "() => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6EDA\u52A8\u5230\u5E95\u81EA\u52A8\u52A0\u8F7D\u4E0B\u4E00\u9875\uFF1A\u8FD9\u4E2A props \u672C\u8EAB\u5C31\u662F\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u88C5\u5E95\u90E8\u54E8\u5175\u5E76\u76D1\u542C\uFF0C\u4E0D\u4F20\u5B8C\u5168\u4E0D\u76D1\u542C\uFF1B\u52A0\u8F7D\u4E2D / \u5230\u5E95\u4E0D\u91CD\u590D\u89E6\u53D1\u3002\u4E0E pagination / groups \u4E92\u65A5",
-              "en": "Auto-load the next page when scrolled near the bottom: this prop is the switch \u2014 pass it to install the sentinel and watch, omit it and nothing listens; guarded while loading or at the end. Mutually exclusive with pagination / groups"
+              "zh": "\u6EDA\u52A8\u5230\u5E95\u81EA\u52A8\u52A0\u8F7D\u4E0B\u4E00\u9875\uFF1A\u8FD9\u4E2A props \u672C\u8EAB\u5C31\u662F\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u88C5\u5E95\u90E8\u54E8\u5175\u5E76\u76D1\u542C\uFF0C\u4E0D\u4F20\u5B8C\u5168\u4E0D\u76D1\u542C\uFF1B\u52A0\u8F7D\u4E2D / \u5230\u5E95\u4E0D\u91CD\u590D\u89E6\u53D1\u3002\u4E0E pagination \u4E92\u65A5\uFF1Bgroups \u6A21\u5F0F\u53EF\u7528\uFF08\u72B6\u6001\u884C\u6392\u5728\u6700\u540E\u4E00\u7EC4\u4E4B\u540E\uFF09",
+              "en": "Auto-load the next page when scrolled near the bottom: this prop is the switch \u2014 pass it to install the sentinel and watch, omit it and nothing listens; guarded while loading or at the end. Mutually exclusive with pagination; works in groups mode (status row after the last group)"
             }
           },
           {
@@ -64261,9 +64270,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.13.0"}`],
-            [t3("buildDemo"), `v${"0.13.0"}`],
-            [t3("buildStamp"), "261031-010600-927"]
+            [t3("buildCore"), `v${"0.14.0"}`],
+            [t3("buildDemo"), `v${"0.14.0"}`],
+            [t3("buildStamp"), "261031-145605-564"]
           ].map(
             ([label, value]) => (0, import_react75.createElement)(
               "tr",
@@ -64586,9 +64595,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react77.createElement)("span", null, `core v${"0.13.0"}`),
-          (0, import_react77.createElement)("span", null, `demo v${"0.13.0"}`),
-          (0, import_react77.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261031-010600-927")
+          (0, import_react77.createElement)("span", null, `core v${"0.14.0"}`),
+          (0, import_react77.createElement)("span", null, `demo v${"0.14.0"}`),
+          (0, import_react77.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261031-145605-564")
         )
       )
     ),

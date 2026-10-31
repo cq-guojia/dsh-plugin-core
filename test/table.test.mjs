@@ -251,6 +251,15 @@ test('底部哨兵：传了 onLoadMore 才渲染，到底后不再渲染', () =>
   )
 })
 
+test('分组与滚动加载可以并存：底部状态行与哨兵排在最后一组之后', () => {
+  const html = renderToStaticMarkup(groupedTable({ onLoadMore: () => {}, loadingMore: true }))
+  assert.match(html, /dshpc-table__state-row--footer/)
+  assert.match(html, /dshpc-table__sentinel/)
+  const done = renderToStaticMarkup(groupedTable({ onLoadMore: () => {}, hasMore: false }))
+  assert.match(done, /没有更多数据/)
+  assert.doesNotMatch(done, /dshpc-table__sentinel/)
+})
+
 test('分页与滚动加载互斥：分页模式下不渲染底部加载行与哨兵', () => {
   const html = renderToStaticMarkup(createElement(Table, {
     columns: oneColumn,

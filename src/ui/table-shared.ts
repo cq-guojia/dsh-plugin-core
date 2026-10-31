@@ -86,7 +86,8 @@ export interface TableSharedProps {
   /**
    * 滚动到底自动加载下一页：**这个 props 本身就是开关** —— 传了就装底部哨兵并监听，
    * 不传完全不监听、也不触发。正在加载（`loading` / `loadingMore`）或已到底（`hasMore: false`）
-   * 时不会重复触发。与 `pagination` / `groups` 同时给时忽略（一个表里两套翻页说不清）。
+   * 时不会重复触发。与 `pagination` 同时给时忽略（一个表里两套翻页说不清）；
+   * `groups` 模式可用，底部状态行与哨兵排在最后一组之后。
    */
   onLoadMore?: () => void
   /** 追加 class（只允许补布局，不许覆盖皮肤）。 */
@@ -364,9 +365,15 @@ export function tableShell(
     .filter((s) => s !== '')
     .join(' ')
 
+  // 分组模式下底部状态行 / 哨兵单独占一个 tbody，排在最后一组之后（不影响各组的表头归属）。
+  const groupFoot =
+    footerRows.length > 0 || sentinelRow !== null
+      ? h('tbody', { key: 'group-foot', className: 'dshpc-table__body' }, ...footerRows, sentinelRow)
+      : null
   const groups = props.groups ?? []
   const body = groups.length > 0
-    ? groups.map((group, groupIndex) =>
+    ? [
+        ...groups.map((group, groupIndex) =>
         h(
           'tbody',
           { key: group.key, className: 'dshpc-table__body dshpc-table__group-body' },
@@ -393,7 +400,9 @@ export function tableShell(
           ...headRows.map((cells, level) => headRowOf(cells, `g${groupIndex}-${level}`)),
           ...dataRowsOf(group.rows, 0),
         ),
-      )
+        ),
+        ...(groupFoot === null ? [] : [groupFoot]),
+      ]
     : [
         h(
           'tbody',
