@@ -1,8 +1,9 @@
 # 20261101-1409-f4d2-新增-surface-容器并改造-card-外框与色条: 新增 Surface 容器并改造 Card 外框与色条
 
 - **Tags**: 组件, 圆角, 容器
-- **Status**: doing · 2026-11-01 15:04:16 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-01 15:04:31 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-01 14:09:51 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-01 15:04:31 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -63,3 +64,4 @@
 - 2026-11-01 14:43:02 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 收口完成：Surface 加 dashed 档（src/ui/surface.css:33），doc.tsx 三处骨架与 Placeholder/toolbar 虚线框改走 Surface，demo 裸圆角全改 token；build+build:demo+209 测试+codelint 全过；未提交
 - 2026-11-01 14:48:06 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修 demo 级联冲突：.dshpc-doc-block 的 padding 与 .dshpc-surface 同权被覆盖成 0，改由 Surface md 档提供（doc.tsx:83/154、demo.css:37）；build+build:demo+209 测试+codelint 全过
 - 2026-11-01 15:04:16 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 收尾：SurfaceProps.padding 补 null（src/ui/Surface.ts:19，demo 类型检查暴露）；两包 bump 0.17.0；build+build:demo+pnpm test 209 全过+codelint 27 文件全过；准备提交并发版
+- 2026-11-01 15:04:31 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed

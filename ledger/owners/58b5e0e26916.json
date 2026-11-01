@@ -1,8 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261101-0949-2930-segmented-选中片配色-tone": {"category": "功能新增", "created": "2026-11-01 09:49:30", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-01 09:49:30", "status": "doing", "tags": ["Segmented", "icon", "控件"], "title": "Segmented 选中片配色（tone）", "updated": "2026-11-01 10:02:14", "worklog": "worklog/202611/01-0949-2930-segmented-选中片配色-tone.md"},
-    "20261101-1409-f4d2-新增-surface-容器并改造-card-外框与色条": {"category": "建设", "created": "2026-11-01 14:09:51", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-01 14:19:59", "status": "doing", "tags": ["组件", "圆角", "容器"], "title": "新增 Surface 容器并改造 Card 外框与色条", "updated": "2026-11-01 15:04:16", "worklog": "worklog/202611/01-1409-f4d2-新增-surface-容器并改造-card-外框与色条.md"}
+    "20261101-0949-2930-segmented-选中片配色-tone": {"category": "功能新增", "created": "2026-11-01 09:49:30", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-01 09:49:30", "status": "doing", "tags": ["Segmented", "icon", "控件"], "title": "Segmented 选中片配色（tone）", "updated": "2026-11-01 10:02:14", "worklog": "worklog/202611/01-0949-2930-segmented-选中片配色-tone.md"}
   },
   "version": "20261022000000"
 }
