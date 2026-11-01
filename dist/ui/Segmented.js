@@ -107,15 +107,20 @@ export function Segmented(props) {
             };
             const count = countText(item.count);
             const badge = countText(item.badge);
+            // 图标 / 文字 / 计数三者都没有文字内容时，这一段只有图标 ⇒ 要正方形（CSS 归零左右内距）。
+            const hasLabel = item.label !== undefined && item.label !== null && item.label !== '';
+            const hasIcon = item.icon !== undefined && item.icon !== null;
+            const iconOnly = hasIcon && !hasLabel && count === null && badge === null;
             const itemButton = h('button', {
                 key: item.value,
                 type: 'button',
-                className: 'dshpc-seg__item',
+                className: `dshpc-seg__item${iconOnly ? ' dshpc-seg__item--icon-only' : ''}`,
                 // 选中态用 aria-pressed 表达 ⇒ 读屏可读，皮肤也只认这一个选择器
                 'aria-pressed': on,
+                'aria-label': item.ariaLabel ?? (iconOnly ? item.tooltip : undefined),
                 disabled,
                 onClick: handle,
-            }, item.label, count === null ? null : h('span', { className: 'dshpc-seg__count' }, count), badge === null ? null : h('span', { className: 'dshpc-seg__badge' }, badge));
+            }, hasIcon ? h('span', { className: 'dshpc-seg__icon' }, item.icon) : null, hasLabel ? item.label : null, count === null ? null : h('span', { className: 'dshpc-seg__count' }, count), badge === null ? null : h('span', { className: 'dshpc-seg__badge' }, badge));
             // 段级悬停提示：走注入的官方 Tooltip（与 FieldHint 同一条路），不破坏分段布局。
             if (item.tooltip !== undefined && renderer !== undefined) {
                 return renderer({ label: item.tooltip, side: 'top', children: itemButton });

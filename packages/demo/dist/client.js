@@ -3297,6 +3297,14 @@ var SEGMENTED_CSS = `
 .dshpc-seg__item{appearance:none;display:inline-flex;align-items:center;gap:4px;box-sizing:border-box;height:calc(var(--dshpc-control-h-sm) - 6px);padding:0 12px;border:0;border-radius:var(--dshpc-radius-sm);background:transparent;color:var(--dshpc-fg-2);font-family:inherit;font-size:var(--dshpc-font-xs);font-weight:500;white-space:nowrap;cursor:pointer;flex:none;transition:color var(--dshpc-dur-fast) var(--dshpc-ease),background-color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-seg--md .dshpc-seg__item{height:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item{height:calc(var(--dshpc-control-h-lg) - 6px);}
+/* \u6BB5\u5185\u56FE\u6807\uFF08\u524D\u7F6E\uFF09\uFF1A\u4E0E Button \u540C\u53E3\u5F84 \u2014\u2014 inline-flex \u5403\u6389\u884C\u9AD8\u57FA\u7EBF\uFF0Csvg \u6309\u5757\u7EA7\u3002 */
+.dshpc-seg__icon{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}
+.dshpc-seg__icon svg{display:block;margin:0;}
+/* \u53EA\u6709\u56FE\u6807\uFF08\u65E0\u6587\u5B57 / \u8BA1\u6570 / \u89D2\u6807\uFF09\uFF1A\u6BB5\u5FC5\u987B\u662F\u6B63\u65B9\u5F62 \u21D2 \u5BBD = \u6BB5\u9AD8\u3001\u5DE6\u53F3\u5185\u8DDD\u5F52\u96F6\u3001\u5185\u5BB9\u5C45\u4E2D\uFF1B
+   \u5426\u5219\u57FA\u7840\u89C4\u5219\u7684 0 12px \u4F1A\u628A\u5B83\u62C9\u6210\u957F\u65B9\u5F62\u3002\u653E\u5728\u4E09\u6863\u4E4B\u540E\uFF1A\u540C\u540D\u7279\u5F02\u6027\u4E0B\u540E\u5199\u8005\u80DC\u3002 */
+.dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-sm) - 6px);padding:0;justify-content:center;}
+.dshpc-seg--md .dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-md) - 6px);}
+.dshpc-seg--lg .dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-lg) - 6px);}
 .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);}
 .dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--seg-on);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
@@ -6981,15 +6989,19 @@ function Segmented(props) {
       };
       const count3 = countText(item.count);
       const badge = countText(item.badge);
+      const hasLabel = item.label !== void 0 && item.label !== null && item.label !== "";
+      const hasIcon = item.icon !== void 0 && item.icon !== null;
+      const iconOnly = hasIcon && !hasLabel && count3 === null && badge === null;
       const itemButton = (0, import_react27.createElement)("button", {
         key: item.value,
         type: "button",
-        className: "dshpc-seg__item",
+        className: `dshpc-seg__item${iconOnly ? " dshpc-seg__item--icon-only" : ""}`,
         // 选中态用 aria-pressed 表达 ⇒ 读屏可读，皮肤也只认这一个选择器
         "aria-pressed": on,
+        "aria-label": item.ariaLabel ?? (iconOnly ? item.tooltip : void 0),
         disabled,
         onClick: handle
-      }, item.label, count3 === null ? null : (0, import_react27.createElement)("span", { className: "dshpc-seg__count" }, count3), badge === null ? null : (0, import_react27.createElement)("span", { className: "dshpc-seg__badge" }, badge));
+      }, hasIcon ? (0, import_react27.createElement)("span", { className: "dshpc-seg__icon" }, item.icon) : null, hasLabel ? item.label : null, count3 === null ? null : (0, import_react27.createElement)("span", { className: "dshpc-seg__count" }, count3), badge === null ? null : (0, import_react27.createElement)("span", { className: "dshpc-seg__badge" }, badge));
       if (item.tooltip !== void 0 && renderer2 !== void 0) {
         return renderer2({ label: item.tooltip, side: "top", children: itemButton });
       }
@@ -56439,7 +56451,7 @@ var DICT2 = {
     demoInputFamily: "Input \u5BB6\u65CF",
     inputHint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u4F20 hint \u53C2\u6570\u5373\u81EA\u52A8\u5728\u884C\u5C3E\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF08FieldHint \u672C\u4F53\u4ECD\u53EF\u5355\u72EC\u7528\uFF09\uFF1BInput \u4F20 icon \u5373\u5728\u5DE6\u4FA7\u52A0\u56FE\u6807\u69FD",
     switchTip: "\u5B98\u65B9 Switch\uFF08\u542F\u7528\u8BED\u4E49\uFF0C\u4E0D\u662F\u52FE\u9009\uFF09+ Checkbox + Segmented",
-    checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF1Bbordered \u662F\u5916\u6846\u6B3E\uFF08\u6700\u53F3\uFF0C\u53EF\u70B9\u7740\u73A9\uFF09\uFF1B\u661F\u671F\u65B9\u5757\u662F\u591A\u9009\u3002\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362",
+    checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF1Bbordered \u662F\u5916\u6846\u6B3E\uFF08\u6700\u53F3\uFF0C\u53EF\u70B9\u7740\u73A9\uFF09\uFF1B\u661F\u671F\u65B9\u5757\u662F\u591A\u9009\u3002icon \u5728\u524D\u3001\u53EA\u6709\u56FE\u6807\u65F6\u81EA\u52A8\u6B63\u65B9\u5F62\u3002\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362",
     segToneTitle: "Segmented \u9009\u4E2D\u7247\u914D\u8272\uFF08tone\uFF09",
     segToneHint: "\u4E0D\u4F20 = \u4E3B\u9898\u4EAE\u7247\uFF08\u767D\u7247 + \u6B63\u6587\u8272\uFF09\u3002\u4F20\u5185\u7F6E\u8272\u540D\uFF08\u4E0E Chip \u540C\u540D\uFF09\u65F6\u5E95\u4E0E\u5B57\u7531\u6838\u5FC3\u5B9A\u3001\u6DF1\u6D45\u4E24\u4E2A\u4E3B\u9898\u5404\u81EA\u6210\u7ACB\uFF08\u9EC4\u5E95\u81EA\u52A8\u914D\u6DF1\u5B57\uFF09\uFF1B\u4F20 { bg, fg } \u65F6\u4E24\u4E2A\u4E3B\u9898\u90FD\u7528\u8FD9\u4E00\u5BF9\u989C\u8272\uFF0C\u5BF9\u6BD4\u5EA6\u7531\u8C03\u7528\u65B9\u8D1F\u8D23\uFF1Btone \u4E5F\u538B\u8FC7 weekday \u7684\u9ED8\u8BA4\u84DD",
     pickerHint: '\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22\uFF08searchable \u5F00\u5173\uFF09/ \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\uFF1B\u89E6\u53D1\u5668\u4E0E\u9009\u9879\u90FD\u652F\u6301\u524D\u7F6E icon\uFF1B\u6587\u5B57\u9ED8\u8BA4\u5C45\u5DE6\uFF08align="center" \u624D\u5C45\u4E2D\uFF09\uFF1B\u591A\u9009\u5230\u4E0A\u9650\u540E\u5DF2\u9009\u9879\u4ECD\u53EF\u70B9\u9009\u53D6\u6D88',
@@ -56690,7 +56702,7 @@ var DICT2 = {
     demoInputFamily: "Input family",
     inputHint: "Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone); pass icon to Input to get a leading icon slot",
     switchTip: "Official Switch (enable semantics, not a tick) + Checkbox + Segmented",
-    checkboxHint: "Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select. Labels follow the locale",
+    checkboxHint: "Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select; icons lead the label and icon-only segments square themselves. Labels follow the locale",
     segToneTitle: "Segmented selected-pill colors (tone)",
     segToneHint: "Omitted = theme pill (white on body text). A built-in color name (same names as Chip) lets the core pick background and text per theme (yellow gets dark text); { bg, fg } uses that pair in both themes, contrast is the caller\u2019s call; tone also overrides weekday\u2019s default blue",
     pickerHint: 'Single / multi / max / search (searchable switch) / grouped / empty / degraded; trigger and options both take a leading icon; label is left-aligned by default (align="center" to center); multi-select at max still allows deselecting picked items',
@@ -58111,8 +58123,8 @@ var docData = {
         "en": "IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title)."
       },
       {
-        "zh": "Segmented\uFF1A`items`\uFF08\u5FC5\u586B\uFF09\u652F\u6301\u5355\u9009 / \u591A\u9009\uFF0C`size`\uFF08\u9ED8\u8BA4 lg\uFF1B\u4E09\u6863\u603B\u9AD8 24 / 28 / 32\uFF09\u3001`bordered`\uFF081px \u5916\u6846\uFF0C\u603B\u9AD8\u4E0D\u53D8\uFF09\u3001`multiple`\uFF08\u591A\u9009\uFF09\u3002\u5916\u89C2\u53EA\u6709\u4E00\u5957\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF0C\u9009\u4E2D\u7247\u7684\u63CF\u8FB9\u73AF\u4E0E\u9634\u5F71\u7531\u5BBF\u4E3B elevation token \u63D0\u4F9B\uFF08\u79BB\u7EBF\u515C\u5E95\u503C\u6CA1\u6709\u90A3\u5708\u73AF\uFF09\u3002\u9009\u4E2D\u7247\u914D\u8272\u53EA\u7ECF `tone`\uFF1A\u4F20\u5185\u7F6E\u8272\u540D\uFF08\u4E0E Chip \u540C\u540D\u7684 business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate\uFF09\u65F6\u5E95\u4E0E\u5B57\u7531\u6838\u5FC3\u5B9A\u3001\u6DF1\u6D45\u4E24\u4E3B\u9898\u5404\u81EA\u6210\u7ACB\uFF1B\u4F20 `{ bg, fg }` \u65F6\u4E24\u4E2A\u4E3B\u9898\u90FD\u7528\u8C03\u7528\u65B9\u8FD9\u4E00\u5BF9\u989C\u8272\uFF08\u5BF9\u6BD4\u5EA6\u7531\u8C03\u7528\u65B9\u8D1F\u8D23\uFF09\u3002\u6BB5\u5185 `count`\uFF08\u5F31\u5316\u7070\u5B57\uFF0C\u9009\u4E2D\u6BB5\u5185\u81EA\u52A8\u8DDF\u7740\u9009\u4E2D\u7247\u5B57\u8272\u63D0\u4EAE\uFF09/ `badge`\uFF08\u7EA2\u89D2\u6807\uFF09\u63A5\u53D7 `number | string`\uFF1A\u6570\u5B57 \u22640 \u4E0D\u663E\u793A\uFF0C\u5B57\u7B26\u4E32\u539F\u6837\u663E\u793A\uFF08\u5982 `1K` / `99+`\uFF09\u3002",
-        "en": "Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). The selected pill\u2019s colors go through `tone` only: a built-in color name (business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate, same names as Chip) lets the core pick background and text per theme; `{ bg, fg }` uses that pair verbatim in both themes (contrast is the caller\u2019s call). An item\u2019s `count` (muted text; auto-lightened to follow the selected pill\u2019s text color while selected) and `badge` (red pill) take `number | string`: numbers \u22640 render nothing, strings render as given (e.g. `'1K'` / `'99+'`)."
+        "zh": "Segmented\uFF1A`items`\uFF08\u5FC5\u586B\uFF09\u652F\u6301\u5355\u9009 / \u591A\u9009\uFF0C`size`\uFF08\u9ED8\u8BA4 lg\uFF1B\u4E09\u6863\u603B\u9AD8 24 / 28 / 32\uFF09\u3001`bordered`\uFF081px \u5916\u6846\uFF0C\u603B\u9AD8\u4E0D\u53D8\uFF09\u3001`multiple`\uFF08\u591A\u9009\uFF09\u3002\u5916\u89C2\u53EA\u6709\u4E00\u5957\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF0C\u9009\u4E2D\u7247\u7684\u63CF\u8FB9\u73AF\u4E0E\u9634\u5F71\u7531\u5BBF\u4E3B elevation token \u63D0\u4F9B\uFF08\u79BB\u7EBF\u515C\u5E95\u503C\u6CA1\u6709\u90A3\u5708\u73AF\uFF09\u3002\u9009\u4E2D\u7247\u914D\u8272\u53EA\u7ECF `tone`\uFF1A\u4F20\u5185\u7F6E\u8272\u540D\uFF08\u4E0E Chip \u540C\u540D\u7684 business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate\uFF09\u65F6\u5E95\u4E0E\u5B57\u7531\u6838\u5FC3\u5B9A\u3001\u6DF1\u6D45\u4E24\u4E3B\u9898\u5404\u81EA\u6210\u7ACB\uFF1B\u4F20 `{ bg, fg }` \u65F6\u4E24\u4E2A\u4E3B\u9898\u90FD\u7528\u8C03\u7528\u65B9\u8FD9\u4E00\u5BF9\u989C\u8272\uFF08\u5BF9\u6BD4\u5EA6\u7531\u8C03\u7528\u65B9\u8D1F\u8D23\uFF09\u3002\u6BB5\u5185 `icon` \u662F\u524D\u7F6E\u56FE\u6807\u69FD\uFF08\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u6570\u7EC4 / \u81EA\u7ED8\u8282\u70B9\u5747\u53EF\uFF09\uFF0C`label` \u4E5F\u53EF\u4F20\u8282\u70B9\uFF1B\u987A\u5E8F\u56FA\u5B9A\u4E3A icon \u2192 label \u2192 count\u3002\u53EA\u6709\u56FE\u6807\uFF08\u65E0\u6587\u5B57 / \u8BA1\u6570 / \u89D2\u6807\uFF09\u65F6\u8BE5\u6BB5\u81EA\u52A8\u53D8\u6B63\u65B9\u5F62\uFF08\u5BBD = \u6BB5\u9AD8\uFF09\uFF0C\u8BFB\u5C4F\u540D\u7528 `ariaLabel`\uFF0C\u7F3A\u7701\u9000\u56DE `tooltip`\u3002\u6BB5\u5185 `count`\uFF08\u5F31\u5316\u7070\u5B57\uFF0C\u9009\u4E2D\u6BB5\u5185\u81EA\u52A8\u8DDF\u7740\u9009\u4E2D\u7247\u5B57\u8272\u63D0\u4EAE\uFF09/ `badge`\uFF08\u7EA2\u89D2\u6807\uFF09\u63A5\u53D7 `number | string`\uFF1A\u6570\u5B57 \u22640 \u4E0D\u663E\u793A\uFF0C\u5B57\u7B26\u4E32\u539F\u6837\u663E\u793A\uFF08\u5982 `1K` / `99+`\uFF09\u3002",
+        "en": "Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). The selected pill\u2019s colors go through `tone` only: a built-in color name (business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate, same names as Chip) lets the core pick background and text per theme; `{ bg, fg }` uses that pair verbatim in both themes (contrast is the caller\u2019s call). An item\u2019s leading `icon` takes any node (official icon component, array, or custom); `label` also accepts a node; order is always icon \u2192 label \u2192 count. With only an icon (no label / count / badge) the segment squares itself (width = segment height), and the accessible name comes from `ariaLabel`, falling back to `tooltip`. An item\u2019s `count` (muted text; auto-lightened to follow the selected pill\u2019s text color while selected) and `badge` (red pill) take `number | string`: numbers \u22640 render nothing, strings render as given (e.g. `'1K'` / `'99+'`)."
       }
     ],
     "api": [
@@ -60744,6 +60756,19 @@ var CODE_SWITCH_SEG = `// \u5F00\u5173\u8BED\u4E49\u7528\u5B98\u65B9 Switch\uFF1
   onChange={setFilter}
 />
 
+// \u6BB5\u5185\u56FE\u6807\uFF1Aicon \u5728\u524D\u3001\u6587\u5B57\u5C45\u4E2D\u3001count \u5728\u540E
+<Segmented
+  items={[{ value: 'all', icon: h(IconSearchOutlineRegular, { size: 14 }), label: '\u5168\u90E8', count: 11 }]}
+  value={filter}
+  onChange={setFilter}
+/>
+// \u53EA\u6709\u56FE\u6807\uFF08\u65E0\u6587\u5B57 / \u8BA1\u6570\uFF09\uFF1A\u6BB5\u81EA\u52A8\u53D8\u6210\u6B63\u65B9\u5F62\uFF0C\u8BFB\u5C4F\u540D\u8D70 ariaLabel
+<Segmented
+  items={[{ value: 'search', icon: h(IconSearchOutlineRegular, { size: 14 }), ariaLabel: '\u641C\u7D22' }]}
+  value={iconSeg}
+  onChange={setIconSeg}
+/>
+
 // \u661F\u671F\u591A\u9009\uFF1Amultiple + value \u662F\u6570\u7EC4
 <Segmented
   multiple
@@ -60774,6 +60799,8 @@ function InputPage() {
   const [seg, setSeg] = (0, import_react65.useState)("week");
   const [filter2, setFilter] = (0, import_react65.useState)("all");
   const [multi, setMulti] = (0, import_react65.useState)(["1"]);
+  const [iconSeg, setIconSeg] = (0, import_react65.useState)("search");
+  const [iconSeg2, setIconSeg2] = (0, import_react65.useState)("all");
   const [kw, setKw] = (0, import_react65.useState)("");
   return (0, import_react65.createElement)(
     "div",
@@ -60952,6 +60979,25 @@ function InputPage() {
           })),
           value: multi,
           onChange: setMulti
+        }),
+        // 段内图标：icon 在前、文字居中、count 在后；只有图标（无文字 / 计数）时自动正方形
+        (0, import_react65.createElement)(Segmented, {
+          items: [
+            { value: "search", icon: (0, import_react65.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), ariaLabel: "\u641C\u7D22" },
+            { value: "clock", icon: (0, import_react65.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), ariaLabel: "\u65F6\u95F4" },
+            { value: "play", icon: (0, import_react65.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }), ariaLabel: "\u8FD0\u884C" }
+          ],
+          value: iconSeg,
+          onChange: setIconSeg
+        }),
+        (0, import_react65.createElement)(Segmented, {
+          items: [
+            { value: "all", icon: (0, import_react65.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: t3("segAll"), count: 11 },
+            { value: "doing", icon: (0, import_react65.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), label: t3("segDoing"), count: 5 },
+            { value: "done", icon: (0, import_react65.createElement)(import_dsh_client_ui_primitives2.IconCheckOutlineRegular, { size: 14 }), label: t3("segClaimed"), count: 11 }
+          ],
+          value: iconSeg2,
+          onChange: setIconSeg2
         })
       )
     ),
@@ -64950,9 +64996,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.15.1"}`],
-            [t3("buildDemo"), `v${"0.15.1"}`],
-            [t3("buildStamp"), "261101-005732-944"]
+            [t3("buildCore"), `v${"0.16.0"}`],
+            [t3("buildDemo"), `v${"0.16.0"}`],
+            [t3("buildStamp"), "261101-180105-228"]
           ].map(
             ([label, value]) => (0, import_react77.createElement)(
               "tr",
@@ -65276,9 +65322,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react79.createElement)("span", null, `core v${"0.15.1"}`),
-          (0, import_react79.createElement)("span", null, `demo v${"0.15.1"}`),
-          (0, import_react79.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261101-005732-944")
+          (0, import_react79.createElement)("span", null, `core v${"0.16.0"}`),
+          (0, import_react79.createElement)("span", null, `demo v${"0.16.0"}`),
+          (0, import_react79.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261101-180105-228")
         )
       )
     ),

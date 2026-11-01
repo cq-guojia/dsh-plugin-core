@@ -198,6 +198,22 @@ test('Segmented 每个内置 tone 都有底 / 字配对，黄底用 on-warning',
   assert.match(controls.SEGMENTED_CSS, /--tone-warning\{[^}]*--seg-on:var\(--dshpc-on-warning\)/)
 })
 
+test('Segmented 只有图标时必须是正方形（宽 = 段高，左右内距归零）', () => {
+  const css = controls.SEGMENTED_CSS
+  const sub = (decls) => Number(/calc\(var\(--dshpc-control-h-\w+\) - (\d+)px\)/.exec(decls ?? '')?.[1])
+  const baseItem = /^\.dshpc-seg__item\{([^}]*)\}/m.exec(css)?.[1]
+  const baseIconOnly = /^\.dshpc-seg__item--icon-only\{([^}]*)\}/m.exec(css)?.[1]
+  assert.ok(baseIconOnly !== undefined, '找不到只有图标段的规则')
+  assert.equal(sub(baseIconOnly), sub(baseItem), 'sm 档只有图标段宽 ≠ 段高')
+  assert.match(baseIconOnly, /padding:0/, '只有图标段的左右内距没归零，会被拉成长方形')
+  for (const tier of ['md', 'lg']) {
+    const item = new RegExp(`\\.dshpc-seg--${tier} \\.dshpc-seg__item\\{([^}]*)\\}`).exec(css)?.[1]
+    const iconOnly = new RegExp(`\\.dshpc-seg--${tier} \\.dshpc-seg__item--icon-only\\{([^}]*)\\}`).exec(css)?.[1]
+    assert.ok(iconOnly !== undefined, `${tier} 档缺只有图标段的规则`)
+    assert.equal(sub(iconOnly), sub(item), `${tier} 档只有图标段宽 ≠ 段高`)
+  }
+})
+
 test('快速失败：注入文本不得含反引号 / 反斜杠', () => {
   const bad = ['`', '\\'].filter((ch) => INJECTED.includes(ch))
   assert.deepEqual(bad, [], `注入文本出现非法字符：${JSON.stringify(bad)}`)

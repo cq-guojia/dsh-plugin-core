@@ -401,7 +401,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     demoInputFamily: 'Input 家族',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；传 hint 参数即自动在行尾挂标准问号提示（FieldHint 本体仍可单独用）；Input 传 icon 即在左侧加图标槽',
     switchTip: '官方 Switch（启用语义，不是勾选）+ Checkbox + Segmented',
-    checkboxHint: '外观对齐真实插件：灰底轨道 + 白色选中片；bordered 是外框款（最右，可点着玩）；星期方块是多选。文案随语言切换',
+    checkboxHint: '外观对齐真实插件：灰底轨道 + 白色选中片；bordered 是外框款（最右，可点着玩）；星期方块是多选。icon 在前、只有图标时自动正方形。文案随语言切换',
     segToneTitle: 'Segmented 选中片配色（tone）',
     segToneHint: '不传 = 主题亮片（白片 + 正文色）。传内置色名（与 Chip 同名）时底与字由核心定、深浅两个主题各自成立（黄底自动配深字）；传 { bg, fg } 时两个主题都用这一对颜色，对比度由调用方负责；tone 也压过 weekday 的默认蓝',
 
@@ -701,7 +701,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     demoInputFamily: 'Input family',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone); pass icon to Input to get a leading icon slot',
     switchTip: 'Official Switch (enable semantics, not a tick) + Checkbox + Segmented',
-    checkboxHint: 'Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select. Labels follow the locale',
+    checkboxHint: 'Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select; icons lead the label and icon-only segments square themselves. Labels follow the locale',
     segToneTitle: 'Segmented selected-pill colors (tone)',
     segToneHint: 'Omitted = theme pill (white on body text). A built-in color name (same names as Chip) lets the core pick background and text per theme (yellow gets dark text); { bg, fg } uses that pair in both themes, contrast is the caller’s call; tone also overrides weekday’s default blue',
 

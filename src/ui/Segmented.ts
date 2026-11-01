@@ -30,6 +30,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type ReactNode,
 } from 'react'
 import { getTooltipRenderer } from './tooltip.js'
 import { ensureComponentStyles } from './css.js'
@@ -57,8 +58,12 @@ interface ThumbRect {
 export interface SegmentedItem<T extends string = string> {
   /** 该段代表的值（唯一）。 */
   value: T
-  /** 段内文字。 */
-  label: string
+  /** 段内文字（也接受任意节点；只有图标时可省略）。 */
+  label?: ReactNode
+  /** 前置图标（官方图标组件 / 数组 / 调用方自绘节点均可）。 */
+  icon?: ReactNode
+  /** 读屏名：只有图标、没有文字时给（缺省退回 tooltip）。 */
+  ariaLabel?: string
   /** 段内角标（如「异常 3」）；数字 ≤0 视为没东西可数、不显示，字符串原样显示（如 `'99+'`）。danger 红圆标。 */
   badge?: number | string
   /** 段内中性计数（如筛选条「全部 11」）；口径同 badge，字符串照样显示（如 `'1K'`）。弱化灰字，不做角标。 */
@@ -210,15 +215,22 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
     }
     const count = countText(item.count)
     const badge = countText(item.badge)
+    // 图标 / 文字 / 计数三者都没有文字内容时，这一段只有图标 ⇒ 要正方形（CSS 归零左右内距）。
+    const hasLabel = item.label !== undefined && item.label !== null && item.label !== ''
+    const hasIcon = item.icon !== undefined && item.icon !== null
+    const iconOnly = hasIcon && !hasLabel && count === null && badge === null
     const itemButton = h('button', {
       key: item.value,
       type: 'button',
-      className: 'dshpc-seg__item',
+      className: `dshpc-seg__item${iconOnly ? ' dshpc-seg__item--icon-only' : ''}`,
       // 选中态用 aria-pressed 表达 ⇒ 读屏可读，皮肤也只认这一个选择器
       'aria-pressed': on,
+      'aria-label': item.ariaLabel ?? (iconOnly ? item.tooltip : undefined),
       disabled,
       onClick: handle,
-    }, item.label,
+    },
+      hasIcon ? h('span', { className: 'dshpc-seg__icon' }, item.icon) : null,
+      hasLabel ? item.label : null,
       count === null ? null : h('span', { className: 'dshpc-seg__count' }, count),
       badge === null ? null : h('span', { className: 'dshpc-seg__badge' }, badge))
     // 段级悬停提示：走注入的官方 Tooltip（与 FieldHint 同一条路），不破坏分段布局。

@@ -23,13 +23,17 @@
  * docs/design/ui-style-guide.md §五 的流程（改基础层，一处改全站生效）。
  */
 import type { ChipTone } from './Chip.js';
-import { createElement as h, type CSSProperties } from 'react';
+import { createElement as h, type CSSProperties, type ReactNode } from 'react';
 /** 一段（一个可选值）。 */
 export interface SegmentedItem<T extends string = string> {
     /** 该段代表的值（唯一）。 */
     value: T;
-    /** 段内文字。 */
-    label: string;
+    /** 段内文字（也接受任意节点；只有图标时可省略）。 */
+    label?: ReactNode;
+    /** 前置图标（官方图标组件 / 数组 / 调用方自绘节点均可）。 */
+    icon?: ReactNode;
+    /** 读屏名：只有图标、没有文字时给（缺省退回 tooltip）。 */
+    ariaLabel?: string;
     /** 段内角标（如「异常 3」）；数字 ≤0 视为没东西可数、不显示，字符串原样显示（如 `'99+'`）。danger 红圆标。 */
     badge?: number | string;
     /** 段内中性计数（如筛选条「全部 11」）；口径同 badge，字符串照样显示（如 `'1K'`）。弱化灰字，不做角标。 */

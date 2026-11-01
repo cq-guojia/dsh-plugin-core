@@ -63,6 +63,22 @@ test('Segmented 的 count / badge 收字符串（如 "1K"），数字 ≤0 仍�
   assert.equal((html.match(/dshpc-seg__count/g) ?? []).length, 1, 'count 为 0 的那段不该渲染计数')
 })
 
+test('Segmented 段内 icon：图标在前、文字居中、计数在后；只有图标时挂 icon-only 与读屏名', () => {
+  const html = renderToStaticMarkup(createElement(Segmented, {
+    items: [
+      { value: 'a', icon: createElement('svg', { 'data-probe': 'a' }), label: '甲', count: 3 },
+      { value: 'b', icon: createElement('svg', { 'data-probe': 'b' }), ariaLabel: '乙' },
+    ],
+    value: 'a',
+    onChange() {},
+  }))
+  assert.match(html, /class="dshpc-seg__icon"/, '图标没渲成 __icon 槽')
+  assert.ok(html.indexOf('dshpc-seg__icon') < html.indexOf('甲'), '图标必须排在文字前')
+  assert.ok(html.indexOf('甲') < html.indexOf('dshpc-seg__count'), '计数必须排在文字后')
+  assert.equal((html.match(/dshpc-seg__item--icon-only/g) ?? []).length, 1, '只有图标的那段才该挂 icon-only')
+  assert.match(html, /aria-label="乙"/, '只有图标时的读屏名没挂上')
+})
+
 test('Segmented tone：内置色名走类、自定义一对颜色内联写进根节点', () => {
   const items = [{ value: 'a', label: '甲' }]
   const named = renderToStaticMarkup(createElement(Segmented, { items, value: 'a', tone: 'teal', onChange() {} }))

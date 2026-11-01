@@ -396,6 +396,19 @@ const CODE_SWITCH_SEG = `// 开关语义用官方 Switch：label 只是无障碍
   onChange={setFilter}
 />
 
+// 段内图标：icon 在前、文字居中、count 在后
+<Segmented
+  items={[{ value: 'all', icon: h(IconSearchOutlineRegular, { size: 14 }), label: '全部', count: 11 }]}
+  value={filter}
+  onChange={setFilter}
+/>
+// 只有图标（无文字 / 计数）：段自动变成正方形，读屏名走 ariaLabel
+<Segmented
+  items={[{ value: 'search', icon: h(IconSearchOutlineRegular, { size: 14 }), ariaLabel: '搜索' }]}
+  value={iconSeg}
+  onChange={setIconSeg}
+/>
+
 // 星期多选：multiple + value 是数组
 <Segmented
   multiple
@@ -439,6 +452,8 @@ export function InputPage(): ReturnType<typeof h> {
   const [seg, setSeg] = useState<'day' | 'week' | 'month'>('week')
   const [filter, setFilter] = useState('all')
   const [multi, setMulti] = useState<string[]>(['1'])
+  const [iconSeg, setIconSeg] = useState('search')
+  const [iconSeg2, setIconSeg2] = useState('all')
   const [kw, setKw] = useState('')
 
   return h(
@@ -606,6 +621,25 @@ export function InputPage(): ReturnType<typeof h> {
           })),
           value: multi,
           onChange: setMulti,
+        }),
+        // 段内图标：icon 在前、文字居中、count 在后；只有图标（无文字 / 计数）时自动正方形
+        h(Segmented, {
+          items: [
+            { value: 'search', icon: h(IconSearchOutlineRegular, { size: 14 }), ariaLabel: '搜索' },
+            { value: 'clock', icon: h(IconClockOutlineRegular, { size: 14 }), ariaLabel: '时间' },
+            { value: 'play', icon: h(IconPlayOutlineRegular, { size: 14 }), ariaLabel: '运行' },
+          ],
+          value: iconSeg,
+          onChange: setIconSeg,
+        }),
+        h(Segmented, {
+          items: [
+            { value: 'all', icon: h(IconSearchOutlineRegular, { size: 14 }), label: t('segAll'), count: 11 },
+            { value: 'doing', icon: h(IconClockOutlineRegular, { size: 14 }), label: t('segDoing'), count: 5 },
+            { value: 'done', icon: h(IconCheckOutlineRegular, { size: 14 }), label: t('segClaimed'), count: 11 },
+          ],
+          value: iconSeg2,
+          onChange: setIconSeg2,
         }),
       ),
     ),
