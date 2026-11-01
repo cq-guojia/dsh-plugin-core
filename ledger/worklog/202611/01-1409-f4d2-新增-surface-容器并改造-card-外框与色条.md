@@ -1,7 +1,7 @@
 # 20261101-1409-f4d2-新增-surface-容器并改造-card-外框与色条: 新增 Surface 容器并改造 Card 外框与色条
 
 - **Tags**: 组件, 圆角, 容器
-- **Status**: open · 2026-11-01 14:09:51
+- **Status**: doing · 2026-11-01 14:19:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-01 14:09:51 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -34,3 +34,4 @@
 <!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
      Backfill with: progress log --id 20261101-1409-f4d2-新增-surface-容器并改造-card-外框与色条 --note "...". -->
 - 2026-11-01 14:09:51 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
+- 2026-11-01 14:19:59 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
