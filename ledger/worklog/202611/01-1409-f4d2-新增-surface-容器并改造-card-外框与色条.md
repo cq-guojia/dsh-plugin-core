@@ -1,7 +1,7 @@
 # 20261101-1409-f4d2-新增-surface-容器并改造-card-外框与色条: 新增 Surface 容器并改造 Card 外框与色条
 
 - **Tags**: 组件, 圆角, 容器
-- **Status**: doing · 2026-11-01 14:43:02 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-01 14:48:06 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-01 14:09:51 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -39,6 +39,7 @@
 - 圆角口径：全站控件统一 `--dshpc-radius-md`(12)，只有 Card 用 sm(8)（button.css:21 / field.css:18 / segmented.css:14 等）。
 - 命名调研：MUI 通用容器 `Box`、带皮肤的 `Paper`(elevated surface)；Chakra / Radix 用 `Box`；Ant / Joy / shadcn 用 `Card`；M3 里 `surface` 是色彩角色不是组件。本项目 token 已叫 `--dshpc-surface-*` ⇒ 组件名 `Surface`（用户 2026-11-01 拍板），Card / PanelDock 重名不可用。
 - 落地约束：css-contract 要求每个 CSS 常量内选择器唯一；新 CSS 必须进 gen-css MAP 且生成物入库；CSS 引用的 var() 必须来自 token 或本文件（否则按需注入下静默失效）。
+- 踩坑（用户 2026-11-01 截图指出）：`.dshpc-doc-block` 自己写了 `padding:12px 14px`，而它同时挂 `.dshpc-surface`（基类 `padding:var(--surface-pad)`），两者 (0,1,0) 同权 ⇒ demo 页先注入 DEMO_CSS、控件后注入 surface ⇒ **内距被吃成 0**，代码块标签贴边。修法：内距交给 Surface 的 `md` 档，demo.css 只留 margin 并加注释禁止再写框属性。
 
 ## Conclusion
 
@@ -58,3 +59,4 @@
 - 2026-11-01 14:23:14 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已认领并写入 Background/To Do/Process；下一步落 src/ui/surface.css
 - 2026-11-01 14:32:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · Surface 组件 + Card 复用外框（圆角 8→12）+ 色条四向/间距/props 完成；build、209 测试、codelint 全过；文档与 demo 已同步；未提交
 - 2026-11-01 14:43:02 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 收口完成：Surface 加 dashed 档（src/ui/surface.css:33），doc.tsx 三处骨架与 Placeholder/toolbar 虚线框改走 Surface，demo 裸圆角全改 token；build+build:demo+209 测试+codelint 全过；未提交
+- 2026-11-01 14:48:06 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修 demo 级联冲突：.dshpc-doc-block 的 padding 与 .dshpc-surface 同权被覆盖成 0，改由 Surface md 档提供（doc.tsx:83/154、demo.css:37）；build+build:demo+209 测试+codelint 全过
