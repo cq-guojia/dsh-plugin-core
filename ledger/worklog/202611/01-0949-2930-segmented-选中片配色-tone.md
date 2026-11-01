@@ -1,7 +1,7 @@
 # 20261101-0949-2930-segmented-选中片配色-tone: Segmented 选中片配色（tone）
 
 - **Tags**: Segmented, icon, 控件
-- **Status**: doing · 2026-11-01 09:53:41 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-01 10:02:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-01 09:49:30 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -40,3 +40,4 @@ Segmented 已支持段内 icon、节点 label 与 icon-only 正方形；文档�
      Backfill with: progress log --id 20261101-0949-2930-segmented-选中片配色-tone --note "...". -->
 - 2026-11-01 09:49:30 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-01 09:53:41 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · Segmented 已加 icon/节点 label/icon-only 正方形；build + 204 测试 + build:demo + codelint 全过，已交付待验收
+- 2026-11-01 10:02:14 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 v0.16.0：两包同号 bump、build/test 204 过、commit 4726e54 + push main、tag v0.16.0 已推
