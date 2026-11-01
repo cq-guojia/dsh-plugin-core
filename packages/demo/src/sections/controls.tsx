@@ -25,6 +25,7 @@ import {
   Segmented,
   SplitGroup,
   StripCard,
+  Surface,
   Textarea,
   WorkspacePicker,
   showToast,
@@ -140,7 +141,7 @@ function tipAnchor(text: string, side: 'top' | 'bottom' | 'right', align?: 'cent
   return h(Tooltip, props as never, h('button', {
     type: 'button',
     style: {
-      padding: '4px 10px', border: '1px solid var(--dshpc-border)', borderRadius: '6px',
+      padding: '4px 10px', border: '1px solid var(--dshpc-border)', borderRadius: 'var(--dshpc-radius-sm)',
       background: 'var(--dshpc-surface-1)', color: 'var(--dshpc-fg)', fontSize: '12px', cursor: 'pointer',
     },
   }, text))
@@ -1066,9 +1067,10 @@ export function TooltipPage(): ReturnType<typeof h> {
 
 // ── 卡片与容器 ──────────────────────────────────────────────────────────
 
-const CODE_CARD = `// Card：surface 底 + 1px 边框 + 圆角；action 里裸放一个元素也垂直居中
+const CODE_CARD = `// Card：复用 Surface 外框（底 + 1px 边框 + 圆角 12）；色条方位与间距都可配
 <Card
   accent="business"
+  bar={{ side: 'left', inset: 12, gap: 12 }}   // left / right / top / bottom
   action={<span style={{ color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)' }}>2026-10-18 创建</span>}
 >
   <div style={{ fontWeight: 600 }}>将 OpenSSH 上所有 NPM 安装迁移到 PNPM</div>
@@ -1076,10 +1078,22 @@ const CODE_CARD = `// Card：surface 底 + 1px 边框 + 圆角；action 里裸�
     <Chip>#npm</Chip>
     <Chip>#迁移</Chip>
   </div>
-</Card>
+</Card>`
 
-// accent 五档：business / success / warning / danger / neutral（或任意 CSS 色值）
-<Card accent="warning"><div>…</div></Card>`
+const CODE_SURFACE = `// Surface：底 / 边框 / 圆角 / 内距四根轴，圆角固定 12（与 Button 同档）
+<Surface tone="sunken" padding="md">
+  <div>任意内容</div>
+</Surface>
+
+// 下游自己建「一块面」时用它，不要再写 border + border-radius
+<Surface border="faint" padding="lg"><Card>…</Card></Surface>
+
+// 虚线占位框也走它，不要自己写 1px dashed
+<Surface tone="sunken" border="dashed" padding="lg">还没做的东西</Surface>`
+
+const CODE_BAR = `// 色条换边：side 之外还能单独调 size / inset（距卡片边）/ gap（距内容）/ length（上下时）
+<Card bar={{ side: 'right', inset: 10, gap: 8 }}>…</Card>
+<Card bar={{ side: 'top', size: 4, length: '40%' }}>…</Card>`
 
 const CODE_STRIP_CARD = `// StripCard：同色系浅底 + 方角 + 左缘 4px 通高色条（备注框、执行记录条同款）
 <StripCard
@@ -1112,6 +1126,21 @@ export function CardPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
+    h(DocProse, { id: 'surface' }),
+    h(
+      Example,
+      { title: t('demoSurfaceTitle'), hint: t('surfaceHint'), code: CODE_SURFACE },
+      h(
+        'div',
+        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', maxWidth: '640px' } },
+        (['plain', 'raised', 'sunken', 'subtle'] as const).map((tone) =>
+          h(Surface, { key: tone, tone, padding: 'md', style: { flex: '1 1 140px' } },
+            h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, `tone="${tone}"`),
+            h('div', { style: { marginTop: '6px' } }, h(Button, { size: 'sm', variant: 'outline' }, 'Button')),
+          ),
+        ),
+      ),
+    ),
     h(DocProse, { id: 'card' }),
     h(
       Example,
@@ -1150,6 +1179,20 @@ export function CardPage(): ReturnType<typeof h> {
             h(Card, { key: a, accent: a, style: { padding: '8px 12px' } },
               h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, `accent="${a}"`),
             ),
+          ),
+        ),
+      ),
+    ),
+    h(
+      Example,
+      { title: t('demoBarTitle'), hint: t('barHint'), code: CODE_BAR },
+      h(
+        'div',
+        { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', maxWidth: '640px' } },
+        (['left', 'right', 'top', 'bottom'] as const).map((side) =>
+          h(Card, { key: side, accent: 'business', bar: { side } },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)', fontWeight: 600 } }, `bar.side="${side}"`),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, 'inset 12 · gap 12'),
           ),
         ),
       ),
@@ -1681,7 +1724,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
                   'div',
                   null,
                   h('div', { style: { fontSize: '13px', lineHeight: '1.7' } }, '这里整个弹窗都由调用方自己定义：没有 footer，头部也换了一种排法（多排标题 + 副标题行）。内容区可放任意业务组件。'),
-                  h('div', { style: { marginTop: '12px', border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px', padding: '12px', fontSize: '13px' } }, '任意内容，例如一段说明或一个业务卡片。'),
+                  h(Surface, { border: 'faint', padding: 'md', style: { marginTop: '12px', fontSize: '13px' } }, '任意内容，例如一段说明或一个业务卡片。'),
                 ),
               )
             : null,
@@ -1850,20 +1893,19 @@ export function FeedbackPage(): ReturnType<typeof h> {
             'span',
             {
               style: {
-                display: 'inline-flex', padding: '6px', borderRadius: '999px',
+                display: 'inline-flex', padding: '6px', borderRadius: 'var(--dshpc-radius-pill)',
                 background: 'var(--dshpc-surface-sunken)',
               },
             },
             h(Loader, { size: 'sm' }),
           ),
           h(
-            'span',
+            Surface,
             {
+              padding: null,
               style: {
                 display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 10px',
-                borderRadius: 'var(--dshpc-radius-md)', background: 'var(--dshpc-surface-1)',
-                border: '1px solid var(--dshpc-border)', color: 'var(--dshpc-fg-2)',
-                fontSize: 'var(--dshpc-font-xs)',
+                color: 'var(--dshpc-fg-2)', fontSize: 'var(--dshpc-font-xs)',
               },
             },
             h(Loader, { variant: 'blocks', size: 'sm' }),

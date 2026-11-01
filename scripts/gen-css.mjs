@@ -46,6 +46,7 @@ const MAP = [
   ['src/ui/controls/section-head.css', 'src/ui/controls/section-head-css.generated.ts', 'SECTION_HEAD_CSS'],
   ['src/ui/picker.css', 'src/ui/picker-css.generated.ts', 'PICKER_CSS'],
   ['src/ui/feedback.css', 'src/ui/feedback-css.generated.ts', 'FEEDBACK_CSS'],
+  ['src/ui/surface.css', 'src/ui/surface-css.generated.ts', 'SURFACE_CSS'],
   ['src/ui/card.css', 'src/ui/card-css.generated.ts', 'CARD_CSS'],
   ['src/ui/chip.css', 'src/ui/chip-css.generated.ts', 'CHIP_CSS'],
   ['src/ui/panel-dock.css', 'src/ui/panel-dock-css.generated.ts', 'PANEL_DOCK_CSS'],

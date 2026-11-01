@@ -12,7 +12,7 @@
  */
 import { createElement as h, Fragment, type ReactNode } from 'react'
 import { CodeViewer } from '../../../dist/ui/CodeViewer.js'
-import { StripCard } from '../../../dist/ui/index.js'
+import { StripCard, Surface } from '../../../dist/ui/index.js'
 import { getLocale, t as coreT } from '../../../dist/utils/index.js'
 import { t, type DemoMessageKey } from './i18n.js'
 import { docData as RAW_DOC_DATA } from './doc-data.generated.js'
@@ -79,8 +79,8 @@ export function CodeOnly(props: {
 }): ReturnType<typeof h> {
   const label = props.label ?? (props.labelKey !== undefined ? t(props.labelKey) : t('docCode'))
   return h(
-    'div',
-    { className: 'dshpc-doc-block' },
+    Surface,
+    { border: 'faint', className: 'dshpc-doc-block' },
     h('div', { className: 'dshpc-doc-label' }, label),
     h(CodeViewer, {
       text: props.code,
@@ -106,8 +106,8 @@ export function Example(props: {
   children?: ReactNode
 }): ReturnType<typeof h> {
   return h(
-    'section',
-    { className: 'dshpc-doc-example' },
+    Surface,
+    { border: 'faint', padding: null, className: 'dshpc-doc-example' },
     h(
       'div',
       { className: 'dshpc-doc-example__head' },
@@ -150,8 +150,8 @@ export function Example(props: {
 /** API 表：属性 | 类型 | 默认值 | 说明（说明走字典或 docData，随语言切换）。title 用于一张表说不清时区分是哪组 API。 */
 export function ApiTable(props: { rows: readonly ApiRow[]; title?: string }): ReturnType<typeof h> {
   return h(
-    'div',
-    { className: 'dshpc-doc-block' },
+    Surface,
+    { border: 'faint', className: 'dshpc-doc-block' },
     h(
       'div',
       { className: 'dshpc-doc-label', style: props.title === undefined ? undefined : { textTransform: 'none' } },

@@ -31,12 +31,10 @@
   line-height: var(--dshpc-line-md);
 }
 
-/* 边框盒：用法块 / API 表的共同外壳 */
+/* 用法块 / API 表的共同外壳：框属性与内距全由核心 Surface 提供（圆角与全站同档 12），
+   这里只留外距。⚠️ 不要再在本类里写 border / padding / background —— 与 .dshpc-surface 同权重，
+   谁后注入谁赢，结果会随注入顺序漂移。 */
 .dshpc-doc-block {
-  border: 1px solid var(--dshpc-border-faint);
-  border-radius: var(--dshpc-radius-md);
-  background: var(--dshpc-surface-1);
-  padding: 12px 14px;
   margin: 0 0 16px;
 }
 
@@ -49,10 +47,8 @@
   margin-bottom: 8px;
 }
 
+/* 示例外壳同样复用 Surface（外框 / 圆角 / 底都在核心），这里只管裁切与间距。 */
 .dshpc-doc-example {
-  border: 1px solid var(--dshpc-border-faint);
-  border-radius: var(--dshpc-radius-md);
-  background: var(--dshpc-surface-1);
   overflow: hidden;
   margin: 0 0 16px;
 }

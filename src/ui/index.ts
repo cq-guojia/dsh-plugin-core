@@ -84,8 +84,18 @@ export {
   Card,
   StripCard,
   type CardAccent,
+  type CardBarOptions,
   type CardSharedProps,
 } from './Card.js'
+export {
+  Surface,
+  surfaceClass,
+  type SurfaceBorder,
+  type SurfacePadding,
+  type SurfaceProps,
+  type SurfaceRadius,
+  type SurfaceTone,
+} from './Surface.js'
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js'
 // 表格：第一档外观 = Table（后续 TableGrid / TableZebra 各自独立导出，引哪个打包哪个）。
 export { Table, type TableProps } from './Table.js'

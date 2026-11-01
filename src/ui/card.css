@@ -1,8 +1,23 @@
 
+/* ── Card / StripCard：Surface 外框 + 头部契约 + 色条 ─────────────────────
+   外框（底 / 边框 / 圆角 / 内距）全部来自 .dshpc-surface（src/ui/surface.css）：
+   本文件**不再写 border / border-radius**，圆角契约因此只有一个定义点（容器档 = 12）。
+   这里只管两件 Surface 不该知道的事：色条几何、头部布局。
+
+   色条几何默认值都可被 props 覆盖（Card.ts 写对应的 CSS 变量）：
+     --card-bar-size   条子粗细
+     --card-bar-inset  条子距卡片边缘的距离（= 贴边那一侧的内距）
+     --card-bar-gap    条子距内容的距离（= body 的 gap）
+     --card-bar-length 上下方位时的条长（100% = 跟内容同宽）
+   这些变量只在本文件消费（3 份文件一起引时，跨文件引用别处的变量会静默失效），
+   所以默认值必须写在这里，而不是令牌或别的皮肤里。 */
 .dshpc-card{
-  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;
   --card-accent:var(--dshpc-business);
   --card-accent-soft:var(--dshpc-business-soft);
+  --card-bar-size:6px;
+  --card-bar-inset:12px;
+  --card-bar-gap:12px;
+  --card-bar-length:100%;
 }
 /* 档位 → token（照 records-timeline 的 tone 模式：一个变量切档，不写 5 套规则；浅底与色条同源）。 */
 .dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}
@@ -20,34 +35,52 @@
 .dshpc-card--rose{--card-accent:var(--dshpc-rose);--card-accent-soft:var(--dshpc-rose-soft)}
 .dshpc-card--slate{--card-accent:var(--dshpc-slate);--card-accent-soft:var(--dshpc-slate-soft)}
 
-/* 头部一行 = 色条 + 主内容 + 右侧槽，**整体垂直居中**：调用方在 action 里裸放一个元素
+/* body = 色条 + 头部。方向跟着条子贴的边切 ⇒ 四个方位只是「换一个方向的 flex 项」，
+   不用为每个方位各写一套定位。 */
+.dshpc-card__body{display:flex;gap:var(--card-bar-gap);min-width:0}
+.dshpc-card--bar-top .dshpc-card__body,
+.dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}
+
+/* 头部一行 = 主内容 + 右侧槽，**整体垂直居中**：调用方在 action 里裸放一个元素
    （按钮 / 文字 / 图标）不用自己套容器居中；一行两行、右边怎么放由调用方在框内自定。 */
 .dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}
+.dshpc-card--bar-left .dshpc-card__head,
+.dshpc-card--bar-right .dshpc-card__head{flex:1 1 auto}
 .dshpc-card__main{flex:1;min-width:0}
 .dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}
 
-/* ── 外观一 · StripCard：同色系浅底 + 1px 不可见占位边框 + 方角 + 4px 通高方角色条贴左缘 ── */
-.dshpc-card--strip{
-  padding:12px 12px 12px 20px;border:1px solid transparent;
+/* 色条：左/右 = 竖向条（高度跟内容，最小一行）；上/下 = 横向条（长度默认跟内容同宽）。
+   右/下方位靠 order 排到头部之后，DOM 顺序始终不变。 */
+.dshpc-card__bar{flex:none;background:var(--card-accent);border-radius:var(--dshpc-radius-xs)}
+.dshpc-card--bar-left .dshpc-card__bar,
+.dshpc-card--bar-right .dshpc-card__bar{width:var(--card-bar-size);align-self:stretch;min-height:var(--dshpc-line-md)}
+.dshpc-card--bar-top .dshpc-card__bar,
+.dshpc-card--bar-bottom .dshpc-card__bar{width:var(--card-bar-length);height:var(--card-bar-size);align-self:flex-start}
+.dshpc-card--bar-right .dshpc-card__bar,
+.dshpc-card--bar-bottom .dshpc-card__bar{order:1}
+
+/* ── 外观一 · StripCard：同色系浅底 + 1px 不可见占位边框 + 方角 + 4px 通高方角色条贴左缘 ──
+   底色 / 方角 / 占位边框由 Surface 的三条修饰类提供（Card.ts 按 kind 传），此处只管内距与条子。 */
+.dshpc-card.dshpc-card--strip{
+  --card-bar-size:4px;--card-bar-inset:0;
+  padding:12px 12px 12px 20px;
   background:var(--card-accent-soft,transparent);
 }
-/* 左内边距 20px = 16 留白 + 4 条宽 ⇒ 内容从色条右缘起算；色条绝对定位通高，跟着内容高度自适应。 */
-.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--card-accent)}
+/* 左内边距 20px = 16 留白 + 4 条宽 ⇒ 内容从色条右缘起算；色条绝对定位通高，跟着内容高度自适应。
+   特异性 0,3,0：压过上面 .dshpc-card--bar-left .dshpc-card__bar 的宽度规则，与注入顺序无关。 */
+.dshpc-card.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;align-self:auto}
 
-/* ── 外观二 · Card：surface 底 + 1px 实色边框 + 圆角 + 行内圆角短条 ── */
-.dshpc-card--bordered{
-  /* 左内边距 12（比上/右/下 14 少 2）：竖条贴近边框；头部内缩 2px ⇒ 主内容跟着左移 2px，
-     竖条↔内容的 12px 间距不变——比「条子 left:-2 而内容不动」更正规（不靠相对定位硬补）。 */
-  padding:14px 14px 14px 12px;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);
-  background:var(--dshpc-surface-1);
-}
-.dshpc-card--bordered .dshpc-card__head{gap:12px}
-/* 短条：行内 flex 项，**高度跟着内容走**（stretch），最小一行文字（--dshpc-line-md）——
-   一行文字时条子与文字齐高，不会把卡撑高；竖条距左 12（= 左内边距），距上/右/下 14。 */
-.dshpc-card--bordered .dshpc-card__bar{width:6px;flex:none;align-self:stretch;min-height:var(--dshpc-line-md);border-radius:var(--dshpc-radius-xs);background:var(--card-accent)}
+/* ── 外观二 · Card：Surface 外框（底 + 1px 实色边框 + 圆角 12）+ 色条贴边那一侧的内距 ──
+   内距用 0,2,0 / 0,3,0 的长写法：高过 .dshpc-surface 的 padding 简写，与两份 CSS 的注入顺序无关。 */
+.dshpc-card.dshpc-card--bordered{padding:14px}
+.dshpc-card.dshpc-card--bordered.dshpc-card--bar-left{padding-left:var(--card-bar-inset)}
+.dshpc-card.dshpc-card--bordered.dshpc-card--bar-right{padding-right:var(--card-bar-inset)}
+.dshpc-card.dshpc-card--bordered.dshpc-card--bar-top{padding-top:var(--card-bar-inset)}
+.dshpc-card.dshpc-card--bordered.dshpc-card--bar-bottom{padding-bottom:var(--card-bar-inset)}
+
 .dshpc-card__toggle{
   display:inline-flex;align-items:center;justify-content:center;
-  width:24px;height:24px;padding:0;background:none;border:none;border-radius:6px;
+  width:24px;height:24px;padding:0;background:none;border:none;border-radius:var(--dshpc-radius-sm);
   color:var(--dshpc-fg-3);cursor:pointer;
 }
 .dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}

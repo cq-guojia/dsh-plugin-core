@@ -1871,6 +1871,78 @@ export const docData = {
       }
     ]
   },
+  "surface": {
+    "id": "surface",
+    "heading": {
+      "zh": "Surface（区域容器）",
+      "en": "Surface (region container)"
+    },
+    "prose": [
+      {
+        "zh": "纯框容器：底 / 边框 / 圆角 / 内距四根轴，无业务语义。圆角固定 12（与 Button 同档），是全站容器圆角的唯一来源——要「一块一块的面」就用它，不要再自己写 border + border-radius。",
+        "en": "A plain frame: background / border / radius / padding, nothing else. Radius is fixed at 12 (same tier as Button) and is the single source of container radii — use it instead of hand-rolling border + border-radius."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-surface",
+        "rows": [
+          {
+            "name": "tone",
+            "type": "'plain' | 'raised' | 'sunken' | 'subtle'",
+            "def": "'plain'",
+            "desc": {
+              "zh": "底色档（surface-1 / raised / sunken / chip 底）",
+              "en": "Background tier (surface-1 / raised / sunken / chip)"
+            }
+          },
+          {
+            "name": "border",
+            "type": "true | 'faint' | 'none' | 'dashed'",
+            "def": "true",
+            "desc": {
+              "zh": "none 保留 1px 透明占位，换外观不跳高；dashed 为虚线占位框",
+              "en": "'none' keeps a transparent 1px placeholder so heights stay stable; 'dashed' draws a dashed placeholder frame"
+            }
+          },
+          {
+            "name": "radius",
+            "type": "'sm' | 'md' | 'lg' | 'none'",
+            "def": "'md'",
+            "desc": {
+              "zh": "md = 12，与控件同档",
+              "en": "md = 12, same tier as controls"
+            }
+          },
+          {
+            "name": "padding",
+            "type": "'none' | 'sm' | 'md' | 'lg'",
+            "def": "'md'",
+            "desc": {
+              "zh": "内距档：0 / 8 / 12 / 16",
+              "en": "Inner padding tiers: 0 / 8 / 12 / 16"
+            }
+          },
+          {
+            "name": "className / style",
+            "type": "—",
+            "def": "—",
+            "desc": {
+              "zh": "追加类 / 样式",
+              "en": "Append class / style"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-surface-example",
+        "lang": "tsx",
+        "src": "import { Surface, Card } from 'dsh-plugin-core/ui'\n\n// 纯框：底 / 边框 / 圆角 / 内距四根轴。圆角固定 12，与 Button 同档。\nh(Surface, { tone: 'sunken', padding: 'md' }, h('div', null, '任意内容'))\n\n// 下游自己建「一块面」时用它，不要再写 border + border-radius：\nh(Surface, { border: 'faint', padding: 'lg' }, h(Card, null, '框里再放卡'))\n\n// 虚线占位框也走它，不要自己写 1px dashed：\nh(Surface, { tone: 'sunken', border: 'dashed', padding: 'lg' }, '还没做的东西')"
+      }
+    ]
+  },
   "card": {
     "id": "card",
     "heading": {
@@ -1879,8 +1951,8 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "两种外观，两个组件：Card = surface 底 + 1px 边框 + 圆角（padding 14px，左 12 使竖条贴边）；StripCard = 同色浅底 + 占位边框 + 方角。",
-        "en": "Two appearances, two components: Card = surface background + 1px border + rounded corners (padding 14px, left 12 so the strip hugs the edge); StripCard = same-hue light background + placeholder border + square corners."
+        "zh": "两种外观，两个组件：Card = Surface 外框（底 + 1px 边框 + 圆角 12）+ 色条（方位与间距可配）；StripCard = 同色浅底 + 占位边框 + 方角 + 通高左缘色条。",
+        "en": "Two appearances, two components: Card = Surface frame (background + 1px border + 12px radius) + rail (side and spacing configurable); StripCard = same-hue light background + placeholder border + square corners + full-height left rail."
       },
       {
         "zh": "头部整体垂直居中，`action` 里裸放一个元素即居中。颜色全走 token，明暗跟随宿主。",
@@ -1898,6 +1970,15 @@ export const docData = {
             "desc": {
               "zh": "档位映射到 design 的 token；也可传 '#f59e0b' 这类自定义值",
               "en": "Tiers map to design tokens; also accepts custom values like '#f59e0b'"
+            }
+          },
+          {
+            "name": "bar",
+            "type": "'left' | 'right' | 'top' | 'bottom' + size / inset / gap / length",
+            "def": "side 'left'",
+            "desc": {
+              "zh": "色条方位与几何：inset = 距卡片边缘、gap = 距内容、length = 上下方位时的条长（默认跟内容同宽）",
+              "en": "Rail side and geometry: inset = distance to card edge, gap = distance to content, length = rail length for top/bottom (defaults to content width)"
             }
           },
           {
@@ -1961,7 +2042,7 @@ export const docData = {
       {
         "id": "ui-card-example",
         "lang": "tsx",
-        "src": "import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'\n\nh(Card, {\n  accent: 'warning',\n  action: h(Button, { size: 'sm', variant: 'ghost' }, '跳过'),\n},\n  h('div', null, '标题'),\n  h(Chip, null, '#npm'),\n)\n\nh(StripCard, {\n  accent: 'success',\n  expanded: open, onToggle: () => setOpen(!open),\n  panel: h('div', null, '展开详情'),\n}, h('div', null, '标题 + 元信息'))"
+        "src": "import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'\n\nh(Card, {\n  accent: 'warning',\n  bar: { side: 'left', inset: 12, gap: 12 },   // 色条可放 left / right / top / bottom\n  action: h(Button, { size: 'sm', variant: 'ghost' }, '跳过'),\n},\n  h('div', null, '标题'),\n  h(Chip, null, '#npm'),\n)\n\nh(StripCard, {\n  accent: 'success',\n  expanded: open, onToggle: () => setOpen(!open),\n  panel: h('div', null, '展开详情'),\n}, h('div', null, '标题 + 元信息'))"
       }
     ]
   },

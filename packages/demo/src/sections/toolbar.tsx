@@ -1,5 +1,5 @@
 import { createElement as h, useState } from 'react'
-import { QuickToolbar, Segmented } from '../../../../dist/ui/index.js'
+import { QuickToolbar, Segmented, Surface } from '../../../../dist/ui/index.js'
 import {
   IconCopyOutlineRegular,
   IconSearchOutlineRegular,
@@ -55,27 +55,30 @@ export function ToolbarPage(): ReturnType<typeof h> {
         }),
         h(
           'div',
-          {
-            id: ANCHOR_ID,
-            style: {
-              width: 'min(560px, 100%)', padding: '16px 18px', boxSizing: 'border-box',
-              border: '1px dashed var(--dshpc-border)', borderRadius: '8px',
-              background: 'var(--dshpc-surface-sunken)',
-            },
-          },
-          h('div', { style: { fontWeight: 600, fontSize: '13px' } }, '锚定控件'),
+          { id: ANCHOR_ID },
           h(
-            'div',
-            { style: { marginTop: '6px', color: 'var(--dshpc-fg-3)', fontSize: '12px', lineHeight: '1.8' } },
-            '工具栏会贴在这个框的右缘外侧；窗口窄到放不下时自动退回屏幕右缘。',
+            Surface,
+            {
+              tone: 'sunken',
+              border: 'dashed',
+              padding: 'lg',
+              style: { width: 'min(560px, 100%)' },
+            },
+            h('div', { style: { fontWeight: 600, fontSize: '13px' } }, '锚定控件'),
+            h(
+              'div',
+              { style: { marginTop: '6px', color: 'var(--dshpc-fg-3)', fontSize: '12px', lineHeight: '1.8' } },
+              '工具栏会贴在这个框的右缘外侧；窗口窄到放不下时自动退回屏幕右缘。',
+            ),
           ),
         ),
         h(
-          'div',
+          Surface,
           {
+            border: 'dashed',
+            padding: null,
             style: {
               height: '55vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '1px dashed var(--dshpc-border)', borderRadius: '8px',
               color: 'var(--dshpc-fg-4)', fontSize: '13px',
             },
           },

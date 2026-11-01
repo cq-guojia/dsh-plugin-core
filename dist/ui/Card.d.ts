@@ -3,9 +3,24 @@ import { type Translate } from '../utils/i18n.js';
 /** 色条档位（映射到 design 的 token，不新增 token；也接受任意 CSS 颜色值）。 */
 export declare const CARD_ACCENTS: readonly ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"];
 export type CardAccent = (typeof CARD_ACCENTS)[number];
+/** 色条方位与几何；不给就用默认（左侧、6px 宽、距边 12、距内容 12）。 */
+export interface CardBarOptions {
+    /** 贴哪条边（默认 `left`）；`StripCard` 固定贴左，忽略此项。 */
+    side?: 'left' | 'right' | 'top' | 'bottom';
+    /** 条子粗细（默认 6px）。 */
+    size?: number | string;
+    /** 条子距卡片边缘的距离（默认 12px）。 */
+    inset?: number | string;
+    /** 条子距内容的距离（默认 12px）。 */
+    gap?: number | string;
+    /** 上下方位时的条长（默认 `100%` = 跟内容同宽）；左右方位忽略。 */
+    length?: number | string;
+}
 export interface CardSharedProps {
-    /** 左侧色条档位或任意 CSS 颜色值（如 `'#f59e0b'`）。 */
+    /** 色条档位或任意 CSS 颜色值（如 `'#f59e0b'`）。 */
     accent?: CardAccent | string;
+    /** 色条方位与几何；默认左侧。 */
+    bar?: CardBarOptions;
     /** 展开态（决定箭头朝向与 `panel` 显隐）。 */
     expanded?: boolean;
     /** 传了才显示右侧折叠箭头（全站唯一的 Chevron）；由调用方管展开状态。 */
@@ -21,12 +36,14 @@ export interface CardSharedProps {
     translate?: Translate;
 }
 /**
- * 卡片（框式）：surface 底 + 1px 边框 + 圆角，左缘行内 6px 圆角短条（高度随内容）。
+ * 卡片（框式）：复用 `Surface` 外框（surface 底 + 1px 边框 + 圆角 12），
+ * 色条默认贴左缘、6px 粗、圆角短条（高度随内容）；`bar.side` 可换成右/上/下。
  * 头部整体垂直居中；悬停浮出的按钮、一行两行由调用方在框内自定。
  *
  * ```tsx
  * h(Card, {
  *   accent: 'warning',
+ *   bar: { side: 'right', inset: 10, gap: 8 },
  *   action: h(Button, { size: 'sm', variant: 'ghost' }, '跳过'),
  * }, h('div', null, '标题 + 内容'))
  * ```

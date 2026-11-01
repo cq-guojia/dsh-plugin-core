@@ -15,6 +15,7 @@ import * as controls from '../dist/ui/controls-css.js'
 import { PICKER_CSS } from '../dist/ui/picker-css.js'
 import { FEEDBACK_CSS } from '../dist/ui/feedback-css.js'
 import { CARD_CSS } from '../dist/ui/card-css.js'
+import { SURFACE_CSS } from '../dist/ui/surface-css.js'
 import { CHIP_CSS } from '../dist/ui/chip-css.js'
 import { PANEL_DOCK_CSS } from '../dist/ui/panel-dock-css.js'
 import { MARQUEE_CSS } from '../dist/ui/marquee-css.js'
@@ -31,6 +32,7 @@ const CONSTANTS = {
   ),
   PICKER_CSS,
   FEEDBACK_CSS,
+  SURFACE_CSS,
   CARD_CSS,
   CHIP_CSS,
   PANEL_DOCK_CSS,
@@ -188,6 +190,25 @@ test('彩色实面上的弱化字（计数 / 禁用）从实面色派生，不�
     /\.dshpc-chip:disabled\{[^}]*color:color-mix\(in srgb,var\(--chip-fg\)/,
     'Chip 禁用态字色没有从 --chip-fg 派生',
   )
+})
+
+// 2026-11-01 用户对比发现：卡片外框圆角比框里的按钮还小（8 < 12），属圆角倒挂。
+// 契约：容器档 = md(12)，圆角只在 Surface 一处定义，其它皮肤不许再写裸值。
+test('圆角契约：Surface 容器档 = md(12)，Card 不自带圆角、不写裸值', () => {
+  assert.match(
+    SURFACE_CSS,
+    /\.dshpc-surface\{[^}]*--surface-radius:var\(--dshpc-radius-md\)/,
+    'Surface 的默认圆角不是 md(12)',
+  )
+  const bare = (css) =>
+    [...css.matchAll(/border-radius:([^;}]+)/g)]
+      .map((m) => m[1].trim())
+      .filter((v) => !/var\(--surface-radius\)|var\(--dshpc-radius-\w+\)/u.test(v))
+  assert.deepEqual(bare(SURFACE_CSS), [], 'Surface 出现裸圆角值')
+  assert.deepEqual(bare(CARD_CSS), [], 'Card 出现裸圆角值（应统一走 Surface / token 档）')
+  // 虚线档只能改「线型变量」，不能改写 border 属性——否则注入顺序一变就压不住基类
+  assert.match(SURFACE_CSS, /\.dshpc-surface--border-dashed\{--surface-border-style:dashed\}/)
+  assert.doesNotMatch(SURFACE_CSS, /\.dshpc-surface--border-dashed\{[^}]*border:/, '虚线档直接改了 border 属性')
 })
 
 test('Segmented 每个内置 tone 都有底 / 字配对，黄底用 on-warning', () => {

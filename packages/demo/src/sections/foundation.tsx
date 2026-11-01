@@ -47,7 +47,7 @@ export function FoundationPage(): ReturnType<typeof h> {
             { key: item.cssVar, style: { width: '104px' } },
             h('div', {
               style: {
-                height: '40px', borderRadius: '6px',
+                height: '40px', borderRadius: 'var(--dshpc-radius-sm)',
                 background: `var(${item.cssVar})`,
                 border: '1px solid var(--dshpc-border-faint)',
               },
@@ -70,7 +70,7 @@ export function FoundationPage(): ReturnType<typeof h> {
         h('code', {
           style: {
             fontFamily: 'var(--dshpc-font-mono)', fontSize: '13px', padding: '3px 10px',
-            borderRadius: '6px', background: 'var(--dshpc-open-bg)',
+            borderRadius: 'var(--dshpc-radius-sm)', background: 'var(--dshpc-open-bg)',
             color: typeof document !== 'undefined' && document.body.hasAttribute('data-ds-dark-theme')
               ? 'var(--dshpc-success)' : 'var(--dshpc-fg-2)',
           },

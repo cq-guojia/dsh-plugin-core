@@ -222,7 +222,7 @@ function DemoPage(): ReturnType<typeof h> {
               display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
               background: active === section.id ? 'var(--dshpc-open-bg)' : 'transparent',
               color: active === section.id ? 'var(--dshpc-business)' : 'var(--dshpc-fg)',
-              padding: '7px 10px', borderRadius: '6px', fontSize: '13px', marginBottom: '2px',
+              padding: '7px 10px', borderRadius: 'var(--dshpc-radius-sm)', fontSize: '13px', marginBottom: '2px',
             },
           },
           t(section.titleKey),

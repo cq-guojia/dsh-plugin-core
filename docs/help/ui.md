@@ -4,7 +4,7 @@
 
 > EN: ui — base controls
 
-导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Card、StripCard、Chip、Table、Pagination、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、QuickToolbar、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
+导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Surface、Card、StripCard、Chip、Table、Pagination、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、QuickToolbar、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
 
 ## 概览
 
@@ -233,13 +233,42 @@ h(DateTimePicker, {
 
 > EN: Without a renderer only the question-mark icon shows, no bubble.
 
+## Surface（区域容器）
+
+> EN: Surface (region container)
+
+纯框容器：底 / 边框 / 圆角 / 内距四根轴，无业务语义。圆角固定 12（与 Button 同档），是全站容器圆角的唯一来源——要「一块一块的面」就用它，不要再自己写 border + border-radius。
+
+> EN: A plain frame: background / border / radius / padding, nothing else. Radius is fixed at 12 (same tier as Button) and is the single source of container radii — use it instead of hand-rolling border + border-radius.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `tone` | `'plain' \| 'raised' \| 'sunken' \| 'subtle'` | 'plain' | 底色档（surface-1 / raised / sunken / chip 底） | Background tier (surface-1 / raised / sunken / chip) |
+| `border` | `true \| 'faint' \| 'none' \| 'dashed'` | true | none 保留 1px 透明占位，换外观不跳高；dashed 为虚线占位框 | 'none' keeps a transparent 1px placeholder so heights stay stable; 'dashed' draws a dashed placeholder frame |
+| `radius` | `'sm' \| 'md' \| 'lg' \| 'none'` | 'md' | md = 12，与控件同档 | md = 12, same tier as controls |
+| `padding` | `'none' \| 'sm' \| 'md' \| 'lg'` | 'md' | 内距档：0 / 8 / 12 / 16 | Inner padding tiers: 0 / 8 / 12 / 16 |
+| `className / style` | `—` | — | 追加类 / 样式 | Append class / style |
+
+```tsx id="ui-surface-example"
+import { Surface, Card } from 'dsh-plugin-core/ui'
+
+// 纯框：底 / 边框 / 圆角 / 内距四根轴。圆角固定 12，与 Button 同档。
+h(Surface, { tone: 'sunken', padding: 'md' }, h('div', null, '任意内容'))
+
+// 下游自己建「一块面」时用它，不要再写 border + border-radius：
+h(Surface, { border: 'faint', padding: 'lg' }, h(Card, null, '框里再放卡'))
+
+// 虚线占位框也走它，不要自己写 1px dashed：
+h(Surface, { tone: 'sunken', border: 'dashed', padding: 'lg' }, '还没做的东西')
+```
+
 ## Card / StripCard
 
 > EN: Card / StripCard
 
-两种外观，两个组件：Card = surface 底 + 1px 边框 + 圆角（padding 14px，左 12 使竖条贴边）；StripCard = 同色浅底 + 占位边框 + 方角。
+两种外观，两个组件：Card = Surface 外框（底 + 1px 边框 + 圆角 12）+ 色条（方位与间距可配）；StripCard = 同色浅底 + 占位边框 + 方角 + 通高左缘色条。
 
-> EN: Two appearances, two components: Card = surface background + 1px border + rounded corners (padding 14px, left 12 so the strip hugs the edge); StripCard = same-hue light background + placeholder border + square corners.
+> EN: Two appearances, two components: Card = Surface frame (background + 1px border + 12px radius) + rail (side and spacing configurable); StripCard = same-hue light background + placeholder border + square corners + full-height left rail.
 
 头部整体垂直居中，`action` 里裸放一个元素即居中。颜色全走 token，明暗跟随宿主。
 
@@ -248,6 +277,7 @@ h(DateTimePicker, {
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `accent` | `13 档 or 任意 CSS 色值（business/success/warning/danger/neutral + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）` | 'business' | 档位映射到 design 的 token；也可传 '#f59e0b' 这类自定义值 | Tiers map to design tokens; also accepts custom values like '#f59e0b' |
+| `bar` | `'left' \| 'right' \| 'top' \| 'bottom' + size / inset / gap / length` | side 'left' | 色条方位与几何：inset = 距卡片边缘、gap = 距内容、length = 上下方位时的条长（默认跟内容同宽） | Rail side and geometry: inset = distance to card edge, gap = distance to content, length = rail length for top/bottom (defaults to content width) |
 | `expanded` | `boolean` | 'false' | 展开态（箭头朝向 + panel 显隐） | Expanded state (arrow direction + panel show/hide) |
 | `onToggle` | `() => void` | — | 传了才显示右侧折叠箭头；展开状态由调用方管 | Only shows the right collapse arrow if provided; caller owns the expanded state |
 | `action` | `ReactNode` | — | 右上角操作区 | Top-right action area |
@@ -260,6 +290,7 @@ import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'
 
 h(Card, {
   accent: 'warning',
+  bar: { side: 'left', inset: 12, gap: 12 },   // 色条可放 left / right / top / bottom
   action: h(Button, { size: 'sm', variant: 'ghost' }, '跳过'),
 },
   h('div', null, '标题'),

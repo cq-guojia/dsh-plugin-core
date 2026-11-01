@@ -15,6 +15,7 @@ export { AlertModal, } from './AlertModal.js';
 export { ConfirmModal, } from './ConfirmModal.js';
 export { alertModal, confirmModal, } from './modal-host.js';
 export { CARD_ACCENTS, Card, StripCard, } from './Card.js';
+export { Surface, surfaceClass, } from './Surface.js';
 export { Chip } from './Chip.js';
 // 表格：第一档外观 = Table（后续 TableGrid / TableZebra 各自独立导出，引哪个打包哪个）。
 export { Table } from './Table.js';

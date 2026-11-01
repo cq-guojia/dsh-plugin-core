@@ -1,4 +1,5 @@
 import { createElement as h, type ReactNode } from 'react'
+import { Surface } from '../../../../dist/ui/index.js'
 import type { DemoMessageKey } from '../i18n.js'
 import { t } from '../i18n.js'
 import { QuickstartPage, HelpIndexPage } from './start.js'
@@ -124,13 +125,12 @@ export function Demo(props: {
  */
 export function Placeholder(props: { descKey: DemoMessageKey }): ReturnType<typeof h> {
   return h(
-    'div',
+    Surface,
     {
-      style: {
-        marginTop: '4px', padding: '16px 18px',
-        border: '1px dashed var(--dshpc-border)', borderRadius: '8px',
-        background: 'var(--dshpc-surface-sunken)', color: 'var(--dshpc-fg-3)',
-      },
+      tone: 'sunken',
+      border: 'dashed',
+      padding: 'lg',
+      style: { marginTop: '4px', color: 'var(--dshpc-fg-3)' },
     },
     h('div', {
       style: {
@@ -147,7 +147,7 @@ function SectionHead(props: { id: SectionId; title: string }): ReturnType<typeof
     'div',
     { id: `sec-${props.id}`, style: { margin: '28px 0 14px' } },
     h('h2', { style: { margin: 0, fontSize: '20px' } }, props.title),
-    h('div', { style: { height: '3px', width: '36px', background: 'var(--dshpc-business)', borderRadius: '2px', marginTop: '6px' } }),
+    h('div', { style: { height: '3px', width: '36px', background: 'var(--dshpc-business)', borderRadius: 'var(--dshpc-radius-xs)', marginTop: '6px' } }),
   )
 }
 

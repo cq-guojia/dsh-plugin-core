@@ -131,7 +131,7 @@ export function I18nPage(): ReturnType<typeof h> {
         h('code', {
           style: {
             fontFamily: 'var(--dshpc-font-mono)', fontSize: '13px', padding: '3px 10px',
-            borderRadius: '6px', background: 'var(--dshpc-open-bg)', color: 'var(--dshpc-business)',
+            borderRadius: 'var(--dshpc-radius-sm)', background: 'var(--dshpc-open-bg)', color: 'var(--dshpc-business)',
           },
         }, getLocale()),
       ),

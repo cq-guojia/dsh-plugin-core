@@ -255,7 +255,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
         onClick: () => { setOpenId(row.sessionId) },
         style: {
           display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px',
-          border: '1px solid var(--dshpc-border-faint)', borderRadius: '8px',
+          border: '1px solid var(--dshpc-border-faint)', borderRadius: 'var(--dshpc-radius-sm)',
           background: 'var(--dshpc-surface-2)', color: 'var(--dshpc-fg)',
           font: 'inherit', fontSize: '13px', textAlign: 'left', cursor: 'pointer',
         },

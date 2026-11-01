@@ -1,0 +1,40 @@
+
+/* ── Surface · 纯框容器 ───────────────────────────────────────────────────
+   只回答「一块面长什么样」：底 / 边 / 圆角 / 内距，四根轴，零业务语义。
+   它是**圆角契约的唯一真源**：容器档 = --dshpc-radius-md(12)，与 Button / Input 同档，
+   外框永远不小于里面的控件 —— 杜绝「卡片 8 < 按钮 12」这类倒挂（2026-11-01）。
+
+   所有轴都用**变量**表达，修饰类只改这些变量、不改属性：
+   消费方（Card、下游插件）自己写规则时，无论两份 CSS 谁先注入，胜负都不依赖顺序。
+
+     tone    plain(默认 surface-1) / raised / sunken / subtle
+     border  默认 1px 实线；faint 更淡；none 透明（保留 1px 占位，不跳高）；
+             dashed 虚线（占位框用，线色仍是 border token）
+     radius  默认 md；none / sm / lg
+     padding 默认由调用方选档；none / sm(8) / md(12) / lg(16)
+   基类不带内距：容器要自己算四边内距时（如 Card 的色条贴边），不传 pad 档即可，不需要覆盖。 */
+.dshpc-surface{
+  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;
+  --surface-bg:var(--dshpc-surface-1);
+  --surface-border:var(--dshpc-border);
+  --surface-border-style:solid;
+  --surface-radius:var(--dshpc-radius-md);
+  --surface-pad:0;
+  border:1px var(--surface-border-style) var(--surface-border);
+  border-radius:var(--surface-radius);
+  background:var(--surface-bg);
+  padding:var(--surface-pad);
+}
+.dshpc-surface--tone-raised{--surface-bg:var(--dshpc-surface-raised)}
+.dshpc-surface--tone-sunken{--surface-bg:var(--dshpc-surface-sunken)}
+.dshpc-surface--tone-subtle{--surface-bg:var(--dshpc-chip-bg)}
+.dshpc-surface--border-faint{--surface-border:var(--dshpc-border-faint)}
+.dshpc-surface--border-none{--surface-border:transparent}
+.dshpc-surface--border-dashed{--surface-border-style:dashed}
+.dshpc-surface--radius-none{--surface-radius:0}
+.dshpc-surface--radius-sm{--surface-radius:var(--dshpc-radius-sm)}
+.dshpc-surface--radius-lg{--surface-radius:var(--dshpc-radius-lg)}
+.dshpc-surface--pad-none{--surface-pad:0}
+.dshpc-surface--pad-sm{--surface-pad:var(--dshpc-space-2)}
+.dshpc-surface--pad-md{--surface-pad:var(--dshpc-space-3)}
+.dshpc-surface--pad-lg{--surface-pad:var(--dshpc-space-4)}
