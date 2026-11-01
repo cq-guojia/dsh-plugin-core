@@ -1,7 +1,7 @@
 # 20261101-1409-f4d2-新增-surface-容器并改造-card-外框与色条: 新增 Surface 容器并改造 Card 外框与色条
 
 - **Tags**: 组件, 圆角, 容器
-- **Status**: doing · 2026-11-01 14:32:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-01 14:43:02 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-01 14:09:51 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -24,11 +24,12 @@
 - [x] 色条 props：`side` left|right|top|bottom + `size` / `inset`(距卡片边) / `gap`(距内容) / `length`(上下时的条长)
 - [x] 自检：圆角契约（Surface=md、Card/Surface 无裸值）；`SURFACE_CSS` 进 css-contract 常量表
 - [x] 文档 docs/help/ui.doc.ts（新增 Surface 节 + Card 的 bar 行）与 demo（Surface / 四向色条两例）同步
+- [x] demo 自身收口：文档骨架 `.dshpc-doc-block` / `.dshpc-doc-example`、Placeholder 与虚线占位框改走 Surface；demo 内 6px/8px 裸圆角全部改 token 档；Surface 增 `border:'dashed'` 档
 - [ ] 下游 dsh-task-dispatch-table 改用 Surface（另开任务，等用户指令）
 
 ## Next
 
-等用户真机看 demo：Card 圆角 8→12、色条四向与间距。**未提交**（等用户指令）。
+等用户真机看 demo：Card 圆角 8→12、色条四向与间距，以及 demo 文档骨架 / 占位框是否已统一为 Surface（圆角 12）。**未提交**（等用户指令）。
 
 ## Process
 
@@ -41,7 +42,12 @@
 
 ## Conclusion
 
-（待完成）
+- 核心：`Surface`（四轴容器，圆角唯一真源 12）+ Card 复用外框；色条四向（`bar.side`）与 `size`/`inset`/`gap`/`length` 可配。
+- 收口：demo 文档骨架（CodeOnly / Example / ApiTable）、Placeholder、toolbar 两处虚线框改走 Surface；`.dshpc-doc-block` / `.dshpc-doc-example` 的 border/radius/background 从 demo.css 删除（只留排版）。
+- 裸值清零：demo 内 6px/8px 圆角全部改 `--dshpc-radius-sm` / `-xs` / `-pill`；Surface 新增 `border:'dashed'`（只改 `--surface-border-style` 变量，不改 border 属性，避免依赖注入顺序）。
+- 验证：`pnpm run build` / `build:demo` 干净；`node --test test/*.test.mjs` 209 全过；`koc-codelint` 25 文件六层全过。
+- 仍手写框的 3 处是按钮 / 色卡本体（blocks.tsx:258 会话行按钮、controls.tsx:144 Tooltip 锚点、foundation.tsx:52 色卡），非容器，圆角已走 token。
+- 未提交；下游 dsh-task-dispatch-table 未改（另开任务）。
 
 ## Execution Log
 
@@ -51,3 +57,4 @@
 - 2026-11-01 14:19:59 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
 - 2026-11-01 14:23:14 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已认领并写入 Background/To Do/Process；下一步落 src/ui/surface.css
 - 2026-11-01 14:32:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · Surface 组件 + Card 复用外框（圆角 8→12）+ 色条四向/间距/props 完成；build、209 测试、codelint 全过；文档与 demo 已同步；未提交
+- 2026-11-01 14:43:02 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 收口完成：Surface 加 dashed 档（src/ui/surface.css:33），doc.tsx 三处骨架与 Placeholder/toolbar 虚线框改走 Surface，demo 裸圆角全改 token；build+build:demo+209 测试+codelint 全过；未提交
