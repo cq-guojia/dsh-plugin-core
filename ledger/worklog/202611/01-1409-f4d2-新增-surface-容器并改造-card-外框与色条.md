@@ -1,7 +1,7 @@
 # 20261101-1409-f4d2-新增-surface-容器并改造-card-外框与色条: 新增 Surface 容器并改造 Card 外框与色条
 
 - **Tags**: 组件, 圆角, 容器
-- **Status**: doing · 2026-11-01 14:23:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-01 14:32:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-01 14:09:51 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -19,15 +19,16 @@
 
 ## To Do
 
-- [ ] `Surface` 容器：tone(底色) / border(边框) / radius(圆角) / padding(内距) 四轴，零业务语义
-- [ ] Card 根节点挂 `.dshpc-surface` 复用外框，删掉自己写的 border / radius；圆角统一 12
-- [ ] 色条 props：`side` left|right|top|bottom + `size` / `inset`(距卡片边) / `gap`(距内容) / `length`(上下时的条长)
-- [ ] 自检：圆角只许 token 档；`SURFACE_CSS` 进 css-contract 常量表
-- [ ] 文档 docs/help/ui.doc.ts 与 demo packages/demo/src/sections/controls.tsx 同步
+- [x] `Surface` 容器：tone(底色) / border(边框) / radius(圆角) / padding(内距) 四轴，零业务语义
+- [x] Card 根节点挂 `.dshpc-surface` 复用外框，删掉自己写的 border / radius；圆角统一 12
+- [x] 色条 props：`side` left|right|top|bottom + `size` / `inset`(距卡片边) / `gap`(距内容) / `length`(上下时的条长)
+- [x] 自检：圆角契约（Surface=md、Card/Surface 无裸值）；`SURFACE_CSS` 进 css-contract 常量表
+- [x] 文档 docs/help/ui.doc.ts（新增 Surface 节 + Card 的 bar 行）与 demo（Surface / 四向色条两例）同步
+- [ ] 下游 dsh-task-dispatch-table 改用 Surface（另开任务，等用户指令）
 
 ## Next
 
-写 `src/ui/surface.css`（真源）→ `scripts/gen-css.mjs` MAP 加一行 → `src/ui/surface-css.ts` re-export → 跑生成 → `src/ui/Surface.ts` + `src/ui/index.ts` 导出。
+等用户真机看 demo：Card 圆角 8→12、色条四向与间距。**未提交**（等用户指令）。
 
 ## Process
 
@@ -49,3 +50,4 @@
 - 2026-11-01 14:09:51 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
 - 2026-11-01 14:19:59 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
 - 2026-11-01 14:23:14 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已认领并写入 Background/To Do/Process；下一步落 src/ui/surface.css
+- 2026-11-01 14:32:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · Surface 组件 + Card 复用外框（圆角 8→12）+ 色条四向/间距/props 完成；build、209 测试、codelint 全过；文档与 demo 已同步；未提交
