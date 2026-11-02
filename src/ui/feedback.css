@@ -8,8 +8,8 @@
 }
 /* body = 唯一滚动容器：内距与滚动都归它（滚动条贴面板右缘，不被内距挤进来）；
    内容按流排，不设 height:100%、不自己开滚动条。 */
-.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 31px}
-.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 31px 18px}
+.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px}
+.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px 18px}
 .dshpc-toast-host{
   position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);
   display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;

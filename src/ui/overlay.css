@@ -18,7 +18,7 @@
 
 /* 头部四槽：左图标 / 标题组 / 弹性间隔 / 右侧动作区 + 关闭钮。 */
 .dshpc-overlay-head{
-  display:flex;align-items:center;gap:8px;padding:18px 31px 12px;
+  display:flex;align-items:center;gap:8px;padding:18px 18px 12px;
   border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;
 }
 .dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
