@@ -1,7 +1,7 @@
 # 20261102-0251-3c4d-新增侧边覆盖弹窗-sidesheet: 新增侧边覆盖弹窗 SideSheet
 
 - **Tags**: 控件, 弹窗, 覆盖式, SideSheet
-- **Status**: doing · 2026-11-02 03:03:48 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-02 03:15:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-02 02:51:29 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -24,13 +24,13 @@
 ## To Do
 
 - **真机验证**（本仓没有浏览器渲染测试）：左侧滑入动效、遮罩与右侧分栏同开时的让位、明暗两套、与宿主弹窗 / 菜单的 z 层叠。
-- demo 未加展示页（用户没要求；加了要发版）。
+- demo 展示已加（ui 页 → 反馈件 → 「侧边抽屉（覆盖式）」，左 / 右 / 带底栏三颗按钮），但 demo 走 npm 分发，**只有打 tag 才看得到**，当前未发版。
 - 拖宽、宽度记忆、收起耳朵**明确不做**（那是 PanelDock 的能力）。
 
 ## Next
 
 - 真机验收：插件里写 `{open && h(SideSheet, { title, onClose }, children)}`，确认从左侧滑入、遮罩盖住主区但不压暗右侧 PanelDock、Esc 与 ✕ 都能关。
-- 验收通过后再决定要不要进 demo 页（进就得 bump 版本 + 打 tag）。
+- 要用户在插件市场看到 demo 展示：bump 0.18.0 → build + build:demo → commit + push → tag v0.18.0（等用户明确说「发版」）。
 
 ## Process
 
@@ -55,3 +55,4 @@
 - 2026-11-02 02:51:29 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
 - 2026-11-02 02:58:14 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
 - 2026-11-02 03:03:48 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 新增 SideSheet（src/ui/SideSheet.ts）+ 抽公共件 overlay.ts/overlay.css（OverlayMask/OverlayHead/useEscapeClose），Modal 改用公共件；build 干净、test 215 条全过、codelint 全过；待真机验收
+- 2026-11-02 03:15:19 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 补 SideSheet 展示（反馈件页：左/右/带底栏）；顺手修掉改名残留 dshpc-modal__sid → dshpc-overlay-head__sid（demo 三处）；typecheck + build:demo + test 215 全过
