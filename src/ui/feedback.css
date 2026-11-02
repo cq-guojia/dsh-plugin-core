@@ -9,8 +9,9 @@
   box-shadow:var(--dshpc-shadow-2);overflow:hidden;
 }
 /* body = 唯一滚动容器：内距与滚动都归它（滚动条贴面板右缘，不被内距挤进来）；
-   内容按流排，不设 height:100%、不自己开滚动条。 */
-.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px}
+   内容按流排，不设 height:100%、不自己开滚动条。
+   透明右边框 = 让滚动条与面板右缘隔 1px（口径见 style.md §滚动条让位）。 */
+.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px;border-right:1px solid transparent}
 /* 底栏与头部同一口径（2026-11-02 用户）：上下内距相等、内容垂直居中、默认带一条分隔线。
    线可由消费方关掉（Modal 的 footerDivider=false）—— 确认框家族本来就没有线（与头部一致）。 */
 .dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}

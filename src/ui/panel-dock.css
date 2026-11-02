@@ -2,10 +2,9 @@
    「分栏压过来，不是盖上去」）。所以调用方必须把它放进自己的 flex 根里。
    皮肤（头部 / 拖拽条 / 关闭钮 / 背景阴影）在 side-panel.css，与 SideSheet 共用。 */
 .dshpc-dock{display:flex;flex:0 0 auto;align-self:stretch;min-width:0}
-/* 开着时给主区滚动条让出一条缝：滚动条贴死分隔线很难看（用户 2026-10-28，对齐
-   dsh-better-sidebar 的留白）。全关时整条 dock 退出，缝隙一起消失、不留白边。
-   缝宽可由调用方盖 --dshpc-dock-gap；TS 侧的让位量（DOCK_GAP）要与它一致。 */
-.dshpc-dock--open{margin-left:var(--dshpc-dock-gap,1px)}
+/* dock 不再替主区让缝（原 --dshpc-dock-gap 的 1px margin 已删，用户 2026-11-02）：
+   滚动条与容器边缘的 1px 统一由滚动容器自己的透明边框提供（见 style.md §滚动条让位），
+   主区容器带了让位，滚动条与这条分隔线之间自然还是 1px。别再往这里加 margin。 */
 
 /* 自动加的宿主行（openFilePreview 加 / 关闭即摘）：消费方那行不必自己写 flex。
    只让「第一个非预览子项」当主区伸展，其余直接子项不动（页脚条、工具条不误伤）；

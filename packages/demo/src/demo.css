@@ -103,6 +103,9 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
+  /* 滚动条与右 / 下缘隔 1px（口径见 docs/design/style.md §滚动条让位） */
+  border-right: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 
 .dshpc-doc-api {

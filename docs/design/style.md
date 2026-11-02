@@ -156,6 +156,35 @@ EN: Welding controls into one visual unit has exactly one recipe: the shell owns
 `SplitGroup` overrides inner classes with descendant selectors, so those class names are the coupling point —
 rename them and you must update `src/ui/controls/split-group.css`, or the weld fails silently.
 
+## 滚动条让位：一律离边缘 1px
+
+> EN: Scrollbars always sit 1px off the edge
+
+本仓每个滚动容器（`overflow:auto` / `overflow-y:auto` / `overflow-x:auto`）都要带一条**透明边框**：
+纵向滚的加 `border-right`，横向滚的加 `border-bottom`，双向就两条：
+
+```css
+border-right: 1px solid transparent;
+```
+
+原理：原生滚动条画在 padding box 之外、border 之内 —— 只有 border 能把它推离边缘，加 padding 无效。
+**滚动条一律用浏览器默认样式，不许自绘。** 2026-11-02 试过 `::-webkit-scrollbar` 改 thumb（留 3px
+缝 + 圆角）当场被否：用户要的就是「让出 1 像素」，不是换一套滚动条外观。所以口径只有一条 ——
+让位量固定 1px，颜色 / 粗细 / 圆角全部归浏览器。
+
+- 已有实色边框的容器（如 Picker 菜单的 `border:1px solid`）滚动条贴的就是那条线，算已让位，**不要叠加**。
+- 消费方自己的滚动容器（主区 / 侧栏）不在本仓代码里，配方相同：自己加那条 `border-right`。
+  2026-11-02 起 `--dshpc-dock-gap` 已删，dock 不再替主区让 margin，改由主区容器自己让。
+- 自检：`test/quality.test.mjs` 扫 `src/**/*.css`，滚动规则缺边框即红。
+
+EN: every scroll container in this repo carries a transparent `border-right` (and `border-bottom` when it
+scrolls horizontally). Native scrollbars are painted between the padding box and the border, so a border is
+the only thing that moves them off the edge — padding does nothing. **Never restyle the scrollbar itself**:
+a `::-webkit-scrollbar` thumb (3px gap + radius) was tried on 2026-11-02 and rejected — the ask is exactly
+"give up 1 pixel", not a different scrollbar look; the inset stays 1px and the rest belongs to the browser.
+Containers that already have a solid border count as done. Consumer-owned scroll containers use the same
+one-liner; `--dshpc-dock-gap` was removed on 2026-11-02. A test enforces the border.
+
 ## 三条硬规矩
 
 > EN: Three hard rules

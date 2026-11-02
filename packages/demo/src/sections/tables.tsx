@@ -14,6 +14,9 @@ import {
 import { DocApi, DocCode, DocProse, Example } from '../doc.js'
 import { t } from '../i18n.js'
 
+/** 表格横滚外壳：横向滚动条与底边隔 1px（口径见 docs/design/style.md §滚动条让位）。 */
+const H_SCROLL = { overflowX: 'auto', borderBottom: '1px solid transparent' } as const
+
 /**
  * 主表示例（外观一：带全框）：把「列级配置」全摆出来 —— 多色表头、全框 + 列间竖线、
  * 居中 / 右对齐、头像 + 姓名 + 编号的多内容单元格、斑马纹、可点选中。
@@ -306,7 +309,7 @@ export function TablePage(): ReturnType<typeof h> {
       { title: 'Table', hint: t('tableHint') },
       h(
         'div',
-        { style: { overflowX: 'auto' } },
+        { style: H_SCROLL },
         h(Table, {
           columns: COLUMNS,
           rows: rowsOf(),
@@ -321,7 +324,7 @@ export function TablePage(): ReturnType<typeof h> {
       ),
       h(
         'div',
-        { style: { overflowX: 'auto', marginTop: '16px' } },
+        { style: { ...H_SCROLL, marginTop: '16px' } },
         h(Table, {
           columns: COLUMNS,
           rows: [],
@@ -336,7 +339,7 @@ export function TablePage(): ReturnType<typeof h> {
       { title: 'Density · borders · spans', hint: t('tableSpanHint') },
       h(
         'div',
-        { style: { overflowX: 'auto' } },
+        { style: H_SCROLL },
         h(Table, {
           columns: SPAN_COLUMNS,
           rows: SPAN_ROWS,
@@ -370,7 +373,7 @@ export function TablePage(): ReturnType<typeof h> {
       ),
       h(
         'div',
-        { style: { overflowX: 'auto', marginTop: '12px' } },
+        { style: { ...H_SCROLL, marginTop: '12px' } },
         h(Table, {
           columns: GROUP_COLUMNS,
           groups: GROUPS,
@@ -434,7 +437,7 @@ export function TablePage(): ReturnType<typeof h> {
       { title: 'Table · 分页', hint: t('tablePagerHint') },
       h(
         'div',
-        { style: { overflowX: 'auto' } },
+        { style: H_SCROLL },
         h(Table, {
           columns: COLUMNS,
           // 不传 pagination.total ⇒ 本地分页：这里是全量 12 行，Table 自己按当前页切片
@@ -470,7 +473,7 @@ export function TablePage(): ReturnType<typeof h> {
         'div',
         {
           style: {
-            overflowX: 'auto',
+            ...H_SCROLL,
             marginTop: '12px',
             display: 'flex',
             flexDirection: 'column',

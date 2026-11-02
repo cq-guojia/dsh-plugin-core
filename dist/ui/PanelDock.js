@@ -23,10 +23,6 @@ import { FEEDBACK_CSS } from './feedback-css.js';
 // （`.dshpc-overlay` 的 right inset 读的就是这个变量）。挂在根元素上，是因为遮罩不保证
 // 是本 dock 那个 flex 行的后代；同页多个 dock 按实例求和，全部关掉即移除变量。
 const INSET_VAR = '--dshpc-page-inset-right';
-/** 分栏开着时给主区滚动条留的缝（px）：滚动条与分隔线只留 1px（用户 2026-10-28：
- *  「有一像素就可以了」）。缝隙也是 dock 的足迹 —— 遮罩让位量要一并计入，否则遮罩会盖住它。
- *  调用方可用 `--dshpc-dock-gap` 盖缝宽，但 TS 这份要跟着改。 */
-const DOCK_GAP = 1;
 const dockInsets = new Map();
 let dockSeq = 0;
 function publishInset(key, width, el) {
@@ -248,9 +244,9 @@ export function PanelDock(props) {
         .filter((pane) => state.ids.includes(pane.id))
         .reduce((sum, pane) => sum + widthOf(pane), 0);
     // 开合 / 拖宽松手后同步一次（拖拽中的实时值由 onMove 写）；卸载归零，别把变量留给下一个人。
-    // 让位量 = 已开栏宽 + 开着时的留缝（缝隙也算 dock 足迹，遮罩边界才贴得到分隔线上）。
+    // 让位量 = 已开栏宽（不留缝：滚动条的 1px 让位在主区容器自己身上）。
     useEffect(() => {
-        publishInset(insetKey.current, state.ids.length > 0 ? totalWidth + DOCK_GAP : 0, rootRef.current);
+        publishInset(insetKey.current, state.ids.length > 0 ? totalWidth : 0, rootRef.current);
     });
     useEffect(() => () => {
         publishInset(insetKey.current, 0, null);
@@ -284,8 +280,8 @@ export function PanelDock(props) {
             },
             onMove: (width) => {
                 element.style.width = `${width}px`;
-                // 遮罩的右边界跟着走，否则拖出去的那条缝会被遮罩压住（用户 2026-10-22）；含留缝。
-                publishInset(insetKey.current, restWidth(pane.id) + width + DOCK_GAP, rootRef.current);
+                // 遮罩的右边界跟着走，否则拖出去的那条缝会被遮罩压住（用户 2026-10-22）。
+                publishInset(insetKey.current, restWidth(pane.id) + width, rootRef.current);
             },
             onCommit: (width) => {
                 element.classList.remove('dshpc-dock__panel--resizing');

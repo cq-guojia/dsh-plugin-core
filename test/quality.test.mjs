@@ -65,3 +65,30 @@ test('ui 层不许再用字形箭头，一律走 Chevron', async () => {
   await walk('../src/ui')
   assert.deepEqual(hits, [], `ui 层出现字形箭头（改用 Chevron）：\n${hits.join('\n')}`)
 })
+
+// 2026-11-02 用户口径：所有滚动条都要和容器边缘隔 1px（贴死了看不出是滚动条）。
+// CSS 没有「可滚动」选择器，写不出一条全局规则 ⇒ 只能靠这条扫源码的自检拦住新增容器漏加。
+// 通过条件：滚动规则自带透明边框（让位）或实色边框（滚动条贴的是那条线，视觉上已让位）。
+test('滚动容器都与边缘隔 1px（透明边框或实色边框）', async () => {
+  const hits = []
+  const walk = async (rel) => {
+    for (const entry of await readdir(new URL(rel, import.meta.url), { withFileTypes: true })) {
+      const next = `${rel}/${entry.name}`
+      if (entry.isDirectory()) await walk(next)
+      else if (entry.name.endsWith('.css')) {
+        const css = (await readFile(new URL(next, import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
+        for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+          if (!/overflow(-[xy])?\s*:\s*(auto|scroll)/.test(body)) continue
+          if (/\bborder(-(right|bottom))?\s*:/.test(body)) continue
+          hits.push(`${next.slice('../'.length)} → ${selector.trim().split('\n').pop()}`)
+        }
+      }
+    }
+  }
+  await walk('../src')
+  assert.deepEqual(
+    hits,
+    [],
+    `滚动容器缺 1px 让位（border-right/-bottom: 1px solid transparent，见 style.md §滚动条让位）：\n${hits.join('\n')}`,
+  )
+})

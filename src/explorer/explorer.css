@@ -85,8 +85,9 @@
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;
 }
 
-/* 主体（兄弟 .dsh-tdt-sv-preview-body / -hint / -preview-err） */
-.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px}
+/* 主体（兄弟 .dsh-tdt-sv-preview-body / -hint / -preview-err）
+   下面三个滚动容器都带透明右边框 = 滚动条与右缘隔 1px（口径见 style.md §滚动条让位）。 */
+.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px;border-right:1px solid transparent}
 .dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}
 .dshpc-fb__err{
   display:flex;flex-direction:column;align-items:flex-start;gap:10px;
@@ -94,7 +95,7 @@
 }
 
 /* 目录树（兄弟 .dsh-tdt-sv-tree*） */
-.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px}
+.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px;border-right:1px solid transparent;border-bottom:1px solid transparent}
 .dshpc-fb__row{
   display:flex;align-items:center;gap:8px;padding:6px 8px;
   border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;
@@ -141,7 +142,7 @@
    必须 border-box：渲染态 inline 加了 padding:12px 14px，content-box 下 width:100%+padding
    会溢出父层 28px（父 .dshpc-fb 无 overflow 裁切）→ 恒多一条横滚条；border-box 把 padding
    算进 100%，从根消除该溢出。 */
-.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box}
+.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box;border-right:1px solid transparent;border-bottom:1px solid transparent}
 .dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}
 .dshpc-fb__more{display:flex;justify-content:center;padding:10px}
 .dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}

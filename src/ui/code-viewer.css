@@ -8,4 +8,6 @@
 .dshpc-cv__copy svg{width:16px;height:16px;}
 .dshpc-cv__editor{flex:1 1 auto;min-height:0;overflow:hidden;}
 .dshpc-cv__editor .cm-editor{height:100%;}
-.dshpc-cv__editor .cm-scroller{overflow:auto;}
+/* 透明右边框 = 滚动条与右缘隔 1px（口径见 style.md §滚动条让位）。
+   只给右边：给底边会改 scroller 高度，CodeMirror 的测量循环会多算一条横滚条。 */
+.dshpc-cv__editor .cm-scroller{overflow:auto;border-right:1px solid transparent}

@@ -426,7 +426,6 @@ test('CSS 常量引用的每个 var() 都必须有确定来源（不得依赖别
   // 「新增了一个运行时发布的变量却忘了登记」和「误用了别的文件定义的变量」都会在这里被拦住。
   const runtimeVars = new Map([
     ['dshpc-page-inset-right', 'PanelDock 发布，loading / feedback 遮罩读取后给 dock 让位'],
-    ['dshpc-dock-gap', 'PanelDock 自己发布'],
     ['dshpc-dock-h', 'PanelDock 自己发布'],
     ['dshpc-mq-dur', 'MarqueeText 测距后发布'],
     ['dshpc-mq-dist', 'MarqueeText 测距后发布'],
