@@ -39,9 +39,9 @@ Button 18 档外观（实心 / 线框 / 无底）。hover / active 走 token 派
 
 > EN: Button offers 18 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity). The eight extended tiers (purple/pink/cyan/teal/orange/indigo/rose/slate) are solid faces, same source as Chip/Card.
 
-IconButton：variant: plain|outline|danger（默认 plain）、size（默认 lg）、icon（必填）、label（必填，无障碍名兼 title）。
+IconButton：variant: plain|outline|danger（默认 plain，**无底色**）、size（默认 lg）、icon（必填）、label（必填，无障碍名兼 title）、color（图标色）、background（底色，不传即无底色）。
 
-> EN: IconButton: variant plain|outline|danger (default plain), size (default lg), icon (required), label (required, doubles as a11y name and title).
+> EN: IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, doubles as a11y name and title), color (icon colour), background (fill; omitted = no fill).
 
 Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三档总高 24 / 28 / 32）、`bordered`（1px 外框，总高不变）、`multiple`（多选）。外观只有一套：灰底轨道 + 白色选中片，选中片的描边环与阴影由宿主 elevation token 提供（离线兜底值没有那圈环）。选中片配色只经 `tone`：传内置色名（与 Chip 同名的 business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate）时底与字由核心定、深浅两主题各自成立；传 `{ bg, fg }` 时两个主题都用调用方这一对颜色（对比度由调用方负责）。段内 `icon` 是前置图标槽（官方图标组件 / 数组 / 自绘节点均可），`label` 也可传节点；顺序固定为 icon → label → count。只有图标（无文字 / 计数 / 角标）时该段自动变正方形（宽 = 段高），读屏名用 `ariaLabel`，缺省退回 `tooltip`。段内 `count`（弱化灰字，选中段内自动跟着选中片字色提亮）/ `badge`（红角标）接受 `number | string`：数字 ≤0 不显示，字符串原样显示（如 `1K` / `99+`）。
 

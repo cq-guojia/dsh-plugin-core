@@ -297,7 +297,12 @@ export function ButtonPage(): ReturnType<typeof h> {
             h(Button, { variant: 'outline', block: true }, '无图标对照'))),
         h(Labeled, { label: t('btnIconOnly') },
           BUTTON_ICONS.slice(0, 6).map((item) =>
-            h(IconButton, { key: item.name, icon: h(item.Icon, { size: 16 }), label: item.name })))),
+            h(IconButton, { key: item.name, icon: h(item.Icon, { size: 16 }), label: item.name }))),
+        // 纯图标钮的配色轴：默认无底色；color 改图标色，background 给底色（用户 2026-11-02）
+        h(Labeled, { label: 'IconButton · color / background' },
+          h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '默认无底色' }),
+          h(IconButton, { icon: h(BUTTON_ICONS[1].Icon, { size: 16 }), label: '自定义图标色', color: '#7c3aed' }),
+          h(IconButton, { icon: h(BUTTON_ICONS[2].Icon, { size: 16 }), label: '自定义底色', color: '#fff', background: '#7c3aed' }))),
     ),
 
     // 状态

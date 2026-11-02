@@ -31,8 +31,10 @@
    把右内边距补上「图标宽 + 间距」，可用盒随之左移同量 ⇒ 文字落回视觉中心，图标贴左侧。
    图标宽按 1.2em 估（官方图标 14/16px vs 字号 12/13px），em 随字号档自动缩放。 */
 .dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}
-.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;}
-.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;}
+/* 图标比同档文字小一号（用户 2026-11-02）：容器吃掉 0.875em，内联 SVG 一律跟随 1em，
+   不再由调用方的 size={16} 说了算 —— 全站按钮图标尺寸只由这一处决定。 */
+.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;font-size:.875em;}
+.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;width:1em;height:1em;}
 /* maxWidth 包 MarqueeText 时：标签作为 flex 子项必须能收缩到内容以下，否则省略号 / 跑马灯测不准 */
 .dshpc-btn .dshpc-btn__label{min-width:0;}
 /* loading：不换 DOM 结构，只在文案前插一枚 Loader（size=xs，12px）。
@@ -88,19 +90,22 @@
   height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}
 .dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}
 
-/* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高、圆角统一吃 md（与 .dshpc-btn 同款，2026-10-28 拍板） */
-.dshpc-iconbtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
-  border:1px solid transparent;border-radius:var(--dshpc-radius-md);background:transparent;color:var(--dshpc-fg-2);
+/* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高、圆角统一吃 md（与 .dshpc-btn 同款，2026-10-28 拍板）
+   底色 / 图标色全走局部变量：默认**无底色**，消费方可传 color（图标色）/ background（底色）覆盖（用户 2026-11-02）。 */
+.dshpc-iconbtn{--icb-bg:transparent;--icb-bg-hover:var(--dshpc-hover);--icb-fg:var(--dshpc-fg-2);--icb-fg-hover:var(--dshpc-fg);
+  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  border:1px solid var(--icb-border,transparent);border-radius:var(--dshpc-radius-md);
+  background:var(--icb-bg);color:var(--icb-fg);
   font-family:inherit;cursor:pointer;flex:none;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
 .dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}
 .dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}
 .dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}
-.dshpc-iconbtn--plain{color:var(--dshpc-fg-2);}
-.dshpc-iconbtn--outline{background:var(--dshpc-surface-1);border-color:var(--dshpc-border);color:var(--dshpc-fg-2);}
-.dshpc-iconbtn--danger{color:var(--dshpc-danger);}
-.dshpc-iconbtn:hover:not(:disabled){background:var(--dshpc-hover);color:var(--dshpc-fg);}
-.dshpc-iconbtn--danger:hover:not(:disabled){background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}
+/* 图标与文字按钮同口径：内联 SVG 一律跟随 1em（比 16px 档小一号） */
+.dshpc-iconbtn > svg{display:block;width:1em;height:1em;}
+.dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}
+.dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}
+.dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}
 .dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
 .dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
 

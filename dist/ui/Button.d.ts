@@ -41,7 +41,7 @@ export interface ButtonProps {
     [key: string]: unknown;
 }
 export interface IconButtonProps {
-    /** 外观档（默认 plain）。 */
+    /** 外观档（默认 plain：无底色、无边框）。 */
     variant?: 'plain' | 'outline' | 'danger';
     /** 高度档（默认 lg）。 */
     size?: ButtonSize;
@@ -49,6 +49,10 @@ export interface IconButtonProps {
     icon: ReactNode;
     /** 无障碍名（必填；同时作为默认 title）。 */
     label: string;
+    /** 图标色（任意 CSS 色值）；hover 按它混出浅底。 */
+    color?: string;
+    /** 底色（任意 CSS 色值）；不传 = 无底色。hover 按它压深。 */
+    background?: string;
     /** 追加 class。 */
     className?: string;
     /** 追加样式。 */

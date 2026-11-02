@@ -107,14 +107,25 @@ export function Button(props) {
  */
 export function IconButton(props) {
     ensureComponentStyles('button', BUTTON_CSS);
-    const { variant = 'plain', size = 'lg', icon, label, className, style, ...rest } = props;
+    const { variant = 'plain', size = 'lg', icon, label, color, background, className, style, ...rest } = props;
+    // 只覆盖 4 个局部变量：图标色 / 底色及其 hover 派生（不新增皮肤，皮肤仍在 controls-css.ts）。
+    const accent = {};
+    if (color !== undefined && color !== '') {
+        accent['--icb-fg'] = color;
+        accent['--icb-fg-hover'] = color;
+        accent['--icb-bg-hover'] = `color-mix(in srgb, ${color} 14%, transparent)`;
+    }
+    if (background !== undefined && background !== '') {
+        accent['--icb-bg'] = background;
+        accent['--icb-bg-hover'] = `color-mix(in srgb, ${background} 85%, var(--dshpc-fg))`;
+    }
     const attrs = {
         ...rest,
         type: rest.type ?? 'button',
         title: rest.title ?? label,
         'aria-label': rest['aria-label'] ?? label,
         className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
-        style,
+        style: { ...accent, ...style },
     };
     return h('button', attrs, icon);
 }

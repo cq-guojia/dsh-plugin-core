@@ -88,7 +88,7 @@ export interface ButtonProps {
 }
 
 export interface IconButtonProps {
-  /** 外观档（默认 plain）。 */
+  /** 外观档（默认 plain：无底色、无边框）。 */
   variant?: 'plain' | 'outline' | 'danger'
   /** 高度档（默认 lg）。 */
   size?: ButtonSize
@@ -96,6 +96,10 @@ export interface IconButtonProps {
   icon: ReactNode
   /** 无障碍名（必填；同时作为默认 title）。 */
   label: string
+  /** 图标色（任意 CSS 色值）；hover 按它混出浅底。 */
+  color?: string
+  /** 底色（任意 CSS 色值）；不传 = 无底色。hover 按它压深。 */
+  background?: string
   /** 追加 class。 */
   className?: string
   /** 追加样式。 */
@@ -186,14 +190,25 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
  */
 export function IconButton(props: IconButtonProps): ReturnType<typeof h> {
   ensureComponentStyles('button', BUTTON_CSS)
-  const { variant = 'plain', size = 'lg', icon, label, className, style, ...rest } = props
+  const { variant = 'plain', size = 'lg', icon, label, color, background, className, style, ...rest } = props
+  // 只覆盖 4 个局部变量：图标色 / 底色及其 hover 派生（不新增皮肤，皮肤仍在 controls-css.ts）。
+  const accent: Record<string, string> = {}
+  if (color !== undefined && color !== '') {
+    accent['--icb-fg'] = color
+    accent['--icb-fg-hover'] = color
+    accent['--icb-bg-hover'] = `color-mix(in srgb, ${color} 14%, transparent)`
+  }
+  if (background !== undefined && background !== '') {
+    accent['--icb-bg'] = background
+    accent['--icb-bg-hover'] = `color-mix(in srgb, ${background} 85%, var(--dshpc-fg))`
+  }
   const attrs = {
     ...rest,
     type: (rest.type as string | undefined) ?? 'button',
     title: rest.title ?? label,
     'aria-label': rest['aria-label'] ?? label,
     className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
-    style,
+    style: { ...accent, ...style } as CSSProperties,
   }
   return h('button', attrs as never, icon)
 }
