@@ -193,7 +193,11 @@ function createToasterHost(): ToastHost {
             { style: { flex: 1, minWidth: 0 } },
             h('div', { style: { fontWeight: 600 } }, payload.message),
             payload.description !== undefined
-              ? h('div', { style: { opacity: 0.9, fontSize: '13px', marginTop: '2px' } }, payload.description)
+              ? h(
+                  'div',
+                  { style: { opacity: 0.9, fontSize: '13px', marginTop: '2px', whiteSpace: 'pre-line' } },
+                  payload.description,
+                )
               : null,
           ),
           actions !== undefined && actions.length > 0

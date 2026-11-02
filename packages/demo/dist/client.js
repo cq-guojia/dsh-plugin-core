@@ -7051,7 +7051,7 @@ function createToasterHost() {
         fontSize: "13px",
         fontWeight: 700
       }
-    }, palette.glyph), (0, import_react29.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react29.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react29.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react29.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react29.createElement)(Button, {
+    }, palette.glyph), (0, import_react29.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react29.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react29.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react29.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react29.createElement)(Button, {
       variant: a.variant ?? "outline",
       size: "md",
       onClick: () => {
@@ -65822,9 +65822,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.20.2"}`],
-            [t3("buildDemo"), `v${"0.20.2"}`],
-            [t3("buildStamp"), "261102-213713-206"]
+            [t3("buildCore"), `v${"0.20.3"}`],
+            [t3("buildDemo"), `v${"0.20.3"}`],
+            [t3("buildStamp"), "261102-224307-501"]
           ].map(
             ([label, value]) => (0, import_react81.createElement)(
               "tr",
@@ -66144,9 +66144,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react83.createElement)("span", null, `core v${"0.20.2"}`),
-          (0, import_react83.createElement)("span", null, `demo v${"0.20.2"}`),
-          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261102-213713-206")
+          (0, import_react83.createElement)("span", null, `core v${"0.20.3"}`),
+          (0, import_react83.createElement)("span", null, `demo v${"0.20.3"}`),
+          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261102-224307-501")
         )
       )
     ),
