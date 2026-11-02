@@ -1,8 +1,9 @@
 # 20261102-0251-3c4d-新增侧边覆盖弹窗-sidesheet: 新增侧边覆盖弹窗 SideSheet
 
 - **Tags**: 控件, 弹窗, 覆盖式, SideSheet
-- **Status**: doing · 2026-11-02 03:29:38 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-02 03:47:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-02 02:51:29 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-02 03:47:04 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -63,3 +64,4 @@
 - 2026-11-02 03:03:48 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 新增 SideSheet（src/ui/SideSheet.ts）+ 抽公共件 overlay.ts/overlay.css（OverlayMask/OverlayHead/useEscapeClose），Modal 改用公共件；build 干净、test 215 条全过、codelint 全过；待真机验收
 - 2026-11-02 03:15:19 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 补 SideSheet 展示（反馈件页：左/右/带底栏）；顺手修掉改名残留 dshpc-modal__sid → dshpc-overlay-head__sid（demo 三处）；typecheck + build:demo + test 215 全过
 - 2026-11-02 03:29:38 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · SideSheet 改为与 PanelDock 同一套皮肤：抽 src/ui/side-panel.css（.dshpc-side-surface + 头部/拖拽条/关闭钮），PanelDock 一并改用；加拖宽（resizer.ts 复用、宽度 460/320 默认可拖、朝内侧镜像）、去掉收起；test 219 条全过、codelint 27 文件全过
+- 2026-11-02 03:47:04 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed
