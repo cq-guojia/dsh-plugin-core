@@ -1,7 +1,7 @@
 # 20261102-0251-3c4d-新增侧边覆盖弹窗-sidesheet: 新增侧边覆盖弹窗 SideSheet
 
 - **Tags**: 控件, 弹窗, 覆盖式, SideSheet
-- **Status**: open · 2026-11-02 02:51:29
+- **Status**: doing · 2026-11-02 02:58:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-02 02:51:29 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -34,3 +34,4 @@
 <!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
      Backfill with: progress log --id 20261102-0251-3c4d-新增侧边覆盖弹窗-sidesheet --note "...". -->
 - 2026-11-02 02:51:29 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
+- 2026-11-02 02:58:14 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
