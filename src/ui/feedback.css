@@ -4,7 +4,9 @@
   display:flex;flex-direction:column;box-sizing:border-box;
   background:var(--dshpc-surface-base);color:var(--dshpc-fg);
   border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);
-  box-shadow:var(--dshpc-shadow-2);overflow:hidden;
+  /* 外圈 10px 实色描边（2026-11-02 用户）：不透明，颜色 = 边框色与面板底色各半（比边框浅一半），
+     不吃内距、跟着圆角走。混面板底色而不是混透明白 ⇒ 明暗两套主题下都表现为「更淡」。 */
+  box-shadow:0 0 0 10px color-mix(in srgb,var(--dshpc-border) 50%,var(--dshpc-surface-base)),var(--dshpc-shadow-2);overflow:hidden;
 }
 /* body = 唯一滚动容器：内距与滚动都归它（滚动条贴面板右缘，不被内距挤进来）；
    内容按流排，不设 height:100%、不自己开滚动条。 */

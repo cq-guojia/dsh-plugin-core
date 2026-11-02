@@ -661,6 +661,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `hideHeader` | `boolean` | 'false' | 不渲染头部（沉浸式） | Skip header (immersive) |
 | `footer` | `ReactNode` | — | 底栏（按钮区；上下内距相等、内容垂直居中） | Footer (button area; symmetric padding, vertically centred) |
 | `footerDivider` | `boolean` | 'true' | 底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有） | The divider above the footer; pass false to drop it (sm dialogs never have one) |
+| `className` | `string` | — | 追加 class（只补布局 / 视觉修饰，别覆盖皮肤） | Extra class (layout / visual tweaks only; do not override the skin) |
 | `children` | `ReactNode` | — | 主体 | Body |
 
 ## SideSheet（侧边抽屉）

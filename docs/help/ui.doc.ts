@@ -788,6 +788,7 @@ const doc: DocTopic = {
             { name: 'hideHeader', type: 'boolean', def: "'false'", desc: { zh: '不渲染头部（沉浸式）', en: 'Skip header (immersive)' } },
             { name: 'footer', type: 'ReactNode', def: '—', desc: { zh: '底栏（按钮区；上下内距相等、内容垂直居中）', en: 'Footer (button area; symmetric padding, vertically centred)' } },
             { name: 'footerDivider', type: 'boolean', def: "'true'", desc: { zh: '底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有）', en: 'The divider above the footer; pass false to drop it (sm dialogs never have one)' } },
+            { name: 'className', type: 'string', def: '—', desc: { zh: '追加 class（只补布局 / 视觉修饰，别覆盖皮肤）', en: 'Extra class (layout / visual tweaks only; do not override the skin)' } },
             { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '主体', en: 'Body' } },
           ],
         },

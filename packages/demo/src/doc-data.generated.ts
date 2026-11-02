@@ -2909,6 +2909,15 @@ export const docData = {
             }
           },
           {
+            "name": "className",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "追加 class（只补布局 / 视觉修饰，别覆盖皮肤）",
+              "en": "Extra class (layout / visual tweaks only; do not override the skin)"
+            }
+          },
+          {
             "name": "children",
             "type": "ReactNode",
             "def": "—",

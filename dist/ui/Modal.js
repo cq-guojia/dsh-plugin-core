@@ -31,7 +31,7 @@ export function Modal(props) {
             props.headerActions !== undefined ||
             showClose);
     return h(OverlayMask, { kind: 'center', closeOnMask, onClose: props.onClose }, h('div', {
-        className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}`,
+        className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
         style: {
             width: props.width ?? s.width,
             maxWidth: props.maxWidth ?? s.maxWidth,

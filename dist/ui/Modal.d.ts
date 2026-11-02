@@ -37,6 +37,8 @@ export interface ModalProps {
     footer?: ReactNode;
     /** footer 上面那条分隔线（默认 true）。传 false 关闭；sm 确认框家族本来就没有。 */
     footerDivider?: boolean;
+    /** 追加 class（只允许补布局 / 视觉修饰，不许覆盖皮肤）。 */
+    className?: string;
     children?: ReactNode;
     translate?: Translate;
 }
