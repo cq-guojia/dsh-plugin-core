@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261102-0706-fafe-新增组合输入框控件": {"category": "新功能", "created": "2026-11-02 07:06:02", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-02 07:07:07", "status": "doing", "tags": ["控件", "输入框", "组合"], "title": "新增组合输入框控件", "updated": "2026-11-02 07:22:08", "worklog": "worklog/202611/02-0706-fafe-新增组合输入框控件.md"}
+    "20261102-0706-fafe-新增组合输入框控件": {"category": "新功能", "created": "2026-11-02 07:06:02", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-02 07:07:07", "status": "doing", "tags": ["控件", "输入框", "组合"], "title": "新增组合输入框控件", "updated": "2026-11-02 07:27:07", "worklog": "worklog/202611/02-0706-fafe-新增组合输入框控件.md"}
   },
   "version": "20261022000000"
 }
