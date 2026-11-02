@@ -22,6 +22,7 @@ export { showToast, notify, type ToastVariant, type ToastPosition, type ToastOpt
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js';
 export { Segmented, type SegmentedProps, type SegmentedTone } from './Segmented.js';
 export { SplitGroup, type SplitGroupProps } from './SplitGroup.js';
+export { InputGroup, type InputGroupAction, type InputGroupProps, } from './InputGroup.js';
 export { Textarea, type TextareaProps } from './Textarea.js';
 export { Checkbox, type CheckboxProps } from './Checkbox.js';
 export { MarqueeText } from './MarqueeText.js';

@@ -8,6 +8,7 @@ export { QUICK_TOOLBAR_CSS } from './controls/quick-toolbar-css.generated.js';
 export { HINT_CSS } from './controls/hint-css.generated.js';
 export { DATETIME_CSS } from './controls/datetime-css.generated.js';
 export { SPLIT_GROUP_CSS } from './controls/split-group-css.generated.js';
+export { INPUT_GROUP_CSS } from './controls/input-group-css.generated.js';
 export { TABLE_BASE_CSS } from './controls/table-css.generated.js';
 export { TABLE_PLAIN_CSS } from './controls/table-plain-css.generated.js';
 export { PAGINATION_CSS } from './controls/pagination-css.generated.js';

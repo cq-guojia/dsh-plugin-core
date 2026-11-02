@@ -53,6 +53,7 @@ dsh-plugin-core/
 │   ├── 选择                ✅ WorkspacePicker（选工作区，自取宿主快照）
 │   │                          通用 Picker 是纯零件；领域选择器经 connectHost 自取数（2026-10-20）
 │   ├── 组合                ✅ SplitGroup（两格焊成一体：只画外框 / 分隔 / 聚焦圈，不持状态）
+│   │                          InputGroup（输入框 + 按钮组焊成一体：可选前置标题 / 撤销 / 自定义高度）
 │   └── 布局                ✅ PanelDock / createPanelDock（可停靠分栏：多面板 + 拖拽拉栏）
 │                              组名 = 窗口一对一、同名覆盖、默认上限 3 超限拒绝；
 │                              不做 tab 切换 / 自动淘汰 / 浮动层（用户 2026-10-20 定案）
@@ -120,7 +121,7 @@ utils（谁都不依赖，谁都可以用）
 │   ├─ 动作    Button / IconButton
 │   ├─ 反馈    Modal / Toast
 │   ├─ 展示    Card / StripCard / Chip / Table / MarqueeText / SectionHead / FieldHint / LiveText
-│   ├─ 组合    SplitGroup（展示在选择器页）
+│   ├─ 组合    SplitGroup（展示在选择器页）/ InputGroup（展示在表单页）
 │   └─ 布局    PanelDock / 拉栏 / QuickToolbar
 │
 ├─ ③ 高级空间

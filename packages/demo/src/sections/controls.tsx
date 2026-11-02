@@ -8,6 +8,7 @@ import {
   FieldHint,
   IconButton,
   Input,
+  InputGroup,
   LiveText,
   Loader,
   LoaderBar,
@@ -368,6 +369,34 @@ const [kw, setKw] = useState('')
 // 多行输入：问号置右下角
 <Textarea value={text} onChange={setText} placeholder="多行输入" hint="多行输入也支持 hint 参数。" />`
 
+const CODE_INPUT_GROUP = `// 输入框 + 按钮组焊成一体；label 是前置标题（同格灰底），undoable 在最前面加撤销钮
+<InputGroup
+  label="任务名"
+  value={name}
+  onChange={setName}
+  undoable
+  placeholder="改完按 Enter 提交"
+  actions={[
+    { label: '返回', variant: 'ghost', onClick: back },
+    { label: '确定', onClick: save },   // 不传 variant = 业务色实心
+  ]}
+/>
+
+// 按钮三形：纯图标（正方形，ariaLabel 给读屏）/ 图标 + 文字 / 纯文字
+// 颜色不自己调，直接传 Button 的语义档：success / info（默认）/ warning / danger
+<InputGroup
+  size="md"
+  value={kw}
+  onChange={setKw}
+  actions={[
+    { icon: <IconRefreshOutlineRegular size={14} />, ariaLabel: '重置', onClick: reset },
+    { icon: <IconSearchOutlineRegular size={14} />, label: '搜索', onClick: search },
+  ]}
+/>
+
+// 高度自定义：height 直接给 px，压过 size 档（内件跟着撑满）
+<InputGroup value={kw} onChange={setKw} height={44} actions={[{ label: '确定', onClick: save }]} />`
+
 const CODE_FIELD_HINT = `// 问号提示是独立组件，放哪都行（14px 内联元素）
 <h3>一个标题</h3>
 <FieldHint text="说明这一块是干什么的。" side="top" />
@@ -457,6 +486,7 @@ export function InputPage(): ReturnType<typeof h> {
   const [iconSeg, setIconSeg] = useState('search')
   const [iconSeg2, setIconSeg2] = useState('all')
   const [kw, setKw] = useState('')
+  const [igValue, setIgValue] = useState('')
 
   return h(
     'div',
@@ -489,6 +519,46 @@ export function InputPage(): ReturnType<typeof h> {
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
         h(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: '次', style: { alignSelf: 'flex-start' }, hint: '超出范围会自动收回到 min / max。' }),
         h(Textarea, { value: text, onChange: setText, placeholder: '多行输入', hint: '多行输入也支持 hint 参数。' }),
+      ),
+    ),
+
+    // 组合输入框：输入框 + 按钮组焊成一体（前置标题 / 撤销 / 图标按钮 / 自定义高度）
+    h(
+      Example,
+      { title: t('inputGroupTitle'), hint: t('inputGroupHint'), code: CODE_INPUT_GROUP },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '460px' } },
+        h(InputGroup, {
+          label: '任务名',
+          value: igValue,
+          onChange: setIgValue,
+          undoable: true,
+          placeholder: '改完按 Enter 提交，撤销回退到上一次提交前',
+          actions: [
+            { label: '返回', variant: 'ghost', onClick: () => { setIgValue('') } },
+            { label: '确定', variant: 'success', onClick: () => {} },
+          ],
+        }),
+        h(InputGroup, {
+          size: 'md',
+          value: igValue,
+          onChange: setIgValue,
+          placeholder: '纯图标 / 图标 + 文字 / 纯文字',
+          actions: [
+            { icon: h(IconRefreshOutlineRegular, { size: 14 }), ariaLabel: '重置', onClick: () => { setIgValue('') } },
+            { icon: h(IconSearchOutlineRegular, { size: 14 }), label: '搜索', onClick: () => {} },
+            { label: '提交', onClick: () => {} },
+          ],
+        }),
+        h(InputGroup, {
+          value: igValue,
+          onChange: setIgValue,
+          height: 44,
+          placeholder: '自定义高度 44px',
+          undoable: true,
+          actions: [{ label: '确定', onClick: () => {} }],
+        }),
       ),
     ),
 
@@ -679,6 +749,7 @@ export function InputPage(): ReturnType<typeof h> {
     ),
     h(DocCode, { id: 'input' }),
     h(DocApi, { id: 'input' }),
+    h(DocApi, { id: 'input-group' }),
     h(Placeholder, { descKey: 'inputMissingDesc' }),
   )
 }

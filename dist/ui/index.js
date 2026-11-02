@@ -28,6 +28,7 @@ export { showToast, notify, } from './Toast.js';
 export { Button, IconButton } from './Button.js';
 export { Segmented } from './Segmented.js';
 export { SplitGroup } from './SplitGroup.js';
+export { InputGroup, } from './InputGroup.js';
 export { Textarea } from './Textarea.js';
 export { Checkbox } from './Checkbox.js';
 export { MarqueeText } from './MarqueeText.js';

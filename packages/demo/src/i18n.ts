@@ -79,6 +79,8 @@ export type DemoMessageKey =
   | 'btnHintTitle'
   | 'btnHintHint'
   | 'inputHint'
+  | 'inputGroupTitle'
+  | 'inputGroupHint'
   | 'switchTip'
   | 'checkboxHint'
   | 'segToneTitle'
@@ -406,6 +408,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     demoInputFamily: 'Input 家族',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea，都支持 error 描红；传 hint 参数即自动在行尾挂标准问号提示（FieldHint 本体仍可单独用）；Input 传 icon 即在左侧加图标槽',
+    inputGroupTitle: 'InputGroup（组合输入框）',
+    inputGroupHint: '输入框 + 后置按钮组焊成一体，和 SplitGroup 同一套皮肤口径（外框 / 圆角 / 1px 分隔 / 整体聚焦圈都由外壳画）；label 是前置标题（同格灰底）；actions 写多少枚就排多少（返回 + 确定、图标 / 图文 / 纯文字都行），默认是业务色实心按钮、variant 可换任意档；undoable 在最前面加撤销钮，回退到上一次提交前的值；size 三档，height 直接给 px 自定义高度',
     switchTip: '官方 Switch（启用语义，不是勾选）+ Checkbox + Segmented',
     checkboxHint: '外观对齐真实插件：灰底轨道 + 白色选中片；bordered 是外框款（最右，可点着玩）；星期方块是多选。icon 在前、只有图标时自动正方形。文案随语言切换',
     segToneTitle: 'Segmented 选中片配色（tone）',
@@ -712,6 +716,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     demoInputFamily: 'Input family',
     inputHint: 'Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone); pass icon to Input to get a leading icon slot',
+    inputGroupTitle: 'InputGroup (input with actions)',
+    inputGroupHint: 'Input and trailing buttons welded into one shell with the same skin rules as SplitGroup (frame, radius, 1px dividers and focus ring all come from the shell); label is a leading title sharing the cell; actions lays out as many buttons as you pass (back + confirm, icon / icon+text / text), coloured with Button’s own semantic variants — info by default, pass success / warning / danger for those, no custom colours; undoable prepends an undo button that returns to the value before the last commit; three sizes, plus height in px for a custom height',
     switchTip: 'Official Switch (enable semantics, not a tick) + Checkbox + Segmented',
     checkboxHint: 'Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select; icons lead the label and icon-only segments square themselves. Labels follow the locale',
     segToneTitle: 'Segmented selected-pill colors (tone)',

@@ -177,6 +177,65 @@ h(SplitGroup, null,
 )
 ```
 
+## InputGroup（组合输入框）
+
+> EN: InputGroup (input with actions)
+
+输入框 + 后置按钮组焊成一体，外观与 SplitGroup 同一套口径（外框 / 圆角 / 相邻 1px 分隔 / 整体聚焦圈都由外壳画，内件把自己的边框、圆角交出来）。区别是这里**持状态**：值受控于调用方，提交点与撤销栈在控件内部。
+
+> EN: An input and a trailing button group welded into one shell, using the same skin rules as SplitGroup (frame, radius, 1px dividers and the focus ring all come from the shell; inner controls hand over their border and radius). The difference: this one **holds state** — the value is controlled by the caller, while commit points and the undo stack live inside.
+
+按钮可以是任意多枚（返回 + 确定、图标 / 图文 / 纯文字）；`label` 是前置标题，与输入框同格灰底。`size` 三档（sm 24 / md 28 / lg 32），要别的就传 `height`（px），内件跟着撑满。
+
+> EN: Any number of buttons (back + confirm; icon / icon+text / text only); `label` is a leading title sharing the cell with a sunken background. Three sizes (sm 24 / md 28 / lg 32); pass `height` in px for anything else and the inner controls fill it.
+
+撤销口径：Enter / 失焦 / 点任一动作 = 一次提交，提交前的值进栈；点撤销弹回栈顶、栈空时按钮禁用。父级直接改 `value`（如外部清空）不算编辑，不进栈。
+
+> EN: Undo semantics: Enter / blur / clicking any action is one commit, and the value before it is pushed; the undo button pops the top and is disabled while the stack is empty. A `value` change made directly by the parent (such as an external clear) is not an edit and never enters the stack.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `value / onChange(v)` | `string / (v: string) => void` | — | 受控值 | Controlled value |
+| `label` | `string` | — | 前置标题（同格灰底）；同时作为整组无障碍名的兜底 | Leading title in the same cell (sunken background); also the fallback accessible name for the group |
+| `actions` | `InputGroupAction[]` | — | { icon?, label?, variant?, disabled?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色 | { icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour |
+| `undoable / undoLabel` | `boolean / string` | false / '撤销' | 最前面加撤销钮，回到上一次提交前的值 | Prepends an undo button returning to the value before the last commit |
+| `size / height` | `'sm' \| 'md' \| 'lg' / number(px)` | 'lg' / — | height 给了就压过 size 档 | height overrides the size preset |
+| `error / disabled` | `boolean` | — | error 描红整组；disabled 禁用输入与所有按钮 | error turns the whole shell red; disabled disables the input and every button |
+| `onSubmit(v)` | `(v: string) => void` | — | Enter 提交（同时记一次撤销点） | Enter submit (also records an undo point) |
+| `hint` | `string` | — | 整组后面挂标准 FieldHint | Attaches a standard FieldHint after the whole group |
+| `placeholder / aria-label / id / className / style` | `string` | — | 占位 / 无障碍名 / 锚点 / 只补布局 | Placeholder / accessible name / anchor / layout-only additions |
+
+```tsx id="ui-inputgroup-example"
+import { InputGroup } from 'dsh-plugin-core/ui'
+
+// 输入框 + 按钮组焊成一体；label 是前置标题，undoable 在最前面加撤销钮
+h(InputGroup, {
+  label: '任务名',
+  value: name, onChange: setName,
+  undoable: true,
+  onSubmit: save,                       // Enter 提交（提交点也会进撤销栈）
+  actions: [
+    { label: '返回', variant: 'ghost', onClick: back },
+    { label: '确定', variant: 'success', onClick: save },   // 语义色直接传档，不自己调色
+  ],
+})
+
+// 按钮三形：纯图标（正方形，ariaLabel 给读屏）/ 图标 + 文字 / 纯文字；size 三档
+h(InputGroup, {
+  size: 'md', value: kw, onChange: setKw,
+  actions: [
+    { icon: h(IconRefreshOutlineRegular, { size: 14 }), ariaLabel: '重置', onClick: reset },
+    { icon: h(IconSearchOutlineRegular, { size: 14 }), label: '搜索', onClick: search },
+  ],
+})
+
+// 高度自定义：height 直接给 px，压过 size 档（内件跟着撑满）
+h(InputGroup, {
+  value: kw, onChange: setKw, height: 44,
+  actions: [{ label: '确定', onClick: save }],
+})
+```
+
 ## DateTimePicker（日期时间选择）
 
 > EN: DateTimePicker (date & time)

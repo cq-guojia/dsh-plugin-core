@@ -39,6 +39,7 @@ const MAP = [
   ['src/ui/controls/hint.css', 'src/ui/controls/hint-css.generated.ts', 'HINT_CSS'],
   ['src/ui/controls/datetime.css', 'src/ui/controls/datetime-css.generated.ts', 'DATETIME_CSS'],
   ['src/ui/controls/split-group.css', 'src/ui/controls/split-group-css.generated.ts', 'SPLIT_GROUP_CSS'],
+  ['src/ui/controls/input-group.css', 'src/ui/controls/input-group-css.generated.ts', 'INPUT_GROUP_CSS'],
   // 表格：基础层 + 第一档皮肤。新外观（grid / zebra）各加一行，消费方引哪个只打包哪个。
   ['src/ui/controls/table.css', 'src/ui/controls/table-css.generated.ts', 'TABLE_BASE_CSS'],
   ['src/ui/controls/table-plain.css', 'src/ui/controls/table-plain-css.generated.ts', 'TABLE_PLAIN_CSS'],

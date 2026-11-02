@@ -4,7 +4,7 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/css.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/controls/field-css.generated.js'
-import { Button, Chip, Input, Segmented, SplitGroup } from '../dist/ui/index.js'
+import { Button, Chip, Input, InputGroup, Segmented, SplitGroup } from '../dist/ui/index.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -47,6 +47,44 @@ test('SplitGroup 只包壳：根节点带 dshpc-split，两格顺序原样、cla
   assert.match(html, /class="dshpc-split probe"/)
   assert.match(html, /aria-label="组合"/)
   assert.ok(html.indexOf('L') < html.indexOf('R'), '左格必须在前')
+})
+
+test('InputGroup 拼成一体：标题 → 输入框 → 撤销 → 按钮，顺序与修饰类都对', () => {
+  const html = renderToStaticMarkup(createElement(InputGroup, {
+    value: 'v',
+    onChange() {},
+    label: '任务名',
+    error: true,
+    className: 'probe',
+    undoable: true,
+    actions: [
+      { label: '返回', variant: 'ghost', onClick() {} },
+      { icon: createElement('svg', { 'data-probe': 'ok' }), ariaLabel: '提交', onClick() {} },
+    ],
+  }))
+  assert.match(html, /class="dshpc-igroup dshpc-igroup--lg dshpc-igroup--error probe"/)
+  assert.match(html, /dshpc-igroup__label">任务名/)
+  assert.ok(html.indexOf('任务名') < html.indexOf('dshpc-input'), '标题必须在输入框前')
+  // 撤销钮在按钮组最前，且没有历史时是禁用态
+  const undoAt = html.indexOf('aria-label="撤销"')
+  assert.ok(undoAt > html.indexOf('dshpc-input') && undoAt < html.indexOf('返回'), '撤销钮在动作之前')
+  assert.match(html, /<button[^>]*disabled[^>]*aria-label="撤销"|aria-label="撤销"[^>]*disabled/, '没历史时撤销不可点')
+  // 只有图标的动作退化成 IconButton（正方形），文字动作仍走 Button
+  assert.match(html, /dshpc-btn--ghost/)
+  assert.match(html, /aria-label="提交"[^>]*class="dshpc-iconbtn/)
+  // 语义色走 Button 现成的档：默认 info，传什么档就是什么档
+  const dflt = renderToStaticMarkup(createElement(InputGroup, {
+    value: '', onChange() {}, actions: [{ label: '默认', onClick() {} }],
+  }))
+  assert.match(dflt, /dshpc-btn--info/)
+  const success = renderToStaticMarkup(createElement(InputGroup, {
+    value: '', onChange() {}, actions: [{ label: '成功', variant: 'success', onClick() {} }],
+  }))
+  assert.match(success, /dshpc-btn--success/)
+  assert.ok(!success.includes('--btn-bg:'), '不该再有自定义色内联变量')
+  // 自定义高度压过 size 档（写在根节点内联样式上）
+  const tall = renderToStaticMarkup(createElement(InputGroup, { value: '', onChange() {}, height: 40 }))
+  assert.match(tall, /style="height:40px"/)
 })
 
 test('Segmented 的 count / badge 收字符串（如 "1K"），数字 ≤0 仍不显示', () => {

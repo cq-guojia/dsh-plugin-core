@@ -94,6 +94,34 @@ h(SplitGroup, null,
   h(Picker, { size: 'md', options: membersOf(scope), value: member, onChange: setMember, searchable: true }),
 )`
 
+const inputGroupExample = `import { InputGroup } from 'dsh-plugin-core/ui'
+
+// 输入框 + 按钮组焊成一体；label 是前置标题，undoable 在最前面加撤销钮
+h(InputGroup, {
+  label: '任务名',
+  value: name, onChange: setName,
+  undoable: true,
+  onSubmit: save,                       // Enter 提交（提交点也会进撤销栈）
+  actions: [
+    { label: '返回', variant: 'ghost', onClick: back },
+    { label: '确定', variant: 'success', onClick: save },   // 语义色直接传档，不自己调色
+  ],
+})
+
+// 按钮三形：纯图标（正方形，ariaLabel 给读屏）/ 图标 + 文字 / 纯文字；size 三档
+h(InputGroup, {
+  size: 'md', value: kw, onChange: setKw,
+  actions: [
+    { icon: h(IconRefreshOutlineRegular, { size: 14 }), ariaLabel: '重置', onClick: reset },
+    { icon: h(IconSearchOutlineRegular, { size: 14 }), label: '搜索', onClick: search },
+  ],
+})
+
+// 高度自定义：height 直接给 px，压过 size 档（内件跟着撑满）
+h(InputGroup, {
+  value: kw, onChange: setKw, height: 44,
+  actions: [{ label: '确定', onClick: save }],
+})`
 const tableExample = `import { Table, Chip } from 'dsh-plugin-core/ui'
 
 const columns = [
@@ -414,6 +442,41 @@ const doc: DocTopic = {
         },
       ],
       code: [{ id: 'ui-splitgroup-example', lang: 'tsx', src: splitGroupExample }],
+    },
+    {
+      id: 'input-group',
+      heading: { zh: 'InputGroup（组合输入框）', en: 'InputGroup (input with actions)' },
+      prose: [
+        {
+          zh: '输入框 + 后置按钮组焊成一体，外观与 SplitGroup 同一套口径（外框 / 圆角 / 相邻 1px 分隔 / 整体聚焦圈都由外壳画，内件把自己的边框、圆角交出来）。区别是这里**持状态**：值受控于调用方，提交点与撤销栈在控件内部。',
+          en: 'An input and a trailing button group welded into one shell, using the same skin rules as SplitGroup (frame, radius, 1px dividers and the focus ring all come from the shell; inner controls hand over their border and radius). The difference: this one **holds state** — the value is controlled by the caller, while commit points and the undo stack live inside.',
+        },
+        {
+          zh: '按钮可以是任意多枚（返回 + 确定、图标 / 图文 / 纯文字）；`label` 是前置标题，与输入框同格灰底。`size` 三档（sm 24 / md 28 / lg 32），要别的就传 `height`（px），内件跟着撑满。',
+          en: 'Any number of buttons (back + confirm; icon / icon+text / text only); `label` is a leading title sharing the cell with a sunken background. Three sizes (sm 24 / md 28 / lg 32); pass `height` in px for anything else and the inner controls fill it.',
+        },
+        {
+          zh: '撤销口径：Enter / 失焦 / 点任一动作 = 一次提交，提交前的值进栈；点撤销弹回栈顶、栈空时按钮禁用。父级直接改 `value`（如外部清空）不算编辑，不进栈。',
+          en: 'Undo semantics: Enter / blur / clicking any action is one commit, and the value before it is pushed; the undo button pops the top and is disabled while the stack is empty. A `value` change made directly by the parent (such as an external clear) is not an edit and never enters the stack.',
+        },
+      ],
+      api: [
+        {
+          id: 'ui-input-group',
+          rows: [
+            { name: 'value / onChange(v)', type: 'string / (v: string) => void', def: '—', desc: { zh: '受控值', en: 'Controlled value' } },
+            { name: 'label', type: 'string', def: '—', desc: { zh: '前置标题（同格灰底）；同时作为整组无障碍名的兜底', en: 'Leading title in the same cell (sunken background); also the fallback accessible name for the group' } },
+            { name: 'actions', type: 'InputGroupAction[]', def: '—', desc: { zh: '{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色', en: '{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour' } },
+            { name: 'undoable / undoLabel', type: 'boolean / string', def: "false / '撤销'", desc: { zh: '最前面加撤销钮，回到上一次提交前的值', en: 'Prepends an undo button returning to the value before the last commit' } },
+            { name: 'size / height', type: "'sm' | 'md' | 'lg' / number(px)", def: "'lg' / —", desc: { zh: 'height 给了就压过 size 档', en: 'height overrides the size preset' } },
+            { name: 'error / disabled', type: 'boolean', def: '—', desc: { zh: 'error 描红整组；disabled 禁用输入与所有按钮', en: 'error turns the whole shell red; disabled disables the input and every button' } },
+            { name: 'onSubmit(v)', type: '(v: string) => void', def: '—', desc: { zh: 'Enter 提交（同时记一次撤销点）', en: 'Enter submit (also records an undo point)' } },
+            { name: 'hint', type: 'string', def: '—', desc: { zh: '整组后面挂标准 FieldHint', en: 'Attaches a standard FieldHint after the whole group' } },
+            { name: 'placeholder / aria-label / id / className / style', type: 'string', def: '—', desc: { zh: '占位 / 无障碍名 / 锚点 / 只补布局', en: 'Placeholder / accessible name / anchor / layout-only additions' } },
+          ],
+        },
+      ],
+      code: [{ id: 'ui-inputgroup-example', lang: 'tsx', src: inputGroupExample }],
     },
     {
       id: 'datetime-picker',
