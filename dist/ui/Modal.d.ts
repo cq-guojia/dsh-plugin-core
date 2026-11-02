@@ -35,6 +35,8 @@ export interface ModalProps {
     /** 不渲染头部（沉浸式 / 无标题场景）。 */
     hideHeader?: boolean;
     footer?: ReactNode;
+    /** footer 上面那条分隔线（默认 true）。传 false 关闭；sm 确认框家族本来就没有。 */
+    footerDivider?: boolean;
     children?: ReactNode;
     translate?: Translate;
 }

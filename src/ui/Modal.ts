@@ -40,6 +40,8 @@ export interface ModalProps {
   /** 不渲染头部（沉浸式 / 无标题场景）。 */
   hideHeader?: boolean
   footer?: ReactNode
+  /** footer 上面那条分隔线（默认 true）。传 false 关闭；sm 确认框家族本来就没有。 */
+  footerDivider?: boolean
   children?: ReactNode
   translate?: Translate
 }
@@ -104,7 +106,13 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
       // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
       // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
       h('div', { className: 'dshpc-modal__body' }, props.children ?? null),
-      props.footer === undefined ? null : h('div', { className: 'dshpc-modal__foot' }, props.footer),
+      props.footer === undefined
+        ? null
+        : h(
+            'div',
+            { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` },
+            props.footer,
+          ),
     ),
   )
 }

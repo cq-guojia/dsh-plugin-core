@@ -659,7 +659,8 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `escClose` | `boolean` | 'true' | Esc 关闭 | Close on Esc |
 | `maxWidth` | `string` | 按 size | 任意 CSS 值，覆盖 size 的宽度上限；不要用 vw（遮罩已按右侧分栏让位） | Any CSS value, overriding the size’s max width; avoid vw (the mask already yielded to the right column) |
 | `hideHeader` | `boolean` | 'false' | 不渲染头部（沉浸式） | Skip header (immersive) |
-| `footer` | `ReactNode` | — | 底栏（按钮区） | Footer (button area) |
+| `footer` | `ReactNode` | — | 底栏（按钮区；上下内距相等、内容垂直居中） | Footer (button area; symmetric padding, vertically centred) |
+| `footerDivider` | `boolean` | 'true' | 底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有） | The divider above the footer; pass false to drop it (sm dialogs never have one) |
 | `children` | `ReactNode` | — | 主体 | Body |
 
 ## SideSheet（侧边抽屉）

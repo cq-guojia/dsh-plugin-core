@@ -4820,7 +4820,7 @@ function WorkspacePicker(props) {
 var import_react16 = require("react");
 
 // dist/ui/feedback-css.generated.js
-var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5DF2\u62BD\u5230 overlay.css\uFF08Modal / SideSheet \u5171\u7528\uFF09\uFF0C\u8FD9\u91CC\u53EA\u5269\u9762\u677F\u672C\u4F53\u4E0E\u5BB6\u65CF\u5C3A\u5BF8\u3002 */\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px}\n.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px 18px}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0}\n";
+var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5DF2\u62BD\u5230 overlay.css\uFF08Modal / SideSheet \u5171\u7528\uFF09\uFF0C\u8FD9\u91CC\u53EA\u5269\u9762\u677F\u672C\u4F53\u4E0E\u5BB6\u65CF\u5C3A\u5BF8\u3002 */\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px}\n/* \u5E95\u680F\u4E0E\u5934\u90E8\u540C\u4E00\u53E3\u5F84\uFF082026-11-02 \u7528\u6237\uFF09\uFF1A\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\u3001\u9ED8\u8BA4\u5E26\u4E00\u6761\u5206\u9694\u7EBF\u3002\n   \u7EBF\u53EF\u7531\u6D88\u8D39\u65B9\u5173\u6389\uFF08Modal \u7684 footerDivider=false\uFF09\u2014\u2014 \u786E\u8BA4\u6846\u5BB6\u65CF\u672C\u6765\u5C31\u6CA1\u6709\u7EBF\uFF08\u4E0E\u5934\u90E8\u4E00\u81F4\uFF09\u3002 */\n.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}\n.dshpc-modal .dshpc-modal__foot--bare{border-top:none}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}\n";
 
 // dist/ui/overlay.js
 var import_react15 = require("react");
@@ -4900,7 +4900,7 @@ function Modal(props) {
     // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
     // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
     (0, import_react16.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null),
-    props.footer === void 0 ? null : (0, import_react16.createElement)("div", { className: "dshpc-modal__foot" }, props.footer)
+    props.footer === void 0 ? null : (0, import_react16.createElement)("div", { className: `dshpc-modal__foot${props.footerDivider === false ? " dshpc-modal__foot--bare" : ""}` }, props.footer)
   ));
 }
 
@@ -60093,8 +60093,17 @@ var docData = {
             "type": "ReactNode",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5E95\u680F\uFF08\u6309\u94AE\u533A\uFF09",
-              "en": "Footer (button area)"
+              "zh": "\u5E95\u680F\uFF08\u6309\u94AE\u533A\uFF1B\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\uFF09",
+              "en": "Footer (button area; symmetric padding, vertically centred)"
+            }
+          },
+          {
+            "name": "footerDivider",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "\u5E95\u680F\u4E0A\u9762\u7684\u90A3\u6761\u5206\u9694\u7EBF\uFF1B\u4F20 false \u5173\u6389\uFF08sm \u786E\u8BA4\u6846\u672C\u6765\u5C31\u6CA1\u6709\uFF09",
+              "en": "The divider above the footer; pass false to drop it (sm dialogs never have one)"
             }
           },
           {
@@ -65743,7 +65752,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.19.1"}`],
             [t3("buildDemo"), `v${"0.19.1"}`],
-            [t3("buildStamp"), "261102-170745-112"]
+            [t3("buildStamp"), "261102-174537-623"]
           ].map(
             ([label, value]) => (0, import_react81.createElement)(
               "tr",
@@ -66065,7 +66074,7 @@ function DemoPage() {
           },
           (0, import_react83.createElement)("span", null, `core v${"0.19.1"}`),
           (0, import_react83.createElement)("span", null, `demo v${"0.19.1"}`),
-          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261102-170745-112")
+          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261102-174537-623")
         )
       )
     ),

@@ -54,6 +54,8 @@ export function Modal(props) {
         : null, 
     // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
     // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
-    h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dshpc-modal__foot' }, props.footer)));
+    h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined
+        ? null
+        : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, props.footer)));
 }
 //# sourceMappingURL=Modal.js.map

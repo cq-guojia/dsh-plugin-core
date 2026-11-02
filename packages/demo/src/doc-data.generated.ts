@@ -2895,8 +2895,17 @@ export const docData = {
             "type": "ReactNode",
             "def": "—",
             "desc": {
-              "zh": "底栏（按钮区）",
-              "en": "Footer (button area)"
+              "zh": "底栏（按钮区；上下内距相等、内容垂直居中）",
+              "en": "Footer (button area; symmetric padding, vertically centred)"
+            }
+          },
+          {
+            "name": "footerDivider",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有）",
+              "en": "The divider above the footer; pass false to drop it (sm dialogs never have one)"
             }
           },
           {

@@ -9,7 +9,10 @@
 /* body = 唯一滚动容器：内距与滚动都归它（滚动条贴面板右缘，不被内距挤进来）；
    内容按流排，不设 height:100%、不自己开滚动条。 */
 .dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px}
-.dshpc-modal__foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px 18px}
+/* 底栏与头部同一口径（2026-11-02 用户）：上下内距相等、内容垂直居中、默认带一条分隔线。
+   线可由消费方关掉（Modal 的 footerDivider=false）—— 确认框家族本来就没有线（与头部一致）。 */
+.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}
+.dshpc-modal .dshpc-modal__foot--bare{border-top:none}
 .dshpc-toast-host{
   position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);
   display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;
@@ -37,4 +40,4 @@
 .dshpc-modal--sm{padding:18px}
 .dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}
 .dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}
-.dshpc-modal--sm .dshpc-modal__foot{padding:0}
+.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}
