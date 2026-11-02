@@ -16,9 +16,10 @@
 /* 侧边档（SideSheet）：面板 absolute 贴边，不需要 flex 居中；z 走 drawer 档（低于 modal）。 */
 .dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}
 
-/* 头部四槽：左图标 / 标题组 / 弹性间隔 / 右侧动作区 + 关闭钮。 */
+/* 头部四槽：左图标 / 标题组 / 弹性间隔 / 右侧动作区 + 关闭钮。
+   上下内距必须相等（18/12 会让标题离面板顶远、离分隔线近，用户 2026-11-02）。 */
 .dshpc-overlay-head{
-  display:flex;align-items:center;gap:8px;padding:18px 18px 12px;
+  display:flex;align-items:center;gap:8px;padding:18px;
   border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;
 }
 .dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
