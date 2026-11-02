@@ -7,6 +7,7 @@ export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './M
 export { WorkspacePicker, type WorkspacePickerProps } from './WorkspacePicker.js';
 export { connectHost, getWorkspaceFiles, modelCatalog, workspaceList, type ConnectHostOptions, type HostClientContext, type HostWorkspaceItem, type HostWorkspaceSource, type ModelCatalogState, type ModelRoute, } from './host-data.js';
 export { Modal, type ModalProps, type ModalSize } from './Modal.js';
+export { SideSheet, type SideSheetProps, type SideSheetSide } from './SideSheet.js';
 export { AlertModal, type AlertModalProps, type AlertSeverity, } from './AlertModal.js';
 export { ConfirmModal, type ConfirmModalProps, type ConfirmTone, } from './ConfirmModal.js';
 export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, } from './modal-host.js';

@@ -1,12 +1,4 @@
-
-/* 遮罩 = 宿主遮罩变量 --dsw-alias-bg-mask-1（与官方 Modal / 兄弟项目 --tdt-mask 同一条真值，用户 2026-10-20）。 */
-/* 右边界让位页面级分栏（PanelDock 发布的 --dshpc-page-inset-right，用户 2026-10-22）：
-   分栏不被压暗、照常可点；弹窗在这块**剩下**的区域里居中，就像整页被推出去一样。 */
-.dshpc-modal-mask{
-  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;z-index:1070;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--dshpc-mask);
-}
+/* 遮罩与头部已抽到 overlay.css（Modal / SideSheet 共用），这里只剩面板本体与家族尺寸。 */
 /* 大弹窗家族（md/lg）：抄兄弟项目 archive-session-css 的 .dsh-tdt-sv-panel（surface-base + border-l2 + radius 12 + shadow-2）。 */
 .dshpc-modal{
   display:flex;flex-direction:column;box-sizing:border-box;
@@ -14,25 +6,6 @@
   border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);
   box-shadow:var(--dshpc-shadow-2);overflow:hidden;
 }
-.dshpc-modal__head{
-  display:flex;align-items:center;gap:8px;padding:18px 31px 12px;
-  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;
-}
-/* 标题组：第一行 = 标题 + 右侧小块（徽标紧跟标题），第二行 = 副标题。 */
-.dshpc-modal__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}
-.dshpc-modal__titlerow{display:flex;align-items:center;gap:8px;min-width:0}
-.dshpc-modal__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}
-/* 标题下副标题行（兄弟项目 .dsh-tdt-sv-sid：等宽字体、caption 色、可换行）。 */
-.dshpc-modal__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}
-/* 关闭按钮：24×24 方角图标位，不借用 Picker 的触发器皮肤（那份带 min-width:120px）。 */
-.dshpc-modal__close{
-  display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);
-  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;
-  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);
-}
-.dshpc-modal__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}
-.dshpc-modal__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
 /* body = 唯一滚动容器：内距与滚动都归它（滚动条贴面板右缘，不被内距挤进来）；
    内容按流排，不设 height:100%、不自己开滚动条。 */
 .dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 31px}
@@ -53,12 +26,6 @@
 }
 /* 原生弹窗演示：经宿主 Modal 的 contentClassName 注入，证明宿主内容区尺寸可经类名自定义。 */
 .dshpc-native-demo-content{max-width:520px}
-/* Modal 头部四槽：左图标 / 标题组 / 弹性间隔 / 右侧动作区 + 关闭钮。 */
-.dshpc-modal__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
-.dshpc-modal__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
-.dshpc-modal__extra{flex:none;display:inline-flex;align-items:center}
-.dshpc-modal__spacer{flex:1 1 auto;min-width:8px}
-.dshpc-modal__actions{flex:none;display:flex;align-items:center;gap:8px}
 /* 头部信号图标（AlertModal 按 severity 注入）：自含配色，不依赖宿主 token。 */
 .dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}
 .dshpc-alert-sev--info{background:#2563eb}
@@ -68,6 +35,6 @@
 /* 小确认框家族（sm）：严格抄兄弟项目 renderConfirm 的 dialogStyle（task-list.tsx:456）——
    360px 宽 / 18px 内距 / 头部无分隔线 / 说明文字 fg-2 / 底部按钮右对齐。 */
 .dshpc-modal--sm{padding:18px}
-.dshpc-modal--sm .dshpc-modal__head{padding:0 0 8px;border-bottom:none}
+.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}
 .dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}
 .dshpc-modal--sm .dshpc-modal__foot{padding:0}

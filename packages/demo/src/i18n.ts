@@ -170,6 +170,8 @@ export type DemoMessageKey =
   | 'exSmallModalHint'
   | 'exLargeModalTitle'
   | 'exLargeModalHint'
+  | 'exSideSheetTitle'
+  | 'exSideSheetHint'
   | 'exHostModalTitle'
   | 'exHostModalHint'
   | 'exToastNotifyTitle'
@@ -493,6 +495,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exSmallModalHint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。',
     exLargeModalTitle: '大型弹窗（自定义）',
     exLargeModalHint: '我们的内容弹窗：Modal（size md/lg），承载任意内容，不是「确定/取消」命令式。三张示例：默认 md / 带 footer / 无 footer（内容自定义），头部排法可不同。',
+    exSideSheetTitle: '侧边抽屉（覆盖式）',
+    exSideSheetHint: 'SideSheet：从屏幕左 / 右缘滑入的覆盖层 —— 盖住页面、主区宽度不变。皮肤与 PanelDock 分栏完全一致（头部 / 边框 / 拖拽条 / 阴影），宽度默认就能拖；没有收起与耳朵。Esc / 点遮罩 / ✕ 都能关。',
     exHostModalTitle: '原生弹窗（宿主）',
     exHostModalHint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。',
     exToastNotifyTitle: 'Toast · 我们封装 notify',
@@ -797,6 +801,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exSmallModalHint: 'Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host’s own.',
     exLargeModalTitle: 'Large dialogs (custom)',
     exLargeModalHint: 'Our content dialog: Modal (size md/lg) carrying arbitrary content — not a confirm/cancel primitive. Three samples: default md / with footer / without footer (custom content); the header layout may differ.',
+    exSideSheetTitle: 'Side drawer (overlay)',
+    exSideSheetHint: 'SideSheet: an overlay sliding in from the left or right edge — it covers the page while the main area keeps its width. The skin matches PanelDock exactly (header / border / resize handle / shadow) and it resizes by dragging by default; there is no collapse or edge ear. Esc, mask click and ✕ all close it.',
     exHostModalTitle: 'Native dialogs (host)',
     exHostModalHint: 'The host kernel’s own Modal: mask, header and close button all belong to the host; the body takes arbitrary content and the footer any button set. Imperative use goes through confirmModal/alertModal with skin:"host"; neither shadows the other.',
     exToastNotifyTitle: 'Toast · our notify wrapper',

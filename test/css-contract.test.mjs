@@ -14,6 +14,9 @@ import { fileURLToPath } from 'node:url'
 import * as controls from '../dist/ui/controls-css.js'
 import { PICKER_CSS } from '../dist/ui/picker-css.js'
 import { FEEDBACK_CSS } from '../dist/ui/feedback-css.js'
+import { OVERLAY_CSS } from '../dist/ui/overlay-css.js'
+import { SIDE_PANEL_CSS } from '../dist/ui/side-panel-css.js'
+import { SIDE_SHEET_CSS } from '../dist/ui/side-sheet-css.js'
 import { CARD_CSS } from '../dist/ui/card-css.js'
 import { SURFACE_CSS } from '../dist/ui/surface-css.js'
 import { CHIP_CSS } from '../dist/ui/chip-css.js'
@@ -31,6 +34,9 @@ const CONSTANTS = {
     Object.entries(controls).filter(([key, value]) => key.endsWith('_CSS') && typeof value === 'string'),
   ),
   PICKER_CSS,
+  OVERLAY_CSS,
+  SIDE_PANEL_CSS,
+  SIDE_SHEET_CSS,
   FEEDBACK_CSS,
   SURFACE_CSS,
   CARD_CSS,
@@ -270,23 +276,48 @@ test('注入文本的括号与注释必须平衡', () => {
   assert.equal(depth, 0, `花括号不平衡，残留 ${depth} 层`)
 })
 
-test('Modal 关闭按钮用专属类名，不借 Picker 触发器皮肤', async () => {
-  assert.ok(FEEDBACK_CSS.includes('.dshpc-modal__close'), 'FEEDBACK_CSS 缺 .dshpc-modal__close')
-  const modal = await readFile(new URL('../dist/ui/Modal.js', import.meta.url), 'utf8')
-  assert.ok(modal.includes('dshpc-modal__close'), 'Modal 关闭按钮未用 dshpc-modal__close')
-  assert.ok(!modal.includes('dshpc-picker__trigger'), 'Modal 仍在借 dshpc-picker__trigger')
+test('浮层关闭按钮用专属类名，不借 Picker 触发器皮肤', async () => {
+  assert.ok(OVERLAY_CSS.includes('.dshpc-overlay-head__close'), 'OVERLAY_CSS 缺 .dshpc-overlay-head__close')
+  const overlay = await readFile(new URL('../dist/ui/overlay.js', import.meta.url), 'utf8')
+  assert.ok(overlay.includes('dshpc-overlay-head__close'), '浮层关闭按钮未用 dshpc-overlay-head__close')
+  assert.ok(!overlay.includes('dshpc-picker__trigger'), '浮层关闭按钮仍在借 dshpc-picker__trigger')
 })
 
 // 遮罩让位分栏（2026-10-22）：契约是「PanelDock 写变量 / 遮罩读变量」，两边改名走散了
 // 不会报错，只会静默回到「遮罩盖住 dock」，所以由测试钉住同一个变量名。
 test('遮罩让位分栏：写的与读的是同一个 CSS 变量', async () => {
   assert.ok(
-    FEEDBACK_CSS.includes('inset:0 var(--dshpc-page-inset-right'),
+    OVERLAY_CSS.includes('inset:0 var(--dshpc-page-inset-right'),
     '遮罩没用 --dshpc-page-inset-right 让位（右边界会让到全屏）',
   )
   const dock = await readFile(new URL('../dist/ui/PanelDock.js', import.meta.url), 'utf8')
   assert.ok(dock.includes('--dshpc-page-inset-right'), 'PanelDock 没有发布 --dshpc-page-inset-right')
   assert.ok(!FEEDBACK_CSS.includes('dshpc-modal-mask--plain'), 'mask={false} 的旁路样式已删，勿回潮')
+})
+
+// 遮罩只允许有一份（overlay.css）：Modal 与 SideSheet 共用。谁再抄一层 fixed 遮罩，
+// 遮罩就会有两套让位 / 两套 z 档，改动时必走散。由测试钉住。
+test('遮罩只有一份：SideSheet 不许自己再写一层', () => {
+  assert.ok(!SIDE_SHEET_CSS.includes('.dshpc-overlay'), 'SideSheet 的 CSS 里重复定义了遮罩')
+  assert.ok(!SIDE_SHEET_CSS.includes('position:fixed'), 'SideSheet 的 CSS 里出现了 fixed 层（遮罩应来自 overlay.css）')
+  assert.ok(!/^\.dshpc-overlay\{/m.test(FEEDBACK_CSS), 'FEEDBACK_CSS 里又定义了遮罩本体（只在 overlay.css）')
+})
+
+// 侧边面板皮肤只有一份（side-panel.css）：PanelDock 与 SideSheet 共用。
+// 谁为了「微调一下」在旁边再写一条同名规则，两个控件的观感就会从这一行开始分叉。
+test('侧边面板皮肤只有一份：头部 / 拖拽条 / 关闭钮只在 SIDE_PANEL_CSS', () => {
+  // 只认「以该类开头的规则」= 定义皮肤；像 .dshpc-sheet--left .dshpc-dock__resizer{}
+  // 这种后代选择器是镜像定位，合法。
+  const definesBase = (css, cls) => new RegExp(`^${cls.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(,|\\{)`, 'm').test(css)
+  for (const cls of ['.dshpc-dock__head', '.dshpc-dock__title', '.dshpc-dock__close', '.dshpc-dock__resizer', '.dshpc-side-surface']) {
+    assert.ok(SIDE_PANEL_CSS.includes(cls), `${cls} 不在 SIDE_PANEL_CSS 里`)
+    for (const [name, css] of [['PANEL_DOCK_CSS', PANEL_DOCK_CSS], ['SIDE_SHEET_CSS', SIDE_SHEET_CSS]]) {
+      assert.ok(!definesBase(css, cls), `${name} 里重复定义了 ${cls} 的皮肤（只允许 side-panel.css）`)
+    }
+  }
+  // 定位是两者唯一的形态差异：分栏占宽、抽屉覆盖，各自在自己文件里定。
+  assert.ok(PANEL_DOCK_CSS.includes('position:sticky'), 'PanelDock 丢了 sticky 占位')
+  assert.ok(SIDE_SHEET_CSS.includes('position:absolute'), 'SideSheet 丢了 absolute 定位')
 })
 
 // ── 真源 → 生成物 这一跳的闸 ──────────────────────────────────────────────

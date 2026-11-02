@@ -1,7 +1,8 @@
-import { createElement as h, useEffect } from 'react';
+import { createElement as h } from 'react';
 import { t } from '../utils/i18n.js';
 import { ensureComponentStyles } from './css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
+import { OverlayHead, OverlayMask, useEscapeClose } from './overlay.js';
 /**
  * 模态弹窗（自绘 overlay，**不用 react-dom 的 portal**，避免多一个必需依赖）。
  *
@@ -11,17 +12,7 @@ export function Modal(props) {
     ensureComponentStyles('feedback', FEEDBACK_CSS);
     const tt = props.translate ?? t;
     const closeOnMask = props.closeOnMask !== false;
-    const escClose = props.escClose !== false;
-    useEffect(() => {
-        if (!escClose || props.onClose === undefined)
-            return;
-        const onKey = (e) => {
-            if (e.key === 'Escape')
-                props.onClose?.();
-        };
-        document.addEventListener('keydown', onKey);
-        return () => document.removeEventListener('keydown', onKey);
-    }, [escClose, props.onClose]);
+    useEscapeClose(props.escClose !== false, props.onClose);
     // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
     // 宽度用 `100%`（相对遮罩盒）而不是 `100vw`：遮罩已按右侧分栏让位（见 feedback.css），
     // 用 `100vw` 算出来的宽在分栏在场时会溢出到分栏上，等于白让（用户 2026-10-22）。
@@ -39,13 +30,7 @@ export function Modal(props) {
             props.headerExtra !== undefined ||
             props.headerActions !== undefined ||
             showClose);
-    return h('div', {
-        className: 'dshpc-modal-mask',
-        onClick: () => {
-            if (closeOnMask)
-                props.onClose?.();
-        },
-    }, h('div', {
+    return h(OverlayMask, { kind: 'center', closeOnMask, onClose: props.onClose }, h('div', {
         className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}`,
         style: {
             width: props.width ?? s.width,
@@ -54,24 +39,18 @@ export function Modal(props) {
             height: props.height ?? s.height,
         },
         onClick: (e) => e.stopPropagation(),
-    }, showHeader
-        ? h('div', { className: 'dshpc-modal__head' }, h('div', { className: 'dshpc-modal__heading' }, props.icon === undefined ? null : h('span', { className: 'dshpc-modal__lead' }, props.icon), 
-        // 标题组：第一行 = 标题 + 右侧小块（徽标**紧跟标题**，不跨两行居中），
-        // 第二行 = 副标题（会话 id 这类标识）。
-        h('div', { className: 'dshpc-modal__titlegroup' }, h('div', { className: 'dshpc-modal__titlerow' }, h('div', { className: 'dshpc-modal__title' }, props.title ?? ''), props.headerExtra === undefined
-            ? null
-            : h('div', { className: 'dshpc-modal__extra' }, props.headerExtra)), props.subtitle === undefined
-            ? null
-            : h('div', { className: 'dshpc-modal__sid' }, props.subtitle))), h('div', { className: 'dshpc-modal__spacer' }), props.headerActions === undefined
-            ? null
-            : h('div', { className: 'dshpc-modal__actions' }, props.headerActions), showClose
-            ? h('button', {
-                type: 'button',
-                className: 'dshpc-modal__close',
-                'aria-label': tt('modalClose'),
-                onClick: () => props.onClose?.(),
-            }, '✕')
-            : null)
+    }, 
+    // 头部与遮罩都是浮层公共件（overlay.ts），SideSheet 用的是同一套。
+    showHeader
+        ? h(OverlayHead, {
+            icon: props.icon,
+            title: props.title,
+            subtitle: props.subtitle,
+            extra: props.headerExtra,
+            actions: props.headerActions,
+            closeLabel: tt('modalClose'),
+            onClose: showClose ? props.onClose : undefined,
+        })
         : null, 
     // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
     // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。

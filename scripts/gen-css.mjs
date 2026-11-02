@@ -45,6 +45,10 @@ const MAP = [
   ['src/ui/controls/pagination.css', 'src/ui/controls/pagination-css.generated.ts', 'PAGINATION_CSS'],
   ['src/ui/controls/section-head.css', 'src/ui/controls/section-head-css.generated.ts', 'SECTION_HEAD_CSS'],
   ['src/ui/picker.css', 'src/ui/picker-css.generated.ts', 'PICKER_CSS'],
+  ['src/ui/overlay.css', 'src/ui/overlay-css.generated.ts', 'OVERLAY_CSS'],
+  // 侧边面板皮肤：PanelDock 与 SideSheet 共用（定位各自在 panel-dock / side-sheet）。
+  ['src/ui/side-panel.css', 'src/ui/side-panel-css.generated.ts', 'SIDE_PANEL_CSS'],
+  ['src/ui/side-sheet.css', 'src/ui/side-sheet-css.generated.ts', 'SIDE_SHEET_CSS'],
   ['src/ui/feedback.css', 'src/ui/feedback-css.generated.ts', 'FEEDBACK_CSS'],
   ['src/ui/surface.css', 'src/ui/surface-css.generated.ts', 'SURFACE_CSS'],
   ['src/ui/card.css', 'src/ui/card-css.generated.ts', 'CARD_CSS'],

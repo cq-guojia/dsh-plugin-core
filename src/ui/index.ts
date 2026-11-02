@@ -63,6 +63,7 @@ export {
   type ModelRoute,
 } from './host-data.js'
 export { Modal, type ModalProps, type ModalSize } from './Modal.js'
+export { SideSheet, type SideSheetProps, type SideSheetSide } from './SideSheet.js'
 export {
   AlertModal,
   type AlertModalProps,

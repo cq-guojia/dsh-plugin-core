@@ -15,6 +15,7 @@ import {
   LoadingToast,
   MarqueeText,
   Modal,
+  SideSheet,
   AlertModal,
   ConfirmModal,
   DateTimePicker,
@@ -1481,11 +1482,22 @@ const CODE_LARGE_MODAL = `// 内容弹窗：size md / lg，承载任意内容（
 // 无 footer、头部自定义排法：title 收 ReactNode
 <Modal
   size="lg"
-  title={<><b>任务详情</b><span className="dshpc-modal__sid">sid-2026-1020-7f3a · 5 个步骤</span></>}
+  title={<><b>任务详情</b><span className="dshpc-overlay-head__sid">sid-2026-1020-7f3a · 5 个步骤</span></>}
   onClose={close}
 >
   <div>这里整个弹窗都由调用方自己定义。</div>
 </Modal>`
+
+const CODE_SIDE_SHEET = `// 覆盖式侧边抽屉：皮肤与 PanelDock 分栏一致，但盖在页面上、不挤窄主区
+<SideSheet side="left" title="文件详情" onClose={close}>
+  <FileDetail />
+</SideSheet>
+
+// 从右侧滑入 + 底栏 + 720 宽 + 不许拖
+<SideSheet side="right" width={720} resizable={false} title="筛选" onClose={close}
+  footer={<Button variant="primary">应用</Button>}>
+  <FilterForm />
+</SideSheet>`
 
 const CODE_TOAST_NATIVE = `// showToast：Sonner 原味（对比用）
 showToast('已保存')
@@ -1570,6 +1582,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [confirmResult, setConfirmResult] = useState('')
   const [largeOpen, setLargeOpen] = useState(false)
   const [largeOpenB, setLargeOpenB] = useState(false)
+  const [sheetCfg, setSheetCfg] = useState<{ side: 'left' | 'right'; footer: boolean } | null>(null)
   const [nativeText, setNativeText] = useState('')
   // 全局加载提示：1.2 秒后自动关掉（演示只需看到它在正中同一处出现）。
   const flash = (opts?: LoadingOptions): void => {
@@ -1697,7 +1710,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
                   Array.from({ length: 40 }, (_, i) =>
                     h('div', { key: i, style: { padding: '10px 0', borderBottom: '1px solid var(--dshpc-border-faint)', fontSize: '13px' } }, `列表项 ${i + 1}：这是一段可滚动的内容示例`),
                   ),
-                  h('div', { className: 'dshpc-modal__sid' }, '共 128 条 · 最近更新 2 分钟前'),
+                  h('div', { className: 'dshpc-overlay-head__sid' }, '共 128 条 · 最近更新 2 分钟前'),
                 ),
               )
             : null,
@@ -1716,7 +1729,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
                     'div',
                     null,
                     h('div', { style: { fontWeight: 600 } }, '任务详情'),
-                    h('div', { className: 'dshpc-modal__sid' }, 'sid-2026-1020-7f3a · 5 个步骤'),
+                    h('div', { className: 'dshpc-overlay-head__sid' }, 'sid-2026-1020-7f3a · 5 个步骤'),
                   ),
                   onClose: () => setLargeOpenB(false),
                 },
@@ -1729,6 +1742,38 @@ export function FeedbackPage(): ReturnType<typeof h> {
               )
             : null,
         ),
+      ),
+    ),
+    h(
+      Example,
+      { title: t('exSideSheetTitle'), hint: t('exSideSheetHint'), code: CODE_SIDE_SHEET },
+      h(
+        'div',
+        { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
+        h(Button, { onClick: () => setSheetCfg({ side: 'left', footer: false }) }, '从左侧滑出'),
+        h(Button, { variant: 'outline', onClick: () => setSheetCfg({ side: 'right', footer: false }) }, '从右侧滑出'),
+        h(Button, { variant: 'ghost', onClick: () => setSheetCfg({ side: 'left', footer: true }) }, '带底栏'),
+        sheetCfg !== null
+          ? h(
+              SideSheet,
+              {
+                side: sheetCfg.side,
+                title: '文件详情',
+                extra: h(Chip, null, '只读'),
+                onClose: () => setSheetCfg(null),
+                footer: sheetCfg.footer
+                  ? h(Button, { variant: 'primary', onClick: () => setSheetCfg(null) }, '知道了')
+                  : undefined,
+              },
+              h(
+                'div',
+                { style: { display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', lineHeight: '1.7' } },
+                h('div', null, '皮肤和 PanelDock 分栏一模一样（头部 / 边框 / 拖拽条 / 阴影），宽度默认就能拖 —— 但它盖在页面上，主区宽度不变。'),
+                h('div', null, '没有收起：关就是关（分栏才有收起钮和贴边的耳朵）。'),
+                h(Surface, { border: 'faint', padding: 'md', style: { fontSize: '13px' } }, '内容随便放：文件树、详情、筛选表单都行。'),
+              ),
+            )
+          : null,
       ),
     ),
     h(

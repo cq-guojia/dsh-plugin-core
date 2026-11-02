@@ -11,6 +11,7 @@ export { ModelPicker } from './ModelPicker.js';
 export { WorkspacePicker } from './WorkspacePicker.js';
 export { connectHost, getWorkspaceFiles, modelCatalog, workspaceList, } from './host-data.js';
 export { Modal } from './Modal.js';
+export { SideSheet } from './SideSheet.js';
 export { AlertModal, } from './AlertModal.js';
 export { ConfirmModal, } from './ConfirmModal.js';
 export { alertModal, confirmModal, } from './modal-host.js';

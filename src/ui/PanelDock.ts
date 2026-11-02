@@ -30,11 +30,12 @@ import {
 } from './panel-dock-logic.js'
 import { ensureComponentStyles } from './css.js'
 import { PANEL_DOCK_CSS } from './panel-dock-css.js'
+import { SIDE_PANEL_CSS } from './side-panel-css.js'
 import { FEEDBACK_CSS } from './feedback-css.js'
 
 // ── 分栏占宽契约（用户 2026-10-22 拍板）──
 // 遮罩必须知道「页面右侧被分栏占掉多少」，否则它会把 dock 一起压暗、还吃掉点击
-// （`.dshpc-modal-mask` 的 right inset 读的就是这个变量）。挂在根元素上，是因为遮罩不保证
+// （`.dshpc-overlay` 的 right inset 读的就是这个变量）。挂在根元素上，是因为遮罩不保证
 // 是本 dock 那个 flex 行的后代；同页多个 dock 按实例求和，全部关掉即移除变量。
 const INSET_VAR = '--dshpc-page-inset-right'
 /** 分栏开着时给主区滚动条留的缝（px）：滚动条与分隔线只留 1px（用户 2026-10-28：
@@ -284,6 +285,7 @@ function panesOf(children: ReactNode): DockPanelProps[] {
 
 /** 停靠栏本体：只渲染「开着的」面板，结构取自对应的 `<DockPanel>`。 */
 export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
+  ensureComponentStyles('side-panel', SIDE_PANEL_CSS)
   ensureComponentStyles('panel-dock', PANEL_DOCK_CSS)
   ensureComponentStyles('feedback', FEEDBACK_CSS)
   const tt = props.translate ?? t
@@ -453,8 +455,10 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
               if (element === null) panelRefs.current.delete(pane.id)
               else panelRefs.current.set(pane.id, element)
             },
-            className:
-              closing.includes(pane.id) ? 'dshpc-dock__panel dshpc-dock__panel--closing' : 'dshpc-dock__panel',
+            // side-surface = 与 SideSheet 共用的面板皮肤（背景 / 阴影 / 头部 / 拖拽条都在那份里）。
+            className: `dshpc-side-surface dshpc-dock__panel${
+              closing.includes(pane.id) ? ' dshpc-dock__panel--closing' : ''
+            }`,
             style: { width: `${widthOf(pane)}px` },
             'data-panel': pane.id,
             'aria-label': pane.ariaLabel ?? (typeof pane.title === 'string' ? pane.title : pane.id),

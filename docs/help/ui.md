@@ -4,7 +4,7 @@
 
 > EN: ui — base controls
 
-导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Surface、Card、StripCard、Chip、Table、Pagination、Modal、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、QuickToolbar、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
+导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Surface、Card、StripCard、Chip、Table、Pagination、Modal、SideSheet、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、LiveText、QuickToolbar、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
 
 ## 概览
 
@@ -602,6 +602,52 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `hideHeader` | `boolean` | 'false' | 不渲染头部（沉浸式） | Skip header (immersive) |
 | `footer` | `ReactNode` | — | 底栏（按钮区） | Footer (button area) |
 | `children` | `ReactNode` | — | 主体 | Body |
+
+## SideSheet（侧边抽屉）
+
+> EN: SideSheet (side drawer)
+
+从屏幕左 / 右缘滑入的**覆盖式**浮层。皮肤与 `PanelDock` **一模一样**（同一份 `side-panel.css`：头部排版、拖拽条、关闭钮、边框、阴影、入场动画），宽度也能拖；差别只在**怎么占位**：分栏是 sticky 占宽、把主区挤窄（调用方必须给挂载点），抽屉是 absolute 盖上去（自铺遮罩，不需要挂载点）。
+
+> EN: An **overlay** sliding in from the left or right edge. It shares the **exact same skin** as `PanelDock` (one `side-panel.css`: header layout, resize handle, close button, border, shadow, entrance animation) and resizes by dragging too; the only difference is **how it occupies space**: a dock is sticky and narrows the main area (caller must supply a mount), a sheet is absolute and covers it (lays its own mask, no mount needed).
+
+**没有收起**：抽屉没有收起钮、也没有收进去之后贴在边上的耳朵 —— 关就是关（用户 2026-11-02）。要「收起来还留着入口」那个形态，用 `PanelDock`。
+
+> EN: **No collapse**: there is no collapse button and no edge ear to reopen from — closing means closing (decided 2026-11-02). For “collapse but keep an entry point”, use `PanelDock`.
+
+开关行为与 `Modal` 一致：**渲染即显示**（`{open && <SideSheet … />}`）、点遮罩 / Esc / ✕ 三条关闭路径都在，且可分别关掉（`closeOnMask` / `escClose` / `closable`）。遮罩右边界照样让开右侧分栏（读 `--dshpc-page-inset-right`），分级走 drawer 档（低于 modal、高于 dock）。
+
+> EN: Closing behaves exactly like `Modal`: **rendered means visible** (`{open && <SideSheet … />}`), with mask click / Esc / ✕ all wired and individually switchable (`closeOnMask` / `escClose` / `closable`). The mask still yields to the right column (`--dshpc-page-inset-right`) and sits on the drawer z-tier (below modal, above dock).
+
+宽度：初始 460px（与 PanelDock 同档）、下限 320、上限默认只受遮罩盒限制，都可调。**默认就能拖**（`resizable={false}` 关掉）；拖动期把面板自己那条边框染成蓝色渐变，与分栏同款（不在旁边另加一条线）。拖出来的宽度只活在组件内，下次打开回到初始值。
+
+> EN: Width: starts at 460px (same as PanelDock), floor 320, ceiling defaults to the mask box — all adjustable. **Draggable by default** (`resizable={false}` to turn it off); while dragging, the panel’s own border becomes the blue gradient, same as the dock (never a second line beside it). A dragged width lives inside the component only — reopening starts from the initial value again.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `side` | `'left' \| 'right'` | 'left' | 贴哪条边、从哪边滑入；拖拽条自动落到朝内那一侧 | Which edge it hugs and slides from; the resize handle moves to the inner edge |
+| `title / icon / extra` | `ReactNode` | — | 内置头的标题 / 标题前图标 / 标题右侧任意内容（与 PanelDock 同槽） | Built-in header: title / icon before it / anything to the right (same slots as PanelDock) |
+| `header` | `ReactNode \| null` | — | 整块替换头部；`null` = 不要头部（关闭钮浮到右上角） | Replace the whole header; `null` = no header (close button floats top-right) |
+| `onClose / closable / closeIcon` | `() => void / boolean / ReactNode` | — / 跟随 onClose / ✕ | 关闭回调；不传则不出关闭钮 | Close handler; no close button if omitted |
+| `closeOnMask / escClose` | `boolean` | 'true' / 'true' | 点遮罩关闭 / Esc 关闭 | Close on mask click / on Esc |
+| `width / minWidth / maxWidth` | `number / number / number` | 460 / 320 / — | 初始宽度 / 拖拽下限 / 拖拽上限（px；上限缺省 = 遮罩盒宽） | Initial width / resize floor / resize ceiling (px; ceiling defaults to the mask box) |
+| `resizable` | `boolean` | true | 能否拖宽（关掉就没有拖拽条） | Whether it resizes by dragging (off = no handle) |
+| `footer / children` | `ReactNode / ReactNode` | — / — | 底栏 / 主体（主体是唯一滚动容器） | Footer / body (the body is the only scroll container) |
+| `translate` | `Translate` | 内置字典 | 覆盖关闭 / 拖拽条的文案 | Override close / resize copy |
+
+```tsx id="ui-sidesheet-example"
+import { SideSheet } from 'dsh-plugin-core/ui'
+
+// 页面里某一处（关闭就是卸载，和 Modal 一样）
+open ? h(SideSheet, {
+  title: '文件详情',
+  extra: h(Chip, null, '只读'),          // 标题右侧（与 PanelDock 同一个槽）
+  onClose: () => setOpen(false),
+  footer: h(Button, { variant: 'primary', onClick: () => setOpen(false) }, '知道了'),
+}, h(FileDetail)) : null
+
+// 从右侧滑入、初始 720 宽、不许拖：side="right" / width={720} / resizable={false}
+```
 
 ## PanelDock（停靠分栏）
 
