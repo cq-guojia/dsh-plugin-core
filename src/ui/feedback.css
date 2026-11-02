@@ -2,11 +2,11 @@
 /* 大弹窗家族（md/lg）：抄兄弟项目 archive-session-css 的 .dsh-tdt-sv-panel（surface-base + border-l2 + radius 12 + shadow-2）。 */
 .dshpc-modal{
   display:flex;flex-direction:column;box-sizing:border-box;
-  background:var(--dshpc-surface-base);color:var(--dshpc-fg);
-  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);
-  /* 外圈 10px 实色描边（2026-11-02 用户）：不透明，颜色 = 边框色与面板底色各半（比边框浅一半），
-     不吃内距、跟着圆角走。混面板底色而不是混透明白 ⇒ 明暗两套主题下都表现为「更淡」。 */
-  box-shadow:0 0 0 10px color-mix(in srgb,var(--dshpc-border) 50%,var(--dshpc-surface-base)),var(--dshpc-shadow-2);overflow:hidden;
+  /* 面板底色 = 宿主浮层档 bg-layer-1（与官方弹窗同层），不是页面底 bg-base：
+     base 在暗色下是纯黑、亮色下是最白，弹窗用它才会「比原生更黑 / 更白」（用户 2026-11-02）。 */
+  background:var(--dshpc-surface-1);color:var(--dshpc-fg);
+  border:3px solid var(--dshpc-border);border-radius:var(--dshpc-radius-xl);
+  box-shadow:var(--dshpc-shadow-2);overflow:hidden;
 }
 /* body = 唯一滚动容器：内距与滚动都归它（滚动条贴面板右缘，不被内距挤进来）；
    内容按流排，不设 height:100%、不自己开滚动条。 */

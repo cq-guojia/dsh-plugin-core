@@ -5,6 +5,9 @@
    没有收起/耳朵（用户 2026-11-02）：抽屉关就是关。 */
 
 .dshpc-sheet{position:absolute;top:0;bottom:0}
+/* 面与 Modal 同档（bg-layer-1），PanelDock 仍用页面底：双类压过共用的 .dshpc-side-surface，
+   不碰边框（用户 2026-11-02：只改背景）。 */
+.dshpc-side-surface.dshpc-sheet{background:var(--dshpc-surface-1)}
 /* 贴边那侧描边（与分栏的 border-left 同一套线色），拖拽条永远在**朝内**那一侧。 */
 .dshpc-sheet--left{left:0;border-right:1px solid var(--dshpc-border)}
 .dshpc-sheet--right{right:0;border-left:1px solid var(--dshpc-border)}
