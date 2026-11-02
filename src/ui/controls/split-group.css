@@ -20,8 +20,10 @@
    .dshpc-split > *{min-width:0;max-width:100%;}
    /* 分隔：相邻兄弟的左描边，不额外插 DOM，hover / focus 时也不会断 */
    .dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}
-   /* 整体聚焦：内件自己的外圈交出来，由外壳画一整圈（内件各自画会变成格内半圈） */
-   .dshpc-split:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
+   /* 整体聚焦：只在**下拉展开**时画一整圈（判据是内件的 aria-expanded，不是 :focus-within）。
+      2026-11-02 用户定稿：滑块那格是「选中」不是「输入聚焦」，鼠标点它不该让整框常亮；
+      而且选取值后焦点会留在按钮上，用 :focus-within 会一直亮着。 */
+   .dshpc-split:has(.dshpc-picker__trigger[aria-expanded='true']){border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}
    /* Picker：去掉自身外框与底色；display 改成 flex，消掉 inline-block 行盒带来的基线间隙。
       注意**不能用 height:100%**：它会和 .dshpc-picker__trigger--lg / --sm 同特异性（都是两个类），
       且 split-group.css 在 picker.css 之后注入，会把三档高度全吃掉（md/lg 看起来一样大）。
