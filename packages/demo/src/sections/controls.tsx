@@ -1565,12 +1565,13 @@ const CODE_LARGE_MODAL = `// 内容弹窗：size md / lg，承载任意内容（
 </Modal>`
 
 const CODE_SIDE_SHEET = `// 覆盖式侧边抽屉：皮肤与 PanelDock 分栏一致，但盖在页面上、不挤窄主区
-<SideSheet side="left" title="文件详情" onClose={close}>
+// 常驻渲染 + open 布尔：关的时候宽度收回去（写 {open && <SideSheet/>} 会一卸载就没影）
+<SideSheet open={open} side="left" title="文件详情" onClose={() => setOpen(false)}>
   <FileDetail />
 </SideSheet>
 
 // 从右侧滑入 + 底栏 + 720 宽 + 不许拖
-<SideSheet side="right" width={720} resizable={false} title="筛选" onClose={close}
+<SideSheet open={open} side="right" width={720} resizable={false} title="筛选" onClose={() => setOpen(false)}
   footer={<Button variant="primary">应用</Button>}>
   <FilterForm />
 </SideSheet>`
@@ -1658,7 +1659,9 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [confirmResult, setConfirmResult] = useState('')
   const [largeOpen, setLargeOpen] = useState(false)
   const [largeOpenB, setLargeOpenB] = useState(false)
-  const [sheetCfg, setSheetCfg] = useState<{ side: 'left' | 'right'; footer: boolean } | null>(null)
+  // 抽屉常驻渲染，只切 open —— 关的时候才有收回去的动效。
+  const [sheetCfg, setSheetCfg] = useState<{ side: 'left' | 'right'; footer: boolean }>({ side: 'left', footer: false })
+  const [sheetOpen, setSheetOpen] = useState(false)
   const [nativeText, setNativeText] = useState('')
   // 全局加载提示：1.2 秒后自动关掉（演示只需看到它在正中同一处出现）。
   const flash = (opts?: LoadingOptions): void => {
@@ -1826,30 +1829,30 @@ export function FeedbackPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
-        h(Button, { onClick: () => setSheetCfg({ side: 'left', footer: false }) }, '从左侧滑出'),
-        h(Button, { variant: 'outline', onClick: () => setSheetCfg({ side: 'right', footer: false }) }, '从右侧滑出'),
-        h(Button, { variant: 'ghost', onClick: () => setSheetCfg({ side: 'left', footer: true }) }, '带底栏'),
-        sheetCfg !== null
-          ? h(
-              SideSheet,
-              {
-                side: sheetCfg.side,
-                title: '文件详情',
-                extra: h(Chip, null, '只读'),
-                onClose: () => setSheetCfg(null),
-                footer: sheetCfg.footer
-                  ? h(Button, { variant: 'primary', onClick: () => setSheetCfg(null) }, '知道了')
-                  : undefined,
-              },
-              h(
-                'div',
-                { style: { display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', lineHeight: '1.7' } },
-                h('div', null, '皮肤和 PanelDock 分栏一模一样（头部 / 边框 / 拖拽条 / 阴影），宽度默认就能拖 —— 但它盖在页面上，主区宽度不变。'),
-                h('div', null, '没有收起：关就是关（分栏才有收起钮和贴边的耳朵）。'),
-                h(Surface, { border: 'faint', padding: 'md', style: { fontSize: '13px' } }, '内容随便放：文件树、详情、筛选表单都行。'),
-              ),
-            )
-          : null,
+        h(Button, { onClick: () => { setSheetCfg({ side: 'left', footer: false }); setSheetOpen(true) } }, '从左侧滑出'),
+        h(Button, { variant: 'outline', onClick: () => { setSheetCfg({ side: 'right', footer: false }); setSheetOpen(true) } }, '从右侧滑出'),
+        h(Button, { variant: 'ghost', onClick: () => { setSheetCfg({ side: 'left', footer: true }); setSheetOpen(true) } }, '带底栏'),
+        // 常驻渲染 + open 布尔：关闭时才有收回去的动效（条件渲染会一卸载就没影）。
+        h(
+          SideSheet,
+          {
+            open: sheetOpen,
+            side: sheetCfg.side,
+            title: '文件详情',
+            extra: h(Chip, null, '只读'),
+            onClose: () => setSheetOpen(false),
+            footer: sheetCfg.footer
+              ? h(Button, { variant: 'primary', onClick: () => setSheetOpen(false) }, '知道了')
+              : undefined,
+          },
+          h(
+            'div',
+            { style: { display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', lineHeight: '1.7' } },
+            h('div', null, '皮肤和 PanelDock 分栏一模一样（头部 / 边框 / 拖拽条 / 阴影），宽度默认就能拖 —— 但它盖在页面上，主区宽度不变。'),
+            h('div', null, '没有收起：关就是关（分栏才有收起钮和贴边的耳朵）。'),
+            h(Surface, { border: 'faint', padding: 'md', style: { fontSize: '13px' } }, '内容随便放：文件树、详情、筛选表单都行。'),
+          ),
+        ),
       ),
     ),
     h(

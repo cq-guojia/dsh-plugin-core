@@ -10,7 +10,7 @@
  * 开关行为与 Modal 一致：渲染即显示（`{open && <SideSheet … />}`）、点遮罩 / Esc / ✕ 都能关，
  * 三者都可关掉；遮罩与 Esc 判定走 overlay.ts 的公共件。
  */
-import { createElement as h, useRef, useState, type ReactNode } from 'react'
+import { createElement as h, useEffect, useRef, useState, type ReactNode } from 'react'
 import { t, type Translate } from '../utils/i18n.js'
 import { ensureComponentStyles } from './css.js'
 import { SIDE_PANEL_CSS } from './side-panel-css.js'
@@ -43,6 +43,11 @@ export interface SideSheetProps {
   closeIcon?: ReactNode
   /** 关闭回调；不传则不出关闭钮（必须自己给关闭路径）。 */
   onClose?: () => void
+  /**
+   * 受控开关（默认 true）。传 `false` 时先播收起动画再卸载 —— 想让关闭有动效就常驻渲染它、只切这个布尔；
+   * 继续用 `{open && <SideSheet/>}` 的老写法也能跑，只是没有收起动画（一卸载就没 DOM 了）。
+   */
+  open?: boolean
   /** 点遮罩是否关闭（默认 true）。 */
   closeOnMask?: boolean
   /** 按 Esc 是否关闭（默认 true）。 */
@@ -60,7 +65,7 @@ export interface SideSheetProps {
   translate?: Translate
 }
 
-export function SideSheet(props: SideSheetProps): ReturnType<typeof h> {
+export function SideSheet(props: SideSheetProps): ReactNode {
   ensureComponentStyles('side-panel', SIDE_PANEL_CSS)
   ensureComponentStyles('side-sheet', SIDE_SHEET_CSS)
   const tt = props.translate ?? t
@@ -70,6 +75,16 @@ export function SideSheet(props: SideSheetProps): ReturnType<typeof h> {
 
   const [width, setWidth] = useState(props.width ?? 460)
   const panelRef = useRef<HTMLElement | null>(null)
+
+  // 收起动效（用户 2026-11-02）：open=false 时先播完 dshpc-side-out 再真正卸载；
+  // 中途又被打开就撤销，不留残影。
+  const leaving = props.open === false
+  // 挂载时就是关着的 ⇒ 直接不渲染（否则开页面会闪一下抽屉）。
+  const [unmounted, setUnmounted] = useState(leaving)
+  useEffect(() => {
+    if (!leaving) setUnmounted(false)
+  }, [leaving])
+  if (unmounted) return null
 
   const showClose = props.closable !== false && props.onClose !== undefined
   const hasHeader = props.header !== null
@@ -140,8 +155,12 @@ export function SideSheet(props: SideSheetProps): ReturnType<typeof h> {
         ref: (element: HTMLElement | null): void => {
           panelRef.current = element
         },
-        className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}`,
+        className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? ' dshpc-sheet--leaving' : ''}`,
         style: { width: `${width}px` },
+        // 收起动画结束才卸载；入场动画结束（leaving=false）在这里不算数。
+        onAnimationEnd: (): void => {
+          if (leaving) setUnmounted(true)
+        },
         'aria-label': typeof props.title === 'string' ? props.title : undefined,
         // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
         onClick: (e: { stopPropagation: () => void }) => e.stopPropagation(),

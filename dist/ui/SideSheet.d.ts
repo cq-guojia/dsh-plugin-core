@@ -10,7 +10,7 @@
  * 开关行为与 Modal 一致：渲染即显示（`{open && <SideSheet … />}`）、点遮罩 / Esc / ✕ 都能关，
  * 三者都可关掉；遮罩与 Esc 判定走 overlay.ts 的公共件。
  */
-import { createElement as h, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { type Translate } from '../utils/i18n.js';
 /** 从哪一侧滑入。默认 `left`。 */
 export type SideSheetSide = 'left' | 'right';
@@ -36,6 +36,11 @@ export interface SideSheetProps {
     closeIcon?: ReactNode;
     /** 关闭回调；不传则不出关闭钮（必须自己给关闭路径）。 */
     onClose?: () => void;
+    /**
+     * 受控开关（默认 true）。传 `false` 时先播收起动画再卸载 —— 想让关闭有动效就常驻渲染它、只切这个布尔；
+     * 继续用 `{open && <SideSheet/>}` 的老写法也能跑，只是没有收起动画（一卸载就没 DOM 了）。
+     */
+    open?: boolean;
     /** 点遮罩是否关闭（默认 true）。 */
     closeOnMask?: boolean;
     /** 按 Esc 是否关闭（默认 true）。 */
@@ -52,5 +57,5 @@ export interface SideSheetProps {
     children?: ReactNode;
     translate?: Translate;
 }
-export declare function SideSheet(props: SideSheetProps): ReturnType<typeof h>;
+export declare function SideSheet(props: SideSheetProps): ReactNode;
 //# sourceMappingURL=SideSheet.d.ts.map

@@ -690,6 +690,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `title / icon / extra` | `ReactNode` | — | 内置头的标题 / 标题前图标 / 标题右侧任意内容（与 PanelDock 同槽） | Built-in header: title / icon before it / anything to the right (same slots as PanelDock) |
 | `header` | `ReactNode \| null` | — | 整块替换头部；`null` = 不要头部（关闭钮浮到右上角） | Replace the whole header; `null` = no header (close button floats top-right) |
 | `onClose / closable / closeIcon` | `() => void / boolean / ReactNode` | — / 跟随 onClose / ✕ | 关闭回调；不传则不出关闭钮 | Close handler; no close button if omitted |
+| `open` | `boolean` | true | 受控开关：传 false 时先播收起动画再卸载（想有收起效果就常驻渲染它、只切这个布尔） | Controlled flag: false plays the collapse animation before unmounting (keep it mounted and toggle this to get the exit motion) |
 | `closeOnMask / escClose` | `boolean` | 'true' / 'true' | 点遮罩关闭 / Esc 关闭 | Close on mask click / on Esc |
 | `width / minWidth / maxWidth` | `number / number / number` | 460 / 320 / — | 初始宽度 / 拖拽下限 / 拖拽上限（px；上限缺省 = 遮罩盒宽） | Initial width / resize floor / resize ceiling (px; ceiling defaults to the mask box) |
 | `resizable` | `boolean` | true | 能否拖宽（关掉就没有拖拽条） | Whether it resizes by dragging (off = no handle) |
@@ -699,13 +700,14 @@ Modal 是自绘 overlay，不走 react-dom portal。
 ```tsx id="ui-sidesheet-example"
 import { SideSheet } from 'dsh-plugin-core/ui'
 
-// 页面里某一处（关闭就是卸载，和 Modal 一样）
-open ? h(SideSheet, {
+// 页面里常驻渲染，只切 open：关的时候宽度收回去（条件渲染会一卸载就没影）
+h(SideSheet, {
+  open,                                  // 传 false ⇒ 播完收起动画再卸载
   title: '文件详情',
   extra: h(Chip, null, '只读'),          // 标题右侧（与 PanelDock 同一个槽）
   onClose: () => setOpen(false),
   footer: h(Button, { variant: 'primary', onClick: () => setOpen(false) }, '知道了'),
-}, h(FileDetail)) : null
+}, h(FileDetail))
 
 // 从右侧滑入、初始 720 宽、不许拖：side="right" / width={720} / resizable={false}
 ```

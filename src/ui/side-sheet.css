@@ -5,6 +5,9 @@
    没有收起/耳朵（用户 2026-11-02）：抽屉关就是关。 */
 
 .dshpc-sheet{position:absolute;top:0;bottom:0}
+/* 收起出场（用户 2026-11-02）：宽度收到 0 + 淡出，播完由组件卸载。双类压过 .dshpc-side-surface 的入场动画。 */
+@keyframes dshpc-side-out{to{width:0;opacity:0;border-width:0;overflow:hidden}}
+.dshpc-side-surface.dshpc-sheet--leaving{animation:dshpc-side-out .2s var(--dshpc-ease) forwards;pointer-events:none;}
 /* 面与 Modal 同档（bg-layer-1），PanelDock 仍用页面底：双类压过共用的 .dshpc-side-surface，
    不碰边框（用户 2026-11-02：只改背景）。 */
 .dshpc-side-surface.dshpc-sheet{background:var(--dshpc-surface-1)}

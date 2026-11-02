@@ -4921,7 +4921,7 @@ var import_react17 = require("react");
 var SIDE_PANEL_CSS = "/* \u4FA7\u8FB9\u9762\u677F\u7684\u516C\u5171\u76AE\u80A4 \u2014\u2014 PanelDock\uFF08\u5360\u5BBD\u5206\u680F\uFF09\u4E0E SideSheet\uFF08\u8986\u76D6\u62BD\u5C49\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\u3002\n *\n * \u5206\u754C\uFF1A**\u76AE\u80A4\u5728\u8FD9\u91CC\uFF0C\u5B9A\u4F4D\u5404\u81EA\u5199**\u3002\u4E24\u8005\u552F\u4E00\u7684\u5F62\u6001\u5DEE\u5F02\u5C31\u662F\u300C\u600E\u4E48\u5360\u4F4D\u300D\u2014\u2014\n * PanelDock \u7528 sticky \u5360\u5BBD\u6324\u7A84\u4E3B\u533A\uFF08panel-dock.css\uFF09\uFF0CSideSheet \u7528 absolute \u76D6\u5728\u9875\u9762\u4E0A\uFF08side-sheet.css\uFF09\u3002\n *\n * \u7C7B\u540D\u6CBF\u7528 dshpc-dock__* \u524D\u7F00\uFF1A\u90A3\u662F\u65E2\u6709\u516C\u5F00\u9762\uFF08\u6587\u6863\u4E0E\u6D88\u8D39\u65B9\u90FD\u5728\u7528\uFF09\uFF0C\n * \u8FD9\u91CC\u53EA\u642C\u6587\u4EF6\u4E0D\u6539\u540D\uFF1B\u65B0\u589E\u7684\u4E2D\u6027\u7C7B\u662F .dshpc-side-surface\uFF08\u5916\u89C2\u57FA\u7C7B\uFF09\u3002 */\n\n/* \u5165\u573A\uFF1A\u5BBD\u5EA6\u4ECE 0 \u957F\u51FA\u6765\uFF08keyframes \u53EA\u5199 from\uFF0C\u7EC8\u70B9\u53D6\u5185\u8054 / \u72B6\u6001\u5BBD\u5EA6\uFF09\u3002\u4E24\u8FB9\u5171\u7528\u3002 */\n@keyframes dshpc-side-in{from{width:0;opacity:0;overflow:hidden}}\n\n/* \u5916\u89C2\u57FA\u7C7B\uFF1A\u80CC\u666F / \u6587\u5B57\u8272 / \u9634\u5F71 / \u7EB5\u5411 flex\u3002**\u4E0D\u542B** position\u3001\u9AD8\u5EA6\u3001\u8FB9\u6846\u65B9\u5411\u3001\u52A8\u753B\u89E6\u53D1\u3002 */\n.dshpc-side-surface{\n  box-sizing:border-box;\n  display:flex;flex-direction:column;flex:0 0 auto;min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  box-shadow:var(--dshpc-shadow-2);\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease);\n  animation:dshpc-side-in .22s var(--dshpc-ease);\n}\n\n/* \u5934\u90E8\uFF1A\u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB\u3002 */\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF08top 10 / right 8\uFF09\uFF0C\u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB \u2014\u2014 \u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF08\u9762\u677F\u9AD8\u5EA6\u9501\u6B7B\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u9875\u9762\u6491\u9AD8\uFF09\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto}\n\n/* \u62D6\u62FD\u6761\uFF1A6px \u547D\u4E2D\u533A\uFF0C**\u81EA\u5DF1\u4E0D\u753B\u4EFB\u4F55\u7EBF**\uFF08\u8D34\u5728\u671D\u5185\u90A3\u4E00\u4FA7\uFF0C\u955C\u50CF\u7531\u5404\u81EA\u7684\u5B9A\u4F4D\u6587\u4EF6\u505A\uFF09\u3002\n   hover / \u62D6\u52A8\u65F6\u628A\u9762\u677F\u81EA\u5DF1\u7684\u8FB9\u6846\u67D3\u6210\u84DD \u2014\u2014 \u84DD\u7EBF\u53EA\u51C6\u6539\u539F\u7EBF\uFF0C\u4E0D\u51C6\u5728\u65C1\u8FB9\u518D\u52A0\u4E00\u6761\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n}\n.dshpc-side-surface:has(> .dshpc-dock__resizer:hover),\n.dshpc-side-surface--resizing{\n  /* \u539F\u7EBF\u4FDD\u7559\u300C\u4E0A\u4E0B\u6E10\u9690\u300D\u5DE5\u4F5C\u533A\u6307\u793A\u6761\u8D28\u611F\uFF1A\u628A\u9762\u677F\u81EA\u5DF1\u7684\u90A3\u6761\u8FB9\u6846\u6362\u6210\u540C\u6B3E\u6E10\u53D8\u3002\n     \u9762\u677F\u56DB\u8FB9\u91CC\u53EA\u6709\u671D\u5185\u4E00\u4FA7\u6709\u5BBD\u5EA6\uFF0C\u6240\u4EE5\u6E10\u53D8\u53EA\u843D\u5728\u90A3\u4E00\u4FA7\u3002 */\n  border-image:linear-gradient(180deg,transparent,var(--dshpc-business) 30% 70%,transparent) 1;\n}\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove \u2014\u2014\n   \u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u9762\u677F\u5185\uFF0C\u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\u3002 */\n.dshpc-side-surface--resizing{contain:layout paint;will-change:width}\n.dshpc-side-surface--resizing iframe{pointer-events:none}\n\n/* \u52A8\u6548\u793C\u8C8C\uFF1A\u7CFB\u7EDF\u58F0\u660E\u51CF\u5C11\u52A8\u6548\u65F6\u9000\u5316\u4E3A\u77AC\u65F6\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-side-surface{animation:none}\n}\n";
 
 // dist/ui/side-sheet-css.generated.js
-var SIDE_SHEET_CSS = "/* \u4FA7\u8FB9\u62BD\u5C49\uFF1A\u8986\u76D6\u5F0F\u3002**\u76AE\u80A4\u4E0E PanelDock \u5B8C\u5168\u5171\u7528**\uFF08side-panel.css \u7684 .dshpc-side-surface\n   + \u5934\u90E8 / \u62D6\u62FD\u6761 / \u5173\u95ED\u94AE\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u300C\u600E\u4E48\u5360\u4F4D\u300D\uFF1Aabsolute \u8D34\u8FB9\u3001\u901A\u9AD8\u3001\u76D6\u5728\u9875\u9762\u4E0A\u3002\n   \u4E0E\u5206\u680F\u7684\u552F\u4E00\u5DEE\u522B\uFF1A\u5B83\u4E0D\u6324\u7A84\u4E3B\u533A\uFF08\u6240\u4EE5\u6CA1\u6709 sticky\u3001\u6CA1\u6709\u5360\u5BBD\u3001\u4E5F\u6CA1\u6709\u6536\u8D77\uFF09\u3002\n\n   \u6CA1\u6709\u6536\u8D77/\u8033\u6735\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u62BD\u5C49\u5173\u5C31\u662F\u5173\u3002 */\n\n.dshpc-sheet{position:absolute;top:0;bottom:0}\n/* \u9762\u4E0E Modal \u540C\u6863\uFF08bg-layer-1\uFF09\uFF0CPanelDock \u4ECD\u7528\u9875\u9762\u5E95\uFF1A\u53CC\u7C7B\u538B\u8FC7\u5171\u7528\u7684 .dshpc-side-surface\uFF0C\n   \u4E0D\u78B0\u8FB9\u6846\uFF08\u7528\u6237 2026-11-02\uFF1A\u53EA\u6539\u80CC\u666F\uFF09\u3002 */\n.dshpc-side-surface.dshpc-sheet{background:var(--dshpc-surface-1)}\n/* \u8D34\u8FB9\u90A3\u4FA7\u63CF\u8FB9\uFF08\u4E0E\u5206\u680F\u7684 border-left \u540C\u4E00\u5957\u7EBF\u8272\uFF09\uFF0C\u62D6\u62FD\u6761\u6C38\u8FDC\u5728**\u671D\u5185**\u90A3\u4E00\u4FA7\u3002 */\n.dshpc-sheet--left{left:0;border-right:1px solid var(--dshpc-border)}\n.dshpc-sheet--right{right:0;border-left:1px solid var(--dshpc-border)}\n.dshpc-sheet--left .dshpc-dock__resizer{left:auto;right:0}\n/* \u5185\u5BB9\u5185\u8DDD\uFF1A\u5206\u680F\u7684 body \u628A\u5185\u8DDD\u4EA4\u7ED9\u5185\u5BB9\u7EC4\u4EF6\uFF08FileBrowser \u90A3\u7C7B\u81EA\u5DF1\u5E26 17px\uFF09\uFF0C\n   \u62BD\u5C49\u662F**\u901A\u7528\u5BB9\u5668**\uFF0C\u5FC5\u987B\u81EA\u5E26 \u2014\u2014 \u5426\u5219\u6587\u5B57\u76F4\u63A5\u8D34\u9762\u677F\u8FB9\uFF08\u7528\u6237 2026-11-02 \u622A\u56FE\uFF09\u3002\n   \u5DE6\u53F3 14 \u4E0E\u5934\u90E8\u5DE6\u5185\u8DDD\u5BF9\u9F50\uFF0C\u4E0A\u4E0B\u4E5F\u7559\u540C\u6863\u547C\u5438\u3002 */\n.dshpc-sheet__body{padding:14px}\n/* \u5E95\u680F\uFF08\u53EF\u9009\uFF09\uFF1A\u7EBF\u8272\u4E0E\u5185\u8DDD\u5BF9\u9F50\u9762\u677F\u5934\u90E8\u3002 */\n.dshpc-sheet__foot{\n  flex:none;display:flex;justify-content:flex-end;gap:8px;\n  padding:10px 14px;border-top:1px solid var(--dshpc-border-faint);\n}\n";
+var SIDE_SHEET_CSS = "/* \u4FA7\u8FB9\u62BD\u5C49\uFF1A\u8986\u76D6\u5F0F\u3002**\u76AE\u80A4\u4E0E PanelDock \u5B8C\u5168\u5171\u7528**\uFF08side-panel.css \u7684 .dshpc-side-surface\n   + \u5934\u90E8 / \u62D6\u62FD\u6761 / \u5173\u95ED\u94AE\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u300C\u600E\u4E48\u5360\u4F4D\u300D\uFF1Aabsolute \u8D34\u8FB9\u3001\u901A\u9AD8\u3001\u76D6\u5728\u9875\u9762\u4E0A\u3002\n   \u4E0E\u5206\u680F\u7684\u552F\u4E00\u5DEE\u522B\uFF1A\u5B83\u4E0D\u6324\u7A84\u4E3B\u533A\uFF08\u6240\u4EE5\u6CA1\u6709 sticky\u3001\u6CA1\u6709\u5360\u5BBD\u3001\u4E5F\u6CA1\u6709\u6536\u8D77\uFF09\u3002\n\n   \u6CA1\u6709\u6536\u8D77/\u8033\u6735\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u62BD\u5C49\u5173\u5C31\u662F\u5173\u3002 */\n\n.dshpc-sheet{position:absolute;top:0;bottom:0}\n/* \u6536\u8D77\u51FA\u573A\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u5BBD\u5EA6\u6536\u5230 0 + \u6DE1\u51FA\uFF0C\u64AD\u5B8C\u7531\u7EC4\u4EF6\u5378\u8F7D\u3002\u53CC\u7C7B\u538B\u8FC7 .dshpc-side-surface \u7684\u5165\u573A\u52A8\u753B\u3002 */\n@keyframes dshpc-side-out{to{width:0;opacity:0;border-width:0;overflow:hidden}}\n.dshpc-side-surface.dshpc-sheet--leaving{animation:dshpc-side-out .2s var(--dshpc-ease) forwards;pointer-events:none;}\n/* \u9762\u4E0E Modal \u540C\u6863\uFF08bg-layer-1\uFF09\uFF0CPanelDock \u4ECD\u7528\u9875\u9762\u5E95\uFF1A\u53CC\u7C7B\u538B\u8FC7\u5171\u7528\u7684 .dshpc-side-surface\uFF0C\n   \u4E0D\u78B0\u8FB9\u6846\uFF08\u7528\u6237 2026-11-02\uFF1A\u53EA\u6539\u80CC\u666F\uFF09\u3002 */\n.dshpc-side-surface.dshpc-sheet{background:var(--dshpc-surface-1)}\n/* \u8D34\u8FB9\u90A3\u4FA7\u63CF\u8FB9\uFF08\u4E0E\u5206\u680F\u7684 border-left \u540C\u4E00\u5957\u7EBF\u8272\uFF09\uFF0C\u62D6\u62FD\u6761\u6C38\u8FDC\u5728**\u671D\u5185**\u90A3\u4E00\u4FA7\u3002 */\n.dshpc-sheet--left{left:0;border-right:1px solid var(--dshpc-border)}\n.dshpc-sheet--right{right:0;border-left:1px solid var(--dshpc-border)}\n.dshpc-sheet--left .dshpc-dock__resizer{left:auto;right:0}\n/* \u5185\u5BB9\u5185\u8DDD\uFF1A\u5206\u680F\u7684 body \u628A\u5185\u8DDD\u4EA4\u7ED9\u5185\u5BB9\u7EC4\u4EF6\uFF08FileBrowser \u90A3\u7C7B\u81EA\u5DF1\u5E26 17px\uFF09\uFF0C\n   \u62BD\u5C49\u662F**\u901A\u7528\u5BB9\u5668**\uFF0C\u5FC5\u987B\u81EA\u5E26 \u2014\u2014 \u5426\u5219\u6587\u5B57\u76F4\u63A5\u8D34\u9762\u677F\u8FB9\uFF08\u7528\u6237 2026-11-02 \u622A\u56FE\uFF09\u3002\n   \u5DE6\u53F3 14 \u4E0E\u5934\u90E8\u5DE6\u5185\u8DDD\u5BF9\u9F50\uFF0C\u4E0A\u4E0B\u4E5F\u7559\u540C\u6863\u547C\u5438\u3002 */\n.dshpc-sheet__body{padding:14px}\n/* \u5E95\u680F\uFF08\u53EF\u9009\uFF09\uFF1A\u7EBF\u8272\u4E0E\u5185\u8DDD\u5BF9\u9F50\u9762\u677F\u5934\u90E8\u3002 */\n.dshpc-sheet__foot{\n  flex:none;display:flex;justify-content:flex-end;gap:8px;\n  padding:10px 14px;border-top:1px solid var(--dshpc-border-faint);\n}\n";
 
 // dist/ui/resizer.js
 function startResizeLayoutWidth(opts) {
@@ -4977,6 +4977,14 @@ function SideSheet(props) {
   useEscapeClose(props.escClose !== false, props.onClose);
   const [width, setWidth] = (0, import_react17.useState)(props.width ?? 460);
   const panelRef = (0, import_react17.useRef)(null);
+  const leaving = props.open === false;
+  const [unmounted, setUnmounted] = (0, import_react17.useState)(leaving);
+  (0, import_react17.useEffect)(() => {
+    if (!leaving)
+      setUnmounted(false);
+  }, [leaving]);
+  if (unmounted)
+    return null;
   const showClose = props.closable !== false && props.onClose !== void 0;
   const hasHeader = props.header !== null;
   const beginResize = (event) => {
@@ -5024,8 +5032,13 @@ function SideSheet(props) {
     ref: (element) => {
       panelRef.current = element;
     },
-    className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}`,
+    className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? " dshpc-sheet--leaving" : ""}`,
     style: { width: `${width}px` },
+    // 收起动画结束才卸载；入场动画结束（leaving=false）在这里不算数。
+    onAnimationEnd: () => {
+      if (leaving)
+        setUnmounted(true);
+    },
     "aria-label": typeof props.title === "string" ? props.title : void 0,
     // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
     onClick: (e) => e.stopPropagation()
@@ -8201,6 +8214,15 @@ function PanelDock(props) {
       props.dock.collapse(id3);
     }, 220);
   };
+  const prevIds = (0, import_react41.useRef)(state.ids);
+  (0, import_react41.useEffect)(() => {
+    const gone = prevIds.current.filter((id3) => !state.ids.includes(id3) && !state.collapsed.includes(id3));
+    prevIds.current = state.ids;
+    if (gone.length === 0)
+      return;
+    setClosing((prev) => [...prev, ...gone.filter((id3) => !prev.includes(id3))]);
+    window.setTimeout(() => setClosing((prev) => prev.filter((id3) => !gone.includes(id3))), 220);
+  }, [state.ids, state.collapsed]);
   const insetKey = (0, import_react41.useRef)("");
   if (insetKey.current === "")
     insetKey.current = `dock-${++dockSeq}`;
@@ -8292,7 +8314,7 @@ function PanelDock(props) {
       ref: rootRef,
       className: rootClass
     },
-    panes.filter((pane) => state.ids.includes(pane.id)).map((pane) => (0, import_react41.createElement)(
+    panes.filter((pane) => state.ids.includes(pane.id) || closing4.includes(pane.id)).map((pane) => (0, import_react41.createElement)(
       "section",
       {
         key: pane.id,
@@ -60203,6 +60225,15 @@ var docData = {
             }
           },
           {
+            "name": "open",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "\u53D7\u63A7\u5F00\u5173\uFF1A\u4F20 false \u65F6\u5148\u64AD\u6536\u8D77\u52A8\u753B\u518D\u5378\u8F7D\uFF08\u60F3\u6709\u6536\u8D77\u6548\u679C\u5C31\u5E38\u9A7B\u6E32\u67D3\u5B83\u3001\u53EA\u5207\u8FD9\u4E2A\u5E03\u5C14\uFF09",
+              "en": "Controlled flag: false plays the collapse animation before unmounting (keep it mounted and toggle this to get the exit motion)"
+            }
+          },
+          {
             "name": "closeOnMask / escClose",
             "type": "boolean",
             "def": "'true' / 'true'",
@@ -60256,13 +60287,14 @@ var docData = {
         "lang": "tsx",
         "src": `import { SideSheet } from 'dsh-plugin-core/ui'
 
-// \u9875\u9762\u91CC\u67D0\u4E00\u5904\uFF08\u5173\u95ED\u5C31\u662F\u5378\u8F7D\uFF0C\u548C Modal \u4E00\u6837\uFF09
-open ? h(SideSheet, {
+// \u9875\u9762\u91CC\u5E38\u9A7B\u6E32\u67D3\uFF0C\u53EA\u5207 open\uFF1A\u5173\u7684\u65F6\u5019\u5BBD\u5EA6\u6536\u56DE\u53BB\uFF08\u6761\u4EF6\u6E32\u67D3\u4F1A\u4E00\u5378\u8F7D\u5C31\u6CA1\u5F71\uFF09
+h(SideSheet, {
+  open,                                  // \u4F20 false \u21D2 \u64AD\u5B8C\u6536\u8D77\u52A8\u753B\u518D\u5378\u8F7D
   title: '\u6587\u4EF6\u8BE6\u60C5',
   extra: h(Chip, null, '\u53EA\u8BFB'),          // \u6807\u9898\u53F3\u4FA7\uFF08\u4E0E PanelDock \u540C\u4E00\u4E2A\u69FD\uFF09
   onClose: () => setOpen(false),
   footer: h(Button, { variant: 'primary', onClick: () => setOpen(false) }, '\u77E5\u9053\u4E86'),
-}, h(FileDetail)) : null
+}, h(FileDetail))
 
 // \u4ECE\u53F3\u4FA7\u6ED1\u5165\u3001\u521D\u59CB 720 \u5BBD\u3001\u4E0D\u8BB8\u62D6\uFF1Aside="right" / width={720} / resizable={false}`
       }
@@ -62592,12 +62624,13 @@ var CODE_LARGE_MODAL = `// \u5185\u5BB9\u5F39\u7A97\uFF1Asize md / lg\uFF0C\u627
   <div>\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\u3002</div>
 </Modal>`;
 var CODE_SIDE_SHEET = `// \u8986\u76D6\u5F0F\u4FA7\u8FB9\u62BD\u5C49\uFF1A\u76AE\u80A4\u4E0E PanelDock \u5206\u680F\u4E00\u81F4\uFF0C\u4F46\u76D6\u5728\u9875\u9762\u4E0A\u3001\u4E0D\u6324\u7A84\u4E3B\u533A
-<SideSheet side="left" title="\u6587\u4EF6\u8BE6\u60C5" onClose={close}>
+// \u5E38\u9A7B\u6E32\u67D3 + open \u5E03\u5C14\uFF1A\u5173\u7684\u65F6\u5019\u5BBD\u5EA6\u6536\u56DE\u53BB\uFF08\u5199 {open && <SideSheet/>} \u4F1A\u4E00\u5378\u8F7D\u5C31\u6CA1\u5F71\uFF09
+<SideSheet open={open} side="left" title="\u6587\u4EF6\u8BE6\u60C5" onClose={() => setOpen(false)}>
   <FileDetail />
 </SideSheet>
 
 // \u4ECE\u53F3\u4FA7\u6ED1\u5165 + \u5E95\u680F + 720 \u5BBD + \u4E0D\u8BB8\u62D6
-<SideSheet side="right" width={720} resizable={false} title="\u7B5B\u9009" onClose={close}
+<SideSheet open={open} side="right" width={720} resizable={false} title="\u7B5B\u9009" onClose={() => setOpen(false)}
   footer={<Button variant="primary">\u5E94\u7528</Button>}>
   <FilterForm />
 </SideSheet>`;
@@ -62672,7 +62705,8 @@ function FeedbackPage() {
   const [confirmResult, setConfirmResult] = (0, import_react69.useState)("");
   const [largeOpen, setLargeOpen] = (0, import_react69.useState)(false);
   const [largeOpenB, setLargeOpenB] = (0, import_react69.useState)(false);
-  const [sheetCfg, setSheetCfg] = (0, import_react69.useState)(null);
+  const [sheetCfg, setSheetCfg] = (0, import_react69.useState)({ side: "left", footer: false });
+  const [sheetOpen, setSheetOpen] = (0, import_react69.useState)(false);
   const [nativeText, setNativeText] = (0, import_react69.useState)("");
   const flash = (opts) => {
     const handle = showLoading(opts);
@@ -62847,17 +62881,28 @@ function FeedbackPage() {
       (0, import_react69.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react69.createElement)(Button, { onClick: () => setSheetCfg({ side: "left", footer: false }) }, "\u4ECE\u5DE6\u4FA7\u6ED1\u51FA"),
-        (0, import_react69.createElement)(Button, { variant: "outline", onClick: () => setSheetCfg({ side: "right", footer: false }) }, "\u4ECE\u53F3\u4FA7\u6ED1\u51FA"),
-        (0, import_react69.createElement)(Button, { variant: "ghost", onClick: () => setSheetCfg({ side: "left", footer: true }) }, "\u5E26\u5E95\u680F"),
-        sheetCfg !== null ? (0, import_react69.createElement)(
+        (0, import_react69.createElement)(Button, { onClick: () => {
+          setSheetCfg({ side: "left", footer: false });
+          setSheetOpen(true);
+        } }, "\u4ECE\u5DE6\u4FA7\u6ED1\u51FA"),
+        (0, import_react69.createElement)(Button, { variant: "outline", onClick: () => {
+          setSheetCfg({ side: "right", footer: false });
+          setSheetOpen(true);
+        } }, "\u4ECE\u53F3\u4FA7\u6ED1\u51FA"),
+        (0, import_react69.createElement)(Button, { variant: "ghost", onClick: () => {
+          setSheetCfg({ side: "left", footer: true });
+          setSheetOpen(true);
+        } }, "\u5E26\u5E95\u680F"),
+        // 常驻渲染 + open 布尔：关闭时才有收回去的动效（条件渲染会一卸载就没影）。
+        (0, import_react69.createElement)(
           SideSheet,
           {
+            open: sheetOpen,
             side: sheetCfg.side,
             title: "\u6587\u4EF6\u8BE6\u60C5",
             extra: (0, import_react69.createElement)(Chip, null, "\u53EA\u8BFB"),
-            onClose: () => setSheetCfg(null),
-            footer: sheetCfg.footer ? (0, import_react69.createElement)(Button, { variant: "primary", onClick: () => setSheetCfg(null) }, "\u77E5\u9053\u4E86") : void 0
+            onClose: () => setSheetOpen(false),
+            footer: sheetCfg.footer ? (0, import_react69.createElement)(Button, { variant: "primary", onClick: () => setSheetOpen(false) }, "\u77E5\u9053\u4E86") : void 0
           },
           (0, import_react69.createElement)(
             "div",
@@ -62866,7 +62911,7 @@ function FeedbackPage() {
             (0, import_react69.createElement)("div", null, "\u6CA1\u6709\u6536\u8D77\uFF1A\u5173\u5C31\u662F\u5173\uFF08\u5206\u680F\u624D\u6709\u6536\u8D77\u94AE\u548C\u8D34\u8FB9\u7684\u8033\u6735\uFF09\u3002"),
             (0, import_react69.createElement)(Surface, { border: "faint", padding: "md", style: { fontSize: "13px" } }, "\u5185\u5BB9\u968F\u4FBF\u653E\uFF1A\u6587\u4EF6\u6811\u3001\u8BE6\u60C5\u3001\u7B5B\u9009\u8868\u5355\u90FD\u884C\u3002")
           )
-        ) : null
+        )
       )
     ),
     (0, import_react69.createElement)(
@@ -65777,9 +65822,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.20.1"}`],
-            [t3("buildDemo"), `v${"0.20.1"}`],
-            [t3("buildStamp"), "261102-212645-918"]
+            [t3("buildCore"), `v${"0.20.2"}`],
+            [t3("buildDemo"), `v${"0.20.2"}`],
+            [t3("buildStamp"), "261102-213713-206"]
           ].map(
             ([label, value]) => (0, import_react81.createElement)(
               "tr",
@@ -66099,9 +66144,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react83.createElement)("span", null, `core v${"0.20.1"}`),
-          (0, import_react83.createElement)("span", null, `demo v${"0.20.1"}`),
-          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261102-212645-918")
+          (0, import_react83.createElement)("span", null, `core v${"0.20.2"}`),
+          (0, import_react83.createElement)("span", null, `demo v${"0.20.2"}`),
+          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261102-213713-206")
         )
       )
     ),

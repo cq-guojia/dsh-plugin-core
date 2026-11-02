@@ -319,6 +319,16 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
       props.dock.collapse(id)
     }, 220)
   }
+  // 关闭（不只是收起）也要收回去（用户 2026-11-02）：id 从 ids 消失后先留在 DOM 里收宽 220ms 再摘。
+  // 收起流程走完会把 id 挪进 collapsed，那种不算「关闭」，要排除掉，否则多演一遍。
+  const prevIds = useRef<readonly string[]>(state.ids)
+  useEffect(() => {
+    const gone = prevIds.current.filter((id) => !state.ids.includes(id) && !state.collapsed.includes(id))
+    prevIds.current = state.ids
+    if (gone.length === 0) return
+    setClosing((prev) => [...prev, ...gone.filter((id) => !prev.includes(id))])
+    window.setTimeout(() => setClosing((prev) => prev.filter((id) => !gone.includes(id))), 220)
+  }, [state.ids, state.collapsed])
 
   // 本 dock 在「页面右侧占宽」里的那一份：实例唯一键，拖拽期也用它实时更新。
   const insetKey = useRef('')
@@ -445,7 +455,8 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
       className: rootClass,
     },
     panes
-      .filter((pane) => state.ids.includes(pane.id))
+      // closing 里的 pane 已不在 ids，但仍要渲染一帧把宽度收回去。
+      .filter((pane) => state.ids.includes(pane.id) || closing.includes(pane.id))
       .map((pane) =>
         h(
           'section',

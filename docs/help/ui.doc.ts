@@ -51,13 +51,14 @@ h('div', { style: { display: 'flex' } },
 
 const sideSheetExample = `import { SideSheet } from 'dsh-plugin-core/ui'
 
-// 页面里某一处（关闭就是卸载，和 Modal 一样）
-open ? h(SideSheet, {
+// 页面里常驻渲染，只切 open：关的时候宽度收回去（条件渲染会一卸载就没影）
+h(SideSheet, {
+  open,                                  // 传 false ⇒ 播完收起动画再卸载
   title: '文件详情',
   extra: h(Chip, null, '只读'),          // 标题右侧（与 PanelDock 同一个槽）
   onClose: () => setOpen(false),
   footer: h(Button, { variant: 'primary', onClick: () => setOpen(false) }, '知道了'),
-}, h(FileDetail)) : null
+}, h(FileDetail))
 
 // 从右侧滑入、初始 720 宽、不许拖：side="right" / width={720} / resizable={false}`
 
@@ -823,6 +824,7 @@ const doc: DocTopic = {
             { name: 'title / icon / extra', type: 'ReactNode', def: '—', desc: { zh: '内置头的标题 / 标题前图标 / 标题右侧任意内容（与 PanelDock 同槽）', en: 'Built-in header: title / icon before it / anything to the right (same slots as PanelDock)' } },
             { name: 'header', type: 'ReactNode | null', def: '—', desc: { zh: '整块替换头部；`null` = 不要头部（关闭钮浮到右上角）', en: 'Replace the whole header; `null` = no header (close button floats top-right)' } },
             { name: 'onClose / closable / closeIcon', type: '() => void / boolean / ReactNode', def: '— / 跟随 onClose / ✕', desc: { zh: '关闭回调；不传则不出关闭钮', en: 'Close handler; no close button if omitted' } },
+            { name: 'open', type: 'boolean', def: 'true', desc: { zh: '受控开关：传 false 时先播收起动画再卸载（想有收起效果就常驻渲染它、只切这个布尔）', en: 'Controlled flag: false plays the collapse animation before unmounting (keep it mounted and toggle this to get the exit motion)' } },
             { name: 'closeOnMask / escClose', type: 'boolean', def: "'true' / 'true'", desc: { zh: '点遮罩关闭 / Esc 关闭', en: 'Close on mask click / on Esc' } },
             { name: 'width / minWidth / maxWidth', type: 'number / number / number', def: '460 / 320 / —', desc: { zh: '初始宽度 / 拖拽下限 / 拖拽上限（px；上限缺省 = 遮罩盒宽）', en: 'Initial width / resize floor / resize ceiling (px; ceiling defaults to the mask box)' } },
             { name: 'resizable', type: 'boolean', def: 'true', desc: { zh: '能否拖宽（关掉就没有拖拽条）', en: 'Whether it resizes by dragging (off = no handle)' } },
