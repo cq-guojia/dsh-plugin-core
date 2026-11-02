@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261101-0949-2930-segmented-选中片配色-tone": {"category": "功能新增", "created": "2026-11-01 09:49:30", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-01 09:49:30", "status": "doing", "tags": ["Segmented", "icon", "控件"], "title": "Segmented 选中片配色（tone）", "updated": "2026-11-01 10:02:14", "worklog": "worklog/202611/01-0949-2930-segmented-选中片配色-tone.md"},
+    "20261101-0949-2930-segmented-选中片配色-tone": {"category": "功能新增", "created": "2026-11-01 09:49:30", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-01 09:49:30", "status": "doing", "tags": ["Segmented", "icon", "控件"], "title": "Segmented 选中片配色（tone）", "updated": "2026-11-02 03:16:01", "worklog": "worklog/202611/01-0949-2930-segmented-选中片配色-tone.md"},
     "20261102-0251-3c4d-新增侧边覆盖弹窗-sidesheet": {"category": "新增控件", "created": "2026-11-02 02:51:29", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-02 02:58:14", "status": "doing", "tags": ["控件", "弹窗", "覆盖式", "SideSheet"], "title": "新增侧边覆盖弹窗 SideSheet", "updated": "2026-11-02 03:15:19", "worklog": "worklog/202611/02-0251-3c4d-新增侧边覆盖弹窗-sidesheet.md"}
   },
   "version": "20261022000000"

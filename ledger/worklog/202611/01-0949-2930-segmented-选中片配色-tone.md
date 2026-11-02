@@ -1,7 +1,7 @@
 # 20261101-0949-2930-segmented-选中片配色-tone: Segmented 选中片配色（tone）
 
 - **Tags**: Segmented, icon, 控件
-- **Status**: doing · 2026-11-01 10:02:14 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-02 03:16:01 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-01 09:49:30 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -15,12 +15,11 @@
 
 ## To Do
 
-- 待用户真机验收：demo 里 icon-only 是否正方形、icon + 文字 + 计数顺序是否正确。
-- 未提交（等验收后 commit + push；调试期不发 tag）。
+- 无。
 
 ## Next
 
-等用户验收；通过后 `git add` 相关文件（含 `dist/`、`packages/demo/dist/`）→ commit → push。
+已结案，无后续动作。
 
 ## Process
 
@@ -41,3 +40,4 @@ Segmented 已支持段内 icon、节点 label 与 icon-only 正方形；文档�
 - 2026-11-01 09:49:30 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-01 09:53:41 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · Segmented 已加 icon/节点 label/icon-only 正方形；build + 204 测试 + build:demo + codelint 全过，已交付待验收
 - 2026-11-01 10:02:14 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 v0.16.0：两包同号 bump、build/test 204 过、commit 4726e54 + push main、tag v0.16.0 已推
+- 2026-11-02 03:16:01 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 收尾：v0.16.0 已发版（commit 4726e54 + tag 已推），To Do 清空、Next 置为无；用户确认结束，准备结案
