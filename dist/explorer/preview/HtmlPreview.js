@@ -62,8 +62,8 @@ export function HtmlPreview(props) {
         const controller = new AbortController();
         setDoc(null);
         setFailed(null);
-        props.workspaceFiles
-            .readBytes(props.sessionId, props.path, {}, controller.signal)
+        props.files
+            .readBytes(props.path, {}, controller.signal)
             .then((res) => {
             if (controller.signal.aborted)
                 return;
@@ -93,11 +93,10 @@ export function HtmlPreview(props) {
         return () => {
             controller.abort();
         };
-    }, [props.workspaceFiles, props.sessionId, props.path, props.sourceView]);
+    }, [props.files, props.path, props.sourceView]);
     if (props.sourceView) {
         return h(TextPreview, {
-            workspaceFiles: props.workspaceFiles,
-            sessionId: props.sessionId,
+            files: props.files,
             path: props.path,
             markdown: false,
             sourceView: true,

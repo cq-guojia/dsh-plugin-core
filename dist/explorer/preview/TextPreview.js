@@ -39,7 +39,7 @@ export function TextPreview(props) {
         setLoading(true);
         try {
             // range 只两态：首页 `{}`、翻页 `{offset}`（见文件头口径说明）。
-            const parsed = textPageOf(await props.workspaceFiles.read(props.sessionId, props.path, offset > 0 ? { offset } : {}, controller.signal));
+            const parsed = textPageOf(await props.files.read(props.path, offset > 0 ? { offset } : {}, controller.signal));
             if (controller.signal.aborted)
                 return;
             if (parsed === null) {
@@ -81,7 +81,7 @@ export function TextPreview(props) {
             if (!controller.signal.aborted)
                 setLoading(false);
         }
-    }, [props.workspaceFiles, props.sessionId, props.path, props.maxBytes]);
+    }, [props.files, props.path, props.maxBytes]);
     useEffect(() => {
         accRef.current = '';
         setText('');

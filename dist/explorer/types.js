@@ -196,15 +196,6 @@ export function isAborted(signal, error) {
         return true;
     return typeof error === 'object' && error !== null && error.name === 'AbortError';
 }
-export function createRootCache() {
-    const map = new Map();
-    return {
-        get: (sessionId) => map.get(sessionId),
-        set: (sessionId, root) => {
-            map.set(sessionId, root);
-        },
-    };
-}
 /** 宿主绝对路径形态（/ 开头或 Windows 盘符）。 */
 export function isAbsoluteish(p) {
     return p.startsWith('/') || p.startsWith('\\') || /^[a-zA-Z]:[\\/]/.test(p);
@@ -212,113 +203,6 @@ export function isAbsoluteish(p) {
 /** 工作区相对拼接（根下直接 name，不补前导 /）。 */
 export function relJoin(dir, name) {
     return dir.replace(/\/+$/, '') === '' ? name : `${dir.replace(/\/+$/, '')}/${name}`;
-}
-/** 由「相对路径 + 该文件宿主绝对路径」反推工作区根并写入缓存；学不出返回 null。 */
-export function learnRoot(cache, sessionId, relativePath, absolutePath) {
-    const rel = relativePath.replace(/^\/+/, '').replace(/\/+$/, '');
-    if (rel === '' || !absolutePath.endsWith(`/${rel}`))
-        return null;
-    const root = absolutePath.slice(0, absolutePath.length - rel.length - 1);
-    cache.set(sessionId, root);
-    return root;
-}
-/** 把宿主绝对路径剥回工作区相对（根未知或不在根下 ⇒ 原样返回，退化）。 */
-export function relativizeToRoot(cache, sessionId, dir) {
-    if (!isAbsoluteish(dir))
-        return dir;
-    const root = cache.get(sessionId);
-    if (root === undefined)
-        return dir;
-    const norm = root.replace(/\/+$/, '');
-    if (dir === norm)
-        return '';
-    if (dir.startsWith(`${norm}/`))
-        return dir.slice(norm.length + 1);
-    return dir;
-}
-/**
- * 在相对目录树里找**任意一个文件**并 stat（广度优先、有界：每层最多 5 个目录、最多 3 层）。
- * 用于目标目录本身没有文件子项（空目录 / 只有子目录）时反推工作区根。
- */
-export async function findAnyFileAbs(workspaceFiles, sessionId, startDir, signal) {
-    const stat = workspaceFiles.stat;
-    if (stat === undefined)
-        return null;
-    let frontier = [startDir];
-    for (let depth = 0; depth < 3 && frontier.length > 0; depth++) {
-        if (signal?.aborted)
-            return null;
-        const nextDirs = [];
-        for (const dir of frontier.slice(0, 5)) {
-            if (signal?.aborted)
-                return null;
-            let entries;
-            try {
-                const parsed = listingOf(await workspaceFiles.list(sessionId, listPathOf(dir), signal));
-                if (parsed === null || isFailed(parsed))
-                    continue;
-                entries = parsed.entries;
-            }
-            catch {
-                continue;
-            }
-            const file = entries.find((entry) => entry.type === 'file');
-            if (file !== undefined) {
-                const rel = relJoin(dir, file.name);
-                try {
-                    const abs = absolutePathOf(await stat(sessionId, rel, signal));
-                    if (abs !== null)
-                        return { absolutePath: abs, relativePath: rel };
-                }
-                catch {
-                    /* 换下一个候选 */
-                }
-            }
-            for (const entry of entries) {
-                if (entry.type === 'directory' && nextDirs.length < 5)
-                    nextDirs.push(relJoin(dir, entry.name));
-            }
-        }
-        frontier = nextDirs;
-    }
-    return null;
-}
-/**
- * 把「工作区相对名」的目录解析成宿主绝对路径（面包屑才能从工作区根往下列）。
- * 优先级：① 根已缓存 ⇒ 根 + '/' + 规范相对路径（覆盖空目录 / 只有子目录）；
- * ② 目录里有文件子项 ⇒ stat 它反推根；③ 有界 BFS 找任一文件反推根。
- * 全部失败 ⇒ 退回入参，浏览不受影响。
- */
-export async function absolutizeDir(cache, workspaceFiles, sessionId, dir, canonical, entries, signal) {
-    if (isAbsoluteish(dir))
-        return dir;
-    const rel = canonical !== '' ? canonical : dir;
-    const cached = cache.get(sessionId);
-    if (cached !== undefined)
-        return `${cached}/${rel}`;
-    const stat = workspaceFiles.stat;
-    if (stat === undefined)
-        return dir;
-    // ② 本目录里的文件子项
-    const file = entries.find((entry) => entry.type === 'file');
-    if (file !== undefined) {
-        try {
-            const sub = relJoin(rel, file.name);
-            const abs = absolutePathOf(await stat(sessionId, sub, signal));
-            if (abs?.endsWith(`/${file.name}`) === true && learnRoot(cache, sessionId, sub, abs) !== null) {
-                return abs.slice(0, abs.length - file.name.length - 1);
-            }
-        }
-        catch {
-            /* 落到 ③ */
-        }
-    }
-    // ③ 有界 BFS 找一个文件反推根
-    const found = await findAnyFileAbs(workspaceFiles, sessionId, rel, signal);
-    if (found === null)
-        return dir;
-    const root = learnRoot(cache, sessionId, found.relativePath, found.absolutePath);
-    return root === null ? dir : `${root}/${rel}`;
 }
 export function matchesFilter(path, isDir, filter) {
     if (filter === undefined)
@@ -332,17 +216,72 @@ export function matchesFilter(path, isDir, filter) {
     return filter.exts.includes(extOf(path));
 }
 // ── 面包屑 ──
-/** 面包屑段：把目录路径拆成可点层级（绝对路径保留前导 /）。 */
+/**
+ * 归一绝对路径：`\` → `/`、盘符大写、去尾斜杠。相对路径原样返回（由调用方决定 base）。
+ * FS 面的路径一律先过这里，避免 `D:\a` 与 `d:/a` 被当成两个目录。
+ */
+export function normalizePath(path) {
+    const slashed = path.replace(/\\/g, '/');
+    const drive = /^([a-zA-Z]):/.exec(slashed);
+    const head = drive === null ? slashed : `${drive[1].toUpperCase()}:${slashed.slice(2)}`;
+    // 裸盘符 `D:` 补成 `D:/`：`isAbsoluteish` 要求冒号后带分隔符，否则当成相对路径。
+    if (/^[a-zA-Z]:$/.test(head))
+        return `${head}/`;
+    return head.length > 1 ? head.replace(/\/+$/, '') : head;
+}
+/** 把绝对路径剥回某个根之下（不在根下 ⇒ 原样返回）。根为 null ⇒ 原样返回。 */
+export function relativizeToDir(path, root) {
+    if (root === null || root === '')
+        return path;
+    const target = normalizePath(path);
+    const base = normalizePath(root);
+    if (target === base)
+        return '';
+    return target.startsWith(`${base}/`) ? target.slice(base.length + 1) : path;
+}
+/**
+ * 面包屑段：把目录路径拆成可点层级（绝对路径保留前导 /；Windows 盘符单独成段）。
+ */
 export function crumbsOfDir(dir) {
-    const isAbs = isAbsoluteish(dir);
-    const segs = dir.split('/').filter((s) => s.length > 0);
+    const normalized = normalizePath(dir);
+    const drive = /^([a-zA-Z]):(\/|$)/.exec(normalized);
+    const body = drive === null ? normalized : normalized.slice(2);
+    const isAbs = drive === null && isAbsoluteish(normalized);
+    const segs = body.split('/').filter((s) => s.length > 0);
     const out = [];
     let acc = '';
+    if (drive !== null) {
+        acc = `${drive[1].toUpperCase()}:`;
+        out.push({ label: acc, path: `${acc}/` });
+    }
     for (const seg of segs) {
         acc = acc === '' ? (isAbs ? `/${seg}` : seg) : `${acc}/${seg}`;
         out.push({ label: seg, path: acc });
     }
     return out;
+}
+/**
+ * 目标路径落在哪个工作区（**最长前缀**，不需要会话）。嵌套工作区取最具体的那个。
+ * 与 `workspaceAnchorForPath` 的区别：这里不要求该工作区有会话 —— 浏览已经不吃会话了。
+ */
+export function workspaceOfPath(path, items) {
+    if (!isAbsoluteish(path))
+        return null;
+    const target = normalizePath(path);
+    let best = null;
+    let bestLen = -1;
+    for (const item of items) {
+        if (typeof item.path !== 'string' || item.path === '')
+            continue;
+        const root = normalizePath(item.path);
+        if (root === '' || !(target === root || target.startsWith(`${root}/`)))
+            continue;
+        if (root.length > bestLen) {
+            best = item;
+            bestLen = root.length;
+        }
+    }
+    return best;
 }
 /** 文件/目录的显示名（末段）。 */
 export function baseNameOfPath(p) {

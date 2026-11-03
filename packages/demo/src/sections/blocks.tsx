@@ -159,7 +159,7 @@ function PickFileDemo(): ReturnType<typeof h> {
   if (workspaceFiles === null) return h(NotReady, { which: 'files' })
   if (anchor === null) return h(NotReady, { which: 'anchor' })
 
-  const pick = (anchorBtn: HTMLElement, filter?: { exts: string[] }): void => {
+  const pick = (anchorBtn: HTMLElement, filter?: { exts?: string[]; dirs?: boolean }): void => {
     void pickWorkspaceFile({
       sessionId: anchor.sessionId,
       anchor: anchorBtn,
@@ -185,6 +185,15 @@ function PickFileDemo(): ReturnType<typeof h> {
         onClick: (event: { currentTarget: EventTarget | null }) => pick(event.currentTarget as HTMLElement, { exts: ['js', 'md'] }),
       },
       t('pickJsMd'),
+    ),
+    // 需求一（2026-11-03）：只选文件夹 —— 文件不渲染，目录行尾「选择」+ 面包屑行「选择此文件夹」。
+    h(
+      Button,
+      {
+        variant: 'outline',
+        onClick: (event: { currentTarget: EventTarget | null }) => pick(event.currentTarget as HTMLElement, { dirs: true }),
+      },
+      t('pickDir'),
     ),
     h('code', { style: { fontSize: '12px' } }, picked === null ? t('pickNone') : `${t('pickResult')}${picked}`),
   )

@@ -2,7 +2,8 @@
 // officeToPdf 未注入（宿主没装 dsh-office-to-pdf）⇒ 「预览不可用」空态，不发起请求、不崩。
 import { createElement as h, useEffect, useState } from 'react';
 import { t } from '../../utils/i18n.js';
-import { bytesOf, errView, isAborted } from '../types.js';
+import { bytesOf, errView, isAborted, pickWorkspaceAnchor } from '../types.js';
+import { workspaceList } from '../../ui/host-data.js';
 import { ensureComponentStyles } from '../../ui/css.js';
 import { EXPLORER_CSS } from '../explorer-css.js';
 export function OfficePreview(props) {
@@ -18,9 +19,15 @@ export function OfficePreview(props) {
         const face = props.officeToPdf;
         if (face === null)
             return;
+        // 懒取会话：浏览本身不吃会话，只有这一种格式要（授权探针要一条有效会话，不要求文件在工作区内）。
+        const sessionId = props.sessionId ?? pickWorkspaceAnchor(workspaceList.getSnapshot())?.sessionId;
+        if (sessionId === undefined || sessionId === '') {
+            setFailed({ key: 'previewOfficeNoSession' });
+            return;
+        }
         // 转换慢也不能让它挡路：切文件即 abort（官方实现按「最后一个读者取消」释放共享转换）。
         face
-            .render(props.sessionId, props.path, 'foreground', controller.signal)
+            .render(sessionId, props.path, 'foreground', controller.signal)
             .then((res) => {
             if (controller.signal.aborted)
                 return;

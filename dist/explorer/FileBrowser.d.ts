@@ -1,11 +1,14 @@
 import { createElement as h, type CSSProperties } from 'react';
 import { type Translate } from '../utils/i18n.js';
-import { type OfficeToPdfFace, type PickFilter, type RootCache, type WorkspaceAnchorItem, type WorkspaceFilesFace } from './types.js';
+import { type OfficeToPdfFace, type PickFilter, type PickedPath, type WorkspaceAnchorItem } from './types.js';
+import type { FsFace } from './fs-face.js';
 export interface FileBrowserProps {
-    workspaceFiles: WorkspaceFilesFace;
+    /** 只读文件面（绝对路径；列目录 / 读文件都走它）。 */
+    files: FsFace;
     /** 官方 remote.officeToPdf；未就位传 null ⇒ Office 文件出「不可用」空态。 */
     officeToPdf?: OfficeToPdfFace | null;
-    sessionId: string;
+    /** 相对路径的基准目录（工作区根）；不传 ⇒ 只认绝对路径。 */
+    rootPath?: string;
     /** 起始路径：目录 ⇒ 直接列；文件 ⇒ 预览态（dir 取父目录，面包屑保留可返回）。 */
     path: string;
     /**
@@ -30,14 +33,13 @@ export interface FileBrowserProps {
     /** 从 ▾ 下拉选择其他工作区（点当前工作区 = 回其根目录）。 */
     onSelectWorkspace?: (name: string) => void;
     /** 工作区根缓存（可注入；不传 = 内部自建，随组件废弃——不用模块级 Map）。 */
-    rootCache?: RootCache;
     /** 外部容器样式（嵌入浮层时撑满高度用）。 */
     style?: CSSProperties;
     translate?: Translate;
     /** 选择器态：点文件即 onPick（不进预览）；不传 = 浏览态。 */
     picker?: boolean;
     /** 选择器选中回调：path 为**工作区相对**路径，isDir = 选的是整个文件夹。 */
-    onPick?: (path: string, isDir: boolean) => void;
+    onPick?: (picked: PickedPath) => void;
     /** 选择器过滤（exts = 只要这些扩展名；dirs = 只要文件夹；不传 = 不限）。 */
     filter?: PickFilter;
 }

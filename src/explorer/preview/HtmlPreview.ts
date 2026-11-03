@@ -2,7 +2,8 @@
 // 源码态走 TextPreview 并按 256K 截断。降级路径（无 DOM 能力时）直接出错误态，不猜。
 import { createElement as h, useEffect, useState } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
-import { bytesOf, errView, isAborted, SOURCE_MAX_BYTES, type WorkspaceFilesFace } from '../types.js'
+import { bytesOf, errView, isAborted, SOURCE_MAX_BYTES } from '../types.js'
+import type { FsFace } from '../fs-face.js'
 import { TextPreview } from './TextPreview.js'
 import { ensureComponentStyles } from '../../ui/css.js'
 import { EXPLORER_CSS } from '../explorer-css.js'
@@ -50,8 +51,7 @@ export function buildStaticHtml(data: Uint8Array): string | undefined {
 }
 
 export interface HtmlPreviewProps {
-  workspaceFiles: WorkspaceFilesFace
-  sessionId: string
+  files: FsFace
   path: string
   /** true = 源码态（走 TextPreview + 256K 截断）。 */
   sourceView: boolean
@@ -69,8 +69,8 @@ export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
     const controller = new AbortController()
     setDoc(null)
     setFailed(null)
-    props.workspaceFiles
-      .readBytes(props.sessionId, props.path, {}, controller.signal)
+    props.files
+      .readBytes(props.path, {}, controller.signal)
       .then((res) => {
         if (controller.signal.aborted) return
         const data = bytesOf(res)
@@ -98,12 +98,11 @@ export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
     return () => {
       controller.abort()
     }
-  }, [props.workspaceFiles, props.sessionId, props.path, props.sourceView])
+  }, [props.files, props.path, props.sourceView])
 
   if (props.sourceView) {
     return h(TextPreview, {
-      workspaceFiles: props.workspaceFiles,
-      sessionId: props.sessionId,
+      files: props.files,
       path: props.path,
       markdown: false,
       sourceView: true,

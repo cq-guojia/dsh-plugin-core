@@ -20,6 +20,7 @@ import type { SettingsFormScope } from '@deepseek-ai/dsh-client-ui-primitives'
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
 import { Button, Card, PanelDock, Segmented, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { connectFs } from '../../../../dist/explorer/index.js'
 import { connectFileServices } from '../host-files.js'
 import { connectRealSessions } from '../real-sessions.js'
 import { demoDock, demoPanels } from '../dock.js'
@@ -28,7 +29,7 @@ import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, SECTION_GROUPS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
 import { DEMO_CSS } from '../demo-css.generated.js'
-import { MODELS_PATH } from '../paths.js'
+import { FS_PATH, MODELS_PATH } from '../paths.js'
 
 /** 侧栏条目 id / 主面板 key / 设置命名空间 / 详情页槽位 key：四者必须逐字一致，且 = package.json 的 name。
  *  命名空间这条尤其硬：settings 服务的命名空间 = **profile entry id**（`cordis.patch.yml` 那条
@@ -454,6 +455,8 @@ export function apply(ctx: {
   // 领域选择器的数据面（工作区列表 / 模型目录）：core 自己订数，这里只递一次 ctx。
   // 模型目录走宿主路由（server 侧 serveModelCatalog 注册的同一个 path）。
   connectHost(ctx, { modelsPath: MODELS_PATH })
+  // 文件面：宿主侧 serveFsRoute 注册的同一个 path（绝对路径、只读、不限工作区）。
+  connectFs({ path: FS_PATH })
   // explorer 的数据面（remote.workspaceFiles / remote.officeToPdf）：同样是真服务，缺席即停在未就位态。
   connectFileServices(ctx)
   connectRealSessions(ctx)

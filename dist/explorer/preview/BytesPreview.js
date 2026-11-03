@@ -17,8 +17,8 @@ export function BytesPreview(props) {
         let objectUrl = null;
         setUrl(null);
         setFailed(null);
-        props.workspaceFiles
-            .readBytes(props.sessionId, props.path, {}, controller.signal)
+        props.files
+            .readBytes(props.path, {}, controller.signal)
             .then((res) => {
             if (controller.signal.aborted)
                 return;
@@ -47,7 +47,7 @@ export function BytesPreview(props) {
             if (objectUrl !== null)
                 URL.revokeObjectURL(objectUrl);
         };
-    }, [props.workspaceFiles, props.sessionId, props.path, props.mime]);
+    }, [props.files, props.path, props.mime]);
     if (failed !== null)
         return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params));
     if (url === null)

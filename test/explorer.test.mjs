@@ -3,26 +3,24 @@ import assert from 'node:assert/strict'
 import { crumbsOf, extOf, joinPath, mimeOf, parentOf } from '../dist/utils/index.js'
 // 只引纯逻辑层：面板/预览体静态 import 官方 primitives（Node 下不可解析，那是宿主平台模块）
 import {
-  absolutizeDir,
   anchorSessionForTitle,
   bareCode,
   baseNameOfPath,
   createRequestGate,
-  createRootCache,
   crumbsOfDir,
   dirnameOf,
   errView,
-  findAnyFileAbs,
   isAborted,
-  learnRoot,
   listPathOf,
   matchesFilter,
+  normalizePath,
+  relativizeToDir,
   pickWorkspaceAnchor,
   previewInfoOf,
   previewKindOf,
-  relativizeToRoot,
   sortEntries,
   workspaceAnchorForPath,
+  workspaceOfPath,
 } from '../dist/explorer/types.js'
 
 test('createRequestGate：latest-wins（旧 token 作废且 signal 中止）', () => {
@@ -45,22 +43,6 @@ test('isAborted：主动取消静默，真错误不吞', () => {
   assert.equal(isAborted(token.signal), true)
   assert.equal(isAborted(undefined, { name: 'AbortError' }), true)
   assert.equal(isAborted(undefined, new Error('boom')), false)
-})
-
-test('findAnyFileAbs：signal 已取消 ⇒ 一个请求都不发', async () => {
-  const gate = createRequestGate()
-  const token = gate.begin()
-  gate.abort()
-  let calls = 0
-  const files = {
-    list: async () => {
-      calls += 1
-      return { path: '', entries: [{ name: 'a.txt', type: 'file' }], truncated: false }
-    },
-    stat: async () => ({ absolutePath: '/root/a.txt' }),
-  }
-  assert.equal(await findAnyFileAbs(files, 's', '', token.signal), null)
-  assert.equal(calls, 0)
 })
 
 test('crumbsOf / parentOf / joinPath', () => {
@@ -200,81 +182,6 @@ test('crumbsOfDir / dirnameOf / baseNameOfPath', () => {
   assert.equal(baseNameOfPath('a/b/c.ts'), 'c.ts')
 })
 
-// ── 工作区根反推 ──
-
-const mockWf = {
-  async list(_sessionId, path) {
-    const key = path === '.' ? '' : path
-    const tree = {
-      '': ['src', 'docs', 'README.md', 'logo.png'],
-      src: ['index.ts', 'ui'],
-      'src/ui': ['Picker.ts'],
-      docs: ['requirements.md'],
-    }
-    const names = tree[key]
-    if (names === undefined) throw { code: 'workspace-file/not-directory' }
-    return {
-      path: key,
-      truncated: false,
-      entries: names.map((name) => ({ name, type: guess(name), size: 10 })),
-    }
-  },
-  async read(_sessionId, path) {
-    return { offset: 0, text: `text of ${path}`, lines: 1, eof: true }
-  },
-  async readBytes() {
-    return { offset: 0, data: new Uint8Array(), eof: true }
-  },
-  async stat(_sessionId, path) {
-    return { absolutePath: `/home/ws/${path}` }
-  },
-}
-function guess(name) {
-  return name === 'src' || name === 'docs' || name === 'ui' ? 'directory' : 'file'
-}
-
-test('learnRoot 反推 + relativizeToRoot 剥根', () => {
-  const cache = createRootCache()
-  assert.equal(learnRoot(cache, 's1', 'src/index.ts', '/home/ws/src/index.ts'), '/home/ws')
-  assert.equal(cache.get('s1'), '/home/ws')
-  // 后缀不匹配 ⇒ 学不出
-  assert.equal(learnRoot(cache, 's2', 'a.ts', '/other/b.ts'), null)
-  assert.equal(cache.get('s2'), undefined)
-  // 相对路径原样返回
-  assert.equal(relativizeToRoot(cache, 's1', 'docs'), 'docs')
-  // 绝对路径剥回相对
-  assert.equal(relativizeToRoot(cache, 's1', '/home/ws/docs'), 'docs')
-  // 根本身 ⇒ 空串
-  assert.equal(relativizeToRoot(cache, 's1', '/home/ws'), '')
-  // 不在根下 ⇒ 原样（退化）
-  assert.equal(relativizeToRoot(cache, 's1', '/other/x'), '/other/x')
-  // 会话隔离
-  assert.equal(relativizeToRoot(cache, 's9', '/home/ws/docs'), '/home/ws/docs')
-})
-
-test('absolutizeDir 三级解析', async () => {
-  // ① 根已缓存 ⇒ 直接拼（覆盖空目录/只有子目录）
-  const cache1 = createRootCache()
-  cache1.set('s', '/home/ws')
-  assert.equal(await absolutizeDir(cache1, mockWf, 's', 'docs', 'docs', []), '/home/ws/docs')
-  // ② 目录里有文件子项 ⇒ stat 反推
-  const cache2 = createRootCache()
-  assert.equal(
-    await absolutizeDir(cache2, mockWf, 's', 'docs', 'docs', [{ name: 'requirements.md', type: 'file' }]),
-    '/home/ws/docs',
-  )
-  assert.equal(cache2.get('s'), '/home/ws')
-  // 绝对路径入参原样返回
-  assert.equal(await absolutizeDir(createRootCache(), mockWf, 's', '/abs/dir', '/abs/dir', []), '/abs/dir')
-})
-
-test('findAnyFileAbs 有界 BFS 找任一文件', async () => {
-  const found = await findAnyFileAbs(mockWf, 's', '')
-  assert.deepEqual(found, { absolutePath: '/home/ws/README.md', relativePath: 'README.md' })
-  // list 一个文件报 not-directory ⇒ 找不到（返回 null 而不是抛）
-  assert.equal(await findAnyFileAbs(mockWf, 's', 'README.md'), null)
-})
-
 test('pickWorkspaceAnchor 取「最近更新且有会话」的工作区', () => {
   assert.equal(pickWorkspaceAnchor([]), null)
   // 没有会话 / 没 sessionIds ⇒ 不能做浏览锚点（list/read 都要 sessionId）
@@ -320,7 +227,7 @@ test('关预览走 close（卸载 React 根），不直接移除挂载体', asyn
 test('再打开预览复用旧根：只重画内容、宽度先钉住', async () => {
   const { readFile } = await import('node:fs/promises')
   const src = await readFile(new URL('../dist/explorer/open.js', import.meta.url), 'utf8')
-  assert.ok(src.includes('activePreview.draw(opts)'), '复用分支没有重画内容')
+  assert.ok(src.includes('activePreview.draw(opts'), '复用分支没有重画内容')
   assert.ok(src.includes('activePreview.keepWidth()'), '换内容前没钉住用户拖好的宽度')
   assert.ok(!src.includes('activePreview?.close()'), '又变回「重开就先关旧的」（动效会重播、宽度会重置）')
   // 收起来过就得自动弹回来，否则换文件「看不见任何变化」（2026-10-28 真机）。
@@ -334,12 +241,67 @@ test('再打开预览复用旧根：只重画内容、宽度先钉住', async ()
   assert.ok(fb.includes('revision'), 'FileBrowser 初始 effect 没接 revision')
 })
 
-// 2026-10-28 真机：消费方传工作区内的绝对路径打开时，根还没反推出来的那一帧会按段铺出
-// `root/.local/share/…` 十几段工作区之外的层级（点不动也没信息量），根一学成又缩回 ⇒ 闪一下。
-test('根未反推时不铺绝对路径层级，且溢出测量跟着根学成重算', async () => {
+// 2026-11-03：单根树（工作区节点 + 真实根）。归属与相对化都是纯函数 —— 组件文件
+// 静态 import 官方 primitives，Node 下引不了，逻辑只能长在这里。
+test('normalizePath：斜杠归一 / 盘符大写 / 裸盘符补斜杠', () => {
+  assert.equal(normalizePath('D:\\proj\\a.ts'), 'D:/proj/a.ts')
+  assert.equal(normalizePath('d:/proj/'), 'D:/proj')
+  assert.equal(normalizePath('D:'), 'D:/')
+  assert.equal(normalizePath('/home/ws/'), '/home/ws')
+  assert.equal(normalizePath('docs'), 'docs')
+})
+
+test('workspaceOfPath：最长前缀归属，不看会话', () => {
+  const items = [
+    { title: 'outer', path: '/home/ws', sessionIds: [] },
+    { title: 'inner', path: '/home/ws/sub', sessionIds: [] },
+    { title: 'other', path: 'D:/proj', sessionIds: [] },
+  ]
+  assert.equal(workspaceOfPath('/home/ws/sub/a.ts', items)?.title, 'inner')
+  assert.equal(workspaceOfPath('/home/ws/docs/a.ts', items)?.title, 'outer')
+  // 只是名字前缀、不是真前缀 ⇒ 不算
+  assert.equal(workspaceOfPath('/home/wsx/a.ts', items), null)
+  assert.equal(workspaceOfPath('/etc/passwd', items), null)
+  // 相对路径不猜
+  assert.equal(workspaceOfPath('src/a.ts', items), null)
+  // 工作区根本身也算「在里面」
+  assert.equal(workspaceOfPath('/home/ws', items)?.title, 'outer')
+})
+
+test('relativizeToDir：根下剥回相对，根外原样', () => {
+  assert.equal(relativizeToDir('/home/ws/docs/a.md', '/home/ws'), 'docs/a.md')
+  assert.equal(relativizeToDir('/home/ws', '/home/ws'), '')
+  assert.equal(relativizeToDir('/home/wsx/a', '/home/ws'), '/home/wsx/a')
+  assert.equal(relativizeToDir('/etc/x', null), '/etc/x')
+})
+
+test('crumbsOfDir：绝对路径保留前导 /，Windows 盘符单独成段', () => {
+  assert.deepEqual(
+    crumbsOfDir('/home/ws'),
+    [{ label: 'home', path: '/home' }, { label: 'ws', path: '/home/ws' }],
+  )
+  assert.deepEqual(
+    crumbsOfDir('D:/proj/src'),
+    [{ label: 'D:', path: 'D:/' }, { label: 'proj', path: 'D:/proj' }, { label: 'src', path: 'D:/proj/src' }],
+  )
+  assert.deepEqual(crumbsOfDir('docs'), [{ label: 'docs', path: 'docs' }])
+})
+
+// 用户 2026-11-03：**UI 一律不动**，唯一变化是 ▾ 里根目录常驻第一行。
+test('FileBrowser：▾ 有根目录条目；没有「反推工作区根」那套', async () => {
   const { readFile } = await import('node:fs/promises')
   const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
-  assert.ok(src.includes('rootPending'), '缺「根未学成」占位分支 —— 绝对路径会被逐段铺开')
-  // 测量依赖缺 rootNonce/outside ⇒ 面包屑变短后不重算，折叠态卡在首帧只显示末段。
-  assert.ok(src.includes('rootNonce, outside'), '溢出测量没跟着根反推 / 越界态重算')
+  assert.ok(src.includes('explorerRootDir'), '▾ 里没有根目录条目')
+  assert.ok(src.includes('workspaceOfPath'), '没有工作区归属判定（面包屑根会错）')
+  assert.ok(!src.includes('rootPending'), '又回到「反推工作区根」那套')
+  assert.ok(!src.includes('rootCache'), '根缓存没删干净')
+})
+
+// 2026-11-03 真机两问：① 目录状态必须是绝对路径（存相对 ⇒ 子项拼出相对 ⇒ read 报 bad-request）；
+// ② 面包屑只有落在基准工作区内才以工作区名作根，在工作区外才从真实根展开。
+test('FileBrowser：目录状态存绝对路径，面包屑按基准判定', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  assert.ok(src.includes('setDir(absTarget)'), 'fetchDir 又把原始入参当目录状态（相对路径会让子项读不到）')
+  assert.ok(src.includes('workspaceOfPath(dir'), '面包屑没按**当前目录**去匹配工作区（会一直用打开时的路径）')
 })

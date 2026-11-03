@@ -85,3 +85,6 @@ export function serveModelCatalog(ctx: HostContextLike, options: { path: string 
     })
   })
 }
+
+export { serveFsRoute, FS_PAGE_LIMIT, normalizeAbsPath } from './fs-route.js'
+export type { FsRouteEntry, FsRouteListing } from './fs-route.js'

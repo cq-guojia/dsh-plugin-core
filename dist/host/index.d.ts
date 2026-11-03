@@ -63,4 +63,6 @@ export declare function buildModelRoutes(llm: HostLlmLike): Promise<ModelRouteDa
 export declare function serveModelCatalog(ctx: HostContextLike, options: {
     path: string;
 }): void;
+export { serveFsRoute, FS_PAGE_LIMIT, normalizeAbsPath } from './fs-route.js';
+export type { FsRouteEntry, FsRouteListing } from './fs-route.js';
 //# sourceMappingURL=index.d.ts.map

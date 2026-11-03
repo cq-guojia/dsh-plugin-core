@@ -2,13 +2,13 @@
 // readBytes 读全量（受部署 maxFileBytes 封顶，超出抛 too-large ⇒ 错误态）。
 import { createElement as h, useEffect, useState } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
-import { bytesOf, errView, isAborted, type WorkspaceFilesFace } from '../types.js'
+import { bytesOf, errView, isAborted } from '../types.js'
+import type { FsFace } from '../fs-face.js'
 import { ensureComponentStyles } from '../../ui/css.js'
 import { EXPLORER_CSS } from '../explorer-css.js'
 
 export interface BytesPreviewProps {
-  workspaceFiles: WorkspaceFilesFace
-  sessionId: string
+  files: FsFace
   path: string
   kind: 'image' | 'pdf'
   mime: string
@@ -28,8 +28,8 @@ export function BytesPreview(props: BytesPreviewProps): ReturnType<typeof h> {
     let objectUrl: string | null = null
     setUrl(null)
     setFailed(null)
-    props.workspaceFiles
-      .readBytes(props.sessionId, props.path, {}, controller.signal)
+    props.files
+      .readBytes(props.path, {}, controller.signal)
       .then((res) => {
         if (controller.signal.aborted) return
         const data = bytesOf(res)
@@ -55,7 +55,7 @@ export function BytesPreview(props: BytesPreviewProps): ReturnType<typeof h> {
       controller.abort()
       if (objectUrl !== null) URL.revokeObjectURL(objectUrl)
     }
-  }, [props.workspaceFiles, props.sessionId, props.path, props.mime])
+  }, [props.files, props.path, props.mime])
 
   if (failed !== null) return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params))
   if (url === null) return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'))

@@ -1,9 +1,8 @@
 import { createElement as h } from 'react';
 import { type Translate } from '../../utils/i18n.js';
-import { type WorkspaceFilesFace } from '../types.js';
+import type { FsFace } from '../fs-face.js';
 export interface BytesPreviewProps {
-    workspaceFiles: WorkspaceFilesFace;
-    sessionId: string;
+    files: FsFace;
     path: string;
     kind: 'image' | 'pdf';
     mime: string;

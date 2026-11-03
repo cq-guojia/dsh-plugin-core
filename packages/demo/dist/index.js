@@ -892,6 +892,202 @@ var init_lib2 = __esm({
   }
 });
 
+// dist/host/fs-route.js
+import { access, lstat, open, readdir, stat } from "node:fs/promises";
+import { isAbsolute, join, normalize, sep } from "node:path";
+var FS_PAGE_LIMIT = 500;
+var READ_LINES = 5e3;
+var BYTES_MAX = 32 * 1024 * 1024;
+var LIST_TIMEOUT = 8e3;
+function fail(code, message) {
+  return { ok: false, error: { code, message } };
+}
+function errCode(error) {
+  const code = error?.code;
+  if (code === "ENOENT")
+    return "not-found";
+  if (code === "ENOTDIR")
+    return "not-directory";
+  if (code === "EACCES" || code === "EPERM")
+    return "service-unavailable";
+  if (code === "EISDIR")
+    return "not-regular-file";
+  return "service-unavailable";
+}
+function normalizeAbsPath(raw) {
+  if (raw === "")
+    return null;
+  const slashed = raw.replace(/\\/g, "/");
+  if (!isAbsolute(slashed))
+    return null;
+  const normalized = normalize(slashed.replace(/\//g, sep)).replace(/\\/g, "/");
+  const drive = /^([a-zA-Z]):/.exec(normalized);
+  if (drive !== null)
+    return `${drive[1].toUpperCase()}${normalized.slice(1)}`;
+  return normalized.length > 1 ? normalized.replace(/\/+$/, "") : normalized;
+}
+async function listDir(target, offset, limit) {
+  let info;
+  try {
+    info = await lstat(target);
+  } catch (error) {
+    return fail(errCode(error), `no entry at ${target}`);
+  }
+  if (!info.isDirectory())
+    return fail("not-directory", `${target} is not a directory`);
+  let names;
+  try {
+    names = await Promise.race([
+      readdir(target),
+      new Promise((_resolve, reject) => {
+        setTimeout(() => reject(Object.assign(new Error("list timeout"), { code: "ETIMEDOUT" })), LIST_TIMEOUT);
+      })
+    ]);
+  } catch (error) {
+    const code = error?.code;
+    return fail(code === "ETIMEDOUT" ? "timeout" : errCode(error), `cannot list ${target}`);
+  }
+  names.sort((left, right) => left.toLowerCase().localeCompare(right.toLowerCase()));
+  const page = names.slice(offset, offset + limit);
+  const entries = [];
+  for (const name2 of page) {
+    const child = join(target, name2);
+    try {
+      const childInfo = await lstat(child);
+      entries.push({
+        name: name2,
+        type: childInfo.isDirectory() ? "directory" : childInfo.isFile() ? "file" : "other",
+        ...childInfo.isFile() ? { size: childInfo.size } : {}
+      });
+    } catch {
+      entries.push({ name: name2, type: "other" });
+    }
+  }
+  const listing = {
+    path: target,
+    entries,
+    truncated: names.length > offset + limit
+  };
+  return { ok: true, value: listing };
+}
+async function readText(target, offset, limit) {
+  let info;
+  try {
+    info = await stat(target);
+  } catch (error) {
+    return fail(errCode(error), `no file at ${target}`);
+  }
+  if (!info.isFile())
+    return fail("not-regular-file", `${target} is not a regular file`);
+  if (info.size > BYTES_MAX)
+    return fail("too-large", `${target} exceeds the ${BYTES_MAX} byte cap`);
+  const buffer = Buffer.alloc(info.size);
+  const handle = await open(target, "r");
+  try {
+    if (info.size > 0)
+      await handle.read(buffer, 0, info.size, 0);
+  } finally {
+    await handle.close();
+  }
+  if (buffer.includes(0))
+    return fail("not-text", `${target} contains NUL bytes`);
+  const all = buffer.toString("utf8").split("\n");
+  const start = Math.max(0, offset - 1);
+  const page = all.slice(start, start + limit);
+  const text = page.join("\n");
+  return {
+    ok: true,
+    value: {
+      text,
+      offset,
+      lines: page.length,
+      eof: start + page.length >= all.length,
+      absolutePath: target,
+      bytes: info.size
+    }
+  };
+}
+async function readBinary(target, offset, length) {
+  let info;
+  try {
+    info = await stat(target);
+  } catch (error) {
+    return fail(errCode(error), `no file at ${target}`);
+  }
+  if (!info.isFile())
+    return fail("not-regular-file", `${target} is not a regular file`);
+  const want = length > 0 ? length : info.size - offset;
+  if (want > BYTES_MAX)
+    return fail("too-large", `${target} exceeds the ${BYTES_MAX} byte cap`);
+  const size = Math.max(0, Math.min(want, info.size - offset));
+  const buffer = Buffer.alloc(size);
+  if (size > 0) {
+    const handle = await open(target, "r");
+    try {
+      await handle.read(buffer, 0, size, offset);
+    } finally {
+      await handle.close();
+    }
+  }
+  return {
+    ok: true,
+    value: {
+      offset,
+      data: buffer.toString("base64"),
+      eof: offset + size >= info.size,
+      bytes: info.size
+    }
+  };
+}
+async function roots() {
+  if (process.platform !== "win32")
+    return ["/"];
+  const found = [];
+  await Promise.all(Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index)).map(async (letter) => {
+    const drive = `${letter}:\\`;
+    try {
+      await access(drive);
+      found.push(`${letter}:/`);
+    } catch {
+    }
+  }));
+  return found.sort();
+}
+function serveFsRoute(ctx, options) {
+  ctx.inject(["webServer"], (services) => {
+    const webServer = services.webServer;
+    if (webServer === void 0)
+      return;
+    webServer.register({
+      kind: "prefix",
+      path: options.path,
+      handler: async (req, res) => {
+        const url = new URL(req.url ?? "", "http://host");
+        const target = normalizeAbsPath(url.searchParams.get("path") ?? "");
+        const op = url.searchParams.get("op") ?? "list";
+        const offset = Number(url.searchParams.get("offset") ?? "0") || 0;
+        const limitParam = Number(url.searchParams.get("limit") ?? "0") || 0;
+        let reply;
+        if (op === "roots") {
+          reply = { ok: true, value: { roots: await roots() } };
+        } else if (target === null) {
+          reply = fail("bad-request", "path must be absolute");
+        } else if (op === "list") {
+          reply = await listDir(target, offset, limitParam > 0 ? Math.min(limitParam, FS_PAGE_LIMIT) : FS_PAGE_LIMIT);
+        } else if (op === "read") {
+          reply = await readText(target, offset > 0 ? offset : 1, limitParam > 0 ? limitParam : READ_LINES);
+        } else if (op === "readBytes") {
+          reply = await readBinary(target, offset, limitParam);
+        } else {
+          reply = fail("bad-request", `unknown op ${op}`);
+        }
+        res.writeHead(200, { "content-type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify(reply));
+      }
+    });
+  });
+}
+
 // dist/host/index.js
 async function buildModelRoutes(llm) {
   const routes = [];
@@ -931,6 +1127,7 @@ function serveModelCatalog(ctx, options) {
 
 // packages/demo/src/paths.ts
 var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
+var FS_PATH = "/api/dsh-plugin-core-demo/fs";
 
 // packages/demo/src/index.ts
 var name = "dsh-plugin-core-demo";
@@ -949,6 +1146,7 @@ var Config = z === void 0 ? void 0 : z.object({
 });
 function apply(ctx) {
   serveModelCatalog(ctx, { path: MODELS_PATH });
+  serveFsRoute(ctx, { path: FS_PATH });
 }
 export {
   Config,

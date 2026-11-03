@@ -133,10 +133,6 @@ export declare function sortEntries(entries: readonly DirEntry[]): DirEntry[];
  * （`'.'` 按 cwd = 工作区根归一解析为根本身；响应里根的 path 仍是 `''`）。
  */
 export declare function listPathOf(dir: string): string;
-export interface RootCache {
-    get(sessionId: string): string | undefined;
-    set(sessionId: string, root: string): void;
-}
 export interface RequestToken {
     readonly signal: AbortSignal;
     /** true = 仍是最新一次（未被下一次 begin / abort 作废，且未被取消）。 */
@@ -154,41 +150,47 @@ export declare function createRequestGate(): RequestGate;
  * reject `AbortError`，或 resolve `{ ok:false, error }` 信封——调用方补传 signal 由这里判定。
  */
 export declare function isAborted(signal: AbortSignal | undefined, error?: unknown): boolean;
-export declare function createRootCache(): RootCache;
 /** 宿主绝对路径形态（/ 开头或 Windows 盘符）。 */
 export declare function isAbsoluteish(p: string): boolean;
 /** 工作区相对拼接（根下直接 name，不补前导 /）。 */
 export declare function relJoin(dir: string, name: string): string;
-/** 由「相对路径 + 该文件宿主绝对路径」反推工作区根并写入缓存；学不出返回 null。 */
-export declare function learnRoot(cache: RootCache, sessionId: string, relativePath: string, absolutePath: string): string | null;
-/** 把宿主绝对路径剥回工作区相对（根未知或不在根下 ⇒ 原样返回，退化）。 */
-export declare function relativizeToRoot(cache: RootCache, sessionId: string, dir: string): string;
 /**
- * 在相对目录树里找**任意一个文件**并 stat（广度优先、有界：每层最多 5 个目录、最多 3 层）。
- * 用于目标目录本身没有文件子项（空目录 / 只有子目录）时反推工作区根。
+ * 选择器回传：`path` 一律**绝对路径**（用户 2026-11-03 定）。
+ * 仍需要相对语义的消费方用 `workspaceRel`（仅当目标落在某个工作区内才有）。
  */
-export declare function findAnyFileAbs(workspaceFiles: WorkspaceFilesFace, sessionId: string, startDir: string, signal?: AbortSignal): Promise<{
-    absolutePath: string;
-    relativePath: string;
-} | null>;
-/**
- * 把「工作区相对名」的目录解析成宿主绝对路径（面包屑才能从工作区根往下列）。
- * 优先级：① 根已缓存 ⇒ 根 + '/' + 规范相对路径（覆盖空目录 / 只有子目录）；
- * ② 目录里有文件子项 ⇒ stat 它反推根；③ 有界 BFS 找任一文件反推根。
- * 全部失败 ⇒ 退回入参，浏览不受影响。
- */
-export declare function absolutizeDir(cache: RootCache, workspaceFiles: WorkspaceFilesFace, sessionId: string, dir: string, canonical: string, entries: readonly DirEntry[], signal?: AbortSignal): Promise<string>;
+export interface PickedPath {
+    path: string;
+    isDir: boolean;
+    /** 目标相对其所属工作区根的路径；不在任何工作区内 ⇒ 不出现。 */
+    workspaceRel?: string;
+    /** 所属工作区显示名；不在任何工作区内 ⇒ 不出现。 */
+    workspace?: string;
+}
 /** 选择器过滤：`exts` = 只要这些扩展名（小写无点）；`dirs` = 只要文件夹；都不传 = 不限。 */
 export interface PickFilter {
     exts?: readonly string[];
     dirs?: boolean;
 }
 export declare function matchesFilter(path: string, isDir: boolean, filter: PickFilter | undefined): boolean;
-/** 面包屑段：把目录路径拆成可点层级（绝对路径保留前导 /）。 */
+/**
+ * 归一绝对路径：`\` → `/`、盘符大写、去尾斜杠。相对路径原样返回（由调用方决定 base）。
+ * FS 面的路径一律先过这里，避免 `D:\a` 与 `d:/a` 被当成两个目录。
+ */
+export declare function normalizePath(path: string): string;
+/** 把绝对路径剥回某个根之下（不在根下 ⇒ 原样返回）。根为 null ⇒ 原样返回。 */
+export declare function relativizeToDir(path: string, root: string | null): string;
+/**
+ * 面包屑段：把目录路径拆成可点层级（绝对路径保留前导 /；Windows 盘符单独成段）。
+ */
 export declare function crumbsOfDir(dir: string): {
     label: string;
     path: string;
 }[];
+/**
+ * 目标路径落在哪个工作区（**最长前缀**，不需要会话）。嵌套工作区取最具体的那个。
+ * 与 `workspaceAnchorForPath` 的区别：这里不要求该工作区有会话 —— 浏览已经不吃会话了。
+ */
+export declare function workspaceOfPath(path: string, items: readonly WorkspaceAnchorItem[]): WorkspaceAnchorItem | null;
 /** 文件/目录的显示名（末段）。 */
 export declare function baseNameOfPath(p: string): string;
 /** 父目录（无父 = 空串）。 */

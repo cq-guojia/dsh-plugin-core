@@ -15,15 +15,15 @@ import { MarkdownText } from '../../ui/official.js'
 import { CodeViewer } from '../../ui/CodeViewer.js'
 import { Button } from '../../ui/Button.js'
 import { t, type Translate } from '../../utils/i18n.js'
-import { errView, isAborted, textPageOf, type WorkspaceFilesFace } from '../types.js'
+import { errView, isAborted, textPageOf } from '../types.js'
+import type { FsFace } from '../fs-face.js'
 import { formatBytes } from '../../utils/number.js'
 import { markdownLabels } from './md-labels.js'
 import { ensureComponentStyles } from '../../ui/css.js'
 import { EXPLORER_CSS } from '../explorer-css.js'
 
 export interface TextPreviewProps {
-  workspaceFiles: WorkspaceFilesFace
-  sessionId: string
+  files: FsFace
   path: string
   /** 是否 md（决定默认渲染态）。 */
   markdown: boolean
@@ -56,7 +56,7 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
       try {
         // range 只两态：首页 `{}`、翻页 `{offset}`（见文件头口径说明）。
         const parsed = textPageOf(
-          await props.workspaceFiles.read(props.sessionId, props.path, offset > 0 ? { offset } : {}, controller.signal),
+          await props.files.read(props.path, offset > 0 ? { offset } : {}, controller.signal),
         )
         if (controller.signal.aborted) return
         if (parsed === null) {
@@ -93,7 +93,7 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
         if (!controller.signal.aborted) setLoading(false)
       }
     },
-    [props.workspaceFiles, props.sessionId, props.path, props.maxBytes],
+    [props.files, props.path, props.maxBytes],
   )
 
   useEffect(() => {

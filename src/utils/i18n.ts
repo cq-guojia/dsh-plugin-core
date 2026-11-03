@@ -28,6 +28,7 @@ export type UtilMessageKey =
   | 'explorerPickFile'
   | 'explorerPickDir'
   | 'explorerPickDirAria'
+  | 'explorerRootDir'
   | 'previewClose'
   | 'previewCopyPath'
   | 'previewRefresh'
@@ -38,6 +39,7 @@ export type UtilMessageKey =
   | 'previewLoadMore'
   | 'previewTruncated'
   | 'previewOfficeUnavailable'
+  | 'previewOfficeNoSession'
   | 'previewRenderFailed'
   | 'previewBadPayload'
   | 'previewOutside'
@@ -302,6 +304,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerExpand: '展开',
     explorerCollapse: '收起',
     explorerEnter: '进入',
+    explorerRootDir: '根目录',
     explorerRootName: '（工作区根目录）',
     explorerCrumbsAria: '目录路径',
     explorerPickFile: '选择此文件',
@@ -317,6 +320,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     previewLoadMore: '加载更多',
     previewTruncated: '内容过大，仅显示前 {n}',
     previewOfficeUnavailable: 'Office 预览不可用',
+    previewOfficeNoSession: 'Office 预览不可用（还没有任何会话）',
     previewRenderFailed: '预览渲染失败',
     previewBadPayload: '返回数据不符合预期',
     previewOutside: '路径在工作区之外',
@@ -575,6 +579,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerExpand: 'Expand',
     explorerCollapse: 'Collapse',
     explorerEnter: 'Open',
+    explorerRootDir: '根目录',
     explorerRootName: '(workspace root)',
     explorerCrumbsAria: 'Breadcrumb',
     explorerPickFile: 'Pick this file',
@@ -590,6 +595,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     previewLoadMore: 'Load more',
     previewTruncated: 'Content too large, showing first {n}',
     previewOfficeUnavailable: 'Office preview unavailable',
+    previewOfficeNoSession: 'Office preview unavailable (no session yet)',
     previewRenderFailed: 'Failed to render preview',
     previewBadPayload: 'Unexpected response payload',
     previewOutside: 'Path is outside the workspace',

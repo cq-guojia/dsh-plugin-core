@@ -21,8 +21,7 @@ export function FilePreview(props) {
         case 'image':
         case 'pdf':
             return h(BytesPreview, {
-                workspaceFiles: props.workspaceFiles,
-                sessionId: props.sessionId,
+                files: props.files,
                 path: props.path,
                 kind: info.kind,
                 mime: info.mime ?? 'application/octet-stream',
@@ -37,8 +36,7 @@ export function FilePreview(props) {
             });
         case 'html':
             return h(HtmlPreview, {
-                workspaceFiles: props.workspaceFiles,
-                sessionId: props.sessionId,
+                files: props.files,
                 path: props.path,
                 sourceView,
                 translate: tt,
@@ -46,8 +44,7 @@ export function FilePreview(props) {
         case 'md':
         case 'text':
             return h(TextPreview, {
-                workspaceFiles: props.workspaceFiles,
-                sessionId: props.sessionId,
+                files: props.files,
                 path: props.path,
                 markdown: info.kind === 'md',
                 sourceView,

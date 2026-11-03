@@ -3,7 +3,8 @@
 import { createElement as h } from 'react'
 import { ensureControls } from '../../ui/css.js'
 import { t, type Translate } from '../../utils/i18n.js'
-import { previewInfoOf, type OfficeToPdfFace, type WorkspaceFilesFace } from '../types.js'
+import { previewInfoOf, type OfficeToPdfFace } from '../types.js'
+import type { FsFace } from '../fs-face.js'
 import { BytesPreview } from './BytesPreview.js'
 import { HtmlPreview } from './HtmlPreview.js'
 import { OfficePreview } from './OfficePreview.js'
@@ -15,8 +16,10 @@ export { OfficePreview, type OfficePreviewProps } from './OfficePreview.js'
 export { TextPreview, type TextPreviewProps } from './TextPreview.js'
 
 export interface FilePreviewProps {
-  workspaceFiles: WorkspaceFilesFace
-  sessionId: string
+  /** 只读文件面（绝对路径）。 */
+  files: FsFace
+  /** Office 预览要的会话；可省 ⇒ 预览体按宿主工作区快照自己挑一条。 */
+  sessionId?: string
   path: string
   /** 官方 remote.officeToPdf；未就位传 null ⇒ Office 文件出「不可用」空态。 */
   officeToPdf?: OfficeToPdfFace | null
@@ -34,8 +37,7 @@ export function FilePreview(props: FilePreviewProps): ReturnType<typeof h> | nul
     case 'image':
     case 'pdf':
       return h(BytesPreview, {
-        workspaceFiles: props.workspaceFiles,
-        sessionId: props.sessionId,
+        files: props.files,
         path: props.path,
         kind: info.kind,
         mime: info.mime ?? 'application/octet-stream',
@@ -50,8 +52,7 @@ export function FilePreview(props: FilePreviewProps): ReturnType<typeof h> | nul
       })
     case 'html':
       return h(HtmlPreview, {
-        workspaceFiles: props.workspaceFiles,
-        sessionId: props.sessionId,
+        files: props.files,
         path: props.path,
         sourceView,
         translate: tt,
@@ -59,8 +60,7 @@ export function FilePreview(props: FilePreviewProps): ReturnType<typeof h> | nul
     case 'md':
     case 'text':
       return h(TextPreview, {
-        workspaceFiles: props.workspaceFiles,
-        sessionId: props.sessionId,
+        files: props.files,
         path: props.path,
         markdown: info.kind === 'md',
         sourceView,

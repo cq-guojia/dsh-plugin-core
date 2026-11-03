@@ -57,4 +57,5 @@ export function serveModelCatalog(ctx, options) {
         });
     });
 }
+export { serveFsRoute, FS_PAGE_LIMIT, normalizeAbsPath } from './fs-route.js';
 //# sourceMappingURL=index.js.map

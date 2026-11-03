@@ -8,7 +8,7 @@
 // 两个消费场景共用本组件（用户 2026-10-20 拍板：同一套内容，两种展现形式）：
 //  · 浏览（dock）：由 **核心 PanelDock** 承载（openFilePreview），拖宽与关闭都由它负责，
 //    本组件不再自绘拖拽条 / 侧边栏外壳；
-//  · 选择（picker）：`picker` + `onPick(path, isDir)`（path 为**工作区相对**路径），点文件即回调。
+//  · 选择（picker）：`picker` + `onPick(picked)`（`path` 是**绝对路径**，另带工作区归属），点文件即回调。
 //
 // 控件纪律：能用核心控件的一律核心（ghost 面包屑 / IconButton / Segmented / MarqueeText）；
 // 核心没有的那一项 = ▾ 选层浮层，按兄弟项目 dsh-task-dispatch-table 的 `.dsh-tdt-sv-crumbs-*`
@@ -21,9 +21,11 @@ import { Segmented } from '../ui/Segmented.js';
 import { workspaceList } from '../ui/host-data.js';
 import { t } from '../utils/i18n.js';
 import { FilePreview } from './preview/index.js';
-import { absolutizeDir, bareCode, baseNameOfPath, crumbsOfDir, createRequestGate, createRootCache, dirnameOf, errView, findAnyFileAbs, isAborted, isAbsoluteish, isFailed, joinPath, learnRoot, listingOf, listPathOf, matchesFilter, relativizeToRoot, sortEntries, workspaceAnchorForPath, } from './types.js';
+import { bareCode, baseNameOfPath, crumbsOfDir, createRequestGate, dirnameOf, errView, isAborted, isAbsoluteish, isFailed, joinPath, listingOf, matchesFilter, relativizeToDir, sortEntries, normalizePath, workspaceOfPath, } from './types.js';
 import { ensureComponentStyles } from '../ui/css.js';
 import { EXPLORER_CSS } from './explorer-css.js';
+/** 「根」在 FS 面上的落点：POSIX 是 `/`；Windows 上由宿主解析成当前盘根。 */
+const FS_ROOT = '/';
 /**
  * ▾ 下拉条目构造（**picker 与 dock 共用同一段代码**，差别只在入参——源实现用户 2026-09-29
  * 点名提炼，严禁两处各写一份）：
@@ -37,8 +39,20 @@ import { EXPLORER_CSS } from './explorer-css.js';
  * backdrop + 菜单本体 + `-item`（4px 8px / 最大宽 280 / 超出滚动 / 空态）。
  */
 function crumbsMenuEntries(params) {
-    const { workspaces, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
+    const { workspaces, rootName, rootFallbackLabel, rootEntryLabel, crumbs, onPickWorkspace, onLoadDir, onLoadRoot } = params;
     const out = [];
+    // 根目录常驻第一行（用户 2026-11-03：原来拉开的只有工作区，根目录要放最上面）。
+    if (onLoadRoot !== undefined) {
+        out.push(h('button', {
+            key: 'root',
+            type: 'button',
+            role: 'menuitem',
+            className: 'dshpc-fb__menu-item',
+            style: { paddingLeft: 8, display: 'flex', alignItems: 'center', gap: '6px' },
+            title: rootEntryLabel,
+            onClick: onLoadRoot,
+        }, h('span', { className: 'dshpc-fb__menu-icon', style: { color: 'var(--dshpc-fg-2)' } }, h(IconFolderCloseRegular, { size: 13 })), h('span', { className: 'dshpc-fb__menu-label' }, rootEntryLabel)));
+    }
     // 内联样式照抄兄弟项目（wsEntry 的 gap 6px 覆盖类的 2px：图标与文字的间距以它为准）。
     const wsEntry = (ws, current) => h('button', {
         key: `ws:${ws}`,
@@ -74,8 +88,9 @@ function crumbsMenuEntries(params) {
             return [h('div', { key: 'empty', className: 'dshpc-fb__menu-empty' }, rootFallbackLabel)];
         return crumbs.map((crumb, index) => pathEntry(crumb, index === 0 ? 0 : index - 1, index !== 0));
     }
-    // 路径段：根 crumb（path=''）已由工作区段表达时剔除，深度从根下一层起算。
-    const segments = rootName !== '' && crumbs.length > 0 && crumbs[0]?.path === '' ? crumbs.slice(1) : crumbs;
+    // 路径段：第一段是「根」（工作区名 或 根目录）时由上面那行表达，剔除后再从下一层起算。
+    const head = crumbs[0];
+    const segments = head !== undefined && (head.path === '' || head.path === '/') ? crumbs.slice(1) : crumbs;
     if (rootName !== '' && workspaces.includes(rootName)) {
         // 当前工作区排第一，其下路径紧跟，然后是其他工作区（保持原相对顺序）。
         out.push(wsEntry(rootName, true));
@@ -101,11 +116,6 @@ export function FileBrowser(props) {
     ensureComponentStyles('explorer', EXPLORER_CSS);
     const tt = props.translate ?? t;
     const picker = props.picker === true;
-    // 根缓存：调用方可注入（多实例/清理策略归调用方）；不传则内部自建、随组件废弃。
-    const cacheRef = useRef(null);
-    if (cacheRef.current === null)
-        cacheRef.current = props.rootCache ?? createRootCache();
-    const rootCache = props.rootCache ?? cacheRef.current;
     // mode：加载/目录树/文件预览/列举错误。viewing 非空 ⇒ 在 dir 树内预览文件。
     const [mode, setMode] = useState('loading');
     const [dir, setDir] = useState('');
@@ -125,8 +135,6 @@ export function FileBrowser(props) {
     // 内联展开：openDirs = 已展开目录路径集合；childCache = 各展开目录拉到的子项。
     const [openDirs, setOpenDirs] = useState(new Set());
     const [childCache, setChildCache] = useState({});
-    // 工作区根补学完成信号（缓存非响应式，学成后 bump 触发面包屑重算）。
-    const [rootNonce, setRootNonce] = useState(0);
     // 当前目录在会话工作区之外（官方 list 限工作区内，越界即报 outside-workspace）。
     // 依据 = list 的**真实错误码**，不靠缓存猜（根学不出时会误判成"在区内"）。
     const [outside, setOutside] = useState(false);
@@ -138,10 +146,6 @@ export function FileBrowser(props) {
     if (listGateRef.current === null)
         listGateRef.current = createRequestGate();
     const listGate = listGateRef.current;
-    const rootGateRef = useRef(null);
-    if (rootGateRef.current === null)
-        rootGateRef.current = createRequestGate();
-    const rootGate = rootGateRef.current;
     const childAbortsRef = useRef(new Map());
     const abortChildren = useCallback(() => {
         for (const controller of childAbortsRef.current.values())
@@ -155,18 +159,34 @@ export function FileBrowser(props) {
         dirRef.current = dir;
         listingRef.current = listing;
     }, [dir, listing]);
-    // 路径 → 工作区匹配：props.path 是绝对路径时，找出它所属的工作区（最长前缀），
-    // list / 学根 / 相对化**全部**换用该工作区的会话与根——官方 list 按 sessionId 解析工作区根，
-    // 只换 list 的 sessionId 不换学根的键，面包屑会露出工作区之外的层级（2026-10-22 真机：
-    // 匹配生效但 rootCache 仍按 props.sessionId 学根 ⇒ 相对化失败 ⇒ 显示 `C.x > workspace > …`）。
-    // 匹配不到 ⇒ 整体回落 props.sessionId（旧行为）。
+    // 路径 → 工作区匹配：props.path 是绝对路径时按最长前缀找出所属工作区，面包屑根名与
+    // 相对化就用它（路径本来就在 FS 面里，不需要再「反推工作区根」）。
+    // 匹配不到 ⇒ 回落 props.rootName（调用方给的显示名）。
     // 工作区清单来源（优先级从高到低）：① props.workspaceAnchors（调用方显式给，可覆盖）；
     // ② 宿主 workspaces 快照（connectHost 注入的 workspaceList，官方 WorkspaceView 镜像）。
-    // 快照异步到达时会重算 + 重跑初始 effect（listSessionId 在其依赖里）⇒ 自愈，无感。
+    // 快照异步到达时会重算 + 重跑初始 effect（rootBase 在其依赖里）⇒ 自愈，无感。
     const hostWorkspaces = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot);
     const anchors = props.workspaceAnchors ?? hostWorkspaces;
-    const anchorMatch = useMemo(() => workspaceAnchorForPath(props.path, anchors), [props.path, anchors]);
-    const listSessionId = anchorMatch?.sessionId ?? props.sessionId;
+    const anchorMatch = useMemo(() => workspaceOfPath(props.path, anchors), [props.path, anchors]);
+    /** 相对路径的基准目录（工作区根）：匹配出的工作区 > 调用方给的 > 无（只认绝对路径）。 */
+    const rootBase = anchorMatch?.path ?? props.rootPath ?? anchors.find((item) => item.path !== undefined)?.path;
+    /** 任意入参 → 绝对路径（FS 面只认绝对路径）。 */
+    const absOf = useCallback((p) => {
+        if (isAbsoluteish(p))
+            return normalizePath(p);
+        // '' = 「根」：有工作区基准就是该工作区根，没有就是文件系统根（`/`；Windows 上是当前盘根）。
+        if (rootBase === undefined || rootBase === '')
+            return p === '' ? FS_ROOT : p;
+        return p === '' ? normalizePath(rootBase) : normalizePath(`${rootBase}/${p.replace(/^\/+/, '')}`);
+    }, [rootBase]);
+    /** 面板回传（绝对路径 + 工作区归属）。 */
+    const toPicked = useCallback((p, isDir) => {
+        const abs = absOf(p);
+        const owner = workspaceOfPath(abs, anchors);
+        return owner === null
+            ? { path: abs, isDir }
+            : { path: abs, isDir, workspaceRel: relativizeToDir(abs, owner.path ?? null), workspace: owner.title };
+    }, [absOf, anchors]);
     /** 记一次 list 结果的"是否越界"（outside-workspace / not-found 均视为不可浏览）。 */
     const noteOutside = useCallback((parsed) => {
         if (parsed === null || parsed === undefined)
@@ -183,7 +203,8 @@ export function FileBrowser(props) {
     const fetchDir = useCallback((targetDir) => {
         const token = listGate.begin();
         abortChildren();
-        setDir(targetDir);
+        const absTarget = absOf(targetDir);
+        setDir(absTarget);
         setViewing(null);
         setListErr(null);
         setMenuOpen(false);
@@ -191,8 +212,8 @@ export function FileBrowser(props) {
         // 切换顶层目录：清空内联展开态（展开树只属于当前这一层）。
         setOpenDirs(new Set());
         setChildCache({});
-        props.workspaceFiles
-            .list(listSessionId, listPathOf(targetDir), token.signal)
+        props.files
+            .list(absTarget, token.signal)
             .then((result) => {
             if (!token.current())
                 return;
@@ -218,7 +239,7 @@ export function FileBrowser(props) {
             setListErr(errView(error));
             setMode('error');
         });
-    }, [abortChildren, listGate, listSessionId, noteOutside, props.workspaceFiles]);
+    }, [abortChildren, absOf, listGate, noteOutside, props.files]);
     /** 进入某目录；点到当前目录本身 = 重列本层（刷新）。 */
     const loadDir = useCallback((targetDir) => {
         if (targetDir === dir) {
@@ -241,7 +262,7 @@ export function FileBrowser(props) {
         const name = baseNameOfPath(props.path);
         const knownFile = listingRef.current?.some((entry) => entry.name === name && entry.type === 'file') === true;
         if (props.path !== '' && dirRef.current !== '' && parent === dirRef.current && knownFile) {
-            setViewing(props.path);
+            setViewing(absOf(props.path));
             setMode('file');
             setSourceView(false);
             // 同路径再点一次也要重读内容（对齐旧版「每次打开都重读」；不重挂只换 key）。
@@ -251,7 +272,6 @@ export function FileBrowser(props) {
             return;
         }
         const token = listGate.begin();
-        const rootToken = rootGate.begin();
         abortChildren();
         setMode('loading');
         setListErr(null);
@@ -261,94 +281,28 @@ export function FileBrowser(props) {
         setMenuOpen(false);
         setOpenDirs(new Set());
         setChildCache({});
-        /** 补学工作区根（面包屑根名显示 + picker 相对化要用）：列目录 → 有文件就 stat 反推，没有就走有界 BFS。 */
-        const ensureRootLearned = (currentDir) => {
-            if (rootCache.get(listSessionId) !== undefined)
-                return;
-            void (async () => {
-                try {
-                    const parsed = listingOf(await props.workspaceFiles.list(listSessionId, listPathOf(currentDir), rootToken.signal));
-                    if (!rootToken.current() || parsed === null || isFailed(parsed))
-                        return;
-                    const stat = props.workspaceFiles.stat;
-                    if (stat === undefined)
-                        return;
-                    const rel = parsed.path;
-                    const file = parsed.entries.find((entry) => entry.type === 'file');
-                    if (file !== undefined) {
-                        const sub = rel === '' ? file.name : `${rel}/${file.name}`;
-                        const abs = (await stat(listSessionId, sub, rootToken.signal).catch(() => null));
-                        if (!rootToken.current())
-                            return;
-                        const absPath = typeof abs?.absolutePath === 'string' ? abs.absolutePath : null;
-                        if (absPath !== null && learnRoot(rootCache, listSessionId, sub, absPath) !== null) {
-                            setRootNonce((n) => n + 1);
-                            return;
-                        }
-                    }
-                    const found = await findAnyFileAbs(props.workspaceFiles, listSessionId, rel, rootToken.signal);
-                    if (!rootToken.current())
-                        return;
-                    if (found !== null && learnRoot(rootCache, listSessionId, found.relativePath, found.absolutePath) !== null) {
-                        setRootNonce((n) => n + 1);
-                    }
-                }
-                catch {
-                    /* 学不出就维持退化显示 */
-                }
-            })();
-        };
-        props.workspaceFiles
-            .list(listSessionId, listPathOf(props.path), token.signal)
-            .then(async (result) => {
+        const entry = absOf(props.path);
+        props.files
+            .list(entry, token.signal)
+            .then((result) => {
             if (!token.current())
                 return;
             const parsed = listingOf(result);
             if (!isFailed(parsed) && parsed !== null) {
                 setOutside(false);
-                // 入口可能是工作区相对名 ⇒ 用目录里任一文件子项的 stat 反推绝对路径；
-                // 解析不出（空目录/只有子目录/stat 缺失）就退回入参，不阻塞浏览。
-                const absDir = await absolutizeDir(rootCache, props.workspaceFiles, listSessionId, props.path, parsed.path, parsed.entries, token.signal);
-                if (!token.current())
-                    return;
-                setDir(absDir);
+                setDir(entry);
                 setListing(parsed.entries);
                 setTruncated(parsed.truncated);
                 setMode('dir');
-                ensureRootLearned(absDir);
                 return;
             }
             // 不是目录 ⇒ 当作文件预览，dir 取父目录，尽量把父树也列出来。
-            let parentDir = dirnameOf(props.path);
-            if (!isAbsoluteish(props.path)) {
-                const stat = props.workspaceFiles.stat;
-                if (stat !== undefined) {
-                    try {
-                        const res = await stat(listSessionId, props.path, token.signal);
-                        if (!token.current())
-                            return;
-                        const abs = typeof res.absolutePath === 'string'
-                            ? res.absolutePath
-                            : null;
-                        if (abs !== null) {
-                            parentDir = dirnameOf(abs);
-                            // 记住工作区根 ⇒ 之后同会话里相对名也能解析
-                            learnRoot(rootCache, listSessionId, props.path, abs);
-                        }
-                    }
-                    catch {
-                        /* 解析不出就用入参父目录 */
-                    }
-                }
-            }
-            if (!token.current())
-                return;
+            const parentDir = dirnameOf(entry);
             setDir(parentDir);
-            setViewing(props.path);
+            setViewing(entry);
             setMode('file');
-            ensureRootLearned(parentDir);
-            props.workspaceFiles
-                .list(listSessionId, listPathOf(parentDir), token.signal)
+            props.files
+                .list(parentDir, token.signal)
                 .then((pres) => {
                 if (!token.current())
                     return;
@@ -367,21 +321,28 @@ export function FileBrowser(props) {
             if (!token.current() || isAborted(token.signal, error))
                 return;
             // 传输层失败：仍尝试按文件预览（预览体内部会给出错误态）。
-            const parentDir = dirnameOf(props.path);
-            setDir(parentDir);
-            setViewing(props.path);
+            setDir(dirnameOf(entry));
+            setViewing(entry);
             setMode('file');
-            ensureRootLearned(parentDir);
         });
         return () => {
             listGate.abort();
-            rootGate.abort();
         };
         // ⚠️ 这里**不** abort 内联展开的子请求：同目录换文件时它们仍然有效（树也保留着）。
         // 子请求只在「换顶层目录」（fetchDir）与卸载时取消。
-    }, [abortChildren, listGate, listSessionId, noteOutside, props.workspaceFiles, props.path, revision, rootCache, rootGate]);
+    }, [abortChildren, absOf, listGate, noteOutside, props.files, props.path, revision]);
     // 卸载时把内联展开的在途请求一起取消（依赖为空 ⇒ 只有卸载才跑清理）。
     useEffect(() => () => abortChildren(), [abortChildren]);
+    /** ▾ 里点别的工作区：调用方没接管就直接列该工作区根（不需要会话）。 */
+    const switchWorkspace = useCallback((name) => {
+        if (props.onSelectWorkspace !== undefined) {
+            props.onSelectWorkspace(name);
+            return;
+        }
+        const target = anchors.find((item) => item.title === name);
+        if (target?.path !== undefined)
+            loadDir(target.path);
+    }, [anchors, loadDir, props.onSelectWorkspace]);
     // 面包屑溢出测量：隐藏测量条渲染与可见态完全相同的 crumb 按钮（含 padding/max-width），
     // 使溢出判定与真实排版一致——不超长时必定还原完整路径。ResizeObserver 同时覆盖
     // dock 宽度变化 / 初次布局。
@@ -400,7 +361,7 @@ export function FileBrowser(props) {
         // 依赖要带上「根反推完成」「越界态变化」：这两样会让面包屑从超长绝对路径相对化成
         // 短路径，但若不重算，crumbsOverflow 会卡在首帧的 true（只显示末段），直到下次导航才复原
         // （2026-10-28 真机：打开工作区内的绝对路径，面包屑只剩末段，点一下目录才恢复）。
-    }, [dir, viewing, mode, listing, rootNonce, outside]);
+    }, [dir, viewing, mode, listing, outside]);
     const reload = useCallback(() => {
         if (viewing !== null) {
             setReloadNonce((n) => n + 1);
@@ -413,7 +374,7 @@ export function FileBrowser(props) {
         const target = viewing ?? dir;
         if (target === '')
             return;
-        const rel = relativizeToRoot(rootCache, listSessionId, target);
+        const rel = relativizeToDir(target, rootBase ?? null);
         writeClipboard(rel)
             .then((ok) => {
             if (ok) {
@@ -424,7 +385,7 @@ export function FileBrowser(props) {
             .catch(() => {
             /* 剪贴板不可用（非安全上下文等）：静默，不弹错 */
         });
-    }, [viewing, dir, rootCache, listSessionId]);
+    }, [viewing, dir, rootBase]);
     /** 内联展开/收起某目录（点 ▸）：只切展开态，不导航；首次展开才拉子项。 */
     const toggleDir = useCallback((path) => {
         setOpenDirs((prev) => {
@@ -440,8 +401,8 @@ export function FileBrowser(props) {
             const controller = new AbortController();
             childAbortsRef.current.set(path, controller);
             setChildCache((prev) => ({ ...prev, [path]: { status: 'loading' } }));
-            props.workspaceFiles
-                .list(listSessionId, listPathOf(path), controller.signal)
+            props.files
+                .list(absOf(path), controller.signal)
                 .then((result) => {
                 if (controller.signal.aborted)
                     return;
@@ -463,7 +424,7 @@ export function FileBrowser(props) {
                     childAbortsRef.current.delete(path);
             });
         }
-    }, [childCache, props.workspaceFiles, listSessionId]);
+    }, [absOf, childCache, props.files]);
     // 过滤点名了扩展名 ⇒ 要的是**文件**：目录只作导航（点行就地展开），不给「选择」、也回传不了 isDir。
     // （旧实现「目录永远保留且永远带选择钮」，于是「仅 JS/MD」下出现「文件夹旁边有选择、
     //   MD 文件旁边反而没有」，选中还回传一个文件夹——与过滤语义直接打架。）
@@ -480,8 +441,8 @@ export function FileBrowser(props) {
         if (!isDir) {
             const pick = () => {
                 if (picker && props.onPick !== undefined) {
-                    // 回传**工作区相对**路径（源实现真机 bug：绝对路径被宿主 zod 拒）。
-                    props.onPick(relativizeToRoot(rootCache, listSessionId, childPath), false);
+                    // 回传绝对路径 + 工作区归属（用户 2026-11-03 定 `PickedPath`）。
+                    props.onPick(toPicked(childPath, false));
                     return;
                 }
                 // 逐层展开后选中文件：面包屑要跟随到该文件所在目录。
@@ -532,7 +493,7 @@ export function FileBrowser(props) {
             if (picker) {
                 // 扩展名过滤下这里不该被触发（目录行根本不渲染这枚钮）；兜住是为了语义不被绕过。
                 if (!extsOnly && props.onPick !== undefined)
-                    props.onPick(relativizeToRoot(rootCache, listSessionId, childPath), true);
+                    props.onPick(toPicked(childPath, true));
                 return;
             }
             loadDir(childPath);
@@ -588,21 +549,15 @@ export function FileBrowser(props) {
                     ? h('div', { className: 'dshpc-fb__row-err' }, tt(cached.error.key, cached.error.params))
                     : h(Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? h('div', { className: 'dshpc-fb__row-note' }, tt('explorerTruncated')) : null))
             : null);
-    }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, listSessionId, rootCache, dir, loadDir, tt]);
-    // 面包屑 = 工作区根 + 其下相对层级。根名优先级：**匹配出的工作区名**（当前路径所属，
-    // 不写死）> 调用方 rootName > 缓存根末段。学根/相对化一律按 listSessionId——
-    // 用调用方原始 sessionId 学根会学出别的根 ⇒ 相对化失败 ⇒ 露出工作区外层级（真机 2026-10-22）。
-    const rootAbs = rootCache.get(listSessionId);
-    const rootLabel = anchorMatch?.title ?? props.rootName ?? (rootAbs !== undefined ? baseNameOfPath(rootAbs.replace(/\/+$/, '')) : '');
-    const relDir = relativizeToRoot(rootCache, listSessionId, dir);
-    // 根还没反推出来时 dir 仍是整条绝对路径：逐段铺开会露出「root/.local/share/…」十几段工作区之外的
-    // 层级（点不动、也没信息量），根一学成又整条缩回 ⇒ 中间闪一下。这里先只给「根名 + 当前层」，
-    // 根学成后由 rootNonce 触发重算，自动补全成完整层级（2026-10-28 真机：绝对路径打开时的闪段）。
-    const rootPending = rootAbs === undefined && dir !== '' && isAbsoluteish(dir);
-    const crumbs = [
-        ...(rootLabel !== '' ? [{ label: rootLabel, path: '' }] : []),
-        ...(rootPending ? [{ label: baseNameOfPath(dir), path: dir }] : crumbsOfDir(relDir)),
-    ];
+    }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, toPicked, dir, loadDir, tt]);
+    // 面包屑（用户 2026-11-03 定）：**按当前目录**去比所有工作区。
+    // 命中 ⇒ 第一段是工作区名，其下按相对层级；没命中 ⇒ 第一段是「根目录」，其下是从 `/` 起的完整链。
+    // 判据只看 `dir`（不比 props.path）：浏览途中切进别的工作区也要立刻跟着切根。
+    const owner = workspaceOfPath(dir, anchors);
+    const rootLabel = owner?.title ?? '';
+    const crumbs = owner === null
+        ? [{ label: tt('explorerRootDir'), path: FS_ROOT }, ...crumbsOfDir(dir)]
+        : [{ label: rootLabel, path: '' }, ...crumbsOfDir(relativizeToDir(dir, owner.path ?? null))];
     // md / html 都出「渲染 ⇄ 源码」切换（默认渲染）。
     const viewingIsMd = viewing !== null && /\.(md|markdown)$/i.test(viewing);
     const viewingIsHtml = viewing !== null && /\.(html|htm)$/i.test(viewing);
@@ -611,8 +566,10 @@ export function FileBrowser(props) {
         workspaces: props.workspaces,
         rootName: rootLabel,
         rootFallbackLabel: tt('explorerRootName'),
+        rootEntryLabel: tt('explorerRootDir'),
+        onLoadRoot: () => loadDir(FS_ROOT),
         crumbs,
-        onPickWorkspace: props.onSelectWorkspace,
+        onPickWorkspace: switchWorkspace,
         onLoadDir: loadDir,
     });
     /** 一段面包屑（核心 ghost 钮：无底无边；度量条与可见态必须逐字同构）。 */
@@ -711,9 +668,8 @@ export function FileBrowser(props) {
     if (viewing !== null) {
         body = h(FilePreview, {
             key: `${viewing}:${reloadNonce}`,
-            workspaceFiles: props.workspaceFiles,
+            files: props.files,
             officeToPdf: props.officeToPdf ?? null,
-            sessionId: listSessionId,
             path: viewing,
             sourceView,
             translate: tt,

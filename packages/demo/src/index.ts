@@ -15,8 +15,8 @@
  *     设置页里既不可见也不可写；
  *   · 写入走 profile patch 文档，**宿主负责持久化**；插件不自己落盘、不碰 localStorage。
  */
-import { serveModelCatalog, type HostContextLike } from '../../../dist/host/index.js'
-import { MODELS_PATH } from './paths.js'
+import { serveFsRoute, serveModelCatalog, type HostContextLike } from '../../../dist/host/index.js'
+import { FS_PATH, MODELS_PATH } from './paths.js'
 
 export const name = 'dsh-plugin-core-demo'
 
@@ -58,4 +58,6 @@ export const Config =
 export function apply(ctx: HostContextLike): void {
   // 模型目录（供应商 → 模型）只有宿主侧 llm.listModels 拿得到，挂成只读路由给 client fetch。
   serveModelCatalog(ctx, { path: MODELS_PATH })
+  // 只读文件路由：官方 workspaceFiles.list 出不了工作区，单根文件树要自己开一条（见 docs）。
+  serveFsRoute(ctx, { path: FS_PATH })
 }

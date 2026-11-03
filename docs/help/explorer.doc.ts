@@ -1,20 +1,25 @@
 // explorer 子包的使用帮助 —— 真源（TS 数据模块）。内容全在此一处，demo 与 md 都从这份派生。
 import type { DocTopic } from '../design/doc-format.js'
 
-const explorerUsage = `import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+const explorerUsage = `import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+import { serveFsRoute } from 'dsh-plugin-core/host'
+import { FS_PATH } from './paths'   // 你自己的常量：宿主与 client 必须用同一个
 
-// 只在 client apply 里接线一次（接工作区快照 + 读文件服务），之后不用再碰服务
+// ── 宿主半边（apply）：挂一条只读文件路由（不限工作区；读文件/列目录都在它上面） ──
+serveFsRoute(ctx, { path: FS_PATH })
+
+// ── client 半边（apply）：接一次（connectHost 照旧负责工作区快照） ──
 connectHost(ctx)
+connectFs({ path: FS_PATH })
 
 // 右侧分栏预览（占宽度、挤窄主区）：一个容器 + 一个路径就够
-openFilePreview({ mount, path: '/abs/ledger' })   // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览
-openFilePreview({ mount, path: 'docs/README.md' }) // 工作区相对路径也行
+openFilePreview({ mount, path: '/abs/ledger' })    // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览
+openFilePreview({ mount, path: 'docs/README.md' }) // 工作区相对路径也行（相对谁见下）
+openFilePreview({ mount })                         // 不给路径 ⇒ 根节点（工作区清单 + 盘符）
 
-// 覆盖项：指定工作区快照 / 指定会话 / Office 转 PDF / 与别处共用的根缓存
-openFilePreview({ mount, path, workspaceAnchors, sessionId, officeToPdf, rootCache })
-
-// 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）
-const r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })`
+// 锚定弹窗选文件（Promise 返回**绝对路径**，不自己挂 dock）
+const r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })
+const dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // 只选文件夹`
 
 const doc: DocTopic = {
   title: { zh: 'explorer —— 工作区浏览', en: 'explorer — Workspace browsing' },
@@ -25,20 +30,20 @@ const doc: DocTopic = {
       heading: { zh: '概览', en: 'Overview' },
       prose: [
         {
-          zh: '提供工作区文件浏览与选择，数据来自宿主提供的工作区文件快照。',
-          en: 'Workspace file browsing and picking, driven by the host-provided workspace file snapshot.',
+          zh: '提供文件浏览与选择；数据走宿主侧只读 FS 路由，**不限工作区**（工作区之外也能浏览）。界面与原版一致。',
+          en: 'File browsing and picking **not limited to workspaces**: one root tree (workspace nodes + the real root), served by a host-side read-only FS route.',
         },
         {
-          zh: '**接线归核心**：client `apply` 里调一次 `connectHost(ctx)`，读文件服务、会话 id、工作区快照都由核心自己解，调用时只给容器和路径。',
-          en: '**Wiring belongs to core**: call `connectHost(ctx)` once in the client apply; the file service, session id and workspace snapshot are resolved by core — you only pass a container and a path.',
+          zh: '**接线归核心，但要两条**：宿主 `apply` 调 `serveFsRoute({ path })`，client `apply` 用同一个常量调 `connectFs({ path })`（`connectHost(ctx)` 照旧负责工作区快照）。浏览**不需要会话**。',
+          en: '**Core does the wiring, but with two calls**: `serveFsRoute({ path })` on the host side and `connectFs({ path })` with the same constant on the client side (`connectHost(ctx)` still covers the workspace snapshot). Browsing needs **no session**.',
         },
         {
           zh: '落点只给一个元素：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原），不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。',
           en: 'Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning — that is an overlay, not a split.',
         },
         {
-          zh: '绝对路径按最长前缀匹配所属工作区；落在任何工作区外时，文件照样能预览（官方 read 允许工作区外文件），只有目录树退化成只读路径栏。',
-          en: 'Absolute paths are matched to their workspace by longest prefix. Outside every workspace the file still previews (official read allows it); only the directory tree degrades to a read-only path bar.',
+          zh: '面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**新增一行「根目录」置顶**（其余仍列各工作区）；点其他工作区 = 直接列该区根目录（不需要会话）。',
+          en: 'Inside a workspace the breadcrumb starts at its name and the ▾ menu nests it there; outside it starts at the real root (`/` or a drive). A workspace root still appears in the real path, tagged “Workspace”.',
         },
       ],
     },
@@ -85,28 +90,22 @@ const doc: DocTopic = {
               },
             },
             {
-              name: 'opts.workspaceFiles',
-              type: 'WorkspaceFilesFace',
-              def: '—',
-              desc: {
-                zh: '读文件服务。**一般不用传**：`connectHost(ctx)` 接线后核心自己持有；传了以传入为准。传 `content` 时可省',
-                en: 'File service. **Usually unnecessary**: core holds it after `connectHost(ctx)`; when passed it wins. Optional when passing `content`',
-              },
-            },
-            {
               name: 'opts.sessionId',
               type: 'string',
               def: '—',
               desc: {
-                zh: '该工作区的真实会话 id。**一般不用传**：按路径匹配所属工作区，匹配不出就取最近有会话的工作区；传 `content` 时可省',
-                en: 'A real session id. **Usually unnecessary**: resolved from the path’s workspace, else the most recently updated workspace with a session; optional when passing `content`',
+                zh: '**只在两种情况下需要**：① 相对路径的基准工作区；② Office 预览（转 PDF 要一条有效会话，缺省由核心取最近有会话的工作区）',
+                en: 'Needed in exactly two cases: (1) the base workspace for a relative path; (2) Office preview (conversion needs one valid session; core falls back to the most recent workspace with one)',
               },
             },
             {
               name: 'opts.path',
               type: 'string',
               def: '—',
-              desc: { zh: '工作区相对路径；绝对路径会自动按最长前缀匹配所属工作区。与 `content` 二选一', en: 'Workspace-relative path; absolute paths are matched to their workspace by longest prefix. Mutually exclusive with `content`' },
+              desc: {
+                zh: '绝对路径或工作区相对路径（相对路径要有可解析的基准，否则返回 `null` 并 warn）；不传 ⇒ 根节点。与 `content` 二选一',
+                en: 'Absolute or workspace-relative (a relative one needs a resolvable base, else `null` + a warning); omitted ⇒ the root node. Mutually exclusive with `content`',
+              },
             },
             {
               name: 'opts.content',
@@ -128,9 +127,12 @@ const doc: DocTopic = {
             },
             {
               name: 'pickWorkspaceFile(opts)',
-              type: 'PickWorkspaceFileOptions => Promise<PickedFile>',
+              type: 'PickWorkspaceFileOptions => Promise<PickedPath | null>',
               def: '—',
-              desc: { zh: '锚定按钮弹出模态选文件，解析出 `{ path, isDir }`', en: 'Anchored modal picker that resolves `{ path, isDir }`' },
+              desc: {
+                zh: '锚定按钮弹出模态选文件，解析出 `{ path, isDir, workspaceRel?, workspace? }`；`path` 是**绝对路径**',
+                en: 'Anchored modal picker resolving `{ path, isDir, workspaceRel?, workspace? }`; `path` is **absolute**',
+              },
             },
             {
               name: 'opts.anchor',
@@ -143,7 +145,10 @@ const doc: DocTopic = {
               name: 'opts.filter',
               type: 'PickFilter',
               def: '—',
-              desc: { zh: '按扩展名过滤 `{ exts: [\'md\'] }`；`dirs: true` 则只允许选文件夹', en: 'Filter by extension `{ exts: [\'md\'] }`; `dirs: true` restricts picking to folders' },
+              desc: {
+                zh: '`exts` 只要这些扩展名（目录仍可展开导航）；`dirs: true` 只允许选文件夹（文件不渲染）',
+                en: '`exts` limits files (folders still expand); `dirs: true` picks folders only (files hidden, plus a “Select this folder” action in the crumb bar)',
+              },
             },
           ],
         },

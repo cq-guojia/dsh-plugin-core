@@ -93,16 +93,21 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
   - 模型目录：client 侧 remote **拿不到**每个 provider 的模型 ⇒ 插件宿主侧
     `llm.listModels()` 现查、`serveModelCatalog()`（`src/host/index.ts`，`./host` 子路径）挂成只读路由，
     client 侧 `connectHost(ctx, { modelsPath })` fetch。两侧共用同一个 path 常量。
-  - 读文件：client 侧 `ctx.inject(['remote', 'remote.workspaceFiles'])`，封装在
-    `src/ui/host-data.ts` 的 `getWorkspaceFiles()`；会话 id 由「路径 → 工作区 → 该区会话」自己解。
+  - 读文件（2026-11-03 换数据面）：**不再走 `remote.workspaceFiles`**（它的 `list` 被
+    `contains(workspaceRoot, target)` 卡死，出不了工作区）。改走插件自己的只读路由：
+    宿主 `serveFsRoute({ path })`（`src/host/fs-route.ts`，`./host` 子路径）+ client
+    `connectFs({ path })`（`src/explorer/fs-face.ts`，`createHttpFsFace` 内部 fetch）。
+    **浏览不吃会话**：路径一律绝对；相对路径只在入口按 `sessionId` → 工作区根解析一次。
+    会话还剩一处用途 —— Office 预览的授权探针（懒取任意一条，见
+    `docs/design/external/dsh-host.md` §13.1）。
   任一通路缺席只影响那一块：选择器渲染空态 / 降级提示，`openFilePreview` 直接不打开并留痕。
 
 | 组件 | 数据从哪来 |
 |---|---|
 | `Picker` | 选项数据（props） |
 | `ModelPicker` / `WorkspacePicker` | 自取（connectHost 接线；`groups` 参数仅作覆盖） |
-| `openFilePreview` / `pickWorkspaceFile` | 自取（connectHost 接线；`workspaceFiles` / `sessionId` 仅作覆盖） |
-| `FileBrowser` | `WorkspaceFilesFace`（props，纯零件） |
+| `openFilePreview` / `pickWorkspaceFile` | 自取（connectHost + connectFs 接线；`sessionId` 仅作相对路径基准 / Office 覆盖） |
+| `FileBrowser` | `FsFace`（props，纯零件；绝对路径、只读） |
 | `SessionPreview` | `SessionSource`（props） |
 
 不传整个 `ctx`：ctx 是宿主给的整个大对象，传进来就把本包和宿主版本焊死；只传需要的那一小块，

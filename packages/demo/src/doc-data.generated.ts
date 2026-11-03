@@ -104,20 +104,20 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "提供工作区文件浏览与选择，数据来自宿主提供的工作区文件快照。",
-        "en": "Workspace file browsing and picking, driven by the host-provided workspace file snapshot."
+        "zh": "提供文件浏览与选择；数据走宿主侧只读 FS 路由，**不限工作区**（工作区之外也能浏览）。界面与原版一致。",
+        "en": "File browsing and picking **not limited to workspaces**: one root tree (workspace nodes + the real root), served by a host-side read-only FS route."
       },
       {
-        "zh": "**接线归核心**：client `apply` 里调一次 `connectHost(ctx)`，读文件服务、会话 id、工作区快照都由核心自己解，调用时只给容器和路径。",
-        "en": "**Wiring belongs to core**: call `connectHost(ctx)` once in the client apply; the file service, session id and workspace snapshot are resolved by core — you only pass a container and a path."
+        "zh": "**接线归核心，但要两条**：宿主 `apply` 调 `serveFsRoute({ path })`，client `apply` 用同一个常量调 `connectFs({ path })`（`connectHost(ctx)` 照旧负责工作区快照）。浏览**不需要会话**。",
+        "en": "**Core does the wiring, but with two calls**: `serveFsRoute({ path })` on the host side and `connectFs({ path })` with the same constant on the client side (`connectHost(ctx)` still covers the workspace snapshot). Browsing needs **no session**."
       },
       {
         "zh": "落点只给一个元素：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原），不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。",
         "en": "Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning — that is an overlay, not a split."
       },
       {
-        "zh": "绝对路径按最长前缀匹配所属工作区；落在任何工作区外时，文件照样能预览（官方 read 允许工作区外文件），只有目录树退化成只读路径栏。",
-        "en": "Absolute paths are matched to their workspace by longest prefix. Outside every workspace the file still previews (official read allows it); only the directory tree degrades to a read-only path bar."
+        "zh": "面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**新增一行「根目录」置顶**（其余仍列各工作区）；点其他工作区 = 直接列该区根目录（不需要会话）。",
+        "en": "Inside a workspace the breadcrumb starts at its name and the ▾ menu nests it there; outside it starts at the real root (`/` or a drive). A workspace root still appears in the real path, tagged “Workspace”."
       }
     ]
   },
@@ -151,7 +151,7 @@ export const docData = {
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// 只在 client apply 里接线一次（接工作区快照 + 读文件服务），之后不用再碰服务\nconnectHost(ctx)\n\n// 右侧分栏预览（占宽度、挤窄主区）：一个容器 + 一个路径就够\nopenFilePreview({ mount, path: '/abs/ledger' })   // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览\nopenFilePreview({ mount, path: 'docs/README.md' }) // 工作区相对路径也行\n\n// 覆盖项：指定工作区快照 / 指定会话 / Office 转 PDF / 与别处共用的根缓存\nopenFilePreview({ mount, path, workspaceAnchors, sessionId, officeToPdf, rootCache })\n\n// 锚定弹窗选文件（Promise 返回路径，不自己挂 dock）\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // 你自己的常量：宿主与 client 必须用同一个\n\n// ── 宿主半边（apply）：挂一条只读文件路由（不限工作区；读文件/列目录都在它上面） ──\nserveFsRoute(ctx, { path: FS_PATH })\n\n// ── client 半边（apply）：接一次（connectHost 照旧负责工作区快照） ──\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// 右侧分栏预览（占宽度、挤窄主区）：一个容器 + 一个路径就够\nopenFilePreview({ mount, path: '/abs/ledger' })    // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览\nopenFilePreview({ mount, path: 'docs/README.md' }) // 工作区相对路径也行（相对谁见下）\nopenFilePreview({ mount })                         // 不给路径 ⇒ 根节点（工作区清单 + 盘符）\n\n// 锚定弹窗选文件（Promise 返回**绝对路径**，不自己挂 dock）\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // 只选文件夹"
       }
     ]
   },
@@ -185,21 +185,12 @@ export const docData = {
             }
           },
           {
-            "name": "opts.workspaceFiles",
-            "type": "WorkspaceFilesFace",
-            "def": "—",
-            "desc": {
-              "zh": "读文件服务。**一般不用传**：`connectHost(ctx)` 接线后核心自己持有；传了以传入为准。传 `content` 时可省",
-              "en": "File service. **Usually unnecessary**: core holds it after `connectHost(ctx)`; when passed it wins. Optional when passing `content`"
-            }
-          },
-          {
             "name": "opts.sessionId",
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "该工作区的真实会话 id。**一般不用传**：按路径匹配所属工作区，匹配不出就取最近有会话的工作区；传 `content` 时可省",
-              "en": "A real session id. **Usually unnecessary**: resolved from the path’s workspace, else the most recently updated workspace with a session; optional when passing `content`"
+              "zh": "**只在两种情况下需要**：① 相对路径的基准工作区；② Office 预览（转 PDF 要一条有效会话，缺省由核心取最近有会话的工作区）",
+              "en": "Needed in exactly two cases: (1) the base workspace for a relative path; (2) Office preview (conversion needs one valid session; core falls back to the most recent workspace with one)"
             }
           },
           {
@@ -207,8 +198,8 @@ export const docData = {
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "工作区相对路径；绝对路径会自动按最长前缀匹配所属工作区。与 `content` 二选一",
-              "en": "Workspace-relative path; absolute paths are matched to their workspace by longest prefix. Mutually exclusive with `content`"
+              "zh": "绝对路径或工作区相对路径（相对路径要有可解析的基准，否则返回 `null` 并 warn）；不传 ⇒ 根节点。与 `content` 二选一",
+              "en": "Absolute or workspace-relative (a relative one needs a resolvable base, else `null` + a warning); omitted ⇒ the root node. Mutually exclusive with `content`"
             }
           },
           {
@@ -240,11 +231,11 @@ export const docData = {
           },
           {
             "name": "pickWorkspaceFile(opts)",
-            "type": "PickWorkspaceFileOptions => Promise<PickedFile>",
+            "type": "PickWorkspaceFileOptions => Promise<PickedPath | null>",
             "def": "—",
             "desc": {
-              "zh": "锚定按钮弹出模态选文件，解析出 `{ path, isDir }`",
-              "en": "Anchored modal picker that resolves `{ path, isDir }`"
+              "zh": "锚定按钮弹出模态选文件，解析出 `{ path, isDir, workspaceRel?, workspace? }`；`path` 是**绝对路径**",
+              "en": "Anchored modal picker resolving `{ path, isDir, workspaceRel?, workspace? }`; `path` is **absolute**"
             }
           },
           {
@@ -262,8 +253,8 @@ export const docData = {
             "type": "PickFilter",
             "def": "—",
             "desc": {
-              "zh": "按扩展名过滤 `{ exts: ['md'] }`；`dirs: true` 则只允许选文件夹",
-              "en": "Filter by extension `{ exts: ['md'] }`; `dirs: true` restricts picking to folders"
+              "zh": "`exts` 只要这些扩展名（目录仍可展开导航）；`dirs: true` 只允许选文件夹（文件不渲染）",
+              "en": "`exts` limits files (folders still expand); `dirs: true` picks folders only (files hidden, plus a “Select this folder” action in the crumb bar)"
             }
           }
         ]
@@ -1019,8 +1010,8 @@ export const docData = {
         "en": "§3 Use helpers"
       },
       {
-        "zh": "§4 接工作区浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行。`sessionId` 必须属于该工作区。",
-        "en": "§4 Wire workspace browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row. `sessionId` must belong to that workspace."
+        "zh": "§4 接文件浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行；数据面要在宿主 `serveFsRoute` + client `connectFs` 用同一个 path 常量接上，浏览本身不需要会话。",
+        "en": "§4 Wire file browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row. Wire the data face with the same path constant on both sides (`serveFsRoute` / `connectFs`) — browsing itself needs no session."
       },
       {
         "zh": "§5 接会话预览：`openSessionView` 返回 `null` 表示该会话不可解析；拿到 view 后交给 `SessionViewModal`，关闭时记得 `dispose()`。",
@@ -1055,12 +1046,12 @@ export const docData = {
       {
         "id": "integration-use-explorer",
         "lang": "tsx",
-        "src": "import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\n\n// 从 ctx 取出这一小块（不要传整个 ctx）\nconst workspaceFiles = ctx.remote.workspaceFiles\n\n// 预览某文件：右侧分栏（挤窄 row 左边的主区，不是浮在上面）\nopenFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })\n\n// 让用户选文件：锚定按钮旁弹模态，Promise 返回 { path, isDir }（工作区相对路径）\nconst picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // 自己的常量，宿主与 client 共用\n\n// 宿主 apply：挂只读文件路由（列目录 / 读文件都在它上面，不限工作区）\nserveFsRoute(ctx, { path: FS_PATH })\n// client apply：接同一个常量（connectHost(ctx) 照旧负责工作区快照）\nconnectFs({ path: FS_PATH })\n\n// 预览某文件：右侧分栏（挤窄 row 左边的主区，不是浮在上面）；绝对 / 相对都收\nopenFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })\n\n// 让用户选：锚定按钮旁弹模态，Promise 返回 { path: 绝对路径, isDir, workspaceRel?, workspace? }\nconst picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })\nconst folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // 只选文件夹"
       },
       {
         "id": "integration-use-session",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // 关闭必须释放 retain 引用\n    onClose: () => { view.dispose(); setOpen(false) },\n    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path }),\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // 关闭必须释放 retain 引用\n    onClose: () => { view.dispose(); setOpen(false) },\n    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, path, sessionId }),\n  })\n}"
       },
       {
         "id": "integration-cleanup",

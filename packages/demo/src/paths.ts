@@ -3,3 +3,8 @@
  * ─ MODELS_PATH：宿主 `serveModelCatalog` 注册它、client `connectHost` fetch 它。
  */
 export const MODELS_PATH = '/api/dsh-plugin-core-demo/models'
+
+/**
+ * FS_PATH：宿主 `serveFsRoute` 注册它、client `connectFs` fetch 它（**同一常量，两边不许各写一份**）。
+ */
+export const FS_PATH = '/api/dsh-plugin-core-demo/fs'

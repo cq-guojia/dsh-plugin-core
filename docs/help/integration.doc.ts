@@ -26,16 +26,21 @@ const useUtils = `import { formatDateTime, relativeFuture, formatBytes } from 'd
 formatDateTime(task.runAt, { seconds: true })   // 2026-10-18 09:30:05
 relativeFuture(task.runAt, Date.now())          // 3 分钟后（未来时间用这个）
 formatBytes(file.size)                          // 12 KB`
-const useExplorer = `import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+const useExplorer = `import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+import { serveFsRoute } from 'dsh-plugin-core/host'
+import { FS_PATH } from './paths'   // 自己的常量，宿主与 client 共用
 
-// 从 ctx 取出这一小块（不要传整个 ctx）
-const workspaceFiles = ctx.remote.workspaceFiles
+// 宿主 apply：挂只读文件路由（列目录 / 读文件都在它上面，不限工作区）
+serveFsRoute(ctx, { path: FS_PATH })
+// client apply：接同一个常量（connectHost(ctx) 照旧负责工作区快照）
+connectFs({ path: FS_PATH })
 
-// 预览某文件：右侧分栏（挤窄 row 左边的主区，不是浮在上面）
-openFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path: 'docs/requirements.md' })
+// 预览某文件：右侧分栏（挤窄 row 左边的主区，不是浮在上面）；绝对 / 相对都收
+openFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })
 
-// 让用户选文件：锚定按钮旁弹模态，Promise 返回 { path, isDir }（工作区相对路径）
-const picked = await pickWorkspaceFile({ workspaceFiles, sessionId, anchor: btn, filter: { exts: ['ts'] } })`
+// 让用户选：锚定按钮旁弹模态，Promise 返回 { path: 绝对路径, isDir, workspaceRel?, workspace? }
+const picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })
+const folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // 只选文件夹`
 const useSession = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
 
 // sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）
@@ -45,7 +50,7 @@ if (view !== null) {
     sessionId, view,
     // 关闭必须释放 retain 引用
     onClose: () => { view.dispose(); setOpen(false) },
-    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, workspaceFiles, sessionId, path }),
+    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, path, sessionId }),
   })
 }`
 const cleanup = `kit.dispose()   // 撤掉 <style> 标签并清空登记域（插件卸载 / HMR）`
@@ -69,8 +74,8 @@ const doc: DocTopic = {
         { zh: '§2 用一个控件', en: '§2 Use a control' },
         { zh: '§3 用通用方法', en: '§3 Use helpers' },
         {
-          zh: '§4 接工作区浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行。`sessionId` 必须属于该工作区。',
-          en: '§4 Wire workspace browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row. `sessionId` must belong to that workspace.',
+          zh: '§4 接文件浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行；数据面要在宿主 `serveFsRoute` + client `connectFs` 用同一个 path 常量接上，浏览本身不需要会话。',
+          en: '§4 Wire file browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row. Wire the data face with the same path constant on both sides (`serveFsRoute` / `connectFs`) — browsing itself needs no session.',
         },
         {
           zh: '§5 接会话预览：`openSessionView` 返回 `null` 表示该会话不可解析；拿到 view 后交给 `SessionViewModal`，关闭时记得 `dispose()`。',

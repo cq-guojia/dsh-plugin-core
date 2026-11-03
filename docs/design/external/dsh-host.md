@@ -222,3 +222,63 @@
   透传；匹配不到 ⇒ 回落 `props.sessionId` + `crumbBarPlain` 的 hint 说破原因。
 - 来源：官方包 `lib/index.js:489-512 / 563-583 / 421 / 480`；`dsh-task-dispatch-table/src/host.ts:174-187`；
   `dsh-better-sidebar` README + `docs/plans/2026-08-29-workspace-fence-toggle-design.md` + `src/client/use-session-root.ts`。
+
+> ⚠️ 上面这条「处置（本仓）」是 2026-10-22 的做法，已被下面的 §13 取代（浏览不再吃会话）。
+
+## 13. 跨工作区浏览：官方能力边界与本仓自建只读路由（2026-11-03 解包核实）
+
+解包版本：`dsh-api-workspace-files@0.2.1-rc.5`、`dsh-office-to-pdf@0.2.1-rc.5`、`dsh-fs@0.2.1-rc.5`、
+`dsh-api-workspace-controller@0.2.1-rc.5`、`dsh-host-directory-picker@0.2.1-rc.5`、
+`dsh-client-ui-workspace@0.2.1-rc.5`。
+
+### 13.1 会话到底绑在哪一步（修正 §12 的粗判）
+
+- **只有 `list` 被栅栏卡住**：`list` 走 `inspect` + `confine`（`workspace-files/lib/index.js:495-505 / 576-583`）。
+- **`inspect` 不做 contains**：`read` / `readBytes` / `stat` 走 `locateFile → inspect`（`index.js:563-574 / 589-605`），
+  `inspect` 只 `fs.lstat(path, { cwd: workspaceRoot })`（注释原文：目录包含检查是 `list` 的事）。
+  ⇒ **相对路径按会话根解析，绝对路径任意文件都能读，与会话所属工作区无关**。
+- **`officeToPdf` 的会话只用来做授权探针**：`renderFile` 先 `files.readBytes(scope, path, {range:{0,1}})`
+  与 `files.stat(scope, path)`，真正的字节走宿主 `fs` 服务（`office-to-pdf/lib/index.js:519-560`，`this.ctx.get('fs')`）。
+  因为上一条，探针不会因「文件在工作区外」失败 ⇒ **任意一条有效会话就够，不必按路径匹配所属工作区**。
+- PDF / 图片 / 文本**不走 officeToPdf**：`.pdf` 走 `readBytes`（本仓 `preview/index.ts` → `BytesPreview`），
+  只有 doc/docx/ppt/pptx 走 `OfficePreview`。
+
+### 13.2 官方别处的目录能力：`remote.directoryPicker`（能列任意目录，但只回目录）
+
+| 事实 | 证据 |
+|---|---|
+| 宿主 Remote 服务，namespace `directoryPicker`，verb = `pick` / `list` / `createDirectory` | `api-workspace-controller/lib/types/directory-picker.d.ts:36-60`；`.js` 里 `Remote('pick'/'list'/'createDirectory')` |
+| `list(path?)` 列**任意绝对路径**（不传 = 家目录），回 `{ path, home, crumbs, entries, truncated }` | `host-directory-picker/lib/types/types.d.ts` |
+| `entries` 是 **direct child directories**（`{name, path, hidden}`）——**不含文件** | 同上，类型注释 |
+| `crumbs` 直接给祖先链 | 同上 |
+| 能力两档：`native`（桌面端弹系统框）/ `browse`（网页端只能逐层列）；不匹配的 verb 抛 `directory-picker/unavailable` | `host-directory-picker/lib/types/index.d.ts` + `controller/lib/types/directory-picker.js:130` |
+| 错误码：`directory-picker/{unavailable,unreadable,exists,create-failed}` | `controller/lib/types/directory-picker.js:140-145` |
+| 官方「添加工作区」就走它 | `dsh-client-ui-workspace/lib/client.js:5011 / 5039 / 1560-1573` |
+
+⇒ **「列任意目录」官方本来就有**（我早先「官方做不到系统根」只对 `workspaceFiles.list` 成立）；
+但**文件**它给不了，所以本仓不用它，自建一条只读路由。
+
+### 13.3 宿主 `ctx.fs` 服务（自建路由可以复用的那层）
+
+`dsh-fs/lib/types/index.d.ts:94-208`：`resolve` / `lstat` / `stat` / `listDir` / `readBytes` / `readByteRange` /
+`contains` / `fileUrl` / `processPath`。第一方插件这样用（`office-to-pdf` 的 `this.ctx.get('fs')`）。
+
+本仓**不依赖**它：第三方插件宿主半边能否 inject `fs` 未验证，且插件宿主进程本来就有磁盘权限，
+`node:fs` 只多几十行、不引入跨版本耦合。
+
+### 13.4 本仓自建路由契约（`src/host/fs-route.ts` + `src/explorer/fs-face.ts`）
+
+| 项 | 值 |
+|---|---|
+| 端点 | `GET <path>?op=list\|read\|readBytes\|roots&path=<绝对路径>&offset&limit` |
+| 只读 | 只有这 4 个 op，没有任何写/删/改入口 |
+| 鉴权 | 不加 token：宿主 HTTP 面本来就能调 `remote.workspaceFiles.read`（允许工作区外绝对路径），本路由不引入新暴露面；静态 token 写在同一个 bundle 里是装饰 |
+| 每层上限 | 500 条（`FS_PAGE_LIMIT`），服务端先按名排序再切片，翻页不重复/不漏 |
+| 文本分页 | **按行**：`offset` 是 1 起行号、`limit` 是行数（对齐官方 `read`，客户端下一页偏移 = `offset + lines`） |
+| 二进制 | 单文件上限 32MB（超出 `too-large`），回 base64 |
+| 错误码 | 复用官方词表：`not-found` / `not-directory` / `not-regular-file` / `too-large` / `not-text` / `service-unavailable`；`errView` 的兜底分支接不认识的码 |
+| 根节点 | POSIX `['/']`；Windows 逐个 `X:\` 探（Node 无盘符枚举 API） |
+| 超时 | 列目录 8s（`ETIMEDOUT` → `timeout`），网络挂载盘上不会挂死 |
+
+树模型、路径语义（绝对/相对都收、相对要 base）、返回值形状与 500 条上限的决策来龙去脉见
+`ledger/worklog/202611/03-0053-12d5-选择器支持只选文件夹与非工作区目录.md`。
