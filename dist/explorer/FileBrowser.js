@@ -32,7 +32,7 @@ const FS_ROOT = '/';
  *  - 当前工作区排第一（打开文件夹图标 + 加粗），**其下路径紧跟**（每层一个右箭头位缩进），
  *   再列其他工作区（关合图标 + 灰）——「打开哪个就跟在哪个下面」；点当前工作区 = 回到其根目录。
  *  - 当前工作区未知（rootName 空或不在清单）时路径段置顶、全部工作区按「其他」罗列；
- *  - workspaces 不传 = 不显示工作区段（根无箭头、其下逐层缩进）。
+ *  - workspaces 为空（宿主还没给工作区快照）= 只出路径段（根无箭头、其下逐层缩进）。
  *
  * 条目是**自写浮层**（核心没有「带缩进的选择层菜单」这类控件 ⇒ 按兄弟项目
  * `dsh-task-dispatch-table` 的 `.dsh-tdt-sv-crumbs-menu*` 逐条照抄间距）：
@@ -83,7 +83,8 @@ function crumbsMenuEntries(params) {
     }, withArrow
         ? h(Fragment, null, Array.from({ length: depth }, (_, s) => h('span', { key: `s${s}`, className: 'dshpc-fb__menu-chev-slot', 'aria-hidden': true })), h('span', { className: 'dshpc-fb__menu-chev' }, h(IconChevronRightOutlineRegular, { size: 11 })))
         : null, h('span', { className: 'dshpc-fb__menu-label' }, crumb.label));
-    if (workspaces === undefined) {
+    if (workspaces.length === 0) {
+        // 宿主还没给工作区快照 ⇒ 只出路径段（不出空的工作区组）。
         if (crumbs.length === 0)
             return [h('div', { key: 'empty', className: 'dshpc-fb__menu-empty' }, rootFallbackLabel)];
         return crumbs.map((crumb, index) => pathEntry(crumb, index === 0 ? 0 : index - 1, index !== 0));
@@ -138,6 +139,12 @@ export function FileBrowser(props) {
     // 当前目录在会话工作区之外（官方 list 限工作区内，越界即报 outside-workspace）。
     // 依据 = list 的**真实错误码**，不靠缓存猜（根学不出时会误判成"在区内"）。
     const [outside, setOutside] = useState(false);
+    // picker 且路径/会话都没给 ⇒ 落地页：主窗体先列「根目录 + 各工作区」让用户自己选（用户 2026-11-03 定）。
+    const [landing, setLanding] = useState(props.picker === true && props.path === '' && props.sessionId === undefined);
+    const landingRef = useRef(landing);
+    useLayoutEffect(() => {
+        landingRef.current = landing;
+    }, [landing]);
     const revision = props.revision ?? 0;
     // 请求闸门（latest-wins）：顶层列举 / 补学根 各一口；内联展开每个目录一口。
     // begin() 先 abort 上一次，回调用 token.current() 判新旧 ⇒ 连续切换只认最后一次，
@@ -169,7 +176,10 @@ export function FileBrowser(props) {
     const anchors = props.workspaceAnchors ?? hostWorkspaces;
     const anchorMatch = useMemo(() => workspaceOfPath(props.path, anchors), [props.path, anchors]);
     /** 相对路径的基准目录（工作区根）：匹配出的工作区 > 调用方给的 > 无（只认绝对路径）。 */
-    const rootBase = anchorMatch?.path ?? props.rootPath ?? anchors.find((item) => item.path !== undefined)?.path;
+    const sessionAnchor = props.sessionId === undefined
+        ? null
+        : anchors.find((item) => item.sessionIds?.includes(props.sessionId) === true) ?? null;
+    const rootBase = anchorMatch?.path ?? props.rootPath ?? sessionAnchor?.path ?? anchors.find((item) => item.path !== undefined)?.path;
     /** 任意入参 → 绝对路径（FS 面只认绝对路径）。 */
     const absOf = useCallback((p) => {
         if (isAbsoluteish(p))
@@ -242,18 +252,23 @@ export function FileBrowser(props) {
     }, [abortChildren, absOf, listGate, noteOutside, props.files]);
     /** 进入某目录；点到当前目录本身 = 重列本层（刷新）。 */
     const loadDir = useCallback((targetDir) => {
-        if (targetDir === dir) {
-            fetchDir(targetDir);
-            return;
-        }
+        // 落地页上点 ▾ 选根目录 / 工作区：必须先退出落地页，否则主体还是落地页那张表，
+        // 点了跟没点一样（用户 2026-11-03 真机："选里面的任何一个都没有任何效果"）。
+        if (landingRef.current)
+            setLanding(false);
         fetchDir(targetDir);
-    }, [dir, fetchDir]);
+    }, [fetchDir]);
     // 初次进入（path 可能是文件或目录）：
     // list(path) 成功 ⇒ 目录树（dir 尽量取宿主绝对路径 ⇒ 面包屑从工作区根往下列）；
     // 报错 ⇒ 文件预览态（dir = 父目录，面包屑保留可返回）。
     // ⚠️ 切勿改用服务端 list 返回的 path 当面包屑：那是 workspacePathOf 的工作区**相对**形式，
     //    会丢掉根以下的前导段，面包屑只剩最近一层（源实现 2026-09-29 踩过 ⇒ 已回退为入参路径）。
     useEffect(() => {
+        // 落地页（还没选根目录/工作区）：什么都不列，等用户点。
+        // 用 ref 读、**不进依赖**：否则从落地页点进目录那一刻 landing 变 false 会重跑本 effect，
+        // 又把目录拉回 absOf('') = 第一个工作区（真机 2026-11-03）。
+        if (landingRef.current)
+            return;
         // 同目录换文件（侧栏连点 / 重开同一文件）：只换 viewing——目录树、展开态、滚动位置保留，
         // 也不再额外触发一次 list。旧目录列举已由上一轮 effect 的清理函数 abort。
         // 判据用 listingRef（不是 props.path 的类型）：只有「当前已列出的这一层里确实有这个文件」
@@ -562,8 +577,10 @@ export function FileBrowser(props) {
     const viewingIsMd = viewing !== null && /\.(md|markdown)$/i.test(viewing);
     const viewingIsHtml = viewing !== null && /\.(html|htm)$/i.test(viewing);
     const switchable = viewingIsMd || viewingIsHtml;
+    // 工作区清单：调用方没传就用宿主快照里的（picker 与 dock 同一条逻辑 —— 用户 2026-11-03：
+    // 两处显示必须一致，不能 dock 有清单、picker 只有一个根目录）。
     const menuItems = crumbsMenuEntries({
-        workspaces: props.workspaces,
+        workspaces: props.workspaces ?? anchors.map((item) => item.title),
         rootName: rootLabel,
         rootFallbackLabel: tt('explorerRootName'),
         rootEntryLabel: tt('explorerRootDir'),
@@ -596,17 +613,19 @@ export function FileBrowser(props) {
             className: 'dshpc-fb__crumbs-backdrop',
             onClick: () => setMenuOpen(false),
         }), h('div', { className: 'dshpc-fb__crumbs-menu', role: 'menu' }, menuItems))
-        : null), h('div', { ref: regionRef, className: 'dshpc-fb__crumbs' }, 
-    // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
-    h('span', { ref: measureRef, className: 'dshpc-fb__crumbs-measure', 'aria-hidden': true }, crumbs.length === 0
-        ? crumbButton(tt('explorerRootName'))
-        : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label)))), 
-    // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
-    crumbsOverflow
-        ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt('explorerRootName') : tt('explorerRootName'), undefined, true)
-        : crumbs.length === 0
-            ? crumbButton(tt('explorerRootName'), undefined, true)
-            : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))), h('div', { className: 'dshpc-fb__actions' }, props.onClose === undefined
+        : null), landing
+        ? h('div', { className: 'dshpc-fb__crumbs' })
+        : h('div', { ref: regionRef, className: 'dshpc-fb__crumbs' }, 
+        // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
+        h('span', { ref: measureRef, className: 'dshpc-fb__crumbs-measure', 'aria-hidden': true }, crumbs.length === 0
+            ? crumbButton(tt('explorerRootName'))
+            : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label)))), 
+        // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
+        crumbsOverflow
+            ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt('explorerRootName') : tt('explorerRootName'), undefined, true)
+            : crumbs.length === 0
+                ? crumbButton(tt('explorerRootName'), undefined, true)
+                : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))), h('div', { className: 'dshpc-fb__actions' }, props.onClose === undefined
         ? null
         : h(IconButton, {
             variant: 'plain',
@@ -665,7 +684,34 @@ export function FileBrowser(props) {
         })));
     // ── 主体 ──
     let body;
-    if (viewing !== null) {
+    if (landing) {
+        const row = (key, label, target) => h('div', {
+            key,
+            className: 'dshpc-fb__row',
+            role: 'button',
+            tabIndex: 0,
+            onClick: () => loadDir(target),
+            onKeyDown: (event) => {
+                if (event.key === 'Enter' || event.key === ' ')
+                    loadDir(target);
+            },
+        }, h('span', { className: 'dshpc-fb__row-icon' }, h(IconFolderCloseRegular, { size: 18 })), h('span', { className: 'dshpc-fb__row-name' }, label), 
+        // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 工作区根本身也要能选）。
+        picker && props.onPick !== undefined && !extsOnly
+            ? h(Button, {
+                variant: 'outline',
+                size: 'sm',
+                className: 'dshpc-fb__row-act',
+                'aria-label': tt('explorerPickDirAria'),
+                onClick: (event) => {
+                    event.stopPropagation();
+                    props.onPick?.(toPicked(target, true));
+                },
+            }, tt('explorerPickDir'))
+            : null);
+        body = h('div', { className: 'dshpc-fb__tree' }, row('root', tt('explorerRootDir'), FS_ROOT), anchors.filter((item) => item.path !== undefined && item.path !== '').map((item) => row(`ws:${item.title}`, item.title, item.path)));
+    }
+    else if (viewing !== null) {
         body = h(FilePreview, {
             key: `${viewing}:${reloadNonce}`,
             files: props.files,

@@ -9,6 +9,8 @@ export interface FileBrowserProps {
     officeToPdf?: OfficeToPdfFace | null;
     /** 相对路径的基准目录（工作区根）；不传 ⇒ 只认绝对路径。 */
     rootPath?: string;
+    /** 只用来判断「默认落哪个工作区」；浏览本身不需要它。 */
+    sessionId?: string;
     /** 起始路径：目录 ⇒ 直接列；文件 ⇒ 预览态（dir 取父目录，面包屑保留可返回）。 */
     path: string;
     /**
@@ -20,7 +22,10 @@ export interface FileBrowserProps {
     onClose?: () => void;
     /** 工作区根显示名（picker = 调用方选的工作区名）；不传 = 用缓存根的末段。 */
     rootName?: string;
-    /** ▾ 下拉顶部的工作区清单；不传 = 不显示工作区段。 */
+    /**
+     * ▾ 下拉顶部的工作区清单（可选覆盖）；不传 = 用宿主快照里的工作区标题
+     * （picker 与 dock 同一份清单，用户 2026-11-03：两处显示必须一致）。
+     */
     workspaces?: readonly string[];
     /**
      * 宿主工作区清单（带绝对 path，`workspaces` 服务快照的消费子集）——**路径 → 会话解析用**：

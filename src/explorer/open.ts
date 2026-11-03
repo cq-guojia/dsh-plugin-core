@@ -150,7 +150,14 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     warnNotWired('openFilePreview', false)
     return null
   }
-  const base = workspaceOfPath(start ?? '', anchors)?.path ?? anchors.find((item) => item.path !== undefined)?.path
+  const sessionBase =
+    options.sessionId === undefined
+      ? undefined
+      : anchors.find((item) => item.sessionIds?.includes(options.sessionId as string) === true)?.path
+  const base =
+    workspaceOfPath(start ?? '', anchors)?.path
+    ?? sessionBase
+    ?? anchors.find((item) => item.path !== undefined)?.path
   const opts: OpenFilePreviewOptions = { ...options, rootPath: options.rootPath ?? base }
 
   // 只允许一个预览。**已经开着 ⇒ 换内容**（用户 2026-10-28：侧栏已经在那了，点别的文件就该
@@ -436,7 +443,13 @@ export function pickWorkspaceFile(options: PickWorkspaceFileOptions): Promise<Pi
         officeToPdf: options.officeToPdf ?? null,
         path: start,
         rootName: options.rootName,
-        rootPath: workspaceOfPath(start, anchors)?.path ?? anchors.find((item) => item.path !== undefined)?.path,
+        sessionId: options.sessionId,
+        rootPath:
+          workspaceOfPath(start, anchors)?.path
+          ?? (options.sessionId === undefined
+            ? undefined
+            : anchors.find((item) => item.sessionIds?.includes(options.sessionId as string) === true)?.path)
+          ?? anchors.find((item) => item.path !== undefined)?.path,
         workspaces: options.workspaces,
         onSelectWorkspace: options.onSelectWorkspace,
         picker: true,

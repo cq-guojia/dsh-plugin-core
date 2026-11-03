@@ -305,3 +305,16 @@ test('FileBrowser：目录状态存绝对路径，面包屑按基准判定', asy
   assert.ok(src.includes('setDir(absTarget)'), 'fetchDir 又把原始入参当目录状态（相对路径会让子项读不到）')
   assert.ok(src.includes('workspaceOfPath(dir'), '面包屑没按**当前目录**去匹配工作区（会一直用打开时的路径）')
 })
+
+// 2026-11-03：picker 什么都不传 ⇒ 主窗体先列「根目录 + 各工作区」，面包屑留空（只留 ▾ 箭头）。
+test('FileBrowser 落地页：根目录 + 工作区清单，选完才进目录', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  assert.ok(src.includes('landing'), '没有落地页状态')
+  // 落地页上点行 / 点 ▾ 选层都走 loadDir：它必须顺手退出落地页，否则主体还是落地页那张表（点了没反应）。
+  const loadDirAt = src.indexOf('loadDir = ')
+  assert.ok(loadDirAt > 0, '没有 loadDir（进入目录的唯一入口）')
+  assert.ok(src.slice(loadDirAt, loadDirAt + 600).includes('setLanding(false)'), 'loadDir 没退出落地页（从落地页点选会没反应）')
+  assert.ok(src.includes('explorerRootDir'), '落地页没有「根目录」那一行')
+  assert.ok(src.includes('landingRef'), '落地页切换仍会重跑初始 effect（会被拉回第一个工作区）')
+})

@@ -79,7 +79,12 @@ export function openFilePreview(options) {
         warnNotWired('openFilePreview', false);
         return null;
     }
-    const base = workspaceOfPath(start ?? '', anchors)?.path ?? anchors.find((item) => item.path !== undefined)?.path;
+    const sessionBase = options.sessionId === undefined
+        ? undefined
+        : anchors.find((item) => item.sessionIds?.includes(options.sessionId) === true)?.path;
+    const base = workspaceOfPath(start ?? '', anchors)?.path
+        ?? sessionBase
+        ?? anchors.find((item) => item.path !== undefined)?.path;
     const opts = { ...options, rootPath: options.rootPath ?? base };
     // 只允许一个预览。**已经开着 ⇒ 换内容**（用户 2026-10-28：侧栏已经在那了，点别的文件就该
     // 直接切 —— 不重播展开动效、也不改用户拖好的宽度）。换页面 / 换容器就地把挂载体搬过去。
@@ -322,7 +327,12 @@ export function pickWorkspaceFile(options) {
             officeToPdf: options.officeToPdf ?? null,
             path: start,
             rootName: options.rootName,
-            rootPath: workspaceOfPath(start, anchors)?.path ?? anchors.find((item) => item.path !== undefined)?.path,
+            sessionId: options.sessionId,
+            rootPath: workspaceOfPath(start, anchors)?.path
+                ?? (options.sessionId === undefined
+                    ? undefined
+                    : anchors.find((item) => item.sessionIds?.includes(options.sessionId) === true)?.path)
+                ?? anchors.find((item) => item.path !== undefined)?.path,
             workspaces: options.workspaces,
             onSelectWorkspace: options.onSelectWorkspace,
             picker: true,

@@ -54107,7 +54107,7 @@ function crumbsMenuEntries(params) {
       onLoadDir?.(crumb.path);
     }
   }, withArrow ? (0, import_react51.createElement)(import_react51.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react51.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react51.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react51.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react51.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
-  if (workspaces === void 0) {
+  if (workspaces.length === 0) {
     if (crumbs.length === 0)
       return [(0, import_react51.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
     return crumbs.map((crumb, index3) => pathEntry(crumb, index3 === 0 ? 0 : index3 - 1, index3 !== 0));
@@ -54152,6 +54152,11 @@ function FileBrowser(props) {
   const [openDirs, setOpenDirs] = (0, import_react51.useState)(/* @__PURE__ */ new Set());
   const [childCache, setChildCache] = (0, import_react51.useState)({});
   const [outside, setOutside] = (0, import_react51.useState)(false);
+  const [landing, setLanding] = (0, import_react51.useState)(props.picker === true && props.path === "" && props.sessionId === void 0);
+  const landingRef = (0, import_react51.useRef)(landing);
+  (0, import_react51.useLayoutEffect)(() => {
+    landingRef.current = landing;
+  }, [landing]);
   const revision = props.revision ?? 0;
   const listGateRef = (0, import_react51.useRef)(null);
   if (listGateRef.current === null)
@@ -54172,7 +54177,8 @@ function FileBrowser(props) {
   const hostWorkspaces = (0, import_react51.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = props.workspaceAnchors ?? hostWorkspaces;
   const anchorMatch = (0, import_react51.useMemo)(() => workspaceOfPath(props.path, anchors), [props.path, anchors]);
-  const rootBase = anchorMatch?.path ?? props.rootPath ?? anchors.find((item) => item.path !== void 0)?.path;
+  const sessionAnchor = props.sessionId === void 0 ? null : anchors.find((item) => item.sessionIds?.includes(props.sessionId) === true) ?? null;
+  const rootBase = anchorMatch?.path ?? props.rootPath ?? sessionAnchor?.path ?? anchors.find((item) => item.path !== void 0)?.path;
   const absOf = (0, import_react51.useCallback)((p) => {
     if (isAbsoluteish(p))
       return normalizePath(p);
@@ -54233,13 +54239,13 @@ function FileBrowser(props) {
     });
   }, [abortChildren, absOf, listGate, noteOutside, props.files]);
   const loadDir = (0, import_react51.useCallback)((targetDir) => {
-    if (targetDir === dir) {
-      fetchDir(targetDir);
-      return;
-    }
+    if (landingRef.current)
+      setLanding(false);
     fetchDir(targetDir);
-  }, [dir, fetchDir]);
+  }, [fetchDir]);
   (0, import_react51.useEffect)(() => {
+    if (landingRef.current)
+      return;
     const parent = dirnameOf(props.path);
     const name2 = baseNameOfPath(props.path);
     const knownFile = listingRef.current?.some((entry2) => entry2.name === name2 && entry2.type === "file") === true;
@@ -54496,7 +54502,7 @@ function FileBrowser(props) {
   const viewingIsHtml = viewing !== null && /\.(html|htm)$/i.test(viewing);
   const switchable = viewingIsMd || viewingIsHtml;
   const menuItems = crumbsMenuEntries({
-    workspaces: props.workspaces,
+    workspaces: props.workspaces ?? anchors.map((item) => item.title),
     rootName: rootLabel,
     rootFallbackLabel: tt("explorerRootName"),
     rootEntryLabel: tt("explorerRootDir"),
@@ -54530,7 +54536,7 @@ function FileBrowser(props) {
       className: "dshpc-fb__crumbs-backdrop",
       onClick: () => setMenuOpen(false)
     }), (0, import_react51.createElement)("div", { className: "dshpc-fb__crumbs-menu", role: "menu" }, menuItems)) : null
-  ), (0, import_react51.createElement)(
+  ), landing ? (0, import_react51.createElement)("div", { className: "dshpc-fb__crumbs" }) : (0, import_react51.createElement)(
     "div",
     { ref: regionRef, className: "dshpc-fb__crumbs" },
     // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
@@ -54584,7 +54590,36 @@ function FileBrowser(props) {
     onClick: reload
   })));
   let body;
-  if (viewing !== null) {
+  if (landing) {
+    const row = (key, label, target) => (0, import_react51.createElement)(
+      "div",
+      {
+        key,
+        className: "dshpc-fb__row",
+        role: "button",
+        tabIndex: 0,
+        onClick: () => loadDir(target),
+        onKeyDown: (event) => {
+          if (event.key === "Enter" || event.key === " ")
+            loadDir(target);
+        }
+      },
+      (0, import_react51.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react51.createElement)(official_exports.IconFolderCloseRegular, { size: 18 })),
+      (0, import_react51.createElement)("span", { className: "dshpc-fb__row-name" }, label),
+      // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 工作区根本身也要能选）。
+      picker && props.onPick !== void 0 && !extsOnly ? (0, import_react51.createElement)(Button, {
+        variant: "outline",
+        size: "sm",
+        className: "dshpc-fb__row-act",
+        "aria-label": tt("explorerPickDirAria"),
+        onClick: (event) => {
+          event.stopPropagation();
+          props.onPick?.(toPicked(target, true));
+        }
+      }, tt("explorerPickDir")) : null
+    );
+    body = (0, import_react51.createElement)("div", { className: "dshpc-fb__tree" }, row("root", tt("explorerRootDir"), FS_ROOT), anchors.filter((item) => item.path !== void 0 && item.path !== "").map((item) => row(`ws:${item.title}`, item.title, item.path)));
+  } else if (viewing !== null) {
     body = (0, import_react51.createElement)(FilePreview, {
       key: `${viewing}:${reloadNonce}`,
       files: props.files,
@@ -54705,7 +54740,8 @@ function openFilePreview(options) {
     warnNotWired("openFilePreview", false);
     return null;
   }
-  const base3 = workspaceOfPath(start ?? "", anchors)?.path ?? anchors.find((item) => item.path !== void 0)?.path;
+  const sessionBase = options.sessionId === void 0 ? void 0 : anchors.find((item) => item.sessionIds?.includes(options.sessionId) === true)?.path;
+  const base3 = workspaceOfPath(start ?? "", anchors)?.path ?? sessionBase ?? anchors.find((item) => item.path !== void 0)?.path;
   const opts = { ...options, rootPath: options.rootPath ?? base3 };
   if (activePreview !== null) {
     activePreview.keepWidth();
@@ -54904,7 +54940,8 @@ function pickWorkspaceFile(options) {
       officeToPdf: options.officeToPdf ?? null,
       path: start,
       rootName: options.rootName,
-      rootPath: workspaceOfPath(start, anchors)?.path ?? anchors.find((item) => item.path !== void 0)?.path,
+      sessionId: options.sessionId,
+      rootPath: workspaceOfPath(start, anchors)?.path ?? (options.sessionId === void 0 ? void 0 : anchors.find((item) => item.sessionIds?.includes(options.sessionId) === true)?.path) ?? anchors.find((item) => item.path !== void 0)?.path,
       workspaces: options.workspaces,
       onSelectWorkspace: options.onSelectWorkspace,
       picker: true,
@@ -64863,7 +64900,6 @@ function PickFileDemo() {
   if (anchor === null) return (0, import_react77.createElement)(NotReady, { which: "anchor" });
   const pick2 = (anchorBtn, filter2) => {
     void pickWorkspaceFile({
-      sessionId: anchor.sessionId,
       anchor: anchorBtn,
       rootName: anchor.title,
       filter: filter2
@@ -65728,7 +65764,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.20.4"}`],
             [t3("buildDemo"), `v${"0.20.4"}`],
-            [t3("buildStamp"), "261103-103902-314"]
+            [t3("buildStamp"), "261103-114826-574"]
           ].map(
             ([label, value]) => (0, import_react81.createElement)(
               "tr",
@@ -66052,7 +66088,7 @@ function DemoPage() {
           },
           (0, import_react83.createElement)("span", null, `core v${"0.20.4"}`),
           (0, import_react83.createElement)("span", null, `demo v${"0.20.4"}`),
-          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-103902-314")
+          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-114826-574")
         )
       )
     ),

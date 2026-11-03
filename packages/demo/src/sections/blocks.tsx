@@ -160,8 +160,8 @@ function PickFileDemo(): ReturnType<typeof h> {
   if (anchor === null) return h(NotReady, { which: 'anchor' })
 
   const pick = (anchorBtn: HTMLElement, filter?: { exts?: string[]; dirs?: boolean }): void => {
+    // 不传路径 / 会话 ⇒ 落地页先列「根目录 + 各工作区」，由用户自己选（2026-11-03 新语义）。
     void pickWorkspaceFile({
-      sessionId: anchor.sessionId,
       anchor: anchorBtn,
       rootName: anchor.title,
       filter,
