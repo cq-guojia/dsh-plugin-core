@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261103-0824-1524-弹窗确定与取消按钮支持-loading-状态": {"category": "功能", "created": "2026-11-03 08:24:11", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-03 08:24:11", "status": "doing", "tags": ["弹窗", "loading", "异步"], "title": "弹窗确定与取消按钮支持 loading 状态", "updated": "2026-11-03 08:59:39", "worklog": "worklog/202611/03-0824-1524-弹窗确定与取消按钮支持-loading-状态.md"}
+    "20261103-0824-1524-弹窗确定与取消按钮支持-loading-状态": {"category": "功能", "created": "2026-11-03 08:24:11", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-03 08:24:11", "status": "doing", "tags": ["弹窗", "loading", "异步"], "title": "弹窗确定与取消按钮支持 loading 状态", "updated": "2026-11-03 10:02:56", "worklog": "worklog/202611/03-0824-1524-弹窗确定与取消按钮支持-loading-状态.md"}
   },
   "version": "20261022000000"
 }
