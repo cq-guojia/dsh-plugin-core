@@ -1,7 +1,7 @@
 # 20261103-0434-b181-浮层面板皮肤统一-modal-popover-menu: 浮层面板皮肤统一（modal/popover/menu）
 
 - **Tags**: 样式, 浮层, UI
-- **Status**: doing · 2026-11-03 04:48:23 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-03 04:54:35 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-03 04:34:34 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -164,9 +164,31 @@
 校验：`tsc --noEmit` / `build` / `build:demo` / 228 测试全过 / codelint 六层全过。**未提交**（用户要求先测）。
 
 留待（本次未做，理由写在这里）：
-- `FileBrowser` 剩余 965 行的继续拆分：余下部分共用 20+ 个闭包变量，需要先做 prop 化改造，硬拆风险大。
-- 渲染级测试：需引入 DOM 依赖（happy-dom / jsdom），属「装依赖」，等用户明确同意。
+- `FileBrowser` 剩余 792 行的继续拆分（目录树那一块）：树行函数吃 `childCache` / `openDirs` / `loadDir` 等
+  8 个闭包，硬拆要先把这些状态改成显式 props 传参，属于结构性改造，单独一轮更稳。
+- **带图标的展示模块 SSR 测试**：Node 下解析不了 `@deepseek-ai/dsh-client-ui-primitives`（宿主平台模块），
+  `landing` / `crumb-nav` / `preview-title-bar` 都要过 stub 才能 SSR。两条路：
+  ① 加一个测试用 resolve hook + 本地 stub（零依赖，但 `node --test` 的跑法要加 `--import`）；
+  ② 装 happy-dom / jsdom（属「装依赖」）。**未选，等用户定**。
 - `PanelDock` / `SideSheet` 未并入三档：贴边家族，2026-11-02 已拍板两者皮肤一致，不是浮层。
+
+### 十、第二批（同日，用户「都先做完」）
+
+继续拆分 `FileBrowser`（965 → 792 行），按「展示层出栈、状态留组件」的界线拆出三个模块：
+
+- `src/explorer/landing.ts`（74 行）：落地页主体（根层 + 工作区行 + 行尾「选择」钮）。
+- `src/explorer/crumb-nav.ts`（171 行）：第一排 —— ▾ 选层 + 面包屑 + 隐藏测量条 + 右侧动作；
+  含越界变体 `PlainNav`（只读完整路径）。
+- `src/explorer/preview-title-bar.ts`（81 行）：预览态第二排（文件名 + 渲染⇄源码 + 复制 + 刷新）。
+
+顺带收口两处「关闭钮仍是第二份」的地方：`OverlayHead` 与文件浏览器的 ✕ 都改成 `PanelClose`
+（旧类名 `dshpc-overlay-head__close` 继续挂在 `OverlayHead` 那颗上）。
+
+新增 `test/panel-render.test.mjs`（5 条，SSR = `renderToStaticMarkup`，零新依赖）：
+`PanelSurface` 档位/attrs、`PanelClose`、`Modal` 三档落地、以及「三个展示模块确实搬出 FileBrowser」的结构断言
+（`FileBrowser.js` 里不再有 ▾ 遮罩与标题栏标记，且确实 import 了三个新模块）。
+
+校验：`tsc --noEmit` / `build` / `build:demo` / **233 测试**全过 / codelint 六层全过。**未提交**。
 
 ## Execution Log
 
@@ -175,3 +197,4 @@
 - 2026-11-03 04:34:34 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-03 04:35:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 方案写入 worklog（三档皮肤 + L3 落点 + 三步迁移 + 兼容策略），并附体检：77 处 dist 字符串断言、FileBrowser 1082 行、open.ts 根基准写三遍、16 处裸色值、z-index 5 处字面量；未动代码
 - 2026-11-03 04:48:23 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按用户指令合并实施：新增 panel.css/panel.ts（三档+PanelClose）；Modal/选文件弹窗/▾选层/Picker下拉/DateTime弹层全部切档；z 语义别名；裸色值收口到 tokens（含告警四色、loading、session）；删死 toast 样式；open.ts 根基准合并；拆出 crumbs-menu.ts；新增 css-discipline 测试；228 测试与 codelint 全过；未提交
+- 2026-11-03 04:54:35 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第二批：FileBrowser 965→792 行，拆出 landing/crumb-nav/preview-title-bar 三个展示模块；OverlayHead 与文件浏览器 ✕ 统一走 PanelClose；新增 panel-render SSR 测试 5 条；233 测试 + codelint 全过；未提交
