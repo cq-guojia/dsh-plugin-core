@@ -325,9 +325,21 @@ test('FileBrowser 根层：盘符由宿主给，POSIX 的根不给选', async ()
   const { readFile } = await import('node:fs/promises')
   const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
   assert.ok(src.includes('props.files.roots'), '没向宿主要根清单（Windows 上就只剩一个假「根目录」）')
-  assert.ok(src.includes('pickable: false'), '根层行没区分「能不能选」（根目录仍可被选中）')
+  // 根层条目（根目录 / 盘符）都是可选目标，不再有「能不能选」的分叉。
+  assert.ok(!src.includes('pickable'), '根层还留着「不可选」的分叉')
   const face = await readFile(new URL('../dist/explorer/fs-face.js', import.meta.url), 'utf8')
   assert.ok(face.includes("op: 'roots'"), 'client 文件面没接宿主的 roots op')
+})
+
+// 2026-11-03：选择器里「当前看到的这一层」必须能选出去 —— ✕ 左边那枚按钮（预览文件 = 选文件，
+// 否则选当前目录）；没有它，进了目录 / 打开文件之后就没有选中入口。
+test('FileBrowser 选择器：头部有「选当前」按钮', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  assert.ok(src.includes('dshpc-fb__pick'), '头部没有「选当前」按钮（进入目录后选不了当前层）')
+  const pickAt = src.indexOf('dshpc-fb__pick')
+  const body = src.slice(pickAt, pickAt + 900)
+  assert.ok(body.includes('toPicked'), '「选当前」没有回传绝对路径')
 })
 
 // 2026-11-03：选择结果展示只补一次尾斜杠（`/` + `/` 曾显示成 `//`，盘符会成 `C://`）。

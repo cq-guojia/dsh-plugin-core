@@ -49,6 +49,8 @@
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;
 }
 .dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}
+/* 选择器头部「选当前文件 / 当前文件夹」钮：与 ✕ 并排，不被面包屑挤扁。 */
+.dshpc-fb__pick{flex:none}
 
 /* ▾ 选层浮层（兄弟 .dsh-tdt-sv-crumbs-*）。
    层序：兄弟是 30/31；本仓 picker 面板是 1100，遮罩必须高于它，否则菜单开着点面板不算「点外部」。 */

@@ -590,11 +590,11 @@ export function FileBrowser(props) {
             : null);
     }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, toPicked, dir, loadDir, tt]);
     // 根层条目：有盘符（Windows）就一条一档；否则单条「根目录」（POSIX）。
-    // 盘符本身是实体目录 ⇒ 可以当选择目标；POSIX 的 `/` 不是（选了等于没选，用户 2026-11-03）。
+    // 两者都是**可选目标**（用户 2026-11-03：Linux 的 `/` 也可以选；Windows 至少能选盘）。
     const drives = roots.filter((root) => root !== FS_ROOT);
     const rootRows = drives.length > 0
-        ? drives.map((path) => ({ label: path.replace(/\/+$/, ''), path, pickable: true }))
-        : [{ label: tt('explorerRootDir'), path: FS_ROOT, pickable: false }];
+        ? drives.map((path) => ({ label: path.replace(/\/+$/, ''), path }))
+        : [{ label: tt('explorerRootDir'), path: FS_ROOT }];
     // 面包屑（用户 2026-11-03 定）：**按当前目录**去比所有工作区。
     // 命中 ⇒ 第一段是工作区名，其下按相对层级；没命中 ⇒ 第一段是根（「根目录」或盘符），其下逐层。
     // 判据只看 `dir`（不比 props.path）：浏览途中切进别的工作区也要立刻跟着切根。
@@ -630,6 +630,18 @@ export function FileBrowser(props) {
         tabIndex: onClick === undefined ? -1 : 0,
         onClick,
     }, h(MarqueeText, { text: label, className: 'dshpc-fb__crumb-mq' }));
+    // 选择器的「选当前目录」入口（用户 2026-11-03：进到某一层之后，行上没有它自己，
+    // 树里也点不到「当前这层」⇒ 在 ✕ 左边给一枚按钮）。落地页还没进任何目录、扩展名过滤下
+    // 目录不是合法结果 —— 这两种情况不出按钮。
+    const pickNow = picker && props.onPick !== undefined && !landing && dirPickable && dir !== ''
+        ? h(Button, {
+            variant: 'outline',
+            size: 'sm',
+            className: 'dshpc-fb__pick',
+            'aria-label': tt('explorerPickDirAria'),
+            onClick: () => props.onPick?.(toPicked(dir, true)),
+        }, tt('explorerPickDir'))
+        : null;
     const crumbBar = h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h('div', { className: 'dshpc-fb__menu-wrap' }, h(IconButton, {
         variant: 'plain',
         size: 'md',
@@ -657,7 +669,7 @@ export function FileBrowser(props) {
             ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt('explorerRootName') : tt('explorerRootName'), undefined, true)
             : crumbs.length === 0
                 ? crumbButton(tt('explorerRootName'), undefined, true)
-                : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))), h('div', { className: 'dshpc-fb__actions' }, props.onClose === undefined
+                : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))), h('div', { className: 'dshpc-fb__actions' }, pickNow, props.onClose === undefined
         ? null
         : h(IconButton, {
             variant: 'plain',
@@ -672,7 +684,7 @@ export function FileBrowser(props) {
         title: dir,
         className: 'dshpc-fb__bar-plain',
         style: { flex: '1 1 auto', minWidth: 0 },
-    }), h('div', { className: 'dshpc-fb__actions' }, props.onClose === undefined
+    }), h('div', { className: 'dshpc-fb__actions' }, pickNow, props.onClose === undefined
         ? null
         : h(IconButton, {
             variant: 'plain',
@@ -717,7 +729,7 @@ export function FileBrowser(props) {
     // ── 主体 ──
     let body;
     if (landing) {
-        const row = (key, label, target, pickable = true) => h('div', {
+        const row = (key, label, target) => h('div', {
             key,
             className: 'dshpc-fb__row',
             role: 'button',
@@ -728,8 +740,8 @@ export function FileBrowser(props) {
                     loadDir(target);
             },
         }, h('span', { className: 'dshpc-fb__row-icon' }, h(IconFolderCloseRegular, { size: 18 })), h('span', { className: 'dshpc-fb__row-name' }, label), 
-        // 行 = 展开进去；行尾钮 = 直接选这个目录（盘符 / 工作区根能选；POSIX 的 `/` 不给选）。
-        picker && props.onPick !== undefined && !extsOnly && pickable
+        // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 盘符 / 工作区根本身都能选）。
+        picker && props.onPick !== undefined && !extsOnly
             ? h(Button, {
                 variant: 'outline',
                 size: 'sm',
@@ -741,7 +753,7 @@ export function FileBrowser(props) {
                 },
             }, tt('explorerPickDir'))
             : null);
-        body = h('div', { className: 'dshpc-fb__tree' }, rootRows.map((root) => row(`root:${root.path}`, root.label, root.path, root.pickable)), anchors.filter((item) => item.path !== undefined && item.path !== '').map((item) => row(`ws:${item.title}`, item.title, item.path)));
+        body = h('div', { className: 'dshpc-fb__tree' }, rootRows.map((root) => row(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== undefined && item.path !== '').map((item) => row(`ws:${item.title}`, item.title, item.path)));
     }
     else if (viewing !== null) {
         body = h(FilePreview, {
