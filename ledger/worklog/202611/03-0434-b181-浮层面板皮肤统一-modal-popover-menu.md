@@ -1,7 +1,7 @@
 # 20261103-0434-b181-浮层面板皮肤统一-modal-popover-menu: 浮层面板皮肤统一（modal/popover/menu）
 
 - **Tags**: 样式, 浮层, UI
-- **Status**: doing · 2026-11-03 05:44:07 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-03 05:52:17 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-03 04:34:34 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -225,3 +225,18 @@
 校验（这次按 CI 的命令跑）：`pnpm run build && pnpm test` 退出 0（238 测试全过，含 demo tsc）；
 `pnpm run build:demo` 通过；codelint 六层全过。仍未提交。
 - 2026-11-03 05:44:07 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修 v0.20.5 CI 失败（demo en 缺 pickDir + 重复 union key），AGENTS checklist 改用 pnpm test；按「不依赖」加测试stub（primitives-stub/hooks）解锁带图标模块 SSR，panel-render 扩到 10 条；pnpm run build && pnpm test 退出 0（238 全过）；未提交
+
+### 十二、真机视觉反馈修正（2026-11-03，用户口述）
+
+1. **面包屑栏的「选择」钮**：原来 `outline`（带描边）+ 24px 高，比同排 ✕ 显大 →
+   改 `ghost`（无底无边）+ `.dshpc-fb__pick{height:20px}`，与 ✕ 等高。
+2. **目录树行尾的「选择 / 进入」钮**：`explorer.css` 里又写了一遍描边、内距、字号、颜色 —— 等于
+   自己手搓一颗，跟别处的核心按钮长得不一样 → 皮肤全删，只留布局（`margin-left:auto`）与
+   「悬停才现身」（opacity），皮肤完全交给核心 `Button`。
+3. **弹窗发黑**：`.dshpc-fb` 自己刷了一层 `surface-base`，把面板档位的 `surface-1` 盖掉了 →
+   改成 `background:transparent`（dock 的底色由 `.dshpc-side-surface` 提供，弹窗由 `.dshpc-panel` 提供）。
+4. **▾ 选层浮层发黑**：menu 档原来用 `--dshpc-surface-menu`（= 页面底色 `surface-base`，暗色下近乎纯黑）→
+   与模态同层，改 `surface-1`。遮罩本来就已经走 `OverlayMask`（`--dshpc-mask`，与模态同一份），未改。
+
+校验：`pnpm run build && pnpm test` 退出 0（238 全过，含 demo tsc）/ `build:demo` 通过 / codelint 六层全过。未提交。
+- 2026-11-03 05:52:17 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 真机视觉四修：面包屑「选择」改 ghost+20px 与 ✕ 等高；行尾按钮删自绘皮肤交还核心 Button；.dshpc-fb 底色透明（不再盖掉面板 surface-1）；menu 档底色改 surface-1（原页面底色在暗色下发黑）；CI 同款命令 238 全过，未提交
