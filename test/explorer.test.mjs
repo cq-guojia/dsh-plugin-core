@@ -318,3 +318,21 @@ test('FileBrowser 落地页：根目录 + 工作区清单，选完才进目录',
   assert.ok(src.includes('explorerRootDir'), '落地页没有「根目录」那一行')
   assert.ok(src.includes('landingRef'), '落地页切换仍会重跑初始 effect（会被拉回第一个工作区）')
 })
+
+// 2026-11-03：根层不能写死成「根目录」—— Windows 没有根目录，根就是盘符清单（C:/、D:/…），
+// 盘符可以当选择目标；POSIX 的 `/` 不是目标（选了等于没选）。
+test('FileBrowser 根层：盘符由宿主给，POSIX 的根不给选', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  assert.ok(src.includes('props.files.roots'), '没向宿主要根清单（Windows 上就只剩一个假「根目录」）')
+  assert.ok(src.includes('pickable: false'), '根层行没区分「能不能选」（根目录仍可被选中）')
+  const face = await readFile(new URL('../dist/explorer/fs-face.js', import.meta.url), 'utf8')
+  assert.ok(face.includes("op: 'roots'"), 'client 文件面没接宿主的 roots op')
+})
+
+// 2026-11-03：选择结果展示只补一次尾斜杠（`/` + `/` 曾显示成 `//`，盘符会成 `C://`）。
+test('demo 选择结果不重复补尾斜杠', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../packages/demo/src/sections/blocks.tsx', import.meta.url), 'utf8')
+  assert.ok(src.includes("!r.path.endsWith('/')"), '选择结果又无条件补斜杠（根 / 盘符会显示成两条斜杠）')
+})

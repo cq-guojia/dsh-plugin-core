@@ -165,7 +165,8 @@ function PickFileDemo(): ReturnType<typeof h> {
       anchor: anchorBtn,
       rootName: anchor.title,
       filter,
-    }).then((r) => setPicked(r === null ? null : r.path + (r.isDir ? '/' : '')))
+      // 目录补尾斜杠只补一次：根 `/`、盘符 `C:/` 自己就带着，再补就成了 `//` / `C://`。
+    }).then((r) => setPicked(r === null ? null : r.path + (r.isDir && !r.path.endsWith('/') ? '/' : '')))
   }
   return h(
     'div',

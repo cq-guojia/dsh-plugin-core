@@ -22,7 +22,7 @@
 
 > EN: Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning — that is an overlay, not a split.
 
-面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**新增一行「根目录」置顶**（其余仍列各工作区）；点其他工作区 = 直接列该区根目录（不需要会话）。
+面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**根层置顶**（其余仍列各工作区）：POSIX 是一条「根目录」，**Windows 没有根目录这东西，列的是盘符**（`C:/`、`D:/`…，由宿主 `op:roots` 探出来）。点其他工作区 = 直接列该区根目录（不需要会话）。
 
 > EN: Inside a workspace the breadcrumb starts at its name and the ▾ menu nests it there; outside it starts at the real root (`/` or a drive). A workspace root still appears in the real path, tagged “Workspace”.
 

@@ -24,7 +24,10 @@ import { FilePreview } from './preview/index.js';
 import { bareCode, baseNameOfPath, crumbsOfDir, createRequestGate, dirnameOf, errView, isAborted, isAbsoluteish, isFailed, joinPath, listingOf, matchesFilter, relativizeToDir, sortEntries, normalizePath, workspaceOfPath, } from './types.js';
 import { ensureComponentStyles } from '../ui/css.js';
 import { EXPLORER_CSS } from './explorer-css.js';
-/** 「根」在 FS 面上的落点：POSIX 是 `/`；Windows 上由宿主解析成当前盘根。 */
+/**
+ * 「根」在 POSIX 上的落点 `/`。Windows 没有这一个根 —— 根层是盘符清单，由宿主 `op:'roots'` 给出
+ * （见下面 `roots` 状态），本常量只在 POSIX / 探不到盘符时用。
+ */
 const FS_ROOT = '/';
 /**
  * ▾ 下拉条目构造（**picker 与 dock 共用同一段代码**，差别只在入参——源实现用户 2026-09-29
@@ -39,19 +42,19 @@ const FS_ROOT = '/';
  * backdrop + 菜单本体 + `-item`（4px 8px / 最大宽 280 / 超出滚动 / 空态）。
  */
 function crumbsMenuEntries(params) {
-    const { workspaces, rootName, rootFallbackLabel, rootEntryLabel, crumbs, onPickWorkspace, onLoadDir, onLoadRoot } = params;
+    const { workspaces, roots, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
     const out = [];
-    // 根目录常驻第一行（用户 2026-11-03：原来拉开的只有工作区，根目录要放最上面）。
-    if (onLoadRoot !== undefined) {
+    // 根层常驻最上面（用户 2026-11-03：原来拉开的只有工作区，根目录要放最上面）。
+    for (const root of roots) {
         out.push(h('button', {
-            key: 'root',
+            key: `root:${root.path}`,
             type: 'button',
             role: 'menuitem',
             className: 'dshpc-fb__menu-item',
             style: { paddingLeft: 8, display: 'flex', alignItems: 'center', gap: '6px' },
-            title: rootEntryLabel,
-            onClick: onLoadRoot,
-        }, h('span', { className: 'dshpc-fb__menu-icon', style: { color: 'var(--dshpc-fg-2)' } }, h(IconFolderCloseRegular, { size: 13 })), h('span', { className: 'dshpc-fb__menu-label' }, rootEntryLabel)));
+            title: root.path,
+            onClick: () => onLoadDir?.(root.path),
+        }, h('span', { className: 'dshpc-fb__menu-icon', style: { color: 'var(--dshpc-fg-2)' } }, h(IconFolderCloseRegular, { size: 13 })), h('span', { className: 'dshpc-fb__menu-label' }, root.label)));
     }
     // 内联样式照抄兄弟项目（wsEntry 的 gap 6px 覆盖类的 2px：图标与文字的间距以它为准）。
     const wsEntry = (ws, current) => h('button', {
@@ -89,9 +92,11 @@ function crumbsMenuEntries(params) {
             return [h('div', { key: 'empty', className: 'dshpc-fb__menu-empty' }, rootFallbackLabel)];
         return crumbs.map((crumb, index) => pathEntry(crumb, index === 0 ? 0 : index - 1, index !== 0));
     }
-    // 路径段：第一段是「根」（工作区名 或 根目录）时由上面那行表达，剔除后再从下一层起算。
+    // 路径段：第一段是「根」（工作区名 / 根目录 / 盘符）时由上面那组行表达，剔除后再从下一层起算。
     const head = crumbs[0];
-    const segments = head !== undefined && (head.path === '' || head.path === '/') ? crumbs.slice(1) : crumbs;
+    const isRootHead = head !== undefined
+        && (head.path === '' || head.path === FS_ROOT || roots.some((root) => root.path === head.path));
+    const segments = isRootHead ? crumbs.slice(1) : crumbs;
     if (rootName !== '' && workspaces.includes(rootName)) {
         // 当前工作区排第一，其下路径紧跟，然后是其他工作区（保持原相对顺序）。
         out.push(wsEntry(rootName, true));
@@ -174,6 +179,25 @@ export function FileBrowser(props) {
     // 快照异步到达时会重算 + 重跑初始 effect（rootBase 在其依赖里）⇒ 自愈，无感。
     const hostWorkspaces = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot);
     const anchors = props.workspaceAnchors ?? hostWorkspaces;
+    // 根层清单：问宿主要（`op:'roots'`）。POSIX 回 `['/']`；Windows 回盘符 —— **Windows 没有「根目录」
+    // 这一个东西，根就是盘符清单**（用户 2026-11-03）。拿不到（文件面没这能力）⇒ 按 POSIX 单根。
+    const [roots, setRoots] = useState([FS_ROOT]);
+    useEffect(() => {
+        const ask = props.files.roots;
+        if (ask === undefined)
+            return;
+        let alive = true;
+        void Promise.resolve()
+            .then(() => ask.call(props.files))
+            .then((list) => {
+            if (!alive || list.length === 0)
+                return;
+            // 内容相同就不换引用：调用方每次渲染都给新的 files 对象时，否则会「effect → setState → 渲染 → effect」空转。
+            setRoots((prev) => (prev.length === list.length && prev.every((item, index) => item === list[index]) ? prev : list));
+        })
+            .catch(() => { });
+        return () => { alive = false; };
+    }, [props.files]);
     const anchorMatch = useMemo(() => workspaceOfPath(props.path, anchors), [props.path, anchors]);
     /** 相对路径的基准目录（工作区根）：匹配出的工作区 > 调用方给的 > 无（只认绝对路径）。 */
     const sessionAnchor = props.sessionId === undefined
@@ -565,13 +589,22 @@ export function FileBrowser(props) {
                     : h(Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? h('div', { className: 'dshpc-fb__row-note' }, tt('explorerTruncated')) : null))
             : null);
     }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, toPicked, dir, loadDir, tt]);
+    // 根层条目：有盘符（Windows）就一条一档；否则单条「根目录」（POSIX）。
+    // 盘符本身是实体目录 ⇒ 可以当选择目标；POSIX 的 `/` 不是（选了等于没选，用户 2026-11-03）。
+    const drives = roots.filter((root) => root !== FS_ROOT);
+    const rootRows = drives.length > 0
+        ? drives.map((path) => ({ label: path.replace(/\/+$/, ''), path, pickable: true }))
+        : [{ label: tt('explorerRootDir'), path: FS_ROOT, pickable: false }];
     // 面包屑（用户 2026-11-03 定）：**按当前目录**去比所有工作区。
-    // 命中 ⇒ 第一段是工作区名，其下按相对层级；没命中 ⇒ 第一段是「根目录」，其下是从 `/` 起的完整链。
+    // 命中 ⇒ 第一段是工作区名，其下按相对层级；没命中 ⇒ 第一段是根（「根目录」或盘符），其下逐层。
     // 判据只看 `dir`（不比 props.path）：浏览途中切进别的工作区也要立刻跟着切根。
     const owner = workspaceOfPath(dir, anchors);
     const rootLabel = owner?.title ?? '';
     const crumbs = owner === null
-        ? [{ label: tt('explorerRootDir'), path: FS_ROOT }, ...crumbsOfDir(dir)]
+        ? (/^[a-zA-Z]:/.test(normalizePath(dir))
+            // 盘符路径：根段由 crumbsOfDir 自己出（`C:`），再补一段「根目录」就重复了。
+            ? crumbsOfDir(dir)
+            : [{ label: rootRows[0]?.label ?? tt('explorerRootDir'), path: FS_ROOT }, ...crumbsOfDir(dir)])
         : [{ label: rootLabel, path: '' }, ...crumbsOfDir(relativizeToDir(dir, owner.path ?? null))];
     // md / html 都出「渲染 ⇄ 源码」切换（默认渲染）。
     const viewingIsMd = viewing !== null && /\.(md|markdown)$/i.test(viewing);
@@ -581,10 +614,9 @@ export function FileBrowser(props) {
     // 两处显示必须一致，不能 dock 有清单、picker 只有一个根目录）。
     const menuItems = crumbsMenuEntries({
         workspaces: props.workspaces ?? anchors.map((item) => item.title),
+        roots: rootRows,
         rootName: rootLabel,
         rootFallbackLabel: tt('explorerRootName'),
-        rootEntryLabel: tt('explorerRootDir'),
-        onLoadRoot: () => loadDir(FS_ROOT),
         crumbs,
         onPickWorkspace: switchWorkspace,
         onLoadDir: loadDir,
@@ -685,7 +717,7 @@ export function FileBrowser(props) {
     // ── 主体 ──
     let body;
     if (landing) {
-        const row = (key, label, target) => h('div', {
+        const row = (key, label, target, pickable = true) => h('div', {
             key,
             className: 'dshpc-fb__row',
             role: 'button',
@@ -696,8 +728,8 @@ export function FileBrowser(props) {
                     loadDir(target);
             },
         }, h('span', { className: 'dshpc-fb__row-icon' }, h(IconFolderCloseRegular, { size: 18 })), h('span', { className: 'dshpc-fb__row-name' }, label), 
-        // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 工作区根本身也要能选）。
-        picker && props.onPick !== undefined && !extsOnly
+        // 行 = 展开进去；行尾钮 = 直接选这个目录（盘符 / 工作区根能选；POSIX 的 `/` 不给选）。
+        picker && props.onPick !== undefined && !extsOnly && pickable
             ? h(Button, {
                 variant: 'outline',
                 size: 'sm',
@@ -709,7 +741,7 @@ export function FileBrowser(props) {
                 },
             }, tt('explorerPickDir'))
             : null);
-        body = h('div', { className: 'dshpc-fb__tree' }, row('root', tt('explorerRootDir'), FS_ROOT), anchors.filter((item) => item.path !== undefined && item.path !== '').map((item) => row(`ws:${item.title}`, item.title, item.path)));
+        body = h('div', { className: 'dshpc-fb__tree' }, rootRows.map((root) => row(`root:${root.path}`, root.label, root.path, root.pickable)), anchors.filter((item) => item.path !== undefined && item.path !== '').map((item) => row(`ws:${item.title}`, item.title, item.path)));
     }
     else if (viewing !== null) {
         body = h(FilePreview, {
