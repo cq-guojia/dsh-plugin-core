@@ -1,7 +1,7 @@
 # 20261103-0434-b181-浮层面板皮肤统一-modal-popover-menu: 浮层面板皮肤统一（modal/popover/menu）
 
 - **Tags**: 样式, 浮层, UI
-- **Status**: doing · 2026-11-03 04:35:52 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-03 04:48:23 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-03 04:34:34 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -134,9 +134,44 @@
 方案定稿，代码未动（用户 2026-11-03 明确「先别改」）。落地按 To Do 三步走；
 第八节列出的其他项不在本任务范围，需用户点头后另开任务。
 
+### 九、实施记录（2026-11-03，用户改口「全部合到这个任务里开始做，不要提交」）
+
+新增：
+- `src/ui/panel.css` + `panel-css.ts` + `panel-css.generated.ts`：三档皮肤唯一真源；关闭钮
+  `.dshpc-panel__close`（`.dshpc-overlay-head__close` 作别名）；`gen-css.mjs` 已登记。
+- `src/ui/panel.ts`：`PanelSurface`（皮肤载体，只管表面）+ `PanelClose`（唯一关闭钮）。
+- `src/explorer/crumbs-menu.ts`：▾ 菜单条目构造从 `FileBrowser.ts` 拆出（135 行），FileBrowser 1082 → 965 行。
+- `test/css-discipline.test.mjs`：① 色值只许在 `tokens.css`（`token-ok` 注释可豁免）；② `--dshpc-panel-*` 只许在 `panel.css`。
+
+改造：
+- `Modal` → `PanelSurface tier="modal"`，`dshpc-modal` 降为布局别名；`feedback.css` 不再带皮肤。
+- 选文件弹窗（`open.ts`）→ `OverlayMask kind="plain"` + `PanelSurface tier="popover"`；手写 backdrop、
+  内联皮肤（含 `#fff`/`#d0d7de` 兜底、`rgba(0,0,0,.28)` 遮罩）全删；`data-dshpc-picker-*` 钩子保留。
+- ▾ 选层（`FileBrowser`）与 `Picker` 下拉（`Picker.ts`）→ `tier="menu"`，删硬编码阴影与 `z-index:60`。
+- `DateTimePicker` 弹层（`.dshpc-dt__pop`）→ `tier="menu"`（原第五套皮肤，同样带 `z-index:60` 与裸阴影）。
+- 层序：`tokens.css` 加 `--dshpc-z-panel`（=z-menu）/ `--dshpc-z-popmenu`（=z-tip）两个语义别名，
+  三处字面量（1099/1100/1200/1201/60）全部换掉；已发布 token 名不动。
+- 裸色值：告警严重度四色收进 `tokens.css`（`--dshpc-sev-*`）；`loading.css` 去掉 `#f4f4f5/#18181b`
+  与整段暗色覆盖（改走 token）；`session.css` 8 处无意义兜底删除；`field.css` 兜底删除。
+  例外：`marquee.css` 的遮罩模板色 `#000` 标 `token-ok`（纯黑=完全不透明，与主题无关）。
+- 删除死样式：`.dshpc-toast*`（Toast 早已走宿主 `toast()`，这些类无消费者，还带裸 z-index 与裸阴影）。
+- `open.ts` 三处「根基准推导」合并为 `rootPathOf()`，dock 与 picker 共用。
+- 文档：`style.md` 增「浮层三档」一节（含「组件内部微层序不走 token」的边界）；
+  `requirements.md` 里指向 README 已不存在章节的死引用改成「以任务台账为准」。
+- 测试适配：`css-contract`（关闭钮皮肤唯一、PANEL_CSS 入皮肤清单）、`quality`（面板式滚动容器按类名放行，
+  且先断言面板确实带 1px 边框）、`side-sheet`（类名断言更新）。
+
+校验：`tsc --noEmit` / `build` / `build:demo` / 228 测试全过 / codelint 六层全过。**未提交**（用户要求先测）。
+
+留待（本次未做，理由写在这里）：
+- `FileBrowser` 剩余 965 行的继续拆分：余下部分共用 20+ 个闭包变量，需要先做 prop 化改造，硬拆风险大。
+- 渲染级测试：需引入 DOM 依赖（happy-dom / jsdom），属「装依赖」，等用户明确同意。
+- `PanelDock` / `SideSheet` 未并入三档：贴边家族，2026-11-02 已拍板两者皮肤一致，不是浮层。
+
 ## Execution Log
 
 <!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
      Backfill with: progress log --id 20261103-0434-b181-浮层面板皮肤统一-modal-popover-menu --note "...". -->
 - 2026-11-03 04:34:34 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-03 04:35:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 方案写入 worklog（三档皮肤 + L3 落点 + 三步迁移 + 兼容策略），并附体检：77 处 dist 字符串断言、FileBrowser 1082 行、open.ts 根基准写三遍、16 处裸色值、z-index 5 处字面量；未动代码
+- 2026-11-03 04:48:23 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按用户指令合并实施：新增 panel.css/panel.ts（三档+PanelClose）；Modal/选文件弹窗/▾选层/Picker下拉/DateTime弹层全部切档；z 语义别名；裸色值收口到 tokens（含告警四色、loading、session）；删死 toast 样式；open.ts 根基准合并；拆出 crumbs-menu.ts；新增 css-discipline 测试；228 测试与 codelint 全过；未提交
