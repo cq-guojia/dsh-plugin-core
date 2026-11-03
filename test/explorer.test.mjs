@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { crumbsOf, extOf, joinPath, mimeOf, parentOf } from '../dist/utils/index.js'
+import { placePicker } from '../dist/explorer/picker-placement.js'
 // 只引纯逻辑层：面板/预览体静态 import 官方 primitives（Node 下不可解析，那是宿主平台模块）
 import {
   anchorSessionForTitle,
@@ -343,6 +344,61 @@ test('FileBrowser 选择器：头部有「选当前」按钮', async () => {
   const pickAt = src.indexOf('dshpc-fb__pick')
   const body = src.slice(pickAt, pickAt + 900)
   assert.ok(body.includes('toPicked'), '「选当前」没有回传绝对路径')
+})
+
+// 2026-11-03（用户拍板八档方位）：面板落到哪由 `placement` 定，指定方向后**不再自动翻边**，
+// 只在超出视口时夹紧 —— 按钮贴定宽区最右边时传 bottom-end / left-start 即可不再向右溢出。
+test('placePicker：八档方位各自对齐，且任何锚点位置都不越出视口', () => {
+  const vp = { width: 2000, height: 1400 }
+  // 面板居中位置：四边都有空间，先验对齐关系（不被夹紧干扰）。
+  const anchor = { left: 900, top: 400, right: 1000, bottom: 430 }
+  const at = (placement) => placePicker(anchor, vp, placement)
+
+  // 下方：顶边 = 按钮底边 + 12；start 左缘对齐 / end 右缘对齐
+  assert.equal(at('bottom-start').top, 442)
+  assert.equal(at('bottom-start').left, 900)
+  assert.equal(at('bottom-end').left, 1000 - at('bottom-end').width)
+  // 上方：底边 = 按钮顶边 − 12
+  assert.equal(at('top-start').left, 900)
+  assert.equal(at('top-start').top + at('top-start').height, 388)
+  assert.equal(at('top-end').left, 1000 - at('top-end').width)
+  // 右侧：左缘 = 按钮右缘 + 12；start 顶边齐平 / end 底边齐平
+  assert.equal(at('right-start').left, 1012)
+  assert.equal(at('right-start').top, 400)
+  assert.equal(at('right-end').left, 1012)
+  // 左侧：右缘 = 按钮左缘 − 12
+  assert.equal(at('left-start').left + at('left-start').width, 888)
+  assert.equal(at('left-start').top, 400)
+
+  // 底边齐平那两档：锚点靠上时面板（高 660）会被视口夹紧，换成靠下的锚点才验得到对齐本身。
+  const low = { left: 900, top: 900, right: 1000, bottom: 930 }
+  const atLow = (placement) => placePicker(low, vp, placement)
+  assert.equal(atLow('right-end').left, 1012)
+  assert.equal(atLow('right-end').top + atLow('right-end').height, 930)
+  assert.equal(atLow('left-end').left + atLow('left-end').width, 888)
+  assert.equal(atLow('left-end').top + atLow('left-end').height, 930)
+  // auto = 旧行为：这种位置等价于 bottom-start（下方放得下就不翻边、不夹紧）
+  assert.deepEqual(at('auto'), at('bottom-start'))
+
+  // 四角极端锚点 × 九档：面板必须始终落在视口内（留白 EDGE = 12）
+  const spots = [
+    { left: 0, top: 0, right: 60, bottom: 30 },
+    { left: 1940, top: 0, right: 2000, bottom: 30 },
+    { left: 0, top: 1370, right: 60, bottom: 1400 },
+    { left: 1940, top: 1370, right: 2000, bottom: 1400 },
+  ]
+  const all = ['auto', 'bottom-start', 'bottom-end', 'top-start', 'top-end', 'right-start', 'right-end', 'left-start', 'left-end']
+  for (const spot of spots) {
+    for (const placement of all) {
+      const box = placePicker(spot, vp, placement)
+      const label = `${placement} @ ${spot.left},${spot.top}`
+      assert.ok(box.width > 0 && box.height > 0, `${label}：面板尺寸为 0`)
+      assert.ok(box.left >= 12, `${label}：左越界`)
+      assert.ok(box.left + box.width <= 2000 - 12, `${label}：右越界`)
+      assert.ok(box.top >= 12, `${label}：上越界`)
+      assert.ok(box.top + box.height <= 1400 - 12, `${label}：下越界`)
+    }
+  }
 })
 
 // 2026-11-03：选择结果展示只补一次尾斜杠（`/` + `/` 曾显示成 `//`，盘符会成 `C://`）。

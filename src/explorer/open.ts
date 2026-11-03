@@ -18,6 +18,7 @@ import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js'
 import { type Translate } from '../utils/i18n.js'
 import { FileBrowser } from './FileBrowser.js'
 import { getFsFace } from './fs-face.js'
+import { PICKER_MAX_H, PICKER_WIDTH, placePicker, type PickPlacement } from './picker-placement.js'
 import { isAbsoluteish, normalizePath, workspaceOfPath } from './types.js'
 import type { OfficeToPdfFace, PickedPath, PickFilter, WorkspaceAnchorItem } from './types.js'
 import { ensureComponentStyles, getStyleKit } from '../ui/css.js'
@@ -323,8 +324,23 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
 export type PickedFile = PickedPath
 
 export interface PickWorkspaceFileOptions {
-  /** 锚点元素：弹窗左缘与之对齐、优先落在它**下方**（下方不够才翻到上方）；不传 = 屏幕居中。 */
+  /** 锚点元素：弹窗贴着它弹（具体方位见 `placement`）；不传 = 屏幕居中。 */
   anchor?: HTMLElement | null
+  /**
+   * 展开方位（用户 2026-11-03 定），八档 + 默认 `'auto'`：
+   *
+   * | 值 | 面板落点 |
+   * |---|---|
+   * | `auto` | 旧行为：优先下方，下方不够翻上方，横向夹紧（不传就是它） |
+   * | `bottom-start` / `bottom-end` | 按钮下方，左缘 / 右缘对齐 |
+   * | `top-start` / `top-end` | 按钮上方，左缘 / 右缘对齐 |
+   * | `right-start` / `right-end` | 按钮右侧，顶边 / 底边齐平 |
+   * | `left-start` / `left-end` | 按钮左侧，顶边 / 底边齐平 |
+   *
+   * **指定方位后不再自动翻边**（说往左就往左），只在真的超出视口时夹紧——按钮贴着
+   * 定宽区右边界时传 `bottom-end` / `left-start` 之类，面板就不会向右溢出。
+   */
+  placement?: PickPlacement
   /** 过滤：exts = 只要这些扩展名（小写无点）；dirs = 只要文件夹；不传 = 不限。 */
   filter?: PickFilter
   officeToPdf?: OfficeToPdfFace | null
@@ -347,14 +363,8 @@ export interface PickWorkspaceFileOptions {
   translate?: Translate
 }
 
-/** 弹窗宽度（源实现 480，用户 2026-09-29 微调定值）。 */
-const PICKER_WIDTH = 480
-/** 弹窗高度上限 / 保底。 */
-const PICKER_MAX_H = 660
-/** 判定「下方放得下」的最小高度：低于它就翻到上方。 */
-const PICKER_MIN_H = 240
-/** 硬地板：锚点上下都极窄时也要给出一个能滚动的高度（此时以夹紧进视口优先）。 */
-const PICKER_MIN_FLOOR = 160
+/** 方位类型对外透出：消费方写 `placement` 时不必再 import 内部模块。 */
+export type { PickPlacement }
 
 /**
  * 弹出「选择文件」模态弹窗，Promise 返回选中结果；取消（Esc / 点外部 / ✕）resolve `null`。
@@ -393,27 +403,16 @@ export function pickWorkspaceFile(options: PickWorkspaceFileOptions): Promise<Pi
     }
     const anchor = options.anchor ?? null
     if (anchor !== null) {
-      const rect = anchor.getBoundingClientRect()
-      const GAP = 12
-      const vw = window.innerWidth
-      const vh = window.innerHeight
-      const width = Math.min(PICKER_WIDTH, vw - 2 * GAP)
-      // 垂直：先量锚点上下各自还剩多少，再决定往哪边展——高度必须跟着所选那侧的空间走
-      // （旧实现先按「上方空间」定高，锚点靠顶时算出个矮条，还硬往上方塞）。
-      const availBelow = vh - GAP - rect.bottom - GAP
-      const availAbove = rect.top - GAP - GAP
-      const below = availBelow >= PICKER_MIN_H || availBelow >= availAbove
-      const height = Math.max(Math.min(PICKER_MAX_H, below ? availBelow : availAbove), PICKER_MIN_FLOOR)
-      // 水平：与锚点左缘对齐（下拉式），右侧放不下就整体左移，最后夹紧进视口——绝不溢出屏幕。
-      const left = Math.max(GAP, Math.min(rect.left, vw - GAP - width))
-      // 垂直：**优先落在锚点下方**（下缘 + 间距），下方不够才翻到上方（上缘 - 间距 - 高）。
-      const top = below
-        ? Math.min(rect.bottom + GAP, Math.max(GAP, vh - GAP - height))
-        : Math.max(GAP, rect.top - GAP - height)
-      panelStyle.left = Math.round(left)
-      panelStyle.top = Math.round(top)
-      panelStyle.width = Math.round(width)
-      panelStyle.height = Math.round(height)
+      // 几何全在纯函数里（`picker-placement.ts`，可单测）：这里只把结果贴到 fixed 面板上。
+      const box = placePicker(
+        anchor.getBoundingClientRect(),
+        { width: window.innerWidth, height: window.innerHeight },
+        options.placement ?? 'auto',
+      )
+      panelStyle.left = box.left
+      panelStyle.top = box.top
+      panelStyle.width = box.width
+      panelStyle.height = box.height
     } else {
       panelStyle.width = `min(${PICKER_WIDTH}px,calc(100vw - 24px))`
       panelStyle.height = PICKER_MAX_H

@@ -62,6 +62,10 @@ openFilePreview({ mount })                         // 不给路径 ⇒ 根节点
 // 锚定弹窗选文件（Promise 返回**绝对路径**，不自己挂 dock）
 const r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })
 const dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // 只选文件夹
+
+// 展开方位：默认 auto（下方优先、不够翻上方）；按钮贴着定宽区右边界时改向左展开
+await pickWorkspaceFile({ anchor, placement: 'bottom-end' })   // 下方、右缘对齐
+await pickWorkspaceFile({ anchor, placement: 'left-start' })   // 左侧、顶边齐平
 ```
 
 ## API
@@ -80,3 +84,4 @@ const dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // 只�
 | `pickWorkspaceFile(opts)` | `PickWorkspaceFileOptions => Promise<PickedPath \| null>` | — | — | 锚定按钮弹出模态选文件，解析出 `{ path, isDir, workspaceRel?, workspace? }`；`path` 是**绝对路径** | Anchored modal picker resolving `{ path, isDir, workspaceRel?, workspace? }`; `path` is **absolute** |
 | `opts.anchor` | `HTMLElement` | 是 | — | 模态贴着它弹 | The modal anchors next to it |
 | `opts.filter` | `PickFilter` | — | — | `exts` 只要这些扩展名（目录仍可展开导航）；`dirs: true` 只允许选文件夹（文件不渲染） | `exts` limits files (folders still expand); `dirs: true` picks folders only (files hidden, plus a “Select this folder” action in the crumb bar) |
+| `opts.placement` | `PickPlacement` | — | 'auto' | 展开方位八档：`bottom-start` / `bottom-end`（下方，左缘 / 右缘对齐）、`top-start` / `top-end`（上方）、`right-start` / `right-end`（右侧，顶边 / 底边齐平）、`left-start` / `left-end`（左侧）；`auto` = 旧行为（下方优先、下方不够翻上方、横向夹紧）。**指定方位后不再自动翻边**，只在超出视口时夹紧——按钮贴着定宽区右边界时用 `bottom-end` / `left-start` | Expansion side, eight values: `bottom-start` / `bottom-end` (below, left / right edge aligned), `top-start` / `top-end` (above), `right-start` / `right-end` (right of the trigger, top / bottom edge aligned), `left-start` / `left-end` (left of the trigger); `auto` = old behaviour (below first, flip above when short, clamp horizontally). An explicit side **never auto-flips** — it is only clamped into the viewport, so use `bottom-end` / `left-start` when the trigger sits at the right edge of a fixed-width area |

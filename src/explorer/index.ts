@@ -5,6 +5,7 @@ export {
   type FilePreviewHandle,
   type OpenFilePreviewOptions,
   type PickedFile,
+  type PickPlacement,
   type PickWorkspaceFileOptions,
 } from './open.js'
 export { FilePreview, type FilePreviewProps } from './preview/index.js'

@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 import { type Translate } from '../utils/i18n.js';
+import { type PickPlacement } from './picker-placement.js';
 import type { OfficeToPdfFace, PickedPath, PickFilter, WorkspaceAnchorItem } from './types.js';
 type Anchors = readonly WorkspaceAnchorItem[];
 /**
@@ -72,8 +73,23 @@ export declare function openFilePreview(options: OpenFilePreviewOptions): FilePr
 /** 兼容旧名：`PickedPath` 的前身（`path` 现在是绝对路径）。 */
 export type PickedFile = PickedPath;
 export interface PickWorkspaceFileOptions {
-    /** 锚点元素：弹窗左缘与之对齐、优先落在它**下方**（下方不够才翻到上方）；不传 = 屏幕居中。 */
+    /** 锚点元素：弹窗贴着它弹（具体方位见 `placement`）；不传 = 屏幕居中。 */
     anchor?: HTMLElement | null;
+    /**
+     * 展开方位（用户 2026-11-03 定），八档 + 默认 `'auto'`：
+     *
+     * | 值 | 面板落点 |
+     * |---|---|
+     * | `auto` | 旧行为：优先下方，下方不够翻上方，横向夹紧（不传就是它） |
+     * | `bottom-start` / `bottom-end` | 按钮下方，左缘 / 右缘对齐 |
+     * | `top-start` / `top-end` | 按钮上方，左缘 / 右缘对齐 |
+     * | `right-start` / `right-end` | 按钮右侧，顶边 / 底边齐平 |
+     * | `left-start` / `left-end` | 按钮左侧，顶边 / 底边齐平 |
+     *
+     * **指定方位后不再自动翻边**（说往左就往左），只在真的超出视口时夹紧——按钮贴着
+     * 定宽区右边界时传 `bottom-end` / `left-start` 之类，面板就不会向右溢出。
+     */
+    placement?: PickPlacement;
     /** 过滤：exts = 只要这些扩展名（小写无点）；dirs = 只要文件夹；不传 = 不限。 */
     filter?: PickFilter;
     officeToPdf?: OfficeToPdfFace | null;
@@ -95,6 +111,8 @@ export interface PickWorkspaceFileOptions {
      */
     translate?: Translate;
 }
+/** 方位类型对外透出：消费方写 `placement` 时不必再 import 内部模块。 */
+export type { PickPlacement };
 /**
  * 弹出「选择文件」模态弹窗，Promise 返回选中结果；取消（Esc / 点外部 / ✕）resolve `null`。
  *
@@ -103,5 +121,4 @@ export interface PickWorkspaceFileOptions {
  * ② `picker` 形态参数（点文件即回传、行尾按钮变「选择」）。
  */
 export declare function pickWorkspaceFile(options: PickWorkspaceFileOptions): Promise<PickedPath | null>;
-export {};
 //# sourceMappingURL=open.d.ts.map

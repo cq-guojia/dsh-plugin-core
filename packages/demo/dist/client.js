@@ -2994,7 +2994,7 @@ var DICT = {
     explorerExpand: "Expand",
     explorerCollapse: "Collapse",
     explorerEnter: "Open",
-    explorerRootDir: "\u6839\u76EE\u5F55",
+    explorerRootDir: "Root",
     explorerRootName: "(workspace root)",
     explorerCrumbsAria: "Breadcrumb",
     explorerPickFile: "Pick this file",
@@ -7354,7 +7354,7 @@ function NumberInput(props) {
   (0, import_react33.useEffect)(() => {
     setText(String(value));
   }, [value]);
-  const clamp2 = (n) => Math.min(max2, Math.max(min2, n));
+  const clamp3 = (n) => Math.min(max2, Math.max(min2, n));
   const commit = (raw) => {
     if (raw.trim() === "") {
       setText(String(value));
@@ -7365,14 +7365,14 @@ function NumberInput(props) {
       setText(String(value));
       return;
     }
-    const next = clamp2(n);
+    const next = clamp3(n);
     setText(String(next));
     if (next !== value)
       onChange(next);
   };
   const bump = (dir) => {
     const base3 = Number.isFinite(Number(text2)) ? Number(text2) : value;
-    const next = clamp2(base3 + dir * step);
+    const next = clamp3(base3 + dir * step);
     setText(String(next));
     if (next !== value)
       onChange(next);
@@ -54833,6 +54833,64 @@ function getFsFace() {
   return current3;
 }
 
+// dist/explorer/picker-placement.js
+var PICKER_WIDTH = 480;
+var PICKER_MAX_H = 480;
+var PICKER_MIN_H = 240;
+var PICKER_MIN_FLOOR = 160;
+var PICKER_MIN_W = 240;
+var PICKER_GAP = 12;
+var VIEWPORT_EDGE = 12;
+function clamp2(value, low, high) {
+  return Math.min(Math.max(value, low), Math.max(low, high));
+}
+function placePicker(anchor, viewport, placement = "auto") {
+  const vw = viewport.width;
+  const vh = viewport.height;
+  const GAP2 = PICKER_GAP;
+  const EDGE = VIEWPORT_EDGE;
+  const fullWidth = Math.min(PICKER_WIDTH, Math.max(vw - 2 * EDGE, 0));
+  if (placement === "auto") {
+    const availBelow = vh - EDGE - (anchor.bottom + GAP2);
+    const availAbove = anchor.top - GAP2 - EDGE;
+    const below = availBelow >= PICKER_MIN_H || availBelow >= availAbove;
+    const height2 = Math.max(Math.min(PICKER_MAX_H, below ? availBelow : availAbove), PICKER_MIN_FLOOR);
+    const left2 = clamp2(anchor.left, EDGE, vw - EDGE - fullWidth);
+    const top3 = below ? clamp2(Math.min(anchor.bottom + GAP2, vh - EDGE - height2), EDGE, vh - EDGE - height2) : clamp2(anchor.top - GAP2 - height2, EDGE, vh - EDGE - height2);
+    return round2({ left: left2, top: top3, width: fullWidth, height: height2 });
+  }
+  const vertical = placement.startsWith("bottom") || placement.startsWith("top");
+  if (vertical) {
+    const below = placement.startsWith("bottom");
+    const startAligned2 = placement.endsWith("start");
+    const avail = below ? vh - EDGE - (anchor.bottom + GAP2) : anchor.top - GAP2 - EDGE;
+    const height2 = Math.max(Math.min(PICKER_MAX_H, avail), PICKER_MIN_FLOOR);
+    const rawLeft2 = startAligned2 ? anchor.left : anchor.right - fullWidth;
+    const left2 = clamp2(rawLeft2, EDGE, vw - EDGE - fullWidth);
+    const rawTop2 = below ? anchor.bottom + GAP2 : anchor.top - GAP2 - height2;
+    const top3 = clamp2(rawTop2, EDGE, vh - EDGE - height2);
+    return round2({ left: left2, top: top3, width: fullWidth, height: height2 });
+  }
+  const toRight = placement.startsWith("right");
+  const startAligned = placement.endsWith("start");
+  const availW = toRight ? vw - EDGE - (anchor.right + GAP2) : anchor.left - GAP2 - EDGE;
+  const width = Math.max(Math.min(PICKER_WIDTH, availW), Math.min(PICKER_MIN_W, Math.max(vw - 2 * EDGE, 0)));
+  const height = Math.min(PICKER_MAX_H, Math.max(vh - 2 * EDGE, 0));
+  const rawLeft = toRight ? anchor.right + GAP2 : anchor.left - GAP2 - width;
+  const left = clamp2(rawLeft, EDGE, vw - EDGE - width);
+  const rawTop = startAligned ? anchor.top : anchor.bottom - height;
+  const top2 = clamp2(rawTop, EDGE, vh - EDGE - height);
+  return round2({ left, top: top2, width, height });
+}
+function round2(box) {
+  return {
+    left: Math.round(box.left),
+    top: Math.round(box.top),
+    width: Math.round(box.width),
+    height: Math.round(box.height)
+  };
+}
+
 // dist/explorer/open.js
 function resolveStartPath(path, anchors, sessionId) {
   if (path === "")
@@ -54995,10 +55053,6 @@ function openFilePreview(options) {
   activePreview = { adopt, keepWidth, draw, close };
   return { close, path: opts.path ?? "" };
 }
-var PICKER_WIDTH = 480;
-var PICKER_MAX_H = 660;
-var PICKER_MIN_H = 240;
-var PICKER_MIN_FLOOR = 160;
 function pickWorkspaceFile(options) {
   return new Promise((resolve) => {
     if (typeof document === "undefined") {
@@ -55026,21 +55080,11 @@ function pickWorkspaceFile(options) {
     };
     const anchor = options.anchor ?? null;
     if (anchor !== null) {
-      const rect = anchor.getBoundingClientRect();
-      const GAP2 = 12;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const width = Math.min(PICKER_WIDTH, vw - 2 * GAP2);
-      const availBelow = vh - GAP2 - rect.bottom - GAP2;
-      const availAbove = rect.top - GAP2 - GAP2;
-      const below = availBelow >= PICKER_MIN_H || availBelow >= availAbove;
-      const height = Math.max(Math.min(PICKER_MAX_H, below ? availBelow : availAbove), PICKER_MIN_FLOOR);
-      const left = Math.max(GAP2, Math.min(rect.left, vw - GAP2 - width));
-      const top2 = below ? Math.min(rect.bottom + GAP2, Math.max(GAP2, vh - GAP2 - height)) : Math.max(GAP2, rect.top - GAP2 - height);
-      panelStyle.left = Math.round(left);
-      panelStyle.top = Math.round(top2);
-      panelStyle.width = Math.round(width);
-      panelStyle.height = Math.round(height);
+      const box = placePicker(anchor.getBoundingClientRect(), { width: window.innerWidth, height: window.innerHeight }, options.placement ?? "auto");
+      panelStyle.left = box.left;
+      panelStyle.top = box.top;
+      panelStyle.width = box.width;
+      panelStyle.height = box.height;
     } else {
       panelStyle.width = `min(${PICKER_WIDTH}px,calc(100vw - 24px))`;
       panelStyle.height = PICKER_MAX_H;
@@ -58971,7 +59015,7 @@ var docData = {
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u4F60\u81EA\u5DF1\u7684\u5E38\u91CF\uFF1A\u5BBF\u4E3B\u4E0E client \u5FC5\u987B\u7528\u540C\u4E00\u4E2A\n\n// \u2500\u2500 \u5BBF\u4E3B\u534A\u8FB9\uFF08apply\uFF09\uFF1A\u6302\u4E00\u6761\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF1B\u8BFB\u6587\u4EF6/\u5217\u76EE\u5F55\u90FD\u5728\u5B83\u4E0A\u9762\uFF09 \u2500\u2500\nserveFsRoute(ctx, { path: FS_PATH })\n\n// \u2500\u2500 client \u534A\u8FB9\uFF08apply\uFF09\uFF1A\u63A5\u4E00\u6B21\uFF08connectHost \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09 \u2500\u2500\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF1A\u4E00\u4E2A\u5BB9\u5668 + \u4E00\u4E2A\u8DEF\u5F84\u5C31\u591F\nopenFilePreview({ mount, path: '/abs/ledger' })    // \u6587\u4EF6\u5939 \u21D2 \u76EE\u5F55\u6811\uFF1B\u6587\u4EF6 \u21D2 \u76F4\u63A5\u9884\u89C8\nopenFilePreview({ mount, path: 'docs/README.md' }) // \u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\u4E5F\u884C\uFF08\u76F8\u5BF9\u8C01\u89C1\u4E0B\uFF09\nopenFilePreview({ mount })                         // \u4E0D\u7ED9\u8DEF\u5F84 \u21D2 \u6839\u8282\u70B9\uFF08\u5DE5\u4F5C\u533A\u6E05\u5355 + \u76D8\u7B26\uFF09\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE**\u7EDD\u5BF9\u8DEF\u5F84**\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // \u53EA\u9009\u6587\u4EF6\u5939"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u4F60\u81EA\u5DF1\u7684\u5E38\u91CF\uFF1A\u5BBF\u4E3B\u4E0E client \u5FC5\u987B\u7528\u540C\u4E00\u4E2A\n\n// \u2500\u2500 \u5BBF\u4E3B\u534A\u8FB9\uFF08apply\uFF09\uFF1A\u6302\u4E00\u6761\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF1B\u8BFB\u6587\u4EF6/\u5217\u76EE\u5F55\u90FD\u5728\u5B83\u4E0A\u9762\uFF09 \u2500\u2500\nserveFsRoute(ctx, { path: FS_PATH })\n\n// \u2500\u2500 client \u534A\u8FB9\uFF08apply\uFF09\uFF1A\u63A5\u4E00\u6B21\uFF08connectHost \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09 \u2500\u2500\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF1A\u4E00\u4E2A\u5BB9\u5668 + \u4E00\u4E2A\u8DEF\u5F84\u5C31\u591F\nopenFilePreview({ mount, path: '/abs/ledger' })    // \u6587\u4EF6\u5939 \u21D2 \u76EE\u5F55\u6811\uFF1B\u6587\u4EF6 \u21D2 \u76F4\u63A5\u9884\u89C8\nopenFilePreview({ mount, path: 'docs/README.md' }) // \u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\u4E5F\u884C\uFF08\u76F8\u5BF9\u8C01\u89C1\u4E0B\uFF09\nopenFilePreview({ mount })                         // \u4E0D\u7ED9\u8DEF\u5F84 \u21D2 \u6839\u8282\u70B9\uFF08\u5DE5\u4F5C\u533A\u6E05\u5355 + \u76D8\u7B26\uFF09\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE**\u7EDD\u5BF9\u8DEF\u5F84**\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // \u53EA\u9009\u6587\u4EF6\u5939\n\n// \u5C55\u5F00\u65B9\u4F4D\uFF1A\u9ED8\u8BA4 auto\uFF08\u4E0B\u65B9\u4F18\u5148\u3001\u4E0D\u591F\u7FFB\u4E0A\u65B9\uFF09\uFF1B\u6309\u94AE\u8D34\u7740\u5B9A\u5BBD\u533A\u53F3\u8FB9\u754C\u65F6\u6539\u5411\u5DE6\u5C55\u5F00\nawait pickWorkspaceFile({ anchor, placement: 'bottom-end' })   // \u4E0B\u65B9\u3001\u53F3\u7F18\u5BF9\u9F50\nawait pickWorkspaceFile({ anchor, placement: 'left-start' })   // \u5DE6\u4FA7\u3001\u9876\u8FB9\u9F50\u5E73"
       }
     ]
   },
@@ -59075,6 +59119,15 @@ var docData = {
             "desc": {
               "zh": "`exts` \u53EA\u8981\u8FD9\u4E9B\u6269\u5C55\u540D\uFF08\u76EE\u5F55\u4ECD\u53EF\u5C55\u5F00\u5BFC\u822A\uFF09\uFF1B`dirs: true` \u53EA\u5141\u8BB8\u9009\u6587\u4EF6\u5939\uFF08\u6587\u4EF6\u4E0D\u6E32\u67D3\uFF09",
               "en": "`exts` limits files (folders still expand); `dirs: true` picks folders only (files hidden, plus a \u201CSelect this folder\u201D action in the crumb bar)"
+            }
+          },
+          {
+            "name": "opts.placement",
+            "type": "PickPlacement",
+            "def": "'auto'",
+            "desc": {
+              "zh": "\u5C55\u5F00\u65B9\u4F4D\u516B\u6863\uFF1A`bottom-start` / `bottom-end`\uFF08\u4E0B\u65B9\uFF0C\u5DE6\u7F18 / \u53F3\u7F18\u5BF9\u9F50\uFF09\u3001`top-start` / `top-end`\uFF08\u4E0A\u65B9\uFF09\u3001`right-start` / `right-end`\uFF08\u53F3\u4FA7\uFF0C\u9876\u8FB9 / \u5E95\u8FB9\u9F50\u5E73\uFF09\u3001`left-start` / `left-end`\uFF08\u5DE6\u4FA7\uFF09\uFF1B`auto` = \u65E7\u884C\u4E3A\uFF08\u4E0B\u65B9\u4F18\u5148\u3001\u4E0B\u65B9\u4E0D\u591F\u7FFB\u4E0A\u65B9\u3001\u6A2A\u5411\u5939\u7D27\uFF09\u3002**\u6307\u5B9A\u65B9\u4F4D\u540E\u4E0D\u518D\u81EA\u52A8\u7FFB\u8FB9**\uFF0C\u53EA\u5728\u8D85\u51FA\u89C6\u53E3\u65F6\u5939\u7D27\u2014\u2014\u6309\u94AE\u8D34\u7740\u5B9A\u5BBD\u533A\u53F3\u8FB9\u754C\u65F6\u7528 `bottom-end` / `left-start`",
+              "en": "Expansion side, eight values: `bottom-start` / `bottom-end` (below, left / right edge aligned), `top-start` / `top-end` (above), `right-start` / `right-end` (right of the trigger, top / bottom edge aligned), `left-start` / `left-end` (left of the trigger); `auto` = old behaviour (below first, flip above when short, clamp horizontally). An explicit side **never auto-flips** \u2014 it is only clamped into the viewport, so use `bottom-end` / `left-start` when the trigger sits at the right edge of a fixed-width area"
             }
           }
         ]
@@ -65906,9 +65959,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.20.7"}`],
-            [t3("buildDemo"), `v${"0.20.7"}`],
-            [t3("buildStamp"), "261103-142124-510"]
+            [t3("buildCore"), `v${"0.20.8"}`],
+            [t3("buildDemo"), `v${"0.20.8"}`],
+            [t3("buildStamp"), "261103-145752-398"]
           ].map(
             ([label, value]) => (0, import_react86.createElement)(
               "tr",
@@ -66230,9 +66283,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react88.createElement)("span", null, `core v${"0.20.7"}`),
-          (0, import_react88.createElement)("span", null, `demo v${"0.20.7"}`),
-          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-142124-510")
+          (0, import_react88.createElement)("span", null, `core v${"0.20.8"}`),
+          (0, import_react88.createElement)("span", null, `demo v${"0.20.8"}`),
+          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-145752-398")
         )
       )
     ),

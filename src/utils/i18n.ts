@@ -581,7 +581,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     explorerExpand: 'Expand',
     explorerCollapse: 'Collapse',
     explorerEnter: 'Open',
-    explorerRootDir: '根目录',
+    explorerRootDir: 'Root',
     explorerRootName: '(workspace root)',
     explorerCrumbsAria: 'Breadcrumb',
     explorerPickFile: 'Pick this file',
