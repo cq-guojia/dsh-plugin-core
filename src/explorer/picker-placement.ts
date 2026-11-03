@@ -15,8 +15,12 @@
  * | `left-end`     | 按钮左侧，底边齐平（向左展开、底部对齐） |
  * | `auto`         | 旧行为：优先下方，下方不够翻上方，横向夹紧 |
  *
- * 关键口径：**指定方位后不再自动翻边**。用户要的是「说往左就往左」——按钮贴在定宽区
- * 最右边时传 `bottom-end` / `left-start`，面板就不会再向右溢出；只有真的超出视口才夹紧。
+ * 关键口径（用户 2026-11-03 两轮拍板）：
+ *
+ * 1. 指定方位 = **优先方位**。该侧放得下就照它（按钮贴定宽区右边界时传 `bottom-end` /
+ *    `left-start`，面板不会再向右溢出）；
+ * 2. 该侧放不下、**对侧放得下 ⇒ 自动翻边**（bottom↔top、left↔right，对齐轴保持 start/end 不变）；
+ * 3. 两侧都放不下 ⇒ 仍按所给方位落位，再**夹紧进视口**（绝不溢出）。
  */
 
 /** 展开方位。 */
@@ -70,6 +74,20 @@ function clamp(value: number, low: number, high: number): number {
 }
 
 /**
+ * 决定最终落在哪一侧：优先侧够用就守，够不上但对侧更宽敞就翻过去，两边都窄就守原侧交给夹紧。
+ *
+ * @param preferred 是否落在「正方向」（下方 / 右侧）。
+ * @param own 优先那侧的可用空间。
+ * @param other 对侧的可用空间。
+ * @param min 该侧「够用」的门槛（竖向是 `PICKER_MIN_H`，横向是 `PICKER_MIN_W`）。
+ * @returns 最终是否落在正方向。
+ */
+function flipSide(preferred: boolean, own: number, other: number, min: number): boolean {
+  if (own >= min) return preferred
+  return other > own ? !preferred : preferred
+}
+
+/**
  * 算面板盒子。
  *
  * @param anchor 锚点矩形（按钮的 `getBoundingClientRect()`）。
@@ -92,7 +110,7 @@ export function placePicker(
     // 旧行为逐字保留：先量上下剩余空间决定展向，高度跟着所选那侧走，横向夹紧。
     const availBelow = vh - EDGE - (anchor.bottom + GAP)
     const availAbove = anchor.top - GAP - EDGE
-    const below = availBelow >= PICKER_MIN_H || availBelow >= availAbove
+    const below = flipSide(true, availBelow, availAbove, PICKER_MIN_H)
     const height = Math.max(Math.min(PICKER_MAX_H, below ? availBelow : availAbove), PICKER_MIN_FLOOR)
     const left = clamp(anchor.left, EDGE, vw - EDGE - fullWidth)
     const top = below
@@ -103,11 +121,18 @@ export function placePicker(
 
   const vertical = placement.startsWith('bottom') || placement.startsWith('top')
   if (vertical) {
-    const below = placement.startsWith('bottom')
+    const belowAvail = vh - EDGE - (anchor.bottom + GAP)
+    const aboveAvail = anchor.top - GAP - EDGE
     const startAligned = placement.endsWith('start')
-    const avail = below
-      ? vh - EDGE - (anchor.bottom + GAP)
-      : anchor.top - GAP - EDGE
+    // 优先方位放不下、对侧放得下 ⇒ 翻边；两侧都窄就守住原方位，交给下面的夹紧兜底。
+    const prefersBelow = placement.startsWith('bottom')
+    const below = flipSide(
+      prefersBelow,
+      prefersBelow ? belowAvail : aboveAvail,
+      prefersBelow ? aboveAvail : belowAvail,
+      PICKER_MIN_H,
+    )
+    const avail = below ? belowAvail : aboveAvail
     const height = Math.max(Math.min(PICKER_MAX_H, avail), PICKER_MIN_FLOOR)
     const rawLeft = startAligned ? anchor.left : anchor.right - fullWidth
     const left = clamp(rawLeft, EDGE, vw - EDGE - fullWidth)
@@ -117,9 +142,17 @@ export function placePicker(
   }
 
   // 左右展开：宽度跟着那一侧的实际空间走，高度取视口高度（上下各留 EDGE）。
-  const toRight = placement.startsWith('right')
   const startAligned = placement.endsWith('start')
-  const availW = toRight ? vw - EDGE - (anchor.right + GAP) : anchor.left - GAP - EDGE
+  const rightAvail = vw - EDGE - (anchor.right + GAP)
+  const leftAvail = anchor.left - GAP - EDGE
+  const prefersRight = placement.startsWith('right')
+  const toRight = flipSide(
+    prefersRight,
+    prefersRight ? rightAvail : leftAvail,
+    prefersRight ? leftAvail : rightAvail,
+    PICKER_MIN_W,
+  )
+  const availW = toRight ? rightAvail : leftAvail
   const width = Math.max(Math.min(PICKER_WIDTH, availW), Math.min(PICKER_MIN_W, Math.max(vw - 2 * EDGE, 0)))
   const height = Math.min(PICKER_MAX_H, Math.max(vh - 2 * EDGE, 0))
   const rawLeft = toRight ? anchor.right + GAP : anchor.left - GAP - width

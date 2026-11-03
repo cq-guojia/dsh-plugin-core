@@ -380,6 +380,18 @@ test('placePicker：八档方位各自对齐，且任何锚点位置都不越出
   // auto = 旧行为：这种位置等价于 bottom-start（下方放得下就不翻边、不夹紧）
   assert.deepEqual(at('auto'), at('bottom-start'))
 
+  // 优先侧放不下、对侧放得下 ⇒ 自动翻边（对齐轴 start/end 不变）
+  const nearBottom = { left: 900, top: 1300, right: 1000, bottom: 1330 }
+  const flippedUp = placePicker(nearBottom, vp, 'bottom-start')   // 下方只剩 46 ⇒ 翻到上方
+  assert.equal(flippedUp.top + flippedUp.height, 1288)            // 底边 = 按钮顶边 − 12
+  const nearLeft = { left: 20, top: 400, right: 120, bottom: 430 }
+  const flippedRight = placePicker(nearLeft, vp, 'left-start')    // 左侧为负 ⇒ 翻到右侧
+  assert.equal(flippedRight.left, 132)                            // 左缘 = 按钮右缘 + 12
+  const nearTop = { left: 900, top: 10, right: 1000, bottom: 40 }
+  assert.equal(placePicker(nearTop, vp, 'top-start').top, 52)      // 上方不够 ⇒ 翻到下方
+  const nearRight = { left: 1900, top: 400, right: 1980, bottom: 430 }
+  assert.equal(placePicker(nearRight, vp, 'right-start').left, 1408) // 右侧不够 ⇒ 翻到左侧
+
   // 四角极端锚点 × 九档：面板必须始终落在视口内（留白 EDGE = 12）
   const spots = [
     { left: 0, top: 0, right: 60, bottom: 30 },

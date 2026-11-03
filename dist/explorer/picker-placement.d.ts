@@ -15,8 +15,12 @@
  * | `left-end`     | 按钮左侧，底边齐平（向左展开、底部对齐） |
  * | `auto`         | 旧行为：优先下方，下方不够翻上方，横向夹紧 |
  *
- * 关键口径：**指定方位后不再自动翻边**。用户要的是「说往左就往左」——按钮贴在定宽区
- * 最右边时传 `bottom-end` / `left-start`，面板就不会再向右溢出；只有真的超出视口才夹紧。
+ * 关键口径（用户 2026-11-03 两轮拍板）：
+ *
+ * 1. 指定方位 = **优先方位**。该侧放得下就照它（按钮贴定宽区右边界时传 `bottom-end` /
+ *    `left-start`，面板不会再向右溢出）；
+ * 2. 该侧放不下、**对侧放得下 ⇒ 自动翻边**（bottom↔top、left↔right，对齐轴保持 start/end 不变）；
+ * 3. 两侧都放不下 ⇒ 仍按所给方位落位，再**夹紧进视口**（绝不溢出）。
  */
 /** 展开方位。 */
 export type PickPlacement = 'auto' | 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'right-start' | 'right-end' | 'left-start' | 'left-end';

@@ -337,8 +337,9 @@ export interface PickWorkspaceFileOptions {
    * | `right-start` / `right-end` | 按钮右侧，顶边 / 底边齐平 |
    * | `left-start` / `left-end` | 按钮左侧，顶边 / 底边齐平 |
    *
-   * **指定方位后不再自动翻边**（说往左就往左），只在真的超出视口时夹紧——按钮贴着
-   * 定宽区右边界时传 `bottom-end` / `left-start` 之类，面板就不会向右溢出。
+   * 方位是**优先**而非焊死（用户 2026-11-03）：该侧放得下就照它（按钮贴定宽区右边界时传
+   * `bottom-end` / `left-start`，面板不会向右溢出）；该侧放不下、对侧放得下 ⇒ **自动翻边**
+   * （bottom↔top、left↔right，对齐轴不变）；两侧都放不下 ⇒ 守原方位再夹紧进视口。
    */
   placement?: PickPlacement
   /** 过滤：exts = 只要这些扩展名（小写无点）；dirs = 只要文件夹；不传 = 不限。 */

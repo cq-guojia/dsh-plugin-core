@@ -54844,6 +54844,11 @@ var VIEWPORT_EDGE = 12;
 function clamp2(value, low, high) {
   return Math.min(Math.max(value, low), Math.max(low, high));
 }
+function flipSide(preferred, own, other, min2) {
+  if (own >= min2)
+    return preferred;
+  return other > own ? !preferred : preferred;
+}
 function placePicker(anchor, viewport, placement = "auto") {
   const vw = viewport.width;
   const vh = viewport.height;
@@ -54853,7 +54858,7 @@ function placePicker(anchor, viewport, placement = "auto") {
   if (placement === "auto") {
     const availBelow = vh - EDGE - (anchor.bottom + GAP2);
     const availAbove = anchor.top - GAP2 - EDGE;
-    const below = availBelow >= PICKER_MIN_H || availBelow >= availAbove;
+    const below = flipSide(true, availBelow, availAbove, PICKER_MIN_H);
     const height2 = Math.max(Math.min(PICKER_MAX_H, below ? availBelow : availAbove), PICKER_MIN_FLOOR);
     const left2 = clamp2(anchor.left, EDGE, vw - EDGE - fullWidth);
     const top3 = below ? clamp2(Math.min(anchor.bottom + GAP2, vh - EDGE - height2), EDGE, vh - EDGE - height2) : clamp2(anchor.top - GAP2 - height2, EDGE, vh - EDGE - height2);
@@ -54861,9 +54866,12 @@ function placePicker(anchor, viewport, placement = "auto") {
   }
   const vertical = placement.startsWith("bottom") || placement.startsWith("top");
   if (vertical) {
-    const below = placement.startsWith("bottom");
+    const belowAvail = vh - EDGE - (anchor.bottom + GAP2);
+    const aboveAvail = anchor.top - GAP2 - EDGE;
     const startAligned2 = placement.endsWith("start");
-    const avail = below ? vh - EDGE - (anchor.bottom + GAP2) : anchor.top - GAP2 - EDGE;
+    const prefersBelow = placement.startsWith("bottom");
+    const below = flipSide(prefersBelow, prefersBelow ? belowAvail : aboveAvail, prefersBelow ? aboveAvail : belowAvail, PICKER_MIN_H);
+    const avail = below ? belowAvail : aboveAvail;
     const height2 = Math.max(Math.min(PICKER_MAX_H, avail), PICKER_MIN_FLOOR);
     const rawLeft2 = startAligned2 ? anchor.left : anchor.right - fullWidth;
     const left2 = clamp2(rawLeft2, EDGE, vw - EDGE - fullWidth);
@@ -54871,9 +54879,12 @@ function placePicker(anchor, viewport, placement = "auto") {
     const top3 = clamp2(rawTop2, EDGE, vh - EDGE - height2);
     return round2({ left: left2, top: top3, width: fullWidth, height: height2 });
   }
-  const toRight = placement.startsWith("right");
   const startAligned = placement.endsWith("start");
-  const availW = toRight ? vw - EDGE - (anchor.right + GAP2) : anchor.left - GAP2 - EDGE;
+  const rightAvail = vw - EDGE - (anchor.right + GAP2);
+  const leftAvail = anchor.left - GAP2 - EDGE;
+  const prefersRight = placement.startsWith("right");
+  const toRight = flipSide(prefersRight, prefersRight ? rightAvail : leftAvail, prefersRight ? leftAvail : rightAvail, PICKER_MIN_W);
+  const availW = toRight ? rightAvail : leftAvail;
   const width = Math.max(Math.min(PICKER_WIDTH, availW), Math.min(PICKER_MIN_W, Math.max(vw - 2 * EDGE, 0)));
   const height = Math.min(PICKER_MAX_H, Math.max(vh - 2 * EDGE, 0));
   const rawLeft = toRight ? anchor.right + GAP2 : anchor.left - GAP2 - width;
@@ -59126,8 +59137,8 @@ var docData = {
             "type": "PickPlacement",
             "def": "'auto'",
             "desc": {
-              "zh": "\u5C55\u5F00\u65B9\u4F4D\u516B\u6863\uFF1A`bottom-start` / `bottom-end`\uFF08\u4E0B\u65B9\uFF0C\u5DE6\u7F18 / \u53F3\u7F18\u5BF9\u9F50\uFF09\u3001`top-start` / `top-end`\uFF08\u4E0A\u65B9\uFF09\u3001`right-start` / `right-end`\uFF08\u53F3\u4FA7\uFF0C\u9876\u8FB9 / \u5E95\u8FB9\u9F50\u5E73\uFF09\u3001`left-start` / `left-end`\uFF08\u5DE6\u4FA7\uFF09\uFF1B`auto` = \u65E7\u884C\u4E3A\uFF08\u4E0B\u65B9\u4F18\u5148\u3001\u4E0B\u65B9\u4E0D\u591F\u7FFB\u4E0A\u65B9\u3001\u6A2A\u5411\u5939\u7D27\uFF09\u3002**\u6307\u5B9A\u65B9\u4F4D\u540E\u4E0D\u518D\u81EA\u52A8\u7FFB\u8FB9**\uFF0C\u53EA\u5728\u8D85\u51FA\u89C6\u53E3\u65F6\u5939\u7D27\u2014\u2014\u6309\u94AE\u8D34\u7740\u5B9A\u5BBD\u533A\u53F3\u8FB9\u754C\u65F6\u7528 `bottom-end` / `left-start`",
-              "en": "Expansion side, eight values: `bottom-start` / `bottom-end` (below, left / right edge aligned), `top-start` / `top-end` (above), `right-start` / `right-end` (right of the trigger, top / bottom edge aligned), `left-start` / `left-end` (left of the trigger); `auto` = old behaviour (below first, flip above when short, clamp horizontally). An explicit side **never auto-flips** \u2014 it is only clamped into the viewport, so use `bottom-end` / `left-start` when the trigger sits at the right edge of a fixed-width area"
+              "zh": "\u5C55\u5F00\u65B9\u4F4D\u516B\u6863\uFF1A`bottom-start` / `bottom-end`\uFF08\u4E0B\u65B9\uFF0C\u5DE6\u7F18 / \u53F3\u7F18\u5BF9\u9F50\uFF09\u3001`top-start` / `top-end`\uFF08\u4E0A\u65B9\uFF09\u3001`right-start` / `right-end`\uFF08\u53F3\u4FA7\uFF0C\u9876\u8FB9 / \u5E95\u8FB9\u9F50\u5E73\uFF09\u3001`left-start` / `left-end`\uFF08\u5DE6\u4FA7\uFF09\uFF1B`auto` = \u65E7\u884C\u4E3A\uFF08\u4E0B\u65B9\u4F18\u5148\u3001\u4E0B\u65B9\u4E0D\u591F\u7FFB\u4E0A\u65B9\u3001\u6A2A\u5411\u5939\u7D27\uFF09\u3002\u65B9\u4F4D\u662F**\u4F18\u5148**\uFF1A\u8BE5\u4FA7\u653E\u5F97\u4E0B\u5C31\u7167\u5B83\uFF1B\u653E\u4E0D\u4E0B\u800C\u5BF9\u4FA7\u591F \u21D2 **\u81EA\u52A8\u7FFB\u8FB9**\uFF08bottom\u2194top\u3001left\u2194right\uFF0C\u5BF9\u9F50\u8F74\u4E0D\u53D8\uFF09\uFF1B\u4E24\u4FA7\u90FD\u4E0D\u591F\u624D\u5939\u7D27\u8FDB\u89C6\u53E3\u2014\u2014\u6309\u94AE\u8D34\u7740\u5B9A\u5BBD\u533A\u53F3\u8FB9\u754C\u65F6\u7528 `bottom-end` / `left-start`",
+              "en": "Expansion side, eight values: `bottom-start` / `bottom-end` (below, left / right edge aligned), `top-start` / `top-end` (above), `right-start` / `right-end` (right of the trigger, top / bottom edge aligned), `left-start` / `left-end` (left of the trigger); `auto` = old behaviour (below first, flip above when short, clamp horizontally). The side is a **preference**: used when it fits; if it does not fit but the opposite side does, the panel **flips** (bottom\u2194top, left\u2194right, same start/end alignment); only when neither fits is it clamped into the viewport \u2014 use `bottom-end` / `left-start` when the trigger sits at the right edge of a fixed-width area"
             }
           }
         ]
@@ -65959,9 +65970,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.20.8"}`],
-            [t3("buildDemo"), `v${"0.20.8"}`],
-            [t3("buildStamp"), "261103-145752-398"]
+            [t3("buildCore"), `v${"0.20.9"}`],
+            [t3("buildDemo"), `v${"0.20.9"}`],
+            [t3("buildStamp"), "261103-151416-621"]
           ].map(
             ([label, value]) => (0, import_react86.createElement)(
               "tr",
@@ -66283,9 +66294,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react88.createElement)("span", null, `core v${"0.20.8"}`),
-          (0, import_react88.createElement)("span", null, `demo v${"0.20.8"}`),
-          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-145752-398")
+          (0, import_react88.createElement)("span", null, `core v${"0.20.9"}`),
+          (0, import_react88.createElement)("span", null, `demo v${"0.20.9"}`),
+          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-151416-621")
         )
       )
     ),

@@ -159,8 +159,8 @@ const doc: DocTopic = {
               type: 'PickPlacement',
               def: `'auto'`,
               desc: {
-                zh: '展开方位八档：`bottom-start` / `bottom-end`（下方，左缘 / 右缘对齐）、`top-start` / `top-end`（上方）、`right-start` / `right-end`（右侧，顶边 / 底边齐平）、`left-start` / `left-end`（左侧）；`auto` = 旧行为（下方优先、下方不够翻上方、横向夹紧）。**指定方位后不再自动翻边**，只在超出视口时夹紧——按钮贴着定宽区右边界时用 `bottom-end` / `left-start`',
-                en: 'Expansion side, eight values: `bottom-start` / `bottom-end` (below, left / right edge aligned), `top-start` / `top-end` (above), `right-start` / `right-end` (right of the trigger, top / bottom edge aligned), `left-start` / `left-end` (left of the trigger); `auto` = old behaviour (below first, flip above when short, clamp horizontally). An explicit side **never auto-flips** — it is only clamped into the viewport, so use `bottom-end` / `left-start` when the trigger sits at the right edge of a fixed-width area',
+                zh: '展开方位八档：`bottom-start` / `bottom-end`（下方，左缘 / 右缘对齐）、`top-start` / `top-end`（上方）、`right-start` / `right-end`（右侧，顶边 / 底边齐平）、`left-start` / `left-end`（左侧）；`auto` = 旧行为（下方优先、下方不够翻上方、横向夹紧）。方位是**优先**：该侧放得下就照它；放不下而对侧够 ⇒ **自动翻边**（bottom↔top、left↔right，对齐轴不变）；两侧都不够才夹紧进视口——按钮贴着定宽区右边界时用 `bottom-end` / `left-start`',
+                en: 'Expansion side, eight values: `bottom-start` / `bottom-end` (below, left / right edge aligned), `top-start` / `top-end` (above), `right-start` / `right-end` (right of the trigger, top / bottom edge aligned), `left-start` / `left-end` (left of the trigger); `auto` = old behaviour (below first, flip above when short, clamp horizontally). The side is a **preference**: used when it fits; if it does not fit but the opposite side does, the panel **flips** (bottom↔top, left↔right, same start/end alignment); only when neither fits is it clamped into the viewport — use `bottom-end` / `left-start` when the trigger sits at the right edge of a fixed-width area',
               },
             },
           ],
