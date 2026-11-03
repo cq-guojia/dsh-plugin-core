@@ -1,7 +1,7 @@
 # 20261103-0434-b181-浮层面板皮肤统一-modal-popover-menu: 浮层面板皮肤统一（modal/popover/menu）
 
 - **Tags**: 样式, 浮层, UI
-- **Status**: doing · 2026-11-03 05:52:17 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-03 06:23:54 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-03 04:34:34 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -34,9 +34,7 @@
 
 ## Next
 
-- 从第 1 步动手：先建 `src/ui/panel.css`（三档变量定义）与 `src/ui/panel.ts`，把 `.dshpc-modal` 现有参数
-  （`src/ui/feedback.css:3-10`：`surface-1` / `3px` / `radius-xl` / `shadow-2`）原样搬成 `--modal` 档，
-  再让 `Modal.ts` 挂 `dshpc-panel dshpc-panel--modal` 并保留 `dshpc-modal` 别名。
+- 无——三步迁移与后续两轮真机修正均已落地并随 v0.20.6 / v0.20.7 发版（见 Conclusion 与 Process 九~十三）。
 
 ## Process
 
@@ -131,8 +129,12 @@
 
 ## Conclusion
 
-方案定稿，代码未动（用户 2026-11-03 明确「先别改」）。落地按 To Do 三步走；
-第八节列出的其他项不在本任务范围，需用户点头后另开任务。
+已全部落地并随 v0.20.6 / v0.20.7 发版：三档浮层皮肤（`panel.css` 唯一真源）+ 五处消费点切档 +
+FileBrowser 拆分（landing / crumb-nav / preview-title-bar / crumbs-menu）+ z 序与裸色值收口 +
+测试补齐（238 条全绿，含 demo tsc）。真机两轮修正（选择钮档位、内距四周统一、底色透明、menu 档底色）。
+顺带修复 /bin 符号链接目录不可浏览（fs-route lstat→stat）与 not-regular-file 误文案；
+预览错误文案统一为「暂不支持此类型文件的预览」（用户 2026-11-03 定稿）。
+遗留（另开任务）：FileBrowser 目录树块继续拆分、Windows 盘符路径真机验证。
 
 ### 九、实施记录（2026-11-03，用户改口「全部合到这个任务里开始做，不要提交」）
 
@@ -240,3 +242,29 @@
 
 校验：`pnpm run build && pnpm test` 退出 0（238 全过，含 demo tsc）/ `build:demo` 通过 / codelint 六层全过。未提交。
 - 2026-11-03 05:52:17 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 真机视觉四修：面包屑「选择」改 ghost+20px 与 ✕ 等高；行尾按钮删自绘皮肤交还核心 Button；.dshpc-fb 底色透明（不再盖掉面板 surface-1）；menu 档底色改 surface-1（原页面底色在暗色下发黑）；CI 同款命令 238 全过，未提交
+
+### 十三、第三批：真机第二轮 + /bin 事故修复 + 文案定稿（2026-11-03，发版 v0.20.6 / v0.20.7）
+
+真机第二轮（用户口述）：
+
+1. **面包屑右「选当前目录」钮**：上一批改的 ghost 在面板上看不出是按钮（无底无边，与面板同色，
+   用户：「就像没有背景一样」）→ 改回 `outline`；`.dshpc-fb__pick` 的 `height:20px / padding` 覆盖删除——
+   样式域按登记顺序拼接，这组覆盖与核心 `.dshpc-btn--sm` 特异性相同、谁生效取决于渲染次序（时灵时不灵），
+   尺寸与皮肤交还核心 Button sm 档。
+2. **容器内距左右比上下宽** → 四周统一（token 档）：bar `4px 10px`→8、title `8px 14px`→8、
+   tree `6px 8px`→8、body `12px 14px`→12；`TextPreview` 内联 `12px 14px`→12。行级内距未动。
+
+/bin 事故（用户：「我选的是根目录下面的 bin，报『不是文件夹』……你是用后缀去判断的吗？」）：
+
+- 根因链：`/bin` 是指向 `usr/bin` 的符号链接（本机 `ls -ld /bin` 实证）→ `fs-route.ts` `listDir`
+  用 `lstat`（**不跟随**链接）判成非目录，报 `not-directory` → 前端转按文件预览 →
+  `readText` 用 `stat`（跟随）报 `not-regular-file` → `errView` 又把它误映射到
+  `previewNotDirectory`（「不是文件夹」）——文案与事实相反。**与后缀无关**（后缀只选预览器）。
+- 修：`listDir` 目标与子项 `lstat`→`stat`（子项中指向目录的链接标 `directory`，断链落 `other`）；
+  `errView` 的 `not-regular-file` 单独映射新 key `previewNotFile`。
+- 文案定稿（用户拍板）：`not-text` 与 `not-regular-file` 统一为「暂不支持此类型文件的预览」
+  （en: Preview not supported for this file type）。
+
+发版：v0.20.6（皮肤统一 + FileBrowser 拆分 + 真机修正入库）、v0.20.7（/bin 修复 + 文案定稿）。
+两次均 `build` + `build:demo` + `pnpm test` 238 全过 + codelint 六层全过。
+- 2026-11-03 06:23:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第三批：选当前目录钮改回 outline+尺寸交还核心 sm 档（域顺序致覆盖时灵时不灵）；容器内距四周统一 space-2/3；修 /bin 符号链接不可浏览（fs-route lstat→stat）与 not-regular-file 误文案；not-text/not-regular-file 文案统一「暂不支持此类型文件的预览」（用户定稿）；发 v0.20.6/v0.20.7，238 测试+codelint 全过
