@@ -85,7 +85,8 @@ export function InputGroup(props) {
     actions.forEach((action, i) => {
         if (action.label === undefined && (action.icon === undefined || action.icon === null))
             return;
-        const run = () => { commit(); action.onClick(); };
+        // 必须把返回值透出去：Button / IconButton 靠「返回值是不是 Promise」决定要不要转圈
+        const run = () => { commit(); return action.onClick(); };
         const off = disabled === true || action.disabled === true;
         const onlyIcon = action.label === undefined;
         nodes.push(onlyIcon

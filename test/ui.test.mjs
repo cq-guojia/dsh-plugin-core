@@ -239,6 +239,8 @@ test('Button 受控 loading（别处刷新也能点亮它）：转圈 + 禁用�
   const busy = renderToStaticMarkup(createElement(Button, { loading: true }, '保存'))
   assert.ok(busy.includes('dshpc-loader'), '受控 loading 必须转圈')
   assert.ok(busy.includes('disabled'), '受控 loading 必须禁用')
+  assert.ok(busy.includes('aria-busy="true"'), '要有文字也照样声明正在忙（与 IconButton 一致）')
+  assert.ok(!idle.includes('aria-busy'), '不转时不带 aria-busy')
 })
 
 test('Button 转圈时两个图标位都让位，只留转圈 + 文字', () => {

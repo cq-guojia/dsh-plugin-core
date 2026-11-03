@@ -559,7 +559,8 @@ export function InputPage(): ReturnType<typeof h> {
           placeholder: '改完按 Enter 提交，撤销回退到上一次提交前',
           actions: [
             { label: '返回', variant: 'ghost', onClick: () => { setIgValue('') } },
-            { label: '确定', variant: 'success', onClick: () => {} },
+            // 返回 Promise ⇒ 这枚按钮自己转圈（同 Button），调用方不用管 loading
+            { label: '确定', variant: 'success', onClick: async () => { await demoWait(1000) } },
           ],
         }),
         h(InputGroup, {

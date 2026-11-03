@@ -38,8 +38,8 @@ export interface InputGroupAction {
   disabled?: boolean
   /** 无障碍名：只有图标时必给（否则读屏只知道「按钮」）。 */
   ariaLabel?: string
-  /** 点击。 */
-  onClick: () => void
+  /** 点击。**返回 Promise 时按钮自动转圈禁用**（同 Button / IconButton）。 */
+  onClick: () => unknown
 }
 
 export interface InputGroupProps {
@@ -141,7 +141,8 @@ export function InputGroup(props: InputGroupProps): ReturnType<typeof h> {
   }
   actions.forEach((action, i) => {
     if (action.label === undefined && (action.icon === undefined || action.icon === null)) return
-    const run = (): void => { commit(); action.onClick() }
+    // 必须把返回值透出去：Button / IconButton 靠「返回值是不是 Promise」决定要不要转圈
+    const run = (): unknown => { commit(); return action.onClick() }
     const off = disabled === true || action.disabled === true
     const onlyIcon = action.label === undefined
     nodes.push(onlyIcon

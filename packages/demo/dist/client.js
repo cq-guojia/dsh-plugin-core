@@ -3980,6 +3980,8 @@ function Button(props) {
     ...rest,
     type: rest.type ?? "button",
     disabled: rest.disabled === true || loading,
+    // 与 IconButton 同一口径：文字还在，但让读屏知道它正在忙、不是单纯不可点
+    "aria-busy": loading || void 0,
     onClick: asyncClick.click,
     className: buttonClass(variant, size4, block2, icon2 !== void 0 && icon2 !== null && !loading, className2),
     style: { ...colorVars(variant, color), ...widthStyle, ...style2 }
@@ -7542,7 +7544,7 @@ function InputGroup(props) {
       return;
     const run = () => {
       commit();
-      action.onClick();
+      return action.onClick();
     };
     const off = disabled === true || action.disabled === true;
     const onlyIcon = action.label === void 0;
@@ -58444,7 +58446,7 @@ var DICT2 = {
     demoInputFamily: "Input \u5BB6\u65CF",
     inputHint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u4F20 hint \u53C2\u6570\u5373\u81EA\u52A8\u5728\u884C\u5C3E\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF08FieldHint \u672C\u4F53\u4ECD\u53EF\u5355\u72EC\u7528\uFF09\uFF1BInput \u4F20 icon \u5373\u5728\u5DE6\u4FA7\u52A0\u56FE\u6807\u69FD",
     inputGroupTitle: "InputGroup\uFF08\u7EC4\u5408\u8F93\u5165\u6846\uFF09",
-    inputGroupHint: "\u8F93\u5165\u6846 + \u540E\u7F6E\u6309\u94AE\u7EC4\u710A\u6210\u4E00\u4F53\uFF0C\u548C SplitGroup \u540C\u4E00\u5957\u76AE\u80A4\u53E3\u5F84\uFF08\u5916\u6846 / \u5706\u89D2 / 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\u90FD\u7531\u5916\u58F3\u753B\uFF09\uFF1Blabel \u662F\u524D\u7F6E\u6807\u9898\uFF08\u540C\u683C\u7070\u5E95\uFF09\uFF1Bactions \u5199\u591A\u5C11\u679A\u5C31\u6392\u591A\u5C11\uFF08\u8FD4\u56DE + \u786E\u5B9A\u3001\u56FE\u6807 / \u56FE\u6587 / \u7EAF\u6587\u5B57\u90FD\u884C\uFF09\uFF0C\u9ED8\u8BA4\u662F\u4E1A\u52A1\u8272\u5B9E\u5FC3\u6309\u94AE\u3001variant \u53EF\u6362\u4EFB\u610F\u6863\uFF1Bundoable \u5728\u6700\u524D\u9762\u52A0\u64A4\u9500\u94AE\uFF0C\u56DE\u9000\u5230\u4E0A\u4E00\u6B21\u63D0\u4EA4\u524D\u7684\u503C\uFF1Bsize \u4E09\u6863\uFF0Cheight \u76F4\u63A5\u7ED9 px \u81EA\u5B9A\u4E49\u9AD8\u5EA6",
+    inputGroupHint: "\u8F93\u5165\u6846 + \u540E\u7F6E\u6309\u94AE\u7EC4\u710A\u6210\u4E00\u4F53\uFF0C\u548C SplitGroup \u540C\u4E00\u5957\u76AE\u80A4\u53E3\u5F84\uFF08\u5916\u6846 / \u5706\u89D2 / 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\u90FD\u7531\u5916\u58F3\u753B\uFF09\uFF1Blabel \u662F\u524D\u7F6E\u6807\u9898\uFF08\u540C\u683C\u7070\u5E95\uFF09\uFF1Bactions \u5199\u591A\u5C11\u679A\u5C31\u6392\u591A\u5C11\uFF08\u8FD4\u56DE + \u786E\u5B9A\u3001\u56FE\u6807 / \u56FE\u6587 / \u7EAF\u6587\u5B57\u90FD\u884C\uFF09\uFF0C\u9ED8\u8BA4\u662F\u4E1A\u52A1\u8272\u5B9E\u5FC3\u6309\u94AE\u3001variant \u53EF\u6362\u4EFB\u610F\u6863\uFF1Bundoable \u5728\u6700\u524D\u9762\u52A0\u64A4\u9500\u94AE\uFF0C\u56DE\u9000\u5230\u4E0A\u4E00\u6B21\u63D0\u4EA4\u524D\u7684\u503C\uFF1Bsize \u4E09\u6863\uFF0Cheight \u76F4\u63A5\u7ED9 px \u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF1Baction \u7684 onClick \u8FD4\u56DE Promise \u65F6\u90A3\u679A\u6309\u94AE\u81EA\u52A8\u8F6C\u5708\u7981\u7528\uFF08\u540C Button\uFF09\uFF0C\u4E0D\u7528\u81EA\u5DF1\u7BA1 loading",
     switchTip: "\u5B98\u65B9 Switch\uFF08\u542F\u7528\u8BED\u4E49\uFF0C\u4E0D\u662F\u52FE\u9009\uFF09+ Checkbox + Segmented",
     checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF1Bbordered \u662F\u5916\u6846\u6B3E\uFF08\u6700\u53F3\uFF0C\u53EF\u70B9\u7740\u73A9\uFF09\uFF1B\u661F\u671F\u65B9\u5757\u662F\u591A\u9009\u3002icon \u5728\u524D\u3001\u53EA\u6709\u56FE\u6807\u65F6\u81EA\u52A8\u6B63\u65B9\u5F62\u3002\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362",
     segToneTitle: "Segmented \u9009\u4E2D\u7247\u914D\u8272\uFF08tone\uFF09",
@@ -58699,7 +58701,7 @@ var DICT2 = {
     demoInputFamily: "Input family",
     inputHint: "Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone); pass icon to Input to get a leading icon slot",
     inputGroupTitle: "InputGroup (input with actions)",
-    inputGroupHint: "Input and trailing buttons welded into one shell with the same skin rules as SplitGroup (frame, radius, 1px dividers and focus ring all come from the shell); label is a leading title sharing the cell; actions lays out as many buttons as you pass (back + confirm, icon / icon+text / text), coloured with Button\u2019s own semantic variants \u2014 info by default, pass success / warning / danger for those, no custom colours; undoable prepends an undo button that returns to the value before the last commit; three sizes, plus height in px for a custom height",
+    inputGroupHint: "Input and trailing buttons welded into one shell with the same skin rules as SplitGroup (frame, radius, 1px dividers and focus ring all come from the shell); label is a leading title sharing the cell; actions lays out as many buttons as you pass (back + confirm, icon / icon+text / text), coloured with Button\u2019s own semantic variants \u2014 info by default, pass success / warning / danger for those, no custom colours; undoable prepends an undo button that returns to the value before the last commit; three sizes, plus height in px for a custom height; an action whose `onClick` returns a Promise spins and disables itself (same as Button) \u2014 no loading state to manage",
     switchTip: "Official Switch (enable semantics, not a tick) + Checkbox + Segmented",
     checkboxHint: "Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select; icons lead the label and icon-only segments square themselves. Labels follow the locale",
     segToneTitle: "Segmented selected-pill colors (tone)",
@@ -60767,8 +60769,8 @@ var docData = {
             "type": "InputGroupAction[]",
             "def": "\u2014",
             "desc": {
-              "zh": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }\uFF1B\u53EA\u7ED9 icon \u9000\u5316\u6210\u6B63\u65B9\u5F62\u56FE\u6807\u94AE\uFF08ariaLabel \u5FC5\u7ED9\uFF09\uFF0C\u7ED9 label \u8D70 Button\uFF1Bvariant \u9ED8\u8BA4 info\uFF0C\u8BED\u4E49\u8272\u5C31\u7528 Button \u73B0\u6210\u7684\u6863\uFF08success / info / warning / danger\uFF09\uFF0C\u4E0D\u53E6\u8C03\u8272",
-              "en": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info \u2014 for a semantic colour pass Button\u2019s own variant (success / info / warning / danger) instead of a custom colour"
+              "zh": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }\uFF1B\u53EA\u7ED9 icon \u9000\u5316\u6210\u6B63\u65B9\u5F62\u56FE\u6807\u94AE\uFF08ariaLabel \u5FC5\u7ED9\uFF09\uFF0C\u7ED9 label \u8D70 Button\uFF1Bvariant \u9ED8\u8BA4 info\uFF0C\u8BED\u4E49\u8272\u5C31\u7528 Button \u73B0\u6210\u7684\u6863\uFF08success / info / warning / danger\uFF09\uFF0C\u4E0D\u53E6\u8C03\u8272\uFF1B**onClick \u8FD4\u56DE Promise \u65F6\u90A3\u679A\u6309\u94AE\u81EA\u52A8\u8F6C\u5708\u7981\u7528**\uFF0C\u4E0D\u7528\u81EA\u5DF1\u4F20 loading",
+              "en": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info \u2014 for a semantic colour pass Button\u2019s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** \u2014 no loading prop to manage"
             }
           },
           {
@@ -63286,7 +63288,9 @@ function InputPage() {
             { label: "\u8FD4\u56DE", variant: "ghost", onClick: () => {
               setIgValue("");
             } },
-            { label: "\u786E\u5B9A", variant: "success", onClick: () => {
+            // 返回 Promise ⇒ 这枚按钮自己转圈（同 Button），调用方不用管 loading
+            { label: "\u786E\u5B9A", variant: "success", onClick: async () => {
+              await demoWait(1e3);
             } }
           ]
         }),
@@ -66132,9 +66136,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.22.0"}`],
-            [t3("buildDemo"), `v${"0.22.0"}`],
-            [t3("buildStamp"), "261103-194030-027"]
+            [t3("buildCore"), `v${"0.22.1"}`],
+            [t3("buildDemo"), `v${"0.22.1"}`],
+            [t3("buildStamp"), "261103-195254-170"]
           ].map(
             ([label, value]) => (0, import_react85.createElement)(
               "tr",
@@ -66456,9 +66460,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react87.createElement)("span", null, `core v${"0.22.0"}`),
-          (0, import_react87.createElement)("span", null, `demo v${"0.22.0"}`),
-          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-194030-027")
+          (0, import_react87.createElement)("span", null, `core v${"0.22.1"}`),
+          (0, import_react87.createElement)("span", null, `demo v${"0.22.1"}`),
+          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-195254-170")
         )
       )
     ),

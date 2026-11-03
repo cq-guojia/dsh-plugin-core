@@ -35,8 +35,8 @@ export interface InputGroupAction {
     disabled?: boolean;
     /** 无障碍名：只有图标时必给（否则读屏只知道「按钮」）。 */
     ariaLabel?: string;
-    /** 点击。 */
-    onClick: () => void;
+    /** 点击。**返回 Promise 时按钮自动转圈禁用**（同 Button / IconButton）。 */
+    onClick: () => unknown;
 }
 export interface InputGroupProps {
     /** 当前值。 */

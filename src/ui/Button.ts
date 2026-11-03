@@ -212,6 +212,8 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     ...rest,
     type: (rest.type as string | undefined) ?? 'button',
     disabled: rest.disabled === true || loading,
+    // 与 IconButton 同一口径：文字还在，但让读屏知道它正在忙、不是单纯不可点
+    'aria-busy': loading || undefined,
     onClick: asyncClick.click,
     className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, className),
     style: { ...colorVars(variant, color), ...widthStyle, ...style },

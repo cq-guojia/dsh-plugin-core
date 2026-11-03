@@ -1830,8 +1830,8 @@ export const docData = {
             "type": "InputGroupAction[]",
             "def": "—",
             "desc": {
-              "zh": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色",
-              "en": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour"
+              "zh": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色；**onClick 返回 Promise 时那枚按钮自动转圈禁用**，不用自己传 loading",
+              "en": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** — no loading prop to manage"
             }
           },
           {
