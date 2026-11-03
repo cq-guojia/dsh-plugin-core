@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { ensureControls, getStyleKit } from './css.js';
 import { AlertModal } from './AlertModal.js';
 import { ConfirmModal } from './ConfirmModal.js';
-import { isThenable } from './thenable.js';
+import { isSuccess, isThenable } from './thenable.js';
 // ⚠️ core 的 StyleKit / i18n 都是**模块级单例**（见 css.ts 注释），不依赖 React Context，
 // 所以命令式弹窗所在的独立 root 天然能读到它们——无需手动注入插件上下文。
 // 唯一读不到的是「插件自己定义的 React Context」，那是用户的私有环境，命令式本就不继承。
@@ -80,12 +80,17 @@ export function confirmModal(opts) {
             if (closed)
                 return undefined;
             const out = (which === 'confirm' ? onConfirm : onCancel)?.();
+            // 只有明确的 false 表示「这次没成」：框留着让人重试（消费方自己去提示）
+            const settle = (value) => {
+                if (isSuccess(value))
+                    close(which === 'confirm');
+            };
             if (!isThenable(out)) {
-                close(which === 'confirm');
+                settle(out);
                 return undefined;
             }
-            // reject 不关：按钮已自己恢复可点，错误由 Button 打到控制台
-            void out.then(() => close(which === 'confirm'), () => { });
+            // reject 也不关：按钮已自己恢复可点，错误由 Button 打到控制台
+            void out.then(settle, () => { });
             return out;
         };
         entries.push({
@@ -98,6 +103,7 @@ export function confirmModal(opts) {
 /**
  * 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。`skin:"host"` 走宿主原生 Modal。
  * 回调返回 Promise 时进入 loading（按钮转圈 + 遮罩 / Esc 锁死），settle 后才真正关闭。
+ * 回调返回 `false`（同步或 resolve 成 `false`）⇒ 本次当作没成，框不关。
  */
 export function alertModal(opts) {
     if (opts.skin === 'host') {
@@ -127,11 +133,15 @@ export function alertModal(opts) {
             if (closed)
                 return undefined;
             const out = onConfirm?.();
+            const settle = (value) => {
+                if (isSuccess(value))
+                    close();
+            };
             if (!isThenable(out)) {
-                close();
+                settle(out);
                 return undefined;
             }
-            void out.then(close, () => { });
+            void out.then(settle, () => { });
             return out;
         };
         entries.push({ id, node: h(AlertModal, { ...core, onConfirm: () => run() }) });

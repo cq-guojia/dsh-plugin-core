@@ -20,6 +20,15 @@ export interface ButtonProps {
     /** 加载中：文案前显示同色小圈，并自动禁用点击。与「点击自动 loading」是或关系，任一为真就转圈。 */
     loading?: boolean;
     /**
+     * loading 时是否保留文案（默认 true）。
+     * 传 `false`：loading 期间**清掉文案**、把按钮锁在「有文案时」的宽度上，只剩一枚居中的圈，
+     * settle 后文案与自适应宽度一起回来 —— 用于文案长、不想让按钮被圈撑宽的场景。
+     *
+     * 两条前提：① 文案被清掉后读屏只剩「按钮」，`children` 不是字符串时请自己传 `aria-label`；
+     * ② 首帧就是 loading（没有「有文案的宽度」可量）时不锁宽，请改用 `width` 定宽。
+     */
+    loadingText?: boolean;
+    /**
      * 点击回调。**返回 Promise 即自动进入 loading**（转圈 + 禁用 + 防连点），settle 后自己恢复；
      * reject 会恢复并把错误打到控制台。同步返回值 = 老行为，不转圈。
      */

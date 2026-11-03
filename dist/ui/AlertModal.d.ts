@@ -12,6 +12,13 @@ export interface AlertModalProps {
     severity?: AlertSeverity;
     /** 确认按钮文案（默认 i18n「知道了」）。 */
     confirmText?: string;
+    /** 确认钮定宽（px 或任意 CSS 宽度值）；loading 转圈会把按钮撑宽，定宽后不跳。 */
+    confirmWidth?: number | string;
+    /**
+     * loading 时是否保留按钮文案（默认 true）。传 `false`：loading 期间清文字、
+     * 锁在「有文案」的宽度上、只留一枚居中的圈（见 `Button.loadingText`）。
+     */
+    loadingText?: boolean;
     /** 点遮罩是否关闭（默认 true）。 */
     closeOnMask?: boolean;
     /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */

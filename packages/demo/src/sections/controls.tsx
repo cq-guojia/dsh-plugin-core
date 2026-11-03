@@ -215,7 +215,10 @@ const CODE_BTN_STATE = `<Button variant="primary">默认</Button>
 <Button variant="outline" loading={refreshing}>保存</Button>
 
 // 把「在跑」报出去，锁死所在弹窗（弹窗传 busy）
-<Button onBusyChange={setBusy} onClick={async () => { await save() }}>保存</Button>`
+<Button onBusyChange={setBusy} onClick={async () => { await save() }}>保存</Button>
+
+// loading 时只剩一圈：文案清掉、宽度锁在「有文案」时的尺寸，settle 后还原（转圈不再把按钮撑宽）
+<Button variant="outline" loadingText={false} onClick={async () => { await save() }}>保存</Button>`
 
 const CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
 <Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`
@@ -333,7 +336,12 @@ export function ButtonPage(): ReturnType<typeof h> {
         h(Labeled, { label: '异步 / 外部 loading' },
           h(Button, { variant: 'primary', onClick: async () => { await demoWait() } }, '点了自己转圈（1.4s）'),
           h(Button, { variant: 'outline', loading: extLoading, onClick: () => setExtLoading((v) => !v) }, extLoading ? '外部刷新中…' : '点我点亮右边'),
-          h(Button, { variant: 'outline', loading: extLoading }, '被别处刷新带成 loading'))),
+          h(Button, { variant: 'outline', loading: extLoading }, '被别处刷新带成 loading')),
+        // 文案长又不想被圈撑宽 ⇒ loadingText={false}：清文案、锁住有文案时的宽度，只留一圈
+        h(Labeled, { label: 'loading 只留圈（宽度不跳）' },
+          h(Button, { variant: 'outline', loadingText: false, onClick: async () => { await demoWait() } }, '点我转圈（1.4s）'),
+          h(Button, { variant: 'primary', loadingText: false, loading: true }, '认领'),
+          h(Button, { variant: 'outline', loading: true }, '对照：加载中'))),
     ),
 
     // 自定义颜色
@@ -411,10 +419,13 @@ const CODE_INPUT_GROUP = `// 输入框 + 按钮组焊成一体；label 是前置
   value={kw}
   onChange={setKw}
   actions={[
-    { icon: <IconRefreshOutlineRegular size={14} />, ariaLabel: '重置', onClick: reset },
-    { icon: <IconSearchOutlineRegular size={14} />, label: '搜索', onClick: search },
+  { icon: <IconRefreshOutlineRegular size={14} />, ariaLabel: '重置', onClick: reset },
+  { icon: <IconSearchOutlineRegular size={14} />, label: '搜索', onClick: search },
   ]}
-/>
+  />
+
+  // 动作钮转圈会变宽 ⇒ 挤窄输入框。要不动：定宽，或让它 loading 时只剩一圈
+  actions={[{ label: '创建用户', width: 116, loadingText: false, onClick: createUser }]}
 
 // 高度自定义：height 直接给 px，压过 size 档（内件跟着撑满）
 <InputGroup value={kw} onChange={setKw} height={44} actions={[{ label: '确定', onClick: save }]} />`
@@ -572,6 +583,22 @@ export function InputPage(): ReturnType<typeof h> {
             { icon: h(IconRefreshOutlineRegular, { size: 14 }), ariaLabel: '重置', onClick: () => { setIgValue('') } },
             { icon: h(IconSearchOutlineRegular, { size: 14 }), label: '搜索', onClick: () => {} },
             { label: '提交', onClick: () => {} },
+          ],
+        }),
+        // 转圈会变宽 ⇒ 下面两条对照：不定宽时按钮变宽、输入框被挤；定宽 / 只留圈时纹丝不动
+        h(InputGroup, {
+          value: igValue,
+          onChange: setIgValue,
+          placeholder: '不定宽：点「创建用户」，按钮转圈同时变宽、输入框被挤窄',
+          actions: [{ label: '创建用户', onClick: async () => { await demoWait() } }],
+        }),
+        h(InputGroup, {
+          value: igValue,
+          onChange: setIgValue,
+          placeholder: '定宽 116 / 只留圈：转圈时按钮宽度不动',
+          actions: [
+            { label: '创建用户', width: 116, onClick: async () => { await demoWait() } },
+            { label: '创建用户', width: 116, loadingText: false, onClick: async () => { await demoWait() } },
           ],
         }),
         h(InputGroup, {
@@ -1574,7 +1601,18 @@ const ok = await confirmModal({
   onCancel: async () => { await check() },    // 取消钮也能转圈
 })
 // 组件形态自己控：confirmLoading / cancelLoading
-<ConfirmModal message="…" confirmLoading={saving} onConfirm={…} />`
+<ConfirmModal message="…" confirmLoading={saving} onConfirm={…} />
+
+// 转圈会把按钮撑宽 18px（圈 12 + 间距 6）⇒ 要不动就定宽，或让它 loading 时只剩一圈
+await confirmModal({
+  title: '认领任务', confirmText: '认领', cancelText: '取消',
+  confirmWidth: 96, cancelWidth: 88,
+  onConfirm: async () => { await claim() },
+})
+await confirmModal({
+  title: '释放任务', confirmText: '释放', loadingText: false,
+  onConfirm: async () => { await release() },
+})`
 
 const CODE_LARGE_MODAL = `// 内容弹窗：size md / lg，承载任意内容（不是「确定/取消」命令式）
 <Modal title="任务详情" onClose={close} footer={<Button variant="primary">知道了</Button>}>
@@ -1814,6 +1852,34 @@ export function FeedbackPage(): ReturnType<typeof h> {
                 notify(ok ? '意外成功' : '已取消（false）')
               },
             }, 'confirmModal() · 异步失败'),
+            // 转圈会撑宽按钮 ⇒ 两颗钮定宽，点「认领」时宽度与位置都不动
+            h(Button, {
+              variant: 'outline',
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: '认领任务',
+                  message: '点「认领」转圈 1.4 秒：两颗钮都定宽，宽度不跳、取消钮不挪。',
+                  confirmText: '认领', cancelText: '取消',
+                  confirmWidth: 96, cancelWidth: 88,
+                  onConfirm: async () => { await demoWait() },
+                })
+                notify(ok ? '已认领' : '已取消')
+              },
+            }, 'confirmModal() · 定宽'),
+            // loading 时只剩一圈：宽度锁在「有文案」时的大小，settle 后文案回来
+            h(Button, {
+              variant: 'outline',
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: '释放任务',
+                  message: '点「释放」后按钮只剩一圈：文案清掉、宽度不变，1.4 秒后一起还原。',
+                  confirmText: '释放', cancelText: '取消',
+                  loadingText: false,
+                  onConfirm: async () => { await demoWait() },
+                })
+                notify(ok ? '已释放' : '已取消')
+              },
+            }, 'confirmModal() · loading 只留圈'),
           ),
         ),
       ),

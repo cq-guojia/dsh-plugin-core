@@ -16,6 +16,15 @@ export interface ConfirmModalProps {
   confirmText?: string
   /** 取消钮文案（默认 i18n「取消」）。 */
   cancelText?: string
+  /** 确认钮定宽（px 或任意 CSS 宽度值）；loading 转圈会把按钮撑宽，定宽后不跳。 */
+  confirmWidth?: number | string
+  /** 取消钮定宽；同上。 */
+  cancelWidth?: number | string
+  /**
+   * loading 时是否保留按钮文案（默认 true）。传 `false`：loading 期间按钮清文字、
+   * 锁在「有文案」的宽度上、只留一枚居中的圈，settle 后一起还原（见 `Button.loadingText`）。
+   */
+  loadingText?: boolean
   /** 点遮罩是否关闭（默认 true；点了 = 取消）。 */
   closeOnMask?: boolean
   /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
@@ -58,8 +67,22 @@ export function ConfirmModal(props: ConfirmModalProps): ReturnType<typeof h> {
       footer: h(
         'div',
         { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } },
-        h(Button, { variant: 'outline', loading: props.cancelLoading === true, onBusyChange: setCancelBusy, onClick: () => props.onCancel?.() }, props.cancelText ?? tt('cancel')),
-        h(Button, { variant: confirmVariant, loading: props.confirmLoading === true, onBusyChange: setConfirmBusy, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('confirm')),
+        h(Button, {
+          variant: 'outline',
+          width: props.cancelWidth,
+          loadingText: props.loadingText,
+          loading: props.cancelLoading === true,
+          onBusyChange: setCancelBusy,
+          onClick: () => props.onCancel?.(),
+        }, props.cancelText ?? tt('cancel')),
+        h(Button, {
+          variant: confirmVariant,
+          width: props.confirmWidth,
+          loadingText: props.loadingText,
+          loading: props.confirmLoading === true,
+          onBusyChange: setConfirmBusy,
+          onClick: () => props.onConfirm?.(),
+        }, props.confirmText ?? tt('confirm')),
       ),
     },
     props.message ?? null,

@@ -3,7 +3,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { ensureControls, getStyleKit } from './css.js'
 import { AlertModal, type AlertModalProps } from './AlertModal.js'
 import { ConfirmModal, type ConfirmModalProps } from './ConfirmModal.js'
-import { isThenable } from './thenable.js'
+import { isSuccess, isThenable } from './thenable.js'
 
 interface HostEntry {
   id: number
@@ -80,14 +80,14 @@ type DialogHandler = () => unknown
 
 export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel' | 'confirmLoading' | 'cancelLoading'> & {
   skin?: 'core' | 'host'
-  /** 确认回调；异步期间确认钮转圈、整框不可关，resolve 后按 `true` 关闭，reject 后恢复可点。 */
+  /** 确认回调；异步期间确认钮转圈、整框不可关，resolve 后按 `true` 关闭，reject 后恢复可点；返回 `false` 不关。 */
   onConfirm?: DialogHandler
-  /** 取消 / 遮罩 / Esc 回调；异步语义同 `onConfirm`，resolve 后按 `false` 关闭。 */
+  /** 取消 / 遮罩 / Esc 回调；异步语义同 `onConfirm`，resolve 后按 `false` 关闭（返回 `false` 同样不关）。 */
   onCancel?: DialogHandler
 }
 export type AlertOptions = Omit<AlertModalProps, 'onConfirm' | 'confirmLoading'> & {
   skin?: 'core' | 'host'
-  /** 确认回调（遮罩 / Esc 同一个出口）；异步期间转圈并锁死关闭，resolve 后才关。 */
+  /** 确认回调（遮罩 / Esc 同一个出口）；异步期间转圈并锁死关闭，settle 后才关，返回 `false` 不关。 */
   onConfirm?: DialogHandler
 }
 
@@ -123,12 +123,16 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
     const run = (which: 'confirm' | 'cancel'): unknown => {
       if (closed) return undefined
       const out = (which === 'confirm' ? onConfirm : onCancel)?.()
+      // 只有明确的 false 表示「这次没成」：框留着让人重试（消费方自己去提示）
+      const settle = (value: unknown): void => {
+        if (isSuccess(value)) close(which === 'confirm')
+      }
       if (!isThenable(out)) {
-        close(which === 'confirm')
+        settle(out)
         return undefined
       }
-      // reject 不关：按钮已自己恢复可点，错误由 Button 打到控制台
-      void out.then(() => close(which === 'confirm'), () => {})
+      // reject 也不关：按钮已自己恢复可点，错误由 Button 打到控制台
+      void out.then(settle, () => {})
       return out
     }
     entries.push({
@@ -142,6 +146,7 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
 /**
  * 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。`skin:"host"` 走宿主原生 Modal。
  * 回调返回 Promise 时进入 loading（按钮转圈 + 遮罩 / Esc 锁死），settle 后才真正关闭。
+ * 回调返回 `false`（同步或 resolve 成 `false`）⇒ 本次当作没成，框不关。
  */
 export function alertModal(opts: AlertOptions): Promise<void> {
   if (opts.skin === 'host') {
@@ -169,11 +174,14 @@ export function alertModal(opts: AlertOptions): Promise<void> {
     const run = (): unknown => {
       if (closed) return undefined
       const out = onConfirm?.()
+      const settle = (value: unknown): void => {
+        if (isSuccess(value)) close()
+      }
       if (!isThenable(out)) {
-        close()
+        settle(out)
         return undefined
       }
-      void out.then(close, () => {})
+      void out.then(settle, () => {})
       return out
     }
     entries.push({ id, node: h(AlertModal, { ...core, onConfirm: () => run() }) })

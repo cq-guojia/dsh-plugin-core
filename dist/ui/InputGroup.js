@@ -104,6 +104,8 @@ export function InputGroup(props) {
                 variant: action.variant ?? 'info',
                 size,
                 icon: action.icon,
+                width: action.width,
+                loadingText: action.loadingText,
                 disabled: off,
                 onClick: run,
             }, action.label));

@@ -5,7 +5,7 @@ import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/controls/field-css.generated.js'
 import { AlertModal, Button, Chip, ConfirmModal, IconButton, Input, InputGroup, Modal, Segmented, SideSheet, SplitGroup } from '../dist/ui/index.js'
-import { isThenable } from '../dist/ui/thenable.js'
+import { isSuccess, isThenable } from '../dist/ui/thenable.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -279,6 +279,62 @@ test('isThenable 只认带 then 的东西（Button 自动 loading 的判据）',
   const fake = Object.create(null)
   Reflect.set(fake, 'then', () => {})
   assert.equal(isThenable(fake), true)
+})
+
+test('Button loadingText={false}：loading 时清文案、保无障碍名、只留常规图标位的圈', () => {
+  const idle = renderToStaticMarkup(createElement(Button, null, '保存'))
+  assert.ok(idle.includes('保存'), '平时文案在')
+  assert.ok(!idle.includes('dshpc-loader'), '平时没有圈')
+
+  const busy = renderToStaticMarkup(createElement(Button, { loading: true, loadingText: false }, '保存'))
+  assert.ok(!busy.includes('>保存<'), 'loading 时文案节点必须清掉（aria-label 里的文字不算）')
+  assert.ok(busy.includes('dshpc-loader'), '必须转圈')
+  assert.ok(busy.includes('aria-label="保存"'), '文案清掉后读屏名称要自动补上')
+  assert.ok(busy.includes('dshpc-btn__icon'), '圈要进常规图标容器，尺寸才与 icon 一致')
+})
+
+test('Button loadingText={false} 不覆盖调用方传的 aria-label', () => {
+  const busy = renderToStaticMarkup(createElement(
+    Button, { loading: true, loadingText: false, 'aria-label': '正在保存' }, '保存',
+  ))
+  assert.ok(busy.includes('aria-label="正在保存"'))
+})
+
+test('Button 默认 loading 仍保留文案（外观不变）', () => {
+  const busy = renderToStaticMarkup(createElement(Button, { loading: true }, '保存'))
+  assert.ok(busy.includes('保存'), '默认不动文案')
+  assert.ok(busy.includes('dshpc-loader'))
+})
+
+test('ConfirmModal 暴露两颗钮的定宽', () => {
+  const html = renderToStaticMarkup(createElement(ConfirmModal, {
+    title: '确认', confirmWidth: 120, cancelWidth: 96,
+  }))
+  assert.ok(html.includes('width:120px'), '确认钮定宽要落到按钮 style')
+  assert.ok(html.includes('width:96px'), '取消钮定宽要落到按钮 style')
+})
+
+test('AlertModal 暴露确认钮定宽', () => {
+  const html = renderToStaticMarkup(createElement(AlertModal, { title: '提示', confirmWidth: 88 }))
+  assert.ok(html.includes('width:88px'))
+})
+
+test('InputGroupAction 暴露定宽（转圈不挤输入框）', () => {
+  const html = renderToStaticMarkup(createElement(InputGroup, {
+    value: 'u',
+    onChange: () => {},
+    actions: [{ label: '创建用户', width: 120, onClick: () => {} }],
+  }))
+  assert.ok(html.includes('width:120px'))
+})
+
+test('isSuccess：只有明确的 false 算没成，其余照常关（命令式弹窗的收尾判据）', () => {
+  assert.equal(isSuccess(false), false)
+  assert.equal(isSuccess(true), true)
+  assert.equal(isSuccess(undefined), true)
+  assert.equal(isSuccess(null), true)
+  assert.equal(isSuccess(0), true)
+  assert.equal(isSuccess(''), true)
 })
 
 test('Modal busy：✕ 不渲染；不 busy 时✕在', () => {

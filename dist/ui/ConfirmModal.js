@@ -25,7 +25,21 @@ export function ConfirmModal(props) {
         closeOnMask: props.closeOnMask,
         busy,
         onClose: props.onCancel,
-        footer: h('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, h(Button, { variant: 'outline', loading: props.cancelLoading === true, onBusyChange: setCancelBusy, onClick: () => props.onCancel?.() }, props.cancelText ?? tt('cancel')), h(Button, { variant: confirmVariant, loading: props.confirmLoading === true, onBusyChange: setConfirmBusy, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('confirm'))),
+        footer: h('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, h(Button, {
+            variant: 'outline',
+            width: props.cancelWidth,
+            loadingText: props.loadingText,
+            loading: props.cancelLoading === true,
+            onBusyChange: setCancelBusy,
+            onClick: () => props.onCancel?.(),
+        }, props.cancelText ?? tt('cancel')), h(Button, {
+            variant: confirmVariant,
+            width: props.confirmWidth,
+            loadingText: props.loadingText,
+            loading: props.confirmLoading === true,
+            onBusyChange: setConfirmBusy,
+            onClick: () => props.onConfirm?.(),
+        }, props.confirmText ?? tt('confirm'))),
     }, props.message ?? null);
 }
 //# sourceMappingURL=ConfirmModal.js.map

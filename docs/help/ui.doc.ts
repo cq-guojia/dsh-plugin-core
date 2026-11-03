@@ -311,6 +311,10 @@ const doc: DocTopic = {
           en: 'Both share one loading semantics: a Promise-returning `onClick` spins (an icon button swaps its icon for the spinner, keeps `aria-label` and adds `aria-busy`), `onBusyChange` reports "running", and the controlled `loading` prop is OR-ed in — an external refresh lights the same button too. While spinning, the button’s own icon slots (`icon` / `iconRight`) all step aside: spinner plus label only.',
         },
         {
+          zh: 'loading 会把前置圈插进按钮：无 icon 的按钮因此宽出 18px（圈 12 + 间距 6），把旁边的按钮挤开。要完全不跳有两条路：给 `width` 定宽（按最长文案 + 18px 留），或传 `loadingText={false}` 让 loading 时只剩一圈。',
+          en: 'Loading inserts the spinner into the button, so a button without an icon grows 18px (12px spinner + 6px gap) and shoves its neighbours. To keep it rock-steady, either set `width` (longest label + 18px) or pass `loadingText={false}` so only the spinner remains while loading.',
+        },
+        {
           zh: 'Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三档总高 24 / 28 / 32）、`bordered`（1px 外框，总高不变）、`multiple`（多选）。外观只有一套：灰底轨道 + 白色选中片，选中片的描边环与阴影由宿主 elevation token 提供（离线兜底值没有那圈环）。选中片配色只经 `tone`：传内置色名（与 Chip 同名的 business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate）时底与字由核心定、深浅两主题各自成立；传 `{ bg, fg }` 时两个主题都用调用方这一对颜色（对比度由调用方负责）。段内 `icon` 是前置图标槽（官方图标组件 / 数组 / 自绘节点均可），`label` 也可传节点；顺序固定为 icon → label → count。只有图标（无文字 / 计数 / 角标）时该段自动变正方形（宽 = 段高），读屏名用 `ariaLabel`，缺省退回 `tooltip`。段内 `count`（弱化灰字，选中段内自动跟着选中片字色提亮）/ `badge`（红角标）接受 `number | string`：数字 ≤0 不显示，字符串原样显示（如 `1K` / `99+`）。',
           en: 'Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). The selected pill’s colors go through `tone` only: a built-in color name (business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate, same names as Chip) lets the core pick background and text per theme; `{ bg, fg }` uses that pair verbatim in both themes (contrast is the caller’s call). An item’s leading `icon` takes any node (official icon component, array, or custom); `label` also accepts a node; order is always icon → label → count. With only an icon (no label / count / badge) the segment squares itself (width = segment height), and the accessible name comes from `ariaLabel`, falling back to `tooltip`. An item’s `count` (muted text; auto-lightened to follow the selected pill’s text color while selected) and `badge` (red pill) take `number | string`: numbers ≤0 render nothing, strings render as given (e.g. `\'1K\'` / `\'99+\'`).',
         },
@@ -325,6 +329,7 @@ const doc: DocTopic = {
             { name: 'iconRight', type: 'ReactNode', def: '—', desc: { zh: '后置图标（展开箭头、外链）', en: 'Trailing icon (expand arrow, external link)' } },
             { name: 'color', type: 'string', def: '—', desc: { zh: '自定义主色：实心档作底色，线框 / 无底档作主色', en: 'Custom main color: background for solid tiers, main color for outline/bare' } },
             { name: 'loading', type: 'boolean', def: "'false'", desc: { zh: '受控 loading：文案前显示同色小圈并自动 disabled（别处刷新也能点亮它）；与「点击自动 loading」取或', en: 'Controlled loading: same-color spinner before the label plus auto-disable (an external refresh can light it up too); OR-ed with automatic click loading' } },
+            { name: 'loadingText', type: 'boolean', def: 'true', desc: { zh: '传 false：loading 时清掉文案、把按钮锁在「有文案时」的宽度上、只留一枚居中的圈；settle 后文案与自适应宽度一起还原。文案清掉后读屏靠 aria-label（字符串 children 自动补），首帧就是 loading 时锁不到宽，改用 width', en: 'Pass false to drop the label while loading, freeze the button at its labelled width and show a single centred spinner; label and auto width come back on settle. Screen readers fall back to aria-label (auto-filled for string children); a button that starts out loading has no labelled width to freeze — set width instead' } },
             { name: 'onClick', type: '(...) => unknown', def: '—', desc: { zh: '**返回 Promise 即自动 loading**：转圈 + 禁用 + 防连点，settle 后自己恢复；reject 也恢复并把错误打到控制台。同步返回值 = 老行为', en: '**Returning a Promise enables loading automatically**: spinner, disabled, no double-clicks, restored on settle; a rejection also restores and logs the error. Sync return values behave as before' } },
             { name: 'onBusyChange', type: '(busy: boolean) => void', def: '—', desc: { zh: '把「这个按钮正在跑」报出去（配合 `Modal` / `SideSheet` 的 `busy` 锁死关闭），不改变按钮自身行为', en: 'Reports "this button is running" outward (pair with `busy` on `Modal` / `SideSheet` to lock closing); does not change the button itself' } },
             { name: 'block', type: 'boolean', def: "'false'", desc: { zh: '撑满父宽', en: 'Fill parent width' } },
@@ -473,7 +478,7 @@ const doc: DocTopic = {
           rows: [
             { name: 'value / onChange(v)', type: 'string / (v: string) => void', def: '—', desc: { zh: '受控值', en: 'Controlled value' } },
             { name: 'label', type: 'string', def: '—', desc: { zh: '前置标题（同格灰底）；同时作为整组无障碍名的兜底', en: 'Leading title in the same cell (sunken background); also the fallback accessible name for the group' } },
-            { name: 'actions', type: 'InputGroupAction[]', def: '—', desc: { zh: '{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色；**onClick 返回 Promise 时那枚按钮自动转圈禁用**，不用自己传 loading', en: '{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** — no loading prop to manage' } },
+            { name: 'actions', type: 'InputGroupAction[]', def: '—', desc: { zh: '{ icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色；**onClick 返回 Promise 时那枚按钮自动转圈禁用**，不用自己传 loading；转圈会把按钮撑宽并挤窄输入框，用 width 或 loadingText={false} 压住', en: '{ icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** — no loading prop to manage; spinning widens the button and squeezes the input, so hold it with width or loadingText={false}' } },
             { name: 'undoable / undoLabel', type: 'boolean / string', def: "false / '撤销'", desc: { zh: '最前面加撤销钮，回到上一次提交前的值', en: 'Prepends an undo button returning to the value before the last commit' } },
             { name: 'size / height', type: "'sm' | 'md' | 'lg' / number(px)", def: "'lg' / —", desc: { zh: 'height 给了就压过 size 档', en: 'height overrides the size preset' } },
             { name: 'error / disabled', type: 'boolean', def: '—', desc: { zh: 'error 描红整组；disabled 禁用输入与所有按钮', en: 'error turns the whole shell red; disabled disables the input and every button' } },
@@ -760,6 +765,14 @@ const doc: DocTopic = {
           zh: '遮罩右边界读 `--dshpc-page-inset-right`（多个 dock 求和），自动让开右侧分栏，弹窗在**剩余区域**居中。弹窗无需任何遮罩参数；也别自己量分栏宽度（挂载异步，恒为 0）。',
           en: 'The mask’s right edge reads `--dshpc-page-inset-right` (summed across docks) and yields to the right column, centering the dialog in the **remaining** area. The dialog needs no mask props; never measure the column yourself (mounting is async, it always reads 0).',
         },
+        {
+          zh: '命令式 `confirmModal(opts)` / `alertModal(opts)` 返回 Promise：前者 resolve `true`（确定）或 `false`（取消 / 遮罩 / Esc），后者关闭即 resolve。回调返回 Promise 时对应按钮自己转圈、整框锁死，settle 后才关。',
+          en: 'The imperative `confirmModal(opts)` / `alertModal(opts)` return a Promise: the former resolves `true` (confirmed) or `false` (cancel / mask / Esc), the latter resolves on close. When a callback returns a Promise, its button spins and the dialog locks until it settles.',
+        },
+        {
+          zh: '回调的返回值决定关不关：**只有 `false`**（同步返回，或 resolve 成 `false`）表示这次没成 —— 框留着让人重试；`true` / `undefined` / 其他返回值照常关；reject 也不关（错误打到控制台）。失败提示由回调自己出，调用点不必包 `try/catch`。',
+          en: 'The callback’s return value decides whether it closes: **only `false`** (returned directly, or resolved to `false`) means it did not succeed — the dialog stays for a retry; `true` / `undefined` / anything else closes as usual; a rejection also keeps it open (the error is logged). The callback owns its failure message, so call sites need no `try/catch`.',
+        },
       ],
       api: [
         {
@@ -798,6 +811,44 @@ const doc: DocTopic = {
             { name: 'footerDivider', type: 'boolean', def: "'true'", desc: { zh: '底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有）', en: 'The divider above the footer; pass false to drop it (sm dialogs never have one)' } },
             { name: 'className', type: 'string', def: '—', desc: { zh: '追加 class（只补布局 / 视觉修饰，别覆盖皮肤）', en: 'Extra class (layout / visual tweaks only; do not override the skin)' } },
             { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '主体', en: 'Body' } },
+          ],
+        },
+        {
+          id: 'ui-confirm-dialog',
+          rows: [
+            { name: 'title / message', type: 'ReactNode', def: '—', desc: { zh: '标题 / 说明文字或任意内容；无标题时整条头部消失', en: 'Title / body text or any content; no title means no header row' } },
+            { name: 'tone', type: "'primary' | 'danger' | 'warning'", def: "'primary'", desc: { zh: '确认钮语义档（决定按钮颜色）', en: 'Confirm button tone (sets its colour)' } },
+            { name: 'confirmText / cancelText', type: 'string', def: '内置字典「确定」/「取消」', desc: { zh: '按钮文案', en: 'Button labels' } },
+            { name: 'confirmWidth / cancelWidth', type: 'number | string', def: '—', desc: { zh: '两颗钮各自定宽（px 或任意 CSS 宽度）；loading 转圈会把按钮撑宽，定宽后不跳', en: 'Per-button fixed width (px or any CSS width); loading would otherwise widen the button and shift its neighbour' } },
+            { name: 'loadingText', type: 'boolean', def: 'true', desc: { zh: '传 false：loading 时两颗钮清文案、锁住有文案的宽度、只留居中的圈（见 `Button.loadingText`）', en: 'Pass false: while loading, both buttons drop their labels, freeze at the labelled width and show a centred spinner (see `Button.loadingText`)' } },
+            { name: 'onConfirm / onCancel', type: '() => unknown', def: '—', desc: { zh: '确认 / 取消回调；返回 Promise 时按钮转圈、整框锁死，settle 后恢复；返回 `false` 不关', en: 'Confirm / cancel callback; a Promise makes its button spin and locks the dialog until it settles; `false` keeps it open' } },
+            { name: 'confirmLoading / cancelLoading', type: 'boolean', def: 'false', desc: { zh: '外部驱动对应按钮 loading，与按钮自身异步状态取或', en: 'External loading for that button, OR-ed with its own async state' } },
+            { name: 'closeOnMask', type: 'boolean', def: "'true'", desc: { zh: '点遮罩关闭（等于取消）', en: 'Close on mask click (treated as cancel)' } },
+            { name: 'size', type: 'ModalSize', def: "'sm'", desc: { zh: '尺寸档', en: 'Size tier' } },
+            { name: 'translate', type: 'Translate', def: '内置字典', desc: { zh: '覆盖确定 / 取消文案', en: 'Override confirm / cancel copy' } },
+          ],
+        },
+        {
+          id: 'ui-alert-dialog',
+          rows: [
+            { name: 'title / message', type: 'ReactNode', def: '—', desc: { zh: '标题 / 说明文字或任意内容；无标题时整条头部消失', en: 'Title / body text or any content; no title means no header row' } },
+            { name: 'severity', type: "'info' | 'success' | 'warning' | 'error'", def: "'info'", desc: { zh: '信号档：头部图标与配色由它决定', en: 'Signal tier: sets the header glyph and colour' } },
+            { name: 'confirmText', type: 'string', def: '内置字典「知道了」', desc: { zh: '按钮文案', en: 'Button label' } },
+            { name: 'confirmWidth', type: 'number | string', def: '—', desc: { zh: '确认钮定宽（px 或任意 CSS 宽度）；loading 转圈会把按钮撑宽，定宽后不跳', en: 'Fixed width for the confirm button (px or any CSS width); loading would otherwise widen it' } },
+            { name: 'loadingText', type: 'boolean', def: 'true', desc: { zh: '传 false：loading 时清文案、锁住有文案的宽度、只留居中的圈（见 `Button.loadingText`）', en: 'Pass false: while loading, drop the label, freeze at the labelled width and show a centred spinner (see `Button.loadingText`)' } },
+            { name: 'onConfirm', type: '() => unknown', def: '—', desc: { zh: '确认 / 遮罩 / Esc 的统一出口；返回 Promise 时转圈锁框，返回 `false` 不关', en: 'Single exit for confirm / mask / Esc; a Promise spins and locks it, `false` keeps it open' } },
+            { name: 'confirmLoading', type: 'boolean', def: 'false', desc: { zh: '外部驱动按钮 loading，与按钮自身异步状态取或', en: 'External button loading, OR-ed with its own async state' } },
+            { name: 'closeOnMask', type: 'boolean', def: "'true'", desc: { zh: '点遮罩关闭', en: 'Close on mask click' } },
+            { name: 'size', type: 'ModalSize', def: "'sm'", desc: { zh: '尺寸档', en: 'Size tier' } },
+            { name: 'translate', type: 'Translate', def: '内置字典', desc: { zh: '覆盖按钮文案', en: 'Override the button copy' } },
+          ],
+        },
+        {
+          id: 'ui-imperative-dialog',
+          rows: [
+            { name: 'confirmModal(opts)', type: 'Promise<boolean>', def: '—', desc: { zh: '命令式确认框；opts 同 `ConfirmModal`，另有 `skin`；`true` = 确定', en: 'Imperative confirm; opts match `ConfirmModal` plus `skin`; `true` = confirmed' } },
+            { name: 'alertModal(opts)', type: 'Promise<void>', def: '—', desc: { zh: '命令式警告框；opts 同 `AlertModal`，另有 `skin`；关闭即 resolve', en: 'Imperative alert; opts match `AlertModal` plus `skin`; resolves on close' } },
+            { name: 'skin', type: "'core' | 'host'", def: "'core'", desc: { zh: 'host 走宿主原生 Modal（需先引入适配层 `official.js`，未注册则回落 core 并告警）', en: 'host uses the host’s native Modal (requires the `official.js` adapter; falls back to core with a warning when unregistered)' } },
           ],
         },
       ],

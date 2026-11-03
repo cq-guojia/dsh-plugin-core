@@ -33,6 +33,13 @@ export interface InputGroupAction {
     variant?: ButtonVariant;
     /** 单钮禁用。 */
     disabled?: boolean;
+    /** 定宽（px 或任意 CSS 宽度值）；loading 转圈会把按钮撑宽并挤到输入框，定宽后不跳。 */
+    width?: number | string;
+    /**
+     * loading 时是否保留按钮文案（默认 true）。传 `false`：loading 期间清文字、
+     * 锁在「有文案」的宽度上、只留一枚居中的圈（见 `Button.loadingText`）。
+     */
+    loadingText?: boolean;
     /** 无障碍名：只有图标时必给（否则读屏只知道「按钮」）。 */
     ariaLabel?: string;
     /** 点击。**返回 Promise 时按钮自动转圈禁用**（同 Button / IconButton）。 */

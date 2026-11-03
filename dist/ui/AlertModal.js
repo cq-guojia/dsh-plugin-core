@@ -30,7 +30,14 @@ export function AlertModal(props) {
         closeOnMask: props.closeOnMask,
         busy,
         onClose: props.onConfirm,
-        footer: h(Button, { variant: 'primary', loading: props.confirmLoading === true, onBusyChange: setRunning, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('dialogOk')),
+        footer: h(Button, {
+            variant: 'primary',
+            width: props.confirmWidth,
+            loadingText: props.loadingText,
+            loading: props.confirmLoading === true,
+            onBusyChange: setRunning,
+            onClick: () => props.onConfirm?.(),
+        }, props.confirmText ?? tt('dialogOk')),
     }, props.message ?? null);
 }
 //# sourceMappingURL=AlertModal.js.map

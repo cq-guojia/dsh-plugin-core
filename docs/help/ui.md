@@ -47,6 +47,10 @@ IconButton：variant: plain|outline|danger（默认 plain，**无底色**）、s
 
 > EN: Both share one loading semantics: a Promise-returning `onClick` spins (an icon button swaps its icon for the spinner, keeps `aria-label` and adds `aria-busy`), `onBusyChange` reports "running", and the controlled `loading` prop is OR-ed in — an external refresh lights the same button too. While spinning, the button’s own icon slots (`icon` / `iconRight`) all step aside: spinner plus label only.
 
+loading 会把前置圈插进按钮：无 icon 的按钮因此宽出 18px（圈 12 + 间距 6），把旁边的按钮挤开。要完全不跳有两条路：给 `width` 定宽（按最长文案 + 18px 留），或传 `loadingText={false}` 让 loading 时只剩一圈。
+
+> EN: Loading inserts the spinner into the button, so a button without an icon grows 18px (12px spinner + 6px gap) and shoves its neighbours. To keep it rock-steady, either set `width` (longest label + 18px) or pass `loadingText={false}` so only the spinner remains while loading.
+
 Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三档总高 24 / 28 / 32）、`bordered`（1px 外框，总高不变）、`multiple`（多选）。外观只有一套：灰底轨道 + 白色选中片，选中片的描边环与阴影由宿主 elevation token 提供（离线兜底值没有那圈环）。选中片配色只经 `tone`：传内置色名（与 Chip 同名的 business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate）时底与字由核心定、深浅两主题各自成立；传 `{ bg, fg }` 时两个主题都用调用方这一对颜色（对比度由调用方负责）。段内 `icon` 是前置图标槽（官方图标组件 / 数组 / 自绘节点均可），`label` 也可传节点；顺序固定为 icon → label → count。只有图标（无文字 / 计数 / 角标）时该段自动变正方形（宽 = 段高），读屏名用 `ariaLabel`，缺省退回 `tooltip`。段内 `count`（弱化灰字，选中段内自动跟着选中片字色提亮）/ `badge`（红角标）接受 `number | string`：数字 ≤0 不显示，字符串原样显示（如 `1K` / `99+`）。
 
 > EN: Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). The selected pill’s colors go through `tone` only: a built-in color name (business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate, same names as Chip) lets the core pick background and text per theme; `{ bg, fg }` uses that pair verbatim in both themes (contrast is the caller’s call). An item’s leading `icon` takes any node (official icon component, array, or custom); `label` also accepts a node; order is always icon → label → count. With only an icon (no label / count / badge) the segment squares itself (width = segment height), and the accessible name comes from `ariaLabel`, falling back to `tooltip`. An item’s `count` (muted text; auto-lightened to follow the selected pill’s text color while selected) and `badge` (red pill) take `number | string`: numbers ≤0 render nothing, strings render as given (e.g. `'1K'` / `'99+'`).
@@ -59,6 +63,7 @@ Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三�
 | `iconRight` | `ReactNode` | — | 后置图标（展开箭头、外链） | Trailing icon (expand arrow, external link) |
 | `color` | `string` | — | 自定义主色：实心档作底色，线框 / 无底档作主色 | Custom main color: background for solid tiers, main color for outline/bare |
 | `loading` | `boolean` | 'false' | 受控 loading：文案前显示同色小圈并自动 disabled（别处刷新也能点亮它）；与「点击自动 loading」取或 | Controlled loading: same-color spinner before the label plus auto-disable (an external refresh can light it up too); OR-ed with automatic click loading |
+| `loadingText` | `boolean` | true | 传 false：loading 时清掉文案、把按钮锁在「有文案时」的宽度上、只留一枚居中的圈；settle 后文案与自适应宽度一起还原。文案清掉后读屏靠 aria-label（字符串 children 自动补），首帧就是 loading 时锁不到宽，改用 width | Pass false to drop the label while loading, freeze the button at its labelled width and show a single centred spinner; label and auto width come back on settle. Screen readers fall back to aria-label (auto-filled for string children); a button that starts out loading has no labelled width to freeze — set width instead |
 | `onClick` | `(...) => unknown` | — | **返回 Promise 即自动 loading**：转圈 + 禁用 + 防连点，settle 后自己恢复；reject 也恢复并把错误打到控制台。同步返回值 = 老行为 | **Returning a Promise enables loading automatically**: spinner, disabled, no double-clicks, restored on settle; a rejection also restores and logs the error. Sync return values behave as before |
 | `onBusyChange` | `(busy: boolean) => void` | — | 把「这个按钮正在跑」报出去（配合 `Modal` / `SideSheet` 的 `busy` 锁死关闭），不改变按钮自身行为 | Reports "this button is running" outward (pair with `busy` on `Modal` / `SideSheet` to lock closing); does not change the button itself |
 | `block` | `boolean` | 'false' | 撑满父宽 | Fill parent width |
@@ -203,7 +208,7 @@ h(SplitGroup, null,
 |---|---|---|---|---|
 | `value / onChange(v)` | `string / (v: string) => void` | — | 受控值 | Controlled value |
 | `label` | `string` | — | 前置标题（同格灰底）；同时作为整组无障碍名的兜底 | Leading title in the same cell (sunken background); also the fallback accessible name for the group |
-| `actions` | `InputGroupAction[]` | — | { icon?, label?, variant?, disabled?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色；**onClick 返回 Promise 时那枚按钮自动转圈禁用**，不用自己传 loading | { icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** — no loading prop to manage |
+| `actions` | `InputGroupAction[]` | — | { icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色；**onClick 返回 Promise 时那枚按钮自动转圈禁用**，不用自己传 loading；转圈会把按钮撑宽并挤窄输入框，用 width 或 loadingText={false} 压住 | { icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** — no loading prop to manage; spinning widens the button and squeezes the input, so hold it with width or loadingText={false} |
 | `undoable / undoLabel` | `boolean / string` | false / '撤销' | 最前面加撤销钮，回到上一次提交前的值 | Prepends an undo button returning to the value before the last commit |
 | `size / height` | `'sm' \| 'md' \| 'lg' / number(px)` | 'lg' / — | height 给了就压过 size 档 | height overrides the size preset |
 | `error / disabled` | `boolean` | — | error 描红整组；disabled 禁用输入与所有按钮 | error turns the whole shell red; disabled disables the input and every button |
@@ -637,6 +642,14 @@ Modal 是自绘 overlay，不走 react-dom portal。
 
 > EN: The mask’s right edge reads `--dshpc-page-inset-right` (summed across docks) and yields to the right column, centering the dialog in the **remaining** area. The dialog needs no mask props; never measure the column yourself (mounting is async, it always reads 0).
 
+命令式 `confirmModal(opts)` / `alertModal(opts)` 返回 Promise：前者 resolve `true`（确定）或 `false`（取消 / 遮罩 / Esc），后者关闭即 resolve。回调返回 Promise 时对应按钮自己转圈、整框锁死，settle 后才关。
+
+> EN: The imperative `confirmModal(opts)` / `alertModal(opts)` return a Promise: the former resolves `true` (confirmed) or `false` (cancel / mask / Esc), the latter resolves on close. When a callback returns a Promise, its button spins and the dialog locks until it settles.
+
+回调的返回值决定关不关：**只有 `false`**（同步返回，或 resolve 成 `false`）表示这次没成 —— 框留着让人重试；`true` / `undefined` / 其他返回值照常关；reject 也不关（错误打到控制台）。失败提示由回调自己出，调用点不必包 `try/catch`。
+
+> EN: The callback’s return value decides whether it closes: **only `false`** (returned directly, or resolved to `false`) means it did not succeed — the dialog stays for a retry; `true` / `undefined` / anything else closes as usual; a rejection also keeps it open (the error is logged). The callback owns its failure message, so call sites need no `try/catch`.
+
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `showToast(message, opts?)` | `` |  | 官方 Sonner 原味（轻量原生观感；demo 统一用 notify）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主 | Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host |
@@ -670,6 +683,38 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `footerDivider` | `boolean` | 'true' | 底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有） | The divider above the footer; pass false to drop it (sm dialogs never have one) |
 | `className` | `string` | — | 追加 class（只补布局 / 视觉修饰，别覆盖皮肤） | Extra class (layout / visual tweaks only; do not override the skin) |
 | `children` | `ReactNode` | — | 主体 | Body |
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `title / message` | `ReactNode` | — | 标题 / 说明文字或任意内容；无标题时整条头部消失 | Title / body text or any content; no title means no header row |
+| `tone` | `'primary' \| 'danger' \| 'warning'` | 'primary' | 确认钮语义档（决定按钮颜色） | Confirm button tone (sets its colour) |
+| `confirmText / cancelText` | `string` | 内置字典「确定」/「取消」 | 按钮文案 | Button labels |
+| `confirmWidth / cancelWidth` | `number \| string` | — | 两颗钮各自定宽（px 或任意 CSS 宽度）；loading 转圈会把按钮撑宽，定宽后不跳 | Per-button fixed width (px or any CSS width); loading would otherwise widen the button and shift its neighbour |
+| `loadingText` | `boolean` | true | 传 false：loading 时两颗钮清文案、锁住有文案的宽度、只留居中的圈（见 `Button.loadingText`） | Pass false: while loading, both buttons drop their labels, freeze at the labelled width and show a centred spinner (see `Button.loadingText`) |
+| `onConfirm / onCancel` | `() => unknown` | — | 确认 / 取消回调；返回 Promise 时按钮转圈、整框锁死，settle 后恢复；返回 `false` 不关 | Confirm / cancel callback; a Promise makes its button spin and locks the dialog until it settles; `false` keeps it open |
+| `confirmLoading / cancelLoading` | `boolean` | false | 外部驱动对应按钮 loading，与按钮自身异步状态取或 | External loading for that button, OR-ed with its own async state |
+| `closeOnMask` | `boolean` | 'true' | 点遮罩关闭（等于取消） | Close on mask click (treated as cancel) |
+| `size` | `ModalSize` | 'sm' | 尺寸档 | Size tier |
+| `translate` | `Translate` | 内置字典 | 覆盖确定 / 取消文案 | Override confirm / cancel copy |
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `title / message` | `ReactNode` | — | 标题 / 说明文字或任意内容；无标题时整条头部消失 | Title / body text or any content; no title means no header row |
+| `severity` | `'info' \| 'success' \| 'warning' \| 'error'` | 'info' | 信号档：头部图标与配色由它决定 | Signal tier: sets the header glyph and colour |
+| `confirmText` | `string` | 内置字典「知道了」 | 按钮文案 | Button label |
+| `confirmWidth` | `number \| string` | — | 确认钮定宽（px 或任意 CSS 宽度）；loading 转圈会把按钮撑宽，定宽后不跳 | Fixed width for the confirm button (px or any CSS width); loading would otherwise widen it |
+| `loadingText` | `boolean` | true | 传 false：loading 时清文案、锁住有文案的宽度、只留居中的圈（见 `Button.loadingText`） | Pass false: while loading, drop the label, freeze at the labelled width and show a centred spinner (see `Button.loadingText`) |
+| `onConfirm` | `() => unknown` | — | 确认 / 遮罩 / Esc 的统一出口；返回 Promise 时转圈锁框，返回 `false` 不关 | Single exit for confirm / mask / Esc; a Promise spins and locks it, `false` keeps it open |
+| `confirmLoading` | `boolean` | false | 外部驱动按钮 loading，与按钮自身异步状态取或 | External button loading, OR-ed with its own async state |
+| `closeOnMask` | `boolean` | 'true' | 点遮罩关闭 | Close on mask click |
+| `size` | `ModalSize` | 'sm' | 尺寸档 | Size tier |
+| `translate` | `Translate` | 内置字典 | 覆盖按钮文案 | Override the button copy |
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `confirmModal(opts)` | `Promise<boolean>` | — | 命令式确认框；opts 同 `ConfirmModal`，另有 `skin`；`true` = 确定 | Imperative confirm; opts match `ConfirmModal` plus `skin`; `true` = confirmed |
+| `alertModal(opts)` | `Promise<void>` | — | 命令式警告框；opts 同 `AlertModal`，另有 `skin`；关闭即 resolve | Imperative alert; opts match `AlertModal` plus `skin`; resolves on close |
+| `skin` | `'core' \| 'host'` | 'core' | host 走宿主原生 Modal（需先引入适配层 `official.js`，未注册则回落 core 并告警） | host uses the host’s native Modal (requires the `official.js` adapter; falls back to core with a warning when unregistered) |
 
 ## SideSheet（侧边抽屉）
 

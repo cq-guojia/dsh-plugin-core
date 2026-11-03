@@ -3900,8 +3900,12 @@ function isThenable(value) {
     return false;
   return typeof value.then === "function";
 }
+function isSuccess(value) {
+  return value !== false;
+}
 
 // dist/ui/Button.js
+var useIsoLayoutEffect = typeof document === "undefined" ? import_react9.useEffect : import_react9.useLayoutEffect;
 var SOLID_VARIANTS = [
   "primary",
   "secondary",
@@ -3940,7 +3944,7 @@ function colorVars(variant, color) {
 function buttonClass(variant, size4, block2, hasIcon, extra) {
   return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size4}${block2 ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
 }
-function useAsyncClick(onClick, onBusyChange) {
+function useAsyncClick(onClick, onBusyChange, onBusyStart) {
   const [busy, setBusy] = (0, import_react9.useState)(false);
   const click = (event) => {
     if (onClick === void 0)
@@ -3948,6 +3952,7 @@ function useAsyncClick(onClick, onBusyChange) {
     const out = onClick(event);
     if (!isThenable(out))
       return;
+    onBusyStart?.(event.currentTarget);
     setBusy(true);
     onBusyChange?.(true);
     const done = () => {
@@ -3963,25 +3968,64 @@ function useAsyncClick(onClick, onBusyChange) {
 }
 function Button(props) {
   ensureComponentStyles("button", BUTTON_CSS);
-  const { variant = "outline", size: size4 = "lg", icon: icon2, iconRight, color, loading: loadingProp = false, block: block2 = false, width, minWidth, maxWidth, className: className2, style: style2, children, onClick, onBusyChange, ...rest } = props;
-  const asyncClick = useAsyncClick(onClick, onBusyChange);
+  const { variant = "outline", size: size4 = "lg", icon: icon2, iconRight, color, loading: loadingProp = false, loadingText = true, block: block2 = false, width, minWidth, maxWidth, className: className2, style: style2, children, onClick, onBusyChange, ...rest } = props;
+  const btnRef = (0, import_react9.useRef)(null);
+  const idleWidth = (0, import_react9.useRef)(null);
+  const [lockWidth, setLockWidth] = (0, import_react9.useState)(null);
+  const hasOwnWidth = width !== void 0 || style2 !== void 0 && style2.width !== void 0;
+  const lockable = !loadingText && !hasOwnWidth && !block2;
+  const asyncClick = useAsyncClick(onClick, onBusyChange, (el) => {
+    if (!lockable)
+      return;
+    const w = el.getBoundingClientRect().width;
+    if (w > 0) {
+      idleWidth.current = w;
+      setLockWidth(w);
+    }
+  });
   const loading = loadingProp || asyncClick.busy;
+  useIsoLayoutEffect(() => {
+    const el = btnRef.current;
+    if (el === null)
+      return;
+    if (!loading) {
+      const w = el.getBoundingClientRect().width;
+      if (w > 0)
+        idleWidth.current = w;
+      if (lockWidth !== null)
+        setLockWidth(null);
+      return;
+    }
+    if (!lockable) {
+      if (lockWidth !== null)
+        setLockWidth(null);
+      return;
+    }
+    if (lockWidth === null && idleWidth.current !== null)
+      setLockWidth(idleWidth.current);
+  }, [loading, lockable, lockWidth]);
   const widthStyle = {};
   if (width !== void 0) {
     widthStyle.width = width;
+  } else if (loading && lockWidth !== null) {
+    widthStyle.width = lockWidth;
   } else {
     if (minWidth !== void 0)
       widthStyle.minWidth = minWidth;
     if (maxWidth !== void 0)
       widthStyle.maxWidth = maxWidth;
   }
-  const marqueeLabel = maxWidth !== void 0 && width === void 0 && typeof children === "string";
+  const hideText = loading && !loadingText;
+  const marqueeLabel = !hideText && maxWidth !== void 0 && width === void 0 && typeof children === "string";
+  const autoLabel = hideText && typeof children === "string" ? children : void 0;
   const attrs2 = {
     ...rest,
+    ref: btnRef,
     type: rest.type ?? "button",
     disabled: rest.disabled === true || loading,
     // 与 IconButton 同一口径：文字还在，但让读屏知道它正在忙、不是单纯不可点
     "aria-busy": loading || void 0,
+    ...autoLabel !== void 0 && rest["aria-label"] === void 0 ? { "aria-label": autoLabel } : {},
     onClick: asyncClick.click,
     className: buttonClass(variant, size4, block2, icon2 !== void 0 && icon2 !== null && !loading, className2),
     style: { ...colorVars(variant, color), ...widthStyle, ...style2 }
@@ -3989,8 +4033,8 @@ function Button(props) {
   return (0, import_react9.createElement)(
     "button",
     attrs2,
-    loading ? (0, import_react9.createElement)(Loader, { size: "xs" }) : icon2 !== void 0 && icon2 !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, icon2) : null,
-    marqueeLabel ? (0, import_react9.createElement)(MarqueeText, { text: children, className: "dshpc-btn__label" }) : children,
+    loading ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, (0, import_react9.createElement)(Loader, { size: "xs" })) : icon2 !== void 0 && icon2 !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, icon2) : null,
+    hideText ? null : marqueeLabel ? (0, import_react9.createElement)(MarqueeText, { text: children, className: "dshpc-btn__label" }) : children,
     // 转圈期间所有图标位都让位：前置位被 Loader 顶替，后置位（展开 / 外链）留在禁用态里只会挤版面
     iconRight !== void 0 && iconRight !== null && !loading ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null
   );
@@ -5167,7 +5211,14 @@ function AlertModal(props) {
     closeOnMask: props.closeOnMask,
     busy,
     onClose: props.onConfirm,
-    footer: (0, import_react19.createElement)(Button, { variant: "primary", loading: props.confirmLoading === true, onBusyChange: setRunning, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
+    footer: (0, import_react19.createElement)(Button, {
+      variant: "primary",
+      width: props.confirmWidth,
+      loadingText: props.loadingText,
+      loading: props.confirmLoading === true,
+      onBusyChange: setRunning,
+      onClick: () => props.onConfirm?.()
+    }, props.confirmText ?? tt("dialogOk"))
   }, props.message ?? null);
 }
 
@@ -5188,7 +5239,21 @@ function ConfirmModal(props) {
     closeOnMask: props.closeOnMask,
     busy,
     onClose: props.onCancel,
-    footer: (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react20.createElement)(Button, { variant: "outline", loading: props.cancelLoading === true, onBusyChange: setCancelBusy, onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react20.createElement)(Button, { variant: confirmVariant, loading: props.confirmLoading === true, onBusyChange: setConfirmBusy, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
+    footer: (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react20.createElement)(Button, {
+      variant: "outline",
+      width: props.cancelWidth,
+      loadingText: props.loadingText,
+      loading: props.cancelLoading === true,
+      onBusyChange: setCancelBusy,
+      onClick: () => props.onCancel?.()
+    }, props.cancelText ?? tt("cancel")), (0, import_react20.createElement)(Button, {
+      variant: confirmVariant,
+      width: props.confirmWidth,
+      loadingText: props.loadingText,
+      loading: props.confirmLoading === true,
+      onBusyChange: setConfirmBusy,
+      onClick: () => props.onConfirm?.()
+    }, props.confirmText ?? tt("confirm")))
   }, props.message ?? null);
 }
 
@@ -5261,11 +5326,15 @@ function confirmModal(opts) {
       if (closed)
         return void 0;
       const out = (which === "confirm" ? onConfirm : onCancel)?.();
+      const settle = (value) => {
+        if (isSuccess(value))
+          close(which === "confirm");
+      };
       if (!isThenable(out)) {
-        close(which === "confirm");
+        settle(out);
         return void 0;
       }
-      void out.then(() => close(which === "confirm"), () => {
+      void out.then(settle, () => {
       });
       return out;
     };
@@ -5303,11 +5372,15 @@ function alertModal(opts) {
       if (closed)
         return void 0;
       const out = onConfirm?.();
+      const settle = (value) => {
+        if (isSuccess(value))
+          close();
+      };
       if (!isThenable(out)) {
-        close();
+        settle(out);
         return void 0;
       }
-      void out.then(close, () => {
+      void out.then(settle, () => {
       });
       return out;
     };
@@ -7561,6 +7634,8 @@ function InputGroup(props) {
       variant: action.variant ?? "info",
       size: size4,
       icon: action.icon,
+      width: action.width,
+      loadingText: action.loadingText,
       disabled: off,
       onClick: run
     }, action.label));
@@ -60130,6 +60205,10 @@ var docData = {
         "en": 'Both share one loading semantics: a Promise-returning `onClick` spins (an icon button swaps its icon for the spinner, keeps `aria-label` and adds `aria-busy`), `onBusyChange` reports "running", and the controlled `loading` prop is OR-ed in \u2014 an external refresh lights the same button too. While spinning, the button\u2019s own icon slots (`icon` / `iconRight`) all step aside: spinner plus label only.'
       },
       {
+        "zh": "loading \u4F1A\u628A\u524D\u7F6E\u5708\u63D2\u8FDB\u6309\u94AE\uFF1A\u65E0 icon \u7684\u6309\u94AE\u56E0\u6B64\u5BBD\u51FA 18px\uFF08\u5708 12 + \u95F4\u8DDD 6\uFF09\uFF0C\u628A\u65C1\u8FB9\u7684\u6309\u94AE\u6324\u5F00\u3002\u8981\u5B8C\u5168\u4E0D\u8DF3\u6709\u4E24\u6761\u8DEF\uFF1A\u7ED9 `width` \u5B9A\u5BBD\uFF08\u6309\u6700\u957F\u6587\u6848 + 18px \u7559\uFF09\uFF0C\u6216\u4F20 `loadingText={false}` \u8BA9 loading \u65F6\u53EA\u5269\u4E00\u5708\u3002",
+        "en": "Loading inserts the spinner into the button, so a button without an icon grows 18px (12px spinner + 6px gap) and shoves its neighbours. To keep it rock-steady, either set `width` (longest label + 18px) or pass `loadingText={false}` so only the spinner remains while loading."
+      },
+      {
         "zh": "Segmented\uFF1A`items`\uFF08\u5FC5\u586B\uFF09\u652F\u6301\u5355\u9009 / \u591A\u9009\uFF0C`size`\uFF08\u9ED8\u8BA4 lg\uFF1B\u4E09\u6863\u603B\u9AD8 24 / 28 / 32\uFF09\u3001`bordered`\uFF081px \u5916\u6846\uFF0C\u603B\u9AD8\u4E0D\u53D8\uFF09\u3001`multiple`\uFF08\u591A\u9009\uFF09\u3002\u5916\u89C2\u53EA\u6709\u4E00\u5957\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF0C\u9009\u4E2D\u7247\u7684\u63CF\u8FB9\u73AF\u4E0E\u9634\u5F71\u7531\u5BBF\u4E3B elevation token \u63D0\u4F9B\uFF08\u79BB\u7EBF\u515C\u5E95\u503C\u6CA1\u6709\u90A3\u5708\u73AF\uFF09\u3002\u9009\u4E2D\u7247\u914D\u8272\u53EA\u7ECF `tone`\uFF1A\u4F20\u5185\u7F6E\u8272\u540D\uFF08\u4E0E Chip \u540C\u540D\u7684 business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate\uFF09\u65F6\u5E95\u4E0E\u5B57\u7531\u6838\u5FC3\u5B9A\u3001\u6DF1\u6D45\u4E24\u4E3B\u9898\u5404\u81EA\u6210\u7ACB\uFF1B\u4F20 `{ bg, fg }` \u65F6\u4E24\u4E2A\u4E3B\u9898\u90FD\u7528\u8C03\u7528\u65B9\u8FD9\u4E00\u5BF9\u989C\u8272\uFF08\u5BF9\u6BD4\u5EA6\u7531\u8C03\u7528\u65B9\u8D1F\u8D23\uFF09\u3002\u6BB5\u5185 `icon` \u662F\u524D\u7F6E\u56FE\u6807\u69FD\uFF08\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u6570\u7EC4 / \u81EA\u7ED8\u8282\u70B9\u5747\u53EF\uFF09\uFF0C`label` \u4E5F\u53EF\u4F20\u8282\u70B9\uFF1B\u987A\u5E8F\u56FA\u5B9A\u4E3A icon \u2192 label \u2192 count\u3002\u53EA\u6709\u56FE\u6807\uFF08\u65E0\u6587\u5B57 / \u8BA1\u6570 / \u89D2\u6807\uFF09\u65F6\u8BE5\u6BB5\u81EA\u52A8\u53D8\u6B63\u65B9\u5F62\uFF08\u5BBD = \u6BB5\u9AD8\uFF09\uFF0C\u8BFB\u5C4F\u540D\u7528 `ariaLabel`\uFF0C\u7F3A\u7701\u9000\u56DE `tooltip`\u3002\u6BB5\u5185 `count`\uFF08\u5F31\u5316\u7070\u5B57\uFF0C\u9009\u4E2D\u6BB5\u5185\u81EA\u52A8\u8DDF\u7740\u9009\u4E2D\u7247\u5B57\u8272\u63D0\u4EAE\uFF09/ `badge`\uFF08\u7EA2\u89D2\u6807\uFF09\u63A5\u53D7 `number | string`\uFF1A\u6570\u5B57 \u22640 \u4E0D\u663E\u793A\uFF0C\u5B57\u7B26\u4E32\u539F\u6837\u663E\u793A\uFF08\u5982 `1K` / `99+`\uFF09\u3002",
         "en": "Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). The selected pill\u2019s colors go through `tone` only: a built-in color name (business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate, same names as Chip) lets the core pick background and text per theme; `{ bg, fg }` uses that pair verbatim in both themes (contrast is the caller\u2019s call). An item\u2019s leading `icon` takes any node (official icon component, array, or custom); `label` also accepts a node; order is always icon \u2192 label \u2192 count. With only an icon (no label / count / badge) the segment squares itself (width = segment height), and the accessible name comes from `ariaLabel`, falling back to `tooltip`. An item\u2019s `count` (muted text; auto-lightened to follow the selected pill\u2019s text color while selected) and `badge` (red pill) take `number | string`: numbers \u22640 render nothing, strings render as given (e.g. `'1K'` / `'99+'`)."
       }
@@ -60190,6 +60269,15 @@ var docData = {
             "desc": {
               "zh": "\u53D7\u63A7 loading\uFF1A\u6587\u6848\u524D\u663E\u793A\u540C\u8272\u5C0F\u5708\u5E76\u81EA\u52A8 disabled\uFF08\u522B\u5904\u5237\u65B0\u4E5F\u80FD\u70B9\u4EAE\u5B83\uFF09\uFF1B\u4E0E\u300C\u70B9\u51FB\u81EA\u52A8 loading\u300D\u53D6\u6216",
               "en": "Controlled loading: same-color spinner before the label plus auto-disable (an external refresh can light it up too); OR-ed with automatic click loading"
+            }
+          },
+          {
+            "name": "loadingText",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "\u4F20 false\uFF1Aloading \u65F6\u6E05\u6389\u6587\u6848\u3001\u628A\u6309\u94AE\u9501\u5728\u300C\u6709\u6587\u6848\u65F6\u300D\u7684\u5BBD\u5EA6\u4E0A\u3001\u53EA\u7559\u4E00\u679A\u5C45\u4E2D\u7684\u5708\uFF1Bsettle \u540E\u6587\u6848\u4E0E\u81EA\u9002\u5E94\u5BBD\u5EA6\u4E00\u8D77\u8FD8\u539F\u3002\u6587\u6848\u6E05\u6389\u540E\u8BFB\u5C4F\u9760 aria-label\uFF08\u5B57\u7B26\u4E32 children \u81EA\u52A8\u8865\uFF09\uFF0C\u9996\u5E27\u5C31\u662F loading \u65F6\u9501\u4E0D\u5230\u5BBD\uFF0C\u6539\u7528 width",
+              "en": "Pass false to drop the label while loading, freeze the button at its labelled width and show a single centred spinner; label and auto width come back on settle. Screen readers fall back to aria-label (auto-filled for string children); a button that starts out loading has no labelled width to freeze \u2014 set width instead"
             }
           },
           {
@@ -60769,8 +60857,8 @@ var docData = {
             "type": "InputGroupAction[]",
             "def": "\u2014",
             "desc": {
-              "zh": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }\uFF1B\u53EA\u7ED9 icon \u9000\u5316\u6210\u6B63\u65B9\u5F62\u56FE\u6807\u94AE\uFF08ariaLabel \u5FC5\u7ED9\uFF09\uFF0C\u7ED9 label \u8D70 Button\uFF1Bvariant \u9ED8\u8BA4 info\uFF0C\u8BED\u4E49\u8272\u5C31\u7528 Button \u73B0\u6210\u7684\u6863\uFF08success / info / warning / danger\uFF09\uFF0C\u4E0D\u53E6\u8C03\u8272\uFF1B**onClick \u8FD4\u56DE Promise \u65F6\u90A3\u679A\u6309\u94AE\u81EA\u52A8\u8F6C\u5708\u7981\u7528**\uFF0C\u4E0D\u7528\u81EA\u5DF1\u4F20 loading",
-              "en": "{ icon?, label?, variant?, disabled?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info \u2014 for a semantic colour pass Button\u2019s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** \u2014 no loading prop to manage"
+              "zh": "{ icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }\uFF1B\u53EA\u7ED9 icon \u9000\u5316\u6210\u6B63\u65B9\u5F62\u56FE\u6807\u94AE\uFF08ariaLabel \u5FC5\u7ED9\uFF09\uFF0C\u7ED9 label \u8D70 Button\uFF1Bvariant \u9ED8\u8BA4 info\uFF0C\u8BED\u4E49\u8272\u5C31\u7528 Button \u73B0\u6210\u7684\u6863\uFF08success / info / warning / danger\uFF09\uFF0C\u4E0D\u53E6\u8C03\u8272\uFF1B**onClick \u8FD4\u56DE Promise \u65F6\u90A3\u679A\u6309\u94AE\u81EA\u52A8\u8F6C\u5708\u7981\u7528**\uFF0C\u4E0D\u7528\u81EA\u5DF1\u4F20 loading\uFF1B\u8F6C\u5708\u4F1A\u628A\u6309\u94AE\u6491\u5BBD\u5E76\u6324\u7A84\u8F93\u5165\u6846\uFF0C\u7528 width \u6216 loadingText={false} \u538B\u4F4F",
+              "en": "{ icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info \u2014 for a semantic colour pass Button\u2019s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** \u2014 no loading prop to manage; spinning widens the button and squeezes the input, so hold it with width or loadingText={false}"
             }
           },
           {
@@ -61633,6 +61721,14 @@ var docData = {
       {
         "zh": "\u906E\u7F69\u53F3\u8FB9\u754C\u8BFB `--dshpc-page-inset-right`\uFF08\u591A\u4E2A dock \u6C42\u548C\uFF09\uFF0C\u81EA\u52A8\u8BA9\u5F00\u53F3\u4FA7\u5206\u680F\uFF0C\u5F39\u7A97\u5728**\u5269\u4F59\u533A\u57DF**\u5C45\u4E2D\u3002\u5F39\u7A97\u65E0\u9700\u4EFB\u4F55\u906E\u7F69\u53C2\u6570\uFF1B\u4E5F\u522B\u81EA\u5DF1\u91CF\u5206\u680F\u5BBD\u5EA6\uFF08\u6302\u8F7D\u5F02\u6B65\uFF0C\u6052\u4E3A 0\uFF09\u3002",
         "en": "The mask\u2019s right edge reads `--dshpc-page-inset-right` (summed across docks) and yields to the right column, centering the dialog in the **remaining** area. The dialog needs no mask props; never measure the column yourself (mounting is async, it always reads 0)."
+      },
+      {
+        "zh": "\u547D\u4EE4\u5F0F `confirmModal(opts)` / `alertModal(opts)` \u8FD4\u56DE Promise\uFF1A\u524D\u8005 resolve `true`\uFF08\u786E\u5B9A\uFF09\u6216 `false`\uFF08\u53D6\u6D88 / \u906E\u7F69 / Esc\uFF09\uFF0C\u540E\u8005\u5173\u95ED\u5373 resolve\u3002\u56DE\u8C03\u8FD4\u56DE Promise \u65F6\u5BF9\u5E94\u6309\u94AE\u81EA\u5DF1\u8F6C\u5708\u3001\u6574\u6846\u9501\u6B7B\uFF0Csettle \u540E\u624D\u5173\u3002",
+        "en": "The imperative `confirmModal(opts)` / `alertModal(opts)` return a Promise: the former resolves `true` (confirmed) or `false` (cancel / mask / Esc), the latter resolves on close. When a callback returns a Promise, its button spins and the dialog locks until it settles."
+      },
+      {
+        "zh": "\u56DE\u8C03\u7684\u8FD4\u56DE\u503C\u51B3\u5B9A\u5173\u4E0D\u5173\uFF1A**\u53EA\u6709 `false`**\uFF08\u540C\u6B65\u8FD4\u56DE\uFF0C\u6216 resolve \u6210 `false`\uFF09\u8868\u793A\u8FD9\u6B21\u6CA1\u6210 \u2014\u2014 \u6846\u7559\u7740\u8BA9\u4EBA\u91CD\u8BD5\uFF1B`true` / `undefined` / \u5176\u4ED6\u8FD4\u56DE\u503C\u7167\u5E38\u5173\uFF1Breject \u4E5F\u4E0D\u5173\uFF08\u9519\u8BEF\u6253\u5230\u63A7\u5236\u53F0\uFF09\u3002\u5931\u8D25\u63D0\u793A\u7531\u56DE\u8C03\u81EA\u5DF1\u51FA\uFF0C\u8C03\u7528\u70B9\u4E0D\u5FC5\u5305 `try/catch`\u3002",
+        "en": "The callback\u2019s return value decides whether it closes: **only `false`** (returned directly, or resolved to `false`) means it did not succeed \u2014 the dialog stays for a retry; `true` / `undefined` / anything else closes as usual; a rejection also keeps it open (the error is logged). The callback owns its failure message, so call sites need no `try/catch`."
       }
     ],
     "api": [
@@ -61894,6 +61990,228 @@ var docData = {
             "desc": {
               "zh": "\u4E3B\u4F53",
               "en": "Body"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-confirm-dialog",
+        "rows": [
+          {
+            "name": "title / message",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6807\u9898 / \u8BF4\u660E\u6587\u5B57\u6216\u4EFB\u610F\u5185\u5BB9\uFF1B\u65E0\u6807\u9898\u65F6\u6574\u6761\u5934\u90E8\u6D88\u5931",
+              "en": "Title / body text or any content; no title means no header row"
+            }
+          },
+          {
+            "name": "tone",
+            "type": "'primary' | 'danger' | 'warning'",
+            "def": "'primary'",
+            "desc": {
+              "zh": "\u786E\u8BA4\u94AE\u8BED\u4E49\u6863\uFF08\u51B3\u5B9A\u6309\u94AE\u989C\u8272\uFF09",
+              "en": "Confirm button tone (sets its colour)"
+            }
+          },
+          {
+            "name": "confirmText / cancelText",
+            "type": "string",
+            "def": "\u5185\u7F6E\u5B57\u5178\u300C\u786E\u5B9A\u300D/\u300C\u53D6\u6D88\u300D",
+            "desc": {
+              "zh": "\u6309\u94AE\u6587\u6848",
+              "en": "Button labels"
+            }
+          },
+          {
+            "name": "confirmWidth / cancelWidth",
+            "type": "number | string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E24\u9897\u94AE\u5404\u81EA\u5B9A\u5BBD\uFF08px \u6216\u4EFB\u610F CSS \u5BBD\u5EA6\uFF09\uFF1Bloading \u8F6C\u5708\u4F1A\u628A\u6309\u94AE\u6491\u5BBD\uFF0C\u5B9A\u5BBD\u540E\u4E0D\u8DF3",
+              "en": "Per-button fixed width (px or any CSS width); loading would otherwise widen the button and shift its neighbour"
+            }
+          },
+          {
+            "name": "loadingText",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "\u4F20 false\uFF1Aloading \u65F6\u4E24\u9897\u94AE\u6E05\u6587\u6848\u3001\u9501\u4F4F\u6709\u6587\u6848\u7684\u5BBD\u5EA6\u3001\u53EA\u7559\u5C45\u4E2D\u7684\u5708\uFF08\u89C1 `Button.loadingText`\uFF09",
+              "en": "Pass false: while loading, both buttons drop their labels, freeze at the labelled width and show a centred spinner (see `Button.loadingText`)"
+            }
+          },
+          {
+            "name": "onConfirm / onCancel",
+            "type": "() => unknown",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u786E\u8BA4 / \u53D6\u6D88\u56DE\u8C03\uFF1B\u8FD4\u56DE Promise \u65F6\u6309\u94AE\u8F6C\u5708\u3001\u6574\u6846\u9501\u6B7B\uFF0Csettle \u540E\u6062\u590D\uFF1B\u8FD4\u56DE `false` \u4E0D\u5173",
+              "en": "Confirm / cancel callback; a Promise makes its button spin and locks the dialog until it settles; `false` keeps it open"
+            }
+          },
+          {
+            "name": "confirmLoading / cancelLoading",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u5916\u90E8\u9A71\u52A8\u5BF9\u5E94\u6309\u94AE loading\uFF0C\u4E0E\u6309\u94AE\u81EA\u8EAB\u5F02\u6B65\u72B6\u6001\u53D6\u6216",
+              "en": "External loading for that button, OR-ed with its own async state"
+            }
+          },
+          {
+            "name": "closeOnMask",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "\u70B9\u906E\u7F69\u5173\u95ED\uFF08\u7B49\u4E8E\u53D6\u6D88\uFF09",
+              "en": "Close on mask click (treated as cancel)"
+            }
+          },
+          {
+            "name": "size",
+            "type": "ModalSize",
+            "def": "'sm'",
+            "desc": {
+              "zh": "\u5C3A\u5BF8\u6863",
+              "en": "Size tier"
+            }
+          },
+          {
+            "name": "translate",
+            "type": "Translate",
+            "def": "\u5185\u7F6E\u5B57\u5178",
+            "desc": {
+              "zh": "\u8986\u76D6\u786E\u5B9A / \u53D6\u6D88\u6587\u6848",
+              "en": "Override confirm / cancel copy"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-alert-dialog",
+        "rows": [
+          {
+            "name": "title / message",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6807\u9898 / \u8BF4\u660E\u6587\u5B57\u6216\u4EFB\u610F\u5185\u5BB9\uFF1B\u65E0\u6807\u9898\u65F6\u6574\u6761\u5934\u90E8\u6D88\u5931",
+              "en": "Title / body text or any content; no title means no header row"
+            }
+          },
+          {
+            "name": "severity",
+            "type": "'info' | 'success' | 'warning' | 'error'",
+            "def": "'info'",
+            "desc": {
+              "zh": "\u4FE1\u53F7\u6863\uFF1A\u5934\u90E8\u56FE\u6807\u4E0E\u914D\u8272\u7531\u5B83\u51B3\u5B9A",
+              "en": "Signal tier: sets the header glyph and colour"
+            }
+          },
+          {
+            "name": "confirmText",
+            "type": "string",
+            "def": "\u5185\u7F6E\u5B57\u5178\u300C\u77E5\u9053\u4E86\u300D",
+            "desc": {
+              "zh": "\u6309\u94AE\u6587\u6848",
+              "en": "Button label"
+            }
+          },
+          {
+            "name": "confirmWidth",
+            "type": "number | string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u786E\u8BA4\u94AE\u5B9A\u5BBD\uFF08px \u6216\u4EFB\u610F CSS \u5BBD\u5EA6\uFF09\uFF1Bloading \u8F6C\u5708\u4F1A\u628A\u6309\u94AE\u6491\u5BBD\uFF0C\u5B9A\u5BBD\u540E\u4E0D\u8DF3",
+              "en": "Fixed width for the confirm button (px or any CSS width); loading would otherwise widen it"
+            }
+          },
+          {
+            "name": "loadingText",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "\u4F20 false\uFF1Aloading \u65F6\u6E05\u6587\u6848\u3001\u9501\u4F4F\u6709\u6587\u6848\u7684\u5BBD\u5EA6\u3001\u53EA\u7559\u5C45\u4E2D\u7684\u5708\uFF08\u89C1 `Button.loadingText`\uFF09",
+              "en": "Pass false: while loading, drop the label, freeze at the labelled width and show a centred spinner (see `Button.loadingText`)"
+            }
+          },
+          {
+            "name": "onConfirm",
+            "type": "() => unknown",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u786E\u8BA4 / \u906E\u7F69 / Esc \u7684\u7EDF\u4E00\u51FA\u53E3\uFF1B\u8FD4\u56DE Promise \u65F6\u8F6C\u5708\u9501\u6846\uFF0C\u8FD4\u56DE `false` \u4E0D\u5173",
+              "en": "Single exit for confirm / mask / Esc; a Promise spins and locks it, `false` keeps it open"
+            }
+          },
+          {
+            "name": "confirmLoading",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u5916\u90E8\u9A71\u52A8\u6309\u94AE loading\uFF0C\u4E0E\u6309\u94AE\u81EA\u8EAB\u5F02\u6B65\u72B6\u6001\u53D6\u6216",
+              "en": "External button loading, OR-ed with its own async state"
+            }
+          },
+          {
+            "name": "closeOnMask",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "\u70B9\u906E\u7F69\u5173\u95ED",
+              "en": "Close on mask click"
+            }
+          },
+          {
+            "name": "size",
+            "type": "ModalSize",
+            "def": "'sm'",
+            "desc": {
+              "zh": "\u5C3A\u5BF8\u6863",
+              "en": "Size tier"
+            }
+          },
+          {
+            "name": "translate",
+            "type": "Translate",
+            "def": "\u5185\u7F6E\u5B57\u5178",
+            "desc": {
+              "zh": "\u8986\u76D6\u6309\u94AE\u6587\u6848",
+              "en": "Override the button copy"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ui-imperative-dialog",
+        "rows": [
+          {
+            "name": "confirmModal(opts)",
+            "type": "Promise<boolean>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u547D\u4EE4\u5F0F\u786E\u8BA4\u6846\uFF1Bopts \u540C `ConfirmModal`\uFF0C\u53E6\u6709 `skin`\uFF1B`true` = \u786E\u5B9A",
+              "en": "Imperative confirm; opts match `ConfirmModal` plus `skin`; `true` = confirmed"
+            }
+          },
+          {
+            "name": "alertModal(opts)",
+            "type": "Promise<void>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u547D\u4EE4\u5F0F\u8B66\u544A\u6846\uFF1Bopts \u540C `AlertModal`\uFF0C\u53E6\u6709 `skin`\uFF1B\u5173\u95ED\u5373 resolve",
+              "en": "Imperative alert; opts match `AlertModal` plus `skin`; resolves on close"
+            }
+          },
+          {
+            "name": "skin",
+            "type": "'core' | 'host'",
+            "def": "'core'",
+            "desc": {
+              "zh": "host \u8D70\u5BBF\u4E3B\u539F\u751F Modal\uFF08\u9700\u5148\u5F15\u5165\u9002\u914D\u5C42 `official.js`\uFF0C\u672A\u6CE8\u518C\u5219\u56DE\u843D core \u5E76\u544A\u8B66\uFF09",
+              "en": "host uses the host\u2019s native Modal (requires the `official.js` adapter; falls back to core with a warning when unregistered)"
             }
           }
         ]
@@ -62888,7 +63206,10 @@ var CODE_BTN_STATE = `<Button variant="primary">\u9ED8\u8BA4</Button>
 <Button variant="outline" loading={refreshing}>\u4FDD\u5B58</Button>
 
 // \u628A\u300C\u5728\u8DD1\u300D\u62A5\u51FA\u53BB\uFF0C\u9501\u6B7B\u6240\u5728\u5F39\u7A97\uFF08\u5F39\u7A97\u4F20 busy\uFF09
-<Button onBusyChange={setBusy} onClick={async () => { await save() }}>\u4FDD\u5B58</Button>`;
+<Button onBusyChange={setBusy} onClick={async () => { await save() }}>\u4FDD\u5B58</Button>
+
+// loading \u65F6\u53EA\u5269\u4E00\u5708\uFF1A\u6587\u6848\u6E05\u6389\u3001\u5BBD\u5EA6\u9501\u5728\u300C\u6709\u6587\u6848\u300D\u65F6\u7684\u5C3A\u5BF8\uFF0Csettle \u540E\u8FD8\u539F\uFF08\u8F6C\u5708\u4E0D\u518D\u628A\u6309\u94AE\u6491\u5BBD\uFF09
+<Button variant="outline" loadingText={false} onClick={async () => { await save() }}>\u4FDD\u5B58</Button>`;
 var CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
 <Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`;
 var CODE_BTN_WIDTH = `// \u56FA\u5B9A\u5BBD\uFF1A\u5199\u6B7B\u5BBD\u5EA6
@@ -63056,6 +63377,16 @@ function ButtonPage() {
           } }, "\u70B9\u4E86\u81EA\u5DF1\u8F6C\u5708\uFF081.4s\uFF09"),
           (0, import_react80.createElement)(Button, { variant: "outline", loading: extLoading, onClick: () => setExtLoading((v) => !v) }, extLoading ? "\u5916\u90E8\u5237\u65B0\u4E2D\u2026" : "\u70B9\u6211\u70B9\u4EAE\u53F3\u8FB9"),
           (0, import_react80.createElement)(Button, { variant: "outline", loading: extLoading }, "\u88AB\u522B\u5904\u5237\u65B0\u5E26\u6210 loading")
+        ),
+        // 文案长又不想被圈撑宽 ⇒ loadingText={false}：清文案、锁住有文案时的宽度，只留一圈
+        (0, import_react80.createElement)(
+          Labeled,
+          { label: "loading \u53EA\u7559\u5708\uFF08\u5BBD\u5EA6\u4E0D\u8DF3\uFF09" },
+          (0, import_react80.createElement)(Button, { variant: "outline", loadingText: false, onClick: async () => {
+            await demoWait();
+          } }, "\u70B9\u6211\u8F6C\u5708\uFF081.4s\uFF09"),
+          (0, import_react80.createElement)(Button, { variant: "primary", loadingText: false, loading: true }, "\u8BA4\u9886"),
+          (0, import_react80.createElement)(Button, { variant: "outline", loading: true }, "\u5BF9\u7167\uFF1A\u52A0\u8F7D\u4E2D")
         )
       )
     ),
@@ -63155,10 +63486,13 @@ var CODE_INPUT_GROUP = `// \u8F93\u5165\u6846 + \u6309\u94AE\u7EC4\u710A\u6210\u
   value={kw}
   onChange={setKw}
   actions={[
-    { icon: <IconRefreshOutlineRegular size={14} />, ariaLabel: '\u91CD\u7F6E', onClick: reset },
-    { icon: <IconSearchOutlineRegular size={14} />, label: '\u641C\u7D22', onClick: search },
+  { icon: <IconRefreshOutlineRegular size={14} />, ariaLabel: '\u91CD\u7F6E', onClick: reset },
+  { icon: <IconSearchOutlineRegular size={14} />, label: '\u641C\u7D22', onClick: search },
   ]}
-/>
+  />
+
+  // \u52A8\u4F5C\u94AE\u8F6C\u5708\u4F1A\u53D8\u5BBD \u21D2 \u6324\u7A84\u8F93\u5165\u6846\u3002\u8981\u4E0D\u52A8\uFF1A\u5B9A\u5BBD\uFF0C\u6216\u8BA9\u5B83 loading \u65F6\u53EA\u5269\u4E00\u5708
+  actions={[{ label: '\u521B\u5EFA\u7528\u6237', width: 116, loadingText: false, onClick: createUser }]}
 
 // \u9AD8\u5EA6\u81EA\u5B9A\u4E49\uFF1Aheight \u76F4\u63A5\u7ED9 px\uFF0C\u538B\u8FC7 size \u6863\uFF08\u5185\u4EF6\u8DDF\u7740\u6491\u6EE1\uFF09
 <InputGroup value={kw} onChange={setKw} height={44} actions={[{ label: '\u786E\u5B9A', onClick: save }]} />`;
@@ -63306,6 +63640,28 @@ function InputPage() {
             { icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: "\u641C\u7D22", onClick: () => {
             } },
             { label: "\u63D0\u4EA4", onClick: () => {
+            } }
+          ]
+        }),
+        // 转圈会变宽 ⇒ 下面两条对照：不定宽时按钮变宽、输入框被挤；定宽 / 只留圈时纹丝不动
+        (0, import_react80.createElement)(InputGroup, {
+          value: igValue,
+          onChange: setIgValue,
+          placeholder: "\u4E0D\u5B9A\u5BBD\uFF1A\u70B9\u300C\u521B\u5EFA\u7528\u6237\u300D\uFF0C\u6309\u94AE\u8F6C\u5708\u540C\u65F6\u53D8\u5BBD\u3001\u8F93\u5165\u6846\u88AB\u6324\u7A84",
+          actions: [{ label: "\u521B\u5EFA\u7528\u6237", onClick: async () => {
+            await demoWait();
+          } }]
+        }),
+        (0, import_react80.createElement)(InputGroup, {
+          value: igValue,
+          onChange: setIgValue,
+          placeholder: "\u5B9A\u5BBD 116 / \u53EA\u7559\u5708\uFF1A\u8F6C\u5708\u65F6\u6309\u94AE\u5BBD\u5EA6\u4E0D\u52A8",
+          actions: [
+            { label: "\u521B\u5EFA\u7528\u6237", width: 116, onClick: async () => {
+              await demoWait();
+            } },
+            { label: "\u521B\u5EFA\u7528\u6237", width: 116, loadingText: false, onClick: async () => {
+              await demoWait();
             } }
           ]
         }),
@@ -64370,7 +64726,18 @@ const ok = await confirmModal({
   onCancel: async () => { await check() },    // \u53D6\u6D88\u94AE\u4E5F\u80FD\u8F6C\u5708
 })
 // \u7EC4\u4EF6\u5F62\u6001\u81EA\u5DF1\u63A7\uFF1AconfirmLoading / cancelLoading
-<ConfirmModal message="\u2026" confirmLoading={saving} onConfirm={\u2026} />`;
+<ConfirmModal message="\u2026" confirmLoading={saving} onConfirm={\u2026} />
+
+// \u8F6C\u5708\u4F1A\u628A\u6309\u94AE\u6491\u5BBD 18px\uFF08\u5708 12 + \u95F4\u8DDD 6\uFF09\u21D2 \u8981\u4E0D\u52A8\u5C31\u5B9A\u5BBD\uFF0C\u6216\u8BA9\u5B83 loading \u65F6\u53EA\u5269\u4E00\u5708
+await confirmModal({
+  title: '\u8BA4\u9886\u4EFB\u52A1', confirmText: '\u8BA4\u9886', cancelText: '\u53D6\u6D88',
+  confirmWidth: 96, cancelWidth: 88,
+  onConfirm: async () => { await claim() },
+})
+await confirmModal({
+  title: '\u91CA\u653E\u4EFB\u52A1', confirmText: '\u91CA\u653E', loadingText: false,
+  onConfirm: async () => { await release() },
+})`;
 var CODE_LARGE_MODAL = `// \u5185\u5BB9\u5F39\u7A97\uFF1Asize md / lg\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF08\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\uFF09
 <Modal title="\u4EFB\u52A1\u8BE6\u60C5" onClose={close} footer={<Button variant="primary">\u77E5\u9053\u4E86</Button>}>
   <div>\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002</div>
@@ -64620,7 +64987,42 @@ function FeedbackPage() {
                 });
                 notify(ok ? "\u610F\u5916\u6210\u529F" : "\u5DF2\u53D6\u6D88\uFF08false\uFF09");
               }
-            }, "confirmModal() \xB7 \u5F02\u6B65\u5931\u8D25")
+            }, "confirmModal() \xB7 \u5F02\u6B65\u5931\u8D25"),
+            // 转圈会撑宽按钮 ⇒ 两颗钮定宽，点「认领」时宽度与位置都不动
+            (0, import_react80.createElement)(Button, {
+              variant: "outline",
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: "\u8BA4\u9886\u4EFB\u52A1",
+                  message: "\u70B9\u300C\u8BA4\u9886\u300D\u8F6C\u5708 1.4 \u79D2\uFF1A\u4E24\u9897\u94AE\u90FD\u5B9A\u5BBD\uFF0C\u5BBD\u5EA6\u4E0D\u8DF3\u3001\u53D6\u6D88\u94AE\u4E0D\u632A\u3002",
+                  confirmText: "\u8BA4\u9886",
+                  cancelText: "\u53D6\u6D88",
+                  confirmWidth: 96,
+                  cancelWidth: 88,
+                  onConfirm: async () => {
+                    await demoWait();
+                  }
+                });
+                notify(ok ? "\u5DF2\u8BA4\u9886" : "\u5DF2\u53D6\u6D88");
+              }
+            }, "confirmModal() \xB7 \u5B9A\u5BBD"),
+            // loading 时只剩一圈：宽度锁在「有文案」时的大小，settle 后文案回来
+            (0, import_react80.createElement)(Button, {
+              variant: "outline",
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: "\u91CA\u653E\u4EFB\u52A1",
+                  message: "\u70B9\u300C\u91CA\u653E\u300D\u540E\u6309\u94AE\u53EA\u5269\u4E00\u5708\uFF1A\u6587\u6848\u6E05\u6389\u3001\u5BBD\u5EA6\u4E0D\u53D8\uFF0C1.4 \u79D2\u540E\u4E00\u8D77\u8FD8\u539F\u3002",
+                  confirmText: "\u91CA\u653E",
+                  cancelText: "\u53D6\u6D88",
+                  loadingText: false,
+                  onConfirm: async () => {
+                    await demoWait();
+                  }
+                });
+                notify(ok ? "\u5DF2\u91CA\u653E" : "\u5DF2\u53D6\u6D88");
+              }
+            }, "confirmModal() \xB7 loading \u53EA\u7559\u5708")
           )
         )
       )
@@ -66136,9 +66538,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.22.1"}`],
-            [t3("buildDemo"), `v${"0.22.1"}`],
-            [t3("buildStamp"), "261103-195254-170"]
+            [t3("buildCore"), `v${"0.23.0"}`],
+            [t3("buildDemo"), `v${"0.23.0"}`],
+            [t3("buildStamp"), "261103-213852-965"]
           ].map(
             ([label, value]) => (0, import_react85.createElement)(
               "tr",
@@ -66460,9 +66862,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react87.createElement)("span", null, `core v${"0.22.1"}`),
-          (0, import_react87.createElement)("span", null, `demo v${"0.22.1"}`),
-          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-195254-170")
+          (0, import_react87.createElement)("span", null, `core v${"0.23.0"}`),
+          (0, import_react87.createElement)("span", null, `demo v${"0.23.0"}`),
+          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-213852-965")
         )
       )
     ),
