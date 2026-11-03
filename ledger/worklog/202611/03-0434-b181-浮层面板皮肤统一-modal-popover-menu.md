@@ -1,7 +1,7 @@
 # 20261103-0434-b181-浮层面板皮肤统一-modal-popover-menu: 浮层面板皮肤统一（modal/popover/menu）
 
 - **Tags**: 样式, 浮层, UI
-- **Status**: doing · 2026-11-03 04:54:35 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-03 05:44:07 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-03 04:34:34 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -198,3 +198,30 @@
 - 2026-11-03 04:35:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 方案写入 worklog（三档皮肤 + L3 落点 + 三步迁移 + 兼容策略），并附体检：77 处 dist 字符串断言、FileBrowser 1082 行、open.ts 根基准写三遍、16 处裸色值、z-index 5 处字面量；未动代码
 - 2026-11-03 04:48:23 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按用户指令合并实施：新增 panel.css/panel.ts（三档+PanelClose）；Modal/选文件弹窗/▾选层/Picker下拉/DateTime弹层全部切档；z 语义别名；裸色值收口到 tokens（含告警四色、loading、session）；删死 toast 样式；open.ts 根基准合并；拆出 crumbs-menu.ts；新增 css-discipline 测试；228 测试与 codelint 全过；未提交
 - 2026-11-03 04:54:35 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第二批：FileBrowser 965→792 行，拆出 landing/crumb-nav/preview-title-bar 三个展示模块；OverlayHead 与文件浏览器 ✕ 统一走 PanelClose；新增 panel-render SSR 测试 5 条；233 测试 + codelint 全过；未提交
+
+### 十一、v0.20.5 的 CI 挂了（发现与修法，同日）
+
+现象（用户回报的 Actions 日志）：`packages/demo/src/i18n.ts(583,3): TS2741: Property 'pickDir' is missing`，
+`pnpm run build && pnpm test` 退出码 2 —— 即 **v0.20.5 这个 tag 的发布链挂了**（npm 没发出去）。
+
+根因两层：
+1. 上个任务给 demo 加「只要文件夹」按钮时，`pickDir` 只加进了 `zh` 字典，`en` 漏了；类型是
+   `Record<DemoMessageKey, string>`，缺 key 直接编译失败。
+2. 我本地一直用 `node --test test/*.test.mjs` 验证 —— 那会**跳过 `pretest`**，而 demo 的 `tsc`
+   （`tsconfig.demo.json`）只在 `pretest` 里跑。所以本地「全绿」是假绿，CI 用的是 `pnpm test` 才发现。
+
+修：
+- `packages/demo/src/i18n.ts` 补 `en.pickDir`；顺手删掉 key 联合类型里重复的 `'pickDir'`。
+- `AGENTS.md` 的 checklist 把「`node --test test/*.test.mjs` 全绿」改成「`pnpm test` 全绿」，
+  并写明为什么不能只跑 `node --test`（会跳过 gen-css/gen-docs 的 --check 与 demo 的 tsc）。
+
+另按用户 2026-11-03 的「不依赖」定案，补上带图标模块的 SSR 能力（零新依赖）：
+- `test/primitives-stub.mjs`：宿主平台包的测试替身（52 个名字，全是返回 null 的占位）。
+- `test/primitives-hooks.mjs`：`resolve` 钩子，把 `@deepseek-ai/dsh-client-ui-primitives` 指到替身。
+- `test/panel-render.test.mjs` 改为先 `register(hooks)`、再动态 import，测试从 5 条扩到 10 条
+  （落地页「选择」钮有无、▾ 菜单档位类、落地页留空、溢出只剩当前段、关闭钮走公共件、越界无 ▾、
+  预览标题栏的 md/html 切换……）。`node --test` 的跑法不变。
+
+校验（这次按 CI 的命令跑）：`pnpm run build && pnpm test` 退出 0（238 测试全过，含 demo tsc）；
+`pnpm run build:demo` 通过；codelint 六层全过。仍未提交。
+- 2026-11-03 05:44:07 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 修 v0.20.5 CI 失败（demo en 缺 pickDir + 重复 union key），AGENTS checklist 改用 pnpm test；按「不依赖」加测试stub（primitives-stub/hooks）解锁带图标模块 SSR，panel-render 扩到 10 条；pnpm run build && pnpm test 退出 0（238 全过）；未提交
