@@ -23,6 +23,11 @@ export interface ModalProps {
     closeOnMask?: boolean;
     /** 按 Esc 是否关闭（默认 true）。 */
     escClose?: boolean;
+    /**
+     * 有异步在跑（如 footer 里的 `Button` 正在 loading）：为真时遮罩 / Esc / ✕ **三条关闭路径全失效**，
+     * 内容照常渲染。与 `closeOnMask` / `escClose` / `closable` 是"与"关系 —— 它是否决项，不替代它们。
+     */
+    busy?: boolean;
     /** 尺寸档：sm=小确认框家族 / md·lg=大弹窗家族；也可用 width/height 精确覆盖。 */
     size?: ModalSize;
     /** 面板宽度（默认随 size：sm 360px / md 720px / lg 1120px，均带视口兜底）。 */

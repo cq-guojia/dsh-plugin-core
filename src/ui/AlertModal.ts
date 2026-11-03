@@ -1,4 +1,4 @@
-import { createElement as h, type ReactNode } from 'react'
+import { createElement as h, useState, type ReactNode } from 'react'
 import { Modal, type ModalSize } from './Modal.js'
 import { Button } from './Button.js'
 import { t, type Translate } from '../utils/i18n.js'
@@ -26,12 +26,12 @@ export interface AlertModalProps {
   confirmText?: string
   /** 点遮罩是否关闭（默认 true）。 */
   closeOnMask?: boolean
-  /** 确认钮加载中（消费方在做异步处理）：转圈 + 禁用，并锁死遮罩 / Esc 关闭。 */
+  /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
   confirmLoading?: boolean
   /** 尺寸档（默认 sm 确认框宽度）。 */
   size?: ModalSize
-  /** 点击确认 / 遮罩 / Esc 的统一出口（单按钮弹窗，关闭即确认）。 */
-  onConfirm?: () => void
+  /** 点击确认 / 遮罩 / Esc 的统一出口（单按钮弹窗，关闭即确认）；**返回 Promise 自动转圈 + 整框锁死**。 */
+  onConfirm?: () => unknown
   translate?: Translate
 }
 
@@ -43,6 +43,9 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
   ensureComponentStyles('feedback', FEEDBACK_CSS)
   const tt = props.translate ?? t
   const severity = props.severity ?? 'info'
+  const [running, setRunning] = useState(false)
+  // 在跑（自己点的或外部传的）⇒ 遮罩 / Esc 一律不关。
+  const busy = running || props.confirmLoading === true
   return h(
     Modal,
     {
@@ -51,10 +54,10 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
       size: props.size ?? 'sm',
       hideHeader: props.title === undefined,
       closable: false,
-      closeOnMask: props.confirmLoading === true ? false : props.closeOnMask,
-      // 加载中锁死关闭路径（遮罩 / Esc 都走 onClose）。
-      onClose: props.confirmLoading === true ? undefined : props.onConfirm,
-      footer: h(Button, { variant: 'primary', loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('dialogOk')),
+      closeOnMask: props.closeOnMask,
+      busy,
+      onClose: props.onConfirm,
+      footer: h(Button, { variant: 'primary', loading: props.confirmLoading === true, onBusyChange: setRunning, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('dialogOk')),
     },
     props.message ?? null,
   )

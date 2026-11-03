@@ -206,7 +206,16 @@ const CODE_BTN_STATE = `<Button variant="primary">默认</Button>
 <Button variant="primary" disabled>禁用</Button>
 <Button variant="danger" disabled icon={<IconCloseOutlineRegular size={16} />}>禁用</Button>
 <Button variant="outline" loading>加载中</Button>
-<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>提交中</Button>`
+<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>提交中</Button>
+
+// 异步：onClick 返回 Promise ⇒ 自己转圈 + 禁用，settle 后恢复（reject 也恢复）
+<Button variant="primary" onClick={async () => { await save() }}>保存</Button>
+
+// 外部也能点亮同一个按钮（比如别处正在刷新）
+<Button variant="outline" loading={refreshing}>保存</Button>
+
+// 把「在跑」报出去，锁死所在弹窗（弹窗传 busy）
+<Button onBusyChange={setBusy} onClick={async () => { await save() }}>保存</Button>`
 
 const CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
 <Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`
@@ -228,6 +237,8 @@ const CODE_BTN_WIDTH = `// 固定宽：写死宽度
 /** Button 的对外参数（与 src/ui/Button.ts 的 ButtonProps 逐条对齐）。 */
 
 export function ButtonPage(): ReturnType<typeof h> {
+  // 演示「外部刷新也能把按钮带成 loading」：这个布尔就是那个外部状态
+  const [extLoading, setExtLoading] = useState(false)
   return h(
     'div',
     null,
@@ -313,7 +324,12 @@ export function ButtonPage(): ReturnType<typeof h> {
           h(Button, { variant: 'danger', disabled: true, icon: iconOf('close', ICON_SIZE.lg) }, '禁用')),
         h(Labeled, { label: 'loading' },
           h(Button, { variant: 'outline', loading: true }, '加载中'),
-          h(Button, { variant: 'primary', loading: true, icon: iconOf('refresh', ICON_SIZE.lg) }, '提交中'))),
+          h(Button, { variant: 'primary', loading: true, icon: iconOf('refresh', ICON_SIZE.lg) }, '提交中')),
+        // 异步：onClick 返回 Promise 就自己转圈；外部 loading 与它取或（别处刷新也能点亮同一颗按钮）
+        h(Labeled, { label: '异步 / 外部 loading' },
+          h(Button, { variant: 'primary', onClick: async () => { await demoWait() } }, '点了自己转圈（1.4s）'),
+          h(Button, { variant: 'outline', loading: extLoading, onClick: () => setExtLoading((v) => !v) }, extLoading ? '外部刷新中…' : '点我点亮右边'),
+          h(Button, { variant: 'outline', loading: extLoading }, '被别处刷新带成 loading'))),
     ),
 
     // 自定义颜色
@@ -1662,6 +1678,8 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [confirmResult, setConfirmResult] = useState('')
   const [largeOpen, setLargeOpen] = useState(false)
   const [largeOpenB, setLargeOpenB] = useState(false)
+  const [asyncOpen, setAsyncOpen] = useState(false)
+  const [saving, setSaving] = useState(false)
   // 抽屉常驻渲染，只切 open —— 关的时候才有收回去的动效。
   const [sheetCfg, setSheetCfg] = useState<{ side: 'left' | 'right'; footer: boolean }>({ side: 'left', footer: false })
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -1872,6 +1890,34 @@ export function FeedbackPage(): ReturnType<typeof h> {
                   h('div', { style: { fontSize: '13px', lineHeight: '1.7' } }, '这里整个弹窗都由调用方自己定义：没有 footer，头部也换了一种排法（多排标题 + 副标题行）。内容区可放任意业务组件。'),
                   h(Surface, { border: 'faint', padding: 'md', style: { marginTop: '12px', fontSize: '13px' } }, '任意内容，例如一段说明或一个业务卡片。'),
                 ),
+              )
+            : null,
+        ),
+        // 异步按钮 + busy：按钮自己转圈，把「在跑」报给 Modal，三条关闭路径一起封死
+        h(
+          'div',
+          null,
+          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, 'footer 异步（保存时整框锁死）'),
+          h(Button, { variant: 'outline', onClick: () => setAsyncOpen(true) }, '打开大弹窗（异步保存）'),
+          asyncOpen
+            ? h(
+                Modal,
+                {
+                  title: '编辑任务',
+                  busy: saving,
+                  onClose: () => setAsyncOpen(false),
+                  footer: h(
+                    'div',
+                    { style: { display: 'flex', justifyContent: 'flex-end', gap: '8px' } },
+                    h(Button, { variant: 'outline', disabled: saving, onClick: () => setAsyncOpen(false) }, '取消'),
+                    h(Button, {
+                      variant: 'primary',
+                      onBusyChange: setSaving,
+                      onClick: async () => { await demoWait(); setAsyncOpen(false) },
+                    }, '保存'),
+                  ),
+                },
+                h('div', { style: { fontSize: '13px', lineHeight: '1.7' } }, '点「保存」：按钮自己转圈，同时把 busy 报给弹窗 —— 遮罩 / Esc / ✕ 全部失效，1.4 秒后关闭。footer 那条分隔线照旧，不因异步改变。'),
               )
             : null,
         ),

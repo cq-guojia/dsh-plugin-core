@@ -12,8 +12,10 @@ import { PanelSurface } from './panel.js';
 export function Modal(props) {
     ensureComponentStyles('feedback', FEEDBACK_CSS);
     const tt = props.translate ?? t;
-    const closeOnMask = props.closeOnMask !== false;
-    useEscapeClose(props.escClose !== false, props.onClose);
+    // busy 是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+    const busy = props.busy === true;
+    const closeOnMask = !busy && props.closeOnMask !== false;
+    useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose);
     // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
     // 宽度用 `100%`（相对遮罩盒）而不是 `100vw`：遮罩已按右侧分栏让位（见 feedback.css），
     // 用 `100vw` 算出来的宽在分栏在场时会溢出到分栏上，等于白让（用户 2026-10-22）。
@@ -23,7 +25,7 @@ export function Modal(props) {
         lg: { width: 'min(1120px, calc(100% - 32px))', height: 'calc(100% - 80px)' },
     };
     const s = sizeStyle[props.size ?? 'md'];
-    const showClose = props.closable !== false && props.onClose !== undefined;
+    const showClose = props.closable !== false && props.onClose !== undefined && !busy;
     const showHeader = props.hideHeader !== true &&
         (props.icon !== undefined ||
             props.title !== undefined ||
@@ -31,7 +33,7 @@ export function Modal(props) {
             props.headerExtra !== undefined ||
             props.headerActions !== undefined ||
             showClose);
-    return h(OverlayMask, { kind: 'center', closeOnMask, onClose: props.onClose }, 
+    return h(OverlayMask, { kind: 'center', closeOnMask, onClose: busy ? undefined : props.onClose }, 
     // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
     // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
     h(PanelSurface, {

@@ -4,7 +4,8 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/css.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/controls/field-css.generated.js'
-import { AlertModal, Button, Chip, ConfirmModal, Input, InputGroup, Segmented, SplitGroup } from '../dist/ui/index.js'
+import { AlertModal, Button, Chip, ConfirmModal, Input, InputGroup, Modal, Segmented, SideSheet, SplitGroup } from '../dist/ui/index.js'
+import { isThenable } from '../dist/ui/thenable.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -228,4 +229,42 @@ test('AlertModal 加载中：确认钮转圈 + 禁用；默认不转', () => {
   const busy = renderToStaticMarkup(createElement(AlertModal, { message: 'x', confirmLoading: true }))
   assert.ok(busy.includes('dshpc-loader'), '确认钮必须转圈')
   assert.ok(busy.includes('disabled'), '确认钮加载中必须禁用')
+})
+
+test('Button 受控 loading（别处刷新也能点亮它）：转圈 + 禁用，onBusyChange 不落 DOM', () => {
+  const idle = renderToStaticMarkup(createElement(Button, { onBusyChange() {} }, '保存'))
+  assert.ok(!idle.includes('dshpc-loader'), '默认不转圈')
+  assert.ok(!idle.toLowerCase().includes('onbusychange'), 'onBusyChange 是回调，不许透传到 DOM')
+
+  const busy = renderToStaticMarkup(createElement(Button, { loading: true }, '保存'))
+  assert.ok(busy.includes('dshpc-loader'), '受控 loading 必须转圈')
+  assert.ok(busy.includes('disabled'), '受控 loading 必须禁用')
+})
+
+test('isThenable 只认带 then 的东西（Button 自动 loading 的判据）', () => {
+  assert.equal(isThenable(undefined), false)
+  assert.equal(isThenable(null), false)
+  assert.equal(isThenable(0), false)
+  assert.equal(isThenable({}), false)
+  assert.equal(isThenable(Promise.resolve()), true)
+  // 非 Promise 的 thenable（lint 不许直接写 then 属性，用 Reflect.set 构造）
+  const fake = Object.create(null)
+  Reflect.set(fake, 'then', () => {})
+  assert.equal(isThenable(fake), true)
+})
+
+test('Modal busy：✕ 不渲染；不 busy 时✕在', () => {
+  const idle = renderToStaticMarkup(createElement(Modal, { title: 'x', onClose() {} }, 'body'))
+  assert.ok(idle.includes('dshpc-overlay-head__close'), '不忙时应有关闭钮')
+
+  const busy = renderToStaticMarkup(createElement(Modal, { title: 'x', busy: true, onClose() {} }, 'body'))
+  assert.ok(!busy.includes('dshpc-overlay-head__close'), 'busy 时关闭钮必须消失')
+})
+
+test('SideSheet busy：✕ 不渲染', () => {
+  const idle = renderToStaticMarkup(createElement(SideSheet, { title: 'x', onClose() {} }))
+  assert.ok(idle.includes('dshpc-dock__close'), '不忙时应有关闭钮')
+
+  const busy = renderToStaticMarkup(createElement(SideSheet, { title: 'x', busy: true, onClose() {} }))
+  assert.ok(!busy.includes('dshpc-dock__close'), 'busy 时关闭钮必须消失')
 })

@@ -54,13 +54,15 @@ Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三�
 | `icon` | `ReactNode` | — | 前置图标（官方图标组件 / 字符串均可） | Leading icon (official icon component or string) |
 | `iconRight` | `ReactNode` | — | 后置图标（展开箭头、外链） | Trailing icon (expand arrow, external link) |
 | `color` | `string` | — | 自定义主色：实心档作底色，线框 / 无底档作主色 | Custom main color: background for solid tiers, main color for outline/bare |
-| `loading` | `boolean` | 'false' | 文案前显示同色小圈，并自动 disabled | Shows a same-color spinner before the label and auto-disables |
+| `loading` | `boolean` | 'false' | 受控 loading：文案前显示同色小圈并自动 disabled（别处刷新也能点亮它）；与「点击自动 loading」取或 | Controlled loading: same-color spinner before the label plus auto-disable (an external refresh can light it up too); OR-ed with automatic click loading |
+| `onClick` | `(...) => unknown` | — | **返回 Promise 即自动 loading**：转圈 + 禁用 + 防连点，settle 后自己恢复；reject 也恢复并把错误打到控制台。同步返回值 = 老行为 | **Returning a Promise enables loading automatically**: spinner, disabled, no double-clicks, restored on settle; a rejection also restores and logs the error. Sync return values behave as before |
+| `onBusyChange` | `(busy: boolean) => void` | — | 把「这个按钮正在跑」报出去（配合 `Modal` / `SideSheet` 的 `busy` 锁死关闭），不改变按钮自身行为 | Reports "this button is running" outward (pair with `busy` on `Modal` / `SideSheet` to lock closing); does not change the button itself |
 | `block` | `boolean` | 'false' | 撑满父宽 | Fill parent width |
 | `width` | `number \| string` | — | 固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效 | Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored |
 | `minWidth` | `number \| string` | — | 最小宽：width 未设时生效，内容不足此宽时以它为准 | Minimum width: applies only when width is unset; content shorter than this still takes this width |
 | `maxWidth` | `number \| string` | — | 最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开全名 | Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover |
 | `children` | `ReactNode` | — | 文案（由调用方按语言给：中文出中文、英文出英文，中英混排也支持） | Label (caller supplies per locale: zh shows zh, en shows en, mixed is supported) |
-| `…rest` | `原生 button 属性` | — | type / disabled / title / aria-* / onClick 原样透传 | type / disabled / title / aria-* / onClick passed through |
+| `…rest` | `原生 button 属性` | — | type / disabled / title / aria-* 等原样透传（onClick 见上面那行） | type / disabled / title / aria-* and friends pass through (onClick is documented above) |
 
 ## Input 家族（Field.ts）
 
@@ -657,6 +659,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `onClose` | `() => void` | — | 不传则不显示关闭钮 | No close button if omitted |
 | `closeOnMask` | `boolean` | 'true' | 点遮罩关闭；误触代价大的场景设 false | Close on mask click; set false where mis-clicks are costly |
 | `escClose` | `boolean` | 'true' | Esc 关闭 | Close on Esc |
+| `busy` | `boolean` | false | 有异步在跑（footer 里的 `Button` 正在 loading）：遮罩 / Esc / ✕ 三条关闭路径一起失效，内容照常。否决项，不替代 closeOnMask / escClose | Async work in flight (a footer `Button` is loading): mask / Esc / ✕ all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose |
 | `maxWidth` | `string` | 按 size | 任意 CSS 值，覆盖 size 的宽度上限；不要用 vw（遮罩已按右侧分栏让位） | Any CSS value, overriding the size’s max width; avoid vw (the mask already yielded to the right column) |
 | `hideHeader` | `boolean` | 'false' | 不渲染头部（沉浸式） | Skip header (immersive) |
 | `footer` | `ReactNode` | — | 底栏（按钮区；上下内距相等、内容垂直居中） | Footer (button area; symmetric padding, vertically centred) |
@@ -692,6 +695,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `onClose / closable / closeIcon` | `() => void / boolean / ReactNode` | — / 跟随 onClose / ✕ | 关闭回调；不传则不出关闭钮 | Close handler; no close button if omitted |
 | `open` | `boolean` | true | 受控开关：传 false 时先播收起动画再卸载（想有收起效果就常驻渲染它、只切这个布尔） | Controlled flag: false plays the collapse animation before unmounting (keep it mounted and toggle this to get the exit motion) |
 | `closeOnMask / escClose` | `boolean` | 'true' / 'true' | 点遮罩关闭 / Esc 关闭 | Close on mask click / on Esc |
+| `busy` | `boolean` | false | 有异步在跑（footer 里的 `Button` 正在 loading）：遮罩 / Esc / ✕ 三条关闭路径一起失效，内容照常。否决项，不替代 closeOnMask / escClose | Async work in flight (a footer `Button` is loading): mask / Esc / ✕ all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose |
 | `width / minWidth / maxWidth` | `number / number / number` | 460 / 320 / — | 初始宽度 / 拖拽下限 / 拖拽上限（px；上限缺省 = 遮罩盒宽） | Initial width / resize floor / resize ceiling (px; ceiling defaults to the mask box) |
 | `resizable` | `boolean` | true | 能否拖宽（关掉就没有拖拽条） | Whether it resizes by dragging (off = no handle) |
 | `footer / children` | `ReactNode / ReactNode` | — / — | 底栏 / 主体（主体是唯一滚动容器） | Footer / body (the body is the only scroll container) |

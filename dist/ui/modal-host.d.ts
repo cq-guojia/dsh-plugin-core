@@ -17,7 +17,7 @@ export interface HostDialogHandlers {
     alert: (opts: HostAlertArgs) => Promise<void>;
 }
 export declare function registerHostDialog(handlers: HostDialogHandlers): void;
-/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」，弹窗转 loading 并锁死关闭，settle 后再收尾。 */
+/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」。 */
 type DialogHandler = () => unknown;
 export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel' | 'confirmLoading' | 'cancelLoading'> & {
     skin?: 'core' | 'host';

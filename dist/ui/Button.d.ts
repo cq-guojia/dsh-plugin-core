@@ -1,4 +1,4 @@
-import { createElement as h, type CSSProperties, type ReactNode } from 'react';
+import { createElement as h, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 /** 按钮外观档。 */
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success' | 'warning' | 'info' | 'danger-outline' | 'link' | 'purple' | 'pink' | 'cyan' | 'teal' | 'orange' | 'indigo' | 'rose' | 'slate';
 /** 按钮高度档（sm 24 / md 28 / lg 32）。 */
@@ -17,8 +17,18 @@ export interface ButtonProps {
      * 实心档作底色、描边与文字档作主色；hover / active 由基础层按该色混出。
      */
     color?: string;
-    /** 加载中：文案前显示同色小圈，并自动禁用点击。 */
+    /** 加载中：文案前显示同色小圈，并自动禁用点击。与「点击自动 loading」是或关系，任一为真就转圈。 */
     loading?: boolean;
+    /**
+     * 点击回调。**返回 Promise 即自动进入 loading**（转圈 + 禁用 + 防连点），settle 后自己恢复；
+     * reject 会恢复并把错误打到控制台。同步返回值 = 老行为，不转圈。
+     */
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => unknown;
+    /**
+     * 把「这个按钮正在跑」报出去（如锁死所在弹窗的遮罩 / Esc / ✕）。
+     * 不改变按钮自己的行为；与 `loading` 无关。
+     */
+    onBusyChange?: (busy: boolean) => void;
     /** 撑满父宽。 */
     block?: boolean;
     /**

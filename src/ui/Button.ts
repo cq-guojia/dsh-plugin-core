@@ -22,9 +22,10 @@
  */
 import { MarqueeText } from './MarqueeText.js'
 import { Loader } from './Loader.js'
-import { createElement as h, type CSSProperties, type ReactNode } from 'react'
+import { createElement as h, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
 import { ensureComponentStyles } from './css.js'
 import { BUTTON_CSS } from './controls-css.js'
+import { isThenable } from './thenable.js'
 
 /** 按钮外观档。 */
 export type ButtonVariant =
@@ -63,8 +64,18 @@ export interface ButtonProps {
    * 实心档作底色、描边与文字档作主色；hover / active 由基础层按该色混出。
    */
   color?: string
-  /** 加载中：文案前显示同色小圈，并自动禁用点击。 */
+  /** 加载中：文案前显示同色小圈，并自动禁用点击。与「点击自动 loading」是或关系，任一为真就转圈。 */
   loading?: boolean
+  /**
+   * 点击回调。**返回 Promise 即自动进入 loading**（转圈 + 禁用 + 防连点），settle 后自己恢复；
+   * reject 会恢复并把错误打到控制台。同步返回值 = 老行为，不转圈。
+   */
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => unknown
+  /**
+   * 把「这个按钮正在跑」报出去（如锁死所在弹窗的遮罩 / Esc / ✕）。
+   * 不改变按钮自己的行为；与 `loading` 无关。
+   */
+  onBusyChange?: (busy: boolean) => void
   /** 撑满父宽。 */
   block?: boolean
   /**
@@ -138,6 +149,34 @@ function buttonClass(variant: ButtonVariant, size: ButtonSize, block: boolean, h
 }
 
 /**
+ * 异步点击：`onClick` 返回 thenable 就自己转圈（并禁用），settle 后恢复。
+ * 不用 `onBusyChange` 也能单独工作 —— 它只是把状态报给外面（弹窗锁关闭用）。
+ */
+function useAsyncClick(
+  onClick: ButtonProps['onClick'],
+  onBusyChange: ButtonProps['onBusyChange'],
+): { busy: boolean; click: (event: MouseEvent<HTMLButtonElement>) => void } {
+  const [busy, setBusy] = useState(false)
+  const click = (event: MouseEvent<HTMLButtonElement>): void => {
+    if (onClick === undefined) return
+    const out = onClick(event)
+    if (!isThenable(out)) return
+    setBusy(true)
+    onBusyChange?.(true)
+    const done = (): void => {
+      setBusy(false)
+      onBusyChange?.(false)
+    }
+    void out.then(done, (err: unknown) => {
+      // 状态先恢复，再让失败可见（不吞：消费方该看到自己抛了什么）
+      done()
+      console.error('[dsh-plugin-core] Button 异步点击失败，已恢复可点：', err)
+    })
+  }
+  return { busy, click }
+}
+
+/**
  * 渲染一个「图标 + 文案」按钮。
  *
  * @param props 见 {@link ButtonProps}。
@@ -146,9 +185,13 @@ function buttonClass(variant: ButtonVariant, size: ButtonSize, block: boolean, h
 export function Button(props: ButtonProps): ReturnType<typeof h> {
   ensureComponentStyles('button', BUTTON_CSS)
   const {
-    variant = 'outline', size = 'lg', icon, iconRight, color, loading = false,
-    block = false, width, minWidth, maxWidth, className, style, children, ...rest
+    variant = 'outline', size = 'lg', icon, iconRight, color, loading: loadingProp = false,
+    block = false, width, minWidth, maxWidth, className, style, children,
+    onClick, onBusyChange, ...rest
   } = props
+  const asyncClick = useAsyncClick(onClick, onBusyChange)
+  // 两个来源取或：外部传的 loading（别处刷新也能点亮它）+ 自己异步在跑
+  const loading = loadingProp || asyncClick.busy
   // 三轴互斥：固定宽优先，min / max 失效；否则 min / max 各自生效。
   const widthStyle: CSSProperties = {}
   if (width !== undefined) {
@@ -163,6 +206,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     ...rest,
     type: (rest.type as string | undefined) ?? 'button',
     disabled: rest.disabled === true || loading,
+    onClick: asyncClick.click,
     className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, className),
     style: { ...colorVars(variant, color), ...widthStyle, ...style },
   }

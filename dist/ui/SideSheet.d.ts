@@ -45,6 +45,11 @@ export interface SideSheetProps {
     closeOnMask?: boolean;
     /** 按 Esc 是否关闭（默认 true）。 */
     escClose?: boolean;
+    /**
+     * 有异步在跑（如 footer 里的 `Button` 正在 loading）：为真时遮罩 / Esc / ✕ **三条关闭路径全失效**，
+     * 内容照常渲染。与 `closeOnMask` / `escClose` / `closable` 是"与"关系 —— 它是否决项，不替代它们。
+     */
+    busy?: boolean;
     /** **初始**宽度（px，默认 460，与 PanelDock 同档）；拖过之后以拖出来的为准。 */
     width?: number;
     /** 可拖宽的下限（默认 320）。 */

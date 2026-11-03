@@ -3893,6 +3893,15 @@ function Loader(props) {
 
 // dist/ui/Button.js
 var import_react9 = require("react");
+
+// dist/ui/thenable.js
+function isThenable(value) {
+  if (value === null || value === void 0)
+    return false;
+  return typeof value.then === "function";
+}
+
+// dist/ui/Button.js
 var SOLID_VARIANTS = [
   "primary",
   "secondary",
@@ -3931,9 +3940,32 @@ function colorVars(variant, color) {
 function buttonClass(variant, size4, block2, hasIcon, extra) {
   return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size4}${block2 ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
 }
+function useAsyncClick(onClick, onBusyChange) {
+  const [busy, setBusy] = (0, import_react9.useState)(false);
+  const click = (event) => {
+    if (onClick === void 0)
+      return;
+    const out = onClick(event);
+    if (!isThenable(out))
+      return;
+    setBusy(true);
+    onBusyChange?.(true);
+    const done = () => {
+      setBusy(false);
+      onBusyChange?.(false);
+    };
+    void out.then(done, (err) => {
+      done();
+      console.error("[dsh-plugin-core] Button \u5F02\u6B65\u70B9\u51FB\u5931\u8D25\uFF0C\u5DF2\u6062\u590D\u53EF\u70B9\uFF1A", err);
+    });
+  };
+  return { busy, click };
+}
 function Button(props) {
   ensureComponentStyles("button", BUTTON_CSS);
-  const { variant = "outline", size: size4 = "lg", icon: icon2, iconRight, color, loading = false, block: block2 = false, width, minWidth, maxWidth, className: className2, style: style2, children, ...rest } = props;
+  const { variant = "outline", size: size4 = "lg", icon: icon2, iconRight, color, loading: loadingProp = false, block: block2 = false, width, minWidth, maxWidth, className: className2, style: style2, children, onClick, onBusyChange, ...rest } = props;
+  const asyncClick = useAsyncClick(onClick, onBusyChange);
+  const loading = loadingProp || asyncClick.busy;
   const widthStyle = {};
   if (width !== void 0) {
     widthStyle.width = width;
@@ -3948,6 +3980,7 @@ function Button(props) {
     ...rest,
     type: rest.type ?? "button",
     disabled: rest.disabled === true || loading,
+    onClick: asyncClick.click,
     className: buttonClass(variant, size4, block2, icon2 !== void 0 && icon2 !== null && !loading, className2),
     style: { ...colorVars(variant, color), ...widthStyle, ...style2 }
   };
@@ -4909,19 +4942,20 @@ function OverlayHead(props) {
 function Modal(props) {
   ensureComponentStyles("feedback", FEEDBACK_CSS);
   const tt = props.translate ?? t;
-  const closeOnMask = props.closeOnMask !== false;
-  useEscapeClose(props.escClose !== false, props.onClose);
+  const busy = props.busy === true;
+  const closeOnMask = !busy && props.closeOnMask !== false;
+  useEscapeClose(!busy && props.escClose !== false, busy ? void 0 : props.onClose);
   const sizeStyle = {
     sm: { width: "360px", maxWidth: "calc(100% - 48px)" },
     md: { width: "min(720px, calc(100% - 32px))", maxHeight: "86vh" },
     lg: { width: "min(1120px, calc(100% - 32px))", height: "calc(100% - 80px)" }
   };
   const s = sizeStyle[props.size ?? "md"];
-  const showClose = props.closable !== false && props.onClose !== void 0;
+  const showClose = props.closable !== false && props.onClose !== void 0 && !busy;
   const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
   return (0, import_react17.createElement)(
     OverlayMask,
-    { kind: "center", closeOnMask, onClose: props.onClose },
+    { kind: "center", closeOnMask, onClose: busy ? void 0 : props.onClose },
     // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
     // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
     (0, import_react17.createElement)(
@@ -5014,8 +5048,9 @@ function SideSheet(props) {
   ensureComponentStyles("side-sheet", SIDE_SHEET_CSS);
   const tt = props.translate ?? t;
   const side = props.side ?? "left";
-  const closeOnMask = props.closeOnMask !== false;
-  useEscapeClose(props.escClose !== false, props.onClose);
+  const busy = props.busy === true;
+  const closeOnMask = !busy && props.closeOnMask !== false;
+  useEscapeClose(!busy && props.escClose !== false, busy ? void 0 : props.onClose);
   const [width, setWidth] = (0, import_react18.useState)(props.width ?? 460);
   const panelRef = (0, import_react18.useRef)(null);
   const leaving = props.open === false;
@@ -5026,7 +5061,7 @@ function SideSheet(props) {
   }, [leaving]);
   if (unmounted)
     return null;
-  const showClose = props.closable !== false && props.onClose !== void 0;
+  const showClose = props.closable !== false && props.onClose !== void 0 && !busy;
   const hasHeader = props.header !== null;
   const beginResize = (event) => {
     const element = panelRef.current;
@@ -5069,7 +5104,7 @@ function SideSheet(props) {
     }
     return (0, import_react18.createElement)("div", { className: "dshpc-dock__head" }, props.icon === void 0 ? null : (0, import_react18.createElement)("div", { className: "dshpc-dock__lead" }, props.icon), (0, import_react18.createElement)("div", { className: "dshpc-dock__title" }, props.title), props.extra === void 0 ? null : (0, import_react18.createElement)("div", { className: "dshpc-dock__extra" }, props.extra));
   };
-  return (0, import_react18.createElement)(OverlayMask, { kind: "side", closeOnMask, onClose: props.onClose }, (0, import_react18.createElement)("section", {
+  return (0, import_react18.createElement)(OverlayMask, { kind: "side", closeOnMask, onClose: busy ? void 0 : props.onClose }, (0, import_react18.createElement)("section", {
     ref: (element) => {
       panelRef.current = element;
     },
@@ -5106,16 +5141,18 @@ function AlertModal(props) {
   ensureComponentStyles("feedback", FEEDBACK_CSS);
   const tt = props.translate ?? t;
   const severity = props.severity ?? "info";
+  const [running, setRunning] = (0, import_react19.useState)(false);
+  const busy = running || props.confirmLoading === true;
   return (0, import_react19.createElement)(Modal, {
     icon: (0, import_react19.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
-    closeOnMask: props.confirmLoading === true ? false : props.closeOnMask,
-    // 加载中锁死关闭路径（遮罩 / Esc 都走 onClose）。
-    onClose: props.confirmLoading === true ? void 0 : props.onConfirm,
-    footer: (0, import_react19.createElement)(Button, { variant: "primary", loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
+    closeOnMask: props.closeOnMask,
+    busy,
+    onClose: props.onConfirm,
+    footer: (0, import_react19.createElement)(Button, { variant: "primary", loading: props.confirmLoading === true, onBusyChange: setRunning, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
   }, props.message ?? null);
 }
 
@@ -5125,15 +5162,18 @@ function ConfirmModal(props) {
   const tt = props.translate ?? t;
   const tone = props.tone ?? "primary";
   const confirmVariant = tone === "danger" ? "danger" : tone === "warning" ? "warning" : "primary";
-  const busy = props.confirmLoading === true || props.cancelLoading === true;
+  const [confirmBusy, setConfirmBusy] = (0, import_react20.useState)(false);
+  const [cancelBusy, setCancelBusy] = (0, import_react20.useState)(false);
+  const busy = confirmBusy || cancelBusy || props.confirmLoading === true || props.cancelLoading === true;
   return (0, import_react20.createElement)(Modal, {
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
-    closeOnMask: busy ? false : props.closeOnMask,
-    onClose: busy ? void 0 : props.onCancel,
-    footer: (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react20.createElement)(Button, { variant: "outline", loading: props.cancelLoading === true, onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react20.createElement)(Button, { variant: confirmVariant, loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
+    closeOnMask: props.closeOnMask,
+    busy,
+    onClose: props.onCancel,
+    footer: (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react20.createElement)(Button, { variant: "outline", loading: props.cancelLoading === true, onBusyChange: setCancelBusy, onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react20.createElement)(Button, { variant: confirmVariant, loading: props.confirmLoading === true, onBusyChange: setConfirmBusy, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
   }, props.message ?? null);
 }
 
@@ -5177,11 +5217,6 @@ var hostHandlers = null;
 function registerHostDialog(handlers2) {
   hostHandlers = handlers2;
 }
-function isThenable(value) {
-  if (value === null || value === void 0)
-    return false;
-  return typeof value.then === "function";
-}
 function confirmModal(opts) {
   if (opts.skin === "host") {
     if (hostHandlers !== null) {
@@ -5199,47 +5234,31 @@ function confirmModal(opts) {
   void _skin;
   return new Promise((resolve) => {
     const id3 = ++idSeq;
-    const entry = { id: id3, node: null };
-    let busy = null;
     let closed = false;
-    const draw = () => {
-      entry.node = (0, import_react21.createElement)(ConfirmModal, {
-        ...core,
-        confirmLoading: busy === "confirm",
-        cancelLoading: busy === "cancel",
-        onConfirm: () => void run("confirm"),
-        onCancel: () => void run("cancel")
-      });
-      flush();
-    };
     const close = (result) => {
+      if (closed)
+        return;
       closed = true;
       dismiss(id3);
       resolve(result);
     };
-    const run = async (which) => {
-      if (closed || busy !== null)
-        return;
+    const run = (which) => {
+      if (closed)
+        return void 0;
       const out = (which === "confirm" ? onConfirm : onCancel)?.();
       if (!isThenable(out)) {
         close(which === "confirm");
-        return;
+        return void 0;
       }
-      busy = which;
-      draw();
-      try {
-        await out;
-      } catch (err) {
-        busy = null;
-        draw();
-        console.error("[dsh-plugin-core] confirmModal \u56DE\u8C03\u5931\u8D25\uFF0C\u5F39\u7A97\u5DF2\u6062\u590D\u53EF\u64CD\u4F5C\uFF1A", err);
-        return;
-      }
-      busy = null;
-      close(which === "confirm");
+      void out.then(() => close(which === "confirm"), () => {
+      });
+      return out;
     };
-    entries.push(entry);
-    draw();
+    entries.push({
+      id: id3,
+      node: (0, import_react21.createElement)(ConfirmModal, { ...core, onConfirm: () => run("confirm"), onCancel: () => run("cancel") })
+    });
+    flush();
   });
 }
 function alertModal(opts) {
@@ -5257,39 +5276,28 @@ function alertModal(opts) {
   void _skin;
   return new Promise((resolve) => {
     const id3 = ++idSeq;
-    const entry = { id: id3, node: null };
-    let busy = false;
-    const draw = () => {
-      entry.node = (0, import_react21.createElement)(AlertModal, { ...core, confirmLoading: busy, onConfirm: () => void run() });
-      flush();
-    };
+    let closed = false;
     const close = () => {
+      if (closed)
+        return;
+      closed = true;
       dismiss(id3);
       resolve();
     };
-    const run = async () => {
-      if (busy)
-        return;
+    const run = () => {
+      if (closed)
+        return void 0;
       const out = onConfirm?.();
       if (!isThenable(out)) {
         close();
-        return;
+        return void 0;
       }
-      busy = true;
-      draw();
-      try {
-        await out;
-      } catch (err) {
-        busy = false;
-        draw();
-        console.error("[dsh-plugin-core] alertModal \u56DE\u8C03\u5931\u8D25\uFF0C\u5F39\u7A97\u5DF2\u6062\u590D\u53EF\u64CD\u4F5C\uFF1A", err);
-        return;
-      }
-      busy = false;
-      close();
+      void out.then(close, () => {
+      });
+      return out;
     };
-    entries.push(entry);
-    draw();
+    entries.push({ id: id3, node: (0, import_react21.createElement)(AlertModal, { ...core, onConfirm: () => run() }) });
+    flush();
   });
 }
 
@@ -60161,8 +60169,26 @@ var docData = {
             "type": "boolean",
             "def": "'false'",
             "desc": {
-              "zh": "\u6587\u6848\u524D\u663E\u793A\u540C\u8272\u5C0F\u5708\uFF0C\u5E76\u81EA\u52A8 disabled",
-              "en": "Shows a same-color spinner before the label and auto-disables"
+              "zh": "\u53D7\u63A7 loading\uFF1A\u6587\u6848\u524D\u663E\u793A\u540C\u8272\u5C0F\u5708\u5E76\u81EA\u52A8 disabled\uFF08\u522B\u5904\u5237\u65B0\u4E5F\u80FD\u70B9\u4EAE\u5B83\uFF09\uFF1B\u4E0E\u300C\u70B9\u51FB\u81EA\u52A8 loading\u300D\u53D6\u6216",
+              "en": "Controlled loading: same-color spinner before the label plus auto-disable (an external refresh can light it up too); OR-ed with automatic click loading"
+            }
+          },
+          {
+            "name": "onClick",
+            "type": "(...) => unknown",
+            "def": "\u2014",
+            "desc": {
+              "zh": "**\u8FD4\u56DE Promise \u5373\u81EA\u52A8 loading**\uFF1A\u8F6C\u5708 + \u7981\u7528 + \u9632\u8FDE\u70B9\uFF0Csettle \u540E\u81EA\u5DF1\u6062\u590D\uFF1Breject \u4E5F\u6062\u590D\u5E76\u628A\u9519\u8BEF\u6253\u5230\u63A7\u5236\u53F0\u3002\u540C\u6B65\u8FD4\u56DE\u503C = \u8001\u884C\u4E3A",
+              "en": "**Returning a Promise enables loading automatically**: spinner, disabled, no double-clicks, restored on settle; a rejection also restores and logs the error. Sync return values behave as before"
+            }
+          },
+          {
+            "name": "onBusyChange",
+            "type": "(busy: boolean) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u628A\u300C\u8FD9\u4E2A\u6309\u94AE\u6B63\u5728\u8DD1\u300D\u62A5\u51FA\u53BB\uFF08\u914D\u5408 `Modal` / `SideSheet` \u7684 `busy` \u9501\u6B7B\u5173\u95ED\uFF09\uFF0C\u4E0D\u6539\u53D8\u6309\u94AE\u81EA\u8EAB\u884C\u4E3A",
+              "en": 'Reports "this button is running" outward (pair with `busy` on `Modal` / `SideSheet` to lock closing); does not change the button itself'
             }
           },
           {
@@ -60215,8 +60241,8 @@ var docData = {
             "type": "\u539F\u751F button \u5C5E\u6027",
             "def": "\u2014",
             "desc": {
-              "zh": "type / disabled / title / aria-* / onClick \u539F\u6837\u900F\u4F20",
-              "en": "type / disabled / title / aria-* / onClick passed through"
+              "zh": "type / disabled / title / aria-* \u7B49\u539F\u6837\u900F\u4F20\uFF08onClick \u89C1\u4E0A\u9762\u90A3\u884C\uFF09",
+              "en": "type / disabled / title / aria-* and friends pass through (onClick is documented above)"
             }
           }
         ]
@@ -61789,6 +61815,15 @@ var docData = {
             }
           },
           {
+            "name": "busy",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u6709\u5F02\u6B65\u5728\u8DD1\uFF08footer \u91CC\u7684 `Button` \u6B63\u5728 loading\uFF09\uFF1A\u906E\u7F69 / Esc / \u2715 \u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4E00\u8D77\u5931\u6548\uFF0C\u5185\u5BB9\u7167\u5E38\u3002\u5426\u51B3\u9879\uFF0C\u4E0D\u66FF\u4EE3 closeOnMask / escClose",
+              "en": "Async work in flight (a footer `Button` is loading): mask / Esc / \u2715 all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose"
+            }
+          },
+          {
             "name": "maxWidth",
             "type": "string",
             "def": "\u6309 size",
@@ -61926,6 +61961,15 @@ var docData = {
             "desc": {
               "zh": "\u70B9\u906E\u7F69\u5173\u95ED / Esc \u5173\u95ED",
               "en": "Close on mask click / on Esc"
+            }
+          },
+          {
+            "name": "busy",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u6709\u5F02\u6B65\u5728\u8DD1\uFF08footer \u91CC\u7684 `Button` \u6B63\u5728 loading\uFF09\uFF1A\u906E\u7F69 / Esc / \u2715 \u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4E00\u8D77\u5931\u6548\uFF0C\u5185\u5BB9\u7167\u5E38\u3002\u5426\u51B3\u9879\uFF0C\u4E0D\u66FF\u4EE3 closeOnMask / escClose",
+              "en": "Async work in flight (a footer `Button` is loading): mask / Esc / \u2715 all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose"
             }
           },
           {
@@ -62816,7 +62860,16 @@ var CODE_BTN_STATE = `<Button variant="primary">\u9ED8\u8BA4</Button>
 <Button variant="primary" disabled>\u7981\u7528</Button>
 <Button variant="danger" disabled icon={<IconCloseOutlineRegular size={16} />}>\u7981\u7528</Button>
 <Button variant="outline" loading>\u52A0\u8F7D\u4E2D</Button>
-<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>\u63D0\u4EA4\u4E2D</Button>`;
+<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>\u63D0\u4EA4\u4E2D</Button>
+
+// \u5F02\u6B65\uFF1AonClick \u8FD4\u56DE Promise \u21D2 \u81EA\u5DF1\u8F6C\u5708 + \u7981\u7528\uFF0Csettle \u540E\u6062\u590D\uFF08reject \u4E5F\u6062\u590D\uFF09
+<Button variant="primary" onClick={async () => { await save() }}>\u4FDD\u5B58</Button>
+
+// \u5916\u90E8\u4E5F\u80FD\u70B9\u4EAE\u540C\u4E00\u4E2A\u6309\u94AE\uFF08\u6BD4\u5982\u522B\u5904\u6B63\u5728\u5237\u65B0\uFF09
+<Button variant="outline" loading={refreshing}>\u4FDD\u5B58</Button>
+
+// \u628A\u300C\u5728\u8DD1\u300D\u62A5\u51FA\u53BB\uFF0C\u9501\u6B7B\u6240\u5728\u5F39\u7A97\uFF08\u5F39\u7A97\u4F20 busy\uFF09
+<Button onBusyChange={setBusy} onClick={async () => { await save() }}>\u4FDD\u5B58</Button>`;
 var CODE_BTN_COLOR = `<Button variant="primary" color="#7c3aed">#7c3aed</Button>
 <Button variant="outline" color="#0ea5e9">#0ea5e9</Button>`;
 var CODE_BTN_WIDTH = `// \u56FA\u5B9A\u5BBD\uFF1A\u5199\u6B7B\u5BBD\u5EA6
@@ -62832,6 +62885,7 @@ var CODE_BTN_WIDTH = `// \u56FA\u5B9A\u5BBD\uFF1A\u5199\u6B7B\u5BBD\u5EA6
 // \u4E09\u8005\u540C\u8BBE \u21D2 \u56FA\u5B9A\u5BBD\u4F18\u5148\uFF0C\u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\u81EA\u52A8\u5931\u6548
 <Button variant="outline" width={120} minWidth={200} maxWidth={160}>\u56FA\u5B9A\u5BBD\u4F18\u5148</Button>`;
 function ButtonPage() {
+  const [extLoading, setExtLoading] = (0, import_react80.useState)(false);
   return (0, import_react80.createElement)(
     "div",
     null,
@@ -62964,6 +63018,16 @@ function ButtonPage() {
           { label: "loading" },
           (0, import_react80.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
           (0, import_react80.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+        ),
+        // 异步：onClick 返回 Promise 就自己转圈；外部 loading 与它取或（别处刷新也能点亮同一颗按钮）
+        (0, import_react80.createElement)(
+          Labeled,
+          { label: "\u5F02\u6B65 / \u5916\u90E8 loading" },
+          (0, import_react80.createElement)(Button, { variant: "primary", onClick: async () => {
+            await demoWait();
+          } }, "\u70B9\u4E86\u81EA\u5DF1\u8F6C\u5708\uFF081.4s\uFF09"),
+          (0, import_react80.createElement)(Button, { variant: "outline", loading: extLoading, onClick: () => setExtLoading((v) => !v) }, extLoading ? "\u5916\u90E8\u5237\u65B0\u4E2D\u2026" : "\u70B9\u6211\u70B9\u4EAE\u53F3\u8FB9"),
+          (0, import_react80.createElement)(Button, { variant: "outline", loading: extLoading }, "\u88AB\u522B\u5904\u5237\u65B0\u5E26\u6210 loading")
         )
       )
     ),
@@ -64372,6 +64436,8 @@ function FeedbackPage() {
   const [confirmResult, setConfirmResult] = (0, import_react80.useState)("");
   const [largeOpen, setLargeOpen] = (0, import_react80.useState)(false);
   const [largeOpenB, setLargeOpenB] = (0, import_react80.useState)(false);
+  const [asyncOpen, setAsyncOpen] = (0, import_react80.useState)(false);
+  const [saving, setSaving] = (0, import_react80.useState)(false);
   const [sheetCfg, setSheetCfg] = (0, import_react80.useState)({ side: "left", footer: false });
   const [sheetOpen, setSheetOpen] = (0, import_react80.useState)(false);
   const [nativeText, setNativeText] = (0, import_react80.useState)("");
@@ -64602,6 +64668,35 @@ function FeedbackPage() {
               (0, import_react80.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
               (0, import_react80.createElement)(Surface, { border: "faint", padding: "md", style: { marginTop: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
             )
+          ) : null
+        ),
+        // 异步按钮 + busy：按钮自己转圈，把「在跑」报给 Modal，三条关闭路径一起封死
+        (0, import_react80.createElement)(
+          "div",
+          null,
+          (0, import_react80.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "footer \u5F02\u6B65\uFF08\u4FDD\u5B58\u65F6\u6574\u6846\u9501\u6B7B\uFF09"),
+          (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => setAsyncOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5F02\u6B65\u4FDD\u5B58\uFF09"),
+          asyncOpen ? (0, import_react80.createElement)(
+            Modal,
+            {
+              title: "\u7F16\u8F91\u4EFB\u52A1",
+              busy: saving,
+              onClose: () => setAsyncOpen(false),
+              footer: (0, import_react80.createElement)(
+                "div",
+                { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
+                (0, import_react80.createElement)(Button, { variant: "outline", disabled: saving, onClick: () => setAsyncOpen(false) }, "\u53D6\u6D88"),
+                (0, import_react80.createElement)(Button, {
+                  variant: "primary",
+                  onBusyChange: setSaving,
+                  onClick: async () => {
+                    await demoWait();
+                    setAsyncOpen(false);
+                  }
+                }, "\u4FDD\u5B58")
+              )
+            },
+            (0, import_react80.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u70B9\u300C\u4FDD\u5B58\u300D\uFF1A\u6309\u94AE\u81EA\u5DF1\u8F6C\u5708\uFF0C\u540C\u65F6\u628A busy \u62A5\u7ED9\u5F39\u7A97 \u2014\u2014 \u906E\u7F69 / Esc / \u2715 \u5168\u90E8\u5931\u6548\uFF0C1.4 \u79D2\u540E\u5173\u95ED\u3002footer \u90A3\u6761\u5206\u9694\u7EBF\u7167\u65E7\uFF0C\u4E0D\u56E0\u5F02\u6B65\u6539\u53D8\u3002")
           ) : null
         )
       )
@@ -66005,9 +66100,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.20.9"}`],
-            [t3("buildDemo"), `v${"0.20.9"}`],
-            [t3("buildStamp"), "261103-165803-852"]
+            [t3("buildCore"), `v${"0.21.0"}`],
+            [t3("buildDemo"), `v${"0.21.0"}`],
+            [t3("buildStamp"), "261103-180116-575"]
           ].map(
             ([label, value]) => (0, import_react85.createElement)(
               "tr",
@@ -66329,9 +66424,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react87.createElement)("span", null, `core v${"0.20.9"}`),
-          (0, import_react87.createElement)("span", null, `demo v${"0.20.9"}`),
-          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-165803-852")
+          (0, import_react87.createElement)("span", null, `core v${"0.21.0"}`),
+          (0, import_react87.createElement)("span", null, `demo v${"0.21.0"}`),
+          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-180116-575")
         )
       )
     ),

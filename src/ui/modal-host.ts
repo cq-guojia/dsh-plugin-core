@@ -3,6 +3,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { ensureControls, getStyleKit } from './css.js'
 import { AlertModal, type AlertModalProps } from './AlertModal.js'
 import { ConfirmModal, type ConfirmModalProps } from './ConfirmModal.js'
+import { isThenable } from './thenable.js'
 
 interface HostEntry {
   id: number
@@ -74,7 +75,7 @@ export function registerHostDialog(handlers: HostDialogHandlers): void {
   hostHandlers = handlers
 }
 
-/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」，弹窗转 loading 并锁死关闭，settle 后再收尾。 */
+/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」。 */
 type DialogHandler = () => unknown
 
 export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel' | 'confirmLoading' | 'cancelLoading'> & {
@@ -88,11 +89,6 @@ export type AlertOptions = Omit<AlertModalProps, 'onConfirm' | 'confirmLoading'>
   skin?: 'core' | 'host'
   /** 确认回调（遮罩 / Esc 同一个出口）；异步期间转圈并锁死关闭，resolve 后才关。 */
   onConfirm?: DialogHandler
-}
-
-function isThenable(value: unknown): value is PromiseLike<unknown> {
-  if (value === null || value === undefined) return false
-  return typeof (value as { then?: unknown }).then === 'function'
 }
 
 /**
@@ -116,47 +112,30 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
   void _skin
   return new Promise<boolean>((resolve) => {
     const id = ++idSeq
-    const entry: HostEntry = { id, node: null }
-    let busy: 'confirm' | 'cancel' | null = null
     let closed = false
-    const draw = (): void => {
-      entry.node = h(ConfirmModal, {
-        ...core,
-        confirmLoading: busy === 'confirm',
-        cancelLoading: busy === 'cancel',
-        onConfirm: () => void run('confirm'),
-        onCancel: () => void run('cancel'),
-      })
-      flush()
-    }
     const close = (result: boolean): void => {
+      if (closed) return
       closed = true
       dismiss(id)
       resolve(result)
     }
-    const run = async (which: 'confirm' | 'cancel'): Promise<void> => {
-      if (closed || busy !== null) return
+    // 「跑完关不关」归这里；转圈与锁框归 Button / ConfirmModal。把原 promise 返回给 Button 去转。
+    const run = (which: 'confirm' | 'cancel'): unknown => {
+      if (closed) return undefined
       const out = (which === 'confirm' ? onConfirm : onCancel)?.()
       if (!isThenable(out)) {
         close(which === 'confirm')
-        return
+        return undefined
       }
-      busy = which
-      draw()
-      try {
-        await out
-      } catch (err) {
-        // 失败：撤回 loading，框留着让人重试 / 取消；错误照常暴露出来，不吞。
-        busy = null
-        draw()
-        console.error('[dsh-plugin-core] confirmModal 回调失败，弹窗已恢复可操作：', err)
-        return
-      }
-      busy = null
-      close(which === 'confirm')
+      // reject 不关：按钮已自己恢复可点，错误由 Button 打到控制台
+      void out.then(() => close(which === 'confirm'), () => {})
+      return out
     }
-    entries.push(entry)
-    draw()
+    entries.push({
+      id,
+      node: h(ConfirmModal, { ...core, onConfirm: () => run('confirm'), onCancel: () => run('cancel') }),
+    })
+    flush()
   })
 }
 
@@ -179,37 +158,25 @@ export function alertModal(opts: AlertOptions): Promise<void> {
   void _skin
   return new Promise<void>((resolve) => {
     const id = ++idSeq
-    const entry: HostEntry = { id, node: null }
-    let busy = false
-    const draw = (): void => {
-      entry.node = h(AlertModal, { ...core, confirmLoading: busy, onConfirm: () => void run() })
-      flush()
-    }
+    let closed = false
     const close = (): void => {
+      if (closed) return
+      closed = true
       dismiss(id)
       resolve()
     }
-    const run = async (): Promise<void> => {
-      if (busy) return
+    // 同 confirmModal：只决定「跑完关不关」，转圈与锁框交给 Button / AlertModal。
+    const run = (): unknown => {
+      if (closed) return undefined
       const out = onConfirm?.()
       if (!isThenable(out)) {
         close()
-        return
+        return undefined
       }
-      busy = true
-      draw()
-      try {
-        await out
-      } catch (err) {
-        busy = false
-        draw()
-        console.error('[dsh-plugin-core] alertModal 回调失败，弹窗已恢复可操作：', err)
-        return
-      }
-      busy = false
-      close()
+      void out.then(close, () => {})
+      return out
     }
-    entries.push(entry)
-    draw()
+    entries.push({ id, node: h(AlertModal, { ...core, onConfirm: () => run() }) })
+    flush()
   })
 }

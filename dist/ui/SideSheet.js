@@ -22,8 +22,10 @@ export function SideSheet(props) {
     ensureComponentStyles('side-sheet', SIDE_SHEET_CSS);
     const tt = props.translate ?? t;
     const side = props.side ?? 'left';
-    const closeOnMask = props.closeOnMask !== false;
-    useEscapeClose(props.escClose !== false, props.onClose);
+    // busy 是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+    const busy = props.busy === true;
+    const closeOnMask = !busy && props.closeOnMask !== false;
+    useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose);
     const [width, setWidth] = useState(props.width ?? 460);
     const panelRef = useRef(null);
     // 收起动效（用户 2026-11-02）：open=false 时先播完 dshpc-side-out 再真正卸载；
@@ -37,7 +39,7 @@ export function SideSheet(props) {
     }, [leaving]);
     if (unmounted)
         return null;
-    const showClose = props.closable !== false && props.onClose !== undefined;
+    const showClose = props.closable !== false && props.onClose !== undefined && !busy;
     const hasHeader = props.header !== null;
     const beginResize = (event) => {
         const element = panelRef.current;
@@ -84,7 +86,7 @@ export function SideSheet(props) {
         }
         return h('div', { className: 'dshpc-dock__head' }, props.icon === undefined ? null : h('div', { className: 'dshpc-dock__lead' }, props.icon), h('div', { className: 'dshpc-dock__title' }, props.title), props.extra === undefined ? null : h('div', { className: 'dshpc-dock__extra' }, props.extra));
     };
-    return h(OverlayMask, { kind: 'side', closeOnMask, onClose: props.onClose }, h('section', {
+    return h(OverlayMask, { kind: 'side', closeOnMask, onClose: busy ? undefined : props.onClose }, h('section', {
         ref: (element) => {
             panelRef.current = element;
         },

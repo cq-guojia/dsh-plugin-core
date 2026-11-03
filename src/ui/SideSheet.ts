@@ -52,6 +52,11 @@ export interface SideSheetProps {
   closeOnMask?: boolean
   /** 按 Esc 是否关闭（默认 true）。 */
   escClose?: boolean
+  /**
+   * 有异步在跑（如 footer 里的 `Button` 正在 loading）：为真时遮罩 / Esc / ✕ **三条关闭路径全失效**，
+   * 内容照常渲染。与 `closeOnMask` / `escClose` / `closable` 是"与"关系 —— 它是否决项，不替代它们。
+   */
+  busy?: boolean
   /** **初始**宽度（px，默认 460，与 PanelDock 同档）；拖过之后以拖出来的为准。 */
   width?: number
   /** 可拖宽的下限（默认 320）。 */
@@ -70,8 +75,10 @@ export function SideSheet(props: SideSheetProps): ReactNode {
   ensureComponentStyles('side-sheet', SIDE_SHEET_CSS)
   const tt = props.translate ?? t
   const side = props.side ?? 'left'
-  const closeOnMask = props.closeOnMask !== false
-  useEscapeClose(props.escClose !== false, props.onClose)
+  // busy 是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+  const busy = props.busy === true
+  const closeOnMask = !busy && props.closeOnMask !== false
+  useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose)
 
   const [width, setWidth] = useState(props.width ?? 460)
   const panelRef = useRef<HTMLElement | null>(null)
@@ -86,7 +93,7 @@ export function SideSheet(props: SideSheetProps): ReactNode {
   }, [leaving])
   if (unmounted) return null
 
-  const showClose = props.closable !== false && props.onClose !== undefined
+  const showClose = props.closable !== false && props.onClose !== undefined && !busy
   const hasHeader = props.header !== null
 
   const beginResize = (event: { clientX: number; preventDefault?: () => void }): void => {
@@ -148,7 +155,7 @@ export function SideSheet(props: SideSheetProps): ReactNode {
 
   return h(
     OverlayMask,
-    { kind: 'side', closeOnMask, onClose: props.onClose },
+    { kind: 'side', closeOnMask, onClose: busy ? undefined : props.onClose },
     h(
       'section',
       {

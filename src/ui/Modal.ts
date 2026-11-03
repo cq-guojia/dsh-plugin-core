@@ -29,6 +29,11 @@ export interface ModalProps {
   closeOnMask?: boolean
   /** 按 Esc 是否关闭（默认 true）。 */
   escClose?: boolean
+  /**
+   * 有异步在跑（如 footer 里的 `Button` 正在 loading）：为真时遮罩 / Esc / ✕ **三条关闭路径全失效**，
+   * 内容照常渲染。与 `closeOnMask` / `escClose` / `closable` 是"与"关系 —— 它是否决项，不替代它们。
+   */
+  busy?: boolean
   /** 尺寸档：sm=小确认框家族 / md·lg=大弹窗家族；也可用 width/height 精确覆盖。 */
   size?: ModalSize
   /** 面板宽度（默认随 size：sm 360px / md 720px / lg 1120px，均带视口兜底）。 */
@@ -57,8 +62,10 @@ export interface ModalProps {
 export function Modal(props: ModalProps): ReturnType<typeof h> {
   ensureComponentStyles('feedback', FEEDBACK_CSS)
   const tt = props.translate ?? t
-  const closeOnMask = props.closeOnMask !== false
-  useEscapeClose(props.escClose !== false, props.onClose)
+  // busy 是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+  const busy = props.busy === true
+  const closeOnMask = !busy && props.closeOnMask !== false
+  useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose)
 
   // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
   // 宽度用 `100%`（相对遮罩盒）而不是 `100vw`：遮罩已按右侧分栏让位（见 feedback.css），
@@ -69,7 +76,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
     lg: { width: 'min(1120px, calc(100% - 32px))', height: 'calc(100% - 80px)' },
   }
   const s = sizeStyle[props.size ?? 'md']
-  const showClose = props.closable !== false && props.onClose !== undefined
+  const showClose = props.closable !== false && props.onClose !== undefined && !busy
   const showHeader =
     props.hideHeader !== true &&
     (props.icon !== undefined ||
@@ -81,7 +88,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
 
   return h(
     OverlayMask,
-    { kind: 'center', closeOnMask, onClose: props.onClose },
+    { kind: 'center', closeOnMask, onClose: busy ? undefined : props.onClose },
     // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
     // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
     h(

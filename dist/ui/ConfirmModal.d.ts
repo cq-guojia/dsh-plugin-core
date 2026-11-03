@@ -15,20 +15,23 @@ export interface ConfirmModalProps {
     cancelText?: string;
     /** 点遮罩是否关闭（默认 true；点了 = 取消）。 */
     closeOnMask?: boolean;
-    /** 确认钮加载中（消费方在做异步处理）：转圈 + 禁用。任一钮加载中，整框都不许关。 */
+    /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
     confirmLoading?: boolean;
-    /** 取消钮加载中：同上。 */
+    /** 外部驱动取消钮 loading：同上。 */
     cancelLoading?: boolean;
     size?: ModalSize;
-    /** 确认回调。 */
-    onConfirm?: () => void;
-    /** 取消 / 遮罩 / Esc 回调。 */
-    onCancel?: () => void;
+    /** 确认回调；**返回 Promise 自动转圈 + 整框锁死**，settle 后恢复（关闭与否由你决定）。 */
+    onConfirm?: () => unknown;
+    /** 取消 / 遮罩 / Esc 回调；异步语义同 `onConfirm`。 */
+    onCancel?: () => unknown;
     translate?: Translate;
 }
 /**
  * 确认框（语义层，基于 Modal）：双按钮（取消 outline + 确认语义档）、无 ✕；无标题时整条头部消失。
  * 样式封闭：按钮只暴露语义档（tone → variant），不透传任意 className/style。
+ *
+ * 异步不在这里实现：`onConfirm` / `onCancel` 返回 Promise 时由 `Button` 自动转圈，
+ * 它再把「在跑」报上来，这里只负责把它转成 `Modal` 的 `busy`（锁死遮罩 / Esc）。
  */
 export declare function ConfirmModal(props: ConfirmModalProps): ReturnType<typeof h>;
 //# sourceMappingURL=ConfirmModal.d.ts.map

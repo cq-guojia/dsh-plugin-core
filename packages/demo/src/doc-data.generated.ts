@@ -1245,8 +1245,26 @@ export const docData = {
             "type": "boolean",
             "def": "'false'",
             "desc": {
-              "zh": "文案前显示同色小圈，并自动 disabled",
-              "en": "Shows a same-color spinner before the label and auto-disables"
+              "zh": "受控 loading：文案前显示同色小圈并自动 disabled（别处刷新也能点亮它）；与「点击自动 loading」取或",
+              "en": "Controlled loading: same-color spinner before the label plus auto-disable (an external refresh can light it up too); OR-ed with automatic click loading"
+            }
+          },
+          {
+            "name": "onClick",
+            "type": "(...) => unknown",
+            "def": "—",
+            "desc": {
+              "zh": "**返回 Promise 即自动 loading**：转圈 + 禁用 + 防连点，settle 后自己恢复；reject 也恢复并把错误打到控制台。同步返回值 = 老行为",
+              "en": "**Returning a Promise enables loading automatically**: spinner, disabled, no double-clicks, restored on settle; a rejection also restores and logs the error. Sync return values behave as before"
+            }
+          },
+          {
+            "name": "onBusyChange",
+            "type": "(busy: boolean) => void",
+            "def": "—",
+            "desc": {
+              "zh": "把「这个按钮正在跑」报出去（配合 `Modal` / `SideSheet` 的 `busy` 锁死关闭），不改变按钮自身行为",
+              "en": "Reports \"this button is running\" outward (pair with `busy` on `Modal` / `SideSheet` to lock closing); does not change the button itself"
             }
           },
           {
@@ -1299,8 +1317,8 @@ export const docData = {
             "type": "原生 button 属性",
             "def": "—",
             "desc": {
-              "zh": "type / disabled / title / aria-* / onClick 原样透传",
-              "en": "type / disabled / title / aria-* / onClick passed through"
+              "zh": "type / disabled / title / aria-* 等原样透传（onClick 见上面那行）",
+              "en": "type / disabled / title / aria-* and friends pass through (onClick is documented above)"
             }
           }
         ]
@@ -2873,6 +2891,15 @@ export const docData = {
             }
           },
           {
+            "name": "busy",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "有异步在跑（footer 里的 `Button` 正在 loading）：遮罩 / Esc / ✕ 三条关闭路径一起失效，内容照常。否决项，不替代 closeOnMask / escClose",
+              "en": "Async work in flight (a footer `Button` is loading): mask / Esc / ✕ all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose"
+            }
+          },
+          {
             "name": "maxWidth",
             "type": "string",
             "def": "按 size",
@@ -3010,6 +3037,15 @@ export const docData = {
             "desc": {
               "zh": "点遮罩关闭 / Esc 关闭",
               "en": "Close on mask click / on Esc"
+            }
+          },
+          {
+            "name": "busy",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "有异步在跑（footer 里的 `Button` 正在 loading）：遮罩 / Esc / ✕ 三条关闭路径一起失效，内容照常。否决项，不替代 closeOnMask / escClose",
+              "en": "Async work in flight (a footer `Button` is loading): mask / Esc / ✕ all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose"
             }
           },
           {
