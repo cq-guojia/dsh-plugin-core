@@ -24,9 +24,10 @@ export function AlertModal(props) {
         size: props.size ?? 'sm',
         hideHeader: props.title === undefined,
         closable: false,
-        closeOnMask: props.closeOnMask,
-        onClose: props.onConfirm,
-        footer: h(Button, { variant: 'primary', onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('dialogOk')),
+        closeOnMask: props.confirmLoading === true ? false : props.closeOnMask,
+        // 加载中锁死关闭路径（遮罩 / Esc 都走 onClose）。
+        onClose: props.confirmLoading === true ? undefined : props.onConfirm,
+        footer: h(Button, { variant: 'primary', loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('dialogOk')),
     }, props.message ?? null);
 }
 //# sourceMappingURL=AlertModal.js.map

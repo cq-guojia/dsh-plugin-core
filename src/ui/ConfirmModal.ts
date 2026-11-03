@@ -18,6 +18,10 @@ export interface ConfirmModalProps {
   cancelText?: string
   /** 点遮罩是否关闭（默认 true；点了 = 取消）。 */
   closeOnMask?: boolean
+  /** 确认钮加载中（消费方在做异步处理）：转圈 + 禁用。任一钮加载中，整框都不许关。 */
+  confirmLoading?: boolean
+  /** 取消钮加载中：同上。 */
+  cancelLoading?: boolean
   size?: ModalSize
   /** 确认回调。 */
   onConfirm?: () => void
@@ -34,6 +38,8 @@ export function ConfirmModal(props: ConfirmModalProps): ReturnType<typeof h> {
   const tt = props.translate ?? t
   const tone = props.tone ?? 'primary'
   const confirmVariant = tone === 'danger' ? 'danger' : tone === 'warning' ? 'warning' : 'primary'
+  // 加载中整框锁死：遮罩 / Esc 都走 onClose，置空即封死（✕ 本来就没有）。
+  const busy = props.confirmLoading === true || props.cancelLoading === true
   return h(
     Modal,
     {
@@ -41,13 +47,13 @@ export function ConfirmModal(props: ConfirmModalProps): ReturnType<typeof h> {
       size: props.size ?? 'sm',
       hideHeader: props.title === undefined,
       closable: false,
-      closeOnMask: props.closeOnMask,
-      onClose: props.onCancel,
+      closeOnMask: busy ? false : props.closeOnMask,
+      onClose: busy ? undefined : props.onCancel,
       footer: h(
         'div',
         { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } },
-        h(Button, { variant: 'outline', onClick: () => props.onCancel?.() }, props.cancelText ?? tt('cancel')),
-        h(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('confirm')),
+        h(Button, { variant: 'outline', loading: props.cancelLoading === true, onClick: () => props.onCancel?.() }, props.cancelText ?? tt('cancel')),
+        h(Button, { variant: confirmVariant, loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('confirm')),
       ),
     },
     props.message ?? null,

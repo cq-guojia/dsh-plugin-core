@@ -15,6 +15,10 @@ export interface ConfirmModalProps {
     cancelText?: string;
     /** 点遮罩是否关闭（默认 true；点了 = 取消）。 */
     closeOnMask?: boolean;
+    /** 确认钮加载中（消费方在做异步处理）：转圈 + 禁用。任一钮加载中，整框都不许关。 */
+    confirmLoading?: boolean;
+    /** 取消钮加载中：同上。 */
+    cancelLoading?: boolean;
     size?: ModalSize;
     /** 确认回调。 */
     onConfirm?: () => void;

@@ -10,14 +10,16 @@ export function ConfirmModal(props) {
     const tt = props.translate ?? t;
     const tone = props.tone ?? 'primary';
     const confirmVariant = tone === 'danger' ? 'danger' : tone === 'warning' ? 'warning' : 'primary';
+    // 加载中整框锁死：遮罩 / Esc 都走 onClose，置空即封死（✕ 本来就没有）。
+    const busy = props.confirmLoading === true || props.cancelLoading === true;
     return h(Modal, {
         title: props.title,
         size: props.size ?? 'sm',
         hideHeader: props.title === undefined,
         closable: false,
-        closeOnMask: props.closeOnMask,
-        onClose: props.onCancel,
-        footer: h('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, h(Button, { variant: 'outline', onClick: () => props.onCancel?.() }, props.cancelText ?? tt('cancel')), h(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('confirm'))),
+        closeOnMask: busy ? false : props.closeOnMask,
+        onClose: busy ? undefined : props.onCancel,
+        footer: h('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, h(Button, { variant: 'outline', loading: props.cancelLoading === true, onClick: () => props.onCancel?.() }, props.cancelText ?? tt('cancel')), h(Button, { variant: confirmVariant, loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('confirm'))),
     }, props.message ?? null);
 }
 //# sourceMappingURL=ConfirmModal.js.map

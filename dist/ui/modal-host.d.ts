@@ -17,14 +17,29 @@ export interface HostDialogHandlers {
     alert: (opts: HostAlertArgs) => Promise<void>;
 }
 export declare function registerHostDialog(handlers: HostDialogHandlers): void;
-export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel'> & {
+/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」，弹窗转 loading 并锁死关闭，settle 后再收尾。 */
+type DialogHandler = () => unknown;
+export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel' | 'confirmLoading' | 'cancelLoading'> & {
     skin?: 'core' | 'host';
+    /** 确认回调；异步期间确认钮转圈、整框不可关，resolve 后按 `true` 关闭，reject 后恢复可点。 */
+    onConfirm?: DialogHandler;
+    /** 取消 / 遮罩 / Esc 回调；异步语义同 `onConfirm`，resolve 后按 `false` 关闭。 */
+    onCancel?: DialogHandler;
 };
-export type AlertOptions = Omit<AlertModalProps, 'onConfirm'> & {
+export type AlertOptions = Omit<AlertModalProps, 'onConfirm' | 'confirmLoading'> & {
     skin?: 'core' | 'host';
+    /** 确认回调（遮罩 / Esc 同一个出口）；异步期间转圈并锁死关闭，resolve 后才关。 */
+    onConfirm?: DialogHandler;
 };
-/** 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。`skin:"host"` 走宿主原生 Modal。 */
+/**
+ * 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。`skin:"host"` 走宿主原生 Modal。
+ * 回调返回 Promise 时进入 loading（按钮转圈 + 遮罩 / Esc 锁死），settle 后才真正关闭。
+ */
 export declare function confirmModal(opts: ConfirmOptions): Promise<boolean>;
-/** 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。`skin:"host"` 走宿主原生 Modal。 */
+/**
+ * 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。`skin:"host"` 走宿主原生 Modal。
+ * 回调返回 Promise 时进入 loading（按钮转圈 + 遮罩 / Esc 锁死），settle 后才真正关闭。
+ */
 export declare function alertModal(opts: AlertOptions): Promise<void>;
+export {};
 //# sourceMappingURL=modal-host.d.ts.map

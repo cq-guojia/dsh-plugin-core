@@ -14,6 +14,8 @@ export interface AlertModalProps {
     confirmText?: string;
     /** 点遮罩是否关闭（默认 true）。 */
     closeOnMask?: boolean;
+    /** 确认钮加载中（消费方在做异步处理）：转圈 + 禁用，并锁死遮罩 / Esc 关闭。 */
+    confirmLoading?: boolean;
     /** 尺寸档（默认 sm 确认框宽度）。 */
     size?: ModalSize;
     /** 点击确认 / 遮罩 / Esc 的统一出口（单按钮弹窗，关闭即确认）。 */

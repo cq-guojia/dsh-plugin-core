@@ -45,7 +45,15 @@ let hostHandlers = null;
 export function registerHostDialog(handlers) {
     hostHandlers = handlers;
 }
-/** 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。`skin:"host"` 走宿主原生 Modal。 */
+function isThenable(value) {
+    if (value === null || value === undefined)
+        return false;
+    return typeof value.then === 'function';
+}
+/**
+ * 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。`skin:"host"` 走宿主原生 Modal。
+ * 回调返回 Promise 时进入 loading（按钮转圈 + 遮罩 / Esc 锁死），settle 后才真正关闭。
+ */
 export function confirmModal(opts) {
     if (opts.skin === 'host') {
         if (hostHandlers !== null) {
@@ -59,22 +67,59 @@ export function confirmModal(opts) {
         }
         console.warn('[dsh-plugin-core] confirmModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤');
     }
-    const { skin: _skin, ...core } = opts;
+    const { skin: _skin, onConfirm, onCancel, ...core } = opts;
     void _skin;
     return new Promise((resolve) => {
         const id = ++idSeq;
+        const entry = { id, node: null };
+        let busy = null;
+        let closed = false;
+        const draw = () => {
+            entry.node = h(ConfirmModal, {
+                ...core,
+                confirmLoading: busy === 'confirm',
+                cancelLoading: busy === 'cancel',
+                onConfirm: () => void run('confirm'),
+                onCancel: () => void run('cancel'),
+            });
+            flush();
+        };
         const close = (result) => {
+            closed = true;
             dismiss(id);
             resolve(result);
         };
-        entries.push({
-            id,
-            node: h(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) }),
-        });
-        flush();
+        const run = async (which) => {
+            if (closed || busy !== null)
+                return;
+            const out = (which === 'confirm' ? onConfirm : onCancel)?.();
+            if (!isThenable(out)) {
+                close(which === 'confirm');
+                return;
+            }
+            busy = which;
+            draw();
+            try {
+                await out;
+            }
+            catch (err) {
+                // 失败：撤回 loading，框留着让人重试 / 取消；错误照常暴露出来，不吞。
+                busy = null;
+                draw();
+                console.error('[dsh-plugin-core] confirmModal 回调失败，弹窗已恢复可操作：', err);
+                return;
+            }
+            busy = null;
+            close(which === 'confirm');
+        };
+        entries.push(entry);
+        draw();
     });
 }
-/** 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。`skin:"host"` 走宿主原生 Modal。 */
+/**
+ * 命令式警告框：Promise 在关闭时 resolve（单按钮，关闭即确认）。`skin:"host"` 走宿主原生 Modal。
+ * 回调返回 Promise 时进入 loading（按钮转圈 + 遮罩 / Esc 锁死），settle 后才真正关闭。
+ */
 export function alertModal(opts) {
     if (opts.skin === 'host') {
         if (hostHandlers !== null) {
@@ -86,16 +131,44 @@ export function alertModal(opts) {
         }
         console.warn('[dsh-plugin-core] alertModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤');
     }
-    const { skin: _skin, ...core } = opts;
+    const { skin: _skin, onConfirm, ...core } = opts;
     void _skin;
     return new Promise((resolve) => {
         const id = ++idSeq;
+        const entry = { id, node: null };
+        let busy = false;
+        const draw = () => {
+            entry.node = h(AlertModal, { ...core, confirmLoading: busy, onConfirm: () => void run() });
+            flush();
+        };
         const close = () => {
             dismiss(id);
             resolve();
         };
-        entries.push({ id, node: h(AlertModal, { ...core, onConfirm: close }) });
-        flush();
+        const run = async () => {
+            if (busy)
+                return;
+            const out = onConfirm?.();
+            if (!isThenable(out)) {
+                close();
+                return;
+            }
+            busy = true;
+            draw();
+            try {
+                await out;
+            }
+            catch (err) {
+                busy = false;
+                draw();
+                console.error('[dsh-plugin-core] alertModal 回调失败，弹窗已恢复可操作：', err);
+                return;
+            }
+            busy = false;
+            close();
+        };
+        entries.push(entry);
+        draw();
     });
 }
 //# sourceMappingURL=modal-host.js.map

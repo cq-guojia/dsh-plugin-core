@@ -26,6 +26,8 @@ export interface AlertModalProps {
   confirmText?: string
   /** 点遮罩是否关闭（默认 true）。 */
   closeOnMask?: boolean
+  /** 确认钮加载中（消费方在做异步处理）：转圈 + 禁用，并锁死遮罩 / Esc 关闭。 */
+  confirmLoading?: boolean
   /** 尺寸档（默认 sm 确认框宽度）。 */
   size?: ModalSize
   /** 点击确认 / 遮罩 / Esc 的统一出口（单按钮弹窗，关闭即确认）。 */
@@ -49,9 +51,10 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
       size: props.size ?? 'sm',
       hideHeader: props.title === undefined,
       closable: false,
-      closeOnMask: props.closeOnMask,
-      onClose: props.onConfirm,
-      footer: h(Button, { variant: 'primary', onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('dialogOk')),
+      closeOnMask: props.confirmLoading === true ? false : props.closeOnMask,
+      // 加载中锁死关闭路径（遮罩 / Esc 都走 onClose）。
+      onClose: props.confirmLoading === true ? undefined : props.onConfirm,
+      footer: h(Button, { variant: 'primary', loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt('dialogOk')),
     },
     props.message ?? null,
   )

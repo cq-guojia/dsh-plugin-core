@@ -178,14 +178,10 @@ export type DemoMessageKey =
   | 'exHostModalHint'
   | 'exToastNotifyTitle'
   | 'exToastNotifyHint'
-  | 'exToastHostTitle'
-  | 'exToastHostHint'
   | 'exLoaderTitle'
   | 'exLoaderHint'
   | 'exLoadingTitle'
   | 'exLoadingHint'
-  | 'exToastSonnerTitle'
-  | 'exToastSonnerHint'
   | 'sessionListUnavailable'
   | 'sessionListEmpty'
   | 'sessionListRunning'
@@ -451,7 +447,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     liveTitle: 'LiveText 实时文本',
 
     feedbackModalHint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关。标题栏的 ✕ 是 24×24 图标位，不该出现边框或 120px 宽的底色块',
-    feedbackToastHint: '命令式 showToast，不要求挂组件',
+    feedbackToastHint: '命令式 notify，不要求挂组件',
 
     explorerDataTitle: '数据来源（真数据，无 mock）',
     explorerDataHint:
@@ -496,7 +492,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exMarqueeHint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号',
     exLiveHint: '订阅内部节拍器，走时 Ui 由调用方渲染',
     exSmallModalTitle: '小型弹窗（自定义）',
-    exSmallModalHint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。',
+    exSmallModalHint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。回调返回 Promise 时（消费方在做异步），对应按钮自己转圈、整框锁死（遮罩 / Esc 都关不掉），resolve 才关闭、reject 则撤回 loading 留着重试；组件形态也可以自己传 confirmLoading / cancelLoading。',
     exLargeModalTitle: '大型弹窗（自定义）',
     exLargeModalHint: '我们的内容弹窗：Modal（size md/lg），承载任意内容，不是「确定/取消」命令式。三张示例：默认 md / 带 footer / 无 footer（内容自定义），头部排法可不同。',
     exSideSheetTitle: '侧边抽屉（覆盖式）',
@@ -505,14 +501,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exHostModalHint: '宿主内核官方 Modal：遮罩/头部/关闭叉全归宿主管；正文区塞任意内容，footer 任意按钮组合。命令式用 confirmModal/alertModal 加 skin:"host"，与 core 互不覆盖。',
     exToastNotifyTitle: 'Toast · 我们封装 notify',
     exToastNotifyHint: 'notify()：统一灰/绿/红/黄 + 右侧我们自己的按钮',
-    exToastHostTitle: 'Toast · 宿主原生',
-    exToastHostHint: 'showHostToast()：直接包 @deepseek-ai 官方 Toast（顶部横幅）',
     exLoaderTitle: '加载图标 · Loader',
     exLoaderHint: '只画图标：无背景、无内距、无定位 —— 背景与位置归你（套 Chip、套 Card，或自己包一层 fixed 容器）。variant 两种（ring / blocks）× size 五档（xs 12 / sm 16 / md 24 / lg 32 / xl 48），几何等比缩放。颜色走 currentColor，跟着所在文字自动变色。倒数第二行是「自己配背景 + 自己定位」的写法，最后一行是同族的 LoaderBar（胶囊不定进度）—— 边界一致，都只画图形。',
     exLoadingTitle: '加载提示 · 两种样式',
     exLoadingHint: 'showLoading() 不自动消失，只能自己拿句柄 close()；屏幕上永远只有一张卡——后一次调用直接顶掉前一次（连点也只有一张）。默认屏位下方居中（与 Toast 同屏位），position 可选六向 + center；不给遮罩时后面照常可点。要放进自己的空间就直接渲染 LoadingToast / LoadingBlock。',
-    exToastSonnerTitle: 'Toast · 官方 Sonner',
-    exToastSonnerHint: 'showToast()：第三方库原味，对比用',
     sessionRealHint: '宿主 sessions.list 快照（冷安全，不激活 Agent）→ 点开真预览；fork 与跳转都是官方口子',
     sessionListUnavailable: '宿主会话服务未就位（sessions / uiConversation / uiWorkspace 缺席）——在真实 dsh profile 里安装本插件即可读到本机会话',
     sessionListEmpty: '宿主当前没有可显示的会话',
@@ -759,7 +751,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     liveTitle: 'LiveText',
 
     feedbackModalHint: 'Hand-rolled overlay (no portal); click backdrop / Esc / ✕ all close it. The header ✕ is a 24×24 icon slot — no border or 120px-wide color block should appear',
-    feedbackToastHint: 'Imperative showToast — no component mounting required',
+    feedbackToastHint: 'Imperative notify — no component mounting required',
 
     explorerDataTitle: 'Where the data comes from (real data, no mocks)',
     explorerDataHint:
@@ -804,7 +796,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exMarqueeHint: 'Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis',
     exLiveHint: 'Subscribes to an internal ticker; the running clock UI is rendered by the caller',
     exSmallModalTitle: 'Small dialogs (custom)',
-    exSmallModalHint: 'Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host’s own.',
+    exSmallModalHint: 'Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host’s own. When a callback returns a Promise (the caller is doing async work), that button spins and the whole dialog locks (mask and Esc stop working); it closes on resolve, and on reject the spinner is withdrawn and the dialog stays open for a retry. Component form takes confirmLoading / cancelLoading directly.',
     exLargeModalTitle: 'Large dialogs (custom)',
     exLargeModalHint: 'Our content dialog: Modal (size md/lg) carrying arbitrary content — not a confirm/cancel primitive. Three samples: default md / with footer / without footer (custom content); the header layout may differ.',
     exSideSheetTitle: 'Side drawer (overlay)',
@@ -813,14 +805,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exHostModalHint: 'The host kernel’s own Modal: mask, header and close button all belong to the host; the body takes arbitrary content and the footer any button set. Imperative use goes through confirmModal/alertModal with skin:"host"; neither shadows the other.',
     exToastNotifyTitle: 'Toast · our notify wrapper',
     exToastNotifyHint: 'notify(): uniform grey/green/red/yellow plus our own button on the right',
-    exToastHostTitle: 'Toast · host native',
-    exToastHostHint: 'showHostToast(): wraps the official @deepseek-ai Toast (top banner)',
     exLoaderTitle: 'Loader · icon only',
     exLoaderHint: 'Draws the icon and nothing else: no background, no padding, no positioning — those belong to you (wrap it in a Chip, a Card, or your own fixed container). Two variants (ring / blocks) × five sizes (xs 12 / sm 16 / md 24 / lg 32 / xl 48), geometry scales proportionally. Colour follows currentColor, so it inherits the surrounding text colour. The second-to-last row is the “bring your own background and position” pattern; the last row shows the same-family LoaderBar — same boundary, graphics only.',
     exLoadingTitle: 'Loading · two styles',
     exLoadingHint: 'showLoading() never dismisses itself — you call close() on the handle. Only one card ever exists: a later call replaces the previous one (rapid clicks still show one). It sits bottom-centre by default (the Toast slot); position takes the six directions plus center. Without a mask the page stays clickable. To keep it inside your own area, render LoadingToast / LoadingBlock in place.',
-    exToastSonnerTitle: 'Toast · Sonner',
-    exToastSonnerHint: 'showToast(): the third-party library as-is, for comparison',
     sessionRealHint: 'Host sessions.list snapshot (cold-safe, no Agent activation) → click for a real preview; fork and navigation are official APIs',
     sessionListUnavailable: 'Host session services not ready (sessions / uiConversation / uiWorkspace absent) — install this plugin into a real dsh profile to list and preview your sessions',
     sessionListEmpty: 'The host has no visible sessions right now',

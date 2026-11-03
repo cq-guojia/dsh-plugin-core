@@ -4,7 +4,7 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/css.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/controls/field-css.generated.js'
-import { Button, Chip, Input, InputGroup, Segmented, SplitGroup } from '../dist/ui/index.js'
+import { AlertModal, Button, Chip, ConfirmModal, Input, InputGroup, Segmented, SplitGroup } from '../dist/ui/index.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -203,4 +203,29 @@ test('Chip 最大宽 + onClick：渲染成 button 且仍包 MarqueeText', () => 
   const html = renderToStaticMarkup(createElement(Chip, { maxWidth: 100, onClick: () => {} }, '很长的标签文字内容'))
   assert.ok(html.includes('<button'), '有 onClick 应是 button')
   assert.ok(html.includes('dshpc-mq'), '最大宽下标签仍包进跑马灯容器')
+})
+
+test('ConfirmModal 加载中：只有对应钮转圈并被禁用，另一个钮照常可点', () => {
+  const html = renderToStaticMarkup(
+    createElement(ConfirmModal, { title: '删除', message: '确定？', confirmLoading: true }),
+  )
+  const [cancelBtn, confirmBtn] = html.split('<button').slice(1)
+  assert.ok(!cancelBtn.includes('dshpc-loader'), '取消钮没在跑就不该转圈')
+  assert.ok(!cancelBtn.includes('disabled'), '取消钮应保持可点')
+  assert.ok(confirmBtn.includes('dshpc-loader'), '确认钮必须转圈')
+  assert.ok(confirmBtn.includes('disabled'), '确认钮加载中必须禁用（防连点）')
+
+  const canceling = renderToStaticMarkup(createElement(ConfirmModal, { message: 'x', cancelLoading: true }))
+  const [cancelBtn2, confirmBtn2] = canceling.split('<button').slice(1)
+  assert.ok(cancelBtn2.includes('disabled') && cancelBtn2.includes('dshpc-loader'), '取消钮自己也能转圈')
+  assert.ok(!confirmBtn2.includes('disabled'), '确认钮不该被取消钮带成禁用')
+})
+
+test('AlertModal 加载中：确认钮转圈 + 禁用；默认不转', () => {
+  const idle = renderToStaticMarkup(createElement(AlertModal, { message: 'x' }))
+  assert.ok(!idle.includes('dshpc-loader') && !idle.includes('disabled'), '默认既不该转圈也不该禁用')
+
+  const busy = renderToStaticMarkup(createElement(AlertModal, { message: 'x', confirmLoading: true }))
+  assert.ok(busy.includes('dshpc-loader'), '确认钮必须转圈')
+  assert.ok(busy.includes('disabled'), '确认钮加载中必须禁用')
 })

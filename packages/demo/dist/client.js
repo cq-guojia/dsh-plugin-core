@@ -37,7 +37,7 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react88 = require("react");
+var import_react87 = require("react");
 var import_dsh_client_ui_primitives6 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
@@ -4022,10 +4022,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h79 = Math.floor(totalSec / 3600);
+  const h78 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h79 > 0 ? `${h79}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h78 > 0 ? `${h78}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -5112,9 +5112,10 @@ function AlertModal(props) {
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
-    closeOnMask: props.closeOnMask,
-    onClose: props.onConfirm,
-    footer: (0, import_react19.createElement)(Button, { variant: "primary", onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
+    closeOnMask: props.confirmLoading === true ? false : props.closeOnMask,
+    // 加载中锁死关闭路径（遮罩 / Esc 都走 onClose）。
+    onClose: props.confirmLoading === true ? void 0 : props.onConfirm,
+    footer: (0, import_react19.createElement)(Button, { variant: "primary", loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
   }, props.message ?? null);
 }
 
@@ -5124,14 +5125,15 @@ function ConfirmModal(props) {
   const tt = props.translate ?? t;
   const tone = props.tone ?? "primary";
   const confirmVariant = tone === "danger" ? "danger" : tone === "warning" ? "warning" : "primary";
+  const busy = props.confirmLoading === true || props.cancelLoading === true;
   return (0, import_react20.createElement)(Modal, {
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
-    closeOnMask: props.closeOnMask,
-    onClose: props.onCancel,
-    footer: (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react20.createElement)(Button, { variant: "outline", onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react20.createElement)(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
+    closeOnMask: busy ? false : props.closeOnMask,
+    onClose: busy ? void 0 : props.onCancel,
+    footer: (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react20.createElement)(Button, { variant: "outline", loading: props.cancelLoading === true, onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react20.createElement)(Button, { variant: confirmVariant, loading: props.confirmLoading === true, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
   }, props.message ?? null);
 }
 
@@ -5175,6 +5177,11 @@ var hostHandlers = null;
 function registerHostDialog(handlers2) {
   hostHandlers = handlers2;
 }
+function isThenable(value) {
+  if (value === null || value === void 0)
+    return false;
+  return typeof value.then === "function";
+}
 function confirmModal(opts) {
   if (opts.skin === "host") {
     if (hostHandlers !== null) {
@@ -5188,19 +5195,51 @@ function confirmModal(opts) {
     }
     console.warn('[dsh-plugin-core] confirmModal skin:"host" \u9700\u5148\u5F15\u5165\u5B98\u65B9\u9002\u914D\u5C42 official.js\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4');
   }
-  const { skin: _skin, ...core } = opts;
+  const { skin: _skin, onConfirm, onCancel, ...core } = opts;
   void _skin;
   return new Promise((resolve) => {
     const id3 = ++idSeq;
+    const entry = { id: id3, node: null };
+    let busy = null;
+    let closed = false;
+    const draw = () => {
+      entry.node = (0, import_react21.createElement)(ConfirmModal, {
+        ...core,
+        confirmLoading: busy === "confirm",
+        cancelLoading: busy === "cancel",
+        onConfirm: () => void run("confirm"),
+        onCancel: () => void run("cancel")
+      });
+      flush();
+    };
     const close = (result) => {
+      closed = true;
       dismiss(id3);
       resolve(result);
     };
-    entries.push({
-      id: id3,
-      node: (0, import_react21.createElement)(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) })
-    });
-    flush();
+    const run = async (which) => {
+      if (closed || busy !== null)
+        return;
+      const out = (which === "confirm" ? onConfirm : onCancel)?.();
+      if (!isThenable(out)) {
+        close(which === "confirm");
+        return;
+      }
+      busy = which;
+      draw();
+      try {
+        await out;
+      } catch (err) {
+        busy = null;
+        draw();
+        console.error("[dsh-plugin-core] confirmModal \u56DE\u8C03\u5931\u8D25\uFF0C\u5F39\u7A97\u5DF2\u6062\u590D\u53EF\u64CD\u4F5C\uFF1A", err);
+        return;
+      }
+      busy = null;
+      close(which === "confirm");
+    };
+    entries.push(entry);
+    draw();
   });
 }
 function alertModal(opts) {
@@ -5214,16 +5253,43 @@ function alertModal(opts) {
     }
     console.warn('[dsh-plugin-core] alertModal skin:"host" \u9700\u5148\u5F15\u5165\u5B98\u65B9\u9002\u914D\u5C42 official.js\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4');
   }
-  const { skin: _skin, ...core } = opts;
+  const { skin: _skin, onConfirm, ...core } = opts;
   void _skin;
   return new Promise((resolve) => {
     const id3 = ++idSeq;
+    const entry = { id: id3, node: null };
+    let busy = false;
+    const draw = () => {
+      entry.node = (0, import_react21.createElement)(AlertModal, { ...core, confirmLoading: busy, onConfirm: () => void run() });
+      flush();
+    };
     const close = () => {
       dismiss(id3);
       resolve();
     };
-    entries.push({ id: id3, node: (0, import_react21.createElement)(AlertModal, { ...core, onConfirm: close }) });
-    flush();
+    const run = async () => {
+      if (busy)
+        return;
+      const out = onConfirm?.();
+      if (!isThenable(out)) {
+        close();
+        return;
+      }
+      busy = true;
+      draw();
+      try {
+        await out;
+      } catch (err) {
+        busy = false;
+        draw();
+        console.error("[dsh-plugin-core] alertModal \u56DE\u8C03\u5931\u8D25\uFF0C\u5F39\u7A97\u5DF2\u6062\u590D\u53EF\u64CD\u4F5C\uFF1A", err);
+        return;
+      }
+      busy = false;
+      close();
+    };
+    entries.push(entry);
+    draw();
   });
 }
 
@@ -6371,15 +6437,15 @@ var Toast = (props) => {
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h79) => [
+      setHeights((h78) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h79
+        ...h78
       ]);
-      return () => setHeights((h79) => h79.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h78) => h78.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
@@ -6424,7 +6490,7 @@ var Toast = (props) => {
   const deleteToast = import_react29.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
-    setHeights((h79) => h79.filter((height) => height.toastId !== toast2.id));
+    setHeights((h78) => h78.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -6951,7 +7017,7 @@ var Toaster = /* @__PURE__ */ import_react29.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t4) => t4.position == toast2.position),
-          heights: heights.filter((h79) => h79.position == toast2.position),
+          heights: heights.filter((h78) => h78.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -7115,23 +7181,6 @@ function createToasterHost() {
       renderToaster();
     }
   };
-}
-function showToast(message, opts) {
-  if (typeof document === "undefined")
-    return;
-  const host = toasterHost();
-  if (host === null)
-    return;
-  if (opts?.position !== void 0)
-    host.setPosition(opts.position);
-  host.show({
-    message,
-    variant: opts?.variant ?? "info",
-    style: "native",
-    durationMs: opts?.durationMs ?? DEFAULT_MS,
-    color: opts?.color,
-    onDismiss: opts?.onDismiss
-  });
 }
 function notifyPalette(variant, theme2) {
   switch (variant) {
@@ -16629,7 +16678,7 @@ function applyDOMChangeInner(view, change, newSel, lastKey = -1) {
     view.inputState.composing++;
   let defaultTr;
   let defaultInsert = () => defaultTr || (defaultTr = applyDefaultInsert(view, change, newSel));
-  if (!view.state.facet(inputHandler).some((h79) => h79(view, change.from, change.to, text2, defaultInsert)))
+  if (!view.state.facet(inputHandler).some((h78) => h78(view, change.from, change.to, text2, defaultInsert)))
     view.dispatch(defaultInsert());
   return true;
 }
@@ -17567,12 +17616,12 @@ var HeightOracle = class {
   mustRefreshForHeights(lineHeights) {
     let newHeight = false;
     for (let i2 = 0; i2 < lineHeights.length; i2++) {
-      let h79 = lineHeights[i2];
-      if (h79 < 0) {
+      let h78 = lineHeights[i2];
+      if (h78 < 0) {
         i2++;
-      } else if (!this.heightSamples[Math.floor(h79 * 10)]) {
+      } else if (!this.heightSamples[Math.floor(h78 * 10)]) {
         newHeight = true;
-        this.heightSamples[Math.floor(h79 * 10)] = true;
+        this.heightSamples[Math.floor(h78 * 10)] = true;
       }
     }
     return newHeight;
@@ -17588,11 +17637,11 @@ var HeightOracle = class {
     if (changed) {
       this.heightSamples = {};
       for (let i2 = 0; i2 < knownHeights.length; i2++) {
-        let h79 = knownHeights[i2];
-        if (h79 < 0)
+        let h78 = knownHeights[i2];
+        if (h78 < 0)
           i2++;
         else
-          this.heightSamples[Math.floor(h79 * 10)] = true;
+          this.heightSamples[Math.floor(h78 * 10)] = true;
       }
     }
     return changed;
@@ -25639,7 +25688,7 @@ var HighlightBuilder = class {
     if (start >= to || end <= from2)
       return;
     if (type3.isTop)
-      highlighters = this.highlighters.filter((h79) => !h79.scope || h79.scope(type3));
+      highlighters = this.highlighters.filter((h78) => !h78.scope || h78.scope(type3));
     let cls = inheritedClass;
     let rule = getStyleTags(cursor2) || Rule.empty;
     let tagCls = highlightTags(highlighters, rule.tags);
@@ -25656,7 +25705,7 @@ var HighlightBuilder = class {
     let mounted = cursor2.tree && cursor2.tree.prop(NodeProp.mounted);
     if (mounted && mounted.overlay) {
       let inner = cursor2.node.enter(mounted.overlay[0].from + start, 1);
-      let innerHighlighters = this.highlighters.filter((h79) => !h79.scope || h79.scope(mounted.tree.type));
+      let innerHighlighters = this.highlighters.filter((h78) => !h78.scope || h78.scope(mounted.tree.type));
       let hasChild2 = cursor2.firstChild();
       for (let i2 = 0, pos = start; ; i2++) {
         let next = i2 < mounted.overlay.length ? mounted.overlay[i2] : null;
@@ -58412,7 +58461,7 @@ var DICT2 = {
     marqueeTitle: "MarqueeText \u8DD1\u9A6C\u706F",
     liveTitle: "LiveText \u5B9E\u65F6\u6587\u672C",
     feedbackModalHint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757",
-    feedbackToastHint: "\u547D\u4EE4\u5F0F showToast\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6",
+    feedbackToastHint: "\u547D\u4EE4\u5F0F notify\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6",
     explorerDataTitle: "\u6570\u636E\u6765\u6E90\uFF08\u771F\u6570\u636E\uFF0C\u65E0 mock\uFF09",
     explorerDataHint: "\u6587\u4EF6\u670D\u52A1\u53D6\u5BBF\u4E3B\u7684 remote.workspaceFiles\uFF08dotted \u6CE8\u5165\uFF09\uFF0C\u5DE5\u4F5C\u533A\u6E05\u5355\u53D6\u5B98\u65B9 workspaces \u670D\u52A1\u5FEB\u7167\uFF1B\u300C\u6700\u8FD1\u4F1A\u8BDD\u6240\u5C5E\u5DE5\u4F5C\u533A\u300D= \u66F4\u65B0\u8FC7\u7684\u6700\u65B0\u4E14\u5E26\u4F1A\u8BDD\u7684\u90A3\u4E2A\u5DE5\u4F5C\u533A\uFF08pickWorkspaceAnchor\uFF09\u2014\u2014list / read \u90FD\u8981 sessionId\uFF0C\u951A\u70B9\u5FC5\u987B\u5148\u843D\u5230\u4E00\u4E2A\u771F\u4F1A\u8BDD\u4E0A\u3002",
     explorerFilesNone: "\u672A\u5C31\u4F4D\uFF1A\u5BBF\u4E3B\u8FD8\u6CA1\u7ED9\u51FA remote.workspaceFiles\uFF08\u6587\u4EF6\u9884\u89C8 / \u9009\u62E9\u90FD\u4E0D\u53EF\u7528\uFF0C\u4E0D\u9020\u5047\u6570\u636E\uFF09",
@@ -58449,7 +58498,7 @@ var DICT2 = {
     exMarqueeHint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7",
     exLiveHint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3",
     exSmallModalTitle: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09",
-    exSmallModalHint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002",
+    exSmallModalHint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002\u56DE\u8C03\u8FD4\u56DE Promise \u65F6\uFF08\u6D88\u8D39\u65B9\u5728\u505A\u5F02\u6B65\uFF09\uFF0C\u5BF9\u5E94\u6309\u94AE\u81EA\u5DF1\u8F6C\u5708\u3001\u6574\u6846\u9501\u6B7B\uFF08\u906E\u7F69 / Esc \u90FD\u5173\u4E0D\u6389\uFF09\uFF0Cresolve \u624D\u5173\u95ED\u3001reject \u5219\u64A4\u56DE loading \u7559\u7740\u91CD\u8BD5\uFF1B\u7EC4\u4EF6\u5F62\u6001\u4E5F\u53EF\u4EE5\u81EA\u5DF1\u4F20 confirmLoading / cancelLoading\u3002",
     exLargeModalTitle: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09",
     exLargeModalHint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002",
     exSideSheetTitle: "\u4FA7\u8FB9\u62BD\u5C49\uFF08\u8986\u76D6\u5F0F\uFF09",
@@ -58458,14 +58507,10 @@ var DICT2 = {
     exHostModalHint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002',
     exToastNotifyTitle: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify",
     exToastNotifyHint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE",
-    exToastHostTitle: "Toast \xB7 \u5BBF\u4E3B\u539F\u751F",
-    exToastHostHint: "showHostToast()\uFF1A\u76F4\u63A5\u5305 @deepseek-ai \u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09",
     exLoaderTitle: "\u52A0\u8F7D\u56FE\u6807 \xB7 Loader",
     exLoaderHint: "\u53EA\u753B\u56FE\u6807\uFF1A\u65E0\u80CC\u666F\u3001\u65E0\u5185\u8DDD\u3001\u65E0\u5B9A\u4F4D \u2014\u2014 \u80CC\u666F\u4E0E\u4F4D\u7F6E\u5F52\u4F60\uFF08\u5957 Chip\u3001\u5957 Card\uFF0C\u6216\u81EA\u5DF1\u5305\u4E00\u5C42 fixed \u5BB9\u5668\uFF09\u3002variant \u4E24\u79CD\uFF08ring / blocks\uFF09\xD7 size \u4E94\u6863\uFF08xs 12 / sm 16 / md 24 / lg 32 / xl 48\uFF09\uFF0C\u51E0\u4F55\u7B49\u6BD4\u7F29\u653E\u3002\u989C\u8272\u8D70 currentColor\uFF0C\u8DDF\u7740\u6240\u5728\u6587\u5B57\u81EA\u52A8\u53D8\u8272\u3002\u5012\u6570\u7B2C\u4E8C\u884C\u662F\u300C\u81EA\u5DF1\u914D\u80CC\u666F + \u81EA\u5DF1\u5B9A\u4F4D\u300D\u7684\u5199\u6CD5\uFF0C\u6700\u540E\u4E00\u884C\u662F\u540C\u65CF\u7684 LoaderBar\uFF08\u80F6\u56CA\u4E0D\u5B9A\u8FDB\u5EA6\uFF09\u2014\u2014 \u8FB9\u754C\u4E00\u81F4\uFF0C\u90FD\u53EA\u753B\u56FE\u5F62\u3002",
     exLoadingTitle: "\u52A0\u8F7D\u63D0\u793A \xB7 \u4E24\u79CD\u6837\u5F0F",
     exLoadingHint: "showLoading() \u4E0D\u81EA\u52A8\u6D88\u5931\uFF0C\u53EA\u80FD\u81EA\u5DF1\u62FF\u53E5\u67C4 close()\uFF1B\u5C4F\u5E55\u4E0A\u6C38\u8FDC\u53EA\u6709\u4E00\u5F20\u5361\u2014\u2014\u540E\u4E00\u6B21\u8C03\u7528\u76F4\u63A5\u9876\u6389\u524D\u4E00\u6B21\uFF08\u8FDE\u70B9\u4E5F\u53EA\u6709\u4E00\u5F20\uFF09\u3002\u9ED8\u8BA4\u5C4F\u4F4D\u4E0B\u65B9\u5C45\u4E2D\uFF08\u4E0E Toast \u540C\u5C4F\u4F4D\uFF09\uFF0Cposition \u53EF\u9009\u516D\u5411 + center\uFF1B\u4E0D\u7ED9\u906E\u7F69\u65F6\u540E\u9762\u7167\u5E38\u53EF\u70B9\u3002\u8981\u653E\u8FDB\u81EA\u5DF1\u7684\u7A7A\u95F4\u5C31\u76F4\u63A5\u6E32\u67D3 LoadingToast / LoadingBlock\u3002",
-    exToastSonnerTitle: "Toast \xB7 \u5B98\u65B9 Sonner",
-    exToastSonnerHint: "showToast()\uFF1A\u7B2C\u4E09\u65B9\u5E93\u539F\u5473\uFF0C\u5BF9\u6BD4\u7528",
     sessionRealHint: "\u5BBF\u4E3B sessions.list \u5FEB\u7167\uFF08\u51B7\u5B89\u5168\uFF0C\u4E0D\u6FC0\u6D3B Agent\uFF09\u2192 \u70B9\u5F00\u771F\u9884\u89C8\uFF1Bfork \u4E0E\u8DF3\u8F6C\u90FD\u662F\u5B98\u65B9\u53E3\u5B50",
     sessionListUnavailable: "\u5BBF\u4E3B\u4F1A\u8BDD\u670D\u52A1\u672A\u5C31\u4F4D\uFF08sessions / uiConversation / uiWorkspace \u7F3A\u5E2D\uFF09\u2014\u2014\u5728\u771F\u5B9E dsh profile \u91CC\u5B89\u88C5\u672C\u63D2\u4EF6\u5373\u53EF\u8BFB\u5230\u672C\u673A\u4F1A\u8BDD",
     sessionListEmpty: "\u5BBF\u4E3B\u5F53\u524D\u6CA1\u6709\u53EF\u663E\u793A\u7684\u4F1A\u8BDD",
@@ -58671,7 +58716,7 @@ var DICT2 = {
     marqueeTitle: "MarqueeText",
     liveTitle: "LiveText",
     feedbackModalHint: "Hand-rolled overlay (no portal); click backdrop / Esc / \u2715 all close it. The header \u2715 is a 24\xD724 icon slot \u2014 no border or 120px-wide color block should appear",
-    feedbackToastHint: "Imperative showToast \u2014 no component mounting required",
+    feedbackToastHint: "Imperative notify \u2014 no component mounting required",
     explorerDataTitle: "Where the data comes from (real data, no mocks)",
     explorerDataHint: 'File services come from the host remote.workspaceFiles (dotted injection); the workspace list is the official workspaces snapshot. The "most recent workspace" is the newest updated one that owns a session (pickWorkspaceAnchor) \u2014 list / read all need a sessionId, so browsing must land on a real session first.',
     explorerFilesNone: "Not ready: the host has not exposed remote.workspaceFiles yet (no preview, no picking \u2014 no fake data either)",
@@ -58708,7 +58753,7 @@ var DICT2 = {
     exMarqueeHint: "Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis",
     exLiveHint: "Subscribes to an internal ticker; the running clock UI is rendered by the caller",
     exSmallModalTitle: "Small dialogs (custom)",
-    exSmallModalHint: "Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host\u2019s own.",
+    exSmallModalHint: "Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host\u2019s own. When a callback returns a Promise (the caller is doing async work), that button spins and the whole dialog locks (mask and Esc stop working); it closes on resolve, and on reject the spinner is withdrawn and the dialog stays open for a retry. Component form takes confirmLoading / cancelLoading directly.",
     exLargeModalTitle: "Large dialogs (custom)",
     exLargeModalHint: "Our content dialog: Modal (size md/lg) carrying arbitrary content \u2014 not a confirm/cancel primitive. Three samples: default md / with footer / without footer (custom content); the header layout may differ.",
     exSideSheetTitle: "Side drawer (overlay)",
@@ -58717,14 +58762,10 @@ var DICT2 = {
     exHostModalHint: 'The host kernel\u2019s own Modal: mask, header and close button all belong to the host; the body takes arbitrary content and the footer any button set. Imperative use goes through confirmModal/alertModal with skin:"host"; neither shadows the other.',
     exToastNotifyTitle: "Toast \xB7 our notify wrapper",
     exToastNotifyHint: "notify(): uniform grey/green/red/yellow plus our own button on the right",
-    exToastHostTitle: "Toast \xB7 host native",
-    exToastHostHint: "showHostToast(): wraps the official @deepseek-ai Toast (top banner)",
     exLoaderTitle: "Loader \xB7 icon only",
     exLoaderHint: "Draws the icon and nothing else: no background, no padding, no positioning \u2014 those belong to you (wrap it in a Chip, a Card, or your own fixed container). Two variants (ring / blocks) \xD7 five sizes (xs 12 / sm 16 / md 24 / lg 32 / xl 48), geometry scales proportionally. Colour follows currentColor, so it inherits the surrounding text colour. The second-to-last row is the \u201Cbring your own background and position\u201D pattern; the last row shows the same-family LoaderBar \u2014 same boundary, graphics only.",
     exLoadingTitle: "Loading \xB7 two styles",
     exLoadingHint: "showLoading() never dismisses itself \u2014 you call close() on the handle. Only one card ever exists: a later call replaces the previous one (rapid clicks still show one). It sits bottom-centre by default (the Toast slot); position takes the six directions plus center. Without a mask the page stays clickable. To keep it inside your own area, render LoadingToast / LoadingBlock in place.",
-    exToastSonnerTitle: "Toast \xB7 Sonner",
-    exToastSonnerHint: "showToast(): the third-party library as-is, for comparison",
     sessionRealHint: "Host sessions.list snapshot (cold-safe, no Agent activation) \u2192 click for a real preview; fork and navigation are official APIs",
     sessionListUnavailable: "Host session services not ready (sessions / uiConversation / uiWorkspace absent) \u2014 install this plugin into a real dsh profile to list and preview your sessions",
     sessionListEmpty: "The host has no visible sessions right now",
@@ -58865,7 +58906,7 @@ function demoPanels() {
 var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
-var import_react87 = require("react");
+var import_react86 = require("react");
 
 // packages/demo/src/sections/start.tsx
 var import_react78 = require("react");
@@ -61558,8 +61599,8 @@ var docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "\u5B98\u65B9 Sonner \u539F\u751F\uFF08\u5BF9\u6BD4 / demo \u7528\uFF09\u3002opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`\uFF0C6 \u5411\u5B9A\u4F4D\uFF0C\u660E\u6697\u8DDF\u968F\u5BBF\u4E3B",
-              "en": "Raw official Sonner (comparison / demo). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host"
+              "zh": "\u5B98\u65B9 Sonner \u539F\u5473\uFF08\u8F7B\u91CF\u539F\u751F\u89C2\u611F\uFF1Bdemo \u7EDF\u4E00\u7528 notify\uFF09\u3002opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`\uFF0C6 \u5411\u5B9A\u4F4D\uFF0C\u660E\u6697\u8DDF\u968F\u5BBF\u4E3B",
+              "en": "Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host"
             }
           },
           {
@@ -62645,34 +62686,7 @@ ensureControls()`
 }
 
 // packages/demo/src/sections/controls.tsx
-var import_react81 = require("react");
-
-// dist/ui/host-toast.js
 var import_react80 = require("react");
-var import_client6 = require("react-dom/client");
-function showHostToast(message, opts) {
-  if (typeof document === "undefined")
-    return;
-  const container = document.createElement("div");
-  document.body.appendChild(container);
-  const root = (0, import_client6.createRoot)(container);
-  const close = () => {
-    root.unmount();
-    container.remove();
-  };
-  root.render((0, import_react80.createElement)(Official.Toast, {
-    text: message,
-    tone: opts?.tone,
-    holdMs: opts?.holdMs ?? 3e3,
-    actions: opts?.actions !== void 0 ? opts.actions.map((a) => ({ label: a.text, onClick: a.onClick })) : void 0,
-    onDone: () => {
-      close();
-      opts?.onDismiss?.();
-    }
-  }));
-}
-
-// packages/demo/src/sections/controls.tsx
 var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
 var BUTTON_ICONS = [
   { name: "plus", Icon: import_dsh_client_ui_primitives2.IconPlusOutlineRegular },
@@ -62690,13 +62704,13 @@ var BUTTON_ICONS = [
 ];
 function iconOf(name2, size4 = 14) {
   const found = BUTTON_ICONS.find((item) => item.name === name2);
-  return found === void 0 ? null : (0, import_react81.createElement)(found.Icon, { size: size4 });
+  return found === void 0 ? null : (0, import_react80.createElement)(found.Icon, { size: size4 });
 }
 function StarSvg() {
-  return (0, import_react81.createElement)(
+  return (0, import_react80.createElement)(
     "svg",
     { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-    (0, import_react81.createElement)("path", {
+    (0, import_react80.createElement)("path", {
       d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
       stroke: "currentColor",
       strokeWidth: 1.2,
@@ -62736,7 +62750,7 @@ var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
 function tipAnchor(text2, side, align) {
   const props = { label: text2, side };
   if (align !== void 0) props.align = align;
-  return (0, import_react81.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react81.createElement)("button", {
+  return (0, import_react80.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react80.createElement)("button", {
     type: "button",
     style: {
       padding: "4px 10px",
@@ -62750,13 +62764,13 @@ function tipAnchor(text2, side, align) {
   }, text2));
 }
 function Row(props) {
-  return (0, import_react81.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+  return (0, import_react80.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
 }
 function Labeled(props) {
-  return (0, import_react81.createElement)(
+  return (0, import_react80.createElement)(
     "div",
     { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react81.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    (0, import_react80.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
     props.children
   );
 }
@@ -62818,200 +62832,200 @@ var CODE_BTN_WIDTH = `// \u56FA\u5B9A\u5BBD\uFF1A\u5199\u6B7B\u5BBD\u5EA6
 // \u4E09\u8005\u540C\u8BBE \u21D2 \u56FA\u5B9A\u5BBD\u4F18\u5148\uFF0C\u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\u81EA\u52A8\u5931\u6548
 <Button variant="outline" width={120} minWidth={200} maxWidth={160}>\u56FA\u5B9A\u5BBD\u4F18\u5148</Button>`;
 function ButtonPage() {
-  return (0, import_react81.createElement)(
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "button" }),
+    (0, import_react80.createElement)(DocProse, { id: "button" }),
     // 文案与语言
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("btnTextTitle"), hint: t3("btnTextHint"), code: CODE_BTN_TEXT },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "locale" },
-          (0, import_react81.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t3("btnLabelSave")),
-          (0, import_react81.createElement)(Button, { variant: "outline" }, t3("btnLabelCancel")),
-          (0, import_react81.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t3("btnLabelDelete"))
+          (0, import_react80.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t3("btnLabelSave")),
+          (0, import_react80.createElement)(Button, { variant: "outline" }, t3("btnLabelCancel")),
+          (0, import_react80.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t3("btnLabelDelete"))
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "en" },
-          (0, import_react81.createElement)(Button, { variant: "primary" }, "Save"),
-          (0, import_react81.createElement)(Button, { variant: "outline" }, "Cancel"),
-          (0, import_react81.createElement)(Button, { variant: "ghost" }, "Learn more")
+          (0, import_react80.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react80.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react80.createElement)(Button, { variant: "ghost" }, "Learn more")
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "zh" },
-          (0, import_react81.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
-          (0, import_react81.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
-          (0, import_react81.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+          (0, import_react80.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react80.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react80.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "zh + en" },
-          (0, import_react81.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t3("btnLabelMixed")),
-          (0, import_react81.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
-          (0, import_react81.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+          (0, import_react80.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t3("btnLabelMixed")),
+          (0, import_react80.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react80.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
         )
       )
     ),
     // 10 档外观
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("btnVariantTitle"), hint: t3("btnVariantHint"), code: CODE_BTN_VARIANT },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        VARIANT_GROUPS.map((group) => (0, import_react81.createElement)(
+        VARIANT_GROUPS.map((group) => (0, import_react80.createElement)(
           Labeled,
           { key: group.label, label: group.label },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "6px", alignItems: "flex-start" } },
-            (0, import_react81.createElement)(Row, null, group.items.map((variant) => (0, import_react81.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
-            (0, import_react81.createElement)(Row, null, group.items.map((variant) => (0, import_react81.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
+            (0, import_react80.createElement)(Row, null, group.items.map((variant) => (0, import_react80.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
+            (0, import_react80.createElement)(Row, null, group.items.map((variant) => (0, import_react80.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
           )
         ))
       )
     ),
     // 尺寸 / 图标位置 / block
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("btnSizeTitle"), hint: t3("btnSizeHint"), code: CODE_BTN_SIZE },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "size" },
-          ["sm", "md", "lg"].map((size4) => (0, import_react81.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus", ICON_SIZE[size4]) }, size4))
+          ["sm", "md", "lg"].map((size4) => (0, import_react80.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus", ICON_SIZE[size4]) }, size4))
         ),
         // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "icon" },
-          (0, import_react81.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
-          (0, import_react81.createElement)(Button, { variant: "outline", icon: (0, import_react81.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
+          (0, import_react80.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react80.createElement)(Button, { variant: "outline", icon: (0, import_react80.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "iconRight" },
-          (0, import_react81.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
-          (0, import_react81.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+          (0, import_react80.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
+          (0, import_react80.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
         ),
         // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "block" },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react81.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
-            (0, import_react81.createElement)("div", { style: { height: "8px" } }),
-            (0, import_react81.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
+            (0, import_react80.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react80.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react80.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
           )
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: t3("btnIconOnly") },
-          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react81.createElement)(IconButton, { key: item.name, icon: (0, import_react81.createElement)(item.Icon, { size: 16 }), label: item.name }))
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react80.createElement)(IconButton, { key: item.name, icon: (0, import_react80.createElement)(item.Icon, { size: 16 }), label: item.name }))
         ),
         // 纯图标钮的配色轴：默认无底色；color 改图标色，background 给底色（用户 2026-11-02）
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "IconButton \xB7 color / background" },
-          (0, import_react81.createElement)(IconButton, { icon: (0, import_react81.createElement)(BUTTON_ICONS[0].Icon, { size: 16 }), label: "\u9ED8\u8BA4\u65E0\u5E95\u8272" }),
-          (0, import_react81.createElement)(IconButton, { icon: (0, import_react81.createElement)(BUTTON_ICONS[1].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u56FE\u6807\u8272", color: "#7c3aed" }),
-          (0, import_react81.createElement)(IconButton, { icon: (0, import_react81.createElement)(BUTTON_ICONS[2].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u5E95\u8272", color: "#fff", background: "#7c3aed" })
+          (0, import_react80.createElement)(IconButton, { icon: (0, import_react80.createElement)(BUTTON_ICONS[0].Icon, { size: 16 }), label: "\u9ED8\u8BA4\u65E0\u5E95\u8272" }),
+          (0, import_react80.createElement)(IconButton, { icon: (0, import_react80.createElement)(BUTTON_ICONS[1].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u56FE\u6807\u8272", color: "#7c3aed" }),
+          (0, import_react80.createElement)(IconButton, { icon: (0, import_react80.createElement)(BUTTON_ICONS[2].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u5E95\u8272", color: "#fff", background: "#7c3aed" })
         )
       )
     ),
     // 状态
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("btnStateTitle"), hint: t3("btnStateHint"), code: CODE_BTN_STATE },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "\u7981\u7528" },
-          (0, import_react81.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-          (0, import_react81.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-          (0, import_react81.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
+          (0, import_react80.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+          (0, import_react80.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+          (0, import_react80.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "loading" },
-          (0, import_react81.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-          (0, import_react81.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+          (0, import_react80.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+          (0, import_react80.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
         )
       )
     ),
     // 自定义颜色
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("btnColorTitle"), hint: t3("btnColorHint"), code: CODE_BTN_COLOR },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "\u5B9E\u5FC3" },
-          (0, import_react81.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react81.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
+          (0, import_react80.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react80.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "\u63CF\u8FB9" },
-          (0, import_react81.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react81.createElement)(Button, { key: color, variant: "outline", color }, color)))
+          (0, import_react80.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react80.createElement)(Button, { key: color, variant: "outline", color }, color)))
         )
       )
     ),
     // 宽度三轴
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("btnWidthTitle"), hint: t3("btnWidthHint"), code: CODE_BTN_WIDTH },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react81.createElement)(Button, { variant: "outline", width: 120 }, "120px \u56FA\u5B9A\u5BBD")
+          (0, import_react80.createElement)(Button, { variant: "outline", width: 120 }, "120px \u56FA\u5B9A\u5BBD")
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", gap: "8px" } },
-            (0, import_react81.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u77ED"),
-            (0, import_react81.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+            (0, import_react80.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u77ED"),
+            (0, import_react80.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
           )
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { width: "320px" } },
-            (0, import_react81.createElement)(Button, { variant: "outline", maxWidth: 160 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6309\u94AE\u6587\u5B57\u6807\u7B7E")
+            (0, import_react80.createElement)(Button, { variant: "outline", maxWidth: 160 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6309\u94AE\u6587\u5B57\u6807\u7B7E")
           )
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
-          (0, import_react81.createElement)(Button, { variant: "outline", width: 120, minWidth: 200, maxWidth: 160 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+          (0, import_react80.createElement)(Button, { variant: "outline", width: 120, minWidth: 200, maxWidth: 160 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
         )
       )
     ),
-    (0, import_react81.createElement)(DocCode, { id: "button" }),
-    (0, import_react81.createElement)(DocApi, { id: "button" })
+    (0, import_react80.createElement)(DocCode, { id: "button" }),
+    (0, import_react80.createElement)(DocApi, { id: "button" })
   );
 }
 var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
@@ -63122,57 +63136,57 @@ var PERIODS = [
   { value: "month", label: "\u6708" }
 ];
 function InputPage() {
-  const [text2, setText] = (0, import_react81.useState)("");
-  const [num, setNum] = (0, import_react81.useState)(3);
-  const [checked, setChecked] = (0, import_react81.useState)(true);
-  const [seg, setSeg] = (0, import_react81.useState)("week");
-  const [filter2, setFilter] = (0, import_react81.useState)("all");
-  const [multi, setMulti] = (0, import_react81.useState)(["1"]);
-  const [iconSeg, setIconSeg] = (0, import_react81.useState)("search");
-  const [iconSeg2, setIconSeg2] = (0, import_react81.useState)("all");
-  const [kw, setKw] = (0, import_react81.useState)("");
-  const [igValue, setIgValue] = (0, import_react81.useState)("");
-  return (0, import_react81.createElement)(
+  const [text2, setText] = (0, import_react80.useState)("");
+  const [num, setNum] = (0, import_react80.useState)(3);
+  const [checked, setChecked] = (0, import_react80.useState)(true);
+  const [seg, setSeg] = (0, import_react80.useState)("week");
+  const [filter2, setFilter] = (0, import_react80.useState)("all");
+  const [multi, setMulti] = (0, import_react80.useState)(["1"]);
+  const [iconSeg, setIconSeg] = (0, import_react80.useState)("search");
+  const [iconSeg2, setIconSeg2] = (0, import_react80.useState)("all");
+  const [kw, setKw] = (0, import_react80.useState)("");
+  const [igValue, setIgValue] = (0, import_react80.useState)("");
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "input" }),
+    (0, import_react80.createElement)(DocProse, { id: "input" }),
     // Input 家族
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("demoInputFamily"), hint: t3("inputHint"), code: CODE_INPUT_FAMILY },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
+          (0, import_react80.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
-          (0, import_react81.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
+          (0, import_react80.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
+          (0, import_react80.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
           // 左侧图标槽（icon）+ 聚焦且有内容才出的清空钮（type="search"）
-          (0, import_react81.createElement)(Input, { type: "search", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+          (0, import_react80.createElement)(Input, { type: "search", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
         ),
-        (0, import_react81.createElement)(Input, { value: "bad value", onChange: () => {
+        (0, import_react80.createElement)(Input, { value: "bad value", onChange: () => {
         }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        (0, import_react81.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
-        (0, import_react81.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
+        (0, import_react80.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
+        (0, import_react80.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
       )
     ),
     // 组合输入框：输入框 + 按钮组焊成一体（前置标题 / 撤销 / 图标按钮 / 自定义高度）
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("inputGroupTitle"), hint: t3("inputGroupHint"), code: CODE_INPUT_GROUP },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", maxWidth: "460px" } },
-        (0, import_react81.createElement)(InputGroup, {
+        (0, import_react80.createElement)(InputGroup, {
           label: "\u4EFB\u52A1\u540D",
           value: igValue,
           onChange: setIgValue,
@@ -63186,22 +63200,22 @@ function InputPage() {
             } }
           ]
         }),
-        (0, import_react81.createElement)(InputGroup, {
+        (0, import_react80.createElement)(InputGroup, {
           size: "md",
           value: igValue,
           onChange: setIgValue,
           placeholder: "\u7EAF\u56FE\u6807 / \u56FE\u6807 + \u6587\u5B57 / \u7EAF\u6587\u5B57",
           actions: [
-            { icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }), ariaLabel: "\u91CD\u7F6E", onClick: () => {
+            { icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }), ariaLabel: "\u91CD\u7F6E", onClick: () => {
               setIgValue("");
             } },
-            { icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: "\u641C\u7D22", onClick: () => {
+            { icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: "\u641C\u7D22", onClick: () => {
             } },
             { label: "\u63D0\u4EA4", onClick: () => {
             } }
           ]
         }),
-        (0, import_react81.createElement)(InputGroup, {
+        (0, import_react80.createElement)(InputGroup, {
           value: igValue,
           onChange: setIgValue,
           height: 44,
@@ -63213,62 +63227,62 @@ function InputPage() {
       )
     ),
     // 问号提示：证明它不属于 Input 家族，随处可挂
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("btnHintTitle"), hint: t3("btnHintHint"), code: CODE_FIELD_HINT },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Row,
           null,
-          (0, import_react81.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
-          (0, import_react81.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+          (0, import_react80.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react80.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Row,
           null,
-          (0, import_react81.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
-          (0, import_react81.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+          (0, import_react80.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react80.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Row,
           null,
-          (0, import_react81.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
-          (0, import_react81.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
+          (0, import_react80.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react80.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
         )
       )
     ),
     // Switch / Checkbox / Segmented
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("switchTip"), hint: t3("checkboxHint"), code: CODE_SWITCH_SEG },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
           // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
           // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
           // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
-            (0, import_react81.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-            (0, import_react81.createElement)("span", {
+            (0, import_react80.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+            (0, import_react80.createElement)("span", {
               style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
               onClick: () => {
                 setChecked(!checked);
               }
             }, "\u542F\u7528")
           ),
-          (0, import_react81.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
+          (0, import_react80.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
-          (0, import_react81.createElement)(Segmented, {
+          (0, import_react80.createElement)(Segmented, {
             items: [
               { value: "day", label: "\u65E5" },
               { value: "week", label: "\u5468" },
@@ -63277,7 +63291,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react81.createElement)(Segmented, {
+          (0, import_react80.createElement)(Segmented, {
             bordered: true,
             items: [
               { value: "day", label: "\u65E5" },
@@ -63287,7 +63301,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react81.createElement)(Segmented, {
+          (0, import_react80.createElement)(Segmented, {
             size: "sm",
             items: [
               { value: "day", label: "\u65E5" },
@@ -63297,7 +63311,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react81.createElement)(Segmented, {
+          (0, import_react80.createElement)(Segmented, {
             size: "sm",
             bordered: true,
             items: [
@@ -63310,7 +63324,7 @@ function InputPage() {
           })
         ),
         // 筛选条形态（真实插件同款）：中性计数 + 灰底轨道
-        (0, import_react81.createElement)(Segmented, {
+        (0, import_react80.createElement)(Segmented, {
           items: [
             { value: "all", label: t3("segAll"), count: 11 },
             { value: "doing", label: t3("segDoing"), count: 5 },
@@ -63321,7 +63335,7 @@ function InputPage() {
           value: filter2,
           onChange: setFilter
         }),
-        (0, import_react81.createElement)(Segmented, {
+        (0, import_react80.createElement)(Segmented, {
           bordered: true,
           items: [
             { value: "all", label: t3("segAll"), count: 11 },
@@ -63334,7 +63348,7 @@ function InputPage() {
           onChange: setFilter
         }),
         // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react81.createElement)(Segmented, {
+        (0, import_react80.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
@@ -63345,7 +63359,7 @@ function InputPage() {
           value: multi,
           onChange: setMulti
         }),
-        (0, import_react81.createElement)(Segmented, {
+        (0, import_react80.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           bordered: true,
@@ -63358,20 +63372,20 @@ function InputPage() {
           onChange: setMulti
         }),
         // 段内图标：icon 在前、文字居中、count 在后；只有图标（无文字 / 计数）时自动正方形
-        (0, import_react81.createElement)(Segmented, {
+        (0, import_react80.createElement)(Segmented, {
           items: [
-            { value: "search", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), ariaLabel: "\u641C\u7D22" },
-            { value: "clock", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), ariaLabel: "\u65F6\u95F4" },
-            { value: "play", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }), ariaLabel: "\u8FD0\u884C" }
+            { value: "search", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), ariaLabel: "\u641C\u7D22" },
+            { value: "clock", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), ariaLabel: "\u65F6\u95F4" },
+            { value: "play", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }), ariaLabel: "\u8FD0\u884C" }
           ],
           value: iconSeg,
           onChange: setIconSeg
         }),
-        (0, import_react81.createElement)(Segmented, {
+        (0, import_react80.createElement)(Segmented, {
           items: [
-            { value: "all", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: t3("segAll"), count: 11 },
-            { value: "doing", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), label: t3("segDoing"), count: 5 },
-            { value: "done", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconCheckOutlineRegular, { size: 14 }), label: t3("segClaimed"), count: 11 }
+            { value: "all", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: t3("segAll"), count: 11 },
+            { value: "doing", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), label: t3("segDoing"), count: 5 },
+            { value: "done", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconCheckOutlineRegular, { size: 14 }), label: t3("segClaimed"), count: 11 }
           ],
           value: iconSeg2,
           onChange: setIconSeg2
@@ -63379,36 +63393,36 @@ function InputPage() {
       )
     ),
     // 选中片配色（tone，2026-10-29）：内置色名 / 自定义一对颜色
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("segToneTitle"), hint: t3("segToneHint"), code: CODE_SEG_TONE },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: 'tone="teal"' },
-          (0, import_react81.createElement)(Segmented, { tone: "teal", items: PERIODS, value: seg, onChange: setSeg })
+          (0, import_react80.createElement)(Segmented, { tone: "teal", items: PERIODS, value: seg, onChange: setSeg })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: 'tone="danger"' },
-          (0, import_react81.createElement)(Segmented, { tone: "danger", items: PERIODS, value: seg, onChange: setSeg })
+          (0, import_react80.createElement)(Segmented, { tone: "danger", items: PERIODS, value: seg, onChange: setSeg })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "{ bg, fg }" },
-          (0, import_react81.createElement)(Segmented, {
+          (0, import_react80.createElement)(Segmented, {
             tone: { bg: "#0b3d2e", fg: "#d1fae5" },
             items: PERIODS,
             value: seg,
             onChange: setSeg
           })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "tone + weekday" },
-          (0, import_react81.createElement)(Segmented, {
+          (0, import_react80.createElement)(Segmented, {
             multiple: true,
             tone: "purple",
             className: "dshpc-seg--weekday",
@@ -63423,16 +63437,16 @@ function InputPage() {
         )
       )
     ),
-    (0, import_react81.createElement)(DocCode, { id: "input" }),
-    (0, import_react81.createElement)(DocApi, { id: "input" }),
-    (0, import_react81.createElement)(DocApi, { id: "input-group" }),
-    (0, import_react81.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
+    (0, import_react80.createElement)(DocCode, { id: "input" }),
+    (0, import_react80.createElement)(DocApi, { id: "input" }),
+    (0, import_react80.createElement)(DocApi, { id: "input-group" }),
+    (0, import_react80.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
   );
 }
 var ICON_OPTIONS = [
-  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
-  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
-  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
+  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
+  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
+  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
 ];
 var CODE_PICKER = `// \u5355\u9009\uFF1Aicon + \u53EF\u641C\u7D22 / \u53EF\u6E05\u9664
 <Picker
@@ -63508,51 +63522,51 @@ var SPLIT_MEMBERS = {
   ]
 };
 function PickerPage() {
-  const [single, setSingle] = (0, import_react81.useState)(void 0);
-  const [multi, setMulti] = (0, import_react81.useState)([]);
-  const [model, setModel] = (0, import_react81.useState)("");
-  const [model2, setModel2] = (0, import_react81.useState)("");
-  const [ws, setWs] = (0, import_react81.useState)(void 0);
-  const [period2, setPeriod] = (0, import_react81.useState)("formal");
-  const [bucket, setBucket] = (0, import_react81.useState)("");
-  const [scope, setScope] = (0, import_react81.useState)("project");
-  const [member, setMember] = (0, import_react81.useState)("");
-  const [groups, setGroups] = (0, import_react81.useState)(["a"]);
-  const [groupValue, setGroupValue] = (0, import_react81.useState)("");
-  return (0, import_react81.createElement)(
+  const [single, setSingle] = (0, import_react80.useState)(void 0);
+  const [multi, setMulti] = (0, import_react80.useState)([]);
+  const [model, setModel] = (0, import_react80.useState)("");
+  const [model2, setModel2] = (0, import_react80.useState)("");
+  const [ws, setWs] = (0, import_react80.useState)(void 0);
+  const [period2, setPeriod] = (0, import_react80.useState)("formal");
+  const [bucket, setBucket] = (0, import_react80.useState)("");
+  const [scope, setScope] = (0, import_react80.useState)("project");
+  const [member, setMember] = (0, import_react80.useState)("");
+  const [groups, setGroups] = (0, import_react80.useState)(["a"]);
+  const [groupValue, setGroupValue] = (0, import_react80.useState)("");
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "picker" }),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(DocProse, { id: "picker" }),
+    (0, import_react80.createElement)(
       Example,
       { title: "Picker", hint: t3("pickerHint"), code: CODE_PICKER },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react81.createElement)(Picker, {
+        (0, import_react80.createElement)(Picker, {
           options: ICON_OPTIONS,
-          icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
+          icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
           value: single,
           onChange: (v) => setSingle(v),
           searchable: true,
           clearable: true,
           placeholder: "\u5355\u9009\uFF08icon + \u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
         }),
-        (0, import_react81.createElement)(Picker, {
+        (0, import_react80.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
           placeholder: "\u5355\u9009\uFF08\u65E0\u641C\u7D22\u6846\uFF09"
         }),
-        (0, import_react81.createElement)(Picker, {
+        (0, import_react80.createElement)(Picker, {
           groups: [
             { value: "g1", label: "\u7EC4\u4E00", options: ICON_OPTIONS },
             {
               value: "g2",
               label: "\u7EC4\u4E8C",
               options: [
-                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
-                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
+                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
+                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
               ]
             }
           ],
@@ -63563,13 +63577,13 @@ function PickerPage() {
           searchable: true,
           placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF0C\u53EF\u53CD\u9009\uFF09"
         }),
-        (0, import_react81.createElement)(Picker, {
+        (0, import_react80.createElement)(Picker, {
           options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
           degraded: true,
           disabled: true,
           placeholder: "\u964D\u7EA7 + \u7981\u7528"
         }),
-        (0, import_react81.createElement)(Picker, {
+        (0, import_react80.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
@@ -63578,16 +63592,16 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exModelPickerTitle"), hint: t3("modelPickerHint"), code: CODE_MODEL_PICKER },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
-        (0, import_react81.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
+        (0, import_react80.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
         // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
-        (0, import_react81.createElement)(ModelPicker, {
+        (0, import_react80.createElement)(ModelPicker, {
           value: model2,
           onChange: setModel2,
           variant: "cascade",
@@ -63595,14 +63609,14 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exWorkspacePickerTitle"), hint: t3("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
-        (0, import_react81.createElement)(WorkspacePicker, {
+        (0, import_react80.createElement)(WorkspacePicker, {
           value: ws,
           onChange: (v) => setWs(v),
           clearable: true,
@@ -63610,18 +63624,18 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exSplitGroupTitle"), hint: t3("splitGroupHint"), code: CODE_SPLIT_GROUP },
       // 形态一（单选滑块 + 下拉）：左滑块选「正式组 / 测试组」，右格下拉联动换源、且略长；sm/md/lg 三档
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
         ["sm", "md", "lg"].map(
-          (sz) => (0, import_react81.createElement)(
+          (sz) => (0, import_react80.createElement)(
             SplitGroup,
             { key: sz, label: `\u5355\u9009 \xB7 ${sz}` },
-            (0, import_react81.createElement)(Segmented, {
+            (0, import_react80.createElement)(Segmented, {
               size: sz,
               items: SPLIT_SINGLE_OPTS,
               value: period2,
@@ -63630,7 +63644,7 @@ function PickerPage() {
                 setBucket("");
               }
             }),
-            (0, import_react81.createElement)(Picker, {
+            (0, import_react80.createElement)(Picker, {
               size: sz,
               options: SPLIT_TARGETS[period2] ?? [],
               value: bucket,
@@ -63643,14 +63657,14 @@ function PickerPage() {
         )
       ),
       // 形态二（下拉 + 下拉）：左格「范围」、右格「值」，三个尺寸各来一个
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
         ["sm", "md", "lg"].map(
-          (sz) => (0, import_react81.createElement)(
+          (sz) => (0, import_react80.createElement)(
             SplitGroup,
             { key: sz, label: `\u4E0B\u62C9 \xB7 ${sz}` },
-            (0, import_react81.createElement)(Picker, {
+            (0, import_react80.createElement)(Picker, {
               size: sz,
               options: SPLIT_SCOPES,
               value: scope,
@@ -63660,7 +63674,7 @@ function PickerPage() {
               },
               minWidth: 110
             }),
-            (0, import_react81.createElement)(Picker, {
+            (0, import_react80.createElement)(Picker, {
               size: sz,
               options: SPLIT_MEMBERS[scope] ?? [],
               value: member,
@@ -63673,20 +63687,20 @@ function PickerPage() {
         )
       ),
       // 多选：左滑块 A/B/C 三组可多选，右格一个下拉
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           SplitGroup,
           { label: "\u591A\u9009" },
-          (0, import_react81.createElement)(Segmented, {
+          (0, import_react80.createElement)(Segmented, {
             size: "lg",
             multiple: true,
             items: SPLIT_GROUPS,
             value: groups,
             onChange: setGroups
           }),
-          (0, import_react81.createElement)(Picker, {
+          (0, import_react80.createElement)(Picker, {
             size: "lg",
             options: SPLIT_FIXED,
             value: groupValue,
@@ -63697,10 +63711,10 @@ function PickerPage() {
         )
       )
     ),
-    (0, import_react81.createElement)(DocApi, { id: "split-group" }),
-    (0, import_react81.createElement)(DocCode, { id: "picker" }),
-    (0, import_react81.createElement)(DocApi, { id: "picker" }),
-    (0, import_react81.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
+    (0, import_react80.createElement)(DocApi, { id: "split-group" }),
+    (0, import_react80.createElement)(DocCode, { id: "picker" }),
+    (0, import_react80.createElement)(DocApi, { id: "picker" }),
+    (0, import_react80.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
   );
 }
 var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM\uFF08\u51FD\u6570\u7EC4\u4EF6\u6302\u4E0D\u4E0A \u21D2 \u65E0\u6C14\u6CE1\uFF09
@@ -63724,17 +63738,17 @@ var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80
   content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>\u2026</div>}
 />`;
 function TooltipPage() {
-  return (0, import_react81.createElement)(
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "tooltip" }),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(DocProse, { id: "tooltip" }),
+    (0, import_react80.createElement)(
       Example,
       { title: t3("tooltipTitle"), hint: t3("tooltipHint"), code: CODE_TOOLTIP },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: t3("tooltipAnchorButton") },
           tipAnchor("top \xB7 center", "top", "center"),
@@ -63743,52 +63757,52 @@ function TooltipPage() {
           tipAnchor("bottom \xB7 end", "bottom", "end"),
           tipAnchor("right", "right")
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: t3("tooltipAnchorText") },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: t3("tooltipHint"), side: "top" },
-            (0, import_react81.createElement)("span", {
+            (0, import_react80.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipAnchorText"))
           ),
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: t3("tooltipLongText"), side: "bottom", maxWidth: 240 },
-            (0, import_react81.createElement)("span", {
+            (0, import_react80.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipLong"))
           )
         ),
         // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: t3("tooltipMultiline") },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: `${t3("tooltipName")}
 ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
-            (0, import_react81.createElement)("span", {
+            (0, import_react80.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName"))
           )
         ),
         // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: t3("tooltipRich") },
-          (0, import_react81.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
+          (0, import_react80.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
             variant: "compact",
             openDelayMs: 200,
-            anchor: (0, import_react81.createElement)("span", {
+            anchor: (0, import_react80.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName")),
             // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
             // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
             // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
             // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-            content: (0, import_react81.createElement)(
+            content: (0, import_react80.createElement)(
               "div",
               {
                 style: {
@@ -63797,15 +63811,15 @@ ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
                   color: "var(--dsw-static-neutral-bluish-00,#fff)"
                 }
               },
-              (0, import_react81.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t3("tooltipName")),
-              (0, import_react81.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t3("tooltipLongText"))
+              (0, import_react80.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t3("tooltipName")),
+              (0, import_react80.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t3("tooltipLongText"))
             )
           })
         )
       )
     ),
-    (0, import_react81.createElement)(DocCode, { id: "tooltip" }),
-    (0, import_react81.createElement)(DocApi, { id: "tooltip" })
+    (0, import_react80.createElement)(DocCode, { id: "tooltip" }),
+    (0, import_react80.createElement)(DocApi, { id: "tooltip" })
   );
 }
 var CODE_CARD = `// Card\uFF1A\u590D\u7528 Surface \u5916\u6846\uFF08\u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2 12\uFF09\uFF1B\u8272\u6761\u65B9\u4F4D\u4E0E\u95F4\u8DDD\u90FD\u53EF\u914D
@@ -63852,162 +63866,162 @@ var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1A\u6807\u7B7E\uFF08\u53
   ]}
 />`;
 function CardPage() {
-  const [seg, setSeg] = (0, import_react81.useState)("all");
-  const [kw, setKw] = (0, import_react81.useState)("");
-  return (0, import_react81.createElement)(
+  const [seg, setSeg] = (0, import_react80.useState)("all");
+  const [kw, setKw] = (0, import_react80.useState)("");
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "surface" }),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(DocProse, { id: "surface" }),
+    (0, import_react80.createElement)(
       Example,
       { title: t3("demoSurfaceTitle"), hint: t3("surfaceHint"), code: CODE_SURFACE },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", maxWidth: "640px" } },
         ["plain", "raised", "sunken", "subtle"].map(
-          (tone) => (0, import_react81.createElement)(
+          (tone) => (0, import_react80.createElement)(
             Surface,
             { key: tone, tone, padding: "md", style: { flex: "1 1 140px" } },
-            (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `tone="${tone}"`),
-            (0, import_react81.createElement)("div", { style: { marginTop: "6px" } }, (0, import_react81.createElement)(Button, { size: "sm", variant: "outline" }, "Button"))
+            (0, import_react80.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `tone="${tone}"`),
+            (0, import_react80.createElement)("div", { style: { marginTop: "6px" } }, (0, import_react80.createElement)(Button, { size: "sm", variant: "outline" }, "Button"))
           )
         )
       )
     ),
-    (0, import_react81.createElement)(DocProse, { id: "card" }),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(DocProse, { id: "card" }),
+    (0, import_react80.createElement)(
       Example,
       { title: t3("demoCardTitle"), hint: t3("cardHint"), code: CODE_CARD },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
         // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            action: (0, import_react80.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
           },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
             "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
           ),
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react81.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react81.createElement)(Chip, null, "#npm"),
-            (0, import_react81.createElement)(Chip, null, "#pnpm"),
-            (0, import_react81.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react81.createElement)(Chip, null, "#\u8FC1\u79FB")
+            (0, import_react80.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react80.createElement)(Chip, null, "#npm"),
+            (0, import_react80.createElement)(Chip, null, "#pnpm"),
+            (0, import_react80.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react80.createElement)(Chip, null, "#\u8FC1\u79FB")
           )
         ),
         // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react81.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+            action: (0, import_react80.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
           },
-          (0, import_react81.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react81.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
+          (0, import_react80.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react80.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
         // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"].map(
-            (a) => (0, import_react81.createElement)(
+            (a) => (0, import_react80.createElement)(
               Card,
               { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react80.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("demoBarTitle"), hint: t3("barHint"), code: CODE_BAR },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", maxWidth: "640px" } },
         ["left", "right", "top", "bottom"].map(
-          (side) => (0, import_react81.createElement)(
+          (side) => (0, import_react80.createElement)(
             Card,
             { key: side, accent: "business", bar: { side } },
-            (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)", fontWeight: 600 } }, `bar.side="${side}"`),
-            (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "inset 12 \xB7 gap 12")
+            (0, import_react80.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)", fontWeight: 600 } }, `bar.side="${side}"`),
+            (0, import_react80.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "inset 12 \xB7 gap 12")
           )
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("demoStripTitle"), hint: t3("stripHint"), code: CODE_STRIP_CARD },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           StripCard,
           {
             accent: "business",
-            action: (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+            action: (0, import_react80.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
           },
-          (0, import_react81.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react81.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react81.createElement)(
+            (0, import_react80.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react80.createElement)(
               "span",
               { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
             )
           )
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           StripCard,
           {
             accent: "success",
             // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
-            action: (0, import_react81.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+            action: (0, import_react80.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
           },
-          (0, import_react81.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react81.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+          (0, import_react80.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react80.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"].map(
-            (a) => (0, import_react81.createElement)(
+            (a) => (0, import_react80.createElement)(
               StripCard,
               { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
-              (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react80.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("sectionHeadTitle"), hint: t3("exSectionHeadHint"), code: CODE_SECTION_HEAD },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "8px" } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
-        (0, import_react81.createElement)(SectionHead, {
-          icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
-          title: (0, import_react81.createElement)(
+        (0, import_react80.createElement)(SectionHead, {
+          icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
+          title: (0, import_react80.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5168\u90E8\u5F85\u529E",
-            (0, import_react81.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
+            (0, import_react80.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
           ),
           right: [
-            (0, import_react81.createElement)(Segmented, {
+            (0, import_react80.createElement)(Segmented, {
               items: [
                 { value: "all", label: t3("segAll"), count: 22 },
                 { value: "doing", label: t3("segDoing"), count: 11 },
@@ -64017,40 +64031,40 @@ function CardPage() {
               onChange: setSeg
             }),
             // 搜索框 140px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
-            (0, import_react81.createElement)(
+            (0, import_react80.createElement)(
               "div",
               { style: { width: "140px", flex: "none" } },
-              (0, import_react81.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+              (0, import_react80.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
             )
           ]
         }),
         // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
-        (0, import_react81.createElement)(SectionHead, {
-          icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
-          title: (0, import_react81.createElement)(
+        (0, import_react80.createElement)(SectionHead, {
+          icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
+          title: (0, import_react80.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
             "\u6211\u7684\u5F85\u529E",
-            (0, import_react81.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
+            (0, import_react80.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
           ),
-          right: (0, import_react81.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
+          right: (0, import_react80.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
         }),
         // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
-        (0, import_react81.createElement)(SectionHead, {
-          icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
-          title: (0, import_react81.createElement)(
+        (0, import_react80.createElement)(SectionHead, {
+          icon: (0, import_react80.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
+          title: (0, import_react80.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5DF2\u5F52\u6863",
-            (0, import_react81.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
+            (0, import_react80.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
           ),
           right: [
-            (0, import_react81.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
-            (0, import_react81.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
+            (0, import_react80.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
+            (0, import_react80.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
           ]
         }),
         // D：固定标签颜色速览 —— accent 内置色名 / 任意色值 / default / false
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "4px" } },
           [
@@ -64059,12 +64073,12 @@ function CardPage() {
             ["success", "success"],
             ["#7c3aed", "#7c3aed"],
             [false, "false\uFF08\u4E0D\u753B\uFF09"]
-          ].map(([accent, label]) => (0, import_react81.createElement)(SectionHead, { key: String(accent), accent, title: label, flush: true }))
+          ].map(([accent, label]) => (0, import_react80.createElement)(SectionHead, { key: String(accent), accent, title: label, flush: true }))
         )
       )
     ),
-    (0, import_react81.createElement)(DocCode, { id: "card" }),
-    (0, import_react81.createElement)(DocApi, { id: "card" })
+    (0, import_react80.createElement)(DocCode, { id: "card" }),
+    (0, import_react80.createElement)(DocApi, { id: "card" })
   );
 }
 var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884C\u56FA\u5B9A\u7531\u5927\u5230\u5C0F\uFF08md \u2192 sm \u2192 xs\uFF09\uFF0C\u540C\u6863\u6587\u6848\u4E0D\u6DF7\u6392
@@ -64074,7 +64088,7 @@ var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884
 
 // \u4E2D\u6027 # \u6807\u7B7E\uFF08\u8BED\u8A00\u65E0\u5173\uFF09\uFF1B\u4F20 onClick \u624D\u6E32\u67D3\u6210 button
 <Chip>#npm</Chip>
-<Chip onClick={() => showToast('\u70B9\u4E86 chip')}>#\u53EF\u70B9</Chip>`;
+<Chip onClick={() => notify('\u70B9\u4E86 chip')}>#\u53EF\u70B9</Chip>`;
 var CODE_CHIP_WIDTH = `// \u56FA\u5B9A\u5BBD\uFF1A\u5199\u6B7B\u5BBD\u5EA6
 <Chip width={90}>90px \u56FA\u5B9A\u5BBD</Chip>
 
@@ -64101,100 +64115,100 @@ var CODE_MARQUEE = `// \u5B9A\u5BBD\u5C0F\u5BB9\u5668\uFF1A\u653E\u4E0D\u4E0B\u6
 var CODE_LIVE = `// \u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6\u5185\u5BB9\u8C03\u7528\u65B9\u6E32\u67D3
 <LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`;
 function ChipPage() {
-  return (0, import_react81.createElement)(
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "chip" }),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(DocProse, { id: "chip" }),
+    (0, import_react80.createElement)(
       Example,
       { title: "Chip", hint: t3("chipHint"), code: CODE_CHIP },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
         ...["md", "sm", "xs"].map(
-          (sz) => (0, import_react81.createElement)(
+          (sz) => (0, import_react80.createElement)(
             "div",
             { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-            (0, import_react81.createElement)(Chip, { size: sz, tone: "warning" }, t3("chipOverdue")),
-            (0, import_react81.createElement)(Chip, { size: sz, tone: "danger" }, t3("chipStalled")),
-            (0, import_react81.createElement)(Chip, { size: sz, tone: "success" }, t3("chipDone")),
-            (0, import_react81.createElement)(Chip, { size: sz, tone: "business" }, t3("chipDoing")),
-            (0, import_react81.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
+            (0, import_react80.createElement)(Chip, { size: sz, tone: "warning" }, t3("chipOverdue")),
+            (0, import_react80.createElement)(Chip, { size: sz, tone: "danger" }, t3("chipStalled")),
+            (0, import_react80.createElement)(Chip, { size: sz, tone: "success" }, t3("chipDone")),
+            (0, import_react80.createElement)(Chip, { size: sz, tone: "business" }, t3("chipDoing")),
+            (0, import_react80.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
           )
         ),
         // 中性 # 标签（语言无关）+ 长文字回归样
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react81.createElement)(Chip, null, "#npm"),
-          (0, import_react81.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react81.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react81.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+          (0, import_react80.createElement)(Chip, null, "#npm"),
+          (0, import_react80.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react80.createElement)(Chip, { onClick: () => notify("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react80.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("chipWidthTitle"), hint: t3("chipWidthHint"), code: CODE_CHIP_WIDTH },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react81.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
+          (0, import_react80.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", gap: "8px" } },
-            (0, import_react81.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
-            (0, import_react81.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+            (0, import_react80.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
+            (0, import_react80.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
           )
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react81.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
+            (0, import_react80.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
           )
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Labeled,
           { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
-          (0, import_react81.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+          (0, import_react80.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("marqueeTitle"), hint: t3("exMarqueeHint"), code: CODE_MARQUEE },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { maxWidth: "148px" } },
-          (0, import_react81.createElement)(MarqueeText, { text: "\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" })
+          (0, import_react80.createElement)(MarqueeText, { text: "\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Chip,
           { tone: "business", size: "md", maxWidth: 148 },
           "\u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1A\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF0Chover \u8DD1\u9A6C\u706F"
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("liveTitle"), hint: t3("exLiveHint"), code: CODE_LIVE },
-      (0, import_react81.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+      (0, import_react80.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
-    (0, import_react81.createElement)(DocCode, { id: "chip" }),
-    (0, import_react81.createElement)(DocApi, { id: "chip" })
+    (0, import_react80.createElement)(DocCode, { id: "chip" }),
+    (0, import_react80.createElement)(DocApi, { id: "chip" })
   );
 }
 var CODE_HOST_MODAL = `// \u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u76F4\u63A5\u7528\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF09
@@ -64222,6 +64236,9 @@ const ok = await confirmModal({
   tone: 'danger', confirmText: '\u5220\u9664', cancelText: '\u518D\u60F3\u60F3', skin: 'host',
 })
 await alertModal({ title: '\u5BBF\u4E3B\u63D0\u793A', message: '\u5173\u95ED\u5373\u786E\u8BA4', skin: 'host' })`;
+var demoWait = (ms = 1400) => new Promise((r2) => {
+  setTimeout(r2, ms);
+});
 var CODE_SMALL_MODAL = `// \u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1A\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F
 <AlertModal
   severity="warning"
@@ -64243,7 +64260,23 @@ var CODE_SMALL_MODAL = `// \u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1A\u540
 if (await confirmModal({ title: '\u786E\u8BA4\u63D0\u4EA4', message: '\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500', tone: 'danger' })) {
   // \u7528\u6237\u70B9\u4E86\u786E\u8BA4
 }
-await alertModal({ title: '\u63D0\u793A', message: '\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' })`;
+await alertModal({ title: '\u63D0\u793A', message: '\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' })
+
+// \u5F02\u6B65\uFF1A\u56DE\u8C03\u8FD4\u56DE Promise \u21D2 \u5BF9\u5E94\u6309\u94AE\u81EA\u52A8\u8F6C\u5708\u3001\u6574\u6846\u9501\u6B7B\u4E0D\u53EF\u5173\uFF1Bresolve \u624D\u5173\u95ED\uFF0Creject \u5219\u6062\u590D\u53EF\u70B9
+await alertModal({
+  title: '\u6B63\u5728\u4FDD\u5B58',
+  message: '\u70B9\u300C\u786E\u5B9A\u300D\u624D\u5F00\u59CB\u8DD1\uFF0C\u8DD1\u5B8C\u81EA\u5DF1\u5173',
+  onConfirm: async () => { await save() },
+})
+const ok = await confirmModal({
+  title: '\u5220\u9664\u4EFB\u52A1',
+  message: '\u5904\u7406\u671F\u95F4\u5F39\u7A97\u4E0D\u53EF\u5173\u95ED',
+  tone: 'danger',
+  onConfirm: async () => { await remove() },  // \u786E\u8BA4\u94AE\u8F6C\u5708
+  onCancel: async () => { await check() },    // \u53D6\u6D88\u94AE\u4E5F\u80FD\u8F6C\u5708
+})
+// \u7EC4\u4EF6\u5F62\u6001\u81EA\u5DF1\u63A7\uFF1AconfirmLoading / cancelLoading
+<ConfirmModal message="\u2026" confirmLoading={saving} onConfirm={\u2026} />`;
 var CODE_LARGE_MODAL = `// \u5185\u5BB9\u5F39\u7A97\uFF1Asize md / lg\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF08\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\uFF09
 <Modal title="\u4EFB\u52A1\u8BE6\u60C5" onClose={close} footer={<Button variant="primary">\u77E5\u9053\u4E86</Button>}>
   <div>\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002</div>
@@ -64279,17 +64312,6 @@ var CODE_SIDE_SHEET = `// \u8986\u76D6\u5F0F\u4FA7\u8FB9\u62BD\u5C49\uFF1A\u76AE
   footer={<Button variant="primary">\u5E94\u7528</Button>}>
   <FilterForm />
 </SideSheet>`;
-var CODE_TOAST_NATIVE = `// showToast\uFF1ASonner \u539F\u5473\uFF08\u5BF9\u6BD4\u7528\uFF09
-showToast('\u5DF2\u4FDD\u5B58')
-showToast('\u4FDD\u5B58\u6210\u529F', { variant: 'success' })
-showToast('\u4FDD\u5B58\u5931\u8D25', { variant: 'error' })
-showToast('\u6574\u6761\u81EA\u5B9A\u4E49\u8272', { color: '#7c3aed' })
-showToast('\u6D88\u5931\u540E\u56DE\u8C03', { onDismiss: () => {} })
-showToast('\u9876\u90E8-\u5DE6', { position: 'top-left' })`;
-var CODE_TOAST_HOST = `// showHostToast\uFF1A\u76F4\u63A5\u5305\u5B98\u65B9 Toast\uFF08\u9876\u90E8\u6A2A\u5E45\uFF09
-showHostToast('\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A')
-showHostToast('\u64CD\u4F5C\u6210\u529F', { tone: 'success' })
-showHostToast('\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A', { actions: [{ text: '\u67E5\u770B', onClick: () => {} }] })`;
 var CODE_TOAST_NOTIFY = `// notify\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE\uFF08\u9879\u76EE\u5185\u63A8\u8350\uFF09
 notify('\u5DF2\u4FDD\u5B58\u8349\u7A3F')
 notify('\u4FDD\u5B58\u6210\u529F', { variant: 'success' })
@@ -64343,72 +64365,72 @@ blocked.close()
 <LoadingToast text="\u6B63\u5728\u52A0\u8F7D" />
 <LoadingBlock text="\u5904\u7406\u4E2D" />`;
 function FeedbackPage() {
-  const [open, setOpen] = (0, import_react81.useState)(false);
-  const [openNative, setOpenNative] = (0, import_react81.useState)(false);
-  const [alertState, setAlertState] = (0, import_react81.useState)(null);
-  const [confirmCfg, setConfirmCfg] = (0, import_react81.useState)(null);
-  const [confirmResult, setConfirmResult] = (0, import_react81.useState)("");
-  const [largeOpen, setLargeOpen] = (0, import_react81.useState)(false);
-  const [largeOpenB, setLargeOpenB] = (0, import_react81.useState)(false);
-  const [sheetCfg, setSheetCfg] = (0, import_react81.useState)({ side: "left", footer: false });
-  const [sheetOpen, setSheetOpen] = (0, import_react81.useState)(false);
-  const [nativeText, setNativeText] = (0, import_react81.useState)("");
+  const [open, setOpen] = (0, import_react80.useState)(false);
+  const [openNative, setOpenNative] = (0, import_react80.useState)(false);
+  const [alertState, setAlertState] = (0, import_react80.useState)(null);
+  const [confirmCfg, setConfirmCfg] = (0, import_react80.useState)(null);
+  const [confirmResult, setConfirmResult] = (0, import_react80.useState)("");
+  const [largeOpen, setLargeOpen] = (0, import_react80.useState)(false);
+  const [largeOpenB, setLargeOpenB] = (0, import_react80.useState)(false);
+  const [sheetCfg, setSheetCfg] = (0, import_react80.useState)({ side: "left", footer: false });
+  const [sheetOpen, setSheetOpen] = (0, import_react80.useState)(false);
+  const [nativeText, setNativeText] = (0, import_react80.useState)("");
   const flash = (opts) => {
     const handle = showLoading(opts);
     window.setTimeout(() => handle.close(), 1200);
   };
-  return (0, import_react81.createElement)(
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "feedback" }),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(DocProse, { id: "feedback" }),
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exSmallModalTitle"), hint: t3("exSmallModalHint"), code: CODE_SMALL_MODAL },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           null,
-          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react81.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
-            (0, import_react81.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
-            (0, import_react81.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
-            (0, import_react81.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
-            (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
+            (0, import_react80.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
+            (0, import_react80.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
+            (0, import_react80.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
+            (0, import_react80.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
+            (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
           ),
-          alertState !== null ? (0, import_react81.createElement)(AlertModal, {
+          alertState !== null ? (0, import_react80.createElement)(AlertModal, {
             severity: alertState.sev,
             title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
             message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
             onConfirm: () => setAlertState(null)
           }) : null
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           null,
-          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
-            (0, import_react81.createElement)(Button, { onClick: () => {
+            (0, import_react80.createElement)(Button, { onClick: () => {
               setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
               setConfirmResult("");
             } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
-            (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => {
               setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
               setConfirmResult("");
             } }, "danger \u53D8\u4F53"),
-            (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => {
+            (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => {
               setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
               setConfirmResult("");
             } }, "\u6539\u6587\u6848"),
-            confirmResult ? (0, import_react81.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
+            confirmResult ? (0, import_react80.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
           ),
-          confirmCfg !== null ? (0, import_react81.createElement)(ConfirmModal, {
+          confirmCfg !== null ? (0, import_react80.createElement)(ConfirmModal, {
             title: "\u5220\u9664\u4EFB\u52A1",
             message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
             tone: confirmCfg.tone,
@@ -64424,156 +64446,220 @@ function FeedbackPage() {
             }
           }) : null
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           null,
-          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => {
-              alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => showToast("alert \u5DF2\u5173\u95ED"));
+            (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => {
+              alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => notify("alert \u5DF2\u5173\u95ED"));
             } }, "alertModal()"),
-            (0, import_react81.createElement)(Button, { onClick: async () => {
+            (0, import_react80.createElement)(Button, { onClick: async () => {
               const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
-              showToast(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
+              notify(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
             } }, "confirmModal()")
+          ),
+          // 异步回调 ⇒ 对应按钮自动转圈、整框锁死，settle 后才关（1.4 秒演示）
+          (0, import_react80.createElement)(
+            "div",
+            { style: { display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "8px", alignItems: "center" } },
+            (0, import_react80.createElement)(Button, {
+              variant: "outline",
+              onClick: () => {
+                void alertModal({
+                  title: "\u6B63\u5728\u4FDD\u5B58",
+                  message: "\u70B9\u300C\u4FDD\u5B58\u300D\u540E\uFF1A\u6309\u94AE\u8F6C\u5708\u3001\u906E\u7F69\u4E0E Esc \u90FD\u5173\u4E0D\u6389\uFF0C1.4 \u79D2\u540E\u81EA\u5DF1\u5173\u3002",
+                  confirmText: "\u4FDD\u5B58",
+                  onConfirm: async () => {
+                    await demoWait();
+                  }
+                }).then(() => notify("\u4FDD\u5B58\u5B8C\u6210\uFF0Calert \u5DF2\u5173\u95ED"));
+              }
+            }, "alertModal() \xB7 \u5F02\u6B65\u786E\u8BA4"),
+            (0, import_react80.createElement)(Button, {
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: "\u5220\u9664\u4EFB\u52A1",
+                  message: "\u786E\u8BA4\u94AE\u8F6C\u5708\u671F\u95F4\u6574\u6846\u4E0D\u53EF\u5173\uFF1B\u53D6\u6D88\u94AE\u7167\u5E38\u53EF\u70B9\u3002",
+                  tone: "danger",
+                  confirmText: "\u5220\u9664",
+                  cancelText: "\u53D6\u6D88",
+                  onConfirm: async () => {
+                    await demoWait();
+                  }
+                });
+                notify(ok ? "\u5220\u9664\u5B8C\u6210\uFF08\u786E\u8BA4\u4E3A true\uFF09" : "\u5DF2\u53D6\u6D88\uFF08false\uFF09");
+              }
+            }, "confirmModal() \xB7 \u5F02\u6B65\u786E\u8BA4"),
+            (0, import_react80.createElement)(Button, {
+              variant: "outline",
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: "\u79BB\u5F00\u524D\u68C0\u67E5",
+                  message: "\u8FD9\u6B21\u8F6C\u5708\u7684\u662F\u300C\u53D6\u6D88\u300D\u94AE\uFF1A\u70B9\u5B83\u8DD1 1.4 \u79D2\u68C0\u67E5\uFF0C\u671F\u95F4\u6574\u6846\u4E0D\u53EF\u5173\u3002",
+                  confirmText: "\u7559\u5728\u9875\u9762",
+                  cancelText: "\u68C0\u67E5\u5E76\u79BB\u5F00",
+                  onCancel: async () => {
+                    await demoWait();
+                  }
+                });
+                notify(ok ? "\u4F60\u70B9\u4E86\uFF1A\u7559\u5728\u9875\u9762" : "\u68C0\u67E5\u5B8C\u6210\uFF0C\u5DF2\u79BB\u5F00\uFF08false\uFF09");
+              }
+            }, "confirmModal() \xB7 \u5F02\u6B65\u53D6\u6D88"),
+            (0, import_react80.createElement)(Button, {
+              variant: "ghost",
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: "\u53EF\u80FD\u5931\u8D25",
+                  message: "\u786E\u8BA4\u540E 1.4 \u79D2\u629B\u9519\uFF1Aloading \u64A4\u56DE\u3001\u5F39\u7A97\u7559\u7740\u53EF\u91CD\u8BD5\uFF0C\u63A7\u5236\u53F0\u6709\u62A5\u9519\u3002",
+                  confirmText: "\u6267\u884C",
+                  cancelText: "\u7B97\u4E86",
+                  onConfirm: async () => {
+                    await demoWait();
+                    throw new Error("\u6F14\u793A\uFF1A\u5F02\u6B65\u5904\u7406\u5931\u8D25");
+                  }
+                });
+                notify(ok ? "\u610F\u5916\u6210\u529F" : "\u5DF2\u53D6\u6D88\uFF08false\uFF09");
+              }
+            }, "confirmModal() \xB7 \u5F02\u6B65\u5931\u8D25")
           )
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exLargeModalTitle"), hint: t3("exLargeModalHint"), code: CODE_LARGE_MODAL },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           null,
-          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
-          (0, import_react81.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
-          open ? (0, import_react81.createElement)(Modal, {
+          (0, import_react80.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
+          (0, import_react80.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
+          open ? (0, import_react80.createElement)(Modal, {
             title: "\u4EFB\u52A1\u8BE6\u60C5",
             onClose: () => setOpen(false),
-            footer: (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-          }, (0, import_react81.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+            footer: (0, import_react80.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+          }, (0, import_react80.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           null,
-          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
-          (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
-          largeOpen ? (0, import_react81.createElement)(
+          (0, import_react80.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
+          (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
+          largeOpen ? (0, import_react80.createElement)(
             Modal,
             {
               size: "lg",
               title: "\u4F1A\u8BDD\u8BB0\u5F55",
-              headerActions: (0, import_react81.createElement)(
+              headerActions: (0, import_react80.createElement)(
                 Button,
                 { variant: "outline", size: "sm", icon: iconOf("chevron", 14) },
                 "\u66F4\u591A"
               ),
               onClose: () => setLargeOpen(false),
-              footer: (0, import_react81.createElement)(
+              footer: (0, import_react80.createElement)(
                 "div",
                 { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-                (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
-                (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
+                (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
+                (0, import_react80.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
               )
             },
-            (0, import_react81.createElement)(
+            (0, import_react80.createElement)(
               "div",
               null,
               Array.from(
                 { length: 40 },
-                (_, i2) => (0, import_react81.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
+                (_, i2) => (0, import_react80.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
               ),
-              (0, import_react81.createElement)("div", { className: "dshpc-overlay-head__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
+              (0, import_react80.createElement)("div", { className: "dshpc-overlay-head__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
             )
           ) : null
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           null,
-          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
-          (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
-          largeOpenB ? (0, import_react81.createElement)(
+          (0, import_react80.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
+          (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
+          largeOpenB ? (0, import_react80.createElement)(
             Modal,
             {
               size: "lg",
-              title: (0, import_react81.createElement)(
+              title: (0, import_react80.createElement)(
                 "div",
                 null,
-                (0, import_react81.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
-                (0, import_react81.createElement)("div", { className: "dshpc-overlay-head__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
+                (0, import_react80.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
+                (0, import_react80.createElement)("div", { className: "dshpc-overlay-head__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
               ),
               onClose: () => setLargeOpenB(false)
             },
-            (0, import_react81.createElement)(
+            (0, import_react80.createElement)(
               "div",
               null,
-              (0, import_react81.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
-              (0, import_react81.createElement)(Surface, { border: "faint", padding: "md", style: { marginTop: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
+              (0, import_react80.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
+              (0, import_react80.createElement)(Surface, { border: "faint", padding: "md", style: { marginTop: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
             )
           ) : null
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exSideSheetTitle"), hint: t3("exSideSheetHint"), code: CODE_SIDE_SHEET },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react81.createElement)(Button, { onClick: () => {
+        (0, import_react80.createElement)(Button, { onClick: () => {
           setSheetCfg({ side: "left", footer: false });
           setSheetOpen(true);
         } }, "\u4ECE\u5DE6\u4FA7\u6ED1\u51FA"),
-        (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => {
+        (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => {
           setSheetCfg({ side: "right", footer: false });
           setSheetOpen(true);
         } }, "\u4ECE\u53F3\u4FA7\u6ED1\u51FA"),
-        (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => {
           setSheetCfg({ side: "left", footer: true });
           setSheetOpen(true);
         } }, "\u5E26\u5E95\u680F"),
         // 常驻渲染 + open 布尔：关闭时才有收回去的动效（条件渲染会一卸载就没影）。
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           SideSheet,
           {
             open: sheetOpen,
             side: sheetCfg.side,
             title: "\u6587\u4EF6\u8BE6\u60C5",
-            extra: (0, import_react81.createElement)(Chip, null, "\u53EA\u8BFB"),
+            extra: (0, import_react80.createElement)(Chip, null, "\u53EA\u8BFB"),
             onClose: () => setSheetOpen(false),
-            footer: sheetCfg.footer ? (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => setSheetOpen(false) }, "\u77E5\u9053\u4E86") : void 0
+            footer: sheetCfg.footer ? (0, import_react80.createElement)(Button, { variant: "primary", onClick: () => setSheetOpen(false) }, "\u77E5\u9053\u4E86") : void 0
           },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "10px", fontSize: "13px", lineHeight: "1.7" } },
-            (0, import_react81.createElement)("div", null, "\u76AE\u80A4\u548C PanelDock \u5206\u680F\u4E00\u6A21\u4E00\u6837\uFF08\u5934\u90E8 / \u8FB9\u6846 / \u62D6\u62FD\u6761 / \u9634\u5F71\uFF09\uFF0C\u5BBD\u5EA6\u9ED8\u8BA4\u5C31\u80FD\u62D6 \u2014\u2014 \u4F46\u5B83\u76D6\u5728\u9875\u9762\u4E0A\uFF0C\u4E3B\u533A\u5BBD\u5EA6\u4E0D\u53D8\u3002"),
-            (0, import_react81.createElement)("div", null, "\u6CA1\u6709\u6536\u8D77\uFF1A\u5173\u5C31\u662F\u5173\uFF08\u5206\u680F\u624D\u6709\u6536\u8D77\u94AE\u548C\u8D34\u8FB9\u7684\u8033\u6735\uFF09\u3002"),
-            (0, import_react81.createElement)(Surface, { border: "faint", padding: "md", style: { fontSize: "13px" } }, "\u5185\u5BB9\u968F\u4FBF\u653E\uFF1A\u6587\u4EF6\u6811\u3001\u8BE6\u60C5\u3001\u7B5B\u9009\u8868\u5355\u90FD\u884C\u3002")
+            (0, import_react80.createElement)("div", null, "\u76AE\u80A4\u548C PanelDock \u5206\u680F\u4E00\u6A21\u4E00\u6837\uFF08\u5934\u90E8 / \u8FB9\u6846 / \u62D6\u62FD\u6761 / \u9634\u5F71\uFF09\uFF0C\u5BBD\u5EA6\u9ED8\u8BA4\u5C31\u80FD\u62D6 \u2014\u2014 \u4F46\u5B83\u76D6\u5728\u9875\u9762\u4E0A\uFF0C\u4E3B\u533A\u5BBD\u5EA6\u4E0D\u53D8\u3002"),
+            (0, import_react80.createElement)("div", null, "\u6CA1\u6709\u6536\u8D77\uFF1A\u5173\u5C31\u662F\u5173\uFF08\u5206\u680F\u624D\u6709\u6536\u8D77\u94AE\u548C\u8D34\u8FB9\u7684\u8033\u6735\uFF09\u3002"),
+            (0, import_react80.createElement)(Surface, { border: "faint", padding: "md", style: { fontSize: "13px" } }, "\u5185\u5BB9\u968F\u4FBF\u653E\uFF1A\u6587\u4EF6\u6811\u3001\u8BE6\u60C5\u3001\u7B5B\u9009\u8868\u5355\u90FD\u884C\u3002")
           )
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exHostModalTitle"), hint: t3("exHostModalHint"), code: CODE_HOST_MODAL },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
-        (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
+        (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => {
           void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
         } }, 'alertModal({skin:"host"})'),
-        (0, import_react81.createElement)(Button, { variant: "ghost", onClick: async () => {
+        (0, import_react80.createElement)(Button, { variant: "ghost", onClick: async () => {
           const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
-          showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
+          notify(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
         } }, 'confirmModal({skin:"host"})'),
-        openNative ? (0, import_react81.createElement)(
+        openNative ? (0, import_react80.createElement)(
           Official.Modal,
           {
             open: openNative,
@@ -64582,22 +64668,22 @@ function FeedbackPage() {
             closeLabel: "\u5173\u95ED",
             description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
             contentClassName: "dshpc-native-demo-content",
-            footer: (0, import_react81.createElement)(
+            footer: (0, import_react80.createElement)(
               "div",
               { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-              (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
-              (0, import_react81.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
-              (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+              (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react80.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react80.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
             )
           },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-            (0, import_react81.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
-            (0, import_react81.createElement)(
+            (0, import_react80.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react80.createElement)(
               "label",
               { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
-              (0, import_react81.createElement)(Checkbox, { checked: false, onChange: () => {
+              (0, import_react80.createElement)(Checkbox, { checked: false, onChange: () => {
               } }),
               "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
             )
@@ -64605,17 +64691,17 @@ function FeedbackPage() {
         ) : null
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exToastNotifyTitle"), hint: t3("exToastNotifyHint"), code: CODE_TOAST_NOTIFY },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react81.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
-        (0, import_react81.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react81.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react81.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
+        (0, import_react80.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react80.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react80.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react80.createElement)(
           Button,
           {
             onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
@@ -64626,7 +64712,7 @@ function FeedbackPage() {
           },
           "\u5355\u6309\u94AE+\u63CF\u8FF0"
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           Button,
           {
             onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
@@ -64641,80 +64727,29 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react81.createElement)(
-      Example,
-      { title: t3("exToastHostTitle"), hint: t3("exToastHostHint"), code: CODE_TOAST_HOST },
-      (0, import_react81.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react81.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
-        (0, import_react81.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
-        (0, import_react81.createElement)(
-          Button,
-          {
-            onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
-              actions: [{ text: "\u67E5\u770B", onClick: () => showToast("\u70B9\u4E86\u300C\u67E5\u770B\u300D") }]
-            })
-          },
-          "\u5E26\u52A8\u4F5C"
-        )
-      )
-    ),
-    (0, import_react81.createElement)(
-      Example,
-      { title: t3("exToastSonnerTitle"), hint: t3("exToastSonnerHint"), code: CODE_TOAST_NATIVE },
-      (0, import_react81.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" } },
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
-        (0, import_react81.createElement)(
-          Button,
-          {
-            onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
-              onDismiss: () => showToast("\u4E0A\u4E00\u6761\u6D88\u5931\u4E86")
-            })
-          },
-          "\u5E26\u56DE\u8C03"
-        )
-      ),
-      (0, import_react81.createElement)(
-        "div",
-        { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
-        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
-      )
-    ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exLoaderTitle"), hint: t3("exLoaderHint"), code: CODE_LOADER },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
         ...LOADER_VARIANTS.map(
-          (variant) => (0, import_react81.createElement)(
+          (variant) => (0, import_react80.createElement)(
             "div",
             { key: variant, style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
-            (0, import_react81.createElement)(
+            (0, import_react80.createElement)(
               "span",
               { style: { width: "56px", color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               variant
             ),
-            ...LOADER_SIZES.map((size4) => (0, import_react81.createElement)(Loader, { key: size4, variant, size: size4 }))
+            ...LOADER_SIZES.map((size4) => (0, import_react80.createElement)(Loader, { key: size4, variant, size: size4 }))
           )
         ),
         // 背景 / 定位 / 颜色都由调用方配：组件本身只是裸图标
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" } },
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             "span",
             {
               style: {
@@ -64724,9 +64759,9 @@ function FeedbackPage() {
                 background: "var(--dshpc-surface-sunken)"
               }
             },
-            (0, import_react81.createElement)(Loader, { size: "sm" })
+            (0, import_react80.createElement)(Loader, { size: "sm" })
           ),
-          (0, import_react81.createElement)(
+          (0, import_react80.createElement)(
             Surface,
             {
               padding: null,
@@ -64739,56 +64774,56 @@ function FeedbackPage() {
                 fontSize: "var(--dshpc-font-xs)"
               }
             },
-            (0, import_react81.createElement)(Loader, { variant: "blocks", size: "sm" }),
+            (0, import_react80.createElement)(Loader, { variant: "blocks", size: "sm" }),
             "\u6B63\u5728\u540C\u6B65"
           ),
-          (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react81.createElement)(Loader, { size: "lg" }))
+          (0, import_react80.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react80.createElement)(Loader, { size: "lg" }))
         ),
         // 同族的胶囊不定进度：三档尺寸
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
-          (0, import_react81.createElement)(LoaderBar, { size: "sm" }),
-          (0, import_react81.createElement)(LoaderBar, { size: "md" }),
-          (0, import_react81.createElement)(LoaderBar, { size: "lg" })
+          (0, import_react80.createElement)(LoaderBar, { size: "sm" }),
+          (0, import_react80.createElement)(LoaderBar, { size: "md" }),
+          (0, import_react80.createElement)(LoaderBar, { size: "lg" })
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(
       Example,
       { title: t3("exLoadingTitle"), hint: t3("exLoadingHint"), code: CODE_LOADING },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" } },
-          (0, import_react81.createElement)(LoadingToast, null),
-          (0, import_react81.createElement)(LoadingBlock, { text: "\u5904\u7406\u4E2D" })
+          (0, import_react80.createElement)(LoadingToast, null),
+          (0, import_react80.createElement)(LoadingBlock, { text: "\u5904\u7406\u4E2D" })
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-          (0, import_react81.createElement)(Button, { onClick: () => flash() }, "\u5168\u5C40 toast\uFF081.2s\uFF09"),
-          (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => flash({ variant: "block", text: "\u5904\u7406\u4E2D\u2026" }) }, "\u5168\u5C40 block\uFF081.2s\uFF09"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u906E\u7F69 0.3", mask: true, maskOpacity: 0.3 }) }, "\u906E\u7F69 0.3"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u900F\u660E\u906E\u7F69", mask: true }) }, "\u906E\u7F69\u900F\u660E\uFF08\u4ECD\u6321\u4F4F\u70B9\u51FB\uFF09")
+          (0, import_react80.createElement)(Button, { onClick: () => flash() }, "\u5168\u5C40 toast\uFF081.2s\uFF09"),
+          (0, import_react80.createElement)(Button, { variant: "outline", onClick: () => flash({ variant: "block", text: "\u5904\u7406\u4E2D\u2026" }) }, "\u5168\u5C40 block\uFF081.2s\uFF09"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u906E\u7F69 0.3", mask: true, maskOpacity: 0.3 }) }, "\u906E\u7F69 0.3"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u900F\u660E\u906E\u7F69", mask: true }) }, "\u906E\u7F69\u900F\u660E\uFF08\u4ECD\u6321\u4F4F\u70B9\u51FB\uFF09")
         ),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(
           "div",
           { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-left", text: "top-left" }) }, "top-left"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-center", text: "top-center" }) }, "top-center"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-right", text: "top-right" }) }, "top-right"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "center", text: "center" }) }, "center"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-left", text: "bottom-left" }) }, "bottom-left"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-center", text: "bottom-center\uFF08\u9ED8\u8BA4\uFF09" }) }, "bottom-center"),
-          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-right", text: "bottom-right" }) }, "bottom-right")
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-left", text: "top-left" }) }, "top-left"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-center", text: "top-center" }) }, "top-center"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-right", text: "top-right" }) }, "top-right"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "center", text: "center" }) }, "center"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-left", text: "bottom-left" }) }, "bottom-left"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-center", text: "bottom-center\uFF08\u9ED8\u8BA4\uFF09" }) }, "bottom-center"),
+          (0, import_react80.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-right", text: "bottom-right" }) }, "bottom-right")
         )
       )
     ),
-    (0, import_react81.createElement)(DocCode, { id: "feedback" }),
-    (0, import_react81.createElement)(DocApi, { id: "feedback" })
+    (0, import_react80.createElement)(DocCode, { id: "feedback" }),
+    (0, import_react80.createElement)(DocApi, { id: "feedback" })
   );
 }
 var CODE_DOCK = `// 1) \u5EFA\u4E00\u4E2A dock \u63A7\u5236\u5668\uFF08\u5E94\u7528\u7EA7\u5355\u4F8B\uFF1BmaxPanels \u9ED8\u8BA4 3\uFF09
@@ -64809,7 +64844,7 @@ const dock = createPanelDock({ maxPanels: 3 })
 
 // 3) \u663E\u9690\u5F52\u72B6\u6001\uFF1A\u53EA\u4F20 id\uFF0C\u4E0D\u4F20\u5185\u5BB9
 const result = dock.open('files')   // { ok, reason }\uFF1B\u5230\u4E0A\u9650\u65F6 ok=false
-if (!result.ok) showToast('\u6700\u591A\u540C\u65F6\u5F00 3 \u680F')
+if (!result.ok) notify('\u6700\u591A\u540C\u65F6\u5F00 3 \u680F')
 dock.close('files')
 dock.toggle('preview')
 dock.isOpen('files')
@@ -64820,8 +64855,8 @@ dock.isCollapsed('files')
 // 4) \u8BA2\u9605\u72B6\u6001\u9A71\u52A8 UI\uFF08React\uFF09
 const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`;
 function LayoutPage() {
-  const state = (0, import_react81.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
-  const [notice, setNotice] = (0, import_react81.useState)(null);
+  const state = (0, import_react80.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
+  const [notice, setNotice] = (0, import_react80.useState)(null);
   const open = (id3) => {
     const result = demoDock.open(id3);
     setNotice(result.ok ? null : t3("dockLimitWarn"));
@@ -64836,24 +64871,24 @@ function LayoutPage() {
   };
   const opened = state.ids;
   const collapsedIds = state.collapsed;
-  return (0, import_react81.createElement)(
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "layout" }),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(DocProse, { id: "layout" }),
+    (0, import_react80.createElement)(
       Example,
       { title: "PanelDock", hint: t3("dockHint"), code: CODE_DOCK },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
-        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => open("A") }, t3("dockBtnOpenA")),
-        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => open("B") }, t3("dockBtnOpenB")),
-        (0, import_react81.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t3("dockBtnOpenA2")),
-        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => close("A") }, t3("dockBtnCloseA")),
-        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => collapse("A") }, t3("dockBtnCollapseA")),
-        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => open("default") }, t3("dockBtnDefault")),
-        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => open("C") }, t3("dockBtnOpenC")),
-        (0, import_react81.createElement)(
+        (0, import_react80.createElement)(Button, { size: "sm", onClick: () => open("A") }, t3("dockBtnOpenA")),
+        (0, import_react80.createElement)(Button, { size: "sm", onClick: () => open("B") }, t3("dockBtnOpenB")),
+        (0, import_react80.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t3("dockBtnOpenA2")),
+        (0, import_react80.createElement)(Button, { size: "sm", onClick: () => close("A") }, t3("dockBtnCloseA")),
+        (0, import_react80.createElement)(Button, { size: "sm", onClick: () => collapse("A") }, t3("dockBtnCollapseA")),
+        (0, import_react80.createElement)(Button, { size: "sm", onClick: () => open("default") }, t3("dockBtnDefault")),
+        (0, import_react80.createElement)(Button, { size: "sm", onClick: () => open("C") }, t3("dockBtnOpenC")),
+        (0, import_react80.createElement)(
           Button,
           {
             size: "sm",
@@ -64866,21 +64901,21 @@ function LayoutPage() {
           t3("dockBtnReset")
         )
       ),
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } },
         `${t3("dockOpened")}${opened.length === 0 ? "\u2014" : opened.join(", ")}`,
         collapsedIds.length === 0 ? "" : `\u3000${t3("dockCollapsed")}${collapsedIds.join(", ")}`,
         notice === null ? "" : `\u3000${notice}`
       ),
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
         t3("dockMainText")
       )
     ),
-    (0, import_react81.createElement)(DocCode, { id: "layout" }),
-    (0, import_react81.createElement)(DocApi, { id: "layout" })
+    (0, import_react80.createElement)(DocCode, { id: "layout" }),
+    (0, import_react80.createElement)(DocApi, { id: "layout" })
   );
 }
 var CODE_DATETIME = `// \u5355\u4E2A\u65F6\u523B\uFF1Aprecision \u63A7\u5236\u7CBE\u5EA6\uFF08day / hour / minute / second\uFF09
@@ -64889,43 +64924,43 @@ h(DateTimePicker, { precision: 'minute', value: at, onChange: setAt })
 // \u65F6\u95F4\u6BB5\uFF1A\u8D77\u6B62\u4E24\u4E2A\u72EC\u7ACB\u6846\u3001\u540C\u65F6\u5C55\u5F00\uFF1Bday \u7CBE\u5EA6\u4E0B\u7ED3\u675F\u7AEF\u8865\u5230 23:59:59.999
 h(DateTimePicker, { mode: 'range', precision: 'day', value: range, onChange: setRange })`;
 function DateTimePage() {
-  const [singleDay, setSingleDay] = (0, import_react81.useState)(null);
-  const [singleMinute, setSingleMinute] = (0, import_react81.useState)(null);
-  const [rangeDay, setRangeDay] = (0, import_react81.useState)(null);
-  const [rangeSecond, setRangeSecond] = (0, import_react81.useState)(null);
-  return (0, import_react81.createElement)(
+  const [singleDay, setSingleDay] = (0, import_react80.useState)(null);
+  const [singleMinute, setSingleMinute] = (0, import_react80.useState)(null);
+  const [rangeDay, setRangeDay] = (0, import_react80.useState)(null);
+  const [rangeSecond, setRangeSecond] = (0, import_react80.useState)(null);
+  return (0, import_react80.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(DocProse, { id: "datetime-picker" }),
-    (0, import_react81.createElement)(
+    (0, import_react80.createElement)(DocProse, { id: "datetime-picker" }),
+    (0, import_react80.createElement)(
       Example,
       { title: "DateTimePicker", hint: t3("dateTimePickerHint"), code: CODE_DATETIME },
-      (0, import_react81.createElement)(
+      (0, import_react80.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react81.createElement)(DateTimePicker, {
+        (0, import_react80.createElement)(DateTimePicker, {
           precision: "day",
           value: singleDay,
           onChange: (v) => setSingleDay(v)
         }),
-        (0, import_react81.createElement)(DateTimePicker, {
+        (0, import_react80.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v)
         }),
-        (0, import_react81.createElement)(DateTimePicker, {
+        (0, import_react80.createElement)(DateTimePicker, {
           mode: "range",
           precision: "day",
           value: rangeDay,
           onChange: (v) => setRangeDay(v)
         }),
-        (0, import_react81.createElement)(DateTimePicker, {
+        (0, import_react80.createElement)(DateTimePicker, {
           mode: "range",
           precision: "second",
           value: rangeSecond,
           onChange: (v) => setRangeSecond(v)
         }),
-        (0, import_react81.createElement)(DateTimePicker, {
+        (0, import_react80.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v),
@@ -64933,13 +64968,13 @@ function DateTimePage() {
         })
       )
     ),
-    (0, import_react81.createElement)(DocCode, { id: "datetime-picker" }),
-    (0, import_react81.createElement)(DocApi, { id: "datetime-picker" })
+    (0, import_react80.createElement)(DocCode, { id: "datetime-picker" }),
+    (0, import_react80.createElement)(DocApi, { id: "datetime-picker" })
   );
 }
 
 // packages/demo/src/sections/blocks.tsx
-var import_react82 = require("react");
+var import_react81 = require("react");
 var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // packages/demo/src/samples.ts
@@ -65040,13 +65075,13 @@ var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'`;
 function useExplorerHost() {
-  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react82.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react82.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react81.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react81.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
   return { workspaceFiles: workspaceFiles2, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
 }
 function NotReady(props) {
-  return (0, import_react82.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } },
     t3(props.which === "files" ? "explorerFilesNone" : "explorerAnchorNone")
@@ -65054,12 +65089,12 @@ function NotReady(props) {
 }
 function OpenPreviewDemo() {
   const { workspaceFiles: workspaceFiles2, anchor, workspaceNames } = useExplorerHost();
-  const [samples, setSamples] = (0, import_react82.useState)(null);
-  const [phase, setPhase] = (0, import_react82.useState)("idle");
-  const [last2, setLast] = (0, import_react82.useState)(null);
-  const pending = (0, import_react82.useRef)(null);
+  const [samples, setSamples] = (0, import_react81.useState)(null);
+  const [phase, setPhase] = (0, import_react81.useState)("idle");
+  const [last2, setLast] = (0, import_react81.useState)(null);
+  const pending = (0, import_react81.useRef)(null);
   const sessionId = anchor === null ? null : anchor.sessionId;
-  (0, import_react82.useEffect)(() => {
+  (0, import_react81.useEffect)(() => {
     if (workspaceFiles2 === null || sessionId === null) return;
     if (pending.current !== null) return;
     setPhase("probing");
@@ -65069,8 +65104,8 @@ function OpenPreviewDemo() {
       return s;
     });
   }, [workspaceFiles2, sessionId]);
-  if (workspaceFiles2 === null) return (0, import_react82.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react82.createElement)(NotReady, { which: "anchor" });
+  if (workspaceFiles2 === null) return (0, import_react81.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react81.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
     const mount = pageRow.element;
     if (mount === null) {
@@ -65086,14 +65121,14 @@ function OpenPreviewDemo() {
       if (s !== null) open(pick2(s), anchor.title);
     });
   };
-  return (0, import_react82.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react82.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
-    (0, import_react82.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
-    (0, import_react82.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
-    last2 === null ? null : (0, import_react82.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
-    (0, import_react82.createElement)(
+    (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
+    (0, import_react81.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
+    (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
+    last2 === null ? null : (0, import_react81.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
+    (0, import_react81.createElement)(
       "div",
       { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", width: "100%" } },
       `${t3("explorerAnchorLabel")}${anchor.title} \xB7 ${t3("explorerSessionLabel")}${anchor.sessionId} \xB7 ${t3("explorerWorkspaces")}${String(workspaceNames.length)}`
@@ -65102,9 +65137,9 @@ function OpenPreviewDemo() {
 }
 function PickFileDemo() {
   const { workspaceFiles: workspaceFiles2, anchor } = useExplorerHost();
-  const [picked, setPicked] = (0, import_react82.useState)(null);
-  if (workspaceFiles2 === null) return (0, import_react82.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react82.createElement)(NotReady, { which: "anchor" });
+  const [picked, setPicked] = (0, import_react81.useState)(null);
+  if (workspaceFiles2 === null) return (0, import_react81.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react81.createElement)(NotReady, { which: "anchor" });
   const pick2 = (anchorBtn, filter2) => {
     void pickWorkspaceFile({
       anchor: anchorBtn,
@@ -65113,10 +65148,10 @@ function PickFileDemo() {
       // 目录补尾斜杠只补一次：根 `/`、盘符 `C:/` 自己就带着，再补就成了 `//` / `C://`。
     }).then((r2) => setPicked(r2 === null ? null : r2.path + (r2.isDir && !r2.path.endsWith("/") ? "/" : "")));
   };
-  return (0, import_react82.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react82.createElement)(
+    (0, import_react81.createElement)(
       Button,
       {
         variant: "primary",
@@ -65124,7 +65159,7 @@ function PickFileDemo() {
       },
       t3("pickAny")
     ),
-    (0, import_react82.createElement)(
+    (0, import_react81.createElement)(
       Button,
       {
         variant: "secondary",
@@ -65133,7 +65168,7 @@ function PickFileDemo() {
       t3("pickJsMd")
     ),
     // 需求一（2026-11-03）：只选文件夹 —— 文件不渲染，目录行尾「选择」+ 面包屑行「选择此文件夹」。
-    (0, import_react82.createElement)(
+    (0, import_react81.createElement)(
       Button,
       {
         variant: "outline",
@@ -65141,16 +65176,16 @@ function PickFileDemo() {
       },
       t3("pickDir")
     ),
-    (0, import_react82.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
+    (0, import_react81.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
   );
 }
 function RealSessionListDemo() {
-  const state = (0, import_react82.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
-  const files = (0, import_react82.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react82.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const state = (0, import_react81.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
+  const files = (0, import_react81.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react81.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
-  const [openId, setOpenId] = (0, import_react82.useState)(null);
-  const view = (0, import_react82.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
+  const [openId, setOpenId] = (0, import_react81.useState)(null);
+  const view = (0, import_react81.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles2 = files.workspaceFiles;
   const canOpenFile = workspaceFiles2 !== null && anchor !== null;
   const openLinkedFile = (path, sessionId) => {
@@ -65176,7 +65211,7 @@ function RealSessionListDemo() {
       mount,
       sessionId: loc.sessionId,
       path: "",
-      content: () => (0, import_react82.createElement)(ChangedFileDiff, {
+      content: () => (0, import_react81.createElement)(ChangedFileDiff, {
         sessionId: loc.sessionId,
         seq: loc.seq,
         index: loc.index,
@@ -65189,16 +65224,16 @@ function RealSessionListDemo() {
     });
   };
   if (state.status !== "ready") {
-    return (0, import_react82.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
+    return (0, import_react81.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
   }
   if (state.rows.length === 0) {
-    return (0, import_react82.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListEmpty"));
+    return (0, import_react81.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListEmpty"));
   }
-  return (0, import_react82.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "6px", maxWidth: "720px" } },
     ...state.rows.map(
-      (row) => (0, import_react82.createElement)(
+      (row) => (0, import_react81.createElement)(
         "button",
         {
           key: row.sessionId,
@@ -65221,22 +65256,22 @@ function RealSessionListDemo() {
             cursor: "pointer"
           }
         },
-        (0, import_react82.createElement)("span", { style: { flex: "1", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row.displayTitle),
-        row.running ? (0, import_react82.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
-        row.archived ? (0, import_react82.createElement)(
+        (0, import_react81.createElement)("span", { style: { flex: "1", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row.displayTitle),
+        row.running ? (0, import_react81.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
+        row.archived ? (0, import_react81.createElement)(
           Chip,
           { size: "xs" },
-          (0, import_react82.createElement)(
+          (0, import_react81.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "4px" } },
-            (0, import_react82.createElement)(import_dsh_client_ui_primitives3.IconArchiveOutlineRegular, { size: 12 }),
+            (0, import_react81.createElement)(import_dsh_client_ui_primitives3.IconArchiveOutlineRegular, { size: 12 }),
             t3("sessionListArchived")
           )
         ) : null,
-        (0, import_react82.createElement)("span", { style: { flex: "none", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, formatDateTime(new Date(row.updatedAt).toISOString()))
+        (0, import_react81.createElement)("span", { style: { flex: "none", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, formatDateTime(new Date(row.updatedAt).toISOString()))
       )
     ),
-    openId !== null && view !== null ? (0, import_react82.createElement)(SessionViewModal, {
+    openId !== null && view !== null ? (0, import_react81.createElement)(SessionViewModal, {
       sessionId: openId,
       view,
       // 标题 = 会话自己的标题；归档态分化「继续对话」行为（开分支确认 vs 直跳官方）。
@@ -65262,40 +65297,40 @@ function RealSessionListDemo() {
   );
 }
 function ExplorerPage() {
-  return (0, import_react82.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react82.createElement)(DocProse, { id: "explorer" }),
-    (0, import_react82.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "explorer" }),
+    (0, import_react81.createElement)(
       Example,
       { title: t3("methodATitle"), hint: t3("methodAHint"), code: CODE_OPEN },
-      (0, import_react82.createElement)(OpenPreviewDemo, null)
+      (0, import_react81.createElement)(OpenPreviewDemo, null)
     ),
-    (0, import_react82.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("methodBTitle"), hint: t3("methodBHint"), code: CODE_PICK },
-      (0, import_react82.createElement)(PickFileDemo, null)
+      (0, import_react81.createElement)(PickFileDemo, null)
     ),
-    (0, import_react82.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
-    (0, import_react82.createElement)(DocApi, { id: "explorer" })
+    (0, import_react81.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
+    (0, import_react81.createElement)(DocApi, { id: "explorer" })
   );
 }
 function SessionPage() {
-  return (0, import_react82.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react82.createElement)(DocProse, { id: "session" }),
-    (0, import_react82.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "session" }),
+    (0, import_react81.createElement)(
       Example,
       { title: t3("sessionRealTitle"), hint: t3("sessionRealHint"), code: CODE_SESSION_REAL },
-      (0, import_react82.createElement)(RealSessionListDemo, null)
+      (0, import_react81.createElement)(RealSessionListDemo, null)
     ),
-    (0, import_react82.createElement)(DocApi, { id: "session" })
+    (0, import_react81.createElement)(DocApi, { id: "session" })
   );
 }
 
 // packages/demo/src/sections/tables.tsx
-var import_react83 = require("react");
+var import_react82 = require("react");
 var import_dsh_client_ui_primitives4 = require("@deepseek-ai/dsh-client-ui-primitives");
 var H_SCROLL = { overflowX: "auto", borderBottom: "1px solid transparent" };
 var COLUMNS = [
@@ -65340,10 +65375,10 @@ var PEOPLE = [
   { id: "S-2429", name: "Deng, Qian", mrn: "MRN-61248", age: "33 / F", date: "2026-10-19", modality: "US", flags: [], tone: "success", state: "Reviewed" }
 ];
 function personCell(person) {
-  return (0, import_react83.createElement)(
+  return (0, import_react82.createElement)(
     "div",
     { style: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 } },
-    (0, import_react83.createElement)(
+    (0, import_react82.createElement)(
       "div",
       {
         style: {
@@ -65362,11 +65397,11 @@ function personCell(person) {
       },
       person.name.slice(0, 1)
     ),
-    (0, import_react83.createElement)(
+    (0, import_react82.createElement)(
       "div",
       { style: { display: "flex", flexDirection: "column", minWidth: 0 } },
-      (0, import_react83.createElement)("span", null, person.name),
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)("span", null, person.name),
+      (0, import_react82.createElement)(
         "span",
         { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)" } },
         person.mrn
@@ -65375,8 +65410,8 @@ function personCell(person) {
   );
 }
 function rowsOf() {
-  const actions2 = (0, import_react83.createElement)(IconButton, {
-    icon: (0, import_react83.createElement)(import_dsh_client_ui_primitives4.IconChevronDownOutlineRegular, { size: 16 }),
+  const actions2 = (0, import_react82.createElement)(IconButton, {
+    icon: (0, import_react82.createElement)(import_dsh_client_ui_primitives4.IconChevronDownOutlineRegular, { size: 16 }),
     label: "Open study"
   });
   return PEOPLE.map((person) => ({
@@ -65386,13 +65421,13 @@ function rowsOf() {
       name: personCell(person),
       age: person.age,
       date: person.date,
-      modality: (0, import_react83.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality),
+      modality: (0, import_react82.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality),
       // 多标签：标签之间的间距由调用方布局控制（这里 4px），列内距走列级 padding:8
-      flags: person.flags.length === 0 ? null : (0, import_react83.createElement)(
+      flags: person.flags.length === 0 ? null : (0, import_react82.createElement)(
         "div",
         { style: { display: "flex", gap: "4px", flexWrap: "wrap" } },
         ...person.flags.map(
-          (flag) => (0, import_react83.createElement)(
+          (flag) => (0, import_react82.createElement)(
             Chip,
             {
               key: flag,
@@ -65403,7 +65438,7 @@ function rowsOf() {
           )
         )
       ),
-      status: (0, import_react83.createElement)(Chip, { tone: person.tone, size: "xs" }, person.state),
+      status: (0, import_react82.createElement)(Chip, { tone: person.tone, size: "xs" }, person.state),
       actions: actions2
     }
   }));
@@ -65468,24 +65503,24 @@ var GROUPS = WORKSPACES.map((workspace) => ({
     cells: {
       task: task.title,
       owner: task.owner,
-      state: (0, import_react83.createElement)(Chip, { tone: task.tone, size: "xs" }, task.state),
+      state: (0, import_react82.createElement)(Chip, { tone: task.tone, size: "xs" }, task.state),
       updated: task.updated
     }
   }))
 }));
 function TablePage() {
-  const [selected, setSelected] = (0, import_react83.useState)("S-2418");
-  const [spanSelected, setSpanSelected] = (0, import_react83.useState)("c");
-  const [groupSelected, setGroupSelected] = (0, import_react83.useState)("a2");
-  const [groupAccentOn, setGroupAccentOn] = (0, import_react83.useState)(true);
-  const [groupAccent, setGroupAccent] = (0, import_react83.useState)("default");
-  const [pagerPage, setPagerPage] = (0, import_react83.useState)(1);
-  const [pagerSize, setPagerSize] = (0, import_react83.useState)(10);
-  const [demoPage, setDemoPage] = (0, import_react83.useState)(2);
-  const [demoSize, setDemoSize] = (0, import_react83.useState)(10);
-  const [demoAlign, setDemoAlign] = (0, import_react83.useState)("right");
-  const [demoShowTotal, setDemoShowTotal] = (0, import_react83.useState)(true);
-  const [loadState, setLoadState] = (0, import_react83.useState)("idle");
+  const [selected, setSelected] = (0, import_react82.useState)("S-2418");
+  const [spanSelected, setSpanSelected] = (0, import_react82.useState)("c");
+  const [groupSelected, setGroupSelected] = (0, import_react82.useState)("a2");
+  const [groupAccentOn, setGroupAccentOn] = (0, import_react82.useState)(true);
+  const [groupAccent, setGroupAccent] = (0, import_react82.useState)("default");
+  const [pagerPage, setPagerPage] = (0, import_react82.useState)(1);
+  const [pagerSize, setPagerSize] = (0, import_react82.useState)(10);
+  const [demoPage, setDemoPage] = (0, import_react82.useState)(2);
+  const [demoSize, setDemoSize] = (0, import_react82.useState)(10);
+  const [demoAlign, setDemoAlign] = (0, import_react82.useState)("right");
+  const [demoShowTotal, setDemoShowTotal] = (0, import_react82.useState)(true);
+  const [loadState, setLoadState] = (0, import_react82.useState)("idle");
   const loadColumns = [
     { key: "name", title: "Patient", width: 240 },
     { key: "date", title: "Date", width: 120 },
@@ -65496,7 +65531,7 @@ function TablePage() {
     cells: {
       name: personCell(person),
       date: person.date,
-      modality: (0, import_react83.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality)
+      modality: (0, import_react82.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality)
     }
   }));
   const pagerOnChange = (page, size4) => {
@@ -65507,7 +65542,7 @@ function TablePage() {
     setDemoPage(page);
     setDemoSize(size4);
   };
-  const renderLoadTable = (borders) => (0, import_react83.createElement)(Table, {
+  const renderLoadTable = (borders) => (0, import_react82.createElement)(Table, {
     columns: loadColumns,
     rows: loadState === "loading" ? [] : loadRows,
     borders,
@@ -65521,19 +65556,19 @@ function TablePage() {
     ariaLabel: "Patients loaded incrementally",
     style: { maxWidth: "640px" }
   });
-  return (0, import_react83.createElement)(
+  return (0, import_react82.createElement)(
     "div",
     null,
-    (0, import_react83.createElement)(DocProse, { id: "table" }),
+    (0, import_react82.createElement)(DocProse, { id: "table" }),
     // 表格较宽：示例区占满整栏（代码放页面底部），并在窄屏时横向滚动。
     // 空态不放成第二个示例 —— 直接接在主表下方，同一区块里展示「有数据 / 没数据」。
-    (0, import_react83.createElement)(
+    (0, import_react82.createElement)(
       Example,
       { title: "Table", hint: t3("tableHint") },
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: H_SCROLL },
-        (0, import_react83.createElement)(Table, {
+        (0, import_react82.createElement)(Table, {
           columns: COLUMNS,
           rows: rowsOf(),
           striped: true,
@@ -65545,10 +65580,10 @@ function TablePage() {
           style: { minWidth: 960 }
         })
       ),
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: { ...H_SCROLL, marginTop: "16px" } },
-        (0, import_react83.createElement)(Table, {
+        (0, import_react82.createElement)(Table, {
           columns: COLUMNS,
           rows: [],
           borders: "all",
@@ -65557,13 +65592,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react83.createElement)(
+    (0, import_react82.createElement)(
       Example,
       { title: "Density \xB7 borders \xB7 spans", hint: t3("tableSpanHint") },
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: H_SCROLL },
-        (0, import_react83.createElement)(Table, {
+        (0, import_react82.createElement)(Table, {
           columns: SPAN_COLUMNS,
           rows: SPAN_ROWS,
           density: "compact",
@@ -65575,13 +65610,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react83.createElement)(
+    (0, import_react82.createElement)(
       Example,
       { title: "Groups \xB7 \u901A\u680F", hint: t3("tableGroupHint") },
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
-        (0, import_react83.createElement)(Segmented, {
+        (0, import_react82.createElement)(Segmented, {
           size: "sm",
           items: [
             { value: "default", label: "\u9ED8\u8BA4" },
@@ -65592,12 +65627,12 @@ function TablePage() {
           value: groupAccent,
           onChange: setGroupAccent
         }),
-        (0, import_react83.createElement)(Checkbox, { checked: groupAccentOn, onChange: setGroupAccentOn, label: "groupAccent" })
+        (0, import_react82.createElement)(Checkbox, { checked: groupAccentOn, onChange: setGroupAccentOn, label: "groupAccent" })
       ),
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: { ...H_SCROLL, marginTop: "12px" } },
-        (0, import_react83.createElement)(Table, {
+        (0, import_react82.createElement)(Table, {
           columns: GROUP_COLUMNS,
           groups: GROUPS,
           groupAccent: groupAccentOn ? groupAccent : false,
@@ -65608,13 +65643,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react83.createElement)(
+    (0, import_react82.createElement)(
       Example,
       { title: "Pagination", hint: t3("paginationHint") },
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
-        (0, import_react83.createElement)(Segmented, {
+        (0, import_react82.createElement)(Segmented, {
           size: "sm",
           items: [
             { value: "left", label: "\u5DE6" },
@@ -65624,12 +65659,12 @@ function TablePage() {
           value: demoAlign,
           onChange: setDemoAlign
         }),
-        (0, import_react83.createElement)(Checkbox, { checked: demoShowTotal, onChange: setDemoShowTotal, label: "showTotal" })
+        (0, import_react82.createElement)(Checkbox, { checked: demoShowTotal, onChange: setDemoShowTotal, label: "showTotal" })
       ),
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: { marginTop: "12px" } },
-        (0, import_react83.createElement)(Pagination, {
+        (0, import_react82.createElement)(Pagination, {
           page: demoPage,
           pageSize: demoSize,
           total: 86,
@@ -65641,10 +65676,10 @@ function TablePage() {
           ariaLabel: "Demo pagination"
         })
       ),
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: { marginTop: "12px" } },
-        (0, import_react83.createElement)(Pagination, {
+        (0, import_react82.createElement)(Pagination, {
           page: demoPage,
           pageSize: demoSize,
           total: 86,
@@ -65655,13 +65690,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react83.createElement)(
+    (0, import_react82.createElement)(
       Example,
       { title: "Table \xB7 \u5206\u9875", hint: t3("tablePagerHint") },
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         { style: H_SCROLL },
-        (0, import_react83.createElement)(Table, {
+        (0, import_react82.createElement)(Table, {
           columns: COLUMNS,
           // 不传 pagination.total ⇒ 本地分页：这里是全量 12 行，Table 自己按当前页切片
           rows: rowsOf(),
@@ -65678,10 +65713,10 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react83.createElement)(
+    (0, import_react82.createElement)(
       Example,
       { title: "Loading \xB7 \u52A0\u8F7D\u66F4\u591A", hint: t3("tableLoadingHint") },
-      (0, import_react83.createElement)(Segmented, {
+      (0, import_react82.createElement)(Segmented, {
         size: "sm",
         items: [
           { value: "idle", label: "\u6B63\u5E38" },
@@ -65692,7 +65727,7 @@ function TablePage() {
         value: loadState,
         onChange: setLoadState
       }),
-      (0, import_react83.createElement)(
+      (0, import_react82.createElement)(
         "div",
         {
           style: {
@@ -65707,13 +65742,13 @@ function TablePage() {
         renderLoadTable("y")
       )
     ),
-    (0, import_react83.createElement)(DocApi, { id: "table" }),
-    (0, import_react83.createElement)(DocCode, { id: "table" })
+    (0, import_react82.createElement)(DocApi, { id: "table" }),
+    (0, import_react82.createElement)(DocCode, { id: "table" })
   );
 }
 
 // packages/demo/src/sections/toolbar.tsx
-var import_react84 = require("react");
+var import_react83 = require("react");
 var import_dsh_client_ui_primitives5 = require("@deepseek-ai/dsh-client-ui-primitives");
 var ANCHOR_ID = "dshpc-demo-quick-toolbar-anchor";
 var CODE_TOOLBAR = `import { QuickToolbar } from 'dsh-plugin-core/ui'
@@ -65728,23 +65763,23 @@ h(QuickToolbar, {
   backToTop: { threshold: 320 },   // \u9ED8\u8BA4\u5373\u662F 320\uFF1Bfalse \u53EF\u5173\u6389
 })`;
 function ToolbarPage() {
-  const [mode, setMode] = (0, import_react84.useState)("box");
-  const [last2, setLast] = (0, import_react84.useState)("\u2014");
-  return (0, import_react84.createElement)(
+  const [mode, setMode] = (0, import_react83.useState)("box");
+  const [last2, setLast] = (0, import_react83.useState)("\u2014");
+  return (0, import_react83.createElement)(
     "div",
     null,
-    (0, import_react84.createElement)(DocProse, { id: "quick-toolbar" }),
-    (0, import_react84.createElement)(
+    (0, import_react83.createElement)(DocProse, { id: "quick-toolbar" }),
+    (0, import_react83.createElement)(
       Example,
       {
         title: "QuickToolbar\uFF08\u53F3\u4FA7\u6D6E\u52A8\uFF09",
         hint: "\u7EB5\u5411\u6052\u8D34\u5C4F\u5E55\u5E95\u8FB9\uFF1B\u5207\u6362\u951A\u70B9\u53EF\u770B\u6A2A\u5411\u4F4D\u7F6E\u53D8\u5316\u3002\u5411\u4E0B\u6EDA\u52A8\uFF0C\u56DE\u9876\u90E8\u6309\u94AE\u4F1A\u51FA\u73B0\u3002",
         code: CODE_TOOLBAR
       },
-      (0, import_react84.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px" } },
-        (0, import_react84.createElement)(Segmented, {
+        (0, import_react83.createElement)(Segmented, {
           items: [
             { value: "box", label: "\u8DDF\u968F\u63A7\u4EF6" },
             { value: "window", label: "\u8DDF\u968F\u7A97\u53E3" }
@@ -65753,10 +65788,10 @@ function ToolbarPage() {
           onChange: setMode,
           label: "\u6A2A\u5411\u951A\u70B9"
         }),
-        (0, import_react84.createElement)(
+        (0, import_react83.createElement)(
           "div",
           { id: ANCHOR_ID },
-          (0, import_react84.createElement)(
+          (0, import_react83.createElement)(
             Surface,
             {
               tone: "sunken",
@@ -65764,15 +65799,15 @@ function ToolbarPage() {
               padding: "lg",
               style: { width: "min(560px, 100%)" }
             },
-            (0, import_react84.createElement)("div", { style: { fontWeight: 600, fontSize: "13px" } }, "\u951A\u5B9A\u63A7\u4EF6"),
-            (0, import_react84.createElement)(
+            (0, import_react83.createElement)("div", { style: { fontWeight: 600, fontSize: "13px" } }, "\u951A\u5B9A\u63A7\u4EF6"),
+            (0, import_react83.createElement)(
               "div",
               { style: { marginTop: "6px", color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "1.8" } },
               "\u5DE5\u5177\u680F\u4F1A\u8D34\u5728\u8FD9\u4E2A\u6846\u7684\u53F3\u7F18\u5916\u4FA7\uFF1B\u7A97\u53E3\u7A84\u5230\u653E\u4E0D\u4E0B\u65F6\u81EA\u52A8\u9000\u56DE\u5C4F\u5E55\u53F3\u7F18\u3002"
             )
           )
         ),
-        (0, import_react84.createElement)(
+        (0, import_react83.createElement)(
           Surface,
           {
             border: "dashed",
@@ -65788,19 +65823,19 @@ function ToolbarPage() {
           },
           "\u5411\u4E0B\u6EDA\u52A8\uFF0C\u56DE\u9876\u90E8\u6309\u94AE\u4F1A\u51FA\u73B0"
         ),
-        (0, import_react84.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, `\u6700\u8FD1\u4E00\u6B21\u70B9\u51FB\uFF1A${last2}`)
+        (0, import_react83.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, `\u6700\u8FD1\u4E00\u6B21\u70B9\u51FB\uFF1A${last2}`)
       )
     ),
-    (0, import_react84.createElement)(DocApi, { id: "quick-toolbar" }),
-    (0, import_react84.createElement)(QuickToolbar, {
+    (0, import_react83.createElement)(DocApi, { id: "quick-toolbar" }),
+    (0, import_react83.createElement)(QuickToolbar, {
       anchorId: mode === "box" ? ANCHOR_ID : void 0,
       onAction: (id3) => setLast(id3),
       items: [
-        { id: "search", icon: (0, import_react84.createElement)(import_dsh_client_ui_primitives5.IconSearchOutlineRegular, { size: 18 }), label: "\u641C\u7D22" },
-        { id: "copy", icon: (0, import_react84.createElement)(import_dsh_client_ui_primitives5.IconCopyOutlineRegular, { size: 18 }), label: "\u590D\u5236" },
+        { id: "search", icon: (0, import_react83.createElement)(import_dsh_client_ui_primitives5.IconSearchOutlineRegular, { size: 18 }), label: "\u641C\u7D22" },
+        { id: "copy", icon: (0, import_react83.createElement)(import_dsh_client_ui_primitives5.IconCopyOutlineRegular, { size: 18 }), label: "\u590D\u5236" },
         {
           id: "sparkle",
-          icon: (0, import_react84.createElement)(import_dsh_client_ui_primitives5.IconSparkleRegular, { size: 18 }),
+          icon: (0, import_react83.createElement)(import_dsh_client_ui_primitives5.IconSparkleRegular, { size: 18 }),
           label: "AI \u52A9\u624B",
           color: "var(--dshpc-business)",
           fgColor: "#fff"
@@ -65811,7 +65846,7 @@ function ToolbarPage() {
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react85 = require("react");
+var import_react84 = require("react");
 var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
@@ -65846,28 +65881,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react85.createElement)(
+  return (0, import_react84.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react85.createElement)(
+    (0, import_react84.createElement)(
       "thead",
       null,
-      (0, import_react85.createElement)(
+      (0, import_react84.createElement)(
         "tr",
         null,
-        (0, import_react85.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react85.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react84.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react84.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react85.createElement)(
+    (0, import_react84.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react85.createElement)(
+        ([fn, out]) => (0, import_react84.createElement)(
           "tr",
           { key: fn },
-          (0, import_react85.createElement)("td", { style: td }, fn),
-          (0, import_react85.createElement)("td", { style: td }, out)
+          (0, import_react84.createElement)("td", { style: td }, fn),
+          (0, import_react84.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -65876,44 +65911,44 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react85.createElement)(
+  return (0, import_react84.createElement)(
     "div",
     null,
-    (0, import_react85.createElement)(DocProse, { id: "date" }),
-    (0, import_react85.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react85.createElement)(FnTable, { rows: DATE_ROWS })),
-    (0, import_react85.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react85.createElement)(DocApi, { id: "date" })
+    (0, import_react84.createElement)(DocProse, { id: "date" }),
+    (0, import_react84.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react84.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react84.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react84.createElement)(DocApi, { id: "date" })
   );
 }
 function NumberPage() {
-  return (0, import_react85.createElement)(
+  return (0, import_react84.createElement)(
     "div",
     null,
-    (0, import_react85.createElement)(DocProse, { id: "number" }),
-    (0, import_react85.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react85.createElement)(FnTable, { rows: NUMBER_ROWS })),
-    (0, import_react85.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react85.createElement)(DocApi, { id: "number" })
+    (0, import_react84.createElement)(DocProse, { id: "number" }),
+    (0, import_react84.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react84.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react84.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react84.createElement)(DocApi, { id: "number" })
   );
 }
 function TextPage() {
-  return (0, import_react85.createElement)(DocContent, { id: "text" });
+  return (0, import_react84.createElement)(DocContent, { id: "text" });
 }
 function HttpPage() {
-  return (0, import_react85.createElement)(DocContent, { id: "http" });
+  return (0, import_react84.createElement)(DocContent, { id: "http" });
 }
 function I18nPage() {
-  return (0, import_react85.createElement)(
+  return (0, import_react84.createElement)(
     "div",
     null,
-    (0, import_react85.createElement)(DocProse, { id: "i18n" }),
-    (0, import_react85.createElement)(
+    (0, import_react84.createElement)(DocProse, { id: "i18n" }),
+    (0, import_react84.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
-      (0, import_react85.createElement)(
+      (0, import_react84.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react85.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
-        (0, import_react85.createElement)("code", {
+        (0, import_react84.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
+        (0, import_react84.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -65925,60 +65960,60 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react85.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react85.createElement)(DocApi, { id: "i18n" })
+    (0, import_react84.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react84.createElement)(DocApi, { id: "i18n" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react86 = require("react");
+var import_react85 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react86.createElement)(
+  return (0, import_react85.createElement)(
     "div",
     null,
-    (0, import_react86.createElement)(Note, { text: t3("referenceNote") }),
-    (0, import_react86.createElement)(Example, { title: t3("secA11y") }, (0, import_react86.createElement)(Placeholder2, { descKey: "a11yDesc" })),
-    (0, import_react86.createElement)(
+    (0, import_react85.createElement)(Note, { text: t3("referenceNote") }),
+    (0, import_react85.createElement)(Example, { title: t3("secA11y") }, (0, import_react85.createElement)(Placeholder2, { descKey: "a11yDesc" })),
+    (0, import_react85.createElement)(
       Example,
       { title: t3("secRoadmap"), hint: t3("roadmapHint") },
-      (0, import_react86.createElement)(
+      (0, import_react85.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react86.createElement)(
+          (key) => (0, import_react85.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react86.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react86.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
+            (0, import_react85.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react85.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
           )
         ),
-        (0, import_react86.createElement)(
+        (0, import_react85.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("roadmapLayout")
         )
       )
     ),
-    (0, import_react86.createElement)(
+    (0, import_react85.createElement)(
       Example,
       { title: t3("secBuild"), hint: t3("buildDesc") },
-      (0, import_react86.createElement)(
+      (0, import_react85.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react86.createElement)(
+        (0, import_react85.createElement)(
           "tbody",
           null,
           [
             [t3("buildCore"), `v${"0.20.9"}`],
             [t3("buildDemo"), `v${"0.20.9"}`],
-            [t3("buildStamp"), "261103-151416-621"]
+            [t3("buildStamp"), "261103-165803-852"]
           ].map(
-            ([label, value]) => (0, import_react86.createElement)(
+            ([label, value]) => (0, import_react85.createElement)(
               "tr",
               { key: label },
-              (0, import_react86.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react86.createElement)("td", {
+              (0, import_react85.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react85.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -66004,32 +66039,32 @@ var SECTION_GROUPS = [
 ];
 var ALL_SECTIONS = [
   // 入门：帮助索引（读哪一份）在前，然后是快速开始与设计基础
-  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react87.createElement)(HelpIndexPage, null) },
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react87.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react87.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react87.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react87.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react87.createElement)(PickerPage, null) },
-  { id: "datetime", group: "components", titleKey: "secDateTime", render: () => (0, import_react87.createElement)(DateTimePage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react87.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react87.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react87.createElement)(ChipPage, null) },
-  { id: "table", group: "components", titleKey: "secTable", render: () => (0, import_react87.createElement)(TablePage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react87.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react87.createElement)(LayoutPage, null) },
-  { id: "toolbar", group: "components", titleKey: "secToolbar", render: () => (0, import_react87.createElement)(ToolbarPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react87.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react87.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react87.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react87.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react87.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react87.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react87.createElement)(I18nPage, null) },
+  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react86.createElement)(HelpIndexPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react86.createElement)(QuickstartPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react86.createElement)(FoundationPage, null) },
+  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react86.createElement)(ButtonPage, null) },
+  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react86.createElement)(InputPage, null) },
+  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react86.createElement)(PickerPage, null) },
+  { id: "datetime", group: "components", titleKey: "secDateTime", render: () => (0, import_react86.createElement)(DateTimePage, null) },
+  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react86.createElement)(TooltipPage, null) },
+  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react86.createElement)(CardPage, null) },
+  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react86.createElement)(ChipPage, null) },
+  { id: "table", group: "components", titleKey: "secTable", render: () => (0, import_react86.createElement)(TablePage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react86.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react86.createElement)(LayoutPage, null) },
+  { id: "toolbar", group: "components", titleKey: "secToolbar", render: () => (0, import_react86.createElement)(ToolbarPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react86.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react86.createElement)(SessionPage, null) },
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react86.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react86.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react86.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react86.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react86.createElement)(I18nPage, null) },
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react87.createElement)(ReferencePage, null) }
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react86.createElement)(ReferencePage, null) }
 ];
 function Placeholder2(props) {
-  return (0, import_react87.createElement)(
+  return (0, import_react86.createElement)(
     Surface,
     {
       tone: "sunken",
@@ -66037,7 +66072,7 @@ function Placeholder2(props) {
       padding: "lg",
       style: { marginTop: "4px", color: "var(--dshpc-fg-3)" }
     },
-    (0, import_react87.createElement)("div", {
+    (0, import_react86.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -66047,23 +66082,23 @@ function Placeholder2(props) {
         marginBottom: "10px"
       }
     }, t3("phTodo")),
-    (0, import_react87.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
+    (0, import_react86.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react87.createElement)(
+  return (0, import_react86.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react87.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react87.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
+    (0, import_react86.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react86.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current4 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react87.createElement)(
+  return (0, import_react86.createElement)(
     "div",
     null,
-    (0, import_react87.createElement)(SectionHead2, { id: current4.id, title: t3(current4.titleKey) }),
+    (0, import_react86.createElement)(SectionHead2, { id: current4.id, title: t3(current4.titleKey) }),
     current4.render()
   );
 }
@@ -66123,10 +66158,10 @@ function applySidebarEntry() {
   }
 }
 function MoreMenuRow(props) {
-  return (0, import_react88.createElement)(
+  return (0, import_react87.createElement)(
     import_dsh_client_ui_primitives6.MenuItemButton,
     {
-      icon: (0, import_react88.createElement)(PanelIcon, { size: 16 }),
+      icon: (0, import_react87.createElement)(PanelIcon, { size: 16 }),
       onSelect: () => {
         props.onDismiss();
         jump(PANEL_ID);
@@ -66137,8 +66172,8 @@ function MoreMenuRow(props) {
 }
 var localeRuntime;
 function useLocaleTick() {
-  const [, setTick] = (0, import_react88.useState)(0);
-  (0, import_react88.useEffect)(() => {
+  const [, setTick] = (0, import_react87.useState)(0);
+  (0, import_react87.useEffect)(() => {
     const rt = localeRuntime;
     if (rt === void 0) return;
     return rt.subscribe(() => {
@@ -66148,8 +66183,8 @@ function useLocaleTick() {
 }
 function useHostDark() {
   const read = () => document.body.hasAttribute("data-ds-dark-theme");
-  const [dark, setDark] = (0, import_react88.useState)(read);
-  (0, import_react88.useEffect)(() => {
+  const [dark, setDark] = (0, import_react87.useState)(read);
+  (0, import_react87.useEffect)(() => {
     const obs = new MutationObserver(() => {
       setDark(read());
     });
@@ -66169,11 +66204,11 @@ function useHostDark() {
 function DemoPage() {
   useLocaleTick();
   const { dark, toggle } = useHostDark();
-  const [active, setActive2] = (0, import_react88.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive2] = (0, import_react87.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav2.push(
-      (0, import_react88.createElement)(
+      (0, import_react87.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -66191,7 +66226,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav2.push(
-        (0, import_react88.createElement)(
+        (0, import_react87.createElement)(
           "button",
           {
             key: section.id,
@@ -66218,7 +66253,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react88.createElement)(
+  return (0, import_react87.createElement)(
     "div",
     {
       // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
@@ -66235,7 +66270,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react88.createElement)(
+    (0, import_react87.createElement)(
       "aside",
       {
         style: {
@@ -66251,9 +66286,9 @@ function DemoPage() {
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
       // 透明右边框 = 滚动条与右缘隔 1px（口径见 docs/design/style.md §滚动条让位）
-      (0, import_react88.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px", borderRight: "1px solid transparent" } }, nav2),
+      (0, import_react87.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px", borderRight: "1px solid transparent" } }, nav2),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
-      (0, import_react88.createElement)(
+      (0, import_react87.createElement)(
         "div",
         {
           style: {
@@ -66266,7 +66301,7 @@ function DemoPage() {
           }
         },
         // 明暗切换：核心 Segmented 滑动分段（左亮右暗，图标进 label），不手写按钮
-        (0, import_react88.createElement)(Segmented, {
+        (0, import_react87.createElement)(Segmented, {
           items: [
             { value: "light", label: `\u2600 ${t3("themeLight")}` },
             { value: "dark", label: `\u263E ${t3("themeDark")}` }
@@ -66280,7 +66315,7 @@ function DemoPage() {
           label: t3("themeToggle")
         }),
         // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行；编译码小一号、与上面隔开
-        (0, import_react88.createElement)(
+        (0, import_react87.createElement)(
           "div",
           {
             style: {
@@ -66294,46 +66329,46 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react88.createElement)("span", null, `core v${"0.20.9"}`),
-          (0, import_react88.createElement)("span", null, `demo v${"0.20.9"}`),
-          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-151416-621")
+          (0, import_react87.createElement)("span", null, `core v${"0.20.9"}`),
+          (0, import_react87.createElement)("span", null, `demo v${"0.20.9"}`),
+          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-165803-852")
         )
       )
     ),
-    (0, import_react88.createElement)(
+    (0, import_react87.createElement)(
       "main",
       // 透明右边框 = 滚动条与右缘隔 1px（口径见 docs/design/style.md §滚动条让位）：
       // dock 不再让 margin，靠这里让，滚动条与分栏分隔线之间才是 1px。
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px", borderRight: "1px solid transparent" } },
-      (0, import_react88.createElement)(Sections, { active })
+      (0, import_react87.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react88.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react87.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function ConfigPanel(props) {
   const form = props.form;
-  const [, rerender] = (0, import_react88.useState)(0);
-  (0, import_react88.useEffect)(() => form.subscribe(() => {
+  const [, rerender] = (0, import_react87.useState)(0);
+  (0, import_react87.useEffect)(() => form.subscribe(() => {
     rerender((n) => n + 1);
   }), [form]);
-  if (props.view !== "page") return (0, import_react88.createElement)("div", { style: { display: "none" } });
+  if (props.view !== "page") return (0, import_react87.createElement)("div", { style: { display: "none" } });
   const snap = form.getSnapshot();
   const storedMode = snap.value?.entryMode;
   const mode = storedMode === "off" || storedMode === "first" || storedMode === "more" ? storedMode : "more";
   const ready = snap.status === "ready";
-  return (0, import_react88.createElement)(
+  return (0, import_react87.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "14px" } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
-    (0, import_react88.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
+    (0, import_react87.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
     // 设置行：滑动栏在右、说明在左；左缘圆角短条有入口=绿 / 关闭=灰（核心 Card 框式）
-    ready ? (0, import_react88.createElement)(
+    ready ? (0, import_react87.createElement)(
       Card,
       {
         accent: mode === "off" ? "neutral" : "success",
-        action: (0, import_react88.createElement)(Segmented, {
+        action: (0, import_react87.createElement)(Segmented, {
           size: "sm",
           value: mode,
           disabled: !snap.writable,
@@ -66350,35 +66385,35 @@ function ConfigPanel(props) {
           ]
         })
       },
-      (0, import_react88.createElement)(
+      (0, import_react87.createElement)(
         "div",
         null,
-        (0, import_react88.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
-        (0, import_react88.createElement)(
+        (0, import_react87.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
+        (0, import_react87.createElement)(
           "div",
           { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
           t3("settingsEntryHint")
         )
       )
-    ) : (0, import_react88.createElement)(
+    ) : (0, import_react87.createElement)(
       "div",
       { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
       t3(snap.status === "loading" ? "settingsLoading" : "settingsUnavailable")
     ),
-    (0, import_react88.createElement)(
+    (0, import_react87.createElement)(
       "div",
       { style: { display: "flex", gap: "8px" } },
-      (0, import_react88.createElement)(
+      (0, import_react87.createElement)(
         Button,
-        { size: "md", variant: "primary", icon: (0, import_react88.createElement)(import_dsh_client_ui_primitives6.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
+        { size: "md", variant: "primary", icon: (0, import_react87.createElement)(import_dsh_client_ui_primitives6.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
         t3("settingsOpenDemo")
       ),
-      (0, import_react88.createElement)(
+      (0, import_react87.createElement)(
         Button,
         {
           size: "md",
           variant: "outline",
-          icon: (0, import_react88.createElement)(import_dsh_client_ui_primitives6.IconLinkOutlineRegular, { size: 16 }),
+          icon: (0, import_react87.createElement)(import_dsh_client_ui_primitives6.IconLinkOutlineRegular, { size: 16 }),
           onClick: () => {
             window.open("https://github.com/cq-guojia/dsh-plugin-core", "_blank", "noopener");
           }
@@ -66390,14 +66425,14 @@ function ConfigPanel(props) {
 }
 function PanelIcon(props) {
   const size4 = props.size ?? 18;
-  return (0, import_react88.createElement)(
+  return (0, import_react87.createElement)(
     "svg",
     { width: size4, height: size4, viewBox: "0 0 1024 1024", "aria-hidden": true },
-    (0, import_react88.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
-    (0, import_react88.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react88.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
-    (0, import_react88.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react88.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
+    (0, import_react87.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
+    (0, import_react87.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react87.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
+    (0, import_react87.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react87.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
   );
 }
 function apply(ctx) {
@@ -66406,7 +66441,7 @@ function apply(ctx) {
   ensureControls(kit);
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react88.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react87.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
   ctx.inject(["layout"], (sub) => {
     const layout = sub?.layout;
     if (layout?.selectPanel === void 0) return;

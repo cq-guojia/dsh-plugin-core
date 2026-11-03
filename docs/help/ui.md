@@ -633,7 +633,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `showToast(message, opts?)` | `` |  | 官方 Sonner 原生（对比 / demo 用）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主 | Raw official Sonner (comparison / demo). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host |
+| `showToast(message, opts?)` | `` |  | 官方 Sonner 原味（轻量原生观感；demo 统一用 notify）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主 | Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host |
 | `notify(message, opts?)` | `` |  | 默认用这个。opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个） | Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2) |
 | `showHostToast(message, opts?)` | `` |  | 宿主原生 Toast，走 `dsh-plugin-core/ui/host` 子路径。opts: `{ tone?, holdMs?, actions?, onDismiss? }` | Host-native Toast from the `dsh-plugin-core/ui/host` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }` |
 | `showLoading(opts?)` | `` |  | 全局加载提示（全局唯一一处），返回 `{ close() }`。opts: `{ text?, variant?: 'toast' \| 'block', position?, mask?, maskOpacity?, translate? }`；position 默认 bottom-center | Global loading hint (one spot globally) returning `{ close() }`. opts `{ text?, variant?: 'toast' \| 'block', position?, mask?, maskOpacity?, translate? }`; position defaults to bottom-center |

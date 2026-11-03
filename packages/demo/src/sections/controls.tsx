@@ -30,7 +30,6 @@ import {
   Surface,
   Textarea,
   WorkspacePicker,
-  showToast,
   showLoading,
   notify,
   alertModal,
@@ -38,8 +37,6 @@ import {
 } from '../../../../dist/ui/index.js'
 // 宿主原生弹窗：经官方适配层 official.js 取（全仓唯一 import 平台模块处），保持本包 ui 入口零官方依赖。
 import { Official } from '../../../../dist/ui/official.js'
-// 宿主原生 Toast 封装（独立子路径，避免 ui 入口静态 import 平台模块导致 Node 单测崩）。
-import { showHostToast } from '../../../../dist/ui/host-toast.js'
 import {
   HoverCard,
   IconCheckOutlineRegular,
@@ -1386,7 +1383,7 @@ const CODE_CHIP = `// tone 五档 + size 三档；尺寸行固定由大到小（
 
 // 中性 # 标签（语言无关）；传 onClick 才渲染成 button
 <Chip>#npm</Chip>
-<Chip onClick={() => showToast('点了 chip')}>#可点</Chip>`
+<Chip onClick={() => notify('点了 chip')}>#可点</Chip>`
 
 const CODE_CHIP_WIDTH = `// 固定宽：写死宽度
 <Chip width={90}>90px 固定宽</Chip>
@@ -1447,7 +1444,7 @@ export function ChipPage(): ReturnType<typeof h> {
           { style: { display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } },
           h(Chip, null, '#npm'),
           h(Chip, null, '#构建'),
-          h(Chip, { onClick: () => showToast('点了 chip') }, '#可点'),
+          h(Chip, { onClick: () => notify('点了 chip') }, '#可点'),
           h(Chip, null, '一整段比较长的标签文字，宽度应该跟着文字走'),
         ),
       ),
@@ -1516,6 +1513,9 @@ const ok = await confirmModal({
 })
 await alertModal({ title: '宿主提示', message: '关闭即确认', skin: 'host' })`
 
+/** 演示用：假装消费方在跑 1.4 秒。 */
+const demoWait = (ms = 1400): Promise<void> => new Promise((r) => { setTimeout(r, ms) })
+
 const CODE_SMALL_MODAL = `// 我们的标准小框：名字带 Modal 后缀，不覆盖宿主原生
 <AlertModal
   severity="warning"
@@ -1537,7 +1537,23 @@ const CODE_SMALL_MODAL = `// 我们的标准小框：名字带 Modal 后缀，�
 if (await confirmModal({ title: '确认提交', message: '提交后不可撤销', tone: 'danger' })) {
   // 用户点了确认
 }
-await alertModal({ title: '提示', message: '这是命令式 alert，关闭即确认' })`
+await alertModal({ title: '提示', message: '这是命令式 alert，关闭即确认' })
+
+// 异步：回调返回 Promise ⇒ 对应按钮自动转圈、整框锁死不可关；resolve 才关闭，reject 则恢复可点
+await alertModal({
+  title: '正在保存',
+  message: '点「确定」才开始跑，跑完自己关',
+  onConfirm: async () => { await save() },
+})
+const ok = await confirmModal({
+  title: '删除任务',
+  message: '处理期间弹窗不可关闭',
+  tone: 'danger',
+  onConfirm: async () => { await remove() },  // 确认钮转圈
+  onCancel: async () => { await check() },    // 取消钮也能转圈
+})
+// 组件形态自己控：confirmLoading / cancelLoading
+<ConfirmModal message="…" confirmLoading={saving} onConfirm={…} />`
 
 const CODE_LARGE_MODAL = `// 内容弹窗：size md / lg，承载任意内容（不是「确定/取消」命令式）
 <Modal title="任务详情" onClose={close} footer={<Button variant="primary">知道了</Button>}>
@@ -1575,19 +1591,6 @@ const CODE_SIDE_SHEET = `// 覆盖式侧边抽屉：皮肤与 PanelDock 分栏�
   footer={<Button variant="primary">应用</Button>}>
   <FilterForm />
 </SideSheet>`
-
-const CODE_TOAST_NATIVE = `// showToast：Sonner 原味（对比用）
-showToast('已保存')
-showToast('保存成功', { variant: 'success' })
-showToast('保存失败', { variant: 'error' })
-showToast('整条自定义色', { color: '#7c3aed' })
-showToast('消失后回调', { onDismiss: () => {} })
-showToast('顶部-左', { position: 'top-left' })`
-
-const CODE_TOAST_HOST = `// showHostToast：直接包官方 Toast（顶部横幅）
-showHostToast('这是宿主原生提示')
-showHostToast('操作成功', { tone: 'success' })
-showHostToast('有动作的原生提示', { actions: [{ text: '查看', onClick: () => {} }] })`
 
 const CODE_TOAST_NOTIFY = `// notify：统一灰/绿/红/黄 + 右侧我们自己的按钮（项目内推荐）
 notify('已保存草稿')
@@ -1649,7 +1652,7 @@ blocked.close()
 
 /** 弹窗家族公共参数（AlertModal / ConfirmModal / Modal 同源，字段按各自能力裁剪）。 */
 
-/** 提示家族参数（notify / showToast / showHostToast 三者的交集与差异）。 */
+/** 提示家族参数（notify 的档位与按钮）。 */
 
 export function FeedbackPage(): ReturnType<typeof h> {
   const [open, setOpen] = useState(false)
@@ -1731,11 +1734,62 @@ export function FeedbackPage(): ReturnType<typeof h> {
           h(
             'div',
             { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } },
-            h(Button, { variant: 'outline', onClick: () => { alertModal({ title: '提示', message: '这是命令式 alert，关闭即确认' }).then(() => showToast('alert 已关闭')) } }, 'alertModal()'),
+            h(Button, { variant: 'outline', onClick: () => { alertModal({ title: '提示', message: '这是命令式 alert，关闭即确认' }).then(() => notify('alert 已关闭')) } }, 'alertModal()'),
             h(Button, { onClick: async () => {
                 const ok = await confirmModal({ title: '确认提交', message: '提交后不可撤销', tone: 'danger', confirmText: '提交', cancelText: '取消' })
-                showToast(ok ? '你点了：提交' : '你点了：取消')
+                notify(ok ? '你点了：提交' : '你点了：取消')
               } }, 'confirmModal()'),
+          ),
+          // 异步回调 ⇒ 对应按钮自动转圈、整框锁死，settle 后才关（1.4 秒演示）
+          h(
+            'div',
+            { style: { display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px', alignItems: 'center' } },
+            h(Button, {
+              variant: 'outline',
+              onClick: () => {
+                void alertModal({
+                  title: '正在保存',
+                  message: '点「保存」后：按钮转圈、遮罩与 Esc 都关不掉，1.4 秒后自己关。',
+                  confirmText: '保存',
+                  onConfirm: async () => { await demoWait() },
+                }).then(() => notify('保存完成，alert 已关闭'))
+              },
+            }, 'alertModal() · 异步确认'),
+            h(Button, {
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: '删除任务',
+                  message: '确认钮转圈期间整框不可关；取消钮照常可点。',
+                  tone: 'danger', confirmText: '删除', cancelText: '取消',
+                  onConfirm: async () => { await demoWait() },
+                })
+                notify(ok ? '删除完成（确认为 true）' : '已取消（false）')
+              },
+            }, 'confirmModal() · 异步确认'),
+            h(Button, {
+              variant: 'outline',
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: '离开前检查',
+                  message: '这次转圈的是「取消」钮：点它跑 1.4 秒检查，期间整框不可关。',
+                  confirmText: '留在页面', cancelText: '检查并离开',
+                  onCancel: async () => { await demoWait() },
+                })
+                notify(ok ? '你点了：留在页面' : '检查完成，已离开（false）')
+              },
+            }, 'confirmModal() · 异步取消'),
+            h(Button, {
+              variant: 'ghost',
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: '可能失败',
+                  message: '确认后 1.4 秒抛错：loading 撤回、弹窗留着可重试，控制台有报错。',
+                  confirmText: '执行', cancelText: '算了',
+                  onConfirm: async () => { await demoWait(); throw new Error('演示：异步处理失败') },
+                })
+                notify(ok ? '意外成功' : '已取消（false）')
+              },
+            }, 'confirmModal() · 异步失败'),
           ),
         ),
       ),
@@ -1865,7 +1919,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
         h(Button, { variant: 'ghost', onClick: () => { void alertModal({ title: '宿主提示', message: '这是宿主样式的命令式 alert（skin:"host"），关闭即确认' }) } }, 'alertModal({skin:"host"})'),
         h(Button, { variant: 'ghost', onClick: async () => {
             const ok = await confirmModal({ title: '宿主确认框', message: '官方 Modal 弹出的确认（danger）', tone: 'danger', confirmText: '删除', cancelText: '再想想', skin: 'host' })
-            showToast(ok ? '宿主 confirm：你点了删除' : '宿主 confirm：你点了取消')
+            notify(ok ? '宿主 confirm：你点了删除' : '宿主 confirm：你点了取消')
           } }, 'confirmModal({skin:"host"})'),
         openNative
           ? h(
@@ -1936,59 +1990,6 @@ export function FeedbackPage(): ReturnType<typeof h> {
           },
           '双按钮',
         ),
-      ),
-    ),
-    h(
-      Example,
-      { title: t('exToastHostTitle'), hint: t('exToastHostHint'), code: CODE_TOAST_HOST },
-      h(
-        'div',
-        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
-        h(Button, { onClick: () => showHostToast('这是宿主原生提示') }, '普通'),
-        h(Button, { onClick: () => showHostToast('操作成功', { tone: 'success' }) }, '成功(success)'),
-        h(
-          Button,
-          {
-            onClick: () =>
-              showHostToast('有动作的原生提示', {
-                actions: [{ text: '查看', onClick: () => showToast('点了「查看」') }],
-              }),
-          },
-          '带动作',
-        ),
-      ),
-    ),
-    h(
-      Example,
-      { title: t('exToastSonnerTitle'), hint: t('exToastSonnerHint'), code: CODE_TOAST_NATIVE },
-      h(
-        'div',
-        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' } },
-        h(Button, { onClick: () => showToast('已保存') }, '普通(info)'),
-        h(Button, { onClick: () => showToast('保存成功', { variant: 'success' }) }, '成功'),
-        h(Button, { onClick: () => showToast('保存失败', { variant: 'error' }) }, '失败'),
-        h(Button, { onClick: () => showToast('注意一下', { variant: 'warning' }) }, '警告'),
-        h(Button, { onClick: () => showToast('整条自定义色', { color: '#7c3aed' }) }, '自定义色'),
-        h(
-          Button,
-          {
-            onClick: () =>
-              showToast('消失后回调', {
-                onDismiss: () => showToast('上一条消失了'),
-              }),
-          },
-          '带回调',
-        ),
-      ),
-      h(
-        'div',
-        { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
-        h(Button, { onClick: () => showToast('顶部-左', { position: 'top-left' }) }, 'top-left'),
-        h(Button, { onClick: () => showToast('顶部-中', { position: 'top-center' }) }, 'top-center'),
-        h(Button, { onClick: () => showToast('顶部-右', { position: 'top-right' }) }, 'top-right'),
-        h(Button, { onClick: () => showToast('底部-左', { position: 'bottom-left' }) }, 'bottom-left'),
-        h(Button, { onClick: () => showToast('底部-中', { position: 'bottom-center' }) }, 'bottom-center'),
-        h(Button, { onClick: () => showToast('底部-右', { position: 'bottom-right' }) }, 'bottom-right'),
       ),
     ),
     h(
@@ -2105,7 +2106,7 @@ const dock = createPanelDock({ maxPanels: 3 })
 
 // 3) 显隐归状态：只传 id，不传内容
 const result = dock.open('files')   // { ok, reason }；到上限时 ok=false
-if (!result.ok) showToast('最多同时开 3 栏')
+if (!result.ok) notify('最多同时开 3 栏')
 dock.close('files')
 dock.toggle('preview')
 dock.isOpen('files')
