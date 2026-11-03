@@ -13,6 +13,7 @@ import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import * as controls from '../dist/ui/controls-css.js'
 import { PICKER_CSS } from '../dist/ui/picker-css.js'
+import { PANEL_CSS } from '../dist/ui/panel-css.js'
 import { FEEDBACK_CSS } from '../dist/ui/feedback-css.js'
 import { OVERLAY_CSS } from '../dist/ui/overlay-css.js'
 import { SIDE_PANEL_CSS } from '../dist/ui/side-panel-css.js'
@@ -33,6 +34,7 @@ const CONSTANTS = {
   ...Object.fromEntries(
     Object.entries(controls).filter(([key, value]) => key.endsWith('_CSS') && typeof value === 'string'),
   ),
+  PANEL_CSS,
   PICKER_CSS,
   OVERLAY_CSS,
   SIDE_PANEL_CSS,
@@ -276,10 +278,15 @@ test('注入文本的括号与注释必须平衡', () => {
   assert.equal(depth, 0, `花括号不平衡，残留 ${depth} 层`)
 })
 
-test('浮层关闭按钮用专属类名，不借 Picker 触发器皮肤', async () => {
-  assert.ok(OVERLAY_CSS.includes('.dshpc-overlay-head__close'), 'OVERLAY_CSS 缺 .dshpc-overlay-head__close')
+// 2026-11-03：关闭钮皮肤收到 panel.css（浮层唯一那枚），overlay.css 只留头部布局；
+// 旧类名 dshpc-overlay-head__close 必须继续作别名存在，否则消费方写在它上面的覆盖会失效。
+test('浮层关闭按钮：皮肤只有一份（panel.css），旧类名留别名', async () => {
+  assert.ok(PANEL_CSS.includes('.dshpc-panel__close'), 'PANEL_CSS 缺 .dshpc-panel__close')
+  assert.ok(PANEL_CSS.includes('.dshpc-overlay-head__close'), '旧类名别名丢了（消费方覆盖会失效）')
+  assert.ok(!OVERLAY_CSS.includes('.dshpc-overlay-head__close'), '关闭钮皮肤在 overlay.css 里还有第二份')
   const overlay = await readFile(new URL('../dist/ui/overlay.js', import.meta.url), 'utf8')
-  assert.ok(overlay.includes('dshpc-overlay-head__close'), '浮层关闭按钮未用 dshpc-overlay-head__close')
+  assert.ok(overlay.includes('PanelClose'), '头部关闭钮没走公共件 PanelClose（又手写了一份）')
+  assert.ok(overlay.includes('dshpc-overlay-head__close'), '浮层关闭按钮没挂旧类名别名')
   assert.ok(!overlay.includes('dshpc-picker__trigger'), '浮层关闭按钮仍在借 dshpc-picker__trigger')
 })
 

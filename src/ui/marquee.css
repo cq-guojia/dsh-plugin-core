@@ -12,4 +12,5 @@
 /* 溢出渐影（用户 2026-10-24 拍板「左右稍微有点渐影」；官方口径 = dsh-client-ui-primitives@0.2.1-rc.2
    PathLabel.module.css:13-15：mask-image 线性渐隐 + 28px 随官方）。⚠️ 只在 **hover 滚动态** 加：
    静态态（三个点）不要渐影（用户 2026-10-24 二次拍板），hover 滚动时两端渐影——左缘柔化被裁的文字头。 */
+/* token-ok：遮罩模板色（纯黑 = 完全不透明），不是主题色；换主题也不该变。 */
 .dshpc-mq-run:hover{mask-image:linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);}

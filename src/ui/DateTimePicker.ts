@@ -44,6 +44,7 @@ import {
 } from './datetime-logic.js'
 import { ensureComponentStyles } from './css.js'
 import { DATETIME_CSS, FIELD_CSS } from './controls-css.js'
+import { PANEL_CSS } from './panel-css.js'
 
 export type { DateTimePrecision } from './datetime-logic.js'
 
@@ -186,6 +187,7 @@ const ICON_DOWN = h(Chevron, { size: 12 })
  */
 export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h> {
   ensureComponentStyles('datetime', DATETIME_CSS)
+  ensureComponentStyles('panel', PANEL_CSS)
   ensureComponentStyles('field', FIELD_CSS)
   const tt = props.translate ?? t
   const mode = props.mode ?? 'single'
@@ -661,7 +663,8 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
 
   const pop = h(
     'div',
-    { className: 'dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown },
+    // 弹层表面积走 panel.css 的 menu 档（2026-11-03 皮肤统一）；这类名只剩定位与内距。
+    { className: 'dshpc-panel dshpc-panel--menu dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown },
     rangeMode
       ? h(
           'div',

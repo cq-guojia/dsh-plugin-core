@@ -10,13 +10,19 @@ import { type ReactNode } from 'react';
  * （无回调还挂监听，等于让 Esc 被白白吃掉）。
  */
 export declare function useEscapeClose(enabled: boolean, onClose: (() => void) | undefined): void;
-/** 浮层档：center = 居中弹窗；side = 贴边抽屉（z 更低，见 overlay.css）。 */
-export type OverlayKind = 'center' | 'side';
+/**
+ * 浮层档：center = 居中弹窗；side = 贴边抽屉；plain = 不居中的锚定面板（选文件弹窗用，
+ * 面板自己 `position:fixed` 贴锚点，遮罩只负责压暗与「点外部关闭」）。
+ * 三档的遮罩视觉同一套，只差布局与 z（见 overlay.css）。
+ */
+export type OverlayKind = 'center' | 'side' | 'plain';
 export interface OverlayMaskProps {
     kind: OverlayKind;
     /** 点遮罩是否关闭。 */
     closeOnMask: boolean;
     onClose?: () => void;
+    /** 原样铺到遮罩节点上的属性（`data-*` 这类既有钩子）。 */
+    attrs?: Record<string, string | undefined>;
     children?: ReactNode;
 }
 /** 遮罩 + 承载盒。右边界让位分栏的规则只有这一份。 */

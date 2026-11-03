@@ -4,21 +4,27 @@
  * （.dsh-tdt-sv-* 全族）。**逐条照抄，不许自己估**：padding / gap / 圆角 / 字号 / 行高 /
  * 边框色 / 悬停色 / 透明度动画 / 溢出策略，一一对应，改这里之前先去那边对原文。
  * 前缀与变量名换成本仓口径（--tdt-* → --dshpc-*），数值不换。
+ * **例外**：容器级内距（__bar / __title / __tree / __body）2026-11-03 起改成四周一致
+ * 的 token 档（space-2 / space-3）——用户反馈兄弟那套「左右比上下宽」在这两处窗口里不对称。
+ * 行级内距（__row / __row-note / __banner）仍是兄弟数值，未动。
  *
  * 控件：能核心就核心（面包屑 = Button ghost、行尾 = Button outline、展开 / 图标 = IconButton、
  * 分段 = Segmented、文字 = MarqueeText）。核心控件自带的 padding / 高度 / 皮肤在本文件里
  * **按兄弟数值覆盖**（选择器带 .dshpc-fb 前缀提高特异性，确保盖得住控件默认值）。
  */
+/* 背景不在这里画：dock 由 .dshpc-side-surface、选文件弹窗由 .dshpc-panel 提供。
+   自己再刷一层 surface-base 会把面板档位（modal 同色的 surface-1）盖掉 —— 弹窗就显得发黑。 */
 .dshpc-fb{
   position:relative;display:flex;flex-direction:column;height:100%;min-height:0;
-  background:var(--dshpc-surface-base);color:var(--dshpc-fg);
+  background:transparent;color:var(--dshpc-fg);
 }
 
 /* 第一排：▾ 选层 + 面包屑 + 动作（兄弟 .dsh-tdt-sv-crumbbar）
    ⚠️ 不能 overflow:hidden —— 下拉浮层挂在它下面，裁了就看不见。 */
 .dshpc-fb__bar{
   position:relative;flex:none;display:flex;align-items:center;gap:2px;
-  padding:4px 10px;border-bottom:1px solid var(--dshpc-border);white-space:nowrap;
+  /* 四周内距一致（用户 2026-11-03：原来 4/10，左右比上下宽，看着不对称）——下文 __title / __tree / __body 同口径。 */
+  padding:var(--dshpc-space-2);border-bottom:1px solid var(--dshpc-border);white-space:nowrap;
 }
 .dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}
 .dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}
@@ -49,16 +55,19 @@
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;
 }
 .dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}
-/* 选择器头部「选当前文件 / 当前文件夹」钮：与 ✕ 并排，不被面包屑挤扁。 */
+/* 选择器头部「选当前文件 / 当前文件夹」钮：与 ✕ 并排，不被面包屑挤扁。
+   「选当前目录」= 核心 Button outline（sm 档）：尺寸与皮肤全归核心，这里只留布局。
+   ⚠️ 别再往这里写 height / padding 覆盖 —— 域按登记顺序拼接，核心 .dshpc-btn--sm 谁先谁后
+   取决于渲染次序，覆盖会时灵时不灵（2026-11-03 前就是这么写的）。 */
 .dshpc-fb__pick{flex:none}
 
-/* ▾ 选层浮层（兄弟 .dsh-tdt-sv-crumbs-*）。
-   层序：兄弟是 30/31；本仓 picker 面板是 1100，遮罩必须高于它，否则菜单开着点面板不算「点外部」。 */
-.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}
+/* ▾ 选层浮层。
+   层序：遮罩必须高于 picker 面板（--dshpc-z-panel），否则菜单开着点面板不算「点外部」；
+   菜单再压在遮罩之上，所以是 popmenu 一档 +1。表皮来自 panel.css 的 menu 档。 */
+.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:var(--dshpc-z-popmenu);background:transparent}
 .dshpc-fb__crumbs-menu{
-  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;
-  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);
-  box-shadow:0 4px 16px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;
+  position:absolute;top:calc(100% + 4px);left:0;z-index:calc(var(--dshpc-z-popmenu) + 1);
+  min-width:160px;max-height:240px;overflow:auto;padding:4px;display:flex;flex-direction:column;
 }
 .dshpc-fb__menu-item{
   appearance:none;background:0 0;border:none;text-align:left;font:inherit;
@@ -79,7 +88,7 @@
 /* 第二排（仅预览态）：文件名 + 工具（兄弟 .dsh-tdt-sv-titlebar / -preview-title-inner）。 */
 .dshpc-fb__title{
   flex:none;display:flex;align-items:center;gap:8px;
-  padding:8px 14px;border-bottom:1px solid var(--dshpc-border);
+  padding:var(--dshpc-space-2);border-bottom:1px solid var(--dshpc-border);
 }
 .dshpc-fb__title-inner{
   font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);
@@ -89,7 +98,7 @@
 
 /* 主体（兄弟 .dsh-tdt-sv-preview-body / -hint / -preview-err）
    下面三个滚动容器都带透明右边框 = 滚动条与右缘隔 1px（口径见 style.md §滚动条让位）。 */
-.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px;border-right:1px solid transparent}
+.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:var(--dshpc-space-3);border-right:1px solid transparent}
 .dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}
 .dshpc-fb__err{
   display:flex;flex-direction:column;align-items:flex-start;gap:10px;
@@ -97,7 +106,7 @@
 }
 
 /* 目录树（兄弟 .dsh-tdt-sv-tree*） */
-.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px;border-right:1px solid transparent;border-bottom:1px solid transparent}
+.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:var(--dshpc-space-2);border-right:1px solid transparent;border-bottom:1px solid transparent}
 .dshpc-fb__row{
   display:flex;align-items:center;gap:8px;padding:6px 8px;
   border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;
@@ -120,18 +129,15 @@
 }
 .dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}
 
-/* 行尾「进入 / 选择」：核心 outline 钮，皮肤取兄弟 .dsh-tdt-sv-tree-act（高由内容决定）。
+/* 行尾「进入 / 选择」：按钮**皮肤完全交给核心 Button**（2026-11-03：原来这里又写了一遍描边/内距/
+   字号，等于自己手搓了一颗，跟别处的按钮长得不一样）。本仓只保留布局与「悬停才现身」：
    平时隐身但占位（opacity 而非 display）⇒ 出现时不顶动行内布局。 */
 .dshpc-fb .dshpc-fb__row-act{
-  flex:none;margin-left:auto;appearance:none;background:0 0;
-  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);
-  height:auto;padding:2px 8px;font-size:var(--dshpc-font-sm);line-height:1.4;
-  color:var(--dshpc-fg-2);cursor:pointer;
+  flex:none;margin-left:auto;
   opacity:0;pointer-events:none;
   transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);
 }
 .dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}
-.dshpc-fb .dshpc-fb__row-act:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}
 
 .dshpc-fb__row-children{
   margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);

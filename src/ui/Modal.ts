@@ -3,6 +3,7 @@ import { t, type Translate } from '../utils/i18n.js'
 import { ensureComponentStyles } from './css.js'
 import { FEEDBACK_CSS } from './feedback-css.js'
 import { OverlayHead, OverlayMask, useEscapeClose } from './overlay.js'
+import { PanelSurface } from './panel.js'
 
 /** 弹窗尺寸档：sm≈确认框 / md(默认) / lg 大窗。 */
 export type ModalSize = 'sm' | 'md' | 'lg'
@@ -81,9 +82,12 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
   return h(
     OverlayMask,
     { kind: 'center', closeOnMask, onClose: props.onClose },
+    // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
+    // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
     h(
-      'div',
+      PanelSurface,
       {
+        tier: 'modal',
         className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
         style: {
           width: props.width ?? s.width,
@@ -91,7 +95,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
           maxHeight: props.maxHeight ?? s.maxHeight,
           height: props.height ?? s.height,
         },
-        onClick: (e: { stopPropagation: () => void }) => e.stopPropagation(),
+        stopPropagation: true,
       },
       // 头部与遮罩都是浮层公共件（overlay.ts），SideSheet 用的是同一套。
       showHeader

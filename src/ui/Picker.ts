@@ -15,6 +15,7 @@ import {
   type PickerOption,
 } from './picker-logic.js'
 import { ensureComponentStyles } from './css.js'
+import { PANEL_CSS } from './panel-css.js'
 import { PICKER_CSS } from './picker-css.js'
 import { FIELD_CSS } from './controls-css.js'
 
@@ -74,6 +75,8 @@ export interface PickerProps {
  */
 export function Picker(props: PickerProps): ReturnType<typeof h> {
   ensureComponentStyles('picker', PICKER_CSS)
+  // 下拉面板的表皮来自 panel.css 的 menu 档（2026-11-03 皮肤统一）：这里只留定位与滚动。
+  ensureComponentStyles('panel', PANEL_CSS)
   ensureComponentStyles('field', FIELD_CSS)
   const tt = props.translate ?? t
   const mode = props.mode ?? 'single'
@@ -144,8 +147,8 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
     const onDown = (e: MouseEvent): void => {
       const root = rootRef.current
       const floatingEl = refs.floating.current
-      if (root !== null && root.contains(e.target as Node)) return
-      if (floatingEl !== null && floatingEl.contains(e.target as Node)) return
+      if (root?.contains(e.target as Node) === true) return
+      if (floatingEl?.contains(e.target as Node) === true) return
       setOpen(false)
     }
     document.addEventListener('mousedown', onDown)
@@ -253,7 +256,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
           h(
             'div',
             {
-              className: 'dshpc-picker__menu',
+              className: 'dshpc-panel dshpc-panel--menu dshpc-picker__menu',
               ref: refs.setFloating,
               style: floatingStyles,
             },

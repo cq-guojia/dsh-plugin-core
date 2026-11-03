@@ -45,6 +45,7 @@ export type UtilMessageKey =
   | 'previewOutside'
   | 'previewNotFound'
   | 'previewNotDirectory'
+  | 'previewNotFile'
   | 'previewTooLarge'
   | 'previewNotText'
   | 'previewFailedCode'
@@ -326,6 +327,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     previewOutside: '路径在工作区之外',
     previewNotFound: '文件不存在',
     previewNotDirectory: '不是文件夹',
+    previewNotFile: '不是文件',
     previewTooLarge: '文件过大，无法预览',
     previewNotText: '不是文本文件',
     previewFailedCode: '加载失败（{code}）',
@@ -601,6 +603,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     previewOutside: 'Path is outside the workspace',
     previewNotFound: 'File not found',
     previewNotDirectory: 'Not a folder',
+    previewNotFile: 'Not a file',
     previewTooLarge: 'File too large to preview',
     previewNotText: 'Not a text file',
     previewFailedCode: 'Failed to load ({code})',

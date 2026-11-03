@@ -1,5 +1,6 @@
-/* 浮层公共骨架：遮罩 + 头部。Modal（居中）/ SideSheet（侧边）共用这一份，
-   两边各自 registerStyle 同一份（幂等），谁也不许再抄一份遮罩。 */
+/* 浮层公共骨架：遮罩 + 头部。Modal（居中）/ SideSheet（侧边）/ 选文件弹窗（锚定）共用这一份，
+   各家各自 registerStyle 同一份（幂等），谁也不许再抄一份遮罩。
+   关闭钮的皮肤在 panel.css（.dshpc-panel__close，旧类名作别名），不在这里再写一份。 */
 
 /* 遮罩 = 宿主遮罩变量 --dsw-alias-bg-mask-1（与官方 Modal / 兄弟项目 --tdt-mask 同一条真值，用户 2026-10-20）。 */
 /* 右边界让位页面级分栏（PanelDock 发布的 --dshpc-page-inset-right，用户 2026-10-22）：
@@ -15,6 +16,8 @@
 }
 /* 侧边档（SideSheet）：面板 absolute 贴边，不需要 flex 居中；z 走 drawer 档（低于 modal）。 */
 .dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}
+/* 锚定档（选文件弹窗）：遮罩照旧压暗 + 点外部关闭，面板自己 fixed 贴锚点，这里不做布局。 */
+.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}
 
 /* 头部四槽：左图标 / 标题组 / 弹性间隔 / 右侧动作区 + 关闭钮。
    上下内距必须相等（18/12 会让标题离面板顶远、离分隔线近，用户 2026-11-02）。 */
@@ -33,12 +36,3 @@
 .dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}
 .dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}
 .dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}
-/* 关闭按钮：20×20 方角图标位，不借用 Picker 的触发器皮肤（那份带 min-width:120px）。 */
-.dshpc-overlay-head__close{
-  display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);
-  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;
-  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);
-}
-.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}
-.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}

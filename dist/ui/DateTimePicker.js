@@ -8,6 +8,7 @@ import { formatDateTimePrecision } from '../utils/date.js';
 import { buildMonthCells, ceilToPrecision, clampUnit, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
 import { ensureComponentStyles } from './css.js';
 import { DATETIME_CSS, FIELD_CSS } from './controls-css.js';
+import { PANEL_CSS } from './panel-css.js';
 const UNIT_LABEL = {
     hour: 'dtHour',
     minute: 'dtMinute',
@@ -92,6 +93,7 @@ const ICON_DOWN = h(Chevron, { size: 12 });
  */
 export function DateTimePicker(props) {
     ensureComponentStyles('datetime', DATETIME_CSS);
+    ensureComponentStyles('panel', PANEL_CSS);
     ensureComponentStyles('field', FIELD_CSS);
     const tt = props.translate ?? t;
     const mode = props.mode ?? 'single';
@@ -439,7 +441,9 @@ export function DateTimePicker(props) {
     const canCommit = rangeMode
         ? partsOf(draft.start) !== null && partsOf(draft.end) !== null && !invalidRange
         : partsOf(draft.start) !== null;
-    const pop = h('div', { className: 'dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown }, rangeMode
+    const pop = h('div', 
+    // 弹层表面积走 panel.css 的 menu 档（2026-11-03 皮肤统一）；这类名只剩定位与内距。
+    { className: 'dshpc-panel dshpc-panel--menu dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown }, rangeMode
         ? h('div', { className: 'dshpc-dt__ends' }, endBox('start', tt('dtStart')), endBox('end', tt('dtEnd')))
         : null, h('div', { className: 'dshpc-dt__panels' }, panel('start'), rangeMode ? panel('end') : null), h('div', { className: 'dshpc-dt__foot' }, h('div', { className: 'dshpc-dt__foot-side' }, h(Button, { variant: 'ghost', size: 'sm', onClick: applyNow }, precision === 'day' ? tt('dtToday') : tt('dtNow')), h(Button, { variant: 'ghost', size: 'sm', onClick: clear }, tt('dtClear'))), h('div', { className: 'dshpc-dt__foot-side' }, invalidRange ? h('span', { className: 'dshpc-dt__warn' }, tt('dtInvalidRange')) : null, h(Button, { variant: 'outline', size: 'sm', onClick: () => setOpen(false) }, tt('cancel')), h(Button, { variant: 'primary', size: 'sm', disabled: !canCommit, onClick: commit }, tt('confirm')))));
     return h('div', {

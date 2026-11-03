@@ -61,7 +61,9 @@ tag 会触发 npm publish，调试期不需要走发布链。问题定位收敛�
 ## 改完的 checklist
 
 - [ ] `pnpm run build` 干净（`noUnusedLocals` / `strict` 全开）
-- [ ] `node --test test/*.test.mjs` 全绿
+- [ ] `pnpm test` 全绿（**不要**只跑 `node --test`：那样会跳过 `pretest` 里的
+      `gen-css --check` / `gen-docs --check` / 根 `tsc` / **demo `tsc`** —— demo 的字典缺 key
+      这类错误只由 `pretest` 拦住，2026-11-03 就是这么漏到 CI 的）
 - [ ] 新增导出是否进了对应 `index.ts`（曾漏过 `relativeFuture`）
 - [ ] 新增文案 key 是否被使用（死 key 自检会红）
 - [ ] 改的是文档 → 落位是否登记在 `docs/README.md`

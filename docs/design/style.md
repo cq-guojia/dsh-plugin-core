@@ -172,7 +172,8 @@ border-right: 1px solid transparent;
 缝 + 圆角）当场被否：用户要的就是「让出 1 像素」，不是换一套滚动条外观。所以口径只有一条 ——
 让位量固定 1px，颜色 / 粗细 / 圆角全部归浏览器。
 
-- 已有实色边框的容器（如 Picker 菜单的 `border:1px solid`）滚动条贴的就是那条线，算已让位，**不要叠加**。
+- 已有实色边框的容器（如 Picker 菜单的 `border:1px solid`，或挂 `.dshpc-panel` 后由面板提供的边框）
+  滚动条贴的就是那条线，算已让位，**不要叠加**。
 - 消费方自己的滚动容器（主区 / 侧栏）不在本仓代码里，配方相同：自己加那条 `border-right`。
   2026-11-02 起 `--dshpc-dock-gap` 已删，dock 不再替主区让 margin，改由主区容器自己让。
 - 自检：`test/quality.test.mjs` 扫 `src/**/*.css`，滚动规则缺边框即红。
@@ -184,6 +185,30 @@ a `::-webkit-scrollbar` thumb (3px gap + radius) was tried on 2026-11-02 and rej
 "give up 1 pixel", not a different scrollbar look; the inset stays 1px and the rest belongs to the browser.
 Containers that already have a solid border count as done. Consumer-owned scroll containers use the same
 one-liner; `--dshpc-dock-gap` was removed on 2026-11-02. A test enforces the border.
+
+## 浮层三档：模态 / 锚点面板 / 菜单
+
+> EN: Three tiers for floating surfaces — modal / popover / menu
+
+所有「浮起来的框」的**表面**（底色 · 描边宽 · 圆角 · 阴影）只在 `src/ui/panel.css` 定义，档位只有三个
+（2026-11-03 用户定：样式统一，交互各家自己管）：
+
+| 档位 | 用在 | 底色 | 描边 | 圆角 | 阴影 |
+|---|---|---|---|---|---|
+| `--modal` | `Modal` / `ConfirmModal` / `AlertModal` | `surface-1` | 3px | `radius-xl` | `shadow-2` |
+| `--popover` | 选文件弹窗（`pickWorkspaceFile`） | `surface-1` | 1px | `radius-lg` | `shadow-2` |
+| `--menu` | ▾ 选层、`Picker` 下拉 | `surface-menu` | 1px | `radius-sm` | `shadow-1` |
+
+- 组件里**不许**再写这四个值；要改外观只改 `panel.css`。
+- **定位不归档位管**：Modal 居中、选文件弹窗贴锚点并上下翻转、菜单挂触发器下方，各自实现。
+- 关闭钮只有一枚 `.dshpc-panel__close`；旧类名 `.dshpc-overlay-head__close` 保留作别名（消费方覆盖不失效）。
+- 层序只许用 `--dshpc-z-panel`（面板本体）/ `--dshpc-z-popmenu`（叠在面板上的菜单与其透明遮罩），不许写字面量。
+- **不并入三档**：`PanelDock` 与 `SideSheet` 属贴边家族（`side-panel.css` 的 `.dshpc-side-surface`，
+  2026-11-02 拍板两者皮肤一模一样），一个是布局成员、一个是贴边抽屉，都不是浮层。
+- 组件**内部**的微层序（缩略按钮 5、拖拽条 7、dock 关闭钮 8、Segmented 的 0/1）不走 token ——
+  它们只在各自 stacking context 里排序，跟页面浮层层级无关。
+- 自检：`test/css-discipline.test.mjs` 盯「色值只进 `tokens.css`」「`--dshpc-panel-*` 只在 `panel.css`」；
+  `test/css-contract.test.mjs` 盯「一个类名一套皮肤」。
 
 ## 三条硬规矩
 

@@ -11,7 +11,7 @@
  *
  * ⚠️ 本文件是 Node 侧入口：不得 import React / DOM。
  */
-import { access, lstat, open, readdir, stat } from 'node:fs/promises';
+import { access, open, readdir, stat } from 'node:fs/promises';
 import { isAbsolute, join, normalize, sep } from 'node:path';
 /** 单层目录最多回多少条（用户 2026-11-03 定：官方 2000 太粗，取四分之一）。 */
 export const FS_PAGE_LIMIT = 500;
@@ -52,7 +52,9 @@ export function normalizeAbsPath(raw) {
 async function listDir(target, offset, limit) {
     let info;
     try {
-        info = await lstat(target);
+        // stat（跟随符号链接）：/bin、/sbin 这类指向目录的链接必须能进。
+        // 曾用 lstat —— 链接本身既非 file 也非 directory，直接被判成 not-directory（2026-11-03 真机：/bin 报「不是文件夹」）。
+        info = await stat(target);
     }
     catch (error) {
         return fail(errCode(error), `no entry at ${target}`);
@@ -79,7 +81,9 @@ async function listDir(target, offset, limit) {
     for (const name of page) {
         const child = join(target, name);
         try {
-            const childInfo = await lstat(child);
+            // 子项同样 stat 跟随链接：指向目录的符号链接要标成 directory（可展开），指向文件的标成 file。
+            // 断链 stat 会抛 ⇒ 落 catch 标 other（与 lstat 时代的断链表现一致）。
+            const childInfo = await stat(child);
             entries.push({
                 name,
                 type: childInfo.isDirectory() ? 'directory' : childInfo.isFile() ? 'file' : 'other',

@@ -893,7 +893,7 @@ var init_lib2 = __esm({
 });
 
 // dist/host/fs-route.js
-import { access, lstat, open, readdir, stat } from "node:fs/promises";
+import { access, open, readdir, stat } from "node:fs/promises";
 import { isAbsolute, join, normalize, sep } from "node:path";
 var FS_PAGE_LIMIT = 500;
 var READ_LINES = 5e3;
@@ -929,7 +929,7 @@ function normalizeAbsPath(raw) {
 async function listDir(target, offset, limit) {
   let info;
   try {
-    info = await lstat(target);
+    info = await stat(target);
   } catch (error) {
     return fail(errCode(error), `no entry at ${target}`);
   }
@@ -953,7 +953,7 @@ async function listDir(target, offset, limit) {
   for (const name2 of page) {
     const child = join(target, name2);
     try {
-      const childInfo = await lstat(child);
+      const childInfo = await stat(child);
       entries.push({
         name: name2,
         type: childInfo.isDirectory() ? "directory" : childInfo.isFile() ? "file" : "other",

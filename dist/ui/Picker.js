@@ -6,6 +6,7 @@ import { FieldHint } from './FieldHint.js';
 import { MarqueeText } from './MarqueeText.js';
 import { filterGroups, flattenOptions, labelsOf, resolveTriggerSizing, toGroups, toggleValue, } from './picker-logic.js';
 import { ensureComponentStyles } from './css.js';
+import { PANEL_CSS } from './panel-css.js';
 import { PICKER_CSS } from './picker-css.js';
 import { FIELD_CSS } from './controls-css.js';
 /**
@@ -16,6 +17,8 @@ import { FIELD_CSS } from './controls-css.js';
  */
 export function Picker(props) {
     ensureComponentStyles('picker', PICKER_CSS);
+    // 下拉面板的表皮来自 panel.css 的 menu 档（2026-11-03 皮肤统一）：这里只留定位与滚动。
+    ensureComponentStyles('panel', PANEL_CSS);
     ensureComponentStyles('field', FIELD_CSS);
     const tt = props.translate ?? t;
     const mode = props.mode ?? 'single';
@@ -79,9 +82,9 @@ export function Picker(props) {
         const onDown = (e) => {
             const root = rootRef.current;
             const floatingEl = refs.floating.current;
-            if (root !== null && root.contains(e.target))
+            if (root?.contains(e.target) === true)
                 return;
-            if (floatingEl !== null && floatingEl.contains(e.target))
+            if (floatingEl?.contains(e.target) === true)
                 return;
             setOpen(false);
         };
@@ -168,7 +171,7 @@ export function Picker(props) {
         onKeyDown,
     }, triggerRow, open
         ? h(FloatingPortal, null, h('div', {
-            className: 'dshpc-picker__menu',
+            className: 'dshpc-panel dshpc-panel--menu dshpc-picker__menu',
             ref: refs.setFloating,
             style: floatingStyles,
         }, props.degraded === true

@@ -87,6 +87,9 @@ test('bareCode 剥命名空间 / errView 按 code 分支', () => {
   assert.equal(errView({ code: 'workspace-file/outside-workspace' }).key, 'previewOutside')
   assert.equal(errView('workspace-file/not-found').key, 'previewNotFound')
   assert.equal(errView({ code: 'not-directory' }).key, 'previewNotDirectory')
+  // not-regular-file（read 到目录/设备）与 not-directory（list 到文件）是两个码、两句文案；
+  // 曾共用「不是文件夹」——/bin 符号链接事故里用户看到的就是这句反话（2026-11-03）。
+  assert.equal(errView({ code: 'not-regular-file' }).key, 'previewNotFile')
   assert.equal(errView({ code: 'too-large' }).key, 'previewTooLarge')
   assert.equal(errView({ code: 'not-text' }).key, 'previewNotText')
   assert.equal(errView({ code: 'service-unavailable' }).key, 'previewOfficeUnavailable')
@@ -325,8 +328,8 @@ test('FileBrowser 根层：盘符由宿主给，POSIX 的根不给选', async ()
   const { readFile } = await import('node:fs/promises')
   const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
   assert.ok(src.includes('props.files.roots'), '没向宿主要根清单（Windows 上就只剩一个假「根目录」）')
-  // 根层条目（根目录 / 盘符）都是可选目标，不再有「能不能选」的分叉。
-  assert.ok(!src.includes('pickable'), '根层还留着「不可选」的分叉')
+  // 根层条目（根目录 / 盘符）都是可选目标，不再有「这个根不可选」的分叉。
+  assert.ok(!src.includes('pickable: false'), '根层还留着「不可选」的分叉')
   const face = await readFile(new URL('../dist/explorer/fs-face.js', import.meta.url), 'utf8')
   assert.ok(face.includes("op: 'roots'"), 'client 文件面没接宿主的 roots op')
 })

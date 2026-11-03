@@ -1,0 +1,52 @@
+/* 浮层面板皮肤（2026-11-03 用户定：皮肤统一，只改样式不动交互）。
+ *
+ * 这份文件是**所有「浮起来的框」的皮肤真源**。定位（fixed / absolute、贴谁、怎么翻转、多大的
+ * 层序）留在各自控件里，这里只管表面四件：底色 / 描边宽 / 圆角 / 阴影。
+ * ⚠️ 组件 CSS 里不许再写这四个字面值 —— 想改外观就改这里，别在消费方另起一套。
+ *
+ * 三档（差异只在这三段定义，别处分叉）：
+ *   --modal    居中模态（Modal / ConfirmModal / AlertModal 家族）
+ *   --popover  贴锚点的浮层面板（pickWorkspaceFile 的选文件弹窗）
+ *   --menu     下拉菜单（文件浏览器 ▾ 选层、Picker 下拉）
+ *
+ * 不并入三档的：PanelDock 与 SideSheet 是**贴边家族**（side-panel.css 的
+ * .dshpc-side-surface，surface-base、无外描边）—— 2026-11-02 拍板「两者皮肤一模一样」，
+ * 一个是布局成员、一个是贴边抽屉，都不是浮层。
+ */
+.dshpc-panel{
+  background:var(--dshpc-panel-bg);color:var(--dshpc-fg);
+  border:var(--dshpc-panel-bw) solid var(--dshpc-border);
+  border-radius:var(--dshpc-panel-radius);box-shadow:var(--dshpc-panel-shadow);
+}
+.dshpc-panel--modal{
+  --dshpc-panel-bg:var(--dshpc-surface-1);
+  --dshpc-panel-bw:3px;
+  --dshpc-panel-radius:var(--dshpc-radius-xl);
+  --dshpc-panel-shadow:var(--dshpc-shadow-2);
+  overflow:hidden;
+}
+.dshpc-panel--popover{
+  --dshpc-panel-bg:var(--dshpc-surface-1);
+  --dshpc-panel-bw:1px;
+  --dshpc-panel-radius:var(--dshpc-radius-lg);
+  --dshpc-panel-shadow:var(--dshpc-shadow-2);
+  overflow:hidden;
+}
+.dshpc-panel--menu{
+  /* 菜单底与模态同一层（用户 2026-11-03：别用页面底色，暗色下看着全黑）。 */
+  --dshpc-panel-bg:var(--dshpc-surface-1);
+  --dshpc-panel-bw:1px;
+  --dshpc-panel-radius:var(--dshpc-radius-sm);
+  --dshpc-panel-shadow:var(--dshpc-shadow-1);
+}
+
+/* 浮层唯一的关闭钮（20×20 方角图标位）。
+   旧类名 .dshpc-overlay-head__close 保留为别名：消费方写在旧类名上的覆盖仍生效。 */
+.dshpc-panel__close,.dshpc-overlay-head__close{
+  display:inline-flex;align-items:center;justify-content:center;flex:none;
+  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);
+  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);
+}
+.dshpc-panel__close:hover,.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}
+.dshpc-panel__close:focus-visible,.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}

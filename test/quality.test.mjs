@@ -70,6 +70,11 @@ test('ui 层不许再用字形箭头，一律走 Chevron', async () => {
 // CSS 没有「可滚动」选择器，写不出一条全局规则 ⇒ 只能靠这条扫源码的自检拦住新增容器漏加。
 // 通过条件：滚动规则自带透明边框（让位）或实色边框（滚动条贴的是那条线，视觉上已让位）。
 test('滚动容器都与边缘隔 1px（透明边框或实色边框）', async () => {
+  // 2026-11-03：浮层面板把边框收到 panel.css 的 `.dshpc-panel`，滚动容器自身不再写 border。
+  // 这类容器靠**同一元素上**的面板边框让位，按类名白名单放行；前提是面板确实带 1px 边框。
+  const panelCss = (await readFile(new URL('../src/ui/panel.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.match(panelCss, /\.dshpc-panel\{[^}]*border:var\(--dshpc-panel-bw\) solid var\(--dshpc-border\)/, '面板不再带 1px 边框（滚动条会贴死边缘）')
+  const PANEL_SCROLLERS = new Set(['dshpc-fb__crumbs-menu', 'dshpc-picker__menu'])
   const hits = []
   const walk = async (rel) => {
     for (const entry of await readdir(new URL(rel, import.meta.url), { withFileTypes: true })) {
@@ -80,6 +85,7 @@ test('滚动容器都与边缘隔 1px（透明边框或实色边框）', async (
         for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
           if (!/overflow(-[xy])?\s*:\s*(auto|scroll)/.test(body)) continue
           if (/\bborder(-(right|bottom))?\s*:/.test(body)) continue
+          if ([...selector.matchAll(/\.(dshpc-[a-z0-9_-]+)/g)].some((m) => PANEL_SCROLLERS.has(m[1]))) continue
           hits.push(`${next.slice('../'.length)} → ${selector.trim().split('\n').pop()}`)
         }
       }

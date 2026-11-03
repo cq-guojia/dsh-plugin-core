@@ -65,5 +65,6 @@ test('关闭钮文案走内置字典', () => {
 test('Modal 与 SideSheet 共用遮罩（只有档位不同）', () => {
   const modal = renderToStaticMarkup(createElement(Modal, { title: 'm', onClose: () => {} }, 'x'))
   assert.match(modal, /class="dshpc-overlay dshpc-overlay--center"/)
-  assert.match(modal, /class="dshpc-modal"/)
+  // 2026-11-03：表面归 panel.css 的 modal 档，家族类名 dshpc-modal 继续挂着（别名，不改引用）。
+  assert.match(modal, /class="dshpc-panel dshpc-panel--modal dshpc-modal"/)
 })

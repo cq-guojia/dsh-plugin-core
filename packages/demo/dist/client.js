@@ -37,11 +37,11 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react83 = require("react");
+var import_react88 = require("react");
 var import_dsh_client_ui_primitives6 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
-var TOKENS_CSS_TEMPLATE = '\n/* \u2500\u2500 \u6587\u5B57\uFF08\u5BBF\u4E3B label \u56DB\u6863 + \u53CD\u8272\u9762\u7528\u5B57\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\nbody{\n  --dshpc-fg:var(--dsw-alias-label-primary,#1f2328);\n  --dshpc-fg-2:var(--dsw-alias-label-secondary,#5c6370);\n  --dshpc-fg-3:var(--dsw-alias-label-tertiary,#767d87);\n  --dshpc-fg-4:var(--dsw-alias-label-caption,#9aa1ab);\n  --dshpc-fg-dim:var(--dsw-alias-label-dimmed,#b9bfc7);\n  /* \u53CD\u8272\u9762\u4E0A\u7684\u5B57\uFF08\u5B9E\u5FC3\u94AE / \u89D2\u6807\uFF09\uFF1A\u6697\u8272\u4E0B\u662F bluish-1000\uFF0C\u6545\u7528 -foreground \u800C\u975E -inverted */\n  --dshpc-fg-inverse:var(--dsw-alias-label-primary-foreground,#fff);\n\n  /* \u2500\u2500 \u9762\uFF08\u5BBF\u4E3B bg-layer \u4E09\u6863 + \u4E0B\u6C89\u8F68\u9053\u5E95\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-surface-1:var(--dsw-alias-bg-layer-1,#fff);\n  --dshpc-surface-2:var(--dsw-alias-bg-layer-2,#fff);\n  --dshpc-surface-3:var(--dsw-alias-bg-layer-3,#fff);\n  /* \u300C\u9009\u4E2D\u4EAE\u7247\u300D\u7684\u5E95\u76D8\u8272\uFF08\u914D --dshpc-shadow-raised \u7528\uFF09 */\n  --dshpc-surface-raised:var(--dsw-alias-bg-layer-1,#fff);\n  /* \u8F68\u9053 / \u4E0B\u6C89\u5E95\uFF08\u5B98\u65B9\u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u7528\u7684\u5C31\u662F\u8FD9\u6761\uFF09 */\n  --dshpc-surface-sunken:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));\n  /* \u6574\u9875 / \u7F16\u8F91\u5668\u5E95\uFF08bg-base\uFF09 */\n  --dshpc-surface-base:var(--dsw-alias-bg-base,#fff);\n  /* \u81EA\u7ED8\u6D6E\u5C42 / \u83DC\u5355\u5361\u7684\u4E0D\u900F\u660E\u5E95\uFF08= base\uFF1B\u4E0D\u8981\u7528\u534A\u900F\u660E\u7684 specific-menu\uFF09 */\n  --dshpc-surface-menu:var(--dshpc-surface-base);\n  /* markdown \u4EE3\u7801\u5757\u9762 / \u5B57\u4F53\uFF08\u4F1A\u8BDD\u955C\u50CF\u91CC\u7528\u5230\uFF09 */\n  --dshpc-code-surface:var(--dsw-alias-markdown-code-block,rgba(128,128,128,.10));\n  --dshpc-code-font:var(--dsw-font-markdown-code-block-small,12px/18px var(--ds-font-family-code,monospace));\n  /* \u8B66\u544A\u6587\u5B57\u8272\uFF08\u5BBF\u4E3B state-warn-label\uFF09 */\n  --dshpc-warning-label:var(--dsw-alias-state-warn-label,#f5a623);\n  /* \u56FA\u5B9A\u4E2D\u6027\u5B9E\u9762\uFF08\u81EA\u7ED8\u6D6E\u5C42\u3001\u6DF1\u8272\u4E3B\u9898\u4E0B\u5FC5\u987B\u81EA\u5DF1\u53D8\u7684\u90A3\u51E0\u4E2A\uFF09\u2014\u2014\u53EA\u6709\u5B83\u9700\u8981\u6697\u8272\u8986\u76D6 */\n  --dshpc-solid:var(--dsw-static-neutral-00,#fff);\n  --dshpc-on-solid:var(--dsw-alias-label-primary,#1f2328);\n  /* \u4EA4\u4ED8\u6587\u4EF6\u5361\u90A3\u79CD\u300C\u6D45\u5E95\u76D8 + hover \u52A0\u6DF1\u300D\u4E24\u62CD */\n  --dshpc-plate:var(--dsw-static-neutral-50,#fafafa);\n  --dshpc-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u26A0\uFE0F \u8FD9\u4E9B**\u56FA\u5B9A\u4E2D\u6027\u9762\u4E00\u5F8B\u7528 rgba \u5B57\u9762\u91CF**\uFF082026-10-19 \u771F\u673A\u6559\u8BAD\uFF09\uFF1A\u4E0D\u8981\u5199\u6210\n     \u300Crgba \u56DE\u9000\u884C + \u5D4C --dsw-static-* \u7684 color-mix \u884C\u300D\u4E24\u6761\u540C\u540D\u58F0\u660E\u2014\u2014\u81EA\u5B9A\u4E49\u5C5E\u6027**\u540E\u8005\u6052\u80DC**\uFF0C\n     \u54EA\u6015\u5B83\u7684\u503C\u5728\u5BBF\u4E3B\u91CC\u7B97\u4E0D\u51FA\u6765\uFF08static \u53D8\u91CF invalid\uFF09\u21D2 \u6574\u6761 token \u4F5C\u5E9F\u3001rgba \u515C\u5E95\u4E00\u8D77\u88AB\u5E9F\uFF0C\n     0.2.6 \u91CC Segmented \u8F68\u9053\u5168\u900F\u660E\u5C31\u662F\u8FD9\u4E48\u6765\u7684\u3002\u8981\u8DDF\u5BBF\u4E3B\u4E3B\u9898\u8054\u52A8\u7684\u9762\u7528 alias token\uFF08\u90A3\u4E9B\u5B9E\u6D4B\u6709\u6548\uFF09\u3002 */\n  --dshpc-icon-plate:rgba(255,255,255,.5);\n  /* \u8868\u5934\u5E95\uFF1A\u6D45\u8272\u4E3B\u9898**\u504F\u6DF1**\uFF0C\u4E14\u5FC5\u987B**\u6BD4\u6591\u9A6C\u7EB9\uFF08--dshpc-plate\uFF09\u518D\u6DF1\u4E00\u6863**\u2014\u2014\n     \u4E24\u8005\u4E0D\u80FD\u649E\u8272\uFF08\u7528\u6237 2026-10-02\uFF1A\u8868\u5934\u8DDF\u6591\u9A6C\u7EB9\u4E00\u6A21\u4E00\u6837\uFF09\u3002 */\n  --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u8868\u683C\u5E95 / \u884C hover\uFF082026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934\u4E0E\u901A\u680F**\u4E92\u6362**\u5E95\u8272\uFF09\uFF1A\n     \u8868\u5934\u9ED8\u8BA4\u5E95 = \u901A\u680F\u539F\u6765\u90A3\u5C42\u7070\uFF08--dshpc-surface-sunken\uFF0C\u8DDF\u7740\u5BBF\u4E3B\u4EA4\u4E92\u9762\u8D70\uFF09\uFF1B\n     \u901A\u680F\u9ED8\u8BA4\u5E95 = \u8868\u5934\u539F\u6765\u90A3\u8272\uFF08\u4EAE #f6f8fa / \u6697 #151b23\uFF0C\u53C2\u8003\u56FE\u5B9E\u6D4B\uFF0C\u4E0E\u6DF1\u8272\u6BB5\u540C\u6E90\uFF09\uFF1B\n     \u884C hover \u662F\u300C\u4E00\u5C42\u6781\u6DE1\u7684\u9ED1\u300D\u22481.5%\uFF08\u7528\u6237\uFF1A\u518D\u6D45\u4E00\u534A\uFF0C\u8981\u7279\u522B\u6DE1\uFF09\u3002 */\n  --dshpc-table-head-bg:var(--dshpc-surface-sunken);\n  --dshpc-table-banner-bg:#f6f8fa;\n  --dshpc-table-row-hover:rgba(15,15,15,.015);\n  /* \u56FE\u6807\u5C0F\u5E95\u677F\uFF08\u4EA7\u51FA\u7269\uFF09\uFF1A\u6D45\u8272\u4E0B\u8981**\u770B\u5F97\u89C1**\uFF08\u539F\u5148\u53D6 plate \u21D2 \u5728\u767D\u5E95\u4E0A\u7B49\u4E8E\u6CA1\u6709\uFF09\uFF1Bhover \u52A0\u500D\u3002 */\n  --dshpc-chip-bg:rgba(15,15,15,.07);\n  --dshpc-chip-bg-hover:rgba(15,15,15,.14);\n  /* \u5C55\u5F00\u884C\uFF1A**\u5E26\u900F\u660E\u5EA6\u7684\u84DD**\u2014\u2014\u4E0D\u662F\u7070\u3001\u4E5F\u4E0D\u662F\u7EAF\u8272\uFF0C\u900F\u51FA\u5361\u7247\u5E95\u8272\uFF0C\u4E00\u773C\u770B\u51FA\u300C\u8FD9\u662F\u5C55\u5F00\u7684\u300D\n     \uFF08\u7528\u6237 2026-10-02\uFF1A\u7070\u8272\u8DDF\u6591\u9A6C\u7EB9\u5206\u4E0D\u51FA\u6765\uFF09\u3002\u5185\u5BB9\u533A\u518D\u6DE1\u4E00\u6863\uFF0C\u5F62\u6210\u300C\u884C\u6DF1 / \u5185\u5BB9\u6D45\u300D\u7684\u533A\u9694\u3002 */\n  --dshpc-open-bg:rgba(37,99,235,.10);\n  --dshpc-open-bg-soft:rgba(37,99,235,.05);\n  --dshpc-card-hover:rgba(37,99,235,.07);\n\n  /* \u2500\u2500 \u63CF\u8FB9\u56DB\u6863\uFF08\u5BBF\u4E3B\u771F\u503C\uFF1Al1 4% / l2 10% / l3 12% / l4 16%\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-border-faint:var(--dsw-alias-border-l1,#0000000a);\n  --dshpc-border:var(--dsw-alias-border-l2,#0000001a);\n  --dshpc-border-strong:var(--dsw-alias-border-l3,#0000001f);\n  --dshpc-border-heavy:var(--dsw-alias-border-l4,#00000029);\n\n  /* \u2500\u2500 \u54C1\u724C / \u8BED\u4E49\u8272 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u54C1\u724C\u300C\u9762\u300D\u8272\uFF1A\u660E\u8272\u8FD1\u9ED1\u3001\u6697\u8272\u8FD1\u767D\uFF08\u5B98\u65B9 Switch \u9009\u4E2D\u6001\u5373\u6B64\uFF09\uFF0C**\u4E0D\u662F\u84DD\u8272** */\n  --dshpc-accent:var(--dsw-alias-brand-primary,#0f1115);\n  /* \u84DD\u8272\uFF1A\u5F3A\u8C03 / \u9009\u4E2D / \u7126\u70B9\uFF0C\u4E00\u5F8B\u8D70\u8FD9\u6761 */\n  --dshpc-business:var(--dsw-alias-state-business-primary,#3b5bdb);\n  --dshpc-success:var(--dsw-alias-state-success-primary,#22c55e);\n  /* \u26A0\uFE0F \u662F state-warn\uFF08\u4E0D\u662F state-warning\uFF0C\u540E\u8005\u5BBF\u4E3B\u65E0\u6B64\u5B9A\u4E49\uFF09 */\n  --dshpc-warning:var(--dsw-alias-state-warn-primary,#f59e0b);\n  --dshpc-danger:var(--dsw-alias-state-error-primary,#ec1313);\n  --dshpc-link:var(--dsw-alias-link,#3b5bdb);\n  /* \u8BED\u4E49\u8272**\u5B9E\u9762**\u4E0A\u7684\u5B57\uFF08\u89D2\u6807 / \u5B9E\u5FC3\u63D0\u793A\uFF09\uFF1A\u5BBF\u4E3B\u7EA2\u7EFF\u9EC4\u4E09\u8272\u90FD\u662F\u4E2D\u8C03 \u21D2 \u767D\u5B57\u4E24\u4E2A\u4E3B\u9898\u90FD\u53EF\u8BFB\uFF0C\n     \u6545\u8FD9\u662F\u4E00\u6761\u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u5E38\u91CF\uFF1B\u4E0D\u8981\u62FF --dshpc-fg-inverse \u9876\u2014\u2014\u5B83\u5728\u6697\u8272\u4E0B\u662F\u8FD1\u9ED1\uFF0C\u538B\u5728\u7EA2\u5E95\u4E0A\u770B\u4E0D\u6E05\u3002 */\n  --dshpc-on-signal:#fff;\n  /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */\n  --dshpc-on-warning:#1f2328;\n\n  /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002\n     \u21D2 \u6539\u6210\u5BF9\u5E95\u8272\u505A**\u660E\u786E\u7684\u6DF7\u8272**\uFF08\u538B 22% / 34%\uFF09\uFF0C\u4E0D\u7528 opacity\uFF1A\n       \xB7 \u4EAE\u8272\u4E3B\u9898\uFF1A\u9ED1\u5E95\uFF08--dshpc-accent\uFF09\u63BA\u767D\u63D0\u4EAE\uFF1B\u7EA2 / \u7EFF / \u9EC4 / \u84DD\u5E95\u63BA\u9ED1\u538B\u6DF1\uFF1B\n       \xB7 \u6697\u8272\u4E3B\u9898\uFF1A\u53CD\u8FC7\u6765\uFF08\u6697\u5E95\u63BA\u767D\u3001\u4EAE\u5E95\u63BA\u9ED1\uFF09\u3002\n     \u6DF7\u8272\u5BF9\u8C61\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272\u5B57\u9762\u91CF**\uFF08#fff / #000\uFF09\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B static-neutral \u662F\u5426\u5B58\u5728\uFF1B\n     \u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u6574\u6761\u58F0\u660E\u4F5C\u5E9F \u21D2 \u56DE\u843D\u5404\u6863\u539F\u8272\uFF08\u53EF\u63A5\u53D7\uFF1A\u4ECD\u53EF\u70B9\uFF0C\u53EA\u662F\u6CA1\u6709 hover \u53CD\u9988\uFF09\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 78%,#ffffff);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 64%,#ffffff);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#000000);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#000000);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#000000);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#000000);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#000000);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#000000);\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#000000);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#000000);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF1A\u72B6\u6001\u8272\u7CFB\u7684\u300C\u4E00\u5757\u5E95\u8272\u300D\u2014\u2014\u6267\u884C\u8BB0\u5F55\u9875\u6BCF\u6761\u6D41\u6C34\u8D26\u7684\u5757\u5E95\u5C31\u662F\u5B83\n     \uFF08\u7528\u6237 2026-10-04\uFF1A\u6B63\u5E38\u6001\u7ED9\u540C\u8272\u7CFB\u5F88\u6D45\u7684\u900F\u660E\u5E95\u3001\u5931\u8D25\u7528\u7EA2\u5E95\u900F\u51FA\u6765\uFF09\u3002\n     \u7528 \u300Ccolor-mix\u300D \u73B0\u7B97\u800C\u4E0D\u5199\u6B7B rgba\uFF1A\u72B6\u6001\u8272\u672C\u8EAB\u8DDF\u968F\u5BBF\u4E3B alias\uFF0C\u4E3B\u9898\u4E00\u6362\u81EA\u52A8\u6210\u7ACB\u3002\n     \u26A0\uFE0F **\u6DF1\u8272\u4E0B\u8981\u66F4\u6DE1**\uFF1A\u7528\u6237 2026-10-04\u300C\u6DF1\u8272\u98CE\u683C\u7684\u7EFF\u8272\u548C\u7EA2\u8272\u597D\u50CF\u90FD\u6709\u70B9\u6DF1\u300D\u21D2 dark \u6BB5\n     \u628A\u8FD9\u56DB\u6761\u538B\u5230 5%\uFF08\u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF09\uFF1B\u6D45\u8272\u6BB5\u7EF4\u6301 8%\u3002\u4E24\u7AEF\u5404\u81EA\u7ED9\u503C\uFF0C\u4E0D\u5171\u7528\u4E00\u6761\u66F2\u7EBF\u3002\n     \u547D\u540D\u6536\u5728 tokens.ts \u5355\u70B9\uFF08\u672C\u4ED3\u786C\u89C4\u77E9\uFF1A\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u81EA\u9020 --dshpc-*\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 8%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 8%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 8%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 8%,transparent);\n\n  /* \u2500\u2500 \u6269\u5C55\u8BED\u4E49\u8272\uFF082026-10-29 \u7528\u6237\u62CD\u677F\uFF1A\u5206\u7C7B / \u56FE\u8868\u5E38\u7528\u8272\u516B\u652F\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u5BBF\u4E3B\u65E0\u5BF9\u5E94 alias \u21D2 \u5199\u6B7B hex\uFF08\u4E0D\u8DDF\u968F\u5BBF\u4E3B\u6362\u80A4\uFF09\uFF1B\u5B9E\u5FC3\u9762\u5B57\u8272\u7EDF\u4E00\u8D70 --dshpc-on-signal\uFF08\u767D\uFF09\uFF0C\n     \u56E0\u516B\u652F\u660E\u5EA6\u90FD\u4F4E\u4E8E\u9EC4 / \u9752\u67E0\uFF0C\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1 \u53EF\u8BFB\u3002\u6BCF\u6761\u81EA\u5E26 hover/active/soft \u6D3E\u751F\uFF1B\n     \u6697\u8272\u6BB5\u53EA\u8986\u76D6\u6D3E\u751F\uFF08base \u5199\u6B7B\u3001\u4E24\u4E3B\u9898\u540C\u503C\uFF09\u3002 */\n  --dshpc-purple:#9333ea;\n  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 78%,#000000);\n  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 64%,#000000);\n  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 8%,transparent);\n  --dshpc-pink:#db2777;\n  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 78%,#000000);\n  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 64%,#000000);\n  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 8%,transparent);\n  --dshpc-cyan:#0e7490;\n  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 78%,#000000);\n  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 64%,#000000);\n  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 8%,transparent);\n  --dshpc-teal:#0f766e;\n  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 78%,#000000);\n  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 64%,#000000);\n  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 8%,transparent);\n  --dshpc-orange:#c2410c;\n  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 78%,#000000);\n  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 64%,#000000);\n  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 8%,transparent);\n  --dshpc-indigo:#4f46e5;\n  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 78%,#000000);\n  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 64%,#000000);\n  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 8%,transparent);\n  --dshpc-rose:#e11d48;\n  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 78%,#000000);\n  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 64%,#000000);\n  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 8%,transparent);\n  --dshpc-slate:#475569;\n  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 78%,#000000);\n  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 64%,#000000);\n  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 8%,transparent);\n\n  /* \u26A0\uFE0F 2026-10-18 \u7528\u6237\u62CD\u677F\uFF1A\u5BBF\u4E3B alias \u7684 hover\uFF08\u6697\u8272\u767D 8% / \u4EAE\u8272 6%\uFF09**\u592A\u5F31**\uFF0C\n     \u300C\u79FB\u4E0A\u53BB\u8981\u4ED4\u7EC6\u770B\u624D\u770B\u5F97\u51FA\u6765\u300D\u21D2 \u4E0D\u518D\u59D4\u6258\u5BBF\u4E3B hover \u522B\u540D\uFF0C\u6539\u4E3A\u81EA\u63BA\u4E2D\u6027\u8272\u5E76\u52A0\u91CD\uFF1A\n     \u4EAE\u8272\u63BA\u9ED1 10%\u3001\u6697\u8272\u63BA\u767D 14%\uFF08active \u518D\u52A0\u4E00\u6863\uFF09\u3002\u6309\u94AE / \u5206\u6BB5\u8F68\u9053 / \u5404\u7C7B hover \u5E95\u540C\u65F6\u53D7\u76CA\u3002\n     \u26A0\uFE0F \u5FC5\u987B\u4FDD\u7559 rgba \u515C\u5E95\u884C\u5728\u524D\uFF08\u672C\u6587\u4EF6\u60EF\u4F8B\uFF0C\u89C1 icon-plate \u6CE8\u91CA\uFF09\uFF1A\u63BA\u7684\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272**\n     \uFF08neutral-900=#0f0f0f / neutral-00=#fff\uFF09\uFF0C\u9884\u8BA1\u7B97\u65E0\u635F\uFF1B\u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u8D70\u515C\u5E95\uFF0C\n     \u5426\u5219\u6574\u6761 background:var(--seg-track) \u4F5C\u5E9F \u21D2 \u5206\u6BB5\u8F68\u9053\u900F\u660E\uFF08\u771F\u8E29\u8FC7\uFF1A\u9884\u89C8\u7AD9\u8F68\u9053\u6D88\u5931\uFF09\u3002 */\n  --dshpc-hover:rgba(15,15,15,.10);\n  --dshpc-active:rgba(15,15,15,.18);\n  /* \u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u5E95\uFF1A\u4E13\u7528 token\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u501F --dshpc-hover \u4E2D\u8F6C\uFF09\u2014\u2014\n     2026-10-19 \u6559\u8BAD\uFF1A\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid \u21D2 background \u6574\u6761\u4F5C\u5E9F\u3001\u8F68\u9053\u5168\u900F\u660E\u3002\n     \u4EAE\u8272\uFF1A\u9ED1 7%\uFF08\u6BD4 hover \u7684 10% \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u767D\u7247\u624D\u8DF3\u5F97\u51FA\uFF09\u3002 */\n  --dshpc-seg-track:rgba(15,15,15,.07);\n  --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A\n     \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002\n     \u8BED\u4E49\uFF1A\u6807\u8BB0\u300C\u6B63\u5728\u770B\u7684\u4E1C\u897F\u300D\uFF0C\u6BD4\u5E38\u6001\u660E\u663E\u3001\u53C8\u4E0D\u8BB8\u76D6\u4F4F\u5185\u5BB9\uFF08\u4E0D\u8BB8\u7528\u534A\u900F\u660E\u53E0\u72B6\u6001\u8272\uFF09\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 88%,var(--dshpc-fg));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u9ED8\u8BA4\u5E95\uFF082026-10-06 \u2192 \u7EED2\uFF09\uFF1A\u6D45\u8272\u4E0B\u7ED9**\u6DE1\u84DD**\uFF08business 8% \u900F\u767D\u5E95\uFF09\u2014\u2014\n     \u53C2\u7167\u7528\u6237\u53C2\u8003\u7A3F\u91CC\u672A\u9009\u4E2D\u65E5\u7A0B\u5757 / Tuesday \u5217\u7684\u90A3\u79CD\u84DD\u3001\u518D\u6D45\u4E00\u70B9\u70B9\uFF1B\n     \u76F8\u90BB\u6708\u8865\u4F4D\u683C\u4ECD\u8D70 --dshpc-surface-2\uFF08\u66F4\u7070\uFF09\uFF0C\u4E0D\u53D7\u5F71\u54CD\u3002\n     \u6DF1\u8272\u6BB5\u7EF4\u6301 #23262e\uFF08\u7528\u6237\uFF1A\u6DF1\u8272 UI \u5DF2\u5DEE\u4E0D\u591A\uFF0C\u4E0D\u52A8\uFF09\u3002 */\n  --dshpc-cal-cell-bg:color-mix(in srgb,var(--dshpc-business) 8%,var(--dshpc-surface-1));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u300C\u70B9\u5F00\u67D0\u5929\u300D\u5C55\u5F00\u7684\u9762\u677F\u5E95\uFF082026-10-06 \u7EED\uFF09\uFF1A\u6D45\u8272\u4E0B**\u65E0\u9650\u63A5\u8FD1\u767D\u3001\u53EA\u5E26\u4E00\u4E01\u70B9\u7070**\n     \uFF08neutral-50 = #fafafa\uFF09\u2014\u2014\u9762\u677F\u91CC\u88C5\u534A\u900F\u660E\u6267\u884C\u8BB0\u5F55\u5217\u8868\uFF0C\u5E95\u518D\u6DF1\u6574\u7247\u5C31\u53D1\u7CCA\u53D1\u7070\uFF1B\n     \u6DF1\u8272\u6BB5\u6CBF\u7528\u539F selected-bg \u6697\u503C\uFF0C\u4FDD\u6301\u4E0D\u52A8\u3002 */\n  --dshpc-cal-panel-bg:var(--dsw-static-neutral-50,#fafafa);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6D45\u8272\u6BB5\uFF0C2026-10-06 \u7EED3\uFF09\uFF1A\u4E0D\u518D\u8D70\u7070\u8272\u901A\u7528\u4EA4\u4E92\u5E95\u2014\u2014\n     \u9F20\u6807\u79FB\u4E0A\u53BB\u5E94\u662F\u300C\u66F4\u4EAE\u4E00\u70B9\u70B9\u7684\u84DD\u300D\uFF08\u4E0E\u6DF1\u8272\u6BB5\u540C\u8BED\u4E49\uFF1Ahover = \u63D0\u4EAE\u7684\u84DD\uFF0C\u4E0D\u662F\u7070\u4E0B\u53BB\uFF09\u3002\n     \u6D53\u5EA6**\u4ECB\u4E8E**\u8868\u5934\u84DD\uFF0814%\uFF09\u4E0E\u672A\u9009\u4E2D\u683C\u84DD\uFF088%\uFF09\u4E4B\u95F4\u3001\u7565\u504F\u8868\u5934\u4E00\u4FA7\uFF1Abusiness 12% \u900F\u767D\u5E95\n     \uFF08\u6BD4\u8868\u5934\u6D45\u4E00\u70B9\u3001\u6BD4\u672A\u9009\u4E2D\u683C\u6DF1\u4E00\u70B9\uFF09\u3002 */\n  --dshpc-cal-cell-hover:color-mix(in srgb,var(--dshpc-business) 12%,var(--dshpc-surface-1));\n\n  /* \u2500\u2500 \u6295\u5F71 / \u7126\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-shadow-1:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  /* \u4EAE\u7247\u81EA\u5E26\u7684\u6D6E\u8D77\u611F\uFF08\u9009\u4E2D\u6001\u7528\uFF1B\u4E0E --dshpc-surface-raised \u914D\u5BF9\uFF09 */\n  --dshpc-shadow-raised:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  --dshpc-shadow-2:var(--dsw-shadow-lv3,0 12px 32px 0 #00000014);\n  /* \u952E\u76D8\u7126\u70B9\u73AF\u3002\u26A0\uFE0F \u4E0D\u7528\u5BBF\u4E3B --dsw-focus-ring-color\uFF1A\u5B83\u9ED8\u8BA4\u503C\u662F transparent\uFF08\u515C\u5E95\u4E0D\u751F\u6548\u3001\u4F1A\u9690\u8EAB\uFF09 */\n  --dshpc-focus:var(--dsw-alias-state-business-primary,#3b5bdb);\n\n  /* \u2500\u2500 \u5706\u89D2\uFF08\u5BBF\u4E3B\u771F\u503C 4 / 8 / 12 / 16 / 20 / 28\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-radius-xs:var(--dsw-radius-xs,4px);\n  --dshpc-radius-sm:var(--dsw-radius-sm,8px);\n  --dshpc-radius-md:var(--dsw-radius-md,12px);\n  --dshpc-radius-lg:var(--dsw-radius-lg,16px);\n  --dshpc-radius-xl:var(--dsw-radius-xl,20px);\n  --dshpc-radius-panel:var(--dsw-radius-panel,28px);\n  /* \u5168\u5706\uFF08\u80F6\u56CA\u6807\u7B7E\uFF09\uFF1A\u5BBF\u4E3B\u7684 radius \u6863\u6700\u5927\u53EA\u6709 28px\uFF0C\u6491\u4E0D\u6EE1 24px \u9AD8\u7684 chip */\n  --dshpc-radius-pill:999px;\n\n  /* \u2500\u2500 \u95F4\u8DDD\u56DB\u62CD\uFF08\u53EA\u8BB8\u7528\u8FD9\u56DB\u6863\uFF0C\u4E0D\u8BB8\u51FA\u73B0 5 / 7 / 9px\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-space-1:4px;\n  --dshpc-space-2:8px;\n  --dshpc-space-3:12px;\n  --dshpc-space-4:16px;\n\n  /* \u2500\u2500 \u63A7\u4EF6\u9AD8\u5EA6\uFF1A\u79BB\u6563\u4E09\u6863\uFF08\u63A7\u4EF6\u7528 size="sm|md|lg" \u9009\uFF1B\u8C03\u7528\u70B9\u4E0D\u8BB8\u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF0C\n       \u771F\u4E0D\u591F\u7528\u624D\u5141\u8BB8\u5728\u8C03\u7528\u70B9\u672C\u5730\u8986\u76D6 --dshpc-control-h-*\uFF0C\u5C5E\u4F8B\u5916\u800C\u975E\u5E38\u6001\uFF09\u2500\u2500 */\n  --dshpc-control-h-sm:24px;\n  --dshpc-control-h-md:28px;\n  --dshpc-control-h-lg:32px;\n\n  /* \u2500\u2500 \u5B57\u53F7 / \u884C\u9AD8\uFF1A\u76F4\u7ED1\u5BBF\u4E3B\u5B57\u53F7\u65CF\uFF08\u5BBF\u4E3B\u771F\u503C 11 / 12 / 13 / 14 / 16\uFF09\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-font-xs:var(--dsw-font-xxxs-11-font-size,11px);\n  --dshpc-font-sm:var(--dsw-font-xxs-12-font-size,12px);\n  --dshpc-font-md:var(--dsw-font-xs-13-font-size,13px);\n  --dshpc-font-lg:var(--dsw-font-s-14-font-size,14px);\n  --dshpc-font-xl:var(--dsw-font-base-16-font-size,16px);\n  --dshpc-line-xs:var(--dsw-font-xxxs-11-line-height,14px);\n  --dshpc-line-sm:var(--dsw-font-xxs-12-line-height,18px);\n  --dshpc-line-md:var(--dsw-font-xs-13-line-height,20px);\n  --dshpc-line-lg:var(--dsw-font-s-14-line-height,22px);\n  --dshpc-line-xl:var(--dsw-font-base-16-line-height,24px);\n  --dshpc-font-mono:var(--ds-font-family-code,monospace);\n\n  /* \u2500\u2500 \u5C42\u7EA7\u9636\u68AF\uFF08\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u518D\u5199\u88F8 z-index\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u9875\u9762\u7EA7\u9884\u89C8\u5206\u680F \u2192 \u62BD\u5C49\uFF08\u65B0\u5EFA/\u7F16\u8F91\uFF09\u2192 \u5F39\u7A97/\u786E\u8BA4\u6846 \u2192 \u6D6E\u5C42\u83DC\u5355 \u2192 \u6D6E\u5C42\u63D0\u793A */\n  /* \u5185\u5BB9\u5C42\u5438\u9876\uFF08\u5929\u6807\u7B7E / \u8868\u5934\u8FD9\u7C7B\u300C\u8DDF\u7740\u6EDA\u4F46\u538B\u4F4F\u540C\u5C42\u5185\u5BB9\u300D\u7684\u5143\u7D20\uFF09\uFF1A\u53EA\u538B\u540C\u5C42\u5144\u5F1F\uFF0C\n     \u5FC5\u987B\u4F4E\u4E8E\u4E0B\u9762\u6240\u6709\u6D6E\u5C42\u6863 \u2014\u2014 \u6240\u4EE5\u5B83\u4E0D\u662F\u300C\u5F00\u65B0\u6D6E\u5C42\u6863\u300D\uFF0C\u800C\u662F\u5185\u5BB9\u5C42\u5185\u90E8\u7684\u6392\u5E8F\u4F4D\u3002 */\n  --dshpc-z-sticky:10;\n  --dshpc-z-dock:1030;\n  --dshpc-z-drawer:1040;\n  --dshpc-z-modal:1070;\n  --dshpc-z-menu:1100;\n  --dshpc-z-tip:1200;\n\n  /* \u2500\u2500 \u52A8\u6548 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-dur:var(--ds-transition-duration,.2s);\n  --dshpc-dur-fast:var(--ds-transition-duration-fast,.12s);\n  --dshpc-ease:var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1));\n  /* \u8FD0\u884C\u4E2D\u72B6\u6001\u7684\u8109\u52A8\u65F6\u957F\uFF082026-10-06 \u7EDF\u4E00\u524D\u540E\u4E24\u7AEF\uFF1A\u4EFB\u52A1\u914D\u7F6E\u91CC\u7684\u7EFF\u547C\u5438 \u2192 \u84DD\u3001\u653E\u6162\uFF1B\n     \u6267\u884C\u8BB0\u5F55\u91CC\u7684\u84DD\u95EA \u2192 \u653E\u6162\u4E00\u70B9\u3002\u4E24\u8005\u7528\u540C\u4E00\u4E2A\u503C\uFF0C\u52A8\u753B\u5F62\u72B6\u672C\u5C31\u4E00\u81F4\uFF09\u3002 */\n  --dshpc-dur-run:500ms;\n}\n\n/* \u2500\u2500 \u660E\u6697\u5DEE\u5F02\u7684**\u552F\u4E00**\u843D\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5224\u636E = body[data-ds-dark-theme]\uFF08\u5BBF\u4E3B 0.2.0-rc.2 \u6E90\u7801\u6838\u5B9E\uFF1A\u542F\u52A8\u811A\u672C toggleAttribute \u5199\u5165\uFF0C\n   \u552F\u4E00\u660E\u6697\u5224\u636E\uFF1B\u63D2\u4EF6\u7981\u6B62\u7528 prefers-color-scheme \u2014\u2014 \u5B83\u8DDF\u7684\u662F\u7CFB\u7EDF\u3001\u4E0D\u662F\u7528\u6237\u5728\u5BBF\u4E3B\u91CC\u7684\u9009\u62E9\uFF09\u3002\n   \u4E0B\u9762\u53EA\u653E alias \u8868\u8FBE\u4E0D\u4E86\u7684\u300C\u56FA\u5B9A\u4E2D\u6027\u9762\u300D\uFF1B\u989C\u8272\u82E5\u80FD\u9760 alias \u81EA\u52A8\u8DDF\u968F\uFF0C\u4E00\u5F8B\u4E0D\u8981\u5199\u5728\u8FD9\u91CC\u3002 */\nbody[data-ds-dark-theme]{\n  /* \u6DF1\u8272\u6BB5\u7684\u84DD**\u523B\u610F\u4E0D\u8DDF\u968F\u5BBF\u4E3B alias**\uFF08\u552F\u4E00\u4F8B\u5916\uFF09\uFF1A\u5BBF\u4E3B\u6697\u8272 alias \u7ED9\u7684\u662F #60a5fa \u4E00\u6863\u7684\u9AD8\u4EAE\u84DD\uFF0C\n     \u5B9E\u5FC3\u9762\uFF08Chip / Button info / \u65E5\u671F\u9009\u4E2D\u683C\uFF09\u538B\u767D\u5B57\u4F1A\u53D1\u7CCA \u2014\u2014 \u7528\u6237 2026-10-29 \u5B9E\u6D4B\u53CD\u9988\u3002\n     \u21D2 \u6DF1\u8272\u4E0B\u6539\u5B9A\u5411\u6D45\u8272\u72B6\u6001\u7684\u84DD\uFF08#3b5bdb\uFF09\u9760\uFF0C\u53EA\u5728\u660E\u5EA6\u4E0A\u62AC\u4E00\u70B9\u70B9\uFF0C\u4FDD\u8BC1\u5B83\u5728\u6697\u5E95\u4E0A\u4ECD\u770B\u5F97\u89C1\uFF1A\n     #4c6bd8 \u5BF9\u767D\u5B57 \u22484.8:1\uFF08\u539F\u4EAE\u84DD\u53EA\u6709 ~2.3:1\uFF09\uFF0C\u5BF9\u65E5\u5386\u683C\u5E95 \u22483.2:1 \u4ECD\u8FC7 UI \u4EF6\u7684 3:1 \u7EBF\u3002\n     \u4EE3\u4EF7\uFF1A\u5BBF\u4E3B\u6362\u54C1\u724C\u8272\u65F6\u6DF1\u8272\u4E0D\u518D\u81EA\u52A8\u8DDF\u7740\u53D8\uFF0C\u9700\u8981\u8FD9\u91CC\u624B\u52A8\u540C\u6B65\u3002 */\n  --dshpc-business:#4c6bd8;\n  --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);\n  --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);\n  /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B\n     \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 66%,#000000);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#ffffff);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#ffffff);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#ffffff);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);\n  /* \u540C\u4E0A\uFF1A\u63BA\u767D\u6BD4\u4F8B\u4ECE 22% / 36% \u6536\u5230 12% / 22% \u2014\u2014 \u5E95\u8272\u5DF2\u53D8\u6DF1\uFF0C\u7167\u65E7\u6BD4\u4F8B\u63D0\u4EAE\u4F1A\u5728 hover \u77AC\u95F4\n     \u628A\u767D\u5B57\u5BF9\u6BD4\u6253\u56DE ~3:1\uFF08\u6B63\u662F\u7528\u6237\u5ACC\u7CCA\u7684\u90A3\u4E00\u6863\uFF09\uFF1B\u6536\u7A84\u540E hover \u4ECD\u53EF\u611F\u77E5\u3001\u5B57\u4ECD\u6E05\u6670\u3002 */\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 88%,#ffffff);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);\n  /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */\n  --dshpc-hover:rgba(255,255,255,.14);\n  --dshpc-active:rgba(255,255,255,.24);\n  /* \u5206\u6BB5\u8F68\u9053\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 10%\u2014\u2014\u6BD4 hover \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u4EAE\u7247\u624D\u8DF3\u5F97\u51FA\u3002 */\n  --dshpc-seg-track:rgba(255,255,255,.10);\n  --dshpc-plate:var(--dsw-static-neutral-850,#212123);\n  --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);\n  --dshpc-icon-plate:rgba(255,255,255,.05);\n  /* \u6697\u8272\u4E3B\u9898**\u53CD\u8FC7\u6765**\uFF1A\u8868\u5934\u8981\u6BD4\u5361\u7247\u9762**\u4EAE**\u3001\u6BD4\u6591\u9A6C\u7EB9\u518D**\u6D45\u4E00\u6863**\uFF08\u7528\u6237\uFF1A\u7EAF\u9ED1\u80CC\u666F\u6CA1\u6CD5\u770B\uFF09\u3002 */\n  --dshpc-head-bg:var(--dshpc-surface-2);\n  /* \u8868\u683C\uFF082026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u4E0E\u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1A\u901A\u680F\u5E95\u53D6\u8868\u5934\u539F\u6765\u90A3\u8272 #151b23\n     \uFF08\u4EAE\u8272\u6BB5\u5BF9\u5E94 #f6f8fa\uFF09\uFF1B\u8868\u5934\u9ED8\u8BA4\u5E95\u6CBF\u7528\u4EAE\u8272\u6BB5\u5B9A\u4E49\u7684 --dshpc-surface-sunken\uFF0C\u4E0D\u5728\u6697\u8272\u6BB5\u91CD\u5199\uFF1B\n     \u884C hover \u662F\u300C\u4E00\u5C42\u6781\u6DE1\u7684\u767D\u300D\u22483% \u2014\u2014 \u6697\u5E95\u4E0A\u7528\u9ED1\u4F1A\u8D8A\u60AC\u8D8A\u6697\uFF0C\u770B\u4E0D\u51FA\u300C\u6D45\u7070\u300D\u53CD\u9988\u3002 */\n  --dshpc-table-banner-bg:#151b23;\n  --dshpc-table-row-hover:rgba(255,255,255,.03);\n  /* \u6697\u8272\u5E95\u677F**\u5FAE\u4EAE**\uFF1Bhover **\u66F4\u4EAE**\uFF08\u539F\u5148 hover \u53D6 plate-hover \u53CD\u800C\u66F4\u6DE1 \u21D2 \u9F20\u6807\u79FB\u4E0A\u53BB\u5C31\u6CA1\u4E86\uFF09\u3002 */\n  --dshpc-chip-bg:rgba(255,255,255,.08);\n  --dshpc-chip-bg-hover:rgba(255,255,255,.16);\n  /* \u6697\u8272\u4E0B\u84DD\u8272\u8981\u66F4\u4EAE\u3001\u900F\u660E\u5EA6\u7565\u9AD8\u624D\u538B\u5F97\u4F4F\u6DF1\u5E95\u3002 */\n  --dshpc-open-bg:rgba(96,165,250,.18);\n  --dshpc-open-bg-soft:rgba(96,165,250,.08);\n  --dshpc-card-hover:rgba(96,165,250,.13);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF08\u6DF1\u8272\u7248\uFF09\uFF1A\u7528\u6237\u5ACC\u6DF1\u8272\u7684\u7EFF / \u7EA2\u300C\u6709\u70B9\u6DF1\u300D\u21D2 \u538B\u5230 **5%**\uFF08\u6D45\u8272\u6BB5\u662F 8%\uFF09\uFF0C\n     \u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u8272\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF1B\u5757\u5E95\u4E0E\u72B6\u6001\u8272\u7AD6\u6761\u4ECD\u540C\u6E90\uFF08\u7AD6\u6761\u662F\u5B9E\u8272\uFF0C\u4E0D\u53D7\u8FD9\u6761\u5F71\u54CD\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 5%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 5%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 5%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 5%,transparent);\n  /* \u6269\u5C55\u8272\u6DF1\u8272\u6D3E\u751F\uFF1A\u5E95\u8272\u5199\u6B7B\u3001hover \u63BA\u767D 12%/22%\uFF08\u540C business\uFF0C\u9632\u767D\u5B57\u53D1\u7CCA\uFF09\uFF0Csoft 5%\u3002 */\n  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 88%,#ffffff);\n  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 78%,#ffffff);\n  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 5%,transparent);\n  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 88%,#ffffff);\n  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 78%,#ffffff);\n  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 5%,transparent);\n  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 88%,#ffffff);\n  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 78%,#ffffff);\n  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 5%,transparent);\n  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 88%,#ffffff);\n  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 78%,#ffffff);\n  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 5%,transparent);\n  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 88%,#ffffff);\n  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 78%,#ffffff);\n  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 5%,transparent);\n  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 88%,#ffffff);\n  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 78%,#ffffff);\n  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 5%,transparent);\n  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 88%,#ffffff);\n  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 78%,#ffffff);\n  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 5%,transparent);\n  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 88%,#ffffff);\n  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 78%,#ffffff);\n  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 5%,transparent);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u63BA **~40% \u80CC\u666F\u8272**\uFF08--dshpc-surface-base\uFF09\u21D2 \u65E0\u9650\u63A5\u8FD1\u9875\u9762\u80CC\u666F\u7684\u9ED1\u3001\n     \u53EA\u6BD4\u80CC\u666F\u7565\u6DF1\u4E00\u70B9\u70B9\uFF08\u7528\u6237\uFF1A\u6DF1\u8272\u4E0B\u5C55\u5F00\u533A\u538B\u7740\u4EFB\u52A1\u900F\u660E\u7EFF\u4F1A\u53D1\u7070\uFF0C\u5E95\u8272\u8981\u5C3D\u91CF\u8D34\u8FD1\u80CC\u666F\u624D\u4E0D\u663E\u7070\uFF09\u3002\n     \u26A0\uFE0F \u6DF1\u8272\u4E0B\u4E0D\u80FD\u63BA\u6587\u5B57\u8272 \u2014\u2014 \u90A3\u662F\u767D\uFF0C\u4F1A\u53D8\u4EAE\uFF0C\u9009\u4E2D\u53CD\u800C\u6BD4\u672C\u6708\u65E5\u671F\u6D45\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u7684\u9ED8\u8BA4\u5E95\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u6DF1\u7684\u3001\u5E26\u70B9\u7070\u84DD\u7684\u6697\u8272\uFF08\u7528\u6237\u7ED9\u7684\u53C2\u8003\u56FE \u2248 #23262e\uFF09\uFF0C\n     \u6BD4\u539F\u6765\u7684\u5361\u7247\u9762\u66F4\u6C89\u3001\u66F4\u504F\u84DD\u7070\uFF1B\u9009\u4E2D\u683C\u4ECD\u8D70 --dshpc-selected-bg\uFF08\u66F4\u6697\u4E00\u6863\uFF09\uFF0C\u5C42\u7EA7\u4E0D\u53D8\u3002 */\n  --dshpc-cal-cell-bg:#23262e;\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06\uFF09\uFF1A\u539F\u5148\u8D70 --dshpc-hover\uFF08\u5BBF\u4E3B\u6D45\u8272\u53E0\u52A0\uFF09\u5728\u6DF1\u5E95\u4E0A\u663E\u5F97\n     \u300C\u7070\u53D1\u4EAE\u300D\uFF0C\u4E0D\u597D\u770B \u21D2 \u6362\u6210\u66F4\u8D34\u5E95\u7684\u84DD\u8C03\u5FAE\u4EAE\uFF08\u4E0E open-bg-soft \u540C\u65CF\uFF09\uFF0Chover \u65F6\u4E0D\u523A\u773C\u3001\u53C8\u6709\u53CD\u9988\u3002 */\n  --dshpc-cal-cell-hover:rgba(96,165,250,.12);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u5C55\u5F00\u9762\u677F\u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06 \u7EED\uFF09\uFF1A\u4E0E\u539F selected-bg \u6697\u503C\u4E00\u81F4\uFF0C\u6DF1\u8272 UI \u4E0D\u52A8 */\n  --dshpc-cal-panel-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n}\n';
+var TOKENS_CSS_TEMPLATE = '\n/* \u2500\u2500 \u6587\u5B57\uFF08\u5BBF\u4E3B label \u56DB\u6863 + \u53CD\u8272\u9762\u7528\u5B57\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\nbody{\n  --dshpc-fg:var(--dsw-alias-label-primary,#1f2328);\n  --dshpc-fg-2:var(--dsw-alias-label-secondary,#5c6370);\n  --dshpc-fg-3:var(--dsw-alias-label-tertiary,#767d87);\n  --dshpc-fg-4:var(--dsw-alias-label-caption,#9aa1ab);\n  --dshpc-fg-dim:var(--dsw-alias-label-dimmed,#b9bfc7);\n  /* \u53CD\u8272\u9762\u4E0A\u7684\u5B57\uFF08\u5B9E\u5FC3\u94AE / \u89D2\u6807\uFF09\uFF1A\u6697\u8272\u4E0B\u662F bluish-1000\uFF0C\u6545\u7528 -foreground \u800C\u975E -inverted */\n  --dshpc-fg-inverse:var(--dsw-alias-label-primary-foreground,#fff);\n\n  /* \u2500\u2500 \u9762\uFF08\u5BBF\u4E3B bg-layer \u4E09\u6863 + \u4E0B\u6C89\u8F68\u9053\u5E95\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-surface-1:var(--dsw-alias-bg-layer-1,#fff);\n  --dshpc-surface-2:var(--dsw-alias-bg-layer-2,#fff);\n  --dshpc-surface-3:var(--dsw-alias-bg-layer-3,#fff);\n  /* \u300C\u9009\u4E2D\u4EAE\u7247\u300D\u7684\u5E95\u76D8\u8272\uFF08\u914D --dshpc-shadow-raised \u7528\uFF09 */\n  --dshpc-surface-raised:var(--dsw-alias-bg-layer-1,#fff);\n  /* \u8F68\u9053 / \u4E0B\u6C89\u5E95\uFF08\u5B98\u65B9\u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u7528\u7684\u5C31\u662F\u8FD9\u6761\uFF09 */\n  --dshpc-surface-sunken:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));\n  /* \u6574\u9875 / \u7F16\u8F91\u5668\u5E95\uFF08bg-base\uFF09 */\n  --dshpc-surface-base:var(--dsw-alias-bg-base,#fff);\n  /* \u81EA\u7ED8\u6D6E\u5C42 / \u83DC\u5355\u5361\u7684\u4E0D\u900F\u660E\u5E95\uFF08= base\uFF1B\u4E0D\u8981\u7528\u534A\u900F\u660E\u7684 specific-menu\uFF09 */\n  --dshpc-surface-menu:var(--dshpc-surface-base);\n  /* markdown \u4EE3\u7801\u5757\u9762 / \u5B57\u4F53\uFF08\u4F1A\u8BDD\u955C\u50CF\u91CC\u7528\u5230\uFF09 */\n  --dshpc-code-surface:var(--dsw-alias-markdown-code-block,rgba(128,128,128,.10));\n  --dshpc-code-font:var(--dsw-font-markdown-code-block-small,12px/18px var(--ds-font-family-code,monospace));\n  /* \u8B66\u544A\u6587\u5B57\u8272\uFF08\u5BBF\u4E3B state-warn-label\uFF09 */\n  --dshpc-warning-label:var(--dsw-alias-state-warn-label,#f5a623);\n  /* \u56FA\u5B9A\u4E2D\u6027\u5B9E\u9762\uFF08\u81EA\u7ED8\u6D6E\u5C42\u3001\u6DF1\u8272\u4E3B\u9898\u4E0B\u5FC5\u987B\u81EA\u5DF1\u53D8\u7684\u90A3\u51E0\u4E2A\uFF09\u2014\u2014\u53EA\u6709\u5B83\u9700\u8981\u6697\u8272\u8986\u76D6 */\n  --dshpc-solid:var(--dsw-static-neutral-00,#fff);\n  --dshpc-on-solid:var(--dsw-alias-label-primary,#1f2328);\n  /* \u4EA4\u4ED8\u6587\u4EF6\u5361\u90A3\u79CD\u300C\u6D45\u5E95\u76D8 + hover \u52A0\u6DF1\u300D\u4E24\u62CD */\n  --dshpc-plate:var(--dsw-static-neutral-50,#fafafa);\n  --dshpc-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u26A0\uFE0F \u8FD9\u4E9B**\u56FA\u5B9A\u4E2D\u6027\u9762\u4E00\u5F8B\u7528 rgba \u5B57\u9762\u91CF**\uFF082026-10-19 \u771F\u673A\u6559\u8BAD\uFF09\uFF1A\u4E0D\u8981\u5199\u6210\n     \u300Crgba \u56DE\u9000\u884C + \u5D4C --dsw-static-* \u7684 color-mix \u884C\u300D\u4E24\u6761\u540C\u540D\u58F0\u660E\u2014\u2014\u81EA\u5B9A\u4E49\u5C5E\u6027**\u540E\u8005\u6052\u80DC**\uFF0C\n     \u54EA\u6015\u5B83\u7684\u503C\u5728\u5BBF\u4E3B\u91CC\u7B97\u4E0D\u51FA\u6765\uFF08static \u53D8\u91CF invalid\uFF09\u21D2 \u6574\u6761 token \u4F5C\u5E9F\u3001rgba \u515C\u5E95\u4E00\u8D77\u88AB\u5E9F\uFF0C\n     0.2.6 \u91CC Segmented \u8F68\u9053\u5168\u900F\u660E\u5C31\u662F\u8FD9\u4E48\u6765\u7684\u3002\u8981\u8DDF\u5BBF\u4E3B\u4E3B\u9898\u8054\u52A8\u7684\u9762\u7528 alias token\uFF08\u90A3\u4E9B\u5B9E\u6D4B\u6709\u6548\uFF09\u3002 */\n  --dshpc-icon-plate:rgba(255,255,255,.5);\n  /* \u8868\u5934\u5E95\uFF1A\u6D45\u8272\u4E3B\u9898**\u504F\u6DF1**\uFF0C\u4E14\u5FC5\u987B**\u6BD4\u6591\u9A6C\u7EB9\uFF08--dshpc-plate\uFF09\u518D\u6DF1\u4E00\u6863**\u2014\u2014\n     \u4E24\u8005\u4E0D\u80FD\u649E\u8272\uFF08\u7528\u6237 2026-10-02\uFF1A\u8868\u5934\u8DDF\u6591\u9A6C\u7EB9\u4E00\u6A21\u4E00\u6837\uFF09\u3002 */\n  --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u8868\u683C\u5E95 / \u884C hover\uFF082026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934\u4E0E\u901A\u680F**\u4E92\u6362**\u5E95\u8272\uFF09\uFF1A\n     \u8868\u5934\u9ED8\u8BA4\u5E95 = \u901A\u680F\u539F\u6765\u90A3\u5C42\u7070\uFF08--dshpc-surface-sunken\uFF0C\u8DDF\u7740\u5BBF\u4E3B\u4EA4\u4E92\u9762\u8D70\uFF09\uFF1B\n     \u901A\u680F\u9ED8\u8BA4\u5E95 = \u8868\u5934\u539F\u6765\u90A3\u8272\uFF08\u4EAE #f6f8fa / \u6697 #151b23\uFF0C\u53C2\u8003\u56FE\u5B9E\u6D4B\uFF0C\u4E0E\u6DF1\u8272\u6BB5\u540C\u6E90\uFF09\uFF1B\n     \u884C hover \u662F\u300C\u4E00\u5C42\u6781\u6DE1\u7684\u9ED1\u300D\u22481.5%\uFF08\u7528\u6237\uFF1A\u518D\u6D45\u4E00\u534A\uFF0C\u8981\u7279\u522B\u6DE1\uFF09\u3002 */\n  --dshpc-table-head-bg:var(--dshpc-surface-sunken);\n  --dshpc-table-banner-bg:#f6f8fa;\n  --dshpc-table-row-hover:rgba(15,15,15,.015);\n  /* \u56FE\u6807\u5C0F\u5E95\u677F\uFF08\u4EA7\u51FA\u7269\uFF09\uFF1A\u6D45\u8272\u4E0B\u8981**\u770B\u5F97\u89C1**\uFF08\u539F\u5148\u53D6 plate \u21D2 \u5728\u767D\u5E95\u4E0A\u7B49\u4E8E\u6CA1\u6709\uFF09\uFF1Bhover \u52A0\u500D\u3002 */\n  --dshpc-chip-bg:rgba(15,15,15,.07);\n  --dshpc-chip-bg-hover:rgba(15,15,15,.14);\n  /* \u5C55\u5F00\u884C\uFF1A**\u5E26\u900F\u660E\u5EA6\u7684\u84DD**\u2014\u2014\u4E0D\u662F\u7070\u3001\u4E5F\u4E0D\u662F\u7EAF\u8272\uFF0C\u900F\u51FA\u5361\u7247\u5E95\u8272\uFF0C\u4E00\u773C\u770B\u51FA\u300C\u8FD9\u662F\u5C55\u5F00\u7684\u300D\n     \uFF08\u7528\u6237 2026-10-02\uFF1A\u7070\u8272\u8DDF\u6591\u9A6C\u7EB9\u5206\u4E0D\u51FA\u6765\uFF09\u3002\u5185\u5BB9\u533A\u518D\u6DE1\u4E00\u6863\uFF0C\u5F62\u6210\u300C\u884C\u6DF1 / \u5185\u5BB9\u6D45\u300D\u7684\u533A\u9694\u3002 */\n  --dshpc-open-bg:rgba(37,99,235,.10);\n  --dshpc-open-bg-soft:rgba(37,99,235,.05);\n  --dshpc-card-hover:rgba(37,99,235,.07);\n\n  /* \u2500\u2500 \u63CF\u8FB9\u56DB\u6863\uFF08\u5BBF\u4E3B\u771F\u503C\uFF1Al1 4% / l2 10% / l3 12% / l4 16%\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-border-faint:var(--dsw-alias-border-l1,#0000000a);\n  --dshpc-border:var(--dsw-alias-border-l2,#0000001a);\n  --dshpc-border-strong:var(--dsw-alias-border-l3,#0000001f);\n  --dshpc-border-heavy:var(--dsw-alias-border-l4,#00000029);\n\n  /* \u2500\u2500 \u54C1\u724C / \u8BED\u4E49\u8272 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u54C1\u724C\u300C\u9762\u300D\u8272\uFF1A\u660E\u8272\u8FD1\u9ED1\u3001\u6697\u8272\u8FD1\u767D\uFF08\u5B98\u65B9 Switch \u9009\u4E2D\u6001\u5373\u6B64\uFF09\uFF0C**\u4E0D\u662F\u84DD\u8272** */\n  --dshpc-accent:var(--dsw-alias-brand-primary,#0f1115);\n  /* \u84DD\u8272\uFF1A\u5F3A\u8C03 / \u9009\u4E2D / \u7126\u70B9\uFF0C\u4E00\u5F8B\u8D70\u8FD9\u6761 */\n  --dshpc-business:var(--dsw-alias-state-business-primary,#3b5bdb);\n  --dshpc-success:var(--dsw-alias-state-success-primary,#22c55e);\n  /* \u26A0\uFE0F \u662F state-warn\uFF08\u4E0D\u662F state-warning\uFF0C\u540E\u8005\u5BBF\u4E3B\u65E0\u6B64\u5B9A\u4E49\uFF09 */\n  --dshpc-warning:var(--dsw-alias-state-warn-primary,#f59e0b);\n  --dshpc-danger:var(--dsw-alias-state-error-primary,#ec1313);\n  --dshpc-link:var(--dsw-alias-link,#3b5bdb);\n  /* \u8BED\u4E49\u8272**\u5B9E\u9762**\u4E0A\u7684\u5B57\uFF08\u89D2\u6807 / \u5B9E\u5FC3\u63D0\u793A\uFF09\uFF1A\u5BBF\u4E3B\u7EA2\u7EFF\u9EC4\u4E09\u8272\u90FD\u662F\u4E2D\u8C03 \u21D2 \u767D\u5B57\u4E24\u4E2A\u4E3B\u9898\u90FD\u53EF\u8BFB\uFF0C\n     \u6545\u8FD9\u662F\u4E00\u6761\u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u5E38\u91CF\uFF1B\u4E0D\u8981\u62FF --dshpc-fg-inverse \u9876\u2014\u2014\u5B83\u5728\u6697\u8272\u4E0B\u662F\u8FD1\u9ED1\uFF0C\u538B\u5728\u7EA2\u5E95\u4E0A\u770B\u4E0D\u6E05\u3002 */\n  --dshpc-on-signal:#fff;\n  /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */\n  --dshpc-on-warning:#1f2328;\n  /* \u544A\u8B66\u4E25\u91CD\u5EA6\u7684\u5706\u70B9\u5E95\u8272\uFF082026-11-03 \u4ECE feedback.css \u6536\u5230\u8FD9\u91CC\uFF09\u3002\n     \u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u4E00\u7EC4\u5E38\u91CF\uFF1A\u8FD9\u51E0\u4E2A\u8272\u8981\u5728\u4EFB\u610F\u5E95\u8272\u4E0A\u90FD\u8BA4\u5F97\u51FA\u6765\uFF0C\u6240\u4EE5**\u4E0D\u8DDF\u5BBF\u4E3B state \u8272\u8D70**\n     \uFF08\u5BBF\u4E3B state-warn-primary \u504F\u4EAE\uFF0C\u538B\u767D \u2715 \u770B\u4E0D\u6E05\uFF09\u3002\u8BED\u4E49\u8272\u6539\u52A8\u8BF7\u53EA\u6539\u8FD9\u91CC\u3002 */\n  --dshpc-sev-info:#2563eb;\n  --dshpc-sev-success:#16a34a;\n  --dshpc-sev-warning:#d97706;\n  --dshpc-sev-error:#dc2626;\n\n  /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002\n     \u21D2 \u6539\u6210\u5BF9\u5E95\u8272\u505A**\u660E\u786E\u7684\u6DF7\u8272**\uFF08\u538B 22% / 34%\uFF09\uFF0C\u4E0D\u7528 opacity\uFF1A\n       \xB7 \u4EAE\u8272\u4E3B\u9898\uFF1A\u9ED1\u5E95\uFF08--dshpc-accent\uFF09\u63BA\u767D\u63D0\u4EAE\uFF1B\u7EA2 / \u7EFF / \u9EC4 / \u84DD\u5E95\u63BA\u9ED1\u538B\u6DF1\uFF1B\n       \xB7 \u6697\u8272\u4E3B\u9898\uFF1A\u53CD\u8FC7\u6765\uFF08\u6697\u5E95\u63BA\u767D\u3001\u4EAE\u5E95\u63BA\u9ED1\uFF09\u3002\n     \u6DF7\u8272\u5BF9\u8C61\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272\u5B57\u9762\u91CF**\uFF08#fff / #000\uFF09\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B static-neutral \u662F\u5426\u5B58\u5728\uFF1B\n     \u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u6574\u6761\u58F0\u660E\u4F5C\u5E9F \u21D2 \u56DE\u843D\u5404\u6863\u539F\u8272\uFF08\u53EF\u63A5\u53D7\uFF1A\u4ECD\u53EF\u70B9\uFF0C\u53EA\u662F\u6CA1\u6709 hover \u53CD\u9988\uFF09\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 78%,#ffffff);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 64%,#ffffff);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#000000);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#000000);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#000000);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#000000);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#000000);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#000000);\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#000000);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#000000);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF1A\u72B6\u6001\u8272\u7CFB\u7684\u300C\u4E00\u5757\u5E95\u8272\u300D\u2014\u2014\u6267\u884C\u8BB0\u5F55\u9875\u6BCF\u6761\u6D41\u6C34\u8D26\u7684\u5757\u5E95\u5C31\u662F\u5B83\n     \uFF08\u7528\u6237 2026-10-04\uFF1A\u6B63\u5E38\u6001\u7ED9\u540C\u8272\u7CFB\u5F88\u6D45\u7684\u900F\u660E\u5E95\u3001\u5931\u8D25\u7528\u7EA2\u5E95\u900F\u51FA\u6765\uFF09\u3002\n     \u7528 \u300Ccolor-mix\u300D \u73B0\u7B97\u800C\u4E0D\u5199\u6B7B rgba\uFF1A\u72B6\u6001\u8272\u672C\u8EAB\u8DDF\u968F\u5BBF\u4E3B alias\uFF0C\u4E3B\u9898\u4E00\u6362\u81EA\u52A8\u6210\u7ACB\u3002\n     \u26A0\uFE0F **\u6DF1\u8272\u4E0B\u8981\u66F4\u6DE1**\uFF1A\u7528\u6237 2026-10-04\u300C\u6DF1\u8272\u98CE\u683C\u7684\u7EFF\u8272\u548C\u7EA2\u8272\u597D\u50CF\u90FD\u6709\u70B9\u6DF1\u300D\u21D2 dark \u6BB5\n     \u628A\u8FD9\u56DB\u6761\u538B\u5230 5%\uFF08\u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF09\uFF1B\u6D45\u8272\u6BB5\u7EF4\u6301 8%\u3002\u4E24\u7AEF\u5404\u81EA\u7ED9\u503C\uFF0C\u4E0D\u5171\u7528\u4E00\u6761\u66F2\u7EBF\u3002\n     \u547D\u540D\u6536\u5728 tokens.ts \u5355\u70B9\uFF08\u672C\u4ED3\u786C\u89C4\u77E9\uFF1A\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u81EA\u9020 --dshpc-*\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 8%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 8%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 8%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 8%,transparent);\n\n  /* \u2500\u2500 \u6269\u5C55\u8BED\u4E49\u8272\uFF082026-10-29 \u7528\u6237\u62CD\u677F\uFF1A\u5206\u7C7B / \u56FE\u8868\u5E38\u7528\u8272\u516B\u652F\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u5BBF\u4E3B\u65E0\u5BF9\u5E94 alias \u21D2 \u5199\u6B7B hex\uFF08\u4E0D\u8DDF\u968F\u5BBF\u4E3B\u6362\u80A4\uFF09\uFF1B\u5B9E\u5FC3\u9762\u5B57\u8272\u7EDF\u4E00\u8D70 --dshpc-on-signal\uFF08\u767D\uFF09\uFF0C\n     \u56E0\u516B\u652F\u660E\u5EA6\u90FD\u4F4E\u4E8E\u9EC4 / \u9752\u67E0\uFF0C\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1 \u53EF\u8BFB\u3002\u6BCF\u6761\u81EA\u5E26 hover/active/soft \u6D3E\u751F\uFF1B\n     \u6697\u8272\u6BB5\u53EA\u8986\u76D6\u6D3E\u751F\uFF08base \u5199\u6B7B\u3001\u4E24\u4E3B\u9898\u540C\u503C\uFF09\u3002 */\n  --dshpc-purple:#9333ea;\n  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 78%,#000000);\n  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 64%,#000000);\n  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 8%,transparent);\n  --dshpc-pink:#db2777;\n  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 78%,#000000);\n  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 64%,#000000);\n  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 8%,transparent);\n  --dshpc-cyan:#0e7490;\n  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 78%,#000000);\n  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 64%,#000000);\n  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 8%,transparent);\n  --dshpc-teal:#0f766e;\n  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 78%,#000000);\n  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 64%,#000000);\n  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 8%,transparent);\n  --dshpc-orange:#c2410c;\n  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 78%,#000000);\n  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 64%,#000000);\n  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 8%,transparent);\n  --dshpc-indigo:#4f46e5;\n  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 78%,#000000);\n  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 64%,#000000);\n  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 8%,transparent);\n  --dshpc-rose:#e11d48;\n  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 78%,#000000);\n  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 64%,#000000);\n  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 8%,transparent);\n  --dshpc-slate:#475569;\n  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 78%,#000000);\n  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 64%,#000000);\n  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 8%,transparent);\n\n  /* \u26A0\uFE0F 2026-10-18 \u7528\u6237\u62CD\u677F\uFF1A\u5BBF\u4E3B alias \u7684 hover\uFF08\u6697\u8272\u767D 8% / \u4EAE\u8272 6%\uFF09**\u592A\u5F31**\uFF0C\n     \u300C\u79FB\u4E0A\u53BB\u8981\u4ED4\u7EC6\u770B\u624D\u770B\u5F97\u51FA\u6765\u300D\u21D2 \u4E0D\u518D\u59D4\u6258\u5BBF\u4E3B hover \u522B\u540D\uFF0C\u6539\u4E3A\u81EA\u63BA\u4E2D\u6027\u8272\u5E76\u52A0\u91CD\uFF1A\n     \u4EAE\u8272\u63BA\u9ED1 10%\u3001\u6697\u8272\u63BA\u767D 14%\uFF08active \u518D\u52A0\u4E00\u6863\uFF09\u3002\u6309\u94AE / \u5206\u6BB5\u8F68\u9053 / \u5404\u7C7B hover \u5E95\u540C\u65F6\u53D7\u76CA\u3002\n     \u26A0\uFE0F \u5FC5\u987B\u4FDD\u7559 rgba \u515C\u5E95\u884C\u5728\u524D\uFF08\u672C\u6587\u4EF6\u60EF\u4F8B\uFF0C\u89C1 icon-plate \u6CE8\u91CA\uFF09\uFF1A\u63BA\u7684\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272**\n     \uFF08neutral-900=#0f0f0f / neutral-00=#fff\uFF09\uFF0C\u9884\u8BA1\u7B97\u65E0\u635F\uFF1B\u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u8D70\u515C\u5E95\uFF0C\n     \u5426\u5219\u6574\u6761 background:var(--seg-track) \u4F5C\u5E9F \u21D2 \u5206\u6BB5\u8F68\u9053\u900F\u660E\uFF08\u771F\u8E29\u8FC7\uFF1A\u9884\u89C8\u7AD9\u8F68\u9053\u6D88\u5931\uFF09\u3002 */\n  --dshpc-hover:rgba(15,15,15,.10);\n  --dshpc-active:rgba(15,15,15,.18);\n  /* \u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u5E95\uFF1A\u4E13\u7528 token\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u501F --dshpc-hover \u4E2D\u8F6C\uFF09\u2014\u2014\n     2026-10-19 \u6559\u8BAD\uFF1A\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid \u21D2 background \u6574\u6761\u4F5C\u5E9F\u3001\u8F68\u9053\u5168\u900F\u660E\u3002\n     \u4EAE\u8272\uFF1A\u9ED1 7%\uFF08\u6BD4 hover \u7684 10% \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u767D\u7247\u624D\u8DF3\u5F97\u51FA\uFF09\u3002 */\n  --dshpc-seg-track:rgba(15,15,15,.07);\n  --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A\n     \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002\n     \u8BED\u4E49\uFF1A\u6807\u8BB0\u300C\u6B63\u5728\u770B\u7684\u4E1C\u897F\u300D\uFF0C\u6BD4\u5E38\u6001\u660E\u663E\u3001\u53C8\u4E0D\u8BB8\u76D6\u4F4F\u5185\u5BB9\uFF08\u4E0D\u8BB8\u7528\u534A\u900F\u660E\u53E0\u72B6\u6001\u8272\uFF09\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 88%,var(--dshpc-fg));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u9ED8\u8BA4\u5E95\uFF082026-10-06 \u2192 \u7EED2\uFF09\uFF1A\u6D45\u8272\u4E0B\u7ED9**\u6DE1\u84DD**\uFF08business 8% \u900F\u767D\u5E95\uFF09\u2014\u2014\n     \u53C2\u7167\u7528\u6237\u53C2\u8003\u7A3F\u91CC\u672A\u9009\u4E2D\u65E5\u7A0B\u5757 / Tuesday \u5217\u7684\u90A3\u79CD\u84DD\u3001\u518D\u6D45\u4E00\u70B9\u70B9\uFF1B\n     \u76F8\u90BB\u6708\u8865\u4F4D\u683C\u4ECD\u8D70 --dshpc-surface-2\uFF08\u66F4\u7070\uFF09\uFF0C\u4E0D\u53D7\u5F71\u54CD\u3002\n     \u6DF1\u8272\u6BB5\u7EF4\u6301 #23262e\uFF08\u7528\u6237\uFF1A\u6DF1\u8272 UI \u5DF2\u5DEE\u4E0D\u591A\uFF0C\u4E0D\u52A8\uFF09\u3002 */\n  --dshpc-cal-cell-bg:color-mix(in srgb,var(--dshpc-business) 8%,var(--dshpc-surface-1));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u300C\u70B9\u5F00\u67D0\u5929\u300D\u5C55\u5F00\u7684\u9762\u677F\u5E95\uFF082026-10-06 \u7EED\uFF09\uFF1A\u6D45\u8272\u4E0B**\u65E0\u9650\u63A5\u8FD1\u767D\u3001\u53EA\u5E26\u4E00\u4E01\u70B9\u7070**\n     \uFF08neutral-50 = #fafafa\uFF09\u2014\u2014\u9762\u677F\u91CC\u88C5\u534A\u900F\u660E\u6267\u884C\u8BB0\u5F55\u5217\u8868\uFF0C\u5E95\u518D\u6DF1\u6574\u7247\u5C31\u53D1\u7CCA\u53D1\u7070\uFF1B\n     \u6DF1\u8272\u6BB5\u6CBF\u7528\u539F selected-bg \u6697\u503C\uFF0C\u4FDD\u6301\u4E0D\u52A8\u3002 */\n  --dshpc-cal-panel-bg:var(--dsw-static-neutral-50,#fafafa);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6D45\u8272\u6BB5\uFF0C2026-10-06 \u7EED3\uFF09\uFF1A\u4E0D\u518D\u8D70\u7070\u8272\u901A\u7528\u4EA4\u4E92\u5E95\u2014\u2014\n     \u9F20\u6807\u79FB\u4E0A\u53BB\u5E94\u662F\u300C\u66F4\u4EAE\u4E00\u70B9\u70B9\u7684\u84DD\u300D\uFF08\u4E0E\u6DF1\u8272\u6BB5\u540C\u8BED\u4E49\uFF1Ahover = \u63D0\u4EAE\u7684\u84DD\uFF0C\u4E0D\u662F\u7070\u4E0B\u53BB\uFF09\u3002\n     \u6D53\u5EA6**\u4ECB\u4E8E**\u8868\u5934\u84DD\uFF0814%\uFF09\u4E0E\u672A\u9009\u4E2D\u683C\u84DD\uFF088%\uFF09\u4E4B\u95F4\u3001\u7565\u504F\u8868\u5934\u4E00\u4FA7\uFF1Abusiness 12% \u900F\u767D\u5E95\n     \uFF08\u6BD4\u8868\u5934\u6D45\u4E00\u70B9\u3001\u6BD4\u672A\u9009\u4E2D\u683C\u6DF1\u4E00\u70B9\uFF09\u3002 */\n  --dshpc-cal-cell-hover:color-mix(in srgb,var(--dshpc-business) 12%,var(--dshpc-surface-1));\n\n  /* \u2500\u2500 \u6295\u5F71 / \u7126\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-shadow-1:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  /* \u4EAE\u7247\u81EA\u5E26\u7684\u6D6E\u8D77\u611F\uFF08\u9009\u4E2D\u6001\u7528\uFF1B\u4E0E --dshpc-surface-raised \u914D\u5BF9\uFF09 */\n  --dshpc-shadow-raised:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  --dshpc-shadow-2:var(--dsw-shadow-lv3,0 12px 32px 0 #00000014);\n  /* \u952E\u76D8\u7126\u70B9\u73AF\u3002\u26A0\uFE0F \u4E0D\u7528\u5BBF\u4E3B --dsw-focus-ring-color\uFF1A\u5B83\u9ED8\u8BA4\u503C\u662F transparent\uFF08\u515C\u5E95\u4E0D\u751F\u6548\u3001\u4F1A\u9690\u8EAB\uFF09 */\n  --dshpc-focus:var(--dsw-alias-state-business-primary,#3b5bdb);\n\n  /* \u2500\u2500 \u5706\u89D2\uFF08\u5BBF\u4E3B\u771F\u503C 4 / 8 / 12 / 16 / 20 / 28\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-radius-xs:var(--dsw-radius-xs,4px);\n  --dshpc-radius-sm:var(--dsw-radius-sm,8px);\n  --dshpc-radius-md:var(--dsw-radius-md,12px);\n  --dshpc-radius-lg:var(--dsw-radius-lg,16px);\n  --dshpc-radius-xl:var(--dsw-radius-xl,20px);\n  --dshpc-radius-panel:var(--dsw-radius-panel,28px);\n  /* \u5168\u5706\uFF08\u80F6\u56CA\u6807\u7B7E\uFF09\uFF1A\u5BBF\u4E3B\u7684 radius \u6863\u6700\u5927\u53EA\u6709 28px\uFF0C\u6491\u4E0D\u6EE1 24px \u9AD8\u7684 chip */\n  --dshpc-radius-pill:999px;\n\n  /* \u2500\u2500 \u95F4\u8DDD\u56DB\u62CD\uFF08\u53EA\u8BB8\u7528\u8FD9\u56DB\u6863\uFF0C\u4E0D\u8BB8\u51FA\u73B0 5 / 7 / 9px\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-space-1:4px;\n  --dshpc-space-2:8px;\n  --dshpc-space-3:12px;\n  --dshpc-space-4:16px;\n\n  /* \u2500\u2500 \u63A7\u4EF6\u9AD8\u5EA6\uFF1A\u79BB\u6563\u4E09\u6863\uFF08\u63A7\u4EF6\u7528 size="sm|md|lg" \u9009\uFF1B\u8C03\u7528\u70B9\u4E0D\u8BB8\u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF0C\n       \u771F\u4E0D\u591F\u7528\u624D\u5141\u8BB8\u5728\u8C03\u7528\u70B9\u672C\u5730\u8986\u76D6 --dshpc-control-h-*\uFF0C\u5C5E\u4F8B\u5916\u800C\u975E\u5E38\u6001\uFF09\u2500\u2500 */\n  --dshpc-control-h-sm:24px;\n  --dshpc-control-h-md:28px;\n  --dshpc-control-h-lg:32px;\n\n  /* \u2500\u2500 \u5B57\u53F7 / \u884C\u9AD8\uFF1A\u76F4\u7ED1\u5BBF\u4E3B\u5B57\u53F7\u65CF\uFF08\u5BBF\u4E3B\u771F\u503C 11 / 12 / 13 / 14 / 16\uFF09\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-font-xs:var(--dsw-font-xxxs-11-font-size,11px);\n  --dshpc-font-sm:var(--dsw-font-xxs-12-font-size,12px);\n  --dshpc-font-md:var(--dsw-font-xs-13-font-size,13px);\n  --dshpc-font-lg:var(--dsw-font-s-14-font-size,14px);\n  --dshpc-font-xl:var(--dsw-font-base-16-font-size,16px);\n  --dshpc-line-xs:var(--dsw-font-xxxs-11-line-height,14px);\n  --dshpc-line-sm:var(--dsw-font-xxs-12-line-height,18px);\n  --dshpc-line-md:var(--dsw-font-xs-13-line-height,20px);\n  --dshpc-line-lg:var(--dsw-font-s-14-line-height,22px);\n  --dshpc-line-xl:var(--dsw-font-base-16-line-height,24px);\n  --dshpc-font-mono:var(--ds-font-family-code,monospace);\n\n  /* \u2500\u2500 \u5C42\u7EA7\u9636\u68AF\uFF08\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u518D\u5199\u88F8 z-index\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u9875\u9762\u7EA7\u9884\u89C8\u5206\u680F \u2192 \u62BD\u5C49\uFF08\u65B0\u5EFA/\u7F16\u8F91\uFF09\u2192 \u5F39\u7A97/\u786E\u8BA4\u6846 \u2192 \u6D6E\u5C42\u83DC\u5355 \u2192 \u6D6E\u5C42\u63D0\u793A */\n  /* \u5185\u5BB9\u5C42\u5438\u9876\uFF08\u5929\u6807\u7B7E / \u8868\u5934\u8FD9\u7C7B\u300C\u8DDF\u7740\u6EDA\u4F46\u538B\u4F4F\u540C\u5C42\u5185\u5BB9\u300D\u7684\u5143\u7D20\uFF09\uFF1A\u53EA\u538B\u540C\u5C42\u5144\u5F1F\uFF0C\n     \u5FC5\u987B\u4F4E\u4E8E\u4E0B\u9762\u6240\u6709\u6D6E\u5C42\u6863 \u2014\u2014 \u6240\u4EE5\u5B83\u4E0D\u662F\u300C\u5F00\u65B0\u6D6E\u5C42\u6863\u300D\uFF0C\u800C\u662F\u5185\u5BB9\u5C42\u5185\u90E8\u7684\u6392\u5E8F\u4F4D\u3002 */\n  --dshpc-z-sticky:10;\n  --dshpc-z-dock:1030;\n  --dshpc-z-drawer:1040;\n  --dshpc-z-modal:1070;\n  --dshpc-z-menu:1100;\n  --dshpc-z-tip:1200;\n  /* \u8BED\u4E49\u522B\u540D\uFF082026-11-03 \u9762\u677F\u76AE\u80A4\u7EDF\u4E00\uFF09\uFF1A\u4E1A\u52A1\u6587\u4EF6\u53EA\u8BB8\u7528\u8FD9\u4E24\u4E2A\u8BF4\u300C\u6211\u8981\u4E00\u5C42\u6D6E\u5C42\u300D\uFF0C\n     \u4E0D\u518D\u5404\u81EA\u5199 1099/1100/1200/1201 \u8FD9\u7C7B\u5B57\u9762\u91CF\u3002\n       panel   = \u6D6E\u5C42\u9762\u677F\u672C\u4F53\uFF08picker \u5F39\u7A97\u3001\u951A\u5B9A\u9762\u677F\uFF09\uFF1B\n       popmenu = \u53E0\u5728\u9762\u677F\u4E4B\u4E0A\u7684\u83DC\u5355\uFF08\u25BE \u9009\u5C42\u3001Picker \u4E0B\u62C9\uFF09\u4E0E\u5176\u900F\u660E\u906E\u7F69\u3002 */\n  --dshpc-z-panel:var(--dshpc-z-menu);\n  --dshpc-z-popmenu:var(--dshpc-z-tip);\n\n  /* \u2500\u2500 \u52A8\u6548 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-dur:var(--ds-transition-duration,.2s);\n  --dshpc-dur-fast:var(--ds-transition-duration-fast,.12s);\n  --dshpc-ease:var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1));\n  /* \u8FD0\u884C\u4E2D\u72B6\u6001\u7684\u8109\u52A8\u65F6\u957F\uFF082026-10-06 \u7EDF\u4E00\u524D\u540E\u4E24\u7AEF\uFF1A\u4EFB\u52A1\u914D\u7F6E\u91CC\u7684\u7EFF\u547C\u5438 \u2192 \u84DD\u3001\u653E\u6162\uFF1B\n     \u6267\u884C\u8BB0\u5F55\u91CC\u7684\u84DD\u95EA \u2192 \u653E\u6162\u4E00\u70B9\u3002\u4E24\u8005\u7528\u540C\u4E00\u4E2A\u503C\uFF0C\u52A8\u753B\u5F62\u72B6\u672C\u5C31\u4E00\u81F4\uFF09\u3002 */\n  --dshpc-dur-run:500ms;\n}\n\n/* \u2500\u2500 \u660E\u6697\u5DEE\u5F02\u7684**\u552F\u4E00**\u843D\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5224\u636E = body[data-ds-dark-theme]\uFF08\u5BBF\u4E3B 0.2.0-rc.2 \u6E90\u7801\u6838\u5B9E\uFF1A\u542F\u52A8\u811A\u672C toggleAttribute \u5199\u5165\uFF0C\n   \u552F\u4E00\u660E\u6697\u5224\u636E\uFF1B\u63D2\u4EF6\u7981\u6B62\u7528 prefers-color-scheme \u2014\u2014 \u5B83\u8DDF\u7684\u662F\u7CFB\u7EDF\u3001\u4E0D\u662F\u7528\u6237\u5728\u5BBF\u4E3B\u91CC\u7684\u9009\u62E9\uFF09\u3002\n   \u4E0B\u9762\u53EA\u653E alias \u8868\u8FBE\u4E0D\u4E86\u7684\u300C\u56FA\u5B9A\u4E2D\u6027\u9762\u300D\uFF1B\u989C\u8272\u82E5\u80FD\u9760 alias \u81EA\u52A8\u8DDF\u968F\uFF0C\u4E00\u5F8B\u4E0D\u8981\u5199\u5728\u8FD9\u91CC\u3002 */\nbody[data-ds-dark-theme]{\n  /* \u6DF1\u8272\u6BB5\u7684\u84DD**\u523B\u610F\u4E0D\u8DDF\u968F\u5BBF\u4E3B alias**\uFF08\u552F\u4E00\u4F8B\u5916\uFF09\uFF1A\u5BBF\u4E3B\u6697\u8272 alias \u7ED9\u7684\u662F #60a5fa \u4E00\u6863\u7684\u9AD8\u4EAE\u84DD\uFF0C\n     \u5B9E\u5FC3\u9762\uFF08Chip / Button info / \u65E5\u671F\u9009\u4E2D\u683C\uFF09\u538B\u767D\u5B57\u4F1A\u53D1\u7CCA \u2014\u2014 \u7528\u6237 2026-10-29 \u5B9E\u6D4B\u53CD\u9988\u3002\n     \u21D2 \u6DF1\u8272\u4E0B\u6539\u5B9A\u5411\u6D45\u8272\u72B6\u6001\u7684\u84DD\uFF08#3b5bdb\uFF09\u9760\uFF0C\u53EA\u5728\u660E\u5EA6\u4E0A\u62AC\u4E00\u70B9\u70B9\uFF0C\u4FDD\u8BC1\u5B83\u5728\u6697\u5E95\u4E0A\u4ECD\u770B\u5F97\u89C1\uFF1A\n     #4c6bd8 \u5BF9\u767D\u5B57 \u22484.8:1\uFF08\u539F\u4EAE\u84DD\u53EA\u6709 ~2.3:1\uFF09\uFF0C\u5BF9\u65E5\u5386\u683C\u5E95 \u22483.2:1 \u4ECD\u8FC7 UI \u4EF6\u7684 3:1 \u7EBF\u3002\n     \u4EE3\u4EF7\uFF1A\u5BBF\u4E3B\u6362\u54C1\u724C\u8272\u65F6\u6DF1\u8272\u4E0D\u518D\u81EA\u52A8\u8DDF\u7740\u53D8\uFF0C\u9700\u8981\u8FD9\u91CC\u624B\u52A8\u540C\u6B65\u3002 */\n  --dshpc-business:#4c6bd8;\n  --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);\n  --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);\n  /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B\n     \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 66%,#000000);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#ffffff);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#ffffff);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#ffffff);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);\n  /* \u540C\u4E0A\uFF1A\u63BA\u767D\u6BD4\u4F8B\u4ECE 22% / 36% \u6536\u5230 12% / 22% \u2014\u2014 \u5E95\u8272\u5DF2\u53D8\u6DF1\uFF0C\u7167\u65E7\u6BD4\u4F8B\u63D0\u4EAE\u4F1A\u5728 hover \u77AC\u95F4\n     \u628A\u767D\u5B57\u5BF9\u6BD4\u6253\u56DE ~3:1\uFF08\u6B63\u662F\u7528\u6237\u5ACC\u7CCA\u7684\u90A3\u4E00\u6863\uFF09\uFF1B\u6536\u7A84\u540E hover \u4ECD\u53EF\u611F\u77E5\u3001\u5B57\u4ECD\u6E05\u6670\u3002 */\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 88%,#ffffff);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);\n  /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */\n  --dshpc-hover:rgba(255,255,255,.14);\n  --dshpc-active:rgba(255,255,255,.24);\n  /* \u5206\u6BB5\u8F68\u9053\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 10%\u2014\u2014\u6BD4 hover \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u4EAE\u7247\u624D\u8DF3\u5F97\u51FA\u3002 */\n  --dshpc-seg-track:rgba(255,255,255,.10);\n  --dshpc-plate:var(--dsw-static-neutral-850,#212123);\n  --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);\n  --dshpc-icon-plate:rgba(255,255,255,.05);\n  /* \u6697\u8272\u4E3B\u9898**\u53CD\u8FC7\u6765**\uFF1A\u8868\u5934\u8981\u6BD4\u5361\u7247\u9762**\u4EAE**\u3001\u6BD4\u6591\u9A6C\u7EB9\u518D**\u6D45\u4E00\u6863**\uFF08\u7528\u6237\uFF1A\u7EAF\u9ED1\u80CC\u666F\u6CA1\u6CD5\u770B\uFF09\u3002 */\n  --dshpc-head-bg:var(--dshpc-surface-2);\n  /* \u8868\u683C\uFF082026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u4E0E\u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1A\u901A\u680F\u5E95\u53D6\u8868\u5934\u539F\u6765\u90A3\u8272 #151b23\n     \uFF08\u4EAE\u8272\u6BB5\u5BF9\u5E94 #f6f8fa\uFF09\uFF1B\u8868\u5934\u9ED8\u8BA4\u5E95\u6CBF\u7528\u4EAE\u8272\u6BB5\u5B9A\u4E49\u7684 --dshpc-surface-sunken\uFF0C\u4E0D\u5728\u6697\u8272\u6BB5\u91CD\u5199\uFF1B\n     \u884C hover \u662F\u300C\u4E00\u5C42\u6781\u6DE1\u7684\u767D\u300D\u22483% \u2014\u2014 \u6697\u5E95\u4E0A\u7528\u9ED1\u4F1A\u8D8A\u60AC\u8D8A\u6697\uFF0C\u770B\u4E0D\u51FA\u300C\u6D45\u7070\u300D\u53CD\u9988\u3002 */\n  --dshpc-table-banner-bg:#151b23;\n  --dshpc-table-row-hover:rgba(255,255,255,.03);\n  /* \u6697\u8272\u5E95\u677F**\u5FAE\u4EAE**\uFF1Bhover **\u66F4\u4EAE**\uFF08\u539F\u5148 hover \u53D6 plate-hover \u53CD\u800C\u66F4\u6DE1 \u21D2 \u9F20\u6807\u79FB\u4E0A\u53BB\u5C31\u6CA1\u4E86\uFF09\u3002 */\n  --dshpc-chip-bg:rgba(255,255,255,.08);\n  --dshpc-chip-bg-hover:rgba(255,255,255,.16);\n  /* \u6697\u8272\u4E0B\u84DD\u8272\u8981\u66F4\u4EAE\u3001\u900F\u660E\u5EA6\u7565\u9AD8\u624D\u538B\u5F97\u4F4F\u6DF1\u5E95\u3002 */\n  --dshpc-open-bg:rgba(96,165,250,.18);\n  --dshpc-open-bg-soft:rgba(96,165,250,.08);\n  --dshpc-card-hover:rgba(96,165,250,.13);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF08\u6DF1\u8272\u7248\uFF09\uFF1A\u7528\u6237\u5ACC\u6DF1\u8272\u7684\u7EFF / \u7EA2\u300C\u6709\u70B9\u6DF1\u300D\u21D2 \u538B\u5230 **5%**\uFF08\u6D45\u8272\u6BB5\u662F 8%\uFF09\uFF0C\n     \u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u8272\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF1B\u5757\u5E95\u4E0E\u72B6\u6001\u8272\u7AD6\u6761\u4ECD\u540C\u6E90\uFF08\u7AD6\u6761\u662F\u5B9E\u8272\uFF0C\u4E0D\u53D7\u8FD9\u6761\u5F71\u54CD\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 5%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 5%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 5%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 5%,transparent);\n  /* \u6269\u5C55\u8272\u6DF1\u8272\u6D3E\u751F\uFF1A\u5E95\u8272\u5199\u6B7B\u3001hover \u63BA\u767D 12%/22%\uFF08\u540C business\uFF0C\u9632\u767D\u5B57\u53D1\u7CCA\uFF09\uFF0Csoft 5%\u3002 */\n  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 88%,#ffffff);\n  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 78%,#ffffff);\n  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 5%,transparent);\n  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 88%,#ffffff);\n  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 78%,#ffffff);\n  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 5%,transparent);\n  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 88%,#ffffff);\n  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 78%,#ffffff);\n  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 5%,transparent);\n  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 88%,#ffffff);\n  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 78%,#ffffff);\n  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 5%,transparent);\n  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 88%,#ffffff);\n  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 78%,#ffffff);\n  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 5%,transparent);\n  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 88%,#ffffff);\n  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 78%,#ffffff);\n  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 5%,transparent);\n  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 88%,#ffffff);\n  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 78%,#ffffff);\n  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 5%,transparent);\n  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 88%,#ffffff);\n  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 78%,#ffffff);\n  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 5%,transparent);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u63BA **~40% \u80CC\u666F\u8272**\uFF08--dshpc-surface-base\uFF09\u21D2 \u65E0\u9650\u63A5\u8FD1\u9875\u9762\u80CC\u666F\u7684\u9ED1\u3001\n     \u53EA\u6BD4\u80CC\u666F\u7565\u6DF1\u4E00\u70B9\u70B9\uFF08\u7528\u6237\uFF1A\u6DF1\u8272\u4E0B\u5C55\u5F00\u533A\u538B\u7740\u4EFB\u52A1\u900F\u660E\u7EFF\u4F1A\u53D1\u7070\uFF0C\u5E95\u8272\u8981\u5C3D\u91CF\u8D34\u8FD1\u80CC\u666F\u624D\u4E0D\u663E\u7070\uFF09\u3002\n     \u26A0\uFE0F \u6DF1\u8272\u4E0B\u4E0D\u80FD\u63BA\u6587\u5B57\u8272 \u2014\u2014 \u90A3\u662F\u767D\uFF0C\u4F1A\u53D8\u4EAE\uFF0C\u9009\u4E2D\u53CD\u800C\u6BD4\u672C\u6708\u65E5\u671F\u6D45\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u7684\u9ED8\u8BA4\u5E95\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u6DF1\u7684\u3001\u5E26\u70B9\u7070\u84DD\u7684\u6697\u8272\uFF08\u7528\u6237\u7ED9\u7684\u53C2\u8003\u56FE \u2248 #23262e\uFF09\uFF0C\n     \u6BD4\u539F\u6765\u7684\u5361\u7247\u9762\u66F4\u6C89\u3001\u66F4\u504F\u84DD\u7070\uFF1B\u9009\u4E2D\u683C\u4ECD\u8D70 --dshpc-selected-bg\uFF08\u66F4\u6697\u4E00\u6863\uFF09\uFF0C\u5C42\u7EA7\u4E0D\u53D8\u3002 */\n  --dshpc-cal-cell-bg:#23262e;\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06\uFF09\uFF1A\u539F\u5148\u8D70 --dshpc-hover\uFF08\u5BBF\u4E3B\u6D45\u8272\u53E0\u52A0\uFF09\u5728\u6DF1\u5E95\u4E0A\u663E\u5F97\n     \u300C\u7070\u53D1\u4EAE\u300D\uFF0C\u4E0D\u597D\u770B \u21D2 \u6362\u6210\u66F4\u8D34\u5E95\u7684\u84DD\u8C03\u5FAE\u4EAE\uFF08\u4E0E open-bg-soft \u540C\u65CF\uFF09\uFF0Chover \u65F6\u4E0D\u523A\u773C\u3001\u53C8\u6709\u53CD\u9988\u3002 */\n  --dshpc-cal-cell-hover:rgba(96,165,250,.12);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u5C55\u5F00\u9762\u677F\u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06 \u7EED\uFF09\uFF1A\u4E0E\u539F selected-bg \u6697\u503C\u4E00\u81F4\uFF0C\u6DF1\u8272 UI \u4E0D\u52A8 */\n  --dshpc-cal-panel-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n}\n';
 
 // dist/design/style-kit.js
 var CSS_PREFIX = "dshpc";
@@ -2740,6 +2740,7 @@ var DICT = {
     previewOutside: "\u8DEF\u5F84\u5728\u5DE5\u4F5C\u533A\u4E4B\u5916",
     previewNotFound: "\u6587\u4EF6\u4E0D\u5B58\u5728",
     previewNotDirectory: "\u4E0D\u662F\u6587\u4EF6\u5939",
+    previewNotFile: "\u4E0D\u662F\u6587\u4EF6",
     previewTooLarge: "\u6587\u4EF6\u8FC7\u5927\uFF0C\u65E0\u6CD5\u9884\u89C8",
     previewNotText: "\u4E0D\u662F\u6587\u672C\u6587\u4EF6",
     previewFailedCode: "\u52A0\u8F7D\u5931\u8D25\uFF08{code}\uFF09",
@@ -3015,6 +3016,7 @@ var DICT = {
     previewOutside: "Path is outside the workspace",
     previewNotFound: "File not found",
     previewNotDirectory: "Not a folder",
+    previewNotFile: "Not a file",
     previewTooLarge: "File too large to preview",
     previewNotText: "Not a text file",
     previewFailedCode: "Failed to load ({code})",
@@ -3480,13 +3482,13 @@ var FIELD_CSS = `
 /* \u62D6\u62FD\u5206\u9694\u6761\uFF08\u7F16\u8F91\u5206\u680F / \u9884\u89C8 dock \u5171\u7528\uFF0CU20 #3\uFF09\uFF1A6px \u547D\u4E2D\u533A\uFF0Ccol-resize\uFF0C\u4E0D\u753B\u7EBF\uFF0Chover/\u6309\u4E0B\u6D6E\u51FA\u6D45\u5E26\u3002
    \u5177\u4F53 z-index \u7531 .dshpc-ed-resizer / .dshpc-sv-resizer \u5404\u81EA\u8865\u3002 */
 .dshpc-resizer{position:absolute;top:0;bottom:0;left:0;width:6px;cursor:col-resize;background:0 0;touch-action:none;user-select:none;}
-.dshpc-resizer:hover,.dshpc-resizer:active{background:var(--dshpc-hover,rgba(38,49,72,.06));}
+.dshpc-resizer:hover,.dshpc-resizer:active{background:var(--dshpc-hover);}
 
 @media (prefers-reduced-motion: reduce){.dshpc-input,.dshpc-pfx{transition:none;}}
 `;
 
 // dist/ui/controls/loading-css.generated.js
-var LOADING_CSS = "\n/* \u8FD0\u884C\u4E2D / loading \u7684\u6D3B\u52A8\u6307\u793A\uFF1A\u4E09\u4E2A\u5C0F\u65B9\u5757\u4F9D\u6B21\u8109\u52A8\u3002 */\n@keyframes dshpc-run-block { 0%, 80%, 100% { opacity: 0.25; transform: scale(0.8) } 40% { opacity: 1; transform: scale(1) } }\n.dshpc-run-blocks { display: inline-flex; align-items: center; gap: 3px; }\n.dshpc-run-blocks > i { width: 5px; height: 5px; border-radius: 1px; background: currentColor; animation: dshpc-run-block 1.2s ease-in-out infinite; }\n.dshpc-run-blocks > i:nth-child(2) { animation-delay: 0.15s; }\n.dshpc-run-blocks > i:nth-child(3) { animation-delay: 0.3s; }\n@media (prefers-reduced-motion: reduce) { .dshpc-run-blocks > i { animation: none; opacity: 1; } }\n\n/* \u2500\u2500 \u52A0\u8F7D\u63D0\u793A\uFF08LoadingToast / LoadingBlock / showLoading\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E24\u79CD\u6837\u5F0F\u5171\u7528\u4E00\u4E2A\u7070\u8272\u9762\uFF08\u4E0E notify \u7684 info \u5361\u540C\u8272\uFF09\uFF0C\u6697\u8272\u8D70 body[data-ds-dark-theme]\u3002\n   \u5361\u91CC\u7684\u8F6C\u5708\u56FE\u6807\u4E0D\u81EA\u7ED8\uFF1A\u590D\u7528 Loader\uFF08size sm / md\uFF09\uFF0C\u73AF\u7684\u753B\u6CD5\u4E0E\u52A8\u753B\u53EA\u6709 controls/loader.css \u4E00\u4EFD\u3002 */\n\n/* \u6837\u5F0F\u4E00\uFF1A\u6A2A\u6392 toast \u5361\uFF08\u56FE\u6807\u5728\u5DE6\u3001\u6587\u5B57\u5728\u53F3\uFF09\uFF0C\u4E0E notify \u7684 info \u5361\u540C\u5C3A\u5BF8\u540C\u8272\u3002 */\n.dshpc-loading-toast {\n  display: inline-flex; align-items: center; gap: 10px;\n  /* \u4E0D\u5B66 notify \u56FA\u5B9A 320 \u5BBD\uFF1A\u8FD9\u5F20\u5361\u4E5F\u5E38\u88AB\u585E\u8FDB\u8868\u683C / \u7A84\u680F\u91CC\uFF0C\u5BBD\u5EA6\u968F\u5185\u5BB9\u8D70\u3002\n     shortcut: \u4E0B\u9650 250px\uFF0C\u8981\u66F4\u5BBD / \u66F4\u7A84\u5C31\u6539\u8FD9\u4E00\u5904\u3002 */\n  min-width: 250px; min-height: 48px; padding: 12px 16px; box-sizing: border-box;\n  border-radius: 10px; box-shadow: 0 6px 16px rgba(0, 0, 0, .18);\n  background: #f4f4f5; color: #18181b;\n  font-size: var(--dshpc-font-lg); line-height: var(--dshpc-line-lg);\n}\n\n/* \u6837\u5F0F\u4E8C\uFF1A\u65B9\u5757\u5361\uFF08\u8F6C\u5708\u5728\u4E0A\u3001\u6587\u5B57\u5728\u4E0B\uFF09\uFF0C\u5185\u8DDD\u66F4\u5927\u3002 */\n.dshpc-loading-block {\n  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;\n  min-width: 132px; min-height: 132px; padding: 24px; box-sizing: border-box;\n  border-radius: var(--dshpc-radius-md); box-shadow: 0 6px 16px rgba(0, 0, 0, .18);\n  background: #f4f4f5; color: #18181b;\n  font-size: var(--dshpc-font-md); line-height: var(--dshpc-line-md);\n}\nbody[data-ds-dark-theme] .dshpc-loading-toast,\nbody[data-ds-dark-theme] .dshpc-loading-block { background: #3f3f46; color: #fafafa; }\n\n/* \u5168\u5C40\u6D6E\u5C42\uFF1A\u5C45\u4E2D\u3001\u4E0D\u6321\u70B9\u51FB\uFF08\u906E\u7F69\u5C42\u5355\u72EC\u4E00\u4E2A div \u624D\u6321\uFF09\u3002\n   \u4E0E Modal \u906E\u7F69\u540C\u4E00\u5957\u8BA9\u4F4D\u53E3\u5F84\uFF1A\u53F3\u8FB9\u754C\u8BFB --dshpc-page-inset-right\u3002 */\n.dshpc-loading-overlay {\n  position: fixed; inset: 0 var(--dshpc-page-inset-right, 0px) 0 0; z-index: var(--dshpc-z-modal);\n  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;\n  padding: 24px; box-sizing: border-box; pointer-events: none;\n}\n/* \u4E03\u5411\u5B9A\u4F4D\uFF08\u4E0E Toast \u7684\u516D\u5411\u540C\u540D + \u6B63\u4E2D\uFF09\uFF1A\u9ED8\u8BA4 bottom-center\uFF0C\u4E0E Sonner \u63D0\u793A\u540C\u5C4F\u4F4D\u3002 */\n.dshpc-loading-overlay--top-left { align-items: flex-start; justify-content: flex-start; }\n.dshpc-loading-overlay--top-center { justify-content: flex-start; }\n.dshpc-loading-overlay--top-right { align-items: flex-end; justify-content: flex-start; }\n.dshpc-loading-overlay--bottom-left { align-items: flex-start; justify-content: flex-end; }\n.dshpc-loading-overlay--bottom-center { justify-content: flex-end; }\n.dshpc-loading-overlay--bottom-right { align-items: flex-end; justify-content: flex-end; }\n.dshpc-loading-overlay__mask { position: absolute; inset: 0; pointer-events: auto; }\n";
+var LOADING_CSS = "\n/* \u8FD0\u884C\u4E2D / loading \u7684\u6D3B\u52A8\u6307\u793A\uFF1A\u4E09\u4E2A\u5C0F\u65B9\u5757\u4F9D\u6B21\u8109\u52A8\u3002 */\n@keyframes dshpc-run-block { 0%, 80%, 100% { opacity: 0.25; transform: scale(0.8) } 40% { opacity: 1; transform: scale(1) } }\n.dshpc-run-blocks { display: inline-flex; align-items: center; gap: 3px; }\n.dshpc-run-blocks > i { width: 5px; height: 5px; border-radius: 1px; background: currentColor; animation: dshpc-run-block 1.2s ease-in-out infinite; }\n.dshpc-run-blocks > i:nth-child(2) { animation-delay: 0.15s; }\n.dshpc-run-blocks > i:nth-child(3) { animation-delay: 0.3s; }\n@media (prefers-reduced-motion: reduce) { .dshpc-run-blocks > i { animation: none; opacity: 1; } }\n\n/* \u2500\u2500 \u52A0\u8F7D\u63D0\u793A\uFF08LoadingToast / LoadingBlock / showLoading\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E24\u79CD\u6837\u5F0F\u7684\u8868\u9762\u7EDF\u4E00\u8D70 token\uFF082026-11-03\uFF1A\u539F\u6765\u5199\u6B7B #f4f4f5/#18181b \u518D\u8865\u4E00\u6BB5\u6697\u8272\u8986\u76D6\uFF0C\n   \u7B49\u4E8E\u81EA\u5DF1\u9020\u7B2C\u4E8C\u5957\u4E3B\u9898\uFF1B\u73B0\u5728\u5E95\u8272/\u5B57\u8272/\u9634\u5F71\u5168\u4ECE var(--dshpc-*) \u6765\uFF0C\u6697\u8272\u81EA\u52A8\u8DDF\u968F\uFF09\u3002\n   \u5361\u91CC\u7684\u8F6C\u5708\u56FE\u6807\u4E0D\u81EA\u7ED8\uFF1A\u590D\u7528 Loader\uFF08size sm / md\uFF09\uFF0C\u73AF\u7684\u753B\u6CD5\u4E0E\u52A8\u753B\u53EA\u6709 controls/loader.css \u4E00\u4EFD\u3002 */\n\n/* \u6837\u5F0F\u4E00\uFF1A\u6A2A\u6392 toast \u5361\uFF08\u56FE\u6807\u5728\u5DE6\u3001\u6587\u5B57\u5728\u53F3\uFF09\uFF0C\u4E0E notify \u7684 info \u5361\u540C\u5C3A\u5BF8\u540C\u8272\u3002 */\n.dshpc-loading-toast {\n  display: inline-flex; align-items: center; gap: 10px;\n  /* \u4E0D\u5B66 notify \u56FA\u5B9A 320 \u5BBD\uFF1A\u8FD9\u5F20\u5361\u4E5F\u5E38\u88AB\u585E\u8FDB\u8868\u683C / \u7A84\u680F\u91CC\uFF0C\u5BBD\u5EA6\u968F\u5185\u5BB9\u8D70\u3002\n     shortcut: \u4E0B\u9650 250px\uFF0C\u8981\u66F4\u5BBD / \u66F4\u7A84\u5C31\u6539\u8FD9\u4E00\u5904\u3002 */\n  min-width: 250px; min-height: 48px; padding: 12px 16px; box-sizing: border-box;\n  border-radius: var(--dshpc-radius-lg); box-shadow: var(--dshpc-shadow-2);\n  background: var(--dshpc-surface-1); color: var(--dshpc-fg);\n  font-size: var(--dshpc-font-lg); line-height: var(--dshpc-line-lg);\n}\n\n/* \u6837\u5F0F\u4E8C\uFF1A\u65B9\u5757\u5361\uFF08\u8F6C\u5708\u5728\u4E0A\u3001\u6587\u5B57\u5728\u4E0B\uFF09\uFF0C\u5185\u8DDD\u66F4\u5927\u3002 */\n.dshpc-loading-block {\n  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;\n  min-width: 132px; min-height: 132px; padding: 24px; box-sizing: border-box;\n  border-radius: var(--dshpc-radius-md); box-shadow: var(--dshpc-shadow-2);\n  background: var(--dshpc-surface-1); color: var(--dshpc-fg);\n  font-size: var(--dshpc-font-md); line-height: var(--dshpc-line-md);\n}\n\n/* \u5168\u5C40\u6D6E\u5C42\uFF1A\u5C45\u4E2D\u3001\u4E0D\u6321\u70B9\u51FB\uFF08\u906E\u7F69\u5C42\u5355\u72EC\u4E00\u4E2A div \u624D\u6321\uFF09\u3002\n   \u4E0E Modal \u906E\u7F69\u540C\u4E00\u5957\u8BA9\u4F4D\u53E3\u5F84\uFF1A\u53F3\u8FB9\u754C\u8BFB --dshpc-page-inset-right\u3002 */\n.dshpc-loading-overlay {\n  position: fixed; inset: 0 var(--dshpc-page-inset-right, 0px) 0 0; z-index: var(--dshpc-z-modal);\n  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;\n  padding: 24px; box-sizing: border-box; pointer-events: none;\n}\n/* \u4E03\u5411\u5B9A\u4F4D\uFF08\u4E0E Toast \u7684\u516D\u5411\u540C\u540D + \u6B63\u4E2D\uFF09\uFF1A\u9ED8\u8BA4 bottom-center\uFF0C\u4E0E Sonner \u63D0\u793A\u540C\u5C4F\u4F4D\u3002 */\n.dshpc-loading-overlay--top-left { align-items: flex-start; justify-content: flex-start; }\n.dshpc-loading-overlay--top-center { justify-content: flex-start; }\n.dshpc-loading-overlay--top-right { align-items: flex-end; justify-content: flex-start; }\n.dshpc-loading-overlay--bottom-left { align-items: flex-start; justify-content: flex-end; }\n.dshpc-loading-overlay--bottom-center { justify-content: flex-end; }\n.dshpc-loading-overlay--bottom-right { align-items: flex-end; justify-content: flex-end; }\n.dshpc-loading-overlay__mask { position: absolute; inset: 0; pointer-events: auto; }\n";
 
 // dist/ui/controls/loader-css.generated.js
 var LOADER_CSS = '/* \u2500\u2500 Loader\uFF1A\u7EDF\u4E00\u7684\u52A0\u8F7D\u52A8\u753B\u56FE\u6807\uFF08\u65E0\u80CC\u666F / \u65E0\u5B9A\u4F4D / \u989C\u8272\u8DDF\u968F currentColor\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5F62\u6001 \xD7 \u5C3A\u5BF8\u4E24\u8F74\u6B63\u4EA4\uFF1A\u5F62\u6001\u7BA1\u51E0\u4F55\u4E0E\u52A8\u753B\uFF1B\u5C3A\u5BF8\u6863\u53EA\u6539 width / height\uFF0C\u51E0\u4F55\u6309\n   viewBox="0 0 24 24" \u7B49\u6BD4\u7F29\u653E \u2014\u2014 \u4E00\u5957\u51E0\u4F55\u5403\u4E94\u6863\uFF0C12px \u65F6\u63CF\u8FB9\u5373 1.5px\u300148px \u65F6 6px\uFF0C\n   \u89C6\u89C9\u91CD\u91CF\u4E00\u81F4\uFF0C\u4E0D\u7528\u9010\u4E2A\u5C3A\u5BF8\u6362\u7B97 calc\u3002\n\n   \u8FB9\u754C\uFF1A\u672C\u63A7\u4EF6**\u53EA\u7BA1\u56FE\u6807\u672C\u8EAB**\u3002\u80CC\u666F / \u5706\u89D2 / \u5185\u8DDD / \u9634\u5F71 / \u5B9A\u4F4D\uFF08fixed\u3001\u5C45\u4E2D\u3001\u6F02\u6D6E\uFF09\n   \u4E00\u5F8B\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u5957 Chip\u3001\u5957 Card\uFF0C\u6216\u81EA\u5DF1\u5305\u4E00\u4E2A div\u3002 */\n\n.dshpc-loader { display: inline-block; flex: none; vertical-align: middle; line-height: 0; color: inherit; }\n\n.dshpc-loader--xs { width: 12px; height: 12px; }\n.dshpc-loader--sm { width: 16px; height: 16px; }\n.dshpc-loader--md { width: 24px; height: 24px; }\n.dshpc-loader--lg { width: 32px; height: 32px; }\n.dshpc-loader--xl { width: 48px; height: 48px; }\n\n/* \u5F62\u6001\u4E00 ring\uFF1A\u5F00\u53E3\u5F27\u6574\u4F53\u65CB\u8F6C\u3002\u5FC5\u987B\u8D70 SVG \u77E2\u91CF\u5F27 \u2014\u2014 \u6B21\u50CF\u7D20\u8FB9\u6846\u753B\u5706\u5728 12px \u4E0B\u4F1A\u88AB\n   \u6297\u952F\u9F7F\u62C9\u6BDB\u3001\u770B\u7740\u50CF\u5706\u89D2\u65B9\uFF082026-10-20 \u771F\u673A\u5B9E\u6D4B\uFF0C\u66FE\u88AB\u8BEF\u5224\u6210 border-radius \u88AB\u8986\u76D6\uFF09\u3002 */\n.dshpc-loader--ring { animation: dshpc-loader-rotate .8s linear infinite; }\n@keyframes dshpc-loader-rotate { to { transform: rotate(360deg) } }\n\n/* \u5F62\u6001\u4E8C blocks\uFF1A\u4E09\u4E2A\u65B9\u5757\u4F9D\u6B21\u8109\u52A8\u653E\u5927\u3002\n   transform-box: fill-box \u662F SVG \u5B50\u5143\u7D20\u505A CSS transform \u7684\u5FC5\u8981\u6761\u4EF6 \u2014\u2014 \u5426\u5219 origin\n   \u843D\u5728 viewBox \u539F\u70B9\uFF0C\u8282\u70B9\u4F1A\u7ED5\u7740\u5DE6\u4E0A\u89D2\u98DE\u51FA\u53BB\u3002 */\n.dshpc-loader__node { transform-box: fill-box; transform-origin: center; }\n.dshpc-loader--blocks .dshpc-loader__node { animation: dshpc-loader-blink 1.2s ease-in-out infinite; }\n.dshpc-loader__node:nth-child(2) { animation-delay: .15s; }\n.dshpc-loader__node:nth-child(3) { animation-delay: .3s; }\n@keyframes dshpc-loader-blink {\n  0%, 80%, 100% { opacity: .25; transform: scale(.8) }\n  40% { opacity: 1; transform: scale(1) }\n}\n\n/* \u964D\u4F4E\u52A8\u6548\uFF1A\u505C\u5728\u300C\u5168\u90E8\u53EF\u89C1\u3001\u5B9E\u4F53\u5927\u5C0F\u300D\uFF0C\u800C\u4E0D\u662F\u505C\u5728\u52A8\u753B\u4E2D\u9014\u7684\u534A\u900F\u660E\u5C0F\u70B9\u3002 */\n@media (prefers-reduced-motion: reduce) {\n  .dshpc-loader--ring { animation: none; }\n  .dshpc-loader__node { animation: none; opacity: 1; transform: none; }\n}\n';
@@ -3501,7 +3503,7 @@ var QUICK_TOOLBAR_CSS = "/* \u5FEB\u6377\u5DE5\u5177\u680F\uFF1A\u53F3\u4FA7\u60
 var HINT_CSS = "\n/* \u2500\u2500 \u95EE\u53F7\u63D0\u793A P4\uFF08\u7528\u6237 2026-10-18\uFF1A\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6 HelpButton\u2014\u2014**\u5E26\u5708\u7684\u95EE\u53F7\u56FE\u6807**\uFF09\u2500\u2500\n   \u672C\u4F53 14px \u7EC6\u5708 + \u5708\u5185 ?\uFF0C\u989C\u8272 fg-3\u3001hover \u53EA\u63D0\u4EAE\u4E0D\u52A0\u5E95\uFF08\u4E0E dshpc-ed-help \u540C\u89C4\u77E9\uFF09\u3002\n   \u6C14\u6CE1\u4E0D\u5728\u672C\u6587\u4EF6\uFF1A2026-10-19 \u7528\u6237\u62CD\u677F\u300C\u95EE\u53F7\u5FC5\u987B\u7528\u5B98\u65B9 Tooltip \u90A3\u4E00\u4E2A\u300D\u21D2 \u6C14\u6CE1\u7531\u6CE8\u5165\u7684\n   \u5B98\u65B9\u7EC4\u4EF6\u6E32\u67D3\uFF08src/ui/tooltip.ts\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u95EE\u53F7\u56FE\u6807\u672C\u8EAB\u3002 */\n.dshpc-hint{display:inline-flex;align-items:center;justify-content:center;flex:none;\n  box-sizing:border-box;width:14px;height:14px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;\n  color:var(--dshpc-fg-3);font-family:inherit;font-size:8px;font-weight:600;line-height:12px;cursor:help;vertical-align:middle;\n  transition:color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-hint:hover,.dshpc-hint:focus-visible{color:var(--dshpc-fg);background:0 0;}\n.dshpc-hint:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n";
 
 // dist/ui/controls/datetime-css.generated.js
-var DATETIME_CSS = '/* \u65E5\u671F\u65F6\u95F4\u9009\u62E9\u5668\uFF08DateTimePicker\uFF09\u3002\u7C7B\u540D dshpc-dt-*\uFF1B\u914D\u8272\u53EA\u5403 token\uFF0C\u660E\u6697\u968F token \u5207\u6362\u3002\n   \u7ED3\u6784\uFF1A\u89E6\u53D1\u5668\uFF08range = \u4E00\u4E2A\u6574\u6761\uFF1A\u4E24\u4E2A\u65E5\u671F\u533A + \u6837\u5F0F\u753B\u7684\u7070\u9694\u6761\uFF1Bsingle = \u5355\u65E5\u671F\uFF09\u2192 \u6D6E\u5C42\n   \uFF08\u4E24\u4E2A\u72EC\u7ACB\u7AEF\u6846 + \u4E24\u5757\u72EC\u7ACB\u65E5\u5386 + \u5E95\u90E8\u52A8\u4F5C\uFF09\u3002\n   \u6D6E\u5C42\u884C\u4E3A\u4E0E Picker \u4E00\u81F4\uFF1Aportal \u5230 body\u3001\u8D34\u8FB9\u7FFB\u8F6C\u3001\u70B9\u5916\u5173\u95ED\u3001\u65E0\u906E\u7F69\u3002 */\n.dshpc-dt{position:relative;display:inline-block;font-size:13px;line-height:20px}\n.dshpc-dt__trigger{\n  display:inline-flex;align-items:center;justify-content:space-between;gap:6px;\n  max-width:100%;height:var(--dshpc-control-h-md);padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);cursor:pointer;\n}\n.dshpc-dt__trigger--sm{height:var(--dshpc-control-h-sm);font-size:12px}\n.dshpc-dt__trigger--lg{height:var(--dshpc-control-h-lg)}\n.dshpc-dt__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}\n/* \u7126\u70B9\u4E0E\u57FA\u7840 Input \u5B8C\u5168\u540C\u6B3E\uFF08\u70B9\u51FB\u5373\u84DD\u63CF\u8FB9 + 1px \u5149\u73AF\uFF09\u3002 */\n.dshpc-dt__trigger:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}\n.dshpc-dt__trigger-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-variant-numeric:tabular-nums}\n.dshpc-dt__trigger-label--empty{color:var(--dshpc-fg-dim)}\n.dshpc-dt__cal{flex:none;color:var(--dshpc-fg-3)}\n/* range \u89E6\u53D1\u5668\uFF1A\u4E00\u4E2A\u6574\u6761\u91CC\u4E24\u4E2A\u65E5\u671F\u533A + \u6837\u5F0F\u753B\u51FA\u6765\u7684\u7070\u9694\u6761\uFF08\u5DE6\u53F3\u4E24\u6761\u7AD6\u8FB9\uFF09\uFF0C\u70B9\u6574\u6761\u90FD\u5C55\u5F00\u3002 */\n/* \u7EC4\u6491\u6EE1\u89E6\u53D1\u5668\u5185\u5BB9\u9AD8\u5EA6\uFF0C\u9694\u6761\u624D\u80FD\u4E0A\u4E0B\u9876\u5230 border\u3002 */\n.dshpc-dt__pair-group{flex:1 1 auto;min-width:0;align-self:stretch;display:flex;align-items:center;gap:8px}\n/* \u4E24\u4E2A\u65E5\u671F\u533A\u5E73\u5206\uFF08flex:1 1 0\uFF09\uFF1A\u5F00\u59CB / \u7ED3\u675F\u6C38\u8FDC\u4E00\u6837\u5BBD\uFF0C\u4E0D\u968F\u5185\u5BB9\u504F\u8892\u3002 */\n.dshpc-dt__pair-date{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}\n.dshpc-dt__pair-date--empty{color:var(--dshpc-fg-dim)}\n/* \u9694\u6761\uFF1A\u4E0A\u4E0B\u9876\u5230\u89E6\u53D1\u5668 border\uFF08\u4E0E\u8FB9\u6846\u8FDE\u8D77\u6765\uFF09\uFF0C\u4E2D\u95F4\u9694\u51FA\u4E00\u5757\uFF1B\u5757\u91CC\u653E\u300C\u5230\u300D\u7684\u7B26\u53F7\uFF08-\uFF0C\u7528\u6237 2026-10-24 \u62CD\u677F\uFF09\u3002 */\n.dshpc-dt__pair-sep{\n  flex:none;align-self:stretch;width:22px;margin:0;\n  display:inline-flex;align-items:center;justify-content:center;\n  background:var(--dshpc-surface-sunken);\n  border-left:1px solid var(--dshpc-border);border-right:1px solid var(--dshpc-border);\n  color:var(--dshpc-fg-3);font-size:12px;line-height:1;\n}\n/* \u9ED8\u8BA4\u5BBD\uFF1A**\u56FA\u5B9A**\uFF08\u9009\u4E2D\u524D\u540E\u4E0D\u53D8\uFF09\uFF0C\u6570\u503C\u5BF9\u7167\u53C2\u8003\u56FE\u5B9E\u6D4B\uFF082x \u5C4F\uFF0C\u6362\u7B97 CSS px\uFF09\u540E\n   \u7EDF\u4E00 -6px\uFF08\u7528\u6237 2026-10-24\uFF1A\u5B9E\u6D4B\u503C\u7559\u5F97\u504F\u591A\uFF09\uFF1A\n   \u5355\u503C day 128 / \u65F6\xB7\u5206 153.2 / \u79D2 174.8\uFF1B\u533A\u95F4 day 269 / \u5206 341.4 / \u79D2 377.6\u3002\n   ch = \u5B57\u4F53\u91CC "0" \u7684\u5BBD\uFF08\u65E5\u671F tabular-nums \u7B49\u5BBD\uFF09\u21D2 \u5199\u6210 Nch + \u5E38\u6570\uFF1B\u5E38\u6570\u540C\u65F6\u515C\u4F4F\n   \u9ED8\u8BA4\u5360\u4F4D\u300C\u8BF7\u9009\u62E9\u65E5\u671F\u65F6\u95F4\u300D\uFF087 \u6C49\u5B57\uFF09\u4E0D\u7701\u7565\u3002\u8C03\u7528\u65B9\u8981\u53E6\u7ED9\u5BBD\uFF1AclassName \u4F20 width\u3002 */\n.dshpc-dt__trigger--w-day{width:calc(10ch + 56px)}\n.dshpc-dt__trigger--w-minute{width:calc(16ch + 38px)}\n.dshpc-dt__trigger--w-second{width:calc(19ch + 38px)}\n.dshpc-dt__trigger--wr-day{width:calc(20ch + 125px)}\n.dshpc-dt__trigger--wr-minute{width:calc(32ch + 111px)}\n.dshpc-dt__trigger--wr-second{width:calc(38ch + 104px)}\n\n.dshpc-dt__pop{\n  z-index:60;padding:10px;user-select:none;\n  font-size:13px;line-height:20px;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  border-radius:var(--dshpc-radius-md);box-shadow:0 8px 24px rgba(15,23,42,.12);\n}\n/* \u4E24\u4E2A\u72EC\u7ACB\u7AEF\u6846\uFF08range\uFF09\uFF1A\u70B9\u54EA\u4E2A\u54EA\u4E2A\u6210\u4E3A\u5F53\u524D\u7F16\u8F91\u7AEF\uFF0C\u4E92\u4E0D\u8054\u52A8\u3001\u53EA\u662F\u6392\u5728\u4E00\u8D77\u3002 */\n.dshpc-dt__ends{display:flex;gap:6px;margin-bottom:8px}\n.dshpc-dt__end{\n  flex:1 1 0;min-width:0;display:flex;align-items:center;gap:6px;padding:4px 8px;\n  text-align:left;background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__end--active{border-color:var(--dshpc-business);background:var(--dshpc-open-bg)}\n.dshpc-dt__end:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-dt__end-label{flex:none;font-size:11px;line-height:16px;color:var(--dshpc-fg-3);white-space:nowrap}\n.dshpc-dt__end-value{font-size:12px;line-height:18px;color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}\n.dshpc-dt__end-value--empty{color:var(--dshpc-fg-dim)}\n\n.dshpc-dt__nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}\n.dshpc-dt__nav-group{display:flex;gap:2px}\n.dshpc-dt__nav-btn{\n  display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;\n  color:var(--dshpc-fg-2);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__nav-btn:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-dt__nav-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__caption{font-size:13px;font-weight:600;color:var(--dshpc-fg);white-space:nowrap}\n\n.dshpc-dt__grid{display:grid;grid-template-columns:repeat(7,30px);gap:2px}\n.dshpc-dt__wd{height:20px;font-size:11px;line-height:20px;color:var(--dshpc-fg-3);text-align:center}\n.dshpc-dt__cell{\n  height:26px;padding:0;font-size:12px;font-variant-numeric:tabular-nums;\n  color:var(--dshpc-fg);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__cell:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-dt__cell:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__cell--out{color:var(--dshpc-fg-dim)}\n.dshpc-dt__cell--today{color:var(--dshpc-business);font-weight:600}\n/* \u8D77 / \u6B62\u7AEF\uFF1A\u54C1\u724C\u84DD\u5B9E\u9762\u53CD\u767D\uFF08\u4E0E Segmented weekday \u9009\u4E2D\u540C\u53E3\u5F84\uFF09\u3002\n   \u26A0\uFE0F \u5B57\u8272\u7528\u5E38\u91CF\u767D --dshpc-on-signal\uFF0C\u4E0D\u7528 --dshpc-fg-inverse\uFF1A\u540E\u8005\u8DDF\u5BBF\u4E3B label-primary-foreground\uFF0C\n   \u6697\u8272\u4E3B\u9898\u4E0B\u662F\u8FD1\u9ED1 \u21D2 \u84DD\u5E95\u9ED1\u5B57\uFF08\u4E0E Segmented 2026-10-29 \u540C\u4E00\u4E8B\u6545\uFF09\u3002 */\n.dshpc-dt__cell--sel{background:var(--dshpc-business);color:var(--dshpc-on-signal);font-weight:600}\n.dshpc-dt__cell--sel:hover{background:var(--dshpc-business-hover)}\n\n/* \u4E24\u5757\u65E5\u5386\u9762\u677F\uFF08range\uFF1A\u5DE6\u5F00\u59CB\u3001\u53F3\u7ED3\u675F\uFF0C\u5404\u9009\u5404\u7684\uFF09\u3002 */\n.dshpc-dt__panels{display:flex;gap:14px;align-items:flex-start}\n.dshpc-dt__panel{display:flex;flex-direction:column;gap:6px}\n\n.dshpc-dt__time{display:flex;align-items:flex-end;justify-content:center;gap:4px;margin-top:2px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n.dshpc-dt__unit{display:flex;flex-direction:column;align-items:center;gap:2px}\n.dshpc-dt__unit-label{font-size:10px;line-height:14px;color:var(--dshpc-fg-3)}\n.dshpc-dt__step-btn{\n  display:inline-flex;align-items:center;justify-content:center;width:34px;height:14px;padding:0;\n  color:var(--dshpc-fg-2);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__step-btn:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-dt__step-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__step-val{\n  width:34px;height:24px;padding:0;box-sizing:border-box;text-align:center;\n  font-size:13px;font-variant-numeric:tabular-nums;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-sunken);border:1px solid var(--dshpc-border-faint);\n  border-radius:var(--dshpc-radius-sm);outline:none;\n}\n.dshpc-dt__step-val:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}\n.dshpc-dt__step-val:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}\n.dshpc-dt__sep{padding-bottom:5px;color:var(--dshpc-fg-3);font-size:12px}\n\n.dshpc-dt__foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n.dshpc-dt__foot-side{display:flex;align-items:center;gap:6px}\n.dshpc-dt__warn{font-size:11px;color:var(--dshpc-warning-label);white-space:nowrap}\n';
+var DATETIME_CSS = '/* \u65E5\u671F\u65F6\u95F4\u9009\u62E9\u5668\uFF08DateTimePicker\uFF09\u3002\u7C7B\u540D dshpc-dt-*\uFF1B\u914D\u8272\u53EA\u5403 token\uFF0C\u660E\u6697\u968F token \u5207\u6362\u3002\n   \u7ED3\u6784\uFF1A\u89E6\u53D1\u5668\uFF08range = \u4E00\u4E2A\u6574\u6761\uFF1A\u4E24\u4E2A\u65E5\u671F\u533A + \u6837\u5F0F\u753B\u7684\u7070\u9694\u6761\uFF1Bsingle = \u5355\u65E5\u671F\uFF09\u2192 \u6D6E\u5C42\n   \uFF08\u4E24\u4E2A\u72EC\u7ACB\u7AEF\u6846 + \u4E24\u5757\u72EC\u7ACB\u65E5\u5386 + \u5E95\u90E8\u52A8\u4F5C\uFF09\u3002\n   \u6D6E\u5C42\u884C\u4E3A\u4E0E Picker \u4E00\u81F4\uFF1Aportal \u5230 body\u3001\u8D34\u8FB9\u7FFB\u8F6C\u3001\u70B9\u5916\u5173\u95ED\u3001\u65E0\u906E\u7F69\u3002 */\n.dshpc-dt{position:relative;display:inline-block;font-size:13px;line-height:20px}\n.dshpc-dt__trigger{\n  display:inline-flex;align-items:center;justify-content:space-between;gap:6px;\n  max-width:100%;height:var(--dshpc-control-h-md);padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);cursor:pointer;\n}\n.dshpc-dt__trigger--sm{height:var(--dshpc-control-h-sm);font-size:12px}\n.dshpc-dt__trigger--lg{height:var(--dshpc-control-h-lg)}\n.dshpc-dt__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}\n/* \u7126\u70B9\u4E0E\u57FA\u7840 Input \u5B8C\u5168\u540C\u6B3E\uFF08\u70B9\u51FB\u5373\u84DD\u63CF\u8FB9 + 1px \u5149\u73AF\uFF09\u3002 */\n.dshpc-dt__trigger:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}\n.dshpc-dt__trigger-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-variant-numeric:tabular-nums}\n.dshpc-dt__trigger-label--empty{color:var(--dshpc-fg-dim)}\n.dshpc-dt__cal{flex:none;color:var(--dshpc-fg-3)}\n/* range \u89E6\u53D1\u5668\uFF1A\u4E00\u4E2A\u6574\u6761\u91CC\u4E24\u4E2A\u65E5\u671F\u533A + \u6837\u5F0F\u753B\u51FA\u6765\u7684\u7070\u9694\u6761\uFF08\u5DE6\u53F3\u4E24\u6761\u7AD6\u8FB9\uFF09\uFF0C\u70B9\u6574\u6761\u90FD\u5C55\u5F00\u3002 */\n/* \u7EC4\u6491\u6EE1\u89E6\u53D1\u5668\u5185\u5BB9\u9AD8\u5EA6\uFF0C\u9694\u6761\u624D\u80FD\u4E0A\u4E0B\u9876\u5230 border\u3002 */\n.dshpc-dt__pair-group{flex:1 1 auto;min-width:0;align-self:stretch;display:flex;align-items:center;gap:8px}\n/* \u4E24\u4E2A\u65E5\u671F\u533A\u5E73\u5206\uFF08flex:1 1 0\uFF09\uFF1A\u5F00\u59CB / \u7ED3\u675F\u6C38\u8FDC\u4E00\u6837\u5BBD\uFF0C\u4E0D\u968F\u5185\u5BB9\u504F\u8892\u3002 */\n.dshpc-dt__pair-date{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}\n.dshpc-dt__pair-date--empty{color:var(--dshpc-fg-dim)}\n/* \u9694\u6761\uFF1A\u4E0A\u4E0B\u9876\u5230\u89E6\u53D1\u5668 border\uFF08\u4E0E\u8FB9\u6846\u8FDE\u8D77\u6765\uFF09\uFF0C\u4E2D\u95F4\u9694\u51FA\u4E00\u5757\uFF1B\u5757\u91CC\u653E\u300C\u5230\u300D\u7684\u7B26\u53F7\uFF08-\uFF0C\u7528\u6237 2026-10-24 \u62CD\u677F\uFF09\u3002 */\n.dshpc-dt__pair-sep{\n  flex:none;align-self:stretch;width:22px;margin:0;\n  display:inline-flex;align-items:center;justify-content:center;\n  background:var(--dshpc-surface-sunken);\n  border-left:1px solid var(--dshpc-border);border-right:1px solid var(--dshpc-border);\n  color:var(--dshpc-fg-3);font-size:12px;line-height:1;\n}\n/* \u9ED8\u8BA4\u5BBD\uFF1A**\u56FA\u5B9A**\uFF08\u9009\u4E2D\u524D\u540E\u4E0D\u53D8\uFF09\uFF0C\u6570\u503C\u5BF9\u7167\u53C2\u8003\u56FE\u5B9E\u6D4B\uFF082x \u5C4F\uFF0C\u6362\u7B97 CSS px\uFF09\u540E\n   \u7EDF\u4E00 -6px\uFF08\u7528\u6237 2026-10-24\uFF1A\u5B9E\u6D4B\u503C\u7559\u5F97\u504F\u591A\uFF09\uFF1A\n   \u5355\u503C day 128 / \u65F6\xB7\u5206 153.2 / \u79D2 174.8\uFF1B\u533A\u95F4 day 269 / \u5206 341.4 / \u79D2 377.6\u3002\n   ch = \u5B57\u4F53\u91CC "0" \u7684\u5BBD\uFF08\u65E5\u671F tabular-nums \u7B49\u5BBD\uFF09\u21D2 \u5199\u6210 Nch + \u5E38\u6570\uFF1B\u5E38\u6570\u540C\u65F6\u515C\u4F4F\n   \u9ED8\u8BA4\u5360\u4F4D\u300C\u8BF7\u9009\u62E9\u65E5\u671F\u65F6\u95F4\u300D\uFF087 \u6C49\u5B57\uFF09\u4E0D\u7701\u7565\u3002\u8C03\u7528\u65B9\u8981\u53E6\u7ED9\u5BBD\uFF1AclassName \u4F20 width\u3002 */\n.dshpc-dt__trigger--w-day{width:calc(10ch + 56px)}\n.dshpc-dt__trigger--w-minute{width:calc(16ch + 38px)}\n.dshpc-dt__trigger--w-second{width:calc(19ch + 38px)}\n.dshpc-dt__trigger--wr-day{width:calc(20ch + 125px)}\n.dshpc-dt__trigger--wr-minute{width:calc(32ch + 111px)}\n.dshpc-dt__trigger--wr-second{width:calc(38ch + 104px)}\n\n/* \u5F39\u5C42\u8868\u9762\u79EF\u5F52 panel.css \u7684 menu \u6863\uFF082026-11-03\uFF09\uFF1A\u8FD9\u91CC\u53EA\u7559\u5C42\u5E8F\u4E0E\u5185\u8DDD\u3002 */\n.dshpc-dt__pop{\n  z-index:var(--dshpc-z-popmenu);padding:10px;user-select:none;\n  font-size:13px;line-height:20px;\n}\n/* \u4E24\u4E2A\u72EC\u7ACB\u7AEF\u6846\uFF08range\uFF09\uFF1A\u70B9\u54EA\u4E2A\u54EA\u4E2A\u6210\u4E3A\u5F53\u524D\u7F16\u8F91\u7AEF\uFF0C\u4E92\u4E0D\u8054\u52A8\u3001\u53EA\u662F\u6392\u5728\u4E00\u8D77\u3002 */\n.dshpc-dt__ends{display:flex;gap:6px;margin-bottom:8px}\n.dshpc-dt__end{\n  flex:1 1 0;min-width:0;display:flex;align-items:center;gap:6px;padding:4px 8px;\n  text-align:left;background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__end--active{border-color:var(--dshpc-business);background:var(--dshpc-open-bg)}\n.dshpc-dt__end:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-dt__end-label{flex:none;font-size:11px;line-height:16px;color:var(--dshpc-fg-3);white-space:nowrap}\n.dshpc-dt__end-value{font-size:12px;line-height:18px;color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}\n.dshpc-dt__end-value--empty{color:var(--dshpc-fg-dim)}\n\n.dshpc-dt__nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}\n.dshpc-dt__nav-group{display:flex;gap:2px}\n.dshpc-dt__nav-btn{\n  display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;\n  color:var(--dshpc-fg-2);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__nav-btn:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-dt__nav-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__caption{font-size:13px;font-weight:600;color:var(--dshpc-fg);white-space:nowrap}\n\n.dshpc-dt__grid{display:grid;grid-template-columns:repeat(7,30px);gap:2px}\n.dshpc-dt__wd{height:20px;font-size:11px;line-height:20px;color:var(--dshpc-fg-3);text-align:center}\n.dshpc-dt__cell{\n  height:26px;padding:0;font-size:12px;font-variant-numeric:tabular-nums;\n  color:var(--dshpc-fg);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__cell:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-dt__cell:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__cell--out{color:var(--dshpc-fg-dim)}\n.dshpc-dt__cell--today{color:var(--dshpc-business);font-weight:600}\n/* \u8D77 / \u6B62\u7AEF\uFF1A\u54C1\u724C\u84DD\u5B9E\u9762\u53CD\u767D\uFF08\u4E0E Segmented weekday \u9009\u4E2D\u540C\u53E3\u5F84\uFF09\u3002\n   \u26A0\uFE0F \u5B57\u8272\u7528\u5E38\u91CF\u767D --dshpc-on-signal\uFF0C\u4E0D\u7528 --dshpc-fg-inverse\uFF1A\u540E\u8005\u8DDF\u5BBF\u4E3B label-primary-foreground\uFF0C\n   \u6697\u8272\u4E3B\u9898\u4E0B\u662F\u8FD1\u9ED1 \u21D2 \u84DD\u5E95\u9ED1\u5B57\uFF08\u4E0E Segmented 2026-10-29 \u540C\u4E00\u4E8B\u6545\uFF09\u3002 */\n.dshpc-dt__cell--sel{background:var(--dshpc-business);color:var(--dshpc-on-signal);font-weight:600}\n.dshpc-dt__cell--sel:hover{background:var(--dshpc-business-hover)}\n\n/* \u4E24\u5757\u65E5\u5386\u9762\u677F\uFF08range\uFF1A\u5DE6\u5F00\u59CB\u3001\u53F3\u7ED3\u675F\uFF0C\u5404\u9009\u5404\u7684\uFF09\u3002 */\n.dshpc-dt__panels{display:flex;gap:14px;align-items:flex-start}\n.dshpc-dt__panel{display:flex;flex-direction:column;gap:6px}\n\n.dshpc-dt__time{display:flex;align-items:flex-end;justify-content:center;gap:4px;margin-top:2px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n.dshpc-dt__unit{display:flex;flex-direction:column;align-items:center;gap:2px}\n.dshpc-dt__unit-label{font-size:10px;line-height:14px;color:var(--dshpc-fg-3)}\n.dshpc-dt__step-btn{\n  display:inline-flex;align-items:center;justify-content:center;width:34px;height:14px;padding:0;\n  color:var(--dshpc-fg-2);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__step-btn:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-dt__step-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__step-val{\n  width:34px;height:24px;padding:0;box-sizing:border-box;text-align:center;\n  font-size:13px;font-variant-numeric:tabular-nums;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-sunken);border:1px solid var(--dshpc-border-faint);\n  border-radius:var(--dshpc-radius-sm);outline:none;\n}\n.dshpc-dt__step-val:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}\n.dshpc-dt__step-val:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}\n.dshpc-dt__sep{padding-bottom:5px;color:var(--dshpc-fg-3);font-size:12px}\n\n.dshpc-dt__foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n.dshpc-dt__foot-side{display:flex;align-items:center;gap:6px}\n.dshpc-dt__warn{font-size:11px;color:var(--dshpc-warning-label);white-space:nowrap}\n';
 
 // dist/ui/controls/split-group-css.generated.js
 var SPLIT_GROUP_CSS = "\n/* \u2500\u2500 \u62FC\u63A5\u5916\u58F3 SplitGroup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u804C\u8D23\u53EA\u6709\u4E00\u6761\uFF1A\u628A\u4E24\u4E2A\u63A7\u4EF6\u5728\u5916\u89C2\u4E0A\u710A\u6210\u4E00\u4F53\uFF08\u5916\u6846 / \u5706\u89D2 / \u4E2D\u95F4 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\uFF09\u3002\n   \u5B83**\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03** \u2014\u2014 \u9009\u4E2D\u4E0E\u8054\u52A8\u5168\u8D70\u5185\u4EF6\u81EA\u5DF1\u7684 value / onChange\n   \uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF1A\u5916\u58F3\u4E0D\u5FC5\u77E5\u9053\u53F3\u8FB9\u90A3\u4E2A\u4E0B\u62C9\u7BA1\u4EC0\u4E48\uFF09\u3002\n\n   \u26A0\uFE0F \u4E0E\u5185\u4EF6\u7C7B\u540D\u6709\u610F\u8026\u5408\uFF1A\u5185\u4EF6\u662F Picker / Segmented \u65F6\u7531\u4E0B\u9762\u51E0\u6761\u89C4\u5219\u628A\u5B83\u4EEC\u81EA\u5DF1\u7684\n   \u8FB9\u6846 / \u5E95\u8272 / \u5706\u89D2\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u7EDF\u4E00\u753B\u3002\u5185\u4EF6\u6539\u540D\u6216\u6539\u7ED3\u6784\u8981\u540C\u6B65\u6539\u8FD9\u91CC\uFF0C\n   \u5426\u5219\u4F1A\u51FA\u73B0\u53CC\u8FB9\u6846\u3001\u53CC\u5E95\u8272\u3002\n\n   \u9AD8\u5EA6\u4E0D\u5199\u6B7B\uFF1A\u5185\u4EF6\u81EA\u5DF1\u6309 size \u6863\uFF08sm 24 / md 28 / lg 32\uFF09\u6491\u5F00\uFF0C\u5916\u58F3\u8DDF\u7740\u957F\u3002\n   \u4E24\u683C\u8981\u7B49\u9AD8\uFF0C\u5C31\u7ED9\u5185\u4EF6\u4F20**\u540C\u4E00\u4E2A size**\u3002\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\u5916\u58F3\u5185\u4EF6\u7528 align-items:center\n   \u5C45\u4E2D\uFF08\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\uFF0C\u7528\u6237 2026-10-28 \u622A\u56FE\u53CD\u9988\u300C\u672C\u6708\u504F\u4E0A\u300D\u540E\u7684\u5904\u7406\uFF09\uFF1B**\u522B\u7528 height:100%**\uFF0C\n   \u5B83\u4F1A\u8986\u76D6\u4E09\u6863\u9AD8\u5EA6\uFF08\u4E0E --lg/--sm \u540C\u7279\u5F02\u6027\u4E14\u6CE8\u5165\u66F4\u665A\uFF09\u3002\n\n   \u5DE6\u683C\u7EDF\u4E00\u7070\u5E95\uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF09\uFF1A\u6ED1\u5757\u4FDD\u7559\u81EA\u5DF1\u7684\u7070\u8F68\uFF0C\u5DE6\u683C\u4E0B\u62C9\u628A\u5E95\u8272\u6362\u6210\n   surface-sunken\uFF1B\u53F3\u683C\u4FDD\u6301\u539F\u6837\u3002\u5C42\u6B21\u611F = \u5DE6\u683C\u662F\u300C\u6863\u4F4D/\u8303\u56F4\u300D\uFF0C\u53F3\u683C\u662F\u300C\u503C\u300D\u3002 */\n   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}\n   /* \u4E24\u683C\u5BBD\u5EA6\u90FD\u7531\u5185\u5BB9\u7ED9\uFF1B\u5BB9\u5668\u518D\u7A84\u4E5F\u8BA9\u5185\u4EF6\u81EA\u5DF1\u7701\u7565\uFF0C\u4E0D\u8BA9\u5916\u58F3\u88AB\u6491\u7834 */\n   .dshpc-split > *{min-width:0;max-width:100%;}\n   /* \u5206\u9694\uFF1A\u76F8\u90BB\u5144\u5F1F\u7684\u5DE6\u63CF\u8FB9\uFF0C\u4E0D\u989D\u5916\u63D2 DOM\uFF0Chover / focus \u65F6\u4E5F\u4E0D\u4F1A\u65AD */\n   .dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n   /* \u6574\u4F53\u805A\u7126\uFF1A\u53EA\u5728**\u4E0B\u62C9\u5C55\u5F00**\u65F6\u753B\u4E00\u6574\u5708\uFF08\u5224\u636E\u662F\u5185\u4EF6\u7684 aria-expanded\uFF0C\u4E0D\u662F :focus-within\uFF09\u3002\n      2026-11-02 \u7528\u6237\u5B9A\u7A3F\uFF1A\u6ED1\u5757\u90A3\u683C\u662F\u300C\u9009\u4E2D\u300D\u4E0D\u662F\u300C\u8F93\u5165\u805A\u7126\u300D\uFF0C\u9F20\u6807\u70B9\u5B83\u4E0D\u8BE5\u8BA9\u6574\u6846\u5E38\u4EAE\uFF1B\n      \u800C\u4E14\u9009\u53D6\u503C\u540E\u7126\u70B9\u4F1A\u7559\u5728\u6309\u94AE\u4E0A\uFF0C\u7528 :focus-within \u4F1A\u4E00\u76F4\u4EAE\u7740\u3002 */\n   .dshpc-split:has(.dshpc-picker__trigger[aria-expanded='true']){border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n   /* Picker\uFF1A\u53BB\u6389\u81EA\u8EAB\u5916\u6846\u4E0E\u5E95\u8272\uFF1Bdisplay \u6539\u6210 flex\uFF0C\u6D88\u6389 inline-block \u884C\u76D2\u5E26\u6765\u7684\u57FA\u7EBF\u95F4\u9699\u3002\n      \u6CE8\u610F**\u4E0D\u80FD\u7528 height:100%**\uFF1A\u5B83\u4F1A\u548C .dshpc-picker__trigger--lg / --sm \u540C\u7279\u5F02\u6027\uFF08\u90FD\u662F\u4E24\u4E2A\u7C7B\uFF09\uFF0C\n      \u4E14 split-group.css \u5728 picker.css \u4E4B\u540E\u6CE8\u5165\uFF0C\u4F1A\u628A\u4E09\u6863\u9AD8\u5EA6\u5168\u5403\u6389\uFF08md/lg \u770B\u8D77\u6765\u4E00\u6837\u5927\uFF09\u3002\n      \u6539\u7528 align-items:center \u2014\u2014 \u540C size \u65F6\u4E24\u683C\u81EA\u7136\u7B49\u9AD8\u7684\u540C\u65F6\u6587\u5B57\u5782\u76F4\u5C45\u4E2D\uFF1B\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\n      \u8F83\u77EE\u7684\u683C\u4E5F\u53EA\u662F\u5C45\u4E2D\u3001\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\u3002 */\n   .dshpc-split .dshpc-picker{display:flex;align-items:center;}\n   .dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}\n   .dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}\n   /* \u5DE6\u683C\u4E0B\u62C9\uFF1A\u7070\u5E95\uFF08\u6ED1\u5757\u7684\u7070\u8F68\u662F\u5B83\u81EA\u5DF1\u7684 --dshpc-seg-track\uFF0C\u4E0D\u5728\u8FD9\u91CC\u8986\u76D6\uFF09 */\n   .dshpc-split > :first-child .dshpc-picker__trigger{background:var(--dshpc-surface-sunken);}\n   /* Segmented\uFF1A\u53EA\u53BB\u5916\u5706\u89D2\u4E0E\u63CF\u8FB9\uFF0C\u7070\u8F68\u4FDD\u7559\uFF1Bpadding \u4FDD\u6301 3px \u4E0D\u52A8 \u2014\u2014 \u5B83\u662F\u9AD8\u5EA6\u5951\u7EA6\u7684\u4E00\u90E8\u5206\n    \uFF083 + item + 3 = control-h\uFF09\u3002bordered \u90A3\u6863\u53BB\u6389\u63CF\u8FB9\u3001\u628A\u8BA9\u7ED9\u63CF\u8FB9\u7684 1px \u8FD8\u56DE padding\uFF0C\n    \u5426\u5219\u4F1A\u6BD4\u53F3\u8FB9\u77EE 2px\u3002 */\n   .dshpc-split .dshpc-seg{border-radius:0;border:0;}\n   .dshpc-split .dshpc-seg--bordered{padding:3px;}\n";
@@ -3548,7 +3550,7 @@ function FieldHint(props) {
 var import_react5 = require("react");
 
 // dist/ui/marquee-css.generated.js
-var MARQUEE_CSS = "/* \u8DD1\u9A6C\u706F\uFF08MarqueeText\uFF09\uFF1A\u53CC\u5C42\u2014\u2014\u5916\u5C42\u53EA\u88C1\u526A\uFF0C\u5185\u5C42\u624D transform \u6EDA\u52A8\uFF1B\u975E hover \u5185\u5C42\u81EA\u5E26\u7701\u7565\u53F7\u3002\n   2026-10-20\uFF1A\u672C\u6587\u4EF6\u539F\u662F\u6742\u70E9\u300Cselect.css\u300D\uFF08\u4E0B\u62C9 / \u65E5\u5386 / \u65F6\u5206\u7684\u76AE\u80A4\u90FD\u88C5\u8FC7\uFF09\uFF0C\u968F\u7740\u90A3\u4E9B\u63A7\u4EF6\n   \u4E00\u4E2A\u4E2A\u5220\u5B8C\uFF0C\u6700\u540E\u53EA\u5269\u8DD1\u9A6C\u706F\uFF0C\u6545\u6309\u672C\u5305\u300C\u4E00\u4E2A css \u670D\u52A1\u4E00\u4E2A\u5BF9\u8C61\u300D\u7684\u683C\u5C40\u6539\u540D\u5F52\u6863\u3002\n   \u540C\u6279\u6E05\u6389\u7684\u8FD8\u6709\u96F6\u5F15\u7528\u7684\u7701\u7565\u53F7\u7C7B .dshpc-ellipsis \u2014\u2014 \u672C\u5305\u4E09\u4E2A\u7528\u5230\u622A\u65AD\u7684\u5730\u65B9\u90FD\u6CA1\u91C7\u7EB3\u5B83\u3002 */\n.dshpc-mq{display:block;overflow:hidden;white-space:nowrap;}\n.dshpc-mq .dshpc-mq-in{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:top;}\n/* \u26A0\uFE0F \u8DD1\u6CD5\uFF08\u7528\u6237 2026-10-03 \u62CD\u677F\uFF09\uFF1A**\u8DD1\u4E00\u904D\u3001\u505C\u5728\u5C3E\u5B57**\uFF08\u64AD\u653E 1 \u6B21 + forwards\uFF09\uFF0C\u4E0D\u6765\u56DE\u5F39\u3001\u4E0D\u65E0\u9650\u8DD1\u3002\n   \u6EDA\u8DDD = \u7CBE\u786E\u6EA2\u51FA\u91CF \u21D2 \u505C\u4E0B\u65F6\u6700\u540E\u4E00\u4E2A\u5B57\u6B63\u597D\u8D34\u53F3\u7F18\uFF0C**\u4E0D\u4F1A\u8DD1\u8FDB\u9ED1\u5757**\uFF08\u9ED1\u5757\u662F\u65E7\u624B\u5199\u7248\u628A\n   \u5185\u5C42\u76D2\u5B50\u88C1\u4E86\u3001\u6309\u300C\u534A\u622A\u6587\u672C\u300D\u5E73\u79FB\u5BFC\u81F4\u7684\uFF09\u3002\u9F20\u6807\u79FB\u5F00 \u21D2 :hover \u5931\u6548 \u21D2 \u81EA\u52A8\u590D\u4F4D\u56DE\u7701\u7565\u53F7\u6001\u3002 */\n.dshpc-mq-run:hover .dshpc-mq-in{max-width:none;overflow:visible;animation:dshpc-mq-scroll var(--dshpc-mq-dur,6s) linear .4s 1 forwards;}\n@keyframes dshpc-mq-scroll{from{transform:translateX(0)}to{transform:translateX(var(--dshpc-mq-dist,-40px))}}\n/* \u6EA2\u51FA\u6E10\u5F71\uFF08\u7528\u6237 2026-10-24 \u62CD\u677F\u300C\u5DE6\u53F3\u7A0D\u5FAE\u6709\u70B9\u6E10\u5F71\u300D\uFF1B\u5B98\u65B9\u53E3\u5F84 = dsh-client-ui-primitives@0.2.1-rc.2\n   PathLabel.module.css:13-15\uFF1Amask-image \u7EBF\u6027\u6E10\u9690 + 28px \u968F\u5B98\u65B9\uFF09\u3002\u26A0\uFE0F \u53EA\u5728 **hover \u6EDA\u52A8\u6001** \u52A0\uFF1A\n   \u9759\u6001\u6001\uFF08\u4E09\u4E2A\u70B9\uFF09\u4E0D\u8981\u6E10\u5F71\uFF08\u7528\u6237 2026-10-24 \u4E8C\u6B21\u62CD\u677F\uFF09\uFF0Chover \u6EDA\u52A8\u65F6\u4E24\u7AEF\u6E10\u5F71\u2014\u2014\u5DE6\u7F18\u67D4\u5316\u88AB\u88C1\u7684\u6587\u5B57\u5934\u3002 */\n.dshpc-mq-run:hover{mask-image:linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);}\n";
+var MARQUEE_CSS = "/* \u8DD1\u9A6C\u706F\uFF08MarqueeText\uFF09\uFF1A\u53CC\u5C42\u2014\u2014\u5916\u5C42\u53EA\u88C1\u526A\uFF0C\u5185\u5C42\u624D transform \u6EDA\u52A8\uFF1B\u975E hover \u5185\u5C42\u81EA\u5E26\u7701\u7565\u53F7\u3002\n   2026-10-20\uFF1A\u672C\u6587\u4EF6\u539F\u662F\u6742\u70E9\u300Cselect.css\u300D\uFF08\u4E0B\u62C9 / \u65E5\u5386 / \u65F6\u5206\u7684\u76AE\u80A4\u90FD\u88C5\u8FC7\uFF09\uFF0C\u968F\u7740\u90A3\u4E9B\u63A7\u4EF6\n   \u4E00\u4E2A\u4E2A\u5220\u5B8C\uFF0C\u6700\u540E\u53EA\u5269\u8DD1\u9A6C\u706F\uFF0C\u6545\u6309\u672C\u5305\u300C\u4E00\u4E2A css \u670D\u52A1\u4E00\u4E2A\u5BF9\u8C61\u300D\u7684\u683C\u5C40\u6539\u540D\u5F52\u6863\u3002\n   \u540C\u6279\u6E05\u6389\u7684\u8FD8\u6709\u96F6\u5F15\u7528\u7684\u7701\u7565\u53F7\u7C7B .dshpc-ellipsis \u2014\u2014 \u672C\u5305\u4E09\u4E2A\u7528\u5230\u622A\u65AD\u7684\u5730\u65B9\u90FD\u6CA1\u91C7\u7EB3\u5B83\u3002 */\n.dshpc-mq{display:block;overflow:hidden;white-space:nowrap;}\n.dshpc-mq .dshpc-mq-in{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:top;}\n/* \u26A0\uFE0F \u8DD1\u6CD5\uFF08\u7528\u6237 2026-10-03 \u62CD\u677F\uFF09\uFF1A**\u8DD1\u4E00\u904D\u3001\u505C\u5728\u5C3E\u5B57**\uFF08\u64AD\u653E 1 \u6B21 + forwards\uFF09\uFF0C\u4E0D\u6765\u56DE\u5F39\u3001\u4E0D\u65E0\u9650\u8DD1\u3002\n   \u6EDA\u8DDD = \u7CBE\u786E\u6EA2\u51FA\u91CF \u21D2 \u505C\u4E0B\u65F6\u6700\u540E\u4E00\u4E2A\u5B57\u6B63\u597D\u8D34\u53F3\u7F18\uFF0C**\u4E0D\u4F1A\u8DD1\u8FDB\u9ED1\u5757**\uFF08\u9ED1\u5757\u662F\u65E7\u624B\u5199\u7248\u628A\n   \u5185\u5C42\u76D2\u5B50\u88C1\u4E86\u3001\u6309\u300C\u534A\u622A\u6587\u672C\u300D\u5E73\u79FB\u5BFC\u81F4\u7684\uFF09\u3002\u9F20\u6807\u79FB\u5F00 \u21D2 :hover \u5931\u6548 \u21D2 \u81EA\u52A8\u590D\u4F4D\u56DE\u7701\u7565\u53F7\u6001\u3002 */\n.dshpc-mq-run:hover .dshpc-mq-in{max-width:none;overflow:visible;animation:dshpc-mq-scroll var(--dshpc-mq-dur,6s) linear .4s 1 forwards;}\n@keyframes dshpc-mq-scroll{from{transform:translateX(0)}to{transform:translateX(var(--dshpc-mq-dist,-40px))}}\n/* \u6EA2\u51FA\u6E10\u5F71\uFF08\u7528\u6237 2026-10-24 \u62CD\u677F\u300C\u5DE6\u53F3\u7A0D\u5FAE\u6709\u70B9\u6E10\u5F71\u300D\uFF1B\u5B98\u65B9\u53E3\u5F84 = dsh-client-ui-primitives@0.2.1-rc.2\n   PathLabel.module.css:13-15\uFF1Amask-image \u7EBF\u6027\u6E10\u9690 + 28px \u968F\u5B98\u65B9\uFF09\u3002\u26A0\uFE0F \u53EA\u5728 **hover \u6EDA\u52A8\u6001** \u52A0\uFF1A\n   \u9759\u6001\u6001\uFF08\u4E09\u4E2A\u70B9\uFF09\u4E0D\u8981\u6E10\u5F71\uFF08\u7528\u6237 2026-10-24 \u4E8C\u6B21\u62CD\u677F\uFF09\uFF0Chover \u6EDA\u52A8\u65F6\u4E24\u7AEF\u6E10\u5F71\u2014\u2014\u5DE6\u7F18\u67D4\u5316\u88AB\u88C1\u7684\u6587\u5B57\u5934\u3002 */\n/* token-ok\uFF1A\u906E\u7F69\u6A21\u677F\u8272\uFF08\u7EAF\u9ED1 = \u5B8C\u5168\u4E0D\u900F\u660E\uFF09\uFF0C\u4E0D\u662F\u4E3B\u9898\u8272\uFF1B\u6362\u4E3B\u9898\u4E5F\u4E0D\u8BE5\u53D8\u3002 */\n.dshpc-mq-run:hover{mask-image:linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);}\n";
 
 // dist/ui/MarqueeText.js
 function MarqueeText(props) {
@@ -3594,6 +3596,9 @@ function MarqueeText(props) {
   }, props.text));
 }
 
+// dist/ui/panel-css.generated.js
+var PANEL_CSS = "/* \u6D6E\u5C42\u9762\u677F\u76AE\u80A4\uFF082026-11-03 \u7528\u6237\u5B9A\uFF1A\u76AE\u80A4\u7EDF\u4E00\uFF0C\u53EA\u6539\u6837\u5F0F\u4E0D\u52A8\u4EA4\u4E92\uFF09\u3002\n *\n * \u8FD9\u4EFD\u6587\u4EF6\u662F**\u6240\u6709\u300C\u6D6E\u8D77\u6765\u7684\u6846\u300D\u7684\u76AE\u80A4\u771F\u6E90**\u3002\u5B9A\u4F4D\uFF08fixed / absolute\u3001\u8D34\u8C01\u3001\u600E\u4E48\u7FFB\u8F6C\u3001\u591A\u5927\u7684\n * \u5C42\u5E8F\uFF09\u7559\u5728\u5404\u81EA\u63A7\u4EF6\u91CC\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u8868\u9762\u56DB\u4EF6\uFF1A\u5E95\u8272 / \u63CF\u8FB9\u5BBD / \u5706\u89D2 / \u9634\u5F71\u3002\n * \u26A0\uFE0F \u7EC4\u4EF6 CSS \u91CC\u4E0D\u8BB8\u518D\u5199\u8FD9\u56DB\u4E2A\u5B57\u9762\u503C \u2014\u2014 \u60F3\u6539\u5916\u89C2\u5C31\u6539\u8FD9\u91CC\uFF0C\u522B\u5728\u6D88\u8D39\u65B9\u53E6\u8D77\u4E00\u5957\u3002\n *\n * \u4E09\u6863\uFF08\u5DEE\u5F02\u53EA\u5728\u8FD9\u4E09\u6BB5\u5B9A\u4E49\uFF0C\u522B\u5904\u5206\u53C9\uFF09\uFF1A\n *   --modal    \u5C45\u4E2D\u6A21\u6001\uFF08Modal / ConfirmModal / AlertModal \u5BB6\u65CF\uFF09\n *   --popover  \u8D34\u951A\u70B9\u7684\u6D6E\u5C42\u9762\u677F\uFF08pickWorkspaceFile \u7684\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\n *   --menu     \u4E0B\u62C9\u83DC\u5355\uFF08\u6587\u4EF6\u6D4F\u89C8\u5668 \u25BE \u9009\u5C42\u3001Picker \u4E0B\u62C9\uFF09\n *\n * \u4E0D\u5E76\u5165\u4E09\u6863\u7684\uFF1APanelDock \u4E0E SideSheet \u662F**\u8D34\u8FB9\u5BB6\u65CF**\uFF08side-panel.css \u7684\n * .dshpc-side-surface\uFF0Csurface-base\u3001\u65E0\u5916\u63CF\u8FB9\uFF09\u2014\u2014 2026-11-02 \u62CD\u677F\u300C\u4E24\u8005\u76AE\u80A4\u4E00\u6A21\u4E00\u6837\u300D\uFF0C\n * \u4E00\u4E2A\u662F\u5E03\u5C40\u6210\u5458\u3001\u4E00\u4E2A\u662F\u8D34\u8FB9\u62BD\u5C49\uFF0C\u90FD\u4E0D\u662F\u6D6E\u5C42\u3002\n */\n.dshpc-panel{\n  background:var(--dshpc-panel-bg);color:var(--dshpc-fg);\n  border:var(--dshpc-panel-bw) solid var(--dshpc-border);\n  border-radius:var(--dshpc-panel-radius);box-shadow:var(--dshpc-panel-shadow);\n}\n.dshpc-panel--modal{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:3px;\n  --dshpc-panel-radius:var(--dshpc-radius-xl);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n}\n.dshpc-panel--popover{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  --dshpc-panel-radius:var(--dshpc-radius-lg);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n}\n.dshpc-panel--menu{\n  /* \u83DC\u5355\u5E95\u4E0E\u6A21\u6001\u540C\u4E00\u5C42\uFF08\u7528\u6237 2026-11-03\uFF1A\u522B\u7528\u9875\u9762\u5E95\u8272\uFF0C\u6697\u8272\u4E0B\u770B\u7740\u5168\u9ED1\uFF09\u3002 */\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  --dshpc-panel-radius:var(--dshpc-radius-sm);\n  --dshpc-panel-shadow:var(--dshpc-shadow-1);\n}\n\n/* \u6D6E\u5C42\u552F\u4E00\u7684\u5173\u95ED\u94AE\uFF0820\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF09\u3002\n   \u65E7\u7C7B\u540D .dshpc-overlay-head__close \u4FDD\u7559\u4E3A\u522B\u540D\uFF1A\u6D88\u8D39\u65B9\u5199\u5728\u65E7\u7C7B\u540D\u4E0A\u7684\u8986\u76D6\u4ECD\u751F\u6548\u3002 */\n.dshpc-panel__close,.dshpc-overlay-head__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-panel__close:hover,.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-panel__close:focus-visible,.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n";
+
 // dist/ui/picker-css.generated.js
 var PICKER_CSS = `
 .dshpc-picker{position:relative;display:inline-block;max-width:100%;font-size:13px;line-height:20px}
@@ -3613,12 +3618,11 @@ var PICKER_CSS = `
 .dshpc-picker__caret{flex:none;color:var(--dshpc-fg-3)}
 .dshpc-picker__icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
 .dshpc-picker__option-icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
+/* \u4E0B\u62C9\u9762\u677F\u53EA\u7559\u5B9A\u4F4D / \u6EDA\u52A8 / \u5B57\u53F7\uFF1A\u5E95\u8272\xB7\u63CF\u8FB9\xB7\u5706\u89D2\xB7\u9634\u5F71\u6765\u81EA panel.css \u7684 menu \u6863\u3002 */
 .dshpc-picker__menu{
-  z-index:60;max-height:280px;overflow:auto;padding:4px;
+  z-index:var(--dshpc-z-popmenu);max-height:280px;overflow:auto;padding:4px;
   /* \u83DC\u5355\u7ECF FloatingPortal \u6302\u5230 body\uFF0C\u8131\u79BB .dshpc-picker\uFF0C\u987B\u663E\u5F0F\u5B57\u53F7\uFF0C\u5426\u5219\u7EE7\u627F body \u7684\u5927\u5B57\u53F7 */
   font-size:13px;line-height:20px;
-  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);
-  border-radius:var(--dshpc-radius-md);box-shadow:0 8px 24px rgba(15,23,42,.12);
 }
 /* \u5C3A\u5BF8\u6863\uFF08\u4E0E Field \u7684 sm/md/lg \u5BF9\u5E94\uFF09\u3002 */
 .dshpc-picker__trigger--sm{height:24px;font-size:12px}
@@ -3656,6 +3660,7 @@ var PICKER_CSS = `
 // dist/ui/Picker.js
 function Picker(props) {
   ensureComponentStyles("picker", PICKER_CSS);
+  ensureComponentStyles("panel", PANEL_CSS);
   ensureComponentStyles("field", FIELD_CSS);
   const tt = props.translate ?? t;
   const mode = props.mode ?? "single";
@@ -3711,9 +3716,9 @@ function Picker(props) {
     const onDown = (e) => {
       const root = rootRef.current;
       const floatingEl = refs.floating.current;
-      if (root !== null && root.contains(e.target))
+      if (root?.contains(e.target) === true)
         return;
-      if (floatingEl !== null && floatingEl.contains(e.target))
+      if (floatingEl?.contains(e.target) === true)
         return;
       setOpen(false);
     };
@@ -3792,7 +3797,7 @@ function Picker(props) {
     ref: rootRef,
     onKeyDown
   }, triggerRow, open ? (0, import_react6.createElement)(FloatingPortal, null, (0, import_react6.createElement)("div", {
-    className: "dshpc-picker__menu",
+    className: "dshpc-panel dshpc-panel--menu dshpc-picker__menu",
     ref: refs.setFloating,
     style: floatingStyles
   }, props.degraded === true ? (0, import_react6.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react6.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react6.createElement)("input", {
@@ -4017,10 +4022,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h74 = Math.floor(totalSec / 3600);
+  const h79 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h74 > 0 ? `${h74}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h79 > 0 ? `${h79}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -4297,6 +4302,7 @@ var ICON_UP = (0, import_react10.createElement)(Chevron, { dir: "up", size: 12 }
 var ICON_DOWN = (0, import_react10.createElement)(Chevron, { size: 12 });
 function DateTimePicker(props) {
   ensureComponentStyles("datetime", DATETIME_CSS);
+  ensureComponentStyles("panel", PANEL_CSS);
   ensureComponentStyles("field", FIELD_CSS);
   const tt = props.translate ?? t;
   const mode = props.mode ?? "single";
@@ -4605,7 +4611,14 @@ function DateTimePicker(props) {
   };
   const invalidRange = rangeMode && partsOf(draft.start) !== null && partsOf(draft.end) !== null && !rangeIsValid(formatDateTimeIso(partsOf(draft.start)), formatDateTimeIso(partsOf(draft.end)));
   const canCommit = rangeMode ? partsOf(draft.start) !== null && partsOf(draft.end) !== null && !invalidRange : partsOf(draft.start) !== null;
-  const pop2 = (0, import_react10.createElement)("div", { className: "dshpc-dt__pop", ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown }, rangeMode ? (0, import_react10.createElement)("div", { className: "dshpc-dt__ends" }, endBox("start", tt("dtStart")), endBox("end", tt("dtEnd"))) : null, (0, import_react10.createElement)("div", { className: "dshpc-dt__panels" }, panel("start"), rangeMode ? panel("end") : null), (0, import_react10.createElement)("div", { className: "dshpc-dt__foot" }, (0, import_react10.createElement)("div", { className: "dshpc-dt__foot-side" }, (0, import_react10.createElement)(Button, { variant: "ghost", size: "sm", onClick: applyNow }, precision === "day" ? tt("dtToday") : tt("dtNow")), (0, import_react10.createElement)(Button, { variant: "ghost", size: "sm", onClick: clear }, tt("dtClear"))), (0, import_react10.createElement)("div", { className: "dshpc-dt__foot-side" }, invalidRange ? (0, import_react10.createElement)("span", { className: "dshpc-dt__warn" }, tt("dtInvalidRange")) : null, (0, import_react10.createElement)(Button, { variant: "outline", size: "sm", onClick: () => setOpen(false) }, tt("cancel")), (0, import_react10.createElement)(Button, { variant: "primary", size: "sm", disabled: !canCommit, onClick: commit }, tt("confirm")))));
+  const pop2 = (0, import_react10.createElement)(
+    "div",
+    // 弹层表面积走 panel.css 的 menu 档（2026-11-03 皮肤统一）；这类名只剩定位与内距。
+    { className: "dshpc-panel dshpc-panel--menu dshpc-dt__pop", ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown },
+    rangeMode ? (0, import_react10.createElement)("div", { className: "dshpc-dt__ends" }, endBox("start", tt("dtStart")), endBox("end", tt("dtEnd"))) : null,
+    (0, import_react10.createElement)("div", { className: "dshpc-dt__panels" }, panel("start"), rangeMode ? panel("end") : null),
+    (0, import_react10.createElement)("div", { className: "dshpc-dt__foot" }, (0, import_react10.createElement)("div", { className: "dshpc-dt__foot-side" }, (0, import_react10.createElement)(Button, { variant: "ghost", size: "sm", onClick: applyNow }, precision === "day" ? tt("dtToday") : tt("dtNow")), (0, import_react10.createElement)(Button, { variant: "ghost", size: "sm", onClick: clear }, tt("dtClear"))), (0, import_react10.createElement)("div", { className: "dshpc-dt__foot-side" }, invalidRange ? (0, import_react10.createElement)("span", { className: "dshpc-dt__warn" }, tt("dtInvalidRange")) : null, (0, import_react10.createElement)(Button, { variant: "outline", size: "sm", onClick: () => setOpen(false) }, tt("cancel")), (0, import_react10.createElement)(Button, { variant: "primary", size: "sm", disabled: !canCommit, onClick: commit }, tt("confirm"))))
+  );
   return (0, import_react10.createElement)("div", {
     className: `dshpc-dt${props.className === void 0 ? "" : ` ${props.className}`}`,
     ref: rootRef
@@ -4828,20 +4841,43 @@ function WorkspacePicker(props) {
 }
 
 // dist/ui/Modal.js
-var import_react16 = require("react");
+var import_react17 = require("react");
 
 // dist/ui/feedback-css.generated.js
-var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5DF2\u62BD\u5230 overlay.css\uFF08Modal / SideSheet \u5171\u7528\uFF09\uFF0C\u8FD9\u91CC\u53EA\u5269\u9762\u677F\u672C\u4F53\u4E0E\u5BB6\u65CF\u5C3A\u5BF8\u3002 */\n/* \u5927\u5F39\u7A97\u5BB6\u65CF\uFF08md/lg\uFF09\uFF1A\u6284\u5144\u5F1F\u9879\u76EE archive-session-css \u7684 .dsh-tdt-sv-panel\uFF08surface-base + border-l2 + radius 12 + shadow-2\uFF09\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n  /* \u9762\u677F\u5E95\u8272 = \u5BBF\u4E3B\u6D6E\u5C42\u6863 bg-layer-1\uFF08\u4E0E\u5B98\u65B9\u5F39\u7A97\u540C\u5C42\uFF09\uFF0C\u4E0D\u662F\u9875\u9762\u5E95 bg-base\uFF1A\n     base \u5728\u6697\u8272\u4E0B\u662F\u7EAF\u9ED1\u3001\u4EAE\u8272\u4E0B\u662F\u6700\u767D\uFF0C\u5F39\u7A97\u7528\u5B83\u624D\u4F1A\u300C\u6BD4\u539F\u751F\u66F4\u9ED1 / \u66F4\u767D\u300D\uFF08\u7528\u6237 2026-11-02\uFF09\u3002 */\n  background:var(--dshpc-surface-1);color:var(--dshpc-fg);\n  border:3px solid var(--dshpc-border);border-radius:var(--dshpc-radius-xl);\n  box-shadow:var(--dshpc-shadow-2);overflow:hidden;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\n   \u900F\u660E\u53F3\u8FB9\u6846 = \u8BA9\u6EDA\u52A8\u6761\u4E0E\u9762\u677F\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px;border-right:1px solid transparent}\n/* \u5E95\u680F\u4E0E\u5934\u90E8\u540C\u4E00\u53E3\u5F84\uFF082026-11-02 \u7528\u6237\uFF09\uFF1A\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\u3001\u9ED8\u8BA4\u5E26\u4E00\u6761\u5206\u9694\u7EBF\u3002\n   \u7EBF\u53EF\u7531\u6D88\u8D39\u65B9\u5173\u6389\uFF08Modal \u7684 footerDivider=false\uFF09\u2014\u2014 \u786E\u8BA4\u6846\u5BB6\u65CF\u672C\u6765\u5C31\u6CA1\u6709\u7EBF\uFF08\u4E0E\u5934\u90E8\u4E00\u81F4\uFF09\u3002 */\n.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}\n.dshpc-modal .dshpc-modal__foot--bare{border-top:none}\n.dshpc-toast-host{\n  position:fixed;z-index:1090;left:50%;bottom:32px;transform:translateX(-50%);\n  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;\n}\n.dshpc-toast{\n  padding:8px 14px;border-radius:8px;font-size:13px;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);\n  box-shadow:0 8px 24px rgba(15,23,42,.16);\n}\n.dshpc-toast--success{color:var(--dshpc-success);border-color:color-mix(in srgb,var(--dshpc-success) 40%,transparent)}\n.dshpc-toast--error{color:var(--dshpc-danger);border-color:color-mix(in srgb,var(--dshpc-danger) 40%,transparent)}\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B token\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:#fff;flex:none}\n.dshpc-alert-sev--info{background:#2563eb}\n.dshpc-alert-sev--success{background:#16a34a}\n.dshpc-alert-sev--warning{background:#d97706}\n.dshpc-alert-sev--error{background:#dc2626}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}\n";
+var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5728 overlay.css\uFF0C\u8868\u9762\uFF08\u5E95\u8272/\u63CF\u8FB9/\u5706\u89D2/\u9634\u5F71\uFF09\u5728 panel.css \u7684 --modal \u6863\uFF0C\n   \u8FD9\u91CC\u53EA\u5269**\u5BB6\u65CF\u5E03\u5C40\u4E0E\u5C3A\u5BF8**\u3002\u4E09\u8005\u5404\u7BA1\u4E00\u6BB5\uFF0C\u522B\u518D\u628A\u76AE\u80A4\u6284\u56DE\u6765\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\n   \u900F\u660E\u53F3\u8FB9\u6846 = \u8BA9\u6EDA\u52A8\u6761\u4E0E\u9762\u677F\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px;border-right:1px solid transparent}\n/* \u5E95\u680F\u4E0E\u5934\u90E8\u540C\u4E00\u53E3\u5F84\uFF082026-11-02 \u7528\u6237\uFF09\uFF1A\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\u3001\u9ED8\u8BA4\u5E26\u4E00\u6761\u5206\u9694\u7EBF\u3002\n   \u7EBF\u53EF\u7531\u6D88\u8D39\u65B9\u5173\u6389\uFF08Modal \u7684 footerDivider=false\uFF09\u2014\u2014 \u786E\u8BA4\u6846\u5BB6\u65CF\u672C\u6765\u5C31\u6CA1\u6709\u7EBF\uFF08\u4E0E\u5934\u90E8\u4E00\u81F4\uFF09\u3002 */\n.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}\n.dshpc-modal .dshpc-modal__foot--bare{border-top:none}\n/* \u81EA\u7ED8 toast \u7684\u6837\u5F0F\u5728 2026-11-03 \u5220\u9664\uFF1AToast \u65E9\u5DF2\u6539\u8D70\u5BBF\u4E3B toast()\uFF08Toast.ts \u7684 showNative\uFF09\uFF0C\n   .dshpc-toast* \u8FD9\u51E0\u4E2A\u7C7B\u6CA1\u6709\u4EFB\u4F55\u6D88\u8D39\u8005\uFF0C\u7559\u7740\u53EA\u662F\u6B7B\u6837\u5F0F\uFF08\u8FD8\u5E26\u7740\u88F8 z-index \u4E0E\u88F8\u9634\u5F71\uFF09\u3002 */\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u8272\u503C\u5728 tokens.css \u7684 --dshpc-sev-*\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:var(--dshpc-on-signal);flex:none}\n.dshpc-alert-sev--info{background:var(--dshpc-sev-info)}\n.dshpc-alert-sev--success{background:var(--dshpc-sev-success)}\n.dshpc-alert-sev--warning{background:var(--dshpc-sev-warning)}\n.dshpc-alert-sev--error{background:var(--dshpc-sev-error)}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}\n";
 
 // dist/ui/overlay.js
-var import_react15 = require("react");
+var import_react16 = require("react");
 
 // dist/ui/overlay-css.generated.js
-var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u4E24\u8FB9\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n/* \u5173\u95ED\u6309\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF0C\u4E0D\u501F\u7528 Picker \u7684\u89E6\u53D1\u5668\u76AE\u80A4\uFF08\u90A3\u4EFD\u5E26 min-width:120px\uFF09\u3002 */\n.dshpc-overlay-head__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n";
+var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09/ \u9009\u6587\u4EF6\u5F39\u7A97\uFF08\u951A\u5B9A\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u5404\u5BB6\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002\n   \u5173\u95ED\u94AE\u7684\u76AE\u80A4\u5728 panel.css\uFF08.dshpc-panel__close\uFF0C\u65E7\u7C7B\u540D\u4F5C\u522B\u540D\uFF09\uFF0C\u4E0D\u5728\u8FD9\u91CC\u518D\u5199\u4E00\u4EFD\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n/* \u951A\u5B9A\u6863\uFF08\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\uFF1A\u906E\u7F69\u7167\u65E7\u538B\u6697 + \u70B9\u5916\u90E8\u5173\u95ED\uFF0C\u9762\u677F\u81EA\u5DF1 fixed \u8D34\u951A\u70B9\uFF0C\u8FD9\u91CC\u4E0D\u505A\u5E03\u5C40\u3002 */\n.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n";
+
+// dist/ui/panel.js
+var import_react15 = require("react");
+function PanelSurface(props) {
+  ensureComponentStyles("panel", PANEL_CSS);
+  const className2 = `dshpc-panel dshpc-panel--${props.tier}${props.className === void 0 || props.className === "" ? "" : ` ${props.className}`}`;
+  return (0, import_react15.createElement)("div", {
+    ...props.attrs,
+    className: className2,
+    style: props.style,
+    role: props.role,
+    onClick: props.stopPropagation === true ? (event) => event.stopPropagation() : void 0
+  }, props.children ?? null);
+}
+function PanelClose(props) {
+  ensureComponentStyles("panel", PANEL_CSS);
+  return (0, import_react15.createElement)("button", {
+    type: "button",
+    className: `dshpc-panel__close${props.className === void 0 ? "" : ` ${props.className}`}`,
+    "aria-label": props.label,
+    onClick: () => props.onClick()
+  }, props.icon ?? "\u2715");
+}
 
 // dist/ui/overlay.js
 function useEscapeClose(enabled, onClose) {
-  (0, import_react15.useEffect)(() => {
+  (0, import_react16.useEffect)(() => {
     if (!enabled || onClose === void 0)
       return;
     const onKey = (event) => {
@@ -4854,7 +4890,8 @@ function useEscapeClose(enabled, onClose) {
 }
 function OverlayMask(props) {
   ensureComponentStyles("overlay", OVERLAY_CSS);
-  return (0, import_react15.createElement)("div", {
+  return (0, import_react16.createElement)("div", {
+    ...props.attrs,
     className: `dshpc-overlay dshpc-overlay--${props.kind}`,
     onClick: () => {
       if (props.closeOnMask)
@@ -4864,12 +4901,8 @@ function OverlayMask(props) {
 }
 function OverlayHead(props) {
   ensureComponentStyles("overlay", OVERLAY_CSS);
-  return (0, import_react15.createElement)("div", { className: "dshpc-overlay-head" }, (0, import_react15.createElement)("div", { className: "dshpc-overlay-head__heading" }, props.icon === void 0 ? null : (0, import_react15.createElement)("span", { className: "dshpc-overlay-head__lead" }, props.icon), (0, import_react15.createElement)("div", { className: "dshpc-overlay-head__titlegroup" }, (0, import_react15.createElement)("div", { className: "dshpc-overlay-head__titlerow" }, (0, import_react15.createElement)("div", { className: "dshpc-overlay-head__title" }, props.title ?? ""), props.extra === void 0 ? null : (0, import_react15.createElement)("div", { className: "dshpc-overlay-head__extra" }, props.extra)), props.subtitle === void 0 ? null : (0, import_react15.createElement)("div", { className: "dshpc-overlay-head__sid" }, props.subtitle))), (0, import_react15.createElement)("div", { className: "dshpc-overlay-head__spacer" }), props.actions === void 0 ? null : (0, import_react15.createElement)("div", { className: "dshpc-overlay-head__actions" }, props.actions), props.onClose === void 0 ? null : (0, import_react15.createElement)("button", {
-    type: "button",
-    className: "dshpc-overlay-head__close",
-    "aria-label": props.closeLabel,
-    onClick: () => props.onClose?.()
-  }, "\u2715"));
+  ensureComponentStyles("panel", PANEL_CSS);
+  return (0, import_react16.createElement)("div", { className: "dshpc-overlay-head" }, (0, import_react16.createElement)("div", { className: "dshpc-overlay-head__heading" }, props.icon === void 0 ? null : (0, import_react16.createElement)("span", { className: "dshpc-overlay-head__lead" }, props.icon), (0, import_react16.createElement)("div", { className: "dshpc-overlay-head__titlegroup" }, (0, import_react16.createElement)("div", { className: "dshpc-overlay-head__titlerow" }, (0, import_react16.createElement)("div", { className: "dshpc-overlay-head__title" }, props.title ?? ""), props.extra === void 0 ? null : (0, import_react16.createElement)("div", { className: "dshpc-overlay-head__extra" }, props.extra)), props.subtitle === void 0 ? null : (0, import_react16.createElement)("div", { className: "dshpc-overlay-head__sid" }, props.subtitle))), (0, import_react16.createElement)("div", { className: "dshpc-overlay-head__spacer" }), props.actions === void 0 ? null : (0, import_react16.createElement)("div", { className: "dshpc-overlay-head__actions" }, props.actions), props.onClose === void 0 ? null : (0, import_react16.createElement)(PanelClose, { label: props.closeLabel, onClick: props.onClose, className: "dshpc-overlay-head__close" }));
 }
 
 // dist/ui/Modal.js
@@ -4886,37 +4919,44 @@ function Modal(props) {
   const s = sizeStyle[props.size ?? "md"];
   const showClose = props.closable !== false && props.onClose !== void 0;
   const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
-  return (0, import_react16.createElement)(OverlayMask, { kind: "center", closeOnMask, onClose: props.onClose }, (0, import_react16.createElement)(
-    "div",
-    {
-      className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}`,
-      style: {
-        width: props.width ?? s.width,
-        maxWidth: props.maxWidth ?? s.maxWidth,
-        maxHeight: props.maxHeight ?? s.maxHeight,
-        height: props.height ?? s.height
+  return (0, import_react17.createElement)(
+    OverlayMask,
+    { kind: "center", closeOnMask, onClose: props.onClose },
+    // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
+    // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
+    (0, import_react17.createElement)(
+      PanelSurface,
+      {
+        tier: "modal",
+        className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}`,
+        style: {
+          width: props.width ?? s.width,
+          maxWidth: props.maxWidth ?? s.maxWidth,
+          maxHeight: props.maxHeight ?? s.maxHeight,
+          height: props.height ?? s.height
+        },
+        stopPropagation: true
       },
-      onClick: (e) => e.stopPropagation()
-    },
-    // 头部与遮罩都是浮层公共件（overlay.ts），SideSheet 用的是同一套。
-    showHeader ? (0, import_react16.createElement)(OverlayHead, {
-      icon: props.icon,
-      title: props.title,
-      subtitle: props.subtitle,
-      extra: props.headerExtra,
-      actions: props.headerActions,
-      closeLabel: tt("modalClose"),
-      onClose: showClose ? props.onClose : void 0
-    }) : null,
-    // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
-    // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
-    (0, import_react16.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null),
-    props.footer === void 0 ? null : (0, import_react16.createElement)("div", { className: `dshpc-modal__foot${props.footerDivider === false ? " dshpc-modal__foot--bare" : ""}` }, props.footer)
-  ));
+      // 头部与遮罩都是浮层公共件（overlay.ts），SideSheet 用的是同一套。
+      showHeader ? (0, import_react17.createElement)(OverlayHead, {
+        icon: props.icon,
+        title: props.title,
+        subtitle: props.subtitle,
+        extra: props.headerExtra,
+        actions: props.headerActions,
+        closeLabel: tt("modalClose"),
+        onClose: showClose ? props.onClose : void 0
+      }) : null,
+      // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
+      // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
+      (0, import_react17.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null),
+      props.footer === void 0 ? null : (0, import_react17.createElement)("div", { className: `dshpc-modal__foot${props.footerDivider === false ? " dshpc-modal__foot--bare" : ""}` }, props.footer)
+    )
+  );
 }
 
 // dist/ui/SideSheet.js
-var import_react17 = require("react");
+var import_react18 = require("react");
 
 // dist/ui/side-panel-css.generated.js
 var SIDE_PANEL_CSS = "/* \u4FA7\u8FB9\u9762\u677F\u7684\u516C\u5171\u76AE\u80A4 \u2014\u2014 PanelDock\uFF08\u5360\u5BBD\u5206\u680F\uFF09\u4E0E SideSheet\uFF08\u8986\u76D6\u62BD\u5C49\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\u3002\n *\n * \u5206\u754C\uFF1A**\u76AE\u80A4\u5728\u8FD9\u91CC\uFF0C\u5B9A\u4F4D\u5404\u81EA\u5199**\u3002\u4E24\u8005\u552F\u4E00\u7684\u5F62\u6001\u5DEE\u5F02\u5C31\u662F\u300C\u600E\u4E48\u5360\u4F4D\u300D\u2014\u2014\n * PanelDock \u7528 sticky \u5360\u5BBD\u6324\u7A84\u4E3B\u533A\uFF08panel-dock.css\uFF09\uFF0CSideSheet \u7528 absolute \u76D6\u5728\u9875\u9762\u4E0A\uFF08side-sheet.css\uFF09\u3002\n *\n * \u7C7B\u540D\u6CBF\u7528 dshpc-dock__* \u524D\u7F00\uFF1A\u90A3\u662F\u65E2\u6709\u516C\u5F00\u9762\uFF08\u6587\u6863\u4E0E\u6D88\u8D39\u65B9\u90FD\u5728\u7528\uFF09\uFF0C\n * \u8FD9\u91CC\u53EA\u642C\u6587\u4EF6\u4E0D\u6539\u540D\uFF1B\u65B0\u589E\u7684\u4E2D\u6027\u7C7B\u662F .dshpc-side-surface\uFF08\u5916\u89C2\u57FA\u7C7B\uFF09\u3002 */\n\n/* \u5165\u573A\uFF1A\u5BBD\u5EA6\u4ECE 0 \u957F\u51FA\u6765\uFF08keyframes \u53EA\u5199 from\uFF0C\u7EC8\u70B9\u53D6\u5185\u8054 / \u72B6\u6001\u5BBD\u5EA6\uFF09\u3002\u4E24\u8FB9\u5171\u7528\u3002 */\n@keyframes dshpc-side-in{from{width:0;opacity:0;overflow:hidden}}\n\n/* \u5916\u89C2\u57FA\u7C7B\uFF1A\u80CC\u666F / \u6587\u5B57\u8272 / \u9634\u5F71 / \u7EB5\u5411 flex\u3002**\u4E0D\u542B** position\u3001\u9AD8\u5EA6\u3001\u8FB9\u6846\u65B9\u5411\u3001\u52A8\u753B\u89E6\u53D1\u3002 */\n.dshpc-side-surface{\n  box-sizing:border-box;\n  display:flex;flex-direction:column;flex:0 0 auto;min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  box-shadow:var(--dshpc-shadow-2);\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease);\n  animation:dshpc-side-in .22s var(--dshpc-ease);\n}\n\n/* \u5934\u90E8\uFF1A\u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB\u3002 */\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF08top 10 / right 8\uFF09\uFF0C\u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB \u2014\u2014 \u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF08\u9762\u677F\u9AD8\u5EA6\u9501\u6B7B\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u9875\u9762\u6491\u9AD8\uFF09\u3002\n   \u900F\u660E\u53F3\u8FB9\u6846 = \u6EDA\u52A8\u6761\u4E0E\u9762\u677F\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto;border-right:1px solid transparent}\n\n/* \u62D6\u62FD\u6761\uFF1A6px \u547D\u4E2D\u533A\uFF0C**\u81EA\u5DF1\u4E0D\u753B\u4EFB\u4F55\u7EBF**\uFF08\u8D34\u5728\u671D\u5185\u90A3\u4E00\u4FA7\uFF0C\u955C\u50CF\u7531\u5404\u81EA\u7684\u5B9A\u4F4D\u6587\u4EF6\u505A\uFF09\u3002\n   hover / \u62D6\u52A8\u65F6\u628A\u9762\u677F\u81EA\u5DF1\u7684\u8FB9\u6846\u67D3\u6210\u84DD \u2014\u2014 \u84DD\u7EBF\u53EA\u51C6\u6539\u539F\u7EBF\uFF0C\u4E0D\u51C6\u5728\u65C1\u8FB9\u518D\u52A0\u4E00\u6761\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n}\n.dshpc-side-surface:has(> .dshpc-dock__resizer:hover),\n.dshpc-side-surface--resizing{\n  /* \u539F\u7EBF\u4FDD\u7559\u300C\u4E0A\u4E0B\u6E10\u9690\u300D\u5DE5\u4F5C\u533A\u6307\u793A\u6761\u8D28\u611F\uFF1A\u628A\u9762\u677F\u81EA\u5DF1\u7684\u90A3\u6761\u8FB9\u6846\u6362\u6210\u540C\u6B3E\u6E10\u53D8\u3002\n     \u9762\u677F\u56DB\u8FB9\u91CC\u53EA\u6709\u671D\u5185\u4E00\u4FA7\u6709\u5BBD\u5EA6\uFF0C\u6240\u4EE5\u6E10\u53D8\u53EA\u843D\u5728\u90A3\u4E00\u4FA7\u3002 */\n  border-image:linear-gradient(180deg,transparent,var(--dshpc-business) 30% 70%,transparent) 1;\n}\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove \u2014\u2014\n   \u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u9762\u677F\u5185\uFF0C\u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\u3002 */\n.dshpc-side-surface--resizing{contain:layout paint;will-change:width}\n.dshpc-side-surface--resizing iframe{pointer-events:none}\n\n/* \u52A8\u6548\u793C\u8C8C\uFF1A\u7CFB\u7EDF\u58F0\u660E\u51CF\u5C11\u52A8\u6548\u65F6\u9000\u5316\u4E3A\u77AC\u65F6\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-side-surface{animation:none}\n}\n";
@@ -4976,11 +5016,11 @@ function SideSheet(props) {
   const side = props.side ?? "left";
   const closeOnMask = props.closeOnMask !== false;
   useEscapeClose(props.escClose !== false, props.onClose);
-  const [width, setWidth] = (0, import_react17.useState)(props.width ?? 460);
-  const panelRef = (0, import_react17.useRef)(null);
+  const [width, setWidth] = (0, import_react18.useState)(props.width ?? 460);
+  const panelRef = (0, import_react18.useRef)(null);
   const leaving = props.open === false;
-  const [unmounted, setUnmounted] = (0, import_react17.useState)(leaving);
-  (0, import_react17.useEffect)(() => {
+  const [unmounted, setUnmounted] = (0, import_react18.useState)(leaving);
+  (0, import_react18.useEffect)(() => {
     if (!leaving)
       setUnmounted(false);
   }, [leaving]);
@@ -5015,7 +5055,7 @@ function SideSheet(props) {
       }
     });
   };
-  const closeButton = (floating) => !showClose ? null : (0, import_react17.createElement)("button", {
+  const closeButton = (floating) => !showClose ? null : (0, import_react18.createElement)("button", {
     type: "button",
     className: `dshpc-dock__close ${floating ? "dshpc-dock__close--floating" : "dshpc-dock__close--abs"}`,
     "aria-label": tt("dockClose"),
@@ -5025,11 +5065,11 @@ function SideSheet(props) {
     if (props.header === null)
       return null;
     if (props.header !== void 0) {
-      return (0, import_react17.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, props.header);
+      return (0, import_react18.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, props.header);
     }
-    return (0, import_react17.createElement)("div", { className: "dshpc-dock__head" }, props.icon === void 0 ? null : (0, import_react17.createElement)("div", { className: "dshpc-dock__lead" }, props.icon), (0, import_react17.createElement)("div", { className: "dshpc-dock__title" }, props.title), props.extra === void 0 ? null : (0, import_react17.createElement)("div", { className: "dshpc-dock__extra" }, props.extra));
+    return (0, import_react18.createElement)("div", { className: "dshpc-dock__head" }, props.icon === void 0 ? null : (0, import_react18.createElement)("div", { className: "dshpc-dock__lead" }, props.icon), (0, import_react18.createElement)("div", { className: "dshpc-dock__title" }, props.title), props.extra === void 0 ? null : (0, import_react18.createElement)("div", { className: "dshpc-dock__extra" }, props.extra));
   };
-  return (0, import_react17.createElement)(OverlayMask, { kind: "side", closeOnMask, onClose: props.onClose }, (0, import_react17.createElement)("section", {
+  return (0, import_react18.createElement)(OverlayMask, { kind: "side", closeOnMask, onClose: props.onClose }, (0, import_react18.createElement)("section", {
     ref: (element) => {
       panelRef.current = element;
     },
@@ -5043,7 +5083,7 @@ function SideSheet(props) {
     "aria-label": typeof props.title === "string" ? props.title : void 0,
     // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
     onClick: (e) => e.stopPropagation()
-  }, props.resizable === false ? null : (0, import_react17.createElement)("div", {
+  }, props.resizable === false ? null : (0, import_react18.createElement)("div", {
     className: "dshpc-dock__resizer",
     role: "separator",
     "aria-orientation": "vertical",
@@ -5051,11 +5091,11 @@ function SideSheet(props) {
     onPointerDown: (event) => {
       beginResize(event);
     }
-  }), renderHeader(), closeButton(!hasHeader), (0, import_react17.createElement)("div", { className: "dshpc-dock__body dshpc-sheet__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react17.createElement)("div", { className: "dshpc-sheet__foot" }, props.footer)));
+  }), renderHeader(), closeButton(!hasHeader), (0, import_react18.createElement)("div", { className: "dshpc-dock__body dshpc-sheet__body" }, props.children ?? null), props.footer === void 0 ? null : (0, import_react18.createElement)("div", { className: "dshpc-sheet__foot" }, props.footer)));
 }
 
 // dist/ui/AlertModal.js
-var import_react18 = require("react");
+var import_react19 = require("react");
 var SEVERITY_GLYPH = {
   info: "\u24D8",
   success: "\u2713",
@@ -5066,37 +5106,37 @@ function AlertModal(props) {
   ensureComponentStyles("feedback", FEEDBACK_CSS);
   const tt = props.translate ?? t;
   const severity = props.severity ?? "info";
-  return (0, import_react18.createElement)(Modal, {
-    icon: (0, import_react18.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
+  return (0, import_react19.createElement)(Modal, {
+    icon: (0, import_react19.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
     closeOnMask: props.closeOnMask,
     onClose: props.onConfirm,
-    footer: (0, import_react18.createElement)(Button, { variant: "primary", onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
+    footer: (0, import_react19.createElement)(Button, { variant: "primary", onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("dialogOk"))
   }, props.message ?? null);
 }
 
 // dist/ui/ConfirmModal.js
-var import_react19 = require("react");
+var import_react20 = require("react");
 function ConfirmModal(props) {
   const tt = props.translate ?? t;
   const tone = props.tone ?? "primary";
   const confirmVariant = tone === "danger" ? "danger" : tone === "warning" ? "warning" : "primary";
-  return (0, import_react19.createElement)(Modal, {
+  return (0, import_react20.createElement)(Modal, {
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
     closable: false,
     closeOnMask: props.closeOnMask,
     onClose: props.onCancel,
-    footer: (0, import_react19.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react19.createElement)(Button, { variant: "outline", onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react19.createElement)(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
+    footer: (0, import_react20.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react20.createElement)(Button, { variant: "outline", onClick: () => props.onCancel?.() }, props.cancelText ?? tt("cancel")), (0, import_react20.createElement)(Button, { variant: confirmVariant, onClick: () => props.onConfirm?.() }, props.confirmText ?? tt("confirm")))
   }, props.message ?? null);
 }
 
 // dist/ui/modal-host.js
-var import_react20 = require("react");
+var import_react21 = require("react");
 var import_client = require("react-dom/client");
 var hostRoot = null;
 var hostContainer = null;
@@ -5125,7 +5165,7 @@ function flush() {
     hostContainer = null;
     return;
   }
-  root.render((0, import_react20.createElement)(import_react20.Fragment, null, entries.map((e) => e.node)));
+  root.render((0, import_react21.createElement)(import_react21.Fragment, null, entries.map((e) => e.node)));
 }
 function dismiss(id3) {
   entries = entries.filter((e) => e.id !== id3);
@@ -5158,7 +5198,7 @@ function confirmModal(opts) {
     };
     entries.push({
       id: id3,
-      node: (0, import_react20.createElement)(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) })
+      node: (0, import_react21.createElement)(ConfirmModal, { ...core, onConfirm: () => close(true), onCancel: () => close(false) })
     });
     flush();
   });
@@ -5182,13 +5222,13 @@ function alertModal(opts) {
       dismiss(id3);
       resolve();
     };
-    entries.push({ id: id3, node: (0, import_react20.createElement)(AlertModal, { ...core, onConfirm: close }) });
+    entries.push({ id: id3, node: (0, import_react21.createElement)(AlertModal, { ...core, onConfirm: close }) });
     flush();
   });
 }
 
 // dist/ui/Card.js
-var import_react22 = require("react");
+var import_react23 = require("react");
 
 // dist/ui/card-css.generated.js
 var CARD_CSS = "\n/* \u2500\u2500 Card / StripCard\uFF1ASurface \u5916\u6846 + \u5934\u90E8\u5951\u7EA6 + \u8272\u6761 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u6846\uFF08\u5E95 / \u8FB9\u6846 / \u5706\u89D2 / \u5185\u8DDD\uFF09\u5168\u90E8\u6765\u81EA .dshpc-surface\uFF08src/ui/surface.css\uFF09\uFF1A\n   \u672C\u6587\u4EF6**\u4E0D\u518D\u5199 border / border-radius**\uFF0C\u5706\u89D2\u5951\u7EA6\u56E0\u6B64\u53EA\u6709\u4E00\u4E2A\u5B9A\u4E49\u70B9\uFF08\u5BB9\u5668\u6863 = 12\uFF09\u3002\n   \u8FD9\u91CC\u53EA\u7BA1\u4E24\u4EF6 Surface \u4E0D\u8BE5\u77E5\u9053\u7684\u4E8B\uFF1A\u8272\u6761\u51E0\u4F55\u3001\u5934\u90E8\u5E03\u5C40\u3002\n\n   \u8272\u6761\u51E0\u4F55\u9ED8\u8BA4\u503C\u90FD\u53EF\u88AB props \u8986\u76D6\uFF08Card.ts \u5199\u5BF9\u5E94\u7684 CSS \u53D8\u91CF\uFF09\uFF1A\n     --card-bar-size   \u6761\u5B50\u7C97\u7EC6\n     --card-bar-inset  \u6761\u5B50\u8DDD\u5361\u7247\u8FB9\u7F18\u7684\u8DDD\u79BB\uFF08= \u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD\uFF09\n     --card-bar-gap    \u6761\u5B50\u8DDD\u5185\u5BB9\u7684\u8DDD\u79BB\uFF08= body \u7684 gap\uFF09\n     --card-bar-length \u4E0A\u4E0B\u65B9\u4F4D\u65F6\u7684\u6761\u957F\uFF08100% = \u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\n   \u8FD9\u4E9B\u53D8\u91CF\u53EA\u5728\u672C\u6587\u4EF6\u6D88\u8D39\uFF083 \u4EFD\u6587\u4EF6\u4E00\u8D77\u5F15\u65F6\uFF0C\u8DE8\u6587\u4EF6\u5F15\u7528\u522B\u5904\u7684\u53D8\u91CF\u4F1A\u9759\u9ED8\u5931\u6548\uFF09\uFF0C\n   \u6240\u4EE5\u9ED8\u8BA4\u503C\u5FC5\u987B\u5199\u5728\u8FD9\u91CC\uFF0C\u800C\u4E0D\u662F\u4EE4\u724C\u6216\u522B\u7684\u76AE\u80A4\u91CC\u3002 */\n.dshpc-card{\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n  --card-bar-size:6px;\n  --card-bar-inset:12px;\n  --card-bar-gap:12px;\n  --card-bar-length:100%;\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n/* \u6269\u5C55\u516B\u8272\uFF082026-10-29\uFF09\uFF1A\u8272\u6761 + \u6D45\u5E95\u540C\u6E90\uFF0C\u8F6F\u5E95\u8D70\u5404\u81EA -soft\u3002 */\n.dshpc-card--purple{--card-accent:var(--dshpc-purple);--card-accent-soft:var(--dshpc-purple-soft)}\n.dshpc-card--pink{--card-accent:var(--dshpc-pink);--card-accent-soft:var(--dshpc-pink-soft)}\n.dshpc-card--cyan{--card-accent:var(--dshpc-cyan);--card-accent-soft:var(--dshpc-cyan-soft)}\n.dshpc-card--teal{--card-accent:var(--dshpc-teal);--card-accent-soft:var(--dshpc-teal-soft)}\n.dshpc-card--orange{--card-accent:var(--dshpc-orange);--card-accent-soft:var(--dshpc-orange-soft)}\n.dshpc-card--indigo{--card-accent:var(--dshpc-indigo);--card-accent-soft:var(--dshpc-indigo-soft)}\n.dshpc-card--rose{--card-accent:var(--dshpc-rose);--card-accent-soft:var(--dshpc-rose-soft)}\n.dshpc-card--slate{--card-accent:var(--dshpc-slate);--card-accent-soft:var(--dshpc-slate-soft)}\n\n/* body = \u8272\u6761 + \u5934\u90E8\u3002\u65B9\u5411\u8DDF\u7740\u6761\u5B50\u8D34\u7684\u8FB9\u5207 \u21D2 \u56DB\u4E2A\u65B9\u4F4D\u53EA\u662F\u300C\u6362\u4E00\u4E2A\u65B9\u5411\u7684 flex \u9879\u300D\uFF0C\n   \u4E0D\u7528\u4E3A\u6BCF\u4E2A\u65B9\u4F4D\u5404\u5199\u4E00\u5957\u5B9A\u4F4D\u3002 */\n.dshpc-card__body{display:flex;gap:var(--card-bar-gap);min-width:0}\n.dshpc-card--bar-top .dshpc-card__body,\n.dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}\n\n/* \u5934\u90E8\u4E00\u884C = \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card--bar-left .dshpc-card__head,\n.dshpc-card--bar-right .dshpc-card__head{flex:1 1 auto}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u8272\u6761\uFF1A\u5DE6/\u53F3 = \u7AD6\u5411\u6761\uFF08\u9AD8\u5EA6\u8DDF\u5185\u5BB9\uFF0C\u6700\u5C0F\u4E00\u884C\uFF09\uFF1B\u4E0A/\u4E0B = \u6A2A\u5411\u6761\uFF08\u957F\u5EA6\u9ED8\u8BA4\u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\u3002\n   \u53F3/\u4E0B\u65B9\u4F4D\u9760 order \u6392\u5230\u5934\u90E8\u4E4B\u540E\uFF0CDOM \u987A\u5E8F\u59CB\u7EC8\u4E0D\u53D8\u3002 */\n.dshpc-card__bar{flex:none;background:var(--card-accent);border-radius:var(--dshpc-radius-xs)}\n.dshpc-card--bar-left .dshpc-card__bar,\n.dshpc-card--bar-right .dshpc-card__bar{width:var(--card-bar-size);align-self:stretch;min-height:var(--dshpc-line-md)}\n.dshpc-card--bar-top .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{width:var(--card-bar-length);height:var(--card-bar-size);align-self:flex-start}\n.dshpc-card--bar-right .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{order:1}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500\n   \u5E95\u8272 / \u65B9\u89D2 / \u5360\u4F4D\u8FB9\u6846\u7531 Surface \u7684\u4E09\u6761\u4FEE\u9970\u7C7B\u63D0\u4F9B\uFF08Card.ts \u6309 kind \u4F20\uFF09\uFF0C\u6B64\u5904\u53EA\u7BA1\u5185\u8DDD\u4E0E\u6761\u5B50\u3002 */\n.dshpc-card.dshpc-card--strip{\n  --card-bar-size:4px;--card-bar-inset:0;\n  padding:12px 12px 12px 20px;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002\n   \u7279\u5F02\u6027 0,3,0\uFF1A\u538B\u8FC7\u4E0A\u9762 .dshpc-card--bar-left .dshpc-card__bar \u7684\u5BBD\u5EA6\u89C4\u5219\uFF0C\u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;align-self:auto}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1ASurface \u5916\u6846\uFF08\u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 12\uFF09+ \u8272\u6761\u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD \u2500\u2500\n   \u5185\u8DDD\u7528 0,2,0 / 0,3,0 \u7684\u957F\u5199\u6CD5\uFF1A\u9AD8\u8FC7 .dshpc-surface \u7684 padding \u7B80\u5199\uFF0C\u4E0E\u4E24\u4EFD CSS \u7684\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--bordered{padding:14px}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-left{padding-left:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-right{padding-right:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-top{padding-top:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-bottom{padding-bottom:var(--card-bar-inset)}\n\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n/* \u7BAD\u5934\u662F svg\uFF08Chevron\uFF09\uFF0C\u4E0D\u662F\u5B57\u5F62 \u21D2 \u4E0D\u8981 font-size\uFF1Binline-flex \u514D\u6389 svg \u7684\u57FA\u7EBF\u7559\u767D\u3002 */\n.dshpc-card__caret{display:inline-flex;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
@@ -5197,7 +5237,7 @@ var CARD_CSS = "\n/* \u2500\u2500 Card / StripCard\uFF1ASurface \u5916\u6846 + \
 var SURFACE_CSS = "\n/* \u2500\u2500 Surface \xB7 \u7EAF\u6846\u5BB9\u5668 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u53EA\u56DE\u7B54\u300C\u4E00\u5757\u9762\u957F\u4EC0\u4E48\u6837\u300D\uFF1A\u5E95 / \u8FB9 / \u5706\u89D2 / \u5185\u8DDD\uFF0C\u56DB\u6839\u8F74\uFF0C\u96F6\u4E1A\u52A1\u8BED\u4E49\u3002\n   \u5B83\u662F**\u5706\u89D2\u5951\u7EA6\u7684\u552F\u4E00\u771F\u6E90**\uFF1A\u5BB9\u5668\u6863 = --dshpc-radius-md(12)\uFF0C\u4E0E Button / Input \u540C\u6863\uFF0C\n   \u5916\u6846\u6C38\u8FDC\u4E0D\u5C0F\u4E8E\u91CC\u9762\u7684\u63A7\u4EF6 \u2014\u2014 \u675C\u7EDD\u300C\u5361\u7247 8 < \u6309\u94AE 12\u300D\u8FD9\u7C7B\u5012\u6302\uFF082026-11-01\uFF09\u3002\n\n   \u6240\u6709\u8F74\u90FD\u7528**\u53D8\u91CF**\u8868\u8FBE\uFF0C\u4FEE\u9970\u7C7B\u53EA\u6539\u8FD9\u4E9B\u53D8\u91CF\u3001\u4E0D\u6539\u5C5E\u6027\uFF1A\n   \u6D88\u8D39\u65B9\uFF08Card\u3001\u4E0B\u6E38\u63D2\u4EF6\uFF09\u81EA\u5DF1\u5199\u89C4\u5219\u65F6\uFF0C\u65E0\u8BBA\u4E24\u4EFD CSS \u8C01\u5148\u6CE8\u5165\uFF0C\u80DC\u8D1F\u90FD\u4E0D\u4F9D\u8D56\u987A\u5E8F\u3002\n\n     tone    plain(\u9ED8\u8BA4 surface-1) / raised / sunken / subtle\n     border  \u9ED8\u8BA4 1px \u5B9E\u7EBF\uFF1Bfaint \u66F4\u6DE1\uFF1Bnone \u900F\u660E\uFF08\u4FDD\u7559 1px \u5360\u4F4D\uFF0C\u4E0D\u8DF3\u9AD8\uFF09\uFF1B\n             dashed \u865A\u7EBF\uFF08\u5360\u4F4D\u6846\u7528\uFF0C\u7EBF\u8272\u4ECD\u662F border token\uFF09\n     radius  \u9ED8\u8BA4 md\uFF1Bnone / sm / lg\n     padding \u9ED8\u8BA4\u7531\u8C03\u7528\u65B9\u9009\u6863\uFF1Bnone / sm(8) / md(12) / lg(16)\n   \u57FA\u7C7B\u4E0D\u5E26\u5185\u8DDD\uFF1A\u5BB9\u5668\u8981\u81EA\u5DF1\u7B97\u56DB\u8FB9\u5185\u8DDD\u65F6\uFF08\u5982 Card \u7684\u8272\u6761\u8D34\u8FB9\uFF09\uFF0C\u4E0D\u4F20 pad \u6863\u5373\u53EF\uFF0C\u4E0D\u9700\u8981\u8986\u76D6\u3002 */\n.dshpc-surface{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --surface-bg:var(--dshpc-surface-1);\n  --surface-border:var(--dshpc-border);\n  --surface-border-style:solid;\n  --surface-radius:var(--dshpc-radius-md);\n  --surface-pad:0;\n  border:1px var(--surface-border-style) var(--surface-border);\n  border-radius:var(--surface-radius);\n  background:var(--surface-bg);\n  padding:var(--surface-pad);\n}\n.dshpc-surface--tone-raised{--surface-bg:var(--dshpc-surface-raised)}\n.dshpc-surface--tone-sunken{--surface-bg:var(--dshpc-surface-sunken)}\n.dshpc-surface--tone-subtle{--surface-bg:var(--dshpc-chip-bg)}\n.dshpc-surface--border-faint{--surface-border:var(--dshpc-border-faint)}\n.dshpc-surface--border-none{--surface-border:transparent}\n.dshpc-surface--border-dashed{--surface-border-style:dashed}\n.dshpc-surface--radius-none{--surface-radius:0}\n.dshpc-surface--radius-sm{--surface-radius:var(--dshpc-radius-sm)}\n.dshpc-surface--radius-lg{--surface-radius:var(--dshpc-radius-lg)}\n.dshpc-surface--pad-none{--surface-pad:0}\n.dshpc-surface--pad-sm{--surface-pad:var(--dshpc-space-2)}\n.dshpc-surface--pad-md{--surface-pad:var(--dshpc-space-3)}\n.dshpc-surface--pad-lg{--surface-pad:var(--dshpc-space-4)}\n";
 
 // dist/ui/Surface.js
-var import_react21 = require("react");
+var import_react22 = require("react");
 function surfaceClass(options = {}) {
   const tone = options.tone ?? "plain";
   const border = options.border ?? true;
@@ -5213,7 +5253,7 @@ function surfaceClass(options = {}) {
 }
 function Surface(props) {
   ensureComponentStyles("surface", SURFACE_CSS);
-  return (0, import_react21.createElement)("div", {
+  return (0, import_react22.createElement)("div", {
     className: [surfaceClass(props), props.className ?? ""].filter((s) => s !== "").join(" "),
     style: props.style
   }, props.children ?? null);
@@ -5267,12 +5307,12 @@ function CardShell(kind, props) {
   if (bar.length !== void 0)
     vars["--card-bar-length"] = lengthOf(bar.length);
   const style2 = { ...props.style, ...vars };
-  return (0, import_react22.createElement)("div", { className: classes, style: style2 }, (0, import_react22.createElement)(
+  return (0, import_react23.createElement)("div", { className: classes, style: style2 }, (0, import_react23.createElement)(
     "div",
     { className: "dshpc-card__body" },
     // 色条是 body 的第一个子元素：DOM 顺序恒定，左/上 = 天然在前，右/下靠 order 排到头部之后。
-    (0, import_react22.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
-    (0, import_react22.createElement)("div", { className: "dshpc-card__head" }, (0, import_react22.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null), props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react22.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react22.createElement)(
+    (0, import_react23.createElement)("span", { className: "dshpc-card__bar", "aria-hidden": true }),
+    (0, import_react23.createElement)("div", { className: "dshpc-card__head" }, (0, import_react23.createElement)("div", { className: "dshpc-card__main" }, props.children ?? null), props.action === void 0 && props.onToggle === void 0 ? null : (0, import_react23.createElement)("div", { className: "dshpc-card__side" }, props.action ?? null, props.onToggle === void 0 ? null : (0, import_react23.createElement)(
       "button",
       {
         type: "button",
@@ -5282,9 +5322,9 @@ function CardShell(kind, props) {
         onClick: props.onToggle
       },
       // 箭头走全站唯一的 Chevron（不再写 ▾ 字形）；旋转由外层 .is-open 承担，动画不变。
-      (0, import_react22.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, (0, import_react22.createElement)(Chevron, { size: 12 }))
+      (0, import_react23.createElement)("span", { className: props.expanded === true ? "dshpc-card__caret is-open" : "dshpc-card__caret" }, (0, import_react23.createElement)(Chevron, { size: 12 }))
     )))
-  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react22.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
+  ), props.panel === void 0 || props.expanded !== true ? null : (0, import_react23.createElement)("div", { className: "dshpc-card__panel" }, props.panel));
 }
 function Card(props) {
   return CardShell("bordered", props);
@@ -5294,7 +5334,7 @@ function StripCard(props) {
 }
 
 // dist/ui/Chip.js
-var import_react23 = require("react");
+var import_react24 = require("react");
 
 // dist/ui/chip-css.generated.js
 var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u8272\uFF1Aneutral \u8D70\u65E7\u7070\u9762\uFF1B\u8BED\u4E49\u6863\u6362\u5E95\u5B57\u914D\u5BF9\uFF082026-10-20 \u7528\u6237\u8981\u591A\u8272\u591A\u5C3A\u5BF8\u6807\u7B7E\uFF09\u3002 */\n.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--chip-bg);color:var(--chip-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* md \u6863\uFF1A\u5361\u7247\u5143\u4FE1\u606F\u884C\u7B49\u7A0D\u5927\u573A\u666F\uFF1Bsm \u5373\u65E7\u7248\u9ED8\u8BA4\uFF0C\u9010\u50CF\u7D20\u4E0D\u52A8\u3002 */\n.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}\n/* xs \u6863\uFF1A\u6807\u9898\u540E\u7F00\u7B49\u6781\u7D27\u51D1\u573A\u666F\uFF082026-10-20 \u7528\u6237\u8981\u66F4\u5C0F\u6807\u7B7E\uFF09\uFF1B16px \u9AD8\u3001font 10\u3002 */\n.dshpc-chip--xs{padding:0 6px;font-size:10px;line-height:16px;}\n/* \u8BED\u4E49\u8272\u5B9E\u5FC3\u6863\uFF1A\u5E95 / \u5B57 / hover \u914D\u5BF9\u4E0E Button \u540C\u6E90\uFF08\u9EC4\u5E95\u4E2D\u9AD8\u660E\u5EA6 \u21D2 \u5B57\u7528 --dshpc-on-warning\uFF09\u3002 */\n.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}\n.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}\n.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}\n.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}\n/* \u6269\u5C55\u516B\u8272\uFF082026-10-29\uFF09\uFF1A\u5B9E\u5FC3\u9762\u5B57\u8272\u7EDF\u4E00\u767D\uFF08on-signal\uFF09\uFF0C\u660E\u5EA6\u5747\u4F4E\u4E8E\u9EC4 / \u9752\u67E0\uFF0C\u767D\u5B57\u4E24\u4E3B\u9898\u53EF\u8BFB\u3002 */\n.dshpc-chip--purple{--chip-bg:var(--dshpc-purple);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-purple-hover);}\n.dshpc-chip--pink{--chip-bg:var(--dshpc-pink);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-pink-hover);}\n.dshpc-chip--cyan{--chip-bg:var(--dshpc-cyan);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-cyan-hover);}\n.dshpc-chip--teal{--chip-bg:var(--dshpc-teal);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-teal-hover);}\n.dshpc-chip--orange{--chip-bg:var(--dshpc-orange);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-orange-hover);}\n.dshpc-chip--indigo{--chip-bg:var(--dshpc-indigo);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-indigo-hover);}\n.dshpc-chip--rose{--chip-bg:var(--dshpc-rose);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-rose-hover);}\n.dshpc-chip--slate{--chip-bg:var(--dshpc-slate);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-slate-hover);}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u7981\u7528\u6001\u5B57\u8272\u4ECE --chip-fg \u6D3E\u751F\uFF0845% \u2248 \u65E7 fg-3 \u7684\u5F31\u5316\u89C2\u611F\uFF09\uFF0C\u4E0D\u8BB8\u76F4\u63A5\u7528 --dshpc-fg-3\uFF1A\n   \u5B83\u8DDF\u4E3B\u9898\u8D70\uFF0C\u6697\u8272\u4E0B\u662F\u6DF1\u7070 \u21D2 \u8BED\u4E49\u8272\u5B9E\u5FC3\u6807\u7B7E\uFF08\u84DD / \u7EA2\u5E95\uFF09\u4E0A\u51E0\u4E4E\u770B\u4E0D\u89C1\uFF08\u4E0E Segmented \u8BA1\u6570 2026-10-29 \u540C\u7C7B\uFF09\u3002 */\n.dshpc-chip:disabled{cursor:default;color:color-mix(in srgb,var(--chip-fg) 45%,transparent)}\n/* maxWidth \u5305 MarqueeText \u65F6\uFF1A\u6807\u7B7E\u4F5C\u4E3A flex \u5B50\u9879\u5FC5\u987B\u80FD\u6536\u7F29\u5230\u5185\u5BB9\u4EE5\u4E0B\uFF0C\u5426\u5219\u7701\u7565\u53F7 / \u8DD1\u9A6C\u706F\u6D4B\u4E0D\u51C6 */\n.dshpc-chip .dshpc-chip__label{min-width:0;}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
@@ -5314,19 +5354,19 @@ function Chip(props) {
       widthStyle.maxWidth = maxWidth;
   }
   const marqueeLabel = maxWidth !== void 0 && width === void 0 && typeof children === "string";
-  return (0, import_react23.createElement)(clickable ? "button" : "span", {
+  return (0, import_react24.createElement)(clickable ? "button" : "span", {
     type: clickable ? "button" : void 0,
     className: `dshpc-chip${tone !== "neutral" ? ` dshpc-chip--${tone}` : ""}${size4 !== "sm" ? ` dshpc-chip--${size4}` : ""}${clickable ? " dshpc-chip--clickable" : ""}${className2 === void 0 ? "" : ` ${className2}`}`,
     style: widthStyle,
     onClick
-  }, marqueeLabel ? (0, import_react23.createElement)(MarqueeText, { text: children, className: "dshpc-chip__label" }) : children ?? null);
+  }, marqueeLabel ? (0, import_react24.createElement)(MarqueeText, { text: children, className: "dshpc-chip__label" }) : children ?? null);
 }
 
 // dist/ui/Table.js
-var import_react27 = require("react");
+var import_react28 = require("react");
 
 // dist/ui/Pagination.js
-var import_react24 = require("react");
+var import_react25 = require("react");
 
 // dist/ui/pagination-logic.js
 function pageCountOf(total, pageSize) {
@@ -5411,7 +5451,7 @@ function Pagination(props) {
       return showTotal(total, from2, to);
     return total === 0 ? tt("paginationTotalZero") : tt("paginationTotal", { from: from2, to, total });
   })();
-  const pageButton = (n) => (0, import_react24.createElement)(Button, {
+  const pageButton = (n) => (0, import_react25.createElement)(Button, {
     key: n,
     variant: n === page ? "info" : "ghost",
     size: "md",
@@ -5424,20 +5464,20 @@ function Pagination(props) {
   const navButton = (direction) => {
     const isPrev = direction === "prev";
     const label = isPrev ? tt("paginationPrev") : tt("paginationNext");
-    return (0, import_react24.createElement)(Button, {
+    return (0, import_react25.createElement)(Button, {
       variant: "ghost",
       size: "md",
       className: "dshpc-pagination__nav",
-      icon: isPrev ? (0, import_react24.createElement)(Chevron, { dir: "left", size: 14 }) : void 0,
-      iconRight: isPrev ? void 0 : (0, import_react24.createElement)(Chevron, { dir: "right", size: 14 }),
+      icon: isPrev ? (0, import_react25.createElement)(Chevron, { dir: "left", size: 14 }) : void 0,
+      iconRight: isPrev ? void 0 : (0, import_react25.createElement)(Chevron, { dir: "right", size: 14 }),
       "aria-label": label,
       disabled: disabled || (isPrev ? page <= 1 : page >= count3),
       onClick: () => go(isPrev ? page - 1 : page + 1)
-    }, (0, import_react24.createElement)("span", { className: "dshpc-pagination__text" }, label));
+    }, (0, import_react25.createElement)("span", { className: "dshpc-pagination__text" }, label));
   };
-  const middle2 = props.simple === true ? [(0, import_react24.createElement)("span", { key: "simple", className: "dshpc-pagination__simple" }, `${String(page)} / ${String(count3)}`)] : pageItems(page, count3, props.siblingCount, props.boundaryCount).map((item, index3) => item === "gap" ? (0, import_react24.createElement)("span", { key: `gap-${String(index3)}`, className: "dshpc-pagination__ellipsis", "aria-hidden": "true" }, "\u2026") : pageButton(item));
+  const middle2 = props.simple === true ? [(0, import_react25.createElement)("span", { key: "simple", className: "dshpc-pagination__simple" }, `${String(page)} / ${String(count3)}`)] : pageItems(page, count3, props.siblingCount, props.boundaryCount).map((item, index3) => item === "gap" ? (0, import_react25.createElement)("span", { key: `gap-${String(index3)}`, className: "dshpc-pagination__ellipsis", "aria-hidden": "true" }, "\u2026") : pageButton(item));
   const options = props.pageSizeOptions ?? [];
-  const sizeNode = options.length === 0 ? null : (0, import_react24.createElement)(Picker, {
+  const sizeNode = options.length === 0 ? null : (0, import_react25.createElement)(Picker, {
     className: "dshpc-pagination__size",
     minWidth: "auto",
     mode: "single",
@@ -5455,18 +5495,18 @@ function Pagination(props) {
       props.onChange(1, next);
     }
   });
-  return (0, import_react24.createElement)("nav", {
+  return (0, import_react25.createElement)("nav", {
     className: navClass,
     style: props.style,
     "aria-label": props.ariaLabel ?? tt("paginationAria")
-  }, totalNode === null ? null : (0, import_react24.createElement)("span", { className: "dshpc-pagination__total" }, totalNode), (0, import_react24.createElement)("div", { className: "dshpc-pagination__pages" }, navButton("prev"), ...middle2, navButton("next")), sizeNode);
+  }, totalNode === null ? null : (0, import_react25.createElement)("span", { className: "dshpc-pagination__total" }, totalNode), (0, import_react25.createElement)("div", { className: "dshpc-pagination__pages" }, navButton("prev"), ...middle2, navButton("next")), sizeNode);
 }
 
 // dist/ui/table-shared.js
-var import_react26 = require("react");
+var import_react27 = require("react");
 
 // dist/ui/SectionHead.js
-var import_react25 = require("react");
+var import_react26 = require("react");
 var ACCENT_TONES = [
   "business",
   "success",
@@ -5494,11 +5534,11 @@ function SectionHead(props) {
     props.flush === true ? "dshpc-section-head--flush" : "",
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
-  return (0, import_react25.createElement)("div", { className: className2, style: props.style }, accent === false || accent === void 0 ? null : (0, import_react25.createElement)("span", {
+  return (0, import_react26.createElement)("div", { className: className2, style: props.style }, accent === false || accent === void 0 ? null : (0, import_react26.createElement)("span", {
     className: "dshpc-section-head__bar",
     "aria-hidden": "true",
     style: accent === "default" ? void 0 : barStyleOf(accent)
-  }), props.icon === void 0 ? null : (0, import_react25.createElement)("span", { className: "dshpc-section-head__icon" }, props.icon), (0, import_react25.createElement)("span", { className: "dshpc-section-head__title" }, props.title), props.right === void 0 ? null : (0, import_react25.createElement)("div", { className: "dshpc-section-head__right" }, props.right));
+  }), props.icon === void 0 ? null : (0, import_react26.createElement)("span", { className: "dshpc-section-head__icon" }, props.icon), (0, import_react26.createElement)("span", { className: "dshpc-section-head__title" }, props.title), props.right === void 0 ? null : (0, import_react26.createElement)("div", { className: "dshpc-section-head__right" }, props.right));
 }
 
 // dist/ui/table-logic.js
@@ -5582,13 +5622,13 @@ function tableShell(skinClass, props, options = {}) {
   const onRowClick = props.onRowClick;
   const density = props.density ?? "default";
   const borders = props.borders ?? "y";
-  const headRowOf = (cells, level) => (0, import_react26.createElement)("tr", { key: `head-${level}`, className: "dshpc-table__head-row" }, ...cells.map((cell) => {
+  const headRowOf = (cells, level) => (0, import_react27.createElement)("tr", { key: `head-${level}`, className: "dshpc-table__head-row" }, ...cells.map((cell) => {
     const group = cell.colSpan > 1;
     const firstLeafIndex = leafIndexByKey.get(cell.leafKeys[0] ?? "");
     const firstLeaf = firstLeafIndex === void 0 ? void 0 : leaves[firstLeafIndex];
     const className2 = `dshpc-table__head-cell${group ? " dshpc-table__head-cell--group" : ""}${alignClass("dshpc-table__head-cell", cell.column.align)}`;
     const tone = cell.column.headerTone;
-    return (0, import_react26.createElement)("th", {
+    return (0, import_react27.createElement)("th", {
       key: cell.column.key,
       scope: group ? "colgroup" : "col",
       colSpan: cell.colSpan > 1 ? cell.colSpan : void 0,
@@ -5626,7 +5666,7 @@ function tableShell(skinClass, props, options = {}) {
   };
   const dataRowsOf = (rows, offset4 = 0) => {
     const selectedBlocks = selectedBlocksOf(rows);
-    return rows.map((row, index3) => (0, import_react26.createElement)("tr", {
+    return rows.map((row, index3) => (0, import_react27.createElement)("tr", {
       key: row.key,
       className: "dshpc-table__row",
       "data-selected": selectedBlocks[index3] === true ? "true" : void 0,
@@ -5652,7 +5692,7 @@ function tableShell(skinClass, props, options = {}) {
         content2 = cell;
       }
       const align = spec?.align ?? column.align;
-      return (0, import_react26.createElement)("td", {
+      return (0, import_react27.createElement)("td", {
         key: column.key,
         className: `dshpc-table__cell${alignClass("dshpc-table__cell", align)}`,
         style: padStyle(column),
@@ -5663,26 +5703,26 @@ function tableShell(skinClass, props, options = {}) {
     })));
   };
   const colSpan = leaves.length > 0 ? leaves.length : void 0;
-  const emptyRow = (0, import_react26.createElement)("tr", { key: "empty", className: "dshpc-table__row" }, (0, import_react26.createElement)("td", { className: "dshpc-table__empty", colSpan }, props.emptyText ?? tt("tableEmpty")));
-  const loadingRow = (0, import_react26.createElement)("tr", { key: "loading", className: "dshpc-table__state-row" }, (0, import_react26.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react26.createElement)("div", {
+  const emptyRow = (0, import_react27.createElement)("tr", { key: "empty", className: "dshpc-table__row" }, (0, import_react27.createElement)("td", { className: "dshpc-table__empty", colSpan }, props.emptyText ?? tt("tableEmpty")));
+  const loadingRow = (0, import_react27.createElement)("tr", { key: "loading", className: "dshpc-table__state-row" }, (0, import_react27.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react27.createElement)("div", {
     className: "dshpc-table__state dshpc-table__state--full",
     style: props.loadingHeight === void 0 ? void 0 : { height: `${props.loadingHeight}px` }
-  }, (0, import_react26.createElement)(Loader, { variant: "blocks", size: "xl", label: tt("tableLoading") }))));
+  }, (0, import_react27.createElement)(Loader, { variant: "blocks", size: "xl", label: tt("tableLoading") }))));
   const infinite = props.onLoadMore !== void 0;
   const loadingMore = infinite && props.loadingMore === true;
   const showNoMore = infinite && !loadingMore && props.hasMore === false && props.noMoreText !== false;
   const footerRows = [];
   if (loadingMore) {
-    footerRows.push((0, import_react26.createElement)("tr", { key: "more", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react26.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react26.createElement)("div", { className: "dshpc-table__state" }, (0, import_react26.createElement)(Loader, { variant: "blocks", size: "md", label: tt("tableLoadingMore") })))));
+    footerRows.push((0, import_react27.createElement)("tr", { key: "more", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react27.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react27.createElement)("div", { className: "dshpc-table__state" }, (0, import_react27.createElement)(Loader, { variant: "blocks", size: "md", label: tt("tableLoadingMore") })))));
   } else if (showNoMore) {
-    footerRows.push((0, import_react26.createElement)("tr", { key: "end", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react26.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react26.createElement)("div", { className: "dshpc-table__state" }, (0, import_react26.createElement)("span", { className: "dshpc-table__state-text" }, props.noMoreText === void 0 ? tt("tableNoMore") : props.noMoreText)))));
+    footerRows.push((0, import_react27.createElement)("tr", { key: "end", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react27.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react27.createElement)("div", { className: "dshpc-table__state" }, (0, import_react27.createElement)("span", { className: "dshpc-table__state-text" }, props.noMoreText === void 0 ? tt("tableNoMore") : props.noMoreText)))));
   }
-  const sentinelRow = infinite && props.hasMore !== false && options.sentinelRef !== void 0 ? (0, import_react26.createElement)("tr", {
+  const sentinelRow = infinite && props.hasMore !== false && options.sentinelRef !== void 0 ? (0, import_react27.createElement)("tr", {
     key: "sentinel",
     ref: options.sentinelRef,
     className: "dshpc-table__sentinel",
     "aria-hidden": "true"
-  }, (0, import_react26.createElement)("td", { colSpan })) : null;
+  }, (0, import_react27.createElement)("td", { colSpan })) : null;
   const flatFoot = footerRows.length > 0 && (borders === "y" || borders === "none");
   const tableClass = [
     "dshpc-table",
@@ -5693,14 +5733,14 @@ function tableShell(skinClass, props, options = {}) {
     flatFoot ? "dshpc-table--foot-no-bottom" : "",
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
-  const groupFoot = footerRows.length > 0 || sentinelRow !== null ? (0, import_react26.createElement)("tbody", { key: "group-foot", className: "dshpc-table__body" }, ...footerRows, sentinelRow) : null;
+  const groupFoot = footerRows.length > 0 || sentinelRow !== null ? (0, import_react27.createElement)("tbody", { key: "group-foot", className: "dshpc-table__body" }, ...footerRows, sentinelRow) : null;
   const groups = props.groups ?? [];
   const body = groups.length > 0 ? [
-    ...groups.map((group, groupIndex) => (0, import_react26.createElement)(
+    ...groups.map((group, groupIndex) => (0, import_react27.createElement)(
       "tbody",
       { key: group.key, className: "dshpc-table__body dshpc-table__group-body" },
       // 通栏标题行：横跨所有列，充当这一组的「大标题」。
-      (0, import_react26.createElement)("tr", { className: "dshpc-table__group-row" }, (0, import_react26.createElement)(
+      (0, import_react27.createElement)("tr", { className: "dshpc-table__group-row" }, (0, import_react27.createElement)(
         "th",
         {
           className: "dshpc-table__group-cell",
@@ -5708,7 +5748,7 @@ function tableShell(skinClass, props, options = {}) {
           colSpan: leaves.length > 0 ? leaves.length : void 0
         },
         // 标题的固定标签（短竖线）与排版归 SectionHead —— Table 只负责把标题装进通栏。
-        (0, import_react26.createElement)(SectionHead, {
+        (0, import_react27.createElement)(SectionHead, {
           title: group.title,
           accent: props.groupAccent ?? "default",
           flush: true
@@ -5719,34 +5759,34 @@ function tableShell(skinClass, props, options = {}) {
     )),
     ...groupFoot === null ? [] : [groupFoot]
   ] : [
-    (0, import_react26.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.loading === true && (props.rows?.length ?? 0) === 0 ? loadingRow : props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : emptyRow, ...footerRows, sentinelRow)
+    (0, import_react27.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.loading === true && (props.rows?.length ?? 0) === 0 ? loadingRow : props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : emptyRow, ...footerRows, sentinelRow)
   ];
-  return (0, import_react26.createElement)(
+  return (0, import_react27.createElement)(
     "table",
     { className: tableClass, style: props.style, "aria-label": props.ariaLabel },
-    leaves.length === 0 ? null : (0, import_react26.createElement)("colgroup", null, ...leaves.map((column) => (0, import_react26.createElement)("col", {
+    leaves.length === 0 ? null : (0, import_react27.createElement)("colgroup", null, ...leaves.map((column) => (0, import_react27.createElement)("col", {
       key: column.key,
       style: widthOf(column.width) === void 0 ? void 0 : { width: widthOf(column.width) }
     }))),
     // 有分组时，每组的表头在各自的 tbody 里；单一表时表头在 thead。
-    groups.length > 0 ? null : (0, import_react26.createElement)("thead", { className: "dshpc-table__head" }, ...headRows.map((cells, level) => headRowOf(cells, level))),
+    groups.length > 0 ? null : (0, import_react27.createElement)("thead", { className: "dshpc-table__head" }, ...headRows.map((cells, level) => headRowOf(cells, level))),
     ...body
   );
 }
 
 // dist/ui/Table.js
 function useLoadMoreSentinel(props, enabled) {
-  const nodeRef = (0, import_react27.useRef)(null);
-  const onLoadMoreRef = (0, import_react27.useRef)(props.onLoadMore);
-  const blockedRef = (0, import_react27.useRef)(true);
-  (0, import_react27.useEffect)(() => {
+  const nodeRef = (0, import_react28.useRef)(null);
+  const onLoadMoreRef = (0, import_react28.useRef)(props.onLoadMore);
+  const blockedRef = (0, import_react28.useRef)(true);
+  (0, import_react28.useEffect)(() => {
     onLoadMoreRef.current = props.onLoadMore;
     blockedRef.current = !enabled || props.onLoadMore === void 0 || props.loading === true || props.loadingMore === true || props.hasMore === false;
   });
-  const refCallback = (0, import_react27.useRef)((node) => {
+  const refCallback = (0, import_react28.useRef)((node) => {
     nodeRef.current = node;
   }).current;
-  (0, import_react27.useEffect)(() => {
+  (0, import_react28.useEffect)(() => {
     if (!enabled || typeof IntersectionObserver === "undefined")
       return;
     const node = nodeRef.current;
@@ -5784,21 +5824,21 @@ function Table(props) {
   const total = local ? allRows.length : Math.max(0, Math.floor(pager.total ?? 0));
   const page = clampPage(pager.page, pageCountOf(total, pageSize));
   const rows = local ? allRows.slice((page - 1) * pageSize, page * pageSize) : allRows;
-  return (0, import_react27.createElement)(
+  return (0, import_react28.createElement)(
     "div",
     { className: "dshpc-table-frame" },
     // 分页与滚动加载二选一：分页模式下把底部加载相关 props 摘掉，避免同表两套翻页。
     tableShell("dshpc-table--plain", { ...props, rows, onLoadMore: void 0, loadingMore: void 0, hasMore: void 0, noMoreText: void 0 }, {}),
-    (0, import_react27.createElement)(Pagination, { ...pager, page, total, align: pager.align ?? "right" })
+    (0, import_react28.createElement)(Pagination, { ...pager, page, total, align: pager.align ?? "right" })
   );
 }
 
 // dist/ui/Toast.js
-var import_react29 = require("react");
+var import_react30 = require("react");
 var import_client2 = require("react-dom/client");
 
 // node_modules/.pnpm/sonner@2.0.8_@types+react@18.3.31_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/sonner/dist/index.mjs
-var import_react28 = __toESM(require("react"), 1);
+var import_react29 = __toESM(require("react"), 1);
 var import_react_dom3 = __toESM(require("react-dom"), 1);
 function __insertCSS(code3) {
   if (!code3 || typeof document == "undefined") return;
@@ -5824,68 +5864,68 @@ var getAsset = (type3) => {
 };
 var bars = Array(12).fill(0);
 var Loader2 = ({ visible, className: className2 }) => {
-  return /* @__PURE__ */ import_react28.default.createElement("div", {
+  return /* @__PURE__ */ import_react29.default.createElement("div", {
     className: [
       "sonner-loading-wrapper",
       className2
     ].filter(Boolean).join(" "),
     "data-visible": visible
-  }, /* @__PURE__ */ import_react28.default.createElement("div", {
+  }, /* @__PURE__ */ import_react29.default.createElement("div", {
     className: "sonner-spinner"
-  }, bars.map((_, i2) => /* @__PURE__ */ import_react28.default.createElement("div", {
+  }, bars.map((_, i2) => /* @__PURE__ */ import_react29.default.createElement("div", {
     className: "sonner-loading-bar",
     key: `spinner-bar-${i2}`
   }))));
 };
-var SuccessIcon = /* @__PURE__ */ import_react28.default.createElement("svg", {
+var SuccessIcon = /* @__PURE__ */ import_react29.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react28.default.createElement("path", {
+}, /* @__PURE__ */ import_react29.default.createElement("path", {
   fillRule: "evenodd",
   d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z",
   clipRule: "evenodd"
 }));
-var WarningIcon = /* @__PURE__ */ import_react28.default.createElement("svg", {
+var WarningIcon = /* @__PURE__ */ import_react29.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react28.default.createElement("path", {
+}, /* @__PURE__ */ import_react29.default.createElement("path", {
   fillRule: "evenodd",
   d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z",
   clipRule: "evenodd"
 }));
-var InfoIcon = /* @__PURE__ */ import_react28.default.createElement("svg", {
+var InfoIcon = /* @__PURE__ */ import_react29.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react28.default.createElement("path", {
+}, /* @__PURE__ */ import_react29.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z",
   clipRule: "evenodd"
 }));
-var ErrorIcon = /* @__PURE__ */ import_react28.default.createElement("svg", {
+var ErrorIcon = /* @__PURE__ */ import_react29.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react28.default.createElement("path", {
+}, /* @__PURE__ */ import_react29.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z",
   clipRule: "evenodd"
 }));
-var CloseIcon = /* @__PURE__ */ import_react28.default.createElement("svg", {
+var CloseIcon = /* @__PURE__ */ import_react29.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "12",
   height: "12",
@@ -5896,20 +5936,20 @@ var CloseIcon = /* @__PURE__ */ import_react28.default.createElement("svg", {
   strokeLinecap: "round",
   strokeLinejoin: "round",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react28.default.createElement("line", {
+}, /* @__PURE__ */ import_react29.default.createElement("line", {
   x1: "18",
   y1: "6",
   x2: "6",
   y2: "18"
-}), /* @__PURE__ */ import_react28.default.createElement("line", {
+}), /* @__PURE__ */ import_react29.default.createElement("line", {
   x1: "6",
   y1: "6",
   x2: "18",
   y2: "18"
 }));
 var useIsDocumentHidden = () => {
-  const [isDocumentHidden, setIsDocumentHidden] = import_react28.default.useState(document.hidden);
-  import_react28.default.useEffect(() => {
+  const [isDocumentHidden, setIsDocumentHidden] = import_react29.default.useState(document.hidden);
+  import_react29.default.useEffect(() => {
     const callback = () => {
       setIsDocumentHidden(document.hidden);
     };
@@ -6093,7 +6133,7 @@ var Observer = class {
           "resolve",
           response
         ];
-        const isReactElementResponse = import_react28.default.isValidElement(response);
+        const isReactElementResponse = import_react29.default.isValidElement(response);
         if (isReactElementResponse) {
           shouldDismiss = false;
           this.create({
@@ -6105,7 +6145,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(`HTTP error! status: ${response.status}`) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(`HTTP error! status: ${response.status}`) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react28.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react29.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -6119,7 +6159,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(response) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react28.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react29.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -6133,7 +6173,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.success === "function" ? await data2.success(response) : data2.success;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react28.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react29.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -6153,7 +6193,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(error) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(error) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react28.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react29.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -6254,18 +6294,18 @@ function getDefaultSwipeDirections(position) {
 var Toast = (props) => {
   var _toast_classNames, _toast_classNames1, _toast_classNames2, _toast_classNames3, _toast_classNames4, _toast_classNames5, _toast_classNames6, _toast_classNames7, _toast_classNames8;
   const { invert: ToasterInvert, toast: toast2, unstyled, interacting, setHeights, visibleToasts, heights, index: index3, toasts, expanded, removeToast, defaultRichColors, closeButton: closeButtonFromToaster, style: style2, cancelButtonStyle, actionButtonStyle, className: className2 = "", descriptionClassName = "", duration: durationFromToaster, position, gap, expandByDefault, classNames, icons, closeButtonAriaLabel = "Close toast" } = props;
-  const [swipeDirection, setSwipeDirection] = import_react28.default.useState(null);
-  const [swipeOutDirection, setSwipeOutDirection] = import_react28.default.useState(null);
-  const [mounted, setMounted] = import_react28.default.useState(false);
-  const [removed, setRemoved] = import_react28.default.useState(false);
-  const [swiping, setSwiping] = import_react28.default.useState(false);
-  const [swipeOut, setSwipeOut] = import_react28.default.useState(false);
-  const [isSwiped, setIsSwiped] = import_react28.default.useState(false);
-  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react28.default.useState(0);
-  const [initialHeight, setInitialHeight] = import_react28.default.useState(0);
-  const remainingTime = import_react28.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
-  const dragStartTime = import_react28.default.useRef(null);
-  const toastRef = import_react28.default.useRef(null);
+  const [swipeDirection, setSwipeDirection] = import_react29.default.useState(null);
+  const [swipeOutDirection, setSwipeOutDirection] = import_react29.default.useState(null);
+  const [mounted, setMounted] = import_react29.default.useState(false);
+  const [removed, setRemoved] = import_react29.default.useState(false);
+  const [swiping, setSwiping] = import_react29.default.useState(false);
+  const [swipeOut, setSwipeOut] = import_react29.default.useState(false);
+  const [isSwiped, setIsSwiped] = import_react29.default.useState(false);
+  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react29.default.useState(0);
+  const [initialHeight, setInitialHeight] = import_react29.default.useState(0);
+  const remainingTime = import_react29.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
+  const dragStartTime = import_react29.default.useRef(null);
+  const toastRef = import_react29.default.useRef(null);
   const isFront = index3 === 0;
   const isVisible = index3 + 1 <= visibleToasts;
   const toastType = toast2.type;
@@ -6273,27 +6313,27 @@ var Toast = (props) => {
   const dismissible = toast2.dismissible !== false;
   const toastClassname = toast2.className || "";
   const toastDescriptionClassname = toast2.descriptionClassName || "";
-  const heightIndex = import_react28.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
+  const heightIndex = import_react29.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
     heights,
     toast2.id
   ]);
-  const closeButton = import_react28.default.useMemo(() => {
+  const closeButton = import_react29.default.useMemo(() => {
     var _toast_closeButton;
     return (_toast_closeButton = toast2.closeButton) != null ? _toast_closeButton : closeButtonFromToaster;
   }, [
     toast2.closeButton,
     closeButtonFromToaster
   ]);
-  const duration = import_react28.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
+  const duration = import_react29.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
     toast2.duration,
     durationFromToaster
   ]);
-  const closeTimerStartTimeRef = import_react28.default.useRef(0);
-  const offset4 = import_react28.default.useRef(0);
-  const lastCloseTimerStartTimeRef = import_react28.default.useRef(0);
-  const pointerStartRef = import_react28.default.useRef(null);
+  const closeTimerStartTimeRef = import_react29.default.useRef(0);
+  const offset4 = import_react29.default.useRef(0);
+  const lastCloseTimerStartTimeRef = import_react29.default.useRef(0);
+  const pointerStartRef = import_react29.default.useRef(null);
   const [y, x] = position.split("-");
-  const toastsHeightBefore = import_react28.default.useMemo(() => {
+  const toastsHeightBefore = import_react29.default.useMemo(() => {
     return heights.reduce((prev, curr, reducerIndex) => {
       if (reducerIndex >= heightIndex) {
         return prev;
@@ -6305,7 +6345,7 @@ var Toast = (props) => {
     heightIndex
   ]);
   const isDocumentHidden = useIsDocumentHidden();
-  const swipeDirections = import_react28.default.useMemo(() => {
+  const swipeDirections = import_react29.default.useMemo(() => {
     var _props_swipeDirections;
     return (_props_swipeDirections = props.swipeDirections) != null ? _props_swipeDirections : getDefaultSwipeDirections(position);
   }, [
@@ -6314,38 +6354,38 @@ var Toast = (props) => {
   ]);
   const invert = toast2.invert || ToasterInvert;
   const disabled = toastType === "loading";
-  offset4.current = import_react28.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
+  offset4.current = import_react29.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
     heightIndex,
     toastsHeightBefore
   ]);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     remainingTime.current = duration;
   }, [
     duration
   ]);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     setMounted(true);
   }, []);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     const toastNode = toastRef.current;
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h74) => [
+      setHeights((h79) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h74
+        ...h79
       ]);
-      return () => setHeights((h74) => h74.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h79) => h79.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
     toast2.id
   ]);
-  import_react28.default.useLayoutEffect(() => {
+  import_react29.default.useLayoutEffect(() => {
     if (!mounted) return;
     const toastNode = toastRef.current;
     const originalHeight = toastNode.style.height;
@@ -6381,10 +6421,10 @@ var Toast = (props) => {
     toast2.action,
     toast2.cancel
   ]);
-  const deleteToast = import_react28.default.useCallback(() => {
+  const deleteToast = import_react29.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
-    setHeights((h74) => h74.filter((height) => height.toastId !== toast2.id));
+    setHeights((h79) => h79.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -6394,7 +6434,7 @@ var Toast = (props) => {
     setHeights,
     offset4
   ]);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     if (toast2.promise && toastType === "loading" || toast2.duration === Infinity || toast2.type === "loading") return;
     let timeoutId;
     const pauseTimer = () => {
@@ -6426,7 +6466,7 @@ var Toast = (props) => {
     isDocumentHidden,
     deleteToast
   ]);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     if (toast2.delete) {
       deleteToast();
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
@@ -6439,19 +6479,19 @@ var Toast = (props) => {
     var _toast_classNames9;
     if (icons == null ? void 0 : icons.loading) {
       var _toast_classNames12;
-      return /* @__PURE__ */ import_react28.default.createElement("div", {
+      return /* @__PURE__ */ import_react29.default.createElement("div", {
         className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames12 = toast2.classNames) == null ? void 0 : _toast_classNames12.loader, "sonner-loader"),
         "data-visible": toastType === "loading"
       }, icons.loading);
     }
-    return /* @__PURE__ */ import_react28.default.createElement(Loader2, {
+    return /* @__PURE__ */ import_react29.default.createElement(Loader2, {
       className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames9 = toast2.classNames) == null ? void 0 : _toast_classNames9.loader),
       visible: toastType === "loading"
     });
   }
   const icon2 = toast2.icon || (icons == null ? void 0 : icons[toastType]) || getAsset(toastType);
   var _toast_richColors, _icons_close;
-  return /* @__PURE__ */ import_react28.default.createElement("li", {
+  return /* @__PURE__ */ import_react29.default.createElement("li", {
     tabIndex: 0,
     ref: toastRef,
     className: cn(className2, toastClassname, classNames == null ? void 0 : classNames.toast, toast2 == null ? void 0 : (_toast_classNames = toast2.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames[toastTypeKey], toast2 == null ? void 0 : (_toast_classNames1 = toast2.classNames) == null ? void 0 : _toast_classNames1[toastTypeKey]),
@@ -6575,7 +6615,7 @@ var Toast = (props) => {
       (_toastRef_current = toastRef.current) == null ? void 0 : _toastRef_current.style.setProperty("--swipe-amount-x", `${swipeAmount.x}px`);
       (_toastRef_current1 = toastRef.current) == null ? void 0 : _toastRef_current1.style.setProperty("--swipe-amount-y", `${swipeAmount.y}px`);
     }
-  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react28.default.createElement("button", {
+  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react29.default.createElement("button", {
     "aria-label": closeButtonAriaLabel,
     "data-disabled": disabled,
     "data-close-button": true,
@@ -6585,19 +6625,19 @@ var Toast = (props) => {
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
     },
     className: cn(classNames == null ? void 0 : classNames.closeButton, toast2 == null ? void 0 : (_toast_classNames2 = toast2.classNames) == null ? void 0 : _toast_classNames2.closeButton)
-  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react28.default.createElement("div", {
+  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react29.default.createElement("div", {
     "data-icon": "",
     className: cn(classNames == null ? void 0 : classNames.icon, toast2 == null ? void 0 : (_toast_classNames3 = toast2.classNames) == null ? void 0 : _toast_classNames3.icon)
-  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon2 : null) : null, /* @__PURE__ */ import_react28.default.createElement("div", {
+  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon2 : null) : null, /* @__PURE__ */ import_react29.default.createElement("div", {
     "data-content": "",
     className: cn(classNames == null ? void 0 : classNames.content, toast2 == null ? void 0 : (_toast_classNames4 = toast2.classNames) == null ? void 0 : _toast_classNames4.content)
-  }, /* @__PURE__ */ import_react28.default.createElement("div", {
+  }, /* @__PURE__ */ import_react29.default.createElement("div", {
     "data-title": "",
     className: cn(classNames == null ? void 0 : classNames.title, toast2 == null ? void 0 : (_toast_classNames5 = toast2.classNames) == null ? void 0 : _toast_classNames5.title)
-  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react28.default.createElement("div", {
+  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react29.default.createElement("div", {
     "data-description": "",
     className: cn(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast2 == null ? void 0 : (_toast_classNames6 = toast2.classNames) == null ? void 0 : _toast_classNames6.description)
-  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react28.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react28.default.createElement("button", {
+  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react29.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react29.default.createElement("button", {
     "data-button": true,
     "data-cancel": true,
     style: toast2.cancelButtonStyle || cancelButtonStyle,
@@ -6608,7 +6648,7 @@ var Toast = (props) => {
       deleteToast();
     },
     className: cn(classNames == null ? void 0 : classNames.cancelButton, toast2 == null ? void 0 : (_toast_classNames7 = toast2.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
-  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react28.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react28.default.createElement("button", {
+  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react29.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react29.default.createElement("button", {
     "data-button": true,
     "data-action": true,
     style: toast2.actionButtonStyle || actionButtonStyle,
@@ -6670,13 +6710,13 @@ function assignOffset(defaultOffset, mobileOffset) {
   });
   return styles;
 }
-var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster2(props, ref) {
+var Toaster = /* @__PURE__ */ import_react29.default.forwardRef(function Toaster2(props, ref) {
   const { id: id3, invert, position = "bottom-right", hotkey = [
     "altKey",
     "KeyT"
   ], expand, closeButton, className: className2, offset: offset4, mobileOffset, theme: theme2 = "light", richColors, duration, style: style2, visibleToasts = VISIBLE_TOASTS_AMOUNT, toastOptions, dir = getDocumentDirection(), gap = GAP, icons, customAriaLabel, containerAriaLabel = "Notifications" } = props;
-  const [toasts, setToasts] = import_react28.default.useState([]);
-  const filteredToasts = import_react28.default.useMemo(() => {
+  const [toasts, setToasts] = import_react29.default.useState([]);
+  const filteredToasts = import_react29.default.useMemo(() => {
     if (id3) {
       return toasts.filter((toast2) => toast2.toasterId === id3);
     }
@@ -6685,7 +6725,7 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
     toasts,
     id3
   ]);
-  const possiblePositions = import_react28.default.useMemo(() => {
+  const possiblePositions = import_react29.default.useMemo(() => {
     return Array.from(new Set([
       position
     ].concat(filteredToasts.filter((toast2) => toast2.position).map((toast2) => toast2.position))));
@@ -6693,15 +6733,15 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
     filteredToasts,
     position
   ]);
-  const [heights, setHeights] = import_react28.default.useState([]);
-  const [expanded, setExpanded] = import_react28.default.useState(false);
-  const [interacting, setInteracting] = import_react28.default.useState(false);
-  const [actualTheme, setActualTheme] = import_react28.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
-  const listRef = import_react28.default.useRef(null);
+  const [heights, setHeights] = import_react29.default.useState([]);
+  const [expanded, setExpanded] = import_react29.default.useState(false);
+  const [interacting, setInteracting] = import_react29.default.useState(false);
+  const [actualTheme, setActualTheme] = import_react29.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
+  const listRef = import_react29.default.useRef(null);
   const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "");
-  const lastFocusedElementRef = import_react28.default.useRef(null);
-  const isFocusWithinRef = import_react28.default.useRef(false);
-  const removeToast = import_react28.default.useCallback((toastToRemove) => {
+  const lastFocusedElementRef = import_react29.default.useRef(null);
+  const isFocusWithinRef = import_react29.default.useRef(false);
+  const removeToast = import_react29.default.useCallback((toastToRemove) => {
     setToasts((toasts2) => {
       var _toasts_find;
       if (!((_toasts_find = toasts2.find((toast2) => toast2.id === toastToRemove.id)) == null ? void 0 : _toasts_find.delete)) {
@@ -6710,7 +6750,7 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
       return toasts2.filter(({ id: id4 }) => id4 !== toastToRemove.id);
     });
   }, []);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     return ToastState.subscribe((toast2) => {
       if (toast2.dismiss) {
         requestAnimationFrame(() => {
@@ -6744,7 +6784,7 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
       });
     });
   }, []);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     if (theme2 !== "system") {
       setActualTheme(theme2);
       return;
@@ -6782,14 +6822,14 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
   }, [
     theme2
   ]);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     if (toasts.length <= 1) {
       setExpanded(false);
     }
   }, [
     toasts
   ]);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     const handleKeyDown = (event) => {
       var _listRef_current;
       const isHotkeyPressed = hotkey.length > 0 && hotkey.every((key) => event[key] || event.code === key);
@@ -6807,7 +6847,7 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
   }, [
     hotkey
   ]);
-  import_react28.default.useEffect(() => {
+  import_react29.default.useEffect(() => {
     if (listRef.current) {
       return () => {
         if (lastFocusedElementRef.current) {
@@ -6824,7 +6864,7 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
   ]);
   return (
     // Remove item from normal navigation flow, only available via hotkey
-    /* @__PURE__ */ import_react28.default.createElement("section", {
+    /* @__PURE__ */ import_react29.default.createElement("section", {
       ref,
       "aria-label": customAriaLabel != null ? customAriaLabel : `${containerAriaLabel} ${hotkeyLabel}`,
       tabIndex: -1,
@@ -6837,7 +6877,7 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
       var _heights_;
       const [y, x] = position2.split("-");
       if (!filteredToasts.length) return null;
-      return /* @__PURE__ */ import_react28.default.createElement("ol", {
+      return /* @__PURE__ */ import_react29.default.createElement("ol", {
         key: position2,
         dir: dir === "auto" ? getDocumentDirection() : dir,
         tabIndex: -1,
@@ -6889,7 +6929,7 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
         onPointerUp: () => setInteracting(false)
       }, filteredToasts.filter((toast2) => !toast2.position && index3 === 0 || toast2.position === position2).map((toast2, index4) => {
         var _toastOptions_duration, _toastOptions_closeButton;
-        return /* @__PURE__ */ import_react28.default.createElement(Toast, {
+        return /* @__PURE__ */ import_react29.default.createElement(Toast, {
           key: toast2.id,
           icons,
           index: index4,
@@ -6911,7 +6951,7 @@ var Toaster = /* @__PURE__ */ import_react28.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t4) => t4.position == toast2.position),
-          heights: heights.filter((h74) => h74.position == toast2.position),
+          heights: heights.filter((h79) => h79.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -6957,7 +6997,7 @@ function createToasterHost() {
   function renderToaster() {
     if (root === null)
       return;
-    root.render((0, import_react29.createElement)(Toaster, {
+    root.render((0, import_react30.createElement)(Toaster, {
       theme: currentTheme(),
       position,
       // richColors：success=绿整条 / error=红整条 / warning=黄整条（Sonner 自带）；
@@ -7022,8 +7062,8 @@ function createToasterHost() {
   function showCard(payload) {
     const palette = notifyPalette(payload.variant, currentTheme());
     const duration = payload.durationMs;
-    const actions = payload.actions;
-    const id3 = toast.custom(() => (0, import_react29.createElement)("div", {
+    const actions2 = payload.actions;
+    const id3 = toast.custom(() => (0, import_react30.createElement)("div", {
       style: {
         display: "flex",
         alignItems: "center",
@@ -7039,7 +7079,7 @@ function createToasterHost() {
         fontSize: "14px",
         lineHeight: "20px"
       }
-    }, (0, import_react29.createElement)("span", {
+    }, (0, import_react30.createElement)("span", {
       style: {
         flexShrink: 0,
         width: "20px",
@@ -7052,7 +7092,7 @@ function createToasterHost() {
         fontSize: "13px",
         fontWeight: 700
       }
-    }, palette.glyph), (0, import_react29.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react29.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react29.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions !== void 0 && actions.length > 0 ? (0, import_react29.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => (0, import_react29.createElement)(Button, {
+    }, palette.glyph), (0, import_react30.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react30.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react30.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions2 !== void 0 && actions2.length > 0 ? (0, import_react30.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions2.slice(0, 2).map((a) => (0, import_react30.createElement)(Button, {
       variant: a.variant ?? "outline",
       size: "md",
       onClick: () => {
@@ -7126,7 +7166,7 @@ function notify(message, opts) {
 }
 
 // dist/ui/Segmented.js
-var import_react30 = require("react");
+var import_react31 = require("react");
 function countText(value) {
   if (value === void 0)
     return null;
@@ -7142,9 +7182,9 @@ function Segmented(props) {
   const value = props.value;
   const onChange = props.onChange;
   const sliding = !multiple && props.items.length > 1;
-  const rootRef = (0, import_react30.useRef)(null);
-  const [thumb, setThumb] = (0, import_react30.useState)(null);
-  const measure = (0, import_react30.useCallback)(() => {
+  const rootRef = (0, import_react31.useRef)(null);
+  const [thumb, setThumb] = (0, import_react31.useState)(null);
+  const measure = (0, import_react31.useCallback)(() => {
     const sel = rootRef.current?.querySelector('.dshpc-seg__item[aria-pressed="true"]');
     if (sel === void 0 || sel === null) {
       setThumb(null);
@@ -7153,7 +7193,7 @@ function Segmented(props) {
     const next = { left: sel.offsetLeft, top: sel.offsetTop, width: sel.offsetWidth, height: sel.offsetHeight };
     setThumb((cur2) => cur2 !== null && cur2.left === next.left && cur2.top === next.top && cur2.width === next.width && cur2.height === next.height ? cur2 : next);
   }, []);
-  (0, import_react30.useLayoutEffect)(() => {
+  (0, import_react31.useLayoutEffect)(() => {
     if (!sliding) {
       setThumb(null);
       return;
@@ -7170,7 +7210,7 @@ function Segmented(props) {
   const tone = props.tone;
   const toneClass = typeof tone === "string" ? ` dshpc-seg--tone-${tone}` : "";
   const toneStyle = tone !== void 0 && typeof tone !== "string" ? { "--seg-thumb": tone.bg, "--seg-on": tone.fg } : void 0;
-  return (0, import_react30.createElement)("div", {
+  return (0, import_react31.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -7179,7 +7219,7 @@ function Segmented(props) {
     className: `dshpc-seg dshpc-seg--${size4}${sliding ? " dshpc-seg--slide" : ""}${props.block === true ? " dshpc-seg--block" : ""}${props.bordered === true ? " dshpc-seg--bordered" : ""}${toneClass}${props.className !== void 0 ? ` ${props.className}` : ""}`,
     style: toneStyle === void 0 ? props.style : { ...toneStyle, ...props.style }
   }, [
-    sliding && thumb !== null ? (0, import_react30.createElement)("span", {
+    sliding && thumb !== null ? (0, import_react31.createElement)("span", {
       key: "__thumb__",
       className: "dshpc-seg__thumb",
       "aria-hidden": true,
@@ -7210,7 +7250,7 @@ function Segmented(props) {
       const hasLabel = item.label !== void 0 && item.label !== null && item.label !== "";
       const hasIcon = item.icon !== void 0 && item.icon !== null;
       const iconOnly = hasIcon && !hasLabel && count3 === null && badge === null;
-      const itemButton = (0, import_react30.createElement)("button", {
+      const itemButton = (0, import_react31.createElement)("button", {
         key: item.value,
         type: "button",
         className: `dshpc-seg__item${iconOnly ? " dshpc-seg__item--icon-only" : ""}`,
@@ -7219,7 +7259,7 @@ function Segmented(props) {
         "aria-label": item.ariaLabel ?? (iconOnly ? item.tooltip : void 0),
         disabled,
         onClick: handle
-      }, hasIcon ? (0, import_react30.createElement)("span", { className: "dshpc-seg__icon" }, item.icon) : null, hasLabel ? item.label : null, count3 === null ? null : (0, import_react30.createElement)("span", { className: "dshpc-seg__count" }, count3), badge === null ? null : (0, import_react30.createElement)("span", { className: "dshpc-seg__badge" }, badge));
+      }, hasIcon ? (0, import_react31.createElement)("span", { className: "dshpc-seg__icon" }, item.icon) : null, hasLabel ? item.label : null, count3 === null ? null : (0, import_react31.createElement)("span", { className: "dshpc-seg__count" }, count3), badge === null ? null : (0, import_react31.createElement)("span", { className: "dshpc-seg__badge" }, badge));
       if (item.tooltip !== void 0 && renderer2 !== void 0) {
         return renderer2({ label: item.tooltip, side: "top", children: itemButton });
       }
@@ -7229,10 +7269,10 @@ function Segmented(props) {
 }
 
 // dist/ui/SplitGroup.js
-var import_react31 = require("react");
+var import_react32 = require("react");
 function SplitGroup(props) {
   ensureComponentStyles("split-group", SPLIT_GROUP_CSS);
-  return (0, import_react31.createElement)("div", {
+  return (0, import_react32.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -7242,14 +7282,14 @@ function SplitGroup(props) {
 }
 
 // dist/ui/InputGroup.js
-var import_react33 = require("react");
+var import_react34 = require("react");
 
 // dist/ui/Field.js
-var import_react32 = require("react");
+var import_react33 = require("react");
 function withHint(control, hint) {
   if (hint === void 0)
     return control;
-  return (0, import_react32.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react32.createElement)(FieldHint, { text: hint }));
+  return (0, import_react33.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react33.createElement)(FieldHint, { text: hint }));
 }
 function sizeClass(size4) {
   return size4 === "lg" ? "--lg" : size4 === "md" ? "--md" : "--sm";
@@ -7257,10 +7297,10 @@ function sizeClass(size4) {
 function Input(props) {
   ensureComponentStyles("field", FIELD_CSS);
   const { value, onChange, placeholder: placeholder2, size: size4 = "lg", error, disabled, type: type3, icon: icon2, className: className2, style: style2 } = props;
-  const [focused, setFocused] = (0, import_react32.useState)(false);
+  const [focused, setFocused] = (0, import_react33.useState)(false);
   const search = type3 === "search";
   const showClear = search && value !== "" && focused && disabled !== true;
-  const input = (0, import_react32.createElement)("input", {
+  const input = (0, import_react33.createElement)("input", {
     ref: props.inputRef,
     type: type3 ?? "text",
     value,
@@ -7286,13 +7326,13 @@ function Input(props) {
   const hasIcon = icon2 !== void 0 && icon2 !== null;
   if (!hasIcon && !search)
     return withHint(input, props.hint);
-  return withHint((0, import_react32.createElement)(
+  return withHint((0, import_react33.createElement)(
     "span",
     { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size4)}${showClear ? " dshpc-iwrap--clear" : ""}` },
-    hasIcon ? (0, import_react32.createElement)("span", { className: "dshpc-iwrap__icon" }, icon2) : null,
+    hasIcon ? (0, import_react33.createElement)("span", { className: "dshpc-iwrap__icon" }, icon2) : null,
     input,
     // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
-    showClear ? (0, import_react32.createElement)(IconButton, {
+    showClear ? (0, import_react33.createElement)(IconButton, {
       className: "dshpc-iwrap__clear",
       variant: "plain",
       size: size4,
@@ -7310,8 +7350,8 @@ function Input(props) {
 function NumberInput(props) {
   ensureComponentStyles("field", FIELD_CSS);
   const { value, onChange, min: min2 = -Infinity, max: max2 = Infinity, step = 1, size: size4 = "lg", inputWidth, disabled, suffix: suffix2, label, decreaseLabel = "\u51CF\u5C11", increaseLabel = "\u589E\u52A0", className: className2, style: style2 } = props;
-  const [text2, setText] = (0, import_react32.useState)(String(value));
-  (0, import_react32.useEffect)(() => {
+  const [text2, setText] = (0, import_react33.useState)(String(value));
+  (0, import_react33.useEffect)(() => {
     setText(String(value));
   }, [value]);
   const clamp2 = (n) => Math.min(max2, Math.max(min2, n));
@@ -7337,18 +7377,18 @@ function NumberInput(props) {
     if (next !== value)
       onChange(next);
   };
-  return withHint((0, import_react32.createElement)(
+  return withHint((0, import_react33.createElement)(
     "div",
     {
       className: `dshpc-num dshpc-num${sizeClass(size4)}${disabled === true ? " dshpc-num--disabled" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
       style: style2
     },
-    (0, import_react32.createElement)(IconButton, { variant: "plain", size: size4, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
+    (0, import_react33.createElement)(IconButton, { variant: "plain", size: size4, icon: "\u2212", label: decreaseLabel, disabled, onClick: () => {
       bump(-1);
     } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
-    (0, import_react32.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react32.createElement)("input", {
+    (0, import_react33.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react33.createElement)("input", {
       className: "dshpc-num__input",
       ...inputWidth === void 0 ? {} : { style: { width: `${inputWidth}px` } },
       value: text2,
@@ -7365,8 +7405,8 @@ function NumberInput(props) {
         if (event.key === "Enter")
           commit(text2);
       }
-    }), suffix2 !== void 0 ? (0, import_react32.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
-    (0, import_react32.createElement)(IconButton, { variant: "plain", size: size4, icon: "+", label: increaseLabel, disabled, onClick: () => {
+    }), suffix2 !== void 0 ? (0, import_react33.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
+    (0, import_react33.createElement)(IconButton, { variant: "plain", size: size4, icon: "+", label: increaseLabel, disabled, onClick: () => {
       bump(1);
     } })
   ), props.hint);
@@ -7377,9 +7417,9 @@ function InputGroup(props) {
   ensureComponentStyles("input-group", INPUT_GROUP_CSS);
   ensureComponentStyles("field", FIELD_CSS);
   ensureComponentStyles("button", BUTTON_CSS);
-  const { value, onChange, label, placeholder: placeholder2, size: size4 = "lg", height, error, disabled, actions = [], undoable = false, undoLabel = "\u64A4\u9500", onSubmit } = props;
-  const committed = (0, import_react33.useRef)(value);
-  const [undoStack, setUndoStack] = (0, import_react33.useState)([]);
+  const { value, onChange, label, placeholder: placeholder2, size: size4 = "lg", height, error, disabled, actions: actions2 = [], undoable = false, undoLabel = "\u64A4\u9500", onSubmit } = props;
+  const committed = (0, import_react34.useRef)(value);
+  const [undoStack, setUndoStack] = (0, import_react34.useState)([]);
   const commit = () => {
     if (value === committed.current)
       return;
@@ -7397,8 +7437,8 @@ function InputGroup(props) {
   };
   const nodes = [];
   if (label !== void 0)
-    nodes.push((0, import_react33.createElement)("span", { key: "label", className: "dshpc-igroup__label" }, label));
-  nodes.push((0, import_react33.createElement)(Input, {
+    nodes.push((0, import_react34.createElement)("span", { key: "label", className: "dshpc-igroup__label" }, label));
+  nodes.push((0, import_react34.createElement)(Input, {
     key: "input",
     value,
     onChange,
@@ -7417,7 +7457,7 @@ function InputGroup(props) {
     }
   }));
   if (undoable) {
-    nodes.push((0, import_react33.createElement)(IconButton, {
+    nodes.push((0, import_react34.createElement)(IconButton, {
       key: "undo",
       variant: "plain",
       size: size4,
@@ -7427,7 +7467,7 @@ function InputGroup(props) {
       onClick: undo2
     }));
   }
-  actions.forEach((action, i2) => {
+  actions2.forEach((action, i2) => {
     if (action.label === void 0 && (action.icon === void 0 || action.icon === null))
       return;
     const run = () => {
@@ -7436,7 +7476,7 @@ function InputGroup(props) {
     };
     const off = disabled === true || action.disabled === true;
     const onlyIcon = action.label === void 0;
-    nodes.push(onlyIcon ? (0, import_react33.createElement)(IconButton, {
+    nodes.push(onlyIcon ? (0, import_react34.createElement)(IconButton, {
       key: `action-${String(i2)}`,
       variant: "plain",
       size: size4,
@@ -7444,7 +7484,7 @@ function InputGroup(props) {
       label: action.ariaLabel ?? "\u64CD\u4F5C",
       disabled: off,
       onClick: run
-    }) : (0, import_react33.createElement)(Button, {
+    }) : (0, import_react34.createElement)(Button, {
       key: `action-${String(i2)}`,
       variant: action.variant ?? "info",
       size: size4,
@@ -7454,7 +7494,7 @@ function InputGroup(props) {
     }, action.label));
   });
   const className2 = `dshpc-igroup dshpc-igroup--${size4}${error === true ? " dshpc-igroup--error" : ""}${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}`;
-  return withHint((0, import_react33.createElement)("div", {
+  return withHint((0, import_react34.createElement)("div", {
     role: "group",
     "aria-label": props["aria-label"] ?? label,
     id: props.id,
@@ -7464,11 +7504,11 @@ function InputGroup(props) {
 }
 
 // dist/ui/Textarea.js
-var import_react34 = require("react");
+var import_react35 = require("react");
 function Textarea(props) {
   ensureComponentStyles("field", FIELD_CSS);
   const { value, onChange, placeholder: placeholder2, error, disabled, id: id3, rows, spellCheck, className: className2, style: style2 } = props;
-  const box = (0, import_react34.createElement)("textarea", {
+  const box = (0, import_react35.createElement)("textarea", {
     id: id3,
     rows,
     value,
@@ -7484,14 +7524,14 @@ function Textarea(props) {
   });
   if (props.hint === void 0)
     return box;
-  return (0, import_react34.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react34.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react35.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react35.createElement)(FieldHint, { text: props.hint }));
 }
 
 // dist/ui/Checkbox.js
-var import_react35 = require("react");
+var import_react36 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className: className2 } = props;
-  return (0, import_react35.createElement)("label", {
+  return (0, import_react36.createElement)("label", {
     className: `dshpc-checkbox${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: {
       display: "flex",
@@ -7501,7 +7541,7 @@ function Checkbox(props) {
       lineHeight: "var(--dshpc-line-md)",
       cursor: disabled === true ? "default" : "pointer"
     }
-  }, (0, import_react35.createElement)("input", {
+  }, (0, import_react36.createElement)("input", {
     type: "checkbox",
     checked,
     disabled,
@@ -7516,11 +7556,11 @@ function Checkbox(props) {
     onChange: (event) => {
       onChange(event.target.checked);
     }
-  }), label !== void 0 ? (0, import_react35.createElement)("span", null, label) : null);
+  }), label !== void 0 ? (0, import_react36.createElement)("span", null, label) : null);
 }
 
 // dist/ui/LoaderBar.js
-var import_react36 = require("react");
+var import_react37 = require("react");
 
 // dist/ui/loader-bar-art.js
 var BAR_PATHS = [
@@ -7544,7 +7584,7 @@ function pathAt(paths, index3) {
 function LoaderBar(props) {
   ensureComponentStyles("loader-bar", LOADER_BAR_CSS);
   const { size: size4 = "md", animated = true, label, className: className2 } = props;
-  const clipId = `dshpc-loader-bar-clip-${(0, import_react36.useId)().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const clipId = `dshpc-loader-bar-clip-${(0, import_react37.useId)().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const track = pathAt(BAR_PATHS, TRACK_INDEX);
   const fill = pathAt(BAR_PATHS, FILL_INDEX);
   const stripe = pathAt(BAR_PATHS, STRIPE_INDEX);
@@ -7553,32 +7593,32 @@ function LoaderBar(props) {
     classes.push("dshpc-loader-bar--still");
   if (className2 !== void 0 && className2 !== "")
     classes.push(className2);
-  return (0, import_react36.createElement)("svg", {
+  return (0, import_react37.createElement)("svg", {
     className: classes.join(" "),
     viewBox: "0 384 1024 256",
     role: label === void 0 ? void 0 : "status",
     "aria-label": label,
     "aria-hidden": label === void 0 ? true : void 0,
     focusable: "false"
-  }, (0, import_react36.createElement)(
+  }, (0, import_react37.createElement)(
     "defs",
     null,
     // 直接拿「蓝色段」自己的路径当裁剪区：它左端是圆的、**右端是平直的**
     // （进度刚走到一大半，右边界是一条切面，不能带弧度）。
     // 早先用 rect + rx 裁，四个角都是圆的 ⇒ 右端被裁成弧形，看着像走满了。
-    (0, import_react36.createElement)("clipPath", { id: clipId }, (0, import_react36.createElement)("path", { d: fill.d }))
-  ), (0, import_react36.createElement)("path", { d: track.d, fill: track.fill }), (0, import_react36.createElement)("path", { d: fill.d, fill: fill.fill }), (0, import_react36.createElement)("g", { clipPath: `url(#${clipId})` }, (0, import_react36.createElement)(
+    (0, import_react37.createElement)("clipPath", { id: clipId }, (0, import_react37.createElement)("path", { d: fill.d }))
+  ), (0, import_react37.createElement)("path", { d: track.d, fill: track.fill }), (0, import_react37.createElement)("path", { d: fill.d, fill: fill.fill }), (0, import_react37.createElement)("g", { clipPath: `url(#${clipId})` }, (0, import_react37.createElement)(
     "g",
     { className: "dshpc-loader-bar__stripe" },
-    ...[0, 1, 2].map((step) => (0, import_react36.createElement)("g", {
+    ...[0, 1, 2].map((step) => (0, import_react37.createElement)("g", {
       key: step,
       transform: step === 0 ? void 0 : `translate(${String(-STRIPE_PERIOD * step)} 0)`
-    }, (0, import_react36.createElement)("path", { d: stripe.d, fill: stripe.fill })))
+    }, (0, import_react37.createElement)("path", { d: stripe.d, fill: stripe.fill })))
   )));
 }
 
 // dist/ui/Loading.js
-var import_react37 = require("react");
+var import_react38 = require("react");
 var import_client3 = require("react-dom/client");
 
 // dist/ui/loading-host.js
@@ -7623,11 +7663,11 @@ function textOf(props) {
 }
 function LoadingToast(props) {
   ensureComponentStyles("loading", LOADING_CSS);
-  return (0, import_react37.createElement)("div", { className: "dshpc-loading-toast", role: "status", "aria-live": "polite" }, (0, import_react37.createElement)(Loader, { size: "sm" }), (0, import_react37.createElement)("span", null, textOf(props)));
+  return (0, import_react38.createElement)("div", { className: "dshpc-loading-toast", role: "status", "aria-live": "polite" }, (0, import_react38.createElement)(Loader, { size: "sm" }), (0, import_react38.createElement)("span", null, textOf(props)));
 }
 function LoadingBlock(props) {
   ensureComponentStyles("loading", LOADING_CSS);
-  return (0, import_react37.createElement)("div", { className: "dshpc-loading-block", role: "status", "aria-live": "polite" }, (0, import_react37.createElement)(Loader, { size: "md" }), (0, import_react37.createElement)("span", null, textOf(props)));
+  return (0, import_react38.createElement)("div", { className: "dshpc-loading-block", role: "status", "aria-live": "polite" }, (0, import_react38.createElement)(Loader, { size: "md" }), (0, import_react38.createElement)("span", null, textOf(props)));
 }
 function createLoadingHost() {
   const slot = createLoadingSlot();
@@ -7651,10 +7691,10 @@ function createLoadingHost() {
     ensureComponentStyles("loading", LOADING_CSS, getStyleKit());
     const { request } = state;
     const opacity = Math.min(1, Math.max(0, request.maskOpacity));
-    root.render((0, import_react37.createElement)("div", { className: loadingOverlayClass(request.position) }, request.mask ? (0, import_react37.createElement)("div", {
+    root.render((0, import_react38.createElement)("div", { className: loadingOverlayClass(request.position) }, request.mask ? (0, import_react38.createElement)("div", {
       className: "dshpc-loading-overlay__mask",
       style: { background: `rgba(0, 0, 0, ${opacity})` }
-    }) : null, request.variant === "block" ? (0, import_react37.createElement)(LoadingBlock, { text: request.text, translate: request.translate }) : (0, import_react37.createElement)(LoadingToast, { text: request.text, translate: request.translate })));
+    }) : null, request.variant === "block" ? (0, import_react38.createElement)(LoadingBlock, { text: request.text, translate: request.translate }) : (0, import_react38.createElement)(LoadingToast, { text: request.text, translate: request.translate })));
   }
   return {
     show(request) {
@@ -7684,10 +7724,10 @@ function showLoading(opts) {
 }
 
 // dist/ui/LiveText.js
-var import_react39 = require("react");
+var import_react40 = require("react");
 
 // dist/ui/ticker.js
-var import_react38 = require("react");
+var import_react39 = require("react");
 var tickerListeners = /* @__PURE__ */ new Set();
 var tickerTimer = null;
 var onVisibilityChange = () => {
@@ -7718,15 +7758,15 @@ function subscribeTicker(cb) {
 
 // dist/ui/LiveText.js
 function LiveText(props) {
-  const [, force] = (0, import_react39.useState)(0);
-  const renderRef = (0, import_react39.useRef)(props.render);
+  const [, force] = (0, import_react40.useState)(0);
+  const renderRef = (0, import_react40.useRef)(props.render);
   renderRef.current = props.render;
-  (0, import_react39.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
-  return (0, import_react39.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
+  (0, import_react40.useEffect)(() => subscribeTicker(() => force((v) => v + 1)), []);
+  return (0, import_react40.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
 }
 
 // dist/ui/QuickToolbar.js
-var import_react40 = require("react");
+var import_react41 = require("react");
 
 // dist/ui/quick-toolbar-logic.js
 var DEFAULT_SCROLL_THRESHOLD = 320;
@@ -7798,16 +7838,16 @@ function scrollToTop(target) {
 }
 function QuickToolbar(props) {
   ensureComponentStyles("quick-toolbar", QUICK_TOOLBAR_CSS);
-  const ref = (0, import_react40.useRef)(null);
-  const [left, setLeft] = (0, import_react40.useState)(null);
-  const [scrollTop, setScrollTop] = (0, import_react40.useState)(0);
-  const [leaving, setLeaving] = (0, import_react40.useState)([]);
-  const shownRef = (0, import_react40.useRef)([]);
-  const leaveTimers = (0, import_react40.useRef)(/* @__PURE__ */ new Map());
+  const ref = (0, import_react41.useRef)(null);
+  const [left, setLeft] = (0, import_react41.useState)(null);
+  const [scrollTop, setScrollTop] = (0, import_react41.useState)(0);
+  const [leaving, setLeaving] = (0, import_react41.useState)([]);
+  const shownRef = (0, import_react41.useRef)([]);
+  const leaveTimers = (0, import_react41.useRef)(/* @__PURE__ */ new Map());
   const offset4 = props.offset ?? DEFAULT_OFFSET;
   const size4 = props.size ?? DEFAULT_SIZE;
   const gap = props.gap ?? DEFAULT_GAP;
-  (0, import_react40.useEffect)(() => {
+  (0, import_react41.useEffect)(() => {
     const node = ref.current;
     if (node === null)
       return;
@@ -7848,7 +7888,7 @@ function QuickToolbar(props) {
       ro.disconnect();
     };
   }, [props.anchor, props.anchorId, offset4, size4]);
-  (0, import_react40.useEffect)(() => {
+  (0, import_react41.useEffect)(() => {
     const node = ref.current;
     if (node === null)
       return;
@@ -7874,7 +7914,7 @@ function QuickToolbar(props) {
     return isToolbarEntryVisible(entry.item ?? {}, scrollTop);
   });
   const visibleKey = JSON.stringify(visible.map((entry) => entry.id));
-  (0, import_react40.useEffect)(() => {
+  (0, import_react41.useEffect)(() => {
     const next = JSON.parse(visibleKey);
     const revived = next.filter((id3) => leaveTimers.current.has(id3));
     for (const id3 of revived) {
@@ -7900,7 +7940,7 @@ function QuickToolbar(props) {
     }
     shownRef.current = next;
   }, [visibleKey]);
-  (0, import_react40.useEffect)(() => () => {
+  (0, import_react41.useEffect)(() => () => {
     for (const timer of leaveTimers.current.values())
       clearTimeout(timer);
     leaveTimers.current.clear();
@@ -7917,7 +7957,7 @@ function QuickToolbar(props) {
     const leaveClass = isLeaving ? " is-leaving" : "";
     if (entry.kind === "backtop") {
       const label = backTop?.label ?? t("backToTop");
-      return (0, import_react40.createElement)("button", {
+      return (0, import_react41.createElement)("button", {
         key: entry.id,
         type: "button",
         className: `dshpc-quick-toolbar__item dshpc-quick-toolbar__backtop${leaveClass}`,
@@ -7925,7 +7965,7 @@ function QuickToolbar(props) {
         "aria-label": label,
         title: label,
         onClick: () => scrollToTop(resolveScrollTarget(props.scrollContainer, ref.current))
-      }, (0, import_react40.createElement)(Chevron, { dir: "up", size: 18 }));
+      }, (0, import_react41.createElement)(Chevron, { dir: "up", size: 18 }));
     }
     const item = entry.item;
     if (item === void 0)
@@ -7939,7 +7979,7 @@ function QuickToolbar(props) {
       item.onClick?.();
       props.onAction?.(item.id, item);
     };
-    return (0, import_react40.createElement)("button", {
+    return (0, import_react41.createElement)("button", {
       key: entry.id,
       type: "button",
       className: `dshpc-quick-toolbar__item${leaveClass}`,
@@ -7949,7 +7989,7 @@ function QuickToolbar(props) {
       onClick
     }, item.icon);
   };
-  return (0, import_react40.createElement)("div", {
+  return (0, import_react41.createElement)("div", {
     ref,
     className: `dshpc-quick-toolbar${props.className === void 0 ? "" : ` ${props.className}`}`,
     style: style2,
@@ -7959,7 +7999,7 @@ function QuickToolbar(props) {
 }
 
 // dist/ui/PanelDock.js
-var import_react41 = require("react");
+var import_react42 = require("react");
 
 // dist/ui/panel-dock-logic.js
 var DEFAULT_PANEL_ID = "default";
@@ -8179,8 +8219,8 @@ function createPanelDock(options = {}) {
 }
 function panesOf(children) {
   const out = [];
-  import_react41.Children.forEach(children, (child) => {
-    if ((0, import_react41.isValidElement)(child) && child.type === DockPanel)
+  import_react42.Children.forEach(children, (child) => {
+    if ((0, import_react42.isValidElement)(child) && child.type === DockPanel)
       out.push(child.props);
   });
   return out;
@@ -8190,9 +8230,9 @@ function PanelDock(props) {
   ensureComponentStyles("panel-dock", PANEL_DOCK_CSS);
   ensureComponentStyles("feedback", FEEDBACK_CSS);
   const tt = props.translate ?? t;
-  const state = (0, import_react41.useSyncExternalStore)(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
-  const rootRef = (0, import_react41.useRef)(null);
-  const panelRefs = (0, import_react41.useRef)(/* @__PURE__ */ new Map());
+  const state = (0, import_react42.useSyncExternalStore)(props.dock.subscribe, props.dock.getSnapshot, props.dock.getSnapshot);
+  const rootRef = (0, import_react42.useRef)(null);
+  const panelRefs = (0, import_react42.useRef)(/* @__PURE__ */ new Map());
   const panes = panesOf(props.children);
   const { defaultWidth, minWidth: fallbackMin } = props.dock.defaults;
   const widthOf2 = (pane) => clampWidth(state.widths[pane.id] ?? pane.width ?? defaultWidth, pane.minWidth ?? fallbackMin, pane.maxWidth);
@@ -8206,7 +8246,7 @@ function PanelDock(props) {
       return pane.ariaLabel;
     return id3;
   };
-  const [closing4, setClosing] = (0, import_react41.useState)([]);
+  const [closing4, setClosing] = (0, import_react42.useState)([]);
   const collapseWithAnim = (id3) => {
     setClosing((prev) => prev.includes(id3) ? prev : [...prev, id3]);
     window.setTimeout(() => {
@@ -8214,8 +8254,8 @@ function PanelDock(props) {
       props.dock.collapse(id3);
     }, 220);
   };
-  const prevIds = (0, import_react41.useRef)(state.ids);
-  (0, import_react41.useEffect)(() => {
+  const prevIds = (0, import_react42.useRef)(state.ids);
+  (0, import_react42.useEffect)(() => {
     const gone = prevIds.current.filter((id3) => !state.ids.includes(id3) && !state.collapsed.includes(id3));
     prevIds.current = state.ids;
     if (gone.length === 0)
@@ -8223,7 +8263,7 @@ function PanelDock(props) {
     setClosing((prev) => [...prev, ...gone.filter((id3) => !prev.includes(id3))]);
     window.setTimeout(() => setClosing((prev) => prev.filter((id3) => !gone.includes(id3))), 220);
   }, [state.ids, state.collapsed]);
-  const insetKey = (0, import_react41.useRef)("");
+  const insetKey = (0, import_react42.useRef)("");
   if (insetKey.current === "")
     insetKey.current = `dock-${++dockSeq}`;
   const restWidth = (paneId) => othersWidth(state, paneId, (id3) => {
@@ -8231,10 +8271,10 @@ function PanelDock(props) {
     return other === void 0 ? defaultWidth : widthOf2(other);
   });
   const totalWidth = panes.filter((pane) => state.ids.includes(pane.id)).reduce((sum, pane) => sum + widthOf2(pane), 0);
-  (0, import_react41.useEffect)(() => {
+  (0, import_react42.useEffect)(() => {
     publishInset(insetKey.current, state.ids.length > 0 ? totalWidth : 0, rootRef.current);
   });
-  (0, import_react41.useEffect)(() => () => {
+  (0, import_react42.useEffect)(() => () => {
     publishInset(insetKey.current, 0, null);
   }, []);
   for (const id3 of state.ids) {
@@ -8278,7 +8318,7 @@ function PanelDock(props) {
     const hasHeader = pane.header !== null;
     if (!closable || !(mode === "header" || mode === "auto" && hasHeader))
       return null;
-    return (0, import_react41.createElement)("button", {
+    return (0, import_react42.createElement)("button", {
       type: "button",
       className: "dshpc-dock__close dshpc-dock__close--abs",
       "aria-label": tt("dockClose"),
@@ -8289,9 +8329,9 @@ function PanelDock(props) {
     if (pane.header === null)
       return null;
     if (pane.header !== void 0) {
-      return (0, import_react41.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, pane.header);
+      return (0, import_react42.createElement)("div", { className: "dshpc-dock__head dshpc-dock__head--custom" }, pane.header);
     }
-    return (0, import_react41.createElement)("div", { className: "dshpc-dock__head" }, pane.icon === void 0 ? null : (0, import_react41.createElement)("div", { className: "dshpc-dock__lead" }, pane.icon), (0, import_react41.createElement)("div", { className: "dshpc-dock__title" }, pane.title), pane.extra === void 0 ? null : (0, import_react41.createElement)("div", { className: "dshpc-dock__extra" }, pane.extra));
+    return (0, import_react42.createElement)("div", { className: "dshpc-dock__head" }, pane.icon === void 0 ? null : (0, import_react42.createElement)("div", { className: "dshpc-dock__lead" }, pane.icon), (0, import_react42.createElement)("div", { className: "dshpc-dock__title" }, pane.title), pane.extra === void 0 ? null : (0, import_react42.createElement)("div", { className: "dshpc-dock__extra" }, pane.extra));
   };
   const floatingCloseOf = (pane) => {
     if (pane.closable === false)
@@ -8300,7 +8340,7 @@ function PanelDock(props) {
     const hasHeader = pane.header !== null;
     if (mode !== "floating" && !(mode === "auto" && !hasHeader))
       return null;
-    return (0, import_react41.createElement)("button", {
+    return (0, import_react42.createElement)("button", {
       type: "button",
       className: "dshpc-dock__close dshpc-dock__close--floating",
       "aria-label": tt("dockClose"),
@@ -8308,13 +8348,13 @@ function PanelDock(props) {
     }, pane.closeIcon ?? "\u2715");
   };
   const rootClass = `dshpc-dock${state.ids.length > 0 ? " dshpc-dock--open" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`;
-  return (0, import_react41.createElement)(
+  return (0, import_react42.createElement)(
     "div",
     {
       ref: rootRef,
       className: rootClass
     },
-    panes.filter((pane) => state.ids.includes(pane.id) || closing4.includes(pane.id)).map((pane) => (0, import_react41.createElement)(
+    panes.filter((pane) => state.ids.includes(pane.id) || closing4.includes(pane.id)).map((pane) => (0, import_react42.createElement)(
       "section",
       {
         key: pane.id,
@@ -8330,7 +8370,7 @@ function PanelDock(props) {
         "data-panel": pane.id,
         "aria-label": pane.ariaLabel ?? (typeof pane.title === "string" ? pane.title : pane.id)
       },
-      (0, import_react41.createElement)("div", {
+      (0, import_react42.createElement)("div", {
         className: "dshpc-dock__resizer",
         role: "separator",
         "aria-orientation": "vertical",
@@ -8341,7 +8381,7 @@ function PanelDock(props) {
       }),
       // 收起钮是 resizer 的**兄弟**，不是子元素 —— 用户 2026-10-28：鼠标停在按钮上时，
       // 拖宽线不能亮、也不能出蓝色发光（那是在拖宽，不是点按钮）。挂在面板左缘外。
-      (0, import_react41.createElement)("button", {
+      (0, import_react42.createElement)("button", {
         type: "button",
         className: "dshpc-dock__collapse",
         "aria-label": tt("dockCollapse"),
@@ -8350,13 +8390,13 @@ function PanelDock(props) {
       renderHeader(pane),
       headerCloseOf(pane),
       floatingCloseOf(pane),
-      (0, import_react41.createElement)("div", { className: "dshpc-dock__body" }, pane.children ?? null)
+      (0, import_react42.createElement)("div", { className: "dshpc-dock__body" }, pane.children ?? null)
     )),
     // 收起后的耳朵：**独立的 fixed 浮层**，与分栏不是一体（用户 2026-10-28 口径）。
     // 多个耳朵按收起顺序纵向堆叠，点一只展开回来。
-    state.collapsed.length === 0 ? null : (0, import_react41.createElement)("div", { className: "dshpc-dock__ears" }, state.collapsed.map((id3) => {
+    state.collapsed.length === 0 ? null : (0, import_react42.createElement)("div", { className: "dshpc-dock__ears" }, state.collapsed.map((id3) => {
       const label = earLabelOf(id3);
-      return (0, import_react41.createElement)(
+      return (0, import_react42.createElement)(
         "button",
         {
           key: id3,
@@ -8367,14 +8407,14 @@ function PanelDock(props) {
           onClick: () => props.dock.expand(id3)
         },
         // 只有一个箭头，与收起钮同尺寸反向：收起钮 ›（往右收），耳朵 ‹（往左拉回来）。
-        (0, import_react41.createElement)("span", { className: "dshpc-dock__ear-arrow", "aria-hidden": true }, "\u2039")
+        (0, import_react42.createElement)("span", { className: "dshpc-dock__ear-arrow", "aria-hidden": true }, "\u2039")
       );
     }))
   );
 }
 
 // dist/explorer/FileBrowser.js
-var import_react51 = require("react");
+var import_react56 = require("react");
 
 // dist/ui/official.js
 var official_exports = {};
@@ -8384,7 +8424,7 @@ __export(official_exports, {
 });
 var Official = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
 __reExport(official_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
-var import_react42 = require("react");
+var import_react43 = require("react");
 var import_client4 = require("react-dom/client");
 var warned = /* @__PURE__ */ new Set();
 var officialRegistry = Official;
@@ -8412,7 +8452,7 @@ function mountHostModal(render) {
   root.render(render(close));
 }
 var hostConfirm = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react42.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react43.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -8421,17 +8461,17 @@ var hostConfirm = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react42.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react42.createElement)(Button, { variant: "outline", onClick: () => {
+    footer: (0, import_react43.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react43.createElement)(Button, { variant: "outline", onClick: () => {
       close();
       resolve(false);
-    } }, opts.cancelText ?? t("cancel")), (0, import_react42.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
+    } }, opts.cancelText ?? t("cancel")), (0, import_react43.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
       close();
       resolve(true);
     } }, opts.confirmText ?? t("confirm")))
   }));
 });
 var hostAlert = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react42.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react43.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -8440,7 +8480,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react42.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react42.createElement)(Button, { variant: "primary", onClick: () => {
+    footer: (0, import_react43.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react43.createElement)(Button, { variant: "primary", onClick: () => {
       close();
       resolve();
     } }, opts.confirmText ?? t("dialogOk")))
@@ -8449,7 +8489,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
 registerHostDialog({ confirm: hostConfirm, alert: hostAlert });
 
 // dist/explorer/preview/index.js
-var import_react50 = require("react");
+var import_react51 = require("react");
 
 // dist/utils/path.js
 var IMAGE_EXT = {
@@ -8578,7 +8618,7 @@ function errView(error) {
     case "not-directory":
       return { key: "previewNotDirectory" };
     case "not-regular-file":
-      return { key: "previewNotDirectory" };
+      return { key: "previewNotFile" };
     case "too-large":
       return { key: "previewTooLarge" };
     case "not-text":
@@ -8718,18 +8758,18 @@ function pickWorkspaceAnchor(items) {
 }
 
 // dist/explorer/preview/BytesPreview.js
-var import_react43 = require("react");
+var import_react44 = require("react");
 
 // dist/explorer/explorer-css.generated.js
-var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  padding:4px 10px;border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n/* \u9009\u62E9\u5668\u5934\u90E8\u300C\u9009\u5F53\u524D\u6587\u4EF6 / \u5F53\u524D\u6587\u4EF6\u5939\u300D\u94AE\uFF1A\u4E0E \u2715 \u5E76\u6392\uFF0C\u4E0D\u88AB\u9762\u5305\u5C51\u6324\u6241\u3002 */\n.dshpc-fb__pick{flex:none}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbs-*\uFF09\u3002\n   \u5C42\u5E8F\uFF1A\u5144\u5F1F\u662F 30/31\uFF1B\u672C\u4ED3 picker \u9762\u677F\u662F 1100\uFF0C\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E\u5B83\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:1200;background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:1201;min-width:160px;max-height:240px;overflow:auto;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  box-shadow:0 4px 16px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:8px 14px;border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09\n   \u4E0B\u9762\u4E09\u4E2A\u6EDA\u52A8\u5BB9\u5668\u90FD\u5E26\u900F\u660E\u53F3\u8FB9\u6846 = \u6EDA\u52A8\u6761\u4E0E\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:12px 14px;border-right:1px solid transparent}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:6px 8px;border-right:1px solid transparent;border-bottom:1px solid transparent}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6838\u5FC3 outline \u94AE\uFF0C\u76AE\u80A4\u53D6\u5144\u5F1F .dsh-tdt-sv-tree-act\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF09\u3002\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;appearance:none;background:0 0;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-sm);\n  height:auto;padding:2px 8px;font-size:var(--dshpc-font-sm);line-height:1.4;\n  color:var(--dshpc-fg-2);cursor:pointer;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n.dshpc-fb .dshpc-fb__row-act:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09\u3002\n   \u5FC5\u987B border-box\uFF1A\u6E32\u67D3\u6001 inline \u52A0\u4E86 padding:12px 14px\uFF0Ccontent-box \u4E0B width:100%+padding\n   \u4F1A\u6EA2\u51FA\u7236\u5C42 28px\uFF08\u7236 .dshpc-fb \u65E0 overflow \u88C1\u5207\uFF09\u2192 \u6052\u591A\u4E00\u6761\u6A2A\u6EDA\u6761\uFF1Bborder-box \u628A padding\n   \u7B97\u8FDB 100%\uFF0C\u4ECE\u6839\u6D88\u9664\u8BE5\u6EA2\u51FA\u3002 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box;border-right:1px solid transparent;border-bottom:1px solid transparent}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n/* iframe \u7684\u5916\u58F3\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-fill\uFF09\uFF1Aiframe \u5FC5\u987B\u5305\u5728\u8FD9\u4E00\u5C42\u91CC\u624D\u62FF\u5F97\u5230\u9AD8\u5EA6\u2014\u2014\n   \u88F8\u6302 iframe \u65F6\u66FF\u6362\u5143\u7D20\u7684\u81EA\u52A8\u6700\u5C0F\u5C3A\u5BF8\u4F1A\u8BA9\u9AD8\u5EA6\u7B97\u4E0D\u51FA\u6765\uFF08\u8868\u73B0\u4E3A\u9884\u89C8\u533A\u6574\u7247\u7A7A\u767D\u3001\u50CF\u6CA1\u53CD\u5E94\uFF09\u3002 */\n.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}\n.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
+var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n * **\u4F8B\u5916**\uFF1A\u5BB9\u5668\u7EA7\u5185\u8DDD\uFF08__bar / __title / __tree / __body\uFF092026-11-03 \u8D77\u6539\u6210\u56DB\u5468\u4E00\u81F4\n * \u7684 token \u6863\uFF08space-2 / space-3\uFF09\u2014\u2014\u7528\u6237\u53CD\u9988\u5144\u5F1F\u90A3\u5957\u300C\u5DE6\u53F3\u6BD4\u4E0A\u4E0B\u5BBD\u300D\u5728\u8FD9\u4E24\u5904\u7A97\u53E3\u91CC\u4E0D\u5BF9\u79F0\u3002\n * \u884C\u7EA7\u5185\u8DDD\uFF08__row / __row-note / __banner\uFF09\u4ECD\u662F\u5144\u5F1F\u6570\u503C\uFF0C\u672A\u52A8\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n/* \u80CC\u666F\u4E0D\u5728\u8FD9\u91CC\u753B\uFF1Adock \u7531 .dshpc-side-surface\u3001\u9009\u6587\u4EF6\u5F39\u7A97\u7531 .dshpc-panel \u63D0\u4F9B\u3002\n   \u81EA\u5DF1\u518D\u5237\u4E00\u5C42 surface-base \u4F1A\u628A\u9762\u677F\u6863\u4F4D\uFF08modal \u540C\u8272\u7684 surface-1\uFF09\u76D6\u6389 \u2014\u2014 \u5F39\u7A97\u5C31\u663E\u5F97\u53D1\u9ED1\u3002 */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:transparent;color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  /* \u56DB\u5468\u5185\u8DDD\u4E00\u81F4\uFF08\u7528\u6237 2026-11-03\uFF1A\u539F\u6765 4/10\uFF0C\u5DE6\u53F3\u6BD4\u4E0A\u4E0B\u5BBD\uFF0C\u770B\u7740\u4E0D\u5BF9\u79F0\uFF09\u2014\u2014\u4E0B\u6587 __title / __tree / __body \u540C\u53E3\u5F84\u3002 */\n  padding:var(--dshpc-space-2);border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n/* \u9009\u62E9\u5668\u5934\u90E8\u300C\u9009\u5F53\u524D\u6587\u4EF6 / \u5F53\u524D\u6587\u4EF6\u5939\u300D\u94AE\uFF1A\u4E0E \u2715 \u5E76\u6392\uFF0C\u4E0D\u88AB\u9762\u5305\u5C51\u6324\u6241\u3002\n   \u300C\u9009\u5F53\u524D\u76EE\u5F55\u300D= \u6838\u5FC3 Button outline\uFF08sm \u6863\uFF09\uFF1A\u5C3A\u5BF8\u4E0E\u76AE\u80A4\u5168\u5F52\u6838\u5FC3\uFF0C\u8FD9\u91CC\u53EA\u7559\u5E03\u5C40\u3002\n   \u26A0\uFE0F \u522B\u518D\u5F80\u8FD9\u91CC\u5199 height / padding \u8986\u76D6 \u2014\u2014 \u57DF\u6309\u767B\u8BB0\u987A\u5E8F\u62FC\u63A5\uFF0C\u6838\u5FC3 .dshpc-btn--sm \u8C01\u5148\u8C01\u540E\n   \u53D6\u51B3\u4E8E\u6E32\u67D3\u6B21\u5E8F\uFF0C\u8986\u76D6\u4F1A\u65F6\u7075\u65F6\u4E0D\u7075\uFF082026-11-03 \u524D\u5C31\u662F\u8FD9\u4E48\u5199\u7684\uFF09\u3002 */\n.dshpc-fb__pick{flex:none}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\u3002\n   \u5C42\u5E8F\uFF1A\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E picker \u9762\u677F\uFF08--dshpc-z-panel\uFF09\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\uFF1B\n   \u83DC\u5355\u518D\u538B\u5728\u906E\u7F69\u4E4B\u4E0A\uFF0C\u6240\u4EE5\u662F popmenu \u4E00\u6863 +1\u3002\u8868\u76AE\u6765\u81EA panel.css \u7684 menu \u6863\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:var(--dshpc-z-popmenu);background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:calc(var(--dshpc-z-popmenu) + 1);\n  min-width:160px;max-height:240px;overflow:auto;padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:var(--dshpc-space-2);border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09\n   \u4E0B\u9762\u4E09\u4E2A\u6EDA\u52A8\u5BB9\u5668\u90FD\u5E26\u900F\u660E\u53F3\u8FB9\u6846 = \u6EDA\u52A8\u6761\u4E0E\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:var(--dshpc-space-3);border-right:1px solid transparent}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:var(--dshpc-space-2);border-right:1px solid transparent;border-bottom:1px solid transparent}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6309\u94AE**\u76AE\u80A4\u5B8C\u5168\u4EA4\u7ED9\u6838\u5FC3 Button**\uFF082026-11-03\uFF1A\u539F\u6765\u8FD9\u91CC\u53C8\u5199\u4E86\u4E00\u904D\u63CF\u8FB9/\u5185\u8DDD/\n   \u5B57\u53F7\uFF0C\u7B49\u4E8E\u81EA\u5DF1\u624B\u6413\u4E86\u4E00\u9897\uFF0C\u8DDF\u522B\u5904\u7684\u6309\u94AE\u957F\u5F97\u4E0D\u4E00\u6837\uFF09\u3002\u672C\u4ED3\u53EA\u4FDD\u7559\u5E03\u5C40\u4E0E\u300C\u60AC\u505C\u624D\u73B0\u8EAB\u300D\uFF1A\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09\u3002\n   \u5FC5\u987B border-box\uFF1A\u6E32\u67D3\u6001 inline \u52A0\u4E86 padding:12px 14px\uFF0Ccontent-box \u4E0B width:100%+padding\n   \u4F1A\u6EA2\u51FA\u7236\u5C42 28px\uFF08\u7236 .dshpc-fb \u65E0 overflow \u88C1\u5207\uFF09\u2192 \u6052\u591A\u4E00\u6761\u6A2A\u6EDA\u6761\uFF1Bborder-box \u628A padding\n   \u7B97\u8FDB 100%\uFF0C\u4ECE\u6839\u6D88\u9664\u8BE5\u6EA2\u51FA\u3002 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box;border-right:1px solid transparent;border-bottom:1px solid transparent}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n/* iframe \u7684\u5916\u58F3\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-fill\uFF09\uFF1Aiframe \u5FC5\u987B\u5305\u5728\u8FD9\u4E00\u5C42\u91CC\u624D\u62FF\u5F97\u5230\u9AD8\u5EA6\u2014\u2014\n   \u88F8\u6302 iframe \u65F6\u66FF\u6362\u5143\u7D20\u7684\u81EA\u52A8\u6700\u5C0F\u5C3A\u5BF8\u4F1A\u8BA9\u9AD8\u5EA6\u7B97\u4E0D\u51FA\u6765\uFF08\u8868\u73B0\u4E3A\u9884\u89C8\u533A\u6574\u7247\u7A7A\u767D\u3001\u50CF\u6CA1\u53CD\u5E94\uFF09\u3002 */\n.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}\n.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
 
 // dist/explorer/preview/BytesPreview.js
 function BytesPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [url, setUrl] = (0, import_react43.useState)(null);
-  const [failed, setFailed] = (0, import_react43.useState)(null);
-  (0, import_react43.useEffect)(() => {
+  const [url, setUrl] = (0, import_react44.useState)(null);
+  const [failed, setFailed] = (0, import_react44.useState)(null);
+  (0, import_react44.useEffect)(() => {
     const controller = new AbortController();
     let objectUrl = null;
     setUrl(null);
@@ -8762,23 +8802,23 @@ function BytesPreview(props) {
     };
   }, [props.files, props.path, props.mime]);
   if (failed !== null)
-    return (0, import_react43.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react44.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (url === null)
-    return (0, import_react43.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+    return (0, import_react44.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   if (props.kind === "image") {
-    return (0, import_react43.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
+    return (0, import_react44.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
   }
-  return (0, import_react43.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react43.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path }));
+  return (0, import_react44.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react44.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path }));
 }
 
 // dist/explorer/preview/HtmlPreview.js
-var import_react48 = require("react");
+var import_react49 = require("react");
 
 // dist/explorer/preview/TextPreview.js
-var import_react47 = require("react");
+var import_react48 = require("react");
 
 // dist/ui/CodeViewer.js
-var import_react46 = require("react");
+var import_react47 = require("react");
 
 // node_modules/.pnpm/@babel+runtime@8.0.7/node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
@@ -8803,10 +8843,10 @@ function _objectWithoutPropertiesLoose(r2, e) {
 }
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/index.js
-var import_react45 = __toESM(require("react"), 1);
+var import_react46 = __toESM(require("react"), 1);
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/useCodeMirror.js
-var import_react44 = require("react");
+var import_react45 = require("react");
 
 // node_modules/.pnpm/@marijn+find-cluster-break@1.0.4/node_modules/@marijn/find-cluster-break/src/index.js
 var rangeFrom = [];
@@ -16589,7 +16629,7 @@ function applyDOMChangeInner(view, change, newSel, lastKey = -1) {
     view.inputState.composing++;
   let defaultTr;
   let defaultInsert = () => defaultTr || (defaultTr = applyDefaultInsert(view, change, newSel));
-  if (!view.state.facet(inputHandler).some((h74) => h74(view, change.from, change.to, text2, defaultInsert)))
+  if (!view.state.facet(inputHandler).some((h79) => h79(view, change.from, change.to, text2, defaultInsert)))
     view.dispatch(defaultInsert());
   return true;
 }
@@ -17527,12 +17567,12 @@ var HeightOracle = class {
   mustRefreshForHeights(lineHeights) {
     let newHeight = false;
     for (let i2 = 0; i2 < lineHeights.length; i2++) {
-      let h74 = lineHeights[i2];
-      if (h74 < 0) {
+      let h79 = lineHeights[i2];
+      if (h79 < 0) {
         i2++;
-      } else if (!this.heightSamples[Math.floor(h74 * 10)]) {
+      } else if (!this.heightSamples[Math.floor(h79 * 10)]) {
         newHeight = true;
-        this.heightSamples[Math.floor(h74 * 10)] = true;
+        this.heightSamples[Math.floor(h79 * 10)] = true;
       }
     }
     return newHeight;
@@ -17548,11 +17588,11 @@ var HeightOracle = class {
     if (changed) {
       this.heightSamples = {};
       for (let i2 = 0; i2 < knownHeights.length; i2++) {
-        let h74 = knownHeights[i2];
-        if (h74 < 0)
+        let h79 = knownHeights[i2];
+        if (h79 < 0)
           i2++;
         else
-          this.heightSamples[Math.floor(h74 * 10)] = true;
+          this.heightSamples[Math.floor(h79 * 10)] = true;
       }
     }
     return changed;
@@ -25599,7 +25639,7 @@ var HighlightBuilder = class {
     if (start >= to || end <= from2)
       return;
     if (type3.isTop)
-      highlighters = this.highlighters.filter((h74) => !h74.scope || h74.scope(type3));
+      highlighters = this.highlighters.filter((h79) => !h79.scope || h79.scope(type3));
     let cls = inheritedClass;
     let rule = getStyleTags(cursor2) || Rule.empty;
     let tagCls = highlightTags(highlighters, rule.tags);
@@ -25616,7 +25656,7 @@ var HighlightBuilder = class {
     let mounted = cursor2.tree && cursor2.tree.prop(NodeProp.mounted);
     if (mounted && mounted.overlay) {
       let inner = cursor2.node.enter(mounted.overlay[0].from + start, 1);
-      let innerHighlighters = this.highlighters.filter((h74) => !h74.scope || h74.scope(mounted.tree.type));
+      let innerHighlighters = this.highlighters.filter((h79) => !h79.scope || h79.scope(mounted.tree.type));
       let hasChild2 = cursor2.firstChild();
       for (let i2 = 0, pos = start; ; i2++) {
         let next = i2 < mounted.overlay.length ? mounted.overlay[i2] : null;
@@ -32450,10 +32490,10 @@ var lintConfig = /* @__PURE__ */ Facet.define({
 function combineFilter(a, b) {
   return !a ? b : !b ? a : (d2, s) => b(a(d2, s), s);
 }
-function assignKeys(actions) {
+function assignKeys(actions2) {
   let assigned = [];
-  if (actions)
-    actions: for (let { name: name2 } of actions) {
+  if (actions2)
+    actions: for (let { name: name2 } of actions2) {
       for (let i2 = 0; i2 < name2.length; i2++) {
         let ch2 = name2[i2];
         if (/[a-zA-Z]/.test(ch2) && !assigned.some((c2) => c2.toLowerCase() == ch2.toLowerCase())) {
@@ -33208,13 +33248,13 @@ var TYPING_TIMOUT = 200;
 var emptyExtensions = [];
 function useCodeMirror(props) {
   var value = props.value, selection2 = props.selection, onChange = props.onChange, onStatistics = props.onStatistics, onCreateEditor = props.onCreateEditor, onUpdate = props.onUpdate, _props$extensions = props.extensions, extensions = _props$extensions === void 0 ? emptyExtensions : _props$extensions, autoFocus = props.autoFocus, _props$theme = props.theme, theme2 = _props$theme === void 0 ? "light" : _props$theme, _props$height = props.height, height = _props$height === void 0 ? null : _props$height, _props$minHeight = props.minHeight, minHeight = _props$minHeight === void 0 ? null : _props$minHeight, _props$maxHeight = props.maxHeight, maxHeight = _props$maxHeight === void 0 ? null : _props$maxHeight, _props$width = props.width, width = _props$width === void 0 ? null : _props$width, _props$minWidth = props.minWidth, minWidth = _props$minWidth === void 0 ? null : _props$minWidth, _props$maxWidth = props.maxWidth, maxWidth = _props$maxWidth === void 0 ? null : _props$maxWidth, _props$placeholder = props.placeholder, placeholderStr = _props$placeholder === void 0 ? "" : _props$placeholder, _props$editable = props.editable, editable2 = _props$editable === void 0 ? true : _props$editable, _props$readOnly = props.readOnly, readOnly2 = _props$readOnly === void 0 ? false : _props$readOnly, _props$indentWithTab = props.indentWithTab, defaultIndentWithTab = _props$indentWithTab === void 0 ? true : _props$indentWithTab, _props$basicSetup = props.basicSetup, defaultBasicSetup = _props$basicSetup === void 0 ? true : _props$basicSetup, root = props.root, initialState = props.initialState;
-  var _useState = (0, import_react44.useState)(), container = _useState[0], setContainer = _useState[1];
-  var _useState2 = (0, import_react44.useState)(), view = _useState2[0], setView = _useState2[1];
-  var _useState3 = (0, import_react44.useState)(), state = _useState3[0], setState = _useState3[1];
-  var typingLatch = (0, import_react44.useState)(() => ({
+  var _useState = (0, import_react45.useState)(), container = _useState[0], setContainer = _useState[1];
+  var _useState2 = (0, import_react45.useState)(), view = _useState2[0], setView = _useState2[1];
+  var _useState3 = (0, import_react45.useState)(), state = _useState3[0], setState = _useState3[1];
+  var typingLatch = (0, import_react45.useState)(() => ({
     current: null
   }))[0];
-  var pendingUpdate = (0, import_react44.useState)(() => ({
+  var pendingUpdate = (0, import_react45.useState)(() => ({
     current: null
   }))[0];
   var defaultThemeOption = getDimensionTheme(height, minHeight, maxHeight, width, minWidth, maxWidth);
@@ -33254,7 +33294,7 @@ function useCodeMirror(props) {
     getExtensions.push(EditorView.updateListener.of(onUpdate));
   }
   getExtensions = getExtensions.concat(extensions);
-  (0, import_react44.useLayoutEffect)(() => {
+  (0, import_react45.useLayoutEffect)(() => {
     if (container && !state) {
       var config2 = {
         doc: value,
@@ -33280,12 +33320,12 @@ function useCodeMirror(props) {
       }
     };
   }, [container, state]);
-  (0, import_react44.useEffect)(() => {
+  (0, import_react45.useEffect)(() => {
     if (props.container) {
       setContainer(props.container);
     }
   }, [props.container]);
-  (0, import_react44.useEffect)(() => () => {
+  (0, import_react45.useEffect)(() => () => {
     if (view) {
       view.destroy();
       setView(void 0);
@@ -33295,19 +33335,19 @@ function useCodeMirror(props) {
       typingLatch.current = null;
     }
   }, [view]);
-  (0, import_react44.useEffect)(() => {
+  (0, import_react45.useEffect)(() => {
     if (autoFocus && view) {
       view.focus();
     }
   }, [autoFocus, view]);
-  (0, import_react44.useEffect)(() => {
+  (0, import_react45.useEffect)(() => {
     if (view) {
       view.dispatch({
         effects: StateEffect.reconfigure.of(getExtensions)
       });
     }
   }, [theme2, extensions, height, minHeight, maxHeight, width, minWidth, maxWidth, placeholderStr, editable2, readOnly2, defaultIndentWithTab, defaultBasicSetup, onChange, onUpdate]);
-  (0, import_react44.useEffect)(() => {
+  (0, import_react45.useEffect)(() => {
     if (value === void 0) {
       return;
     }
@@ -33346,9 +33386,9 @@ function useCodeMirror(props) {
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/index.js
 var import_jsx_runtime2 = require("react/jsx-runtime");
 var _excluded = ["className", "value", "selection", "extensions", "onChange", "onStatistics", "onCreateEditor", "onUpdate", "autoFocus", "theme", "height", "minHeight", "maxHeight", "width", "minWidth", "maxWidth", "basicSetup", "placeholder", "indentWithTab", "editable", "readOnly", "root", "initialState"];
-var ReactCodeMirror = /* @__PURE__ */ (0, import_react45.forwardRef)((props, ref) => {
+var ReactCodeMirror = /* @__PURE__ */ (0, import_react46.forwardRef)((props, ref) => {
   var className2 = props.className, _props$value = props.value, value = _props$value === void 0 ? "" : _props$value, selection2 = props.selection, _props$extensions = props.extensions, extensions = _props$extensions === void 0 ? [] : _props$extensions, onChange = props.onChange, onStatistics = props.onStatistics, onCreateEditor = props.onCreateEditor, onUpdate = props.onUpdate, autoFocus = props.autoFocus, _props$theme = props.theme, theme2 = _props$theme === void 0 ? "light" : _props$theme, height = props.height, minHeight = props.minHeight, maxHeight = props.maxHeight, width = props.width, minWidth = props.minWidth, maxWidth = props.maxWidth, basicSetup3 = props.basicSetup, placeholder2 = props.placeholder, indentWithTab2 = props.indentWithTab, editable2 = props.editable, readOnly2 = props.readOnly, root = props.root, initialState = props.initialState, other = _objectWithoutPropertiesLoose(props, _excluded);
-  var editor = (0, import_react45.useRef)(null);
+  var editor = (0, import_react46.useRef)(null);
   var _useCodeMirror = useCodeMirror({
     root,
     value,
@@ -33373,12 +33413,12 @@ var ReactCodeMirror = /* @__PURE__ */ (0, import_react45.forwardRef)((props, ref
     extensions,
     initialState
   }), state = _useCodeMirror.state, view = _useCodeMirror.view, container = _useCodeMirror.container, setContainer = _useCodeMirror.setContainer;
-  (0, import_react45.useImperativeHandle)(ref, () => ({
+  (0, import_react46.useImperativeHandle)(ref, () => ({
     editor: editor.current,
     state,
     view
   }), [editor, container, state, view]);
-  var setEditorRef = (0, import_react45.useCallback)((el) => {
+  var setEditorRef = (0, import_react46.useCallback)((el) => {
     editor.current = el;
     setContainer(el);
   }, [setContainer]);
@@ -34713,10 +34753,10 @@ var Parse2 = class {
       while (stack.stack.length > 6e3 && stack.forceReduce()) {
       }
     }
-    let actions = this.tokens.getActions(stack);
-    for (let i2 = 0; i2 < actions.length; ) {
-      let action = actions[i2++], term = actions[i2++], end = actions[i2++];
-      let last2 = i2 == actions.length || !split;
+    let actions2 = this.tokens.getActions(stack);
+    for (let i2 = 0; i2 < actions2.length; ) {
+      let action = actions2[i2++], term = actions2[i2++], end = actions2[i2++];
+      let last2 = i2 == actions2.length || !split;
       let localStack = last2 ? stack : stack.split();
       let main = this.tokens.mainToken;
       localStack.apply(action, term, main ? main.start : localStack.pos, end);
@@ -53715,9 +53755,9 @@ function hostDark() {
 function CodeViewer(props) {
   ensureComponentStyles("code-viewer", CODE_VIEWER_CSS);
   const { text: text2, path, t: t4, className: className2, style: style2, height = "100%", lineNumbers: lineNumbers2 = true } = props;
-  const [copied, setCopied] = (0, import_react46.useState)(false);
-  const [dark, setDark] = (0, import_react46.useState)(hostDark);
-  (0, import_react46.useEffect)(() => {
+  const [copied, setCopied] = (0, import_react47.useState)(false);
+  const [dark, setDark] = (0, import_react47.useState)(hostDark);
+  (0, import_react47.useEffect)(() => {
     if (typeof document === "undefined" || typeof MutationObserver !== "function")
       return;
     const body = document.body;
@@ -53733,8 +53773,8 @@ function CodeViewer(props) {
       observer.disconnect();
     };
   }, []);
-  const language2 = (0, import_react46.useMemo)(() => languageForPath(path), [path]);
-  const extensions = (0, import_react46.useMemo)(() => [
+  const language2 = (0, import_react47.useMemo)(() => languageForPath(path), [path]);
+  const extensions = (0, import_react47.useMemo)(() => [
     ...codeMirrorTheme(dark),
     EditorView.lineWrapping,
     // 默认全换行，避免横向滚动条
@@ -53748,14 +53788,14 @@ function CodeViewer(props) {
       }
     });
   };
-  return (0, import_react46.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, (0, import_react46.createElement)(IconButton, {
+  return (0, import_react47.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, (0, import_react47.createElement)(IconButton, {
     variant: "outline",
     size: "md",
-    icon: copied ? (0, import_react46.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react46.createElement)(official_exports.IconCopyOutlineRegular),
+    icon: copied ? (0, import_react47.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react47.createElement)(official_exports.IconCopyOutlineRegular),
     label: copied ? t4("codeCopied") : t4("codeCopy"),
     className: "dshpc-cv__copy",
     onClick: copy
-  }), (0, import_react46.createElement)(esm_default, {
+  }), (0, import_react47.createElement)(esm_default, {
     value: text2,
     className: "dshpc-cv__editor",
     theme: "none",
@@ -53809,14 +53849,14 @@ function markdownLabels() {
 function TextPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [text2, setText] = (0, import_react47.useState)("");
-  const [truncated, setTruncated] = (0, import_react47.useState)(false);
-  const [nextOffset, setNextOffset] = (0, import_react47.useState)(null);
-  const [loading, setLoading] = (0, import_react47.useState)(false);
-  const [failed, setFailed] = (0, import_react47.useState)(null);
-  const accRef = (0, import_react47.useRef)("");
-  const abortRef = (0, import_react47.useRef)(null);
-  const load = (0, import_react47.useCallback)(async (offset4, append2) => {
+  const [text2, setText] = (0, import_react48.useState)("");
+  const [truncated, setTruncated] = (0, import_react48.useState)(false);
+  const [nextOffset, setNextOffset] = (0, import_react48.useState)(null);
+  const [loading, setLoading] = (0, import_react48.useState)(false);
+  const [failed, setFailed] = (0, import_react48.useState)(null);
+  const accRef = (0, import_react48.useRef)("");
+  const abortRef = (0, import_react48.useRef)(null);
+  const load = (0, import_react48.useCallback)(async (offset4, append2) => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -53859,7 +53899,7 @@ function TextPreview(props) {
         setLoading(false);
     }
   }, [props.files, props.path, props.maxBytes]);
-  (0, import_react47.useEffect)(() => {
+  (0, import_react48.useEffect)(() => {
     accRef.current = "";
     setText("");
     setTruncated(false);
@@ -53871,11 +53911,11 @@ function TextPreview(props) {
     };
   }, [load]);
   if (failed !== null)
-    return (0, import_react47.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react48.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (text2 === "" && loading)
-    return (0, import_react47.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+    return (0, import_react48.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   const rendered = props.markdown && !props.sourceView;
-  return (0, import_react47.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "12px 14px" } : {} } }, truncated ? (0, import_react47.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react47.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react47.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react47.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react47.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react47.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
+  return (0, import_react48.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "var(--dshpc-space-3)" } : {} } }, truncated ? (0, import_react48.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react48.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react48.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react48.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react48.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react48.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
 }
 
 // dist/explorer/preview/HtmlPreview.js
@@ -53916,9 +53956,9 @@ ${doc2.documentElement.outerHTML}`;
 function HtmlPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [doc2, setDoc] = (0, import_react48.useState)(null);
-  const [failed, setFailed] = (0, import_react48.useState)(null);
-  (0, import_react48.useEffect)(() => {
+  const [doc2, setDoc] = (0, import_react49.useState)(null);
+  const [failed, setFailed] = (0, import_react49.useState)(null);
+  (0, import_react49.useEffect)(() => {
     if (props.sourceView)
       return;
     const controller = new AbortController();
@@ -53953,7 +53993,7 @@ function HtmlPreview(props) {
     };
   }, [props.files, props.path, props.sourceView]);
   if (props.sourceView) {
-    return (0, import_react48.createElement)(TextPreview, {
+    return (0, import_react49.createElement)(TextPreview, {
       files: props.files,
       path: props.path,
       markdown: false,
@@ -53963,20 +54003,20 @@ function HtmlPreview(props) {
     });
   }
   if (failed !== null)
-    return (0, import_react48.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react49.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (doc2 === null)
-    return (0, import_react48.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react48.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react48.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2, title: props.path }));
+    return (0, import_react49.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react49.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react49.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2, title: props.path }));
 }
 
 // dist/explorer/preview/OfficePreview.js
-var import_react49 = require("react");
+var import_react50 = require("react");
 function OfficePreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [url, setUrl] = (0, import_react49.useState)(null);
-  const [failed, setFailed] = (0, import_react49.useState)(null);
-  (0, import_react49.useEffect)(() => {
+  const [url, setUrl] = (0, import_react50.useState)(null);
+  const [failed, setFailed] = (0, import_react50.useState)(null);
+  (0, import_react50.useEffect)(() => {
     const controller = new AbortController();
     let objectUrl = null;
     setUrl(null);
@@ -54012,13 +54052,13 @@ function OfficePreview(props) {
     };
   }, [props.officeToPdf, props.sessionId, props.path]);
   if (props.officeToPdf === null) {
-    return (0, import_react49.createElement)("div", { className: "dshpc-fb__note" }, tt("previewOfficeUnavailable"));
+    return (0, import_react50.createElement)("div", { className: "dshpc-fb__note" }, tt("previewOfficeUnavailable"));
   }
   if (failed !== null)
-    return (0, import_react49.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react50.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (url === null)
-    return (0, import_react49.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react49.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
+    return (0, import_react50.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react50.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
 }
 
 // dist/explorer/preview/index.js
@@ -54030,7 +54070,7 @@ function FilePreview(props) {
   switch (info.kind) {
     case "image":
     case "pdf":
-      return (0, import_react50.createElement)(BytesPreview, {
+      return (0, import_react51.createElement)(BytesPreview, {
         files: props.files,
         path: props.path,
         kind: info.kind,
@@ -54038,14 +54078,14 @@ function FilePreview(props) {
         translate: tt
       });
     case "office":
-      return (0, import_react50.createElement)(OfficePreview, {
+      return (0, import_react51.createElement)(OfficePreview, {
         officeToPdf: props.officeToPdf ?? null,
         sessionId: props.sessionId,
         path: props.path,
         translate: tt
       });
     case "html":
-      return (0, import_react50.createElement)(HtmlPreview, {
+      return (0, import_react51.createElement)(HtmlPreview, {
         files: props.files,
         path: props.path,
         sourceView,
@@ -54053,7 +54093,7 @@ function FilePreview(props) {
       });
     case "md":
     case "text":
-      return (0, import_react50.createElement)(TextPreview, {
+      return (0, import_react51.createElement)(TextPreview, {
         files: props.files,
         path: props.path,
         markdown: info.kind === "md",
@@ -54064,13 +54104,14 @@ function FilePreview(props) {
   return null;
 }
 
-// dist/explorer/FileBrowser.js
-var FS_ROOT = "/";
+// dist/explorer/crumbs-menu.js
+var import_react52 = require("react");
 function crumbsMenuEntries(params) {
+  ensureComponentStyles("explorer", EXPLORER_CSS);
   const { workspaces, roots, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
   const out = [];
   for (const root of roots) {
-    out.push((0, import_react51.createElement)("button", {
+    out.push((0, import_react52.createElement)("button", {
       key: `root:${root.path}`,
       type: "button",
       role: "menuitem",
@@ -54078,9 +54119,9 @@ function crumbsMenuEntries(params) {
       style: { paddingLeft: 8, display: "flex", alignItems: "center", gap: "6px" },
       title: root.path,
       onClick: () => onLoadDir?.(root.path)
-    }, (0, import_react51.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: "var(--dshpc-fg-2)" } }, (0, import_react51.createElement)(official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react51.createElement)("span", { className: "dshpc-fb__menu-label" }, root.label)));
+    }, (0, import_react52.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: "var(--dshpc-fg-2)" } }, (0, import_react52.createElement)(official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react52.createElement)("span", { className: "dshpc-fb__menu-label" }, root.label)));
   }
-  const wsEntry = (ws, current4) => (0, import_react51.createElement)("button", {
+  const wsEntry = (ws, current4) => (0, import_react52.createElement)("button", {
     key: `ws:${ws}`,
     type: "button",
     role: "menuitem",
@@ -54095,8 +54136,8 @@ function crumbsMenuEntries(params) {
       else
         onPickWorkspace?.(ws);
     }
-  }, (0, import_react51.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current4 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react51.createElement)(current4 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react51.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current4 ? 600 : 400 } }, ws));
-  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react51.createElement)("button", {
+  }, (0, import_react52.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current4 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react52.createElement)(current4 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react52.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current4 ? 600 : 400 } }, ws));
+  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react52.createElement)("button", {
     key: `dir:${crumb.path}`,
     type: "button",
     role: "menuitem",
@@ -54106,14 +54147,14 @@ function crumbsMenuEntries(params) {
     onClick: () => {
       onLoadDir?.(crumb.path);
     }
-  }, withArrow ? (0, import_react51.createElement)(import_react51.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react51.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react51.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react51.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react51.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
+  }, withArrow ? (0, import_react52.createElement)(import_react52.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react52.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react52.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react52.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react52.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
   if (workspaces.length === 0) {
     if (crumbs.length === 0)
-      return [(0, import_react51.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
+      return [(0, import_react52.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
     return crumbs.map((crumb, index3) => pathEntry(crumb, index3 === 0 ? 0 : index3 - 1, index3 !== 0));
   }
   const head = crumbs[0];
-  const isRootHead = head !== void 0 && (head.path === "" || head.path === FS_ROOT || roots.some((root) => root.path === head.path));
+  const isRootHead = head !== void 0 && (head.path === "" || roots.some((root) => root.path === head.path));
   const segments = isRootHead ? crumbs.slice(1) : crumbs;
   if (rootName !== "" && workspaces.includes(rootName)) {
     out.push(wsEntry(rootName, true));
@@ -54133,52 +54174,183 @@ function crumbsMenuEntries(params) {
   }
   return out;
 }
+
+// dist/explorer/crumb-nav.js
+var import_react53 = require("react");
+function crumbButton(label, onClick, current4 = false) {
+  return (0, import_react53.createElement)(Button, {
+    variant: "ghost",
+    size: "sm",
+    className: `dshpc-fb__crumb${current4 ? " dshpc-fb__crumb--current" : ""}`,
+    disabled: onClick === void 0,
+    tabIndex: onClick === void 0 ? -1 : 0,
+    onClick
+  }, (0, import_react53.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
+}
+function actions(pickNow, tt, onClose) {
+  return (0, import_react53.createElement)("div", { className: "dshpc-fb__actions" }, pickNow, onClose === void 0 ? null : (0, import_react53.createElement)(PanelClose, { label: tt("previewClose"), onClick: onClose }));
+}
+function CrumbNav(props) {
+  ensureComponentStyles("explorer", EXPLORER_CSS);
+  const { translate: tt, landing, crumbs, overflow, menuItems, menuOpen, onToggleMenu, onCloseMenu, onLoadDir, pickNow, onClose, regionRef, measureRef } = props;
+  const visibleCrumbs = overflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index3) => (0, import_react53.createElement)(import_react53.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react53.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => onLoadDir(crumb.path))));
+  return (0, import_react53.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react53.createElement)(
+    "div",
+    { className: "dshpc-fb__menu-wrap" },
+    (0, import_react53.createElement)(IconButton, {
+      variant: "plain",
+      size: "md",
+      icon: (0, import_react53.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
+      label: tt("explorerLevels"),
+      "aria-expanded": menuOpen,
+      onClick: onToggleMenu
+    }),
+    // 选层下拉 = 自写浮层：透明遮罩点一下即收；遮罩层序走 --dshpc-z-popmenu，
+    // 高于 picker 面板（--dshpc-z-panel）⇒ 菜单开着时点面板也算「点外部」。
+    menuOpen ? (0, import_react53.createElement)(
+      import_react53.Fragment,
+      null,
+      (0, import_react53.createElement)("div", { className: "dshpc-fb__crumbs-backdrop", onClick: onCloseMenu }),
+      // 表皮走 panel.css 的 menu 档；`.dshpc-fb__crumbs-menu` 只留定位与滚动（旧类名作别名）。
+      (0, import_react53.createElement)("div", { className: "dshpc-panel dshpc-panel--menu dshpc-fb__crumbs-menu", role: "menu" }, menuItems)
+    ) : null
+  ), landing ? (0, import_react53.createElement)("div", { className: "dshpc-fb__crumbs" }) : (0, import_react53.createElement)(
+    "div",
+    { ref: regionRef, className: "dshpc-fb__crumbs" },
+    // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
+    (0, import_react53.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index3) => (0, import_react53.createElement)(import_react53.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react53.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
+    visibleCrumbs
+  ), actions(pickNow, tt, onClose));
+}
+function PlainNav(props) {
+  ensureComponentStyles("explorer", EXPLORER_CSS);
+  const { translate: tt, path, pickNow, onClose } = props;
+  return (0, import_react53.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react53.createElement)(MarqueeText, {
+    text: path,
+    title: path,
+    className: "dshpc-fb__bar-plain",
+    style: { flex: "1 1 auto", minWidth: 0 }
+  }), actions(pickNow, tt, onClose));
+}
+
+// dist/explorer/landing.js
+var import_react54 = require("react");
+function LandingBody(props) {
+  ensureComponentStyles("explorer", EXPLORER_CSS);
+  const { translate: tt, roots, anchors, pickable, onOpen, onPickDir } = props;
+  const row = (key, label, target) => (0, import_react54.createElement)(
+    "div",
+    {
+      key,
+      className: "dshpc-fb__row",
+      role: "button",
+      tabIndex: 0,
+      onClick: () => onOpen(target),
+      onKeyDown: (event) => {
+        if (event.key === "Enter" || event.key === " ")
+          onOpen(target);
+      }
+    },
+    (0, import_react54.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react54.createElement)(official_exports.IconFolderCloseRegular, { size: 18 })),
+    (0, import_react54.createElement)("span", { className: "dshpc-fb__row-name" }, label),
+    // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 盘符 / 工作区根本身都能选）。
+    pickable ? (0, import_react54.createElement)(Button, {
+      variant: "outline",
+      size: "sm",
+      className: "dshpc-fb__row-act",
+      "aria-label": tt("explorerPickDirAria"),
+      onClick: (event) => {
+        event.stopPropagation();
+        onPickDir(target);
+      }
+    }, tt("explorerPickDir")) : null
+  );
+  return (0, import_react54.createElement)("div", { className: "dshpc-fb__tree" }, roots.map((root) => row(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== void 0 && item.path !== "").map((item) => row(`ws:${item.title}`, item.title, item.path)));
+}
+
+// dist/explorer/preview-title-bar.js
+var import_react55 = require("react");
+function PreviewTitleBar(props) {
+  ensureComponentStyles("explorer", EXPLORER_CSS);
+  const { translate: tt, path, switchable, isMarkdown, sourceView, onSourceViewChange, copied, onCopyPath, onReload } = props;
+  return (0, import_react55.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react55.createElement)(MarqueeText, {
+    text: baseNameOfPath(path),
+    title: path,
+    className: "dshpc-fb__title-inner",
+    style: { flex: "1 1 auto", minWidth: 0 }
+  }), (0, import_react55.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react55.createElement)(Segmented, {
+    size: "sm",
+    label: isMarkdown ? tt("previewMdSwitchAria") : tt("previewHtmlSwitchAria"),
+    value: sourceView ? "source" : "render",
+    items: [
+      { value: "render", label: tt("previewRender") },
+      { value: "source", label: tt("previewSource") }
+    ],
+    onChange: (next) => onSourceViewChange(next === "source")
+  }) : null, (0, import_react55.createElement)(IconButton, {
+    variant: "plain",
+    size: "md",
+    icon: copied ? (0, import_react55.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react55.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
+    label: tt("previewCopyPath"),
+    onClick: onCopyPath
+  }), (0, import_react55.createElement)(IconButton, {
+    variant: "plain",
+    size: "md",
+    icon: (0, import_react55.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
+    label: tt("previewRefresh"),
+    onClick: onReload
+  })));
+}
+
+// dist/explorer/FileBrowser.js
+var FS_ROOT = "/";
 function FileBrowser(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
+  ensureComponentStyles("panel", PANEL_CSS);
   const tt = props.translate ?? t;
   const picker = props.picker === true;
-  const [mode, setMode] = (0, import_react51.useState)("loading");
-  const [dir, setDir] = (0, import_react51.useState)("");
-  const [listing, setListing] = (0, import_react51.useState)(null);
-  const [truncated, setTruncated] = (0, import_react51.useState)(false);
-  const [viewing, setViewing] = (0, import_react51.useState)(null);
-  const [listErr, setListErr] = (0, import_react51.useState)(null);
-  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react51.useState)(false);
-  const [menuOpen, setMenuOpen] = (0, import_react51.useState)(false);
-  const regionRef = (0, import_react51.useRef)(null);
-  const measureRef = (0, import_react51.useRef)(null);
-  const [sourceView, setSourceView] = (0, import_react51.useState)(false);
-  const [reloadNonce, setReloadNonce] = (0, import_react51.useState)(0);
-  const [copied, setCopied] = (0, import_react51.useState)(false);
-  const [openDirs, setOpenDirs] = (0, import_react51.useState)(/* @__PURE__ */ new Set());
-  const [childCache, setChildCache] = (0, import_react51.useState)({});
-  const [outside, setOutside] = (0, import_react51.useState)(false);
-  const [landing, setLanding] = (0, import_react51.useState)(props.picker === true && props.path === "" && props.sessionId === void 0);
-  const landingRef = (0, import_react51.useRef)(landing);
-  (0, import_react51.useLayoutEffect)(() => {
+  const [mode, setMode] = (0, import_react56.useState)("loading");
+  const [dir, setDir] = (0, import_react56.useState)("");
+  const [listing, setListing] = (0, import_react56.useState)(null);
+  const [truncated, setTruncated] = (0, import_react56.useState)(false);
+  const [viewing, setViewing] = (0, import_react56.useState)(null);
+  const [listErr, setListErr] = (0, import_react56.useState)(null);
+  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react56.useState)(false);
+  const [menuOpen, setMenuOpen] = (0, import_react56.useState)(false);
+  const regionRef = (0, import_react56.useRef)(null);
+  const measureRef = (0, import_react56.useRef)(null);
+  const [sourceView, setSourceView] = (0, import_react56.useState)(false);
+  const [reloadNonce, setReloadNonce] = (0, import_react56.useState)(0);
+  const [copied, setCopied] = (0, import_react56.useState)(false);
+  const [openDirs, setOpenDirs] = (0, import_react56.useState)(/* @__PURE__ */ new Set());
+  const [childCache, setChildCache] = (0, import_react56.useState)({});
+  const [outside, setOutside] = (0, import_react56.useState)(false);
+  const [landing, setLanding] = (0, import_react56.useState)(props.picker === true && props.path === "" && props.sessionId === void 0);
+  const landingRef = (0, import_react56.useRef)(landing);
+  (0, import_react56.useLayoutEffect)(() => {
     landingRef.current = landing;
   }, [landing]);
   const revision = props.revision ?? 0;
-  const listGateRef = (0, import_react51.useRef)(null);
+  const listGateRef = (0, import_react56.useRef)(null);
   if (listGateRef.current === null)
     listGateRef.current = createRequestGate();
   const listGate = listGateRef.current;
-  const childAbortsRef = (0, import_react51.useRef)(/* @__PURE__ */ new Map());
-  const abortChildren = (0, import_react51.useCallback)(() => {
+  const childAbortsRef = (0, import_react56.useRef)(/* @__PURE__ */ new Map());
+  const abortChildren = (0, import_react56.useCallback)(() => {
     for (const controller of childAbortsRef.current.values())
       controller.abort();
     childAbortsRef.current.clear();
   }, []);
-  const dirRef = (0, import_react51.useRef)("");
-  const listingRef = (0, import_react51.useRef)(null);
-  (0, import_react51.useLayoutEffect)(() => {
+  const dirRef = (0, import_react56.useRef)("");
+  const listingRef = (0, import_react56.useRef)(null);
+  (0, import_react56.useLayoutEffect)(() => {
     dirRef.current = dir;
     listingRef.current = listing;
   }, [dir, listing]);
-  const hostWorkspaces = (0, import_react51.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const hostWorkspaces = (0, import_react56.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = props.workspaceAnchors ?? hostWorkspaces;
-  const [roots, setRoots] = (0, import_react51.useState)([FS_ROOT]);
-  (0, import_react51.useEffect)(() => {
+  const [roots, setRoots] = (0, import_react56.useState)([FS_ROOT]);
+  (0, import_react56.useEffect)(() => {
     const ask = props.files.roots;
     if (ask === void 0)
       return;
@@ -54193,22 +54365,22 @@ function FileBrowser(props) {
       alive = false;
     };
   }, [props.files]);
-  const anchorMatch = (0, import_react51.useMemo)(() => workspaceOfPath(props.path, anchors), [props.path, anchors]);
+  const anchorMatch = (0, import_react56.useMemo)(() => workspaceOfPath(props.path, anchors), [props.path, anchors]);
   const sessionAnchor = props.sessionId === void 0 ? null : anchors.find((item) => item.sessionIds?.includes(props.sessionId) === true) ?? null;
   const rootBase = anchorMatch?.path ?? props.rootPath ?? sessionAnchor?.path ?? anchors.find((item) => item.path !== void 0)?.path;
-  const absOf = (0, import_react51.useCallback)((p) => {
+  const absOf = (0, import_react56.useCallback)((p) => {
     if (isAbsoluteish(p))
       return normalizePath(p);
     if (rootBase === void 0 || rootBase === "")
       return p === "" ? FS_ROOT : p;
     return p === "" ? normalizePath(rootBase) : normalizePath(`${rootBase}/${p.replace(/^\/+/, "")}`);
   }, [rootBase]);
-  const toPicked = (0, import_react51.useCallback)((p, isDir) => {
+  const toPicked = (0, import_react56.useCallback)((p, isDir) => {
     const abs = absOf(p);
     const owner2 = workspaceOfPath(abs, anchors);
     return owner2 === null ? { path: abs, isDir } : { path: abs, isDir, workspaceRel: relativizeToDir(abs, owner2.path ?? null), workspace: owner2.title };
   }, [absOf, anchors]);
-  const noteOutside = (0, import_react51.useCallback)((parsed) => {
+  const noteOutside = (0, import_react56.useCallback)((parsed) => {
     if (parsed === null || parsed === void 0)
       return;
     if (!isFailed(parsed)) {
@@ -54219,7 +54391,7 @@ function FileBrowser(props) {
     if (code3 === "outside-workspace" || code3 === "not-found")
       setOutside(true);
   }, []);
-  const fetchDir = (0, import_react51.useCallback)((targetDir) => {
+  const fetchDir = (0, import_react56.useCallback)((targetDir) => {
     const token = listGate.begin();
     abortChildren();
     const absTarget = absOf(targetDir);
@@ -54255,12 +54427,12 @@ function FileBrowser(props) {
       setMode("error");
     });
   }, [abortChildren, absOf, listGate, noteOutside, props.files]);
-  const loadDir = (0, import_react51.useCallback)((targetDir) => {
+  const loadDir = (0, import_react56.useCallback)((targetDir) => {
     if (landingRef.current)
       setLanding(false);
     fetchDir(targetDir);
   }, [fetchDir]);
-  (0, import_react51.useEffect)(() => {
+  (0, import_react56.useEffect)(() => {
     if (landingRef.current)
       return;
     const parent = dirnameOf(props.path);
@@ -54324,8 +54496,8 @@ function FileBrowser(props) {
       listGate.abort();
     };
   }, [abortChildren, absOf, listGate, noteOutside, props.files, props.path, revision]);
-  (0, import_react51.useEffect)(() => () => abortChildren(), [abortChildren]);
-  const switchWorkspace = (0, import_react51.useCallback)((name2) => {
+  (0, import_react56.useEffect)(() => () => abortChildren(), [abortChildren]);
+  const switchWorkspace = (0, import_react56.useCallback)((name2) => {
     if (props.onSelectWorkspace !== void 0) {
       props.onSelectWorkspace(name2);
       return;
@@ -54334,7 +54506,7 @@ function FileBrowser(props) {
     if (target?.path !== void 0)
       loadDir(target.path);
   }, [anchors, loadDir, props.onSelectWorkspace]);
-  (0, import_react51.useLayoutEffect)(() => {
+  (0, import_react56.useLayoutEffect)(() => {
     const region = regionRef.current;
     const measure = measureRef.current;
     if (region === null || measure === null)
@@ -54347,14 +54519,14 @@ function FileBrowser(props) {
     ro.observe(region);
     return () => ro.disconnect();
   }, [dir, viewing, mode, listing, outside]);
-  const reload = (0, import_react51.useCallback)(() => {
+  const reload = (0, import_react56.useCallback)(() => {
     if (viewing !== null) {
       setReloadNonce((n) => n + 1);
       return;
     }
     loadDir(dir);
   }, [viewing, dir, loadDir]);
-  const copyPath = (0, import_react51.useCallback)(() => {
+  const copyPath = (0, import_react56.useCallback)(() => {
     const target = viewing ?? dir;
     if (target === "")
       return;
@@ -54367,7 +54539,7 @@ function FileBrowser(props) {
     }).catch(() => {
     });
   }, [viewing, dir, rootBase]);
-  const toggleDir = (0, import_react51.useCallback)((path) => {
+  const toggleDir = (0, import_react56.useCallback)((path) => {
     setOpenDirs((prev) => {
       const next = new Set(prev);
       if (next.has(path))
@@ -54401,7 +54573,7 @@ function FileBrowser(props) {
   }, [absOf, childCache, props.files]);
   const extsOnly = picker && props.filter !== void 0 && props.filter.dirs !== true && (props.filter.exts?.length ?? 0) > 0;
   const dirPickable = picker && props.onPick !== void 0 && !extsOnly;
-  const renderTree = (0, import_react51.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
+  const renderTree = (0, import_react56.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
     const childPath = joinPath(baseDir, entry.name);
     const isDir = entry.type === "directory";
     if (!isDir && picker && !matchesFilter(childPath, false, props.filter))
@@ -54419,7 +54591,7 @@ function FileBrowser(props) {
         setReloadNonce(0);
         setSourceView(false);
       };
-      return (0, import_react51.createElement)(
+      return (0, import_react56.createElement)(
         "div",
         {
           key: childPath,
@@ -54433,11 +54605,11 @@ function FileBrowser(props) {
               pick2();
           }
         },
-        (0, import_react51.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react51.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })),
-        (0, import_react51.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+        (0, import_react56.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react56.createElement)(official_exports.FileTypeIcon, { path: childPath, size: 18 })),
+        (0, import_react56.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
         // 选择器里文件行也给一枚「选择」钮，与目录行的操作位对齐（目录没有时它仍在，
         // 「点行 = 选中」的旧默契保持不变，外显入口不再缺）。
-        picker && props.onPick !== void 0 ? (0, import_react51.createElement)(Button, {
+        picker && props.onPick !== void 0 ? (0, import_react56.createElement)(Button, {
           variant: "outline",
           size: "sm",
           className: "dshpc-fb__row-act",
@@ -54463,7 +54635,7 @@ function FileBrowser(props) {
       }
       loadDir(childPath);
     };
-    return (0, import_react51.createElement)(import_react51.Fragment, { key: childPath }, (0, import_react51.createElement)(
+    return (0, import_react56.createElement)(import_react56.Fragment, { key: childPath }, (0, import_react56.createElement)(
       "div",
       {
         className: "dshpc-fb__row",
@@ -54477,11 +54649,11 @@ function FileBrowser(props) {
         }
       },
       // 展开 / 收起：核心 IconButton，20×20 命中位 + 展开时转 90°（与兄弟 .dsh-tdt-sv-tree-toggle 同款）。
-      (0, import_react51.createElement)(IconButton, {
+      (0, import_react56.createElement)(IconButton, {
         variant: "plain",
         size: "sm",
         className: `dshpc-fb__row-toggle${isOpen2 ? " dshpc-fb__row-toggle--open" : ""}`,
-        icon: (0, import_react51.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 16 }),
+        icon: (0, import_react56.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 16 }),
         label: isOpen2 ? tt("explorerCollapse") : tt("explorerExpand"),
         "aria-expanded": isOpen2,
         onClick: (event) => {
@@ -54489,27 +54661,27 @@ function FileBrowser(props) {
           toggleDir(childPath);
         }
       }),
-      (0, import_react51.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+      (0, import_react56.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
       // picker：仅目录可选时才出「选择」（扩展名过滤下没有，目录只作导航）；
       // 浏览态：出「进入」。
-      picker ? dirPickable ? (0, import_react51.createElement)(Button, {
+      picker ? dirPickable ? (0, import_react56.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
         "aria-label": tt("explorerPickDirAria"),
         onClick: actThisDir
-      }, tt("explorerPickDir")) : null : (0, import_react51.createElement)(Button, {
+      }, tt("explorerPickDir")) : null : (0, import_react56.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
         "aria-label": tt("explorerEnter"),
         onClick: actThisDir
       }, tt("explorerEnter"))
-    ), isOpen2 ? (0, import_react51.createElement)(
+    ), isOpen2 ? (0, import_react56.createElement)(
       "div",
       { className: "dshpc-fb__row-children" },
       // 硬性规定：不新建 Loading、不写加载文案 ⇒ 还在拉就空着（源实现用户 2026-10-05）。
-      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react51.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react51.createElement)(import_react51.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react51.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
+      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react56.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react56.createElement)(import_react56.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react56.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
     ) : null);
   }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, toPicked, dir, loadDir, tt]);
   const drives = roots.filter((root) => root !== FS_ROOT);
@@ -54529,123 +54701,53 @@ function FileBrowser(props) {
     onPickWorkspace: switchWorkspace,
     onLoadDir: loadDir
   });
-  const crumbButton = (label, onClick, current4 = false) => (0, import_react51.createElement)(Button, {
-    variant: "ghost",
-    size: "sm",
-    className: `dshpc-fb__crumb${current4 ? " dshpc-fb__crumb--current" : ""}`,
-    disabled: onClick === void 0,
-    tabIndex: onClick === void 0 ? -1 : 0,
-    onClick
-  }, (0, import_react51.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
-  const pickNow = picker && props.onPick !== void 0 && !landing && dirPickable && dir !== "" ? (0, import_react51.createElement)(Button, {
+  const pickNow = picker && props.onPick !== void 0 && !landing && dirPickable && dir !== "" ? (0, import_react56.createElement)(Button, {
+    // 描边（outline）：ghost 在这一排**看不出来是按钮**——它无底无边，与面板同色，
+    // 用户 2026-11-03 实测「就像没有背景一样」，于是改回有 border 的一档（覆盖当天早些的 ghost 结论）。
     variant: "outline",
     size: "sm",
     className: "dshpc-fb__pick",
     "aria-label": tt("explorerPickDirAria"),
     onClick: () => props.onPick?.(toPicked(dir, true))
   }, tt("explorerPickDir")) : null;
-  const crumbBar = (0, import_react51.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react51.createElement)(
-    "div",
-    { className: "dshpc-fb__menu-wrap" },
-    (0, import_react51.createElement)(IconButton, {
-      variant: "plain",
-      size: "md",
-      icon: (0, import_react51.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
-      label: tt("explorerLevels"),
-      "aria-expanded": menuOpen,
-      onClick: () => setMenuOpen((v) => !v)
-    }),
-    // 选层下拉 = 自写浮层（抄兄弟 .dsh-tdt-sv-crumbs-*）：透明遮罩点一下即收，
-    // 遮罩层序高于 picker 面板（1100）⇒ 菜单开着时点面板也算「点外部」。
-    menuOpen ? (0, import_react51.createElement)(import_react51.Fragment, null, (0, import_react51.createElement)("div", {
-      className: "dshpc-fb__crumbs-backdrop",
-      onClick: () => setMenuOpen(false)
-    }), (0, import_react51.createElement)("div", { className: "dshpc-fb__crumbs-menu", role: "menu" }, menuItems)) : null
-  ), landing ? (0, import_react51.createElement)("div", { className: "dshpc-fb__crumbs" }) : (0, import_react51.createElement)(
-    "div",
-    { ref: regionRef, className: "dshpc-fb__crumbs" },
-    // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
-    (0, import_react51.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index3) => (0, import_react51.createElement)(import_react51.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react51.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
-    // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
-    crumbsOverflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index3) => (0, import_react51.createElement)(import_react51.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react51.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))
-  ), (0, import_react51.createElement)("div", { className: "dshpc-fb__actions" }, pickNow, props.onClose === void 0 ? null : (0, import_react51.createElement)(IconButton, {
-    variant: "plain",
-    size: "md",
-    icon: (0, import_react51.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
-    label: tt("previewClose"),
-    onClick: props.onClose
-  })));
-  const crumbBarPlain = (0, import_react51.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react51.createElement)(MarqueeText, {
-    text: dir,
-    title: dir,
-    className: "dshpc-fb__bar-plain",
-    style: { flex: "1 1 auto", minWidth: 0 }
-  }), (0, import_react51.createElement)("div", { className: "dshpc-fb__actions" }, pickNow, props.onClose === void 0 ? null : (0, import_react51.createElement)(IconButton, {
-    variant: "plain",
-    size: "md",
-    icon: (0, import_react51.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
-    label: tt("previewClose"),
-    onClick: props.onClose
-  })));
-  const titleBar = viewing === null ? null : (0, import_react51.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react51.createElement)(MarqueeText, {
-    text: baseNameOfPath(viewing),
-    title: viewing,
-    className: "dshpc-fb__title-inner",
-    style: { flex: "1 1 auto", minWidth: 0 }
-  }), (0, import_react51.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react51.createElement)(Segmented, {
-    size: "sm",
-    label: viewingIsMd ? tt("previewMdSwitchAria") : tt("previewHtmlSwitchAria"),
-    value: sourceView ? "source" : "render",
-    items: [
-      { value: "render", label: tt("previewRender") },
-      { value: "source", label: tt("previewSource") }
-    ],
-    onChange: (next) => setSourceView(next === "source")
-  }) : null, (0, import_react51.createElement)(IconButton, {
-    variant: "plain",
-    size: "md",
-    icon: copied ? (0, import_react51.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react51.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
-    label: tt("previewCopyPath"),
-    onClick: copyPath
-  }), (0, import_react51.createElement)(IconButton, {
-    variant: "plain",
-    size: "md",
-    icon: (0, import_react51.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
-    label: tt("previewRefresh"),
-    onClick: reload
-  })));
+  const nav2 = outside ? (0, import_react56.createElement)(PlainNav, { translate: tt, path: dir, pickNow, onClose: props.onClose }) : (0, import_react56.createElement)(CrumbNav, {
+    translate: tt,
+    landing,
+    crumbs,
+    overflow: crumbsOverflow,
+    menuItems,
+    menuOpen,
+    onToggleMenu: () => setMenuOpen((v) => !v),
+    onCloseMenu: () => setMenuOpen(false),
+    onLoadDir: loadDir,
+    pickNow,
+    onClose: props.onClose,
+    regionRef,
+    measureRef
+  });
+  const titleBar = viewing === null ? null : (0, import_react56.createElement)(PreviewTitleBar, {
+    translate: tt,
+    path: viewing,
+    switchable,
+    isMarkdown: viewingIsMd,
+    sourceView,
+    onSourceViewChange: setSourceView,
+    copied,
+    onCopyPath: copyPath,
+    onReload: reload
+  });
   let body;
   if (landing) {
-    const row = (key, label, target) => (0, import_react51.createElement)(
-      "div",
-      {
-        key,
-        className: "dshpc-fb__row",
-        role: "button",
-        tabIndex: 0,
-        onClick: () => loadDir(target),
-        onKeyDown: (event) => {
-          if (event.key === "Enter" || event.key === " ")
-            loadDir(target);
-        }
-      },
-      (0, import_react51.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react51.createElement)(official_exports.IconFolderCloseRegular, { size: 18 })),
-      (0, import_react51.createElement)("span", { className: "dshpc-fb__row-name" }, label),
-      // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 盘符 / 工作区根本身都能选）。
-      picker && props.onPick !== void 0 && !extsOnly ? (0, import_react51.createElement)(Button, {
-        variant: "outline",
-        size: "sm",
-        className: "dshpc-fb__row-act",
-        "aria-label": tt("explorerPickDirAria"),
-        onClick: (event) => {
-          event.stopPropagation();
-          props.onPick?.(toPicked(target, true));
-        }
-      }, tt("explorerPickDir")) : null
-    );
-    body = (0, import_react51.createElement)("div", { className: "dshpc-fb__tree" }, rootRows.map((root) => row(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== void 0 && item.path !== "").map((item) => row(`ws:${item.title}`, item.title, item.path)));
+    body = (0, import_react56.createElement)(LandingBody, {
+      translate: tt,
+      roots: rootRows,
+      anchors,
+      pickable: picker && props.onPick !== void 0 && !extsOnly,
+      onOpen: loadDir,
+      onPickDir: (target) => props.onPick?.(toPicked(target, true))
+    });
   } else if (viewing !== null) {
-    body = (0, import_react51.createElement)(FilePreview, {
+    body = (0, import_react56.createElement)(FilePreview, {
       key: `${viewing}:${reloadNonce}`,
       files: props.files,
       officeToPdf: props.officeToPdf ?? null,
@@ -54654,21 +54756,21 @@ function FileBrowser(props) {
       translate: tt
     });
   } else if (mode === "error" && listErr !== null) {
-    body = (0, import_react51.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react51.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
+    body = (0, import_react56.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react56.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
   } else if (listing !== null) {
     const visible = listing.filter((entry) => entry.type === "directory" || matchesFilter(joinPath(dir, entry.name), false, picker ? props.filter : void 0));
-    body = visible.length === 0 ? (0, import_react51.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react51.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react51.createElement)("div", { className: "dshpc-fb__tree" }, renderTree(visible, dir), truncated ? (0, import_react51.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
+    body = visible.length === 0 ? (0, import_react56.createElement)("div", { className: "dshpc-fb__body" }, (0, import_react56.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react56.createElement)("div", { className: "dshpc-fb__tree" }, renderTree(visible, dir), truncated ? (0, import_react56.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
   } else {
-    body = (0, import_react51.createElement)("div", { className: "dshpc-fb__body" });
+    body = (0, import_react56.createElement)("div", { className: "dshpc-fb__body" });
   }
-  return (0, import_react51.createElement)("div", {
+  return (0, import_react56.createElement)("div", {
     className: "dshpc-fb",
     style: props.style ?? void 0
-  }, outside ? crumbBarPlain : crumbBar, titleBar, body);
+  }, nav2, titleBar, body);
 }
 
 // dist/explorer/open.js
-var import_react52 = require("react");
+var import_react57 = require("react");
 var import_client5 = require("react-dom/client");
 
 // dist/explorer/fs-face.js
@@ -54743,6 +54845,9 @@ function resolveStartPath(path, anchors, sessionId) {
     return null;
   return normalizePath(`${normalizePath(base3)}/${path.replace(/^\/+/, "")}`);
 }
+function rootPathOf(path, anchors, sessionId) {
+  return workspaceOfPath(path, anchors)?.path ?? (sessionId === void 0 ? void 0 : anchors.find((item) => item.sessionIds?.includes(sessionId) === true)?.path) ?? anchors.find((item) => item.path !== void 0)?.path;
+}
 function warnNotWired(api, filesMissing) {
   console.warn(`[dsh-plugin-core/explorer] ${api}: ` + (filesMissing ? "\u6CA1\u6709\u6587\u4EF6\u9762\uFF08client apply \u91CC\u6CA1\u8C03 connectFs\uFF0C\u6216\u5BBF\u4E3B\u6CA1\u6CE8\u518C serveFsRoute\uFF09" : "\u76F8\u5BF9\u8DEF\u5F84\u627E\u4E0D\u5230\u5DE5\u4F5C\u533A\u57FA\u51C6\uFF08\u5BBF\u4E3B workspaces \u91CC\u6CA1\u6709\u5E26 path \u7684\u5DE5\u4F5C\u533A\uFF09") + " \u21D2 \u653E\u5F03\u672C\u6B21\u64CD\u4F5C");
 }
@@ -54765,9 +54870,10 @@ function openFilePreview(options) {
     warnNotWired("openFilePreview", false);
     return null;
   }
-  const sessionBase = options.sessionId === void 0 ? void 0 : anchors.find((item) => item.sessionIds?.includes(options.sessionId) === true)?.path;
-  const base3 = workspaceOfPath(start ?? "", anchors)?.path ?? sessionBase ?? anchors.find((item) => item.path !== void 0)?.path;
-  const opts = { ...options, rootPath: options.rootPath ?? base3 };
+  const opts = {
+    ...options,
+    rootPath: options.rootPath ?? rootPathOf(start ?? "", anchors, options.sessionId)
+  };
   if (activePreview !== null) {
     activePreview.keepWidth();
     activePreview.adopt(opts.mount);
@@ -54854,11 +54960,11 @@ function openFilePreview(options) {
     if (dock.isCollapsed(PREVIEW_PANEL_ID))
       dock.expand(PREVIEW_PANEL_ID);
     const revision = ++openSeq;
-    root.render((0, import_react52.createElement)(
+    root.render((0, import_react57.createElement)(
       "div",
       // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
       { style: { display: "contents", ["--dshpc-dock-h"]: "100%" } },
-      (0, import_react52.createElement)(PanelDock, { dock, mainMinWidth: o.mainMinWidth ?? 480, translate: o.translate }, (0, import_react52.createElement)(DockPanel, {
+      (0, import_react57.createElement)(PanelDock, { dock, mainMinWidth: o.mainMinWidth ?? 480, translate: o.translate }, (0, import_react57.createElement)(DockPanel, {
         id: PREVIEW_PANEL_ID,
         // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
         header: null,
@@ -54870,7 +54976,7 @@ function openFilePreview(options) {
         width: pinnedWidth ?? o.width ?? 460,
         minWidth: o.minWidth ?? 320,
         maxWidth: o.maxWidth
-      }, o.content !== void 0 ? (0, import_react52.createElement)(import_react52.Fragment, { key: `custom:${revision}` }, o.content()) : (0, import_react52.createElement)(FileBrowser, {
+      }, o.content !== void 0 ? (0, import_react57.createElement)(import_react57.Fragment, { key: `custom:${revision}` }, o.content()) : (0, import_react57.createElement)(FileBrowser, {
         files: getFsFace(),
         officeToPdf: o.officeToPdf ?? null,
         path: start2,
@@ -54913,13 +55019,11 @@ function pickWorkspaceFile(options) {
       return;
     }
     let settled = false;
-    const backdrop = document.createElement("div");
-    backdrop.setAttribute("data-dshpc-picker-backdrop", "");
-    backdrop.style.cssText = "position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;z-index:1099;background:rgba(0,0,0,0.28)";
-    const panel = document.createElement("div");
-    panel.setAttribute("data-dshpc-picker-panel", "");
-    panel.setAttribute("role", "dialog");
-    panel.setAttribute("aria-modal", "true");
+    const panelStyle = {
+      position: "fixed",
+      display: "flex",
+      flexDirection: "column"
+    };
     const anchor = options.anchor ?? null;
     if (anchor !== null) {
       const rect = anchor.getBoundingClientRect();
@@ -54933,18 +55037,21 @@ function pickWorkspaceFile(options) {
       const height = Math.max(Math.min(PICKER_MAX_H, below ? availBelow : availAbove), PICKER_MIN_FLOOR);
       const left = Math.max(GAP2, Math.min(rect.left, vw - GAP2 - width));
       const top2 = below ? Math.min(rect.bottom + GAP2, Math.max(GAP2, vh - GAP2 - height)) : Math.max(GAP2, rect.top - GAP2 - height);
-      panel.style.cssText = `position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;left:${Math.round(left)}px;top:${Math.round(top2)}px;width:${Math.round(width)}px;height:${Math.round(height)}px;background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)`;
+      panelStyle.left = Math.round(left);
+      panelStyle.top = Math.round(top2);
+      panelStyle.width = Math.round(width);
+      panelStyle.height = Math.round(height);
     } else {
-      panel.style.cssText = `position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;width:min(${PICKER_WIDTH}px,calc(100vw - 24px));height:${PICKER_MAX_H}px;background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)`;
+      panelStyle.width = `min(${PICKER_WIDTH}px,calc(100vw - 24px))`;
+      panelStyle.height = PICKER_MAX_H;
     }
     const finish = (result) => {
       if (settled)
         return;
       settled = true;
       window.removeEventListener("keydown", onKeyDown);
-      backdrop.remove();
       root.unmount();
-      panel.remove();
+      mount.remove();
       if (result === null)
         options.onCancel?.();
       resolve(result);
@@ -54953,29 +55060,39 @@ function pickWorkspaceFile(options) {
       if (event.key === "Escape")
         finish(null);
     };
-    backdrop.addEventListener("click", () => finish(null));
     window.addEventListener("keydown", onKeyDown);
-    document.body.appendChild(backdrop);
-    document.body.appendChild(panel);
+    const mount = document.createElement("div");
+    document.body.appendChild(mount);
     ensureComponentStyles("panel-dock", PANEL_DOCK_CSS, getStyleKit());
     ensureComponentStyles("feedback", FEEDBACK_CSS, getStyleKit());
-    const root = (0, import_client5.createRoot)(panel);
-    root.render((0, import_react52.createElement)(FileBrowser, {
-      files,
-      officeToPdf: options.officeToPdf ?? null,
-      path: start,
-      rootName: options.rootName,
-      sessionId: options.sessionId,
-      rootPath: workspaceOfPath(start, anchors)?.path ?? (options.sessionId === void 0 ? void 0 : anchors.find((item) => item.sessionIds?.includes(options.sessionId) === true)?.path) ?? anchors.find((item) => item.path !== void 0)?.path,
-      workspaces: options.workspaces,
-      onSelectWorkspace: options.onSelectWorkspace,
-      picker: true,
-      filter: options.filter,
-      translate: options.translate,
-      onPick: (picked) => finish(picked),
-      onClose: () => finish(null),
-      style: { flex: "1 1 auto", width: "100%", minWidth: 0, minHeight: 0 }
-    }));
+    const root = (0, import_client5.createRoot)(mount);
+    root.render((0, import_react57.createElement)(
+      OverlayMask,
+      { kind: "plain", closeOnMask: true, onClose: () => finish(null), attrs: { "data-dshpc-picker-backdrop": "" } },
+      // `data-dshpc-picker-panel` / `data-dshpc-picker-backdrop` 是既有定位钩子，继续保留。
+      (0, import_react57.createElement)(PanelSurface, {
+        tier: "popover",
+        role: "dialog",
+        attrs: { "data-dshpc-picker-panel": "", "aria-modal": "true" },
+        style: panelStyle,
+        stopPropagation: true
+      }, (0, import_react57.createElement)(FileBrowser, {
+        files,
+        officeToPdf: options.officeToPdf ?? null,
+        path: start,
+        rootName: options.rootName,
+        sessionId: options.sessionId,
+        rootPath: rootPathOf(start, anchors, options.sessionId),
+        workspaces: options.workspaces,
+        onSelectWorkspace: options.onSelectWorkspace,
+        picker: true,
+        filter: options.filter,
+        translate: options.translate,
+        onPick: (picked) => finish(picked),
+        onClose: () => finish(null),
+        style: { flex: "1 1 auto", width: "100%", minWidth: 0, minHeight: 0 }
+      }))
+    ));
   });
 }
 
@@ -55024,10 +55141,10 @@ function connectFileServices(ctx) {
 }
 
 // dist/session/SessionViewModal.js
-var import_react70 = require("react");
+var import_react75 = require("react");
 
 // dist/session/mirror/ChatView.js
-var import_react55 = require("react");
+var import_react60 = require("react");
 
 // dist/session/official-classes.js
 var CSS_PKG_PREFIXES = [
@@ -55109,10 +55226,10 @@ function officialClass(module2, semantic) {
 }
 
 // dist/session/mirror/ChatGroupSeat.js
-var import_react54 = require("react");
+var import_react59 = require("react");
 
 // dist/session/mirror/ChatNodeSeat.js
-var import_react53 = require("react");
+var import_react58 = require("react");
 var TURN_PROCESS_INDEPENDENT_KINDS = /* @__PURE__ */ new Set([
   "system-prompt",
   "user",
@@ -55181,7 +55298,7 @@ function ChatNodeSeatMirror(props) {
   if (inner === null || inner === void 0)
     return null;
   const flowKey = groupPart === void 0 || groupPart === "response" ? node.key : JSON.stringify([node.key, groupPart]);
-  return (0, import_react53.createElement)("div", {
+  return (0, import_react58.createElement)("div", {
     className: officialClass("ChatView", "flowItem") ?? "",
     "data-chat-anchor-key": flowKey,
     "data-chat-flow-key": flowKey,
@@ -55403,7 +55520,7 @@ var SMALL_ICONS = /* @__PURE__ */ new Set([
 ]);
 function ChatGroupSeatMirror(props) {
   const { group, grouped, store, openState, onSetOpen, foldCompleted, renderNode, t: t4 } = props;
-  const [open, setOpen] = (0, import_react54.useState)(false);
+  const [open, setOpen] = (0, import_react59.useState)(false);
   const first = group.members[0];
   const firstNode = first === void 0 ? void 0 : store?.get(first.key);
   const presentation = first === void 0 ? void 0 : readPresentation(store, first.key);
@@ -55413,13 +55530,13 @@ function ChatGroupSeatMirror(props) {
   const alwaysOpen = presentation?.turnClosed === false || presentation?.hasInterleavedInput === true || reason === "aborted" || reason === "error";
   const storedAnswerStep = openState.get(group.data.turn);
   const outerHidden = foldCompleted && presentation?.turnClosed === true && spec !== void 0 && !alwaysOpen && storedAnswerStep !== (spec.answerStep ?? 0);
-  (0, import_react54.useEffect)(() => {
+  (0, import_react59.useEffect)(() => {
     if (outerHidden)
       setOpen(false);
   }, [outerHidden]);
-  const bodyRef = (0, import_react54.useRef)(null);
-  const [edges, setEdges] = (0, import_react54.useState)({ up: false, down: false });
-  const measure = (0, import_react54.useCallback)(() => {
+  const bodyRef = (0, import_react59.useRef)(null);
+  const [edges, setEdges] = (0, import_react59.useState)({ up: false, down: false });
+  const measure = (0, import_react59.useCallback)(() => {
     const el = bodyRef.current;
     if (el === null)
       return;
@@ -55428,7 +55545,7 @@ function ChatGroupSeatMirror(props) {
       down: el.scrollTop + el.clientHeight < el.scrollHeight - 1
     });
   }, []);
-  (0, import_react54.useEffect)(() => {
+  (0, import_react59.useEffect)(() => {
     if (grouped && open)
       measure();
   }, [grouped, open, measure]);
@@ -55443,7 +55560,7 @@ function ChatGroupSeatMirror(props) {
     grouped && edges.up ? officialClass("ChatGroupSeat", "fadeTop") ?? "" : "",
     grouped && edges.down ? officialClass("ChatGroupSeat", "fadeBottom") ?? "" : ""
   ].filter((part) => part !== "").join(" ");
-  return (0, import_react54.createElement)("div", {
+  return (0, import_react59.createElement)("div", {
     className: officialClass("ChatGroupSeat", "root") ?? "",
     "data-chat-group-key": group.key,
     "data-chat-flow-key": group.key,
@@ -55452,20 +55569,20 @@ function ChatGroupSeatMirror(props) {
     "data-step-process": true,
     "data-group-expanded-mode": !grouped || void 0,
     hidden: outerHidden || void 0
-  }, grouped ? (0, import_react54.createElement)("button", {
+  }, grouped ? (0, import_react59.createElement)("button", {
     type: "button",
     className: officialClass("ChatGroupSeat", "title") ?? "",
     "aria-expanded": open,
     onClick: () => {
       setOpen((value) => !value);
     }
-  }, (0, import_react54.createElement)("span", {
+  }, (0, import_react59.createElement)("span", {
     className: officialClass("ChatGroupSeat", "leading") ?? "",
     "aria-hidden": true
-  }, (0, import_react54.createElement)("span", {
+  }, (0, import_react59.createElement)("span", {
     className: officialClass("ChatGroupSeat", "activityIcon") ?? "",
     "data-step-process-icon": true
-  }, (0, import_react54.createElement)(ActivityIcon, SMALL_ICONS.has(activity) ? { size: 14 } : {})), open ? (0, import_react54.createElement)(official_exports.IconChevronUpOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" }) : (0, import_react54.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" })), (0, import_react54.createElement)("span", { className: officialClass("ChatGroupSeat", "label") ?? "" }, label)) : null, (0, import_react54.createElement)("div", {
+  }, (0, import_react59.createElement)(ActivityIcon, SMALL_ICONS.has(activity) ? { size: 14 } : {})), open ? (0, import_react59.createElement)(official_exports.IconChevronUpOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" }) : (0, import_react59.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" })), (0, import_react59.createElement)("span", { className: officialClass("ChatGroupSeat", "label") ?? "" }, label)) : null, (0, import_react59.createElement)("div", {
     ref: bodyRef,
     className: bodyClass,
     "data-step-process-body": true,
@@ -55473,11 +55590,11 @@ function ChatGroupSeatMirror(props) {
     "data-scroll-down": edges.down || void 0,
     onScroll: measure,
     hidden: grouped && !open || void 0
-  }, (0, import_react54.createElement)("div", {
+  }, (0, import_react59.createElement)("div", {
     className: officialClass("ChatGroupSeat", "content") ?? "",
     "data-step-process-content": true,
     "data-chat-flow": ""
-  }, group.members.map((member) => (0, import_react54.createElement)(ChatNodeSeatMirror, {
+  }, group.members.map((member) => (0, import_react59.createElement)(ChatNodeSeatMirror, {
     key: JSON.stringify([member.key, member.groupPart ?? null]),
     node: store?.get(member.key) ?? { key: member.key, kind: "", anchorSeq: 0 },
     groupPart: member.groupPart,
@@ -55490,12 +55607,12 @@ function ChatGroupSeatMirror(props) {
 }
 
 // dist/session/session-css.generated.js
-var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA\u7ED8\u6837\u5F0F\uFF1A\u53EA\u88C5\u672C\u5305\u81EA\u5DF1\u7684\u7EC4\u4EF6\uFF08\u6682\u5B58\u8F93\u5165\u533A / fork / \u63A2\u9488\u7B49\uFF09\n   + \u4E24\u4E2A\u7A33\u5B9A\u94A9\u5B50\u7C7B\uFF08dshpc-sv-frame / dshpc-sv-scroll\uFF09\u3002\n   \u5DF2\u5220\uFF1AChangedFiles \u5361\u4E0E FileDiff \u7684\u5168\u90E8\u81EA\u7ED8\u89C4\u5219\uFF082026-10-24\uFF09\u2014\u2014\u5B98\u65B9 ChangedFiles /\n   FileDiff \u6A21\u5757\u7C7B\u7531 officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\u5E76\u6302\u5728\u5143\u7D20\u4E0A\uFF0C\u672C\u5305\u4E0D\u518D\u6709\u4E00\u884C\u515C\u5E95\u3002\n   \u26A0\uFE0F 2026-10-23 \u8D77\u4E0D\u518D\u6709\u5B98\u65B9\u7C7B\u515C\u5E95\uFF1A\u955C\u50CF\u5B98\u65B9\u7EC4\u4EF6\u7684\u5143\u7D20\u4E00\u5F8B\u6302\u5B98\u65B9 CSS-module \u7C7B\u540D\n   \uFF08officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\uFF0C\u53D6\u4E0D\u5230 = \u7A7A\u7C7B\u3001\u88F8\u7ED3\u6784\u4E0D\u767D\u5C4F\uFF09\u2014\u2014\u672C\u5305\u53EA\u8DD1 DSH \u5BBF\u4E3B\u3001\u5B98\u65B9\u6837\u5F0F\u5FC5\u5728\u573A\uFF0C\n   \u81EA\u7ED8\u4E00\u4E00\u5BF9\u5E94\u662F\u6B7B\u4EE3\u7801\u3002\u8981\u6539\u5B98\u65B9\u89C2\u611F\u8D70 token \u8986\u76D6 / \u53CC\u7C7B\u540D\u94A9\u5B50\uFF08\u89C1 ChatView.ts \u5934\u6CE8\uFF09\uFF0C\u522B\u5728\u8FD9\u52A0\u515C\u5E95\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\u3002\n   \u5916\u58F3\uFF08\u906E\u7F69 / \u9762\u677F / \u5934\u90E8 / \u5173\u95ED\u94AE\uFF09= \u6838\u5FC3 Modal\uFF08size lg\uFF09\u3002 */\n/* \u4F1A\u8BDD\u533A = \u666E\u901A\u7EB5\u5411\u6D41\uFF1A\u4E0D\u8BBE\u9AD8\u5EA6\u3001\u4E0D\u81EA\u5DF1\u6EDA\uFF08\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3 Modal body\uFF0C\u7528\u6237 2026-10-22 \u53E3\u5F84\uFF09\u3002 */\n.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}\n\n/* \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\u65F6\u7684\u53EF\u89C1\u63A2\u9488\uFF08\u6302\u5728\u5934\u90E8\u526F\u6807\u9898\u884C\uFF0C\u4E0D\u5360\u6B63\u6587\uFF09\u3002 */\n.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning,#b7791f)}\n\n/* \u5934\u90E8\u5F52\u6863\u6807\u8BC6\uFF08\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\uFF09\u3002 */\n.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}\n\n/* \u5185\u8DDD\u4E0E\u6EDA\u52A8\u5168\u90E8\u8BA9\u7ED9\u6838\u5FC3 Modal body \u21D2 \u8FD9\u91CC\u628A\u5B98\u65B9 ChatView.frame / scroll \u7684\u5185\u8DDD\u3001\n   overflow\u3001\u9AD8\u5EA6\u4E00\u5F8B\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\u3002\n   \u26A0\uFE0F \u5FC5\u987B\u540C\u65F6\u628A flex \u6536\u6389\uFF1A\u5B98\u65B9 scroll \u662F flex:1\uFF08basis=0\uFF09\uFF0C\u5728**\u81EA\u52A8\u9AD8**\u7684\u5BB9\u5668\u91CC\u4F1A\u628A\n   \u4F1A\u8BDD\u533A\u538B\u6210 0 \u9AD8 \u2014\u2014 \u8FD9\u6B63\u662F\u300C\u5185\u5BB9\u81EA\u7BA1\u9AD8\u5EA6\u300D\u7684\u8001\u6BDB\u75C5\uFF0C\u522B\u518D\u653E\u56DE\u6765\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}\n\n.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}\n\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9AD8\u5EA6\u7531\u5185\u5BB9\u51B3\u5B9A\uFF08\u6491\u5F00\u7531 Modal body \u6EDA\uFF09\u3002 */\n.dshpc-sv-chat{flex:none;min-height:0;}\n\n\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));border:1px dashed var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n\n/* \u5DE5\u5177\u5361\u6839\uFF08SessionViewModal legacy \u515C\u5E95\u6E32\u67D3\u76F4\u63A5\u7528\uFF1B\u6B63\u5E38 keyed \u8DEF\u5F84\u4E00\u5F8B\u6302\u5B98\u65B9 ToolRow \u7C7B\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding:2px 8px;}\n\n\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger,#e5484d);word-break:break-word;}\n\n.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}\n\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}\n\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg,#1f2328);background:var(--dshpc-surface-2,rgba(128,128,128,.10));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus,#3b5bdb);outline-offset:-1px;}\n\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding-bottom:10px;white-space:nowrap;}";
+var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA\u7ED8\u6837\u5F0F\uFF1A\u53EA\u88C5\u672C\u5305\u81EA\u5DF1\u7684\u7EC4\u4EF6\uFF08\u6682\u5B58\u8F93\u5165\u533A / fork / \u63A2\u9488\u7B49\uFF09\n   + \u4E24\u4E2A\u7A33\u5B9A\u94A9\u5B50\u7C7B\uFF08dshpc-sv-frame / dshpc-sv-scroll\uFF09\u3002\n   \u5DF2\u5220\uFF1AChangedFiles \u5361\u4E0E FileDiff \u7684\u5168\u90E8\u81EA\u7ED8\u89C4\u5219\uFF082026-10-24\uFF09\u2014\u2014\u5B98\u65B9 ChangedFiles /\n   FileDiff \u6A21\u5757\u7C7B\u7531 officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\u5E76\u6302\u5728\u5143\u7D20\u4E0A\uFF0C\u672C\u5305\u4E0D\u518D\u6709\u4E00\u884C\u515C\u5E95\u3002\n   \u26A0\uFE0F 2026-10-23 \u8D77\u4E0D\u518D\u6709\u5B98\u65B9\u7C7B\u515C\u5E95\uFF1A\u955C\u50CF\u5B98\u65B9\u7EC4\u4EF6\u7684\u5143\u7D20\u4E00\u5F8B\u6302\u5B98\u65B9 CSS-module \u7C7B\u540D\n   \uFF08officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\uFF0C\u53D6\u4E0D\u5230 = \u7A7A\u7C7B\u3001\u88F8\u7ED3\u6784\u4E0D\u767D\u5C4F\uFF09\u2014\u2014\u672C\u5305\u53EA\u8DD1 DSH \u5BBF\u4E3B\u3001\u5B98\u65B9\u6837\u5F0F\u5FC5\u5728\u573A\uFF0C\n   \u81EA\u7ED8\u4E00\u4E00\u5BF9\u5E94\u662F\u6B7B\u4EE3\u7801\u3002\u8981\u6539\u5B98\u65B9\u89C2\u611F\u8D70 token \u8986\u76D6 / \u53CC\u7C7B\u540D\u94A9\u5B50\uFF08\u89C1 ChatView.ts \u5934\u6CE8\uFF09\uFF0C\u522B\u5728\u8FD9\u52A0\u515C\u5E95\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\u3002\n   \u5916\u58F3\uFF08\u906E\u7F69 / \u9762\u677F / \u5934\u90E8 / \u5173\u95ED\u94AE\uFF09= \u6838\u5FC3 Modal\uFF08size lg\uFF09\u3002 */\n/* \u4F1A\u8BDD\u533A = \u666E\u901A\u7EB5\u5411\u6D41\uFF1A\u4E0D\u8BBE\u9AD8\u5EA6\u3001\u4E0D\u81EA\u5DF1\u6EDA\uFF08\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3 Modal body\uFF0C\u7528\u6237 2026-10-22 \u53E3\u5F84\uFF09\u3002 */\n.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}\n\n/* \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\u65F6\u7684\u53EF\u89C1\u63A2\u9488\uFF08\u6302\u5728\u5934\u90E8\u526F\u6807\u9898\u884C\uFF0C\u4E0D\u5360\u6B63\u6587\uFF09\u3002 */\n.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning)}\n\n/* \u5934\u90E8\u5F52\u6863\u6807\u8BC6\uFF08\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\uFF09\u3002 */\n.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}\n\n/* \u5185\u8DDD\u4E0E\u6EDA\u52A8\u5168\u90E8\u8BA9\u7ED9\u6838\u5FC3 Modal body \u21D2 \u8FD9\u91CC\u628A\u5B98\u65B9 ChatView.frame / scroll \u7684\u5185\u8DDD\u3001\n   overflow\u3001\u9AD8\u5EA6\u4E00\u5F8B\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\u3002\n   \u26A0\uFE0F \u5FC5\u987B\u540C\u65F6\u628A flex \u6536\u6389\uFF1A\u5B98\u65B9 scroll \u662F flex:1\uFF08basis=0\uFF09\uFF0C\u5728**\u81EA\u52A8\u9AD8**\u7684\u5BB9\u5668\u91CC\u4F1A\u628A\n   \u4F1A\u8BDD\u533A\u538B\u6210 0 \u9AD8 \u2014\u2014 \u8FD9\u6B63\u662F\u300C\u5185\u5BB9\u81EA\u7BA1\u9AD8\u5EA6\u300D\u7684\u8001\u6BDB\u75C5\uFF0C\u522B\u518D\u653E\u56DE\u6765\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}\n\n.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}\n\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9AD8\u5EA6\u7531\u5185\u5BB9\u51B3\u5B9A\uFF08\u6491\u5F00\u7531 Modal body \u6EDA\uFF09\u3002 */\n.dshpc-sv-chat{flex:none;min-height:0;}\n\n\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);border:1px dashed var(--dshpc-border);border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n\n/* \u5DE5\u5177\u5361\u6839\uFF08SessionViewModal legacy \u515C\u5E95\u6E32\u67D3\u76F4\u63A5\u7528\uFF1B\u6B63\u5E38 keyed \u8DEF\u5F84\u4E00\u5F8B\u6302\u5B98\u65B9 ToolRow \u7C7B\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);padding:2px 8px;}\n\n\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger);word-break:break-word;}\n\n.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}\n\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}\n\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg);background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px;}\n\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);padding-bottom:10px;white-space:nowrap;}";
 
 // dist/session/mirror/ChatView.js
 function ChatViewFrame(props) {
   ensureComponentStyles("session", SESSION_CSS);
-  return (0, import_react55.createElement)("div", { className: `${officialClass("ChatView", "frame") ?? ""} dshpc-sv-frame dshpc-sv-chat` }, (0, import_react55.createElement)("div", { className: officialClass("ChatView", "root") ?? "" }, (0, import_react55.createElement)("div", { className: `${officialClass("ChatView", "scroll") ?? ""} dshpc-sv-scroll` }, (0, import_react55.createElement)("div", { className: officialClass("ChatView", "column") ?? "", "data-chat-flow": "" }, props.children))));
+  return (0, import_react60.createElement)("div", { className: `${officialClass("ChatView", "frame") ?? ""} dshpc-sv-frame dshpc-sv-chat` }, (0, import_react60.createElement)("div", { className: officialClass("ChatView", "root") ?? "" }, (0, import_react60.createElement)("div", { className: `${officialClass("ChatView", "scroll") ?? ""} dshpc-sv-scroll` }, (0, import_react60.createElement)("div", { className: officialClass("ChatView", "column") ?? "", "data-chat-flow": "" }, props.children))));
 }
 function ChatNodeListMirror(props) {
   const { order, store, entries: entries2, groups, turns, openState, onSetOpen, foldCompleted, renderNode, t: t4 } = props;
@@ -55540,7 +55657,7 @@ function ChatNodeListMirror(props) {
         if (group === void 0)
           continue;
         const latest = flatKeys.has(group.key);
-        rows.push((0, import_react55.createElement)(ChatGroupSeatMirror, {
+        rows.push((0, import_react60.createElement)(ChatGroupSeatMirror, {
           key: entry.key,
           group,
           grouped: turnStatus(turns, group.data.turn) !== "open" && !latest,
@@ -55555,7 +55672,7 @@ function ChatNodeListMirror(props) {
         const node = readSafe(entry.key);
         if (node === void 0)
           continue;
-        rows.push((0, import_react55.createElement)(ChatNodeSeatMirror, {
+        rows.push((0, import_react60.createElement)(ChatNodeSeatMirror, {
           key: JSON.stringify([entry.key, entry.groupPart ?? null]),
           node,
           groupPart: entry.groupPart,
@@ -55573,7 +55690,7 @@ function ChatNodeListMirror(props) {
     const node = readSafe(key);
     if (node === void 0)
       continue;
-    rows.push((0, import_react55.createElement)(ChatNodeSeatMirror, { key, node, store, openState, onSetOpen, foldCompleted, renderNode }));
+    rows.push((0, import_react60.createElement)(ChatNodeSeatMirror, { key, node, store, openState, onSetOpen, foldCompleted, renderNode }));
   }
   return rows;
 }
@@ -55582,14 +55699,14 @@ function turnStatus(turns, turn) {
   return row?.status;
 }
 function ChatHint(props) {
-  return (0, import_react55.createElement)("div", { className: officialClass("ChatView", "hint") ?? "" }, props.text);
+  return (0, import_react60.createElement)("div", { className: officialClass("ChatView", "hint") ?? "" }, props.text);
 }
 function ChatOlderButton(props) {
-  return (0, import_react55.createElement)("div", { className: officialClass("ChatView", "older") ?? "" }, (0, import_react55.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
+  return (0, import_react60.createElement)("div", { className: officialClass("ChatView", "older") ?? "" }, (0, import_react60.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
 }
 
 // dist/session/mirror/GenericCommandCard.js
-var import_react56 = require("react");
+var import_react61 = require("react");
 var TOOL_VARIANTS = {
   bash: "bash",
   pwsh: "bash",
@@ -55628,13 +55745,13 @@ var TOOL_TITLE_KEYS = {
 };
 var toolTitleKey = (name2) => TOOL_TITLE_KEYS[name2] ?? VARIANT_TITLE_KEYS[classifyTool(name2)];
 var VARIANT_ICONS = {
-  search: (0, import_react56.createElement)(official_exports.IconSearchOutlineRegular, { size: 14 }),
-  read: (0, import_react56.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
-  bash: (0, import_react56.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
-  write: (0, import_react56.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
-  edit: (0, import_react56.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
-  code: (0, import_react56.createElement)(official_exports.IconCodeOutlineRegular, { size: 14 }),
-  others: (0, import_react56.createElement)(official_exports.IconSparkleRegular, { size: 14 })
+  search: (0, import_react61.createElement)(official_exports.IconSearchOutlineRegular, { size: 14 }),
+  read: (0, import_react61.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
+  bash: (0, import_react61.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
+  write: (0, import_react61.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
+  edit: (0, import_react61.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
+  code: (0, import_react61.createElement)(official_exports.IconCodeOutlineRegular, { size: 14 }),
+  others: (0, import_react61.createElement)(official_exports.IconSparkleRegular, { size: 14 })
 };
 var SUMMARY_KEYS = {
   bash: ["description", "command"],
@@ -55979,14 +56096,14 @@ var stopLinkClick = (event) => {
 };
 function GenericCommandCard(props) {
   const { name: name2, argsRaw, output, isError, meta: meta2, settled = true, phase, interrupted, onOpenFile, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react56.useState)(false);
+  const [expanded, setExpanded] = (0, import_react61.useState)(false);
   const variant = classifyTool(name2);
   const titleKey = toolTitleKey(name2);
   const state = !settled ? phase === "preparing" ? "preparing" : "running" : interrupted ? "stopped" : isError ? "error" : "ok";
-  const terminalFace = (0, import_react56.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
-  const read = (0, import_react56.useMemo)(() => readCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
-  const diffs = (0, import_react56.useMemo)(() => diffCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
-  const terminal = (0, import_react56.useMemo)(() => {
+  const terminalFace = (0, import_react61.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
+  const read = (0, import_react61.useMemo)(() => readCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
+  const diffs = (0, import_react61.useMemo)(() => diffCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
+  const terminal = (0, import_react61.useMemo)(() => {
     if (terminalFace === null)
       return null;
     return terminalFace.sessionId !== void 0 ? { ...terminalFace, command: terminalFace.command === "" ? t4("terminalSendInput") : terminalFace.command, description: t4("terminalSession", { sessionId: terminalFace.sessionId }) } : terminalFace;
@@ -56014,21 +56131,21 @@ function GenericCommandCard(props) {
   const cardBody = variant === "code" ? null : bodyText;
   const expandable = rowState !== "preparing" && (inputRaw !== null || outputText !== null || card !== null);
   const open = expanded && expandable;
-  const blockLabels = (0, import_react56.useMemo)(() => ({ diff: diffLabels(t4), read: readLabels(t4), terminal: terminalLabels(t4) }), [t4]);
+  const blockLabels = (0, import_react61.useMemo)(() => ({ diff: diffLabels(t4), read: readLabels(t4), terminal: terminalLabels(t4) }), [t4]);
   const statusText = rowState === "preparing" ? t4("rowPreparing") : rowState === "running" ? t4("rowRunning") : rowState === "error" ? t4("rowFailed") : rowState === "stopped" ? t4("rowStopped") : null;
   const summaryClassName = `${officialClass("ToolRow", "summary") ?? ""}${rowState === "error" ? ` ${officialClass("ToolRow", "errorSummary") ?? ""}` : ""}${rowState === "stopped" ? ` ${officialClass("ToolRow", "stoppedSummary") ?? ""}` : ""}`;
-  const collapsedContent = summaryText === "" ? void 0 : (0, import_react56.createElement)(import_react56.Fragment, null, (0, import_react56.createElement)("span", { className: officialClass("ToolRow", "sep") ?? "", "aria-hidden": true }), openFile !== void 0 ? (0, import_react56.createElement)("button", {
+  const collapsedContent = summaryText === "" ? void 0 : (0, import_react61.createElement)(import_react61.Fragment, null, (0, import_react61.createElement)("span", { className: officialClass("ToolRow", "sep") ?? "", "aria-hidden": true }), openFile !== void 0 ? (0, import_react61.createElement)("button", {
     type: "button",
     className: officialClass("ToolRow", "fileLink") ?? "",
     onClick: (event) => {
       stopLinkClick(event);
       openFile();
     }
-  }, (0, import_react56.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : (0, import_react56.createElement)("span", { className: summaryClassName }, (0, import_react56.createElement)(official_exports.TextShimmer, { active: running }, summaryText)), suffix2 !== null ? (0, import_react56.createElement)(official_exports.TextShimmer, {
+  }, (0, import_react61.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : (0, import_react61.createElement)("span", { className: summaryClassName }, (0, import_react61.createElement)(official_exports.TextShimmer, { active: running }, summaryText)), suffix2 !== null ? (0, import_react61.createElement)(official_exports.TextShimmer, {
     className: `${officialClass("ToolRow", "summarySuffix") ?? ""} ${officialClass("ToolRow", "diffStat") ?? ""}`,
     active: running
   }, suffix2) : null);
-  const expandedContent = open ? (0, import_react56.createElement)("div", { className: officialClass("ToolRow", "bodyWrap") ?? "" }, terminal !== null ? (0, import_react56.createElement)(official_exports.TerminalBlock, {
+  const expandedContent = open ? (0, import_react61.createElement)("div", { className: officialClass("ToolRow", "bodyWrap") ?? "" }, terminal !== null ? (0, import_react61.createElement)(official_exports.TerminalBlock, {
     command: terminal.command,
     cwd: terminal.cwd,
     output: terminal.output,
@@ -56038,7 +56155,7 @@ function GenericCommandCard(props) {
     maxLines: Infinity,
     labels: blockLabels.terminal,
     className: officialClass("ToolRow", "terminalBody") ?? ""
-  }) : diffs !== null ? (0, import_react56.createElement)(official_exports.DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass("ToolRow", "diffBody") ?? "" }) : read !== null ? (0, import_react56.createElement)(official_exports.ReadBlock, {
+  }) : diffs !== null ? (0, import_react61.createElement)(official_exports.DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass("ToolRow", "diffBody") ?? "" }) : read !== null ? (0, import_react61.createElement)(official_exports.ReadBlock, {
     label: read.label,
     lines: read.lines,
     totalLines: read.totalLines,
@@ -56046,20 +56163,20 @@ function GenericCommandCard(props) {
     labels: blockLabels.read,
     maxLines: 8,
     className: officialClass("ToolRow", "readBody") ?? ""
-  }) : (0, import_react56.createElement)(import_react56.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react56.createElement)("div", { className: officialClass("ToolRow", "bodyScroll") ?? "" }, (0, import_react56.createElement)(CodeViewer, {
+  }) : (0, import_react61.createElement)(import_react61.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react61.createElement)("div", { className: officialClass("ToolRow", "bodyScroll") ?? "" }, (0, import_react61.createElement)(CodeViewer, {
     text: bodyText,
     path: "tool-code.ts",
     t: t4,
     className: officialClass("ToolRow", "codeBody") ?? "",
     height: "auto",
     style: { height: "auto" }
-  })) : null, (cardBody !== null || outputText !== null) && (0, import_react56.createElement)("div", { className: officialClass("ToolRow", "ioCard") ?? "" }, cardBody !== null && (0, import_react56.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react56.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolInputLabel")), (0, import_react56.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "" }, cardBody)), cardBody !== null && outputText !== null && (0, import_react56.createElement)("span", { className: officialClass("ToolRow", "ioDivider") ?? "", "aria-hidden": true }), outputText !== null && (0, import_react56.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react56.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolOutputLabel")), (0, import_react56.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "", "data-error": rowState === "error" || void 0 }, outputText))))) : void 0;
-  return (0, import_react56.createElement)("div", {
+  })) : null, (cardBody !== null || outputText !== null) && (0, import_react61.createElement)("div", { className: officialClass("ToolRow", "ioCard") ?? "" }, cardBody !== null && (0, import_react61.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react61.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolInputLabel")), (0, import_react61.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "" }, cardBody)), cardBody !== null && outputText !== null && (0, import_react61.createElement)("span", { className: officialClass("ToolRow", "ioDivider") ?? "", "aria-hidden": true }), outputText !== null && (0, import_react61.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react61.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolOutputLabel")), (0, import_react61.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "", "data-error": rowState === "error" || void 0 }, outputText))))) : void 0;
+  return (0, import_react61.createElement)("div", {
     className: officialClass("ToolRow", "root") ?? "",
     "data-variant": variant,
     "data-tool": name2,
     "data-state": rowState
-  }, statusText !== null ? (0, import_react56.createElement)("span", { className: officialClass("ToolRow", "visuallyHidden") ?? "" }, statusText) : null, (0, import_react56.createElement)(official_exports.DisclosureRow, {
+  }, statusText !== null ? (0, import_react61.createElement)("span", { className: officialClass("ToolRow", "visuallyHidden") ?? "" }, statusText) : null, (0, import_react61.createElement)(official_exports.DisclosureRow, {
     rowClassName: officialClass("ToolRow", "row") ?? "",
     leadingClassName: officialClass("ToolRow", "leading") ?? "",
     titleClassName: officialClass("ToolRow", "title") ?? "",
@@ -56080,7 +56197,7 @@ function GenericCommandCard(props) {
 }
 
 // dist/session/mirror/CommandCard.js
-var import_react57 = require("react");
+var import_react62 = require("react");
 var gcc = (semantic) => officialClass("GenericCommandCard", semantic) ?? "";
 function stateOf(outcome) {
   if (outcome === null || outcome === void 0)
@@ -56089,7 +56206,7 @@ function stateOf(outcome) {
 }
 function CommandCard(props) {
   const { node, t: t4, runningSummary } = props;
-  const [expanded, setExpanded] = (0, import_react57.useState)(false);
+  const [expanded, setExpanded] = (0, import_react62.useState)(false);
   const outcome = node.outcome ?? null;
   const text2 = outcome?.text;
   const summary = outcome === null ? runningSummary ?? t4("commandRunning") : text2 ?? (outcome.kind === "error" ? t4("commandFailed") : t4("commandDone"));
@@ -56098,19 +56215,19 @@ function CommandCard(props) {
   const running = state === "running";
   const body = text2 !== void 0 && text2.includes("\n") ? text2 : null;
   const open = expanded && body !== null;
-  const toggle = (0, import_react57.useCallback)(() => {
+  const toggle = (0, import_react62.useCallback)(() => {
     setExpanded((value) => !value);
   }, []);
   const hidden = officialClass("ToolRow", "visuallyHidden") ?? "";
-  return (0, import_react57.createElement)(
+  return (0, import_react62.createElement)(
     "div",
     { className: gcc("root"), "data-state": state },
     // 官方 a11y：running/error 的读屏状态词（visually-hidden，不占可见空间）。
-    state === "running" ? (0, import_react57.createElement)("span", { className: hidden }, t4("rowRunning")) : state === "error" ? (0, import_react57.createElement)("span", { className: hidden }, t4("rowFailed")) : null,
-    (0, import_react57.createElement)(official_exports.DisclosureRow, {
+    state === "running" ? (0, import_react62.createElement)("span", { className: hidden }, t4("rowRunning")) : state === "error" ? (0, import_react62.createElement)("span", { className: hidden }, t4("rowFailed")) : null,
+    (0, import_react62.createElement)(official_exports.DisclosureRow, {
       leadingClassName: gcc("leading"),
       titleClassName: gcc("title"),
-      icon: (0, import_react57.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
+      icon: (0, import_react62.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
       title,
       running,
       open,
@@ -56118,11 +56235,11 @@ function CommandCard(props) {
       expandOnRowClick: true,
       keepContentWhenOpen: true,
       onToggle: toggle,
-      collapsedContent: (0, import_react57.createElement)(import_react57.Fragment, null, (0, import_react57.createElement)("span", { className: gcc("separator"), "aria-hidden": true }), (0, import_react57.createElement)("span", {
+      collapsedContent: (0, import_react62.createElement)(import_react62.Fragment, null, (0, import_react62.createElement)("span", { className: gcc("separator"), "aria-hidden": true }), (0, import_react62.createElement)("span", {
         className: gcc("summary"),
         "data-error": state === "error" || void 0
-      }, (0, import_react57.createElement)(official_exports.TextShimmer, { active: running }, summary))),
-      children: open && body !== null ? (0, import_react57.createElement)("div", {
+      }, (0, import_react62.createElement)(official_exports.TextShimmer, { active: running }, summary))),
+      children: open && body !== null ? (0, import_react62.createElement)("div", {
         className: gcc("body"),
         "data-error": state === "error" || void 0
       }, body) : void 0
@@ -56131,10 +56248,10 @@ function CommandCard(props) {
 }
 
 // dist/session/mirror/MessageIconActions.js
-var import_react59 = require("react");
+var import_react64 = require("react");
 
 // dist/session/mirror/message-chrome.js
-var import_react58 = require("react");
+var import_react63 = require("react");
 function formatRunDuration(ms, tt) {
   const total = Math.max(0, Math.floor(ms / 1e3));
   const hours = Math.floor(total / 3600);
@@ -56241,10 +56358,10 @@ function formatCacheHitPercent(cacheReadTokens, promptTokens, decimalPlaces = 0)
 var COPIED_RESET_MS = 1e3;
 function MessageIconActionsMirror(props) {
   const { text: text2, time, clock, onBranch, branchUnavailable = false, className: className2, extraActions, usageAction, t: t4 } = props;
-  const [copied, setCopied] = (0, import_react59.useState)(false);
-  const [pending, setPending] = (0, import_react59.useState)(false);
-  const timerRef = (0, import_react59.useRef)(void 0);
-  (0, import_react59.useEffect)(() => () => {
+  const [copied, setCopied] = (0, import_react64.useState)(false);
+  const [pending, setPending] = (0, import_react64.useState)(false);
+  const timerRef = (0, import_react64.useRef)(void 0);
+  (0, import_react64.useEffect)(() => () => {
     if (timerRef.current !== void 0)
       clearTimeout(timerRef.current);
   }, []);
@@ -56264,20 +56381,20 @@ function MessageIconActionsMirror(props) {
     });
   };
   const clockClass = (clock === "end" ? officialClass("MessageIconActions", "timeEnd") ?? officialClass("MessageIconActions", "clock") : officialClass("MessageIconActions", "timeStart") ?? officialClass("MessageIconActions", "clock")) ?? "";
-  const clockEl = time === void 0 ? null : (0, import_react59.createElement)("time", {
+  const clockEl = time === void 0 ? null : (0, import_react64.createElement)("time", {
     className: clockClass,
     dateTime: new Date(time).toISOString()
   }, formatMessageClock(time, t4));
   const reasonId = "dshpc-sv-branch-unavailable";
-  return (0, import_react59.createElement)("div", {
+  return (0, import_react64.createElement)("div", {
     className: `${officialClass("MessageIconActions", "actions") ?? ""}${className2 === void 0 ? "" : ` ${className2}`}`,
     "data-clock": clock
-  }, clock === "start" ? clockEl : null, (0, import_react59.createElement)(official_exports.Tooltip, { label: copyLabel, side: "bottom" }, (0, import_react59.createElement)("button", {
+  }, clock === "start" ? clockEl : null, (0, import_react64.createElement)(official_exports.Tooltip, { label: copyLabel, side: "bottom" }, (0, import_react64.createElement)("button", {
     type: "button",
     className: officialClass("MessageIconActions", "action") ?? "",
     "aria-label": copyLabel,
     onClick: onCopy
-  }, copied ? (0, import_react59.createElement)(official_exports.IconCheckOutlineRegular, null) : (0, import_react59.createElement)(official_exports.IconCopyOutlineRegular, null))), extraActions, onBranch === void 0 ? null : (0, import_react59.createElement)(official_exports.Tooltip, { label: branchUnavailable ? t4("branchUnavailableLabel") : t4("branchLabel"), side: "bottom" }, (0, import_react59.createElement)("button", {
+  }, copied ? (0, import_react64.createElement)(official_exports.IconCheckOutlineRegular, null) : (0, import_react64.createElement)(official_exports.IconCopyOutlineRegular, null))), extraActions, onBranch === void 0 ? null : (0, import_react64.createElement)(official_exports.Tooltip, { label: branchUnavailable ? t4("branchUnavailableLabel") : t4("branchLabel"), side: "bottom" }, (0, import_react64.createElement)("button", {
     type: "button",
     className: officialClass("MessageIconActions", "action") ?? "",
     "aria-label": t4("branchLabel"),
@@ -56285,15 +56402,15 @@ function MessageIconActionsMirror(props) {
     "aria-describedby": branchUnavailable ? reasonId : void 0,
     "data-unavailable": branchUnavailable || void 0,
     onClick: branchUnavailable ? void 0 : onBranch
-  }, (0, import_react59.createElement)(official_exports.IconBranchOutlineRegular, null))), onBranch === void 0 || !branchUnavailable ? null : (0, import_react59.createElement)("span", { id: reasonId, className: officialClass("accessibility", "visuallyHidden") ?? "" }, t4("branchUnavailableLabel")), clock === "end" ? (0, import_react59.createElement)("span", { className: officialClass("MessageIconActions", "endInfo") ?? "" }, usageAction, clockEl) : usageAction);
+  }, (0, import_react64.createElement)(official_exports.IconBranchOutlineRegular, null))), onBranch === void 0 || !branchUnavailable ? null : (0, import_react64.createElement)("span", { id: reasonId, className: officialClass("accessibility", "visuallyHidden") ?? "" }, t4("branchUnavailableLabel")), clock === "end" ? (0, import_react64.createElement)("span", { className: officialClass("MessageIconActions", "endInfo") ?? "" }, usageAction, clockEl) : usageAction);
 }
 
 // dist/session/mirror/MessageItem.js
-var import_react60 = require("react");
+var import_react65 = require("react");
 function AssistantMarkdown(props) {
   if (props.text.trim() === "")
-    return (0, import_react60.createElement)("span", null);
-  return (0, import_react60.createElement)("div", { className: officialClass("AssistantMarkdown", "root") ?? "" }, (0, import_react60.createElement)(official_exports.MarkdownText, {
+    return (0, import_react65.createElement)("span", null);
+  return (0, import_react65.createElement)("div", { className: officialClass("AssistantMarkdown", "root") ?? "" }, (0, import_react65.createElement)(official_exports.MarkdownText, {
     text: props.text,
     labels: markdownLabels(),
     fileMentions: props.fileMentions
@@ -56302,11 +56419,11 @@ function AssistantMarkdown(props) {
 function UserMessage(props) {
   const { text: text2, files } = props;
   const chips = files ?? [];
-  return (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "userRow") ?? "" }, (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "userStack") ?? "" }, text2 === "" ? null : (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "bubble") ?? "" }, (0, import_react60.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() })), chips.length === 0 ? null : (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "attachmentRow") ?? "" }, chips.map((file, index3) => (0, import_react60.createElement)("div", {
+  return (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "userRow") ?? "" }, (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "userStack") ?? "" }, text2 === "" ? null : (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "bubble") ?? "" }, (0, import_react65.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() })), chips.length === 0 ? null : (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "attachmentRow") ?? "" }, chips.map((file, index3) => (0, import_react65.createElement)("div", {
     key: `${file.name}:${index3}`,
     className: officialClass("MessageItem", "fileCard") ?? "",
     title: file.name
-  }, (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "fileIcon") ?? "" }, (0, import_react60.createElement)(official_exports.FileTypeIcon, { path: file.name, size: 16 })), (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "fileContent") ?? "" }, (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "fileName") ?? "" }, file.name), (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "fileMeta") ?? "" }, formatBytes(file.bytes))))))));
+  }, (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "fileIcon") ?? "" }, (0, import_react65.createElement)(official_exports.FileTypeIcon, { path: file.name, size: 16 })), (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "fileContent") ?? "" }, (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "fileName") ?? "" }, file.name), (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "fileMeta") ?? "" }, formatBytes(file.bytes))))))));
 }
 function retrySeconds(milliseconds) {
   return Math.max(1, Math.ceil(milliseconds / 1e3));
@@ -56325,11 +56442,11 @@ function ModelRetryItemMirror(props) {
   const node = props.node;
   const delayMs = typeof node.delayMs === "number" ? node.delayMs : 0;
   const maximum = node.mode === "normal" && typeof node.maxRetries === "number" ? node.maxRetries : "\u221E";
-  const deadline = (0, import_react60.useMemo)(() => Date.now() + delayMs, [delayMs, node.retryState]);
+  const deadline = (0, import_react65.useMemo)(() => Date.now() + delayMs, [delayMs, node.retryState]);
   const scheduledSeconds = retrySeconds(delayMs);
-  const [countdown, setCountdown] = (0, import_react60.useState)(() => ({ deadline, seconds: retrySeconds(deadline - Date.now()) }));
+  const [countdown, setCountdown] = (0, import_react65.useState)(() => ({ deadline, seconds: retrySeconds(deadline - Date.now()) }));
   const remainingSeconds = countdown.deadline === deadline ? countdown.seconds : retrySeconds(deadline - Date.now());
-  (0, import_react60.useEffect)(() => {
+  (0, import_react65.useEffect)(() => {
     if (!active)
       return;
     const updateCountdown = () => {
@@ -56350,49 +56467,49 @@ function ModelRetryItemMirror(props) {
   const label = active ? t4("retryActive") : node.retryState === "cancelled" ? t4("retryCancelled") : node.retryState === "started" ? t4("retryStarted") : t4("retryScheduled");
   const seconds = active ? remainingSeconds : scheduledSeconds;
   const failure2 = node.failure;
-  return (0, import_react60.createElement)("details", {
+  return (0, import_react65.createElement)("details", {
     className: officialClass("MessageItem", "retryRow") ?? "",
     "data-active": active || void 0
-  }, (0, import_react60.createElement)("summary", { className: officialClass("MessageItem", "retrySummary") ?? "" }, (0, import_react60.createElement)("span", {
+  }, (0, import_react65.createElement)("summary", { className: officialClass("MessageItem", "retrySummary") ?? "" }, (0, import_react65.createElement)("span", {
     className: officialClass("MessageItem", "retryText") ?? "",
     role: "status"
-  }, t4("retryStatus", { label, retry: node.retry ?? 0, maximum, seconds }))), (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "retryDetails") ?? "" }, (0, import_react60.createElement)("div", null, (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryDelay")), t4("durationMilliseconds", { milliseconds: Math.round(delayMs) })), (0, import_react60.createElement)("div", null, (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryFailure")), failureMessage(failure2?.message, failure2?.code, t4))));
+  }, t4("retryStatus", { label, retry: node.retry ?? 0, maximum, seconds }))), (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "retryDetails") ?? "" }, (0, import_react65.createElement)("div", null, (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryDelay")), t4("durationMilliseconds", { milliseconds: Math.round(delayMs) })), (0, import_react65.createElement)("div", null, (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryFailure")), failureMessage(failure2?.message, failure2?.code, t4))));
 }
 function TurnErrorItemMirror(props) {
   const { node, t: t4 } = props;
-  return (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react60.createElement)(official_exports.StateDot, {
+  return (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react65.createElement)(official_exports.StateDot, {
     state: "error",
     className: officialClass("MessageItem", "turnErrorDot") ?? ""
-  }), (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "turnErrorTitle") ?? "" }, node.code === "ACCOUNT_SIGNED_OUT" ? t4("accountStopped") : t4("turnErrorTitle")), (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, failureMessage(node.message, node.code, t4))), node.code !== void 0 && node.code !== "" ? (0, import_react60.createElement)("code", { className: officialClass("MessageItem", "turnErrorCode") ?? "" }, node.code) : null);
+  }), (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "turnErrorTitle") ?? "" }, node.code === "ACCOUNT_SIGNED_OUT" ? t4("accountStopped") : t4("turnErrorTitle")), (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, failureMessage(node.message, node.code, t4))), node.code !== void 0 && node.code !== "" ? (0, import_react65.createElement)("code", { className: officialClass("MessageItem", "turnErrorCode") ?? "" }, node.code) : null);
 }
 function TurnMaxTokensItemMirror(props) {
   const { t: t4 } = props;
-  return (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react60.createElement)(official_exports.StateDot, {
+  return (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react65.createElement)(official_exports.StateDot, {
     state: "warning",
     className: officialClass("MessageItem", "turnErrorDot") ?? ""
-  }), (0, import_react60.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "maxTokensTitle") ?? "" }, t4("maxTokensTitle")), (0, import_react60.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, t4("maxTokensHint"))));
+  }), (0, import_react65.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "maxTokensTitle") ?? "" }, t4("maxTokensTitle")), (0, import_react65.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, t4("maxTokensHint"))));
 }
 
 // dist/session/mirror/ReasoningRow.js
-var import_react61 = require("react");
+var import_react66 = require("react");
 function firstLine2(text2) {
   const newline4 = text2.indexOf("\n");
   return newline4 === -1 ? text2 : text2.slice(0, newline4);
 }
 function ReasoningRowMirror(props) {
   const { text: text2, running = false, preview = true, t: t4 } = props;
-  const [open, setOpen] = (0, import_react61.useState)(false);
+  const [open, setOpen] = (0, import_react66.useState)(false);
   if (text2.trim() === "")
     return null;
   const summary = firstLine2(text2).split("**").join("");
-  return (0, import_react61.createElement)("div", {
+  return (0, import_react66.createElement)("div", {
     className: officialClass("ReasoningRow", "root") ?? "",
     "data-variant": "think",
     "data-state": running ? "running" : "ok",
     "data-expanded": open || void 0,
     "data-preview": preview && summary !== "" || void 0
-  }, (0, import_react61.createElement)(official_exports.DisclosureRow, {
-    icon: (0, import_react61.createElement)(official_exports.IconThinkOutlineRegular, { size: 14 }),
+  }, (0, import_react66.createElement)(official_exports.DisclosureRow, {
+    icon: (0, import_react66.createElement)(official_exports.IconThinkOutlineRegular, { size: 14 }),
     title: t4("thinkLabel"),
     open,
     expandable: true,
@@ -56404,26 +56521,26 @@ function ReasoningRowMirror(props) {
     leadingClassName: officialClass("ReasoningRow", "leading") ?? "",
     titleClassName: officialClass("ReasoningRow", "title") ?? "",
     chevronClassName: officialClass("ReasoningRow", "chevron") ?? "",
-    collapsedContent: (0, import_react61.createElement)(
-      import_react61.Fragment,
+    collapsedContent: (0, import_react66.createElement)(
+      import_react66.Fragment,
       null,
-      (0, import_react61.createElement)("span", { className: officialClass("ReasoningRow", "separator") ?? "", "aria-hidden": true }),
+      (0, import_react66.createElement)("span", { className: officialClass("ReasoningRow", "separator") ?? "", "aria-hidden": true }),
       // 官方是 summary > summaryText 两层：外层 nowrap 截断、内层 text-overflow:ellipsis（省略号）。
-      (0, import_react61.createElement)("span", { className: officialClass("ReasoningRow", "summary") ?? "" }, (0, import_react61.createElement)("span", { className: officialClass("ReasoningRow", "summaryText") ?? "" }, summary))
+      (0, import_react66.createElement)("span", { className: officialClass("ReasoningRow", "summary") ?? "" }, (0, import_react66.createElement)("span", { className: officialClass("ReasoningRow", "summaryText") ?? "" }, summary))
     ),
-    children: open ? (0, import_react61.createElement)("div", { className: officialClass("ReasoningRow", "thinkBody") ?? "" }, (0, import_react61.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels(), variant: "compact" })) : void 0
+    children: open ? (0, import_react66.createElement)("div", { className: officialClass("ReasoningRow", "thinkBody") ?? "" }, (0, import_react66.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels(), variant: "compact" })) : void 0
   }));
 }
 
 // dist/session/mirror/TurnProcessNodeView.js
-var import_react62 = require("react");
+var import_react67 = require("react");
 var LIVE_RUN_CLOCK_INTERVAL_MS = 1e3;
 function TurnProcessNodeViewMirror(props) {
   const { turn, turnProcess, t: t4 } = props;
   const open = !turnProcess.foldable || turnProcess.open;
-  const [now, setNow] = (0, import_react62.useState)(() => Date.now());
+  const [now, setNow] = (0, import_react67.useState)(() => Date.now());
   const ticking = turn?.status === "open" && turn.start !== void 0;
-  (0, import_react62.useEffect)(() => {
+  (0, import_react67.useEffect)(() => {
     if (!ticking)
       return;
     setNow(Date.now());
@@ -56444,12 +56561,12 @@ function TurnProcessNodeViewMirror(props) {
   const label = running ? duration === void 0 ? t4("chatDeepDiving") : t4("turnProcessDeepDiving", { duration }) : reason === "aborted" ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : duration === void 0 ? t4("turnProcessWorked") : t4("turnProcessTook", { duration });
   const announcement = running ? t4("chatDeepDiving") : reason === "aborted" ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : t4("turnProcessWorked");
   const spec = turnProcess.spec;
-  return (0, import_react62.createElement)(import_react62.Fragment, null, (0, import_react62.createElement)("span", {
+  return (0, import_react67.createElement)(import_react67.Fragment, null, (0, import_react67.createElement)("span", {
     className: officialClass("accessibility", "visuallyHidden") ?? "",
     role: "status",
     "aria-live": "polite",
     "aria-atomic": "true"
-  }, announcement), (0, import_react62.createElement)("button", {
+  }, announcement), (0, import_react67.createElement)("button", {
     type: "button",
     className: officialClass("TurnProcessNodeView", "root") ?? "",
     "data-open": open || void 0,
@@ -56462,30 +56579,30 @@ function TurnProcessNodeViewMirror(props) {
     onClick: () => {
       turnProcess.setOpen(!open);
     }
-  }, (0, import_react62.createElement)("span", { className: officialClass("TurnProcessNodeView", "label") ?? "" }, label), canCollapse ? (0, import_react62.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("TurnProcessNodeView", "chevron") ?? "" }) : null));
+  }, (0, import_react67.createElement)("span", { className: officialClass("TurnProcessNodeView", "label") ?? "" }, label), canCollapse ? (0, import_react67.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("TurnProcessNodeView", "chevron") ?? "" }) : null));
 }
 
 // dist/session/mirror/TurnTailNodeView.js
-var import_react65 = require("react");
+var import_react70 = require("react");
 
 // dist/session/mirror/TurnUsagePanel.js
-var import_react64 = require("react");
+var import_react69 = require("react");
 var import_react_dom4 = require("react-dom");
 
 // dist/session/mirror/StatDialog.js
-var import_react63 = require("react");
+var import_react68 = require("react");
 var PANEL_MARGIN = 12;
 var PANEL_GAP = 8;
 var STAT_MEASURE_STYLE = { visibility: "hidden", left: 0, top: 0 };
 function useStatDialog(controlled) {
-  const [ownOpen, setOwnOpen] = (0, import_react63.useState)(false);
+  const [ownOpen, setOwnOpen] = (0, import_react68.useState)(false);
   const open = controlled?.open ?? ownOpen;
   const setOpen = controlled?.setOpen ?? setOwnOpen;
-  const rootRef = (0, import_react63.useRef)(null);
-  const panelRef = (0, import_react63.useRef)(null);
+  const rootRef = (0, import_react68.useRef)(null);
+  const panelRef = (0, import_react68.useRef)(null);
   const pos = (0, official_exports.useAnchoredPosition)({ open, anchorRef: rootRef, panelRef, side: "top", gap: PANEL_GAP, margin: PANEL_MARGIN });
   (0, official_exports.useDismissOnOutsidePointer)(rootRef, open, setOpen, panelRef);
-  (0, import_react63.useEffect)(() => {
+  (0, import_react68.useEffect)(() => {
     if (!open)
       return;
     const onKeyDown = (event) => {
@@ -56507,7 +56624,7 @@ function TurnUsagePanelMirror(props) {
   const cacheHit = usage.cacheReadTokens === void 0 ? null : formatCacheHitPercent(usage.cacheReadTokens, usage.totalTokens - usage.outputTokens, 1);
   const total = formatCompactCount(usage.totalTokens, t4);
   const routes = usage.routes?.map((route) => `${route.provider}/${route.model}`).join(", ") ?? "";
-  return (0, import_react64.createElement)("span", { ref: rootRef, className: officialClass("TurnUsagePanel", "root") ?? "" }, (0, import_react64.createElement)("button", {
+  return (0, import_react69.createElement)("span", { ref: rootRef, className: officialClass("TurnUsagePanel", "root") ?? "" }, (0, import_react69.createElement)("button", {
     type: "button",
     className: officialClass("TurnUsagePanel", "trigger") ?? "",
     "aria-haspopup": "dialog",
@@ -56515,13 +56632,13 @@ function TurnUsagePanelMirror(props) {
     onClick: () => {
       setOpen(!open);
     }
-  }, (0, import_react64.createElement)(official_exports.IconDatabaseOutlineRegular, null), (0, import_react64.createElement)("span", { className: officialClass("TurnUsagePanel", "label") ?? "" }, t4("turnUsageConsumed", { total }))), open ? (0, import_react_dom4.createPortal)((0, import_react64.createElement)("div", {
+  }, (0, import_react69.createElement)(official_exports.IconDatabaseOutlineRegular, null), (0, import_react69.createElement)("span", { className: officialClass("TurnUsagePanel", "label") ?? "" }, t4("turnUsageConsumed", { total }))), open ? (0, import_react_dom4.createPortal)((0, import_react69.createElement)("div", {
     ref: panelRef,
     className: officialClass("stat-dialog", "panel") ?? "",
     role: "dialog",
     "aria-label": t4("turnUsageTitle"),
     style: pos ?? STAT_MEASURE_STYLE
-  }, (0, import_react64.createElement)("div", { className: officialClass("stat-dialog", "title") ?? "" }, (0, import_react64.createElement)("span", { className: officialClass("stat-dialog", "titleLabel") ?? "" }, (0, import_react64.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react64.createElement)("span", { className: officialClass("stat-dialog", "titleValue") ?? "" }, formatExactCount(usage.totalTokens, t4))), (0, import_react64.createElement)("div", { className: officialClass("stat-dialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react64.createElement)("dl", { className: officialClass("stat-dialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react64.createElement)(import_react64.Fragment, null, (0, import_react64.createElement)("dt", null, t4("turnUsageModel")), (0, import_react64.createElement)("dd", { className: officialClass("stat-dialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react64.createElement)(import_react64.Fragment, null, (0, import_react64.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react64.createElement)("dd", null, `${cacheHit}%`)), (0, import_react64.createElement)("dt", null, t4("turnUsageInput")), (0, import_react64.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react64.createElement)(import_react64.Fragment, null, (0, import_react64.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react64.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react64.createElement)(import_react64.Fragment, null, (0, import_react64.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react64.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react64.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react64.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react64.createElement)("span", {
+  }, (0, import_react69.createElement)("div", { className: officialClass("stat-dialog", "title") ?? "" }, (0, import_react69.createElement)("span", { className: officialClass("stat-dialog", "titleLabel") ?? "" }, (0, import_react69.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react69.createElement)("span", { className: officialClass("stat-dialog", "titleValue") ?? "" }, formatExactCount(usage.totalTokens, t4))), (0, import_react69.createElement)("div", { className: officialClass("stat-dialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react69.createElement)("dl", { className: officialClass("stat-dialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("dt", null, t4("turnUsageModel")), (0, import_react69.createElement)("dd", { className: officialClass("stat-dialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react69.createElement)("dd", null, `${cacheHit}%`)), (0, import_react69.createElement)("dt", null, t4("turnUsageInput")), (0, import_react69.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react69.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react69.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react69.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react69.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react69.createElement)("span", {
     className: officialClass("stat-dialog", "reasoning") ?? ""
   }, t4("turnUsageReasoning", { tokens: formatExactCount(usage.reasoningTokens, t4) }))))), document.body) : null);
 }
@@ -56536,11 +56653,11 @@ function TurnTailNodeViewMirror(props) {
   if (closing4 === null || closing4 === void 0)
     return null;
   const text2 = assistantText(closing4.blocks);
-  return (0, import_react65.createElement)("div", {
+  return (0, import_react70.createElement)("div", {
     className: officialClass("TurnTailNodeView", "root") ?? "",
     "data-turn-tail": data2.turn,
     "data-actions-reveal": "always"
-  }, tailSlot === void 0 || tailSlot === null ? null : tailSlot, (0, import_react65.createElement)(MessageIconActionsMirror, {
+  }, tailSlot === void 0 || tailSlot === null ? null : tailSlot, (0, import_react70.createElement)(MessageIconActionsMirror, {
     text: text2,
     time: closing4.time,
     clock: "end",
@@ -56550,13 +56667,13 @@ function TurnTailNodeViewMirror(props) {
       onBranchAt(data2.seq);
     },
     className: officialClass("TurnTailNodeView", "actions") ?? "",
-    usageAction: data2.tokenUsage === void 0 ? void 0 : (0, import_react65.createElement)(TurnUsagePanelMirror, { usage: data2.tokenUsage, t: t4 }),
+    usageAction: data2.tokenUsage === void 0 ? void 0 : (0, import_react70.createElement)(TurnUsagePanelMirror, { usage: data2.tokenUsage, t: t4 }),
     t: t4
   }));
 }
 
 // dist/session/mirror/TurnTriggerNodeView.js
-var import_react66 = require("react");
+var import_react71 = require("react");
 var TRIGGER_ICONS = {
   request: official_exports.IconContextInjectionOutlineRegular,
   goal: official_exports.IconGoalOutlineRegular,
@@ -56598,28 +56715,28 @@ function turnTriggerDetails(source) {
 }
 function TurnTriggerNodeViewMirror(props) {
   const { data: data2, t: t4 } = props;
-  const [open, setOpen] = (0, import_react66.useState)(false);
+  const [open, setOpen] = (0, import_react71.useState)(false);
   const details = turnTriggerDetails(data2?.source);
   const TriggerIcon = TRIGGER_ICONS[details.icon] ?? official_exports.IconContextInjectionOutlineRegular;
   const time = typeof data2?.time === "number" ? data2.time : void 0;
   const content2 = triggerContent(data2?.content);
-  return (0, import_react66.createElement)("section", {
+  return (0, import_react71.createElement)("section", {
     className: officialClass("TurnTriggerNodeView", "root") ?? "",
     "data-turn-trigger": true
-  }, (0, import_react66.createElement)("button", {
+  }, (0, import_react71.createElement)("button", {
     type: "button",
     className: officialClass("TurnTriggerNodeView", "header") ?? "",
     "aria-expanded": open,
     onClick: () => {
       setOpen((value) => !value);
     }
-  }, (0, import_react66.createElement)("span", { className: officialClass("TurnTriggerNodeView", "icon") ?? "", "aria-hidden": true }, (0, import_react66.createElement)(TriggerIcon, { size: 14 })), (0, import_react66.createElement)("span", { className: officialClass("TurnTriggerNodeView", "title") ?? "" }, t4(details.title)), time === void 0 ? null : (0, import_react66.createElement)("time", {
+  }, (0, import_react71.createElement)("span", { className: officialClass("TurnTriggerNodeView", "icon") ?? "", "aria-hidden": true }, (0, import_react71.createElement)(TriggerIcon, { size: 14 })), (0, import_react71.createElement)("span", { className: officialClass("TurnTriggerNodeView", "title") ?? "" }, t4(details.title)), time === void 0 ? null : (0, import_react71.createElement)("time", {
     className: officialClass("TurnTriggerNodeView", "time") ?? "",
     dateTime: new Date(time).toISOString()
-  }, formatMessageClock(time, t4)), (0, import_react66.createElement)(official_exports.IconChevronDownOutlineRegular, {
+  }, formatMessageClock(time, t4)), (0, import_react71.createElement)(official_exports.IconChevronDownOutlineRegular, {
     size: 12,
     className: open ? officialClass("TurnTriggerNodeView", "openChevron") ?? "" : officialClass("TurnTriggerNodeView", "chevron") ?? ""
-  })), open ? (0, import_react66.createElement)("div", { className: officialClass("TurnTriggerNodeView", "body") ?? "" }, (0, import_react66.createElement)("p", { className: officialClass("TurnTriggerNodeView", "explanation") ?? "" }, t4("triggerExplanation")), (0, import_react66.createElement)("div", { className: officialClass("TurnTriggerNodeView", "content") ?? "" }, content2 === "" ? t4("sessionEmpty") : content2)) : null);
+  })), open ? (0, import_react71.createElement)("div", { className: officialClass("TurnTriggerNodeView", "body") ?? "" }, (0, import_react71.createElement)("p", { className: officialClass("TurnTriggerNodeView", "explanation") ?? "" }, t4("triggerExplanation")), (0, import_react71.createElement)("div", { className: officialClass("TurnTriggerNodeView", "content") ?? "" }, content2 === "" ? t4("sessionEmpty") : content2)) : null);
 }
 function triggerContent(content2) {
   if (!Array.isArray(content2))
@@ -56633,7 +56750,7 @@ function triggerContent(content2) {
 }
 
 // dist/session/mirror/Deliverables.js
-var import_react67 = require("react");
+var import_react72 = require("react");
 var basename = (path) => path.slice(Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\")) + 1);
 function fileNames(raw) {
   let args;
@@ -56653,14 +56770,14 @@ function PresentRowMirror(props) {
   const state = !settled ? b.phase === "preparing" ? "preparing" : "running" : b.error?.code === "interrupted" ? "stopped" : b.isError ? "error" : "ok";
   const argsRaw = (settled ? b.call?.argsRaw : b.argsRaw) ?? "";
   const details = settled ? (b.content ?? []).map((item) => item.type === "text" ? item.text ?? "" : JSON.stringify(item)).join("\n") || (b.error ? `${b.error.name ?? ""}: ${b.error.code ?? ""}` : "") : "";
-  const [expanded, setExpanded] = (0, import_react67.useState)(false);
+  const [expanded, setExpanded] = (0, import_react72.useState)(false);
   const statusKey = state === "preparing" ? "deliverRowPreparing" : state === "running" ? "deliverRowRunning" : state === "error" ? "deliverRowError" : state === "stopped" ? "deliverRowStopped" : "deliverRowOk";
-  return (0, import_react67.createElement)("div", {
+  return (0, import_react72.createElement)("div", {
     className: officialClass("ToolRow", "root") ?? "",
     "data-tool": "present",
     "data-state": state
-  }, (0, import_react67.createElement)(official_exports.DisclosureRow, {
-    icon: (0, import_react67.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
+  }, (0, import_react72.createElement)(official_exports.DisclosureRow, {
+    icon: (0, import_react72.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
     title: t4("deliverRowTitle"),
     open: expanded && details !== "",
     expandable: details !== "",
@@ -56674,8 +56791,8 @@ function PresentRowMirror(props) {
     leadingClassName: officialClass("ToolRow", "leading") ?? "",
     titleClassName: officialClass("ToolRow", "title") ?? "",
     chevronClassName: officialClass("ToolRow", "chevron") ?? "",
-    collapsedContent: (0, import_react67.createElement)("span", { className: officialClass("PresentRow", "summary") ?? "" }, (0, import_react67.createElement)("span", null, t4(statusKey)), (0, import_react67.createElement)("span", { className: officialClass("PresentRow", "paths") ?? "" }, fileNames(argsRaw))),
-    children: details !== "" && expanded ? (0, import_react67.createElement)("pre", { className: officialClass("PresentRow", "output") ?? "" }, details) : null
+    collapsedContent: (0, import_react72.createElement)("span", { className: officialClass("PresentRow", "summary") ?? "" }, (0, import_react72.createElement)("span", null, t4(statusKey)), (0, import_react72.createElement)("span", { className: officialClass("PresentRow", "paths") ?? "" }, fileNames(argsRaw))),
+    children: details !== "" && expanded ? (0, import_react72.createElement)("pre", { className: officialClass("PresentRow", "output") ?? "" }, details) : null
   }));
 }
 var COLLAPSED_DELIVERED_COUNT = 4;
@@ -56687,10 +56804,10 @@ function DeliveredFileCard(props) {
   const { file, onPreview, t: t4 } = props;
   const name2 = basename(file.path);
   const metadata = (0, official_exports.fileExtension)(name2).toUpperCase() || t4("deliverFileLabel");
-  return (0, import_react67.createElement)("div", {
+  return (0, import_react72.createElement)("div", {
     className: officialClass("Deliverables", "file") ?? "",
     "data-presented-file": true
-  }, onPreview !== void 0 ? (0, import_react67.createElement)("button", {
+  }, onPreview !== void 0 ? (0, import_react72.createElement)("button", {
     type: "button",
     className: officialClass("Deliverables", "cardPreview") ?? "",
     title: file.path,
@@ -56699,29 +56816,29 @@ function DeliveredFileCard(props) {
       event.stopPropagation();
       onPreview();
     }
-  }) : null, (0, import_react67.createElement)("span", { className: officialClass("Deliverables", "fileIcon") ?? "" }, (0, import_react67.createElement)(official_exports.FileTypeIcon, { path: file.path, size: 20 })), (0, import_react67.createElement)("div", { className: officialClass("Deliverables", "fileBody") ?? "" }, (0, import_react67.createElement)("div", { className: officialClass("Deliverables", "details") ?? "" }, (0, import_react67.createElement)("span", { className: officialClass("Deliverables", "fileName") ?? "" }, name2), (0, import_react67.createElement)("span", { className: officialClass("Deliverables", "description") ?? "", "data-presented-description": true }, (0, import_react67.createElement)("span", { className: officialClass("Deliverables", "secondaryText") ?? "" }, cardDescription(file.description, metadata)), onPreview !== void 0 ? (0, import_react67.createElement)("span", { className: officialClass("Deliverables", "previewHint") ?? "" }, t4("deliverPreviewHint")) : null))));
+  }) : null, (0, import_react72.createElement)("span", { className: officialClass("Deliverables", "fileIcon") ?? "" }, (0, import_react72.createElement)(official_exports.FileTypeIcon, { path: file.path, size: 20 })), (0, import_react72.createElement)("div", { className: officialClass("Deliverables", "fileBody") ?? "" }, (0, import_react72.createElement)("div", { className: officialClass("Deliverables", "details") ?? "" }, (0, import_react72.createElement)("span", { className: officialClass("Deliverables", "fileName") ?? "" }, name2), (0, import_react72.createElement)("span", { className: officialClass("Deliverables", "description") ?? "", "data-presented-description": true }, (0, import_react72.createElement)("span", { className: officialClass("Deliverables", "secondaryText") ?? "" }, cardDescription(file.description, metadata)), onPreview !== void 0 ? (0, import_react72.createElement)("span", { className: officialClass("Deliverables", "previewHint") ?? "" }, t4("deliverPreviewHint")) : null))));
 }
 function DeliverablesGridMirror(props) {
   const { files, onOpen, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react67.useState)(false);
+  const [expanded, setExpanded] = (0, import_react72.useState)(false);
   if (files.length === 0)
     return null;
   const collapsible = files.length > COLLAPSED_DELIVERED_COUNT;
   const shown = collapsible && !expanded ? files.slice(0, COLLAPSED_DELIVERED_COUNT) : files;
-  return (0, import_react67.createElement)("div", {
+  return (0, import_react72.createElement)("div", {
     className: officialClass("Deliverables", "root") ?? "",
     "data-presented-files-grid": true
-  }, (0, import_react67.createElement)("div", {
+  }, (0, import_react72.createElement)("div", {
     className: officialClass("Deliverables", "presented") ?? "",
     "data-presented-files-row": true
-  }, shown.map((file, index3) => (0, import_react67.createElement)(DeliveredFileCard, {
+  }, shown.map((file, index3) => (0, import_react72.createElement)(DeliveredFileCard, {
     key: `${file.path}:${index3}`,
     file,
     onPreview: onOpen === void 0 ? void 0 : () => {
       onOpen(file.path);
     },
     t: t4
-  }))), collapsible ? (0, import_react67.createElement)("button", {
+  }))), collapsible ? (0, import_react72.createElement)("button", {
     type: "button",
     className: officialClass("Deliverables", "toggle") ?? "",
     "aria-expanded": expanded,
@@ -56729,11 +56846,11 @@ function DeliverablesGridMirror(props) {
     onClick: () => {
       setExpanded((value) => !value);
     }
-  }, (0, import_react67.createElement)("span", null, t4(expanded ? "deliverCollapse" : "deliverAll", { count: files.length })), expanded ? (0, import_react67.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react67.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null);
+  }, (0, import_react72.createElement)("span", null, t4(expanded ? "deliverCollapse" : "deliverAll", { count: files.length })), expanded ? (0, import_react72.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react72.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null);
 }
 
 // dist/session/mirror/ChangedFilesCard.js
-var import_react69 = require("react");
+var import_react74 = require("react");
 
 // dist/utils/string.js
 function baseNameOf(path) {
@@ -56840,7 +56957,7 @@ function turnDeliverablesChangesSeq(face) {
 }
 
 // dist/session/mirror/ChangedFileDiff.js
-var import_react68 = require("react");
+var import_react73 = require("react");
 var C2 = (semantic) => officialClass("ChangedFiles", semantic) ?? "";
 var D = (semantic) => officialClass("FileDiff", semantic) ?? "";
 var cache3 = /* @__PURE__ */ new Map();
@@ -56855,20 +56972,20 @@ function highlightedSide(rows, side, highlighter) {
 }
 function DiffText(props) {
   const { text: text2, spans } = props;
-  return (0, import_react68.createElement)("span", { className: D("text"), "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react68.createElement)("span", { key: index3, style: span.style }, span.text)));
+  return (0, import_react73.createElement)("span", { className: D("text"), "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react73.createElement)("span", { key: index3, style: span.style }, span.text)));
 }
 function DiffLine(props) {
   const { row } = props;
   const kindClass = row.kind === "add" ? D("add") : row.kind === "del" ? D("del") : D("context");
   const spans = row.kind === "del" ? props.oldSpans : props.newSpans;
-  return (0, import_react68.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row.kind }, (0, import_react68.createElement)("span", { className: D("number") }, row.old ?? ""), (0, import_react68.createElement)("span", { className: D("number") }, row.new ?? ""), (0, import_react68.createElement)("span", { className: D("sign") }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react68.createElement)(DiffText, { text: row.text, spans }));
+  return (0, import_react73.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row.kind }, (0, import_react73.createElement)("span", { className: D("number") }, row.old ?? ""), (0, import_react73.createElement)("span", { className: D("number") }, row.new ?? ""), (0, import_react73.createElement)("span", { className: D("sign") }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react73.createElement)(DiffText, { text: row.text, spans }));
 }
 function ChangedFileDiff(props) {
   const { sessionId, seq, index: index3, display, t: t4 = t, variant = "preview", onClose } = props;
   const url = changesDiffUrl(sessionId, seq, index3);
-  const [state, setState] = (0, import_react68.useState)(void 0);
-  const [attempt, setAttempt] = (0, import_react68.useState)(0);
-  (0, import_react68.useEffect)(() => {
+  const [state, setState] = (0, import_react73.useState)(void 0);
+  const [attempt, setAttempt] = (0, import_react73.useState)(0);
+  (0, import_react73.useEffect)(() => {
     if (cache3.has(url)) {
       setState(cache3.get(url));
       return;
@@ -56898,23 +57015,23 @@ function ChangedFileDiff(props) {
       alive = false;
     };
   }, [url, attempt]);
-  const retry = (0, import_react68.useCallback)(() => {
+  const retry = (0, import_react73.useCallback)(() => {
     setAttempt((value) => value + 1);
   }, []);
   const path = state === void 0 || state === "error" || state === null ? void 0 : state.path;
   const highlighter = (0, official_exports.useCodeHighlighter)(path === void 0 ? void 0 : (0, official_exports.languageForPath)(path));
-  const body = (0, import_react68.useMemo)(() => {
+  const body = (0, import_react73.useMemo)(() => {
     if (state === void 0)
-      return (0, import_react68.createElement)("p", { className: D("status"), role: "status" }, t4("diffLoading"));
+      return (0, import_react73.createElement)("p", { className: D("status"), role: "status" }, t4("diffLoading"));
     if (state === "error") {
-      return (0, import_react68.createElement)("div", { className: D("status") }, (0, import_react68.createElement)("span", null, t4("diffError")), (0, import_react68.createElement)(official_exports.Button, { size: "sm", onClick: retry }, t4("errorRetry")));
+      return (0, import_react73.createElement)("div", { className: D("status") }, (0, import_react73.createElement)("span", null, t4("diffError")), (0, import_react73.createElement)(official_exports.Button, { size: "sm", onClick: retry }, t4("errorRetry")));
     }
     if (state === null)
-      return (0, import_react68.createElement)("p", { className: D("status") }, t4("diffMissing"));
+      return (0, import_react73.createElement)("p", { className: D("status") }, t4("diffMissing"));
     if (state.kind === "binary")
-      return (0, import_react68.createElement)("p", { className: D("status") }, t4("diffBinary"));
+      return (0, import_react73.createElement)("p", { className: D("status") }, t4("diffBinary"));
     if (state.kind === "oversized")
-      return (0, import_react68.createElement)("p", { className: D("status") }, t4("diffOversized"));
+      return (0, import_react73.createElement)("p", { className: D("status") }, t4("diffOversized"));
     const note = diffNoteKey(state);
     const hunks = state.hunks ?? [];
     let budget = DIFF_MAX_RENDERED_LINES;
@@ -56934,14 +57051,14 @@ function ChangedFileDiff(props) {
       kept.push(hunk);
       budget -= hunk.lines.length;
     }
-    return (0, import_react68.createElement)("div", { className: D("body"), "data-review-view": "unified" }, note === void 0 ? null : (0, import_react68.createElement)("p", {
+    return (0, import_react73.createElement)("div", { className: D("body"), "data-review-view": "unified" }, note === void 0 ? null : (0, import_react73.createElement)("p", {
       className: D("note"),
       "data-diff-note": hunks.length === 0 ? "empty" : "metadata"
-    }, t4(note)), state.coarse === true ? (0, import_react68.createElement)("p", { className: D("note"), "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react68.createElement)("p", { className: D("note"), "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
+    }, t4(note)), state.coarse === true ? (0, import_react73.createElement)("p", { className: D("note"), "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react73.createElement)("p", { className: D("note"), "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
       const rows = hunkRows(hunk);
       const oldSpans = highlightedSide(rows, "old", highlighter);
       const newSpans = highlightedSide(rows, "new", highlighter);
-      return (0, import_react68.createElement)("section", { key: position, className: D("hunk") }, (0, import_react68.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row, at) => (0, import_react68.createElement)(DiffLine, {
+      return (0, import_react73.createElement)("section", { key: position, className: D("hunk") }, (0, import_react73.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row, at) => (0, import_react73.createElement)(DiffLine, {
         key: at,
         row,
         oldSpans: oldSpans?.get(row.old ?? -1),
@@ -56950,18 +57067,18 @@ function ChangedFileDiff(props) {
     }));
   }, [state, highlighter, t4, retry]);
   const preview = variant !== "review";
-  return (0, import_react68.createElement)("div", {
+  return (0, import_react73.createElement)("div", {
     className: preview ? `${D("root")} ${C2("preview")}` : D("root"),
     "data-changes-hover-preview": preview ? true : void 0
-  }, (0, import_react68.createElement)(
+  }, (0, import_react73.createElement)(
     "div",
     { className: D("header") },
-    (0, import_react68.createElement)("span", { className: C2("previewPath"), "data-changes-preview-path": true }, display),
+    (0, import_react73.createElement)("span", { className: C2("previewPath"), "data-changes-preview-path": true }, display),
     // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
-    preview || onClose === void 0 ? null : (0, import_react68.createElement)(IconButton, {
+    preview || onClose === void 0 ? null : (0, import_react73.createElement)(IconButton, {
       variant: "plain",
       size: "md",
-      icon: (0, import_react68.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+      icon: (0, import_react73.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
       label: t4("previewClose"),
       onClick: onClose
     })
@@ -56974,22 +57091,22 @@ var cache4 = /* @__PURE__ */ new Map();
 var COLLAPSED_ROWS = 4;
 function Counts(props) {
   const grouped = new Intl.NumberFormat("en-US");
-  return (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("span", { className: C3("added") }, `+${grouped.format(props.added)}`), " ", (0, import_react69.createElement)("span", { className: C3("deleted") }, `-${grouped.format(props.deleted)}`));
+  return (0, import_react74.createElement)(import_react74.Fragment, null, (0, import_react74.createElement)("span", { className: C3("added") }, `+${grouped.format(props.added)}`), " ", (0, import_react74.createElement)("span", { className: C3("deleted") }, `-${grouped.format(props.deleted)}`));
 }
 function countsOf(file, t4) {
   if (file.binary === true)
     return t4("changesBinary");
   if (file.oversized === true)
     return t4("changesOversized");
-  return (0, import_react69.createElement)(Counts, { added: file.added, deleted: file.deleted });
+  return (0, import_react74.createElement)(Counts, { added: file.added, deleted: file.deleted });
 }
 function ChangedFilesCard(props) {
   const { sessionId, seq, onOpenReview, t: t4 } = props;
   const url = changesSummaryUrl(sessionId, seq);
-  const [summary, setSummary] = (0, import_react69.useState)(void 0);
-  const [expanded, setExpanded] = (0, import_react69.useState)(false);
-  const cardRef = (0, import_react69.useRef)(null);
-  (0, import_react69.useEffect)(() => {
+  const [summary, setSummary] = (0, import_react74.useState)(void 0);
+  const [expanded, setExpanded] = (0, import_react74.useState)(false);
+  const cardRef = (0, import_react74.useRef)(null);
+  (0, import_react74.useEffect)(() => {
     if (cache4.has(url)) {
       setSummary(cache4.get(url));
       return;
@@ -57014,16 +57131,16 @@ function ChangedFilesCard(props) {
   if (summary === void 0 || summary === null || summary.total === 0 || summary.files.length === 0)
     return null;
   const single = summary.total === 1 ? summary.files[0] : void 0;
-  const icon2 = single !== void 0 ? (0, import_react69.createElement)(official_exports.FileTypeIcon, { path: single.path, size: 20 }) : (0, import_react69.createElement)(official_exports.FileTypeIcon, { kind: "code", size: 20 });
+  const icon2 = single !== void 0 ? (0, import_react74.createElement)(official_exports.FileTypeIcon, { path: single.path, size: 20 }) : (0, import_react74.createElement)(official_exports.FileTypeIcon, { kind: "code", size: 20 });
   const title = single === void 0 ? t4("changesMulti", { count: String(summary.total) }) : t4("changesSingle", { name: baseNameOf(single.path) });
   const foldable2 = summary.files.length > COLLAPSED_ROWS;
   const rows = foldable2 && !expanded ? summary.files.slice(0, COLLAPSED_ROWS) : summary.files;
-  const headerBody = (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("span", { className: C3("tile") }, icon2), (0, import_react69.createElement)("span", { className: C3("titles") }, (0, import_react69.createElement)("span", { className: C3("title") }, title), (0, import_react69.createElement)(
+  const headerBody = (0, import_react74.createElement)(import_react74.Fragment, null, (0, import_react74.createElement)("span", { className: C3("tile") }, icon2), (0, import_react74.createElement)("span", { className: C3("titles") }, (0, import_react74.createElement)("span", { className: C3("title") }, title), (0, import_react74.createElement)(
     "span",
     { className: C3("stat") },
-    (0, import_react69.createElement)("span", { className: C3("statCounts") }, countsOf(single ?? summary, t4)),
+    (0, import_react74.createElement)("span", { className: C3("statCounts") }, countsOf(single ?? summary, t4)),
     // 官方 previewHint：hover/focus 时替换计数显示（提示这张卡可以 hover 出 diff 预览）。
-    (0, import_react69.createElement)("span", { className: C3("previewHint") }, t4("deliverPreviewHint"))
+    (0, import_react74.createElement)("span", { className: C3("previewHint") }, t4("deliverPreviewHint"))
   )));
   const headerLocator = {
     sessionId,
@@ -57031,7 +57148,7 @@ function ChangedFilesCard(props) {
     index: 0,
     display: single?.display ?? summary.files[0].display
   };
-  const headerNode = onOpenReview === void 0 ? (0, import_react69.createElement)("div", { className: C3("header") }, headerBody) : (0, import_react69.createElement)("button", {
+  const headerNode = onOpenReview === void 0 ? (0, import_react74.createElement)("div", { className: C3("header") }, headerBody) : (0, import_react74.createElement)("button", {
     type: "button",
     className: C3("header"),
     title: headerLocator.display,
@@ -57039,11 +57156,11 @@ function ChangedFilesCard(props) {
       onOpenReview(headerLocator);
     }
   }, headerBody);
-  const previewOf = (index3, display) => (0, import_react69.createElement)(ChangedFileDiff, { sessionId, seq, index: index3, display, t: t4 });
+  const previewOf = (index3, display) => (0, import_react74.createElement)(ChangedFileDiff, { sessionId, seq, index: index3, display, t: t4 });
   const rowOf = (file, index3) => {
-    const body = (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("span", { className: C3("path") }, file.display), (0, import_react69.createElement)("span", { className: C3("counts") }, countsOf(file, t4)));
+    const body = (0, import_react74.createElement)(import_react74.Fragment, null, (0, import_react74.createElement)("span", { className: C3("path") }, file.display), (0, import_react74.createElement)("span", { className: C3("counts") }, countsOf(file, t4)));
     const locator = { sessionId, seq, index: index3, display: file.display };
-    const row = onOpenReview === void 0 ? (0, import_react69.createElement)("div", { className: C3("row"), title: file.path }, body) : (0, import_react69.createElement)("button", {
+    const row = onOpenReview === void 0 ? (0, import_react74.createElement)("div", { className: C3("row"), title: file.path }, body) : (0, import_react74.createElement)("button", {
       type: "button",
       className: C3("row"),
       title: file.path,
@@ -57051,7 +57168,7 @@ function ChangedFilesCard(props) {
         onOpenReview(locator);
       }
     }, body);
-    return (0, import_react69.createElement)(official_exports.HoverCard, {
+    return (0, import_react74.createElement)(official_exports.HoverCard, {
       key: file.display,
       variant: "preview",
       widthAnchorRef: cardRef,
@@ -57060,11 +57177,11 @@ function ChangedFilesCard(props) {
       content: previewOf(index3, file.display)
     });
   };
-  const list = single === void 0 ? (0, import_react69.createElement)("ul", { className: C3("list") }, rows.map((file) => {
+  const list = single === void 0 ? (0, import_react74.createElement)("ul", { className: C3("list") }, rows.map((file) => {
     const index3 = summary.files.indexOf(file);
-    return (0, import_react69.createElement)("li", { key: file.display }, rowOf(file, index3));
+    return (0, import_react74.createElement)("li", { key: file.display }, rowOf(file, index3));
   })) : null;
-  const toggle = foldable2 ? (0, import_react69.createElement)("button", {
+  const toggle = foldable2 ? (0, import_react74.createElement)("button", {
     type: "button",
     className: C3("toggle"),
     "aria-expanded": expanded,
@@ -57072,15 +57189,15 @@ function ChangedFilesCard(props) {
     onClick: () => {
       setExpanded((value) => !value);
     }
-  }, (0, import_react69.createElement)("span", null, t4(expanded ? "changesCollapse" : "changesAll", { count: summary.files.length })), expanded ? (0, import_react69.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react69.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null;
-  const header = single === void 0 ? headerNode : (0, import_react69.createElement)(official_exports.HoverCard, {
+  }, (0, import_react74.createElement)("span", null, t4(expanded ? "changesCollapse" : "changesAll", { count: summary.files.length })), expanded ? (0, import_react74.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react74.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null;
+  const header = single === void 0 ? headerNode : (0, import_react74.createElement)(official_exports.HoverCard, {
     variant: "preview",
     widthAnchorRef: cardRef,
     openDelayMs: 500,
     anchor: headerNode,
     content: previewOf(0, single.display)
   });
-  return (0, import_react69.createElement)("div", {
+  return (0, import_react74.createElement)("div", {
     ref: cardRef,
     className: C3("card"),
     "data-changed-files": true,
@@ -57204,9 +57321,9 @@ function presentFiles(root) {
 function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, changesSeq, sessionId, onOpenReview) {
   switch (node.kind) {
     case "turn-trigger":
-      return (0, import_react70.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
+      return (0, import_react75.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
     case "turn-process":
-      return turnProcess === void 0 ? null : (0, import_react70.createElement)(TurnProcessNodeViewMirror, {
+      return turnProcess === void 0 ? null : (0, import_react75.createElement)(TurnProcessNodeViewMirror, {
         turn: turnLocationOf(node),
         turnProcess,
         t: t4
@@ -57216,9 +57333,9 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const turn = data2?.turn ?? turnLocationOf(node)?.turn;
       const atLastTail = turn !== void 0 && lastTailTurn !== void 0 && turn === lastTailTurn;
       const showGrid = deliverFiles !== void 0 && deliverFiles.length > 0 && atLastTail;
-      const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react70.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t: t4 }) : null;
-      const tailSlot = changesCard === null && !showGrid ? null : (0, import_react70.createElement)(import_react70.Fragment, null, changesCard, showGrid ? (0, import_react70.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null);
-      const tail = data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react70.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, t: t4 });
+      const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react75.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t: t4 }) : null;
+      const tailSlot = changesCard === null && !showGrid ? null : (0, import_react75.createElement)(import_react75.Fragment, null, changesCard, showGrid ? (0, import_react75.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null);
+      const tail = data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react75.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, t: t4 });
       return tail;
     }
     case "assistant-step": {
@@ -57228,17 +57345,17 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
         return null;
       const visible = groupPart === "reasoning" ? contentBlocks.filter((block2) => block2.kind === "reasoning") : groupPart === "response" ? contentBlocks.filter((block2) => block2.kind !== "reasoning") : contentBlocks;
       const parts = assistantBlocks(visible, t4, fileOpen?.mentions);
-      return parts.length === 0 ? null : (0, import_react70.createElement)("div", { className: "dshpc-sv-assistant" }, parts);
+      return parts.length === 0 ? null : (0, import_react75.createElement)("div", { className: "dshpc-sv-assistant" }, parts);
     }
     case "tool-call": {
       const root = dataOf(node).root;
       if (isPresentRoot(root))
-        return (0, import_react70.createElement)(PresentRowMirror, { block: root, t: t4 });
+        return (0, import_react75.createElement)(PresentRowMirror, { block: root, t: t4 });
       const card = toolCallCard(node, t4, fileOpen?.open);
-      return card === null ? null : (0, import_react70.createElement)(GenericCommandCard, card);
+      return card === null ? null : (0, import_react75.createElement)(GenericCommandCard, card);
     }
     case "command": {
-      return (0, import_react70.createElement)(CommandCard, { node: dataOf(node), t: t4 });
+      return (0, import_react75.createElement)(CommandCard, { node: dataOf(node), t: t4 });
     }
     case "user":
     case "steering": {
@@ -57247,19 +57364,19 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const { files, hadFiles } = contentFiles(blocks);
       if (text2 === "" && !hadFiles)
         return null;
-      return (0, import_react70.createElement)(UserMessage, { text: text2, files });
+      return (0, import_react75.createElement)(UserMessage, { text: text2, files });
     }
     case "turn-error":
-      return (0, import_react70.createElement)(TurnErrorItemMirror, { node: dataOf(node), t: t4 });
+      return (0, import_react75.createElement)(TurnErrorItemMirror, { node: dataOf(node), t: t4 });
     case "turn-max-tokens":
-      return (0, import_react70.createElement)(TurnMaxTokensItemMirror, { t: t4 });
+      return (0, import_react75.createElement)(TurnMaxTokensItemMirror, { t: t4 });
     case "model-retry": {
       const data2 = dataOf(node);
       const attempts = Array.isArray(data2.attempts) ? data2.attempts : [];
       const current4 = typeof data2.current === "object" && data2.current !== null ? data2.current : attempts[attempts.length - 1];
       if (current4 === void 0)
         return null;
-      return (0, import_react70.createElement)(ModelRetryItemMirror, { node: current4, active: current4.retryState === "scheduled", t: t4 });
+      return (0, import_react75.createElement)(ModelRetryItemMirror, { node: current4, active: current4.retryState === "scheduled", t: t4 });
     }
     // 决策 28：context（系统注入）/ compaction / unknown 仍默认过滤；
     // ⚠ ui-map §十一-B：官方 ContextInjectionRow / SystemPromptRow 待实施——届时从这里放行。
@@ -57269,7 +57386,7 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
     case "unknown":
       return null;
     default:
-      return (0, import_react70.createElement)("details", { className: "dshpc-sv-tool" }, (0, import_react70.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react70.createElement)("pre", null, safeJson(node.data)));
+      return (0, import_react75.createElement)("details", { className: "dshpc-sv-tool" }, (0, import_react75.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react75.createElement)("pre", null, safeJson(node.data)));
   }
 }
 function assistantBlocks(blocks, t4, fileMentions) {
@@ -57280,19 +57397,19 @@ function assistantBlocks(blocks, t4, fileMentions) {
     switch (block2.kind) {
       case "text":
         if (block2.text.trim() !== "")
-          parts.push((0, import_react70.createElement)(AssistantMarkdown, { key: `t${index3}`, text: block2.text, fileMentions }));
+          parts.push((0, import_react75.createElement)(AssistantMarkdown, { key: `t${index3}`, text: block2.text, fileMentions }));
         break;
       case "reasoning":
         if (block2.text.trim() !== "")
-          parts.push((0, import_react70.createElement)(ReasoningRowMirror, { key: `r${index3}`, text: block2.text, t: t4 }));
+          parts.push((0, import_react75.createElement)(ReasoningRowMirror, { key: `r${index3}`, text: block2.text, t: t4 }));
         break;
       case "image":
-        parts.push((0, import_react70.createElement)("div", { key: `i${index3}`, className: "dshpc-sv-image" }, "[\u56FE\u7247]"));
+        parts.push((0, import_react75.createElement)("div", { key: `i${index3}`, className: "dshpc-sv-image" }, "[\u56FE\u7247]"));
         break;
       case "tool-call":
         break;
       default:
-        parts.push((0, import_react70.createElement)("details", { key: `o${index3}`, className: "dshpc-sv-tool" }, (0, import_react70.createElement)("summary", null, t4("sessionUnknownKind")), (0, import_react70.createElement)("pre", null, safeJson(block2.block))));
+        parts.push((0, import_react75.createElement)("details", { key: `o${index3}`, className: "dshpc-sv-tool" }, (0, import_react75.createElement)("summary", null, t4("sessionUnknownKind")), (0, import_react75.createElement)("pre", null, safeJson(block2.block))));
     }
   });
   return parts;
@@ -57305,16 +57422,16 @@ function renderLegacyNode(node, t4, fileOpen) {
       const { files, hadFiles } = contentFiles(node.content);
       if (text2 === "" && !hadFiles)
         return null;
-      return (0, import_react70.createElement)(UserMessage, { key: node.seq, text: text2, files });
+      return (0, import_react75.createElement)(UserMessage, { key: node.seq, text: text2, files });
     }
     case "assistant": {
       const parts = assistantBlocks(node.blocks, t4, fileOpen?.mentions);
-      return parts.length === 0 ? null : (0, import_react70.createElement)("div", { key: node.seq, className: "dshpc-sv-assistant" }, parts);
+      return parts.length === 0 ? null : (0, import_react75.createElement)("div", { key: node.seq, className: "dshpc-sv-assistant" }, parts);
     }
     case "tool-result": {
       if (node.call?.name === "present")
-        return (0, import_react70.createElement)(PresentRowMirror, { key: node.seq, block: node, t: t4 });
-      return (0, import_react70.createElement)(GenericCommandCard, {
+        return (0, import_react75.createElement)(PresentRowMirror, { key: node.seq, block: node, t: t4 });
+      return (0, import_react75.createElement)(GenericCommandCard, {
         key: node.seq,
         name: node.call?.name ?? "tool",
         argsRaw: node.call?.argsRaw ?? "",
@@ -57329,7 +57446,7 @@ function renderLegacyNode(node, t4, fileOpen) {
       });
     }
     case "command": {
-      return (0, import_react70.createElement)(GenericCommandCard, {
+      return (0, import_react75.createElement)(GenericCommandCard, {
         key: node.seq,
         name: `/${node.name ?? "?"}`,
         argsRaw: node.args ?? "",
@@ -57339,11 +57456,11 @@ function renderLegacyNode(node, t4, fileOpen) {
       });
     }
     case "turn-error":
-      return (0, import_react70.createElement)(TurnErrorItemMirror, { key: node.seq, node, t: t4 });
+      return (0, import_react75.createElement)(TurnErrorItemMirror, { key: node.seq, node, t: t4 });
     case "turn-max-tokens":
-      return (0, import_react70.createElement)(TurnMaxTokensItemMirror, { key: node.seq, t: t4 });
+      return (0, import_react75.createElement)(TurnMaxTokensItemMirror, { key: node.seq, t: t4 });
     case "model-retry":
-      return (0, import_react70.createElement)(ModelRetryItemMirror, { key: node.seq, node, active: node.retryState === "scheduled", t: t4 });
+      return (0, import_react75.createElement)(ModelRetryItemMirror, { key: node.seq, node, active: node.retryState === "scheduled", t: t4 });
     // 决策 28：默认过滤的噪音 kind —— context（系统注入）、compaction（压缩标记）、
     // unknown（未知事件面）。assistant 里的 reasoning 由 mirror/ReasoningRow 折叠渲染。
     // ⚠ ui-map §十一-B：系统提示/上下文注入行（官方 ContextInjectionRow）待实施——届时从这里放行。
@@ -57352,7 +57469,7 @@ function renderLegacyNode(node, t4, fileOpen) {
     case "unknown":
       return null;
     default:
-      return (0, import_react70.createElement)("details", { key: node.seq, className: "dshpc-sv-tool" }, (0, import_react70.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react70.createElement)("pre", null, safeJson(node)));
+      return (0, import_react75.createElement)("details", { key: node.seq, className: "dshpc-sv-tool" }, (0, import_react75.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react75.createElement)("pre", null, safeJson(node)));
   }
 }
 function groupNodes(list) {
@@ -57389,11 +57506,11 @@ function renderLegacyRows(nodes, t4, fileOpen) {
   items.forEach((entry, index3) => {
     const parts = [];
     if (entry.kind === "process") {
-      parts.push((0, import_react70.createElement)("div", { key: "lead", className: "dshpc-sv-notice" }, `${t4("sessionProcess")} \xB7 ${entry.nodes.length}`));
+      parts.push((0, import_react75.createElement)("div", { key: "lead", className: "dshpc-sv-notice" }, `${t4("sessionProcess")} \xB7 ${entry.nodes.length}`));
       entry.nodes.forEach((node, i2) => {
         const rendered = renderLegacyNode(node, t4, fileOpen);
         if (rendered !== null)
-          parts.push((0, import_react70.createElement)("div", { key: `p${i2}` }, rendered));
+          parts.push((0, import_react75.createElement)("div", { key: `p${i2}` }, rendered));
       });
     } else {
       const inner = renderLegacyNode(entry.node, t4, fileOpen);
@@ -57403,12 +57520,12 @@ function renderLegacyRows(nodes, t4, fileOpen) {
         const next = items[index3 + 1];
         const isTurnEnd = next === void 0 || !(next.kind === "node" && next.node.kind === "assistant");
         if (isTurnEnd)
-          parts.push((0, import_react70.createElement)(MessageIconActionsMirror, { key: "act", text: assistantText2(entry.node), clock: "end", t: t4 }));
+          parts.push((0, import_react75.createElement)(MessageIconActionsMirror, { key: "act", text: assistantText2(entry.node), clock: "end", t: t4 }));
       }
     }
     if (parts.length === 0)
       return;
-    rows.push((0, import_react70.createElement)("div", { key: `lg${index3}`, className: officialClass("ChatView", "flowItem") ?? "" }, parts));
+    rows.push((0, import_react75.createElement)("div", { key: `lg${index3}`, className: officialClass("ChatView", "flowItem") ?? "" }, parts));
   });
   return rows;
 }
@@ -57566,14 +57683,14 @@ function SessionViewModal(props) {
   ensureComponentStyles("session", SESSION_CSS);
   const tt = props.t ?? t;
   const { heading: heading2, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
-  const subscribe = (0, import_react70.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
-  const getSnapshot = (0, import_react70.useMemo)(() => () => view.target.getSnapshot(), [view]);
-  const chat = (0, import_react70.useSyncExternalStore)(subscribe, getSnapshot);
-  const sessionSub = (0, import_react70.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
-  const sessionGet = (0, import_react70.useMemo)(() => () => view.session.getSnapshot(), [view]);
-  const sessionSnap = (0, import_react70.useSyncExternalStore)(sessionSub, sessionGet);
-  const [openTurns, setOpenTurns] = (0, import_react70.useState)(() => /* @__PURE__ */ new Map());
-  const onSetOpen = (0, import_react70.useCallback)((turn, answerStep, open) => {
+  const subscribe = (0, import_react75.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
+  const getSnapshot = (0, import_react75.useMemo)(() => () => view.target.getSnapshot(), [view]);
+  const chat = (0, import_react75.useSyncExternalStore)(subscribe, getSnapshot);
+  const sessionSub = (0, import_react75.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
+  const sessionGet = (0, import_react75.useMemo)(() => () => view.session.getSnapshot(), [view]);
+  const sessionSnap = (0, import_react75.useSyncExternalStore)(sessionSub, sessionGet);
+  const [openTurns, setOpenTurns] = (0, import_react75.useState)(() => /* @__PURE__ */ new Map());
+  const onSetOpen = (0, import_react75.useCallback)((turn, answerStep, open) => {
     setOpenTurns((prev) => {
       const next = new Map(prev);
       if (open)
@@ -57587,14 +57704,14 @@ function SessionViewModal(props) {
   const canFork = forkSession !== void 0 && openHostSession !== void 0;
   const canDirectOpen = openHostSession !== void 0;
   const showContinue = isArchived ? canFork : canDirectOpen;
-  const [forkTarget, setForkTarget] = (0, import_react70.useState)(null);
-  const [forking, setForking] = (0, import_react70.useState)(false);
-  const [forkErr, setForkErr] = (0, import_react70.useState)(null);
-  const aliveRef = (0, import_react70.useRef)(true);
-  (0, import_react70.useEffect)(() => () => {
+  const [forkTarget, setForkTarget] = (0, import_react75.useState)(null);
+  const [forking, setForking] = (0, import_react75.useState)(false);
+  const [forkErr, setForkErr] = (0, import_react75.useState)(null);
+  const aliveRef = (0, import_react75.useRef)(true);
+  (0, import_react75.useEffect)(() => () => {
     aliveRef.current = false;
   }, []);
-  const onForkAccept = (0, import_react70.useCallback)(() => {
+  const onForkAccept = (0, import_react75.useCallback)(() => {
     if (forking || forkSession === void 0 || openHostSession === void 0)
       return;
     setForking(true);
@@ -57616,14 +57733,14 @@ function SessionViewModal(props) {
       }
     })();
   }, [forking, forkSession, openHostSession, sessionId, forkTarget, onClose]);
-  const onBranchAt = (0, import_react70.useCallback)((seq) => {
+  const onBranchAt = (0, import_react75.useCallback)((seq) => {
     setForkErr(null);
     setForkTarget({ atSeq: seq });
   }, []);
-  const [draft, setDraft] = (0, import_react70.useState)("");
-  const [sending, setSending] = (0, import_react70.useState)(false);
-  const [sendErr, setSendErr] = (0, import_react70.useState)(null);
-  const onSend = (0, import_react70.useCallback)(() => {
+  const [draft, setDraft] = (0, import_react75.useState)("");
+  const [sending, setSending] = (0, import_react75.useState)(false);
+  const [sendErr, setSendErr] = (0, import_react75.useState)(null);
+  const onSend = (0, import_react75.useCallback)(() => {
     const message = draft.trim();
     if (sending || message === "" || onContinue === void 0)
       return;
@@ -57645,14 +57762,14 @@ function SessionViewModal(props) {
       }
     })();
   }, [draft, sending, onContinue]);
-  const openFile = (0, import_react70.useCallback)((path) => {
+  const openFile = (0, import_react75.useCallback)((path) => {
     onOpenFile?.(path, sessionId);
   }, [onOpenFile, sessionId]);
   const order = chat?.order ?? EMPTY_ORDER;
   const store = chat?.nodes;
   const keyed = order.length > 0 && store !== void 0;
   const turns = chat?.timeline?.turns;
-  const fileOpen = (0, import_react70.useMemo)(() => {
+  const fileOpen = (0, import_react75.useMemo)(() => {
     if (onOpenFile === void 0)
       return void 0;
     return {
@@ -57660,7 +57777,7 @@ function SessionViewModal(props) {
       mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile)
     };
   }, [onOpenFile, openFile, order, store, turns]);
-  const openDelegatedFile = (0, import_react70.useMemo)(() => {
+  const openDelegatedFile = (0, import_react75.useMemo)(() => {
     if (fileOpen === void 0)
       return () => {
       };
@@ -57673,8 +57790,8 @@ function SessionViewModal(props) {
       hit.open();
     };
   }, [fileOpen]);
-  const deliveredByTurn = (0, import_react70.useMemo)(() => collectPresentedByTurn(turns), [turns]);
-  const deliverFiles = (0, import_react70.useMemo)(() => {
+  const deliveredByTurn = (0, import_react75.useMemo)(() => collectPresentedByTurn(turns), [turns]);
+  const deliverFiles = (0, import_react75.useMemo)(() => {
     const byPath = /* @__PURE__ */ new Map();
     const add2 = (file) => {
       const key = file.path.trim();
@@ -57687,7 +57804,7 @@ function SessionViewModal(props) {
         add2(file);
     return [...byPath.values()];
   }, [deliveredByTurn]);
-  const lastTailTurn = (0, import_react70.useMemo)(() => {
+  const lastTailTurn = (0, import_react75.useMemo)(() => {
     if (!keyed || store === void 0)
       return void 0;
     for (let i2 = order.length - 1; i2 >= 0; i2--) {
@@ -57704,7 +57821,7 @@ function SessionViewModal(props) {
     }
     return void 0;
   }, [keyed, order, store]);
-  const lastTailChangesSeq = (0, import_react70.useMemo)(() => {
+  const lastTailChangesSeq = (0, import_react75.useMemo)(() => {
     if (turns === null || turns === void 0)
       return void 0;
     const map = turns;
@@ -57722,8 +57839,8 @@ function SessionViewModal(props) {
     }
     return best ?? void 0;
   }, [turns]);
-  const diagChatRef = (0, import_react70.useRef)(void 0);
-  (0, import_react70.useEffect)(() => {
+  const diagChatRef = (0, import_react75.useRef)(void 0);
+  (0, import_react75.useEffect)(() => {
     if (diagChatRef.current === chat)
       return;
     diagChatRef.current = chat;
@@ -57763,9 +57880,9 @@ function SessionViewModal(props) {
     });
     console.log("[preview] turnsDetail", turnsDetail);
   }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store]);
-  const renderNode = (0, import_react70.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview]);
-  const isTurnClosed = (0, import_react70.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
-  const groupedView = (0, import_react70.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed) : void 0, [keyed, order, store, isTurnClosed]);
+  const renderNode = (0, import_react75.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview]);
+  const isTurnClosed = (0, import_react75.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
+  const groupedView = (0, import_react75.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed) : void 0, [keyed, order, store, isTurnClosed]);
   const rows = keyed ? ChatNodeListMirror({
     order,
     store,
@@ -57790,39 +57907,39 @@ function SessionViewModal(props) {
   }
   const openState = sessionSnap?.openState;
   const showLoadOlder = sessionSnap?.hasMore !== false;
-  const body = rendered.length === 0 ? (0, import_react70.createElement)(ChatHint, {
+  const body = rendered.length === 0 ? (0, import_react75.createElement)(ChatHint, {
     text: openState === "error" ? tt("sessionFailed") : openState === "loading" || openState === "cold" ? tt("sessionLoading") : tt("sessionEmpty")
   }) : [
-    showLoadOlder ? (0, import_react70.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
+    showLoadOlder ? (0, import_react75.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
       view.loadOlder();
     } }) : null,
     ...rendered
   ];
   const flowChildren = Array.isArray(body) ? body : [body];
-  return (0, import_react70.createElement)(
-    import_react70.Fragment,
+  return (0, import_react75.createElement)(
+    import_react75.Fragment,
     null,
-    (0, import_react70.createElement)(Modal, {
+    (0, import_react75.createElement)(Modal, {
       size: "lg",
       // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
       // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
       title: heading2 ?? tt("sessionHeading"),
-      subtitle: (0, import_react70.createElement)(
-        import_react70.Fragment,
+      subtitle: (0, import_react75.createElement)(
+        import_react75.Fragment,
         null,
-        (0, import_react70.createElement)("span", null, sessionId),
+        (0, import_react75.createElement)("span", null, sessionId),
         // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
-        officialCount === 0 ? (0, import_react70.createElement)("span", { className: "dshpc-sv-probe" }, " \u26A0 \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\uFF08\u5F53\u524D\u4E3A\u81EA\u7ED8\u56DE\u9000\uFF09") : null
+        officialCount === 0 ? (0, import_react75.createElement)("span", { className: "dshpc-sv-probe" }, " \u26A0 \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\uFF08\u5F53\u524D\u4E3A\u81EA\u7ED8\u56DE\u9000\uFF09") : null
       ),
       // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块。
-      headerExtra: isArchived ? (0, import_react70.createElement)("span", { className: "dshpc-sv-archived", title: tt("sessionArchived") }, (0, import_react70.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0,
+      headerExtra: isArchived ? (0, import_react75.createElement)("span", { className: "dshpc-sv-archived", title: tt("sessionArchived") }, (0, import_react75.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0,
       // 「继续对话」：已归档 = 开分支图标 + 确认框；未归档 = 会话图标直跳官方会话页。
-      headerActions: showContinue ? (0, import_react70.createElement)(Button, {
+      headerActions: showContinue ? (0, import_react75.createElement)(Button, {
         variant: "outline",
         size: "sm",
         disabled: forking,
         title: tt("continueBranch"),
-        icon: isArchived ? (0, import_react70.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react70.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
+        icon: isArchived ? (0, import_react75.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react75.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
         onClick: () => {
           if (isArchived) {
             setForkErr(null);
@@ -57836,7 +57953,7 @@ function SessionViewModal(props) {
       onClose,
       translate: tt,
       // 底部暂存输入框走 footer（不随会话区滚动）：打字 → 确定 → onContinue 带话开分支跳官方视图。
-      footer: onContinue === void 0 ? void 0 : (0, import_react70.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react70.createElement)("textarea", {
+      footer: onContinue === void 0 ? void 0 : (0, import_react75.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react75.createElement)("textarea", {
         value: draft,
         placeholder: tt("composerPlaceholder"),
         disabled: sending,
@@ -57849,21 +57966,21 @@ function SessionViewModal(props) {
             onSend();
           }
         }
-      }), (0, import_react70.createElement)(Button, {
+      }), (0, import_react75.createElement)(Button, {
         variant: "primary",
         size: "sm",
         disabled: sending || draft.trim() === "",
         onClick: onSend
-      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react70.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react70.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
-    }, (0, import_react70.createElement)(
+      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react75.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react75.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
+    }, (0, import_react75.createElement)(
       "div",
       { className: "dshpc-sv" },
       // markdown 导航委托：挂上 openFile 后，正文里的本地文件链接才渲成官方
       // `fileMention fileLink` 按钮（不挂 ⇒ 官方自己退回纯文本）。
-      fileOpen === void 0 ? (0, import_react70.createElement)(ChatViewFrame, { children: flowChildren }) : (0, import_react70.createElement)(official_exports.MarkdownDelegateProvider, { openFile: openDelegatedFile }, (0, import_react70.createElement)(ChatViewFrame, { children: flowChildren }))
+      fileOpen === void 0 ? (0, import_react75.createElement)(ChatViewFrame, { children: flowChildren }) : (0, import_react75.createElement)(official_exports.MarkdownDelegateProvider, { openFile: openDelegatedFile }, (0, import_react75.createElement)(ChatViewFrame, { children: flowChildren }))
     )),
     // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——核心 Modal + Button。
-    forkTarget === null ? null : (0, import_react70.createElement)(Modal, {
+    forkTarget === null ? null : (0, import_react75.createElement)(Modal, {
       size: "sm",
       onClose: () => {
         if (!forking)
@@ -57872,12 +57989,12 @@ function SessionViewModal(props) {
       title: tt("forkConfirmTitle"),
       translate: tt,
       footer: [
-        (0, import_react70.createElement)(Button, { key: "cancel", variant: "outline", disabled: forking, onClick: () => {
+        (0, import_react75.createElement)(Button, { key: "cancel", variant: "outline", disabled: forking, onClick: () => {
           setForkTarget(null);
         } }, tt("cancel")),
-        (0, import_react70.createElement)(Button, { key: "accept", variant: "primary", disabled: forking, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
+        (0, import_react75.createElement)(Button, { key: "accept", variant: "primary", disabled: forking, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
       ]
-    }, (0, import_react70.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), forkErr !== null ? (0, import_react70.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
+    }, (0, import_react75.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), forkErr !== null ? (0, import_react75.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
   );
 }
 
@@ -58090,7 +58207,7 @@ function connectRealSessions(ctx) {
 }
 
 // packages/demo/src/dock.ts
-var import_react71 = require("react");
+var import_react76 = require("react");
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // packages/demo/src/i18n.ts
@@ -58520,6 +58637,7 @@ var DICT2 = {
     methodBHint: "A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / \u2715 cancels with null",
     pickAny: "Pick a file (any)",
     pickTs: ".ts only",
+    pickDir: "Folders only",
     pickFolder: "folder",
     pickNone: "Nothing picked yet",
     pickJsMd: "JS/MD only",
@@ -58630,24 +58748,24 @@ function t3(key, vars) {
 // packages/demo/src/dock.ts
 var demoDock = createPanelDock({ maxPanels: 3 });
 function Body(props) {
-  return (0, import_react71.createElement)(
+  return (0, import_react76.createElement)(
     "div",
     { style: { padding: "12px 14px", fontSize: "13px", lineHeight: "1.9" } },
-    (0, import_react71.createElement)("div", { style: { fontWeight: 600 } }, props.id),
-    (0, import_react71.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t3("dockPanelBody"))
+    (0, import_react76.createElement)("div", { style: { fontWeight: 600 } }, props.id),
+    (0, import_react76.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t3("dockPanelBody"))
   );
 }
 function CustomHead() {
-  return (0, import_react71.createElement)(
+  return (0, import_react76.createElement)(
     "div",
     { style: { padding: "10px 12px", borderBottom: "1px solid var(--dshpc-border-faint)" } },
-    (0, import_react71.createElement)(
+    (0, import_react76.createElement)(
       "div",
       { style: { display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600 } },
-      (0, import_react71.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react76.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
       t3("dockCustomHeadTitle")
     ),
-    (0, import_react71.createElement)(
+    (0, import_react76.createElement)(
       "div",
       { style: { marginTop: "6px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
       t3("dockCustomHeadHint")
@@ -58658,20 +58776,20 @@ var PANELS = [
   {
     id: "A",
     title: t3("dockPanelA"),
-    icon: (0, import_react71.createElement)(
+    icon: (0, import_react76.createElement)(
       "span",
       { style: { display: "inline-flex", gap: "4px" } },
-      (0, import_react71.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
-      (0, import_react71.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
+      (0, import_react76.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react76.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
     ),
     // 标题右侧：任意内容，不只按钮。
-    extra: (0, import_react71.createElement)(Chip, { tone: "business", size: "sm" }, t3("dockPanelATag")),
+    extra: (0, import_react76.createElement)(Chip, { tone: "business", size: "sm" }, t3("dockPanelATag")),
     minWidth: 300,
     maxWidth: 620
   },
   {
     id: "B",
-    header: (0, import_react71.createElement)(CustomHead, null),
+    header: (0, import_react76.createElement)(CustomHead, null),
     minWidth: 320
   },
   {
@@ -58684,7 +58802,7 @@ var PANELS = [
 ];
 function demoPanels() {
   return PANELS.map(
-    (pane) => (0, import_react71.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react71.createElement)(Body, { id: pane.id }))
+    (pane) => (0, import_react76.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react76.createElement)(Body, { id: pane.id }))
   );
 }
 
@@ -58692,13 +58810,13 @@ function demoPanels() {
 var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
-var import_react82 = require("react");
+var import_react87 = require("react");
 
 // packages/demo/src/sections/start.tsx
-var import_react73 = require("react");
+var import_react78 = require("react");
 
 // packages/demo/src/doc.tsx
-var import_react72 = require("react");
+var import_react77 = require("react");
 
 // packages/demo/src/doc-data.generated.ts
 var docData = {
@@ -62195,14 +62313,14 @@ function locale() {
   return getLocale() === "en" ? "en" : "zh";
 }
 function Note(props) {
-  return (0, import_react72.createElement)(
+  return (0, import_react77.createElement)(
     StripCard,
     { accent: "business", className: "dshpc-doc-note" },
-    (0, import_react72.createElement)(
+    (0, import_react77.createElement)(
       "div",
       { className: "dshpc-doc-note__body" },
-      (0, import_react72.createElement)("span", { className: "dshpc-doc-note__mark" }, t3("docNote")),
-      props.children ?? (0, import_react72.createElement)("span", null, props.text ?? "")
+      (0, import_react77.createElement)("span", { className: "dshpc-doc-note__mark" }, t3("docNote")),
+      props.children ?? (0, import_react77.createElement)("span", null, props.text ?? "")
     )
   );
 }
@@ -62211,11 +62329,11 @@ function snippetPath(lang) {
 }
 function CodeOnly(props) {
   const label = props.label ?? (props.labelKey !== void 0 ? t3(props.labelKey) : t3("docCode"));
-  return (0, import_react72.createElement)(
+  return (0, import_react77.createElement)(
     Surface,
     { border: "faint", className: "dshpc-doc-block" },
-    (0, import_react72.createElement)("div", { className: "dshpc-doc-label" }, label),
-    (0, import_react72.createElement)(CodeViewer, {
+    (0, import_react77.createElement)("div", { className: "dshpc-doc-label" }, label),
+    (0, import_react77.createElement)(CodeViewer, {
       text: props.code,
       path: snippetPath(props.lang ?? "tsx"),
       t,
@@ -62227,32 +62345,32 @@ function CodeOnly(props) {
   );
 }
 function Example(props) {
-  return (0, import_react72.createElement)(
+  return (0, import_react77.createElement)(
     Surface,
     { border: "faint", padding: null, className: "dshpc-doc-example" },
-    (0, import_react72.createElement)(
+    (0, import_react77.createElement)(
       "div",
       { className: "dshpc-doc-example__head" },
-      (0, import_react72.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
-      props.hint === void 0 ? null : (0, import_react72.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
+      (0, import_react77.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
+      props.hint === void 0 ? null : (0, import_react77.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
     ),
-    (0, import_react72.createElement)(
+    (0, import_react77.createElement)(
       "div",
       { className: "dshpc-doc-example__body" },
-      (0, import_react72.createElement)(
+      (0, import_react77.createElement)(
         "div",
         { className: "dshpc-doc-example__demo" },
-        (0, import_react72.createElement)("div", { className: "dshpc-doc-label" }, t3("docPreview")),
+        (0, import_react77.createElement)("div", { className: "dshpc-doc-label" }, t3("docPreview")),
         props.children ?? null
       ),
-      props.code === void 0 ? null : (0, import_react72.createElement)(
+      props.code === void 0 ? null : (0, import_react77.createElement)(
         "div",
         { className: "dshpc-doc-example__code" },
-        (0, import_react72.createElement)("div", { className: "dshpc-doc-label" }, t3("docCode")),
-        (0, import_react72.createElement)(
+        (0, import_react77.createElement)("div", { className: "dshpc-doc-label" }, t3("docCode")),
+        (0, import_react77.createElement)(
           "div",
           { className: "dshpc-doc-example__scroll" },
-          (0, import_react72.createElement)(CodeViewer, {
+          (0, import_react77.createElement)(CodeViewer, {
             text: props.code,
             path: snippetPath("tsx"),
             t,
@@ -62265,40 +62383,40 @@ function Example(props) {
   );
 }
 function ApiTable(props) {
-  return (0, import_react72.createElement)(
+  return (0, import_react77.createElement)(
     Surface,
     { border: "faint", className: "dshpc-doc-block" },
-    (0, import_react72.createElement)(
+    (0, import_react77.createElement)(
       "div",
       { className: "dshpc-doc-label", style: props.title === void 0 ? void 0 : { textTransform: "none" } },
       props.title ?? t3("docApi")
     ),
-    (0, import_react72.createElement)(
+    (0, import_react77.createElement)(
       "table",
       { className: "dshpc-doc-api" },
-      (0, import_react72.createElement)(
+      (0, import_react77.createElement)(
         "thead",
         null,
-        (0, import_react72.createElement)(
+        (0, import_react77.createElement)(
           "tr",
           null,
-          (0, import_react72.createElement)("th", null, t3("docApiName")),
-          (0, import_react72.createElement)("th", null, t3("docApiType")),
-          (0, import_react72.createElement)("th", null, t3("docApiDefault")),
-          (0, import_react72.createElement)("th", null, t3("docApiDesc"))
+          (0, import_react77.createElement)("th", null, t3("docApiName")),
+          (0, import_react77.createElement)("th", null, t3("docApiType")),
+          (0, import_react77.createElement)("th", null, t3("docApiDefault")),
+          (0, import_react77.createElement)("th", null, t3("docApiDesc"))
         )
       ),
-      (0, import_react72.createElement)(
+      (0, import_react77.createElement)(
         "tbody",
         null,
         props.rows.map(
-          (row) => (0, import_react72.createElement)(
+          (row) => (0, import_react77.createElement)(
             "tr",
             { key: row.name },
-            (0, import_react72.createElement)("td", null, row.name),
-            (0, import_react72.createElement)("td", null, row.type),
-            (0, import_react72.createElement)("td", null, row.def),
-            (0, import_react72.createElement)("td", null, row.desc ?? t3(row.descKey ?? "docApiDesc"))
+            (0, import_react77.createElement)("td", null, row.name),
+            (0, import_react77.createElement)("td", null, row.type),
+            (0, import_react77.createElement)("td", null, row.def),
+            (0, import_react77.createElement)("td", null, row.desc ?? t3(row.descKey ?? "docApiDesc"))
           )
         )
       )
@@ -62309,13 +62427,13 @@ function DocProse(props) {
   const section = DOC_DATA[props.id];
   if (section?.prose === void 0) return null;
   const l = locale();
-  return (0, import_react72.createElement)(
+  return (0, import_react77.createElement)(
     Note,
     null,
-    (0, import_react72.createElement)(
+    (0, import_react77.createElement)(
       "div",
       { className: "dshpc-doc-note__content" },
-      ...section.prose.map((p, i2) => (0, import_react72.createElement)("div", { key: i2, className: "dshpc-doc-note__p" }, p[l]))
+      ...section.prose.map((p, i2) => (0, import_react77.createElement)("div", { key: i2, className: "dshpc-doc-note__p" }, p[l]))
     )
   );
 }
@@ -62323,11 +62441,11 @@ function DocApi(props) {
   const section = DOC_DATA[props.id];
   if (section?.api === void 0) return null;
   const l = locale();
-  return (0, import_react72.createElement)(
-    import_react72.Fragment,
+  return (0, import_react77.createElement)(
+    import_react77.Fragment,
     null,
     ...section.api.map(
-      (table, i2) => (0, import_react72.createElement)(ApiTable, {
+      (table, i2) => (0, import_react77.createElement)(ApiTable, {
         key: i2,
         rows: table.rows.map((r2) => ({
           name: r2.name,
@@ -62343,32 +62461,32 @@ function DocApi(props) {
 function DocCode(props) {
   const section = DOC_DATA[props.id];
   if (section?.code === void 0) return null;
-  return (0, import_react72.createElement)(
-    import_react72.Fragment,
+  return (0, import_react77.createElement)(
+    import_react77.Fragment,
     null,
-    ...section.code.map((c2, i2) => (0, import_react72.createElement)(CodeOnly, { key: i2, code: c2.src, lang: c2.lang }))
+    ...section.code.map((c2, i2) => (0, import_react77.createElement)(CodeOnly, { key: i2, code: c2.src, lang: c2.lang }))
   );
 }
 function DocContent(props) {
-  return (0, import_react72.createElement)(
-    import_react72.Fragment,
+  return (0, import_react77.createElement)(
+    import_react77.Fragment,
     null,
-    (0, import_react72.createElement)(DocProse, { id: props.id }),
-    (0, import_react72.createElement)(DocApi, { id: props.id }),
-    (0, import_react72.createElement)(DocCode, { id: props.id })
+    (0, import_react77.createElement)(DocProse, { id: props.id }),
+    (0, import_react77.createElement)(DocApi, { id: props.id }),
+    (0, import_react77.createElement)(DocCode, { id: props.id })
   );
 }
 
 // packages/demo/src/sections/start.tsx
 function HelpIndexPage() {
-  return (0, import_react73.createElement)(DocContent, { id: "help-index" });
+  return (0, import_react78.createElement)(DocContent, { id: "help-index" });
 }
 function QuickstartPage() {
-  return (0, import_react73.createElement)(DocContent, { id: "quickstart" });
+  return (0, import_react78.createElement)(DocContent, { id: "quickstart" });
 }
 
 // packages/demo/src/sections/foundation.tsx
-var import_react74 = require("react");
+var import_react79 = require("react");
 var TOKENS = [
   { label: "business", cssVar: "--dshpc-business" },
   { label: "success", cssVar: "--dshpc-success" },
@@ -62391,22 +62509,22 @@ var TOKENS = [
   { label: "fg-4", cssVar: "--dshpc-fg-4" }
 ];
 function FoundationPage() {
-  return (0, import_react74.createElement)(
+  return (0, import_react79.createElement)(
     "div",
     null,
-    (0, import_react74.createElement)(DocProse, { id: "foundation" }),
+    (0, import_react79.createElement)(DocProse, { id: "foundation" }),
     // Token 色板：颜色全部来自 design 的 token。
-    (0, import_react74.createElement)(
+    (0, import_react79.createElement)(
       Example,
       { title: t3("demoTokenPalette"), hint: t3("tokensHint") },
-      (0, import_react74.createElement)(
+      (0, import_react79.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
         TOKENS.map(
-          (item) => (0, import_react74.createElement)(
+          (item) => (0, import_react79.createElement)(
             "div",
             { key: item.cssVar, style: { width: "104px" } },
-            (0, import_react74.createElement)("div", {
+            (0, import_react79.createElement)("div", {
               style: {
                 height: "40px",
                 borderRadius: "var(--dshpc-radius-sm)",
@@ -62414,25 +62532,25 @@ function FoundationPage() {
                 border: "1px solid var(--dshpc-border-faint)"
               }
             }),
-            (0, import_react74.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
-            (0, import_react74.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+            (0, import_react79.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
+            (0, import_react79.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
           )
         )
       )
     ),
     // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
-    (0, import_react74.createElement)(
+    (0, import_react79.createElement)(
       Example,
       { title: "body[data-ds-dark-theme]", hint: t3("darkHint") },
-      (0, import_react74.createElement)(
+      (0, import_react79.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react74.createElement)(
+        (0, import_react79.createElement)(
           "span",
           { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("darkNow")
         ),
-        (0, import_react74.createElement)("code", {
+        (0, import_react79.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -62444,7 +62562,7 @@ function FoundationPage() {
         }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
       )
     ),
-    (0, import_react74.createElement)(
+    (0, import_react79.createElement)(
       Example,
       {
         title: t3("demoStyleInject"),
@@ -62455,18 +62573,18 @@ import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
 ensureControls()`
       },
-      (0, import_react74.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t3("designInjectNote"))
+      (0, import_react79.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t3("designInjectNote"))
     ),
     // 命名契约（原「命名与前缀契约」页）的 API 表 —— 直接吃 docData['foundation'] 的 api 段。
-    (0, import_react74.createElement)(DocApi, { id: "foundation" })
+    (0, import_react79.createElement)(DocApi, { id: "foundation" })
   );
 }
 
 // packages/demo/src/sections/controls.tsx
-var import_react76 = require("react");
+var import_react81 = require("react");
 
 // dist/ui/host-toast.js
-var import_react75 = require("react");
+var import_react80 = require("react");
 var import_client6 = require("react-dom/client");
 function showHostToast(message, opts) {
   if (typeof document === "undefined")
@@ -62478,7 +62596,7 @@ function showHostToast(message, opts) {
     root.unmount();
     container.remove();
   };
-  root.render((0, import_react75.createElement)(Official.Toast, {
+  root.render((0, import_react80.createElement)(Official.Toast, {
     text: message,
     tone: opts?.tone,
     holdMs: opts?.holdMs ?? 3e3,
@@ -62508,13 +62626,13 @@ var BUTTON_ICONS = [
 ];
 function iconOf(name2, size4 = 14) {
   const found = BUTTON_ICONS.find((item) => item.name === name2);
-  return found === void 0 ? null : (0, import_react76.createElement)(found.Icon, { size: size4 });
+  return found === void 0 ? null : (0, import_react81.createElement)(found.Icon, { size: size4 });
 }
 function StarSvg() {
-  return (0, import_react76.createElement)(
+  return (0, import_react81.createElement)(
     "svg",
     { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-    (0, import_react76.createElement)("path", {
+    (0, import_react81.createElement)("path", {
       d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
       stroke: "currentColor",
       strokeWidth: 1.2,
@@ -62554,7 +62672,7 @@ var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
 function tipAnchor(text2, side, align) {
   const props = { label: text2, side };
   if (align !== void 0) props.align = align;
-  return (0, import_react76.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react76.createElement)("button", {
+  return (0, import_react81.createElement)(import_dsh_client_ui_primitives2.Tooltip, props, (0, import_react81.createElement)("button", {
     type: "button",
     style: {
       padding: "4px 10px",
@@ -62568,13 +62686,13 @@ function tipAnchor(text2, side, align) {
   }, text2));
 }
 function Row(props) {
-  return (0, import_react76.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+  return (0, import_react81.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
 }
 function Labeled(props) {
-  return (0, import_react76.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react76.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    (0, import_react81.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
     props.children
   );
 }
@@ -62636,200 +62754,200 @@ var CODE_BTN_WIDTH = `// \u56FA\u5B9A\u5BBD\uFF1A\u5199\u6B7B\u5BBD\u5EA6
 // \u4E09\u8005\u540C\u8BBE \u21D2 \u56FA\u5B9A\u5BBD\u4F18\u5148\uFF0C\u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\u81EA\u52A8\u5931\u6548
 <Button variant="outline" width={120} minWidth={200} maxWidth={160}>\u56FA\u5B9A\u5BBD\u4F18\u5148</Button>`;
 function ButtonPage() {
-  return (0, import_react76.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "button" }),
+    (0, import_react81.createElement)(DocProse, { id: "button" }),
     // 文案与语言
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("btnTextTitle"), hint: t3("btnTextHint"), code: CODE_BTN_TEXT },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "locale" },
-          (0, import_react76.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t3("btnLabelSave")),
-          (0, import_react76.createElement)(Button, { variant: "outline" }, t3("btnLabelCancel")),
-          (0, import_react76.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t3("btnLabelDelete"))
+          (0, import_react81.createElement)(Button, { variant: "primary", icon: iconOf("check", ICON_SIZE.lg) }, t3("btnLabelSave")),
+          (0, import_react81.createElement)(Button, { variant: "outline" }, t3("btnLabelCancel")),
+          (0, import_react81.createElement)(Button, { variant: "danger", icon: iconOf("close", ICON_SIZE.lg) }, t3("btnLabelDelete"))
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "en" },
-          (0, import_react76.createElement)(Button, { variant: "primary" }, "Save"),
-          (0, import_react76.createElement)(Button, { variant: "outline" }, "Cancel"),
-          (0, import_react76.createElement)(Button, { variant: "ghost" }, "Learn more")
+          (0, import_react81.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react81.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react81.createElement)(Button, { variant: "ghost" }, "Learn more")
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "zh" },
-          (0, import_react76.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
-          (0, import_react76.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
-          (0, import_react76.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+          (0, import_react81.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react81.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react81.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "zh + en" },
-          (0, import_react76.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t3("btnLabelMixed")),
-          (0, import_react76.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
-          (0, import_react76.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+          (0, import_react81.createElement)(Button, { variant: "primary", icon: iconOf("sparkle", ICON_SIZE.lg) }, t3("btnLabelMixed")),
+          (0, import_react81.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react81.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
         )
       )
     ),
     // 10 档外观
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("btnVariantTitle"), hint: t3("btnVariantHint"), code: CODE_BTN_VARIANT },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        VARIANT_GROUPS.map((group) => (0, import_react76.createElement)(
+        VARIANT_GROUPS.map((group) => (0, import_react81.createElement)(
           Labeled,
           { key: group.label, label: group.label },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "6px", alignItems: "flex-start" } },
-            (0, import_react76.createElement)(Row, null, group.items.map((variant) => (0, import_react76.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
-            (0, import_react76.createElement)(Row, null, group.items.map((variant) => (0, import_react76.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
+            (0, import_react81.createElement)(Row, null, group.items.map((variant) => (0, import_react81.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
+            (0, import_react81.createElement)(Row, null, group.items.map((variant) => (0, import_react81.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant)))
           )
         ))
       )
     ),
     // 尺寸 / 图标位置 / block
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("btnSizeTitle"), hint: t3("btnSizeHint"), code: CODE_BTN_SIZE },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "size" },
-          ["sm", "md", "lg"].map((size4) => (0, import_react76.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus", ICON_SIZE[size4]) }, size4))
+          ["sm", "md", "lg"].map((size4) => (0, import_react81.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus", ICON_SIZE[size4]) }, size4))
         ),
         // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "icon" },
-          (0, import_react76.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
-          (0, import_react76.createElement)(Button, { variant: "outline", icon: (0, import_react76.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
+          (0, import_react81.createElement)(Button, { variant: "primary", icon: iconOf("send", ICON_SIZE.lg) }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react81.createElement)(Button, { variant: "outline", icon: (0, import_react81.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "iconRight" },
-          (0, import_react76.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
-          (0, import_react76.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+          (0, import_react81.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron", ICON_SIZE.lg) }, "\u66F4\u591A"),
+          (0, import_react81.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
         ),
         // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "block" },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react76.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
-            (0, import_react76.createElement)("div", { style: { height: "8px" } }),
-            (0, import_react76.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
+            (0, import_react81.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check", ICON_SIZE.lg) }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react81.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react81.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
           )
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: t3("btnIconOnly") },
-          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react76.createElement)(IconButton, { key: item.name, icon: (0, import_react76.createElement)(item.Icon, { size: 16 }), label: item.name }))
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react81.createElement)(IconButton, { key: item.name, icon: (0, import_react81.createElement)(item.Icon, { size: 16 }), label: item.name }))
         ),
         // 纯图标钮的配色轴：默认无底色；color 改图标色，background 给底色（用户 2026-11-02）
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "IconButton \xB7 color / background" },
-          (0, import_react76.createElement)(IconButton, { icon: (0, import_react76.createElement)(BUTTON_ICONS[0].Icon, { size: 16 }), label: "\u9ED8\u8BA4\u65E0\u5E95\u8272" }),
-          (0, import_react76.createElement)(IconButton, { icon: (0, import_react76.createElement)(BUTTON_ICONS[1].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u56FE\u6807\u8272", color: "#7c3aed" }),
-          (0, import_react76.createElement)(IconButton, { icon: (0, import_react76.createElement)(BUTTON_ICONS[2].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u5E95\u8272", color: "#fff", background: "#7c3aed" })
+          (0, import_react81.createElement)(IconButton, { icon: (0, import_react81.createElement)(BUTTON_ICONS[0].Icon, { size: 16 }), label: "\u9ED8\u8BA4\u65E0\u5E95\u8272" }),
+          (0, import_react81.createElement)(IconButton, { icon: (0, import_react81.createElement)(BUTTON_ICONS[1].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u56FE\u6807\u8272", color: "#7c3aed" }),
+          (0, import_react81.createElement)(IconButton, { icon: (0, import_react81.createElement)(BUTTON_ICONS[2].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u5E95\u8272", color: "#fff", background: "#7c3aed" })
         )
       )
     ),
     // 状态
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("btnStateTitle"), hint: t3("btnStateHint"), code: CODE_BTN_STATE },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "\u7981\u7528" },
-          (0, import_react76.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-          (0, import_react76.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-          (0, import_react76.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
+          (0, import_react81.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+          (0, import_react81.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+          (0, import_react81.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close", ICON_SIZE.lg) }, "\u7981\u7528")
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "loading" },
-          (0, import_react76.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-          (0, import_react76.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
+          (0, import_react81.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+          (0, import_react81.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh", ICON_SIZE.lg) }, "\u63D0\u4EA4\u4E2D")
         )
       )
     ),
     // 自定义颜色
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("btnColorTitle"), hint: t3("btnColorHint"), code: CODE_BTN_COLOR },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "\u5B9E\u5FC3" },
-          (0, import_react76.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react76.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
+          (0, import_react81.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react81.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle", ICON_SIZE.lg) }, color)))
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "\u63CF\u8FB9" },
-          (0, import_react76.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react76.createElement)(Button, { key: color, variant: "outline", color }, color)))
+          (0, import_react81.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react81.createElement)(Button, { key: color, variant: "outline", color }, color)))
         )
       )
     ),
     // 宽度三轴
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("btnWidthTitle"), hint: t3("btnWidthHint"), code: CODE_BTN_WIDTH },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react76.createElement)(Button, { variant: "outline", width: 120 }, "120px \u56FA\u5B9A\u5BBD")
+          (0, import_react81.createElement)(Button, { variant: "outline", width: 120 }, "120px \u56FA\u5B9A\u5BBD")
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", gap: "8px" } },
-            (0, import_react76.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u77ED"),
-            (0, import_react76.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+            (0, import_react81.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u77ED"),
+            (0, import_react81.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
           )
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { width: "320px" } },
-            (0, import_react76.createElement)(Button, { variant: "outline", maxWidth: 160 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6309\u94AE\u6587\u5B57\u6807\u7B7E")
+            (0, import_react81.createElement)(Button, { variant: "outline", maxWidth: 160 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6309\u94AE\u6587\u5B57\u6807\u7B7E")
           )
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
-          (0, import_react76.createElement)(Button, { variant: "outline", width: 120, minWidth: 200, maxWidth: 160 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+          (0, import_react81.createElement)(Button, { variant: "outline", width: 120, minWidth: 200, maxWidth: 160 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
         )
       )
     ),
-    (0, import_react76.createElement)(DocCode, { id: "button" }),
-    (0, import_react76.createElement)(DocApi, { id: "button" })
+    (0, import_react81.createElement)(DocCode, { id: "button" }),
+    (0, import_react81.createElement)(DocApi, { id: "button" })
   );
 }
 var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
@@ -62940,57 +63058,57 @@ var PERIODS = [
   { value: "month", label: "\u6708" }
 ];
 function InputPage() {
-  const [text2, setText] = (0, import_react76.useState)("");
-  const [num, setNum] = (0, import_react76.useState)(3);
-  const [checked, setChecked] = (0, import_react76.useState)(true);
-  const [seg, setSeg] = (0, import_react76.useState)("week");
-  const [filter2, setFilter] = (0, import_react76.useState)("all");
-  const [multi, setMulti] = (0, import_react76.useState)(["1"]);
-  const [iconSeg, setIconSeg] = (0, import_react76.useState)("search");
-  const [iconSeg2, setIconSeg2] = (0, import_react76.useState)("all");
-  const [kw, setKw] = (0, import_react76.useState)("");
-  const [igValue, setIgValue] = (0, import_react76.useState)("");
-  return (0, import_react76.createElement)(
+  const [text2, setText] = (0, import_react81.useState)("");
+  const [num, setNum] = (0, import_react81.useState)(3);
+  const [checked, setChecked] = (0, import_react81.useState)(true);
+  const [seg, setSeg] = (0, import_react81.useState)("week");
+  const [filter2, setFilter] = (0, import_react81.useState)("all");
+  const [multi, setMulti] = (0, import_react81.useState)(["1"]);
+  const [iconSeg, setIconSeg] = (0, import_react81.useState)("search");
+  const [iconSeg2, setIconSeg2] = (0, import_react81.useState)("all");
+  const [kw, setKw] = (0, import_react81.useState)("");
+  const [igValue, setIgValue] = (0, import_react81.useState)("");
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "input" }),
+    (0, import_react81.createElement)(DocProse, { id: "input" }),
     // Input 家族
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("demoInputFamily"), hint: t3("inputHint"), code: CODE_INPUT_FAMILY },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react76.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
+          (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
-          (0, import_react76.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
+          (0, import_react81.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react76.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
+          (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
           // 左侧图标槽（icon）+ 聚焦且有内容才出的清空钮（type="search"）
-          (0, import_react76.createElement)(Input, { type: "search", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+          (0, import_react81.createElement)(Input, { type: "search", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
         ),
-        (0, import_react76.createElement)(Input, { value: "bad value", onChange: () => {
+        (0, import_react81.createElement)(Input, { value: "bad value", onChange: () => {
         }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        (0, import_react76.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
-        (0, import_react76.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
+        (0, import_react81.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
+        (0, import_react81.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
       )
     ),
     // 组合输入框：输入框 + 按钮组焊成一体（前置标题 / 撤销 / 图标按钮 / 自定义高度）
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("inputGroupTitle"), hint: t3("inputGroupHint"), code: CODE_INPUT_GROUP },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", maxWidth: "460px" } },
-        (0, import_react76.createElement)(InputGroup, {
+        (0, import_react81.createElement)(InputGroup, {
           label: "\u4EFB\u52A1\u540D",
           value: igValue,
           onChange: setIgValue,
@@ -63004,22 +63122,22 @@ function InputPage() {
             } }
           ]
         }),
-        (0, import_react76.createElement)(InputGroup, {
+        (0, import_react81.createElement)(InputGroup, {
           size: "md",
           value: igValue,
           onChange: setIgValue,
           placeholder: "\u7EAF\u56FE\u6807 / \u56FE\u6807 + \u6587\u5B57 / \u7EAF\u6587\u5B57",
           actions: [
-            { icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }), ariaLabel: "\u91CD\u7F6E", onClick: () => {
+            { icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }), ariaLabel: "\u91CD\u7F6E", onClick: () => {
               setIgValue("");
             } },
-            { icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: "\u641C\u7D22", onClick: () => {
+            { icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: "\u641C\u7D22", onClick: () => {
             } },
             { label: "\u63D0\u4EA4", onClick: () => {
             } }
           ]
         }),
-        (0, import_react76.createElement)(InputGroup, {
+        (0, import_react81.createElement)(InputGroup, {
           value: igValue,
           onChange: setIgValue,
           height: 44,
@@ -63031,62 +63149,62 @@ function InputPage() {
       )
     ),
     // 问号提示：证明它不属于 Input 家族，随处可挂
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("btnHintTitle"), hint: t3("btnHintHint"), code: CODE_FIELD_HINT },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Row,
           null,
-          (0, import_react76.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
-          (0, import_react76.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+          (0, import_react81.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react81.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Row,
           null,
-          (0, import_react76.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
-          (0, import_react76.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+          (0, import_react81.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react81.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Row,
           null,
-          (0, import_react76.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
-          (0, import_react76.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
+          (0, import_react81.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react81.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
         )
       )
     ),
     // Switch / Checkbox / Segmented
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("switchTip"), hint: t3("checkboxHint"), code: CODE_SWITCH_SEG },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
           // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
           // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
           // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
-            (0, import_react76.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-            (0, import_react76.createElement)("span", {
+            (0, import_react81.createElement)(import_dsh_client_ui_primitives2.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+            (0, import_react81.createElement)("span", {
               style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
               onClick: () => {
                 setChecked(!checked);
               }
             }, "\u542F\u7528")
           ),
-          (0, import_react76.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
+          (0, import_react81.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
-          (0, import_react76.createElement)(Segmented, {
+          (0, import_react81.createElement)(Segmented, {
             items: [
               { value: "day", label: "\u65E5" },
               { value: "week", label: "\u5468" },
@@ -63095,7 +63213,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react76.createElement)(Segmented, {
+          (0, import_react81.createElement)(Segmented, {
             bordered: true,
             items: [
               { value: "day", label: "\u65E5" },
@@ -63105,7 +63223,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react76.createElement)(Segmented, {
+          (0, import_react81.createElement)(Segmented, {
             size: "sm",
             items: [
               { value: "day", label: "\u65E5" },
@@ -63115,7 +63233,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react76.createElement)(Segmented, {
+          (0, import_react81.createElement)(Segmented, {
             size: "sm",
             bordered: true,
             items: [
@@ -63128,7 +63246,7 @@ function InputPage() {
           })
         ),
         // 筛选条形态（真实插件同款）：中性计数 + 灰底轨道
-        (0, import_react76.createElement)(Segmented, {
+        (0, import_react81.createElement)(Segmented, {
           items: [
             { value: "all", label: t3("segAll"), count: 11 },
             { value: "doing", label: t3("segDoing"), count: 5 },
@@ -63139,7 +63257,7 @@ function InputPage() {
           value: filter2,
           onChange: setFilter
         }),
-        (0, import_react76.createElement)(Segmented, {
+        (0, import_react81.createElement)(Segmented, {
           bordered: true,
           items: [
             { value: "all", label: t3("segAll"), count: 11 },
@@ -63152,7 +63270,7 @@ function InputPage() {
           onChange: setFilter
         }),
         // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react76.createElement)(Segmented, {
+        (0, import_react81.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
@@ -63163,7 +63281,7 @@ function InputPage() {
           value: multi,
           onChange: setMulti
         }),
-        (0, import_react76.createElement)(Segmented, {
+        (0, import_react81.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           bordered: true,
@@ -63176,20 +63294,20 @@ function InputPage() {
           onChange: setMulti
         }),
         // 段内图标：icon 在前、文字居中、count 在后；只有图标（无文字 / 计数）时自动正方形
-        (0, import_react76.createElement)(Segmented, {
+        (0, import_react81.createElement)(Segmented, {
           items: [
-            { value: "search", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), ariaLabel: "\u641C\u7D22" },
-            { value: "clock", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), ariaLabel: "\u65F6\u95F4" },
-            { value: "play", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }), ariaLabel: "\u8FD0\u884C" }
+            { value: "search", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), ariaLabel: "\u641C\u7D22" },
+            { value: "clock", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), ariaLabel: "\u65F6\u95F4" },
+            { value: "play", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }), ariaLabel: "\u8FD0\u884C" }
           ],
           value: iconSeg,
           onChange: setIconSeg
         }),
-        (0, import_react76.createElement)(Segmented, {
+        (0, import_react81.createElement)(Segmented, {
           items: [
-            { value: "all", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: t3("segAll"), count: 11 },
-            { value: "doing", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), label: t3("segDoing"), count: 5 },
-            { value: "done", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconCheckOutlineRegular, { size: 14 }), label: t3("segClaimed"), count: 11 }
+            { value: "all", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, { size: 14 }), label: t3("segAll"), count: 11 },
+            { value: "doing", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }), label: t3("segDoing"), count: 5 },
+            { value: "done", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconCheckOutlineRegular, { size: 14 }), label: t3("segClaimed"), count: 11 }
           ],
           value: iconSeg2,
           onChange: setIconSeg2
@@ -63197,36 +63315,36 @@ function InputPage() {
       )
     ),
     // 选中片配色（tone，2026-10-29）：内置色名 / 自定义一对颜色
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("segToneTitle"), hint: t3("segToneHint"), code: CODE_SEG_TONE },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: 'tone="teal"' },
-          (0, import_react76.createElement)(Segmented, { tone: "teal", items: PERIODS, value: seg, onChange: setSeg })
+          (0, import_react81.createElement)(Segmented, { tone: "teal", items: PERIODS, value: seg, onChange: setSeg })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: 'tone="danger"' },
-          (0, import_react76.createElement)(Segmented, { tone: "danger", items: PERIODS, value: seg, onChange: setSeg })
+          (0, import_react81.createElement)(Segmented, { tone: "danger", items: PERIODS, value: seg, onChange: setSeg })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "{ bg, fg }" },
-          (0, import_react76.createElement)(Segmented, {
+          (0, import_react81.createElement)(Segmented, {
             tone: { bg: "#0b3d2e", fg: "#d1fae5" },
             items: PERIODS,
             value: seg,
             onChange: setSeg
           })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "tone + weekday" },
-          (0, import_react76.createElement)(Segmented, {
+          (0, import_react81.createElement)(Segmented, {
             multiple: true,
             tone: "purple",
             className: "dshpc-seg--weekday",
@@ -63241,16 +63359,16 @@ function InputPage() {
         )
       )
     ),
-    (0, import_react76.createElement)(DocCode, { id: "input" }),
-    (0, import_react76.createElement)(DocApi, { id: "input" }),
-    (0, import_react76.createElement)(DocApi, { id: "input-group" }),
-    (0, import_react76.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
+    (0, import_react81.createElement)(DocCode, { id: "input" }),
+    (0, import_react81.createElement)(DocApi, { id: "input" }),
+    (0, import_react81.createElement)(DocApi, { id: "input-group" }),
+    (0, import_react81.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
   );
 }
 var ICON_OPTIONS = [
-  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
-  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
-  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
+  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }) },
+  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 14 }) },
+  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconPlayOutlineRegular, { size: 14 }) }
 ];
 var CODE_PICKER = `// \u5355\u9009\uFF1Aicon + \u53EF\u641C\u7D22 / \u53EF\u6E05\u9664
 <Picker
@@ -63326,51 +63444,51 @@ var SPLIT_MEMBERS = {
   ]
 };
 function PickerPage() {
-  const [single, setSingle] = (0, import_react76.useState)(void 0);
-  const [multi, setMulti] = (0, import_react76.useState)([]);
-  const [model, setModel] = (0, import_react76.useState)("");
-  const [model2, setModel2] = (0, import_react76.useState)("");
-  const [ws, setWs] = (0, import_react76.useState)(void 0);
-  const [period2, setPeriod] = (0, import_react76.useState)("formal");
-  const [bucket, setBucket] = (0, import_react76.useState)("");
-  const [scope, setScope] = (0, import_react76.useState)("project");
-  const [member, setMember] = (0, import_react76.useState)("");
-  const [groups, setGroups] = (0, import_react76.useState)(["a"]);
-  const [groupValue, setGroupValue] = (0, import_react76.useState)("");
-  return (0, import_react76.createElement)(
+  const [single, setSingle] = (0, import_react81.useState)(void 0);
+  const [multi, setMulti] = (0, import_react81.useState)([]);
+  const [model, setModel] = (0, import_react81.useState)("");
+  const [model2, setModel2] = (0, import_react81.useState)("");
+  const [ws, setWs] = (0, import_react81.useState)(void 0);
+  const [period2, setPeriod] = (0, import_react81.useState)("formal");
+  const [bucket, setBucket] = (0, import_react81.useState)("");
+  const [scope, setScope] = (0, import_react81.useState)("project");
+  const [member, setMember] = (0, import_react81.useState)("");
+  const [groups, setGroups] = (0, import_react81.useState)(["a"]);
+  const [groupValue, setGroupValue] = (0, import_react81.useState)("");
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "picker" }),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "picker" }),
+    (0, import_react81.createElement)(
       Example,
       { title: "Picker", hint: t3("pickerHint"), code: CODE_PICKER },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react76.createElement)(Picker, {
+        (0, import_react81.createElement)(Picker, {
           options: ICON_OPTIONS,
-          icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
+          icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 14 }),
           value: single,
           onChange: (v) => setSingle(v),
           searchable: true,
           clearable: true,
           placeholder: "\u5355\u9009\uFF08icon + \u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
         }),
-        (0, import_react76.createElement)(Picker, {
+        (0, import_react81.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
           placeholder: "\u5355\u9009\uFF08\u65E0\u641C\u7D22\u6846\uFF09"
         }),
-        (0, import_react76.createElement)(Picker, {
+        (0, import_react81.createElement)(Picker, {
           groups: [
             { value: "g1", label: "\u7EC4\u4E00", options: ICON_OPTIONS },
             {
               value: "g2",
               label: "\u7EC4\u4E8C",
               options: [
-                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
-                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
+                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 14 }) },
+                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconPlusOutlineRegular, { size: 14 }) }
               ]
             }
           ],
@@ -63381,13 +63499,13 @@ function PickerPage() {
           searchable: true,
           placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF0C\u53EF\u53CD\u9009\uFF09"
         }),
-        (0, import_react76.createElement)(Picker, {
+        (0, import_react81.createElement)(Picker, {
           options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
           degraded: true,
           disabled: true,
           placeholder: "\u964D\u7EA7 + \u7981\u7528"
         }),
-        (0, import_react76.createElement)(Picker, {
+        (0, import_react81.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
@@ -63396,16 +63514,16 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exModelPickerTitle"), hint: t3("modelPickerHint"), code: CODE_MODEL_PICKER },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
-        (0, import_react76.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
+        (0, import_react81.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
         // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
-        (0, import_react76.createElement)(ModelPicker, {
+        (0, import_react81.createElement)(ModelPicker, {
           value: model2,
           onChange: setModel2,
           variant: "cascade",
@@ -63413,14 +63531,14 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exWorkspacePickerTitle"), hint: t3("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
-        (0, import_react76.createElement)(WorkspacePicker, {
+        (0, import_react81.createElement)(WorkspacePicker, {
           value: ws,
           onChange: (v) => setWs(v),
           clearable: true,
@@ -63428,18 +63546,18 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exSplitGroupTitle"), hint: t3("splitGroupHint"), code: CODE_SPLIT_GROUP },
       // 形态一（单选滑块 + 下拉）：左滑块选「正式组 / 测试组」，右格下拉联动换源、且略长；sm/md/lg 三档
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
         ["sm", "md", "lg"].map(
-          (sz) => (0, import_react76.createElement)(
+          (sz) => (0, import_react81.createElement)(
             SplitGroup,
             { key: sz, label: `\u5355\u9009 \xB7 ${sz}` },
-            (0, import_react76.createElement)(Segmented, {
+            (0, import_react81.createElement)(Segmented, {
               size: sz,
               items: SPLIT_SINGLE_OPTS,
               value: period2,
@@ -63448,7 +63566,7 @@ function PickerPage() {
                 setBucket("");
               }
             }),
-            (0, import_react76.createElement)(Picker, {
+            (0, import_react81.createElement)(Picker, {
               size: sz,
               options: SPLIT_TARGETS[period2] ?? [],
               value: bucket,
@@ -63461,14 +63579,14 @@ function PickerPage() {
         )
       ),
       // 形态二（下拉 + 下拉）：左格「范围」、右格「值」，三个尺寸各来一个
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
         ["sm", "md", "lg"].map(
-          (sz) => (0, import_react76.createElement)(
+          (sz) => (0, import_react81.createElement)(
             SplitGroup,
             { key: sz, label: `\u4E0B\u62C9 \xB7 ${sz}` },
-            (0, import_react76.createElement)(Picker, {
+            (0, import_react81.createElement)(Picker, {
               size: sz,
               options: SPLIT_SCOPES,
               value: scope,
@@ -63478,7 +63596,7 @@ function PickerPage() {
               },
               minWidth: 110
             }),
-            (0, import_react76.createElement)(Picker, {
+            (0, import_react81.createElement)(Picker, {
               size: sz,
               options: SPLIT_MEMBERS[scope] ?? [],
               value: member,
@@ -63491,20 +63609,20 @@ function PickerPage() {
         )
       ),
       // 多选：左滑块 A/B/C 三组可多选，右格一个下拉
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           SplitGroup,
           { label: "\u591A\u9009" },
-          (0, import_react76.createElement)(Segmented, {
+          (0, import_react81.createElement)(Segmented, {
             size: "lg",
             multiple: true,
             items: SPLIT_GROUPS,
             value: groups,
             onChange: setGroups
           }),
-          (0, import_react76.createElement)(Picker, {
+          (0, import_react81.createElement)(Picker, {
             size: "lg",
             options: SPLIT_FIXED,
             value: groupValue,
@@ -63515,10 +63633,10 @@ function PickerPage() {
         )
       )
     ),
-    (0, import_react76.createElement)(DocApi, { id: "split-group" }),
-    (0, import_react76.createElement)(DocCode, { id: "picker" }),
-    (0, import_react76.createElement)(DocApi, { id: "picker" }),
-    (0, import_react76.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
+    (0, import_react81.createElement)(DocApi, { id: "split-group" }),
+    (0, import_react81.createElement)(DocCode, { id: "picker" }),
+    (0, import_react81.createElement)(DocApi, { id: "picker" }),
+    (0, import_react81.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
   );
 }
 var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM\uFF08\u51FD\u6570\u7EC4\u4EF6\u6302\u4E0D\u4E0A \u21D2 \u65E0\u6C14\u6CE1\uFF09
@@ -63542,17 +63660,17 @@ var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80
   content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>\u2026</div>}
 />`;
 function TooltipPage() {
-  return (0, import_react76.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "tooltip" }),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "tooltip" }),
+    (0, import_react81.createElement)(
       Example,
       { title: t3("tooltipTitle"), hint: t3("tooltipHint"), code: CODE_TOOLTIP },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: t3("tooltipAnchorButton") },
           tipAnchor("top \xB7 center", "top", "center"),
@@ -63561,52 +63679,52 @@ function TooltipPage() {
           tipAnchor("bottom \xB7 end", "bottom", "end"),
           tipAnchor("right", "right")
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: t3("tooltipAnchorText") },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: t3("tooltipHint"), side: "top" },
-            (0, import_react76.createElement)("span", {
+            (0, import_react81.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipAnchorText"))
           ),
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: t3("tooltipLongText"), side: "bottom", maxWidth: 240 },
-            (0, import_react76.createElement)("span", {
+            (0, import_react81.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipLong"))
           )
         ),
         // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: t3("tooltipMultiline") },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             import_dsh_client_ui_primitives2.Tooltip,
             { label: `${t3("tooltipName")}
 ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
-            (0, import_react76.createElement)("span", {
+            (0, import_react81.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName"))
           )
         ),
         // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: t3("tooltipRich") },
-          (0, import_react76.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
+          (0, import_react81.createElement)(import_dsh_client_ui_primitives2.HoverCard, {
             variant: "compact",
             openDelayMs: 200,
-            anchor: (0, import_react76.createElement)("span", {
+            anchor: (0, import_react81.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName")),
             // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
             // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
             // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
             // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-            content: (0, import_react76.createElement)(
+            content: (0, import_react81.createElement)(
               "div",
               {
                 style: {
@@ -63615,15 +63733,15 @@ ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
                   color: "var(--dsw-static-neutral-bluish-00,#fff)"
                 }
               },
-              (0, import_react76.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t3("tooltipName")),
-              (0, import_react76.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t3("tooltipLongText"))
+              (0, import_react81.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t3("tooltipName")),
+              (0, import_react81.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t3("tooltipLongText"))
             )
           })
         )
       )
     ),
-    (0, import_react76.createElement)(DocCode, { id: "tooltip" }),
-    (0, import_react76.createElement)(DocApi, { id: "tooltip" })
+    (0, import_react81.createElement)(DocCode, { id: "tooltip" }),
+    (0, import_react81.createElement)(DocApi, { id: "tooltip" })
   );
 }
 var CODE_CARD = `// Card\uFF1A\u590D\u7528 Surface \u5916\u6846\uFF08\u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2 12\uFF09\uFF1B\u8272\u6761\u65B9\u4F4D\u4E0E\u95F4\u8DDD\u90FD\u53EF\u914D
@@ -63670,162 +63788,162 @@ var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1A\u6807\u7B7E\uFF08\u53
   ]}
 />`;
 function CardPage() {
-  const [seg, setSeg] = (0, import_react76.useState)("all");
-  const [kw, setKw] = (0, import_react76.useState)("");
-  return (0, import_react76.createElement)(
+  const [seg, setSeg] = (0, import_react81.useState)("all");
+  const [kw, setKw] = (0, import_react81.useState)("");
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "surface" }),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "surface" }),
+    (0, import_react81.createElement)(
       Example,
       { title: t3("demoSurfaceTitle"), hint: t3("surfaceHint"), code: CODE_SURFACE },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", maxWidth: "640px" } },
         ["plain", "raised", "sunken", "subtle"].map(
-          (tone) => (0, import_react76.createElement)(
+          (tone) => (0, import_react81.createElement)(
             Surface,
             { key: tone, tone, padding: "md", style: { flex: "1 1 140px" } },
-            (0, import_react76.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `tone="${tone}"`),
-            (0, import_react76.createElement)("div", { style: { marginTop: "6px" } }, (0, import_react76.createElement)(Button, { size: "sm", variant: "outline" }, "Button"))
+            (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `tone="${tone}"`),
+            (0, import_react81.createElement)("div", { style: { marginTop: "6px" } }, (0, import_react81.createElement)(Button, { size: "sm", variant: "outline" }, "Button"))
           )
         )
       )
     ),
-    (0, import_react76.createElement)(DocProse, { id: "card" }),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "card" }),
+    (0, import_react81.createElement)(
       Example,
       { title: t3("demoCardTitle"), hint: t3("cardHint"), code: CODE_CARD },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
         // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react76.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            action: (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
           },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
             "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
           ),
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react76.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react76.createElement)(Chip, null, "#npm"),
-            (0, import_react76.createElement)(Chip, null, "#pnpm"),
-            (0, import_react76.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react76.createElement)(Chip, null, "#\u8FC1\u79FB")
+            (0, import_react81.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react81.createElement)(Chip, null, "#npm"),
+            (0, import_react81.createElement)(Chip, null, "#pnpm"),
+            (0, import_react81.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react81.createElement)(Chip, null, "#\u8FC1\u79FB")
           )
         ),
         // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react76.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+            action: (0, import_react81.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
           },
-          (0, import_react76.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react76.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
+          (0, import_react81.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react81.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
         // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"].map(
-            (a) => (0, import_react76.createElement)(
+            (a) => (0, import_react81.createElement)(
               Card,
               { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react76.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("demoBarTitle"), hint: t3("barHint"), code: CODE_BAR },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", maxWidth: "640px" } },
         ["left", "right", "top", "bottom"].map(
-          (side) => (0, import_react76.createElement)(
+          (side) => (0, import_react81.createElement)(
             Card,
             { key: side, accent: "business", bar: { side } },
-            (0, import_react76.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)", fontWeight: 600 } }, `bar.side="${side}"`),
-            (0, import_react76.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "inset 12 \xB7 gap 12")
+            (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)", fontWeight: 600 } }, `bar.side="${side}"`),
+            (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "inset 12 \xB7 gap 12")
           )
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("demoStripTitle"), hint: t3("stripHint"), code: CODE_STRIP_CARD },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           StripCard,
           {
             accent: "business",
-            action: (0, import_react76.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+            action: (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
           },
-          (0, import_react76.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react76.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react76.createElement)(
+            (0, import_react81.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react81.createElement)(
               "span",
               { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
             )
           )
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           StripCard,
           {
             accent: "success",
             // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
-            action: (0, import_react76.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+            action: (0, import_react81.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
           },
-          (0, import_react76.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react76.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+          (0, import_react81.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react81.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"].map(
-            (a) => (0, import_react76.createElement)(
+            (a) => (0, import_react81.createElement)(
               StripCard,
               { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
-              (0, import_react76.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react81.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("sectionHeadTitle"), hint: t3("exSectionHeadHint"), code: CODE_SECTION_HEAD },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "8px" } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
-        (0, import_react76.createElement)(SectionHead, {
-          icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
-          title: (0, import_react76.createElement)(
+        (0, import_react81.createElement)(SectionHead, {
+          icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconSparkleRegular, { size: 16 }),
+          title: (0, import_react81.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5168\u90E8\u5F85\u529E",
-            (0, import_react76.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
+            (0, import_react81.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
           ),
           right: [
-            (0, import_react76.createElement)(Segmented, {
+            (0, import_react81.createElement)(Segmented, {
               items: [
                 { value: "all", label: t3("segAll"), count: 22 },
                 { value: "doing", label: t3("segDoing"), count: 11 },
@@ -63835,40 +63953,40 @@ function CardPage() {
               onChange: setSeg
             }),
             // 搜索框 140px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
-            (0, import_react76.createElement)(
+            (0, import_react81.createElement)(
               "div",
               { style: { width: "140px", flex: "none" } },
-              (0, import_react76.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+              (0, import_react81.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
             )
           ]
         }),
         // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
-        (0, import_react76.createElement)(SectionHead, {
-          icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
-          title: (0, import_react76.createElement)(
+        (0, import_react81.createElement)(SectionHead, {
+          icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconClockOutlineRegular, { size: 16 }),
+          title: (0, import_react81.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
             "\u6211\u7684\u5F85\u529E",
-            (0, import_react76.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
+            (0, import_react81.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
           ),
-          right: (0, import_react76.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
+          right: (0, import_react81.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
         }),
         // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
-        (0, import_react76.createElement)(SectionHead, {
-          icon: (0, import_react76.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
-          title: (0, import_react76.createElement)(
+        (0, import_react81.createElement)(SectionHead, {
+          icon: (0, import_react81.createElement)(import_dsh_client_ui_primitives2.IconRefreshOutlineRegular, { size: 16 }),
+          title: (0, import_react81.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5DF2\u5F52\u6863",
-            (0, import_react76.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
+            (0, import_react81.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
           ),
           right: [
-            (0, import_react76.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
-            (0, import_react76.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
+            (0, import_react81.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
+            (0, import_react81.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
           ]
         }),
         // D：固定标签颜色速览 —— accent 内置色名 / 任意色值 / default / false
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "4px" } },
           [
@@ -63877,12 +63995,12 @@ function CardPage() {
             ["success", "success"],
             ["#7c3aed", "#7c3aed"],
             [false, "false\uFF08\u4E0D\u753B\uFF09"]
-          ].map(([accent, label]) => (0, import_react76.createElement)(SectionHead, { key: String(accent), accent, title: label, flush: true }))
+          ].map(([accent, label]) => (0, import_react81.createElement)(SectionHead, { key: String(accent), accent, title: label, flush: true }))
         )
       )
     ),
-    (0, import_react76.createElement)(DocCode, { id: "card" }),
-    (0, import_react76.createElement)(DocApi, { id: "card" })
+    (0, import_react81.createElement)(DocCode, { id: "card" }),
+    (0, import_react81.createElement)(DocApi, { id: "card" })
   );
 }
 var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884C\u56FA\u5B9A\u7531\u5927\u5230\u5C0F\uFF08md \u2192 sm \u2192 xs\uFF09\uFF0C\u540C\u6863\u6587\u6848\u4E0D\u6DF7\u6392
@@ -63919,100 +64037,100 @@ var CODE_MARQUEE = `// \u5B9A\u5BBD\u5C0F\u5BB9\u5668\uFF1A\u653E\u4E0D\u4E0B\u6
 var CODE_LIVE = `// \u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6\u5185\u5BB9\u8C03\u7528\u65B9\u6E32\u67D3
 <LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`;
 function ChipPage() {
-  return (0, import_react76.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "chip" }),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "chip" }),
+    (0, import_react81.createElement)(
       Example,
       { title: "Chip", hint: t3("chipHint"), code: CODE_CHIP },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
         ...["md", "sm", "xs"].map(
-          (sz) => (0, import_react76.createElement)(
+          (sz) => (0, import_react81.createElement)(
             "div",
             { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-            (0, import_react76.createElement)(Chip, { size: sz, tone: "warning" }, t3("chipOverdue")),
-            (0, import_react76.createElement)(Chip, { size: sz, tone: "danger" }, t3("chipStalled")),
-            (0, import_react76.createElement)(Chip, { size: sz, tone: "success" }, t3("chipDone")),
-            (0, import_react76.createElement)(Chip, { size: sz, tone: "business" }, t3("chipDoing")),
-            (0, import_react76.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
+            (0, import_react81.createElement)(Chip, { size: sz, tone: "warning" }, t3("chipOverdue")),
+            (0, import_react81.createElement)(Chip, { size: sz, tone: "danger" }, t3("chipStalled")),
+            (0, import_react81.createElement)(Chip, { size: sz, tone: "success" }, t3("chipDone")),
+            (0, import_react81.createElement)(Chip, { size: sz, tone: "business" }, t3("chipDoing")),
+            (0, import_react81.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
           )
         ),
         // 中性 # 标签（语言无关）+ 长文字回归样
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react76.createElement)(Chip, null, "#npm"),
-          (0, import_react76.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react76.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react76.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+          (0, import_react81.createElement)(Chip, null, "#npm"),
+          (0, import_react81.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react81.createElement)(Chip, { onClick: () => showToast("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react81.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("chipWidthTitle"), hint: t3("chipWidthHint"), code: CODE_CHIP_WIDTH },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react76.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
+          (0, import_react81.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", gap: "8px" } },
-            (0, import_react76.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
-            (0, import_react76.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+            (0, import_react81.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
+            (0, import_react81.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
           )
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react76.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
+            (0, import_react81.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
           )
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Labeled,
           { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
-          (0, import_react76.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+          (0, import_react81.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("marqueeTitle"), hint: t3("exMarqueeHint"), code: CODE_MARQUEE },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { maxWidth: "148px" } },
-          (0, import_react76.createElement)(MarqueeText, { text: "\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" })
+          (0, import_react81.createElement)(MarqueeText, { text: "\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Chip,
           { tone: "business", size: "md", maxWidth: 148 },
           "\u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1A\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF0Chover \u8DD1\u9A6C\u706F"
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("liveTitle"), hint: t3("exLiveHint"), code: CODE_LIVE },
-      (0, import_react76.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+      (0, import_react81.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
-    (0, import_react76.createElement)(DocCode, { id: "chip" }),
-    (0, import_react76.createElement)(DocApi, { id: "chip" })
+    (0, import_react81.createElement)(DocCode, { id: "chip" }),
+    (0, import_react81.createElement)(DocApi, { id: "chip" })
   );
 }
 var CODE_HOST_MODAL = `// \u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u76F4\u63A5\u7528\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF09
@@ -64161,72 +64279,72 @@ blocked.close()
 <LoadingToast text="\u6B63\u5728\u52A0\u8F7D" />
 <LoadingBlock text="\u5904\u7406\u4E2D" />`;
 function FeedbackPage() {
-  const [open, setOpen] = (0, import_react76.useState)(false);
-  const [openNative, setOpenNative] = (0, import_react76.useState)(false);
-  const [alertState, setAlertState] = (0, import_react76.useState)(null);
-  const [confirmCfg, setConfirmCfg] = (0, import_react76.useState)(null);
-  const [confirmResult, setConfirmResult] = (0, import_react76.useState)("");
-  const [largeOpen, setLargeOpen] = (0, import_react76.useState)(false);
-  const [largeOpenB, setLargeOpenB] = (0, import_react76.useState)(false);
-  const [sheetCfg, setSheetCfg] = (0, import_react76.useState)({ side: "left", footer: false });
-  const [sheetOpen, setSheetOpen] = (0, import_react76.useState)(false);
-  const [nativeText, setNativeText] = (0, import_react76.useState)("");
+  const [open, setOpen] = (0, import_react81.useState)(false);
+  const [openNative, setOpenNative] = (0, import_react81.useState)(false);
+  const [alertState, setAlertState] = (0, import_react81.useState)(null);
+  const [confirmCfg, setConfirmCfg] = (0, import_react81.useState)(null);
+  const [confirmResult, setConfirmResult] = (0, import_react81.useState)("");
+  const [largeOpen, setLargeOpen] = (0, import_react81.useState)(false);
+  const [largeOpenB, setLargeOpenB] = (0, import_react81.useState)(false);
+  const [sheetCfg, setSheetCfg] = (0, import_react81.useState)({ side: "left", footer: false });
+  const [sheetOpen, setSheetOpen] = (0, import_react81.useState)(false);
+  const [nativeText, setNativeText] = (0, import_react81.useState)("");
   const flash = (opts) => {
     const handle = showLoading(opts);
     window.setTimeout(() => handle.close(), 1200);
   };
-  return (0, import_react76.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "feedback" }),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "feedback" }),
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exSmallModalTitle"), hint: t3("exSmallModalHint"), code: CODE_SMALL_MODAL },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           null,
-          (0, import_react76.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react76.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
-            (0, import_react76.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
-            (0, import_react76.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
-            (0, import_react76.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
-            (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
+            (0, import_react81.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
+            (0, import_react81.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
+            (0, import_react81.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
+            (0, import_react81.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
+            (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
           ),
-          alertState !== null ? (0, import_react76.createElement)(AlertModal, {
+          alertState !== null ? (0, import_react81.createElement)(AlertModal, {
             severity: alertState.sev,
             title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
             message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
             onConfirm: () => setAlertState(null)
           }) : null
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           null,
-          (0, import_react76.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
-            (0, import_react76.createElement)(Button, { onClick: () => {
+            (0, import_react81.createElement)(Button, { onClick: () => {
               setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
               setConfirmResult("");
             } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
-            (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => {
               setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
               setConfirmResult("");
             } }, "danger \u53D8\u4F53"),
-            (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => {
+            (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => {
               setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
               setConfirmResult("");
             } }, "\u6539\u6587\u6848"),
-            confirmResult ? (0, import_react76.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
+            confirmResult ? (0, import_react81.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
           ),
-          confirmCfg !== null ? (0, import_react76.createElement)(ConfirmModal, {
+          confirmCfg !== null ? (0, import_react81.createElement)(ConfirmModal, {
             title: "\u5220\u9664\u4EFB\u52A1",
             message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
             tone: confirmCfg.tone,
@@ -64242,17 +64360,17 @@ function FeedbackPage() {
             }
           }) : null
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           null,
-          (0, import_react76.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => {
               alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => showToast("alert \u5DF2\u5173\u95ED"));
             } }, "alertModal()"),
-            (0, import_react76.createElement)(Button, { onClick: async () => {
+            (0, import_react81.createElement)(Button, { onClick: async () => {
               const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
               showToast(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
             } }, "confirmModal()")
@@ -64260,138 +64378,138 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exLargeModalTitle"), hint: t3("exLargeModalHint"), code: CODE_LARGE_MODAL },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           null,
-          (0, import_react76.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
-          (0, import_react76.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
-          open ? (0, import_react76.createElement)(Modal, {
+          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
+          (0, import_react81.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
+          open ? (0, import_react81.createElement)(Modal, {
             title: "\u4EFB\u52A1\u8BE6\u60C5",
             onClose: () => setOpen(false),
-            footer: (0, import_react76.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-          }, (0, import_react76.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+            footer: (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+          }, (0, import_react81.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           null,
-          (0, import_react76.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
-          (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
-          largeOpen ? (0, import_react76.createElement)(
+          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
+          (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
+          largeOpen ? (0, import_react81.createElement)(
             Modal,
             {
               size: "lg",
               title: "\u4F1A\u8BDD\u8BB0\u5F55",
-              headerActions: (0, import_react76.createElement)(
+              headerActions: (0, import_react81.createElement)(
                 Button,
                 { variant: "outline", size: "sm", icon: iconOf("chevron", 14) },
                 "\u66F4\u591A"
               ),
               onClose: () => setLargeOpen(false),
-              footer: (0, import_react76.createElement)(
+              footer: (0, import_react81.createElement)(
                 "div",
                 { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-                (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
-                (0, import_react76.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
+                (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
+                (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
               )
             },
-            (0, import_react76.createElement)(
+            (0, import_react81.createElement)(
               "div",
               null,
               Array.from(
                 { length: 40 },
-                (_, i2) => (0, import_react76.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
+                (_, i2) => (0, import_react81.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
               ),
-              (0, import_react76.createElement)("div", { className: "dshpc-overlay-head__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
+              (0, import_react81.createElement)("div", { className: "dshpc-overlay-head__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
             )
           ) : null
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           null,
-          (0, import_react76.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
-          (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
-          largeOpenB ? (0, import_react76.createElement)(
+          (0, import_react81.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
+          (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
+          largeOpenB ? (0, import_react81.createElement)(
             Modal,
             {
               size: "lg",
-              title: (0, import_react76.createElement)(
+              title: (0, import_react81.createElement)(
                 "div",
                 null,
-                (0, import_react76.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
-                (0, import_react76.createElement)("div", { className: "dshpc-overlay-head__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
+                (0, import_react81.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
+                (0, import_react81.createElement)("div", { className: "dshpc-overlay-head__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
               ),
               onClose: () => setLargeOpenB(false)
             },
-            (0, import_react76.createElement)(
+            (0, import_react81.createElement)(
               "div",
               null,
-              (0, import_react76.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
-              (0, import_react76.createElement)(Surface, { border: "faint", padding: "md", style: { marginTop: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
+              (0, import_react81.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
+              (0, import_react81.createElement)(Surface, { border: "faint", padding: "md", style: { marginTop: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
             )
           ) : null
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exSideSheetTitle"), hint: t3("exSideSheetHint"), code: CODE_SIDE_SHEET },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react76.createElement)(Button, { onClick: () => {
+        (0, import_react81.createElement)(Button, { onClick: () => {
           setSheetCfg({ side: "left", footer: false });
           setSheetOpen(true);
         } }, "\u4ECE\u5DE6\u4FA7\u6ED1\u51FA"),
-        (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => {
+        (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => {
           setSheetCfg({ side: "right", footer: false });
           setSheetOpen(true);
         } }, "\u4ECE\u53F3\u4FA7\u6ED1\u51FA"),
-        (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => {
           setSheetCfg({ side: "left", footer: true });
           setSheetOpen(true);
         } }, "\u5E26\u5E95\u680F"),
         // 常驻渲染 + open 布尔：关闭时才有收回去的动效（条件渲染会一卸载就没影）。
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           SideSheet,
           {
             open: sheetOpen,
             side: sheetCfg.side,
             title: "\u6587\u4EF6\u8BE6\u60C5",
-            extra: (0, import_react76.createElement)(Chip, null, "\u53EA\u8BFB"),
+            extra: (0, import_react81.createElement)(Chip, null, "\u53EA\u8BFB"),
             onClose: () => setSheetOpen(false),
-            footer: sheetCfg.footer ? (0, import_react76.createElement)(Button, { variant: "primary", onClick: () => setSheetOpen(false) }, "\u77E5\u9053\u4E86") : void 0
+            footer: sheetCfg.footer ? (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => setSheetOpen(false) }, "\u77E5\u9053\u4E86") : void 0
           },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "10px", fontSize: "13px", lineHeight: "1.7" } },
-            (0, import_react76.createElement)("div", null, "\u76AE\u80A4\u548C PanelDock \u5206\u680F\u4E00\u6A21\u4E00\u6837\uFF08\u5934\u90E8 / \u8FB9\u6846 / \u62D6\u62FD\u6761 / \u9634\u5F71\uFF09\uFF0C\u5BBD\u5EA6\u9ED8\u8BA4\u5C31\u80FD\u62D6 \u2014\u2014 \u4F46\u5B83\u76D6\u5728\u9875\u9762\u4E0A\uFF0C\u4E3B\u533A\u5BBD\u5EA6\u4E0D\u53D8\u3002"),
-            (0, import_react76.createElement)("div", null, "\u6CA1\u6709\u6536\u8D77\uFF1A\u5173\u5C31\u662F\u5173\uFF08\u5206\u680F\u624D\u6709\u6536\u8D77\u94AE\u548C\u8D34\u8FB9\u7684\u8033\u6735\uFF09\u3002"),
-            (0, import_react76.createElement)(Surface, { border: "faint", padding: "md", style: { fontSize: "13px" } }, "\u5185\u5BB9\u968F\u4FBF\u653E\uFF1A\u6587\u4EF6\u6811\u3001\u8BE6\u60C5\u3001\u7B5B\u9009\u8868\u5355\u90FD\u884C\u3002")
+            (0, import_react81.createElement)("div", null, "\u76AE\u80A4\u548C PanelDock \u5206\u680F\u4E00\u6A21\u4E00\u6837\uFF08\u5934\u90E8 / \u8FB9\u6846 / \u62D6\u62FD\u6761 / \u9634\u5F71\uFF09\uFF0C\u5BBD\u5EA6\u9ED8\u8BA4\u5C31\u80FD\u62D6 \u2014\u2014 \u4F46\u5B83\u76D6\u5728\u9875\u9762\u4E0A\uFF0C\u4E3B\u533A\u5BBD\u5EA6\u4E0D\u53D8\u3002"),
+            (0, import_react81.createElement)("div", null, "\u6CA1\u6709\u6536\u8D77\uFF1A\u5173\u5C31\u662F\u5173\uFF08\u5206\u680F\u624D\u6709\u6536\u8D77\u94AE\u548C\u8D34\u8FB9\u7684\u8033\u6735\uFF09\u3002"),
+            (0, import_react81.createElement)(Surface, { border: "faint", padding: "md", style: { fontSize: "13px" } }, "\u5185\u5BB9\u968F\u4FBF\u653E\uFF1A\u6587\u4EF6\u6811\u3001\u8BE6\u60C5\u3001\u7B5B\u9009\u8868\u5355\u90FD\u884C\u3002")
           )
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exHostModalTitle"), hint: t3("exHostModalHint"), code: CODE_HOST_MODAL },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
-        (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
+        (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => {
           void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
         } }, 'alertModal({skin:"host"})'),
-        (0, import_react76.createElement)(Button, { variant: "ghost", onClick: async () => {
+        (0, import_react81.createElement)(Button, { variant: "ghost", onClick: async () => {
           const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
           showToast(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
         } }, 'confirmModal({skin:"host"})'),
-        openNative ? (0, import_react76.createElement)(
+        openNative ? (0, import_react81.createElement)(
           Official.Modal,
           {
             open: openNative,
@@ -64400,22 +64518,22 @@ function FeedbackPage() {
             closeLabel: "\u5173\u95ED",
             description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
             contentClassName: "dshpc-native-demo-content",
-            footer: (0, import_react76.createElement)(
+            footer: (0, import_react81.createElement)(
               "div",
               { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-              (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
-              (0, import_react76.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
-              (0, import_react76.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+              (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react81.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react81.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
             )
           },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-            (0, import_react76.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
-            (0, import_react76.createElement)(
+            (0, import_react81.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react81.createElement)(
               "label",
               { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
-              (0, import_react76.createElement)(Checkbox, { checked: false, onChange: () => {
+              (0, import_react81.createElement)(Checkbox, { checked: false, onChange: () => {
               } }),
               "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
             )
@@ -64423,17 +64541,17 @@ function FeedbackPage() {
         ) : null
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exToastNotifyTitle"), hint: t3("exToastNotifyHint"), code: CODE_TOAST_NOTIFY },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react76.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
-        (0, import_react76.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react76.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react76.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
+        (0, import_react81.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react81.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react81.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react81.createElement)(
           Button,
           {
             onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
@@ -64444,7 +64562,7 @@ function FeedbackPage() {
           },
           "\u5355\u6309\u94AE+\u63CF\u8FF0"
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           Button,
           {
             onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
@@ -64459,15 +64577,15 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exToastHostTitle"), hint: t3("exToastHostHint"), code: CODE_TOAST_HOST },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react76.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
-        (0, import_react76.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(Button, { onClick: () => showHostToast("\u8FD9\u662F\u5BBF\u4E3B\u539F\u751F\u63D0\u793A") }, "\u666E\u901A"),
+        (0, import_react81.createElement)(Button, { onClick: () => showHostToast("\u64CD\u4F5C\u6210\u529F", { tone: "success" }) }, "\u6210\u529F(success)"),
+        (0, import_react81.createElement)(
           Button,
           {
             onClick: () => showHostToast("\u6709\u52A8\u4F5C\u7684\u539F\u751F\u63D0\u793A", {
@@ -64478,18 +64596,18 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exToastSonnerTitle"), hint: t3("exToastSonnerHint"), code: CODE_TOAST_NATIVE },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" } },
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u5DF2\u4FDD\u5B58") }, "\u666E\u901A(info)"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u6CE8\u610F\u4E00\u4E0B", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u6574\u6761\u81EA\u5B9A\u4E49\u8272", { color: "#7c3aed" }) }, "\u81EA\u5B9A\u4E49\u8272"),
+        (0, import_react81.createElement)(
           Button,
           {
             onClick: () => showToast("\u6D88\u5931\u540E\u56DE\u8C03", {
@@ -64499,40 +64617,40 @@ function FeedbackPage() {
           "\u5E26\u56DE\u8C03"
         )
       ),
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
-        (0, import_react76.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u5DE6", { position: "top-left" }) }, "top-left"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u4E2D", { position: "top-center" }) }, "top-center"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u9876\u90E8-\u53F3", { position: "top-right" }) }, "top-right"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u5DE6", { position: "bottom-left" }) }, "bottom-left"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u4E2D", { position: "bottom-center" }) }, "bottom-center"),
+        (0, import_react81.createElement)(Button, { onClick: () => showToast("\u5E95\u90E8-\u53F3", { position: "bottom-right" }) }, "bottom-right")
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exLoaderTitle"), hint: t3("exLoaderHint"), code: CODE_LOADER },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
         ...LOADER_VARIANTS.map(
-          (variant) => (0, import_react76.createElement)(
+          (variant) => (0, import_react81.createElement)(
             "div",
             { key: variant, style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
-            (0, import_react76.createElement)(
+            (0, import_react81.createElement)(
               "span",
               { style: { width: "56px", color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               variant
             ),
-            ...LOADER_SIZES.map((size4) => (0, import_react76.createElement)(Loader, { key: size4, variant, size: size4 }))
+            ...LOADER_SIZES.map((size4) => (0, import_react81.createElement)(Loader, { key: size4, variant, size: size4 }))
           )
         ),
         // 背景 / 定位 / 颜色都由调用方配：组件本身只是裸图标
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" } },
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             "span",
             {
               style: {
@@ -64542,9 +64660,9 @@ function FeedbackPage() {
                 background: "var(--dshpc-surface-sunken)"
               }
             },
-            (0, import_react76.createElement)(Loader, { size: "sm" })
+            (0, import_react81.createElement)(Loader, { size: "sm" })
           ),
-          (0, import_react76.createElement)(
+          (0, import_react81.createElement)(
             Surface,
             {
               padding: null,
@@ -64557,56 +64675,56 @@ function FeedbackPage() {
                 fontSize: "var(--dshpc-font-xs)"
               }
             },
-            (0, import_react76.createElement)(Loader, { variant: "blocks", size: "sm" }),
+            (0, import_react81.createElement)(Loader, { variant: "blocks", size: "sm" }),
             "\u6B63\u5728\u540C\u6B65"
           ),
-          (0, import_react76.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react76.createElement)(Loader, { size: "lg" }))
+          (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react81.createElement)(Loader, { size: "lg" }))
         ),
         // 同族的胶囊不定进度：三档尺寸
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
-          (0, import_react76.createElement)(LoaderBar, { size: "sm" }),
-          (0, import_react76.createElement)(LoaderBar, { size: "md" }),
-          (0, import_react76.createElement)(LoaderBar, { size: "lg" })
+          (0, import_react81.createElement)(LoaderBar, { size: "sm" }),
+          (0, import_react81.createElement)(LoaderBar, { size: "md" }),
+          (0, import_react81.createElement)(LoaderBar, { size: "lg" })
         )
       )
     ),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(
       Example,
       { title: t3("exLoadingTitle"), hint: t3("exLoadingHint"), code: CODE_LOADING },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" } },
-          (0, import_react76.createElement)(LoadingToast, null),
-          (0, import_react76.createElement)(LoadingBlock, { text: "\u5904\u7406\u4E2D" })
+          (0, import_react81.createElement)(LoadingToast, null),
+          (0, import_react81.createElement)(LoadingBlock, { text: "\u5904\u7406\u4E2D" })
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-          (0, import_react76.createElement)(Button, { onClick: () => flash() }, "\u5168\u5C40 toast\uFF081.2s\uFF09"),
-          (0, import_react76.createElement)(Button, { variant: "outline", onClick: () => flash({ variant: "block", text: "\u5904\u7406\u4E2D\u2026" }) }, "\u5168\u5C40 block\uFF081.2s\uFF09"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u906E\u7F69 0.3", mask: true, maskOpacity: 0.3 }) }, "\u906E\u7F69 0.3"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u900F\u660E\u906E\u7F69", mask: true }) }, "\u906E\u7F69\u900F\u660E\uFF08\u4ECD\u6321\u4F4F\u70B9\u51FB\uFF09")
+          (0, import_react81.createElement)(Button, { onClick: () => flash() }, "\u5168\u5C40 toast\uFF081.2s\uFF09"),
+          (0, import_react81.createElement)(Button, { variant: "outline", onClick: () => flash({ variant: "block", text: "\u5904\u7406\u4E2D\u2026" }) }, "\u5168\u5C40 block\uFF081.2s\uFF09"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u906E\u7F69 0.3", mask: true, maskOpacity: 0.3 }) }, "\u906E\u7F69 0.3"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u900F\u660E\u906E\u7F69", mask: true }) }, "\u906E\u7F69\u900F\u660E\uFF08\u4ECD\u6321\u4F4F\u70B9\u51FB\uFF09")
         ),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(
           "div",
           { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-left", text: "top-left" }) }, "top-left"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-center", text: "top-center" }) }, "top-center"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-right", text: "top-right" }) }, "top-right"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "center", text: "center" }) }, "center"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-left", text: "bottom-left" }) }, "bottom-left"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-center", text: "bottom-center\uFF08\u9ED8\u8BA4\uFF09" }) }, "bottom-center"),
-          (0, import_react76.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-right", text: "bottom-right" }) }, "bottom-right")
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-left", text: "top-left" }) }, "top-left"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-center", text: "top-center" }) }, "top-center"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-right", text: "top-right" }) }, "top-right"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "center", text: "center" }) }, "center"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-left", text: "bottom-left" }) }, "bottom-left"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-center", text: "bottom-center\uFF08\u9ED8\u8BA4\uFF09" }) }, "bottom-center"),
+          (0, import_react81.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-right", text: "bottom-right" }) }, "bottom-right")
         )
       )
     ),
-    (0, import_react76.createElement)(DocCode, { id: "feedback" }),
-    (0, import_react76.createElement)(DocApi, { id: "feedback" })
+    (0, import_react81.createElement)(DocCode, { id: "feedback" }),
+    (0, import_react81.createElement)(DocApi, { id: "feedback" })
   );
 }
 var CODE_DOCK = `// 1) \u5EFA\u4E00\u4E2A dock \u63A7\u5236\u5668\uFF08\u5E94\u7528\u7EA7\u5355\u4F8B\uFF1BmaxPanels \u9ED8\u8BA4 3\uFF09
@@ -64638,8 +64756,8 @@ dock.isCollapsed('files')
 // 4) \u8BA2\u9605\u72B6\u6001\u9A71\u52A8 UI\uFF08React\uFF09
 const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`;
 function LayoutPage() {
-  const state = (0, import_react76.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
-  const [notice, setNotice] = (0, import_react76.useState)(null);
+  const state = (0, import_react81.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
+  const [notice, setNotice] = (0, import_react81.useState)(null);
   const open = (id3) => {
     const result = demoDock.open(id3);
     setNotice(result.ok ? null : t3("dockLimitWarn"));
@@ -64654,24 +64772,24 @@ function LayoutPage() {
   };
   const opened = state.ids;
   const collapsedIds = state.collapsed;
-  return (0, import_react76.createElement)(
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "layout" }),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "layout" }),
+    (0, import_react81.createElement)(
       Example,
       { title: "PanelDock", hint: t3("dockHint"), code: CODE_DOCK },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
-        (0, import_react76.createElement)(Button, { size: "sm", onClick: () => open("A") }, t3("dockBtnOpenA")),
-        (0, import_react76.createElement)(Button, { size: "sm", onClick: () => open("B") }, t3("dockBtnOpenB")),
-        (0, import_react76.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t3("dockBtnOpenA2")),
-        (0, import_react76.createElement)(Button, { size: "sm", onClick: () => close("A") }, t3("dockBtnCloseA")),
-        (0, import_react76.createElement)(Button, { size: "sm", onClick: () => collapse("A") }, t3("dockBtnCollapseA")),
-        (0, import_react76.createElement)(Button, { size: "sm", onClick: () => open("default") }, t3("dockBtnDefault")),
-        (0, import_react76.createElement)(Button, { size: "sm", onClick: () => open("C") }, t3("dockBtnOpenC")),
-        (0, import_react76.createElement)(
+        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => open("A") }, t3("dockBtnOpenA")),
+        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => open("B") }, t3("dockBtnOpenB")),
+        (0, import_react81.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t3("dockBtnOpenA2")),
+        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => close("A") }, t3("dockBtnCloseA")),
+        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => collapse("A") }, t3("dockBtnCollapseA")),
+        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => open("default") }, t3("dockBtnDefault")),
+        (0, import_react81.createElement)(Button, { size: "sm", onClick: () => open("C") }, t3("dockBtnOpenC")),
+        (0, import_react81.createElement)(
           Button,
           {
             size: "sm",
@@ -64684,21 +64802,21 @@ function LayoutPage() {
           t3("dockBtnReset")
         )
       ),
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } },
         `${t3("dockOpened")}${opened.length === 0 ? "\u2014" : opened.join(", ")}`,
         collapsedIds.length === 0 ? "" : `\u3000${t3("dockCollapsed")}${collapsedIds.join(", ")}`,
         notice === null ? "" : `\u3000${notice}`
       ),
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
         t3("dockMainText")
       )
     ),
-    (0, import_react76.createElement)(DocCode, { id: "layout" }),
-    (0, import_react76.createElement)(DocApi, { id: "layout" })
+    (0, import_react81.createElement)(DocCode, { id: "layout" }),
+    (0, import_react81.createElement)(DocApi, { id: "layout" })
   );
 }
 var CODE_DATETIME = `// \u5355\u4E2A\u65F6\u523B\uFF1Aprecision \u63A7\u5236\u7CBE\u5EA6\uFF08day / hour / minute / second\uFF09
@@ -64707,43 +64825,43 @@ h(DateTimePicker, { precision: 'minute', value: at, onChange: setAt })
 // \u65F6\u95F4\u6BB5\uFF1A\u8D77\u6B62\u4E24\u4E2A\u72EC\u7ACB\u6846\u3001\u540C\u65F6\u5C55\u5F00\uFF1Bday \u7CBE\u5EA6\u4E0B\u7ED3\u675F\u7AEF\u8865\u5230 23:59:59.999
 h(DateTimePicker, { mode: 'range', precision: 'day', value: range, onChange: setRange })`;
 function DateTimePage() {
-  const [singleDay, setSingleDay] = (0, import_react76.useState)(null);
-  const [singleMinute, setSingleMinute] = (0, import_react76.useState)(null);
-  const [rangeDay, setRangeDay] = (0, import_react76.useState)(null);
-  const [rangeSecond, setRangeSecond] = (0, import_react76.useState)(null);
-  return (0, import_react76.createElement)(
+  const [singleDay, setSingleDay] = (0, import_react81.useState)(null);
+  const [singleMinute, setSingleMinute] = (0, import_react81.useState)(null);
+  const [rangeDay, setRangeDay] = (0, import_react81.useState)(null);
+  const [rangeSecond, setRangeSecond] = (0, import_react81.useState)(null);
+  return (0, import_react81.createElement)(
     "div",
     null,
-    (0, import_react76.createElement)(DocProse, { id: "datetime-picker" }),
-    (0, import_react76.createElement)(
+    (0, import_react81.createElement)(DocProse, { id: "datetime-picker" }),
+    (0, import_react81.createElement)(
       Example,
       { title: "DateTimePicker", hint: t3("dateTimePickerHint"), code: CODE_DATETIME },
-      (0, import_react76.createElement)(
+      (0, import_react81.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react76.createElement)(DateTimePicker, {
+        (0, import_react81.createElement)(DateTimePicker, {
           precision: "day",
           value: singleDay,
           onChange: (v) => setSingleDay(v)
         }),
-        (0, import_react76.createElement)(DateTimePicker, {
+        (0, import_react81.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v)
         }),
-        (0, import_react76.createElement)(DateTimePicker, {
+        (0, import_react81.createElement)(DateTimePicker, {
           mode: "range",
           precision: "day",
           value: rangeDay,
           onChange: (v) => setRangeDay(v)
         }),
-        (0, import_react76.createElement)(DateTimePicker, {
+        (0, import_react81.createElement)(DateTimePicker, {
           mode: "range",
           precision: "second",
           value: rangeSecond,
           onChange: (v) => setRangeSecond(v)
         }),
-        (0, import_react76.createElement)(DateTimePicker, {
+        (0, import_react81.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v),
@@ -64751,13 +64869,13 @@ function DateTimePage() {
         })
       )
     ),
-    (0, import_react76.createElement)(DocCode, { id: "datetime-picker" }),
-    (0, import_react76.createElement)(DocApi, { id: "datetime-picker" })
+    (0, import_react81.createElement)(DocCode, { id: "datetime-picker" }),
+    (0, import_react81.createElement)(DocApi, { id: "datetime-picker" })
   );
 }
 
 // packages/demo/src/sections/blocks.tsx
-var import_react77 = require("react");
+var import_react82 = require("react");
 var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // packages/demo/src/samples.ts
@@ -64858,13 +64976,13 @@ var CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
 import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'`;
 function useExplorerHost() {
-  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react77.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react77.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react82.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react82.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
   return { workspaceFiles: workspaceFiles2, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
 }
 function NotReady(props) {
-  return (0, import_react77.createElement)(
+  return (0, import_react82.createElement)(
     "div",
     { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } },
     t3(props.which === "files" ? "explorerFilesNone" : "explorerAnchorNone")
@@ -64872,12 +64990,12 @@ function NotReady(props) {
 }
 function OpenPreviewDemo() {
   const { workspaceFiles: workspaceFiles2, anchor, workspaceNames } = useExplorerHost();
-  const [samples, setSamples] = (0, import_react77.useState)(null);
-  const [phase, setPhase] = (0, import_react77.useState)("idle");
-  const [last2, setLast] = (0, import_react77.useState)(null);
-  const pending = (0, import_react77.useRef)(null);
+  const [samples, setSamples] = (0, import_react82.useState)(null);
+  const [phase, setPhase] = (0, import_react82.useState)("idle");
+  const [last2, setLast] = (0, import_react82.useState)(null);
+  const pending = (0, import_react82.useRef)(null);
   const sessionId = anchor === null ? null : anchor.sessionId;
-  (0, import_react77.useEffect)(() => {
+  (0, import_react82.useEffect)(() => {
     if (workspaceFiles2 === null || sessionId === null) return;
     if (pending.current !== null) return;
     setPhase("probing");
@@ -64887,8 +65005,8 @@ function OpenPreviewDemo() {
       return s;
     });
   }, [workspaceFiles2, sessionId]);
-  if (workspaceFiles2 === null) return (0, import_react77.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react77.createElement)(NotReady, { which: "anchor" });
+  if (workspaceFiles2 === null) return (0, import_react82.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react82.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
     const mount = pageRow.element;
     if (mount === null) {
@@ -64904,14 +65022,14 @@ function OpenPreviewDemo() {
       if (s !== null) open(pick2(s), anchor.title);
     });
   };
-  return (0, import_react77.createElement)(
+  return (0, import_react82.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react77.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
-    (0, import_react77.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
-    (0, import_react77.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
-    last2 === null ? null : (0, import_react77.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
-    (0, import_react77.createElement)(
+    (0, import_react82.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
+    (0, import_react82.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
+    (0, import_react82.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
+    last2 === null ? null : (0, import_react82.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
+    (0, import_react82.createElement)(
       "div",
       { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", width: "100%" } },
       `${t3("explorerAnchorLabel")}${anchor.title} \xB7 ${t3("explorerSessionLabel")}${anchor.sessionId} \xB7 ${t3("explorerWorkspaces")}${String(workspaceNames.length)}`
@@ -64920,9 +65038,9 @@ function OpenPreviewDemo() {
 }
 function PickFileDemo() {
   const { workspaceFiles: workspaceFiles2, anchor } = useExplorerHost();
-  const [picked, setPicked] = (0, import_react77.useState)(null);
-  if (workspaceFiles2 === null) return (0, import_react77.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react77.createElement)(NotReady, { which: "anchor" });
+  const [picked, setPicked] = (0, import_react82.useState)(null);
+  if (workspaceFiles2 === null) return (0, import_react82.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react82.createElement)(NotReady, { which: "anchor" });
   const pick2 = (anchorBtn, filter2) => {
     void pickWorkspaceFile({
       anchor: anchorBtn,
@@ -64931,10 +65049,10 @@ function PickFileDemo() {
       // 目录补尾斜杠只补一次：根 `/`、盘符 `C:/` 自己就带着，再补就成了 `//` / `C://`。
     }).then((r2) => setPicked(r2 === null ? null : r2.path + (r2.isDir && !r2.path.endsWith("/") ? "/" : "")));
   };
-  return (0, import_react77.createElement)(
+  return (0, import_react82.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react77.createElement)(
+    (0, import_react82.createElement)(
       Button,
       {
         variant: "primary",
@@ -64942,7 +65060,7 @@ function PickFileDemo() {
       },
       t3("pickAny")
     ),
-    (0, import_react77.createElement)(
+    (0, import_react82.createElement)(
       Button,
       {
         variant: "secondary",
@@ -64951,7 +65069,7 @@ function PickFileDemo() {
       t3("pickJsMd")
     ),
     // 需求一（2026-11-03）：只选文件夹 —— 文件不渲染，目录行尾「选择」+ 面包屑行「选择此文件夹」。
-    (0, import_react77.createElement)(
+    (0, import_react82.createElement)(
       Button,
       {
         variant: "outline",
@@ -64959,16 +65077,16 @@ function PickFileDemo() {
       },
       t3("pickDir")
     ),
-    (0, import_react77.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
+    (0, import_react82.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
   );
 }
 function RealSessionListDemo() {
-  const state = (0, import_react77.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
-  const files = (0, import_react77.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react77.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const state = (0, import_react82.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
+  const files = (0, import_react82.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react82.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
-  const [openId, setOpenId] = (0, import_react77.useState)(null);
-  const view = (0, import_react77.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
+  const [openId, setOpenId] = (0, import_react82.useState)(null);
+  const view = (0, import_react82.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles2 = files.workspaceFiles;
   const canOpenFile = workspaceFiles2 !== null && anchor !== null;
   const openLinkedFile = (path, sessionId) => {
@@ -64994,7 +65112,7 @@ function RealSessionListDemo() {
       mount,
       sessionId: loc.sessionId,
       path: "",
-      content: () => (0, import_react77.createElement)(ChangedFileDiff, {
+      content: () => (0, import_react82.createElement)(ChangedFileDiff, {
         sessionId: loc.sessionId,
         seq: loc.seq,
         index: loc.index,
@@ -65007,16 +65125,16 @@ function RealSessionListDemo() {
     });
   };
   if (state.status !== "ready") {
-    return (0, import_react77.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
+    return (0, import_react82.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
   }
   if (state.rows.length === 0) {
-    return (0, import_react77.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListEmpty"));
+    return (0, import_react82.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListEmpty"));
   }
-  return (0, import_react77.createElement)(
+  return (0, import_react82.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "6px", maxWidth: "720px" } },
     ...state.rows.map(
-      (row) => (0, import_react77.createElement)(
+      (row) => (0, import_react82.createElement)(
         "button",
         {
           key: row.sessionId,
@@ -65039,22 +65157,22 @@ function RealSessionListDemo() {
             cursor: "pointer"
           }
         },
-        (0, import_react77.createElement)("span", { style: { flex: "1", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row.displayTitle),
-        row.running ? (0, import_react77.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
-        row.archived ? (0, import_react77.createElement)(
+        (0, import_react82.createElement)("span", { style: { flex: "1", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row.displayTitle),
+        row.running ? (0, import_react82.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
+        row.archived ? (0, import_react82.createElement)(
           Chip,
           { size: "xs" },
-          (0, import_react77.createElement)(
+          (0, import_react82.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "4px" } },
-            (0, import_react77.createElement)(import_dsh_client_ui_primitives3.IconArchiveOutlineRegular, { size: 12 }),
+            (0, import_react82.createElement)(import_dsh_client_ui_primitives3.IconArchiveOutlineRegular, { size: 12 }),
             t3("sessionListArchived")
           )
         ) : null,
-        (0, import_react77.createElement)("span", { style: { flex: "none", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, formatDateTime(new Date(row.updatedAt).toISOString()))
+        (0, import_react82.createElement)("span", { style: { flex: "none", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, formatDateTime(new Date(row.updatedAt).toISOString()))
       )
     ),
-    openId !== null && view !== null ? (0, import_react77.createElement)(SessionViewModal, {
+    openId !== null && view !== null ? (0, import_react82.createElement)(SessionViewModal, {
       sessionId: openId,
       view,
       // 标题 = 会话自己的标题；归档态分化「继续对话」行为（开分支确认 vs 直跳官方）。
@@ -65080,40 +65198,40 @@ function RealSessionListDemo() {
   );
 }
 function ExplorerPage() {
-  return (0, import_react77.createElement)(
+  return (0, import_react82.createElement)(
     "div",
     null,
-    (0, import_react77.createElement)(DocProse, { id: "explorer" }),
-    (0, import_react77.createElement)(
+    (0, import_react82.createElement)(DocProse, { id: "explorer" }),
+    (0, import_react82.createElement)(
       Example,
       { title: t3("methodATitle"), hint: t3("methodAHint"), code: CODE_OPEN },
-      (0, import_react77.createElement)(OpenPreviewDemo, null)
+      (0, import_react82.createElement)(OpenPreviewDemo, null)
     ),
-    (0, import_react77.createElement)(
+    (0, import_react82.createElement)(
       Example,
       { title: t3("methodBTitle"), hint: t3("methodBHint"), code: CODE_PICK },
-      (0, import_react77.createElement)(PickFileDemo, null)
+      (0, import_react82.createElement)(PickFileDemo, null)
     ),
-    (0, import_react77.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
-    (0, import_react77.createElement)(DocApi, { id: "explorer" })
+    (0, import_react82.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
+    (0, import_react82.createElement)(DocApi, { id: "explorer" })
   );
 }
 function SessionPage() {
-  return (0, import_react77.createElement)(
+  return (0, import_react82.createElement)(
     "div",
     null,
-    (0, import_react77.createElement)(DocProse, { id: "session" }),
-    (0, import_react77.createElement)(
+    (0, import_react82.createElement)(DocProse, { id: "session" }),
+    (0, import_react82.createElement)(
       Example,
       { title: t3("sessionRealTitle"), hint: t3("sessionRealHint"), code: CODE_SESSION_REAL },
-      (0, import_react77.createElement)(RealSessionListDemo, null)
+      (0, import_react82.createElement)(RealSessionListDemo, null)
     ),
-    (0, import_react77.createElement)(DocApi, { id: "session" })
+    (0, import_react82.createElement)(DocApi, { id: "session" })
   );
 }
 
 // packages/demo/src/sections/tables.tsx
-var import_react78 = require("react");
+var import_react83 = require("react");
 var import_dsh_client_ui_primitives4 = require("@deepseek-ai/dsh-client-ui-primitives");
 var H_SCROLL = { overflowX: "auto", borderBottom: "1px solid transparent" };
 var COLUMNS = [
@@ -65158,10 +65276,10 @@ var PEOPLE = [
   { id: "S-2429", name: "Deng, Qian", mrn: "MRN-61248", age: "33 / F", date: "2026-10-19", modality: "US", flags: [], tone: "success", state: "Reviewed" }
 ];
 function personCell(person) {
-  return (0, import_react78.createElement)(
+  return (0, import_react83.createElement)(
     "div",
     { style: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 } },
-    (0, import_react78.createElement)(
+    (0, import_react83.createElement)(
       "div",
       {
         style: {
@@ -65180,11 +65298,11 @@ function personCell(person) {
       },
       person.name.slice(0, 1)
     ),
-    (0, import_react78.createElement)(
+    (0, import_react83.createElement)(
       "div",
       { style: { display: "flex", flexDirection: "column", minWidth: 0 } },
-      (0, import_react78.createElement)("span", null, person.name),
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)("span", null, person.name),
+      (0, import_react83.createElement)(
         "span",
         { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)" } },
         person.mrn
@@ -65193,8 +65311,8 @@ function personCell(person) {
   );
 }
 function rowsOf() {
-  const actions = (0, import_react78.createElement)(IconButton, {
-    icon: (0, import_react78.createElement)(import_dsh_client_ui_primitives4.IconChevronDownOutlineRegular, { size: 16 }),
+  const actions2 = (0, import_react83.createElement)(IconButton, {
+    icon: (0, import_react83.createElement)(import_dsh_client_ui_primitives4.IconChevronDownOutlineRegular, { size: 16 }),
     label: "Open study"
   });
   return PEOPLE.map((person) => ({
@@ -65204,13 +65322,13 @@ function rowsOf() {
       name: personCell(person),
       age: person.age,
       date: person.date,
-      modality: (0, import_react78.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality),
+      modality: (0, import_react83.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality),
       // 多标签：标签之间的间距由调用方布局控制（这里 4px），列内距走列级 padding:8
-      flags: person.flags.length === 0 ? null : (0, import_react78.createElement)(
+      flags: person.flags.length === 0 ? null : (0, import_react83.createElement)(
         "div",
         { style: { display: "flex", gap: "4px", flexWrap: "wrap" } },
         ...person.flags.map(
-          (flag) => (0, import_react78.createElement)(
+          (flag) => (0, import_react83.createElement)(
             Chip,
             {
               key: flag,
@@ -65221,8 +65339,8 @@ function rowsOf() {
           )
         )
       ),
-      status: (0, import_react78.createElement)(Chip, { tone: person.tone, size: "xs" }, person.state),
-      actions
+      status: (0, import_react83.createElement)(Chip, { tone: person.tone, size: "xs" }, person.state),
+      actions: actions2
     }
   }));
 }
@@ -65286,24 +65404,24 @@ var GROUPS = WORKSPACES.map((workspace) => ({
     cells: {
       task: task.title,
       owner: task.owner,
-      state: (0, import_react78.createElement)(Chip, { tone: task.tone, size: "xs" }, task.state),
+      state: (0, import_react83.createElement)(Chip, { tone: task.tone, size: "xs" }, task.state),
       updated: task.updated
     }
   }))
 }));
 function TablePage() {
-  const [selected, setSelected] = (0, import_react78.useState)("S-2418");
-  const [spanSelected, setSpanSelected] = (0, import_react78.useState)("c");
-  const [groupSelected, setGroupSelected] = (0, import_react78.useState)("a2");
-  const [groupAccentOn, setGroupAccentOn] = (0, import_react78.useState)(true);
-  const [groupAccent, setGroupAccent] = (0, import_react78.useState)("default");
-  const [pagerPage, setPagerPage] = (0, import_react78.useState)(1);
-  const [pagerSize, setPagerSize] = (0, import_react78.useState)(10);
-  const [demoPage, setDemoPage] = (0, import_react78.useState)(2);
-  const [demoSize, setDemoSize] = (0, import_react78.useState)(10);
-  const [demoAlign, setDemoAlign] = (0, import_react78.useState)("right");
-  const [demoShowTotal, setDemoShowTotal] = (0, import_react78.useState)(true);
-  const [loadState, setLoadState] = (0, import_react78.useState)("idle");
+  const [selected, setSelected] = (0, import_react83.useState)("S-2418");
+  const [spanSelected, setSpanSelected] = (0, import_react83.useState)("c");
+  const [groupSelected, setGroupSelected] = (0, import_react83.useState)("a2");
+  const [groupAccentOn, setGroupAccentOn] = (0, import_react83.useState)(true);
+  const [groupAccent, setGroupAccent] = (0, import_react83.useState)("default");
+  const [pagerPage, setPagerPage] = (0, import_react83.useState)(1);
+  const [pagerSize, setPagerSize] = (0, import_react83.useState)(10);
+  const [demoPage, setDemoPage] = (0, import_react83.useState)(2);
+  const [demoSize, setDemoSize] = (0, import_react83.useState)(10);
+  const [demoAlign, setDemoAlign] = (0, import_react83.useState)("right");
+  const [demoShowTotal, setDemoShowTotal] = (0, import_react83.useState)(true);
+  const [loadState, setLoadState] = (0, import_react83.useState)("idle");
   const loadColumns = [
     { key: "name", title: "Patient", width: 240 },
     { key: "date", title: "Date", width: 120 },
@@ -65314,7 +65432,7 @@ function TablePage() {
     cells: {
       name: personCell(person),
       date: person.date,
-      modality: (0, import_react78.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality)
+      modality: (0, import_react83.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality)
     }
   }));
   const pagerOnChange = (page, size4) => {
@@ -65325,7 +65443,7 @@ function TablePage() {
     setDemoPage(page);
     setDemoSize(size4);
   };
-  const renderLoadTable = (borders) => (0, import_react78.createElement)(Table, {
+  const renderLoadTable = (borders) => (0, import_react83.createElement)(Table, {
     columns: loadColumns,
     rows: loadState === "loading" ? [] : loadRows,
     borders,
@@ -65339,19 +65457,19 @@ function TablePage() {
     ariaLabel: "Patients loaded incrementally",
     style: { maxWidth: "640px" }
   });
-  return (0, import_react78.createElement)(
+  return (0, import_react83.createElement)(
     "div",
     null,
-    (0, import_react78.createElement)(DocProse, { id: "table" }),
+    (0, import_react83.createElement)(DocProse, { id: "table" }),
     // 表格较宽：示例区占满整栏（代码放页面底部），并在窄屏时横向滚动。
     // 空态不放成第二个示例 —— 直接接在主表下方，同一区块里展示「有数据 / 没数据」。
-    (0, import_react78.createElement)(
+    (0, import_react83.createElement)(
       Example,
       { title: "Table", hint: t3("tableHint") },
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: H_SCROLL },
-        (0, import_react78.createElement)(Table, {
+        (0, import_react83.createElement)(Table, {
           columns: COLUMNS,
           rows: rowsOf(),
           striped: true,
@@ -65363,10 +65481,10 @@ function TablePage() {
           style: { minWidth: 960 }
         })
       ),
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: { ...H_SCROLL, marginTop: "16px" } },
-        (0, import_react78.createElement)(Table, {
+        (0, import_react83.createElement)(Table, {
           columns: COLUMNS,
           rows: [],
           borders: "all",
@@ -65375,13 +65493,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react78.createElement)(
+    (0, import_react83.createElement)(
       Example,
       { title: "Density \xB7 borders \xB7 spans", hint: t3("tableSpanHint") },
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: H_SCROLL },
-        (0, import_react78.createElement)(Table, {
+        (0, import_react83.createElement)(Table, {
           columns: SPAN_COLUMNS,
           rows: SPAN_ROWS,
           density: "compact",
@@ -65393,13 +65511,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react78.createElement)(
+    (0, import_react83.createElement)(
       Example,
       { title: "Groups \xB7 \u901A\u680F", hint: t3("tableGroupHint") },
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
-        (0, import_react78.createElement)(Segmented, {
+        (0, import_react83.createElement)(Segmented, {
           size: "sm",
           items: [
             { value: "default", label: "\u9ED8\u8BA4" },
@@ -65410,12 +65528,12 @@ function TablePage() {
           value: groupAccent,
           onChange: setGroupAccent
         }),
-        (0, import_react78.createElement)(Checkbox, { checked: groupAccentOn, onChange: setGroupAccentOn, label: "groupAccent" })
+        (0, import_react83.createElement)(Checkbox, { checked: groupAccentOn, onChange: setGroupAccentOn, label: "groupAccent" })
       ),
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: { ...H_SCROLL, marginTop: "12px" } },
-        (0, import_react78.createElement)(Table, {
+        (0, import_react83.createElement)(Table, {
           columns: GROUP_COLUMNS,
           groups: GROUPS,
           groupAccent: groupAccentOn ? groupAccent : false,
@@ -65426,13 +65544,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react78.createElement)(
+    (0, import_react83.createElement)(
       Example,
       { title: "Pagination", hint: t3("paginationHint") },
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
-        (0, import_react78.createElement)(Segmented, {
+        (0, import_react83.createElement)(Segmented, {
           size: "sm",
           items: [
             { value: "left", label: "\u5DE6" },
@@ -65442,12 +65560,12 @@ function TablePage() {
           value: demoAlign,
           onChange: setDemoAlign
         }),
-        (0, import_react78.createElement)(Checkbox, { checked: demoShowTotal, onChange: setDemoShowTotal, label: "showTotal" })
+        (0, import_react83.createElement)(Checkbox, { checked: demoShowTotal, onChange: setDemoShowTotal, label: "showTotal" })
       ),
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: { marginTop: "12px" } },
-        (0, import_react78.createElement)(Pagination, {
+        (0, import_react83.createElement)(Pagination, {
           page: demoPage,
           pageSize: demoSize,
           total: 86,
@@ -65459,10 +65577,10 @@ function TablePage() {
           ariaLabel: "Demo pagination"
         })
       ),
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: { marginTop: "12px" } },
-        (0, import_react78.createElement)(Pagination, {
+        (0, import_react83.createElement)(Pagination, {
           page: demoPage,
           pageSize: demoSize,
           total: 86,
@@ -65473,13 +65591,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react78.createElement)(
+    (0, import_react83.createElement)(
       Example,
       { title: "Table \xB7 \u5206\u9875", hint: t3("tablePagerHint") },
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         { style: H_SCROLL },
-        (0, import_react78.createElement)(Table, {
+        (0, import_react83.createElement)(Table, {
           columns: COLUMNS,
           // 不传 pagination.total ⇒ 本地分页：这里是全量 12 行，Table 自己按当前页切片
           rows: rowsOf(),
@@ -65496,10 +65614,10 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react78.createElement)(
+    (0, import_react83.createElement)(
       Example,
       { title: "Loading \xB7 \u52A0\u8F7D\u66F4\u591A", hint: t3("tableLoadingHint") },
-      (0, import_react78.createElement)(Segmented, {
+      (0, import_react83.createElement)(Segmented, {
         size: "sm",
         items: [
           { value: "idle", label: "\u6B63\u5E38" },
@@ -65510,7 +65628,7 @@ function TablePage() {
         value: loadState,
         onChange: setLoadState
       }),
-      (0, import_react78.createElement)(
+      (0, import_react83.createElement)(
         "div",
         {
           style: {
@@ -65525,13 +65643,13 @@ function TablePage() {
         renderLoadTable("y")
       )
     ),
-    (0, import_react78.createElement)(DocApi, { id: "table" }),
-    (0, import_react78.createElement)(DocCode, { id: "table" })
+    (0, import_react83.createElement)(DocApi, { id: "table" }),
+    (0, import_react83.createElement)(DocCode, { id: "table" })
   );
 }
 
 // packages/demo/src/sections/toolbar.tsx
-var import_react79 = require("react");
+var import_react84 = require("react");
 var import_dsh_client_ui_primitives5 = require("@deepseek-ai/dsh-client-ui-primitives");
 var ANCHOR_ID = "dshpc-demo-quick-toolbar-anchor";
 var CODE_TOOLBAR = `import { QuickToolbar } from 'dsh-plugin-core/ui'
@@ -65546,23 +65664,23 @@ h(QuickToolbar, {
   backToTop: { threshold: 320 },   // \u9ED8\u8BA4\u5373\u662F 320\uFF1Bfalse \u53EF\u5173\u6389
 })`;
 function ToolbarPage() {
-  const [mode, setMode] = (0, import_react79.useState)("box");
-  const [last2, setLast] = (0, import_react79.useState)("\u2014");
-  return (0, import_react79.createElement)(
+  const [mode, setMode] = (0, import_react84.useState)("box");
+  const [last2, setLast] = (0, import_react84.useState)("\u2014");
+  return (0, import_react84.createElement)(
     "div",
     null,
-    (0, import_react79.createElement)(DocProse, { id: "quick-toolbar" }),
-    (0, import_react79.createElement)(
+    (0, import_react84.createElement)(DocProse, { id: "quick-toolbar" }),
+    (0, import_react84.createElement)(
       Example,
       {
         title: "QuickToolbar\uFF08\u53F3\u4FA7\u6D6E\u52A8\uFF09",
         hint: "\u7EB5\u5411\u6052\u8D34\u5C4F\u5E55\u5E95\u8FB9\uFF1B\u5207\u6362\u951A\u70B9\u53EF\u770B\u6A2A\u5411\u4F4D\u7F6E\u53D8\u5316\u3002\u5411\u4E0B\u6EDA\u52A8\uFF0C\u56DE\u9876\u90E8\u6309\u94AE\u4F1A\u51FA\u73B0\u3002",
         code: CODE_TOOLBAR
       },
-      (0, import_react79.createElement)(
+      (0, import_react84.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px" } },
-        (0, import_react79.createElement)(Segmented, {
+        (0, import_react84.createElement)(Segmented, {
           items: [
             { value: "box", label: "\u8DDF\u968F\u63A7\u4EF6" },
             { value: "window", label: "\u8DDF\u968F\u7A97\u53E3" }
@@ -65571,10 +65689,10 @@ function ToolbarPage() {
           onChange: setMode,
           label: "\u6A2A\u5411\u951A\u70B9"
         }),
-        (0, import_react79.createElement)(
+        (0, import_react84.createElement)(
           "div",
           { id: ANCHOR_ID },
-          (0, import_react79.createElement)(
+          (0, import_react84.createElement)(
             Surface,
             {
               tone: "sunken",
@@ -65582,15 +65700,15 @@ function ToolbarPage() {
               padding: "lg",
               style: { width: "min(560px, 100%)" }
             },
-            (0, import_react79.createElement)("div", { style: { fontWeight: 600, fontSize: "13px" } }, "\u951A\u5B9A\u63A7\u4EF6"),
-            (0, import_react79.createElement)(
+            (0, import_react84.createElement)("div", { style: { fontWeight: 600, fontSize: "13px" } }, "\u951A\u5B9A\u63A7\u4EF6"),
+            (0, import_react84.createElement)(
               "div",
               { style: { marginTop: "6px", color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "1.8" } },
               "\u5DE5\u5177\u680F\u4F1A\u8D34\u5728\u8FD9\u4E2A\u6846\u7684\u53F3\u7F18\u5916\u4FA7\uFF1B\u7A97\u53E3\u7A84\u5230\u653E\u4E0D\u4E0B\u65F6\u81EA\u52A8\u9000\u56DE\u5C4F\u5E55\u53F3\u7F18\u3002"
             )
           )
         ),
-        (0, import_react79.createElement)(
+        (0, import_react84.createElement)(
           Surface,
           {
             border: "dashed",
@@ -65606,19 +65724,19 @@ function ToolbarPage() {
           },
           "\u5411\u4E0B\u6EDA\u52A8\uFF0C\u56DE\u9876\u90E8\u6309\u94AE\u4F1A\u51FA\u73B0"
         ),
-        (0, import_react79.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, `\u6700\u8FD1\u4E00\u6B21\u70B9\u51FB\uFF1A${last2}`)
+        (0, import_react84.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, `\u6700\u8FD1\u4E00\u6B21\u70B9\u51FB\uFF1A${last2}`)
       )
     ),
-    (0, import_react79.createElement)(DocApi, { id: "quick-toolbar" }),
-    (0, import_react79.createElement)(QuickToolbar, {
+    (0, import_react84.createElement)(DocApi, { id: "quick-toolbar" }),
+    (0, import_react84.createElement)(QuickToolbar, {
       anchorId: mode === "box" ? ANCHOR_ID : void 0,
       onAction: (id3) => setLast(id3),
       items: [
-        { id: "search", icon: (0, import_react79.createElement)(import_dsh_client_ui_primitives5.IconSearchOutlineRegular, { size: 18 }), label: "\u641C\u7D22" },
-        { id: "copy", icon: (0, import_react79.createElement)(import_dsh_client_ui_primitives5.IconCopyOutlineRegular, { size: 18 }), label: "\u590D\u5236" },
+        { id: "search", icon: (0, import_react84.createElement)(import_dsh_client_ui_primitives5.IconSearchOutlineRegular, { size: 18 }), label: "\u641C\u7D22" },
+        { id: "copy", icon: (0, import_react84.createElement)(import_dsh_client_ui_primitives5.IconCopyOutlineRegular, { size: 18 }), label: "\u590D\u5236" },
         {
           id: "sparkle",
-          icon: (0, import_react79.createElement)(import_dsh_client_ui_primitives5.IconSparkleRegular, { size: 18 }),
+          icon: (0, import_react84.createElement)(import_dsh_client_ui_primitives5.IconSparkleRegular, { size: 18 }),
           label: "AI \u52A9\u624B",
           color: "var(--dshpc-business)",
           fgColor: "#fff"
@@ -65629,7 +65747,7 @@ function ToolbarPage() {
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react80 = require("react");
+var import_react85 = require("react");
 var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
@@ -65664,28 +65782,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react80.createElement)(
+  return (0, import_react85.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react80.createElement)(
+    (0, import_react85.createElement)(
       "thead",
       null,
-      (0, import_react80.createElement)(
+      (0, import_react85.createElement)(
         "tr",
         null,
-        (0, import_react80.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react80.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react85.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react85.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react80.createElement)(
+    (0, import_react85.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react80.createElement)(
+        ([fn, out]) => (0, import_react85.createElement)(
           "tr",
           { key: fn },
-          (0, import_react80.createElement)("td", { style: td }, fn),
-          (0, import_react80.createElement)("td", { style: td }, out)
+          (0, import_react85.createElement)("td", { style: td }, fn),
+          (0, import_react85.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -65694,44 +65812,44 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react80.createElement)(
+  return (0, import_react85.createElement)(
     "div",
     null,
-    (0, import_react80.createElement)(DocProse, { id: "date" }),
-    (0, import_react80.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react80.createElement)(FnTable, { rows: DATE_ROWS })),
-    (0, import_react80.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react80.createElement)(DocApi, { id: "date" })
+    (0, import_react85.createElement)(DocProse, { id: "date" }),
+    (0, import_react85.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react85.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react85.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react85.createElement)(DocApi, { id: "date" })
   );
 }
 function NumberPage() {
-  return (0, import_react80.createElement)(
+  return (0, import_react85.createElement)(
     "div",
     null,
-    (0, import_react80.createElement)(DocProse, { id: "number" }),
-    (0, import_react80.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react80.createElement)(FnTable, { rows: NUMBER_ROWS })),
-    (0, import_react80.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react80.createElement)(DocApi, { id: "number" })
+    (0, import_react85.createElement)(DocProse, { id: "number" }),
+    (0, import_react85.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react85.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react85.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react85.createElement)(DocApi, { id: "number" })
   );
 }
 function TextPage() {
-  return (0, import_react80.createElement)(DocContent, { id: "text" });
+  return (0, import_react85.createElement)(DocContent, { id: "text" });
 }
 function HttpPage() {
-  return (0, import_react80.createElement)(DocContent, { id: "http" });
+  return (0, import_react85.createElement)(DocContent, { id: "http" });
 }
 function I18nPage() {
-  return (0, import_react80.createElement)(
+  return (0, import_react85.createElement)(
     "div",
     null,
-    (0, import_react80.createElement)(DocProse, { id: "i18n" }),
-    (0, import_react80.createElement)(
+    (0, import_react85.createElement)(DocProse, { id: "i18n" }),
+    (0, import_react85.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
-      (0, import_react80.createElement)(
+      (0, import_react85.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react80.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
-        (0, import_react80.createElement)("code", {
+        (0, import_react85.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
+        (0, import_react85.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -65743,60 +65861,60 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react80.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react80.createElement)(DocApi, { id: "i18n" })
+    (0, import_react85.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react85.createElement)(DocApi, { id: "i18n" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react81 = require("react");
+var import_react86 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react81.createElement)(
+  return (0, import_react86.createElement)(
     "div",
     null,
-    (0, import_react81.createElement)(Note, { text: t3("referenceNote") }),
-    (0, import_react81.createElement)(Example, { title: t3("secA11y") }, (0, import_react81.createElement)(Placeholder2, { descKey: "a11yDesc" })),
-    (0, import_react81.createElement)(
+    (0, import_react86.createElement)(Note, { text: t3("referenceNote") }),
+    (0, import_react86.createElement)(Example, { title: t3("secA11y") }, (0, import_react86.createElement)(Placeholder2, { descKey: "a11yDesc" })),
+    (0, import_react86.createElement)(
       Example,
       { title: t3("secRoadmap"), hint: t3("roadmapHint") },
-      (0, import_react81.createElement)(
+      (0, import_react86.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react81.createElement)(
+          (key) => (0, import_react86.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react81.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
+            (0, import_react86.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react86.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
           )
         ),
-        (0, import_react81.createElement)(
+        (0, import_react86.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("roadmapLayout")
         )
       )
     ),
-    (0, import_react81.createElement)(
+    (0, import_react86.createElement)(
       Example,
       { title: t3("secBuild"), hint: t3("buildDesc") },
-      (0, import_react81.createElement)(
+      (0, import_react86.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react81.createElement)(
+        (0, import_react86.createElement)(
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.20.5"}`],
-            [t3("buildDemo"), `v${"0.20.5"}`],
-            [t3("buildStamp"), "261103-120813-123"]
+            [t3("buildCore"), `v${"0.20.6"}`],
+            [t3("buildDemo"), `v${"0.20.6"}`],
+            [t3("buildStamp"), "261103-140311-554"]
           ].map(
-            ([label, value]) => (0, import_react81.createElement)(
+            ([label, value]) => (0, import_react86.createElement)(
               "tr",
               { key: label },
-              (0, import_react81.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react81.createElement)("td", {
+              (0, import_react86.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react86.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -65822,32 +65940,32 @@ var SECTION_GROUPS = [
 ];
 var ALL_SECTIONS = [
   // 入门：帮助索引（读哪一份）在前，然后是快速开始与设计基础
-  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react82.createElement)(HelpIndexPage, null) },
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react82.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react82.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react82.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react82.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react82.createElement)(PickerPage, null) },
-  { id: "datetime", group: "components", titleKey: "secDateTime", render: () => (0, import_react82.createElement)(DateTimePage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react82.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react82.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react82.createElement)(ChipPage, null) },
-  { id: "table", group: "components", titleKey: "secTable", render: () => (0, import_react82.createElement)(TablePage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react82.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react82.createElement)(LayoutPage, null) },
-  { id: "toolbar", group: "components", titleKey: "secToolbar", render: () => (0, import_react82.createElement)(ToolbarPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react82.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react82.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react82.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react82.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react82.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react82.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react82.createElement)(I18nPage, null) },
+  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react87.createElement)(HelpIndexPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react87.createElement)(QuickstartPage, null) },
+  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react87.createElement)(FoundationPage, null) },
+  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react87.createElement)(ButtonPage, null) },
+  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react87.createElement)(InputPage, null) },
+  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react87.createElement)(PickerPage, null) },
+  { id: "datetime", group: "components", titleKey: "secDateTime", render: () => (0, import_react87.createElement)(DateTimePage, null) },
+  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react87.createElement)(TooltipPage, null) },
+  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react87.createElement)(CardPage, null) },
+  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react87.createElement)(ChipPage, null) },
+  { id: "table", group: "components", titleKey: "secTable", render: () => (0, import_react87.createElement)(TablePage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react87.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react87.createElement)(LayoutPage, null) },
+  { id: "toolbar", group: "components", titleKey: "secToolbar", render: () => (0, import_react87.createElement)(ToolbarPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react87.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react87.createElement)(SessionPage, null) },
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react87.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react87.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react87.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react87.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react87.createElement)(I18nPage, null) },
   // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react82.createElement)(ReferencePage, null) }
+  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react87.createElement)(ReferencePage, null) }
 ];
 function Placeholder2(props) {
-  return (0, import_react82.createElement)(
+  return (0, import_react87.createElement)(
     Surface,
     {
       tone: "sunken",
@@ -65855,7 +65973,7 @@ function Placeholder2(props) {
       padding: "lg",
       style: { marginTop: "4px", color: "var(--dshpc-fg-3)" }
     },
-    (0, import_react82.createElement)("div", {
+    (0, import_react87.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -65865,23 +65983,23 @@ function Placeholder2(props) {
         marginBottom: "10px"
       }
     }, t3("phTodo")),
-    (0, import_react82.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
+    (0, import_react87.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react82.createElement)(
+  return (0, import_react87.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react82.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react82.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
+    (0, import_react87.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react87.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current4 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react82.createElement)(
+  return (0, import_react87.createElement)(
     "div",
     null,
-    (0, import_react82.createElement)(SectionHead2, { id: current4.id, title: t3(current4.titleKey) }),
+    (0, import_react87.createElement)(SectionHead2, { id: current4.id, title: t3(current4.titleKey) }),
     current4.render()
   );
 }
@@ -65941,10 +66059,10 @@ function applySidebarEntry() {
   }
 }
 function MoreMenuRow(props) {
-  return (0, import_react83.createElement)(
+  return (0, import_react88.createElement)(
     import_dsh_client_ui_primitives6.MenuItemButton,
     {
-      icon: (0, import_react83.createElement)(PanelIcon, { size: 16 }),
+      icon: (0, import_react88.createElement)(PanelIcon, { size: 16 }),
       onSelect: () => {
         props.onDismiss();
         jump(PANEL_ID);
@@ -65955,8 +66073,8 @@ function MoreMenuRow(props) {
 }
 var localeRuntime;
 function useLocaleTick() {
-  const [, setTick] = (0, import_react83.useState)(0);
-  (0, import_react83.useEffect)(() => {
+  const [, setTick] = (0, import_react88.useState)(0);
+  (0, import_react88.useEffect)(() => {
     const rt = localeRuntime;
     if (rt === void 0) return;
     return rt.subscribe(() => {
@@ -65966,8 +66084,8 @@ function useLocaleTick() {
 }
 function useHostDark() {
   const read = () => document.body.hasAttribute("data-ds-dark-theme");
-  const [dark, setDark] = (0, import_react83.useState)(read);
-  (0, import_react83.useEffect)(() => {
+  const [dark, setDark] = (0, import_react88.useState)(read);
+  (0, import_react88.useEffect)(() => {
     const obs = new MutationObserver(() => {
       setDark(read());
     });
@@ -65987,11 +66105,11 @@ function useHostDark() {
 function DemoPage() {
   useLocaleTick();
   const { dark, toggle } = useHostDark();
-  const [active, setActive2] = (0, import_react83.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive2] = (0, import_react88.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav2.push(
-      (0, import_react83.createElement)(
+      (0, import_react88.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -66009,7 +66127,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav2.push(
-        (0, import_react83.createElement)(
+        (0, import_react88.createElement)(
           "button",
           {
             key: section.id,
@@ -66036,7 +66154,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react83.createElement)(
+  return (0, import_react88.createElement)(
     "div",
     {
       // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
@@ -66053,7 +66171,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react83.createElement)(
+    (0, import_react88.createElement)(
       "aside",
       {
         style: {
@@ -66069,9 +66187,9 @@ function DemoPage() {
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
       // 透明右边框 = 滚动条与右缘隔 1px（口径见 docs/design/style.md §滚动条让位）
-      (0, import_react83.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px", borderRight: "1px solid transparent" } }, nav2),
+      (0, import_react88.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px", borderRight: "1px solid transparent" } }, nav2),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
-      (0, import_react83.createElement)(
+      (0, import_react88.createElement)(
         "div",
         {
           style: {
@@ -66084,7 +66202,7 @@ function DemoPage() {
           }
         },
         // 明暗切换：核心 Segmented 滑动分段（左亮右暗，图标进 label），不手写按钮
-        (0, import_react83.createElement)(Segmented, {
+        (0, import_react88.createElement)(Segmented, {
           items: [
             { value: "light", label: `\u2600 ${t3("themeLight")}` },
             { value: "dark", label: `\u263E ${t3("themeDark")}` }
@@ -66098,7 +66216,7 @@ function DemoPage() {
           label: t3("themeToggle")
         }),
         // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行；编译码小一号、与上面隔开
-        (0, import_react83.createElement)(
+        (0, import_react88.createElement)(
           "div",
           {
             style: {
@@ -66112,46 +66230,46 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react83.createElement)("span", null, `core v${"0.20.5"}`),
-          (0, import_react83.createElement)("span", null, `demo v${"0.20.5"}`),
-          (0, import_react83.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-120813-123")
+          (0, import_react88.createElement)("span", null, `core v${"0.20.6"}`),
+          (0, import_react88.createElement)("span", null, `demo v${"0.20.6"}`),
+          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-140311-554")
         )
       )
     ),
-    (0, import_react83.createElement)(
+    (0, import_react88.createElement)(
       "main",
       // 透明右边框 = 滚动条与右缘隔 1px（口径见 docs/design/style.md §滚动条让位）：
       // dock 不再让 margin，靠这里让，滚动条与分栏分隔线之间才是 1px。
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px", borderRight: "1px solid transparent" } },
-      (0, import_react83.createElement)(Sections, { active })
+      (0, import_react88.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react83.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react88.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function ConfigPanel(props) {
   const form = props.form;
-  const [, rerender] = (0, import_react83.useState)(0);
-  (0, import_react83.useEffect)(() => form.subscribe(() => {
+  const [, rerender] = (0, import_react88.useState)(0);
+  (0, import_react88.useEffect)(() => form.subscribe(() => {
     rerender((n) => n + 1);
   }), [form]);
-  if (props.view !== "page") return (0, import_react83.createElement)("div", { style: { display: "none" } });
+  if (props.view !== "page") return (0, import_react88.createElement)("div", { style: { display: "none" } });
   const snap = form.getSnapshot();
   const storedMode = snap.value?.entryMode;
   const mode = storedMode === "off" || storedMode === "first" || storedMode === "more" ? storedMode : "more";
   const ready = snap.status === "ready";
-  return (0, import_react83.createElement)(
+  return (0, import_react88.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "14px" } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
-    (0, import_react83.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
+    (0, import_react88.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
     // 设置行：滑动栏在右、说明在左；左缘圆角短条有入口=绿 / 关闭=灰（核心 Card 框式）
-    ready ? (0, import_react83.createElement)(
+    ready ? (0, import_react88.createElement)(
       Card,
       {
         accent: mode === "off" ? "neutral" : "success",
-        action: (0, import_react83.createElement)(Segmented, {
+        action: (0, import_react88.createElement)(Segmented, {
           size: "sm",
           value: mode,
           disabled: !snap.writable,
@@ -66168,35 +66286,35 @@ function ConfigPanel(props) {
           ]
         })
       },
-      (0, import_react83.createElement)(
+      (0, import_react88.createElement)(
         "div",
         null,
-        (0, import_react83.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
-        (0, import_react83.createElement)(
+        (0, import_react88.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
+        (0, import_react88.createElement)(
           "div",
           { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
           t3("settingsEntryHint")
         )
       )
-    ) : (0, import_react83.createElement)(
+    ) : (0, import_react88.createElement)(
       "div",
       { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
       t3(snap.status === "loading" ? "settingsLoading" : "settingsUnavailable")
     ),
-    (0, import_react83.createElement)(
+    (0, import_react88.createElement)(
       "div",
       { style: { display: "flex", gap: "8px" } },
-      (0, import_react83.createElement)(
+      (0, import_react88.createElement)(
         Button,
-        { size: "md", variant: "primary", icon: (0, import_react83.createElement)(import_dsh_client_ui_primitives6.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
+        { size: "md", variant: "primary", icon: (0, import_react88.createElement)(import_dsh_client_ui_primitives6.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
         t3("settingsOpenDemo")
       ),
-      (0, import_react83.createElement)(
+      (0, import_react88.createElement)(
         Button,
         {
           size: "md",
           variant: "outline",
-          icon: (0, import_react83.createElement)(import_dsh_client_ui_primitives6.IconLinkOutlineRegular, { size: 16 }),
+          icon: (0, import_react88.createElement)(import_dsh_client_ui_primitives6.IconLinkOutlineRegular, { size: 16 }),
           onClick: () => {
             window.open("https://github.com/cq-guojia/dsh-plugin-core", "_blank", "noopener");
           }
@@ -66208,14 +66326,14 @@ function ConfigPanel(props) {
 }
 function PanelIcon(props) {
   const size4 = props.size ?? 18;
-  return (0, import_react83.createElement)(
+  return (0, import_react88.createElement)(
     "svg",
     { width: size4, height: size4, viewBox: "0 0 1024 1024", "aria-hidden": true },
-    (0, import_react83.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
-    (0, import_react83.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react83.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
-    (0, import_react83.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react83.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
+    (0, import_react88.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
+    (0, import_react88.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react88.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
+    (0, import_react88.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react88.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
   );
 }
 function apply(ctx) {
@@ -66224,7 +66342,7 @@ function apply(ctx) {
   ensureControls(kit);
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react83.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react88.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
   ctx.inject(["layout"], (sub) => {
     const layout = sub?.layout;
     if (layout?.selectPanel === void 0) return;

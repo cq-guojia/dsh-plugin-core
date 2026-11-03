@@ -158,7 +158,6 @@ export type DemoMessageKey =
   | 'previewBodyTitle'
   | 'previewBodyHint'
   | 'pickJsMd'
-  | 'pickDir'
   | 'openedPath'
   | 'sessionRealTitle'
   | 'sessionRealHint'
@@ -787,6 +786,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     methodBHint: 'A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / ✕ cancels with null',
     pickAny: 'Pick a file (any)',
     pickTs: '.ts only',
+    pickDir: 'Folders only',
     pickFolder: 'folder',
     pickNone: 'Nothing picked yet',
     pickJsMd: 'JS/MD only',

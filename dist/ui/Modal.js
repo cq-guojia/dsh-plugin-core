@@ -3,6 +3,7 @@ import { t } from '../utils/i18n.js';
 import { ensureComponentStyles } from './css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
 import { OverlayHead, OverlayMask, useEscapeClose } from './overlay.js';
+import { PanelSurface } from './panel.js';
 /**
  * 模态弹窗（自绘 overlay，**不用 react-dom 的 portal**，避免多一个必需依赖）。
  *
@@ -30,7 +31,11 @@ export function Modal(props) {
             props.headerExtra !== undefined ||
             props.headerActions !== undefined ||
             showClose);
-    return h(OverlayMask, { kind: 'center', closeOnMask, onClose: props.onClose }, h('div', {
+    return h(OverlayMask, { kind: 'center', closeOnMask, onClose: props.onClose }, 
+    // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
+    // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
+    h(PanelSurface, {
+        tier: 'modal',
         className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
         style: {
             width: props.width ?? s.width,
@@ -38,7 +43,7 @@ export function Modal(props) {
             maxHeight: props.maxHeight ?? s.maxHeight,
             height: props.height ?? s.height,
         },
-        onClick: (e) => e.stopPropagation(),
+        stopPropagation: true,
     }, 
     // 头部与遮罩都是浮层公共件（overlay.ts），SideSheet 用的是同一套。
     showHeader

@@ -45,6 +45,8 @@ const MAP = [
   ['src/ui/controls/table-plain.css', 'src/ui/controls/table-plain-css.generated.ts', 'TABLE_PLAIN_CSS'],
   ['src/ui/controls/pagination.css', 'src/ui/controls/pagination-css.generated.ts', 'PAGINATION_CSS'],
   ['src/ui/controls/section-head.css', 'src/ui/controls/section-head-css.generated.ts', 'SECTION_HEAD_CSS'],
+  // 浮层面板皮肤（三档）：Modal / 选文件弹窗 / ▾ 选层与 Picker 下拉共用。
+  ['src/ui/panel.css', 'src/ui/panel-css.generated.ts', 'PANEL_CSS'],
   ['src/ui/picker.css', 'src/ui/picker-css.generated.ts', 'PICKER_CSS'],
   ['src/ui/overlay.css', 'src/ui/overlay-css.generated.ts', 'OVERLAY_CSS'],
   // 侧边面板皮肤：PanelDock 与 SideSheet 共用（定位各自在 panel-dock / side-sheet）。

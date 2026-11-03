@@ -237,7 +237,9 @@ export function errView(error: unknown): ErrView {
     case 'not-directory':
       return { key: 'previewNotDirectory' }
     case 'not-regular-file':
-      return { key: 'previewNotDirectory' }
+      // read 到目录 / 设备 / 管道这类「不是普通文件」的东西；与 not-directory（list 到文件）是两码事，
+      // 曾共用「不是文件夹」——/bin 事故里用户看到的正是这句反话（2026-11-03）。
+      return { key: 'previewNotFile' }
     case 'too-large':
       return { key: 'previewTooLarge' }
     case 'not-text':

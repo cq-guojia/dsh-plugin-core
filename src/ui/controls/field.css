@@ -106,6 +106,6 @@
 /* 拖拽分隔条（编辑分栏 / 预览 dock 共用，U20 #3）：6px 命中区，col-resize，不画线，hover/按下浮出浅带。
    具体 z-index 由 .dshpc-ed-resizer / .dshpc-sv-resizer 各自补。 */
 .dshpc-resizer{position:absolute;top:0;bottom:0;left:0;width:6px;cursor:col-resize;background:0 0;touch-action:none;user-select:none;}
-.dshpc-resizer:hover,.dshpc-resizer:active{background:var(--dshpc-hover,rgba(38,49,72,.06));}
+.dshpc-resizer:hover,.dshpc-resizer:active{background:var(--dshpc-hover);}
 
 @media (prefers-reduced-motion: reduce){.dshpc-input,.dshpc-pfx{transition:none;}}

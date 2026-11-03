@@ -11,7 +11,7 @@
 // ⚠️ 方法 A 的**侧边栏本体是核心 PanelDock**（用户 2026-10-21 拍板：不许自绘制外壳 + 拖拽条）。
 // PanelDock 是布局成员（占宽度、挤窄主区），同 ui/modal-host.ts 的做法：自建 container 挂 + createRoot，
 // 关闭即卸载回收，不残留空根；拖宽与关闭交给 PanelDock 自己的 resizer / header 关钮。
-import { createElement as h, Fragment, type ReactNode } from 'react'
+import { createElement as h, Fragment, type CSSProperties, type ReactNode } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { workspaceList } from '../ui/host-data.js'
 import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js'
@@ -23,6 +23,8 @@ import type { OfficeToPdfFace, PickedPath, PickFilter, WorkspaceAnchorItem } fro
 import { ensureComponentStyles, getStyleKit } from '../ui/css.js'
 import { PANEL_DOCK_CSS } from '../ui/panel-dock-css.js'
 import { FEEDBACK_CSS } from '../ui/feedback-css.js'
+import { OverlayMask } from '../ui/overlay.js'
+import { PanelSurface } from '../ui/panel.js'
 
 type Anchors = readonly WorkspaceAnchorItem[]
 
@@ -41,6 +43,18 @@ export function resolveStartPath(path: string, anchors: Anchors, sessionId?: str
   const base = owner?.path ?? anchors.find((item) => item.path !== undefined)?.path
   if (base === undefined) return null
   return normalizePath(`${normalizePath(base)}/${path.replace(/^\/+/, '')}`)
+}
+
+/**
+ * 给 `FileBrowser` 的 `rootPath`：路径所属工作区的真实根（dock 与 picker 共用这一份推导）。
+ * 顺序 = 当前路径命中 > 指定会话所属 > 第一个带 path 的工作区（2026-11-03 从两处重复代码合并）。
+ */
+function rootPathOf(path: string, anchors: Anchors, sessionId?: string): string | undefined {
+  return workspaceOfPath(path, anchors)?.path
+    ?? (sessionId === undefined
+      ? undefined
+      : anchors.find((item) => item.sessionIds?.includes(sessionId) === true)?.path)
+    ?? anchors.find((item) => item.path !== undefined)?.path
 }
 
 function warnNotWired(api: 'openFilePreview' | 'pickWorkspaceFile', filesMissing: boolean): void {
@@ -150,15 +164,11 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     warnNotWired('openFilePreview', false)
     return null
   }
-  const sessionBase =
-    options.sessionId === undefined
-      ? undefined
-      : anchors.find((item) => item.sessionIds?.includes(options.sessionId as string) === true)?.path
-  const base =
-    workspaceOfPath(start ?? '', anchors)?.path
-    ?? sessionBase
-    ?? anchors.find((item) => item.path !== undefined)?.path
-  const opts: OpenFilePreviewOptions = { ...options, rootPath: options.rootPath ?? base }
+  // rootPath 的推导只有一份（`rootPathOf`）；调用方显式给了就听调用方的。
+  const opts: OpenFilePreviewOptions = {
+    ...options,
+    rootPath: options.rootPath ?? rootPathOf(start ?? '', anchors, options.sessionId),
+  }
 
   // 只允许一个预览。**已经开着 ⇒ 换内容**（用户 2026-10-28：侧栏已经在那了，点别的文件就该
   // 直接切 —— 不重播展开动效、也不改用户拖好的宽度）。换页面 / 换容器就地把挂载体搬过去。
@@ -373,16 +383,14 @@ export function pickWorkspaceFile(options: PickWorkspaceFileOptions): Promise<Pi
       return
     }
     let settled = false
-    const backdrop = document.createElement('div')
-    backdrop.setAttribute('data-dshpc-picker-backdrop', '')
-    // 右边界读 PanelDock 发布的 --dshpc-page-inset-right，与 .dshpc-overlay 同款：
-    // 不把右侧分栏（openFilePreview 的 dock）连同它的分隔线一起压暗（2026-10-23 真机）。
-    backdrop.style.cssText = 'position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;z-index:1099;background:rgba(0,0,0,0.28)'
-
-    const panel = document.createElement('div')
-    panel.setAttribute('data-dshpc-picker-panel', '')
-    panel.setAttribute('role', 'dialog')
-    panel.setAttribute('aria-modal', 'true')
+    // 遮罩与面板都走浮层公共件（2026-11-03 皮肤统一）：遮罩 = `OverlayMask('plain')`，
+    // 面板 = `PanelSurface('popover')`。这里只算**定位**（贴锚点、上下翻转、夹紧进视口），
+    // 底色/描边/圆角/阴影归 panel.css —— 原来内联那套带 `#fff`/`#d0d7de` 兜底，换主题就脱节。
+    const panelStyle: CSSProperties = {
+      position: 'fixed',
+      display: 'flex',
+      flexDirection: 'column',
+    }
     const anchor = options.anchor ?? null
     if (anchor !== null) {
       const rect = anchor.getBoundingClientRect()
@@ -402,63 +410,66 @@ export function pickWorkspaceFile(options: PickWorkspaceFileOptions): Promise<Pi
       const top = below
         ? Math.min(rect.bottom + GAP, Math.max(GAP, vh - GAP - height))
         : Math.max(GAP, rect.top - GAP - height)
-      panel.style.cssText =
-        'position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;' +
-        `left:${Math.round(left)}px;top:${Math.round(top)}px;` +
-        `width:${Math.round(width)}px;height:${Math.round(height)}px;` +
-        'background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);' +
-        'border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)'
+      panelStyle.left = Math.round(left)
+      panelStyle.top = Math.round(top)
+      panelStyle.width = Math.round(width)
+      panelStyle.height = Math.round(height)
     } else {
-      panel.style.cssText =
-        'position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;' +
-        `width:min(${PICKER_WIDTH}px,calc(100vw - 24px));height:${PICKER_MAX_H}px;` +
-        'background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);' +
-        'border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)'
+      panelStyle.width = `min(${PICKER_WIDTH}px,calc(100vw - 24px))`
+      panelStyle.height = PICKER_MAX_H
     }
 
     const finish = (result: PickedPath | null): void => {
       if (settled) return
       settled = true
       window.removeEventListener('keydown', onKeyDown)
-      backdrop.remove()
       root.unmount()
-      panel.remove()
+      mount.remove()
       if (result === null) options.onCancel?.()
       resolve(result)
     }
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.key === 'Escape') finish(null)
     }
-    backdrop.addEventListener('click', () => finish(null))
     window.addEventListener('keydown', onKeyDown)
 
-    document.body.appendChild(backdrop)
-    document.body.appendChild(panel)
+    const mount = document.createElement('div')
+    document.body.appendChild(mount)
     ensureComponentStyles('panel-dock', PANEL_DOCK_CSS, getStyleKit())
     ensureComponentStyles('feedback', FEEDBACK_CSS, getStyleKit())
-    const root: Root = createRoot(panel)
+    const root: Root = createRoot(mount)
     root.render(
-      h(FileBrowser, {
-        files,
-        officeToPdf: options.officeToPdf ?? null,
-        path: start,
-        rootName: options.rootName,
-        sessionId: options.sessionId,
-        rootPath:
-          workspaceOfPath(start, anchors)?.path
-          ?? (options.sessionId === undefined
-            ? undefined
-            : anchors.find((item) => item.sessionIds?.includes(options.sessionId as string) === true)?.path)
-          ?? anchors.find((item) => item.path !== undefined)?.path,
-        workspaces: options.workspaces,
-        onSelectWorkspace: options.onSelectWorkspace,
-        picker: true,
-        filter: options.filter,
-        translate: options.translate,
-        onPick: (picked: PickedPath) => finish(picked),
-        onClose: () => finish(null),
-        style: { flex: '1 1 auto', width: '100%', minWidth: 0, minHeight: 0 },
-      }) as ReactNode,
+      h(
+        OverlayMask,
+        { kind: 'plain', closeOnMask: true, onClose: () => finish(null), attrs: { 'data-dshpc-picker-backdrop': '' } },
+        // `data-dshpc-picker-panel` / `data-dshpc-picker-backdrop` 是既有定位钩子，继续保留。
+        h(
+          PanelSurface,
+          {
+            tier: 'popover',
+            role: 'dialog',
+            attrs: { 'data-dshpc-picker-panel': '', 'aria-modal': 'true' },
+            style: panelStyle,
+            stopPropagation: true,
+          },
+          h(FileBrowser, {
+            files,
+            officeToPdf: options.officeToPdf ?? null,
+            path: start,
+            rootName: options.rootName,
+            sessionId: options.sessionId,
+            rootPath: rootPathOf(start, anchors, options.sessionId),
+            workspaces: options.workspaces,
+            onSelectWorkspace: options.onSelectWorkspace,
+            picker: true,
+            filter: options.filter,
+            translate: options.translate,
+            onPick: (picked: PickedPath) => finish(picked),
+            onClose: () => finish(null),
+            style: { flex: '1 1 auto', width: '100%', minWidth: 0, minHeight: 0 },
+          }) as ReactNode,
+        ),
+      ),
     )
   })
 }

@@ -7,6 +7,8 @@
 import { createElement as h, useEffect, type ReactNode } from 'react'
 import { ensureComponentStyles } from './css.js'
 import { OVERLAY_CSS } from './overlay-css.js'
+import { PANEL_CSS } from './panel-css.js'
+import { PanelClose } from './panel.js'
 
 /**
  * Esc 关闭。不传 `onClose` 或 `enabled=false` 时完全不挂监听
@@ -23,14 +25,20 @@ export function useEscapeClose(enabled: boolean, onClose: (() => void) | undefin
   }, [enabled, onClose])
 }
 
-/** 浮层档：center = 居中弹窗；side = 贴边抽屉（z 更低，见 overlay.css）。 */
-export type OverlayKind = 'center' | 'side'
+/**
+ * 浮层档：center = 居中弹窗；side = 贴边抽屉；plain = 不居中的锚定面板（选文件弹窗用，
+ * 面板自己 `position:fixed` 贴锚点，遮罩只负责压暗与「点外部关闭」）。
+ * 三档的遮罩视觉同一套，只差布局与 z（见 overlay.css）。
+ */
+export type OverlayKind = 'center' | 'side' | 'plain'
 
 export interface OverlayMaskProps {
   kind: OverlayKind
   /** 点遮罩是否关闭。 */
   closeOnMask: boolean
   onClose?: () => void
+  /** 原样铺到遮罩节点上的属性（`data-*` 这类既有钩子）。 */
+  attrs?: Record<string, string | undefined>
   children?: ReactNode
 }
 
@@ -40,6 +48,7 @@ export function OverlayMask(props: OverlayMaskProps): ReactNode {
   return h(
     'div',
     {
+      ...props.attrs,
       className: `dshpc-overlay dshpc-overlay--${props.kind}`,
       onClick: () => {
         if (props.closeOnMask) props.onClose?.()
@@ -67,6 +76,8 @@ export interface OverlayHeadProps {
 /** 头部四槽：icon + 标题组 + 右侧动作 + 关闭钮。 */
 export function OverlayHead(props: OverlayHeadProps): ReactNode {
   ensureComponentStyles('overlay', OVERLAY_CSS)
+  // 关闭钮的皮肤在 panel.css（浮层唯一那枚）；旧类名 `dshpc-overlay-head__close` 仍挂着做别名。
+  ensureComponentStyles('panel', PANEL_CSS)
   return h(
     'div',
     { className: 'dshpc-overlay-head' },
@@ -90,15 +101,7 @@ export function OverlayHead(props: OverlayHeadProps): ReactNode {
     props.actions === undefined ? null : h('div', { className: 'dshpc-overlay-head__actions' }, props.actions),
     props.onClose === undefined
       ? null
-      : h(
-          'button',
-          {
-            type: 'button',
-            className: 'dshpc-overlay-head__close',
-            'aria-label': props.closeLabel,
-            onClick: () => props.onClose?.(),
-          },
-          '✕',
-        ),
+      // 关闭钮只此一枚（`PanelClose`）；旧类名挂着做别名，消费方写在上面的覆盖仍生效。
+      : h(PanelClose, { label: props.closeLabel, onClick: props.onClose, className: 'dshpc-overlay-head__close' }),
   )
 }

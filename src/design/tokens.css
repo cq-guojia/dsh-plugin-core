@@ -77,6 +77,13 @@ body{
   --dshpc-on-signal:#fff;
   /* 黄底上的字：黄色是中高明度，白字看不清 ⇒ 固定深色（与主题无关）。 */
   --dshpc-on-warning:#1f2328;
+  /* 告警严重度的圆点底色（2026-11-03 从 feedback.css 收到这里）。
+     与主题无关的一组常量：这几个色要在任意底色上都认得出来，所以**不跟宿主 state 色走**
+     （宿主 state-warn-primary 偏亮，压白 ✕ 看不清）。语义色改动请只改这里。 */
+  --dshpc-sev-info:#2563eb;
+  --dshpc-sev-success:#16a34a;
+  --dshpc-sev-warning:#d97706;
+  --dshpc-sev-error:#dc2626;
 
   /* ── 实心按钮的 hover / active 派生态（2026-10-19 用户点名）─────────────────
      原实现是 :hover 直接压 opacity .9：黑底压 10% 几乎看不出来，用户原话「完全感觉不到颜色变了」。
@@ -228,6 +235,12 @@ body{
   --dshpc-z-modal:1070;
   --dshpc-z-menu:1100;
   --dshpc-z-tip:1200;
+  /* 语义别名（2026-11-03 面板皮肤统一）：业务文件只许用这两个说「我要一层浮层」，
+     不再各自写 1099/1100/1200/1201 这类字面量。
+       panel   = 浮层面板本体（picker 弹窗、锚定面板）；
+       popmenu = 叠在面板之上的菜单（▾ 选层、Picker 下拉）与其透明遮罩。 */
+  --dshpc-z-panel:var(--dshpc-z-menu);
+  --dshpc-z-popmenu:var(--dshpc-z-tip);
 
   /* ── 动效 ─────────────────────────────────────────────────────────── */
   --dshpc-dur:var(--ds-transition-duration,.2s);

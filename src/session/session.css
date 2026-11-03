@@ -11,7 +11,7 @@
 .dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}
 
 /* 官方样式未命中时的可见探针（挂在头部副标题行，不占正文）。 */
-.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning,#b7791f)}
+.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning)}
 
 /* 头部归档标识（官方归档图标 + 「已归档」）。 */
 .dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}
@@ -30,23 +30,23 @@
 
 .dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}
 
-.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));border:1px dashed var(--dshpc-border,rgba(128,128,128,.35));border-radius:var(--dshpc-radius-sm);padding:4px 10px;}
+.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);border:1px dashed var(--dshpc-border);border-radius:var(--dshpc-radius-sm);padding:4px 10px;}
 
 /* 工具卡根（SessionViewModal legacy 兜底渲染直接用；正常 keyed 路径一律挂官方 ToolRow 类）。 */
 .dshpc-sv-tool{flex-direction:column;display:flex;}
 
-.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding:2px 8px;}
+.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);padding:2px 8px;}
 
 
-.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger,#e5484d);word-break:break-word;}
+.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger);word-break:break-word;}
 
 .dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}
 
 /* ── 暂存输入区（期4：打字 → 确定 → fork 带话跳官方视图）── */
 .dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}
 
-.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg,#1f2328);background:var(--dshpc-surface-2,rgba(128,128,128,.10));border:1px solid var(--dshpc-border,rgba(128,128,128,.28));border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}
+.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg);background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}
 
-.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus,#3b5bdb);outline-offset:-1px;}
+.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px;}
 
-.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3,rgba(128,128,128,.8));padding-bottom:10px;white-space:nowrap;}
+.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);padding-bottom:10px;white-space:nowrap;}

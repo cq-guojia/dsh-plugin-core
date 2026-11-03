@@ -14,112 +14,29 @@
 // 核心没有的那一项 = ▾ 选层浮层，按兄弟项目 dsh-task-dispatch-table 的 `.dsh-tdt-sv-crumbs-*`
 // 逐像素照抄（间距 / 圆角 / 最大高度 / 空态），不自创度量。
 import { createElement as h, Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, } from 'react';
-import { IconCheckOutlineRegular, IconChevronDownOutlineRegular, IconChevronRightOutlineRegular, IconCloseOutlineRegular, IconCopyOutlineRegular, IconFolderCloseRegular, IconFolderOpenOutlineRegular, IconRefreshOutlineRegular, writeClipboard, FileTypeIcon, } from '../ui/official.js';
+import { IconChevronRightOutlineRegular, writeClipboard, FileTypeIcon, } from '../ui/official.js';
 import { Button, IconButton } from '../ui/Button.js';
-import { MarqueeText } from '../ui/MarqueeText.js';
-import { Segmented } from '../ui/Segmented.js';
 import { workspaceList } from '../ui/host-data.js';
 import { t } from '../utils/i18n.js';
 import { FilePreview } from './preview/index.js';
 import { bareCode, baseNameOfPath, crumbsOfDir, createRequestGate, dirnameOf, errView, isAborted, isAbsoluteish, isFailed, joinPath, listingOf, matchesFilter, relativizeToDir, sortEntries, normalizePath, workspaceOfPath, } from './types.js';
 import { ensureComponentStyles } from '../ui/css.js';
+import { PANEL_CSS } from '../ui/panel-css.js';
 import { EXPLORER_CSS } from './explorer-css.js';
+import { crumbsMenuEntries } from './crumbs-menu.js';
+import { CrumbNav, PlainNav } from './crumb-nav.js';
+import { LandingBody } from './landing.js';
+import { PreviewTitleBar } from './preview-title-bar.js';
 /**
  * 「根」在 POSIX 上的落点 `/`。Windows 没有这一个根 —— 根层是盘符清单，由宿主 `op:'roots'` 给出
  * （见下面 `roots` 状态），本常量只在 POSIX / 探不到盘符时用。
  */
 const FS_ROOT = '/';
-/**
- * ▾ 下拉条目构造（**picker 与 dock 共用同一段代码**，差别只在入参——源实现用户 2026-09-29
- * 点名提炼，严禁两处各写一份）：
- *  - 当前工作区排第一（打开文件夹图标 + 加粗），**其下路径紧跟**（每层一个右箭头位缩进），
- *   再列其他工作区（关合图标 + 灰）——「打开哪个就跟在哪个下面」；点当前工作区 = 回到其根目录。
- *  - 当前工作区未知（rootName 空或不在清单）时路径段置顶、全部工作区按「其他」罗列；
- *  - workspaces 为空（宿主还没给工作区快照）= 只出路径段（根无箭头、其下逐层缩进）。
- *
- * 条目是**自写浮层**（核心没有「带缩进的选择层菜单」这类控件 ⇒ 按兄弟项目
- * `dsh-task-dispatch-table` 的 `.dsh-tdt-sv-crumbs-menu*` 逐条照抄间距）：
- * backdrop + 菜单本体 + `-item`（4px 8px / 最大宽 280 / 超出滚动 / 空态）。
- */
-function crumbsMenuEntries(params) {
-    const { workspaces, roots, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
-    const out = [];
-    // 根层常驻最上面（用户 2026-11-03：原来拉开的只有工作区，根目录要放最上面）。
-    for (const root of roots) {
-        out.push(h('button', {
-            key: `root:${root.path}`,
-            type: 'button',
-            role: 'menuitem',
-            className: 'dshpc-fb__menu-item',
-            style: { paddingLeft: 8, display: 'flex', alignItems: 'center', gap: '6px' },
-            title: root.path,
-            onClick: () => onLoadDir?.(root.path),
-        }, h('span', { className: 'dshpc-fb__menu-icon', style: { color: 'var(--dshpc-fg-2)' } }, h(IconFolderCloseRegular, { size: 13 })), h('span', { className: 'dshpc-fb__menu-label' }, root.label)));
-    }
-    // 内联样式照抄兄弟项目（wsEntry 的 gap 6px 覆盖类的 2px：图标与文字的间距以它为准）。
-    const wsEntry = (ws, current) => h('button', {
-        key: `ws:${ws}`,
-        type: 'button',
-        role: 'menuitem',
-        className: 'dshpc-fb__menu-item',
-        style: { paddingLeft: 8, display: 'flex', alignItems: 'center', gap: '6px' },
-        title: ws,
-        // 点当前工作区 = 回到该工作区根目录（浏览深处时唯一的「回根」入口，兄弟 2026-10-10）；
-        // 点其他工作区才走 onPickWorkspace（换会话）。
-        onClick: () => {
-            if (current)
-                onLoadDir?.('');
-            else
-                onPickWorkspace?.(ws);
-        },
-    }, h('span', { className: 'dshpc-fb__menu-icon', style: { color: current ? 'var(--dshpc-fg)' : 'var(--dshpc-fg-2)' } }, h(current ? IconFolderOpenOutlineRegular : IconFolderCloseRegular, { size: 13 })), h('span', { className: 'dshpc-fb__menu-label', style: { fontWeight: current ? 600 : 400 } }, ws));
-    const pathEntry = (crumb, depth, withArrow = true) => h('button', {
-        key: `dir:${crumb.path}`,
-        type: 'button',
-        role: 'menuitem',
-        className: 'dshpc-fb__menu-item',
-        style: { paddingLeft: 8 },
-        title: crumb.path,
-        onClick: () => {
-            onLoadDir?.(crumb.path);
-        },
-    }, withArrow
-        ? h(Fragment, null, Array.from({ length: depth }, (_, s) => h('span', { key: `s${s}`, className: 'dshpc-fb__menu-chev-slot', 'aria-hidden': true })), h('span', { className: 'dshpc-fb__menu-chev' }, h(IconChevronRightOutlineRegular, { size: 11 })))
-        : null, h('span', { className: 'dshpc-fb__menu-label' }, crumb.label));
-    if (workspaces.length === 0) {
-        // 宿主还没给工作区快照 ⇒ 只出路径段（不出空的工作区组）。
-        if (crumbs.length === 0)
-            return [h('div', { key: 'empty', className: 'dshpc-fb__menu-empty' }, rootFallbackLabel)];
-        return crumbs.map((crumb, index) => pathEntry(crumb, index === 0 ? 0 : index - 1, index !== 0));
-    }
-    // 路径段：第一段是「根」（工作区名 / 根目录 / 盘符）时由上面那组行表达，剔除后再从下一层起算。
-    const head = crumbs[0];
-    const isRootHead = head !== undefined
-        && (head.path === '' || head.path === FS_ROOT || roots.some((root) => root.path === head.path));
-    const segments = isRootHead ? crumbs.slice(1) : crumbs;
-    if (rootName !== '' && workspaces.includes(rootName)) {
-        // 当前工作区排第一，其下路径紧跟，然后是其他工作区（保持原相对顺序）。
-        out.push(wsEntry(rootName, true));
-        segments.forEach((crumb, i) => {
-            out.push(pathEntry(crumb, i));
-        });
-        for (const ws of workspaces) {
-            if (ws !== rootName)
-                out.push(wsEntry(ws, false));
-        }
-    }
-    else {
-        segments.forEach((crumb, i) => {
-            out.push(pathEntry(crumb, i));
-        });
-        for (const ws of workspaces)
-            out.push(wsEntry(ws, false));
-    }
-    return out;
-}
 /** 目录浏览器面板。详见 {@link FileBrowserProps}。 */
 export function FileBrowser(props) {
     ensureComponentStyles('explorer', EXPLORER_CSS);
+    // ▾ 选层用浮层 menu 档（panel.css）：跟弹窗同一套底色/描边/圆角/阴影。
+    ensureComponentStyles('panel', PANEL_CSS);
     const tt = props.translate ?? t;
     const picker = props.picker === true;
     // mode：加载/目录树/文件预览/列举错误。viewing 非空 ⇒ 在 dir 树内预览文件。
@@ -621,20 +538,13 @@ export function FileBrowser(props) {
         onPickWorkspace: switchWorkspace,
         onLoadDir: loadDir,
     });
-    /** 一段面包屑（核心 ghost 钮：无底无边；度量条与可见态必须逐字同构）。 */
-    const crumbButton = (label, onClick, current = false) => h(Button, {
-        variant: 'ghost',
-        size: 'sm',
-        className: `dshpc-fb__crumb${current ? ' dshpc-fb__crumb--current' : ''}`,
-        disabled: onClick === undefined,
-        tabIndex: onClick === undefined ? -1 : 0,
-        onClick,
-    }, h(MarqueeText, { text: label, className: 'dshpc-fb__crumb-mq' }));
     // 选择器的「选当前目录」入口（用户 2026-11-03：进到某一层之后，行上没有它自己，
     // 树里也点不到「当前这层」⇒ 在 ✕ 左边给一枚按钮）。落地页还没进任何目录、扩展名过滤下
     // 目录不是合法结果 —— 这两种情况不出按钮。
     const pickNow = picker && props.onPick !== undefined && !landing && dirPickable && dir !== ''
         ? h(Button, {
+            // 描边（outline）：ghost 在这一排**看不出来是按钮**——它无底无边，与面板同色，
+            // 用户 2026-11-03 实测「就像没有背景一样」，于是改回有 border 的一档（覆盖当天早些的 ghost 结论）。
             variant: 'outline',
             size: 'sm',
             className: 'dshpc-fb__pick',
@@ -642,118 +552,47 @@ export function FileBrowser(props) {
             onClick: () => props.onPick?.(toPicked(dir, true)),
         }, tt('explorerPickDir'))
         : null;
-    const crumbBar = h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h('div', { className: 'dshpc-fb__menu-wrap' }, h(IconButton, {
-        variant: 'plain',
-        size: 'md',
-        icon: h(IconChevronDownOutlineRegular, { size: 14 }),
-        label: tt('explorerLevels'),
-        'aria-expanded': menuOpen,
-        onClick: () => setMenuOpen((v) => !v),
-    }), 
-    // 选层下拉 = 自写浮层（抄兄弟 .dsh-tdt-sv-crumbs-*）：透明遮罩点一下即收，
-    // 遮罩层序高于 picker 面板（1100）⇒ 菜单开着时点面板也算「点外部」。
-    menuOpen
-        ? h(Fragment, null, h('div', {
-            className: 'dshpc-fb__crumbs-backdrop',
-            onClick: () => setMenuOpen(false),
-        }), h('div', { className: 'dshpc-fb__crumbs-menu', role: 'menu' }, menuItems))
-        : null), landing
-        ? h('div', { className: 'dshpc-fb__crumbs' })
-        : h('div', { ref: regionRef, className: 'dshpc-fb__crumbs' }, 
-        // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
-        h('span', { ref: measureRef, className: 'dshpc-fb__crumbs-measure', 'aria-hidden': true }, crumbs.length === 0
-            ? crumbButton(tt('explorerRootName'))
-            : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label)))), 
-        // 工作区根目录（crumbs 空）也要有可见的面包屑占位。
-        crumbsOverflow
-            ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt('explorerRootName') : tt('explorerRootName'), undefined, true)
-            : crumbs.length === 0
-                ? crumbButton(tt('explorerRootName'), undefined, true)
-                : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label, () => loadDir(crumb.path))))), h('div', { className: 'dshpc-fb__actions' }, pickNow, props.onClose === undefined
-        ? null
-        : h(IconButton, {
-            variant: 'plain',
-            size: 'md',
-            icon: h(IconCloseOutlineRegular, { size: 14 }),
-            label: tt('previewClose'),
-            onClick: props.onClose,
-        })));
-    // 越界（outside-workspace）：第一排整条换成只读完整路径，不给任何会失败的入口。
-    const crumbBarPlain = h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h(MarqueeText, {
-        text: dir,
-        title: dir,
-        className: 'dshpc-fb__bar-plain',
-        style: { flex: '1 1 auto', minWidth: 0 },
-    }), h('div', { className: 'dshpc-fb__actions' }, pickNow, props.onClose === undefined
-        ? null
-        : h(IconButton, {
-            variant: 'plain',
-            size: 'md',
-            icon: h(IconCloseOutlineRegular, { size: 14 }),
-            label: tt('previewClose'),
-            onClick: props.onClose,
-        })));
-    // 第二排（仅预览态显示）：文件名 + 渲染⇄源码切换 / 复制路径 / 刷新。
-    // 档位照兄弟项目调用点：Segmented `sm` + 图标钮 `md`（核心 Segmented 高度由 CSS 定，不随档变）。
+    const nav = outside
+        ? h(PlainNav, { translate: tt, path: dir, pickNow, onClose: props.onClose })
+        : h(CrumbNav, {
+            translate: tt,
+            landing,
+            crumbs,
+            overflow: crumbsOverflow,
+            menuItems,
+            menuOpen,
+            onToggleMenu: () => setMenuOpen((v) => !v),
+            onCloseMenu: () => setMenuOpen(false),
+            onLoadDir: loadDir,
+            pickNow,
+            onClose: props.onClose,
+            regionRef,
+            measureRef,
+        });
     const titleBar = viewing === null
         ? null
-        : h('div', { className: 'dshpc-fb__title' }, h(MarqueeText, {
-            text: baseNameOfPath(viewing),
-            title: viewing,
-            className: 'dshpc-fb__title-inner',
-            style: { flex: '1 1 auto', minWidth: 0 },
-        }), h('div', { className: 'dshpc-fb__actions' }, switchable
-            ? h(Segmented, {
-                size: 'sm',
-                label: viewingIsMd ? tt('previewMdSwitchAria') : tt('previewHtmlSwitchAria'),
-                value: sourceView ? 'source' : 'render',
-                items: [
-                    { value: 'render', label: tt('previewRender') },
-                    { value: 'source', label: tt('previewSource') },
-                ],
-                onChange: (next) => setSourceView(next === 'source'),
-            })
-            : null, h(IconButton, {
-            variant: 'plain',
-            size: 'md',
-            icon: copied ? h(IconCheckOutlineRegular, { size: 14 }) : h(IconCopyOutlineRegular, { size: 14 }),
-            label: tt('previewCopyPath'),
-            onClick: copyPath,
-        }), h(IconButton, {
-            variant: 'plain',
-            size: 'md',
-            icon: h(IconRefreshOutlineRegular, { size: 14 }),
-            label: tt('previewRefresh'),
-            onClick: reload,
-        })));
+        : h(PreviewTitleBar, {
+            translate: tt,
+            path: viewing,
+            switchable,
+            isMarkdown: viewingIsMd,
+            sourceView,
+            onSourceViewChange: setSourceView,
+            copied,
+            onCopyPath: copyPath,
+            onReload: reload,
+        });
     // ── 主体 ──
     let body;
     if (landing) {
-        const row = (key, label, target) => h('div', {
-            key,
-            className: 'dshpc-fb__row',
-            role: 'button',
-            tabIndex: 0,
-            onClick: () => loadDir(target),
-            onKeyDown: (event) => {
-                if (event.key === 'Enter' || event.key === ' ')
-                    loadDir(target);
-            },
-        }, h('span', { className: 'dshpc-fb__row-icon' }, h(IconFolderCloseRegular, { size: 18 })), h('span', { className: 'dshpc-fb__row-name' }, label), 
-        // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 盘符 / 工作区根本身都能选）。
-        picker && props.onPick !== undefined && !extsOnly
-            ? h(Button, {
-                variant: 'outline',
-                size: 'sm',
-                className: 'dshpc-fb__row-act',
-                'aria-label': tt('explorerPickDirAria'),
-                onClick: (event) => {
-                    event.stopPropagation();
-                    props.onPick?.(toPicked(target, true));
-                },
-            }, tt('explorerPickDir'))
-            : null);
-        body = h('div', { className: 'dshpc-fb__tree' }, rootRows.map((root) => row(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== undefined && item.path !== '').map((item) => row(`ws:${item.title}`, item.title, item.path)));
+        body = h(LandingBody, {
+            translate: tt,
+            roots: rootRows,
+            anchors,
+            pickable: picker && props.onPick !== undefined && !extsOnly,
+            onOpen: loadDir,
+            onPickDir: (target) => props.onPick?.(toPicked(target, true)),
+        });
     }
     else if (viewing !== null) {
         body = h(FilePreview, {
@@ -783,6 +622,6 @@ export function FileBrowser(props) {
     return h('div', {
         className: 'dshpc-fb',
         style: props.style ?? undefined,
-    }, outside ? crumbBarPlain : crumbBar, titleBar, body);
+    }, nav, titleBar, body);
 }
 //# sourceMappingURL=FileBrowser.js.map

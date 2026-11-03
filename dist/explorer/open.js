@@ -21,6 +21,8 @@ import { isAbsoluteish, normalizePath, workspaceOfPath } from './types.js';
 import { ensureComponentStyles, getStyleKit } from '../ui/css.js';
 import { PANEL_DOCK_CSS } from '../ui/panel-dock-css.js';
 import { FEEDBACK_CSS } from '../ui/feedback-css.js';
+import { OverlayMask } from '../ui/overlay.js';
+import { PanelSurface } from '../ui/panel.js';
 /**
  * 入参路径解析成**绝对路径**（`''` = 虚拟根）。用户 2026-11-03 定：绝对/相对都收。
  *
@@ -39,6 +41,17 @@ export function resolveStartPath(path, anchors, sessionId) {
     if (base === undefined)
         return null;
     return normalizePath(`${normalizePath(base)}/${path.replace(/^\/+/, '')}`);
+}
+/**
+ * 给 `FileBrowser` 的 `rootPath`：路径所属工作区的真实根（dock 与 picker 共用这一份推导）。
+ * 顺序 = 当前路径命中 > 指定会话所属 > 第一个带 path 的工作区（2026-11-03 从两处重复代码合并）。
+ */
+function rootPathOf(path, anchors, sessionId) {
+    return workspaceOfPath(path, anchors)?.path
+        ?? (sessionId === undefined
+            ? undefined
+            : anchors.find((item) => item.sessionIds?.includes(sessionId) === true)?.path)
+        ?? anchors.find((item) => item.path !== undefined)?.path;
 }
 function warnNotWired(api, filesMissing) {
     console.warn(`[dsh-plugin-core/explorer] ${api}: `
@@ -79,13 +92,11 @@ export function openFilePreview(options) {
         warnNotWired('openFilePreview', false);
         return null;
     }
-    const sessionBase = options.sessionId === undefined
-        ? undefined
-        : anchors.find((item) => item.sessionIds?.includes(options.sessionId) === true)?.path;
-    const base = workspaceOfPath(start ?? '', anchors)?.path
-        ?? sessionBase
-        ?? anchors.find((item) => item.path !== undefined)?.path;
-    const opts = { ...options, rootPath: options.rootPath ?? base };
+    // rootPath 的推导只有一份（`rootPathOf`）；调用方显式给了就听调用方的。
+    const opts = {
+        ...options,
+        rootPath: options.rootPath ?? rootPathOf(start ?? '', anchors, options.sessionId),
+    };
     // 只允许一个预览。**已经开着 ⇒ 换内容**（用户 2026-10-28：侧栏已经在那了，点别的文件就该
     // 直接切 —— 不重播展开动效、也不改用户拖好的宽度）。换页面 / 换容器就地把挂载体搬过去。
     if (activePreview !== null) {
@@ -257,15 +268,14 @@ export function pickWorkspaceFile(options) {
             return;
         }
         let settled = false;
-        const backdrop = document.createElement('div');
-        backdrop.setAttribute('data-dshpc-picker-backdrop', '');
-        // 右边界读 PanelDock 发布的 --dshpc-page-inset-right，与 .dshpc-overlay 同款：
-        // 不把右侧分栏（openFilePreview 的 dock）连同它的分隔线一起压暗（2026-10-23 真机）。
-        backdrop.style.cssText = 'position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;z-index:1099;background:rgba(0,0,0,0.28)';
-        const panel = document.createElement('div');
-        panel.setAttribute('data-dshpc-picker-panel', '');
-        panel.setAttribute('role', 'dialog');
-        panel.setAttribute('aria-modal', 'true');
+        // 遮罩与面板都走浮层公共件（2026-11-03 皮肤统一）：遮罩 = `OverlayMask('plain')`，
+        // 面板 = `PanelSurface('popover')`。这里只算**定位**（贴锚点、上下翻转、夹紧进视口），
+        // 底色/描边/圆角/阴影归 panel.css —— 原来内联那套带 `#fff`/`#d0d7de` 兜底，换主题就脱节。
+        const panelStyle = {
+            position: 'fixed',
+            display: 'flex',
+            flexDirection: 'column',
+        };
         const anchor = options.anchor ?? null;
         if (anchor !== null) {
             const rect = anchor.getBoundingClientRect();
@@ -285,28 +295,22 @@ export function pickWorkspaceFile(options) {
             const top = below
                 ? Math.min(rect.bottom + GAP, Math.max(GAP, vh - GAP - height))
                 : Math.max(GAP, rect.top - GAP - height);
-            panel.style.cssText =
-                'position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;' +
-                    `left:${Math.round(left)}px;top:${Math.round(top)}px;` +
-                    `width:${Math.round(width)}px;height:${Math.round(height)}px;` +
-                    'background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);' +
-                    'border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)';
+            panelStyle.left = Math.round(left);
+            panelStyle.top = Math.round(top);
+            panelStyle.width = Math.round(width);
+            panelStyle.height = Math.round(height);
         }
         else {
-            panel.style.cssText =
-                'position:fixed;z-index:1100;display:flex;flex-direction:column;overflow:hidden;' +
-                    `width:min(${PICKER_WIDTH}px,calc(100vw - 24px));height:${PICKER_MAX_H}px;` +
-                    'background:var(--dshpc-surface-2,#fff);border:1px solid var(--dshpc-border,#d0d7de);' +
-                    'border-radius:8px;box-shadow:var(--dshpc-shadow-2,none)';
+            panelStyle.width = `min(${PICKER_WIDTH}px,calc(100vw - 24px))`;
+            panelStyle.height = PICKER_MAX_H;
         }
         const finish = (result) => {
             if (settled)
                 return;
             settled = true;
             window.removeEventListener('keydown', onKeyDown);
-            backdrop.remove();
             root.unmount();
-            panel.remove();
+            mount.remove();
             if (result === null)
                 options.onCancel?.();
             resolve(result);
@@ -315,24 +319,27 @@ export function pickWorkspaceFile(options) {
             if (event.key === 'Escape')
                 finish(null);
         };
-        backdrop.addEventListener('click', () => finish(null));
         window.addEventListener('keydown', onKeyDown);
-        document.body.appendChild(backdrop);
-        document.body.appendChild(panel);
+        const mount = document.createElement('div');
+        document.body.appendChild(mount);
         ensureComponentStyles('panel-dock', PANEL_DOCK_CSS, getStyleKit());
         ensureComponentStyles('feedback', FEEDBACK_CSS, getStyleKit());
-        const root = createRoot(panel);
-        root.render(h(FileBrowser, {
+        const root = createRoot(mount);
+        root.render(h(OverlayMask, { kind: 'plain', closeOnMask: true, onClose: () => finish(null), attrs: { 'data-dshpc-picker-backdrop': '' } }, 
+        // `data-dshpc-picker-panel` / `data-dshpc-picker-backdrop` 是既有定位钩子，继续保留。
+        h(PanelSurface, {
+            tier: 'popover',
+            role: 'dialog',
+            attrs: { 'data-dshpc-picker-panel': '', 'aria-modal': 'true' },
+            style: panelStyle,
+            stopPropagation: true,
+        }, h(FileBrowser, {
             files,
             officeToPdf: options.officeToPdf ?? null,
             path: start,
             rootName: options.rootName,
             sessionId: options.sessionId,
-            rootPath: workspaceOfPath(start, anchors)?.path
-                ?? (options.sessionId === undefined
-                    ? undefined
-                    : anchors.find((item) => item.sessionIds?.includes(options.sessionId) === true)?.path)
-                ?? anchors.find((item) => item.path !== undefined)?.path,
+            rootPath: rootPathOf(start, anchors, options.sessionId),
             workspaces: options.workspaces,
             onSelectWorkspace: options.onSelectWorkspace,
             picker: true,
@@ -341,7 +348,7 @@ export function pickWorkspaceFile(options) {
             onPick: (picked) => finish(picked),
             onClose: () => finish(null),
             style: { flex: '1 1 auto', width: '100%', minWidth: 0, minHeight: 0 },
-        }));
+        }))));
     });
 }
 //# sourceMappingURL=open.js.map

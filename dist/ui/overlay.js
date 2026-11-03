@@ -7,6 +7,8 @@
 import { createElement as h, useEffect } from 'react';
 import { ensureComponentStyles } from './css.js';
 import { OVERLAY_CSS } from './overlay-css.js';
+import { PANEL_CSS } from './panel-css.js';
+import { PanelClose } from './panel.js';
 /**
  * Esc 关闭。不传 `onClose` 或 `enabled=false` 时完全不挂监听
  * （无回调还挂监听，等于让 Esc 被白白吃掉）。
@@ -27,6 +29,7 @@ export function useEscapeClose(enabled, onClose) {
 export function OverlayMask(props) {
     ensureComponentStyles('overlay', OVERLAY_CSS);
     return h('div', {
+        ...props.attrs,
         className: `dshpc-overlay dshpc-overlay--${props.kind}`,
         onClick: () => {
             if (props.closeOnMask)
@@ -37,13 +40,11 @@ export function OverlayMask(props) {
 /** 头部四槽：icon + 标题组 + 右侧动作 + 关闭钮。 */
 export function OverlayHead(props) {
     ensureComponentStyles('overlay', OVERLAY_CSS);
+    // 关闭钮的皮肤在 panel.css（浮层唯一那枚）；旧类名 `dshpc-overlay-head__close` 仍挂着做别名。
+    ensureComponentStyles('panel', PANEL_CSS);
     return h('div', { className: 'dshpc-overlay-head' }, h('div', { className: 'dshpc-overlay-head__heading' }, props.icon === undefined ? null : h('span', { className: 'dshpc-overlay-head__lead' }, props.icon), h('div', { className: 'dshpc-overlay-head__titlegroup' }, h('div', { className: 'dshpc-overlay-head__titlerow' }, h('div', { className: 'dshpc-overlay-head__title' }, props.title ?? ''), props.extra === undefined ? null : h('div', { className: 'dshpc-overlay-head__extra' }, props.extra)), props.subtitle === undefined ? null : h('div', { className: 'dshpc-overlay-head__sid' }, props.subtitle))), h('div', { className: 'dshpc-overlay-head__spacer' }), props.actions === undefined ? null : h('div', { className: 'dshpc-overlay-head__actions' }, props.actions), props.onClose === undefined
         ? null
-        : h('button', {
-            type: 'button',
-            className: 'dshpc-overlay-head__close',
-            'aria-label': props.closeLabel,
-            onClick: () => props.onClose?.(),
-        }, '✕'));
+        // 关闭钮只此一枚（`PanelClose`）；旧类名挂着做别名，消费方写在上面的覆盖仍生效。
+        : h(PanelClose, { label: props.closeLabel, onClick: props.onClose, className: 'dshpc-overlay-head__close' }));
 }
 //# sourceMappingURL=overlay.js.map
