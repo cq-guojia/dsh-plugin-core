@@ -943,8 +943,12 @@ export const docData = {
         "en": "Boundary: a plugin’s own UI copy is the plugin’s responsibility; this package offers no plugin-level i18n framework. To override a string: pass a `translate` prop, or use `t` with your own dictionary."
       },
       {
-        "zh": "可用 key 全集见 src/utils/i18n.ts 的 UtilMessageKey。",
-        "en": "Full key list: `UtilMessageKey` in `src/utils/i18n.ts`."
+        "zh": "语言默认跟随宿主：官方 locale 插件把生效语言写进 `<html lang>`（zh → `zh-CN`），本包直接读它 ⇒ 插件不必再接 locale 服务、也不必自己同步。`setLocale` 只是手动覆盖（测试 / 非宿主环境用），调过就不再跟随宿主。",
+        "en": "The language follows the host by default: the official locale plugin writes the active language into `<html lang>` (zh → `zh-CN`) and this package reads it directly, so a plugin needs neither the locale service nor its own sync. `setLocale` is only a manual override (tests / non-host environments); once called it stops following the host."
+      },
+      {
+        "zh": "可用 key 全集见 src/utils/i18n.ts 的 UtilMessageKey；要在宿主切语言时重渲组件，顶层调一次 `useLocale()`（ui 导出）。",
+        "en": "Full key list: `UtilMessageKey` in `src/utils/i18n.ts`; to re-render on a host language switch, call `useLocale()` (exported from ui) once at the top of a component."
       }
     ],
     "api": [
@@ -954,10 +958,10 @@ export const docData = {
           {
             "name": "setLocale(locale)",
             "type": "('zh' | 'en') => void",
-            "def": "—",
+            "def": "不调则跟随宿主",
             "desc": {
-              "zh": "'zh'（默认）/ 'en'",
-              "en": "'zh' (default) / 'en'"
+              "zh": "手动覆盖语言（测试 / 非宿主）；不调就跟随宿主 `<html lang>`",
+              "en": "Manual override (tests / non-host); otherwise follows the host `<html lang>`"
             }
           },
           {
@@ -965,8 +969,8 @@ export const docData = {
             "type": "() => string",
             "def": "—",
             "desc": {
-              "zh": "当前语言",
-              "en": "Current locale"
+              "zh": "当前语言（默认跟随宿主）",
+              "en": "Current locale (follows the host by default)"
             }
           },
           {
@@ -2836,6 +2840,15 @@ export const docData = {
             "desc": {
               "zh": "定时重渲染（相对时间这类）",
               "en": "Periodic re-render (for relative time etc.)"
+            }
+          },
+          {
+            "name": "useLocale()",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "当前语言，并在宿主切语言（`<html lang>` 变化）时重渲；内置文案本来就跟随宿主，这个 hook 只补「切完刷新」",
+              "en": "Current locale, re-rendering when the host switches language (`<html lang>` change); built-in copy already follows the host, this hook only adds the post-switch refresh"
             }
           },
           {

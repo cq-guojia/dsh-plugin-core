@@ -33,6 +33,7 @@ import {
 } from '../ui/official.js'
 import { Button, IconButton } from '../ui/Button.js'
 import { workspaceList } from '../ui/host-data.js'
+import { useLocale } from '../ui/locale.js'
 import { t, type Translate } from '../utils/i18n.js'
 import { FilePreview } from './preview/index.js'
 import {
@@ -134,6 +135,8 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
   ensureComponentStyles('explorer', EXPLORER_CSS)
   // ▾ 选层用浮层 menu 档（panel.css）：跟弹窗同一套底色/描边/圆角/阴影。
   ensureComponentStyles('panel', PANEL_CSS)
+  // 宿主切语言 ⇒ 重渲（标签文案默认已跟随 `<html lang>`，这里只补「切换后刷新」）。
+  useLocale()
   const tt = props.translate ?? t
   const picker = props.picker === true
 

@@ -12,7 +12,7 @@ import { Fragment, createElement as h, useCallback, useEffect, useMemo, useRef, 
 import { IconArchiveOutlineRegular, IconBranchOutlineRegular, IconNewChatOutlineRegular, MarkdownDelegateProvider } from '../ui/official.js'
 import { Modal } from '../ui/Modal.js'
 import { Button } from '../ui/Button.js'
-import type { Translate } from '../utils/i18n.js'
+import { t as coreT, type Translate } from '../utils/i18n.js'
 import type {
   AssistantBlockLike,
   ChatNodeFace,
@@ -64,7 +64,7 @@ function contentText(blocks: readonly ContentBlockLike[] | undefined): string {
   if (blocks === undefined) return ''
   const parts = blocks.map((block) => {
     if (block !== null && typeof block === 'object' && block.type === 'text' && typeof block.text === 'string') return block.text
-    if (block !== null && typeof block === 'object' && block.type === 'image') return '[图片]'
+    if (block !== null && typeof block === 'object' && block.type === 'image') return coreT('sessionImage')
     return ''
   }).filter(part => part !== '')
   return parts.join('\n')
@@ -339,7 +339,7 @@ function assistantBlocks(
         if (block.text.trim() !== '') parts.push(h(ReasoningRowMirror, { key: `r${index}`, text: block.text, t }))
         break
       case 'image':
-        parts.push(h('div', { key: `i${index}`, className: 'dshpc-sv-image' }, '[图片]'))
+        parts.push(h('div', { key: `i${index}`, className: 'dshpc-sv-image' }, t('sessionImage')))
         break
       case 'tool-call':
         break
@@ -978,7 +978,7 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
         h('span', null, sessionId),
         // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
         officialCount === 0
-          ? h('span', { className: 'dshpc-sv-probe' }, ' ⚠ 官方样式未命中（当前为自绘回退）')
+          ? h('span', { className: 'dshpc-sv-probe' }, ' ⚠ ', tt('sessionProbeStyle'))
           : null,
       ),
       // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块。

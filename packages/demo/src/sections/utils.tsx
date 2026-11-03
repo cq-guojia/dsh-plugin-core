@@ -26,8 +26,8 @@ const CODE_NUMBER = `formatBytes(125_829)   // 123 KB`
 
 const CODE_I18N = `import { getLocale, setLocale, t } from 'dsh-plugin-core/utils'
 
-getLocale()     // 当前 locale（由宿主驱动）
-setLocale('en') // 切语言（宿主覆盖时以此为准）
+getLocale()     // 当前语言：默认跟随宿主 <html lang>（切宿主语言即变）
+setLocale('en') // 手动覆盖；调过就不再跟随宿主（测试 / 非宿主环境用）
 t('someKey')    // 取当前语言的文案`
 
 const CODE_UTILS_USAGE = `pnpm add dsh-plugin-core

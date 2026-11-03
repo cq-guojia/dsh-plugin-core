@@ -286,6 +286,16 @@ export type UtilMessageKey =
   | 'dtNextMonth'
   | 'dtNextYear'
   | 'dtInvalidRange'
+  // ── 控件内部标签（aria / 占位）──
+  | 'fieldClear'
+  | 'fieldDecrease'
+  | 'fieldIncrease'
+  | 'inputUndo'
+  | 'inputAction'
+  /** 会话里的图片块占位（非 vision 渲染处）。 */
+  | 'sessionImage'
+  /** 官方样式未命中时的可见提示。 */
+  | 'sessionProbeStyle'
 
 /** 文案函数：`vars` 用于填 `{n}` 这类占位。 */
 export type Translate = (key: UtilMessageKey, vars?: Record<string, number | string>) => string
@@ -566,6 +576,13 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     dtNextMonth: '下一月',
     dtNextYear: '下一年',
     dtInvalidRange: '结束时间早于开始时间',
+    fieldClear: '清空',
+    fieldDecrease: '减少',
+    fieldIncrease: '增加',
+    inputUndo: '撤销',
+    inputAction: '操作',
+    sessionImage: '[图片]',
+    sessionProbeStyle: '官方样式未命中（当前为自绘回退）',
   },
   en: {
     sessionLoading: 'Loading session…',
@@ -841,22 +858,43 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     dtNextMonth: 'Next month',
     dtNextYear: 'Next year',
     dtInvalidRange: 'End is before start',
+    fieldClear: 'Clear',
+    fieldDecrease: 'Decrease',
+    fieldIncrease: 'Increase',
+    inputUndo: 'Undo',
+    inputAction: 'Action',
+    sessionImage: '[Image]',
+    sessionProbeStyle: 'Official styles not matched (using the self-drawn fallback)',
   },
 }
 
-let current: Locale = 'zh'
+/** 手动覆盖（`setLocale`）；不覆盖就跟随宿主语言。 */
+let override: Locale | null = null
 
+/**
+ * 宿主当前语言。官方 `@deepseek-ai/dsh-client-locale` 把生效语言写进 `<html lang>`
+ * （zh → `zh-CN`，其余按语言 id），切语言时同步改写 ⇒ 这里读它即可，插件不必自己接 locale 服务。
+ * 非浏览器环境（Node 自检）没有 document，回落 'zh'。
+ */
+function hostLocale(): Locale {
+  if (typeof document === 'undefined') return 'zh'
+  const tag = document.documentElement.lang !== '' ? document.documentElement.lang : navigator.language
+  if (tag === undefined || tag === '') return 'zh'
+  return tag.toLowerCase().startsWith('zh') ? 'zh' : 'en'
+}
+
+/** 手动指定语言；此后不再跟随宿主（测试 / 非宿主环境用）。 */
 export function setLocale(locale: Locale): void {
-  current = locale
+  override = locale
 }
 
 export function getLocale(): Locale {
-  return current
+  return override ?? hostLocale()
 }
 
 /** 用内置字典翻译一个 key；未知 key 直接回退 key 本身（不抛、不空白）。 */
 export function t(key: UtilMessageKey, vars?: Record<string, number | string>): string {
-  const template = DICT[current][key] ?? DICT.zh[key] ?? key
+  const template = DICT[getLocale()][key] ?? DICT.zh[key] ?? key
   if (vars === undefined) return template
   return template.replace(/\{(\w+)\}/g, (whole, name: string): string => {
     const value = vars[name]

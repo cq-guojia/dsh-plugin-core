@@ -5,7 +5,7 @@ import { Button } from './Button.js';
 import { FieldHint } from './FieldHint.js';
 import { getLocale, t } from '../utils/i18n.js';
 import { formatDateTimePrecision } from '../utils/date.js';
-import { buildMonthCells, ceilToPrecision, clampUnit, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
+import { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
 import { ensureComponentStyles } from './css.js';
 import { DATETIME_CSS, FIELD_CSS } from './controls-css.js';
 import { PANEL_CSS } from './panel-css.js';
@@ -357,7 +357,9 @@ export function DateTimePicker(props) {
             className: `dshpc-dt__end${active === side ? ' dshpc-dt__end--active' : ''}`,
             'aria-pressed': active === side,
             onClick: () => setActive(side),
-        }, h('span', { className: 'dshpc-dt__end-label' }, `${label}：`), h('span', { className: `dshpc-dt__end-value${p === null ? ' dshpc-dt__end-value--empty' : ''}` }, p === null ? placeholder : fmtParts(p, precision)));
+        }, 
+        // 中文用全角冒号、英文用 ASCII 冒号（同一个 label 后的分隔，跟语言走）。
+        h('span', { className: 'dshpc-dt__end-label' }, `${label}${locale === 'zh' ? '：' : ': '}`), h('span', { className: `dshpc-dt__end-value${p === null ? ' dshpc-dt__end-value--empty' : ''}` }, p === null ? placeholder : fmtParts(p, precision)));
     };
     /** 一块日历面板：导航 + 月历 + 时:分[:秒] 步进（该端自己的，互不影响）。 */
     const panel = (side) => {
@@ -384,9 +386,7 @@ export function DateTimePicker(props) {
                 (c.year === today.year && c.month === today.month && c.day === today.day ? ' dshpc-dt__cell--today' : ''),
             'data-iso': c.iso,
             tabIndex: c.iso === focus[side] ? 0 : -1,
-            'aria-label': locale === 'zh'
-                ? `${String(c.year)}年${String(c.month)}月${String(c.day)}日`
-                : `${weekdayLabels('en')[c.weekday]}, ${String(c.year)}-${String(c.month).padStart(2, '0')}-${String(c.day).padStart(2, '0')}`,
+            'aria-label': dayCaption(c, locale),
             'aria-selected': selIso !== null && c.iso === selIso,
             onClick: () => pickDay(side, c),
         }, String(c.day)))), units.length === 0

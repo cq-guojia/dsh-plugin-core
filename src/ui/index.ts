@@ -3,6 +3,7 @@
 // 控件样式**由各控件自注入**：每个控件只登记自己那份 CSS（幂等），用不到的控件其 CSS 不进包；
 // `ensureControls()` 退化为可选的 token 预热，不再需要调。
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css.js'
+export { useLocale } from './locale.js'
 export {
   filterGroups,
   flattenOptions,
@@ -25,6 +26,7 @@ export {
   buildMonthCells,
   ceilToPrecision,
   clampUnit,
+  dayCaption,
   floorToPrecision,
   formatDateTimeIso,
   monthCaption,

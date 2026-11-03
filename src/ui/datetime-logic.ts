@@ -229,6 +229,14 @@ export function weekdayLabels(locale: 'zh' | 'en'): readonly string[] {
   return WEEKDAYS[locale]
 }
 
+/** 日月格的无障碍标题：zh `2026年11月3日`；en `Tue, 2026-11-03`。 */
+export function dayCaption(cell: DayCell, locale: 'zh' | 'en'): string {
+  const y = String(cell.year)
+  const m = String(cell.month).padStart(2, '0')
+  const d = String(cell.day).padStart(2, '0')
+  return locale === 'zh' ? `${y}年${cell.month}月${cell.day}日` : `${weekdayLabels('en')[cell.weekday]}, ${y}-${m}-${d}`
+}
+
 /** 步进 ±1 循环（23→0、59→0）：免去用户点 60 次选分钟。 */
 export function stepUnit(value: number, unit: StepUnit, delta: number): number {
   const max = STEP_MAX[unit] + 1

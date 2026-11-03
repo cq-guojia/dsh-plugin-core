@@ -791,6 +791,7 @@ const doc: DocTopic = {
             { name: 'SectionHead({ icon?, title, right?, accent?, flush? })', type: '', def: '', desc: { zh: '分区标题：标签（可选，画出来的短竖线）/ icon + 标题 + 右侧控件。accent = 标签颜色（内置色名 / 任意色值 / default / false 不画）；flush = 去底边距', en: 'Section heading: optional drawn bar / icon + title + right controls. accent = bar colour (built-in name / raw value / default / false for none); flush = no bottom margin' } },
             { name: 'MarqueeText({ text, style?, title?, className? })', type: '', def: '', desc: { zh: '超长省略、hover 滚动', en: 'Ellipsis on overflow, scroll on hover' } },
             { name: 'LiveText({ render, style? })', type: '', def: '', desc: { zh: '定时重渲染（相对时间这类）', en: 'Periodic re-render (for relative time etc.)' } },
+            { name: 'useLocale()', type: '', def: '', desc: { zh: '当前语言，并在宿主切语言（`<html lang>` 变化）时重渲；内置文案本来就跟随宿主，这个 hook 只补「切完刷新」', en: 'Current locale, re-rendering when the host switches language (`<html lang>` change); built-in copy already follows the host, this hook only adds the post-switch refresh' } },
             { name: 'startResizeLayoutWidth(opts)', type: '', def: '', desc: { zh: '拖拽调整布局宽度（root 不传则回落 #dshpc-root）', en: 'Drag to resize layout width (falls back to #dshpc-root if root omitted)' } },
           ],
         },

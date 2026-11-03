@@ -3,10 +3,11 @@
 // 控件样式**由各控件自注入**：每个控件只登记自己那份 CSS（幂等），用不到的控件其 CSS 不进包；
 // `ensureControls()` 退化为可选的 token 预热，不再需要调。
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css.js';
+export { useLocale } from './locale.js';
 export { filterGroups, flattenOptions, groupOf, labelsOf, resolveTriggerSizing, toGroups, toggleValue, } from './picker-logic.js';
 export { Picker } from './Picker.js';
 export { DateTimePicker, } from './DateTimePicker.js';
-export { buildMonthCells, ceilToPrecision, clampUnit, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
+export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
 export { ModelPicker } from './ModelPicker.js';
 export { WorkspacePicker } from './WorkspacePicker.js';
 export { connectHost, getWorkspaceFiles, modelCatalog, workspaceList, } from './host-data.js';

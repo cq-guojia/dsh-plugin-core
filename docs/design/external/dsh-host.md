@@ -282,3 +282,18 @@
 
 树模型、路径语义（绝对/相对都收、相对要 base）、返回值形状与 500 条上限的决策来龙去脉见
 `ledger/worklog/202611/03-0053-12d5-选择器支持只选文件夹与非工作区目录.md`。
+
+## 14. 宿主当前语言写在 `<html lang>`（2026-11-03 解包核实）
+
+- 版本：`@deepseek-ai/dsh-client-locale@0.2.0-rc.1`（`lib/client.js`）。
+- 事实：`syncDocumentLanguage(snapshot)` —— `document.documentElement.lang` 被写成**当前生效语言**
+  （`zh` 落成 `zh-CN`，其余按语言 id）；它挂在 `locale.subscribe` 上，`apply` 里先 `sync()` 一次
+  ⇒ **启动即有值，切语言即时改写**。浏览器兜底语言取自 `navigator.languages` / `navigator.language`，
+  检测不到时默认 `en`。
+- 后果：插件**不需要**接 `ctx.inject(['locale'])` 才能知道自己该说哪种语言——读 `<html lang>` 即可。
+  本包 `getLocale()` 就是这么取默认值（`setLocale` 只作手动覆盖）；组件要「切完立即刷新」再调
+  `useLocale()`（观察 `lang` 属性变化）。
+- 注意：宿主同时提供 `ctx.locale`（`getLocale` / `getSnapshot` / `subscribe` / `register` / `bind`），
+  那是给**插件自己的文案**用的，与本包的跟随机制不冲突。
+- 来源：`dsh-client-locale/lib/client.js`（`syncDocumentLanguage`、`detectBrowserLocale`、
+  `apply` 里的 `ctx.effect(() => locale.subscribe(sync))`、`register(COMMON_NS, { zh, en })`）。

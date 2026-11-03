@@ -17,6 +17,7 @@ import { createElement as h, Fragment, useCallback, useEffect, useLayoutEffect, 
 import { IconChevronRightOutlineRegular, writeClipboard, FileTypeIcon, } from '../ui/official.js';
 import { Button, IconButton } from '../ui/Button.js';
 import { workspaceList } from '../ui/host-data.js';
+import { useLocale } from '../ui/locale.js';
 import { t } from '../utils/i18n.js';
 import { FilePreview } from './preview/index.js';
 import { bareCode, baseNameOfPath, crumbsOfDir, createRequestGate, dirnameOf, errView, isAborted, isAbsoluteish, isFailed, joinPath, listingOf, matchesFilter, relativizeToDir, sortEntries, normalizePath, workspaceOfPath, } from './types.js';
@@ -37,6 +38,8 @@ export function FileBrowser(props) {
     ensureComponentStyles('explorer', EXPLORER_CSS);
     // ▾ 选层用浮层 menu 档（panel.css）：跟弹窗同一套底色/描边/圆角/阴影。
     ensureComponentStyles('panel', PANEL_CSS);
+    // 宿主切语言 ⇒ 重渲（标签文案默认已跟随 `<html lang>`，这里只补「切换后刷新」）。
+    useLocale();
     const tt = props.translate ?? t;
     const picker = props.picker === true;
     // mode：加载/目录树/文件预览/列举错误。viewing 非空 ⇒ 在 dir 树内预览文件。

@@ -22,6 +22,7 @@ import { Button, IconButton, type ButtonVariant } from './Button.js'
 import { Input, withHint, type FieldSize } from './Field.js'
 import { ensureComponentStyles } from './css.js'
 import { BUTTON_CSS, FIELD_CSS, INPUT_GROUP_CSS } from './controls-css.js'
+import { t } from '../utils/i18n.js'
 
 /** 后置按钮：只给 icon = 纯图标钮（正方形）；给 label = 文字钮；两个都给 = 图标 + 文字。 */
 export interface InputGroupAction {
@@ -98,7 +99,7 @@ export function InputGroup(props: InputGroupProps): ReturnType<typeof h> {
   ensureComponentStyles('button', BUTTON_CSS)
   const {
     value, onChange, label, placeholder, size = 'lg', height, error, disabled,
-    actions = [], undoable = false, undoLabel = '撤销', onSubmit,
+    actions = [], undoable = false, undoLabel = t('inputUndo'), onSubmit,
   } = props
 
   const committed = useRef(value)
@@ -158,7 +159,7 @@ export function InputGroup(props: InputGroupProps): ReturnType<typeof h> {
           variant: 'plain',
           size,
           icon: action.icon,
-          label: action.ariaLabel ?? '操作',
+          label: action.ariaLabel ?? t('inputAction'),
           disabled: off,
           onClick: run,
         })

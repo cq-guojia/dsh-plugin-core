@@ -1,8 +1,9 @@
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css.js';
+export { useLocale } from './locale.js';
 export { filterGroups, flattenOptions, groupOf, labelsOf, resolveTriggerSizing, toGroups, toggleValue, type PickerGroup, type PickerOption, } from './picker-logic.js';
 export { Picker, type PickerProps, type PickerSize } from './Picker.js';
 export { DateTimePicker, type DateTimeOutput, type DateTimePickerProps, type DateTimeSize, } from './DateTimePicker.js';
-export { buildMonthCells, ceilToPrecision, clampUnit, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, type DateTimeParts, type DateTimePrecision, type DayCell, type DayRef, type EndDraft, type StepUnit, type TimeParts, } from './datetime-logic.js';
+export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, type DateTimeParts, type DateTimePrecision, type DayCell, type DayRef, type EndDraft, type StepUnit, type TimeParts, } from './datetime-logic.js';
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js';
 export { WorkspacePicker, type WorkspacePickerProps } from './WorkspacePicker.js';
 export { connectHost, getWorkspaceFiles, modelCatalog, workspaceList, type ConnectHostOptions, type HostClientContext, type HostWorkspaceItem, type HostWorkspaceSource, type ModelCatalogState, type ModelRoute, } from './host-data.js';

@@ -23,6 +23,7 @@ import {
   buildMonthCells,
   ceilToPrecision,
   clampUnit,
+  dayCaption,
   floorToPrecision,
   formatDateTimeIso,
   monthCaption,
@@ -497,7 +498,8 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
         'aria-pressed': active === side,
         onClick: () => setActive(side),
       },
-      h('span', { className: 'dshpc-dt__end-label' }, `${label}：`),
+      // 中文用全角冒号、英文用 ASCII 冒号（同一个 label 后的分隔，跟语言走）。
+      h('span', { className: 'dshpc-dt__end-label' }, `${label}${locale === 'zh' ? '：' : ': '}`),
       h(
         'span',
         { className: `dshpc-dt__end-value${p === null ? ' dshpc-dt__end-value--empty' : ''}` },
@@ -575,10 +577,7 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
                 (c.year === today.year && c.month === today.month && c.day === today.day ? ' dshpc-dt__cell--today' : ''),
               'data-iso': c.iso,
               tabIndex: c.iso === focus[side] ? 0 : -1,
-              'aria-label':
-                locale === 'zh'
-                  ? `${String(c.year)}年${String(c.month)}月${String(c.day)}日`
-                  : `${weekdayLabels('en')[c.weekday]}, ${String(c.year)}-${String(c.month).padStart(2, '0')}-${String(c.day).padStart(2, '0')}`,
+              'aria-label': dayCaption(c, locale),
               'aria-selected': selIso !== null && c.iso === selIso,
               onClick: () => pickDay(side, c),
             },

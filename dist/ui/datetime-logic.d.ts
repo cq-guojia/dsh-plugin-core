@@ -87,6 +87,8 @@ export declare function buildMonthCells(year: number, month: number): DayCell[];
 export declare function monthCaption(year: number, month: number, locale: 'zh' | 'en'): string;
 /** 星期表头（周一起排）。 */
 export declare function weekdayLabels(locale: 'zh' | 'en'): readonly string[];
+/** 日月格的无障碍标题：zh `2026年11月3日`；en `Tue, 2026-11-03`。 */
+export declare function dayCaption(cell: DayCell, locale: 'zh' | 'en'): string;
 /** 步进 ±1 循环（23→0、59→0）：免去用户点 60 次选分钟。 */
 export declare function stepUnit(value: number, unit: StepUnit, delta: number): number;
 /** 步进列的上限（hour 23 / minute 59 / second 59）。 */

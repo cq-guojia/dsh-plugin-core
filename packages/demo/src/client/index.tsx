@@ -19,13 +19,12 @@ import type { SettingsFormScope } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { Button, Card, PanelDock, Segmented, connectHost, ensureControls, setStyleKit, setTooltipRenderer } from '../../../../dist/ui/index.js'
+import { Button, Card, PanelDock, Segmented, connectHost, ensureControls, setStyleKit, setTooltipRenderer, useLocale } from '../../../../dist/ui/index.js'
 import { connectFs } from '../../../../dist/explorer/index.js'
 import { connectFileServices } from '../host-files.js'
 import { connectRealSessions } from '../real-sessions.js'
 import { demoDock, demoPanels } from '../dock.js'
 import { pageRow } from '../layout-mount.js'
-import { setLocale as coreSetLocale } from '../../../../dist/utils/index.js'
 import { ALL_SECTIONS, SECTION_GROUPS, Sections, type SectionId } from '../sections/index.js'
 import { DICT, setDemoTranslate, t } from '../i18n.js'
 import { DEMO_CSS } from '../demo-css.generated.js'
@@ -151,19 +150,6 @@ interface LocaleRuntimeLike {
   bind(ns: string): (key: string, vars?: Record<string, number | string>) => string
 }
 
-/** 由 apply 的 ctx.inject(['locale']) 赋值；预览页据此随语言切换重渲。 */
-let localeRuntime: LocaleRuntimeLike | undefined
-
-/** 订阅宿主 locale 变化，强制预览页重渲（核心内置组件读 getLocale，需重渲才刷新）。 */
-function useLocaleTick(): void {
-  const [, setTick] = useState(0)
-  useEffect(() => {
-    const rt = localeRuntime
-    if (rt === undefined) return
-    return rt.subscribe(() => { setTick((v) => v + 1) })
-  }, [])
-}
-
 /**
  * 明暗皮肤：直接翻 body 的 `data-ds-dark-theme`（宿主亮度判据，见 docs/design/style.md）——
  * 做界面要来回切换，去系统设置改太绕。MutationObserver 同步宿主侧自己改的主题
@@ -188,7 +174,7 @@ function useHostDark(): { dark: boolean; toggle: () => void } {
 
 /** 整页：左侧两级目录 + 右侧当前页（套用 demo 的展示内容）。 */
 function DemoPage(): ReturnType<typeof h> {
-  useLocaleTick()
+  useLocale()
   const { dark, toggle } = useHostDark()
   const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
 
@@ -461,23 +447,18 @@ export function apply(ctx: {
   connectFileServices(ctx)
   connectRealSessions(ctx)
 
-  // 宿主语言：注册本插件字典 + 绑定 t；切换时同步核心 setLocale，内置组件随之切换
+  // 宿主语言：只注册本插件自己的字典 + 绑定 t。核心文案（内置字典）不用管——
+  // getLocale 直接跟随宿主写的 `<html lang>`（见 core src/utils/i18n.ts）。
   ctx.inject(['locale'], (sub: unknown) => {
     const loc = (sub as { locale?: LocaleRuntimeLike } | null)?.locale
     if (loc === undefined) return
-    localeRuntime = loc
     try {
       loc.register(PANEL_ID, 'zh', { ...DICT.zh })
       loc.register(PANEL_ID, 'en', { ...DICT.en })
       setDemoTranslate(loc.bind(PANEL_ID))
     } catch {
-      // 注册冲突（如热重载）时保持核心 getLocale 回退，不影响启动
+      // 注册冲突（如热重载）时保持原有绑定，不影响启动
     }
-    const sync = (): void => {
-      coreSetLocale(loc.getLocale().active === 'en' ? 'en' : 'zh')
-    }
-    sync()
-    loc.subscribe(sync)
   })
 
   // ⚠️ 两块注册各自 ctx.inject、自成一块：嵌进别的注入块会无声消失（兄弟仓注释原话）

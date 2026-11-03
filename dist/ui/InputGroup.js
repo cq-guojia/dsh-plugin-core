@@ -22,6 +22,7 @@ import { Button, IconButton } from './Button.js';
 import { Input, withHint } from './Field.js';
 import { ensureComponentStyles } from './css.js';
 import { BUTTON_CSS, FIELD_CSS, INPUT_GROUP_CSS } from './controls-css.js';
+import { t } from '../utils/i18n.js';
 /**
  * 渲染一个「输入框 + 按钮组」组合控件。
  *
@@ -32,7 +33,7 @@ export function InputGroup(props) {
     ensureComponentStyles('input-group', INPUT_GROUP_CSS);
     ensureComponentStyles('field', FIELD_CSS);
     ensureComponentStyles('button', BUTTON_CSS);
-    const { value, onChange, label, placeholder, size = 'lg', height, error, disabled, actions = [], undoable = false, undoLabel = '撤销', onSubmit, } = props;
+    const { value, onChange, label, placeholder, size = 'lg', height, error, disabled, actions = [], undoable = false, undoLabel = t('inputUndo'), onSubmit, } = props;
     const committed = useRef(value);
     const [undoStack, setUndoStack] = useState([]);
     const commit = () => {
@@ -95,7 +96,7 @@ export function InputGroup(props) {
                 variant: 'plain',
                 size,
                 icon: action.icon,
-                label: action.ariaLabel ?? '操作',
+                label: action.ariaLabel ?? t('inputAction'),
                 disabled: off,
                 onClick: run,
             })

@@ -1,5 +1,5 @@
 import { createElement as h } from 'react';
-import type { Translate } from '../utils/i18n.js';
+import { type Translate } from '../utils/i18n.js';
 import type { SessionViewTarget } from './open-session-view.js';
 import { type ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js';
 export interface SessionViewModalProps {

@@ -13,6 +13,7 @@ import { IconButton } from './Button.js'
 import { FieldHint } from './FieldHint.js'
 import { ensureComponentStyles } from './css.js'
 import { FIELD_CSS } from './controls-css.js'
+import { t } from '../utils/i18n.js'
 
 /**
  * 字段 hint 的统一包法：控件 + 问号提示同一行（间距/对齐收进组件，调用方传个
@@ -99,7 +100,7 @@ export function Input(props: InputProps): ReturnType<typeof h> {
       // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
       showClear
         ? h(IconButton, {
-            className: 'dshpc-iwrap__clear', variant: 'plain', size, icon: '×', label: '清空',
+            className: 'dshpc-iwrap__clear', variant: 'plain', size, icon: '×', label: t('fieldClear'),
             onMouseDown: (event: { preventDefault(): void }) => { event.preventDefault() },
             onClick: () => { onChange('') },
           })
@@ -179,7 +180,7 @@ export function NumberInput(props: NumberInputProps): ReturnType<typeof h> {
   ensureComponentStyles('field', FIELD_CSS)
   const {
     value, onChange, min = -Infinity, max = Infinity, step = 1, size = 'lg', inputWidth,
-    disabled, suffix, label, decreaseLabel = '减少', increaseLabel = '增加', className, style,
+    disabled, suffix, label, decreaseLabel = t('fieldDecrease'), increaseLabel = t('fieldIncrease'), className, style,
   } = props
   const [text, setText] = useState(String(value))
   // 外部值变化（如切档位重置）时同步回输入框。
