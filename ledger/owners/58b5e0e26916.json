@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261103-0053-12d5-选择器支持只选文件夹与非工作区目录": {"category": "需求讨论", "created": "2026-11-03 00:53:09", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-03 00:53:26", "status": "doing", "tags": ["explorer", "picker", "工作区"], "title": "选择器支持只选文件夹与非工作区目录", "updated": "2026-11-03 03:36:44", "worklog": "worklog/202611/03-0053-12d5-选择器支持只选文件夹与非工作区目录.md"}
+    "20261103-0053-12d5-选择器支持只选文件夹与非工作区目录": {"category": "需求讨论", "created": "2026-11-03 00:53:09", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-03 00:53:26", "status": "doing", "tags": ["explorer", "picker", "工作区"], "title": "选择器支持只选文件夹与非工作区目录", "updated": "2026-11-03 03:40:00", "worklog": "worklog/202611/03-0053-12d5-选择器支持只选文件夹与非工作区目录.md"}
   },
   "version": "20261022000000"
 }
