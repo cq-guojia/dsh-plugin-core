@@ -310,7 +310,11 @@ export function ButtonPage(): ReturnType<typeof h> {
         h(Labeled, { label: 'IconButton · color / background' },
           h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '默认无底色' }),
           h(IconButton, { icon: h(BUTTON_ICONS[1].Icon, { size: 16 }), label: '自定义图标色', color: '#7c3aed' }),
-          h(IconButton, { icon: h(BUTTON_ICONS[2].Icon, { size: 16 }), label: '自定义底色', color: '#fff', background: '#7c3aed' }))),
+          h(IconButton, { icon: h(BUTTON_ICONS[2].Icon, { size: 16 }), label: '自定义底色', color: '#fff', background: '#7c3aed' })),
+        // 纯图标钮也吃同一套 loading：图标位换成小圈，文字本来就没有
+        h(Labeled, { label: 'IconButton · loading' },
+          h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '刷新', onClick: async () => { await demoWait() } }),
+          h(IconButton, { variant: 'outline', icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '加载中', loading: true }))),
     ),
 
     // 状态
@@ -1683,6 +1687,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
   // 抽屉常驻渲染，只切 open —— 关的时候才有收回去的动效。
   const [sheetCfg, setSheetCfg] = useState<{ side: 'left' | 'right'; footer: boolean }>({ side: 'left', footer: false })
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [sheetSaving, setSheetSaving] = useState(false)
   const [nativeText, setNativeText] = useState('')
   // 全局加载提示：1.2 秒后自动关掉（演示只需看到它在正中同一处出现）。
   const flash = (opts?: LoadingOptions): void => {
@@ -1941,8 +1946,10 @@ export function FeedbackPage(): ReturnType<typeof h> {
             title: '文件详情',
             extra: h(Chip, null, '只读'),
             onClose: () => setSheetOpen(false),
+            // 底栏按钮异步：转圈期间抽屉也锁死（busy 由按钮报上来）
+            busy: sheetSaving,
             footer: sheetCfg.footer
-              ? h(Button, { variant: 'primary', onClick: () => setSheetOpen(false) }, '知道了')
+              ? h(Button, { variant: 'primary', onBusyChange: setSheetSaving, onClick: async () => { await demoWait(1000); setSheetOpen(false) } }, '保存并关闭')
               : undefined,
           },
           h(

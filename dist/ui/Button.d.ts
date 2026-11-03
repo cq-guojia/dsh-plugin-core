@@ -63,6 +63,12 @@ export interface IconButtonProps {
     color?: string;
     /** 底色（任意 CSS 色值）；不传 = 无底色。hover 按它压深。 */
     background?: string;
+    /** 加载中：图标位换成小圈并禁用（纯图标钮没有文字，圈就是它的全部内容）。与「点击自动 loading」取或。 */
+    loading?: boolean;
+    /** 点击回调；**返回 Promise 自动 loading**，settle 后恢复。 */
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => unknown;
+    /** 把「这个按钮正在跑」报出去（如锁死所在弹窗）。 */
+    onBusyChange?: (busy: boolean) => void;
     /** 追加 class。 */
     className?: string;
     /** 追加样式。 */

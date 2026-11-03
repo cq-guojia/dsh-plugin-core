@@ -109,6 +109,12 @@ dsh-plugin-core/
     几何画在 24×24 viewBox 内等比缩放；颜色走 `currentColor`；默认 `aria-hidden`，传 `label` 才播报。
     新形态加在库里（枚举 + 一段 CSS），不在插件里另造转圈。Button 的 loading 与 `LoadingToast` /
     `LoadingBlock` 的转圈改为复用它（环的画法与 keyframes 只剩 `controls/loader.css` 一份）。
+  - 按钮与弹窗的 loading **只有一套**（2026-11-03 用户拍板，推翻「alert/confirm 单独一套」）：
+    `Button` / `IconButton` 的 `onClick` 返回 Promise 即自动转圈禁用、settle 后恢复（reject 也恢复并打错），
+    受控 `loading` 与之取或（**别处刷新也能点亮同一颗按钮**）；`onBusyChange` 把「在跑」报出去。
+    `Modal` / `SideSheet` 只认 `busy`（遮罩 / Esc / ✕ 一并失效，footer 皮肤各弹窗自管），
+    `ConfirmModal` / `AlertModal` 退化成薄壳，命令式 `confirmModal` / `alertModal` 只负责「跑完关不关」。
+    转圈期间按钮自己的 `icon` / `iconRight` 一律让位，只留转圈（+ 文字）。内测期不设兼容层。
   - `Loading` 是旧的「自带定位 + 自带 pill 背景」复合件，**保留不删**但标 `@deprecated`，新代码用 `Loader`。
 - 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 多份同名；**面板本身始终是布局成员，不做面板浮层**（2026-10-28 补：**收起** = 面板退出布局、另出右侧一只独立的 `position: fixed` 耳朵，点耳朵展开并还原宽度；关闭不留耳朵——耳朵是独立浮层，不是把面板变浮层）。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
 - 浮动快捷工具栏：`QuickToolbar`（2026-10-31 用户拍板）：右侧一列独立圆钮，纵向**恒贴屏幕底边**（默认 16px）；横向默认贴屏幕右缘，传 `anchorId` / `anchor()` 时贴到指定控件右缘外侧，右侧放不下则退回屏幕右缘（控件找不到按跟随窗口处理）。内置回顶部默认 `when:'scroll'`、阈值 320，`backToTop:false` 可关掉，对象可调 `order` / `label` / `threshold`；自定义项 `items` 支持 `icon` / `label` / `onClick` / `visible` / `when` / `order` / `threshold` / `color` / `fgColor`，统一 `onAction`。旧的 `BackToTop` **全部删除**，只保留这一份，不做迁移。

@@ -4,7 +4,7 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/css.js'
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/controls/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/controls/field-css.generated.js'
-import { AlertModal, Button, Chip, ConfirmModal, Input, InputGroup, Modal, Segmented, SideSheet, SplitGroup } from '../dist/ui/index.js'
+import { AlertModal, Button, Chip, ConfirmModal, IconButton, Input, InputGroup, Modal, Segmented, SideSheet, SplitGroup } from '../dist/ui/index.js'
 import { isThenable } from '../dist/ui/thenable.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -239,6 +239,32 @@ test('Button 受控 loading（别处刷新也能点亮它）：转圈 + 禁用�
   const busy = renderToStaticMarkup(createElement(Button, { loading: true }, '保存'))
   assert.ok(busy.includes('dshpc-loader'), '受控 loading 必须转圈')
   assert.ok(busy.includes('disabled'), '受控 loading 必须禁用')
+})
+
+test('Button 转圈时两个图标位都让位，只留转圈 + 文字', () => {
+  const outside = createElement('i', null, 'ICON')
+  const right = createElement('i', null, 'RIGHT')
+  const idle = renderToStaticMarkup(createElement(Button, { icon: outside, iconRight: right }, '刷新'))
+  assert.ok(idle.includes('ICON') && idle.includes('RIGHT'), '不转时两个图标都在')
+
+  const busy = renderToStaticMarkup(createElement(Button, { icon: outside, iconRight: right, loading: true }, '刷新'))
+  assert.ok(!busy.includes('ICON'), '前置图标必须被转圈顶替')
+  assert.ok(!busy.includes('RIGHT'), '后置图标也必须让位')
+  assert.ok(busy.includes('刷新'), '文字要留着')
+})
+
+test('IconButton 加载中：图标换成小圈 + 禁用，无障碍名与在忙状态都在', () => {
+  const icon = createElement('i', null, 'REFRESH')
+  const idle = renderToStaticMarkup(createElement(IconButton, { icon, label: '刷新' }))
+  assert.ok(idle.includes('REFRESH'), '不转时图标在')
+  assert.ok(!idle.includes('dshpc-loader'), '不转时没有圈')
+
+  const busy = renderToStaticMarkup(createElement(IconButton, { icon, label: '刷新', loading: true }))
+  assert.ok(!busy.includes('REFRESH'), '图标位必须被转圈顶替')
+  assert.ok(busy.includes('dshpc-loader'), '必须转圈')
+  assert.ok(busy.includes('disabled'), '加载中必须禁用')
+  assert.ok(busy.includes('aria-label="刷新"'), '无障碍名不能丢')
+  assert.ok(busy.includes('aria-busy="true"'), '要声明正在忙')
 })
 
 test('isThenable 只认带 then 的东西（Button 自动 loading 的判据）', () => {

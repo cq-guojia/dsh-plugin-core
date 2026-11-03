@@ -3984,11 +3984,20 @@ function Button(props) {
     className: buttonClass(variant, size4, block2, icon2 !== void 0 && icon2 !== null && !loading, className2),
     style: { ...colorVars(variant, color), ...widthStyle, ...style2 }
   };
-  return (0, import_react9.createElement)("button", attrs2, loading ? (0, import_react9.createElement)(Loader, { size: "xs" }) : icon2 !== void 0 && icon2 !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, icon2) : null, marqueeLabel ? (0, import_react9.createElement)(MarqueeText, { text: children, className: "dshpc-btn__label" }) : children, iconRight !== void 0 && iconRight !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null);
+  return (0, import_react9.createElement)(
+    "button",
+    attrs2,
+    loading ? (0, import_react9.createElement)(Loader, { size: "xs" }) : icon2 !== void 0 && icon2 !== null ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon" }, icon2) : null,
+    marqueeLabel ? (0, import_react9.createElement)(MarqueeText, { text: children, className: "dshpc-btn__label" }) : children,
+    // 转圈期间所有图标位都让位：前置位被 Loader 顶替，后置位（展开 / 外链）留在禁用态里只会挤版面
+    iconRight !== void 0 && iconRight !== null && !loading ? (0, import_react9.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null
+  );
 }
 function IconButton(props) {
   ensureComponentStyles("button", BUTTON_CSS);
-  const { variant = "plain", size: size4 = "lg", icon: icon2, label, color, background: background2, className: className2, style: style2, ...rest } = props;
+  const { variant = "plain", size: size4 = "lg", icon: icon2, label, color, background: background2, loading: loadingProp = false, className: className2, style: style2, onClick, onBusyChange, ...rest } = props;
+  const asyncClick = useAsyncClick(onClick, onBusyChange);
+  const loading = loadingProp || asyncClick.busy;
   const accent = {};
   if (color !== void 0 && color !== "") {
     accent["--icb-fg"] = color;
@@ -4004,10 +4013,14 @@ function IconButton(props) {
     type: rest.type ?? "button",
     title: rest.title ?? label,
     "aria-label": rest["aria-label"] ?? label,
+    // 无障碍名不变（仍是 label），只声明「正在忙」，读屏不会把圈读成内容
+    "aria-busy": loading || void 0,
+    disabled: rest.disabled === true || loading,
+    onClick: asyncClick.click,
     className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size4}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: { ...accent, ...style2 }
   };
-  return (0, import_react9.createElement)("button", attrs2, icon2);
+  return (0, import_react9.createElement)("button", attrs2, loading ? (0, import_react9.createElement)(Loader, { size: "xs" }) : icon2);
 }
 
 // dist/utils/date.js
@@ -60111,6 +60124,10 @@ var docData = {
         "en": "IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, doubles as a11y name and title), color (icon colour), background (fill; omitted = no fill)."
       },
       {
+        "zh": "\u4E24\u8005\u7684 loading \u8BED\u4E49\u4E00\u81F4\uFF1A`onClick` \u8FD4\u56DE Promise \u5C31\u8F6C\u5708\uFF08\u7EAF\u56FE\u6807\u94AE\u628A\u56FE\u6807\u4F4D\u6362\u6210\u5C0F\u5708\uFF0C`aria-label` \u4E0D\u53D8\u3001\u8865 `aria-busy`\uFF09\uFF0C`onBusyChange` \u628A\u300C\u5728\u8DD1\u300D\u62A5\u51FA\u53BB\uFF1B\u53D7\u63A7 `loading` \u4E0E\u5B83\u53D6\u6216 \u2014\u2014 \u522B\u5904\u5237\u65B0\u4E5F\u80FD\u70B9\u4EAE\u540C\u4E00\u9897\u6309\u94AE\u3002\u8F6C\u5708\u671F\u95F4\u6309\u94AE\u81EA\u5DF1\u7684\u56FE\u6807\u4F4D\uFF08`icon` / `iconRight`\uFF09\u5168\u90E8\u8BA9\u4F4D\uFF0C\u53EA\u7559\u8F6C\u5708 + \u6587\u5B57\u3002",
+        "en": 'Both share one loading semantics: a Promise-returning `onClick` spins (an icon button swaps its icon for the spinner, keeps `aria-label` and adds `aria-busy`), `onBusyChange` reports "running", and the controlled `loading` prop is OR-ed in \u2014 an external refresh lights the same button too. While spinning, the button\u2019s own icon slots (`icon` / `iconRight`) all step aside: spinner plus label only.'
+      },
+      {
         "zh": "Segmented\uFF1A`items`\uFF08\u5FC5\u586B\uFF09\u652F\u6301\u5355\u9009 / \u591A\u9009\uFF0C`size`\uFF08\u9ED8\u8BA4 lg\uFF1B\u4E09\u6863\u603B\u9AD8 24 / 28 / 32\uFF09\u3001`bordered`\uFF081px \u5916\u6846\uFF0C\u603B\u9AD8\u4E0D\u53D8\uFF09\u3001`multiple`\uFF08\u591A\u9009\uFF09\u3002\u5916\u89C2\u53EA\u6709\u4E00\u5957\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF0C\u9009\u4E2D\u7247\u7684\u63CF\u8FB9\u73AF\u4E0E\u9634\u5F71\u7531\u5BBF\u4E3B elevation token \u63D0\u4F9B\uFF08\u79BB\u7EBF\u515C\u5E95\u503C\u6CA1\u6709\u90A3\u5708\u73AF\uFF09\u3002\u9009\u4E2D\u7247\u914D\u8272\u53EA\u7ECF `tone`\uFF1A\u4F20\u5185\u7F6E\u8272\u540D\uFF08\u4E0E Chip \u540C\u540D\u7684 business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate\uFF09\u65F6\u5E95\u4E0E\u5B57\u7531\u6838\u5FC3\u5B9A\u3001\u6DF1\u6D45\u4E24\u4E3B\u9898\u5404\u81EA\u6210\u7ACB\uFF1B\u4F20 `{ bg, fg }` \u65F6\u4E24\u4E2A\u4E3B\u9898\u90FD\u7528\u8C03\u7528\u65B9\u8FD9\u4E00\u5BF9\u989C\u8272\uFF08\u5BF9\u6BD4\u5EA6\u7531\u8C03\u7528\u65B9\u8D1F\u8D23\uFF09\u3002\u6BB5\u5185 `icon` \u662F\u524D\u7F6E\u56FE\u6807\u69FD\uFF08\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u6570\u7EC4 / \u81EA\u7ED8\u8282\u70B9\u5747\u53EF\uFF09\uFF0C`label` \u4E5F\u53EF\u4F20\u8282\u70B9\uFF1B\u987A\u5E8F\u56FA\u5B9A\u4E3A icon \u2192 label \u2192 count\u3002\u53EA\u6709\u56FE\u6807\uFF08\u65E0\u6587\u5B57 / \u8BA1\u6570 / \u89D2\u6807\uFF09\u65F6\u8BE5\u6BB5\u81EA\u52A8\u53D8\u6B63\u65B9\u5F62\uFF08\u5BBD = \u6BB5\u9AD8\uFF09\uFF0C\u8BFB\u5C4F\u540D\u7528 `ariaLabel`\uFF0C\u7F3A\u7701\u9000\u56DE `tooltip`\u3002\u6BB5\u5185 `count`\uFF08\u5F31\u5316\u7070\u5B57\uFF0C\u9009\u4E2D\u6BB5\u5185\u81EA\u52A8\u8DDF\u7740\u9009\u4E2D\u7247\u5B57\u8272\u63D0\u4EAE\uFF09/ `badge`\uFF08\u7EA2\u89D2\u6807\uFF09\u63A5\u53D7 `number | string`\uFF1A\u6570\u5B57 \u22640 \u4E0D\u663E\u793A\uFF0C\u5B57\u7B26\u4E32\u539F\u6837\u663E\u793A\uFF08\u5982 `1K` / `99+`\uFF09\u3002",
         "en": "Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). The selected pill\u2019s colors go through `tone` only: a built-in color name (business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate, same names as Chip) lets the core pick background and text per theme; `{ bg, fg }` uses that pair verbatim in both themes (contrast is the caller\u2019s call). An item\u2019s leading `icon` takes any node (official icon component, array, or custom); `label` also accepts a node; order is always icon \u2192 label \u2192 count. With only an icon (no label / count / badge) the segment squares itself (width = segment height), and the accessible name comes from `ariaLabel`, falling back to `tooltip`. An item\u2019s `count` (muted text; auto-lightened to follow the selected pill\u2019s text color while selected) and `badge` (red pill) take `number | string`: numbers \u22640 render nothing, strings render as given (e.g. `'1K'` / `'99+'`)."
       }
@@ -62996,6 +63013,15 @@ function ButtonPage() {
           (0, import_react80.createElement)(IconButton, { icon: (0, import_react80.createElement)(BUTTON_ICONS[0].Icon, { size: 16 }), label: "\u9ED8\u8BA4\u65E0\u5E95\u8272" }),
           (0, import_react80.createElement)(IconButton, { icon: (0, import_react80.createElement)(BUTTON_ICONS[1].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u56FE\u6807\u8272", color: "#7c3aed" }),
           (0, import_react80.createElement)(IconButton, { icon: (0, import_react80.createElement)(BUTTON_ICONS[2].Icon, { size: 16 }), label: "\u81EA\u5B9A\u4E49\u5E95\u8272", color: "#fff", background: "#7c3aed" })
+        ),
+        // 纯图标钮也吃同一套 loading：图标位换成小圈，文字本来就没有
+        (0, import_react80.createElement)(
+          Labeled,
+          { label: "IconButton \xB7 loading" },
+          (0, import_react80.createElement)(IconButton, { icon: (0, import_react80.createElement)(BUTTON_ICONS[0].Icon, { size: 16 }), label: "\u5237\u65B0", onClick: async () => {
+            await demoWait();
+          } }),
+          (0, import_react80.createElement)(IconButton, { variant: "outline", icon: (0, import_react80.createElement)(BUTTON_ICONS[0].Icon, { size: 16 }), label: "\u52A0\u8F7D\u4E2D", loading: true })
         )
       )
     ),
@@ -64440,6 +64466,7 @@ function FeedbackPage() {
   const [saving, setSaving] = (0, import_react80.useState)(false);
   const [sheetCfg, setSheetCfg] = (0, import_react80.useState)({ side: "left", footer: false });
   const [sheetOpen, setSheetOpen] = (0, import_react80.useState)(false);
+  const [sheetSaving, setSheetSaving] = (0, import_react80.useState)(false);
   const [nativeText, setNativeText] = (0, import_react80.useState)("");
   const flash = (opts) => {
     const handle = showLoading(opts);
@@ -64728,7 +64755,12 @@ function FeedbackPage() {
             title: "\u6587\u4EF6\u8BE6\u60C5",
             extra: (0, import_react80.createElement)(Chip, null, "\u53EA\u8BFB"),
             onClose: () => setSheetOpen(false),
-            footer: sheetCfg.footer ? (0, import_react80.createElement)(Button, { variant: "primary", onClick: () => setSheetOpen(false) }, "\u77E5\u9053\u4E86") : void 0
+            // 底栏按钮异步：转圈期间抽屉也锁死（busy 由按钮报上来）
+            busy: sheetSaving,
+            footer: sheetCfg.footer ? (0, import_react80.createElement)(Button, { variant: "primary", onBusyChange: setSheetSaving, onClick: async () => {
+              await demoWait(1e3);
+              setSheetOpen(false);
+            } }, "\u4FDD\u5B58\u5E76\u5173\u95ED") : void 0
           },
           (0, import_react80.createElement)(
             "div",
@@ -66100,9 +66132,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.21.0"}`],
-            [t3("buildDemo"), `v${"0.21.0"}`],
-            [t3("buildStamp"), "261103-180116-575"]
+            [t3("buildCore"), `v${"0.22.0"}`],
+            [t3("buildDemo"), `v${"0.22.0"}`],
+            [t3("buildStamp"), "261103-194030-027"]
           ].map(
             ([label, value]) => (0, import_react85.createElement)(
               "tr",
@@ -66424,9 +66456,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react87.createElement)("span", null, `core v${"0.21.0"}`),
-          (0, import_react87.createElement)("span", null, `demo v${"0.21.0"}`),
-          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-180116-575")
+          (0, import_react87.createElement)("span", null, `core v${"0.22.0"}`),
+          (0, import_react87.createElement)("span", null, `demo v${"0.22.0"}`),
+          (0, import_react87.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-194030-027")
         )
       )
     ),

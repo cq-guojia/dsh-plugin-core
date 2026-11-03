@@ -126,7 +126,9 @@ export function Button(props) {
             ? h('span', { className: 'dshpc-btn__icon' }, icon)
             : null, marqueeLabel
         ? h(MarqueeText, { text: children, className: 'dshpc-btn__label' })
-        : children, iconRight !== undefined && iconRight !== null
+        : children, 
+    // 转圈期间所有图标位都让位：前置位被 Loader 顶替，后置位（展开 / 外链）留在禁用态里只会挤版面
+    iconRight !== undefined && iconRight !== null && !loading
         ? h('span', { className: 'dshpc-btn__icon-end' }, iconRight)
         : null);
 }
@@ -138,7 +140,9 @@ export function Button(props) {
  */
 export function IconButton(props) {
     ensureComponentStyles('button', BUTTON_CSS);
-    const { variant = 'plain', size = 'lg', icon, label, color, background, className, style, ...rest } = props;
+    const { variant = 'plain', size = 'lg', icon, label, color, background, loading: loadingProp = false, className, style, onClick, onBusyChange, ...rest } = props;
+    const asyncClick = useAsyncClick(onClick, onBusyChange);
+    const loading = loadingProp || asyncClick.busy;
     // 只覆盖 4 个局部变量：图标色 / 底色及其 hover 派生（不新增皮肤，皮肤仍在 controls-css.ts）。
     const accent = {};
     if (color !== undefined && color !== '') {
@@ -155,9 +159,13 @@ export function IconButton(props) {
         type: rest.type ?? 'button',
         title: rest.title ?? label,
         'aria-label': rest['aria-label'] ?? label,
+        // 无障碍名不变（仍是 label），只声明「正在忙」，读屏不会把圈读成内容
+        'aria-busy': loading || undefined,
+        disabled: rest.disabled === true || loading,
+        onClick: asyncClick.click,
         className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
         style: { ...accent, ...style },
     };
-    return h('button', attrs, icon);
+    return h('button', attrs, loading ? h(Loader, { size: 'xs' }) : icon);
 }
 //# sourceMappingURL=Button.js.map
