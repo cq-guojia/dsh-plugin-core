@@ -2740,9 +2740,9 @@ var DICT = {
     previewOutside: "\u8DEF\u5F84\u5728\u5DE5\u4F5C\u533A\u4E4B\u5916",
     previewNotFound: "\u6587\u4EF6\u4E0D\u5B58\u5728",
     previewNotDirectory: "\u4E0D\u662F\u6587\u4EF6\u5939",
-    previewNotFile: "\u4E0D\u662F\u6587\u4EF6",
+    previewNotFile: "\u6682\u4E0D\u652F\u6301\u6B64\u7C7B\u578B\u6587\u4EF6\u7684\u9884\u89C8",
     previewTooLarge: "\u6587\u4EF6\u8FC7\u5927\uFF0C\u65E0\u6CD5\u9884\u89C8",
-    previewNotText: "\u4E0D\u662F\u6587\u672C\u6587\u4EF6",
+    previewNotText: "\u6682\u4E0D\u652F\u6301\u6B64\u7C7B\u578B\u6587\u4EF6\u7684\u9884\u89C8",
     previewFailedCode: "\u52A0\u8F7D\u5931\u8D25\uFF08{code}\uFF09",
     mdCopy: "\u590D\u5236",
     mdCopied: "\u5DF2\u590D\u5236",
@@ -3016,9 +3016,9 @@ var DICT = {
     previewOutside: "Path is outside the workspace",
     previewNotFound: "File not found",
     previewNotDirectory: "Not a folder",
-    previewNotFile: "Not a file",
+    previewNotFile: "Preview not supported for this file type",
     previewTooLarge: "File too large to preview",
-    previewNotText: "Not a text file",
+    previewNotText: "Preview not supported for this file type",
     previewFailedCode: "Failed to load ({code})",
     mdCopy: "Copy",
     mdCopied: "Copied",
@@ -65906,9 +65906,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.20.6"}`],
-            [t3("buildDemo"), `v${"0.20.6"}`],
-            [t3("buildStamp"), "261103-140311-554"]
+            [t3("buildCore"), `v${"0.20.7"}`],
+            [t3("buildDemo"), `v${"0.20.7"}`],
+            [t3("buildStamp"), "261103-142124-510"]
           ].map(
             ([label, value]) => (0, import_react86.createElement)(
               "tr",
@@ -66230,9 +66230,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react88.createElement)("span", null, `core v${"0.20.6"}`),
-          (0, import_react88.createElement)("span", null, `demo v${"0.20.6"}`),
-          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-140311-554")
+          (0, import_react88.createElement)("span", null, `core v${"0.20.7"}`),
+          (0, import_react88.createElement)("span", null, `demo v${"0.20.7"}`),
+          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-142124-510")
         )
       )
     ),

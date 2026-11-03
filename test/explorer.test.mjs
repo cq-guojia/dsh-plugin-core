@@ -88,7 +88,7 @@ test('bareCode 剥命名空间 / errView 按 code 分支', () => {
   assert.equal(errView('workspace-file/not-found').key, 'previewNotFound')
   assert.equal(errView({ code: 'not-directory' }).key, 'previewNotDirectory')
   // not-regular-file（read 到目录/设备）与 not-directory（list 到文件）是两个码、两句文案；
-  // 曾共用「不是文件夹」——/bin 符号链接事故里用户看到的就是这句反话（2026-11-03）。
+  // not-text / not-regular-file 的文案统一为「暂不支持此类型文件的预览」（用户 2026-11-03 定稿）。
   assert.equal(errView({ code: 'not-regular-file' }).key, 'previewNotFile')
   assert.equal(errView({ code: 'too-large' }).key, 'previewTooLarge')
   assert.equal(errView({ code: 'not-text' }).key, 'previewNotText')
