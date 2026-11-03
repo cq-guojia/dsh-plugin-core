@@ -1,8 +1,9 @@
 # 20261103-0434-b181-浮层面板皮肤统一-modal-popover-menu: 浮层面板皮肤统一（modal/popover/menu）
 
-- **Tags**: 样式, 浮层, UI
-- **Status**: doing · 2026-11-03 06:23:54 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 样式, 浮层, UI, 浏览器, 发版
+- **Status**: done · 2026-11-03 06:24:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-03 04:34:34 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-03 06:24:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -268,3 +269,4 @@ FileBrowser 拆分（landing / crumb-nav / preview-title-bar / crumbs-menu）+ z
 发版：v0.20.6（皮肤统一 + FileBrowser 拆分 + 真机修正入库）、v0.20.7（/bin 修复 + 文案定稿）。
 两次均 `build` + `build:demo` + `pnpm test` 238 全过 + codelint 六层全过。
 - 2026-11-03 06:23:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 第三批：选当前目录钮改回 outline+尺寸交还核心 sm 档（域顺序致覆盖时灵时不灵）；容器内距四周统一 space-2/3；修 /bin 符号链接不可浏览（fs-route lstat→stat）与 not-regular-file 误文案；not-text/not-regular-file 文案统一「暂不支持此类型文件的预览」（用户定稿）；发 v0.20.6/v0.20.7，238 测试+codelint 全过
+- 2026-11-03 06:24:19 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed
