@@ -142,6 +142,9 @@ export function ChangedFileDiff(props) {
     return h('div', {
         className: preview ? `${D('root')} ${C('preview')}` : D('root'),
         'data-changes-hover-preview': preview ? true : undefined,
+        // review 版式要填满父容器：官方 root 高度 auto 时 body 只撑到内容高，
+        // 横向滚动条会停在内容下沿（面板下面空一大截）。hover 预览卡不撑，保持自适应。
+        style: preview ? undefined : { height: '100%' },
     }, h('div', { className: D('header') }, h('span', { className: C('previewPath'), 'data-changes-preview-path': true }, display), 
     // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
     preview || onClose === undefined

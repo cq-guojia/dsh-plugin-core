@@ -57321,7 +57321,10 @@ function ChangedFileDiff(props) {
   const preview = variant !== "review";
   return (0, import_react74.createElement)("div", {
     className: preview ? `${D("root")} ${C2("preview")}` : D("root"),
-    "data-changes-hover-preview": preview ? true : void 0
+    "data-changes-hover-preview": preview ? true : void 0,
+    // review 版式要填满父容器：官方 root 高度 auto 时 body 只撑到内容高，
+    // 横向滚动条会停在内容下沿（面板下面空一大截）。hover 预览卡不撑，保持自适应。
+    style: preview ? void 0 : { height: "100%" }
   }, (0, import_react74.createElement)(
     "div",
     { className: D("header") },
@@ -66603,7 +66606,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.24.0"}`],
             [t3("buildDemo"), `v${"0.24.0"}`],
-            [t3("buildStamp"), "261103-222056-059"]
+            [t3("buildStamp"), "261104-093950-647"]
           ].map(
             ([label, value]) => (0, import_react86.createElement)(
               "tr",
@@ -66916,7 +66919,7 @@ function DemoPage() {
           },
           (0, import_react88.createElement)("span", null, `core v${"0.24.0"}`),
           (0, import_react88.createElement)("span", null, `demo v${"0.24.0"}`),
-          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261103-222056-059")
+          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-093950-647")
         )
       )
     ),
