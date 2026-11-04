@@ -59841,6 +59841,92 @@ function pendingFiles(item) {
   return out;
 }
 
+// dist/session/tail-follow.js
+var TAIL_NEAR_BOTTOM_PX = 24;
+var TAIL_STABLE_FRAMES = 3;
+function createTailFollower(host) {
+  let following = true;
+  let lastTop = host.metrics().scrollTop;
+  let lastHeight = host.metrics().scrollHeight;
+  let stableFrames = 0;
+  let windowOpen = false;
+  let animating = false;
+  let raf = 0;
+  let disposed = false;
+  const targetOf = () => {
+    const m = host.metrics();
+    return Math.max(0, m.scrollHeight - m.clientHeight);
+  };
+  const nearBottom = () => {
+    const m = host.metrics();
+    return m.scrollHeight - m.scrollTop - m.clientHeight <= TAIL_NEAR_BOTTOM_PX;
+  };
+  const stop = () => {
+    if (animating)
+      host.cancelFrame(raf);
+    animating = false;
+    windowOpen = false;
+    stableFrames = 0;
+  };
+  const step = () => {
+    if (disposed || !following || !windowOpen) {
+      stop();
+      return;
+    }
+    const m = host.metrics();
+    const target = Math.max(0, m.scrollHeight - m.clientHeight);
+    const delta = target - m.scrollTop;
+    if (delta > 1)
+      host.setScrollTop(m.scrollTop + Math.max(1, delta * 0.28));
+    else
+      host.setScrollTop(target);
+    stableFrames = m.scrollHeight === lastHeight && delta <= 1 ? stableFrames + 1 : 0;
+    lastHeight = m.scrollHeight;
+    if (stableFrames >= TAIL_STABLE_FRAMES) {
+      stop();
+      return;
+    }
+    raf = host.frame(step);
+  };
+  return {
+    open() {
+      if (disposed)
+        return;
+      host.setScrollTop(targetOf());
+      lastTop = host.metrics().scrollTop;
+      lastHeight = host.metrics().scrollHeight;
+    },
+    content() {
+      if (disposed || !following)
+        return;
+      windowOpen = true;
+      stableFrames = 0;
+      lastHeight = host.metrics().scrollHeight;
+      if (animating)
+        return;
+      animating = true;
+      raf = host.frame(step);
+    },
+    scrolled() {
+      if (disposed)
+        return;
+      const top2 = host.metrics().scrollTop;
+      if (top2 < lastTop - 1) {
+        following = false;
+        stop();
+      } else if (nearBottom())
+        following = true;
+      lastTop = top2;
+    },
+    dispose() {
+      if (disposed)
+        return;
+      disposed = true;
+      stop();
+    }
+  };
+}
+
 // dist/session/SessionViewModal.js
 var EMPTY_ORDER = [];
 var officialWarned = false;
@@ -60365,82 +60451,44 @@ function SessionViewModal(props) {
     aliveRef.current = false;
   }, []);
   const flowRef = (0, import_react82.useRef)(null);
-  const contentBumpRef = (0, import_react82.useRef)(true);
-  (0, import_react82.useLayoutEffect)(() => {
-    contentBumpRef.current = true;
-  }, [chat, sessionSnap]);
+  const tailRef = (0, import_react82.useRef)(null);
+  const firstSnapRef = (0, import_react82.useRef)(true);
   (0, import_react82.useLayoutEffect)(() => {
     const flow = flowRef.current;
     const scroller = flow === null ? null : flow.closest(".dshpc-modal__body");
     if (scroller === null)
       return;
-    let following = true;
-    let lastHeight = 0;
-    let lastTop = scroller.scrollTop;
-    let raf = 0;
-    let animating = false;
-    const nearBottom = () => scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight <= 24;
-    const jump2 = () => {
-      scroller.scrollTop = scroller.scrollHeight;
-    };
-    const step = () => {
-      if (!following) {
-        animating = false;
-        return;
-      }
-      const target = scroller.scrollHeight - scroller.clientHeight;
-      const delta = target - scroller.scrollTop;
-      if (delta <= 1) {
-        scroller.scrollTop = target;
-        animating = false;
-        return;
-      }
-      scroller.scrollTop += Math.max(1, delta * 0.28);
-      raf = requestAnimationFrame(step);
-    };
-    const follow = () => {
-      if (!following || animating)
-        return;
-      animating = true;
-      raf = requestAnimationFrame(step);
-    };
+    const tail = createTailFollower({
+      metrics: () => ({
+        scrollTop: scroller.scrollTop,
+        scrollHeight: scroller.scrollHeight,
+        clientHeight: scroller.clientHeight
+      }),
+      setScrollTop: (top2) => {
+        scroller.scrollTop = top2;
+      },
+      frame: (fn) => requestAnimationFrame(fn),
+      cancelFrame: (id3) => cancelAnimationFrame(id3)
+    });
+    tailRef.current = tail;
     const onScroll = () => {
-      const top2 = scroller.scrollTop;
-      if (top2 < lastTop - 1)
-        following = false;
-      else if (nearBottom()) {
-        following = true;
-        follow();
-      }
-      lastTop = top2;
+      tail.scrolled();
     };
     scroller.addEventListener("scroll", onScroll, { passive: true });
-    const observer = new ResizeObserver(() => {
-      const height = flow === null ? 0 : flow.scrollHeight;
-      if (height === lastHeight) {
-        contentBumpRef.current = false;
-        return;
-      }
-      const firstPaint = lastHeight === 0;
-      lastHeight = height;
-      if (!firstPaint && !contentBumpRef.current)
-        return;
-      if (!following)
-        return;
-      if (firstPaint)
-        jump2();
-      else
-        follow();
-    });
-    if (flow !== null)
-      observer.observe(flow);
-    jump2();
+    tail.open();
     return () => {
-      cancelAnimationFrame(raf);
-      observer.disconnect();
+      tail.dispose();
+      tailRef.current = null;
       scroller.removeEventListener("scroll", onScroll);
     };
   }, []);
+  (0, import_react82.useLayoutEffect)(() => {
+    if (firstSnapRef.current) {
+      firstSnapRef.current = false;
+      return;
+    }
+    tailRef.current?.content();
+  }, [chat, sessionSnap]);
   const onForkAccept = (0, import_react82.useCallback)(() => {
     if (forking || forkSession === void 0 || openHostSession === void 0)
       return;
@@ -69383,9 +69431,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.29.2"}`],
-            [t3("buildDemo"), `v${"0.29.2"}`],
-            [t3("buildStamp"), "261104-170023-794"]
+            [t3("buildCore"), `v${"0.29.3"}`],
+            [t3("buildDemo"), `v${"0.29.3"}`],
+            [t3("buildStamp"), "261104-174427-311"]
           ].map(
             ([label, value]) => (0, import_react93.createElement)(
               "tr",
@@ -69697,9 +69745,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react95.createElement)("span", null, `core v${"0.29.2"}`),
-          (0, import_react95.createElement)("span", null, `demo v${"0.29.2"}`),
-          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-170023-794")
+          (0, import_react95.createElement)("span", null, `core v${"0.29.3"}`),
+          (0, import_react95.createElement)("span", null, `demo v${"0.29.3"}`),
+          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-174427-311")
         )
       )
     ),

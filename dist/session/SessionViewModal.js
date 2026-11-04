@@ -34,6 +34,7 @@ import { officialClass, officialModuleCount } from './official-classes.js';
 import { t as defaultT } from '../utils/i18n.js';
 import { ensureComponentStyles } from '../ui/css.js';
 import { SESSION_CSS } from './session-css.js';
+import { createTailFollower } from './tail-follow.js';
 /** 稳定的空序列（避免默认值每次新建数组）。 */
 const EMPTY_ORDER = [];
 /** 官方样式缺失告警只打一次（避免每次渲染刷屏）。 */
@@ -712,90 +713,48 @@ export function SessionViewModal(props) {
     const [forkErr, setForkErr] = useState(null);
     const aliveRef = useRef(true);
     useEffect(() => () => { aliveRef.current = false; }, []);
-    // 会话区自动贴底（用户 2026-11-04 定）：打开即到底；内容还在长就跟到底；用户自己往上滚过
-    // 就停（滚回底部恢复）。别用「时间窗」判程序滚动——流式更新会一直续窗，用户就再也滚不开了；
-    // 程序只往下滚，所以「往上滚」是可靠的用户意图判据。
-    // 触发条件只能是「宿主快照变了」（= 有新内容）；展开 / 折叠历史分组同样会改高度，但那是本地
-    // 状态，不能把视图拽走（用户 2026-11-04 二次拍板：只有「首次打开」和「有新内容」两种才贴底）。
+    // 会话区自动贴底（用户 2026-11-04 二次拍板）：只有「首次打开」和「有新内容且当时在底部」
+    // 两种情况允许贴底。状态机是纯逻辑（tail-follow.ts）：贴底只由**宿主快照内容版本变化**触发，
+    // 不再由 ResizeObserver 的「高度变了」反推原因——展开 / 折叠思考行、历史分组是组件本地 state，
+    // 只改 DOM 高度，不改 chat / sessionSnap，因此永远不会进这条链，视图不会被拽走。
+    // scroll 事件只记录用户意图（往上滚 = 不跟），程序自己往下滚不会再触发追尾自激。
     const flowRef = useRef(null);
-    const contentBumpRef = useRef(true);
-    // pending 回显出现 / 消失也算「有新内容」（它来自 session 快照，不是 chat 快照）。
-    useLayoutEffect(() => { contentBumpRef.current = true; }, [chat, sessionSnap]);
+    const tailRef = useRef(null);
+    const firstSnapRef = useRef(true);
     useLayoutEffect(() => {
         const flow = flowRef.current;
         const scroller = flow === null ? null : flow.closest('.dshpc-modal__body');
         if (scroller === null)
             return;
-        let following = true;
-        let lastHeight = 0;
-        let lastTop = scroller.scrollTop;
-        let raf = 0;
-        let animating = false;
-        const nearBottom = () => scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight <= 24;
-        // 首屏一把到底（instant）；之后由 rAF 自驱动追尾动画：每帧以**最新** scrollHeight 为目标，
-        // 内容边渲染边长也不会被打断或停在半路（浏览器原生 smooth 会，真机 2026-11-04）。
-        const jump = () => { scroller.scrollTop = scroller.scrollHeight; };
-        const step = () => {
-            if (!following) {
-                animating = false;
-                return;
-            }
-            const target = scroller.scrollHeight - scroller.clientHeight;
-            const delta = target - scroller.scrollTop;
-            if (delta <= 1) {
-                scroller.scrollTop = target;
-                animating = false;
-                return;
-            }
-            // 指数缓出：长距离快、末尾慢，几帧收敛，且始终朝最新目标走。
-            scroller.scrollTop += Math.max(1, delta * 0.28);
-            raf = requestAnimationFrame(step);
-        };
-        const follow = () => {
-            if (!following || animating)
-                return;
-            animating = true;
-            raf = requestAnimationFrame(step);
-        };
-        const onScroll = () => {
-            const top = scroller.scrollTop;
-            if (top < lastTop - 1)
-                following = false;
-            else if (nearBottom()) {
-                following = true;
-                follow();
-            }
-            lastTop = top;
-        };
-        scroller.addEventListener('scroll', onScroll, { passive: true });
-        const observer = new ResizeObserver(() => {
-            const height = flow === null ? 0 : flow.scrollHeight;
-            if (height === lastHeight) {
-                // 高度稳定 ⇒ 「新内容」贴底窗口结束。异步渲染常常多次增量，必须持续到稳定。
-                contentBumpRef.current = false;
-                return;
-            }
-            const firstPaint = lastHeight === 0;
-            lastHeight = height;
-            if (!firstPaint && !contentBumpRef.current)
-                return;
-            if (!following)
-                return;
-            if (firstPaint)
-                jump();
-            else
-                follow();
+        const tail = createTailFollower({
+            metrics: () => ({
+                scrollTop: scroller.scrollTop,
+                scrollHeight: scroller.scrollHeight,
+                clientHeight: scroller.clientHeight,
+            }),
+            setScrollTop: (top) => { scroller.scrollTop = top; },
+            frame: (fn) => requestAnimationFrame(fn),
+            cancelFrame: (id) => cancelAnimationFrame(id),
         });
-        if (flow !== null)
-            observer.observe(flow);
-        // 首屏：内容可能已渲染完（ResizeObserver 首次回调前高度就非 0），先即时贴一次底。
-        jump();
+        tailRef.current = tail;
+        const onScroll = () => { tail.scrolled(); };
+        scroller.addEventListener('scroll', onScroll, { passive: true });
+        tail.open(); // 首屏一把到底（instant）
         return () => {
-            cancelAnimationFrame(raf);
-            observer.disconnect();
+            tail.dispose();
+            tailRef.current = null;
             scroller.removeEventListener('scroll', onScroll);
         };
     }, []);
+    // 唯一「有新内容」信号 = 宿主快照版本变化（chat / sessionSnap 引用变了）。
+    // pending 回显出现 / 消失也算（它来自 session 快照，不是 chat 快照）。首次挂载由 open() 负责。
+    useLayoutEffect(() => {
+        if (firstSnapRef.current) {
+            firstSnapRef.current = false;
+            return;
+        }
+        tailRef.current?.content();
+    }, [chat, sessionSnap]);
     const onForkAccept = useCallback(() => {
         if (forking || forkSession === undefined || openHostSession === undefined)
             return;
