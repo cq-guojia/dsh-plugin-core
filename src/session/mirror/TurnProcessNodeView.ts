@@ -1,20 +1,18 @@
-// 官方对照：packages/client/ui-chat/src/client/chat/TurnProcessNodeView.tsx（0.1.7-rc.2 lib/client.js:6129-6196）
+// 官方对照：packages/client/ui-chat@0.2.2-alpha.3 lib/client.js:8668-8730（TurnProcessNodeView）
 // root（button，高 calc(33px + delta)、border-bottom .5px border-l2、padding 0 0 8px、flex）
-//   :disabled{cursor:default} / :not(:disabled):hover{color:primary} / :not([data-open]){margin-bottom:8px}
-//   > label（13px，ellipsis）> chevron（14px caption，[data-open] 旋转 180°）
-// label 官方文案（源码 6167-6170 逐字）：
-//   running → 「深度求索中，用时D」；aborted → 「已停止」；error → 「处理失败」；
-//   其余 → 有时长「用时 D」、无时长「已完成工作」。D 由 turn 位置（start/end）算出，下限 1 秒。
-// 这就是官方原图里那行「用时 34 秒 ⌄」——它把整个 turn 的过程（工具调用 / 中间文本 / 思考）折在下面。
-import { Fragment, createElement as h, useEffect, useState } from 'react'
+//   :disabled{cursor:default} / :hover:not(:disabled){color:secondary} / [data-open] 内 chevron 旋转 180°
+//   > label（13px，ellipsis）> chevron（14px，color:inherit）
+// label：stopped（aborted/interrupted）→「已停止」；error →「处理失败」；
+//   有时长 →「已完成，用时 」+ duration parts（数字段套 durationNumber 等宽数字）；无时长 →「已完成」。
+// ⚠ 0.2.x 起 turn 未关闭时**整块不渲染**（`turn?.status !== "closed"` return null）——
+//   运行中的「深度求索中，用时 N 秒 ···」改由 ChatView 的 RunningStatus 在流末尾单独一行显示
+//   （见 RunningStatus.ts）。别再把 running 分支加回来，否则与官方重叠出两行。
+import { Fragment, createElement as h } from 'react'
 import { IconChevronDownOutlineRegular } from '../../ui/official.js'
 import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../utils/i18n.js'
 import type { TurnLocationFace, TurnProcessHandle } from './ChatNodeSeat.js'
-import { formatLiveRunDuration, formatRunDuration } from './message-chrome.js'
-
-/** 官方 LIVE_RUN_CLOCK_INTERVAL_MS（lib/client.js:979）。 */
-const LIVE_RUN_CLOCK_INTERVAL_MS = 1_000
+import { formatRunDuration } from './message-chrome.js'
 
 /** Turn 过程行：折叠时只有 label + 箭头；点开由外层 seat 把过程节点放出来。 */
 export function TurnProcessNodeViewMirror(props: {
@@ -23,33 +21,21 @@ export function TurnProcessNodeViewMirror(props: {
   t: Translate
 }): ReturnType<typeof h> | null {
   const { turn, turnProcess, t } = props
+  if (turn === undefined || turn.status !== 'closed') return null
   const open = !turnProcess.foldable || turnProcess.open
-  const [now, setNow] = useState<number>(() => Date.now())
-  const ticking = turn?.status === 'open' && turn.start !== undefined
-  useEffect(() => {
-    if (!ticking) return
-    setNow(Date.now())
-    const timer = setInterval(() => { setNow(Date.now()) }, LIVE_RUN_CLOCK_INTERVAL_MS)
-    return () => { clearInterval(timer) }
-  }, [ticking])
-  if (turn === undefined || (turn.start === undefined && turn.status !== 'closed')) return null
   const canCollapse = turnProcess.foldable && turnProcess.hasContent && !turnProcess.alwaysOpen
-  const running = turn.status === 'open'
   const reason = turn.end?.data?.reason?.kind
-  const elapsedMs = turn.start === undefined ? undefined : Math.max(1_000, (turn.end?.time ?? now) - turn.start.time)
-  const duration = elapsedMs === undefined
+  const stopped = reason === 'aborted' || reason === 'interrupted'
+  const elapsedMs = turn.start === undefined || turn.end === undefined
     ? undefined
-    : running ? formatLiveRunDuration(elapsedMs, t) : formatRunDuration(elapsedMs, t)
-  const label = running
-    ? (duration === undefined ? t('chatDeepDiving') : t('turnProcessDeepDiving', { duration }))
-    : reason === 'aborted' ? t('turnStopped')
-      : reason === 'error' ? t('turnProcessFailed')
-        : duration === undefined ? t('turnProcessWorked') : t('turnProcessTook', { duration })
-  const announcement = running
-    ? t('chatDeepDiving')
-    : reason === 'aborted' ? t('turnStopped')
-      : reason === 'error' ? t('turnProcessFailed')
-        : t('turnProcessWorked')
+    : Math.max(1_000, turn.end.time - turn.start.time)
+  const duration = elapsedMs === undefined || stopped || reason === 'error'
+    ? undefined
+    : formatRunDuration(elapsedMs, t)
+  const label = stopped ? t('turnStopped')
+    : reason === 'error' ? t('turnProcessFailed')
+      : duration === undefined ? t('turnProcessWorked') : t('turnProcessTook')
+  const durationNumberClass = officialClass('TurnProcessNodeView', 'durationNumber') ?? undefined
   const spec = turnProcess.spec
   return h(Fragment, null,
     h('span', {
@@ -57,7 +43,7 @@ export function TurnProcessNodeViewMirror(props: {
       role: 'status',
       'aria-live': 'polite',
       'aria-atomic': 'true',
-    }, announcement),
+    }, stopped ? t('turnStopped') : reason === 'error' ? t('turnProcessFailed') : t('turnProcessWorked')),
     h('button', {
       type: 'button',
       className: officialClass('TurnProcessNodeView', 'root') ?? '',
@@ -70,7 +56,13 @@ export function TurnProcessNodeViewMirror(props: {
       'aria-expanded': turnProcess.hasContent ? open : undefined,
       onClick: (): void => { turnProcess.setOpen(!open) },
     },
-      h('span', { className: officialClass('TurnProcessNodeView', 'label') ?? '' }, label),
+      h('span', { className: officialClass('TurnProcessNodeView', 'label') ?? '' },
+        label,
+        duration?.map((part, index) => h('span', {
+          key: index,
+          className: part.numeric ? durationNumberClass : undefined,
+        }, part.text)),
+      ),
       canCollapse
         ? h(IconChevronDownOutlineRegular, { className: officialClass('TurnProcessNodeView', 'chevron') ?? '' })
         : null,

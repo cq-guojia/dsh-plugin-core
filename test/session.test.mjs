@@ -21,7 +21,7 @@ import {
   diffNoteKey,
   DIFF_MAX_RENDERED_LINES,
 } from '../dist/session/changes.js'
-import { formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/session/mirror/message-chrome.js'
+import { durationText, formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/session/mirror/message-chrome.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
 // ── official-classes：官方 CSS module 类名运行时发现 ──
@@ -186,9 +186,12 @@ test('processTitle：zh 两类「A并B」去已前缀、超三类补等', () => 
 
 test('formatRunDuration / formatMessageClock / formatTokens 逐字对齐官方', () => {
   setLocale('zh')
-  assert.equal(formatRunDuration(34_000, t), '34秒')
-  assert.equal(formatRunDuration(65_000, t), '1分05秒')
-  assert.equal(formatRunDuration(3_725_000, t), '1小时02分05秒')
+  const run = (ms) => durationText(formatRunDuration(ms, t))
+  assert.equal(run(34_000), '34秒')
+  assert.equal(run(65_000), '1分5秒', '官方 0.2.x：秒不补零（parts 拼接）')
+  assert.equal(run(3_725_000), '1小时2分5秒')
+  // parts 的数字段标记（TurnProcessNodeView 据此套等宽数字类）
+  assert.deepEqual(formatRunDuration(34_000, t).map((part) => part.numeric), [true, false])
   assert.equal(formatMessageClock(new Date(2026, 8, 26, 1, 35).getTime(), t, new Date(2026, 8, 26, 12, 0).getTime()), '01:35')
   assert.equal(formatMessageClock(new Date(2026, 8, 26, 1, 35).getTime(), t, new Date(2026, 8, 20, 12, 0).getTime()), '9月26日 01:35')
   assert.equal(formatMessageClock(new Date(2025, 8, 26, 1, 35).getTime(), t, new Date(2026, 8, 20, 12, 0).getTime()), '2025年9月26日 01:35')
@@ -197,7 +200,7 @@ test('formatRunDuration / formatMessageClock / formatTokens 逐字对齐官方',
   assert.equal(formatTokens(1_200_000, t), '1.2M')
   assert.equal(formatExactCount(91_500, t), '91,500 tok')
   setLocale('en')
-  assert.equal(formatRunDuration(65_000, t), '1m 05s')
+  assert.equal(run(65_000), '1m 5s')
   assert.equal(formatTokens(12_200, t), '12.2K')
   setLocale('zh')
 })
@@ -343,7 +346,8 @@ test('DIFF_MAX_RENDERED_LINES = 5000（官方截断阈值，超出出 diff.trunc
 test('会话预览文案中英齐全（镜像官方词典的新增键）', () => {
   const keys = [
     'sessionLoadOlder', 'sessionProcess', 'sessionArchived', 'continueBranch', 'forkConfirmTitle',
-    'turnProcessTook', 'chatDeepDiving', 'thinkLabel', 'durationSeconds', 'retryStatus', 'turnErrorTitle',
+    'turnProcessTook', 'chatDeepDiving', 'chatDeepDivingFor', 'reasoningRunning', 'jsonTruncated',
+    'thinkLabel', 'durationSecondUnit', 'durationMinuteUnit', 'durationHourUnit', 'retryStatus', 'turnErrorTitle',
     'clockDate', 'turnUsageTitle', 'turnUsageCount', 'numberThousand', 'stepProcessDoneRead',
     'stepProcessJoinTwo', 'toolTitleRead', 'toolTitleGeneric', 'toolInputLabel', 'rowRunning',
     'readWindow', 'terminalExitCode', 'diffWrapLabel', 'deliverRowTitle', 'deliverAll',

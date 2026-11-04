@@ -124,15 +124,18 @@ export type UtilMessageKey =
   | 'triggerPlugin'
   | 'triggerExplanation'
   | 'turnProcessTook'
-  | 'turnProcessDeepDiving'
   | 'turnProcessWorked'
   | 'turnProcessFailed'
   | 'turnStopped'
   | 'chatDeepDiving'
+  | 'chatDeepDivingFor'
+  | 'reasoningRunning'
+  | 'jsonTruncated'
+  | 'failureInterrupted'
   | 'thinkLabel'
-  | 'durationSeconds'
-  | 'durationMinutes'
-  | 'durationHours'
+  | 'durationSecondUnit'
+  | 'durationMinuteUnit'
+  | 'durationHourUnit'
   | 'durationMilliseconds'
   | 'retryActive'
   | 'retryCancelled'
@@ -415,16 +418,18 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     triggerJob: '后台任务状态更新',
     triggerPlugin: '插件状态更新',
     triggerExplanation: '这条通知触发了本轮回复。',
-    turnProcessTook: '用时 {duration}',
-    turnProcessDeepDiving: '深度求索中，用时{duration}',
-    turnProcessWorked: '已完成工作',
+    turnProcessTook: '已完成，用时 ',
+    turnProcessWorked: '已完成',
     turnProcessFailed: '处理失败',
     turnStopped: '已停止',
     chatDeepDiving: '深度求索中',
+    chatDeepDivingFor: '深度求索中，用时 {duration} ···',
+    reasoningRunning: '运行中',
+    jsonTruncated: '… 已截断，共 {total} 字符',
     thinkLabel: '思考',
-    durationSeconds: '{seconds}秒',
-    durationMinutes: '{minutes}分{seconds}秒',
-    durationHours: '{hours}小时{minutes}分{seconds}秒',
+    durationSecondUnit: '秒',
+    durationMinuteUnit: '分',
+    durationHourUnit: '小时',
     durationMilliseconds: '{milliseconds}毫秒',
     retryActive: '正在重试模型请求',
     retryCancelled: '模型请求重试已取消',
@@ -437,6 +442,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     accountStopped: '任务已停止',
     maxTokensTitle: '已达到输出 token 上限',
     maxTokensHint: '回答被截断，已有输出保留在对话中。发送“继续”可让模型接着输出。',
+    failureInterrupted: 'DSH 进程在本轮完成前退出（例如被强制结束、崩溃或关闭超时），重新启动后本轮已中止。未完成的工具调用结果未知。',
     failureAuth: 'API 密钥无效',
     failureQuota: '当前请求的额度已用尽',
     failureAccountSignedOut: '任务已因退出 DeepSeek 登录而停止。',
@@ -700,16 +706,18 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     triggerJob: 'Background task status update',
     triggerPlugin: 'Plugin status update',
     triggerExplanation: 'This notification triggered the reply below.',
-    turnProcessTook: 'Took {duration}',
-    turnProcessDeepDiving: 'Thinking, {duration}',
-    turnProcessWorked: 'Work completed',
+    turnProcessTook: 'Completed in ',
+    turnProcessWorked: 'Completed',
     turnProcessFailed: 'Failed',
     turnStopped: 'Stopped',
     chatDeepDiving: 'Thinking',
+    chatDeepDivingFor: 'Deep diving for {duration} ···',
+    reasoningRunning: 'Running',
+    jsonTruncated: '… truncated, {total} characters total',
     thinkLabel: 'Think',
-    durationSeconds: '{seconds}s',
-    durationMinutes: '{minutes}m {seconds}s',
-    durationHours: '{hours}h {minutes}m {seconds}s',
+    durationSecondUnit: 's',
+    durationMinuteUnit: 'm ',
+    durationHourUnit: 'h ',
     durationMilliseconds: '{milliseconds}ms',
     retryActive: 'Retrying model request',
     retryCancelled: 'Model request retry cancelled',
@@ -722,6 +730,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     accountStopped: 'Task stopped',
     maxTokensTitle: 'Output token limit reached',
     maxTokensHint: 'The reply was cut off; earlier output is preserved in the conversation. Send "continue" to let the model resume.',
+    failureInterrupted: 'The DSH process exited before this turn finished (for example, it was killed, crashed, or timed out while shutting down), so the turn was closed when DSH restarted. Unfinished tool calls have unknown outcomes.',
     failureAuth: 'API key is invalid',
     failureQuota: 'Request quota exhausted.',
     failureAccountSignedOut: 'Stopped because you signed out of DeepSeek.',
@@ -835,8 +844,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     forkConfirmAccept: 'Fork & open',
     forkWorking: 'Forking…',
     forkFailed: 'Fork failed: {error}',
-    deliverRowTitle: 'Deliver files',
-    deliverRowPreparing: 'Preparing delivery',
+    deliverRowTitle: 'Present files',
+    deliverRowPreparing: 'Preparing deliverables',
     deliverRowRunning: 'Delivering',
     deliverRowOk: 'Delivered',
     deliverRowError: 'Delivery failed',

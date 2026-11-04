@@ -5,12 +5,18 @@ export { pad2 };
 export declare function startOfLocalDay(ms: number): number;
 /** 距下一个本机零点（官方 msUntilNextLocalMidnight）。 */
 export declare function msUntilNextLocalMidnight(ms: number): number;
+/** 官方 formatRunDuration 的片段（numeric = 数字段，调用方按官方套等宽数字字体）。 */
+export interface DurationPart {
+    text: string;
+    numeric: boolean;
+}
 /**
- * 官方 formatRunDuration：整秒；≥1 分带零补秒；≥1 小时带零补分秒。
+ * 官方 formatRunDuration（0.2.x，lib/client.js:5067-5095）：整秒；≥1 分带分；≥1 小时带小时。
+ * 单位是独立片段（`duration.hourUnit` / `minuteUnit` / `secondUnit`），不是一条带占位的模板。
  */
-export declare function formatRunDuration(ms: number, tt: Translate): string;
-/** 官方 formatLiveRunDuration：秒不补零、分钟自 60 秒起。 */
-export declare function formatLiveRunDuration(ms: number, tt: Translate): string;
+export declare function formatRunDuration(ms: number, tt: Translate): readonly DurationPart[];
+/** 时长片段拼成单行文本（塞进带占位符的文案 / aria 用）。 */
+export declare function durationText(parts: readonly DurationPart[]): string;
 /**
  * 官方 formatMessageClock：同日 → `HH:mm`；同年 → `{m}月{d}日 HH:mm`；跨年 → `{y}年{m}月{d}日 HH:mm`。
  */

@@ -4,6 +4,8 @@ import type { Translate } from '../../utils/i18n.js';
  * U11：fileMentions 词表就位时行内 code 文件引用渲成可点链接（官方语义：resolve 不出保持惰性 code）。 */
 export declare function AssistantMarkdown(props: {
     text: string;
+    /** 官方 streaming（节点 data.status === 'running'）：MarkdownText 按流式尾渲染。 */
+    streaming?: boolean;
     fileMentions?: {
         resolve(value: string): {
             open(): void;

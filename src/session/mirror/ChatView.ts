@@ -26,9 +26,16 @@ import { SESSION_CSS } from '../session-css.js'
 export function ChatViewFrame(props: { children?: ReactNode }): ReturnType<typeof h> {
   ensureComponentStyles('session', SESSION_CSS)
   return h('div', { className: `${officialClass('ChatView', 'frame') ?? ''} dshpc-sv-frame dshpc-sv-chat` },
-    h('div', { className: officialClass('ChatView', 'root') ?? '' },
+    // 弹窗恒贴尾 ⇒ root 带 data-chat-following-tail（官方只在贴尾时写，作用 = overflow-anchor:none）。
+    h('div', { className: officialClass('ChatView', 'root') ?? '', 'data-chat-following-tail': '' },
       h('div', { className: `${officialClass('ChatView', 'scroll') ?? ''} dshpc-sv-scroll` },
         h('div', { className: officialClass('ChatView', 'column') ?? '', 'data-chat-flow': '' }, props.children),
+        // 官方 scroll 末尾的滚动占位（高度 0，只做锚点）。
+        h('div', {
+          className: officialClass('ChatView', 'turnSpacer') ?? '',
+          'data-chat-turn-spacer': true,
+          'aria-hidden': 'true',
+        }),
       ),
     ),
   )

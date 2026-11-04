@@ -18,30 +18,25 @@ export function msUntilNextLocalMidnight(ms) {
     return Math.max(next.getTime() - ms, 1);
 }
 /**
- * 官方 formatRunDuration：整秒；≥1 分带零补秒；≥1 小时带零补分秒。
+ * 官方 formatRunDuration（0.2.x，lib/client.js:5067-5095）：整秒；≥1 分带分；≥1 小时带小时。
+ * 单位是独立片段（`duration.hourUnit` / `minuteUnit` / `secondUnit`），不是一条带占位的模板。
  */
 export function formatRunDuration(ms, tt) {
     const total = Math.max(0, Math.floor(ms / 1e3));
     const hours = Math.floor(total / 3600);
     const minutes = Math.floor(total / 60) % 60;
     const seconds = total % 60;
+    const parts = [];
     if (hours > 0)
-        return tt('durationHours', { hours, minutes: pad2(minutes), seconds: pad2(seconds) });
-    return minutes > 0
-        ? tt('durationMinutes', { minutes, seconds: pad2(seconds) })
-        : tt('durationSeconds', { seconds });
+        parts.push({ text: String(hours), numeric: true }, { text: tt('durationHourUnit'), numeric: false });
+    if (total >= 60)
+        parts.push({ text: String(minutes), numeric: true }, { text: tt('durationMinuteUnit'), numeric: false });
+    parts.push({ text: String(seconds), numeric: true }, { text: tt('durationSecondUnit'), numeric: false });
+    return parts;
 }
-/** 官方 formatLiveRunDuration：秒不补零、分钟自 60 秒起。 */
-export function formatLiveRunDuration(ms, tt) {
-    const totalSeconds = Math.max(0, Math.floor(ms / 1e3));
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor(totalSeconds / 60) % 60;
-    const seconds = String(totalSeconds % 60);
-    if (hours > 0)
-        return tt('durationHours', { hours, minutes: pad2(minutes), seconds });
-    return minutes > 0
-        ? tt('durationMinutes', { minutes, seconds })
-        : tt('durationSeconds', { seconds });
+/** 时长片段拼成单行文本（塞进带占位符的文案 / aria 用）。 */
+export function durationText(parts) {
+    return parts.map(part => part.text).join('');
 }
 /**
  * 官方 formatMessageClock：同日 → `HH:mm`；同年 → `{m}月{d}日 HH:mm`；跨年 → `{y}年{m}月{d}日 HH:mm`。

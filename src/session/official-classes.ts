@@ -12,7 +12,8 @@
 // 不空白），并在控制台告警一次。
 //
 // 已知官方模块与语义名（源码 *_module_css_default 实测清单）：
-//   ChatView(12): frame root scroll column flowItem hint older callRow openError modalAction toBottom toBottomSlot
+//   ChatView(19): frame root scroll column flowItem hint older callRow openError modalAction toBottom toBottomSlot
+//                running runningDivider runningContent runningText runningIcon runningWhaleAnimated runningWhaleStill
 //   AssistantMarkdown(4): root body actions stopped
 //   MessageItem(32): bubble userRow userStack contextRow fileCard ... turnErrorRow retryRow ...
 //   GenericCommandCard(8): root row title summary body chevron leading separator
@@ -21,7 +22,8 @@
 //   ToolRow(30): root row leading title sep summary summarySuffix diffStat fileLink
 //   errorSummary stoppedSummary bodyWrap inspectButton detailsBodyWrap bodyScroll ioCard
 //   ioSection ioLabel ioDivider ioText codeBody terminalBody diffBody readBody imageBody
-//   searchBody webBody searchRecovery imageLabel imageMeta visuallyHidden
+//   searchBody webBody searchRecovery imageExtra imageMeta visuallyHidden
+//   （0.2.x 已删 chevron / imageLabel：箭头样式并入 primitives DisclosureRow）
 //   ui-sidebar-documentpreview 包（官方文件预览体，2026-09 U11 文本渲染对齐时接入）：
 //   CodeBody(2): renderer code（CodeBlock + lineNumbers 的官方外壳）
 //   ui-deliverables 包（交付文件行 + 交付文件卡，2026-09 U11 产出物入口接入）：
@@ -72,7 +74,7 @@ export function parseOfficialCss(css: string): OfficialClassMap {
   counts.forEach((count, key) => { if (count > best) { best = count; prefix = key } })
   if (prefix === '') return out
   for (const token of tokens) {
-    if (!token.startsWith(prefix + '_')) continue
+    if (!token.startsWith(`${prefix}_`)) continue
     const semantic = token.slice(prefix.length + 1)
     // 语义名是 camelCase，不含下划线；跳过复合类名（如 foo_bar_baz 的剩余部分）
     if (semantic === '' || semantic.includes('_')) continue

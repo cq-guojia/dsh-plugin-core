@@ -22,30 +22,31 @@ export function msUntilNextLocalMidnight(ms: number): number {
   return Math.max(next.getTime() - ms, 1)
 }
 
+/** 官方 formatRunDuration 的片段（numeric = 数字段，调用方按官方套等宽数字字体）。 */
+export interface DurationPart {
+  text: string
+  numeric: boolean
+}
+
 /**
- * 官方 formatRunDuration：整秒；≥1 分带零补秒；≥1 小时带零补分秒。
+ * 官方 formatRunDuration（0.2.x，lib/client.js:5067-5095）：整秒；≥1 分带分；≥1 小时带小时。
+ * 单位是独立片段（`duration.hourUnit` / `minuteUnit` / `secondUnit`），不是一条带占位的模板。
  */
-export function formatRunDuration(ms: number, tt: Translate): string {
+export function formatRunDuration(ms: number, tt: Translate): readonly DurationPart[] {
   const total = Math.max(0, Math.floor(ms / 1e3))
   const hours = Math.floor(total / 3600)
   const minutes = Math.floor(total / 60) % 60
   const seconds = total % 60
-  if (hours > 0) return tt('durationHours', { hours, minutes: pad2(minutes), seconds: pad2(seconds) })
-  return minutes > 0
-    ? tt('durationMinutes', { minutes, seconds: pad2(seconds) })
-    : tt('durationSeconds', { seconds })
+  const parts: DurationPart[] = []
+  if (hours > 0) parts.push({ text: String(hours), numeric: true }, { text: tt('durationHourUnit'), numeric: false })
+  if (total >= 60) parts.push({ text: String(minutes), numeric: true }, { text: tt('durationMinuteUnit'), numeric: false })
+  parts.push({ text: String(seconds), numeric: true }, { text: tt('durationSecondUnit'), numeric: false })
+  return parts
 }
 
-/** 官方 formatLiveRunDuration：秒不补零、分钟自 60 秒起。 */
-export function formatLiveRunDuration(ms: number, tt: Translate): string {
-  const totalSeconds = Math.max(0, Math.floor(ms / 1e3))
-  const hours = Math.floor(totalSeconds / 3600)
-  const minutes = Math.floor(totalSeconds / 60) % 60
-  const seconds = String(totalSeconds % 60)
-  if (hours > 0) return tt('durationHours', { hours, minutes: pad2(minutes), seconds })
-  return minutes > 0
-    ? tt('durationMinutes', { minutes, seconds })
-    : tt('durationSeconds', { seconds })
+/** 时长片段拼成单行文本（塞进带占位符的文案 / aria 用）。 */
+export function durationText(parts: readonly DurationPart[]): string {
+  return parts.map(part => part.text).join('')
 }
 
 /**

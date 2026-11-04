@@ -28,13 +28,31 @@ function fileNames(raw) {
         .flatMap((file) => (typeof file === 'object' && file !== null && 'path' in file && typeof file.path === 'string' ? [file.path] : []))
         .join(', ');
 }
+/** 官方 PreparingPresentRow：瘦行（只标题+图标、不可展开、running），root 无类名。 */
+function PreparingPresentRow(props) {
+    const { t } = props;
+    return h('div', {
+        'data-tool': 'present',
+        'data-state': 'preparing',
+        'aria-label': t('deliverRowPreparing'),
+    }, h(DisclosureRow, {
+        title: t('deliverRowTitle'),
+        icon: h(IconDeliverDocRegular, { size: 14 }),
+        open: false,
+        expandable: false,
+        onToggle: () => { },
+        running: true,
+    }));
+}
 /** 官方 PresentRow：present 工具调用的状态行（折叠 = 状态词 + 路径；展开 = 结果原文）。 */
 export function PresentRowMirror(props) {
     const { block, t } = props;
     const b = (block ?? {});
     const settled = typeof b.kind === 'string';
+    if (!settled && b.phase === 'preparing')
+        return h(PreparingPresentRow, { t });
     const state = !settled
-        ? (b.phase === 'preparing' ? 'preparing' : 'running')
+        ? 'running'
         : b.error?.code === 'interrupted' ? 'stopped' : b.isError ? 'error' : 'ok';
     const argsRaw = (settled ? b.call?.argsRaw : b.argsRaw) ?? '';
     const details = settled
@@ -42,32 +60,25 @@ export function PresentRowMirror(props) {
             || (b.error ? `${b.error.name ?? ''}: ${b.error.code ?? ''}` : ''))
         : '';
     const [expanded, setExpanded] = useState(false);
-    const statusKey = state === 'preparing' ? 'deliverRowPreparing'
-        : state === 'running' ? 'deliverRowRunning'
-            : state === 'error' ? 'deliverRowError'
-                : state === 'stopped' ? 'deliverRowStopped'
-                    : 'deliverRowOk';
+    const statusKey = state === 'running' ? 'deliverRowRunning'
+        : state === 'error' ? 'deliverRowError'
+            : state === 'stopped' ? 'deliverRowStopped'
+                : 'deliverRowOk';
     return h('div', {
-        className: officialClass('ToolRow', 'root') ?? '',
+        // 官方 StartedPresentRow 的 root 不挂任何类（只 data-tool / data-state）。
         'data-tool': 'present',
         'data-state': state,
     }, h(DisclosureRow, {
-        icon: h(IconDeliverDocRegular, { size: 14 }),
         title: t('deliverRowTitle'),
+        icon: h(IconDeliverDocRegular, { size: 14 }),
         open: expanded && details !== '',
         expandable: details !== '',
         expandOnRowClick: true,
         keepContentWhenOpen: true,
         onToggle: () => { setExpanded((value) => !value); },
-        running: state === 'running' || state === 'preparing',
-        rowClassName: officialClass('ToolRow', 'row') ?? '',
-        leadingClassName: officialClass('ToolRow', 'leading') ?? '',
-        titleClassName: officialClass('ToolRow', 'title') ?? '',
-        chevronClassName: officialClass('ToolRow', 'chevron') ?? '',
         collapsedContent: h('span', { className: officialClass('PresentRow', 'summary') ?? '' }, h('span', null, t(statusKey)), h('span', { className: officialClass('PresentRow', 'paths') ?? '' }, fileNames(argsRaw))),
-        children: details !== '' && expanded
-            ? h('pre', { className: officialClass('PresentRow', 'output') ?? '' }, details)
-            : null,
+        // 官方 children 是数组且 pre.output **恒在**（空字符串也渲染）。
+        children: [h('pre', { key: 'output', className: officialClass('PresentRow', 'output') ?? '' }, details)],
     }));
 }
 /** 官方 COLLAPSED_PRESENTED_COUNT（Deliverables.tsx）：超过 4 张折叠。 */
@@ -85,17 +96,18 @@ function DeliveredFileCard(props) {
     return h('div', {
         className: officialClass('Deliverables', 'file') ?? '',
         'data-presented-file': true,
-    }, onPreview !== undefined
-        ? h('button', {
-            type: 'button',
-            className: officialClass('Deliverables', 'cardPreview') ?? '',
-            title: file.path,
-            'aria-label': t('deliverPreviewCard', { name: file.path }),
-            onClick: (event) => { event.stopPropagation(); onPreview(); },
-        })
-        : null, h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' }, h(FileTypeIcon, { path: file.path, size: 20 })), h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' }, h('div', { className: officialClass('Deliverables', 'details') ?? '' }, h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name), h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true }, h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)), onPreview !== undefined
-        ? h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint'))
-        : null))));
+    }, 
+    // 官方 cardPreview 按钮**恒在**（弹窗无预览出口时点击无副作用）。
+    h('button', {
+        type: 'button',
+        className: officialClass('Deliverables', 'cardPreview') ?? '',
+        title: file.path,
+        'aria-label': t('deliverPreviewCard', { name: file.path }),
+        onClick: (event) => {
+            event.stopPropagation();
+            onPreview?.();
+        },
+    }), h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' }, h(FileTypeIcon, { path: file.path, size: 20 })), h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' }, h('div', { className: officialClass('Deliverables', 'details') ?? '' }, h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name), h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true }, h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)), h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint'))))));
 }
 /**
  * 官方 DeliverablesTail 的 presented 网格（FileTypeIcon + 文件名 + 简介，整卡可点 → 预览）。
@@ -112,10 +124,13 @@ export function DeliverablesGridMirror(props) {
     const shown = collapsible && !expanded ? files.slice(0, COLLAPSED_DELIVERED_COUNT) : files;
     return h('div', {
         className: officialClass('Deliverables', 'root') ?? '',
+        'data-after-changes': true,
         'data-presented-files-grid': true,
     }, h('div', {
         className: officialClass('Deliverables', 'presented') ?? '',
         'data-presented-files-row': true,
+        // 官方单文件整行铺满（CSS 依赖 data-single）。
+        'data-single': files.length === 1 || undefined,
     }, shown.map((file, index) => h(DeliveredFileCard, {
         key: `${file.path}:${index}`,
         file,

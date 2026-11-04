@@ -30,8 +30,9 @@ import { CommandCard, type CommandNodeFace } from './mirror/CommandCard.js'
 import { MessageIconActionsMirror } from './mirror/MessageIconActions.js'
 import { AssistantMarkdown, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage, type RetryAttemptFace, type TurnErrorFace } from './mirror/MessageItem.js'
 import { ReasoningRowMirror } from './mirror/ReasoningRow.js'
+import { RunningStatusMirror } from './mirror/RunningStatus.js'
 import { TurnProcessNodeViewMirror } from './mirror/TurnProcessNodeView.js'
-import { TurnTailNodeViewMirror, type TurnTailDataFace } from './mirror/TurnTailNodeView.js'
+import { buildTurnTailFacts, TurnTailNodeViewMirror, type TurnTailDataFace, type TurnTailFacts } from './mirror/TurnTailNodeView.js'
 import { TurnTriggerNodeViewMirror } from './mirror/TurnTriggerNodeView.js'
 import { DeliverablesGridMirror, PresentRowMirror, type DeliveredFileFace } from './mirror/Deliverables.js'
 import { ChangedFilesCard, type ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js'
@@ -207,6 +208,8 @@ function renderKeyedNode(
   sessionId?: string,
   /** 变更文件点击出口（官方 openReview 等价）：带改动身份；undefined = 变更卡不可点。 */
   onOpenReview?: (locator: ChangedFileReviewLocator) => void,
+  /** 官方 endsWithResponse / hasLaterChatNode（尾部操作行常显与分支可用性）。 */
+  tailFacts?: TurnTailFacts,
 ): ReturnType<typeof h> | null {
   switch (node.kind) {
     case 'turn-trigger':
@@ -243,7 +246,7 @@ function renderKeyedNode(
           )
       const tail = data === undefined || data.closing === null || data.closing === undefined
         ? null
-        : h(TurnTailNodeViewMirror, { data, onBranchAt, tailSlot, t })
+        : h(TurnTailNodeViewMirror, { data, onBranchAt, tailSlot, facts: tailFacts, t })
       return tail
     }
     case 'assistant-step': {
@@ -251,15 +254,19 @@ function renderKeyedNode(
       //   · 整步只有 tool-call 块 ⇒ 整步不渲染（工具调用由独立的 tool-call 节点画）；
       //   · tool-call 块一律跳过（case "tool-call": break）——重复渲染卡片即真机踩过的「编辑/写入×2」；
       //   · groupPart 'reasoning' 只画思考块、'response' 跳过思考块；未分组全画（除工具块）。
-      const blocks = blocksOf(dataOf(node).blocks) ?? []
+      const nodeData = dataOf(node)
+      const blocks = blocksOf(nodeData.blocks) ?? []
+      const streaming = nodeData.status === 'running'
+      const interrupted = nodeData.status === 'interrupted'
       const contentBlocks = blocks.filter(block => block.kind !== 'tool-call')
-      if (blocks.length > 0 && contentBlocks.length === 0) return null
+      // 官方 AssistantMarkdown 提前返回：整步只有 tool-call（且非流式 / 非中断）⇒ 不渲染。
+      if (!(streaming || interrupted || blocks.some(block => block.kind !== 'tool-call'))) return null
       const visible = groupPart === 'reasoning'
         ? contentBlocks.filter(block => block.kind === 'reasoning')
         : groupPart === 'response'
           ? contentBlocks.filter(block => block.kind !== 'reasoning')
           : contentBlocks
-      const parts = assistantBlocks(visible, t, fileOpen?.mentions)
+      const parts = assistantBlocks(visible, t, fileOpen?.mentions, streaming)
       return parts.length === 0 ? null : h('div', { className: 'dshpc-sv-assistant' }, parts)
     }
     case 'tool-call': {
@@ -327,16 +334,24 @@ function assistantBlocks(
   blocks: readonly AssistantBlockLike[] | undefined,
   t: Translate,
   fileMentions?: FileOpenFace['mentions'],
+  /** 官方 streaming（节点 data.status === 'running'）：正文按流式尾渲染、末块思考行走 shimmer。 */
+  streaming = false,
 ): ReturnType<typeof h>[] {
   if (blocks === undefined) return []
   const parts: ReturnType<typeof h>[] = []
+  const last = blocks.length - 1
   blocks.forEach((block, index) => {
     switch (block.kind) {
       case 'text':
-        if (block.text.trim() !== '') parts.push(h(AssistantMarkdown, { key: `t${index}`, text: block.text, fileMentions }))
+        if (block.text.trim() !== '') {
+          parts.push(h(AssistantMarkdown, { key: `t${index}`, text: block.text, streaming, fileMentions }))
+        }
         break
       case 'reasoning':
-        if (block.text.trim() !== '') parts.push(h(ReasoningRowMirror, { key: `r${index}`, text: block.text, t }))
+        if (block.text.trim() !== '') {
+          // 官方 running = streaming && i === last（原始块下标，不是过滤后的）。
+          parts.push(h(ReasoningRowMirror, { key: `r${index}`, text: block.text, running: streaming && index === last, t }))
+        }
         break
       case 'image':
         parts.push(h('div', { key: `i${index}`, className: 'dshpc-sv-image' }, t('sessionImage')))
@@ -944,12 +959,16 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
     })
     console.log('[preview] turnsDetail', turnsDetail)
   }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store])
+  // 官方 TurnTailNodeView 的两个判定（操作行常显 / 分支可用）——按 order + 节点仓预计算。
+  const tailFacts = useMemo(() => (keyed && store !== undefined
+    ? buildTurnTailFacts({ order, store, lastTurn: lastTailTurn })
+    : undefined), [keyed, order, store, lastTailTurn])
   const renderNode = useCallback<NodeRenderer>(
     (node, turnProcess, groupPart) => renderKeyedNode(
       node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn,
-      lastTailChangesSeq, sessionId, props.onOpenReview,
+      lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts,
     ),
-    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview],
+    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts],
   )
   // 官方 grouped('chat')：把 keyed 流切成「独立条目 + 过程分组」（二级收折）。
   const isTurnClosed = useCallback((turn: number): boolean =>
@@ -958,6 +977,16 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
     () => keyed ? buildProcessGroups(order, key => store?.get(key), isTurnClosed) : undefined,
     [keyed, order, store, isTurnClosed],
   )
+
+  // 官方 RunningStatus（0.2.x）的 startTime：流末尾那个节点所属 turn 处于 open 时的开始时间
+  // （ChatFlow lib/client.js:5645-5649）。没有 open turn ⇒ 不渲染这一行。
+  const runningStartTime = useMemo(() => {
+    if (!keyed || store === undefined) return undefined
+    const last = order[order.length - 1]
+    const location = last === undefined ? undefined : store.get(last)?.location
+    if (location?.kind !== 'turn' && location?.kind !== 'step') return undefined
+    return location.turn?.status === 'open' ? location.turn.start?.time : undefined
+  }, [keyed, order, store])
 
   // ChatNodeList 直接调用（无 hook 的纯函数）：它产出的是「flowItem 数组」，不是单个元素。
   const rows: Array<ReturnType<typeof h> | null> = keyed
@@ -987,17 +1016,26 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   }
   const openState = sessionSnap?.openState
   const showLoadOlder = sessionSnap?.hasMore !== false
+  // 官方 ChatFlow：RunningStatus 挂在流末尾（紧跟最后一个 flowItem；官方 CSS 在最后是 turn-tail 时自动隐藏）。
+  const runningRow = runningStartTime === undefined
+    ? null
+    : h(RunningStatusMirror, { key: 'running', startTime: runningStartTime, t: tt })
   const body = rendered.length === 0
-    ? h(ChatHint, {
-        text: openState === 'error' ? tt('sessionFailed')
-          : openState === 'loading' || openState === 'cold' ? tt('sessionLoading')
-            : tt('sessionEmpty'),
-      })
+    ? [
+        h(ChatHint, {
+          key: 'hint',
+          text: openState === 'error' ? tt('sessionFailed')
+            : openState === 'loading' || openState === 'cold' ? tt('sessionLoading')
+              : tt('sessionEmpty'),
+        }),
+        runningRow,
+      ]
     : [
         showLoadOlder
           ? h(ChatOlderButton, { key: 'older', label: tt('sessionLoadOlder'), onClick: () => { view.loadOlder() } })
           : null,
         ...rendered,
+        runningRow,
       ]
   const flowChildren = Array.isArray(body) ? body : [body]
 

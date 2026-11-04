@@ -11,22 +11,24 @@
 //   TurnMaxTokensItem= 同行结构，StateDot(warning) + maxTokensTitle（警示色）+ 提示语。
 // 文案逐字抄官方词典（message.retry.* / message.turnError / message.maxTokens*，zh+en）。
 import { createElement as h, useEffect, useMemo, useState } from 'react'
-import { FileTypeIcon, MarkdownText, StateDot } from '../../ui/official.js'
+import { FileTypeIcon, fileExtension, fileSizeText, MarkdownText, StateDot, TextShimmer } from '../../ui/official.js'
 import { officialClass } from '../official-classes.js'
 import { markdownLabels } from '../../explorer/preview/md-labels.js'
-import { formatBytes } from '../../utils/number.js'
 import type { Translate } from '../../utils/i18n.js'
 
 /** 助手正文：官方 MarkdownText 渲染 + 官方 AssistantMarkdown.root 类（fallback 自绘）。
  * U11：fileMentions 词表就位时行内 code 文件引用渲成可点链接（官方语义：resolve 不出保持惰性 code）。 */
 export function AssistantMarkdown(props: {
   text: string
+  /** 官方 streaming（节点 data.status === 'running'）：MarkdownText 按流式尾渲染。 */
+  streaming?: boolean
   fileMentions?: { resolve(value: string): { open(): void; label: string; title: string } | undefined }
 }): ReturnType<typeof h> {
   if (props.text.trim() === '') return h('span', null)
   return h('div', { className: officialClass('AssistantMarkdown', 'root') ?? '' },
     h(MarkdownText, {
       text: props.text,
+      streaming: props.streaming,
       labels: markdownLabels(),
       fileMentions: props.fileMentions,
     }),
@@ -51,26 +53,34 @@ export function UserMessage(props: { text: string; files?: readonly UserFileFace
   const chips = files ?? []
   return h('div', { className: officialClass('MessageItem', 'userRow') ?? '' },
     h('div', { className: officialClass('MessageItem', 'userStack') ?? '' },
-      text === ''
-        ? null
-        : h('div', { className: officialClass('MessageItem', 'bubble') ?? '' },
-            h(MarkdownText, { text, labels: markdownLabels() })),
+      // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
       chips.length === 0
         ? null
-        : h('div', { className: officialClass('MessageItem', 'attachmentRow') ?? '' },
-            chips.map((file, index) => h('div', {
+        : h('div', {
+            className: officialClass('MessageItem', 'attachmentRow') ?? '',
+            'data-message-attachments': true,
+          },
+            chips.map((file, index) => h('span', {
               key: `${file.name}:${index}`,
               className: officialClass('MessageItem', 'fileCard') ?? '',
               title: file.name,
             },
-              h('span', { className: officialClass('MessageItem', 'fileIcon') ?? '' },
-                h(FileTypeIcon, { path: file.name, size: 16 })),
+              h(FileTypeIcon, {
+                path: file.name,
+                className: officialClass('MessageItem', 'fileIcon') ?? '',
+              }),
               h('span', { className: officialClass('MessageItem', 'fileContent') ?? '' },
                 h('span', { className: officialClass('MessageItem', 'fileName') ?? '' }, file.name),
-                h('span', { className: officialClass('MessageItem', 'fileMeta') ?? '' }, formatBytes(file.bytes)),
+                h('span', { className: officialClass('MessageItem', 'fileMeta') ?? '' },
+                  [fileExtension(file.name).toUpperCase().slice(0, 8), fileSizeText(file.bytes)]
+                    .filter(Boolean).join(' ')),
               ),
             )),
           ),
+      text === ''
+        ? null
+        : h('div', { className: officialClass('MessageItem', 'bubble') ?? '' },
+            h(MarkdownText, { text, labels: markdownLabels() })),
     ),
   )
 }
@@ -99,11 +109,12 @@ function retrySeconds(milliseconds: number): number {
 }
 
 /**
- * 官方 failureMessage（lib/client.js:1219）：已知机器码走本地化文案，其余原样展示。
- * 官方判定顺序逐字：ACCOUNT_SIGNED_OUT / ACCOUNT_SIGN_IN_REQUIRED / QUOTA|ACCOUNT_QUOTA / AUTH。
+ * 官方 failureMessage（0.2.x lib/client.js:5278-5284）：已知机器码走本地化文案，其余原样展示。
+ * 判定顺序逐字：ACCOUNT_SIGNED_OUT / INTERRUPTED / ACCOUNT_SIGN_IN_REQUIRED / QUOTA|ACCOUNT_QUOTA / AUTH。
  */
 function failureMessage(message: string | undefined, code: string | undefined, t: Translate): string {
   if (code === 'ACCOUNT_SIGNED_OUT') return t('failureAccountSignedOut')
+  if (code === 'INTERRUPTED') return t('failureInterrupted')
   if (code === 'ACCOUNT_SIGN_IN_REQUIRED') return t('failureAccountSignInRequired')
   if (code === 'QUOTA' || code === 'ACCOUNT_QUOTA') return t('failureQuota')
   return code === 'AUTH' ? t('failureAuth') : (message ?? '')
@@ -157,7 +168,8 @@ export function ModelRetryItemMirror(props: { node: RetryAttemptFace; active: bo
       h('span', {
         className: officialClass('MessageItem', 'retryText') ?? '',
         role: 'status',
-      }, t('retryStatus', { label, retry: node.retry ?? 0, maximum, seconds })),
+      }, h(TextShimmer, { active },
+        t('retryStatus', { label, retry: node.retry ?? 0, maximum, seconds }))),
     ),
     h('div', { className: officialClass('MessageItem', 'retryDetails') ?? '' },
       h('div', null,
@@ -182,13 +194,13 @@ export function TurnErrorItemMirror(props: { node: TurnErrorFace; t: Translate }
     }),
     h('div', { className: officialClass('MessageItem', 'turnErrorCopy') ?? '' },
       h('span', { className: officialClass('MessageItem', 'turnErrorTitle') ?? '' },
-        node.code === 'ACCOUNT_SIGNED_OUT' ? t('accountStopped') : t('turnErrorTitle'),
+        node.code === 'ACCOUNT_SIGNED_OUT' || node.code === 'INTERRUPTED' ? t('accountStopped') : t('turnErrorTitle'),
       ),
       h('span', { className: officialClass('MessageItem', 'turnErrorMessage') ?? '' },
         failureMessage(node.message, node.code, t),
       ),
     ),
-    node.code !== undefined && node.code !== ''
+    node.code !== undefined && node.code !== '' && node.code !== 'INTERRUPTED'
       ? h('code', { className: officialClass('MessageItem', 'turnErrorCode') ?? '' }, node.code)
       : null,
   )

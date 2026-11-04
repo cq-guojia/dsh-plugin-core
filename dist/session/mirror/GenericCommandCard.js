@@ -363,14 +363,14 @@ function terminalCardModel(name, argsRaw, output, isError, settled) {
     const send = shell === null ? terminalSendCall(name, args) : null;
     if (shell === null && send === null)
         return null;
-    if ((shell !== null && shell.background) || (send !== null && send.background))
+    if (shell?.background || send?.background)
         return null;
     if (!settled) {
         return shell !== null
             ? { command: shell.command, cwd: shell.workdir === undefined ? undefined : normalizeSegments(shell.workdir), running: true }
             : { command: send.text, running: true, sessionId: send.sessionId };
     }
-    if (isError || (shell !== null && shell.persistent) || hasSpillNotice(output))
+    if (isError || shell?.persistent || hasSpillNotice(output))
         return null;
     if (send !== null)
         return { command: send.text, running: false, sessionId: send.sessionId };
@@ -551,7 +551,6 @@ export function GenericCommandCard(props) {
         rowClassName: officialClass('ToolRow', 'row') ?? '',
         leadingClassName: officialClass('ToolRow', 'leading') ?? '',
         titleClassName: officialClass('ToolRow', 'title') ?? '',
-        chevronClassName: officialClass('ToolRow', 'chevron') ?? '',
         icon: VARIANT_ICONS[variant],
         title: t(titleKey),
         running,

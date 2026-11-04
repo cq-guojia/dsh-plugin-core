@@ -177,6 +177,8 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   export const IconLoadingOutlineRegular: ComponentType<{ size?: number; className?: string }>
   /** 取文件扩展名（无点 / 尾点返回空串；大小写保持）。 */
   export function fileExtension(path: string): string
+  /** 官方文件大小文案（`512B` / `12KB` / `1.5MB`，无空格）。 */
+  export function fileSizeText(bytes: number): string
   /** 按路径推语法高亮语言（官方 code/CodeBody 预览体同款入参来源）。 */
   export function languageForPath(path: string): string | undefined
 
