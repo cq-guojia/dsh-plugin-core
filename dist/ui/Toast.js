@@ -135,7 +135,7 @@ function createToasterHost() {
             ? h('div', { style: { opacity: 0.9, fontSize: '13px', marginTop: '2px', whiteSpace: 'pre-line' } }, payload.description)
             : null), actions !== undefined && actions.length > 0
             ? h('div', { style: { display: 'flex', gap: '8px', flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => h(Button, {
-                variant: a.variant ?? 'outline',
+                variant: a.variant ?? 'info',
                 size: 'md',
                 onClick: () => {
                     a.onClick();

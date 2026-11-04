@@ -7806,7 +7806,7 @@ function createToasterHost() {
         fontWeight: 700
       }
     }, palette.glyph), (0, import_react32.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react32.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react32.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions2 !== void 0 && actions2.length > 0 ? (0, import_react32.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions2.slice(0, 2).map((a) => (0, import_react32.createElement)(Button, {
-      variant: a.variant ?? "outline",
+      variant: a.variant ?? "info",
       size: "md",
       onClick: () => {
         a.onClick();
@@ -67644,12 +67644,12 @@ notify('\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3', { variant: 'warning', description
 notify('\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6', {
   variant: 'success',
   description: '\u53EF\u5728 10 \u79D2\u5185\u64A4\u9500',
-  actions: [{ text: '\u64A4\u9500', variant: 'outline', onClick: () => {} }],
+  actions: [{ text: '\u64A4\u9500', variant: 'info', onClick: () => {} }],
 })
 notify('\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F', {
   description: '\u63D0\u4EA4\u540E\u5C06\u901A\u77E5\u76F8\u5173\u6210\u5458',
   actions: [
-    { text: '\u53D6\u6D88', variant: 'outline', onClick: () => {} },
+    { text: '\u53D6\u6D88', variant: 'info', onClick: () => {} },
     { text: '\u63D0\u4EA4', variant: 'primary', onClick: () => {} },
   ],
 })`;
@@ -68132,7 +68132,7 @@ function FeedbackPage() {
             onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
               variant: "success",
               description: "\u53EF\u5728 10 \u79D2\u5185\u64A4\u9500",
-              actions: [{ text: "\u64A4\u9500", variant: "outline", onClick: () => notify("\u5DF2\u64A4\u9500") }]
+              actions: [{ text: "\u64A4\u9500", variant: "info", onClick: () => notify("\u5DF2\u64A4\u9500") }]
             })
           },
           "\u5355\u6309\u94AE+\u63CF\u8FF0"
@@ -68143,7 +68143,7 @@ function FeedbackPage() {
             onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
               description: "\u63D0\u4EA4\u540E\u5C06\u901A\u77E5\u76F8\u5173\u6210\u5458",
               actions: [
-                { text: "\u53D6\u6D88", variant: "outline", onClick: () => notify("\u5DF2\u53D6\u6D88") },
+                { text: "\u53D6\u6D88", variant: "info", onClick: () => notify("\u5DF2\u53D6\u6D88") },
                 { text: "\u63D0\u4EA4", variant: "primary", onClick: () => notify("\u5DF2\u63D0\u4EA4", { variant: "success" }) }
               ]
             })
@@ -69416,9 +69416,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.30.0"}`],
-            [t3("buildDemo"), `v${"0.30.0"}`],
-            [t3("buildStamp"), "261104-194908-720"]
+            [t3("buildCore"), `v${"0.30.1"}`],
+            [t3("buildDemo"), `v${"0.30.1"}`],
+            [t3("buildStamp"), "261104-202211-367"]
           ].map(
             ([label, value]) => (0, import_react93.createElement)(
               "tr",
@@ -69730,9 +69730,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react95.createElement)("span", null, `core v${"0.30.0"}`),
-          (0, import_react95.createElement)("span", null, `demo v${"0.30.0"}`),
-          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-194908-720")
+          (0, import_react95.createElement)("span", null, `core v${"0.30.1"}`),
+          (0, import_react95.createElement)("span", null, `demo v${"0.30.1"}`),
+          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-202211-367")
         )
       )
     ),

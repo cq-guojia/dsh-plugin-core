@@ -1721,12 +1721,12 @@ notify('磁盘空间不足', { variant: 'warning', description: '清理后重试
 notify('已删除该文件', {
   variant: 'success',
   description: '可在 10 秒内撤销',
-  actions: [{ text: '撤销', variant: 'outline', onClick: () => {} }],
+  actions: [{ text: '撤销', variant: 'info', onClick: () => {} }],
 })
 notify('确认提交吗？', {
   description: '提交后将通知相关成员',
   actions: [
-    { text: '取消', variant: 'outline', onClick: () => {} },
+    { text: '取消', variant: 'info', onClick: () => {} },
     { text: '提交', variant: 'primary', onClick: () => {} },
   ],
 })`
@@ -2187,7 +2187,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
               notify('已删除该文件', {
                 variant: 'success',
                 description: '可在 10 秒内撤销',
-                actions: [{ text: '撤销', variant: 'outline', onClick: () => notify('已撤销') }],
+                actions: [{ text: '撤销', variant: 'info', onClick: () => notify('已撤销') }],
               }),
           },
           '单按钮+描述',
@@ -2199,7 +2199,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
               notify('确认提交吗？', {
                 description: '提交后将通知相关成员',
                 actions: [
-                  { text: '取消', variant: 'outline', onClick: () => notify('已取消') },
+                  { text: '取消', variant: 'info', onClick: () => notify('已取消') },
                   { text: '提交', variant: 'primary', onClick: () => notify('已提交', { variant: 'success' }) },
                 ],
               }),

@@ -15,7 +15,7 @@ export interface ToastOptions {
 /** 封装好的提示：右侧动作按钮（用我们自己的 Button 样式）。 */
 export interface ToastAction {
     text: string;
-    /** 按钮样式（我们的 ButtonVariant），默认 'outline'。 */
+    /** 按钮样式（我们的 ButtonVariant），默认 'info'（实心无边框）。 */
     variant?: ButtonVariant;
     onClick: () => void;
 }
