@@ -33,6 +33,23 @@ export declare function UserMessage(props: {
     referenceLabels?: readonly string[];
     t: Translate;
 }): ReturnType<typeof h>;
+/** 官方 CompactionNode 数据面（records.d.ts）。 */
+export interface CompactionFace {
+    shadowedItemCount?: number | null;
+    shadowedTokenCount?: number | null;
+    summary?: string | null;
+    title?: string;
+    fallbackSummary?: string | null;
+}
+/**
+ * 自动压缩节点（官方 CompactionItem，lib/client.js:4322-4390）：
+ * compactionRow > compactionButton（disabled=不可展开）> leading(上下文图标 + 展开箭头) + title + sep + summary；
+ * 展开体 = compactionBody > MarkdownText(压缩摘要)。
+ */
+export declare function CompactionItemMirror(props: {
+    node: CompactionFace;
+    t: Translate;
+}): ReturnType<typeof h>;
 /** 重试节点消费面（官方 ModelRetryNode = LlmRetryEventData & {retryState}，records.d.ts:112）。 */
 export interface RetryAttemptFace {
     retryState?: 'scheduled' | 'started' | 'cancelled';

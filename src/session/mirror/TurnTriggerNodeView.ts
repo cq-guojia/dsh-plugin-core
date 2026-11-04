@@ -121,7 +121,7 @@ export function TurnTriggerNodeViewMirror(props: {
 }
 
 /** 官方 contentRuns：连续 text 块合并成一段（未知块不参与文本拼接）。 */
-function modelFacingRuns(content: unknown, t: Translate): string[] {
+export function modelFacingRuns(content: unknown, t: Translate): string[] {
   if (!Array.isArray(content)) return [t('sessionEmpty')]
   const runs: string[] = []
   for (const block of content) {

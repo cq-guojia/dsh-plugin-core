@@ -11,6 +11,7 @@
  *   · **关闭钮可退让** —— `closable={false}` 不出；`closeButton="floating"` 浮在右上角，不占头部布局。
  */
 import { Children, createElement as h, isValidElement, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 import { t } from '../utils/i18n.js';
 import { startResizeLayoutWidth } from './resizer.js';
 import { DEFAULT_PANEL_ID, clampWidth, closePanel, collapsePanel, emptyDock, expandPanel, isCollapsed as isCollapsedState, isOpen, openPanel, othersWidth, setPanelWidth, } from './panel-dock-logic.js';
@@ -331,6 +332,24 @@ export function PanelDock(props) {
     };
     // 开着时根元素带 --open：CSS 据此给主区滚动条让出一条缝（全关即无缝，不留白边）。
     const rootClass = `dshpc-dock${state.ids.length > 0 ? ' dshpc-dock--open' : ''}${props.className === undefined ? '' : ` ${props.className}`}`;
+    // 收起后的耳朵：**独立的 fixed 浮层**，与分栏不是一体（用户 2026-10-28 口径）。
+    // portal 到 body：dock 有时在弹窗 DOM 里，留在原地会被弹窗的 stacking context 关住，
+    // 遮罩一盖就点不到（2026-11-04 真机）。层序走 --dshpc-z-ear（高于遮罩）。
+    const ears = state.collapsed.length === 0
+        ? null
+        : h('div', { className: 'dshpc-dock__ears' }, state.collapsed.map((id) => {
+            const label = earLabelOf(id);
+            return h('button', {
+                key: id,
+                type: 'button',
+                className: 'dshpc-dock__ear',
+                // 不放 title：原生 tooltip 会把面板标题弹出来，用户明确「不要显示任何标题」。
+                'aria-label': `${label} · ${tt('dockExpand')}`,
+                onClick: () => props.dock.expand(id),
+            }, 
+            // 只有一个箭头，与收起钮同尺寸反向：收起钮 ›（往右收），耳朵 ‹（往左拉回来）。
+            h('span', { className: 'dshpc-dock__ear-arrow', 'aria-hidden': true }, '‹'));
+        }));
     return h('div', {
         ref: rootRef,
         className: rootClass,
@@ -366,23 +385,6 @@ export function PanelDock(props) {
         className: 'dshpc-dock__collapse',
         'aria-label': tt('dockCollapse'),
         onClick: () => collapseWithAnim(pane.id),
-    }, '›'), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), h('div', { className: 'dshpc-dock__body' }, pane.children ?? null))), 
-    // 收起后的耳朵：**独立的 fixed 浮层**，与分栏不是一体（用户 2026-10-28 口径）。
-    // 多个耳朵按收起顺序纵向堆叠，点一只展开回来。
-    state.collapsed.length === 0
-        ? null
-        : h('div', { className: 'dshpc-dock__ears' }, state.collapsed.map((id) => {
-            const label = earLabelOf(id);
-            return h('button', {
-                key: id,
-                type: 'button',
-                className: 'dshpc-dock__ear',
-                // 不放 title：原生 tooltip 会把面板标题弹出来，用户明确「不要显示任何标题」。
-                'aria-label': `${label} · ${tt('dockExpand')}`,
-                onClick: () => props.dock.expand(id),
-            }, 
-            // 只有一个箭头，与收起钮同尺寸反向：收起钮 ›（往右收），耳朵 ‹（往左拉回来）。
-            h('span', { className: 'dshpc-dock__ear-arrow', 'aria-hidden': true }, '‹'));
-        })));
+    }, '›'), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), h('div', { className: 'dshpc-dock__body' }, pane.children ?? null))), ears === null || typeof document === 'undefined' ? null : createPortal(ears, document.body));
 }
 //# sourceMappingURL=PanelDock.js.map

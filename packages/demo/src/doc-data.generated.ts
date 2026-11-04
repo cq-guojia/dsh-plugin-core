@@ -116,8 +116,8 @@ export const docData = {
         "en": "Give exactly one mount: the element wrapping the main area (core makes it a flex row and lets the main area stretch, restoring it on close). Either an element or a selector (`'#page-row'`) works, so no ref bookkeeping is needed; an unresolvable selector abandons the open (never falls back to `body`). Never pass `document.body` with your own fixed positioning — that is an overlay, not a split."
       },
       {
-        "zh": "**关闭归面板壳**（2026-11-04）：文件与 `content` 两种模式都由 dock 右上角的浮动 ✕ 关闭（Esc 同效），内容组件不画关闭钮；`FileBrowser` 的 `onClose` 只服务没有壳的选文件弹窗。`content` 与 `path` 二选一，同传时忽略 `path` 并 warn。",
-        "en": "**Closing belongs to the dock shell** (2026-11-04): both file and `content` modes close via the floating ✕ at the panel’s top-right (Esc works too); content components draw no close button. `FileBrowser.onClose` only serves the headerless picker popover. `content` and `path` are mutually exclusive — passing both ignores `path` with a warning."
+        "zh": "**关钮可退让**（2026-11-04 用户拍板）：dock 默认不在面板层画关钮 —— 文件模式用 `FileBrowser` 面包屑行尾那枚，`content` 模式由你给的内容自己画（无头面板画不画、画在哪，归调用方）；不想自己画就传 `opts.closeButton: 'floating'`。Esc 始终有效。`content` 与 `path` 二选一，同传时忽略 `path` 并 warn。",
+        "en": "**The close button yields to the caller** (2026-11-04): by default the dock draws none at panel level — file mode uses the one at the end of the breadcrumb row, `content` mode draws its own (on a headerless panel that is the caller’s call); pass `opts.closeButton: 'floating'` if you would rather have the dock draw it. Esc always works. `content` and `path` are mutually exclusive — passing both ignores `path` with a warning."
       },
       {
         "zh": "面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**根层置顶**（其余仍列各工作区）：POSIX 是一条「根目录」，**Windows 没有根目录这东西，列的是盘符**（`C:/`、`D:/`…，由宿主 `op:roots` 探出来）。点其他工作区 = 直接列该区根目录（不需要会话）。",
@@ -174,8 +174,8 @@ export const docData = {
             "type": "OpenFilePreviewOptions => FilePreviewHandle",
             "def": "—",
             "desc": {
-              "zh": "在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容）；两种模式的 ✕ 都在面板右上角，由 dock 提供",
-              "en": "Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node); in both modes the ✕ sits at the panel’s top-right, provided by the dock"
+              "zh": "在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容）。面板**默认不画关钮**：文件模式用面包屑行尾那枚，`content` 模式由内容自己画；不想自己画就传 `opts.closeButton`",
+              "en": "Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node). The panel draws **no close button by default**: file mode uses the one at the end of the breadcrumb row, `content` mode draws its own — pass `opts.closeButton` if you would rather have the dock draw it"
             }
           },
           {
@@ -211,8 +211,17 @@ export const docData = {
             "type": "() => ReactNode",
             "def": "—",
             "desc": {
-              "zh": "自定义预览内容，塞进同一个右侧 dock；平时优先用领域入口（如 `openSessionReview`）。关闭钮由 dock 提供，内容不画 ✕；与 `path` 二选一",
-              "en": "Custom preview body rendered in the same dock; prefer a domain entry such as `openSessionReview` when one exists. The dock provides the close button — content draws no ✕; mutually exclusive with `path`"
+              "zh": "自定义预览内容，塞进同一个右侧 dock；平时优先用领域入口（如 `openSessionReview`）。面板默认不出关钮 ⇒ 内容自己画 ✕（或用 `opts.closeButton` 让 dock 画）；与 `path` 二选一",
+              "en": "Custom preview body rendered in the same dock; prefer a domain entry such as `openSessionReview` when one exists. No panel close button by default ⇒ the content draws its own ✕ (or use `opts.closeButton`); mutually exclusive with `path`"
+            }
+          },
+          {
+            "name": "opts.closeButton",
+            "type": "'auto' | 'header' | 'floating' | 'none'",
+            "def": "'none'",
+            "desc": {
+              "zh": "面板关钮位置。默认 `none` = 不在面板层画（文件模式用面包屑行尾、`content` 模式由内容画）；传 `floating` 让壳在右上角出一枚（占 28px，内容右上要让位）",
+              "en": "Panel close-button placement. Default `none` = draw none at panel level (file mode uses the breadcrumb row, `content` mode draws its own); pass `floating` to have the dock put one at the top-right (occupies 28px — headerless content must leave room)"
             }
           },
           {
@@ -505,8 +514,8 @@ export const docData = {
         "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit — not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core’s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })` — the mount takes an element or a selector, and the dialog needs no mask props."
       },
       {
-        "zh": "变更文件的审阅出口是 `onOpenReview`，落点用 `openSessionReview({ mount, locator })` 一行接上：`locator`（sessionId / seq / index / display）到 diff 的拼装归会话域，调用方不挑组件、不塞节点、不补 ✕。面板关闭钮由 dock 出；`ChangedFileDiff.onClose` 只给自带壳的容器，不是关面板的手段。",
-        "en": "The review exit for changed files is `onOpenReview`; wire it with one line, `openSessionReview({ mount, locator })`. Turning the locator (sessionId / seq / index / display) into a diff belongs to the session domain — pick no components, pass no nodes, add no ✕. The panel close belongs to the dock; `ChangedFileDiff.onClose` is for containers that own their own chrome, not a way to close the panel."
+        "zh": "变更文件的审阅出口是 `onOpenReview`，落点用 `openSessionReview({ mount, locator })` 一行接上：`locator`（sessionId / seq / index / display）到 diff 的拼装归会话域，调用方不挑组件、不塞节点、不补 ✕。审阅面板是无头的，`openSessionReview` 已把关闭钮画在审阅头行尾（与换行钮同排），你什么都不用做。",
+        "en": "The review exit for changed files is `onOpenReview`; wire it with one line, `openSessionReview({ mount, locator })`. Turning the locator (sessionId / seq / index / display) into a diff belongs to the session domain — pick no components, pass no nodes, add no ✕. The review panel is headerless, so `openSessionReview` already draws the close button at the end of the review header row (next to the wrap toggle); nothing left for you to do."
       },
       {
         "zh": "限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染，用「加载更早记录」向前翻页；👍👎 反馈走官方 slots，弹窗没有该插槽。",

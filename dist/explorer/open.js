@@ -221,9 +221,10 @@ export function openFilePreview(options) {
             id: PREVIEW_PANEL_ID,
             // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
             header: null,
-            // 关闭归**面板壳**（用户 2026-11-04 定：内容不承担关闭）：无头 ⇒ 浮在右上。
-            // 文件 / content 两种模式位置一致；FileBrowser 那枚不再接，避免同一面板两枚 ✕。
-            closeButton: 'floating',
+            // 关钮默认不画（用户 2026-11-04：dock 不强制，画不画由调用方定）：
+            // 文件模式用 FileBrowser 面包屑行尾那枚，content 模式由内容自己画；
+            // 不想自己画就传 closeButton: 'floating'。
+            closeButton: o.closeButton ?? 'none',
             ariaLabel: o.title,
             // 重画时沿用用户拖出来的宽度（pinnedWidth），不回到默认值。
             width: pinnedWidth ?? o.width ?? 460,
@@ -241,7 +242,8 @@ export function openFilePreview(options) {
                 workspaceAnchors: o.workspaceAnchors,
                 onSelectWorkspace: o.onSelectWorkspace,
                 translate: o.translate,
-                // 不传 onClose：dock 的关闭已由上面的浮动 ✕ 提供（内容不画关）。
+                // 面板没画关钮（默认 none）⇒ 行尾这枚就是唯一入口。
+                onClose: close,
                 style: { height: '100%', minHeight: 0 },
             })))));
     };

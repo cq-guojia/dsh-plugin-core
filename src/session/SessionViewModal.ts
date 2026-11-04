@@ -28,8 +28,9 @@ import { type NodeRenderer, type TurnProcessHandle, type TurnLocationFace } from
 import { GenericCommandCard } from './mirror/GenericCommandCard.js'
 import { CommandCard, type CommandNodeFace } from './mirror/CommandCard.js'
 import { MessageIconActionsMirror } from './mirror/MessageIconActions.js'
-import { AssistantMarkdown, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage, type RetryAttemptFace, type TurnErrorFace } from './mirror/MessageItem.js'
+import { AssistantMarkdown, CompactionItemMirror, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage, type CompactionFace, type RetryAttemptFace, type TurnErrorFace } from './mirror/MessageItem.js'
 import { BashRowMirror } from './mirror/BashRow.js'
+import { ContextInjectionRowMirror, type ContextFace } from './mirror/ContextInjectionRow.js'
 import { ReasoningRowMirror } from './mirror/ReasoningRow.js'
 import { RunningStatusMirror } from './mirror/RunningStatus.js'
 import { TurnProcessNodeViewMirror } from './mirror/TurnProcessNodeView.js'
@@ -318,11 +319,13 @@ function renderKeyedNode(
       if (current === undefined) return null
       return h(ModelRetryItemMirror, { node: current, active: current.retryState === 'scheduled', t })
     }
-    // 决策 28：context（系统注入）/ compaction / unknown 仍默认过滤；
-    // ⚠ ui-map §十一-B：官方 ContextInjectionRow / SystemPromptRow 待实施——届时从这里放行。
-    case 'context':
+    // 决策 28：context（系统注入）/ unknown 仍默认过滤；
+    // 0.2.x compaction 节点走官方 CompactionItem（此前漏渲染 ⇒ 压缩段整段消失）。
     case 'compaction':
     case 'manual-compaction':
+      return h(CompactionItemMirror, { node: dataOf(node) as unknown as CompactionFace, t })
+    case 'context':
+      return h(ContextInjectionRowMirror, { node: dataOf(node) as unknown as ContextFace, t })
     case 'unknown':
       return null
     default:

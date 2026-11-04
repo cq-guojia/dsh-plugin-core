@@ -205,6 +205,12 @@ export type UtilMessageKey =
   | 'toolTitleSearch'
   | 'toolInputLabel'
   | 'toolPreparingContent'
+  | 'compactionTitle'
+  | 'compactionCompleted'
+  | 'compactionExpand'
+  | 'compactionUnavailable'
+  | 'contextInjection'
+  | 'contextRecall'
   | 'toolOutputLabel'
   | 'rowPreparing'
   | 'rowRunning'
@@ -503,6 +509,12 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     toolTitleSearch: '搜索',
     toolInputLabel: '输入',
     toolPreparingContent: '{kilobytes} KB',
+    compactionTitle: '上下文已压缩',
+    compactionCompleted: '已压缩 {items} 条历史记录（约 {tokens} tokens）',
+    compactionExpand: '点击查看压缩摘要',
+    compactionUnavailable: '压缩摘要不可用',
+    contextInjection: '上下文注入',
+    contextRecall: '跨会话召回',
     toolOutputLabel: '输出',
     rowPreparing: '正在准备调用',
     rowRunning: '运行中',
@@ -794,6 +806,12 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     toolTitleSearch: 'Search',
     toolInputLabel: 'IN',
     toolPreparingContent: '{kilobytes} KB',
+    compactionTitle: 'Context compacted',
+    compactionCompleted: 'Compacted {items} history items (~{tokens} tokens)',
+    compactionExpand: 'Click to view the compaction summary',
+    compactionUnavailable: 'Compaction summary unavailable',
+    contextInjection: 'Context injection',
+    contextRecall: 'Cross-session recall',
     toolOutputLabel: 'OUT',
     rowPreparing: 'Preparing tool call',
     rowRunning: 'Running',

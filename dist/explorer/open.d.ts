@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { type DockCloseButton } from '../ui/PanelDock.js';
 import { type Translate } from '../utils/i18n.js';
 import { type PickPlacement } from './picker-placement.js';
 import type { OfficeToPdfFace, PickedPath, PickFilter, WorkspaceAnchorItem } from './types.js';
@@ -52,6 +53,14 @@ export interface OpenFilePreviewOptions {
     mainMinWidth?: number;
     /** 面板无障碍名（没有头部，只用于 aria-label）。 */
     title?: string;
+    /**
+     * 面板关钮位置（默认 `'none'`）。
+     *
+     * 默认不画：文件模式用 `FileBrowser` 面包屑行尾那枚，`content` 模式由你给的内容自己画
+     * （用户 2026-11-04：dock 不强制浮钮，画不画、画在哪归调用方）。不想自己画就传
+     * `'floating'` 让壳在右上角出一枚。
+     */
+    closeButton?: DockCloseButton;
     translate?: Translate;
     /**
      * **必填**：挂进哪个布局容器（`PanelDock` 是布局成员 —— 占宽度、把左边挤窄）。

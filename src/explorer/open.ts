@@ -14,7 +14,7 @@
 import { createElement as h, Fragment, type CSSProperties, type ReactNode } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { workspaceList } from '../ui/host-data.js'
-import { DockPanel, PanelDock, createPanelDock } from '../ui/PanelDock.js'
+import { DockPanel, PanelDock, createPanelDock, type DockCloseButton } from '../ui/PanelDock.js'
 import { type Translate } from '../utils/i18n.js'
 import { FileBrowser } from './FileBrowser.js'
 import { getFsFace } from './fs-face.js'
@@ -113,6 +113,14 @@ export interface OpenFilePreviewOptions {
   mainMinWidth?: number
   /** 面板无障碍名（没有头部，只用于 aria-label）。 */
   title?: string
+  /**
+   * 面板关钮位置（默认 `'none'`）。
+   *
+   * 默认不画：文件模式用 `FileBrowser` 面包屑行尾那枚，`content` 模式由你给的内容自己画
+   * （用户 2026-11-04：dock 不强制浮钮，画不画、画在哪归调用方）。不想自己画就传
+   * `'floating'` 让壳在右上角出一枚。
+   */
+  closeButton?: DockCloseButton
   translate?: Translate
   /**
    * **必填**：挂进哪个布局容器（`PanelDock` 是布局成员 —— 占宽度、把左边挤窄）。
@@ -302,9 +310,10 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
               id: PREVIEW_PANEL_ID,
               // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
               header: null,
-              // 关闭归**面板壳**（用户 2026-11-04 定：内容不承担关闭）：无头 ⇒ 浮在右上。
-              // 文件 / content 两种模式位置一致；FileBrowser 那枚不再接，避免同一面板两枚 ✕。
-              closeButton: 'floating',
+              // 关钮默认不画（用户 2026-11-04：dock 不强制，画不画由调用方定）：
+              // 文件模式用 FileBrowser 面包屑行尾那枚，content 模式由内容自己画；
+              // 不想自己画就传 closeButton: 'floating'。
+              closeButton: o.closeButton ?? 'none',
               ariaLabel: o.title,
               // 重画时沿用用户拖出来的宽度（pinnedWidth），不回到默认值。
               width: pinnedWidth ?? o.width ?? 460,
@@ -323,7 +332,8 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
                   workspaceAnchors: o.workspaceAnchors,
                   onSelectWorkspace: o.onSelectWorkspace,
                   translate: o.translate,
-                  // 不传 onClose：dock 的关闭已由上面的浮动 ✕ 提供（内容不画关）。
+                  // 面板没画关钮（默认 none）⇒ 行尾这枚就是唯一入口。
+                  onClose: close,
                   style: { height: '100%', minHeight: 0 },
                 }),
           ),

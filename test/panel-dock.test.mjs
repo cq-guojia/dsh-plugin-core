@@ -216,3 +216,17 @@ test('展开受数量闸约束：满栏时耳朵展开被拒并回调', () => {
   assert.equal(dock.isCollapsed('A'), true)
   assert.deepEqual(hit, ['A'])
 })
+
+// 2026-11-04 真机：分栏在弹窗里（或弹窗盖在分栏上）时，收起后的耳朵被遮罩挡住、点不到。
+// 修法 = 耳朵 portal 到 body + 层序高于 modal。
+test('收起后的耳朵：portal 到 body，层序高于弹窗遮罩', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const dock = await readFile(new URL('../dist/ui/PanelDock.js', import.meta.url), 'utf8')
+  assert.ok(dock.includes('createPortal'), '耳朵没 portal 到 body（会被弹窗的 stacking context 关住）')
+  const css = await readFile(new URL('../src/ui/panel-dock.css', import.meta.url), 'utf8')
+  assert.match(css, /\.dshpc-dock__ears\{[^}]*z-index:var\(--dshpc-z-ear/, '耳朵没走 ear 层档')
+  const tokens = await readFile(new URL('../src/design/tokens.css', import.meta.url), 'utf8')
+  const ear = Number(/--dshpc-z-ear:(\d+)/.exec(tokens)?.[1])
+  const modal = Number(/--dshpc-z-modal:(\d+)/.exec(tokens)?.[1])
+  assert.ok(ear > modal, '耳朵层档不高于弹窗遮罩')
+})

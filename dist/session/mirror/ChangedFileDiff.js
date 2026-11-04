@@ -147,12 +147,7 @@ export function ChangedFileDiff(props) {
         // review 版式要填满父容器：官方 root 高度 auto 时 body 只撑到内容高，
         // 横向滚动条会停在内容下沿（面板下面空一大截）。hover 预览卡不撑，保持自适应。
         style: preview ? undefined : { height: '100%' },
-    }, h('div', {
-        className: D('header'),
-        // 面板壳的浮动 ✕ 钉在右上 6px 处、20×20（side-panel.css）：审阅态右端让位 28px，
-        // 别把换行钮压在关钮底下。hover 预览卡不在面板里，不让。
-        style: preview ? undefined : { paddingRight: 28 },
-    }, h('span', { className: C('previewPath'), 'data-changes-preview-path': true }, display), 
+    }, h('div', { className: D('header') }, h('span', { className: C('previewPath'), 'data-changes-preview-path': true }, display), 
     // 审阅态右上：换行开关（等价官方 ReviewTab 的 wrap 工具钮；图标语义同官方：开着显示「取消换行」）。
     preview
         ? null

@@ -11,7 +11,7 @@
 //   TurnMaxTokensItem= 同行结构，StateDot(warning) + maxTokensTitle（警示色）+ 提示语。
 // 文案逐字抄官方词典（message.retry.* / message.turnError / message.maxTokens*，zh+en）。
 import { createElement as h, useEffect, useMemo, useState } from 'react';
-import { FileTypeIcon, fileExtension, fileSizeText, MarkdownText, StateDot, TextShimmer } from '../../ui/official.js';
+import { FileTypeIcon, fileExtension, fileSizeText, IconApiOutlineRegular, IconChevronDownOutlineRegular, IconChevronRightOutlineRegular, MarkdownText, StateDot, TextShimmer, } from '../../ui/official.js';
 import { officialClass } from '../official-classes.js';
 import { markdownLabels } from '../../explorer/preview/md-labels.js';
 /** 助手正文：官方 MarkdownText 渲染 + 官方 AssistantMarkdown.root 类（fallback 自绘）。
@@ -61,6 +61,38 @@ export function UserMessage(props) {
         : h('div', {
             className: officialClass('MessageItem', 'referenceSummary') ?? '',
         }, t('referenceSummary', { labels: references.join(t('referenceSeparator')) }))));
+}
+/**
+ * 自动压缩节点（官方 CompactionItem，lib/client.js:4322-4390）：
+ * compactionRow > compactionButton（disabled=不可展开）> leading(上下文图标 + 展开箭头) + title + sep + summary；
+ * 展开体 = compactionBody > MarkdownText(压缩摘要)。
+ */
+export function CompactionItemMirror(props) {
+    const { node, t } = props;
+    const [expanded, setExpanded] = useState(false);
+    const summaryText = node.summary ?? null;
+    const expandable = summaryText !== null;
+    const open = expandable && expanded;
+    const items = node.shadowedItemCount ?? null;
+    const tokens = node.shadowedTokenCount ?? null;
+    const summary = items !== null && tokens !== null
+        ? t('compactionCompleted', { items, tokens })
+        : node.fallbackSummary ?? (expandable ? t('compactionExpand') : t('compactionUnavailable'));
+    return h('div', { className: officialClass('MessageItem', 'compactionRow') ?? '' }, h('button', {
+        type: 'button',
+        className: officialClass('MessageItem', 'compactionButton') ?? '',
+        disabled: !expandable,
+        'aria-expanded': expandable ? open : undefined,
+        onClick: () => { setExpanded(value => !value); },
+    }, h('span', { className: officialClass('MessageItem', 'compactionLeading') ?? '', 'aria-hidden': true }, h('span', {
+        className: officialClass('MessageItem', 'compactionContextIcon') ?? '',
+        'data-compaction-icon': 'context',
+    }, h(IconApiOutlineRegular, {})), h('span', {
+        className: officialClass('MessageItem', 'compactionDisclosureIcon') ?? '',
+        'data-compaction-disclosure': open ? 'expanded' : 'collapsed',
+    }, open ? h(IconChevronDownOutlineRegular, {}) : h(IconChevronRightOutlineRegular, {}))), h('span', { className: officialClass('MessageItem', 'compactionTitle') ?? '' }, node.title ?? t('compactionTitle')), h('span', { className: officialClass('MessageItem', 'compactionSep') ?? '', 'aria-hidden': true }), h('span', { className: officialClass('MessageItem', 'compactionSummary') ?? '' }, summary)), open && summaryText !== null
+        ? h('div', { className: officialClass('MessageItem', 'compactionBody') ?? '' }, h(MarkdownText, { text: summaryText, labels: markdownLabels() }))
+        : null);
 }
 /** 官方 retrySeconds（lib/client.js:1215）：下限 1 秒。 */
 function retrySeconds(milliseconds) {

@@ -160,7 +160,7 @@ dsh-plugin-core/
     类并补 `display:flex`，关闭时还原；子项规则只让第一个非预览子项伸展，不要传 `document.body`；
   - 依据：插件沙箱里没有 `fs`，读字节唯一通道是 ctx 注入的服务对象 ⇒ 服务只能「接线一次」交进来，
     不能每次调用各传一遍（这是权限边界，不是能力缺口）。
-- **关闭钮归面板壳**（2026-11-04 用户拍板）：`openFilePreview` 的 dock 一律用壳的浮动 ✕（`closeButton: 'floating'`，文件 / content 两种模式位置一致），`FileBrowser` 不再接 `onClose`（它的 `onClose` 只留给无壳的 picker 弹窗）；内容组件（`ChangedFileDiff` 等）不画关，只在右上让 28px。根因：关在内容上曾是可选 prop，漏传即整块面板无关闭钮（dsh-task-ledger 报的缺陷）。`content` 与 `path` 同传 ⇒ warn 并忽略 `path`（`handle.path` 不再回报未生效的路径）。
+- **关钮可退让**（2026-11-04 用户拍板，同日二次修正）：`openFilePreview` 默认**不在面板层画关钮**（`closeButton: 'none'`）—— 文件模式用 `FileBrowser` 面包屑行尾那枚，`content` 模式由内容自己画；新增 `OpenFilePreviewOptions.closeButton`，传 `'floating'` 才由壳在右上出一枚。审阅面板（`openSessionReview`）的 ✕ 画在审阅头行尾，与换行钮同排。理由：无头面板画不画、画在哪归调用方，dock 不强制浮动。`content` 与 `path` 同传 ⇒ warn 并忽略 `path`（`handle.path` 不再回报未生效的路径）。
 - 控件纪律（2026-10-21）：核心有的控件一律核心（`Button` ghost 面包屑 / `IconButton` / `Segmented` / `MarqueeText` / `PanelDock`）；核心没有的那一项（▾ 选层浮层）严格按兄弟项目度量照抄
 - 选工作区（`WorkspacePicker`）在 `ui`，不在这里；`FilePicker` 已删（2026-10-20）
 

@@ -1,6 +1,8 @@
 /* CodeViewer（只读 CodeMirror 查看器）样式。类名固定 dshpc-cv*；颜色吃 --dshpc-* token，
    深色由 design 的 token 深色段自动生效（不写死颜色值）。 */
-.dshpc-cv{position:relative;display:flex;flex-direction:column;height:100%;min-height:0;}
+/* flex:1 1 auto + min-width:0：调用方常把它放进 display:flex 的容器里（TextPreview），
+   不写会在主轴按内容宽排 —— 短文本时 __copy（absolute 相对本层）落在文字右端而不是面板右缘。 */
+.dshpc-cv{position:relative;display:flex;flex-direction:column;flex:1 1 auto;min-width:0;height:100%;min-height:0;}
 /* 复制钮复用核心 IconButton（variant=outline / size=md）：盒型、描边、圆角（已统一 md）、底色、hover 全由核心提供；
    这里只管「绝对定位 + 默认隐藏、hover/聚焦才显」（overlay 浮在编辑器右上角）。 */
 .dshpc-cv__copy{position:absolute;top:6px;right:6px;z-index:5;opacity:0;}

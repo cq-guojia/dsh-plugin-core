@@ -11,7 +11,17 @@
 //   TurnMaxTokensItem= 同行结构，StateDot(warning) + maxTokensTitle（警示色）+ 提示语。
 // 文案逐字抄官方词典（message.retry.* / message.turnError / message.maxTokens*，zh+en）。
 import { createElement as h, useEffect, useMemo, useState } from 'react'
-import { FileTypeIcon, fileExtension, fileSizeText, MarkdownText, StateDot, TextShimmer } from '../../ui/official.js'
+import {
+  FileTypeIcon,
+  fileExtension,
+  fileSizeText,
+  IconApiOutlineRegular,
+  IconChevronDownOutlineRegular,
+  IconChevronRightOutlineRegular,
+  MarkdownText,
+  StateDot,
+  TextShimmer,
+} from '../../ui/official.js'
 import { officialClass } from '../official-classes.js'
 import { markdownLabels } from '../../explorer/preview/md-labels.js'
 import type { Translate } from '../../utils/i18n.js'
@@ -95,6 +105,59 @@ export function UserMessage(props: {
             className: officialClass('MessageItem', 'referenceSummary') ?? '',
           }, t('referenceSummary', { labels: references.join(t('referenceSeparator')) })),
     ),
+  )
+}
+
+/** 官方 CompactionNode 数据面（records.d.ts）。 */
+export interface CompactionFace {
+  shadowedItemCount?: number | null
+  shadowedTokenCount?: number | null
+  summary?: string | null
+  title?: string
+  fallbackSummary?: string | null
+}
+
+/**
+ * 自动压缩节点（官方 CompactionItem，lib/client.js:4322-4390）：
+ * compactionRow > compactionButton（disabled=不可展开）> leading(上下文图标 + 展开箭头) + title + sep + summary；
+ * 展开体 = compactionBody > MarkdownText(压缩摘要)。
+ */
+export function CompactionItemMirror(props: { node: CompactionFace; t: Translate }): ReturnType<typeof h> {
+  const { node, t } = props
+  const [expanded, setExpanded] = useState(false)
+  const summaryText = node.summary ?? null
+  const expandable = summaryText !== null
+  const open = expandable && expanded
+  const items = node.shadowedItemCount ?? null
+  const tokens = node.shadowedTokenCount ?? null
+  const summary = items !== null && tokens !== null
+    ? t('compactionCompleted', { items, tokens })
+    : node.fallbackSummary ?? (expandable ? t('compactionExpand') : t('compactionUnavailable'))
+  return h('div', { className: officialClass('MessageItem', 'compactionRow') ?? '' },
+    h('button', {
+      type: 'button',
+      className: officialClass('MessageItem', 'compactionButton') ?? '',
+      disabled: !expandable,
+      'aria-expanded': expandable ? open : undefined,
+      onClick: () => { setExpanded(value => !value) },
+    },
+      h('span', { className: officialClass('MessageItem', 'compactionLeading') ?? '', 'aria-hidden': true },
+        h('span', {
+          className: officialClass('MessageItem', 'compactionContextIcon') ?? '',
+          'data-compaction-icon': 'context',
+        }, h(IconApiOutlineRegular, {})),
+        h('span', {
+          className: officialClass('MessageItem', 'compactionDisclosureIcon') ?? '',
+          'data-compaction-disclosure': open ? 'expanded' : 'collapsed',
+        }, open ? h(IconChevronDownOutlineRegular, {}) : h(IconChevronRightOutlineRegular, {}))),
+      h('span', { className: officialClass('MessageItem', 'compactionTitle') ?? '' }, node.title ?? t('compactionTitle')),
+      h('span', { className: officialClass('MessageItem', 'compactionSep') ?? '', 'aria-hidden': true }),
+      h('span', { className: officialClass('MessageItem', 'compactionSummary') ?? '' }, summary),
+    ),
+    open && summaryText !== null
+      ? h('div', { className: officialClass('MessageItem', 'compactionBody') ?? '' },
+          h(MarkdownText, { text: summaryText, labels: markdownLabels() }))
+      : null,
   )
 }
 

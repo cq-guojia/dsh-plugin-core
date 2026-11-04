@@ -247,16 +247,18 @@ test('再打开预览复用旧根：只重画内容、宽度先钉住', async ()
 
 // 2026-11-03：单根树（工作区节点 + 真实根）。归属与相对化都是纯函数 —— 组件文件
 // 静态 import 官方 primitives，Node 下引不了，逻辑只能长在这里。
-// 2026-11-04：关闭钮归面板壳。content 模式曾因「dock 关钮写死 none + 不渲染 FileBrowser」
-// 整块面板没有关闭入口（dsh-task-ledger 报的缺陷）。
-test('预览关闭钮归面板壳：两种模式都出浮动关钮，内容不再接 onClose', async () => {
+// 2026-11-04：面板关钮可退让（dock 不强制浮钮）。默认不画 —— 文件模式用面包屑行尾，
+// content 模式由内容自己画；想用壳的就传 closeButton。
+test('预览关钮可退让：默认不画面板关钮，文件模式走面包屑行尾', async () => {
   const { readFile } = await import('node:fs/promises')
   const src = await readFile(new URL('../dist/explorer/open.js', import.meta.url), 'utf8')
-  assert.ok(src.includes("closeButton: 'floating'"), '关钮没交给面板壳')
-  assert.ok(!src.includes("closeButton: 'none'"), '关钮又被关掉（content 模式会没有关闭入口）')
-  assert.ok(!src.includes('onClose: close'), 'dock 又把关钮塞回内容（同一面板会出现两枚 ✕）')
+  assert.ok(src.includes("closeButton: o.closeButton ?? 'none'"), '默认不是「不画」（content 模式又会没有关闭入口）')
+  assert.ok(src.includes('onClose: close'), '文件模式没接面包屑行尾那枚 ✕')
   // content 与 path 同传：忽略 path，别让 handle.path 回报一个没生效的路径
   assert.ok(src.includes('二选一'), 'content + path 同传没提示')
+  // 审阅入口自己画关闭钮（无头面板，壳不出）
+  const review = await readFile(new URL('../dist/session/open-review.js', import.meta.url), 'utf8')
+  assert.ok(review.includes('onClose'), 'openSessionReview 没给内容画关闭钮')
 })
 
 test('normalizePath：斜杠归一 / 盘符大写 / 裸盘符补斜杠', () => {

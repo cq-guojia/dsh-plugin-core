@@ -17,8 +17,8 @@ export declare function ChangedFileDiff(props: {
      */
     variant?: 'preview' | 'review';
     /**
-     * 关闭回调：**不是关面板的手段**（面板关闭由 PanelDock 的浮动 ✕ 提供，2026-11-04 定）。
-     * 只留给自带壳的容器；hover 预览不传。
+     * 关掉承载它的面板（审阅态右上角那枚 ✕，与换行钮同排）。
+     * 用户 2026-11-04：无头面板的关钮归内容自己画 ⇒ 审阅入口必须传它。
      */
     onClose?: () => void;
 }): ReactNode;

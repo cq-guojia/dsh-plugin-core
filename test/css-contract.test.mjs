@@ -461,3 +461,10 @@ test('CSS 常量引用的每个 var() 都必须有确定来源（不得依赖别
     `以下 var() 依赖了别人的 CSS 定义，按需注入下那份可能没被注入 ⇒ 静默失效：\n${orphan.join('\n')}`,
   )
 })
+
+// 2026-11-04 真机：TextPreview 用 display:flex 包 CodeViewer，主轴不撑满 ⇒ 短文本时
+// __copy（absolute 相对 .dshpc-cv）落在文字右端，而不是面板右缘。
+test('CodeViewer 在 flex 容器里撑满主轴（复制钮贴面板右缘）', () => {
+  assert.match(CODE_VIEWER_CSS, /\.dshpc-cv\{[^}]*flex:1 1 auto/)
+  assert.match(CODE_VIEWER_CSS, /\.dshpc-cv\{[^}]*min-width:0/)
+})

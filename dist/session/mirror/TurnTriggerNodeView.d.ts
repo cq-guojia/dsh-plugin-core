@@ -11,4 +11,6 @@ export declare function TurnTriggerNodeViewMirror(props: {
     data: Record<string, unknown> | undefined;
     t: Translate;
 }): ReturnType<typeof h>;
+/** 官方 contentRuns：连续 text 块合并成一段（未知块不参与文本拼接）。 */
+export declare function modelFacingRuns(content: unknown, t: Translate): string[];
 //# sourceMappingURL=TurnTriggerNodeView.d.ts.map
