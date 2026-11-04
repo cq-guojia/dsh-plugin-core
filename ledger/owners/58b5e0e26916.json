@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261104-0252-f85f-弹窗-footer-过程提示条": {"category": "建设", "created": "2026-11-04 02:52:16", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-04 02:52:16", "status": "doing", "tags": ["弹窗", "动效", "控件提炼"], "title": "弹窗 footer 过程提示条", "updated": "2026-11-04 03:19:04", "worklog": "worklog/202611/04-0252-f85f-弹窗-footer-过程提示条.md"},
+    "20261104-0252-f85f-弹窗-footer-过程提示条": {"category": "建设", "created": "2026-11-04 02:52:16", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-04 02:52:16", "status": "doing", "tags": ["弹窗", "动效", "控件提炼"], "title": "弹窗 footer 过程提示条", "updated": "2026-11-04 04:28:14", "worklog": "worklog/202611/04-0252-f85f-弹窗-footer-过程提示条.md"},
     "20261104-0341-01f9-会话预览镜像全量对齐宿主-0-2-x": {"category": "改造", "created": "2026-11-04 03:41:15", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-04 03:41:15", "status": "doing", "tags": ["会话预览", "镜像对齐", "宿主版本"], "title": "会话预览镜像全量对齐宿主 0.2.x", "updated": "2026-11-04 04:16:20", "worklog": "worklog/202611/04-0341-01f9-会话预览镜像全量对齐宿主-0-2-x.md"}
   },
   "version": "20261022000000"
