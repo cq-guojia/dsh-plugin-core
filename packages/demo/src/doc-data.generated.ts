@@ -207,6 +207,15 @@ export const docData = {
             }
           },
           {
+            "name": "opts.line",
+            "type": "number",
+            "def": "—",
+            "desc": {
+              "zh": "打开后定位到这一行（1 起；只对文本 / 源码态生效）。首屏没读到就自动续翻，最多 10 页；`content` 模式忽略。会话预览的 read 工具卡会把 `offset` 作为这一行传进来",
+              "en": "Scroll to this line after opening (1-based; text/source view only). Auto-pages up to 10 pages when the line is beyond the first chunk; ignored in `content` mode. The session mirror passes a read tool’s `offset` here"
+            }
+          },
+          {
             "name": "opts.content",
             "type": "() => ReactNode",
             "def": "—",
@@ -656,11 +665,11 @@ export const docData = {
           },
           {
             "name": "onOpenFile",
-            "type": "(path: string, sessionId: string) => void",
+            "type": "(path: string, sessionId: string, options?: { line?: number }) => void",
             "def": "—",
             "desc": {
-              "zh": "文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；缺省 = 链接纯文本",
-              "en": "File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; absent = plain text"
+              "zh": "文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；第三参可带 `line`（read 工具卡的 `offset`，直接转给 `openFilePreview` 的 `opts.line`）；缺省 = 链接纯文本",
+              "en": "File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; the third may carry `line` (a read call’s `offset`, forward it to `openFilePreview`’s `opts.line`); absent = plain text"
             }
           },
           {
@@ -688,7 +697,7 @@ export const docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏\n    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),\n    // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    archived,                                   // 是否已归档\n    t,                                          // 可选，覆盖文案\n  })\n}"
+        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    archived,                                   // 是否已归档\n    t,                                          // 可选，覆盖文案\n  })\n}"
       },
       {
         "id": "session-data-chain",
@@ -1081,7 +1090,7 @@ export const docData = {
       {
         "id": "integration-use-session",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // 关闭必须释放 retain 引用\n    onClose: () => { view.dispose(); setOpen(false) },\n    // 文件出口：已经点开的那条会话 id 会作为第二参传进来（相对路径 / Office 都按它定位）\n    onOpenFile: (path, sid) => openFilePreview({ mount: pageRowEl, path, sessionId: sid }),\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // 关闭必须释放 retain 引用\n    onClose: () => { view.dispose(); setOpen(false) },\n    // 文件出口：已经点开的那条会话 id 会作为第二参传进来（相对路径 / Office 都按它定位）\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: pageRowEl, path, sessionId: sid, line: opts?.line }),\n  })\n}"
       },
       {
         "id": "integration-cleanup",

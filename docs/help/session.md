@@ -52,7 +52,7 @@
 | `forkSession` | `(sessionId, atSeq?) => Promise<string>` | — | — | 开分支并返回子会话 id；缺 openHostSession 则不渲染「继续对话」 | Fork and resolve the child session id; without openHostSession "Continue" does not render |
 | `openHostSession` | `(sessionId: string) => void` | — | — | 跳官方会话区（uiWorkspace.openSession） | Jump into the official session area (uiWorkspace.openSession) |
 | `onContinue` | `(message: string) => Promise<void>` | — | — | 暂存输入框的确定：调用方完成 fork + 发首轮 + 跳转；缺省 = 不渲染输入框 | Staging input confirm: caller forks, sends the first turn, navigates; absent = no input rendered |
-| `onOpenFile` | `(path: string, sessionId: string) => void` | — | — | 文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；缺省 = 链接纯文本 | File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; absent = plain text |
+| `onOpenFile` | `(path: string, sessionId: string, options?: { line?: number }) => void` | — | — | 文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；第三参可带 `line`（read 工具卡的 `offset`，直接转给 `openFilePreview` 的 `opts.line`）；缺省 = 链接纯文本 | File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; the third may carry `line` (a read call’s `offset`, forward it to `openFilePreview`’s `opts.line`); absent = plain text |
 | `onOpenReview` | `(locator: ChangedFileReviewLocator) => void` | — | — | 变更文件的审阅出口（等价官方 openReview）；落点用 `openSessionReview({ mount, locator })` 一行接上；缺省 = 变更卡整张不可点 | Review exit for changed files (equals official openReview); wire it with `openSessionReview({ mount, locator })`; absent = the change card is not clickable |
 | `t` | `Translate` | — | 内置 | 覆盖文案（内置字典已含全部会话文案，中英） | Override copy (the built-in dictionary has all session copy, zh+en) |
 
@@ -78,7 +78,7 @@ if (view !== null) {
       openHostSession(child)
     },
     // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏
-    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),
+    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),
     // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）
     onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),
     archived,                                   // 是否已归档

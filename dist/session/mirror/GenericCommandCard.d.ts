@@ -6,6 +6,8 @@ export declare const classifyTool: (name: string) => Variant;
 export declare const toolTitleKey: (name: string) => UtilMessageKey;
 /** 官方 deriveSummary（tool client.js:221-233）。 */
 export declare function deriveSummary(variant: Variant, argsRaw: string): string;
+/** 官方 readCallLine（tool client.js:432-436）：read 的 offset（1 起）就是落点行，参数非法则无行。 */
+export declare function readCallLine(name: string, argsRaw: string): number | undefined;
 /** 官方 formatToolBody（tool client.js:255-264）：通用展开体的输入正文。 */
 export declare function formatToolBody(variant: Variant, argsRaw: string): string | null;
 /** 搜索结果卡两面（官方 searchCardModel 的返回；recovery = 截断时的完整结果正文）。 */
@@ -122,8 +124,10 @@ export declare function GenericCommandCard(props: {
     phase?: 'preparing' | 'start';
     /** root.error.code === 'interrupted' ⇒ 官方 stopped 态。 */
     interrupted?: boolean;
-    /** 统一 openFile 入口：read/write/edit 摘要路径渲染成官方 fileLink。 */
-    onOpenFile?: (path: string) => void;
+    /** 统一 openFile 入口：read/write/edit 摘要路径渲染成官方 fileLink（read 带 offset 落点行）。 */
+    onOpenFile?: (path: string, options?: {
+        line?: number;
+    }) => void;
     t: Translate;
 }): ReturnType<typeof h>;
 export {};

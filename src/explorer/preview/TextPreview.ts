@@ -31,8 +31,13 @@ export interface TextPreviewProps {
   sourceView: boolean
   /** 字节上限：超出即截断 + 横幅，且不出「加载更多」（HTML 源码态用）。 */
   maxBytes?: number
+  /** 打开即定位到这一行（1 起）：首屏没读到就自动续翻，最多 {@link FOCUS_MAX_PAGES} 页。 */
+  focusLine?: number
   translate?: Translate
 }
+
+/** 定位到行时最多自动续翻的页数（远处行号不值得为它打一整圈往返；用户仍可手动「加载更多」）。 */
+const FOCUS_MAX_PAGES = 10
 
 export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
   ensureComponentStyles('explorer', EXPLORER_CSS)
@@ -48,7 +53,7 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
   const abortRef = useRef<AbortController | null>(null)
 
   const load = useCallback(
-    async (offset: number, append: boolean): Promise<void> => {
+    async (offset: number, append: boolean): Promise<number | null> => {
       abortRef.current?.abort()
       const controller = new AbortController()
       abortRef.current = controller
@@ -58,21 +63,22 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
         const parsed = textPageOf(
           await props.files.read(props.path, offset > 0 ? { offset } : {}, controller.signal),
         )
-        if (controller.signal.aborted) return
+        if (controller.signal.aborted) return null
         if (parsed === null) {
           // 形状不对要说「返回数据不符合预期」，不能混进「加载失败」——混了就永远查不出是谁的锅。
           console.warn('[dsh-plugin-core:explorer] read 返回体无法解析为文本页', props.path)
           setFailed({ key: 'previewBadPayload' })
-          return
+          return null
         }
         if ('failed' in parsed) {
           setFailed(errView(parsed.failed))
-          return
+          return null
         }
         setFailed(null)
         const full = append ? accRef.current + parsed.text : parsed.text
         accRef.current = full
         setText(full)
+        const next = parsed.eof ? null : parsed.offset + parsed.lines
         if (props.maxBytes !== undefined) {
           // 有上限：按 UTF-8 实字节（Blob.size）判超限，超了截断不出翻页钮。
           if (parsed.eof) {
@@ -81,14 +87,16 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
             setTruncated(true)
             setNextOffset(null)
           } else {
-            setNextOffset(parsed.offset + parsed.lines)
+            setNextOffset(next)
           }
-          return
+          return null
         }
-        setNextOffset(parsed.eof ? null : parsed.offset + parsed.lines)
+        setNextOffset(next)
+        return next
       } catch (error: unknown) {
-        if (isAborted(controller.signal, error)) return
+        if (isAborted(controller.signal, error)) return null
         setFailed(errView(error))
+        return null
       } finally {
         if (!controller.signal.aborted) setLoading(false)
       }
@@ -102,11 +110,19 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
     setTruncated(false)
     setNextOffset(null)
     setFailed(null)
-    void load(0, false)
+    void (async () => {
+      let next = await load(0, false)
+      // 目标行不在首屏 ⇒ 续读到覆盖它（或到 eof / 上限）。
+      for (let page = 0; next !== null && props.focusLine !== undefined && page < FOCUS_MAX_PAGES
+        && accRef.current.split('\n').length < props.focusLine; page += 1) {
+        next = await load(next, true)
+      }
+    })()
     return () => {
       abortRef.current?.abort()
     }
-  }, [load])
+    // focusLine 变了 = 同一文件换个落点，重新从首页读一遍。
+  }, [load, props.focusLine])
 
   if (failed !== null) return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params))
   if (text === '' && loading) return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'))
@@ -123,7 +139,7 @@ export function TextPreview(props: TextPreviewProps): ReturnType<typeof h> {
       : h(
           'div',
           { style: { flex: '1 1 auto', minHeight: 0, display: 'flex' } },
-          h(CodeViewer, { text, path: props.path, t: tt }),
+          h(CodeViewer, { text, path: props.path, t: tt, focusLine: props.focusLine }),
         ),
     nextOffset !== null && props.maxBytes === undefined
       ? h(

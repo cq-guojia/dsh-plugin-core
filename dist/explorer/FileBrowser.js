@@ -604,6 +604,8 @@ export function FileBrowser(props) {
             officeToPdf: props.officeToPdf ?? null,
             path: viewing,
             sourceView,
+            // 行号只属于「打开时指定的那个文件」：在树里另点一个文件不该带过去。
+            line: viewing === absOf(props.path) ? props.focusLine : undefined,
             translate: tt,
         });
     }

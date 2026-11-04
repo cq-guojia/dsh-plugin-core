@@ -14,7 +14,7 @@
  * 明暗判据（唯一）：body[data-ds-dark-theme]（见 design/style-kit.ts DARK_THEME_SELECTOR），
  * 禁用 prefers-color-scheme。
  */
-import { createElement as h, useEffect, useMemo, useState, type CSSProperties, type ReactElement } from 'react'
+import { createElement as h, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactElement } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { type Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
@@ -50,6 +50,8 @@ export interface CodeViewerProps {
   height?: string
   /** 可选：是否显示行号，默认 true（文件预览要行号；文档里的代码片段一般不要）。 */
   lineNumbers?: boolean
+  /** 可选：挂载/换文本后把这一行滚到视口中部（超出现有文本则不动）。 */
+  focusLine?: number
 }
 
 export function CodeViewer(props: CodeViewerProps): ReactElement {
@@ -57,6 +59,8 @@ export function CodeViewer(props: CodeViewerProps): ReactElement {
   const { text, path, t, className, style, height = '100%', lineNumbers = true } = props
   const [copied, setCopied] = useState(false)
   const [dark, setDark] = useState<boolean>(hostDark)
+  /** 编辑器实例（定位到行要 dispatch scrollIntoView）。 */
+  const viewRef = useRef<EditorView | null>(null)
 
   // 用户切主题 = 宿主 toggleAttribute 写 body[data-ds-dark-theme] ⇒ 用 MutationObserver 跟。
   // 挂载时先 sync 一次：插件挂载可能早于宿主写好该属性。
@@ -88,6 +92,14 @@ export function CodeViewer(props: CodeViewerProps): ReactElement {
     })
   }
 
+  // 定位到行：预览分页是逐步追加的，文本到了才能滚 ⇒ 跟着 text 再试一次。
+  useEffect(() => {
+    const view = viewRef.current
+    if (view === null || props.focusLine === undefined) return
+    if (props.focusLine > view.state.doc.lines) return
+    view.dispatch({ effects: EditorView.scrollIntoView(view.state.doc.line(props.focusLine).from, { y: 'center' }) })
+  }, [text, props.focusLine])
+
   return h(
     'div',
     { className: `dshpc-cv${className ? ` ${className}` : ''}`, style },
@@ -106,6 +118,7 @@ export function CodeViewer(props: CodeViewerProps): ReactElement {
       extensions,
       readOnly: true,
       height,
+      onCreateEditor: (view: EditorView) => { viewRef.current = view },
       style: { flex: '1 1 auto', minHeight: 0, overflow: 'hidden' },
       basicSetup: {
         lineNumbers,

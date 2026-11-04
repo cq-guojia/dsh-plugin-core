@@ -25,6 +25,8 @@ export interface FilePreviewProps {
   officeToPdf?: OfficeToPdfFace | null
   /** true = 源码态（md/html 生效）。 */
   sourceView?: boolean
+  /** 打开即定位到这一行（1 起；只对文本/源码态生效）。 */
+  line?: number
   translate?: Translate
 }
 
@@ -64,6 +66,7 @@ export function FilePreview(props: FilePreviewProps): ReturnType<typeof h> | nul
         path: props.path,
         markdown: info.kind === 'md',
         sourceView,
+        focusLine: props.line,
         translate: tt,
       })
   }

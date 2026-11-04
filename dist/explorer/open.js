@@ -237,6 +237,7 @@ export function openFilePreview(options) {
                 files: getFsFace(),
                 officeToPdf: o.officeToPdf ?? null,
                 path: start,
+                focusLine: o.line,
                 revision,
                 workspaces: o.workspaces,
                 workspaceAnchors: o.workspaceAnchors,

@@ -54138,6 +54138,7 @@ function CodeViewer(props) {
   const { text: text2, path, t: t4, className: className2, style: style2, height = "100%", lineNumbers: lineNumbers2 = true } = props;
   const [copied, setCopied] = (0, import_react49.useState)(false);
   const [dark, setDark] = (0, import_react49.useState)(hostDark);
+  const viewRef = (0, import_react49.useRef)(null);
   (0, import_react49.useEffect)(() => {
     if (typeof document === "undefined" || typeof MutationObserver !== "function")
       return;
@@ -54169,6 +54170,14 @@ function CodeViewer(props) {
       }
     });
   };
+  (0, import_react49.useEffect)(() => {
+    const view = viewRef.current;
+    if (view === null || props.focusLine === void 0)
+      return;
+    if (props.focusLine > view.state.doc.lines)
+      return;
+    view.dispatch({ effects: EditorView.scrollIntoView(view.state.doc.line(props.focusLine).from, { y: "center" }) });
+  }, [text2, props.focusLine]);
   return (0, import_react49.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, (0, import_react49.createElement)(IconButton, {
     variant: "outline",
     size: "md",
@@ -54183,6 +54192,9 @@ function CodeViewer(props) {
     extensions,
     readOnly: true,
     height,
+    onCreateEditor: (view) => {
+      viewRef.current = view;
+    },
     style: { flex: "1 1 auto", minHeight: 0, overflow: "hidden" },
     basicSetup: {
       lineNumbers: lineNumbers2,
@@ -54227,6 +54239,7 @@ function markdownLabels() {
 }
 
 // dist/explorer/preview/TextPreview.js
+var FOCUS_MAX_PAGES = 10;
 function TextPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
@@ -54245,20 +54258,21 @@ function TextPreview(props) {
     try {
       const parsed = textPageOf(await props.files.read(props.path, offset4 > 0 ? { offset: offset4 } : {}, controller.signal));
       if (controller.signal.aborted)
-        return;
+        return null;
       if (parsed === null) {
         console.warn("[dsh-plugin-core:explorer] read \u8FD4\u56DE\u4F53\u65E0\u6CD5\u89E3\u6790\u4E3A\u6587\u672C\u9875", props.path);
         setFailed({ key: "previewBadPayload" });
-        return;
+        return null;
       }
       if ("failed" in parsed) {
         setFailed(errView(parsed.failed));
-        return;
+        return null;
       }
       setFailed(null);
       const full = append2 ? accRef.current + parsed.text : parsed.text;
       accRef.current = full;
       setText(full);
+      const next = parsed.eof ? null : parsed.offset + parsed.lines;
       if (props.maxBytes !== void 0) {
         if (parsed.eof) {
           setNextOffset(null);
@@ -54266,15 +54280,17 @@ function TextPreview(props) {
           setTruncated(true);
           setNextOffset(null);
         } else {
-          setNextOffset(parsed.offset + parsed.lines);
+          setNextOffset(next);
         }
-        return;
+        return null;
       }
-      setNextOffset(parsed.eof ? null : parsed.offset + parsed.lines);
+      setNextOffset(next);
+      return next;
     } catch (error) {
       if (isAborted(controller.signal, error))
-        return;
+        return null;
       setFailed(errView(error));
+      return null;
     } finally {
       if (!controller.signal.aborted)
         setLoading(false);
@@ -54286,17 +54302,22 @@ function TextPreview(props) {
     setTruncated(false);
     setNextOffset(null);
     setFailed(null);
-    void load(0, false);
+    void (async () => {
+      let next = await load(0, false);
+      for (let page = 0; next !== null && props.focusLine !== void 0 && page < FOCUS_MAX_PAGES && accRef.current.split("\n").length < props.focusLine; page += 1) {
+        next = await load(next, true);
+      }
+    })();
     return () => {
       abortRef.current?.abort();
     };
-  }, [load]);
+  }, [load, props.focusLine]);
   if (failed !== null)
     return (0, import_react50.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (text2 === "" && loading)
     return (0, import_react50.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   const rendered = props.markdown && !props.sourceView;
-  return (0, import_react50.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "var(--dshpc-space-3)" } : {} } }, truncated ? (0, import_react50.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react50.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react50.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react50.createElement)(CodeViewer, { text: text2, path: props.path, t: tt })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react50.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react50.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
+  return (0, import_react50.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "var(--dshpc-space-3)" } : {} } }, truncated ? (0, import_react50.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react50.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react50.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react50.createElement)(CodeViewer, { text: text2, path: props.path, t: tt, focusLine: props.focusLine })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react50.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react50.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
 }
 
 // dist/explorer/preview/HtmlPreview.js
@@ -54479,6 +54500,7 @@ function FilePreview(props) {
         path: props.path,
         markdown: info.kind === "md",
         sourceView,
+        focusLine: props.line,
         translate: tt
       });
   }
@@ -55137,6 +55159,8 @@ function FileBrowser(props) {
       officeToPdf: props.officeToPdf ?? null,
       path: viewing,
       sourceView,
+      // 行号只属于「打开时指定的那个文件」：在树里另点一个文件不该带过去。
+      line: viewing === absOf(props.path) ? props.focusLine : void 0,
       translate: tt
     });
   } else if (mode === "error" && listErr !== null) {
@@ -55444,6 +55468,7 @@ function openFilePreview(options) {
         files: getFsFace(),
         officeToPdf: o.officeToPdf ?? null,
         path: start2,
+        focusLine: o.line,
         revision,
         workspaces: o.workspaces,
         workspaceAnchors: o.workspaceAnchors,
@@ -56318,6 +56343,21 @@ function deriveFilePath(variant, argsRaw) {
   const picked = pickString(parsed, ["path", "file_path"]);
   return picked === void 0 ? void 0 : firstLine(picked);
 }
+function readCallLine(name2, argsRaw) {
+  if (name2 !== "read")
+    return void 0;
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return void 0;
+  const { file_path, offset: offset4, limit } = parsed;
+  if (typeof file_path !== "string" || file_path.trim() === "")
+    return void 0;
+  if (offset4 !== void 0 && !positiveInteger(offset4))
+    return void 0;
+  if (limit !== void 0 && !positiveInteger(limit))
+    return void 0;
+  return positiveInteger(offset4) ? offset4 : void 0;
+}
 function formatToolBody(variant, argsRaw) {
   if (argsRaw === "")
     return null;
@@ -56846,8 +56886,12 @@ function GenericCommandCard(props) {
   const summarySuffix = settledWithCue ? null : todoInfo !== null ? todoInfo.extra > 0 ? `+${todoInfo.extra}` : null : kilobytes === null || summaryText === "" ? null : t4("toolPreparingContent", { kilobytes });
   const diffStatTotals = settledWithCue ? null : totals;
   const filePath = argsRaw === "" ? void 0 : deriveFilePath(variant, argsRaw);
+  const filePathLine = filePath === void 0 ? void 0 : readCallLine(name2, argsRaw);
   const openFile = filePath !== void 0 && onOpenFile !== void 0 && !settledWithCue ? () => {
-    onOpenFile(filePath);
+    if (filePathLine === void 0)
+      onOpenFile(filePath);
+    else
+      onOpenFile(filePath, { line: filePathLine });
   } : void 0;
   const linkHref = (() => {
     if (name2 !== "web_fetch" || settledWithCue)
@@ -58994,8 +59038,8 @@ function SessionViewModal(props) {
       }
     })();
   }, [draft, sending, onContinue]);
-  const openFile = (0, import_react80.useCallback)((path) => {
-    onOpenFile?.(path, sessionId);
+  const openFile = (0, import_react80.useCallback)((path, options) => {
+    onOpenFile?.(path, sessionId, options);
   }, [onOpenFile, sessionId]);
   const order = chat?.order ?? EMPTY_ORDER;
   const store = chat?.nodes;
@@ -60296,6 +60340,15 @@ var docData = {
             }
           },
           {
+            "name": "opts.line",
+            "type": "number",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6253\u5F00\u540E\u5B9A\u4F4D\u5230\u8FD9\u4E00\u884C\uFF081 \u8D77\uFF1B\u53EA\u5BF9\u6587\u672C / \u6E90\u7801\u6001\u751F\u6548\uFF09\u3002\u9996\u5C4F\u6CA1\u8BFB\u5230\u5C31\u81EA\u52A8\u7EED\u7FFB\uFF0C\u6700\u591A 10 \u9875\uFF1B`content` \u6A21\u5F0F\u5FFD\u7565\u3002\u4F1A\u8BDD\u9884\u89C8\u7684 read \u5DE5\u5177\u5361\u4F1A\u628A `offset` \u4F5C\u4E3A\u8FD9\u4E00\u884C\u4F20\u8FDB\u6765",
+              "en": "Scroll to this line after opening (1-based; text/source view only). Auto-pages up to 10 pages when the line is beyond the first chunk; ignored in `content` mode. The session mirror passes a read tool\u2019s `offset` here"
+            }
+          },
+          {
             "name": "opts.content",
             "type": "() => ReactNode",
             "def": "\u2014",
@@ -60745,11 +60798,11 @@ var docData = {
           },
           {
             "name": "onOpenFile",
-            "type": "(path: string, sessionId: string) => void",
+            "type": "(path: string, sessionId: string, options?: { line?: number }) => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF08\u5DE5\u5177\u5361 fileLink / \u884C\u5185\u5F15\u7528 / \u4EA4\u4ED8\u5361\u5171\u7528\uFF09\uFF1B\u7B2C\u4E8C\u53C2\u662F\u6587\u4EF6\u6240\u5C5E\u4F1A\u8BDD id\uFF0C\u522B\u62FF\u522B\u7684\u4F1A\u8BDD\u53BB\u5B9A\u4F4D\uFF1B\u7F3A\u7701 = \u94FE\u63A5\u7EAF\u6587\u672C",
-              "en": "File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id \u2014 locate the file there, not elsewhere; absent = plain text"
+              "zh": "\u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF08\u5DE5\u5177\u5361 fileLink / \u884C\u5185\u5F15\u7528 / \u4EA4\u4ED8\u5361\u5171\u7528\uFF09\uFF1B\u7B2C\u4E8C\u53C2\u662F\u6587\u4EF6\u6240\u5C5E\u4F1A\u8BDD id\uFF0C\u522B\u62FF\u522B\u7684\u4F1A\u8BDD\u53BB\u5B9A\u4F4D\uFF1B\u7B2C\u4E09\u53C2\u53EF\u5E26 `line`\uFF08read \u5DE5\u5177\u5361\u7684 `offset`\uFF0C\u76F4\u63A5\u8F6C\u7ED9 `openFilePreview` \u7684 `opts.line`\uFF09\uFF1B\u7F3A\u7701 = \u94FE\u63A5\u7EAF\u6587\u672C",
+              "en": "File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id \u2014 locate the file there, not elsewhere; the third may carry `line` (a read call\u2019s `offset`, forward it to `openFilePreview`\u2019s `opts.line`); absent = plain text"
             }
           },
           {
@@ -60777,7 +60830,7 @@ var docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u4E24\u8005\u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    archived,                                   // \u662F\u5426\u5DF2\u5F52\u6863\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
+        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u4E24\u8005\u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    archived,                                   // \u662F\u5426\u5DF2\u5F52\u6863\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
       },
       {
         "id": "session-data-chain",
@@ -61170,7 +61223,7 @@ var docData = {
       {
         "id": "integration-use-session",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation \u540C\u6837\u4ECE ctx \u53D6\u51FA\uFF08\u61D2\u5F97\u53D6\u5C31\u7528\u5B98\u65B9 client \u670D\u52A1\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    onClose: () => { view.dispose(); setOpen(false) },\n    // \u6587\u4EF6\u51FA\u53E3\uFF1A\u5DF2\u7ECF\u70B9\u5F00\u7684\u90A3\u6761\u4F1A\u8BDD id \u4F1A\u4F5C\u4E3A\u7B2C\u4E8C\u53C2\u4F20\u8FDB\u6765\uFF08\u76F8\u5BF9\u8DEF\u5F84 / Office \u90FD\u6309\u5B83\u5B9A\u4F4D\uFF09\n    onOpenFile: (path, sid) => openFilePreview({ mount: pageRowEl, path, sessionId: sid }),\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation \u540C\u6837\u4ECE ctx \u53D6\u51FA\uFF08\u61D2\u5F97\u53D6\u5C31\u7528\u5B98\u65B9 client \u670D\u52A1\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    onClose: () => { view.dispose(); setOpen(false) },\n    // \u6587\u4EF6\u51FA\u53E3\uFF1A\u5DF2\u7ECF\u70B9\u5F00\u7684\u90A3\u6761\u4F1A\u8BDD id \u4F1A\u4F5C\u4E3A\u7B2C\u4E8C\u53C2\u4F20\u8FDB\u6765\uFF08\u76F8\u5BF9\u8DEF\u5F84 / Office \u90FD\u6309\u5B83\u5B9A\u4F4D\uFF09\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: pageRowEl, path, sessionId: sid, line: opts?.line }),\n  })\n}"
       },
       {
         "id": "integration-cleanup",
@@ -67055,7 +67108,7 @@ function RealSessionListDemo() {
   const view = (0, import_react87.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles2 = files.workspaceFiles;
   const canOpenFile = workspaceFiles2 !== null && anchor !== null;
-  const openLinkedFile = (path, sessionId) => {
+  const openLinkedFile = (path, sessionId, options) => {
     console.log("[preview] openLinkedFile path=", JSON.stringify(path), "sessionId=", sessionId, "anchorSessionId=", anchor?.sessionId);
     const mount = pageRow.element;
     if (mount === null || workspaceFiles2 === null || anchor === null) return;
@@ -67066,6 +67119,7 @@ function RealSessionListDemo() {
       // 兜底才用当前工作区锚点会话（explorer 页那种没上下文的入口）。
       sessionId: sessionId ?? anchor.sessionId,
       path,
+      line: options?.line,
       rootName: anchor.title,
       workspaces: wsItems.map((w) => w.title)
     });
@@ -67143,7 +67197,7 @@ function RealSessionListDemo() {
       },
       // 文件链接（工具卡路径 / md 行内引用 / 交付卡）→ **页面右侧**开核心文件预览 dock，
       // 不在弹窗里面分栏；遮罩让位由核心自己处理，这里不量宽度、不传参数。
-      onOpenFile: canOpenFile ? (path, sid) => openLinkedFile(path, sid) : void 0,
+      onOpenFile: canOpenFile ? (path, sid, opts) => openLinkedFile(path, sid, opts) : void 0,
       onOpenReview: openReviewFile
     }) : null
   );
@@ -67859,7 +67913,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.29.1"}`],
             [t3("buildDemo"), `v${"0.29.1"}`],
-            [t3("buildStamp"), "261104-143429-625"]
+            [t3("buildStamp"), "261104-145839-724"]
           ].map(
             ([label, value]) => (0, import_react91.createElement)(
               "tr",
@@ -68173,7 +68227,7 @@ function DemoPage() {
           },
           (0, import_react93.createElement)("span", null, `core v${"0.29.1"}`),
           (0, import_react93.createElement)("span", null, `demo v${"0.29.1"}`),
-          (0, import_react93.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-143429-625")
+          (0, import_react93.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-145839-724")
         )
       )
     ),

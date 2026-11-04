@@ -28,7 +28,9 @@ export interface SessionViewModalProps {
     /** 文件打开出口（工具卡 fileLink / md 行内 mention / 交付卡共用）；缺省 = 链接降级纯文本。
      *  第二个参数带「文件所属的会话 id」（本视图自己在 props.sessionId 上，自动透传），
      *  消费方据此在正确的工作区会话作用域里定位文件，避免用错会话导致 not-found。 */
-    onOpenFile?: (path: string, sessionId: string) => void;
+    onOpenFile?: (path: string, sessionId: string, options?: {
+        line?: number;
+    }) => void;
     /** 变更文件点击出口（官方 openReview 等价）：带「改动身份」(sessionId+seq+index)，
      *  消费方据此开审阅（本包走 openFilePreview 的 content 槽）。缺省 = 变更卡整张不可点。 */
     onOpenReview?: (locator: ChangedFileReviewLocator) => void;

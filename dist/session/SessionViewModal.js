@@ -853,7 +853,7 @@ export function SessionViewModal(props) {
     }, [draft, sending, onContinue]);
     // 文件打开上下文：onOpenFile 就位即启用（工具卡 fileLink + md 行内 mention 共用单一入口）。
     // 透传本视图的 sessionId，使消费方在「文件所属会话」的正确作用域里打开，而非默认/全局锚点。
-    const openFile = useCallback((path) => { onOpenFile?.(path, sessionId); }, [onOpenFile, sessionId]);
+    const openFile = useCallback((path, options) => { onOpenFile?.(path, sessionId, options); }, [onOpenFile, sessionId]);
     const order = chat?.order ?? EMPTY_ORDER;
     const store = chat?.nodes;
     const keyed = order.length > 0 && store !== undefined;

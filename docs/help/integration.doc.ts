@@ -52,7 +52,7 @@ if (view !== null) {
     // 关闭必须释放 retain 引用
     onClose: () => { view.dispose(); setOpen(false) },
     // 文件出口：已经点开的那条会话 id 会作为第二参传进来（相对路径 / Office 都按它定位）
-    onOpenFile: (path, sid) => openFilePreview({ mount: pageRowEl, path, sessionId: sid }),
+    onOpenFile: (path, sid, opts) => openFilePreview({ mount: pageRowEl, path, sessionId: sid, line: opts?.line }),
   })
 }`
 const cleanup = `kit.dispose()   // 撤掉 <style> 标签并清空登记域（插件卸载 / HMR）`

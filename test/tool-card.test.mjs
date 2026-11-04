@@ -5,7 +5,14 @@ import assert from 'node:assert/strict'
 import { register } from 'node:module'
 
 register(new URL('./primitives-hooks.mjs', import.meta.url))
-const { searchCardModel, webCardModel, toolTitleKey } = await import('../dist/session/mirror/GenericCommandCard.js')
+const { searchCardModel, webCardModel, toolTitleKey, readCallLine } = await import('../dist/session/mirror/GenericCommandCard.js')
+
+test('readCallLine：read 的 offset 即落点行，参数非法不给行', () => {
+  assert.equal(readCallLine('read', JSON.stringify({ file_path: 'a.ts', offset: 12 })), 12)
+  assert.equal(readCallLine('read', JSON.stringify({ file_path: 'a.ts' })), undefined)
+  assert.equal(readCallLine('read', JSON.stringify({ file_path: 'a.ts', offset: 0 })), undefined)
+  assert.equal(readCallLine('write', JSON.stringify({ file_path: 'a.ts', offset: 3 })), undefined)
+})
 
 test('toolTitleKey：专属标题优先，未知工具落 generic', () => {
   assert.equal(toolTitleKey('grep'), 'toolTitleGrep')

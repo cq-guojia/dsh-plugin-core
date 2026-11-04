@@ -214,7 +214,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
 
   // 文件链接在**页面右侧**开核心文件预览 dock（不在弹窗里）。弹窗不用知道它的宽度：
   // dock 自己把占宽发布成 CSS 变量，遮罩让位、弹窗在左边剩余区域居中（用户 2026-10-22）。
-  const openLinkedFile = (path: string, sessionId?: string): void => {
+  const openLinkedFile = (path: string, sessionId?: string, options?: { line?: number }): void => {
     // debug（临时）：确认预览收到的真实路径——判断是否带 Temp / 是否相对路径
     console.log('[preview] openLinkedFile path=', JSON.stringify(path), 'sessionId=', sessionId, 'anchorSessionId=', anchor?.sessionId)
     const mount = pageRow.element
@@ -226,6 +226,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
       // 兜底才用当前工作区锚点会话（explorer 页那种没上下文的入口）。
       sessionId: sessionId ?? anchor.sessionId,
       path,
+      line: options?.line,
       rootName: anchor.title,
       workspaces: wsItems.map((w) => w.title),
     })
@@ -286,7 +287,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
           openHostSession: (id) => { realOpenHostSession(id) },
           // 文件链接（工具卡路径 / md 行内引用 / 交付卡）→ **页面右侧**开核心文件预览 dock，
           // 不在弹窗里面分栏；遮罩让位由核心自己处理，这里不量宽度、不传参数。
-          onOpenFile: canOpenFile ? (path, sid) => openLinkedFile(path, sid) : undefined,
+          onOpenFile: canOpenFile ? (path, sid, opts) => openLinkedFile(path, sid, opts) : undefined,
           onOpenReview: openReviewFile,
         })
       : null,

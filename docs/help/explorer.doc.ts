@@ -116,6 +116,15 @@ const doc: DocTopic = {
               },
             },
             {
+              name: 'opts.line',
+              type: 'number',
+              def: '—',
+              desc: {
+                zh: '打开后定位到这一行（1 起；只对文本 / 源码态生效）。首屏没读到就自动续翻，最多 10 页；`content` 模式忽略。会话预览的 read 工具卡会把 `offset` 作为这一行传进来',
+                en: 'Scroll to this line after opening (1-based; text/source view only). Auto-pages up to 10 pages when the line is beyond the first chunk; ignored in `content` mode. The session mirror passes a read tool’s `offset` here',
+              },
+            },
+            {
               name: 'opts.content',
               type: '() => ReactNode',
               def: '—',

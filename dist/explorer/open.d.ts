@@ -28,6 +28,8 @@ export interface OpenFilePreviewOptions {
     officeToPdf?: OfficeToPdfFace | null;
     /** 相对路径的基准工作区（也是 Office 预览用的会话）。可省。 */
     sessionId?: string;
+    /** 打开后定位到这一行（1 起；只对文本文件生效，`content` 模式忽略）。 */
+    line?: number;
     /** 工作区根显示名（面包屑第一段的兜底）。 */
     rootName?: string;
     /** 相对路径 / 面包屑的基准目录；不传 = 按路径匹配出的工作区根。 */

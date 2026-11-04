@@ -48,6 +48,7 @@ export function FilePreview(props) {
                 path: props.path,
                 markdown: info.kind === 'md',
                 sourceView,
+                focusLine: props.line,
                 translate: tt,
             });
     }

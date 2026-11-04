@@ -14,7 +14,7 @@
  * 明暗判据（唯一）：body[data-ds-dark-theme]（见 design/style-kit.ts DARK_THEME_SELECTOR），
  * 禁用 prefers-color-scheme。
  */
-import { createElement as h, useEffect, useMemo, useState } from 'react';
+import { createElement as h, useEffect, useMemo, useRef, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { EditorView } from '@codemirror/view';
 import { IconButton } from './Button.js';
@@ -36,6 +36,8 @@ export function CodeViewer(props) {
     const { text, path, t, className, style, height = '100%', lineNumbers = true } = props;
     const [copied, setCopied] = useState(false);
     const [dark, setDark] = useState(hostDark);
+    /** 编辑器实例（定位到行要 dispatch scrollIntoView）。 */
+    const viewRef = useRef(null);
     // 用户切主题 = 宿主 toggleAttribute 写 body[data-ds-dark-theme] ⇒ 用 MutationObserver 跟。
     // 挂载时先 sync 一次：插件挂载可能早于宿主写好该属性。
     useEffect(() => {
@@ -64,6 +66,15 @@ export function CodeViewer(props) {
             }
         });
     };
+    // 定位到行：预览分页是逐步追加的，文本到了才能滚 ⇒ 跟着 text 再试一次。
+    useEffect(() => {
+        const view = viewRef.current;
+        if (view === null || props.focusLine === undefined)
+            return;
+        if (props.focusLine > view.state.doc.lines)
+            return;
+        view.dispatch({ effects: EditorView.scrollIntoView(view.state.doc.line(props.focusLine).from, { y: 'center' }) });
+    }, [text, props.focusLine]);
     return h('div', { className: `dshpc-cv${className ? ` ${className}` : ''}`, style }, h(IconButton, {
         variant: 'outline',
         size: 'md',
@@ -78,6 +89,7 @@ export function CodeViewer(props) {
         extensions,
         readOnly: true,
         height,
+        onCreateEditor: (view) => { viewRef.current = view; },
         style: { flex: '1 1 auto', minHeight: 0, overflow: 'hidden' },
         basicSetup: {
             lineNumbers,

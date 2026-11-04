@@ -22,7 +22,7 @@ if (view !== null) {
       openHostSession(child)
     },
     // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏
-    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),
+    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),
     // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）
     onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),
     archived,                                   // 是否已归档
@@ -136,9 +136,9 @@ const doc: DocTopic = {
             },
             {
               name: 'onOpenFile',
-              type: '(path: string, sessionId: string) => void',
+              type: '(path: string, sessionId: string, options?: { line?: number }) => void',
               def: '—',
-              desc: { zh: '文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；缺省 = 链接纯文本', en: 'File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; absent = plain text' },
+              desc: { zh: '文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；第三参可带 `line`（read 工具卡的 `offset`，直接转给 `openFilePreview` 的 `opts.line`）；缺省 = 链接纯文本', en: 'File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; the third may carry `line` (a read call’s `offset`, forward it to `openFilePreview`’s `opts.line`); absent = plain text' },
             },
             {
               name: 'onOpenReview',

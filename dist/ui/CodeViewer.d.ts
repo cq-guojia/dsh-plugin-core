@@ -31,6 +31,8 @@ export interface CodeViewerProps {
     height?: string;
     /** 可选：是否显示行号，默认 true（文件预览要行号；文档里的代码片段一般不要）。 */
     lineNumbers?: boolean;
+    /** 可选：挂载/换文本后把这一行滚到视口中部（超出现有文本则不动）。 */
+    focusLine?: number;
 }
 export declare function CodeViewer(props: CodeViewerProps): ReactElement;
 //# sourceMappingURL=CodeViewer.d.ts.map

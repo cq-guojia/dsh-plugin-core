@@ -92,6 +92,8 @@ export interface FileBrowserProps {
   sessionId?: string
   /** 起始路径：目录 ⇒ 直接列；文件 ⇒ 预览态（dir 取父目录，面包屑保留可返回）。 */
   path: string
+  /** 起始文件打开后定位到这一行（1 起）；树里另点别的文件不沿用。 */
+  focusLine?: number
   /**
    * 重开令牌（`openFilePreview` 每次调用递增）：**同一 path 再点一次**也要回到该文件 /
    * 重读内容，所以初始 effect 依赖它；它只触发重跑，**不重挂组件**（目录树、展开态、滚动位置保留）。
@@ -765,6 +767,8 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
       officeToPdf: props.officeToPdf ?? null,
       path: viewing,
       sourceView,
+      // 行号只属于「打开时指定的那个文件」：在树里另点一个文件不该带过去。
+      line: viewing === absOf(props.path) ? props.focusLine : undefined,
       translate: tt,
     })
   } else if (mode === 'error' && listErr !== null) {

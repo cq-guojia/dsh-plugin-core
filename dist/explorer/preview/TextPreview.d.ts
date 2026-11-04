@@ -10,6 +10,8 @@ export interface TextPreviewProps {
     sourceView: boolean;
     /** 字节上限：超出即截断 + 横幅，且不出「加载更多」（HTML 源码态用）。 */
     maxBytes?: number;
+    /** 打开即定位到这一行（1 起）：首屏没读到就自动续翻，最多 {@link FOCUS_MAX_PAGES} 页。 */
+    focusLine?: number;
     translate?: Translate;
 }
 export declare function TextPreview(props: TextPreviewProps): ReturnType<typeof h>;

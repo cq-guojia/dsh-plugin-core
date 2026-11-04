@@ -186,6 +186,18 @@ function deriveFilePath(variant: Variant, argsRaw: string): string | undefined {
   return picked === undefined ? undefined : firstLine(picked)
 }
 
+/** 官方 readCallLine（tool client.js:432-436）：read 的 offset（1 起）就是落点行，参数非法则无行。 */
+export function readCallLine(name: string, argsRaw: string): number | undefined {
+  if (name !== 'read') return undefined
+  const parsed = parseArgs(argsRaw)
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return undefined
+  const { file_path, offset, limit } = parsed as Record<string, unknown>
+  if (typeof file_path !== 'string' || file_path.trim() === '') return undefined
+  if (offset !== undefined && !positiveInteger(offset)) return undefined
+  if (limit !== undefined && !positiveInteger(limit)) return undefined
+  return positiveInteger(offset) ? offset : undefined
+}
+
 /** 官方 formatToolBody（tool client.js:255-264）：通用展开体的输入正文。 */
 export function formatToolBody(variant: Variant, argsRaw: string): string | null {
   if (argsRaw === '') return null
@@ -691,8 +703,8 @@ export function GenericCommandCard(props: {
   phase?: 'preparing' | 'start'
   /** root.error.code === 'interrupted' ⇒ 官方 stopped 态。 */
   interrupted?: boolean
-  /** 统一 openFile 入口：read/write/edit 摘要路径渲染成官方 fileLink。 */
-  onOpenFile?: (path: string) => void
+  /** 统一 openFile 入口：read/write/edit 摘要路径渲染成官方 fileLink（read 带 offset 落点行）。 */
+  onOpenFile?: (path: string, options?: { line?: number }) => void
   t: Translate
 }): ReturnType<typeof h> {
   const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, onOpenFile, t } = props
@@ -748,8 +760,13 @@ export function GenericCommandCard(props: {
   const diffStatTotals = settledWithCue ? null : totals
   // 官方 fileLink（1536-1545）：read/write/edit 摘要路径 + onOpenFile + 非 error/stopped ⇒ 链接钮。
   const filePath = argsRaw === '' ? undefined : deriveFilePath(variant, argsRaw)
+  // 官方 readCallLine（tool client.js:432-436）：read 的 offset 就是落点行，链接可带过去。
+  const filePathLine = filePath === undefined ? undefined : readCallLine(name, argsRaw)
   const openFile = filePath !== undefined && onOpenFile !== undefined && !settledWithCue
-    ? () => { onOpenFile(filePath) }
+    ? () => {
+        if (filePathLine === undefined) onOpenFile(filePath)
+        else onOpenFile(filePath, { line: filePathLine })
+      }
     : undefined
   // 官方 linkHref（tool client.js:1100-1110）：web_fetch 且 args.url 为 http(s) ⇒ 摘要外链。
   const linkHref = (() => {
