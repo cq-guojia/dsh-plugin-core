@@ -10,7 +10,7 @@
 // 高亮：官方 `useCodeHighlighter`（primitive hook）+ 官方 highlightedSide 映射口径
 // （按一侧收集文本 → 整段高亮 → 按行号回表）；语法未知 / 语法树未加载返回 undefined ⇒ 纯文本回落。
 import { createElement as h, useCallback, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
-import { Button, IconCloseOutlineRegular, languageForPath, useCodeHighlighter, type HighlightSpan } from '../../ui/official.js'
+import { Button, IconCloseOutlineRegular, IconNowrapFillRegular, IconWrapFillRegular, languageForPath, useCodeHighlighter, type HighlightSpan } from '../../ui/official.js'
 import { IconButton } from '../../ui/Button.js'
 import { officialClass } from '../official-classes.js'
 import {
@@ -91,6 +91,8 @@ export function ChangedFileDiff(props: {
   const url = changesDiffUrl(sessionId, seq, index)
   const [state, setState] = useState<ChangesDiff | null | undefined | 'error'>(undefined)
   const [attempt, setAttempt] = useState(0)
+  // 换行开关（等价官方 ReviewTab 的 wrap 工具钮）：官方 CSS 按 body[data-review-wrap] 切 pre-wrap。
+  const [wrap, setWrap] = useState(false)
   useEffect(() => {
     if (cache.has(url)) {
       setState(cache.get(url))
@@ -154,7 +156,7 @@ export function ChangedFileDiff(props: {
       kept.push(hunk)
       budget -= hunk.lines.length
     }
-    return h('div', { className: D('body'), 'data-review-view': 'unified' },
+    return h('div', { className: D('body'), 'data-review-view': 'unified', 'data-review-wrap': wrap ? true : undefined },
       note === undefined ? null : h('p', {
         className: D('note'),
         'data-diff-note': hunks.length === 0 ? 'empty' : 'metadata',
@@ -181,7 +183,7 @@ export function ChangedFileDiff(props: {
         )
       }),
     )
-  }, [state, highlighter, t, retry])
+  }, [state, highlighter, t, retry, wrap])
 
   // 官方两套壳：hover 预览 = ChangedFiles.preview（限高、隐 note / hunk 头）；
   // 审阅视图 = 完整 FileDiff.root（hunk 头 + note 正常渲染）。
@@ -195,6 +197,16 @@ export function ChangedFileDiff(props: {
   },
     h('div', { className: D('header') },
       h('span', { className: C('previewPath'), 'data-changes-preview-path': true }, display),
+      // 审阅态右上：换行开关（等价官方 ReviewTab 的 wrap 工具钮；图标语义同官方：开着显示「取消换行」）。
+      preview
+        ? null
+        : h(IconButton, {
+            variant: 'plain',
+            size: 'md',
+            icon: h(wrap ? IconNowrapFillRegular : IconWrapFillRegular, { size: 14 }),
+            label: wrap ? t('diffNowrap') : t('diffWrap'),
+            onClick: () => { setWrap((value) => !value) },
+          }),
       // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
       preview || onClose === undefined
         ? null

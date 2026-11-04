@@ -250,6 +250,8 @@ export type UtilMessageKey =
   | 'diffUnchanged'
   | 'diffCoarse'
   | 'diffTruncated'
+  | 'diffWrap'
+  | 'diffNowrap'
   | 'continueBranch'
   | 'forkConfirmTitle'
   | 'forkConfirmText'
@@ -541,6 +543,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     diffUnchanged: '两侧内容相同',
     diffCoarse: '逐行对比超时，按整个文件替换显示',
     diffTruncated: '只显示前 {count} 行',
+    diffWrap: '自动换行',
+    diffNowrap: '取消换行',
     continueBranch: '继续对话',
     forkConfirmTitle: '开分支继续对话',
     forkConfirmText: '是否需要基于此会话开一个新分支继续对话？原会话保持只读留档，新分支复制本会话内容并可继续对话。',
@@ -823,6 +827,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     diffUnchanged: 'Both sides hold the same lines',
     diffCoarse: 'Line comparison timed out; shown as a whole-file replacement',
     diffTruncated: 'Showing the first {count} lines',
+    diffWrap: 'Wrap lines',
+    diffNowrap: 'No wrap',
     continueBranch: 'Continue conversation',
     forkConfirmTitle: 'Fork to continue',
     forkConfirmText: 'Start a new branch from this session to continue the conversation? The original stays read-only; the branch copies this conversation and can continue.',

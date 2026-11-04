@@ -682,6 +682,46 @@ export function SessionViewModal(props) {
     const [forkErr, setForkErr] = useState(null);
     const aliveRef = useRef(true);
     useEffect(() => () => { aliveRef.current = false; }, []);
+    // 会话区自动贴底（用户 2026-11-04 定）：打开即到底；内容还在长就跟到底；用户自己往上滚过
+    // 就停（滚回底部恢复）。别用「时间窗」判程序滚动——流式更新会一直续窗，用户就再也滚不开了；
+    // 程序只往下滚，所以「往上滚」是可靠的用户意图判据。
+    const flowRef = useRef(null);
+    useEffect(() => {
+        const flow = flowRef.current;
+        const scroller = flow === null ? null : flow.closest('.dshpc-modal__body');
+        if (scroller === null)
+            return;
+        let following = true;
+        let lastHeight = 0;
+        let lastTop = scroller.scrollTop;
+        const nearBottom = () => scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight <= 24;
+        const onScroll = () => {
+            const top = scroller.scrollTop;
+            if (top < lastTop - 1)
+                following = false;
+            else if (nearBottom())
+                following = true;
+            lastTop = top;
+        };
+        scroller.addEventListener('scroll', onScroll, { passive: true });
+        const observer = new ResizeObserver(() => {
+            const height = flow === null ? 0 : flow.scrollHeight;
+            if (height === lastHeight)
+                return;
+            const firstPaint = lastHeight === 0;
+            lastHeight = height;
+            if (!following)
+                return;
+            // 首屏（空 → 有内容）直接贴底；之后每次增量平滑滑一小段（官方同款手感）。
+            scroller.scrollTo({ top: scroller.scrollHeight, behavior: firstPaint ? 'auto' : 'smooth' });
+        });
+        if (flow !== null)
+            observer.observe(flow);
+        return () => {
+            observer.disconnect();
+            scroller.removeEventListener('scroll', onScroll);
+        };
+    }, []);
     const onForkAccept = useCallback(() => {
         if (forking || forkSession === undefined || openHostSession === undefined)
             return;
@@ -977,7 +1017,7 @@ export function SessionViewModal(props) {
             disabled: sending || draft.trim() === '',
             onClick: onSend,
         }, sending ? tt('forkWorking') : tt('confirm')), h('span', { className: 'dshpc-sv-composer-hint', title: tt('composerHint') }, '⌘/Ctrl + ↵'), sendErr !== null ? h('div', { className: 'dshpc-sv-forkerr' }, sendErr) : null),
-    }, h('div', { className: 'dshpc-sv' }, 
+    }, h('div', { className: 'dshpc-sv', ref: flowRef }, 
     // markdown 导航委托：挂上 openFile 后，正文里的本地文件链接才渲成官方
     // `fileMention fileLink` 按钮（不挂 ⇒ 官方自己退回纯文本）。
     fileOpen === undefined

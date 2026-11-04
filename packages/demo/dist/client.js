@@ -376,6 +376,8 @@ var DICT = {
     diffUnchanged: "\u4E24\u4FA7\u5185\u5BB9\u76F8\u540C",
     diffCoarse: "\u9010\u884C\u5BF9\u6BD4\u8D85\u65F6\uFF0C\u6309\u6574\u4E2A\u6587\u4EF6\u66FF\u6362\u663E\u793A",
     diffTruncated: "\u53EA\u663E\u793A\u524D {count} \u884C",
+    diffWrap: "\u81EA\u52A8\u6362\u884C",
+    diffNowrap: "\u53D6\u6D88\u6362\u884C",
     continueBranch: "\u7EE7\u7EED\u5BF9\u8BDD",
     forkConfirmTitle: "\u5F00\u5206\u652F\u7EE7\u7EED\u5BF9\u8BDD",
     forkConfirmText: "\u662F\u5426\u9700\u8981\u57FA\u4E8E\u6B64\u4F1A\u8BDD\u5F00\u4E00\u4E2A\u65B0\u5206\u652F\u7EE7\u7EED\u5BF9\u8BDD\uFF1F\u539F\u4F1A\u8BDD\u4FDD\u6301\u53EA\u8BFB\u7559\u6863\uFF0C\u65B0\u5206\u652F\u590D\u5236\u672C\u4F1A\u8BDD\u5185\u5BB9\u5E76\u53EF\u7EE7\u7EED\u5BF9\u8BDD\u3002",
@@ -658,6 +660,8 @@ var DICT = {
     diffUnchanged: "Both sides hold the same lines",
     diffCoarse: "Line comparison timed out; shown as a whole-file replacement",
     diffTruncated: "Showing the first {count} lines",
+    diffWrap: "Wrap lines",
+    diffNowrap: "No wrap",
     continueBranch: "Continue conversation",
     forkConfirmTitle: "Fork to continue",
     forkConfirmText: "Start a new branch from this session to continue the conversation? The original stays read-only; the branch copies this conversation and can continue.",
@@ -57237,6 +57241,7 @@ function ChangedFileDiff(props) {
   const url = changesDiffUrl(sessionId, seq, index3);
   const [state, setState] = (0, import_react74.useState)(void 0);
   const [attempt, setAttempt] = (0, import_react74.useState)(0);
+  const [wrap, setWrap] = (0, import_react74.useState)(false);
   (0, import_react74.useEffect)(() => {
     if (cache3.has(url)) {
       setState(cache3.get(url));
@@ -57303,7 +57308,7 @@ function ChangedFileDiff(props) {
       kept.push(hunk);
       budget -= hunk.lines.length;
     }
-    return (0, import_react74.createElement)("div", { className: D("body"), "data-review-view": "unified" }, note === void 0 ? null : (0, import_react74.createElement)("p", {
+    return (0, import_react74.createElement)("div", { className: D("body"), "data-review-view": "unified", "data-review-wrap": wrap ? true : void 0 }, note === void 0 ? null : (0, import_react74.createElement)("p", {
       className: D("note"),
       "data-diff-note": hunks.length === 0 ? "empty" : "metadata"
     }, t4(note)), state.coarse === true ? (0, import_react74.createElement)("p", { className: D("note"), "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react74.createElement)("p", { className: D("note"), "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
@@ -57317,7 +57322,7 @@ function ChangedFileDiff(props) {
         newSpans: newSpans?.get(row.new ?? -1)
       })));
     }));
-  }, [state, highlighter, t4, retry]);
+  }, [state, highlighter, t4, retry, wrap]);
   const preview = variant !== "review";
   return (0, import_react74.createElement)("div", {
     className: preview ? `${D("root")} ${C2("preview")}` : D("root"),
@@ -57329,6 +57334,16 @@ function ChangedFileDiff(props) {
     "div",
     { className: D("header") },
     (0, import_react74.createElement)("span", { className: C2("previewPath"), "data-changes-preview-path": true }, display),
+    // 审阅态右上：换行开关（等价官方 ReviewTab 的 wrap 工具钮；图标语义同官方：开着显示「取消换行」）。
+    preview ? null : (0, import_react74.createElement)(IconButton, {
+      variant: "plain",
+      size: "md",
+      icon: (0, import_react74.createElement)(wrap ? official_exports.IconNowrapFillRegular : official_exports.IconWrapFillRegular, { size: 14 }),
+      label: wrap ? t4("diffNowrap") : t4("diffWrap"),
+      onClick: () => {
+        setWrap((value) => !value);
+      }
+    }),
     // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
     preview || onClose === void 0 ? null : (0, import_react74.createElement)(IconButton, {
       variant: "plain",
@@ -57966,6 +57981,42 @@ function SessionViewModal(props) {
   (0, import_react76.useEffect)(() => () => {
     aliveRef.current = false;
   }, []);
+  const flowRef = (0, import_react76.useRef)(null);
+  (0, import_react76.useEffect)(() => {
+    const flow = flowRef.current;
+    const scroller = flow === null ? null : flow.closest(".dshpc-modal__body");
+    if (scroller === null)
+      return;
+    let following = true;
+    let lastHeight = 0;
+    let lastTop = scroller.scrollTop;
+    const nearBottom = () => scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight <= 24;
+    const onScroll = () => {
+      const top2 = scroller.scrollTop;
+      if (top2 < lastTop - 1)
+        following = false;
+      else if (nearBottom())
+        following = true;
+      lastTop = top2;
+    };
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    const observer = new ResizeObserver(() => {
+      const height = flow === null ? 0 : flow.scrollHeight;
+      if (height === lastHeight)
+        return;
+      const firstPaint = lastHeight === 0;
+      lastHeight = height;
+      if (!following)
+        return;
+      scroller.scrollTo({ top: scroller.scrollHeight, behavior: firstPaint ? "auto" : "smooth" });
+    });
+    if (flow !== null)
+      observer.observe(flow);
+    return () => {
+      observer.disconnect();
+      scroller.removeEventListener("scroll", onScroll);
+    };
+  }, []);
   const onForkAccept = (0, import_react76.useCallback)(() => {
     if (forking || forkSession === void 0 || openHostSession === void 0)
       return;
@@ -58229,7 +58280,7 @@ function SessionViewModal(props) {
       }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react76.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react76.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
     }, (0, import_react76.createElement)(
       "div",
-      { className: "dshpc-sv" },
+      { className: "dshpc-sv", ref: flowRef },
       // markdown 导航委托：挂上 openFile 后，正文里的本地文件链接才渲成官方
       // `fileMention fileLink` 按钮（不挂 ⇒ 官方自己退回纯文本）。
       fileOpen === void 0 ? (0, import_react76.createElement)(ChatViewFrame, { children: flowChildren }) : (0, import_react76.createElement)(official_exports.MarkdownDelegateProvider, { openFile: openDelegatedFile }, (0, import_react76.createElement)(ChatViewFrame, { children: flowChildren }))
@@ -66604,9 +66655,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.24.0"}`],
-            [t3("buildDemo"), `v${"0.24.0"}`],
-            [t3("buildStamp"), "261104-093950-647"]
+            [t3("buildCore"), `v${"0.25.0"}`],
+            [t3("buildDemo"), `v${"0.25.0"}`],
+            [t3("buildStamp"), "261104-094956-784"]
           ].map(
             ([label, value]) => (0, import_react86.createElement)(
               "tr",
@@ -66917,9 +66968,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react88.createElement)("span", null, `core v${"0.24.0"}`),
-          (0, import_react88.createElement)("span", null, `demo v${"0.24.0"}`),
-          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-093950-647")
+          (0, import_react88.createElement)("span", null, `core v${"0.25.0"}`),
+          (0, import_react88.createElement)("span", null, `demo v${"0.25.0"}`),
+          (0, import_react88.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-094956-784")
         )
       )
     ),
