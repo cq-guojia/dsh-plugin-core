@@ -25,15 +25,22 @@ class ModelCatalogStore {
 }
 /** 模型目录单例（ModelPicker 消费；connectHost 负责喂）。 */
 export const modelCatalog = new ModelCatalogStore();
+/** 稳定的空归档集合：官方快照缺席时用它，保证 getArchiveSnapshot 引用稳定。 */
+const NO_ARCHIVED_SESSIONS = [];
 /**
- * 工作区列表的 observable store：直接镜像官方 WorkspaceSource 的 `items`
- * （宿主权威快照，follow 流实时推 —— 源变我们就变，不自持第二份状态机）。
+ * 工作区列表的 observable store：直接镜像官方 WorkspaceSource 的 `items` 与
+ * `archivedSessionIds`（宿主权威快照，follow 流实时推 —— 源变我们就变，不自持第二份状态机）。
+ * `getSnapshot` 保持原有的 items 形态（explorer 各调用方按数组消费），归档集合另给两种读法。
  */
 class WorkspaceListStore {
     constructor() {
         this.items = [];
+        this.archivedSessionIds = NO_ARCHIVED_SESSIONS;
         this.listeners = new Set();
         this.getSnapshot = () => this.items;
+        /** 归档集合的稳定引用（直接喂 useSyncExternalStore，不需要额外 selector 缓存）。 */
+        this.getArchiveSnapshot = () => this.archivedSessionIds;
+        this.isSessionArchived = (sessionId) => this.archivedSessionIds.includes(sessionId);
         this.subscribe = (listener) => {
             this.listeners.add(listener);
             return () => {
@@ -45,7 +52,9 @@ class WorkspaceListStore {
     setSource(source) {
         this.unsubscribe?.();
         const pull = () => {
-            this.items = source.getSnapshot().items;
+            const snap = source.getSnapshot();
+            this.items = snap.items;
+            this.archivedSessionIds = snap.archivedSessionIds ?? NO_ARCHIVED_SESSIONS;
             for (const listener of this.listeners)
                 listener();
         };
@@ -53,7 +62,7 @@ class WorkspaceListStore {
         this.unsubscribe = source.subscribe(pull);
     }
 }
-/** 工作区列表单例（WorkspacePicker 消费；connectHost 负责喂）。 */
+/** 工作区列表单例（WorkspacePicker / 会话预览消费；connectHost 负责喂）。 */
 export const workspaceList = new WorkspaceListStore();
 // ── 工作区文件服务 ──────────────────────────────────────────────────────
 /**

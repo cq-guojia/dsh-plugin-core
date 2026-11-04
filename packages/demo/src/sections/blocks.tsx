@@ -53,7 +53,7 @@ h(SessionViewModal, {
   sessionId: row.sessionId,
   view,
   heading: row.displayTitle,      // 标题可自定义；会话 id 自动显示在标题下方（副标题行）
-  archived: row.archived,         // 来自 workspaces 快照的 archivedSessionIds
+  // 归档态不传：核心订阅官方 workspaces 快照，弹窗开着期间徽标与「继续对话」实时跟随
   onClose: () => { view.dispose(); setOpenId(null) },
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
   openHostSession: (id) => uiWorkspace.openSession(id),
@@ -205,6 +205,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
   const state = useSyncExternalStore(realSessions.subscribe, realSessions.getSnapshot)
   const files = useSyncExternalStore(fileServices.subscribe, fileServices.getSnapshot)
   const wsItems = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
+  const archivedIds = useSyncExternalStore(workspaceList.subscribe, workspaceList.getArchiveSnapshot)
   const anchor = pickWorkspaceAnchor(wsItems)
   const [openId, setOpenId] = useState<string | null>(null)
   const view = useMemo(() => (openId === null ? null : openRealSessionView(openId)), [openId])
@@ -260,7 +261,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
       },
         h('span', { style: { flex: '1', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, row.displayTitle),
         row.running ? h(Chip, { size: 'xs', tone: 'warning' }, t('sessionListRunning')) : null,
-        row.archived
+        archivedIds.includes(row.sessionId)
           ? h(Chip, { size: 'xs' },
               h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '4px' } },
                 h(IconArchiveOutlineRegular, { size: 12 }),
@@ -275,9 +276,8 @@ function RealSessionListDemo(): ReturnType<typeof h> {
       ? h(SessionViewModal, {
           sessionId: openId,
           view,
-          // 标题 = 会话自己的标题；归档态分化「继续对话」行为（开分支确认 vs 直跳官方）。
+          // 标题 = 会话自己的标题；归档态由核心订阅官方快照，不在这里传。
           heading: state.rows.find((row) => row.sessionId === openId)?.displayTitle,
-          archived: state.rows.find((row) => row.sessionId === openId)?.archived,
           onClose: () => { view.dispose(); setOpenId(null) },
           // 真宿主服务：fork 与跳转都是官方口子（预览弹窗里不可打字续聊，走开分支）。
           forkSession: (id, atSeq) => {

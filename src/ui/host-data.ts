@@ -15,6 +15,9 @@
  *
  * 2026-10-28 扩一条：`connectHost` 同时接 `remote.workspaceFiles` ⇒ `openFilePreview` /
  * `pickWorkspaceFile` 不必再由调用方传服务（explorer 的读文件通道同属「绑定宿主能力」）。
+ *
+ * 2026-11-04 归档态：同一份 `workspaces` 快照里的 `archivedSessionIds` 也由核心镜像，
+ * 会话预览不再收调用方注入的静态 boolean（官方推送链见 dsh-host.md §11.2）。
  */
 import type { WorkspaceFilesFace } from '../explorer/types.js'
 
@@ -87,16 +90,25 @@ export interface HostWorkspaceItem {
  *    本宿主没给时保持 undefined，取锚点方自行判空，不得编造。
  */
 export interface HostWorkspaceSource {
-  getSnapshot: () => { items: readonly HostWorkspaceItem[] }
+  getSnapshot: () => {
+    items: readonly HostWorkspaceItem[]
+    /** registry-global 归档集合；官方只在集合变化时换成新数组（dsh-host.md §11.2）。 */
+    archivedSessionIds?: readonly string[]
+  }
   subscribe: (listener: () => void) => () => void
 }
 
+/** 稳定的空归档集合：官方快照缺席时用它，保证 getArchiveSnapshot 引用稳定。 */
+const NO_ARCHIVED_SESSIONS: readonly string[] = []
+
 /**
- * 工作区列表的 observable store：直接镜像官方 WorkspaceSource 的 `items`
- * （宿主权威快照，follow 流实时推 —— 源变我们就变，不自持第二份状态机）。
+ * 工作区列表的 observable store：直接镜像官方 WorkspaceSource 的 `items` 与
+ * `archivedSessionIds`（宿主权威快照，follow 流实时推 —— 源变我们就变，不自持第二份状态机）。
+ * `getSnapshot` 保持原有的 items 形态（explorer 各调用方按数组消费），归档集合另给两种读法。
  */
 class WorkspaceListStore {
   private items: readonly HostWorkspaceItem[] = []
+  private archivedSessionIds: readonly string[] = NO_ARCHIVED_SESSIONS
   private readonly listeners = new Set<() => void>()
   private unsubscribe: (() => void) | undefined
 
@@ -104,7 +116,9 @@ class WorkspaceListStore {
   setSource(source: HostWorkspaceSource): void {
     this.unsubscribe?.()
     const pull = (): void => {
-      this.items = source.getSnapshot().items
+      const snap = source.getSnapshot()
+      this.items = snap.items
+      this.archivedSessionIds = snap.archivedSessionIds ?? NO_ARCHIVED_SESSIONS
       for (const listener of this.listeners) listener()
     }
     pull()
@@ -112,6 +126,11 @@ class WorkspaceListStore {
   }
 
   readonly getSnapshot = (): readonly HostWorkspaceItem[] => this.items
+
+  /** 归档集合的稳定引用（直接喂 useSyncExternalStore，不需要额外 selector 缓存）。 */
+  readonly getArchiveSnapshot = (): readonly string[] => this.archivedSessionIds
+
+  readonly isSessionArchived = (sessionId: string): boolean => this.archivedSessionIds.includes(sessionId)
 
   readonly subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener)
@@ -121,7 +140,7 @@ class WorkspaceListStore {
   }
 }
 
-/** 工作区列表单例（WorkspacePicker 消费；connectHost 负责喂）。 */
+/** 工作区列表单例（WorkspacePicker / 会话预览消费；connectHost 负责喂）。 */
 export const workspaceList = new WorkspaceListStore()
 
 // ── 工作区文件服务 ──────────────────────────────────────────────────────

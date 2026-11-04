@@ -74,3 +74,30 @@ test('workspaceList 换源即镜像新快照并转发通知', () => {
   assert.equal(listeners, 1)
   off()
 })
+
+test('workspaceList：归档集合镜像官方快照，推新集合即时跟随', () => {
+  const rows = [{ workspaceId: 'w1', title: 'NAS' }]
+  let archived = ['s1']
+  let notify = () => {}
+  const source = {
+    getSnapshot: () => ({ items: rows, archivedSessionIds: archived }),
+    subscribe: (listener) => { notify = listener; return () => {} },
+  }
+  let notified = 0
+  const off = workspaceList.subscribe(() => { notified += 1 })
+  workspaceList.setSource(source)
+  assert.equal(workspaceList.getArchiveSnapshot(), archived) // 稳定引用，useSyncExternalStore 可比
+  assert.equal(workspaceList.isSessionArchived('s1'), true)
+  assert.equal(workspaceList.isSessionArchived('s2'), false)
+  assert.deepEqual(workspaceList.getSnapshot(), rows) // items 读法不变，explorer 零改动
+  assert.ok(notified >= 1)
+  archived = ['s1', 's2']
+  notify() // 宿主 follow 流推来新归档集合
+  assert.equal(workspaceList.getArchiveSnapshot(), archived)
+  assert.equal(workspaceList.isSessionArchived('s2'), true)
+  assert.ok(notified >= 2)
+  workspaceList.setSource({ getSnapshot: () => ({ items: rows }), subscribe: () => () => {} })
+  assert.deepEqual(workspaceList.getArchiveSnapshot(), []) // 字段缺席按未归档，不编造
+  assert.equal(workspaceList.isSessionArchived('s1'), false)
+  off()
+})

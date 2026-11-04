@@ -511,8 +511,8 @@ export const docData = {
         "en": "Renders one session as a **read-only dialog** that looks like the official session page. First `openSessionView` builds the chain and returns a `view` (`null` when unresolvable), then hand it to `SessionViewModal`; **call `view.dispose()` on close**."
       },
       {
-        "zh": "数据全由调用方注入，组件不自己取。`archived` 从官方 `workspaces` 快照的 `archivedSessionIds` 读取并订阅刷新。归档会话走同一条链，同样可读。",
-        "en": "All data is injected by the caller; the component fetches nothing. Read `archived` from `archivedSessionIds` on the official `workspaces` snapshot and keep it subscribed. Archived sessions travel the same chain and read fine."
+        "zh": "归档态不需要调用方传：核心订阅官方 `workspaces.list` 快照的 `archivedSessionIds`（宿主 `domain/changed` → `workspace/follow` 增量推送），弹窗开着期间归档徽标与「继续对话」实时跟随；点击前还会用权威快照复核，不会直开已归档会话。前提是插件 client `apply` 调过一次 `connectHost(ctx)`。归档会话走同一条数据链，同样可读。",
+        "en": "Archive state needs no prop: core subscribes to `archivedSessionIds` on the official `workspaces.list` snapshot (host `domain/changed` → `workspace/follow` increments), so the badge and \"Continue\" follow changes while the dialog stays open; the click re-checks the authoritative snapshot so an archived session is never opened directly. Call `connectHost(ctx)` once in the plugin client `apply`. Archived sessions use the same data chain and read fine."
       },
       {
         "zh": "快照只读，框内不能打字续聊。续聊 = `forkSession` 开分支 + `openHostSession` 跳官方会话区；暂存输入框的确定走 `onContinue`（fork + 发首轮 + 跳转）。",
@@ -627,16 +627,6 @@ export const docData = {
             }
           },
           {
-            "name": "archived",
-            "type": "boolean",
-            "def": "false",
-            "required": "否",
-            "desc": {
-              "zh": "已归档时标题旁显示归档徽标，且「继续对话」先弹 fork 确认框；未归档则直跳官方会话页",
-              "en": "When true an archive badge appears beside the title and \"Continue\" asks to fork first; when false it jumps straight to the official session page"
-            }
-          },
-          {
             "name": "forkSession",
             "type": "(sessionId, atSeq?) => Promise<string>",
             "def": "—",
@@ -697,7 +687,7 @@ export const docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    archived,                                   // 是否已归档\n    t,                                          // 可选，覆盖文案\n  })\n}"
+        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    // 归档态不用传：核心订阅官方 workspaces 快照（apply 里 connectHost 接线一次即可）\n    t,                                          // 可选，覆盖文案\n  })\n}"
       },
       {
         "id": "session-data-chain",

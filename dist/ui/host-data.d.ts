@@ -15,6 +15,9 @@
  *
  * 2026-10-28 扩一条：`connectHost` 同时接 `remote.workspaceFiles` ⇒ `openFilePreview` /
  * `pickWorkspaceFile` 不必再由调用方传服务（explorer 的读文件通道同属「绑定宿主能力」）。
+ *
+ * 2026-11-04 归档态：同一份 `workspaces` 快照里的 `archivedSessionIds` 也由核心镜像，
+ * 会话预览不再收调用方注入的静态 boolean（官方推送链见 dsh-host.md §11.2）。
  */
 import type { WorkspaceFilesFace } from '../explorer/types.js';
 /** 一条路由：一个供应商 + 它的模型（与宿主侧 `ModelRouteData` 同形）。 */
@@ -70,23 +73,30 @@ export interface HostWorkspaceItem {
 export interface HostWorkspaceSource {
     getSnapshot: () => {
         items: readonly HostWorkspaceItem[];
+        /** registry-global 归档集合；官方只在集合变化时换成新数组（dsh-host.md §11.2）。 */
+        archivedSessionIds?: readonly string[];
     };
     subscribe: (listener: () => void) => () => void;
 }
 /**
- * 工作区列表的 observable store：直接镜像官方 WorkspaceSource 的 `items`
- * （宿主权威快照，follow 流实时推 —— 源变我们就变，不自持第二份状态机）。
+ * 工作区列表的 observable store：直接镜像官方 WorkspaceSource 的 `items` 与
+ * `archivedSessionIds`（宿主权威快照，follow 流实时推 —— 源变我们就变，不自持第二份状态机）。
+ * `getSnapshot` 保持原有的 items 形态（explorer 各调用方按数组消费），归档集合另给两种读法。
  */
 declare class WorkspaceListStore {
     private items;
+    private archivedSessionIds;
     private readonly listeners;
     private unsubscribe;
     /** 换源（仅 connectHost 调；重复调用换到新源）。 */
     setSource(source: HostWorkspaceSource): void;
     readonly getSnapshot: () => readonly HostWorkspaceItem[];
+    /** 归档集合的稳定引用（直接喂 useSyncExternalStore，不需要额外 selector 缓存）。 */
+    readonly getArchiveSnapshot: () => readonly string[];
+    readonly isSessionArchived: (sessionId: string) => boolean;
     readonly subscribe: (listener: () => void) => (() => void);
 }
-/** 工作区列表单例（WorkspacePicker 消费；connectHost 负责喂）。 */
+/** 工作区列表单例（WorkspacePicker / 会话预览消费；connectHost 负责喂）。 */
 export declare const workspaceList: WorkspaceListStore;
 /** 当前接到的文件服务；宿主没这能力 / 没调 connectHost ⇒ undefined。 */
 export declare function getWorkspaceFiles(): WorkspaceFilesFace | undefined;

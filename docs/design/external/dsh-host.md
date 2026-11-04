@@ -195,6 +195,19 @@
 - 来源：`dsh-task-dispatch-table/src/host.ts:214-232`（`HostLlm` 面）、`src/dispatch.ts:81-88`（listModels 用法）、
   `dsh-task-ledger/packages/plugin/src/host/routes.ts:20-44`（webServer.register + sendJson）。
 
+### 11.2 归档变更的官方推送链与打开判据（2026-11-04 解包核实）
+
+版本：`@deepseek-ai/dsh-workspace@0.2.1-rc.5`、`@deepseek-ai/dsh-api-workspace-controller@0.2.1-rc.5`、`@deepseek-ai/dsh-client-ui-workspace@0.2.1-rc.5`（§13 记录的宿主当前线；§11 事实 3 的 0.2.0-rc.2 结论在此版本仍成立）。
+
+| 环节 | 事实 |
+|---|---|
+| 写口 | `dsh-workspace/lib/index.js:526-541` `archiveSession()` 把 id 写进 `workspaceDomainState.archivedSessionIds`（schema `:240-248`），经 `setState()`（`:938-941`）落盘；`unarchiveSession()` 同路（`:553-561`）。**这是唯一写口**：绕过 registry 直改磁盘文件不会发领域变更事件 |
+| 推送 | `dsh-api-workspace-controller/lib/index.js:54-56` `WorkspaceFeed` 监听 `ctx.on("domain/changed")`；`:115-122` 归档集合变了才 `publish({type:"archived", archivedSessionIds})`；`:78-91 / :711` 经 `Remote({mode:"stream"})` 的 `follow()` 长连流下发（先 baseline 后增量） |
+| 客户端 | 同包 `lib/client.js:473-489 / :491-513` `case "archived"` → `replaceArchived`（`:212-215`）→ `installArchived`（`:269-273` 内容相同直接 return）→ `notifySubscribers`（`:331-335`）；`:245-267` 标准 `getSnapshot()` / `subscribe()`；`:388-392` 服务名 `workspaces`、`list` 即该模型 |
+| 官方 UI 同款用法 | `dsh-client-ui-workspace/lib/client.js:1597` `workspaces.list.subscribe(reconcile)`；`:1639-1643` `clearArchivedCurrent()`；`:5067-5068` `derive(...)` 派生归档集合；`:5168-5174` `openForkSource()` 打开前读 `getSnapshot().archivedSessionIds`，已归档则 `notify({kind:"archivedNotOpenable"})` 不跳（文案 `:4813`「已归档对话暂时无法查看，请取消归档后查看」） |
+
+⇒ 官方为归档态提供的正式通道就是「host 领域事件 → follow 流增量 → client 可观察快照 → 订阅」，**没有轮询，也没有独立的归档事件 API**。本仓处置：`connectHost` 已订阅同一份 `workspaces.list`，`src/ui/host-data.ts` 的 `WorkspaceListStore` 镜像 `archivedSessionIds`，`SessionViewModal` 用 `useSyncExternalStore` 实时跟随；点击「继续对话」按官方 `openForkSource` 判据复核。零新增连接 / RPC / 定时器。
+
 ## 12. workspaceFiles.list / read 的路径语义与越界判定（2026-10-22 解包核实）
 
 - 版本：`@deepseek-ai/dsh-api-workspace-files@0.2.1-rc.2`（npm 拉包读 `lib/index.js`；0.2.0-rc.2 / 0.2.1-rc.1 的 confine 逻辑一致）。

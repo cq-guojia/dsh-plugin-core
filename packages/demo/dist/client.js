@@ -5247,11 +5247,15 @@ var ModelCatalogStore = class {
   }
 };
 var modelCatalog = new ModelCatalogStore();
+var NO_ARCHIVED_SESSIONS = [];
 var WorkspaceListStore = class {
   constructor() {
     this.items = [];
+    this.archivedSessionIds = NO_ARCHIVED_SESSIONS;
     this.listeners = /* @__PURE__ */ new Set();
     this.getSnapshot = () => this.items;
+    this.getArchiveSnapshot = () => this.archivedSessionIds;
+    this.isSessionArchived = (sessionId) => this.archivedSessionIds.includes(sessionId);
     this.subscribe = (listener) => {
       this.listeners.add(listener);
       return () => {
@@ -5263,7 +5267,9 @@ var WorkspaceListStore = class {
   setSource(source) {
     this.unsubscribe?.();
     const pull = () => {
-      this.items = source.getSnapshot().items;
+      const snap = source.getSnapshot();
+      this.items = snap.items;
+      this.archivedSessionIds = snap.archivedSessionIds ?? NO_ARCHIVED_SESSIONS;
       for (const listener of this.listeners)
         listener();
     };
@@ -59929,6 +59935,7 @@ function createTailFollower(host) {
 
 // dist/session/SessionViewModal.js
 var EMPTY_ORDER = [];
+var NOT_ARCHIVED = () => false;
 var officialWarned = false;
 function safeJson(value) {
   try {
@@ -60421,7 +60428,9 @@ function makeFileMentions(paths, open) {
 function SessionViewModal(props) {
   ensureComponentStyles("session", SESSION_CSS);
   const tt = props.t ?? t;
-  const { heading: heading2, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props;
+  const { heading: heading2, sessionId, view, onClose, forkSession, openHostSession, onContinue, onOpenFile } = props;
+  const archivedNow = (0, import_react82.useCallback)(() => workspaceList.isSessionArchived(sessionId), [sessionId]);
+  const isArchived = (0, import_react82.useSyncExternalStore)(workspaceList.subscribe, archivedNow, NOT_ARCHIVED);
   const subscribe = (0, import_react82.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
   const getSnapshot = (0, import_react82.useMemo)(() => () => view.target.getSnapshot(), [view]);
   const chat = (0, import_react82.useSyncExternalStore)(subscribe, getSnapshot);
@@ -60439,7 +60448,6 @@ function SessionViewModal(props) {
       return next;
     });
   }, []);
-  const isArchived = archived === true;
   const canFork = forkSession !== void 0 && openHostSession !== void 0;
   const canDirectOpen = openHostSession !== void 0;
   const showContinue = isArchived ? canFork : canDirectOpen;
@@ -60450,6 +60458,10 @@ function SessionViewModal(props) {
   (0, import_react82.useEffect)(() => () => {
     aliveRef.current = false;
   }, []);
+  (0, import_react82.useEffect)(() => {
+    if (!isArchived && !forking && forkTarget !== null && forkTarget.atSeq === void 0)
+      setForkTarget(null);
+  }, [isArchived, forking, forkTarget]);
   const flowRef = (0, import_react82.useRef)(null);
   const tailRef = (0, import_react82.useRef)(null);
   const firstSnapRef = (0, import_react82.useRef)(true);
@@ -60753,7 +60765,7 @@ function SessionViewModal(props) {
         title: tt("continueBranch"),
         icon: isArchived ? (0, import_react82.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react82.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
         onClick: () => {
-          if (isArchived) {
+          if (archivedNow()) {
             setForkErr(null);
             setForkTarget({});
           } else if (openHostSession !== void 0) {
@@ -60959,11 +60971,6 @@ var RealSessionsStore = class {
   }
 };
 var realSessions = new RealSessionsStore();
-var workspacesService = null;
-function archivedSet() {
-  const ids = workspacesService?.list?.getSnapshot().archivedSessionIds;
-  return ids === void 0 ? /* @__PURE__ */ new Set() : new Set(ids);
-}
 function repullRows() {
   const list = sessionsService?.list;
   if (list === void 0 || typeof list.getSnapshot !== "function") return;
@@ -60972,7 +60979,6 @@ function repullRows() {
     realSessions.markReady();
     return;
   }
-  const archived = archivedSet();
   const rows = [];
   for (const id3 of snap.ids) {
     const row = snap.byId[id3];
@@ -60982,8 +60988,7 @@ function repullRows() {
       displayTitle: row.displayTitle === "" ? id3 : row.displayTitle,
       updatedAt: row.updatedAt,
       running: row.running,
-      blank: row.blank,
-      archived: archived.has(id3)
+      blank: row.blank
     });
   }
   rows.sort((left, right) => right.updatedAt - left.updatedAt);
@@ -61028,16 +61033,6 @@ function connectRealSessions(ctx) {
     };
     pull();
     list.subscribe(pull);
-  });
-  ctx.inject(["workspaces"], (sub) => {
-    const workspaces = sub.workspaces;
-    const list = workspaces?.list;
-    if (workspaces === void 0 || list === void 0 || typeof list.getSnapshot !== "function") return;
-    workspacesService = workspaces;
-    repullRows();
-    if (typeof list.subscribe === "function") list.subscribe(() => {
-      repullRows();
-    });
   });
 }
 
@@ -62164,8 +62159,8 @@ var docData = {
         "en": "Renders one session as a **read-only dialog** that looks like the official session page. First `openSessionView` builds the chain and returns a `view` (`null` when unresolvable), then hand it to `SessionViewModal`; **call `view.dispose()` on close**."
       },
       {
-        "zh": "\u6570\u636E\u5168\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF0C\u7EC4\u4EF6\u4E0D\u81EA\u5DF1\u53D6\u3002`archived` \u4ECE\u5B98\u65B9 `workspaces` \u5FEB\u7167\u7684 `archivedSessionIds` \u8BFB\u53D6\u5E76\u8BA2\u9605\u5237\u65B0\u3002\u5F52\u6863\u4F1A\u8BDD\u8D70\u540C\u4E00\u6761\u94FE\uFF0C\u540C\u6837\u53EF\u8BFB\u3002",
-        "en": "All data is injected by the caller; the component fetches nothing. Read `archived` from `archivedSessionIds` on the official `workspaces` snapshot and keep it subscribed. Archived sessions travel the same chain and read fine."
+        "zh": "\u5F52\u6863\u6001\u4E0D\u9700\u8981\u8C03\u7528\u65B9\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 `workspaces.list` \u5FEB\u7167\u7684 `archivedSessionIds`\uFF08\u5BBF\u4E3B `domain/changed` \u2192 `workspace/follow` \u589E\u91CF\u63A8\u9001\uFF09\uFF0C\u5F39\u7A97\u5F00\u7740\u671F\u95F4\u5F52\u6863\u5FBD\u6807\u4E0E\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u5B9E\u65F6\u8DDF\u968F\uFF1B\u70B9\u51FB\u524D\u8FD8\u4F1A\u7528\u6743\u5A01\u5FEB\u7167\u590D\u6838\uFF0C\u4E0D\u4F1A\u76F4\u5F00\u5DF2\u5F52\u6863\u4F1A\u8BDD\u3002\u524D\u63D0\u662F\u63D2\u4EF6 client `apply` \u8C03\u8FC7\u4E00\u6B21 `connectHost(ctx)`\u3002\u5F52\u6863\u4F1A\u8BDD\u8D70\u540C\u4E00\u6761\u6570\u636E\u94FE\uFF0C\u540C\u6837\u53EF\u8BFB\u3002",
+        "en": 'Archive state needs no prop: core subscribes to `archivedSessionIds` on the official `workspaces.list` snapshot (host `domain/changed` \u2192 `workspace/follow` increments), so the badge and "Continue" follow changes while the dialog stays open; the click re-checks the authoritative snapshot so an archived session is never opened directly. Call `connectHost(ctx)` once in the plugin client `apply`. Archived sessions use the same data chain and read fine.'
       },
       {
         "zh": "\u5FEB\u7167\u53EA\u8BFB\uFF0C\u6846\u5185\u4E0D\u80FD\u6253\u5B57\u7EED\u804A\u3002\u7EED\u804A = `forkSession` \u5F00\u5206\u652F + `openHostSession` \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u6682\u5B58\u8F93\u5165\u6846\u7684\u786E\u5B9A\u8D70 `onContinue`\uFF08fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\uFF09\u3002",
@@ -62280,16 +62275,6 @@ var docData = {
             }
           },
           {
-            "name": "archived",
-            "type": "boolean",
-            "def": "false",
-            "required": "\u5426",
-            "desc": {
-              "zh": "\u5DF2\u5F52\u6863\u65F6\u6807\u9898\u65C1\u663E\u793A\u5F52\u6863\u5FBD\u6807\uFF0C\u4E14\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u5148\u5F39 fork \u786E\u8BA4\u6846\uFF1B\u672A\u5F52\u6863\u5219\u76F4\u8DF3\u5B98\u65B9\u4F1A\u8BDD\u9875",
-              "en": 'When true an archive badge appears beside the title and "Continue" asks to fork first; when false it jumps straight to the official session page'
-            }
-          },
-          {
             "name": "forkSession",
             "type": "(sessionId, atSeq?) => Promise<string>",
             "def": "\u2014",
@@ -62350,7 +62335,7 @@ var docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u4E24\u8005\u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    archived,                                   // \u662F\u5426\u5DF2\u5F52\u6863\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
+        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u4E24\u8005\u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    // \u5F52\u6863\u6001\u4E0D\u7528\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF08apply \u91CC connectHost \u63A5\u7EBF\u4E00\u6B21\u5373\u53EF\uFF09\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
       },
       {
         "id": "session-data-chain",
@@ -68502,7 +68487,7 @@ h(SessionViewModal, {
   sessionId: row.sessionId,
   view,
   heading: row.displayTitle,      // \u6807\u9898\u53EF\u81EA\u5B9A\u4E49\uFF1B\u4F1A\u8BDD id \u81EA\u52A8\u663E\u793A\u5728\u6807\u9898\u4E0B\u65B9\uFF08\u526F\u6807\u9898\u884C\uFF09
-  archived: row.archived,         // \u6765\u81EA workspaces \u5FEB\u7167\u7684 archivedSessionIds
+  // \u5F52\u6863\u6001\u4E0D\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF0C\u5F39\u7A97\u5F00\u7740\u671F\u95F4\u5FBD\u6807\u4E0E\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u5B9E\u65F6\u8DDF\u968F
   onClose: () => { view.dispose(); setOpenId(null) },
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
   openHostSession: (id) => uiWorkspace.openSession(id),
@@ -68623,6 +68608,7 @@ function RealSessionListDemo() {
   const state = (0, import_react89.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
   const files = (0, import_react89.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
   const wsItems = (0, import_react89.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const archivedIds = (0, import_react89.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getArchiveSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
   const [openId, setOpenId] = (0, import_react89.useState)(null);
   const view = (0, import_react89.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
@@ -68684,7 +68670,7 @@ function RealSessionListDemo() {
         },
         (0, import_react89.createElement)("span", { style: { flex: "1", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row.displayTitle),
         row.running ? (0, import_react89.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
-        row.archived ? (0, import_react89.createElement)(
+        archivedIds.includes(row.sessionId) ? (0, import_react89.createElement)(
           Chip,
           { size: "xs" },
           (0, import_react89.createElement)(
@@ -68700,9 +68686,8 @@ function RealSessionListDemo() {
     openId !== null && view !== null ? (0, import_react89.createElement)(SessionViewModal, {
       sessionId: openId,
       view,
-      // 标题 = 会话自己的标题；归档态分化「继续对话」行为（开分支确认 vs 直跳官方）。
+      // 标题 = 会话自己的标题；归档态由核心订阅官方快照，不在这里传。
       heading: state.rows.find((row) => row.sessionId === openId)?.displayTitle,
-      archived: state.rows.find((row) => row.sessionId === openId)?.archived,
       onClose: () => {
         view.dispose();
         setOpenId(null);
@@ -69431,9 +69416,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.29.3"}`],
-            [t3("buildDemo"), `v${"0.29.3"}`],
-            [t3("buildStamp"), "261104-174427-311"]
+            [t3("buildCore"), `v${"0.30.0"}`],
+            [t3("buildDemo"), `v${"0.30.0"}`],
+            [t3("buildStamp"), "261104-194908-720"]
           ].map(
             ([label, value]) => (0, import_react93.createElement)(
               "tr",
@@ -69745,9 +69730,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react95.createElement)("span", null, `core v${"0.29.3"}`),
-          (0, import_react95.createElement)("span", null, `demo v${"0.29.3"}`),
-          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-174427-311")
+          (0, import_react95.createElement)("span", null, `core v${"0.30.0"}`),
+          (0, import_react95.createElement)("span", null, `demo v${"0.30.0"}`),
+          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-194908-720")
         )
       )
     ),

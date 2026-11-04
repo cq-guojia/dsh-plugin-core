@@ -46,9 +46,13 @@ import { t as defaultT } from '../utils/i18n.js'
 import { ensureComponentStyles } from '../ui/css.js'
 import { SESSION_CSS } from './session-css.js'
 import { createTailFollower, type TailFollower } from './tail-follow.js'
+import { workspaceList } from '../ui/host-data.js'
 
 /** 稳定的空序列（避免默认值每次新建数组）。 */
 const EMPTY_ORDER: readonly string[] = []
+
+/** SSR / 数据面未接线时的归档态：如实按未归档，不编造。 */
+const NOT_ARCHIVED = (): boolean => false
 
 /** 官方样式缺失告警只打一次（避免每次渲染刷屏）。 */
 let officialWarned = false
@@ -706,13 +710,6 @@ export interface SessionViewModalProps {
   sessionId: string
   view: SessionViewTarget
   onClose: () => void
-  /**
-   * 会话是否已归档（由调用方注入：官方 client 服务 `workspaces` 的快照字段 `archivedSessionIds`，
-   * registry-global、随 follow 流实时更新，见 docs/design/external/dsh-host.md §11）。
-   * 分化「继续对话」行为：已归档 = 开分支图标 + 确认框（fork 后跳官方区）；
-   * 未归档 / 未提供 = 会话图标，点击直跳官方会话页。undefined = 调用方不知道，按未归档处理。
-   */
-  archived?: boolean
   /** fork 源会话：`sessions.fork({ sessionId, increaseTitle: true })`，解析为子会话 id。 */
   forkSession?: (sessionId: string, atSeq?: number) => Promise<string>
   /** 官方导航跳转：`uiWorkspace.openSession(id)`（会话区打开目标会话）。 */
@@ -739,7 +736,11 @@ export interface SessionViewModalProps {
 export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeof h> {
   ensureComponentStyles('session', SESSION_CSS)
   const tt = props.t ?? defaultT
-  const { heading, sessionId, view, onClose, archived, forkSession, openHostSession, onContinue, onOpenFile } = props
+  const { heading, sessionId, view, onClose, forkSession, openHostSession, onContinue, onOpenFile } = props
+  // 归档态唯一真源 = 官方 `workspaces.list` 快照的 archivedSessionIds（core 的 connectHost 已订阅
+  // 同一条 follow 流）。弹窗开着期间归档 / 取消归档，徽标与「继续对话」即时跟随，调用方零接线。
+  const archivedNow = useCallback((): boolean => workspaceList.isSessionArchived(sessionId), [sessionId])
+  const isArchived = useSyncExternalStore(workspaceList.subscribe, archivedNow, NOT_ARCHIVED)
   const subscribe = useMemo(() => (onChange: () => void): (() => void) => view.target.subscribe(onChange), [view])
   const getSnapshot = useMemo(() => (): ChatViewFace | undefined => view.target.getSnapshot(), [view])
   const chat = useSyncExternalStore(subscribe, getSnapshot)
@@ -765,7 +766,6 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   // 「继续对话」按归档状态分化（用户 2026-10-22 拍板）：
   //   已归档   ⇒ 开分支图标 + 确认框（fork 出子会话再跳官方区；官方策略归档会话不进主视图）
   //   未归档   ⇒ 会话图标，点击直跳官方会话页（uiWorkspace.openSession，无确认）
-  const isArchived = archived === true
   const canFork = forkSession !== undefined && openHostSession !== undefined
   const canDirectOpen = openHostSession !== undefined
   const showContinue = isArchived ? canFork : canDirectOpen
@@ -774,6 +774,11 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   const [forkErr, setForkErr] = useState<string | null>(null)
   const aliveRef = useRef(true)
   useEffect(() => () => { aliveRef.current = false }, [])
+  // 取消归档时收掉「因为归档才弹的」fork 确认框（atSeq 缺省 = 头部按钮触发）；
+  // 消息行分支确认框带 atSeq，fork 在途都不打断。
+  useEffect(() => {
+    if (!isArchived && !forking && forkTarget !== null && forkTarget.atSeq === undefined) setForkTarget(null)
+  }, [isArchived, forking, forkTarget])
 
   // 会话区自动贴底（用户 2026-11-04 二次拍板）：只有「首次打开」和「有新内容且当时在底部」
   // 两种情况允许贴底。状态机是纯逻辑（tail-follow.ts）：贴底只由**宿主快照内容版本变化**触发，
@@ -1120,7 +1125,9 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
               ? h(IconBranchOutlineRegular, { size: 14 })
               : h(IconNewChatOutlineRegular, { size: 14 }),
             onClick: () => {
-              if (isArchived) { setForkErr(null); setForkTarget({}) }
+              // 官方 openForkSource 判据：动作前读权威快照（client 内存，零远端 IO），
+              // 避免渲染与快照之间的竞态把已归档会话直开。
+              if (archivedNow()) { setForkErr(null); setForkTarget({}) }
               else if (openHostSession !== undefined) { onClose(); openHostSession(sessionId) }
             },
           }, tt('continueBranch'))

@@ -25,7 +25,7 @@ if (view !== null) {
     onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),
     // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）
     onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),
-    archived,                                   // 是否已归档
+    // 归档态不用传：核心订阅官方 workspaces 快照（apply 里 connectHost 接线一次即可）
     t,                                          // 可选，覆盖文案
   })
 }`
@@ -51,8 +51,8 @@ const doc: DocTopic = {
           en: 'Renders one session as a **read-only dialog** that looks like the official session page. First `openSessionView` builds the chain and returns a `view` (`null` when unresolvable), then hand it to `SessionViewModal`; **call `view.dispose()` on close**.',
         },
         {
-          zh: '数据全由调用方注入，组件不自己取。`archived` 从官方 `workspaces` 快照的 `archivedSessionIds` 读取并订阅刷新。归档会话走同一条链，同样可读。',
-          en: 'All data is injected by the caller; the component fetches nothing. Read `archived` from `archivedSessionIds` on the official `workspaces` snapshot and keep it subscribed. Archived sessions travel the same chain and read fine.',
+          zh: '归档态不需要调用方传：核心订阅官方 `workspaces.list` 快照的 `archivedSessionIds`（宿主 `domain/changed` → `workspace/follow` 增量推送），弹窗开着期间归档徽标与「继续对话」实时跟随；点击前还会用权威快照复核，不会直开已归档会话。前提是插件 client `apply` 调过一次 `connectHost(ctx)`。归档会话走同一条数据链，同样可读。',
+          en: 'Archive state needs no prop: core subscribes to `archivedSessionIds` on the official `workspaces.list` snapshot (host `domain/changed` → `workspace/follow` increments), so the badge and "Continue" follow changes while the dialog stays open; the click re-checks the authoritative snapshot so an archived session is never opened directly. Call `connectHost(ctx)` once in the plugin client `apply`. Archived sessions use the same data chain and read fine.',
         },
         {
           zh: '快照只读，框内不能打字续聊。续聊 = `forkSession` 开分支 + `openHostSession` 跳官方会话区；暂存输入框的确定走 `onContinue`（fork + 发首轮 + 跳转）。',
@@ -115,7 +115,6 @@ const doc: DocTopic = {
             { name: 'view', type: 'SessionViewTarget', def: '—', required: '是', desc: { zh: 'openSessionView 的返回值', en: 'What openSessionView returned' } },
             { name: 'onClose', type: '() => void', def: '—', required: '是', desc: { zh: '关闭回调；由调用方在里面调 view.dispose()', en: 'Close callback; the caller calls view.dispose() inside it' } },
             { name: 'heading', type: 'string', def: '「会话预览」', required: '否', desc: { zh: '弹窗标题，通常传宿主 sessions.list 的 displayTitle；会话 id 显示在标题下方副标题行（等宽小字）', en: 'Dialog title, usually the displayTitle from the host sessions.list; the session id sits on the monospace subtitle line below it' } },
-            { name: 'archived', type: 'boolean', def: 'false', required: '否', desc: { zh: '已归档时标题旁显示归档徽标，且「继续对话」先弹 fork 确认框；未归档则直跳官方会话页', en: 'When true an archive badge appears beside the title and "Continue" asks to fork first; when false it jumps straight to the official session page' } },
             {
               name: 'forkSession',
               type: '(sessionId, atSeq?) => Promise<string>',

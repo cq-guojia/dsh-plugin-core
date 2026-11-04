@@ -9,13 +9,6 @@ export interface SessionViewModalProps {
     sessionId: string;
     view: SessionViewTarget;
     onClose: () => void;
-    /**
-     * 会话是否已归档（由调用方注入：官方 client 服务 `workspaces` 的快照字段 `archivedSessionIds`，
-     * registry-global、随 follow 流实时更新，见 docs/design/external/dsh-host.md §11）。
-     * 分化「继续对话」行为：已归档 = 开分支图标 + 确认框（fork 后跳官方区）；
-     * 未归档 / 未提供 = 会话图标，点击直跳官方会话页。undefined = 调用方不知道，按未归档处理。
-     */
-    archived?: boolean;
     /** fork 源会话：`sessions.fork({ sessionId, increaseTitle: true })`，解析为子会话 id。 */
     forkSession?: (sessionId: string, atSeq?: number) => Promise<string>;
     /** 官方导航跳转：`uiWorkspace.openSession(id)`（会话区打开目标会话）。 */

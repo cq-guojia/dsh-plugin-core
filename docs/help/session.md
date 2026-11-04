@@ -14,9 +14,9 @@
 
 > EN: Renders one session as a **read-only dialog** that looks like the official session page. First `openSessionView` builds the chain and returns a `view` (`null` when unresolvable), then hand it to `SessionViewModal`; **call `view.dispose()` on close**.
 
-数据全由调用方注入，组件不自己取。`archived` 从官方 `workspaces` 快照的 `archivedSessionIds` 读取并订阅刷新。归档会话走同一条链，同样可读。
+归档态不需要调用方传：核心订阅官方 `workspaces.list` 快照的 `archivedSessionIds`（宿主 `domain/changed` → `workspace/follow` 增量推送），弹窗开着期间归档徽标与「继续对话」实时跟随；点击前还会用权威快照复核，不会直开已归档会话。前提是插件 client `apply` 调过一次 `connectHost(ctx)`。归档会话走同一条数据链，同样可读。
 
-> EN: All data is injected by the caller; the component fetches nothing. Read `archived` from `archivedSessionIds` on the official `workspaces` snapshot and keep it subscribed. Archived sessions travel the same chain and read fine.
+> EN: Archive state needs no prop: core subscribes to `archivedSessionIds` on the official `workspaces.list` snapshot (host `domain/changed` → `workspace/follow` increments), so the badge and "Continue" follow changes while the dialog stays open; the click re-checks the authoritative snapshot so an archived session is never opened directly. Call `connectHost(ctx)` once in the plugin client `apply`. Archived sessions use the same data chain and read fine.
 
 快照只读，框内不能打字续聊。续聊 = `forkSession` 开分支 + `openHostSession` 跳官方会话区；暂存输入框的确定走 `onContinue`（fork + 发首轮 + 跳转）。
 
@@ -48,7 +48,6 @@
 | `view` | `SessionViewTarget` | 是 | — | openSessionView 的返回值 | What openSessionView returned |
 | `onClose` | `() => void` | 是 | — | 关闭回调；由调用方在里面调 view.dispose() | Close callback; the caller calls view.dispose() inside it |
 | `heading` | `string` | 否 | 「会话预览」 | 弹窗标题，通常传宿主 sessions.list 的 displayTitle；会话 id 显示在标题下方副标题行（等宽小字） | Dialog title, usually the displayTitle from the host sessions.list; the session id sits on the monospace subtitle line below it |
-| `archived` | `boolean` | 否 | false | 已归档时标题旁显示归档徽标，且「继续对话」先弹 fork 确认框；未归档则直跳官方会话页 | When true an archive badge appears beside the title and "Continue" asks to fork first; when false it jumps straight to the official session page |
 | `forkSession` | `(sessionId, atSeq?) => Promise<string>` | — | — | 开分支并返回子会话 id；缺 openHostSession 则不渲染「继续对话」 | Fork and resolve the child session id; without openHostSession "Continue" does not render |
 | `openHostSession` | `(sessionId: string) => void` | — | — | 跳官方会话区（uiWorkspace.openSession） | Jump into the official session area (uiWorkspace.openSession) |
 | `onContinue` | `(message: string) => Promise<void>` | — | — | 暂存输入框的确定：调用方完成 fork + 发首轮 + 跳转；缺省 = 不渲染输入框 | Staging input confirm: caller forks, sends the first turn, navigates; absent = no input rendered |
@@ -81,7 +80,7 @@ if (view !== null) {
     onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),
     // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）
     onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),
-    archived,                                   // 是否已归档
+    // 归档态不用传：核心订阅官方 workspaces 快照（apply 里 connectHost 接线一次即可）
     t,                                          // 可选，覆盖文案
   })
 }
