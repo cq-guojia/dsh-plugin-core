@@ -22,7 +22,7 @@ import {
   DIFF_MAX_RENDERED_LINES,
 } from '../dist/session/changes.js'
 import { durationText, formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/session/mirror/message-chrome.js'
-import { observedRpcIds, visiblePendingInputs, pendingFiles } from '../dist/session/pending-inputs.js'
+import { observedRpcIds, visiblePendingInputs, pendingFiles, waitingUserRows } from '../dist/session/pending-inputs.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
 // ── official-classes：官方 CSS module 类名运行时发现 ──
@@ -399,4 +399,56 @@ test('pendingFiles：只取官方已有的真实名字 / 大小，不造附件',
     { type: 'file', value: null },
   ] }), [{ name: 'a.md', bytes: 12 }, { name: 'b.png', bytes: 0 }])
   assert.deepEqual(pendingFiles({ requestId: 'r2' }), [])
+})
+
+// ── 首轮等待期：host inbox 投影 + 本地回显两路合并 ──
+
+test('waitingUserRows：本地回显被 retire 后，inbox 投影仍能画出首条提示词', () => {
+  const inbox = {
+    'next-turn': [
+      { id: 'm1', source: { kind: 'user', rpcId: 'r1' }, content: [{ type: 'text', text: '帮我把日程排好' }] },
+    ],
+    'next-step': [],
+  }
+  assert.deepEqual(waitingUserRows(inbox, undefined, new Set()), [
+    { key: 'm1', text: '帮我把日程排好', files: [], pending: true, echo: false },
+  ])
+})
+
+test('waitingUserRows：rpcId 命中本地回显时不重复画，附件只取真实字段', () => {
+  const inbox = {
+    'next-step': [
+      { id: 'm1', source: { kind: 'user', rpcId: 'r1' }, content: [{ type: 'text', text: '帮我把日程排好' }] },
+    ],
+  }
+  const pending = [
+    { requestId: 'r1', placement: 'transcript', text: '帮我把日程排好', attachments: [{ type: 'file', value: { name: 'a.md', bytes: 12 } }] },
+  ]
+  assert.deepEqual(waitingUserRows(inbox, pending, new Set()), [
+    { key: 'r1', text: '帮我把日程排好', files: [{ name: 'a.md', bytes: 12 }], pending: false, echo: true },
+  ])
+})
+
+test('waitingUserRows：durable 已落盘 / queued / 非 user 消息不画，附件字段缺席按 0 不编造', () => {
+  const inbox = {
+    'next-turn': [
+      { id: 'm1', source: { kind: 'user', rpcId: 'r1' }, content: [{ type: 'text', text: '已落盘' }] },
+      { id: 'm2', source: { kind: 'agent' }, content: [{ type: 'text', text: '系统注入' }] },
+      { id: 'm3', source: { kind: 'user', rpcId: 'r3' }, content: [{ type: 'file', attachment: { name: 'b.pdf' } }] },
+    ],
+  }
+  const pending = [
+    { requestId: 'r1', placement: 'transcript', text: '已落盘' },
+    { requestId: 'r4', placement: 'queued', text: '排队中的' },
+  ]
+  assert.deepEqual(waitingUserRows(inbox, pending, new Set(['r1'])), [
+    { key: 'm3', text: '', files: [{ name: 'b.pdf', bytes: 0 }], pending: true, echo: false },
+  ])
+})
+
+test('waitingUserRows：投影缺席时只画本地回显，不编造消息', () => {
+  assert.deepEqual(waitingUserRows(undefined, undefined, new Set()), [])
+  assert.deepEqual(waitingUserRows({}, [{ requestId: 'r1', placement: 'steering', text: '补充一句' }], new Set()), [
+    { key: 'r1', text: '补充一句', files: [], pending: true, echo: false },
+  ])
 })

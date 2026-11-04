@@ -218,5 +218,27 @@ export type ConversationNodeLike = NodeBaseLike & {
     type?: string;
     data?: unknown;
 };
+/**
+ * 官方 `inbox` 投影里的一条消息（session-projection 的 next-turn / next-step 队列）。
+ * content 块形态经 api-session-controller 0.2.0-rc.1 `attachmentRefsIn`（lib/client.js:2316-2325）
+ * 核实：text = `{type:'text', text}`；附件 = `{type:'image'|'file', attachment:{name, bytes}}`。
+ */
+export interface InboxMessageFace {
+    readonly id?: string;
+    readonly source?: {
+        readonly kind?: string;
+        readonly rpcId?: string;
+    };
+    readonly content?: unknown;
+}
+/** 官方 `inbox` 投影值（api-session-controller lib/client.js:2101 读 `inbox[target]`）。 */
+export interface InboxProjectionFace {
+    readonly 'next-turn'?: readonly InboxMessageFace[];
+    readonly 'next-step'?: readonly InboxMessageFace[];
+}
+/** 官方 ProjectionValueStore 的公开面（projection-store.d.ts 的 `faceOf(key)`）。 */
+export interface ProjectionStoreFace {
+    faceOf(key: string): SnapshotFace<unknown>;
+}
 export {};
 //# sourceMappingURL=faces.d.ts.map

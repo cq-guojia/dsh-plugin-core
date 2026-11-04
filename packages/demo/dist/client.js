@@ -607,6 +607,7 @@ var DICT = {
     forkConfirmAccept: "\u5F00\u5206\u652F\u5E76\u8DF3\u8F6C",
     forkWorking: "\u6B63\u5728\u5F00\u5206\u652F\u2026",
     forkFailed: "\u5F00\u5206\u652F\u5931\u8D25\uFF1A{error}",
+    forkUnavailable: "\u5F00\u5206\u652F\u80FD\u529B\u672A\u5C31\u4F4D\uFF1A\u8C03\u7528\u65B9\u6CA1\u6709\u63D0\u4F9B forkSession\uFF0C\u65E0\u6CD5\u7EE7\u7EED\u5BF9\u8BDD\u3002",
     deliverRowTitle: "\u4EA4\u4ED8\u6587\u4EF6",
     deliverRowPreparing: "\u51C6\u5907\u4EA4\u4ED8",
     deliverRowRunning: "\u6B63\u5728\u4EA4\u4ED8",
@@ -1115,6 +1116,7 @@ var DICT = {
     forkConfirmAccept: "Fork & open",
     forkWorking: "Forking\u2026",
     forkFailed: "Fork failed: {error}",
+    forkUnavailable: "Fork capability unavailable: the caller did not provide forkSession, so this conversation cannot be continued.",
     deliverRowTitle: "Present files",
     deliverRowPreparing: "Preparing deliverables",
     deliverRowRunning: "Delivering",
@@ -59846,6 +59848,95 @@ function pendingFiles(item) {
   }
   return out;
 }
+var EMPTY_FILES = [];
+function inboxUserMessages(inbox) {
+  if (typeof inbox !== "object" || inbox === null)
+    return [];
+  const rec = inbox;
+  const out = [];
+  for (const target of ["next-turn", "next-step"]) {
+    const list = rec[target];
+    if (!Array.isArray(list))
+      continue;
+    for (const item of list) {
+      if (typeof item !== "object" || item === null)
+        continue;
+      const msg = item;
+      if (msg.source?.kind !== "user")
+        continue;
+      out.push(msg);
+    }
+  }
+  return out;
+}
+function inboxContent(msg) {
+  if (!Array.isArray(msg.content))
+    return { text: "", files: EMPTY_FILES };
+  const texts = [];
+  const files = [];
+  for (const block2 of msg.content) {
+    if (typeof block2 !== "object" || block2 === null)
+      continue;
+    const part = block2;
+    if (part.type === "text" && typeof part.text === "string") {
+      texts.push(part.text);
+      continue;
+    }
+    if (part.type !== "image" && part.type !== "file")
+      continue;
+    if (typeof part.attachment !== "object" || part.attachment === null)
+      continue;
+    const value = part.attachment;
+    if (typeof value.name !== "string" || value.name === "")
+      continue;
+    files.push({ name: value.name, bytes: typeof value.bytes === "number" ? value.bytes : 0 });
+  }
+  return { text: texts.join(""), files };
+}
+function fromSubmission(item) {
+  return {
+    key: item.requestId,
+    text: item.text ?? "",
+    files: pendingFiles(item),
+    pending: item.placement === "steering",
+    echo: item.placement !== "steering"
+  };
+}
+function waitingUserRows(inbox, pending, observed) {
+  const local = new Map(visiblePendingInputs(pending, observed).map((item) => [item.requestId, item]));
+  const rows = [];
+  const messages = inboxUserMessages(inbox);
+  for (const [i2, msg] of messages.entries()) {
+    const rpcId = msg.source?.rpcId;
+    if (rpcId !== void 0) {
+      const echo = local.get(rpcId);
+      if (echo !== void 0) {
+        rows.push(fromSubmission(echo));
+        local.delete(rpcId);
+        continue;
+      }
+      if (observed.has(rpcId))
+        continue;
+    }
+    const content2 = inboxContent(msg);
+    if (content2.text === "" && content2.files.length === 0)
+      continue;
+    rows.push({
+      key: msg.id ?? `inbox-${String(i2)}`,
+      text: content2.text,
+      files: content2.files,
+      pending: true,
+      echo: false
+    });
+  }
+  for (const item of local.values()) {
+    const row = fromSubmission(item);
+    if (row.text === "" && row.files.length === 0)
+      continue;
+    rows.push(row);
+  }
+  return rows;
+}
 
 // dist/session/tail-follow.js
 var TAIL_NEAR_BOTTOM_PX = 24;
@@ -59936,6 +60027,7 @@ function createTailFollower(host) {
 // dist/session/SessionViewModal.js
 var EMPTY_ORDER = [];
 var NOT_ARCHIVED = () => false;
+var NO_INBOX = () => void 0;
 var officialWarned = false;
 function safeJson(value) {
   try {
@@ -60437,6 +60529,9 @@ function SessionViewModal(props) {
   const sessionSub = (0, import_react82.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
   const sessionGet = (0, import_react82.useMemo)(() => () => view.session.getSnapshot(), [view]);
   const sessionSnap = (0, import_react82.useSyncExternalStore)(sessionSub, sessionGet);
+  const inboxSub = (0, import_react82.useMemo)(() => (onChange) => view.inbox.subscribe(onChange), [view]);
+  const inboxGet = (0, import_react82.useMemo)(() => () => view.inbox.getSnapshot(), [view]);
+  const inboxSnap = (0, import_react82.useSyncExternalStore)(inboxSub, inboxGet, NO_INBOX);
   const [openTurns, setOpenTurns] = (0, import_react82.useState)(() => /* @__PURE__ */ new Map());
   const onSetOpen = (0, import_react82.useCallback)((turn, answerStep, open) => {
     setOpenTurns((prev) => {
@@ -60449,8 +60544,7 @@ function SessionViewModal(props) {
     });
   }, []);
   const canFork = forkSession !== void 0 && openHostSession !== void 0;
-  const canDirectOpen = openHostSession !== void 0;
-  const showContinue = isArchived ? canFork : canDirectOpen;
+  const showContinue = openHostSession !== void 0;
   const [forkTarget, setForkTarget] = (0, import_react82.useState)(null);
   const [forking, setForking] = (0, import_react82.useState)(false);
   const [forkErr, setForkErr] = (0, import_react82.useState)(null);
@@ -60500,7 +60594,7 @@ function SessionViewModal(props) {
       return;
     }
     tailRef.current?.content();
-  }, [chat, sessionSnap]);
+  }, [chat, sessionSnap, inboxSnap]);
   const onForkAccept = (0, import_react82.useCallback)(() => {
     if (forking || forkSession === void 0 || openHostSession === void 0)
       return;
@@ -60560,22 +60654,15 @@ function SessionViewModal(props) {
   const keyed = order.length > 0 && store !== void 0;
   const turns = chat?.timeline?.turns;
   const observedRpc = (0, import_react82.useMemo)(() => keyed && store !== void 0 ? observedRpcIds(order, (key) => store.get(key)) : /* @__PURE__ */ new Set(), [keyed, order, store]);
-  const pendingInputs = (0, import_react82.useMemo)(() => visiblePendingInputs(sessionSnap?.pendingSubmissions, observedRpc), [sessionSnap, observedRpc]);
-  const pendingRows = [];
-  for (const item of pendingInputs) {
-    const text2 = item.text ?? "";
-    const files = pendingFiles(item);
-    if (text2 === "" && files.length === 0)
-      continue;
-    pendingRows.push((0, import_react82.createElement)(UserMessage, {
-      key: item.requestId,
-      text: text2,
-      files,
-      pending: item.placement === "steering",
-      echo: item.placement !== "steering",
-      t: tt
-    }));
-  }
+  const waitingRows = (0, import_react82.useMemo)(() => waitingUserRows(inboxSnap, sessionSnap?.pendingSubmissions, observedRpc), [inboxSnap, sessionSnap, observedRpc]);
+  const pendingRows = waitingRows.map((row) => (0, import_react82.createElement)(UserMessage, {
+    key: row.key,
+    text: row.text,
+    files: row.files,
+    pending: row.pending,
+    echo: row.echo,
+    t: tt
+  }));
   const fileOpen = (0, import_react82.useMemo)(() => {
     if (onOpenFile === void 0)
       return void 0;
@@ -60816,9 +60903,9 @@ function SessionViewModal(props) {
         (0, import_react82.createElement)(Button, { key: "cancel", variant: "outline", disabled: forking, onClick: () => {
           setForkTarget(null);
         } }, tt("cancel")),
-        (0, import_react82.createElement)(Button, { key: "accept", variant: "primary", disabled: forking, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
+        (0, import_react82.createElement)(Button, { key: "accept", variant: "primary", disabled: forking || !canFork, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
       ]
-    }, (0, import_react82.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), forkErr !== null ? (0, import_react82.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
+    }, (0, import_react82.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), canFork ? null : (0, import_react82.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkUnavailable")), forkErr !== null ? (0, import_react82.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
   );
 }
 
@@ -60847,6 +60934,12 @@ function openSessionReview(options) {
 
 // dist/session/open-session-view.js
 var DEFAULT_RETAIN_SOURCE = "dsh-plugin-core";
+var NOOP_DISPOSE = () => {
+};
+var EMPTY_INBOX_FACE = {
+  getSnapshot: () => void 0,
+  subscribe: () => NOOP_DISPOSE
+};
 function openSessionView(sessions, uiConversation, id3, retainSource = DEFAULT_RETAIN_SOURCE) {
   const log = (level, msg, extra) => {
     if (level === "warn")
@@ -60904,6 +60997,8 @@ function openSessionView(sessions, uiConversation, id3, retainSource = DEFAULT_R
     return null;
   }
   const session = binding.session;
+  const projections = session.projections;
+  const inbox = projections?.faceOf?.("inbox") ?? EMPTY_INBOX_FACE;
   try {
     const opened = session.open?.();
     if (opened !== void 0 && typeof opened.catch === "function") {
@@ -60930,6 +61025,7 @@ function openSessionView(sessions, uiConversation, id3, retainSource = DEFAULT_R
   return {
     target,
     session,
+    inbox,
     dispose: releaseRef,
     loadOlder() {
       try {
@@ -62163,6 +62259,14 @@ var docData = {
         "en": 'Archive state needs no prop: core subscribes to `archivedSessionIds` on the official `workspaces.list` snapshot (host `domain/changed` \u2192 `workspace/follow` increments), so the badge and "Continue" follow changes while the dialog stays open; the click re-checks the authoritative snapshot so an archived session is never opened directly. Call `connectHost(ctx)` once in the plugin client `apply`. Archived sessions use the same data chain and read fine.'
       },
       {
+        "zh": "\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u59CB\u7EC8\u4FDD\u7559\uFF1A\u672A\u5F52\u6863\u662F\u4F1A\u8BDD\u56FE\u6807\u3001\u70B9\u51FB\u76F4\u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u5DF2\u5F52\u6863\u6362\u6210\u5F00\u5206\u652F\u56FE\u6807\u3001\u70B9\u51FB\u5148\u5F39\u786E\u8BA4\u6846\uFF08fork \u51FA\u5B50\u4F1A\u8BDD\u518D\u8DF3\u8F6C\uFF09\u3002\u6309\u94AE\u53EA\u5728\u7F3A `openHostSession` \u65F6\u7F3A\u5E2D\uFF1B\u7F3A `forkSession` \u65F6\u786E\u8BA4\u6846\u5185\u5982\u5B9E\u8BF4\u660E\u80FD\u529B\u672A\u5C31\u4F4D\uFF0C\u4E0D\u9759\u9ED8\u9690\u85CF\u5165\u53E3\u3002",
+        "en": '"Continue" is always kept: for an active session it shows the conversation icon and jumps straight to the official session; for an archived one it switches to the branch icon and opens a confirm dialog before forking into a child session. The button disappears only when `openHostSession` is absent; without `forkSession` the dialog states plainly that the capability is unavailable instead of silently hiding the entry.'
+      },
+      {
+        "zh": "\u65B0\u4F1A\u8BDD\u9996\u8F6E\uFF1A\u9996\u4E2A\u6A21\u578B\u4E8B\u4EF6\u843D\u76D8\u524D\uFF0C\u7528\u6237\u63D0\u793A\u8BCD\u53EA\u5728\u5B98\u65B9 `inbox` \u6295\u5F71\u4E0E `session.pendingSubmissions` \u672C\u5730\u56DE\u663E\u91CC\uFF0C`chat.order` \u8FD8\u6CA1\u6709 user \u8282\u70B9\u3002\u6838\u5FC3\u4E24\u8DEF\u5408\u5E76\u6E32\u67D3\uFF08\u6309 rpcId \u53BB\u91CD\uFF09\uFF0C\u6240\u4EE5\u521A\u53D1\u5B8C\u63D0\u793A\u8BCD\u5C31\u6253\u5F00\u9884\u89C8\u4E5F\u80FD\u7ACB\u523B\u770B\u5230\u81EA\u5DF1\u53D1\u7684\u8BDD\uFF1B\u6295\u5F71\u4E0E\u56DE\u663E\u90FD\u7F3A\u5E2D\u65F6\u4E0D\u7F16\u9020\u6C14\u6CE1\u3002",
+        "en": "First turn: before the first model event is durable, the user prompt lives only in the official `inbox` projection and the `session.pendingSubmissions` local echo \u2014 `chat.order` has no user node yet. Core merges both sources (deduped by rpcId), so opening the preview right after sending a prompt still shows what you wrote; nothing is invented when neither source is present."
+      },
+      {
         "zh": "\u5FEB\u7167\u53EA\u8BFB\uFF0C\u6846\u5185\u4E0D\u80FD\u6253\u5B57\u7EED\u804A\u3002\u7EED\u804A = `forkSession` \u5F00\u5206\u652F + `openHostSession` \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u6682\u5B58\u8F93\u5165\u6846\u7684\u786E\u5B9A\u8D70 `onContinue`\uFF08fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\uFF09\u3002",
         "en": "The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input\u2019s confirm goes through `onContinue` (fork + first turn + navigate)."
       },
@@ -62207,8 +62311,17 @@ var docData = {
             "type": "SnapshotFace<SessionSnapshotFace>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u4F1A\u8BDD\u81EA\u8EAB\u5FEB\u7167\uFF08\u52A0\u8F7D\u6001 / \u662F\u5426\u7FFB\u5C3D\uFF09",
-              "en": "Snapshot of the session itself (loading state, paged-out)"
+              "zh": "\u4F1A\u8BDD\u81EA\u8EAB\u5FEB\u7167\uFF08\u52A0\u8F7D\u6001 / \u662F\u5426\u7FFB\u5C3D / \u672C\u5730\u63D0\u4EA4\u56DE\u663E\uFF09",
+              "en": "Snapshot of the session itself (loading state, paged-out, local submission echoes)"
+            }
+          },
+          {
+            "name": "inbox",
+            "type": "SnapshotFace<unknown>",
+            "def": "\u2014",
+            "desc": {
+              "zh": '\u5B98\u65B9 `inbox` \u6295\u5F71\u8BA2\u9605\u9762\uFF08faceOf("inbox")\uFF09\uFF1B\u9996\u8F6E\u7B49\u5F85\u671F\u7528\u6237\u6D88\u606F\u7684 host \u4FA7\u771F\u6E90\uFF0C\u7531 openSessionView \u63A5\u597D\uFF0C\u8C03\u7528\u65B9\u96F6\u63A5\u7EBF',
+              "en": 'Official `inbox` projection surface (faceOf("inbox")); the host-side source of first-turn user messages, wired by openSessionView \u2014 no caller setup'
             }
           },
           {
@@ -62279,8 +62392,8 @@ var docData = {
             "type": "(sessionId, atSeq?) => Promise<string>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5F00\u5206\u652F\u5E76\u8FD4\u56DE\u5B50\u4F1A\u8BDD id\uFF1B\u7F3A openHostSession \u5219\u4E0D\u6E32\u67D3\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D",
-              "en": 'Fork and resolve the child session id; without openHostSession "Continue" does not render'
+              "zh": "\u5F00\u5206\u652F\u5E76\u8FD4\u56DE\u5B50\u4F1A\u8BDD id\uFF1B\u5DF2\u5F52\u6863\u4F1A\u8BDD\u7684\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u59CB\u7EC8\u6E32\u67D3\uFF0C\u7F3A\u5B83\u65F6\u786E\u8BA4\u6846\u5185\u5982\u5B9E\u8BF4\u660E\u80FD\u529B\u672A\u5C31\u4F4D",
+              "en": 'Fork and resolve the child session id; "Continue" stays rendered for archived sessions, and the dialog states plainly when this capability is missing'
             }
           },
           {
@@ -62335,12 +62448,12 @@ var docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u4E24\u8005\u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    // \u5F52\u6863\u6001\u4E0D\u7528\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF08apply \u91CC connectHost \u63A5\u7EBF\u4E00\u6B21\u5373\u53EF\uFF09\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
+        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u7F3A openHostSession \u624D\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    // \u5F52\u6863\u6001\u4E0D\u7528\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF08apply \u91CC connectHost \u63A5\u7EBF\u4E00\u6B21\u5373\u53EF\uFF09\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
       },
       {
         "id": "session-data-chain",
         "lang": "ts",
-        "src": "// \u6570\u636E\u94FE\uFF08\u8D8A\u5F80\u4E0A\u8D8A\u65E9\uFF09\uFF1A\n//   sessions.retain(id, { source })  \u7269\u5316 scope\n//     \u2192 sessions.binding(id)         \u53D6\u7ED1\u5B9A\n//     \u2192 session.open()               \u5E42\u7B49\u62C9\u5386\u53F2\u5C3E\u9875\n//     \u2192 uiConversation.binding(binding).target('chat')\n//                                     \u62FF ChatSnapshot\uFF1Aorder + nodes\uFF08keyed \u6D41\uFF09\n// \u7528\u5B8C\u5FC5\u987B view.dispose()\uFF0C\u5426\u5219\u4F1A\u8BDD scope \u4E0D\u56DE\u6536\u3002"
+        "src": "// \u6570\u636E\u94FE\uFF08\u8D8A\u5F80\u4E0A\u8D8A\u65E9\uFF09\uFF1A\n//   sessions.retain(id, { source })  \u7269\u5316 scope\n//     \u2192 sessions.binding(id)         \u53D6\u7ED1\u5B9A\n//     \u2192 session.open()               \u5E42\u7B49\u62C9\u5386\u53F2\u5C3E\u9875\n//     \u2192 uiConversation.binding(binding).target('chat')\n//                                     \u62FF ChatSnapshot\uFF1Aorder + nodes\uFF08keyed \u6D41\uFF09\n//     \u2192 session.projections.faceOf('inbox')\n//                                     \u9996\u8F6E\u7B49\u5F85\u671F\u7528\u6237\u6D88\u606F\uFF08host \u6295\u5F71\uFF0C\u51B7\u8BFB\u4E5F\u62FF\u5F97\u5230\uFF09\n// \u7528\u5B8C\u5FC5\u987B view.dispose()\uFF0C\u5426\u5219\u4F1A\u8BDD scope \u4E0D\u56DE\u6536\u3002"
       }
     ]
   },
@@ -69416,9 +69529,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.30.1"}`],
-            [t3("buildDemo"), `v${"0.30.1"}`],
-            [t3("buildStamp"), "261104-202211-367"]
+            [t3("buildCore"), `v${"0.30.2"}`],
+            [t3("buildDemo"), `v${"0.30.2"}`],
+            [t3("buildStamp"), "261104-232006-676"]
           ].map(
             ([label, value]) => (0, import_react93.createElement)(
               "tr",
@@ -69730,9 +69843,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react95.createElement)("span", null, `core v${"0.30.1"}`),
-          (0, import_react95.createElement)("span", null, `demo v${"0.30.1"}`),
-          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-202211-367")
+          (0, import_react95.createElement)("span", null, `core v${"0.30.2"}`),
+          (0, import_react95.createElement)("span", null, `demo v${"0.30.2"}`),
+          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-232006-676")
         )
       )
     ),

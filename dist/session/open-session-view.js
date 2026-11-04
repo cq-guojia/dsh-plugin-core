@@ -21,6 +21,12 @@
 //      「无活动通道」⇒ 归档会话一律走上面的 retain 主路，不搞冷读。
 /** 默认 retain source（写进宿主 retainedBy；调用方可覆盖成自己的插件名）。 */
 export const DEFAULT_RETAIN_SOURCE = 'dsh-plugin-core';
+/** 投影面缺席时的稳定空快照：能力缺席按 undefined 呈现，不编造数据。 */
+const NOOP_DISPOSE = () => { };
+const EMPTY_INBOX_FACE = {
+    getSnapshot: () => undefined,
+    subscribe: () => NOOP_DISPOSE,
+};
 /** 打开只读视图：物化 binding → 探测拉尾页 → 建 chat target。会话不可解析时返回 null。 */
 export function openSessionView(sessions, uiConversation, id, 
 /** retain 引用记进宿主 retainedBy 的键；默认 'dsh-plugin-core'。 */
@@ -88,6 +94,10 @@ retainSource = DEFAULT_RETAIN_SOURCE) {
         return null;
     }
     const session = binding.session;
+    // 官方 ChatFlow 用 useProjection('inbox') 画等待期用户消息；其解析路径的公开面是
+    // ProjectionValueStore.faceOf(key)（projection-store.d.ts）。运行时探测，缺席 = 能力缺席。
+    const projections = session.projections;
+    const inbox = projections?.faceOf?.('inbox') ?? EMPTY_INBOX_FACE;
     // 数据闸门：官方 Session.open() 幂等拉历史尾页。类型未公开 ⇒ 探测调用；
     // 失败软着陆（界面显示空态与重试提示，不崩面板）。
     try {
@@ -119,6 +129,7 @@ retainSource = DEFAULT_RETAIN_SOURCE) {
     return {
         target,
         session,
+        inbox,
         dispose: releaseRef,
         loadOlder() {
             try {

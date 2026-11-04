@@ -481,6 +481,7 @@ export type UtilMessageKey =
   | 'forkConfirmAccept'
   | 'forkWorking'
   | 'forkFailed'
+  | 'forkUnavailable'
   | 'deliverRowTitle'
   | 'deliverRowPreparing'
   | 'deliverRowRunning'
@@ -998,6 +999,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     forkConfirmAccept: '开分支并跳转',
     forkWorking: '正在开分支…',
     forkFailed: '开分支失败：{error}',
+    forkUnavailable: '开分支能力未就位：调用方没有提供 forkSession，无法继续对话。',
     deliverRowTitle: '交付文件',
     deliverRowPreparing: '准备交付',
     deliverRowRunning: '正在交付',
@@ -1506,6 +1508,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     forkConfirmAccept: 'Fork & open',
     forkWorking: 'Forking…',
     forkFailed: 'Fork failed: {error}',
+    forkUnavailable: 'Fork capability unavailable: the caller did not provide forkSession, so this conversation cannot be continued.',
     deliverRowTitle: 'Present files',
     deliverRowPreparing: 'Preparing deliverables',
     deliverRowRunning: 'Delivering',

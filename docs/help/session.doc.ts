@@ -12,7 +12,7 @@ if (view !== null) {
     view,
     heading: '镜像升级日报',                    // 标题，缺省「会话预览」
     onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose
-    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口
+    // 续聊（可选）：fork 开分支 → 跳官方会话区；缺 openHostSession 才不渲染该入口
     forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
     openHostSession: (id) => uiWorkspace.openSession(id),
     // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转
@@ -36,6 +36,8 @@ const dataChain = `// 数据链（越往上越早）：
 //     → session.open()               幂等拉历史尾页
 //     → uiConversation.binding(binding).target('chat')
 //                                     拿 ChatSnapshot：order + nodes（keyed 流）
+//     → session.projections.faceOf('inbox')
+//                                     首轮等待期用户消息（host 投影，冷读也拿得到）
 // 用完必须 view.dispose()，否则会话 scope 不回收。`
 
 const doc: DocTopic = {
@@ -53,6 +55,14 @@ const doc: DocTopic = {
         {
           zh: '归档态不需要调用方传：核心订阅官方 `workspaces.list` 快照的 `archivedSessionIds`（宿主 `domain/changed` → `workspace/follow` 增量推送），弹窗开着期间归档徽标与「继续对话」实时跟随；点击前还会用权威快照复核，不会直开已归档会话。前提是插件 client `apply` 调过一次 `connectHost(ctx)`。归档会话走同一条数据链，同样可读。',
           en: 'Archive state needs no prop: core subscribes to `archivedSessionIds` on the official `workspaces.list` snapshot (host `domain/changed` → `workspace/follow` increments), so the badge and "Continue" follow changes while the dialog stays open; the click re-checks the authoritative snapshot so an archived session is never opened directly. Call `connectHost(ctx)` once in the plugin client `apply`. Archived sessions use the same data chain and read fine.',
+        },
+        {
+          zh: '「继续对话」始终保留：未归档是会话图标、点击直跳官方会话区；已归档换成开分支图标、点击先弹确认框（fork 出子会话再跳转）。按钮只在缺 `openHostSession` 时缺席；缺 `forkSession` 时确认框内如实说明能力未就位，不静默隐藏入口。',
+          en: '"Continue" is always kept: for an active session it shows the conversation icon and jumps straight to the official session; for an archived one it switches to the branch icon and opens a confirm dialog before forking into a child session. The button disappears only when `openHostSession` is absent; without `forkSession` the dialog states plainly that the capability is unavailable instead of silently hiding the entry.',
+        },
+        {
+          zh: '新会话首轮：首个模型事件落盘前，用户提示词只在官方 `inbox` 投影与 `session.pendingSubmissions` 本地回显里，`chat.order` 还没有 user 节点。核心两路合并渲染（按 rpcId 去重），所以刚发完提示词就打开预览也能立刻看到自己发的话；投影与回显都缺席时不编造气泡。',
+          en: 'First turn: before the first model event is durable, the user prompt lives only in the official `inbox` projection and the `session.pendingSubmissions` local echo — `chat.order` has no user node yet. Core merges both sources (deduped by rpcId), so opening the preview right after sending a prompt still shows what you wrote; nothing is invented when neither source is present.',
         },
         {
           zh: '快照只读，框内不能打字续聊。续聊 = `forkSession` 开分支 + `openHostSession` 跳官方会话区；暂存输入框的确定走 `onContinue`（fork + 发首轮 + 跳转）。',
@@ -92,7 +102,13 @@ const doc: DocTopic = {
               name: 'session',
               type: 'SnapshotFace<SessionSnapshotFace>',
               def: '—',
-              desc: { zh: '会话自身快照（加载态 / 是否翻尽）', en: 'Snapshot of the session itself (loading state, paged-out)' },
+              desc: { zh: '会话自身快照（加载态 / 是否翻尽 / 本地提交回显）', en: 'Snapshot of the session itself (loading state, paged-out, local submission echoes)' },
+            },
+            {
+              name: 'inbox',
+              type: 'SnapshotFace<unknown>',
+              def: '—',
+              desc: { zh: '官方 `inbox` 投影订阅面（faceOf("inbox")）；首轮等待期用户消息的 host 侧真源，由 openSessionView 接好，调用方零接线', en: 'Official `inbox` projection surface (faceOf("inbox")); the host-side source of first-turn user messages, wired by openSessionView — no caller setup' },
             },
             {
               name: 'loadOlder',
@@ -119,7 +135,7 @@ const doc: DocTopic = {
               name: 'forkSession',
               type: '(sessionId, atSeq?) => Promise<string>',
               def: '—',
-              desc: { zh: '开分支并返回子会话 id；缺 openHostSession 则不渲染「继续对话」', en: 'Fork and resolve the child session id; without openHostSession "Continue" does not render' },
+              desc: { zh: '开分支并返回子会话 id；已归档会话的「继续对话」始终渲染，缺它时确认框内如实说明能力未就位', en: 'Fork and resolve the child session id; "Continue" stays rendered for archived sessions, and the dialog states plainly when this capability is missing' },
             },
             {
               name: 'openHostSession',

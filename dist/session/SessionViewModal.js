@@ -29,7 +29,7 @@ import { DeliverablesGridMirror, PresentRowMirror } from './mirror/Deliverables.
 import { ChangedFilesCard } from './mirror/ChangedFilesCard.js';
 import { turnDeliverablesChangesSeq, turnDeliverablesValue } from './changes.js';
 import { buildProcessGroups } from './mirror/process-groups.js';
-import { observedRpcIds, pendingFiles, visiblePendingInputs } from './pending-inputs.js';
+import { observedRpcIds, waitingUserRows } from './pending-inputs.js';
 import { officialClass, officialModuleCount } from './official-classes.js';
 import { t as defaultT } from '../utils/i18n.js';
 import { ensureComponentStyles } from '../ui/css.js';
@@ -40,6 +40,8 @@ import { workspaceList } from '../ui/host-data.js';
 const EMPTY_ORDER = [];
 /** SSR / 数据面未接线时的归档态：如实按未归档，不编造。 */
 const NOT_ARCHIVED = () => false;
+/** SSR / 宿主未注册 inbox 投影时按能力缺席，不编造等待期消息。 */
+const NO_INBOX = () => undefined;
 /** 官方样式缺失告警只打一次（避免每次渲染刷屏）。 */
 let officialWarned = false;
 // ─────────────────────────── 纯函数：内容块 → 可读文本 / 文件 ───────────────────────────
@@ -694,6 +696,11 @@ export function SessionViewModal(props) {
     const sessionSub = useMemo(() => (onChange) => view.session.subscribe(onChange), [view]);
     const sessionGet = useMemo(() => () => view.session.getSnapshot(), [view]);
     const sessionSnap = useSyncExternalStore(sessionSub, sessionGet);
+    // host `inbox` 投影（faceOf('inbox')）：首轮 durable 事件落盘前用户消息的权威来源，
+    // 冷读 / 新打开预览时也拿得到；本地回显被 retire 后靠它继续画气泡。
+    const inboxSub = useMemo(() => (onChange) => view.inbox.subscribe(onChange), [view]);
+    const inboxGet = useMemo(() => () => view.inbox.getSnapshot(), [view]);
+    const inboxSnap = useSyncExternalStore(inboxSub, inboxGet, NO_INBOX);
     // 折叠状态：turn → 已展开的 answerStep（官方 store 的 storedTurnProcessEntry，同语义）。
     const [openTurns, setOpenTurns] = useState(() => new Map());
     const onSetOpen = useCallback((turn, answerStep, open) => {
@@ -712,8 +719,9 @@ export function SessionViewModal(props) {
     //   已归档   ⇒ 开分支图标 + 确认框（fork 出子会话再跳官方区；官方策略归档会话不进主视图）
     //   未归档   ⇒ 会话图标，点击直跳官方会话页（uiWorkspace.openSession，无确认）
     const canFork = forkSession !== undefined && openHostSession !== undefined;
-    const canDirectOpen = openHostSession !== undefined;
-    const showContinue = isArchived ? canFork : canDirectOpen;
+    // 「继续对话」只在缺跳转出口时缺席；已归档同样保留按钮（图标变分支 + 开分支确认框），
+    // 不能因为调用方没接 fork 能力就把按钮抹掉。能力缺席在确认框里如实呈现。
+    const showContinue = openHostSession !== undefined;
     const [forkTarget, setForkTarget] = useState(null);
     const [forking, setForking] = useState(false);
     const [forkErr, setForkErr] = useState(null);
@@ -758,15 +766,15 @@ export function SessionViewModal(props) {
             scroller.removeEventListener('scroll', onScroll);
         };
     }, []);
-    // 唯一「有新内容」信号 = 宿主快照版本变化（chat / sessionSnap 引用变了）。
-    // pending 回显出现 / 消失也算（它来自 session 快照，不是 chat 快照）。首次挂载由 open() 负责。
+    // 唯一「有新内容」信号 = 宿主快照版本变化（chat / sessionSnap / inboxSnap 引用变了）。
+    // pending 回显与 inbox 投影出现 / 消失也算（不来自 chat 快照）。首次挂载由 open() 负责。
     useLayoutEffect(() => {
         if (firstSnapRef.current) {
             firstSnapRef.current = false;
             return;
         }
         tailRef.current?.content();
-    }, [chat, sessionSnap]);
+    }, [chat, sessionSnap, inboxSnap]);
     const onForkAccept = useCallback(() => {
         if (forking || forkSession === undefined || openHostSession === undefined)
             return;
@@ -832,26 +840,19 @@ export function SessionViewModal(props) {
     const store = chat?.nodes;
     const keyed = order.length > 0 && store !== undefined;
     const turns = chat?.timeline?.turns;
-    // 官方 ChatFlow 的 pendingRows（ui-chat 0.2.1-rc.5 lib/client.js:5686-5706）：
-    // 首轮 durable 事件落盘前，用户消息只在 session.pendingSubmissions 里（本地回显），
-    // order 里没有 user 节点 ⇒ 这条链不补，新会话就只剩「深度求索中」而看不到自己发的话。
+    // 官方 ChatFlow 的 pendingRows（ui-chat 0.2.1-rc.5 lib/client.js:2815-2839 / 5686-5706）：
+    // 首轮 durable 事件落盘前，用户消息在 host `inbox` 投影与 session.pendingSubmissions
+    // 本地回显里，order 里没有 user 节点 ⇒ 两路不补，新会话就只剩「深度求索中」看不到自己发的话。
     const observedRpc = useMemo(() => keyed && store !== undefined ? observedRpcIds(order, key => store.get(key)) : new Set(), [keyed, order, store]);
-    const pendingInputs = useMemo(() => visiblePendingInputs(sessionSnap?.pendingSubmissions, observedRpc), [sessionSnap, observedRpc]);
-    const pendingRows = [];
-    for (const item of pendingInputs) {
-        const text = item.text ?? '';
-        const files = pendingFiles(item);
-        if (text === '' && files.length === 0)
-            continue;
-        pendingRows.push(h(UserMessage, {
-            key: item.requestId,
-            text,
-            files,
-            pending: item.placement === 'steering',
-            echo: item.placement !== 'steering',
-            t: tt,
-        }));
-    }
+    const waitingRows = useMemo(() => waitingUserRows(inboxSnap, sessionSnap?.pendingSubmissions, observedRpc), [inboxSnap, sessionSnap, observedRpc]);
+    const pendingRows = waitingRows.map(row => h(UserMessage, {
+        key: row.key,
+        text: row.text,
+        files: row.files,
+        pending: row.pending,
+        echo: row.echo,
+        t: tt,
+    }));
     // markdown 行内文件词表（来自 keyed 工具流；onOpenFile 未就位 = 整个上下文不启用）。
     const fileOpen = useMemo(() => {
         if (onOpenFile === undefined)
@@ -1125,8 +1126,8 @@ export function SessionViewModal(props) {
         translate: tt,
         footer: [
             h(Button, { key: 'cancel', variant: 'outline', disabled: forking, onClick: () => { setForkTarget(null); } }, tt('cancel')),
-            h(Button, { key: 'accept', variant: 'primary', disabled: forking, onClick: onForkAccept }, forking ? tt('forkWorking') : tt('forkConfirmAccept')),
+            h(Button, { key: 'accept', variant: 'primary', disabled: forking || !canFork, onClick: onForkAccept }, forking ? tt('forkWorking') : tt('forkConfirmAccept')),
         ],
-    }, h('p', { className: 'dshpc-sv-forktext' }, tt('forkConfirmText')), forkErr !== null ? h('p', { className: 'dshpc-sv-forkerr' }, tt('forkFailed', { error: forkErr })) : null));
+    }, h('p', { className: 'dshpc-sv-forktext' }, tt('forkConfirmText')), canFork ? null : h('p', { className: 'dshpc-sv-forkerr' }, tt('forkUnavailable')), forkErr !== null ? h('p', { className: 'dshpc-sv-forkerr' }, tt('forkFailed', { error: forkErr })) : null));
 }
 //# sourceMappingURL=SessionViewModal.js.map

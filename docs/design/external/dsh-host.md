@@ -311,7 +311,7 @@
 - 来源：`dsh-client-locale/lib/client.js`（`syncDocumentLanguage`、`detectBrowserLocale`、
   `apply` 里的 `ctx.effect(() => locale.subscribe(sync))`、`register(COMMON_NS, { zh, en })`）。
 
-## 15. 会话首轮等待期：用户消息只在 `SessionSnapshot.pendingSubmissions`（2026-11-04 解包核实）
+## 15. 会话首轮等待期：本地回显 + host `inbox` 投影（2026-11-04 解包核实，当日补充修正）
 
 - 版本：`@deepseek-ai/dsh-api-session-controller@0.2.0-rc.1`（`lib/client.js`、
   `lib/types/client/contract/snapshot.d.ts`）；`@deepseek-ai/dsh-client-ui-chat@0.2.1-rc.5`（`lib/client.js`）。
@@ -330,4 +330,22 @@
 - 后果：只渲染 `chat` target 的 `order`，新会话首轮在首个模型事件落盘前**完全没有用户消息**，
   只剩运行态行；durable 节点到达时才把 user + assistant 一起显示。本包
   `src/session/pending-inputs.ts` 补这条链，`SessionViewModal` 按官方顺序挂回显气泡。
-- 来源：上列两包 `lib/client.js` / `contract/snapshot.d.ts` 的实现本体（非按 `.d.ts` 推测）。
+- 补充修正（2026-11-04，版本同上；旧结论「只补本地回显这一路」不完整，插件真机首条提示词仍不显示）：
+  · `beginSubmission()` 的 placement = `this.running ? (mode === 'steer' ? 'steering' : 'queued') : 'transcript'`
+    （controller `lib/client.js:1686`）；运行中发出的普通提交标成 `queued`，官方 `visibleSubmissions` 也不画。
+  · 本地回显会被 host 投影 retire：`observeSubmissionInbox()`（`:2216-2226`）在 inbox 到达后
+    `retireAdmittedSubmission`，`scheduleObservedRetirement()`（`:2231-2245`）延一帧移除 ⇒ 等待期不能只靠
+    `pendingSubmissions`。
+  · `inbox` 是 host 侧 durable 投影：`projections.values.inbox` 含 `next-turn` / `next-step` 两队列
+    （`:2101`），由 `agent/inbox/spliced` 事件驱动；历史尾页的 `projections` baseline 会 seed（`:2094`），
+    **冷读 / 新打开会话也拿得到**。消息形态 `{ id, source: { kind, rpcId }, content }`；content 块由
+    `attachmentRefsIn()`（`:2316-2325`）核实为 `{type:'text',text}` 与
+    `{type:'image'|'file',attachment:{name,bytes}}`。
+  · 读它的公开面 = `ProjectionValueStore.faceOf(key)`（`lib/types/client/sessions/projection-store.d.ts`
+    的方法声明；实现 `:942` / `:1051-1059`），返回 `{ getSnapshot, subscribe }` 的 observable face；
+    官方 `useProjection('inbox')` 走同一解析路径（ui-chat `lib/client.js:2757` 取 `inboxSteering`）。
+  · 官方 `ChatFlow` 只从 `next-step` 取 steering（`:2815`），但首轮唤醒新 turn 的消息落在 `next-turn`
+    （`:9846-9849` 的 inbox 定义）⇒ 插件两条队列都要读。
+  · 本包落地：`openSessionView` 把 `faceOf('inbox')` 接进 `SessionViewTarget.inbox`；
+    `src/session/pending-inputs.ts` 的 `waitingUserRows` 按官方 `pendingInputs` 口径合并两路、按 rpcId 去重。
+- 来源：上列两包 `lib/client.js` / `contract/snapshot.d.ts` / `projection-store.d.ts` 的实现本体（非按 `.d.ts` 推测）。

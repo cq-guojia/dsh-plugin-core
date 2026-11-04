@@ -18,6 +18,14 @@
 
 > EN: Archive state needs no prop: core subscribes to `archivedSessionIds` on the official `workspaces.list` snapshot (host `domain/changed` → `workspace/follow` increments), so the badge and "Continue" follow changes while the dialog stays open; the click re-checks the authoritative snapshot so an archived session is never opened directly. Call `connectHost(ctx)` once in the plugin client `apply`. Archived sessions use the same data chain and read fine.
 
+「继续对话」始终保留：未归档是会话图标、点击直跳官方会话区；已归档换成开分支图标、点击先弹确认框（fork 出子会话再跳转）。按钮只在缺 `openHostSession` 时缺席；缺 `forkSession` 时确认框内如实说明能力未就位，不静默隐藏入口。
+
+> EN: "Continue" is always kept: for an active session it shows the conversation icon and jumps straight to the official session; for an archived one it switches to the branch icon and opens a confirm dialog before forking into a child session. The button disappears only when `openHostSession` is absent; without `forkSession` the dialog states plainly that the capability is unavailable instead of silently hiding the entry.
+
+新会话首轮：首个模型事件落盘前，用户提示词只在官方 `inbox` 投影与 `session.pendingSubmissions` 本地回显里，`chat.order` 还没有 user 节点。核心两路合并渲染（按 rpcId 去重），所以刚发完提示词就打开预览也能立刻看到自己发的话；投影与回显都缺席时不编造气泡。
+
+> EN: First turn: before the first model event is durable, the user prompt lives only in the official `inbox` projection and the `session.pendingSubmissions` local echo — `chat.order` has no user node yet. Core merges both sources (deduped by rpcId), so opening the preview right after sending a prompt still shows what you wrote; nothing is invented when neither source is present.
+
 快照只读，框内不能打字续聊。续聊 = `forkSession` 开分支 + `openHostSession` 跳官方会话区；暂存输入框的确定走 `onContinue`（fork + 发首轮 + 跳转）。
 
 > EN: The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input’s confirm goes through `onContinue` (fork + first turn + navigate).
@@ -38,7 +46,8 @@
 |---|---|---|---|---|---|
 | `openSessionView` | `(sessions, uiConversation, id, retainSource?) => SessionViewTarget \| null` | 是 | — | 建数据链：retain → binding → open → target(chat)；不可解析返回 null | Builds the chain retain → binding → open → target(chat); null when unresolvable |
 | `target` | `SnapshotFace<ChatViewFace \| undefined>` | — | — | chat 快照订阅面（供 useSyncExternalStore） | Chat snapshot surface (for useSyncExternalStore) |
-| `session` | `SnapshotFace<SessionSnapshotFace>` | — | — | 会话自身快照（加载态 / 是否翻尽） | Snapshot of the session itself (loading state, paged-out) |
+| `session` | `SnapshotFace<SessionSnapshotFace>` | — | — | 会话自身快照（加载态 / 是否翻尽 / 本地提交回显） | Snapshot of the session itself (loading state, paged-out, local submission echoes) |
+| `inbox` | `SnapshotFace<unknown>` | — | — | 官方 `inbox` 投影订阅面（faceOf("inbox")）；首轮等待期用户消息的 host 侧真源，由 openSessionView 接好，调用方零接线 | Official `inbox` projection surface (faceOf("inbox")); the host-side source of first-turn user messages, wired by openSessionView — no caller setup |
 | `loadOlder` | `() => void` | — | — | 向前翻一页更早的历史 | Page backward through older history |
 | `dispose` | `() => void` | — | — | 释放 retain 引用；弹窗关闭必调 | Release the retain reference; call on close |
 
@@ -48,7 +57,7 @@
 | `view` | `SessionViewTarget` | 是 | — | openSessionView 的返回值 | What openSessionView returned |
 | `onClose` | `() => void` | 是 | — | 关闭回调；由调用方在里面调 view.dispose() | Close callback; the caller calls view.dispose() inside it |
 | `heading` | `string` | 否 | 「会话预览」 | 弹窗标题，通常传宿主 sessions.list 的 displayTitle；会话 id 显示在标题下方副标题行（等宽小字） | Dialog title, usually the displayTitle from the host sessions.list; the session id sits on the monospace subtitle line below it |
-| `forkSession` | `(sessionId, atSeq?) => Promise<string>` | — | — | 开分支并返回子会话 id；缺 openHostSession 则不渲染「继续对话」 | Fork and resolve the child session id; without openHostSession "Continue" does not render |
+| `forkSession` | `(sessionId, atSeq?) => Promise<string>` | — | — | 开分支并返回子会话 id；已归档会话的「继续对话」始终渲染，缺它时确认框内如实说明能力未就位 | Fork and resolve the child session id; "Continue" stays rendered for archived sessions, and the dialog states plainly when this capability is missing |
 | `openHostSession` | `(sessionId: string) => void` | — | — | 跳官方会话区（uiWorkspace.openSession） | Jump into the official session area (uiWorkspace.openSession) |
 | `onContinue` | `(message: string) => Promise<void>` | — | — | 暂存输入框的确定：调用方完成 fork + 发首轮 + 跳转；缺省 = 不渲染输入框 | Staging input confirm: caller forks, sends the first turn, navigates; absent = no input rendered |
 | `onOpenFile` | `(path: string, sessionId: string, options?: { line?: number }) => void` | — | — | 文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；第三参可带 `line`（read 工具卡的 `offset`，直接转给 `openFilePreview` 的 `opts.line`）；缺省 = 链接纯文本 | File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; the third may carry `line` (a read call’s `offset`, forward it to `openFilePreview`’s `opts.line`); absent = plain text |
@@ -67,7 +76,7 @@ if (view !== null) {
     view,
     heading: '镜像升级日报',                    // 标题，缺省「会话预览」
     onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose
-    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口
+    // 续聊（可选）：fork 开分支 → 跳官方会话区；缺 openHostSession 才不渲染该入口
     forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
     openHostSession: (id) => uiWorkspace.openSession(id),
     // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转
@@ -93,5 +102,7 @@ if (view !== null) {
 //     → session.open()               幂等拉历史尾页
 //     → uiConversation.binding(binding).target('chat')
 //                                     拿 ChatSnapshot：order + nodes（keyed 流）
+//     → session.projections.faceOf('inbox')
+//                                     首轮等待期用户消息（host 投影，冷读也拿得到）
 // 用完必须 view.dispose()，否则会话 scope 不回收。
 ```

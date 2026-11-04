@@ -22,6 +22,7 @@
 
 import type {
   ChatViewFace,
+  ProjectionStoreFace,
   SessionBindingFace,
   SessionSnapshotFace,
   SessionsFace,
@@ -35,12 +36,21 @@ export interface SessionViewTarget {
   /** 向前翻一页更早的历史（官方 loadOlder；未 open / 翻尽时官方自行空转）。 */
   loadOlder(): void
   readonly session: SnapshotFace<SessionSnapshotFace>
+  /** 官方 `inbox` 投影面（faceOf('inbox')）：首轮等待期用户消息的 host 侧真源。 */
+  readonly inbox: SnapshotFace<unknown>
   /** 释放 sessions.retain 引用（弹窗关闭时必调；否则会话 scope 永不回收）。 */
   dispose(): void
 }
 
 /** 默认 retain source（写进宿主 retainedBy；调用方可覆盖成自己的插件名）。 */
 export const DEFAULT_RETAIN_SOURCE = 'dsh-plugin-core'
+
+/** 投影面缺席时的稳定空快照：能力缺席按 undefined 呈现，不编造数据。 */
+const NOOP_DISPOSE = (): void => {}
+const EMPTY_INBOX_FACE: SnapshotFace<unknown> = {
+  getSnapshot: () => undefined,
+  subscribe: () => NOOP_DISPOSE,
+}
 
 /** 打开只读视图：物化 binding → 探测拉尾页 → 建 chat target。会话不可解析时返回 null。 */
 export function openSessionView(
@@ -100,6 +110,10 @@ export function openSessionView(
     return null
   }
   const session = binding.session
+  // 官方 ChatFlow 用 useProjection('inbox') 画等待期用户消息；其解析路径的公开面是
+  // ProjectionValueStore.faceOf(key)（projection-store.d.ts）。运行时探测，缺席 = 能力缺席。
+  const projections = (session as { projections?: ProjectionStoreFace }).projections
+  const inbox: SnapshotFace<unknown> = projections?.faceOf?.('inbox') ?? EMPTY_INBOX_FACE
   // 数据闸门：官方 Session.open() 幂等拉历史尾页。类型未公开 ⇒ 探测调用；
   // 失败软着陆（界面显示空态与重试提示，不崩面板）。
   try {
@@ -126,6 +140,7 @@ export function openSessionView(
   return {
     target,
     session,
+    inbox,
     dispose: releaseRef,
     loadOlder(): void {
       try {

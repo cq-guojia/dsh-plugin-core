@@ -5,6 +5,8 @@ export interface SessionViewTarget {
     /** 向前翻一页更早的历史（官方 loadOlder；未 open / 翻尽时官方自行空转）。 */
     loadOlder(): void;
     readonly session: SnapshotFace<SessionSnapshotFace>;
+    /** 官方 `inbox` 投影面（faceOf('inbox')）：首轮等待期用户消息的 host 侧真源。 */
+    readonly inbox: SnapshotFace<unknown>;
     /** 释放 sessions.retain 引用（弹窗关闭时必调；否则会话 scope 永不回收）。 */
     dispose(): void;
 }
