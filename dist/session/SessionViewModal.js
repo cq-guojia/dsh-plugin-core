@@ -282,6 +282,7 @@ tailFacts) {
                 text,
                 files,
                 referenceLabels: dataOf(node).referenceLabels,
+                skillNames: dataOf(node).skillNames,
                 t,
             });
         }

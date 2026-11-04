@@ -196,7 +196,7 @@ export function SideSheet(props: SideSheetProps): ReactNode {
         : h(
             'div',
             { className: 'dshpc-sheet__foot' },
-            notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice' }),
+            notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice', sweep: true }),
             props.footer,
           ),
     ),

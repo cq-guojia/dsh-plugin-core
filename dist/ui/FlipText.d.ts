@@ -20,6 +20,11 @@ export interface FlipTextProps {
     minWidth?: number | string;
     /** 最大宽（width 未设时生效）；超出折叠成省略号，hover 以跑马灯展开。 */
     maxWidth?: number | string;
+    /**
+     * 常驻扫光：一道斜光每 1.5s 扫过文字，让**停在原地**的提示也看得出在动。
+     * 默认关；`Modal` / `SideSheet` 的 `notice` 默认打开（确认框 / 底部过程提示的场景）。
+     */
+    sweep?: boolean;
     /** 追加 class（只允许补字体 / 颜色这类皮肤）。 */
     className?: string;
 }

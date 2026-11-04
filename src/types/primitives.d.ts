@@ -414,6 +414,70 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   /** 官方 diff 统计（+新增 / -删除）。 */
   export function diffTotals(diffs: ReadonlyArray<{ oldText: string | null; newText: string }>): { added: number; removed: number }
 
+  /** 官方搜索结果卡文案（SearchBlockLabels）。 */
+  export interface SearchBlockLabels {
+    pathsSummary: (shown: number, total: number, truncated: boolean) => string
+    matchesSummary: (shown: number, total: number, files: number, truncated: boolean) => string
+    copy: string
+    copied: string
+    noResults: string
+    collapseAria: string
+    expandAria: (hidden: number) => string
+    collapse: string
+    expand: (hidden: number) => string
+  }
+
+  /** 官方搜索结果卡：grep 分组匹配 / glob 扁平路径两形态（kind 判别）。 */
+  export const SearchBlock: ComponentType<
+    | {
+        kind: 'matches'
+        files: ReadonlyArray<{ path: string; matches: ReadonlyArray<{ lineNumber: number; line: string }> }>
+        labels: SearchBlockLabels
+        truncated: boolean
+        total: number
+        maxLines?: number
+        className?: string
+      }
+    | {
+        kind: 'paths'
+        paths: readonly string[]
+        labels: SearchBlockLabels
+        truncated: boolean
+        total: number
+        maxLines?: number
+        className?: string
+      }
+  >
+
+  /** 官方网页卡文案（WebBlockLabels；markdown 复用 MarkdownText 的 labels）。 */
+  export interface WebBlockLabels {
+    noResults: string
+    sourcesTruncated: string
+    http: string
+    contentTruncated: string
+    markdown: MarkdownLabels
+  }
+
+  /** 官方网页检索卡：web_search 答案+来源 / web_fetch 取回摘要两形态。 */
+  export const WebBlock: ComponentType<
+    | {
+        kind: 'search'
+        labels: WebBlockLabels
+        answer?: string
+        sources: ReadonlyArray<{ url: string; title?: string; snippet?: string; publishedAt?: string }>
+        truncated: boolean
+        className?: string
+      }
+    | {
+        kind: 'fetch'
+        labels: WebBlockLabels
+        url: string
+        statusCode: number
+        truncated: boolean
+        className?: string
+      }
+  >
+
   // ── 悬停预览卡与语法高亮（0.2.1-rc.2 lib/types/{HoverCard,code-highlighting}.d.ts 核实）──
 
   /**

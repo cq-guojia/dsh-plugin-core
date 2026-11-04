@@ -66,6 +66,6 @@ export function Modal(props) {
     // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
     h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined && notice === undefined
         ? null
-        : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice' }), props.footer)));
+        : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }), props.footer)));
 }
 //# sourceMappingURL=Modal.js.map

@@ -20,7 +20,7 @@ const NAMES = [
   'IconPlanOutlineRegular', 'IconQuestionOutlineRegular', 'IconQueueOutlineRegular',
   'IconRefreshOutlineRegular', 'IconSearchOutlineRegular', 'IconSparkleRegular',
   'IconThinkOutlineRegular', 'MarkdownDelegateProvider', 'MarkdownText', 'ReadBlock',
-  'StateDot', 'TerminalBlock', 'TextShimmer', 'Tooltip',
+  'SearchBlock', 'StateDot', 'TerminalBlock', 'TextShimmer', 'Tooltip', 'WebBlock',
   'diffTotals', 'fileExtension', 'languageForPath',
   'useAnchoredPosition', 'useCodeHighlighter', 'useDismissOnOutsidePointer', 'writeClipboard',
 ]
@@ -49,7 +49,7 @@ export const {
   IconPlanOutlineRegular, IconQuestionOutlineRegular, IconQueueOutlineRegular,
   IconRefreshOutlineRegular, IconSearchOutlineRegular, IconSparkleRegular,
   IconThinkOutlineRegular, MarkdownDelegateProvider, MarkdownText, ReadBlock,
-  StateDot, TerminalBlock, TextShimmer, Tooltip,
+  SearchBlock, StateDot, TerminalBlock, TextShimmer, Tooltip, WebBlock,
   diffTotals, fileExtension, languageForPath,
   useAnchoredPosition, useCodeHighlighter, useDismissOnOutsidePointer, writeClipboard, Official,
 } = exported

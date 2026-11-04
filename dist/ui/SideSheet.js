@@ -115,6 +115,6 @@ export function SideSheet(props) {
             },
         }), renderHeader(), closeButton(!hasHeader), h('div', { className: 'dshpc-dock__body dshpc-sheet__body' }, props.children ?? null), props.footer === undefined && notice === undefined
         ? null
-        : h('div', { className: 'dshpc-sheet__foot' }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice' }), props.footer)));
+        : h('div', { className: 'dshpc-sheet__foot' }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice', sweep: true }), props.footer)));
 }
 //# sourceMappingURL=SideSheet.js.map

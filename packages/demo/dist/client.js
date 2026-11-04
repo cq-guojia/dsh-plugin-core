@@ -331,6 +331,53 @@ var DICT = {
     toolInputLabel: "\u8F93\u5165",
     toolPreparingContent: "{kilobytes} KB",
     compactionTitle: "\u4E0A\u4E0B\u6587\u5DF2\u538B\u7F29",
+    toolTitleTodo: "\u66F4\u65B0\u4EFB\u52A1\u6E05\u5355",
+    toolTitlePwsh: "\u8FD0\u884C\u547D\u4EE4",
+    toolTitleAsk: "\u63D0\u95EE",
+    toolTitleInspect: "\u67E5\u8BE2 Cordis \u73AF\u5883",
+    toolTitleRunCordis: "\u8FD0\u884C Cordis \u63D2\u4EF6",
+    toolTitleStopCordis: "\u505C\u6B62 Cordis \u63D2\u4EF6",
+    toolTitleRemoveCordis: "\u79FB\u9664 Cordis \u63D2\u4EF6",
+    toolTitleInspectProviders: "\u68C0\u67E5\u63D0\u4F9B\u65B9",
+    toolTitleQueryRuntime: "\u67E5\u8BE2\u8FD0\u884C\u65F6",
+    toolTitleInspectPlugins: "\u68C0\u67E5\u52A8\u6001\u63D2\u4EF6",
+    toolTitleCreateGoal: "\u521B\u5EFA\u76EE\u6807",
+    toolTitleGetGoal: "\u67E5\u770B\u76EE\u6807",
+    toolTitleUpdateGoal: "\u66F4\u65B0\u76EE\u6807",
+    toolTitleCreateSchedule: "\u521B\u5EFA\u5B9A\u65F6\u4EFB\u52A1",
+    toolTitleListSchedules: "\u67E5\u770B\u5B9A\u65F6\u4EFB\u52A1",
+    toolTitleDeleteSchedule: "\u5220\u9664\u5B9A\u65F6\u4EFB\u52A1",
+    toolTitleUpdateSchedule: "\u4FEE\u6539\u5B9A\u65F6\u4EFB\u52A1",
+    toolTitleWorkflow: "\u8FD0\u884C\u5DE5\u4F5C\u6D41",
+    toolTitleRalph: "\u8FD0\u884C\u5FAA\u73AF\u5DE5\u4F5C\u6D41",
+    toolTitleReadEvent: "\u8BFB\u53D6\u4E8B\u4EF6",
+    toolTitleSearchEvents: "\u641C\u7D22\u4E8B\u4EF6",
+    toolTitleTraceEvent: "\u8FFD\u8E2A\u4E8B\u4EF6",
+    toolTitleSearchSessions: "\u641C\u7D22\u4F1A\u8BDD",
+    toolTitleTraceSession: "\u8FFD\u8E2A\u4F1A\u8BDD",
+    toolTitleListModels: "\u67E5\u770B\u53EF\u7528\u6A21\u578B",
+    toolTitleSubagent: "\u521B\u5EFA\u5B50\u667A\u80FD\u4F53",
+    toolTitleListAgents: "\u67E5\u770B\u5B50\u667A\u80FD\u4F53",
+    toolTitleSendMessage: "\u53D1\u9001\u6D88\u606F",
+    toolTitleInterruptAgent: "\u4E2D\u65AD\u667A\u80FD\u4F53",
+    toolTitleListJobs: "\u67E5\u770B\u540E\u53F0\u4EFB\u52A1",
+    toolTitleReadJob: "\u8BFB\u53D6\u4EFB\u52A1\u8F93\u51FA",
+    toolTitleKillJob: "\u53D6\u6D88\u540E\u53F0\u4EFB\u52A1",
+    toolTitleOpenTerminal: "\u521B\u5EFA\u7EC8\u7AEF",
+    toolTitleReadTerminal: "\u8BFB\u53D6\u7EC8\u7AEF",
+    toolTitleListTerminals: "\u67E5\u770B\u7EC8\u7AEF",
+    toolTitleSignalTerminal: "\u53D1\u9001\u7EC8\u7AEF\u4FE1\u53F7",
+    toolTitleCloseTerminal: "\u5173\u95ED\u7EC8\u7AEF",
+    toolTitleLsp: "\u67E5\u8BE2\u4EE3\u7801\u7B26\u53F7",
+    toolTitleSpawnTeammate: "\u521B\u5EFA\u961F\u53CB",
+    toolTitleCreateTeamTask: "\u521B\u5EFA\u56E2\u961F\u4EFB\u52A1",
+    toolTitleGetTeamTask: "\u8BFB\u53D6\u56E2\u961F\u4EFB\u52A1",
+    toolTitleUpdateTeamTask: "\u66F4\u65B0\u56E2\u961F\u4EFB\u52A1",
+    toolTitleListTeamTasks: "\u67E5\u770B\u56E2\u961F\u4EFB\u52A1",
+    toolTitleWaitAgent: "\u7B49\u5F85\u5B50\u667A\u80FD\u4F53",
+    todoCompleted: "\u5DF2\u5B8C\u6210 {done}/{total}",
+    skillSummary: "\u6280\u80FD \xB7 {names}",
+    skillSeparator: "\u3001",
     compactionCompleted: "\u5DF2\u538B\u7F29 {items} \u6761\u5386\u53F2\u8BB0\u5F55\uFF08\u7EA6 {tokens} tokens\uFF09",
     compactionExpand: "\u70B9\u51FB\u67E5\u770B\u538B\u7F29\u6458\u8981",
     compactionUnavailable: "\u538B\u7F29\u6458\u8981\u4E0D\u53EF\u7528",
@@ -350,6 +397,18 @@ var DICT = {
     readCollapseAria: "\u6536\u8D77\u5185\u5BB9",
     readExpandAria: "\u5C55\u5F00\u5176\u4F59 {count} \u884C",
     readExpandRest: "\u2026 \u5176\u4F59 {count} \u884C",
+    searchPaths: "{shown} \u4E2A\u8DEF\u5F84",
+    searchPathsTruncated: "\u663E\u793A {shown} / \u5171 {total} \u4E2A\u8DEF\u5F84",
+    searchMatches: "{shown} \u5904\u5339\u914D \xB7 {files} \u4E2A\u6587\u4EF6",
+    searchMatchesTruncated: "\u663E\u793A {shown} / \u5171 {total} \u5904\u5339\u914D \xB7 {files} \u4E2A\u6587\u4EF6",
+    searchNoResults: "\u65E0\u7ED3\u679C",
+    searchCollapseAria: "\u6536\u8D77\u7ED3\u679C",
+    searchExpandAria: "\u5C55\u5F00\u5176\u4F59 {count} \u884C\u7ED3\u679C",
+    searchExpandRest: "\u2026 \u5176\u4F59 {count} \u884C",
+    webNoResults: "\u672A\u627E\u5230\u7ED3\u679C",
+    webSourcesTruncated: "\u6765\u6E90\u5217\u8868\u5DF2\u622A\u65AD",
+    webHttp: "HTTP",
+    webContentTruncated: "\u5185\u5BB9\u5DF2\u622A\u65AD",
     terminalSignal: "\u4FE1\u53F7 {signal}",
     terminalExitCode: "\u9000\u51FA\u7801 {code}",
     terminalNoExitCode: "\u672A\u6B63\u5E38\u9000\u51FA",
@@ -628,6 +687,53 @@ var DICT = {
     toolInputLabel: "IN",
     toolPreparingContent: "{kilobytes} KB",
     compactionTitle: "Context compacted",
+    toolTitleTodo: "Update to-do list",
+    toolTitlePwsh: "Pwsh",
+    toolTitleAsk: "Ask question",
+    toolTitleInspect: "Query Cordis environment",
+    toolTitleRunCordis: "Run Cordis Plugin",
+    toolTitleStopCordis: "Stop Cordis Plugin",
+    toolTitleRemoveCordis: "Remove Cordis Plugin",
+    toolTitleInspectProviders: "Inspect providers",
+    toolTitleQueryRuntime: "Query runtime",
+    toolTitleInspectPlugins: "Inspect plugins",
+    toolTitleCreateGoal: "Create goal",
+    toolTitleGetGoal: "View goal",
+    toolTitleUpdateGoal: "Update goal",
+    toolTitleCreateSchedule: "Create reminder",
+    toolTitleListSchedules: "List reminders",
+    toolTitleDeleteSchedule: "Delete reminder",
+    toolTitleUpdateSchedule: "Update reminder",
+    toolTitleWorkflow: "Run workflow",
+    toolTitleRalph: "Run ralph loop",
+    toolTitleReadEvent: "Read event",
+    toolTitleSearchEvents: "Search events",
+    toolTitleTraceEvent: "Trace event",
+    toolTitleSearchSessions: "Search sessions",
+    toolTitleTraceSession: "Trace session",
+    toolTitleListModels: "List models",
+    toolTitleSubagent: "Create subagent",
+    toolTitleListAgents: "List subagents",
+    toolTitleSendMessage: "Send message",
+    toolTitleInterruptAgent: "Interrupt agent",
+    toolTitleListJobs: "List background jobs",
+    toolTitleReadJob: "Read job output",
+    toolTitleKillJob: "Cancel background job",
+    toolTitleOpenTerminal: "Open terminal",
+    toolTitleReadTerminal: "Read terminal",
+    toolTitleListTerminals: "List terminals",
+    toolTitleSignalTerminal: "Signal terminal",
+    toolTitleCloseTerminal: "Close terminal",
+    toolTitleLsp: "Query code symbols",
+    toolTitleSpawnTeammate: "Create teammate",
+    toolTitleCreateTeamTask: "Create team task",
+    toolTitleGetTeamTask: "Read team task",
+    toolTitleUpdateTeamTask: "Update team task",
+    toolTitleListTeamTasks: "List team tasks",
+    toolTitleWaitAgent: "Wait for subagent",
+    todoCompleted: "{done}/{total} done",
+    skillSummary: "Skills \xB7 {names}",
+    skillSeparator: ", ",
     compactionCompleted: "Compacted {items} history items (~{tokens} tokens)",
     compactionExpand: "Click to view the compaction summary",
     compactionUnavailable: "Compaction summary unavailable",
@@ -647,6 +753,18 @@ var DICT = {
     readCollapseAria: "Collapse content",
     readExpandAria: "Expand {count} more lines",
     readExpandRest: "\u2026 {count} more lines",
+    searchPaths: "{shown} paths",
+    searchPathsTruncated: "Showing {shown} of {total} paths",
+    searchMatches: "{shown} matches \xB7 {files} files",
+    searchMatchesTruncated: "Showing {shown} of {total} matches \xB7 {files} files",
+    searchNoResults: "No results",
+    searchCollapseAria: "Collapse results",
+    searchExpandAria: "Expand {count} more result lines",
+    searchExpandRest: "\u2026 {count} more lines",
+    webNoResults: "No results found",
+    webSourcesTruncated: "Source list truncated",
+    webHttp: "HTTP",
+    webContentTruncated: "Content truncated",
     terminalSignal: "signal {signal}",
     terminalExitCode: "exit code {code}",
     terminalNoExitCode: "no exit code",
@@ -5078,7 +5196,7 @@ function OverlayHead(props) {
 var import_react18 = require("react");
 
 // dist/ui/flip-css.generated.js
-var FLIP_CSS = "/* \u7FFB\u724C\u6587\u672C\uFF08FlipText\uFF09\uFF1A\u4E00\u4E2A\u5355\u884C\u7A97\u53E3 + \u4E24\u5C42\u540C\u683C\u53E0\u653E\uFF0C\u6362\u5B57\u65F6\u65E7\u7684\u4E0A\u79FB\u51FA\u3001\u65B0\u7684\u4ECE\u4E0B\u8FDB\u3002\n   \u6EA2\u51FA\uFF08\u4E09\u70B9\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF09\u4E0D\u5728\u8FD9\u91CC\u505A \u2014\u2014 \u4EA4\u7ED9 MarqueeText\uFF0C\u672C\u6587\u4EF6\u53EA\u7BA1\u88C1\u526A\u4E0E\u5207\u6362\u52A8\u6548\u3002\n   \u53E0\u653E\u7528 grid \u540C\u683C\u800C\u4E0D\u662F\u7EDD\u5BF9\u5B9A\u4F4D\uFF1A\u5BB9\u5668\u9AD8\u5EA6\u5929\u7136\u7B49\u4E8E\u4E00\u884C\uFF0C\u4E0D\u7528\u6D4B\u91CF\u3001\u4E5F\u4E0D\u4F9D\u8D56 lh \u5355\u4F4D\u3002 */\n.dshpc-flip{--dshpc-flip-dur:260ms;--dshpc-flip-ease:cubic-bezier(.22,.61,.36,1);display:grid;min-width:0;overflow:hidden}\n.dshpc-flip__item{grid-area:1/1;min-width:0}\n.dshpc-flip__in{animation:dshpc-flip-in var(--dshpc-flip-dur) var(--dshpc-flip-ease) both}\n.dshpc-flip__out{animation:dshpc-flip-out var(--dshpc-flip-dur) var(--dshpc-flip-ease) both}\n@keyframes dshpc-flip-in{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}\n@keyframes dshpc-flip-out{from{transform:translateY(0);opacity:1}to{transform:translateY(-100%);opacity:0}}\n/* \u524D\u5EAD\u654F\u611F / \u4F4E\u6027\u80FD\u8BBE\u5907\u5173\u6389\u4F4D\u79FB\u52A8\u753B\uFF1A\u6362\u5B57\u4ECD\u5728\uFF0C\u53EA\u662F\u4E0D\u518D\u7FFB\u3002\n   \u65E7\u5E27\u6CA1\u6709\u52A8\u753B\u53EF\u64AD\uFF0C\u5FC5\u987B\u81EA\u5DF1\u9690\u5F62 \u2014\u2014 \u4E24\u5C42\u540C\u683C\u53E0\u653E\uFF0C\u7559\u7740\u5C31\u91CD\u5F71\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-flip__in,.dshpc-flip__out{animation:none}\n  .dshpc-flip__out{opacity:0}\n}\n";
+var FLIP_CSS = "/* \u7FFB\u724C\u6587\u672C\uFF08FlipText\uFF09\uFF1A\u4E00\u4E2A\u5355\u884C\u7A97\u53E3 + \u4E24\u5C42\u540C\u683C\u53E0\u653E\uFF0C\u6362\u5B57\u65F6\u65E7\u7684\u4E0A\u79FB\u51FA\u3001\u65B0\u7684\u4ECE\u4E0B\u8FDB\u3002\n   \u6EA2\u51FA\uFF08\u4E09\u70B9\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF09\u4E0D\u5728\u8FD9\u91CC\u505A \u2014\u2014 \u4EA4\u7ED9 MarqueeText\uFF0C\u672C\u6587\u4EF6\u53EA\u7BA1\u88C1\u526A\u4E0E\u5207\u6362\u52A8\u6548\u3002\n   \u53E0\u653E\u7528 grid \u540C\u683C\u800C\u4E0D\u662F\u7EDD\u5BF9\u5B9A\u4F4D\uFF1A\u5BB9\u5668\u9AD8\u5EA6\u5929\u7136\u7B49\u4E8E\u4E00\u884C\uFF0C\u4E0D\u7528\u6D4B\u91CF\u3001\u4E5F\u4E0D\u4F9D\u8D56 lh \u5355\u4F4D\u3002 */\n.dshpc-flip{--dshpc-flip-dur:260ms;--dshpc-flip-ease:cubic-bezier(.22,.61,.36,1);display:grid;min-width:0;overflow:hidden}\n.dshpc-flip__item{grid-area:1/1;min-width:0}\n.dshpc-flip__in{animation:dshpc-flip-in var(--dshpc-flip-dur) var(--dshpc-flip-ease) both}\n.dshpc-flip__out{animation:dshpc-flip-out var(--dshpc-flip-dur) var(--dshpc-flip-ease) both}\n@keyframes dshpc-flip-in{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}\n@keyframes dshpc-flip-out{from{transform:translateY(0);opacity:1}to{transform:translateY(-100%);opacity:0}}\n/* \u524D\u5EAD\u654F\u611F / \u4F4E\u6027\u80FD\u8BBE\u5907\u5173\u6389\u4F4D\u79FB\u52A8\u753B\uFF1A\u6362\u5B57\u4ECD\u5728\uFF0C\u53EA\u662F\u4E0D\u518D\u7FFB\u3002\n   \u65E7\u5E27\u6CA1\u6709\u52A8\u753B\u53EF\u64AD\uFF0C\u5FC5\u987B\u81EA\u5DF1\u9690\u5F62 \u2014\u2014 \u4E24\u5C42\u540C\u683C\u53E0\u653E\uFF0C\u7559\u7740\u5C31\u91CD\u5F71\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-flip__in,.dshpc-flip__out{animation:none}\n  .dshpc-flip__out{opacity:0}\n}\n/* \u626B\u5149\uFF08sweep\uFF09\uFF1A\u5E38\u9A7B\u5FAA\u73AF\uFF0C\u505C\u5728\u539F\u5730\u7684\u63D0\u793A\u4E5F\u770B\u5F97\u51FA\u5728\u52A8\u3002\u5F00\u5173\u9ED8\u8BA4\u5173\uFF0C\u5F39\u7A97 / \u62BD\u5C49\u5E95\u680F\u9ED8\u8BA4\u5F00\u3002\n   \u5149\u5FC5\u987B\u53EA\u843D\u5728\u5B57\u4E0A\uFF1A\u76D6\u4E00\u5C42\u534A\u900F\u660E\u5149\u5E26\u7684\u8BDD\uFF0Cnotice \u662F flex:1 \u6491\u5F00\u7684\u5BBD\u5BB9\u5668\uFF0C\u53F3\u4FA7\u5927\u7247\u7A7A\u767D\n   \u91CC\u4F1A\u51FA\u73B0\u4E00\u6761\u767D\u5149\u5728\u626B\u3002\u6545\u628A\u5149\u505A\u6210\u6587\u5B57\u81EA\u5DF1\u7684 background + background-clip:text \u88C1\u5230\u5B57\u5F62\uFF1B\n   \u57FA\u8272\u53D6 currentColor \u21D2 \u8C03\u7528\u65B9\u6362\u5B57\u8272\u4E5F\u8DDF\u7740\u8D70\uFF0C\u4E0D\u9700\u8981\u77E5\u9053\u6587\u5B57\u5BBD\u5EA6\u3002 */\n.dshpc-flip--sweep .dshpc-mq-in{\n  background-image:linear-gradient(105deg,currentColor 0,currentColor 47%,color-mix(in srgb,var(--dshpc-on-signal) 70%,currentColor) 50%,currentColor 53%,currentColor 100%);\n  background-size:300% 100%;background-repeat:no-repeat;\n  background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;\n  animation:dshpc-flip-sweep 1.5s linear infinite;\n}\n/* 1.5s \u4E00\u8F6E\uFF1A\u524D 40% \u626B\u5B8C\uFF0C\u5176\u4F59\u505C\u5728\u89C6\u91CE\u5916\u4F11\u606F \u2014\u2014 \u4E00\u76F4\u626B\u4F1A\u6643\u773C\uFF0C\u95F4\u6B47\u624D\u50CF\u300C\u8FD8\u5728\u5E72\u6D3B\u300D\u3002 */\n@keyframes dshpc-flip-sweep{0%{background-position:100% 0}40%,100%{background-position:0 0}}\n@media (prefers-reduced-motion:reduce){\n  .dshpc-flip--sweep .dshpc-mq-in{animation:none;background-image:none;-webkit-text-fill-color:currentColor}\n}\n";
 
 // dist/ui/FlipText.js
 var FLIP_MS = 300;
@@ -5103,9 +5221,10 @@ function FlipText(props) {
     return null;
   const style2 = props.width !== void 0 ? { width: props.width } : { minWidth: props.minWidth, maxWidth: props.maxWidth };
   const item = "dshpc-flip__item";
+  const root = `dshpc-flip${props.sweep === true ? " dshpc-flip--sweep" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`;
   return (0, import_react18.createElement)(
     "span",
-    { className: props.className === void 0 ? "dshpc-flip" : `dshpc-flip ${props.className}`, style: style2 },
+    { className: root, style: style2 },
     // 旧帧：只在换字后存在，到点摘掉
     slot.prev === null ? null : (0, import_react18.createElement)("span", { key: `p${String(slot.seq)}`, className: `${item} dshpc-flip__out` }, (0, import_react18.createElement)(MarqueeText, { text: slot.prev })),
     // 新帧：没有上一帧（首帧 / 从无到有）不放动画
@@ -5160,7 +5279,7 @@ function Modal(props) {
       // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
       // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
       (0, import_react19.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null),
-      props.footer === void 0 && notice === void 0 ? null : (0, import_react19.createElement)("div", { className: `dshpc-modal__foot${props.footerDivider === false ? " dshpc-modal__foot--bare" : ""}` }, notice === void 0 ? null : (0, import_react19.createElement)(FlipText, { text: notice, className: "dshpc-modal__notice" }), props.footer)
+      props.footer === void 0 && notice === void 0 ? null : (0, import_react19.createElement)("div", { className: `dshpc-modal__foot${props.footerDivider === false ? " dshpc-modal__foot--bare" : ""}` }, notice === void 0 ? null : (0, import_react19.createElement)(FlipText, { text: notice, className: "dshpc-modal__notice", sweep: true }), props.footer)
     )
   );
 }
@@ -5303,7 +5422,7 @@ function SideSheet(props) {
     onPointerDown: (event) => {
       beginResize(event);
     }
-  }), renderHeader(), closeButton(!hasHeader), (0, import_react20.createElement)("div", { className: "dshpc-dock__body dshpc-sheet__body" }, props.children ?? null), props.footer === void 0 && notice === void 0 ? null : (0, import_react20.createElement)("div", { className: "dshpc-sheet__foot" }, notice === void 0 ? null : (0, import_react20.createElement)(FlipText, { text: notice, className: "dshpc-sheet__notice" }), props.footer)));
+  }), renderHeader(), closeButton(!hasHeader), (0, import_react20.createElement)("div", { className: "dshpc-dock__body dshpc-sheet__body" }, props.children ?? null), props.footer === void 0 && notice === void 0 ? null : (0, import_react20.createElement)("div", { className: "dshpc-sheet__foot" }, notice === void 0 ? null : (0, import_react20.createElement)(FlipText, { text: notice, className: "dshpc-sheet__notice", sweep: true }), props.footer)));
 }
 
 // dist/ui/AlertModal.js
@@ -56082,12 +56201,56 @@ var VARIANT_TITLE_KEYS = {
   others: "toolTitleGeneric"
 };
 var TOOL_TITLE_KEYS = {
-  pwsh: "toolTitleBash",
+  pwsh: "toolTitlePwsh",
   read_image: "toolTitleReadImage",
   grep: "toolTitleGrep",
   glob: "toolTitleGlob",
   web_search: "toolTitleWebSearch",
-  web_fetch: "toolTitleWebFetch"
+  web_fetch: "toolTitleWebFetch",
+  todo_write: "toolTitleTodo",
+  ask_user_question: "toolTitleAsk",
+  cordis_package_inspect: "toolTitleInspect",
+  cordis_runtime_inspect: "toolTitleInspect",
+  cordis_run: "toolTitleRunCordis",
+  cordis_stop: "toolTitleStopCordis",
+  cordis_undefine: "toolTitleRemoveCordis",
+  cordis_inspect_list: "toolTitleInspectProviders",
+  cordis_inspect_query: "toolTitleQueryRuntime",
+  cordis_inspect_self: "toolTitleInspectPlugins",
+  create_goal: "toolTitleCreateGoal",
+  get_goal: "toolTitleGetGoal",
+  update_goal: "toolTitleUpdateGoal",
+  schedule_create: "toolTitleCreateSchedule",
+  schedule_list: "toolTitleListSchedules",
+  schedule_delete: "toolTitleDeleteSchedule",
+  schedule_update: "toolTitleUpdateSchedule",
+  workflow: "toolTitleWorkflow",
+  ralph: "toolTitleRalph",
+  session_event_read: "toolTitleReadEvent",
+  session_event_search: "toolTitleSearchEvents",
+  session_event_trace: "toolTitleTraceEvent",
+  session_search: "toolTitleSearchSessions",
+  session_trace: "toolTitleTraceSession",
+  list_subagent_models: "toolTitleListModels",
+  subagent: "toolTitleSubagent",
+  list_agents: "toolTitleListAgents",
+  send_message: "toolTitleSendMessage",
+  interrupt_agent: "toolTitleInterruptAgent",
+  job_list: "toolTitleListJobs",
+  job_output: "toolTitleReadJob",
+  job_kill: "toolTitleKillJob",
+  terminal_open: "toolTitleOpenTerminal",
+  terminal_read: "toolTitleReadTerminal",
+  terminal_list: "toolTitleListTerminals",
+  terminal_signal: "toolTitleSignalTerminal",
+  terminal_close: "toolTitleCloseTerminal",
+  lsp: "toolTitleLsp",
+  spawn_teammate: "toolTitleSpawnTeammate",
+  team_task_create: "toolTitleCreateTeamTask",
+  team_task_get: "toolTitleGetTeamTask",
+  team_task_update: "toolTitleUpdateTeamTask",
+  team_task_list: "toolTitleListTeamTasks",
+  wait_agent: "toolTitleWaitAgent"
 };
 var toolTitleKey = (name2) => TOOL_TITLE_KEYS[name2] ?? VARIANT_TITLE_KEYS[classifyTool(name2)];
 var VARIANT_ICONS = {
@@ -56307,6 +56470,153 @@ function readCardModel(name2, argsRaw, output, meta2, isError, settled) {
     return null;
   return face;
 }
+function validInclude(include2) {
+  if (include2.trim() === "" || include2.startsWith("!"))
+    return false;
+  let braceDepth = 0;
+  for (const character of include2) {
+    if (character === "{")
+      braceDepth += 1;
+    else if (character === "}")
+      braceDepth = Math.max(0, braceDepth - 1);
+    else if (character === "," && braceDepth === 0)
+      return false;
+  }
+  return true;
+}
+function validSearchCall(name2, argsRaw) {
+  if (name2 !== "grep" && name2 !== "glob")
+    return null;
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return null;
+  const { pattern, path, include: include2 } = parsed;
+  if (typeof pattern !== "string")
+    return null;
+  if (name2 === "grep" && pattern === "")
+    return null;
+  if (name2 === "glob" && pattern.trim() === "")
+    return null;
+  if (path !== void 0 && (typeof path !== "string" || path.trim() === ""))
+    return null;
+  if (name2 === "grep" && include2 !== void 0 && (typeof include2 !== "string" || !validInclude(include2)))
+    return null;
+  return name2;
+}
+function searchFiles(value) {
+  if (!Array.isArray(value))
+    return null;
+  const files = [];
+  for (const file of value) {
+    if (typeof file !== "object" || file === null || Array.isArray(file))
+      return null;
+    const { path, matches: matches2 } = file;
+    if (typeof path !== "string" || !Array.isArray(matches2))
+      return null;
+    const narrowed = [];
+    for (const match of matches2) {
+      if (typeof match !== "object" || match === null || Array.isArray(match))
+        return null;
+      const { lineNumber, line } = match;
+      if (typeof lineNumber !== "number" || !Number.isInteger(lineNumber) || lineNumber < 1)
+        return null;
+      if (typeof line !== "string")
+        return null;
+      narrowed.push({ lineNumber, line });
+    }
+    files.push({ path, matches: narrowed });
+  }
+  return files;
+}
+function searchCardModel(name2, argsRaw, output, meta2, isError, settled) {
+  if (!settled || isError)
+    return null;
+  const tool = validSearchCall(name2, argsRaw);
+  if (tool === null)
+    return null;
+  if (typeof meta2 !== "object" || meta2 === null || Array.isArray(meta2))
+    return null;
+  const m = meta2;
+  if (typeof m.truncated !== "boolean")
+    return null;
+  if (typeof m.total !== "number" || !Number.isInteger(m.total) || m.total < 0)
+    return null;
+  const common = { total: m.total, truncated: m.truncated };
+  const recovery = m.truncated && output !== "" ? output : void 0;
+  if (tool === "grep") {
+    if (m.shape !== "matches")
+      return null;
+    const files = searchFiles(m.files);
+    return files === null ? null : { card: { kind: "matches", files, ...common }, ...recovery === void 0 ? {} : { recovery } };
+  }
+  if (m.shape !== "paths" || !Array.isArray(m.paths))
+    return null;
+  if (!m.paths.every((path) => typeof path === "string"))
+    return null;
+  return { card: { kind: "paths", paths: [...m.paths], ...common }, ...recovery === void 0 ? {} : { recovery } };
+}
+function validWebCall(name2, argsRaw) {
+  if (name2 !== "web_search" && name2 !== "web_fetch")
+    return null;
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return null;
+  const args = parsed;
+  if (name2 === "web_search") {
+    const { queries } = args;
+    if (!Array.isArray(queries) || queries.length === 0)
+      return null;
+    return queries.every((query) => typeof query === "string" && query.trim() !== "") ? name2 : null;
+  }
+  const { url } = args;
+  return typeof url === "string" && url.trim() !== "" ? name2 : null;
+}
+function webSources(value) {
+  if (!Array.isArray(value))
+    return null;
+  const sources = [];
+  for (const source of value) {
+    if (typeof source !== "object" || source === null || Array.isArray(source))
+      return null;
+    const { url, title, snippet: snippet2, publishedAt } = source;
+    if (typeof url !== "string")
+      return null;
+    if (title !== void 0 && typeof title !== "string")
+      return null;
+    if (snippet2 !== void 0 && typeof snippet2 !== "string")
+      return null;
+    if (publishedAt !== void 0 && typeof publishedAt !== "string")
+      return null;
+    sources.push({
+      url,
+      ...title === void 0 ? {} : { title },
+      ...snippet2 === void 0 ? {} : { snippet: snippet2 },
+      ...publishedAt === void 0 ? {} : { publishedAt }
+    });
+  }
+  return sources;
+}
+function webCardModel(name2, argsRaw, meta2, isError, settled) {
+  if (!settled || isError)
+    return null;
+  const tool = validWebCall(name2, argsRaw);
+  if (tool === null || typeof meta2 !== "object" || meta2 === null || Array.isArray(meta2))
+    return null;
+  const m = meta2;
+  if (typeof m.truncated !== "boolean")
+    return null;
+  if (tool === "web_search") {
+    const sources = webSources(m.sources);
+    if (sources === null || m.answer !== void 0 && typeof m.answer !== "string")
+      return null;
+    return { kind: "search", ...typeof m.answer === "string" ? { answer: m.answer } : {}, sources, truncated: m.truncated };
+  }
+  if (typeof m.url !== "string")
+    return null;
+  if (typeof m.statusCode !== "number" || !Number.isInteger(m.statusCode))
+    return null;
+  return { kind: "fetch", url: m.url, statusCode: m.statusCode, truncated: m.truncated };
+}
 function shellCall(name2, args) {
   if (name2 !== "bash" && name2 !== "pwsh")
     return null;
@@ -56411,6 +56721,28 @@ function contentKilobytes(argsRaw) {
   }
   return any ? Math.ceil(chars2 / 1024) : null;
 }
+function todoSummary(argsRaw, t4) {
+  if (argsRaw === "")
+    return null;
+  let parsed;
+  try {
+    parsed = JSON.parse(argsRaw);
+  } catch {
+    return null;
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return null;
+  const todos = parsed.todos;
+  if (!Array.isArray(todos) || !todos.every((item) => typeof item === "object" && item !== null))
+    return null;
+  const list = todos;
+  const done = list.filter((item) => item.status === "completed").length;
+  const active = list.filter((item) => item.status === "in_progress");
+  const first = active[0]?.content;
+  const named = typeof first === "string" && first.trim() !== "";
+  const head = t4("todoCompleted", { done, total: list.length });
+  return { text: named ? `${head} \xB7 ${first}` : head, extra: named ? active.length - 1 : 0 };
+}
 var codeToolbarLabels = (t4) => ({
   codeLabel: t4("codeBlockLabel"),
   wrapLabel: t4("diffWrapLabel"),
@@ -56434,6 +56766,24 @@ var readLabels = (t4) => ({
   expandAria: (count3) => t4("readExpandAria", { count: count3 }),
   collapse: t4("collapseLabel"),
   expand: (count3) => t4("readExpandRest", { count: count3 })
+});
+var searchLabels = (t4) => ({
+  pathsSummary: (shown, total, truncated) => truncated ? t4("searchPathsTruncated", { shown, total }) : t4("searchPaths", { shown }),
+  matchesSummary: (shown, total, files, truncated) => truncated ? t4("searchMatchesTruncated", { shown, total, files }) : t4("searchMatches", { shown, files }),
+  copy: t4("copyLabel"),
+  copied: t4("copiedLabel"),
+  noResults: t4("searchNoResults"),
+  collapseAria: t4("searchCollapseAria"),
+  expandAria: (count3) => t4("searchExpandAria", { count: count3 }),
+  collapse: t4("collapseLabel"),
+  expand: (count3) => t4("searchExpandRest", { count: count3 })
+});
+var webLabels = (t4) => ({
+  noResults: t4("webNoResults"),
+  sourcesTruncated: t4("webSourcesTruncated"),
+  http: t4("webHttp"),
+  contentTruncated: t4("webContentTruncated"),
+  markdown: markdownLabels()
 });
 var terminalLabels = (t4) => ({
   // 官方 terminalBlockLabels（ui-tool terminal-card-model.ts）：commandLine 是**函数**，
@@ -56472,6 +56822,8 @@ function GenericCommandCard(props) {
   const terminalFace = (0, import_react63.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
   const read = (0, import_react63.useMemo)(() => readCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
   const diffs = (0, import_react63.useMemo)(() => diffCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
+  const search = (0, import_react63.useMemo)(() => searchCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
+  const web = (0, import_react63.useMemo)(() => webCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
   const terminal = (0, import_react63.useMemo)(() => {
     if (terminalFace === null)
       return null;
@@ -56483,13 +56835,15 @@ function GenericCommandCard(props) {
   const generic = titleKey === "toolTitleGeneric";
   const base3 = argsRaw === "" ? "" : deriveSummary(variant, argsRaw);
   const plainSummary = [generic ? name2 : "", base3].filter(Boolean).join(" \xB7 ");
+  const todoInfo = name2 === "todo_write" ? todoSummary(argsRaw, t4) : null;
+  const normalSummary = todoInfo !== null ? todoInfo.text : terminal?.description ?? plainSummary;
   const errorSummary = rowState === "error" && output !== "" ? firstLine(output) : null;
   const exitLabel = failedTerminal ? terminal?.signal !== void 0 ? t4("terminalSignal", { signal: terminal.signal }) : terminal?.exitCode === void 0 || terminal.exitCode === null ? t4("terminalNoExitCode") : t4("terminalExitCode", { code: terminal.exitCode }) : null;
-  const summaryText = (rowState === "error" && exitLabel === null ? errorSummary ?? (terminal?.description ?? plainSummary) : null) ?? terminal?.description ?? plainSummary;
+  const summaryText = (rowState === "error" && exitLabel === null ? errorSummary ?? normalSummary : null) ?? normalSummary;
   const totals = diffs === null ? null : (0, official_exports.diffTotals)(diffs);
   const settledWithCue = rowState === "error" || rowState === "stopped";
   const kilobytes = variant === "edit" || variant === "write" ? contentKilobytes(argsRaw) : null;
-  const summarySuffix = settledWithCue || kilobytes === null || summaryText === "" ? null : t4("toolPreparingContent", { kilobytes });
+  const summarySuffix = settledWithCue ? null : todoInfo !== null ? todoInfo.extra > 0 ? `+${todoInfo.extra}` : null : kilobytes === null || summaryText === "" ? null : t4("toolPreparingContent", { kilobytes });
   const diffStatTotals = settledWithCue ? null : totals;
   const filePath = argsRaw === "" ? void 0 : deriveFilePath(variant, argsRaw);
   const openFile = filePath !== void 0 && onOpenFile !== void 0 && !settledWithCue ? () => {
@@ -56511,14 +56865,20 @@ function GenericCommandCard(props) {
       return void 0;
     }
   })();
-  const inputRaw = argsRaw === "" ? null : argsRaw;
+  const inputRaw = argsRaw === "" || filePath !== void 0 ? null : argsRaw;
   const outputText = output === "" ? null : output;
-  const card = terminal !== null ? "terminal" : diffs !== null ? "diff" : read !== null ? "read" : null;
+  const card = terminal !== null ? "terminal" : diffs !== null ? "diff" : read !== null ? "read" : search !== null ? "search" : web !== null ? "web" : null;
   const bodyText = expanded && card === null && inputRaw !== null ? formatToolBody(variant, inputRaw) : null;
   const cardBody = variant === "code" ? null : bodyText;
   const expandable = rowState !== "preparing" && (inputRaw !== null || outputText !== null || card !== null);
   const open = expanded && expandable;
-  const blockLabels = (0, import_react63.useMemo)(() => ({ diff: diffLabels(t4), read: readLabels(t4), terminal: terminalLabels(t4) }), [t4]);
+  const blockLabels = (0, import_react63.useMemo)(() => ({
+    diff: diffLabels(t4),
+    read: readLabels(t4),
+    search: searchLabels(t4),
+    web: webLabels(t4),
+    terminal: terminalLabels(t4)
+  }), [t4]);
   const statusText = rowState === "preparing" ? t4("rowPreparing") : rowState === "running" ? t4("rowRunning") : rowState === "error" ? t4("rowFailed") : rowState === "stopped" ? t4("rowStopped") : null;
   const summaryClassName = `${officialClass("ToolRow", "summary") ?? ""}${rowState === "error" ? ` ${officialClass("ToolRow", "errorSummary") ?? ""}` : ""}${rowState === "stopped" ? ` ${officialClass("ToolRow", "stoppedSummary") ?? ""}` : ""}`;
   const collapsedContent = summaryText === "" ? void 0 : (0, import_react63.createElement)(import_react63.Fragment, null, (0, import_react63.createElement)("span", { className: officialClass("ToolRow", "sep") ?? "", "aria-hidden": true }), openFile !== void 0 ? (0, import_react63.createElement)("button", {
@@ -56562,7 +56922,12 @@ function GenericCommandCard(props) {
     labels: blockLabels.read,
     maxLines: 8,
     className: officialClass("ToolRow", "readBody") ?? ""
-  }) : (0, import_react63.createElement)(import_react63.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react63.createElement)("div", { className: officialClass("ToolRow", "bodyScroll") ?? "" }, (0, import_react63.createElement)(CodeViewer, {
+  }) : search !== null ? (0, import_react63.createElement)(import_react63.Fragment, null, (0, import_react63.createElement)(official_exports.SearchBlock, {
+    ...search.card,
+    labels: blockLabels.search,
+    maxLines: 8,
+    className: officialClass("ToolRow", "searchBody") ?? ""
+  }), search.recovery !== void 0 ? (0, import_react63.createElement)("div", { className: officialClass("ToolRow", "searchRecovery") ?? "" }, search.recovery) : null) : web !== null ? (0, import_react63.createElement)(official_exports.WebBlock, { ...web, labels: blockLabels.web, className: officialClass("ToolRow", "webBody") ?? "" }) : (0, import_react63.createElement)(import_react63.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react63.createElement)("div", { className: officialClass("ToolRow", "bodyScroll") ?? "" }, (0, import_react63.createElement)(CodeViewer, {
     text: bodyText,
     path: "tool-code.ts",
     t: t4,
@@ -56814,9 +57179,10 @@ function AssistantMarkdown(props) {
   }));
 }
 function UserMessage(props) {
-  const { text: text2, files, referenceLabels, t: t4 } = props;
+  const { text: text2, files, referenceLabels, skillNames, t: t4 } = props;
   const chips = files ?? [];
   const references = referenceLabels ?? [];
+  const skills = skillNames ?? [];
   return (0, import_react67.createElement)("div", { className: officialClass("MessageItem", "userRow") ?? "" }, (0, import_react67.createElement)(
     "div",
     { className: officialClass("MessageItem", "userStack") ?? "" },
@@ -56836,7 +57202,10 @@ function UserMessage(props) {
     // 官方 UserContent（lib/client.js:7377）：referenceLabels 在气泡**之后**单独一行。
     references.length === 0 ? null : (0, import_react67.createElement)("div", {
       className: officialClass("MessageItem", "referenceSummary") ?? ""
-    }, t4("referenceSummary", { labels: references.join(t4("referenceSeparator")) }))
+    }, t4("referenceSummary", { labels: references.join(t4("referenceSeparator")) })),
+    skills.length === 0 ? null : (0, import_react67.createElement)("div", {
+      className: officialClass("MessageItem", "referenceSummary") ?? ""
+    }, t4("skillSummary", { names: skills.join(t4("skillSeparator")) }))
   ));
 }
 function CompactionItemMirror(props) {
@@ -58143,6 +58512,7 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
         text: text2,
         files,
         referenceLabels: dataOf(node).referenceLabels,
+        skillNames: dataOf(node).skillNames,
         t: t4
       });
     }
@@ -62051,6 +62421,10 @@ var docData = {
       {
         "zh": "\u5BBD\u5EA6\u4E09\u6863\u540C Button / Chip\uFF1A`width` \u4F18\u5148\uFF0C`width` \u672A\u8BBE\u65F6 `minWidth` / `maxWidth` \u751F\u6548\uFF1B\u4E09\u8005\u90FD\u4E0D\u4F20 = \u968F\u7236\u5BB9\u5668\uFF08flex \u5B50\u9879\u81EA\u7136\u4F38\u7F29\uFF0C\u5F39\u7A97\u5E95\u680F\u5C31\u662F\u8FD9\u4E48\u7528\u7684\uFF09\u3002\u8981\u653E\u8FDB\u5F39\u7A97\u5E95\u680F\u5DE6\u4FA7**\u4E0D\u8981\u81EA\u5DF1\u5305**\uFF0C\u76F4\u63A5\u7528 `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` \u7684 `notice`\u3002",
         "en": 'Widths follow Button / Chip: `width` wins; `minWidth` / `maxWidth` apply only when it is unset; none of the three means "follow the parent" (a flex child stretches naturally \u2014 that is how the dialog footer uses it). To put it on the left of a dialog footer, use the `notice` prop on `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` rather than wrapping it yourself.'
+      },
+      {
+        "zh": "`sweep` = \u5E38\u9A7B\u626B\u5149\uFF1A\u4E00\u9053\u659C\u5149\u6BCF 1.5s \u4ECE\u6587\u5B57\u4E0A\u626B\u8FC7\uFF0C\u626B\u5230\u7684\u5B57\u63D0\u4EAE\uFF0C\u751A\u81F3\u6587\u6848\u4E00\u76F4\u4E0D\u53D8\u4E5F\u770B\u5F97\u51FA\u300C\u8FD8\u5728\u5E72\u6D3B\u300D\u3002**\u9ED8\u8BA4\u5173**\uFF1B`Modal` / `SideSheet` \u7684 `notice` \u9ED8\u8BA4\u6253\u5F00\uFF08\u786E\u8BA4\u6846\u4E0E\u8FC7\u7A0B\u63D0\u793A\u7684\u573A\u666F\uFF09\u3002\u5149\u53EA\u843D\u5728\u5B57\u5F62\u4E0A\uFF08`background-clip:text`\uFF09\uFF0C\u4E0D\u4F1A\u5728\u5E95\u680F\u7684\u7A7A\u767D\u533A\u663E\u51FA\u4E00\u6761\u767D\u5149\uFF1B`prefers-reduced-motion` \u4E0B\u4E0E\u7FFB\u724C\u4E00\u8D77\u5173\u6389\u3002",
+        "en": '`sweep` is a persistent sheen: a slanted highlight crosses the text every 1.5s, brightening the characters it passes, so an unchanged line still reads as "still working". **Off by default**; the `notice` prop on `Modal` / `SideSheet` turns it on (confirm dialogs and progress hints). The light is clipped to the glyphs (`background-clip:text`), so it never shows as a white bar across the empty part of a footer, and it is turned off together with the flip under `prefers-reduced-motion`.'
       }
     ],
     "api": [
@@ -62094,6 +62468,15 @@ var docData = {
             }
           },
           {
+            "name": "sweep",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u5E38\u9A7B\u626B\u5149\uFF1A\u6BCF 1.5s \u4E00\u9053\u659C\u5149\u626B\u8FC7\u6587\u5B57\uFF0C\u6587\u6848\u4E0D\u53D8\u4E5F\u80FD\u770B\u51FA\u5728\u52A8\u3002`Modal` / `SideSheet` \u7684 `notice` \u9ED8\u8BA4\u4F20 true",
+              "en": "Persistent sheen: a slanted highlight crosses the text every 1.5s so a static line still reads as active. The `notice` prop on `Modal` / `SideSheet` passes true by default"
+            }
+          },
+          {
             "name": "className",
             "type": "string",
             "def": "\u2014",
@@ -62109,7 +62492,7 @@ var docData = {
       {
         "id": "ui-flip-text-example",
         "lang": "tsx",
-        "src": "import { FlipText } from 'dsh-plugin-core/ui'\n\n// \u6362\u6587\u6848 = \u6539 text\uFF0C\u52A8\u6548\u81EA\u5DF1\u653E\uFF08\u65E7\u7684\u4E0A\u79FB\u51FA\u3001\u65B0\u7684\u4ECE\u4E0B\u8FDB\uFF09\nconst [step, setStep] = useState('\u6B63\u5728\u626B\u63CF\u5DE5\u4F5C\u533A\u2026')\nh(FlipText, { text: step })\n\n// \u6EA2\u51FA\uFF1A\u653E\u4E0D\u4E0B\u4E09\u70B9\u7701\u7565\uFF0Chover \u8DD1\u9A6C\u706F\nh(FlipText, { text: step, maxWidth: 220 })\n\n// \u5BBD\u5EA6\u4E09\u6863\uFF1Awidth \u4F18\u5148\uFF0C\u5176\u6B21 minWidth / maxWidth\nh(FlipText, { text: step, width: 200 })"
+        "src": "import { FlipText } from 'dsh-plugin-core/ui'\n\n// \u6362\u6587\u6848 = \u6539 text\uFF0C\u52A8\u6548\u81EA\u5DF1\u653E\uFF08\u65E7\u7684\u4E0A\u79FB\u51FA\u3001\u65B0\u7684\u4ECE\u4E0B\u8FDB\uFF09\nconst [step, setStep] = useState('\u6B63\u5728\u626B\u63CF\u5DE5\u4F5C\u533A\u2026')\nh(FlipText, { text: step })\n\n// \u6EA2\u51FA\uFF1A\u653E\u4E0D\u4E0B\u4E09\u70B9\u7701\u7565\uFF0Chover \u8DD1\u9A6C\u706F\nh(FlipText, { text: step, maxWidth: 220 })\n\n// \u5BBD\u5EA6\u4E09\u6863\uFF1Awidth \u4F18\u5148\uFF0C\u5176\u6B21 minWidth / maxWidth\nh(FlipText, { text: step, width: 200 })\n\n// \u5E38\u9A7B\u626B\u5149\uFF1A\u6587\u5B57\u4E0D\u53D8\u4E5F\u5728\u52A8\uFF08\u9ED8\u8BA4\u5173\uFF1B\u5F39\u7A97 / \u62BD\u5C49\u5E95\u680F\u7684 notice \u9ED8\u8BA4\u5F00\uFF09\nh(FlipText, { text: step, sweep: true })"
       }
     ]
   },
@@ -62785,8 +63168,8 @@ var docData = {
             "type": "string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5E95\u680F**\u5DE6\u4FA7**\u7684\u4E00\u884C\u8FC7\u7A0B\u63D0\u793A\uFF1A\u6362\u6587\u6848\u5373\u7FFB\u724C\uFF0C\u8D85\u957F\u7701\u7565 + hover \u8DD1\u9A6C\u706F\u3002\u4E0D\u4F20 = \u4E0D\u5360\u4F4D\u3001\u4E0E\u4EE5\u524D\u5B8C\u5168\u4E00\u6837\uFF1B**\u4F20\u7A7A\u5B57\u7B26\u4E32 = \u6E05\u573A**\uFF1Bfooter \u4E5F\u53EF\u4E0D\u7ED9\uFF08\u5B83\u4F1A\u81EA\u5DF1\u6491\u8D77\u5E95\u680F\uFF09",
-              "en": "One-line progress notice on the **left** of the footer: changing the string flips it, overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too \u2014 the notice alone brings the footer up"
+              "zh": "\u5E95\u680F**\u5DE6\u4FA7**\u7684\u4E00\u884C\u8FC7\u7A0B\u63D0\u793A\uFF1A\u6362\u6587\u6848\u5373\u7FFB\u724C\uFF0C**\u9ED8\u8BA4\u5E26\u5E38\u9A7B\u626B\u5149**\uFF08\u4E0D\u52A8\u4E5F\u770B\u5F97\u51FA\u5728\u52A8\uFF09\uFF0C\u8D85\u957F\u7701\u7565 + hover \u8DD1\u9A6C\u706F\u3002\u4E0D\u4F20 = \u4E0D\u5360\u4F4D\u3001\u4E0E\u4EE5\u524D\u5B8C\u5168\u4E00\u6837\uFF1B**\u4F20\u7A7A\u5B57\u7B26\u4E32 = \u6E05\u573A**\uFF1Bfooter \u4E5F\u53EF\u4E0D\u7ED9\uFF08\u5B83\u4F1A\u81EA\u5DF1\u6491\u8D77\u5E95\u680F\uFF09",
+              "en": "One-line progress notice on the **left** of the footer: changing the string flips it, and it carries the **persistent sheen by default** (still reads as active when unchanged); overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too \u2014 the notice alone brings the footer up"
             }
           },
           {
@@ -63183,8 +63566,8 @@ var docData = {
             "type": "string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5E95\u680F**\u5DE6\u4FA7**\u7684\u4E00\u884C\u8FC7\u7A0B\u63D0\u793A\uFF08\u6362\u6587\u6848\u5373\u7FFB\u724C\uFF0C\u8D85\u957F\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF09\u3002\u4E0D\u4F20 = \u4E0D\u5360\u4F4D\uFF1B**\u4F20\u7A7A\u5B57\u7B26\u4E32 = \u6E05\u573A**\uFF08\u62BD\u5C49\u5E38\u9A7B\u6E32\u67D3\uFF0C\u5173\u6389\u518D\u5F00\u65F6\u7528\u5B83\u6E05\u4E0A\u4E00\u8F6E\uFF09",
-              "en": "One-line progress notice on the **left** of the footer (changing it flips; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped)"
+              "zh": "\u5E95\u680F**\u5DE6\u4FA7**\u7684\u4E00\u884C\u8FC7\u7A0B\u63D0\u793A\uFF08\u6362\u6587\u6848\u5373\u7FFB\u724C\uFF0C**\u9ED8\u8BA4\u5E26\u5E38\u9A7B\u626B\u5149**\uFF0C\u8D85\u957F\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF09\u3002\u4E0D\u4F20 = \u4E0D\u5360\u4F4D\uFF1B**\u4F20\u7A7A\u5B57\u7B26\u4E32 = \u6E05\u573A**\uFF08\u62BD\u5C49\u5E38\u9A7B\u6E32\u67D3\uFF0C\u5173\u6389\u518D\u5F00\u65F6\u7528\u5B83\u6E05\u4E0A\u4E00\u8F6E\uFF09",
+              "en": "One-line progress notice on the **left** of the footer (changing it flips; it carries the **persistent sheen by default**; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped)"
             }
           },
           {
@@ -65423,7 +65806,10 @@ const [step, setStep] = useState('\u6B63\u5728\u626B\u63CF\u5DE5\u4F5C\u533A\u20
 <FlipText text="\u4E00\u6761\u5F88\u957F\u7684\u8FC7\u7A0B\u63D0\u793A\u2026" maxWidth={220} />
 
 // \u5BBD\u5EA6\u4E09\u6863\u540C Button / Chip\uFF1Awidth \u4F18\u5148\uFF0C\u5176\u6B21 minWidth / maxWidth
-<FlipText text="\u56FA\u5B9A\u5BBD" width={200} />`;
+<FlipText text="\u56FA\u5B9A\u5BBD" width={200} />
+
+// \u5E38\u9A7B\u626B\u5149\uFF1A\u6587\u5B57\u4E0D\u53D8\u4E5F\u5728\u52A8\uFF08\u9ED8\u8BA4\u5173\uFF1B\u5F39\u7A97 / \u62BD\u5C49\u5E95\u680F\u7684 notice \u9ED8\u8BA4\u5F00\uFF09
+<FlipText text="\u6B63\u5728\u5199\u5165\u53F0\u8D26\u2026" sweep />`;
 var FLIP_STEPS = [
   "\u6B63\u5728\u626B\u63CF\u5DE5\u4F5C\u533A\u2026",
   "\u5DF2\u8BFB\u53D6 42 \u4E2A\u4EFB\u52A1\uFF0C\u6B63\u5728\u9010\u6761\u6BD4\u5BF9\u5DE5\u4F5C\u533A\u5F52\u5C5E\u3001\u4E0A\u6B21\u66F4\u65B0\u65F6\u95F4\u4E0E\u8D1F\u8D23\u4EBA\u662F\u5426\u4E00\u81F4\uFF0C\u6BD4\u5BF9\u5B8C\u6210\u540E\u7EDF\u4E00\u5199\u5165\u53F0\u8D26",
@@ -65570,6 +65956,11 @@ function FlipTextPage() {
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
           (0, import_react86.createElement)(FlipText, { text: "\u56FA\u5B9A 200px", width: 200 })
+        ),
+        (0, import_react86.createElement)(
+          Labeled,
+          { label: "sweep\uFF08\u5E38\u9A7B\u626B\u5149\uFF1A\u6587\u5B57\u4E0D\u52A8\u4E5F\u5728\u52A8\uFF09" },
+          (0, import_react86.createElement)(FlipText, { text: "\u6B63\u5728\u5199\u5165\u53F0\u8D26\u2026", sweep: true, maxWidth: 300 })
         )
       )
     ),
@@ -67466,9 +67857,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.29.0"}`],
-            [t3("buildDemo"), `v${"0.29.0"}`],
-            [t3("buildStamp"), "261104-140809-841"]
+            [t3("buildCore"), `v${"0.29.1"}`],
+            [t3("buildDemo"), `v${"0.29.1"}`],
+            [t3("buildStamp"), "261104-143429-625"]
           ].map(
             ([label, value]) => (0, import_react91.createElement)(
               "tr",
@@ -67780,9 +68171,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react93.createElement)("span", null, `core v${"0.29.0"}`),
-          (0, import_react93.createElement)("span", null, `demo v${"0.29.0"}`),
-          (0, import_react93.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-140809-841")
+          (0, import_react93.createElement)("span", null, `core v${"0.29.1"}`),
+          (0, import_react93.createElement)("span", null, `demo v${"0.29.1"}`),
+          (0, import_react93.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-143429-625")
         )
       )
     ),

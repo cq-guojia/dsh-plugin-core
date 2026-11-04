@@ -300,6 +300,7 @@ function renderKeyedNode(
         text,
         files,
         referenceLabels: (dataOf(node) as { referenceLabels?: readonly string[] }).referenceLabels,
+        skillNames: (dataOf(node) as { skillNames?: readonly string[] }).skillNames,
         t,
       })
     }

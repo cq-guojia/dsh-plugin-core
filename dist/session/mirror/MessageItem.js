@@ -34,9 +34,10 @@ export function AssistantMarkdown(props) {
  * 「按 attachmentId 打开」的公开面 ⇒ 如实降级为只读展示，不伪造打开行为。
  */
 export function UserMessage(props) {
-    const { text, files, referenceLabels, t } = props;
+    const { text, files, referenceLabels, skillNames, t } = props;
     const chips = files ?? [];
     const references = referenceLabels ?? [];
+    const skills = skillNames ?? [];
     return h('div', { className: officialClass('MessageItem', 'userRow') ?? '' }, h('div', { className: officialClass('MessageItem', 'userStack') ?? '' }, 
     // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
     chips.length === 0
@@ -60,7 +61,11 @@ export function UserMessage(props) {
         ? null
         : h('div', {
             className: officialClass('MessageItem', 'referenceSummary') ?? '',
-        }, t('referenceSummary', { labels: references.join(t('referenceSeparator')) }))));
+        }, t('referenceSummary', { labels: references.join(t('referenceSeparator')) })), skills.length === 0
+        ? null
+        : h('div', {
+            className: officialClass('MessageItem', 'referenceSummary') ?? '',
+        }, t('skillSummary', { names: skills.join(t('skillSeparator')) }))));
 }
 /**
  * 自动压缩节点（官方 CompactionItem，lib/client.js:4322-4390）：

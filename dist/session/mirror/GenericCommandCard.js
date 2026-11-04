@@ -3,15 +3,18 @@
 // 本文件名沿用历史，实际镜像 GenericToolCard + ToolRow 一套）。
 // 展开体分发链照官方 ToolRow（lib/client.js:1598-1688）：
 //   TerminalBlock（bash/pwsh/terminal_send，maxLines:∞）→ DiffBlock（write/edit，maxLines:9）
-//   → ReadBlock（read，maxLines:8 = 头 4 + 尾 4，中间「… 其余 N 行」）→ 兜底 ioCard 灰框（输入/分隔/输出）。
+//   → ReadBlock（read，maxLines:8 = 头 4 + 尾 4，中间「… 其余 N 行」）
+//   → SearchBlock（grep/glob，maxLines:8 + 截断 recovery 正文）→ WebBlock（web_search/web_fetch）
+//   → 兜底 ioCard 灰框（输入/分隔/输出）。
 // 数据模型照官方 models/*（行号为 lib/client.js）：toolRowModel 273、diffCardModel 534、
 //   readCardModel 421、terminalCardModel 929、parseExitStatus 903、hasSpillNotice 692；
 // 摘要与五态同构：state = preparing|running|ok|error|stopped（成功结算但退出码非 0 ⇒ error，1767）；
 //   summary = [generic? 工具名, deriveSummary]，终端卡优先 description；error 态摘要 = 输出首行。
 import { Fragment, createElement as h, useMemo, useState } from 'react';
-import { DiffBlock, DisclosureRow, IconApiOutlineRegular, IconBrowseOutlineRegular, IconCodeOutlineRegular, IconEditOutlineRegular, IconSearchOutlineRegular, IconSparkleRegular, ReadBlock, TerminalBlock, TextShimmer, diffTotals, } from '../../ui/official.js';
+import { DiffBlock, DisclosureRow, IconApiOutlineRegular, IconBrowseOutlineRegular, IconCodeOutlineRegular, IconEditOutlineRegular, IconSearchOutlineRegular, IconSparkleRegular, ReadBlock, SearchBlock, TerminalBlock, TextShimmer, WebBlock, diffTotals, } from '../../ui/official.js';
 import { officialClass } from '../official-classes.js';
 import { CodeViewer } from '../../ui/CodeViewer.js';
+import { markdownLabels } from '../../explorer/preview/md-labels.js';
 /** 官方 TOOL_VARIANTS（tool client.js:83-100，cordis_* 一并保留）。 */
 const TOOL_VARIANTS = {
     bash: 'bash',
@@ -43,12 +46,56 @@ const VARIANT_TITLE_KEYS = {
     others: 'toolTitleGeneric',
 };
 const TOOL_TITLE_KEYS = {
-    pwsh: 'toolTitleBash',
+    pwsh: 'toolTitlePwsh',
     read_image: 'toolTitleReadImage',
     grep: 'toolTitleGrep',
     glob: 'toolTitleGlob',
     web_search: 'toolTitleWebSearch',
     web_fetch: 'toolTitleWebFetch',
+    todo_write: 'toolTitleTodo',
+    ask_user_question: 'toolTitleAsk',
+    cordis_package_inspect: 'toolTitleInspect',
+    cordis_runtime_inspect: 'toolTitleInspect',
+    cordis_run: 'toolTitleRunCordis',
+    cordis_stop: 'toolTitleStopCordis',
+    cordis_undefine: 'toolTitleRemoveCordis',
+    cordis_inspect_list: 'toolTitleInspectProviders',
+    cordis_inspect_query: 'toolTitleQueryRuntime',
+    cordis_inspect_self: 'toolTitleInspectPlugins',
+    create_goal: 'toolTitleCreateGoal',
+    get_goal: 'toolTitleGetGoal',
+    update_goal: 'toolTitleUpdateGoal',
+    schedule_create: 'toolTitleCreateSchedule',
+    schedule_list: 'toolTitleListSchedules',
+    schedule_delete: 'toolTitleDeleteSchedule',
+    schedule_update: 'toolTitleUpdateSchedule',
+    workflow: 'toolTitleWorkflow',
+    ralph: 'toolTitleRalph',
+    session_event_read: 'toolTitleReadEvent',
+    session_event_search: 'toolTitleSearchEvents',
+    session_event_trace: 'toolTitleTraceEvent',
+    session_search: 'toolTitleSearchSessions',
+    session_trace: 'toolTitleTraceSession',
+    list_subagent_models: 'toolTitleListModels',
+    subagent: 'toolTitleSubagent',
+    list_agents: 'toolTitleListAgents',
+    send_message: 'toolTitleSendMessage',
+    interrupt_agent: 'toolTitleInterruptAgent',
+    job_list: 'toolTitleListJobs',
+    job_output: 'toolTitleReadJob',
+    job_kill: 'toolTitleKillJob',
+    terminal_open: 'toolTitleOpenTerminal',
+    terminal_read: 'toolTitleReadTerminal',
+    terminal_list: 'toolTitleListTerminals',
+    terminal_signal: 'toolTitleSignalTerminal',
+    terminal_close: 'toolTitleCloseTerminal',
+    lsp: 'toolTitleLsp',
+    spawn_teammate: 'toolTitleSpawnTeammate',
+    team_task_create: 'toolTitleCreateTeamTask',
+    team_task_get: 'toolTitleGetTeamTask',
+    team_task_update: 'toolTitleUpdateTeamTask',
+    team_task_list: 'toolTitleListTeamTasks',
+    wait_agent: 'toolTitleWaitAgent',
 };
 export const toolTitleKey = (name) => TOOL_TITLE_KEYS[name] ?? VARIANT_TITLE_KEYS[classifyTool(name)];
 /** 官方 VARIANT_ICONS（tool client.js:1749-1757，size 14）。 */
@@ -284,6 +331,164 @@ function readCardModel(name, argsRaw, output, meta, isError, settled) {
         return null;
     return face;
 }
+/** 官方 validInclude（tool client.js:590-597）：逗号分隔的多 pattern include 不收。 */
+function validInclude(include) {
+    if (include.trim() === '' || include.startsWith('!'))
+        return false;
+    let braceDepth = 0;
+    for (const character of include) {
+        if (character === '{')
+            braceDepth += 1;
+        else if (character === '}')
+            braceDepth = Math.max(0, braceDepth - 1);
+        else if (character === ',' && braceDepth === 0)
+            return false;
+    }
+    return true;
+}
+/** 官方 validSearchCall（tool client.js:575-589）。 */
+function validSearchCall(name, argsRaw) {
+    if (name !== 'grep' && name !== 'glob')
+        return null;
+    const parsed = parseArgs(argsRaw);
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
+        return null;
+    const { pattern, path, include } = parsed;
+    if (typeof pattern !== 'string')
+        return null;
+    if (name === 'grep' && pattern === '')
+        return null;
+    if (name === 'glob' && pattern.trim() === '')
+        return null;
+    if (path !== undefined && (typeof path !== 'string' || path.trim() === ''))
+        return null;
+    if (name === 'grep' && include !== undefined && (typeof include !== 'string' || !validInclude(include)))
+        return null;
+    return name;
+}
+/** 官方 searchFiles（tool client.js:598-622）：meta.files 收窄。 */
+function searchFiles(value) {
+    if (!Array.isArray(value))
+        return null;
+    const files = [];
+    for (const file of value) {
+        if (typeof file !== 'object' || file === null || Array.isArray(file))
+            return null;
+        const { path, matches } = file;
+        if (typeof path !== 'string' || !Array.isArray(matches))
+            return null;
+        const narrowed = [];
+        for (const match of matches) {
+            if (typeof match !== 'object' || match === null || Array.isArray(match))
+                return null;
+            const { lineNumber, line } = match;
+            if (typeof lineNumber !== 'number' || !Number.isInteger(lineNumber) || lineNumber < 1)
+                return null;
+            if (typeof line !== 'string')
+                return null;
+            narrowed.push({ lineNumber, line });
+        }
+        files.push({ path, matches: narrowed });
+    }
+    return files;
+}
+/**
+ * 官方 searchCardModel（tool client.js:632-667）：结算成功 + meta.{truncated,total} 齐全才出卡，
+ * 否则落回 ioCard 兜底（与官方 generic 路径一致）。
+ */
+export function searchCardModel(name, argsRaw, output, meta, isError, settled) {
+    if (!settled || isError)
+        return null;
+    const tool = validSearchCall(name, argsRaw);
+    if (tool === null)
+        return null;
+    if (typeof meta !== 'object' || meta === null || Array.isArray(meta))
+        return null;
+    const m = meta;
+    if (typeof m.truncated !== 'boolean')
+        return null;
+    if (typeof m.total !== 'number' || !Number.isInteger(m.total) || m.total < 0)
+        return null;
+    const common = { total: m.total, truncated: m.truncated };
+    // 官方 recovery = flattenContent(block.content)：截断时把完整正文摊在卡下方。
+    const recovery = m.truncated && output !== '' ? output : undefined;
+    if (tool === 'grep') {
+        if (m.shape !== 'matches')
+            return null;
+        const files = searchFiles(m.files);
+        return files === null ? null : { card: { kind: 'matches', files, ...common }, ...(recovery === undefined ? {} : { recovery }) };
+    }
+    if (m.shape !== 'paths' || !Array.isArray(m.paths))
+        return null;
+    if (!m.paths.every(path => typeof path === 'string'))
+        return null;
+    return { card: { kind: 'paths', paths: [...m.paths], ...common }, ...(recovery === undefined ? {} : { recovery }) };
+}
+/** 官方 validWebCall（tool client.js:1024-1045）。 */
+function validWebCall(name, argsRaw) {
+    if (name !== 'web_search' && name !== 'web_fetch')
+        return null;
+    const parsed = parseArgs(argsRaw);
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
+        return null;
+    const args = parsed;
+    if (name === 'web_search') {
+        const { queries } = args;
+        if (!Array.isArray(queries) || queries.length === 0)
+            return null;
+        return queries.every(query => typeof query === 'string' && query.trim() !== '') ? name : null;
+    }
+    const { url } = args;
+    return typeof url === 'string' && url.trim() !== '' ? name : null;
+}
+/** 官方 webSources（tool client.js:1046-1064）：meta.sources 收窄（可选字段缺省即不带）。 */
+function webSources(value) {
+    if (!Array.isArray(value))
+        return null;
+    const sources = [];
+    for (const source of value) {
+        if (typeof source !== 'object' || source === null || Array.isArray(source))
+            return null;
+        const { url, title, snippet, publishedAt } = source;
+        if (typeof url !== 'string')
+            return null;
+        if (title !== undefined && typeof title !== 'string')
+            return null;
+        if (snippet !== undefined && typeof snippet !== 'string')
+            return null;
+        if (publishedAt !== undefined && typeof publishedAt !== 'string')
+            return null;
+        sources.push({
+            url,
+            ...(title === undefined ? {} : { title }),
+            ...(snippet === undefined ? {} : { snippet }),
+            ...(publishedAt === undefined ? {} : { publishedAt }),
+        });
+    }
+    return sources;
+}
+/** 官方 webCardModel（tool client.js:1070-1094）。 */
+export function webCardModel(name, argsRaw, meta, isError, settled) {
+    if (!settled || isError)
+        return null;
+    const tool = validWebCall(name, argsRaw);
+    if (tool === null || typeof meta !== 'object' || meta === null || Array.isArray(meta))
+        return null;
+    const m = meta;
+    if (typeof m.truncated !== 'boolean')
+        return null;
+    if (tool === 'web_search') {
+        const sources = webSources(m.sources);
+        if (sources === null || (m.answer !== undefined && typeof m.answer !== 'string'))
+            return null;
+        return { kind: 'search', ...(typeof m.answer === 'string' ? { answer: m.answer } : {}), sources, truncated: m.truncated };
+    }
+    if (typeof m.url !== 'string')
+        return null;
+    if (typeof m.statusCode !== 'number' || !Number.isInteger(m.statusCode))
+        return null;
+    return { kind: 'fetch', url: m.url, statusCode: m.statusCode, truncated: m.truncated };
+}
 /** 官方 shellCall（tool client.js:831-855）：无 description = persistent（结算走 generic）。 */
 export function shellCall(name, args) {
     if (name !== 'bash' && name !== 'pwsh')
@@ -403,6 +608,31 @@ function contentKilobytes(argsRaw) {
     }
     return any ? Math.ceil(chars / 1024) : null;
 }
+/** 官方 todo 行摘要（tool client.js:4480-4503）：done/total + 首个 in_progress 内容，
+ *  多条并行 in_progress ⇒ 额外条数走 summarySuffix「+N」。 */
+function todoSummary(argsRaw, t) {
+    if (argsRaw === '')
+        return null;
+    let parsed;
+    try {
+        parsed = JSON.parse(argsRaw);
+    }
+    catch {
+        return null;
+    }
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
+        return null;
+    const todos = parsed.todos;
+    if (!Array.isArray(todos) || !todos.every(item => typeof item === 'object' && item !== null))
+        return null;
+    const list = todos;
+    const done = list.filter(item => item.status === 'completed').length;
+    const active = list.filter(item => item.status === 'in_progress');
+    const first = active[0]?.content;
+    const named = typeof first === 'string' && first.trim() !== '';
+    const head = t('todoCompleted', { done, total: list.length });
+    return { text: named ? `${head} · ${first}` : head, extra: named ? active.length - 1 : 0 };
+}
 /** 词典：代码工具栏（官方 codeToolbarLabels，tool client.js:1098-1104）。 */
 const codeToolbarLabels = (t) => ({
     codeLabel: t('codeBlockLabel'),
@@ -429,6 +659,30 @@ const readLabels = (t) => ({
     expandAria: (count) => t('readExpandAria', { count }),
     collapse: t('collapseLabel'),
     expand: (count) => t('readExpandRest', { count }),
+});
+/** 官方 searchBlockLabels（tool client.js:1222-1240）。 */
+const searchLabels = (t) => ({
+    pathsSummary: (shown, total, truncated) => truncated
+        ? t('searchPathsTruncated', { shown, total })
+        : t('searchPaths', { shown }),
+    matchesSummary: (shown, total, files, truncated) => truncated
+        ? t('searchMatchesTruncated', { shown, total, files })
+        : t('searchMatches', { shown, files }),
+    copy: t('copyLabel'),
+    copied: t('copiedLabel'),
+    noResults: t('searchNoResults'),
+    collapseAria: t('searchCollapseAria'),
+    expandAria: (count) => t('searchExpandAria', { count }),
+    collapse: t('collapseLabel'),
+    expand: (count) => t('searchExpandRest', { count }),
+});
+/** 官方 webBlockLabels（tool client.js:1247-1255）；markdown 复用 core 的 MarkdownText 文案。 */
+const webLabels = (t) => ({
+    noResults: t('webNoResults'),
+    sourcesTruncated: t('webSourcesTruncated'),
+    http: t('webHttp'),
+    contentTruncated: t('webContentTruncated'),
+    markdown: markdownLabels(),
 });
 /** 官方 terminalBlockLabels（tool client.js:708-737 的键面）。 */
 export const terminalLabels = (t) => ({
@@ -475,6 +729,8 @@ export function GenericCommandCard(props) {
     const terminalFace = useMemo(() => terminalCardModel(name, argsRaw, output, isError, settled), [name, argsRaw, output, isError, settled]);
     const read = useMemo(() => readCardModel(name, argsRaw, output, meta, isError, settled), [name, argsRaw, output, meta, isError, settled]);
     const diffs = useMemo(() => diffCardModel(name, argsRaw, meta, isError, settled), [name, argsRaw, meta, isError, settled]);
+    const search = useMemo(() => searchCardModel(name, argsRaw, output, meta, isError, settled), [name, argsRaw, output, meta, isError, settled]);
+    const web = useMemo(() => webCardModel(name, argsRaw, meta, isError, settled), [name, argsRaw, meta, isError, settled]);
     // 终端卡展开体（官方 localizeTerminalCardModel：send 命令空 = （发送输入），描述 = 终端 {sessionId}）。
     const terminal = useMemo(() => {
         if (terminalFace === null)
@@ -493,6 +749,8 @@ export function GenericCommandCard(props) {
     const generic = titleKey === 'toolTitleGeneric';
     const base = argsRaw === '' ? '' : deriveSummary(variant, argsRaw);
     const plainSummary = [generic ? name : '', base].filter(Boolean).join(' · ');
+    const todoInfo = name === 'todo_write' ? todoSummary(argsRaw, t) : null;
+    const normalSummary = todoInfo !== null ? todoInfo.text : terminal?.description ?? plainSummary;
     const errorSummary = rowState === 'error' && output !== '' ? firstLine(output) : null;
     // 官方 terminalExitLabel（tool client.js:801-809）：已失败前台命令才出退出码徽章。
     const exitLabel = failedTerminal
@@ -502,12 +760,16 @@ export function GenericCommandCard(props) {
                 ? t('terminalNoExitCode')
                 : t('terminalExitCode', { code: terminal.exitCode })
         : null;
-    const summaryText = (rowState === 'error' && exitLabel === null ? errorSummary ?? (terminal?.description ?? plainSummary) : null) ?? terminal?.description ?? plainSummary;
+    const summaryText = (rowState === 'error' && exitLabel === null ? errorSummary ?? normalSummary : null) ?? normalSummary;
     // 官方 ToolRow 两个独立后缀槽（1600-1602）：summarySuffix（edit/write 内容 KB）与 diffStat（+N -M）。
     const totals = diffs === null ? null : diffTotals(diffs);
     const settledWithCue = rowState === 'error' || rowState === 'stopped';
     const kilobytes = variant === 'edit' || variant === 'write' ? contentKilobytes(argsRaw) : null;
-    const summarySuffix = settledWithCue || kilobytes === null || summaryText === '' ? null : t('toolPreparingContent', { kilobytes });
+    const summarySuffix = settledWithCue
+        ? null
+        : todoInfo !== null
+            ? (todoInfo.extra > 0 ? `+${todoInfo.extra}` : null)
+            : (kilobytes === null || summaryText === '' ? null : t('toolPreparingContent', { kilobytes }));
     const diffStatTotals = settledWithCue ? null : totals;
     // 官方 fileLink（1536-1545）：read/write/edit 摘要路径 + onOpenFile + 非 error/stopped ⇒ 链接钮。
     const filePath = argsRaw === '' ? undefined : deriveFilePath(variant, argsRaw);
@@ -533,14 +795,21 @@ export function GenericCommandCard(props) {
         }
     })();
     // 展开体（官方 1514-1550）：input/output/card 三源；bodyText 仅展开且无专属卡时格式化。
-    const inputRaw = argsRaw === '' ? null : argsRaw;
+    // 官方 singleFile（1876/1885）：摘要已是文件路径链接的工具（read）不再摊原始输入 JSON。
+    const inputRaw = argsRaw === '' || filePath !== undefined ? null : argsRaw;
     const outputText = output === '' ? null : output;
-    const card = terminal !== null ? 'terminal' : diffs !== null ? 'diff' : read !== null ? 'read' : null;
+    const card = terminal !== null ? 'terminal' : diffs !== null ? 'diff' : read !== null ? 'read' : search !== null ? 'search' : web !== null ? 'web' : null;
     const bodyText = expanded && card === null && inputRaw !== null ? formatToolBody(variant, inputRaw) : null;
     const cardBody = variant === 'code' ? null : bodyText;
     const expandable = rowState !== 'preparing' && (inputRaw !== null || outputText !== null || card !== null);
     const open = expanded && expandable;
-    const blockLabels = useMemo(() => ({ diff: diffLabels(t), read: readLabels(t), terminal: terminalLabels(t) }), [t]);
+    const blockLabels = useMemo(() => ({
+        diff: diffLabels(t),
+        read: readLabels(t),
+        search: searchLabels(t),
+        web: webLabels(t),
+        terminal: terminalLabels(t),
+    }), [t]);
     const statusText = rowState === 'preparing' ? t('rowPreparing')
         : rowState === 'running' ? t('rowRunning')
             : rowState === 'error' ? t('rowFailed')
@@ -597,17 +866,28 @@ export function GenericCommandCard(props) {
                     maxLines: 8,
                     className: officialClass('ToolRow', 'readBody') ?? '',
                 })
-                : h(Fragment, null, variant === 'code' && bodyText !== null
-                    ? h('div', { className: officialClass('ToolRow', 'bodyScroll') ?? '' }, h(CodeViewer, {
-                        text: bodyText,
-                        path: 'tool-code.ts',
-                        t,
-                        className: officialClass('ToolRow', 'codeBody') ?? '',
-                        height: 'auto',
-                        style: { height: 'auto' },
-                    }))
-                    : null, (cardBody !== null || outputText !== null) && h('div', { className: officialClass('ToolRow', 'ioCard') ?? '' }, cardBody !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolInputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '' }, cardBody)), cardBody !== null && outputText !== null
-                    && h('span', { className: officialClass('ToolRow', 'ioDivider') ?? '', 'aria-hidden': true }), outputText !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolOutputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '', 'data-error': rowState === 'error' || undefined }, outputText))))) : undefined;
+                : search !== null
+                    ? h(Fragment, null, h(SearchBlock, {
+                        ...search.card,
+                        labels: blockLabels.search,
+                        maxLines: 8,
+                        className: officialClass('ToolRow', 'searchBody') ?? '',
+                    }), search.recovery !== undefined
+                        ? h('div', { className: officialClass('ToolRow', 'searchRecovery') ?? '' }, search.recovery)
+                        : null)
+                    : web !== null
+                        ? h(WebBlock, { ...web, labels: blockLabels.web, className: officialClass('ToolRow', 'webBody') ?? '' })
+                        : h(Fragment, null, variant === 'code' && bodyText !== null
+                            ? h('div', { className: officialClass('ToolRow', 'bodyScroll') ?? '' }, h(CodeViewer, {
+                                text: bodyText,
+                                path: 'tool-code.ts',
+                                t,
+                                className: officialClass('ToolRow', 'codeBody') ?? '',
+                                height: 'auto',
+                                style: { height: 'auto' },
+                            }))
+                            : null, (cardBody !== null || outputText !== null) && h('div', { className: officialClass('ToolRow', 'ioCard') ?? '' }, cardBody !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolInputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '' }, cardBody)), cardBody !== null && outputText !== null
+                            && h('span', { className: officialClass('ToolRow', 'ioDivider') ?? '', 'aria-hidden': true }), outputText !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolOutputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '', 'data-error': rowState === 'error' || undefined }, outputText))))) : undefined;
     return h('div', {
         className: officialClass('ToolRow', 'root') ?? '',
         'data-variant': variant,

@@ -47,7 +47,8 @@ export function FlipText(props) {
         ? { width: props.width }
         : { minWidth: props.minWidth, maxWidth: props.maxWidth };
     const item = 'dshpc-flip__item';
-    return h('span', { className: props.className === undefined ? 'dshpc-flip' : `dshpc-flip ${props.className}`, style }, 
+    const root = `dshpc-flip${props.sweep === true ? ' dshpc-flip--sweep' : ''}${props.className === undefined ? '' : ` ${props.className}`}`;
+    return h('span', { className: root, style }, 
     // 旧帧：只在换字后存在，到点摘掉
     slot.prev === null
         ? null

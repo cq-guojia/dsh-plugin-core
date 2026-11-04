@@ -133,7 +133,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
         : h(
             'div',
             { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` },
-            notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice' }),
+            notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }),
             props.footer,
           ),
     ),

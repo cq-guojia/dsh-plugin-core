@@ -1470,7 +1470,10 @@ const [step, setStep] = useState('正在扫描工作区…')
 <FlipText text="一条很长的过程提示…" maxWidth={220} />
 
 // 宽度三档同 Button / Chip：width 优先，其次 minWidth / maxWidth
-<FlipText text="固定宽" width={200} />`
+<FlipText text="固定宽" width={200} />
+
+// 常驻扫光：文字不变也在动（默认关；弹窗 / 抽屉底栏的 notice 默认开）
+<FlipText text="正在写入台账…" sweep />`
 
 /** FlipText 演示用的过程文案（换一次翻一次牌）；第二条故意超长，用来看省略 + 跑马灯。 */
 const FLIP_STEPS = [
@@ -1585,6 +1588,8 @@ export function FlipTextPage(): ReturnType<typeof h> {
           })),
         h(Labeled, { label: 'width（固定宽）' },
           h(FlipText, { text: '固定 200px', width: 200 })),
+        h(Labeled, { label: 'sweep（常驻扫光：文字不动也在动）' },
+          h(FlipText, { text: '正在写入台账…', sweep: true, maxWidth: 300 })),
       ),
     ),
     h(DocApi, { id: 'flip-text' }),

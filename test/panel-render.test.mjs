@@ -53,7 +53,7 @@ test('Modal：遮罩居中档 + 面板 modal 档 + 关闭钮走公共件', () =>
 test('Modal notice：给了才有底栏，左侧那条挂 dshpc-modal__notice', () => {
   const withNotice = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {}, notice: '正在写入…' }, 'x'))
   assert.match(withNotice, /class="dshpc-modal__foot"/)
-  assert.match(withNotice, /class="dshpc-flip dshpc-modal__notice"/)
+  assert.match(withNotice, /class="dshpc-flip(?: dshpc-flip--sweep)? dshpc-modal__notice"/)
   assert.match(withNotice, /正在写入…/)
   // 不传 notice 且没有 footer ⇒ 底栏整个不渲染（与接入前完全一致）
   assert.doesNotMatch(renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {} }, 'x')), /dshpc-modal__foot/)
@@ -68,6 +68,15 @@ test('FlipText：首帧只一层、不放动画；换字才多出一层旧帧', 
   assert.doesNotMatch(first, /dshpc-flip__in|dshpc-flip__out/)
   // 溢出交给 MarqueeText（三点省略 + hover 跑马灯都在它那层里，SSR 测不到测宽）
   assert.match(first, /class="dshpc-mq"/)
+})
+
+test('FlipText sweep：默认不加类，sweep 才挂 dshpc-flip--sweep', () => {
+  // 扫光样式只由这个类触发，拼错 = 完全没效果且看不出来
+  assert.doesNotMatch(renderToStaticMarkup(h(FlipText, { text: '正在写入…' })), /dshpc-flip--sweep/)
+  assert.match(
+    renderToStaticMarkup(h(FlipText, { text: '正在写入…', sweep: true })),
+    /class="dshpc-flip dshpc-flip--sweep"/,
+  )
 })
 
 test('nextFlipSlot：同一句不重播，换句把当前帧降为上一帧且 seq 递增', () => {

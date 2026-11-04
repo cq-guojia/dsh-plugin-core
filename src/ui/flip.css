@@ -13,3 +13,18 @@
   .dshpc-flip__in,.dshpc-flip__out{animation:none}
   .dshpc-flip__out{opacity:0}
 }
+/* 扫光（sweep）：常驻循环，停在原地的提示也看得出在动。开关默认关，弹窗 / 抽屉底栏默认开。
+   光必须只落在字上：盖一层半透明光带的话，notice 是 flex:1 撑开的宽容器，右侧大片空白
+   里会出现一条白光在扫。故把光做成文字自己的 background + background-clip:text 裁到字形；
+   基色取 currentColor ⇒ 调用方换字色也跟着走，不需要知道文字宽度。 */
+.dshpc-flip--sweep .dshpc-mq-in{
+  background-image:linear-gradient(105deg,currentColor 0,currentColor 47%,color-mix(in srgb,var(--dshpc-on-signal) 70%,currentColor) 50%,currentColor 53%,currentColor 100%);
+  background-size:300% 100%;background-repeat:no-repeat;
+  background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:dshpc-flip-sweep 1.5s linear infinite;
+}
+/* 1.5s 一轮：前 40% 扫完，其余停在视野外休息 —— 一直扫会晃眼，间歇才像「还在干活」。 */
+@keyframes dshpc-flip-sweep{0%{background-position:100% 0}40%,100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){
+  .dshpc-flip--sweep .dshpc-mq-in{animation:none;background-image:none;-webkit-text-fill-color:currentColor}
+}

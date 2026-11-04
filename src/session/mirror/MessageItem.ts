@@ -63,11 +63,14 @@ export function UserMessage(props: {
   files?: readonly UserFileFace[]
   /** 官方 referenceLabels：用户 @ 引用的会话标签，气泡后单独一行（非 inline chips）。 */
   referenceLabels?: readonly string[]
+  /** 官方 skillNames：本条消息用到的技能，气泡后单独一行（官方走文本工厂内联，此处近似）。 */
+  skillNames?: readonly string[]
   t: Translate
 }): ReturnType<typeof h> {
-  const { text, files, referenceLabels, t } = props
+  const { text, files, referenceLabels, skillNames, t } = props
   const chips = files ?? []
   const references = referenceLabels ?? []
+  const skills = skillNames ?? []
   return h('div', { className: officialClass('MessageItem', 'userRow') ?? '' },
     h('div', { className: officialClass('MessageItem', 'userStack') ?? '' },
       // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
@@ -104,6 +107,11 @@ export function UserMessage(props: {
         : h('div', {
             className: officialClass('MessageItem', 'referenceSummary') ?? '',
           }, t('referenceSummary', { labels: references.join(t('referenceSeparator')) })),
+      skills.length === 0
+        ? null
+        : h('div', {
+            className: officialClass('MessageItem', 'referenceSummary') ?? '',
+          }, t('skillSummary', { names: skills.join(t('skillSeparator')) })),
     ),
   )
 }

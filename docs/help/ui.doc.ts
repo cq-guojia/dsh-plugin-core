@@ -18,7 +18,10 @@ h(FlipText, { text: step })
 h(FlipText, { text: step, maxWidth: 220 })
 
 // 宽度三档：width 优先，其次 minWidth / maxWidth
-h(FlipText, { text: step, width: 200 })`
+h(FlipText, { text: step, width: 200 })
+
+// 常驻扫光：文字不变也在动（默认关；弹窗 / 抽屉底栏的 notice 默认开）
+h(FlipText, { text: step, sweep: true })`
 
 const cardExample = `import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'
 
@@ -650,6 +653,10 @@ const doc: DocTopic = {
           zh: '宽度三档同 Button / Chip：`width` 优先，`width` 未设时 `minWidth` / `maxWidth` 生效；三者都不传 = 随父容器（flex 子项自然伸缩，弹窗底栏就是这么用的）。要放进弹窗底栏左侧**不要自己包**，直接用 `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` 的 `notice`。',
           en: 'Widths follow Button / Chip: `width` wins; `minWidth` / `maxWidth` apply only when it is unset; none of the three means "follow the parent" (a flex child stretches naturally — that is how the dialog footer uses it). To put it on the left of a dialog footer, use the `notice` prop on `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` rather than wrapping it yourself.',
         },
+        {
+          zh: '`sweep` = 常驻扫光：一道斜光每 1.5s 从文字上扫过，扫到的字提亮，甚至文案一直不变也看得出「还在干活」。**默认关**；`Modal` / `SideSheet` 的 `notice` 默认打开（确认框与过程提示的场景）。光只落在字形上（`background-clip:text`），不会在底栏的空白区显出一条白光；`prefers-reduced-motion` 下与翻牌一起关掉。',
+          en: '`sweep` is a persistent sheen: a slanted highlight crosses the text every 1.5s, brightening the characters it passes, so an unchanged line still reads as "still working". **Off by default**; the `notice` prop on `Modal` / `SideSheet` turns it on (confirm dialogs and progress hints). The light is clipped to the glyphs (`background-clip:text`), so it never shows as a white bar across the empty part of a footer, and it is turned off together with the flip under `prefers-reduced-motion`.',
+        },
       ],
       api: [
         {
@@ -659,6 +666,7 @@ const doc: DocTopic = {
             { name: 'width', type: 'number | string', def: '—', desc: { zh: '固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效', en: 'Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored' } },
             { name: 'minWidth', type: 'number | string', def: '—', desc: { zh: '最小宽：width 未设时生效', en: 'Minimum width: applies only when width is unset' } },
             { name: 'maxWidth', type: 'number | string', def: '—', desc: { zh: '最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开', en: 'Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover' } },
+            { name: 'sweep', type: 'boolean', def: 'false', desc: { zh: '常驻扫光：每 1.5s 一道斜光扫过文字，文案不变也能看出在动。`Modal` / `SideSheet` 的 `notice` 默认传 true', en: 'Persistent sheen: a slanted highlight crosses the text every 1.5s so a static line still reads as active. The `notice` prop on `Modal` / `SideSheet` passes true by default' } },
             { name: 'className', type: 'string', def: '—', desc: { zh: '追加 class（只补字体 / 颜色这类皮肤，布局归组件自己）', en: 'Extra class (font / colour skin only; layout belongs to the component)' } },
           ],
         },
@@ -852,7 +860,7 @@ const doc: DocTopic = {
             { name: 'maxWidth', type: 'string', def: '按 size', desc: { zh: '任意 CSS 值，覆盖 size 的宽度上限；不要用 vw（遮罩已按右侧分栏让位）', en: 'Any CSS value, overriding the size’s max width; avoid vw (the mask already yielded to the right column)' } },
             { name: 'hideHeader', type: 'boolean', def: "'false'", desc: { zh: '不渲染头部（沉浸式）', en: 'Skip header (immersive)' } },
             { name: 'footer', type: 'ReactNode', def: '—', desc: { zh: '底栏（按钮区；上下内距相等、内容垂直居中）', en: 'Footer (button area; symmetric padding, vertically centred)' } },
-            { name: 'notice', type: 'string', def: '—', desc: { zh: '底栏**左侧**的一行过程提示：换文案即翻牌，超长省略 + hover 跑马灯。不传 = 不占位、与以前完全一样；**传空字符串 = 清场**；footer 也可不给（它会自己撑起底栏）', en: 'One-line progress notice on the **left** of the footer: changing the string flips it, overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too — the notice alone brings the footer up' } },
+            { name: 'notice', type: 'string', def: '—', desc: { zh: '底栏**左侧**的一行过程提示：换文案即翻牌，**默认带常驻扫光**（不动也看得出在动），超长省略 + hover 跑马灯。不传 = 不占位、与以前完全一样；**传空字符串 = 清场**；footer 也可不给（它会自己撑起底栏）', en: 'One-line progress notice on the **left** of the footer: changing the string flips it, and it carries the **persistent sheen by default** (still reads as active when unchanged); overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too — the notice alone brings the footer up' } },
             { name: 'footerDivider', type: 'boolean', def: "'true'", desc: { zh: '底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有）', en: 'The divider above the footer; pass false to drop it (sm dialogs never have one)' } },
             { name: 'className', type: 'string', def: '—', desc: { zh: '追加 class（只补布局 / 视觉修饰，别覆盖皮肤）', en: 'Extra class (layout / visual tweaks only; do not override the skin)' } },
             { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '主体', en: 'Body' } },
@@ -935,7 +943,7 @@ const doc: DocTopic = {
             { name: 'width / minWidth / maxWidth', type: 'number / number / number', def: '460 / 320 / —', desc: { zh: '初始宽度 / 拖拽下限 / 拖拽上限（px；上限缺省 = 遮罩盒宽）', en: 'Initial width / resize floor / resize ceiling (px; ceiling defaults to the mask box)' } },
             { name: 'resizable', type: 'boolean', def: 'true', desc: { zh: '能否拖宽（关掉就没有拖拽条）', en: 'Whether it resizes by dragging (off = no handle)' } },
             { name: 'footer / children', type: 'ReactNode / ReactNode', def: '— / —', desc: { zh: '底栏 / 主体（主体是唯一滚动容器）', en: 'Footer / body (the body is the only scroll container)' } },
-            { name: 'notice', type: 'string', def: '—', desc: { zh: '底栏**左侧**的一行过程提示（换文案即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（抽屉常驻渲染，关掉再开时用它清上一轮）', en: 'One-line progress notice on the **left** of the footer (changing it flips; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped)' } },
+            { name: 'notice', type: 'string', def: '—', desc: { zh: '底栏**左侧**的一行过程提示（换文案即翻牌，**默认带常驻扫光**，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（抽屉常驻渲染，关掉再开时用它清上一轮）', en: 'One-line progress notice on the **left** of the footer (changing it flips; it carries the **persistent sheen by default**; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped)' } },
             { name: 'translate', type: 'Translate', def: '内置字典', desc: { zh: '覆盖关闭 / 拖拽条的文案', en: 'Override close / resize copy' } },
           ],
         },

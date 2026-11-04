@@ -8,6 +8,53 @@ export declare const toolTitleKey: (name: string) => UtilMessageKey;
 export declare function deriveSummary(variant: Variant, argsRaw: string): string;
 /** 官方 formatToolBody（tool client.js:255-264）：通用展开体的输入正文。 */
 export declare function formatToolBody(variant: Variant, argsRaw: string): string | null;
+/** 搜索结果卡两面（官方 searchCardModel 的返回；recovery = 截断时的完整结果正文）。 */
+interface SearchFace {
+    card: {
+        kind: 'matches';
+        files: SearchFile[];
+        total: number;
+        truncated: boolean;
+    } | {
+        kind: 'paths';
+        paths: string[];
+        total: number;
+        truncated: boolean;
+    };
+    recovery?: string;
+}
+interface SearchFile {
+    path: string;
+    matches: {
+        lineNumber: number;
+        line: string;
+    }[];
+}
+/**
+ * 官方 searchCardModel（tool client.js:632-667）：结算成功 + meta.{truncated,total} 齐全才出卡，
+ * 否则落回 ioCard 兜底（与官方 generic 路径一致）。
+ */
+export declare function searchCardModel(name: string, argsRaw: string, output: string, meta: unknown, isError: boolean, settled: boolean): SearchFace | null;
+/** 网页卡两面（官方 webCardModel 直接返回的可展开体形状）。 */
+type WebFace = {
+    kind: 'search';
+    answer?: string;
+    sources: WebSource[];
+    truncated: boolean;
+} | {
+    kind: 'fetch';
+    url: string;
+    statusCode: number;
+    truncated: boolean;
+};
+interface WebSource {
+    url: string;
+    title?: string;
+    snippet?: string;
+    publishedAt?: string;
+}
+/** 官方 webCardModel（tool client.js:1070-1094）。 */
+export declare function webCardModel(name: string, argsRaw: string, meta: unknown, isError: boolean, settled: boolean): WebFace | null;
 /** 终端卡规格（官方 localizeTerminalCardModel 的 card 面；send 的命令/描述在组件侧词典化）。 */
 export interface TerminalFace {
     command: string;
@@ -79,4 +126,5 @@ export declare function GenericCommandCard(props: {
     onOpenFile?: (path: string) => void;
     t: Translate;
 }): ReturnType<typeof h>;
+export {};
 //# sourceMappingURL=GenericCommandCard.d.ts.map

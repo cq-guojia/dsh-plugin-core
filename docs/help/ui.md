@@ -413,12 +413,17 @@ h(StripCard, {
 
 > EN: Widths follow Button / Chip: `width` wins; `minWidth` / `maxWidth` apply only when it is unset; none of the three means "follow the parent" (a flex child stretches naturally — that is how the dialog footer uses it). To put it on the left of a dialog footer, use the `notice` prop on `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` rather than wrapping it yourself.
 
+`sweep` = 常驻扫光：一道斜光每 1.5s 从文字上扫过，扫到的字提亮，甚至文案一直不变也看得出「还在干活」。**默认关**；`Modal` / `SideSheet` 的 `notice` 默认打开（确认框与过程提示的场景）。光只落在字形上（`background-clip:text`），不会在底栏的空白区显出一条白光；`prefers-reduced-motion` 下与翻牌一起关掉。
+
+> EN: `sweep` is a persistent sheen: a slanted highlight crosses the text every 1.5s, brightening the characters it passes, so an unchanged line still reads as "still working". **Off by default**; the `notice` prop on `Modal` / `SideSheet` turns it on (confirm dialogs and progress hints). The light is clipped to the glyphs (`background-clip:text`), so it never shows as a white bar across the empty part of a footer, and it is turned off together with the flip under `prefers-reduced-motion`.
+
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `text` | `string` | —（必填） | 当前文本；变了就翻一次牌。**空串 = 没有文案**：不渲染、不占位（同一块地方复用靠它清场）；清空后再给值是直接出现，不从下方翻上来 | Current text; a change flips it once. **An empty string means no line at all**: nothing rendered, no space taken (that is how a reused spot is cleared); the next value appears outright instead of sliding in |
 | `width` | `number \| string` | — | 固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效 | Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored |
 | `minWidth` | `number \| string` | — | 最小宽：width 未设时生效 | Minimum width: applies only when width is unset |
 | `maxWidth` | `number \| string` | — | 最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开 | Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover |
+| `sweep` | `boolean` | false | 常驻扫光：每 1.5s 一道斜光扫过文字，文案不变也能看出在动。`Modal` / `SideSheet` 的 `notice` 默认传 true | Persistent sheen: a slanted highlight crosses the text every 1.5s so a static line still reads as active. The `notice` prop on `Modal` / `SideSheet` passes true by default |
 | `className` | `string` | — | 追加 class（只补字体 / 颜色这类皮肤，布局归组件自己） | Extra class (font / colour skin only; layout belongs to the component) |
 
 ```tsx id="ui-flip-text-example"
@@ -433,6 +438,9 @@ h(FlipText, { text: step, maxWidth: 220 })
 
 // 宽度三档：width 优先，其次 minWidth / maxWidth
 h(FlipText, { text: step, width: 200 })
+
+// 常驻扫光：文字不变也在动（默认关；弹窗 / 抽屉底栏的 notice 默认开）
+h(FlipText, { text: step, sweep: true })
 ```
 
 ## Table（表格）
@@ -719,7 +727,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `maxWidth` | `string` | 按 size | 任意 CSS 值，覆盖 size 的宽度上限；不要用 vw（遮罩已按右侧分栏让位） | Any CSS value, overriding the size’s max width; avoid vw (the mask already yielded to the right column) |
 | `hideHeader` | `boolean` | 'false' | 不渲染头部（沉浸式） | Skip header (immersive) |
 | `footer` | `ReactNode` | — | 底栏（按钮区；上下内距相等、内容垂直居中） | Footer (button area; symmetric padding, vertically centred) |
-| `notice` | `string` | — | 底栏**左侧**的一行过程提示：换文案即翻牌，超长省略 + hover 跑马灯。不传 = 不占位、与以前完全一样；**传空字符串 = 清场**；footer 也可不给（它会自己撑起底栏） | One-line progress notice on the **left** of the footer: changing the string flips it, overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too — the notice alone brings the footer up |
+| `notice` | `string` | — | 底栏**左侧**的一行过程提示：换文案即翻牌，**默认带常驻扫光**（不动也看得出在动），超长省略 + hover 跑马灯。不传 = 不占位、与以前完全一样；**传空字符串 = 清场**；footer 也可不给（它会自己撑起底栏） | One-line progress notice on the **left** of the footer: changing the string flips it, and it carries the **persistent sheen by default** (still reads as active when unchanged); overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too — the notice alone brings the footer up |
 | `footerDivider` | `boolean` | 'true' | 底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有） | The divider above the footer; pass false to drop it (sm dialogs never have one) |
 | `className` | `string` | — | 追加 class（只补布局 / 视觉修饰，别覆盖皮肤） | Extra class (layout / visual tweaks only; do not override the skin) |
 | `children` | `ReactNode` | — | 主体 | Body |
@@ -790,7 +798,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `width / minWidth / maxWidth` | `number / number / number` | 460 / 320 / — | 初始宽度 / 拖拽下限 / 拖拽上限（px；上限缺省 = 遮罩盒宽） | Initial width / resize floor / resize ceiling (px; ceiling defaults to the mask box) |
 | `resizable` | `boolean` | true | 能否拖宽（关掉就没有拖拽条） | Whether it resizes by dragging (off = no handle) |
 | `footer / children` | `ReactNode / ReactNode` | — / — | 底栏 / 主体（主体是唯一滚动容器） | Footer / body (the body is the only scroll container) |
-| `notice` | `string` | — | 底栏**左侧**的一行过程提示（换文案即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（抽屉常驻渲染，关掉再开时用它清上一轮） | One-line progress notice on the **left** of the footer (changing it flips; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped) |
+| `notice` | `string` | — | 底栏**左侧**的一行过程提示（换文案即翻牌，**默认带常驻扫光**，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（抽屉常驻渲染，关掉再开时用它清上一轮） | One-line progress notice on the **left** of the footer (changing it flips; it carries the **persistent sheen by default**; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped) |
 | `translate` | `Translate` | 内置字典 | 覆盖关闭 / 拖拽条的文案 | Override close / resize copy |
 
 ```tsx id="ui-sidesheet-example"

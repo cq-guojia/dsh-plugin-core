@@ -2332,6 +2332,10 @@ export const docData = {
       {
         "zh": "宽度三档同 Button / Chip：`width` 优先，`width` 未设时 `minWidth` / `maxWidth` 生效；三者都不传 = 随父容器（flex 子项自然伸缩，弹窗底栏就是这么用的）。要放进弹窗底栏左侧**不要自己包**，直接用 `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` 的 `notice`。",
         "en": "Widths follow Button / Chip: `width` wins; `minWidth` / `maxWidth` apply only when it is unset; none of the three means \"follow the parent\" (a flex child stretches naturally — that is how the dialog footer uses it). To put it on the left of a dialog footer, use the `notice` prop on `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` rather than wrapping it yourself."
+      },
+      {
+        "zh": "`sweep` = 常驻扫光：一道斜光每 1.5s 从文字上扫过，扫到的字提亮，甚至文案一直不变也看得出「还在干活」。**默认关**；`Modal` / `SideSheet` 的 `notice` 默认打开（确认框与过程提示的场景）。光只落在字形上（`background-clip:text`），不会在底栏的空白区显出一条白光；`prefers-reduced-motion` 下与翻牌一起关掉。",
+        "en": "`sweep` is a persistent sheen: a slanted highlight crosses the text every 1.5s, brightening the characters it passes, so an unchanged line still reads as \"still working\". **Off by default**; the `notice` prop on `Modal` / `SideSheet` turns it on (confirm dialogs and progress hints). The light is clipped to the glyphs (`background-clip:text`), so it never shows as a white bar across the empty part of a footer, and it is turned off together with the flip under `prefers-reduced-motion`."
       }
     ],
     "api": [
@@ -2375,6 +2379,15 @@ export const docData = {
             }
           },
           {
+            "name": "sweep",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "常驻扫光：每 1.5s 一道斜光扫过文字，文案不变也能看出在动。`Modal` / `SideSheet` 的 `notice` 默认传 true",
+              "en": "Persistent sheen: a slanted highlight crosses the text every 1.5s so a static line still reads as active. The `notice` prop on `Modal` / `SideSheet` passes true by default"
+            }
+          },
+          {
             "name": "className",
             "type": "string",
             "def": "—",
@@ -2390,7 +2403,7 @@ export const docData = {
       {
         "id": "ui-flip-text-example",
         "lang": "tsx",
-        "src": "import { FlipText } from 'dsh-plugin-core/ui'\n\n// 换文案 = 改 text，动效自己放（旧的上移出、新的从下进）\nconst [step, setStep] = useState('正在扫描工作区…')\nh(FlipText, { text: step })\n\n// 溢出：放不下三点省略，hover 跑马灯\nh(FlipText, { text: step, maxWidth: 220 })\n\n// 宽度三档：width 优先，其次 minWidth / maxWidth\nh(FlipText, { text: step, width: 200 })"
+        "src": "import { FlipText } from 'dsh-plugin-core/ui'\n\n// 换文案 = 改 text，动效自己放（旧的上移出、新的从下进）\nconst [step, setStep] = useState('正在扫描工作区…')\nh(FlipText, { text: step })\n\n// 溢出：放不下三点省略，hover 跑马灯\nh(FlipText, { text: step, maxWidth: 220 })\n\n// 宽度三档：width 优先，其次 minWidth / maxWidth\nh(FlipText, { text: step, width: 200 })\n\n// 常驻扫光：文字不变也在动（默认关；弹窗 / 抽屉底栏的 notice 默认开）\nh(FlipText, { text: step, sweep: true })"
       }
     ]
   },
@@ -3066,8 +3079,8 @@ export const docData = {
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "底栏**左侧**的一行过程提示：换文案即翻牌，超长省略 + hover 跑马灯。不传 = 不占位、与以前完全一样；**传空字符串 = 清场**；footer 也可不给（它会自己撑起底栏）",
-              "en": "One-line progress notice on the **left** of the footer: changing the string flips it, overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too — the notice alone brings the footer up"
+              "zh": "底栏**左侧**的一行过程提示：换文案即翻牌，**默认带常驻扫光**（不动也看得出在动），超长省略 + hover 跑马灯。不传 = 不占位、与以前完全一样；**传空字符串 = 清场**；footer 也可不给（它会自己撑起底栏）",
+              "en": "One-line progress notice on the **left** of the footer: changing the string flips it, and it carries the **persistent sheen by default** (still reads as active when unchanged); overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too — the notice alone brings the footer up"
             }
           },
           {
@@ -3464,8 +3477,8 @@ export const docData = {
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "底栏**左侧**的一行过程提示（换文案即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（抽屉常驻渲染，关掉再开时用它清上一轮）",
-              "en": "One-line progress notice on the **left** of the footer (changing it flips; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped)"
+              "zh": "底栏**左侧**的一行过程提示（换文案即翻牌，**默认带常驻扫光**，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（抽屉常驻渲染，关掉再开时用它清上一轮）",
+              "en": "One-line progress notice on the **left** of the footer (changing it flips; it carries the **persistent sheen by default**; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped)"
             }
           },
           {
