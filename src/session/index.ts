@@ -37,6 +37,8 @@ export type {
   ContentBlockLike,
   ConversationNodeLike,
   NodeLocationFace,
+  PendingAttachmentFace,
+  PendingSubmissionFace,
   SessionBindingFace,
   SessionSnapshotFace,
   SessionsFace,

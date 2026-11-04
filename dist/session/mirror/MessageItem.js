@@ -38,7 +38,11 @@ export function UserMessage(props) {
     const chips = files ?? [];
     const references = referenceLabels ?? [];
     const skills = skillNames ?? [];
-    return h('div', { className: officialClass('MessageItem', 'userRow') ?? '' }, h('div', { className: officialClass('MessageItem', 'userStack') ?? '' }, 
+    return h('div', {
+        className: officialClass('MessageItem', 'userRow') ?? '',
+        'data-pending-steering': props.pending || undefined,
+        'data-submission-echo': props.echo || undefined,
+    }, h('div', { className: officialClass('MessageItem', 'userStack') ?? '' }, 
     // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
     chips.length === 0
         ? null

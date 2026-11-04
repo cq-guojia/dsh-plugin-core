@@ -3,11 +3,35 @@ export interface SnapshotFace<T> {
     getSnapshot(): T;
     subscribe(fn: () => void): () => void;
 }
+/**
+ * 官方 PendingSubmission 的附件（api-session-controller@0.2.0-rc.1
+ * lib/types/client/contract/snapshot.d.ts:20-33）。弹窗没有 loadImage 通路 ⇒ 只用真实名字/大小。
+ */
+export interface PendingAttachmentFace {
+    readonly type?: 'image' | 'file';
+    readonly value?: {
+        readonly name?: string;
+        readonly bytes?: number;
+        readonly previewUrl?: string;
+    } | null;
+}
+/** 官方 PendingSubmission（同文件 :36-48）：首轮 durable 事件落盘前的本地提交回显。 */
+export interface PendingSubmissionFace {
+    readonly requestId: string;
+    readonly placement?: 'transcript' | 'queued' | 'steering';
+    readonly time?: number;
+    readonly text?: string;
+    readonly attachments?: readonly PendingAttachmentFace[];
+}
 /** 会话生命周期快照（官方 SessionSnapshot 的消费面子集）。 */
 export interface SessionSnapshotFace {
     openState?: 'cold' | 'loading' | 'open' | 'error';
     hasMore?: boolean;
     loadingOlder?: boolean;
+    /** 官方 ChatFlow 用它决定 RunningStatus 挂载（ui-chat lib/client.js:5645/5704）。 */
+    readonly running?: boolean;
+    /** 等待 durable `user/message` 期间的本地提交回显。 */
+    readonly pendingSubmissions?: readonly PendingSubmissionFace[];
 }
 /**
  * 会话绑定（官方 SessionBinding 的消费面子集）。

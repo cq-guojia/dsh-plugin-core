@@ -65,13 +65,20 @@ export function UserMessage(props: {
   referenceLabels?: readonly string[]
   /** 官方 skillNames：本条消息用到的技能，气泡后单独一行（官方走文本工厂内联，此处近似）。 */
   skillNames?: readonly string[]
+  /** 官方 UserStyleBubble 的两个 data 标记（本地回显 / 待处理 steering）。 */
+  pending?: boolean
+  echo?: boolean
   t: Translate
 }): ReturnType<typeof h> {
   const { text, files, referenceLabels, skillNames, t } = props
   const chips = files ?? []
   const references = referenceLabels ?? []
   const skills = skillNames ?? []
-  return h('div', { className: officialClass('MessageItem', 'userRow') ?? '' },
+  return h('div', {
+    className: officialClass('MessageItem', 'userRow') ?? '',
+    'data-pending-steering': props.pending || undefined,
+    'data-submission-echo': props.echo || undefined,
+  },
     h('div', { className: officialClass('MessageItem', 'userStack') ?? '' },
       // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
       chips.length === 0

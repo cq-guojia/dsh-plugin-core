@@ -297,3 +297,24 @@
   那是给**插件自己的文案**用的，与本包的跟随机制不冲突。
 - 来源：`dsh-client-locale/lib/client.js`（`syncDocumentLanguage`、`detectBrowserLocale`、
   `apply` 里的 `ctx.effect(() => locale.subscribe(sync))`、`register(COMMON_NS, { zh, en })`）。
+
+## 15. 会话首轮等待期：用户消息只在 `SessionSnapshot.pendingSubmissions`（2026-11-04 解包核实）
+
+- 版本：`@deepseek-ai/dsh-api-session-controller@0.2.0-rc.1`（`lib/client.js`、
+  `lib/types/client/contract/snapshot.d.ts`）；`@deepseek-ai/dsh-client-ui-chat@0.2.1-rc.5`（`lib/client.js`）。
+- 事实：`beginSubmission()` 在真正发 prompt **之前**就把
+  `{requestId, placement, time, text, attachments}` 写进 `SessionSnapshot.pendingSubmissions`
+  （`lib/client.js:1685-1690`）；`finishSubmission()` 在 durable 事件到达后移除（`:2254-2258`）。
+  快照另有 `running`、`awaitingFirstTurn`（"首个已接受 prompt 尚未到达 durable `turn/start`"）。
+  **回显只在客户端内存里**（`contract/snapshot.d.ts:36-48` 注释），重载 / 重连后由 durable 事件重建
+  ⇒ 冷读归档会话拿不到本地回显。
+- 官方 `ChatFlow`（ui-chat `lib/client.js:2816-2839`、`:5686-5706`）：`pendingInputs` 由
+  `PendingSubmissionBubble` 画成用户气泡（带 `data-submission-echo` / `data-pending-steering`），
+  顺序 = `rows` → `pendingRows` → `RunningStatus`；`placement === 'queued'` 不画；
+  `observedInputs(order, nodes)` 用 durable `user` 节点的 `source.rpcId` 判回显是否已被取代
+  （`:2722-2736`）。`RunningStatus` 挂不挂由 `session.running` 决定（`:5645/:5704`），
+  `startTime` 才从流末尾 open turn 取。
+- 后果：只渲染 `chat` target 的 `order`，新会话首轮在首个模型事件落盘前**完全没有用户消息**，
+  只剩运行态行；durable 节点到达时才把 user + assistant 一起显示。本包
+  `src/session/pending-inputs.ts` 补这条链，`SessionViewModal` 按官方顺序挂回显气泡。
+- 来源：上列两包 `lib/client.js` / `contract/snapshot.d.ts` 的实现本体（非按 `.d.ts` 推测）。

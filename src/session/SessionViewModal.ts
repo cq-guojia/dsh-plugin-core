@@ -40,6 +40,7 @@ import { DeliverablesGridMirror, PresentRowMirror, type DeliveredFileFace } from
 import { ChangedFilesCard, type ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js'
 import { turnDeliverablesChangesSeq, turnDeliverablesValue } from './changes.js'
 import { buildProcessGroups } from './mirror/process-groups.js'
+import { observedRpcIds, pendingFiles, visiblePendingInputs } from './pending-inputs.js'
 import { officialClass, officialModuleCount } from './official-classes.js'
 import { t as defaultT } from '../utils/i18n.js'
 import { ensureComponentStyles } from '../ui/css.js'
@@ -780,7 +781,8 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   // 状态，不能把视图拽走（用户 2026-11-04 二次拍板：只有「首次打开」和「有新内容」两种才贴底）。
   const flowRef = useRef<HTMLDivElement | null>(null)
   const contentBumpRef = useRef(true)
-  useLayoutEffect(() => { contentBumpRef.current = true }, [chat])
+  // pending 回显出现 / 消失也算「有新内容」（它来自 session 快照，不是 chat 快照）。
+  useLayoutEffect(() => { contentBumpRef.current = true }, [chat, sessionSnap])
   useLayoutEffect(() => {
     const flow = flowRef.current
     const scroller = flow === null ? null : flow.closest<HTMLElement>('.dshpc-modal__body')
@@ -902,6 +904,31 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   const store = chat?.nodes
   const keyed = order.length > 0 && store !== undefined
   const turns = chat?.timeline?.turns
+  // 官方 ChatFlow 的 pendingRows（ui-chat 0.2.1-rc.5 lib/client.js:5686-5706）：
+  // 首轮 durable 事件落盘前，用户消息只在 session.pendingSubmissions 里（本地回显），
+  // order 里没有 user 节点 ⇒ 这条链不补，新会话就只剩「深度求索中」而看不到自己发的话。
+  const observedRpc = useMemo(
+    () => keyed && store !== undefined ? observedRpcIds(order, key => store.get(key)) : new Set<string>(),
+    [keyed, order, store],
+  )
+  const pendingInputs = useMemo(
+    () => visiblePendingInputs(sessionSnap?.pendingSubmissions, observedRpc),
+    [sessionSnap, observedRpc],
+  )
+  const pendingRows: Array<ReturnType<typeof h>> = []
+  for (const item of pendingInputs) {
+    const text = item.text ?? ''
+    const files = pendingFiles(item)
+    if (text === '' && files.length === 0) continue
+    pendingRows.push(h(UserMessage, {
+      key: item.requestId,
+      text,
+      files,
+      pending: item.placement === 'steering',
+      echo: item.placement !== 'steering',
+      t: tt,
+    }))
+  }
   // markdown 行内文件词表（来自 keyed 工具流；onOpenFile 未就位 = 整个上下文不启用）。
   const fileOpen = useMemo<FileOpenFace | undefined>(() => {
     if (onOpenFile === undefined) return undefined
@@ -1069,11 +1096,12 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   }
   const openState = sessionSnap?.openState
   const showLoadOlder = sessionSnap?.hasMore !== false
-  // 官方 ChatFlow：RunningStatus 挂在流末尾（紧跟最后一个 flowItem；官方 CSS 在最后是 turn-tail 时自动隐藏）。
-  const runningRow = runningStartTime === undefined
+  // 官方 ChatFlow 的流末尾顺序 = rows → pendingRows → RunningStatus（lib/client.js:5703-5706）；
+  // 运行态由 SessionSnapshot.running 决定（:5645/:5704），不是从 order 末尾节点反推。
+  const runningRow = sessionSnap?.running !== true
     ? null
     : h(RunningStatusMirror, { key: 'running', startTime: runningStartTime, t: tt })
-  const body = rendered.length === 0
+  const body = rendered.length === 0 && pendingRows.length === 0
     ? [
         h(ChatHint, {
           key: 'hint',
@@ -1088,6 +1116,7 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
           ? h(ChatOlderButton, { key: 'older', label: tt('sessionLoadOlder'), onClick: () => { view.loadOlder() } })
           : null,
         ...rendered,
+        ...pendingRows,
         runningRow,
       ]
   const flowChildren = Array.isArray(body) ? body : [body]

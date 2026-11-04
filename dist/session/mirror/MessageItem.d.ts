@@ -33,6 +33,9 @@ export declare function UserMessage(props: {
     referenceLabels?: readonly string[];
     /** 官方 skillNames：本条消息用到的技能，气泡后单独一行（官方走文本工厂内联，此处近似）。 */
     skillNames?: readonly string[];
+    /** 官方 UserStyleBubble 的两个 data 标记（本地回显 / 待处理 steering）。 */
+    pending?: boolean;
+    echo?: boolean;
     t: Translate;
 }): ReturnType<typeof h>;
 /** 官方 CompactionNode 数据面（records.d.ts）。 */

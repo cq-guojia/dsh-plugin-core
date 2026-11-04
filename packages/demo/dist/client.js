@@ -58608,7 +58608,11 @@ function UserMessage(props) {
   const chips = files ?? [];
   const references = referenceLabels ?? [];
   const skills = skillNames ?? [];
-  return (0, import_react69.createElement)("div", { className: officialClass("MessageItem", "userRow") ?? "" }, (0, import_react69.createElement)(
+  return (0, import_react69.createElement)("div", {
+    className: officialClass("MessageItem", "userRow") ?? "",
+    "data-pending-steering": props.pending || void 0,
+    "data-submission-echo": props.echo || void 0
+  }, (0, import_react69.createElement)(
     "div",
     { className: officialClass("MessageItem", "userStack") ?? "" },
     // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
@@ -59808,6 +59812,35 @@ function ChangedFilesCard(props) {
   }, header, list, toggle);
 }
 
+// dist/session/pending-inputs.js
+function observedRpcIds(order, readNode) {
+  const ids = /* @__PURE__ */ new Set();
+  for (const key of order) {
+    const source = readNode(key)?.data?.source;
+    if (typeof source !== "object" || source === null)
+      continue;
+    const face = source;
+    if (face.kind === "user" && typeof face.rpcId === "string")
+      ids.add(face.rpcId);
+  }
+  return ids;
+}
+function visiblePendingInputs(pending, observed) {
+  if (pending === void 0)
+    return [];
+  return pending.filter((item) => item.placement !== "queued" && !observed.has(item.requestId));
+}
+function pendingFiles(item) {
+  const out = [];
+  for (const attachment of item.attachments ?? []) {
+    const value = attachment.value;
+    if (typeof value?.name !== "string" || value.name === "")
+      continue;
+    out.push({ name: value.name, bytes: typeof value.bytes === "number" ? value.bytes : 0 });
+  }
+  return out;
+}
+
 // dist/session/SessionViewModal.js
 var EMPTY_ORDER = [];
 var officialWarned = false;
@@ -60335,7 +60368,7 @@ function SessionViewModal(props) {
   const contentBumpRef = (0, import_react82.useRef)(true);
   (0, import_react82.useLayoutEffect)(() => {
     contentBumpRef.current = true;
-  }, [chat]);
+  }, [chat, sessionSnap]);
   (0, import_react82.useLayoutEffect)(() => {
     const flow = flowRef.current;
     const scroller = flow === null ? null : flow.closest(".dshpc-modal__body");
@@ -60466,6 +60499,23 @@ function SessionViewModal(props) {
   const store = chat?.nodes;
   const keyed = order.length > 0 && store !== void 0;
   const turns = chat?.timeline?.turns;
+  const observedRpc = (0, import_react82.useMemo)(() => keyed && store !== void 0 ? observedRpcIds(order, (key) => store.get(key)) : /* @__PURE__ */ new Set(), [keyed, order, store]);
+  const pendingInputs = (0, import_react82.useMemo)(() => visiblePendingInputs(sessionSnap?.pendingSubmissions, observedRpc), [sessionSnap, observedRpc]);
+  const pendingRows = [];
+  for (const item of pendingInputs) {
+    const text2 = item.text ?? "";
+    const files = pendingFiles(item);
+    if (text2 === "" && files.length === 0)
+      continue;
+    pendingRows.push((0, import_react82.createElement)(UserMessage, {
+      key: item.requestId,
+      text: text2,
+      files,
+      pending: item.placement === "steering",
+      echo: item.placement !== "steering",
+      t: tt
+    }));
+  }
   const fileOpen = (0, import_react82.useMemo)(() => {
     if (onOpenFile === void 0)
       return void 0;
@@ -60614,8 +60664,8 @@ function SessionViewModal(props) {
   }
   const openState = sessionSnap?.openState;
   const showLoadOlder = sessionSnap?.hasMore !== false;
-  const runningRow = runningStartTime === void 0 ? null : (0, import_react82.createElement)(RunningStatusMirror, { key: "running", startTime: runningStartTime, t: tt });
-  const body = rendered.length === 0 ? [
+  const runningRow = sessionSnap?.running !== true ? null : (0, import_react82.createElement)(RunningStatusMirror, { key: "running", startTime: runningStartTime, t: tt });
+  const body = rendered.length === 0 && pendingRows.length === 0 ? [
     (0, import_react82.createElement)(ChatHint, {
       key: "hint",
       text: openState === "error" ? tt("sessionFailed") : openState === "loading" || openState === "cold" ? tt("sessionLoading") : tt("sessionEmpty")
@@ -60626,6 +60676,7 @@ function SessionViewModal(props) {
       view.loadOlder();
     } }) : null,
     ...rendered,
+    ...pendingRows,
     runningRow
   ];
   const flowChildren = Array.isArray(body) ? body : [body];
@@ -69332,9 +69383,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.29.1"}`],
-            [t3("buildDemo"), `v${"0.29.1"}`],
-            [t3("buildStamp"), "261104-163434-877"]
+            [t3("buildCore"), `v${"0.29.2"}`],
+            [t3("buildDemo"), `v${"0.29.2"}`],
+            [t3("buildStamp"), "261104-170023-794"]
           ].map(
             ([label, value]) => (0, import_react93.createElement)(
               "tr",
@@ -69646,9 +69697,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react95.createElement)("span", null, `core v${"0.29.1"}`),
-          (0, import_react95.createElement)("span", null, `demo v${"0.29.1"}`),
-          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-163434-877")
+          (0, import_react95.createElement)("span", null, `core v${"0.29.2"}`),
+          (0, import_react95.createElement)("span", null, `demo v${"0.29.2"}`),
+          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-170023-794")
         )
       )
     ),

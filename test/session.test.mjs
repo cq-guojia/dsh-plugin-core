@@ -22,6 +22,7 @@ import {
   DIFF_MAX_RENDERED_LINES,
 } from '../dist/session/changes.js'
 import { durationText, formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/session/mirror/message-chrome.js'
+import { observedRpcIds, visiblePendingInputs, pendingFiles } from '../dist/session/pending-inputs.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
 // ── official-classes：官方 CSS module 类名运行时发现 ──
@@ -363,4 +364,39 @@ test('会话预览文案中英齐全（镜像官方词典的新增键）', () =>
     assert.notEqual(t(key), key, `${key} 应能在 en 字典里找到`)
   }
   setLocale('zh')
+})
+
+// ── 首轮等待期：session.pendingSubmissions 的本地回显 ──
+
+test('visiblePendingInputs：等待期保留 transcript / steering 回显，queued 不画', () => {
+  const pending = [
+    { requestId: 'r1', placement: 'transcript', text: '帮我把日程排好' },
+    { requestId: 'r2', placement: 'queued', text: '排队中的第二条' },
+    { requestId: 'r3', placement: 'steering', text: '补充一句' },
+  ]
+  assert.deepEqual(visiblePendingInputs(pending, new Set()).map(item => item.requestId), ['r1', 'r3'])
+  assert.deepEqual(visiblePendingInputs(undefined, new Set()), [])
+})
+
+test('observedRpcIds：durable user 节点出现后回显被取代，不重复画气泡', () => {
+  const nodes = new Map([
+    ['k1', { key: 'k1', kind: 'user', anchorSeq: 1, data: { source: { kind: 'user', rpcId: 'r1' } } }],
+    ['k2', { key: 'k2', kind: 'assistant-step', anchorSeq: 2, data: {} }],
+    ['k3', { key: 'k3', kind: 'user', anchorSeq: 3, data: { source: { kind: 'agent' } } }],
+  ])
+  const observed = observedRpcIds(['k1', 'k2', 'k3', 'missing'], key => nodes.get(key))
+  assert.deepEqual([...observed], ['r1'])
+  assert.deepEqual(
+    visiblePendingInputs([{ requestId: 'r1', text: '已落盘' }, { requestId: 'r4', text: '仍在等' }], observed),
+    [{ requestId: 'r4', text: '仍在等' }],
+  )
+})
+
+test('pendingFiles：只取官方已有的真实名字 / 大小，不造附件', () => {
+  assert.deepEqual(pendingFiles({ requestId: 'r1', attachments: [
+    { type: 'file', value: { name: 'a.md', bytes: 12 } },
+    { type: 'image', value: { name: 'b.png' } },
+    { type: 'file', value: null },
+  ] }), [{ name: 'a.md', bytes: 12 }, { name: 'b.png', bytes: 0 }])
+  assert.deepEqual(pendingFiles({ requestId: 'r2' }), [])
 })
