@@ -1,7 +1,6 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261104-0526-7edb-文件预览面板缺关闭按钮": {"category": "缺陷修复", "created": "2026-11-04 05:26:01", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-04 16:15:44", "status": "doing", "tags": ["文件预览", "职责边界", "会话审阅"], "title": "文件预览面板缺关闭按钮", "updated": "2026-11-04 16:15:44", "worklog": "worklog/202611/04-0526-7edb-文件预览面板缺关闭按钮.md"}
   },
   "version": "20261022000000"
 }
