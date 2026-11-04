@@ -1,7 +1,6 @@
 {
   "tasks": {
-    "20261104-0526-7edb-文件预览面板缺关闭按钮": {"category": "缺陷修复", "created": "2026-11-04 05:26:01", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["文件预览", "职责边界", "会话审阅"], "title": "文件预览面板缺关闭按钮", "updated": "2026-11-04 05:26:01", "worklog": "worklog/202611/04-0526-7edb-文件预览面板缺关闭按钮.md"},
-    "20261104-0951-f4c6-会话预览归档态实时跟随": {"category": "缺陷修复", "created": "2026-11-04 09:51:16", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["会话预览", "归档", "推送"], "title": "会话预览归档态实时跟随", "updated": "2026-11-04 09:51:16", "worklog": "worklog/202611/04-0951-f4c6-会话预览归档态实时跟随.md"}
+    "20261104-0526-7edb-文件预览面板缺关闭按钮": {"category": "缺陷修复", "created": "2026-11-04 05:26:01", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["文件预览", "职责边界", "会话审阅"], "title": "文件预览面板缺关闭按钮", "updated": "2026-11-04 05:26:01", "worklog": "worklog/202611/04-0526-7edb-文件预览面板缺关闭按钮.md"}
   },
   "version": "20261022000000"
 }
