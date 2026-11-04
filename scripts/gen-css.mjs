@@ -32,6 +32,7 @@ const MAP = [
   ['src/ui/controls/button.css', 'src/ui/controls/button-css.generated.ts', 'BUTTON_CSS'],
   ['src/ui/controls/field.css', 'src/ui/controls/field-css.generated.ts', 'FIELD_CSS'],
   ['src/ui/marquee.css', 'src/ui/marquee-css.generated.ts', 'MARQUEE_CSS'],
+  ['src/ui/flip.css', 'src/ui/flip-css.generated.ts', 'FLIP_CSS'],
   ['src/ui/controls/loading.css', 'src/ui/controls/loading-css.generated.ts', 'LOADING_CSS'],
   ['src/ui/controls/loader.css', 'src/ui/controls/loader-css.generated.ts', 'LOADER_CSS'],
   ['src/ui/controls/loader-bar.css', 'src/ui/controls/loader-bar-css.generated.ts', 'LOADER_BAR_CSS'],

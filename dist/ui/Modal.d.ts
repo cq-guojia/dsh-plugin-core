@@ -40,6 +40,12 @@ export interface ModalProps {
     /** 不渲染头部（沉浸式 / 无标题场景）。 */
     hideHeader?: boolean;
     footer?: ReactNode;
+    /**
+     * footer **左侧**的一行过程提示（换字即翻牌，太长省略、hover 跑马灯）。
+     * 不传 = 不占位、与以前完全一样；传了就自动出现（footer 也可不给，它会自己撑起底栏）。
+     * 换文案只改这个值，动效由 `FlipText` 负责。
+     */
+    notice?: string;
     /** footer 上面那条分隔线（默认 true）。传 false 关闭；sm 确认框家族本来就没有。 */
     footerDivider?: boolean;
     /** 追加 class（只允许补布局 / 视觉修饰，不许覆盖皮肤）。 */

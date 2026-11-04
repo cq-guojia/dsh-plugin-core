@@ -25,6 +25,7 @@ export function ConfirmModal(props) {
         closeOnMask: props.closeOnMask,
         busy,
         onClose: props.onCancel,
+        notice: props.notice,
         footer: h('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, h(Button, {
             variant: 'outline',
             width: props.cancelWidth,

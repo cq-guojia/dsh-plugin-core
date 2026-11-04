@@ -27,6 +27,7 @@ export type DemoMessageKey =
   | 'secTooltip'
   | 'secCard'
   | 'secChip'
+  | 'secFlipText'
   | 'secTable'
   | 'tableHint'
   | 'tableEmptyHint'
@@ -110,6 +111,7 @@ export type DemoMessageKey =
   | 'chipDoing'
   | 'marqueeTitle'
   | 'liveTitle'
+  | 'flipTitle'
   | 'feedbackModalHint'
   | 'feedbackToastHint'
   | 'dockHint'
@@ -168,6 +170,7 @@ export type DemoMessageKey =
   | 'exSectionHeadHint'
   | 'exMarqueeHint'
   | 'exLiveHint'
+  | 'exFlipHint'
   | 'exSmallModalTitle'
   | 'exSmallModalHint'
   | 'exLargeModalTitle'
@@ -290,6 +293,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secTooltip: '提示',
     secCard: '卡片与容器',
     secChip: '标签 · 文本 · 状态',
+    secFlipText: '翻牌文本',
     secTable: '表格',
     tableHint: '全框外观：borders:all + 列 divider:true。双行分组表头、斑马纹、点行选中；跨行 / 跨列、头像格、Chip 也都在这一张里。',
     tableEmptyHint: '无数据时的内置空态，可用 emptyText 覆盖',
@@ -445,6 +449,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     chipDoing: '进行中',
     marqueeTitle: 'MarqueeText 跑马灯',
     liveTitle: 'LiveText 实时文本',
+    flipTitle: 'FlipText 翻牌文本',
 
     feedbackModalHint: '自绘 overlay（不用 portal）；点遮罩 / Esc / ✕ 都能关。标题栏的 ✕ 是 24×24 图标位，不该出现边框或 120px 宽的底色块',
     feedbackToastHint: '命令式 notify，不要求挂组件',
@@ -491,6 +496,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exSectionHeadHint: '分区标题：标签（可选，画出来的短竖线）+ icon + 标题 + 右侧操作区——纯排版壳，标签/icon/标题/右侧都调用方自定；下示 4 组：不同图标 / 标题后缀（计数·彩色标签·小字说明）/ 两种右侧组合 / 固定标签颜色速览（accent）',
     exMarqueeHint: '双层结构：外层裁剪、内层滚动；跑一遍停在尾字，鼠标移开复位成省略号',
     exLiveHint: '订阅内部节拍器，走时 Ui 由调用方渲染',
+    exFlipHint: '单行窗口：换字时旧的上移出、新的从下进；超长三点省略 + hover 跑马灯（复用 MarqueeText）；宽度三档同 Button / Chip',
     exSmallModalTitle: '小型弹窗（自定义）',
     exSmallModalHint: '我们的标准小框：AlertModal（单按钮 + severity 图标）/ ConfirmModal（双按钮 + 语义档），以及命令式 alertModal()/confirmModal()（Promise）。名字带 Modal 后缀，不覆盖宿主原生。回调返回 Promise 时（消费方在做异步），对应按钮自己转圈、整框锁死（遮罩 / Esc 都关不掉），resolve 才关闭、reject 则撤回 loading 留着重试；组件形态也可以自己传 confirmLoading / cancelLoading。',
     exLargeModalTitle: '大型弹窗（自定义）',
@@ -593,6 +599,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secTooltip: 'Tooltip',
     secCard: 'Cards & containers',
     secChip: 'Tags · text · states',
+    secFlipText: 'Flip text',
     secTable: 'Table',
     tableHint: 'Full-frame look: borders:all + divider:true per column. Two-row grouped header, zebra stripes, click-to-select; row/column spans, avatar cell and chips all shown here.',
     tableEmptyHint: 'Built-in empty state when there are no rows; override with emptyText',
@@ -749,6 +756,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     chipDoing: 'In progress',
     marqueeTitle: 'MarqueeText',
     liveTitle: 'LiveText',
+    flipTitle: 'FlipText',
 
     feedbackModalHint: 'Hand-rolled overlay (no portal); click backdrop / Esc / ✕ all close it. The header ✕ is a 24×24 icon slot — no border or 120px-wide color block should appear',
     feedbackToastHint: 'Imperative notify — no component mounting required',
@@ -795,6 +803,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exSectionHeadHint: 'Section header: optional drawn bar + icon + title + right-side actions — a pure layout shell; bar, icon, title and right side are all caller-defined. Four groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos / fixed-bar colour swatches (accent)',
     exMarqueeHint: 'Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis',
     exLiveHint: 'Subscribes to an internal ticker; the running clock UI is rendered by the caller',
+    exFlipHint: 'A one-line window: on a text change the old line slides up and out while the new one comes in from below; overflow elides with an ellipsis and marquees on hover (reuses MarqueeText); the same three width props as Button / Chip',
     exSmallModalTitle: 'Small dialogs (custom)',
     exSmallModalHint: 'Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host’s own. When a callback returns a Promise (the caller is doing async work), that button spins and the whole dialog locks (mask and Esc stop working); it closes on resolve, and on reject the spinner is withdrawn and the dialog stays open for a retry. Component form takes confirmLoading / cancelLoading directly.',
     exLargeModalTitle: 'Large dialogs (custom)',

@@ -15,6 +15,7 @@ import {
   LoadingBlock,
   LoadingToast,
   MarqueeText,
+  FlipText,
   Modal,
   SideSheet,
   AlertModal,
@@ -1461,6 +1462,24 @@ const CODE_MARQUEE = `// 定宽小容器：放不下才滚，hover 一遍停在�
 const CODE_LIVE = `// 订阅内部节拍器，走时内容调用方渲染
 <LiveText render={(nowMs) => new Date(nowMs).toLocaleTimeString()} />`
 
+const CODE_FLIP = `// 换字即翻牌：只给新文本，动效自己放（旧的上移出、新的从下进）
+const [step, setStep] = useState('正在扫描工作区…')
+<FlipText text={step} />
+
+// 溢出与 MarqueeText 同一套：放不下三点省略，hover 跑马灯
+<FlipText text="一条很长的过程提示…" maxWidth={220} />
+
+// 宽度三档同 Button / Chip：width 优先，其次 minWidth / maxWidth
+<FlipText text="固定宽" width={200} />`
+
+/** FlipText 演示用的过程文案（换一次翻一次牌）；第二条故意超长，用来看省略 + 跑马灯。 */
+const FLIP_STEPS = [
+  '正在扫描工作区…',
+  '已读取 42 个任务，正在逐条比对工作区归属、上次更新时间与负责人是否一致，比对完成后统一写入台账',
+  '正在写入台账…',
+  '已完成',
+]
+
 /** Chip 对外参数（与 src/ui/Chip.ts 的 ChipProps 逐条对齐）。 */
 
 /** MarqueeText / LiveText：两个小件各一行。 */
@@ -1530,6 +1549,45 @@ export function ChipPage(): ReturnType<typeof h> {
     ),
     h(DocCode, { id: 'chip' }),
     h(DocApi, { id: 'chip' }),
+  )
+}
+
+/** FlipText：一行翻牌文本，换字即翻（弹窗底栏的过程提示就是它）。 */
+export function FlipTextPage(): ReturnType<typeof h> {
+  const [flipStep, setFlipStep] = useState(0)
+  const [shown, setShown] = useState(true)
+  return h(
+    'div',
+    null,
+    h(DocProse, { id: 'flip-text' }),
+    h(
+      Example,
+      { title: t('flipTitle'), hint: t('exFlipHint'), code: CODE_FLIP },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
+        h(Labeled, { label: '换字即翻牌（旧的上移出、新的从下进）' },
+          h(
+            'div',
+            { style: { display: 'flex', gap: '8px', alignItems: 'center', minHeight: '28px' } },
+            h(FlipText, { text: shown ? FLIP_STEPS[flipStep] : '', maxWidth: 300 }),
+            h(Button, {
+              size: 'sm',
+              variant: 'outline',
+              onClick: () => { setShown(true); setFlipStep((i) => (i + 1) % FLIP_STEPS.length) },
+            }, '下一步'),
+            h(Button, { size: 'sm', variant: 'ghost', onClick: () => setShown(false) }, '清空（传空串）'),
+          )),
+        h(Labeled, { label: 'maxWidth（超长三点省略 + hover 跑马灯）' },
+          h(FlipText, {
+            text: '一条很长的过程提示：这一步正在把工作区里的所有任务逐个比对后写入台账，请稍候',
+            maxWidth: 220,
+          })),
+        h(Labeled, { label: 'width（固定宽）' },
+          h(FlipText, { text: '固定 200px', width: 200 })),
+      ),
+    ),
+    h(DocApi, { id: 'flip-text' }),
   )
 }
 
@@ -1723,6 +1781,9 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [largeOpenB, setLargeOpenB] = useState(false)
   const [asyncOpen, setAsyncOpen] = useState(false)
   const [saving, setSaving] = useState(false)
+  // footer 过程提示：跑的时候逐句换文案，换一句翻一次牌
+  const [noticeOpen, setNoticeOpen] = useState(false)
+  const [noticeText, setNoticeText] = useState('')
   // 抽屉常驻渲染，只切 open —— 关的时候才有收回去的动效。
   const [sheetCfg, setSheetCfg] = useState<{ side: 'left' | 'right'; footer: boolean }>({ side: 'left', footer: false })
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -1732,6 +1793,11 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const flash = (opts?: LoadingOptions): void => {
     const handle = showLoading(opts)
     window.setTimeout(() => handle.close(), 1200)
+  }
+  // 过程提示演示：进去时底栏左侧**空的**，点了「开始」才逐句出，最后一句显示完自己关。
+  const startNoticeDemo = (): void => {
+    setNoticeText('')
+    setNoticeOpen(true)
   }
   return h(
     'div',
@@ -1775,6 +1841,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
             h(Button, { onClick: () => { setConfirmCfg({ tone: 'primary', confirmText: '确定', cancelText: '取消' }); setConfirmResult('') } }, '默认（primary）'),
             h(Button, { variant: 'outline', onClick: () => { setConfirmCfg({ tone: 'danger', confirmText: '删除', cancelText: '再想想' }); setConfirmResult('') } }, 'danger 变体'),
             h(Button, { variant: 'ghost', onClick: () => { setConfirmCfg({ tone: 'warning', confirmText: '我已知晓', cancelText: '返回' }); setConfirmResult('') } }, '改文案'),
+            h(Button, { variant: 'outline', onClick: startNoticeDemo }, 'footer 带过程提示'),
             confirmResult ? h('span', { style: { fontSize: '13px', color: 'var(--dshpc-fg-3)' } }, confirmResult) : null,
           ),
           confirmCfg !== null
@@ -1786,6 +1853,30 @@ export function FeedbackPage(): ReturnType<typeof h> {
                 cancelText: confirmCfg.cancelText,
                 onConfirm: () => { setConfirmCfg(null); setConfirmResult(`你点了：${confirmCfg.confirmText}（确认）`) },
                 onCancel: () => { setConfirmCfg(null); setConfirmResult(`你点了：${confirmCfg.cancelText}（取消）`) },
+              })
+            : null,
+          // 底栏左侧过程提示：点开始后逐句换文案，loading 期间整框关不掉
+          noticeOpen
+            ? h(ConfirmModal, {
+                title: '迁移台账',
+                message: '进去时底栏左侧是**空的** —— 点「开始」才开始出步骤，换一句翻一次牌，最后一句显示完自己关。中间那句故意很长：放不下就三点省略，鼠标移上去跑马灯。',
+                notice: noticeText,
+                confirmText: '开始',
+                cancelText: '关闭',
+                onConfirm: async () => {
+                  setNoticeText('正在扫描工作区…')
+                  await demoWait(1200)
+                  // 故意给一句超长的：底栏放不下 ⇒ 省略号，鼠标移上去跑马灯（停留久一点方便看）
+                  setNoticeText('已读取 42 个任务，正在逐条比对工作区归属、上次更新时间与负责人是否一致，比对完成后统一写入台账')
+                  await demoWait(5000)
+                  setNoticeText('正在写入台账…')
+                  await demoWait(1500)
+                  setNoticeText('全部完成')
+                  await demoWait(1000)
+                  setNoticeOpen(false)
+                  notify('迁移完成')
+                },
+                onCancel: () => setNoticeOpen(false),
               })
             : null,
         ),

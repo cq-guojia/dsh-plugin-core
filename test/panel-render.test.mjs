@@ -14,6 +14,7 @@ register(new URL('./primitives-hooks.mjs', import.meta.url))
 
 const { PanelClose, PanelSurface } = await import('../dist/ui/panel.js')
 const { Modal } = await import('../dist/ui/Modal.js')
+const { FlipText, nextFlipSlot } = await import('../dist/ui/FlipText.js')
 const { LandingBody } = await import('../dist/explorer/landing.js')
 const { CrumbNav, PlainNav } = await import('../dist/explorer/crumb-nav.js')
 const { PreviewTitleBar } = await import('../dist/explorer/preview-title-bar.js')
@@ -47,6 +48,46 @@ test('Modal：遮罩居中档 + 面板 modal 档 + 关闭钮走公共件', () =>
   assert.match(html, /class="dshpc-overlay dshpc-overlay--center"/)
   assert.match(html, /class="dshpc-panel dshpc-panel--modal dshpc-modal"/)
   assert.match(html, /class="dshpc-panel__close dshpc-overlay-head__close"/)
+})
+
+test('Modal notice：给了才有底栏，左侧那条挂 dshpc-modal__notice', () => {
+  const withNotice = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {}, notice: '正在写入…' }, 'x'))
+  assert.match(withNotice, /class="dshpc-modal__foot"/)
+  assert.match(withNotice, /class="dshpc-flip dshpc-modal__notice"/)
+  assert.match(withNotice, /正在写入…/)
+  // 不传 notice 且没有 footer ⇒ 底栏整个不渲染（与接入前完全一致）
+  assert.doesNotMatch(renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {} }, 'x')), /dshpc-modal__foot/)
+  // 传空串 = 清场：底栏不留占位
+  assert.doesNotMatch(renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {}, notice: '' }, 'x')), /dshpc-modal__foot/)
+})
+
+test('FlipText：首帧只一层、不放动画；换字才多出一层旧帧', () => {
+  const first = renderToStaticMarkup(h(FlipText, { text: '第一步' }))
+  assert.match(first, /class="dshpc-flip"/)
+  assert.equal((first.match(/dshpc-flip__item/g) ?? []).length, 1)
+  assert.doesNotMatch(first, /dshpc-flip__in|dshpc-flip__out/)
+  // 溢出交给 MarqueeText（三点省略 + hover 跑马灯都在它那层里，SSR 测不到测宽）
+  assert.match(first, /class="dshpc-mq"/)
+})
+
+test('nextFlipSlot：同一句不重播，换句把当前帧降为上一帧且 seq 递增', () => {
+  const start = { curr: 'A', prev: null, seq: 0 }
+  assert.equal(nextFlipSlot(start, 'A'), start, '同一句不该触发翻牌')
+  const next = nextFlipSlot(start, 'B')
+  assert.deepEqual(next, { curr: 'B', prev: 'A', seq: 1 })
+  // 连续换字：上一帧永远是被替换掉的那一句，旧的上一帧直接丢弃
+  assert.deepEqual(nextFlipSlot(next, 'C'), { curr: 'C', prev: 'B', seq: 2 })
+})
+
+test('nextFlipSlot：空串清场后第一句直接出现，不从下方翻上来', () => {
+  const cleared = nextFlipSlot({ curr: '正在写入…', prev: null, seq: 3 }, '')
+  assert.deepEqual(cleared, { curr: '', prev: '正在写入…', seq: 4 })
+  // 清空后的下一句没有「上一帧」⇒ prev 为 null ⇒ 渲染层不加 --in，直接出现
+  assert.deepEqual(nextFlipSlot(cleared, '正在扫描…'), { curr: '正在扫描…', prev: null, seq: 5 })
+})
+
+test('FlipText 空串：整行不渲染（复用同一块地方时的清场语义）', () => {
+  assert.equal(renderToStaticMarkup(h(FlipText, { text: '' })), '')
 })
 
 test('落地页：根行 + 工作区行；选择器形态才出行尾「选择」钮', () => {

@@ -1,0 +1,15 @@
+/* 翻牌文本（FlipText）：一个单行窗口 + 两层同格叠放，换字时旧的上移出、新的从下进。
+   溢出（三点省略 + hover 跑马灯）不在这里做 —— 交给 MarqueeText，本文件只管裁剪与切换动效。
+   叠放用 grid 同格而不是绝对定位：容器高度天然等于一行，不用测量、也不依赖 lh 单位。 */
+.dshpc-flip{--dshpc-flip-dur:260ms;--dshpc-flip-ease:cubic-bezier(.22,.61,.36,1);display:grid;min-width:0;overflow:hidden}
+.dshpc-flip__item{grid-area:1/1;min-width:0}
+.dshpc-flip__in{animation:dshpc-flip-in var(--dshpc-flip-dur) var(--dshpc-flip-ease) both}
+.dshpc-flip__out{animation:dshpc-flip-out var(--dshpc-flip-dur) var(--dshpc-flip-ease) both}
+@keyframes dshpc-flip-in{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes dshpc-flip-out{from{transform:translateY(0);opacity:1}to{transform:translateY(-100%);opacity:0}}
+/* 前庭敏感 / 低性能设备关掉位移动画：换字仍在，只是不再翻。
+   旧帧没有动画可播，必须自己隐形 —— 两层同格叠放，留着就重影。 */
+@media (prefers-reduced-motion:reduce){
+  .dshpc-flip__in,.dshpc-flip__out{animation:none}
+  .dshpc-flip__out{opacity:0}
+}

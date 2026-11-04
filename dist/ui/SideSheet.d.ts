@@ -59,6 +59,8 @@ export interface SideSheetProps {
     /** 能否拖宽（默认 true）。 */
     resizable?: boolean;
     footer?: ReactNode;
+    /** 底栏左侧的一行过程提示（换字即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位。 */
+    notice?: string;
     children?: ReactNode;
     translate?: Translate;
 }

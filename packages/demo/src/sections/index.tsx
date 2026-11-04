@@ -10,6 +10,7 @@ import {
   ChipPage,
   DateTimePage,
   FeedbackPage,
+  FlipTextPage,
   InputPage,
   LayoutPage,
   PickerPage,
@@ -39,6 +40,7 @@ export type SectionId =
   | 'tooltip'
   | 'card'
   | 'chip'
+  | 'fliptext'
   | 'table'
   | 'feedback'
   | 'layout'
@@ -87,6 +89,7 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'tooltip', group: 'components', titleKey: 'secTooltip', render: () => h(TooltipPage, null) },
   { id: 'card', group: 'components', titleKey: 'secCard', render: () => h(CardPage, null) },
   { id: 'chip', group: 'components', titleKey: 'secChip', render: () => h(ChipPage, null) },
+  { id: 'fliptext', group: 'components', titleKey: 'secFlipText', render: () => h(FlipTextPage, null) },
   { id: 'table', group: 'components', titleKey: 'secTable', render: () => h(TablePage, null) },
   { id: 'feedback', group: 'components', titleKey: 'secFeedback', render: () => h(FeedbackPage, null) },
   { id: 'layout', group: 'components', titleKey: 'secLayout', render: () => h(LayoutPage, null) },

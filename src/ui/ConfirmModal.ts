@@ -31,6 +31,8 @@ export interface ConfirmModalProps {
   confirmLoading?: boolean
   /** 外部驱动取消钮 loading：同上。 */
   cancelLoading?: boolean
+  /** 底栏左侧的一行过程提示（换字即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位。 */
+  notice?: string
   size?: ModalSize
   /** 确认回调；**返回 Promise 自动转圈 + 整框锁死**，settle 后恢复（关闭与否由你决定）。 */
   onConfirm?: () => unknown
@@ -64,6 +66,7 @@ export function ConfirmModal(props: ConfirmModalProps): ReturnType<typeof h> {
       closeOnMask: props.closeOnMask,
       busy,
       onClose: props.onCancel,
+      notice: props.notice,
       footer: h(
         'div',
         { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } },

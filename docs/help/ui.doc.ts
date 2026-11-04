@@ -8,6 +8,18 @@ setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))
 // 控件样式不用你挂：每个控件首次渲染时自注入自己那份 CSS（幂等），
 // 用不到的控件其 CSS 也不会进你的包。`
 
+const flipExample = `import { FlipText } from 'dsh-plugin-core/ui'
+
+// 换文案 = 改 text，动效自己放（旧的上移出、新的从下进）
+const [step, setStep] = useState('正在扫描工作区…')
+h(FlipText, { text: step })
+
+// 溢出：放不下三点省略，hover 跑马灯
+h(FlipText, { text: step, maxWidth: 220 })
+
+// 宽度三档：width 优先，其次 minWidth / maxWidth
+h(FlipText, { text: step, width: 200 })`
+
 const cardExample = `import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'
 
 h(Card, {
@@ -270,7 +282,7 @@ const doc: DocTopic = {
     'Button', 'IconButton', 'Segmented', 'SplitGroup', 'Input', 'PrefixedInput', 'NumberInput', 'Textarea',
     'Checkbox', 'fieldMetricsOf', 'Picker', 'WorkspacePicker', 'ModelPicker', 'DateTimePicker', 'Surface', 'Card', 'StripCard',
     'Chip', 'Table', 'Pagination', 'Modal', 'SideSheet', 'FieldHint', 'setTooltipRenderer', 'showToast', 'notify', 'showHostToast',
-    'Loader', 'LoaderBar', 'Loading', 'RunningBlocks', 'SectionHead', 'MarqueeText', 'LiveText',
+    'Loader', 'LoaderBar', 'Loading', 'RunningBlocks', 'SectionHead', 'MarqueeText', 'FlipText', 'LiveText',
     'QuickToolbar', 'startResizeLayoutWidth', 'PanelDock', 'createPanelDock', 'DockPanel',
     'ensureControls', 'setStyleKit',
   ],
@@ -623,6 +635,37 @@ const doc: DocTopic = {
       ],
     },
     {
+      id: 'flip-text',
+      heading: { zh: 'FlipText（翻牌文本）', en: 'FlipText' },
+      prose: [
+        {
+          zh: '一行文字，换一句翻一次牌：旧的上移出、新的从下进。**只给文本，动效自己放** —— `text` 变了就翻，没变不动（同一句重复设置不重播）。**空串 = 没有文案**：不渲染、不占位，同一块地方复用时靠它把上一句清干净；清空后再给值是直接出现，不从下方翻上来。',
+          en: 'One line of text that flips on every change: the old line slides up and out, the new one comes in from below. **Give it text; it owns the motion** — a changed `text` flips, an unchanged one does nothing (setting the same line twice does not replay). **An empty string means no line at all**: nothing rendered, no space taken, which is how a reused spot gets cleared; the next value then appears outright instead of sliding in.',
+        },
+        {
+          zh: '溢出与 MarqueeText 同一套：单行、放不下三点省略，鼠标移上去跑马灯（复用同一个实现，不重复测宽）。高度恒为一行，永不换行。',
+          en: 'Overflow behaves exactly like MarqueeText: one line, an ellipsis when it does not fit, marquee on hover (same implementation, no second width measurement). Height stays at one line and it never wraps.',
+        },
+        {
+          zh: '宽度三档同 Button / Chip：`width` 优先，`width` 未设时 `minWidth` / `maxWidth` 生效；三者都不传 = 随父容器（flex 子项自然伸缩，弹窗底栏就是这么用的）。要放进弹窗底栏左侧**不要自己包**，直接用 `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` 的 `notice`。',
+          en: 'Widths follow Button / Chip: `width` wins; `minWidth` / `maxWidth` apply only when it is unset; none of the three means "follow the parent" (a flex child stretches naturally — that is how the dialog footer uses it). To put it on the left of a dialog footer, use the `notice` prop on `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` rather than wrapping it yourself.',
+        },
+      ],
+      api: [
+        {
+          id: 'ui-flip-text',
+          rows: [
+            { name: 'text', type: 'string', def: '—（必填）', desc: { zh: '当前文本；变了就翻一次牌。**空串 = 没有文案**：不渲染、不占位（同一块地方复用靠它清场）；清空后再给值是直接出现，不从下方翻上来', en: 'Current text; a change flips it once. **An empty string means no line at all**: nothing rendered, no space taken (that is how a reused spot is cleared); the next value appears outright instead of sliding in' } },
+            { name: 'width', type: 'number | string', def: '—', desc: { zh: '固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效', en: 'Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored' } },
+            { name: 'minWidth', type: 'number | string', def: '—', desc: { zh: '最小宽：width 未设时生效', en: 'Minimum width: applies only when width is unset' } },
+            { name: 'maxWidth', type: 'number | string', def: '—', desc: { zh: '最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开', en: 'Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover' } },
+            { name: 'className', type: 'string', def: '—', desc: { zh: '追加 class（只补字体 / 颜色这类皮肤，布局归组件自己）', en: 'Extra class (font / colour skin only; layout belongs to the component)' } },
+          ],
+        },
+      ],
+      code: [{ id: 'ui-flip-text-example', lang: 'tsx', src: flipExample }],
+    },
+    {
       id: 'table',
       heading: { zh: 'Table（表格）', en: 'Table' },
       prose: [
@@ -809,6 +852,7 @@ const doc: DocTopic = {
             { name: 'maxWidth', type: 'string', def: '按 size', desc: { zh: '任意 CSS 值，覆盖 size 的宽度上限；不要用 vw（遮罩已按右侧分栏让位）', en: 'Any CSS value, overriding the size’s max width; avoid vw (the mask already yielded to the right column)' } },
             { name: 'hideHeader', type: 'boolean', def: "'false'", desc: { zh: '不渲染头部（沉浸式）', en: 'Skip header (immersive)' } },
             { name: 'footer', type: 'ReactNode', def: '—', desc: { zh: '底栏（按钮区；上下内距相等、内容垂直居中）', en: 'Footer (button area; symmetric padding, vertically centred)' } },
+            { name: 'notice', type: 'string', def: '—', desc: { zh: '底栏**左侧**的一行过程提示：换文案即翻牌，超长省略 + hover 跑马灯。不传 = 不占位、与以前完全一样；**传空字符串 = 清场**；footer 也可不给（它会自己撑起底栏）', en: 'One-line progress notice on the **left** of the footer: changing the string flips it, overflow elides and marquees on hover. Omitted = nothing at all (unchanged behaviour); **an empty string clears it**; `footer` may be omitted too — the notice alone brings the footer up' } },
             { name: 'footerDivider', type: 'boolean', def: "'true'", desc: { zh: '底栏上面的那条分隔线；传 false 关掉（sm 确认框本来就没有）', en: 'The divider above the footer; pass false to drop it (sm dialogs never have one)' } },
             { name: 'className', type: 'string', def: '—', desc: { zh: '追加 class（只补布局 / 视觉修饰，别覆盖皮肤）', en: 'Extra class (layout / visual tweaks only; do not override the skin)' } },
             { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '主体', en: 'Body' } },
@@ -824,6 +868,7 @@ const doc: DocTopic = {
             { name: 'loadingText', type: 'boolean', def: 'true', desc: { zh: '传 false：loading 时两颗钮清文案、锁住有文案的宽度、只留居中的圈（见 `Button.loadingText`）', en: 'Pass false: while loading, both buttons drop their labels, freeze at the labelled width and show a centred spinner (see `Button.loadingText`)' } },
             { name: 'onConfirm / onCancel', type: '() => unknown', def: '—', desc: { zh: '确认 / 取消回调；返回 Promise 时按钮转圈、整框锁死，settle 后恢复；返回 `false` 不关', en: 'Confirm / cancel callback; a Promise makes its button spin and locks the dialog until it settles; `false` keeps it open' } },
             { name: 'confirmLoading / cancelLoading', type: 'boolean', def: 'false', desc: { zh: '外部驱动对应按钮 loading，与按钮自身异步状态取或', en: 'External loading for that button, OR-ed with its own async state' } },
+            { name: 'notice', type: 'string', def: '—', desc: { zh: '底栏**左侧**的一行过程提示（loading 期间逐步换文案、换一句翻一次牌，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（同一块地方复用下一轮时用它把上一句清掉）', en: 'One-line progress notice on the **left** of the footer (swap the string while loading, each change flips; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (use it when the same spot is reused for the next round)' } },
             { name: 'closeOnMask', type: 'boolean', def: "'true'", desc: { zh: '点遮罩关闭（等于取消）', en: 'Close on mask click (treated as cancel)' } },
             { name: 'size', type: 'ModalSize', def: "'sm'", desc: { zh: '尺寸档', en: 'Size tier' } },
             { name: 'translate', type: 'Translate', def: '内置字典', desc: { zh: '覆盖确定 / 取消文案', en: 'Override confirm / cancel copy' } },
@@ -839,6 +884,7 @@ const doc: DocTopic = {
             { name: 'loadingText', type: 'boolean', def: 'true', desc: { zh: '传 false：loading 时清文案、锁住有文案的宽度、只留居中的圈（见 `Button.loadingText`）', en: 'Pass false: while loading, drop the label, freeze at the labelled width and show a centred spinner (see `Button.loadingText`)' } },
             { name: 'onConfirm', type: '() => unknown', def: '—', desc: { zh: '确认 / 遮罩 / Esc 的统一出口；返回 Promise 时转圈锁框，返回 `false` 不关', en: 'Single exit for confirm / mask / Esc; a Promise spins and locks it, `false` keeps it open' } },
             { name: 'confirmLoading', type: 'boolean', def: 'false', desc: { zh: '外部驱动按钮 loading，与按钮自身异步状态取或', en: 'External button loading, OR-ed with its own async state' } },
+            { name: 'notice', type: 'string', def: '—', desc: { zh: '底栏**左侧**的一行过程提示（loading 期间逐步换文案、换一句翻一次牌，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（同一块地方复用下一轮时用它把上一句清掉）', en: 'One-line progress notice on the **left** of the footer (swap the string while loading, each change flips; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (use it when the same spot is reused for the next round)' } },
             { name: 'closeOnMask', type: 'boolean', def: "'true'", desc: { zh: '点遮罩关闭', en: 'Close on mask click' } },
             { name: 'size', type: 'ModalSize', def: "'sm'", desc: { zh: '尺寸档', en: 'Size tier' } },
             { name: 'translate', type: 'Translate', def: '内置字典', desc: { zh: '覆盖按钮文案', en: 'Override the button copy' } },
@@ -889,6 +935,7 @@ const doc: DocTopic = {
             { name: 'width / minWidth / maxWidth', type: 'number / number / number', def: '460 / 320 / —', desc: { zh: '初始宽度 / 拖拽下限 / 拖拽上限（px；上限缺省 = 遮罩盒宽）', en: 'Initial width / resize floor / resize ceiling (px; ceiling defaults to the mask box)' } },
             { name: 'resizable', type: 'boolean', def: 'true', desc: { zh: '能否拖宽（关掉就没有拖拽条）', en: 'Whether it resizes by dragging (off = no handle)' } },
             { name: 'footer / children', type: 'ReactNode / ReactNode', def: '— / —', desc: { zh: '底栏 / 主体（主体是唯一滚动容器）', en: 'Footer / body (the body is the only scroll container)' } },
+            { name: 'notice', type: 'string', def: '—', desc: { zh: '底栏**左侧**的一行过程提示（换文案即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位；**传空字符串 = 清场**（抽屉常驻渲染，关掉再开时用它清上一轮）', en: 'One-line progress notice on the **left** of the footer (changing it flips; overflow elides and marquees on hover). Omitted = nothing at all; **an empty string clears it** (the drawer stays mounted, so this is how the previous round is wiped)' } },
             { name: 'translate', type: 'Translate', def: '内置字典', desc: { zh: '覆盖关闭 / 拖拽条的文案', en: 'Override close / resize copy' } },
           ],
         },

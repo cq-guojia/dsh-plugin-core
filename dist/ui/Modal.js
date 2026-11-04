@@ -4,6 +4,7 @@ import { ensureComponentStyles } from './css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
 import { OverlayHead, OverlayMask, useEscapeClose } from './overlay.js';
 import { PanelSurface } from './panel.js';
+import { FlipText } from './FlipText.js';
 /**
  * 模态弹窗（自绘 overlay，**不用 react-dom 的 portal**，避免多一个必需依赖）。
  *
@@ -16,6 +17,8 @@ export function Modal(props) {
     const busy = props.busy === true;
     const closeOnMask = !busy && props.closeOnMask !== false;
     useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose);
+    // 空串等同于没给：底栏那块地方复用给下一轮时，传 "" 就把上一句清干净、不留占位。
+    const notice = props.notice === '' ? undefined : props.notice;
     // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
     // 宽度用 `100%`（相对遮罩盒）而不是 `100vw`：遮罩已按右侧分栏让位（见 feedback.css），
     // 用 `100vw` 算出来的宽在分栏在场时会溢出到分栏上，等于白让（用户 2026-10-22）。
@@ -61,8 +64,8 @@ export function Modal(props) {
         : null, 
     // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
     // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
-    h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined
+    h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined && notice === undefined
         ? null
-        : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, props.footer)));
+        : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice' }), props.footer)));
 }
 //# sourceMappingURL=Modal.js.map

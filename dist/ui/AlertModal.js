@@ -30,6 +30,7 @@ export function AlertModal(props) {
         closeOnMask: props.closeOnMask,
         busy,
         onClose: props.onConfirm,
+        notice: props.notice,
         footer: h(Button, {
             variant: 'primary',
             width: props.confirmWidth,

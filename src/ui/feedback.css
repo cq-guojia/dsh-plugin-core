@@ -11,6 +11,8 @@
    线可由消费方关掉（Modal 的 footerDivider=false）—— 确认框家族本来就没有线（与头部一致）。 */
 .dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}
 .dshpc-modal .dshpc-modal__foot--bare{border-top:none}
+/* 底栏左侧的过程提示：吃掉按钮之外的剩余宽，超长交给 FlipText 省略 / hover 跑马灯。 */
+.dshpc-modal .dshpc-modal__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}
 /* 自绘 toast 的样式在 2026-11-03 删除：Toast 早已改走宿主 toast()（Toast.ts 的 showNative），
    .dshpc-toast* 这几个类没有任何消费者，留着只是死样式（还带着裸 z-index 与裸阴影）。 */
 .dshpc-error__retry{

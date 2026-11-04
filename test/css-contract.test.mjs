@@ -23,6 +23,7 @@ import { SURFACE_CSS } from '../dist/ui/surface-css.js'
 import { CHIP_CSS } from '../dist/ui/chip-css.js'
 import { PANEL_DOCK_CSS } from '../dist/ui/panel-dock-css.js'
 import { MARQUEE_CSS } from '../dist/ui/marquee-css.js'
+import { FLIP_CSS } from '../dist/ui/flip-css.js'
 import { CODE_VIEWER_CSS } from '../dist/ui/code-viewer-css.js'
 import { EXPLORER_CSS } from '../dist/explorer/explorer-css.js'
 import { SESSION_CSS } from '../dist/session/session-css.js'
@@ -45,6 +46,7 @@ const CONSTANTS = {
   CHIP_CSS,
   PANEL_DOCK_CSS,
   MARQUEE_CSS,
+  FLIP_CSS,
   CODE_VIEWER_CSS,
   EXPLORER_CSS,
   SESSION_CSS,

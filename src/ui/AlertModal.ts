@@ -35,6 +35,8 @@ export interface AlertModalProps {
   closeOnMask?: boolean
   /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
   confirmLoading?: boolean
+  /** 底栏左侧的一行过程提示（换字即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位。 */
+  notice?: string
   /** 尺寸档（默认 sm 确认框宽度）。 */
   size?: ModalSize
   /** 点击确认 / 遮罩 / Esc 的统一出口（单按钮弹窗，关闭即确认）；**返回 Promise 自动转圈 + 整框锁死**。 */
@@ -64,6 +66,7 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
       closeOnMask: props.closeOnMask,
       busy,
       onClose: props.onConfirm,
+      notice: props.notice,
       footer: h(Button, {
         variant: 'primary',
         width: props.confirmWidth,

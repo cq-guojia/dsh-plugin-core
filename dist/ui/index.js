@@ -33,6 +33,7 @@ export { InputGroup, } from './InputGroup.js';
 export { Textarea } from './Textarea.js';
 export { Checkbox } from './Checkbox.js';
 export { MarqueeText } from './MarqueeText.js';
+export { FlipText } from './FlipText.js';
 export { Loader } from './Loader.js';
 export { LoaderBar } from './LoaderBar.js';
 export { Loading, LoadingBlock, LoadingToast, RunningBlocks, showLoading, } from './Loading.js';

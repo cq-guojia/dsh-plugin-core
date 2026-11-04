@@ -46,7 +46,7 @@ dsh-plugin-core/
 ### 2.2 ui
 
 - 零件：Button / Input 家族 / Textarea / Checkbox / Segmented / 下拉框 / 搜索框 / 滑轨 /
-  MarqueeText / LiveText / Field（含错误提示）/ resizer / DateTime / TimeRange
+  MarqueeText / FlipText / LiveText / Field（含错误提示）/ resizer / DateTime / TimeRange
 - 选择器：`Picker`（通用：单选/多选/上限/搜索/分组/空态/降级）、`ModelPicker`、
   `WorkspacePicker`（选工作区）；`FilePicker` 已删（2026-10-20 用户：文件选择框没有用）
 - 日期时间：`DateTimePicker`（2026-10-24 新增：单值 / 时间段 × 精度 day/hour/minute/second；
@@ -126,6 +126,15 @@ dsh-plugin-core/
     清文案后读屏名称靠 `aria-label`（字符串 children 自动补，复合 children 由调用方给）；
     首帧就是 loading（没有「有文案的宽度」可量）时锁不到宽，走 ① 的 `width`。
     loading 圈包进 `.dshpc-btn__icon`（svg 被 1em 规则接管）⇒ 有 icon 的按钮切 loading 宽度零差。
+  - **弹窗底栏左侧的过程提示**（2026-11-04 用户拍板）：`Modal` / `ConfirmModal` / `AlertModal` / `SideSheet`
+    各加一个 `notice?: string`，渲染在 footer 最左；**不传 = 不占位**，与接入前完全一样（`footer` 也可不给，
+    notice 自己撑起底栏）。换文案即翻牌（旧的上移出、新的从下进），单行、超长三点省略、hover 跑马灯 ——
+    跑马灯与省略**复用 `MarqueeText`**，不另写一份测宽；高度恒为一行，永不换行。
+    **空串 = 没有文案**（2026-11-04 用户补的要求）：不渲染、不占位 —— 底栏那块地方被下一轮复用时，
+    传空串就把上一句清干净；清空后第一次给值是直接出现、不从下方翻上来（没有上一句可翻）。
+    实现分两层（用户拍板「拆成两层、不做引擎、不监听 loading」）：控件 `FlipText`（`text` 变了就翻，
+    没变不动；宽度三档与 Button / Chip 同口径：`width` 优先，其次 `minWidth` / `maxWidth`，
+    全不传 = 随父容器）+ 弹窗只做「挂载位 + 透传」。步骤队列、loading 状态一律由调用方 setState 管。
   - `Loading` 是旧的「自带定位 + 自带 pill 背景」复合件，**保留不删**但标 `@deprecated`，新代码用 `Loader`。
 - 布局基础：`PanelDock` / `DockPanel` / `createPanelDock`（**可停靠分栏容器**：多面板并存、按组名寻址、拖拽拉栏、宽度记忆；2026-10-20 拍板用此名，替代早先的 `SidebarLayout` / `SplitPane`）。只做右侧；组名与窗口一对一；默认上限 3，超限拒绝新开；不做 tab 切换 / 自动淘汰 / 多份同名；**面板本身始终是布局成员，不做面板浮层**（2026-10-28 补：**收起** = 面板退出布局、另出右侧一只独立的 `position: fixed` 耳朵，点耳朵展开并还原宽度；关闭不留耳朵——耳朵是独立浮层，不是把面板变浮层）。**结构照成熟库口径写 children，`open/close` 只传 id，不把页面树塞进调用参数**
 - 浮动快捷工具栏：`QuickToolbar`（2026-10-31 用户拍板）：右侧一列独立圆钮，纵向**恒贴屏幕底边**（默认 16px）；横向默认贴屏幕右缘，传 `anchorId` / `anchor()` 时贴到指定控件右缘外侧，右侧放不下则退回屏幕右缘（控件找不到按跟随窗口处理）。内置回顶部默认 `when:'scroll'`、阈值 320，`backToTop:false` 可关掉，对象可调 `order` / `label` / `threshold`；自定义项 `items` 支持 `icon` / `label` / `onClick` / `visible` / `when` / `order` / `threshold` / `color` / `fgColor`，统一 `onAction`。旧的 `BackToTop` **全部删除**，只保留这一份，不做迁移。

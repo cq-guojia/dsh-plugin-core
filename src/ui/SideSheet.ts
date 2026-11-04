@@ -17,6 +17,7 @@ import { SIDE_PANEL_CSS } from './side-panel-css.js'
 import { SIDE_SHEET_CSS } from './side-sheet-css.js'
 import { OverlayMask, useEscapeClose } from './overlay.js'
 import { startResizeLayoutWidth } from './resizer.js'
+import { FlipText } from './FlipText.js'
 
 /** 从哪一侧滑入。默认 `left`。 */
 export type SideSheetSide = 'left' | 'right'
@@ -66,6 +67,8 @@ export interface SideSheetProps {
   /** 能否拖宽（默认 true）。 */
   resizable?: boolean
   footer?: ReactNode
+  /** 底栏左侧的一行过程提示（换字即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位。 */
+  notice?: string
   children?: ReactNode
   translate?: Translate
 }
@@ -79,6 +82,8 @@ export function SideSheet(props: SideSheetProps): ReactNode {
   const busy = props.busy === true
   const closeOnMask = !busy && props.closeOnMask !== false
   useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose)
+  // 空串等同于没给：抽屉常驻渲染时，传 "" 就能把上一轮的提示清干净、不留占位。
+  const notice = props.notice === '' ? undefined : props.notice
 
   const [width, setWidth] = useState(props.width ?? 460)
   const panelRef = useRef<HTMLElement | null>(null)
@@ -186,7 +191,14 @@ export function SideSheet(props: SideSheetProps): ReactNode {
       renderHeader(),
       closeButton(!hasHeader),
       h('div', { className: 'dshpc-dock__body dshpc-sheet__body' }, props.children ?? null),
-      props.footer === undefined ? null : h('div', { className: 'dshpc-sheet__foot' }, props.footer),
+      props.footer === undefined && notice === undefined
+        ? null
+        : h(
+            'div',
+            { className: 'dshpc-sheet__foot' },
+            notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice' }),
+            props.footer,
+          ),
     ),
   )
 }

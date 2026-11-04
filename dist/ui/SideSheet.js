@@ -17,6 +17,7 @@ import { SIDE_PANEL_CSS } from './side-panel-css.js';
 import { SIDE_SHEET_CSS } from './side-sheet-css.js';
 import { OverlayMask, useEscapeClose } from './overlay.js';
 import { startResizeLayoutWidth } from './resizer.js';
+import { FlipText } from './FlipText.js';
 export function SideSheet(props) {
     ensureComponentStyles('side-panel', SIDE_PANEL_CSS);
     ensureComponentStyles('side-sheet', SIDE_SHEET_CSS);
@@ -26,6 +27,8 @@ export function SideSheet(props) {
     const busy = props.busy === true;
     const closeOnMask = !busy && props.closeOnMask !== false;
     useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose);
+    // 空串等同于没给：抽屉常驻渲染时，传 "" 就能把上一轮的提示清干净、不留占位。
+    const notice = props.notice === '' ? undefined : props.notice;
     const [width, setWidth] = useState(props.width ?? 460);
     const panelRef = useRef(null);
     // 收起动效（用户 2026-11-02）：open=false 时先播完 dshpc-side-out 再真正卸载；
@@ -110,6 +113,8 @@ export function SideSheet(props) {
             onPointerDown: (event) => {
                 beginResize(event);
             },
-        }), renderHeader(), closeButton(!hasHeader), h('div', { className: 'dshpc-dock__body dshpc-sheet__body' }, props.children ?? null), props.footer === undefined ? null : h('div', { className: 'dshpc-sheet__foot' }, props.footer)));
+        }), renderHeader(), closeButton(!hasHeader), h('div', { className: 'dshpc-dock__body dshpc-sheet__body' }, props.children ?? null), props.footer === undefined && notice === undefined
+        ? null
+        : h('div', { className: 'dshpc-sheet__foot' }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice' }), props.footer)));
 }
 //# sourceMappingURL=SideSheet.js.map

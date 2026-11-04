@@ -4,6 +4,7 @@ import { ensureComponentStyles } from './css.js'
 import { FEEDBACK_CSS } from './feedback-css.js'
 import { OverlayHead, OverlayMask, useEscapeClose } from './overlay.js'
 import { PanelSurface } from './panel.js'
+import { FlipText } from './FlipText.js'
 
 /** 弹窗尺寸档：sm≈确认框 / md(默认) / lg 大窗。 */
 export type ModalSize = 'sm' | 'md' | 'lg'
@@ -46,6 +47,12 @@ export interface ModalProps {
   /** 不渲染头部（沉浸式 / 无标题场景）。 */
   hideHeader?: boolean
   footer?: ReactNode
+  /**
+   * footer **左侧**的一行过程提示（换字即翻牌，太长省略、hover 跑马灯）。
+   * 不传 = 不占位、与以前完全一样；传了就自动出现（footer 也可不给，它会自己撑起底栏）。
+   * 换文案只改这个值，动效由 `FlipText` 负责。
+   */
+  notice?: string
   /** footer 上面那条分隔线（默认 true）。传 false 关闭；sm 确认框家族本来就没有。 */
   footerDivider?: boolean
   /** 追加 class（只允许补布局 / 视觉修饰，不许覆盖皮肤）。 */
@@ -66,6 +73,8 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
   const busy = props.busy === true
   const closeOnMask = !busy && props.closeOnMask !== false
   useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose)
+  // 空串等同于没给：底栏那块地方复用给下一轮时，传 "" 就把上一句清干净、不留占位。
+  const notice = props.notice === '' ? undefined : props.notice
 
   // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
   // 宽度用 `100%`（相对遮罩盒）而不是 `100vw`：遮罩已按右侧分栏让位（见 feedback.css），
@@ -119,11 +128,12 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
       // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
       // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
       h('div', { className: 'dshpc-modal__body' }, props.children ?? null),
-      props.footer === undefined
+      props.footer === undefined && notice === undefined
         ? null
         : h(
             'div',
             { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` },
+            notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice' }),
             props.footer,
           ),
     ),
