@@ -56,11 +56,12 @@ export interface OpenFilePreviewOptions {
     /**
      * **必填**：挂进哪个布局容器（`PanelDock` 是布局成员 —— 占宽度、把左边挤窄）。
      *
-     * 传入的应当是**你自己的 flex 行**（页面主区 + 侧栏那一层）：核心 dock 会成为它的
-     * 最后一个 flex 子项，于是主区被真正挤窄。**不要**传 `document.body` 再自己套 fixed
-     * —— 那是浮层，不是分栏（用户 2026-10-21 明确否决）。
+     * 传**你自己的 flex 行**（页面主区 + 侧栏那一层）：核心 dock 会成为它的最后一个
+     * flex 子项，于是主区被真正挤窄。可以直接给元素，也可以给选择器（`'#page-row'`）——
+     * 消费方不必存 ref。**不要**传 `document.body` 再自己套 fixed —— 那是浮层，不是分栏
+     * （用户 2026-10-21 明确否决）；选择器解析不到时同样放弃本次打开（不回落 body）。
      */
-    mount: HTMLElement;
+    mount: HTMLElement | string;
 }
 /**
  * 打开工作区文件/文件夹的**停靠**预览（分栏：挤窄 `mount` 左边的兄弟，不是盖上去）。

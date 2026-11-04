@@ -22,6 +22,10 @@
    会话区压成 0 高 —— 这正是「内容自管高度」的老毛病，别再放回来。 */
 .dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}
 
+/* 官方组件拿 --dsw-alias-bg-base 做 sticky 遮挡底（思考行展开头等），取值是宿主 app
+   全局基底色，与弹窗面板底不同层 ⇒ 会话区内改指向弹窗面板底（背景保留、颜色贴合）。 */
+.dshpc-sv-frame.dshpc-sv-frame{--dsw-alias-bg-base:var(--dshpc-surface-1);}
+
 .dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}
 
 /* 会话区保底：高度由内容决定（撑开由 Modal body 滚）。 */

@@ -117,11 +117,12 @@ export interface OpenFilePreviewOptions {
   /**
    * **必填**：挂进哪个布局容器（`PanelDock` 是布局成员 —— 占宽度、把左边挤窄）。
    *
-   * 传入的应当是**你自己的 flex 行**（页面主区 + 侧栏那一层）：核心 dock 会成为它的
-   * 最后一个 flex 子项，于是主区被真正挤窄。**不要**传 `document.body` 再自己套 fixed
-   * —— 那是浮层，不是分栏（用户 2026-10-21 明确否决）。
+   * 传**你自己的 flex 行**（页面主区 + 侧栏那一层）：核心 dock 会成为它的最后一个
+   * flex 子项，于是主区被真正挤窄。可以直接给元素，也可以给选择器（`'#page-row'`）——
+   * 消费方不必存 ref。**不要**传 `document.body` 再自己套 fixed —— 那是浮层，不是分栏
+   * （用户 2026-10-21 明确否决）；选择器解析不到时同样放弃本次打开（不回落 body）。
    */
-  mount: HTMLElement
+  mount: HTMLElement | string
 }
 
 /** 预览侧边栏的挂载容器 id（全站唯一，重复打开先关旧的）。 */
@@ -153,6 +154,17 @@ let activePreview: ActivePreview | null = null
  */
 export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHandle | null {
   if (typeof document === 'undefined') return null
+  const mount = typeof options.mount === 'string'
+    ? document.querySelector<HTMLElement>(options.mount)
+    : options.mount
+  // 解析不到就放弃：绝不回落 body（那是浮层，不是分栏）。
+  if (mount === null) {
+    console.warn(
+      `[dsh-plugin-core/explorer] openFilePreview: mount 选择器解析不到元素（${String(options.mount)}）`
+      + ' ⇒ 放弃本次操作',
+    )
+    return null
+  }
   const custom = options.content !== undefined
   const files = getFsFace()
   const anchors: Anchors = options.workspaceAnchors ?? workspaceList.getSnapshot()
@@ -168,6 +180,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
   // rootPath 的推导只有一份（`rootPathOf`）；调用方显式给了就听调用方的。
   const opts: OpenFilePreviewOptions = {
     ...options,
+    mount,
     rootPath: options.rootPath ?? rootPathOf(start ?? '', anchors, options.sessionId),
   }
 
@@ -175,7 +188,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
   // 直接切 —— 不重播展开动效、也不改用户拖好的宽度）。换页面 / 换容器就地把挂载体搬过去。
   if (activePreview !== null) {
     activePreview.keepWidth()
-    activePreview.adopt(opts.mount)
+    activePreview.adopt(mount)
     activePreview.draw(opts, start ?? '')
     return { close: activePreview.close, path: opts.path ?? '' }
   }
@@ -216,7 +229,7 @@ export function openFilePreview(options: OpenFilePreviewOptions): FilePreviewHan
     next.appendChild(container)
     hostEl = next
   }
-  adopt(options.mount)
+  adopt(mount)
 
   const dock = createPanelDock({
     maxPanels: 1,

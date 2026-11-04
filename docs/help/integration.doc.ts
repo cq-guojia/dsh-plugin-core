@@ -36,6 +36,7 @@ serveFsRoute(ctx, { path: FS_PATH })
 connectFs({ path: FS_PATH })
 
 // 预览某文件：右侧分栏（挤窄 row 左边的主区，不是浮在上面）；绝对 / 相对都收
+// 落点给元素或选择器都行（openFilePreview({ mount: '#page-row' })），不必存 ref
 openFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })
 
 // 让用户选：锚定按钮旁弹模态，Promise 返回 { path: 绝对路径, isDir, workspaceRel?, workspace? }
@@ -50,7 +51,8 @@ if (view !== null) {
     sessionId, view,
     // 关闭必须释放 retain 引用
     onClose: () => { view.dispose(); setOpen(false) },
-    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, path, sessionId }),
+    // 文件出口：已经点开的那条会话 id 会作为第二参传进来（相对路径 / Office 都按它定位）
+    onOpenFile: (path, sid) => openFilePreview({ mount: pageRowEl, path, sessionId: sid }),
   })
 }`
 const cleanup = `kit.dispose()   // 撤掉 <style> 标签并清空登记域（插件卸载 / HMR）`
@@ -74,8 +76,8 @@ const doc: DocTopic = {
         { zh: '§2 用一个控件', en: '§2 Use a control' },
         { zh: '§3 用通用方法', en: '§3 Use helpers' },
         {
-          zh: '§4 接文件浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行；数据面要在宿主 `serveFsRoute` + client `connectFs` 用同一个 path 常量接上，浏览本身不需要会话。',
-          en: '§4 Wire file browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row. Wire the data face with the same path constant on both sides (`serveFsRoute` / `connectFs`) — browsing itself needs no session.',
+          zh: '§4 接文件浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行——元素或选择器都行，解析不到就放弃、不回落 body；数据面要在宿主 `serveFsRoute` + client `connectFs` 用同一个 path 常量接上，浏览本身不需要会话。',
+          en: '§4 Wire file browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row — an element or a selector, and an unresolvable selector abandons the open instead of falling back to `body`. Wire the data face with the same path constant on both sides (`serveFsRoute` / `connectFs`) — browsing itself needs no session.',
         },
         {
           zh: '§5 接会话预览：`openSessionView` 返回 `null` 表示该会话不可解析；拿到 view 后交给 `SessionViewModal`，关闭时记得 `dispose()`。',

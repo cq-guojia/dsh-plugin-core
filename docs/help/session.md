@@ -22,9 +22,9 @@
 
 > EN: The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input’s confirm goes through `onContinue` (fork + first turn + navigate).
 
-文件出口只有一个：工具卡路径、行内引用、交付卡都走 `onOpenFile`；不传则链接降级为纯文本。预览由调用方开在**页面右侧**（`openFilePreview` 的 dock），弹窗不需要任何遮罩参数。
+文件出口只有一个：工具卡路径、行内引用、交付卡都走 `onOpenFile`；不传则链接降级为纯文本（可以点但没有出口，不是坏了）。自己已有预览面的，在回调里调你自己的（核心一个 DOM 都不碰）；没有的，一行接上核心自带的右侧分栏：`onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })`——落点给元素或选择器都行，弹窗不需要任何遮罩参数。
 
-> EN: There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text. The caller opens the preview as a **page-level right column** (the `openFilePreview` dock) — the dialog takes no mask props.
+> EN: There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit — not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core’s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })` — the mount takes an element or a selector, and the dialog needs no mask props.
 
 限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染，用「加载更早记录」向前翻页；👍👎 反馈走官方 slots，弹窗没有该插槽。
 
@@ -73,7 +73,8 @@ if (view !== null) {
       await hostContinue(child, message)
       openHostSession(child)
     },
-    onOpenFile: (path) => openFilePreview(path), // 文件打开出口
+    // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏
+    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),
     archived,                                   // 是否已归档
     t,                                          // 可选，覆盖文案
   })

@@ -12,10 +12,10 @@ serveFsRoute(ctx, { path: FS_PATH })
 connectHost(ctx)
 connectFs({ path: FS_PATH })
 
-// 右侧分栏预览（占宽度、挤窄主区）：一个容器 + 一个路径就够
-openFilePreview({ mount, path: '/abs/ledger' })    // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览
-openFilePreview({ mount, path: 'docs/README.md' }) // 工作区相对路径也行（相对谁见下）
-openFilePreview({ mount })                         // 不给路径 ⇒ 根节点（工作区清单 + 盘符）
+// 右侧分栏预览（占宽度、挤窄主区）：一个落点 + 一个路径就够
+openFilePreview({ mount: pageRowEl, path: '/abs/ledger' })      // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览
+openFilePreview({ mount: '#page-row', path: 'docs/README.md' })  // 落点也可以给选择器；相对路径也收（相对谁见下）
+openFilePreview({ mount: '#page-row' })                          // 不给路径 ⇒ 根节点（工作区清单 + 盘符）
 
 // 锚定弹窗选文件（Promise 返回**绝对路径**，不自己挂 dock）
 const r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })
@@ -42,8 +42,8 @@ const doc: DocTopic = {
           en: '**Core does the wiring, but with two calls**: `serveFsRoute({ path })` on the host side and `connectFs({ path })` with the same constant on the client side (`connectHost(ctx)` still covers the workspace snapshot). Browsing needs **no session**.',
         },
         {
-          zh: '落点只给一个元素：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原），不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。',
-          en: 'Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning — that is an overlay, not a split.',
+          zh: '落点只给一个：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原）。给元素或选择器（`\'#page-row\'`）都行，消费方不必存 ref；selector 解析不到就放弃本次打开（不会回落 body）。不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。',
+          en: 'Give exactly one mount: the element wrapping the main area (core makes it a flex row and lets the main area stretch, restoring it on close). Either an element or a selector (`\'#page-row\'`) works, so no ref bookkeeping is needed; an unresolvable selector abandons the open (never falls back to `body`). Never pass `document.body` with your own fixed positioning — that is an overlay, not a split.',
         },
         {
           zh: '面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**根层置顶**（其余仍列各工作区）：POSIX 是一条「根目录」，**Windows 没有根目录这东西，列的是盘符**（`C:/`、`D:/`…，由宿主 `op:roots` 探出来）。点其他工作区 = 直接列该区根目录（不需要会话）。',
@@ -85,12 +85,12 @@ const doc: DocTopic = {
             },
             {
               name: 'opts.mount',
-              type: 'HTMLElement',
+              type: 'HTMLElement | string',
               def: '—',
               required: '是',
               desc: {
-                zh: '页面里**包住主区**的那个元素；不必自己写 flex（核心补成 flex 行并让主区伸展，关闭时还原）。不要传 `document.body`',
-                en: 'The element wrapping the main area; no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). Never `document.body`',
+                zh: '页面里**包住主区**的那个元素，或指向它的选择器（`\'#page-row\'`）；不必自己写 flex（核心补成 flex 行并让主区伸展，关闭时还原）。选择器解析不到 ⇒ 返回 `null` 并 warn，不回落 body。不要传 `document.body`',
+                en: 'The element wrapping the main area, or a selector pointing at it (`\'#page-row\'`); no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). An unresolvable selector ⇒ `null` + a warning, never a `body` fallback. Never `document.body`',
               },
             },
             {

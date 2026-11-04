@@ -8,7 +8,7 @@
 //   · 新增：底部**暂存输入框**（期4 用户流程）——打字 → 确定 → onContinue(message)，
 //     由调用方完成 fork + host 侧 agent.send 起轮次 + 跳官方视图（官方能力，无歪门邪道）。
 //   · retain source 参数化在 open-session-view.ts。
-import { Fragment, createElement as h, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { Fragment, createElement as h, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { IconArchiveOutlineRegular, IconBranchOutlineRegular, IconNewChatOutlineRegular, MarkdownDelegateProvider } from '../ui/official.js';
 import { Modal } from '../ui/Modal.js';
 import { Button } from '../ui/Button.js';
@@ -271,7 +271,12 @@ tailFacts) {
             const { files, hadFiles } = contentFiles(blocks);
             if (text === '' && !hadFiles)
                 return null;
-            return h(UserMessage, { text, files });
+            return h(UserMessage, {
+                text,
+                files,
+                referenceLabels: dataOf(node).referenceLabels,
+                t,
+            });
         }
         case 'turn-error':
             return h(TurnErrorItemMirror, { node: dataOf(node), t });
@@ -353,7 +358,7 @@ function renderLegacyNode(node, t, fileOpen) {
             const { files, hadFiles } = contentFiles(node.content);
             if (text === '' && !hadFiles)
                 return null;
-            return h(UserMessage, { key: node.seq, text, files });
+            return h(UserMessage, { key: node.seq, text, files, t });
         }
         case 'assistant': {
             const parts = assistantBlocks(node.blocks, t, fileOpen?.mentions);
@@ -698,7 +703,11 @@ export function SessionViewModal(props) {
     // 会话区自动贴底（用户 2026-11-04 定）：打开即到底；内容还在长就跟到底；用户自己往上滚过
     // 就停（滚回底部恢复）。别用「时间窗」判程序滚动——流式更新会一直续窗，用户就再也滚不开了；
     // 程序只往下滚，所以「往上滚」是可靠的用户意图判据。
+    // 触发条件只能是「宿主快照变了」（= 有新内容）；展开 / 折叠历史分组同样会改高度，但那是本地
+    // 状态，不能把视图拽走（用户 2026-11-04 二次拍板：只有「首次打开」和「有新内容」两种才贴底）。
     const flowRef = useRef(null);
+    const contentBumpRef = useRef(true);
+    useLayoutEffect(() => { contentBumpRef.current = true; }, [chat]);
     useEffect(() => {
         const flow = flowRef.current;
         const scroller = flow === null ? null : flow.closest('.dshpc-modal__body');
@@ -719,10 +728,14 @@ export function SessionViewModal(props) {
         scroller.addEventListener('scroll', onScroll, { passive: true });
         const observer = new ResizeObserver(() => {
             const height = flow === null ? 0 : flow.scrollHeight;
+            const bumped = contentBumpRef.current;
+            contentBumpRef.current = false;
             if (height === lastHeight)
                 return;
             const firstPaint = lastHeight === 0;
             lastHeight = height;
+            if (!firstPaint && !bumped)
+                return;
             if (!following)
                 return;
             // 首屏（空 → 有内容）直接贴底；之后每次增量平滑滑一小段（官方同款手感）。

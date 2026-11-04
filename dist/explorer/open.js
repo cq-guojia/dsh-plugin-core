@@ -81,6 +81,15 @@ let activePreview = null;
 export function openFilePreview(options) {
     if (typeof document === 'undefined')
         return null;
+    const mount = typeof options.mount === 'string'
+        ? document.querySelector(options.mount)
+        : options.mount;
+    // 解析不到就放弃：绝不回落 body（那是浮层，不是分栏）。
+    if (mount === null) {
+        console.warn(`[dsh-plugin-core/explorer] openFilePreview: mount 选择器解析不到元素（${String(options.mount)}）`
+            + ' ⇒ 放弃本次操作');
+        return null;
+    }
     const custom = options.content !== undefined;
     const files = getFsFace();
     const anchors = options.workspaceAnchors ?? workspaceList.getSnapshot();
@@ -96,13 +105,14 @@ export function openFilePreview(options) {
     // rootPath 的推导只有一份（`rootPathOf`）；调用方显式给了就听调用方的。
     const opts = {
         ...options,
+        mount,
         rootPath: options.rootPath ?? rootPathOf(start ?? '', anchors, options.sessionId),
     };
     // 只允许一个预览。**已经开着 ⇒ 换内容**（用户 2026-10-28：侧栏已经在那了，点别的文件就该
     // 直接切 —— 不重播展开动效、也不改用户拖好的宽度）。换页面 / 换容器就地把挂载体搬过去。
     if (activePreview !== null) {
         activePreview.keepWidth();
-        activePreview.adopt(opts.mount);
+        activePreview.adopt(mount);
         activePreview.draw(opts, start ?? '');
         return { close: activePreview.close, path: opts.path ?? '' };
     }
@@ -143,7 +153,7 @@ export function openFilePreview(options) {
         next.appendChild(container);
         hostEl = next;
     };
-    adopt(options.mount);
+    adopt(mount);
     const dock = createPanelDock({
         maxPanels: 1,
         defaultWidth: options.width ?? 460,

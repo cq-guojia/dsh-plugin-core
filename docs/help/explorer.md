@@ -18,9 +18,9 @@
 
 > EN: **Core does the wiring, but with two calls**: `serveFsRoute({ path })` on the host side and `connectFs({ path })` with the same constant on the client side (`connectHost(ctx)` still covers the workspace snapshot). Browsing needs **no session**.
 
-落点只给一个元素：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原），不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。
+落点只给一个：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原）。给元素或选择器（`'#page-row'`）都行，消费方不必存 ref；selector 解析不到就放弃本次打开（不会回落 body）。不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。
 
-> EN: Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning — that is an overlay, not a split.
+> EN: Give exactly one mount: the element wrapping the main area (core makes it a flex row and lets the main area stretch, restoring it on close). Either an element or a selector (`'#page-row'`) works, so no ref bookkeeping is needed; an unresolvable selector abandons the open (never falls back to `body`). Never pass `document.body` with your own fixed positioning — that is an overlay, not a split.
 
 面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**根层置顶**（其余仍列各工作区）：POSIX 是一条「根目录」，**Windows 没有根目录这东西，列的是盘符**（`C:/`、`D:/`…，由宿主 `op:roots` 探出来）。点其他工作区 = 直接列该区根目录（不需要会话）。
 
@@ -54,10 +54,10 @@ serveFsRoute(ctx, { path: FS_PATH })
 connectHost(ctx)
 connectFs({ path: FS_PATH })
 
-// 右侧分栏预览（占宽度、挤窄主区）：一个容器 + 一个路径就够
-openFilePreview({ mount, path: '/abs/ledger' })    // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览
-openFilePreview({ mount, path: 'docs/README.md' }) // 工作区相对路径也行（相对谁见下）
-openFilePreview({ mount })                         // 不给路径 ⇒ 根节点（工作区清单 + 盘符）
+// 右侧分栏预览（占宽度、挤窄主区）：一个落点 + 一个路径就够
+openFilePreview({ mount: pageRowEl, path: '/abs/ledger' })      // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览
+openFilePreview({ mount: '#page-row', path: 'docs/README.md' })  // 落点也可以给选择器；相对路径也收（相对谁见下）
+openFilePreview({ mount: '#page-row' })                          // 不给路径 ⇒ 根节点（工作区清单 + 盘符）
 
 // 锚定弹窗选文件（Promise 返回**绝对路径**，不自己挂 dock）
 const r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })
@@ -75,7 +75,7 @@ await pickWorkspaceFile({ anchor, placement: 'left-start' })   // 左侧、顶�
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
 | `openFilePreview(opts)` | `OpenFilePreviewOptions => FilePreviewHandle` | — | — | 在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容） | Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node) |
-| `opts.mount` | `HTMLElement` | 是 | — | 页面里**包住主区**的那个元素；不必自己写 flex（核心补成 flex 行并让主区伸展，关闭时还原）。不要传 `document.body` | The element wrapping the main area; no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). Never `document.body` |
+| `opts.mount` | `HTMLElement \| string` | 是 | — | 页面里**包住主区**的那个元素，或指向它的选择器（`'#page-row'`）；不必自己写 flex（核心补成 flex 行并让主区伸展，关闭时还原）。选择器解析不到 ⇒ 返回 `null` 并 warn，不回落 body。不要传 `document.body` | The element wrapping the main area, or a selector pointing at it (`'#page-row'`); no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). An unresolvable selector ⇒ `null` + a warning, never a `body` fallback. Never `document.body` |
 | `opts.sessionId` | `string` | — | — | **只在两种情况下需要**：① 相对路径的基准工作区；② Office 预览（转 PDF 要一条有效会话，缺省由核心取最近有会话的工作区） | Needed in exactly two cases: (1) the base workspace for a relative path; (2) Office preview (conversion needs one valid session; core falls back to the most recent workspace with one) |
 | `opts.path` | `string` | — | — | 绝对路径或工作区相对路径（相对路径要有可解析的基准，否则返回 `null` 并 warn）；不传 ⇒ 根节点。与 `content` 二选一 | Absolute or workspace-relative (a relative one needs a resolvable base, else `null` + a warning); omitted ⇒ the root node. Mutually exclusive with `content` |
 | `opts.content` | `() => ReactNode` | — | — | 自定义预览内容，塞进同一个右侧 dock；传它时不需要 `path` | Custom preview body rendered in the same dock; no `path` needed when set |

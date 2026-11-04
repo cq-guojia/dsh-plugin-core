@@ -48,9 +48,16 @@ export interface UserFileFace {
  * 官方附件卡 = 图标 + 文件名 + 大小；**不可点开**——引用里没有路径，宿主也没给出
  * 「按 attachmentId 打开」的公开面 ⇒ 如实降级为只读展示，不伪造打开行为。
  */
-export function UserMessage(props: { text: string; files?: readonly UserFileFace[] }): ReturnType<typeof h> {
-  const { text, files } = props
+export function UserMessage(props: {
+  text: string
+  files?: readonly UserFileFace[]
+  /** 官方 referenceLabels：用户 @ 引用的会话标签，气泡后单独一行（非 inline chips）。 */
+  referenceLabels?: readonly string[]
+  t: Translate
+}): ReturnType<typeof h> {
+  const { text, files, referenceLabels, t } = props
   const chips = files ?? []
+  const references = referenceLabels ?? []
   return h('div', { className: officialClass('MessageItem', 'userRow') ?? '' },
     h('div', { className: officialClass('MessageItem', 'userStack') ?? '' },
       // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
@@ -81,6 +88,12 @@ export function UserMessage(props: { text: string; files?: readonly UserFileFace
         ? null
         : h('div', { className: officialClass('MessageItem', 'bubble') ?? '' },
             h(MarkdownText, { text, labels: markdownLabels() })),
+      // 官方 UserContent（lib/client.js:7377）：referenceLabels 在气泡**之后**单独一行。
+      references.length === 0
+        ? null
+        : h('div', {
+            className: officialClass('MessageItem', 'referenceSummary') ?? '',
+          }, t('referenceSummary', { labels: references.join(t('referenceSeparator')) })),
     ),
   )
 }

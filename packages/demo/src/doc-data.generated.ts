@@ -112,8 +112,8 @@ export const docData = {
         "en": "**Core does the wiring, but with two calls**: `serveFsRoute({ path })` on the host side and `connectFs({ path })` with the same constant on the client side (`connectHost(ctx)` still covers the workspace snapshot). Browsing needs **no session**."
       },
       {
-        "zh": "落点只给一个元素：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原），不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。",
-        "en": "Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning — that is an overlay, not a split."
+        "zh": "落点只给一个：页面里**包住主区**的那个（核心会补成 flex 行、让主区伸展，关闭时还原）。给元素或选择器（`'#page-row'`）都行，消费方不必存 ref；selector 解析不到就放弃本次打开（不会回落 body）。不要传 `document.body` 再自己套 fixed——那是浮层，不是分栏。",
+        "en": "Give exactly one mount: the element wrapping the main area (core makes it a flex row and lets the main area stretch, restoring it on close). Either an element or a selector (`'#page-row'`) works, so no ref bookkeeping is needed; an unresolvable selector abandons the open (never falls back to `body`). Never pass `document.body` with your own fixed positioning — that is an overlay, not a split."
       },
       {
         "zh": "面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**根层置顶**（其余仍列各工作区）：POSIX 是一条「根目录」，**Windows 没有根目录这东西，列的是盘符**（`C:/`、`D:/`…，由宿主 `op:roots` 探出来）。点其他工作区 = 直接列该区根目录（不需要会话）。",
@@ -151,7 +151,7 @@ export const docData = {
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // 你自己的常量：宿主与 client 必须用同一个\n\n// ── 宿主半边（apply）：挂一条只读文件路由（不限工作区；读文件/列目录都在它上面） ──\nserveFsRoute(ctx, { path: FS_PATH })\n\n// ── client 半边（apply）：接一次（connectHost 照旧负责工作区快照） ──\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// 右侧分栏预览（占宽度、挤窄主区）：一个容器 + 一个路径就够\nopenFilePreview({ mount, path: '/abs/ledger' })    // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览\nopenFilePreview({ mount, path: 'docs/README.md' }) // 工作区相对路径也行（相对谁见下）\nopenFilePreview({ mount })                         // 不给路径 ⇒ 根节点（工作区清单 + 盘符）\n\n// 锚定弹窗选文件（Promise 返回**绝对路径**，不自己挂 dock）\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // 只选文件夹\n\n// 展开方位：默认 auto（下方优先、不够翻上方）；按钮贴着定宽区右边界时改向左展开\nawait pickWorkspaceFile({ anchor, placement: 'bottom-end' })   // 下方、右缘对齐\nawait pickWorkspaceFile({ anchor, placement: 'left-start' })   // 左侧、顶边齐平"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // 你自己的常量：宿主与 client 必须用同一个\n\n// ── 宿主半边（apply）：挂一条只读文件路由（不限工作区；读文件/列目录都在它上面） ──\nserveFsRoute(ctx, { path: FS_PATH })\n\n// ── client 半边（apply）：接一次（connectHost 照旧负责工作区快照） ──\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// 右侧分栏预览（占宽度、挤窄主区）：一个落点 + 一个路径就够\nopenFilePreview({ mount: pageRowEl, path: '/abs/ledger' })      // 文件夹 ⇒ 目录树；文件 ⇒ 直接预览\nopenFilePreview({ mount: '#page-row', path: 'docs/README.md' })  // 落点也可以给选择器；相对路径也收（相对谁见下）\nopenFilePreview({ mount: '#page-row' })                          // 不给路径 ⇒ 根节点（工作区清单 + 盘符）\n\n// 锚定弹窗选文件（Promise 返回**绝对路径**，不自己挂 dock）\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // 只选文件夹\n\n// 展开方位：默认 auto（下方优先、不够翻上方）；按钮贴着定宽区右边界时改向左展开\nawait pickWorkspaceFile({ anchor, placement: 'bottom-end' })   // 下方、右缘对齐\nawait pickWorkspaceFile({ anchor, placement: 'left-start' })   // 左侧、顶边齐平"
       }
     ]
   },
@@ -176,12 +176,12 @@ export const docData = {
           },
           {
             "name": "opts.mount",
-            "type": "HTMLElement",
+            "type": "HTMLElement | string",
             "def": "—",
             "required": "是",
             "desc": {
-              "zh": "页面里**包住主区**的那个元素；不必自己写 flex（核心补成 flex 行并让主区伸展，关闭时还原）。不要传 `document.body`",
-              "en": "The element wrapping the main area; no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). Never `document.body`"
+              "zh": "页面里**包住主区**的那个元素，或指向它的选择器（`'#page-row'`）；不必自己写 flex（核心补成 flex 行并让主区伸展，关闭时还原）。选择器解析不到 ⇒ 返回 `null` 并 warn，不回落 body。不要传 `document.body`",
+              "en": "The element wrapping the main area, or a selector pointing at it (`'#page-row'`); no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). An unresolvable selector ⇒ `null` + a warning, never a `body` fallback. Never `document.body`"
             }
           },
           {
@@ -497,8 +497,8 @@ export const docData = {
         "en": "The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input’s confirm goes through `onContinue` (fork + first turn + navigate)."
       },
       {
-        "zh": "文件出口只有一个：工具卡路径、行内引用、交付卡都走 `onOpenFile`；不传则链接降级为纯文本。预览由调用方开在**页面右侧**（`openFilePreview` 的 dock），弹窗不需要任何遮罩参数。",
-        "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text. The caller opens the preview as a **page-level right column** (the `openFilePreview` dock) — the dialog takes no mask props."
+        "zh": "文件出口只有一个：工具卡路径、行内引用、交付卡都走 `onOpenFile`；不传则链接降级为纯文本（可以点但没有出口，不是坏了）。自己已有预览面的，在回调里调你自己的（核心一个 DOM 都不碰）；没有的，一行接上核心自带的右侧分栏：`onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })`——落点给元素或选择器都行，弹窗不需要任何遮罩参数。",
+        "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit — not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core’s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })` — the mount takes an element or a selector, and the dialog needs no mask props."
       },
       {
         "zh": "限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染，用「加载更早记录」向前翻页；👍👎 反馈走官方 slots，弹窗没有该插槽。",
@@ -671,7 +671,7 @@ export const docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    onOpenFile: (path) => openFilePreview(path), // 文件打开出口\n    archived,                                   // 是否已归档\n    t,                                          // 可选，覆盖文案\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏\n    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),\n    archived,                                   // 是否已归档\n    t,                                          // 可选，覆盖文案\n  })\n}"
       },
       {
         "id": "session-data-chain",
@@ -1023,8 +1023,8 @@ export const docData = {
         "en": "§3 Use helpers"
       },
       {
-        "zh": "§4 接文件浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行；数据面要在宿主 `serveFsRoute` + client `connectFs` 用同一个 path 常量接上，浏览本身不需要会话。",
-        "en": "§4 Wire file browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row. Wire the data face with the same path constant on both sides (`serveFsRoute` / `connectFs`) — browsing itself needs no session."
+        "zh": "§4 接文件浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行——元素或选择器都行，解析不到就放弃、不回落 body；数据面要在宿主 `serveFsRoute` + client `connectFs` 用同一个 path 常量接上，浏览本身不需要会话。",
+        "en": "§4 Wire file browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page’s flex row — an element or a selector, and an unresolvable selector abandons the open instead of falling back to `body`. Wire the data face with the same path constant on both sides (`serveFsRoute` / `connectFs`) — browsing itself needs no session."
       },
       {
         "zh": "§5 接会话预览：`openSessionView` 返回 `null` 表示该会话不可解析；拿到 view 后交给 `SessionViewModal`，关闭时记得 `dispose()`。",
@@ -1059,12 +1059,12 @@ export const docData = {
       {
         "id": "integration-use-explorer",
         "lang": "tsx",
-        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // 自己的常量，宿主与 client 共用\n\n// 宿主 apply：挂只读文件路由（列目录 / 读文件都在它上面，不限工作区）\nserveFsRoute(ctx, { path: FS_PATH })\n// client apply：接同一个常量（connectHost(ctx) 照旧负责工作区快照）\nconnectFs({ path: FS_PATH })\n\n// 预览某文件：右侧分栏（挤窄 row 左边的主区，不是浮在上面）；绝对 / 相对都收\nopenFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })\n\n// 让用户选：锚定按钮旁弹模态，Promise 返回 { path: 绝对路径, isDir, workspaceRel?, workspace? }\nconst picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })\nconst folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // 只选文件夹"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // 自己的常量，宿主与 client 共用\n\n// 宿主 apply：挂只读文件路由（列目录 / 读文件都在它上面，不限工作区）\nserveFsRoute(ctx, { path: FS_PATH })\n// client apply：接同一个常量（connectHost(ctx) 照旧负责工作区快照）\nconnectFs({ path: FS_PATH })\n\n// 预览某文件：右侧分栏（挤窄 row 左边的主区，不是浮在上面）；绝对 / 相对都收\n// 落点给元素或选择器都行（openFilePreview({ mount: '#page-row' })），不必存 ref\nopenFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })\n\n// 让用户选：锚定按钮旁弹模态，Promise 返回 { path: 绝对路径, isDir, workspaceRel?, workspace? }\nconst picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })\nconst folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // 只选文件夹"
       },
       {
         "id": "integration-use-session",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // 关闭必须释放 retain 引用\n    onClose: () => { view.dispose(); setOpen(false) },\n    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, path, sessionId }),\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // 关闭必须释放 retain 引用\n    onClose: () => { view.dispose(); setOpen(false) },\n    // 文件出口：已经点开的那条会话 id 会作为第二参传进来（相对路径 / Office 都按它定位）\n    onOpenFile: (path, sid) => openFilePreview({ mount: pageRowEl, path, sessionId: sid }),\n  })\n}"
       },
       {
         "id": "integration-cleanup",

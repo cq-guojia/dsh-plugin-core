@@ -131,6 +131,8 @@ export type UtilMessageKey =
   | 'chatDeepDivingFor'
   | 'reasoningRunning'
   | 'jsonTruncated'
+  | 'referenceSummary'
+  | 'referenceSeparator'
   | 'failureInterrupted'
   | 'thinkLabel'
   | 'durationSecondUnit'
@@ -426,6 +428,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     chatDeepDivingFor: '深度求索中，用时 {duration} ···',
     reasoningRunning: '运行中',
     jsonTruncated: '… 已截断，共 {total} 字符',
+    referenceSummary: '引用会话 · {labels}',
+    referenceSeparator: '、',
     thinkLabel: '思考',
     durationSecondUnit: '秒',
     durationMinuteUnit: '分',
@@ -714,6 +718,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     chatDeepDivingFor: 'Deep diving for {duration} ···',
     reasoningRunning: 'Running',
     jsonTruncated: '… truncated, {total} characters total',
+    referenceSummary: 'Referenced session · {labels}',
+    referenceSeparator: ', ',
     thinkLabel: 'Think',
     durationSecondUnit: 's',
     durationMinuteUnit: 'm ',

@@ -256,6 +256,8 @@ var DICT = {
     chatDeepDivingFor: "\u6DF1\u5EA6\u6C42\u7D22\u4E2D\uFF0C\u7528\u65F6 {duration} \xB7\xB7\xB7",
     reasoningRunning: "\u8FD0\u884C\u4E2D",
     jsonTruncated: "\u2026 \u5DF2\u622A\u65AD\uFF0C\u5171 {total} \u5B57\u7B26",
+    referenceSummary: "\u5F15\u7528\u4F1A\u8BDD \xB7 {labels}",
+    referenceSeparator: "\u3001",
     thinkLabel: "\u601D\u8003",
     durationSecondUnit: "\u79D2",
     durationMinuteUnit: "\u5206",
@@ -544,6 +546,8 @@ var DICT = {
     chatDeepDivingFor: "Deep diving for {duration} \xB7\xB7\xB7",
     reasoningRunning: "Running",
     jsonTruncated: "\u2026 truncated, {total} characters total",
+    referenceSummary: "Referenced session \xB7 {labels}",
+    referenceSeparator: ", ",
     thinkLabel: "Think",
     durationSecondUnit: "s",
     durationMinuteUnit: "m ",
@@ -55177,6 +55181,11 @@ var activePreview = null;
 function openFilePreview(options) {
   if (typeof document === "undefined")
     return null;
+  const mount = typeof options.mount === "string" ? document.querySelector(options.mount) : options.mount;
+  if (mount === null) {
+    console.warn(`[dsh-plugin-core/explorer] openFilePreview: mount \u9009\u62E9\u5668\u89E3\u6790\u4E0D\u5230\u5143\u7D20\uFF08${String(options.mount)}\uFF09 \u21D2 \u653E\u5F03\u672C\u6B21\u64CD\u4F5C`);
+    return null;
+  }
   const custom = options.content !== void 0;
   const files = getFsFace();
   const anchors = options.workspaceAnchors ?? workspaceList.getSnapshot();
@@ -55191,11 +55200,12 @@ function openFilePreview(options) {
   }
   const opts = {
     ...options,
+    mount,
     rootPath: options.rootPath ?? rootPathOf(start ?? "", anchors, options.sessionId)
   };
   if (activePreview !== null) {
     activePreview.keepWidth();
-    activePreview.adopt(opts.mount);
+    activePreview.adopt(mount);
     activePreview.draw(opts, start ?? "");
     return { close: activePreview.close, path: opts.path ?? "" };
   }
@@ -55230,7 +55240,7 @@ function openFilePreview(options) {
     next.appendChild(container);
     hostEl = next;
   };
-  adopt(options.mount);
+  adopt(mount);
   const dock = createPanelDock({
     maxPanels: 1,
     defaultWidth: options.width ?? 460,
@@ -55912,7 +55922,7 @@ function ChatGroupSeatMirror(props) {
 }
 
 // dist/session/session-css.generated.js
-var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA\u7ED8\u6837\u5F0F\uFF1A\u53EA\u88C5\u672C\u5305\u81EA\u5DF1\u7684\u7EC4\u4EF6\uFF08\u6682\u5B58\u8F93\u5165\u533A / fork / \u63A2\u9488\u7B49\uFF09\n   + \u4E24\u4E2A\u7A33\u5B9A\u94A9\u5B50\u7C7B\uFF08dshpc-sv-frame / dshpc-sv-scroll\uFF09\u3002\n   \u5DF2\u5220\uFF1AChangedFiles \u5361\u4E0E FileDiff \u7684\u5168\u90E8\u81EA\u7ED8\u89C4\u5219\uFF082026-10-24\uFF09\u2014\u2014\u5B98\u65B9 ChangedFiles /\n   FileDiff \u6A21\u5757\u7C7B\u7531 officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\u5E76\u6302\u5728\u5143\u7D20\u4E0A\uFF0C\u672C\u5305\u4E0D\u518D\u6709\u4E00\u884C\u515C\u5E95\u3002\n   \u26A0\uFE0F 2026-10-23 \u8D77\u4E0D\u518D\u6709\u5B98\u65B9\u7C7B\u515C\u5E95\uFF1A\u955C\u50CF\u5B98\u65B9\u7EC4\u4EF6\u7684\u5143\u7D20\u4E00\u5F8B\u6302\u5B98\u65B9 CSS-module \u7C7B\u540D\n   \uFF08officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\uFF0C\u53D6\u4E0D\u5230 = \u7A7A\u7C7B\u3001\u88F8\u7ED3\u6784\u4E0D\u767D\u5C4F\uFF09\u2014\u2014\u672C\u5305\u53EA\u8DD1 DSH \u5BBF\u4E3B\u3001\u5B98\u65B9\u6837\u5F0F\u5FC5\u5728\u573A\uFF0C\n   \u81EA\u7ED8\u4E00\u4E00\u5BF9\u5E94\u662F\u6B7B\u4EE3\u7801\u3002\u8981\u6539\u5B98\u65B9\u89C2\u611F\u8D70 token \u8986\u76D6 / \u53CC\u7C7B\u540D\u94A9\u5B50\uFF08\u89C1 ChatView.ts \u5934\u6CE8\uFF09\uFF0C\u522B\u5728\u8FD9\u52A0\u515C\u5E95\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\u3002\n   \u5916\u58F3\uFF08\u906E\u7F69 / \u9762\u677F / \u5934\u90E8 / \u5173\u95ED\u94AE\uFF09= \u6838\u5FC3 Modal\uFF08size lg\uFF09\u3002 */\n/* \u4F1A\u8BDD\u533A = \u666E\u901A\u7EB5\u5411\u6D41\uFF1A\u4E0D\u8BBE\u9AD8\u5EA6\u3001\u4E0D\u81EA\u5DF1\u6EDA\uFF08\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3 Modal body\uFF0C\u7528\u6237 2026-10-22 \u53E3\u5F84\uFF09\u3002 */\n.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}\n\n/* \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\u65F6\u7684\u53EF\u89C1\u63A2\u9488\uFF08\u6302\u5728\u5934\u90E8\u526F\u6807\u9898\u884C\uFF0C\u4E0D\u5360\u6B63\u6587\uFF09\u3002 */\n.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning)}\n\n/* \u5934\u90E8\u5F52\u6863\u6807\u8BC6\uFF08\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\uFF09\u3002 */\n.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}\n\n/* \u5185\u8DDD\u4E0E\u6EDA\u52A8\u5168\u90E8\u8BA9\u7ED9\u6838\u5FC3 Modal body \u21D2 \u8FD9\u91CC\u628A\u5B98\u65B9 ChatView.frame / scroll \u7684\u5185\u8DDD\u3001\n   overflow\u3001\u9AD8\u5EA6\u4E00\u5F8B\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\u3002\n   \u26A0\uFE0F \u5FC5\u987B\u540C\u65F6\u628A flex \u6536\u6389\uFF1A\u5B98\u65B9 scroll \u662F flex:1\uFF08basis=0\uFF09\uFF0C\u5728**\u81EA\u52A8\u9AD8**\u7684\u5BB9\u5668\u91CC\u4F1A\u628A\n   \u4F1A\u8BDD\u533A\u538B\u6210 0 \u9AD8 \u2014\u2014 \u8FD9\u6B63\u662F\u300C\u5185\u5BB9\u81EA\u7BA1\u9AD8\u5EA6\u300D\u7684\u8001\u6BDB\u75C5\uFF0C\u522B\u518D\u653E\u56DE\u6765\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}\n\n.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}\n\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9AD8\u5EA6\u7531\u5185\u5BB9\u51B3\u5B9A\uFF08\u6491\u5F00\u7531 Modal body \u6EDA\uFF09\u3002 */\n.dshpc-sv-chat{flex:none;min-height:0;}\n\n\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);border:1px dashed var(--dshpc-border);border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n\n/* \u5DE5\u5177\u5361\u6839\uFF08SessionViewModal legacy \u515C\u5E95\u6E32\u67D3\u76F4\u63A5\u7528\uFF1B\u6B63\u5E38 keyed \u8DEF\u5F84\u4E00\u5F8B\u6302\u5B98\u65B9 ToolRow \u7C7B\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);padding:2px 8px;}\n\n\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger);word-break:break-word;}\n\n.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}\n\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}\n\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg);background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px;}\n\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);padding-bottom:10px;white-space:nowrap;}";
+var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA\u7ED8\u6837\u5F0F\uFF1A\u53EA\u88C5\u672C\u5305\u81EA\u5DF1\u7684\u7EC4\u4EF6\uFF08\u6682\u5B58\u8F93\u5165\u533A / fork / \u63A2\u9488\u7B49\uFF09\n   + \u4E24\u4E2A\u7A33\u5B9A\u94A9\u5B50\u7C7B\uFF08dshpc-sv-frame / dshpc-sv-scroll\uFF09\u3002\n   \u5DF2\u5220\uFF1AChangedFiles \u5361\u4E0E FileDiff \u7684\u5168\u90E8\u81EA\u7ED8\u89C4\u5219\uFF082026-10-24\uFF09\u2014\u2014\u5B98\u65B9 ChangedFiles /\n   FileDiff \u6A21\u5757\u7C7B\u7531 officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\u5E76\u6302\u5728\u5143\u7D20\u4E0A\uFF0C\u672C\u5305\u4E0D\u518D\u6709\u4E00\u884C\u515C\u5E95\u3002\n   \u26A0\uFE0F 2026-10-23 \u8D77\u4E0D\u518D\u6709\u5B98\u65B9\u7C7B\u515C\u5E95\uFF1A\u955C\u50CF\u5B98\u65B9\u7EC4\u4EF6\u7684\u5143\u7D20\u4E00\u5F8B\u6302\u5B98\u65B9 CSS-module \u7C7B\u540D\n   \uFF08officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\uFF0C\u53D6\u4E0D\u5230 = \u7A7A\u7C7B\u3001\u88F8\u7ED3\u6784\u4E0D\u767D\u5C4F\uFF09\u2014\u2014\u672C\u5305\u53EA\u8DD1 DSH \u5BBF\u4E3B\u3001\u5B98\u65B9\u6837\u5F0F\u5FC5\u5728\u573A\uFF0C\n   \u81EA\u7ED8\u4E00\u4E00\u5BF9\u5E94\u662F\u6B7B\u4EE3\u7801\u3002\u8981\u6539\u5B98\u65B9\u89C2\u611F\u8D70 token \u8986\u76D6 / \u53CC\u7C7B\u540D\u94A9\u5B50\uFF08\u89C1 ChatView.ts \u5934\u6CE8\uFF09\uFF0C\u522B\u5728\u8FD9\u52A0\u515C\u5E95\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\u3002\n   \u5916\u58F3\uFF08\u906E\u7F69 / \u9762\u677F / \u5934\u90E8 / \u5173\u95ED\u94AE\uFF09= \u6838\u5FC3 Modal\uFF08size lg\uFF09\u3002 */\n/* \u4F1A\u8BDD\u533A = \u666E\u901A\u7EB5\u5411\u6D41\uFF1A\u4E0D\u8BBE\u9AD8\u5EA6\u3001\u4E0D\u81EA\u5DF1\u6EDA\uFF08\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3 Modal body\uFF0C\u7528\u6237 2026-10-22 \u53E3\u5F84\uFF09\u3002 */\n.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}\n\n/* \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\u65F6\u7684\u53EF\u89C1\u63A2\u9488\uFF08\u6302\u5728\u5934\u90E8\u526F\u6807\u9898\u884C\uFF0C\u4E0D\u5360\u6B63\u6587\uFF09\u3002 */\n.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning)}\n\n/* \u5934\u90E8\u5F52\u6863\u6807\u8BC6\uFF08\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\uFF09\u3002 */\n.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}\n\n/* \u5185\u8DDD\u4E0E\u6EDA\u52A8\u5168\u90E8\u8BA9\u7ED9\u6838\u5FC3 Modal body \u21D2 \u8FD9\u91CC\u628A\u5B98\u65B9 ChatView.frame / scroll \u7684\u5185\u8DDD\u3001\n   overflow\u3001\u9AD8\u5EA6\u4E00\u5F8B\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\u3002\n   \u26A0\uFE0F \u5FC5\u987B\u540C\u65F6\u628A flex \u6536\u6389\uFF1A\u5B98\u65B9 scroll \u662F flex:1\uFF08basis=0\uFF09\uFF0C\u5728**\u81EA\u52A8\u9AD8**\u7684\u5BB9\u5668\u91CC\u4F1A\u628A\n   \u4F1A\u8BDD\u533A\u538B\u6210 0 \u9AD8 \u2014\u2014 \u8FD9\u6B63\u662F\u300C\u5185\u5BB9\u81EA\u7BA1\u9AD8\u5EA6\u300D\u7684\u8001\u6BDB\u75C5\uFF0C\u522B\u518D\u653E\u56DE\u6765\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}\n\n/* \u5B98\u65B9\u7EC4\u4EF6\u62FF --dsw-alias-bg-base \u505A sticky \u906E\u6321\u5E95\uFF08\u601D\u8003\u884C\u5C55\u5F00\u5934\u7B49\uFF09\uFF0C\u53D6\u503C\u662F\u5BBF\u4E3B app\n   \u5168\u5C40\u57FA\u5E95\u8272\uFF0C\u4E0E\u5F39\u7A97\u9762\u677F\u5E95\u4E0D\u540C\u5C42 \u21D2 \u4F1A\u8BDD\u533A\u5185\u6539\u6307\u5411\u5F39\u7A97\u9762\u677F\u5E95\uFF08\u80CC\u666F\u4FDD\u7559\u3001\u989C\u8272\u8D34\u5408\uFF09\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{--dsw-alias-bg-base:var(--dshpc-surface-1);}\n\n.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}\n\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9AD8\u5EA6\u7531\u5185\u5BB9\u51B3\u5B9A\uFF08\u6491\u5F00\u7531 Modal body \u6EDA\uFF09\u3002 */\n.dshpc-sv-chat{flex:none;min-height:0;}\n\n\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);border:1px dashed var(--dshpc-border);border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n\n/* \u5DE5\u5177\u5361\u6839\uFF08SessionViewModal legacy \u515C\u5E95\u6E32\u67D3\u76F4\u63A5\u7528\uFF1B\u6B63\u5E38 keyed \u8DEF\u5F84\u4E00\u5F8B\u6302\u5B98\u65B9 ToolRow \u7C7B\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);padding:2px 8px;}\n\n\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger);word-break:break-word;}\n\n.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}\n\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}\n\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg);background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px;}\n\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);padding-bottom:10px;white-space:nowrap;}";
 
 // dist/session/mirror/ChatView.js
 function ChatViewFrame(props) {
@@ -56735,8 +56745,9 @@ function AssistantMarkdown(props) {
   }));
 }
 function UserMessage(props) {
-  const { text: text2, files } = props;
+  const { text: text2, files, referenceLabels, t: t4 } = props;
   const chips = files ?? [];
+  const references = referenceLabels ?? [];
   return (0, import_react67.createElement)("div", { className: officialClass("MessageItem", "userRow") ?? "" }, (0, import_react67.createElement)(
     "div",
     { className: officialClass("MessageItem", "userStack") ?? "" },
@@ -56752,7 +56763,11 @@ function UserMessage(props) {
       path: file.name,
       className: officialClass("MessageItem", "fileIcon") ?? ""
     }), (0, import_react67.createElement)("span", { className: officialClass("MessageItem", "fileContent") ?? "" }, (0, import_react67.createElement)("span", { className: officialClass("MessageItem", "fileName") ?? "" }, file.name), (0, import_react67.createElement)("span", { className: officialClass("MessageItem", "fileMeta") ?? "" }, [(0, official_exports.fileExtension)(file.name).toUpperCase().slice(0, 8), (0, official_exports.fileSizeText)(file.bytes)].filter(Boolean).join(" ")))))),
-    text2 === "" ? null : (0, import_react67.createElement)("div", { className: officialClass("MessageItem", "bubble") ?? "" }, (0, import_react67.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }))
+    text2 === "" ? null : (0, import_react67.createElement)("div", { className: officialClass("MessageItem", "bubble") ?? "" }, (0, import_react67.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() })),
+    // 官方 UserContent（lib/client.js:7377）：referenceLabels 在气泡**之后**单独一行。
+    references.length === 0 ? null : (0, import_react67.createElement)("div", {
+      className: officialClass("MessageItem", "referenceSummary") ?? ""
+    }, t4("referenceSummary", { labels: references.join(t4("referenceSeparator")) }))
   ));
 }
 function retrySeconds(milliseconds) {
@@ -57892,7 +57907,12 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const { files, hadFiles } = contentFiles(blocks);
       if (text2 === "" && !hadFiles)
         return null;
-      return (0, import_react78.createElement)(UserMessage, { text: text2, files });
+      return (0, import_react78.createElement)(UserMessage, {
+        text: text2,
+        files,
+        referenceLabels: dataOf(node).referenceLabels,
+        t: t4
+      });
     }
     case "turn-error":
       return (0, import_react78.createElement)(TurnErrorItemMirror, { node: dataOf(node), t: t4 });
@@ -57953,7 +57973,7 @@ function renderLegacyNode(node, t4, fileOpen) {
       const { files, hadFiles } = contentFiles(node.content);
       if (text2 === "" && !hadFiles)
         return null;
-      return (0, import_react78.createElement)(UserMessage, { key: node.seq, text: text2, files });
+      return (0, import_react78.createElement)(UserMessage, { key: node.seq, text: text2, files, t: t4 });
     }
     case "assistant": {
       const parts = assistantBlocks(node.blocks, t4, fileOpen?.mentions);
@@ -58243,6 +58263,10 @@ function SessionViewModal(props) {
     aliveRef.current = false;
   }, []);
   const flowRef = (0, import_react78.useRef)(null);
+  const contentBumpRef = (0, import_react78.useRef)(true);
+  (0, import_react78.useLayoutEffect)(() => {
+    contentBumpRef.current = true;
+  }, [chat]);
   (0, import_react78.useEffect)(() => {
     const flow = flowRef.current;
     const scroller = flow === null ? null : flow.closest(".dshpc-modal__body");
@@ -58263,10 +58287,14 @@ function SessionViewModal(props) {
     scroller.addEventListener("scroll", onScroll, { passive: true });
     const observer = new ResizeObserver(() => {
       const height = flow === null ? 0 : flow.scrollHeight;
+      const bumped = contentBumpRef.current;
+      contentBumpRef.current = false;
       if (height === lastHeight)
         return;
       const firstPaint = lastHeight === 0;
       lastHeight = height;
+      if (!firstPaint && !bumped)
+        return;
       if (!following)
         return;
       scroller.scrollTo({ top: scroller.scrollHeight, behavior: firstPaint ? "auto" : "smooth" });
@@ -59513,8 +59541,8 @@ var docData = {
         "en": "**Core does the wiring, but with two calls**: `serveFsRoute({ path })` on the host side and `connectFs({ path })` with the same constant on the client side (`connectHost(ctx)` still covers the workspace snapshot). Browsing needs **no session**."
       },
       {
-        "zh": "\u843D\u70B9\u53EA\u7ED9\u4E00\u4E2A\u5143\u7D20\uFF1A\u9875\u9762\u91CC**\u5305\u4F4F\u4E3B\u533A**\u7684\u90A3\u4E2A\uFF08\u6838\u5FC3\u4F1A\u8865\u6210 flex \u884C\u3001\u8BA9\u4E3B\u533A\u4F38\u5C55\uFF0C\u5173\u95ED\u65F6\u8FD8\u539F\uFF09\uFF0C\u4E0D\u8981\u4F20 `document.body` \u518D\u81EA\u5DF1\u5957 fixed\u2014\u2014\u90A3\u662F\u6D6E\u5C42\uFF0C\u4E0D\u662F\u5206\u680F\u3002",
-        "en": "Pass one element: the one wrapping the main area. Core makes it a flex row and lets the main area stretch, restoring it on close. Never pass `document.body` with your own fixed positioning \u2014 that is an overlay, not a split."
+        "zh": "\u843D\u70B9\u53EA\u7ED9\u4E00\u4E2A\uFF1A\u9875\u9762\u91CC**\u5305\u4F4F\u4E3B\u533A**\u7684\u90A3\u4E2A\uFF08\u6838\u5FC3\u4F1A\u8865\u6210 flex \u884C\u3001\u8BA9\u4E3B\u533A\u4F38\u5C55\uFF0C\u5173\u95ED\u65F6\u8FD8\u539F\uFF09\u3002\u7ED9\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF08`'#page-row'`\uFF09\u90FD\u884C\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5FC5\u5B58 ref\uFF1Bselector \u89E3\u6790\u4E0D\u5230\u5C31\u653E\u5F03\u672C\u6B21\u6253\u5F00\uFF08\u4E0D\u4F1A\u56DE\u843D body\uFF09\u3002\u4E0D\u8981\u4F20 `document.body` \u518D\u81EA\u5DF1\u5957 fixed\u2014\u2014\u90A3\u662F\u6D6E\u5C42\uFF0C\u4E0D\u662F\u5206\u680F\u3002",
+        "en": "Give exactly one mount: the element wrapping the main area (core makes it a flex row and lets the main area stretch, restoring it on close). Either an element or a selector (`'#page-row'`) works, so no ref bookkeeping is needed; an unresolvable selector abandons the open (never falls back to `body`). Never pass `document.body` with your own fixed positioning \u2014 that is an overlay, not a split."
       },
       {
         "zh": "\u9762\u5305\u5C51\u53E3\u5F84\u4E0D\u53D8\uFF1A\u8DEF\u5F84\u6240\u5C5E\u5DE5\u4F5C\u533A\u540D\u4F5C\u6839\u540D\uFF0C\u5176\u4E0B\u6309\u76F8\u5BF9\u5C42\u7EA7\u5C55\u5F00\u3002\u25BE \u4E0B\u62C9**\u6839\u5C42\u7F6E\u9876**\uFF08\u5176\u4F59\u4ECD\u5217\u5404\u5DE5\u4F5C\u533A\uFF09\uFF1APOSIX \u662F\u4E00\u6761\u300C\u6839\u76EE\u5F55\u300D\uFF0C**Windows \u6CA1\u6709\u6839\u76EE\u5F55\u8FD9\u4E1C\u897F\uFF0C\u5217\u7684\u662F\u76D8\u7B26**\uFF08`C:/`\u3001`D:/`\u2026\uFF0C\u7531\u5BBF\u4E3B `op:roots` \u63A2\u51FA\u6765\uFF09\u3002\u70B9\u5176\u4ED6\u5DE5\u4F5C\u533A = \u76F4\u63A5\u5217\u8BE5\u533A\u6839\u76EE\u5F55\uFF08\u4E0D\u9700\u8981\u4F1A\u8BDD\uFF09\u3002",
@@ -59552,7 +59580,7 @@ var docData = {
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u4F60\u81EA\u5DF1\u7684\u5E38\u91CF\uFF1A\u5BBF\u4E3B\u4E0E client \u5FC5\u987B\u7528\u540C\u4E00\u4E2A\n\n// \u2500\u2500 \u5BBF\u4E3B\u534A\u8FB9\uFF08apply\uFF09\uFF1A\u6302\u4E00\u6761\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF1B\u8BFB\u6587\u4EF6/\u5217\u76EE\u5F55\u90FD\u5728\u5B83\u4E0A\u9762\uFF09 \u2500\u2500\nserveFsRoute(ctx, { path: FS_PATH })\n\n// \u2500\u2500 client \u534A\u8FB9\uFF08apply\uFF09\uFF1A\u63A5\u4E00\u6B21\uFF08connectHost \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09 \u2500\u2500\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF1A\u4E00\u4E2A\u5BB9\u5668 + \u4E00\u4E2A\u8DEF\u5F84\u5C31\u591F\nopenFilePreview({ mount, path: '/abs/ledger' })    // \u6587\u4EF6\u5939 \u21D2 \u76EE\u5F55\u6811\uFF1B\u6587\u4EF6 \u21D2 \u76F4\u63A5\u9884\u89C8\nopenFilePreview({ mount, path: 'docs/README.md' }) // \u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\u4E5F\u884C\uFF08\u76F8\u5BF9\u8C01\u89C1\u4E0B\uFF09\nopenFilePreview({ mount })                         // \u4E0D\u7ED9\u8DEF\u5F84 \u21D2 \u6839\u8282\u70B9\uFF08\u5DE5\u4F5C\u533A\u6E05\u5355 + \u76D8\u7B26\uFF09\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE**\u7EDD\u5BF9\u8DEF\u5F84**\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // \u53EA\u9009\u6587\u4EF6\u5939\n\n// \u5C55\u5F00\u65B9\u4F4D\uFF1A\u9ED8\u8BA4 auto\uFF08\u4E0B\u65B9\u4F18\u5148\u3001\u4E0D\u591F\u7FFB\u4E0A\u65B9\uFF09\uFF1B\u6309\u94AE\u8D34\u7740\u5B9A\u5BBD\u533A\u53F3\u8FB9\u754C\u65F6\u6539\u5411\u5DE6\u5C55\u5F00\nawait pickWorkspaceFile({ anchor, placement: 'bottom-end' })   // \u4E0B\u65B9\u3001\u53F3\u7F18\u5BF9\u9F50\nawait pickWorkspaceFile({ anchor, placement: 'left-start' })   // \u5DE6\u4FA7\u3001\u9876\u8FB9\u9F50\u5E73"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u4F60\u81EA\u5DF1\u7684\u5E38\u91CF\uFF1A\u5BBF\u4E3B\u4E0E client \u5FC5\u987B\u7528\u540C\u4E00\u4E2A\n\n// \u2500\u2500 \u5BBF\u4E3B\u534A\u8FB9\uFF08apply\uFF09\uFF1A\u6302\u4E00\u6761\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF1B\u8BFB\u6587\u4EF6/\u5217\u76EE\u5F55\u90FD\u5728\u5B83\u4E0A\u9762\uFF09 \u2500\u2500\nserveFsRoute(ctx, { path: FS_PATH })\n\n// \u2500\u2500 client \u534A\u8FB9\uFF08apply\uFF09\uFF1A\u63A5\u4E00\u6B21\uFF08connectHost \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09 \u2500\u2500\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF1A\u4E00\u4E2A\u843D\u70B9 + \u4E00\u4E2A\u8DEF\u5F84\u5C31\u591F\nopenFilePreview({ mount: pageRowEl, path: '/abs/ledger' })      // \u6587\u4EF6\u5939 \u21D2 \u76EE\u5F55\u6811\uFF1B\u6587\u4EF6 \u21D2 \u76F4\u63A5\u9884\u89C8\nopenFilePreview({ mount: '#page-row', path: 'docs/README.md' })  // \u843D\u70B9\u4E5F\u53EF\u4EE5\u7ED9\u9009\u62E9\u5668\uFF1B\u76F8\u5BF9\u8DEF\u5F84\u4E5F\u6536\uFF08\u76F8\u5BF9\u8C01\u89C1\u4E0B\uFF09\nopenFilePreview({ mount: '#page-row' })                          // \u4E0D\u7ED9\u8DEF\u5F84 \u21D2 \u6839\u8282\u70B9\uFF08\u5DE5\u4F5C\u533A\u6E05\u5355 + \u76D8\u7B26\uFF09\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE**\u7EDD\u5BF9\u8DEF\u5F84**\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // \u53EA\u9009\u6587\u4EF6\u5939\n\n// \u5C55\u5F00\u65B9\u4F4D\uFF1A\u9ED8\u8BA4 auto\uFF08\u4E0B\u65B9\u4F18\u5148\u3001\u4E0D\u591F\u7FFB\u4E0A\u65B9\uFF09\uFF1B\u6309\u94AE\u8D34\u7740\u5B9A\u5BBD\u533A\u53F3\u8FB9\u754C\u65F6\u6539\u5411\u5DE6\u5C55\u5F00\nawait pickWorkspaceFile({ anchor, placement: 'bottom-end' })   // \u4E0B\u65B9\u3001\u53F3\u7F18\u5BF9\u9F50\nawait pickWorkspaceFile({ anchor, placement: 'left-start' })   // \u5DE6\u4FA7\u3001\u9876\u8FB9\u9F50\u5E73"
       }
     ]
   },
@@ -59577,12 +59605,12 @@ var docData = {
           },
           {
             "name": "opts.mount",
-            "type": "HTMLElement",
+            "type": "HTMLElement | string",
             "def": "\u2014",
             "required": "\u662F",
             "desc": {
-              "zh": "\u9875\u9762\u91CC**\u5305\u4F4F\u4E3B\u533A**\u7684\u90A3\u4E2A\u5143\u7D20\uFF1B\u4E0D\u5FC5\u81EA\u5DF1\u5199 flex\uFF08\u6838\u5FC3\u8865\u6210 flex \u884C\u5E76\u8BA9\u4E3B\u533A\u4F38\u5C55\uFF0C\u5173\u95ED\u65F6\u8FD8\u539F\uFF09\u3002\u4E0D\u8981\u4F20 `document.body`",
-              "en": "The element wrapping the main area; no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). Never `document.body`"
+              "zh": "\u9875\u9762\u91CC**\u5305\u4F4F\u4E3B\u533A**\u7684\u90A3\u4E2A\u5143\u7D20\uFF0C\u6216\u6307\u5411\u5B83\u7684\u9009\u62E9\u5668\uFF08`'#page-row'`\uFF09\uFF1B\u4E0D\u5FC5\u81EA\u5DF1\u5199 flex\uFF08\u6838\u5FC3\u8865\u6210 flex \u884C\u5E76\u8BA9\u4E3B\u533A\u4F38\u5C55\uFF0C\u5173\u95ED\u65F6\u8FD8\u539F\uFF09\u3002\u9009\u62E9\u5668\u89E3\u6790\u4E0D\u5230 \u21D2 \u8FD4\u56DE `null` \u5E76 warn\uFF0C\u4E0D\u56DE\u843D body\u3002\u4E0D\u8981\u4F20 `document.body`",
+              "en": "The element wrapping the main area, or a selector pointing at it (`'#page-row'`); no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). An unresolvable selector \u21D2 `null` + a warning, never a `body` fallback. Never `document.body`"
             }
           },
           {
@@ -59898,8 +59926,8 @@ var docData = {
         "en": "The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input\u2019s confirm goes through `onContinue` (fork + first turn + navigate)."
       },
       {
-        "zh": "\u6587\u4EF6\u51FA\u53E3\u53EA\u6709\u4E00\u4E2A\uFF1A\u5DE5\u5177\u5361\u8DEF\u5F84\u3001\u884C\u5185\u5F15\u7528\u3001\u4EA4\u4ED8\u5361\u90FD\u8D70 `onOpenFile`\uFF1B\u4E0D\u4F20\u5219\u94FE\u63A5\u964D\u7EA7\u4E3A\u7EAF\u6587\u672C\u3002\u9884\u89C8\u7531\u8C03\u7528\u65B9\u5F00\u5728**\u9875\u9762\u53F3\u4FA7**\uFF08`openFilePreview` \u7684 dock\uFF09\uFF0C\u5F39\u7A97\u4E0D\u9700\u8981\u4EFB\u4F55\u906E\u7F69\u53C2\u6570\u3002",
-        "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text. The caller opens the preview as a **page-level right column** (the `openFilePreview` dock) \u2014 the dialog takes no mask props."
+        "zh": "\u6587\u4EF6\u51FA\u53E3\u53EA\u6709\u4E00\u4E2A\uFF1A\u5DE5\u5177\u5361\u8DEF\u5F84\u3001\u884C\u5185\u5F15\u7528\u3001\u4EA4\u4ED8\u5361\u90FD\u8D70 `onOpenFile`\uFF1B\u4E0D\u4F20\u5219\u94FE\u63A5\u964D\u7EA7\u4E3A\u7EAF\u6587\u672C\uFF08\u53EF\u4EE5\u70B9\u4F46\u6CA1\u6709\u51FA\u53E3\uFF0C\u4E0D\u662F\u574F\u4E86\uFF09\u3002\u81EA\u5DF1\u5DF2\u6709\u9884\u89C8\u9762\u7684\uFF0C\u5728\u56DE\u8C03\u91CC\u8C03\u4F60\u81EA\u5DF1\u7684\uFF08\u6838\u5FC3\u4E00\u4E2A DOM \u90FD\u4E0D\u78B0\uFF09\uFF1B\u6CA1\u6709\u7684\uFF0C\u4E00\u884C\u63A5\u4E0A\u6838\u5FC3\u81EA\u5E26\u7684\u53F3\u4FA7\u5206\u680F\uFF1A`onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })`\u2014\u2014\u843D\u70B9\u7ED9\u5143\u7D20\u6216\u9009\u62E9\u5668\u90FD\u884C\uFF0C\u5F39\u7A97\u4E0D\u9700\u8981\u4EFB\u4F55\u906E\u7F69\u53C2\u6570\u3002",
+        "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit \u2014 not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core\u2019s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })` \u2014 the mount takes an element or a selector, and the dialog needs no mask props."
       },
       {
         "zh": "\u9650\u5236\uFF1A\u5B98\u65B9\u6837\u5F0F\u672A\u6CE8\u5165\u65F6\u56DE\u9000\u81EA\u7ED8\u89C2\u611F\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\uFF1B\u957F\u4F1A\u8BDD\u4E00\u6B21\u5168\u6E32\u67D3\uFF0C\u7528\u300C\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55\u300D\u5411\u524D\u7FFB\u9875\uFF1B\u{1F44D}\u{1F44E} \u53CD\u9988\u8D70\u5B98\u65B9 slots\uFF0C\u5F39\u7A97\u6CA1\u6709\u8BE5\u63D2\u69FD\u3002",
@@ -60072,7 +60100,7 @@ var docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u4E24\u8005\u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    onOpenFile: (path) => openFilePreview(path), // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\n    archived,                                   // \u662F\u5426\u5DF2\u5F52\u6863\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u4E24\u8005\u7F3A\u4E00\u5373\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),\n    archived,                                   // \u662F\u5426\u5DF2\u5F52\u6863\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
       },
       {
         "id": "session-data-chain",
@@ -60424,8 +60452,8 @@ var docData = {
         "en": "\xA73 Use helpers"
       },
       {
-        "zh": "\xA74 \u63A5\u6587\u4EF6\u6D4F\u89C8\uFF1A`mount` \u5FC5\u586B\uFF08\u9884\u89C8\u9762\u677F\u662F\u5E03\u5C40\u6210\u5458\uFF0C\u5360\u5BBD\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4F20\u9875\u9762\u90A3\u5C42 flex \u884C\uFF1B\u6570\u636E\u9762\u8981\u5728\u5BBF\u4E3B `serveFsRoute` + client `connectFs` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\u63A5\u4E0A\uFF0C\u6D4F\u89C8\u672C\u8EAB\u4E0D\u9700\u8981\u4F1A\u8BDD\u3002",
-        "en": "\xA74 Wire file browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page\u2019s flex row. Wire the data face with the same path constant on both sides (`serveFsRoute` / `connectFs`) \u2014 browsing itself needs no session."
+        "zh": "\xA74 \u63A5\u6587\u4EF6\u6D4F\u89C8\uFF1A`mount` \u5FC5\u586B\uFF08\u9884\u89C8\u9762\u677F\u662F\u5E03\u5C40\u6210\u5458\uFF0C\u5360\u5BBD\u6324\u7A84\u4E3B\u533A\uFF09\uFF0C\u4F20\u9875\u9762\u90A3\u5C42 flex \u884C\u2014\u2014\u5143\u7D20\u6216\u9009\u62E9\u5668\u90FD\u884C\uFF0C\u89E3\u6790\u4E0D\u5230\u5C31\u653E\u5F03\u3001\u4E0D\u56DE\u843D body\uFF1B\u6570\u636E\u9762\u8981\u5728\u5BBF\u4E3B `serveFsRoute` + client `connectFs` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\u63A5\u4E0A\uFF0C\u6D4F\u89C8\u672C\u8EAB\u4E0D\u9700\u8981\u4F1A\u8BDD\u3002",
+        "en": "\xA74 Wire file browsing: `mount` is required (the preview panel is a layout member that takes width); pass the page\u2019s flex row \u2014 an element or a selector, and an unresolvable selector abandons the open instead of falling back to `body`. Wire the data face with the same path constant on both sides (`serveFsRoute` / `connectFs`) \u2014 browsing itself needs no session."
       },
       {
         "zh": "\xA75 \u63A5\u4F1A\u8BDD\u9884\u89C8\uFF1A`openSessionView` \u8FD4\u56DE `null` \u8868\u793A\u8BE5\u4F1A\u8BDD\u4E0D\u53EF\u89E3\u6790\uFF1B\u62FF\u5230 view \u540E\u4EA4\u7ED9 `SessionViewModal`\uFF0C\u5173\u95ED\u65F6\u8BB0\u5F97 `dispose()`\u3002",
@@ -60460,12 +60488,12 @@ var docData = {
       {
         "id": "integration-use-explorer",
         "lang": "tsx",
-        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u81EA\u5DF1\u7684\u5E38\u91CF\uFF0C\u5BBF\u4E3B\u4E0E client \u5171\u7528\n\n// \u5BBF\u4E3B apply\uFF1A\u6302\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u5217\u76EE\u5F55 / \u8BFB\u6587\u4EF6\u90FD\u5728\u5B83\u4E0A\u9762\uFF0C\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF09\nserveFsRoute(ctx, { path: FS_PATH })\n// client apply\uFF1A\u63A5\u540C\u4E00\u4E2A\u5E38\u91CF\uFF08connectHost(ctx) \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09\nconnectFs({ path: FS_PATH })\n\n// \u9884\u89C8\u67D0\u6587\u4EF6\uFF1A\u53F3\u4FA7\u5206\u680F\uFF08\u6324\u7A84 row \u5DE6\u8FB9\u7684\u4E3B\u533A\uFF0C\u4E0D\u662F\u6D6E\u5728\u4E0A\u9762\uFF09\uFF1B\u7EDD\u5BF9 / \u76F8\u5BF9\u90FD\u6536\nopenFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })\n\n// \u8BA9\u7528\u6237\u9009\uFF1A\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path: \u7EDD\u5BF9\u8DEF\u5F84, isDir, workspaceRel?, workspace? }\nconst picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })\nconst folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // \u53EA\u9009\u6587\u4EF6\u5939"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u81EA\u5DF1\u7684\u5E38\u91CF\uFF0C\u5BBF\u4E3B\u4E0E client \u5171\u7528\n\n// \u5BBF\u4E3B apply\uFF1A\u6302\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u5217\u76EE\u5F55 / \u8BFB\u6587\u4EF6\u90FD\u5728\u5B83\u4E0A\u9762\uFF0C\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF09\nserveFsRoute(ctx, { path: FS_PATH })\n// client apply\uFF1A\u63A5\u540C\u4E00\u4E2A\u5E38\u91CF\uFF08connectHost(ctx) \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09\nconnectFs({ path: FS_PATH })\n\n// \u9884\u89C8\u67D0\u6587\u4EF6\uFF1A\u53F3\u4FA7\u5206\u680F\uFF08\u6324\u7A84 row \u5DE6\u8FB9\u7684\u4E3B\u533A\uFF0C\u4E0D\u662F\u6D6E\u5728\u4E0A\u9762\uFF09\uFF1B\u7EDD\u5BF9 / \u76F8\u5BF9\u90FD\u6536\n// \u843D\u70B9\u7ED9\u5143\u7D20\u6216\u9009\u62E9\u5668\u90FD\u884C\uFF08openFilePreview({ mount: '#page-row' })\uFF09\uFF0C\u4E0D\u5FC5\u5B58 ref\nopenFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })\n\n// \u8BA9\u7528\u6237\u9009\uFF1A\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path: \u7EDD\u5BF9\u8DEF\u5F84, isDir, workspaceRel?, workspace? }\nconst picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })\nconst folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // \u53EA\u9009\u6587\u4EF6\u5939"
       },
       {
         "id": "integration-use-session",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation \u540C\u6837\u4ECE ctx \u53D6\u51FA\uFF08\u61D2\u5F97\u53D6\u5C31\u7528\u5B98\u65B9 client \u670D\u52A1\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    onClose: () => { view.dispose(); setOpen(false) },\n    onOpenFile: (path) => openFilePreview({ mount: pageRowEl, path, sessionId }),\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation \u540C\u6837\u4ECE ctx \u53D6\u51FA\uFF08\u61D2\u5F97\u53D6\u5C31\u7528\u5B98\u65B9 client \u670D\u52A1\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    onClose: () => { view.dispose(); setOpen(false) },\n    // \u6587\u4EF6\u51FA\u53E3\uFF1A\u5DF2\u7ECF\u70B9\u5F00\u7684\u90A3\u6761\u4F1A\u8BDD id \u4F1A\u4F5C\u4E3A\u7B2C\u4E8C\u53C2\u4F20\u8FDB\u6765\uFF08\u76F8\u5BF9\u8DEF\u5F84 / Office \u90FD\u6309\u5B83\u5B9A\u4F4D\uFF09\n    onOpenFile: (path, sid) => openFilePreview({ mount: pageRowEl, path, sessionId: sid }),\n  })\n}"
       },
       {
         "id": "integration-cleanup",
@@ -67146,9 +67174,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.27.0"}`],
-            [t3("buildDemo"), `v${"0.27.0"}`],
-            [t3("buildStamp"), "261104-115540-529"]
+            [t3("buildCore"), `v${"0.28.0"}`],
+            [t3("buildDemo"), `v${"0.28.0"}`],
+            [t3("buildStamp"), "261104-131721-203"]
           ].map(
             ([label, value]) => (0, import_react88.createElement)(
               "tr",
@@ -67460,9 +67488,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react90.createElement)("span", null, `core v${"0.27.0"}`),
-          (0, import_react90.createElement)("span", null, `demo v${"0.27.0"}`),
-          (0, import_react90.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-115540-529")
+          (0, import_react90.createElement)("span", null, `core v${"0.28.0"}`),
+          (0, import_react90.createElement)("span", null, `demo v${"0.28.0"}`),
+          (0, import_react90.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-131721-203")
         )
       )
     ),

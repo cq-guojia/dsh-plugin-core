@@ -34,8 +34,9 @@ export function AssistantMarkdown(props) {
  * 「按 attachmentId 打开」的公开面 ⇒ 如实降级为只读展示，不伪造打开行为。
  */
 export function UserMessage(props) {
-    const { text, files } = props;
+    const { text, files, referenceLabels, t } = props;
     const chips = files ?? [];
+    const references = referenceLabels ?? [];
     return h('div', { className: officialClass('MessageItem', 'userRow') ?? '' }, h('div', { className: officialClass('MessageItem', 'userStack') ?? '' }, 
     // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
     chips.length === 0
@@ -53,7 +54,13 @@ export function UserMessage(props) {
         }), h('span', { className: officialClass('MessageItem', 'fileContent') ?? '' }, h('span', { className: officialClass('MessageItem', 'fileName') ?? '' }, file.name), h('span', { className: officialClass('MessageItem', 'fileMeta') ?? '' }, [fileExtension(file.name).toUpperCase().slice(0, 8), fileSizeText(file.bytes)]
             .filter(Boolean).join(' ')))))), text === ''
         ? null
-        : h('div', { className: officialClass('MessageItem', 'bubble') ?? '' }, h(MarkdownText, { text, labels: markdownLabels() }))));
+        : h('div', { className: officialClass('MessageItem', 'bubble') ?? '' }, h(MarkdownText, { text, labels: markdownLabels() })), 
+    // 官方 UserContent（lib/client.js:7377）：referenceLabels 在气泡**之后**单独一行。
+    references.length === 0
+        ? null
+        : h('div', {
+            className: officialClass('MessageItem', 'referenceSummary') ?? '',
+        }, t('referenceSummary', { labels: references.join(t('referenceSeparator')) }))));
 }
 /** 官方 retrySeconds（lib/client.js:1215）：下限 1 秒。 */
 function retrySeconds(milliseconds) {

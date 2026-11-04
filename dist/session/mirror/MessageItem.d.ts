@@ -29,6 +29,9 @@ export interface UserFileFace {
 export declare function UserMessage(props: {
     text: string;
     files?: readonly UserFileFace[];
+    /** 官方 referenceLabels：用户 @ 引用的会话标签，气泡后单独一行（非 inline chips）。 */
+    referenceLabels?: readonly string[];
+    t: Translate;
 }): ReturnType<typeof h>;
 /** 重试节点消费面（官方 ModelRetryNode = LlmRetryEventData & {retryState}，records.d.ts:112）。 */
 export interface RetryAttemptFace {
