@@ -204,6 +204,7 @@ export type UtilMessageKey =
   | 'toolTitleGeneric'
   | 'toolTitleSearch'
   | 'toolInputLabel'
+  | 'toolPreparingContent'
   | 'toolOutputLabel'
   | 'rowPreparing'
   | 'rowRunning'
@@ -501,6 +502,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     toolTitleGeneric: '工具调用',
     toolTitleSearch: '搜索',
     toolInputLabel: '输入',
+    toolPreparingContent: '{kilobytes} KB',
     toolOutputLabel: '输出',
     rowPreparing: '正在准备调用',
     rowRunning: '运行中',
@@ -791,6 +793,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     toolTitleGeneric: 'Tool call',
     toolTitleSearch: 'Search',
     toolInputLabel: 'IN',
+    toolPreparingContent: '{kilobytes} KB',
     toolOutputLabel: 'OUT',
     rowPreparing: 'Preparing tool call',
     rowRunning: 'Running',

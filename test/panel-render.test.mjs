@@ -138,6 +138,8 @@ test('面包屑栏：落地页留空位；溢出只显示末段；关闭钮走�
   assert.equal(renderToStaticMarkup(h(CrumbNav, navBase)).includes('crumb--current'), false, '不溢出时不该有「当前段」标记')
   const withClose = renderToStaticMarkup(h(CrumbNav, { ...navBase, onClose: () => {} }))
   assert.match(withClose, /class="dshpc-panel__close"/, '关闭钮没走公共件')
+  // dock 场景不传 onClose（关闭归面板壳）：这一排不该再出现第二枚 ✕
+  assert.doesNotMatch(renderToStaticMarkup(h(CrumbNav, navBase)), /dshpc-panel__close/, 'dock 场景又画了内容级关钮')
 })
 
 test('越界形态：整条换成只读路径（没有 ▾）', () => {

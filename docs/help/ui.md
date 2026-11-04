@@ -840,7 +840,7 @@ h(SideSheet, {
 | `title / icon` | `ReactNode` | — | 内置头的标题与标题前图标 | Built-in header title and icon before it |
 | `extra` | `ReactNode` | — | 标题右侧的任意内容（不只是按钮） | Any content to the right of the title (not just buttons) |
 | `header` | `ReactNode \| null` | — | 整块替换头部：不传 = 内置头；null = 不要头部；其他 = 你的头 | Whole-header replacement: omitted = built-in; null = no header; else = your header |
-| `closable / closeButton / closeIcon` | `—` | — | 关钮开关；位置 auto/header/floating/none | Close-button toggle; position auto/header/floating/none |
+| `closable / closeButton / closeIcon` | `—` | — | 关钮开关；位置 auto/header/floating/none。`floating` 钉在面板右上（6px 偏移、20×20），无头内容要给右上留 28px | Close-button toggle; position auto/header/floating/none. `floating` sits at the panel’s top-right (6px offset, 20×20) — headerless content must leave 28px there |
 | `width / minWidth / maxWidth` | `number` | — | 宽度与可拖动区间 | Width and draggable range |
 | `ariaLabel` | `string` | — | 无头部时的无障碍名 | A11y name when no header |
 

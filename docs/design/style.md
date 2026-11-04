@@ -202,6 +202,7 @@ one-liner; `--dshpc-dock-gap` was removed on 2026-11-02. A test enforces the bor
 - 组件里**不许**再写这四个值；要改外观只改 `panel.css`。
 - **定位不归档位管**：Modal 居中、选文件弹窗贴锚点并上下翻转、菜单挂触发器下方，各自实现。
 - 关闭钮只有一枚 `.dshpc-panel__close`；旧类名 `.dshpc-overlay-head__close` 保留作别名（消费方覆盖不失效）。
+- **面板关闭归壳**（2026-11-04 定）：`PanelDock` / `SideSheet` 的 ✕ 由壳出；内容组件不画关，只在右上留 28px 让位（6 偏移 + 20 钮 + 2 呼吸）。`FileBrowser` 的 `onClose` 只服务无壳容器（picker 弹窗），dock 场景不传。
 - 层序只许用 `--dshpc-z-panel`（面板本体）/ `--dshpc-z-popmenu`（叠在面板上的菜单与其透明遮罩），不许写字面量。
 - **不并入三档**：`PanelDock` 与 `SideSheet` 属贴边家族（`side-panel.css` 的 `.dshpc-side-surface`，
   2026-11-02 拍板两者皮肤一模一样），一个是布局成员、一个是贴边抽屉，都不是浮层。

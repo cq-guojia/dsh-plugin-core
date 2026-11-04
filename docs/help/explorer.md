@@ -22,6 +22,10 @@
 
 > EN: Give exactly one mount: the element wrapping the main area (core makes it a flex row and lets the main area stretch, restoring it on close). Either an element or a selector (`'#page-row'`) works, so no ref bookkeeping is needed; an unresolvable selector abandons the open (never falls back to `body`). Never pass `document.body` with your own fixed positioning — that is an overlay, not a split.
 
+**关闭归面板壳**（2026-11-04）：文件与 `content` 两种模式都由 dock 右上角的浮动 ✕ 关闭（Esc 同效），内容组件不画关闭钮；`FileBrowser` 的 `onClose` 只服务没有壳的选文件弹窗。`content` 与 `path` 二选一，同传时忽略 `path` 并 warn。
+
+> EN: **Closing belongs to the dock shell** (2026-11-04): both file and `content` modes close via the floating ✕ at the panel’s top-right (Esc works too); content components draw no close button. `FileBrowser.onClose` only serves the headerless picker popover. `content` and `path` are mutually exclusive — passing both ignores `path` with a warning.
+
 面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**根层置顶**（其余仍列各工作区）：POSIX 是一条「根目录」，**Windows 没有根目录这东西，列的是盘符**（`C:/`、`D:/`…，由宿主 `op:roots` 探出来）。点其他工作区 = 直接列该区根目录（不需要会话）。
 
 > EN: Inside a workspace the breadcrumb starts at its name and the ▾ menu nests it there; outside it starts at the real root (`/` or a drive). A workspace root still appears in the real path, tagged “Workspace”.
@@ -74,11 +78,11 @@ await pickWorkspaceFile({ anchor, placement: 'left-start' })   // 左侧、顶�
 
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
-| `openFilePreview(opts)` | `OpenFilePreviewOptions => FilePreviewHandle` | — | — | 在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容） | Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node) |
+| `openFilePreview(opts)` | `OpenFilePreviewOptions => FilePreviewHandle` | — | — | 在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容）；两种模式的 ✕ 都在面板右上角，由 dock 提供 | Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node); in both modes the ✕ sits at the panel’s top-right, provided by the dock |
 | `opts.mount` | `HTMLElement \| string` | 是 | — | 页面里**包住主区**的那个元素，或指向它的选择器（`'#page-row'`）；不必自己写 flex（核心补成 flex 行并让主区伸展，关闭时还原）。选择器解析不到 ⇒ 返回 `null` 并 warn，不回落 body。不要传 `document.body` | The element wrapping the main area, or a selector pointing at it (`'#page-row'`); no flex needed (core turns it into a flex row, stretches the main area, and restores it on close). An unresolvable selector ⇒ `null` + a warning, never a `body` fallback. Never `document.body` |
 | `opts.sessionId` | `string` | — | — | **只在两种情况下需要**：① 相对路径的基准工作区；② Office 预览（转 PDF 要一条有效会话，缺省由核心取最近有会话的工作区） | Needed in exactly two cases: (1) the base workspace for a relative path; (2) Office preview (conversion needs one valid session; core falls back to the most recent workspace with one) |
 | `opts.path` | `string` | — | — | 绝对路径或工作区相对路径（相对路径要有可解析的基准，否则返回 `null` 并 warn）；不传 ⇒ 根节点。与 `content` 二选一 | Absolute or workspace-relative (a relative one needs a resolvable base, else `null` + a warning); omitted ⇒ the root node. Mutually exclusive with `content` |
-| `opts.content` | `() => ReactNode` | — | — | 自定义预览内容，塞进同一个右侧 dock；传它时不需要 `path` | Custom preview body rendered in the same dock; no `path` needed when set |
+| `opts.content` | `() => ReactNode` | — | — | 自定义预览内容，塞进同一个右侧 dock；平时优先用领域入口（如 `openSessionReview`）。关闭钮由 dock 提供，内容不画 ✕；与 `path` 二选一 | Custom preview body rendered in the same dock; prefer a domain entry such as `openSessionReview` when one exists. The dock provides the close button — content draws no ✕; mutually exclusive with `path` |
 | `opts.officeToPdf` | `OfficeToPdfFace` | — | — | Office 转 PDF 能力；缺失则该格式走「不支持」而不是报错 | Office→PDF capability; without it that format shows "unsupported" instead of erroring |
 | `opts.rootName` | `string` | — | — | 兜底显示名（路径匹配不出工作区时用） | Fallback display name, used when no workspace matches the path |
 | `pickWorkspaceFile(opts)` | `PickWorkspaceFileOptions => Promise<PickedPath \| null>` | — | — | 锚定按钮弹出模态选文件，解析出 `{ path, isDir, workspaceRel?, workspace? }`；`path` 是**绝对路径** | Anchored modal picker resolving `{ path, isDir, workspaceRel?, workspace? }`; `path` is **absolute** |

@@ -16,7 +16,10 @@ export declare function ChangedFileDiff(props: {
      * 之前一律用 preview 壳，导致审阅视图里 hunk 头被 CSS 隐掉（用户截图对照官方）。
      */
     variant?: 'preview' | 'review';
-    /** 审阅态右上角 ✕ 关闭（hover 预览态不传 = 不显示；复用 FileBrowser 行尾同一个 IconButton + 官方 ✕）。 */
+    /**
+     * 关闭回调：**不是关面板的手段**（面板关闭由 PanelDock 的浮动 ✕ 提供，2026-11-04 定）。
+     * 只留给自带壳的容器；hover 预览不传。
+     */
     onClose?: () => void;
 }): ReactNode;
 //# sourceMappingURL=ChangedFileDiff.d.ts.map

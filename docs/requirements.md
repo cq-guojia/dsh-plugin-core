@@ -160,6 +160,7 @@ dsh-plugin-core/
     类并补 `display:flex`，关闭时还原；子项规则只让第一个非预览子项伸展，不要传 `document.body`；
   - 依据：插件沙箱里没有 `fs`，读字节唯一通道是 ctx 注入的服务对象 ⇒ 服务只能「接线一次」交进来，
     不能每次调用各传一遍（这是权限边界，不是能力缺口）。
+- **关闭钮归面板壳**（2026-11-04 用户拍板）：`openFilePreview` 的 dock 一律用壳的浮动 ✕（`closeButton: 'floating'`，文件 / content 两种模式位置一致），`FileBrowser` 不再接 `onClose`（它的 `onClose` 只留给无壳的 picker 弹窗）；内容组件（`ChangedFileDiff` 等）不画关，只在右上让 28px。根因：关在内容上曾是可选 prop，漏传即整块面板无关闭钮（dsh-task-ledger 报的缺陷）。`content` 与 `path` 同传 ⇒ warn 并忽略 `path`（`handle.path` 不再回报未生效的路径）。
 - 控件纪律（2026-10-21）：核心有的控件一律核心（`Button` ghost 面包屑 / `IconButton` / `Segmented` / `MarqueeText` / `PanelDock`）；核心没有的那一项（▾ 选层浮层）严格按兄弟项目度量照抄
 - 选工作区（`WorkspacePicker`）在 `ui`，不在这里；`FilePicker` 已删（2026-10-20）
 
@@ -169,6 +170,7 @@ dsh-plugin-core/
 - `variant` 决定承载方式：弹窗 / 侧栏 / 整页（**承载可换**是硬要求）
 - 必须预留定制扩展点
 - 文件出口只有一个 `onOpenFile(path, sessionId)`（工具卡 / 行内引用 / 交付卡共用）：不传 ⇒ 链接纯文本。已有预览面的调用方在回调里开自己的；没有的一行接 `openFilePreview({ mount, path, sessionId })`。**不做「给个 id 让核心塞进第三方面板」**（2026-11-04 定：核心只认识自己的 `PanelDock`，按 id 塞 = 两套布局互相拽）
+- 变更文件的审阅出口是 `onOpenReview`，落点用 `openSessionReview({ mount, locator })`（2026-11-04 定）：`locator`（sessionId / seq / index / display）属会话领域知识，locator → diff 的拼装留在 `session`（依赖方向 session → explorer 本就存在，反向不许），调用方不挑组件、不塞节点、不补 ✕。`openFilePreview({ content })` 保留为逃生口，不再是推荐路径。
 - 会话区自动贴底只在两种情况下发生：**首次打开**、**有新内容且当时就在底部**；本地展开 / 折叠历史分组（如「已完成」）改变高度不算新内容，不许把视图拽走（2026-11-04 用户二次拍板）
 
 ## 3. 不进（业务，各插件自己写）

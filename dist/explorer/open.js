@@ -102,10 +102,16 @@ export function openFilePreview(options) {
         warnNotWired('openFilePreview', false);
         return null;
     }
+    // content 与 path 文档写的二选一：同传时 content 生效，但别让 handle.path
+    // 回报一个根本没被使用的路径（2026-11-04）。
+    if (custom && options.path !== undefined) {
+        console.warn('[dsh-plugin-core/explorer] openFilePreview: content 与 path 只能二选一，path 已忽略');
+    }
     // rootPath 的推导只有一份（`rootPathOf`）；调用方显式给了就听调用方的。
     const opts = {
         ...options,
         mount,
+        path: custom ? undefined : options.path,
         rootPath: options.rootPath ?? rootPathOf(start ?? '', anchors, options.sessionId),
     };
     // 只允许一个预览。**已经开着 ⇒ 换内容**（用户 2026-10-28：侧栏已经在那了，点别的文件就该
@@ -215,9 +221,9 @@ export function openFilePreview(options) {
             id: PREVIEW_PANEL_ID,
             // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
             header: null,
-            // 关闭钮不用核心浮动的（那是 absolute 固定偏移、不垂直居中）；关掉它的，
-            // 改用 FileBrowser 自己的 ✕（和 pick 弹窗同一个 crumb-bar 钮，垂直居中）。
-            closeButton: 'none',
+            // 关闭归**面板壳**（用户 2026-11-04 定：内容不承担关闭）：无头 ⇒ 浮在右上。
+            // 文件 / content 两种模式位置一致；FileBrowser 那枚不再接，避免同一面板两枚 ✕。
+            closeButton: 'floating',
             ariaLabel: o.title,
             // 重画时沿用用户拖出来的宽度（pinnedWidth），不回到默认值。
             width: pinnedWidth ?? o.width ?? 460,
@@ -235,8 +241,7 @@ export function openFilePreview(options) {
                 workspaceAnchors: o.workspaceAnchors,
                 onSelectWorkspace: o.onSelectWorkspace,
                 translate: o.translate,
-                // 传 onClose ⇒ FileBrowser 在面包屑行尾渲染自己的 ✕（垂直居中，与 pick 一致）。
-                onClose: close,
+                // 不传 onClose：dock 的关闭已由上面的浮动 ✕ 提供（内容不画关）。
                 style: { height: '100%', minHeight: 0 },
             })))));
     };

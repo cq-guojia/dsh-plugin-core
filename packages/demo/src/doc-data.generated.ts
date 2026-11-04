@@ -116,6 +116,10 @@ export const docData = {
         "en": "Give exactly one mount: the element wrapping the main area (core makes it a flex row and lets the main area stretch, restoring it on close). Either an element or a selector (`'#page-row'`) works, so no ref bookkeeping is needed; an unresolvable selector abandons the open (never falls back to `body`). Never pass `document.body` with your own fixed positioning — that is an overlay, not a split."
       },
       {
+        "zh": "**关闭归面板壳**（2026-11-04）：文件与 `content` 两种模式都由 dock 右上角的浮动 ✕ 关闭（Esc 同效），内容组件不画关闭钮；`FileBrowser` 的 `onClose` 只服务没有壳的选文件弹窗。`content` 与 `path` 二选一，同传时忽略 `path` 并 warn。",
+        "en": "**Closing belongs to the dock shell** (2026-11-04): both file and `content` modes close via the floating ✕ at the panel’s top-right (Esc works too); content components draw no close button. `FileBrowser.onClose` only serves the headerless picker popover. `content` and `path` are mutually exclusive — passing both ignores `path` with a warning."
+      },
+      {
         "zh": "面包屑口径不变：路径所属工作区名作根名，其下按相对层级展开。▾ 下拉**根层置顶**（其余仍列各工作区）：POSIX 是一条「根目录」，**Windows 没有根目录这东西，列的是盘符**（`C:/`、`D:/`…，由宿主 `op:roots` 探出来）。点其他工作区 = 直接列该区根目录（不需要会话）。",
         "en": "Inside a workspace the breadcrumb starts at its name and the ▾ menu nests it there; outside it starts at the real root (`/` or a drive). A workspace root still appears in the real path, tagged “Workspace”."
       }
@@ -170,8 +174,8 @@ export const docData = {
             "type": "OpenFilePreviewOptions => FilePreviewHandle",
             "def": "—",
             "desc": {
-              "zh": "在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容）",
-              "en": "Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node)"
+              "zh": "在右侧分栏打开文件 / 文件夹预览，返回可关闭它的句柄。预览内容二选一：`path`（核心解析并渲染）或 `content`（由调用方给内容）；两种模式的 ✕ 都在面板右上角，由 dock 提供",
+              "en": "Opens a file/folder preview in the right-side dock and returns a handle to close it. Body is one of two: `path` (resolved and rendered by core) or `content` (rendered from your own node); in both modes the ✕ sits at the panel’s top-right, provided by the dock"
             }
           },
           {
@@ -207,8 +211,8 @@ export const docData = {
             "type": "() => ReactNode",
             "def": "—",
             "desc": {
-              "zh": "自定义预览内容，塞进同一个右侧 dock；传它时不需要 `path`",
-              "en": "Custom preview body rendered in the same dock; no `path` needed when set"
+              "zh": "自定义预览内容，塞进同一个右侧 dock；平时优先用领域入口（如 `openSessionReview`）。关闭钮由 dock 提供，内容不画 ✕；与 `path` 二选一",
+              "en": "Custom preview body rendered in the same dock; prefer a domain entry such as `openSessionReview` when one exists. The dock provides the close button — content draws no ✕; mutually exclusive with `path`"
             }
           },
           {
@@ -501,6 +505,10 @@ export const docData = {
         "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit — not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core’s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })` — the mount takes an element or a selector, and the dialog needs no mask props."
       },
       {
+        "zh": "变更文件的审阅出口是 `onOpenReview`，落点用 `openSessionReview({ mount, locator })` 一行接上：`locator`（sessionId / seq / index / display）到 diff 的拼装归会话域，调用方不挑组件、不塞节点、不补 ✕。面板关闭钮由 dock 出；`ChangedFileDiff.onClose` 只给自带壳的容器，不是关面板的手段。",
+        "en": "The review exit for changed files is `onOpenReview`; wire it with one line, `openSessionReview({ mount, locator })`. Turning the locator (sessionId / seq / index / display) into a diff belongs to the session domain — pick no components, pass no nodes, add no ✕. The panel close belongs to the dock; `ChangedFileDiff.onClose` is for containers that own their own chrome, not a way to close the panel."
+      },
+      {
         "zh": "限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染，用「加载更早记录」向前翻页；👍👎 反馈走官方 slots，弹窗没有该插槽。",
         "en": "Limits: without official styles injected, the self-drawn look applies (functionality unaffected); long sessions render whole, paged backward via \"load earlier\"; 👍👎 feedback goes through official slots, which this dialog lacks."
       }
@@ -651,8 +659,8 @@ export const docData = {
             "type": "(locator: ChangedFileReviewLocator) => void",
             "def": "—",
             "desc": {
-              "zh": "变更文件的审阅出口（等价官方 openReview）；缺省 = 变更卡整张不可点",
-              "en": "Review exit for changed files (equals official openReview); absent = the change card is not clickable"
+              "zh": "变更文件的审阅出口（等价官方 openReview）；落点用 `openSessionReview({ mount, locator })` 一行接上；缺省 = 变更卡整张不可点",
+              "en": "Review exit for changed files (equals official openReview); wire it with `openSessionReview({ mount, locator })`; absent = the change card is not clickable"
             }
           },
           {
@@ -671,7 +679,7 @@ export const docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏\n    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),\n    archived,                                   // 是否已归档\n    t,                                          // 可选，覆盖文案\n  })\n}"
+        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// 宿主服务由调用方注入：sessions ← dsh-api-session-controller、\n//   uiConversation ← dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '镜像升级日报',                    // 标题，缺省「会话预览」\n    onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose\n    // 续聊（可选）：fork 开分支 → 跳官方会话区；两者缺一即不渲染该入口\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // 暂存输入框（可选）：由调用方 fork + 发首轮 + 跳转\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏\n    onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),\n    // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    archived,                                   // 是否已归档\n    t,                                          // 可选，覆盖文案\n  })\n}"
       },
       {
         "id": "session-data-chain",
@@ -3572,8 +3580,8 @@ export const docData = {
             "type": "—",
             "def": "—",
             "desc": {
-              "zh": "关钮开关；位置 auto/header/floating/none",
-              "en": "Close-button toggle; position auto/header/floating/none"
+              "zh": "关钮开关；位置 auto/header/floating/none。`floating` 钉在面板右上（6px 偏移、20×20），无头内容要给右上留 28px",
+              "en": "Close-button toggle; position auto/header/floating/none. `floating` sits at the panel’s top-right (6px offset, 20×20) — headerless content must leave 28px there"
             }
           },
           {

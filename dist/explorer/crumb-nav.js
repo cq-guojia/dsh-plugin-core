@@ -26,6 +26,9 @@ function crumbButton(label, onClick, current = false) {
     }, h(MarqueeText, { text: label, className: 'dshpc-fb__crumb-mq' }));
 }
 function actions(pickNow, tt, onClose) {
+    // 只有无壳容器（picker 弹窗）才在这一排补关闭钮；dock 的关闭归 PanelDock（不传 onClose）。
+    if (pickNow == null && onClose === undefined)
+        return null;
     return h('div', { className: 'dshpc-fb__actions' }, pickNow, onClose === undefined
         ? null
         // 关闭钮只有一枚（PanelClose），与 Modal / SideSheet 同一颗。

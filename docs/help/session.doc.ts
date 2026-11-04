@@ -1,7 +1,7 @@
 // session 子包的使用帮助 —— 真源（TS 数据模块）。内容全在此一处，demo 与 md 都从这份派生。
 import type { DocTopic } from '../design/doc-format.js'
 
-const usage = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
+const usage = `import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'
 
 // 宿主服务由调用方注入：sessions ← dsh-api-session-controller、
 //   uiConversation ← dsh-client-ui-conversation
@@ -23,6 +23,8 @@ if (view !== null) {
     },
     // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏
     onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),
+    // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）
+    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),
     archived,                                   // 是否已归档
     t,                                          // 可选，覆盖文案
   })
@@ -38,7 +40,7 @@ const dataChain = `// 数据链（越往上越早）：
 
 const doc: DocTopic = {
   title: { zh: 'session —— 会话预览', en: 'session — session preview' },
-  exports: ['SessionViewModal', 'openSessionView'],
+  exports: ['SessionViewModal', 'openSessionView', 'openSessionReview', 'ChangedFileDiff'],
   sections: [
     {
       id: 'session',
@@ -59,6 +61,10 @@ const doc: DocTopic = {
         {
           zh: '文件出口只有一个：工具卡路径、行内引用、交付卡都走 `onOpenFile`；不传则链接降级为纯文本（可以点但没有出口，不是坏了）。自己已有预览面的，在回调里调你自己的（核心一个 DOM 都不碰）；没有的，一行接上核心自带的右侧分栏：`onOpenFile: (path, sid) => openFilePreview({ mount: \'#page-row\', path, sessionId: sid })`——落点给元素或选择器都行，弹窗不需要任何遮罩参数。',
           en: 'There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit — not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core’s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: \'#page-row\', path, sessionId: sid })` — the mount takes an element or a selector, and the dialog needs no mask props.',
+        },
+        {
+          zh: '变更文件的审阅出口是 `onOpenReview`，落点用 `openSessionReview({ mount, locator })` 一行接上：`locator`（sessionId / seq / index / display）到 diff 的拼装归会话域，调用方不挑组件、不塞节点、不补 ✕。面板关闭钮由 dock 出；`ChangedFileDiff.onClose` 只给自带壳的容器，不是关面板的手段。',
+          en: 'The review exit for changed files is `onOpenReview`; wire it with one line, `openSessionReview({ mount, locator })`. Turning the locator (sessionId / seq / index / display) into a diff belongs to the session domain — pick no components, pass no nodes, add no ✕. The panel close belongs to the dock; `ChangedFileDiff.onClose` is for containers that own their own chrome, not a way to close the panel.',
         },
         {
           zh: '限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染，用「加载更早记录」向前翻页；👍👎 反馈走官方 slots，弹窗没有该插槽。',
@@ -138,7 +144,7 @@ const doc: DocTopic = {
               name: 'onOpenReview',
               type: '(locator: ChangedFileReviewLocator) => void',
               def: '—',
-              desc: { zh: '变更文件的审阅出口（等价官方 openReview）；缺省 = 变更卡整张不可点', en: 'Review exit for changed files (equals official openReview); absent = the change card is not clickable' },
+              desc: { zh: '变更文件的审阅出口（等价官方 openReview）；落点用 `openSessionReview({ mount, locator })` 一行接上；缺省 = 变更卡整张不可点', en: 'Review exit for changed files (equals official openReview); wire it with `openSessionReview({ mount, locator })`; absent = the change card is not clickable' },
             },
             { name: 't', type: 'Translate', def: '内置', desc: { zh: '覆盖文案（内置字典已含全部会话文案，中英）', en: 'Override copy (the built-in dictionary has all session copy, zh+en)' } },
           ],

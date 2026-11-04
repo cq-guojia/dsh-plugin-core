@@ -4,13 +4,12 @@ import {
   openFilePreview,
   pickWorkspaceAnchor,
   pickWorkspaceFile,
-  type FilePreviewHandle,
   type OfficeToPdfFace,
   type WorkspaceFilesFace,
 } from '../../../../dist/explorer/index.js'
 import { workspaceList } from '../../../../dist/ui/index.js'
 import { Chip } from '../../../../dist/ui/index.js'
-import { ChangedFileDiff, SessionViewModal, type ChangedFileReviewLocator } from '../../../../dist/session/index.js'
+import { openSessionReview, SessionViewModal, type ChangedFileReviewLocator } from '../../../../dist/session/index.js'
 import { formatDateTime } from '../../../../dist/utils/index.js'
 import { Button } from '../../../../dist/ui/index.js'
 import { openRealSessionView, realForkSession, realOpenHostSession, realSessions } from '../real-sessions.js'
@@ -231,23 +230,11 @@ function RealSessionListDemo(): ReturnType<typeof h> {
       workspaces: wsItems.map((w) => w.title),
     })
   }
-  // 变更文件点击：开「文件预览」同一个右侧 dock，但内容是那次改动的 diff（content 槽——核心不认识 changes）。
-  // 不传 t：核心 defaultT 认识 changes/diff 这组 key，demo 字典只认自己的 key。
+  // 变更文件点击：会话领域的一行入口 —— 面板、diff、关闭钮全归核心，调用方不给内容。
   const openReviewFile = (loc: ChangedFileReviewLocator): void => {
     const mount = pageRow.element
     if (mount === null) return
-    // 记住本次预览的 handle，好让 diff 审阅头行尾那枚 ✕ 能关掉这个 dock（与 FileBrowser 同一钮）。
-    let handle: FilePreviewHandle | null = null
-    handle = openFilePreview({
-      mount,
-      sessionId: loc.sessionId,
-      path: '',
-      content: () => h(ChangedFileDiff, {
-        sessionId: loc.sessionId, seq: loc.seq, index: loc.index, display: loc.display,
-        variant: 'review',
-        onClose: () => { handle?.close() },
-      }),
-    })
+    openSessionReview({ mount, locator: loc })
   }
   if (state.status !== 'ready') {
     return h('p', { style: { fontSize: '13px', opacity: .8 } }, t('sessionListUnavailable'))

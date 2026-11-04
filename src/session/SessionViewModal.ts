@@ -29,6 +29,7 @@ import { GenericCommandCard } from './mirror/GenericCommandCard.js'
 import { CommandCard, type CommandNodeFace } from './mirror/CommandCard.js'
 import { MessageIconActionsMirror } from './mirror/MessageIconActions.js'
 import { AssistantMarkdown, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage, type RetryAttemptFace, type TurnErrorFace } from './mirror/MessageItem.js'
+import { BashRowMirror } from './mirror/BashRow.js'
 import { ReasoningRowMirror } from './mirror/ReasoningRow.js'
 import { RunningStatusMirror } from './mirror/RunningStatus.js'
 import { TurnProcessNodeViewMirror } from './mirror/TurnProcessNodeView.js'
@@ -275,7 +276,11 @@ function renderKeyedNode(
       const root = dataOf(node).root
       if (isPresentRoot(root)) return h(PresentRowMirror, { block: root, t })
       const card = toolCallCard(node, t, fileOpen?.open)
-      return card === null ? null : h(GenericCommandCard, card)
+      if (card === null) return null
+      // 官方 tool.call.toolview 槽位按工具名分派：bash / pwsh 走专属 BashRow（独立卡片，无 DisclosureRow）。
+      return card.name === 'bash' || card.name === 'pwsh'
+        ? h(BashRowMirror, card)
+        : h(GenericCommandCard, card)
     }
     case 'command': {
       // 官方 CommandNodeView → GenericCommandCard（ui-chat/chat/GenericCommandCard.tsx 原样复刻）。
@@ -771,36 +776,67 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   const flowRef = useRef<HTMLDivElement | null>(null)
   const contentBumpRef = useRef(true)
   useLayoutEffect(() => { contentBumpRef.current = true }, [chat])
-  useEffect(() => {
+  useLayoutEffect(() => {
     const flow = flowRef.current
     const scroller = flow === null ? null : flow.closest<HTMLElement>('.dshpc-modal__body')
     if (scroller === null) return
     let following = true
     let lastHeight = 0
     let lastTop = scroller.scrollTop
+    let raf = 0
+    let animating = false
     const nearBottom = (): boolean =>
       scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight <= 24
+    // 首屏一把到底（instant）；之后由 rAF 自驱动追尾动画：每帧以**最新** scrollHeight 为目标，
+    // 内容边渲染边长也不会被打断或停在半路（浏览器原生 smooth 会，真机 2026-11-04）。
+    const jump = (): void => { scroller.scrollTop = scroller.scrollHeight }
+    const step = (): void => {
+      if (!following) { animating = false; return }
+      const target = scroller.scrollHeight - scroller.clientHeight
+      const delta = target - scroller.scrollTop
+      if (delta <= 1) {
+        scroller.scrollTop = target
+        animating = false
+        return
+      }
+      // 指数缓出：长距离快、末尾慢，几帧收敛，且始终朝最新目标走。
+      scroller.scrollTop += Math.max(1, delta * 0.28)
+      raf = requestAnimationFrame(step)
+    }
+    const follow = (): void => {
+      if (!following || animating) return
+      animating = true
+      raf = requestAnimationFrame(step)
+    }
     const onScroll = (): void => {
       const top = scroller.scrollTop
       if (top < lastTop - 1) following = false
-      else if (nearBottom()) following = true
+      else if (nearBottom()) {
+        following = true
+        follow()
+      }
       lastTop = top
     }
     scroller.addEventListener('scroll', onScroll, { passive: true })
     const observer = new ResizeObserver(() => {
       const height = flow === null ? 0 : flow.scrollHeight
-      const bumped = contentBumpRef.current
-      contentBumpRef.current = false
-      if (height === lastHeight) return
+      if (height === lastHeight) {
+        // 高度稳定 ⇒ 「新内容」贴底窗口结束。异步渲染常常多次增量，必须持续到稳定。
+        contentBumpRef.current = false
+        return
+      }
       const firstPaint = lastHeight === 0
       lastHeight = height
-      if (!firstPaint && !bumped) return
+      if (!firstPaint && !contentBumpRef.current) return
       if (!following) return
-      // 首屏（空 → 有内容）直接贴底；之后每次增量平滑滑一小段（官方同款手感）。
-      scroller.scrollTo({ top: scroller.scrollHeight, behavior: firstPaint ? 'auto' : 'smooth' })
+      if (firstPaint) jump()
+      else follow()
     })
     if (flow !== null) observer.observe(flow)
+    // 首屏：内容可能已渲染完（ResizeObserver 首次回调前高度就非 0），先即时贴一次底。
+    jump()
     return () => {
+      cancelAnimationFrame(raf)
       observer.disconnect()
       scroller.removeEventListener('scroll', onScroll)
     }

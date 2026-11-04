@@ -979,7 +979,7 @@ const doc: DocTopic = {
             { name: 'title / icon', type: 'ReactNode', def: '—', desc: { zh: '内置头的标题与标题前图标', en: 'Built-in header title and icon before it' } },
             { name: 'extra', type: 'ReactNode', def: '—', desc: { zh: '标题右侧的任意内容（不只是按钮）', en: 'Any content to the right of the title (not just buttons)' } },
             { name: 'header', type: 'ReactNode | null', def: '—', desc: { zh: '整块替换头部：不传 = 内置头；null = 不要头部；其他 = 你的头', en: 'Whole-header replacement: omitted = built-in; null = no header; else = your header' } },
-            { name: 'closable / closeButton / closeIcon', type: '—', def: '—', desc: { zh: '关钮开关；位置 auto/header/floating/none', en: 'Close-button toggle; position auto/header/floating/none' } },
+            { name: 'closable / closeButton / closeIcon', type: '—', def: '—', desc: { zh: '关钮开关；位置 auto/header/floating/none。`floating` 钉在面板右上（6px 偏移、20×20），无头内容要给右上留 28px', en: 'Close-button toggle; position auto/header/floating/none. `floating` sits at the panel’s top-right (6px offset, 20×20) — headerless content must leave 28px there' } },
             { name: 'width / minWidth / maxWidth', type: 'number', def: '—', desc: { zh: '宽度与可拖动区间', en: 'Width and draggable range' } },
             { name: 'ariaLabel', type: 'string', def: '—', desc: { zh: '无头部时的无障碍名', en: 'A11y name when no header' } },
           ],

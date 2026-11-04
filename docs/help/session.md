@@ -4,7 +4,7 @@
 
 > EN: session — session preview
 
-导出：SessionViewModal、openSessionView
+导出：SessionViewModal、openSessionView、openSessionReview、ChangedFileDiff
 
 ## 会话预览
 
@@ -25,6 +25,10 @@
 文件出口只有一个：工具卡路径、行内引用、交付卡都走 `onOpenFile`；不传则链接降级为纯文本（可以点但没有出口，不是坏了）。自己已有预览面的，在回调里调你自己的（核心一个 DOM 都不碰）；没有的，一行接上核心自带的右侧分栏：`onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })`——落点给元素或选择器都行，弹窗不需要任何遮罩参数。
 
 > EN: There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit — not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core’s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })` — the mount takes an element or a selector, and the dialog needs no mask props.
+
+变更文件的审阅出口是 `onOpenReview`，落点用 `openSessionReview({ mount, locator })` 一行接上：`locator`（sessionId / seq / index / display）到 diff 的拼装归会话域，调用方不挑组件、不塞节点、不补 ✕。面板关闭钮由 dock 出；`ChangedFileDiff.onClose` 只给自带壳的容器，不是关面板的手段。
+
+> EN: The review exit for changed files is `onOpenReview`; wire it with one line, `openSessionReview({ mount, locator })`. Turning the locator (sessionId / seq / index / display) into a diff belongs to the session domain — pick no components, pass no nodes, add no ✕. The panel close belongs to the dock; `ChangedFileDiff.onClose` is for containers that own their own chrome, not a way to close the panel.
 
 限制：官方样式未注入时回退自绘观感（功能不受影响）；长会话一次全渲染，用「加载更早记录」向前翻页；👍👎 反馈走官方 slots，弹窗没有该插槽。
 
@@ -49,11 +53,11 @@
 | `openHostSession` | `(sessionId: string) => void` | — | — | 跳官方会话区（uiWorkspace.openSession） | Jump into the official session area (uiWorkspace.openSession) |
 | `onContinue` | `(message: string) => Promise<void>` | — | — | 暂存输入框的确定：调用方完成 fork + 发首轮 + 跳转；缺省 = 不渲染输入框 | Staging input confirm: caller forks, sends the first turn, navigates; absent = no input rendered |
 | `onOpenFile` | `(path: string, sessionId: string) => void` | — | — | 文件打开出口（工具卡 fileLink / 行内引用 / 交付卡共用）；第二参是文件所属会话 id，别拿别的会话去定位；缺省 = 链接纯文本 | File-open exit shared by fileLinks, mentions and delivered cards; the second arg is the owning session id — locate the file there, not elsewhere; absent = plain text |
-| `onOpenReview` | `(locator: ChangedFileReviewLocator) => void` | — | — | 变更文件的审阅出口（等价官方 openReview）；缺省 = 变更卡整张不可点 | Review exit for changed files (equals official openReview); absent = the change card is not clickable |
+| `onOpenReview` | `(locator: ChangedFileReviewLocator) => void` | — | — | 变更文件的审阅出口（等价官方 openReview）；落点用 `openSessionReview({ mount, locator })` 一行接上；缺省 = 变更卡整张不可点 | Review exit for changed files (equals official openReview); wire it with `openSessionReview({ mount, locator })`; absent = the change card is not clickable |
 | `t` | `Translate` | — | 内置 | 覆盖文案（内置字典已含全部会话文案，中英） | Override copy (the built-in dictionary has all session copy, zh+en) |
 
 ```tsx id="session-usage"
-import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
+import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'
 
 // 宿主服务由调用方注入：sessions ← dsh-api-session-controller、
 //   uiConversation ← dsh-client-ui-conversation
@@ -75,6 +79,8 @@ if (view !== null) {
     },
     // 文件打开出口：给一个落点即可（元素或选择器），核心自带右侧分栏
     onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid }),
+    // 变更文件审阅：一行打开那次改动的 diff（面板 / 关闭钮全归核心）
+    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),
     archived,                                   // 是否已归档
     t,                                          // 可选，覆盖文案
   })

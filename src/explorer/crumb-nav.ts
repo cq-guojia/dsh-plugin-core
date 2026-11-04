@@ -57,6 +57,8 @@ function crumbButton(label: string, onClick?: () => void, current = false): Reac
 }
 
 function actions(pickNow: ReactNode, tt: Translate, onClose?: () => void): ReactNode {
+  // 只有无壳容器（picker 弹窗）才在这一排补关闭钮；dock 的关闭归 PanelDock（不传 onClose）。
+  if (pickNow == null && onClose === undefined) return null
   return h(
     'div',
     { className: 'dshpc-fb__actions' },

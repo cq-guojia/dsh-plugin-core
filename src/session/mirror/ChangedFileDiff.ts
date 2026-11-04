@@ -84,7 +84,10 @@ export function ChangedFileDiff(props: {
    * 之前一律用 preview 壳，导致审阅视图里 hunk 头被 CSS 隐掉（用户截图对照官方）。
    */
   variant?: 'preview' | 'review'
-  /** 审阅态右上角 ✕ 关闭（hover 预览态不传 = 不显示；复用 FileBrowser 行尾同一个 IconButton + 官方 ✕）。 */
+  /**
+   * 关闭回调：**不是关面板的手段**（面板关闭由 PanelDock 的浮动 ✕ 提供，2026-11-04 定）。
+   * 只留给自带壳的容器；hover 预览不传。
+   */
   onClose?: () => void
 }): ReactNode {
   const { sessionId, seq, index, display, t = defaultT, variant = 'preview', onClose } = props
@@ -195,7 +198,12 @@ export function ChangedFileDiff(props: {
     // 横向滚动条会停在内容下沿（面板下面空一大截）。hover 预览卡不撑，保持自适应。
     style: preview ? undefined : { height: '100%' },
   },
-    h('div', { className: D('header') },
+    h('div', {
+      className: D('header'),
+      // 面板壳的浮动 ✕ 钉在右上 6px 处、20×20（side-panel.css）：审阅态右端让位 28px，
+      // 别把换行钮压在关钮底下。hover 预览卡不在面板里，不让。
+      style: preview ? undefined : { paddingRight: 28 },
+    },
       h('span', { className: C('previewPath'), 'data-changes-preview-path': true }, display),
       // 审阅态右上：换行开关（等价官方 ReviewTab 的 wrap 工具钮；图标语义同官方：开着显示「取消换行」）。
       preview

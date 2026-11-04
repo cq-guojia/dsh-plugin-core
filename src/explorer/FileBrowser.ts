@@ -97,7 +97,10 @@ export interface FileBrowserProps {
    * 重读内容，所以初始 effect 依赖它；它只触发重跑，**不重挂组件**（目录树、展开态、滚动位置保留）。
    */
   revision?: number
-  /** 关闭回调（✕ 与越界只读态共用）。 */
+  /**
+   * 关闭回调：**只给没有自己关闭钮的容器**（picker 弹窗）用，第一排才补一枚 ✕。
+   * PanelDock 场景不传 —— 面板关闭归壳（用户 2026-11-04 定），内容不承担关闭。
+   */
   onClose?: () => void
   /** 工作区根显示名（picker = 调用方选的工作区名）；不传 = 用缓存根的末段。 */
   rootName?: string

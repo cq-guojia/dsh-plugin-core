@@ -31,7 +31,7 @@ const TOOL_VARIANTS = {
     cordis_stop: 'others',
     cordis_undefine: 'others',
 };
-const classifyTool = (name) => TOOL_VARIANTS[name] ?? 'others';
+export const classifyTool = (name) => TOOL_VARIANTS[name] ?? 'others';
 /** 官方 VARIANT_TITLE_KEYS + TOOL_TITLE_KEYS（tool client.js:65-149；本仓库键名前缀 toolTitle）。 */
 const VARIANT_TITLE_KEYS = {
     search: 'toolTitleSearch',
@@ -50,7 +50,7 @@ const TOOL_TITLE_KEYS = {
     web_search: 'toolTitleWebSearch',
     web_fetch: 'toolTitleWebFetch',
 };
-const toolTitleKey = (name) => TOOL_TITLE_KEYS[name] ?? VARIANT_TITLE_KEYS[classifyTool(name)];
+export const toolTitleKey = (name) => TOOL_TITLE_KEYS[name] ?? VARIANT_TITLE_KEYS[classifyTool(name)];
 /** 官方 VARIANT_ICONS（tool client.js:1749-1757，size 14）。 */
 const VARIANT_ICONS = {
     search: h(IconSearchOutlineRegular, { size: 14 }),
@@ -95,7 +95,7 @@ const pickString = (args, keys) => {
     return undefined;
 };
 /** 官方 deriveSummary（tool client.js:221-233）。 */
-function deriveSummary(variant, argsRaw) {
+export function deriveSummary(variant, argsRaw) {
     const parsed = parseArgs(argsRaw);
     if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
         return firstLine(argsRaw);
@@ -124,7 +124,7 @@ function deriveFilePath(variant, argsRaw) {
     return picked === undefined ? undefined : firstLine(picked);
 }
 /** 官方 formatToolBody（tool client.js:255-264）：通用展开体的输入正文。 */
-function formatToolBody(variant, argsRaw) {
+export function formatToolBody(variant, argsRaw) {
     if (argsRaw === '')
         return null;
     const parsed = parseArgs(argsRaw);
@@ -285,7 +285,7 @@ function readCardModel(name, argsRaw, output, meta, isError, settled) {
     return face;
 }
 /** 官方 shellCall（tool client.js:831-855）：无 description = persistent（结算走 generic）。 */
-function shellCall(name, args) {
+export function shellCall(name, args) {
     if (name !== 'bash' && name !== 'pwsh')
         return null;
     const { command, description, timeoutMs, workdir, run_in_background: background } = args;
@@ -331,7 +331,7 @@ function parseExitStatus(text) {
  * 结尾 `)` + 「\n\n( Full formatted result stored at: 」段。超长输出被 spill 化的
  * bash 结果走 generic（官方 isSpilledShellCall 同向；此处放宽为字面匹配，宁滥勿漏）。
  */
-function hasSpillNotice(text) {
+export function hasSpillNotice(text) {
     if (!text.endsWith(')'))
         return false;
     return text.includes('\n\n( Full formatted result stored at: ');
@@ -354,7 +354,7 @@ function normalizeSegments(path) {
     return out.join('/');
 }
 /** 官方 terminalCardModel（tool client.js:929-968）：running 半截返回 running 卡。 */
-function terminalCardModel(name, argsRaw, output, isError, settled) {
+export function terminalCardModel(name, argsRaw, output, isError, settled) {
     const parsed = parseArgs(argsRaw);
     if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
         return null;
@@ -385,6 +385,24 @@ function terminalCardModel(name, argsRaw, output, isError, settled) {
         running: false,
     };
 }
+/** 官方 contentKilobytes（tool client.js:2632-2645）静态参数版：content/old_string/new_string 字符数 / 1024。
+ *  shortcut: 官方按流式 stringLength 增量算，弹窗只有 argsRaw 全量串 ⇒ 按已到字段总长估算。 */
+function contentKilobytes(argsRaw) {
+    const parsed = parseArgs(argsRaw);
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
+        return null;
+    const args = parsed;
+    let chars = 0;
+    let any = false;
+    for (const key of ['content', 'old_string', 'new_string']) {
+        const value = args[key];
+        if (typeof value === 'string') {
+            any = true;
+            chars += value.length;
+        }
+    }
+    return any ? Math.ceil(chars / 1024) : null;
+}
 /** 词典：代码工具栏（官方 codeToolbarLabels，tool client.js:1098-1104）。 */
 const codeToolbarLabels = (t) => ({
     codeLabel: t('codeBlockLabel'),
@@ -413,7 +431,7 @@ const readLabels = (t) => ({
     expand: (count) => t('readExpandRest', { count }),
 });
 /** 官方 terminalBlockLabels（tool client.js:708-737 的键面）。 */
-const terminalLabels = (t) => ({
+export const terminalLabels = (t) => ({
     // 官方 terminalBlockLabels（ui-tool terminal-card-model.ts）：commandLine 是**函数**，
     // TerminalBlock 会调它给输出行编号。缺它就抛 `w.commandLine is not a function`（真机 2026-10-23 崩溃）。
     commandLine: (line) => t('terminalCommandLine', { n: line }),
@@ -433,6 +451,15 @@ const terminalLabels = (t) => ({
 });
 /** 摘要链接（官方 fileLink）：点击只跟随、不折叠行。 */
 const stopLinkClick = (event) => { event.stopPropagation(); };
+/** 官方 summaryLinkKeyDown：Enter/空格不触发行折叠（链接自身仍可达）。 */
+const summaryLinkKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ')
+        event.stopPropagation();
+};
+/** 官方 ExitCodeBadge（tool client.js:1517-1522）：中性胶囊 + 失败点 + 本地化退出状态。 */
+export function ExitCodeBadge({ label }) {
+    return h('span', { className: officialClass('ExitCodeBadge', 'badge') ?? '' }, h('span', { className: officialClass('ExitCodeBadge', 'dot') ?? '', 'aria-hidden': true }), label);
+}
 /**
  * 工具调用 / 命令卡（官方 GenericToolCard + ToolRow 镜像）。
  * 折叠行 = 图标 + 标题 [+ 分隔点 + 摘要（文件路径链接化）+ 后缀]；展开体按官方分发链。
@@ -467,17 +494,44 @@ export function GenericCommandCard(props) {
     const base = argsRaw === '' ? '' : deriveSummary(variant, argsRaw);
     const plainSummary = [generic ? name : '', base].filter(Boolean).join(' · ');
     const errorSummary = rowState === 'error' && output !== '' ? firstLine(output) : null;
-    const summaryText = (rowState === 'error' ? errorSummary ?? (terminal?.description ?? plainSummary) : null) ?? terminal?.description ?? plainSummary;
-    // diffStat 后缀（官方 1529-1535）：error/stopped 不显示；diff 卡 = 「+N -M」独立 span。
+    // 官方 terminalExitLabel（tool client.js:801-809）：已失败前台命令才出退出码徽章。
+    const exitLabel = failedTerminal
+        ? terminal?.signal !== undefined
+            ? t('terminalSignal', { signal: terminal.signal })
+            : terminal?.exitCode === undefined || terminal.exitCode === null
+                ? t('terminalNoExitCode')
+                : t('terminalExitCode', { code: terminal.exitCode })
+        : null;
+    const summaryText = (rowState === 'error' && exitLabel === null ? errorSummary ?? (terminal?.description ?? plainSummary) : null) ?? terminal?.description ?? plainSummary;
+    // 官方 ToolRow 两个独立后缀槽（1600-1602）：summarySuffix（edit/write 内容 KB）与 diffStat（+N -M）。
     const totals = diffs === null ? null : diffTotals(diffs);
-    const diffStat = totals === null ? null : `+${totals.added} -${totals.removed}`;
     const settledWithCue = rowState === 'error' || rowState === 'stopped';
-    const suffix = settledWithCue ? null : diffStat;
+    const kilobytes = variant === 'edit' || variant === 'write' ? contentKilobytes(argsRaw) : null;
+    const summarySuffix = settledWithCue || kilobytes === null || summaryText === '' ? null : t('toolPreparingContent', { kilobytes });
+    const diffStatTotals = settledWithCue ? null : totals;
     // 官方 fileLink（1536-1545）：read/write/edit 摘要路径 + onOpenFile + 非 error/stopped ⇒ 链接钮。
     const filePath = argsRaw === '' ? undefined : deriveFilePath(variant, argsRaw);
     const openFile = filePath !== undefined && onOpenFile !== undefined && !settledWithCue
         ? () => { onOpenFile(filePath); }
         : undefined;
+    // 官方 linkHref（tool client.js:1100-1110）：web_fetch 且 args.url 为 http(s) ⇒ 摘要外链。
+    const linkHref = (() => {
+        if (name !== 'web_fetch' || settledWithCue)
+            return undefined;
+        const parsed = parseArgs(argsRaw);
+        if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
+            return undefined;
+        const url = parsed.url;
+        if (typeof url !== 'string')
+            return undefined;
+        try {
+            const { protocol } = new URL(url);
+            return protocol === 'http:' || protocol === 'https:' ? url : undefined;
+        }
+        catch {
+            return undefined;
+        }
+    })();
     // 展开体（官方 1514-1550）：input/output/card 三源；bodyText 仅展开且无专属卡时格式化。
     const inputRaw = argsRaw === '' ? null : argsRaw;
     const outputText = output === '' ? null : output;
@@ -499,11 +553,25 @@ export function GenericCommandCard(props) {
             className: officialClass('ToolRow', 'fileLink') ?? '',
             onClick: (event) => { stopLinkClick(event); openFile(); },
         }, h(TextShimmer, { active: running }, summaryText))
-        : h('span', { className: summaryClassName }, h(TextShimmer, { active: running }, summaryText)), suffix !== null
+        : linkHref !== undefined
+            ? h('a', {
+                className: officialClass('ToolRow', 'fileLink') ?? '',
+                href: linkHref,
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                onClick: (event) => { event.stopPropagation(); },
+                onKeyDown: summaryLinkKeyDown,
+            }, h(TextShimmer, { active: running }, summaryText))
+            : h('span', { className: summaryClassName }, h(TextShimmer, { active: running }, summaryText)), exitLabel !== null ? h(ExitCodeBadge, { label: exitLabel }) : null, summarySuffix !== null
+        ? h(TextShimmer, {
+            className: officialClass('ToolRow', 'summarySuffix') ?? '',
+            active: running,
+        }, summarySuffix)
+        : null, diffStatTotals !== null
         ? h(TextShimmer, {
             className: `${officialClass('ToolRow', 'summarySuffix') ?? ''} ${officialClass('ToolRow', 'diffStat') ?? ''}`,
             active: running,
-        }, suffix)
+        }, h('span', { className: officialClass('ToolRow', 'diffAdded') ?? '' }, `+${diffStatTotals.added}`), ' ', h('span', { className: officialClass('ToolRow', 'diffRemoved') ?? '' }, `-${diffStatTotals.removed}`))
         : null);
     const expandedContent = open ? h('div', { className: officialClass('ToolRow', 'bodyWrap') ?? '' }, terminal !== null
         ? h(TerminalBlock, {
