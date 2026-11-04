@@ -214,6 +214,158 @@ export type UtilMessageKey =
   | 'toolTitleTodo'
   | 'toolTitlePwsh'
   | 'toolTitleAsk'
+  | 'askAnswered'
+  | 'askSkipped'
+  | 'askCancelled'
+  | 'askCancelledDetail'
+  | 'askInterrupted'
+  | 'askInterruptedDetail'
+  | 'askWaiting'
+  | 'detailState'
+  | 'detailGoalEmpty'
+  | 'detailGoalDisarmed'
+  | 'detailGoalActive'
+  | 'detailGoalPaused'
+  | 'detailGoalBlocked'
+  | 'detailGoalComplete'
+  | 'detailGoalRounds'
+  | 'detailGoalReason'
+  | 'detailScheduleCount'
+  | 'detailScheduleEmpty'
+  | 'detailScheduleDeleted'
+  | 'detailScheduleOnce'
+  | 'detailScheduleEvery'
+  | 'detailDays'
+  | 'detailHours'
+  | 'detailMinutes'
+  | 'detailSeconds'
+  | 'detailScheduleDaily'
+  | 'detailScheduleWeekly'
+  | 'detailScheduleCron'
+  | 'detailScheduleWhen'
+  | 'detailScheduleFrequency'
+  | 'detailScheduleScheduled'
+  | 'detailScheduleOverdue'
+  | 'detailWeekdayJoin'
+  | 'detailWeekday1'
+  | 'detailWeekday2'
+  | 'detailWeekday3'
+  | 'detailWeekday4'
+  | 'detailWeekday5'
+  | 'detailWeekday6'
+  | 'detailWeekday7'
+  | 'detailAgentReply'
+  | 'detailAgentsCount'
+  | 'detailEmpty'
+  | 'detailEventNeighbors'
+  | 'detailFieldAgent'
+  | 'detailFieldAgents'
+  | 'detailFieldAvailability'
+  | 'detailFieldBestMatch'
+  | 'detailFieldCallId'
+  | 'detailFieldContent'
+  | 'detailFieldContext'
+  | 'detailFieldCurrentPackage'
+  | 'detailFieldData'
+  | 'detailFieldDependencies'
+  | 'detailFieldDepth'
+  | 'detailFieldDiagnostics'
+  | 'detailFieldExitCode'
+  | 'detailFieldId'
+  | 'detailFieldInputSchema'
+  | 'detailFieldJob'
+  | 'detailFieldLatestRun'
+  | 'detailFieldMessage'
+  | 'detailFieldMessageId'
+  | 'detailFieldMethods'
+  | 'detailFieldModel'
+  | 'detailFieldNextPackage'
+  | 'detailFieldOutputSchema'
+  | 'detailFieldOwner'
+  | 'detailFieldPackages'
+  | 'detailFieldParent'
+  | 'detailFieldPid'
+  | 'detailFieldPlatform'
+  | 'detailFieldPreviousStatus'
+  | 'detailFieldProcessGroup'
+  | 'detailFieldProps'
+  | 'detailFieldProvider'
+  | 'detailFieldReady'
+  | 'detailFieldRegistrations'
+  | 'detailFieldResult'
+  | 'detailFieldRevision'
+  | 'detailFieldRole'
+  | 'detailFieldRoot'
+  | 'detailFieldSeq'
+  | 'detailFieldSignal'
+  | 'detailFieldSource'
+  | 'detailFieldStep'
+  | 'detailFieldSurface'
+  | 'detailFieldTarget'
+  | 'detailFieldTask'
+  | 'detailFieldTime'
+  | 'detailFieldTurn'
+  | 'detailFieldType'
+  | 'detailFieldWarnings'
+  | 'detailFieldWriteScopes'
+  | 'detailJobsCount'
+  | 'detailLocation'
+  | 'detailLocationsCount'
+  | 'detailMatchesCapped'
+  | 'detailMatchesCount'
+  | 'detailModelsTitle'
+  | 'detailMoreInInspect'
+  | 'detailNo'
+  | 'detailNone'
+  | 'detailOutputLines'
+  | 'detailOutputTruncated'
+  | 'detailPluginsCount'
+  | 'detailProvidersCount'
+  | 'detailRalphLimit'
+  | 'detailRalphReportedBlocker'
+  | 'detailRalphReportedComplete'
+  | 'detailReceiptAlreadyFinished'
+  | 'detailReceiptCancel'
+  | 'detailReceiptClosed'
+  | 'detailReceiptClosing'
+  | 'detailReceiptDelivered'
+  | 'detailReceiptInterrupt'
+  | 'detailReceiptSignal'
+  | 'detailReceiptStarted'
+  | 'detailRecordedResult'
+  | 'detailReportNextSteps'
+  | 'detailStatusAccepted'
+  | 'detailStatusCompleted'
+  | 'detailStatusDeleted'
+  | 'detailStatusExited'
+  | 'detailStatusFailed'
+  | 'detailStatusIdle'
+  | 'detailStatusInactive'
+  | 'detailStatusKilled'
+  | 'detailStatusProvisioning'
+  | 'detailStatusQueued'
+  | 'detailStatusReady'
+  | 'detailStatusRunning'
+  | 'detailTasksCount'
+  | 'detailTasksNextPage'
+  | 'detailTerminalsCount'
+  | 'detailTodoCompleted'
+  | 'detailTodoEmpty'
+  | 'detailTodoInProgress'
+  | 'detailTodoPending'
+  | 'detailTraceAncestors'
+  | 'detailTraceDerived'
+  | 'detailTraceDescendants'
+  | 'detailTraceReplacedBy'
+  | 'detailTraceReplacementChain'
+  | 'detailTraceReplaces'
+  | 'detailTraceSources'
+  | 'detailWaitChanged'
+  | 'detailWaitNoProgress'
+  | 'detailWaitTimeout'
+  | 'detailWaitTitle'
+  | 'detailWorkflowScript'
+  | 'detailYes'
   | 'toolTitleInspect'
   | 'toolTitleRunCordis'
   | 'toolTitleStopCordis'
@@ -337,6 +489,7 @@ export type UtilMessageKey =
   | 'deliverRowStopped'
   | 'deliverFileLabel'
   | 'deliverPreviewHint'
+  | 'deliverReveal'
   | 'deliverPreviewCard'
   | 'deliverAll'
   | 'deliverCollapse'
@@ -572,6 +725,158 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     toolTitleTodo: '更新任务清单',
     toolTitlePwsh: '运行命令',
     toolTitleAsk: '提问',
+    askAnswered: '{answered}/{total} 已回答',
+    askSkipped: '未回答',
+    askCancelled: '已取消',
+    askCancelledDetail: '本轮已取消，未提交回答',
+    askInterrupted: '已中断',
+    askInterruptedDetail: '本轮已中断，未提交回答',
+    askWaiting: '等待回答',
+    detailState: '状态',
+    detailGoalEmpty: '没有目标',
+    detailGoalDisarmed: '等待继续',
+    detailGoalActive: '进行中',
+    detailGoalPaused: '已暂停',
+    detailGoalBlocked: '受阻',
+    detailGoalComplete: '已完成',
+    detailGoalRounds: '执行轮次',
+    detailGoalReason: '受阻原因',
+    detailScheduleCount: '{count} 个定时任务',
+    detailScheduleEmpty: '没有定时任务',
+    detailScheduleDeleted: '已删除',
+    detailScheduleOnce: '单次',
+    detailScheduleEvery: '每 {interval}',
+    detailDays: '{count} 天',
+    detailHours: '{count} 小时',
+    detailMinutes: '{count} 分钟',
+    detailSeconds: '{count} 秒',
+    detailScheduleDaily: '每天 {time}（{zone}）',
+    detailScheduleWeekly: '每周 {days} {time}（{zone}）',
+    detailScheduleCron: 'Cron {expression}（{zone}）',
+    detailScheduleWhen: '计划时间',
+    detailScheduleFrequency: '重复',
+    detailScheduleScheduled: '等待触发',
+    detailScheduleOverdue: '已到期，等待会话恢复',
+    detailWeekdayJoin: '、',
+    detailWeekday1: '周一',
+    detailWeekday2: '周二',
+    detailWeekday3: '周三',
+    detailWeekday4: '周四',
+    detailWeekday5: '周五',
+    detailWeekday6: '周六',
+    detailWeekday7: '周日',
+    detailAgentReply: "智能体回复",
+    detailAgentsCount: "{count} 个智能体",
+    detailEmpty: "暂无结果",
+    detailEventNeighbors: "前后事件",
+    detailFieldAgent: "智能体 ID",
+    detailFieldAgents: "启动智能体数",
+    detailFieldAvailability: "可用状态",
+    detailFieldBestMatch: "最相关事件",
+    detailFieldCallId: "调用 ID",
+    detailFieldContent: "内容",
+    detailFieldContext: "上下文",
+    detailFieldCurrentPackage: "当前包",
+    detailFieldData: "数据",
+    detailFieldDependencies: "前置任务",
+    detailFieldDepth: "层级",
+    detailFieldDiagnostics: "诊断",
+    detailFieldExitCode: "退出码",
+    detailFieldId: "ID",
+    detailFieldInputSchema: "输入 Schema",
+    detailFieldJob: "任务 ID",
+    detailFieldLatestRun: "最近运行",
+    detailFieldMessage: "消息",
+    detailFieldMessageId: "消息 ID",
+    detailFieldMethods: "方法",
+    detailFieldModel: "模型",
+    detailFieldNextPackage: "待运行的包",
+    detailFieldOutputSchema: "输出 Schema",
+    detailFieldOwner: "负责人",
+    detailFieldPackages: "版本包",
+    detailFieldParent: "父级",
+    detailFieldPid: "进程 ID",
+    detailFieldPlatform: "平台",
+    detailFieldPreviousStatus: "中断前状态",
+    detailFieldProcessGroup: "进程组",
+    detailFieldProps: "属性",
+    detailFieldProvider: "提供方",
+    detailFieldReady: "可开始",
+    detailFieldRegistrations: "注册项",
+    detailFieldResult: "结果",
+    detailFieldRevision: "版本",
+    detailFieldRole: "角色",
+    detailFieldRoot: "根节点",
+    detailFieldSeq: "事件序号",
+    detailFieldSignal: "信号",
+    detailFieldSource: "来源",
+    detailFieldStep: "步骤",
+    detailFieldSurface: "记录状态",
+    detailFieldTarget: "目标事件",
+    detailFieldTask: "任务内容",
+    detailFieldTime: "时间",
+    detailFieldTurn: "轮次",
+    detailFieldType: "类型",
+    detailFieldWarnings: "提示",
+    detailFieldWriteScopes: "文件范围",
+    detailJobsCount: "{count} 个后台任务",
+    detailLocation: "第 {line} 行，第 {column} 列",
+    detailLocationsCount: "{count} 个位置",
+    detailMatchesCapped: "已达到结果上限，可缩小搜索范围",
+    detailMatchesCount: "{count} 条匹配",
+    detailModelsTitle: "可用模型",
+    detailMoreInInspect: "另有 {count} 项，可在「查看」中读取",
+    detailNo: "否",
+    detailNone: "无",
+    detailOutputLines: "第 {begin}–{end} 行，共 {total} 行",
+    detailOutputTruncated: "输出已截断",
+    detailPluginsCount: "{count} 个动态插件",
+    detailProvidersCount: "{count} 个检查提供方",
+    detailRalphLimit: "已达到轮次上限",
+    detailRalphReportedBlocker: "智能体报告受阻",
+    detailRalphReportedComplete: "智能体报告完成",
+    detailReceiptAlreadyFinished: "任务已结束",
+    detailReceiptCancel: "已请求取消",
+    detailReceiptClosed: "已关闭",
+    detailReceiptClosing: "关闭中",
+    detailReceiptDelivered: "消息已送达",
+    detailReceiptInterrupt: "已请求中断",
+    detailReceiptSignal: "信号已发送",
+    detailReceiptStarted: "已启动",
+    detailRecordedResult: "调用结果",
+    detailReportNextSteps: "待完成事项",
+    detailStatusAccepted: "已接收",
+    detailStatusCompleted: "已完成",
+    detailStatusDeleted: "已删除",
+    detailStatusExited: "已退出",
+    detailStatusFailed: "失败",
+    detailStatusIdle: "空闲",
+    detailStatusInactive: "未运行",
+    detailStatusKilled: "已取消",
+    detailStatusProvisioning: "准备中",
+    detailStatusQueued: "已入队",
+    detailStatusReady: "就绪",
+    detailStatusRunning: "运行中",
+    detailTasksCount: "{count} 个团队任务",
+    detailTasksNextPage: "后面还有任务；下一页位置为 {cursor}",
+    detailTerminalsCount: "{count} 个终端",
+    detailTodoCompleted: "已完成",
+    detailTodoEmpty: "任务清单为空",
+    detailTodoInProgress: "进行中",
+    detailTodoPending: "待处理",
+    detailTraceAncestors: "祖先会话",
+    detailTraceDerived: "派生事件",
+    detailTraceDescendants: "后代会话",
+    detailTraceReplacedBy: "被替换为",
+    detailTraceReplacementChain: "替换链",
+    detailTraceReplaces: "替换的事件",
+    detailTraceSources: "引用来源",
+    detailWaitChanged: "检测到变化",
+    detailWaitNoProgress: "没有正在运行的子智能体",
+    detailWaitTimeout: "等待超时",
+    detailWaitTitle: "子智能体状态",
+    detailWorkflowScript: "工作流脚本",
+    detailYes: "是",
     toolTitleInspect: '查询 Cordis 环境',
     toolTitleRunCordis: '运行 Cordis 插件',
     toolTitleStopCordis: '停止 Cordis 插件',
@@ -701,6 +1006,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverRowStopped: '已中断',
     deliverFileLabel: '文件',
     deliverPreviewHint: '预览',
+    deliverReveal: '在文件夹中显示',
     deliverPreviewCard: '预览 {name}',
     deliverAll: '全部 {count} 个文件',
     deliverCollapse: '收起',
@@ -928,6 +1234,158 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     toolTitleTodo: 'Update to-do list',
     toolTitlePwsh: 'Pwsh',
     toolTitleAsk: 'Ask question',
+    askAnswered: '{answered}/{total} answered',
+    askSkipped: 'Not answered',
+    askCancelled: 'cancelled',
+    askCancelledDetail: 'This question set was cancelled before answers were submitted.',
+    askInterrupted: 'interrupted',
+    askInterruptedDetail: 'This question set was interrupted before answers were submitted.',
+    askWaiting: 'waiting',
+    detailState: 'Status',
+    detailGoalEmpty: 'No goal',
+    detailGoalDisarmed: 'Awaiting continuation',
+    detailGoalActive: 'Active',
+    detailGoalPaused: 'Paused',
+    detailGoalBlocked: 'Blocked',
+    detailGoalComplete: 'Completed',
+    detailGoalRounds: 'Rounds',
+    detailGoalReason: 'Blocker',
+    detailScheduleCount: '{count} reminders',
+    detailScheduleEmpty: 'No reminders',
+    detailScheduleDeleted: 'Deleted',
+    detailScheduleOnce: 'Once',
+    detailScheduleEvery: 'Every {interval}',
+    detailDays: '{count} d',
+    detailHours: '{count} h',
+    detailMinutes: '{count} min',
+    detailSeconds: '{count} s',
+    detailScheduleDaily: 'Every day at {time} ({zone})',
+    detailScheduleWeekly: 'Weekly on {days} at {time} ({zone})',
+    detailScheduleCron: 'Cron {expression} ({zone})',
+    detailScheduleWhen: 'Scheduled for',
+    detailScheduleFrequency: 'Repeat',
+    detailScheduleScheduled: 'Scheduled',
+    detailScheduleOverdue: 'Overdue, awaiting session resume',
+    detailWeekdayJoin: ',',
+    detailWeekday1: 'Mon',
+    detailWeekday2: 'Tue',
+    detailWeekday3: 'Wed',
+    detailWeekday4: 'Thu',
+    detailWeekday5: 'Fri',
+    detailWeekday6: 'Sat',
+    detailWeekday7: 'Sun',
+    detailAgentReply: "Agent response",
+    detailAgentsCount: "{count} agents",
+    detailEmpty: "No results",
+    detailEventNeighbors: "Surrounding events",
+    detailFieldAgent: "Agent ID",
+    detailFieldAgents: "Agents started",
+    detailFieldAvailability: "Availability",
+    detailFieldBestMatch: "Best match",
+    detailFieldCallId: "Call ID",
+    detailFieldContent: "Content",
+    detailFieldContext: "Context",
+    detailFieldCurrentPackage: "Current package",
+    detailFieldData: "Data",
+    detailFieldDependencies: "Dependencies",
+    detailFieldDepth: "Depth",
+    detailFieldDiagnostics: "Diagnostics",
+    detailFieldExitCode: "Exit code",
+    detailFieldId: "ID",
+    detailFieldInputSchema: "Input schema",
+    detailFieldJob: "Job ID",
+    detailFieldLatestRun: "Latest run",
+    detailFieldMessage: "Message",
+    detailFieldMessageId: "Message ID",
+    detailFieldMethods: "Methods",
+    detailFieldModel: "Model",
+    detailFieldNextPackage: "Next package",
+    detailFieldOutputSchema: "Output schema",
+    detailFieldOwner: "Owner",
+    detailFieldPackages: "Packages",
+    detailFieldParent: "Parent",
+    detailFieldPid: "Process ID",
+    detailFieldPlatform: "Platform",
+    detailFieldPreviousStatus: "Previous status",
+    detailFieldProcessGroup: "Process group",
+    detailFieldProps: "Props",
+    detailFieldProvider: "Provider",
+    detailFieldReady: "Ready",
+    detailFieldRegistrations: "Registrations",
+    detailFieldResult: "Result",
+    detailFieldRevision: "Revision",
+    detailFieldRole: "Role",
+    detailFieldRoot: "Root",
+    detailFieldSeq: "Event sequence",
+    detailFieldSignal: "Signal",
+    detailFieldSource: "Source",
+    detailFieldStep: "Step",
+    detailFieldSurface: "Record status",
+    detailFieldTarget: "Target event",
+    detailFieldTask: "Task",
+    detailFieldTime: "Time",
+    detailFieldTurn: "Turn",
+    detailFieldType: "Type",
+    detailFieldWarnings: "Warnings",
+    detailFieldWriteScopes: "Write scopes",
+    detailJobsCount: "{count} background jobs",
+    detailLocation: "Line {line}, column {column}",
+    detailLocationsCount: "{count} locations",
+    detailMatchesCapped: "Result limit reached; narrow the search for more",
+    detailMatchesCount: "{count} matches",
+    detailModelsTitle: "Available models",
+    detailMoreInInspect: "{count} more items available in Inspect",
+    detailNo: "No",
+    detailNone: "None",
+    detailOutputLines: "Lines {begin}–{end} of {total}",
+    detailOutputTruncated: "Output truncated",
+    detailPluginsCount: "{count} dynamic plugins",
+    detailProvidersCount: "{count} inspect providers",
+    detailRalphLimit: "Round limit reached",
+    detailRalphReportedBlocker: "Worker reported a blocker",
+    detailRalphReportedComplete: "Worker reported completion",
+    detailReceiptAlreadyFinished: "Already finished",
+    detailReceiptCancel: "Cancellation requested",
+    detailReceiptClosed: "Closed",
+    detailReceiptClosing: "Closing",
+    detailReceiptDelivered: "Message delivered",
+    detailReceiptInterrupt: "Interrupt requested",
+    detailReceiptSignal: "Signal delivered",
+    detailReceiptStarted: "Started",
+    detailRecordedResult: "Recorded result",
+    detailReportNextSteps: "Remaining work",
+    detailStatusAccepted: "Accepted",
+    detailStatusCompleted: "Completed",
+    detailStatusDeleted: "Deleted",
+    detailStatusExited: "Exited",
+    detailStatusFailed: "Failed",
+    detailStatusIdle: "Idle",
+    detailStatusInactive: "Inactive",
+    detailStatusKilled: "Cancelled",
+    detailStatusProvisioning: "Provisioning",
+    detailStatusQueued: "Queued",
+    detailStatusReady: "Ready",
+    detailStatusRunning: "Running",
+    detailTasksCount: "{count} team tasks",
+    detailTasksNextPage: "More tasks available; next cursor is {cursor}",
+    detailTerminalsCount: "{count} terminals",
+    detailTodoCompleted: "Completed",
+    detailTodoEmpty: "The to-do list is empty",
+    detailTodoInProgress: "In progress",
+    detailTodoPending: "Pending",
+    detailTraceAncestors: "Ancestor sessions",
+    detailTraceDerived: "Derived events",
+    detailTraceDescendants: "Descendant sessions",
+    detailTraceReplacedBy: "Replaced by",
+    detailTraceReplacementChain: "Replacement chain",
+    detailTraceReplaces: "Replaced events",
+    detailTraceSources: "Source events",
+    detailWaitChanged: "Change detected",
+    detailWaitNoProgress: "No active subagents",
+    detailWaitTimeout: "Wait timed out",
+    detailWaitTitle: "Subagent activity",
+    detailWorkflowScript: "Workflow script",
+    detailYes: "Yes",
     toolTitleInspect: 'Query Cordis environment',
     toolTitleRunCordis: 'Run Cordis Plugin',
     toolTitleStopCordis: 'Stop Cordis Plugin',
@@ -1056,6 +1514,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverRowStopped: 'Interrupted',
     deliverFileLabel: 'File',
     deliverPreviewHint: 'Preview',
+    deliverReveal: 'Show in folder',
     deliverPreviewCard: 'Preview {name}',
     deliverAll: 'All {count} files',
     deliverCollapse: 'Collapse',

@@ -62,9 +62,15 @@ export function ChangedFileDiff(props) {
             let next = null;
             try {
                 const res = await fetch(url);
-                // 官方口径（client.js:227）：404 = missing（这轮的改动内容已不可用），其余非 2xx = error。
-                if (res.ok)
+                // 官方口径（deliv:226-231）：404 = missing；非 2xx = error；200 但载荷不合规同样 = error（可重试）。
+                if (res.ok) {
                     next = parseChangesDiff(await res.json());
+                    if (next === null) {
+                        if (alive)
+                            setState('error');
+                        return;
+                    }
+                }
                 else if (res.status !== 404) {
                     if (alive)
                         setState('error');

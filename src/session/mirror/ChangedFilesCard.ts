@@ -110,7 +110,13 @@ export function ChangedFilesCard(props: {
     h('span', { className: C('titles') },
       h('span', { className: C('title') }, title),
       h('span', { className: C('stat') },
-        h('span', { className: C('statCounts') }, countsOf(single ?? summary, t)),
+        // 官方 deliv:1384-1388：header 恒用 turn 级汇总；binary/oversized 只看单文件那一份。
+        h('span', { className: C('statCounts') }, countsOf({
+          added: summary.added,
+          deleted: summary.deleted,
+          ...(single?.binary === true ? { binary: true as const } : {}),
+          ...(single?.oversized === true ? { oversized: true as const } : {}),
+        }, t)),
         // 官方 previewHint：hover/focus 时替换计数显示（提示这张卡可以 hover 出 diff 预览）。
         h('span', { className: C('previewHint') }, t('deliverPreviewHint')),
       ),

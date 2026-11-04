@@ -48,7 +48,7 @@ export interface ChangesDiff {
     readonly coarse?: boolean;
     readonly hunks?: readonly DiffHunk[];
 }
-/** 官方 isChangesDiff（client.js）：不合规返回 null（官方按 missing 处理）。 */
+/** 官方 isChangesDiff（deliv:231）：200 响应载荷不合规 ⇒ error（可重试），不是 missing。 */
 export declare function parseChangesDiff(value: unknown): ChangesDiff | null;
 /** 官方 MAX_RENDERED_LINES：超过即截断（出 diff.truncated 提示），防巨型对比卡死预览。 */
 export declare const DIFF_MAX_RENDERED_LINES = 5000;

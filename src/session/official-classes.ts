@@ -27,6 +27,10 @@
 //   ui-sidebar-documentpreview 包（官方文件预览体，2026-09 U11 文本渲染对齐时接入）：
 //   CodeBody(2): renderer code（CodeBlock + lineNumbers 的官方外壳）
 //   ui-deliverables 包（交付文件行 + 交付文件卡，2026-09 U11 产出物入口接入）：
+//   ui-tool 包内组件（2026-11 详情卡 / 提问卡接入）：
+//   ToolDetails(29): root list item empty caption heading text status pending statusText previous
+//                    unchanged fields field badge subtitle description lines group prose code path
+//   AskQuestionCard(9): card questionList item unansweredQuestion question answerLine answer skipped verdict
 //   PresentRow(4): summary paths output inspect
 //   Deliverables(16): root hostStatus presented file cardPreview fileIcon fileBody details
 //   fileName description previewHint secondaryText toggle actions success-fade

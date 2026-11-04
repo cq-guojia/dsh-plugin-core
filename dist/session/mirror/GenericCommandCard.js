@@ -5,7 +5,8 @@
 //   TerminalBlock（bash/pwsh/terminal_send，maxLines:∞）→ DiffBlock（write/edit，maxLines:9）
 //   → ReadBlock（read，maxLines:8 = 头 4 + 尾 4，中间「… 其余 N 行」）
 //   → SearchBlock（grep/glob，maxLines:8 + 截断 recovery 正文）→ WebBlock（web_search/web_fetch）
-//   → 兜底 ioCard 灰框（输入/分隔/输出）。
+//   → ToolDetails（goal/schedule 两族）→ 兜底 ioCard 灰框（输入/分隔/输出）。
+//   ask_user_question 走 AskQuestionCard，插在整条链之前。
 // 数据模型照官方 models/*（行号为 lib/client.js）：toolRowModel 273、diffCardModel 534、
 //   readCardModel 421、terminalCardModel 929、parseExitStatus 903、hasSpillNotice 692；
 // 摘要与五态同构：state = preparing|running|ok|error|stopped（成功结算但退出码非 0 ⇒ error，1767）；
@@ -15,6 +16,8 @@ import { DiffBlock, DisclosureRow, IconApiOutlineRegular, IconBrowseOutlineRegul
 import { officialClass } from '../official-classes.js';
 import { CodeViewer } from '../../ui/CodeViewer.js';
 import { markdownLabels } from '../../explorer/preview/md-labels.js';
+import { AskQuestionCardView, askCardModel } from './AskCard.js';
+import { ToolDetailsView, detailsCardModel, detailsSummary } from './ToolDetails.js';
 /** 官方 TOOL_VARIANTS（tool client.js:83-100，cordis_* 一并保留）。 */
 const TOOL_VARIANTS = {
     bash: 'bash',
@@ -735,7 +738,7 @@ export function ExitCodeBadge({ label }) {
  * 折叠行 = 图标 + 标题 [+ 分隔点 + 摘要（文件路径链接化）+ 后缀]；展开体按官方分发链。
  */
 export function GenericCommandCard(props) {
-    const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, onOpenFile, t } = props;
+    const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, errorCode, onOpenFile, t } = props;
     const [expanded, setExpanded] = useState(false);
     const variant = classifyTool(name);
     const titleKey = toolTitleKey(name);
@@ -747,6 +750,8 @@ export function GenericCommandCard(props) {
     const diffs = useMemo(() => diffCardModel(name, argsRaw, meta, isError, settled), [name, argsRaw, meta, isError, settled]);
     const search = useMemo(() => searchCardModel(name, argsRaw, output, meta, isError, settled), [name, argsRaw, output, meta, isError, settled]);
     const web = useMemo(() => webCardModel(name, argsRaw, meta, isError, settled), [name, argsRaw, meta, isError, settled]);
+    const ask = useMemo(() => askCardModel(name, argsRaw, output, errorCode, settled, t), [name, argsRaw, output, errorCode, settled, t]);
+    const details = useMemo(() => detailsCardModel(name, argsRaw, output, settled, isError, t), [name, argsRaw, output, settled, isError, t]);
     // 终端卡展开体（官方 localizeTerminalCardModel：send 命令空 = （发送输入），描述 = 终端 {sessionId}）。
     const terminal = useMemo(() => {
         if (terminalFace === null)
@@ -758,7 +763,8 @@ export function GenericCommandCard(props) {
     // 官方 terminalFailed（tool client.js:763-766）：成功结算但退出码非 0 / 有信号 ⇒ 整行 error。
     const failedTerminal = terminal !== null && terminal.running !== true
         && ((terminal.exitCode !== undefined && terminal.exitCode !== 0) || terminal.signal !== undefined);
-    const rowState = state === 'ok' && failedTerminal ? 'error' : state;
+    // 官方 AskQuestionRow 强制态（2298-2316）：取消 ⇒ ok、中断 ⇒ stopped，优先于 error。
+    const rowState = ask?.state ?? (state === 'ok' && failedTerminal ? 'error' : state);
     const running = rowState === 'running' || rowState === 'preparing';
     // 摘要（官方 toolRowModel 273-295 + ToolRow 1527-1528）：generic 标题补工具名；
     // 终端卡优先 description；error 态摘要 = 输出首行。
@@ -766,7 +772,8 @@ export function GenericCommandCard(props) {
     const base = argsRaw === '' ? '' : deriveSummary(variant, argsRaw);
     const plainSummary = [generic ? name : '', base].filter(Boolean).join(' · ');
     const todoInfo = name === 'todo_write' ? todoSummary(argsRaw, t) : null;
-    const normalSummary = todoInfo !== null ? todoInfo.text : terminal?.description ?? plainSummary;
+    const detailsText = details === null ? undefined : detailsSummary(details);
+    const normalSummary = ask !== null ? ask.summary : detailsText ?? (todoInfo !== null ? todoInfo.text : terminal?.description ?? plainSummary);
     const errorSummary = rowState === 'error' && output !== '' ? firstLine(output) : null;
     // 官方 terminalExitLabel（tool client.js:801-809）：已失败前台命令才出退出码徽章。
     const exitLabel = failedTerminal
@@ -821,7 +828,7 @@ export function GenericCommandCard(props) {
     // 官方 singleFile（1876/1885）：摘要已是文件路径链接的工具（read）不再摊原始输入 JSON。
     const inputRaw = argsRaw === '' || filePath !== undefined ? null : argsRaw;
     const outputText = output === '' ? null : output;
-    const card = terminal !== null ? 'terminal' : diffs !== null ? 'diff' : read !== null ? 'read' : search !== null ? 'search' : web !== null ? 'web' : null;
+    const card = terminal !== null ? 'terminal' : diffs !== null ? 'diff' : read !== null ? 'read' : search !== null ? 'search' : web !== null ? 'web' : details !== null ? 'details' : null;
     const bodyText = expanded && card === null && inputRaw !== null ? formatToolBody(variant, inputRaw) : null;
     const cardBody = variant === 'code' ? null : bodyText;
     const expandable = rowState !== 'preparing' && (inputRaw !== null || outputText !== null || card !== null);
@@ -865,52 +872,56 @@ export function GenericCommandCard(props) {
             active: running,
         }, h('span', { className: officialClass('ToolRow', 'diffAdded') ?? '' }, `+${diffStatTotals.added}`), ' ', h('span', { className: officialClass('ToolRow', 'diffRemoved') ?? '' }, `-${diffStatTotals.removed}`))
         : null);
-    const expandedContent = open ? h('div', { className: officialClass('ToolRow', 'bodyWrap') ?? '' }, terminal !== null
-        ? h(TerminalBlock, {
-            command: terminal.command,
-            cwd: terminal.cwd,
-            output: terminal.output,
-            exitCode: terminal.exitCode,
-            signal: terminal.signal,
-            running: terminal.running,
-            maxLines: Infinity,
-            labels: blockLabels.terminal,
-            className: officialClass('ToolRow', 'terminalBody') ?? '',
-        })
-        : diffs !== null
-            ? h(DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass('ToolRow', 'diffBody') ?? '' })
-            : read !== null
-                ? h(ReadBlock, {
-                    label: read.label,
-                    lines: read.lines,
-                    totalLines: read.totalLines,
-                    lang: read.lang,
-                    labels: blockLabels.read,
-                    maxLines: 8,
-                    className: officialClass('ToolRow', 'readBody') ?? '',
-                })
-                : search !== null
-                    ? h(Fragment, null, h(SearchBlock, {
-                        ...search.card,
-                        labels: blockLabels.search,
+    const expandedContent = open ? h('div', { className: officialClass('ToolRow', 'bodyWrap') ?? '' }, ask?.card !== undefined
+        ? h(AskQuestionCardView, { card: ask.card })
+        : terminal !== null
+            ? h(TerminalBlock, {
+                command: terminal.command,
+                cwd: terminal.cwd,
+                output: terminal.output,
+                exitCode: terminal.exitCode,
+                signal: terminal.signal,
+                running: terminal.running,
+                maxLines: Infinity,
+                labels: blockLabels.terminal,
+                className: officialClass('ToolRow', 'terminalBody') ?? '',
+            })
+            : diffs !== null
+                ? h(DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass('ToolRow', 'diffBody') ?? '' })
+                : read !== null
+                    ? h(ReadBlock, {
+                        label: read.label,
+                        lines: read.lines,
+                        totalLines: read.totalLines,
+                        lang: read.lang,
+                        labels: blockLabels.read,
                         maxLines: 8,
-                        className: officialClass('ToolRow', 'searchBody') ?? '',
-                    }), search.recovery !== undefined
-                        ? h('div', { className: officialClass('ToolRow', 'searchRecovery') ?? '' }, search.recovery)
-                        : null)
-                    : web !== null
-                        ? h(WebBlock, { ...web, labels: blockLabels.web, className: officialClass('ToolRow', 'webBody') ?? '' })
-                        : h(Fragment, null, variant === 'code' && bodyText !== null
-                            ? h('div', { className: officialClass('ToolRow', 'bodyScroll') ?? '' }, h(CodeViewer, {
-                                text: bodyText,
-                                path: 'tool-code.ts',
-                                t,
-                                className: officialClass('ToolRow', 'codeBody') ?? '',
-                                height: 'auto',
-                                style: { height: 'auto' },
-                            }))
-                            : null, (cardBody !== null || outputText !== null) && h('div', { className: officialClass('ToolRow', 'ioCard') ?? '' }, cardBody !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolInputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '' }, cardBody)), cardBody !== null && outputText !== null
-                            && h('span', { className: officialClass('ToolRow', 'ioDivider') ?? '', 'aria-hidden': true }), outputText !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolOutputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '', 'data-error': rowState === 'error' || undefined }, outputText))))) : undefined;
+                        className: officialClass('ToolRow', 'readBody') ?? '',
+                    })
+                    : search !== null
+                        ? h(Fragment, null, h(SearchBlock, {
+                            ...search.card,
+                            labels: blockLabels.search,
+                            maxLines: 8,
+                            className: officialClass('ToolRow', 'searchBody') ?? '',
+                        }), search.recovery !== undefined
+                            ? h('div', { className: officialClass('ToolRow', 'searchRecovery') ?? '' }, search.recovery)
+                            : null)
+                        : web !== null
+                            ? h(WebBlock, { ...web, labels: blockLabels.web, className: officialClass('ToolRow', 'webBody') ?? '' })
+                            : details !== null
+                                ? h(ToolDetailsView, { model: details, t, onOpenFile })
+                                : h(Fragment, null, variant === 'code' && bodyText !== null
+                                    ? h('div', { className: officialClass('ToolRow', 'bodyScroll') ?? '' }, h(CodeViewer, {
+                                        text: bodyText,
+                                        path: 'tool-code.ts',
+                                        t,
+                                        className: officialClass('ToolRow', 'codeBody') ?? '',
+                                        height: 'auto',
+                                        style: { height: 'auto' },
+                                    }))
+                                    : null, (cardBody !== null || outputText !== null) && h('div', { className: officialClass('ToolRow', 'ioCard') ?? '' }, cardBody !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolInputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '' }, cardBody)), cardBody !== null && outputText !== null
+                                    && h('span', { className: officialClass('ToolRow', 'ioDivider') ?? '', 'aria-hidden': true }), outputText !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolOutputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '', 'data-error': rowState === 'error' || undefined }, outputText))))) : undefined;
     return h('div', {
         className: officialClass('ToolRow', 'root') ?? '',
         'data-variant': variant,

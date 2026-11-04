@@ -128,6 +128,7 @@ function toolCallCard(node, t, onOpenFile) {
         settled,
         phase: settled ? undefined : root.phase === 'preparing' ? 'preparing' : 'start',
         interrupted: error?.code === 'interrupted',
+        errorCode: error?.code,
         onOpenFile,
         t,
     };

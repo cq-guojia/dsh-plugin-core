@@ -124,6 +124,8 @@ export declare function GenericCommandCard(props: {
     phase?: 'preparing' | 'start';
     /** root.error.code === 'interrupted' ⇒ 官方 stopped 态。 */
     interrupted?: boolean;
+    /** root.error.code（ASK_CANCELLED / ASK_ABORTED / …）。 */
+    errorCode?: string;
     /** 统一 openFile 入口：read/write/edit 摘要路径渲染成官方 fileLink（read 带 offset 落点行）。 */
     onOpenFile?: (path: string, options?: {
         line?: number;

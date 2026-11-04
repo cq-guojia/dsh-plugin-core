@@ -76,10 +76,11 @@ export function ChatGroupSeatMirror(props: {
   const reason = location?.kind === 'turn' || location?.kind === 'step'
     ? location.turn?.end?.data?.reason?.kind
     : undefined
-  // 官方 ChatGroupSeat 的 alwaysOpen（2301）：与 seat 的版本略有差异（多 turnClosed === false 分支）。
+  // 官方 ChatGroupSeat 的 alwaysOpen（0.2.1-rc.5 chat:4159）：多 turnClosed === false 分支，且含 interrupted。
   const alwaysOpen = presentation?.turnClosed === false
     || presentation?.hasInterleavedInput === true
     || reason === 'aborted'
+    || reason === 'interrupted'
     || reason === 'error'
   const storedAnswerStep = openState.get(group.data.turn)
   const outerHidden = foldCompleted && presentation?.turnClosed === true && spec !== undefined

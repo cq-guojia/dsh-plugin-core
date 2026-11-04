@@ -38,8 +38,19 @@ export function useStatDialog(controlled?: { open?: boolean; setOpen?(open: bool
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.key === 'Escape') setOpen(false)
     }
+    // 官方 chat:6806-6820：pointerdown 之外还要捕获阶段 click（只发 click 的交互也得关）。
+    const onClick = (event: MouseEvent): void => {
+      const target = event.target
+      if (!(target instanceof Node)) return
+      if (rootRef.current?.contains(target) === true || panelRef.current?.contains(target) === true) return
+      setOpen(false)
+    }
     document.addEventListener('keydown', onKeyDown)
-    return () => { document.removeEventListener('keydown', onKeyDown) }
+    document.addEventListener('click', onClick, true)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('click', onClick, true)
+    }
   }, [open, setOpen])
   return { open, setOpen, rootRef, panelRef, pos }
 }

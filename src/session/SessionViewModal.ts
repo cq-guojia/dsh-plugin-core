@@ -144,6 +144,7 @@ function toolCallCard(node: ChatNodeFace, t: Translate, onOpenFile?: (path: stri
     settled,
     phase: settled ? undefined : root.phase === 'preparing' ? 'preparing' : 'start',
     interrupted: error?.code === 'interrupted',
+    errorCode: error?.code,
     onOpenFile,
     t,
   }

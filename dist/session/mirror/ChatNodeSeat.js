@@ -55,13 +55,13 @@ export function turnOf(node) {
     const location = node?.location;
     return location?.kind === 'turn' || location?.kind === 'step' ? location.turn?.turn : undefined;
 }
-/** 官方 turnProcessAlwaysOpen（lib/client.js:1558）：live / 已停止 / 失败的 turn 不折叠。 */
+/** 官方 turnProcessAlwaysOpen（0.2.1-rc.5 chat:3644-3649）：live / aborted / interrupted / error 的 turn 不折叠。 */
 export function turnProcessAlwaysOpen(node) {
     const location = node?.location;
     if (location?.kind !== 'turn' && location?.kind !== 'step')
         return false;
     const reason = location.turn?.end?.data?.reason?.kind;
-    return location.turn?.status === 'open' || reason === 'aborted' || reason === 'error';
+    return location.turn?.status === 'open' || reason === 'aborted' || reason === 'interrupted' || reason === 'error';
 }
 /** 一个 keyed 节点 → 一个 flowItem（官方 ChatNodeSeat 的 JSX 等价物）。 */
 export function ChatNodeSeatMirror(props) {

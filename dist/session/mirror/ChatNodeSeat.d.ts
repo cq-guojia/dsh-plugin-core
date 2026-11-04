@@ -25,7 +25,7 @@ export type NodeRenderer = (node: ChatNodeFace, turnProcess: TurnProcessHandle |
 groupPart?: 'response' | 'reasoning') => ReactNode;
 /** 取节点所属 turn（官方 turnOf，ChatNodeSeat.tsx:1660）。 */
 export declare function turnOf(node: ChatNodeFace | undefined): number | undefined;
-/** 官方 turnProcessAlwaysOpen（lib/client.js:1558）：live / 已停止 / 失败的 turn 不折叠。 */
+/** 官方 turnProcessAlwaysOpen（0.2.1-rc.5 chat:3644-3649）：live / aborted / interrupted / error 的 turn 不折叠。 */
 export declare function turnProcessAlwaysOpen(node: ChatNodeFace | undefined): boolean;
 /** 一个 keyed 节点 → 一个 flowItem（官方 ChatNodeSeat 的 JSX 等价物）。 */
 export declare function ChatNodeSeatMirror(props: {

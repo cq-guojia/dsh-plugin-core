@@ -10,9 +10,15 @@
 //      官方另有原生打开（桌面 Host）的状态行/重试行——本弹窗无原生层，不渲染。
 // 数据真源 = 会话 keyed 流里的 present 工具调用 / turn 级 deliverables.presented（真实取数，禁模拟）。
 import { createElement as h, useState } from 'react';
-import { DisclosureRow, FileTypeIcon, IconChevronDownOutlineRegular, IconChevronUpOutlineRegular, IconDeliverDocRegular, fileExtension, } from '../../ui/official.js';
+import { DisclosureRow, FileTypeIcon, IconChevronDownOutlineRegular, IconChevronUpOutlineRegular, IconDeliverDocRegular, IconFolderOpenOutlineRegular, fileExtension, } from '../../ui/official.js';
+import { IconButton } from '../../ui/Button.js';
 import { officialClass } from '../official-classes.js';
 const basename = (path) => path.slice(Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\')) + 1);
+/** 交付路径的所在目录；无分隔符（纯文件名）⇒ undefined，不出「在文件夹中显示」。 */
+function parentOf(path) {
+    const cut = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+    return cut > 0 ? path.slice(0, cut) : undefined;
+}
 /** 官方 fileNames（PresentRow.tsx）：argsRaw.files[].path 逗号连接；解析不出回原样。 */
 function fileNames(raw) {
     let args;
@@ -88,9 +94,15 @@ function cardDescription(description, fallback) {
     const trimmed = description?.replace(/\s*(?:\([^()]*\)|（[^（）]*）)\s*$/u, '').trim();
     return trimmed === undefined || trimmed === '' ? fallback : trimmed;
 }
-/** 官方 PresentedFileCard：整卡可点 → onPreview（官方 = 右栏预览，本弹窗 = 调用方 openFile）。 */
+/**
+ * 官方 PresentedFileCard：整卡可点 → onPreview（官方 = 右栏预览，本弹窗 = 调用方 openFile）。
+ *
+ * 官方 `actions` 是宿主 `deliverables.file.actions` 槽（桌面端「默认应用打开 / 文件管理器显示」），
+ * 本弹窗只有预览出口 ⇒ 只保留等价的那一个：**在文件夹中显示** = 打开所在目录的预览
+ * （「打开」与整卡点击同义，不再第二个按钮重复）。
+ */
 function DeliveredFileCard(props) {
-    const { file, onPreview, t } = props;
+    const { file, onPreview, onReveal, t } = props;
     const name = basename(file.path);
     const metadata = fileExtension(name).toUpperCase() || t('deliverFileLabel');
     return h('div', {
@@ -107,7 +119,17 @@ function DeliveredFileCard(props) {
             event.stopPropagation();
             onPreview?.();
         },
-    }), h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' }, h(FileTypeIcon, { path: file.path, size: 20 })), h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' }, h('div', { className: officialClass('Deliverables', 'details') ?? '' }, h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name), h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true }, h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)), h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint'))))));
+    }), h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' }, h(FileTypeIcon, { path: file.path, size: 20 })), h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' }, h('div', { className: officialClass('Deliverables', 'details') ?? '' }, h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name), h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true }, h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)), h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint')))), onReveal === undefined
+        ? null
+        : h('div', { className: officialClass('Deliverables', 'actions') ?? '' }, h(IconButton, {
+            size: 'sm',
+            icon: h(IconFolderOpenOutlineRegular),
+            label: t('deliverReveal'),
+            onClick: (event) => {
+                event.stopPropagation();
+                onReveal();
+            },
+        }))));
 }
 /**
  * 官方 DeliverablesTail 的 presented 网格（FileTypeIcon + 文件名 + 简介，整卡可点 → 预览）。
@@ -135,6 +157,10 @@ export function DeliverablesGridMirror(props) {
         key: `${file.path}:${index}`,
         file,
         onPreview: onOpen === undefined ? undefined : () => { onOpen(file.path); },
+        onReveal: onOpen === undefined ? undefined : (() => {
+            const parent = parentOf(file.path);
+            return parent === undefined ? undefined : () => { onOpen(parent); };
+        })(),
         t,
     }))), collapsible
         ? h('button', {

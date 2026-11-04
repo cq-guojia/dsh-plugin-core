@@ -80,7 +80,14 @@ export function ChangedFilesCard(props) {
         : t('changesSingle', { name: baseNameOf(single.path) });
     const foldable = summary.files.length > COLLAPSED_ROWS;
     const rows = foldable && !expanded ? summary.files.slice(0, COLLAPSED_ROWS) : summary.files;
-    const headerBody = h(Fragment, null, h('span', { className: C('tile') }, icon), h('span', { className: C('titles') }, h('span', { className: C('title') }, title), h('span', { className: C('stat') }, h('span', { className: C('statCounts') }, countsOf(single ?? summary, t)), 
+    const headerBody = h(Fragment, null, h('span', { className: C('tile') }, icon), h('span', { className: C('titles') }, h('span', { className: C('title') }, title), h('span', { className: C('stat') }, 
+    // 官方 deliv:1384-1388：header 恒用 turn 级汇总；binary/oversized 只看单文件那一份。
+    h('span', { className: C('statCounts') }, countsOf({
+        added: summary.added,
+        deleted: summary.deleted,
+        ...(single?.binary === true ? { binary: true } : {}),
+        ...(single?.oversized === true ? { oversized: true } : {}),
+    }, t)), 
     // 官方 previewHint：hover/focus 时替换计数显示（提示这张卡可以 hover 出 diff 预览）。
     h('span', { className: C('previewHint') }, t('deliverPreviewHint')))));
     // 官方 header 永远是 button → openReview(0)；本包无 review 槽 ⇒ 走 onOpenReview（带改动身份）。

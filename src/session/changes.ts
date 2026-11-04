@@ -112,7 +112,7 @@ function isDiffHunk(value: unknown): value is DiffHunk {
     && lines.every((line) => typeof line === 'string' && /^[+ -]/.test(line))
 }
 
-/** 官方 isChangesDiff（client.js）：不合规返回 null（官方按 missing 处理）。 */
+/** 官方 isChangesDiff（deliv:231）：200 响应载荷不合规 ⇒ error（可重试），不是 missing。 */
 export function parseChangesDiff(value: unknown): ChangesDiff | null {
   if (!isRecord(value)) return null
   const { kind, path, display, before, after, coarse, hunks } = value
