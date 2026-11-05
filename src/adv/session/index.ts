@@ -21,6 +21,7 @@
 //     })
 //   }
 export { SessionViewModal, type SessionViewModalProps } from './SessionViewModal.js'
+export { ALIGNED_HOST_VERSION } from './official-classes.js'
 export { ChangedFileDiff } from './mirror/ChangedFileDiff.js'
 export type { ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js'
 export { openSessionReview, type OpenSessionReviewOptions } from './open-review.js'

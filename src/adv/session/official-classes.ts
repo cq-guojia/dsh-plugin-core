@@ -27,6 +27,9 @@
 //     本表查不到也不该查，mirror/MessageItem.ts 直接用官方组件。
 //   0.2.x 已删 ToolRow.chevron / imageLabel（箭头样式并入 primitives DisclosureRow）。
 
+/** 本仓会话预览当前对齐的宿主版本（单一真源；升级核对工具读这里，散落的版本注释不作真源）。 */
+export const ALIGNED_HOST_VERSION = '0.2.2-rc.1'
+
 /** 官方注入 style 标签的 data-plugin-css 包前缀（chat 主视图 + ui-tool / ui-skill 工具卡 + ui-deliverables）。 */
 const CSS_PKG_PREFIXES = [
   '@deepseek-ai/dsh-client-ui-chat/',

@@ -21,6 +21,7 @@
 //     })
 //   }
 export { SessionViewModal } from './SessionViewModal.js';
+export { ALIGNED_HOST_VERSION } from './official-classes.js';
 export { ChangedFileDiff } from './mirror/ChangedFileDiff.js';
 export { openSessionReview } from './open-review.js';
 export { DEFAULT_RETAIN_SOURCE, openSessionView, } from './open-session-view.js';
