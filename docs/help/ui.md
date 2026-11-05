@@ -94,6 +94,10 @@ Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Es
 
 > EN: Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`.
 
+首屏分页：`limit` 按**选项条数**跨组切片，菜单底部「显示更多」每点一次再追加 `limit` 条；搜索结果走同一套分页，换搜索词或重新展开都回到首屏。不传 `limit` 就是全量渲染。`PickerOption.keywords` 是可选的单个字符串（调用方自己拼），只和 `label` 拼起来参与大小写不敏感子串匹配，**绝不渲染**——适合任务 UUID 这种「用户能贴、但不该显示」的搜索词。纯逻辑另可单用 `sliceGroups`。
+
+> EN: First-page paging: `limit` slices by **option count** across groups; "Show more" at the menu bottom appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** — for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic.
+
 WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。
 
 > EN: WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data.
@@ -110,6 +114,8 @@ ModelPicker：数据自带，`variant` 为 `grouped`（默认）/ `cascade`；`o
 | `mode` | `'single' \| 'multiple'` | 'single' | — | — |
 | `max` | `number` | — | 多选上限；到上限其余项置灰 + 提示（不静默截断） | Multiple-select cap; at cap others grey out + a hint (no silent truncation) |
 | `searchable` | `boolean` | 'false' | 显示搜索框；展开菜单时自动聚焦搜索框 | Shows a search box; auto-focuses it when the menu opens |
+| `limit` | `number` | — | 首屏显示的选项条数（跨组计）；底部「显示更多」每次再追加同样条数，搜索结果同样分页。不传 = 全量 | Options shown on the first page (counted across groups); "Show more" appends the same amount each click, search results included. Omitted = all |
+| `options[].keywords` | `string` | — | 只参与搜索、不渲染的额外关键词（单个字符串，调用方自行拼接） | Extra search-only keyword, never rendered (one string, joined by the caller) |
 | `align` | `'left' \| 'center'` | 'left' | 触发器文字对齐 | Trigger text alignment |
 | `clearable` | `boolean` | 'false' | 单选时列表顶部多一项「不选」 | In single mode, adds a "none" item at the top of the list |
 | `placeholder` | `string` | 内置「请选择」 | — | — |
@@ -267,6 +273,14 @@ h(InputGroup, {
 
 > EN: The popup shares Picker’s mechanics (floating-ui layer, edge flip, outside-click close, no mask): two end boxes + two independent calendars (left = start, right = end, each picks its own, no span marking) + per-end hour/minute/second steppers (▲▼, direct typing, ↑↓ keys — no clicking through 60 minutes; **time never requires picking a date first** — on confirm, no date means no data emitted). Quick button: "Today" at day precision (date only), "Now" when hours/minutes/seconds are on (sets date + time together, editable afterwards). Draft state; onChange only on confirm; Esc / outside = discard. Calendar keys: arrows move, PageUp/Down change month, Home/End jump to month bounds, Enter selects. When end precedes start, confirm greys out with a hint.
 
+`presets` 只在 range 生效：弹层拆成左区（两个端框 + 两块日历，同宽、上下对齐）与右侧一整列快捷按钮（从端框那行竖排到日历底部，一条竖线隔开，按钮多了自己滚）。**列宽固定容下英文缩写最长那档**（中文两字居中），列高严格等于左侧日历区，档位多了只在列内滚动、不把弹层撑高；按钮文字居中。快捷按钮（`size="sm"`）与两个端框（`size="md"`）**都复用核心 `Button`**（选中态走 `color` 轴），不另写皮肤、圆角与全站一致；`label` 由调用方给，给 `{ zh, en }` 双语对象即随 `setLocale` 自动切换（核心不内置文案）。`expr` 用 Grafana / Elasticsearch 的 date math 子集——`now/d` 今天、`now-1d/d` 昨天、`now/w` 本周、`now-1w/w` 上周、`now/M` 本月、`now-1M/M` 上月、`now/Q` 本季度、`now-1Q/Q` 上季度、`now/y` 今年、`now-1y/y` 去年（`Q` 季、`M` 月、`m` 分），`expr: null` 即清空起止。点一下**立刻 onChange 且面板不关**，当场看得见两端与日历一起变。选中态只按当前起止与各项算出的起止逐一比对：撞上就亮，一个没撞上就整排不亮（不显示「自定义」）；每次渲染按当天重算，不用记状态。
+
+> EN: `presets` applies to range only: the popup splits into a left zone (two end boxes + two calendars, same width and aligned) and one full-height shortcut column on the right (runs from the end-box row down past the calendars, separated by a vertical rule, scrolls when crowded). **Column width is fixed to fit the longest short English label** (two Chinese characters sit centered), its height exactly matches the left calendar zone, and extra items scroll inside the column without growing the popup; button text is centered. Shortcut buttons (`size="sm"`) and both end boxes (`size="md"`) **reuse the core `Button`** (active via the `color` axis) — no local skin, corner radius matches the rest of the kit; labels come from the caller, and a `{ zh, en }` object switches with `setLocale` (no built-in copy). `expr` uses the Grafana / Elasticsearch date math subset — `now/d` today, `now-1d/d` yesterday, `now/w` this week, `now-1w/w` last week, `now/M` this month, `now-1M/M` last month, `now/Q` this quarter, `now-1Q/Q` last quarter, `now/y` this year, `now-1y/y` last year (`Q` quarter, `M` month, `m` minute); `expr: null` clears both ends. A click **emits immediately without closing the popup**, so both ends and the calendars visibly jump together. The active state is pure value comparison against each preset’s resolved range: matches light up, no match leaves the whole column unlit (no "Custom" item). Ranges are recomputed against the current day on every render; no state is kept.
+
+`value` 永远只放具体日期：短词只是「怎么算出这两个日期」的配方，不进值（与 Ant Design `presets` / MUI X `shortcuts` 同口径），因此不存在「这是时间点还是相对表达式」的字符串歧义。`width` 覆盖**整个触发器**（数字按 px、字符串按 CSS 长度原样），直接盖掉按 precision 写死的默认宽，核心不换算；两个日期区仍平分，过窄自动省略。不传 `presets` 就没有右侧快捷列与竖线；不传 `width` 时触发器仍按 precision 走默认宽。两个端框现已统一到核心 `Button` 皮肤，range 弹层外观与全站一致。
+
+> EN: `value` always carries concrete dates only: the short expression is merely the recipe for computing those two dates and never enters the value (same shape as Ant Design `presets` / MUI X `shortcuts`), so there is no string ambiguity between an instant and a relative expression. `width` sizes the **whole trigger** (number = px, string = CSS length verbatim), overriding the precision-derived default with no conversion in core; the two date zones stay equally split and elide when too narrow. Without `presets` there is no shortcut column or rule; without `width` the trigger keeps its precision-derived default. Both end boxes now use the core `Button` skin, so the range popup matches the rest of the kit.
+
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `mode` | `'single' \| 'range'` | 'single' | single = 一个时刻；range = 一个整条触发器（两个日期区 + 灰隔条） | single = one instant; range = one-bar trigger (two date zones + grey separator) |
@@ -275,6 +289,8 @@ h(InputGroup, {
 | `onChange` | `(v: string \| [string, string] \| null) => void` | — | 「确定」时提交；「清除」发 null | Emitted on confirm; clear emits null |
 | `disabled / size / placeholder` | `boolean / 'sm' \| 'md' \| 'lg' / string` | false / 'md' / 内置「请选择日期时间」 | 与 Picker 同名参数对齐 | Aligned with Picker’s same-named params |
 | `hint / className / ariaLabel / translate` | `string / string / string / Translate` | — | 同 Picker 同名参数 | Same-named params as Picker |
+| `presets` | `DateTimePreset[]（{ label: string \| { zh, en }; expr: string \| null }）` | — | range 专用的弹层右侧竖列；列高严格等于左侧日历区，档位多了在列内滚动；label 给双语对象即随 setLocale 切换，**英文建议缩写**（如 `This Q`）以免撑宽弹层；expr 走 date math 子集（Q 季 / y 年），null = 清空；不传 = 无入口 | Range-only right-hand shortcut column; its height equals the left calendar zone and extra items scroll inside the column; a bilingual label follows setLocale — **prefer short English labels** (e.g. `This Q`) so the popup stays narrow; expr uses the date math subset (Q quarter / y year), null clears; omitted = no entry |
+| `width` | `number \| string` | 按 precision 的默认宽 | 整个触发器总宽：数字 px / 字符串原样；覆盖默认宽、不做换算，过窄省略 | Total trigger width: number = px, string = verbatim CSS length; overrides the default with no conversion, elides when narrow |
 
 ```tsx id="ui-datetimepicker-example"
 import { DateTimePicker } from 'dsh-plugin-core/ui'

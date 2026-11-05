@@ -88,6 +88,7 @@ export type UtilMessageKey =
   | 'pickerSelected'
   | 'pickerMaxReached'
   | 'pickerDegraded'
+  | 'pickerMore'
   | 'modelProvider'
   | 'modelModel'
   | 'modelDefault'
@@ -612,6 +613,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     pickerSelected: '已选 {n} 项',
     pickerMaxReached: '最多选 {n} 项',
     pickerDegraded: '候选可能不完整',
+    pickerMore: '显示更多',
     modelProvider: '供应商',
     modelModel: '模型',
     modelDefault: '默认模型',
@@ -1128,6 +1130,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     pickerSelected: '{n} selected',
     pickerMaxReached: 'Up to {n}',
     pickerDegraded: 'List may be incomplete',
+    pickerMore: 'Show more',
     modelProvider: 'Provider',
     modelModel: 'Model',
     modelDefault: 'Default model',
@@ -1543,7 +1546,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverCollapseAria: 'Collapse the delivered-files list',
     composerPlaceholder: 'Say something to continue…',
     composerHint: 'Confirm forks a branch from this session and starts this turn in the official chat',
-    dtPlaceholder: 'Select date & time',
+    dtPlaceholder: 'Date & time',
     dtStart: 'Start',
     dtEnd: 'End',
     dtToday: 'Today',

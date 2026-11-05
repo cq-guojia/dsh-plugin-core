@@ -9,6 +9,7 @@ import {
   flattenOptions,
   labelsOf,
   resolveTriggerSizing,
+  sliceGroups,
   toGroups,
   toggleValue,
   type PickerGroup,
@@ -38,6 +39,8 @@ export interface PickerProps {
   /** 多选上限；到上限后其余选项置灰并提示（不静默截断）。 */
   max?: number
   searchable?: boolean
+  /** 首屏最多显示多少条选项（按选项条数跨组计）；每点一次「显示更多」再追加 limit 条，搜索结果同样分页。不传 = 全量。 */
+  limit?: number
   /** 单选时允许「不选」——选项列表顶部多一项清除。 */
   clearable?: boolean
   placeholder?: string
@@ -103,9 +106,11 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
     props.onChange?.(mode === 'single' ? (next[0] ?? '') : next)
   }
 
+  const limit = props.limit ?? 0
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(-1)
+  const [visible, setVisible] = useState(limit)
   const rootRef = useRef<HTMLDivElement | null>(null)
   const searchRef = useRef<HTMLInputElement | null>(null)
 
@@ -163,15 +168,18 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
     if (overlayLocked) setOpen(false)
   }, [overlayLocked])
 
-  // 收起时清掉搜索词与键盘游标，别让下次打开带着上次的过滤条件
+  // 收起 / 换 limit / 重新展开时都回到首屏，别让下次打开带着上次的过滤与翻页
   useEffect(() => {
+    setVisible(limit)
     if (open) return
     setQuery('')
     setActive(-1)
-  }, [open])
+  }, [open, limit])
 
-  const shown = filterGroups(groups, query)
+  const matched = filterGroups(groups, query)
+  const shown = sliceGroups(matched, visible)
   const flat = flattenOptions(shown)
+  const hasMore = limit > 0 && flat.length < flattenOptions(matched).length
   const atMax = mode === 'multiple' && props.max !== undefined && selected.length >= props.max
   const summary =
     selected.length === 0
@@ -278,7 +286,10 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                 className: 'dshpc-picker__search',
                 placeholder: tt('pickerSearch'),
                 value: query,
-                onChange: (e: { target: { value: string } }) => setQuery(e.target.value),
+                onChange: (e: { target: { value: string } }) => {
+                  setQuery(e.target.value)
+                  setVisible(limit) // 换搜索词回到首屏：搜索结果同样按 limit 分页
+                },
               })
             : null,
           flat.length === 0 && groups.length === 0
@@ -341,6 +352,17 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                       }),
                     ),
                   ),
+                  hasMore
+                    ? h(
+                        'button',
+                        {
+                          type: 'button',
+                          className: 'dshpc-picker__more',
+                          onClick: () => setVisible((v) => v + limit),
+                        },
+                        tt('pickerMore'),
+                      )
+                    : null,
                 ],
           ),
       )

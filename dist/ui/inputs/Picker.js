@@ -4,7 +4,7 @@ import { Chevron } from '../infra/chevron.js';
 import { t } from '../../utils/i18n.js';
 import { FieldHint } from '../display/FieldHint.js';
 import { MarqueeText } from '../display/MarqueeText.js';
-import { filterGroups, flattenOptions, labelsOf, resolveTriggerSizing, toGroups, toggleValue, } from './picker-logic.js';
+import { filterGroups, flattenOptions, labelsOf, resolveTriggerSizing, sliceGroups, toGroups, toggleValue, } from './picker-logic.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { useOverlayLocked } from '../infra/overlay.js';
 import { PANEL_CSS } from '../infra/panel-css.js';
@@ -39,9 +39,11 @@ export function Picker(props) {
             setInner(next);
         props.onChange?.(mode === 'single' ? (next[0] ?? '') : next);
     };
+    const limit = props.limit ?? 0;
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [active, setActive] = useState(-1);
+    const [visible, setVisible] = useState(limit);
     const rootRef = useRef(null);
     const searchRef = useRef(null);
     // 浮层定位：portal 到 body + viewport 相对 + 滚动/缩放自动跟随 + 贴边自动翻转，
@@ -99,15 +101,18 @@ export function Picker(props) {
         if (overlayLocked)
             setOpen(false);
     }, [overlayLocked]);
-    // 收起时清掉搜索词与键盘游标，别让下次打开带着上次的过滤条件
+    // 收起 / 换 limit / 重新展开时都回到首屏，别让下次打开带着上次的过滤与翻页
     useEffect(() => {
+        setVisible(limit);
         if (open)
             return;
         setQuery('');
         setActive(-1);
-    }, [open]);
-    const shown = filterGroups(groups, query);
+    }, [open, limit]);
+    const matched = filterGroups(groups, query);
+    const shown = sliceGroups(matched, visible);
     const flat = flattenOptions(shown);
+    const hasMore = limit > 0 && flat.length < flattenOptions(matched).length;
     const atMax = mode === 'multiple' && props.max !== undefined && selected.length >= props.max;
     const summary = selected.length === 0
         ? (props.placeholder ?? tt('pickerPlaceholder'))
@@ -190,7 +195,10 @@ export function Picker(props) {
                 className: 'dshpc-picker__search',
                 placeholder: tt('pickerSearch'),
                 value: query,
-                onChange: (e) => setQuery(e.target.value),
+                onChange: (e) => {
+                    setQuery(e.target.value);
+                    setVisible(limit); // 换搜索词回到首屏：搜索结果同样按 limit 分页
+                },
             })
             : null, flat.length === 0 && groups.length === 0
             ? h('div', { className: 'dshpc-picker__empty' }, tt('pickerEmpty'))
@@ -233,6 +241,13 @@ export function Picker(props) {
                         // 选项文字超长时省略号 + hover 跑马灯（与触发器同一套逻辑），不把菜单撑出横向滚动条。
                         h(MarqueeText, { text: o.label, className: 'dshpc-picker__option-label' }));
                     }))),
+                    hasMore
+                        ? h('button', {
+                            type: 'button',
+                            className: 'dshpc-picker__more',
+                            onClick: () => setVisible((v) => v + limit),
+                        }, tt('pickerMore'))
+                        : null,
                 ]))
         : null);
 }

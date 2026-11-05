@@ -267,3 +267,91 @@ export function rangeIsValid(startIso: string, endIso: string): boolean {
 export function sameLocalDay(a: DateTimeParts, b: DateTimeParts): boolean {
   return a.year === b.year && a.month === b.month && a.day === b.day
 }
+
+// ── 预设档相对算式（Grafana / Elasticsearch date math 子集） ────────────────
+
+/** 快捷档：`label` 由调用方给（字符串或中英双语对象，文案插件自管）；`expr` 为 null = 清空起止。 */
+export interface DateTimePreset {
+  label: string | { zh: string; en: string }
+  expr: string | null
+}
+
+type PresetUnit = 'y' | 'Q' | 'M' | 'w' | 'd' | 'h' | 'm' | 's'
+
+/** `now` + 可选 `[+-]N{单位}`，末尾 `/{单位}` 取整到整周期。Q = 季、M = 月、m = 分。 */
+const PRESET_EXPR_RE = /^now(?:([+-])(\d+)([yQMwdhms]))?(?:\/([yQMwdhms]))?$/
+
+function daysInMonth(year: number, month0: number): number {
+  return new Date(year, month0 + 1, 0).getDate()
+}
+
+/** 按日历字段位移，M / y 先把日钳到目标月的天数，避免 3-31 减 1 月卷回 3 月。 */
+function shiftByUnit(ms: number, n: number, unit: PresetUnit): number {
+  const d = new Date(ms)
+  const Y = d.getFullYear(), M = d.getMonth(), D = d.getDate()
+  const h = d.getHours(), mi = d.getMinutes(), s = d.getSeconds(), x = d.getMilliseconds()
+  const at = (y: number, mo: number, day: number, hh = h, mm = mi, ss = s): number =>
+    new Date(y, mo, day, hh, mm, ss, x).getTime()
+  switch (unit) {
+    case 'y': return at(Y + n, M, Math.min(D, daysInMonth(Y + n, M)))
+    case 'Q':
+    case 'M': {
+      const total = Y * 12 + M + (unit === 'Q' ? 3 * n : n)
+      const y = Math.floor(total / 12), mo = ((total % 12) + 12) % 12
+      return at(y, mo, Math.min(D, daysInMonth(y, mo)))
+    }
+    case 'w': return at(Y, M, D + 7 * n)
+    case 'd': return at(Y, M, D + n)
+    case 'h': return at(Y, M, D, h + n)
+    case 'm': return at(Y, M, D, h, mi + n)
+    case 's': return at(Y, M, D, h, mi, s + n)
+  }
+}
+
+/** 取整到某个周期的首尾（周一为周首，与月历网格一致）。 */
+function unitBounds(ms: number, unit: PresetUnit): [number, number] {
+  const d = new Date(ms)
+  const Y = d.getFullYear(), M = d.getMonth(), D = d.getDate()
+  const h = d.getHours(), mi = d.getMinutes(), s = d.getSeconds()
+  const at = (y: number, mo: number, day: number, hh = 0, mm = 0, ss = 0): number =>
+    new Date(y, mo, day, hh, mm, ss).getTime()
+  switch (unit) {
+    case 'y': return [at(Y, 0, 1), at(Y + 1, 0, 1) - 1]
+    case 'Q': {
+      const q = Math.floor(M / 3) * 3
+      return [at(Y, q, 1), at(Y, q + 3, 1) - 1]
+    }
+    case 'M': return [at(Y, M, 1), at(Y, M + 1, 1) - 1]
+    case 'w': {
+      const wd = (d.getDay() + 6) % 7
+      return [at(Y, M, D - wd), at(Y, M, D - wd + 7) - 1]
+    }
+    case 'd': return [at(Y, M, D), at(Y, M, D + 1) - 1]
+    case 'h': return [at(Y, M, D, h), at(Y, M, D, h + 1) - 1]
+    case 'm': return [at(Y, M, D, h, mi), at(Y, M, D, h, mi + 1) - 1]
+    case 's': return [at(Y, M, D, h, mi, s), at(Y, M, D, h, mi, s + 1) - 1]
+  }
+}
+
+/**
+ * 把预设算式展开成一对本地 ISO 起止（起端 floor、止端 ceil 到 precision）；非法写法返回 null。
+ * 无 `/取整` 时是从位移点到当下的一段滚动窗口。now 可注入以便单测。
+ */
+export function resolvePresetExpr(
+  expr: string,
+  precision: DateTimePrecision,
+  now: DateTimeParts = nowParts(),
+): [string, string] | null {
+  const m = PRESET_EXPR_RE.exec(expr.trim())
+  if (m === null) return null
+  const amount = m[2] === undefined ? 0 : Number(m[2]) * (m[1] === '-' ? -1 : 1)
+  const base = partsToMs(now)
+  const shifted = shiftByUnit(base, amount, (m[3] as PresetUnit | undefined) ?? 'd')
+  const [startMs, endMs] = m[4] !== undefined
+    ? unitBounds(shifted, m[4] as PresetUnit)
+    : [Math.min(base, shifted), Math.max(base, shifted)]
+  return [
+    formatDateTimeIso(floorToPrecision(msToParts(startMs), precision)),
+    formatDateTimeIso(ceilToPrecision(msToParts(endMs), precision)),
+  ]
+}

@@ -197,4 +197,72 @@ export function rangeIsValid(startIso, endIso) {
 export function sameLocalDay(a, b) {
     return a.year === b.year && a.month === b.month && a.day === b.day;
 }
+/** `now` + 可选 `[+-]N{单位}`，末尾 `/{单位}` 取整到整周期。Q = 季、M = 月、m = 分。 */
+const PRESET_EXPR_RE = /^now(?:([+-])(\d+)([yQMwdhms]))?(?:\/([yQMwdhms]))?$/;
+function daysInMonth(year, month0) {
+    return new Date(year, month0 + 1, 0).getDate();
+}
+/** 按日历字段位移，M / y 先把日钳到目标月的天数，避免 3-31 减 1 月卷回 3 月。 */
+function shiftByUnit(ms, n, unit) {
+    const d = new Date(ms);
+    const Y = d.getFullYear(), M = d.getMonth(), D = d.getDate();
+    const h = d.getHours(), mi = d.getMinutes(), s = d.getSeconds(), x = d.getMilliseconds();
+    const at = (y, mo, day, hh = h, mm = mi, ss = s) => new Date(y, mo, day, hh, mm, ss, x).getTime();
+    switch (unit) {
+        case 'y': return at(Y + n, M, Math.min(D, daysInMonth(Y + n, M)));
+        case 'Q':
+        case 'M': {
+            const total = Y * 12 + M + (unit === 'Q' ? 3 * n : n);
+            const y = Math.floor(total / 12), mo = ((total % 12) + 12) % 12;
+            return at(y, mo, Math.min(D, daysInMonth(y, mo)));
+        }
+        case 'w': return at(Y, M, D + 7 * n);
+        case 'd': return at(Y, M, D + n);
+        case 'h': return at(Y, M, D, h + n);
+        case 'm': return at(Y, M, D, h, mi + n);
+        case 's': return at(Y, M, D, h, mi, s + n);
+    }
+}
+/** 取整到某个周期的首尾（周一为周首，与月历网格一致）。 */
+function unitBounds(ms, unit) {
+    const d = new Date(ms);
+    const Y = d.getFullYear(), M = d.getMonth(), D = d.getDate();
+    const h = d.getHours(), mi = d.getMinutes(), s = d.getSeconds();
+    const at = (y, mo, day, hh = 0, mm = 0, ss = 0) => new Date(y, mo, day, hh, mm, ss).getTime();
+    switch (unit) {
+        case 'y': return [at(Y, 0, 1), at(Y + 1, 0, 1) - 1];
+        case 'Q': {
+            const q = Math.floor(M / 3) * 3;
+            return [at(Y, q, 1), at(Y, q + 3, 1) - 1];
+        }
+        case 'M': return [at(Y, M, 1), at(Y, M + 1, 1) - 1];
+        case 'w': {
+            const wd = (d.getDay() + 6) % 7;
+            return [at(Y, M, D - wd), at(Y, M, D - wd + 7) - 1];
+        }
+        case 'd': return [at(Y, M, D), at(Y, M, D + 1) - 1];
+        case 'h': return [at(Y, M, D, h), at(Y, M, D, h + 1) - 1];
+        case 'm': return [at(Y, M, D, h, mi), at(Y, M, D, h, mi + 1) - 1];
+        case 's': return [at(Y, M, D, h, mi, s), at(Y, M, D, h, mi, s + 1) - 1];
+    }
+}
+/**
+ * 把预设算式展开成一对本地 ISO 起止（起端 floor、止端 ceil 到 precision）；非法写法返回 null。
+ * 无 `/取整` 时是从位移点到当下的一段滚动窗口。now 可注入以便单测。
+ */
+export function resolvePresetExpr(expr, precision, now = nowParts()) {
+    const m = PRESET_EXPR_RE.exec(expr.trim());
+    if (m === null)
+        return null;
+    const amount = m[2] === undefined ? 0 : Number(m[2]) * (m[1] === '-' ? -1 : 1);
+    const base = partsToMs(now);
+    const shifted = shiftByUnit(base, amount, m[3] ?? 'd');
+    const [startMs, endMs] = m[4] !== undefined
+        ? unitBounds(shifted, m[4])
+        : [Math.min(base, shifted), Math.max(base, shifted)];
+    return [
+        formatDateTimeIso(floorToPrecision(msToParts(startMs), precision)),
+        formatDateTimeIso(ceilToPrecision(msToParts(endMs), precision)),
+    ];
+}
 //# sourceMappingURL=datetime-logic.js.map

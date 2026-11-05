@@ -129,7 +129,7 @@ export function Placeholder(props: { descKey: DemoMessageKey }): ReturnType<type
       tone: 'sunken',
       border: 'dashed',
       padding: 'lg',
-      style: { marginTop: '4px', color: 'var(--dshpc-fg-3)' },
+      style: { marginTop: '4px', marginBottom: '16px', color: 'var(--dshpc-fg-3)' },
     },
     h('div', {
       style: {

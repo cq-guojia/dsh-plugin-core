@@ -12,6 +12,7 @@ import {
   partsOf,
   partsToMs,
   rangeIsValid,
+  resolvePresetExpr,
   sameLocalDay,
   stepMax,
   stepUnit,
@@ -142,4 +143,32 @@ test('sameLocalDay / monthCaption / weekdayLabels', () => {
   assert.equal(weekdayLabels('zh')[0], '一')
   assert.equal(weekdayLabels('en')[0], 'Mon')
   assert.equal(weekdayLabels('zh').length, 7)
+})
+
+test('resolvePresetExpr：date math 子集展开成一对本地 ISO 起止', () => {
+  const now = parseDateTime('2026-11-05T14:30:15.123') // 周四
+  const day = (s, e) => [`${s}T00:00:00.000`, `${e}T23:59:59.999`]
+  assert.deepEqual(resolvePresetExpr('now/d', 'day', now), day('2026-11-05', '2026-11-05'))
+  assert.deepEqual(resolvePresetExpr('now-1d/d', 'day', now), day('2026-11-04', '2026-11-04'))
+  assert.deepEqual(resolvePresetExpr('now+1d/d', 'day', now), day('2026-11-06', '2026-11-06'))
+  assert.deepEqual(resolvePresetExpr('now/w', 'day', now), day('2026-11-02', '2026-11-08')) // 周一起
+  assert.deepEqual(resolvePresetExpr('now-1w/w', 'day', now), day('2026-10-26', '2026-11-01'))
+  assert.deepEqual(resolvePresetExpr('now/M', 'day', now), day('2026-11-01', '2026-11-30'))
+  assert.deepEqual(resolvePresetExpr('now-1M/M', 'day', now), day('2026-10-01', '2026-10-31'))
+  assert.deepEqual(resolvePresetExpr('now/Q', 'day', now), day('2026-10-01', '2026-12-31')) // Q4
+  assert.deepEqual(resolvePresetExpr('now-1Q/Q', 'day', now), day('2026-07-01', '2026-09-30'))
+  assert.deepEqual(resolvePresetExpr('now/y', 'day', now), day('2026-01-01', '2026-12-31'))
+  assert.deepEqual(resolvePresetExpr('now-1y/y', 'day', now), day('2025-01-01', '2025-12-31'))
+  // M = 月、m = 分；两者不可混
+  assert.notDeepEqual(resolvePresetExpr('now-1M/M', 'day', now), resolvePresetExpr('now-1m/m', 'day', now))
+  // 无 /取整：从位移点到当下的一段滚动窗口；起端按 second 精度把 ms 归零（项目既有 floor 口径）
+  assert.deepEqual(resolvePresetExpr('now-7d', 'second', now), ['2026-10-29T14:30:15.000', '2026-11-05T14:30:15.123'])
+  // 非法写法返回 null，不编造时间
+  assert.equal(resolvePresetExpr('week-1', 'day', now), null)
+  assert.equal(resolvePresetExpr('now-1X/X', 'day', now), null)
+})
+
+test('resolvePresetExpr：跨月末不卷月（3-31 减 1 月仍是 2 月）', () => {
+  const now = parseDateTime('2026-03-31T09:00:00.000')
+  assert.deepEqual(resolvePresetExpr('now-1M/M', 'day', now), ['2026-02-01T00:00:00.000', '2026-02-28T23:59:59.999'])
 })

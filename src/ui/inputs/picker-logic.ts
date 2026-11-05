@@ -6,6 +6,8 @@ export interface PickerOption {
   label: string
   /** 选项文字前的图标（任意 ReactNode；不传就没有这一段）。 */
   icon?: ReactNode
+  /** 只参与搜索、不渲染的额外关键词（调用方自行拼接；如任务 UUID）。 */
+  keywords?: string
   disabled?: boolean
 }
 
@@ -32,14 +34,27 @@ export function flattenOptions(groups: PickerGroup[]): PickerOption[] {
   return out
 }
 
-/** 按关键词过滤（大小写不敏感，匹配 label；整组无命中则整组去掉）。 */
+/** 按关键词过滤（大小写不敏感，匹配 label 与 keywords 拼起来的串；整组无命中则整组去掉）。 */
 export function filterGroups(groups: PickerGroup[], query: string): PickerGroup[] {
   const q = query.trim().toLowerCase()
   if (q === '') return groups
   const out: PickerGroup[] = []
   for (const g of groups) {
-    const hit = g.options.filter((o) => o.label.toLowerCase().includes(q))
+    const hit = g.options.filter((o) => `${o.label} ${o.keywords ?? ''}`.toLowerCase().includes(q))
     if (hit.length > 0) out.push({ ...g, options: hit })
+  }
+  return out
+}
+
+/** 按选项条数跨组切片（首屏 limit 条）；count <= 0 视为不分页，整组没被截到就复用原对象。 */
+export function sliceGroups(groups: PickerGroup[], count: number): PickerGroup[] {
+  if (!(count > 0)) return groups
+  const out: PickerGroup[] = []
+  let left = count
+  for (const g of groups) {
+    if (left <= 0) break
+    out.push(left >= g.options.length ? g : { ...g, options: g.options.slice(0, left) })
+    left -= g.options.length
   }
   return out
 }

@@ -7,7 +7,7 @@
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
   max-width:100%;height:var(--dshpc-control-h-md);padding:0 8px;
   color:var(--dshpc-fg);background:var(--dshpc-surface-1);
-  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);cursor:pointer;
+  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);cursor:pointer;
 }
 .dshpc-dt__trigger--sm{height:var(--dshpc-control-h-sm);font-size:12px}
 .dshpc-dt__trigger--lg{height:var(--dshpc-control-h-lg)}
@@ -15,14 +15,14 @@
 /* 焦点与基础 Input 完全同款（点击即蓝描边 + 1px 光环）。 */
 .dshpc-dt__trigger:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}
 .dshpc-dt__trigger-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-variant-numeric:tabular-nums}
-.dshpc-dt__trigger-label--empty{color:var(--dshpc-fg-dim)}
+.dshpc-dt__trigger-label--empty{color:var(--dshpc-fg-3)}
 .dshpc-dt__cal{flex:none;color:var(--dshpc-fg-3)}
 /* range 触发器：一个整条里两个日期区 + 样式画出来的灰隔条（左右两条竖边），点整条都展开。 */
 /* 组撑满触发器内容高度，隔条才能上下顶到 border。 */
 .dshpc-dt__pair-group{flex:1 1 auto;min-width:0;align-self:stretch;display:flex;align-items:center;gap:8px}
 /* 两个日期区平分（flex:1 1 0）：开始 / 结束永远一样宽，不随内容偏袒。 */
 .dshpc-dt__pair-date{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
-.dshpc-dt__pair-date--empty{color:var(--dshpc-fg-dim)}
+.dshpc-dt__pair-date--empty{color:var(--dshpc-fg-3)}
 /* 隔条：上下顶到触发器 border（与边框连起来），中间隔出一块；块里放「到」的符号（-，用户 2026-10-24 拍板）。 */
 .dshpc-dt__pair-sep{
   flex:none;align-self:stretch;width:22px;margin:0;
@@ -48,18 +48,12 @@
   z-index:var(--dshpc-z-popmenu);padding:10px;user-select:none;
   font-size:13px;line-height:20px;
 }
-/* 两个独立端框（range）：点哪个哪个成为当前编辑端，互不联动、只是排在一起。 */
+/* 两个独立端框（range）：按钮皮肤全走核心 Button，这里只管两根框的排布与内部文字。 */
 .dshpc-dt__ends{display:flex;gap:6px;margin-bottom:8px}
-.dshpc-dt__end{
-  flex:1 1 0;min-width:0;display:flex;align-items:center;gap:6px;padding:4px 8px;
-  text-align:left;background:var(--dshpc-surface-1);
-  border:1px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-sm);cursor:pointer;
-}
-.dshpc-dt__end--active{border-color:var(--dshpc-business);background:var(--dshpc-open-bg)}
-.dshpc-dt__end:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
-.dshpc-dt__end-label{flex:none;font-size:11px;line-height:16px;color:var(--dshpc-fg-3);white-space:nowrap}
-.dshpc-dt__end-value{font-size:12px;line-height:18px;color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
-.dshpc-dt__end-value--empty{color:var(--dshpc-fg-dim)}
+.dshpc-dt__ends > .dshpc-btn{flex:1 1 0;min-width:0}
+.dshpc-dt__end-label{flex:none;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);white-space:nowrap}
+.dshpc-dt__end-value{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dshpc-dt__end-value--empty{color:var(--dshpc-fg-3)}
 
 .dshpc-dt__nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .dshpc-dt__nav-group{display:flex;gap:2px}
@@ -91,6 +85,22 @@
 .dshpc-dt__panels{display:flex;gap:14px;align-items:flex-start}
 .dshpc-dt__panel{display:flex;flex-direction:column;gap:6px}
 
+/* 左列（两个端框 + 两块日历）与右列（快捷档）并排；不传 presets 时只剩左列，布局与旧版一致。 */
+.dshpc-dt__layout{display:flex;align-items:stretch;gap:10px}
+.dshpc-dt__body{flex:1 1 auto;min-width:0}
+/* 右列高度由 layout 的 stretch 跟左边日历区拉齐，自己不撑高弹层；档位多了只在列内滚。
+   76px 容得下英文缩写最长那档 + 滚动条，中文两字居中，不随文案变宽（2026-11-06）。 */
+.dshpc-dt__side{
+  position:relative;flex:none;width:76px;
+  padding-left:9px;border-left:1px solid var(--dshpc-border-faint);
+}
+.dshpc-dt__side-scroll{
+  position:absolute;inset:0 0 0 9px;
+  display:flex;flex-direction:column;gap:2px;overflow-y:auto;
+  border-right:1px solid transparent;
+}
+.dshpc-dt__side-scroll > .dshpc-btn{flex:none}
+
 .dshpc-dt__time{display:flex;align-items:flex-end;justify-content:center;gap:4px;margin-top:2px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}
 .dshpc-dt__unit{display:flex;flex-direction:column;align-items:center;gap:2px}
 .dshpc-dt__unit-label{font-size:10px;line-height:14px;color:var(--dshpc-fg-3)}
@@ -103,7 +113,7 @@
 .dshpc-dt__step-val{
   width:34px;height:24px;padding:0;box-sizing:border-box;text-align:center;
   font-size:13px;font-variant-numeric:tabular-nums;color:var(--dshpc-fg);
-  background:var(--dshpc-surface-sunken);border:1px solid var(--dshpc-border-faint);
+  background:var(--dshpc-surface-sunken);border:1px solid var(--dshpc-border-heavy);
   border-radius:var(--dshpc-radius-sm);outline:none;
 }
 .dshpc-dt__step-val:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}

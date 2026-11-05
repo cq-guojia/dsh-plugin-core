@@ -806,6 +806,13 @@ export function InputPage(): ReturnType<typeof h> {
 // ── 选择器 ──────────────────────────────────────────────────────────────
 
 /** 选项 icon 演示：三个官方图标各领一个选项（icon 收任意 ReactNode）。 */
+// 演示用的模拟选项（仅展示 limit 分页与 keywords 搜索，非宿主数据）
+const PAGED_OPTIONS = Array.from({ length: 25 }, (_, i) => ({
+  value: `task-${i}`,
+  label: `任务 ${i + 1}`,
+  keywords: `uuid-${String(i).padStart(4, '0')}`,
+}))
+
 const ICON_OPTIONS = [
   { value: 'a', label: '选项 A', icon: h(IconSparkleRegular, { size: 14 }) },
   { value: 'b', label: '选项 B', icon: h(IconClockOutlineRegular, { size: 14 }) },
@@ -915,6 +922,7 @@ export function PickerPage(): ReturnType<typeof h> {
   const [member, setMember] = useState('')
   const [groups, setGroups] = useState<string[]>(['a'])
   const [groupValue, setGroupValue] = useState('')
+  const [paged, setPaged] = useState('')
 
   return h(
     'div',
@@ -939,6 +947,14 @@ export function PickerPage(): ReturnType<typeof h> {
           value: single,
           onChange: (v) => setSingle(v as string),
           placeholder: '单选（无搜索框）',
+        }),
+        h(Picker, {
+          options: PAGED_OPTIONS,
+          value: paged,
+          onChange: (v) => setPaged(v as string),
+          searchable: true,
+          limit: 10,
+          placeholder: '首屏 10 条（贴 uuid-0007 可搜到任务 8）',
         }),
         h(Picker, {
           groups: [
@@ -2422,17 +2438,45 @@ export function LayoutPage(): ReturnType<typeof h> {
 
 // ── 日期时间选择 ──────────────────────────────────────────────────────────
 
+const RANGE_PRESETS = [
+  { label: { zh: '今天', en: 'Today' }, expr: 'now/d' },
+  { label: { zh: '昨天', en: 'Yest.' }, expr: 'now-1d/d' },
+  { label: { zh: '本周', en: 'This W' }, expr: 'now/w' },
+  { label: { zh: '上周', en: 'Last W' }, expr: 'now-1w/w' },
+  { label: { zh: '本月', en: 'This M' }, expr: 'now/M' },
+  { label: { zh: '上月', en: 'Last M' }, expr: 'now-1M/M' },
+  { label: { zh: '本季度', en: 'This Q' }, expr: 'now/Q' },
+  { label: { zh: '上季度', en: 'Last Q' }, expr: 'now-1Q/Q' },
+  { label: { zh: '今年', en: 'This Y' }, expr: 'now/y' },
+  { label: { zh: '去年', en: 'Last Y' }, expr: 'now-1y/y' },
+  { label: { zh: '清除', en: 'Clear' }, expr: null },
+]
+
 const CODE_DATETIME = `// 单个时刻：precision 控制精度（day / hour / minute / second）
 h(DateTimePicker, { precision: 'minute', value: at, onChange: setAt })
 
 // 时间段：起止两个独立框、同时展开；day 精度下结束端补到 23:59:59.999
-h(DateTimePicker, { mode: 'range', precision: 'day', value: range, onChange: setRange })`
+h(DateTimePicker, { mode: 'range', precision: 'day', value: range, onChange: setRange })
+
+// 快捷档：弹层右侧竖列（一条竖线隔开），列高跟左侧日历区，点一下立即生效且面板不关
+// label 给 { zh, en } 就随 setLocale 自动切；Q = 季、y = 年；英文用缩写免得右列变宽
+h(DateTimePicker, {
+  mode: 'range', precision: 'day', value: range, onChange: setRange,
+  presets: [
+    { label: { zh: '上周', en: 'Last W' }, expr: 'now-1w/w' },
+    { label: { zh: '本季度', en: 'This Q' }, expr: 'now/Q' },
+    { label: { zh: '去年', en: 'Last Y' }, expr: 'now-1y/y' },
+    { label: { zh: '清除', en: 'Clear' }, expr: null },
+  ],
+  width: 320,
+})`
 
 export function DateTimePage(): ReturnType<typeof h> {
   const [singleDay, setSingleDay] = useState<string | null>(null)
   const [singleMinute, setSingleMinute] = useState<string | null>(null)
   const [rangeDay, setRangeDay] = useState<[string, string] | null>(null)
   const [rangeSecond, setRangeSecond] = useState<[string, string] | null>(null)
+  const [rangePreset, setRangePreset] = useState<[string, string] | null>(null)
 
   return h(
     'div',
@@ -2464,6 +2508,15 @@ export function DateTimePage(): ReturnType<typeof h> {
           precision: 'second',
           value: rangeSecond,
           onChange: (v) => setRangeSecond(v as [string, string] | null),
+          presets: RANGE_PRESETS,
+        }),
+        h(DateTimePicker, {
+          mode: 'range',
+          precision: 'day',
+          value: rangePreset,
+          onChange: (v) => setRangePreset(v as [string, string] | null),
+          width: 320,
+          presets: RANGE_PRESETS,
         }),
         h(DateTimePicker, {
           precision: 'minute',

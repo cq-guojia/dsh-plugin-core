@@ -11,7 +11,7 @@
 /* min-width：输入格是 flex:1，没有它时 inline-flex 按占位文字宽收得很窄（搜索框 + 按钮的典型用法会难看）。
    要更宽 / 更窄由调用方在外面套壳或给 className，不许在这里写死 max-width。 */
 .dshpc-igroup{display:inline-flex;align-items:stretch;min-width:200px;max-width:100%;box-sizing:border-box;overflow:hidden;
-  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}
+  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}
 .dshpc-igroup--sm{height:var(--dshpc-control-h-sm);}
 .dshpc-igroup--md{height:var(--dshpc-control-h-md);}
 .dshpc-igroup--lg{height:var(--dshpc-control-h-lg);}

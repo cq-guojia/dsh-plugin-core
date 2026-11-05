@@ -99,4 +99,17 @@ export declare function clampUnit(value: number, unit: StepUnit): number;
 export declare function rangeIsValid(startIso: string, endIso: string): boolean;
 /** 两个时刻是否同一本地日历日。 */
 export declare function sameLocalDay(a: DateTimeParts, b: DateTimeParts): boolean;
+/** 快捷档：`label` 由调用方给（字符串或中英双语对象，文案插件自管）；`expr` 为 null = 清空起止。 */
+export interface DateTimePreset {
+    label: string | {
+        zh: string;
+        en: string;
+    };
+    expr: string | null;
+}
+/**
+ * 把预设算式展开成一对本地 ISO 起止（起端 floor、止端 ceil 到 precision）；非法写法返回 null。
+ * 无 `/取整` 时是从位移点到当下的一段滚动窗口。now 可注入以便单测。
+ */
+export declare function resolvePresetExpr(expr: string, precision: DateTimePrecision, now?: DateTimeParts): [string, string] | null;
 //# sourceMappingURL=datetime-logic.d.ts.map

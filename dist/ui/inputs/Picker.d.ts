@@ -17,6 +17,8 @@ export interface PickerProps {
     /** 多选上限；到上限后其余选项置灰并提示（不静默截断）。 */
     max?: number;
     searchable?: boolean;
+    /** 首屏最多显示多少条选项（按选项条数跨组计）；每点一次「显示更多」再追加 limit 条，搜索结果同样分页。不传 = 全量。 */
+    limit?: number;
     /** 单选时允许「不选」——选项列表顶部多一项清除。 */
     clearable?: boolean;
     placeholder?: string;

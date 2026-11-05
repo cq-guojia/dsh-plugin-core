@@ -33,11 +33,13 @@ import {
   parseDateTime,
   partsOf,
   rangeIsValid,
+  resolvePresetExpr,
   stepUnit,
   toEndDraft,
   weekdayLabels,
   type DateTimeParts,
   type DateTimePrecision,
+  type DateTimePreset,
   type DayCell,
   type DayRef,
   type EndDraft,
@@ -77,6 +79,10 @@ export interface DateTimePickerProps {
   className?: string
   ariaLabel?: string
   translate?: Translate
+  /** 触发器总宽：数字按 px、字符串按 CSS 长度原样透传；覆盖按 precision 写死的默认宽，不做换算。 */
+  width?: number | string
+  /** range 模式的快捷档（弹层右侧竖列）：label 可给字符串或 `{ zh, en }` 双语对象（随 setLocale 自动切），expr 走 Grafana/Elastic date math 子集（含 Q 季 / y 年），null = 清空起止。不传 = 无入口。 */
+  presets?: DateTimePreset[]
 }
 
 interface Draft {
@@ -454,6 +460,9 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
       value === null ? placeholder : fmtParts(value, precision),
     )
   const calIcon = h('span', { className: 'dshpc-dt__cal' }, ICON_CAL)
+  // 内联 width 优先级高于 WIDTH_CLASS，不传就完全走按 precision 的默认宽；过窄省略由现有 CSS 兜住。
+  const triggerWidth =
+    props.width === undefined ? undefined : { width: typeof props.width === 'number' ? `${props.width}px` : props.width }
   const trigger = h(
     'button',
     {
@@ -463,6 +472,7 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
       ref: refs.setReference,
       disabled: off,
       className: `dshpc-dt__trigger ${SIZE_CLASS[size]} ${WIDTH_CLASS(rangeMode, precision)}`.trim(),
+      style: triggerWidth,
       onClick: openPop,
     },
     rangeMode
@@ -497,11 +507,15 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
   const endBox = (side: Side, label: string): ReturnType<typeof h> => {
     const p = partsOf(draft[side])
     return h(
-      'button',
+      Button,
       {
         key: side,
-        type: 'button',
-        className: `dshpc-dt__end${active === side ? ' dshpc-dt__end--active' : ''}`,
+        variant: 'outline',
+        size: 'md',
+        block: true,
+        // 外观（圆角/边框/聚焦）全交给核心 Button；选中端走 color 轴，不就地写皮肤。
+        color: active === side ? 'var(--dshpc-business)' : undefined,
+        style: { justifyContent: 'flex-start' },
         'aria-pressed': active === side,
         onClick: () => setActive(side),
       },
@@ -658,6 +672,24 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
     )
   }
 
+  // 快捷档只在 range 生效；每次渲染按当天重算，选中态只靠值比对（不记「谁最后动过」）。
+  const presetRows = (rangeMode && props.presets !== undefined ? props.presets : []).flatMap((p) => {
+    const label = typeof p.label === 'string' ? p.label : p.label[locale]
+    if (p.expr === null) return [{ label, range: null as [string, string] | null, isClear: true }]
+    const range = resolvePresetExpr(p.expr, precision)
+    return range === null ? [] : [{ label, range, isClear: false }]
+  })
+  const currentRange: [string, string] | null = Array.isArray(current) ? current : null
+  const applyPreset = (range: [string, string] | null): void => {
+    emit(range) // 立刻给出去，不等「确定」；面板保持打开，当场看得见两端与日历一起变
+    const d = draftOf(range)
+    setDraft(d)
+    const n = nowParts()
+    const monthOf = (e: EndDraft): ViewMonth =>
+      e.day === null ? { year: n.year, month: n.month } : { year: e.day.year, month: e.day.month }
+    setViews({ start: monthOf(d.start), end: monthOf(d.end) })
+  }
+
   const invalidRange =
     rangeMode &&
     partsOf(draft.start) !== null &&
@@ -671,19 +703,54 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
     'div',
     // 弹层表面积走 panel.css 的 menu 档（2026-11-03 皮肤统一）；这类名只剩定位与内距。
     { className: 'dshpc-panel dshpc-panel--menu dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown },
-    rangeMode
-      ? h(
-          'div',
-          { className: 'dshpc-dt__ends' },
-          endBox('start', tt('dtStart')),
-          endBox('end', tt('dtEnd')),
-        )
-      : null,
     h(
       'div',
-      { className: 'dshpc-dt__panels' },
-      panel('start'),
-      rangeMode ? panel('end') : null,
+      { className: 'dshpc-dt__layout' },
+      h(
+        'div',
+        { className: 'dshpc-dt__body' },
+        rangeMode
+          ? h(
+              'div',
+              { className: 'dshpc-dt__ends' },
+              endBox('start', tt('dtStart')),
+              endBox('end', tt('dtEnd')),
+            )
+          : null,
+        h(
+          'div',
+          { className: 'dshpc-dt__panels' },
+          panel('start'),
+          rangeMode ? panel('end') : null,
+        ),
+      ),
+      presetRows.length === 0
+        ? null
+        : h(
+            'div',
+            { className: 'dshpc-dt__side' },
+            h(
+              'div',
+              { className: 'dshpc-dt__side-scroll' },
+              presetRows.map((p, i) => {
+                const active = !p.isClear && p.range !== null && currentRange !== null &&
+                  p.range[0] === currentRange[0] && p.range[1] === currentRange[1]
+                return h(
+                  Button,
+                  {
+                    key: `${i}-${p.label}`,
+                    variant: active ? 'outline' : 'ghost',
+                    size: 'sm',
+                    block: true,
+                    color: active ? 'var(--dshpc-business)' : undefined,
+                    'aria-pressed': active,
+                    onClick: () => applyPreset(p.range),
+                  },
+                  p.label,
+                )
+              }),
+            ),
+          ),
     ),
     h(
       'div',

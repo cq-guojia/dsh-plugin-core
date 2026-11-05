@@ -6,6 +6,7 @@ import {
   groupOf,
   labelsOf,
   resolveTriggerSizing,
+  sliceGroups,
   toggleValue,
 } from '../dist/ui/index.js'
 import { setLocale, t } from '../dist/utils/index.js'
@@ -26,6 +27,35 @@ test('filterGroups 整组无命中则去掉整组', () => {
   assert.equal(filterGroups(GROUPS, 'claude')[0].value, 'anthropic')
   assert.equal(filterGroups(GROUPS, 'zzz').length, 0)
   assert.equal(filterGroups(GROUPS, '  ').length, 2) // 空白视为不过滤
+})
+
+test('filterGroups 大小写不敏感，keywords 只参与搜索', () => {
+  const groups = [
+    {
+      value: 'g', label: 'Group', options: [
+        { value: 'a', label: '任务甲', keywords: 'task-uuid-1234' },
+        { value: 'b', label: 'GPT-4' },
+      ],
+    },
+  ]
+  assert.equal(filterGroups(groups, 'gpt')[0].options.length, 1)
+  assert.equal(filterGroups(groups, 'TASK-UUID')[0].options[0].value, 'a')
+  assert.equal(filterGroups(groups, 'uuid-1234')[0].options.length, 1)
+  assert.equal(filterGroups(groups, '甲')[0].options[0].value, 'a')
+  assert.equal(filterGroups(groups, '任务甲 task')[0].options.length, 1) // label 与 keywords 拼起来匹配
+  assert.equal(filterGroups(groups, 'zzz').length, 0)
+})
+
+test('sliceGroups 按选项条数跨组切片；0 / 负数 / 越界都不分页', () => {
+  assert.deepEqual(sliceGroups(GROUPS, 0), GROUPS)
+  assert.deepEqual(sliceGroups(GROUPS, -1), GROUPS)
+  assert.equal(flattenOptions(sliceGroups(GROUPS, 1)).length, 1)
+  assert.equal(sliceGroups(GROUPS, 1).length, 1)
+  assert.equal(flattenOptions(sliceGroups(GROUPS, 2)).length, 2)
+  assert.equal(sliceGroups(GROUPS, 3).length, 2)
+  assert.equal(flattenOptions(sliceGroups(GROUPS, 99)).length, 3)
+  // 搜索结果按同一套分页
+  assert.equal(flattenOptions(sliceGroups(filterGroups(GROUPS, 'pt'), 1)).length, 1)
 })
 
 test('toggleValue 达上限不添加、也不静默截断', () => {

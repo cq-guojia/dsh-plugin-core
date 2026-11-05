@@ -4,10 +4,10 @@
 // `ensureControls()` 退化为可选的 token 预热，不再需要调。
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './infra/css.js';
 export { useLocale } from './infra/locale.js';
-export { filterGroups, flattenOptions, groupOf, labelsOf, resolveTriggerSizing, toGroups, toggleValue, } from './inputs/picker-logic.js';
+export { filterGroups, flattenOptions, groupOf, labelsOf, resolveTriggerSizing, sliceGroups, toGroups, toggleValue, } from './inputs/picker-logic.js';
 export { Picker } from './inputs/Picker.js';
 export { DateTimePicker, } from './inputs/DateTimePicker.js';
-export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, } from './inputs/datetime-logic.js';
+export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, resolvePresetExpr, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, } from './inputs/datetime-logic.js';
 export { ModelPicker } from './inputs/ModelPicker.js';
 export { WorkspacePicker } from './inputs/WorkspacePicker.js';
 export { connectHost, getWorkspaceFiles, modelCatalog, workspaceList, } from './infra/host-data.js';

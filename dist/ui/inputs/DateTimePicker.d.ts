@@ -1,6 +1,6 @@
 import { createElement as h } from 'react';
 import { type Translate } from '../../utils/i18n.js';
-import { type DateTimePrecision } from './datetime-logic.js';
+import { type DateTimePrecision, type DateTimePreset } from './datetime-logic.js';
 export type { DateTimePrecision } from './datetime-logic.js';
 /** 触发器高度档（与 Picker 对齐）。 */
 export type DateTimeSize = 'sm' | 'md' | 'lg';
@@ -27,6 +27,10 @@ export interface DateTimePickerProps {
     className?: string;
     ariaLabel?: string;
     translate?: Translate;
+    /** 触发器总宽：数字按 px、字符串按 CSS 长度原样透传；覆盖按 precision 写死的默认宽，不做换算。 */
+    width?: number | string;
+    /** range 模式的快捷档（弹层右侧竖列）：label 可给字符串或 `{ zh, en }` 双语对象（随 setLocale 自动切），expr 走 Grafana/Elastic date math 子集（含 Q 季 / y 年），null = 清空起止。不传 = 无入口。 */
+    presets?: DateTimePreset[];
 }
 /**
  * 日期时间选择器：单值 / 时间段，精度可控（日 / 时 / 分 / 秒）。

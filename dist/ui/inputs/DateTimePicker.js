@@ -6,7 +6,7 @@ import { FieldHint } from '../display/FieldHint.js';
 import { useOverlayLocked } from '../infra/overlay.js';
 import { getLocale, t } from '../../utils/i18n.js';
 import { formatDateTimePrecision } from '../../utils/date.js';
-import { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
+import { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, resolvePresetExpr, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { DATETIME_CSS, FIELD_CSS } from '../infra/controls-css.js';
 import { PANEL_CSS } from '../infra/panel-css.js';
@@ -339,6 +339,8 @@ export function DateTimePicker(props) {
     const endValue = rangeMode ? partsOf(currentDraft.end) : null;
     const dateZone = (key, value) => h('span', { key, className: `dshpc-dt__pair-date${value === null ? ' dshpc-dt__pair-date--empty' : ''}` }, value === null ? placeholder : fmtParts(value, precision));
     const calIcon = h('span', { className: 'dshpc-dt__cal' }, ICON_CAL);
+    // 内联 width 优先级高于 WIDTH_CLASS，不传就完全走按 precision 的默认宽；过窄省略由现有 CSS 兜住。
+    const triggerWidth = props.width === undefined ? undefined : { width: typeof props.width === 'number' ? `${props.width}px` : props.width };
     const trigger = h('button', {
         type: 'button',
         'aria-label': props.ariaLabel,
@@ -346,6 +348,7 @@ export function DateTimePicker(props) {
         ref: refs.setReference,
         disabled: off,
         className: `dshpc-dt__trigger ${SIZE_CLASS[size]} ${WIDTH_CLASS(rangeMode, precision)}`.trim(),
+        style: triggerWidth,
         onClick: openPop,
     }, rangeMode
         ? h('span', { key: 'group', className: 'dshpc-dt__pair-group' }, dateZone('start', startValue), h('span', { key: 'sep', className: 'dshpc-dt__pair-sep', 'aria-hidden': true }, '-'), dateZone('end', endValue))
@@ -359,10 +362,14 @@ export function DateTimePicker(props) {
     // ── 弹层 ──
     const endBox = (side, label) => {
         const p = partsOf(draft[side]);
-        return h('button', {
+        return h(Button, {
             key: side,
-            type: 'button',
-            className: `dshpc-dt__end${active === side ? ' dshpc-dt__end--active' : ''}`,
+            variant: 'outline',
+            size: 'md',
+            block: true,
+            // 外观（圆角/边框/聚焦）全交给核心 Button；选中端走 color 轴，不就地写皮肤。
+            color: active === side ? 'var(--dshpc-business)' : undefined,
+            style: { justifyContent: 'flex-start' },
             'aria-pressed': active === side,
             onClick: () => setActive(side),
         }, 
@@ -442,6 +449,23 @@ export function DateTimePicker(props) {
                 ];
             })));
     };
+    // 快捷档只在 range 生效；每次渲染按当天重算，选中态只靠值比对（不记「谁最后动过」）。
+    const presetRows = (rangeMode && props.presets !== undefined ? props.presets : []).flatMap((p) => {
+        const label = typeof p.label === 'string' ? p.label : p.label[locale];
+        if (p.expr === null)
+            return [{ label, range: null, isClear: true }];
+        const range = resolvePresetExpr(p.expr, precision);
+        return range === null ? [] : [{ label, range, isClear: false }];
+    });
+    const currentRange = Array.isArray(current) ? current : null;
+    const applyPreset = (range) => {
+        emit(range); // 立刻给出去，不等「确定」；面板保持打开，当场看得见两端与日历一起变
+        const d = draftOf(range);
+        setDraft(d);
+        const n = nowParts();
+        const monthOf = (e) => e.day === null ? { year: n.year, month: n.month } : { year: e.day.year, month: e.day.month };
+        setViews({ start: monthOf(d.start), end: monthOf(d.end) });
+    };
     const invalidRange = rangeMode &&
         partsOf(draft.start) !== null &&
         partsOf(draft.end) !== null &&
@@ -451,9 +475,23 @@ export function DateTimePicker(props) {
         : partsOf(draft.start) !== null;
     const pop = h('div', 
     // 弹层表面积走 panel.css 的 menu 档（2026-11-03 皮肤统一）；这类名只剩定位与内距。
-    { className: 'dshpc-panel dshpc-panel--menu dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown }, rangeMode
+    { className: 'dshpc-panel dshpc-panel--menu dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown }, h('div', { className: 'dshpc-dt__layout' }, h('div', { className: 'dshpc-dt__body' }, rangeMode
         ? h('div', { className: 'dshpc-dt__ends' }, endBox('start', tt('dtStart')), endBox('end', tt('dtEnd')))
-        : null, h('div', { className: 'dshpc-dt__panels' }, panel('start'), rangeMode ? panel('end') : null), h('div', { className: 'dshpc-dt__foot' }, h('div', { className: 'dshpc-dt__foot-side' }, h(Button, { variant: 'ghost', size: 'sm', onClick: applyNow }, precision === 'day' ? tt('dtToday') : tt('dtNow')), h(Button, { variant: 'ghost', size: 'sm', onClick: clear }, tt('dtClear'))), h('div', { className: 'dshpc-dt__foot-side' }, invalidRange ? h('span', { className: 'dshpc-dt__warn' }, tt('dtInvalidRange')) : null, h(Button, { variant: 'outline', size: 'sm', onClick: () => setOpen(false) }, tt('cancel')), h(Button, { variant: 'primary', size: 'sm', disabled: !canCommit, onClick: commit }, tt('confirm')))));
+        : null, h('div', { className: 'dshpc-dt__panels' }, panel('start'), rangeMode ? panel('end') : null)), presetRows.length === 0
+        ? null
+        : h('div', { className: 'dshpc-dt__side' }, h('div', { className: 'dshpc-dt__side-scroll' }, presetRows.map((p, i) => {
+            const active = !p.isClear && p.range !== null && currentRange !== null &&
+                p.range[0] === currentRange[0] && p.range[1] === currentRange[1];
+            return h(Button, {
+                key: `${i}-${p.label}`,
+                variant: active ? 'outline' : 'ghost',
+                size: 'sm',
+                block: true,
+                color: active ? 'var(--dshpc-business)' : undefined,
+                'aria-pressed': active,
+                onClick: () => applyPreset(p.range),
+            }, p.label);
+        })))), h('div', { className: 'dshpc-dt__foot' }, h('div', { className: 'dshpc-dt__foot-side' }, h(Button, { variant: 'ghost', size: 'sm', onClick: applyNow }, precision === 'day' ? tt('dtToday') : tt('dtNow')), h(Button, { variant: 'ghost', size: 'sm', onClick: clear }, tt('dtClear'))), h('div', { className: 'dshpc-dt__foot-side' }, invalidRange ? h('span', { className: 'dshpc-dt__warn' }, tt('dtInvalidRange')) : null, h(Button, { variant: 'outline', size: 'sm', onClick: () => setOpen(false) }, tt('cancel')), h(Button, { variant: 'primary', size: 'sm', disabled: !canCommit, onClick: commit }, tt('confirm')))));
     return h('div', {
         className: `dshpc-dt${props.className === undefined ? '' : ` ${props.className}`}`,
         ref: rootRef,

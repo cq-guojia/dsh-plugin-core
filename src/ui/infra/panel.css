@@ -38,6 +38,9 @@
   --dshpc-panel-bw:1px;
   --dshpc-panel-radius:var(--dshpc-radius-sm);
   --dshpc-panel-shadow:var(--dshpc-shadow-1);
+  /* 小弹框描边比模态重一档（2026-11-06 用户：看着像被屏蔽的输入框）。
+     只改 menu 这一档，Picker 下拉 / 日期弹层 / ▾ 选层同源，modal 的 3px 边框不动。 */
+  border-color:var(--dshpc-border-heavy);
 }
 
 /* 浮层唯一的关闭钮（20×20 方角图标位）。

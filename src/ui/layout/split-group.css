@@ -15,7 +15,7 @@
 
    左格统一灰底（用户 2026-10-28 拍板）：滑块保留自己的灰轨，左格下拉把底色换成
    surface-sunken；右格保持原样。层次感 = 左格是「档位/范围」，右格是「值」。 */
-   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}
+   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}
    /* 两格宽度都由内容给；容器再窄也让内件自己省略，不让外壳被撑破 */
    .dshpc-split > *{min-width:0;max-width:100%;}
    /* 分隔：相邻兄弟的左描边，不额外插 DOM，hover / focus 时也不会断 */

@@ -4,7 +4,7 @@
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
   min-width:120px;max-width:100%;height:28px;padding:0 8px;
   color:var(--dshpc-fg);background:var(--dshpc-surface-1);
-  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);cursor:pointer;
+  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);cursor:pointer;
 }
 .dshpc-picker__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}
 /* 聚焦（键盘或点击选中）时与全站一致的蓝色描边；菜单打开后焦点会进去，触发器自然失去焦点。 */
@@ -31,8 +31,9 @@
 .dshpc-picker__search{
   width:100%;height:28px;margin-bottom:4px;padding:0 8px;box-sizing:border-box;
   color:var(--dshpc-fg);background:var(--dshpc-surface-sunken);
-  border:1px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-md);outline:none;
+  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);outline:none;
 }
+.dshpc-picker__search::placeholder{color:var(--dshpc-fg-3)}
 .dshpc-picker__group-label{
   padding:6px 8px 2px;color:var(--dshpc-fg-3);font-size:11px;
 }
@@ -53,3 +54,11 @@
   font-size:11px;
 }
 .dshpc-picker__row{display:flex;align-items:center;gap:8px}
+/* 「显示更多」吸在滚动容器底部：不新增滚动层，列表再长也点得到。 */
+.dshpc-picker__more{
+  position:sticky;bottom:0;display:block;width:100%;margin-top:4px;padding:6px 8px;
+  color:var(--dshpc-business);background:var(--dshpc-surface-1);
+  border:0;border-top:1px solid var(--dshpc-border-faint);cursor:pointer;
+  font-size:12px;line-height:20px;text-align:center;
+}
+.dshpc-picker__more:hover{background:var(--dshpc-surface-sunken)}
