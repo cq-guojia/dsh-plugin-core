@@ -1,7 +1,7 @@
 # 20261105-1440-2653-picker-与-datetimepicker-四项增强: Picker 与 DateTimePicker 四项增强
 
 - **Tags**: Picker, DateTimePicker, 搜索, 分页, 预设档
-- **Status**: doing · 2026-11-05 17:20:07 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-05 17:33:07 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-05 14:40:50 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -26,6 +26,7 @@
 ## To Do
 
 - 真机（DSH 宿主）观感未验：右列定宽 76px 在中英文下的留白、11 档列内滚动条与竖线、右列高度是否贴齐左侧日历区；暗色配色、200px 宽下省略表现；`limit=10` 的「显示更多」点击效果需真机点一次。
+- 四轮返工的真机观感未验：明暗两主题下输入类外框 / 提示文字加深后是否仍像禁用、虚线待补块的 16px 下间距、小弹框描边加重程度、端框 md 档与两块日历的视觉比例。
 - 外部事实（Grafana / Elastic / AntD / MUI 官方文档）是否单独落 `docs/design/external/` 待用户定，本轮随 `ui.doc.ts` 的中英说明引用。
 - 未提交、未打 tag（用户未说提交 / 发版）。
 
@@ -55,9 +56,15 @@ DateTimePicker 默认宽是 6 个 CSS 类按精度写死（`datetime.css:39-44` 
 坑 3：上一轮替换 `datetime.css` 因 old_str 与当时实际文本不符而失败，`DateTimePicker.ts:734` 已引用 `.dshpc-dt__side-scroll` 但 CSS 未定义；本轮重读原文后补齐，没有留半成品。坑 4：删掉旧的透明边框会让 `test/quality.test.mjs:95` 报红，补回后 304 项全绿。
 三次返工后复验：`pnpm run build` / `pnpm test` 304 全绿 / `pnpm run build:demo` / `pnpm run typecheck` / `koc-codelint` 22 文件六层全过；`datetime-css.generated.ts` 已含新类。
 
+四次返工（2026-11-06，用户四条）：① 所有 input 明暗两主题下边框与提示文字太淡、像禁用；② demo 虚线待补块与下方内容贴死；③ 日期的框应走统一的小弹框样式；④ 「开始 / 结束」端框太小。
+查证：淡的根源是 `--dshpc-border`（l2 10%）与 `--dshpc-fg-dim`（label-dimmed），两者都跟宿主 alias 走、明暗自动跟随；`panel.css:1-15` 是浮层皮肤唯一真源，`DateTimePicker.ts:705` 与 `Picker.ts:275` 都挂 `dshpc-panel dshpc-panel--menu`，即**早已统一**，`ensureComponentStyles('panel', PANEL_CSS)` 两边都有（`DateTimePicker.ts:198`、`Picker.ts:83`）。
+改法：输入类外框统一吃已有的 `--dshpc-border-heavy`（l4 16%），placeholder / 空值提示吃 `--dshpc-fg-3`（tertiary）——覆盖 `field.css`（Input/PrefixedInput/NumberInput/Textarea）、`input-group.css`、`split-group.css`、`picker.css`（触发器 + 搜索框，并补搜索框 placeholder 色）、`datetime.css`（触发器 + 步进值 + 三处空值提示）；不动四档梯度、不改 token 定义，禁用态与日历补位格保持原样。`panel.css` 只在 `--menu` 档加 `border-color:var(--dshpc-border-heavy)`，Picker 下拉 / 日期弹层 / ▾ 选层同源，modal 3px 边框不动。demo `Placeholder` 补 `marginBottom:16px`（与 `.dshpc-doc-example` / `.dshpc-doc-block` 的 16px 一致）。端框 `size` sm→md（`DateTimePicker.ts:514`），内部 label/value 字号跟到 `--dshpc-font-sm` / `--dshpc-font-md`；`ui.doc.ts` 中英说明同步。
+坑 5：先把 `.dshpc-panel` 基础边框改成 heavy，`test/quality.test.mjs:76` 硬断言（滚动条让位白名单的前提）立刻报红；不弱化断言，恢复基础边框、只在 menu 档覆盖颜色，304 项恢复全绿。
+四次返工后复验：`pnpm run build` / `pnpm test` 304 全绿 / `pnpm run build:demo` / `pnpm run typecheck` / `koc-codelint` 31 文件六层全过。
+
 ## Conclusion
 
-四项全部落地并随 `dist/` 与 demo `dist/` 入库：Picker `limit` / `keywords`、DateTimePicker `presets`（date math 子集 + 按值比对高亮 + 立即 emit 不关面板）、`width`；并按用户真机反馈完成复用核心 `Button`、弹层左右分栏、英文缩写 + 右列定宽且高度贴左 + 列内滚动三轮返工。文档真源 `docs/help/ui.doc.ts` 及两个生成投影、demo 示例、中英字典、纯逻辑单测同步完成；全量自检与基础代码检查全绿。
+四项全部落地并随 `dist/` 与 demo `dist/` 入库：Picker `limit` / `keywords`、DateTimePicker `presets`（date math 子集 + 按值比对高亮 + 立即 emit 不关面板）、`width`；并按用户真机反馈完成复用核心 `Button`、弹层左右分栏、英文缩写 + 右列定宽且高度贴左 + 列内滚动、输入类描边与提示文字加深 + demo 待补块间距 + 小弹框描边 + 端框加大一号四轮返工。文档真源 `docs/help/ui.doc.ts` 及两个生成投影、demo 示例、中英字典、纯逻辑单测同步完成；全量自检与基础代码检查全绿。
 未做：真机再次观感验证、外部事实单独落槽位文档、提交 / 打 tag（均需用户指令）。
 
 ## Execution Log
@@ -71,3 +78,4 @@ DateTimePicker 默认宽是 6 个 CSS 类按精度写死（`datetime.css:39-44` 
 - 2026-11-05 16:46:48 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 真机反馈返工：快捷按钮与两个端框改用核心 Button（去掉就地皮肤、圆角统一）；弹层改左右分栏（左=端框+两块日历上下对齐，右=竖列快捷档+竖线+溢出滚动）；demo「全部」改「清除」、second 精度实例也开 presets；文档真源同步。复验 build/test 304 全绿/build:demo/typecheck/codelint 全过
 - 2026-11-05 16:58:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 二次返工（用户真机）：右列宽度改 max-content 自适应（中文两字窄/英文最长档撑开）、快捷按钮文字居中；核心 DateTimePreset.label 支持 {zh,en} 双语对象并按 getLocale 解析，demo 全部改双语（此前硬编码中文导致切英文不变）；新增 now/Q、now-1Q/Q、now/y、now-1y/y 四档并给解析器补 Q 季单位。build/test 304 全绿/build:demo/typecheck/codelint 全过
 - 2026-11-05 17:20:07 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 三次返工：datetime.css 右列改定宽 76px + .dshpc-dt__side-scroll 内部滚动，高度由 .dshpc-dt__layout 的 stretch 跟左区拉齐；demo 与 CODE_DATETIME 英文缩写、ui.doc.ts 中英叙述同步；build/test 304 全绿/build:demo/typecheck/codelint 22 文件全过。待真机看英文缩写与滚动条
+- 2026-11-05 17:33:07 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 四次返工（用户四条）：输入类外框统一吃 --dshpc-border-heavy、提示文字吃 --dshpc-fg-3（field/input-group/split-group/picker/datetime.css），panel.css 只在 menu 档加重描边（避开 quality.test.mjs:76 硬断言）；demo Placeholder 补 16px 下间距；端框 size sm→md 且字号跟档、ui.doc.ts 中英同步。查证 DateTimePicker.ts:705 与 Picker.ts:275 浮层本就同挂 dshpc-panel--menu。build/test 304 全绿/build:demo/typecheck/codelint 31 文件全过。待真机看明暗对比与端框比例
