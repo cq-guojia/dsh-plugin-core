@@ -1,7 +1,7 @@
 # 20261105-1440-2653-picker-与-datetimepicker-四项增强: Picker 与 DateTimePicker 四项增强
 
 - **Tags**: Picker, DateTimePicker, 搜索, 分页, 预设档
-- **Status**: doing · 2026-11-05 16:58:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-05 17:20:07 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-05 14:40:50 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -25,13 +25,13 @@
 
 ## To Do
 
-- 真机（DSH 宿主）观感未验：弹层右列撑宽、暗色配色、200px 宽下省略表现；`limit=10` 的「显示更多」点击效果需真机点一次。
+- 真机（DSH 宿主）观感未验：右列定宽 76px 在中英文下的留白、11 档列内滚动条与竖线、右列高度是否贴齐左侧日历区；暗色配色、200px 宽下省略表现；`limit=10` 的「显示更多」点击效果需真机点一次。
 - 外部事实（Grafana / Elastic / AntD / MUI 官方文档）是否单独落 `docs/design/external/` 待用户定，本轮随 `ui.doc.ts` 的中英说明引用。
 - 未提交、未打 tag（用户未说提交 / 发版）。
 
 ## Next
 
-宿主里更新 demo 插件后真机点一次：`limit=10` 的「显示更多」、贴 `uuid-0007` 搜到任务 8、预设列选「上周」立即生效且面板不关、手改起止后高亮消失、`width: 320` 的触发器宽度。真机过了再请用户验收结案。
+宿主里更新 demo 插件后真机点一次：`limit=10` 的「显示更多」、贴 `uuid-0007` 搜到任务 8、预设列选「上周」立即生效且面板不关、手改起止后高亮消失、`width: 320` 的触发器宽度；重点看第三轮返工：切英文后右列是否还撑宽、11 档是否只在列内滚而不把弹层撑高、右列高度是否贴齐左侧日历区。真机过了再请用户验收结案。
 
 ## Process
 
@@ -51,9 +51,13 @@ DateTimePicker 默认宽是 6 个 CSS 类按精度写死（`datetime.css:39-44` 
 ⚠️ 口径变化：range 两个端框的外观现在随核心 `Button`，**不传 presets 时也不再与旧版逐像素一致** —— 这是用户明确要求的统一，已同步 `docs/help/ui.doc.ts` 中英说明。
 返工后复验：`pnpm run build` / `pnpm test` 304 全绿 / `pnpm run build:demo` / `pnpm run typecheck` / `koc-codelint` 六层全过。
 
+三次返工（2026-11-06，用户截图）：`max-content` 让英文全称把右列撑出弹层，11 档又把右列撑得比左边高。改法：demo 英文标签一律缩写（`Last W` / `This Q` / `Last Y` …），`CODE_DATETIME` 同步；`.dshpc-dt__side` 改 `position:relative` + 定宽 76px（容得下英文缩写最长那档 + 滚动条），高度交给 `.dshpc-dt__layout` 的 `align-items:stretch` 跟左区拉齐；按钮移进 `.dshpc-dt__side-scroll`（`position:absolute;inset:0 0 0 9px;overflow-y:auto`），`flex:none` 防压缩、`border-right:1px solid transparent` 满足 `test/quality.test.mjs:72` 滚动条让位自检。`docs/help/ui.doc.ts` 中英叙述与 API row 统一为「列宽固定、列高等于左区、列内滚动」。
+坑 3：上一轮替换 `datetime.css` 因 old_str 与当时实际文本不符而失败，`DateTimePicker.ts:734` 已引用 `.dshpc-dt__side-scroll` 但 CSS 未定义；本轮重读原文后补齐，没有留半成品。坑 4：删掉旧的透明边框会让 `test/quality.test.mjs:95` 报红，补回后 304 项全绿。
+三次返工后复验：`pnpm run build` / `pnpm test` 304 全绿 / `pnpm run build:demo` / `pnpm run typecheck` / `koc-codelint` 22 文件六层全过；`datetime-css.generated.ts` 已含新类。
+
 ## Conclusion
 
-四项全部落地并随 `dist/` 与 demo `dist/` 入库：Picker `limit` / `keywords`、DateTimePicker `presets`（date math 子集 + 按值比对高亮 + 立即 emit 不关面板）、`width`；并按用户真机反馈完成复用核心 `Button` 与弹层左右分栏的返工。文档真源 `docs/help/ui.doc.ts` 及两个生成投影、demo 示例、中英字典、纯逻辑单测同步完成；全量自检与基础代码检查全绿。
+四项全部落地并随 `dist/` 与 demo `dist/` 入库：Picker `limit` / `keywords`、DateTimePicker `presets`（date math 子集 + 按值比对高亮 + 立即 emit 不关面板）、`width`；并按用户真机反馈完成复用核心 `Button`、弹层左右分栏、英文缩写 + 右列定宽且高度贴左 + 列内滚动三轮返工。文档真源 `docs/help/ui.doc.ts` 及两个生成投影、demo 示例、中英字典、纯逻辑单测同步完成；全量自检与基础代码检查全绿。
 未做：真机再次观感验证、外部事实单独落槽位文档、提交 / 打 tag（均需用户指令）。
 
 ## Execution Log
@@ -66,3 +70,4 @@ DateTimePicker 默认宽是 6 个 CSS 类按精度写死（`datetime.css:39-44` 
 - 2026-11-05 15:29:35 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 四项实现完成：sliceGroups/filterGroups(keywords)、resolvePresetExpr(date math 子集)、presets 弹层右列+按值比对+立即 emit 不关面板、width 内联覆盖；文档真源/生成投影/demo/中英字典/单测同步；build 干净、pnpm test 304 全绿、build:demo 出产物、typecheck 双配置干净、koc-codelint 六层全过。待真机观感验收；未提交未打 tag
 - 2026-11-05 16:46:48 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 真机反馈返工：快捷按钮与两个端框改用核心 Button（去掉就地皮肤、圆角统一）；弹层改左右分栏（左=端框+两块日历上下对齐，右=竖列快捷档+竖线+溢出滚动）；demo「全部」改「清除」、second 精度实例也开 presets；文档真源同步。复验 build/test 304 全绿/build:demo/typecheck/codelint 全过
 - 2026-11-05 16:58:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 二次返工（用户真机）：右列宽度改 max-content 自适应（中文两字窄/英文最长档撑开）、快捷按钮文字居中；核心 DateTimePreset.label 支持 {zh,en} 双语对象并按 getLocale 解析，demo 全部改双语（此前硬编码中文导致切英文不变）；新增 now/Q、now-1Q/Q、now/y、now-1y/y 四档并给解析器补 Q 季单位。build/test 304 全绿/build:demo/typecheck/codelint 全过
+- 2026-11-05 17:20:07 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 三次返工：datetime.css 右列改定宽 76px + .dshpc-dt__side-scroll 内部滚动，高度由 .dshpc-dt__layout 的 stretch 跟左区拉齐；demo 与 CODE_DATETIME 英文缩写、ui.doc.ts 中英叙述同步；build/test 304 全绿/build:demo/typecheck/codelint 22 文件全过。待真机看英文缩写与滚动条
