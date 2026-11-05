@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261105-0600-bde5-整理控件归类与文档结构": {"category": "重构", "created": "2026-11-05 06:00:31", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-05 06:00:31", "status": "doing", "tags": ["控件归类", "文档结构", "ui", "docs"], "title": "整理控件归类与文档结构", "updated": "2026-11-05 06:30:25", "worklog": "worklog/202611/05-0600-bde5-整理控件归类与文档结构.md"}
+    "20261105-0600-bde5-整理控件归类与文档结构": {"category": "重构", "created": "2026-11-05 06:00:31", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-05 06:00:31", "status": "doing", "tags": ["控件归类", "文档结构", "ui", "docs"], "title": "整理控件归类与文档结构", "updated": "2026-11-05 06:33:40", "worklog": "worklog/202611/05-0600-bde5-整理控件归类与文档结构.md"}
   },
   "version": "20261022000000"
 }
