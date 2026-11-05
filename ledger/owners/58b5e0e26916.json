@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261105-0919-ab71-对齐新版宿主会话预览样式": {"category": "缺陷修复", "created": "2026-11-05 09:19:52", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-05 09:19:52", "status": "doing", "tags": ["会话预览", "样式对齐", "宿主升级", "0.2.2-rc.1"], "title": "对齐新版宿主会话预览样式", "updated": "2026-11-05 12:50:02", "worklog": "worklog/202611/05-0919-ab71-对齐新版宿主会话预览样式.md"}
+    "20261105-0919-ab71-对齐新版宿主会话预览样式": {"category": "缺陷修复", "created": "2026-11-05 09:19:52", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-05 09:19:52", "status": "doing", "tags": ["会话预览", "样式对齐", "宿主升级", "0.2.2-rc.1"], "title": "对齐新版宿主会话预览样式", "updated": "2026-11-05 12:55:16", "worklog": "worklog/202611/05-0919-ab71-对齐新版宿主会话预览样式.md"}
   },
   "version": "20261022000000"
 }
