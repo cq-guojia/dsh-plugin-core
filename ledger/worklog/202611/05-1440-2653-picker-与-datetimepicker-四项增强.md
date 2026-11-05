@@ -1,8 +1,9 @@
 # 20261105-1440-2653-picker-与-datetimepicker-四项增强: Picker 与 DateTimePicker 四项增强
 
 - **Tags**: Picker, DateTimePicker, 搜索, 分页, 预设档
-- **Status**: doing · 2026-11-05 17:49:49 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-05 17:57:31 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-05 14:40:50 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-05 17:57:31 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -83,3 +84,4 @@ DateTimePicker 默认宽是 6 个 CSS 类按精度写死（`datetime.css:39-44` 
 - 2026-11-05 17:43:07 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已按用户指令提交并推送 3105ff9（74 文件；排除 src/adv/session、dist/adv/session、tools 等他人改动）。随后核对浮层档位：pickWorkspaceFile 用 PanelSurface({tier:'popover'})（open.ts:478-480），日期弹层原手拼 dshpc-panel--menu，圆角 8px vs 16px；按 panel.css:9-10 分工改到 popover 档，popover 档补同口径加重描边，注释与 CSS 投影同步。build/test 304 全绿/build:demo/typecheck/codelint 11 文件全过。档位改动未提交
 - 2026-11-05 17:47:12 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户截图指出 single 弹层右侧大块空白：底部四个英文按钮把弹层撑宽，而 datetime.css 的 grid 写死 7×30px=222px。cancel/confirm 是全站字典（i18n.ts:605-606,1122-1123，Modal 等共用）不能为日期单独缩写，缩 Today/Clear 仍消不掉空白 ⇒ 走自适应：grid 改 repeat(7,minmax(30px,1fr))、panel 改 flex:1 1 auto 填满 body；中文按钮短仍 30px，英文自动拉开。build/test 304 全绿/build:demo/typecheck/codelint 11 文件全过。popover 档位改动与本轮改动均未提交
 - 2026-11-05 17:49:49 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户报高亮 bug 并追加两项：① 快捷档选中态错用已提交的 current（DateTimePicker.ts:682），改为按弹层里 draft 算（起点 floor / 终点 ceil，与 resolvePresetExpr 同口径），与日历/端框同源；② menu 档（Picker 下拉 Picker.ts:275、文件浏览器 ▾ 选层 crumb-nav.ts:115）圆角改 lg 16px，与 popover 统一；③ 触发器 sm/md/lg 补齐内距 8/10/12 与字号 sm=12、md/lg=13，与 .dshpc-input:21-23 逐项对齐。build/test 304 全绿/build:demo/typecheck/codelint 11 文件全过。本轮及上两轮改动均未提交
+- 2026-11-05 17:57:31 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: Picker/DateTimePicker 四项增强与四轮真机返工全部落地并发布 v0.34.0：limit 跨组分页、keywords 只搜不渲染、presets 快捷档(date math 子集/双语缩写/定宽列内滚动)、width、端框 md；浮层改 panel.css popover 档与选文件弹窗同档、日历列宽自适应、快捷档按草稿高亮；统一浮层与下拉圆角 16px、触发器 sm/md/lg 内距字号对齐 Input；输入类描边与提示文字加深、小弹框描边加重、demo 待补块间距、英文占位缩写。build/304 项自检/build:demo/typecheck/codelint 全绿。
