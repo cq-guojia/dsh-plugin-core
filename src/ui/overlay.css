@@ -9,8 +9,18 @@
   position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;
   background:var(--dshpc-mask);
 }
-/* 锁定态：面板是 inert（不参与命中测试），鼠标落点其实落在遮罩上 —— 禁止手势挂这层才看得见。 */
+/* 锁定态：禁用手势挂在遮罩上（面板外那一圈也要一致）。 */
 .dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}
+/* 锁定时的透明点击层：吃指针、不改任何外观（变灰由各控件自己的 :disabled 负责）。
+   全透明是刻意的 —— 盖一层灰会让人以为界面坏了。 */
+.dshpc-lock-catcher{position:absolute;inset:0;z-index:1;cursor:not-allowed}
+/* 锁定态：消费方自绘的原生表单元素也「看起来禁用」。
+   整条选择器包在 :where() 里 = 特异性 0 —— 消费方任意一条自己的规则都能盖回来，我们只当默认值。
+   只写 opacity / cursor 两个属性；不想被灰就在自己元素上写 --dshpc-lock-dim: 1。
+   解锁 = 规则不再匹配，不存在「还原」，也就不会冲掉别人写的样式。 */
+:where(.dshpc-locked button:not(:disabled),.dshpc-locked input:not(:disabled),.dshpc-locked select:not(:disabled),.dshpc-locked textarea:not(:disabled)){
+  opacity:var(--dshpc-lock-dim);cursor:not-allowed;
+}
 /* 居中档（Modal）：z 走 modal 档。 */
 .dshpc-overlay--center{
   display:flex;align-items:center;justify-content:center;

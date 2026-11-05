@@ -1786,9 +1786,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [largeOpenB, setLargeOpenB] = useState(false)
   const [asyncOpen, setAsyncOpen] = useState(false)
   const [saving, setSaving] = useState(false)
-  // 锁定态演示：开框即锁 2 秒（锁住期间框里点不动，所以解锁只能由外部定时器给）
-  const [lockDemoOpen, setLockDemoOpen] = useState(false)
-  const [lockDemoBusy, setLockDemoBusy] = useState(false)
+
   // footer 过程提示：跑的时候逐句换文案，换一句翻一次牌
   const [noticeOpen, setNoticeOpen] = useState(false)
   const [noticeText, setNoticeText] = useState('')
@@ -1979,6 +1977,25 @@ export function FeedbackPage(): ReturnType<typeof h> {
                 notify(ok ? '已释放' : '已取消')
               },
             }, 'confirmModal() · loading 只留圈'),
+            // 锁定与 loading 解耦：不是按钮转圈，是整框谁都别动，跑完自己解开
+            h(Button, {
+              variant: 'outline',
+              onClick: async () => {
+                const ok = await confirmModal({
+                  title: '发布版本',
+                  message: '点「发布」后整框锁 2 秒：两颗钮变禁用样、点不动，✕ / Esc 也关不掉；2 秒后自动**解开**、弹窗留着，让你看清「又能点了」。',
+                  confirmText: '发布', cancelText: '取消',
+                  onConfirm: async (ctl) => {
+                    ctl.setLocked(true)
+                    await new Promise((resolve) => { setTimeout(resolve, 2000) })
+                    ctl.setLocked(false)
+                    // 返回 false = 这次不算成：框不关，留着看解封后的样子；要关就点「取消」
+                    return false
+                  },
+                })
+                notify(ok ? '已发布' : '已取消')
+              },
+            }, 'confirmModal() · 提交时整框锁住'),
           ),
         ),
       ),
@@ -2034,40 +2051,6 @@ export function FeedbackPage(): ReturnType<typeof h> {
                   ),
                   h('div', { className: 'dshpc-overlay-head__sid' }, '共 128 条 · 最近更新 2 分钟前'),
                 ),
-              )
-            : null,
-        ),
-        h(
-          'div',
-          null,
-          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, '锁定态 locked（与 loading 无关：整框谁都别动）'),
-          h(
-            Button,
-            {
-              variant: 'outline',
-              onClick: () => {
-                setLockDemoOpen(true)
-                setLockDemoBusy(true)
-                setTimeout(() => setLockDemoBusy(false), 2000)
-              },
-            },
-            '打开并锁定 2 秒',
-          ),
-          lockDemoOpen
-            ? h(
-                Modal,
-                {
-                  size: 'sm',
-                  title: '正在提交',
-                  locked: lockDemoBusy,
-                  onClose: () => setLockDemoOpen(false),
-                  footer: h(
-                    Button,
-                    { variant: 'primary', loading: lockDemoBusy, onClick: () => setLockDemoOpen(false) },
-                    lockDemoBusy ? '提交中' : '完成',
-                  ),
-                },
-                h('div', null, '前 2 秒整框锁死：这一行字点不动、Tab 也进不来、鼠标是禁止手势、✕ 与 Esc 都不关；2 秒后自动解开，底下的按钮就能点了。'),
               )
             : null,
         ),

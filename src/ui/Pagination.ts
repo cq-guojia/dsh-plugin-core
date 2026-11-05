@@ -5,6 +5,7 @@ import { PAGINATION_CSS } from './controls-css.js'
 import { Picker } from './Picker.js'
 import { Button } from './Button.js'
 import { Chevron } from './chevron.js'
+import { useOverlayLocked } from './overlay.js'
 import {
   clampPage,
   pageCountOf,
@@ -80,7 +81,8 @@ export function Pagination(props: PaginationProps): ReactNode {
 
   if (props.hideOnSinglePage === true && count <= 1) return null
 
-  const disabled = props.disabled === true
+  const locked = useOverlayLocked()
+  const disabled = props.disabled === true || locked
   const [from, to] = pageRange(page, pageSize, total)
 
   const go = (next: number): void => {

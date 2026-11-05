@@ -94,6 +94,7 @@ export function Picker(props) {
     }, [open]);
     // 外层浮层锁死就收起：菜单是 portal 到 body 的，不在面板的 inert 子树里，锁不住。
     const overlayLocked = useOverlayLocked();
+    const off = props.disabled === true || overlayLocked;
     useEffect(() => {
         if (overlayLocked)
             setOpen(false);
@@ -158,9 +159,9 @@ export function Picker(props) {
         ref: refs.setReference,
         className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === 'center' ? ' dshpc-picker__trigger--center' : ''}`,
         style: triggerStyle,
-        disabled: props.disabled === true,
+        disabled: off,
         onClick: () => {
-            if (props.disabled !== true)
+            if (!off)
                 setOpen(!open);
         },
     }, props.icon !== undefined && props.icon !== null

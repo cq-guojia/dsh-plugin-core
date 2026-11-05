@@ -5,6 +5,7 @@ import { PAGINATION_CSS } from './controls-css.js';
 import { Picker } from './Picker.js';
 import { Button } from './Button.js';
 import { Chevron } from './chevron.js';
+import { useOverlayLocked } from './overlay.js';
 import { clampPage, pageCountOf, pageItems, pageRange, } from './pagination-logic.js';
 /**
  * 分页（`‹ Previous  1 [2] 3 … 36  Next ›`）。
@@ -21,7 +22,8 @@ export function Pagination(props) {
     const page = clampPage(props.page, count);
     if (props.hideOnSinglePage === true && count <= 1)
         return null;
-    const disabled = props.disabled === true;
+    const locked = useOverlayLocked();
+    const disabled = props.disabled === true || locked;
     const [from, to] = pageRange(page, pageSize, total);
     const go = (next) => {
         if (disabled)

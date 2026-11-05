@@ -15,7 +15,7 @@ import { t, type Translate } from '../utils/i18n.js'
 import { ensureComponentStyles } from './css.js'
 import { SIDE_PANEL_CSS } from './side-panel-css.js'
 import { SIDE_SHEET_CSS } from './side-sheet-css.js'
-import { OverlayLockedProvider, OverlayMask, useEscapeClose } from './overlay.js'
+import { OverlayLockCatcher, OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from './overlay.js'
 import { startResizeLayoutWidth } from './resizer.js'
 import { FlipText } from './FlipText.js'
 
@@ -86,6 +86,7 @@ export function SideSheet(props: SideSheetProps): ReactNode {
   const denyClose = busy || locked
   const closeOnMask = !denyClose && props.closeOnMask !== false
   useEscapeClose(!denyClose && props.escClose !== false, denyClose ? undefined : props.onClose)
+  useLockGuards(locked)
   // 空串等同于没给：抽屉常驻渲染时，传 "" 就能把上一轮的提示清干净、不留占位。
   const notice = props.notice === '' ? undefined : props.notice
 
@@ -176,12 +177,10 @@ export function SideSheet(props: SideSheetProps): ReactNode {
       h(
         'section',
         {
-          // 与 Modal 同一套：inert 一次封住点击 + Tab 焦点 + 输入，不碰任何子控件的 disabled。
-          ...(locked ? { inert: '' } : {}),
           ref: (element: HTMLElement | null): void => {
             panelRef.current = element
           },
-          className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? ' dshpc-sheet--leaving' : ''}${locked ? ' dshpc-sheet--locked' : ''}`,
+          className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? ' dshpc-sheet--leaving' : ''}${locked ? ' dshpc-locked' : ''}`,
           style: { width: `${width}px` },
           // 收起动画结束才卸载；入场动画结束（leaving=false）在这里不算数。
           onAnimationEnd: (): void => {
@@ -213,6 +212,8 @@ export function SideSheet(props: SideSheetProps): ReactNode {
               notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice', sweep: true }),
               props.footer,
             ),
+        // 与 Modal 同一套：透明点击层兜住自绘元素，变灰归各控件自己的 :disabled。
+        locked ? h(OverlayLockCatcher) : null,
       ),
     ),
   )

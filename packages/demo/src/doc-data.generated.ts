@@ -2847,8 +2847,8 @@ export const docData = {
         "en": "The callback’s return value decides whether it closes: **only `false`** (returned directly, or resolved to `false`) means it did not succeed — the dialog stays for a retry; `true` / `undefined` / anything else closes as usual; a rejection also keeps it open (the error is logged). The callback owns its failure message, so call sites need no `try/catch`."
       },
       {
-        "zh": "**要「整框谁都别动」就传 `locked`**，别拿按钮 loading 顶替 —— 两者是两件事：loading 只管那一颗按钮转圈，`locked` 管整块面板不可交互（自绘滑块、原生 input、下位选择器一并管住）+ 三条关闭路径失效 + 压灰与禁止手势。声明式传 `locked={saving}` 即可；它是受控项，不传 = 未锁，关掉重开自然复位，也不会改动任何子控件自己的 `disabled`。命令式那两个函数的回调会收到 `ctl`（`{ setLocked(bool) }`），在异步过程中自己开 / 关：`onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`；框关掉之后再调 `setLocked` 是空操作。",
-        "en": "**When the whole dialog must be untouchable, pass `locked`** — do not fake it with button loading: loading only spins that one button, while `locked` makes the entire panel non-interactive (custom sliders, native inputs and selects included), disables all three close paths, dims the surface and shows a not-allowed cursor. Declaratively just pass `locked={saving}`; it is controlled and stateless — omitted means unlocked, reopening starts clean, and it never touches a child’s own `disabled`. The two imperative dialogs hand their callbacks a `ctl` (`{ setLocked(bool) }`) so you can flip it mid-flight: `onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`. Calling `setLocked` after the dialog closed is a no-op."
+        "zh": "**要「整框谁都别动」就传 `locked`**，别拿按钮 loading 顶替 —— 两者是两件事：loading 只管那一颗按钮转圈，`locked` 管整块面板。做法是**控件各自按自己的禁用态渲染**（Button / Input / Textarea / Checkbox / Segmented / Picker / 日期选择 / 分页 都会自己变灰并真的禁用，Tab 自然跳过），再盖一层**全透明**点击层兜住自绘元素与鼠标 —— 所以界面不会整体蒙灰（蒙灰会让人以为坏了），只有控件自己变灰 + 禁止手势。它**只做「或」、从不写回**任何 `disabled`：本来禁用的解锁后照样禁用，锁定期间你把某个控件改成能用 / 禁用，解锁后也照你的。声明式传 `locked={saving}` 即可；受控项，不传 = 未锁，关掉重开自然复位。命令式那两个函数的回调会收到 `ctl`（`{ setLocked(bool) }`）：`onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`；框关掉之后再调是空操作。",
+        "en": "**When the whole dialog must be untouchable, pass `locked`** — do not fake it with button loading: loading only spins that one button, while `locked` covers the whole panel. It works by letting **each control render its own disabled state** (Button / Input / Textarea / Checkbox / Segmented / Picker / date picker / pagination all dim themselves and are genuinely disabled, so Tab skips them), plus a **fully transparent** click layer that catches self-drawn elements and the pointer — so the surface is never dimmed as a whole (a veil reads as \"the app broke\"); only the controls dim and the cursor turns not-allowed. It **only ORs and never writes back** any `disabled`: already-disabled controls stay disabled after unlocking, and anything you flip mid-lock stays as you left it. Declaratively pass `locked={saving}`; it is controlled and stateless — omitted means unlocked, reopening starts clean. The imperative dialogs hand their callbacks a `ctl` (`{ setLocked(bool) }`): `onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`. Calling it after the dialog closed is a no-op."
       }
     ],
     "api": [
@@ -3072,8 +3072,8 @@ export const docData = {
             "type": "boolean",
             "def": "false",
             "desc": {
-              "zh": "**锁死全部交互**（与 loading 解耦）：面板整块 `inert` —— 里面任何控件（自绘滑块、原生 input、按钮、下拉）点不到、Tab 也进不去；三条关闭路径同时失效；压一层灰 + 鼠标变禁止手势。受控项、不落内部 state（关掉重开自然回到未锁）；不碰子控件的 `disabled`，原本禁用的解锁后照样禁用",
-              "en": "**Locks every interaction** (decoupled from loading): the panel becomes `inert` — no control inside (custom slider, native input, button, select) can be clicked or reached with Tab; all three close paths stop working; a dim layer plus a not-allowed cursor. Controlled and stateless (reopening starts unlocked); it never touches a child’s `disabled`, so already-disabled controls stay disabled after unlocking"
+              "zh": "**锁死全部交互**（与 loading 解耦）：面板里的核心控件各自按**自己的禁用态**渲染（灰掉、点不动、Tab 跳过），再盖一层**全透明**点击层兜住自绘元素与鼠标（禁止手势）—— **不压任何灰色遮罩**；同时 Tab 键整个吃掉、锁定瞬间把面板里的活动焦点 blur 掉（自绘的 input 也打不了字）；三条关闭路径同时失效。自绘的原生表单元素会顺带**近似变灰**（一条特异性为 0 的规则，只写 opacity / cursor，被你自己任何一条规则或 `--dshpc-lock-dim: 1` 覆盖掉）。只做「或」、不写回调用方的 `disabled`：本来禁用的解锁后照样禁用，锁定期间改的也不被覆盖。受控项、不落内部 state（关掉重开自然回到未锁）",
+              "en": "**Locks every interaction** (decoupled from loading): core controls inside render in **their own disabled state** (dimmed, unclickable, skipped by Tab), plus a **fully transparent** click layer that catches self-drawn elements and the pointer (not-allowed cursor) — **no dim veil at all**; Tab is swallowed outright and whatever was focused inside is blurred on lock (so a self-drawn input cannot be typed into); all three close paths stop working. Self-drawn native form elements get an **approximate dim** too (one zero-specificity rule writing only opacity / cursor, beaten by any rule of yours or by `--dshpc-lock-dim: 1`). It only ORs and never writes back a caller’s `disabled`: already-disabled controls stay disabled after unlocking, and mid-lock changes are not overwritten. Controlled and stateless (reopening starts unlocked)"
             }
           },
           {
@@ -3479,8 +3479,8 @@ export const docData = {
             "type": "boolean",
             "def": "false",
             "desc": {
-              "zh": "锁死全部交互（含义同 `Modal.locked`）：抽屉整块 `inert`、点不到也 Tab 不进去，三条关闭路径同时失效，压一层灰 + 禁止手势",
-              "en": "Lock every interaction (same as `Modal.locked`): the drawer goes `inert` — no clicks, no Tab — all three close paths stop working, plus a dim layer and a not-allowed cursor"
+              "zh": "锁死全部交互（含义同 `Modal.locked`）：核心控件各自按自己的禁用态渲染 + 全透明点击层 + 三条关闭路径失效；不压灰色遮罩、不写回任何 `disabled`",
+              "en": "Lock every interaction (same as `Modal.locked`): core controls render in their own disabled state, a fully transparent click layer catches the rest, all three close paths stop working; no dim veil and no writing back to any `disabled`"
             }
           },
           {

@@ -5,25 +5,29 @@
  * 标记色默认随业务色；高危确认可传 `accentColor`（如 `var(--dshpc-warning)`）染橙。
  */
 import { createElement as h } from 'react';
+import { useOverlayLocked } from './overlay.js';
 /** 勾选框（label + input 一体，整行可点）。 */
 export function Checkbox(props) {
     const { checked, onChange, label, accentColor, disabled, className } = props;
+    // 锁定时按自己的禁用态渲染，只做「或」—— 不写回调用方的 disabled，解锁即还原。
+    const locked = useOverlayLocked();
+    const off = disabled === true || locked;
     return h('label', {
         className: `dshpc-checkbox${className !== undefined && className !== '' ? ` ${className}` : ''}`,
         style: {
             display: 'flex', alignItems: 'flex-start', gap: '8px',
             fontSize: 'var(--dshpc-font-md)', lineHeight: 'var(--dshpc-line-md)',
-            cursor: disabled === true ? 'default' : 'pointer',
+            cursor: off ? 'default' : 'pointer',
         },
     }, h('input', {
         type: 'checkbox',
         checked,
-        disabled,
+        disabled: off,
         style: {
             flex: 'none', margin: '2px 0 0',
             accentColor: accentColor ?? 'var(--dshpc-business)',
             width: '14px', height: '14px',
-            cursor: disabled === true ? 'default' : 'pointer',
+            cursor: off ? 'default' : 'pointer',
         },
         onChange: (event) => { onChange(event.target.checked); },
     }), label !== undefined ? h('span', null, label) : null);

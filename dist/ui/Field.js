@@ -11,6 +11,7 @@
 import { createElement as h, useEffect, useState } from 'react';
 import { IconButton } from './Button.js';
 import { FieldHint } from './FieldHint.js';
+import { useOverlayLocked } from './overlay.js';
 import { ensureComponentStyles } from './css.js';
 import { FIELD_CSS } from './controls-css.js';
 import { t } from '../utils/i18n.js';
@@ -30,17 +31,20 @@ function sizeClass(size) {
 export function Input(props) {
     ensureComponentStyles('field', FIELD_CSS);
     const { value, onChange, placeholder, size = 'lg', error, disabled, type, icon, className, style } = props;
+    // 外层浮层锁死：按自己的禁用态渲染，只做「或」—— 不写回调用方的 disabled。
+    const locked = useOverlayLocked();
+    const off = disabled === true || locked;
     const [focused, setFocused] = useState(false);
     // 搜索框的清空钮：只在「有焦点 + 有内容」时出现。原生 ::-webkit-search-cancel-button 由壳的 CSS 隐掉，
     // 换成与 NumberInput 加减号同款的 plain IconButton（2026-10-28 用户：原生那个不好看）。
     const search = type === 'search';
-    const showClear = search && value !== '' && focused && disabled !== true;
+    const showClear = search && value !== '' && focused && !off;
     const input = h('input', {
         ref: props.inputRef,
         type: type ?? 'text',
         value,
         placeholder,
-        disabled,
+        disabled: off,
         'aria-label': props['aria-label'],
         title: props.title,
         className: `dshpc-input dshpc-input${sizeClass(size)}${error === true ? ' dshpc-input--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
@@ -69,6 +73,8 @@ export function Input(props) {
 export function PrefixedInput(props) {
     ensureComponentStyles('field', FIELD_CSS);
     const { prefix, value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props;
+    const locked = useOverlayLocked();
+    const off = disabled === true || locked;
     return h('div', {
         className: `dshpc-pfx dshpc-pfx${sizeClass(size)}${error === true ? ' dshpc-pfx--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
         style,
@@ -76,7 +82,7 @@ export function PrefixedInput(props) {
         type: type ?? 'text',
         value,
         placeholder,
-        disabled,
+        disabled: off,
         'aria-label': props['aria-label'],
         title: props.title,
         className: 'dshpc-pfx__input',
@@ -92,6 +98,8 @@ export function PrefixedInput(props) {
 export function NumberInput(props) {
     ensureComponentStyles('field', FIELD_CSS);
     const { value, onChange, min = -Infinity, max = Infinity, step = 1, size = 'lg', inputWidth, disabled, suffix, label, decreaseLabel = t('fieldDecrease'), increaseLabel = t('fieldIncrease'), className, style, } = props;
+    const locked = useOverlayLocked();
+    const off = disabled === true || locked;
     const [text, setText] = useState(String(value));
     // 外部值变化（如切档位重置）时同步回输入框。
     useEffect(() => { setText(String(value)); }, [value]);
@@ -121,23 +129,23 @@ export function NumberInput(props) {
             onChange(next);
     };
     return withHint(h('div', {
-        className: `dshpc-num dshpc-num${sizeClass(size)}${disabled === true ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
+        className: `dshpc-num dshpc-num${sizeClass(size)}${off ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
         style,
-    }, h(IconButton, { variant: 'plain', size, icon: '−', label: decreaseLabel, disabled, onClick: () => { bump(-1); } }), 
+    }, h(IconButton, { variant: 'plain', size, icon: '−', label: decreaseLabel, disabled: off, onClick: () => { bump(-1); } }), 
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
     h('span', { className: 'dshpc-num__mid' }, h('input', {
         className: 'dshpc-num__input',
         ...(inputWidth === undefined ? {} : { style: { width: `${inputWidth}px` } }),
         value: text,
-        disabled,
+        disabled: off,
         inputMode: 'numeric',
         'aria-label': label,
         onChange: (event) => { setText(event.target.value); },
         onBlur: () => { commit(text); },
         onKeyDown: (event) => { if (event.key === 'Enter')
             commit(text); },
-    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled, onClick: () => { bump(1); } })), props.hint);
+    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled: off, onClick: () => { bump(1); } })), props.hint);
 }
 /**
  * 下拉锚点的统一样式（**全站唯一一份**）：`SelectField` 与 `TaskPicker` 共用 —— 两者是同一类锚点，

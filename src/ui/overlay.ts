@@ -25,6 +25,38 @@ export function useOverlayLocked(): boolean {
 export const OverlayLockedProvider = LockedContext.Provider
 
 /**
+ * 锁定期间的两道保险（消费方自绘的控件不是我们的，管不到它们的 `disabled`）：
+ *  ① Tab 整个吃掉 —— 否则能 Tab 进他们的 input 打字；
+ *  ② 把面板里没被禁用的活动元素 `blur` 掉 —— 否则锁定前已经停在里面的光标还能继续打字。
+ * 只认 `.dshpc-locked` 子树里的元素，不碰面板外面的焦点。
+ */
+export function useLockGuards(enabled: boolean): void {
+  useEffect(() => {
+    if (!enabled || typeof document === 'undefined') return
+    const active = document.activeElement
+    if (active instanceof Element && active.closest('.dshpc-locked') !== null) (active as HTMLElement).blur()
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.key === 'Tab') event.preventDefault()
+    }
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
+  }, [enabled])
+}
+
+/**
+ * 锁定时的**透明点击层**：盖住整块面板、不遮任何像素，只吃掉指针事件
+ * （消费方自绘的元素也跟着点不动）。变灰由各控件自己的 `:disabled` 负责，这里不管外观。
+ * 不做焦点接管：核心控件此刻已是真 disabled，Tab 自己就跳过它们。
+ */
+export function OverlayLockCatcher(): ReactNode {
+  return h('div', {
+    className: 'dshpc-lock-catcher',
+    // 点它不能再冒到遮罩：否则等于点了外部，会顺带把弹窗关掉。
+    onClick: (event: { stopPropagation: () => void }) => event.stopPropagation(),
+  })
+}
+
+/**
  * Esc 关闭。不传 `onClose` 或 `enabled=false` 时完全不挂监听
  * （无回调还挂监听，等于让 Esc 被白白吃掉）。
  */

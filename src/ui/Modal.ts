@@ -2,7 +2,7 @@ import { createElement as h, type ReactNode } from 'react'
 import { t, type Translate } from '../utils/i18n.js'
 import { ensureComponentStyles } from './css.js'
 import { FEEDBACK_CSS } from './feedback-css.js'
-import { OverlayHead, OverlayLockedProvider, OverlayMask, useEscapeClose } from './overlay.js'
+import { OverlayHead, OverlayLockCatcher, OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from './overlay.js'
 import { PanelSurface } from './panel.js'
 import { FlipText } from './FlipText.js'
 
@@ -36,13 +36,14 @@ export interface ModalProps {
    */
   busy?: boolean
   /**
-   * **锁死全部交互**（与 loading 解耦：按钮转不转圈是另一回事）。为真时整块面板 `inert` ——
-   * 里面任何控件（自绘滑块、原生 input、按钮、下拉）既点不到、Tab 也进不去；遮罩 / Esc / ✕
-   * 三条关闭路径同时失效；面板压一层灰 + 鼠标变禁止手势。受控项，不落内部 state：
-   * 关掉重开自然回到未锁。它只改交互环境，**不碰任何子控件的 `disabled`** —— 原本禁用的解锁后照样禁用。
+   * **锁死全部交互**（与 loading 解耦：按钮转不转圈是另一回事）。为真时：
+   *  · 面板内的核心控件各自按**自己的禁用态**渲染（灰掉、点不动、Tab 跳过）；
+   *  · 面板上盖一层**全透明**的点击层，消费方自绘的元素也跟着点不动，鼠标是禁止手势；
+   *  · 遮罩 / Esc / ✕ 三条关闭路径同时失效。
    *
-   * shortcut: `inert` 会把整块面板从无障碍树摘掉，读屏用户此刻也读不到内容；
-   * 要保住朗读得改成逐控件 disabled，等真有读屏用户反馈再升级。
+   * 一律只做「或」，**永不写回调用方的 `disabled`**：本来禁用的解锁后照样禁用，锁定期间你把它改成
+   * 能用 / 禁用，解锁后也照你的。不压任何灰色遮罩 —— 整块蒙一层会让人以为界面坏了。
+   * 受控项，不落内部 state：关掉重开自然回到未锁。
    */
   locked?: boolean
   /** 尺寸档：sm=小确认框家族 / md·lg=大弹窗家族；也可用 width/height 精确覆盖。 */
@@ -86,6 +87,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
   const denyClose = busy || locked
   const closeOnMask = !denyClose && props.closeOnMask !== false
   useEscapeClose(!denyClose && props.escClose !== false, denyClose ? undefined : props.onClose)
+  useLockGuards(locked)
   // 空串等同于没给：底栏那块地方复用给下一轮时，传 "" 就把上一句清干净、不留占位。
   const notice = props.notice === '' ? undefined : props.notice
 
@@ -126,10 +128,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
         PanelSurface,
         {
           tier: 'modal',
-          className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${locked ? ' dshpc-modal--locked' : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
-          // `inert` 一次封住点击 + Tab 焦点 + 输入：比逐控件塞 disabled 更彻底，也不碰控件自己的状态。
-          // 写成空串而不是 true —— React 18 的类型与运行时都不认布尔 inert（会告警）。
-          attrs: locked ? { inert: '' } : undefined,
+          className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${locked ? ' dshpc-modal--locked dshpc-locked' : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
           style: {
             width: props.width ?? s.width,
             maxWidth: props.maxWidth ?? s.maxWidth,
@@ -161,6 +160,8 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
               notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }),
               props.footer,
             ),
+        // 透明点击层兜住消费方自绘的元素；核心控件此时已各自是真 disabled。
+        locked ? h(OverlayLockCatcher) : null,
       ),
     ),
   )

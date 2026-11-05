@@ -209,6 +209,7 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
   useEffect(() => {
     if (overlayLocked) setOpen(false)
   }, [overlayLocked])
+  const off = props.disabled === true || overlayLocked
   const [draft, setDraft] = useState<Draft>(() => draftOf(current))
   const [views, setViews] = useState<{ start: ViewMonth; end: ViewMonth }>(() => {
     const d = draftOf(current)
@@ -256,7 +257,7 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
   )
 
   const openPop = useCallback((): void => {
-    if (props.disabled === true) return
+    if (off) return
     const d = draftOf(current)
     const n = nowParts()
     const monthOf = (e: EndDraft): ViewMonth =>
@@ -267,7 +268,7 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
     setFocus({ start: null, end: null })
     setTyping(null)
     setOpen(true)
-  }, [current, props.disabled])
+  }, [current, off])
 
   // 点外面收起（认 root 与浮层两棵子树；菜单 portal 到 body 后不在 root 内）。
   useEffect(() => {
@@ -460,7 +461,7 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
       'aria-label': props.ariaLabel,
       'aria-expanded': open,
       ref: refs.setReference,
-      disabled: props.disabled === true,
+      disabled: off,
       className: `dshpc-dt__trigger ${SIZE_CLASS[size]} ${WIDTH_CLASS(rangeMode, precision)}`.trim(),
       onClick: openPop,
     },

@@ -33,6 +33,7 @@ import {
   type ReactNode,
 } from 'react'
 import { getTooltipRenderer } from './tooltip.js'
+import { useOverlayLocked } from './overlay.js'
 import { ensureComponentStyles } from './css.js'
 import { SEGMENTED_CSS } from './controls-css.js'
 
@@ -133,6 +134,8 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
   ensureComponentStyles('segmented', SEGMENTED_CSS)
   const size = props.size ?? 'lg'
   const multiple = props.multiple === true
+  // 外层浮层锁死 ⇒ 每一段都按自己的禁用态渲染（只做「或」，不写回 props）。
+  const locked = useOverlayLocked()
   const value = props.value
   const onChange = props.onChange
   // 单选：选中底由一块共用「滑动块」承担，点选后从旧段滑到新段（多选每段各自着色，没有唯一滑块可滑）。
@@ -202,7 +205,7 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
       : null,
     ...props.items.map(item => {
     const on = multiple ? (value as T[]).includes(item.value) : value === item.value
-    const disabled = item.disabled === true || props.disabled === true
+    const disabled = item.disabled === true || props.disabled === true || locked
     const handle = (): void => {
       if (disabled) return
       if (multiple) {

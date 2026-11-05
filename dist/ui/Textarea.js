@@ -6,18 +6,21 @@
  */
 import { createElement as h } from 'react';
 import { FieldHint } from './FieldHint.js';
+import { useOverlayLocked } from './overlay.js';
 import { ensureComponentStyles } from './css.js';
 import { FIELD_CSS } from './controls-css.js';
 /** 多行文本输入。 */
 export function Textarea(props) {
     ensureComponentStyles('field', FIELD_CSS);
     const { value, onChange, placeholder, error, disabled, id, rows, spellCheck, className, style } = props;
+    // 锁定时按自己的禁用态渲染，只做「或」—— 不写回调用方的 disabled，解锁即还原。
+    const off = disabled === true || useOverlayLocked();
     const box = h('textarea', {
         id,
         rows,
         value,
         placeholder,
-        disabled,
+        disabled: off,
         spellCheck: spellCheck === true,
         'aria-label': props['aria-label'],
         className: `dshpc-textarea${error === true ? ' dshpc-textarea--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,

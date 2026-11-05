@@ -14,6 +14,7 @@ register(new URL('./primitives-hooks.mjs', import.meta.url))
 
 const { PanelClose, PanelSurface } = await import('../dist/ui/panel.js')
 const { Modal } = await import('../dist/ui/Modal.js')
+const { Button } = await import('../dist/ui/Button.js')
 const { FlipText, nextFlipSlot } = await import('../dist/ui/FlipText.js')
 const { LandingBody } = await import('../dist/explorer/landing.js')
 const { CrumbNav, PlainNav } = await import('../dist/explorer/crumb-nav.js')
@@ -50,19 +51,28 @@ test('Modal：遮罩居中档 + 面板 modal 档 + 关闭钮走公共件', () =>
   assert.match(html, /class="dshpc-panel__close dshpc-overlay-head__close"/)
 })
 
-test('Modal locked：面板挂 inert + 锁定类，关闭钮与遮罩关闭一起失效', () => {
-  const html = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {}, locked: true }, h('input', null)))
-  // inert 是「所有控件都点不动」的唯一实现：写成别的（比如只挂 pointer-events）键盘还能操作
-  assert.match(html, /inert=""/, '锁定态没把面板设成 inert')
-  assert.match(html, /dshpc-modal--locked/, '锁定类没挂上（遮罩不会变灰）')
+test('Modal locked：核心控件真禁用 + 透明点击层，关闭钮不渲染', () => {
+  const html = renderToStaticMarkup(
+    h(Modal, { title: 't', onClose: () => {}, locked: true }, h(Button, { onClick: () => {} }, '确定')),
+  )
+  assert.match(html, /<button[^>]*disabled=""/, '锁定态里核心控件没被禁用（Tab 还能进去）')
+  assert.match(html, /dshpc-lock-catcher/, '缺透明点击层（消费方自绘的元素就点得动）')
+  assert.match(html, /dshpc-modal--locked/, '锁定类没挂上')
+  // 自绘元素变灰的 CSS 挂在这个类上；漏了就只剩核心控件变灰
+  assert.match(html, /dshpc-locked/, '缺 dshpc-locked（自绘控件不会变灰）')
   assert.match(html, /data-dshpc-locked=""/, '遮罩没带锁定标记（禁止手势不生效）')
   assert.doesNotMatch(html, /dshpc-panel__close/, '锁定态还渲了 ✕')
   // 不传就完全回到老样子 —— 「不传参数 = 初始未锁」
-  const plain = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {} }, h('input', null)))
-  assert.doesNotMatch(plain, /inert|dshpc-modal--locked|data-dshpc-locked/)
+  const plain = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {} }, h(Button, null, '确定')))
+  assert.doesNotMatch(plain, /disabled|dshpc-lock-catcher|dshpc-modal--locked|data-dshpc-locked/)
   assert.match(plain, /dshpc-panel__close/)
-  // 只管交互环境，不碰子控件自己的 disabled（原本禁用的解锁后照样禁用）
-  assert.equal((html.match(/disabled/g) ?? []).length, 0, 'locked 不该给子控件塞 disabled')
+})
+
+test('Modal locked 只做「或」：本来禁用的解锁后照样禁用，控件没被写脏', () => {
+  const locked = renderToStaticMarkup(h(Modal, { locked: true }, h(Button, { disabled: true }, 'x')))
+  const unlocked = renderToStaticMarkup(h(Modal, {}, h(Button, { disabled: true }, 'x')))
+  assert.match(locked, /disabled=""/)
+  assert.match(unlocked, /disabled=""/, '解锁把调用方自己的 disabled 冲掉了')
 })
 
 test('Modal notice：给了才有底栏，左侧那条挂 dshpc-modal__notice', () => {

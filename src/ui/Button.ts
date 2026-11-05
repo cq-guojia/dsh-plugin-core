@@ -27,6 +27,7 @@ import {
   type CSSProperties, type MouseEvent, type ReactNode,
 } from 'react'
 import { ensureComponentStyles } from './css.js'
+import { useOverlayLocked } from './overlay.js'
 import { BUTTON_CSS } from './controls-css.js'
 import { isThenable } from './thenable.js'
 
@@ -235,6 +236,8 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
   })
   // 两个来源取或：外部传的 loading（别处刷新也能点亮它）+ 自己异步在跑
   const loading = loadingProp || asyncClick.busy
+  // 外层浮层锁死：按自己的禁用态渲染，只做「或」—— 不写回调用方的 disabled，解锁即还原。
+  const locked = useOverlayLocked()
   // 外部驱动的 loading 没有点击可抓：进 loading 那一次用上次记下的宽度补锁（绘制前重渲染，不见中间态）。
   useIsoLayoutEffect(() => {
     const el = btnRef.current
@@ -272,7 +275,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     ...rest,
     ref: btnRef,
     type: (rest.type as string | undefined) ?? 'button',
-    disabled: rest.disabled === true || loading,
+    disabled: rest.disabled === true || loading || locked,
     // 与 IconButton 同一口径：文字还在，但让读屏知道它正在忙、不是单纯不可点
     'aria-busy': loading || undefined,
     ...(autoLabel !== undefined && rest['aria-label'] === undefined ? { 'aria-label': autoLabel } : {}),
@@ -313,6 +316,7 @@ export function IconButton(props: IconButtonProps): ReturnType<typeof h> {
   } = props
   const asyncClick = useAsyncClick(onClick, onBusyChange)
   const loading = loadingProp || asyncClick.busy
+  const locked = useOverlayLocked()
   // 只覆盖 4 个局部变量：图标色 / 底色及其 hover 派生（不新增皮肤，皮肤仍在 controls-css.ts）。
   const accent: Record<string, string> = {}
   if (color !== undefined && color !== '') {
@@ -331,7 +335,7 @@ export function IconButton(props: IconButtonProps): ReturnType<typeof h> {
     'aria-label': rest['aria-label'] ?? label,
     // 无障碍名不变（仍是 label），只声明「正在忙」，读屏不会把圈读成内容
     'aria-busy': loading || undefined,
-    disabled: rest.disabled === true || loading,
+    disabled: rest.disabled === true || loading || locked,
     onClick: asyncClick.click,
     className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style: { ...accent, ...style } as CSSProperties,

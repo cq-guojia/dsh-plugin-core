@@ -113,6 +113,7 @@ export function DateTimePicker(props) {
         if (overlayLocked)
             setOpen(false);
     }, [overlayLocked]);
+    const off = props.disabled === true || overlayLocked;
     const [draft, setDraft] = useState(() => draftOf(current));
     const [views, setViews] = useState(() => {
         const d = draftOf(current);
@@ -153,7 +154,7 @@ export function DateTimePicker(props) {
         props.onChange?.(value);
     }, [controlled, props.onChange]);
     const openPop = useCallback(() => {
-        if (props.disabled === true)
+        if (off)
             return;
         const d = draftOf(current);
         const n = nowParts();
@@ -164,7 +165,7 @@ export function DateTimePicker(props) {
         setFocus({ start: null, end: null });
         setTyping(null);
         setOpen(true);
-    }, [current, props.disabled]);
+    }, [current, off]);
     // 点外面收起（认 root 与浮层两棵子树；菜单 portal 到 body 后不在 root 内）。
     useEffect(() => {
         if (!open)
@@ -343,7 +344,7 @@ export function DateTimePicker(props) {
         'aria-label': props.ariaLabel,
         'aria-expanded': open,
         ref: refs.setReference,
-        disabled: props.disabled === true,
+        disabled: off,
         className: `dshpc-dt__trigger ${SIZE_CLASS[size]} ${WIDTH_CLASS(rangeMode, precision)}`.trim(),
         onClick: openPop,
     }, rangeMode
