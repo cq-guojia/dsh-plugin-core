@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261105-1508-ad55-实现宿主升级差异核对工具": {"category": "工具建设", "created": "2026-11-05 15:08:15", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-05 15:08:15", "status": "doing", "tags": ["宿主升级", "差异核对", "内部工具", "实现"], "title": "实现宿主升级差异核对工具", "updated": "2026-11-05 15:27:06", "worklog": "worklog/202611/05-1508-ad55-实现宿主升级差异核对工具.md"}
+    "20261105-1508-ad55-实现宿主升级差异核对工具": {"category": "工具建设", "created": "2026-11-05 15:08:15", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-05 15:08:15", "status": "doing", "tags": ["宿主升级", "差异核对", "内部工具", "实现"], "title": "实现宿主升级差异核对工具", "updated": "2026-11-05 18:28:32", "worklog": "worklog/202611/05-1508-ad55-实现宿主升级差异核对工具.md"}
   },
   "version": "20261022000000"
 }
