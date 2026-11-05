@@ -29,6 +29,7 @@ export function AlertModal(props) {
         closable: false,
         closeOnMask: props.closeOnMask,
         busy,
+        locked: props.locked,
         onClose: props.onConfirm,
         notice: props.notice,
         footer: h(Button, {

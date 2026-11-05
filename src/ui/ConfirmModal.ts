@@ -27,6 +27,8 @@ export interface ConfirmModalProps {
   loadingText?: boolean
   /** 点遮罩是否关闭（默认 true；点了 = 取消）。 */
   closeOnMask?: boolean
+  /** 锁死全部交互（含义见 `Modal.locked`）：整框点不动、Tab 进不去、三条关闭路径同时失效。 */
+  locked?: boolean
   /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
   confirmLoading?: boolean
   /** 外部驱动取消钮 loading：同上。 */
@@ -65,6 +67,7 @@ export function ConfirmModal(props: ConfirmModalProps): ReturnType<typeof h> {
       closable: false,
       closeOnMask: props.closeOnMask,
       busy,
+      locked: props.locked,
       onClose: props.onCancel,
       notice: props.notice,
       footer: h(

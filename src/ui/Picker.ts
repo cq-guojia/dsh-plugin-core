@@ -15,6 +15,7 @@ import {
   type PickerOption,
 } from './picker-logic.js'
 import { ensureComponentStyles } from './css.js'
+import { useOverlayLocked } from './overlay.js'
 import { PANEL_CSS } from './panel-css.js'
 import { PICKER_CSS } from './picker-css.js'
 import { FIELD_CSS } from './controls-css.js'
@@ -154,6 +155,12 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
     document.addEventListener('mousedown', onDown)
     return () => document.removeEventListener('mousedown', onDown)
   }, [open])
+
+  // 外层浮层锁死就收起：菜单是 portal 到 body 的，不在面板的 inert 子树里，锁不住。
+  const overlayLocked = useOverlayLocked()
+  useEffect(() => {
+    if (overlayLocked) setOpen(false)
+  }, [overlayLocked])
 
   // 收起时清掉搜索词与键盘游标，别让下次打开带着上次的过滤条件
   useEffect(() => {

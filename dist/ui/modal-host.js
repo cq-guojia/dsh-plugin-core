@@ -36,7 +36,7 @@ function flush() {
         hostContainer = null;
         return;
     }
-    root.render(h(Fragment, null, entries.map((e) => e.node)));
+    root.render(h(Fragment, null, entries.map((e) => h(Fragment, { key: e.id }, e.render()))));
 }
 function dismiss(id) {
     entries = entries.filter((e) => e.id !== id);
@@ -75,11 +75,21 @@ export function confirmModal(opts) {
             dismiss(id);
             resolve(result);
         };
+        // 锁只活在这条弹窗里：entry 一走、下一框自然是未锁的初始态。
+        const entry = { id, locked: false, render: () => null };
+        const ctl = {
+            setLocked: (next) => {
+                if (closed || entry.locked === next)
+                    return;
+                entry.locked = next;
+                flush();
+            },
+        };
         // 「跑完关不关」归这里；转圈与锁框归 Button / ConfirmModal。把原 promise 返回给 Button 去转。
         const run = (which) => {
             if (closed)
                 return undefined;
-            const out = (which === 'confirm' ? onConfirm : onCancel)?.();
+            const out = (which === 'confirm' ? onConfirm : onCancel)?.(ctl);
             // 只有明确的 false 表示「这次没成」：框留着让人重试（消费方自己去提示）
             const settle = (value) => {
                 if (isSuccess(value))
@@ -93,10 +103,8 @@ export function confirmModal(opts) {
             void out.then(settle, () => { });
             return out;
         };
-        entries.push({
-            id,
-            node: h(ConfirmModal, { ...core, onConfirm: () => run('confirm'), onCancel: () => run('cancel') }),
-        });
+        entry.render = () => h(ConfirmModal, { ...core, locked: entry.locked, onConfirm: () => run('confirm'), onCancel: () => run('cancel') });
+        entries.push(entry);
         flush();
     });
 }
@@ -128,11 +136,21 @@ export function alertModal(opts) {
             dismiss(id);
             resolve();
         };
+        // 同 confirmModal：锁只活在这条弹窗里，entry 一走、下一框自然是未锁的初始态。
+        const entry = { id, locked: false, render: () => null };
+        const ctl = {
+            setLocked: (next) => {
+                if (closed || entry.locked === next)
+                    return;
+                entry.locked = next;
+                flush();
+            },
+        };
         // 同 confirmModal：只决定「跑完关不关」，转圈与锁框交给 Button / AlertModal。
         const run = () => {
             if (closed)
                 return undefined;
-            const out = onConfirm?.();
+            const out = onConfirm?.(ctl);
             const settle = (value) => {
                 if (isSuccess(value))
                     close();
@@ -144,7 +162,8 @@ export function alertModal(opts) {
             void out.then(settle, () => { });
             return out;
         };
-        entries.push({ id, node: h(AlertModal, { ...core, onConfirm: () => run() }) });
+        entry.render = () => h(AlertModal, { ...core, locked: entry.locked, onConfirm: () => run() });
+        entries.push(entry);
         flush();
     });
 }

@@ -7,7 +7,9 @@ import { isSuccess, isThenable } from './thenable.js'
 
 interface HostEntry {
   id: number
-  node: ReactNode
+  /** 锁死状态由条目自己拿着：命令式弹窗没有 props 可改，改它就重渲一次。 */
+  locked: boolean
+  render: () => ReactNode
 }
 
 // ⚠️ core 的 StyleKit / i18n 都是**模块级单例**（见 css.ts 注释），不依赖 React Context，
@@ -43,7 +45,7 @@ function flush(): void {
     hostContainer = null
     return
   }
-  root.render(h(Fragment, null, entries.map((e) => e.node)))
+  root.render(h(Fragment, null, entries.map((e) => h(Fragment, { key: e.id }, e.render()))))
 }
 
 function dismiss(id: number): void {
@@ -75,17 +77,27 @@ export function registerHostDialog(handlers: HostDialogHandlers): void {
   hostHandlers = handlers
 }
 
-/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」。 */
-type DialogHandler = () => unknown
+/** 命令式弹窗的遥控器：异步期间自己决定锁不锁整框 —— 与按钮转圈（loading）互不干扰。 */
+export interface DialogControl {
+  /** 锁死整框（true）/ 解锁（false）：所有控件点不到、Tab 进不去、也关不掉。框已关掉后再调是空操作。 */
+  setLocked(locked: boolean): void
+}
 
-export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel' | 'confirmLoading' | 'cancelLoading'> & {
+/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」；`ctl` 用来在跑的过程中锁 / 解锁整框。 */
+type DialogHandler = (ctl: DialogControl) => unknown
+
+// 命令式不收静态 `locked`：锁与解锁都走 `ctl`，一个开关只留一个入口。
+export type ConfirmOptions = Omit<
+  ConfirmModalProps,
+  'onConfirm' | 'onCancel' | 'confirmLoading' | 'cancelLoading' | 'locked'
+> & {
   skin?: 'core' | 'host'
   /** 确认回调；异步期间确认钮转圈、整框不可关，resolve 后按 `true` 关闭，reject 后恢复可点；返回 `false` 不关。 */
   onConfirm?: DialogHandler
   /** 取消 / 遮罩 / Esc 回调；异步语义同 `onConfirm`，resolve 后按 `false` 关闭（返回 `false` 同样不关）。 */
   onCancel?: DialogHandler
 }
-export type AlertOptions = Omit<AlertModalProps, 'onConfirm' | 'confirmLoading'> & {
+export type AlertOptions = Omit<AlertModalProps, 'onConfirm' | 'confirmLoading' | 'locked'> & {
   skin?: 'core' | 'host'
   /** 确认回调（遮罩 / Esc 同一个出口）；异步期间转圈并锁死关闭，settle 后才关，返回 `false` 不关。 */
   onConfirm?: DialogHandler
@@ -119,10 +131,19 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
       dismiss(id)
       resolve(result)
     }
+    // 锁只活在这条弹窗里：entry 一走、下一框自然是未锁的初始态。
+    const entry: HostEntry = { id, locked: false, render: () => null }
+    const ctl: DialogControl = {
+      setLocked: (next: boolean): void => {
+        if (closed || entry.locked === next) return
+        entry.locked = next
+        flush()
+      },
+    }
     // 「跑完关不关」归这里；转圈与锁框归 Button / ConfirmModal。把原 promise 返回给 Button 去转。
     const run = (which: 'confirm' | 'cancel'): unknown => {
       if (closed) return undefined
-      const out = (which === 'confirm' ? onConfirm : onCancel)?.()
+      const out = (which === 'confirm' ? onConfirm : onCancel)?.(ctl)
       // 只有明确的 false 表示「这次没成」：框留着让人重试（消费方自己去提示）
       const settle = (value: unknown): void => {
         if (isSuccess(value)) close(which === 'confirm')
@@ -135,10 +156,9 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
       void out.then(settle, () => {})
       return out
     }
-    entries.push({
-      id,
-      node: h(ConfirmModal, { ...core, onConfirm: () => run('confirm'), onCancel: () => run('cancel') }),
-    })
+    entry.render = () =>
+      h(ConfirmModal, { ...core, locked: entry.locked, onConfirm: () => run('confirm'), onCancel: () => run('cancel') })
+    entries.push(entry)
     flush()
   })
 }
@@ -170,10 +190,19 @@ export function alertModal(opts: AlertOptions): Promise<void> {
       dismiss(id)
       resolve()
     }
+    // 同 confirmModal：锁只活在这条弹窗里，entry 一走、下一框自然是未锁的初始态。
+    const entry: HostEntry = { id, locked: false, render: () => null }
+    const ctl: DialogControl = {
+      setLocked: (next: boolean): void => {
+        if (closed || entry.locked === next) return
+        entry.locked = next
+        flush()
+      },
+    }
     // 同 confirmModal：只决定「跑完关不关」，转圈与锁框交给 Button / AlertModal。
     const run = (): unknown => {
       if (closed) return undefined
-      const out = onConfirm?.()
+      const out = onConfirm?.(ctl)
       const settle = (value: unknown): void => {
         if (isSuccess(value)) close()
       }
@@ -184,7 +213,8 @@ export function alertModal(opts: AlertOptions): Promise<void> {
       void out.then(settle, () => {})
       return out
     }
-    entries.push({ id, node: h(AlertModal, { ...core, onConfirm: () => run() }) })
+    entry.render = () => h(AlertModal, { ...core, locked: entry.locked, onConfirm: () => run() })
+    entries.push(entry)
     flush()
   })
 }

@@ -696,6 +696,10 @@ Modal 是自绘 overlay，不走 react-dom portal。
 
 > EN: The callback’s return value decides whether it closes: **only `false`** (returned directly, or resolved to `false`) means it did not succeed — the dialog stays for a retry; `true` / `undefined` / anything else closes as usual; a rejection also keeps it open (the error is logged). The callback owns its failure message, so call sites need no `try/catch`.
 
+**要「整框谁都别动」就传 `locked`**，别拿按钮 loading 顶替 —— 两者是两件事：loading 只管那一颗按钮转圈，`locked` 管整块面板不可交互（自绘滑块、原生 input、下位选择器一并管住）+ 三条关闭路径失效 + 压灰与禁止手势。声明式传 `locked={saving}` 即可；它是受控项，不传 = 未锁，关掉重开自然复位，也不会改动任何子控件自己的 `disabled`。命令式那两个函数的回调会收到 `ctl`（`{ setLocked(bool) }`），在异步过程中自己开 / 关：`onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`；框关掉之后再调 `setLocked` 是空操作。
+
+> EN: **When the whole dialog must be untouchable, pass `locked`** — do not fake it with button loading: loading only spins that one button, while `locked` makes the entire panel non-interactive (custom sliders, native inputs and selects included), disables all three close paths, dims the surface and shows a not-allowed cursor. Declaratively just pass `locked={saving}`; it is controlled and stateless — omitted means unlocked, reopening starts clean, and it never touches a child’s own `disabled`. The two imperative dialogs hand their callbacks a `ctl` (`{ setLocked(bool) }`) so you can flip it mid-flight: `onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`. Calling `setLocked` after the dialog closed is a no-op.
+
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `showToast(message, opts?)` | `` |  | 官方 Sonner 原味（轻量原生观感；demo 统一用 notify）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主 | Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host |
@@ -724,6 +728,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `closeOnMask` | `boolean` | 'true' | 点遮罩关闭；误触代价大的场景设 false | Close on mask click; set false where mis-clicks are costly |
 | `escClose` | `boolean` | 'true' | Esc 关闭 | Close on Esc |
 | `busy` | `boolean` | false | 有异步在跑（footer 里的 `Button` 正在 loading）：遮罩 / Esc / ✕ 三条关闭路径一起失效，内容照常。否决项，不替代 closeOnMask / escClose | Async work in flight (a footer `Button` is loading): mask / Esc / ✕ all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose |
+| `locked` | `boolean` | false | **锁死全部交互**（与 loading 解耦）：面板整块 `inert` —— 里面任何控件（自绘滑块、原生 input、按钮、下拉）点不到、Tab 也进不去；三条关闭路径同时失效；压一层灰 + 鼠标变禁止手势。受控项、不落内部 state（关掉重开自然回到未锁）；不碰子控件的 `disabled`，原本禁用的解锁后照样禁用 | **Locks every interaction** (decoupled from loading): the panel becomes `inert` — no control inside (custom slider, native input, button, select) can be clicked or reached with Tab; all three close paths stop working; a dim layer plus a not-allowed cursor. Controlled and stateless (reopening starts unlocked); it never touches a child’s `disabled`, so already-disabled controls stay disabled after unlocking |
 | `maxWidth` | `string` | 按 size | 任意 CSS 值，覆盖 size 的宽度上限；不要用 vw（遮罩已按右侧分栏让位） | Any CSS value, overriding the size’s max width; avoid vw (the mask already yielded to the right column) |
 | `hideHeader` | `boolean` | 'false' | 不渲染头部（沉浸式） | Skip header (immersive) |
 | `footer` | `ReactNode` | — | 底栏（按钮区；上下内距相等、内容垂直居中） | Footer (button area; symmetric padding, vertically centred) |
@@ -795,6 +800,7 @@ Modal 是自绘 overlay，不走 react-dom portal。
 | `open` | `boolean` | true | 受控开关：传 false 时先播收起动画再卸载（想有收起效果就常驻渲染它、只切这个布尔） | Controlled flag: false plays the collapse animation before unmounting (keep it mounted and toggle this to get the exit motion) |
 | `closeOnMask / escClose` | `boolean` | 'true' / 'true' | 点遮罩关闭 / Esc 关闭 | Close on mask click / on Esc |
 | `busy` | `boolean` | false | 有异步在跑（footer 里的 `Button` 正在 loading）：遮罩 / Esc / ✕ 三条关闭路径一起失效，内容照常。否决项，不替代 closeOnMask / escClose | Async work in flight (a footer `Button` is loading): mask / Esc / ✕ all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose |
+| `locked` | `boolean` | false | 锁死全部交互（含义同 `Modal.locked`）：抽屉整块 `inert`、点不到也 Tab 不进去，三条关闭路径同时失效，压一层灰 + 禁止手势 | Lock every interaction (same as `Modal.locked`): the drawer goes `inert` — no clicks, no Tab — all three close paths stop working, plus a dim layer and a not-allowed cursor |
 | `width / minWidth / maxWidth` | `number / number / number` | 460 / 320 / — | 初始宽度 / 拖拽下限 / 拖拽上限（px；上限缺省 = 遮罩盒宽） | Initial width / resize floor / resize ceiling (px; ceiling defaults to the mask box) |
 | `resizable` | `boolean` | true | 能否拖宽（关掉就没有拖拽条） | Whether it resizes by dragging (off = no handle) |
 | `footer / children` | `ReactNode / ReactNode` | — / — | 底栏 / 主体（主体是唯一滚动容器） | Footer / body (the body is the only scroll container) |

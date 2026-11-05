@@ -81,6 +81,7 @@ export {
   confirmModal,
   type AlertOptions,
   type ConfirmOptions,
+  type DialogControl,
 } from './modal-host.js'
 export {
   CARD_ACCENTS,

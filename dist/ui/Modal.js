@@ -2,7 +2,7 @@ import { createElement as h } from 'react';
 import { t } from '../utils/i18n.js';
 import { ensureComponentStyles } from './css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
-import { OverlayHead, OverlayMask, useEscapeClose } from './overlay.js';
+import { OverlayHead, OverlayLockedProvider, OverlayMask, useEscapeClose } from './overlay.js';
 import { PanelSurface } from './panel.js';
 import { FlipText } from './FlipText.js';
 /**
@@ -13,10 +13,13 @@ import { FlipText } from './FlipText.js';
 export function Modal(props) {
     ensureComponentStyles('feedback', FEEDBACK_CSS);
     const tt = props.translate ?? t;
-    // busy 是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+    // busy / locked 都是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+    // locked 比 busy 多管一层：面板整块不可交互（inert）。
     const busy = props.busy === true;
-    const closeOnMask = !busy && props.closeOnMask !== false;
-    useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose);
+    const locked = props.locked === true;
+    const denyClose = busy || locked;
+    const closeOnMask = !denyClose && props.closeOnMask !== false;
+    useEscapeClose(!denyClose && props.escClose !== false, denyClose ? undefined : props.onClose);
     // 空串等同于没给：底栏那块地方复用给下一轮时，传 "" 就把上一句清干净、不留占位。
     const notice = props.notice === '' ? undefined : props.notice;
     // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
@@ -28,7 +31,7 @@ export function Modal(props) {
         lg: { width: 'min(1120px, calc(100% - 32px))', height: 'calc(100% - 80px)' },
     };
     const s = sizeStyle[props.size ?? 'md'];
-    const showClose = props.closable !== false && props.onClose !== undefined && !busy;
+    const showClose = props.closable !== false && props.onClose !== undefined && !denyClose;
     const showHeader = props.hideHeader !== true &&
         (props.icon !== undefined ||
             props.title !== undefined ||
@@ -36,12 +39,21 @@ export function Modal(props) {
             props.headerExtra !== undefined ||
             props.headerActions !== undefined ||
             showClose);
-    return h(OverlayMask, { kind: 'center', closeOnMask, onClose: busy ? undefined : props.onClose }, 
+    return h(OverlayMask, {
+        kind: 'center',
+        closeOnMask,
+        onClose: denyClose ? undefined : props.onClose,
+        // inert 子树不参与命中测试，鼠标落到遮罩上 —— 禁止手势得挂在遮罩这层才看得见。
+        attrs: locked ? { 'data-dshpc-locked': '' } : undefined,
+    }, h(OverlayLockedProvider, { value: locked }, 
     // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
     // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
     h(PanelSurface, {
         tier: 'modal',
-        className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
+        className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${locked ? ' dshpc-modal--locked' : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
+        // `inert` 一次封住点击 + Tab 焦点 + 输入：比逐控件塞 disabled 更彻底，也不碰控件自己的状态。
+        // 写成空串而不是 true —— React 18 的类型与运行时都不认布尔 inert（会告警）。
+        attrs: locked ? { inert: '' } : undefined,
         style: {
             width: props.width ?? s.width,
             maxWidth: props.maxWidth ?? s.maxWidth,
@@ -66,6 +78,6 @@ export function Modal(props) {
     // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
     h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined && notice === undefined
         ? null
-        : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }), props.footer)));
+        : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }), props.footer))));
 }
 //# sourceMappingURL=Modal.js.map

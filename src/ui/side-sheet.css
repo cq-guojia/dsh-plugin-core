@@ -19,6 +19,11 @@
    抽屉是**通用容器**，必须自带 —— 否则文字直接贴面板边（用户 2026-11-02 截图）。
    左右 14 与头部左内距对齐，上下也留同档呼吸。 */
 .dshpc-sheet__body{padding:14px}
+/* 锁定态（locked）：与 Modal 同一套说法 —— inert 不改外观，压一层遮罩让人看得出「点不动」。 */
+.dshpc-sheet--locked::after{
+  content:'';position:absolute;inset:0;
+  background:var(--dshpc-mask);pointer-events:none;
+}
 /* 底栏（可选）：线色与内距对齐面板头部。 */
 .dshpc-sheet__foot{
   flex:none;display:flex;justify-content:flex-end;gap:8px;

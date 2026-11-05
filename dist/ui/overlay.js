@@ -4,11 +4,22 @@
  * 抽出来的判据：这两件在两种浮层里完全同构（遮罩让位分栏、头部四槽、Esc 判定），
  * 差异只在「面板怎么排」（居中 vs 贴边），那部分留在各自的控件里。
  */
-import { createElement as h, useEffect } from 'react';
+import { createContext, createElement as h, useContext, useEffect } from 'react';
 import { ensureComponentStyles } from './css.js';
 import { OVERLAY_CSS } from './overlay-css.js';
 import { PANEL_CSS } from './panel-css.js';
 import { PanelClose } from './panel.js';
+/**
+ * 锁定广播：Modal / SideSheet `locked` 时把 true 传下去。
+ * 为什么要有它：面板挂 `inert` 管不到 **portal 到 body** 的那几个浮层（Picker / 日期选择的菜单
+ * 不在面板 DOM 里），锁定时它们还浮在屏幕上能点；那几个组件自己订阅这里、锁上就收起。
+ */
+const LockedContext = createContext(false);
+/** 外层浮层是否锁死（不在浮层里 = false）。 */
+export function useOverlayLocked() {
+    return useContext(LockedContext);
+}
+export const OverlayLockedProvider = LockedContext.Provider;
 /**
  * Esc 关闭。不传 `onClose` 或 `enabled=false` 时完全不挂监听
  * （无回调还挂监听，等于让 Esc 被白白吃掉）。

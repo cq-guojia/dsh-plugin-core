@@ -28,6 +28,16 @@ export interface ModalProps {
      * 内容照常渲染。与 `closeOnMask` / `escClose` / `closable` 是"与"关系 —— 它是否决项，不替代它们。
      */
     busy?: boolean;
+    /**
+     * **锁死全部交互**（与 loading 解耦：按钮转不转圈是另一回事）。为真时整块面板 `inert` ——
+     * 里面任何控件（自绘滑块、原生 input、按钮、下拉）既点不到、Tab 也进不去；遮罩 / Esc / ✕
+     * 三条关闭路径同时失效；面板压一层灰 + 鼠标变禁止手势。受控项，不落内部 state：
+     * 关掉重开自然回到未锁。它只改交互环境，**不碰任何子控件的 `disabled`** —— 原本禁用的解锁后照样禁用。
+     *
+     * shortcut: `inert` 会把整块面板从无障碍树摘掉，读屏用户此刻也读不到内容；
+     * 要保住朗读得改成逐控件 disabled，等真有读屏用户反馈再升级。
+     */
+    locked?: boolean;
     /** 尺寸档：sm=小确认框家族 / md·lg=大弹窗家族；也可用 width/height 精确覆盖。 */
     size?: ModalSize;
     /** 面板宽度（默认随 size：sm 360px / md 720px / lg 1120px，均带视口兜底）。 */

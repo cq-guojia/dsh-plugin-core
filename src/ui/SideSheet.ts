@@ -15,7 +15,7 @@ import { t, type Translate } from '../utils/i18n.js'
 import { ensureComponentStyles } from './css.js'
 import { SIDE_PANEL_CSS } from './side-panel-css.js'
 import { SIDE_SHEET_CSS } from './side-sheet-css.js'
-import { OverlayMask, useEscapeClose } from './overlay.js'
+import { OverlayLockedProvider, OverlayMask, useEscapeClose } from './overlay.js'
 import { startResizeLayoutWidth } from './resizer.js'
 import { FlipText } from './FlipText.js'
 
@@ -58,6 +58,8 @@ export interface SideSheetProps {
    * 内容照常渲染。与 `closeOnMask` / `escClose` / `closable` 是"与"关系 —— 它是否决项，不替代它们。
    */
   busy?: boolean
+  /** 锁死全部交互（含义见 `Modal.locked`）：抽屉整块点不动、Tab 进不去、三条关闭路径同时失效。 */
+  locked?: boolean
   /** **初始**宽度（px，默认 460，与 PanelDock 同档）；拖过之后以拖出来的为准。 */
   width?: number
   /** 可拖宽的下限（默认 320）。 */
@@ -78,10 +80,12 @@ export function SideSheet(props: SideSheetProps): ReactNode {
   ensureComponentStyles('side-sheet', SIDE_SHEET_CSS)
   const tt = props.translate ?? t
   const side = props.side ?? 'left'
-  // busy 是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+  // busy / locked 都是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
   const busy = props.busy === true
-  const closeOnMask = !busy && props.closeOnMask !== false
-  useEscapeClose(!busy && props.escClose !== false, busy ? undefined : props.onClose)
+  const locked = props.locked === true
+  const denyClose = busy || locked
+  const closeOnMask = !denyClose && props.closeOnMask !== false
+  useEscapeClose(!denyClose && props.escClose !== false, denyClose ? undefined : props.onClose)
   // 空串等同于没给：抽屉常驻渲染时，传 "" 就能把上一轮的提示清干净、不留占位。
   const notice = props.notice === '' ? undefined : props.notice
 
@@ -98,7 +102,7 @@ export function SideSheet(props: SideSheetProps): ReactNode {
   }, [leaving])
   if (unmounted) return null
 
-  const showClose = props.closable !== false && props.onClose !== undefined && !busy
+  const showClose = props.closable !== false && props.onClose !== undefined && !denyClose
   const hasHeader = props.header !== null
 
   const beginResize = (event: { clientX: number; preventDefault?: () => void }): void => {
@@ -160,45 +164,56 @@ export function SideSheet(props: SideSheetProps): ReactNode {
 
   return h(
     OverlayMask,
-    { kind: 'side', closeOnMask, onClose: busy ? undefined : props.onClose },
+    {
+      kind: 'side',
+      closeOnMask,
+      onClose: denyClose ? undefined : props.onClose,
+      attrs: locked ? { 'data-dshpc-locked': '' } : undefined,
+    },
     h(
-      'section',
-      {
-        ref: (element: HTMLElement | null): void => {
-          panelRef.current = element
+      OverlayLockedProvider,
+      { value: locked },
+      h(
+        'section',
+        {
+          // 与 Modal 同一套：inert 一次封住点击 + Tab 焦点 + 输入，不碰任何子控件的 disabled。
+          ...(locked ? { inert: '' } : {}),
+          ref: (element: HTMLElement | null): void => {
+            panelRef.current = element
+          },
+          className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? ' dshpc-sheet--leaving' : ''}${locked ? ' dshpc-sheet--locked' : ''}`,
+          style: { width: `${width}px` },
+          // 收起动画结束才卸载；入场动画结束（leaving=false）在这里不算数。
+          onAnimationEnd: (): void => {
+            if (leaving) setUnmounted(true)
+          },
+          'aria-label': typeof props.title === 'string' ? props.title : undefined,
+          // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
+          onClick: (e: { stopPropagation: () => void }) => e.stopPropagation(),
         },
-        className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? ' dshpc-sheet--leaving' : ''}`,
-        style: { width: `${width}px` },
-        // 收起动画结束才卸载；入场动画结束（leaving=false）在这里不算数。
-        onAnimationEnd: (): void => {
-          if (leaving) setUnmounted(true)
-        },
-        'aria-label': typeof props.title === 'string' ? props.title : undefined,
-        // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
-        onClick: (e: { stopPropagation: () => void }) => e.stopPropagation(),
-      },
-      props.resizable === false
-        ? null
-        : h('div', {
-            className: 'dshpc-dock__resizer',
-            role: 'separator',
-            'aria-orientation': 'vertical',
-            'aria-label': tt('dockResize'),
-            onPointerDown: (event: { clientX: number; preventDefault?: () => void }) => {
-              beginResize(event)
-            },
-          }),
-      renderHeader(),
-      closeButton(!hasHeader),
-      h('div', { className: 'dshpc-dock__body dshpc-sheet__body' }, props.children ?? null),
-      props.footer === undefined && notice === undefined
-        ? null
-        : h(
-            'div',
-            { className: 'dshpc-sheet__foot' },
-            notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice', sweep: true }),
-            props.footer,
-          ),
+        props.resizable === false
+          ? null
+          : h('div', {
+              className: 'dshpc-dock__resizer',
+              role: 'separator',
+              'aria-orientation': 'vertical',
+              'aria-label': tt('dockResize'),
+              onPointerDown: (event: { clientX: number; preventDefault?: () => void }) => {
+                beginResize(event)
+              },
+            }),
+        renderHeader(),
+        closeButton(!hasHeader),
+        h('div', { className: 'dshpc-dock__body dshpc-sheet__body' }, props.children ?? null),
+        props.footer === undefined && notice === undefined
+          ? null
+          : h(
+              'div',
+              { className: 'dshpc-sheet__foot' },
+              notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice', sweep: true }),
+              props.footer,
+            ),
+      ),
     ),
   )
 }

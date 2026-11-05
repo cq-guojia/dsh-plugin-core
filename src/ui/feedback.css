@@ -32,3 +32,10 @@
 .dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}
 .dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}
 .dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}
+/* 锁定态（locked）：inert 只管「点不动」，一个像素都不改外观 —— 不压这层用户会以为电脑坏了。
+   用遮罩变量而不是 opacity：opacity 会和控件自身 disabled 的 .5 叠乘成看不清的死灰。 */
+.dshpc-modal--locked{position:relative}
+.dshpc-modal--locked::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:var(--dshpc-mask);pointer-events:none;
+}

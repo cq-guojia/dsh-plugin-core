@@ -9,6 +9,8 @@
   position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;
   background:var(--dshpc-mask);
 }
+/* 锁定态：面板是 inert（不参与命中测试），鼠标落点其实落在遮罩上 —— 禁止手势挂这层才看得见。 */
+.dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}
 /* 居中档（Modal）：z 走 modal 档。 */
 .dshpc-overlay--center{
   display:flex;align-items:center;justify-content:center;

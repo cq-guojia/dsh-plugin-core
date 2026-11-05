@@ -24,6 +24,7 @@ export function ConfirmModal(props) {
         closable: false,
         closeOnMask: props.closeOnMask,
         busy,
+        locked: props.locked,
         onClose: props.onCancel,
         notice: props.notice,
         footer: h('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, h(Button, {

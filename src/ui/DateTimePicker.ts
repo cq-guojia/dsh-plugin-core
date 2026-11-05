@@ -17,6 +17,7 @@ import {
 import { Chevron } from './chevron.js'
 import { Button } from './Button.js'
 import { FieldHint } from './FieldHint.js'
+import { useOverlayLocked } from './overlay.js'
 import { getLocale, t, type Translate } from '../utils/i18n.js'
 import { formatDateTimePrecision } from '../utils/date.js'
 import {
@@ -203,6 +204,11 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
   const current: DateTimeOutput = controlled ? (props.value ?? null) : inner
 
   const [open, setOpen] = useState(false)
+  // 外层浮层锁死就收起：日历是 portal 到 body 的，不在面板的 inert 子树里，锁不住。
+  const overlayLocked = useOverlayLocked()
+  useEffect(() => {
+    if (overlayLocked) setOpen(false)
+  }, [overlayLocked])
   const [draft, setDraft] = useState<Draft>(() => draftOf(current))
   const [views, setViews] = useState<{ start: ViewMonth; end: ViewMonth }>(() => {
     const d = draftOf(current)

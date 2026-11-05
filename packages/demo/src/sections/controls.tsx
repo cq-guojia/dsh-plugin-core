@@ -1786,6 +1786,9 @@ export function FeedbackPage(): ReturnType<typeof h> {
   const [largeOpenB, setLargeOpenB] = useState(false)
   const [asyncOpen, setAsyncOpen] = useState(false)
   const [saving, setSaving] = useState(false)
+  // 锁定态演示：开框即锁 2 秒（锁住期间框里点不动，所以解锁只能由外部定时器给）
+  const [lockDemoOpen, setLockDemoOpen] = useState(false)
+  const [lockDemoBusy, setLockDemoBusy] = useState(false)
   // footer 过程提示：跑的时候逐句换文案，换一句翻一次牌
   const [noticeOpen, setNoticeOpen] = useState(false)
   const [noticeText, setNoticeText] = useState('')
@@ -2031,6 +2034,40 @@ export function FeedbackPage(): ReturnType<typeof h> {
                   ),
                   h('div', { className: 'dshpc-overlay-head__sid' }, '共 128 条 · 最近更新 2 分钟前'),
                 ),
+              )
+            : null,
+        ),
+        h(
+          'div',
+          null,
+          h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', marginBottom: '6px' } }, '锁定态 locked（与 loading 无关：整框谁都别动）'),
+          h(
+            Button,
+            {
+              variant: 'outline',
+              onClick: () => {
+                setLockDemoOpen(true)
+                setLockDemoBusy(true)
+                setTimeout(() => setLockDemoBusy(false), 2000)
+              },
+            },
+            '打开并锁定 2 秒',
+          ),
+          lockDemoOpen
+            ? h(
+                Modal,
+                {
+                  size: 'sm',
+                  title: '正在提交',
+                  locked: lockDemoBusy,
+                  onClose: () => setLockDemoOpen(false),
+                  footer: h(
+                    Button,
+                    { variant: 'primary', loading: lockDemoBusy, onClick: () => setLockDemoOpen(false) },
+                    lockDemoBusy ? '提交中' : '完成',
+                  ),
+                },
+                h('div', null, '前 2 秒整框锁死：这一行字点不动、Tab 也进不来、鼠标是禁止手势、✕ 与 Esc 都不关；2 秒后自动解开，底下的按钮就能点了。'),
               )
             : null,
         ),

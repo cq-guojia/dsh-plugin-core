@@ -11,7 +11,7 @@ export { Modal, type ModalProps, type ModalSize } from './Modal.js';
 export { SideSheet, type SideSheetProps, type SideSheetSide } from './SideSheet.js';
 export { AlertModal, type AlertModalProps, type AlertSeverity, } from './AlertModal.js';
 export { ConfirmModal, type ConfirmModalProps, type ConfirmTone, } from './ConfirmModal.js';
-export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, } from './modal-host.js';
+export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, type DialogControl, } from './modal-host.js';
 export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardBarOptions, type CardSharedProps, } from './Card.js';
 export { Surface, surfaceClass, type SurfaceBorder, type SurfacePadding, type SurfaceProps, type SurfaceRadius, type SurfaceTone, } from './Surface.js';
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js';

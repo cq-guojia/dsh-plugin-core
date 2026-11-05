@@ -50,6 +50,8 @@ export interface SideSheetProps {
      * 内容照常渲染。与 `closeOnMask` / `escClose` / `closable` 是"与"关系 —— 它是否决项，不替代它们。
      */
     busy?: boolean;
+    /** 锁死全部交互（含义见 `Modal.locked`）：抽屉整块点不动、Tab 进不去、三条关闭路径同时失效。 */
+    locked?: boolean;
     /** **初始**宽度（px，默认 460，与 PanelDock 同档）；拖过之后以拖出来的为准。 */
     width?: number;
     /** 可拖宽的下限（默认 320）。 */

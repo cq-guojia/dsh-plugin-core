@@ -2845,6 +2845,10 @@ export const docData = {
       {
         "zh": "回调的返回值决定关不关：**只有 `false`**（同步返回，或 resolve 成 `false`）表示这次没成 —— 框留着让人重试；`true` / `undefined` / 其他返回值照常关；reject 也不关（错误打到控制台）。失败提示由回调自己出，调用点不必包 `try/catch`。",
         "en": "The callback’s return value decides whether it closes: **only `false`** (returned directly, or resolved to `false`) means it did not succeed — the dialog stays for a retry; `true` / `undefined` / anything else closes as usual; a rejection also keeps it open (the error is logged). The callback owns its failure message, so call sites need no `try/catch`."
+      },
+      {
+        "zh": "**要「整框谁都别动」就传 `locked`**，别拿按钮 loading 顶替 —— 两者是两件事：loading 只管那一颗按钮转圈，`locked` 管整块面板不可交互（自绘滑块、原生 input、下位选择器一并管住）+ 三条关闭路径失效 + 压灰与禁止手势。声明式传 `locked={saving}` 即可；它是受控项，不传 = 未锁，关掉重开自然复位，也不会改动任何子控件自己的 `disabled`。命令式那两个函数的回调会收到 `ctl`（`{ setLocked(bool) }`），在异步过程中自己开 / 关：`onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`；框关掉之后再调 `setLocked` 是空操作。",
+        "en": "**When the whole dialog must be untouchable, pass `locked`** — do not fake it with button loading: loading only spins that one button, while `locked` makes the entire panel non-interactive (custom sliders, native inputs and selects included), disables all three close paths, dims the surface and shows a not-allowed cursor. Declaratively just pass `locked={saving}`; it is controlled and stateless — omitted means unlocked, reopening starts clean, and it never touches a child’s own `disabled`. The two imperative dialogs hand their callbacks a `ctl` (`{ setLocked(bool) }`) so you can flip it mid-flight: `onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`. Calling `setLocked` after the dialog closed is a no-op."
       }
     ],
     "api": [
@@ -3061,6 +3065,15 @@ export const docData = {
             "desc": {
               "zh": "有异步在跑（footer 里的 `Button` 正在 loading）：遮罩 / Esc / ✕ 三条关闭路径一起失效，内容照常。否决项，不替代 closeOnMask / escClose",
               "en": "Async work in flight (a footer `Button` is loading): mask / Esc / ✕ all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose"
+            }
+          },
+          {
+            "name": "locked",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "**锁死全部交互**（与 loading 解耦）：面板整块 `inert` —— 里面任何控件（自绘滑块、原生 input、按钮、下拉）点不到、Tab 也进不去；三条关闭路径同时失效；压一层灰 + 鼠标变禁止手势。受控项、不落内部 state（关掉重开自然回到未锁）；不碰子控件的 `disabled`，原本禁用的解锁后照样禁用",
+              "en": "**Locks every interaction** (decoupled from loading): the panel becomes `inert` — no control inside (custom slider, native input, button, select) can be clicked or reached with Tab; all three close paths stop working; a dim layer plus a not-allowed cursor. Controlled and stateless (reopening starts unlocked); it never touches a child’s `disabled`, so already-disabled controls stay disabled after unlocking"
             }
           },
           {
@@ -3459,6 +3472,15 @@ export const docData = {
             "desc": {
               "zh": "有异步在跑（footer 里的 `Button` 正在 loading）：遮罩 / Esc / ✕ 三条关闭路径一起失效，内容照常。否决项，不替代 closeOnMask / escClose",
               "en": "Async work in flight (a footer `Button` is loading): mask / Esc / ✕ all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose"
+            }
+          },
+          {
+            "name": "locked",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "锁死全部交互（含义同 `Modal.locked`）：抽屉整块 `inert`、点不到也 Tab 不进去，三条关闭路径同时失效，压一层灰 + 禁止手势",
+              "en": "Lock every interaction (same as `Modal.locked`): the drawer goes `inert` — no clicks, no Tab — all three close paths stop working, plus a dim layer and a not-allowed cursor"
             }
           },
           {

@@ -5,6 +5,9 @@
  * 差异只在「面板怎么排」（居中 vs 贴边），那部分留在各自的控件里。
  */
 import { type ReactNode } from 'react';
+/** 外层浮层是否锁死（不在浮层里 = false）。 */
+export declare function useOverlayLocked(): boolean;
+export declare const OverlayLockedProvider: import("react").Provider<boolean>;
 /**
  * Esc 关闭。不传 `onClose` 或 `enabled=false` 时完全不挂监听
  * （无回调还挂监听，等于让 Esc 被白白吃掉）。

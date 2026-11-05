@@ -17,16 +17,21 @@ export interface HostDialogHandlers {
     alert: (opts: HostAlertArgs) => Promise<void>;
 }
 export declare function registerHostDialog(handlers: HostDialogHandlers): void;
-/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」。 */
-type DialogHandler = () => unknown;
-export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel' | 'confirmLoading' | 'cancelLoading'> & {
+/** 命令式弹窗的遥控器：异步期间自己决定锁不锁整框 —— 与按钮转圈（loading）互不干扰。 */
+export interface DialogControl {
+    /** 锁死整框（true）/ 解锁（false）：所有控件点不到、Tab 进不去、也关不掉。框已关掉后再调是空操作。 */
+    setLocked(locked: boolean): void;
+}
+/** 点按钮的回调：返回 thenable 即视为「消费方要做异步处理」；`ctl` 用来在跑的过程中锁 / 解锁整框。 */
+type DialogHandler = (ctl: DialogControl) => unknown;
+export type ConfirmOptions = Omit<ConfirmModalProps, 'onConfirm' | 'onCancel' | 'confirmLoading' | 'cancelLoading' | 'locked'> & {
     skin?: 'core' | 'host';
     /** 确认回调；异步期间确认钮转圈、整框不可关，resolve 后按 `true` 关闭，reject 后恢复可点；返回 `false` 不关。 */
     onConfirm?: DialogHandler;
     /** 取消 / 遮罩 / Esc 回调；异步语义同 `onConfirm`，resolve 后按 `false` 关闭（返回 `false` 同样不关）。 */
     onCancel?: DialogHandler;
 };
-export type AlertOptions = Omit<AlertModalProps, 'onConfirm' | 'confirmLoading'> & {
+export type AlertOptions = Omit<AlertModalProps, 'onConfirm' | 'confirmLoading' | 'locked'> & {
     skin?: 'core' | 'host';
     /** 确认回调（遮罩 / Esc 同一个出口）；异步期间转圈并锁死关闭，settle 后才关，返回 `false` 不关。 */
     onConfirm?: DialogHandler;

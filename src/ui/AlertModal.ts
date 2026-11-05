@@ -33,6 +33,8 @@ export interface AlertModalProps {
   loadingText?: boolean
   /** 点遮罩是否关闭（默认 true）。 */
   closeOnMask?: boolean
+  /** 锁死全部交互（含义见 `Modal.locked`）：整框点不动、Tab 进不去、三条关闭路径同时失效。 */
+  locked?: boolean
   /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
   confirmLoading?: boolean
   /** 底栏左侧的一行过程提示（换字即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位。 */
@@ -65,6 +67,7 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
       closable: false,
       closeOnMask: props.closeOnMask,
       busy,
+      locked: props.locked,
       onClose: props.onConfirm,
       notice: props.notice,
       footer: h(Button, {

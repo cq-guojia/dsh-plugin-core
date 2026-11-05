@@ -1256,7 +1256,7 @@ function resolveTriggerSizing(opts) {
 }
 
 // dist/ui/Picker.js
-var import_react7 = require("react");
+var import_react9 = require("react");
 
 // node_modules/.pnpm/@floating-ui+react@0.27.20_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react/dist/floating-ui.react.mjs
 var React3 = __toESM(require("react"), 1);
@@ -4087,8 +4087,72 @@ function MarqueeText(props) {
   }, props.text));
 }
 
+// dist/ui/overlay.js
+var import_react8 = require("react");
+
+// dist/ui/overlay-css.generated.js
+var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09/ \u9009\u6587\u4EF6\u5F39\u7A97\uFF08\u951A\u5B9A\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u5404\u5BB6\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002\n   \u5173\u95ED\u94AE\u7684\u76AE\u80A4\u5728 panel.css\uFF08.dshpc-panel__close\uFF0C\u65E7\u7C7B\u540D\u4F5C\u522B\u540D\uFF09\uFF0C\u4E0D\u5728\u8FD9\u91CC\u518D\u5199\u4E00\u4EFD\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u9501\u5B9A\u6001\uFF1A\u9762\u677F\u662F inert\uFF08\u4E0D\u53C2\u4E0E\u547D\u4E2D\u6D4B\u8BD5\uFF09\uFF0C\u9F20\u6807\u843D\u70B9\u5176\u5B9E\u843D\u5728\u906E\u7F69\u4E0A \u2014\u2014 \u7981\u6B62\u624B\u52BF\u6302\u8FD9\u5C42\u624D\u770B\u5F97\u89C1\u3002 */\n.dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n/* \u951A\u5B9A\u6863\uFF08\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\uFF1A\u906E\u7F69\u7167\u65E7\u538B\u6697 + \u70B9\u5916\u90E8\u5173\u95ED\uFF0C\u9762\u677F\u81EA\u5DF1 fixed \u8D34\u951A\u70B9\uFF0C\u8FD9\u91CC\u4E0D\u505A\u5E03\u5C40\u3002 */\n.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n";
+
 // dist/ui/panel-css.generated.js
 var PANEL_CSS = "/* \u6D6E\u5C42\u9762\u677F\u76AE\u80A4\uFF082026-11-03 \u7528\u6237\u5B9A\uFF1A\u76AE\u80A4\u7EDF\u4E00\uFF0C\u53EA\u6539\u6837\u5F0F\u4E0D\u52A8\u4EA4\u4E92\uFF09\u3002\n *\n * \u8FD9\u4EFD\u6587\u4EF6\u662F**\u6240\u6709\u300C\u6D6E\u8D77\u6765\u7684\u6846\u300D\u7684\u76AE\u80A4\u771F\u6E90**\u3002\u5B9A\u4F4D\uFF08fixed / absolute\u3001\u8D34\u8C01\u3001\u600E\u4E48\u7FFB\u8F6C\u3001\u591A\u5927\u7684\n * \u5C42\u5E8F\uFF09\u7559\u5728\u5404\u81EA\u63A7\u4EF6\u91CC\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u8868\u9762\u56DB\u4EF6\uFF1A\u5E95\u8272 / \u63CF\u8FB9\u5BBD / \u5706\u89D2 / \u9634\u5F71\u3002\n * \u26A0\uFE0F \u7EC4\u4EF6 CSS \u91CC\u4E0D\u8BB8\u518D\u5199\u8FD9\u56DB\u4E2A\u5B57\u9762\u503C \u2014\u2014 \u60F3\u6539\u5916\u89C2\u5C31\u6539\u8FD9\u91CC\uFF0C\u522B\u5728\u6D88\u8D39\u65B9\u53E6\u8D77\u4E00\u5957\u3002\n *\n * \u4E09\u6863\uFF08\u5DEE\u5F02\u53EA\u5728\u8FD9\u4E09\u6BB5\u5B9A\u4E49\uFF0C\u522B\u5904\u5206\u53C9\uFF09\uFF1A\n *   --modal    \u5C45\u4E2D\u6A21\u6001\uFF08Modal / ConfirmModal / AlertModal \u5BB6\u65CF\uFF09\n *   --popover  \u8D34\u951A\u70B9\u7684\u6D6E\u5C42\u9762\u677F\uFF08pickWorkspaceFile \u7684\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\n *   --menu     \u4E0B\u62C9\u83DC\u5355\uFF08\u6587\u4EF6\u6D4F\u89C8\u5668 \u25BE \u9009\u5C42\u3001Picker \u4E0B\u62C9\uFF09\n *\n * \u4E0D\u5E76\u5165\u4E09\u6863\u7684\uFF1APanelDock \u4E0E SideSheet \u662F**\u8D34\u8FB9\u5BB6\u65CF**\uFF08side-panel.css \u7684\n * .dshpc-side-surface\uFF0Csurface-base\u3001\u65E0\u5916\u63CF\u8FB9\uFF09\u2014\u2014 2026-11-02 \u62CD\u677F\u300C\u4E24\u8005\u76AE\u80A4\u4E00\u6A21\u4E00\u6837\u300D\uFF0C\n * \u4E00\u4E2A\u662F\u5E03\u5C40\u6210\u5458\u3001\u4E00\u4E2A\u662F\u8D34\u8FB9\u62BD\u5C49\uFF0C\u90FD\u4E0D\u662F\u6D6E\u5C42\u3002\n */\n.dshpc-panel{\n  background:var(--dshpc-panel-bg);color:var(--dshpc-fg);\n  border:var(--dshpc-panel-bw) solid var(--dshpc-border);\n  border-radius:var(--dshpc-panel-radius);box-shadow:var(--dshpc-panel-shadow);\n}\n.dshpc-panel--modal{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:3px;\n  --dshpc-panel-radius:var(--dshpc-radius-xl);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n}\n.dshpc-panel--popover{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  --dshpc-panel-radius:var(--dshpc-radius-lg);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n}\n.dshpc-panel--menu{\n  /* \u83DC\u5355\u5E95\u4E0E\u6A21\u6001\u540C\u4E00\u5C42\uFF08\u7528\u6237 2026-11-03\uFF1A\u522B\u7528\u9875\u9762\u5E95\u8272\uFF0C\u6697\u8272\u4E0B\u770B\u7740\u5168\u9ED1\uFF09\u3002 */\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  --dshpc-panel-radius:var(--dshpc-radius-sm);\n  --dshpc-panel-shadow:var(--dshpc-shadow-1);\n}\n\n/* \u6D6E\u5C42\u552F\u4E00\u7684\u5173\u95ED\u94AE\uFF0820\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF09\u3002\n   \u65E7\u7C7B\u540D .dshpc-overlay-head__close \u4FDD\u7559\u4E3A\u522B\u540D\uFF1A\u6D88\u8D39\u65B9\u5199\u5728\u65E7\u7C7B\u540D\u4E0A\u7684\u8986\u76D6\u4ECD\u751F\u6548\u3002 */\n.dshpc-panel__close,.dshpc-overlay-head__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-panel__close:hover,.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-panel__close:focus-visible,.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n";
+
+// dist/ui/panel.js
+var import_react7 = require("react");
+function PanelSurface(props) {
+  ensureComponentStyles("panel", PANEL_CSS);
+  const className2 = `dshpc-panel dshpc-panel--${props.tier}${props.className === void 0 || props.className === "" ? "" : ` ${props.className}`}`;
+  return (0, import_react7.createElement)("div", {
+    ...props.attrs,
+    className: className2,
+    style: props.style,
+    role: props.role,
+    onClick: props.stopPropagation === true ? (event) => event.stopPropagation() : void 0
+  }, props.children ?? null);
+}
+function PanelClose(props) {
+  ensureComponentStyles("panel", PANEL_CSS);
+  return (0, import_react7.createElement)("button", {
+    type: "button",
+    className: `dshpc-panel__close${props.className === void 0 ? "" : ` ${props.className}`}`,
+    "aria-label": props.label,
+    onClick: () => props.onClick()
+  }, props.icon ?? "\u2715");
+}
+
+// dist/ui/overlay.js
+var LockedContext = (0, import_react8.createContext)(false);
+function useOverlayLocked() {
+  return (0, import_react8.useContext)(LockedContext);
+}
+var OverlayLockedProvider = LockedContext.Provider;
+function useEscapeClose(enabled, onClose) {
+  (0, import_react8.useEffect)(() => {
+    if (!enabled || onClose === void 0)
+      return;
+    const onKey = (event) => {
+      if (event.key === "Escape")
+        onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [enabled, onClose]);
+}
+function OverlayMask(props) {
+  ensureComponentStyles("overlay", OVERLAY_CSS);
+  return (0, import_react8.createElement)("div", {
+    ...props.attrs,
+    className: `dshpc-overlay dshpc-overlay--${props.kind}`,
+    onClick: () => {
+      if (props.closeOnMask)
+        props.onClose?.();
+    }
+  }, props.children ?? null);
+}
+function OverlayHead(props) {
+  ensureComponentStyles("overlay", OVERLAY_CSS);
+  ensureComponentStyles("panel", PANEL_CSS);
+  return (0, import_react8.createElement)("div", { className: "dshpc-overlay-head" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__heading" }, props.icon === void 0 ? null : (0, import_react8.createElement)("span", { className: "dshpc-overlay-head__lead" }, props.icon), (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__titlegroup" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__titlerow" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__title" }, props.title ?? ""), props.extra === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__extra" }, props.extra)), props.subtitle === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__sid" }, props.subtitle))), (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__spacer" }), props.actions === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__actions" }, props.actions), props.onClose === void 0 ? null : (0, import_react8.createElement)(PanelClose, { label: props.closeLabel, onClick: props.onClose, className: "dshpc-overlay-head__close" }));
+}
 
 // dist/ui/picker-css.generated.js
 var PICKER_CSS = `
@@ -4160,20 +4224,20 @@ function Picker(props) {
   const clearable = props.clearable === true;
   const showLabels = props.showLabels !== false;
   const triggerStyle = resolveTriggerSizing(props);
-  const groups = (0, import_react7.useMemo)(() => toGroups(props.groups, props.options), [props.groups, props.options]);
+  const groups = (0, import_react9.useMemo)(() => toGroups(props.groups, props.options), [props.groups, props.options]);
   const controlled = props.value !== void 0;
-  const [inner, setInner] = (0, import_react7.useState)(() => toArray(props.defaultValue));
+  const [inner, setInner] = (0, import_react9.useState)(() => toArray(props.defaultValue));
   const selected = controlled ? toArray(props.value) : inner;
   const emit = (next) => {
     if (!controlled)
       setInner(next);
     props.onChange?.(mode === "single" ? next[0] ?? "" : next);
   };
-  const [open, setOpen] = (0, import_react7.useState)(false);
-  const [query, setQuery] = (0, import_react7.useState)("");
-  const [active, setActive2] = (0, import_react7.useState)(-1);
-  const rootRef = (0, import_react7.useRef)(null);
-  const searchRef = (0, import_react7.useRef)(null);
+  const [open, setOpen] = (0, import_react9.useState)(false);
+  const [query, setQuery] = (0, import_react9.useState)("");
+  const [active, setActive2] = (0, import_react9.useState)(-1);
+  const rootRef = (0, import_react9.useRef)(null);
+  const searchRef = (0, import_react9.useRef)(null);
   const { refs, floatingStyles } = useFloating2({
     open,
     onOpenChange: setOpen,
@@ -4196,12 +4260,12 @@ function Picker(props) {
     whileElementsMounted: autoUpdate,
     strategy: "fixed"
   });
-  const setSearchRef = (0, import_react7.useCallback)((el) => {
+  const setSearchRef = (0, import_react9.useCallback)((el) => {
     searchRef.current = el;
     if (el !== null && open)
       el.focus();
   }, [open]);
-  (0, import_react7.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     if (!open)
       return;
     const onDown = (e) => {
@@ -4216,7 +4280,12 @@ function Picker(props) {
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
-  (0, import_react7.useEffect)(() => {
+  const overlayLocked = useOverlayLocked();
+  (0, import_react9.useEffect)(() => {
+    if (overlayLocked)
+      setOpen(false);
+  }, [overlayLocked]);
+  (0, import_react9.useEffect)(() => {
     if (open)
       return;
     setQuery("");
@@ -4262,7 +4331,7 @@ function Picker(props) {
         pick2(hit.value);
     }
   };
-  const trigger = (0, import_react7.createElement)(
+  const trigger = (0, import_react9.createElement)(
     "button",
     {
       type: "button",
@@ -4277,33 +4346,33 @@ function Picker(props) {
           setOpen(!open);
       }
     },
-    props.icon !== void 0 && props.icon !== null ? (0, import_react7.createElement)("span", { className: "dshpc-picker__icon" }, props.icon) : null,
+    props.icon !== void 0 && props.icon !== null ? (0, import_react9.createElement)("span", { className: "dshpc-picker__icon" }, props.icon) : null,
     // 文字吃掉剩余宽度并靠左（默认）；超长时外层省略号、hover 跑马灯（MarqueeText 自带）。
-    (0, import_react7.createElement)(MarqueeText, { text: summary, className: "dshpc-picker__label" }),
-    (0, import_react7.createElement)(Chevron, { size: 12, className: "dshpc-picker__caret" })
+    (0, import_react9.createElement)(MarqueeText, { text: summary, className: "dshpc-picker__label" }),
+    (0, import_react9.createElement)(Chevron, { size: 12, className: "dshpc-picker__caret" })
   );
-  const triggerRow = props.hint === void 0 ? trigger : (0, import_react7.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react7.createElement)(FieldHint, { text: props.hint }));
-  return (0, import_react7.createElement)("div", {
+  const triggerRow = props.hint === void 0 ? trigger : (0, import_react9.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react9.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react9.createElement)("div", {
     className: `dshpc-picker${props.className === void 0 ? "" : ` ${props.className}`}`,
     ref: rootRef,
     onKeyDown
-  }, triggerRow, open ? (0, import_react7.createElement)(FloatingPortal, null, (0, import_react7.createElement)("div", {
+  }, triggerRow, open ? (0, import_react9.createElement)(FloatingPortal, null, (0, import_react9.createElement)("div", {
     className: "dshpc-panel dshpc-panel--menu dshpc-picker__menu",
     ref: refs.setFloating,
     style: floatingStyles
-  }, props.degraded === true ? (0, import_react7.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react7.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react7.createElement)("input", {
+  }, props.degraded === true ? (0, import_react9.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react9.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react9.createElement)("input", {
     ref: setSearchRef,
     className: "dshpc-picker__search",
     placeholder: tt("pickerSearch"),
     value: query,
     onChange: (e) => setQuery(e.target.value)
-  }) : null, flat.length === 0 && groups.length === 0 ? (0, import_react7.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerEmpty")) : flat.length === 0 ? (0, import_react7.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerNoMatch")) : [
-    clearable && mode === "single" && selected.length > 0 ? (0, import_react7.createElement)("div", {
+  }) : null, flat.length === 0 && groups.length === 0 ? (0, import_react9.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerEmpty")) : flat.length === 0 ? (0, import_react9.createElement)("div", { className: "dshpc-picker__empty" }, tt("pickerNoMatch")) : [
+    clearable && mode === "single" && selected.length > 0 ? (0, import_react9.createElement)("div", {
       key: "__clear__",
       className: "dshpc-picker__option dshpc-picker__option--clear",
       onClick: clear
     }, tt("pickerClear")) : null,
-    ...shown.map((g) => (0, import_react7.createElement)("div", { key: g.value || "_" }, g.label === "" ? null : (0, import_react7.createElement)("div", { className: "dshpc-picker__group-label" }, g.label), g.options.map((o) => {
+    ...shown.map((g) => (0, import_react9.createElement)("div", { key: g.value || "_" }, g.label === "" ? null : (0, import_react9.createElement)("div", { className: "dshpc-picker__group-label" }, g.label), g.options.map((o) => {
       const blocked = o.disabled === true || atMax && !selected.includes(o.value);
       const activeCls = [
         "dshpc-picker__option",
@@ -4311,7 +4380,7 @@ function Picker(props) {
         blocked ? "dshpc-picker__option--disabled" : ""
       ].filter((s) => s !== "").join(" ");
       const idx = flat.indexOf(o);
-      return (0, import_react7.createElement)(
+      return (0, import_react9.createElement)(
         "div",
         {
           key: o.value,
@@ -4322,10 +4391,10 @@ function Picker(props) {
               pick2(o.value);
           }
         },
-        mode === "multiple" ? (0, import_react7.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null,
-        o.icon !== void 0 && o.icon !== null ? (0, import_react7.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null,
+        mode === "multiple" ? (0, import_react9.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? "\u2713" : "") : null,
+        o.icon !== void 0 && o.icon !== null ? (0, import_react9.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null,
         // 选项文字超长时省略号 + hover 跑马灯（与触发器同一套逻辑），不把菜单撑出横向滚动条。
-        (0, import_react7.createElement)(MarqueeText, { text: o.label, className: "dshpc-picker__option-label" })
+        (0, import_react9.createElement)(MarqueeText, { text: o.label, className: "dshpc-picker__option-label" })
       );
     })))
   ])) : null);
@@ -4337,12 +4406,12 @@ function toArray(v) {
 }
 
 // dist/ui/DateTimePicker.js
-var import_react11 = require("react");
+var import_react13 = require("react");
 
 // dist/ui/Loader.js
-var import_react9 = require("react");
+var import_react11 = require("react");
 function ringNode() {
-  return (0, import_react9.createElement)("circle", {
+  return (0, import_react11.createElement)("circle", {
     cx: 12,
     cy: 12,
     r: 9.5,
@@ -4355,7 +4424,7 @@ function ringNode() {
 }
 function blockNodes() {
   const cells = [0, 1, 2];
-  return cells.map((i2) => (0, import_react9.createElement)("rect", {
+  return cells.map((i2) => (0, import_react11.createElement)("rect", {
     key: i2,
     className: "dshpc-loader__node",
     x: 0.6 + i2 * 7.8,
@@ -4372,7 +4441,7 @@ function Loader(props) {
   const classes = ["dshpc-loader", `dshpc-loader--${variant}`, `dshpc-loader--${size4}`];
   if (className2 !== void 0 && className2 !== "")
     classes.push(className2);
-  return (0, import_react9.createElement)("svg", {
+  return (0, import_react11.createElement)("svg", {
     className: classes.join(" "),
     viewBox: "0 0 24 24",
     role: label === void 0 ? void 0 : "status",
@@ -4383,7 +4452,7 @@ function Loader(props) {
 }
 
 // dist/ui/Button.js
-var import_react10 = require("react");
+var import_react12 = require("react");
 
 // dist/ui/thenable.js
 function isThenable(value) {
@@ -4396,7 +4465,7 @@ function isSuccess(value) {
 }
 
 // dist/ui/Button.js
-var useIsoLayoutEffect = typeof document === "undefined" ? import_react10.useEffect : import_react10.useLayoutEffect;
+var useIsoLayoutEffect = typeof document === "undefined" ? import_react12.useEffect : import_react12.useLayoutEffect;
 var SOLID_VARIANTS = [
   "primary",
   "secondary",
@@ -4436,7 +4505,7 @@ function buttonClass(variant, size4, block2, hasIcon, extra) {
   return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size4}${block2 ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
 }
 function useAsyncClick(onClick, onBusyChange, onBusyStart) {
-  const [busy, setBusy] = (0, import_react10.useState)(false);
+  const [busy, setBusy] = (0, import_react12.useState)(false);
   const click = (event) => {
     if (onClick === void 0)
       return;
@@ -4460,9 +4529,9 @@ function useAsyncClick(onClick, onBusyChange, onBusyStart) {
 function Button(props) {
   ensureComponentStyles("button", BUTTON_CSS);
   const { variant = "outline", size: size4 = "lg", icon: icon2, iconRight, color, loading: loadingProp = false, loadingText = true, block: block2 = false, width, minWidth, maxWidth, className: className2, style: style2, children, onClick, onBusyChange, ...rest } = props;
-  const btnRef = (0, import_react10.useRef)(null);
-  const idleWidth = (0, import_react10.useRef)(null);
-  const [lockWidth, setLockWidth] = (0, import_react10.useState)(null);
+  const btnRef = (0, import_react12.useRef)(null);
+  const idleWidth = (0, import_react12.useRef)(null);
+  const [lockWidth, setLockWidth] = (0, import_react12.useState)(null);
   const hasOwnWidth = width !== void 0 || style2 !== void 0 && style2.width !== void 0;
   const lockable = !loadingText && !hasOwnWidth && !block2;
   const asyncClick = useAsyncClick(onClick, onBusyChange, (el) => {
@@ -4521,13 +4590,13 @@ function Button(props) {
     className: buttonClass(variant, size4, block2, icon2 !== void 0 && icon2 !== null && !loading, className2),
     style: { ...colorVars(variant, color), ...widthStyle, ...style2 }
   };
-  return (0, import_react10.createElement)(
+  return (0, import_react12.createElement)(
     "button",
     attrs2,
-    loading ? (0, import_react10.createElement)("span", { className: "dshpc-btn__icon" }, (0, import_react10.createElement)(Loader, { size: "xs" })) : icon2 !== void 0 && icon2 !== null ? (0, import_react10.createElement)("span", { className: "dshpc-btn__icon" }, icon2) : null,
-    hideText ? null : marqueeLabel ? (0, import_react10.createElement)(MarqueeText, { text: children, className: "dshpc-btn__label" }) : children,
+    loading ? (0, import_react12.createElement)("span", { className: "dshpc-btn__icon" }, (0, import_react12.createElement)(Loader, { size: "xs" })) : icon2 !== void 0 && icon2 !== null ? (0, import_react12.createElement)("span", { className: "dshpc-btn__icon" }, icon2) : null,
+    hideText ? null : marqueeLabel ? (0, import_react12.createElement)(MarqueeText, { text: children, className: "dshpc-btn__label" }) : children,
     // 转圈期间所有图标位都让位：前置位被 Loader 顶替，后置位（展开 / 外链）留在禁用态里只会挤版面
-    iconRight !== void 0 && iconRight !== null && !loading ? (0, import_react10.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null
+    iconRight !== void 0 && iconRight !== null && !loading ? (0, import_react12.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null
   );
 }
 function IconButton(props) {
@@ -4557,7 +4626,7 @@ function IconButton(props) {
     className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size4}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: { ...accent, ...style2 }
   };
-  return (0, import_react10.createElement)("button", attrs2, loading ? (0, import_react10.createElement)(Loader, { size: "xs" }) : icon2);
+  return (0, import_react12.createElement)("button", attrs2, loading ? (0, import_react12.createElement)(Loader, { size: "xs" }) : icon2);
 }
 
 // dist/utils/date.js
@@ -4869,7 +4938,7 @@ function fmtParts(p, precision) {
   return formatDateTimePrecision(formatDateTimeIso(p), precision);
 }
 function icon(paths, size4) {
-  return (0, import_react11.createElement)("svg", { width: size4, height: size4, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, ...paths.map((d2) => (0, import_react11.createElement)("path", {
+  return (0, import_react13.createElement)("svg", { width: size4, height: size4, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, ...paths.map((d2) => (0, import_react13.createElement)("path", {
     d: d2,
     stroke: "currentColor",
     "stroke-width": 1.5,
@@ -4887,8 +4956,8 @@ var ICON_PREV_YEAR = icon(["M9 5L5.5 8 9 11", "M12.5 5L9 8l3.5 3"], 14);
 var ICON_PREV_MONTH = icon(["M9.5 5L6 8l3.5 3"], 14);
 var ICON_NEXT_MONTH = icon(["M6.5 5L10 8l-3.5 3"], 14);
 var ICON_NEXT_YEAR = icon(["M7 5l3.5 3L7 11", "M3.5 5L7 8l-3.5 3"], 14);
-var ICON_UP = (0, import_react11.createElement)(Chevron, { dir: "up", size: 12 });
-var ICON_DOWN = (0, import_react11.createElement)(Chevron, { size: 12 });
+var ICON_UP = (0, import_react13.createElement)(Chevron, { dir: "up", size: 12 });
+var ICON_DOWN = (0, import_react13.createElement)(Chevron, { size: 12 });
 function DateTimePicker(props) {
   ensureComponentStyles("datetime", DATETIME_CSS);
   ensureComponentStyles("panel", PANEL_CSS);
@@ -4901,21 +4970,26 @@ function DateTimePicker(props) {
   const locale2 = getLocale();
   const placeholder2 = props.placeholder ?? tt("dtPlaceholder");
   const controlled = props.value !== void 0;
-  const [inner, setInner] = (0, import_react11.useState)(() => props.defaultValue ?? null);
+  const [inner, setInner] = (0, import_react13.useState)(() => props.defaultValue ?? null);
   const current3 = controlled ? props.value ?? null : inner;
-  const [open, setOpen] = (0, import_react11.useState)(false);
-  const [draft, setDraft] = (0, import_react11.useState)(() => draftOf(current3));
-  const [views, setViews] = (0, import_react11.useState)(() => {
+  const [open, setOpen] = (0, import_react13.useState)(false);
+  const overlayLocked = useOverlayLocked();
+  (0, import_react13.useEffect)(() => {
+    if (overlayLocked)
+      setOpen(false);
+  }, [overlayLocked]);
+  const [draft, setDraft] = (0, import_react13.useState)(() => draftOf(current3));
+  const [views, setViews] = (0, import_react13.useState)(() => {
     const d2 = draftOf(current3);
     const n = nowParts();
     const monthOf = (e) => e.day === null ? { year: n.year, month: n.month } : { year: e.day.year, month: e.day.month };
     return { start: monthOf(d2.start), end: monthOf(d2.end) };
   });
-  const [active, setActive2] = (0, import_react11.useState)("start");
-  const [focus, setFocus] = (0, import_react11.useState)({ start: null, end: null });
-  const [typing, setTyping] = (0, import_react11.useState)(null);
-  const rootRef = (0, import_react11.useRef)(null);
-  const gridRefs = (0, import_react11.useRef)({ start: null, end: null });
+  const [active, setActive2] = (0, import_react13.useState)("start");
+  const [focus, setFocus] = (0, import_react13.useState)({ start: null, end: null });
+  const [typing, setTyping] = (0, import_react13.useState)(null);
+  const rootRef = (0, import_react13.useRef)(null);
+  const gridRefs = (0, import_react13.useRef)({ start: null, end: null });
   const { refs, floatingStyles } = useFloating2({
     open,
     onOpenChange: setOpen,
@@ -4936,12 +5010,12 @@ function DateTimePicker(props) {
     whileElementsMounted: autoUpdate,
     strategy: "fixed"
   });
-  const emit = (0, import_react11.useCallback)((value) => {
+  const emit = (0, import_react13.useCallback)((value) => {
     if (!controlled)
       setInner(value);
     props.onChange?.(value);
   }, [controlled, props.onChange]);
-  const openPop = (0, import_react11.useCallback)(() => {
+  const openPop = (0, import_react13.useCallback)(() => {
     if (props.disabled === true)
       return;
     const d2 = draftOf(current3);
@@ -4954,7 +5028,7 @@ function DateTimePicker(props) {
     setTyping(null);
     setOpen(true);
   }, [current3, props.disabled]);
-  (0, import_react11.useEffect)(() => {
+  (0, import_react13.useEffect)(() => {
     if (!open)
       return;
     const onDown = (e) => {
@@ -4969,7 +5043,7 @@ function DateTimePicker(props) {
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, [open, refs.floating]);
-  (0, import_react11.useEffect)(() => {
+  (0, import_react13.useEffect)(() => {
     if (!open)
       return;
     const sides2 = ["start", "end"];
@@ -5110,9 +5184,9 @@ function DateTimePicker(props) {
   const currentDraft = draftOf(current3);
   const startValue = partsOf(currentDraft.start);
   const endValue = rangeMode ? partsOf(currentDraft.end) : null;
-  const dateZone = (key, value) => (0, import_react11.createElement)("span", { key, className: `dshpc-dt__pair-date${value === null ? " dshpc-dt__pair-date--empty" : ""}` }, value === null ? placeholder2 : fmtParts(value, precision));
-  const calIcon = (0, import_react11.createElement)("span", { className: "dshpc-dt__cal" }, ICON_CAL);
-  const trigger = (0, import_react11.createElement)("button", {
+  const dateZone = (key, value) => (0, import_react13.createElement)("span", { key, className: `dshpc-dt__pair-date${value === null ? " dshpc-dt__pair-date--empty" : ""}` }, value === null ? placeholder2 : fmtParts(value, precision));
+  const calIcon = (0, import_react13.createElement)("span", { className: "dshpc-dt__cal" }, ICON_CAL);
+  const trigger = (0, import_react13.createElement)("button", {
     type: "button",
     "aria-label": props.ariaLabel,
     "aria-expanded": open,
@@ -5120,14 +5194,14 @@ function DateTimePicker(props) {
     disabled: props.disabled === true,
     className: `dshpc-dt__trigger ${SIZE_CLASS[size4]} ${WIDTH_CLASS(rangeMode, precision)}`.trim(),
     onClick: openPop
-  }, rangeMode ? (0, import_react11.createElement)("span", { key: "group", className: "dshpc-dt__pair-group" }, dateZone("start", startValue), (0, import_react11.createElement)("span", { key: "sep", className: "dshpc-dt__pair-sep", "aria-hidden": true }, "-"), dateZone("end", endValue)) : (0, import_react11.createElement)("span", {
+  }, rangeMode ? (0, import_react13.createElement)("span", { key: "group", className: "dshpc-dt__pair-group" }, dateZone("start", startValue), (0, import_react13.createElement)("span", { key: "sep", className: "dshpc-dt__pair-sep", "aria-hidden": true }, "-"), dateZone("end", endValue)) : (0, import_react13.createElement)("span", {
     key: "label",
     className: `dshpc-dt__trigger-label${startValue === null ? " dshpc-dt__trigger-label--empty" : ""}`
   }, startValue === null ? placeholder2 : fmtParts(startValue, precision)), calIcon);
-  const triggerRow = props.hint === void 0 ? trigger : (0, import_react11.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react11.createElement)(FieldHint, { text: props.hint }));
+  const triggerRow = props.hint === void 0 ? trigger : (0, import_react13.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react13.createElement)(FieldHint, { text: props.hint }));
   const endBox = (side, label) => {
     const p = partsOf(draft[side]);
-    return (0, import_react11.createElement)(
+    return (0, import_react13.createElement)(
       "button",
       {
         key: side,
@@ -5137,8 +5211,8 @@ function DateTimePicker(props) {
         onClick: () => setActive2(side)
       },
       // 中文用全角冒号、英文用 ASCII 冒号（同一个 label 后的分隔，跟语言走）。
-      (0, import_react11.createElement)("span", { className: "dshpc-dt__end-label" }, `${label}${locale2 === "zh" ? "\uFF1A" : ": "}`),
-      (0, import_react11.createElement)("span", { className: `dshpc-dt__end-value${p === null ? " dshpc-dt__end-value--empty" : ""}` }, p === null ? placeholder2 : fmtParts(p, precision))
+      (0, import_react13.createElement)("span", { className: "dshpc-dt__end-label" }, `${label}${locale2 === "zh" ? "\uFF1A" : ": "}`),
+      (0, import_react13.createElement)("span", { className: `dshpc-dt__end-value${p === null ? " dshpc-dt__end-value--empty" : ""}` }, p === null ? placeholder2 : fmtParts(p, precision))
     );
   };
   const panel = (side) => {
@@ -5147,7 +5221,7 @@ function DateTimePicker(props) {
     const selIso = end.day === null ? null : dayIso(end.day);
     const cells = buildMonthCells(view.year, view.month);
     const today = nowParts();
-    return (0, import_react11.createElement)("div", { className: "dshpc-dt__panel", key: side }, (0, import_react11.createElement)("div", { className: "dshpc-dt__nav" }, (0, import_react11.createElement)("div", { className: "dshpc-dt__nav-group" }, (0, import_react11.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtPrevYear"), onClick: () => shiftMonth(side, -12) }, ICON_PREV_YEAR), (0, import_react11.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtPrevMonth"), onClick: () => shiftMonth(side, -1) }, ICON_PREV_MONTH)), (0, import_react11.createElement)("span", { className: "dshpc-dt__caption" }, monthCaption(view.year, view.month, locale2)), (0, import_react11.createElement)("div", { className: "dshpc-dt__nav-group" }, (0, import_react11.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtNextMonth"), onClick: () => shiftMonth(side, 1) }, ICON_NEXT_MONTH), (0, import_react11.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtNextYear"), onClick: () => shiftMonth(side, 12) }, ICON_NEXT_YEAR))), (0, import_react11.createElement)("div", {
+    return (0, import_react13.createElement)("div", { className: "dshpc-dt__panel", key: side }, (0, import_react13.createElement)("div", { className: "dshpc-dt__nav" }, (0, import_react13.createElement)("div", { className: "dshpc-dt__nav-group" }, (0, import_react13.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtPrevYear"), onClick: () => shiftMonth(side, -12) }, ICON_PREV_YEAR), (0, import_react13.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtPrevMonth"), onClick: () => shiftMonth(side, -1) }, ICON_PREV_MONTH)), (0, import_react13.createElement)("span", { className: "dshpc-dt__caption" }, monthCaption(view.year, view.month, locale2)), (0, import_react13.createElement)("div", { className: "dshpc-dt__nav-group" }, (0, import_react13.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtNextMonth"), onClick: () => shiftMonth(side, 1) }, ICON_NEXT_MONTH), (0, import_react13.createElement)("button", { type: "button", className: "dshpc-dt__nav-btn", "aria-label": tt("dtNextYear"), onClick: () => shiftMonth(side, 12) }, ICON_NEXT_YEAR))), (0, import_react13.createElement)("div", {
       className: "dshpc-dt__grid",
       role: "grid",
       "aria-label": monthCaption(view.year, view.month, locale2),
@@ -5155,7 +5229,7 @@ function DateTimePicker(props) {
         gridRefs.current[side] = el;
       },
       onKeyDown: (e) => onGridKeyDown(side, e)
-    }, ...weekdayLabels(locale2).map((w) => (0, import_react11.createElement)("span", { key: `wd-${w}`, className: "dshpc-dt__wd", role: "columnheader" }, w)), ...cells.map((c2) => (0, import_react11.createElement)("button", {
+    }, ...weekdayLabels(locale2).map((w) => (0, import_react13.createElement)("span", { key: `wd-${w}`, className: "dshpc-dt__wd", role: "columnheader" }, w)), ...cells.map((c2) => (0, import_react13.createElement)("button", {
       key: c2.iso,
       type: "button",
       role: "gridcell",
@@ -5165,18 +5239,18 @@ function DateTimePicker(props) {
       "aria-label": dayCaption(c2, locale2),
       "aria-selected": selIso !== null && c2.iso === selIso,
       onClick: () => pickDay(side, c2)
-    }, String(c2.day)))), units.length === 0 ? null : (0, import_react11.createElement)("div", { className: "dshpc-dt__time" }, ...units.flatMap((unit, i2) => {
+    }, String(c2.day)))), units.length === 0 ? null : (0, import_react13.createElement)("div", { className: "dshpc-dt__time" }, ...units.flatMap((unit, i2) => {
       const labelKey = UNIT_LABEL[unit];
       const value = end.time[unit];
       const shown = typing !== null && typing.side === side && typing.unit === unit ? typing.text : String(value).padStart(2, "0");
       return [
-        i2 > 0 ? (0, import_react11.createElement)("span", { key: `sep-${unit}`, className: "dshpc-dt__sep" }, ":") : null,
-        (0, import_react11.createElement)("div", { key: unit, className: "dshpc-dt__unit" }, (0, import_react11.createElement)("span", { className: "dshpc-dt__unit-label" }, tt(labelKey)), (0, import_react11.createElement)("button", {
+        i2 > 0 ? (0, import_react13.createElement)("span", { key: `sep-${unit}`, className: "dshpc-dt__sep" }, ":") : null,
+        (0, import_react13.createElement)("div", { key: unit, className: "dshpc-dt__unit" }, (0, import_react13.createElement)("span", { className: "dshpc-dt__unit-label" }, tt(labelKey)), (0, import_react13.createElement)("button", {
           type: "button",
           className: "dshpc-dt__step-btn",
           "aria-label": `${tt(labelKey)} +1`,
           onClick: () => shiftUnit(side, unit, 1)
-        }, ICON_UP), (0, import_react11.createElement)("input", {
+        }, ICON_UP), (0, import_react13.createElement)("input", {
           className: "dshpc-dt__step-val",
           inputMode: "numeric",
           maxLength: 2,
@@ -5195,7 +5269,7 @@ function DateTimePicker(props) {
               commitTyping(side, unit, shown);
             }
           }
-        }), (0, import_react11.createElement)("button", {
+        }), (0, import_react13.createElement)("button", {
           type: "button",
           className: "dshpc-dt__step-btn",
           "aria-label": `${tt(labelKey)} -1`,
@@ -5206,22 +5280,22 @@ function DateTimePicker(props) {
   };
   const invalidRange = rangeMode && partsOf(draft.start) !== null && partsOf(draft.end) !== null && !rangeIsValid(formatDateTimeIso(partsOf(draft.start)), formatDateTimeIso(partsOf(draft.end)));
   const canCommit = rangeMode ? partsOf(draft.start) !== null && partsOf(draft.end) !== null && !invalidRange : partsOf(draft.start) !== null;
-  const pop2 = (0, import_react11.createElement)(
+  const pop2 = (0, import_react13.createElement)(
     "div",
     // 弹层表面积走 panel.css 的 menu 档（2026-11-03 皮肤统一）；这类名只剩定位与内距。
     { className: "dshpc-panel dshpc-panel--menu dshpc-dt__pop", ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown },
-    rangeMode ? (0, import_react11.createElement)("div", { className: "dshpc-dt__ends" }, endBox("start", tt("dtStart")), endBox("end", tt("dtEnd"))) : null,
-    (0, import_react11.createElement)("div", { className: "dshpc-dt__panels" }, panel("start"), rangeMode ? panel("end") : null),
-    (0, import_react11.createElement)("div", { className: "dshpc-dt__foot" }, (0, import_react11.createElement)("div", { className: "dshpc-dt__foot-side" }, (0, import_react11.createElement)(Button, { variant: "ghost", size: "sm", onClick: applyNow }, precision === "day" ? tt("dtToday") : tt("dtNow")), (0, import_react11.createElement)(Button, { variant: "ghost", size: "sm", onClick: clear }, tt("dtClear"))), (0, import_react11.createElement)("div", { className: "dshpc-dt__foot-side" }, invalidRange ? (0, import_react11.createElement)("span", { className: "dshpc-dt__warn" }, tt("dtInvalidRange")) : null, (0, import_react11.createElement)(Button, { variant: "outline", size: "sm", onClick: () => setOpen(false) }, tt("cancel")), (0, import_react11.createElement)(Button, { variant: "primary", size: "sm", disabled: !canCommit, onClick: commit }, tt("confirm"))))
+    rangeMode ? (0, import_react13.createElement)("div", { className: "dshpc-dt__ends" }, endBox("start", tt("dtStart")), endBox("end", tt("dtEnd"))) : null,
+    (0, import_react13.createElement)("div", { className: "dshpc-dt__panels" }, panel("start"), rangeMode ? panel("end") : null),
+    (0, import_react13.createElement)("div", { className: "dshpc-dt__foot" }, (0, import_react13.createElement)("div", { className: "dshpc-dt__foot-side" }, (0, import_react13.createElement)(Button, { variant: "ghost", size: "sm", onClick: applyNow }, precision === "day" ? tt("dtToday") : tt("dtNow")), (0, import_react13.createElement)(Button, { variant: "ghost", size: "sm", onClick: clear }, tt("dtClear"))), (0, import_react13.createElement)("div", { className: "dshpc-dt__foot-side" }, invalidRange ? (0, import_react13.createElement)("span", { className: "dshpc-dt__warn" }, tt("dtInvalidRange")) : null, (0, import_react13.createElement)(Button, { variant: "outline", size: "sm", onClick: () => setOpen(false) }, tt("cancel")), (0, import_react13.createElement)(Button, { variant: "primary", size: "sm", disabled: !canCommit, onClick: commit }, tt("confirm"))))
   );
-  return (0, import_react11.createElement)("div", {
+  return (0, import_react13.createElement)("div", {
     className: `dshpc-dt${props.className === void 0 ? "" : ` ${props.className}`}`,
     ref: rootRef
-  }, triggerRow, open ? (0, import_react11.createElement)(FloatingPortal, null, pop2) : null);
+  }, triggerRow, open ? (0, import_react13.createElement)(FloatingPortal, null, pop2) : null);
 }
 
 // dist/ui/ModelPicker.js
-var import_react14 = require("react");
+var import_react16 = require("react");
 
 // dist/ui/host-data.js
 var ModelCatalogStore = class {
@@ -5314,12 +5388,12 @@ function connectHost(ctx, options = {}) {
 }
 
 // dist/ui/picker-icons.js
-var import_react13 = require("react");
+var import_react15 = require("react");
 function glyph(path) {
-  return (0, import_react13.createElement)("svg", { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, path);
+  return (0, import_react15.createElement)("svg", { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, path);
 }
 function folderIcon() {
-  return glyph((0, import_react13.createElement)("path", {
+  return glyph((0, import_react15.createElement)("path", {
     d: "M2 4.5A1.5 1.5 0 0 1 3.5 3h2.6l1.2 1.5h5.2A1.5 1.5 0 0 1 14 6v5.5A1.5 1.5 0 0 1 12.5 13h-9A1.5 1.5 0 0 1 2 11.5z",
     stroke: "currentColor",
     "stroke-width": 1.3,
@@ -5327,7 +5401,7 @@ function folderIcon() {
   }));
 }
 function sparkleIcon() {
-  return glyph((0, import_react13.createElement)("path", {
+  return glyph((0, import_react15.createElement)("path", {
     d: "M8 1.8l1.6 4.1 4.1 1.6-4.1 1.6L8 13.2 6.4 9.1 2.3 7.5l4.1-1.6z",
     stroke: "currentColor",
     "stroke-width": 1.2,
@@ -5343,7 +5417,7 @@ function ModelPicker(props) {
   const variant = props.variant ?? "grouped";
   const searchable = props.searchable ?? true;
   const defaultOption = props.allowDefault === false ? void 0 : { value: "", label: props.defaultLabel ?? tt("modelDefault") };
-  const catalog = (0, import_react14.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot);
+  const catalog = (0, import_react16.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot);
   const groups = props.groups ?? (catalog.status === "ready" ? catalog.routes.map((route) => ({
     value: route.provider,
     label: route.displayName,
@@ -5357,15 +5431,15 @@ function ModelPicker(props) {
   const emitModel = (v) => {
     props.onChange?.(typeof v === "string" ? v : v[0] ?? "");
   };
-  const [pickedProvider, setPickedProvider] = (0, import_react14.useState)("");
+  const [pickedProvider, setPickedProvider] = (0, import_react16.useState)("");
   const curGroup = groupOf(groups, value ?? "");
   const provider = pickedProvider !== "" && groups.some((g) => g.value === pickedProvider) ? pickedProvider : curGroup?.value ?? "";
-  (0, import_react14.useEffect)(() => {
+  (0, import_react16.useEffect)(() => {
     if (value !== void 0 && value !== "")
       setPickedProvider("");
   }, [value]);
   if (variant === "grouped") {
-    return (0, import_react14.createElement)(Picker, {
+    return (0, import_react16.createElement)(Picker, {
       // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
       groups: defaultOption === void 0 ? groups : [{ value: "", label: "", options: [defaultOption] }, ...groups],
       value,
@@ -5385,7 +5459,7 @@ function ModelPicker(props) {
   }
   const group = groups.find((g) => g.value === provider);
   const options = group === void 0 ? [] : flattenOptions([group]);
-  return (0, import_react14.createElement)("div", { className: "dshpc-picker__row" }, (0, import_react14.createElement)(Picker, {
+  return (0, import_react16.createElement)("div", { className: "dshpc-picker__row" }, (0, import_react16.createElement)(Picker, {
     options: groups.map((g) => ({ value: g.value, label: g.label })),
     value: provider === "" ? void 0 : provider,
     placeholder: tt("modelProvider"),
@@ -5396,7 +5470,7 @@ function ModelPicker(props) {
       setPickedProvider(typeof v === "string" ? v : v[0] ?? "");
       props.onChange?.("");
     }
-  }), (0, import_react14.createElement)(Picker, {
+  }), (0, import_react16.createElement)(Picker, {
     options: defaultOption === void 0 ? options : [defaultOption, ...options],
     value,
     defaultValue: props.defaultValue,
@@ -5415,14 +5489,14 @@ function ModelPicker(props) {
 }
 
 // dist/ui/WorkspacePicker.js
-var import_react15 = require("react");
+var import_react17 = require("react");
 function WorkspacePicker(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const items = (0, import_react15.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const items = (0, import_react17.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const options = items.map((w) => ({ value: w.workspaceId, label: w.title }));
   const allOption = props.allowDefault !== false && props.mode !== "multiple" ? { value: "", label: props.defaultLabel ?? tt("workspaceAll") } : void 0;
-  return (0, import_react15.createElement)(Picker, {
+  return (0, import_react17.createElement)(Picker, {
     options: allOption === void 0 ? options : [allOption, ...options],
     value: props.value,
     defaultValue: props.defaultValue,
@@ -5445,66 +5519,7 @@ function WorkspacePicker(props) {
 var import_react19 = require("react");
 
 // dist/ui/feedback-css.generated.js
-var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5728 overlay.css\uFF0C\u8868\u9762\uFF08\u5E95\u8272/\u63CF\u8FB9/\u5706\u89D2/\u9634\u5F71\uFF09\u5728 panel.css \u7684 --modal \u6863\uFF0C\n   \u8FD9\u91CC\u53EA\u5269**\u5BB6\u65CF\u5E03\u5C40\u4E0E\u5C3A\u5BF8**\u3002\u4E09\u8005\u5404\u7BA1\u4E00\u6BB5\uFF0C\u522B\u518D\u628A\u76AE\u80A4\u6284\u56DE\u6765\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\n   \u900F\u660E\u53F3\u8FB9\u6846 = \u8BA9\u6EDA\u52A8\u6761\u4E0E\u9762\u677F\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px;border-right:1px solid transparent}\n/* \u5E95\u680F\u4E0E\u5934\u90E8\u540C\u4E00\u53E3\u5F84\uFF082026-11-02 \u7528\u6237\uFF09\uFF1A\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\u3001\u9ED8\u8BA4\u5E26\u4E00\u6761\u5206\u9694\u7EBF\u3002\n   \u7EBF\u53EF\u7531\u6D88\u8D39\u65B9\u5173\u6389\uFF08Modal \u7684 footerDivider=false\uFF09\u2014\u2014 \u786E\u8BA4\u6846\u5BB6\u65CF\u672C\u6765\u5C31\u6CA1\u6709\u7EBF\uFF08\u4E0E\u5934\u90E8\u4E00\u81F4\uFF09\u3002 */\n.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}\n.dshpc-modal .dshpc-modal__foot--bare{border-top:none}\n/* \u5E95\u680F\u5DE6\u4FA7\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u5403\u6389\u6309\u94AE\u4E4B\u5916\u7684\u5269\u4F59\u5BBD\uFF0C\u8D85\u957F\u4EA4\u7ED9 FlipText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-modal .dshpc-modal__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}\n/* \u81EA\u7ED8 toast \u7684\u6837\u5F0F\u5728 2026-11-03 \u5220\u9664\uFF1AToast \u65E9\u5DF2\u6539\u8D70\u5BBF\u4E3B toast()\uFF08Toast.ts \u7684 showNative\uFF09\uFF0C\n   .dshpc-toast* \u8FD9\u51E0\u4E2A\u7C7B\u6CA1\u6709\u4EFB\u4F55\u6D88\u8D39\u8005\uFF0C\u7559\u7740\u53EA\u662F\u6B7B\u6837\u5F0F\uFF08\u8FD8\u5E26\u7740\u88F8 z-index \u4E0E\u88F8\u9634\u5F71\uFF09\u3002 */\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u8272\u503C\u5728 tokens.css \u7684 --dshpc-sev-*\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:var(--dshpc-on-signal);flex:none}\n.dshpc-alert-sev--info{background:var(--dshpc-sev-info)}\n.dshpc-alert-sev--success{background:var(--dshpc-sev-success)}\n.dshpc-alert-sev--warning{background:var(--dshpc-sev-warning)}\n.dshpc-alert-sev--error{background:var(--dshpc-sev-error)}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}\n";
-
-// dist/ui/overlay.js
-var import_react17 = require("react");
-
-// dist/ui/overlay-css.generated.js
-var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09/ \u9009\u6587\u4EF6\u5F39\u7A97\uFF08\u951A\u5B9A\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u5404\u5BB6\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002\n   \u5173\u95ED\u94AE\u7684\u76AE\u80A4\u5728 panel.css\uFF08.dshpc-panel__close\uFF0C\u65E7\u7C7B\u540D\u4F5C\u522B\u540D\uFF09\uFF0C\u4E0D\u5728\u8FD9\u91CC\u518D\u5199\u4E00\u4EFD\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n/* \u951A\u5B9A\u6863\uFF08\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\uFF1A\u906E\u7F69\u7167\u65E7\u538B\u6697 + \u70B9\u5916\u90E8\u5173\u95ED\uFF0C\u9762\u677F\u81EA\u5DF1 fixed \u8D34\u951A\u70B9\uFF0C\u8FD9\u91CC\u4E0D\u505A\u5E03\u5C40\u3002 */\n.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n";
-
-// dist/ui/panel.js
-var import_react16 = require("react");
-function PanelSurface(props) {
-  ensureComponentStyles("panel", PANEL_CSS);
-  const className2 = `dshpc-panel dshpc-panel--${props.tier}${props.className === void 0 || props.className === "" ? "" : ` ${props.className}`}`;
-  return (0, import_react16.createElement)("div", {
-    ...props.attrs,
-    className: className2,
-    style: props.style,
-    role: props.role,
-    onClick: props.stopPropagation === true ? (event) => event.stopPropagation() : void 0
-  }, props.children ?? null);
-}
-function PanelClose(props) {
-  ensureComponentStyles("panel", PANEL_CSS);
-  return (0, import_react16.createElement)("button", {
-    type: "button",
-    className: `dshpc-panel__close${props.className === void 0 ? "" : ` ${props.className}`}`,
-    "aria-label": props.label,
-    onClick: () => props.onClick()
-  }, props.icon ?? "\u2715");
-}
-
-// dist/ui/overlay.js
-function useEscapeClose(enabled, onClose) {
-  (0, import_react17.useEffect)(() => {
-    if (!enabled || onClose === void 0)
-      return;
-    const onKey = (event) => {
-      if (event.key === "Escape")
-        onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [enabled, onClose]);
-}
-function OverlayMask(props) {
-  ensureComponentStyles("overlay", OVERLAY_CSS);
-  return (0, import_react17.createElement)("div", {
-    ...props.attrs,
-    className: `dshpc-overlay dshpc-overlay--${props.kind}`,
-    onClick: () => {
-      if (props.closeOnMask)
-        props.onClose?.();
-    }
-  }, props.children ?? null);
-}
-function OverlayHead(props) {
-  ensureComponentStyles("overlay", OVERLAY_CSS);
-  ensureComponentStyles("panel", PANEL_CSS);
-  return (0, import_react17.createElement)("div", { className: "dshpc-overlay-head" }, (0, import_react17.createElement)("div", { className: "dshpc-overlay-head__heading" }, props.icon === void 0 ? null : (0, import_react17.createElement)("span", { className: "dshpc-overlay-head__lead" }, props.icon), (0, import_react17.createElement)("div", { className: "dshpc-overlay-head__titlegroup" }, (0, import_react17.createElement)("div", { className: "dshpc-overlay-head__titlerow" }, (0, import_react17.createElement)("div", { className: "dshpc-overlay-head__title" }, props.title ?? ""), props.extra === void 0 ? null : (0, import_react17.createElement)("div", { className: "dshpc-overlay-head__extra" }, props.extra)), props.subtitle === void 0 ? null : (0, import_react17.createElement)("div", { className: "dshpc-overlay-head__sid" }, props.subtitle))), (0, import_react17.createElement)("div", { className: "dshpc-overlay-head__spacer" }), props.actions === void 0 ? null : (0, import_react17.createElement)("div", { className: "dshpc-overlay-head__actions" }, props.actions), props.onClose === void 0 ? null : (0, import_react17.createElement)(PanelClose, { label: props.closeLabel, onClick: props.onClose, className: "dshpc-overlay-head__close" }));
-}
+var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5728 overlay.css\uFF0C\u8868\u9762\uFF08\u5E95\u8272/\u63CF\u8FB9/\u5706\u89D2/\u9634\u5F71\uFF09\u5728 panel.css \u7684 --modal \u6863\uFF0C\n   \u8FD9\u91CC\u53EA\u5269**\u5BB6\u65CF\u5E03\u5C40\u4E0E\u5C3A\u5BF8**\u3002\u4E09\u8005\u5404\u7BA1\u4E00\u6BB5\uFF0C\u522B\u518D\u628A\u76AE\u80A4\u6284\u56DE\u6765\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\n   \u900F\u660E\u53F3\u8FB9\u6846 = \u8BA9\u6EDA\u52A8\u6761\u4E0E\u9762\u677F\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px;border-right:1px solid transparent}\n/* \u5E95\u680F\u4E0E\u5934\u90E8\u540C\u4E00\u53E3\u5F84\uFF082026-11-02 \u7528\u6237\uFF09\uFF1A\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\u3001\u9ED8\u8BA4\u5E26\u4E00\u6761\u5206\u9694\u7EBF\u3002\n   \u7EBF\u53EF\u7531\u6D88\u8D39\u65B9\u5173\u6389\uFF08Modal \u7684 footerDivider=false\uFF09\u2014\u2014 \u786E\u8BA4\u6846\u5BB6\u65CF\u672C\u6765\u5C31\u6CA1\u6709\u7EBF\uFF08\u4E0E\u5934\u90E8\u4E00\u81F4\uFF09\u3002 */\n.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}\n.dshpc-modal .dshpc-modal__foot--bare{border-top:none}\n/* \u5E95\u680F\u5DE6\u4FA7\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u5403\u6389\u6309\u94AE\u4E4B\u5916\u7684\u5269\u4F59\u5BBD\uFF0C\u8D85\u957F\u4EA4\u7ED9 FlipText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-modal .dshpc-modal__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}\n/* \u81EA\u7ED8 toast \u7684\u6837\u5F0F\u5728 2026-11-03 \u5220\u9664\uFF1AToast \u65E9\u5DF2\u6539\u8D70\u5BBF\u4E3B toast()\uFF08Toast.ts \u7684 showNative\uFF09\uFF0C\n   .dshpc-toast* \u8FD9\u51E0\u4E2A\u7C7B\u6CA1\u6709\u4EFB\u4F55\u6D88\u8D39\u8005\uFF0C\u7559\u7740\u53EA\u662F\u6B7B\u6837\u5F0F\uFF08\u8FD8\u5E26\u7740\u88F8 z-index \u4E0E\u88F8\u9634\u5F71\uFF09\u3002 */\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u8272\u503C\u5728 tokens.css \u7684 --dshpc-sev-*\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:var(--dshpc-on-signal);flex:none}\n.dshpc-alert-sev--info{background:var(--dshpc-sev-info)}\n.dshpc-alert-sev--success{background:var(--dshpc-sev-success)}\n.dshpc-alert-sev--warning{background:var(--dshpc-sev-warning)}\n.dshpc-alert-sev--error{background:var(--dshpc-sev-error)}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}\n/* \u9501\u5B9A\u6001\uFF08locked\uFF09\uFF1Ainert \u53EA\u7BA1\u300C\u70B9\u4E0D\u52A8\u300D\uFF0C\u4E00\u4E2A\u50CF\u7D20\u90FD\u4E0D\u6539\u5916\u89C2 \u2014\u2014 \u4E0D\u538B\u8FD9\u5C42\u7528\u6237\u4F1A\u4EE5\u4E3A\u7535\u8111\u574F\u4E86\u3002\n   \u7528\u906E\u7F69\u53D8\u91CF\u800C\u4E0D\u662F opacity\uFF1Aopacity \u4F1A\u548C\u63A7\u4EF6\u81EA\u8EAB disabled \u7684 .5 \u53E0\u4E58\u6210\u770B\u4E0D\u6E05\u7684\u6B7B\u7070\u3002 */\n.dshpc-modal--locked{position:relative}\n.dshpc-modal--locked::after{\n  content:'';position:absolute;inset:0;border-radius:inherit;\n  background:var(--dshpc-mask);pointer-events:none;\n}\n";
 
 // dist/ui/FlipText.js
 var import_react18 = require("react");
@@ -5551,8 +5566,10 @@ function Modal(props) {
   ensureComponentStyles("feedback", FEEDBACK_CSS);
   const tt = props.translate ?? t;
   const busy = props.busy === true;
-  const closeOnMask = !busy && props.closeOnMask !== false;
-  useEscapeClose(!busy && props.escClose !== false, busy ? void 0 : props.onClose);
+  const locked = props.locked === true;
+  const denyClose = busy || locked;
+  const closeOnMask = !denyClose && props.closeOnMask !== false;
+  useEscapeClose(!denyClose && props.escClose !== false, denyClose ? void 0 : props.onClose);
   const notice = props.notice === "" ? void 0 : props.notice;
   const sizeStyle = {
     sm: { width: "360px", maxWidth: "calc(100% - 48px)" },
@@ -5560,18 +5577,27 @@ function Modal(props) {
     lg: { width: "min(1120px, calc(100% - 32px))", height: "calc(100% - 80px)" }
   };
   const s = sizeStyle[props.size ?? "md"];
-  const showClose = props.closable !== false && props.onClose !== void 0 && !busy;
+  const showClose = props.closable !== false && props.onClose !== void 0 && !denyClose;
   const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
-  return (0, import_react19.createElement)(
-    OverlayMask,
-    { kind: "center", closeOnMask, onClose: busy ? void 0 : props.onClose },
+  return (0, import_react19.createElement)(OverlayMask, {
+    kind: "center",
+    closeOnMask,
+    onClose: denyClose ? void 0 : props.onClose,
+    // inert 子树不参与命中测试，鼠标落到遮罩上 —— 禁止手势得挂在遮罩这层才看得见。
+    attrs: locked ? { "data-dshpc-locked": "" } : void 0
+  }, (0, import_react19.createElement)(
+    OverlayLockedProvider,
+    { value: locked },
     // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
     // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
     (0, import_react19.createElement)(
       PanelSurface,
       {
         tier: "modal",
-        className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}`,
+        className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}${locked ? " dshpc-modal--locked" : ""}${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}`,
+        // `inert` 一次封住点击 + Tab 焦点 + 输入：比逐控件塞 disabled 更彻底，也不碰控件自己的状态。
+        // 写成空串而不是 true —— React 18 的类型与运行时都不认布尔 inert（会告警）。
+        attrs: locked ? { inert: "" } : void 0,
         style: {
           width: props.width ?? s.width,
           maxWidth: props.maxWidth ?? s.maxWidth,
@@ -5595,7 +5621,7 @@ function Modal(props) {
       (0, import_react19.createElement)("div", { className: "dshpc-modal__body" }, props.children ?? null),
       props.footer === void 0 && notice === void 0 ? null : (0, import_react19.createElement)("div", { className: `dshpc-modal__foot${props.footerDivider === false ? " dshpc-modal__foot--bare" : ""}` }, notice === void 0 ? null : (0, import_react19.createElement)(FlipText, { text: notice, className: "dshpc-modal__notice", sweep: true }), props.footer)
     )
-  );
+  ));
 }
 
 // dist/ui/SideSheet.js
@@ -5605,7 +5631,7 @@ var import_react20 = require("react");
 var SIDE_PANEL_CSS = "/* \u4FA7\u8FB9\u9762\u677F\u7684\u516C\u5171\u76AE\u80A4 \u2014\u2014 PanelDock\uFF08\u5360\u5BBD\u5206\u680F\uFF09\u4E0E SideSheet\uFF08\u8986\u76D6\u62BD\u5C49\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\u3002\n *\n * \u5206\u754C\uFF1A**\u76AE\u80A4\u5728\u8FD9\u91CC\uFF0C\u5B9A\u4F4D\u5404\u81EA\u5199**\u3002\u4E24\u8005\u552F\u4E00\u7684\u5F62\u6001\u5DEE\u5F02\u5C31\u662F\u300C\u600E\u4E48\u5360\u4F4D\u300D\u2014\u2014\n * PanelDock \u7528 sticky \u5360\u5BBD\u6324\u7A84\u4E3B\u533A\uFF08panel-dock.css\uFF09\uFF0CSideSheet \u7528 absolute \u76D6\u5728\u9875\u9762\u4E0A\uFF08side-sheet.css\uFF09\u3002\n *\n * \u7C7B\u540D\u6CBF\u7528 dshpc-dock__* \u524D\u7F00\uFF1A\u90A3\u662F\u65E2\u6709\u516C\u5F00\u9762\uFF08\u6587\u6863\u4E0E\u6D88\u8D39\u65B9\u90FD\u5728\u7528\uFF09\uFF0C\n * \u8FD9\u91CC\u53EA\u642C\u6587\u4EF6\u4E0D\u6539\u540D\uFF1B\u65B0\u589E\u7684\u4E2D\u6027\u7C7B\u662F .dshpc-side-surface\uFF08\u5916\u89C2\u57FA\u7C7B\uFF09\u3002 */\n\n/* \u5165\u573A\uFF1A\u5BBD\u5EA6\u4ECE 0 \u957F\u51FA\u6765\uFF08keyframes \u53EA\u5199 from\uFF0C\u7EC8\u70B9\u53D6\u5185\u8054 / \u72B6\u6001\u5BBD\u5EA6\uFF09\u3002\u4E24\u8FB9\u5171\u7528\u3002 */\n@keyframes dshpc-side-in{from{width:0;opacity:0;overflow:hidden}}\n\n/* \u5916\u89C2\u57FA\u7C7B\uFF1A\u80CC\u666F / \u6587\u5B57\u8272 / \u9634\u5F71 / \u7EB5\u5411 flex\u3002**\u4E0D\u542B** position\u3001\u9AD8\u5EA6\u3001\u8FB9\u6846\u65B9\u5411\u3001\u52A8\u753B\u89E6\u53D1\u3002 */\n.dshpc-side-surface{\n  box-sizing:border-box;\n  display:flex;flex-direction:column;flex:0 0 auto;min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  box-shadow:var(--dshpc-shadow-2);\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease);\n  animation:dshpc-side-in .22s var(--dshpc-ease);\n}\n\n/* \u5934\u90E8\uFF1A\u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB\u3002 */\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF08top 10 / right 8\uFF09\uFF0C\u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB \u2014\u2014 \u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF08\u9762\u677F\u9AD8\u5EA6\u9501\u6B7B\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u9875\u9762\u6491\u9AD8\uFF09\u3002\n   \u900F\u660E\u53F3\u8FB9\u6846 = \u6EDA\u52A8\u6761\u4E0E\u9762\u677F\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto;border-right:1px solid transparent}\n\n/* \u62D6\u62FD\u6761\uFF1A6px \u547D\u4E2D\u533A\uFF0C**\u81EA\u5DF1\u4E0D\u753B\u4EFB\u4F55\u7EBF**\uFF08\u8D34\u5728\u671D\u5185\u90A3\u4E00\u4FA7\uFF0C\u955C\u50CF\u7531\u5404\u81EA\u7684\u5B9A\u4F4D\u6587\u4EF6\u505A\uFF09\u3002\n   hover / \u62D6\u52A8\u65F6\u628A\u9762\u677F\u81EA\u5DF1\u7684\u8FB9\u6846\u67D3\u6210\u84DD \u2014\u2014 \u84DD\u7EBF\u53EA\u51C6\u6539\u539F\u7EBF\uFF0C\u4E0D\u51C6\u5728\u65C1\u8FB9\u518D\u52A0\u4E00\u6761\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n}\n.dshpc-side-surface:has(> .dshpc-dock__resizer:hover),\n.dshpc-side-surface--resizing{\n  /* \u539F\u7EBF\u4FDD\u7559\u300C\u4E0A\u4E0B\u6E10\u9690\u300D\u5DE5\u4F5C\u533A\u6307\u793A\u6761\u8D28\u611F\uFF1A\u628A\u9762\u677F\u81EA\u5DF1\u7684\u90A3\u6761\u8FB9\u6846\u6362\u6210\u540C\u6B3E\u6E10\u53D8\u3002\n     \u9762\u677F\u56DB\u8FB9\u91CC\u53EA\u6709\u671D\u5185\u4E00\u4FA7\u6709\u5BBD\u5EA6\uFF0C\u6240\u4EE5\u6E10\u53D8\u53EA\u843D\u5728\u90A3\u4E00\u4FA7\u3002 */\n  border-image:linear-gradient(180deg,transparent,var(--dshpc-business) 30% 70%,transparent) 1;\n}\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove \u2014\u2014\n   \u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u9762\u677F\u5185\uFF0C\u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\u3002 */\n.dshpc-side-surface--resizing{contain:layout paint;will-change:width}\n.dshpc-side-surface--resizing iframe{pointer-events:none}\n\n/* \u52A8\u6548\u793C\u8C8C\uFF1A\u7CFB\u7EDF\u58F0\u660E\u51CF\u5C11\u52A8\u6548\u65F6\u9000\u5316\u4E3A\u77AC\u65F6\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-side-surface{animation:none}\n}\n";
 
 // dist/ui/side-sheet-css.generated.js
-var SIDE_SHEET_CSS = "/* \u4FA7\u8FB9\u62BD\u5C49\uFF1A\u8986\u76D6\u5F0F\u3002**\u76AE\u80A4\u4E0E PanelDock \u5B8C\u5168\u5171\u7528**\uFF08side-panel.css \u7684 .dshpc-side-surface\n   + \u5934\u90E8 / \u62D6\u62FD\u6761 / \u5173\u95ED\u94AE\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u300C\u600E\u4E48\u5360\u4F4D\u300D\uFF1Aabsolute \u8D34\u8FB9\u3001\u901A\u9AD8\u3001\u76D6\u5728\u9875\u9762\u4E0A\u3002\n   \u4E0E\u5206\u680F\u7684\u552F\u4E00\u5DEE\u522B\uFF1A\u5B83\u4E0D\u6324\u7A84\u4E3B\u533A\uFF08\u6240\u4EE5\u6CA1\u6709 sticky\u3001\u6CA1\u6709\u5360\u5BBD\u3001\u4E5F\u6CA1\u6709\u6536\u8D77\uFF09\u3002\n\n   \u6CA1\u6709\u6536\u8D77/\u8033\u6735\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u62BD\u5C49\u5173\u5C31\u662F\u5173\u3002 */\n\n.dshpc-sheet{position:absolute;top:0;bottom:0}\n/* \u6536\u8D77\u51FA\u573A\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u5BBD\u5EA6\u6536\u5230 0 + \u6DE1\u51FA\uFF0C\u64AD\u5B8C\u7531\u7EC4\u4EF6\u5378\u8F7D\u3002\u53CC\u7C7B\u538B\u8FC7 .dshpc-side-surface \u7684\u5165\u573A\u52A8\u753B\u3002 */\n@keyframes dshpc-side-out{to{width:0;opacity:0;border-width:0;overflow:hidden}}\n.dshpc-side-surface.dshpc-sheet--leaving{animation:dshpc-side-out .2s var(--dshpc-ease) forwards;pointer-events:none;}\n/* \u9762\u4E0E Modal \u540C\u6863\uFF08bg-layer-1\uFF09\uFF0CPanelDock \u4ECD\u7528\u9875\u9762\u5E95\uFF1A\u53CC\u7C7B\u538B\u8FC7\u5171\u7528\u7684 .dshpc-side-surface\uFF0C\n   \u4E0D\u78B0\u8FB9\u6846\uFF08\u7528\u6237 2026-11-02\uFF1A\u53EA\u6539\u80CC\u666F\uFF09\u3002 */\n.dshpc-side-surface.dshpc-sheet{background:var(--dshpc-surface-1)}\n/* \u8D34\u8FB9\u90A3\u4FA7\u63CF\u8FB9\uFF08\u4E0E\u5206\u680F\u7684 border-left \u540C\u4E00\u5957\u7EBF\u8272\uFF09\uFF0C\u62D6\u62FD\u6761\u6C38\u8FDC\u5728**\u671D\u5185**\u90A3\u4E00\u4FA7\u3002 */\n.dshpc-sheet--left{left:0;border-right:1px solid var(--dshpc-border)}\n.dshpc-sheet--right{right:0;border-left:1px solid var(--dshpc-border)}\n.dshpc-sheet--left .dshpc-dock__resizer{left:auto;right:0}\n/* \u5185\u5BB9\u5185\u8DDD\uFF1A\u5206\u680F\u7684 body \u628A\u5185\u8DDD\u4EA4\u7ED9\u5185\u5BB9\u7EC4\u4EF6\uFF08FileBrowser \u90A3\u7C7B\u81EA\u5DF1\u5E26 17px\uFF09\uFF0C\n   \u62BD\u5C49\u662F**\u901A\u7528\u5BB9\u5668**\uFF0C\u5FC5\u987B\u81EA\u5E26 \u2014\u2014 \u5426\u5219\u6587\u5B57\u76F4\u63A5\u8D34\u9762\u677F\u8FB9\uFF08\u7528\u6237 2026-11-02 \u622A\u56FE\uFF09\u3002\n   \u5DE6\u53F3 14 \u4E0E\u5934\u90E8\u5DE6\u5185\u8DDD\u5BF9\u9F50\uFF0C\u4E0A\u4E0B\u4E5F\u7559\u540C\u6863\u547C\u5438\u3002 */\n.dshpc-sheet__body{padding:14px}\n/* \u5E95\u680F\uFF08\u53EF\u9009\uFF09\uFF1A\u7EBF\u8272\u4E0E\u5185\u8DDD\u5BF9\u9F50\u9762\u677F\u5934\u90E8\u3002 */\n.dshpc-sheet__foot{\n  flex:none;display:flex;justify-content:flex-end;gap:8px;\n  padding:10px 14px;border-top:1px solid var(--dshpc-border-faint);\n}\n/* \u5E95\u680F\u5DE6\u4FA7\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u5403\u6389\u6309\u94AE\u4E4B\u5916\u7684\u5269\u4F59\u5BBD\uFF0C\u8D85\u957F\u4EA4\u7ED9 FlipText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-sheet__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}\n";
+var SIDE_SHEET_CSS = "/* \u4FA7\u8FB9\u62BD\u5C49\uFF1A\u8986\u76D6\u5F0F\u3002**\u76AE\u80A4\u4E0E PanelDock \u5B8C\u5168\u5171\u7528**\uFF08side-panel.css \u7684 .dshpc-side-surface\n   + \u5934\u90E8 / \u62D6\u62FD\u6761 / \u5173\u95ED\u94AE\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u300C\u600E\u4E48\u5360\u4F4D\u300D\uFF1Aabsolute \u8D34\u8FB9\u3001\u901A\u9AD8\u3001\u76D6\u5728\u9875\u9762\u4E0A\u3002\n   \u4E0E\u5206\u680F\u7684\u552F\u4E00\u5DEE\u522B\uFF1A\u5B83\u4E0D\u6324\u7A84\u4E3B\u533A\uFF08\u6240\u4EE5\u6CA1\u6709 sticky\u3001\u6CA1\u6709\u5360\u5BBD\u3001\u4E5F\u6CA1\u6709\u6536\u8D77\uFF09\u3002\n\n   \u6CA1\u6709\u6536\u8D77/\u8033\u6735\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u62BD\u5C49\u5173\u5C31\u662F\u5173\u3002 */\n\n.dshpc-sheet{position:absolute;top:0;bottom:0}\n/* \u6536\u8D77\u51FA\u573A\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u5BBD\u5EA6\u6536\u5230 0 + \u6DE1\u51FA\uFF0C\u64AD\u5B8C\u7531\u7EC4\u4EF6\u5378\u8F7D\u3002\u53CC\u7C7B\u538B\u8FC7 .dshpc-side-surface \u7684\u5165\u573A\u52A8\u753B\u3002 */\n@keyframes dshpc-side-out{to{width:0;opacity:0;border-width:0;overflow:hidden}}\n.dshpc-side-surface.dshpc-sheet--leaving{animation:dshpc-side-out .2s var(--dshpc-ease) forwards;pointer-events:none;}\n/* \u9762\u4E0E Modal \u540C\u6863\uFF08bg-layer-1\uFF09\uFF0CPanelDock \u4ECD\u7528\u9875\u9762\u5E95\uFF1A\u53CC\u7C7B\u538B\u8FC7\u5171\u7528\u7684 .dshpc-side-surface\uFF0C\n   \u4E0D\u78B0\u8FB9\u6846\uFF08\u7528\u6237 2026-11-02\uFF1A\u53EA\u6539\u80CC\u666F\uFF09\u3002 */\n.dshpc-side-surface.dshpc-sheet{background:var(--dshpc-surface-1)}\n/* \u8D34\u8FB9\u90A3\u4FA7\u63CF\u8FB9\uFF08\u4E0E\u5206\u680F\u7684 border-left \u540C\u4E00\u5957\u7EBF\u8272\uFF09\uFF0C\u62D6\u62FD\u6761\u6C38\u8FDC\u5728**\u671D\u5185**\u90A3\u4E00\u4FA7\u3002 */\n.dshpc-sheet--left{left:0;border-right:1px solid var(--dshpc-border)}\n.dshpc-sheet--right{right:0;border-left:1px solid var(--dshpc-border)}\n.dshpc-sheet--left .dshpc-dock__resizer{left:auto;right:0}\n/* \u5185\u5BB9\u5185\u8DDD\uFF1A\u5206\u680F\u7684 body \u628A\u5185\u8DDD\u4EA4\u7ED9\u5185\u5BB9\u7EC4\u4EF6\uFF08FileBrowser \u90A3\u7C7B\u81EA\u5DF1\u5E26 17px\uFF09\uFF0C\n   \u62BD\u5C49\u662F**\u901A\u7528\u5BB9\u5668**\uFF0C\u5FC5\u987B\u81EA\u5E26 \u2014\u2014 \u5426\u5219\u6587\u5B57\u76F4\u63A5\u8D34\u9762\u677F\u8FB9\uFF08\u7528\u6237 2026-11-02 \u622A\u56FE\uFF09\u3002\n   \u5DE6\u53F3 14 \u4E0E\u5934\u90E8\u5DE6\u5185\u8DDD\u5BF9\u9F50\uFF0C\u4E0A\u4E0B\u4E5F\u7559\u540C\u6863\u547C\u5438\u3002 */\n.dshpc-sheet__body{padding:14px}\n/* \u9501\u5B9A\u6001\uFF08locked\uFF09\uFF1A\u4E0E Modal \u540C\u4E00\u5957\u8BF4\u6CD5 \u2014\u2014 inert \u4E0D\u6539\u5916\u89C2\uFF0C\u538B\u4E00\u5C42\u906E\u7F69\u8BA9\u4EBA\u770B\u5F97\u51FA\u300C\u70B9\u4E0D\u52A8\u300D\u3002 */\n.dshpc-sheet--locked::after{\n  content:'';position:absolute;inset:0;\n  background:var(--dshpc-mask);pointer-events:none;\n}\n/* \u5E95\u680F\uFF08\u53EF\u9009\uFF09\uFF1A\u7EBF\u8272\u4E0E\u5185\u8DDD\u5BF9\u9F50\u9762\u677F\u5934\u90E8\u3002 */\n.dshpc-sheet__foot{\n  flex:none;display:flex;justify-content:flex-end;gap:8px;\n  padding:10px 14px;border-top:1px solid var(--dshpc-border-faint);\n}\n/* \u5E95\u680F\u5DE6\u4FA7\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u5403\u6389\u6309\u94AE\u4E4B\u5916\u7684\u5269\u4F59\u5BBD\uFF0C\u8D85\u957F\u4EA4\u7ED9 FlipText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-sheet__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}\n";
 
 // dist/ui/resizer.js
 function startResizeLayoutWidth(opts) {
@@ -5658,8 +5684,10 @@ function SideSheet(props) {
   const tt = props.translate ?? t;
   const side = props.side ?? "left";
   const busy = props.busy === true;
-  const closeOnMask = !busy && props.closeOnMask !== false;
-  useEscapeClose(!busy && props.escClose !== false, busy ? void 0 : props.onClose);
+  const locked = props.locked === true;
+  const denyClose = busy || locked;
+  const closeOnMask = !denyClose && props.closeOnMask !== false;
+  useEscapeClose(!denyClose && props.escClose !== false, denyClose ? void 0 : props.onClose);
   const notice = props.notice === "" ? void 0 : props.notice;
   const [width, setWidth] = (0, import_react20.useState)(props.width ?? 460);
   const panelRef = (0, import_react20.useRef)(null);
@@ -5671,7 +5699,7 @@ function SideSheet(props) {
   }, [leaving]);
   if (unmounted)
     return null;
-  const showClose = props.closable !== false && props.onClose !== void 0 && !busy;
+  const showClose = props.closable !== false && props.onClose !== void 0 && !denyClose;
   const hasHeader = props.header !== null;
   const beginResize = (event) => {
     const element = panelRef.current;
@@ -5714,11 +5742,18 @@ function SideSheet(props) {
     }
     return (0, import_react20.createElement)("div", { className: "dshpc-dock__head" }, props.icon === void 0 ? null : (0, import_react20.createElement)("div", { className: "dshpc-dock__lead" }, props.icon), (0, import_react20.createElement)("div", { className: "dshpc-dock__title" }, props.title), props.extra === void 0 ? null : (0, import_react20.createElement)("div", { className: "dshpc-dock__extra" }, props.extra));
   };
-  return (0, import_react20.createElement)(OverlayMask, { kind: "side", closeOnMask, onClose: busy ? void 0 : props.onClose }, (0, import_react20.createElement)("section", {
+  return (0, import_react20.createElement)(OverlayMask, {
+    kind: "side",
+    closeOnMask,
+    onClose: denyClose ? void 0 : props.onClose,
+    attrs: locked ? { "data-dshpc-locked": "" } : void 0
+  }, (0, import_react20.createElement)(OverlayLockedProvider, { value: locked }, (0, import_react20.createElement)("section", {
+    // 与 Modal 同一套：inert 一次封住点击 + Tab 焦点 + 输入，不碰任何子控件的 disabled。
+    ...locked ? { inert: "" } : {},
     ref: (element) => {
       panelRef.current = element;
     },
-    className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? " dshpc-sheet--leaving" : ""}`,
+    className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? " dshpc-sheet--leaving" : ""}${locked ? " dshpc-sheet--locked" : ""}`,
     style: { width: `${width}px` },
     // 收起动画结束才卸载；入场动画结束（leaving=false）在这里不算数。
     onAnimationEnd: () => {
@@ -5736,7 +5771,7 @@ function SideSheet(props) {
     onPointerDown: (event) => {
       beginResize(event);
     }
-  }), renderHeader(), closeButton(!hasHeader), (0, import_react20.createElement)("div", { className: "dshpc-dock__body dshpc-sheet__body" }, props.children ?? null), props.footer === void 0 && notice === void 0 ? null : (0, import_react20.createElement)("div", { className: "dshpc-sheet__foot" }, notice === void 0 ? null : (0, import_react20.createElement)(FlipText, { text: notice, className: "dshpc-sheet__notice", sweep: true }), props.footer)));
+  }), renderHeader(), closeButton(!hasHeader), (0, import_react20.createElement)("div", { className: "dshpc-dock__body dshpc-sheet__body" }, props.children ?? null), props.footer === void 0 && notice === void 0 ? null : (0, import_react20.createElement)("div", { className: "dshpc-sheet__foot" }, notice === void 0 ? null : (0, import_react20.createElement)(FlipText, { text: notice, className: "dshpc-sheet__notice", sweep: true }), props.footer))));
 }
 
 // dist/ui/AlertModal.js
@@ -5761,6 +5796,7 @@ function AlertModal(props) {
     closable: false,
     closeOnMask: props.closeOnMask,
     busy,
+    locked: props.locked,
     onClose: props.onConfirm,
     notice: props.notice,
     footer: (0, import_react21.createElement)(Button, {
@@ -5790,6 +5826,7 @@ function ConfirmModal(props) {
     closable: false,
     closeOnMask: props.closeOnMask,
     busy,
+    locked: props.locked,
     onClose: props.onCancel,
     notice: props.notice,
     footer: (0, import_react22.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react22.createElement)(Button, {
@@ -5840,7 +5877,7 @@ function flush() {
     hostContainer = null;
     return;
   }
-  root.render((0, import_react23.createElement)(import_react23.Fragment, null, entries.map((e) => e.node)));
+  root.render((0, import_react23.createElement)(import_react23.Fragment, null, entries.map((e) => (0, import_react23.createElement)(import_react23.Fragment, { key: e.id }, e.render()))));
 }
 function dismiss(id3) {
   entries = entries.filter((e) => e.id !== id3);
@@ -5875,10 +5912,19 @@ function confirmModal(opts) {
       dismiss(id3);
       resolve(result);
     };
+    const entry = { id: id3, locked: false, render: () => null };
+    const ctl = {
+      setLocked: (next) => {
+        if (closed || entry.locked === next)
+          return;
+        entry.locked = next;
+        flush();
+      }
+    };
     const run = (which) => {
       if (closed)
         return void 0;
-      const out = (which === "confirm" ? onConfirm : onCancel)?.();
+      const out = (which === "confirm" ? onConfirm : onCancel)?.(ctl);
       const settle = (value) => {
         if (isSuccess(value))
           close(which === "confirm");
@@ -5891,10 +5937,8 @@ function confirmModal(opts) {
       });
       return out;
     };
-    entries.push({
-      id: id3,
-      node: (0, import_react23.createElement)(ConfirmModal, { ...core, onConfirm: () => run("confirm"), onCancel: () => run("cancel") })
-    });
+    entry.render = () => (0, import_react23.createElement)(ConfirmModal, { ...core, locked: entry.locked, onConfirm: () => run("confirm"), onCancel: () => run("cancel") });
+    entries.push(entry);
     flush();
   });
 }
@@ -5921,10 +5965,19 @@ function alertModal(opts) {
       dismiss(id3);
       resolve();
     };
+    const entry = { id: id3, locked: false, render: () => null };
+    const ctl = {
+      setLocked: (next) => {
+        if (closed || entry.locked === next)
+          return;
+        entry.locked = next;
+        flush();
+      }
+    };
     const run = () => {
       if (closed)
         return void 0;
-      const out = onConfirm?.();
+      const out = onConfirm?.(ctl);
       const settle = (value) => {
         if (isSuccess(value))
           close();
@@ -5937,7 +5990,8 @@ function alertModal(opts) {
       });
       return out;
     };
-    entries.push({ id: id3, node: (0, import_react23.createElement)(AlertModal, { ...core, onConfirm: () => run() }) });
+    entry.render = () => (0, import_react23.createElement)(AlertModal, { ...core, locked: entry.locked, onConfirm: () => run() });
+    entries.push(entry);
     flush();
   });
 }
@@ -64589,6 +64643,10 @@ var docData = {
       {
         "zh": "\u56DE\u8C03\u7684\u8FD4\u56DE\u503C\u51B3\u5B9A\u5173\u4E0D\u5173\uFF1A**\u53EA\u6709 `false`**\uFF08\u540C\u6B65\u8FD4\u56DE\uFF0C\u6216 resolve \u6210 `false`\uFF09\u8868\u793A\u8FD9\u6B21\u6CA1\u6210 \u2014\u2014 \u6846\u7559\u7740\u8BA9\u4EBA\u91CD\u8BD5\uFF1B`true` / `undefined` / \u5176\u4ED6\u8FD4\u56DE\u503C\u7167\u5E38\u5173\uFF1Breject \u4E5F\u4E0D\u5173\uFF08\u9519\u8BEF\u6253\u5230\u63A7\u5236\u53F0\uFF09\u3002\u5931\u8D25\u63D0\u793A\u7531\u56DE\u8C03\u81EA\u5DF1\u51FA\uFF0C\u8C03\u7528\u70B9\u4E0D\u5FC5\u5305 `try/catch`\u3002",
         "en": "The callback\u2019s return value decides whether it closes: **only `false`** (returned directly, or resolved to `false`) means it did not succeed \u2014 the dialog stays for a retry; `true` / `undefined` / anything else closes as usual; a rejection also keeps it open (the error is logged). The callback owns its failure message, so call sites need no `try/catch`."
+      },
+      {
+        "zh": "**\u8981\u300C\u6574\u6846\u8C01\u90FD\u522B\u52A8\u300D\u5C31\u4F20 `locked`**\uFF0C\u522B\u62FF\u6309\u94AE loading \u9876\u66FF \u2014\u2014 \u4E24\u8005\u662F\u4E24\u4EF6\u4E8B\uFF1Aloading \u53EA\u7BA1\u90A3\u4E00\u9897\u6309\u94AE\u8F6C\u5708\uFF0C`locked` \u7BA1\u6574\u5757\u9762\u677F\u4E0D\u53EF\u4EA4\u4E92\uFF08\u81EA\u7ED8\u6ED1\u5757\u3001\u539F\u751F input\u3001\u4E0B\u4F4D\u9009\u62E9\u5668\u4E00\u5E76\u7BA1\u4F4F\uFF09+ \u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u5931\u6548 + \u538B\u7070\u4E0E\u7981\u6B62\u624B\u52BF\u3002\u58F0\u660E\u5F0F\u4F20 `locked={saving}` \u5373\u53EF\uFF1B\u5B83\u662F\u53D7\u63A7\u9879\uFF0C\u4E0D\u4F20 = \u672A\u9501\uFF0C\u5173\u6389\u91CD\u5F00\u81EA\u7136\u590D\u4F4D\uFF0C\u4E5F\u4E0D\u4F1A\u6539\u52A8\u4EFB\u4F55\u5B50\u63A7\u4EF6\u81EA\u5DF1\u7684 `disabled`\u3002\u547D\u4EE4\u5F0F\u90A3\u4E24\u4E2A\u51FD\u6570\u7684\u56DE\u8C03\u4F1A\u6536\u5230 `ctl`\uFF08`{ setLocked(bool) }`\uFF09\uFF0C\u5728\u5F02\u6B65\u8FC7\u7A0B\u4E2D\u81EA\u5DF1\u5F00 / \u5173\uFF1A`onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`\uFF1B\u6846\u5173\u6389\u4E4B\u540E\u518D\u8C03 `setLocked` \u662F\u7A7A\u64CD\u4F5C\u3002",
+        "en": "**When the whole dialog must be untouchable, pass `locked`** \u2014 do not fake it with button loading: loading only spins that one button, while `locked` makes the entire panel non-interactive (custom sliders, native inputs and selects included), disables all three close paths, dims the surface and shows a not-allowed cursor. Declaratively just pass `locked={saving}`; it is controlled and stateless \u2014 omitted means unlocked, reopening starts clean, and it never touches a child\u2019s own `disabled`. The two imperative dialogs hand their callbacks a `ctl` (`{ setLocked(bool) }`) so you can flip it mid-flight: `onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`. Calling `setLocked` after the dialog closed is a no-op."
       }
     ],
     "api": [
@@ -64805,6 +64863,15 @@ var docData = {
             "desc": {
               "zh": "\u6709\u5F02\u6B65\u5728\u8DD1\uFF08footer \u91CC\u7684 `Button` \u6B63\u5728 loading\uFF09\uFF1A\u906E\u7F69 / Esc / \u2715 \u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4E00\u8D77\u5931\u6548\uFF0C\u5185\u5BB9\u7167\u5E38\u3002\u5426\u51B3\u9879\uFF0C\u4E0D\u66FF\u4EE3 closeOnMask / escClose",
               "en": "Async work in flight (a footer `Button` is loading): mask / Esc / \u2715 all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose"
+            }
+          },
+          {
+            "name": "locked",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "**\u9501\u6B7B\u5168\u90E8\u4EA4\u4E92**\uFF08\u4E0E loading \u89E3\u8026\uFF09\uFF1A\u9762\u677F\u6574\u5757 `inert` \u2014\u2014 \u91CC\u9762\u4EFB\u4F55\u63A7\u4EF6\uFF08\u81EA\u7ED8\u6ED1\u5757\u3001\u539F\u751F input\u3001\u6309\u94AE\u3001\u4E0B\u62C9\uFF09\u70B9\u4E0D\u5230\u3001Tab \u4E5F\u8FDB\u4E0D\u53BB\uFF1B\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u540C\u65F6\u5931\u6548\uFF1B\u538B\u4E00\u5C42\u7070 + \u9F20\u6807\u53D8\u7981\u6B62\u624B\u52BF\u3002\u53D7\u63A7\u9879\u3001\u4E0D\u843D\u5185\u90E8 state\uFF08\u5173\u6389\u91CD\u5F00\u81EA\u7136\u56DE\u5230\u672A\u9501\uFF09\uFF1B\u4E0D\u78B0\u5B50\u63A7\u4EF6\u7684 `disabled`\uFF0C\u539F\u672C\u7981\u7528\u7684\u89E3\u9501\u540E\u7167\u6837\u7981\u7528",
+              "en": "**Locks every interaction** (decoupled from loading): the panel becomes `inert` \u2014 no control inside (custom slider, native input, button, select) can be clicked or reached with Tab; all three close paths stop working; a dim layer plus a not-allowed cursor. Controlled and stateless (reopening starts unlocked); it never touches a child\u2019s `disabled`, so already-disabled controls stay disabled after unlocking"
             }
           },
           {
@@ -65203,6 +65270,15 @@ var docData = {
             "desc": {
               "zh": "\u6709\u5F02\u6B65\u5728\u8DD1\uFF08footer \u91CC\u7684 `Button` \u6B63\u5728 loading\uFF09\uFF1A\u906E\u7F69 / Esc / \u2715 \u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4E00\u8D77\u5931\u6548\uFF0C\u5185\u5BB9\u7167\u5E38\u3002\u5426\u51B3\u9879\uFF0C\u4E0D\u66FF\u4EE3 closeOnMask / escClose",
               "en": "Async work in flight (a footer `Button` is loading): mask / Esc / \u2715 all stop closing while content keeps rendering. A veto, not a replacement for closeOnMask / escClose"
+            }
+          },
+          {
+            "name": "locked",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u9501\u6B7B\u5168\u90E8\u4EA4\u4E92\uFF08\u542B\u4E49\u540C `Modal.locked`\uFF09\uFF1A\u62BD\u5C49\u6574\u5757 `inert`\u3001\u70B9\u4E0D\u5230\u4E5F Tab \u4E0D\u8FDB\u53BB\uFF0C\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u540C\u65F6\u5931\u6548\uFF0C\u538B\u4E00\u5C42\u7070 + \u7981\u6B62\u624B\u52BF",
+              "en": "Lock every interaction (same as `Modal.locked`): the drawer goes `inert` \u2014 no clicks, no Tab \u2014 all three close paths stop working, plus a dim layer and a not-allowed cursor"
             }
           },
           {
@@ -67812,6 +67888,8 @@ function FeedbackPage() {
   const [largeOpenB, setLargeOpenB] = (0, import_react88.useState)(false);
   const [asyncOpen, setAsyncOpen] = (0, import_react88.useState)(false);
   const [saving, setSaving] = (0, import_react88.useState)(false);
+  const [lockDemoOpen, setLockDemoOpen] = (0, import_react88.useState)(false);
+  const [lockDemoBusy, setLockDemoBusy] = (0, import_react88.useState)(false);
   const [noticeOpen, setNoticeOpen] = (0, import_react88.useState)(false);
   const [noticeText, setNoticeText] = (0, import_react88.useState)("");
   const [sheetCfg, setSheetCfg] = (0, import_react88.useState)({ side: "left", footer: false });
@@ -68081,6 +68159,38 @@ function FeedbackPage() {
               ),
               (0, import_react88.createElement)("div", { className: "dshpc-overlay-head__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
             )
+          ) : null
+        ),
+        (0, import_react88.createElement)(
+          "div",
+          null,
+          (0, import_react88.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9501\u5B9A\u6001 locked\uFF08\u4E0E loading \u65E0\u5173\uFF1A\u6574\u6846\u8C01\u90FD\u522B\u52A8\uFF09"),
+          (0, import_react88.createElement)(
+            Button,
+            {
+              variant: "outline",
+              onClick: () => {
+                setLockDemoOpen(true);
+                setLockDemoBusy(true);
+                setTimeout(() => setLockDemoBusy(false), 2e3);
+              }
+            },
+            "\u6253\u5F00\u5E76\u9501\u5B9A 2 \u79D2"
+          ),
+          lockDemoOpen ? (0, import_react88.createElement)(
+            Modal,
+            {
+              size: "sm",
+              title: "\u6B63\u5728\u63D0\u4EA4",
+              locked: lockDemoBusy,
+              onClose: () => setLockDemoOpen(false),
+              footer: (0, import_react88.createElement)(
+                Button,
+                { variant: "primary", loading: lockDemoBusy, onClick: () => setLockDemoOpen(false) },
+                lockDemoBusy ? "\u63D0\u4EA4\u4E2D" : "\u5B8C\u6210"
+              )
+            },
+            (0, import_react88.createElement)("div", null, "\u524D 2 \u79D2\u6574\u6846\u9501\u6B7B\uFF1A\u8FD9\u4E00\u884C\u5B57\u70B9\u4E0D\u52A8\u3001Tab \u4E5F\u8FDB\u4E0D\u6765\u3001\u9F20\u6807\u662F\u7981\u6B62\u624B\u52BF\u3001\u2715 \u4E0E Esc \u90FD\u4E0D\u5173\uFF1B2 \u79D2\u540E\u81EA\u52A8\u89E3\u5F00\uFF0C\u5E95\u4E0B\u7684\u6309\u94AE\u5C31\u80FD\u70B9\u4E86\u3002")
           ) : null
         ),
         (0, import_react88.createElement)(
@@ -69529,9 +69639,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.30.2"}`],
-            [t3("buildDemo"), `v${"0.30.2"}`],
-            [t3("buildStamp"), "261104-232006-676"]
+            [t3("buildCore"), `v${"0.31.0"}`],
+            [t3("buildDemo"), `v${"0.31.0"}`],
+            [t3("buildStamp"), "261105-100223-432"]
           ].map(
             ([label, value]) => (0, import_react93.createElement)(
               "tr",
@@ -69843,9 +69953,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react95.createElement)("span", null, `core v${"0.30.2"}`),
-          (0, import_react95.createElement)("span", null, `demo v${"0.30.2"}`),
-          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261104-232006-676")
+          (0, import_react95.createElement)("span", null, `core v${"0.31.0"}`),
+          (0, import_react95.createElement)("span", null, `demo v${"0.31.0"}`),
+          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261105-100223-432")
         )
       )
     ),

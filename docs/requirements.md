@@ -114,6 +114,14 @@ dsh-plugin-core/
     受控 `loading` 与之取或（**别处刷新也能点亮同一颗按钮**）；`onBusyChange` 把「在跑」报出去。
     `Modal` / `SideSheet` 只认 `busy`（遮罩 / Esc / ✕ 一并失效，footer 皮肤各弹窗自管），
     `ConfirmModal` / `AlertModal` 退化成薄壳，命令式 `confirmModal` / `alertModal` 只负责「跑完关不关」。
+  - **锁定与 loading 是两件事**（2026-11-05 用户拍板，新增 `locked`，推翻「`busy` 一把抓」）：
+    `busy` 只封三条关闭路径、内容照常；`locked` 封**全部交互** —— 面板挂原生 `inert`（点击 / Tab 焦点 /
+    输入一次性封死，自绘滑块与 portal 出去的下拉都在内），同时封关闭路径，并压一层遮罩 + `not-allowed`
+    光标（不做视觉变化用户会以为电脑坏了）。**不许**用「核心递归给子控件塞 `disabled`」实现：那会与控件
+    自身的禁用状态打架、解锁时无法区分「原本禁用」与「我禁的」。`locked` 是受控项、组件内不存 state，
+    所以不传即初始态、关掉重开自动复位；命令式的两个弹窗不给静态 `locked`，改由回调参数
+    `ctl.setLocked(bool)` 在异步过程中开关（弹窗关掉后调用是空操作）。`skin:'host'` 不支持（宿主弹窗内部
+    不归我们管）。
     这个「关不关」由回调返回值决定（2026-11-03 用户拍板）：**只有明确的 `false`**（同步返回，或 Promise
     resolve 成 `false`）算「这次没成」，弹窗留着让人重试；`true` / `undefined` / 其它照常关。失败怎么提示
     由回调自己决定（核心不弹 Toast），这样调用点就不必在外面包 `try/catch`。同步与异步两条路径同一份判据。

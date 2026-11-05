@@ -3,6 +3,7 @@ import { FloatingPortal, autoUpdate, flip, offset, shift, size as floatingSize, 
 import { Chevron } from './chevron.js';
 import { Button } from './Button.js';
 import { FieldHint } from './FieldHint.js';
+import { useOverlayLocked } from './overlay.js';
 import { getLocale, t } from '../utils/i18n.js';
 import { formatDateTimePrecision } from '../utils/date.js';
 import { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
@@ -106,6 +107,12 @@ export function DateTimePicker(props) {
     const [inner, setInner] = useState(() => props.defaultValue ?? null);
     const current = controlled ? (props.value ?? null) : inner;
     const [open, setOpen] = useState(false);
+    // 外层浮层锁死就收起：日历是 portal 到 body 的，不在面板的 inert 子树里，锁不住。
+    const overlayLocked = useOverlayLocked();
+    useEffect(() => {
+        if (overlayLocked)
+            setOpen(false);
+    }, [overlayLocked]);
     const [draft, setDraft] = useState(() => draftOf(current));
     const [views, setViews] = useState(() => {
         const d = draftOf(current);

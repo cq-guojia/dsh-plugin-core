@@ -50,6 +50,21 @@ test('Modal：遮罩居中档 + 面板 modal 档 + 关闭钮走公共件', () =>
   assert.match(html, /class="dshpc-panel__close dshpc-overlay-head__close"/)
 })
 
+test('Modal locked：面板挂 inert + 锁定类，关闭钮与遮罩关闭一起失效', () => {
+  const html = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {}, locked: true }, h('input', null)))
+  // inert 是「所有控件都点不动」的唯一实现：写成别的（比如只挂 pointer-events）键盘还能操作
+  assert.match(html, /inert=""/, '锁定态没把面板设成 inert')
+  assert.match(html, /dshpc-modal--locked/, '锁定类没挂上（遮罩不会变灰）')
+  assert.match(html, /data-dshpc-locked=""/, '遮罩没带锁定标记（禁止手势不生效）')
+  assert.doesNotMatch(html, /dshpc-panel__close/, '锁定态还渲了 ✕')
+  // 不传就完全回到老样子 —— 「不传参数 = 初始未锁」
+  const plain = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {} }, h('input', null)))
+  assert.doesNotMatch(plain, /inert|dshpc-modal--locked|data-dshpc-locked/)
+  assert.match(plain, /dshpc-panel__close/)
+  // 只管交互环境，不碰子控件自己的 disabled（原本禁用的解锁后照样禁用）
+  assert.equal((html.match(/disabled/g) ?? []).length, 0, 'locked 不该给子控件塞 disabled')
+})
+
 test('Modal notice：给了才有底栏，左侧那条挂 dshpc-modal__notice', () => {
   const withNotice = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {}, notice: '正在写入…' }, 'x'))
   assert.match(withNotice, /class="dshpc-modal__foot"/)
