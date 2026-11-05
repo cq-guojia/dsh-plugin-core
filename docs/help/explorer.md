@@ -47,7 +47,7 @@ pnpm add dsh-plugin-core
 > EN: `connectHost(ctx)` takes just that one slice; the whole ctx never enters core.
 
 ```tsx id="explorer-usage-code"
-import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/adv/explorer'
 import { serveFsRoute } from 'dsh-plugin-core/host'
 import { FS_PATH } from './paths'   // 你自己的常量：宿主与 client 必须用同一个
 

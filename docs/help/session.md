@@ -65,7 +65,7 @@
 | `t` | `Translate` | — | 内置 | 覆盖文案（内置字典已含全部会话文案，中英） | Override copy (the built-in dictionary has all session copy, zh+en) |
 
 ```tsx id="session-usage"
-import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'
+import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/adv/session'
 
 // 宿主服务由调用方注入：sessions ← dsh-api-session-controller、
 //   uiConversation ← dsh-client-ui-conversation

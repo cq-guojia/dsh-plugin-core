@@ -55,7 +55,7 @@ function rootPathOf(path, anchors, sessionId) {
         ?? anchors.find((item) => item.path !== undefined)?.path;
 }
 function warnNotWired(api, filesMissing) {
-    console.warn(`[dsh-plugin-core/explorer] ${api}: `
+    console.warn(`[dsh-plugin-core/adv/explorer] ${api}: `
         + (filesMissing
             ? '没有文件面（client apply 里没调 connectFs，或宿主没注册 serveFsRoute）'
             : '相对路径找不到工作区基准（宿主 workspaces 里没有带 path 的工作区）')
@@ -86,7 +86,7 @@ export function openFilePreview(options) {
         : options.mount;
     // 解析不到就放弃：绝不回落 body（那是浮层，不是分栏）。
     if (mount === null) {
-        console.warn(`[dsh-plugin-core/explorer] openFilePreview: mount 选择器解析不到元素（${String(options.mount)}）`
+        console.warn(`[dsh-plugin-core/adv/explorer] openFilePreview: mount 选择器解析不到元素（${String(options.mount)}）`
             + ' ⇒ 放弃本次操作');
         return null;
     }
@@ -105,7 +105,7 @@ export function openFilePreview(options) {
     // content 与 path 文档写的二选一：同传时 content 生效，但别让 handle.path
     // 回报一个根本没被使用的路径（2026-11-04）。
     if (custom && options.path !== undefined) {
-        console.warn('[dsh-plugin-core/explorer] openFilePreview: content 与 path 只能二选一，path 已忽略');
+        console.warn('[dsh-plugin-core/adv/explorer] openFilePreview: content 与 path 只能二选一，path 已忽略');
     }
     // rootPath 的推导只有一份（`rootPathOf`）；调用方显式给了就听调用方的。
     const opts = {
@@ -146,7 +146,7 @@ export function openFilePreview(options) {
         restoreHost();
         // 唯一仍算错的是传 body（那是浮层，不是分栏），只留痕不改行为。
         if (next === document.body) {
-            console.warn('[dsh-plugin-core/explorer] openFilePreview: 不要传 document.body —— PanelDock 是布局成员'
+            console.warn('[dsh-plugin-core/adv/explorer] openFilePreview: 不要传 document.body —— PanelDock 是布局成员'
                 + '（停靠右侧 + 挤窄主区）。请传你页面里包住主区的那个元素。');
         }
         hostPrevDisplay = next.style.display;

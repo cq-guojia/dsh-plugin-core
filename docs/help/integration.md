@@ -78,7 +78,7 @@ formatBytes(file.size)                          // 12 KB
 ```
 
 ```tsx id="integration-use-explorer"
-import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/adv/explorer'
 import { serveFsRoute } from 'dsh-plugin-core/host'
 import { FS_PATH } from './paths'   // 自己的常量，宿主与 client 共用
 
@@ -97,7 +97,7 @@ const folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } }) 
 ```
 
 ```tsx id="integration-use-session"
-import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
+import { openSessionView, SessionViewModal } from 'dsh-plugin-core/adv/session'
 
 // sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）
 const view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')

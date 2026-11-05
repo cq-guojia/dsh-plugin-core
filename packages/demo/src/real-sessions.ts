@@ -8,7 +8,7 @@
  *    三级回落）、`updatedAt`、`running`、`blank`、`cwd`。数据来自宿主 `session/list` RPC
  *    （ApiSessionList.list：「Read every visible attached and persisted Session **without
  *    activating an Agent**」，按活动序）⇒ 列会话 ≠ 打开会话，冷安全。
- *  · 预览数据链与本仓 `dist/session` 的 openSessionView 同一条：retain → binding →
+ *  · 预览数据链与本仓 `dist/adv/session` 的 openSessionView 同一条：retain → binding →
  *    uiConversation.target('chat')（归档会话同样可读）。
  *  · fork = 官方 ISessions.fork；跳转 = 官方 uiWorkspace.openSession。
  *  · 归档集合 = 官方 `workspaces` 快照的 `archivedSessionIds`，由核心 `connectHost` 统一注入并

@@ -55735,7 +55735,7 @@ function rootPathOf(path, anchors, sessionId) {
   return workspaceOfPath(path, anchors)?.path ?? (sessionId === void 0 ? void 0 : anchors.find((item) => item.sessionIds?.includes(sessionId) === true)?.path) ?? anchors.find((item) => item.path !== void 0)?.path;
 }
 function warnNotWired(api, filesMissing) {
-  console.warn(`[dsh-plugin-core/explorer] ${api}: ` + (filesMissing ? "\u6CA1\u6709\u6587\u4EF6\u9762\uFF08client apply \u91CC\u6CA1\u8C03 connectFs\uFF0C\u6216\u5BBF\u4E3B\u6CA1\u6CE8\u518C serveFsRoute\uFF09" : "\u76F8\u5BF9\u8DEF\u5F84\u627E\u4E0D\u5230\u5DE5\u4F5C\u533A\u57FA\u51C6\uFF08\u5BBF\u4E3B workspaces \u91CC\u6CA1\u6709\u5E26 path \u7684\u5DE5\u4F5C\u533A\uFF09") + " \u21D2 \u653E\u5F03\u672C\u6B21\u64CD\u4F5C");
+  console.warn(`[dsh-plugin-core/adv/explorer] ${api}: ` + (filesMissing ? "\u6CA1\u6709\u6587\u4EF6\u9762\uFF08client apply \u91CC\u6CA1\u8C03 connectFs\uFF0C\u6216\u5BBF\u4E3B\u6CA1\u6CE8\u518C serveFsRoute\uFF09" : "\u76F8\u5BF9\u8DEF\u5F84\u627E\u4E0D\u5230\u5DE5\u4F5C\u533A\u57FA\u51C6\uFF08\u5BBF\u4E3B workspaces \u91CC\u6CA1\u6709\u5E26 path \u7684\u5DE5\u4F5C\u533A\uFF09") + " \u21D2 \u653E\u5F03\u672C\u6B21\u64CD\u4F5C");
 }
 var PREVIEW_HOST_ID = "dshpc-file-preview-host";
 var PREVIEW_PANEL_ID = "file-preview";
@@ -55746,7 +55746,7 @@ function openFilePreview(options) {
     return null;
   const mount = typeof options.mount === "string" ? document.querySelector(options.mount) : options.mount;
   if (mount === null) {
-    console.warn(`[dsh-plugin-core/explorer] openFilePreview: mount \u9009\u62E9\u5668\u89E3\u6790\u4E0D\u5230\u5143\u7D20\uFF08${String(options.mount)}\uFF09 \u21D2 \u653E\u5F03\u672C\u6B21\u64CD\u4F5C`);
+    console.warn(`[dsh-plugin-core/adv/explorer] openFilePreview: mount \u9009\u62E9\u5668\u89E3\u6790\u4E0D\u5230\u5143\u7D20\uFF08${String(options.mount)}\uFF09 \u21D2 \u653E\u5F03\u672C\u6B21\u64CD\u4F5C`);
     return null;
   }
   const custom = options.content !== void 0;
@@ -55762,7 +55762,7 @@ function openFilePreview(options) {
     return null;
   }
   if (custom && options.path !== void 0) {
-    console.warn("[dsh-plugin-core/explorer] openFilePreview: content \u4E0E path \u53EA\u80FD\u4E8C\u9009\u4E00\uFF0Cpath \u5DF2\u5FFD\u7565");
+    console.warn("[dsh-plugin-core/adv/explorer] openFilePreview: content \u4E0E path \u53EA\u80FD\u4E8C\u9009\u4E00\uFF0Cpath \u5DF2\u5FFD\u7565");
   }
   const opts = {
     ...options,
@@ -55796,7 +55796,7 @@ function openFilePreview(options) {
       return;
     restoreHost();
     if (next === document.body) {
-      console.warn("[dsh-plugin-core/explorer] openFilePreview: \u4E0D\u8981\u4F20 document.body \u2014\u2014 PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u505C\u9760\u53F3\u4FA7 + \u6324\u7A84\u4E3B\u533A\uFF09\u3002\u8BF7\u4F20\u4F60\u9875\u9762\u91CC\u5305\u4F4F\u4E3B\u533A\u7684\u90A3\u4E2A\u5143\u7D20\u3002");
+      console.warn("[dsh-plugin-core/adv/explorer] openFilePreview: \u4E0D\u8981\u4F20 document.body \u2014\u2014 PanelDock \u662F\u5E03\u5C40\u6210\u5458\uFF08\u505C\u9760\u53F3\u4FA7 + \u6324\u7A84\u4E3B\u533A\uFF09\u3002\u8BF7\u4F20\u4F60\u9875\u9762\u91CC\u5305\u4F4F\u4E3B\u533A\u7684\u90A3\u4E2A\u5143\u7D20\u3002");
     }
     hostPrevDisplay = next.style.display;
     hostHadClass = next.classList.contains(DOCK_HOST_CLASS);
@@ -62000,7 +62000,7 @@ var docData = {
       {
         "id": "explorer-usage-code",
         "lang": "tsx",
-        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u4F60\u81EA\u5DF1\u7684\u5E38\u91CF\uFF1A\u5BBF\u4E3B\u4E0E client \u5FC5\u987B\u7528\u540C\u4E00\u4E2A\n\n// \u2500\u2500 \u5BBF\u4E3B\u534A\u8FB9\uFF08apply\uFF09\uFF1A\u6302\u4E00\u6761\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF1B\u8BFB\u6587\u4EF6/\u5217\u76EE\u5F55\u90FD\u5728\u5B83\u4E0A\u9762\uFF09 \u2500\u2500\nserveFsRoute(ctx, { path: FS_PATH })\n\n// \u2500\u2500 client \u534A\u8FB9\uFF08apply\uFF09\uFF1A\u63A5\u4E00\u6B21\uFF08connectHost \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09 \u2500\u2500\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF1A\u4E00\u4E2A\u843D\u70B9 + \u4E00\u4E2A\u8DEF\u5F84\u5C31\u591F\nopenFilePreview({ mount: pageRowEl, path: '/abs/ledger' })      // \u6587\u4EF6\u5939 \u21D2 \u76EE\u5F55\u6811\uFF1B\u6587\u4EF6 \u21D2 \u76F4\u63A5\u9884\u89C8\nopenFilePreview({ mount: '#page-row', path: 'docs/README.md' })  // \u843D\u70B9\u4E5F\u53EF\u4EE5\u7ED9\u9009\u62E9\u5668\uFF1B\u76F8\u5BF9\u8DEF\u5F84\u4E5F\u6536\uFF08\u76F8\u5BF9\u8C01\u89C1\u4E0B\uFF09\nopenFilePreview({ mount: '#page-row' })                          // \u4E0D\u7ED9\u8DEF\u5F84 \u21D2 \u6839\u8282\u70B9\uFF08\u5DE5\u4F5C\u533A\u6E05\u5355 + \u76D8\u7B26\uFF09\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE**\u7EDD\u5BF9\u8DEF\u5F84**\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // \u53EA\u9009\u6587\u4EF6\u5939\n\n// \u5C55\u5F00\u65B9\u4F4D\uFF1A\u9ED8\u8BA4 auto\uFF08\u4E0B\u65B9\u4F18\u5148\u3001\u4E0D\u591F\u7FFB\u4E0A\u65B9\uFF09\uFF1B\u6309\u94AE\u8D34\u7740\u5B9A\u5BBD\u533A\u53F3\u8FB9\u754C\u65F6\u6539\u5411\u5DE6\u5C55\u5F00\nawait pickWorkspaceFile({ anchor, placement: 'bottom-end' })   // \u4E0B\u65B9\u3001\u53F3\u7F18\u5BF9\u9F50\nawait pickWorkspaceFile({ anchor, placement: 'left-start' })   // \u5DE6\u4FA7\u3001\u9876\u8FB9\u9F50\u5E73"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/adv/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u4F60\u81EA\u5DF1\u7684\u5E38\u91CF\uFF1A\u5BBF\u4E3B\u4E0E client \u5FC5\u987B\u7528\u540C\u4E00\u4E2A\n\n// \u2500\u2500 \u5BBF\u4E3B\u534A\u8FB9\uFF08apply\uFF09\uFF1A\u6302\u4E00\u6761\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF1B\u8BFB\u6587\u4EF6/\u5217\u76EE\u5F55\u90FD\u5728\u5B83\u4E0A\u9762\uFF09 \u2500\u2500\nserveFsRoute(ctx, { path: FS_PATH })\n\n// \u2500\u2500 client \u534A\u8FB9\uFF08apply\uFF09\uFF1A\u63A5\u4E00\u6B21\uFF08connectHost \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09 \u2500\u2500\nconnectHost(ctx)\nconnectFs({ path: FS_PATH })\n\n// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF09\uFF1A\u4E00\u4E2A\u843D\u70B9 + \u4E00\u4E2A\u8DEF\u5F84\u5C31\u591F\nopenFilePreview({ mount: pageRowEl, path: '/abs/ledger' })      // \u6587\u4EF6\u5939 \u21D2 \u76EE\u5F55\u6811\uFF1B\u6587\u4EF6 \u21D2 \u76F4\u63A5\u9884\u89C8\nopenFilePreview({ mount: '#page-row', path: 'docs/README.md' })  // \u843D\u70B9\u4E5F\u53EF\u4EE5\u7ED9\u9009\u62E9\u5668\uFF1B\u76F8\u5BF9\u8DEF\u5F84\u4E5F\u6536\uFF08\u76F8\u5BF9\u8C01\u89C1\u4E0B\uFF09\nopenFilePreview({ mount: '#page-row' })                          // \u4E0D\u7ED9\u8DEF\u5F84 \u21D2 \u6839\u8282\u70B9\uFF08\u5DE5\u4F5C\u533A\u6E05\u5355 + \u76D8\u7B26\uFF09\n\n// \u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08Promise \u8FD4\u56DE**\u7EDD\u5BF9\u8DEF\u5F84**\uFF0C\u4E0D\u81EA\u5DF1\u6302 dock\uFF09\nconst r = await pickWorkspaceFile({ anchor, filter: { exts: ['md'] } })\nconst dir = await pickWorkspaceFile({ anchor, filter: { dirs: true } })  // \u53EA\u9009\u6587\u4EF6\u5939\n\n// \u5C55\u5F00\u65B9\u4F4D\uFF1A\u9ED8\u8BA4 auto\uFF08\u4E0B\u65B9\u4F18\u5148\u3001\u4E0D\u591F\u7FFB\u4E0A\u65B9\uFF09\uFF1B\u6309\u94AE\u8D34\u7740\u5B9A\u5BBD\u533A\u53F3\u8FB9\u754C\u65F6\u6539\u5411\u5DE6\u5C55\u5F00\nawait pickWorkspaceFile({ anchor, placement: 'bottom-end' })   // \u4E0B\u65B9\u3001\u53F3\u7F18\u5BF9\u9F50\nawait pickWorkspaceFile({ anchor, placement: 'left-start' })   // \u5DE6\u4FA7\u3001\u9876\u8FB9\u9F50\u5E73"
       }
     ]
   },
@@ -62549,7 +62549,7 @@ var docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u7F3A openHostSession \u624D\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    // \u5F52\u6863\u6001\u4E0D\u7528\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF08apply \u91CC connectHost \u63A5\u7EBF\u4E00\u6B21\u5373\u53EF\uFF09\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
+        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/adv/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u7F3A openHostSession \u624D\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    // \u5F52\u6863\u6001\u4E0D\u7528\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF08apply \u91CC connectHost \u63A5\u7EBF\u4E00\u6B21\u5373\u53EF\uFF09\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
       },
       {
         "id": "session-data-chain",
@@ -62937,12 +62937,12 @@ var docData = {
       {
         "id": "integration-use-explorer",
         "lang": "tsx",
-        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u81EA\u5DF1\u7684\u5E38\u91CF\uFF0C\u5BBF\u4E3B\u4E0E client \u5171\u7528\n\n// \u5BBF\u4E3B apply\uFF1A\u6302\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u5217\u76EE\u5F55 / \u8BFB\u6587\u4EF6\u90FD\u5728\u5B83\u4E0A\u9762\uFF0C\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF09\nserveFsRoute(ctx, { path: FS_PATH })\n// client apply\uFF1A\u63A5\u540C\u4E00\u4E2A\u5E38\u91CF\uFF08connectHost(ctx) \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09\nconnectFs({ path: FS_PATH })\n\n// \u9884\u89C8\u67D0\u6587\u4EF6\uFF1A\u53F3\u4FA7\u5206\u680F\uFF08\u6324\u7A84 row \u5DE6\u8FB9\u7684\u4E3B\u533A\uFF0C\u4E0D\u662F\u6D6E\u5728\u4E0A\u9762\uFF09\uFF1B\u7EDD\u5BF9 / \u76F8\u5BF9\u90FD\u6536\n// \u843D\u70B9\u7ED9\u5143\u7D20\u6216\u9009\u62E9\u5668\u90FD\u884C\uFF08openFilePreview({ mount: '#page-row' })\uFF09\uFF0C\u4E0D\u5FC5\u5B58 ref\nopenFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })\n\n// \u8BA9\u7528\u6237\u9009\uFF1A\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path: \u7EDD\u5BF9\u8DEF\u5F84, isDir, workspaceRel?, workspace? }\nconst picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })\nconst folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // \u53EA\u9009\u6587\u4EF6\u5939"
+        "src": "import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/adv/explorer'\nimport { serveFsRoute } from 'dsh-plugin-core/host'\nimport { FS_PATH } from './paths'   // \u81EA\u5DF1\u7684\u5E38\u91CF\uFF0C\u5BBF\u4E3B\u4E0E client \u5171\u7528\n\n// \u5BBF\u4E3B apply\uFF1A\u6302\u53EA\u8BFB\u6587\u4EF6\u8DEF\u7531\uFF08\u5217\u76EE\u5F55 / \u8BFB\u6587\u4EF6\u90FD\u5728\u5B83\u4E0A\u9762\uFF0C\u4E0D\u9650\u5DE5\u4F5C\u533A\uFF09\nserveFsRoute(ctx, { path: FS_PATH })\n// client apply\uFF1A\u63A5\u540C\u4E00\u4E2A\u5E38\u91CF\uFF08connectHost(ctx) \u7167\u65E7\u8D1F\u8D23\u5DE5\u4F5C\u533A\u5FEB\u7167\uFF09\nconnectFs({ path: FS_PATH })\n\n// \u9884\u89C8\u67D0\u6587\u4EF6\uFF1A\u53F3\u4FA7\u5206\u680F\uFF08\u6324\u7A84 row \u5DE6\u8FB9\u7684\u4E3B\u533A\uFF0C\u4E0D\u662F\u6D6E\u5728\u4E0A\u9762\uFF09\uFF1B\u7EDD\u5BF9 / \u76F8\u5BF9\u90FD\u6536\n// \u843D\u70B9\u7ED9\u5143\u7D20\u6216\u9009\u62E9\u5668\u90FD\u884C\uFF08openFilePreview({ mount: '#page-row' })\uFF09\uFF0C\u4E0D\u5FC5\u5B58 ref\nopenFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })\n\n// \u8BA9\u7528\u6237\u9009\uFF1A\u951A\u5B9A\u6309\u94AE\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path: \u7EDD\u5BF9\u8DEF\u5F84, isDir, workspaceRel?, workspace? }\nconst picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })\nconst folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // \u53EA\u9009\u6587\u4EF6\u5939"
       },
       {
         "id": "integration-use-session",
         "lang": "tsx",
-        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'\n\n// sessions / uiConversation \u540C\u6837\u4ECE ctx \u53D6\u51FA\uFF08\u61D2\u5F97\u53D6\u5C31\u7528\u5B98\u65B9 client \u670D\u52A1\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    onClose: () => { view.dispose(); setOpen(false) },\n    // \u6587\u4EF6\u51FA\u53E3\uFF1A\u5DF2\u7ECF\u70B9\u5F00\u7684\u90A3\u6761\u4F1A\u8BDD id \u4F1A\u4F5C\u4E3A\u7B2C\u4E8C\u53C2\u4F20\u8FDB\u6765\uFF08\u76F8\u5BF9\u8DEF\u5F84 / Office \u90FD\u6309\u5B83\u5B9A\u4F4D\uFF09\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: pageRowEl, path, sessionId: sid, line: opts?.line }),\n  })\n}"
+        "src": "import { openSessionView, SessionViewModal } from 'dsh-plugin-core/adv/session'\n\n// sessions / uiConversation \u540C\u6837\u4ECE ctx \u53D6\u51FA\uFF08\u61D2\u5F97\u53D6\u5C31\u7528\u5B98\u65B9 client \u670D\u52A1\uFF09\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId, view,\n    // \u5173\u95ED\u5FC5\u987B\u91CA\u653E retain \u5F15\u7528\n    onClose: () => { view.dispose(); setOpen(false) },\n    // \u6587\u4EF6\u51FA\u53E3\uFF1A\u5DF2\u7ECF\u70B9\u5F00\u7684\u90A3\u6761\u4F1A\u8BDD id \u4F1A\u4F5C\u4E3A\u7B2C\u4E8C\u53C2\u4F20\u8FDB\u6765\uFF08\u76F8\u5BF9\u8DEF\u5F84 / Office \u90FD\u6309\u5B83\u5B9A\u4F4D\uFF09\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: pageRowEl, path, sessionId: sid, line: opts?.line }),\n  })\n}"
       },
       {
         "id": "integration-cleanup",
@@ -64723,8 +64723,8 @@ var docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "\u5BBF\u4E3B\u539F\u751F Toast\uFF0C\u8D70 `dsh-plugin-core/ui/host` \u5B50\u8DEF\u5F84\u3002opts: `{ tone?, holdMs?, actions?, onDismiss? }`",
-              "en": "Host-native Toast from the `dsh-plugin-core/ui/host` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }`"
+              "zh": "\u5BBF\u4E3B\u539F\u751F Toast\uFF0C\u8D70 `dsh-plugin-core/ui/host-toast` \u5B50\u8DEF\u5F84\u3002opts: `{ tone?, holdMs?, actions?, onDismiss? }`",
+              "en": "Host-native Toast from the `dsh-plugin-core/ui/host-toast` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }`"
             }
           },
           {
@@ -69588,9 +69588,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.33.1"}`],
-            [t3("buildDemo"), `v${"0.33.1"}`],
-            [t3("buildStamp"), "261105-162426-565"]
+            [t3("buildCore"), `v${"0.33.2"}`],
+            [t3("buildDemo"), `v${"0.33.2"}`],
+            [t3("buildStamp"), "261105-170139-309"]
           ].map(
             ([label, value]) => (0, import_react94.createElement)(
               "tr",
@@ -69905,9 +69905,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react96.createElement)("span", null, `core v${"0.33.1"}`),
-          (0, import_react96.createElement)("span", null, `demo v${"0.33.1"}`),
-          (0, import_react96.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261105-162426-565")
+          (0, import_react96.createElement)("span", null, `core v${"0.33.2"}`),
+          (0, import_react96.createElement)("span", null, `demo v${"0.33.2"}`),
+          (0, import_react96.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261105-170139-309")
         )
       )
     ),

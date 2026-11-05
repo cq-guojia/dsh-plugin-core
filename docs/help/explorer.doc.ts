@@ -1,7 +1,7 @@
 // explorer 子包的使用帮助 —— 真源（TS 数据模块）。内容全在此一处，demo 与 md 都从这份派生。
 import type { DocTopic } from '../design/doc-format.js'
 
-const explorerUsage = `import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+const explorerUsage = `import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/adv/explorer'
 import { serveFsRoute } from 'dsh-plugin-core/host'
 import { FS_PATH } from './paths'   // 你自己的常量：宿主与 client 必须用同一个
 

@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-core",
-  "version": "0.33.1",
+  "version": "0.33.2",
   "packageManager": "pnpm@12.3.4",
   "description": "Shared base for DSH plugins: design tokens, UI controls, utils, workspace explorer, session preview",
   "keywords": [
@@ -33,28 +33,28 @@
       "default": "./dist/ui/official.js"
     },
     "./ui/code-viewer": {
-      "types": "./dist/ui/CodeViewer.d.ts",
-      "default": "./dist/ui/CodeViewer.js"
+      "types": "./dist/ui/display/CodeViewer.d.ts",
+      "default": "./dist/ui/display/CodeViewer.js"
     },
-    "./ui/host": {
-      "types": "./dist/ui/host-toast.d.ts",
-      "default": "./dist/ui/host-toast.js"
+    "./ui/host-toast": {
+      "types": "./dist/ui/feedback/host-toast.d.ts",
+      "default": "./dist/ui/feedback/host-toast.js"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "default": "./dist/utils/index.js"
     },
-    "./explorer": {
-      "types": "./dist/explorer/index.d.ts",
-      "default": "./dist/explorer/index.js"
+    "./adv/explorer": {
+      "types": "./dist/adv/explorer/index.d.ts",
+      "default": "./dist/adv/explorer/index.js"
     },
-    "./explorer/preview": {
-      "types": "./dist/explorer/preview/index.d.ts",
-      "default": "./dist/explorer/preview/index.js"
+    "./adv/explorer/preview": {
+      "types": "./dist/adv/explorer/preview/index.d.ts",
+      "default": "./dist/adv/explorer/preview/index.js"
     },
-    "./session": {
-      "types": "./dist/session/index.d.ts",
-      "default": "./dist/session/index.js"
+    "./adv/session": {
+      "types": "./dist/adv/session/index.d.ts",
+      "default": "./dist/adv/session/index.js"
     },
     "./host": {
       "types": "./dist/host/index.d.ts",
@@ -67,7 +67,7 @@
   ],
   "scripts": {
     "gen:css": "node scripts/gen-css.mjs",
-    "build": "node scripts/gen-css.mjs && node scripts/gen-docs.mjs && tsc -p tsconfig.json",
+    "build": "node scripts/gen-css.mjs && node scripts/gen-docs.mjs && tsc -p tsconfig.json && node scripts/prune-dist.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.demo.json --noEmit",
     "typecheck:demo": "tsc -p tsconfig.demo.json --noEmit",
     "pretest": "node scripts/gen-css.mjs --check && node scripts/gen-docs.mjs --check && tsc -p tsconfig.json && tsc -p tsconfig.demo.json --noEmit",

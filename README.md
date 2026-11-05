@@ -82,11 +82,11 @@ Three things worth knowing on day one:
 | `dsh-plugin-core/ui` | The whole control set — actions, inputs, display, feedback, layout, navigation | yes |
 | `dsh-plugin-core/ui/official` | Direct re-exports of the host's official primitives, for the rare case you need one | yes |
 | `dsh-plugin-core/ui/code-viewer` | Code viewer with per-line highlighting (also used by file preview) | yes |
-| `dsh-plugin-core/ui/host` | Bridge to the host's own toast | yes |
+| `dsh-plugin-core/ui/host-toast` | Bridge to the host's own toast | yes |
 | `dsh-plugin-core/utils` | Pure helpers: date, string, bytes, HTTP, built-in zh/en dictionary | no |
-| `dsh-plugin-core/explorer` | File browser, file picker, docked file preview | yes |
-| `dsh-plugin-core/explorer/preview` | Preview bodies: image, PDF, Markdown, HTML, Office, text/code | yes |
-| `dsh-plugin-core/session` | Read-only session preview dialog + changed-file diff | yes |
+| `dsh-plugin-core/adv/explorer` | File browser, file picker, docked file preview | yes |
+| `dsh-plugin-core/adv/explorer/preview` | Preview bodies: image, PDF, Markdown, HTML, Office, text/code | yes |
+| `dsh-plugin-core/adv/session` | Read-only session preview dialog + changed-file diff | yes |
 | `dsh-plugin-core/host` | Host-side routes: read-only FS route, model catalog | no |
 
 Dependency direction is one-way: `design` ← `ui` ← `explorer` / `session`, while `utils` depends on nothing.
@@ -108,13 +108,13 @@ Use this subpath alone if you want the palette and the theme switch but write yo
 
 Everything is built from tokens, takes its data through props, and follows the host's theme. Props are the customization surface — compose them instead of forking a component. See the [control reference](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md) for every prop.
 
-**Actions**
+#### Actions
 
 - `Button` — 18 appearance tiers (solid / outline / bare: `primary`, `secondary`, `danger`, `success`, `warning`, `info`, `outline`, `danger-outline`, `ghost`, `link`, plus the eight extended colors), three heights (24 / 28 / 32), leading and trailing icons, fixed / min / max width with marquee overflow, and automatic loading: return a Promise from `onClick` and the button spins, disables and restores itself — including on rejection.
 - `IconButton` — icon-only variant of the same, with the accessible name enforced.
 - `Segmented` — single or multiple selection, optional 1px frame, per-item icon / count / badge, tone-colored selection.
 
-**Inputs**
+#### Inputs
 
 - `Input`, `PrefixedInput`, `NumberInput`, `Textarea` — one shared field metric (`fieldMetricsOf`) so every control lines up; error state, leading icon slot, search clear button, and a question-mark hint that uses the host's tooltip.
 - `Checkbox`, and the official `Switch` for on/off semantics.
@@ -123,7 +123,7 @@ Everything is built from tokens, takes its data through props, and follows the h
 - `DateTimePicker` — one control for a single instant or a range, precision `day` / `hour` / `minute` / `second`, two independent calendars, keyboard support, start floored and end ceiled.
 - `InputGroup` — input with attached actions.
 
-**Display**
+#### Display
 
 - `Surface` — the plain framed container, with tone / border / padding / radius axes.
 - `Card` / `StripCard` — cards with an accent system.
@@ -131,14 +131,14 @@ Everything is built from tokens, takes its data through props, and follows the h
 - `Table` — grouped (multi-row) headers, banner groups so several sections live in one table, row spanning, selection, density / striped / border switches, per-column alignment and header tone, built-in empty state, loading and loading-more states, optional built-in pagination. Data-driven: it never sorts, fetches or virtualizes.
 - `FieldHint` — the standalone question mark that opens the host's tooltip.
 
-**Feedback**
+#### Feedback
 
 - `Modal`, `SideSheet` — sized dialogs; `SideSheet` slides in from either side; both accept a `busy` lock.
 - `AlertModal`, `ConfirmModal`, `alertModal()`, `confirmModal()` — promise-based dialogs.
 - `showToast`, `notify` — Sonner-backed toasts, one host per screen shared across plugins.
 - `Loader`, `LoaderBar`, `Loading`, `LoadingBlock`, `LoadingToast`, `RunningBlocks`, `showLoading` — spinners, an indeterminate bar, and a single-slot global loading card.
 
-**Layout and navigation**
+#### Layout and navigation
 
 - `PanelDock` / `DockPanel` / `createPanelDock` — the right-docked column shell: a real layout member that takes width instead of floating over the page, multiple columns with draggable widths, saved widths, collapse to an edge ear.
 - `QuickToolbar` — a toolbar that follows scrolling with back-to-top and visibility rules.

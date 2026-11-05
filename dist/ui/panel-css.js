@@ -1,2 +1,0 @@
-export { PANEL_CSS } from './panel-css.generated.js';
-//# sourceMappingURL=panel-css.js.map

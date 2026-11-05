@@ -26,7 +26,7 @@ const useUtils = `import { formatDateTime, relativeFuture, formatBytes } from 'd
 formatDateTime(task.runAt, { seconds: true })   // 2026-10-18 09:30:05
 relativeFuture(task.runAt, Date.now())          // 3 分钟后（未来时间用这个）
 formatBytes(file.size)                          // 12 KB`
-const useExplorer = `import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/explorer'
+const useExplorer = `import { connectFs, openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/adv/explorer'
 import { serveFsRoute } from 'dsh-plugin-core/host'
 import { FS_PATH } from './paths'   // 自己的常量，宿主与 client 共用
 
@@ -42,7 +42,7 @@ openFilePreview({ mount: pageRowEl, path: '/abs/ws/docs/requirements.md' })
 // 让用户选：锚定按钮旁弹模态，Promise 返回 { path: 绝对路径, isDir, workspaceRel?, workspace? }
 const picked = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['ts'] } })
 const folder = await pickWorkspaceFile({ anchor: btn, filter: { dirs: true } })   // 只选文件夹`
-const useSession = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/session'
+const useSession = `import { openSessionView, SessionViewModal } from 'dsh-plugin-core/adv/session'
 
 // sessions / uiConversation 同样从 ctx 取出（懒得取就用官方 client 服务）
 const view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')

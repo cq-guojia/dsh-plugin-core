@@ -1,7 +1,7 @@
 // session 子包的使用帮助 —— 真源（TS 数据模块）。内容全在此一处，demo 与 md 都从这份派生。
 import type { DocTopic } from '../design/doc-format.js'
 
-const usage = `import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/session'
+const usage = `import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/adv/session'
 
 // 宿主服务由调用方注入：sessions ← dsh-api-session-controller、
 //   uiConversation ← dsh-client-ui-conversation

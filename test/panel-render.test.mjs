@@ -200,7 +200,7 @@ test('预览标题栏：md/html 才出渲染⇄源码切换', () => {
 
 // 拆分自检：展示层从 FileBrowser 搬走后，这些标记只应出现在各自的模块里。
 test('展示模块已从 FileBrowser 拆出（落地页 / 面包屑栏 / 预览标题栏）', async () => {
-  const read = async (rel) => readFile(new URL(`../dist/explorer/${rel}`, import.meta.url), 'utf8')
+  const read = async (rel) => readFile(new URL(`../dist/adv/explorer/${rel}`, import.meta.url), 'utf8')
   const browser = await read('FileBrowser.js')
   const nav = await read('crumb-nav.js')
 
