@@ -34,7 +34,7 @@
 | 样式规范（本仓内部） | `docs/design/style.md` | 注入机制 why、派生色口径、三条硬规矩（使用侧在 `docs/help/style.md`） |
 | 方法规范（本仓内部） | `docs/design/methods.md` | 新增 utils 方法的 checklist（使用侧在 `docs/help/methods.md`） |
 | 文案撰写规范 | `docs/design/copywriting.md` | 帮助文档文案标准：禁过程叙事、段落与表格口径、双语对等、格式冻结 |
-| 需求与决策（追加槽位） | `docs/requirements.md` | 需求范围、拍板结论、遗留问题 |
+| 需求与决策（追加槽位） | `docs/requirements.md` | 需求范围 + **还没有归属的结论**（写进归属文档后即从本文删除，故本文应越来越短） |
 
 ## 三条硬约定
 

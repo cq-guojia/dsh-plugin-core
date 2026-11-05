@@ -1041,7 +1041,7 @@ function hostLocale() {
         return 'zh';
     return tag.toLowerCase().startsWith('zh') ? 'zh' : 'en';
 }
-/** 手动指定语言；此后不再跟随宿主（测试 / 非宿主环境用）。 */
+/** 手动指定语言；传 `null` 恢复跟随宿主（测试 / 非宿主环境用）。 */
 export function setLocale(locale) {
     override = locale;
 }

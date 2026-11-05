@@ -1,4 +1,4 @@
-import { createElement as h, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { createElement as h, useMemo, useState, useSyncExternalStore } from 'react'
 import { IconArchiveOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitives'
 import {
   openFilePreview,
@@ -13,11 +13,10 @@ import { openSessionReview, SessionViewModal, type ChangedFileReviewLocator } fr
 import { formatDateTime } from '../../../../dist/utils/index.js'
 import { Button } from '../../../../dist/ui/index.js'
 import { openRealSessionView, realForkSession, realOpenHostSession, realSessions } from '../real-sessions.js'
-import { Example, CodeOnly, DocProse, DocApi } from '../doc.js'
+import { Example, CodeOnly, DocApi } from '../doc.js'
 import { pageRow } from '../layout-mount.js'
 import { fileServices } from '../host-files.js'
-import { findSamples, type SampleSet } from '../samples.js'
-import { t, type DemoMessageKey } from '../i18n.js'
+import { t } from '../i18n.js'
 
 const CODE_OPEN = `// 右侧分栏预览（占宽度、挤窄主区；不是浮层）
 import { openFilePreview } from 'dsh-plugin-core/explorer'
@@ -87,29 +86,10 @@ function NotReady(props: { which: 'files' | 'anchor' }): ReturnType<typeof h> {
     t(props.which === 'files' ? 'explorerFilesNone' : 'explorerAnchorNone'))
 }
 
-/** 第一组：打开即预览（停靠右侧、挤窄主区）。打开工作区 / 打开文件夹 / 打开文件。 */
+/** 第一组：打开即预览（停靠右侧、挤窄主区）。 */
 function OpenPreviewDemo(): ReturnType<typeof h> {
   const { workspaceFiles, anchor, workspaceNames } = useExplorerHost()
-  const [samples, setSamples] = useState<SampleSet | null>(null)
-  // idle → probing → found / missing。**「正在找」绝不能显示成「没找到」**：
-  // 旧实现点一下就把按钮文案切成「没找到样例目录」，BFS 完了才切回来，
-  // 用户看到的就是每次点预览都先闪一句假的失败（真机 2026-10-22）。
-  const [phase, setPhase] = useState<'idle' | 'probing' | 'found' | 'missing'>('idle')
   const [last, setLast] = useState<string | null>(null)
-  const pending = useRef<Promise<SampleSet | null> | null>(null)
-  const sessionId = anchor === null ? null : anchor.sessionId
-
-  // 进页面就开始有界探索，不等用户点按钮（待点时早就好了 ⇒ 不会再有文案跳变）。
-  useEffect(() => {
-    if (workspaceFiles === null || sessionId === null) return
-    if (pending.current !== null) return
-    setPhase('probing')
-    pending.current = findSamples(workspaceFiles, sessionId).then((s) => {
-      setSamples(s)
-      setPhase(s === null ? 'missing' : 'found')
-      return s
-    })
-  }, [workspaceFiles, sessionId])
 
   if (workspaceFiles === null) return h(NotReady, { which: 'files' })
   if (anchor === null) return h(NotReady, { which: 'anchor' })
@@ -126,20 +106,11 @@ function OpenPreviewDemo(): ReturnType<typeof h> {
     openFilePreview({ mount, sessionId: anchor.sessionId, path, rootName, workspaces })
     setLast(path === '' ? `${rootName}（根）` : path)
   }
-  // 只在**确认没有**时才改文案；还在找就保持正常按钮文案（点了会等同一个 Promise）。
-  const sampleLabel = (normal: DemoMessageKey): string => (phase === 'missing' ? t('samplesNotFound') : t(normal))
-  const openSamples = (pick: (s: SampleSet) => string): void => {
-    void (pending.current ?? Promise.resolve(samples)).then((s) => {
-      if (s !== null) open(pick(s), anchor.title)
-    })
-  }
 
   return h(
     'div',
     { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' } },
     h(Button, { variant: 'primary', onClick: () => open('', anchor.title, workspaceNames) }, t('openRootPreview')),
-    h(Button, { variant: 'secondary', onClick: () => openSamples((s) => s.dir) }, sampleLabel('openSamplesDir')),
-    h(Button, { variant: 'ghost', onClick: () => openSamples((s) => s.js) }, sampleLabel('sampleJs')),
     last === null ? null : h('code', { style: { fontSize: '12px' } }, `已打开：${last}`),
     h('div', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', width: '100%' } },
       `${t('explorerAnchorLabel')}${anchor.title} · ${t('explorerSessionLabel')}${anchor.sessionId} · ${t('explorerWorkspaces')}${String(workspaceNames.length)}`),
@@ -298,7 +269,6 @@ export function ExplorerPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'explorer' }),
     h(
       Example,
       { title: t('methodATitle'), hint: t('methodAHint'), code: CODE_OPEN },
@@ -318,7 +288,6 @@ export function SessionPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'session' }),
     h(
       Example,
       { title: t('sessionRealTitle'), hint: t('sessionRealHint'), code: CODE_SESSION_REAL },

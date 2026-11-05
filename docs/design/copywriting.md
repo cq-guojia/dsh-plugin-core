@@ -81,6 +81,29 @@ Code comments are English-only.
 本次只改文案内容，不改结构。新增/删除 section 是另一次变更。
 EN: Field names and `section.id` values are frozen — the demo reads entries by id. Only copy changes here.
 
+## R8 · demo 说明只答「这块演示什么」
+
+适用：demo 页 `Example` 的 `hint`（真源是 `packages/demo/src/i18n.ts`，**不**在 `.doc.ts` 里）。
+
+| 规则 | 判据 |
+|---|---|
+| 一句话；中文 ≤ 40 字 | 超了就是把用法塞进了说明 |
+| 只回答「这块演示什么」 | 参数写进 API 表，设计理由写进 `prose` |
+| 标题已说清就不写 | 不为整齐而补齐，允许没有说明 |
+| 一类只讲一次 | 同族控件共性写在该页第一块，后面不重复 |
+
+读者分工（决定了什么能进 demo）：
+
+| 读者 | 在哪儿看 | 有什么 |
+|---|---|---|
+| 要用这个控件的人 | demo 页 | 示例 + 代码 + API 表 + 一句 hint |
+| 要改这个库的人 | `docs/help/`、`docs/design/` | 完整说明、设计理由、踩过的坑 |
+
+⇒ demo 页**不渲染 `prose`**（`DocProse`）：同一段话在帮助文档里已经出现一次，不抄第二份。
+EN: Demo `hint` is one line answering only "what does this block show"; arguments belong in the API table,
+rationale in `prose`. Pages whose reader is the library maintainer are `docs/help/` — the demo does not
+re-render `prose`.
+
 ## 自检
 
 改完跑：

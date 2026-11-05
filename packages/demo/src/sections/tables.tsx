@@ -10,7 +10,7 @@ import {
   type TableGroup,
   type TableRow,
 } from '../../../../dist/ui/index.js'
-import { DocApi, DocCode, DocProse, Example } from '../doc.js'
+import { DocApi, DocCode, Example } from '../doc.js'
 import { t } from '../i18n.js'
 
 /** 表格横滚外壳：横向滚动条与底边隔 1px（口径见 docs/design/style.md §滚动条让位）。 */
@@ -293,7 +293,6 @@ export function TablePage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'table' }),
     // 表格较宽：示例区占满整栏（代码放页面底部），并在窄屏时横向滚动。
     // 空态不放成第二个示例 —— 直接接在主表下方，同一区块里展示「有数据 / 没数据」。
     h(

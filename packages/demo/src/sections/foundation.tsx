@@ -1,5 +1,5 @@
 import { createElement as h } from 'react'
-import { Example, DocProse, DocApi } from '../doc.js'
+import { Example, DocApi } from '../doc.js'
 import { t } from '../i18n.js'
 
 const TOKENS: { label: string; cssVar: string }[] = [
@@ -33,7 +33,6 @@ export function FoundationPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'foundation' }),
     // Token 色板：颜色全部来自 design 的 token。
     h(
       Example,

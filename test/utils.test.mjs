@@ -75,6 +75,14 @@ test('relativePast 中英双语，可传自定义 t 覆盖', () => {
   assert.equal(relativePast(new Date(AT - 5 * 60_000).toISOString(), AT, () => 'X'), 'X')
 })
 
+test('setLocale(null) 恢复跟随宿主', () => {
+  setLocale('en')
+  assert.equal(getLocale(), 'en')
+  setLocale(null)
+  // Node 里没有 document，宿主流判定回落 'zh'
+  assert.equal(getLocale(), 'zh')
+})
+
 test('baseNameOf 目录尾斜杠不会取成空串', () => {
   assert.equal(baseNameOf('a/b/c.md'), 'c.md')
   assert.equal(baseNameOf('a/b/'), 'b')

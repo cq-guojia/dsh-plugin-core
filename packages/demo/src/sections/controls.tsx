@@ -56,7 +56,7 @@ import {
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import { Placeholder } from './index.js'
-import { DocApi, DocCode, DocProse, Example } from '../doc.js'
+import { DocApi, DocCode, Example } from '../doc.js'
 import { demoDock } from '../dock.js'
 import { t, type DemoMessageKey } from '../i18n.js'
 
@@ -246,7 +246,6 @@ export function ButtonPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'button' }),
 
     // 文案与语言
     h(
@@ -525,7 +524,6 @@ export function InputPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'input' }),
 
     // Input 家族
     h(
@@ -921,7 +919,6 @@ export function PickerPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'picker' }),
     h(
       Example,
       { title: 'Picker', hint: t('pickerHint'), code: CODE_PICKER },
@@ -1135,7 +1132,6 @@ export function TooltipPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'tooltip' }),
     h(
       Example,
       { title: t('tooltipTitle'), hint: t('tooltipHint'), code: CODE_TOOLTIP },
@@ -1249,7 +1245,6 @@ export function CardPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'surface' }),
     h(
       Example,
       { title: t('demoSurfaceTitle'), hint: t('surfaceHint'), code: CODE_SURFACE },
@@ -1264,7 +1259,6 @@ export function CardPage(): ReturnType<typeof h> {
         ),
       ),
     ),
-    h(DocProse, { id: 'card' }),
     h(
       Example,
       { title: t('demoCardTitle'), hint: t('cardHint'), code: CODE_CARD },
@@ -1491,7 +1485,6 @@ export function ChipPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'chip' }),
     h(
       Example,
       { title: 'Chip', hint: t('chipHint'), code: CODE_CHIP },
@@ -1562,7 +1555,6 @@ export function FlipTextPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'flip-text' }),
     h(
       Example,
       { title: t('flipTitle'), hint: t('exFlipHint'), code: CODE_FLIP },
@@ -1808,7 +1800,6 @@ export function FeedbackPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'feedback' }),
     h(
       Example,
       { title: t('exSmallModalTitle'), hint: t('exSmallModalHint'), code: CODE_SMALL_MODAL },
@@ -2382,7 +2373,6 @@ export function LayoutPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'layout' }),
     h(
       Example,
       { title: 'PanelDock', hint: t('dockHint'), code: CODE_DOCK },
@@ -2447,7 +2437,6 @@ export function DateTimePage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'datetime-picker' }),
     h(
       Example,
       { title: 'DateTimePicker', hint: t('dateTimePickerHint'), code: CODE_DATETIME },

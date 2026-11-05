@@ -5,7 +5,7 @@ import {
   IconSearchOutlineRegular,
   IconSparkleRegular,
 } from '@deepseek-ai/dsh-client-ui-primitives'
-import { DocApi, DocProse, Example } from '../doc.js'
+import { DocApi, Example } from '../doc.js'
 
 const ANCHOR_ID = 'dshpc-demo-quick-toolbar-anchor'
 
@@ -33,7 +33,6 @@ export function ToolbarPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'quick-toolbar' }),
     h(
       Example,
       {

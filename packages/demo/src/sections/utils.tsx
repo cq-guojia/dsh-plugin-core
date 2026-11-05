@@ -10,7 +10,7 @@ import {
   relativeFuture,
   relativePast,
 } from '../../../../dist/utils/index.js'
-import { Example, CodeOnly, DocProse, DocApi, DocContent } from '../doc.js'
+import { Example, CodeOnly, DocApi, DocContent } from '../doc.js'
 import { t } from '../i18n.js'
 
 const CODE_DATE = `// 日期时间格式化（全部走当前 locale）
@@ -84,7 +84,6 @@ export function DatePage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'date' }),
     h(Example, { title: 'date / time', code: CODE_DATE }, h(FnTable, { rows: DATE_ROWS })),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_UTILS_USAGE }),
     h(DocApi, { id: 'date' }),
@@ -95,7 +94,6 @@ export function NumberPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'number' }),
     h(Example, { title: 'number / bytes', code: CODE_NUMBER }, h(FnTable, { rows: NUMBER_ROWS })),
     h(CodeOnly, { labelKey: 'docUsage', code: CODE_UTILS_USAGE }),
     h(DocApi, { id: 'number' }),
@@ -120,7 +118,6 @@ export function I18nPage(): ReturnType<typeof h> {
   return h(
     'div',
     null,
-    h(DocProse, { id: 'i18n' }),
     h(
       Example,
       { title: 'getLocale / setLocale', code: CODE_I18N },

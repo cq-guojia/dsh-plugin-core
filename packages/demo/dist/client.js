@@ -9433,9 +9433,6 @@ function sortEntries(entries2) {
     return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
   });
 }
-function listPathOf(dir) {
-  return dir === "" ? "." : dir;
-}
 function createRequestGate() {
   let active = null;
   return {
@@ -56216,14 +56213,16 @@ function turnOfNode(node) {
   return location?.kind === "turn" || location?.kind === "step" ? location.turn?.turn : void 0;
 }
 function hasReasoning(node) {
-  if (node.kind !== "assistant-step" || !Array.isArray(node.data?.blocks))
+  const blocks = node.data?.blocks;
+  if (node.kind !== "assistant-step" || !Array.isArray(blocks))
     return false;
-  return (node.data?.blocks).some((block2) => block2?.kind === "reasoning" && (block2.text ?? "").trim() !== "");
+  return blocks.some((block2) => block2?.kind === "reasoning" && (block2.text ?? "").trim() !== "");
 }
 function hasReply(node) {
-  if (node.kind !== "assistant-step" || !Array.isArray(node.data?.blocks))
+  const blocks = node.data?.blocks;
+  if (node.kind !== "assistant-step" || !Array.isArray(blocks))
     return false;
-  return (node.data?.blocks).some((block2) => {
+  return blocks.some((block2) => {
     if (block2 === null || typeof block2 !== "object")
       return false;
     if (block2.kind === "reasoning" || block2.kind === "tool-call")
@@ -58507,7 +58506,7 @@ function CommandCard(props) {
   const title = node.name ?? t4("commandTitle");
   const state = stateOf(outcome);
   const running = state === "running";
-  const body = text2 !== void 0 && text2.includes("\n") ? text2 : null;
+  const body = text2?.includes("\n") === true ? text2 : null;
   const open = expanded && body !== null;
   const toggle = (0, import_react66.useCallback)(() => {
     setExpanded((value) => !value);
@@ -61264,13 +61263,13 @@ var DICT2 = {
     secChip: "\u6807\u7B7E \xB7 \u6587\u672C \xB7 \u72B6\u6001",
     secFlipText: "\u7FFB\u724C\u6587\u672C",
     secTable: "\u8868\u683C",
-    tableHint: "\u5168\u6846\u5916\u89C2\uFF1Aborders:all + \u5217 divider:true\u3002\u53CC\u884C\u5206\u7EC4\u8868\u5934\u3001\u6591\u9A6C\u7EB9\u3001\u70B9\u884C\u9009\u4E2D\uFF1B\u8DE8\u884C / \u8DE8\u5217\u3001\u5934\u50CF\u683C\u3001Chip \u4E5F\u90FD\u5728\u8FD9\u4E00\u5F20\u91CC\u3002",
-    tableEmptyHint: "\u65E0\u6570\u636E\u65F6\u7684\u5185\u7F6E\u7A7A\u6001\uFF0C\u53EF\u7528 emptyText \u8986\u76D6",
-    tableSpanHint: "\u65E0\u5DE6\u53F3\u5916\u6846\uFF08borders:y\uFF09\u7684\u7D27\u51D1\u8868\uFF1ADowntown \u8DE8\u4E24\u884C\u3001North clinic \u8DE8\u4E24\u5217\uFF1B\u8DE8\u884C\u5757\u70B9\u4EFB\u610F\u4E00\u884C\uFF0C\u6574\u5757\u4E00\u8D77\u9AD8\u4EAE\u3002",
-    tableGroupHint: "\u9ED8\u8BA4\u5916\u89C2\uFF08y\u3001\u65E0\u7AD6\u7EBF\uFF09\uFF1Agroups \u4E0E rows \u4E8C\u9009\u4E00\uFF0C\u6BCF\u7EC4 = \u901A\u680F\u6807\u9898 + \u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u6570\u636E\u884C\uFF0C\u7EC4\u95F4\u4E00\u6761\u5B9E\u7EBF\u3002",
-    paginationHint: "\u72EC\u7ACB\u5206\u9875\uFF1A\u53EA\u7ED9 page / pageSize / total\uFF1B\u4F4D\u7F6E\u3001\u7B80\u6D01\u6A21\u5F0F\u3001\u603B\u6570\u6587\u6848\u3001\u6BCF\u9875\u6761\u6570\u90FD\u662F\u53EF\u9009\u5F00\u5173\u3002",
-    tablePagerHint: "Table \u5185\u5EFA\u5206\u9875\uFF1A\u4E0D\u4F20 total \u8D70\u672C\u5730\u5207\u7247\uFF08rows \u4F20\u5168\u91CF\uFF09\uFF0C\u4F20 total \u8D70\u670D\u52A1\u7AEF\u5206\u9875\uFF1B\u5206\u9875\u6761\u5728\u8868\u4E0B\u53F3\u4FA7\u3002",
-    tableLoadingHint: "\u5206\u6BB5\u5F00\u5173\u76F4\u63A5\u5207\u56DB\u79CD\u72B6\u6001\u3002\u4E24\u79CD loading \u53EA\u7528 Loader \u56FE\u6807\uFF08\u6574\u8868\u6700\u5927\u53F7\u3001\u52A0\u8F7D\u66F4\u591A\u4E2D\u53F7\uFF09\uFF1B\u5E95\u90E8\u72B6\u6001\u884C\u901A\u680F\u3001\u4E0A\u65B9\u4E00\u6761\u5B9E\u7EBF\uFF0C\u65E0\u5DE6\u53F3\u5916\u6846\u65F6\u8868\u5E95\u7EBF\u4E5F\u53BB\u6389\u3002",
+    tableHint: "\u5168\u6846\u5916\u89C2\uFF1A\u53CC\u884C\u8868\u5934\u3001\u6591\u9A6C\u7EB9\u3001\u70B9\u884C\u9009\u4E2D",
+    tableEmptyHint: "\u65E0\u6570\u636E\u65F6\u7684\u5185\u7F6E\u7A7A\u6001",
+    tableSpanHint: "\u65E0\u5DE6\u53F3\u5916\u6846\uFF1A\u8DE8\u884C\u3001\u8DE8\u5217\u5408\u5E76",
+    tableGroupHint: "\u9ED8\u8BA4\u5916\u89C2\uFF1Agroups \u5206\u7EC4\u8868\uFF0C\u7EC4\u95F4\u4E00\u6761\u5B9E\u7EBF",
+    paginationHint: "\u72EC\u7ACB\u5206\u9875\uFF1A\u5BF9\u9F50\u3001\u7B80\u6D01\u6A21\u5F0F\u3001\u603B\u6570\u53EF\u9009",
+    tablePagerHint: "Table \u5185\u5EFA\u5206\u9875\uFF1A\u672C\u5730\u5207\u7247\u6216\u670D\u52A1\u7AEF",
+    tableLoadingHint: "\u52A0\u8F7D\u6001\u4E0E\u7A7A\u6001\u5207\u6362",
     secFeedback: "\u53CD\u9988",
     secLayout: "\u5E03\u5C40\u4E0E\u6EDA\u52A8",
     secToolbar: "\u5FEB\u6377\u5DE5\u5177\u680F",
@@ -61297,7 +61296,7 @@ var DICT2 = {
     dockPanelATag: "\u65B0",
     dockPanelC: "\u65E0\u5934\u9762\u677F",
     dockCustomHeadTitle: "\u81EA\u5B9A\u4E49\u5934\u90E8\uFF08\u672C\u884C\u53CA\u4EE5\u4E0B\u90FD\u7531\u8C03\u7528\u65B9\u753B\uFF09",
-    dockCustomHeadHint: "\u5E93\u4E0D\u52A0\u5185\u8FB9\u8DDD\u3001\u4E0D\u52A0\u8FB9\u6846 \u2014\u2014 \u591A\u9AD8\u3001\u51E0\u884C\u3001\u653E\u4EC0\u4E48\u5F39\u5C42\u90FD\u968F\u4F60",
+    dockCustomHeadHint: "\u5934\u90E8\u5185\u5BB9\u81EA\u5B9A\uFF0C\u5E93\u4E0D\u52A0\u5185\u8DDD\u4E0E\u8FB9\u6846",
     dockPanelBody: "\u8FD9\u4E00\u680F\u7684\u5185\u5BB9\u3002\u518D\u5F00\u540C\u540D\u9762\u677F\u4F1A\u66FF\u6362\u5B83\uFF0C\u5BBD\u5EA6\u4E0E\u4F4D\u7F6E\u4FDD\u6301\u4E0D\u53D8\u3002",
     dockOpened: "\u5F53\u524D\u7A97\u53E3\uFF1A",
     dockCollapsed: "\u5DF2\u6536\u8D77\uFF1A",
@@ -61315,25 +61314,25 @@ var DICT2 = {
     i18nDesc: "\u5F85\u8865\uFF1A\n\xB7 getLocale / setLocale\uFF1A\u5355\u4E00\u8BED\u8A00\u72B6\u6001\n\xB7 \u6838\u5FC3\u81EA\u5E26\u7684\u591A\u8BED\u8A00\u662F\u300C\u7EC4\u4EF6\u7684\u56FA\u5B9A\u63D0\u793A\u8BED\u300D\uFF0C\u4E0D\u542B\u63D2\u4EF6\u754C\u9762\u6587\u6848\n\xB7 \u63D2\u4EF6\u81EA\u5DF1\u7684\u6587\u6848\u7531\u63D2\u4EF6\u81EA\u7BA1\u2014\u2014\u672C\u9884\u89C8\u63D2\u4EF6\u7684 DICT \u5C31\u662F\u6837\u4F8B\n\xB7 \u8BED\u8A00\u7531\u5BBF\u4E3B\u9A71\u52A8\uFF0C\u63D2\u4EF6\u4E0D\u81EA\u5E26\u8BED\u8A00\u9009\u62E9\u5668",
     i18nNow: "\u5F53\u524D locale",
     a11yDesc: "\u5F85\u8865\uFF1A\n\xB7 \u7126\u70B9\u73AF\u4E0E\u952E\u76D8\u53EF\u8FBE\u6027\n\xB7 Tab \u987A\u5E8F\u4E0E Modal \u7684\u7126\u70B9\u9677\u9631\n\xB7 role / aria-* \u8BED\u4E49\u7684\u8986\u76D6\u60C5\u51B5\n\xB7 \u5BF9\u6BD4\u5EA6\u4E0E prefers-reduced-motion \u7684\u5904\u7406",
-    tokensHint: "\u989C\u8272\u5168\u90E8\u6765\u81EA design \u7684 token\uFF1B\u5207\u6362\u53F3\u4E0A\u89D2\u660E\u6697\uFF0C\u4E0B\u9762\u4F1A\u8DDF\u7740\u53D8",
+    tokensHint: "\u989C\u8272\u5168\u90E8\u6765\u81EA token\uFF0C\u5207\u660E\u6697\u8DDF\u7740\u53D8",
     darkHint: "\u660E\u6697\u5224\u636E\u662F\u5199\u6B7B\u7684\uFF1A\u5BBF\u4E3B\u5728 body \u4E0A\u6302 data-ds-dark-theme \u624D\u5207\u6697\u8272\uFF0C\u4E0D\u8BFB\u7CFB\u7EDF\u7684 prefers-color-scheme\u3002\u63D2\u4EF6\u56E0\u6B64\u4E0D\u9700\u8981\u3001\u4E5F\u4E0D\u5E94\u8BE5\u81EA\u5E26\u660E\u6697\u5F00\u5173\u2014\u2014\u4E0B\u9762\u662F\u5F53\u524D\u5B9E\u6D4B\u503C\uFF0C\u5207\u660E\u6697\u540E\u91CD\u5F00\u672C\u9875\u53EF\u89C1\u53D8\u5316\u3002",
     darkNow: "\u5F53\u524D body[data-ds-dark-theme]",
-    injectHint: "\u5165\u53E3\u8C03\u4E00\u6B21 setStyleKit\uFF1B\u63A7\u4EF6\u9996\u6B21\u6E32\u67D3\u65F6\u81EA\u6CE8\u5165\u81EA\u5DF1\u90A3\u4EFD CSS\uFF08token \u4E00\u5E76\u767B\u8BB0\uFF0C\u5E42\u7B49\uFF09",
+    injectHint: "\u5165\u53E3\u8C03\u4E00\u6B21 setStyleKit\uFF0C\u63A7\u4EF6\u81EA\u6CE8\u5165 CSS",
     demoTokenPalette: "token \u8272\u677F",
     demoStyleInject: "\u6837\u5F0F\u6CE8\u5165\u673A\u5236",
     designInjectNote: "\u672C\u9884\u89C8\u63D2\u4EF6\u81EA\u5DF1\u5C31\u662F\u8FD9\u4E48\u505A\u521D\u59CB\u5316\u7684\u2014\u2014\u9884\u89C8\u4E0E\u771F\u5B9E\u63D2\u4EF6\u8D70\u540C\u4E00\u6761\u8DEF\u3002",
     btnTextTitle: "\u6309\u94AE\u6587\u6848\u4E0E\u8BED\u8A00",
-    btnTextHint: "\u6587\u6848\u7531\u8C03\u7528\u65B9\u7ED9\uFF1A\u4E2D\u6587\u73AF\u5883\u51FA\u4E2D\u6587\u3001\u82F1\u6587\u73AF\u5883\u51FA\u82F1\u6587\uFF1B\u4E2D\u82F1\u5E76\u6392\u7684\u7EC4\u5408\u4E5F\u652F\u6301\uFF08\u6700\u53F3\u4E00\u9897\uFF09",
+    btnTextHint: "\u6587\u6848\u7531\u8C03\u7528\u65B9\u7ED9\uFF0C\u968F\u8BED\u8A00\u5207\u6362",
     btnVariantTitle: "\u5916\u89C2\u6863\uFF0810 \u6863\uFF09",
-    btnVariantHint: "\u5B9E\u5FC3\uFF1Aprimary / secondary / danger / success / warning / info\uFF1B\u7EBF\u6846\uFF1Aoutline / danger-outline\uFF1B\u65E0\u5E95\uFF1Aghost / link",
+    btnVariantHint: "\u5B9E\u5FC3 / \u7EBF\u6846 / \u65E0\u5E95\u4E09\u7C7B\u6863\u4F4D",
     btnSizeTitle: "\u5C3A\u5BF8 / \u56FE\u6807 / block",
-    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32 \u540C\u9AD8\uFF1Bicon \u6536\u7684\u662F ReactNode\u2014\u2014\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6\u3001\u81EA\u7ED8 SVG\u3001\u751A\u81F3\u4E00\u4E2A\u5B57\u7B26\u90FD\u884C\uFF0C\u4E0D\u662F\u540D\u5B57\u4E5F\u4E0D\u662F class\uFF08\u4E0B\u9762\u4E09\u9897\u5206\u522B\u662F\u8FD9\u4E09\u79CD\uFF09\uFF1BiconRight \u540E\u7F6E\u3001block \u6491\u6EE1\u7236\u5BBD",
+    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32\uFF1Bicon \u6536 ReactNode",
     btnStateTitle: "\u72B6\u6001",
-    btnStateHint: "disabled \u534A\u900F\u660E\u4E0D\u53EF\u70B9\uFF1Bloading \u524D\u7F6E\u540C\u8272\u5C0F\u5708\u5E76\u81EA\u52A8\u7981\u7528",
+    btnStateHint: "disabled \u534A\u900F\u660E\uFF1Bloading \u81EA\u52A8\u7981\u7528",
     btnColorTitle: "\u81EA\u5B9A\u4E49\u989C\u8272",
-    btnColorHint: "color \u4F20\u4EFB\u610F CSS \u8272\u503C\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\u3001\u7EBF\u6846\u4E0E\u6587\u5B57\u6863\u4F5C\u4E3B\u8272\uFF1Bhover / \u6309\u4E0B\u81EA\u52A8\u6309\u8BE5\u8272\u6DF7\u51FA",
+    btnColorHint: "color \u4F20\u4EFB\u610F CSS \u8272\u503C\uFF0Chover \u81EA\u52A8\u6DF7\u8272",
     btnWidthTitle: "\u5BBD\u5EA6\uFF08\u56FA\u5B9A\u5BBD / \u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\uFF09",
-    btnWidthHint: "\u4E09\u8F74\u4E92\u65A5\uFF1A\u56FA\u5B9A\u5BBD width \u4E00\u65E6\u8BBE\u5B9A\uFF0C\u6700\u5C0F\u5BBD minWidth / \u6700\u5927\u5BBD maxWidth \u81EA\u52A8\u5931\u6548\uFF1B\u6700\u5927\u5BBD\u4E0B\u6587\u5B57\u8D85\u957F\u6298\u53E0\u6210\u7701\u7565\u53F7\uFF0Chover \u8DD1\u9A6C\u706F\u5C55\u5F00\u5168\u540D",
+    btnWidthHint: "width / minWidth / maxWidth \u4E09\u8F74\u4E92\u65A5",
     blocksNote: "\u5DE5\u4F5C\u533A\u6D4F\u89C8\u4E24\u5757\u6F14\u793A\uFF1A\u2460 Explorer\u2014\u2014\u53F3\u4FA7\u505C\u9760\u9884\u89C8\uFF08openFilePreview\uFF0C\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u6324\u7A84\uFF09\u4E0E\u951A\u5B9A\u5F39\u7A97\u9009\u6587\u4EF6\uFF08pickWorkspaceFile\uFF0CPromise \u8FD4\u56DE\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\u3002\u2461 Session\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\uFF08SessionPreview\uFF0Cvariant modal/inline\uFF09\u3002\u672C\u9875\u4E0D\u7528\u4EFB\u4F55 mock\uFF1A\u6837\u4F8B\u6587\u4EF6\u662F\u4ED3\u5E93\u771F\u6587\u4EF6\uFF0C\u53D6\u6570\u8D70\u5BBF\u4E3B workspaceFiles\uFF0C\u63A2\u4E0D\u5230\u5C31\u5982\u5B9E\u8BF4\u300C\u6CA1\u627E\u5230\u300D\u3002",
     utilsNote: "utils \u7EC4\u662F\u7EAF\u51FD\u6570\u5DE5\u5177\uFF1A\u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\u3001\u6570\u5B57/\u4F53\u79EF\u683C\u5F0F\u5316\u3001\u591A\u8BED\u8A00\u3002\u5168\u90E8\u8D70\u5F53\u524D locale\uFF08\u7531\u5BBF\u4E3B\u9A71\u52A8\uFF0C\u5207\u5BBF\u4E3B\u8BED\u8A00\u5373\u53D8\uFF09\u3002",
     startNote: "\u5FEB\u901F\u5F00\u59CB\uFF1A\u539F\u300C\u6982\u89C8 / \u5B89\u88C5\u4E0E\u521D\u59CB\u5316 / \u5199\u4E00\u4E2A\u63D2\u4EF6\u300D\u4E09\u6761\u5E76\u6210\u4E00\u9875\uFF0C\u6BCF\u5757\u4ECD\u662F\u72EC\u7ACB\u5361\u7247\u3002\u5148\u770B\u4E00\u773C\u80FD\u4ECE\u672C\u5305\u62FF\u5230\u4EC0\u4E48\uFF0C\u518D\u7167\u5B89\u88C5\u4E0E\u6837\u5F0F\u6CE8\u5165\u4E24\u6BB5\u628A\u73AF\u5883\u642D\u8D77\u6765\u3002",
@@ -61345,22 +61344,22 @@ var DICT2 = {
     btnLabelMixed: "\u4FDD\u5B58 Save",
     btnIconOnly: "icon only",
     btnHintTitle: "\u95EE\u53F7\u63D0\u793A\uFF08FieldHint\uFF09",
-    btnHintHint: "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF1A\u6807\u9898\u540E / \u6309\u94AE\u540E / \u4E00\u6BB5\u6587\u5B57\u540E / \u8F93\u5165\u6846\u540E\uFF1B\u9F20\u6807\u60AC\u505C\u6216\u952E\u76D8\u805A\u7126\u6D6E\u51FA\u6C14\u6CE1",
+    btnHintHint: "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF0C\u60AC\u505C\u6216\u805A\u7126\u6D6E\u51FA",
     demoInputFamily: "Input \u5BB6\u65CF",
-    inputHint: "Input / PrefixedInput / NumberInput / Textarea\uFF0C\u90FD\u652F\u6301 error \u63CF\u7EA2\uFF1B\u4F20 hint \u53C2\u6570\u5373\u81EA\u52A8\u5728\u884C\u5C3E\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF08FieldHint \u672C\u4F53\u4ECD\u53EF\u5355\u72EC\u7528\uFF09\uFF1BInput \u4F20 icon \u5373\u5728\u5DE6\u4FA7\u52A0\u56FE\u6807\u69FD",
+    inputHint: "\u56DB\u79CD\u8F93\u5165\u4EF6\uFF0C\u90FD\u652F\u6301 error \u4E0E\u884C\u5C3E\u95EE\u53F7\u63D0\u793A",
     inputGroupTitle: "InputGroup\uFF08\u7EC4\u5408\u8F93\u5165\u6846\uFF09",
-    inputGroupHint: "\u8F93\u5165\u6846 + \u540E\u7F6E\u6309\u94AE\u7EC4\u710A\u6210\u4E00\u4F53\uFF0C\u548C SplitGroup \u540C\u4E00\u5957\u76AE\u80A4\u53E3\u5F84\uFF08\u5916\u6846 / \u5706\u89D2 / 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\u90FD\u7531\u5916\u58F3\u753B\uFF09\uFF1Blabel \u662F\u524D\u7F6E\u6807\u9898\uFF08\u540C\u683C\u7070\u5E95\uFF09\uFF1Bactions \u5199\u591A\u5C11\u679A\u5C31\u6392\u591A\u5C11\uFF08\u8FD4\u56DE + \u786E\u5B9A\u3001\u56FE\u6807 / \u56FE\u6587 / \u7EAF\u6587\u5B57\u90FD\u884C\uFF09\uFF0C\u9ED8\u8BA4\u662F\u4E1A\u52A1\u8272\u5B9E\u5FC3\u6309\u94AE\u3001variant \u53EF\u6362\u4EFB\u610F\u6863\uFF1Bundoable \u5728\u6700\u524D\u9762\u52A0\u64A4\u9500\u94AE\uFF0C\u56DE\u9000\u5230\u4E0A\u4E00\u6B21\u63D0\u4EA4\u524D\u7684\u503C\uFF1Bsize \u4E09\u6863\uFF0Cheight \u76F4\u63A5\u7ED9 px \u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF1Baction \u7684 onClick \u8FD4\u56DE Promise \u65F6\u90A3\u679A\u6309\u94AE\u81EA\u52A8\u8F6C\u5708\u7981\u7528\uFF08\u540C Button\uFF09\uFF0C\u4E0D\u7528\u81EA\u5DF1\u7BA1 loading",
+    inputGroupHint: "\u8F93\u5165\u6846 + \u540E\u7F6E\u6309\u94AE\u7EC4\u710A\u6210\u4E00\u4F53",
     switchTip: "\u5B98\u65B9 Switch\uFF08\u542F\u7528\u8BED\u4E49\uFF0C\u4E0D\u662F\u52FE\u9009\uFF09+ Checkbox + Segmented",
-    checkboxHint: "\u5916\u89C2\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF1Bbordered \u662F\u5916\u6846\u6B3E\uFF08\u6700\u53F3\uFF0C\u53EF\u70B9\u7740\u73A9\uFF09\uFF1B\u661F\u671F\u65B9\u5757\u662F\u591A\u9009\u3002icon \u5728\u524D\u3001\u53EA\u6709\u56FE\u6807\u65F6\u81EA\u52A8\u6B63\u65B9\u5F62\u3002\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362",
+    checkboxHint: "\u7070\u5E95\u8F68\u9053 + \u767D\u7247\uFF1Bbordered \u4E3A\u5916\u6846\u6B3E",
     segToneTitle: "Segmented \u9009\u4E2D\u7247\u914D\u8272\uFF08tone\uFF09",
-    segToneHint: "\u4E0D\u4F20 = \u4E3B\u9898\u4EAE\u7247\uFF08\u767D\u7247 + \u6B63\u6587\u8272\uFF09\u3002\u4F20\u5185\u7F6E\u8272\u540D\uFF08\u4E0E Chip \u540C\u540D\uFF09\u65F6\u5E95\u4E0E\u5B57\u7531\u6838\u5FC3\u5B9A\u3001\u6DF1\u6D45\u4E24\u4E2A\u4E3B\u9898\u5404\u81EA\u6210\u7ACB\uFF08\u9EC4\u5E95\u81EA\u52A8\u914D\u6DF1\u5B57\uFF09\uFF1B\u4F20 { bg, fg } \u65F6\u4E24\u4E2A\u4E3B\u9898\u90FD\u7528\u8FD9\u4E00\u5BF9\u989C\u8272\uFF0C\u5BF9\u6BD4\u5EA6\u7531\u8C03\u7528\u65B9\u8D1F\u8D23\uFF1Btone \u4E5F\u538B\u8FC7 weekday \u7684\u9ED8\u8BA4\u84DD",
-    pickerHint: '\u5355\u9009 / \u591A\u9009 / \u4E0A\u9650 / \u641C\u7D22\uFF08searchable \u5F00\u5173\uFF09/ \u5206\u7EC4 / \u7A7A\u6001 / \u964D\u7EA7\uFF1B\u89E6\u53D1\u5668\u4E0E\u9009\u9879\u90FD\u652F\u6301\u524D\u7F6E icon\uFF1B\u6587\u5B57\u9ED8\u8BA4\u5C45\u5DE6\uFF08align="center" \u624D\u5C45\u4E2D\uFF09\uFF1B\u591A\u9009\u5230\u4E0A\u9650\u540E\u5DF2\u9009\u9879\u4ECD\u53EF\u70B9\u9009\u53D6\u6D88',
-    dateTimePickerHint: "\u4E00\u4E2A\u63A7\u4EF6\u4E09\u79CD\u7528\u6CD5\uFF1Asingle / range \xD7 precision\uFF08day / hour / minute / second\uFF09\uFF1B\u6D6E\u5C42\u65E0\u906E\u7F69\u3001\u4E0E Picker \u540C\u673A\u5236\uFF1Brange \u5F39\u5C42\u662F\u5DE6\u53F3\u4E24\u5757\u72EC\u7ACB\u65E5\u5386\uFF08\u5DE6\u5F00\u59CB\u3001\u53F3\u7ED3\u675F\uFF0C\u5404\u9009\u5404\u7684\uFF09\uFF1B\u65F6\u5206\u79D2\u8D70\u6B65\u8FDB\uFF08\u25B2\u25BC / \u952E\u5165 / \u2191\u2193\uFF09\uFF0C\u4E0D\u7528\u9010\u683C\u70B9 60 \u5206\u949F\uFF0C\u4E5F\u4E0D\u5F3A\u5236\u5148\u9009\u65E5\u671F\uFF1B\u5FEB\u6377\u952E day \u7CBE\u5EA6\u53EB\u300C\u4ECA\u5929\u300D\u3001\u5E26\u65F6\u5206\u79D2\u53EB\u300C\u73B0\u5728\u300D\uFF1B\u8349\u7A3F\u6001\uFF0C\u300C\u786E\u5B9A\u300D\u624D\u63D0\u4EA4\uFF1Bday \u7CBE\u5EA6\u4E0B\u7ED3\u675F\u7AEF\u81EA\u52A8\u8865 23:59:59.999\uFF08\u6570\u636E\u5E93\u53EA\u6536\u5230\u79D2\u65F6\u4F18\u96C5\u9000\u5316\uFF09",
-    modelPickerHint: "grouped \u5206\u7EC4\uFF08\u4E00\u4E2A\u4E0B\u62C9\u3001\u5382\u5546\u505A\u7EC4\u5934\u3001\u5B8C\u5168\u72EC\u7ACB\uFF09/ cascade \u8054\u52A8\uFF08\u4F9B\u5E94\u5546\u3001\u6A21\u578B\u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF09\u2014\u2014\u4E24\u79CD\u5F62\u6001 onChange \u90FD\u53D1\u6700\u7EC8\u6A21\u578B value\uFF1B\u300C\u9ED8\u8BA4\u6A21\u578B\u300D\u9009\u9879\u9ED8\u8BA4\u63D0\u4F9B\uFF08\u9009\u4E2D\u53D1\u7A7A\u4E32\uFF0C\u5173\u95ED\u4F20 allowDefault: false\uFF09\uFF1B\u76EE\u5F55\u81EA\u52A8\u6765\u81EA\u5BBF\u4E3B",
-    workspacePickerHint: "\u5DE5\u4F5C\u533A\u5217\u8868\u81EA\u52A8\u6765\u81EA\u5BBF\u4E3B\u5FEB\u7167\uFF08connectHost \u63A5\u7EBF\uFF0Cfollow \u6D41\u5B9E\u65F6\u66F4\u65B0\uFF09\uFF0C\u9009\u4E2D\u503C\u4E3A workspaceId",
-    splitGroupHint: "\u53EA\u505A\u300C\u628A\u4E24\u4E2A\u63A7\u4EF6\u710A\u6210\u4E00\u4F53\u300D\u8FD9\u4E00\u4EF6\u4E8B\uFF1A\u5916\u6846 / \u5706\u89D2 / \u4E2D\u95F4 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\u90FD\u7531\u5916\u58F3\u753B\uFF0C\u5185\u4EF6\u4ECD\u662F\u4F60\u539F\u6765\u7684\u63A7\u4EF6\uFF08\u5B83\u4EEC\u628A\u8FB9\u6846\u3001\u5E95\u8272\u4EA4\u51FA\u6765\uFF09\uFF1B\u5916\u58F3\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03\u2014\u2014\u8054\u52A8\u5C31\u662F\u4E24\u683C\u5404\u81EA\u7ED1\u81EA\u5DF1\u7684 onChange\uFF1B\u56FA\u5B9A\u4E24\u683C\uFF0C\u4E0D\u505A\u591A\u683C\uFF1B\u4E24\u683C\u4F20\u540C\u4E00\u4E2A size \u624D\u9010\u50CF\u7D20\u7B49\u9AD8",
+    segToneHint: "\u4E0D\u4F20\u8D70\u4E3B\u9898\u4EAE\u7247\uFF1B\u4E5F\u53EF\u4F20\u8272\u540D\u6216 bg / fg",
+    pickerHint: "\u5355\u9009 / \u591A\u9009 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001",
+    dateTimePickerHint: "single / range \xD7 \u56DB\u79CD\u7CBE\u5EA6\uFF0C\u6D6E\u5C42\u65E0\u906E\u7F69",
+    modelPickerHint: "\u5206\u7EC4\u4E0E\u8054\u52A8\u4E24\u79CD\u5F62\u6001\uFF0C\u76EE\u5F55\u6765\u81EA\u5BBF\u4E3B",
+    workspacePickerHint: "\u5217\u8868\u6765\u81EA\u5BBF\u4E3B\u5FEB\u7167\uFF0C\u503C\u4E3A workspaceId",
+    splitGroupHint: "\u628A\u4E24\u4E2A\u63A7\u4EF6\u710A\u6210\u4E00\u4F53\uFF0C\u5916\u58F3\u753B\u6846\u4E0E\u5206\u9694",
     tooltipTitle: "Tooltip\uFF08\u9F20\u6807\u60AC\u505C\u63D0\u793A\uFF09",
-    tooltipHint: "\u5B98\u65B9 Tooltip\uFF1Aside \u4E0A / \u4E0B / \u53F3 \xD7 align \u5C45\u4E2D / \u8D34\u8FB9\uFF1B\u951A\u70B9\u53EF\u4EE5\u662F\u6309\u94AE\u6216\u4E00\u6BB5\u6587\u5B57\uFF1B\u957F\u6587\u672C\u6309 maxWidth \u81EA\u52A8\u6298\u884C\uFF1B\u6700\u53F3\u4E00\u9897\u662F\u300C\u540D\u5B57 + \u6B63\u6587\u300D\u4E24\u6BB5\u5F0F\u2014\u2014\u6587\u672C\u91CC\u7684 \\n \u5C31\u662F\u771F\u5B9E\u6362\u884C",
+    tooltipHint: "side \xD7 align \u56DB\u5411\uFF1B\u957F\u6587\u672C\u81EA\u52A8\u6298\u884C",
     tooltipAnchorText: "\u6587\u5B57\u951A\u70B9",
     tooltipAnchorButton: "\u6309\u94AE\u951A\u70B9",
     tooltipLong: "\u957F\u6587\u672C\u6362\u884C",
@@ -61372,14 +61371,14 @@ var DICT2 = {
     demoStripTitle: "StripCard\uFF08\u6D45\u5E95 + \u901A\u9AD8\u8272\u6761\uFF09",
     demoSurfaceTitle: "Surface\uFF08\u533A\u57DF\u5BB9\u5668\uFF09",
     demoBarTitle: "\u8272\u6761\u65B9\u4F4D\uFF1A\u4E0A\u4E0B\u5DE6\u53F3",
-    surfaceHint: "\u5E95 / \u8FB9\u6846 / \u5706\u89D2 / \u5185\u8DDD\u56DB\u6839\u8F74\uFF0C\u5706\u89D2\u56FA\u5B9A 12 \u2014\u2014 \u4E0B\u6E38\u8981\u300C\u4E00\u5757\u9762\u300D\u7528\u5B83\uFF0C\u522B\u518D\u81EA\u5DF1\u5199 border + border-radius\uFF1B\u865A\u7EBF\u5360\u4F4D\u6846\u4F20 border: 'dashed'",
-    barHint: "\u8272\u6761\u7531 bar.side \u6362\u8FB9\uFF1Binset = \u8DDD\u5361\u7247\u8FB9\u7F18\u3001gap = \u8DDD\u5185\u5BB9\u3001length = \u4E0A\u4E0B\u65F6\u7684\u6761\u957F\uFF08\u9ED8\u8BA4\u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09",
-    cardHint: "\u590D\u7528 Surface \u5916\u6846\uFF1A\u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2 12\uFF08\u4E0E Button \u540C\u6863\uFF09\uFF1B\u8272\u6761\u9ED8\u8BA4 6px\u3001\u8D34\u5DE6\u7F18\uFF0C\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5C45\u4E2D\uFF1Baccent \u5341\u4E09\u6863\u89C1\u4E0B\u65B9\u901F\u89C8",
-    stripHint: "\u540C\u8272\u7CFB\u6D45\u5E95 + \u5DE6\u7F18 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\uFF08\u7167\u5144\u5F1F\u9879\u76EE\u6267\u884C\u8BB0\u5F55\u5757\uFF09\uFF1B\u540C\u6837\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\u2014\u2014\u6D41\u6C34\u8D26\u6392\u7248\uFF1A\u6807\u9898 + \u5143\u4FE1\u606F\u884C + \u53F3\u4FA7\u65F6\u95F4/\u64CD\u4F5C",
+    surfaceHint: "\u4E00\u5757\u9762\uFF1A\u5E95 / \u8FB9\u6846 / \u5706\u89D2 / \u5185\u8DDD\u56DB\u8F74",
+    barHint: "\u8272\u6761\u6362\u8FB9\u3001\u8DDD\u8FB9\u3001\u95F4\u8DDD\u3001\u957F\u5EA6\u90FD\u53EF\u8C03",
+    cardHint: "\u590D\u7528 Surface \u5916\u6846 + 6px \u5DE6\u7F18\u8272\u6761",
+    stripHint: "\u540C\u8272\u7CFB\u6D45\u5E95 + 4px \u5DE6\u7F18\u8272\u6761",
     sectionHeadTitle: "SectionHead \u5206\u533A\u6807\u9898",
-    chipHint: "chip \u4E24\u8F74\u53EF\u9009\uFF1Atone \u8BED\u4E49\u8272\uFF08neutral \u7070\u9762 / business / success / warning / danger \u5B9E\u5FC3\u4FE1\u53F7\u9762\uFF09\u3001size\uFF08sm / md\uFF09\uFF1B\u5BBD\u5EA6\u6309\u6587\u5B57\u6491\u5F00\u3001\u4E0D\u6362\u884C\uFF1B\u6587\u6848\u968F\u8BED\u8A00\u5207\u6362\uFF08\u4E2D\u82F1\u793A\u4F8B\uFF09\uFF1B\u6700\u540E\u4E00\u9897\u957F\u6587\u5B57\u82E5\u88AB\u538B\u6210 28px \u7AD6\u6392\u5C31\u662F\u53C8\u6DF7\u8FDB\u4E86\u56FE\u6807\u6309\u94AE\u7684\u5B9A\u5BBD\u89C4\u5219",
+    chipHint: "tone \u8BED\u4E49\u8272 \xD7 size \u4E24\u8F74",
     chipWidthTitle: "\u5BBD\u5EA6\uFF08\u56FA\u5B9A\u5BBD / \u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\uFF09",
-    chipWidthHint: "\u4E09\u8F74\u4E92\u65A5\uFF1A\u56FA\u5B9A\u5BBD width \u4E00\u65E6\u8BBE\u5B9A\uFF0C\u6700\u5C0F\u5BBD minWidth / \u6700\u5927\u5BBD maxWidth \u81EA\u52A8\u5931\u6548\uFF1B\u6700\u5927\u5BBD\u4E0B\u6587\u5B57\u8D85\u957F\u6298\u53E0\u6210\u7701\u7565\u53F7\uFF0Chover \u8DD1\u9A6C\u706F\u5C55\u5F00\u5168\u540D",
+    chipWidthHint: "width / minWidth / maxWidth \u4E09\u8F74\u4E92\u65A5",
     chipOverdue: "\u903E\u671F",
     chipStalled: "\u505C\u6EDE",
     chipDone: "\u5DF2\u5B8C\u6210",
@@ -61387,7 +61386,7 @@ var DICT2 = {
     marqueeTitle: "MarqueeText \u8DD1\u9A6C\u706F",
     liveTitle: "LiveText \u5B9E\u65F6\u6587\u672C",
     flipTitle: "FlipText \u7FFB\u724C\u6587\u672C",
-    feedbackModalHint: "\u81EA\u7ED8 overlay\uFF08\u4E0D\u7528 portal\uFF09\uFF1B\u70B9\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173\u3002\u6807\u9898\u680F\u7684 \u2715 \u662F 24\xD724 \u56FE\u6807\u4F4D\uFF0C\u4E0D\u8BE5\u51FA\u73B0\u8FB9\u6846\u6216 120px \u5BBD\u7684\u5E95\u8272\u5757",
+    feedbackModalHint: "\u81EA\u7ED8 overlay\uFF1B\u906E\u7F69 / Esc / \u2715 \u90FD\u80FD\u5173",
     feedbackToastHint: "\u547D\u4EE4\u5F0F notify\uFF0C\u4E0D\u8981\u6C42\u6302\u7EC4\u4EF6",
     explorerDataTitle: "\u6570\u636E\u6765\u6E90\uFF08\u771F\u6570\u636E\uFF0C\u65E0 mock\uFF09",
     explorerDataHint: "\u6587\u4EF6\u670D\u52A1\u53D6\u5BBF\u4E3B\u7684 remote.workspaceFiles\uFF08dotted \u6CE8\u5165\uFF09\uFF0C\u5DE5\u4F5C\u533A\u6E05\u5355\u53D6\u5B98\u65B9 workspaces \u670D\u52A1\u5FEB\u7167\uFF1B\u300C\u6700\u8FD1\u4F1A\u8BDD\u6240\u5C5E\u5DE5\u4F5C\u533A\u300D= \u66F4\u65B0\u8FC7\u7684\u6700\u65B0\u4E14\u5E26\u4F1A\u8BDD\u7684\u90A3\u4E2A\u5DE5\u4F5C\u533A\uFF08pickWorkspaceAnchor\uFF09\u2014\u2014list / read \u90FD\u8981 sessionId\uFF0C\u951A\u70B9\u5FC5\u987B\u5148\u843D\u5230\u4E00\u4E2A\u771F\u4F1A\u8BDD\u4E0A\u3002",
@@ -61397,16 +61396,13 @@ var DICT2 = {
     explorerSessionLabel: "\u4F1A\u8BDD\uFF1A",
     explorerWorkspaces: "\u5DE5\u4F5C\u533A\u6570\uFF1A",
     methodATitle: "\u65B9\u6CD5 A\uFF1AopenFilePreview \u4FA7\u8FB9\u680F\u9884\u89C8",
-    methodAHint: "\u4F20\u6587\u4EF6\u6216\u6587\u4EF6\u5939\u8DEF\u5F84\uFF0C\u53F3\u4FA7**\u5206\u680F**\u6253\u5F00\uFF08\u6838\u5FC3 PanelDock\uFF0Cheader=null \u90A3\u7248\uFF1A\u6CA1\u6709\u5934\u90E8\u90A3\u6761\u7EBF\uFF0C\u2715 \u6D6E\u5728\u53F3\u4E0A\u89D2\uFF09\u2014\u2014\u5B83\u88AB\u585E\u8FDB\u6574\u9875\u8FD9\u5C42 flex \u884C\uFF0C\u6240\u4EE5\u4E3B\u533A\u88AB\u6324\u7A84\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u3002\u62D6\u5BBD\u7531 PanelDock \u8D1F\u8D23\uFF0C\u9762\u677F\u81EA\u5DF1\u4E0D\u753B\u5916\u58F3\u3002\u6837\u4F8B\u6309\u94AE\u6307\u5411\u4ED3\u5E93\u91CC packages/demo/src/samples/ \u7684\u771F\u6587\u4EF6\uFF08\u76EE\u5F55\u662F\u6309\u5185\u5BB9\u63A2\u51FA\u6765\u7684\uFF0C\u4E0D\u5199\u6B7B\u8DEF\u5F84\uFF09\u3002",
+    methodAHint: "\u4F20\u6587\u4EF6\u6216\u6587\u4EF6\u5939\u8DEF\u5F84\uFF0C\u53F3\u4FA7\u5206\u680F\u6253\u5F00\uFF0C\u4E3B\u533A\u88AB\u6324\u7A84\u800C\u4E0D\u662F\u76D6\u4E0A\u53BB",
     openRootPreview: "\u6253\u5F00\u6700\u8FD1\u5DE5\u4F5C\u533A\u7684\u6839\u76EE\u5F55",
-    openSamplesDir: "\u6D4F\u89C8\u6837\u4F8B\u76EE\u5F55",
     sampleMd: "\u9884\u89C8 README.md",
     sampleHtml: "\u9884\u89C8 demo.html",
-    sampleJs: "\u9884\u89C8 sample.js",
     sampleCss: "\u9884\u89C8 sample.css",
-    samplesNotFound: "\u6CA1\u627E\u5230\u6837\u4F8B\u76EE\u5F55\uFF08\u5F53\u524D\u951A\u5B9A\u7684\u5DE5\u4F5C\u533A\u91CC\u6CA1\u6709 packages/demo/src/samples\uFF09",
     methodBTitle: "\u65B9\u6CD5 B\uFF1ApickWorkspaceFile \u9009\u62E9\u6587\u4EF6",
-    methodBHint: "\u5728\u951A\u70B9\u6309\u94AE\u65C1\u5F39\u51FA\u6A21\u6001\u5F39\u7A97\uFF1BPromise \u8FD4\u56DE { path, isDir }\uFF08path \u4E3A\u5DE5\u4F5C\u533A\u76F8\u5BF9\u8DEF\u5F84\uFF09\uFF1BEsc / \u70B9\u5916\u90E8 / \u2715 \u53D6\u6D88\u8FD4\u56DE null",
+    methodBHint: "\u951A\u70B9\u65C1\u5F39\u6A21\u6001\uFF0CPromise \u8FD4\u56DE { path, isDir }",
     pickAny: "\u9009\u62E9\u6587\u4EF6\uFF08\u4E0D\u9650\uFF09",
     pickTs: "\u53EA\u8981 .ts",
     pickDir: "\u53EA\u8981\u6587\u4EF6\u5939",
@@ -61421,38 +61417,38 @@ var DICT2 = {
     exModelPickerTitle: "ModelPicker\uFF08\u771F\u5B9E\u76EE\u5F55\uFF09",
     exWorkspacePickerTitle: "WorkspacePicker\uFF08\u771F\u5B9E\u5217\u8868\uFF09",
     exSplitGroupTitle: "SplitGroup\uFF08\u7EC4\u5408\u9009\u62E9\u6846\uFF09",
-    exSectionHeadHint: "\u5206\u533A\u6807\u9898\uFF1A\u6807\u7B7E\uFF08\u53EF\u9009\uFF0C\u753B\u51FA\u6765\u7684\u77ED\u7AD6\u7EBF\uFF09+ icon + \u6807\u9898 + \u53F3\u4FA7\u64CD\u4F5C\u533A\u2014\u2014\u7EAF\u6392\u7248\u58F3\uFF0C\u6807\u7B7E/icon/\u6807\u9898/\u53F3\u4FA7\u90FD\u8C03\u7528\u65B9\u81EA\u5B9A\uFF1B\u4E0B\u793A 4 \u7EC4\uFF1A\u4E0D\u540C\u56FE\u6807 / \u6807\u9898\u540E\u7F00\uFF08\u8BA1\u6570\xB7\u5F69\u8272\u6807\u7B7E\xB7\u5C0F\u5B57\u8BF4\u660E\uFF09/ \u4E24\u79CD\u53F3\u4FA7\u7EC4\u5408 / \u56FA\u5B9A\u6807\u7B7E\u989C\u8272\u901F\u89C8\uFF08accent\uFF09",
-    exMarqueeHint: "\u53CC\u5C42\u7ED3\u6784\uFF1A\u5916\u5C42\u88C1\u526A\u3001\u5185\u5C42\u6EDA\u52A8\uFF1B\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u9F20\u6807\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7",
-    exLiveHint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 Ui \u7531\u8C03\u7528\u65B9\u6E32\u67D3",
-    exFlipHint: "\u5355\u884C\u7A97\u53E3\uFF1A\u6362\u5B57\u65F6\u65E7\u7684\u4E0A\u79FB\u51FA\u3001\u65B0\u7684\u4ECE\u4E0B\u8FDB\uFF1B\u8D85\u957F\u4E09\u70B9\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF08\u590D\u7528 MarqueeText\uFF09\uFF1B\u5BBD\u5EA6\u4E09\u6863\u540C Button / Chip",
+    exSectionHeadHint: "\u5206\u533A\u6807\u9898\u58F3\uFF1A\u6807\u7B7E / icon / \u6807\u9898 / \u53F3\u4FA7\u64CD\u4F5C",
+    exMarqueeHint: "\u8DD1\u4E00\u904D\u505C\u5728\u5C3E\u5B57\uFF0C\u79FB\u5F00\u590D\u4F4D\u6210\u7701\u7565\u53F7",
+    exLiveHint: "\u8BA2\u9605\u5185\u90E8\u8282\u62CD\u5668\uFF0C\u8D70\u65F6 UI \u7531\u8C03\u7528\u65B9\u6E32\u67D3",
+    exFlipHint: "\u5355\u884C\u7A97\u53E3\u6362\u5B57\uFF1A\u65E7\u7684\u51FA\u3001\u65B0\u7684\u8FDB",
     exSmallModalTitle: "\u5C0F\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09",
-    exSmallModalHint: "\u6211\u4EEC\u7684\u6807\u51C6\u5C0F\u6846\uFF1AAlertModal\uFF08\u5355\u6309\u94AE + severity \u56FE\u6807\uFF09/ ConfirmModal\uFF08\u53CC\u6309\u94AE + \u8BED\u4E49\u6863\uFF09\uFF0C\u4EE5\u53CA\u547D\u4EE4\u5F0F alertModal()/confirmModal()\uFF08Promise\uFF09\u3002\u540D\u5B57\u5E26 Modal \u540E\u7F00\uFF0C\u4E0D\u8986\u76D6\u5BBF\u4E3B\u539F\u751F\u3002\u56DE\u8C03\u8FD4\u56DE Promise \u65F6\uFF08\u6D88\u8D39\u65B9\u5728\u505A\u5F02\u6B65\uFF09\uFF0C\u5BF9\u5E94\u6309\u94AE\u81EA\u5DF1\u8F6C\u5708\u3001\u6574\u6846\u9501\u6B7B\uFF08\u906E\u7F69 / Esc \u90FD\u5173\u4E0D\u6389\uFF09\uFF0Cresolve \u624D\u5173\u95ED\u3001reject \u5219\u64A4\u56DE loading \u7559\u7740\u91CD\u8BD5\uFF1B\u7EC4\u4EF6\u5F62\u6001\u4E5F\u53EF\u4EE5\u81EA\u5DF1\u4F20 confirmLoading / cancelLoading\u3002",
+    exSmallModalHint: "AlertModal / ConfirmModal \u4E0E\u547D\u4EE4\u5F0F\u7248\u672C",
     exLargeModalTitle: "\u5927\u578B\u5F39\u7A97\uFF08\u81EA\u5B9A\u4E49\uFF09",
-    exLargeModalHint: "\u6211\u4EEC\u7684\u5185\u5BB9\u5F39\u7A97\uFF1AModal\uFF08size md/lg\uFF09\uFF0C\u627F\u8F7D\u4EFB\u610F\u5185\u5BB9\uFF0C\u4E0D\u662F\u300C\u786E\u5B9A/\u53D6\u6D88\u300D\u547D\u4EE4\u5F0F\u3002\u4E09\u5F20\u793A\u4F8B\uFF1A\u9ED8\u8BA4 md / \u5E26 footer / \u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09\uFF0C\u5934\u90E8\u6392\u6CD5\u53EF\u4E0D\u540C\u3002",
+    exLargeModalHint: "\u5185\u5BB9\u5F39\u7A97\uFF1A\u4EFB\u610F\u5185\u5BB9 + \u53EF\u9009 footer",
     exSideSheetTitle: "\u4FA7\u8FB9\u62BD\u5C49\uFF08\u8986\u76D6\u5F0F\uFF09",
-    exSideSheetHint: "SideSheet\uFF1A\u4ECE\u5C4F\u5E55\u5DE6 / \u53F3\u7F18\u6ED1\u5165\u7684\u8986\u76D6\u5C42 \u2014\u2014 \u76D6\u4F4F\u9875\u9762\u3001\u4E3B\u533A\u5BBD\u5EA6\u4E0D\u53D8\u3002\u76AE\u80A4\u4E0E PanelDock \u5206\u680F\u5B8C\u5168\u4E00\u81F4\uFF08\u5934\u90E8 / \u8FB9\u6846 / \u62D6\u62FD\u6761 / \u9634\u5F71\uFF09\uFF0C\u5BBD\u5EA6\u9ED8\u8BA4\u5C31\u80FD\u62D6\uFF1B\u6CA1\u6709\u6536\u8D77\u4E0E\u8033\u6735\u3002Esc / \u70B9\u906E\u7F69 / \u2715 \u90FD\u80FD\u5173\u3002",
+    exSideSheetHint: "\u5DE6\u53F3\u6ED1\u5165\u7684\u8986\u76D6\u5C42\uFF0C\u5BBD\u5EA6\u53EF\u62D6",
     exHostModalTitle: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09",
-    exHostModalHint: '\u5BBF\u4E3B\u5185\u6838\u5B98\u65B9 Modal\uFF1A\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF1B\u6B63\u6587\u533A\u585E\u4EFB\u610F\u5185\u5BB9\uFF0Cfooter \u4EFB\u610F\u6309\u94AE\u7EC4\u5408\u3002\u547D\u4EE4\u5F0F\u7528 confirmModal/alertModal \u52A0 skin:"host"\uFF0C\u4E0E core \u4E92\u4E0D\u8986\u76D6\u3002',
+    exHostModalHint: "\u5BBF\u4E3B\u5B98\u65B9 Modal \u76AE\u80A4\uFF0C\u6B63\u6587\u81EA\u5B9A",
     exToastNotifyTitle: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify",
-    exToastNotifyHint: "notify()\uFF1A\u7EDF\u4E00\u7070/\u7EFF/\u7EA2/\u9EC4 + \u53F3\u4FA7\u6211\u4EEC\u81EA\u5DF1\u7684\u6309\u94AE",
+    exToastNotifyHint: "notify()\uFF1A\u56DB\u8272 + \u53F3\u4FA7\u81EA\u5B9A\u4E49\u6309\u94AE",
     exLoaderTitle: "\u52A0\u8F7D\u56FE\u6807 \xB7 Loader",
-    exLoaderHint: "\u53EA\u753B\u56FE\u6807\uFF1A\u65E0\u80CC\u666F\u3001\u65E0\u5185\u8DDD\u3001\u65E0\u5B9A\u4F4D \u2014\u2014 \u80CC\u666F\u4E0E\u4F4D\u7F6E\u5F52\u4F60\uFF08\u5957 Chip\u3001\u5957 Card\uFF0C\u6216\u81EA\u5DF1\u5305\u4E00\u5C42 fixed \u5BB9\u5668\uFF09\u3002variant \u4E24\u79CD\uFF08ring / blocks\uFF09\xD7 size \u4E94\u6863\uFF08xs 12 / sm 16 / md 24 / lg 32 / xl 48\uFF09\uFF0C\u51E0\u4F55\u7B49\u6BD4\u7F29\u653E\u3002\u989C\u8272\u8D70 currentColor\uFF0C\u8DDF\u7740\u6240\u5728\u6587\u5B57\u81EA\u52A8\u53D8\u8272\u3002\u5012\u6570\u7B2C\u4E8C\u884C\u662F\u300C\u81EA\u5DF1\u914D\u80CC\u666F + \u81EA\u5DF1\u5B9A\u4F4D\u300D\u7684\u5199\u6CD5\uFF0C\u6700\u540E\u4E00\u884C\u662F\u540C\u65CF\u7684 LoaderBar\uFF08\u80F6\u56CA\u4E0D\u5B9A\u8FDB\u5EA6\uFF09\u2014\u2014 \u8FB9\u754C\u4E00\u81F4\uFF0C\u90FD\u53EA\u753B\u56FE\u5F62\u3002",
+    exLoaderHint: "\u53EA\u753B\u56FE\u6807\uFF1A\u80CC\u666F\u4E0E\u4F4D\u7F6E\u5F52\u8C03\u7528\u65B9",
     exLoadingTitle: "\u52A0\u8F7D\u63D0\u793A \xB7 \u4E24\u79CD\u6837\u5F0F",
-    exLoadingHint: "showLoading() \u4E0D\u81EA\u52A8\u6D88\u5931\uFF0C\u53EA\u80FD\u81EA\u5DF1\u62FF\u53E5\u67C4 close()\uFF1B\u5C4F\u5E55\u4E0A\u6C38\u8FDC\u53EA\u6709\u4E00\u5F20\u5361\u2014\u2014\u540E\u4E00\u6B21\u8C03\u7528\u76F4\u63A5\u9876\u6389\u524D\u4E00\u6B21\uFF08\u8FDE\u70B9\u4E5F\u53EA\u6709\u4E00\u5F20\uFF09\u3002\u9ED8\u8BA4\u5C4F\u4F4D\u4E0B\u65B9\u5C45\u4E2D\uFF08\u4E0E Toast \u540C\u5C4F\u4F4D\uFF09\uFF0Cposition \u53EF\u9009\u516D\u5411 + center\uFF1B\u4E0D\u7ED9\u906E\u7F69\u65F6\u540E\u9762\u7167\u5E38\u53EF\u70B9\u3002\u8981\u653E\u8FDB\u81EA\u5DF1\u7684\u7A7A\u95F4\u5C31\u76F4\u63A5\u6E32\u67D3 LoadingToast / LoadingBlock\u3002",
-    sessionRealHint: "\u5BBF\u4E3B sessions.list \u5FEB\u7167\uFF08\u51B7\u5B89\u5168\uFF0C\u4E0D\u6FC0\u6D3B Agent\uFF09\u2192 \u70B9\u5F00\u771F\u9884\u89C8\uFF1Bfork \u4E0E\u8DF3\u8F6C\u90FD\u662F\u5B98\u65B9\u53E3\u5B50",
+    exLoadingHint: "showLoading \u4E0D\u81EA\u52A8\u6D88\u5931\uFF0C\u9700\u53E5\u67C4 close",
+    sessionRealHint: "\u5BBF\u4E3B sessions \u5FEB\u7167 \u2192 \u70B9\u5F00\u771F\u9884\u89C8",
     sessionListUnavailable: "\u5BBF\u4E3B\u4F1A\u8BDD\u670D\u52A1\u672A\u5C31\u4F4D\uFF08sessions / uiConversation / uiWorkspace \u7F3A\u5E2D\uFF09\u2014\u2014\u5728\u771F\u5B9E dsh profile \u91CC\u5B89\u88C5\u672C\u63D2\u4EF6\u5373\u53EF\u8BFB\u5230\u672C\u673A\u4F1A\u8BDD",
     sessionListEmpty: "\u5BBF\u4E3B\u5F53\u524D\u6CA1\u6709\u53EF\u663E\u793A\u7684\u4F1A\u8BDD",
     sessionListRunning: "\u8FD0\u884C\u4E2D",
     sessionListArchived: "\u5DF2\u5F52\u6863",
-    dateHint: "\u89E3\u6790\u5931\u8D25\u4E0D\u629B\u9519\u3001\u7ED9\u515C\u5E95\u3001\u4E0D\u7F16\u9020\uFF1B\u6240\u6709\u51FD\u6570\u65E0 UI \u4F9D\u8D56\uFF0CNode \u91CC\u4E5F\u80FD\u8DD1",
-    numberHint: "formatBytes \u6309 1024 \u8FDB\u5236\u3001\u5355\u4F4D\u81EA\u52A8\u8FDB\u4F4D\uFF1BformatCount \u7ED9\u5927\u6570\u52A0\u5343\u5206\u4F4D",
-    roadmapHint: "\u4E0B\u9762\u662F\u300C\u660E\u786E\u4E0D\u63D0\u4F9B\u300D\u7684\u90E8\u5206\u2014\u2014\u5199\u5728\u8FD9\u91CC\u662F\u4E3A\u4E86\u8BA9\u4F60\u4E0D\u7528\u731C\uFF0C\u4E5F\u8BA9\u540E\u6765\u4EBA\u77E5\u9053\u8FB9\u754C\u5728\u54EA\u3002",
+    dateHint: "\u89E3\u6790\u5931\u8D25\u7ED9\u515C\u5E95\uFF0C\u4E0D\u629B\u9519\u3001\u4E0D\u7F16\u9020",
+    numberHint: "formatBytes 1024 \u8FDB\u5236\uFF1BformatCount \u5343\u5206\u4F4D",
+    roadmapHint: "\u4E0B\u9762\u5217\u7684\u662F\u660E\u786E\u4E0D\u63D0\u4F9B\u7684\u80FD\u529B",
     roadmapOut: "\u8BBE\u7F6E\u9875\u9AA8\u67B6\u3001i18n \u6846\u67B6\uFF08\u63D2\u4EF6\u6587\u6848\u63D2\u4EF6\u81EA\u7BA1\uFF09\u3001host \u5BBF\u4E3B\u7C7B\u578B\u9762",
     roadmapMirror: "\u5B98\u65B9\u4F1A\u8BDD UI \u5B8C\u6574\u955C\u50CF\uFF08\u5DE5\u5177\u5361 / \u4EE3\u7801\u5757 / \u63A8\u7406\u884C / \u6298\u53E0\u5173\u7CFB\uFF09\u2014\u2014\u5DF2\u4E8E 2026-10-22 \u642C\u5165 session \u5B50\u5305",
     roadmapPreview: "\uFF08\u5DF2\u843D\u5730\uFF09md \u6E32\u67D3\uFF08\u5B98\u65B9 MarkdownText\uFF09/ \u4EE3\u7801\u9AD8\u4EAE\uFF08\u6838\u5FC3 CodeViewer\uFF09/ HTML / PDF / Office \u9884\u89C8",
     roadmapSkeleton: "\uFF08\u5DF2\u843D\u5730\uFF09PanelDock\u2014\u2014\u53EF\u505C\u9760\u5206\u680F\uFF1A\u591A\u9762\u677F\u3001\u6309\u540D\u8986\u76D6\u3001\u4E0A\u9650 3",
     roadmapLayout: "\u7EA2\u7EBF\uFF1A\u6574\u5408\u4EE5\u524D\u7684.share(plugins/demo)",
-    buildDesc: "\u7248\u672C\u53F7\u4E0D bump \u65F6\uFF0C\u5224\u65AD\u5BBF\u4E3B\u91CC\u8DD1\u7684\u662F\u4E0D\u662F\u6700\u65B0\u4EA7\u7269\uFF0C\u9760\u7684\u662F build \u7F16\u7801\u2014\u2014\u6BCF\u6B21\u6784\u5EFA\u90FD\u53D8\u3002",
+    buildDesc: "\u7248\u672C\u4E0D bump \u65F6\uFF0C\u9760 build \u7F16\u7801\u5224\u65AD\u662F\u5426\u6700\u65B0\u4EA7\u7269",
     buildCore: "core \u7248\u672C",
     buildDemo: "demo \u7248\u672C",
     buildStamp: "\u672C\u6B21 build \u7F16\u7801",
@@ -61527,13 +61523,13 @@ var DICT2 = {
     secChip: "Tags \xB7 text \xB7 states",
     secFlipText: "Flip text",
     secTable: "Table",
-    tableHint: "Full-frame look: borders:all + divider:true per column. Two-row grouped header, zebra stripes, click-to-select; row/column spans, avatar cell and chips all shown here.",
-    tableEmptyHint: "Built-in empty state when there are no rows; override with emptyText",
-    tableSpanHint: "Compact table without side edges (borders:y): Downtown spans two rows, North clinic two columns; selecting any row in a rowSpan block highlights the whole block.",
-    tableGroupHint: "Default look (y, no vertical rules): groups or rows, one at a time; each group = banner + its own header and rows, groups separated by a solid rule.",
-    paginationHint: "Standalone pager: page / pageSize / total only; placement, simple mode, total copy and page-size selector are all optional switches.",
-    tablePagerHint: "Built-in paging: omit total for local slicing (pass all rows), pass total for server-side paging; the pager sits under the table, right-aligned.",
-    tableLoadingHint: "The segmented switch flips four states. Both loaders are icon-only (largest for the whole table, middle for loading more); the footer row spans the width with a rule above it, and without side borders the bottom rule is dropped too.",
+    tableHint: "Full frame: grouped header, zebra, click-to-select",
+    tableEmptyHint: "Built-in empty state",
+    tableSpanHint: "No side edges: row and column spans",
+    tableGroupHint: "Default look: grouped table, solid rule between groups",
+    paginationHint: "Standalone pager: align, simple, total",
+    tablePagerHint: "Built-in paging: local slice or server-side",
+    tableLoadingHint: "Loading and empty states",
     secFeedback: "Feedback",
     secLayout: "Layout",
     secToolbar: "Quick toolbar",
@@ -61560,7 +61556,7 @@ var DICT2 = {
     dockPanelATag: "new",
     dockPanelC: "Header-less panel",
     dockCustomHeadTitle: "Custom header (everything from here down is yours)",
-    dockCustomHeadHint: "No padding, no border from the library \u2014 height, rows and popovers are up to you",
+    dockCustomHeadHint: "Custom head: no padding or border added",
     dockPanelBody: "Content of this column. Reopening the same name replaces it; width and position stay put.",
     dockOpened: "Open now: ",
     dockCollapsed: "Collapsed: ",
@@ -61578,25 +61574,25 @@ var DICT2 = {
     i18nDesc: "To be added:\n\xB7 getLocale / setLocale: a single language state\n\xB7 What ships in the core dictionary: fixed component prompts only, no plugin UI copy\n\xB7 Plugin copy is the plugin\u2019s own job \u2014 this preview plugin\u2019s DICT is the sample\n\xB7 Language is driven by the host; a plugin must not ship its own language picker",
     i18nNow: "Current locale",
     a11yDesc: "To be added:\n\xB7 Focus rings and keyboard reachability\n\xB7 Tab order and the Modal focus trap\n\xB7 Which role / aria-* semantics are covered\n\xB7 Contrast and prefers-reduced-motion handling",
-    tokensHint: "All colors come from design tokens; switch light/dark at top-right and these update with it",
+    tokensHint: "All colors from tokens; follows dark mode",
     darkHint: "The switch is hard-coded: dark applies only when the host sets data-ds-dark-theme on body \u2014 prefers-color-scheme is not read. A plugin therefore needs no theme toggle of its own. The value below is measured live; toggle the theme and reopen this page to see it change.",
     darkNow: "Current body[data-ds-dark-theme]",
-    injectHint: "Call setStyleKit once at entry; each control self-injects its own CSS on first render (tokens included, idempotent)",
+    injectHint: "Call setStyleKit once; controls inject CSS",
     demoTokenPalette: "Token palette",
     demoStyleInject: "Style injection",
     designInjectNote: "This preview plugin initializes itself exactly this way \u2014 preview and real plugin take the same path.",
     btnTextTitle: "Button labels & language",
-    btnTextHint: "Labels come from the caller: Chinese in zh, English in en; a mixed zh+en label is fine too (rightmost)",
+    btnTextHint: "Copy comes from the caller, follows locale",
     btnVariantTitle: "Variants (10)",
-    btnVariantHint: "Solid: primary / secondary / danger / success / warning / info; outlined: outline / danger-outline; flat: ghost / link",
+    btnVariantHint: "Solid, outline and ghost variants",
     btnSizeTitle: "Sizes / icons / block",
-    btnSizeHint: "sm 24 \xB7 md 28 \xB7 lg 32, same height; icon takes any ReactNode \u2014 an official icon component, your own SVG, even a single character (not a name, not a class); iconRight trails, block fills the parent",
+    btnSizeHint: "sm 24 / md 28 / lg 32; icon takes a ReactNode",
     btnStateTitle: "States",
-    btnStateHint: "disabled is dimmed and unclickable; loading shows a same-color spinner and disables itself",
+    btnStateHint: "disabled dims; loading disables automatically",
     btnColorTitle: "Custom colors",
-    btnColorHint: "Pass any CSS color as color: solid variants use it as fill, outlined/text variants as the accent; hover/press are mixed from it",
+    btnColorHint: "color takes any CSS color; hover blends it",
     btnWidthTitle: "Width (fixed / min / max)",
-    btnWidthHint: "Three axes are mutually exclusive: a fixed width wins and disables both minWidth and maxWidth; with maxWidth, overflowing text collapses to an ellipsis and marquees on hover",
+    btnWidthHint: "width / minWidth / maxWidth are exclusive",
     blocksNote: 'Two workspace-browsing demos: \u2460 Explorer \u2014 right-dock preview (openFilePreview, takes width and squeezes the main area) and anchor-popover file picking (pickWorkspaceFile, Promise returns the workspace-relative path). \u2461 Session \u2014 session preview (SessionPreview, variant modal/inline). This page uses no mock: sample files are real repo files, data comes from the host workspaceFiles, and if probing fails it says "not found" honestly.',
     utilsNote: "The utils group is pure-function tooling: date/time formatting, number/byte formatting, and i18n. All honor the current locale (driven by the host; switch host language and it changes).",
     startNote: "Quick start: the original three (overview / install & init / write a plugin) are merged into one page, each still an independent card. First see what this package gives you, then set up the environment with the install and style-injection snippets.",
@@ -61608,22 +61604,22 @@ var DICT2 = {
     btnLabelMixed: "Save \u4FDD\u5B58",
     btnIconOnly: "icon only",
     btnHintTitle: "Question-mark hint (FieldHint)",
-    btnHintHint: "Standalone component, drop it anywhere: after a title, a button, a sentence, or an input; hover or keyboard-focus to reveal",
+    btnHintHint: "Standalone; hover or focus to reveal",
     demoInputFamily: "Input family",
-    inputHint: "Input / PrefixedInput / NumberInput / Textarea, all support error highlighting; pass a hint string and the standard FieldHint is attached automatically (FieldHint still works standalone); pass icon to Input to get a leading icon slot",
+    inputHint: "Four field types, all with error and hint",
     inputGroupTitle: "InputGroup (input with actions)",
-    inputGroupHint: "Input and trailing buttons welded into one shell with the same skin rules as SplitGroup (frame, radius, 1px dividers and focus ring all come from the shell); label is a leading title sharing the cell; actions lays out as many buttons as you pass (back + confirm, icon / icon+text / text), coloured with Button\u2019s own semantic variants \u2014 info by default, pass success / warning / danger for those, no custom colours; undoable prepends an undo button that returns to the value before the last commit; three sizes, plus height in px for a custom height; an action whose `onClick` returns a Promise spins and disables itself (same as Button) \u2014 no loading state to manage",
+    inputGroupHint: "Input plus trailing actions as one unit",
     switchTip: "Official Switch (enable semantics, not a tick) + Checkbox + Segmented",
-    checkboxHint: "Looks match the real plugin: grey track with a white selected pill; bordered adds an outer frame (rightmost, clickable); the weekday squares are multi-select; icons lead the label and icon-only segments square themselves. Labels follow the locale",
+    checkboxHint: "Track and knob; bordered adds a frame",
     segToneTitle: "Segmented selected-pill colors (tone)",
-    segToneHint: "Omitted = theme pill (white on body text). A built-in color name (same names as Chip) lets the core pick background and text per theme (yellow gets dark text); { bg, fg } uses that pair in both themes, contrast is the caller\u2019s call; tone also overrides weekday\u2019s default blue",
-    pickerHint: 'Single / multi / max / search (searchable switch) / grouped / empty / degraded; trigger and options both take a leading icon; label is left-aligned by default (align="center" to center); multi-select at max still allows deselecting picked items',
-    dateTimePickerHint: 'One control, three usages: single / range \xD7 precision (day / hour / minute / second); mask-free popup sharing Picker\u2019s mechanics; the range popup shows two independent calendars (left = start, right = end, each picks its own); hour/minute/second via steppers (\u25B2\u25BC / typing / \u2191\u2193) instead of clicking through 60 minutes, and never requires picking a date first; the quick button is "Today" at day precision, "Now" when hours/minutes/seconds are on; draft state \u2014 commits only on confirm; at day precision the end auto-fills 23:59:59.999 (degrades gracefully if the DB stores seconds only)',
-    modelPickerHint: 'grouped (one dropdown, vendor headers, fully independent) / cascade (vendor and model dropdowns linked) \u2014 both emit the same final model value; a "default model" option is provided by default (emits an empty string, disable with allowDefault: false); the catalog comes from the host automatically',
-    workspacePickerHint: "Workspace list comes from the host snapshot automatically (wired via connectHost, live follow stream); selected value is the workspaceId",
-    splitGroupHint: "Does exactly one thing \u2014 welds two controls into one: outer frame, corner radius, the 1px divider between the cells and the shared focus ring all come from the shell; the inner controls stay your own (they hand over their border and background). The shell holds no state and emits no linking callback \u2014 bind each cell own onChange. Exactly two cells, never more. Give both cells the same size for pixel-identical heights",
+    segToneHint: "Default themed; or pass a color name or bg/fg",
+    pickerHint: "Single, multi, search, groups, empty",
+    dateTimePickerHint: "single or range at four precisions, no mask",
+    modelPickerHint: "Grouped or cascaded; catalog from host",
+    workspacePickerHint: "List from host snapshot; value is workspaceId",
+    splitGroupHint: "Welds two controls; the shell draws the frame",
     tooltipTitle: "Tooltip (hover hint)",
-    tooltipHint: "Official Tooltip: side top / bottom / right x align center / end; anchor can be a button or a span of text; long labels wrap at maxWidth; the rightmost one is a two-part hint (name + body) where \\n in the text is a real line break",
+    tooltipHint: "Four placements; long text wraps",
     tooltipAnchorText: "Text anchor",
     tooltipAnchorButton: "Button anchor",
     tooltipLong: "Long label",
@@ -61635,14 +61631,14 @@ var DICT2 = {
     demoStripTitle: "StripCard (soft tint + full-height bar)",
     demoSurfaceTitle: "Surface (region container)",
     demoBarTitle: "Rail side: top / right / bottom / left",
-    surfaceHint: "Background / border / radius / padding, radius fixed at 12 \u2014 reach for it instead of hand-rolling border + border-radius; pass border: 'dashed' for a placeholder frame",
-    barHint: "Move the rail with bar.side; inset = distance to card edge, gap = distance to content, length = rail length for top/bottom (defaults to content width)",
-    cardHint: "Built on the Surface frame: background + 1px border + 12px radius (same tier as Button); the rail is 6px and hugs the left edge by default, the head is vertically centered as a whole \u2014 drop a bare element into action and it centers itself; thirteen accents below",
-    stripHint: "Same-hue soft tint + 4px full-height square accent bar at the left edge (mirrors the sibling record block); equally centered as a whole \u2014 record-stream layout: title + meta row + right-side time/actions",
+    surfaceHint: "A surface: fill, border, radius, padding",
+    barHint: "Bar side, inset, gap and length",
+    cardHint: "Surface frame plus a 6px accent bar",
+    stripHint: "Tinted fill with a 4px accent bar",
     sectionHeadTitle: "SectionHead",
-    chipHint: "Two optional axes: tone (neutral grey / business / success / warning / danger solid signal) and size (sm / md); width hugs the text, no wrap; labels follow the locale (zh & en examples); if the long-text chip at the end is squeezed into a 28px vertical stack, the icon-button fixed-width rule crept back in",
+    chipHint: "tone and size, two axes",
     chipWidthTitle: "Width (fixed / min / max)",
-    chipWidthHint: "Three axes are mutually exclusive: a fixed width wins and disables both minWidth and maxWidth; with maxWidth, overflowing text collapses to an ellipsis and marquees on hover",
+    chipWidthHint: "width / minWidth / maxWidth are exclusive",
     chipOverdue: "Overdue",
     chipStalled: "Stalled",
     chipDone: "Done",
@@ -61650,8 +61646,8 @@ var DICT2 = {
     marqueeTitle: "MarqueeText",
     liveTitle: "LiveText",
     flipTitle: "FlipText",
-    feedbackModalHint: "Hand-rolled overlay (no portal); click backdrop / Esc / \u2715 all close it. The header \u2715 is a 24\xD724 icon slot \u2014 no border or 120px-wide color block should appear",
-    feedbackToastHint: "Imperative notify \u2014 no component mounting required",
+    feedbackModalHint: "Own overlay; mask, Esc and \u2715 all close",
+    feedbackToastHint: "Imperative notify, no component needed",
     explorerDataTitle: "Where the data comes from (real data, no mocks)",
     explorerDataHint: 'File services come from the host remote.workspaceFiles (dotted injection); the workspace list is the official workspaces snapshot. The "most recent workspace" is the newest updated one that owns a session (pickWorkspaceAnchor) \u2014 list / read all need a sessionId, so browsing must land on a real session first.',
     explorerFilesNone: "Not ready: the host has not exposed remote.workspaceFiles yet (no preview, no picking \u2014 no fake data either)",
@@ -61660,16 +61656,13 @@ var DICT2 = {
     explorerSessionLabel: "session: ",
     explorerWorkspaces: "workspaces: ",
     methodATitle: "Method A: openFilePreview dock preview",
-    methodAHint: "Pass a file or folder path and a dock opens on the right (core PanelDock, the header=null variant: no head line, \u2715 floats top-right) \u2014 it is inserted into the page flex row, so the main area is squeezed rather than covered. Resizing belongs to PanelDock. The sample buttons point at real files under packages/demo/src/samples/ (the directory is probed by content, never hardcoded).",
+    methodAHint: "Pass a path; a dock opens on the right and squeezes the main area",
     openRootPreview: "Open the most recent workspace root",
-    openSamplesDir: "Browse the sample directory",
     sampleMd: "Preview README.md",
     sampleHtml: "Preview demo.html",
-    sampleJs: "Preview sample.js",
     sampleCss: "Preview sample.css",
-    samplesNotFound: "Sample directory not found (the anchored workspace has no packages/demo/src/samples)",
     methodBTitle: "Method B: pickWorkspaceFile",
-    methodBHint: "A modal pops up beside the anchor button; the promise resolves { path, isDir } (path is workspace-relative); Esc / click-outside / \u2715 cancels with null",
+    methodBHint: "Modal by anchor; resolves to { path, isDir }",
     pickAny: "Pick a file (any)",
     pickTs: ".ts only",
     pickDir: "Folders only",
@@ -61684,38 +61677,38 @@ var DICT2 = {
     exModelPickerTitle: "ModelPicker (real catalog)",
     exWorkspacePickerTitle: "WorkspacePicker (real list)",
     exSplitGroupTitle: "SplitGroup (combined selectors)",
-    exSectionHeadHint: "Section header: optional drawn bar + icon + title + right-side actions \u2014 a pure layout shell; bar, icon, title and right side are all caller-defined. Four groups below: different icons / title suffixes (count, coloured tag, caption) / two right-side combos / fixed-bar colour swatches (accent)",
-    exMarqueeHint: "Two layers: the outer clips, the inner scrolls; one pass stops at the last character, and on mouse-out it resets to an ellipsis",
-    exLiveHint: "Subscribes to an internal ticker; the running clock UI is rendered by the caller",
-    exFlipHint: "A one-line window: on a text change the old line slides up and out while the new one comes in from below; overflow elides with an ellipsis and marquees on hover (reuses MarqueeText); the same three width props as Button / Chip",
+    exSectionHeadHint: "Section head shell: tag, icon, title, actions",
+    exMarqueeHint: "Scrolls once; resets to ellipsis on leave",
+    exLiveHint: "Subscribes to a ticker; caller renders the time",
+    exFlipHint: "Single-line swap: old out, new in",
     exSmallModalTitle: "Small dialogs (custom)",
-    exSmallModalHint: "Our standard small dialogs: AlertModal (single button + severity icon) / ConfirmModal (two buttons + tone), plus the imperative alertModal()/confirmModal() (Promise-based). The Modal suffix keeps them from shadowing the host\u2019s own. When a callback returns a Promise (the caller is doing async work), that button spins and the whole dialog locks (mask and Esc stop working); it closes on resolve, and on reject the spinner is withdrawn and the dialog stays open for a retry. Component form takes confirmLoading / cancelLoading directly.",
+    exSmallModalHint: "AlertModal, ConfirmModal and imperative forms",
     exLargeModalTitle: "Large dialogs (custom)",
-    exLargeModalHint: "Our content dialog: Modal (size md/lg) carrying arbitrary content \u2014 not a confirm/cancel primitive. Three samples: default md / with footer / without footer (custom content); the header layout may differ.",
+    exLargeModalHint: "Content modal: any body, optional footer",
     exSideSheetTitle: "Side drawer (overlay)",
-    exSideSheetHint: "SideSheet: an overlay sliding in from the left or right edge \u2014 it covers the page while the main area keeps its width. The skin matches PanelDock exactly (header / border / resize handle / shadow) and it resizes by dragging by default; there is no collapse or edge ear. Esc, mask click and \u2715 all close it.",
+    exSideSheetHint: "Slides in from either side; width draggable",
     exHostModalTitle: "Native dialogs (host)",
-    exHostModalHint: 'The host kernel\u2019s own Modal: mask, header and close button all belong to the host; the body takes arbitrary content and the footer any button set. Imperative use goes through confirmModal/alertModal with skin:"host"; neither shadows the other.',
+    exHostModalHint: "Host Modal skin with a custom body",
     exToastNotifyTitle: "Toast \xB7 our notify wrapper",
-    exToastNotifyHint: "notify(): uniform grey/green/red/yellow plus our own button on the right",
+    exToastNotifyHint: "notify(): four tones plus a custom action",
     exLoaderTitle: "Loader \xB7 icon only",
-    exLoaderHint: "Draws the icon and nothing else: no background, no padding, no positioning \u2014 those belong to you (wrap it in a Chip, a Card, or your own fixed container). Two variants (ring / blocks) \xD7 five sizes (xs 12 / sm 16 / md 24 / lg 32 / xl 48), geometry scales proportionally. Colour follows currentColor, so it inherits the surrounding text colour. The second-to-last row is the \u201Cbring your own background and position\u201D pattern; the last row shows the same-family LoaderBar \u2014 same boundary, graphics only.",
+    exLoaderHint: "Icon only; background and placement are yours",
     exLoadingTitle: "Loading \xB7 two styles",
-    exLoadingHint: "showLoading() never dismisses itself \u2014 you call close() on the handle. Only one card ever exists: a later call replaces the previous one (rapid clicks still show one). It sits bottom-centre by default (the Toast slot); position takes the six directions plus center. Without a mask the page stays clickable. To keep it inside your own area, render LoadingToast / LoadingBlock in place.",
-    sessionRealHint: "Host sessions.list snapshot (cold-safe, no Agent activation) \u2192 click for a real preview; fork and navigation are official APIs",
+    exLoadingHint: "showLoading stays until you close the handle",
+    sessionRealHint: "Host sessions snapshot, then a real preview",
     sessionListUnavailable: "Host session services not ready (sessions / uiConversation / uiWorkspace absent) \u2014 install this plugin into a real dsh profile to list and preview your sessions",
     sessionListEmpty: "The host has no visible sessions right now",
     sessionListRunning: "Running",
     sessionListArchived: "Archived",
-    dateHint: "No throw on parse failure \u2014 falls back gracefully and never fabricates; all functions are UI-free and run in Node too",
-    numberHint: "formatBytes is 1024-based with automatic unit scaling; formatCount adds thousands separators",
-    roadmapHint: "The list below is what this package explicitly does NOT provide \u2014 written down so nobody has to guess, and so the boundary stays visible.",
+    dateHint: "Falls back instead of throwing or inventing",
+    numberHint: "formatBytes in 1024; formatCount with separators",
+    roadmapHint: "What is deliberately not provided",
     roadmapOut: "A settings-page skeleton, an i18n framework (plugin copy is the plugin\u2019s own job), a host typings surface",
     roadmapMirror: "Full mirror of the official session UI (tool cards / code blocks / reasoning rows / fold relations) \u2014 ported into the session subpackage on 2026-10-22",
     roadmapPreview: "(shipped) md render (official MarkdownText) / code highlight (core CodeViewer) / HTML / PDF / Office preview",
     roadmapSkeleton: "(shipped) PanelDock \u2014 dockable split panes: multi-panel, replace-by-name, limit 3",
     roadmapLayout: "Red line: consolidation of the old packages/demo",
-    buildDesc: "When the version number does not change, the build stamp is what tells you whether the host is running the newest bundle \u2014 it changes on every build.",
+    buildDesc: "Without a version bump, the build stamp tells",
     buildCore: "core version",
     buildDemo: "demo version",
     buildStamp: "build stamp",
@@ -62828,8 +62821,8 @@ var docData = {
         "en": "Boundary: a plugin\u2019s own UI copy is the plugin\u2019s responsibility; this package offers no plugin-level i18n framework. To override a string: pass a `translate` prop, or use `t` with your own dictionary."
       },
       {
-        "zh": "\u8BED\u8A00\u9ED8\u8BA4\u8DDF\u968F\u5BBF\u4E3B\uFF1A\u5B98\u65B9 locale \u63D2\u4EF6\u628A\u751F\u6548\u8BED\u8A00\u5199\u8FDB `<html lang>`\uFF08zh \u2192 `zh-CN`\uFF09\uFF0C\u672C\u5305\u76F4\u63A5\u8BFB\u5B83 \u21D2 \u63D2\u4EF6\u4E0D\u5FC5\u518D\u63A5 locale \u670D\u52A1\u3001\u4E5F\u4E0D\u5FC5\u81EA\u5DF1\u540C\u6B65\u3002`setLocale` \u53EA\u662F\u624B\u52A8\u8986\u76D6\uFF08\u6D4B\u8BD5 / \u975E\u5BBF\u4E3B\u73AF\u5883\u7528\uFF09\uFF0C\u8C03\u8FC7\u5C31\u4E0D\u518D\u8DDF\u968F\u5BBF\u4E3B\u3002",
-        "en": "The language follows the host by default: the official locale plugin writes the active language into `<html lang>` (zh \u2192 `zh-CN`) and this package reads it directly, so a plugin needs neither the locale service nor its own sync. `setLocale` is only a manual override (tests / non-host environments); once called it stops following the host."
+        "zh": "\u8BED\u8A00\u9ED8\u8BA4\u8DDF\u968F\u5BBF\u4E3B\uFF1A\u5B98\u65B9 locale \u63D2\u4EF6\u628A\u751F\u6548\u8BED\u8A00\u5199\u8FDB `<html lang>`\uFF08zh \u2192 `zh-CN`\uFF09\uFF0C\u672C\u5305\u76F4\u63A5\u8BFB\u5B83 \u21D2 \u63D2\u4EF6\u4E0D\u5FC5\u518D\u63A5 locale \u670D\u52A1\u3001\u4E5F\u4E0D\u5FC5\u81EA\u5DF1\u540C\u6B65\u3002`setLocale` \u53EA\u662F\u624B\u52A8\u8986\u76D6\uFF08\u6D4B\u8BD5 / \u975E\u5BBF\u4E3B\u73AF\u5883\u7528\uFF09\uFF0C\u8C03\u8FC7\u5C31\u4E0D\u518D\u8DDF\u968F\u5BBF\u4E3B\uFF0C\u4F20 `null` \u6062\u590D\u8DDF\u968F\u3002",
+        "en": "The language follows the host by default: the official locale plugin writes the active language into `<html lang>` (zh \u2192 `zh-CN`) and this package reads it directly, so a plugin needs neither the locale service nor its own sync. `setLocale` is only a manual override (tests / non-host environments); once called it stops following the host, and passing `null` resumes it."
       },
       {
         "zh": "\u53EF\u7528 key \u5168\u96C6\u89C1 src/utils/i18n.ts \u7684 UtilMessageKey\uFF1B\u8981\u5728\u5BBF\u4E3B\u5207\u8BED\u8A00\u65F6\u91CD\u6E32\u7EC4\u4EF6\uFF0C\u9876\u5C42\u8C03\u4E00\u6B21 `useLocale()`\uFF08ui \u5BFC\u51FA\uFF09\u3002",
@@ -62842,11 +62835,11 @@ var docData = {
         "rows": [
           {
             "name": "setLocale(locale)",
-            "type": "('zh' | 'en') => void",
+            "type": "('zh' | 'en' | null) => void",
             "def": "\u4E0D\u8C03\u5219\u8DDF\u968F\u5BBF\u4E3B",
             "desc": {
-              "zh": "\u624B\u52A8\u8986\u76D6\u8BED\u8A00\uFF08\u6D4B\u8BD5 / \u975E\u5BBF\u4E3B\uFF09\uFF1B\u4E0D\u8C03\u5C31\u8DDF\u968F\u5BBF\u4E3B `<html lang>`",
-              "en": "Manual override (tests / non-host); otherwise follows the host `<html lang>`"
+              "zh": "\u624B\u52A8\u8986\u76D6\u8BED\u8A00\uFF08\u6D4B\u8BD5 / \u975E\u5BBF\u4E3B\uFF09\uFF1B\u4F20 `null` \u6062\u590D\u8DDF\u968F\u5BBF\u4E3B `<html lang>`",
+              "en": "Manual override (tests / non-host); pass `null` to follow the host `<html lang>` again"
             }
           },
           {
@@ -66033,7 +66026,6 @@ function FoundationPage() {
   return (0, import_react87.createElement)(
     "div",
     null,
-    (0, import_react87.createElement)(DocProse, { id: "foundation" }),
     // Token 色板：颜色全部来自 design 的 token。
     (0, import_react87.createElement)(
       Example,
@@ -66264,7 +66256,6 @@ function ButtonPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "button" }),
     // 文案与语言
     (0, import_react88.createElement)(
       Example,
@@ -66610,7 +66601,6 @@ function InputPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "input" }),
     // Input 家族
     (0, import_react88.createElement)(
       Example,
@@ -67021,7 +67011,6 @@ function PickerPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "picker" }),
     (0, import_react88.createElement)(
       Example,
       { title: "Picker", hint: t3("pickerHint"), code: CODE_PICKER },
@@ -67226,7 +67215,6 @@ function TooltipPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "tooltip" }),
     (0, import_react88.createElement)(
       Example,
       { title: t3("tooltipTitle"), hint: t3("tooltipHint"), code: CODE_TOOLTIP },
@@ -67356,7 +67344,6 @@ function CardPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "surface" }),
     (0, import_react88.createElement)(
       Example,
       { title: t3("demoSurfaceTitle"), hint: t3("surfaceHint"), code: CODE_SURFACE },
@@ -67373,7 +67360,6 @@ function CardPage() {
         )
       )
     ),
-    (0, import_react88.createElement)(DocProse, { id: "card" }),
     (0, import_react88.createElement)(
       Example,
       { title: t3("demoCardTitle"), hint: t3("cardHint"), code: CODE_CARD },
@@ -67621,7 +67607,6 @@ function ChipPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "chip" }),
     (0, import_react88.createElement)(
       Example,
       { title: "Chip", hint: t3("chipHint"), code: CODE_CHIP },
@@ -67720,7 +67705,6 @@ function FlipTextPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "flip-text" }),
     (0, import_react88.createElement)(
       Example,
       { title: t3("flipTitle"), hint: t3("exFlipHint"), code: CODE_FLIP },
@@ -67959,7 +67943,6 @@ function FeedbackPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "feedback" }),
     (0, import_react88.createElement)(
       Example,
       { title: t3("exSmallModalTitle"), hint: t3("exSmallModalHint"), code: CODE_SMALL_MODAL },
@@ -68563,7 +68546,6 @@ function LayoutPage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "layout" }),
     (0, import_react88.createElement)(
       Example,
       { title: "PanelDock", hint: t3("dockHint"), code: CODE_DOCK },
@@ -68620,7 +68602,6 @@ function DateTimePage() {
   return (0, import_react88.createElement)(
     "div",
     null,
-    (0, import_react88.createElement)(DocProse, { id: "datetime-picker" }),
     (0, import_react88.createElement)(
       Example,
       { title: "DateTimePicker", hint: t3("dateTimePickerHint"), code: CODE_DATETIME },
@@ -68665,60 +68646,6 @@ function DateTimePage() {
 // packages/demo/src/sections/blocks.tsx
 var import_react89 = require("react");
 var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
-
-// packages/demo/src/samples.ts
-var SAMPLE_NAMES = ["README.md", "demo.html", "sample.js", "sample.css"];
-var MAX_DIRS_PER_LEVEL = 6;
-var MAX_DEPTH = 4;
-var SKIP = /* @__PURE__ */ new Set(["node_modules", "dist", ".git", "coverage", "build"]);
-async function readDir(files, sessionId, dir) {
-  try {
-    const parsed = listingOf(await files.list(sessionId, listPathOf(dir)));
-    if (parsed === null || isFailed(parsed)) return null;
-    return parsed.entries;
-  } catch {
-    return null;
-  }
-}
-function hitOf(dir, entries2) {
-  const names = new Set(entries2.filter((entry) => entry.type === "file").map((entry) => entry.name));
-  if (!SAMPLE_NAMES.every((name2) => names.has(name2))) return null;
-  return {
-    dir,
-    md: joinPath(dir, "README.md"),
-    html: joinPath(dir, "demo.html"),
-    js: joinPath(dir, "sample.js"),
-    css: joinPath(dir, "sample.css")
-  };
-}
-async function findSamples(files, sessionId) {
-  const root = await readDir(files, sessionId, "");
-  if (root === null) return null;
-  let frontier = [""];
-  const hit = hitOf("", root);
-  if (hit !== null) return hit;
-  for (let depth = 0; depth < MAX_DEPTH; depth++) {
-    const next = [];
-    for (const dir of frontier) {
-      const listed = dir === "" ? root : await readDir(files, sessionId, dir);
-      if (listed === null) continue;
-      const subdirs = listed.filter((entry) => entry.type === "directory" && !SKIP.has(entry.name));
-      for (const sub of subdirs.slice(0, MAX_DIRS_PER_LEVEL)) {
-        const childPath = joinPath(dir, sub.name);
-        const childEntries = await readDir(files, sessionId, childPath);
-        if (childEntries === null) continue;
-        const found = hitOf(childPath, childEntries);
-        if (found !== null) return found;
-        next.push(childPath);
-      }
-    }
-    if (next.length === 0) return null;
-    frontier = next;
-  }
-  return null;
-}
-
-// packages/demo/src/sections/blocks.tsx
 var CODE_OPEN = `// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF1B\u4E0D\u662F\u6D6E\u5C42\uFF09
 import { openFilePreview } from 'dsh-plugin-core/explorer'
 
@@ -68778,21 +68705,7 @@ function NotReady(props) {
 }
 function OpenPreviewDemo() {
   const { workspaceFiles: workspaceFiles2, anchor, workspaceNames } = useExplorerHost();
-  const [samples, setSamples] = (0, import_react89.useState)(null);
-  const [phase, setPhase] = (0, import_react89.useState)("idle");
   const [last2, setLast] = (0, import_react89.useState)(null);
-  const pending = (0, import_react89.useRef)(null);
-  const sessionId = anchor === null ? null : anchor.sessionId;
-  (0, import_react89.useEffect)(() => {
-    if (workspaceFiles2 === null || sessionId === null) return;
-    if (pending.current !== null) return;
-    setPhase("probing");
-    pending.current = findSamples(workspaceFiles2, sessionId).then((s) => {
-      setSamples(s);
-      setPhase(s === null ? "missing" : "found");
-      return s;
-    });
-  }, [workspaceFiles2, sessionId]);
   if (workspaceFiles2 === null) return (0, import_react89.createElement)(NotReady, { which: "files" });
   if (anchor === null) return (0, import_react89.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
@@ -68804,18 +68717,10 @@ function OpenPreviewDemo() {
     openFilePreview({ mount, sessionId: anchor.sessionId, path, rootName, workspaces });
     setLast(path === "" ? `${rootName}\uFF08\u6839\uFF09` : path);
   };
-  const sampleLabel = (normal3) => phase === "missing" ? t3("samplesNotFound") : t3(normal3);
-  const openSamples = (pick2) => {
-    void (pending.current ?? Promise.resolve(samples)).then((s) => {
-      if (s !== null) open(pick2(s), anchor.title);
-    });
-  };
   return (0, import_react89.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
     (0, import_react89.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
-    (0, import_react89.createElement)(Button, { variant: "secondary", onClick: () => openSamples((s) => s.dir) }, sampleLabel("openSamplesDir")),
-    (0, import_react89.createElement)(Button, { variant: "ghost", onClick: () => openSamples((s) => s.js) }, sampleLabel("sampleJs")),
     last2 === null ? null : (0, import_react89.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
     (0, import_react89.createElement)(
       "div",
@@ -68975,7 +68880,6 @@ function ExplorerPage() {
   return (0, import_react89.createElement)(
     "div",
     null,
-    (0, import_react89.createElement)(DocProse, { id: "explorer" }),
     (0, import_react89.createElement)(
       Example,
       { title: t3("methodATitle"), hint: t3("methodAHint"), code: CODE_OPEN },
@@ -68994,7 +68898,6 @@ function SessionPage() {
   return (0, import_react89.createElement)(
     "div",
     null,
-    (0, import_react89.createElement)(DocProse, { id: "session" }),
     (0, import_react89.createElement)(
       Example,
       { title: t3("sessionRealTitle"), hint: t3("sessionRealHint"), code: CODE_SESSION_REAL },
@@ -69227,7 +69130,6 @@ function TablePage() {
   return (0, import_react90.createElement)(
     "div",
     null,
-    (0, import_react90.createElement)(DocProse, { id: "table" }),
     // 表格较宽：示例区占满整栏（代码放页面底部），并在窄屏时横向滚动。
     // 空态不放成第二个示例 —— 直接接在主表下方，同一区块里展示「有数据 / 没数据」。
     (0, import_react90.createElement)(
@@ -69389,7 +69291,6 @@ function ToolbarPage() {
   return (0, import_react91.createElement)(
     "div",
     null,
-    (0, import_react91.createElement)(DocProse, { id: "quick-toolbar" }),
     (0, import_react91.createElement)(
       Example,
       {
@@ -69599,7 +69500,6 @@ function DatePage() {
   return (0, import_react93.createElement)(
     "div",
     null,
-    (0, import_react93.createElement)(DocProse, { id: "date" }),
     (0, import_react93.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react93.createElement)(FnTable, { rows: DATE_ROWS })),
     (0, import_react93.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
     (0, import_react93.createElement)(DocApi, { id: "date" })
@@ -69609,7 +69509,6 @@ function NumberPage() {
   return (0, import_react93.createElement)(
     "div",
     null,
-    (0, import_react93.createElement)(DocProse, { id: "number" }),
     (0, import_react93.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react93.createElement)(FnTable, { rows: NUMBER_ROWS })),
     (0, import_react93.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
     (0, import_react93.createElement)(DocApi, { id: "number" })
@@ -69625,7 +69524,6 @@ function I18nPage() {
   return (0, import_react93.createElement)(
     "div",
     null,
-    (0, import_react93.createElement)(DocProse, { id: "i18n" }),
     (0, import_react93.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
@@ -69692,7 +69590,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.32.0"}`],
             [t3("buildDemo"), `v${"0.32.0"}`],
-            [t3("buildStamp"), "261105-151539-904"]
+            [t3("buildStamp"), "261105-155511-030"]
           ].map(
             ([label, value]) => (0, import_react94.createElement)(
               "tr",
@@ -70009,7 +69907,7 @@ function DemoPage() {
           },
           (0, import_react96.createElement)("span", null, `core v${"0.32.0"}`),
           (0, import_react96.createElement)("span", null, `demo v${"0.32.0"}`),
-          (0, import_react96.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261105-151539-904")
+          (0, import_react96.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261105-155511-030")
         )
       )
     ),
