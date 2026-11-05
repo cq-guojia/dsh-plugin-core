@@ -1,6 +1,7 @@
 import { createElement as h } from 'react';
 import type { Translate } from '../../../utils/i18n.js';
-/** 助手正文：官方 MarkdownText 渲染 + 官方 AssistantMarkdown.root 类（fallback 自绘）。
+/** 助手正文：官方 DOM = AssistantMarkdown.root > body > MarkdownText（chat lib/client.js:8370-8378）。
+ * root 定 14px/24px，body 定 flex-column + 块间 gap 16px（宽表格规则也挂在 body 上）。
  * U11：fileMentions 词表就位时行内 code 文件引用渲成可点链接（官方语义：resolve 不出保持惰性 code）。 */
 export declare function AssistantMarkdown(props: {
     text: string;
@@ -20,8 +21,8 @@ export interface UserFileFace {
     bytes: number;
 }
 /**
- * 用户消息：官方 MessageItem userRow > userStack > bubble（右对齐气泡）
- * + 气泡下方的 **attachmentRow / fileCard**（官方 MessageItem 的附件行）。
+ * 用户消息：官方 MessageItem userRow > userStack > UserMessageBubble（右对齐气泡）
+ * + 气泡前的 **attachmentRow / fileCard**（官方 0.2.x 把附件行放在气泡之前）。
  *
  * 官方附件卡 = 图标 + 文件名 + 大小；**不可点开**——引用里没有路径，宿主也没给出
  * 「按 attachmentId 打开」的公开面 ⇒ 如实降级为只读展示，不伪造打开行为。

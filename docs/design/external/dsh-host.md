@@ -349,3 +349,36 @@
   · 本包落地：`openSessionView` 把 `faceOf('inbox')` 接进 `SessionViewTarget.inbox`；
     `src/adv/session/pending-inputs.ts` 的 `waitingUserRows` 按官方 `pendingInputs` 口径合并两路、按 rpcId 去重。
 - 来源：上列两包 `lib/client.js` / `contract/snapshot.d.ts` / `projection-store.d.ts` 的实现本体（非按 `.d.ts` 推测）。
+
+## 16. 宿主 0.2.2-rc.1：会话预览官方样式变化（2026-11-05 解包核实）
+
+解包版本：`@deepseek-ai/dsh-client-ui-chat@0.2.2-rc.1`、`-tool`、`-deliverables`、
+`-sidebar-documentpreview`、`-primitives`、`-conversation`、`dsh-client-ui-theme`；
+对照组为同样七个包的 `0.2.1-rc.5`（§13/§15 记的宿主上一线）。
+
+| 事实 | 证据 |
+|---|---|
+| 官方 CSS module 注入形态**未变**：`<style data-plugin="…" data-plugin-css="@deepseek-ai/dsh-client-ui-chat/ChatView.module.css">`，类名仍 `<构建哈希>_<语义名>`；§5 的 4 个包前缀照旧 | ui-chat `lib/client.js:3384-3387`（`css$16` / `tagId$16` 与 `document.head.appendChild`）；ui-tool / ui-deliverables / ui-sidebar-documentpreview 同款 |
+| `MessageItem.bubble` 从 ui-chat 的 CSS 里**删除**；用户气泡改由**新增官方原语** `UserMessageBubble` 渲染，带 `data-message-bubble=""` 与 `data-text-interaction-source=""` | ui-chat `lib/client.js:9393`（对照 0.2.1-rc.5 `:7364` 还是 `div.MessageItem_module_css_default.bubble`）；primitives `lib/types/UserMessageBubble.d.ts`（props = 原生 div）、`lib/UserMessageBubble.module.css` 的 `.bubble`；0.2.1-rc.5 的 primitives 无此导出 |
+| primitives 的 CSS **不走** `data-plugin-css` 注入（`lib/index.js` 仍是 `import css from "./X.module.css"`）⇒ 运行时类名发现拿不到也不该拿，直接用官方组件 | primitives `lib/index.js:3,76-86` |
+| 语义名变化：`ChatView` 加 `textInteraction`；`MessageItem` 去 `bubble`；`TextPreview` 用 `content` / `lineMark` 取代 `lineTarget`（本仓未取用）。本仓 172 个 `officialClass` 语义对在新版**只有 `bubble` 一处取不到** | 逐模块比对两版 CSS 文本（CSS 字符串会 `+ require.asset(…)` 拼接图片资源，只取首段会误判） |
+| ChatView 间距规则改写：默认 `--dsh-chat-flow-gap` 6px→4px，新增 `:not(.textInteraction)` / `[data-chat-steering-batch]` / `[data-pending-steering]` 等选择器；`runningContent` 增 4px 上边距与固定高度；ChatGroupSeat / ToolRow / TurnUsagePanel 等把 `:is(:hover,:focus-visible)` 拆开并包 `@media (hover:hover)` | ui-chat / ui-tool / ui-deliverables 两版 `css$N` 文本比对 |
+| 主题 token 基本未动：删 `--dsw-specific-sidebar-nav-item-hover`、加 12 个、改 1 个值（`--dsw-menu-surface-fill`）；本仓 `tokens.css` 引用的 49 个 `--dsw-*` 全在。明暗判据仍是 `body[data-ds-dark-theme]`；`uiConversation.target(target)` 实现未变 | ui-theme 两版 `lib/*.js`；ui-conversation 两版 `lib/client.js` 的 `target(target)` 段落 |
+| `skill` 工具调用有**独立官方包** `@deepseek-ai/dsh-client-ui-skill`，通过 `tool.call.toolview` 槽位按 `key: "skill"` 注册专属 `SkillRow`（0.2.1-rc.5 起就有，不在 ui-tool 的 `TOOL_TITLE_KEYS` 里，故通用卡永远查不到）。收起行 = `IconSkillOutlineRegular` + 标题 `row.title`（zh「加载技能」/ en「Skill」）+ 分隔点 + 只取 `args.name` 的摘要；展开体 = `instructionsCard`（带 `row.instructions`「说明」头 + `<pre class=instructions>` 原样呈现持久化输出、260px 限高），不是把 skill 正文当 Markdown 铺出来；`inspect` 按钮仅在槽位给了回调时才渲染。CSS module 走 `data-plugin-css="@deepseek-ai/dsh-client-ui-skill/SkillRow.module.css"` | ui-skill `lib/client.js:69-96`（CSS 与类名表）、`:98-267`（`skillRowModel` / `SkillRow` / `StartedSkillRow`）、`:310-325`（zh/en 词典）、`:432-437`（keyed 注册）；`README.zh.md` §skill 工具行 |
+| **用户消息气泡内容是纯文本，不是 Markdown**：`conversation.user.text` 的默认 slot 是 `PlainUserText` → 官方原语 `UserTextRun`（`<span class=plainRun>{text}</span>`，`font/line-height: inherit`，不解析任何 Markdown）；`UserMessageBubble.module.css` 的 `.bubble` 自带 `white-space:pre-wrap` + 14px/22px，负责保留换行。助手正文才走 `MarkdownText`，且 DOM 是 `AssistantMarkdown.root > body > MarkdownText`（`body` 管 flex-column / 块间 gap 16px / 宽表格） | ui-conversation `lib/client.js:22558-22581`（slot 注册）、`:4291`（`PlainUserText`）、`:4221`（`UserText.module.css`）；primitives `lib/index.js:5603`、`lib/user-text.module.css`、`lib/UserMessageBubble.module.css`；ui-chat `lib/client.js:8370-8378`。0.2.1-rc.5 同款，非本次升级新增 |
+| 工具行「退出码 N」胶囊 = 官方原语 **`Tag tone="neutral"`** + `ExitCodeBadge.module.css` 的 `badge` / `dot` 两类。胶囊底色 / 999px 圆角 / 11px 字号全在 `Tag.module.css` 的 `.tag[data-tone='neutral']`；`badge` 类只有 `flex/gap/margin-left`，`dot` 只有红点几何 ⇒ **只搬 CSS 类不用 Tag 会丢掉整个胶囊**。0.2.1-rc.5 同款，非本次升级新增 | ui-tool `lib/client.js:1519-1555`（`ExitCodeBadge` 函数体 `jsx(primitives.Tag, …)`）；primitives `lib/index.js:3009-3016`、`lib/Tag.module.css`、`lib/types/Tag.d.ts` |
+| **过程组默认收起**（`ChatGroupSeat`）：`grouped = stepGrouping === "collapsed" \|\| stepGrouping === "history" && turnLocation?.status !== "open" && !deferCollapse`，`collapsed` 短路 ⇒ **不看 turn 状态、不看 `deferCollapse`**。默认 `compact` / `standard` 都是 `collapsed`，默认 `collapseTiming = "completion"` ⇒ `deferCollapse` 恒 false ⇒ 所有过程组一律带 `ProcessGroupHeader` 汇总行收起（`processTitle` 按活动类别出「执行了命令」等），点开才展开组内条目。`useChatNodeBottom(firstKey)` 只参与一级 `outerHidden` / `storedOpen` 判定，**不影响 grouped**；把「视口底部节点」误读成「每轮最后一组保持平铺」会连汇总行都不画。0.2.1-rc.5 同款，非本次升级新增 | ui-chat `lib/client.js:4935`（grouped）、`:4877-4920`（`ProcessGroupHeader`）、`:3590` + `:14788`（deferCollapse / 默认时机）、`:14837-14860`（`POLICIES`）；0.2.1-rc.5 `:4157` / `:12657` 同款 |
+
+处置（本仓）：`src/adv/session/mirror/MessageItem.ts` 用 `UserMessageBubble` 取代已删类名，
+用户气泡内容改走官方纯文本 `UserTextRun`（此前误用 `MarkdownText`，把 `##` 渲成大标题、`**` 渲成粗体、
+反引号渲成 code chip，并引入 h2/p 的 32px/16px margin —— 2026-11-05 真机对比截图即此），
+助手正文补回官方 `AssistantMarkdown.body` 层；
+`src/adv/session/mirror/SkillRow.ts` 新增 ui-skill 专属卡并在 `SessionViewModal.ts` 按 `name === 'skill'`
+分派（此前落到通用卡 ⇒ 标题「工具调用」、图标错、展开把 skill 正文铺出来），
+`official-classes.ts` 的 `CSS_PKG_PREFIXES` 补 `@deepseek-ai/dsh-client-ui-skill/`；
+`src/adv/session/mirror/GenericCommandCard.ts` 的 `ExitCodeBadge` 补上官方 `Tag`（此前只搬了 CSS 类，
+胶囊几何与底色全丢 —— 2026-11-05 真机反馈「退出码 1 没有这个样式」即此）；
+`src/adv/session/official-classes.ts` 的发现缓存改按官方 style 标签数失效，防多个官方包分批注入时只缓存到第一批；
+`src/adv/session/mirror/ChatView.ts` 删掉「每轮最后一组平铺」的 `flatKeys`（误读 `useChatNodeBottom` 所致），
+按官方默认 `collapsed` 策略让所有过程组 `grouped: true`（2026-11-05 真机反馈「官方收起来的，我们两个都展开」即此）。
+其余 CSS 规则变化由 `officialClass()` 挂官方类自动跟随，**不写自绘兜底**（§8 长期口径）。

@@ -1,7 +1,7 @@
 import { createElement as h } from 'react';
 import type { ReactNode } from 'react';
 import type { Translate } from '../../../utils/i18n.js';
-import type { ChatNodeStoreFace, TurnsFace } from '../faces.js';
+import type { ChatNodeStoreFace } from '../faces.js';
 import type { NodeRenderer } from './ChatNodeSeat.js';
 import type { ChatEntry, ProcessGroupSnapshot } from './process-groups.js';
 /** 会话区骨架：frame > root > scroll > column（类名一律取官方 ChatView.module.css，取不到 = 空类）。
@@ -22,8 +22,6 @@ export declare function ChatNodeListMirror(props: {
     /** 官方 grouped('chat') 的 entries + 组快照（buildProcessGroups 产出）；缺省走 order 兜底。 */
     entries?: ReadonlyArray<ChatEntry>;
     groups?: ReadonlyMap<string, ProcessGroupSnapshot>;
-    /** 官方 timeline.turns（判 turn 是否 open ⇒ grouped 政策）。 */
-    turns?: TurnsFace;
     openState: ReadonlyMap<number, number>;
     onSetOpen(turn: number, answerStep: number, open: boolean): void;
     foldCompleted: boolean;

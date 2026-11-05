@@ -19,6 +19,7 @@ import { CommandCard } from './mirror/CommandCard.js';
 import { MessageIconActionsMirror } from './mirror/MessageIconActions.js';
 import { AssistantMarkdown, CompactionItemMirror, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage } from './mirror/MessageItem.js';
 import { BashRowMirror } from './mirror/BashRow.js';
+import { SkillRowMirror } from './mirror/SkillRow.js';
 import { ContextInjectionRowMirror } from './mirror/ContextInjectionRow.js';
 import { ReasoningRowMirror } from './mirror/ReasoningRow.js';
 import { RunningStatusMirror } from './mirror/RunningStatus.js';
@@ -267,10 +268,13 @@ tailFacts) {
             const card = toolCallCard(node, t, fileOpen?.open);
             if (card === null)
                 return null;
-            // 官方 tool.call.toolview 槽位按工具名分派：bash / pwsh 走专属 BashRow（独立卡片，无 DisclosureRow）。
+            // 官方 tool.call.toolview 槽位按工具名分派：bash / pwsh 走专属 BashRow（独立卡片，无 DisclosureRow）；
+            // skill 走 ui-skill 包注册的专属 SkillRow（标题「加载技能」+ 技能图标 + Instructions 展开卡）。
             return card.name === 'bash' || card.name === 'pwsh'
                 ? h(BashRowMirror, card)
-                : h(GenericCommandCard, card);
+                : card.name === 'skill'
+                    ? h(SkillRowMirror, card)
+                    : h(GenericCommandCard, card);
         }
         case 'command': {
             // 官方 CommandNodeView → GenericCommandCard（ui-chat/chat/GenericCommandCard.tsx 原样复刻）。
@@ -1006,7 +1010,6 @@ export function SessionViewModal(props) {
             store,
             entries: groupedView?.entries,
             groups: groupedView?.groups,
-            turns,
             openState: openTurns,
             onSetOpen,
             // 官方 usePresentation(policy => policy.foldCompletedTurns)：只读历史视图按「折叠已完成轮次」处理。

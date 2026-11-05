@@ -12,7 +12,7 @@
 // 摘要与五态同构：state = preparing|running|ok|error|stopped（成功结算但退出码非 0 ⇒ error，1767）；
 //   summary = [generic? 工具名, deriveSummary]，终端卡优先 description；error 态摘要 = 输出首行。
 import { Fragment, createElement as h, useMemo, useState } from 'react';
-import { DiffBlock, DisclosureRow, IconApiOutlineRegular, IconBrowseOutlineRegular, IconCodeOutlineRegular, IconEditOutlineRegular, IconSearchOutlineRegular, IconSparkleRegular, ReadBlock, SearchBlock, TerminalBlock, TextShimmer, WebBlock, diffTotals, } from '../../../ui/official.js';
+import { DiffBlock, DisclosureRow, IconApiOutlineRegular, IconBrowseOutlineRegular, IconCodeOutlineRegular, IconEditOutlineRegular, IconSearchOutlineRegular, IconSparkleRegular, ReadBlock, SearchBlock, Tag, TerminalBlock, TextShimmer, WebBlock, diffTotals, } from '../../../ui/official.js';
 import { officialClass } from '../official-classes.js';
 import { CodeViewer } from '../../../ui/display/CodeViewer.js';
 import { markdownLabels } from '../../explorer/preview/md-labels.js';
@@ -729,9 +729,14 @@ const summaryLinkKeyDown = (event) => {
     if (event.key === 'Enter' || event.key === ' ')
         event.stopPropagation();
 };
-/** 官方 ExitCodeBadge（tool client.js:1517-1522）：中性胶囊 + 失败点 + 本地化退出状态。 */
+/**
+ * 官方 ExitCodeBadge（ui-tool@0.2.2-rc.1 lib/client.js:1519-1555）：
+ * 官方 Tag 原语 tone="neutral" + badge/dot 两个类。胶囊的底色、圆角、11px 字号全在
+ * Tag.module.css 的 .tag[data-tone='neutral'] 里；badge 类只管 flex/gap/margin，
+ * 所以只搬 CSS 类而不用 Tag 会丢掉整个胶囊。
+ */
 export function ExitCodeBadge({ label }) {
-    return h('span', { className: officialClass('ExitCodeBadge', 'badge') ?? '' }, h('span', { className: officialClass('ExitCodeBadge', 'dot') ?? '', 'aria-hidden': true }), label);
+    return h(Tag, { tone: 'neutral', className: officialClass('ExitCodeBadge', 'badge') ?? '' }, h('span', { className: officialClass('ExitCodeBadge', 'dot') ?? '', 'aria-hidden': true }), label);
 }
 /**
  * 工具调用 / 命令卡（官方 GenericToolCard + ToolRow 镜像）。

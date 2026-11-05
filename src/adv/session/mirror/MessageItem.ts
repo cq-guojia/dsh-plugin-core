@@ -1,6 +1,8 @@
-// 官方对照：packages/client/ui-chat/src/client/chat/MessageItem.tsx（0.1.7-rc.2）
+// 官方对照：packages/client/ui-chat/src/client/chat/MessageItem.tsx（0.2.2-rc.1 lib/client.js:9359-9410）
 // 用户消息：userRow（右对齐，gap 6px）> userStack（宽 ≤ min(内容宽×.702, 82%)，gap 8px）
-//          > bubble（background:--dsw-specific-bubble; radius-xl; padding:10px 16px; 14px/22px 行高）。
+//          > 官方原语 UserMessageBubble（0.2.2-rc.1 起取代已删的 MessageItem.bubble；
+//            背景 --dsw-specific-bubble / radius-xl / padding 10px 16px / 14px-22px 行高由原语自带）。
+//          原语上带 data-message-bubble 与 data-text-interaction-source（官方逐字口径）。
 // 助手正文不走气泡：AssistantMarkdown（root 14px/24px，body 块间 gap 16px）。
 // 重试/轮次失败/限长三件套同在官方 MessageItem.tsx（lib/client.js:1235-1338）：
 //   ModelRetryItem   = <details.retryRow data-active> > summary.retrySummary > span.retryText
@@ -21,12 +23,15 @@ import {
   MarkdownText,
   StateDot,
   TextShimmer,
+  UserMessageBubble,
+  UserTextRun,
 } from '../../../ui/official.js'
 import { officialClass } from '../official-classes.js'
 import { markdownLabels } from '../../explorer/preview/md-labels.js'
 import type { Translate } from '../../../utils/i18n.js'
 
-/** 助手正文：官方 MarkdownText 渲染 + 官方 AssistantMarkdown.root 类（fallback 自绘）。
+/** 助手正文：官方 DOM = AssistantMarkdown.root > body > MarkdownText（chat lib/client.js:8370-8378）。
+ * root 定 14px/24px，body 定 flex-column + 块间 gap 16px（宽表格规则也挂在 body 上）。
  * U11：fileMentions 词表就位时行内 code 文件引用渲成可点链接（官方语义：resolve 不出保持惰性 code）。 */
 export function AssistantMarkdown(props: {
   text: string
@@ -36,12 +41,14 @@ export function AssistantMarkdown(props: {
 }): ReturnType<typeof h> {
   if (props.text.trim() === '') return h('span', null)
   return h('div', { className: officialClass('AssistantMarkdown', 'root') ?? '' },
-    h(MarkdownText, {
-      text: props.text,
-      streaming: props.streaming,
-      labels: markdownLabels(),
-      fileMentions: props.fileMentions,
-    }),
+    h('div', { className: officialClass('AssistantMarkdown', 'body') ?? '' },
+      h(MarkdownText, {
+        text: props.text,
+        streaming: props.streaming,
+        labels: markdownLabels(),
+        fileMentions: props.fileMentions,
+      }),
+    ),
   )
 }
 
@@ -52,8 +59,8 @@ export interface UserFileFace {
 }
 
 /**
- * 用户消息：官方 MessageItem userRow > userStack > bubble（右对齐气泡）
- * + 气泡下方的 **attachmentRow / fileCard**（官方 MessageItem 的附件行）。
+ * 用户消息：官方 MessageItem userRow > userStack > UserMessageBubble（右对齐气泡）
+ * + 气泡前的 **attachmentRow / fileCard**（官方 0.2.x 把附件行放在气泡之前）。
  *
  * 官方附件卡 = 图标 + 文件名 + 大小；**不可点开**——引用里没有路径，宿主也没给出
  * 「按 attachmentId 打开」的公开面 ⇒ 如实降级为只读展示，不伪造打开行为。
@@ -106,8 +113,14 @@ export function UserMessage(props: {
           ),
       text === ''
         ? null
-        : h('div', { className: officialClass('MessageItem', 'bubble') ?? '' },
-            h(MarkdownText, { text, labels: markdownLabels() })),
+        : h(UserMessageBubble, {
+            // 0.2.2-rc.1 起官方 UserContent 用 primitives.UserMessageBubble 取代
+            // MessageItem.bubble（chat lib/client.js:9393），两个 data 标记逐字照搬。
+            // 气泡内容是官方纯文本节点 UserTextRun（conversation.user.text 默认 slot = PlainUserText）：
+            // 用户消息不解析 Markdown，## / ** / ` 一律逐字显示；bubble 自带 white-space:pre-wrap。
+            'data-message-bubble': '',
+            'data-text-interaction-source': '',
+          }, h(UserTextRun, { text })),
       // 官方 UserContent（lib/client.js:7377）：referenceLabels 在气泡**之后**单独一行。
       references.length === 0
         ? null

@@ -52,6 +52,20 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
     }
   }>
 
+  /**
+   * 官方用户消息气泡（0.2.2-rc.1 新增，lib/types/UserMessageBubble.d.ts）：原生 div props，
+   * 内部把 css.bubble 与调用方 className 合并。宿主 0.2.2-rc.1 起把 MessageItem.bubble 搬到这里。
+   */
+  export const UserMessageBubble: ComponentType<
+    import('react').ComponentPropsWithoutRef<'div'> & { [key: `data-${string}`]: string | undefined }
+  >
+
+  /**
+   * 官方用户文本片段（primitives lib/index.js:5603）：`<span class=plainRun>{text}</span>`，
+   * 逐字保留文本、**不解析 Markdown**；换行由消费者（UserMessageBubble 的 white-space:pre-wrap）负责。
+   */
+  export const UserTextRun: ComponentType<{ text: string }>
+
   /** 官方 Shiki 代码块（diff 面与文档预览同源积木；lang 直接传 fence info / 扩展名）。 */
   export const CodeBlock: ComponentType<{
     code: string
@@ -149,6 +163,8 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   export const IconSearchOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconEditOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconApiOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  /** 官方 skill 专属行图标（ui-skill SkillRow 的 leading）。 */
+  export const IconSkillOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconPlanOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconQuestionOutlineRegular: ComponentType<{ size?: number; className?: string }>
   /** 时钟（时分选择锚点用）。 */
@@ -210,6 +226,14 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
     className?: string | undefined
     children?: ReactNode
   } & import('react').ButtonHTMLAttributes<HTMLButtonElement>>
+
+  /** 官方只读标签：胶囊几何与调色板都在 Tag.module.css 的 .tag[data-tone] 里（0.2.2-rc.1 核实）。 */
+  export type TagTone = 'outline' | 'solid' | 'neutral' | 'quiet' | 'success' | 'info' | 'warning' | 'danger'
+  export const Tag: ComponentType<{
+    tone?: TagTone
+    className?: string | undefined
+    children?: ReactNode
+  }>
 
   /** 官方分段控件（滑块指示器；至少两项）。 */
   export interface SegmentedControlOption<Value extends string> {

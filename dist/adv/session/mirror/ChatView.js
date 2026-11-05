@@ -31,7 +31,7 @@ export function ChatViewFrame(props) {
 }
 /** 官方 ChatNodeList：order → seat 列表（grouped 视图 = entries + groups 路径）。 */
 export function ChatNodeListMirror(props) {
-    const { order, store, entries, groups, turns, openState, onSetOpen, foldCompleted, renderNode, t } = props;
+    const { order, store, entries, groups, openState, onSetOpen, foldCompleted, renderNode, t } = props;
     const rows = [];
     const read = store === undefined ? undefined : store.get;
     if (typeof read !== 'function' || store === undefined)
@@ -45,45 +45,24 @@ export function ChatNodeListMirror(props) {
         }
     };
     if (entries !== undefined && groups !== undefined) {
-        // 官方 deferCollapse：**每一轮（turn）的最后那一个过程组**保持 flat
-        // （不画「已完成分析…」头、组内条目直接铺开），该轮其余组照常收折。
-        // 例：turn 1 切出 2 组 ⇒ 前 1 组收折、最后 1 组平铺；turn 3 切出 5 组 ⇒ 前 4 组收折、最后 1 组平铺。
-        // ⚠️ turn = -1 的组（command 节点无 turn location，process-groups.ts:176 `turn ?? -1`）
-        // **不开新轮**，并入它前面那一轮 —— 否则会被单独当成一轮、多平铺一处（真机 2026-10-23）。
-        const flatKeys = new Set();
-        {
-            let bucket = [];
-            let bucketTurn;
-            const closeBucket = () => {
-                const last = bucket[bucket.length - 1];
-                if (last !== undefined)
-                    flatKeys.add(last);
-                bucket = [];
-            };
-            for (const entry of entries) {
-                if (entry.kind !== 'group')
-                    continue;
-                const turn = groups.get(entry.key)?.data.turn ?? -1;
-                if (turn >= 1) {
-                    if (bucketTurn !== undefined && turn !== bucketTurn)
-                        closeBucket();
-                    bucketTurn = turn;
-                }
-                bucket.push(entry.key);
-            }
-            closeBucket();
-        }
+        // 官方 0.2.2-rc.1 `grouped`（ui-chat lib/client.js:4935）：
+        //   stepGrouping === "collapsed" 时短路为 true，不看 turn 状态，也不看 deferCollapse。
+        //   默认 compact / standard 两种策略都是 "collapsed"（:14839 / :14846），
+        //   默认 collapseTiming = "completion"（:14788）⇒ deferCollapse 恒 false（:3590）。
+        // 只读历史视图没有 live turn ⇒ 所有过程组一律带「执行了命令」这类汇总行收起，
+        // 点开才展开组内条目。旧实现把「每轮最后一组」平铺（误读 useChatNodeBottom 的
+        // 「视口底部节点」语义），导致工具调用 + 思考直接铺开、连汇总行都不画
+        // （真机 2026-11-05 第五轮反馈：「官方收起来的，我们两个都展开」）。
         // 官方 ChatNodeList 的 entries 路径：group 条目 → ChatGroupSeat（二级收折）。
         for (const entry of entries) {
             if (entry.kind === 'group') {
                 const group = groups.get(entry.key);
                 if (group === undefined)
                     continue;
-                const latest = flatKeys.has(group.key);
                 rows.push(h(ChatGroupSeatMirror, {
                     key: entry.key,
                     group,
-                    grouped: turnStatus(turns, group.data.turn) !== 'open' && !latest,
+                    grouped: true,
                     store,
                     openState,
                     onSetOpen,
@@ -117,11 +96,6 @@ export function ChatNodeListMirror(props) {
         rows.push(h(ChatNodeSeatMirror, { key, node, store, openState, onSetOpen, foldCompleted, renderNode }));
     }
     return rows;
-}
-/** turn 状态（官方 turns.get(turn)?.status）。 */
-function turnStatus(turns, turn) {
-    const row = turns?.get(turn) ?? turns?.get(String(turn));
-    return row?.status;
 }
 /** 加载 / 空态提示行（13px tertiary）。 */
 export function ChatHint(props) {

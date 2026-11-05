@@ -102,7 +102,12 @@ export declare const terminalLabels: (t: Translate) => {
     expandAria: (hidden: number) => string;
     expand: (hidden: number) => string;
 };
-/** 官方 ExitCodeBadge（tool client.js:1517-1522）：中性胶囊 + 失败点 + 本地化退出状态。 */
+/**
+ * 官方 ExitCodeBadge（ui-tool@0.2.2-rc.1 lib/client.js:1519-1555）：
+ * 官方 Tag 原语 tone="neutral" + badge/dot 两个类。胶囊的底色、圆角、11px 字号全在
+ * Tag.module.css 的 .tag[data-tone='neutral'] 里；badge 类只管 flex/gap/margin，
+ * 所以只搬 CSS 类而不用 Tag 会丢掉整个胶囊。
+ */
 export declare function ExitCodeBadge({ label }: {
     label: string;
 }): ReturnType<typeof h>;

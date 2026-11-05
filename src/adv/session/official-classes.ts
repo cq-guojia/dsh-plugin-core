@@ -1,6 +1,7 @@
 // 复用官方真实 CSS-module 类名（会话预览弹窗外观对齐官方，方案 ①）。
 //
-// 事实（读 @deepseek-ai/dsh-client-ui-chat@0.1.7-rc.2 源码 lib/client.js）：
+// 事实（读 @deepseek-ai/dsh-client-ui-chat@0.2.2-rc.1 源码 lib/client.js，与 0.2.1-rc.5 逐模块比对）：
+// 两版注入形态一致：
 // 官方 CSS module 由宿主在运行时注入 document.head，形如
 //   <style data-plugin="@deepseek-ai/dsh-client-ui-chat"
 //          data-plugin-css="@deepseek-ai/dsh-client-ui-chat/ChatView.module.css">
@@ -11,34 +12,26 @@
 // 集体失效；运行时解析则**自动跟随**。语义名若被改名，取不到 ⇒ 回退到自绘样式（不崩、
 // 不空白），并在控制台告警一次。
 //
-// 已知官方模块与语义名（源码 *_module_css_default 实测清单）：
-//   ChatView(19): frame root scroll column flowItem hint older callRow openError modalAction toBottom toBottomSlot
-//                running runningDivider runningContent runningText runningIcon runningWhaleAnimated runningWhaleStill
-//   AssistantMarkdown(4): root body actions stopped
-//   MessageItem(32): bubble userRow userStack contextRow fileCard ... turnErrorRow retryRow ...
-//   GenericCommandCard(8): root row title summary body chevron leading separator
-//   （另有 ContextBody / StatsPills / TurnNavigator / accessibility 等，按需取用）
-//   ui-tool 包（工具卡，2026-09 对齐官方 GenericToolCard 时接入）：
-//   ToolRow(30): root row leading title sep summary summarySuffix diffStat fileLink
-//   errorSummary stoppedSummary bodyWrap inspectButton detailsBodyWrap bodyScroll ioCard
-//   ioSection ioLabel ioDivider ioText codeBody terminalBody diffBody readBody imageBody
-//   searchBody webBody searchRecovery imageExtra imageMeta visuallyHidden
-//   （0.2.x 已删 chevron / imageLabel：箭头样式并入 primitives DisclosureRow）
-//   ui-sidebar-documentpreview 包（官方文件预览体，2026-09 U11 文本渲染对齐时接入）：
-//   CodeBody(2): renderer code（CodeBlock + lineNumbers 的官方外壳）
-//   ui-deliverables 包（交付文件行 + 交付文件卡，2026-09 U11 产出物入口接入）：
-//   ui-tool 包内组件（2026-11 详情卡 / 提问卡接入）：
-//   ToolDetails(29): root list item empty caption heading text status pending statusText previous
-//                    unchanged fields field badge subtitle description lines group prose code path
-//   AskQuestionCard(9): card questionList item unansweredQuestion question answerLine answer skipped verdict
-//   PresentRow(4): summary paths output inspect
-//   Deliverables(16): root hostStatus presented file cardPreview fileIcon fileBody details
-//   fileName description previewHint secondaryText toggle actions success-fade
+// 已知官方模块（0.2.2-rc.1 解包核实；语义名一律运行时从 CSS 文本解析，不在此穷举）：
+//   ui-chat: ChatView / AssistantMarkdown / MessageItem / ChatGroupSeat / ContextBody /
+//            ContextInjectionRow / GenericCommandCard / MessageIconActions / ReasoningRow /
+//            TurnUsagePanel / TurnTriggerNodeView / TurnProcessNodeView / TurnTailNodeView /
+//            TurnNavigator / StatsPills / stat-dialog / accessibility
+//   ui-tool: ToolRow / ToolDetails / AskQuestionCard / ExitCodeBadge / bash-sample
+//   ui-skill: SkillRow（keyed toolview key='skill' 的专属卡，0.2.1-rc.5 起就有）
+//   ui-deliverables: Deliverables / ChangedFiles / FileDiff / PresentRow
+//   ui-sidebar-documentpreview: CodeBody / TextPreview（0.2.2-rc.1 用 content / lineMark
+//            取代 lineTarget；本仓未取用）
+//   ⚠ 0.2.2-rc.1 删了 MessageItem.bubble：用户气泡改由官方原语 UserMessageBubble 渲染
+//     （primitives lib/UserMessageBubble.module.css），该包 CSS 不走 data-plugin-css 注入 ⇒
+//     本表查不到也不该查，mirror/MessageItem.ts 直接用官方组件。
+//   0.2.x 已删 ToolRow.chevron / imageLabel（箭头样式并入 primitives DisclosureRow）。
 
-/** 官方注入 style 标签的 data-plugin-css 包前缀（chat 主视图 + ui-tool 工具卡 + ui-deliverables）。 */
+/** 官方注入 style 标签的 data-plugin-css 包前缀（chat 主视图 + ui-tool / ui-skill 工具卡 + ui-deliverables）。 */
 const CSS_PKG_PREFIXES = [
   '@deepseek-ai/dsh-client-ui-chat/',
   '@deepseek-ai/dsh-client-ui-tool/',
+  '@deepseek-ai/dsh-client-ui-skill/',
   '@deepseek-ai/dsh-client-ui-deliverables/',
   '@deepseek-ai/dsh-client-ui-sidebar-documentpreview/',
 ]
@@ -87,18 +80,24 @@ export function parseOfficialCss(css: string): OfficialClassMap {
   return out
 }
 
-/** 已发现的官方模块表（只在真的发现到模块时才缓存，见 discoverOfficialClasses 内注释）。 */
+/** 已发现的官方模块表与缓存时的官方 style 标签数。 */
 let discovered: Map<string, OfficialClassMap> | null = null
+let discoveredTagCount = 0
 
 /**
- * 扫描 document 里官方 chat 包注入的 style 标签，按模块缓存解析结果。
+ * 扫描 document 里官方包注入的 style 标签，按模块缓存解析结果。
+ * 官方 CSS module 分属多个独立包、可能分批注入，只缓存「第一批」会让后注入的模块
+ * 永远取不到类名 ⇒ 标签数一变就重扫。
  * 无 document（SSR / 冒烟）时返回空表。
  */
 export function discoverOfficialClasses(): Map<string, OfficialClassMap> {
-  if (discovered !== null) return discovered
+  // shortcut: 只按标签数判变化，同数量替换内容（宿主内不会重建 style 标签）不触发重扫；
+  // 若将来宿主支持热替换 CSS，需改为比对每个 tag 的 textContent。
+  const tags = typeof document !== 'undefined' ? document.querySelectorAll('style[data-plugin-css]') : null
+  const count = tags?.length ?? 0
+  if (discovered !== null && count === discoveredTagCount) return discovered
   const result = new Map<string, OfficialClassMap>()
-  if (typeof document !== 'undefined') {
-    const tags = document.querySelectorAll('style[data-plugin-css]')
+  if (tags !== null) {
     for (let i = 0; i < tags.length; i++) {
       const tag = tags[i] as HTMLElement
       const id = tag.dataset.pluginCss ?? ''
@@ -114,9 +113,12 @@ export function discoverOfficialClasses(): Map<string, OfficialClassMap> {
       result.set(module, parsed)
     }
   }
-  // 只在真的发现到模块时才缓存：本插件 client 可能先于官方 chat 包加载，
+  // 只在真的发现到模块时才缓存：本插件 client 可能先于官方包加载，
   // 此时扫到空表若缓存住，后面官方样式注入了也取不到。
-  if (result.size > 0) discovered = result
+  if (result.size > 0) {
+    discovered = result
+    discoveredTagCount = count
+  }
   return result
 }
 

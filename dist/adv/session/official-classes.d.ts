@@ -8,7 +8,9 @@ export type OfficialClassMap = Map<string, string>;
  */
 export declare function parseOfficialCss(css: string): OfficialClassMap;
 /**
- * 扫描 document 里官方 chat 包注入的 style 标签，按模块缓存解析结果。
+ * 扫描 document 里官方包注入的 style 标签，按模块缓存解析结果。
+ * 官方 CSS module 分属多个独立包、可能分批注入，只缓存「第一批」会让后注入的模块
+ * 永远取不到类名 ⇒ 标签数一变就重扫。
  * 无 document（SSR / 冒烟）时返回空表。
  */
 export declare function discoverOfficialClasses(): Map<string, OfficialClassMap>;
