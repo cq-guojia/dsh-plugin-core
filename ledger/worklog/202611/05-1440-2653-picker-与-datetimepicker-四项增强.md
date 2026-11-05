@@ -1,7 +1,7 @@
 # 20261105-1440-2653-picker-与-datetimepicker-四项增强: Picker 与 DateTimePicker 四项增强
 
 - **Tags**: Picker, DateTimePicker, 搜索, 分页, 预设档
-- **Status**: doing · 2026-11-05 16:46:48 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-05 16:58:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-05 14:40:50 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -65,3 +65,4 @@ DateTimePicker 默认宽是 6 个 CSS 类按精度写死（`datetime.css:39-44` 
 - 2026-11-05 15:12:14 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 四轮方案定稿写入 Background/To Do/Next/Process：limit 按选项条数切片、keywords 只搜不渲染、presets 放弹层右列且立刻 emit 不关面板、选中态按值比对、短词只作配方不进 value（对齐 AntD presets / MUI getValue）、width 内联覆盖；外部事实已核 Grafana/Elastic/AntD/MUI 官方文档
 - 2026-11-05 15:29:35 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 四项实现完成：sliceGroups/filterGroups(keywords)、resolvePresetExpr(date math 子集)、presets 弹层右列+按值比对+立即 emit 不关面板、width 内联覆盖；文档真源/生成投影/demo/中英字典/单测同步；build 干净、pnpm test 304 全绿、build:demo 出产物、typecheck 双配置干净、koc-codelint 六层全过。待真机观感验收；未提交未打 tag
 - 2026-11-05 16:46:48 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 真机反馈返工：快捷按钮与两个端框改用核心 Button（去掉就地皮肤、圆角统一）；弹层改左右分栏（左=端框+两块日历上下对齐，右=竖列快捷档+竖线+溢出滚动）；demo「全部」改「清除」、second 精度实例也开 presets；文档真源同步。复验 build/test 304 全绿/build:demo/typecheck/codelint 全过
+- 2026-11-05 16:58:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 二次返工（用户真机）：右列宽度改 max-content 自适应（中文两字窄/英文最长档撑开）、快捷按钮文字居中；核心 DateTimePreset.label 支持 {zh,en} 双语对象并按 getLocale 解析，demo 全部改双语（此前硬编码中文导致切英文不变）；新增 now/Q、now-1Q/Q、now/y、now-1y/y 四档并给解析器补 Q 季单位。build/test 304 全绿/build:demo/typecheck/codelint 全过
