@@ -1,7 +1,7 @@
 # 20261105-0809-c567-重写-npm-与-github-的-readme: 重写 NPM 与 GitHub 的 README
 
 - **Tags**: README, 文档, NPM, 中英双语
-- **Status**: doing · 2026-11-05 08:19:54 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-05 08:21:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-05 08:09:40 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -17,12 +17,12 @@
 
 ## To Do
 
-- 待用户验收：README 渲染效果（截图 + 中文链接）需 push 后才能在 GitHub / npm 上看到。
-- 未获提交授权：改动尚未 commit / push。
+- 待用户验收 GitHub 渲染效果（截图 + 中文链接）；npm 包页面的 README 要等下次打 tag 发版才更新，push 不改 npm 页。
+- jsDelivr 对新文件的收录可能延迟；若图裂，改用 `raw.githubusercontent.com` 同路径。
 
 ## Next
 
-待用户验收 `README.md`、`README.zh-CN.md`、`packages/demo/README*.md` 四份文件；验收通过后按用户指令提交（含 `docs/assets/readme/*.png`）。
+待用户验收：打开 https://github.com/cq-guojia/dsh-plugin-core 看根与 `packages/demo/` 两份 README；有改动意见就改文案后重新提交。用户明确说「发版 / 打 tag」才 bump + 打 tag。
 
 ## Process
 
@@ -45,3 +45,4 @@
      Backfill with: progress log --id 20261105-0809-c567-重写-npm-与-github-的-readme --note "...". -->
 - 2026-11-05 08:09:40 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-05 08:19:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 四份 README 重写完成（根 + demo，各英/简中），截图落到 docs/assets/readme/，111/ 已删；pnpm test 295 项全过；待用户验收后再提交
+- 2026-11-05 08:21:19 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已 push（93612cc，10 files，含 assets/readme 5 张图）；build 无产物变化；待用户验收 GitHub 渲染，npm 页需打 tag 才更新
