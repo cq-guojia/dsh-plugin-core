@@ -679,7 +679,16 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
     const range = resolvePresetExpr(p.expr, precision)
     return range === null ? [] : [{ label, range, isClear: false }]
   })
-  const currentRange: [string, string] | null = Array.isArray(current) ? current : null
+  // 高亮按弹层里**正在选**的值（draft）算，不用已提交的 current：
+  // 用户改了起止，快捷档要当场跟着换；算完的边界与 resolvePresetExpr 同口径（起点 floor、终点 ceil）。
+  const draftRange: [string, string] | null = (() => {
+    if (!rangeMode) return null
+    const s = partsOf(draft.start)
+    const e = partsOf(draft.end)
+    return s === null || e === null
+      ? null
+      : [formatDateTimeIso(floorToPrecision(s, precision)), formatDateTimeIso(ceilToPrecision(e, precision))]
+  })()
   const applyPreset = (range: [string, string] | null): void => {
     emit(range) // 立刻给出去，不等「确定」；面板保持打开，当场看得见两端与日历一起变
     const d = draftOf(range)
@@ -701,8 +710,8 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
 
   const pop = h(
     'div',
-    // 弹层表面积走 panel.css 的 menu 档（2026-11-03 皮肤统一）；这类名只剩定位与内距。
-    { className: 'dshpc-panel dshpc-panel--menu dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown },
+    // 皮肤与 pickWorkspaceFile 的选文件弹窗同档（panel.css popover）；这里只管定位、层序与键盘。
+    { className: 'dshpc-panel dshpc-panel--popover dshpc-dt__pop', ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown },
     h(
       'div',
       { className: 'dshpc-dt__layout' },
@@ -733,8 +742,8 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
               'div',
               { className: 'dshpc-dt__side-scroll' },
               presetRows.map((p, i) => {
-                const active = !p.isClear && p.range !== null && currentRange !== null &&
-                  p.range[0] === currentRange[0] && p.range[1] === currentRange[1]
+                const active = !p.isClear && p.range !== null && draftRange !== null &&
+                  p.range[0] === draftRange[0] && p.range[1] === draftRange[1]
                 return h(
                   Button,
                   {

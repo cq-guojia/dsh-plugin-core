@@ -6,7 +6,7 @@
  *
  * 三档（差异只在这三段定义，别处分叉）：
  *   --modal    居中模态（Modal / ConfirmModal / AlertModal 家族）
- *   --popover  贴锚点的浮层面板（pickWorkspaceFile 的选文件弹窗）
+ *   --popover  贴锚点的浮层面板（pickWorkspaceFile 选文件弹窗、DateTimePicker 弹层）
  *   --menu     下拉菜单（文件浏览器 ▾ 选层、Picker 下拉）
  *
  * 不并入三档的：PanelDock 与 SideSheet 是**贴边家族**（side-panel.css 的
@@ -31,15 +31,17 @@
   --dshpc-panel-radius:var(--dshpc-radius-lg);
   --dshpc-panel-shadow:var(--dshpc-shadow-2);
   overflow:hidden;
+  /* 与 menu 同口径的加重描边；日期弹层与选文件弹窗共用这一档（2026-11-06）。 */
+  border-color:var(--dshpc-border-heavy);
 }
 .dshpc-panel--menu{
   /* 菜单底与模态同一层（用户 2026-11-03：别用页面底色，暗色下看着全黑）。 */
   --dshpc-panel-bg:var(--dshpc-surface-1);
   --dshpc-panel-bw:1px;
-  --dshpc-panel-radius:var(--dshpc-radius-sm);
+  /* 圆角与 popover 档统一成 lg（2026-11-06 用户：下拉框也改成 16）。 */
+  --dshpc-panel-radius:var(--dshpc-radius-lg);
   --dshpc-panel-shadow:var(--dshpc-shadow-1);
-  /* 小弹框描边比模态重一档（2026-11-06 用户：看着像被屏蔽的输入框）。
-     只改 menu 这一档，Picker 下拉 / 日期弹层 / ▾ 选层同源，modal 的 3px 边框不动。 */
+  /* 下拉菜单同样加重描边；modal 的 3px 边框不动。 */
   border-color:var(--dshpc-border-heavy);
 }
 

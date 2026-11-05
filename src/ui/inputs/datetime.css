@@ -5,12 +5,14 @@
 .dshpc-dt{position:relative;display:inline-block;font-size:13px;line-height:20px}
 .dshpc-dt__trigger{
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
-  max-width:100%;height:var(--dshpc-control-h-md);padding:0 8px;
+  max-width:100%;height:var(--dshpc-control-h-md);padding:0 10px;
+  font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);
   color:var(--dshpc-fg);background:var(--dshpc-surface-1);
   border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);cursor:pointer;
 }
-.dshpc-dt__trigger--sm{height:var(--dshpc-control-h-sm);font-size:12px}
-.dshpc-dt__trigger--lg{height:var(--dshpc-control-h-lg)}
+/* 三档与 .dshpc-input 逐项对齐：高度同 control-h、内距 8/10/12、字号 sm 降到 font-sm（2026-11-06）。 */
+.dshpc-dt__trigger--sm{height:var(--dshpc-control-h-sm);padding:0 8px;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm)}
+.dshpc-dt__trigger--lg{height:var(--dshpc-control-h-lg);padding:0 12px}
 .dshpc-dt__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}
 /* 焦点与基础 Input 完全同款（点击即蓝描边 + 1px 光环）。 */
 .dshpc-dt__trigger:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}
@@ -43,7 +45,7 @@
 .dshpc-dt__trigger--wr-minute{width:calc(32ch + 111px)}
 .dshpc-dt__trigger--wr-second{width:calc(38ch + 104px)}
 
-/* 弹层表面积归 panel.css 的 menu 档（2026-11-03）：这里只留层序与内距。 */
+/* 弹层表面积归 panel.css 的 popover 档（与选文件弹窗同档）：这里只留层序与内距。 */
 .dshpc-dt__pop{
   z-index:var(--dshpc-z-popmenu);padding:10px;user-select:none;
   font-size:13px;line-height:20px;
@@ -65,7 +67,10 @@
 .dshpc-dt__nav-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}
 .dshpc-dt__caption{font-size:13px;font-weight:600;color:var(--dshpc-fg);white-space:nowrap}
 
-.dshpc-dt__grid{display:grid;grid-template-columns:repeat(7,30px);gap:2px}
+/* 列宽弹性：弹层常被底部动作钮（英文 Today/Clear/Cancel/Confirm）撑得比日历宽，
+   固定 30px 会在右边留一大块空白。minmax(30px,1fr) ⇒ 中文时按钮短、格子仍 30px；
+   英文时按钮长、格子自动拉开填满，不留白（2026-11-06）。 */
+.dshpc-dt__grid{display:grid;grid-template-columns:repeat(7,minmax(30px,1fr));gap:2px}
 .dshpc-dt__wd{height:20px;font-size:11px;line-height:20px;color:var(--dshpc-fg-3);text-align:center}
 .dshpc-dt__cell{
   height:26px;padding:0;font-size:12px;font-variant-numeric:tabular-nums;
@@ -83,7 +88,9 @@
 
 /* 两块日历面板（range：左开始、右结束，各选各的）。 */
 .dshpc-dt__panels{display:flex;gap:14px;align-items:flex-start}
-.dshpc-dt__panel{display:flex;flex-direction:column;gap:6px}
+/* 面板跟着 body 一起吃掉弹层多出来的宽，grid 的 1fr 才有东西可分；
+   range 两块日历各自 basis = 内容宽，多余空间才平分，不会互相挤窄。 */
+.dshpc-dt__panel{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px}
 
 /* 左列（两个端框 + 两块日历）与右列（快捷档）并排；不传 presets 时只剩左列，布局与旧版一致。 */
 .dshpc-dt__layout{display:flex;align-items:stretch;gap:10px}
