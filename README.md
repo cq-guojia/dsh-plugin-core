@@ -230,9 +230,9 @@ Core and the demo share one version number, and one git tag publishes both packa
 # 1. set the same version in the root package.json and packages/demo/package.json
 # 2. build, commit (dist/ must be committed) and push
 pnpm run build && pnpm run build:demo
-git add -A && git commit -m "Release 0.33.0" && git push
+git add -A && git commit -m "Release X.Y.Z" && git push
 # 3. the tag triggers GitHub Actions, which publishes to npm
-git tag v0.33.0 && git push origin v0.33.0
+git tag vX.Y.Z && git push origin vX.Y.Z
 ```
 
 `tag vX.Y.Z` must equal both `version` fields; there is no separate `demo-v*` tag.

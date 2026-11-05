@@ -230,9 +230,9 @@ npm install dsh-plugin-core-demo
 # 1. 根 package.json 与 packages/demo/package.json 的 version 改成同一个号
 # 2. 构建、提交（dist/ 必须入库）、推送
 pnpm run build && pnpm run build:demo
-git add -A && git commit -m "发布 0.33.0" && git push
+git add -A && git commit -m "发布 X.Y.Z" && git push
 # 3. 打 tag 触发 GitHub Actions 自动发 npm
-git tag v0.33.0 && git push origin v0.33.0
+git tag vX.Y.Z && git push origin vX.Y.Z
 ```
 
 `tag vX.Y.Z` 必须等于两个 `version` 字段；没有 `demo-v*` 这种独立 tag。

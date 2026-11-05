@@ -93,7 +93,7 @@ pnpm run build:demo   # 再构建本包 → dist/index.js（server 壳）+ dist/
 
 ```bash
 # 在仓库根：一次 tag 发两个包
-git tag v0.33.0 && git push origin v0.33.0
+git tag vX.Y.Z && git push origin vX.Y.Z
 ```
 
 ## 许可证

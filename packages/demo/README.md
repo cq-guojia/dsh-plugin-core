@@ -93,7 +93,7 @@ Do not run `npm publish` in this directory. The library and this plugin share th
 
 ```bash
 # from the repository root — one tag publishes both packages
-git tag v0.33.0 && git push origin v0.33.0
+git tag vX.Y.Z && git push origin vX.Y.Z
 ```
 
 ## License
