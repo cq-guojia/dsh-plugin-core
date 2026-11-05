@@ -1,8 +1,9 @@
 # 20261105-0809-c567-重写-npm-与-github-的-readme: 重写 NPM 与 GitHub 的 README
 
-- **Tags**: README, 文档, NPM, 中英双语
-- **Status**: doing · 2026-11-05 08:28:18 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: README, 文档, NPM, 中英双语, 发版
+- **Status**: done · 2026-11-05 08:30:33 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-05 08:09:40 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-05 08:30:33 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -47,3 +48,4 @@
 - 2026-11-05 08:19:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 四份 README 重写完成（根 + demo，各英/简中），截图落到 docs/assets/readme/，111/ 已删；pnpm test 295 项全过；待用户验收后再提交
 - 2026-11-05 08:21:19 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已 push（93612cc，10 files，含 assets/readme 5 张图）；build 无产物变化；待用户验收 GitHub 渲染，npm 页需打 tag 才更新
 - 2026-11-05 08:28:18 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 0.33.1：两包同号 bump + build/build:demo + push（e7e65c2），已推 tag v0.33.1 触发自动发布；本机 GitHub API 403，CI 结果未能核实
+- 2026-11-05 08:30:33 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: 两个 npm 门面重写：根与 demo 各出英 + 简中四份 README，5 张截图落到 assets/readme/，功能总览与适配范围补全；随后发版 0.33.1（tag 已推，npm 待 CI 完成）
