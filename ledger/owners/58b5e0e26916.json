@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261105-1355-44bb-定宿主升级差异核对工具的方案": {"category": "方案", "created": "2026-11-05 13:55:51", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-05 13:55:51", "status": "doing", "tags": ["宿主升级", "差异核对", "内部工具", "方案"], "title": "定宿主升级差异核对工具的方案", "updated": "2026-11-05 13:55:51", "worklog": "worklog/202611/05-1355-44bb-定宿主升级差异核对工具的方案.md"}
+    "20261105-1355-44bb-定宿主升级差异核对工具的方案": {"category": "方案", "created": "2026-11-05 13:55:51", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-05 13:55:51", "status": "doing", "tags": ["宿主升级", "差异核对", "内部工具", "方案"], "title": "定宿主升级差异核对工具的方案", "updated": "2026-11-05 13:58:14", "worklog": "worklog/202611/05-1355-44bb-定宿主升级差异核对工具的方案.md"}
   },
   "version": "20261022000000"
 }
