@@ -19,32 +19,28 @@ import {
 import { ExplorerPage, SessionPage } from './blocks.js'
 import { TablePage } from './tables.js'
 import { ToolbarPage } from './toolbar.js'
+import { PaginationPage } from './navigation.js'
 import { DatePage, HttpPage, I18nPage, NumberPage, TextPage } from './utils.js'
 import { ReferencePage } from './reference.js'
 import { Example } from '../doc.js'
 
 /**
- * 两级目录：第一层（group）是能力域的纯标题，不可点；第二层（id）是一个可看页。
- * 一级刻意压到 5 个 —— 侧栏条目一多就糊成一团，看不出来分区。
+ * 两级目录：第一层（group）是能力域，不可点；第二层（id）是一个可看页。
+ * 分类规则见 docs/design/structure.md（区 → 类 → 控件）；一级固定 5 个，二级按「类」成页。
  */
-export type SectionGroup = 'start' | 'components' | 'blocks' | 'utils' | 'reference'
+export type SectionGroup = 'start' | 'design' | 'components' | 'blocks' | 'utils'
 
 export type SectionId =
   | 'help-index'
   | 'quickstart'
+  | 'reference'
   | 'foundation'
-  | 'button'
-  | 'input'
-  | 'picker'
-  | 'datetime'
-  | 'tooltip'
-  | 'card'
-  | 'chip'
-  | 'fliptext'
-  | 'table'
+  | 'actions'
+  | 'inputs'
+  | 'display'
   | 'feedback'
   | 'layout'
-  | 'toolbar'
+  | 'navigation'
   | 'explorer'
   | 'session'
   | 'date'
@@ -52,7 +48,6 @@ export type SectionId =
   | 'number'
   | 'http'
   | 'i18n'
-  | 'reference'
 
 export interface SectionDef {
   id: SectionId
@@ -64,48 +59,49 @@ export interface SectionDef {
 /** 第一层：顺序即侧栏顺序。 */
 export const SECTION_GROUPS: { id: SectionGroup; titleKey: DemoMessageKey }[] = [
   { id: 'start', titleKey: 'grpStart' },
+  { id: 'design', titleKey: 'grpDesign' },
   { id: 'components', titleKey: 'grpComponents' },
   { id: 'blocks', titleKey: 'grpBlocks' },
   { id: 'utils', titleKey: 'grpUtils' },
-  { id: 'reference', titleKey: 'grpReference' },
 ]
 
-// 归类判据（以后加东西照这条填，不用再开会）：
-//   跨页复用、无业务含义        → components
-//   要注入数据、有业务语义的整块 → blocks
-//   无 UI 的纯函数              → utils
-//   说明性 / 元信息             → start / reference
+/** 把几页顺序串成一页（合并后的二级页就是这么来的，旧页面组件原样复用）。 */
+const stack = (...pages: (() => ReturnType<typeof h>)[]): (() => ReturnType<typeof h>) => () =>
+  h('div', null, ...pages.map((Page) => h(Page, { key: Page.name })))
+
 /** 全部二级页（顺序即组内顺序）；侧栏与右侧渲染共用同一份目录（单一事实源）。 */
 export const ALL_SECTIONS: SectionDef[] = [
-  // 入门：帮助索引（读哪一份）在前，然后是快速开始与设计基础
+  // ① 入门：帮助索引 → 快速开始 → 参考
   { id: 'help-index', group: 'start', titleKey: 'secHelpIndex', render: () => h(HelpIndexPage, null) },
   { id: 'quickstart', group: 'start', titleKey: 'secQuickstart', render: () => h(QuickstartPage, null) },
-  { id: 'foundation', group: 'start', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
+  { id: 'reference', group: 'start', titleKey: 'secReference', render: () => h(ReferencePage, null) },
 
-  { id: 'button', group: 'components', titleKey: 'secButton', render: () => h(ButtonPage, null) },
-  { id: 'input', group: 'components', titleKey: 'secInput', render: () => h(InputPage, null) },
-  { id: 'picker', group: 'components', titleKey: 'secPicker', render: () => h(PickerPage, null) },
-  { id: 'datetime', group: 'components', titleKey: 'secDateTime', render: () => h(DateTimePage, null) },
-  { id: 'tooltip', group: 'components', titleKey: 'secTooltip', render: () => h(TooltipPage, null) },
-  { id: 'card', group: 'components', titleKey: 'secCard', render: () => h(CardPage, null) },
-  { id: 'chip', group: 'components', titleKey: 'secChip', render: () => h(ChipPage, null) },
-  { id: 'fliptext', group: 'components', titleKey: 'secFlipText', render: () => h(FlipTextPage, null) },
-  { id: 'table', group: 'components', titleKey: 'secTable', render: () => h(TablePage, null) },
+  // ② 设计
+  { id: 'foundation', group: 'design', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
+
+  // ③ 控件：一页一类，页内按控件族顺序排列
+  { id: 'actions', group: 'components', titleKey: 'secActions', render: () => h(ButtonPage, null) },
+  { id: 'inputs', group: 'components', titleKey: 'secInputs', render: stack(InputPage, PickerPage, DateTimePage) },
+  {
+    id: 'display',
+    group: 'components',
+    titleKey: 'secDisplay',
+    render: stack(CardPage, ChipPage, FlipTextPage, TooltipPage, TablePage),
+  },
   { id: 'feedback', group: 'components', titleKey: 'secFeedback', render: () => h(FeedbackPage, null) },
-  { id: 'layout', group: 'components', titleKey: 'secLayout', render: () => h(LayoutPage, null) },
-  { id: 'toolbar', group: 'components', titleKey: 'secToolbar', render: () => h(ToolbarPage, null) },
+  { id: 'layout', group: 'components', titleKey: 'secLayout', render: stack(LayoutPage, ToolbarPage) },
+  { id: 'navigation', group: 'components', titleKey: 'secNavigation', render: () => h(PaginationPage, null) },
 
+  // ④ 应用模块
   { id: 'explorer', group: 'blocks', titleKey: 'secExplorer', render: () => h(ExplorerPage, null) },
   { id: 'session', group: 'blocks', titleKey: 'secSession', render: () => h(SessionPage, null) },
 
+  // ⑤ 工具方法
   { id: 'date', group: 'utils', titleKey: 'secDate', render: () => h(DatePage, null) },
   { id: 'text', group: 'utils', titleKey: 'secText', render: () => h(TextPage, null) },
   { id: 'number', group: 'utils', titleKey: 'secNumber', render: () => h(NumberPage, null) },
   { id: 'http', group: 'utils', titleKey: 'secHttp', render: () => h(HttpPage, null) },
   { id: 'i18n', group: 'utils', titleKey: 'secI18n', render: () => h(I18nPage, null) },
-
-  // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: 'reference', group: 'reference', titleKey: 'secReference', render: () => h(ReferencePage, null) },
 ]
 
 /**

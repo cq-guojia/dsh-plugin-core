@@ -47,9 +47,9 @@ export function pickOfficial(name, fallback) {
 // 故这里实现后通过 registerHostDialog 注入，confirmModal/alertModal 传 skin:"host" 即调用，保持 ui 入口零官方依赖。
 import { createElement as h } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Button } from './Button.js';
+import { Button } from './actions/Button.js';
 import { t } from '../utils/i18n.js';
-import { registerHostDialog } from './modal-host.js';
+import { registerHostDialog } from './feedback/modal-host.js';
 function mountHostModal(render) {
     if (typeof document === 'undefined')
         return;

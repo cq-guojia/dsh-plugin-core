@@ -5,11 +5,11 @@ import assert from 'node:assert/strict'
 import { register } from 'node:module'
 
 register(new URL('./primitives-hooks.mjs', import.meta.url))
-const { searchCardModel, webCardModel, toolTitleKey, readCallLine } = await import('../dist/session/mirror/GenericCommandCard.js')
+const { searchCardModel, webCardModel, toolTitleKey, readCallLine } = await import('../dist/adv/session/mirror/GenericCommandCard.js')
 
-const { askCardModel } = await import('../dist/session/mirror/AskCard.js')
+const { askCardModel } = await import('../dist/adv/session/mirror/AskCard.js')
 const tt = (key, params) => (params === undefined ? key : `${key}:${JSON.stringify(params)}`)
-const { detailsCardModel, detailsSummary } = await import('../dist/session/mirror/ToolDetails.js')
+const { detailsCardModel, detailsSummary } = await import('../dist/adv/session/mirror/ToolDetails.js')
 
 test('detailsCardModel：定时任务列表 / 目标详情；形状不全或未结算落回 ioCard', () => {
   const args = JSON.stringify({})

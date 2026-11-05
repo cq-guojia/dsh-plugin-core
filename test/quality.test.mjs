@@ -42,7 +42,7 @@ test('质检新增的参数都已导出（Picker 尺寸档 / 非受控 / 清除�
 })
 
 // 2026-10-26：卡片折叠箭头写的是 '▾' 字形，用户点名太丑、且与下拉框那颗（自绘 SVG chevron）
-// 不是一个东西 ⇒ 全站箭头收敛到 src/ui/chevron.ts。字形在各系统字体下粗细 / 角度 / 基线都不同，
+// 不是一个东西 ⇒ 全站箭头收敛到 src/ui/infra/chevron.ts。字形在各系统字体下粗细 / 角度 / 基线都不同，
 // 靠人眼审不出「又冒出一颗」，必须由测试盯。
 test('ui 层不许再用字形箭头，一律走 Chevron', async () => {
   const glyphs = /[▾▸▼▲↑↓→←]/
@@ -72,7 +72,7 @@ test('ui 层不许再用字形箭头，一律走 Chevron', async () => {
 test('滚动容器都与边缘隔 1px（透明边框或实色边框）', async () => {
   // 2026-11-03：浮层面板把边框收到 panel.css 的 `.dshpc-panel`，滚动容器自身不再写 border。
   // 这类容器靠**同一元素上**的面板边框让位，按类名白名单放行；前提是面板确实带 1px 边框。
-  const panelCss = (await readFile(new URL('../src/ui/panel.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
+  const panelCss = (await readFile(new URL('../src/ui/infra/panel.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
   assert.match(panelCss, /\.dshpc-panel\{[^}]*border:var\(--dshpc-panel-bw\) solid var\(--dshpc-border\)/, '面板不再带 1px 边框（滚动条会贴死边缘）')
   const PANEL_SCROLLERS = new Set(['dshpc-fb__crumbs-menu', 'dshpc-picker__menu'])
   const hits = []

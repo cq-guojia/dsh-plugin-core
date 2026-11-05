@@ -14,7 +14,7 @@ import {
   listingOf,
   type DirEntry,
   type WorkspaceFilesFace,
-} from '../../../dist/explorer/index.js'
+} from '../../../dist/adv/explorer/index.js'
 
 /** 四个样例文件；缺一即不算命中。 */
 export const SAMPLE_NAMES = ['README.md', 'demo.html', 'sample.js', 'sample.css'] as const

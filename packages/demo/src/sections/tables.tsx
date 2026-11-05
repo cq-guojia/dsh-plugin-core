@@ -4,7 +4,6 @@ import {
   Checkbox,
   Chip,
   IconButton,
-  Pagination,
   Segmented,
   Table,
   type TableColumn,
@@ -252,14 +251,11 @@ export function TablePage(): ReturnType<typeof h> {
   // 通栏标题前竖线：颜色（内置色名 / 直接色值）与开关
   const [groupAccentOn, setGroupAccentOn] = useState(true)
   const [groupAccent, setGroupAccent] = useState<'default' | 'business' | 'success' | '#7c3aed'>('default')
-  // 分页：独立控件与 Table 内建各一份 state（页码 / 每页条数都归调用方持有）。
+  // 分页：Table 内建分页的 state（页码 / 每页条数都归调用方持有）。独立分页见 navigation 页。
   const [pagerPage, setPagerPage] = useState(1)
   const [pagerSize, setPagerSize] = useState(10)
-  const [demoPage, setDemoPage] = useState(2)
-  const [demoSize, setDemoSize] = useState(10)
-  const [demoAlign, setDemoAlign] = useState<'left' | 'center' | 'right'>('right')
-  // 总数文案（「第 1-10 条，共 86 条」）的开关：showTotal 默认关，示例里两个分页共用这一个开关
-  const [demoShowTotal, setDemoShowTotal] = useState(true)
+  // 总数文案（「第 1-10 条，共 86 条」）的开关
+  const [demoShowTotal] = useState(true)
   // 加载态样式预览：直接切状态把三种底部 / 整表样式挂出来，不依赖滚动触发。
   const [loadState, setLoadState] = useState<'idle' | 'more' | 'done' | 'loading'>('idle')
   const loadColumns: TableColumn[] = [
@@ -278,10 +274,6 @@ export function TablePage(): ReturnType<typeof h> {
   const pagerOnChange = (page: number, size: number): void => {
     setPagerPage(page)
     setPagerSize(size)
-  }
-  const demoOnChange = (page: number, size: number): void => {
-    setDemoPage(page)
-    setDemoSize(size)
   }
   // 同一份加载态，覆盖两种外框：有左右边（borders:all）与没有左右边（borders:y）。
   const renderLoadTable = (borders: 'all' | 'y'): ReturnType<typeof h> =>
@@ -382,53 +374,6 @@ export function TablePage(): ReturnType<typeof h> {
           onRowClick: (row) => setGroupSelected((prev) => (prev === row.key ? null : row.key)),
           ariaLabel: 'Tasks by workspace',
           style: { minWidth: 660 },
-        }),
-      ),
-    ),
-    h(
-      Example,
-      { title: 'Pagination', hint: t('paginationHint') },
-      h(
-        'div',
-        { style: { display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' } },
-        h(Segmented<'left' | 'center' | 'right'>, {
-          size: 'sm',
-          items: [
-            { value: 'left', label: '左' },
-            { value: 'center', label: '中' },
-            { value: 'right', label: '右' },
-          ],
-          value: demoAlign,
-          onChange: setDemoAlign,
-        }),
-        h(Checkbox, { checked: demoShowTotal, onChange: setDemoShowTotal, label: 'showTotal' }),
-      ),
-      h(
-        'div',
-        { style: { marginTop: '12px' } },
-        h(Pagination, {
-          page: demoPage,
-          pageSize: demoSize,
-          total: 86,
-          align: demoAlign,
-          pageSizeOptions: [10, 20, 50],
-          showTotal: demoShowTotal,
-          hideOnSinglePage: true,
-          onChange: demoOnChange,
-          ariaLabel: 'Demo pagination',
-        }),
-      ),
-      h(
-        'div',
-        { style: { marginTop: '12px' } },
-        h(Pagination, {
-          page: demoPage,
-          pageSize: demoSize,
-          total: 86,
-          align: demoAlign,
-          simple: true,
-          onChange: demoOnChange,
-          ariaLabel: 'Demo pagination (simple)',
         }),
       ),
     ),

@@ -20,7 +20,7 @@ import type { SettingsFormScope } from '@deepseek-ai/dsh-client-ui-primitives'
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
 import { Button, Card, PanelDock, Segmented, connectHost, ensureControls, setStyleKit, setTooltipRenderer, useLocale } from '../../../../dist/ui/index.js'
-import { connectFs } from '../../../../dist/explorer/index.js'
+import { connectFs } from '../../../../dist/adv/explorer/index.js'
 import { connectFileServices } from '../host-files.js'
 import { connectRealSessions } from '../real-sessions.js'
 import { demoDock, demoPanels } from '../dock.js'
@@ -425,7 +425,7 @@ export function apply(ctx: {
   kit.ensureStyles()
 
   // 把官方 Tooltip 交给 core：此后 FieldHint（问号提示）的气泡就是官方组件本体，
-  // 与 Tooltip 展示区里的是同一个（core 零官方依赖 ⇒ 只能由插件侧注入，见 src/ui/tooltip.ts）。
+  // 与 Tooltip 展示区里的是同一个（core 零官方依赖 ⇒ 只能由插件侧注入，见 src/ui/infra/tooltip.ts）。
   setTooltipRenderer((props) => h(Tooltip, props as never))
 
   // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）。

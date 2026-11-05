@@ -7,6 +7,7 @@ export type Locale = 'zh' | 'en'
 /** demo 界面文案的 key（含六个分组名、25 个页面标题、各 Demo 块 hint、空页待补说明；演示数据/按钮文案不在内）。 */
 export type DemoMessageKey =
   | 'grpStart'
+  | 'grpDesign'
   | 'grpComponents'
   | 'grpBlocks'
   | 'grpUtils'
@@ -19,6 +20,10 @@ export type DemoMessageKey =
   | 'secWritePlugin'
   | 'secReference'
   | 'secNaming'
+  | 'secActions'
+  | 'secInputs'
+  | 'secDisplay'
+  | 'secNavigation'
   | 'secButton'
   | 'secInput'
   | 'secPicker'
@@ -273,9 +278,10 @@ export type DemoMessageKey =
 export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   zh: {
     grpStart: '入门',
+    grpDesign: '设计',
     grpComponents: '控件',
-    grpBlocks: '业务模块',
-    grpUtils: '通用方法',
+    grpBlocks: '应用模块',
+    grpUtils: '工具方法',
     grpReference: '参考',
 
     secOverview: '概览',
@@ -286,6 +292,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secWritePlugin: '写一个插件',
     secReference: '参考与约定',
     secNaming: '命名与前缀契约',
+    secActions: '动作',
+    secInputs: '录入',
+    secDisplay: '展示',
+    secNavigation: '导航',
     secButton: '按钮',
     secInput: '录入',
     secPicker: '选择器',
@@ -579,8 +589,9 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   },
   en: {
     grpStart: 'Getting started',
+    grpDesign: 'Design',
     grpComponents: 'Components',
-    grpBlocks: 'Blocks',
+    grpBlocks: 'App modules',
     grpUtils: 'Utilities',
     grpReference: 'Reference',
 
@@ -592,6 +603,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secWritePlugin: 'Write a plugin',
     secReference: 'Reference',
     secNaming: 'Naming & prefix contract',
+    secActions: 'Actions',
+    secInputs: 'Inputs',
+    secDisplay: 'Display',
+    secNavigation: 'Navigation',
     secButton: 'Button',
     secInput: 'Inputs',
     secPicker: 'Pickers',
@@ -609,7 +624,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tablePagerHint: 'Built-in paging: omit total for local slicing (pass all rows), pass total for server-side paging; the pager sits under the table, right-aligned.',
     tableLoadingHint: 'The segmented switch flips four states. Both loaders are icon-only (largest for the whole table, middle for loading more); the footer row spans the width with a rule above it, and without side borders the bottom rule is dropped too.',
     secFeedback: 'Feedback',
-    secLayout: 'Layout & scrolling',
+    secLayout: 'Layout',
     secToolbar: 'Quick toolbar',
     secExplorer: 'Workspace browsing',
     secSession: 'Session preview',

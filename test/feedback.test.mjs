@@ -11,7 +11,7 @@ import {
   showLoading,
   showToast,
 } from '../dist/ui/index.js'
-import { LOADING_CSS } from '../dist/ui/controls/loading-css.generated.js'
+import { LOADING_CSS } from '../dist/ui/feedback/loading-css.generated.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
 test('showToast 在无 DOM 环境静默跳过，不抛', () => {

@@ -9,19 +9,20 @@
 ```
 dsh-plugin-core/
 ├── design/         token + createStyleKit 注入器工厂 + 主题判据    （零 React）
-├── ui/             基础控件与布局容器（Button / Input / Picker / Modal / toast / PanelDock …） （依赖 design）
+├── ui/             控件，按 7 类分目录：actions / inputs / display / feedback /
+│                   layout / navigation / infra     （依赖 design）
 ├── utils/          纯方法：日期 / 字符串 / 字节 / 时间区间 / HTTP / 路径    （零 React / DOM）
-├── adv.explorer/   文件浏览成品（目录树 + 面包屑 + 预览）           （依赖 ui + utils）
-└── adv.session/    会话记录预览成品                                 （依赖 ui + utils）
+├── adv/explorer/   文件浏览成品（目录树 + 面包屑 + 预览）           （依赖 ui + utils）
+└── adv/session/    会话记录预览成品                                 （依赖 ui + utils）
 ```
 
-> 目录名目标态（`adv.` 前缀）。选工作区/选文件在 `ui`，路径方法归 `utils`——结构细节见
-> `docs/design/structure.md`。
+> 目录是实际落盘形态（2026-11-05 拆分）。分类判定顺序、每个类的成员、demo 分区见
+> `docs/design/structure.md`。选工作区/选文件在 `ui`，路径方法归 `utils`。
 
 ## 依赖方向（单向，不许反向）
 
 ```
-design ──▶ ui ──▶ adv.explorer / adv.session
+design ──▶ ui ──▶ adv/explorer · adv/session
 utils（谁都不依赖，谁都可以用）
 ```
 
@@ -89,14 +90,14 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
   `openFilePreview` / `pickWorkspaceFile` 经 `connectHost(ctx)` **接线一次**后自己取数，消费方
   不再传数组、服务、会话 id。三条通路（2026-10-20 / 2026-10-28 真机核实）：
   - 工作区：client 侧 `ctx.inject(['workspaces'])` 的快照（getSnapshot + subscribe，follow 流实时更新），
-    封装在 `src/ui/host-data.ts` 的 `workspaceList`。
+    封装在 `src/ui/infra/host-data.ts` 的 `workspaceList`。
   - 模型目录：client 侧 remote **拿不到**每个 provider 的模型 ⇒ 插件宿主侧
     `llm.listModels()` 现查、`serveModelCatalog()`（`src/host/index.ts`，`./host` 子路径）挂成只读路由，
     client 侧 `connectHost(ctx, { modelsPath })` fetch。两侧共用同一个 path 常量。
   - 读文件（2026-11-03 换数据面）：**不再走 `remote.workspaceFiles`**（它的 `list` 被
     `contains(workspaceRoot, target)` 卡死，出不了工作区）。改走插件自己的只读路由：
     宿主 `serveFsRoute({ path })`（`src/host/fs-route.ts`，`./host` 子路径）+ client
-    `connectFs({ path })`（`src/explorer/fs-face.ts`，`createHttpFsFace` 内部 fetch）。
+    `connectFs({ path })`（`src/adv/explorer/fs-face.ts`，`createHttpFsFace` 内部 fetch）。
     **浏览不吃会话**：路径一律绝对；相对路径只在入口按 `sessionId` → 工作区根解析一次。
     会话还剩一处用途 —— Office 预览的授权探针（懒取任意一条，见
     `docs/design/external/dsh-host.md` §13.1）。

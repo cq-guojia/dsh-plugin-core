@@ -12,13 +12,13 @@ import { renderToStaticMarkup } from 'react-dom/server'
 
 register(new URL('./primitives-hooks.mjs', import.meta.url))
 
-const { PanelClose, PanelSurface } = await import('../dist/ui/panel.js')
-const { Modal } = await import('../dist/ui/Modal.js')
-const { Button } = await import('../dist/ui/Button.js')
-const { FlipText, nextFlipSlot } = await import('../dist/ui/FlipText.js')
-const { LandingBody } = await import('../dist/explorer/landing.js')
-const { CrumbNav, PlainNav } = await import('../dist/explorer/crumb-nav.js')
-const { PreviewTitleBar } = await import('../dist/explorer/preview-title-bar.js')
+const { PanelClose, PanelSurface } = await import('../dist/ui/infra/panel.js')
+const { Modal } = await import('../dist/ui/feedback/Modal.js')
+const { Button } = await import('../dist/ui/actions/Button.js')
+const { FlipText, nextFlipSlot } = await import('../dist/ui/display/FlipText.js')
+const { LandingBody } = await import('../dist/adv/explorer/landing.js')
+const { CrumbNav, PlainNav } = await import('../dist/adv/explorer/crumb-nav.js')
+const { PreviewTitleBar } = await import('../dist/adv/explorer/preview-title-bar.js')
 
 const tt = (key) => key
 

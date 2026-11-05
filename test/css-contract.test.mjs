@@ -11,22 +11,22 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import * as controls from '../dist/ui/controls-css.js'
-import { PICKER_CSS } from '../dist/ui/picker-css.js'
-import { PANEL_CSS } from '../dist/ui/panel-css.js'
-import { FEEDBACK_CSS } from '../dist/ui/feedback-css.js'
-import { OVERLAY_CSS } from '../dist/ui/overlay-css.js'
-import { SIDE_PANEL_CSS } from '../dist/ui/side-panel-css.js'
-import { SIDE_SHEET_CSS } from '../dist/ui/side-sheet-css.js'
-import { CARD_CSS } from '../dist/ui/card-css.js'
-import { SURFACE_CSS } from '../dist/ui/surface-css.js'
-import { CHIP_CSS } from '../dist/ui/chip-css.js'
-import { PANEL_DOCK_CSS } from '../dist/ui/panel-dock-css.js'
-import { MARQUEE_CSS } from '../dist/ui/marquee-css.js'
-import { FLIP_CSS } from '../dist/ui/flip-css.js'
-import { CODE_VIEWER_CSS } from '../dist/ui/code-viewer-css.js'
-import { EXPLORER_CSS } from '../dist/explorer/explorer-css.js'
-import { SESSION_CSS } from '../dist/session/session-css.js'
+import * as controls from '../dist/ui/infra/controls-css.js'
+import { PICKER_CSS } from '../dist/ui/inputs/picker-css.js'
+import { PANEL_CSS } from '../dist/ui/infra/panel-css.js'
+import { FEEDBACK_CSS } from '../dist/ui/feedback/feedback-css.js'
+import { OVERLAY_CSS } from '../dist/ui/infra/overlay-css.js'
+import { SIDE_PANEL_CSS } from '../dist/ui/infra/side-panel-css.js'
+import { SIDE_SHEET_CSS } from '../dist/ui/feedback/side-sheet-css.js'
+import { CARD_CSS } from '../dist/ui/display/card-css.js'
+import { SURFACE_CSS } from '../dist/ui/display/surface-css.js'
+import { CHIP_CSS } from '../dist/ui/display/chip-css.js'
+import { PANEL_DOCK_CSS } from '../dist/ui/layout/panel-dock-css.js'
+import { MARQUEE_CSS } from '../dist/ui/display/marquee-css.js'
+import { FLIP_CSS } from '../dist/ui/display/flip-css.js'
+import { CODE_VIEWER_CSS } from '../dist/ui/display/code-viewer-css.js'
+import { EXPLORER_CSS } from '../dist/adv/explorer/explorer-css.js'
+import { SESSION_CSS } from '../dist/adv/session/session-css.js'
 import { transform } from 'lightningcss'
 import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
 
@@ -286,7 +286,7 @@ test('浮层关闭按钮：皮肤只有一份（panel.css），旧类名留别�
   assert.ok(PANEL_CSS.includes('.dshpc-panel__close'), 'PANEL_CSS 缺 .dshpc-panel__close')
   assert.ok(PANEL_CSS.includes('.dshpc-overlay-head__close'), '旧类名别名丢了（消费方覆盖会失效）')
   assert.ok(!OVERLAY_CSS.includes('.dshpc-overlay-head__close'), '关闭钮皮肤在 overlay.css 里还有第二份')
-  const overlay = await readFile(new URL('../dist/ui/overlay.js', import.meta.url), 'utf8')
+  const overlay = await readFile(new URL('../dist/ui/infra/overlay.js', import.meta.url), 'utf8')
   assert.ok(overlay.includes('PanelClose'), '头部关闭钮没走公共件 PanelClose（又手写了一份）')
   assert.ok(overlay.includes('dshpc-overlay-head__close'), '浮层关闭按钮没挂旧类名别名')
   assert.ok(!overlay.includes('dshpc-picker__trigger'), '浮层关闭按钮仍在借 dshpc-picker__trigger')
@@ -299,7 +299,7 @@ test('遮罩让位分栏：写的与读的是同一个 CSS 变量', async () => 
     OVERLAY_CSS.includes('inset:0 var(--dshpc-page-inset-right'),
     '遮罩没用 --dshpc-page-inset-right 让位（右边界会让到全屏）',
   )
-  const dock = await readFile(new URL('../dist/ui/PanelDock.js', import.meta.url), 'utf8')
+  const dock = await readFile(new URL('../dist/ui/layout/PanelDock.js', import.meta.url), 'utf8')
   assert.ok(dock.includes('--dshpc-page-inset-right'), 'PanelDock 没有发布 --dshpc-page-inset-right')
   assert.ok(!FEEDBACK_CSS.includes('dshpc-modal-mask--plain'), 'mask={false} 的旁路样式已删，勿回潮')
 })

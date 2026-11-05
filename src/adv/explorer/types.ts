@@ -1,0 +1,548 @@
+// 与宿主「工作区文件」能力对接的**最小接口面** + 文件浏览的纯逻辑。
+//
+// 本文件是 explorer 的纯逻辑层：**零 React、零官方件**——node 单测直接引它
+// （面板/预览体在别的文件，静态 import 官方 primitives，Node 下会
+// ERR_MODULE_NOT_FOUND，那是宿主才有的平台模块）。
+//
+// 为什么不直接用 `ctx`：ctx 是宿主给的整个大对象，传进来就把本包和宿主版本焊死了。
+// 插件从 ctx 里取出这一小块传给我们，宿主 breaking 时改的是插件「取出」的一行（需求文档 §5.5）。
+
+import { extOf, mimeOf, parentOf } from '../../utils/path.js'
+import type { UtilMessageKey } from '../../utils/i18n.js'
+
+export interface WorkspaceFilesFace {
+  /** 文本分页读。⚠️ `range` **必传**（官方按位置参数个数校验，省了会被远端拒），读全量传 `{}`。 */
+  read(
+    sessionId: string,
+    path: string,
+    range: { offset?: number; limit?: number },
+    signal?: AbortSignal,
+  ): Promise<{
+    offset: number
+    text: string
+    lines: number
+    eof: boolean
+    absolutePath?: string
+    version?: number | string
+    bytes?: number
+  }>
+  /** 二进制读（`options` 同样必传，不传 range 即读全量）。 */
+  readBytes(
+    sessionId: string,
+    path: string,
+    options: { range?: { offset?: number; length?: number } },
+    signal?: AbortSignal,
+  ): Promise<{ offset: number; data: Uint8Array; eof: boolean; bytes?: number }>
+  /** 列举直接子项；list 一个文件会报 not-directory。 */
+  list(
+    sessionId: string,
+    path: string,
+    signal?: AbortSignal,
+  ): Promise<{
+    path: string
+    entries: ReadonlyArray<{ name: string; type: 'file' | 'directory' | 'other'; size?: number }>
+    truncated: boolean
+  }>
+  /** 单文件 stat（可选：宿主过旧没有此方法时降级）。只认普通文件，目录会抛。 */
+  stat?(
+    sessionId: string,
+    path: string,
+    signal?: AbortSignal,
+  ): Promise<{ absolutePath: string; version?: number | string; bytes?: number }>
+}
+
+/**
+ * 官方 `remote.officeToPdf` 的消费面（本地结构化声明，零 npm 依赖，同 WorkspaceFilesFace 做法）。
+ * 运行时服务由宿主提供（宿主装了 @deepseek-ai/dsh-office-to-pdf 才有）；未装 ⇒ 调用方传 null ⇒
+ * Office 文件呈现「预览不可用」，不发起请求、不崩。
+ */
+export interface OfficeToPdfFace {
+  render(
+    sessionId: string,
+    path: string,
+    priority: 'foreground' | 'background',
+    signal?: AbortSignal,
+  ): Promise<unknown>
+}
+
+export interface DirEntry {
+  name: string
+  type: 'file' | 'directory' | 'other'
+  size?: number
+}
+
+export interface Listing {
+  path: string
+  entries: DirEntry[]
+  truncated: boolean
+}
+
+// ── 预览类型分发 ──
+
+export type PreviewKind = 'image' | 'pdf' | 'md' | 'html' | 'office' | 'text'
+
+export interface PreviewInfo {
+  kind: PreviewKind
+  ext: string
+  mime?: string
+}
+
+/** HTML 静态预览的扩展名（与官方 htmlBodyDefinition 同款）。 */
+export const HTML_KINDS: readonly string[] = ['html', 'htm']
+
+/**
+ * Office 预览扩展名（官方 remote.officeToPdf 转 PDF 后再渲染）。
+ * ⚠️ 官方 OfficeExtension 还含 xls / xlsx，按兄弟项目 2026-10-05 拍板「Excel 向后讨论」不纳入。
+ */
+export const OFFICE_KINDS: readonly string[] = ['doc', 'docx', 'ppt', 'pptx']
+
+/** 源码态读取上限（256K，UTF-8 边界安全由截断处处理）。 */
+export const SOURCE_MAX_BYTES = 256 * 1024
+
+/**
+ * 按扩展名分发预览类型。**没有 unsupported 档**：认不出的扩展名一律按 text 走，
+ * 由 read 抛 not-text 落「不是文本文件」空态——官方 read 才是真源，不本地猜二进制清单。
+ */
+export function previewInfoOf(path: string): PreviewInfo {
+  const ext = extOf(path)
+  const mime = mimeOf(path)
+  if (mime !== undefined) return { kind: 'image', ext, mime }
+  if (ext === 'pdf') return { kind: 'pdf', ext, mime: 'application/pdf' }
+  if (ext === 'md' || ext === 'markdown') return { kind: 'md', ext }
+  if (HTML_KINDS.includes(ext)) return { kind: 'html', ext }
+  if (OFFICE_KINDS.includes(ext)) return { kind: 'office', ext, mime: 'application/pdf' }
+  return { kind: 'text', ext }
+}
+
+/** 只要 kind（兼容旧用法）；要 ext/mime 用 previewInfoOf。 */
+export function previewKindOf(path: string): PreviewKind {
+  return previewInfoOf(path).kind
+}
+
+// ── 远端信封的防御解析 ──
+// 真机事实（兄弟项目 2026-09-28 实测）：远端失败时 **resolve 出 `{ ok:false, error }`** 而非 reject；
+// 成功时是结果本身（也可能包一层 `{ value }`）。先剥信封，再校验形状——取不到字符串/Uint8Array
+// 一律按错误态处理，绝不把 undefined 喂给渲染器。
+
+type Envelope = { kind: 'ok'; payload: unknown } | { kind: 'error'; error: unknown }
+
+export function unwrapEnvelope(result: unknown): Envelope {
+  if (typeof result === 'object' && result !== null) {
+    const r = result as { ok?: unknown; error?: unknown; value?: unknown }
+    if (r.ok === false) return { kind: 'error', error: r.error }
+    if (r.ok === true && 'value' in r) return { kind: 'ok', payload: r.value }
+  }
+  return { kind: 'ok', payload: result }
+}
+
+/** 失败分支判空（TS 收窄用）。 */
+export function isFailed(value: unknown): value is { failed: unknown } {
+  return typeof value === 'object' && value !== null && 'failed' in (value as object)
+}
+
+export type Listed = Listing | { failed: unknown }
+
+/** `list` 结果防御解析：返回 Listing 或失败/非法信封。 */
+export function listingOf(result: unknown): Listed | null {
+  const envelope = unwrapEnvelope(result)
+  if (envelope.kind === 'error') return { failed: envelope.error }
+  const raw = envelope.payload
+  if (typeof raw !== 'object' || raw === null) {
+    console.warn('[dsh-plugin-core:explorer] list 返回非对象')
+    return null
+  }
+  const r = raw as { path?: unknown; entries?: unknown; truncated?: unknown }
+  if (typeof r.path !== 'string' || !Array.isArray(r.entries) || typeof r.truncated !== 'boolean') {
+    console.warn('[dsh-plugin-core:explorer] list 返回形状不符契约')
+    return null
+  }
+  return { path: r.path, entries: r.entries as DirEntry[], truncated: r.truncated }
+}
+
+export type TextPage =
+  | { text: string; offset: number; lines: number; eof: boolean }
+  | { failed: unknown }
+  | null
+
+/** `read` 结果防御解析：page.text 必须是字符串，否则错误态（防渲染器内部抛错整页黑屏）。 */
+export function textPageOf(result: unknown): TextPage {
+  const envelope = unwrapEnvelope(result)
+  if (envelope.kind === 'error') return { failed: envelope.error }
+  const raw = envelope.payload
+  if (typeof raw !== 'object' || raw === null) {
+    console.warn('[dsh-plugin-core:explorer] read 返回非对象')
+    return null
+  }
+  const r = raw as { text?: unknown; offset?: unknown; lines?: unknown; eof?: unknown }
+  if (typeof r.text !== 'string') {
+    console.warn('[dsh-plugin-core:explorer] read 返回形状不符契约（无 text 字段）')
+    return null
+  }
+  const offset = typeof r.offset === 'number' ? r.offset : 0
+  const lines = typeof r.lines === 'number' ? r.lines : r.text === '' ? 0 : r.text.split('\n').length
+  return { text: r.text, offset, lines, eof: r.eof !== false }
+}
+
+export type BytesRead = Uint8Array | { failed: unknown } | null
+
+/** `readBytes` 结果防御解析：data 必须是 Uint8Array，否则错误态。 */
+export function bytesOf(result: unknown): BytesRead {
+  const envelope = unwrapEnvelope(result)
+  if (envelope.kind === 'error') return { failed: envelope.error }
+  const data = (envelope.payload as { data?: unknown } | null | undefined)?.data
+  if (data instanceof Uint8Array) return data
+  console.warn('[dsh-plugin-core:explorer] readBytes 返回形状不符契约')
+  return null
+}
+
+/** `stat` 结果防御解析：只取 absolutePath（信封剥壳同款；stat 仅认 regular file）。 */
+export function absolutePathOf(result: unknown): string | null {
+  const envelope = unwrapEnvelope(result)
+  if (envelope.kind === 'error') return null
+  const raw = envelope.payload
+  if (typeof raw !== 'object' || raw === null) return null
+  const abs = (raw as { absolutePath?: unknown }).absolutePath
+  return typeof abs === 'string' && abs !== '' ? abs : null
+}
+
+// ── 错误码 → 文案（官方 RemoteError 按 code 分支，不按消息文本） ──
+
+/** 剥 wire 命名空间前缀（如 `workspace-file/not-found` ⇒ `not-found`）。 */
+export function bareCode(raw: unknown): string {
+  if (typeof raw === 'string') {
+    const slash = raw.lastIndexOf('/')
+    return slash >= 0 ? raw.slice(slash + 1) : raw
+  }
+  if (typeof raw === 'object' && raw !== null) {
+    const code = (raw as { code?: unknown }).code
+    if (typeof code === 'string') return bareCode(code)
+  }
+  return ''
+}
+
+/** 错误视图：文案键 + 占位参数。 */
+export interface ErrView {
+  key: UtilMessageKey
+  params?: Record<string, string | number>
+}
+
+/** 任意抛错/reject ⇒ 文案键。官方 code 分支 + 未知回落，绝不按消息文本猜。 */
+export function errView(error: unknown): ErrView {
+  const code = bareCode(error)
+  switch (code) {
+    case 'outside-workspace':
+      return { key: 'previewOutside' }
+    case 'not-found':
+      return { key: 'previewNotFound' }
+    case 'not-directory':
+      return { key: 'previewNotDirectory' }
+    case 'not-regular-file':
+      // read 到目录 / 设备 / 管道这类「不是普通文件」的东西；与 not-directory（list 到文件）是两码事，
+      // 曾共用「不是文件夹」——/bin 事故里用户看到的正是这句反话（2026-11-03）。
+      return { key: 'previewNotFile' }
+    case 'too-large':
+      return { key: 'previewTooLarge' }
+    case 'not-text':
+      return { key: 'previewNotText' }
+    case 'invocation-unavailable':
+    case 'service-unavailable':
+      return { key: 'previewOfficeUnavailable' }
+    default:
+      // 未映射的机器码**必须留痕**：写死「加载失败」会让消费方和我们自己都永远查不出是谁的锅
+      // （HTML/图片预览曾因此只剩一句「加载失败」，无法定位是远端拒了还是形状不对）。
+      console.warn('[dsh-plugin-core:explorer] 预览失败：未映射的远端错误码', code, error)
+      return { key: 'previewFailedCode', params: { code } }
+  }
+}
+
+// ── 目录条目 ──
+
+/** 子项排序：目录在前，文件在后，各自按名称（不区分大小写）升序。 */
+export function sortEntries(entries: readonly DirEntry[]): DirEntry[] {
+  return [...entries].sort((a, b) => {
+    const ad = a.type === 'directory' ? 0 : 1
+    const bd = b.type === 'directory' ? 0 : 1
+    if (ad !== bd) return ad - bd
+    return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+  })
+}
+
+/**
+ * 0.2.0-rc.1 起官方 list **拒绝空路径** ⇒ 空串（= 工作区根）一律以 `'.'` 上线
+ * （`'.'` 按 cwd = 工作区根归一解析为根本身；响应里根的 path 仍是 `''`）。
+ */
+export function listPathOf(dir: string): string {
+  return dir === '' ? '.' : dir
+}
+
+// ── 请求闸门（latest-wins） ──
+// 预览连续切换 / 目录连点的唯一判据：同一个位置只认最后一次请求。
+// 只做两件事——`begin()` 先 abort 上一次、再给出新的 `signal`；回调用 `current()` 判断是否已作废。
+// 官方 remote 服务已声明 `cancellation: { parameter: 'signal' }`（workspace-files / office-to-pdf
+// lib/typert.remote-client.js），传 signal 是真取消；旧宿主忽略 signal 时 `current()` 仍能挡住晚到结果。
+
+export interface RequestToken {
+  readonly signal: AbortSignal
+  /** true = 仍是最新一次（未被下一次 begin / abort 作废，且未被取消）。 */
+  current(): boolean
+}
+
+export interface RequestGate {
+  /** 开一次新请求：先中止上一次，返回本次 token。 */
+  begin(): RequestToken
+  /** 中止当前请求（卸载 / 关闭 / 换目标时用）。 */
+  abort(): void
+}
+
+export function createRequestGate(): RequestGate {
+  let active: AbortController | null = null
+  return {
+    begin() {
+      active?.abort()
+      const next = new AbortController()
+      active = next
+      return {
+        signal: next.signal,
+        current: () => active === next && !next.signal.aborted,
+      }
+    },
+    abort() {
+      active?.abort()
+      active = null
+    },
+  }
+}
+
+/**
+ * 这次失败是不是「我们主动取消的」。宿主两种表现都要静默：
+ * reject `AbortError`，或 resolve `{ ok:false, error }` 信封——调用方补传 signal 由这里判定。
+ */
+export function isAborted(signal: AbortSignal | undefined, error?: unknown): boolean {
+  if (signal?.aborted === true) return true
+  return typeof error === 'object' && error !== null && (error as { name?: unknown }).name === 'AbortError'
+}
+
+/** 宿主绝对路径形态（/ 开头或 Windows 盘符）。 */
+export function isAbsoluteish(p: string): boolean {
+  return p.startsWith('/') || p.startsWith('\\') || /^[a-zA-Z]:[\\/]/.test(p)
+}
+
+/** 工作区相对拼接（根下直接 name，不补前导 /）。 */
+export function relJoin(dir: string, name: string): string {
+  return dir.replace(/\/+$/, '') === '' ? name : `${dir.replace(/\/+$/, '')}/${name}`
+}
+
+// ── picker 过滤器 ──
+
+/**
+ * 选择器回传：`path` 一律**绝对路径**（用户 2026-11-03 定）。
+ * 仍需要相对语义的消费方用 `workspaceRel`（仅当目标落在某个工作区内才有）。
+ */
+export interface PickedPath {
+  path: string
+  isDir: boolean
+  /** 目标相对其所属工作区根的路径；不在任何工作区内 ⇒ 不出现。 */
+  workspaceRel?: string
+  /** 所属工作区显示名；不在任何工作区内 ⇒ 不出现。 */
+  workspace?: string
+}
+
+/** 选择器过滤：`exts` = 只要这些扩展名（小写无点）；`dirs` = 只要文件夹；都不传 = 不限。 */
+export interface PickFilter {
+  exts?: readonly string[]
+  dirs?: boolean
+}
+
+export function matchesFilter(path: string, isDir: boolean, filter: PickFilter | undefined): boolean {
+  if (filter === undefined) return true
+  if (filter.dirs === true) return isDir
+  if (filter.exts === undefined || filter.exts.length === 0) return true
+  if (isDir) return true
+  return filter.exts.includes(extOf(path))
+}
+
+// ── 面包屑 ──
+
+/**
+ * 归一绝对路径：`\` → `/`、盘符大写、去尾斜杠。相对路径原样返回（由调用方决定 base）。
+ * FS 面的路径一律先过这里，避免 `D:\a` 与 `d:/a` 被当成两个目录。
+ */
+export function normalizePath(path: string): string {
+  const slashed = path.replace(/\\/g, '/')
+  const drive = /^([a-zA-Z]):/.exec(slashed)
+  const head = drive === null ? slashed : `${drive[1]!.toUpperCase()}:${slashed.slice(2)}`
+  // 裸盘符 `D:` 补成 `D:/`：`isAbsoluteish` 要求冒号后带分隔符，否则当成相对路径。
+  if (/^[a-zA-Z]:$/.test(head)) return `${head}/`
+  return head.length > 1 ? head.replace(/\/+$/, '') : head
+}
+
+/** 把绝对路径剥回某个根之下（不在根下 ⇒ 原样返回）。根为 null ⇒ 原样返回。 */
+export function relativizeToDir(path: string, root: string | null): string {
+  if (root === null || root === '') return path
+  const target = normalizePath(path)
+  const base = normalizePath(root)
+  if (target === base) return ''
+  return target.startsWith(`${base}/`) ? target.slice(base.length + 1) : path
+}
+
+/**
+ * 面包屑段：把目录路径拆成可点层级（绝对路径保留前导 /；Windows 盘符单独成段）。
+ */
+export function crumbsOfDir(dir: string): { label: string; path: string }[] {
+  const normalized = normalizePath(dir)
+  const drive = /^([a-zA-Z]):(\/|$)/.exec(normalized)
+  const body = drive === null ? normalized : normalized.slice(2)
+  const isAbs = drive === null && isAbsoluteish(normalized)
+  const segs = body.split('/').filter((s) => s.length > 0)
+  const out: { label: string; path: string }[] = []
+  let acc = ''
+  if (drive !== null) {
+    acc = `${drive[1]!.toUpperCase()}:`
+    out.push({ label: acc, path: `${acc}/` })
+  }
+  for (const seg of segs) {
+    acc = acc === '' ? (isAbs ? `/${seg}` : seg) : `${acc}/${seg}`
+    out.push({ label: seg, path: acc })
+  }
+  return out
+}
+
+/**
+ * 目标路径落在哪个工作区（**最长前缀**，不需要会话）。嵌套工作区取最具体的那个。
+ * 与 `workspaceAnchorForPath` 的区别：这里不要求该工作区有会话 —— 浏览已经不吃会话了。
+ */
+export function workspaceOfPath(path: string, items: readonly WorkspaceAnchorItem[]): WorkspaceAnchorItem | null {
+  if (!isAbsoluteish(path)) return null
+  const target = normalizePath(path)
+  let best: WorkspaceAnchorItem | null = null
+  let bestLen = -1
+  for (const item of items) {
+    if (typeof item.path !== 'string' || item.path === '') continue
+    const root = normalizePath(item.path)
+    if (root === '' || !(target === root || target.startsWith(`${root}/`))) continue
+    if (root.length > bestLen) {
+      best = item
+      bestLen = root.length
+    }
+  }
+  return best
+}
+
+
+/** 文件/目录的显示名（末段）。 */
+export function baseNameOfPath(p: string): string {
+  const i = Math.max(p.lastIndexOf('/'), p.lastIndexOf('\\'))
+  return i < 0 ? p : p.slice(i + 1)
+}
+
+/** 父目录（无父 = 空串）。 */
+export function dirnameOf(p: string): string {
+  return parentOf(p)
+}
+
+/** 路径拼接（处理根与绝对/相对；沿用 utils/path 的 joinPath 语义）。 */
+export { joinPath } from '../../utils/path.js'
+
+/** mimeOf 再导出（预览体要用，避免各自 import utils）。 */
+export { extOf, mimeOf }
+
+// ── 浏览锚点（真实数据） ──
+
+/**
+ * 工作区锚点的候选结构（官方 `workspaces` 服务快照 `WorkspaceView` 的消费子集，
+ * 见 docs/design/external/dsh-host.md §11）。只要够必要的字段，谁都能传。
+ */
+export interface WorkspaceAnchorItem {
+  /** 工作区显示名（面包屑首段 / 传给 FileBrowser 的 rootName）。 */
+  title: string
+  /**
+   * 工作区绝对路径（宿主 registry / `workspaces` 快照的 `path`，realpath 归一形态）。
+   * **按路径匹配的必需字段**：不传 = 该工作区不参与 `workspaceAnchorForPath` 匹配
+   * （仍可被 `pickWorkspaceAnchor` 按更新时间挑中）。
+   */
+  path?: string
+  /** 本工作区名下的会话 id（追加序）；没有一个会话的工作区无法浏览。 */
+  sessionIds?: readonly string[]
+  /** 更新时间戳（毫秒/数字口径由宿主给）；用于「最近打开」排序。 */
+  updatedAt?: number
+}
+
+export interface WorkspaceAnchor {
+  /** 该工作区的显示名。 */
+  title: string
+  /** 用来 list / read 的会话 id（该工作区最近一个会话）。 */
+  sessionId: string
+}
+
+/**
+ * 从宿主工作区清单里挑一个**真实浏览锚点**：最近更新过、且有会话的工作区。
+ *
+ * `workspaceFiles` 是会话作用域服务（list/read 都要 sessionId），所以「打开文件夹」必须先
+ * 落到一个真会话上 —— 这里是它的唯一落点。
+ *
+ * @param items 宿主工作区清单（真实快照）。
+ * @returns 锚点；清单为空 / 都没有会话则返回 null。
+ */
+export function pickWorkspaceAnchor(items: readonly WorkspaceAnchorItem[]): WorkspaceAnchor | null {
+  let best: WorkspaceAnchor | null = null
+  let bestAt = Number.NEGATIVE_INFINITY
+  for (const item of items) {
+    const sessionId = item.sessionIds?.[item.sessionIds.length - 1]
+    if (typeof item.title !== 'string' || item.title === '' || typeof sessionId !== 'string' || sessionId === '') continue
+    const at = typeof item.updatedAt === 'number' && Number.isFinite(item.updatedAt) ? item.updatedAt : Number.NEGATIVE_INFINITY
+    // 等号不覆盖 ⇒ 时间戳相同（含都缺失）时保留靠前的那个。
+    if (best !== null && at <= bestAt) continue
+    best = { title: item.title, sessionId }
+    bestAt = at
+  }
+  return best
+}
+
+/**
+ * 按**工作区 title** 取浏览锚点会话（`workspaceAnchors` 里该 title 最近一个会话）。
+ *
+ * 与 `workspaceAnchorForPath`（按路径匹配）互补：调用方有 title 归属信息时用这个
+ * （兄弟项目 `GET /options` 的 `Record<title, 会话id>` 同口径，无歧义）；
+ * 只有裸绝对路径时才走路径匹配。没有该 title / 没有会话 ⇒ null。
+ */
+export function anchorSessionForTitle(items: readonly WorkspaceAnchorItem[], title: string): string | null {
+  if (title === '') return null
+  const item = items.find((it) => it.title === title)
+  const sessionId = item?.sessionIds?.[item.sessionIds.length - 1]
+  return typeof sessionId === 'string' && sessionId !== '' ? sessionId : null
+}
+
+/**
+ * 目标**绝对路径**落在哪个工作区 ⇒ 该工作区最近一个会话 id（list 的 sessionId）。
+ *
+ * 为什么需要：`workspaceFiles.list` 是会话作用域服务（按 sessionId 解析工作区根，目录 confinement
+ * 检查 `contains(root, target)`，官方 `lib/index.js:576-583`）。调用方只甩一个绝对路径进来时，
+ * 默认 sessionId 的工作区根未必含它 ⇒ 官方报 `outside-workspace` ⇒ 面板整条退化成只读。
+ * 这里把「路径 → 工作区 → 会话」的解析收敛到核心，调用方只需把宿主工作区清单（带 path）传进来。
+ *
+ * 口径：**最长前缀**赢（嵌套工作区取最具体的）；尾斜杠归一；字面大小写（宿主 path 与调用方
+ * 路径同源，不做大小写折叠——Windows 跨形态比较是调用方归一的责任）。
+ * shortcut: 只解一次（入口 path），不跟踪 dir 切换；跨工作区跳转由调用方经 onSelectWorkspace 处理。
+ *
+ * @returns 锚点；无 path 字段 / 都不匹配 / 命中工作区没有会话 ⇒ null（调用方回落默认 sessionId）。
+ */
+export function workspaceAnchorForPath(path: string, items: readonly WorkspaceAnchorItem[]): WorkspaceAnchor | null {
+  if (!isAbsoluteish(path) || path === '') return null
+  const norm = (p: string): string => p.replace(/\/+$/, '')
+  const target = norm(path)
+  let best: WorkspaceAnchorItem | null = null
+  let bestLen = -1
+  for (const item of items) {
+    if (typeof item.path !== 'string' || item.path === '') continue
+    const root = norm(item.path)
+    if (root === '' || !(target === root || target.startsWith(`${root}/`))) continue
+    if (root.length > bestLen) {
+      best = item
+      bestLen = root.length
+    }
+  }
+  if (best === null) return null
+  const sessionId = best.sessionIds?.[best.sessionIds.length - 1]
+  if (typeof sessionId !== 'string' || sessionId === '') return null
+  return { title: best.title, sessionId }
+}

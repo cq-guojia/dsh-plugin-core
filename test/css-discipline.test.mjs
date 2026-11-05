@@ -3,7 +3,7 @@
 //  1. 色值只许出现在 `src/design/tokens.css` —— 别处写 `#fff` / `rgba(...)` 会在换主题时脱节，
 //     而且没人审得出来（本周就发现 16 处，其中 picker 弹窗还给每个 token 配了兜底色）。
 //     确有必要的例外（如遮罩模板色）在同一行/紧邻的注释里写 `token-ok` 并说明理由。
-//  2. 浮层三档变量 `--dshpc-panel-*` 只许在 `src/ui/panel.css` 定义 —— 档位一旦散落，
+//  2. 浮层三档变量 `--dshpc-panel-*` 只许在 `src/ui/infra/panel.css` 定义 —— 档位一旦散落，
 //     就又回到「四处面板四套皮肤」。
 import test from 'node:test'
 import assert from 'node:assert/strict'
@@ -47,7 +47,7 @@ test('色值只出现在 tokens.css（token-ok 标记的例外除外）', async 
 test('浮层三档变量只在 panel.css 定义', async () => {
   const hits = []
   for (const rel of await collect()) {
-    if (rel.endsWith('/ui/panel.css')) continue
+    if (rel.endsWith('/ui/infra/panel.css')) continue
     const text = await readFile(new URL(rel, import.meta.url), 'utf8')
     for (const match of text.matchAll(/--dshpc-panel-[a-z-]+\s*:/g)) {
       hits.push(`${rel.slice(3)}:${lineAt(text, match.index)} → ${match[0].trim()}`)

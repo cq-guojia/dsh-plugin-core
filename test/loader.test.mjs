@@ -3,8 +3,8 @@ import assert from 'node:assert/strict'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { Loader, LoaderBar } from '../dist/ui/index.js'
-import { LOADER_CSS } from '../dist/ui/controls/loader-css.generated.js'
-import { LOADER_BAR_CSS } from '../dist/ui/controls/loader-bar-css.generated.js'
+import { LOADER_CSS } from '../dist/ui/feedback/loader-css.generated.js'
+import { LOADER_BAR_CSS } from '../dist/ui/feedback/loader-bar-css.generated.js'
 
 const SIZES = ['xs', 'sm', 'md', 'lg', 'xl']
 const VARIANTS = ['ring', 'blocks']

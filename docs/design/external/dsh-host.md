@@ -206,7 +206,7 @@
 | 客户端 | 同包 `lib/client.js:473-489 / :491-513` `case "archived"` → `replaceArchived`（`:212-215`）→ `installArchived`（`:269-273` 内容相同直接 return）→ `notifySubscribers`（`:331-335`）；`:245-267` 标准 `getSnapshot()` / `subscribe()`；`:388-392` 服务名 `workspaces`、`list` 即该模型 |
 | 官方 UI 同款用法 | `dsh-client-ui-workspace/lib/client.js:1597` `workspaces.list.subscribe(reconcile)`；`:1639-1643` `clearArchivedCurrent()`；`:5067-5068` `derive(...)` 派生归档集合；`:5168-5174` `openForkSource()` 打开前读 `getSnapshot().archivedSessionIds`，已归档则 `notify({kind:"archivedNotOpenable"})` 不跳（文案 `:4813`「已归档对话暂时无法查看，请取消归档后查看」） |
 
-⇒ 官方为归档态提供的正式通道就是「host 领域事件 → follow 流增量 → client 可观察快照 → 订阅」，**没有轮询，也没有独立的归档事件 API**。本仓处置：`connectHost` 已订阅同一份 `workspaces.list`，`src/ui/host-data.ts` 的 `WorkspaceListStore` 镜像 `archivedSessionIds`，`SessionViewModal` 用 `useSyncExternalStore` 实时跟随；点击「继续对话」按官方 `openForkSource` 判据复核。零新增连接 / RPC / 定时器。
+⇒ 官方为归档态提供的正式通道就是「host 领域事件 → follow 流增量 → client 可观察快照 → 订阅」，**没有轮询，也没有独立的归档事件 API**。本仓处置：`connectHost` 已订阅同一份 `workspaces.list`，`src/ui/infra/host-data.ts` 的 `WorkspaceListStore` 镜像 `archivedSessionIds`，`SessionViewModal` 用 `useSyncExternalStore` 实时跟随；点击「继续对话」按官方 `openForkSource` 判据复核。零新增连接 / RPC / 定时器。
 
 ## 12. workspaceFiles.list / read 的路径语义与越界判定（2026-10-22 解包核实）
 
@@ -230,7 +230,7 @@
   `workspaceFiles.list`，走自建 host 路由 `fs.tree`（host 直接 fs）；且 v0.23.0 起删掉了自己的
   workspace fence（README 原话：「fs 路由不做 workspace 包含检查……调用方不得把这些路由当作有栅栏的」）
   ⇒ 它那里「跨工作区随便逛」是绕开官方 confinement 的结果，**不代表官方 API 贯通**。
-- 处置（本仓）：`workspaceAnchorForPath`（`src/explorer/types.ts`）按最长前缀把绝对路径解析到
+- 处置（本仓）：`workspaceAnchorForPath`（`src/adv/explorer/types.ts`）按最长前缀把绝对路径解析到
   宿主工作区清单里的所属工作区，list 换该工作区名下的会话 id；`openFilePreview({ workspaceAnchors })`
   透传；匹配不到 ⇒ 回落 `props.sessionId` + `crumbBarPlain` 的 hint 说破原因。
 - 来源：官方包 `lib/index.js:489-512 / 563-583 / 421 / 480`；`dsh-task-dispatch-table/src/host.ts:174-187`；
@@ -279,7 +279,7 @@
 本仓**不依赖**它：第三方插件宿主半边能否 inject `fs` 未验证，且插件宿主进程本来就有磁盘权限，
 `node:fs` 只多几十行、不引入跨版本耦合。
 
-### 13.4 本仓自建路由契约（`src/host/fs-route.ts` + `src/explorer/fs-face.ts`）
+### 13.4 本仓自建路由契约（`src/host/fs-route.ts` + `src/adv/explorer/fs-face.ts`）
 
 | 项 | 值 |
 |---|---|
@@ -329,7 +329,7 @@
   `startTime` 才从流末尾 open turn 取。
 - 后果：只渲染 `chat` target 的 `order`，新会话首轮在首个模型事件落盘前**完全没有用户消息**，
   只剩运行态行；durable 节点到达时才把 user + assistant 一起显示。本包
-  `src/session/pending-inputs.ts` 补这条链，`SessionViewModal` 按官方顺序挂回显气泡。
+  `src/adv/session/pending-inputs.ts` 补这条链，`SessionViewModal` 按官方顺序挂回显气泡。
 - 补充修正（2026-11-04，版本同上；旧结论「只补本地回显这一路」不完整，插件真机首条提示词仍不显示）：
   · `beginSubmission()` 的 placement = `this.running ? (mode === 'steer' ? 'steering' : 'queued') : 'transcript'`
     （controller `lib/client.js:1686`）；运行中发出的普通提交标成 `queued`，官方 `visibleSubmissions` 也不画。
@@ -347,5 +347,5 @@
   · 官方 `ChatFlow` 只从 `next-step` 取 steering（`:2815`），但首轮唤醒新 turn 的消息落在 `next-turn`
     （`:9846-9849` 的 inbox 定义）⇒ 插件两条队列都要读。
   · 本包落地：`openSessionView` 把 `faceOf('inbox')` 接进 `SessionViewTarget.inbox`；
-    `src/session/pending-inputs.ts` 的 `waitingUserRows` 按官方 `pendingInputs` 口径合并两路、按 rpcId 去重。
+    `src/adv/session/pending-inputs.ts` 的 `waitingUserRows` 按官方 `pendingInputs` 口径合并两路、按 rpcId 去重。
 - 来源：上列两包 `lib/client.js` / `contract/snapshot.d.ts` / `projection-store.d.ts` 的实现本体（非按 `.d.ts` 推测）。

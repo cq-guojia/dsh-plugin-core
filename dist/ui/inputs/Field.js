@@ -1,0 +1,175 @@
+/**
+ * 输入类控件 —— **全站唯一实现**（L2 组件皮肤，P3）
+ *
+ * - `Input`：文本输入（size sm 24 / md 28 / lg 32，error 描红）；
+ * - `PrefixedInput`：前缀 + 文本输入（如路径 / 接口前缀）；
+ * - `NumberInput`：数字步进（显式 `− / +`，替换原生 `<input type="number">` 的浏览器 spinner，
+ *   支持 step / min / max、clamp、Enter 提交、失焦回弹）。
+ *
+ * 高度一律吃 `--dshpc-control-h-*`；有边 / 无边同高（边框在内部补回）。
+ */
+import { createElement as h, useEffect, useState } from 'react';
+import { IconButton } from '../actions/Button.js';
+import { FieldHint } from '../display/FieldHint.js';
+import { useOverlayLocked } from '../infra/overlay.js';
+import { ensureComponentStyles } from '../infra/css.js';
+import { FIELD_CSS } from '../infra/controls-css.js';
+import { t } from '../../utils/i18n.js';
+/**
+ * 字段 hint 的统一包法：控件 + 问号提示同一行（间距/对齐收进组件，调用方传个
+ * `hint` 字符串就行，不再手动拼排版 —— 用户 2026-10-20 拍板）。
+ */
+export function withHint(control, hint) {
+    if (hint === undefined)
+        return control;
+    return h('span', { className: 'dshpc-fieldwrap' }, control, h(FieldHint, { text: hint }));
+}
+function sizeClass(size) {
+    return size === 'lg' ? '--lg' : size === 'md' ? '--md' : '--sm';
+}
+/** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
+export function Input(props) {
+    ensureComponentStyles('field', FIELD_CSS);
+    const { value, onChange, placeholder, size = 'lg', error, disabled, type, icon, className, style } = props;
+    // 外层浮层锁死：按自己的禁用态渲染，只做「或」—— 不写回调用方的 disabled。
+    const locked = useOverlayLocked();
+    const off = disabled === true || locked;
+    const [focused, setFocused] = useState(false);
+    // 搜索框的清空钮：只在「有焦点 + 有内容」时出现。原生 ::-webkit-search-cancel-button 由壳的 CSS 隐掉，
+    // 换成与 NumberInput 加减号同款的 plain IconButton（2026-10-28 用户：原生那个不好看）。
+    const search = type === 'search';
+    const showClear = search && value !== '' && focused && !off;
+    const input = h('input', {
+        ref: props.inputRef,
+        type: type ?? 'text',
+        value,
+        placeholder,
+        disabled: off,
+        'aria-label': props['aria-label'],
+        title: props.title,
+        className: `dshpc-input dshpc-input${sizeClass(size)}${error === true ? ' dshpc-input--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
+        style,
+        onChange: (event) => { onChange(event.target.value); },
+        onKeyDown: props.onKeyDown,
+        onFocus: () => { setFocused(true); },
+        onBlur: () => { setFocused(false); if (props.onBlur !== undefined)
+            props.onBlur(); },
+    });
+    // 定位壳：图标槽和清空钮都得有个壳挂（两样都没有时 DOM 不变，className / style / ref 仍落在 <input> 上）。
+    const hasIcon = icon !== undefined && icon !== null;
+    if (!hasIcon && !search)
+        return withHint(input, props.hint);
+    return withHint(h('span', { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size)}${showClear ? ' dshpc-iwrap--clear' : ''}` }, hasIcon ? h('span', { className: 'dshpc-iwrap__icon' }, icon) : null, input, 
+    // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
+    showClear
+        ? h(IconButton, {
+            className: 'dshpc-iwrap__clear', variant: 'plain', size, icon: '×', label: t('fieldClear'),
+            onMouseDown: (event) => { event.preventDefault(); },
+            onClick: () => { onChange(''); },
+        })
+        : null), props.hint);
+}
+/** 前缀 + 文本输入。 */
+export function PrefixedInput(props) {
+    ensureComponentStyles('field', FIELD_CSS);
+    const { prefix, value, onChange, placeholder, size = 'lg', error, disabled, type, className, style } = props;
+    const locked = useOverlayLocked();
+    const off = disabled === true || locked;
+    return h('div', {
+        className: `dshpc-pfx dshpc-pfx${sizeClass(size)}${error === true ? ' dshpc-pfx--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
+        style,
+    }, h('span', { className: 'dshpc-pfx__label' }, prefix), h('input', {
+        type: type ?? 'text',
+        value,
+        placeholder,
+        disabled: off,
+        'aria-label': props['aria-label'],
+        title: props.title,
+        className: 'dshpc-pfx__input',
+        onChange: (event) => { onChange(event.target.value); },
+    }));
+}
+/**
+ * 数字步进输入：显式 `− / +` 按钮 + 可输入数字。
+ *
+ * @param props 见 {@link NumberInputProps}。
+ * @returns 数字步进控件。
+ */
+export function NumberInput(props) {
+    ensureComponentStyles('field', FIELD_CSS);
+    const { value, onChange, min = -Infinity, max = Infinity, step = 1, size = 'lg', inputWidth, disabled, suffix, label, decreaseLabel = t('fieldDecrease'), increaseLabel = t('fieldIncrease'), className, style, } = props;
+    const locked = useOverlayLocked();
+    const off = disabled === true || locked;
+    const [text, setText] = useState(String(value));
+    // 外部值变化（如切档位重置）时同步回输入框。
+    useEffect(() => { setText(String(value)); }, [value]);
+    const clamp = (n) => Math.min(max, Math.max(min, n));
+    const commit = (raw) => {
+        // ⚠️ 空串按「输入无效」回弹，**不能**当成 0（2026-10-08 真机 bug：`Number('') === 0` ⇒
+        // 用户按 Delete 把数字删空后失焦，值被 clamp 成 min，看起来就是「按 Delete 不管用」）。
+        if (raw.trim() === '') {
+            setText(String(value));
+            return;
+        }
+        const n = Number(raw);
+        if (!Number.isFinite(n)) {
+            setText(String(value));
+            return;
+        }
+        const next = clamp(n);
+        setText(String(next));
+        if (next !== value)
+            onChange(next);
+    };
+    const bump = (dir) => {
+        const base = Number.isFinite(Number(text)) ? Number(text) : value;
+        const next = clamp(base + dir * step);
+        setText(String(next));
+        if (next !== value)
+            onChange(next);
+    };
+    return withHint(h('div', {
+        className: `dshpc-num dshpc-num${sizeClass(size)}${off ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
+        style,
+    }, h(IconButton, { variant: 'plain', size, icon: '−', label: decreaseLabel, disabled: off, onClick: () => { bump(-1); } }), 
+    // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
+    // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
+    h('span', { className: 'dshpc-num__mid' }, h('input', {
+        className: 'dshpc-num__input',
+        ...(inputWidth === undefined ? {} : { style: { width: `${inputWidth}px` } }),
+        value: text,
+        disabled: off,
+        inputMode: 'numeric',
+        'aria-label': label,
+        onChange: (event) => { setText(event.target.value); },
+        onBlur: () => { commit(text); },
+        onKeyDown: (event) => { if (event.key === 'Enter')
+            commit(text); },
+    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: '+', label: increaseLabel, disabled: off, onClick: () => { bump(1); } })), props.hint);
+}
+/**
+ * 下拉锚点的统一样式（**全站唯一一份**）：`SelectField` 与 `TaskPicker` 共用 —— 两者是同一类锚点，
+ * 不许各抄一份（2026-10-04 评审：TaskPicker 曾抄第二/第三份，观感会持续漂移）。
+ */
+export const FIELD_ANCHOR_STYLE = {
+    display: 'inline-flex', alignItems: 'center', gap: '6px', height: 'var(--dshpc-control-h-lg)', boxSizing: 'border-box',
+    minWidth: 0, maxWidth: '100%', padding: '0 var(--dshpc-space-2)',
+    border: '0.5px solid var(--dshpc-border-heavy)', borderRadius: 'var(--dshpc-radius-md)', background: 'var(--dshpc-surface-1)',
+    color: 'var(--dshpc-fg)', font: 'inherit', fontSize: 'var(--dshpc-font-md)', lineHeight: 'var(--dshpc-line-md)', cursor: 'pointer',
+    transition: 'background var(--dshpc-dur-fast) var(--dshpc-ease), color var(--dshpc-dur-fast) var(--dshpc-ease), border-color var(--dshpc-dur-fast) var(--dshpc-ease)',
+};
+/** 下拉锚点里那行文字（省略号三件套收敛到 `.dshpc-ellipsis`，见 ui-style-guide §三 待抽象 #1）。 */
+export const FIELD_LABEL_STYLE = {
+    flex: '1 1 auto', minWidth: 0, textAlign: 'left',
+};
+/** 尺寸档 → 锚点几何（高度 / 字号 / 行高 / 图标 / 间距）。**翻译只此一处**，下拉类控件共用。 */
+export function fieldMetricsOf(size) {
+    return {
+        height: size === 'sm' ? 'var(--dshpc-control-h-sm)' : size === 'md' ? 'var(--dshpc-control-h-md)' : 'var(--dshpc-control-h-lg)',
+        font: size === 'sm' ? 'var(--dshpc-font-sm)' : 'var(--dshpc-font-md)',
+        line: size === 'sm' ? 'var(--dshpc-line-sm)' : 'var(--dshpc-line-md)',
+        icon: size === 'sm' ? 14 : 16,
+        gap: size === 'sm' ? 'var(--dshpc-space-1)' : '6px',
+    };
+}
+//# sourceMappingURL=Field.js.map

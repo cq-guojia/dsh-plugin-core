@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { TOAST_HOST_KEY, claimToastHost } from '../dist/ui/toast-host.js'
+import { TOAST_HOST_KEY, claimToastHost } from '../dist/ui/feedback/toast-host.js'
 
 test('claimToastHost 单例：第二次 claim 不触发 create，拿到同一实例', () => {
   let created = 0

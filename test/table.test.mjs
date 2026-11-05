@@ -4,7 +4,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { headerRows, isTableCellSpec, leafColumns, tableDepth } from '../dist/ui/table-logic.js'
+import { headerRows, isTableCellSpec, leafColumns, tableDepth } from '../dist/ui/display/table-logic.js'
 import { Table } from '../dist/ui/index.js'
 
 const flat = [

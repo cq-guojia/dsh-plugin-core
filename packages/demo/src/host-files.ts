@@ -8,7 +8,7 @@
  *
  * 服务缺席时保持 null，界面如实说「未就位」，绝不造假数据顶替。
  */
-import type { OfficeToPdfFace, WorkspaceFilesFace } from '../../../dist/explorer/index.js'
+import type { OfficeToPdfFace, WorkspaceFilesFace } from '../../../dist/adv/explorer/index.js'
 
 export interface FileServicesState {
   workspaceFiles: WorkspaceFilesFace | null

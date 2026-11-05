@@ -2,8 +2,8 @@
 // 使用前：插件启动时 `setStyleKit(createStyleKit({ id }))` 一次。
 // 控件样式**由各控件自注入**：每个控件只登记自己那份 CSS（幂等），用不到的控件其 CSS 不进包；
 // `ensureControls()` 退化为可选的 token 预热，不再需要调。
-export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './css.js'
-export { useLocale } from './locale.js'
+export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './infra/css.js'
+export { useLocale } from './infra/locale.js'
 export {
   filterGroups,
   flattenOptions,
@@ -14,14 +14,14 @@ export {
   toggleValue,
   type PickerGroup,
   type PickerOption,
-} from './picker-logic.js'
-export { Picker, type PickerProps, type PickerSize } from './Picker.js'
+} from './inputs/picker-logic.js'
+export { Picker, type PickerProps, type PickerSize } from './inputs/Picker.js'
 export {
   DateTimePicker,
   type DateTimeOutput,
   type DateTimePickerProps,
   type DateTimeSize,
-} from './DateTimePicker.js'
+} from './inputs/DateTimePicker.js'
 export {
   buildMonthCells,
   ceilToPrecision,
@@ -49,9 +49,9 @@ export {
   type EndDraft,
   type StepUnit,
   type TimeParts,
-} from './datetime-logic.js'
-export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './ModelPicker.js'
-export { WorkspacePicker, type WorkspacePickerProps } from './WorkspacePicker.js'
+} from './inputs/datetime-logic.js'
+export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './inputs/ModelPicker.js'
+export { WorkspacePicker, type WorkspacePickerProps } from './inputs/WorkspacePicker.js'
 export {
   connectHost,
   getWorkspaceFiles,
@@ -63,26 +63,26 @@ export {
   type HostWorkspaceSource,
   type ModelCatalogState,
   type ModelRoute,
-} from './host-data.js'
-export { Modal, type ModalProps, type ModalSize } from './Modal.js'
-export { SideSheet, type SideSheetProps, type SideSheetSide } from './SideSheet.js'
+} from './infra/host-data.js'
+export { Modal, type ModalProps, type ModalSize } from './feedback/Modal.js'
+export { SideSheet, type SideSheetProps, type SideSheetSide } from './feedback/SideSheet.js'
 export {
   AlertModal,
   type AlertModalProps,
   type AlertSeverity,
-} from './AlertModal.js'
+} from './feedback/AlertModal.js'
 export {
   ConfirmModal,
   type ConfirmModalProps,
   type ConfirmTone,
-} from './ConfirmModal.js'
+} from './feedback/ConfirmModal.js'
 export {
   alertModal,
   confirmModal,
   type AlertOptions,
   type ConfirmOptions,
   type DialogControl,
-} from './modal-host.js'
+} from './feedback/modal-host.js'
 export {
   CARD_ACCENTS,
   Card,
@@ -90,7 +90,7 @@ export {
   type CardAccent,
   type CardBarOptions,
   type CardSharedProps,
-} from './Card.js'
+} from './display/Card.js'
 export {
   Surface,
   surfaceClass,
@@ -99,16 +99,16 @@ export {
   type SurfaceProps,
   type SurfaceRadius,
   type SurfaceTone,
-} from './Surface.js'
-export { Chip, type ChipProps, type ChipSize, type ChipTone } from './Chip.js'
+} from './display/Surface.js'
+export { Chip, type ChipProps, type ChipSize, type ChipTone } from './display/Chip.js'
 // 表格：第一档外观 = Table（后续 TableGrid / TableZebra 各自独立导出，引哪个打包哪个）。
-export { Table, type TableProps } from './Table.js'
+export { Table, type TableProps } from './display/Table.js'
 // 分页：独立控件；Table 也可通过 `pagination` 内建（切片 + 表下渲染）。
 export {
   Pagination,
   type PaginationProps,
   type TablePaginationConfig,
-} from './Pagination.js'
+} from './navigation/Pagination.js'
 export {
   clampPage,
   pageCountOf,
@@ -117,7 +117,7 @@ export {
   type PageItem,
   type PageTotalRenderer,
   type PaginationAlign,
-} from './pagination-logic.js'
+} from './navigation/pagination-logic.js'
 export {
   headerRows,
   isLeafColumn,
@@ -134,7 +134,7 @@ export {
   type TableHeaderCell,
   type TableRow,
   type TableTone,
-} from './table-logic.js'
+} from './display/table-logic.js'
 export {
   showToast,
   notify,
@@ -143,22 +143,22 @@ export {
   type ToastOptions,
   type ToastAction,
   type NotifyOptions,
-} from './Toast.js'
+} from './feedback/Toast.js'
 
-export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './Button.js'
-export { Segmented, type SegmentedProps, type SegmentedTone } from './Segmented.js'
-export { SplitGroup, type SplitGroupProps } from './SplitGroup.js'
+export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './actions/Button.js'
+export { Segmented, type SegmentedProps, type SegmentedTone } from './inputs/Segmented.js'
+export { SplitGroup, type SplitGroupProps } from './layout/SplitGroup.js'
 export {
   InputGroup,
   type InputGroupAction,
   type InputGroupProps,
-} from './InputGroup.js'
-export { Textarea, type TextareaProps } from './Textarea.js'
-export { Checkbox, type CheckboxProps } from './Checkbox.js'
-export { MarqueeText } from './MarqueeText.js'
-export { FlipText, type FlipTextProps } from './FlipText.js'
-export { Loader, type LoaderProps, type LoaderSize, type LoaderVariant } from './Loader.js'
-export { LoaderBar, type LoaderBarProps } from './LoaderBar.js'
+} from './inputs/InputGroup.js'
+export { Textarea, type TextareaProps } from './inputs/Textarea.js'
+export { Checkbox, type CheckboxProps } from './inputs/Checkbox.js'
+export { MarqueeText } from './display/MarqueeText.js'
+export { FlipText, type FlipTextProps } from './display/FlipText.js'
+export { Loader, type LoaderProps, type LoaderSize, type LoaderVariant } from './feedback/Loader.js'
+export { LoaderBar, type LoaderBarProps } from './feedback/LoaderBar.js'
 export {
   Loading,
   LoadingBlock,
@@ -168,7 +168,7 @@ export {
   type LoadingOptions,
   type LoadingProps,
   type LoadingViewProps,
-} from './Loading.js'
+} from './feedback/Loading.js'
 export {
   claimLoadingHost,
   createLoadingSlot,
@@ -178,20 +178,20 @@ export {
   type LoadingPosition,
   type LoadingSlotState,
   type LoadingVariant,
-} from './loading-host.js'
-export { SectionHead, type SectionHeadAccent, type SectionHeadProps } from './SectionHead.js'
-export { FieldHint, type FieldHintProps } from './FieldHint.js'
+} from './feedback/loading-host.js'
+export { SectionHead, type SectionHeadAccent, type SectionHeadProps } from './display/SectionHead.js'
+export { FieldHint, type FieldHintProps } from './display/FieldHint.js'
 export {
   getTooltipRenderer,
   setTooltipRenderer,
   type TooltipRenderProps,
   type TooltipRenderer,
-} from './tooltip.js'
-export { LiveText } from './LiveText.js'
+} from './infra/tooltip.js'
+export { LiveText } from './display/LiveText.js'
 export {
   QuickToolbar,
   type QuickToolbarProps,
-} from './QuickToolbar.js'
+} from './layout/QuickToolbar.js'
 export {
   DEFAULT_SCROLL_THRESHOLD,
   isToolbarEntryVisible,
@@ -202,8 +202,8 @@ export {
   type QuickToolbarWhen,
   type ToolbarEntry,
   type ToolbarGeometry,
-} from './quick-toolbar-logic.js'
-export { startResizeLayoutWidth, type ResizeOptions } from './resizer.js'
+} from './layout/quick-toolbar-logic.js'
+export { startResizeLayoutWidth, type ResizeOptions } from './layout/resizer.js'
 export {
   DockPanel,
   PanelDock,
@@ -214,7 +214,7 @@ export {
   type PanelDockController,
   type PanelDockOptions,
   type PanelDockProps,
-} from './PanelDock.js'
+} from './layout/PanelDock.js'
 export {
   DEFAULT_PANEL_ID,
   clampWidth,
@@ -229,7 +229,7 @@ export {
   setPanelWidth,
   type DockState,
   type OpenResult,
-} from './panel-dock-logic.js'
+} from './layout/panel-dock-logic.js'
 export {
   FIELD_ANCHOR_STYLE,
   FIELD_LABEL_STYLE,
@@ -242,4 +242,4 @@ export {
   type InputProps,
   type NumberInputProps,
   type PrefixedInputProps,
-} from './Field.js'
+} from './inputs/Field.js'

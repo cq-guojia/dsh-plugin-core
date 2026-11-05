@@ -37,7 +37,7 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react95 = require("react");
+var import_react96 = require("react");
 var import_dsh_client_ui_primitives6 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
@@ -115,7 +115,7 @@ function createStyleKit(options) {
   };
 }
 
-// dist/ui/css.js
+// dist/ui/infra/css.js
 var current = createStyleKit({ id: "dsh-plugin-core-ui" });
 function setStyleKit(kit) {
   current = kit;
@@ -131,7 +131,7 @@ function ensureComponentStyles(domain, css3, kit = current) {
   kit.applyStyle(domain, css3);
 }
 
-// dist/ui/locale.js
+// dist/ui/infra/locale.js
 var import_react = require("react");
 
 // dist/utils/i18n.js
@@ -1178,7 +1178,7 @@ function t(key, vars) {
   });
 }
 
-// dist/ui/locale.js
+// dist/ui/infra/locale.js
 function useLocale() {
   const [locale2, setLocaleState] = (0, import_react.useState)(getLocale);
   (0, import_react.useEffect)(() => {
@@ -1193,7 +1193,7 @@ function useLocale() {
   return locale2;
 }
 
-// dist/ui/picker-logic.js
+// dist/ui/inputs/picker-logic.js
 function toGroups(groups, options) {
   if (groups !== void 0 && groups.length > 0)
     return groups;
@@ -1255,7 +1255,7 @@ function resolveTriggerSizing(opts) {
   return style2;
 }
 
-// dist/ui/Picker.js
+// dist/ui/inputs/Picker.js
 var import_react9 = require("react");
 
 // node_modules/.pnpm/@floating-ui+react@0.27.20_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@floating-ui/react/dist/floating-ui.react.mjs
@@ -3740,7 +3740,7 @@ function useFloating2(_temp) {
   }), [position, refs, elements, context]);
 }
 
-// dist/ui/chevron.js
+// dist/ui/infra/chevron.js
 var import_react4 = require("react");
 var ROTATE = { down: 0, up: 180, left: 90, right: 270 };
 function Chevron(props) {
@@ -3764,7 +3764,7 @@ function Chevron(props) {
   }));
 }
 
-// dist/ui/tooltip.js
+// dist/ui/infra/tooltip.js
 var renderer;
 function setTooltipRenderer(fn) {
   renderer = fn;
@@ -3773,10 +3773,10 @@ function getTooltipRenderer() {
   return renderer;
 }
 
-// dist/ui/FieldHint.js
+// dist/ui/display/FieldHint.js
 var import_react5 = require("react");
 
-// dist/ui/controls/segmented-css.generated.js
+// dist/ui/inputs/segmented-css.generated.js
 var SEGMENTED_CSS = `
 /* \u2500\u2500 \u5206\u6BB5\u63A7\u4EF6 P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
    \u7ED3\u6784\u7167\u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 Segmented \u76AE\u80A4\uFF08item \u65E0\u8FB9\u6846\u3001hover \u53EA\u63D0\u4EAE\u6587\u5B57\uFF09\uFF0C
@@ -3861,10 +3861,10 @@ var SEGMENTED_CSS = `
 @media (prefers-reduced-motion: reduce){.dshpc-seg__item{transition:none;}.dshpc-seg__thumb{transition:none;}}
 `;
 
-// dist/ui/controls/button-css.generated.js
+// dist/ui/actions/button-css.generated.js
 var BUTTON_CSS = "\n/* \u2500\u2500 \u6309\u94AE / \u56FE\u6807\u94AE P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E0E Segmented \u540C\u4E00\u6761\u9AD8\u5EA6\u7EAA\u5F8B\uFF1A--dshpc-control-h-sm(24) / -md(28) / -lg(32)\uFF0C\n   \u6709\u8FB9\u6846\u7684 variant \u7528 1px \u771F\u8FB9\u6846 + \u5185\u90E8 padding \u8865\u56DE\uFF0C**\u6709\u8FB9 / \u65E0\u8FB9\u540C\u9AD8**\u3002\n\n   \u4E09\u6761\u53D7\u63A7\u8F74\uFF082026-10-19 \u91CD\u5199\uFF0C\u5BF9\u9F50\u4E3B\u6D41 UI \u6846\u67B6\u7684\u5206\u7C7B\u53E3\u5F84\uFF09\uFF1A\n     \xB7 variant \u2014\u2014 \u5916\u89C2\u6863 = \u5F62\u6001 + \u8BED\u4E49\u8272\uFF0C\u5171 10 \u6863\uFF1A\n         primary / secondary / outline / ghost / danger / success / warning / info /\n         danger-outline\uFF08\u7EA2\u5B57\u63CF\u8FB9\uFF09/ link\uFF08\u884C\u5185\u94FE\u63A5\uFF09\n     \xB7 size \u2014\u2014 sm / md / lg\n     \xB7 block \u2014\u2014 \u6491\u6EE1\u7236\u5BBD\n   \u6BCF\u4E00\u6863**\u53EA\u586B 5 \u4E2A\u5C40\u90E8\u53D8\u91CF**\uFF08--btn-bg / -fg / -border / -bg-hover / -bg-active\uFF09\uFF0C\n   \u7ED3\u6784\u4E0E\u4EA4\u4E92\u53EA\u6709\u4E0A\u9762\u8FD9\u4E00\u4EFD\uFF1B\u4EFB\u4F55\u6863\u4F4D\u90FD\u4E0D\u8BB8\u518D\u5199\u4E00\u904D display/height/padding\u3002\n   \u81EA\u5B9A\u4E49\u989C\u8272\uFF08Button \u7684 color \u53C2\u6570\uFF09\u540C\u6837\u53EA\u8986\u76D6\u8FD9 5 \u4E2A\u53D8\u91CF\uFF08token \u8986\u76D6\uFF0C\u4E0D\u662F\u65B0\u76AE\u80A4\uFF09\u3002\n\n   \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C\n   \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */\n.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;\n  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);\n  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}\n.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */\n.dshpc-btn--block{display:flex;width:100%;}\n/* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A\n   \u5185\u5BB9\u7EC4 [\u56FE\u6807 + \u95F4\u8DDD + \u6587\u5B57] \u6574\u4F53\u5728\u76D2\u5185\u5C45\u4E2D\u65F6\uFF0C**\u6587\u5B57**\u7684\u4E2D\u5FC3\u4F1A\u88AB\u56FE\u6807\u63A8\u53F3\u534A\u683C\u3002\n   \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002\n   \u56FE\u6807\u5BBD\u6309 1.2em \u4F30\uFF08\u5B98\u65B9\u56FE\u6807 14/16px vs \u5B57\u53F7 12/13px\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */\n.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}\n/* \u56FE\u6807\u6BD4\u540C\u6863\u6587\u5B57\u5C0F\u4E00\u53F7\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u5BB9\u5668\u5403\u6389 0.875em\uFF0C\u5185\u8054 SVG \u4E00\u5F8B\u8DDF\u968F 1em\uFF0C\n   \u4E0D\u518D\u7531\u8C03\u7528\u65B9\u7684 size={16} \u8BF4\u4E86\u7B97 \u2014\u2014 \u5168\u7AD9\u6309\u94AE\u56FE\u6807\u5C3A\u5BF8\u53EA\u7531\u8FD9\u4E00\u5904\u51B3\u5B9A\u3002 */\n.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;font-size:.875em;}\n.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;width:1em;height:1em;}\n/* maxWidth \u5305 MarqueeText \u65F6\uFF1A\u6807\u7B7E\u4F5C\u4E3A flex \u5B50\u9879\u5FC5\u987B\u80FD\u6536\u7F29\u5230\u5185\u5BB9\u4EE5\u4E0B\uFF0C\u5426\u5219\u7701\u7565\u53F7 / \u8DD1\u9A6C\u706F\u6D4B\u4E0D\u51C6 */\n.dshpc-btn .dshpc-btn__label{min-width:0;}\n/* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u679A Loader\uFF08size=xs\uFF0C12px\uFF09\u3002\n   \u73AF\u7684\u753B\u6CD5\u4E0E\u52A8\u753B\u7EDF\u4E00\u5728 controls/loader.css\uFF08\u672C\u6587\u4EF6\u4E0D\u518D\u7EF4\u62A4\u7B2C\u4E8C\u4EFD SVG \u5F27 / keyframes\uFF09\u3002 */\n\n/* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */\n.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}\n.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}\n.dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-btn:disabled{cursor:default;opacity:.5;}\n\n.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);\n  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}\n/* secondary\uFF1A\u4E2D\u6027\u5B9E\u5FC3\uFF08\u7070\u9762\uFF09\uFF0C\u7528\u4E8E\u300C\u53D6\u6D88 / \u6B21\u8981\u300D\u8FD9\u7C7B\u4E0E\u4E3B\u64CD\u4F5C\u5E76\u6392\u7684\u6309\u94AE */\n.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}\n.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}\n.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);\n  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}\n.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}\n/* \u6269\u5C55\u516B\u8272\u5B9E\u5FC3\uFF082026-10-29\uFF09\uFF1A\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1\uFF1Bhover/active \u8D70\u5404\u81EA token \u6D3E\u751F\u3002 */\n.dshpc-btn--purple{--btn-bg:var(--dshpc-purple);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-purple-hover);--btn-bg-active:var(--dshpc-purple-active);}\n.dshpc-btn--pink{--btn-bg:var(--dshpc-pink);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-pink-hover);--btn-bg-active:var(--dshpc-pink-active);}\n.dshpc-btn--cyan{--btn-bg:var(--dshpc-cyan);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-cyan-hover);--btn-bg-active:var(--dshpc-cyan-active);}\n.dshpc-btn--teal{--btn-bg:var(--dshpc-teal);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-teal-hover);--btn-bg-active:var(--dshpc-teal-active);}\n.dshpc-btn--orange{--btn-bg:var(--dshpc-orange);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-orange-hover);--btn-bg-active:var(--dshpc-orange-active);}\n.dshpc-btn--indigo{--btn-bg:var(--dshpc-indigo);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-indigo-hover);--btn-bg-active:var(--dshpc-indigo-active);}\n.dshpc-btn--rose{--btn-bg:var(--dshpc-rose);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-rose-hover);--btn-bg-active:var(--dshpc-rose-active);}\n.dshpc-btn--slate{--btn-bg:var(--dshpc-slate);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-slate-hover);--btn-bg-active:var(--dshpc-slate-active);}\n/* danger-outline\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u4FEE\u9970\u7C7B danger-ink \u4FDD\u7559\u4E3A\u522B\u540D\uFF08\u6D88\u8D39\u65B9\u53EF\u80FD\u8FD8\u5728\u6302\uFF09\uFF0C\u4E24\u8005\u540C\u4E00\u5957\u76AE\u80A4\u3002 */\n.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);\n  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}\n/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF */\n.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);\n  --btn-bg-hover:transparent;--btn-bg-active:transparent;\n  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}\n.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}\n\n/* \u56FE\u6807\u94AE\uFF1A\u7EAF\u56FE\u6807\uFF0C\u65B9\u5F62\uFF1B\u5C3A\u5BF8\u6863\u7684\u5BBD\u9AD8\u4E0E\u540C\u6863\u6587\u5B57\u6309\u94AE\u7B49\u9AD8\u3001\u5706\u89D2\u7EDF\u4E00\u5403 md\uFF08\u4E0E .dshpc-btn \u540C\u6B3E\uFF0C2026-10-28 \u62CD\u677F\uFF09\n   \u5E95\u8272 / \u56FE\u6807\u8272\u5168\u8D70\u5C40\u90E8\u53D8\u91CF\uFF1A\u9ED8\u8BA4**\u65E0\u5E95\u8272**\uFF0C\u6D88\u8D39\u65B9\u53EF\u4F20 color\uFF08\u56FE\u6807\u8272\uFF09/ background\uFF08\u5E95\u8272\uFF09\u8986\u76D6\uFF08\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-iconbtn{--icb-bg:transparent;--icb-bg-hover:var(--dshpc-hover);--icb-fg:var(--dshpc-fg-2);--icb-fg-hover:var(--dshpc-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;\n  border:1px solid var(--icb-border,transparent);border-radius:var(--dshpc-radius-md);\n  background:var(--icb-bg);color:var(--icb-fg);\n  font-family:inherit;cursor:pointer;flex:none;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}\n.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}\n/* \u56FE\u6807\u4E0E\u6587\u5B57\u6309\u94AE\u540C\u53E3\u5F84\uFF1A\u5185\u8054 SVG \u4E00\u5F8B\u8DDF\u968F 1em\uFF08\u6BD4 16px \u6863\u5C0F\u4E00\u53F7\uFF09 */\n.dshpc-iconbtn > svg{display:block;width:1em;height:1em;}\n.dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}\n.dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}\n.dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}\n.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}\n\n/* \u2500\u2500 \u884C\u5F0F\u6587\u4EF6\u6309\u94AE\uFF08\u56FE\u6807 + \u6587\u4EF6\u540D\uFF09P2\uFF1A**\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7528\u9014\uFF1A\u300C\u4EA7\u51FA\u7269 / \u9644\u4EF6\u300D\u90A3\u79CD**\u4E00\u884C\u4E00\u4E2A\u6587\u4EF6**\u7684\u6E05\u5355\u9879\uFF08\u57FA\u7840\u4FE1\u606F\u53F3\u680F\u4EA7\u51FA\u7269\u6E05\u5355\u3001\u9644\u4EF6\u533A\u3001\n   \u6267\u884C\u8BB0\u5F55\u9875\u7684\u5C55\u5F00\u533A\uFF09\u3002\u5E73\u65F6\u900F\u660E\u3001**\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u51FA\u6D45\u5E95**\uFF08\u6CBF\u7528\u7528\u6237 2026-10-03 \u5B9A\u7684\u89C2\u611F\uFF09\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4FEE\u9970\u7C7B\uFF1A\n     --block   \u6491\u6EE1\u7236\u5BBD\uFF08\u6E05\u5355\u91CC\u4E00\u9879\u4E00\u884C\uFF09\n     --inline  \u5185\u5BB9\u5BBD\uFF08\u8DDF\u5728\u6587\u5B57\u540E\u5934\uFF0C\u5982\u9644\u4EF6\u884C\uFF09\n   \u6536\u7F16\u539F\u56E0\uFF1A\u8FD9\u4EFD\u76AE\u80A4\u6B64\u524D\u53EA\u5199\u5728 task-list.tsx \u7684 TASK_LIST_CSS \u91CC\uFF08\u65E7\u540D .dshpc-info-out\uFF09\uFF0C\n   \u6267\u884C\u8BB0\u5F55\u9875\u5C55\u5F00\u533A\u8981\u7528\u540C\u4E00\u79CD\u89C2\u611F \u21D2 \u4E0A\u63D0\u57FA\u7840\u5C42\uFF0C\u907F\u514D\u518D\u51FA\u73B0\u300C\u5404\u5199\u4E00\u4EFD\u5916\u89C2\u300D\uFF08\u540C\u540D\u4E0D\u540C\u76AE\u7684\u5751\u521A\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-filechip{appearance:none;-webkit-appearance:none;border:0;border-radius:var(--dshpc-radius-xs);\n  background:transparent;color:var(--dshpc-fg);font:inherit;text-align:left;cursor:pointer;min-width:0;\n  transition:background-color var(--dshpc-dur) var(--dshpc-ease);}\n.dshpc-filechip:hover:not(:disabled){background:var(--dshpc-chip-bg);}\n.dshpc-filechip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-filechip:disabled{cursor:default;background:transparent;color:var(--dshpc-fg-3);}\n.dshpc-filechip--block{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;\n  padding:4px 6px;font-size:var(--dshpc-font-xs);}\n.dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}\n\n@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}\n";
 
-// dist/ui/controls/field-css.generated.js
+// dist/ui/inputs/field-css.generated.js
 var FIELD_CSS = `
 /* \u2500\u2500 \u5B57\u6BB5 + \u95EE\u53F7\u63D0\u793A\uFF08hint \u53C2\u6570\u5185\u7F6E\uFF09 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 /* \u63A7\u4EF6 + FieldHint \u540C\u4E00\u884C\uFF1Bhint \u7248\u7531\u7EC4\u4EF6\u81EA\u5DF1\u5305\uFF0C\u8C03\u7528\u65B9\u53EA\u4F20 hint \u5B57\u7B26\u4E32\u3002
@@ -3978,43 +3978,43 @@ var FIELD_CSS = `
 @media (prefers-reduced-motion: reduce){.dshpc-input,.dshpc-pfx{transition:none;}}
 `;
 
-// dist/ui/controls/loading-css.generated.js
+// dist/ui/feedback/loading-css.generated.js
 var LOADING_CSS = "\n/* \u8FD0\u884C\u4E2D / loading \u7684\u6D3B\u52A8\u6307\u793A\uFF1A\u4E09\u4E2A\u5C0F\u65B9\u5757\u4F9D\u6B21\u8109\u52A8\u3002 */\n@keyframes dshpc-run-block { 0%, 80%, 100% { opacity: 0.25; transform: scale(0.8) } 40% { opacity: 1; transform: scale(1) } }\n.dshpc-run-blocks { display: inline-flex; align-items: center; gap: 3px; }\n.dshpc-run-blocks > i { width: 5px; height: 5px; border-radius: 1px; background: currentColor; animation: dshpc-run-block 1.2s ease-in-out infinite; }\n.dshpc-run-blocks > i:nth-child(2) { animation-delay: 0.15s; }\n.dshpc-run-blocks > i:nth-child(3) { animation-delay: 0.3s; }\n@media (prefers-reduced-motion: reduce) { .dshpc-run-blocks > i { animation: none; opacity: 1; } }\n\n/* \u2500\u2500 \u52A0\u8F7D\u63D0\u793A\uFF08LoadingToast / LoadingBlock / showLoading\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E24\u79CD\u6837\u5F0F\u7684\u8868\u9762\u7EDF\u4E00\u8D70 token\uFF082026-11-03\uFF1A\u539F\u6765\u5199\u6B7B #f4f4f5/#18181b \u518D\u8865\u4E00\u6BB5\u6697\u8272\u8986\u76D6\uFF0C\n   \u7B49\u4E8E\u81EA\u5DF1\u9020\u7B2C\u4E8C\u5957\u4E3B\u9898\uFF1B\u73B0\u5728\u5E95\u8272/\u5B57\u8272/\u9634\u5F71\u5168\u4ECE var(--dshpc-*) \u6765\uFF0C\u6697\u8272\u81EA\u52A8\u8DDF\u968F\uFF09\u3002\n   \u5361\u91CC\u7684\u8F6C\u5708\u56FE\u6807\u4E0D\u81EA\u7ED8\uFF1A\u590D\u7528 Loader\uFF08size sm / md\uFF09\uFF0C\u73AF\u7684\u753B\u6CD5\u4E0E\u52A8\u753B\u53EA\u6709 controls/loader.css \u4E00\u4EFD\u3002 */\n\n/* \u6837\u5F0F\u4E00\uFF1A\u6A2A\u6392 toast \u5361\uFF08\u56FE\u6807\u5728\u5DE6\u3001\u6587\u5B57\u5728\u53F3\uFF09\uFF0C\u4E0E notify \u7684 info \u5361\u540C\u5C3A\u5BF8\u540C\u8272\u3002 */\n.dshpc-loading-toast {\n  display: inline-flex; align-items: center; gap: 10px;\n  /* \u4E0D\u5B66 notify \u56FA\u5B9A 320 \u5BBD\uFF1A\u8FD9\u5F20\u5361\u4E5F\u5E38\u88AB\u585E\u8FDB\u8868\u683C / \u7A84\u680F\u91CC\uFF0C\u5BBD\u5EA6\u968F\u5185\u5BB9\u8D70\u3002\n     shortcut: \u4E0B\u9650 250px\uFF0C\u8981\u66F4\u5BBD / \u66F4\u7A84\u5C31\u6539\u8FD9\u4E00\u5904\u3002 */\n  min-width: 250px; min-height: 48px; padding: 12px 16px; box-sizing: border-box;\n  border-radius: var(--dshpc-radius-lg); box-shadow: var(--dshpc-shadow-2);\n  background: var(--dshpc-surface-1); color: var(--dshpc-fg);\n  font-size: var(--dshpc-font-lg); line-height: var(--dshpc-line-lg);\n}\n\n/* \u6837\u5F0F\u4E8C\uFF1A\u65B9\u5757\u5361\uFF08\u8F6C\u5708\u5728\u4E0A\u3001\u6587\u5B57\u5728\u4E0B\uFF09\uFF0C\u5185\u8DDD\u66F4\u5927\u3002 */\n.dshpc-loading-block {\n  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;\n  min-width: 132px; min-height: 132px; padding: 24px; box-sizing: border-box;\n  border-radius: var(--dshpc-radius-md); box-shadow: var(--dshpc-shadow-2);\n  background: var(--dshpc-surface-1); color: var(--dshpc-fg);\n  font-size: var(--dshpc-font-md); line-height: var(--dshpc-line-md);\n}\n\n/* \u5168\u5C40\u6D6E\u5C42\uFF1A\u5C45\u4E2D\u3001\u4E0D\u6321\u70B9\u51FB\uFF08\u906E\u7F69\u5C42\u5355\u72EC\u4E00\u4E2A div \u624D\u6321\uFF09\u3002\n   \u4E0E Modal \u906E\u7F69\u540C\u4E00\u5957\u8BA9\u4F4D\u53E3\u5F84\uFF1A\u53F3\u8FB9\u754C\u8BFB --dshpc-page-inset-right\u3002 */\n.dshpc-loading-overlay {\n  position: fixed; inset: 0 var(--dshpc-page-inset-right, 0px) 0 0; z-index: var(--dshpc-z-modal);\n  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;\n  padding: 24px; box-sizing: border-box; pointer-events: none;\n}\n/* \u4E03\u5411\u5B9A\u4F4D\uFF08\u4E0E Toast \u7684\u516D\u5411\u540C\u540D + \u6B63\u4E2D\uFF09\uFF1A\u9ED8\u8BA4 bottom-center\uFF0C\u4E0E Sonner \u63D0\u793A\u540C\u5C4F\u4F4D\u3002 */\n.dshpc-loading-overlay--top-left { align-items: flex-start; justify-content: flex-start; }\n.dshpc-loading-overlay--top-center { justify-content: flex-start; }\n.dshpc-loading-overlay--top-right { align-items: flex-end; justify-content: flex-start; }\n.dshpc-loading-overlay--bottom-left { align-items: flex-start; justify-content: flex-end; }\n.dshpc-loading-overlay--bottom-center { justify-content: flex-end; }\n.dshpc-loading-overlay--bottom-right { align-items: flex-end; justify-content: flex-end; }\n.dshpc-loading-overlay__mask { position: absolute; inset: 0; pointer-events: auto; }\n";
 
-// dist/ui/controls/loader-css.generated.js
+// dist/ui/feedback/loader-css.generated.js
 var LOADER_CSS = '/* \u2500\u2500 Loader\uFF1A\u7EDF\u4E00\u7684\u52A0\u8F7D\u52A8\u753B\u56FE\u6807\uFF08\u65E0\u80CC\u666F / \u65E0\u5B9A\u4F4D / \u989C\u8272\u8DDF\u968F currentColor\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5F62\u6001 \xD7 \u5C3A\u5BF8\u4E24\u8F74\u6B63\u4EA4\uFF1A\u5F62\u6001\u7BA1\u51E0\u4F55\u4E0E\u52A8\u753B\uFF1B\u5C3A\u5BF8\u6863\u53EA\u6539 width / height\uFF0C\u51E0\u4F55\u6309\n   viewBox="0 0 24 24" \u7B49\u6BD4\u7F29\u653E \u2014\u2014 \u4E00\u5957\u51E0\u4F55\u5403\u4E94\u6863\uFF0C12px \u65F6\u63CF\u8FB9\u5373 1.5px\u300148px \u65F6 6px\uFF0C\n   \u89C6\u89C9\u91CD\u91CF\u4E00\u81F4\uFF0C\u4E0D\u7528\u9010\u4E2A\u5C3A\u5BF8\u6362\u7B97 calc\u3002\n\n   \u8FB9\u754C\uFF1A\u672C\u63A7\u4EF6**\u53EA\u7BA1\u56FE\u6807\u672C\u8EAB**\u3002\u80CC\u666F / \u5706\u89D2 / \u5185\u8DDD / \u9634\u5F71 / \u5B9A\u4F4D\uFF08fixed\u3001\u5C45\u4E2D\u3001\u6F02\u6D6E\uFF09\n   \u4E00\u5F8B\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u5957 Chip\u3001\u5957 Card\uFF0C\u6216\u81EA\u5DF1\u5305\u4E00\u4E2A div\u3002 */\n\n.dshpc-loader { display: inline-block; flex: none; vertical-align: middle; line-height: 0; color: inherit; }\n\n.dshpc-loader--xs { width: 12px; height: 12px; }\n.dshpc-loader--sm { width: 16px; height: 16px; }\n.dshpc-loader--md { width: 24px; height: 24px; }\n.dshpc-loader--lg { width: 32px; height: 32px; }\n.dshpc-loader--xl { width: 48px; height: 48px; }\n\n/* \u5F62\u6001\u4E00 ring\uFF1A\u5F00\u53E3\u5F27\u6574\u4F53\u65CB\u8F6C\u3002\u5FC5\u987B\u8D70 SVG \u77E2\u91CF\u5F27 \u2014\u2014 \u6B21\u50CF\u7D20\u8FB9\u6846\u753B\u5706\u5728 12px \u4E0B\u4F1A\u88AB\n   \u6297\u952F\u9F7F\u62C9\u6BDB\u3001\u770B\u7740\u50CF\u5706\u89D2\u65B9\uFF082026-10-20 \u771F\u673A\u5B9E\u6D4B\uFF0C\u66FE\u88AB\u8BEF\u5224\u6210 border-radius \u88AB\u8986\u76D6\uFF09\u3002 */\n.dshpc-loader--ring { animation: dshpc-loader-rotate .8s linear infinite; }\n@keyframes dshpc-loader-rotate { to { transform: rotate(360deg) } }\n\n/* \u5F62\u6001\u4E8C blocks\uFF1A\u4E09\u4E2A\u65B9\u5757\u4F9D\u6B21\u8109\u52A8\u653E\u5927\u3002\n   transform-box: fill-box \u662F SVG \u5B50\u5143\u7D20\u505A CSS transform \u7684\u5FC5\u8981\u6761\u4EF6 \u2014\u2014 \u5426\u5219 origin\n   \u843D\u5728 viewBox \u539F\u70B9\uFF0C\u8282\u70B9\u4F1A\u7ED5\u7740\u5DE6\u4E0A\u89D2\u98DE\u51FA\u53BB\u3002 */\n.dshpc-loader__node { transform-box: fill-box; transform-origin: center; }\n.dshpc-loader--blocks .dshpc-loader__node { animation: dshpc-loader-blink 1.2s ease-in-out infinite; }\n.dshpc-loader__node:nth-child(2) { animation-delay: .15s; }\n.dshpc-loader__node:nth-child(3) { animation-delay: .3s; }\n@keyframes dshpc-loader-blink {\n  0%, 80%, 100% { opacity: .25; transform: scale(.8) }\n  40% { opacity: 1; transform: scale(1) }\n}\n\n/* \u964D\u4F4E\u52A8\u6548\uFF1A\u505C\u5728\u300C\u5168\u90E8\u53EF\u89C1\u3001\u5B9E\u4F53\u5927\u5C0F\u300D\uFF0C\u800C\u4E0D\u662F\u505C\u5728\u52A8\u753B\u4E2D\u9014\u7684\u534A\u900F\u660E\u5C0F\u70B9\u3002 */\n@media (prefers-reduced-motion: reduce) {\n  .dshpc-loader--ring { animation: none; }\n  .dshpc-loader__node { animation: none; opacity: 1; transform: none; }\n}\n';
 
-// dist/ui/controls/loader-bar-css.generated.js
+// dist/ui/feedback/loader-bar-css.generated.js
 var LOADER_BAR_CSS = "/* \u2500\u2500 LoaderBar\uFF1A\u80F6\u56CA\u4E0D\u5B9A\u8FDB\u5EA6 loading \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u6E90\u56FE\u5F62\u662F\u300C\u8F68\u9053 + \u84DD\u8272\u6BB5 + \u659C\u7EB9\u300D\u7684\u80F6\u56CA\u6761\u3002\u4E0E Loader \u540C\u65CF\uFF08Loader \u5BB6\u65CF\uFF1A\n   Loader \u901A\u7528\u56FE\u6807 / LoaderBar \u80F6\u56CA\u4E0D\u5B9A\u8FDB\u5EA6\uFF09\uFF0C\u540C\u6837\u53EA\u753B\u56FE\u5F62\uFF1A\u4E0D\u5E26\u80CC\u666F\u3001\u4E0D\u5E26\u5B9A\u4F4D\u3002\n\n   \u52A8\u7684\u662F**\u659C\u7EB9**\uFF0C\u4E0D\u662F\u84DD\u8272\u6BB5\uFF1A\u84DD\u8272\u90A3\u534A\u622A\u56FA\u5B9A\u4E0D\u52A8\uFF0C\u53EA\u6709\u5B83\u4E0A\u9762\u7684\u4E00\u9053\u9053\u7EC6\u659C\u6761\n   \u5728\u8D70\uFF0C\u770B\u7740\u50CF\u6761\u7EB9\u5728\u6D41\u52A8 / \u8F6C\u3002\u8FD9\u7B26\u5408\u6E90\u56FE\u610F\u56FE \u2014\u2014 \u659C\u7EB9\u672C\u6765\u5C31\u662F\u8868\u793A\u300C\u8FDB\u884C\u4E2D\u300D\u3002\n\n   \u5C3A\u5BF8\u6863\u6309**\u9AD8\u5EA6**\u7ED9\uFF08\u5BBD\u56FA\u5B9A 4:1\uFF09\uFF0C\u56E0\u4E3A\u56FE\u5F62\u672C\u8EAB\u662F\u6A2A\u6761\uFF0C\u65B9\u5F62\u5C3A\u5BF8\u8F74\u6CA1\u610F\u4E49\u3002 */\n\n.dshpc-loader-bar { display: inline-block; flex: none; vertical-align: middle; line-height: 0; }\n\n.dshpc-loader-bar--xs { width: 48px; height: 12px; }\n.dshpc-loader-bar--sm { width: 64px; height: 16px; }\n.dshpc-loader-bar--md { width: 96px; height: 24px; }\n.dshpc-loader-bar--lg { width: 128px; height: 32px; }\n.dshpc-loader-bar--xl { width: 192px; height: 48px; }\n\n/* \u659C\u7EB9\u5355\u5411\u5FAA\u73AF\u5E73\u79FB\u300285.333 \u662F\u4E00\u4E2A\u6761\u7EB9\u5468\u671F\uFF08\u6E90\u56FE\u76F8\u90BB\u659C\u7EBF\u7684\u95F4\u8DDD\uFF0C\u7528\u6237\u5355\u4F4D\uFF09\uFF1A\n   \u5E73\u79FB\u6574\u6574\u4E00\u4E2A\u5468\u671F\u540E\u4E0E\u539F\u56FE\u91CD\u5408 \u21D2 \u5FAA\u73AF\u5904\u770B\u4E0D\u51FA\u63A5\u7F1D\u3002\n   \u26A0\uFE0F \u8FD9\u4E2A\u6570\u5B57\u5FC5\u987B\u4E0E LoaderBar.ts \u91CC\u7684 STRIPE_PERIOD \u4E00\u81F4\uFF08\u7EC4\u4EF6\u9760\u5B83\u590D\u5236\u4E00\u4EFD\u5DE6\u4FA7\u8865\u56FE\uFF09\u3002\n   \u5916\u5C42 <g clip-path> \u9759\u6B62\u3001\u53EA\u52A8\u8FD9\u4E00\u5C42 \u2014\u2014 \u82E5\u628A clip \u4E0E transform \u653E\u540C\u4E00\u5C42\uFF0C\n   \u88C1\u526A\u6846\u4F1A\u8DDF\u7740\u4E00\u8D77\u79FB\uFF0C\u7B49\u4E8E\u6CA1\u88C1\uFF0C\u6761\u7EB9\u4F1A\u9732\u5230\u84DD\u8272\u6BB5\u5916\u9762\u3002 */\n.dshpc-loader-bar__stripe { animation: dshpc-loader-bar-flow .55s linear infinite; }\n@keyframes dshpc-loader-bar-flow {\n  from { transform: translateX(0) }\n  to { transform: translateX(85.333px) }\n}\n\n/* animated={false}\uFF1A\u6761\u7EB9\u505C\u5728\u539F\u4F4D\u3002 */\n.dshpc-loader-bar--still .dshpc-loader-bar__stripe { animation: none; }\n\n@media (prefers-reduced-motion: reduce) {\n  .dshpc-loader-bar__stripe { animation: none; }\n}\n";
 
-// dist/ui/controls/quick-toolbar-css.generated.js
+// dist/ui/layout/quick-toolbar-css.generated.js
 var QUICK_TOOLBAR_CSS = "/* \u5FEB\u6377\u5DE5\u5177\u680F\uFF1A\u53F3\u4FA7\u60AC\u6D6E\u7684\u4E00\u5217\u72EC\u7ACB\u5706\u94AE\u3002\n   \u6A2A\u5411 left / right \u4E0E bottom\u3001\u6309\u94AE\u76F4\u5F84\u3001\u7EB5\u5411\u95F4\u8DDD\u7531\u7EC4\u4EF6\u6309 props \u5B9E\u65F6\u5199\u5165 style\uFF1B\n   \u8FD9\u91CC\u53EA\u653E\u4E0E\u4F4D\u7F6E\u65E0\u5173\u7684\u76AE\u80A4\u3002 */\n.dshpc-quick-toolbar{\n  position:fixed;\n  z-index:var(--dshpc-z-dock);\n  display:flex;\n  flex-direction:column;\n  align-items:center;\n}\n/* \u51FA\u73B0 / \u6D88\u5931\uFF1A\u6302\u8F7D\u5373\u6DE1\u5165\uFF0C\u9000\u573A\u5148\u64AD fade-out\uFF08\u7EC4\u4EF6\u5EF6\u8FDF\u5378\u8F7D\uFF0C\u89C1 QuickToolbar.ts\uFF09\u3002 */\n@keyframes dshpc-quick-toolbar-in{\n  from{opacity:0;transform:translateY(6px) scale(.9);}\n  to{opacity:1;transform:none;}\n}\n@keyframes dshpc-quick-toolbar-out{\n  from{opacity:1;transform:none;}\n  to{opacity:0;transform:translateY(6px) scale(.9);}\n}\n.dshpc-quick-toolbar__item{\n  display:inline-flex;\n  align-items:center;\n  justify-content:center;\n  padding:0;\n  margin:0;\n  box-sizing:border-box;\n  border:1px solid var(--dshpc-border);\n  border-radius:50%;\n  /* \u81EA\u5B9A\u4E49\u5E95\u8272 / \u5B57\u8272\u53EA\u5199\u8FD9\u4E24\u4E2A\u53D8\u91CF\uFF08\u89C1 QuickToolbar.ts\uFF09\uFF0Chover/active \u624D\u80FD\u8DDF\u7740\u6DF7\u8272\u3002 */\n  background:var(--dshpc-quick-toolbar-bg, var(--dshpc-solid));\n  color:var(--dshpc-quick-toolbar-fg, var(--dshpc-on-solid));\n  box-shadow:var(--dshpc-shadow-2);\n  cursor:pointer;\n  animation:dshpc-quick-toolbar-in var(--dshpc-dur) var(--dshpc-ease);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),\n             color var(--dshpc-dur-fast) var(--dshpc-ease),\n             transform var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n/* \u9000\u573A\u671F\u4FDD\u7559\u5360\u4F4D\uFF0C\u907F\u514D\u540C\u5217\u5176\u4ED6\u6309\u94AE\u77AC\u65F6\u8DF3\u4F4D\u3002 */\n.dshpc-quick-toolbar__item.is-leaving{\n  animation:dshpc-quick-toolbar-out var(--dshpc-dur) var(--dshpc-ease) forwards;\n  pointer-events:none;\n}\n/* \u53D8\u8272\u4E0E\u6838\u5FC3 Button \u5B9E\u5FC3\u6863\u540C\u4E00\u5957\uFF1A\u6309 --dshpc-fg \u6DF7\u51FA hover / active \u5E95\u8272\uFF08\u81EA\u5B9A\u4E49 color \u4E5F\u8DDF\u968F\uFF09\u3002 */\n.dshpc-quick-toolbar__item:hover{\n  background:color-mix(in srgb, var(--dshpc-quick-toolbar-bg, var(--dshpc-solid)) 82%, var(--dshpc-fg));\n}\n.dshpc-quick-toolbar__item:active{\n  background:color-mix(in srgb, var(--dshpc-quick-toolbar-bg, var(--dshpc-solid)) 70%, var(--dshpc-fg));\n  transform:scale(.94);\n}\n.dshpc-quick-toolbar__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n@media (prefers-reduced-motion: reduce){\n  .dshpc-quick-toolbar__item{transition:none;transform:none;animation:none;}\n  .dshpc-quick-toolbar__item.is-leaving{animation:none;opacity:0;}\n}\n";
 
-// dist/ui/controls/hint-css.generated.js
+// dist/ui/display/hint-css.generated.js
 var HINT_CSS = "\n/* \u2500\u2500 \u95EE\u53F7\u63D0\u793A P4\uFF08\u7528\u6237 2026-10-18\uFF1A\u5BF9\u9F50\u771F\u5B9E\u63D2\u4EF6 HelpButton\u2014\u2014**\u5E26\u5708\u7684\u95EE\u53F7\u56FE\u6807**\uFF09\u2500\u2500\n   \u672C\u4F53 14px \u7EC6\u5708 + \u5708\u5185 ?\uFF0C\u989C\u8272 fg-3\u3001hover \u53EA\u63D0\u4EAE\u4E0D\u52A0\u5E95\uFF08\u4E0E dshpc-ed-help \u540C\u89C4\u77E9\uFF09\u3002\n   \u6C14\u6CE1\u4E0D\u5728\u672C\u6587\u4EF6\uFF1A2026-10-19 \u7528\u6237\u62CD\u677F\u300C\u95EE\u53F7\u5FC5\u987B\u7528\u5B98\u65B9 Tooltip \u90A3\u4E00\u4E2A\u300D\u21D2 \u6C14\u6CE1\u7531\u6CE8\u5165\u7684\n   \u5B98\u65B9\u7EC4\u4EF6\u6E32\u67D3\uFF08src/ui/tooltip.ts\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u95EE\u53F7\u56FE\u6807\u672C\u8EAB\u3002 */\n.dshpc-hint{display:inline-flex;align-items:center;justify-content:center;flex:none;\n  box-sizing:border-box;width:14px;height:14px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;\n  color:var(--dshpc-fg-3);font-family:inherit;font-size:8px;font-weight:600;line-height:12px;cursor:help;vertical-align:middle;\n  transition:color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-hint:hover,.dshpc-hint:focus-visible{color:var(--dshpc-fg);background:0 0;}\n.dshpc-hint:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n";
 
-// dist/ui/controls/datetime-css.generated.js
+// dist/ui/inputs/datetime-css.generated.js
 var DATETIME_CSS = '/* \u65E5\u671F\u65F6\u95F4\u9009\u62E9\u5668\uFF08DateTimePicker\uFF09\u3002\u7C7B\u540D dshpc-dt-*\uFF1B\u914D\u8272\u53EA\u5403 token\uFF0C\u660E\u6697\u968F token \u5207\u6362\u3002\n   \u7ED3\u6784\uFF1A\u89E6\u53D1\u5668\uFF08range = \u4E00\u4E2A\u6574\u6761\uFF1A\u4E24\u4E2A\u65E5\u671F\u533A + \u6837\u5F0F\u753B\u7684\u7070\u9694\u6761\uFF1Bsingle = \u5355\u65E5\u671F\uFF09\u2192 \u6D6E\u5C42\n   \uFF08\u4E24\u4E2A\u72EC\u7ACB\u7AEF\u6846 + \u4E24\u5757\u72EC\u7ACB\u65E5\u5386 + \u5E95\u90E8\u52A8\u4F5C\uFF09\u3002\n   \u6D6E\u5C42\u884C\u4E3A\u4E0E Picker \u4E00\u81F4\uFF1Aportal \u5230 body\u3001\u8D34\u8FB9\u7FFB\u8F6C\u3001\u70B9\u5916\u5173\u95ED\u3001\u65E0\u906E\u7F69\u3002 */\n.dshpc-dt{position:relative;display:inline-block;font-size:13px;line-height:20px}\n.dshpc-dt__trigger{\n  display:inline-flex;align-items:center;justify-content:space-between;gap:6px;\n  max-width:100%;height:var(--dshpc-control-h-md);padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);cursor:pointer;\n}\n.dshpc-dt__trigger--sm{height:var(--dshpc-control-h-sm);font-size:12px}\n.dshpc-dt__trigger--lg{height:var(--dshpc-control-h-lg)}\n.dshpc-dt__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}\n/* \u7126\u70B9\u4E0E\u57FA\u7840 Input \u5B8C\u5168\u540C\u6B3E\uFF08\u70B9\u51FB\u5373\u84DD\u63CF\u8FB9 + 1px \u5149\u73AF\uFF09\u3002 */\n.dshpc-dt__trigger:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}\n.dshpc-dt__trigger-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-variant-numeric:tabular-nums}\n.dshpc-dt__trigger-label--empty{color:var(--dshpc-fg-dim)}\n.dshpc-dt__cal{flex:none;color:var(--dshpc-fg-3)}\n/* range \u89E6\u53D1\u5668\uFF1A\u4E00\u4E2A\u6574\u6761\u91CC\u4E24\u4E2A\u65E5\u671F\u533A + \u6837\u5F0F\u753B\u51FA\u6765\u7684\u7070\u9694\u6761\uFF08\u5DE6\u53F3\u4E24\u6761\u7AD6\u8FB9\uFF09\uFF0C\u70B9\u6574\u6761\u90FD\u5C55\u5F00\u3002 */\n/* \u7EC4\u6491\u6EE1\u89E6\u53D1\u5668\u5185\u5BB9\u9AD8\u5EA6\uFF0C\u9694\u6761\u624D\u80FD\u4E0A\u4E0B\u9876\u5230 border\u3002 */\n.dshpc-dt__pair-group{flex:1 1 auto;min-width:0;align-self:stretch;display:flex;align-items:center;gap:8px}\n/* \u4E24\u4E2A\u65E5\u671F\u533A\u5E73\u5206\uFF08flex:1 1 0\uFF09\uFF1A\u5F00\u59CB / \u7ED3\u675F\u6C38\u8FDC\u4E00\u6837\u5BBD\uFF0C\u4E0D\u968F\u5185\u5BB9\u504F\u8892\u3002 */\n.dshpc-dt__pair-date{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}\n.dshpc-dt__pair-date--empty{color:var(--dshpc-fg-dim)}\n/* \u9694\u6761\uFF1A\u4E0A\u4E0B\u9876\u5230\u89E6\u53D1\u5668 border\uFF08\u4E0E\u8FB9\u6846\u8FDE\u8D77\u6765\uFF09\uFF0C\u4E2D\u95F4\u9694\u51FA\u4E00\u5757\uFF1B\u5757\u91CC\u653E\u300C\u5230\u300D\u7684\u7B26\u53F7\uFF08-\uFF0C\u7528\u6237 2026-10-24 \u62CD\u677F\uFF09\u3002 */\n.dshpc-dt__pair-sep{\n  flex:none;align-self:stretch;width:22px;margin:0;\n  display:inline-flex;align-items:center;justify-content:center;\n  background:var(--dshpc-surface-sunken);\n  border-left:1px solid var(--dshpc-border);border-right:1px solid var(--dshpc-border);\n  color:var(--dshpc-fg-3);font-size:12px;line-height:1;\n}\n/* \u9ED8\u8BA4\u5BBD\uFF1A**\u56FA\u5B9A**\uFF08\u9009\u4E2D\u524D\u540E\u4E0D\u53D8\uFF09\uFF0C\u6570\u503C\u5BF9\u7167\u53C2\u8003\u56FE\u5B9E\u6D4B\uFF082x \u5C4F\uFF0C\u6362\u7B97 CSS px\uFF09\u540E\n   \u7EDF\u4E00 -6px\uFF08\u7528\u6237 2026-10-24\uFF1A\u5B9E\u6D4B\u503C\u7559\u5F97\u504F\u591A\uFF09\uFF1A\n   \u5355\u503C day 128 / \u65F6\xB7\u5206 153.2 / \u79D2 174.8\uFF1B\u533A\u95F4 day 269 / \u5206 341.4 / \u79D2 377.6\u3002\n   ch = \u5B57\u4F53\u91CC "0" \u7684\u5BBD\uFF08\u65E5\u671F tabular-nums \u7B49\u5BBD\uFF09\u21D2 \u5199\u6210 Nch + \u5E38\u6570\uFF1B\u5E38\u6570\u540C\u65F6\u515C\u4F4F\n   \u9ED8\u8BA4\u5360\u4F4D\u300C\u8BF7\u9009\u62E9\u65E5\u671F\u65F6\u95F4\u300D\uFF087 \u6C49\u5B57\uFF09\u4E0D\u7701\u7565\u3002\u8C03\u7528\u65B9\u8981\u53E6\u7ED9\u5BBD\uFF1AclassName \u4F20 width\u3002 */\n.dshpc-dt__trigger--w-day{width:calc(10ch + 56px)}\n.dshpc-dt__trigger--w-minute{width:calc(16ch + 38px)}\n.dshpc-dt__trigger--w-second{width:calc(19ch + 38px)}\n.dshpc-dt__trigger--wr-day{width:calc(20ch + 125px)}\n.dshpc-dt__trigger--wr-minute{width:calc(32ch + 111px)}\n.dshpc-dt__trigger--wr-second{width:calc(38ch + 104px)}\n\n/* \u5F39\u5C42\u8868\u9762\u79EF\u5F52 panel.css \u7684 menu \u6863\uFF082026-11-03\uFF09\uFF1A\u8FD9\u91CC\u53EA\u7559\u5C42\u5E8F\u4E0E\u5185\u8DDD\u3002 */\n.dshpc-dt__pop{\n  z-index:var(--dshpc-z-popmenu);padding:10px;user-select:none;\n  font-size:13px;line-height:20px;\n}\n/* \u4E24\u4E2A\u72EC\u7ACB\u7AEF\u6846\uFF08range\uFF09\uFF1A\u70B9\u54EA\u4E2A\u54EA\u4E2A\u6210\u4E3A\u5F53\u524D\u7F16\u8F91\u7AEF\uFF0C\u4E92\u4E0D\u8054\u52A8\u3001\u53EA\u662F\u6392\u5728\u4E00\u8D77\u3002 */\n.dshpc-dt__ends{display:flex;gap:6px;margin-bottom:8px}\n.dshpc-dt__end{\n  flex:1 1 0;min-width:0;display:flex;align-items:center;gap:6px;padding:4px 8px;\n  text-align:left;background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-faint);border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__end--active{border-color:var(--dshpc-business);background:var(--dshpc-open-bg)}\n.dshpc-dt__end:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n.dshpc-dt__end-label{flex:none;font-size:11px;line-height:16px;color:var(--dshpc-fg-3);white-space:nowrap}\n.dshpc-dt__end-value{font-size:12px;line-height:18px;color:var(--dshpc-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}\n.dshpc-dt__end-value--empty{color:var(--dshpc-fg-dim)}\n\n.dshpc-dt__nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}\n.dshpc-dt__nav-group{display:flex;gap:2px}\n.dshpc-dt__nav-btn{\n  display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;\n  color:var(--dshpc-fg-2);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__nav-btn:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-dt__nav-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__caption{font-size:13px;font-weight:600;color:var(--dshpc-fg);white-space:nowrap}\n\n.dshpc-dt__grid{display:grid;grid-template-columns:repeat(7,30px);gap:2px}\n.dshpc-dt__wd{height:20px;font-size:11px;line-height:20px;color:var(--dshpc-fg-3);text-align:center}\n.dshpc-dt__cell{\n  height:26px;padding:0;font-size:12px;font-variant-numeric:tabular-nums;\n  color:var(--dshpc-fg);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__cell:hover{background:var(--dshpc-surface-sunken)}\n.dshpc-dt__cell:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__cell--out{color:var(--dshpc-fg-dim)}\n.dshpc-dt__cell--today{color:var(--dshpc-business);font-weight:600}\n/* \u8D77 / \u6B62\u7AEF\uFF1A\u54C1\u724C\u84DD\u5B9E\u9762\u53CD\u767D\uFF08\u4E0E Segmented weekday \u9009\u4E2D\u540C\u53E3\u5F84\uFF09\u3002\n   \u26A0\uFE0F \u5B57\u8272\u7528\u5E38\u91CF\u767D --dshpc-on-signal\uFF0C\u4E0D\u7528 --dshpc-fg-inverse\uFF1A\u540E\u8005\u8DDF\u5BBF\u4E3B label-primary-foreground\uFF0C\n   \u6697\u8272\u4E3B\u9898\u4E0B\u662F\u8FD1\u9ED1 \u21D2 \u84DD\u5E95\u9ED1\u5B57\uFF08\u4E0E Segmented 2026-10-29 \u540C\u4E00\u4E8B\u6545\uFF09\u3002 */\n.dshpc-dt__cell--sel{background:var(--dshpc-business);color:var(--dshpc-on-signal);font-weight:600}\n.dshpc-dt__cell--sel:hover{background:var(--dshpc-business-hover)}\n\n/* \u4E24\u5757\u65E5\u5386\u9762\u677F\uFF08range\uFF1A\u5DE6\u5F00\u59CB\u3001\u53F3\u7ED3\u675F\uFF0C\u5404\u9009\u5404\u7684\uFF09\u3002 */\n.dshpc-dt__panels{display:flex;gap:14px;align-items:flex-start}\n.dshpc-dt__panel{display:flex;flex-direction:column;gap:6px}\n\n.dshpc-dt__time{display:flex;align-items:flex-end;justify-content:center;gap:4px;margin-top:2px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n.dshpc-dt__unit{display:flex;flex-direction:column;align-items:center;gap:2px}\n.dshpc-dt__unit-label{font-size:10px;line-height:14px;color:var(--dshpc-fg-3)}\n.dshpc-dt__step-btn{\n  display:inline-flex;align-items:center;justify-content:center;width:34px;height:14px;padding:0;\n  color:var(--dshpc-fg-2);background:none;border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;\n}\n.dshpc-dt__step-btn:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n.dshpc-dt__step-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px}\n.dshpc-dt__step-val{\n  width:34px;height:24px;padding:0;box-sizing:border-box;text-align:center;\n  font-size:13px;font-variant-numeric:tabular-nums;color:var(--dshpc-fg);\n  background:var(--dshpc-surface-sunken);border:1px solid var(--dshpc-border-faint);\n  border-radius:var(--dshpc-radius-sm);outline:none;\n}\n.dshpc-dt__step-val:focus{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus)}\n.dshpc-dt__step-val:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}\n.dshpc-dt__sep{padding-bottom:5px;color:var(--dshpc-fg-3);font-size:12px}\n\n.dshpc-dt__foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n.dshpc-dt__foot-side{display:flex;align-items:center;gap:6px}\n.dshpc-dt__warn{font-size:11px;color:var(--dshpc-warning-label);white-space:nowrap}\n';
 
-// dist/ui/controls/split-group-css.generated.js
+// dist/ui/layout/split-group-css.generated.js
 var SPLIT_GROUP_CSS = "\n/* \u2500\u2500 \u62FC\u63A5\u5916\u58F3 SplitGroup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u804C\u8D23\u53EA\u6709\u4E00\u6761\uFF1A\u628A\u4E24\u4E2A\u63A7\u4EF6\u5728\u5916\u89C2\u4E0A\u710A\u6210\u4E00\u4F53\uFF08\u5916\u6846 / \u5706\u89D2 / \u4E2D\u95F4 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\uFF09\u3002\n   \u5B83**\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03** \u2014\u2014 \u9009\u4E2D\u4E0E\u8054\u52A8\u5168\u8D70\u5185\u4EF6\u81EA\u5DF1\u7684 value / onChange\n   \uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF1A\u5916\u58F3\u4E0D\u5FC5\u77E5\u9053\u53F3\u8FB9\u90A3\u4E2A\u4E0B\u62C9\u7BA1\u4EC0\u4E48\uFF09\u3002\n\n   \u26A0\uFE0F \u4E0E\u5185\u4EF6\u7C7B\u540D\u6709\u610F\u8026\u5408\uFF1A\u5185\u4EF6\u662F Picker / Segmented \u65F6\u7531\u4E0B\u9762\u51E0\u6761\u89C4\u5219\u628A\u5B83\u4EEC\u81EA\u5DF1\u7684\n   \u8FB9\u6846 / \u5E95\u8272 / \u5706\u89D2\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u7EDF\u4E00\u753B\u3002\u5185\u4EF6\u6539\u540D\u6216\u6539\u7ED3\u6784\u8981\u540C\u6B65\u6539\u8FD9\u91CC\uFF0C\n   \u5426\u5219\u4F1A\u51FA\u73B0\u53CC\u8FB9\u6846\u3001\u53CC\u5E95\u8272\u3002\n\n   \u9AD8\u5EA6\u4E0D\u5199\u6B7B\uFF1A\u5185\u4EF6\u81EA\u5DF1\u6309 size \u6863\uFF08sm 24 / md 28 / lg 32\uFF09\u6491\u5F00\uFF0C\u5916\u58F3\u8DDF\u7740\u957F\u3002\n   \u4E24\u683C\u8981\u7B49\u9AD8\uFF0C\u5C31\u7ED9\u5185\u4EF6\u4F20**\u540C\u4E00\u4E2A size**\u3002\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\u5916\u58F3\u5185\u4EF6\u7528 align-items:center\n   \u5C45\u4E2D\uFF08\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\uFF0C\u7528\u6237 2026-10-28 \u622A\u56FE\u53CD\u9988\u300C\u672C\u6708\u504F\u4E0A\u300D\u540E\u7684\u5904\u7406\uFF09\uFF1B**\u522B\u7528 height:100%**\uFF0C\n   \u5B83\u4F1A\u8986\u76D6\u4E09\u6863\u9AD8\u5EA6\uFF08\u4E0E --lg/--sm \u540C\u7279\u5F02\u6027\u4E14\u6CE8\u5165\u66F4\u665A\uFF09\u3002\n\n   \u5DE6\u683C\u7EDF\u4E00\u7070\u5E95\uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF09\uFF1A\u6ED1\u5757\u4FDD\u7559\u81EA\u5DF1\u7684\u7070\u8F68\uFF0C\u5DE6\u683C\u4E0B\u62C9\u628A\u5E95\u8272\u6362\u6210\n   surface-sunken\uFF1B\u53F3\u683C\u4FDD\u6301\u539F\u6837\u3002\u5C42\u6B21\u611F = \u5DE6\u683C\u662F\u300C\u6863\u4F4D/\u8303\u56F4\u300D\uFF0C\u53F3\u683C\u662F\u300C\u503C\u300D\u3002 */\n   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}\n   /* \u4E24\u683C\u5BBD\u5EA6\u90FD\u7531\u5185\u5BB9\u7ED9\uFF1B\u5BB9\u5668\u518D\u7A84\u4E5F\u8BA9\u5185\u4EF6\u81EA\u5DF1\u7701\u7565\uFF0C\u4E0D\u8BA9\u5916\u58F3\u88AB\u6491\u7834 */\n   .dshpc-split > *{min-width:0;max-width:100%;}\n   /* \u5206\u9694\uFF1A\u76F8\u90BB\u5144\u5F1F\u7684\u5DE6\u63CF\u8FB9\uFF0C\u4E0D\u989D\u5916\u63D2 DOM\uFF0Chover / focus \u65F6\u4E5F\u4E0D\u4F1A\u65AD */\n   .dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n   /* \u6574\u4F53\u805A\u7126\uFF1A\u53EA\u5728**\u4E0B\u62C9\u5C55\u5F00**\u65F6\u753B\u4E00\u6574\u5708\uFF08\u5224\u636E\u662F\u5185\u4EF6\u7684 aria-expanded\uFF0C\u4E0D\u662F :focus-within\uFF09\u3002\n      2026-11-02 \u7528\u6237\u5B9A\u7A3F\uFF1A\u6ED1\u5757\u90A3\u683C\u662F\u300C\u9009\u4E2D\u300D\u4E0D\u662F\u300C\u8F93\u5165\u805A\u7126\u300D\uFF0C\u9F20\u6807\u70B9\u5B83\u4E0D\u8BE5\u8BA9\u6574\u6846\u5E38\u4EAE\uFF1B\n      \u800C\u4E14\u9009\u53D6\u503C\u540E\u7126\u70B9\u4F1A\u7559\u5728\u6309\u94AE\u4E0A\uFF0C\u7528 :focus-within \u4F1A\u4E00\u76F4\u4EAE\u7740\u3002 */\n   .dshpc-split:has(.dshpc-picker__trigger[aria-expanded='true']){border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n   /* Picker\uFF1A\u53BB\u6389\u81EA\u8EAB\u5916\u6846\u4E0E\u5E95\u8272\uFF1Bdisplay \u6539\u6210 flex\uFF0C\u6D88\u6389 inline-block \u884C\u76D2\u5E26\u6765\u7684\u57FA\u7EBF\u95F4\u9699\u3002\n      \u6CE8\u610F**\u4E0D\u80FD\u7528 height:100%**\uFF1A\u5B83\u4F1A\u548C .dshpc-picker__trigger--lg / --sm \u540C\u7279\u5F02\u6027\uFF08\u90FD\u662F\u4E24\u4E2A\u7C7B\uFF09\uFF0C\n      \u4E14 split-group.css \u5728 picker.css \u4E4B\u540E\u6CE8\u5165\uFF0C\u4F1A\u628A\u4E09\u6863\u9AD8\u5EA6\u5168\u5403\u6389\uFF08md/lg \u770B\u8D77\u6765\u4E00\u6837\u5927\uFF09\u3002\n      \u6539\u7528 align-items:center \u2014\u2014 \u540C size \u65F6\u4E24\u683C\u81EA\u7136\u7B49\u9AD8\u7684\u540C\u65F6\u6587\u5B57\u5782\u76F4\u5C45\u4E2D\uFF1B\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\n      \u8F83\u77EE\u7684\u683C\u4E5F\u53EA\u662F\u5C45\u4E2D\u3001\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\u3002 */\n   .dshpc-split .dshpc-picker{display:flex;align-items:center;}\n   .dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}\n   .dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}\n   /* \u5DE6\u683C\u4E0B\u62C9\uFF1A\u7070\u5E95\uFF08\u6ED1\u5757\u7684\u7070\u8F68\u662F\u5B83\u81EA\u5DF1\u7684 --dshpc-seg-track\uFF0C\u4E0D\u5728\u8FD9\u91CC\u8986\u76D6\uFF09 */\n   .dshpc-split > :first-child .dshpc-picker__trigger{background:var(--dshpc-surface-sunken);}\n   /* Segmented\uFF1A\u53EA\u53BB\u5916\u5706\u89D2\u4E0E\u63CF\u8FB9\uFF0C\u7070\u8F68\u4FDD\u7559\uFF1Bpadding \u4FDD\u6301 3px \u4E0D\u52A8 \u2014\u2014 \u5B83\u662F\u9AD8\u5EA6\u5951\u7EA6\u7684\u4E00\u90E8\u5206\n    \uFF083 + item + 3 = control-h\uFF09\u3002bordered \u90A3\u6863\u53BB\u6389\u63CF\u8FB9\u3001\u628A\u8BA9\u7ED9\u63CF\u8FB9\u7684 1px \u8FD8\u56DE padding\uFF0C\n    \u5426\u5219\u4F1A\u6BD4\u53F3\u8FB9\u77EE 2px\u3002 */\n   .dshpc-split .dshpc-seg{border-radius:0;border:0;}\n   .dshpc-split .dshpc-seg--bordered{padding:3px;}\n";
 
-// dist/ui/controls/input-group-css.generated.js
+// dist/ui/inputs/input-group-css.generated.js
 var INPUT_GROUP_CSS = "\n/* \u2500\u2500 \u7EC4\u5408\u8F93\u5165\u6846 InputGroup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u8F93\u5165\u6846 + \u540E\u7F6E\u6309\u94AE\uFF08\u4E00\u679A\u6216\u591A\u679A\uFF09+ \u53EF\u9009\u524D\u7F6E\u6807\u9898\uFF0C\u710A\u6210\u4E00\u4F53\u3002\n   \u4E0E SplitGroup \u540C\u4E00\u5957\u5916\u89C2\u53E3\u5F84\uFF1A\u5916\u6846 / \u5706\u89D2 / \u76F8\u90BB 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\u90FD\u7531\u5916\u58F3\u753B\uFF0C\n   \u5185\u4EF6\uFF08.dshpc-input / .dshpc-btn / .dshpc-iconbtn\uFF09\u628A\u81EA\u5DF1\u7684\u8FB9\u6846\u3001\u5706\u89D2\u3001\u5916\u5708\u4EA4\u51FA\u6765\u3002\n\n   \u9AD8\u5EA6\u9ED8\u8BA4\u5403 --dshpc-control-h-*\uFF08sm 24 / md 28 / lg 32\uFF09\uFF1B\u8C03\u7528\u65B9\u8981\u81EA\u5B9A\u4E49\u5C31\u5728\u6839\u8282\u70B9\n   \u5185\u8054 height\uFF0C\u8FD9\u91CC\u8BA9\u5185\u4EF6 height:100% \u8DDF\u4E0A \u2014\u2014 \u5185\u4EF6\u6863\u4F4D\u9AD8\u5EA6\u53EA\u6709 0,1,0\uFF0C\u88AB\u672C\u6587\u4EF6\u7684\n   0,2,0 \u538B\u6389\uFF0C\u4E0D\u4F1A\u51FA\u73B0\u300C\u5916\u58F3\u53D8\u9AD8\u4E86\u3001\u91CC\u9762\u7684\u6846\u8FD8\u662F 32\u300D\u3002\n   \uFF08\u26A0\uFE0F \u522B\u6539\u6210\u4E0D\u5199 height:100% \u53EA\u9760 stretch\uFF1Ainput \u6709\u786E\u5B9A\u9AD8\u5EA6\u65F6 flex \u4E0D\u4F1A\u62C9\u4F38\u5B83\u3002\uFF09 */\n/* min-width\uFF1A\u8F93\u5165\u683C\u662F flex:1\uFF0C\u6CA1\u6709\u5B83\u65F6 inline-flex \u6309\u5360\u4F4D\u6587\u5B57\u5BBD\u6536\u5F97\u5F88\u7A84\uFF08\u641C\u7D22\u6846 + \u6309\u94AE\u7684\u5178\u578B\u7528\u6CD5\u4F1A\u96BE\u770B\uFF09\u3002\n   \u8981\u66F4\u5BBD / \u66F4\u7A84\u7531\u8C03\u7528\u65B9\u5728\u5916\u9762\u5957\u58F3\u6216\u7ED9 className\uFF0C\u4E0D\u8BB8\u5728\u8FD9\u91CC\u5199\u6B7B max-width\u3002 */\n.dshpc-igroup{display:inline-flex;align-items:stretch;min-width:200px;max-width:100%;box-sizing:border-box;overflow:hidden;\n  border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}\n.dshpc-igroup--sm{height:var(--dshpc-control-h-sm);}\n.dshpc-igroup--md{height:var(--dshpc-control-h-md);}\n.dshpc-igroup--lg{height:var(--dshpc-control-h-lg);}\n.dshpc-igroup--error{border-color:var(--dshpc-danger);}\n/* \u6574\u4F53\u805A\u7126\uFF1A\u5185\u4EF6\u81EA\u5DF1\u7684\u7126\u70B9\u5708\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u753B\u4E00\u6574\u5708\uFF08\u5404\u753B\u5404\u7684\u4F1A\u53D8\u6210\u683C\u5185\u534A\u5708\uFF09 */\n.dshpc-igroup:focus-within{border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n\n/* \u524D\u7F6E\u6807\u9898\uFF1A\u4E0E\u8F93\u5165\u6846\u540C\u683C\uFF0C\u7070\u5E95\u533A\u5206\uFF08\u4E0E SplitGroup \u5DE6\u683C\u540C\u4E00\u53E3\u5F84\uFF09 */\n.dshpc-igroup__label{display:inline-flex;align-items:center;flex:none;padding:0 8px;white-space:nowrap;\n  background:var(--dshpc-surface-sunken);color:var(--dshpc-fg-2);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}\n.dshpc-igroup--md .dshpc-igroup__label,.dshpc-igroup--lg .dshpc-igroup__label{font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n\n/* \u8F93\u5165\u683C\uFF1A\u4EA4\u51FA\u8FB9\u6846 / \u5706\u89D2 / \u5E95\u8272 / \u7126\u70B9\u5708\uFF1B\u5BBD\u5EA6\u4EA4\u7ED9 flex\uFF08\u539F\u751F width:100% \u4F1A\u548C flex-basis \u6253\u67B6\uFF09 */\n.dshpc-igroup > .dshpc-input{flex:1 1 auto;width:auto;min-width:0;height:100%;border:0;border-radius:0;background:transparent;}\n.dshpc-igroup > .dshpc-input:focus{box-shadow:none;}\n\n/* \u6309\u94AE\u683C\uFF1A\u4EA4\u51FA\u8FB9\u6846\u4E0E\u5706\u89D2\uFF1B\u5B9E\u5FC3\u5E95\u8272\u4FDD\u7559\uFF08\u53F3\u4FA7\u300C\u786E\u5B9A\u300D\u8BE5\u6709\u91CD\u91CF\uFF09\u3002\n   \u7EAF\u56FE\u6807\u94AE\u672C\u8EAB\u662F\u56FA\u5B9A\u5BBD\u7684\u65B9\u5757\uFF0C\u8FD9\u91CC\u6539\u6210\u6309\u9AD8\u5EA6\u6491\u51FA\u7684\u6B63\u65B9\u5F62\uFF0C\u81EA\u5B9A\u4E49\u9AD8\u5EA6\u65F6\u624D\u4E0D\u4F1A\u53D8\u6210\u7AD6\u957F\u6761\u3002 */\n.dshpc-igroup > .dshpc-btn,.dshpc-igroup > .dshpc-iconbtn{flex:none;height:100%;border-radius:0;}\n.dshpc-igroup > .dshpc-iconbtn{width:auto;aspect-ratio:1;}\n.dshpc-igroup > .dshpc-btn{border:0;}\n\n/* \u5206\u9694\u7EBF\uFF1A\u76F8\u90BB\u5144\u5F1F\u7684\u5DE6\u63CF\u8FB9\uFF0C\u4E0D\u989D\u5916\u63D2 DOM\u3002\u540E\u4E24\u6761\u662F\u7ED9\u300C\u6E05\u8FC7\u8FB9\u6846\u300D\u7684\u683C\u5B50\u8865\u56DE\u6765\u7684\uFF0C\n   \u5FC5\u987B\u5199\u6210 0,2,0 \u4E14\u5199\u5728\u4E0A\u9762\u7684 border:0 \u4E4B\u540E \u2014\u2014 \u5426\u5219\u88AB border:0 \u538B\u6389\uFF0C\u683C\u5B50\u4E4B\u95F4\u6CA1\u5206\u9694\u3002 */\n.dshpc-igroup > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n.dshpc-igroup > * + .dshpc-input{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n.dshpc-igroup > * + .dshpc-btn{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n";
 
-// dist/ui/controls/table-css.generated.js
+// dist/ui/display/table-css.generated.js
 var TABLE_BASE_CSS = "/* \u2500\u2500 \u8868\u683C\u57FA\u7840\u5C42\uFF08\u7ED3\u6784 + \u4EA4\u4E92 + \u7A7A\u6001\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u89C2\u5206\u6863 = \u5206\u7EC4\u4EF6 + \u5206\u6587\u4EF6\uFF1A\u672C\u6587\u4EF6\u53EA\u653E\u6240\u6709\u5916\u89C2\u5171\u7528\u7684\u90E8\u5206\uFF1B\n   \u8868\u5934\u5E95\u8272\u3001\u5206\u9694\u7EBF\u3001\u60AC\u6D6E / \u9009\u4E2D\u8272\u7531\u76AE\u80A4\u6587\u4EF6\u8D1F\u8D23\uFF08table-plain.css \u662F\u7B2C\u4E00\u6863\uFF09\u3002\n   \u76AE\u80A4\u9009\u62E9\u5668\u4E00\u5F8B\u6302\u5728 .dshpc-table--<skin> \u4E0B\uFF0C\u4E0E\u57FA\u7840\u5C42\u4E0D\u540C\u540D \u2014\u2014 \u6CE8\u5165\u987A\u5E8F\u4E0D\u5F71\u54CD\u80DC\u8D1F\n   \uFF08test/css-contract.test.mjs \u7981\u6B62\u8DE8\u5E38\u91CF\u540C\u540D\u9009\u62E9\u5668\uFF09\u3002\n   \u5706\u89D2\u88C1\u526A / \u6A2A\u5411\u6EDA\u52A8\u5F52\u8C03\u7528\u65B9\u5BB9\u5668\uFF0C\u672C\u5C42\u4E0D\u8BBE overflow\uFF1B\u4E5F\u4E0D\u505A\u8868\u5934\u5438\u9876\uFF1A\n   \u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF08\u8981\u5438\u9876\u8BF7\u5728\u5916\u5C42\u5BB9\u5668\u5904\u7406\uFF09\u3002 */\n\n.dshpc-table{--dshpc-table-pad-x:var(--dshpc-space-3);--dshpc-table-head-h:44px;--dshpc-table-row-h:48px;\n  width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;box-sizing:border-box;\n  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n\n/* \u5BC6\u5EA6\u4E09\u6863\uFF1A\u53EA\u6539\u884C\u9AD8\u4E0E\u6C34\u5E73\u5185\u8DDD\uFF0C\u914D\u8272\u4E0E\u5206\u9694\u7EBF\u5F52\u76AE\u80A4\u3002compact / comfortable \u5404\u4E00\u884C\uFF0C\n   \u65B0\u589E\u6863\u4F4D\u5728\u6B64\u8FFD\u52A0\uFF1B\u5217\u7EA7 padding \u8D70\u5185\u8054 style \u8986\u76D6\uFF08\u4E0D\u5728\u8FD9\u91CC\u518D\u5F00\u4E00\u5957\u53D8\u91CF\uFF09\u3002\n   \u9ED8\u8BA4\u6C34\u5E73\u5185\u8DDD 12px\uFF08space-3\uFF09\u2014\u2014 \u53C2\u8003\u7A3F\u7684\u8272\u5757\u95F4\u8DDD\uFF0C16px \u504F\u677E\u3002 */\n.dshpc-table--density-compact{--dshpc-table-pad-x:var(--dshpc-space-2);--dshpc-table-head-h:36px;--dshpc-table-row-h:36px;}\n.dshpc-table--density-comfortable{--dshpc-table-pad-x:var(--dshpc-space-4);--dshpc-table-head-h:52px;--dshpc-table-row-h:60px;}\n\n.dshpc-table__head-cell,.dshpc-table__cell{box-sizing:border-box;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  text-align:left;vertical-align:middle;font-weight:400;}\n\n/* \u8868\u5934 44 / \u6570\u636E\u884C 48 \u662F default \u6863\uFF08\u53C2\u8003\u7A3F\u5BC6\u5EA6\uFF09\uFF1Bheight \u5728 table-cell \u4E0A\u662F\u6700\u5C0F\u9AD8\uFF0C\n   \u591A\u884C\u5185\u5BB9\u4F1A\u81EA\u52A8\u628A\u884C\u6491\u9AD8\uFF0C\u4E0D\u4F1A\u88AB\u622A\u65AD\u3002 */\n.dshpc-table__head-cell{height:var(--dshpc-table-head-h);font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg-2);}\n.dshpc-table__head-cell--group{text-align:center;}\n.dshpc-table__cell{height:var(--dshpc-table-row-h);}\n\n.dshpc-table__head-cell--center,.dshpc-table__cell--center{text-align:center;}\n.dshpc-table__head-cell--right,.dshpc-table__cell--right{text-align:right;}\n\n.dshpc-table__row{transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n/* \u53EA\u6709\u4F20\u4E86 onRowClick \u7684\u884C\u624D\u662F\u53EF\u70B9\u7684\uFF08\u6570\u636E\u5C5E\u6027\u7531\u7EC4\u4EF6\u6309\u6B64\u6253\uFF09\u3002 */\n.dshpc-table__row[data-interactive='true']{cursor:pointer;}\n.dshpc-table__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}\n\n/* \u6591\u9A6C\u7EB9\u662F\u901A\u7528\u80FD\u529B\uFF08\u8868\u7EA7 striped \u5F00\u5173\uFF09\uFF0C\u653E\u5728\u57FA\u7840\u5C42\uFF1A\u5E95\u8272\u53D6 token\uFF0C\u5404\u6863\u76AE\u80A4\u4E0D\u5FC5\u5404\u81EA\u5B9E\u73B0\u3002\n   \u9009\u62E9\u5668\u523B\u610F\u53EA\u5230 3 \u4E2A\u7C7B\u7EA7\u522B\uFF08\u8868\u7EA7 + \u884C + :nth-child\uFF09\uFF1B\u76AE\u80A4\u5C42\u7684\u884C\u6001\u89C4\u5219\u5E26 __body \u4E0A\u4E0B\u6587\n   + \u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u662F 4 \u7EA7 \u21D2 \u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u5730\u538B\u8FC7\u5B83\u3002\n   2026-10-30 \u771F\u673A\u4E8B\u6545\uFF1A\u8FD9\u91CC\u66FE\u5199\u6EE1 4 \u7EA7\uFF08\u591A\u4E86\u4E00\u4E2A __body\uFF09\uFF0C\u4E0E\u9009\u4E2D\u7684 4 \u7EA7\u76F8\u540C \u21D2 \u57FA\u7840\u5C42\n   \u6BD4\u76AE\u80A4\u540E\u6CE8\u5165\uFF0C\u5076\u6570\u884C\u6C38\u8FDC\u88AB\u6591\u9A6C\u7EB9\u76D6\u4F4F\uFF08\u300C\u5355\u6570\u884C\u80FD\u9009\u4E2D\u3001\u53CC\u6570\u884C\u70B9\u4E86\u6CA1\u53CD\u5E94\u300D\uFF09\u3002 */\n.dshpc-table--striped .dshpc-table__row:nth-child(even){background:var(--dshpc-plate);}\n\n/* \u5206\u7EC4\u901A\u680F\uFF1A\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u677F\u5757\uFF08\u5DE5\u4F5C\u533A A / \u5DE5\u4F5C\u533A B\uFF09\u65F6\uFF0C\u6BCF\u7EC4\u5148\u6765\u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u5927\u6807\u9898\uFF0C\n   \u7136\u540E\u624D\u662F\u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u6570\u636E\u884C\u3002\u7ED3\u6784 + \u5E95\u8272\u5F52\u57FA\u7840\u5C42\uFF08\u53EA\u7528 token\uFF0C\u5404\u6863\u76AE\u80A4\u5171\u540C\u6210\u7ACB\uFF09\uFF1B\n   \u901A\u680F\u5E95\u8D70 --dshpc-table-banner-bg\uFF08\u4E0E\u8868\u5934\u4E92\u6362\u7684\u90A3\u4E00\u6863\uFF0C2026-10-30 \u7528\u6237\u5B9A\uFF09\uFF1B\n   \u901A\u680F\u4E0E\u7EC4\u8868\u5934\u4E4B\u95F4\u753B\u4E00\u6761\u7EBF\uFF08\u7528\u6237 2026-10-30\uFF1A\u90A3\u4E4B\u95F4\u4E5F\u8981\u6709 border\uFF09\uFF1B\n   \u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u901A\u680F\u9876\u7EBF\u9694\u5F00\uFF0C\u7B2C\u4E00\u7EC4\u9876\u90E8\u4E0D\u753B\uFF08\u5916\u6846\u5DF2\u7ECF\u5728\u90A3\u513F\uFF0C\u753B\u4E86\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table__group-cell{height:var(--dshpc-table-head-h);padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;background:var(--dshpc-table-banner-bg);border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  text-align:left;vertical-align:middle;font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg);}\n.dshpc-table__group-body:first-of-type .dshpc-table__group-cell{border-top:0;}\n\n/* \u901A\u680F\u6807\u9898\u7684\u56FA\u5B9A\u6807\u7B7E\uFF08\u77ED\u7AD6\u7EBF\uFF09\u4E0E\u6392\u7248\u7531 SectionHead \u81EA\u5E26\uFF084px \u5706\u5934\uFF09\uFF0C\u672C\u5C42\u4E0D\u518D\u753B\u3002 */\n\n.dshpc-table__empty{height:80px;padding:0 var(--dshpc-space-4);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n\n/* \u52A0\u8F7D\u6001\u884C\uFF08\u52A0\u8F7D\u66F4\u591A / \u6CA1\u6709\u66F4\u591A / \u6574\u8868\u52A0\u8F7D\uFF09\uFF1A\u5355\u5143\u683C\u81EA\u8EAB\u4E0D\u753B\u8FB9\u6846\uFF08\u5E95\u90E8\u72B6\u6001\u884C\u7684\u9876\u7EBF\u7531\u76AE\u80A4\u8865\uFF09\uFF0C\u5185\u5BB9\u5C45\u4E2D\uFF1B\n   \u6574\u8868\u52A0\u8F7D\u9ED8\u8BA4\u5360\u4F4D 160px\uFF08\u53EF\u7531 loadingHeight \u8986\u76D6\uFF09\uFF0C\u5E95\u90E8\u90A3\u884C\u53EA\u5360\u4E00\u884C\u9AD8\u3002 */\n.dshpc-table__state-cell{padding:0;border:0;text-align:center;vertical-align:middle;}\n.dshpc-table__state{display:flex;align-items:center;justify-content:center;\n  gap:var(--dshpc-space-2);min-height:40px;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n.dshpc-table__state--full{flex-direction:column;min-height:160px;gap:var(--dshpc-space-3);font-size:var(--dshpc-font-sm);}\n.dshpc-table__state-text{line-height:1;}\n/* \u5E95\u90E8\u54E8\u5175\uFF1A\u96F6\u9AD8\u3001\u65E0\u8FB9\u6846\u3001\u65E0\u5185\u5BB9\uFF0C\u53EA\u7ED9 IntersectionObserver \u4E00\u4E2A\u843D\u70B9\u3002 */\n.dshpc-table__sentinel>td{height:0;padding:0;border:0;line-height:0;}\n\n/* \u5185\u5EFA\u5206\u9875\u7684\u5916\u58F3\uFF1A\u8868\u683C\u5728\u4E0A\u3001\u5206\u9875\u6761\u5728\u4E0B\uFF0C\u95F4\u8DDD\u8D70 space-3\uFF08\u5206\u9875\u6761\u81EA\u5DF1\u7BA1\u5DE6\u53F3\u5BF9\u9F50\uFF09\u3002 */\n.dshpc-table-frame{display:flex;flex-direction:column;gap:var(--dshpc-space-3);}\n";
 
-// dist/ui/controls/table-plain-css.generated.js
+// dist/ui/display/table-plain-css.generated.js
 var TABLE_PLAIN_CSS = "/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 Plain\uFF08\u7B2C\u4E00\u4E2A\u6837\u5F0F\uFF1A\u767D\u5361\u7247\u4E0A\u7684\u8F7B\u91CF\u8868\u683C\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7279\u5F81\uFF1A\u5916\u6846 + \u7070\u5E95\u8868\u5934\uFF08\u542B\u4E0B\u8FB9\u7EBF\uFF0C\u53CC\u884C\u5206\u7EC4\u8868\u5934\u4E5F\u6E05\u695A\uFF09\u3001\u7AD6\u5411\u5206\u9694\u7EBF\u3001\n   \u6570\u636E\u884C\u53EA\u4FDD\u7559\u6781\u6DE1\u5E95\u7EBF\uFF08\u4E0D\u753B\u91CD\u6A2A\u7EBF\uFF09\u3001\u884C\u60AC\u6D6E\u6DE1\u84DD\u3001\u9009\u4E2D\u884C\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7 3px \u84DD\u7AD6\u6761\u3002\n   \u9009\u62E9\u5668\u5168\u90E8\u6302\u5728 .dshpc-table--plain \u4E0B\uFF0C\u548C\u57FA\u7840\u5C42\u4E0D\u540C\u540D\uFF08\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\uFF09\u3002\n   \u7AD6\u5206\u9694\u7EBF\u6309\u5217\u58F0\u660E\uFF08\u683C\u5B50\u4E0A\u7684 data-divider\uFF09\uFF0C\u4E0D\u7528\u76F8\u90BB\u5144\u5F1F\u9009\u62E9\u5668 \u2014\u2014 \u540E\u8005\u4F1A\u8BA9\u6BCF\u884C\u9996\u683C\n   \u6C38\u8FDC\u6CA1\u6709\u5DE6\u7EBF\uFF08\u7528\u6237 2026-10-30 \u771F\u673A\u770B\u5230\u7684 Name \u5DE6\u4FA7\u7F3A\u7EBF\uFF09\uFF0C\u4E14\u5355\u5143\u683C\u8DE8\u5217\u540E\u4F1A\u753B\u9519\u4F4D\u7F6E\u3002\n   \u540E\u7EED\u5916\u89C2\u7167\u6B64\u53E6\u5EFA\uFF1Atable-grid.css / table-zebra.css\uFF0C\u5404\u81EA\u4E00\u4E2A\u7EC4\u4EF6\u3001\u5404\u81EA import \u81EA\u5DF1\u90A3\u4EFD\u3002 */\n\n/* \u5916\u6846\u56DB\u6001\uFF1Aall \u56DB\u8FB9 / x \u53EA\u6709\u5DE6\u53F3 / y \u53EA\u6709\u4E0A\u4E0B / none \u5168\u4E0D\u8981\u3002\n   \u7EC4\u4EF6\u603B\u4F1A\u6309 borders \u5C5E\u6027\u548C\u4E0A\u5BF9\u5E94 class\uFF0C\u6545\u8FD9\u91CC\u4E0D\u5B58\u5728\u300C\u65E0 class \u7684\u88F8\u8868\u300D\u3002\n   \u300C\u4E0D\u8981\u5DE6\u53F3\u4E24\u6761\u8FB9\u300D\u5C31\u662F borders='y'\u3002 */\n.dshpc-table--plain.dshpc-table--borders-all{border:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-x{border-left:1px solid var(--dshpc-border);\n  border-right:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-y{border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-none{border:0;}\n\n/* \u8868\u5934\uFF1A\u4E2D\u6027\u7070\u5E95 + \u4E0B\u8FB9\u7EBF\u3002\u5E95\u8272\u8D70 --dshpc-table-head-bg\uFF08= --dshpc-surface-sunken\uFF0C\n   \u4E0E\u901A\u680F\u90A3\u5C42\u7070\u540C\u6E90\uFF1B2026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934 / \u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1B\u4E0B\u8FB9\u7EBF\u515C\u4F4F\u5206\u7EC4\u8868\u5934\u7684\u7B2C\u4E8C\u5C42\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell{\n  background:var(--dshpc-table-head-bg);\n  border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-table--plain .dshpc-table__head-cell--group{color:var(--dshpc-fg-3);}\n\n/* \u8868\u5934\u591A\u8272\uFF1A\u5217\u7EA7 headerTone \u6253\u5230 data-header-tone\uFF0C\u6D45\u5E95 + \u540C\u8272\u6587\u5B57\u3002\n   \u8272\u503C\u5168\u90E8\u6765\u81EA token\uFF08soft \u5E95 / \u5B9E\u8272\u5B57\uFF09\uFF0C\u6697\u8272\u4E3B\u9898\u81EA\u52A8\u8DDF\u968F\uFF0C\u4E0D\u5199\u6B7B\u4EFB\u4F55 hex\u3002\n   \u8FD9\u7EC4\u89C4\u5219\u6BD4\u4E0A\u65B9\u7070\u5E95\u89C4\u5219\u591A\u4E00\u4E2A\u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u8986\u76D6\u9ED8\u8BA4\u7070\u5E95\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='business']{background:var(--dshpc-business-soft);color:var(--dshpc-business);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='success']{background:var(--dshpc-success-soft);color:var(--dshpc-success);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='warning']{background:var(--dshpc-warning-soft);color:var(--dshpc-warning);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='danger']{background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='purple']{background:var(--dshpc-purple-soft);color:var(--dshpc-purple);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='pink']{background:var(--dshpc-pink-soft);color:var(--dshpc-pink);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='cyan']{background:var(--dshpc-cyan-soft);color:var(--dshpc-cyan);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='teal']{background:var(--dshpc-teal-soft);color:var(--dshpc-teal);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='orange']{background:var(--dshpc-orange-soft);color:var(--dshpc-orange);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='indigo']{background:var(--dshpc-indigo-soft);color:var(--dshpc-indigo);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='rose']{background:var(--dshpc-rose-soft);color:var(--dshpc-rose);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='slate']{background:var(--dshpc-slate-soft);color:var(--dshpc-slate);}\n\n/* \u7AD6\u5206\u9694\u7EBF\uFF1A\u6309\u5217\u58F0\u660E\uFF0C**\u9ED8\u8BA4\u4E0D\u753B**\u3002\u7EC4\u4EF6\u53EA\u7ED9 divider: true \u7684\u5217\u6253 data-divider='left'\uFF0C\n   \u9996\u5217\u6052\u4E0D\u753B\uFF08\u90A3\u662F\u5916\u6846\u7684\u4F4D\u7F6E\uFF09\u3002\u9ED8\u8BA4\u8868\u683C = \u53EA\u6709\u6A2A\u7EBF\u3001\u6CA1\u6709\u4E00\u6761\u7AD6\u7EBF\uFF1B\n   \u8981\u300C\u5217\u95F4\u6709\u7EBF\u300D\u5C31\u7ED9\u5BF9\u5E94\u5217 divider:true\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-divider='left'],\n.dshpc-table--plain .dshpc-table__cell[data-divider='left']{border-left:1px solid var(--dshpc-border);}\n\n/* \u6570\u636E\u884C\u4E4B\u95F4\u7684\u6781\u6DE1\u5E95\u7EBF\uFF1A\u53EA\u5E2E\u773C\u775B\u300C\u5206\u884C\u300D\uFF0C\u4E0D\u56DE\u5230\u7C97\u6A2A\u7EBF\u8868\u683C\u7684\u8001\u6837\u5B50\u3002 */\n.dshpc-table--plain .dshpc-table__row + .dshpc-table__row .dshpc-table__cell{\n  border-top:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5E95\u90E8\u72B6\u6001\u884C\uFF08\u52A0\u8F7D\u66F4\u591A / \u5230\u5E95\uFF09\uFF1A\u6574\u884C\u901A\u680F\uFF0C\u4E0E\u4E0A\u65B9\u6570\u636E\u884C\u4E4B\u95F4\u8865\u4E00\u6761\u5B9E\u7EBF\u3002\n   \u53EA\u8865\u9876\u7EBF\uFF1A\u5DE6\u53F3\u4E24\u6761\u4E0D\u7531\u8FD9\u4E00\u683C\u91CD\u590D\u753B \u2014\u2014 borders=all / x \u65F6\u8868\u7EA7\u5916\u6846\u5DF2\u7ECF\u515C\u4F4F\uFF1B\n   borders=y / none \u672C\u6765\u5C31\u6CA1\u6709\u5DE6\u53F3\u8FB9\u3002\u6574\u8868\u52A0\u8F7D\u5360\u4F4D\u884C\u4E0D\u52A0\uFF08\u8868\u5934\u5DF2\u6709\u4E0B\u8FB9\u7EBF\uFF0C\u518D\u52A0\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table--plain .dshpc-table__state-row--footer .dshpc-table__state-cell{\n  border-top:1px solid var(--dshpc-border);\n}\n\n/* \u6CA1\u6709\u5DE6\u53F3\u5916\u6846\u65F6\uFF08borders=y\uFF09\u5E95\u90E8\u72B6\u6001\u884C\u4E0B\u9762\u90A3\u6761\u8868\u5E95\u7EBF\u4E5F\u53BB\u6389\uFF1A\n   \u72B6\u6001\u884C\u53EA\u7559\u4E0A\u65B9\u4E00\u6761\u5B9E\u7EBF\uFF0C\u5426\u5219\u56FE\u6807 / \u6587\u6848\u4E0B\u65B9\u8FD8\u591A\u4E00\u6761\u5B64\u7EBF\uFF082026-10-31 \u7528\u6237\u5B9A\uFF09\u3002\n   borders=none \u672C\u6765\u5C31\u6CA1\u6709\u5E95\u8FB9\uFF0C\u65E0\u9700\u5728\u6B64\u91CD\u590D\u3002 */\n.dshpc-table--plain.dshpc-table--borders-y.dshpc-table--foot-no-bottom{border-bottom:0;}\n\n/* \u884C\u60AC\u6D6E\uFF1A\u53EA\u5728\u53EF\u70B9\u884C\u4E0A\u7ED9\u53CD\u9988\uFF0C\u9759\u6001\u8868\u683C\u4E0D\u8BEF\u5BFC\u7528\u6237\u4EE5\u4E3A\u80FD\u70B9\u3002\n   \u5E95\u8272\u662F\u6781\u6DE1\u4E2D\u6027\u7070\uFF08--dshpc-table-row-hover\uFF1A\u4EAE\u8272\u4E00\u5C42\u6DE1\u9ED1 \u22481.5%\uFF0C\u6697\u8272\u4E00\u5C42\u6DE1\u767D \u22483%\uFF09\u2014\u2014\n   2026-10-30 \u7528\u6237\uFF1Ahover \u8981\u7279\u522B\u6DE1\u7684\u7070\u3001\u4E0D\u8981\u6DE1\u84DD\uFF08\u7B2C\u4E8C\u6B21\u53C8\u8981\u6C42\u518D\u6D45\u4E00\u534A\uFF09\u3002\u5E26 __body \u4E0A\u4E0B\u6587\u662F\u4E3A\u4E86\u538B\u8FC7\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF08\u89C1 table.css\uFF09\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-table-row-hover);}\n\n/* \u9009\u4E2D\u884C\uFF1A\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7\u84DD\u7AD6\u6761\u3002\u7528\u80CC\u666F\u6E10\u53D8\u753B\u6761\uFF0C\u907F\u514D tr \u4E0A\u4F2A\u5143\u7D20 / \u5B9A\u4F4D\u7684\u517C\u5BB9\u95EE\u9898\uFF1B\n   \u4E24\u6761\u9009\u62E9\u5668\u540C\u4E00\u4EFD\u58F0\u660E\uFF1A\u60AC\u6D6E\u6001\uFF08\u591A\u4E00\u4E2A\u5C5E\u6027 + \u4F2A\u7C7B\uFF09\u4E0D\u4F1A\u76D6\u6389\u9009\u4E2D\u6001\u3002\n   \u5E95\u8272\u7528 business-soft\uFF08\u6BD4\u60AC\u6D6E\u518D\u660E\u786E\u4E00\u6863\u4F46\u4ECD\u662F\u6D45\u8272\uFF09\uFF0C\u6761\u672C\u8EAB\u624D\u662F\u300C\u9009\u4E2D\u300D\u7684\u4FE1\u53F7\u3002\n   \u7279\u5F02\u6027 4 \u7EA7\uFF0C\u9AD8\u4E8E\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF083 \u7EA7\uFF09\u21D2 \u5076\u6570\u884C\u4E5F\u80FD\u6B63\u5E38\u9009\u4E2D\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'],\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'][data-interactive='true']:hover{\n  background:linear-gradient(to right,var(--dshpc-business) 3px,var(--dshpc-business-soft) 3px);\n}\n";
 
-// dist/ui/controls/pagination-css.generated.js
+// dist/ui/navigation/pagination-css.generated.js
 var PAGINATION_CSS = "/* \u2500\u2500 \u5206\u9875\uFF08\u2039 Previous 1 2 3 \u2026 36 Next \u203A\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5F53\u524D\u9875 = \u84DD\u8272\u5706\u89D2\u65B9\u5757 + \u767D\u5B57\uFF08\u5B9E\u5FC3\u9762\u7684\u5B57\u5FC5\u987B\u8D70 --dshpc-on-signal\uFF0C\u4E0D\u8BB8\u7528\u4E3B\u9898\u53CD\u8272\uFF09\uFF1B\n   \u5176\u4F59\u9875\u7801\u662F\u7EAF\u6587\u5B57\u6309\u94AE\uFF0C\u60AC\u6D6E\u53EA\u7ED9\u6781\u6DE1\u4E2D\u6027\u5E95\u3002\u5BF9\u9F50\u7531 --left / --center / --right \u4E09\u4E2A\u4FEE\u9970\u51B3\u5B9A\uFF0C\n   \u7EC4\u4EF6\u9ED8\u8BA4 right\u3002\u989C\u8272\u5168\u90E8\u8D70 token\uFF0C\u660E\u6697\u81EA\u52A8\u8DDF\u968F\u5BBF\u4E3B\u3002 */\n\n.dshpc-pagination{display:flex;align-items:center;gap:var(--dshpc-space-2);flex-wrap:wrap;\n  font-size:var(--dshpc-font-sm);line-height:1;color:var(--dshpc-fg-2);}\n\n.dshpc-pagination--left{justify-content:flex-start;}\n.dshpc-pagination--center{justify-content:center;}\n.dshpc-pagination--right{justify-content:flex-end;}\n\n.dshpc-pagination__total{color:var(--dshpc-fg-3);margin-inline-end:var(--dshpc-space-1);}\n\n.dshpc-pagination__pages{display:flex;align-items:center;gap:2px;}\n\n/* \u9875\u7801 / \u4E0A\u4E0B\u9875 = \u6838\u5FC3 Button\uFF08\u5F53\u524D\u9875 info \u5B9E\u5FC3\u84DD\u3001\u5176\u4F59 ghost\uFF09\uFF0C\u7BAD\u5934 = \u5168\u7AD9\u552F\u4E00 Chevron\u3002\n   \u8FD9\u91CC\u53EA\u8865\u5C3A\u5BF8\u4E0E\u95F4\u8DDD\uFF0C\u4E0D\u91CD\u753B\u6309\u94AE\u76AE\u80A4\uFF1B\u4E24\u7EA7\u9009\u62E9\u5668\u538B\u8FC7 .dshpc-btn--md \u7684\u5185\u8DDD\u3002 */\n.dshpc-pagination .dshpc-pagination__page{padding:0 6px;min-width:28px;}\n.dshpc-pagination .dshpc-pagination__nav{padding:0 var(--dshpc-space-2);}\n\n.dshpc-pagination__ellipsis{display:inline-flex;align-items:center;justify-content:center;\n  min-width:28px;height:28px;color:var(--dshpc-fg-3);}\n\n.dshpc-pagination__simple{min-width:64px;text-align:center;font-variant-numeric:tabular-nums;\n  color:var(--dshpc-fg);}\n\n/* \u7B80\u6D01\u6A21\u5F0F\u53EA\u7559\u7BAD\u5934\uFF1A\u6587\u5B57\u6807\u7B7E\u9690\u85CF\uFF0C\u7BAD\u5934\u4ECD\u7136\u53EF\u89C1\uFF08\u65E0\u969C\u788D\u540D\u8FD8\u5728 aria-label \u4E0A\uFF09\u3002 */\n.dshpc-pagination--simple .dshpc-pagination__text{display:none;}\n\n/* \u6BCF\u9875\u6761\u6570\u4E0B\u62C9 = \u6838\u5FC3 Picker\uFF08\u7BAD\u5934\u662F\u5168\u7AD9\u552F\u4E00\u7684 Chevron\uFF09\uFF1A\u53EA\u6536\u7A84\u4E0D\u53C2\u4E0E\u4F38\u7F29\u3002 */\n.dshpc-pagination__size{flex:none;}\n";
 
-// dist/ui/controls/section-head-css.generated.js
+// dist/ui/display/section-head-css.generated.js
 var SECTION_HEAD_CSS = "/* \u5206\u533A\u6807\u9898\u884C\uFF1A\u6807\u7B7E\uFF08\u53EF\u9009\uFF0C\u753B\u51FA\u6765\u7684\u77ED\u7AD6\u7EBF\uFF09/ icon + \u6807\u9898 + \u53F3\u4FA7\u63A7\u4EF6\u3002 */\n.dshpc-section-head{display:flex;align-items:center;gap:var(--dshpc-space-2);\n  margin-bottom:var(--dshpc-space-3);}\n.dshpc-section-head--flush{margin-bottom:0;}\n\n.dshpc-section-head__bar{flex:none;width:4px;height:1em;border-radius:999px;\n  font-size:var(--dshpc-font-lg);background:var(--dshpc-fg-2);}\n\n.dshpc-section-head__icon{display:inline-flex;align-items:center;flex:none;\n  line-height:var(--dshpc-line-lg);color:var(--dshpc-fg-3);}\n\n.dshpc-section-head__title{font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);\n  font-weight:600;color:var(--dshpc-fg);flex:none;}\n\n.dshpc-section-head__right{flex:1;display:flex;align-items:center;\n  justify-content:flex-end;gap:var(--dshpc-space-2);min-width:0;}\n";
 
-// dist/ui/FieldHint.js
+// dist/ui/display/FieldHint.js
 function FieldHint(props) {
   ensureComponentStyles("hint", HINT_CSS);
   const { text: text2, side, align, maxWidth, className: className2, style: style2 } = props;
@@ -4037,13 +4037,13 @@ function FieldHint(props) {
   });
 }
 
-// dist/ui/MarqueeText.js
+// dist/ui/display/MarqueeText.js
 var import_react6 = require("react");
 
-// dist/ui/marquee-css.generated.js
+// dist/ui/display/marquee-css.generated.js
 var MARQUEE_CSS = "/* \u8DD1\u9A6C\u706F\uFF08MarqueeText\uFF09\uFF1A\u53CC\u5C42\u2014\u2014\u5916\u5C42\u53EA\u88C1\u526A\uFF0C\u5185\u5C42\u624D transform \u6EDA\u52A8\uFF1B\u975E hover \u5185\u5C42\u81EA\u5E26\u7701\u7565\u53F7\u3002\n   2026-10-20\uFF1A\u672C\u6587\u4EF6\u539F\u662F\u6742\u70E9\u300Cselect.css\u300D\uFF08\u4E0B\u62C9 / \u65E5\u5386 / \u65F6\u5206\u7684\u76AE\u80A4\u90FD\u88C5\u8FC7\uFF09\uFF0C\u968F\u7740\u90A3\u4E9B\u63A7\u4EF6\n   \u4E00\u4E2A\u4E2A\u5220\u5B8C\uFF0C\u6700\u540E\u53EA\u5269\u8DD1\u9A6C\u706F\uFF0C\u6545\u6309\u672C\u5305\u300C\u4E00\u4E2A css \u670D\u52A1\u4E00\u4E2A\u5BF9\u8C61\u300D\u7684\u683C\u5C40\u6539\u540D\u5F52\u6863\u3002\n   \u540C\u6279\u6E05\u6389\u7684\u8FD8\u6709\u96F6\u5F15\u7528\u7684\u7701\u7565\u53F7\u7C7B .dshpc-ellipsis \u2014\u2014 \u672C\u5305\u4E09\u4E2A\u7528\u5230\u622A\u65AD\u7684\u5730\u65B9\u90FD\u6CA1\u91C7\u7EB3\u5B83\u3002 */\n.dshpc-mq{display:block;overflow:hidden;white-space:nowrap;}\n.dshpc-mq .dshpc-mq-in{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:top;}\n/* \u26A0\uFE0F \u8DD1\u6CD5\uFF08\u7528\u6237 2026-10-03 \u62CD\u677F\uFF09\uFF1A**\u8DD1\u4E00\u904D\u3001\u505C\u5728\u5C3E\u5B57**\uFF08\u64AD\u653E 1 \u6B21 + forwards\uFF09\uFF0C\u4E0D\u6765\u56DE\u5F39\u3001\u4E0D\u65E0\u9650\u8DD1\u3002\n   \u6EDA\u8DDD = \u7CBE\u786E\u6EA2\u51FA\u91CF \u21D2 \u505C\u4E0B\u65F6\u6700\u540E\u4E00\u4E2A\u5B57\u6B63\u597D\u8D34\u53F3\u7F18\uFF0C**\u4E0D\u4F1A\u8DD1\u8FDB\u9ED1\u5757**\uFF08\u9ED1\u5757\u662F\u65E7\u624B\u5199\u7248\u628A\n   \u5185\u5C42\u76D2\u5B50\u88C1\u4E86\u3001\u6309\u300C\u534A\u622A\u6587\u672C\u300D\u5E73\u79FB\u5BFC\u81F4\u7684\uFF09\u3002\u9F20\u6807\u79FB\u5F00 \u21D2 :hover \u5931\u6548 \u21D2 \u81EA\u52A8\u590D\u4F4D\u56DE\u7701\u7565\u53F7\u6001\u3002 */\n.dshpc-mq-run:hover .dshpc-mq-in{max-width:none;overflow:visible;animation:dshpc-mq-scroll var(--dshpc-mq-dur,6s) linear .4s 1 forwards;}\n@keyframes dshpc-mq-scroll{from{transform:translateX(0)}to{transform:translateX(var(--dshpc-mq-dist,-40px))}}\n/* \u6EA2\u51FA\u6E10\u5F71\uFF08\u7528\u6237 2026-10-24 \u62CD\u677F\u300C\u5DE6\u53F3\u7A0D\u5FAE\u6709\u70B9\u6E10\u5F71\u300D\uFF1B\u5B98\u65B9\u53E3\u5F84 = dsh-client-ui-primitives@0.2.1-rc.2\n   PathLabel.module.css:13-15\uFF1Amask-image \u7EBF\u6027\u6E10\u9690 + 28px \u968F\u5B98\u65B9\uFF09\u3002\u26A0\uFE0F \u53EA\u5728 **hover \u6EDA\u52A8\u6001** \u52A0\uFF1A\n   \u9759\u6001\u6001\uFF08\u4E09\u4E2A\u70B9\uFF09\u4E0D\u8981\u6E10\u5F71\uFF08\u7528\u6237 2026-10-24 \u4E8C\u6B21\u62CD\u677F\uFF09\uFF0Chover \u6EDA\u52A8\u65F6\u4E24\u7AEF\u6E10\u5F71\u2014\u2014\u5DE6\u7F18\u67D4\u5316\u88AB\u88C1\u7684\u6587\u5B57\u5934\u3002 */\n/* token-ok\uFF1A\u906E\u7F69\u6A21\u677F\u8272\uFF08\u7EAF\u9ED1 = \u5B8C\u5168\u4E0D\u900F\u660E\uFF09\uFF0C\u4E0D\u662F\u4E3B\u9898\u8272\uFF1B\u6362\u4E3B\u9898\u4E5F\u4E0D\u8BE5\u53D8\u3002 */\n.dshpc-mq-run:hover{mask-image:linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);}\n";
 
-// dist/ui/MarqueeText.js
+// dist/ui/display/MarqueeText.js
 function MarqueeText(props) {
   ensureComponentStyles("marquee", MARQUEE_CSS);
   const outerRef = (0, import_react6.useRef)(null);
@@ -4087,16 +4087,16 @@ function MarqueeText(props) {
   }, props.text));
 }
 
-// dist/ui/overlay.js
+// dist/ui/infra/overlay.js
 var import_react8 = require("react");
 
-// dist/ui/overlay-css.generated.js
+// dist/ui/infra/overlay-css.generated.js
 var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09/ \u9009\u6587\u4EF6\u5F39\u7A97\uFF08\u951A\u5B9A\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u5404\u5BB6\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002\n   \u5173\u95ED\u94AE\u7684\u76AE\u80A4\u5728 panel.css\uFF08.dshpc-panel__close\uFF0C\u65E7\u7C7B\u540D\u4F5C\u522B\u540D\uFF09\uFF0C\u4E0D\u5728\u8FD9\u91CC\u518D\u5199\u4E00\u4EFD\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u9501\u5B9A\u6001\uFF1A\u7981\u7528\u624B\u52BF\u6302\u5728\u906E\u7F69\u4E0A\uFF08\u9762\u677F\u5916\u90A3\u4E00\u5708\u4E5F\u8981\u4E00\u81F4\uFF09\u3002 */\n.dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}\n/* \u9501\u5B9A\u65F6\u7684\u900F\u660E\u70B9\u51FB\u5C42\uFF1A\u5403\u6307\u9488\u3001\u4E0D\u6539\u4EFB\u4F55\u5916\u89C2\uFF08\u53D8\u7070\u7531\u5404\u63A7\u4EF6\u81EA\u5DF1\u7684 :disabled \u8D1F\u8D23\uFF09\u3002\n   \u5168\u900F\u660E\u662F\u523B\u610F\u7684 \u2014\u2014 \u76D6\u4E00\u5C42\u7070\u4F1A\u8BA9\u4EBA\u4EE5\u4E3A\u754C\u9762\u574F\u4E86\u3002 */\n.dshpc-lock-catcher{position:absolute;inset:0;z-index:1;cursor:not-allowed}\n/* \u9501\u5B9A\u6001\uFF1A\u6D88\u8D39\u65B9\u81EA\u7ED8\u7684\u539F\u751F\u8868\u5355\u5143\u7D20\u4E5F\u300C\u770B\u8D77\u6765\u7981\u7528\u300D\u3002\n   \u6574\u6761\u9009\u62E9\u5668\u5305\u5728 :where() \u91CC = \u7279\u5F02\u6027 0 \u2014\u2014 \u6D88\u8D39\u65B9\u4EFB\u610F\u4E00\u6761\u81EA\u5DF1\u7684\u89C4\u5219\u90FD\u80FD\u76D6\u56DE\u6765\uFF0C\u6211\u4EEC\u53EA\u5F53\u9ED8\u8BA4\u503C\u3002\n   \u53EA\u5199 opacity / cursor \u4E24\u4E2A\u5C5E\u6027\uFF1B\u4E0D\u60F3\u88AB\u7070\u5C31\u5728\u81EA\u5DF1\u5143\u7D20\u4E0A\u5199 --dshpc-lock-dim: 1\u3002\n   \u89E3\u9501 = \u89C4\u5219\u4E0D\u518D\u5339\u914D\uFF0C\u4E0D\u5B58\u5728\u300C\u8FD8\u539F\u300D\uFF0C\u4E5F\u5C31\u4E0D\u4F1A\u51B2\u6389\u522B\u4EBA\u5199\u7684\u6837\u5F0F\u3002 */\n:where(.dshpc-locked button:not(:disabled),.dshpc-locked input:not(:disabled),.dshpc-locked select:not(:disabled),.dshpc-locked textarea:not(:disabled)){\n  opacity:var(--dshpc-lock-dim);cursor:not-allowed;\n}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n/* \u951A\u5B9A\u6863\uFF08\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\uFF1A\u906E\u7F69\u7167\u65E7\u538B\u6697 + \u70B9\u5916\u90E8\u5173\u95ED\uFF0C\u9762\u677F\u81EA\u5DF1 fixed \u8D34\u951A\u70B9\uFF0C\u8FD9\u91CC\u4E0D\u505A\u5E03\u5C40\u3002 */\n.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n";
 
-// dist/ui/panel-css.generated.js
+// dist/ui/infra/panel-css.generated.js
 var PANEL_CSS = "/* \u6D6E\u5C42\u9762\u677F\u76AE\u80A4\uFF082026-11-03 \u7528\u6237\u5B9A\uFF1A\u76AE\u80A4\u7EDF\u4E00\uFF0C\u53EA\u6539\u6837\u5F0F\u4E0D\u52A8\u4EA4\u4E92\uFF09\u3002\n *\n * \u8FD9\u4EFD\u6587\u4EF6\u662F**\u6240\u6709\u300C\u6D6E\u8D77\u6765\u7684\u6846\u300D\u7684\u76AE\u80A4\u771F\u6E90**\u3002\u5B9A\u4F4D\uFF08fixed / absolute\u3001\u8D34\u8C01\u3001\u600E\u4E48\u7FFB\u8F6C\u3001\u591A\u5927\u7684\n * \u5C42\u5E8F\uFF09\u7559\u5728\u5404\u81EA\u63A7\u4EF6\u91CC\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u8868\u9762\u56DB\u4EF6\uFF1A\u5E95\u8272 / \u63CF\u8FB9\u5BBD / \u5706\u89D2 / \u9634\u5F71\u3002\n * \u26A0\uFE0F \u7EC4\u4EF6 CSS \u91CC\u4E0D\u8BB8\u518D\u5199\u8FD9\u56DB\u4E2A\u5B57\u9762\u503C \u2014\u2014 \u60F3\u6539\u5916\u89C2\u5C31\u6539\u8FD9\u91CC\uFF0C\u522B\u5728\u6D88\u8D39\u65B9\u53E6\u8D77\u4E00\u5957\u3002\n *\n * \u4E09\u6863\uFF08\u5DEE\u5F02\u53EA\u5728\u8FD9\u4E09\u6BB5\u5B9A\u4E49\uFF0C\u522B\u5904\u5206\u53C9\uFF09\uFF1A\n *   --modal    \u5C45\u4E2D\u6A21\u6001\uFF08Modal / ConfirmModal / AlertModal \u5BB6\u65CF\uFF09\n *   --popover  \u8D34\u951A\u70B9\u7684\u6D6E\u5C42\u9762\u677F\uFF08pickWorkspaceFile \u7684\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\n *   --menu     \u4E0B\u62C9\u83DC\u5355\uFF08\u6587\u4EF6\u6D4F\u89C8\u5668 \u25BE \u9009\u5C42\u3001Picker \u4E0B\u62C9\uFF09\n *\n * \u4E0D\u5E76\u5165\u4E09\u6863\u7684\uFF1APanelDock \u4E0E SideSheet \u662F**\u8D34\u8FB9\u5BB6\u65CF**\uFF08side-panel.css \u7684\n * .dshpc-side-surface\uFF0Csurface-base\u3001\u65E0\u5916\u63CF\u8FB9\uFF09\u2014\u2014 2026-11-02 \u62CD\u677F\u300C\u4E24\u8005\u76AE\u80A4\u4E00\u6A21\u4E00\u6837\u300D\uFF0C\n * \u4E00\u4E2A\u662F\u5E03\u5C40\u6210\u5458\u3001\u4E00\u4E2A\u662F\u8D34\u8FB9\u62BD\u5C49\uFF0C\u90FD\u4E0D\u662F\u6D6E\u5C42\u3002\n */\n.dshpc-panel{\n  background:var(--dshpc-panel-bg);color:var(--dshpc-fg);\n  border:var(--dshpc-panel-bw) solid var(--dshpc-border);\n  border-radius:var(--dshpc-panel-radius);box-shadow:var(--dshpc-panel-shadow);\n}\n.dshpc-panel--modal{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:3px;\n  --dshpc-panel-radius:var(--dshpc-radius-xl);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n}\n.dshpc-panel--popover{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  --dshpc-panel-radius:var(--dshpc-radius-lg);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n}\n.dshpc-panel--menu{\n  /* \u83DC\u5355\u5E95\u4E0E\u6A21\u6001\u540C\u4E00\u5C42\uFF08\u7528\u6237 2026-11-03\uFF1A\u522B\u7528\u9875\u9762\u5E95\u8272\uFF0C\u6697\u8272\u4E0B\u770B\u7740\u5168\u9ED1\uFF09\u3002 */\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  --dshpc-panel-radius:var(--dshpc-radius-sm);\n  --dshpc-panel-shadow:var(--dshpc-shadow-1);\n}\n\n/* \u6D6E\u5C42\u552F\u4E00\u7684\u5173\u95ED\u94AE\uFF0820\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF09\u3002\n   \u65E7\u7C7B\u540D .dshpc-overlay-head__close \u4FDD\u7559\u4E3A\u522B\u540D\uFF1A\u6D88\u8D39\u65B9\u5199\u5728\u65E7\u7C7B\u540D\u4E0A\u7684\u8986\u76D6\u4ECD\u751F\u6548\u3002 */\n.dshpc-panel__close,.dshpc-overlay-head__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-panel__close:hover,.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-panel__close:focus-visible,.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n";
 
-// dist/ui/panel.js
+// dist/ui/infra/panel.js
 var import_react7 = require("react");
 function PanelSurface(props) {
   ensureComponentStyles("panel", PANEL_CSS);
@@ -4119,7 +4119,7 @@ function PanelClose(props) {
   }, props.icon ?? "\u2715");
 }
 
-// dist/ui/overlay.js
+// dist/ui/infra/overlay.js
 var LockedContext = (0, import_react8.createContext)(false);
 function useOverlayLocked() {
   return (0, import_react8.useContext)(LockedContext);
@@ -4176,7 +4176,7 @@ function OverlayHead(props) {
   return (0, import_react8.createElement)("div", { className: "dshpc-overlay-head" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__heading" }, props.icon === void 0 ? null : (0, import_react8.createElement)("span", { className: "dshpc-overlay-head__lead" }, props.icon), (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__titlegroup" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__titlerow" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__title" }, props.title ?? ""), props.extra === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__extra" }, props.extra)), props.subtitle === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__sid" }, props.subtitle))), (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__spacer" }), props.actions === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__actions" }, props.actions), props.onClose === void 0 ? null : (0, import_react8.createElement)(PanelClose, { label: props.closeLabel, onClick: props.onClose, className: "dshpc-overlay-head__close" }));
 }
 
-// dist/ui/picker-css.generated.js
+// dist/ui/inputs/picker-css.generated.js
 var PICKER_CSS = `
 .dshpc-picker{position:relative;display:inline-block;max-width:100%;font-size:13px;line-height:20px}
 .dshpc-picker__trigger{
@@ -4234,7 +4234,7 @@ var PICKER_CSS = `
 .dshpc-picker__row{display:flex;align-items:center;gap:8px}
 `;
 
-// dist/ui/Picker.js
+// dist/ui/inputs/Picker.js
 function Picker(props) {
   ensureComponentStyles("picker", PICKER_CSS);
   ensureComponentStyles("panel", PANEL_CSS);
@@ -4428,10 +4428,10 @@ function toArray(v) {
   return Array.isArray(v) ? [...v] : [v];
 }
 
-// dist/ui/DateTimePicker.js
+// dist/ui/inputs/DateTimePicker.js
 var import_react13 = require("react");
 
-// dist/ui/Loader.js
+// dist/ui/feedback/Loader.js
 var import_react11 = require("react");
 function ringNode() {
   return (0, import_react11.createElement)("circle", {
@@ -4474,10 +4474,10 @@ function Loader(props) {
   }, variant === "ring" ? ringNode() : blockNodes());
 }
 
-// dist/ui/Button.js
+// dist/ui/actions/Button.js
 var import_react12 = require("react");
 
-// dist/ui/thenable.js
+// dist/ui/infra/thenable.js
 function isThenable(value) {
   if (value === null || value === void 0)
     return false;
@@ -4487,7 +4487,7 @@ function isSuccess(value) {
   return value !== false;
 }
 
-// dist/ui/Button.js
+// dist/ui/actions/Button.js
 var useIsoLayoutEffect = typeof document === "undefined" ? import_react12.useEffect : import_react12.useLayoutEffect;
 var SOLID_VARIANTS = [
   "primary",
@@ -4699,10 +4699,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h85 = Math.floor(totalSec / 3600);
+  const h86 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h85 > 0 ? `${h85}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h86 > 0 ? `${h86}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -4767,7 +4767,7 @@ function formatRange(fromIso, toIso, opts) {
   return `${day(a)} ${clock(a)} \u2013 ${day(b)} ${clock(b)}`;
 }
 
-// dist/ui/datetime-logic.js
+// dist/ui/inputs/datetime-logic.js
 var ISO_RE = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?)?$/;
 var STEP_MAX = { hour: 23, minute: 59, second: 59 };
 var EN_MONTHS = [
@@ -4922,7 +4922,7 @@ function rangeIsValid(startIso, endIso) {
   return partsToMs(a) <= partsToMs(b);
 }
 
-// dist/ui/DateTimePicker.js
+// dist/ui/inputs/DateTimePicker.js
 var UNIT_LABEL = {
   hour: "dtHour",
   minute: "dtMinute",
@@ -5320,10 +5320,10 @@ function DateTimePicker(props) {
   }, triggerRow, open ? (0, import_react13.createElement)(FloatingPortal, null, pop2) : null);
 }
 
-// dist/ui/ModelPicker.js
+// dist/ui/inputs/ModelPicker.js
 var import_react16 = require("react");
 
-// dist/ui/host-data.js
+// dist/ui/infra/host-data.js
 var ModelCatalogStore = class {
   constructor() {
     this.snapshot = { status: "loading" };
@@ -5413,7 +5413,7 @@ function connectHost(ctx, options = {}) {
   });
 }
 
-// dist/ui/picker-icons.js
+// dist/ui/inputs/picker-icons.js
 var import_react15 = require("react");
 function glyph(path) {
   return (0, import_react15.createElement)("svg", { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true }, path);
@@ -5435,7 +5435,7 @@ function sparkleIcon() {
   }));
 }
 
-// dist/ui/ModelPicker.js
+// dist/ui/inputs/ModelPicker.js
 function ModelPicker(props) {
   ensureComponentStyles("picker", PICKER_CSS);
   const tt = props.translate ?? t;
@@ -5514,7 +5514,7 @@ function ModelPicker(props) {
   }));
 }
 
-// dist/ui/WorkspacePicker.js
+// dist/ui/inputs/WorkspacePicker.js
 var import_react17 = require("react");
 function WorkspacePicker(props) {
   ensureControls();
@@ -5541,19 +5541,19 @@ function WorkspacePicker(props) {
   });
 }
 
-// dist/ui/Modal.js
+// dist/ui/feedback/Modal.js
 var import_react19 = require("react");
 
-// dist/ui/feedback-css.generated.js
+// dist/ui/feedback/feedback-css.generated.js
 var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5728 overlay.css\uFF0C\u8868\u9762\uFF08\u5E95\u8272/\u63CF\u8FB9/\u5706\u89D2/\u9634\u5F71\uFF09\u5728 panel.css \u7684 --modal \u6863\uFF0C\n   \u8FD9\u91CC\u53EA\u5269**\u5BB6\u65CF\u5E03\u5C40\u4E0E\u5C3A\u5BF8**\u3002\u4E09\u8005\u5404\u7BA1\u4E00\u6BB5\uFF0C\u522B\u518D\u628A\u76AE\u80A4\u6284\u56DE\u6765\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\n   \u900F\u660E\u53F3\u8FB9\u6846 = \u8BA9\u6EDA\u52A8\u6761\u4E0E\u9762\u677F\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px;border-right:1px solid transparent}\n/* \u5E95\u680F\u4E0E\u5934\u90E8\u540C\u4E00\u53E3\u5F84\uFF082026-11-02 \u7528\u6237\uFF09\uFF1A\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\u3001\u9ED8\u8BA4\u5E26\u4E00\u6761\u5206\u9694\u7EBF\u3002\n   \u7EBF\u53EF\u7531\u6D88\u8D39\u65B9\u5173\u6389\uFF08Modal \u7684 footerDivider=false\uFF09\u2014\u2014 \u786E\u8BA4\u6846\u5BB6\u65CF\u672C\u6765\u5C31\u6CA1\u6709\u7EBF\uFF08\u4E0E\u5934\u90E8\u4E00\u81F4\uFF09\u3002 */\n.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}\n.dshpc-modal .dshpc-modal__foot--bare{border-top:none}\n/* \u5E95\u680F\u5DE6\u4FA7\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u5403\u6389\u6309\u94AE\u4E4B\u5916\u7684\u5269\u4F59\u5BBD\uFF0C\u8D85\u957F\u4EA4\u7ED9 FlipText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-modal .dshpc-modal__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}\n/* \u81EA\u7ED8 toast \u7684\u6837\u5F0F\u5728 2026-11-03 \u5220\u9664\uFF1AToast \u65E9\u5DF2\u6539\u8D70\u5BBF\u4E3B toast()\uFF08Toast.ts \u7684 showNative\uFF09\uFF0C\n   .dshpc-toast* \u8FD9\u51E0\u4E2A\u7C7B\u6CA1\u6709\u4EFB\u4F55\u6D88\u8D39\u8005\uFF0C\u7559\u7740\u53EA\u662F\u6B7B\u6837\u5F0F\uFF08\u8FD8\u5E26\u7740\u88F8 z-index \u4E0E\u88F8\u9634\u5F71\uFF09\u3002 */\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u8272\u503C\u5728 tokens.css \u7684 --dshpc-sev-*\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:var(--dshpc-on-signal);flex:none}\n.dshpc-alert-sev--info{background:var(--dshpc-sev-info)}\n.dshpc-alert-sev--success{background:var(--dshpc-sev-success)}\n.dshpc-alert-sev--warning{background:var(--dshpc-sev-warning)}\n.dshpc-alert-sev--error{background:var(--dshpc-sev-error)}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}\n/* \u9501\u5B9A\u6001\uFF08locked\uFF09\uFF1A\u53EA\u7ED9\u900F\u660E\u70B9\u51FB\u5C42\u505A\u5B9A\u4F4D\u951A\u70B9\uFF0C**\u4E0D\u538B\u4EFB\u4F55\u906E\u7F69** \u2014\u2014 \u76D6\u7070\u4F1A\u8BA9\u4EBA\u4EE5\u4E3A\u754C\u9762\u574F\u4E86\uFF1B\n   \u53D8\u7070\u662F\u5404\u63A7\u4EF6\u81EA\u5DF1 :disabled \u7684\u4E8B\uFF08Button / Input / Picker \u2026 \u672C\u6765\u5C31\u6709\u90A3\u5957\u6837\u5F0F\uFF09\u3002 */\n.dshpc-modal--locked{position:relative}\n";
 
-// dist/ui/FlipText.js
+// dist/ui/display/FlipText.js
 var import_react18 = require("react");
 
-// dist/ui/flip-css.generated.js
+// dist/ui/display/flip-css.generated.js
 var FLIP_CSS = "/* \u7FFB\u724C\u6587\u672C\uFF08FlipText\uFF09\uFF1A\u4E00\u4E2A\u5355\u884C\u7A97\u53E3 + \u4E24\u5C42\u540C\u683C\u53E0\u653E\uFF0C\u6362\u5B57\u65F6\u65E7\u7684\u4E0A\u79FB\u51FA\u3001\u65B0\u7684\u4ECE\u4E0B\u8FDB\u3002\n   \u6EA2\u51FA\uFF08\u4E09\u70B9\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF09\u4E0D\u5728\u8FD9\u91CC\u505A \u2014\u2014 \u4EA4\u7ED9 MarqueeText\uFF0C\u672C\u6587\u4EF6\u53EA\u7BA1\u88C1\u526A\u4E0E\u5207\u6362\u52A8\u6548\u3002\n   \u53E0\u653E\u7528 grid \u540C\u683C\u800C\u4E0D\u662F\u7EDD\u5BF9\u5B9A\u4F4D\uFF1A\u5BB9\u5668\u9AD8\u5EA6\u5929\u7136\u7B49\u4E8E\u4E00\u884C\uFF0C\u4E0D\u7528\u6D4B\u91CF\u3001\u4E5F\u4E0D\u4F9D\u8D56 lh \u5355\u4F4D\u3002 */\n.dshpc-flip{--dshpc-flip-dur:260ms;--dshpc-flip-ease:cubic-bezier(.22,.61,.36,1);display:grid;min-width:0;overflow:hidden}\n.dshpc-flip__item{grid-area:1/1;min-width:0}\n.dshpc-flip__in{animation:dshpc-flip-in var(--dshpc-flip-dur) var(--dshpc-flip-ease) both}\n.dshpc-flip__out{animation:dshpc-flip-out var(--dshpc-flip-dur) var(--dshpc-flip-ease) both}\n@keyframes dshpc-flip-in{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}\n@keyframes dshpc-flip-out{from{transform:translateY(0);opacity:1}to{transform:translateY(-100%);opacity:0}}\n/* \u524D\u5EAD\u654F\u611F / \u4F4E\u6027\u80FD\u8BBE\u5907\u5173\u6389\u4F4D\u79FB\u52A8\u753B\uFF1A\u6362\u5B57\u4ECD\u5728\uFF0C\u53EA\u662F\u4E0D\u518D\u7FFB\u3002\n   \u65E7\u5E27\u6CA1\u6709\u52A8\u753B\u53EF\u64AD\uFF0C\u5FC5\u987B\u81EA\u5DF1\u9690\u5F62 \u2014\u2014 \u4E24\u5C42\u540C\u683C\u53E0\u653E\uFF0C\u7559\u7740\u5C31\u91CD\u5F71\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-flip__in,.dshpc-flip__out{animation:none}\n  .dshpc-flip__out{opacity:0}\n}\n/* \u626B\u5149\uFF08sweep\uFF09\uFF1A\u5E38\u9A7B\u5FAA\u73AF\uFF0C\u505C\u5728\u539F\u5730\u7684\u63D0\u793A\u4E5F\u770B\u5F97\u51FA\u5728\u52A8\u3002\u5F00\u5173\u9ED8\u8BA4\u5173\uFF0C\u5F39\u7A97 / \u62BD\u5C49\u5E95\u680F\u9ED8\u8BA4\u5F00\u3002\n   \u5149\u5FC5\u987B\u53EA\u843D\u5728\u5B57\u4E0A\uFF1A\u76D6\u4E00\u5C42\u534A\u900F\u660E\u5149\u5E26\u7684\u8BDD\uFF0Cnotice \u662F flex:1 \u6491\u5F00\u7684\u5BBD\u5BB9\u5668\uFF0C\u53F3\u4FA7\u5927\u7247\u7A7A\u767D\n   \u91CC\u4F1A\u51FA\u73B0\u4E00\u6761\u767D\u5149\u5728\u626B\u3002\u6545\u628A\u5149\u505A\u6210\u6587\u5B57\u81EA\u5DF1\u7684 background + background-clip:text \u88C1\u5230\u5B57\u5F62\uFF1B\n   \u57FA\u8272\u53D6 currentColor \u21D2 \u8C03\u7528\u65B9\u6362\u5B57\u8272\u4E5F\u8DDF\u7740\u8D70\uFF0C\u4E0D\u9700\u8981\u77E5\u9053\u6587\u5B57\u5BBD\u5EA6\u3002 */\n.dshpc-flip--sweep .dshpc-mq-in{\n  background-image:linear-gradient(105deg,currentColor 0,currentColor 47%,color-mix(in srgb,var(--dshpc-on-signal) 70%,currentColor) 50%,currentColor 53%,currentColor 100%);\n  background-size:300% 100%;background-repeat:no-repeat;\n  background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;\n  animation:dshpc-flip-sweep 1.5s linear infinite;\n}\n/* 1.5s \u4E00\u8F6E\uFF1A\u524D 40% \u626B\u5B8C\uFF0C\u5176\u4F59\u505C\u5728\u89C6\u91CE\u5916\u4F11\u606F \u2014\u2014 \u4E00\u76F4\u626B\u4F1A\u6643\u773C\uFF0C\u95F4\u6B47\u624D\u50CF\u300C\u8FD8\u5728\u5E72\u6D3B\u300D\u3002 */\n@keyframes dshpc-flip-sweep{0%{background-position:100% 0}40%,100%{background-position:0 0}}\n@media (prefers-reduced-motion:reduce){\n  .dshpc-flip--sweep .dshpc-mq-in{animation:none;background-image:none;-webkit-text-fill-color:currentColor}\n}\n";
 
-// dist/ui/FlipText.js
+// dist/ui/display/FlipText.js
 var FLIP_MS = 300;
 function nextFlipSlot(slot, text2) {
   if (slot.curr === text2)
@@ -5587,7 +5587,7 @@ function FlipText(props) {
   );
 }
 
-// dist/ui/Modal.js
+// dist/ui/feedback/Modal.js
 function Modal(props) {
   ensureComponentStyles("feedback", FEEDBACK_CSS);
   const tt = props.translate ?? t;
@@ -5650,16 +5650,16 @@ function Modal(props) {
   ));
 }
 
-// dist/ui/SideSheet.js
+// dist/ui/feedback/SideSheet.js
 var import_react20 = require("react");
 
-// dist/ui/side-panel-css.generated.js
+// dist/ui/infra/side-panel-css.generated.js
 var SIDE_PANEL_CSS = "/* \u4FA7\u8FB9\u9762\u677F\u7684\u516C\u5171\u76AE\u80A4 \u2014\u2014 PanelDock\uFF08\u5360\u5BBD\u5206\u680F\uFF09\u4E0E SideSheet\uFF08\u8986\u76D6\u62BD\u5C49\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\u3002\n *\n * \u5206\u754C\uFF1A**\u76AE\u80A4\u5728\u8FD9\u91CC\uFF0C\u5B9A\u4F4D\u5404\u81EA\u5199**\u3002\u4E24\u8005\u552F\u4E00\u7684\u5F62\u6001\u5DEE\u5F02\u5C31\u662F\u300C\u600E\u4E48\u5360\u4F4D\u300D\u2014\u2014\n * PanelDock \u7528 sticky \u5360\u5BBD\u6324\u7A84\u4E3B\u533A\uFF08panel-dock.css\uFF09\uFF0CSideSheet \u7528 absolute \u76D6\u5728\u9875\u9762\u4E0A\uFF08side-sheet.css\uFF09\u3002\n *\n * \u7C7B\u540D\u6CBF\u7528 dshpc-dock__* \u524D\u7F00\uFF1A\u90A3\u662F\u65E2\u6709\u516C\u5F00\u9762\uFF08\u6587\u6863\u4E0E\u6D88\u8D39\u65B9\u90FD\u5728\u7528\uFF09\uFF0C\n * \u8FD9\u91CC\u53EA\u642C\u6587\u4EF6\u4E0D\u6539\u540D\uFF1B\u65B0\u589E\u7684\u4E2D\u6027\u7C7B\u662F .dshpc-side-surface\uFF08\u5916\u89C2\u57FA\u7C7B\uFF09\u3002 */\n\n/* \u5165\u573A\uFF1A\u5BBD\u5EA6\u4ECE 0 \u957F\u51FA\u6765\uFF08keyframes \u53EA\u5199 from\uFF0C\u7EC8\u70B9\u53D6\u5185\u8054 / \u72B6\u6001\u5BBD\u5EA6\uFF09\u3002\u4E24\u8FB9\u5171\u7528\u3002 */\n@keyframes dshpc-side-in{from{width:0;opacity:0;overflow:hidden}}\n\n/* \u5916\u89C2\u57FA\u7C7B\uFF1A\u80CC\u666F / \u6587\u5B57\u8272 / \u9634\u5F71 / \u7EB5\u5411 flex\u3002**\u4E0D\u542B** position\u3001\u9AD8\u5EA6\u3001\u8FB9\u6846\u65B9\u5411\u3001\u52A8\u753B\u89E6\u53D1\u3002 */\n.dshpc-side-surface{\n  box-sizing:border-box;\n  display:flex;flex-direction:column;flex:0 0 auto;min-width:0;\n  background:var(--dshpc-surface-base);color:var(--dshpc-fg);\n  box-shadow:var(--dshpc-shadow-2);\n  transition:border-color var(--dshpc-dur-fast) var(--dshpc-ease);\n  animation:dshpc-side-in .22s var(--dshpc-ease);\n}\n\n/* \u5934\u90E8\uFF1A\u53F3\u4FA7 34px = 8(\u8FB9\u8DDD) + 20(\u5173\u94AE) + 6(\u547C\u5438)\uFF1A\u7ED9\u7EDD\u5BF9\u5B9A\u4F4D\u7684\u5173\u94AE\u7559\u4F4D\uFF0C\u6807\u9898/extra \u4E0D\u4ECE\u5B83\u5E95\u4E0B\u94BB\u3002 */\n.dshpc-dock__head{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:10px 34px 10px 14px;\n  border-bottom:1px solid var(--dshpc-border-faint);\n}\n/* \u56FE\u6807\u4F4D / \u6807\u9898\u53F3\u4FA7\u7684\u5185\u5BB9\u4F4D\uFF1A\u6D88\u8D39\u65B9\u4F20 ReactNode\uFF0C\u53EF\u585E\u591A\u4E2A\uFF1B\u5E93\u53EA\u8D1F\u8D23\u6392\u5E03\uFF0C\u4E0D\u62A2\u5BBD\u5EA6\u3002 */\n.dshpc-dock__lead{display:inline-flex;align-items:center;gap:6px;flex:none;color:var(--dshpc-fg-2)}\n.dshpc-dock__extra{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto}\n/* \u81EA\u5B9A\u4E49\u5934\u90E8\uFF1A\u6574\u884C\u5F52\u8C03\u7528\u65B9 \u2014\u2014 \u4E0D\u52A0\u5185\u8FB9\u8DDD/\u8FB9\u6846/\u80CC\u666F\uFF0C\u4E5F\u4E0D\u7ED9\u5173\u94AE\u7559\u5185\u8054\u7A7A\u95F4\uFF08\u5173\u94AE\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u7684\uFF09\u3002 */\n.dshpc-dock__head--custom{display:block;padding:0;border-bottom:none}\n.dshpc-dock__title{\n  flex:1 1 auto;min-width:0;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n  font-size:var(--dshpc-font-md);font-weight:600;\n}\n/* \u5173\u95ED\u94AE\uFF1A20\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF08\u4E0E Modal \u7684\u5173\u95ED\u94AE\u540C\u89C4\u683C\uFF0C\u4E0D\u501F Picker \u89E6\u53D1\u5668\u76AE\u80A4\uFF09\u3002 */\n.dshpc-dock__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-dock__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u5934\u90E8\u5173\u94AE\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF08top 10 / right 8\uFF09\uFF0C\u951A\u70B9\u662F\u9762\u677F\u672C\u8EAB \u2014\u2014 \u6B63\u6587\u6EDA\u52A8\u5B83\u4E0D\u8DDF\u6EDA\u3002 */\n.dshpc-dock__close--abs{position:absolute;top:10px;right:8px;z-index:8}\n/* \u6D6E\u52A8\u5173\u94AE\uFF1A\u65E0\u5934\u90E8\u9762\u677F\u7528\uFF0C\u7565\u6536\u4E00\u70B9\u8FB9\u8DDD\u3002 */\n.dshpc-dock__close--floating{\n  position:absolute;top:6px;right:6px;z-index:8;\n  background:var(--dshpc-surface-menu);border:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5185\u5BB9\u533A\u81EA\u5DF1\u6EDA\uFF08\u9762\u677F\u9AD8\u5EA6\u9501\u6B7B\uFF0C\u5185\u5BB9\u4E0D\u8BBE\u5185\u90E8\u6EDA\u52A8\u5C31\u4F1A\u628A\u9875\u9762\u6491\u9AD8\uFF09\u3002\n   \u900F\u660E\u53F3\u8FB9\u6846 = \u6EDA\u52A8\u6761\u4E0E\u9762\u677F\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto;border-right:1px solid transparent}\n\n/* \u62D6\u62FD\u6761\uFF1A6px \u547D\u4E2D\u533A\uFF0C**\u81EA\u5DF1\u4E0D\u753B\u4EFB\u4F55\u7EBF**\uFF08\u8D34\u5728\u671D\u5185\u90A3\u4E00\u4FA7\uFF0C\u955C\u50CF\u7531\u5404\u81EA\u7684\u5B9A\u4F4D\u6587\u4EF6\u505A\uFF09\u3002\n   hover / \u62D6\u52A8\u65F6\u628A\u9762\u677F\u81EA\u5DF1\u7684\u8FB9\u6846\u67D3\u6210\u84DD \u2014\u2014 \u84DD\u7EBF\u53EA\u51C6\u6539\u539F\u7EBF\uFF0C\u4E0D\u51C6\u5728\u65C1\u8FB9\u518D\u52A0\u4E00\u6761\u3002\n   z-index 7 \u5FC5\u987B\u9AD8\u4E8E\u9762\u677F\u5185\u5BB9\u91CC\u7684\u6D6E\u5C42\uFF08\u590D\u5236\u94AE\u4E00\u7C7B\uFF09\uFF0C\u5426\u5219\u547D\u4E2D\u533A\u4F1A\u88AB\u5185\u5BB9\u76D6\u4F4F\u3002 */\n.dshpc-dock__resizer{\n  position:absolute;left:0;top:0;bottom:0;width:6px;\n  z-index:7;cursor:col-resize;background:transparent;\n}\n.dshpc-side-surface:has(> .dshpc-dock__resizer:hover),\n.dshpc-side-surface--resizing{\n  /* \u539F\u7EBF\u4FDD\u7559\u300C\u4E0A\u4E0B\u6E10\u9690\u300D\u5DE5\u4F5C\u533A\u6307\u793A\u6761\u8D28\u611F\uFF1A\u628A\u9762\u677F\u81EA\u5DF1\u7684\u90A3\u6761\u8FB9\u6846\u6362\u6210\u540C\u6B3E\u6E10\u53D8\u3002\n     \u9762\u677F\u56DB\u8FB9\u91CC\u53EA\u6709\u671D\u5185\u4E00\u4FA7\u6709\u5BBD\u5EA6\uFF0C\u6240\u4EE5\u6E10\u53D8\u53EA\u843D\u5728\u90A3\u4E00\u4FA7\u3002 */\n  border-image:linear-gradient(180deg,transparent,var(--dshpc-business) 30% 70%,transparent) 1;\n}\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove \u2014\u2014\n   \u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u9762\u677F\u5185\uFF0C\u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\u3002 */\n.dshpc-side-surface--resizing{contain:layout paint;will-change:width}\n.dshpc-side-surface--resizing iframe{pointer-events:none}\n\n/* \u52A8\u6548\u793C\u8C8C\uFF1A\u7CFB\u7EDF\u58F0\u660E\u51CF\u5C11\u52A8\u6548\u65F6\u9000\u5316\u4E3A\u77AC\u65F6\uFF08\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\uFF09\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-side-surface{animation:none}\n}\n";
 
-// dist/ui/side-sheet-css.generated.js
+// dist/ui/feedback/side-sheet-css.generated.js
 var SIDE_SHEET_CSS = "/* \u4FA7\u8FB9\u62BD\u5C49\uFF1A\u8986\u76D6\u5F0F\u3002**\u76AE\u80A4\u4E0E PanelDock \u5B8C\u5168\u5171\u7528**\uFF08side-panel.css \u7684 .dshpc-side-surface\n   + \u5934\u90E8 / \u62D6\u62FD\u6761 / \u5173\u95ED\u94AE\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u300C\u600E\u4E48\u5360\u4F4D\u300D\uFF1Aabsolute \u8D34\u8FB9\u3001\u901A\u9AD8\u3001\u76D6\u5728\u9875\u9762\u4E0A\u3002\n   \u4E0E\u5206\u680F\u7684\u552F\u4E00\u5DEE\u522B\uFF1A\u5B83\u4E0D\u6324\u7A84\u4E3B\u533A\uFF08\u6240\u4EE5\u6CA1\u6709 sticky\u3001\u6CA1\u6709\u5360\u5BBD\u3001\u4E5F\u6CA1\u6709\u6536\u8D77\uFF09\u3002\n\n   \u6CA1\u6709\u6536\u8D77/\u8033\u6735\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u62BD\u5C49\u5173\u5C31\u662F\u5173\u3002 */\n\n.dshpc-sheet{position:absolute;top:0;bottom:0}\n/* \u6536\u8D77\u51FA\u573A\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u5BBD\u5EA6\u6536\u5230 0 + \u6DE1\u51FA\uFF0C\u64AD\u5B8C\u7531\u7EC4\u4EF6\u5378\u8F7D\u3002\u53CC\u7C7B\u538B\u8FC7 .dshpc-side-surface \u7684\u5165\u573A\u52A8\u753B\u3002 */\n@keyframes dshpc-side-out{to{width:0;opacity:0;border-width:0;overflow:hidden}}\n.dshpc-side-surface.dshpc-sheet--leaving{animation:dshpc-side-out .2s var(--dshpc-ease) forwards;pointer-events:none;}\n/* \u9762\u4E0E Modal \u540C\u6863\uFF08bg-layer-1\uFF09\uFF0CPanelDock \u4ECD\u7528\u9875\u9762\u5E95\uFF1A\u53CC\u7C7B\u538B\u8FC7\u5171\u7528\u7684 .dshpc-side-surface\uFF0C\n   \u4E0D\u78B0\u8FB9\u6846\uFF08\u7528\u6237 2026-11-02\uFF1A\u53EA\u6539\u80CC\u666F\uFF09\u3002 */\n.dshpc-side-surface.dshpc-sheet{background:var(--dshpc-surface-1)}\n/* \u8D34\u8FB9\u90A3\u4FA7\u63CF\u8FB9\uFF08\u4E0E\u5206\u680F\u7684 border-left \u540C\u4E00\u5957\u7EBF\u8272\uFF09\uFF0C\u62D6\u62FD\u6761\u6C38\u8FDC\u5728**\u671D\u5185**\u90A3\u4E00\u4FA7\u3002 */\n.dshpc-sheet--left{left:0;border-right:1px solid var(--dshpc-border)}\n.dshpc-sheet--right{right:0;border-left:1px solid var(--dshpc-border)}\n.dshpc-sheet--left .dshpc-dock__resizer{left:auto;right:0}\n/* \u5185\u5BB9\u5185\u8DDD\uFF1A\u5206\u680F\u7684 body \u628A\u5185\u8DDD\u4EA4\u7ED9\u5185\u5BB9\u7EC4\u4EF6\uFF08FileBrowser \u90A3\u7C7B\u81EA\u5DF1\u5E26 17px\uFF09\uFF0C\n   \u62BD\u5C49\u662F**\u901A\u7528\u5BB9\u5668**\uFF0C\u5FC5\u987B\u81EA\u5E26 \u2014\u2014 \u5426\u5219\u6587\u5B57\u76F4\u63A5\u8D34\u9762\u677F\u8FB9\uFF08\u7528\u6237 2026-11-02 \u622A\u56FE\uFF09\u3002\n   \u5DE6\u53F3 14 \u4E0E\u5934\u90E8\u5DE6\u5185\u8DDD\u5BF9\u9F50\uFF0C\u4E0A\u4E0B\u4E5F\u7559\u540C\u6863\u547C\u5438\u3002 */\n.dshpc-sheet__body{padding:14px}\n\n/* \u5E95\u680F\uFF08\u53EF\u9009\uFF09\uFF1A\u7EBF\u8272\u4E0E\u5185\u8DDD\u5BF9\u9F50\u9762\u677F\u5934\u90E8\u3002 */\n.dshpc-sheet__foot{\n  flex:none;display:flex;justify-content:flex-end;gap:8px;\n  padding:10px 14px;border-top:1px solid var(--dshpc-border-faint);\n}\n/* \u5E95\u680F\u5DE6\u4FA7\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u5403\u6389\u6309\u94AE\u4E4B\u5916\u7684\u5269\u4F59\u5BBD\uFF0C\u8D85\u957F\u4EA4\u7ED9 FlipText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-sheet__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}\n";
 
-// dist/ui/resizer.js
+// dist/ui/layout/resizer.js
 function startResizeLayoutWidth(opts) {
   opts.startEvent.preventDefault?.();
   const body = document.body;
@@ -5703,7 +5703,7 @@ function startResizeLayoutWidth(opts) {
   window.addEventListener("pointerup", onUp);
 }
 
-// dist/ui/SideSheet.js
+// dist/ui/feedback/SideSheet.js
 function SideSheet(props) {
   ensureComponentStyles("side-panel", SIDE_PANEL_CSS);
   ensureComponentStyles("side-sheet", SIDE_SHEET_CSS);
@@ -5809,7 +5809,7 @@ function SideSheet(props) {
   )));
 }
 
-// dist/ui/AlertModal.js
+// dist/ui/feedback/AlertModal.js
 var import_react21 = require("react");
 var SEVERITY_GLYPH = {
   info: "\u24D8",
@@ -5845,7 +5845,7 @@ function AlertModal(props) {
   }, props.message ?? null);
 }
 
-// dist/ui/ConfirmModal.js
+// dist/ui/feedback/ConfirmModal.js
 var import_react22 = require("react");
 function ConfirmModal(props) {
   const tt = props.translate ?? t;
@@ -5882,7 +5882,7 @@ function ConfirmModal(props) {
   }, props.message ?? null);
 }
 
-// dist/ui/modal-host.js
+// dist/ui/feedback/modal-host.js
 var import_react23 = require("react");
 var import_client = require("react-dom/client");
 var hostRoot = null;
@@ -6031,16 +6031,16 @@ function alertModal(opts) {
   });
 }
 
-// dist/ui/Card.js
+// dist/ui/display/Card.js
 var import_react25 = require("react");
 
-// dist/ui/card-css.generated.js
+// dist/ui/display/card-css.generated.js
 var CARD_CSS = "\n/* \u2500\u2500 Card / StripCard\uFF1ASurface \u5916\u6846 + \u5934\u90E8\u5951\u7EA6 + \u8272\u6761 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u6846\uFF08\u5E95 / \u8FB9\u6846 / \u5706\u89D2 / \u5185\u8DDD\uFF09\u5168\u90E8\u6765\u81EA .dshpc-surface\uFF08src/ui/surface.css\uFF09\uFF1A\n   \u672C\u6587\u4EF6**\u4E0D\u518D\u5199 border / border-radius**\uFF0C\u5706\u89D2\u5951\u7EA6\u56E0\u6B64\u53EA\u6709\u4E00\u4E2A\u5B9A\u4E49\u70B9\uFF08\u5BB9\u5668\u6863 = 12\uFF09\u3002\n   \u8FD9\u91CC\u53EA\u7BA1\u4E24\u4EF6 Surface \u4E0D\u8BE5\u77E5\u9053\u7684\u4E8B\uFF1A\u8272\u6761\u51E0\u4F55\u3001\u5934\u90E8\u5E03\u5C40\u3002\n\n   \u8272\u6761\u51E0\u4F55\u9ED8\u8BA4\u503C\u90FD\u53EF\u88AB props \u8986\u76D6\uFF08Card.ts \u5199\u5BF9\u5E94\u7684 CSS \u53D8\u91CF\uFF09\uFF1A\n     --card-bar-size   \u6761\u5B50\u7C97\u7EC6\n     --card-bar-inset  \u6761\u5B50\u8DDD\u5361\u7247\u8FB9\u7F18\u7684\u8DDD\u79BB\uFF08= \u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD\uFF09\n     --card-bar-gap    \u6761\u5B50\u8DDD\u5185\u5BB9\u7684\u8DDD\u79BB\uFF08= body \u7684 gap\uFF09\n     --card-bar-length \u4E0A\u4E0B\u65B9\u4F4D\u65F6\u7684\u6761\u957F\uFF08100% = \u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\n   \u8FD9\u4E9B\u53D8\u91CF\u53EA\u5728\u672C\u6587\u4EF6\u6D88\u8D39\uFF083 \u4EFD\u6587\u4EF6\u4E00\u8D77\u5F15\u65F6\uFF0C\u8DE8\u6587\u4EF6\u5F15\u7528\u522B\u5904\u7684\u53D8\u91CF\u4F1A\u9759\u9ED8\u5931\u6548\uFF09\uFF0C\n   \u6240\u4EE5\u9ED8\u8BA4\u503C\u5FC5\u987B\u5199\u5728\u8FD9\u91CC\uFF0C\u800C\u4E0D\u662F\u4EE4\u724C\u6216\u522B\u7684\u76AE\u80A4\u91CC\u3002 */\n.dshpc-card{\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n  --card-bar-size:6px;\n  --card-bar-inset:12px;\n  --card-bar-gap:12px;\n  --card-bar-length:100%;\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n/* \u6269\u5C55\u516B\u8272\uFF082026-10-29\uFF09\uFF1A\u8272\u6761 + \u6D45\u5E95\u540C\u6E90\uFF0C\u8F6F\u5E95\u8D70\u5404\u81EA -soft\u3002 */\n.dshpc-card--purple{--card-accent:var(--dshpc-purple);--card-accent-soft:var(--dshpc-purple-soft)}\n.dshpc-card--pink{--card-accent:var(--dshpc-pink);--card-accent-soft:var(--dshpc-pink-soft)}\n.dshpc-card--cyan{--card-accent:var(--dshpc-cyan);--card-accent-soft:var(--dshpc-cyan-soft)}\n.dshpc-card--teal{--card-accent:var(--dshpc-teal);--card-accent-soft:var(--dshpc-teal-soft)}\n.dshpc-card--orange{--card-accent:var(--dshpc-orange);--card-accent-soft:var(--dshpc-orange-soft)}\n.dshpc-card--indigo{--card-accent:var(--dshpc-indigo);--card-accent-soft:var(--dshpc-indigo-soft)}\n.dshpc-card--rose{--card-accent:var(--dshpc-rose);--card-accent-soft:var(--dshpc-rose-soft)}\n.dshpc-card--slate{--card-accent:var(--dshpc-slate);--card-accent-soft:var(--dshpc-slate-soft)}\n\n/* body = \u8272\u6761 + \u5934\u90E8\u3002\u65B9\u5411\u8DDF\u7740\u6761\u5B50\u8D34\u7684\u8FB9\u5207 \u21D2 \u56DB\u4E2A\u65B9\u4F4D\u53EA\u662F\u300C\u6362\u4E00\u4E2A\u65B9\u5411\u7684 flex \u9879\u300D\uFF0C\n   \u4E0D\u7528\u4E3A\u6BCF\u4E2A\u65B9\u4F4D\u5404\u5199\u4E00\u5957\u5B9A\u4F4D\u3002 */\n.dshpc-card__body{display:flex;gap:var(--card-bar-gap);min-width:0}\n.dshpc-card--bar-top .dshpc-card__body,\n.dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}\n\n/* \u5934\u90E8\u4E00\u884C = \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card--bar-left .dshpc-card__head,\n.dshpc-card--bar-right .dshpc-card__head{flex:1 1 auto}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u8272\u6761\uFF1A\u5DE6/\u53F3 = \u7AD6\u5411\u6761\uFF08\u9AD8\u5EA6\u8DDF\u5185\u5BB9\uFF0C\u6700\u5C0F\u4E00\u884C\uFF09\uFF1B\u4E0A/\u4E0B = \u6A2A\u5411\u6761\uFF08\u957F\u5EA6\u9ED8\u8BA4\u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\u3002\n   \u53F3/\u4E0B\u65B9\u4F4D\u9760 order \u6392\u5230\u5934\u90E8\u4E4B\u540E\uFF0CDOM \u987A\u5E8F\u59CB\u7EC8\u4E0D\u53D8\u3002 */\n.dshpc-card__bar{flex:none;background:var(--card-accent);border-radius:var(--dshpc-radius-xs)}\n.dshpc-card--bar-left .dshpc-card__bar,\n.dshpc-card--bar-right .dshpc-card__bar{width:var(--card-bar-size);align-self:stretch;min-height:var(--dshpc-line-md)}\n.dshpc-card--bar-top .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{width:var(--card-bar-length);height:var(--card-bar-size);align-self:flex-start}\n.dshpc-card--bar-right .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{order:1}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500\n   \u5E95\u8272 / \u65B9\u89D2 / \u5360\u4F4D\u8FB9\u6846\u7531 Surface \u7684\u4E09\u6761\u4FEE\u9970\u7C7B\u63D0\u4F9B\uFF08Card.ts \u6309 kind \u4F20\uFF09\uFF0C\u6B64\u5904\u53EA\u7BA1\u5185\u8DDD\u4E0E\u6761\u5B50\u3002 */\n.dshpc-card.dshpc-card--strip{\n  --card-bar-size:4px;--card-bar-inset:0;\n  padding:12px 12px 12px 20px;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002\n   \u7279\u5F02\u6027 0,3,0\uFF1A\u538B\u8FC7\u4E0A\u9762 .dshpc-card--bar-left .dshpc-card__bar \u7684\u5BBD\u5EA6\u89C4\u5219\uFF0C\u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;align-self:auto}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1ASurface \u5916\u6846\uFF08\u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 12\uFF09+ \u8272\u6761\u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD \u2500\u2500\n   \u5185\u8DDD\u7528 0,2,0 / 0,3,0 \u7684\u957F\u5199\u6CD5\uFF1A\u9AD8\u8FC7 .dshpc-surface \u7684 padding \u7B80\u5199\uFF0C\u4E0E\u4E24\u4EFD CSS \u7684\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--bordered{padding:14px}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-left{padding-left:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-right{padding-right:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-top{padding-top:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-bottom{padding-bottom:var(--card-bar-inset)}\n\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n/* \u7BAD\u5934\u662F svg\uFF08Chevron\uFF09\uFF0C\u4E0D\u662F\u5B57\u5F62 \u21D2 \u4E0D\u8981 font-size\uFF1Binline-flex \u514D\u6389 svg \u7684\u57FA\u7EBF\u7559\u767D\u3002 */\n.dshpc-card__caret{display:inline-flex;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
 
-// dist/ui/surface-css.generated.js
+// dist/ui/display/surface-css.generated.js
 var SURFACE_CSS = "\n/* \u2500\u2500 Surface \xB7 \u7EAF\u6846\u5BB9\u5668 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u53EA\u56DE\u7B54\u300C\u4E00\u5757\u9762\u957F\u4EC0\u4E48\u6837\u300D\uFF1A\u5E95 / \u8FB9 / \u5706\u89D2 / \u5185\u8DDD\uFF0C\u56DB\u6839\u8F74\uFF0C\u96F6\u4E1A\u52A1\u8BED\u4E49\u3002\n   \u5B83\u662F**\u5706\u89D2\u5951\u7EA6\u7684\u552F\u4E00\u771F\u6E90**\uFF1A\u5BB9\u5668\u6863 = --dshpc-radius-md(12)\uFF0C\u4E0E Button / Input \u540C\u6863\uFF0C\n   \u5916\u6846\u6C38\u8FDC\u4E0D\u5C0F\u4E8E\u91CC\u9762\u7684\u63A7\u4EF6 \u2014\u2014 \u675C\u7EDD\u300C\u5361\u7247 8 < \u6309\u94AE 12\u300D\u8FD9\u7C7B\u5012\u6302\uFF082026-11-01\uFF09\u3002\n\n   \u6240\u6709\u8F74\u90FD\u7528**\u53D8\u91CF**\u8868\u8FBE\uFF0C\u4FEE\u9970\u7C7B\u53EA\u6539\u8FD9\u4E9B\u53D8\u91CF\u3001\u4E0D\u6539\u5C5E\u6027\uFF1A\n   \u6D88\u8D39\u65B9\uFF08Card\u3001\u4E0B\u6E38\u63D2\u4EF6\uFF09\u81EA\u5DF1\u5199\u89C4\u5219\u65F6\uFF0C\u65E0\u8BBA\u4E24\u4EFD CSS \u8C01\u5148\u6CE8\u5165\uFF0C\u80DC\u8D1F\u90FD\u4E0D\u4F9D\u8D56\u987A\u5E8F\u3002\n\n     tone    plain(\u9ED8\u8BA4 surface-1) / raised / sunken / subtle\n     border  \u9ED8\u8BA4 1px \u5B9E\u7EBF\uFF1Bfaint \u66F4\u6DE1\uFF1Bnone \u900F\u660E\uFF08\u4FDD\u7559 1px \u5360\u4F4D\uFF0C\u4E0D\u8DF3\u9AD8\uFF09\uFF1B\n             dashed \u865A\u7EBF\uFF08\u5360\u4F4D\u6846\u7528\uFF0C\u7EBF\u8272\u4ECD\u662F border token\uFF09\n     radius  \u9ED8\u8BA4 md\uFF1Bnone / sm / lg\n     padding \u9ED8\u8BA4\u7531\u8C03\u7528\u65B9\u9009\u6863\uFF1Bnone / sm(8) / md(12) / lg(16)\n   \u57FA\u7C7B\u4E0D\u5E26\u5185\u8DDD\uFF1A\u5BB9\u5668\u8981\u81EA\u5DF1\u7B97\u56DB\u8FB9\u5185\u8DDD\u65F6\uFF08\u5982 Card \u7684\u8272\u6761\u8D34\u8FB9\uFF09\uFF0C\u4E0D\u4F20 pad \u6863\u5373\u53EF\uFF0C\u4E0D\u9700\u8981\u8986\u76D6\u3002 */\n.dshpc-surface{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --surface-bg:var(--dshpc-surface-1);\n  --surface-border:var(--dshpc-border);\n  --surface-border-style:solid;\n  --surface-radius:var(--dshpc-radius-md);\n  --surface-pad:0;\n  border:1px var(--surface-border-style) var(--surface-border);\n  border-radius:var(--surface-radius);\n  background:var(--surface-bg);\n  padding:var(--surface-pad);\n}\n.dshpc-surface--tone-raised{--surface-bg:var(--dshpc-surface-raised)}\n.dshpc-surface--tone-sunken{--surface-bg:var(--dshpc-surface-sunken)}\n.dshpc-surface--tone-subtle{--surface-bg:var(--dshpc-chip-bg)}\n.dshpc-surface--border-faint{--surface-border:var(--dshpc-border-faint)}\n.dshpc-surface--border-none{--surface-border:transparent}\n.dshpc-surface--border-dashed{--surface-border-style:dashed}\n.dshpc-surface--radius-none{--surface-radius:0}\n.dshpc-surface--radius-sm{--surface-radius:var(--dshpc-radius-sm)}\n.dshpc-surface--radius-lg{--surface-radius:var(--dshpc-radius-lg)}\n.dshpc-surface--pad-none{--surface-pad:0}\n.dshpc-surface--pad-sm{--surface-pad:var(--dshpc-space-2)}\n.dshpc-surface--pad-md{--surface-pad:var(--dshpc-space-3)}\n.dshpc-surface--pad-lg{--surface-pad:var(--dshpc-space-4)}\n";
 
-// dist/ui/Surface.js
+// dist/ui/display/Surface.js
 var import_react24 = require("react");
 function surfaceClass(options = {}) {
   const tone = options.tone ?? "plain";
@@ -6063,7 +6063,7 @@ function Surface(props) {
   }, props.children ?? null);
 }
 
-// dist/ui/Card.js
+// dist/ui/display/Card.js
 var CARD_ACCENTS = [
   "business",
   "success",
@@ -6137,13 +6137,13 @@ function StripCard(props) {
   return CardShell("strip", props);
 }
 
-// dist/ui/Chip.js
+// dist/ui/display/Chip.js
 var import_react26 = require("react");
 
-// dist/ui/chip-css.generated.js
+// dist/ui/display/chip-css.generated.js
 var CHIP_CSS = "\n/* \u4E09\u6761\u5C40\u90E8\u53D8\u91CF\u627F\u8F7D\u914D\u8272\uFF1Aneutral \u8D70\u65E7\u7070\u9762\uFF1B\u8BED\u4E49\u6863\u6362\u5E95\u5B57\u914D\u5BF9\uFF082026-10-20 \u7528\u6237\u8981\u591A\u8272\u591A\u5C3A\u5BF8\u6807\u7B7E\uFF09\u3002 */\n.dshpc-chip{--chip-bg:var(--dshpc-chip-bg);--chip-fg:var(--dshpc-fg);--chip-bg-hover:var(--dshpc-chip-bg-hover);\n  display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:1px 8px;\n  box-sizing:border-box;border-radius:var(--dshpc-radius-pill,999px);border:none;\n  background:var(--chip-bg);color:var(--chip-fg);\n  font-family:inherit;font-size:11px;line-height:18px;margin:0;\n  /* 2026-10-18\uFF1Achip \u662F flex \u884C\u91CC\u7684\u5E38\u7528\u9879\uFF0C\u7981\u6B62\u88AB\u538B\u7F29\u6362\u884C\uFF08\u9884\u89C8\u7AD9\u51FA\u73B0\u8FC7\u6587\u5B57\u7AD6\u6392\u3001\u4E92\u76F8\u53E0\u538B\u7684\u6324\u538B\uFF09\u3002 */\n  white-space:nowrap;flex:none;\n  appearance:none;-webkit-appearance:none;\n}\n/* md \u6863\uFF1A\u5361\u7247\u5143\u4FE1\u606F\u884C\u7B49\u7A0D\u5927\u573A\u666F\uFF1Bsm \u5373\u65E7\u7248\u9ED8\u8BA4\uFF0C\u9010\u50CF\u7D20\u4E0D\u52A8\u3002 */\n.dshpc-chip--md{padding:2px 10px;font-size:12px;line-height:20px;}\n/* xs \u6863\uFF1A\u6807\u9898\u540E\u7F00\u7B49\u6781\u7D27\u51D1\u573A\u666F\uFF082026-10-20 \u7528\u6237\u8981\u66F4\u5C0F\u6807\u7B7E\uFF09\uFF1B16px \u9AD8\u3001font 10\u3002 */\n.dshpc-chip--xs{padding:0 6px;font-size:10px;line-height:16px;}\n/* \u8BED\u4E49\u8272\u5B9E\u5FC3\u6863\uFF1A\u5E95 / \u5B57 / hover \u914D\u5BF9\u4E0E Button \u540C\u6E90\uFF08\u9EC4\u5E95\u4E2D\u9AD8\u660E\u5EA6 \u21D2 \u5B57\u7528 --dshpc-on-warning\uFF09\u3002 */\n.dshpc-chip--business{--chip-bg:var(--dshpc-business);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-business-hover);}\n.dshpc-chip--success{--chip-bg:var(--dshpc-success);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-success-hover);}\n.dshpc-chip--warning{--chip-bg:var(--dshpc-warning);--chip-fg:var(--dshpc-on-warning);--chip-bg-hover:var(--dshpc-warning-hover);}\n.dshpc-chip--danger{--chip-bg:var(--dshpc-danger);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-danger-hover);}\n/* \u6269\u5C55\u516B\u8272\uFF082026-10-29\uFF09\uFF1A\u5B9E\u5FC3\u9762\u5B57\u8272\u7EDF\u4E00\u767D\uFF08on-signal\uFF09\uFF0C\u660E\u5EA6\u5747\u4F4E\u4E8E\u9EC4 / \u9752\u67E0\uFF0C\u767D\u5B57\u4E24\u4E3B\u9898\u53EF\u8BFB\u3002 */\n.dshpc-chip--purple{--chip-bg:var(--dshpc-purple);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-purple-hover);}\n.dshpc-chip--pink{--chip-bg:var(--dshpc-pink);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-pink-hover);}\n.dshpc-chip--cyan{--chip-bg:var(--dshpc-cyan);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-cyan-hover);}\n.dshpc-chip--teal{--chip-bg:var(--dshpc-teal);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-teal-hover);}\n.dshpc-chip--orange{--chip-bg:var(--dshpc-orange);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-orange-hover);}\n.dshpc-chip--indigo{--chip-bg:var(--dshpc-indigo);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-indigo-hover);}\n.dshpc-chip--rose{--chip-bg:var(--dshpc-rose);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-rose-hover);}\n.dshpc-chip--slate{--chip-bg:var(--dshpc-slate);--chip-fg:var(--dshpc-on-signal);--chip-bg-hover:var(--dshpc-slate-hover);}\n/* \u53EF\u70B9\u6001\uFF1Abutton \u6E32\u67D3\uFF08\u89C1 Chip.ts\uFF09\uFF0C\u5149\u6807 + hover \u52A0\u6DF1\u3002 */\n.dshpc-chip--clickable{cursor:pointer;transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-chip--clickable:hover:not(:disabled){background:var(--chip-bg-hover)}\n.dshpc-chip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u7981\u7528\u6001\u5B57\u8272\u4ECE --chip-fg \u6D3E\u751F\uFF0845% \u2248 \u65E7 fg-3 \u7684\u5F31\u5316\u89C2\u611F\uFF09\uFF0C\u4E0D\u8BB8\u76F4\u63A5\u7528 --dshpc-fg-3\uFF1A\n   \u5B83\u8DDF\u4E3B\u9898\u8D70\uFF0C\u6697\u8272\u4E0B\u662F\u6DF1\u7070 \u21D2 \u8BED\u4E49\u8272\u5B9E\u5FC3\u6807\u7B7E\uFF08\u84DD / \u7EA2\u5E95\uFF09\u4E0A\u51E0\u4E4E\u770B\u4E0D\u89C1\uFF08\u4E0E Segmented \u8BA1\u6570 2026-10-29 \u540C\u7C7B\uFF09\u3002 */\n.dshpc-chip:disabled{cursor:default;color:color-mix(in srgb,var(--chip-fg) 45%,transparent)}\n/* maxWidth \u5305 MarqueeText \u65F6\uFF1A\u6807\u7B7E\u4F5C\u4E3A flex \u5B50\u9879\u5FC5\u987B\u80FD\u6536\u7F29\u5230\u5185\u5BB9\u4EE5\u4E0B\uFF0C\u5426\u5219\u7701\u7565\u53F7 / \u8DD1\u9A6C\u706F\u6D4B\u4E0D\u51C6 */\n.dshpc-chip .dshpc-chip__label{min-width:0;}\n@media (prefers-reduced-motion: reduce){.dshpc-chip{transition:none}}\n";
 
-// dist/ui/Chip.js
+// dist/ui/display/Chip.js
 function Chip(props) {
   ensureComponentStyles("chip", CHIP_CSS);
   const { children, tone = "neutral", size: size4 = "sm", width, minWidth, maxWidth, onClick, className: className2 } = props;
@@ -6166,13 +6166,13 @@ function Chip(props) {
   }, marqueeLabel ? (0, import_react26.createElement)(MarqueeText, { text: children, className: "dshpc-chip__label" }) : children ?? null);
 }
 
-// dist/ui/Table.js
+// dist/ui/display/Table.js
 var import_react30 = require("react");
 
-// dist/ui/Pagination.js
+// dist/ui/navigation/Pagination.js
 var import_react27 = require("react");
 
-// dist/ui/pagination-logic.js
+// dist/ui/navigation/pagination-logic.js
 function pageCountOf(total, pageSize) {
   const size4 = Math.max(1, Math.floor(pageSize));
   const rows = Math.max(0, Math.floor(total));
@@ -6222,7 +6222,7 @@ function pageItems(page, pageCount, siblingCount = 1, boundaryCount = 1) {
   return items;
 }
 
-// dist/ui/Pagination.js
+// dist/ui/navigation/Pagination.js
 function Pagination(props) {
   ensureComponentStyles("pagination", PAGINATION_CSS);
   const tt = props.translate ?? t;
@@ -6307,10 +6307,10 @@ function Pagination(props) {
   }, totalNode === null ? null : (0, import_react27.createElement)("span", { className: "dshpc-pagination__total" }, totalNode), (0, import_react27.createElement)("div", { className: "dshpc-pagination__pages" }, navButton("prev"), ...middle2, navButton("next")), sizeNode);
 }
 
-// dist/ui/table-shared.js
+// dist/ui/display/table-shared.js
 var import_react29 = require("react");
 
-// dist/ui/SectionHead.js
+// dist/ui/display/SectionHead.js
 var import_react28 = require("react");
 var ACCENT_TONES = [
   "business",
@@ -6346,7 +6346,7 @@ function SectionHead(props) {
   }), props.icon === void 0 ? null : (0, import_react28.createElement)("span", { className: "dshpc-section-head__icon" }, props.icon), (0, import_react28.createElement)("span", { className: "dshpc-section-head__title" }, props.title), props.right === void 0 ? null : (0, import_react28.createElement)("div", { className: "dshpc-section-head__right" }, props.right));
 }
 
-// dist/ui/table-logic.js
+// dist/ui/display/table-logic.js
 function isTableCellSpec(value) {
   if (typeof value !== "object" || value === null)
     return false;
@@ -6397,7 +6397,7 @@ function headerRows(columns) {
   return rows;
 }
 
-// dist/ui/table-shared.js
+// dist/ui/display/table-shared.js
 function widthOf(width) {
   if (width === void 0)
     return void 0;
@@ -6579,7 +6579,7 @@ function tableShell(skinClass, props, options = {}) {
   );
 }
 
-// dist/ui/Table.js
+// dist/ui/display/Table.js
 function useLoadMoreSentinel(props, enabled) {
   const nodeRef = (0, import_react30.useRef)(null);
   const onLoadMoreRef = (0, import_react30.useRef)(props.onLoadMore);
@@ -6638,7 +6638,7 @@ function Table(props) {
   );
 }
 
-// dist/ui/Toast.js
+// dist/ui/feedback/Toast.js
 var import_react32 = require("react");
 var import_client2 = require("react-dom/client");
 
@@ -7176,15 +7176,15 @@ var Toast = (props) => {
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h85) => [
+      setHeights((h86) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h85
+        ...h86
       ]);
-      return () => setHeights((h85) => h85.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h86) => h86.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
@@ -7229,7 +7229,7 @@ var Toast = (props) => {
   const deleteToast = import_react31.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
-    setHeights((h85) => h85.filter((height) => height.toastId !== toast2.id));
+    setHeights((h86) => h86.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -7756,7 +7756,7 @@ var Toaster = /* @__PURE__ */ import_react31.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t4) => t4.position == toast2.position),
-          heights: heights.filter((h85) => h85.position == toast2.position),
+          heights: heights.filter((h86) => h86.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -7768,7 +7768,7 @@ var Toaster = /* @__PURE__ */ import_react31.default.forwardRef(function Toaster
   );
 });
 
-// dist/ui/toast-host.js
+// dist/ui/feedback/toast-host.js
 var TOAST_HOST_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/toast-host");
 function claimToastHost(create) {
   const g = globalThis;
@@ -7780,7 +7780,7 @@ function claimToastHost(create) {
   return created;
 }
 
-// dist/ui/Toast.js
+// dist/ui/feedback/Toast.js
 var DEFAULT_MS = 2600;
 var ROOT_ID = "dshpc-toast-root";
 function currentTheme() {
@@ -7953,7 +7953,7 @@ function notify(message, opts) {
   });
 }
 
-// dist/ui/Segmented.js
+// dist/ui/inputs/Segmented.js
 var import_react33 = require("react");
 function countText(value) {
   if (value === void 0)
@@ -8057,7 +8057,7 @@ function Segmented(props) {
   ]);
 }
 
-// dist/ui/SplitGroup.js
+// dist/ui/layout/SplitGroup.js
 var import_react34 = require("react");
 function SplitGroup(props) {
   ensureComponentStyles("split-group", SPLIT_GROUP_CSS);
@@ -8070,10 +8070,10 @@ function SplitGroup(props) {
   }, props.children);
 }
 
-// dist/ui/InputGroup.js
+// dist/ui/inputs/InputGroup.js
 var import_react36 = require("react");
 
-// dist/ui/Field.js
+// dist/ui/inputs/Field.js
 var import_react35 = require("react");
 function withHint(control, hint) {
   if (hint === void 0)
@@ -8205,7 +8205,7 @@ function NumberInput(props) {
   ), props.hint);
 }
 
-// dist/ui/InputGroup.js
+// dist/ui/inputs/InputGroup.js
 function InputGroup(props) {
   ensureComponentStyles("input-group", INPUT_GROUP_CSS);
   ensureComponentStyles("field", FIELD_CSS);
@@ -8218,13 +8218,13 @@ function InputGroup(props) {
       return;
     const prev = committed.current;
     committed.current = value;
-    setUndoStack((stack) => [...stack, prev]);
+    setUndoStack((stack2) => [...stack2, prev]);
   };
   const undo2 = () => {
     const prev = undoStack[undoStack.length - 1];
     if (prev === void 0)
       return;
-    setUndoStack((stack) => stack.slice(0, -1));
+    setUndoStack((stack2) => stack2.slice(0, -1));
     committed.current = prev;
     onChange(prev);
   };
@@ -8298,7 +8298,7 @@ function InputGroup(props) {
   }, nodes), props.hint);
 }
 
-// dist/ui/Textarea.js
+// dist/ui/inputs/Textarea.js
 var import_react37 = require("react");
 function Textarea(props) {
   ensureComponentStyles("field", FIELD_CSS);
@@ -8323,7 +8323,7 @@ function Textarea(props) {
   return (0, import_react37.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react37.createElement)(FieldHint, { text: props.hint }));
 }
 
-// dist/ui/Checkbox.js
+// dist/ui/inputs/Checkbox.js
 var import_react38 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className: className2 } = props;
@@ -8357,17 +8357,17 @@ function Checkbox(props) {
   }), label !== void 0 ? (0, import_react38.createElement)("span", null, label) : null);
 }
 
-// dist/ui/LoaderBar.js
+// dist/ui/feedback/LoaderBar.js
 var import_react39 = require("react");
 
-// dist/ui/loader-bar-art.js
+// dist/ui/feedback/loader-bar-art.js
 var BAR_PATHS = [
   { d: "M0 384m128 0l768 0q128 0 128 128l0 0q0 128-128 128l-768 0q-128 0-128-128l0 0q0-128 128-128Z", fill: "#455A64" },
   { d: "M128 426.666667h554.666667v170.666666H128a85.333333 85.333333 0 0 1-85.333333-85.333333 85.333333 85.333333 0 0 1 85.333333-85.333333z", fill: "#2196F3" },
   { d: "M256 426.666667l-42.666667 170.666666h42.666667l42.666667-170.666666h-42.666667zM170.666667 426.666667l-42.666667 170.666666h42.666667l42.666666-170.666666H170.666667zM53.76 553.173333a83.84 83.84 0 0 0 34.133333 33.706667L128 426.666667a85.333333 85.333333 0 0 0-46.08 13.653333zM341.333333 426.666667l-42.666666 170.666666h42.666666l42.666667-170.666666h-42.666667zM640 597.333333h42.666667v-170.666666l-42.666667 170.666666zM426.666667 426.666667l-42.666667 170.666666h42.666667l42.666666-170.666666h-42.666666zM597.333333 426.666667l-42.666666 170.666666h42.666666l42.666667-170.666666h-42.666667zM512 426.666667l-42.666667 170.666666h42.666667l42.666667-170.666666h-42.666667z", fill: "#42A5F5" }
 ];
 
-// dist/ui/LoaderBar.js
+// dist/ui/feedback/LoaderBar.js
 var TRACK_INDEX = 0;
 var FILL_INDEX = 1;
 var STRIPE_INDEX = 2;
@@ -8415,11 +8415,11 @@ function LoaderBar(props) {
   )));
 }
 
-// dist/ui/Loading.js
+// dist/ui/feedback/Loading.js
 var import_react40 = require("react");
 var import_client3 = require("react-dom/client");
 
-// dist/ui/loading-host.js
+// dist/ui/feedback/loading-host.js
 var LOADING_HOST_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/loading-host");
 function claimLoadingHost(create) {
   const g = globalThis;
@@ -8455,7 +8455,7 @@ function createLoadingSlot() {
   };
 }
 
-// dist/ui/Loading.js
+// dist/ui/feedback/Loading.js
 function textOf(props) {
   return props.text ?? (props.translate ?? t)("loadingDefault");
 }
@@ -8521,10 +8521,10 @@ function showLoading(opts) {
   });
 }
 
-// dist/ui/LiveText.js
+// dist/ui/display/LiveText.js
 var import_react42 = require("react");
 
-// dist/ui/ticker.js
+// dist/ui/infra/ticker.js
 var import_react41 = require("react");
 var tickerListeners = /* @__PURE__ */ new Set();
 var tickerTimer = null;
@@ -8554,7 +8554,7 @@ function subscribeTicker(cb) {
   };
 }
 
-// dist/ui/LiveText.js
+// dist/ui/display/LiveText.js
 function LiveText(props) {
   const [, force] = (0, import_react42.useState)(0);
   const renderRef = (0, import_react42.useRef)(props.render);
@@ -8563,10 +8563,10 @@ function LiveText(props) {
   return (0, import_react42.createElement)("span", { style: props.style }, renderRef.current(Date.now()));
 }
 
-// dist/ui/QuickToolbar.js
+// dist/ui/layout/QuickToolbar.js
 var import_react43 = require("react");
 
-// dist/ui/quick-toolbar-logic.js
+// dist/ui/layout/quick-toolbar-logic.js
 var DEFAULT_SCROLL_THRESHOLD = 320;
 function resolveToolbarLeft(geometry, anchorRight) {
   const { viewportWidth, offset: offset4, size: size4 } = geometry;
@@ -8594,7 +8594,7 @@ function isToolbarEntryVisible(entry, scrollTop) {
   return true;
 }
 
-// dist/ui/QuickToolbar.js
+// dist/ui/layout/QuickToolbar.js
 var DEFAULT_OFFSET = 16;
 var DEFAULT_SIZE = 44;
 var DEFAULT_GAP = 12;
@@ -8796,11 +8796,11 @@ function QuickToolbar(props) {
   }, ...rendered.map((entry) => renderItem(entry, leavingSet.has(entry.id))));
 }
 
-// dist/ui/PanelDock.js
+// dist/ui/layout/PanelDock.js
 var import_react44 = require("react");
 var import_react_dom4 = require("react-dom");
 
-// dist/ui/panel-dock-logic.js
+// dist/ui/layout/panel-dock-logic.js
 var DEFAULT_PANEL_ID = "default";
 function emptyDock() {
   return { ids: [], widths: {}, collapsed: [] };
@@ -8876,10 +8876,10 @@ function othersWidth(state, id3, fallbackOf) {
   }, 0);
 }
 
-// dist/ui/panel-dock-css.generated.js
+// dist/ui/layout/panel-dock-css.generated.js
 var PANEL_DOCK_CSS = "/* \u505C\u9760\u680F = **\u5E03\u5C40\u6210\u5458**\uFF0C\u4E0D\u662F\u6D6E\u5C42\uFF1A\u5B83\u5360\u5BBD\u5EA6\u3001\u628A\u4E3B\u533A\u771F\u6B63\u6324\u7A84\uFF08\u5144\u5F1F\u9879\u76EE 2026-09-28\uFF1A\n   \u300C\u5206\u680F\u538B\u8FC7\u6765\uFF0C\u4E0D\u662F\u76D6\u4E0A\u53BB\u300D\uFF09\u3002\u6240\u4EE5\u8C03\u7528\u65B9\u5FC5\u987B\u628A\u5B83\u653E\u8FDB\u81EA\u5DF1\u7684 flex \u6839\u91CC\u3002\n   \u76AE\u80A4\uFF08\u5934\u90E8 / \u62D6\u62FD\u6761 / \u5173\u95ED\u94AE / \u80CC\u666F\u9634\u5F71\uFF09\u5728 side-panel.css\uFF0C\u4E0E SideSheet \u5171\u7528\u3002 */\n.dshpc-dock{display:flex;flex:0 0 auto;align-self:stretch;min-width:0}\n/* dock \u4E0D\u518D\u66FF\u4E3B\u533A\u8BA9\u7F1D\uFF08\u539F --dshpc-dock-gap \u7684 1px margin \u5DF2\u5220\uFF0C\u7528\u6237 2026-11-02\uFF09\uFF1A\n   \u6EDA\u52A8\u6761\u4E0E\u5BB9\u5668\u8FB9\u7F18\u7684 1px \u7EDF\u4E00\u7531\u6EDA\u52A8\u5BB9\u5668\u81EA\u5DF1\u7684\u900F\u660E\u8FB9\u6846\u63D0\u4F9B\uFF08\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\uFF0C\n   \u4E3B\u533A\u5BB9\u5668\u5E26\u4E86\u8BA9\u4F4D\uFF0C\u6EDA\u52A8\u6761\u4E0E\u8FD9\u6761\u5206\u9694\u7EBF\u4E4B\u95F4\u81EA\u7136\u8FD8\u662F 1px\u3002\u522B\u518D\u5F80\u8FD9\u91CC\u52A0 margin\u3002 */\n\n/* \u81EA\u52A8\u52A0\u7684\u5BBF\u4E3B\u884C\uFF08openFilePreview \u52A0 / \u5173\u95ED\u5373\u6458\uFF09\uFF1A\u6D88\u8D39\u65B9\u90A3\u884C\u4E0D\u5FC5\u81EA\u5DF1\u5199 flex\u3002\n   \u53EA\u8BA9\u300C\u7B2C\u4E00\u4E2A\u975E\u9884\u89C8\u5B50\u9879\u300D\u5F53\u4E3B\u533A\u4F38\u5C55\uFF0C\u5176\u4F59\u76F4\u63A5\u5B50\u9879\u4E0D\u52A8\uFF08\u9875\u811A\u6761\u3001\u5DE5\u5177\u6761\u4E0D\u8BEF\u4F24\uFF09\uFF1B\n   display \u4E0D\u5728\u8FD9\u91CC\u5199\u6B7B \u2014\u2014 \u672C\u6765\u5C31\u662F grid \u7B49\u5E03\u5C40\u7684\u5143\u7D20\u4FDD\u6301\u539F\u6837\uFF0C\u7531 TS \u4FA7\u6309\u8BA1\u7B97\u503C\u8865 flex\u3002 */\n.dshpc-dock-host{min-width:0;min-height:0}\n.dshpc-dock-host>:not([data-dshpc-file-preview]){min-width:0}\n.dshpc-dock-host>:first-child:not([data-dshpc-file-preview]){flex:1 1 auto}\n\n/* \u5355\u680F**\u5360\u4F4D**\uFF1Asticky + \u89C6\u53E3\u9AD8\u8BA9\u5B83\u5728\u9875\u9762\u6EDA\u52A8\u65F6\u4FDD\u6301\u53EF\u89C1\uFF0C\u540C\u65F6\u4ECD\u7136\u5360\u5BBD\u5EA6\u3002\n   \u26A0\uFE0F **\u672C\u6761\u523B\u610F\u4E0D\u8BBE z-index**\uFF1A\u5E03\u5C40\u6210\u5458\u4E00\u65E6\u5E26\u6B63 z-index\uFF0C\u5C31\u4F1A\u65E0\u6761\u4EF6\u538B\u8FC7\u5BBF\u4E3B portal \u5230 body \u7684\n   \u5F39\u7A97\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-05 \u771F\u673A\u4E8B\u6545\u300C\u4FA7\u8FB9\u680F\u76D6\u4F4F\u5BBF\u4E3B\u8BBE\u7F6E\u5F39\u7A97\u300D\uFF09\u3002\u5C42\u5E8F\u4EA4\u7ED9 DOM \u987A\u5E8F\u88C1\u51B3\u3002\n   \u5916\u89C2\u6765\u81EA .dshpc-side-surface\uFF08side-panel.css\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u600E\u4E48\u5360\u4F4D\u4E0E\u671D\u54EA\u8FB9\u63CF\u8FB9\u3002 */\n.dshpc-dock__panel{\n  position:sticky;top:0;align-self:stretch;\n  /* \u9AD8\u5EA6\u9ED8\u8BA4\u89C6\u53E3\u9AD8\uFF08\u6574\u9875\u573A\u666F\uFF09\uFF1B\u5D4C\u5728\u5B9A\u9AD8\u5BB9\u5668\u91CC\u65F6\u7531\u8C03\u7528\u65B9\u7ED9 --dshpc-dock-h\uFF08\u5982 420px / 100%\uFF09\u3002 */\n  height:var(--dshpc-dock-h,100vh);max-height:var(--dshpc-dock-h,100vh);\n  border-left:1px solid var(--dshpc-border);\n}\n/* \u6536\u8D77\u7684\u51FA\u573A\uFF1A\u5BBD\u5EA6\u6536\u5230 0\u3001\u900F\u660E\u6DE1\u51FA\uFF1B\u843D\u5B9A\u540E\u7EC4\u4EF6\u624D\u771F\u6B63\u6458\u6389\u8FD9\u4E00\u680F\uFF08JS \u5EF6\u65F6 220ms \u914D\u5408\uFF09\u3002 */\n.dshpc-dock__panel--closing{\n  width:0!important;min-width:0!important;opacity:0;border-left-width:0;\n  transition:width .2s var(--dshpc-ease),opacity .2s var(--dshpc-ease),border-left-width .2s var(--dshpc-ease);\n}\n\n/* \u62D6\u52A8\u671F\uFF1A\u2460 <iframe>\uFF08PDF / HTML \u9884\u89C8\uFF09\u662F\u72EC\u7ACB\u6587\u6863\uFF0C\u4F1A\u541E\u6389\u7236\u6587\u6863\u7684 pointermove\uFF0C\n   \u5411\u53F3\u62D6\u8FDB iframe \u5C31\u5361\u6B7B \u2014\u2014 \u6574\u7247\u8BA9\u51FA\u6307\u9488\u4E8B\u4EF6\uFF1B\u2461 contain \u628A\u91CD\u6392\u9694\u79BB\u5728\u680F\u5185\uFF0C\n   \u5426\u5219\u6BCF\u5E27\u6539\u5BBD\u5EA6\u90FD\u4F1A\u7275\u52A8\u6574\u9875\u91CD\u6392\uFF08\u5144\u5F1F\u9879\u76EE 2026-10-04 \u771F\u673A\u300C\u632A\u5F88\u4E45\u624D\u52A8\u4E00\u4E0B\u300D\uFF09\u3002 */\n.dshpc-dock.dshpc-dock--resizing iframe{pointer-events:none}\n.dshpc-dock.dshpc-dock--resizing .dshpc-dock__panel{contain:layout paint;will-change:width}\n\n/* \u6536\u8D77\u94AE\uFF1A**\u5F85\u5728\u9762\u677F\u81EA\u5DF1\u7684\u6846\u91CC**\uFF08\u7528\u6237 2026-10-28 \u4E09\u8F6E\uFF1A\u5360\u9762\u677F\u5185\u90E8\u7A7A\u95F4\uFF0C\u4E0D\u4F38\u5230\u5916\u9762\u53BB\uFF09\u3002\n   left:0 \u4ECE\u5185\u4FA7\u8D34\u7740\u5206\u9694\u7EBF \u2014\u2014 \u8D34\u7EBF\u7684\u4E00\u8FB9\u4E0D\u63CF\u8FB9\uFF08\u7EBF\u662F\u9762\u677F\u81EA\u5DF1\u7684 border-left\uFF09\uFF0C\u9875\u7B7E\u4E0E\u7EBF\u4E0D\u91CD\u5408\u3002\n   20\xD744\uFF08\u7528\u6237 2026-10-28 \u56DB\u8F6E\u5B9A\u5C3A\u5BF8\uFF09\uFF1B\u5B9E\u8272\u5E95\uFF08--dshpc-plate\uFF0C\u660E\u6697\u5404\u6709\u5B9E\u503C\uFF09\uFF0Chover \u4EAE\u4E00\u6863\u3002\n   padding-right:2px \u662F**\u89C6\u89C9\u5C45\u4E2D**\uFF1A\u53F3\u4FA7\u662F\u5706\u89D2\uFF0C\u7BAD\u5934\u5F80\u76F4\u7EBF\u90A3\u8FB9\u632A 1px\uFF08\u7528\u6237 2026-10-28 \u56DB\u8F6E\uFF09\u3002 */\n.dshpc-dock__collapse{\n  position:absolute;left:0;top:50%;transform:translateY(-50%);\n  z-index:8;display:inline-flex;align-items:center;justify-content:center;\n  width:20px;height:44px;padding:0 2px 0 0;\n  border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  border-right:1px solid var(--dshpc-border);\n  border-left:none;\n  border-radius:0 var(--dshpc-radius-sm) var(--dshpc-radius-sm) 0;\n  background:var(--dshpc-plate);color:var(--dshpc-fg-3);\n  font-family:inherit;font-size:16px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-dock__collapse:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}\n.dshpc-dock__collapse:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n\n/* \u6536\u8D77\u540E\u7684\u6D6E\u52A8\u8033\u6735\uFF1A**fixed \u8D34\u53F3\u7F18\u3001\u5782\u76F4\u5C45\u4E2D\u3001\u72EC\u7ACB\u4E8E\u5206\u680F**\uFF08\u7528\u6237 2026-10-28 \u5B9A\u7A3F\uFF1A\n   \u5C0F\u9875\u7B7E\u6302\u4E2D\u95F4\u3001\u91CC\u9762\u653E\u9762\u677F\u56FE\u6807\u3001\u4E0D\u663E\u793A\u6587\u5B57\uFF0C\u7BAD\u5934\u4E0E\u6536\u8D77\u94AE\u53CD\u5411\uFF09\u3002\u591A\u4E2A\u6309\u6536\u8D77\u987A\u5E8F\u7EB5\u5411\u5806\u53E0\u3002\n   z \u8D70 ear \u6863\uFF08\u9AD8\u4E8E\u5F39\u7A97\u906E\u7F69\uFF0C2026-11-04\uFF09\uFF1A\u9762\u677F\u5728\u5F39\u7A97\u4E0B\u9762\u65F6\uFF0C\u8033\u6735\u4ECD\u662F\u552F\u4E00\u80FD\u70B9\u5230\u7684\u5165\u53E3\u3002\n   DOM \u4E0A portal \u5230 body\uFF08PanelDock.ts\uFF09\uFF0C\u5426\u5219\u4F1A\u88AB\u5F39\u7A97\u7684 stacking context \u5173\u5728\u91CC\u9762\u3002 */\n.dshpc-dock__ears{\n  position:fixed;top:50%;right:0;transform:translateY(-50%);\n  z-index:var(--dshpc-z-ear,1080);\n  display:flex;flex-direction:column;gap:8px;align-items:flex-end;\n  pointer-events:none;\n}\n.dshpc-dock__ear{\n  pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;\n  /* \u4E0E\u6536\u8D77\u94AE**\u540C\u5C3A\u5BF8**\uFF0820\xD744\uFF0C\u7528\u6237 2026-10-28 \u56DB\u8F6E\uFF09\uFF1A\u4E0A/\u4E0B/\u5DE6\u63CF\u8FB9\uFF0C\u8D34\u53F3\u7F18\u7684\u4E00\u4FA7\u4E0D\u63CF\u3002\n     \u5B9E\u8272\u5E95\uFF08--dshpc-plate\uFF09\uFF0C\u4E0D\u7528\u900F\u660E\u8272 \u2014\u2014 \u900F\u660E\u5E95\u4E0B\u900F\u51FA\u4E1C\u897F\u5F88\u96BE\u770B\u3002\n     padding-left:2px \u662F**\u89C6\u89C9\u5C45\u4E2D**\uFF1A\u5DE6\u4FA7\u662F\u5706\u89D2\uFF0C\u7BAD\u5934\u5F80\u76F4\u7EBF\uFF08\u53F3\u7F18\uFF09\u90A3\u8FB9\u632A 1px\u3002 */\n  width:20px;height:44px;box-sizing:border-box;padding:0 0 0 2px;\n  border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  border-left:1px solid var(--dshpc-border);\n  border-right:none;\n  border-radius:var(--dshpc-radius-sm) 0 0 var(--dshpc-radius-sm);\n  background:var(--dshpc-plate);color:var(--dshpc-fg-2);\n  cursor:pointer;font-family:inherit;line-height:1;\n  animation:dshpc-ear-in .2s var(--dshpc-ease);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n/* \u5165\u573A\uFF1A\u4ECE\u53F3\u7F18\u5916\u6ED1\u8FDB\u6765\uFF0C\u522B\u300C\u7A81\u7136\u51FA\u73B0\u300D\uFF08\u7528\u6237 2026-10-28\uFF09\u3002 */\n@keyframes dshpc-ear-in{from{opacity:0;transform:translateX(14px)}}\n.dshpc-dock__ear:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}\n.dshpc-dock__ear:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n/* \u4E0E\u6536\u8D77\u94AE\u7684\u7BAD\u5934\u540C\u4E00\u5B57\u53F7\uFF0816px\uFF09\uFF1A\u6536\u8FDB\u53BB\u524D\u540E\u7BAD\u5934\u4E00\u6A21\u4E00\u6837\u5927\uFF08\u7528\u6237 2026-10-28\uFF09\u3002 */\n.dshpc-dock__ear-arrow{font-size:16px;color:var(--dshpc-fg-3)}\n.dshpc-dock__ear:hover .dshpc-dock__ear-arrow{color:var(--dshpc-fg)}\n/* \u52A8\u6548\u793C\u8C8C\uFF1A\u7CFB\u7EDF\u58F0\u660E\u51CF\u5C11\u52A8\u6548\u65F6\u5168\u90E8\u5173\u6389\uFF0C\u6536\u8D77\u9000\u5316\u4E3A\u77AC\u65F6\u3001\u529F\u80FD\u4E0D\u53D7\u5F71\u54CD\u3002 */\n@media (prefers-reduced-motion:reduce){\n  .dshpc-dock__panel{animation:none}\n  .dshpc-dock__panel--closing{transition:none}\n  .dshpc-dock__ear{animation:none}\n}\n";
 
-// dist/ui/PanelDock.js
+// dist/ui/layout/PanelDock.js
 var INSET_VAR = "--dshpc-page-inset-right";
 var dockInsets = /* @__PURE__ */ new Map();
 var dockSeq = 0;
@@ -9206,7 +9206,7 @@ function PanelDock(props) {
   )), ears === null || typeof document === "undefined" ? null : (0, import_react_dom4.createPortal)(ears, document.body));
 }
 
-// dist/explorer/FileBrowser.js
+// dist/adv/explorer/FileBrowser.js
 var import_react58 = require("react");
 
 // dist/ui/official.js
@@ -9281,7 +9281,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
 });
 registerHostDialog({ confirm: hostConfirm, alert: hostAlert });
 
-// dist/explorer/preview/index.js
+// dist/adv/explorer/preview/index.js
 var import_react53 = require("react");
 
 // dist/utils/path.js
@@ -9313,7 +9313,7 @@ function joinPath(dir, name2) {
   return dir === "" ? name2 : `${dir}/${name2}`;
 }
 
-// dist/explorer/types.js
+// dist/adv/explorer/types.js
 var HTML_KINDS = ["html", "htm"];
 var OFFICE_KINDS = ["doc", "docx", "ppt", "pptx"];
 var SOURCE_MAX_BYTES = 256 * 1024;
@@ -9550,13 +9550,13 @@ function pickWorkspaceAnchor(items) {
   return best;
 }
 
-// dist/explorer/preview/BytesPreview.js
+// dist/adv/explorer/preview/BytesPreview.js
 var import_react46 = require("react");
 
-// dist/explorer/explorer-css.generated.js
+// dist/adv/explorer/explorer-css.generated.js
 var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n * **\u4F8B\u5916**\uFF1A\u5BB9\u5668\u7EA7\u5185\u8DDD\uFF08__bar / __title / __tree / __body\uFF092026-11-03 \u8D77\u6539\u6210\u56DB\u5468\u4E00\u81F4\n * \u7684 token \u6863\uFF08space-2 / space-3\uFF09\u2014\u2014\u7528\u6237\u53CD\u9988\u5144\u5F1F\u90A3\u5957\u300C\u5DE6\u53F3\u6BD4\u4E0A\u4E0B\u5BBD\u300D\u5728\u8FD9\u4E24\u5904\u7A97\u53E3\u91CC\u4E0D\u5BF9\u79F0\u3002\n * \u884C\u7EA7\u5185\u8DDD\uFF08__row / __row-note / __banner\uFF09\u4ECD\u662F\u5144\u5F1F\u6570\u503C\uFF0C\u672A\u52A8\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n/* \u80CC\u666F\u4E0D\u5728\u8FD9\u91CC\u753B\uFF1Adock \u7531 .dshpc-side-surface\u3001\u9009\u6587\u4EF6\u5F39\u7A97\u7531 .dshpc-panel \u63D0\u4F9B\u3002\n   \u81EA\u5DF1\u518D\u5237\u4E00\u5C42 surface-base \u4F1A\u628A\u9762\u677F\u6863\u4F4D\uFF08modal \u540C\u8272\u7684 surface-1\uFF09\u76D6\u6389 \u2014\u2014 \u5F39\u7A97\u5C31\u663E\u5F97\u53D1\u9ED1\u3002 */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:transparent;color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  /* \u56DB\u5468\u5185\u8DDD\u4E00\u81F4\uFF08\u7528\u6237 2026-11-03\uFF1A\u539F\u6765 4/10\uFF0C\u5DE6\u53F3\u6BD4\u4E0A\u4E0B\u5BBD\uFF0C\u770B\u7740\u4E0D\u5BF9\u79F0\uFF09\u2014\u2014\u4E0B\u6587 __title / __tree / __body \u540C\u53E3\u5F84\u3002 */\n  padding:var(--dshpc-space-2);border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n/* \u9009\u62E9\u5668\u5934\u90E8\u300C\u9009\u5F53\u524D\u6587\u4EF6 / \u5F53\u524D\u6587\u4EF6\u5939\u300D\u94AE\uFF1A\u4E0E \u2715 \u5E76\u6392\uFF0C\u4E0D\u88AB\u9762\u5305\u5C51\u6324\u6241\u3002\n   \u300C\u9009\u5F53\u524D\u76EE\u5F55\u300D= \u6838\u5FC3 Button outline\uFF08sm \u6863\uFF09\uFF1A\u5C3A\u5BF8\u4E0E\u76AE\u80A4\u5168\u5F52\u6838\u5FC3\uFF0C\u8FD9\u91CC\u53EA\u7559\u5E03\u5C40\u3002\n   \u26A0\uFE0F \u522B\u518D\u5F80\u8FD9\u91CC\u5199 height / padding \u8986\u76D6 \u2014\u2014 \u57DF\u6309\u767B\u8BB0\u987A\u5E8F\u62FC\u63A5\uFF0C\u6838\u5FC3 .dshpc-btn--sm \u8C01\u5148\u8C01\u540E\n   \u53D6\u51B3\u4E8E\u6E32\u67D3\u6B21\u5E8F\uFF0C\u8986\u76D6\u4F1A\u65F6\u7075\u65F6\u4E0D\u7075\uFF082026-11-03 \u524D\u5C31\u662F\u8FD9\u4E48\u5199\u7684\uFF09\u3002 */\n.dshpc-fb__pick{flex:none}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\u3002\n   \u5C42\u5E8F\uFF1A\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E picker \u9762\u677F\uFF08--dshpc-z-panel\uFF09\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\uFF1B\n   \u83DC\u5355\u518D\u538B\u5728\u906E\u7F69\u4E4B\u4E0A\uFF0C\u6240\u4EE5\u662F popmenu \u4E00\u6863 +1\u3002\u8868\u76AE\u6765\u81EA panel.css \u7684 menu \u6863\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:var(--dshpc-z-popmenu);background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:calc(var(--dshpc-z-popmenu) + 1);\n  min-width:160px;max-height:240px;overflow:auto;padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:var(--dshpc-space-2);border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09\n   \u4E0B\u9762\u4E09\u4E2A\u6EDA\u52A8\u5BB9\u5668\u90FD\u5E26\u900F\u660E\u53F3\u8FB9\u6846 = \u6EDA\u52A8\u6761\u4E0E\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:var(--dshpc-space-3);border-right:1px solid transparent}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:var(--dshpc-space-2);border-right:1px solid transparent;border-bottom:1px solid transparent}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6309\u94AE**\u76AE\u80A4\u5B8C\u5168\u4EA4\u7ED9\u6838\u5FC3 Button**\uFF082026-11-03\uFF1A\u539F\u6765\u8FD9\u91CC\u53C8\u5199\u4E86\u4E00\u904D\u63CF\u8FB9/\u5185\u8DDD/\n   \u5B57\u53F7\uFF0C\u7B49\u4E8E\u81EA\u5DF1\u624B\u6413\u4E86\u4E00\u9897\uFF0C\u8DDF\u522B\u5904\u7684\u6309\u94AE\u957F\u5F97\u4E0D\u4E00\u6837\uFF09\u3002\u672C\u4ED3\u53EA\u4FDD\u7559\u5E03\u5C40\u4E0E\u300C\u60AC\u505C\u624D\u73B0\u8EAB\u300D\uFF1A\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09\u3002\n   \u5FC5\u987B border-box\uFF1A\u6E32\u67D3\u6001 inline \u52A0\u4E86 padding:12px 14px\uFF0Ccontent-box \u4E0B width:100%+padding\n   \u4F1A\u6EA2\u51FA\u7236\u5C42 28px\uFF08\u7236 .dshpc-fb \u65E0 overflow \u88C1\u5207\uFF09\u2192 \u6052\u591A\u4E00\u6761\u6A2A\u6EDA\u6761\uFF1Bborder-box \u628A padding\n   \u7B97\u8FDB 100%\uFF0C\u4ECE\u6839\u6D88\u9664\u8BE5\u6EA2\u51FA\u3002 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box;border-right:1px solid transparent;border-bottom:1px solid transparent}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n/* iframe \u7684\u5916\u58F3\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-fill\uFF09\uFF1Aiframe \u5FC5\u987B\u5305\u5728\u8FD9\u4E00\u5C42\u91CC\u624D\u62FF\u5F97\u5230\u9AD8\u5EA6\u2014\u2014\n   \u88F8\u6302 iframe \u65F6\u66FF\u6362\u5143\u7D20\u7684\u81EA\u52A8\u6700\u5C0F\u5C3A\u5BF8\u4F1A\u8BA9\u9AD8\u5EA6\u7B97\u4E0D\u51FA\u6765\uFF08\u8868\u73B0\u4E3A\u9884\u89C8\u533A\u6574\u7247\u7A7A\u767D\u3001\u50CF\u6CA1\u53CD\u5E94\uFF09\u3002 */\n.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}\n.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n";
 
-// dist/explorer/preview/BytesPreview.js
+// dist/adv/explorer/preview/BytesPreview.js
 function BytesPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
@@ -9604,13 +9604,13 @@ function BytesPreview(props) {
   return (0, import_react46.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react46.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path }));
 }
 
-// dist/explorer/preview/HtmlPreview.js
+// dist/adv/explorer/preview/HtmlPreview.js
 var import_react51 = require("react");
 
-// dist/explorer/preview/TextPreview.js
+// dist/adv/explorer/preview/TextPreview.js
 var import_react50 = require("react");
 
-// dist/ui/CodeViewer.js
+// dist/ui/display/CodeViewer.js
 var import_react49 = require("react");
 
 // node_modules/.pnpm/@babel+runtime@8.0.7/node_modules/@babel/runtime/helpers/esm/extends.js
@@ -14015,15 +14015,15 @@ var DOMSelectionState = class {
   }
 };
 function getScrollStack(target) {
-  let stack = [];
+  let stack2 = [];
   for (let cur2 = target; cur2; cur2 = cur2.nodeType == 11 ? cur2.host : cur2.parentNode) {
     if (isElt(cur2))
-      stack.push({ node: cur2, left: cur2.scrollLeft, top: cur2.scrollTop });
+      stack2.push({ node: cur2, left: cur2.scrollLeft, top: cur2.scrollTop });
   }
-  return stack;
+  return stack2;
 }
-function restoreScrollStack(stack, vert = true) {
-  for (let { node, left, top: top2 } of stack) {
+function restoreScrollStack(stack2, vert = true) {
+  for (let { node, left, top: top2 } of stack2) {
     if (vert && node.scrollTop != top2)
       node.scrollTop = top2;
     if (node.scrollLeft != left)
@@ -14038,7 +14038,7 @@ function focusPreventScroll(dom) {
     return dom.setActive();
   if (preventScrollSupported)
     return dom.focus(preventScrollSupported);
-  let stack = getScrollStack(dom);
+  let stack2 = getScrollStack(dom);
   dom.focus(preventScrollSupported == null ? {
     get preventScroll() {
       preventScrollSupported = { preventScroll: true };
@@ -14047,7 +14047,7 @@ function focusPreventScroll(dom) {
   } : void 0);
   if (!preventScrollSupported) {
     preventScrollSupported = false;
-    restoreScrollStack(stack);
+    restoreScrollStack(stack2);
   }
 }
 var scratchRange;
@@ -15074,18 +15074,18 @@ var DocTile = class extends CompositeTile {
     }
   }
   blockTiles(f) {
-    for (let stack = [], cur2 = this, i2 = 0, pos = 0; ; ) {
+    for (let stack2 = [], cur2 = this, i2 = 0, pos = 0; ; ) {
       if (i2 == cur2.children.length) {
-        if (!stack.length)
+        if (!stack2.length)
           return;
         cur2 = cur2.parent;
         if (cur2.breakAfter)
           pos++;
-        i2 = stack.pop();
+        i2 = stack2.pop();
       } else {
         let next = cur2.children[i2++];
         if (next instanceof BlockWrapperTile) {
-          stack.push(i2);
+          stack2.push(i2);
           cur2 = next;
           i2 = 0;
         } else {
@@ -16623,9 +16623,9 @@ var DocView = class {
     if (window.visualViewport && window.innerHeight - window.visualViewport.height > 1 && (rect.top > window.visualViewport.offsetTop + window.visualViewport.height || rect.bottom < window.visualViewport.offsetTop)) {
       let line = this.view.docView.lineAt(range2.head, 1);
       if (line) {
-        let stack = getScrollStack(line.dom);
+        let stack2 = getScrollStack(line.dom);
         line.dom.scrollIntoView({ block: "nearest" });
-        restoreScrollStack(stack, false);
+        restoreScrollStack(stack2, false);
       }
     }
   }
@@ -17422,7 +17422,7 @@ function applyDOMChangeInner(view, change, newSel, lastKey = -1) {
     view.inputState.composing++;
   let defaultTr;
   let defaultInsert = () => defaultTr || (defaultTr = applyDefaultInsert(view, change, newSel));
-  if (!view.state.facet(inputHandler).some((h85) => h85(view, change.from, change.to, text2, defaultInsert)))
+  if (!view.state.facet(inputHandler).some((h86) => h86(view, change.from, change.to, text2, defaultInsert)))
     view.dispatch(defaultInsert());
   return true;
 }
@@ -18360,12 +18360,12 @@ var HeightOracle = class {
   mustRefreshForHeights(lineHeights) {
     let newHeight = false;
     for (let i2 = 0; i2 < lineHeights.length; i2++) {
-      let h85 = lineHeights[i2];
-      if (h85 < 0) {
+      let h86 = lineHeights[i2];
+      if (h86 < 0) {
         i2++;
-      } else if (!this.heightSamples[Math.floor(h85 * 10)]) {
+      } else if (!this.heightSamples[Math.floor(h86 * 10)]) {
         newHeight = true;
-        this.heightSamples[Math.floor(h85 * 10)] = true;
+        this.heightSamples[Math.floor(h86 * 10)] = true;
       }
     }
     return newHeight;
@@ -18381,11 +18381,11 @@ var HeightOracle = class {
     if (changed) {
       this.heightSamples = {};
       for (let i2 = 0; i2 < knownHeights.length; i2++) {
-        let h85 = knownHeights[i2];
-        if (h85 < 0)
+        let h86 = knownHeights[i2];
+        if (h86 < 0)
           i2++;
         else
-          this.heightSamples[Math.floor(h85 * 10)] = true;
+          this.heightSamples[Math.floor(h86 * 10)] = true;
       }
     }
     return changed;
@@ -25993,16 +25993,16 @@ function sliceBuf(buf, startI, endI, nodes, positions, off) {
   }
 }
 function materialize(cursor2) {
-  let { node } = cursor2, stack = [];
+  let { node } = cursor2, stack2 = [];
   let buffer = node.context.buffer;
   do {
-    stack.push(cursor2.index);
+    stack2.push(cursor2.index);
     cursor2.parent();
   } while (!cursor2.tree);
   let base3 = cursor2.tree, i2 = base3.children.indexOf(buffer);
   let buf = base3.children[i2], b = buf.buffer, newStack = [i2];
   function split(startI, endI, type3, innerOffset, length, stackPos) {
-    let targetI = stack[stackPos];
+    let targetI = stack2[stackPos];
     let children = [], positions = [];
     sliceBuf(buf, startI, targetI, children, positions, innerOffset);
     let from2 = b[targetI + 1], to = b[targetI + 2];
@@ -26013,7 +26013,7 @@ function materialize(cursor2) {
     sliceBuf(buf, b[targetI + 3], endI, children, positions, innerOffset);
     return new Tree(type3, children, positions, length);
   }
-  base3.children[i2] = split(0, b.length, NodeType.none, 0, buf.length, stack.length - 1);
+  base3.children[i2] = split(0, b.length, NodeType.none, 0, buf.length, stack2.length - 1);
   for (let index3 of newStack) {
     let tree = cursor2.tree.children[index3], pos = cursor2.tree.positions[index3];
     cursor2.yield(new TreeNode(tree, pos + cursor2.from, index3, cursor2._tree));
@@ -26432,7 +26432,7 @@ var HighlightBuilder = class {
     if (start >= to || end <= from2)
       return;
     if (type3.isTop)
-      highlighters = this.highlighters.filter((h85) => !h85.scope || h85.scope(type3));
+      highlighters = this.highlighters.filter((h86) => !h86.scope || h86.scope(type3));
     let cls = inheritedClass;
     let rule = getStyleTags(cursor2) || Rule.empty;
     let tagCls = highlightTags(highlighters, rule.tags);
@@ -26449,7 +26449,7 @@ var HighlightBuilder = class {
     let mounted = cursor2.tree && cursor2.tree.prop(NodeProp.mounted);
     if (mounted && mounted.overlay) {
       let inner = cursor2.node.enter(mounted.overlay[0].from + start, 1);
-      let innerHighlighters = this.highlighters.filter((h85) => !h85.scope || h85.scope(mounted.tree.type));
+      let innerHighlighters = this.highlighters.filter((h86) => !h86.scope || h86.scope(mounted.tree.type));
       let hasChild2 = cursor2.firstChild();
       for (let i2 = 0, pos = start; ; i2++) {
         let next = i2 < mounted.overlay.length ? mounted.overlay[i2] : null;
@@ -27812,19 +27812,19 @@ var IndentContext = class {
 };
 var indentNodeProp = /* @__PURE__ */ new NodeProp();
 function syntaxIndentation(cx, ast, pos) {
-  let stack = ast.resolveStack(pos);
+  let stack2 = ast.resolveStack(pos);
   let inner = ast.resolveInner(pos, -1).resolve(pos, 0).enterUnfinishedNodesBefore(pos);
-  if (inner != stack.node) {
+  if (inner != stack2.node) {
     let add2 = [];
-    for (let cur2 = inner; cur2 && !(cur2.from < stack.node.from || cur2.to > stack.node.to || cur2.from == stack.node.from && cur2.type == stack.node.type); cur2 = cur2.parent)
+    for (let cur2 = inner; cur2 && !(cur2.from < stack2.node.from || cur2.to > stack2.node.to || cur2.from == stack2.node.from && cur2.type == stack2.node.type); cur2 = cur2.parent)
       add2.push(cur2);
     for (let i2 = add2.length - 1; i2 >= 0; i2--)
-      stack = { node: add2[i2], next: stack };
+      stack2 = { node: add2[i2], next: stack2 };
   }
-  return indentFor(stack, cx, pos);
+  return indentFor(stack2, cx, pos);
 }
-function indentFor(stack, cx, pos) {
-  for (let cur2 = stack; cur2; cur2 = cur2.next) {
+function indentFor(stack2, cx, pos) {
+  for (let cur2 = stack2; cur2; cur2 = cur2.next) {
     let strategy = indentStrategy(cur2.node);
     if (strategy)
       return strategy(TreeIndentContext.create(cx, pos, cur2));
@@ -27995,9 +27995,9 @@ function syntaxFolding(state, start, end) {
   let tree = syntaxTree(state);
   if (tree.length < end)
     return null;
-  let stack = tree.resolveStack(end, 1);
+  let stack2 = tree.resolveStack(end, 1);
   let found = null;
-  for (let iter = stack; iter; iter = iter.next) {
+  for (let iter = stack2; iter; iter = iter.next) {
     let cur2 = iter.node;
     if (cur2.to <= end || cur2.from > end)
       continue;
@@ -29679,13 +29679,13 @@ var selectLine = ({ state, dispatch }) => {
 };
 var selectParentSyntax = ({ state, dispatch }) => {
   let selection2 = updateSel(state.selection, (range2) => {
-    let tree = syntaxTree(state), stack = tree.resolveStack(range2.from, 1);
+    let tree = syntaxTree(state), stack2 = tree.resolveStack(range2.from, 1);
     if (range2.empty) {
       let stackBefore = tree.resolveStack(range2.from, -1);
-      if (stackBefore.node.from >= stack.node.from && stackBefore.node.to <= stack.node.to)
-        stack = stackBefore;
+      if (stackBefore.node.from >= stack2.node.from && stackBefore.node.to <= stack2.node.to)
+        stack2 = stackBefore;
     }
-    for (let cur2 = stack; cur2; cur2 = cur2.next) {
+    for (let cur2 = stack2; cur2; cur2 = cur2.next) {
       let { node } = cur2;
       if ((node.from < range2.from && node.to >= range2.to || node.to > range2.to && node.from <= range2.from) && cur2.next)
         return EditorSelection.undirectionalRange(node.from, node.to);
@@ -34232,9 +34232,9 @@ var Stack = class _Stack {
   /**
   @internal
   */
-  constructor(p, stack, state, reducePos, pos, score2, buffer, bufferBase, curContext, lookAhead = 0, parent) {
+  constructor(p, stack2, state, reducePos, pos, score2, buffer, bufferBase, curContext, lookAhead = 0, parent) {
     this.p = p;
-    this.stack = stack;
+    this.stack = stack2;
     this.state = state;
     this.reducePos = reducePos;
     this.pos = pos;
@@ -34515,13 +34515,13 @@ var Stack = class _Stack {
       let s = nextStates[i2 + 1];
       if (s == this.state)
         continue;
-      let stack = this.split();
-      stack.pushState(s, this.pos);
-      stack.storeNode(0, stack.pos, stack.pos, 4, true);
-      stack.shiftContext(nextStates[i2], this.pos);
-      stack.reducePos = this.pos;
-      stack.score -= 200;
-      result.push(stack);
+      let stack2 = this.split();
+      stack2.pushState(s, this.pos);
+      stack2.storeNode(0, stack2.pos, stack2.pos, 4, true);
+      stack2.shiftContext(nextStates[i2], this.pos);
+      stack2.reducePos = this.pos;
+      stack2.score -= 200;
+      result.push(stack2);
     }
     return result;
   }
@@ -34734,16 +34734,16 @@ var SimulatedStack = class {
   }
 };
 var StackBufferCursor = class _StackBufferCursor {
-  constructor(stack, pos, index3) {
-    this.stack = stack;
+  constructor(stack2, pos, index3) {
+    this.stack = stack2;
     this.pos = pos;
     this.index = index3;
-    this.buffer = stack.buffer;
+    this.buffer = stack2.buffer;
     if (this.index == 0)
       this.maybeNext();
   }
-  static create(stack, pos = stack.bufferBase + stack.buffer.length) {
-    return new _StackBufferCursor(stack, pos, pos - stack.bufferBase);
+  static create(stack2, pos = stack2.bufferBase + stack2.buffer.length) {
+    return new _StackBufferCursor(stack2, pos, pos - stack2.bufferBase);
   }
   maybeNext() {
     let next = this.stack.parent;
@@ -35035,9 +35035,9 @@ var TokenGroup = class {
     this.data = data2;
     this.id = id3;
   }
-  token(input, stack) {
-    let { parser: parser9 } = stack.p;
-    readToken2(this.data, input, stack, this.id, parser9.data, parser9.tokenPrecTable);
+  token(input, stack2) {
+    let { parser: parser9 } = stack2.p;
+    readToken2(this.data, input, stack2, this.id, parser9.data, parser9.tokenPrecTable);
   }
 };
 TokenGroup.prototype.contextual = TokenGroup.prototype.fallback = TokenGroup.prototype.extend = false;
@@ -35047,11 +35047,11 @@ var LocalTokenGroup = class {
     this.elseToken = elseToken;
     this.data = typeof data2 == "string" ? decodeArray(data2) : data2;
   }
-  token(input, stack) {
+  token(input, stack2) {
     let start = input.pos, skipped = 0;
     for (; ; ) {
       let atEof = input.next < 0, nextPos = input.resolveOffset(1, 1);
-      readToken2(this.data, input, stack, 0, this.data, this.precTable);
+      readToken2(this.data, input, stack2, 0, this.data, this.precTable);
       if (input.token.value > -1)
         break;
       if (this.elseToken == null)
@@ -35084,8 +35084,8 @@ var ExternalTokenizer = class {
     this.extend = !!options.extend;
   }
 };
-function readToken2(data2, input, stack, group, precTable, precOffset) {
-  let state = 0, groupMask = 1 << group, { dialect } = stack.p.parser;
+function readToken2(data2, input, stack2, group, precTable, precOffset) {
+  let state = 0, groupMask = 1 << group, { dialect } = stack2.p.parser;
   scan: for (; ; ) {
     if ((groupMask & data2[state]) == 0)
       break;
@@ -35251,16 +35251,16 @@ var TokenCache = class {
     this.actions = [];
     this.tokens = parser9.tokenizers.map((_) => new CachedToken());
   }
-  getActions(stack) {
+  getActions(stack2) {
     let actionIndex = 0;
     let main = null;
-    let { parser: parser9 } = stack.p, { tokenizers } = parser9;
+    let { parser: parser9 } = stack2.p, { tokenizers } = parser9;
     let mask = parser9.stateSlot(
-      stack.state,
+      stack2.state,
       3
       /* ParseState.TokenizerMask */
     );
-    let context = stack.curContext ? stack.curContext.hash : 0;
+    let context = stack2.curContext ? stack2.curContext.hash : 0;
     let lookAhead = 0;
     for (let i2 = 0; i2 < tokenizers.length; i2++) {
       if ((1 << i2 & mask) == 0)
@@ -35268,8 +35268,8 @@ var TokenCache = class {
       let tokenizer2 = tokenizers[i2], token = this.tokens[i2];
       if (main && !tokenizer2.fallback)
         continue;
-      if (tokenizer2.contextual || token.start != stack.pos || token.mask != mask || token.context != context) {
-        this.updateCachedToken(token, tokenizer2, stack);
+      if (tokenizer2.contextual || token.start != stack2.pos || token.mask != mask || token.context != context) {
+        this.updateCachedToken(token, tokenizer2, stack2);
         token.mask = mask;
         token.context = context;
       }
@@ -35278,8 +35278,8 @@ var TokenCache = class {
       if (token.value != 0) {
         let startIndex = actionIndex;
         if (token.extended > -1)
-          actionIndex = this.addActions(stack, token.extended, token.end, actionIndex);
-        actionIndex = this.addActions(stack, token.value, token.end, actionIndex);
+          actionIndex = this.addActions(stack2, token.extended, token.end, actionIndex);
+        actionIndex = this.addActions(stack2, token.value, token.end, actionIndex);
         if (!tokenizer2.extend) {
           main = token;
           if (actionIndex > startIndex)
@@ -35290,34 +35290,34 @@ var TokenCache = class {
     while (this.actions.length > actionIndex)
       this.actions.pop();
     if (lookAhead)
-      stack.setLookAhead(lookAhead);
-    if (!main && stack.pos == this.stream.end) {
+      stack2.setLookAhead(lookAhead);
+    if (!main && stack2.pos == this.stream.end) {
       main = new CachedToken();
-      main.value = stack.p.parser.eofTerm;
-      main.start = main.end = stack.pos;
-      actionIndex = this.addActions(stack, main.value, main.end, actionIndex);
+      main.value = stack2.p.parser.eofTerm;
+      main.start = main.end = stack2.pos;
+      actionIndex = this.addActions(stack2, main.value, main.end, actionIndex);
     }
     this.mainToken = main;
     return this.actions;
   }
-  getMainToken(stack) {
+  getMainToken(stack2) {
     if (this.mainToken)
       return this.mainToken;
-    let main = new CachedToken(), { pos, p } = stack;
+    let main = new CachedToken(), { pos, p } = stack2;
     main.start = pos;
     main.end = Math.min(pos + 1, p.stream.end);
     main.value = pos == p.stream.end ? p.parser.eofTerm : 0;
     return main;
   }
-  updateCachedToken(token, tokenizer2, stack) {
-    let start = this.stream.clipPos(stack.pos);
-    tokenizer2.token(this.stream.reset(start, token), stack);
+  updateCachedToken(token, tokenizer2, stack2) {
+    let start = this.stream.clipPos(stack2.pos);
+    tokenizer2.token(this.stream.reset(start, token), stack2);
     if (token.value > -1) {
-      let { parser: parser9 } = stack.p;
+      let { parser: parser9 } = stack2.p;
       for (let i2 = 0; i2 < parser9.specialized.length; i2++)
         if (parser9.specialized[i2] == token.value) {
-          let result = parser9.specializers[i2](this.stream.read(token.start, token.end), stack);
-          if (result >= 0 && stack.p.parser.dialect.allows(result >> 1)) {
+          let result = parser9.specializers[i2](this.stream.read(token.start, token.end), stack2);
+          if (result >= 0 && stack2.p.parser.dialect.allows(result >> 1)) {
             if ((result & 1) == 0)
               token.value = result >> 1;
             else
@@ -35339,8 +35339,8 @@ var TokenCache = class {
     this.actions[index3++] = end;
     return index3;
   }
-  addActions(stack, token, end, index3) {
-    let { state } = stack, { parser: parser9 } = stack.p, { data: data2 } = parser9;
+  addActions(stack2, token, end, index3) {
+    let { state } = stack2, { parser: parser9 } = stack2.p, { data: data2 } = parser9;
     for (let set = 0; set < 2; set++) {
       for (let i2 = parser9.stateSlot(
         state,
@@ -35403,20 +35403,20 @@ var Parse2 = class {
       this.bigReductionCount = this.lastBigReductionSize = 0;
     }
     for (let i2 = 0; i2 < stacks.length; i2++) {
-      let stack = stacks[i2];
+      let stack2 = stacks[i2];
       for (; ; ) {
         this.tokens.mainToken = null;
-        if (stack.pos > pos) {
-          newStacks.push(stack);
-        } else if (this.advanceStack(stack, newStacks, stacks)) {
+        if (stack2.pos > pos) {
+          newStacks.push(stack2);
+        } else if (this.advanceStack(stack2, newStacks, stacks)) {
           continue;
         } else {
           if (!stopped) {
             stopped = [];
             stoppedTokens = [];
           }
-          stopped.push(stack);
-          let tok = this.tokens.getMainToken(stack);
+          stopped.push(stack2);
+          let tok = this.tokens.getMainToken(stack2);
           stoppedTokens.push(tok.value, tok.end);
         }
         break;
@@ -35456,11 +35456,11 @@ var Parse2 = class {
         this.recovering--;
     } else if (newStacks.length > 1) {
       outer: for (let i2 = 0; i2 < newStacks.length - 1; i2++) {
-        let stack = newStacks[i2];
+        let stack2 = newStacks[i2];
         for (let j = i2 + 1; j < newStacks.length; j++) {
           let other = newStacks[j];
-          if (stack.sameState(other) || stack.buffer.length > 500 && other.buffer.length > 500) {
-            if ((stack.score - other.score || stack.buffer.length - other.buffer.length) > 0) {
+          if (stack2.sameState(other) || stack2.buffer.length > 500 && other.buffer.length > 500) {
+            if ((stack2.score - other.score || stack2.buffer.length - other.buffer.length) > 0) {
               newStacks.splice(j--, 1);
             } else {
               newStacks.splice(i2--, 1);
@@ -35491,14 +35491,14 @@ var Parse2 = class {
   }
   // See if a given tree, or a descendant right at its start, can be
   // reused in the given stack.
-  tryReuse(stack, start, tree, repeatOnly) {
+  tryReuse(stack2, start, tree, repeatOnly) {
     if (!tree)
       return null;
-    let strictCx = stack.curContext && stack.curContext.tracker.strict, cxHash = strictCx ? stack.curContext.hash : 0;
+    let strictCx = stack2.curContext && stack2.curContext.tracker.strict, cxHash = strictCx ? stack2.curContext.hash : 0;
     for (; tree; ) {
-      let match = this.parser.nodeSet.types[tree.type.id] != tree.type ? -1 : this.parser.getGoto(stack.state, tree.type.id);
+      let match = this.parser.nodeSet.types[tree.type.id] != tree.type ? -1 : this.parser.getGoto(stack2.state, tree.type.id);
       if (match > -1 && tree.length && (!strictCx || (tree.prop(NodeProp.contextHash) || 0) == cxHash)) {
-        stack.useNode(tree, match, start);
+        stack2.useNode(tree, match, start);
         return tree;
       }
       if (tree.children.length == 0 || tree.positions[0] > 0)
@@ -35515,49 +35515,49 @@ var Parse2 = class {
   // stack can't advance normally. When `split` and `stacks` are
   // given, stacks split off by ambiguous operations will be pushed to
   // `split`, or added to `stacks` if they move `pos` forward.
-  advanceStack(stack, stacks, split) {
-    let start = stack.pos, { parser: parser9 } = this;
-    let base3 = verbose ? this.stackID(stack) + " -> " : "";
+  advanceStack(stack2, stacks, split) {
+    let start = stack2.pos, { parser: parser9 } = this;
+    let base3 = verbose ? this.stackID(stack2) + " -> " : "";
     if (this.stoppedAt != null && start > this.stoppedAt)
-      return stack.forceReduce() ? stack : null;
+      return stack2.forceReduce() ? stack2 : null;
     if (this.fragments) {
-      let reused = stack.reducePos < start && stack.buffer.length && stack.buffer[stack.buffer.length - 2] <= stack.reducePos && this.fragments.lastRepeatPos == stack.reducePos && this.tryReuse(stack, stack.reducePos, this.fragments.lastRepeat, true) || this.tryReuse(stack, start, this.fragments.nodeAt(start), false);
+      let reused = stack2.reducePos < start && stack2.buffer.length && stack2.buffer[stack2.buffer.length - 2] <= stack2.reducePos && this.fragments.lastRepeatPos == stack2.reducePos && this.tryReuse(stack2, stack2.reducePos, this.fragments.lastRepeat, true) || this.tryReuse(stack2, start, this.fragments.nodeAt(start), false);
       if (reused) {
         if (verbose)
-          console.log(base3 + this.stackID(stack) + ` (via reuse of ${parser9.getName(reused.type.id)})`);
+          console.log(base3 + this.stackID(stack2) + ` (via reuse of ${parser9.getName(reused.type.id)})`);
         return true;
       }
     }
     let defaultReduce = parser9.stateSlot(
-      stack.state,
+      stack2.state,
       4
       /* ParseState.DefaultReduce */
     );
     if (defaultReduce > 0) {
-      stack.reduce(defaultReduce);
+      stack2.reduce(defaultReduce);
       if (verbose)
-        console.log(base3 + this.stackID(stack) + ` (via always-reduce ${parser9.getName(
+        console.log(base3 + this.stackID(stack2) + ` (via always-reduce ${parser9.getName(
           defaultReduce & 65535
           /* Action.ValueMask */
         )})`);
       return true;
     }
-    if (stack.stack.length >= 8400) {
-      while (stack.stack.length > 6e3 && stack.forceReduce()) {
+    if (stack2.stack.length >= 8400) {
+      while (stack2.stack.length > 6e3 && stack2.forceReduce()) {
       }
     }
-    let actions2 = this.tokens.getActions(stack);
+    let actions2 = this.tokens.getActions(stack2);
     for (let i2 = 0; i2 < actions2.length; ) {
       let action = actions2[i2++], term = actions2[i2++], end = actions2[i2++];
       let last2 = i2 == actions2.length || !split;
-      let localStack = last2 ? stack : stack.split();
+      let localStack = last2 ? stack2 : stack2.split();
       let main = this.tokens.mainToken;
       localStack.apply(action, term, main ? main.start : localStack.pos, end);
       if (verbose)
         console.log(base3 + this.stackID(localStack) + ` (via ${(action & 65536) == 0 ? "shift" : `reduce of ${parser9.getName(
           action & 65535
           /* Action.ValueMask */
-        )}`} for ${parser9.getName(term)} @ ${start}${localStack == stack ? "" : ", split"})`);
+        )}`} for ${parser9.getName(term)} @ ${start}${localStack == stack2 ? "" : ", split"})`);
       if (last2)
         return true;
       else if (localStack.pos > start)
@@ -35570,13 +35570,13 @@ var Parse2 = class {
   // Advance a given stack forward as far as it will go. Returns the
   // (possibly updated) stack if it got stuck, or null if it moved
   // forward and was given to `pushStackDedup`.
-  advanceFully(stack, newStacks) {
-    let pos = stack.pos;
+  advanceFully(stack2, newStacks) {
+    let pos = stack2.pos;
     for (; ; ) {
-      if (!this.advanceStack(stack, null, null))
+      if (!this.advanceStack(stack2, null, null))
         return false;
-      if (stack.pos > pos) {
-        pushStackDedup(stack, newStacks);
+      if (stack2.pos > pos) {
+        pushStackDedup(stack2, newStacks);
         return true;
       }
     }
@@ -35584,20 +35584,20 @@ var Parse2 = class {
   runRecovery(stacks, tokens, newStacks) {
     let finished = null, restarted = false;
     for (let i2 = 0; i2 < stacks.length; i2++) {
-      let stack = stacks[i2], token = tokens[i2 << 1], tokenEnd = tokens[(i2 << 1) + 1];
-      let base3 = verbose ? this.stackID(stack) + " -> " : "";
-      if (stack.deadEnd) {
+      let stack2 = stacks[i2], token = tokens[i2 << 1], tokenEnd = tokens[(i2 << 1) + 1];
+      let base3 = verbose ? this.stackID(stack2) + " -> " : "";
+      if (stack2.deadEnd) {
         if (restarted)
           continue;
         restarted = true;
-        stack.restart();
+        stack2.restart();
         if (verbose)
-          console.log(base3 + this.stackID(stack) + " (restarted)");
-        let done = this.advanceFully(stack, newStacks);
+          console.log(base3 + this.stackID(stack2) + " (restarted)");
+        let done = this.advanceFully(stack2, newStacks);
         if (done)
           continue;
       }
-      let force = stack.split(), forceBase = base3;
+      let force = stack2.split(), forceBase = base3;
       for (let j = 0; j < 10 && force.forceReduce(); j++) {
         if (verbose)
           console.log(forceBase + this.stackID(force) + " (via force-reduce)");
@@ -35607,20 +35607,20 @@ var Parse2 = class {
         if (verbose)
           forceBase = this.stackID(force) + " -> ";
       }
-      for (let insert2 of stack.recoverByInsert(token)) {
+      for (let insert2 of stack2.recoverByInsert(token)) {
         if (verbose)
           console.log(base3 + this.stackID(insert2) + " (via recover-insert)");
         this.advanceFully(insert2, newStacks);
       }
-      if (this.stream.end > stack.pos) {
-        if (tokenEnd == stack.pos) {
+      if (this.stream.end > stack2.pos) {
+        if (tokenEnd == stack2.pos) {
           tokenEnd++;
           token = 0;
         }
-        stack.recoverByDelete(token, tokenEnd);
+        stack2.recoverByDelete(token, tokenEnd);
         if (verbose)
-          console.log(base3 + this.stackID(stack) + ` (via recover-delete ${this.parser.getName(token)})`);
-        pushStackDedup(stack, newStacks);
+          console.log(base3 + this.stackID(stack2) + ` (via recover-delete ${this.parser.getName(token)})`);
+        pushStackDedup(stack2, newStacks);
       } else if (!finished || finished.score < force.score) {
         finished = force;
       }
@@ -35628,36 +35628,36 @@ var Parse2 = class {
     return finished;
   }
   // Convert the stack's buffer to a syntax tree.
-  stackToTree(stack) {
-    stack.close();
+  stackToTree(stack2) {
+    stack2.close();
     return Tree.build({
-      buffer: StackBufferCursor.create(stack),
+      buffer: StackBufferCursor.create(stack2),
       nodeSet: this.parser.nodeSet,
       topID: this.topTerm,
       maxBufferLength: this.parser.bufferLength,
       reused: this.reused,
       start: this.ranges[0].from,
-      length: stack.pos - this.ranges[0].from,
+      length: stack2.pos - this.ranges[0].from,
       minRepeatType: this.parser.minRepeatTerm
     });
   }
-  stackID(stack) {
-    let id3 = (stackIDs || (stackIDs = /* @__PURE__ */ new WeakMap())).get(stack);
+  stackID(stack2) {
+    let id3 = (stackIDs || (stackIDs = /* @__PURE__ */ new WeakMap())).get(stack2);
     if (!id3)
-      stackIDs.set(stack, id3 = String.fromCodePoint(this.nextStackID++));
-    return id3 + stack;
+      stackIDs.set(stack2, id3 = String.fromCodePoint(this.nextStackID++));
+    return id3 + stack2;
   }
 };
-function pushStackDedup(stack, newStacks) {
+function pushStackDedup(stack2, newStacks) {
   for (let i2 = 0; i2 < newStacks.length; i2++) {
     let other = newStacks[i2];
-    if (other.pos == stack.pos && other.sameState(stack)) {
-      if (newStacks[i2].score < stack.score)
-        newStacks[i2] = stack;
+    if (other.pos == stack2.pos && other.sameState(stack2)) {
+      if (newStacks[i2].score < stack2.score)
+        newStacks[i2] = stack2;
       return;
     }
   }
-  newStacks.push(stack);
+  newStacks.push(stack2);
 }
 var Dialect = class {
   constructor(source, flags, disabled) {
@@ -35986,21 +35986,21 @@ function pair(data2, off) {
 }
 function findFinished(stacks) {
   let best = null;
-  for (let stack of stacks) {
-    let stopped = stack.p.stoppedAt;
-    if ((stack.pos == stack.p.stream.end || stopped != null && stack.pos > stopped) && stack.p.parser.stateFlag(
-      stack.state,
+  for (let stack2 of stacks) {
+    let stopped = stack2.p.stoppedAt;
+    if ((stack2.pos == stack2.p.stream.end || stopped != null && stack2.pos > stopped) && stack2.p.parser.stateFlag(
+      stack2.state,
       2
       /* StateFlag.Accepting */
-    ) && (!best || best.score < stack.score))
-      best = stack;
+    ) && (!best || best.score < stack2.score))
+      best = stack2;
   }
   return best;
 }
 function getSpecializer(spec) {
   if (spec.external) {
     let mask = spec.extend ? 1 : 0;
-    return (value, stack) => spec.external(value, stack) << 1 | mask;
+    return (value, stack2) => spec.external(value, stack2) << 1 | mask;
   }
   return spec.get;
 }
@@ -36063,28 +36063,28 @@ var trackNewline = new ContextTracker({
   },
   strict: false
 });
-var insertSemicolon = new ExternalTokenizer((input, stack) => {
+var insertSemicolon = new ExternalTokenizer((input, stack2) => {
   let { next } = input;
-  if (next == braceR || next == -1 || stack.context)
+  if (next == braceR || next == -1 || stack2.context)
     input.acceptToken(insertSemi);
 }, { contextual: true, fallback: true });
-var noSemicolon = new ExternalTokenizer((input, stack) => {
+var noSemicolon = new ExternalTokenizer((input, stack2) => {
   let { next } = input, after;
   if (space.indexOf(next) > -1) return;
   if (next == slash && ((after = input.peek(1)) == slash || after == star)) return;
-  if (next != braceR && next != semicolon && next != -1 && !stack.context)
+  if (next != braceR && next != semicolon && next != -1 && !stack2.context)
     input.acceptToken(noSemi);
 }, { contextual: true });
-var noSemicolonType = new ExternalTokenizer((input, stack) => {
-  if (input.next == bracketL && !stack.context) input.acceptToken(noSemiType);
+var noSemicolonType = new ExternalTokenizer((input, stack2) => {
+  if (input.next == bracketL && !stack2.context) input.acceptToken(noSemiType);
 }, { contextual: true });
-var operatorToken = new ExternalTokenizer((input, stack) => {
+var operatorToken = new ExternalTokenizer((input, stack2) => {
   let { next } = input;
   if (next == plus || next == minus) {
     input.advance();
     if (next == input.next) {
       input.advance();
-      let mayPostfix = !stack.context && stack.canShift(incdec);
+      let mayPostfix = !stack2.context && stack2.canShift(incdec);
       input.acceptToken(mayPostfix ? incdec : incdecPrefix);
     }
   } else if (next == question && input.peek(1) == dot) {
@@ -36097,8 +36097,8 @@ var operatorToken = new ExternalTokenizer((input, stack) => {
 function identifierChar(ch2, start) {
   return ch2 >= 65 && ch2 <= 90 || ch2 >= 97 && ch2 <= 122 || ch2 == 95 || ch2 >= 192 || !start && ch2 >= 48 && ch2 <= 57;
 }
-var jsx2 = new ExternalTokenizer((input, stack) => {
-  if (input.next != lt || !stack.dialectEnabled(Dialect_jsx)) return;
+var jsx2 = new ExternalTokenizer((input, stack2) => {
+  if (input.next != lt || !stack2.dialectEnabled(Dialect_jsx)) return;
   input.advance();
   if (input.next == slash) return;
   let back = 0;
@@ -38816,21 +38816,21 @@ function ElementContext(name2, parent) {
 var startTagTerms = [StartTag, StartSelfClosingTag, StartScriptTag, StartStyleTag, StartTextareaTag];
 var elementContext = new ContextTracker({
   start: null,
-  shift(context, term, stack, input) {
+  shift(context, term, stack2, input) {
     return startTagTerms.indexOf(term) > -1 ? new ElementContext(tagNameAfter(input, 1) || "", context) : context;
   },
   reduce(context, term) {
     return term == Element3 && context ? context.parent : context;
   },
-  reuse(context, node, stack, input) {
+  reuse(context, node, stack2, input) {
     let type3 = node.type.id;
     return type3 == StartTag || type3 == OpenTag ? new ElementContext(tagNameAfter(input, 1) || "", context) : context;
   },
   strict: false
 });
-var tagStart = new ExternalTokenizer((input, stack) => {
+var tagStart = new ExternalTokenizer((input, stack2) => {
   if (input.next != lessThan) {
-    if (input.next < 0 && stack.context) input.acceptToken(missingCloseTag);
+    if (input.next < 0 && stack2.context) input.acceptToken(missingCloseTag);
     return;
   }
   input.advance();
@@ -38839,12 +38839,12 @@ var tagStart = new ExternalTokenizer((input, stack) => {
   let name2 = tagNameAfter(input, 0);
   if (name2 === void 0) return;
   if (!name2) return input.acceptToken(close ? IncompleteCloseTag : IncompleteTag);
-  let parent = stack.context ? stack.context.name : null;
+  let parent = stack2.context ? stack2.context.name : null;
   if (close) {
     if (name2 == parent) return input.acceptToken(StartCloseTag);
     if (parent && implicitlyClosed[parent]) return input.acceptToken(missingCloseTag, -2);
-    if (stack.dialectEnabled(Dialect_noMatch)) return input.acceptToken(NoMatchStartCloseTag);
-    for (let cx = stack.context; cx; cx = cx.parent) if (cx.name == name2) return;
+    if (stack2.dialectEnabled(Dialect_noMatch)) return input.acceptToken(NoMatchStartCloseTag);
+    for (let cx = stack2.context; cx; cx = cx.parent) if (cx.name == name2) return;
     input.acceptToken(MismatchedStartCloseTag);
   } else {
     if (name2 == "script") return input.acceptToken(StartScriptTag);
@@ -38877,9 +38877,9 @@ function inForeignElement(context) {
     if (context.name == "svg" || context.name == "math") return true;
   return false;
 }
-var endTag = new ExternalTokenizer((input, stack) => {
+var endTag = new ExternalTokenizer((input, stack2) => {
   if (input.next == slash2 && input.peek(1) == greaterThan) {
-    let selfClosing = stack.dialectEnabled(Dialect_selfClosing) || inForeignElement(stack.context);
+    let selfClosing = stack2.dialectEnabled(Dialect_selfClosing) || inForeignElement(stack2.context);
     input.acceptToken(selfClosing ? SelfClosingEndTag : EndTag, 2);
   } else if (input.next == greaterThan) {
     input.acceptToken(EndTag, 1);
@@ -39074,7 +39074,7 @@ function isDigit(ch2) {
 function isHex(ch2) {
   return isDigit(ch2) || ch2 >= 97 && ch2 <= 102 || ch2 >= 65 && ch2 <= 70;
 }
-var identifierTokens = (id3, varName, callee2) => (input, stack) => {
+var identifierTokens = (id3, varName, callee2) => (input, stack2) => {
   for (let inside = false, dashes = 0, i2 = 0; ; i2++) {
     let { next } = input;
     if (isAlpha(next) || next == dash2 || next == underscore || inside && isDigit(next)) {
@@ -39094,7 +39094,7 @@ var identifierTokens = (id3, varName, callee2) => (input, stack) => {
       inside = true;
     } else {
       if (inside) input.acceptToken(
-        dashes >= 2 && stack.canShift(VariableName) ? varName : next == parenL ? callee2 : id3
+        dashes >= 2 && stack2.canShift(VariableName) ? varName : next == parenL ? callee2 : id3
       );
       break;
     }
@@ -39192,7 +39192,7 @@ var parser5 = LRParser.deserialize({
   tokenizers: [descendant, unitToken, identifiers, queryIdentifiers, 1, 2, 3, 4, new LocalTokenGroup("m~RRYZ[z{a~~g~aO$c~~dP!P!Qg~lO$d~~", 28, 156)],
   topRules: { "StyleSheet": [0, 6], "Styles": [1, 129] },
   dynamicPrecedences: { "97": 1 },
-  specialized: [{ term: 172, get: (value, stack) => hashColor(value) << 1, external: hashColor }, { term: 150, get: (value) => spec_callee[value] || -1 }, { term: 151, get: (value) => spec_queryIdentifier[value] || -1 }, { term: 4, get: (value) => spec_QueryCallee[value] || -1 }, { term: 28, get: (value) => spec_AtKeyword[value] || -1 }, { term: 149, get: (value) => spec_identifier2[value] || -1 }],
+  specialized: [{ term: 172, get: (value, stack2) => hashColor(value) << 1, external: hashColor }, { term: 150, get: (value) => spec_callee[value] || -1 }, { term: 151, get: (value) => spec_queryIdentifier[value] || -1 }, { term: 4, get: (value) => spec_QueryCallee[value] || -1 }, { term: 28, get: (value) => spec_AtKeyword[value] || -1 }, { term: 149, get: (value) => spec_identifier2[value] || -1 }],
   tokenPrec: 2433
 });
 
@@ -41315,13 +41315,13 @@ function isLineBreak(ch2) {
 function isHex2(ch2) {
   return ch2 >= 48 && ch2 <= 57 || ch2 >= 65 && ch2 <= 70 || ch2 >= 97 && ch2 <= 102;
 }
-var newlines = new ExternalTokenizer((input, stack) => {
+var newlines = new ExternalTokenizer((input, stack2) => {
   let prev;
   if (input.next < 0) {
     input.acceptToken(eof);
-  } else if (stack.context.flags & cx_Bracketed) {
+  } else if (stack2.context.flags & cx_Bracketed) {
     if (isLineBreak(input.next)) input.acceptToken(newlineBracketed, 1);
-  } else if (((prev = input.peek(-1)) < 0 || isLineBreak(prev)) && stack.canShift(blankLineStart)) {
+  } else if (((prev = input.peek(-1)) < 0 || isLineBreak(prev)) && stack2.canShift(blankLineStart)) {
     let spaces2 = 0;
     while (input.next == space4 || input.next == tab) {
       input.advance();
@@ -41333,8 +41333,8 @@ var newlines = new ExternalTokenizer((input, stack) => {
     input.acceptToken(newline$1, 1);
   }
 }, { contextual: true });
-var indentation = new ExternalTokenizer((input, stack) => {
-  let context = stack.context;
+var indentation = new ExternalTokenizer((input, stack2) => {
+  let context = stack2.context;
   if (context.flags) return;
   let prev = input.peek(-1);
   if (prev == newline3 || prev == carriageReturn) {
@@ -41396,9 +41396,9 @@ var trackIndent = new ContextTracker({
       return context.parent;
     return context;
   },
-  shift(context, term, stack, input) {
+  shift(context, term, stack2, input) {
     if (term == indent)
-      return new Context2(context, countIndent(input.read(input.pos, stack.pos)), 0);
+      return new Context2(context, countIndent(input.read(input.pos, stack2.pos)), 0);
     if (term == dedent)
       return context.parent;
     if (term == ParenL || term == BracketL || term == BraceL || term == replacementStart)
@@ -41425,8 +41425,8 @@ var legacyPrint = new ExternalTokenizer((input) => {
     return;
   }
 });
-var strings = new ExternalTokenizer((input, stack) => {
-  let { flags } = stack.context;
+var strings = new ExternalTokenizer((input, stack2) => {
+  let { flags } = stack2.context;
   let quote2 = flags & cx_DoubleQuote ? doubleQuote : singleQuote;
   let long = (flags & cx_Long) > 0;
   let escapes = !(flags & cx_Raw);
@@ -42035,7 +42035,7 @@ var indentation2 = new ContextTracker({
   reduce(context, term) {
     return context.type == type_Flow && (term == FlowSequence || term == FlowMapping) ? context.parent : context;
   },
-  shift(context, term, stack, input) {
+  shift(context, term, stack2, input) {
     if (term == sequenceStartMark)
       return new Context3(context, findColumn2(input, input.pos), type_Seq);
     if (term == mapStartMark || term == explicitMapStartMark)
@@ -42047,7 +42047,7 @@ var indentation2 = new ContextTracker({
     if (term == BlockLiteralContent && context.type == type_Lit)
       return context.parent;
     if (term == BlockLiteralHeader) {
-      let indent5 = /[1-9]/.exec(input.read(input.pos, stack.pos));
+      let indent5 = /[1-9]/.exec(input.read(input.pos, stack2.pos));
       if (indent5) return new Context3(context, context.depth + +indent5[0], type_Lit);
     }
     return context;
@@ -42059,17 +42059,17 @@ var indentation2 = new ContextTracker({
 function three(input, ch2, off = 0) {
   return input.peek(off) == ch2 && input.peek(off + 1) == ch2 && input.peek(off + 2) == ch2 && isSep(input.peek(off + 3));
 }
-var newlines2 = new ExternalTokenizer((input, stack) => {
-  if (input.next == -1 && stack.canShift(eof2))
+var newlines2 = new ExternalTokenizer((input, stack2) => {
+  if (input.next == -1 && stack2.canShift(eof2))
     return input.acceptToken(eof2);
   let prev = input.peek(-1);
-  if ((isBreakSpace(prev) || prev < 0) && stack.context.type != type_Flow) {
+  if ((isBreakSpace(prev) || prev < 0) && stack2.context.type != type_Flow) {
     if (three(
       input,
       45
       /* '-' */
     )) {
-      if (stack.canShift(blockEnd)) input.acceptToken(blockEnd);
+      if (stack2.canShift(blockEnd)) input.acceptToken(blockEnd);
       else return input.acceptToken(DirectiveEnd, 3);
     }
     if (three(
@@ -42077,7 +42077,7 @@ var newlines2 = new ExternalTokenizer((input, stack) => {
       46
       /* '.' */
     )) {
-      if (stack.canShift(blockEnd)) input.acceptToken(blockEnd);
+      if (stack2.canShift(blockEnd)) input.acceptToken(blockEnd);
       else return input.acceptToken(DocEnd, 3);
     }
     let depth = 0;
@@ -42085,13 +42085,13 @@ var newlines2 = new ExternalTokenizer((input, stack) => {
       depth++;
       input.advance();
     }
-    if ((depth < stack.context.depth || depth == stack.context.depth && stack.context.type == type_Seq && (input.next != 45 || !isSep(input.peek(1)))) && // Not blank
+    if ((depth < stack2.context.depth || depth == stack2.context.depth && stack2.context.type == type_Seq && (input.next != 45 || !isSep(input.peek(1)))) && // Not blank
     input.next != -1 && !isBreakSpace(input.next) && input.next != 35)
       input.acceptToken(blockEnd, -depth);
   }
 }, { contextual: true });
-var blockMark = new ExternalTokenizer((input, stack) => {
-  if (stack.context.type == type_Flow) {
+var blockMark = new ExternalTokenizer((input, stack2) => {
+  if (stack2.context.type == type_Flow) {
     if (input.next == 63) {
       input.advance();
       if (isSep(input.next)) input.acceptToken(flowMapMark);
@@ -42101,11 +42101,11 @@ var blockMark = new ExternalTokenizer((input, stack) => {
   if (input.next == 45) {
     input.advance();
     if (isSep(input.next))
-      input.acceptToken(stack.context.type == type_Seq && stack.context.depth == findColumn2(input, input.pos - 1) ? sequenceContinueMark : sequenceStartMark);
+      input.acceptToken(stack2.context.type == type_Seq && stack2.context.depth == findColumn2(input, input.pos - 1) ? sequenceContinueMark : sequenceStartMark);
   } else if (input.next == 63) {
     input.advance();
     if (isSep(input.next))
-      input.acceptToken(stack.context.type == type_Map && stack.context.depth == findColumn2(input, input.pos - 1) ? explicitMapContinueMark : explicitMapStartMark);
+      input.acceptToken(stack2.context.type == type_Map && stack2.context.depth == findColumn2(input, input.pos - 1) ? explicitMapContinueMark : explicitMapStartMark);
   } else {
     let start = input.pos;
     for (; ; ) {
@@ -42132,10 +42132,10 @@ var blockMark = new ExternalTokenizer((input, stack) => {
     }
     while (isNonBreakSpace(input.next)) input.advance();
     if (input.next == 58) {
-      if (input.pos == start && stack.canShift(Colon)) return;
+      if (input.pos == start && stack2.canShift(Colon)) return;
       let after = input.peek(1);
       if (isSep(after))
-        input.acceptTokenTo(stack.context.type == type_Map && stack.context.depth == findColumn2(input, start) ? mapContinueMark : mapStartMark, start);
+        input.acceptTokenTo(stack2.context.type == type_Map && stack2.context.depth == findColumn2(input, start) ? mapContinueMark : mapStartMark, start);
     }
   }
 }, { contextual: true });
@@ -42202,17 +42202,17 @@ function readQuoted(input, scan) {
   return !lineBreak;
 }
 function scanBrackets(input) {
-  for (let stack = [], end = input.pos + 1024; ; ) {
+  for (let stack2 = [], end = input.pos + 1024; ; ) {
     if (input.next == 91 || input.next == 123) {
-      stack.push(input.next);
+      stack2.push(input.next);
       input.advance();
     } else if (input.next == 39 || input.next == 34) {
       if (!readQuoted(input, true)) return false;
     } else if (input.next == 93 || input.next == 125) {
-      if (stack[stack.length - 1] != input.next - 2) return false;
-      stack.pop();
+      if (stack2[stack2.length - 1] != input.next - 2) return false;
+      stack2.pop();
       input.advance();
-      if (!stack.length) return true;
+      if (!stack2.length) return true;
     } else if (input.next < 0 || input.pos > end || isBreakSpace(input.next)) {
       return false;
     } else {
@@ -42257,7 +42257,7 @@ function readPlain(input, scan, inFlow, indent5) {
   }
   return true;
 }
-var literals = new ExternalTokenizer((input, stack) => {
+var literals = new ExternalTokenizer((input, stack2) => {
   if (input.next == 33) {
     readTag(input);
     input.acceptToken(Tag2);
@@ -42268,18 +42268,18 @@ var literals = new ExternalTokenizer((input, stack) => {
   } else if (input.next == 39 || input.next == 34) {
     readQuoted(input, false);
     input.acceptToken(QuotedLiteral);
-  } else if (readPlain(input, false, stack.context.type == type_Flow, stack.context.depth)) {
+  } else if (readPlain(input, false, stack2.context.type == type_Flow, stack2.context.depth)) {
     input.acceptToken(Literal);
   }
 });
-var blockLiteral = new ExternalTokenizer((input, stack) => {
-  let indent5 = stack.context.type == type_Lit ? stack.context.depth : -1, upto = input.pos;
+var blockLiteral = new ExternalTokenizer((input, stack2) => {
+  let indent5 = stack2.context.type == type_Lit ? stack2.context.depth : -1, upto = input.pos;
   scan: for (; ; ) {
     let depth = 0, next = input.next;
     while (next == 32) next = input.peek(++depth);
     if (!depth && (three(input, 45, depth) || three(input, 46, depth))) break;
     if (!isBreakSpace(next)) {
-      if (indent5 < 0) indent5 = Math.max(stack.context.depth + 1, depth);
+      if (indent5 < 0) indent5 = Math.max(stack2.context.depth + 1, depth);
       if (depth < indent5) break;
     }
     for (; ; ) {
@@ -52997,31 +52997,31 @@ function maybe_drop_post(s) {
       return s;
   }
 }
-function d(stack, tt) {
+function d(stack2, tt) {
   for (var type3 in tt) {
-    var len = stack.length - 1;
+    var len = stack2.length - 1;
     var tokens = tt[type3];
     for (var i2 = len - 1; -1 < i2; i2--) {
-      if (is_member(stack[i2].token, tokens)) {
-        var ss = stack.slice(0, i2);
+      if (is_member(stack2[i2].token, tokens)) {
+        var ss = stack2.slice(0, i2);
         switch (type3) {
           case "m":
-            return ss.concat(stack[i2]).concat(stack[len]);
+            return ss.concat(stack2[i2]).concat(stack2[len]);
           case "r":
-            return ss.concat(stack[len]);
+            return ss.concat(stack2[len]);
           case "i":
             return ss;
           case "g":
             return ss.concat(fakeToken("group"));
           case "E":
-            return ss.concat(stack[i2]);
+            return ss.concat(stack2[i2]);
           case "e":
-            return ss.concat(stack[i2]);
+            return ss.concat(stack2[i2]);
         }
       }
     }
   }
-  return type3 == "E" ? [] : stack;
+  return type3 == "E" ? [] : stack2;
 }
 function indenter(state, textAfter, cx) {
   var t4;
@@ -54214,7 +54214,7 @@ function mkStex(mathMode) {
 var stex = mkStex(false);
 var stexMath = mkStex(true);
 
-// dist/ui/code-viewer-lang.js
+// dist/ui/display/code-viewer-lang.js
 function extOf2(path) {
   const base3 = path.slice(path.lastIndexOf("/") + 1);
   const dot4 = base3.lastIndexOf(".");
@@ -54401,7 +54401,7 @@ function languageForPath(path) {
   }
 }
 
-// dist/ui/code-viewer-theme.js
+// dist/ui/display/code-viewer-theme.js
 var ONE_DARK = {
   black: "#282c34",
   gray: "#abb2bf",
@@ -54534,10 +54534,10 @@ function codeMirrorTheme(dark) {
   ];
 }
 
-// dist/ui/code-viewer-css.generated.js
+// dist/ui/display/code-viewer-css.generated.js
 var CODE_VIEWER_CSS = "/* CodeViewer\uFF08\u53EA\u8BFB CodeMirror \u67E5\u770B\u5668\uFF09\u6837\u5F0F\u3002\u7C7B\u540D\u56FA\u5B9A dshpc-cv*\uFF1B\u989C\u8272\u5403 --dshpc-* token\uFF0C\n   \u6DF1\u8272\u7531 design \u7684 token \u6DF1\u8272\u6BB5\u81EA\u52A8\u751F\u6548\uFF08\u4E0D\u5199\u6B7B\u989C\u8272\u503C\uFF09\u3002 */\n/* flex:1 1 auto + min-width:0\uFF1A\u8C03\u7528\u65B9\u5E38\u628A\u5B83\u653E\u8FDB display:flex \u7684\u5BB9\u5668\u91CC\uFF08TextPreview\uFF09\uFF0C\n   \u4E0D\u5199\u4F1A\u5728\u4E3B\u8F74\u6309\u5185\u5BB9\u5BBD\u6392 \u2014\u2014 \u77ED\u6587\u672C\u65F6 __copy\uFF08absolute \u76F8\u5BF9\u672C\u5C42\uFF09\u843D\u5728\u6587\u5B57\u53F3\u7AEF\u800C\u4E0D\u662F\u9762\u677F\u53F3\u7F18\u3002 */\n.dshpc-cv{position:relative;display:flex;flex-direction:column;flex:1 1 auto;min-width:0;height:100%;min-height:0;}\n/* \u590D\u5236\u94AE\u590D\u7528\u6838\u5FC3 IconButton\uFF08variant=outline / size=md\uFF09\uFF1A\u76D2\u578B\u3001\u63CF\u8FB9\u3001\u5706\u89D2\uFF08\u5DF2\u7EDF\u4E00 md\uFF09\u3001\u5E95\u8272\u3001hover \u5168\u7531\u6838\u5FC3\u63D0\u4F9B\uFF1B\n   \u8FD9\u91CC\u53EA\u7BA1\u300C\u7EDD\u5BF9\u5B9A\u4F4D + \u9ED8\u8BA4\u9690\u85CF\u3001hover/\u805A\u7126\u624D\u663E\u300D\uFF08overlay \u6D6E\u5728\u7F16\u8F91\u5668\u53F3\u4E0A\u89D2\uFF09\u3002 */\n.dshpc-cv__copy{position:absolute;top:6px;right:6px;z-index:5;opacity:0;}\n.dshpc-cv:hover .dshpc-cv__copy,.dshpc-cv__copy:focus-visible{opacity:1;}\n.dshpc-cv__copy svg{width:16px;height:16px;}\n.dshpc-cv__editor{flex:1 1 auto;min-height:0;overflow:hidden;}\n.dshpc-cv__editor .cm-editor{height:100%;}\n/* \u900F\u660E\u53F3\u8FB9\u6846 = \u6EDA\u52A8\u6761\u4E0E\u53F3\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002\n   \u53EA\u7ED9\u53F3\u8FB9\uFF1A\u7ED9\u5E95\u8FB9\u4F1A\u6539 scroller \u9AD8\u5EA6\uFF0CCodeMirror \u7684\u6D4B\u91CF\u5FAA\u73AF\u4F1A\u591A\u7B97\u4E00\u6761\u6A2A\u6EDA\u6761\u3002 */\n.dshpc-cv__editor .cm-scroller{overflow:auto;border-right:1px solid transparent}\n";
 
-// dist/ui/CodeViewer.js
+// dist/ui/display/CodeViewer.js
 var DARK_ATTR = "data-ds-dark-theme";
 function hostDark() {
   if (typeof document === "undefined")
@@ -54638,7 +54638,7 @@ function formatBytes(bytes) {
   return `${value >= 10 ? String(Math.round(value)) : value.toFixed(1)} ${units[unit]}`;
 }
 
-// dist/explorer/preview/md-labels.js
+// dist/adv/explorer/preview/md-labels.js
 function markdownLabels() {
   return {
     code: {
@@ -54650,7 +54650,7 @@ function markdownLabels() {
   };
 }
 
-// dist/explorer/preview/TextPreview.js
+// dist/adv/explorer/preview/TextPreview.js
 var FOCUS_MAX_PAGES = 10;
 function TextPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
@@ -54732,7 +54732,7 @@ function TextPreview(props) {
   return (0, import_react50.createElement)("div", { className: "dshpc-fb__text", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "var(--dshpc-space-3)" } : {} } }, truncated ? (0, import_react50.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react50.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react50.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react50.createElement)(CodeViewer, { text: text2, path: props.path, t: tt, focusLine: props.focusLine })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react50.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react50.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
 }
 
-// dist/explorer/preview/HtmlPreview.js
+// dist/adv/explorer/preview/HtmlPreview.js
 var HTML_CSP = "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; media-src data:";
 var HTML_FORBID_TAGS = ["noscript", "base", "link", "meta", "iframe", "frame", "object", "embed", "set", "animate", "animatemotion", "animatetransform"];
 var HTML_FORBID_ATTRS = ["href", "xlink:href"];
@@ -54823,7 +54823,7 @@ function HtmlPreview(props) {
   return (0, import_react51.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react51.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2, title: props.path }));
 }
 
-// dist/explorer/preview/OfficePreview.js
+// dist/adv/explorer/preview/OfficePreview.js
 var import_react52 = require("react");
 function OfficePreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
@@ -54875,7 +54875,7 @@ function OfficePreview(props) {
   return (0, import_react52.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
 }
 
-// dist/explorer/preview/index.js
+// dist/adv/explorer/preview/index.js
 function FilePreview(props) {
   ensureControls();
   const tt = props.translate ?? t;
@@ -54919,7 +54919,7 @@ function FilePreview(props) {
   return null;
 }
 
-// dist/explorer/crumbs-menu.js
+// dist/adv/explorer/crumbs-menu.js
 var import_react54 = require("react");
 function crumbsMenuEntries(params) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
@@ -54990,7 +54990,7 @@ function crumbsMenuEntries(params) {
   return out;
 }
 
-// dist/explorer/crumb-nav.js
+// dist/adv/explorer/crumb-nav.js
 var import_react55 = require("react");
 function crumbButton(label, onClick, current3 = false) {
   return (0, import_react55.createElement)(Button, {
@@ -55050,7 +55050,7 @@ function PlainNav(props) {
   }), actions(pickNow, tt, onClose));
 }
 
-// dist/explorer/landing.js
+// dist/adv/explorer/landing.js
 var import_react56 = require("react");
 function LandingBody(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
@@ -55085,7 +55085,7 @@ function LandingBody(props) {
   return (0, import_react56.createElement)("div", { className: "dshpc-fb__tree" }, roots.map((root) => row(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== void 0 && item.path !== "").map((item) => row(`ws:${item.title}`, item.title, item.path)));
 }
 
-// dist/explorer/preview-title-bar.js
+// dist/adv/explorer/preview-title-bar.js
 var import_react57 = require("react");
 function PreviewTitleBar(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
@@ -55119,7 +55119,7 @@ function PreviewTitleBar(props) {
   })));
 }
 
-// dist/explorer/FileBrowser.js
+// dist/adv/explorer/FileBrowser.js
 var FS_ROOT = "/";
 function FileBrowser(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
@@ -55589,11 +55589,11 @@ function FileBrowser(props) {
   }, nav2, titleBar, body);
 }
 
-// dist/explorer/open.js
+// dist/adv/explorer/open.js
 var import_react59 = require("react");
 var import_client5 = require("react-dom/client");
 
-// dist/explorer/fs-face.js
+// dist/adv/explorer/fs-face.js
 function failure(message) {
   return { ok: false, error: { code: "service-unavailable", message } };
 }
@@ -55653,7 +55653,7 @@ function getFsFace() {
   return current2;
 }
 
-// dist/explorer/picker-placement.js
+// dist/adv/explorer/picker-placement.js
 var PICKER_WIDTH = 480;
 var PICKER_MAX_H = 480;
 var PICKER_MIN_H = 240;
@@ -55722,7 +55722,7 @@ function round2(box) {
   };
 }
 
-// dist/explorer/open.js
+// dist/adv/explorer/open.js
 function resolveStartPath(path, anchors, sessionId) {
   if (path === "")
     return "";
@@ -56027,13 +56027,13 @@ function connectFileServices(ctx) {
   });
 }
 
-// dist/session/SessionViewModal.js
+// dist/adv/session/SessionViewModal.js
 var import_react82 = require("react");
 
-// dist/session/mirror/ChatView.js
+// dist/adv/session/mirror/ChatView.js
 var import_react62 = require("react");
 
-// dist/session/official-classes.js
+// dist/adv/session/official-classes.js
 var CSS_PKG_PREFIXES = [
   "@deepseek-ai/dsh-client-ui-chat/",
   "@deepseek-ai/dsh-client-ui-tool/",
@@ -56112,10 +56112,10 @@ function officialClass(module2, semantic) {
   return discoverOfficialClasses().get(module2)?.get(semantic) ?? null;
 }
 
-// dist/session/mirror/ChatGroupSeat.js
+// dist/adv/session/mirror/ChatGroupSeat.js
 var import_react61 = require("react");
 
-// dist/session/mirror/ChatNodeSeat.js
+// dist/adv/session/mirror/ChatNodeSeat.js
 var import_react60 = require("react");
 var TURN_PROCESS_INDEPENDENT_KINDS = /* @__PURE__ */ new Set([
   "system-prompt",
@@ -56201,7 +56201,7 @@ function ChatNodeSeatMirror(props) {
   }, inner);
 }
 
-// dist/session/mirror/process-groups.js
+// dist/adv/session/mirror/process-groups.js
 var INDEPENDENT = /* @__PURE__ */ new Set([
   "user",
   "steering",
@@ -56377,7 +56377,7 @@ function processTitle(summary, t4) {
   return summary.counts.length > 3 ? t4("stepProcessMore", { title }) : title;
 }
 
-// dist/session/mirror/ChatGroupSeat.js
+// dist/adv/session/mirror/ChatGroupSeat.js
 var PROCESS_ICONS = {
   thinking: official_exports.IconThinkOutlineRegular,
   read: official_exports.IconBrowseOutlineRegular,
@@ -56493,10 +56493,10 @@ function ChatGroupSeatMirror(props) {
   })))));
 }
 
-// dist/session/session-css.generated.js
+// dist/adv/session/session-css.generated.js
 var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA\u7ED8\u6837\u5F0F\uFF1A\u53EA\u88C5\u672C\u5305\u81EA\u5DF1\u7684\u7EC4\u4EF6\uFF08\u6682\u5B58\u8F93\u5165\u533A / fork / \u63A2\u9488\u7B49\uFF09\n   + \u4E24\u4E2A\u7A33\u5B9A\u94A9\u5B50\u7C7B\uFF08dshpc-sv-frame / dshpc-sv-scroll\uFF09\u3002\n   \u5DF2\u5220\uFF1AChangedFiles \u5361\u4E0E FileDiff \u7684\u5168\u90E8\u81EA\u7ED8\u89C4\u5219\uFF082026-10-24\uFF09\u2014\u2014\u5B98\u65B9 ChangedFiles /\n   FileDiff \u6A21\u5757\u7C7B\u7531 officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\u5E76\u6302\u5728\u5143\u7D20\u4E0A\uFF0C\u672C\u5305\u4E0D\u518D\u6709\u4E00\u884C\u515C\u5E95\u3002\n   \u26A0\uFE0F 2026-10-23 \u8D77\u4E0D\u518D\u6709\u5B98\u65B9\u7C7B\u515C\u5E95\uFF1A\u955C\u50CF\u5B98\u65B9\u7EC4\u4EF6\u7684\u5143\u7D20\u4E00\u5F8B\u6302\u5B98\u65B9 CSS-module \u7C7B\u540D\n   \uFF08officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\uFF0C\u53D6\u4E0D\u5230 = \u7A7A\u7C7B\u3001\u88F8\u7ED3\u6784\u4E0D\u767D\u5C4F\uFF09\u2014\u2014\u672C\u5305\u53EA\u8DD1 DSH \u5BBF\u4E3B\u3001\u5B98\u65B9\u6837\u5F0F\u5FC5\u5728\u573A\uFF0C\n   \u81EA\u7ED8\u4E00\u4E00\u5BF9\u5E94\u662F\u6B7B\u4EE3\u7801\u3002\u8981\u6539\u5B98\u65B9\u89C2\u611F\u8D70 token \u8986\u76D6 / \u53CC\u7C7B\u540D\u94A9\u5B50\uFF08\u89C1 ChatView.ts \u5934\u6CE8\uFF09\uFF0C\u522B\u5728\u8FD9\u52A0\u515C\u5E95\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\u3002\n   \u5916\u58F3\uFF08\u906E\u7F69 / \u9762\u677F / \u5934\u90E8 / \u5173\u95ED\u94AE\uFF09= \u6838\u5FC3 Modal\uFF08size lg\uFF09\u3002 */\n/* \u4F1A\u8BDD\u533A = \u666E\u901A\u7EB5\u5411\u6D41\uFF1A\u4E0D\u8BBE\u9AD8\u5EA6\u3001\u4E0D\u81EA\u5DF1\u6EDA\uFF08\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3 Modal body\uFF0C\u7528\u6237 2026-10-22 \u53E3\u5F84\uFF09\u3002 */\n.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}\n\n/* \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\u65F6\u7684\u53EF\u89C1\u63A2\u9488\uFF08\u6302\u5728\u5934\u90E8\u526F\u6807\u9898\u884C\uFF0C\u4E0D\u5360\u6B63\u6587\uFF09\u3002 */\n.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning)}\n\n/* \u5934\u90E8\u5F52\u6863\u6807\u8BC6\uFF08\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\uFF09\u3002 */\n.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}\n\n/* \u5185\u8DDD\u4E0E\u6EDA\u52A8\u5168\u90E8\u8BA9\u7ED9\u6838\u5FC3 Modal body \u21D2 \u8FD9\u91CC\u628A\u5B98\u65B9 ChatView.frame / scroll \u7684\u5185\u8DDD\u3001\n   overflow\u3001\u9AD8\u5EA6\u4E00\u5F8B\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\u3002\n   \u26A0\uFE0F \u5FC5\u987B\u540C\u65F6\u628A flex \u6536\u6389\uFF1A\u5B98\u65B9 scroll \u662F flex:1\uFF08basis=0\uFF09\uFF0C\u5728**\u81EA\u52A8\u9AD8**\u7684\u5BB9\u5668\u91CC\u4F1A\u628A\n   \u4F1A\u8BDD\u533A\u538B\u6210 0 \u9AD8 \u2014\u2014 \u8FD9\u6B63\u662F\u300C\u5185\u5BB9\u81EA\u7BA1\u9AD8\u5EA6\u300D\u7684\u8001\u6BDB\u75C5\uFF0C\u522B\u518D\u653E\u56DE\u6765\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}\n\n/* \u5B98\u65B9\u7EC4\u4EF6\u62FF --dsw-alias-bg-base \u505A sticky \u906E\u6321\u5E95\uFF08\u601D\u8003\u884C\u5C55\u5F00\u5934\u7B49\uFF09\uFF0C\u53D6\u503C\u662F\u5BBF\u4E3B app\n   \u5168\u5C40\u57FA\u5E95\u8272\uFF0C\u4E0E\u5F39\u7A97\u9762\u677F\u5E95\u4E0D\u540C\u5C42 \u21D2 \u4F1A\u8BDD\u533A\u5185\u6539\u6307\u5411\u5F39\u7A97\u9762\u677F\u5E95\uFF08\u80CC\u666F\u4FDD\u7559\u3001\u989C\u8272\u8D34\u5408\uFF09\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{--dsw-alias-bg-base:var(--dshpc-surface-1);}\n\n.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}\n\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9AD8\u5EA6\u7531\u5185\u5BB9\u51B3\u5B9A\uFF08\u6491\u5F00\u7531 Modal body \u6EDA\uFF09\u3002 */\n.dshpc-sv-chat{flex:none;min-height:0;}\n\n\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);border:1px dashed var(--dshpc-border);border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n\n/* \u5DE5\u5177\u5361\u6839\uFF08SessionViewModal legacy \u515C\u5E95\u6E32\u67D3\u76F4\u63A5\u7528\uFF1B\u6B63\u5E38 keyed \u8DEF\u5F84\u4E00\u5F8B\u6302\u5B98\u65B9 ToolRow \u7C7B\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);padding:2px 8px;}\n\n\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger);word-break:break-word;}\n\n.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}\n\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}\n\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg);background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px;}\n\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);padding-bottom:10px;white-space:nowrap;}";
 
-// dist/session/mirror/ChatView.js
+// dist/adv/session/mirror/ChatView.js
 function ChatViewFrame(props) {
   ensureComponentStyles("session", SESSION_CSS);
   return (0, import_react62.createElement)(
@@ -56607,10 +56607,10 @@ function ChatOlderButton(props) {
   return (0, import_react62.createElement)("div", { className: officialClass("ChatView", "older") ?? "" }, (0, import_react62.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
 }
 
-// dist/session/mirror/GenericCommandCard.js
+// dist/adv/session/mirror/GenericCommandCard.js
 var import_react65 = require("react");
 
-// dist/session/mirror/AskCard.js
+// dist/adv/session/mirror/AskCard.js
 var import_react63 = require("react");
 var isRecord = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 function parseJson(text2) {
@@ -56719,10 +56719,10 @@ function AskQuestionCardView({ card }) {
   }));
 }
 
-// dist/session/mirror/ToolDetails.js
+// dist/adv/session/mirror/ToolDetails.js
 var import_react64 = require("react");
 
-// dist/session/mirror/detail-i18n.js
+// dist/adv/session/mirror/detail-i18n.js
 var DETAIL_KEYS = {
   "detail.agent.reply": "detailAgentReply",
   "detail.agents.count": "detailAgentsCount",
@@ -56875,7 +56875,7 @@ function detailT(key, t4, params) {
   return mapped === void 0 ? key : params === void 0 ? t4(mapped) : t4(mapped, params);
 }
 
-// dist/session/mirror/control-details.js
+// dist/adv/session/mirror/control-details.js
 var isRecord2 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 var arg = (args, key) => typeof args[key] === "string" ? args[key] : "";
 function detailJson(text2) {
@@ -57455,7 +57455,7 @@ function controlDetails(name2, args, text2, json3, t4) {
   }
 }
 
-// dist/session/mirror/ToolDetails.js
+// dist/adv/session/mirror/ToolDetails.js
 var isRecord3 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 var nonempty = (value) => typeof value === "string" && value.trim() !== "";
 var count3 = (value) => typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
@@ -57680,7 +57680,7 @@ function ToolDetailsView({ model, t: t4, onOpenFile }) {
   return (0, import_react64.createElement)("div", { className: cls("root"), "data-caption": model.caption !== void 0 || void 0 }, model.caption !== void 0 ? (0, import_react64.createElement)("div", { className: cls("caption") }, model.caption) : null, model.items.length === 0 ? (0, import_react64.createElement)("p", { className: cls("empty") }, model.empty) : (0, import_react64.createElement)("ul", { className: cls("list") }, model.items.map((item, index3) => (0, import_react64.createElement)(DetailItem, { key: index3, item, t: t4, onOpenFile }))), model.unchanged !== void 0 ? (0, import_react64.createElement)("details", { className: cls("unchanged") }, (0, import_react64.createElement)("summary", null, (0, import_react64.createElement)(official_exports.IconChevronRightOutlineRegular), model.unchanged.label), (0, import_react64.createElement)("ul", { className: cls("list") }, model.unchanged.items.map((item, index3) => (0, import_react64.createElement)(DetailItem, { key: index3, item, t: t4, onOpenFile })))) : null);
 }
 
-// dist/session/mirror/GenericCommandCard.js
+// dist/adv/session/mirror/GenericCommandCard.js
 var TOOL_VARIANTS = {
   bash: "bash",
   pwsh: "bash",
@@ -58490,7 +58490,7 @@ function GenericCommandCard(props) {
   }));
 }
 
-// dist/session/mirror/CommandCard.js
+// dist/adv/session/mirror/CommandCard.js
 var import_react66 = require("react");
 var gcc = (semantic) => officialClass("GenericCommandCard", semantic) ?? "";
 function stateOf(outcome) {
@@ -58541,10 +58541,10 @@ function CommandCard(props) {
   );
 }
 
-// dist/session/mirror/MessageIconActions.js
+// dist/adv/session/mirror/MessageIconActions.js
 var import_react68 = require("react");
 
-// dist/session/mirror/message-chrome.js
+// dist/adv/session/mirror/message-chrome.js
 var import_react67 = require("react");
 function formatRunDuration(ms, tt) {
   const total = Math.max(0, Math.floor(ms / 1e3));
@@ -58646,7 +58646,7 @@ function formatCacheHitPercent(cacheReadTokens, promptTokens, decimalPlaces = 0)
   return `99.${"9".repeat(distinguishingPlaces - 1)}${10 - roundedLoss}`;
 }
 
-// dist/session/mirror/MessageIconActions.js
+// dist/adv/session/mirror/MessageIconActions.js
 var COPIED_RESET_MS = 1e3;
 function MessageIconActionsMirror(props) {
   const { text: text2, time, clock, onBranch, branchUnavailable = false, className: className2, extraActions, usageAction, t: t4 } = props;
@@ -58697,7 +58697,7 @@ function MessageIconActionsMirror(props) {
   }, (0, import_react68.createElement)(official_exports.IconBranchOutlineRegular, null))), onBranch === void 0 || !branchUnavailable ? null : (0, import_react68.createElement)("span", { id: reasonId, className: officialClass("accessibility", "visuallyHidden") ?? "" }, t4("branchUnavailableLabel")), clock === "end" ? (0, import_react68.createElement)("span", { className: officialClass("MessageIconActions", "endInfo") ?? "" }, usageAction, clockEl) : usageAction);
 }
 
-// dist/session/mirror/MessageItem.js
+// dist/adv/session/mirror/MessageItem.js
 var import_react69 = require("react");
 function AssistantMarkdown(props) {
   if (props.text.trim() === "")
@@ -58835,7 +58835,7 @@ function TurnMaxTokensItemMirror(props) {
   }), (0, import_react69.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react69.createElement)("span", { className: officialClass("MessageItem", "maxTokensTitle") ?? "" }, t4("maxTokensTitle")), (0, import_react69.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, t4("maxTokensHint"))));
 }
 
-// dist/session/mirror/BashRow.js
+// dist/adv/session/mirror/BashRow.js
 var import_react70 = require("react");
 var BASH_ICON = (0, import_react70.createElement)(official_exports.IconApiOutlineRegular, { size: 14 });
 var firstLine2 = (text2) => {
@@ -58929,10 +58929,10 @@ function BashRowMirror(props) {
   }, outputText)) : null)) : void 0);
 }
 
-// dist/session/mirror/ContextInjectionRow.js
+// dist/adv/session/mirror/ContextInjectionRow.js
 var import_react72 = require("react");
 
-// dist/session/mirror/TurnTriggerNodeView.js
+// dist/adv/session/mirror/TurnTriggerNodeView.js
 var import_react71 = require("react");
 var TRIGGER_ICONS = {
   request: official_exports.IconContextInjectionOutlineRegular,
@@ -59022,7 +59022,7 @@ function modelFacingRuns(content2, t4) {
   return runs.length === 0 ? [t4("sessionEmpty")] : runs;
 }
 
-// dist/session/mirror/ContextInjectionRow.js
+// dist/adv/session/mirror/ContextInjectionRow.js
 function ContextInjectionRowMirror(props) {
   const { node, t: t4 } = props;
   const [open, setOpen] = (0, import_react72.useState)(false);
@@ -59061,7 +59061,7 @@ function ContextInjectionRowMirror(props) {
   });
 }
 
-// dist/session/mirror/ReasoningRow.js
+// dist/adv/session/mirror/ReasoningRow.js
 var import_react73 = require("react");
 function firstLine3(text2) {
   const newline4 = text2.indexOf("\n");
@@ -59158,7 +59158,7 @@ function ReasoningRowMirror(props) {
   }));
 }
 
-// dist/session/mirror/RunningStatus.js
+// dist/adv/session/mirror/RunningStatus.js
 var import_react74 = require("react");
 var LIVE_RUN_CLOCK_INTERVAL_MS = 1e3;
 var REST_PATH = "M8.844 13.742C8.967 12.328 8.45 10.4 8.45 9.65C8.45 8.94 8.88 8.43 9.6 8.43C11.285 8.43 12.106 8.281 12.685 8.104C13.71 7.791 14.585 6.768 15.055 5.945C15.137 5.803 14.99 5.641 14.829 5.671C13.829 5.86 12.828 5.376 11.827 4.978C10.659 4.514 9.491 4.707 8.935 4.876C8.805 4.915 8.658 4.819 8.636 4.686C8.468 3.643 7.405 2.615 5.498 2.238C4.54 2.048 3.748 1.574 3.347 1.202C3.252 1.113 3.088 1.125 3.03 1.242C2.628 2.059 2.168 3.82 5.248 6.115C5.82 6.494 6.31 6.785 6.574 7.637C6.72 8.104 6.157 9.168 6.061 9.368C5.157 11.27 5.089 12.19 4.926 13.742";
@@ -59200,7 +59200,7 @@ function RunningStatusMirror(props) {
   }, label)));
 }
 
-// dist/session/mirror/TurnProcessNodeView.js
+// dist/adv/session/mirror/TurnProcessNodeView.js
 var import_react75 = require("react");
 function TurnProcessNodeViewMirror(props) {
   const { turn, turnProcess, t: t4 } = props;
@@ -59239,14 +59239,14 @@ function TurnProcessNodeViewMirror(props) {
   }, part.text))), canCollapse ? (0, import_react75.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("TurnProcessNodeView", "chevron") ?? "" }) : null));
 }
 
-// dist/session/mirror/TurnTailNodeView.js
+// dist/adv/session/mirror/TurnTailNodeView.js
 var import_react78 = require("react");
 
-// dist/session/mirror/TurnUsagePanel.js
+// dist/adv/session/mirror/TurnUsagePanel.js
 var import_react77 = require("react");
 var import_react_dom5 = require("react-dom");
 
-// dist/session/mirror/StatDialog.js
+// dist/adv/session/mirror/StatDialog.js
 var import_react76 = require("react");
 var PANEL_MARGIN = 12;
 var PANEL_GAP = 8;
@@ -59284,7 +59284,7 @@ function useStatDialog(controlled) {
   return { open, setOpen, rootRef, panelRef, pos };
 }
 
-// dist/session/mirror/TurnUsagePanel.js
+// dist/adv/session/mirror/TurnUsagePanel.js
 function TurnUsagePanelMirror(props) {
   const { usage, t: t4 } = props;
   const { open, setOpen, rootRef, panelRef, pos } = useStatDialog();
@@ -59310,7 +59310,7 @@ function TurnUsagePanelMirror(props) {
   }, t4("turnUsageReasoning", { tokens: formatExactCount(usage.reasoningTokens, t4) }))))), document.body) : null);
 }
 
-// dist/session/mirror/TurnTailNodeView.js
+// dist/adv/session/mirror/TurnTailNodeView.js
 function hasAssistantReplyContent(blocks) {
   return blocks.some((block2) => {
     if (block2.kind === "reasoning" || block2.kind === "tool-call")
@@ -59395,7 +59395,7 @@ function TurnTailNodeViewMirror(props) {
   }));
 }
 
-// dist/session/mirror/Deliverables.js
+// dist/adv/session/mirror/Deliverables.js
 var import_react79 = require("react");
 var basename = (path) => path.slice(Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\")) + 1);
 function parentOf2(path) {
@@ -59537,7 +59537,7 @@ function DeliverablesGridMirror(props) {
   }, (0, import_react79.createElement)("span", null, t4(expanded ? "deliverCollapse" : "deliverAll", { count: files.length })), expanded ? (0, import_react79.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react79.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null);
 }
 
-// dist/session/mirror/ChangedFilesCard.js
+// dist/adv/session/mirror/ChangedFilesCard.js
 var import_react81 = require("react");
 
 // dist/utils/string.js
@@ -59549,7 +59549,7 @@ function baseNameOf(path) {
   return cut < 0 ? trimmed : trimmed.slice(cut + 1);
 }
 
-// dist/session/changes.js
+// dist/adv/session/changes.js
 function changesSummaryUrl(sessionId, seq) {
   return `api/changes.summary?${new URLSearchParams({ sessionId, seq: String(seq) })}`;
 }
@@ -59644,7 +59644,7 @@ function turnDeliverablesChangesSeq(face) {
   return isInt(seq) ? seq : null;
 }
 
-// dist/session/mirror/ChangedFileDiff.js
+// dist/adv/session/mirror/ChangedFileDiff.js
 var import_react80 = require("react");
 var C2 = (semantic) => officialClass("ChangedFiles", semantic) ?? "";
 var D = (semantic) => officialClass("FileDiff", semantic) ?? "";
@@ -59792,7 +59792,7 @@ function ChangedFileDiff(props) {
   ), body);
 }
 
-// dist/session/mirror/ChangedFilesCard.js
+// dist/adv/session/mirror/ChangedFilesCard.js
 var C3 = (semantic) => officialClass("ChangedFiles", semantic) ?? "";
 var cache4 = /* @__PURE__ */ new Map();
 var COLLAPSED_ROWS = 4;
@@ -59918,7 +59918,7 @@ function ChangedFilesCard(props) {
   }, header, list, toggle);
 }
 
-// dist/session/pending-inputs.js
+// dist/adv/session/pending-inputs.js
 function observedRpcIds(order, readNode) {
   const ids = /* @__PURE__ */ new Set();
   for (const key of order) {
@@ -60036,7 +60036,7 @@ function waitingUserRows(inbox, pending, observed) {
   return rows;
 }
 
-// dist/session/tail-follow.js
+// dist/adv/session/tail-follow.js
 var TAIL_NEAR_BOTTOM_PX = 24;
 var TAIL_STABLE_FRAMES = 3;
 function createTailFollower(host) {
@@ -60122,7 +60122,7 @@ function createTailFollower(host) {
   };
 }
 
-// dist/session/SessionViewModal.js
+// dist/adv/session/SessionViewModal.js
 var EMPTY_ORDER = [];
 var NOT_ARCHIVED = () => false;
 var NO_INBOX = () => void 0;
@@ -61007,7 +61007,7 @@ function SessionViewModal(props) {
   );
 }
 
-// dist/session/open-review.js
+// dist/adv/session/open-review.js
 var import_react83 = require("react");
 function openSessionReview(options) {
   const { locator, title, ...panel } = options;
@@ -61030,7 +61030,7 @@ function openSessionReview(options) {
   return handle;
 }
 
-// dist/session/open-session-view.js
+// dist/adv/session/open-session-view.js
 var DEFAULT_RETAIN_SOURCE = "dsh-plugin-core";
 var NOOP_DISPOSE = () => {
 };
@@ -61238,9 +61238,10 @@ var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primit
 var DICT2 = {
   zh: {
     grpStart: "\u5165\u95E8",
+    grpDesign: "\u8BBE\u8BA1",
     grpComponents: "\u63A7\u4EF6",
-    grpBlocks: "\u4E1A\u52A1\u6A21\u5757",
-    grpUtils: "\u901A\u7528\u65B9\u6CD5",
+    grpBlocks: "\u5E94\u7528\u6A21\u5757",
+    grpUtils: "\u5DE5\u5177\u65B9\u6CD5",
     grpReference: "\u53C2\u8003",
     secOverview: "\u6982\u89C8",
     secHelpIndex: "\u5E2E\u52A9\u7D22\u5F15",
@@ -61250,6 +61251,10 @@ var DICT2 = {
     secWritePlugin: "\u5199\u4E00\u4E2A\u63D2\u4EF6",
     secReference: "\u53C2\u8003\u4E0E\u7EA6\u5B9A",
     secNaming: "\u547D\u540D\u4E0E\u524D\u7F00\u5951\u7EA6",
+    secActions: "\u52A8\u4F5C",
+    secInputs: "\u5F55\u5165",
+    secDisplay: "\u5C55\u793A",
+    secNavigation: "\u5BFC\u822A",
     secButton: "\u6309\u94AE",
     secInput: "\u5F55\u5165",
     secPicker: "\u9009\u62E9\u5668",
@@ -61496,8 +61501,9 @@ var DICT2 = {
   },
   en: {
     grpStart: "Getting started",
+    grpDesign: "Design",
     grpComponents: "Components",
-    grpBlocks: "Blocks",
+    grpBlocks: "App modules",
     grpUtils: "Utilities",
     grpReference: "Reference",
     secOverview: "Overview",
@@ -61508,6 +61514,10 @@ var DICT2 = {
     secWritePlugin: "Write a plugin",
     secReference: "Reference",
     secNaming: "Naming & prefix contract",
+    secActions: "Actions",
+    secInputs: "Inputs",
+    secDisplay: "Display",
+    secNavigation: "Navigation",
     secButton: "Button",
     secInput: "Inputs",
     secPicker: "Pickers",
@@ -61525,7 +61535,7 @@ var DICT2 = {
     tablePagerHint: "Built-in paging: omit total for local slicing (pass all rows), pass total for server-side paging; the pager sits under the table, right-aligned.",
     tableLoadingHint: "The segmented switch flips four states. Both loaders are icon-only (largest for the whole table, middle for loading more); the footer row spans the width with a rule above it, and without side borders the bottom rule is dropped too.",
     secFeedback: "Feedback",
-    secLayout: "Layout & scrolling",
+    secLayout: "Layout",
     secToolbar: "Quick toolbar",
     secExplorer: "Workspace browsing",
     secSession: "Session preview",
@@ -61832,7 +61842,7 @@ function demoPanels() {
 var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
-var import_react94 = require("react");
+var import_react95 = require("react");
 
 // packages/demo/src/sections/start.tsx
 var import_react86 = require("react");
@@ -69181,10 +69191,7 @@ function TablePage() {
   const [groupAccent, setGroupAccent] = (0, import_react90.useState)("default");
   const [pagerPage, setPagerPage] = (0, import_react90.useState)(1);
   const [pagerSize, setPagerSize] = (0, import_react90.useState)(10);
-  const [demoPage, setDemoPage] = (0, import_react90.useState)(2);
-  const [demoSize, setDemoSize] = (0, import_react90.useState)(10);
-  const [demoAlign, setDemoAlign] = (0, import_react90.useState)("right");
-  const [demoShowTotal, setDemoShowTotal] = (0, import_react90.useState)(true);
+  const [demoShowTotal] = (0, import_react90.useState)(true);
   const [loadState, setLoadState] = (0, import_react90.useState)("idle");
   const loadColumns = [
     { key: "name", title: "Patient", width: 240 },
@@ -69202,10 +69209,6 @@ function TablePage() {
   const pagerOnChange = (page, size4) => {
     setPagerPage(page);
     setPagerSize(size4);
-  };
-  const demoOnChange = (page, size4) => {
-    setDemoPage(page);
-    setDemoSize(size4);
   };
   const renderLoadTable = (borders) => (0, import_react90.createElement)(Table, {
     columns: loadColumns,
@@ -69305,53 +69308,6 @@ function TablePage() {
           onRowClick: (row) => setGroupSelected((prev) => prev === row.key ? null : row.key),
           ariaLabel: "Tasks by workspace",
           style: { minWidth: 660 }
-        })
-      )
-    ),
-    (0, import_react90.createElement)(
-      Example,
-      { title: "Pagination", hint: t3("paginationHint") },
-      (0, import_react90.createElement)(
-        "div",
-        { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
-        (0, import_react90.createElement)(Segmented, {
-          size: "sm",
-          items: [
-            { value: "left", label: "\u5DE6" },
-            { value: "center", label: "\u4E2D" },
-            { value: "right", label: "\u53F3" }
-          ],
-          value: demoAlign,
-          onChange: setDemoAlign
-        }),
-        (0, import_react90.createElement)(Checkbox, { checked: demoShowTotal, onChange: setDemoShowTotal, label: "showTotal" })
-      ),
-      (0, import_react90.createElement)(
-        "div",
-        { style: { marginTop: "12px" } },
-        (0, import_react90.createElement)(Pagination, {
-          page: demoPage,
-          pageSize: demoSize,
-          total: 86,
-          align: demoAlign,
-          pageSizeOptions: [10, 20, 50],
-          showTotal: demoShowTotal,
-          hideOnSinglePage: true,
-          onChange: demoOnChange,
-          ariaLabel: "Demo pagination"
-        })
-      ),
-      (0, import_react90.createElement)(
-        "div",
-        { style: { marginTop: "12px" } },
-        (0, import_react90.createElement)(Pagination, {
-          page: demoPage,
-          pageSize: demoSize,
-          total: 86,
-          align: demoAlign,
-          simple: true,
-          onChange: demoOnChange,
-          ariaLabel: "Demo pagination (simple)"
         })
       )
     ),
@@ -69510,8 +69466,72 @@ function ToolbarPage() {
   );
 }
 
-// packages/demo/src/sections/utils.tsx
+// packages/demo/src/sections/navigation.tsx
 var import_react92 = require("react");
+function PaginationPage() {
+  const [page, setPage] = (0, import_react92.useState)(2);
+  const [size4, setSize] = (0, import_react92.useState)(10);
+  const [align, setAlign] = (0, import_react92.useState)("right");
+  const [showTotal, setShowTotal] = (0, import_react92.useState)(true);
+  const onChange = (nextPage, nextSize) => {
+    setPage(nextPage);
+    setSize(nextSize);
+  };
+  return (0, import_react92.createElement)(
+    "div",
+    null,
+    (0, import_react92.createElement)(
+      Example,
+      { title: "Pagination", hint: t3("paginationHint") },
+      (0, import_react92.createElement)(
+        "div",
+        { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
+        (0, import_react92.createElement)(Segmented, {
+          size: "sm",
+          items: [
+            { value: "left", label: "\u5DE6" },
+            { value: "center", label: "\u4E2D" },
+            { value: "right", label: "\u53F3" }
+          ],
+          value: align,
+          onChange: setAlign
+        }),
+        (0, import_react92.createElement)(Checkbox, { checked: showTotal, onChange: setShowTotal, label: "showTotal" })
+      ),
+      (0, import_react92.createElement)(
+        "div",
+        { style: { marginTop: "12px" } },
+        (0, import_react92.createElement)(Pagination, {
+          page,
+          pageSize: size4,
+          total: 86,
+          align,
+          pageSizeOptions: [10, 20, 50],
+          showTotal,
+          hideOnSinglePage: true,
+          onChange,
+          ariaLabel: "Demo pagination"
+        })
+      ),
+      (0, import_react92.createElement)(
+        "div",
+        { style: { marginTop: "12px" } },
+        (0, import_react92.createElement)(Pagination, {
+          page,
+          pageSize: size4,
+          total: 86,
+          align,
+          simple: true,
+          onChange,
+          ariaLabel: "Demo pagination (simple)"
+        })
+      )
+    )
+  );
+}
+
+// packages/demo/src/sections/utils.tsx
+var import_react93 = require("react");
 var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
@@ -69546,28 +69566,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react92.createElement)(
+  return (0, import_react93.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react92.createElement)(
+    (0, import_react93.createElement)(
       "thead",
       null,
-      (0, import_react92.createElement)(
+      (0, import_react93.createElement)(
         "tr",
         null,
-        (0, import_react92.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react92.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react93.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react93.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react92.createElement)(
+    (0, import_react93.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react92.createElement)(
+        ([fn, out]) => (0, import_react93.createElement)(
           "tr",
           { key: fn },
-          (0, import_react92.createElement)("td", { style: td }, fn),
-          (0, import_react92.createElement)("td", { style: td }, out)
+          (0, import_react93.createElement)("td", { style: td }, fn),
+          (0, import_react93.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -69576,44 +69596,44 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react92.createElement)(
+  return (0, import_react93.createElement)(
     "div",
     null,
-    (0, import_react92.createElement)(DocProse, { id: "date" }),
-    (0, import_react92.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react92.createElement)(FnTable, { rows: DATE_ROWS })),
-    (0, import_react92.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react92.createElement)(DocApi, { id: "date" })
+    (0, import_react93.createElement)(DocProse, { id: "date" }),
+    (0, import_react93.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react93.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react93.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react93.createElement)(DocApi, { id: "date" })
   );
 }
 function NumberPage() {
-  return (0, import_react92.createElement)(
+  return (0, import_react93.createElement)(
     "div",
     null,
-    (0, import_react92.createElement)(DocProse, { id: "number" }),
-    (0, import_react92.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react92.createElement)(FnTable, { rows: NUMBER_ROWS })),
-    (0, import_react92.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react92.createElement)(DocApi, { id: "number" })
+    (0, import_react93.createElement)(DocProse, { id: "number" }),
+    (0, import_react93.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react93.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react93.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react93.createElement)(DocApi, { id: "number" })
   );
 }
 function TextPage() {
-  return (0, import_react92.createElement)(DocContent, { id: "text" });
+  return (0, import_react93.createElement)(DocContent, { id: "text" });
 }
 function HttpPage() {
-  return (0, import_react92.createElement)(DocContent, { id: "http" });
+  return (0, import_react93.createElement)(DocContent, { id: "http" });
 }
 function I18nPage() {
-  return (0, import_react92.createElement)(
+  return (0, import_react93.createElement)(
     "div",
     null,
-    (0, import_react92.createElement)(DocProse, { id: "i18n" }),
-    (0, import_react92.createElement)(
+    (0, import_react93.createElement)(DocProse, { id: "i18n" }),
+    (0, import_react93.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
-      (0, import_react92.createElement)(
+      (0, import_react93.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react92.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
-        (0, import_react92.createElement)("code", {
+        (0, import_react93.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
+        (0, import_react93.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -69625,60 +69645,60 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react92.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react92.createElement)(DocApi, { id: "i18n" })
+    (0, import_react93.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react93.createElement)(DocApi, { id: "i18n" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react93 = require("react");
+var import_react94 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react93.createElement)(
+  return (0, import_react94.createElement)(
     "div",
     null,
-    (0, import_react93.createElement)(Note, { text: t3("referenceNote") }),
-    (0, import_react93.createElement)(Example, { title: t3("secA11y") }, (0, import_react93.createElement)(Placeholder2, { descKey: "a11yDesc" })),
-    (0, import_react93.createElement)(
+    (0, import_react94.createElement)(Note, { text: t3("referenceNote") }),
+    (0, import_react94.createElement)(Example, { title: t3("secA11y") }, (0, import_react94.createElement)(Placeholder2, { descKey: "a11yDesc" })),
+    (0, import_react94.createElement)(
       Example,
       { title: t3("secRoadmap"), hint: t3("roadmapHint") },
-      (0, import_react93.createElement)(
+      (0, import_react94.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react93.createElement)(
+          (key) => (0, import_react94.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react93.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react93.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
+            (0, import_react94.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react94.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
           )
         ),
-        (0, import_react93.createElement)(
+        (0, import_react94.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("roadmapLayout")
         )
       )
     ),
-    (0, import_react93.createElement)(
+    (0, import_react94.createElement)(
       Example,
       { title: t3("secBuild"), hint: t3("buildDesc") },
-      (0, import_react93.createElement)(
+      (0, import_react94.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react93.createElement)(
+        (0, import_react94.createElement)(
           "tbody",
           null,
           [
             [t3("buildCore"), `v${"0.32.0"}`],
             [t3("buildDemo"), `v${"0.32.0"}`],
-            [t3("buildStamp"), "261105-122643-226"]
+            [t3("buildStamp"), "261105-151539-904"]
           ].map(
-            ([label, value]) => (0, import_react93.createElement)(
+            ([label, value]) => (0, import_react94.createElement)(
               "tr",
               { key: label },
-              (0, import_react93.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react93.createElement)("td", {
+              (0, import_react94.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react94.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -69697,40 +69717,43 @@ function ReferencePage() {
 // packages/demo/src/sections/index.tsx
 var SECTION_GROUPS = [
   { id: "start", titleKey: "grpStart" },
+  { id: "design", titleKey: "grpDesign" },
   { id: "components", titleKey: "grpComponents" },
   { id: "blocks", titleKey: "grpBlocks" },
-  { id: "utils", titleKey: "grpUtils" },
-  { id: "reference", titleKey: "grpReference" }
+  { id: "utils", titleKey: "grpUtils" }
 ];
+var stack = (...pages) => () => (0, import_react95.createElement)("div", null, ...pages.map((Page) => (0, import_react95.createElement)(Page, { key: Page.name })));
 var ALL_SECTIONS = [
-  // 入门：帮助索引（读哪一份）在前，然后是快速开始与设计基础
-  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react94.createElement)(HelpIndexPage, null) },
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react94.createElement)(QuickstartPage, null) },
-  { id: "foundation", group: "start", titleKey: "secFoundation", render: () => (0, import_react94.createElement)(FoundationPage, null) },
-  { id: "button", group: "components", titleKey: "secButton", render: () => (0, import_react94.createElement)(ButtonPage, null) },
-  { id: "input", group: "components", titleKey: "secInput", render: () => (0, import_react94.createElement)(InputPage, null) },
-  { id: "picker", group: "components", titleKey: "secPicker", render: () => (0, import_react94.createElement)(PickerPage, null) },
-  { id: "datetime", group: "components", titleKey: "secDateTime", render: () => (0, import_react94.createElement)(DateTimePage, null) },
-  { id: "tooltip", group: "components", titleKey: "secTooltip", render: () => (0, import_react94.createElement)(TooltipPage, null) },
-  { id: "card", group: "components", titleKey: "secCard", render: () => (0, import_react94.createElement)(CardPage, null) },
-  { id: "chip", group: "components", titleKey: "secChip", render: () => (0, import_react94.createElement)(ChipPage, null) },
-  { id: "fliptext", group: "components", titleKey: "secFlipText", render: () => (0, import_react94.createElement)(FlipTextPage, null) },
-  { id: "table", group: "components", titleKey: "secTable", render: () => (0, import_react94.createElement)(TablePage, null) },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react94.createElement)(FeedbackPage, null) },
-  { id: "layout", group: "components", titleKey: "secLayout", render: () => (0, import_react94.createElement)(LayoutPage, null) },
-  { id: "toolbar", group: "components", titleKey: "secToolbar", render: () => (0, import_react94.createElement)(ToolbarPage, null) },
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react94.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react94.createElement)(SessionPage, null) },
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react94.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react94.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react94.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react94.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react94.createElement)(I18nPage, null) },
-  // 参考：无障碍 / 路线图 / 版本构建三条并成一页
-  { id: "reference", group: "reference", titleKey: "secReference", render: () => (0, import_react94.createElement)(ReferencePage, null) }
+  // ① 入门：帮助索引 → 快速开始 → 参考
+  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react95.createElement)(HelpIndexPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react95.createElement)(QuickstartPage, null) },
+  { id: "reference", group: "start", titleKey: "secReference", render: () => (0, import_react95.createElement)(ReferencePage, null) },
+  // ② 设计
+  { id: "foundation", group: "design", titleKey: "secFoundation", render: () => (0, import_react95.createElement)(FoundationPage, null) },
+  // ③ 控件：一页一类，页内按控件族顺序排列
+  { id: "actions", group: "components", titleKey: "secActions", render: () => (0, import_react95.createElement)(ButtonPage, null) },
+  { id: "inputs", group: "components", titleKey: "secInputs", render: stack(InputPage, PickerPage, DateTimePage) },
+  {
+    id: "display",
+    group: "components",
+    titleKey: "secDisplay",
+    render: stack(CardPage, ChipPage, FlipTextPage, TooltipPage, TablePage)
+  },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react95.createElement)(FeedbackPage, null) },
+  { id: "layout", group: "components", titleKey: "secLayout", render: stack(LayoutPage, ToolbarPage) },
+  { id: "navigation", group: "components", titleKey: "secNavigation", render: () => (0, import_react95.createElement)(PaginationPage, null) },
+  // ④ 应用模块
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react95.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react95.createElement)(SessionPage, null) },
+  // ⑤ 工具方法
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react95.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react95.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react95.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react95.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react95.createElement)(I18nPage, null) }
 ];
 function Placeholder2(props) {
-  return (0, import_react94.createElement)(
+  return (0, import_react95.createElement)(
     Surface,
     {
       tone: "sunken",
@@ -69738,7 +69761,7 @@ function Placeholder2(props) {
       padding: "lg",
       style: { marginTop: "4px", color: "var(--dshpc-fg-3)" }
     },
-    (0, import_react94.createElement)("div", {
+    (0, import_react95.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -69748,23 +69771,23 @@ function Placeholder2(props) {
         marginBottom: "10px"
       }
     }, t3("phTodo")),
-    (0, import_react94.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
+    (0, import_react95.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react94.createElement)(
+  return (0, import_react95.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react94.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react94.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
+    (0, import_react95.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react95.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react94.createElement)(
+  return (0, import_react95.createElement)(
     "div",
     null,
-    (0, import_react94.createElement)(SectionHead2, { id: current3.id, title: t3(current3.titleKey) }),
+    (0, import_react95.createElement)(SectionHead2, { id: current3.id, title: t3(current3.titleKey) }),
     current3.render()
   );
 }
@@ -69824,10 +69847,10 @@ function applySidebarEntry() {
   }
 }
 function MoreMenuRow(props) {
-  return (0, import_react95.createElement)(
+  return (0, import_react96.createElement)(
     import_dsh_client_ui_primitives6.MenuItemButton,
     {
-      icon: (0, import_react95.createElement)(PanelIcon, { size: 16 }),
+      icon: (0, import_react96.createElement)(PanelIcon, { size: 16 }),
       onSelect: () => {
         props.onDismiss();
         jump(PANEL_ID);
@@ -69838,8 +69861,8 @@ function MoreMenuRow(props) {
 }
 function useHostDark() {
   const read = () => document.body.hasAttribute("data-ds-dark-theme");
-  const [dark, setDark] = (0, import_react95.useState)(read);
-  (0, import_react95.useEffect)(() => {
+  const [dark, setDark] = (0, import_react96.useState)(read);
+  (0, import_react96.useEffect)(() => {
     const obs = new MutationObserver(() => {
       setDark(read());
     });
@@ -69859,11 +69882,11 @@ function useHostDark() {
 function DemoPage() {
   useLocale();
   const { dark, toggle } = useHostDark();
-  const [active, setActive2] = (0, import_react95.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive2] = (0, import_react96.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav2.push(
-      (0, import_react95.createElement)(
+      (0, import_react96.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -69881,7 +69904,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav2.push(
-        (0, import_react95.createElement)(
+        (0, import_react96.createElement)(
           "button",
           {
             key: section.id,
@@ -69908,7 +69931,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react95.createElement)(
+  return (0, import_react96.createElement)(
     "div",
     {
       // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
@@ -69925,7 +69948,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react95.createElement)(
+    (0, import_react96.createElement)(
       "aside",
       {
         style: {
@@ -69941,9 +69964,9 @@ function DemoPage() {
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
       // 透明右边框 = 滚动条与右缘隔 1px（口径见 docs/design/style.md §滚动条让位）
-      (0, import_react95.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px", borderRight: "1px solid transparent" } }, nav2),
+      (0, import_react96.createElement)("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px", borderRight: "1px solid transparent" } }, nav2),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
-      (0, import_react95.createElement)(
+      (0, import_react96.createElement)(
         "div",
         {
           style: {
@@ -69956,7 +69979,7 @@ function DemoPage() {
           }
         },
         // 明暗切换：核心 Segmented 滑动分段（左亮右暗，图标进 label），不手写按钮
-        (0, import_react95.createElement)(Segmented, {
+        (0, import_react96.createElement)(Segmented, {
           items: [
             { value: "light", label: `\u2600 ${t3("themeLight")}` },
             { value: "dark", label: `\u263E ${t3("themeDark")}` }
@@ -69970,7 +69993,7 @@ function DemoPage() {
           label: t3("themeToggle")
         }),
         // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行；编译码小一号、与上面隔开
-        (0, import_react95.createElement)(
+        (0, import_react96.createElement)(
           "div",
           {
             style: {
@@ -69984,46 +70007,46 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react95.createElement)("span", null, `core v${"0.32.0"}`),
-          (0, import_react95.createElement)("span", null, `demo v${"0.32.0"}`),
-          (0, import_react95.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261105-122643-226")
+          (0, import_react96.createElement)("span", null, `core v${"0.32.0"}`),
+          (0, import_react96.createElement)("span", null, `demo v${"0.32.0"}`),
+          (0, import_react96.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261105-151539-904")
         )
       )
     ),
-    (0, import_react95.createElement)(
+    (0, import_react96.createElement)(
       "main",
       // 透明右边框 = 滚动条与右缘隔 1px（口径见 docs/design/style.md §滚动条让位）：
       // dock 不再让 margin，靠这里让，滚动条与分栏分隔线之间才是 1px。
       { style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px", borderRight: "1px solid transparent" } },
-      (0, import_react95.createElement)(Sections, { active })
+      (0, import_react96.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react95.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react96.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function ConfigPanel(props) {
   const form = props.form;
-  const [, rerender] = (0, import_react95.useState)(0);
-  (0, import_react95.useEffect)(() => form.subscribe(() => {
+  const [, rerender] = (0, import_react96.useState)(0);
+  (0, import_react96.useEffect)(() => form.subscribe(() => {
     rerender((n) => n + 1);
   }), [form]);
-  if (props.view !== "page") return (0, import_react95.createElement)("div", { style: { display: "none" } });
+  if (props.view !== "page") return (0, import_react96.createElement)("div", { style: { display: "none" } });
   const snap = form.getSnapshot();
   const storedMode = snap.value?.entryMode;
   const mode = storedMode === "off" || storedMode === "first" || storedMode === "more" ? storedMode : "more";
   const ready = snap.status === "ready";
-  return (0, import_react95.createElement)(
+  return (0, import_react96.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "14px" } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
-    (0, import_react95.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
+    (0, import_react96.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
     // 设置行：滑动栏在右、说明在左；左缘圆角短条有入口=绿 / 关闭=灰（核心 Card 框式）
-    ready ? (0, import_react95.createElement)(
+    ready ? (0, import_react96.createElement)(
       Card,
       {
         accent: mode === "off" ? "neutral" : "success",
-        action: (0, import_react95.createElement)(Segmented, {
+        action: (0, import_react96.createElement)(Segmented, {
           size: "sm",
           value: mode,
           disabled: !snap.writable,
@@ -70040,35 +70063,35 @@ function ConfigPanel(props) {
           ]
         })
       },
-      (0, import_react95.createElement)(
+      (0, import_react96.createElement)(
         "div",
         null,
-        (0, import_react95.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
-        (0, import_react95.createElement)(
+        (0, import_react96.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
+        (0, import_react96.createElement)(
           "div",
           { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
           t3("settingsEntryHint")
         )
       )
-    ) : (0, import_react95.createElement)(
+    ) : (0, import_react96.createElement)(
       "div",
       { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
       t3(snap.status === "loading" ? "settingsLoading" : "settingsUnavailable")
     ),
-    (0, import_react95.createElement)(
+    (0, import_react96.createElement)(
       "div",
       { style: { display: "flex", gap: "8px" } },
-      (0, import_react95.createElement)(
+      (0, import_react96.createElement)(
         Button,
-        { size: "md", variant: "primary", icon: (0, import_react95.createElement)(import_dsh_client_ui_primitives6.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
+        { size: "md", variant: "primary", icon: (0, import_react96.createElement)(import_dsh_client_ui_primitives6.IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
         t3("settingsOpenDemo")
       ),
-      (0, import_react95.createElement)(
+      (0, import_react96.createElement)(
         Button,
         {
           size: "md",
           variant: "outline",
-          icon: (0, import_react95.createElement)(import_dsh_client_ui_primitives6.IconLinkOutlineRegular, { size: 16 }),
+          icon: (0, import_react96.createElement)(import_dsh_client_ui_primitives6.IconLinkOutlineRegular, { size: 16 }),
           onClick: () => {
             window.open("https://github.com/cq-guojia/dsh-plugin-core", "_blank", "noopener");
           }
@@ -70080,14 +70103,14 @@ function ConfigPanel(props) {
 }
 function PanelIcon(props) {
   const size4 = props.size ?? 18;
-  return (0, import_react95.createElement)(
+  return (0, import_react96.createElement)(
     "svg",
     { width: size4, height: size4, viewBox: "0 0 1024 1024", "aria-hidden": true },
-    (0, import_react95.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
-    (0, import_react95.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react95.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
-    (0, import_react95.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react95.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
+    (0, import_react96.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
+    (0, import_react96.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react96.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
+    (0, import_react96.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react96.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
   );
 }
 function apply(ctx) {
@@ -70096,7 +70119,7 @@ function apply(ctx) {
   ensureControls(kit);
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react95.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react96.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
   ctx.inject(["layout"], (sub) => {
     const layout = sub?.layout;
     if (layout?.selectPanel === void 0) return;

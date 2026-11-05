@@ -57,9 +57,9 @@ export function pickOfficial<K extends keyof typeof Official>(
 
 import { createElement as h, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Button } from './Button.js'
+import { Button } from './actions/Button.js'
 import { t } from '../utils/i18n.js'
-import { registerHostDialog, type HostConfirmArgs, type HostAlertArgs } from './modal-host.js'
+import { registerHostDialog, type HostConfirmArgs, type HostAlertArgs } from './feedback/modal-host.js'
 
 function mountHostModal(render: (close: () => void) => ReactNode): void {
   if (typeof document === 'undefined') return

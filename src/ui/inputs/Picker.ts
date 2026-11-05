@@ -1,0 +1,354 @@
+import { createElement as h, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useFloating, FloatingPortal, flip, shift, offset, autoUpdate, size as floatingSize } from '@floating-ui/react'
+import { Chevron } from '../infra/chevron.js'
+import { t, type Translate } from '../../utils/i18n.js'
+import { FieldHint } from '../display/FieldHint.js'
+import { MarqueeText } from '../display/MarqueeText.js'
+import {
+  filterGroups,
+  flattenOptions,
+  labelsOf,
+  resolveTriggerSizing,
+  toGroups,
+  toggleValue,
+  type PickerGroup,
+  type PickerOption,
+} from './picker-logic.js'
+import { ensureComponentStyles } from '../infra/css.js'
+import { useOverlayLocked } from '../infra/overlay.js'
+import { PANEL_CSS } from '../infra/panel-css.js'
+import { PICKER_CSS } from './picker-css.js'
+import { FIELD_CSS } from '../infra/controls-css.js'
+
+export type { PickerGroup, PickerOption }
+
+export type PickerSize = 'sm' | 'md' | 'lg'
+
+export interface PickerProps {
+  /** 分组数据（模型选择里一组 = 一个 provider）。 */
+  groups?: PickerGroup[]
+  /** 扁平数据的快捷写法；与 `groups` 二选一。 */
+  options?: PickerOption[]
+  /** 受控值。给了它就是受控；不给就内部管（配 `defaultValue`）。 */
+  value?: string | string[]
+  /** 非受控模式下的初始值。 */
+  defaultValue?: string | string[]
+  onChange?: (value: string | string[]) => void
+  mode?: 'single' | 'multiple'
+  /** 多选上限；到上限后其余选项置灰并提示（不静默截断）。 */
+  max?: number
+  searchable?: boolean
+  /** 单选时允许「不选」——选项列表顶部多一项清除。 */
+  clearable?: boolean
+  placeholder?: string
+  /** 候选可能不完整（宿主没接上服务之类）⇒ 如实告诉用户，不编造。 */
+  degraded?: boolean
+  disabled?: boolean
+  size?: PickerSize
+  /** 菜单首选展开方向：靠近视口底部时传 `up`；实际会按可用空间自动翻转（flip）。 */
+  placement?: 'down' | 'up'
+  /** 选中后是否收起菜单；多选默认**不收起**（方便连续选）。 */
+  closeOnSelect?: boolean
+  /** 触发器文字对齐：默认 `left`；`center` 只在确实需要居中的地方显式传（2026-10-20）。 */
+  align?: 'left' | 'center'
+  /** 多选时是否把已选项列在触发器上（默认列）。 */
+  showLabels?: boolean
+  /** 触发器文字前的图标（任意 ReactNode；不传就没有这一段）。 */
+  icon?: ReactNode
+  /** 问号提示文字：给了就在触发器后面挂标准 FieldHint（排版收进组件，调用方不再手动拼）。 */
+  hint?: string
+  className?: string
+  /** 定宽（px 或任意 CSS 长度）。给了即忽略 minWidth / maxWidth，触发器固定此宽，内容超长省略 + hover 跑马灯。 */
+  width?: number | string
+  /** 最小宽（px 或任意 CSS 长度）；内容不到此宽时触发器也不会更窄（缺省沿用 CSS 的 120px）。 */
+  minWidth?: number | string
+  /** 最大宽（px 或任意 CSS 长度）；内容超过此宽时省略 + hover 跑马灯。 */
+  maxWidth?: number | string
+  ariaLabel?: string
+  translate?: Translate
+}
+
+/**
+ * 通用选择器：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级。
+ *
+ * **纯零件，不自己取数** —— 选项由调用方传入（工作区列表、模型列表这类数据要跨 host↔client
+ * 边界，通道是插件私有的，组件取不到，见需求文档 §6）。
+ */
+export function Picker(props: PickerProps): ReturnType<typeof h> {
+  ensureComponentStyles('picker', PICKER_CSS)
+  // 下拉面板的表皮来自 panel.css 的 menu 档（2026-11-03 皮肤统一）：这里只留定位与滚动。
+  ensureComponentStyles('panel', PANEL_CSS)
+  ensureComponentStyles('field', FIELD_CSS)
+  const tt = props.translate ?? t
+  const mode = props.mode ?? 'single'
+  const size = props.size ?? 'md'
+  const placement = props.placement ?? 'down'
+  const clearable = props.clearable === true
+  const showLabels = props.showLabels !== false
+  const triggerStyle = resolveTriggerSizing(props)
+  const groups = useMemo(
+    () => toGroups(props.groups, props.options),
+    [props.groups, props.options],
+  )
+
+  const controlled = props.value !== undefined
+  const [inner, setInner] = useState<string[]>(
+    () => toArray(props.defaultValue),
+  )
+  const selected: string[] = controlled
+    ? toArray(props.value)
+    : inner
+  const emit = (next: string[]): void => {
+    if (!controlled) setInner(next)
+    props.onChange?.(mode === 'single' ? (next[0] ?? '') : next)
+  }
+
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [active, setActive] = useState(-1)
+  const rootRef = useRef<HTMLDivElement | null>(null)
+  const searchRef = useRef<HTMLInputElement | null>(null)
+
+  // 浮层定位：portal 到 body + viewport 相对 + 滚动/缩放自动跟随 + 贴边自动翻转，
+  // 彻底避开祖先 overflow/transform 裁剪（核心缺陷修复）。宽度/最大高由 size 中间件内联设置。
+  const { refs, floatingStyles } = useFloating({
+    open,
+    onOpenChange: setOpen,
+    placement: placement === 'up' ? 'top-start' : 'bottom-start',
+    middleware: [
+      offset(4),
+      flip(),
+      shift({ padding: 8 }),
+      floatingSize({
+        apply({ elements, rects, availableWidth, availableHeight }) {
+          Object.assign(elements.floating.style, {
+            // 触发器可以限宽，菜单不能跟着限：至少与触发器同宽，随内容变宽，封顶 480 免得太夸张
+            minWidth: `${rects.reference.width}px`,
+            maxWidth: `${Math.min(480, availableWidth ?? 480)}px`,
+            maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`,
+          })
+        },
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+    strategy: 'fixed',
+  })
+
+  // 展开即聚焦搜索框（2026-10-20 用户：点开就能直接打字，不用再点一下）。
+  // 用回调 ref 在搜索框「真正挂载」时聚焦：菜单经 FloatingPortal 延后挂载，
+  // 普通 useEffect(open) 会在输入框还没挂上时跑（searchRef 仍为 null），导致失效。
+  const setSearchRef = useCallback((el: HTMLInputElement | null) => {
+    searchRef.current = el
+    if (el !== null && open) el.focus()
+  }, [open])
+
+  // 点外面收起（同时认 root 与浮层两个 DOM 子树：菜单 portal 到 body 后不在 root 内）
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent): void => {
+      const root = rootRef.current
+      const floatingEl = refs.floating.current
+      if (root?.contains(e.target as Node) === true) return
+      if (floatingEl?.contains(e.target as Node) === true) return
+      setOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [open])
+
+  // 外层浮层锁死就收起：菜单是 portal 到 body 的，不在面板的 inert 子树里，锁不住。
+  const overlayLocked = useOverlayLocked()
+  const off = props.disabled === true || overlayLocked
+  useEffect(() => {
+    if (overlayLocked) setOpen(false)
+  }, [overlayLocked])
+
+  // 收起时清掉搜索词与键盘游标，别让下次打开带着上次的过滤条件
+  useEffect(() => {
+    if (open) return
+    setQuery('')
+    setActive(-1)
+  }, [open])
+
+  const shown = filterGroups(groups, query)
+  const flat = flattenOptions(shown)
+  const atMax = mode === 'multiple' && props.max !== undefined && selected.length >= props.max
+  const summary =
+    selected.length === 0
+      ? (props.placeholder ?? tt('pickerPlaceholder'))
+      : mode === 'multiple' && !showLabels
+        ? tt('pickerSelected', { n: selected.length })
+        : labelsOf(groups, selected).join('、') || (props.placeholder ?? tt('pickerPlaceholder'))
+
+  const pick = (value: string): void => {
+    if (mode === 'single') {
+      emit([value])
+      setOpen(false)
+      return
+    }
+    emit(toggleValue(selected, value, props.max))
+    if (props.closeOnSelect === true) setOpen(false)
+  }
+
+  const clear = (): void => {
+    emit([])
+    setOpen(false)
+  }
+
+  // 键盘可达：Esc 关、上下移、回车选（没有 aria 树那么全，但能用键盘走完一遍）
+  const onKeyDown = (e: { key: string; preventDefault: () => void }): void => {
+    if (!open) return
+    if (e.key === 'Escape') {
+      setOpen(false)
+      return
+    }
+    if (flat.length === 0) return
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      const dir = e.key === 'ArrowDown' ? 1 : -1
+      setActive((cur) => (cur + dir + flat.length) % flat.length)
+      return
+    }
+    if (e.key === 'Enter' && active >= 0) {
+      e.preventDefault()
+      const hit = flat[active]
+      if (hit !== undefined) pick(hit.value)
+    }
+  }
+
+  // 触发器（右侧箭头 = 全站唯一的 Chevron，与官方 ⌄ 同形；ui 零官方依赖故自绘）。
+  const trigger = h(
+    'button',
+    {
+      type: 'button',
+      'aria-label': props.ariaLabel,
+      'aria-expanded': open,
+      ref: refs.setReference,
+      className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === 'center' ? ' dshpc-picker__trigger--center' : ''}`,
+      style: triggerStyle,
+      disabled: off,
+      onClick: () => {
+        if (!off) setOpen(!open)
+      },
+    },
+    props.icon !== undefined && props.icon !== null
+      ? h('span', { className: 'dshpc-picker__icon' }, props.icon)
+      : null,
+    // 文字吃掉剩余宽度并靠左（默认）；超长时外层省略号、hover 跑马灯（MarqueeText 自带）。
+    h(MarqueeText, { text: summary, className: 'dshpc-picker__label' }),
+    h(Chevron, { size: 12, className: 'dshpc-picker__caret' }),
+  )
+  // hint 给了就把触发器与 FieldHint 包进同一行（间距/对齐收进组件）。
+  const triggerRow =
+    props.hint === undefined
+      ? trigger
+      : h(
+          'span',
+          { className: 'dshpc-fieldwrap dshpc-fieldwrap--inline' },
+          trigger,
+          h(FieldHint, { text: props.hint }),
+        )
+
+  return h(
+    'div',
+    {
+      className: `dshpc-picker${props.className === undefined ? '' : ` ${props.className}`}`,
+      ref: rootRef,
+      onKeyDown,
+    },
+    triggerRow,
+    open
+      ? h(
+          FloatingPortal,
+          null,
+          h(
+            'div',
+            {
+              className: 'dshpc-panel dshpc-panel--menu dshpc-picker__menu',
+              ref: refs.setFloating,
+              style: floatingStyles,
+            },
+          props.degraded === true
+            ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerDegraded'))
+            : null,
+          atMax ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerMaxReached', { n: props.max ?? 0 })) : null,
+          props.searchable === true
+            ? h('input', {
+                ref: setSearchRef,
+                className: 'dshpc-picker__search',
+                placeholder: tt('pickerSearch'),
+                value: query,
+                onChange: (e: { target: { value: string } }) => setQuery(e.target.value),
+              })
+            : null,
+          flat.length === 0 && groups.length === 0
+            ? h('div', { className: 'dshpc-picker__empty' }, tt('pickerEmpty'))
+            : flat.length === 0
+              ? h('div', { className: 'dshpc-picker__empty' }, tt('pickerNoMatch'))
+              : [
+                  clearable && mode === 'single' && selected.length > 0
+                    ? h(
+                        'div',
+                        {
+                          key: '__clear__',
+                          className: 'dshpc-picker__option dshpc-picker__option--clear',
+                          onClick: clear,
+                        },
+                        tt('pickerClear'),
+                      )
+                    : null,
+                  ...shown.map((g) =>
+                    h(
+                      'div',
+                      { key: g.value || '_' },
+                      g.label === ''
+                        ? null
+                        : h('div', { className: 'dshpc-picker__group-label' }, g.label),
+                      g.options.map((o) => {
+                        // 到上限后：未选项置灰，**已选项保持可点**（点了是取消，不是再加）。
+                        const blocked = o.disabled === true || (atMax && !selected.includes(o.value))
+                        const activeCls = [
+                          'dshpc-picker__option',
+                          selected.includes(o.value) ? 'dshpc-picker__option--active' : '',
+                          blocked ? 'dshpc-picker__option--disabled' : '',
+                        ]
+                          .filter((s) => s !== '')
+                          .join(' ')
+                        const idx = flat.indexOf(o)
+                        return h(
+                          'div',
+                          {
+                            key: o.value,
+                            className: activeCls,
+                            'data-active': idx === active ? 'true' : undefined,
+                            onClick: () => {
+                              if (!blocked) pick(o.value)
+                            },
+                          },
+                          mode === 'multiple'
+                            ? h(
+                                'span',
+                                { className: 'dshpc-picker__tick' },
+                                selected.includes(o.value) ? '✓' : '',
+                              )
+                            : null,
+                          o.icon !== undefined && o.icon !== null
+                            ? h('span', { className: 'dshpc-picker__option-icon' }, o.icon)
+                            : null,
+                          // 选项文字超长时省略号 + hover 跑马灯（与触发器同一套逻辑），不把菜单撑出横向滚动条。
+                          h(MarqueeText, { text: o.label, className: 'dshpc-picker__option-label' }),
+                        )
+                      }),
+                    ),
+                  ),
+                ],
+          ),
+      )
+      : null,
+  )
+}
+
+function toArray(v: string | string[] | undefined): string[] {
+  if (v === undefined) return []
+  return Array.isArray(v) ? [...v] : [v]
+}

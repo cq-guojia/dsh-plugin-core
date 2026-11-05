@@ -5,7 +5,7 @@ import {
   isToolbarEntryVisible,
   resolveToolbarLeft,
   sortToolbarEntries,
-} from '../dist/ui/quick-toolbar-logic.js'
+} from '../dist/ui/layout/quick-toolbar-logic.js'
 
 test('无锚点：贴视口右缘，留 offset', () => {
   assert.equal(resolveToolbarLeft({ viewportWidth: 1200, offset: 16, size: 44 }, null), 1140)

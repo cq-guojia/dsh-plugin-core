@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { crumbsOf, extOf, joinPath, mimeOf, parentOf } from '../dist/utils/index.js'
-import { placePicker } from '../dist/explorer/picker-placement.js'
+import { placePicker } from '../dist/adv/explorer/picker-placement.js'
 // 只引纯逻辑层：面板/预览体静态 import 官方 primitives（Node 下不可解析，那是宿主平台模块）
 import {
   anchorSessionForTitle,
@@ -22,7 +22,7 @@ import {
   sortEntries,
   workspaceAnchorForPath,
   workspaceOfPath,
-} from '../dist/explorer/types.js'
+} from '../dist/adv/explorer/types.js'
 
 test('createRequestGate：latest-wins（旧 token 作废且 signal 中止）', () => {
   const gate = createRequestGate()
@@ -221,7 +221,7 @@ test('pickWorkspaceAnchor 取「最近更新且有会话」的工作区', () => 
 // PanelDock 回收不了它发布的占宽，遮罩从此永久停在让位状态。关掉只走 close（卸载根再摘容器）。
 test('关预览走 close（卸载 React 根），不直接移除挂载体', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/explorer/open.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/adv/explorer/open.js', import.meta.url), 'utf8')
   assert.ok(src.includes('root.unmount()'), 'close 没有卸载 React 根')
   assert.ok(!/previous\.remove\(\)/.test(src), '又回到直接 remove 挂载体的老路（卸载清理会被跳过）')
 })
@@ -230,7 +230,7 @@ test('关预览走 close（卸载 React 根），不直接移除挂载体', asyn
 // ② 用户自己拖好的宽度不许被重置。机制 = 再打开时复用同一份 DOM/React 根，只重画内容。
 test('再打开预览复用旧根：只重画内容、宽度先钉住', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/explorer/open.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/adv/explorer/open.js', import.meta.url), 'utf8')
   assert.ok(src.includes('activePreview.draw(opts'), '复用分支没有重画内容')
   assert.ok(src.includes('activePreview.keepWidth()'), '换内容前没钉住用户拖好的宽度')
   assert.ok(!src.includes('activePreview?.close()'), '又变回「重开就先关旧的」（动效会重播、宽度会重置）')
@@ -241,7 +241,7 @@ test('再打开预览复用旧根：只重画内容、宽度先钉住', async ()
   assert.ok(src.includes('++openSeq'), '没有每次打开递增的重开令牌')
   assert.ok(src.includes('revision'), '重开令牌没传进内层（同路径再点不会重读）')
   assert.ok(!/#\$\{\+\+openSeq\}/.test(src), '内层又按序号整棵重挂（目录树/滚动位置会丢）')
-  const fb = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  const fb = await readFile(new URL('../dist/adv/explorer/FileBrowser.js', import.meta.url), 'utf8')
   assert.ok(fb.includes('revision'), 'FileBrowser 初始 effect 没接 revision')
 })
 
@@ -251,13 +251,13 @@ test('再打开预览复用旧根：只重画内容、宽度先钉住', async ()
 // content 模式由内容自己画；想用壳的就传 closeButton。
 test('预览关钮可退让：默认不画面板关钮，文件模式走面包屑行尾', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/explorer/open.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/adv/explorer/open.js', import.meta.url), 'utf8')
   assert.ok(src.includes("closeButton: o.closeButton ?? 'none'"), '默认不是「不画」（content 模式又会没有关闭入口）')
   assert.ok(src.includes('onClose: close'), '文件模式没接面包屑行尾那枚 ✕')
   // content 与 path 同传：忽略 path，别让 handle.path 回报一个没生效的路径
   assert.ok(src.includes('二选一'), 'content + path 同传没提示')
   // 审阅入口自己画关闭钮（无头面板，壳不出）
-  const review = await readFile(new URL('../dist/session/open-review.js', import.meta.url), 'utf8')
+  const review = await readFile(new URL('../dist/adv/session/open-review.js', import.meta.url), 'utf8')
   assert.ok(review.includes('onClose'), 'openSessionReview 没给内容画关闭钮')
 })
 
@@ -308,7 +308,7 @@ test('crumbsOfDir：绝对路径保留前导 /，Windows 盘符单独成段', ()
 // 用户 2026-11-03：**UI 一律不动**，唯一变化是 ▾ 里根目录常驻第一行。
 test('FileBrowser：▾ 有根目录条目；没有「反推工作区根」那套', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/adv/explorer/FileBrowser.js', import.meta.url), 'utf8')
   assert.ok(src.includes('explorerRootDir'), '▾ 里没有根目录条目')
   assert.ok(src.includes('workspaceOfPath'), '没有工作区归属判定（面包屑根会错）')
   assert.ok(!src.includes('rootPending'), '又回到「反推工作区根」那套')
@@ -319,7 +319,7 @@ test('FileBrowser：▾ 有根目录条目；没有「反推工作区根」那�
 // ② 面包屑只有落在基准工作区内才以工作区名作根，在工作区外才从真实根展开。
 test('FileBrowser：目录状态存绝对路径，面包屑按基准判定', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/adv/explorer/FileBrowser.js', import.meta.url), 'utf8')
   assert.ok(src.includes('setDir(absTarget)'), 'fetchDir 又把原始入参当目录状态（相对路径会让子项读不到）')
   assert.ok(src.includes('workspaceOfPath(dir'), '面包屑没按**当前目录**去匹配工作区（会一直用打开时的路径）')
 })
@@ -327,7 +327,7 @@ test('FileBrowser：目录状态存绝对路径，面包屑按基准判定', asy
 // 2026-11-03：picker 什么都不传 ⇒ 主窗体先列「根目录 + 各工作区」，面包屑留空（只留 ▾ 箭头）。
 test('FileBrowser 落地页：根目录 + 工作区清单，选完才进目录', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/adv/explorer/FileBrowser.js', import.meta.url), 'utf8')
   assert.ok(src.includes('landing'), '没有落地页状态')
   // 落地页上点行 / 点 ▾ 选层都走 loadDir：它必须顺手退出落地页，否则主体还是落地页那张表（点了没反应）。
   const loadDirAt = src.indexOf('loadDir = ')
@@ -341,11 +341,11 @@ test('FileBrowser 落地页：根目录 + 工作区清单，选完才进目录',
 // 盘符可以当选择目标；POSIX 的 `/` 不是目标（选了等于没选）。
 test('FileBrowser 根层：盘符由宿主给，POSIX 的根不给选', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/adv/explorer/FileBrowser.js', import.meta.url), 'utf8')
   assert.ok(src.includes('props.files.roots'), '没向宿主要根清单（Windows 上就只剩一个假「根目录」）')
   // 根层条目（根目录 / 盘符）都是可选目标，不再有「这个根不可选」的分叉。
   assert.ok(!src.includes('pickable: false'), '根层还留着「不可选」的分叉')
-  const face = await readFile(new URL('../dist/explorer/fs-face.js', import.meta.url), 'utf8')
+  const face = await readFile(new URL('../dist/adv/explorer/fs-face.js', import.meta.url), 'utf8')
   assert.ok(face.includes("op: 'roots'"), 'client 文件面没接宿主的 roots op')
 })
 
@@ -353,7 +353,7 @@ test('FileBrowser 根层：盘符由宿主给，POSIX 的根不给选', async ()
 // 否则选当前目录）；没有它，进了目录 / 打开文件之后就没有选中入口。
 test('FileBrowser 选择器：头部有「选当前」按钮', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/explorer/FileBrowser.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/adv/explorer/FileBrowser.js', import.meta.url), 'utf8')
   assert.ok(src.includes('dshpc-fb__pick'), '头部没有「选当前」按钮（进入目录后选不了当前层）')
   const pickAt = src.indexOf('dshpc-fb__pick')
   const body = src.slice(pickAt, pickAt + 900)

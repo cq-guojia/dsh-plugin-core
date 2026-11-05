@@ -6,9 +6,9 @@
 // 这里钉纯函数与数据链（open-session-view 只 import 类型，编译后零依赖）。
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { parseOfficialCss, officialClass, officialModuleCount } from '../dist/session/official-classes.js'
-import { openSessionView, DEFAULT_RETAIN_SOURCE } from '../dist/session/open-session-view.js'
-import { buildProcessGroups, toolActivity, processTitle } from '../dist/session/mirror/process-groups.js'
+import { parseOfficialCss, officialClass, officialModuleCount } from '../dist/adv/session/official-classes.js'
+import { openSessionView, DEFAULT_RETAIN_SOURCE } from '../dist/adv/session/open-session-view.js'
+import { buildProcessGroups, toolActivity, processTitle } from '../dist/adv/session/mirror/process-groups.js'
 import {
   changesSummaryUrl,
   parseChangesSummary,
@@ -20,9 +20,9 @@ import {
   hunkHeader,
   diffNoteKey,
   DIFF_MAX_RENDERED_LINES,
-} from '../dist/session/changes.js'
-import { durationText, formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/session/mirror/message-chrome.js'
-import { observedRpcIds, visiblePendingInputs, pendingFiles, waitingUserRows } from '../dist/session/pending-inputs.js'
+} from '../dist/adv/session/changes.js'
+import { durationText, formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/adv/session/mirror/message-chrome.js'
+import { observedRpcIds, visiblePendingInputs, pendingFiles, waitingUserRows } from '../dist/adv/session/pending-inputs.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
 // ── official-classes：官方 CSS module 类名运行时发现 ──

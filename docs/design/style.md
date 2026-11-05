@@ -122,13 +122,13 @@ its own assertion.
 
 > EN: There is only one arrow: `Chevron`
 
-`ui` 层零官方依赖，箭头一律走 `src/ui/chevron.ts` 的自绘 chevron（`h(Chevron, { dir, size })`，
+`ui` 层零官方依赖，箭头一律走 `src/ui/infra/chevron.ts` 的自绘 chevron（`h(Chevron, { dir, size })`，
 四向共用一条路径，靠旋转实现）。**不许再写 `'▾'` / `'↑'` 这类字形**——各系统字体下粗细、角度、
 基线都不一样，同一套界面里会冒出第二种箭头（2026-10-26：卡片折叠箭头就是这么来的）。
 有自检盯着：`test/quality.test.mjs`。
 
 EN: The `ui` layer has no official dependency, so every arrow comes from the self-drawn chevron in
-`src/ui/chevron.ts`. Never write a glyph arrow again; a test enforces it.
+`src/ui/infra/chevron.ts`. Never write a glyph arrow again; a test enforces it.
 
 ## 拼成一体：外壳持框，内件交边
 
@@ -140,7 +140,7 @@ EN: The `ui` layer has no official dependency, so every arrow comes from the sel
 自己画 `:focus-visible` 圈——否则格子里会冒出半圈描边。
 
 `SplitGroup` 用后代选择器直接压内件（`.dshpc-split .dshpc-picker__trigger` / `.dshpc-split .dshpc-seg`），
-所以**内件类名就是耦合点**：改这些类名或结构必须同步改 `src/ui/controls/split-group.css`，否则拼接
+所以**内件类名就是耦合点**：改这些类名或结构必须同步改 `src/ui/layout/split-group.css`，否则拼接
 静默失效（双边框、底色错位），没有自检能替你发现。高度不写死——内件按自己的 `size`（sm 24 /
 md 28 / lg 32）撑开，外壳跟着长；两格传同一个 `size` 才逐像素等高。**外壳绝不能用 `height:100%`
 拉满内件**：它和 `.dshpc-picker__trigger--lg` / `--sm` 同特异性（两个类）且 `split-group.css`
@@ -154,7 +154,7 @@ md 28 / lg 32）撑开，外壳跟着长；两格传同一个 `size` 才逐像�
 EN: Welding controls into one visual unit has exactly one recipe: the shell owns border, radius,
 `overflow:hidden` and the shared `:focus-within` ring; the cells hand over border, background and radius.
 `SplitGroup` overrides inner classes with descendant selectors, so those class names are the coupling point —
-rename them and you must update `src/ui/controls/split-group.css`, or the weld fails silently.
+rename them and you must update `src/ui/layout/split-group.css`, or the weld fails silently.
 
 ## 滚动条让位：一律离边缘 1px
 
@@ -190,7 +190,7 @@ one-liner; `--dshpc-dock-gap` was removed on 2026-11-02. A test enforces the bor
 
 > EN: Three tiers for floating surfaces — modal / popover / menu
 
-所有「浮起来的框」的**表面**（底色 · 描边宽 · 圆角 · 阴影）只在 `src/ui/panel.css` 定义，档位只有三个
+所有「浮起来的框」的**表面**（底色 · 描边宽 · 圆角 · 阴影）只在 `src/ui/infra/panel.css` 定义，档位只有三个
 （2026-11-03 用户定：样式统一，交互各家自己管）：
 
 | 档位 | 用在 | 底色 | 描边 | 圆角 | 阴影 |

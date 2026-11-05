@@ -16,9 +16,9 @@
  *
  * 服务缺席时保持 unavailable，界面如实说「未就位」，绝不造假数据顶替（与文件数据面同口径）。
  */
-import type { SessionViewTarget } from '../../../dist/session/index.js'
-import { openSessionView } from '../../../dist/session/index.js'
-import type { SessionsFace, UiConversationFace } from '../../../dist/session/index.js'
+import type { SessionViewTarget } from '../../../dist/adv/session/index.js'
+import { openSessionView } from '../../../dist/adv/session/index.js'
+import type { SessionsFace, UiConversationFace } from '../../../dist/adv/session/index.js'
 
 // ── 本地结构化消费面（不引官方包类型；官方改契约时改这一处）──
 

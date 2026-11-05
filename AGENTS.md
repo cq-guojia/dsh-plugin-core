@@ -73,10 +73,10 @@ tag 会触发 npm publish，调试期不需要走发布链。问题定位收敛�
 
 ```
 src/design/    token + createStyleKit（零 React）
-src/ui/        控件 + 样式注入器（依赖 design）
+src/ui/        控件，按 7 类分目录（actions / inputs / display / feedback / layout / navigation / infra）
 src/utils/     纯方法（零 React / DOM）
-src/explorer/  工作区浏览 + 预览 + 选工作区/文件
-src/session/   会话预览
+src/adv/explorer/  工作区浏览 + 预览 + 选工作区/文件
+src/adv/session/   会话预览
 test/          node:test 自检
 docs/          文档（见 docs/README.md）
 dist/          构建产物（入库）

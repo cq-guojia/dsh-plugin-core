@@ -11,7 +11,7 @@
  * 因此「重分类 / 改文档」只动 doc.ts，本层一行不动。
  */
 import { createElement as h, Fragment, type ReactNode } from 'react'
-import { CodeViewer } from '../../../dist/ui/CodeViewer.js'
+import { CodeViewer } from '../../../dist/ui/display/CodeViewer.js'
 import { StripCard, Surface } from '../../../dist/ui/index.js'
 import { getLocale, t as coreT } from '../../../dist/utils/index.js'
 import { t, type DemoMessageKey } from './i18n.js'

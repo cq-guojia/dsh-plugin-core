@@ -238,7 +238,7 @@ const CODE_BTN_WIDTH = `// 固定宽：写死宽度
 <Button variant="outline" width={120} minWidth={200} maxWidth={160}>固定宽优先</Button>`
 
 
-/** Button 的对外参数（与 src/ui/Button.ts 的 ButtonProps 逐条对齐）。 */
+/** Button 的对外参数（与 src/ui/actions/Button.ts 的 ButtonProps 逐条对齐）。 */
 
 export function ButtonPage(): ReturnType<typeof h> {
   // 演示「外部刷新也能把按钮带成 loading」：这个布尔就是那个外部状态
@@ -495,13 +495,13 @@ const CODE_SEG_TONE = `// tone：选中片配色（2026-10-29）。默认不传 
 <Segmented multiple tone="purple" className="dshpc-seg--weekday" items={weekdays} value={multi} onChange={setMulti} />`
 
 
-/** Input 家族对外参数（与 src/ui/Field.ts 的 InputProps / NumberInputProps 逐条对齐）。 */
+/** Input 家族对外参数（与 src/ui/inputs/Field.ts 的 InputProps / NumberInputProps 逐条对齐）。 */
 
-/** NumberInput 在 InputProps 之上多出的参数（与 src/ui/Field.ts 的 NumberInputProps 对齐）。 */
+/** NumberInput 在 InputProps 之上多出的参数（与 src/ui/inputs/Field.ts 的 NumberInputProps 对齐）。 */
 
-/** Textarea 在 InputProps 之上多出的参数（与 src/ui/Textarea.ts 的 TextareaProps 对齐）。 */
+/** Textarea 在 InputProps 之上多出的参数（与 src/ui/inputs/Textarea.ts 的 TextareaProps 对齐）。 */
 
-/** Segmented 对外参数（与 src/ui/Segmented.ts 的 SegmentedProps 对齐；单选 / 多选共用基座）。 */
+/** Segmented 对外参数（与 src/ui/inputs/Segmented.ts 的 SegmentedProps 对齐；单选 / 多选共用基座）。 */
 
 /** Segmented 示例共用的三档（日 / 周 / 月）。 */
 const PERIODS = [
@@ -899,7 +899,7 @@ const SPLIT_MEMBERS: Record<string, { value: string; label: string }[]> = {
 }
 
 
-/** Picker 对外参数（与 src/ui/Picker.ts 的 PickerProps 逐条对齐）。 */
+/** Picker 对外参数（与 src/ui/inputs/Picker.ts 的 PickerProps 逐条对齐）。 */
 
 /** ModelPicker / WorkspacePicker：业务封装，props 与 Picker 同族（数据由宿主给）。 */
 
@@ -1239,7 +1239,7 @@ const CODE_SECTION_HEAD = `// 分区标题：标签（可选，画出来的短�
 />`
 
 
-/** Card / StripCard 共用同一份 props（与 src/ui/Card.ts 的 CardSharedProps 逐条对齐）。 */
+/** Card / StripCard 共用同一份 props（与 src/ui/display/Card.ts 的 CardSharedProps 逐条对齐）。 */
 
 /** SectionHead：纯排版壳，三段都由调用方给。 */
 
@@ -1483,7 +1483,7 @@ const FLIP_STEPS = [
   '已完成',
 ]
 
-/** Chip 对外参数（与 src/ui/Chip.ts 的 ChipProps 逐条对齐）。 */
+/** Chip 对外参数（与 src/ui/display/Chip.ts 的 ChipProps 逐条对齐）。 */
 
 /** MarqueeText / LiveText：两个小件各一行。 */
 
@@ -2354,9 +2354,9 @@ dock.isCollapsed('files')
 const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`
 
 
-/** DockPanel 的 props（与 src/ui/PanelDock.ts 的 DockPanelProps 逐条对齐）。 */
+/** DockPanel 的 props（与 src/ui/layout/PanelDock.ts 的 DockPanelProps 逐条对齐）。 */
 
-/** createPanelDock(options) 的参数（与 src/ui/PanelDock.ts 的 PanelDockOptions 逐条对齐）。 */
+/** createPanelDock(options) 的参数（与 src/ui/layout/PanelDock.ts 的 PanelDockOptions 逐条对齐）。 */
 
 export function LayoutPage(): ReturnType<typeof h> {
   // 控制器与「页面右侧那份 PanelDock」都在 client/index.tsx（页面级），这里只负责触发与读状态。

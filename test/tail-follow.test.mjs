@@ -6,7 +6,7 @@
 // 滚动条必须原地不动。这里用纯状态机 + 假 DOM 几何把四条验收钉死。
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { createTailFollower, TAIL_STABLE_FRAMES } from '../dist/session/tail-follow.js'
+import { createTailFollower, TAIL_STABLE_FRAMES } from '../dist/adv/session/tail-follow.js'
 
 function harness(height = 1000, viewport = 300) {
   const m = { scrollTop: 0, scrollHeight: height, clientHeight: viewport }

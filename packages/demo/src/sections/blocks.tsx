@@ -6,10 +6,10 @@ import {
   pickWorkspaceFile,
   type OfficeToPdfFace,
   type WorkspaceFilesFace,
-} from '../../../../dist/explorer/index.js'
+} from '../../../../dist/adv/explorer/index.js'
 import { workspaceList } from '../../../../dist/ui/index.js'
 import { Chip } from '../../../../dist/ui/index.js'
-import { openSessionReview, SessionViewModal, type ChangedFileReviewLocator } from '../../../../dist/session/index.js'
+import { openSessionReview, SessionViewModal, type ChangedFileReviewLocator } from '../../../../dist/adv/session/index.js'
 import { formatDateTime } from '../../../../dist/utils/index.js'
 import { Button } from '../../../../dist/ui/index.js'
 import { openRealSessionView, realForkSession, realOpenHostSession, realSessions } from '../real-sessions.js'

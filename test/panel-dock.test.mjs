@@ -13,8 +13,8 @@ import {
   isOpen,
   openPanel,
   setPanelWidth,
-} from '../dist/ui/panel-dock-logic.js'
-import { DockPanel, createPanelDock } from '../dist/ui/PanelDock.js'
+} from '../dist/ui/layout/panel-dock-logic.js'
+import { DockPanel, createPanelDock } from '../dist/ui/layout/PanelDock.js'
 
 // ── 纯逻辑 ────────────────────────────────────────────────────────────────
 test('不传 id 用默认窗口；重复打开不新增', () => {
@@ -200,7 +200,7 @@ test('控制器 collapse / expand / isCollapsed；开着再打开会撤销耳朵
 
 test('记忆里那份宽度读回时也过一遍夹（宽屏拖的值换窄窗口不越界）', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../dist/ui/PanelDock.js', import.meta.url), 'utf8')
+  const src = await readFile(new URL('../dist/ui/layout/PanelDock.js', import.meta.url), 'utf8')
   // 只有兜底宽度走 clampWidth、存下来的值直接吃 ⇒ 上次 900 换窄窗口重开就撑满。
   assert.ok(/clampWidth\(state\.widths\[pane\.id\] \?\?/.test(src), '存下来的宽度没夹边界')
 })
@@ -221,9 +221,9 @@ test('展开受数量闸约束：满栏时耳朵展开被拒并回调', () => {
 // 修法 = 耳朵 portal 到 body + 层序高于 modal。
 test('收起后的耳朵：portal 到 body，层序高于弹窗遮罩', async () => {
   const { readFile } = await import('node:fs/promises')
-  const dock = await readFile(new URL('../dist/ui/PanelDock.js', import.meta.url), 'utf8')
+  const dock = await readFile(new URL('../dist/ui/layout/PanelDock.js', import.meta.url), 'utf8')
   assert.ok(dock.includes('createPortal'), '耳朵没 portal 到 body（会被弹窗的 stacking context 关住）')
-  const css = await readFile(new URL('../src/ui/panel-dock.css', import.meta.url), 'utf8')
+  const css = await readFile(new URL('../src/ui/layout/panel-dock.css', import.meta.url), 'utf8')
   assert.match(css, /\.dshpc-dock__ears\{[^}]*z-index:var\(--dshpc-z-ear/, '耳朵没走 ear 层档')
   const tokens = await readFile(new URL('../src/design/tokens.css', import.meta.url), 'utf8')
   const ear = Number(/--dshpc-z-ear:(\d+)/.exec(tokens)?.[1])
