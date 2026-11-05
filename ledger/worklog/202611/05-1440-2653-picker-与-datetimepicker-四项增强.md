@@ -1,7 +1,7 @@
 # 20261105-1440-2653-picker-与-datetimepicker-四项增强: Picker 与 DateTimePicker 四项增强
 
 - **Tags**: Picker, DateTimePicker, 搜索, 分页, 预设档
-- **Status**: doing · 2026-11-05 17:33:07 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-05 17:37:27 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-05 14:40:50 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -32,7 +32,7 @@
 
 ## Next
 
-宿主里更新 demo 插件后真机点一次：`limit=10` 的「显示更多」、贴 `uuid-0007` 搜到任务 8、预设列选「上周」立即生效且面板不关、手改起止后高亮消失、`width: 320` 的触发器宽度；重点看第三轮返工：切英文后右列是否还撑宽、11 档是否只在列内滚而不把弹层撑高、右列高度是否贴齐左侧日历区。真机过了再请用户验收结案。
+宿主里更新 demo 插件后真机点一次：`limit=10` 的「显示更多」、贴 `uuid-0007` 搜到任务 8、预设列选「上周」立即生效且面板不关、手改起止后高亮消失、`width: 320` 的触发器宽度；重点看第三轮返工：切英文后右列是否还撑宽、11 档是否只在列内滚而不把弹层撑高、右列高度是否贴齐左侧日历区。另看英文占位 `Date & time` 在 day / minute 两档是否都不再省略、不再显得顶满，并确认宿主加载的是最新 demo 产物（未提交未打 tag，npm 渠道拿不到）。真机过了再请用户验收结案。
 
 ## Process
 
@@ -79,3 +79,4 @@ DateTimePicker 默认宽是 6 个 CSS 类按精度写死（`datetime.css:39-44` 
 - 2026-11-05 16:58:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 二次返工（用户真机）：右列宽度改 max-content 自适应（中文两字窄/英文最长档撑开）、快捷按钮文字居中；核心 DateTimePreset.label 支持 {zh,en} 双语对象并按 getLocale 解析，demo 全部改双语（此前硬编码中文导致切英文不变）；新增 now/Q、now-1Q/Q、now/y、now-1y/y 四档并给解析器补 Q 季单位。build/test 304 全绿/build:demo/typecheck/codelint 全过
 - 2026-11-05 17:20:07 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 三次返工：datetime.css 右列改定宽 76px + .dshpc-dt__side-scroll 内部滚动，高度由 .dshpc-dt__layout 的 stretch 跟左区拉齐；demo 与 CODE_DATETIME 英文缩写、ui.doc.ts 中英叙述同步；build/test 304 全绿/build:demo/typecheck/codelint 22 文件全过。待真机看英文缩写与滚动条
 - 2026-11-05 17:33:07 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 四次返工（用户四条）：输入类外框统一吃 --dshpc-border-heavy、提示文字吃 --dshpc-fg-3（field/input-group/split-group/picker/datetime.css），panel.css 只在 menu 档加重描边（避开 quality.test.mjs:76 硬断言）；demo Placeholder 补 16px 下间距；端框 size sm→md 且字号跟档、ui.doc.ts 中英同步。查证 DateTimePicker.ts:705 与 Picker.ts:275 浮层本就同挂 dshpc-panel--menu。build/test 304 全绿/build:demo/typecheck/codelint 31 文件全过。待真机看明暗对比与端框比例
+- 2026-11-05 17:37:27 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户截图质疑英文仍被顶宽：核对产物确认上轮缩写/定宽/滚动已编译进 demo dist/client.js；截图的 'Select date & time' 是 utils/i18n.ts:1549 内置英文占位，且该弹层是 single 模式按设计不显示 presets 右列。把 dtPlaceholder 英文缩为 'Date & time'（中文不变），重编译后产物里全拼已消失。build/test 304 全绿/build:demo/typecheck/codelint 31 文件全过。待用户确认宿主加载的是最新产物（未提交未打 tag）
