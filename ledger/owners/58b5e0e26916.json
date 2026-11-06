@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261106-0041-03df-同步宿主升级差异-未接项与合计差": {"category": "宿主适配", "created": "2026-11-06 00:41:04", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-06 00:47:06", "status": "doing", "tags": ["宿主升级", "差异同步"], "title": "同步宿主升级差异：未接项与合计差", "updated": "2026-11-06 03:32:07", "worklog": "worklog/202611/06-0041-03df-同步宿主升级差异-未接项与合计差.md"},
+    "20261106-0041-03df-同步宿主升级差异-未接项与合计差": {"category": "宿主适配", "created": "2026-11-06 00:41:04", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-06 00:47:06", "status": "doing", "tags": ["宿主升级", "差异同步"], "title": "同步宿主升级差异：未接项与合计差", "updated": "2026-11-06 03:57:28", "worklog": "worklog/202611/06-0041-03df-同步宿主升级差异-未接项与合计差.md"},
     "20261106-0331-846c-遮罩不挡左侧菜单": {"category": "修改", "created": "2026-11-06 03:31:21", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-06 03:31:21", "status": "doing", "tags": ["会话弹窗", "遮罩", "层级"], "title": "遮罩不挡左侧菜单", "updated": "2026-11-06 03:31:58", "worklog": "worklog/202611/06-0331-846c-遮罩不挡左侧菜单.md"}
   },
   "version": "20261022000000"
