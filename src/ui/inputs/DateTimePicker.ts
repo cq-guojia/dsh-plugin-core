@@ -740,7 +740,7 @@ export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h>
             { className: 'dshpc-dt__side' },
             h(
               'div',
-              { className: 'dshpc-dt__side-scroll' },
+              { className: 'dshpc-dt__side-scroll dshpc-scroll-thin' },
               presetRows.map((p, i) => {
                 const active = !p.isClear && p.range !== null && draftRange !== null &&
                   p.range[0] === draftRange[0] && p.range[1] === draftRange[1]

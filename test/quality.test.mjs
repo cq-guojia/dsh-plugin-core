@@ -74,7 +74,7 @@ test('滚动容器都与边缘隔 1px（透明边框或实色边框）', async (
   // 这类容器靠**同一元素上**的面板边框让位，按类名白名单放行；前提是面板确实带 1px 边框。
   const panelCss = (await readFile(new URL('../src/ui/infra/panel.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
   assert.match(panelCss, /\.dshpc-panel\{[^}]*border:var\(--dshpc-panel-bw\) solid var\(--dshpc-border\)/, '面板不再带 1px 边框（滚动条会贴死边缘）')
-  const PANEL_SCROLLERS = new Set(['dshpc-fb__crumbs-menu', 'dshpc-picker__menu'])
+  const PANEL_SCROLLERS = new Set(['dshpc-fb__crumbs-menu'])
   const hits = []
   const walk = async (rel) => {
     for (const entry of await readdir(new URL(rel, import.meta.url), { withFileTypes: true })) {

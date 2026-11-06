@@ -16,12 +16,18 @@
 .dshpc-picker__caret{flex:none;color:var(--dshpc-fg-3)}
 .dshpc-picker__icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
 .dshpc-picker__option-icon{display:inline-flex;flex:none;color:var(--dshpc-fg-2)}
-/* 下拉面板只留定位 / 滚动 / 字号：底色·描边·圆角·阴影来自 panel.css 的 menu 档。 */
+/* 下拉面板只留定位 / 裁切 / 字号：底色·描边·圆角·阴影来自 panel.css 的 menu 档。 */
 .dshpc-picker__menu{
-  z-index:var(--dshpc-z-popmenu);max-height:280px;overflow:auto;padding:4px;
+  z-index:var(--dshpc-z-popmenu);max-height:280px;overflow:hidden;
+  display:flex;flex-direction:column;
   /* 菜单经 FloatingPortal 挂到 body，脱离 .dshpc-picker，须显式字号，否则继承 body 的大字号 */
   font-size:13px;line-height:20px;
 }
+/* 固定头部（提示 + 搜索框），不随列表滚（2026-11-06 用户）。 */
+.dshpc-picker__head{flex:none;padding:4px 4px 0}
+/* 滚动在内层：列表贴满面板内容区，再靠自身 1px 透明边框让位 —— 滚动条与面板可见边框之间留出
+   1px 缝（不加这条边框就贴死在边框内壁上，2026-11-06 用户反馈）。上下角溢出由面板 overflow:hidden 裁掉。 */
+.dshpc-picker__list{flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 4px 4px;border-right:1px solid transparent}
 /* 尺寸档（与 Field 的 sm/md/lg 对应）。 */
 .dshpc-picker__trigger--sm{height:24px;font-size:12px}
 .dshpc-picker__trigger--lg{height:32px}
@@ -54,11 +60,11 @@
   font-size:11px;
 }
 .dshpc-picker__row{display:flex;align-items:center;gap:8px}
-/* 「显示更多」吸在滚动容器底部：不新增滚动层，列表再长也点得到。 */
+/* 「显示更多」跟在最后一条后面、长得像多一条选项（2026-11-06 用户：翻到底发现不全才会找它）。 */
 .dshpc-picker__more{
-  position:sticky;bottom:0;display:block;width:100%;margin-top:4px;padding:6px 8px;
-  color:var(--dshpc-business);background:var(--dshpc-surface-1);
-  border:0;border-top:1px solid var(--dshpc-border-faint);cursor:pointer;
+  display:block;width:100%;margin-top:2px;padding:6px 8px;
+  color:var(--dshpc-business);background:none;
+  border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;
   font-size:12px;line-height:20px;text-align:center;
 }
 .dshpc-picker__more:hover{background:var(--dshpc-surface-sunken)}

@@ -276,6 +276,8 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
               ref: refs.setFloating,
               style: floatingStyles,
             },
+          // 搜索框与提示留在固定头部，列表自己滚（2026-11-06 用户：搜索框不随列表滚）。
+          h('div', { className: 'dshpc-picker__head' },
           props.degraded === true
             ? h('div', { className: 'dshpc-picker__degraded' }, tt('pickerDegraded'))
             : null,
@@ -292,6 +294,8 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                 },
               })
             : null,
+          ),
+          h('div', { className: 'dshpc-picker__list dshpc-scroll-thin' },
           flat.length === 0 && groups.length === 0
             ? h('div', { className: 'dshpc-picker__empty' }, tt('pickerEmpty'))
             : flat.length === 0
@@ -364,6 +368,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                       )
                     : null,
                 ],
+          ),
           ),
       )
       : null,

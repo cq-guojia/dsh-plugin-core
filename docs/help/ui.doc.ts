@@ -383,8 +383,8 @@ const doc: DocTopic = {
           en: 'Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`.',
         },
         {
-          zh: '首屏分页：`limit` 按**选项条数**跨组切片，菜单底部「显示更多」每点一次再追加 `limit` 条；搜索结果走同一套分页，换搜索词或重新展开都回到首屏。不传 `limit` 就是全量渲染。`PickerOption.keywords` 是可选的单个字符串（调用方自己拼），只和 `label` 拼起来参与大小写不敏感子串匹配，**绝不渲染**——适合任务 UUID 这种「用户能贴、但不该显示」的搜索词。纯逻辑另可单用 `sliceGroups`。',
-          en: 'First-page paging: `limit` slices by **option count** across groups; "Show more" at the menu bottom appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** — for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic.',
+          zh: '首屏分页：`limit` 按**选项条数**跨组切片，列表末尾「显示更多」（跟在最后一条后，像多一条选项）每点一次再追加 `limit` 条；搜索结果走同一套分页，换搜索词或重新展开都回到首屏。不传 `limit` 就是全量渲染。`PickerOption.keywords` 是可选的单个字符串（调用方自己拼），只和 `label` 拼起来参与大小写不敏感子串匹配，**绝不渲染**——适合任务 UUID 这种「用户能贴、但不该显示」的搜索词。纯逻辑另可单用 `sliceGroups`。',
+          en: 'First-page paging: `limit` slices by **option count** across groups; "Show more" rendered as the last row of the list appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** — for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic.',
         },
         {
           zh: 'WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。',
@@ -405,7 +405,7 @@ const doc: DocTopic = {
             { name: 'mode', type: "'single' | 'multiple'", def: "'single'", desc: { zh: '—', en: '—' } },
             { name: 'max', type: 'number', def: '—', desc: { zh: '多选上限；到上限其余项置灰 + 提示（不静默截断）', en: 'Multiple-select cap; at cap others grey out + a hint (no silent truncation)' } },
             { name: 'searchable', type: 'boolean', def: "'false'", desc: { zh: '显示搜索框；展开菜单时自动聚焦搜索框', en: 'Shows a search box; auto-focuses it when the menu opens' } },
-            { name: 'limit', type: 'number', def: '—', desc: { zh: '首屏显示的选项条数（跨组计）；底部「显示更多」每次再追加同样条数，搜索结果同样分页。不传 = 全量', en: 'Options shown on the first page (counted across groups); "Show more" appends the same amount each click, search results included. Omitted = all' } },
+            { name: 'limit', type: 'number', def: '—', desc: { zh: '首屏显示的选项条数（跨组计）；列表末尾「显示更多」每次再追加同样条数，搜索结果同样分页。不传 = 全量', en: 'Options shown on the first page (counted across groups); "Show more" appends the same amount each click, search results included. Omitted = all' } },
             { name: 'options[].keywords', type: 'string', def: '—', desc: { zh: '只参与搜索、不渲染的额外关键词（单个字符串，调用方自行拼接）', en: 'Extra search-only keyword, never rendered (one string, joined by the caller)' } },
             { name: 'align', type: "'left' | 'center'", def: "'left'", desc: { zh: '触发器文字对齐', en: 'Trigger text alignment' } },
             { name: 'clearable', type: 'boolean', def: "'false'", desc: { zh: '单选时列表顶部多一项「不选」', en: 'In single mode, adds a "none" item at the top of the list' } },

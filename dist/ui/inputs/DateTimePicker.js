@@ -489,7 +489,7 @@ export function DateTimePicker(props) {
         ? h('div', { className: 'dshpc-dt__ends' }, endBox('start', tt('dtStart')), endBox('end', tt('dtEnd')))
         : null, h('div', { className: 'dshpc-dt__panels' }, panel('start'), rangeMode ? panel('end') : null)), presetRows.length === 0
         ? null
-        : h('div', { className: 'dshpc-dt__side' }, h('div', { className: 'dshpc-dt__side-scroll' }, presetRows.map((p, i) => {
+        : h('div', { className: 'dshpc-dt__side' }, h('div', { className: 'dshpc-dt__side-scroll dshpc-scroll-thin' }, presetRows.map((p, i) => {
             const active = !p.isClear && p.range !== null && draftRange !== null &&
                 p.range[0] === draftRange[0] && p.range[1] === draftRange[1];
             return h(Button, {

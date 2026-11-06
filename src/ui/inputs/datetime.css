@@ -101,8 +101,9 @@
   position:relative;flex:none;width:76px;
   padding-left:9px;border-left:1px solid var(--dshpc-border-faint);
 }
+/* 右溢 10px 抵消面板 padding，滚动条才贴到面板自身 1px 边框内侧；内容用 padding-right 补回边距。 */
 .dshpc-dt__side-scroll{
-  position:absolute;inset:0 0 0 9px;
+  position:absolute;inset:0 -10px 0 9px;padding-right:9px;
   display:flex;flex-direction:column;gap:2px;overflow-y:auto;
   border-right:1px solid transparent;
 }
