@@ -1,8 +1,9 @@
 # 20261106-0429-83be-sessionviewmodal-内容插槽: SessionViewModal 内容插槽
 
 - **Tags**: 会话预览, 插槽, 扩展点, 向后兼容
-- **Status**: doing · 2026-11-06 05:51:28 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-06 05:51:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-06 04:29:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-06 05:51:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -183,3 +184,4 @@ turn-tail」，其它情形回落流末尾（已知且测试覆盖）。
 - 2026-11-06 05:37:18 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 插槽示例只挂在列表第一个会话（withSlots = openId === rows[0].sessionId），其余会话不传槽；build:demo + 323 测试全绿
 - 2026-11-06 05:40:47 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 0.35.0：两包同号 bump、build+build:demo、pnpm test 323 全绿；commit c112286 推 main，tag v0.35.0 已推（触发两个 publish workflow）
 - 2026-11-06 05:51:28 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 收尾：worklog 实现清单改为最终态（9 条测试、demo 只挂首个会话、间距一条规则），Next 改为无
+- 2026-11-06 05:51:37 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: SessionViewModal 新增 title/header/headerActions/bodyHeader/bodyFooter（heading 留旧名），Modal 新增 header；无槽 DOM 与 0.34.0 一致；0.35.0 已发版
