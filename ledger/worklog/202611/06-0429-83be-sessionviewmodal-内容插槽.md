@@ -1,7 +1,7 @@
 # 20261106-0429-83be-sessionviewmodal-内容插槽: SessionViewModal 内容插槽
 
 - **Tags**: 会话预览, 插槽, 扩展点, 向后兼容
-- **Status**: doing · 2026-11-06 04:35:25 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-06 04:35:52 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-06 04:29:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -27,27 +27,36 @@
 `headerActionsSlot` / `bodyLead` / `bodyTail` 四个可选 `ReactNode` props，容器类名建议
 `dshpc-sv-lead` / `dshpc-sv-tail`。
 
+用户 2026-11-06 对标题槽的原话澄清（推翻了「一个标题槽」的草案）：
+
+> 左边那个标题现在其实有两块：第一块是上面那个标题的文字，第二块是那个 sessionid。
+> 肯定要开放两层：第一层就是我去定义那个标题的文字（加链接、后面加标签、加按钮），
+> 但是那个 sessionid 还是由我们去显示；还有一种方式，就是那个 sessionid 他都不要，
+> 整个这一块他自己去定制。我觉得这要开放这两级。
+
+内容顶端 / 底端：随会话一起滚动，内容由调用方自己插（用户已确认）。
+
 ## To Do
 
-动手前需先与用户讨论定案（当前**未开工**）：
+API 已定稿（决策见 Process「2026-11-06 讨论定稿」），剩下按顺序实现：
 
-- **最终 prop 命名与数量**：沿用消费端四槽名，还是收成 3 个（标题槽直接复用现有 `heading`）？
-  本仓已有 `Modal` 的 `title` / `subtitle` / `headerExtra` / `headerActions` / `footer` 命名口径可对齐。
-- **标题槽形态**：新增 `titleSlot`，还是把 `heading?: string` 放宽成 `ReactNode`（后者零新 prop，
-  但语义从「人话标题字符串」变成「随便什么」）。
-- **空态是否也渲染内容槽**：现在的正文组装有两条分支（空/加载/错误 与 正常），空分支里连
-  「加载更早」按钮都没有；契约要求四状态都渲染槽，需要确认这是消费方真实需要还是过度设计。
-- **样式落点**：槽容器只给布局（排列 / 间距 / 撑满宽度），还是干脆不给任何 CSS（只给类名）。
-- **测试方案**：是否新建 `SessionViewModal` 的 SSR 渲染测试（stub 官方 primitives + 假 `view`），
-  覆盖「无槽 DOM 一致 / 四状态 / 顺序断言」。
-- **示例与文档**：demo 的 `SessionPage` 加最小示例（标题自定义 + 顶端提示 + 底端汇总）；
-  文档改 `docs/help/session.doc.ts`（真源，双语）并重新生成 `.md` 与 demo doc-data。
-- **版本**：按 minor（0.35.0）记录；调试期是否 bump / 打 tag 待定（本仓规则：调试期不 bump 不打 tag）。
+1. `src/ui/infra/overlay.ts`：`OverlayHeadProps` 加 `titleArea`，标题组整块可替换。
+2. `src/ui/feedback/Modal.ts`：`ModalProps` 加 `titleArea`（透传 + `showHeader` 判据）。
+3. `src/adv/session/SessionViewModal.ts`：`heading` 放宽为 `ReactNode`，新增
+   `titleArea` / `headerActions` / `bodyLead` / `bodyTail`，四处渲染点接线。
+4. `src/adv/session/session.css`：`.dshpc-sv-lead` / `.dshpc-sv-tail`（只 `min-width:0`），
+   跑 `scripts/gen-css.mjs` 重新生成。
+5. 新建 SSR 渲染测试（`test/` 下，需 `register` primitives stub + 假 `view`）：
+   无槽 HTML 一致 / 四状态都有槽 / `lead` 第一 `tail` 最后 / header 动作顺序 / 二级标题生效。
+6. demo `packages/demo/src/sections/blocks.tsx` 的 `SessionPage`：标题自定义 + 顶端提示条 +
+   底端汇总块示例。
+7. 文档 `docs/help/session.doc.ts`（双语真源）→ 跑 `scripts/gen-docs.mjs` 生成 `.md` 与 demo doc-data。
+8. 版本：minor（0.35.0）；调试期是否 bump / 打 tag 待用户定（本仓规则：调试期不 bump 不打 tag）。
 
 ## Next
 
-与用户逐条讨论上节问题并定稿 API；定稿后 `claim` 本任务，再按定稿实现（先改
-`src/adv/session/SessionViewModal.ts:774` 的 props 与 `:1168` 的渲染出口）。
+从 `src/ui/infra/overlay.ts:107` 的 `OverlayHeadProps` 开始加 `titleArea`，再改 `:134` 的标题组渲染分支
+（`titleArea !== undefined` 时用它替掉 titlerow + subtitle，`icon` 与 `headerExtra` 语义一并定案见 Process）。
 
 ## Process
 
@@ -74,9 +83,38 @@
 - **空槽一致性判断点**：`div.dshpc-sv` 是 `display:flex;flex-direction:column;gap:10px`
   （`src/adv/session/session.css`）⇒ 槽容器必须「不传就不渲染元素」，否则空容器会多吃一个 10px gap。
 
+### 2026-11-06 讨论定稿（用户拍板）
+
+**最终 API（5 个 props，全部可选）**
+
+| prop | 位置 | 说明 |
+|---|---|---|
+| `heading?: ReactNode` | 标题行（第一级） | 现有 prop 由 `string` 放宽（string 是 ReactNode 子集，向后兼容）。**只换标题文字那一行**；下方 `sessionId` 副标题行、归档徽标仍由核心渲染，位置不变 |
+| `titleArea?: ReactNode` | 整个标题组（第二级） | 标题行 + `sessionId` 副标题行整块交给调用方，核心不再画这两行。传了就忽略 `heading` |
+| `headerActions?: ReactNode` | 头部右侧动作区 | 排在核心「继续对话」之后、关闭 ✕ 之前（`overlay.ts:146-151` 天然顺序） |
+| `bodyLead?: ReactNode` | 会话内容最顶端 | `div.dshpc-sv` 内第一个，在「加载更早」与全部节点之前；随会话滚动 |
+| `bodyTail?: ReactNode` | 会话内容最底端 | `div.dshpc-sv` 内最后一个（运行中行之后、footer 之前）；随会话滚动 |
+
+**为什么第二级要动核心 `Modal`**：现在 `Modal` 只有 `title` / `subtitle` 两个分槽，没法整块替换标题组；
+把整块塞进 `title` 会吃 `.dshpc-overlay-head__title` 的 `font-size:var(--dshpc-font-lg);font-weight:600`
+（`src/ui/infra/overlay.css:45`），等于给调用方强加字号字重。故给 `OverlayHead` / `Modal` 加一个
+`titleArea`（替换 `.dshpc-overlay-head__titlegroup` 的子内容），算核心控件的通用能力，不是会话专用口子。
+
+**二级模式下归档徽标不丢**：归档标识现在挂 `headerExtra`（`SessionViewModal.ts:1182-1187`，在标题行右侧），
+`titleArea` 覆盖标题组后会一起消失。处理 = `titleArea` 存在时把归档徽标挪到 `headerActions` 首位
+（`titleArea` 已传时 `headerExtra` 不再传）。归档是数据事实，不能因为调用方自定义标题就消失。
+
+**其余定案（用户「其他都同意」）**
+
+- 两个内容槽在**加载 / 空 / 出错 / 正常**四态都渲染（两条分支各插一处：`SessionViewModal.ts:1144` 与 `:1155`）。
+- 槽容器 CSS 只给 `min-width:0`，不给 `display:flex` / `gap` —— 一旦变成 flex，
+  单个按钮会被 `align-items:stretch` 拉满宽，等于替调用方决定了排版。
+- 测试做 SSR 全套（无槽 HTML 一致 / 四状态 / 顺序 / header 顺序 / 二级标题）。
+- 类名 `dshpc-sv-lead` / `dshpc-sv-tail`（沿用 `dshpc-sv-*` 前缀）。
+
 ## Conclusion
 
-未开工：任务已登记，等与用户讨论定案后实现。
+未开工：API 已定稿（见 Process「2026-11-06 讨论定稿」），按 To Do 顺序实现中。
 
 ## Execution Log
 
@@ -84,3 +122,4 @@
      Backfill with: progress log --id 20261106-0429-83be-sessionviewmodal-内容插槽 --note "...". -->
 - 2026-11-06 04:29:19 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
 - 2026-11-06 04:35:25 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
+- 2026-11-06 04:35:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领；API 定稿 5 props（heading 放宽/二级 titleArea/headerActions/bodyLead/bodyTail），定案见 worklog Process；下一步 overlay.ts:107 加 titleArea
