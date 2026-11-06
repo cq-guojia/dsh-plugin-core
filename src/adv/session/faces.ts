@@ -145,24 +145,50 @@ export interface TurnProcessPresentationFace {
   compactAnswer?: boolean
 }
 
+/**
+ * 官方 `ImageAttachmentRef`（`@deepseek-ai/dsh-attachment`，经 records.d.ts:35 进内容块）：
+ * 图片块的持久引用；`width` / `height` 是**原图**尺寸，官方 singleFit 用它算显示框。
+ * 字段不全也能跑（官方缺席时按 240×240 方框）。
+ */
+export interface ImageAttachmentRefLike {
+  attachmentId?: string
+  name?: string
+  bytes?: number
+  width?: number
+  height?: number
+  mediaType?: string
+  /** 原图尺寸（宿主把大图缩小后会有）：工具卡的「由 WxH 缩小」文案用它。 */
+  originalDimensions?: { width: number; height: number }
+}
+
+/** 官方 `MessageImage` 的 loader（ui-attachment MessageImage.d.ts）：`peek` 命中时同步出图。 */
+export type MessageImageLoader = ((attachment: ImageAttachmentRefLike) => Promise<string>) & {
+  peek?(attachment: ImageAttachmentRefLike): string | undefined
+}
+
 /** uiConversation 服务（官方 UiConversation.binding 的消费面）。 */
 export interface UiConversationFace {
   binding(source: SessionBindingFace): {
     target(target: 'chat'): SnapshotFace<ChatViewFace | undefined>
   }
+  /** 官方 `UiConversation.imageUrl`（assembly.d.ts:72）：会话授权后的图片 URL，按会话缓存。 */
+  imageUrl?(sessionId: string, attachment: ImageAttachmentRefLike): Promise<string>
+  /** 官方 `UiConversation.peekImageUrl`（assembly.d.ts:79）：已缓存时同步取，不发请求。 */
+  peekImageUrl?(sessionId: string, attachment: ImageAttachmentRefLike): string | undefined
 }
 
 // ── ConversationNode 联合（官方 records.d.ts 的渲染字段复述；legacy 兜底渲染用）──
 
 /**
  * 内容块（官方 ContentBlock 是 merge-extensible map）。
- * `attachment` = 官方 `FileAttachmentRef`（2026-10-03 核实：只有 attachmentId / name / bytes，
- * **没有路径**）⇒ 附件在 UI 上只能显示「图标 + 名字 + 大小」，点开走不了工作区路径。
+ * `attachment` = 官方 `FileAttachmentRef` / `ImageAttachmentRef`（2026-10-03 核实：只有
+ * attachmentId / name / bytes，**没有路径**）⇒ 文件附件只能显示「图标 + 名字 + 大小」，
+ * 图片附件另走 uiConversation.imageUrl 取浏览器 URL。
  */
 export interface ContentBlockLike {
   type: string
   text?: string
-  attachment?: { attachmentId?: string; name?: string; bytes?: number }
+  attachment?: ImageAttachmentRefLike
 }
 
 /** assistant 内容块（官方 AssistantBlock，records.d.ts:26-43）。 */

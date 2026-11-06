@@ -20,15 +20,18 @@ import type {
   ChatViewFace,
   ContentBlockLike,
   ConversationNodeLike,
+  ImageAttachmentRefLike,
+  MessageImageLoader,
   SessionSnapshotFace,
 } from './faces.js'
 import type { SessionViewTarget } from './open-session-view.js'
 import { ChatCallRow, ChatHint, ChatNodeListMirror, ChatOlderButton, ChatOpenError, ChatViewFrame } from './mirror/ChatView.js'
 import { type NodeRenderer, type TurnProcessHandle, type TurnLocationFace } from './mirror/ChatNodeSeat.js'
-import { GenericCommandCard } from './mirror/GenericCommandCard.js'
+import { GenericCommandCard, imageCardFace } from './mirror/GenericCommandCard.js'
 import { CommandCard, type CommandNodeFace } from './mirror/CommandCard.js'
 import { MessageIconActionsMirror } from './mirror/MessageIconActions.js'
 import { AssistantMarkdown, AssistantStoppedBadge, CompactionItemMirror, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage, type CompactionFace, type RetryAttemptFace, type TurnErrorFace } from './mirror/MessageItem.js'
+import { ImageGalleryMirror } from './mirror/MessageImage.js'
 import { BashRowMirror } from './mirror/BashRow.js'
 import { SkillRowMirror } from './mirror/SkillRow.js'
 import { ContextInjectionRowMirror, type ContextFace } from './mirror/ContextInjectionRow.js'
@@ -72,15 +75,32 @@ function safeJson(value: unknown): string {
   }
 }
 
-/** 提取内容块的可读文本：text 拼接、图片占位（官方 ContentBlock 是 merge-extensible map）。 */
-function contentText(blocks: readonly ContentBlockLike[] | undefined): string {
+/**
+ * 提取内容块的可读文本：text 拼接、图片占位（官方 ContentBlock 是 merge-extensible map）。
+ * @param imagePlaceholder 图片块是否退化成「[图片]」文本：图片能真渲染时传 false（官方文本里没有图片）。
+ */
+function contentText(blocks: readonly ContentBlockLike[] | undefined, imagePlaceholder = true): string {
   if (blocks === undefined) return ''
   const parts = blocks.map((block) => {
     if (block !== null && typeof block === 'object' && block.type === 'text' && typeof block.text === 'string') return block.text
-    if (block !== null && typeof block === 'object' && block.type === 'image') return coreT('sessionImage')
+    if (imagePlaceholder && block !== null && typeof block === 'object' && block.type === 'image') return coreT('sessionImage')
     return ''
   }).filter(part => part !== '')
   return parts.join('\n')
+}
+
+/** 内容块里的官方 image 块（`{ type:'image', attachment: ImageAttachmentRef }`）→ 图片组。 */
+function contentImages(blocks: readonly ContentBlockLike[] | undefined): { attachment: ImageAttachmentRefLike }[] {
+  if (blocks === undefined) return []
+  const out: { attachment: ImageAttachmentRefLike }[] = []
+  for (const block of blocks) {
+    if (block === null || typeof block !== 'object' || block.type !== 'image') continue
+    const attachment = block.attachment
+    if (typeof attachment !== 'object' || attachment === null) continue
+    if (typeof attachment.attachmentId !== 'string' || attachment.attachmentId === '') continue
+    out.push({ attachment })
+  }
+  return out
 }
 
 /**
@@ -138,23 +158,30 @@ function blocksOf(value: unknown): readonly AssistantBlockLike[] | undefined {
  * 官方 ToolCallBlock（uic contract/records.d.ts:140）→ 工具卡 props。
  * running 半截（phase: preparing/start）只有 name/argsRaw；settled（kind: tool-result）带输出与错误。
  */
-function toolCallCard(node: ChatNodeFace, t: Translate, onOpenFile?: (path: string) => void): Parameters<typeof GenericCommandCard>[0] | null {
+function toolCallCard(node: ChatNodeFace, t: Translate, onOpenFile?: (path: string) => void, loadImage?: MessageImageLoader): Parameters<typeof GenericCommandCard>[0] | null {
   const root = dataOf(node).root as Record<string, unknown> | undefined
   if (root === undefined || root === null) return null
   const settled = root.kind === 'tool-result'
   const call = settled ? root.call as Record<string, unknown> | undefined : root
   const error = root.error as { name?: string; code?: string } | undefined
+  const name = typeof call?.name === 'string' ? call.name : 'tool'
+  const argsRaw = typeof call?.argsRaw === 'string' ? call.argsRaw : ''
+  const isError = root.isError === true
+  const content = settled ? root.content as readonly ContentBlockLike[] | undefined : undefined
   return {
-    name: typeof call?.name === 'string' ? call.name : 'tool',
-    argsRaw: typeof call?.argsRaw === 'string' ? call.argsRaw : '',
-    output: settled ? contentText(root.content as readonly ContentBlockLike[] | undefined) : '',
-    isError: root.isError === true,
+    name,
+    argsRaw,
+    output: settled ? contentText(content, false) : '',
+    isError,
     errorName: error?.name,
     meta: root.meta,
     settled,
     phase: settled ? undefined : root.phase === 'preparing' ? 'preparing' : 'start',
     interrupted: error?.code === 'interrupted',
     errorCode: error?.code,
+    // 官方 read_image 专属卡：图片来自结果内容块的附件引用，不是文本。
+    image: imageCardFace(name, argsRaw, content, root.meta, isError, settled) ?? undefined,
+    loadImage,
     onOpenFile,
     t,
   }
@@ -223,6 +250,8 @@ function renderKeyedNode(
   onOpenReview?: (locator: ChangedFileReviewLocator) => void,
   /** 官方 endsWithResponse / hasLaterChatNode（尾部操作行常显与分支可用性）。 */
   tailFacts?: TurnTailFacts,
+  /** 图片 loader（view.loadImage）；缺席 = 图片块退回「[图片]」文本。 */
+  loadImage?: MessageImageLoader,
 ): ReturnType<typeof h> | null {
   switch (node.kind) {
     case 'turn-trigger':
@@ -279,7 +308,7 @@ function renderKeyedNode(
         : groupPart === 'response'
           ? contentBlocks.filter(block => block.kind !== 'reasoning')
           : contentBlocks
-      const parts = assistantBlocks(visible, t, fileOpen?.mentions, streaming)
+      const parts = assistantBlocks(visible, t, fileOpen?.mentions, streaming, loadImage)
       // 官方 AssistantMarkdown.stopped：被中断的整步末尾一枚「已停止」；只画思考块的组内不重复画。
       const stopped = interrupted
         && (groupPart !== 'reasoning' || !blocks.some(block => block.kind !== 'reasoning' && block.kind !== 'tool-call'))
@@ -291,7 +320,7 @@ function renderKeyedNode(
       // （标题「交付文件」+ 状态词 + 路径列表；不经通用工具卡）。
       const root = dataOf(node).root
       if (isPresentRoot(root)) return h(PresentRowMirror, { block: root, t })
-      const card = toolCallCard(node, t, fileOpen?.open)
+      const card = toolCallCard(node, t, fileOpen?.open, loadImage)
       if (card === null) return null
       // 官方 tool.call.toolview 槽位按工具名分派：bash / pwsh 走专属 BashRow（独立卡片，无 DisclosureRow）；
       // skill 走 ui-skill 包注册的专属 SkillRow（标题「加载技能」+ 技能图标 + Instructions 展开卡）。
@@ -310,13 +339,17 @@ function renderKeyedNode(
     case 'user':
     case 'steering': {
       const blocks = dataOf(node).content as readonly ContentBlockLike[] | undefined
-      const text = contentText(blocks)
+      const images = loadImage === undefined ? [] : contentImages(blocks)
+      // 官方文本里没有图片：能真出图时不再塞「[图片]」。
+      const text = contentText(blocks, loadImage === undefined || images.length === 0)
       // 随附文件（官方 file 块）：没有文本但有附件时**照样渲染**（不能整条消失）。
       const { files, hadFiles } = contentFiles(blocks)
-      if (text === '' && !hadFiles) return null
+      if (text === '' && !hadFiles && images.length === 0) return null
       return h(UserMessage, {
         text,
         files,
+        images,
+        loadImage,
         referenceLabels: (dataOf(node) as { referenceLabels?: readonly string[] }).referenceLabels,
         skillNames: (dataOf(node) as { skillNames?: readonly string[] }).skillNames,
         t,
@@ -373,6 +406,8 @@ function assistantBlocks(
   fileMentions?: FileOpenFace['mentions'],
   /** 官方 streaming（节点 data.status === 'running'）：正文按流式尾渲染、末块思考行走 shimmer。 */
   streaming = false,
+  /** 图片 loader；缺席 = 图片块退回「[图片]」文本占位。 */
+  loadImage?: MessageImageLoader,
 ): ReturnType<typeof h>[] {
   if (blocks === undefined) return []
   const parts: ReturnType<typeof h>[] = []
@@ -390,9 +425,25 @@ function assistantBlocks(
           parts.push(h(ReasoningRowMirror, { key: `r${index}`, text: block.text, running: streaming && index === last, t }))
         }
         break
-      case 'image':
-        parts.push(h('div', { key: `i${index}`, className: 'dshpc-sv-image' }, t('sessionImage')))
+      case 'image': {
+        // 官方：连续 image 块并成一组推一次（conversation.chat.message.images，align='start'）。
+        const previous = blocks[index - 1]
+        if (previous !== undefined && previous.kind === 'image') break
+        const images: { attachment: ImageAttachmentRefLike }[] = []
+        for (const candidate of blocks.slice(index)) {
+          if (candidate.kind !== 'image') break
+          const attachment = candidate.attachment as ImageAttachmentRefLike | undefined
+          if (attachment !== null && typeof attachment === 'object' && typeof attachment.attachmentId === 'string') {
+            images.push({ attachment })
+          }
+        }
+        if (loadImage !== undefined && images.length > 0) {
+          parts.push(h(ImageGalleryMirror, { key: `i${index}`, images, load: loadImage, align: 'start', t }))
+        } else {
+          parts.push(h('div', { key: `i${index}`, className: 'dshpc-sv-image' }, t('sessionImage')))
+        }
         break
+      }
       case 'tool-call':
         break
       default:
@@ -420,6 +471,7 @@ function renderLegacyNode(
   switch (node.kind) {
     case 'user':
     case 'steering': {
+      // shortcut: legacy 兜底路径不带图片 loader（图片仍是「[图片]」占位）；keyed 主路已出真图。
       const text = contentText(node.content)
       const { files, hadFiles } = contentFiles(node.content)
       if (text === '' && !hadFiles) return null
@@ -1035,9 +1087,9 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   const renderNode = useCallback<NodeRenderer>(
     (node, turnProcess, groupPart) => renderKeyedNode(
       node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn,
-      lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts,
+      lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage,
     ),
-    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts],
+    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage],
   )
   // 官方 grouped('chat')：把 keyed 流切成「独立条目 + 过程分组」（二级收折）。
   const isTurnClosed = useCallback((turn: number): boolean =>

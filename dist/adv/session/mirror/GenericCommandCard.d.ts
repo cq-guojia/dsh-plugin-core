@@ -1,5 +1,6 @@
 import { createElement as h } from 'react';
 import type { UtilMessageKey, Translate } from '../../../utils/i18n.js';
+import type { ContentBlockLike, ImageAttachmentRefLike, MessageImageLoader } from '../faces.js';
 export type ToolState = 'preparing' | 'running' | 'ok' | 'error' | 'stopped';
 export type Variant = 'bash' | 'read' | 'search' | 'write' | 'edit' | 'code' | 'others';
 export declare const classifyTool: (name: string) => Variant;
@@ -10,6 +11,21 @@ export declare function deriveSummary(variant: Variant, argsRaw: string): string
 export declare function readCallLine(name: string, argsRaw: string): number | undefined;
 /** 官方 formatToolBody（tool client.js:255-264）：通用展开体的输入正文。 */
 export declare function formatToolBody(variant: Variant, argsRaw: string): string | null;
+/** `read_image` 卡面（官方 imageCardModel，tool client.js:2965-2986）。 */
+export interface ImageCardFace {
+    path: string;
+    images: readonly {
+        attachment: ImageAttachmentRefLike;
+    }[];
+    /** 结果里 envelope 之外的文本（官方 extraTexts）；没有 = null。 */
+    extraText: string | null;
+}
+/**
+ * 官方 imageCardModel：read_image + 已结算 + 非错误 + 参数里有 file_path + 结果里既有
+ * IMAGE_ENVELOPE 文本又有 image 块的附件引用，才出图片卡；任一不满足都回通用卡。
+ * @param content - 已结算结果的内容块（图片引用与 envelope 的唯一真源）。
+ */
+export declare function imageCardFace(name: string, argsRaw: string, content: readonly ContentBlockLike[] | undefined, meta: unknown, isError: boolean, settled: boolean): ImageCardFace | null;
 /** 搜索结果卡两面（官方 searchCardModel 的返回；recovery = 截断时的完整结果正文）。 */
 interface SearchFace {
     card: {
@@ -135,6 +151,10 @@ export declare function GenericCommandCard(props: {
     onOpenFile?: (path: string, options?: {
         line?: number;
     }) => void;
+    /** `read_image` 的图片卡面（imageCardFace 的结果）；undefined = 走通用卡。 */
+    image?: ImageCardFace;
+    /** 图片 loader（view.loadImage）；缺席 = 只出路径与尺寸文字，不画图。 */
+    loadImage?: MessageImageLoader;
     t: Translate;
 }): ReturnType<typeof h>;
 export {};

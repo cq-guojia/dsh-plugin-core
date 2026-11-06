@@ -14,10 +14,11 @@ import { Modal } from '../../ui/feedback/Modal.js';
 import { Button } from '../../ui/actions/Button.js';
 import { t as coreT } from '../../utils/i18n.js';
 import { ChatCallRow, ChatHint, ChatNodeListMirror, ChatOlderButton, ChatOpenError, ChatViewFrame } from './mirror/ChatView.js';
-import { GenericCommandCard } from './mirror/GenericCommandCard.js';
+import { GenericCommandCard, imageCardFace } from './mirror/GenericCommandCard.js';
 import { CommandCard } from './mirror/CommandCard.js';
 import { MessageIconActionsMirror } from './mirror/MessageIconActions.js';
 import { AssistantMarkdown, AssistantStoppedBadge, CompactionItemMirror, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage } from './mirror/MessageItem.js';
+import { ImageGalleryMirror } from './mirror/MessageImage.js';
 import { BashRowMirror } from './mirror/BashRow.js';
 import { SkillRowMirror } from './mirror/SkillRow.js';
 import { ContextInjectionRowMirror } from './mirror/ContextInjectionRow.js';
@@ -55,18 +56,38 @@ function safeJson(value) {
         return String(value);
     }
 }
-/** 提取内容块的可读文本：text 拼接、图片占位（官方 ContentBlock 是 merge-extensible map）。 */
-function contentText(blocks) {
+/**
+ * 提取内容块的可读文本：text 拼接、图片占位（官方 ContentBlock 是 merge-extensible map）。
+ * @param imagePlaceholder 图片块是否退化成「[图片]」文本：图片能真渲染时传 false（官方文本里没有图片）。
+ */
+function contentText(blocks, imagePlaceholder = true) {
     if (blocks === undefined)
         return '';
     const parts = blocks.map((block) => {
         if (block !== null && typeof block === 'object' && block.type === 'text' && typeof block.text === 'string')
             return block.text;
-        if (block !== null && typeof block === 'object' && block.type === 'image')
+        if (imagePlaceholder && block !== null && typeof block === 'object' && block.type === 'image')
             return coreT('sessionImage');
         return '';
     }).filter(part => part !== '');
     return parts.join('\n');
+}
+/** 内容块里的官方 image 块（`{ type:'image', attachment: ImageAttachmentRef }`）→ 图片组。 */
+function contentImages(blocks) {
+    if (blocks === undefined)
+        return [];
+    const out = [];
+    for (const block of blocks) {
+        if (block === null || typeof block !== 'object' || block.type !== 'image')
+            continue;
+        const attachment = block.attachment;
+        if (typeof attachment !== 'object' || attachment === null)
+            continue;
+        if (typeof attachment.attachmentId !== 'string' || attachment.attachmentId === '')
+            continue;
+        out.push({ attachment });
+    }
+    return out;
 }
 /**
  * 提取内容块里的**官方 file 块**（2026-10-03 核实）：随附文件以官方附件形式发进会话后，
@@ -119,24 +140,31 @@ function blocksOf(value) {
  * 官方 ToolCallBlock（uic contract/records.d.ts:140）→ 工具卡 props。
  * running 半截（phase: preparing/start）只有 name/argsRaw；settled（kind: tool-result）带输出与错误。
  */
-function toolCallCard(node, t, onOpenFile) {
+function toolCallCard(node, t, onOpenFile, loadImage) {
     const root = dataOf(node).root;
     if (root === undefined || root === null)
         return null;
     const settled = root.kind === 'tool-result';
     const call = settled ? root.call : root;
     const error = root.error;
+    const name = typeof call?.name === 'string' ? call.name : 'tool';
+    const argsRaw = typeof call?.argsRaw === 'string' ? call.argsRaw : '';
+    const isError = root.isError === true;
+    const content = settled ? root.content : undefined;
     return {
-        name: typeof call?.name === 'string' ? call.name : 'tool',
-        argsRaw: typeof call?.argsRaw === 'string' ? call.argsRaw : '',
-        output: settled ? contentText(root.content) : '',
-        isError: root.isError === true,
+        name,
+        argsRaw,
+        output: settled ? contentText(content, false) : '',
+        isError,
         errorName: error?.name,
         meta: root.meta,
         settled,
         phase: settled ? undefined : root.phase === 'preparing' ? 'preparing' : 'start',
         interrupted: error?.code === 'interrupted',
         errorCode: error?.code,
+        // 官方 read_image 专属卡：图片来自结果内容块的附件引用，不是文本。
+        image: imageCardFace(name, argsRaw, content, root.meta, isError, settled) ?? undefined,
+        loadImage,
         onOpenFile,
         t,
     };
@@ -204,7 +232,9 @@ sessionId,
 /** 变更文件点击出口（官方 openReview 等价）：带改动身份；undefined = 变更卡不可点。 */
 onOpenReview, 
 /** 官方 endsWithResponse / hasLaterChatNode（尾部操作行常显与分支可用性）。 */
-tailFacts) {
+tailFacts, 
+/** 图片 loader（view.loadImage）；缺席 = 图片块退回「[图片]」文本。 */
+loadImage) {
     switch (node.kind) {
         case 'turn-trigger':
             return h(TurnTriggerNodeViewMirror, { data: node.data, t });
@@ -256,7 +286,7 @@ tailFacts) {
                 : groupPart === 'response'
                     ? contentBlocks.filter(block => block.kind !== 'reasoning')
                     : contentBlocks;
-            const parts = assistantBlocks(visible, t, fileOpen?.mentions, streaming);
+            const parts = assistantBlocks(visible, t, fileOpen?.mentions, streaming, loadImage);
             // 官方 AssistantMarkdown.stopped：被中断的整步末尾一枚「已停止」；只画思考块的组内不重复画。
             const stopped = interrupted
                 && (groupPart !== 'reasoning' || !blocks.some(block => block.kind !== 'reasoning' && block.kind !== 'tool-call'));
@@ -270,7 +300,7 @@ tailFacts) {
             const root = dataOf(node).root;
             if (isPresentRoot(root))
                 return h(PresentRowMirror, { block: root, t });
-            const card = toolCallCard(node, t, fileOpen?.open);
+            const card = toolCallCard(node, t, fileOpen?.open, loadImage);
             if (card === null)
                 return null;
             // 官方 tool.call.toolview 槽位按工具名分派：bash / pwsh 走专属 BashRow（独立卡片，无 DisclosureRow）；
@@ -290,14 +320,18 @@ tailFacts) {
         case 'user':
         case 'steering': {
             const blocks = dataOf(node).content;
-            const text = contentText(blocks);
+            const images = loadImage === undefined ? [] : contentImages(blocks);
+            // 官方文本里没有图片：能真出图时不再塞「[图片]」。
+            const text = contentText(blocks, loadImage === undefined || images.length === 0);
             // 随附文件（官方 file 块）：没有文本但有附件时**照样渲染**（不能整条消失）。
             const { files, hadFiles } = contentFiles(blocks);
-            if (text === '' && !hadFiles)
+            if (text === '' && !hadFiles && images.length === 0)
                 return null;
             return h(UserMessage, {
                 text,
                 files,
+                images,
+                loadImage,
                 referenceLabels: dataOf(node).referenceLabels,
                 skillNames: dataOf(node).skillNames,
                 t,
@@ -345,7 +379,9 @@ tailFacts) {
  */
 function assistantBlocks(blocks, t, fileMentions, 
 /** 官方 streaming（节点 data.status === 'running'）：正文按流式尾渲染、末块思考行走 shimmer。 */
-streaming = false) {
+streaming = false, 
+/** 图片 loader；缺席 = 图片块退回「[图片]」文本占位。 */
+loadImage) {
     if (blocks === undefined)
         return [];
     const parts = [];
@@ -363,9 +399,28 @@ streaming = false) {
                     parts.push(h(ReasoningRowMirror, { key: `r${index}`, text: block.text, running: streaming && index === last, t }));
                 }
                 break;
-            case 'image':
-                parts.push(h('div', { key: `i${index}`, className: 'dshpc-sv-image' }, t('sessionImage')));
+            case 'image': {
+                // 官方：连续 image 块并成一组推一次（conversation.chat.message.images，align='start'）。
+                const previous = blocks[index - 1];
+                if (previous !== undefined && previous.kind === 'image')
+                    break;
+                const images = [];
+                for (const candidate of blocks.slice(index)) {
+                    if (candidate.kind !== 'image')
+                        break;
+                    const attachment = candidate.attachment;
+                    if (attachment !== null && typeof attachment === 'object' && typeof attachment.attachmentId === 'string') {
+                        images.push({ attachment });
+                    }
+                }
+                if (loadImage !== undefined && images.length > 0) {
+                    parts.push(h(ImageGalleryMirror, { key: `i${index}`, images, load: loadImage, align: 'start', t }));
+                }
+                else {
+                    parts.push(h('div', { key: `i${index}`, className: 'dshpc-sv-image' }, t('sessionImage')));
+                }
                 break;
+            }
             case 'tool-call':
                 break;
             default:
@@ -384,6 +439,7 @@ function renderLegacyNode(node, t, fileOpen) {
     switch (node.kind) {
         case 'user':
         case 'steering': {
+            // shortcut: legacy 兜底路径不带图片 loader（图片仍是「[图片]」占位）；keyed 主路已出真图。
             const text = contentText(node.content);
             const { files, hadFiles } = contentFiles(node.content);
             if (text === '' && !hadFiles)
@@ -998,7 +1054,7 @@ export function SessionViewModal(props) {
     const tailFacts = useMemo(() => (keyed && store !== undefined
         ? buildTurnTailFacts({ order, store, lastTurn: lastTailTurn })
         : undefined), [keyed, order, store, lastTailTurn]);
-    const renderNode = useCallback((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts]);
+    const renderNode = useCallback((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage]);
     // 官方 grouped('chat')：把 keyed 流切成「独立条目 + 过程分组」（二级收折）。
     const isTurnClosed = useCallback((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== 'open', [turns]);
     const groupedView = useMemo(() => keyed ? buildProcessGroups(order, key => store?.get(key), isTurnClosed) : undefined, [keyed, order, store, isTurnClosed]);

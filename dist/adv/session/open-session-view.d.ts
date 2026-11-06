@@ -1,4 +1,4 @@
-import type { ChatViewFace, SessionSnapshotFace, SessionsFace, SnapshotFace, UiConversationFace } from './faces.js';
+import type { ChatViewFace, MessageImageLoader, SessionSnapshotFace, SessionsFace, SnapshotFace, UiConversationFace } from './faces.js';
 /** 弹窗数据源：已解析的 target 与向前翻页句柄；解析失败给 null。 */
 export interface SessionViewTarget {
     readonly target: SnapshotFace<ChatViewFace | undefined>;
@@ -7,6 +7,11 @@ export interface SessionViewTarget {
     readonly session: SnapshotFace<SessionSnapshotFace>;
     /** 官方 `inbox` 投影面（faceOf('inbox')）：首轮等待期用户消息的 host 侧真源。 */
     readonly inbox: SnapshotFace<unknown>;
+    /**
+     * 图片 loader = 官方 `uiConversation.imageUrl` 绑本会话（图要授权，弹窗自己拿不到 URL）。
+     * 缺席（老宿主没有该方法）= 图片块退回「[图片]」文本占位，不画空框。
+     */
+    readonly loadImage?: MessageImageLoader;
     /** 释放 sessions.retain 引用（弹窗关闭时必调；否则会话 scope 永不回收）。 */
     dispose(): void;
 }

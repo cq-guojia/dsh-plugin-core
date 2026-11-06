@@ -33,6 +33,7 @@ const CSS_PKG_PREFIXES = [
     '@deepseek-ai/dsh-client-ui-chat/',
     '@deepseek-ai/dsh-client-ui-tool/',
     '@deepseek-ai/dsh-client-ui-skill/',
+    '@deepseek-ai/dsh-client-ui-attachment/',
     '@deepseek-ai/dsh-client-ui-deliverables/',
     '@deepseek-ai/dsh-client-ui-sidebar-documentpreview/',
 ];

@@ -15,7 +15,9 @@ import { Fragment, createElement as h, useMemo, useState } from 'react';
 import { DiffBlock, DisclosureRow, IconApiOutlineRegular, IconBrowseOutlineRegular, IconCodeOutlineRegular, IconEditOutlineRegular, IconSearchOutlineRegular, IconSparkleRegular, ReadBlock, SearchBlock, Tag, TerminalBlock, TextShimmer, WebBlock, diffTotals, } from '../../../ui/official.js';
 import { officialClass } from '../official-classes.js';
 import { CodeViewer } from '../../../ui/display/CodeViewer.js';
+import { formatBytes } from '../../../utils/number.js';
 import { markdownLabels } from '../../explorer/preview/md-labels.js';
+import { ImageGalleryMirror } from './MessageImage.js';
 import { AskQuestionCardView, askCardModel } from './AskCard.js';
 import { ToolDetailsView, detailsCardModel, detailsSummary } from './ToolDetails.js';
 /** 官方 TOOL_VARIANTS（tool client.js:83-100，cordis_* 一并保留）。 */
@@ -349,6 +351,46 @@ function readCardModel(name, argsRaw, output, meta, isError, settled) {
     if (/^<path>[^\n]*<\/path>\n<type>file<\/type>\n<content>\n([\s\S]*)\n<\/content>$/u.exec(output)?.[1] === undefined)
         return null;
     return face;
+}
+/** 官方 IMAGE_ENVELOPE（tool client.js:2842）：read_image 的结果就是这段结构化文本。 */
+const IMAGE_ENVELOPE = /^<path>[^\n]*<\/path>\n<type>image<\/type>\n<content>\n[\s\S]*\n<\/content>$/u;
+/**
+ * 官方 imageCardModel：read_image + 已结算 + 非错误 + 参数里有 file_path + 结果里既有
+ * IMAGE_ENVELOPE 文本又有 image 块的附件引用，才出图片卡；任一不满足都回通用卡。
+ * @param content - 已结算结果的内容块（图片引用与 envelope 的唯一真源）。
+ */
+export function imageCardFace(name, argsRaw, content, meta, isError, settled) {
+    if (!settled || isError || name !== 'read_image')
+        return null;
+    const parsed = parseArgs(argsRaw);
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
+        return null;
+    const filePath = parsed.file_path;
+    if (typeof filePath !== 'string' || filePath.trim() === '')
+        return null;
+    const metaPath = typeof meta?.path === 'string'
+        ? meta.path
+        : undefined;
+    const images = [];
+    for (const block of content ?? []) {
+        if (block === null || typeof block !== 'object' || block.type !== 'image')
+            continue;
+        const attachment = block.attachment;
+        if (typeof attachment !== 'object' || attachment === null)
+            continue;
+        if (typeof attachment.attachmentId !== 'string' || attachment.attachmentId === '')
+            continue;
+        images.push({ attachment });
+    }
+    if (images.length === 0)
+        return null;
+    const texts = (content ?? []).flatMap(block => block !== null && typeof block === 'object' && block.type === 'text' && typeof block.text === 'string'
+        ? [block.text]
+        : []);
+    if (!texts.some(text => IMAGE_ENVELOPE.test(text)))
+        return null;
+    const extra = texts.filter(text => !IMAGE_ENVELOPE.test(text));
+    return { path: metaPath ?? filePath, images, extraText: extra.length > 0 ? extra.join('\n') : null };
 }
 /** 官方 validInclude（tool client.js:590-597）：逗号分隔的多 pattern include 不收。 */
 function validInclude(include) {
@@ -743,7 +785,7 @@ export function ExitCodeBadge({ label }) {
  * 折叠行 = 图标 + 标题 [+ 分隔点 + 摘要（文件路径链接化）+ 后缀]；展开体按官方分发链。
  */
 export function GenericCommandCard(props) {
-    const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, errorCode, onOpenFile, t } = props;
+    const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, errorCode, onOpenFile, image, loadImage, t } = props;
     const [expanded, setExpanded] = useState(false);
     const variant = classifyTool(name);
     const titleKey = toolTitleKey(name);
@@ -833,7 +875,7 @@ export function GenericCommandCard(props) {
     // 官方 singleFile（1876/1885）：摘要已是文件路径链接的工具（read）不再摊原始输入 JSON。
     const inputRaw = argsRaw === '' || filePath !== undefined ? null : argsRaw;
     const outputText = output === '' ? null : output;
-    const card = terminal !== null ? 'terminal' : diffs !== null ? 'diff' : read !== null ? 'read' : search !== null ? 'search' : web !== null ? 'web' : details !== null ? 'details' : null;
+    const card = terminal !== null ? 'terminal' : diffs !== null ? 'diff' : read !== null ? 'read' : image !== undefined ? 'image' : search !== null ? 'search' : web !== null ? 'web' : details !== null ? 'details' : null;
     const bodyText = expanded && card === null && inputRaw !== null ? formatToolBody(variant, inputRaw) : null;
     const cardBody = variant === 'code' ? null : bodyText;
     const expandable = rowState !== 'preparing' && (inputRaw !== null || outputText !== null || card !== null);
@@ -905,30 +947,48 @@ export function GenericCommandCard(props) {
                         maxLines: 8,
                         className: officialClass('ToolRow', 'readBody') ?? '',
                     })
-                    : search !== null
-                        ? h(Fragment, null, h(SearchBlock, {
-                            ...search.card,
-                            labels: blockLabels.search,
-                            maxLines: 8,
-                            className: officialClass('ToolRow', 'searchBody') ?? '',
-                        }), search.recovery !== undefined
-                            ? h('div', { className: officialClass('ToolRow', 'searchRecovery') ?? '' }, search.recovery)
-                            : null)
-                        : web !== null
-                            ? h(WebBlock, { ...web, labels: blockLabels.web, className: officialClass('ToolRow', 'webBody') ?? '' })
-                            : details !== null
-                                ? h(ToolDetailsView, { model: details, t, onOpenFile })
-                                : h(Fragment, null, variant === 'code' && bodyText !== null
-                                    ? h('div', { className: officialClass('ToolRow', 'bodyScroll') ?? '' }, h(CodeViewer, {
-                                        text: bodyText,
-                                        path: 'tool-code.ts',
-                                        t,
-                                        className: officialClass('ToolRow', 'codeBody') ?? '',
-                                        height: 'auto',
-                                        style: { height: 'auto' },
-                                    }))
-                                    : null, (cardBody !== null || outputText !== null) && h('div', { className: officialClass('ToolRow', 'ioCard') ?? '' }, cardBody !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolInputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '' }, cardBody)), cardBody !== null && outputText !== null
-                                    && h('span', { className: officialClass('ToolRow', 'ioDivider') ?? '', 'aria-hidden': true }), outputText !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolOutputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '', 'data-error': rowState === 'error' || undefined }, outputText))))) : undefined;
+                    : image !== undefined
+                        ? h('div', { className: officialClass('ToolRow', 'imageBody') ?? '' }, loadImage === undefined
+                            ? null
+                            : h(ImageGalleryMirror, { images: image.images, load: loadImage, align: 'start', t }), h('div', { className: officialClass('ToolRow', 'imageMeta') ?? '' }, h('div', null, image.path), image.images.map(({ attachment }, index) => h('div', { key: index }, attachment.originalDimensions === undefined
+                            ? t('toolImageSize', {
+                                width: attachment.width ?? '',
+                                height: attachment.height ?? '',
+                                bytes: formatBytes(attachment.bytes ?? 0),
+                            })
+                            : t('toolImageSizeDownscaled', {
+                                width: attachment.width ?? '',
+                                height: attachment.height ?? '',
+                                originalWidth: attachment.originalDimensions.width,
+                                originalHeight: attachment.originalDimensions.height,
+                                bytes: formatBytes(attachment.bytes ?? 0),
+                            })))), image.extraText === null
+                            ? null
+                            : h('div', { className: officialClass('ToolRow', 'imageExtra') ?? '' }, image.extraText))
+                        : search !== null
+                            ? h(Fragment, null, h(SearchBlock, {
+                                ...search.card,
+                                labels: blockLabels.search,
+                                maxLines: 8,
+                                className: officialClass('ToolRow', 'searchBody') ?? '',
+                            }), search.recovery !== undefined
+                                ? h('div', { className: officialClass('ToolRow', 'searchRecovery') ?? '' }, search.recovery)
+                                : null)
+                            : web !== null
+                                ? h(WebBlock, { ...web, labels: blockLabels.web, className: officialClass('ToolRow', 'webBody') ?? '' })
+                                : details !== null
+                                    ? h(ToolDetailsView, { model: details, t, onOpenFile })
+                                    : h(Fragment, null, variant === 'code' && bodyText !== null
+                                        ? h('div', { className: officialClass('ToolRow', 'bodyScroll') ?? '' }, h(CodeViewer, {
+                                            text: bodyText,
+                                            path: 'tool-code.ts',
+                                            t,
+                                            className: officialClass('ToolRow', 'codeBody') ?? '',
+                                            height: 'auto',
+                                            style: { height: 'auto' },
+                                        }))
+                                        : null, (cardBody !== null || outputText !== null) && h('div', { className: officialClass('ToolRow', 'ioCard') ?? '' }, cardBody !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolInputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '' }, cardBody)), cardBody !== null && outputText !== null
+                                        && h('span', { className: officialClass('ToolRow', 'ioDivider') ?? '', 'aria-hidden': true }), outputText !== null && h('div', { className: officialClass('ToolRow', 'ioSection') ?? '' }, h('span', { className: officialClass('ToolRow', 'ioLabel') ?? '' }, t('toolOutputLabel')), h('span', { className: officialClass('ToolRow', 'ioText') ?? '', 'data-error': rowState === 'error' || undefined }, outputText))))) : undefined;
     return h('div', {
         className: officialClass('ToolRow', 'root') ?? '',
         'data-variant': variant,

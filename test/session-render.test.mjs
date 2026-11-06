@@ -184,3 +184,77 @@ test('工具增删块：单条进标题、多条出行汇总（不重复计数�
   assert.equal(recall.summary, null)
   assert.equal(recall.toolBlocks, undefined)
 })
+// ── 消息图片（官方 ui-attachment 的 MessageImage / ImageGallery）──
+
+test('用户图片附件：官方 ImageGallery 外壳（align=end），单图按 singleFit 定框', () => {
+  setLocale('zh')
+  const load = () => Promise.resolve('blob:loaded')
+  load.peek = () => 'blob:cached'
+  const html = renderToStaticMarkup(h(UserMessage, {
+    text: '',
+    images: [{ attachment: { attachmentId: 'att_1', name: 'shot.png', width: 400, height: 200 } }],
+    loadImage: load,
+    t,
+  }))
+  assert.match(html, /data-message-attachments="true"/)
+  assert.match(html, /data-align="end"/)
+  assert.match(html, /data-variant="single"/)
+  // peek 命中就同步出图，不等 loader（SSR 不跑 effect）。
+  assert.match(html, /src="blob:cached"/)
+  // 400×200 ⇒ 240×120（长边 240、按原比例、不放大）。
+  assert.match(html, /width:240px/)
+  assert.match(html, /height:120px/)
+})
+
+test('多图走方砖：data-variant=tile；无 loader 时整组不画（调用方留文本占位）', () => {
+  setLocale('zh')
+  const load = () => Promise.resolve('blob:loaded')
+  load.peek = () => 'blob:cached'
+  const many = renderToStaticMarkup(h(UserMessage, {
+    text: '',
+    images: [
+      { attachment: { attachmentId: 'a', name: 'a.png', width: 100, height: 100 } },
+      { attachment: { attachmentId: 'b', name: 'b.png', width: 100, height: 100 } },
+    ],
+    loadImage: load,
+    t,
+  }))
+  assert.match(many, /data-variant="tile"/)
+  assert.equal((many.match(/data-variant="tile"/g) ?? []).length, 2)
+  const noLoader = renderToStaticMarkup(h(UserMessage, {
+    text: '[图片]',
+    images: [{ attachment: { attachmentId: 'a' } }],
+    t,
+  }))
+  assert.doesNotMatch(noLoader, /data-message-attachments/)
+  assert.match(noLoader, /\[图片\]/)
+})
+
+// ── read_image 工具卡图片区（官方 imageCardModel）──
+
+const { imageCardFace } = await import('../dist/adv/session/mirror/GenericCommandCard.js')
+const ENVELOPE = '<path>/tmp/a.png</path>\n<type>image</type>\n<content>\n\n</content>'
+
+test('read_image 卡面：image 块 + envelope + file_path 齐了才出图片卡', () => {
+  const content = [{ type: 'text', text: ENVELOPE }, { type: 'image', attachment: { attachmentId: 'att_9', width: 800, height: 600, bytes: 2048 } }]
+  const face = imageCardFace('read_image', JSON.stringify({ file_path: '/tmp/a.png' }), content, { path: '/tmp/a.png' }, false, true)
+  assert.equal(face.path, '/tmp/a.png')
+  assert.equal(face.images.length, 1)
+  assert.equal(face.images[0].attachment.width, 800)
+  assert.equal(face.extraText, null)
+  // 非 envelope 的文本进 extraText。
+  const withExtra = imageCardFace('read_image', JSON.stringify({ file_path: '/tmp/a.png' }),
+    [...content, { type: 'text', text: '还有一张没显示' }], undefined, false, true)
+  assert.equal(withExtra.extraText, '还有一张没显示')
+})
+
+test('read_image 卡面：错误 / 未结算 / 别的工具 / 缺 envelope / 缺附件 ⇒ 回通用卡', () => {
+  const content = [{ type: 'text', text: ENVELOPE }, { type: 'image', attachment: { attachmentId: 'att_9' } }]
+  const args = JSON.stringify({ file_path: '/tmp/a.png' })
+  assert.equal(imageCardFace('read_image', args, content, undefined, true, true), null)
+  assert.equal(imageCardFace('read_image', args, content, undefined, false, false), null)
+  assert.equal(imageCardFace('read', args, content, undefined, false, true), null)
+  assert.equal(imageCardFace('read_image', args, [content[1]], undefined, false, true), null)
+  assert.equal(imageCardFace('read_image', args, [content[0]], undefined, false, true), null)
+  assert.equal(imageCardFace('read_image', JSON.stringify({}), content, undefined, false, true), null)
+})

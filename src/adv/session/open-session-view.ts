@@ -22,6 +22,8 @@
 
 import type {
   ChatViewFace,
+  ImageAttachmentRefLike,
+  MessageImageLoader,
   ProjectionStoreFace,
   SessionBindingFace,
   SessionSnapshotFace,
@@ -38,6 +40,11 @@ export interface SessionViewTarget {
   readonly session: SnapshotFace<SessionSnapshotFace>
   /** 官方 `inbox` 投影面（faceOf('inbox')）：首轮等待期用户消息的 host 侧真源。 */
   readonly inbox: SnapshotFace<unknown>
+  /**
+   * 图片 loader = 官方 `uiConversation.imageUrl` 绑本会话（图要授权，弹窗自己拿不到 URL）。
+   * 缺席（老宿主没有该方法）= 图片块退回「[图片]」文本占位，不画空框。
+   */
+  readonly loadImage?: MessageImageLoader
   /** 释放 sessions.retain 引用（弹窗关闭时必调；否则会话 scope 永不回收）。 */
   dispose(): void
 }
@@ -137,10 +144,21 @@ export function openSessionView(
     return null
   }
   log('info', `openSessionView 成功建立 target（${id}）；首屏 nodes 待订阅回填`)
+  // 官方 ChatView 的 loadImage（ui-chat lib/client.js:15506）= uiConversation.imageUrl 绑会话；
+  // 方法用 this.images，必须经服务对象调用，不能先解构出来。
+  const imageUrl = uiConversation.imageUrl
+  const peekImageUrl = uiConversation.peekImageUrl
+  const loadImage: MessageImageLoader | undefined = imageUrl === undefined
+    ? undefined
+    : Object.assign(
+        (attachment: ImageAttachmentRefLike) => imageUrl.call(uiConversation, id, attachment),
+        { peek: (attachment: ImageAttachmentRefLike) => peekImageUrl?.call(uiConversation, id, attachment) },
+      )
   return {
     target,
     session,
     inbox,
+    ...(loadImage === undefined ? {} : { loadImage }),
     dispose: releaseRef,
     loadOlder(): void {
       try {

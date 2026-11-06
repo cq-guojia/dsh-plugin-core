@@ -126,10 +126,18 @@ retainSource = DEFAULT_RETAIN_SOURCE) {
         return null;
     }
     log('info', `openSessionView 成功建立 target（${id}）；首屏 nodes 待订阅回填`);
+    // 官方 ChatView 的 loadImage（ui-chat lib/client.js:15506）= uiConversation.imageUrl 绑会话；
+    // 方法用 this.images，必须经服务对象调用，不能先解构出来。
+    const imageUrl = uiConversation.imageUrl;
+    const peekImageUrl = uiConversation.peekImageUrl;
+    const loadImage = imageUrl === undefined
+        ? undefined
+        : Object.assign((attachment) => imageUrl.call(uiConversation, id, attachment), { peek: (attachment) => peekImageUrl?.call(uiConversation, id, attachment) });
     return {
         target,
         session,
         inbox,
+        ...(loadImage === undefined ? {} : { loadImage }),
         dispose: releaseRef,
         loadOlder() {
             try {

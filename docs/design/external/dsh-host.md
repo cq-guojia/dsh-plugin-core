@@ -382,3 +382,25 @@
 `src/adv/session/mirror/ChatView.ts` 删掉「每轮最后一组平铺」的 `flatKeys`（误读 `useChatNodeBottom` 所致），
 按官方默认 `collapsed` 策略让所有过程组 `grouped: true`（2026-11-05 真机反馈「官方收起来的，我们两个都展开」即此）。
 其余 CSS 规则变化由 `officialClass()` 挂官方类自动跟随，**不写自绘兜底**（§8 长期口径）。
+
+## 17. 宿主消息图片：官方包、槽位与 loader（2026-11-06 核实 `0.2.2-rc.1`）
+
+解包：`npm pack @deepseek-ai/dsh-client-ui-attachment@0.2.2-rc.1`（该包**不在** §16 那 9 个包里，
+`dist-tags.latest` 还停在老版本 `0.0.1-rc.2`，要按宿主同号取 `next`）。
+
+| 事实 | 证据 |
+|---|---|
+| 消息图片的渲染方是该包的 **client 半区**（`lib/client.js`）：它往三个槽位注册同一组组件 —— `conversation.chat.user.images` / `conversation.chat.message.images` / `tool.call.images`（都 `priority: 100`），另有 `conversation.input.attachments` 与 `conversation.trajectory.images` | ui-attachment `lib/client.js:2380-2395`（`apply(ctx)` 里的 `slots.inject`）；`lib/index.js` 只导出宿主半区的空 `apply()` |
+| 图片组件的真身：`ImageGallery`（`data-align=start\|end`，多图 ≥2 走 64px 方砖、单图按 singleFit）+ `MessageImage`（peek 同步出图 → loader 拉 → 失败给可点重试 → 点开 `ImageLightbox`） | 同包 `lib/client.js:2196-2325` |
+| singleFit 口径：长边 240px、显示比夹在 `[0.25, 4]`、**不放大超过原图**（`scale = min(1, w/boxW, h/boxH)`），裁切锚点偏上 / 偏左 | 同包 `:2168-2192` |
+| CSS 由该包**自己注入**：`<style data-plugin-css="@deepseek-ai/dsh-client-ui-attachment/MessageImage.module.css">`，类名 `<hash>_gallery / frame / loading / error / spinner`（实测 `R_Yw7q_*`） | 同包 `:2139-2159` |
+| URL 只能经官方服务拿：`UiConversation.imageUrl(sessionId, attachment: ImageAttachmentRef): Promise<string>` 与 `peekImageUrl(...): string \| undefined`（按会话缓存，URL 存活到 binding 释放）；官方 ChatView 就是这么接的 `loadImage = (a) => ctx.uiConversation.imageUrl(sessionId, a)` + `.peek` | ui-conversation `lib/types/client/conversation/assembly.d.ts:72,79`；ui-chat `lib/client.js:15506` |
+| 图片块的字段是 `ImageAttachmentRef`（来自 `@deepseek-ai/dsh-attachment`，含 `attachmentId` 与原图 `width`/`height`），内容块里是 `{ type: 'image', attachment }` | ui-conversation `contract/records.d.ts:35`；ui-chat `lib/client.js:6012-6029` |
+| 纯图片消息**不画气泡**：`showBubble = text !== '' \|\| extraBlocks.length > 0`，图片只进附件行 | ui-chat `lib/client.js:9360-9370` |
+
+处置（本仓）：`src/adv/session/mirror/MessageImage.ts` 按上述 DOM / 类名直画（弹窗不走槽机制），
+`faces.ts` 给 `UiConversationFace` 加可选的 `imageUrl` / `peekImageUrl`，
+`open-session-view.ts` 把它们绑成 `SessionViewTarget.loadImage`（`this` 必须经服务对象调用），
+`official-classes.ts` 的前缀表补 `@deepseek-ai/dsh-client-ui-attachment/`；
+用户消息与助手内联图片都改为真图，loader 缺席时才退回「[图片]」文本占位。
+未接：`tool.call.images`（`read_image` 工具卡内的图片区，官方 = `imageBody` + 槽 + `imageMeta` 路径/尺寸）。

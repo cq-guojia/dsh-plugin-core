@@ -29,6 +29,8 @@ import {
 import { officialClass } from '../official-classes.js'
 import { markdownLabels } from '../../explorer/preview/md-labels.js'
 import type { Translate } from '../../../utils/i18n.js'
+import type { ImageAttachmentRefLike, MessageImageLoader } from '../faces.js'
+import { ImageGalleryMirror } from './MessageImage.js'
 
 /** 助手正文：官方 DOM = AssistantMarkdown.root > body > MarkdownText（chat lib/client.js:8370-8378）。
  * root 定 14px/24px，body 定 flex-column + 块间 gap 16px（宽表格规则也挂在 body 上）。
@@ -73,6 +75,10 @@ export interface UserFileFace {
 export function UserMessage(props: {
   text: string
   files?: readonly UserFileFace[]
+  /** 官方 image 块：图片附件不走文件卡，走 ui-attachment 的 ImageGallery（align=end）。 */
+  images?: readonly { attachment: ImageAttachmentRefLike }[]
+  /** 图片 loader（uiConversation.imageUrl 绑会话）；缺席 = 不画图片组，由调用方保留文本占位。 */
+  loadImage?: MessageImageLoader
   /** 官方 referenceLabels：用户 @ 引用的会话标签，气泡后单独一行（非 inline chips）。 */
   referenceLabels?: readonly string[]
   /** 官方 skillNames：本条消息用到的技能，气泡后单独一行（官方走文本工厂内联，此处近似）。 */
@@ -86,6 +92,11 @@ export function UserMessage(props: {
   const chips = files ?? []
   const references = referenceLabels ?? []
   const skills = skillNames ?? []
+  // 官方 UserContent：attachments 是「图片组 / 文件卡」的有序数组；这里图片统一排在文件卡之前
+  // （同一消息里既发图又发文件的场景罕见，顺序差异可接受 → shortcut: 混合附件保持图片在前）。
+  const gallery = props.images !== undefined && props.images.length > 0 && props.loadImage !== undefined
+    ? h(ImageGalleryMirror, { images: props.images, load: props.loadImage, align: 'end', t })
+    : null
   return h('div', {
     className: officialClass('MessageItem', 'userRow') ?? '',
     'data-pending-steering': props.pending || undefined,
@@ -93,12 +104,13 @@ export function UserMessage(props: {
   },
     h('div', { className: officialClass('MessageItem', 'userStack') ?? '' },
       // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
-      chips.length === 0
+      gallery === null && chips.length === 0
         ? null
         : h('div', {
             className: officialClass('MessageItem', 'attachmentRow') ?? '',
             'data-message-attachments': true,
           },
+            gallery,
             chips.map((file, index) => h('span', {
               key: `${file.name}:${index}`,
               className: officialClass('MessageItem', 'fileCard') ?? '',

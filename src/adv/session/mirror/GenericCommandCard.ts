@@ -33,7 +33,10 @@ import {
 import { officialClass } from '../official-classes.js'
 import type { UtilMessageKey, Translate } from '../../../utils/i18n.js'
 import { CodeViewer } from '../../../ui/display/CodeViewer.js'
+import { formatBytes } from '../../../utils/number.js'
 import { markdownLabels } from '../../explorer/preview/md-labels.js'
+import type { ContentBlockLike, ImageAttachmentRefLike, MessageImageLoader } from '../faces.js'
+import { ImageGalleryMirror } from './MessageImage.js'
 import { AskQuestionCardView, askCardModel } from './AskCard.js'
 import { ToolDetailsView, detailsCardModel, detailsSummary } from './ToolDetails.js'
 
@@ -333,6 +336,56 @@ function readCardModel(name: string, argsRaw: string, output: string, meta: unkn
   // 官方结果 envelope（read 工具输出格式）不匹配 ⇒ 走 generic。
   if (/^<path>[^\n]*<\/path>\n<type>file<\/type>\n<content>\n([\s\S]*)\n<\/content>$/u.exec(output)?.[1] === undefined) return null
   return face
+}
+
+/** `read_image` 卡面（官方 imageCardModel，tool client.js:2965-2986）。 */
+export interface ImageCardFace {
+  path: string
+  images: readonly { attachment: ImageAttachmentRefLike }[]
+  /** 结果里 envelope 之外的文本（官方 extraTexts）；没有 = null。 */
+  extraText: string | null
+}
+
+/** 官方 IMAGE_ENVELOPE（tool client.js:2842）：read_image 的结果就是这段结构化文本。 */
+const IMAGE_ENVELOPE = /^<path>[^\n]*<\/path>\n<type>image<\/type>\n<content>\n[\s\S]*\n<\/content>$/u
+
+/**
+ * 官方 imageCardModel：read_image + 已结算 + 非错误 + 参数里有 file_path + 结果里既有
+ * IMAGE_ENVELOPE 文本又有 image 块的附件引用，才出图片卡；任一不满足都回通用卡。
+ * @param content - 已结算结果的内容块（图片引用与 envelope 的唯一真源）。
+ */
+export function imageCardFace(
+  name: string,
+  argsRaw: string,
+  content: readonly ContentBlockLike[] | undefined,
+  meta: unknown,
+  isError: boolean,
+  settled: boolean,
+): ImageCardFace | null {
+  if (!settled || isError || name !== 'read_image') return null
+  const parsed = parseArgs(argsRaw)
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return null
+  const filePath = (parsed as Record<string, unknown>).file_path
+  if (typeof filePath !== 'string' || filePath.trim() === '') return null
+  const metaPath = typeof (meta as { path?: unknown } | null)?.path === 'string'
+    ? (meta as { path: string }).path
+    : undefined
+  const images: { attachment: ImageAttachmentRefLike }[] = []
+  for (const block of content ?? []) {
+    if (block === null || typeof block !== 'object' || block.type !== 'image') continue
+    const attachment = block.attachment
+    if (typeof attachment !== 'object' || attachment === null) continue
+    if (typeof attachment.attachmentId !== 'string' || attachment.attachmentId === '') continue
+    images.push({ attachment })
+  }
+  if (images.length === 0) return null
+  const texts = (content ?? []).flatMap(block =>
+    block !== null && typeof block === 'object' && block.type === 'text' && typeof block.text === 'string'
+      ? [block.text]
+      : [])
+  if (!texts.some(text => IMAGE_ENVELOPE.test(text))) return null
+  const extra = texts.filter(text => !IMAGE_ENVELOPE.test(text))
+  return { path: metaPath ?? filePath, images, extraText: extra.length > 0 ? extra.join('\n') : null }
 }
 
 /** 搜索结果卡两面（官方 searchCardModel 的返回；recovery = 截断时的完整结果正文）。 */
@@ -716,9 +769,13 @@ export function GenericCommandCard(props: {
   errorCode?: string
   /** 统一 openFile 入口：read/write/edit 摘要路径渲染成官方 fileLink（read 带 offset 落点行）。 */
   onOpenFile?: (path: string, options?: { line?: number }) => void
+  /** `read_image` 的图片卡面（imageCardFace 的结果）；undefined = 走通用卡。 */
+  image?: ImageCardFace
+  /** 图片 loader（view.loadImage）；缺席 = 只出路径与尺寸文字，不画图。 */
+  loadImage?: MessageImageLoader
   t: Translate
 }): ReturnType<typeof h> {
-  const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, errorCode, onOpenFile, t } = props
+  const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, errorCode, onOpenFile, image, loadImage, t } = props
   const [expanded, setExpanded] = useState(false)
   const variant = classifyTool(name)
   const titleKey = toolTitleKey(name)
@@ -799,7 +856,7 @@ export function GenericCommandCard(props: {
   // 官方 singleFile（1876/1885）：摘要已是文件路径链接的工具（read）不再摊原始输入 JSON。
   const inputRaw = argsRaw === '' || filePath !== undefined ? null : argsRaw
   const outputText = output === '' ? null : output
-  const card = terminal !== null ? 'terminal' : diffs !== null ? 'diff' : read !== null ? 'read' : search !== null ? 'search' : web !== null ? 'web' : details !== null ? 'details' : null
+  const card = terminal !== null ? 'terminal' : diffs !== null ? 'diff' : read !== null ? 'read' : image !== undefined ? 'image' : search !== null ? 'search' : web !== null ? 'web' : details !== null ? 'details' : null
   const bodyText = expanded && card === null && inputRaw !== null ? formatToolBody(variant, inputRaw) : null
   const cardBody = variant === 'code' ? null : bodyText
   const expandable = rowState !== 'preparing' && (inputRaw !== null || outputText !== null || card !== null)
@@ -885,6 +942,33 @@ export function GenericCommandCard(props: {
               maxLines: 8,
               className: officialClass('ToolRow', 'readBody') ?? '',
             })
+          : image !== undefined
+            ? h('div', { className: officialClass('ToolRow', 'imageBody') ?? '' },
+                loadImage === undefined
+                  ? null
+                  : h(ImageGalleryMirror, { images: image.images, load: loadImage, align: 'start', t }),
+                h('div', { className: officialClass('ToolRow', 'imageMeta') ?? '' },
+                  h('div', null, image.path),
+                  image.images.map(({ attachment }, index) => h('div', { key: index },
+                    attachment.originalDimensions === undefined
+                      ? t('toolImageSize', {
+                          width: attachment.width ?? '',
+                          height: attachment.height ?? '',
+                          bytes: formatBytes(attachment.bytes ?? 0),
+                        })
+                      : t('toolImageSizeDownscaled', {
+                          width: attachment.width ?? '',
+                          height: attachment.height ?? '',
+                          originalWidth: attachment.originalDimensions.width,
+                          originalHeight: attachment.originalDimensions.height,
+                          bytes: formatBytes(attachment.bytes ?? 0),
+                        }),
+                  )),
+                ),
+                image.extraText === null
+                  ? null
+                  : h('div', { className: officialClass('ToolRow', 'imageExtra') ?? '' }, image.extraText),
+              )
           : search !== null
             ? h(Fragment, null,
                 h(SearchBlock, {

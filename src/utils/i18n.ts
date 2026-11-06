@@ -211,6 +211,8 @@ export type UtilMessageKey =
   | 'skillRowStopped'
   | 'skillRowInstructions'
   | 'toolInputLabel'
+  | 'toolImageSize'
+  | 'toolImageSizeDownscaled'
   | 'toolCommandArguments'
   | 'toolPreparingContent'
   | 'compactionTitle'
@@ -547,6 +549,12 @@ export type UtilMessageKey =
   | 'inputAction'
   /** 会话里的图片块占位（非 vision 渲染处）。 */
   | 'sessionImage'
+  | 'sessionImageView'
+  | 'sessionImageOpenNamed'
+  | 'sessionImageLoading'
+  | 'sessionImageLoadFailed'
+  | 'sessionImagePreview'
+  | 'sessionImageClosePreview'
   /** 官方样式未命中时的可见提示。 */
   | 'sessionProbeStyle'
 
@@ -754,6 +762,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     skillRowStopped: 'skill 加载已中止',
     skillRowInstructions: '说明',
     toolInputLabel: '输入',
+    toolImageSize: '{width}x{height}px，{bytes}',
+    toolImageSizeDownscaled: '{width}x{height}px（由 {originalWidth}x{originalHeight}px 缩小），{bytes}',
     toolCommandArguments: '命令参数',
     toolPreparingContent: '{kilobytes} KB',
     compactionTitle: '上下文已压缩',
@@ -1088,6 +1098,12 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     inputUndo: '撤销',
     inputAction: '操作',
     sessionImage: '[图片]',
+    sessionImageView: '查看原图',
+    sessionImageOpenNamed: '{label}，点击查看原图',
+    sessionImageLoading: '图片加载中…',
+    sessionImageLoadFailed: '图片加载失败，点击重试',
+    sessionImagePreview: '原图预览',
+    sessionImageClosePreview: '关闭原图预览',
     sessionProbeStyle: '官方样式未命中（当前为自绘回退）',
   },
   en: {
@@ -1290,6 +1306,8 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     skillRowStopped: 'Skill load stopped',
     skillRowInstructions: 'Instructions',
     toolInputLabel: 'IN',
+    toolImageSize: '{width}x{height}px, {bytes}',
+    toolImageSizeDownscaled: '{width}x{height}px (downscaled from {originalWidth}x{originalHeight}px), {bytes}',
     toolCommandArguments: 'Command arguments',
     toolPreparingContent: '{kilobytes} KB',
     compactionTitle: 'Context compacted',
@@ -1623,6 +1641,12 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     inputUndo: 'Undo',
     inputAction: 'Action',
     sessionImage: '[Image]',
+    sessionImageView: 'View original',
+    sessionImageOpenNamed: '{label}, click to view original',
+    sessionImageLoading: 'Loading image…',
+    sessionImageLoadFailed: 'Image failed to load; click to retry',
+    sessionImagePreview: 'Original image preview',
+    sessionImageClosePreview: 'Close original image preview',
     sessionProbeStyle: 'Official styles not matched (using the self-drawn fallback)',
   },
 }

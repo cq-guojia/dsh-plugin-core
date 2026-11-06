@@ -72,6 +72,18 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
    */
   export function CommandText(props: { text: string; label: string; className?: string | undefined }): ReactNode
 
+  /**
+   * 官方原图预览层（primitives lib/types/ImageLightbox.d.ts，0.2.2-rc.1 核实）：body portal，
+   * Esc / 遮罩 / 关闭钮退出、卸载时把焦点还给打开者。官方消息图片与工具图片共用它。
+   */
+  export function ImageLightbox(props: {
+    src: string
+    alt: string
+    labels: { dialog: string; close: string }
+    onClose: () => void
+    contextMenuProps?: Pick<import('react').HTMLAttributes<HTMLElement>, 'onContextMenu' | 'onKeyDown' | 'tabIndex'> | undefined
+  }): import('react').ReactPortal
+
   /** 官方 Shiki 代码块（diff 面与文档预览同源积木；lang 直接传 fence info / 扩展名）。 */
   export const CodeBlock: ComponentType<{
     code: string

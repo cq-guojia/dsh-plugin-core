@@ -16,6 +16,7 @@ import { createElement as h, useEffect, useMemo, useState } from 'react';
 import { FileTypeIcon, fileExtension, fileSizeText, IconApiOutlineRegular, IconChevronDownOutlineRegular, IconChevronRightOutlineRegular, MarkdownText, StateDot, TextShimmer, UserMessageBubble, UserTextRun, } from '../../../ui/official.js';
 import { officialClass } from '../official-classes.js';
 import { markdownLabels } from '../../explorer/preview/md-labels.js';
+import { ImageGalleryMirror } from './MessageImage.js';
 /** 助手正文：官方 DOM = AssistantMarkdown.root > body > MarkdownText（chat lib/client.js:8370-8378）。
  * root 定 14px/24px，body 定 flex-column + 块间 gap 16px（宽表格规则也挂在 body 上）。
  * U11：fileMentions 词表就位时行内 code 文件引用渲成可点链接（官方语义：resolve 不出保持惰性 code）。 */
@@ -45,18 +46,23 @@ export function UserMessage(props) {
     const chips = files ?? [];
     const references = referenceLabels ?? [];
     const skills = skillNames ?? [];
+    // 官方 UserContent：attachments 是「图片组 / 文件卡」的有序数组；这里图片统一排在文件卡之前
+    // （同一消息里既发图又发文件的场景罕见，顺序差异可接受 → shortcut: 混合附件保持图片在前）。
+    const gallery = props.images !== undefined && props.images.length > 0 && props.loadImage !== undefined
+        ? h(ImageGalleryMirror, { images: props.images, load: props.loadImage, align: 'end', t })
+        : null;
     return h('div', {
         className: officialClass('MessageItem', 'userRow') ?? '',
         'data-pending-steering': props.pending || undefined,
         'data-submission-echo': props.echo || undefined,
     }, h('div', { className: officialClass('MessageItem', 'userStack') ?? '' }, 
     // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
-    chips.length === 0
+    gallery === null && chips.length === 0
         ? null
         : h('div', {
             className: officialClass('MessageItem', 'attachmentRow') ?? '',
             'data-message-attachments': true,
-        }, chips.map((file, index) => h('span', {
+        }, gallery, chips.map((file, index) => h('span', {
             key: `${file.name}:${index}`,
             className: officialClass('MessageItem', 'fileCard') ?? '',
             title: file.name,

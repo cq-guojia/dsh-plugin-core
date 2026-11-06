@@ -1,5 +1,6 @@
 import { createElement as h } from 'react';
 import type { Translate } from '../../../utils/i18n.js';
+import type { ImageAttachmentRefLike, MessageImageLoader } from '../faces.js';
 /** 助手正文：官方 DOM = AssistantMarkdown.root > body > MarkdownText（chat lib/client.js:8370-8378）。
  * root 定 14px/24px，body 定 flex-column + 块间 gap 16px（宽表格规则也挂在 body 上）。
  * U11：fileMentions 词表就位时行内 code 文件引用渲成可点链接（官方语义：resolve 不出保持惰性 code）。 */
@@ -34,6 +35,12 @@ export interface UserFileFace {
 export declare function UserMessage(props: {
     text: string;
     files?: readonly UserFileFace[];
+    /** 官方 image 块：图片附件不走文件卡，走 ui-attachment 的 ImageGallery（align=end）。 */
+    images?: readonly {
+        attachment: ImageAttachmentRefLike;
+    }[];
+    /** 图片 loader（uiConversation.imageUrl 绑会话）；缺席 = 不画图片组，由调用方保留文本占位。 */
+    loadImage?: MessageImageLoader;
     /** 官方 referenceLabels：用户 @ 引用的会话标签，气泡后单独一行（非 inline chips）。 */
     referenceLabels?: readonly string[];
     /** 官方 skillNames：本条消息用到的技能，气泡后单独一行（官方走文本工厂内联，此处近似）。 */
