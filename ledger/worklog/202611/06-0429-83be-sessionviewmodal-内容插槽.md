@@ -1,7 +1,7 @@
 # 20261106-0429-83be-sessionviewmodal-内容插槽: SessionViewModal 内容插槽
 
 - **Tags**: 会话预览, 插槽, 扩展点, 向后兼容
-- **Status**: doing · 2026-11-06 04:47:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-06 04:55:56 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-06 04:29:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -135,6 +135,19 @@
   已补齐（漏一个就在链接阶段报一次，报错信息指得很准）。
 - 自检：`pnpm test` 321 条全绿（新增 `test/session-slots.test.mjs` 7 条）；`codelint` 14 文件六层全过。
 
+### 2026-11-06 用户验收反馈（三条，已改）
+
+1. **`headerActions` 排到「继续对话」左边**：动作区最终顺序 = 归档徽标 → 调用方动作 → 继续对话 → ✕
+   （「继续对话」与 ✕ 恒居最右）。改 `SessionViewModal.ts` 的 `headActions` 排序 + 测试断言反转。
+2. **标题里徽标下沉**：不是核心的锅 —— demo 示例把文字与 `Chip` 直接并排，`Chip` 是 inline-flex，
+   贴基线对齐就显低。示例与文档改成 `display:inline-flex; align-items:center; gap:6px` 包一层；
+   文档同时写明这个写法（槽内容排版归调用方）。
+3. **`bodyFooter` 位置改到尾部操作行之上**：原来落在整条流末尾（在复制 / 分支 / 用量行下面）。
+   现在 = 末尾节点是**带回复的 turn-tail** 时，把它挂在该 tail 节点之前（`renderKeyedNode` 的
+   `footerSlot` / `footerKey`），即「最后那条回复之后、操作行之前」；末尾不是 tail 或 `closing` 为空时
+   仍回落到流末尾；两种情况都保证只渲染一处（`footerAnchorKey === undefined ? bodyFooterRow : null`）。
+   新增 2 条测试钉住：回话时在 `data-turn-tail` 之前且只出现一次；无回话时回落末尾。
+
 ## Conclusion
 
 已实现待验收：`SessionViewModal` 新增 `title` / `header` / `headerActions` / `bodyHeader` / `bodyFooter`
@@ -149,3 +162,4 @@
 - 2026-11-06 04:35:25 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
 - 2026-11-06 04:35:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领；API 定稿 5 props（heading 放宽/二级 titleArea/headerActions/bodyLead/bodyTail），定案见 worklog Process；下一步 overlay.ts:107 加 titleArea
 - 2026-11-06 04:47:24 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 实现完成：SessionViewModal 加 title/header/headerActions/bodyHeader/bodyFooter（heading 留旧名）+ Modal.header；命名按本仓 title/header/headerActions + 业界 bodyHeader/bodyFooter；新增 test/session-slots 7 条，pnpm test 321 全绿，codelint 全过
+- 2026-11-06 04:55:56 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按验收反馈改三处：headerActions 移到继续对话左边、bodyFooter 挂到最后 turn-tail 之前（操作行之上，无回复回落末尾）、demo 标题用 inline-flex 修徽标下沉；测试 323 全绿
