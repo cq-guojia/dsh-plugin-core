@@ -1,7 +1,7 @@
 # 20261106-0429-83be-sessionviewmodal-内容插槽: SessionViewModal 内容插槽
 
 - **Tags**: 会话预览, 插槽, 扩展点, 向后兼容
-- **Status**: doing · 2026-11-06 05:35:05 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-06 05:37:18 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-06 04:29:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -176,3 +176,4 @@
 - 2026-11-06 04:55:56 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按验收反馈改三处：headerActions 移到继续对话左边、bodyFooter 挂到最后 turn-tail 之前（操作行之上，无回复回落末尾）、demo 标题用 inline-flex 修徽标下沉；测试 323 全绿
 - 2026-11-06 05:03:33 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 验收第二轮：bodyFooter 移进 TurnTailNodeView.tailSlot 末项（交付文件之后、操作行之前），bodyHeader 挂官方 flowItem 类对齐项间距；323 测试全绿、codelint 全过
 - 2026-11-06 05:35:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 顶端槽间距改为自带固定下边距 --dshpc-space-3（去掉 flowItem 类，不再跟随相邻项 margin）；323 测试全绿
+- 2026-11-06 05:37:18 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 插槽示例只挂在列表第一个会话（withSlots = openId === rows[0].sessionId），其余会话不传槽；build:demo + 323 测试全绿
