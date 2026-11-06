@@ -139,3 +139,36 @@
   border-bottom: none;
 }
 
+/* 左侧目录行（用户 2026-11-06）：底/前景色写在这里而不是内联 style ——
+   内联会盖掉 :hover，之前鼠标移上去一点反馈都没有。未选中 = 透明，hover 一层很浅的蓝。 */
+.dshpc-demo-nav {
+  background: transparent;
+  color: var(--dshpc-fg);
+  transition: background-color var(--dshpc-dur-fast) var(--dshpc-ease),
+    color var(--dshpc-dur-fast) var(--dshpc-ease);
+}
+
+.dshpc-demo-nav:hover {
+  background: var(--dshpc-card-hover);
+}
+
+/* 选中态压在 hover 之上：划过已选中的那一行不变色，免得看起来像换页了 */
+.dshpc-demo-nav--active,
+.dshpc-demo-nav--active:hover {
+  background: var(--dshpc-open-bg);
+  color: var(--dshpc-business);
+}
+
+/* 代码块懒挂载前的占位（见 doc.tsx 的 LazyCode）：与 CodeViewer 同字体/行高，
+   换成编辑器时高度基本不跳。 */
+.dshpc-doc-code-ph {
+  margin: 0;
+  padding: 8px 10px;
+  font-family: var(--dshpc-font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dshpc-fg-2);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+}

@@ -10,7 +10,7 @@
  * 那份由 scripts/gen-docs.mjs 从 docs 下的 doc.ts 扁平聚合生成，零解析。
  * 因此「重分类 / 改文档」只动 doc.ts，本层一行不动。
  */
-import { createElement as h, Fragment, type ReactNode } from 'react'
+import { createElement as h, Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
 import { CodeViewer } from '../../../dist/ui/display/CodeViewer.js'
 import { StripCard, Surface } from '../../../dist/ui/index.js'
 import { getLocale, t as coreT } from '../../../dist/utils/index.js'
@@ -70,6 +70,45 @@ function snippetPath(lang: string): string {
   return `snippet.${lang}`
 }
 
+/**
+ * 代码块懒挂载（用户 2026-11-06：「内容多的页面点开要等一秒」）。
+ *
+ * 每个 CodeViewer 都是一个**真 CodeMirror 实例**（整套扩展 + DOM + 自己的 MutationObserver）；
+ * 切页时一次建 10 个就是那 1 秒的来源，不是「页面太大」。视口外先放原文本占位
+ * （同样的字/行高，见 demo.css 的 .dshpc-doc-code-ph），进到视口前一屏才换成编辑器。
+ * 想测就对比：把 rootMargin 去掉，切到「展示 / 反馈」这些代码块多的页，Slow 3G 下更明显。
+ */
+function LazyCode(props: { code: string; lang: string }): ReturnType<typeof h> {
+  const holder = useRef<HTMLDivElement | null>(null)
+  const [live, setLive] = useState(false)
+  useEffect(() => {
+    if (live) return
+    const el = holder.current
+    if (el === null) return
+    if (typeof IntersectionObserver !== 'function') { setLive(true); return }
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) setLive(true)
+    }, { rootMargin: '800px 0px' })
+    observer.observe(el)
+    return () => { observer.disconnect() }
+  }, [live])
+  return h(
+    'div',
+    { ref: holder },
+    live
+      ? h(CodeViewer, {
+          text: props.code,
+          path: snippetPath(props.lang),
+          t: coreT,
+          // 卡片里没有确定高度上下文 ⇒ 随内容撑高，由外层滚。
+          height: 'auto',
+          // 文档片段不要行号（行号是「看整个文件」时才需要的坐标，片段有了反而干扰）。
+          lineNumbers: false,
+        })
+      : h('pre', { className: 'dshpc-doc-code-ph' }, props.code),
+  )
+}
+
 /** 一段代码（用法 / 安装这类没有实时渲染的块）。 */
 export function CodeOnly(props: {
   labelKey?: DemoMessageKey
@@ -82,15 +121,7 @@ export function CodeOnly(props: {
     Surface,
     { border: 'faint', className: 'dshpc-doc-block' },
     h('div', { className: 'dshpc-doc-label' }, label),
-    h(CodeViewer, {
-      text: props.code,
-      path: snippetPath(props.lang ?? 'tsx'),
-      t: coreT,
-      // 卡片里没有确定高度上下文 ⇒ 随内容撑高，由外层滚。
-      height: 'auto',
-      // 文档片段不要行号（行号是「看整个文件」时才需要的坐标，片段有了反而干扰）。
-      lineNumbers: false,
-    }),
+    h(LazyCode, { code: props.code, lang: props.lang ?? 'tsx' }),
   )
 }
 
@@ -134,13 +165,7 @@ export function Example(props: {
             h(
               'div',
               { className: 'dshpc-doc-example__scroll' },
-              h(CodeViewer, {
-                text: props.code,
-                path: snippetPath('tsx'),
-                t: coreT,
-                height: 'auto',
-                lineNumbers: false,
-              }),
+              h(LazyCode, { code: props.code, lang: 'tsx' }),
             ),
           ),
     ),

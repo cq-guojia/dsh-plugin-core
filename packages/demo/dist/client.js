@@ -66693,21 +66693,46 @@ function Note(props) {
 function snippetPath(lang) {
   return `snippet.${lang}`;
 }
+function LazyCode(props) {
+  const holder = (0, import_react88.useRef)(null);
+  const [live, setLive] = (0, import_react88.useState)(false);
+  (0, import_react88.useEffect)(() => {
+    if (live) return;
+    const el = holder.current;
+    if (el === null) return;
+    if (typeof IntersectionObserver !== "function") {
+      setLive(true);
+      return;
+    }
+    const observer = new IntersectionObserver((entries2) => {
+      if (entries2.some((entry) => entry.isIntersecting)) setLive(true);
+    }, { rootMargin: "800px 0px" });
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+  }, [live]);
+  return (0, import_react88.createElement)(
+    "div",
+    { ref: holder },
+    live ? (0, import_react88.createElement)(CodeViewer, {
+      text: props.code,
+      path: snippetPath(props.lang),
+      t,
+      // 卡片里没有确定高度上下文 ⇒ 随内容撑高，由外层滚。
+      height: "auto",
+      // 文档片段不要行号（行号是「看整个文件」时才需要的坐标，片段有了反而干扰）。
+      lineNumbers: false
+    }) : (0, import_react88.createElement)("pre", { className: "dshpc-doc-code-ph" }, props.code)
+  );
+}
 function CodeOnly(props) {
   const label = props.label ?? (props.labelKey !== void 0 ? t3(props.labelKey) : t3("docCode"));
   return (0, import_react88.createElement)(
     Surface,
     { border: "faint", className: "dshpc-doc-block" },
     (0, import_react88.createElement)("div", { className: "dshpc-doc-label" }, label),
-    (0, import_react88.createElement)(CodeViewer, {
-      text: props.code,
-      path: snippetPath(props.lang ?? "tsx"),
-      t,
-      // 卡片里没有确定高度上下文 ⇒ 随内容撑高，由外层滚。
-      height: "auto",
-      // 文档片段不要行号（行号是「看整个文件」时才需要的坐标，片段有了反而干扰）。
-      lineNumbers: false
-    })
+    (0, import_react88.createElement)(LazyCode, { code: props.code, lang: props.lang ?? "tsx" })
   );
 }
 function Example(props) {
@@ -66736,13 +66761,7 @@ function Example(props) {
         (0, import_react88.createElement)(
           "div",
           { className: "dshpc-doc-example__scroll" },
-          (0, import_react88.createElement)(CodeViewer, {
-            text: props.code,
-            path: snippetPath("tsx"),
-            t,
-            height: "auto",
-            lineNumbers: false
-          })
+          (0, import_react88.createElement)(LazyCode, { code: props.code, lang: "tsx" })
         )
       )
     )
@@ -70511,7 +70530,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.0"}`],
             [t3("buildDemo"), `v${"0.35.0"}`],
-            [t3("buildStamp"), "261106-160319-599"]
+            [t3("buildStamp"), "261106-161033-115"]
           ].map(
             ([label, value]) => (0, import_react97.createElement)(
               "tr",
@@ -70612,7 +70631,7 @@ function Sections(props) {
 }
 
 // packages/demo/src/demo-css.generated.ts
-var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n/* \u5907\u6CE8\u6846\u672C\u4F53\u662F\u6838\u5FC3 StripCard\uFF08\u65B9\u89D2 + \u5DE6 4px \u901A\u9AD8\u8272\u6761 + \u540C\u8272\u7CFB\u6D45\u5E95\uFF09\uFF0C\u8FD9\u91CC\u53EA\u8865\u884C\u5185\u6392\u7248\u3002 */\n.dshpc-doc-note {\n  margin-bottom: 16px;\n}\n\n.dshpc-doc-note__body {\n  display: flex;\n  gap: 8px;\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u4E00\u4E2A Note \u6846\u5185\u627F\u8F7D\u591A\u6BB5\u8BF4\u660E\uFF1Amark \u662F\u5DE6\u4FA7\u6807\u7B7E\uFF0Ccontent \u662F\u53F3\u4FA7\u7AD6\u6392\u6BB5\u843D\u5217\u3002 */\n.dshpc-doc-note__content {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n.dshpc-doc-note__p {\n  line-height: var(--dshpc-line-md);\n}\n\n/* \u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3\uFF1A\u6846\u5C5E\u6027\u4E0E\u5185\u8DDD\u5168\u7531\u6838\u5FC3 Surface \u63D0\u4F9B\uFF08\u5706\u89D2\u4E0E\u5168\u7AD9\u540C\u6863 12\uFF09\uFF0C\n   \u8FD9\u91CC\u53EA\u7559\u5916\u8DDD\u3002\u26A0\uFE0F \u4E0D\u8981\u518D\u5728\u672C\u7C7B\u91CC\u5199 border / padding / background \u2014\u2014 \u4E0E .dshpc-surface \u540C\u6743\u91CD\uFF0C\n   \u8C01\u540E\u6CE8\u5165\u8C01\u8D62\uFF0C\u7ED3\u679C\u4F1A\u968F\u6CE8\u5165\u987A\u5E8F\u6F02\u79FB\u3002 */\n.dshpc-doc-block {\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n/* \u793A\u4F8B\u5916\u58F3\u540C\u6837\u590D\u7528 Surface\uFF08\u5916\u6846 / \u5706\u89D2 / \u5E95\u90FD\u5728\u6838\u5FC3\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u88C1\u5207\u4E0E\u95F4\u8DDD\u3002 */\n.dshpc-doc-example {\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002\n   \u884C\u9AD8 = \u4E24\u680F\u91CC\u8F83\u9AD8\u7684\u90A3\u4E00\u680F\uFF08grid \u9ED8\u8BA4 stretch\uFF09\u21D2 \u77EE\u7684\u4E00\u680F\u88AB\u62C9\u9F50\uFF0C\u4E0D\u518D\u51FA\u73B0\u300C\u5DE6\u8FB9\u5F88\u9AD8\u3001\u53F3\u8FB9\u4E00\u6761\u5C0F\u6EDA\u52A8\u6761\u300D\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  align-items: stretch;\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  min-height: 0;\n  padding: 14px;\n  display: flex;\n  flex-direction: column;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  min-height: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n  display: flex;\n  flex-direction: column;\n}\n\n/* \u4EE3\u7801\u533A\u5403\u6389\u6574\u680F\u5269\u4F59\u9AD8\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70\uFF0C\u4EE3\u7801\u672C\u8EAB\u6309\u884C\u9AD8\u81EA\u9002\u5E94\n   \uFF08\u4E0D\u5199\u6B7B max-height \u2014\u2014 \u90A3\u4F1A\u5728\u793A\u4F8B\u5F88\u9AD8\u65F6\u4EE3\u7801\u680F\u91CC\u6324\u51FA\u4E00\u6761\u5C0F\u6EDA\u52A8\u6761\uFF09\u3002 */\n.dshpc-doc-example__scroll {\n  flex: 1 1 auto;\n  min-height: 0;\n  overflow: auto;\n  /* \u6EDA\u52A8\u6761\u4E0E\u53F3 / \u4E0B\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 docs/design/style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09 */\n  border-right: 1px solid transparent;\n  border-bottom: 1px solid transparent;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n\n/* \u6700\u540E\u4E00\u884C\u4E0D\u7559\u5E95\u8FB9\u6846\uFF1A\u8868\u683C\u5E95\u90E8\u4E0D\u518D\u591A\u51FA\u4E00\u6761\u60AC\u7A7A\u6A2A\u7EBF */\n.dshpc-doc-api tbody tr:last-child td {\n  border-bottom: none;\n}\n\n";
+var DEMO_CSS = "/* demo \u9884\u89C8\u7AD9\u7684\u6587\u6863\u9AA8\u67B6\u6837\u5F0F\uFF08Bootstrap \u6587\u6863\u7AD9\u5F0F\uFF1A\u63D0\u793A\u6846 + \u5DE6\u793A\u4F8B\u53F3\u4EE3\u7801 + \u7528\u6CD5 + API \u8868\uFF09\u3002\n   \u771F\u6E90\u5728\u8FD9\u91CC\uFF0C\u7531 scripts/gen-css.mjs \u751F\u6210 demo-css.generated.ts\uFF0C\u8FD0\u884C\u65F6\u7ECF createStyleKit \u6CE8\u5165\u3002\n   \u53EA\u6D88\u8D39 var(--dshpc-*)\uFF1A\u660E\u6697\u4EA4\u7ED9 token\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199\u6B7B\u4EFB\u4F55\u989C\u8272\u3002 */\n\n/* \u5907\u6CE8\u6846\u672C\u4F53\u662F\u6838\u5FC3 StripCard\uFF08\u65B9\u89D2 + \u5DE6 4px \u901A\u9AD8\u8272\u6761 + \u540C\u8272\u7CFB\u6D45\u5E95\uFF09\uFF0C\u8FD9\u91CC\u53EA\u8865\u884C\u5185\u6392\u7248\u3002 */\n.dshpc-doc-note {\n  margin-bottom: 16px;\n}\n\n.dshpc-doc-note__body {\n  display: flex;\n  gap: 8px;\n  font-size: var(--dshpc-font-md);\n  line-height: var(--dshpc-line-md);\n}\n\n.dshpc-doc-note__mark {\n  flex: none;\n  font-weight: 600;\n  color: var(--dshpc-business);\n}\n\n/* \u4E00\u4E2A Note \u6846\u5185\u627F\u8F7D\u591A\u6BB5\u8BF4\u660E\uFF1Amark \u662F\u5DE6\u4FA7\u6807\u7B7E\uFF0Ccontent \u662F\u53F3\u4FA7\u7AD6\u6392\u6BB5\u843D\u5217\u3002 */\n.dshpc-doc-note__content {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n.dshpc-doc-note__p {\n  line-height: var(--dshpc-line-md);\n}\n\n/* \u7528\u6CD5\u5757 / API \u8868\u7684\u5171\u540C\u5916\u58F3\uFF1A\u6846\u5C5E\u6027\u4E0E\u5185\u8DDD\u5168\u7531\u6838\u5FC3 Surface \u63D0\u4F9B\uFF08\u5706\u89D2\u4E0E\u5168\u7AD9\u540C\u6863 12\uFF09\uFF0C\n   \u8FD9\u91CC\u53EA\u7559\u5916\u8DDD\u3002\u26A0\uFE0F \u4E0D\u8981\u518D\u5728\u672C\u7C7B\u91CC\u5199 border / padding / background \u2014\u2014 \u4E0E .dshpc-surface \u540C\u6743\u91CD\uFF0C\n   \u8C01\u540E\u6CE8\u5165\u8C01\u8D62\uFF0C\u7ED3\u679C\u4F1A\u968F\u6CE8\u5165\u987A\u5E8F\u6F02\u79FB\u3002 */\n.dshpc-doc-block {\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-label {\n  font-size: var(--dshpc-font-xs);\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--dshpc-fg-4);\n  margin-bottom: 8px;\n}\n\n/* \u793A\u4F8B\u5916\u58F3\u540C\u6837\u590D\u7528 Surface\uFF08\u5916\u6846 / \u5706\u89D2 / \u5E95\u90FD\u5728\u6838\u5FC3\uFF09\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u88C1\u5207\u4E0E\u95F4\u8DDD\u3002 */\n.dshpc-doc-example {\n  overflow: hidden;\n  margin: 0 0 16px;\n}\n\n.dshpc-doc-example__head {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n}\n\n.dshpc-doc-example__title {\n  font-size: var(--dshpc-font-lg);\n  font-weight: 600;\n  color: var(--dshpc-fg);\n}\n\n.dshpc-doc-example__hint {\n  margin-top: 2px;\n  font-size: var(--dshpc-font-sm);\n  line-height: var(--dshpc-line-sm);\n  color: var(--dshpc-fg-3);\n}\n\n/* \u4E24\u680F\uFF1B\u5BB9\u5668\u7A84\u5230\u653E\u4E0D\u4E0B\u4E24\u5217 300px \u65F6\u81EA\u52A8\u584C\u6210\u4E00\u5217\uFF08\u4EE3\u7801\u843D\u5230\u793A\u4F8B\u4E0B\u65B9\uFF09\u3002\n   \u884C\u9AD8 = \u4E24\u680F\u91CC\u8F83\u9AD8\u7684\u90A3\u4E00\u680F\uFF08grid \u9ED8\u8BA4 stretch\uFF09\u21D2 \u77EE\u7684\u4E00\u680F\u88AB\u62C9\u9F50\uFF0C\u4E0D\u518D\u51FA\u73B0\u300C\u5DE6\u8FB9\u5F88\u9AD8\u3001\u53F3\u8FB9\u4E00\u6761\u5C0F\u6EDA\u52A8\u6761\u300D\u3002 */\n.dshpc-doc-example__body {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  align-items: stretch;\n}\n\n.dshpc-doc-example__demo {\n  min-width: 0;\n  min-height: 0;\n  padding: 14px;\n  display: flex;\n  flex-direction: column;\n}\n\n.dshpc-doc-example__code {\n  min-width: 0;\n  min-height: 0;\n  padding: 14px;\n  border-left: 1px solid var(--dshpc-border-faint);\n  background: var(--dshpc-code-surface);\n  display: flex;\n  flex-direction: column;\n}\n\n/* \u4EE3\u7801\u533A\u5403\u6389\u6574\u680F\u5269\u4F59\u9AD8\uFF1A\u8868\u5934\u300C\u4EE3\u7801\u300D\u4E24\u4E2A\u5B57\u4E0D\u88AB\u6EDA\u8D70\uFF0C\u4EE3\u7801\u672C\u8EAB\u6309\u884C\u9AD8\u81EA\u9002\u5E94\n   \uFF08\u4E0D\u5199\u6B7B max-height \u2014\u2014 \u90A3\u4F1A\u5728\u793A\u4F8B\u5F88\u9AD8\u65F6\u4EE3\u7801\u680F\u91CC\u6324\u51FA\u4E00\u6761\u5C0F\u6EDA\u52A8\u6761\uFF09\u3002 */\n.dshpc-doc-example__scroll {\n  flex: 1 1 auto;\n  min-height: 0;\n  overflow: auto;\n  /* \u6EDA\u52A8\u6761\u4E0E\u53F3 / \u4E0B\u7F18\u9694 1px\uFF08\u53E3\u5F84\u89C1 docs/design/style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09 */\n  border-right: 1px solid transparent;\n  border-bottom: 1px solid transparent;\n}\n\n.dshpc-doc-api {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: var(--dshpc-font-md);\n}\n\n.dshpc-doc-api th,\n.dshpc-doc-api td {\n  text-align: left;\n  padding: 6px 10px;\n  border-bottom: 1px solid var(--dshpc-border-faint);\n  vertical-align: top;\n}\n\n.dshpc-doc-api th {\n  font-weight: 600;\n  color: var(--dshpc-fg-3);\n  white-space: nowrap;\n}\n\n.dshpc-doc-api td:first-child {\n  font-family: var(--dshpc-font-mono);\n  white-space: nowrap;\n  color: var(--dshpc-fg);\n}\n\n/* \u6700\u540E\u4E00\u884C\u4E0D\u7559\u5E95\u8FB9\u6846\uFF1A\u8868\u683C\u5E95\u90E8\u4E0D\u518D\u591A\u51FA\u4E00\u6761\u60AC\u7A7A\u6A2A\u7EBF */\n.dshpc-doc-api tbody tr:last-child td {\n  border-bottom: none;\n}\n\n/* \u5DE6\u4FA7\u76EE\u5F55\u884C\uFF08\u7528\u6237 2026-11-06\uFF09\uFF1A\u5E95/\u524D\u666F\u8272\u5199\u5728\u8FD9\u91CC\u800C\u4E0D\u662F\u5185\u8054 style \u2014\u2014\n   \u5185\u8054\u4F1A\u76D6\u6389 :hover\uFF0C\u4E4B\u524D\u9F20\u6807\u79FB\u4E0A\u53BB\u4E00\u70B9\u53CD\u9988\u90FD\u6CA1\u6709\u3002\u672A\u9009\u4E2D = \u900F\u660E\uFF0Chover \u4E00\u5C42\u5F88\u6D45\u7684\u84DD\u3002 */\n.dshpc-demo-nav {\n  background: transparent;\n  color: var(--dshpc-fg);\n  transition: background-color var(--dshpc-dur-fast) var(--dshpc-ease),\n    color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n\n.dshpc-demo-nav:hover {\n  background: var(--dshpc-card-hover);\n}\n\n/* \u9009\u4E2D\u6001\u538B\u5728 hover \u4E4B\u4E0A\uFF1A\u5212\u8FC7\u5DF2\u9009\u4E2D\u7684\u90A3\u4E00\u884C\u4E0D\u53D8\u8272\uFF0C\u514D\u5F97\u770B\u8D77\u6765\u50CF\u6362\u9875\u4E86 */\n.dshpc-demo-nav--active,\n.dshpc-demo-nav--active:hover {\n  background: var(--dshpc-open-bg);\n  color: var(--dshpc-business);\n}\n\n/* \u4EE3\u7801\u5757\u61D2\u6302\u8F7D\u524D\u7684\u5360\u4F4D\uFF08\u89C1 doc.tsx \u7684 LazyCode\uFF09\uFF1A\u4E0E CodeViewer \u540C\u5B57\u4F53/\u884C\u9AD8\uFF0C\n   \u6362\u6210\u7F16\u8F91\u5668\u65F6\u9AD8\u5EA6\u57FA\u672C\u4E0D\u8DF3\u3002 */\n.dshpc-doc-code-ph {\n  margin: 0;\n  padding: 8px 10px;\n  font-family: var(--dshpc-font-mono);\n  font-size: 13px;\n  line-height: 20px;\n  color: var(--dshpc-fg-2);\n  white-space: pre-wrap;\n  word-break: break-word;\n  overflow: hidden;\n}\n";
 
 // packages/demo/src/paths.ts
 var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
@@ -70728,6 +70747,9 @@ function DemoPage() {
           {
             key: section.id,
             type: "button",
+            // 底色 / 前景色必须在 CSS 里：内联 style 优先级高过 .dshpc-demo-nav:hover，
+            // 写在这里 hover 永远不生效（用户 2026-11-06 反馈「移上去完全没效果」）。
+            className: `dshpc-demo-nav${active === section.id ? " dshpc-demo-nav--active" : ""}`,
             onClick: () => {
               setActive2(section.id);
             },
@@ -70737,8 +70759,6 @@ function DemoPage() {
               textAlign: "left",
               border: "none",
               cursor: "pointer",
-              background: active === section.id ? "var(--dshpc-open-bg)" : "transparent",
-              color: active === section.id ? "var(--dshpc-business)" : "var(--dshpc-fg)",
               padding: "7px 10px",
               borderRadius: "var(--dshpc-radius-sm)",
               fontSize: "13px",
@@ -70828,7 +70848,7 @@ function DemoPage() {
           },
           (0, import_react99.createElement)("span", null, `core v${"0.35.0"}`),
           (0, import_react99.createElement)("span", null, `demo v${"0.35.0"}`),
-          (0, import_react99.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261106-160319-599")
+          (0, import_react99.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261106-161033-115")
         )
       )
     ),

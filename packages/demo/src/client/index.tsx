@@ -204,11 +204,12 @@ function DemoPage(): ReturnType<typeof h> {
           {
             key: section.id,
             type: 'button',
+            // 底色 / 前景色必须在 CSS 里：内联 style 优先级高过 .dshpc-demo-nav:hover，
+            // 写在这里 hover 永远不生效（用户 2026-11-06 反馈「移上去完全没效果」）。
+            className: `dshpc-demo-nav${active === section.id ? ' dshpc-demo-nav--active' : ''}`,
             onClick: () => { setActive(section.id) },
             style: {
               display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
-              background: active === section.id ? 'var(--dshpc-open-bg)' : 'transparent',
-              color: active === section.id ? 'var(--dshpc-business)' : 'var(--dshpc-fg)',
               padding: '7px 10px', borderRadius: 'var(--dshpc-radius-sm)', fontSize: '13px', marginBottom: '2px',
             },
           },
