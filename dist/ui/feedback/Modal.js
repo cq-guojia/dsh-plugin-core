@@ -76,7 +76,7 @@ export function Modal(props) {
         : null, 
     // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
     // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
-    h('div', { className: 'dshpc-modal__body' }, props.children ?? null), props.footer === undefined && notice === undefined
+    h('div', { className: 'dshpc-modal__body dshpc-scroll-thin' }, props.children ?? null), props.footer === undefined && notice === undefined
         ? null
         : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }), props.footer), 
     // 透明点击层兜住消费方自绘的元素；核心控件此时已各自是真 disabled。

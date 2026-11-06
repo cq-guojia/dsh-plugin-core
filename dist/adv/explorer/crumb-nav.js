@@ -55,7 +55,7 @@ export function CrumbNav(props) {
     menuOpen
         ? h(Fragment, null, h('div', { className: 'dshpc-fb__crumbs-backdrop', onClick: onCloseMenu }), 
         // 表皮走 panel.css 的 menu 档；`.dshpc-fb__crumbs-menu` 只留定位与滚动（旧类名作别名）。
-        h('div', { className: 'dshpc-panel dshpc-panel--menu dshpc-fb__crumbs-menu', role: 'menu' }, menuItems))
+        h('div', { className: 'dshpc-panel dshpc-panel--menu dshpc-fb__crumbs-menu dshpc-scroll-thin', role: 'menu' }, menuItems))
         : null), landing
         ? h('div', { className: 'dshpc-fb__crumbs' })
         : h('div', { ref: regionRef, className: 'dshpc-fb__crumbs' }, 

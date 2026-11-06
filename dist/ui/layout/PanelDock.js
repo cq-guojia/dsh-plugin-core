@@ -56,7 +56,7 @@ let earsHostNode = null;
 function earsHost() {
     if (typeof document === 'undefined')
         return null;
-    if (earsHostNode !== null && earsHostNode.isConnected)
+    if (earsHostNode?.isConnected === true)
         return earsHostNode;
     // 复用页面里已有的那个：宿主可能同时装了两份 core（各自一个模块作用域），
     // 各建一个又变成两列重叠。
@@ -407,6 +407,6 @@ export function PanelDock(props) {
         className: 'dshpc-dock__collapse',
         'aria-label': tt('dockCollapse'),
         onClick: () => collapseWithAnim(pane.id),
-    }, '›'), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), h('div', { className: 'dshpc-dock__body' }, pane.children ?? null))), earHost === null ? null : createPortal(ears, earHost));
+    }, '›'), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), h('div', { className: 'dshpc-dock__body dshpc-scroll-thin' }, pane.children ?? null))), earHost === null ? null : createPortal(ears, earHost));
 }
 //# sourceMappingURL=PanelDock.js.map

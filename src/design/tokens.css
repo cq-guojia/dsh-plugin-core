@@ -228,6 +228,10 @@ body{
   --dshpc-line-xl:var(--dsw-font-base-16-line-height,24px);
   --dshpc-font-mono:var(--ds-font-family-code,monospace);
 
+  /* ── 细滚动条的让位值（线宽不能放 token，见文件末尾的注释）──────────
+     1px→2px 只改这一行；它用在普通元素上，var() 能正常解析。 */
+  --dshpc-scroll-inset:1px;
+
   /* ── 层级阶梯（业务文件不许再写裸 z-index）───────────────────────── */
   /* 页面级预览分栏 → 抽屉（新建/编辑）→ 弹窗/确认框 → 浮层菜单 → 浮层提示 */
   /* **整条阶梯都必须低于官方浮点 1000 档**（2026-11-06 用户拍板）：官方原语
@@ -354,3 +358,41 @@ body[data-ds-dark-theme]{
   /* 任务日程页展开面板底（深色段，2026-10-06 续）：与原 selected-bg 暗值一致，深色 UI 不动 */
   --dshpc-cal-panel-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));
 }
+
+/* ── 细滚动条 + 离边 1px：全库唯一真源 ─────────────────────────────────
+   放在 tokens 域（ensureComponentStyles 每次必注册、且排在所有控件域之前）：
+   任何组件只要给滚动容器挂 .dshpc-scroll-thin 就生效，不必另行注入 panel 域。
+   改线宽 / 让位 / 圆角 / 颜色只改这一处；别在别的 CSS 里再抄一份。
+
+   只用 ::-webkit-scrollbar：一旦写 scrollbar-width，Chrome 会切到规范化滚动条、
+   忽略这里的宽度（2026-11-06 实测：留着 scrollbar-width:thin 时宽度回到 ~10px）。
+   2026-11-06 用户口径：1px 太细 ⇒ 线宽 2px、thumb 上下端圆角。
+
+   让位（滚动条与容器可见边缘隔 1px）也由这个类负责：原生滚动条画在 padding box 之外、
+   border 之内，只有 border 能把它推离边缘（加 padding 无效）。挂类即自动让位，
+   容器不必自己再写透明边框。方向档（CSS 没有 :scrollable，推不出滚动方向，须显式声明）：
+     .dshpc-scroll-thin          竖滚（默认）：右让位
+     .dshpc-scroll-thin--x       横滚：底让位，且不叠右
+     .dshpc-scroll-thin--both    双向：右 + 底都让位
+   --x / --both 必须与基类同挂（线宽规则只认基类）。
+
+   挂 .dshpc-panel 的容器本身已有实色边框 ⇒ :not(.dshpc-panel) 跳过让位：滚动条贴那条
+   实色线即算让位，无条件叠透明边框会把实色右边框覆盖成透明。
+   CodeMirror 的 .cm-scroller 由官方生成、挂不上类 ⇒ 后代选择器一并命中线宽与让位；
+   它只让右不让底：给底会改 scroller 高度，CodeMirror 的测量循环会多算一条横滚条。
+   外层若自己不滚（如 CodeViewer），把 --dshpc-scroll-inset-right 设 0px 关掉自身让位，
+   免得外层与 .cm-scroller 两层各 1px 叠成 2px。 */
+/* ⚠️ 下面三行的线宽 / 圆角**必须是字面量**：WebKit 的 ::-webkit-scrollbar 系列伪元素
+   不解析 var()，带变量的声明会被静默丢弃 ⇒ 宽度整条作废、退回默认值。2026-11-06 把
+   width:2px 改成 var(--dshpc-scroll-w) 后真机当场打回（用户发现），故线宽不放 token。
+   2px→3px 只改这一块的三处数字；让位那条在普通元素上，仍走 --dshpc-scroll-inset。 */
+.dshpc-scroll-thin::-webkit-scrollbar,
+.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar{width:2px;height:2px}
+.dshpc-scroll-thin::-webkit-scrollbar-thumb,
+.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-thumb{background:var(--dshpc-border-heavy);border-radius:2px}
+.dshpc-scroll-thin::-webkit-scrollbar-track,
+.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-track{background:transparent}
+.dshpc-scroll-thin:not(.dshpc-panel){border-right:var(--dshpc-scroll-inset-right,var(--dshpc-scroll-inset)) solid transparent}
+.dshpc-scroll-thin--x:not(.dshpc-panel){border-right:0;border-bottom:var(--dshpc-scroll-inset) solid transparent}
+.dshpc-scroll-thin--both:not(.dshpc-panel){border-bottom:var(--dshpc-scroll-inset) solid transparent}
+.dshpc-scroll-thin .cm-scroller{border-right:var(--dshpc-scroll-inset) solid transparent}

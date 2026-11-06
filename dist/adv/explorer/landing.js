@@ -36,7 +36,7 @@ export function LandingBody(props) {
             },
         }, tt('explorerPickDir'))
         : null);
-    return h('div', { className: 'dshpc-fb__tree' }, roots.map((root) => row(`root:${root.path}`, root.label, root.path)), anchors
+    return h('div', { className: 'dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both' }, roots.map((root) => row(`root:${root.path}`, root.label, root.path)), anchors
         .filter((item) => item.path !== undefined && item.path !== '')
         .map((item) => row(`ws:${item.title}`, item.title, item.path)));
 }

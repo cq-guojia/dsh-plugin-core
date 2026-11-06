@@ -134,14 +134,21 @@ function createToasterHost() {
         }, palette.glyph), h('div', { style: { flex: 1, minWidth: 0 } }, h('div', { style: { fontWeight: 600 } }, payload.message), payload.description !== undefined
             ? h('div', { style: { opacity: 0.9, fontSize: '13px', marginTop: '2px', whiteSpace: 'pre-line' } }, payload.description)
             : null), actions !== undefined && actions.length > 0
-            ? h('div', { style: { display: 'flex', gap: '8px', flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => h(Button, {
-                variant: a.variant ?? 'info',
-                size: 'md',
-                onClick: () => {
-                    a.onClick();
-                    toast.dismiss(id);
-                },
-            }, a.text)))
+            ? h('div', { style: { display: 'flex', gap: '8px', flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => {
+                // 绿色成功态：卡里的动作钮一律用 surface-2（中性浅面），不再用蓝。
+                // 判据只看 toast 的 variant —— 调用方常显式写 variant:'info'，那正是要换掉的蓝钮，
+                // 不能因为它「显式给过」就跳过。其余态沿用调用方指定 / 默认 info（蓝）。
+                const successSurface = payload.variant === 'success';
+                return h(Button, {
+                    variant: successSurface ? 'secondary' : (a.variant ?? 'info'),
+                    ...(successSurface ? { color: 'var(--dshpc-surface-2)' } : {}),
+                    size: 'md',
+                    onClick: () => {
+                        a.onClick();
+                        toast.dismiss(id);
+                    },
+                }, a.text);
+            }))
             : null), { duration, unstyled: true });
     }
     return {

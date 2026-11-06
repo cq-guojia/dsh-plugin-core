@@ -66,7 +66,7 @@ let earsHostNode: HTMLElement | null = null
 
 function earsHost(): HTMLElement | null {
   if (typeof document === 'undefined') return null
-  if (earsHostNode !== null && earsHostNode.isConnected) return earsHostNode
+  if (earsHostNode?.isConnected === true) return earsHostNode
   // 复用页面里已有的那个：宿主可能同时装了两份 core（各自一个模块作用域），
   // 各建一个又变成两列重叠。
   let host = document.getElementById(EARS_HOST_ID)
@@ -539,7 +539,7 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
           renderHeader(pane),
           headerCloseOf(pane),
           floatingCloseOf(pane),
-          h('div', { className: 'dshpc-dock__body' }, pane.children ?? null),
+          h('div', { className: 'dshpc-dock__body dshpc-scroll-thin' }, pane.children ?? null),
         ),
       ),
     earHost === null ? null : createPortal(ears, earHost),

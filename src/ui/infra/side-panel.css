@@ -54,8 +54,9 @@
 }
 
 /* 内容区自己滚（面板高度锁死，内容不设内部滚动就会把页面撑高）。
-   透明右边框 = 滚动条与面板右缘隔 1px（口径见 style.md §滚动条让位）。 */
-.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto;border-right:1px solid transparent}
+   细滚动条与 1px 让位由 .dshpc-scroll-thin 统一给（口径见 style.md §滚动条让位）。 */
+.dshpc-dock__body{flex:1 1 auto;min-height:0;overflow:auto}
+
 
 /* 拖拽条：6px 命中区，**自己不画任何线**（贴在朝内那一侧，镜像由各自的定位文件做）。
    hover / 拖动时把面板自己的边框染成蓝 —— 蓝线只准改原线，不准在旁边再加一条。

@@ -611,18 +611,18 @@ export function FileBrowser(props) {
     }
     else if (mode === 'error' && listErr !== null) {
         // 列举失败（如 outside-workspace）：只给错误文案；关闭（✕）即退出。
-        body = h('div', { className: 'dshpc-fb__body' }, h('div', { className: 'dshpc-fb__err' }, tt(listErr.key, listErr.params)));
+        body = h('div', { className: 'dshpc-fb__body dshpc-scroll-thin' }, h('div', { className: 'dshpc-fb__err' }, tt(listErr.key, listErr.params)));
     }
     else if (listing !== null) {
         const visible = listing.filter((entry) => entry.type === 'directory' || matchesFilter(joinPath(dir, entry.name), false, picker ? props.filter : undefined));
         body =
             visible.length === 0
-                ? h('div', { className: 'dshpc-fb__body' }, h('div', { className: 'dshpc-fb__note' }, tt('explorerEmptyDir')))
-                : h('div', { className: 'dshpc-fb__tree' }, renderTree(visible, dir), truncated ? h('div', { className: 'dshpc-fb__row-note' }, tt('explorerTruncated')) : null);
+                ? h('div', { className: 'dshpc-fb__body dshpc-scroll-thin' }, h('div', { className: 'dshpc-fb__note' }, tt('explorerEmptyDir')))
+                : h('div', { className: 'dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both' }, renderTree(visible, dir), truncated ? h('div', { className: 'dshpc-fb__row-note' }, tt('explorerTruncated')) : null);
     }
     else {
         // 不动 Loading、不写加载文案 ⇒ 空着（源实现硬性规定）。
-        body = h('div', { className: 'dshpc-fb__body' });
+        body = h('div', { className: 'dshpc-fb__body dshpc-scroll-thin' });
     }
     return h('div', {
         className: 'dshpc-fb',

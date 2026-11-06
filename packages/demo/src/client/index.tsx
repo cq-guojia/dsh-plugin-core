@@ -247,8 +247,8 @@ function DemoPage(): ReturnType<typeof h> {
         },
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
-      // 透明右边框 = 滚动条与右缘隔 1px（口径见 docs/design/style.md §滚动条让位）
-      h('div', { style: { flex: 1, minHeight: 0, overflowY: 'auto', padding: '14px 10px', borderRight: '1px solid transparent' } }, nav),
+      // 细滚动条 + 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/design/style.md §滚动条让位）
+      h('div', { className: 'dshpc-scroll-thin', style: { flex: 1, minHeight: 0, overflowY: 'auto', padding: '14px 10px' } }, nav),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
       h(
         'div',
@@ -287,9 +287,9 @@ function DemoPage(): ReturnType<typeof h> {
     ),
     h(
       'main',
-      // 透明右边框 = 滚动条与右缘隔 1px（口径见 docs/design/style.md §滚动条让位）：
+      // 细滚动条与 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/design/style.md §滚动条让位）：
       // dock 不再让 margin，靠这里让，滚动条与分栏分隔线之间才是 1px。
-      { style: { flex: 1, minWidth: 0, minHeight: 0, height: '100%', boxSizing: 'border-box', overflowY: 'auto', padding: '12px 22px 60px', borderRight: '1px solid transparent' } },
+      { className: 'dshpc-scroll-thin', style: { flex: 1, minWidth: 0, minHeight: 0, height: '100%', boxSizing: 'border-box', overflowY: 'auto', padding: '12px 22px 60px' } },
       h(Sections, { active }),
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。

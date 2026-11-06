@@ -25,9 +25,9 @@
 }
 /* 固定头部（提示 + 搜索框），不随列表滚（2026-11-06 用户）。 */
 .dshpc-picker__head{flex:none;padding:4px 4px 0}
-/* 滚动在内层：列表贴满面板内容区，再靠自身 1px 透明边框让位 —— 滚动条与面板可见边框之间留出
-   1px 缝（不加这条边框就贴死在边框内壁上，2026-11-06 用户反馈）。上下角溢出由面板 overflow:hidden 裁掉。 */
-.dshpc-picker__list{flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 4px 4px;border-right:1px solid transparent}
+/* 滚动在内层：列表贴满面板内容区，1px 让位由 .dshpc-scroll-thin 统一给
+   （不留缝就贴死在边框内壁上，2026-11-06 用户反馈）。上下角溢出由面板 overflow:hidden 裁掉。 */
+.dshpc-picker__list{flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 4px 4px}
 /* 尺寸档（与 Field 的 sm/md/lg 对应）。 */
 .dshpc-picker__trigger--sm{height:24px;font-size:12px}
 .dshpc-picker__trigger--lg{height:32px}

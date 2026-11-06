@@ -159,7 +159,7 @@ test('面包屑栏：▾ 打开时菜单挂 menu 档与 panel 类', () => {
   const closed = renderToStaticMarkup(h(CrumbNav, navBase))
   assert.equal(closed.includes('dshpc-fb__crumbs-menu'), false, '菜单收起时不该渲染菜单')
   const open = renderToStaticMarkup(h(CrumbNav, { ...navBase, menuOpen: true }))
-  assert.match(open, /class="dshpc-panel dshpc-panel--menu dshpc-fb__crumbs-menu"/)
+  assert.match(open, /class="dshpc-panel dshpc-panel--menu dshpc-fb__crumbs-menu[^"]*"/)
   assert.match(open, /class="dshpc-fb__crumbs-backdrop"/)
 })
 

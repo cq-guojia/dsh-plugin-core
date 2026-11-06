@@ -84,7 +84,7 @@ export function CodeViewer(props) {
         onClick: copy,
     }), h(CodeMirror, {
         value: text,
-        className: 'dshpc-cv__editor',
+        className: 'dshpc-cv__editor dshpc-scroll-thin',
         theme: 'none',
         extensions,
         readOnly: true,

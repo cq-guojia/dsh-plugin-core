@@ -13,8 +13,12 @@ import {
 import { DocApi, DocCode, Example } from '../doc.js'
 import { t } from '../i18n.js'
 
-/** 表格横滚外壳：横向滚动条与底边隔 1px（口径见 docs/design/style.md §滚动条让位）。 */
-const H_SCROLL = { overflowX: 'auto', borderBottom: '1px solid transparent' } as const
+/** 表格横滚外壳：细滚动条 + 底边 1px 让位都由 .dshpc-scroll-thin--x 统一给。
+    横滚只让底、不让右（口径见 docs/design/style.md §滚动条让位）。 */
+const H_SCROLL = {
+  className: 'dshpc-scroll-thin dshpc-scroll-thin--x',
+  style: { overflowX: 'auto' },
+} as const
 
 /**
  * 主表示例（外观一：带全框）：把「列级配置」全摆出来 —— 多色表头、全框 + 列间竖线、
@@ -300,7 +304,7 @@ export function TablePage(): ReturnType<typeof h> {
       { title: 'Table', hint: t('tableHint') },
       h(
         'div',
-        { style: H_SCROLL },
+        { ...H_SCROLL },
         h(Table, {
           columns: COLUMNS,
           rows: rowsOf(),
@@ -315,7 +319,7 @@ export function TablePage(): ReturnType<typeof h> {
       ),
       h(
         'div',
-        { style: { ...H_SCROLL, marginTop: '16px' } },
+        { ...H_SCROLL, style: { ...H_SCROLL.style, marginTop: '16px' } },
         h(Table, {
           columns: COLUMNS,
           rows: [],
@@ -330,7 +334,7 @@ export function TablePage(): ReturnType<typeof h> {
       { title: 'Density · borders · spans', hint: t('tableSpanHint') },
       h(
         'div',
-        { style: H_SCROLL },
+        { ...H_SCROLL },
         h(Table, {
           columns: SPAN_COLUMNS,
           rows: SPAN_ROWS,
@@ -364,7 +368,7 @@ export function TablePage(): ReturnType<typeof h> {
       ),
       h(
         'div',
-        { style: { ...H_SCROLL, marginTop: '12px' } },
+        { ...H_SCROLL, style: { ...H_SCROLL.style, marginTop: '12px' } },
         h(Table, {
           columns: GROUP_COLUMNS,
           groups: GROUPS,
@@ -381,7 +385,7 @@ export function TablePage(): ReturnType<typeof h> {
       { title: 'Table · 分页', hint: t('tablePagerHint') },
       h(
         'div',
-        { style: H_SCROLL },
+        { ...H_SCROLL },
         h(Table, {
           columns: COLUMNS,
           // 不传 pagination.total ⇒ 本地分页：这里是全量 12 行，Table 自己按当前页切片
@@ -416,8 +420,9 @@ export function TablePage(): ReturnType<typeof h> {
       h(
         'div',
         {
+          ...H_SCROLL,
           style: {
-            ...H_SCROLL,
+            ...H_SCROLL.style,
             marginTop: '12px',
             display: 'flex',
             flexDirection: 'column',

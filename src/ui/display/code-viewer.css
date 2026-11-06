@@ -8,8 +8,10 @@
 .dshpc-cv__copy{position:absolute;top:6px;right:6px;z-index:5;opacity:0;}
 .dshpc-cv:hover .dshpc-cv__copy,.dshpc-cv__copy:focus-visible{opacity:1;}
 .dshpc-cv__copy svg{width:16px;height:16px;}
-.dshpc-cv__editor{flex:1 1 auto;min-height:0;overflow:hidden;}
+/* 外层只把 .dshpc-scroll-thin 传给官方生成的 .cm-scroller（线宽 + 右让位都由 tokens.css
+   的后代规则给），自己 overflow:hidden 不滚 ⇒ 关掉自身让位，否则两层各 1px 会叠成 2px。
+   scroller 只让右不让底：给底会改 scroller 高度，CodeMirror 的测量循环会多算一条横滚条。 */
+.dshpc-cv__editor{flex:1 1 auto;min-height:0;overflow:hidden;--dshpc-scroll-inset-right:0px;}
 .dshpc-cv__editor .cm-editor{height:100%;}
-/* 透明右边框 = 滚动条与右缘隔 1px（口径见 style.md §滚动条让位）。
-   只给右边：给底边会改 scroller 高度，CodeMirror 的测量循环会多算一条横滚条。 */
-.dshpc-cv__editor .cm-scroller{overflow:auto;border-right:1px solid transparent}
+.dshpc-cv__editor .cm-scroller{overflow:auto}
+

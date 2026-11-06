@@ -111,7 +111,7 @@ export function TextPreview(props) {
     if (text === '' && loading)
         return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'));
     const rendered = props.markdown && !props.sourceView;
-    return h('div', { className: 'dshpc-fb__text', style: { display: 'flex', flexDirection: 'column', ...(rendered ? { padding: 'var(--dshpc-space-3)' } : {}) } }, truncated
+    return h('div', { className: 'dshpc-fb__text dshpc-scroll-thin dshpc-scroll-thin--both', style: { display: 'flex', flexDirection: 'column', ...(rendered ? { padding: 'var(--dshpc-space-3)' } : {}) } }, truncated
         ? h('div', { className: 'dshpc-fb__banner' }, tt('previewTruncated', { n: formatBytes(props.maxBytes ?? 0) }))
         : null, rendered
         ? h(MarkdownText, { text, labels: markdownLabels() })

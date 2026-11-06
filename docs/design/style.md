@@ -156,58 +156,83 @@ EN: Welding controls into one visual unit has exactly one recipe: the shell owns
 `SplitGroup` overrides inner classes with descendant selectors, so those class names are the coupling point —
 rename them and you must update `src/ui/layout/split-group.css`, or the weld fails silently.
 
-## 滚动条让位：一律离边缘 1px
+## 滚动条让位：只挂 `.dshpc-scroll-thin`
 
-> EN: Scrollbars always sit 1px off the edge
+> EN: Scrollbar inset: just hang `.dshpc-scroll-thin`
 
-本仓每个滚动容器（`overflow:auto` / `overflow-y:auto` / `overflow-x:auto`）都要让滚动条与容器的**可见边框**
-之间留出 1px 缝，由容器自己的透明边框提供（横向滚用 `border-bottom`，双向两条）：
+**唯一真源**：`src/design/tokens.css` 的 tokens 域（`ensureComponentStyles` 每次必注册、且排在
+所有控件域之前 ⇒ 任何组件挂类即生效，不必额外注入 `panel` 域）。这个类**同时**给两样东西：
 
-```css
-border-right: 1px solid transparent;
-```
+| 它给什么 | 唯一可调值 |
+|---|---|
+| 细滚动条：线宽、thumb 上下端圆角、track 透明 | 字面量 `2px`（`width` / `height` / `border-radius` 三处，同一个规则块） |
+| 离边 1px 让位（容器自己的透明边框） | `--dshpc-scroll-inset`（现 1px） |
 
-**不要叠加**：容器本身已有实色边框的就不要再加（否则线变粗）。两个具体落点：
-
-- 浮层面板里贴满内容区的滚动层（Picker 列表、日期快捷档列）：**必须**自己写那条透明边框。
-  不写就贴在面板边框内壁上，缝隙是 0，看着就是贴死（2026-11-06 用户实测）。
-- 容器本身就是带边框的面板（文件浏览器 ▾ 选层 `dshpc-fb__crumbs-menu`）：同一元素不能既保留
-  实色边框又让位，只能接受贴边，走 `test/quality.test.mjs` 的 `PANEL_SCROLLERS` 白名单。
-- 消费方自己的滚动容器同理，自己加那条边框。
-
-**为什么没有一条全局规则**：CSS 没有 `:scrollable` 这类选择器，写不出通配所有滚动容器的规则，
-所以只能每个容器自己声明，由 `test/quality.test.mjs` 扫源码兜住漏写。
+⚠️ **线宽不能放进 CSS 变量**：WebKit 的 `::-webkit-scrollbar` 系列伪元素不解析 `var()`，带变量的
+声明会被静默丢弃 ⇒ 宽度整条作废、退回默认值。2026-11-06 把 `width:2px` 改成
+`var(--dshpc-scroll-w)` 后真机当场打回，用户发现。所以线宽与圆角**必须写字面量**，2px→3px 只改
+那一个规则块的三处；让位在普通元素上，仍走 `--dshpc-scroll-inset` 一行。
+**不在任何别的 CSS 里抄规则、也不在组件里另写透明边框**。
 
 原理：原生滚动条画在 padding box 之外、border 之内 —— 只有 border 能把它推离边缘，加 padding 无效。
-**滚动条默认用浏览器原生样式。** 2026-11-02 试过 `::-webkit-scrollbar` 改 thumb（留 3px
-缝 + 圆角）当场被否：要的就是「让出 1 像素」，不是换一套滚动条外观。
-2026-11-06 口径更新：浮层内的滚动区（下拉菜单、日期快捷档列）显式挂 `.dshpc-scroll-thin`
-（定义在 panel.css）——**宽度也是 1px 的一条细线**，离边仍是 1px。实现上只写
-`::-webkit-scrollbar`，**不要写 `scrollbar-width`**：Chrome 一见它就切到规范化滚动条、忽略
-`::-webkit-scrollbar` 的 1px（2026-11-06 实测宽度回到 ~10px）。其余容器仍是原生样式。
+实现只写 `::-webkit-scrollbar`，**不要写 `scrollbar-width`**：Chrome 一见它就切到规范化滚动条、
+忽略这里设的宽度（2026-11-06 实测宽度回到 ~10px）。2026-11-06 用户口径：1px 太细 ⇒ 线宽
+2px + thumb 上下端圆角。
 
-- 已有实色边框的容器（如 Picker 菜单的 `border:1px solid`，或挂 `.dshpc-panel` 后由面板提供的边框）
-  滚动条贴的就是那条线，算已让位，**不要叠加**。
-- 消费方自己的滚动容器（主区 / 侧栏）不在本仓代码里，配方相同：自己加那条 `border-right`。
-  2026-11-02 起 `--dshpc-dock-gap` 已删，dock 不再替主区让 margin，改由主区容器自己让。
-- 自检：`test/quality.test.mjs` 扫 `src/**/*.css`，滚动规则缺边框即红。
+### 方向档（CSS 没有 `:scrollable`，推不出滚动方向，只能显式声明）
 
-EN: every scroll container in this repo keeps a 1px gap between its scrollbar and its visible border, and the
-container owns that gap via its own transparent `border-right` (`border-bottom` when scrolling horizontally).
-Never stack it on an existing solid border. Scroll layers filling a floating panel's content box (Picker
-list, date-preset column) **must** write it themselves — without it the scrollbar sits flush against the
-panel border, zero gap (user-verified 2026-11-06). The one exception is a container that is itself the
-bordered panel (the file-browser crumb menu), whitelisted as `PANEL_SCROLLERS` in
-`test/quality.test.mjs`. Native scrollbars are painted between the padding box and the border, so only a
-border moves them — padding does nothing. There is no global rule to inherit: CSS has no `:scrollable`
-selector, so every container declares it itself and the test catches omissions. **Keep the native scrollbar by default**: a `::-webkit-scrollbar`
-thumb (3px gap + radius) was tried on 2026-11-02 and rejected — the ask is exactly "give up 1 pixel", not a
-different scrollbar look. Updated 2026-11-06: floating-layer scrollers (dropdown menus, the date-preset
-column) opt into a 1px-wide hairline via `.dshpc-scroll-thin` (defined in panel.css) — width 1px, inset still
-1px. Implement with `::-webkit-scrollbar` only: adding `scrollbar-width` makes Chrome switch to the
-standardized scrollbar and ignore the 1px (measured ~10px on 2026-11-06). Everything else stays native.
-Containers that already have a solid border count as done. Consumer-owned scroll containers use the same
-one-liner; `--dshpc-dock-gap` was removed on 2026-11-02. A test enforces the border.
+| 滚动方向 | 挂什么 | 让位落在 |
+|---|---|---|
+| 竖向（`overflow-y:auto`） | `dshpc-scroll-thin` | 右 1px |
+| 横向（`overflow-x:auto`） | `dshpc-scroll-thin dshpc-scroll-thin--x` | 底 1px、右归零 |
+| 双向（`overflow:auto`）且底部也要让 | `dshpc-scroll-thin dshpc-scroll-thin--both` | 右 + 底各 1px |
+
+方向档**必须与基类同挂**（线宽规则只认基类），`test/quality.test.mjs` 盯着。只要右让位的双向容器
+（贴边面板 body、弹窗 body）挂基类即可，不必加 `--both`。
+
+### 四处例外
+
+- **本身已有实色边框**（▾ 选层菜单挂 `.dshpc-panel`）：`:not(.dshpc-panel)` 跳过让位，滚动条贴
+  那条实色线即算让位；无条件叠透明边框会把实色右边框覆盖成透明。挂基类仍拿细滚动条。
+- **CodeMirror**：`.cm-scroller` 由官方生成、挂不上类 ⇒ 类挂外层 `.dshpc-cv__editor`，tokens.css
+  用后代选择器一并命中线宽与**右**让位；只让右不让底（给底会改 scroller 高度，CodeMirror 的
+  测量循环会多算一条横滚条）。外层自己 `overflow:hidden` 不滚 ⇒ 在 `code-viewer.css` 把
+  `--dshpc-scroll-inset-right` 设 `0px` 关掉自身让位，免得两层各 1px 叠成 2px。
+- **消费方自己的滚动容器**（demo 左导航 / main 主区 / 表格横滚区）：配方相同，挂类即可，
+  **不再自己写 `border-right: 1px solid transparent`**。2026-11-02 起 `--dshpc-dock-gap` 已删，
+  dock 不替主区让 margin。
+- **面板边框本身**：`test/quality.test.mjs` 仍断言 `.dshpc-panel` 带边框（上一条例外的前提）。
+
+### 自检
+
+`test/quality.test.mjs` 三条：① 所有滚动容器都挂基类（含 demo 的内联 `overflowY/X` —— 旧自检
+只扫 CSS 文件，漏过 demo）；② 1px 让位边框不许在 tokens.css 之外出现；③ `::-webkit-scrollbar`
+只许在 tokens.css 出现一份，且线宽 / 圆角必须是字面量 `2px`（防这次的 var 化回潮）。旧口径
+「CSS 没有 `:scrollable`，只能每个容器自己声明」已被类取代。
+
+EN: `.dshpc-scroll-thin` in `src/design/tokens.css` (tokens domain, registered on every
+`ensureComponentStyles` call and sorted first) is the single source of truth for **both** the hairline
+(literal `2px` in `width` / `height` / `border-radius`) and the 1px inset
+(`--dshpc-scroll-inset`, 1px). Never put the line width in a CSS variable: WebKit scrollbar
+pseudo-elements do not resolve `var()`, so such declarations are silently dropped and the width falls
+back to the default (hit in a real client on 2026-11-06). Hang the class; never duplicate the rules.
+Native scrollbars sit between the padding box and the border, so only a border can push them off the
+edge — padding does nothing. Use `::-webkit-scrollbar` only: adding `scrollbar-width` makes Chrome
+switch to the standardized scrollbar and ignore the width (measured ~10px on 2026-11-06).
+
+Direction variants (no `:scrollable` selector exists, so direction must be stated explicitly):
+`dshpc-scroll-thin` for vertical (right inset), `+ dshpc-scroll-thin--x` for horizontal (bottom inset,
+right zeroed), `+ dshpc-scroll-thin--both` for two-axis (right + bottom). Variants must be hung together
+with the base class.
+
+Exceptions: containers already carrying a solid border (`.dshpc-panel`) are skipped via
+`:not(.dshpc-panel)` — their border is the inset. CodeMirror generates `.cm-scroller` and cannot take a
+class, so the class goes on `.dshpc-cv__editor` and a descendant selector in tokens.css covers line width
+and the **right** inset only (a bottom border changes scroller height and makes CodeMirror's measurement
+loop add a phantom horizontal scrollbar); the non-scrolling outer layer sets
+`--dshpc-scroll-inset-right:0px` in `code-viewer.css` to avoid stacking two 1px gaps. Consumer-owned
+scroll containers (demo sidebar / main / table wrappers) just hang the class. `test/quality.test.mjs`
+checks all three, including inline `overflowY/X` in the demo.
 
 ## 浮层三档：模态 / 锚点面板 / 菜单
 

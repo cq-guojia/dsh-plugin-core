@@ -66,35 +66,109 @@ test('ui 层不许再用字形箭头，一律走 Chevron', async () => {
   assert.deepEqual(hits, [], `ui 层出现字形箭头（改用 Chevron）：\n${hits.join('\n')}`)
 })
 
-// 2026-11-02 用户口径：所有滚动条都要和容器边缘隔 1px（贴死了看不出是滚动条）。
-// CSS 没有「可滚动」选择器，写不出一条全局规则 ⇒ 只能靠这条扫源码的自检拦住新增容器漏加。
-// 通过条件：滚动规则自带透明边框（让位）或实色边框（滚动条贴的是那条线，视觉上已让位）。
-test('滚动容器都与边缘隔 1px（透明边框或实色边框）', async () => {
-  // 2026-11-03：浮层面板把边框收到 panel.css 的 `.dshpc-panel`，滚动容器自身不再写 border。
-  // 这类容器靠**同一元素上**的面板边框让位，按类名白名单放行；前提是面板确实带 1px 边框。
-  const panelCss = (await readFile(new URL('../src/ui/infra/panel.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
-  assert.match(panelCss, /\.dshpc-panel\{[^}]*border:var\(--dshpc-panel-bw\) solid var\(--dshpc-border\)/, '面板不再带 1px 边框（滚动条会贴死边缘）')
-  const PANEL_SCROLLERS = new Set(['dshpc-fb__crumbs-menu'])
+// 2026-11-06：细滚动条与「离边 1px」一起收进 .dshpc-scroll-thin（src/design/tokens.css
+// 的 tokens 域，全库唯一真源）。容器只挂类，不再自己写透明边框 ⇒ 自检盯三件事：
+//   ① 每个滚动容器都挂了基类（漏挂 = 粗滚动条 + 贴边），方向档必须与基类同挂；
+//   ② 1px 让位边框不许再散落到别的 CSS / demo 内联 style 里；
+//   ③ ::-webkit-scrollbar 只在 tokens.css 出现一份。
+// 旧版只扫 src/**/*.css 里的 border ⇒ demo 的内联 overflowY / overflowX 漏挂类完全没人管，
+// 这次把 demo 源码一起纳入扫描。
+async function collectSource(roots, exts, out = []) {
+  for (const root of roots) {
+    for (const entry of await readdir(new URL(root, import.meta.url), { withFileTypes: true })) {
+      const next = `${root}/${entry.name}`
+      if (entry.isDirectory()) await collectSource([next], exts, out)
+      else if (exts.test(entry.name) && !entry.name.endsWith('.generated.ts')) out.push(next)
+    }
+  }
+  return out
+}
+
+const CSS_FILES = await collectSource(['../src', '../packages/demo/src'], /\.css$/)
+const CODE_FILES = await collectSource(['../src', '../packages/demo/src'], /\.tsx?$/)
+const SCROLL_DECL = /overflow(?:-[xy])?\s*:\s*(?:auto|scroll)/
+// 只认 props 里的 style 对象：CodeMirror 主题里的 '.cm-scroller': { overflow:'auto' } 是
+// 第三方 CSS-in-JS 规则，不是本仓的滚动容器，别把它算进来。
+const INLINE_SCROLL_DECL = /style\s*:\s*\{[^{}]{0,400}?overflow(?:Y|X)?\s*:\s*['"](?:auto|scroll)['"]/g
+const INSET_BORDER = /border(?:-right|-bottom|Right|Bottom)\s*:\s*'?1px solid transparent/g
+
+/** className 字符串（h() 与 JSX 都覆盖）；按空白切词，避免前缀误命中。 */
+function classNames(text) {
+  return [...text.matchAll(/className\s*[:=]\s*['"]([^'"]*)['"]/g)].map((m) => m[1].split(/\s+/))
+}
+
+test('所有滚动容器都挂 .dshpc-scroll-thin（含 demo 内联 overflow）', async () => {
+  // CSS 里带 overflow 的规则 → 收集其选择器里的 dshpc-* 类名（这些类名的挂载点必须挂基类）。
+  const scrollClasses = new Set()
+  for (const rel of CSS_FILES) {
+    const css = (await readFile(new URL(rel, import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
+    for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      if (!SCROLL_DECL.test(body)) continue
+      for (const m of selector.matchAll(/\.(dshpc-[a-z0-9_-]+)/g)) scrollClasses.add(m[1])
+    }
+  }
+  assert.ok(scrollClasses.size >= 8, `只识别出 ${scrollClasses.size} 个滚动容器类名，扫描正则可能失效`)
+
   const hits = []
-  const walk = async (rel) => {
-    for (const entry of await readdir(new URL(rel, import.meta.url), { withFileTypes: true })) {
-      const next = `${rel}/${entry.name}`
-      if (entry.isDirectory()) await walk(next)
-      else if (entry.name.endsWith('.css')) {
-        const css = (await readFile(new URL(next, import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
-        for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-          if (!/overflow(-[xy])?\s*:\s*(auto|scroll)/.test(body)) continue
-          if (/\bborder(-(right|bottom))?\s*:/.test(body)) continue
-          if ([...selector.matchAll(/\.(dshpc-[a-z0-9_-]+)/g)].some((m) => PANEL_SCROLLERS.has(m[1]))) continue
-          hits.push(`${next.slice('../'.length)} → ${selector.trim().split('\n').pop()}`)
-        }
+  for (const rel of CODE_FILES) {
+    const text = await readFile(new URL(rel, import.meta.url), 'utf8')
+    const path = rel.slice('../'.length)
+    for (const classes of classNames(text)) {
+      const base = classes.includes('dshpc-scroll-thin')
+      if (/\bdshpc-scroll-thin--(?:x|both)\b/.test(classes.join(' ')) && !base) hits.push(`${path} → 方向修饰类没和基类同挂`)
+      if (!classes.some((c) => scrollClasses.has(c))) continue
+      if (!base) hits.push(`${path} → ${classes.join(' ')} 是滚动容器但没挂 .dshpc-scroll-thin`)
+    }
+    // demo 的内联滚动容器在 CSS 文件里找不到，只能从 style 对象里的 overflow 声明兜住。
+    for (const m of text.matchAll(INLINE_SCROLL_DECL)) {
+      const nearby = `${text.slice(Math.max(0, m.index - 320), m.index)}${text.slice(m.index, m.index + 320)}`
+      if (!nearby.includes('dshpc-scroll-thin')) {
+        hits.push(`${path}:${text.slice(0, m.index).split('\n').length} → 内联滚动容器没挂 .dshpc-scroll-thin`)
       }
     }
   }
-  await walk('../src')
-  assert.deepEqual(
-    hits,
-    [],
-    `滚动容器缺 1px 让位（border-right/-bottom: 1px solid transparent，见 style.md §滚动条让位）：\n${hits.join('\n')}`,
+  assert.deepEqual(hits, [], `滚动容器漏挂统一类（细滚动条 + 1px 让位都会失效）：\n${hits.join('\n')}`)
+})
+
+test('1px 让位边框只在 tokens.css 的 .dshpc-scroll-thin 一处', async () => {
+  const hits = []
+  for (const rel of [...CSS_FILES, ...CODE_FILES]) {
+    if (rel.endsWith('/design/tokens.css')) continue
+    const text = await readFile(new URL(rel, import.meta.url), 'utf8')
+    const code = text
+      .replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '))
+      .replace(/^\s*\/\/.*$/gm, '')
+    for (const m of code.matchAll(INSET_BORDER)) {
+      hits.push(`${rel.slice('../'.length)}:${code.slice(0, m.index).split('\n').length}`)
+    }
+  }
+  assert.deepEqual(hits, [], `又在各容器里手搓透明让位边框了（只需挂 .dshpc-scroll-thin）：\n${hits.join('\n')}`)
+})
+
+test('::-webkit-scrollbar 只在 tokens.css 定义（宽度不许有第二份）', async () => {
+  const hits = []
+  for (const rel of CSS_FILES) {
+    if (rel.endsWith('/design/tokens.css')) continue
+    if ((await readFile(new URL(rel, import.meta.url), 'utf8')).includes('::-webkit-scrollbar')) hits.push(rel.slice('../'.length))
+  }
+  assert.deepEqual(hits, [], `细滚动条规则出现第二份：\n${hits.join('\n')}`)
+  const tokens = await readFile(new URL('../src/design/tokens.css', import.meta.url), 'utf8')
+  assert.match(tokens, /--dshpc-scroll-inset:1px/, '让位 token 丢了')
+  // 2026-11-06 真机回归：::-webkit-scrollbar 系列伪元素不解析 var()，把 width:2px 写成
+  // var(--dshpc-scroll-w) 后整条声明被静默丢弃 ⇒ 宽度退回默认值。线宽 / 圆角必须字面量。
+  const bar = tokens.slice(tokens.indexOf('.dshpc-scroll-thin::-webkit-scrollbar,'))
+  assert.match(bar, /width:2px;height:2px/, '竖 / 横滚动条线宽不是字面量 2px')
+  assert.match(bar, /border-radius:2px/, 'thumb 圆角不是字面量 2px')
+  assert.doesNotMatch(
+    bar.slice(0, bar.indexOf('.dshpc-scroll-thin:not(')),
+    /width:var\(|border-radius:var\(/,
+    '线宽 / 圆角不许写成 var()（滚动条伪元素不解析）',
+  )
+  // :not(.dshpc-panel) 跳过让位的前提：面板确实自带一条实色边框给滚动条贴。
+  const panel = (await readFile(new URL('../src/ui/infra/panel.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.match(
+    panel,
+    /\.dshpc-panel\{[^}]*border:var\(--dshpc-panel-bw\) solid var\(--dshpc-border\)/,
+    '.dshpc-panel 不再带边框 ⇒ 跳过让位后滚动条会贴死边缘',
   )
 })

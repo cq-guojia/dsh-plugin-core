@@ -65,7 +65,7 @@ export function LandingBody(props: LandingBodyProps): ReactNode {
 
   return h(
     'div',
-    { className: 'dshpc-fb__tree' },
+    { className: 'dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both' },
     roots.map((root) => row(`root:${root.path}`, root.label, root.path)),
     anchors
       .filter((item) => item.path !== undefined && item.path !== '')

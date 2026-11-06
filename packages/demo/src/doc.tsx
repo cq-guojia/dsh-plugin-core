@@ -164,7 +164,7 @@ export function Example(props: {
             h('div', { className: 'dshpc-doc-label' }, t('docCode')),
             h(
               'div',
-              { className: 'dshpc-doc-example__scroll' },
+              { className: 'dshpc-doc-example__scroll dshpc-scroll-thin dshpc-scroll-thin--both' },
               h(LazyCode, { code: props.code, lang: 'tsx' }),
             ),
           ),

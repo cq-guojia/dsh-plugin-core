@@ -56,10 +56,5 @@
 .dshpc-panel__close:hover,.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}
 .dshpc-panel__close:focus-visible,.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
 
-/* 细线滚动条（opt-in）：2026-11-06 用户要「没存在感」的一条线，给浮层内的滚动区用
-   （Picker 下拉、日期快捷档列）。其余容器仍是浏览器原生样式（style.md §滚动条让位）。 */
-/* 只用 ::-webkit-scrollbar：一旦写 scrollbar-width，Chrome 会切到规范化滚动条、忽略这里的 1px
-   （2026-11-06 实测：留着 scrollbar-width:thin 时宽度回到 ~10px）。宽度 1px，离边仍 1px 不变。 */
-.dshpc-scroll-thin::-webkit-scrollbar{width:1px}
-.dshpc-scroll-thin::-webkit-scrollbar-thumb{background:var(--dshpc-border-heavy)}
-.dshpc-scroll-thin::-webkit-scrollbar-track{background:transparent}
+/* .dshpc-scroll-thin（细滚动条）的唯一定义已移到 design/tokens.css 的 tokens 域：
+   那里全局必在、挂类即生效。这里不再写第二份。 */

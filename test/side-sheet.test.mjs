@@ -22,7 +22,7 @@ test('面板皮肤与 PanelDock 同一份（side-surface + dock 头部 / 拖拽�
   assert.match(html, /class="dshpc-dock__head"/, '头部不是 PanelDock 那一套')
   assert.match(html, /class="dshpc-dock__resizer"/, '默认应当可拖宽')
   // 分栏的 body 不带内距（内距归 FileBrowser 那类内容组件），抽屉是通用容器必须自带。
-  assert.match(html, /class="dshpc-dock__body dshpc-sheet__body"/, '内容区没有自带内距，文字会贴面板边')
+  assert.match(html, /class="dshpc-dock__body dshpc-sheet__body[^"]*"/, '内容区没有自带内距，文字会贴面板边')
   assert.match(html, /class="dshpc-dock__close dshpc-dock__close--abs"/, '关闭钮位置与 PanelDock 不一致')
 })
 

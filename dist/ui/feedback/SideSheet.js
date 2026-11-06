@@ -121,7 +121,7 @@ export function SideSheet(props) {
             onPointerDown: (event) => {
                 beginResize(event);
             },
-        }), renderHeader(), closeButton(!hasHeader), h('div', { className: 'dshpc-dock__body dshpc-sheet__body' }, props.children ?? null), props.footer === undefined && notice === undefined
+        }), renderHeader(), closeButton(!hasHeader), h('div', { className: 'dshpc-dock__body dshpc-sheet__body dshpc-scroll-thin' }, props.children ?? null), props.footer === undefined && notice === undefined
         ? null
         : h('div', { className: 'dshpc-sheet__foot' }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice', sweep: true }), props.footer), 
     // 与 Modal 同一套：透明点击层兜住自绘元素，变灰归各控件自己的 :disabled。

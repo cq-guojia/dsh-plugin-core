@@ -203,7 +203,7 @@ export function SideSheet(props: SideSheetProps): ReactNode {
             }),
         renderHeader(),
         closeButton(!hasHeader),
-        h('div', { className: 'dshpc-dock__body dshpc-sheet__body' }, props.children ?? null),
+        h('div', { className: 'dshpc-dock__body dshpc-sheet__body dshpc-scroll-thin' }, props.children ?? null),
         props.footer === undefined && notice === undefined
           ? null
           : h(
