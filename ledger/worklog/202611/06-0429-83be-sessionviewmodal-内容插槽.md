@@ -1,7 +1,7 @@
 # 20261106-0429-83be-sessionviewmodal-内容插槽: SessionViewModal 内容插槽
 
 - **Tags**: 会话预览, 插槽, 扩展点, 向后兼容
-- **Status**: doing · 2026-11-06 05:37:18 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-06 05:40:47 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-06 04:29:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -38,10 +38,10 @@
 
 ## To Do
 
-已实现并自检全绿（2026-11-06），剩两项：
+已实现、验收、发版（2026-11-06）：
 
-- [ ] 真机验收：弹窗里看三处位置、滚动、空态；归档会话下确认归档徽标落在动作区最前。
-- [ ] 版本号：minor（0.35.0）。本仓规则 = 调试期不 bump 不打 tag，等用户说发版再走。
+- [x] 真机验收：三处位置 / 滚动 / 间距已在 demo 真机会话里看过并逐条修正。
+- [x] 版本号：0.34.0 → **0.35.0**（两包同号），commit `c112286` + tag `v0.35.0` 已推。
 
 实现清单（全部完成）：
 
@@ -161,9 +161,11 @@
 
 ## Conclusion
 
-已实现待验收：`SessionViewModal` 新增 `title` / `header` / `headerActions` / `bodyHeader` / `bodyFooter`
+已交付并发版：`SessionViewModal` 新增 `title` / `header` / `headerActions` / `bodyHeader` / `bodyFooter`
 （`heading` 保留为旧名），`Modal` 新增 `header`；无槽时 DOM 与 0.34.0 一致（测试钉住）；demo 与
-`docs/help/session.*` 同步。版本号未 bump（调试期）。
+`docs/help/session.*` 同步。版本 0.35.0（核心 + demo 同号），commit `c112286`、tag `v0.35.0` 已推送，
+两个 npm 包由 tag 触发 workflow 自动发布。遗留：`bodyFooter` 的位置依赖「末尾节点是带回复的
+turn-tail」，其它情形回落流末尾（已知且测试覆盖）。
 
 ## Execution Log
 
@@ -177,3 +179,4 @@
 - 2026-11-06 05:03:33 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 验收第二轮：bodyFooter 移进 TurnTailNodeView.tailSlot 末项（交付文件之后、操作行之前），bodyHeader 挂官方 flowItem 类对齐项间距；323 测试全绿、codelint 全过
 - 2026-11-06 05:35:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 顶端槽间距改为自带固定下边距 --dshpc-space-3（去掉 flowItem 类，不再跟随相邻项 margin）；323 测试全绿
 - 2026-11-06 05:37:18 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 插槽示例只挂在列表第一个会话（withSlots = openId === rows[0].sessionId），其余会话不传槽；build:demo + 323 测试全绿
+- 2026-11-06 05:40:47 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 0.35.0：两包同号 bump、build+build:demo、pnpm test 323 全绿；commit c112286 推 main，tag v0.35.0 已推（触发两个 publish workflow）
