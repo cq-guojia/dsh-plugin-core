@@ -77,6 +77,7 @@ export function ModelPicker(props) {
         degraded,
         disabled: props.disabled,
         searchable: false,
+        size: props.size,
         onChange: (v) => {
             setPickedProvider(typeof v === 'string' ? v : v[0] ?? '');
             props.onChange?.('');

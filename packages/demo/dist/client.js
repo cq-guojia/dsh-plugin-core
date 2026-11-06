@@ -5716,6 +5716,7 @@ function ModelPicker(props) {
     degraded,
     disabled: props.disabled,
     searchable: false,
+    size: props.size,
     onChange: (v) => {
       setPickedProvider(typeof v === "string" ? v : v[0] ?? "");
       props.onChange?.("");
@@ -70528,9 +70529,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.0"}`],
-            [t3("buildDemo"), `v${"0.35.0"}`],
-            [t3("buildStamp"), "261106-161033-115"]
+            [t3("buildCore"), `v${"0.35.2"}`],
+            [t3("buildDemo"), `v${"0.35.2"}`],
+            [t3("buildStamp"), "261106-205239-793"]
           ].map(
             ([label, value]) => (0, import_react97.createElement)(
               "tr",
@@ -70846,9 +70847,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react99.createElement)("span", null, `core v${"0.35.0"}`),
-          (0, import_react99.createElement)("span", null, `demo v${"0.35.0"}`),
-          (0, import_react99.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261106-161033-115")
+          (0, import_react99.createElement)("span", null, `core v${"0.35.2"}`),
+          (0, import_react99.createElement)("span", null, `demo v${"0.35.2"}`),
+          (0, import_react99.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261106-205239-793")
         )
       )
     ),
