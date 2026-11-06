@@ -1,7 +1,7 @@
 # 20261106-0429-83be-sessionviewmodal-内容插槽: SessionViewModal 内容插槽
 
 - **Tags**: 会话预览, 插槽, 扩展点, 向后兼容
-- **Status**: doing · 2026-11-06 05:40:47 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-06 05:51:28 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-06 04:29:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -49,15 +49,17 @@
 2. `src/ui/feedback/Modal.ts`：`ModalProps.header` 透传 + `showHeader` 判据。
 3. `src/adv/session/SessionViewModal.ts`：`title`（新增）/ `heading`（旧名保留）/ `header` /
    `headerActions` / `bodyHeader` / `bodyFooter`。
-4. `src/adv/session/session.css`：`.dshpc-sv-body-header` / `.dshpc-sv-body-footer`（只 `min-width:0`）。
-5. `test/session-slots.test.mjs`：7 条 SSR 断言（无槽一致 / 四态 / 顺序 / 两级标题 / 动作顺序）。
-6. demo `SessionPage`：标题 + 标签、自定义动作、正文两端各一块。
+4. `src/adv/session/session.css`：`.dshpc-sv-body-header`（`min-width:0` + 固定下边距 `--dshpc-space-3`）
+   / `.dshpc-sv-body-footer`（`min-width:0`）。
+5. `test/session-slots.test.mjs`：9 条 SSR 断言（无槽一致 / 四态 / 顺序 / 两级标题 / 动作顺序 / 底端槽挂点）。
+6. demo `RealSessionListDemo`：**只在列表第一个会话**演示插槽（标题 + 标签、自定义动作、正文两端各一块）。
 7. `docs/help/session.doc.ts`（双语）+ 生成物 `session.md`、demo doc-data。
 
 ## Next
 
-等用户验收：`pnpm test` 全绿（321 条）后，在 dsh 里打开 demo 的「真实会话列表」点开任一会话，
-看标题行标签、「示例动作」按钮位置、正文顶端 / 底端两块是否随会话滚动；再看一眼归档会话的徽标位置。
+无（已结案）。后续若要动这块：`SessionViewModal` 的插槽实现在
+`src/adv/session/SessionViewModal.ts` 的 `bodyHeaderRow` / `bodyFooterRow` / `headActions` 三处；
+间距只改 `src/adv/session/session.css` 的 `.dshpc-sv-body-header` 一条。
 
 ## Process
 
@@ -180,3 +182,4 @@ turn-tail」，其它情形回落流末尾（已知且测试覆盖）。
 - 2026-11-06 05:35:05 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 顶端槽间距改为自带固定下边距 --dshpc-space-3（去掉 flowItem 类，不再跟随相邻项 margin）；323 测试全绿
 - 2026-11-06 05:37:18 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · demo 插槽示例只挂在列表第一个会话（withSlots = openId === rows[0].sessionId），其余会话不传槽；build:demo + 323 测试全绿
 - 2026-11-06 05:40:47 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 0.35.0：两包同号 bump、build+build:demo、pnpm test 323 全绿；commit c112286 推 main，tag v0.35.0 已推（触发两个 publish workflow）
+- 2026-11-06 05:51:28 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 收尾：worklog 实现清单改为最终态（9 条测试、demo 只挂首个会话、间距一条规则），Next 改为无

@@ -2,7 +2,7 @@
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
     "20261106-0331-846c-遮罩不挡左侧菜单": {"category": "修改", "created": "2026-11-06 03:31:21", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-06 03:31:21", "status": "doing", "tags": ["会话弹窗", "遮罩", "层级"], "title": "遮罩不挡左侧菜单", "updated": "2026-11-06 03:31:58", "worklog": "worklog/202611/06-0331-846c-遮罩不挡左侧菜单.md"},
-    "20261106-0429-83be-sessionviewmodal-内容插槽": {"category": "功能增强", "created": "2026-11-06 04:29:19", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-06 04:35:25", "status": "doing", "tags": ["会话预览", "插槽", "扩展点", "向后兼容"], "title": "SessionViewModal 内容插槽", "updated": "2026-11-06 05:40:47", "worklog": "worklog/202611/06-0429-83be-sessionviewmodal-内容插槽.md"}
+    "20261106-0429-83be-sessionviewmodal-内容插槽": {"category": "功能增强", "created": "2026-11-06 04:29:19", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-06 04:35:25", "status": "doing", "tags": ["会话预览", "插槽", "扩展点", "向后兼容"], "title": "SessionViewModal 内容插槽", "updated": "2026-11-06 05:51:28", "worklog": "worklog/202611/06-0429-83be-sessionviewmodal-内容插槽.md"}
   },
   "version": "20261022000000"
 }
