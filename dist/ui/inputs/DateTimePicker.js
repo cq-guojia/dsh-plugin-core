@@ -468,8 +468,9 @@ export function DateTimePicker(props) {
             ? null
             : [formatDateTimeIso(floorToPrecision(s, precision)), formatDateTimeIso(ceilToPrecision(e, precision))];
     })();
+    // 快捷档只**填草稿**（用户 2026-11-06）：弹层是预览，不点「确定」外面那两个真实的框不能动，
+    // 与手动点日历同口径 —— 一律到 commit 才 emit。
     const applyPreset = (range) => {
-        emit(range); // 立刻给出去，不等「确定」；面板保持打开，当场看得见两端与日历一起变
         const d = draftOf(range);
         setDraft(d);
         const n = nowParts();

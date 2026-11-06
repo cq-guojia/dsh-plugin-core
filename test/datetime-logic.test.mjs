@@ -172,3 +172,14 @@ test('resolvePresetExpr：跨月末不卷月（3-31 减 1 月仍是 2 月）', (
   const now = parseDateTime('2026-03-31T09:00:00.000')
   assert.deepEqual(resolvePresetExpr('now-1M/M', 'day', now), ['2026-02-01T00:00:00.000', '2026-02-28T23:59:59.999'])
 })
+
+// 2026-11-06 用户口径：右侧快捷档（今天 / 昨天 / 本周 / 上周…）只是弹层里的预览，
+// 不点「确定」不能动外面那个真正的触发器 —— 与手动点日历同口径，一律 commit 才 emit。
+test('快捷档只填弹层草稿，点确定才 onChange', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(new URL('../dist/ui/inputs/DateTimePicker.js', import.meta.url), 'utf8')
+  const from = src.indexOf('const applyPreset')
+  const to = src.indexOf('const invalidRange')
+  assert.ok(from >= 0 && to > from, '找不到 applyPreset 函数体')
+  assert.doesNotMatch(src.slice(from, to), /emit\(/, '快捷档不能直接 emit：不点确定时触发器必须保持原值')
+})
