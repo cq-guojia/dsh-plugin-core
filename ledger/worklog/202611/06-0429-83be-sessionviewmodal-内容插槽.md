@@ -1,7 +1,7 @@
 # 20261106-0429-83be-sessionviewmodal-内容插槽: SessionViewModal 内容插槽
 
 - **Tags**: 会话预览, 插槽, 扩展点, 向后兼容
-- **Status**: doing · 2026-11-06 04:35:52 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-06 04:47:24 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-06 04:29:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -38,25 +38,26 @@
 
 ## To Do
 
-API 已定稿（决策见 Process「2026-11-06 讨论定稿」），剩下按顺序实现：
+已实现并自检全绿（2026-11-06），剩两项：
 
-1. `src/ui/infra/overlay.ts`：`OverlayHeadProps` 加 `titleArea`，标题组整块可替换。
-2. `src/ui/feedback/Modal.ts`：`ModalProps` 加 `titleArea`（透传 + `showHeader` 判据）。
-3. `src/adv/session/SessionViewModal.ts`：`heading` 放宽为 `ReactNode`，新增
-   `titleArea` / `headerActions` / `bodyLead` / `bodyTail`，四处渲染点接线。
-4. `src/adv/session/session.css`：`.dshpc-sv-lead` / `.dshpc-sv-tail`（只 `min-width:0`），
-   跑 `scripts/gen-css.mjs` 重新生成。
-5. 新建 SSR 渲染测试（`test/` 下，需 `register` primitives stub + 假 `view`）：
-   无槽 HTML 一致 / 四状态都有槽 / `lead` 第一 `tail` 最后 / header 动作顺序 / 二级标题生效。
-6. demo `packages/demo/src/sections/blocks.tsx` 的 `SessionPage`：标题自定义 + 顶端提示条 +
-   底端汇总块示例。
-7. 文档 `docs/help/session.doc.ts`（双语真源）→ 跑 `scripts/gen-docs.mjs` 生成 `.md` 与 demo doc-data。
-8. 版本：minor（0.35.0）；调试期是否 bump / 打 tag 待用户定（本仓规则：调试期不 bump 不打 tag）。
+- [ ] 真机验收：弹窗里看三处位置、滚动、空态；归档会话下确认归档徽标落在动作区最前。
+- [ ] 版本号：minor（0.35.0）。本仓规则 = 调试期不 bump 不打 tag，等用户说发版再走。
+
+实现清单（全部完成）：
+
+1. `src/ui/infra/overlay.ts`：`OverlayHeadProps.header`（`ReactNode | null`）+ 自定义分支。
+2. `src/ui/feedback/Modal.ts`：`ModalProps.header` 透传 + `showHeader` 判据。
+3. `src/adv/session/SessionViewModal.ts`：`title`（新增）/ `heading`（旧名保留）/ `header` /
+   `headerActions` / `bodyHeader` / `bodyFooter`。
+4. `src/adv/session/session.css`：`.dshpc-sv-body-header` / `.dshpc-sv-body-footer`（只 `min-width:0`）。
+5. `test/session-slots.test.mjs`：7 条 SSR 断言（无槽一致 / 四态 / 顺序 / 两级标题 / 动作顺序）。
+6. demo `SessionPage`：标题 + 标签、自定义动作、正文两端各一块。
+7. `docs/help/session.doc.ts`（双语）+ 生成物 `session.md`、demo doc-data。
 
 ## Next
 
-从 `src/ui/infra/overlay.ts:107` 的 `OverlayHeadProps` 开始加 `titleArea`，再改 `:134` 的标题组渲染分支
-（`titleArea !== undefined` 时用它替掉 titlerow + subtitle，`icon` 与 `headerExtra` 语义一并定案见 Process）。
+等用户验收：`pnpm test` 全绿（321 条）后，在 dsh 里打开 demo 的「真实会话列表」点开任一会话，
+看标题行标签、「示例动作」按钮位置、正文顶端 / 底端两块是否随会话滚动；再看一眼归档会话的徽标位置。
 
 ## Process
 
@@ -89,32 +90,56 @@ API 已定稿（决策见 Process「2026-11-06 讨论定稿」），剩下按顺
 
 | prop | 位置 | 说明 |
 |---|---|---|
-| `heading?: ReactNode` | 标题行（第一级） | 现有 prop 由 `string` 放宽（string 是 ReactNode 子集，向后兼容）。**只换标题文字那一行**；下方 `sessionId` 副标题行、归档徽标仍由核心渲染，位置不变 |
-| `titleArea?: ReactNode` | 整个标题组（第二级） | 标题行 + `sessionId` 副标题行整块交给调用方，核心不再画这两行。传了就忽略 `heading` |
+| `title?: ReactNode` | 标题行（第一级） | 只换标题文字那一行；下方 `sessionId` 副标题行、归档徽标仍由核心渲染，位置不变。旧名 `heading?: string` 保留（deprecated，`title ?? heading`） |
+| `header?: ReactNode` | 整个标题区（第二级） | 标题行 + `sessionId` 副标题行整块交给调用方，核心不再画这两行；归档徽标改挂动作区最前 |
 | `headerActions?: ReactNode` | 头部右侧动作区 | 排在核心「继续对话」之后、关闭 ✕ 之前（`overlay.ts:146-151` 天然顺序） |
-| `bodyLead?: ReactNode` | 会话内容最顶端 | `div.dshpc-sv` 内第一个，在「加载更早」与全部节点之前；随会话滚动 |
-| `bodyTail?: ReactNode` | 会话内容最底端 | `div.dshpc-sv` 内最后一个（运行中行之后、footer 之前）；随会话滚动 |
+| `bodyHeader?: ReactNode` | 会话内容最顶端 | 会话滚动容器内第一个，在「加载更早」与全部节点之前；随会话滚动 |
+| `bodyFooter?: ReactNode` | 会话内容最底端 | 会话滚动容器内最后一个（运行中行之后、footer 之前）；随会话滚动 |
+
+**命名的依据（用户要求：不拍脑袋，照本仓与市场惯例取）**
+
+| prop | 依据 |
+|---|---|
+| `title` | 本仓 14 处控件都用 `title`（Modal / SideSheet / PanelDock / SectionHead / AlertModal…），业界 Ant Design / MUI / Element Plus 同为 `title`；`heading` 只有本组件在用，属异类，故降为兼容旧名 |
+| `header` | **本仓已有两处同义先例**：`SideSheet.header`（`SideSheet.ts:40`）与 `PanelDock` 的 `header`（`PanelDock.ts:82`），语义都是「不传=内置头 / null=不要头 / 其他=自绘整块」；业界 Element Plus `el-card` `el-dialog` 的 `header` 插槽同义 |
+| `headerActions` | 沿用 `Modal.headerActions`（`Modal.ts:24`）既有词汇，不新造 |
+| `bodyHeader` / `bodyFooter` | 容器分区在业界是 header / body / footer 三分（MUI CardHeader-CardContent-CardFooter、Element `el-card` header/footer、Primer/shadcn 同构）；弹窗自身已有 `footer`（底栏输入框），故用 `body` 前缀限定作用域，避免同名撞车。**否掉了草案的 `lead` / `tail`**：lead/tail 是排版术语，UI 库几乎不用 |
 
 **为什么第二级要动核心 `Modal`**：现在 `Modal` 只有 `title` / `subtitle` 两个分槽，没法整块替换标题组；
 把整块塞进 `title` 会吃 `.dshpc-overlay-head__title` 的 `font-size:var(--dshpc-font-lg);font-weight:600`
-（`src/ui/infra/overlay.css:45`），等于给调用方强加字号字重。故给 `OverlayHead` / `Modal` 加一个
-`titleArea`（替换 `.dshpc-overlay-head__titlegroup` 的子内容），算核心控件的通用能力，不是会话专用口子。
+（`src/ui/infra/overlay.css:45`），等于给调用方强加字号字重。故给 `OverlayHead` / `Modal` 加
+`header`（替换 `.dshpc-overlay-head__titlegroup` 那一块），算核心控件的通用能力，不是会话专用口子。
 
 **二级模式下归档徽标不丢**：归档标识现在挂 `headerExtra`（`SessionViewModal.ts:1182-1187`，在标题行右侧），
-`titleArea` 覆盖标题组后会一起消失。处理 = `titleArea` 存在时把归档徽标挪到 `headerActions` 首位
-（`titleArea` 已传时 `headerExtra` 不再传）。归档是数据事实，不能因为调用方自定义标题就消失。
+`header` 覆盖标题区后会一起消失。处理 = `header` 存在时把归档徽标挪到 `headerActions` 首位
+（`header` 已传时 `headerExtra` 不再传）。归档是数据事实，不能因为调用方自定义标题就消失。
 
 **其余定案（用户「其他都同意」）**
 
-- 两个内容槽在**加载 / 空 / 出错 / 正常**四态都渲染（两条分支各插一处：`SessionViewModal.ts:1144` 与 `:1155`）。
+- 两个内容槽在**加载 / 空 / 出错 / 正常**四态都渲染（两条分支各插一处）。
 - 槽容器 CSS 只给 `min-width:0`，不给 `display:flex` / `gap` —— 一旦变成 flex，
   单个按钮会被 `align-items:stretch` 拉满宽，等于替调用方决定了排版。
 - 测试做 SSR 全套（无槽 HTML 一致 / 四状态 / 顺序 / header 顺序 / 二级标题）。
-- 类名 `dshpc-sv-lead` / `dshpc-sv-tail`（沿用 `dshpc-sv-*` 前缀）。
+- 类名 `dshpc-sv-body-header` / `dshpc-sv-body-footer`（跟 prop 同名，`dshpc-sv-*` 前缀）。
+
+### 实现记录（2026-11-06）
+
+- `overlay.ts`：`OverlayHeadProps.header`，自定义分支包一层 `__heading--custom`（`flex:1 1 auto` 占满左侧、可换行）。
+- `Modal.ts`：`ModalProps.header` 透传 + `showHeader` 判据加 `header !== undefined`（`null` 也要能进头部，免得动作区/✕ 被吞）。
+- `SessionViewModal.ts`：`title ?? heading ?? 「会话预览」`；`header` 存在时标题/副标题/headerExtra 全不传；
+  `bodyHeader` / `bodyFooter` 两分支各插一处，`undefined` 时不渲染元素（`flex` 的 `gap:10px` 不会凭空多一格）。
+- **SSR 坑（本次新增第三参）**：`useSyncExternalStore` 缺 `getServerSnapshot` 在 SSR 直接抛错，原来 chat / session
+  两处都没传 ⇒ 本次补成「同一个快照函数」（数据挂在 props 的 `view` 上，不是全局 store，服务端读同值不串数据）。
+- **测试坑**：`test/primitives-stub.mjs` 是白名单，缺 `IconClockOutlineRegular` / `IconWrapFillRegular` /
+  `IconNowrapFillRegular` / `CodeBlock`，走 `SessionViewModal` 的 import 链会报 "does not provide an export named"；
+  已补齐（漏一个就在链接阶段报一次，报错信息指得很准）。
+- 自检：`pnpm test` 321 条全绿（新增 `test/session-slots.test.mjs` 7 条）；`codelint` 14 文件六层全过。
 
 ## Conclusion
 
-未开工：API 已定稿（见 Process「2026-11-06 讨论定稿」），按 To Do 顺序实现中。
+已实现待验收：`SessionViewModal` 新增 `title` / `header` / `headerActions` / `bodyHeader` / `bodyFooter`
+（`heading` 保留为旧名），`Modal` 新增 `header`；无槽时 DOM 与 0.34.0 一致（测试钉住）；demo 与
+`docs/help/session.*` 同步。版本号未 bump（调试期）。
 
 ## Execution Log
 
@@ -123,3 +148,4 @@ API 已定稿（决策见 Process「2026-11-06 讨论定稿」），剩下按顺
 - 2026-11-06 04:29:19 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
 - 2026-11-06 04:35:25 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
 - 2026-11-06 04:35:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领；API 定稿 5 props（heading 放宽/二级 titleArea/headerActions/bodyLead/bodyTail），定案见 worklog Process；下一步 overlay.ts:107 加 titleArea
+- 2026-11-06 04:47:24 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 实现完成：SessionViewModal 加 title/header/headerActions/bodyHeader/bodyFooter（heading 留旧名）+ Modal.header；命名按本仓 title/header/headerActions + 业界 bodyHeader/bodyFooter；新增 test/session-slots 7 条，pnpm test 321 全绿，codelint 全过
