@@ -227,6 +227,11 @@ one-liner; `--dshpc-dock-gap` was removed on 2026-11-02. A test enforces the bor
 - 关闭钮只有一枚 `.dshpc-panel__close`；旧类名 `.dshpc-overlay-head__close` 保留作别名（消费方覆盖不失效）。
 - **关钮可退让**（2026-11-04 定）：`PanelDock` / `SideSheet` 的 ✕ 归壳，但壳允许调用方不要（`closeButton: 'none'`，`openFilePreview` 的默认）——无头面板由内容自己画，画不画、画在哪归调用方；壳画时用 `floating`（右上，占 28px：20 钮 + 6 偏移 + 2 呼吸），内容右上要让位。
 - 层序只许用 `--dshpc-z-panel`（面板本体）/ `--dshpc-z-popmenu`（叠在面板上的菜单与其透明遮罩），不许写字面量。
+- **整条层级阶梯必须低于官方浮点 1000 档**（2026-11-06 用户定）：官方原语的 `Modal` / `ImageLightbox`
+  是 `z-index:1000`（body portal），`Menu` / `Toast` 是 `1100`。我们只是宿主里的一个页面 ⇒ 宿主的浮点
+  恒在我们之上。现行阶梯 dock 900 / drawer 920 / modal 940 / ear 950 / menu 960 / tip 970，全部 < 1000。
+  反例代价：弹窗里点图片放大，官方原图预览被我们 1070 的遮罩压住（2026-11-06 真机踩到），
+  以后在弹窗里再开官方模态也是同一个坑。出处与理由写在 `src/design/tokens.css` 的层级段注释里。
 - **不并入三档**：`PanelDock` 与 `SideSheet` 属贴边家族（`side-panel.css` 的 `.dshpc-side-surface`，
   2026-11-02 拍板两者皮肤一模一样），一个是布局成员、一个是贴边抽屉，都不是浮层。
 - 组件**内部**的微层序（缩略按钮 5、拖拽条 7、dock 关闭钮 8、Segmented 的 0/1）不走 token ——

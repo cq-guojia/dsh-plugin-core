@@ -61,7 +61,7 @@
    DOM 上 portal 到 body（PanelDock.ts），否则会被弹窗的 stacking context 关在里面。 */
 .dshpc-dock__ears{
   position:fixed;top:50%;right:0;transform:translateY(-50%);
-  z-index:var(--dshpc-z-ear,1080);
+  z-index:var(--dshpc-z-ear,950);
   display:flex;flex-direction:column;gap:8px;align-items:flex-end;
   pointer-events:none;
 }
