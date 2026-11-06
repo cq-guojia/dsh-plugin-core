@@ -219,10 +219,14 @@ test('展开受数量闸约束：满栏时耳朵展开被拒并回调', () => {
 
 // 2026-11-04 真机：分栏在弹窗里（或弹窗盖在分栏上）时，收起后的耳朵被遮罩挡住、点不到。
 // 修法 = 耳朵 portal 到 body + 层序高于 modal。
-test('收起后的耳朵：portal 到 body，层序高于弹窗遮罩', async () => {
+// 2026-11-06 真机：同页两个 dock 各建一个固定容器 ⇒ 两个都 top:50%，收起后耳朵重叠。
+// 修法 = 全页共用一列（id 固定、实例复用），堆叠交给容器 flex。
+test('收起后的耳朵：全页共用的那一列、层序高于弹窗遮罩', async () => {
   const { readFile } = await import('node:fs/promises')
   const dock = await readFile(new URL('../dist/ui/layout/PanelDock.js', import.meta.url), 'utf8')
   assert.ok(dock.includes('createPortal'), '耳朵没 portal 到 body（会被弹窗的 stacking context 关住）')
+  assert.match(dock, /const EARS_HOST_ID = 'dshpc-dock-ears'/, '耳朵容器没有全局唯一 id')
+  assert.match(dock, /getElementById\(EARS_HOST_ID\)/, '没复用页面里已有的耳朵容器（两份 core 会变成两列重叠）')
   const css = await readFile(new URL('../src/ui/layout/panel-dock.css', import.meta.url), 'utf8')
   assert.match(css, /\.dshpc-dock__ears\{[^}]*z-index:var\(--dshpc-z-ear/, '耳朵没走 ear 层档')
   const tokens = await readFile(new URL('../src/design/tokens.css', import.meta.url), 'utf8')

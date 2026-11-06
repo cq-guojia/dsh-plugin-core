@@ -58,7 +58,10 @@
 /* 收起后的浮动耳朵：**fixed 贴右缘、垂直居中、独立于分栏**（用户 2026-10-28 定稿：
    小页签挂中间、里面放面板图标、不显示文字，箭头与收起钮反向）。多个按收起顺序纵向堆叠。
    z 走 ear 档（高于弹窗遮罩，2026-11-04）：面板在弹窗下面时，耳朵仍是唯一能点到的入口。
-   DOM 上 portal 到 body（PanelDock.ts），否则会被弹窗的 stacking context 关在里面。 */
+   DOM 上 portal 到 body（PanelDock.ts），否则会被弹窗的 stacking context 关在里面。
+   ⚠️ 这一列**全页唯一**（id = dshpc-dock-ears，由 PanelDock 懒创建、各实例共用）：
+   每个 dock 各建一个的话，容器全部落在 top:50% ⇒ 两个 dock 收起时耳朵重叠
+   （兄弟项目 2026-11-06 真机：文件预览 + 编辑任务）。堆叠交给这里的 flex，别再按实例定位。 */
 .dshpc-dock__ears{
   position:fixed;top:50%;right:0;transform:translateY(-50%);
   z-index:var(--dshpc-z-ear,950);
