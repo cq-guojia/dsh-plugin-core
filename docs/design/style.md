@@ -165,19 +165,19 @@ rename them and you must update `src/ui/layout/split-group.css`, or the weld fai
 
 | 它给什么 | 唯一可调值 |
 |---|---|
-| 细滚动条：线宽、thumb 上下端圆角、track 透明 | 字面量 `2px`（`width` / `height` / `border-radius` 三处，同一个规则块） |
+| 细滚动条：线宽、thumb 上下端圆角、track 透明 | 字面量三处同值（`width` / `height` / `border-radius`，现行值见 `tokens.css`） |
 | 离边 1px 让位（容器自己的透明边框） | `--dshpc-scroll-inset`（现 1px） |
 
 ⚠️ **线宽不能放进 CSS 变量**：WebKit 的 `::-webkit-scrollbar` 系列伪元素不解析 `var()`，带变量的
 声明会被静默丢弃 ⇒ 宽度整条作废、退回默认值。2026-11-06 把 `width:2px` 改成
-`var(--dshpc-scroll-w)` 后真机当场打回，用户发现。所以线宽与圆角**必须写字面量**，2px→3px 只改
-那一个规则块的三处；让位在普通元素上，仍走 `--dshpc-scroll-inset` 一行。
+`var(--dshpc-scroll-w)` 后真机当场打回，用户发现。所以线宽与圆角**必须写字面量**，改宽度只改
+那一个规则块的三处数字；让位在普通元素上，仍走 `--dshpc-scroll-inset` 一行。
 **不在任何别的 CSS 里抄规则、也不在组件里另写透明边框**。
 
 原理：原生滚动条画在 padding box 之外、border 之内 —— 只有 border 能把它推离边缘，加 padding 无效。
 实现只写 `::-webkit-scrollbar`，**不要写 `scrollbar-width`**：Chrome 一见它就切到规范化滚动条、
-忽略这里设的宽度（2026-11-06 实测宽度回到 ~10px）。2026-11-06 用户口径：1px 太细 ⇒ 线宽
-2px + thumb 上下端圆角。
+忽略这里设的宽度（2026-11-06 实测宽度回到 ~10px）。2026-11-06 用户口径：1px 太细 ⇒ 线宽起步
+2px、thumb 上下端圆角；后续宽度调整只改 `tokens.css` 那三处，自检不写死数字。
 
 ### 方向档（CSS 没有 `:scrollable`，推不出滚动方向，只能显式声明）
 
@@ -207,12 +207,12 @@ rename them and you must update `src/ui/layout/split-group.css`, or the weld fai
 
 `test/quality.test.mjs` 三条：① 所有滚动容器都挂基类（含 demo 的内联 `overflowY/X` —— 旧自检
 只扫 CSS 文件，漏过 demo）；② 1px 让位边框不许在 tokens.css 之外出现；③ `::-webkit-scrollbar`
-只许在 tokens.css 出现一份，且线宽 / 圆角必须是字面量 `2px`（防这次的 var 化回潮）。旧口径
+只许在 tokens.css 出现一份，且线宽 / 圆角必须是同一个字面量（防这次的 var 化回潮）。旧口径
 「CSS 没有 `:scrollable`，只能每个容器自己声明」已被类取代。
 
 EN: `.dshpc-scroll-thin` in `src/design/tokens.css` (tokens domain, registered on every
 `ensureComponentStyles` call and sorted first) is the single source of truth for **both** the hairline
-(literal `2px` in `width` / `height` / `border-radius`) and the 1px inset
+(a literal, identical value in `width` / `height` / `border-radius`) and the 1px inset
 (`--dshpc-scroll-inset`, 1px). Never put the line width in a CSS variable: WebKit scrollbar
 pseudo-elements do not resolve `var()`, so such declarations are silently dropped and the width falls
 back to the default (hit in a real client on 2026-11-06). Hang the class; never duplicate the rules.

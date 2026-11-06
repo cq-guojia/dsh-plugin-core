@@ -154,11 +154,11 @@ test('::-webkit-scrollbar 只在 tokens.css 定义（宽度不许有第二份）
   assert.deepEqual(hits, [], `细滚动条规则出现第二份：\n${hits.join('\n')}`)
   const tokens = await readFile(new URL('../src/design/tokens.css', import.meta.url), 'utf8')
   assert.match(tokens, /--dshpc-scroll-inset:1px/, '让位 token 丢了')
-  // 2026-11-06 真机回归：::-webkit-scrollbar 系列伪元素不解析 var()，把 width:2px 写成
+  // 2026-11-06 真机回归：::-webkit-scrollbar 系列伪元素不解析 var()，把 width 写成
   // var(--dshpc-scroll-w) 后整条声明被静默丢弃 ⇒ 宽度退回默认值。线宽 / 圆角必须字面量。
+  // 这里**故意不写死数字**：宽度是给用户真机对比的可调值，改它只该改 tokens.css 一处。
   const bar = tokens.slice(tokens.indexOf('.dshpc-scroll-thin::-webkit-scrollbar,'))
-  assert.match(bar, /width:2px;height:2px/, '竖 / 横滚动条线宽不是字面量 2px')
-  assert.match(bar, /border-radius:2px/, 'thumb 圆角不是字面量 2px')
+  assert.match(bar, /width:(\d+)px;height:\1px[\s\S]*?border-radius:\1px/, '竖 / 横滚动条线宽与 thumb 圆角不是同一个字面量')
   assert.doesNotMatch(
     bar.slice(0, bar.indexOf('.dshpc-scroll-thin:not(')),
     /width:var\(|border-radius:var\(/,

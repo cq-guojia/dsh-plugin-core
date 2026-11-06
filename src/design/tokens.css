@@ -366,7 +366,7 @@ body[data-ds-dark-theme]{
 
    只用 ::-webkit-scrollbar：一旦写 scrollbar-width，Chrome 会切到规范化滚动条、
    忽略这里的宽度（2026-11-06 实测：留着 scrollbar-width:thin 时宽度回到 ~10px）。
-   2026-11-06 用户口径：1px 太细 ⇒ 线宽 2px、thumb 上下端圆角。
+   2026-11-06 用户口径：1px 太细 ⇒ 线宽起步 2px、thumb 上下端圆角；现行值见下面三行。
 
    让位（滚动条与容器可见边缘隔 1px）也由这个类负责：原生滚动条画在 padding box 之外、
    border 之内，只有 border 能把它推离边缘（加 padding 无效）。挂类即自动让位，
@@ -385,11 +385,11 @@ body[data-ds-dark-theme]{
 /* ⚠️ 下面三行的线宽 / 圆角**必须是字面量**：WebKit 的 ::-webkit-scrollbar 系列伪元素
    不解析 var()，带变量的声明会被静默丢弃 ⇒ 宽度整条作废、退回默认值。2026-11-06 把
    width:2px 改成 var(--dshpc-scroll-w) 后真机当场打回（用户发现），故线宽不放 token。
-   2px→3px 只改这一块的三处数字；让位那条在普通元素上，仍走 --dshpc-scroll-inset。 */
+   改线宽只改这一块的三处数字（三处必须同值）；让位仍走 --dshpc-scroll-inset。 */
 .dshpc-scroll-thin::-webkit-scrollbar,
-.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar{width:2px;height:2px}
+.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar{width:3px;height:3px}
 .dshpc-scroll-thin::-webkit-scrollbar-thumb,
-.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-thumb{background:var(--dshpc-border-heavy);border-radius:2px}
+.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-thumb{background:var(--dshpc-border-heavy);border-radius:3px}
 .dshpc-scroll-thin::-webkit-scrollbar-track,
 .dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-track{background:transparent}
 .dshpc-scroll-thin:not(.dshpc-panel){border-right:var(--dshpc-scroll-inset-right,var(--dshpc-scroll-inset)) solid transparent}
