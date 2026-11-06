@@ -1,7 +1,7 @@
 # 20261106-0429-83be-sessionviewmodal-内容插槽: SessionViewModal 内容插槽
 
 - **Tags**: 会话预览, 插槽, 扩展点, 向后兼容
-- **Status**: doing · 2026-11-06 04:55:56 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-06 05:03:33 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-06 04:29:19 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -148,6 +148,17 @@
    仍回落到流末尾；两种情况都保证只渲染一处（`footerAnchorKey === undefined ? bodyFooterRow : null`）。
    新增 2 条测试钉住：回话时在 `data-turn-tail` 之前且只出现一次；无回话时回落末尾。
 
+### 2026-11-06 第二轮验收（再两条）
+
+1. **底端槽位置再往下**：用户指出要在「交付文件（report.md 卡）下面」，不是整条 tail 之前。
+   改为放进 `TurnTailNodeView` 的 `tailSlot` **最后一项** ⇒ 回复 → 变更卡 → 交付网格 → 底端槽 → 操作行；
+   没有交付卡时它紧贴回复下方、仍在操作行之上。测试断言改为
+   `data-turn-tail` < footer < `data-clock="end"`。
+2. **顶端槽的项间距**：原来 lead 只是个裸 div，与其它会话项（官方 `ChatView.flowItem`）不同结构，
+   间距对不齐。改为 lead 同时挂 `officialClass('ChatView','flowItem')` ⇒ 与相邻会话项共用同一套项间距，
+   不去猜像素补 margin（缺省不传时仍不渲染元素，等于没有这个槽）。
+   底端槽在 tail root 内，间距由该 root 的 16px gap 负责（`TurnTailNodeView.ts` 头注）。
+
 ## Conclusion
 
 已实现待验收：`SessionViewModal` 新增 `title` / `header` / `headerActions` / `bodyHeader` / `bodyFooter`
@@ -163,3 +174,4 @@
 - 2026-11-06 04:35:52 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 认领；API 定稿 5 props（heading 放宽/二级 titleArea/headerActions/bodyLead/bodyTail），定案见 worklog Process；下一步 overlay.ts:107 加 titleArea
 - 2026-11-06 04:47:24 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 实现完成：SessionViewModal 加 title/header/headerActions/bodyHeader/bodyFooter（heading 留旧名）+ Modal.header；命名按本仓 title/header/headerActions + 业界 bodyHeader/bodyFooter；新增 test/session-slots 7 条，pnpm test 321 全绿，codelint 全过
 - 2026-11-06 04:55:56 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按验收反馈改三处：headerActions 移到继续对话左边、bodyFooter 挂到最后 turn-tail 之前（操作行之上，无回复回落末尾）、demo 标题用 inline-flex 修徽标下沉；测试 323 全绿
+- 2026-11-06 05:03:33 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 验收第二轮：bodyFooter 移进 TurnTailNodeView.tailSlot 末项（交付文件之后、操作行之前），bodyHeader 挂官方 flowItem 类对齐项间距；323 测试全绿、codelint 全过
