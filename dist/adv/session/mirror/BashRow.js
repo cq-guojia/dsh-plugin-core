@@ -4,7 +4,7 @@
 // （终端卡）或 ioCard（输入 / 分隔 / 输出，错误态输出红字）。
 // 复用：终端/摘要模型全走 GenericCommandCard 的导出（terminalCardModel 等），样式走官方 bash-sample 类名。
 import { Fragment, createElement as h, useMemo, useState } from 'react';
-import { IconApiOutlineRegular, IconChevronDownOutlineRegular, IconChevronUpOutlineRegular, TerminalBlock, TextShimmer, } from '../../../ui/official.js';
+import { CommandText, IconApiOutlineRegular, IconChevronDownOutlineRegular, IconChevronUpOutlineRegular, TerminalBlock, TextShimmer, } from '../../../ui/official.js';
 import { officialClass } from '../official-classes.js';
 import { ExitCodeBadge, classifyTool, deriveSummary, formatToolBody, hasSpillNotice, shellCall, terminalCardModel, terminalLabels, toolTitleKey, } from './GenericCommandCard.js';
 /** 官方 BASH_ICON（tool client.js:2469）：终端图标 14px。 */
@@ -129,7 +129,16 @@ export function BashRowMirror(props) {
                 className: officialClass('bash-sample', 'terminal') ?? '',
             })
             : h('div', { className: officialClass('bash-sample', 'ioCard') ?? '' }, body !== null
-                ? h('div', { className: officialClass('bash-sample', 'ioSection') ?? '' }, h('span', { className: officialClass('bash-sample', 'ioLabel') ?? '' }, t('toolInputLabel')), h('span', { className: officialClass('bash-sample', 'ioText') ?? '' }, body))
+                ? h('div', { className: officialClass('bash-sample', 'ioSection') ?? '' }, h('span', { className: officialClass('bash-sample', 'ioLabel') ?? '' }, t('toolInputLabel')), 
+                // 官方 bash-sample：后台常驻 shell 的命令参数走 CommandText 滚动槽（commandInput 类），
+                // 普通前台 shell 仍是 plain ioText。
+                background
+                    ? h(CommandText, {
+                        className: officialClass('bash-sample', 'commandInput') ?? '',
+                        text: body,
+                        label: t('toolCommandArguments'),
+                    })
+                    : h('span', { className: officialClass('bash-sample', 'ioText') ?? '' }, body))
                 : null, body !== null && outputText !== null
                 ? h('span', { className: officialClass('bash-sample', 'ioDivider') ?? '', 'aria-hidden': true })
                 : null, outputText !== null

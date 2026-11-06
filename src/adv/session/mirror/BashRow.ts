@@ -6,6 +6,7 @@
 import { Fragment, createElement as h, useMemo, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import {
+  CommandText,
   IconApiOutlineRegular,
   IconChevronDownOutlineRegular,
   IconChevronUpOutlineRegular,
@@ -179,7 +180,15 @@ export function BashRowMirror(props: {
                 body !== null
                   ? h('div', { className: officialClass('bash-sample', 'ioSection') ?? '' },
                       h('span', { className: officialClass('bash-sample', 'ioLabel') ?? '' }, t('toolInputLabel')),
-                      h('span', { className: officialClass('bash-sample', 'ioText') ?? '' }, body))
+                      // 官方 bash-sample：后台常驻 shell 的命令参数走 CommandText 滚动槽（commandInput 类），
+                      // 普通前台 shell 仍是 plain ioText。
+                      background
+                        ? h(CommandText, {
+                            className: officialClass('bash-sample', 'commandInput') ?? '',
+                            text: body,
+                            label: t('toolCommandArguments'),
+                          })
+                        : h('span', { className: officialClass('bash-sample', 'ioText') ?? '' }, body))
                   : null,
                 body !== null && outputText !== null
                   ? h('span', { className: officialClass('bash-sample', 'ioDivider') ?? '', 'aria-hidden': true })

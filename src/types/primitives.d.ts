@@ -66,6 +66,12 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
    */
   export const UserTextRun: ComponentType<{ text: string }>
 
+  /**
+   * 官方命令文本滚动槽（primitives lib/types/CommandText.d.ts，0.2.2-rc.1 核实）：
+   * 内容装得下不加 Tab 停靠点，横向溢出时才可键盘聚焦。官方 bash-sample 的后台命令输入用它。
+   */
+  export function CommandText(props: { text: string; label: string; className?: string | undefined }): ReactNode
+
   /** 官方 Shiki 代码块（diff 面与文档预览同源积木；lang 直接传 fence info / 扩展名）。 */
   export const CodeBlock: ComponentType<{
     code: string

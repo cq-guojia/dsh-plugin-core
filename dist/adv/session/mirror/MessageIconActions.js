@@ -62,7 +62,7 @@ export function MessageIconActionsMirror(props) {
             onClick: branchUnavailable ? undefined : onBranch,
         }, h(IconBranchOutlineRegular, null))), onBranch === undefined || !branchUnavailable
         ? null
-        : h('span', { id: reasonId, className: officialClass('accessibility', 'visuallyHidden') ?? '' }, t('branchUnavailableLabel')), clock === 'end'
+        : h('span', { id: reasonId, className: officialClass('MessageIconActions', 'visuallyHidden') ?? '' }, t('branchUnavailableLabel')), clock === 'end'
         ? h('span', { className: officialClass('MessageIconActions', 'endInfo') ?? '' }, usageAction, clockEl)
         : usageAction);
 }

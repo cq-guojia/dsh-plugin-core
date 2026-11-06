@@ -29,6 +29,10 @@ export function AssistantMarkdown(props) {
         fileMentions: props.fileMentions,
     })));
 }
+/** 官方 AssistantMarkdown.stopped：被中断的正文尾部那枚「已停止」标记（整步只挂一枚）。 */
+export function AssistantStoppedBadge(props) {
+    return h('span', { className: officialClass('AssistantMarkdown', 'stopped') ?? '' }, props.t('turnStopped'));
+}
 /**
  * 用户消息：官方 MessageItem userRow > userStack > UserMessageBubble（右对齐气泡）
  * + 气泡前的 **attachmentRow / fileCard**（官方 0.2.x 把附件行放在气泡之前）。

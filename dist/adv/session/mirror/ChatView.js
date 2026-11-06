@@ -101,6 +101,14 @@ export function ChatNodeListMirror(props) {
 export function ChatHint(props) {
     return h('div', { className: officialClass('ChatView', 'hint') ?? '' }, props.text);
 }
+/** 打开历史失败行（官方 openError：与 hint 同排版但走错误色）。 */
+export function ChatOpenError(props) {
+    return h('div', { className: officialClass('ChatView', 'openError') ?? '' }, props.text);
+}
+/** 官方 CommandNodeView / ManualCompactionNodeView 的 callRow 外壳（斜杠命令 / 手动压缩生命周期行）。 */
+export function ChatCallRow(props) {
+    return h('div', { className: officialClass('ChatView', 'callRow') ?? '' }, props.children);
+}
 /** 「加载更早记录」按钮（官方 older：按钮 4px 12px / 12px 字号 / radius-sm / 底色 interactive-bg-hover-solid）。 */
 export function ChatOlderButton(props) {
     return h('div', { className: officialClass('ChatView', 'older') ?? '' }, h('button', { type: 'button', onClick: props.onClick }, props.label));

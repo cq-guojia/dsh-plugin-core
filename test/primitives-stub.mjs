@@ -10,7 +10,7 @@ import { createElement, Fragment } from 'react'
 // 不模拟任何真实行为（图标画不出、hook 不返回数据）。新增官方依赖时，把名字补进下面的表 ——
 // 漏了会在链接阶段报 "does not provide an export named ..."，指得很准。
 const NAMES = [
-  'Button', 'DiffBlock', 'DisclosureRow', 'FileTypeIcon', 'HoverCard',
+  'Button', 'CommandText', 'DiffBlock', 'DisclosureRow', 'FileTypeIcon', 'HoverCard',
   'IconAgentPresetOutlineRegular', 'IconAlarmClockOutlineRegular', 'IconApiOutlineRegular',
   'IconArchiveOutlineRegular', 'IconBranchOutlineRegular', 'IconBrowseOutlineRegular',
   'IconCheckOutlineRegular', 'IconChevronDownOutlineRegular', 'IconChevronRightOutlineRegular',
@@ -42,13 +42,15 @@ exported.Tag = ({ tone = 'outline', className, children }) =>
   createElement('span', { className, 'data-tone': tone }, children)
 // UserTextRun 是逐字纯文本：自检要看到 ## / ** 原样保留，故返回真实文本。
 exported.UserTextRun = ({ text }) => createElement('span', null, text)
+// CommandText 是命令滚动槽：自检要看到后台命令原文与 className，故返回真实文本。
+exported.CommandText = ({ text, className }) => createElement('span', { className }, text)
 // TextShimmer 只加高光、不吞 children：自检要看到它包住的 skill 标题与摘要。
 exported.TextShimmer = ({ children }) => createElement(Fragment, null, children)
 // `official.ts` 还 `export { Official }`，消费方可能从 official.js 拿命名空间对象。
 exported.Official = Object.fromEntries(NAMES.map((name) => [name, stub(name)]))
 
 export const {
-  Button, DiffBlock, DisclosureRow, FileTypeIcon, HoverCard,
+  Button, CommandText, DiffBlock, DisclosureRow, FileTypeIcon, HoverCard,
   IconAgentPresetOutlineRegular, IconAlarmClockOutlineRegular, IconApiOutlineRegular,
   IconArchiveOutlineRegular, IconBranchOutlineRegular, IconBrowseOutlineRegular,
   IconCheckOutlineRegular, IconChevronDownOutlineRegular, IconChevronRightOutlineRegular,

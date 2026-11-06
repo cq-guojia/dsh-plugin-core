@@ -32,6 +32,14 @@ export declare function ChatNodeListMirror(props: {
 export declare function ChatHint(props: {
     text: string;
 }): ReturnType<typeof h>;
+/** 打开历史失败行（官方 openError：与 hint 同排版但走错误色）。 */
+export declare function ChatOpenError(props: {
+    text: string;
+}): ReturnType<typeof h>;
+/** 官方 CommandNodeView / ManualCompactionNodeView 的 callRow 外壳（斜杠命令 / 手动压缩生命周期行）。 */
+export declare function ChatCallRow(props: {
+    children?: ReactNode;
+}): ReturnType<typeof h>;
 /** 「加载更早记录」按钮（官方 older：按钮 4px 12px / 12px 字号 / radius-sm / 底色 interactive-bg-hover-solid）。 */
 export declare function ChatOlderButton(props: {
     label: string;

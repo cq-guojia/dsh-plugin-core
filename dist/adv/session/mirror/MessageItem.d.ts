@@ -15,6 +15,10 @@ export declare function AssistantMarkdown(props: {
         } | undefined;
     };
 }): ReturnType<typeof h>;
+/** 官方 AssistantMarkdown.stopped：被中断的正文尾部那枚「已停止」标记（整步只挂一枚）。 */
+export declare function AssistantStoppedBadge(props: {
+    t: Translate;
+}): ReturnType<typeof h>;
 /** 用户消息里的官方附件（file 块）：`FileAttachmentRef` 只有 id / 名字 / 字节数，**没有路径**。 */
 export interface UserFileFace {
     name: string;

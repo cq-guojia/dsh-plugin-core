@@ -13,11 +13,11 @@ import { IconArchiveOutlineRegular, IconBranchOutlineRegular, IconNewChatOutline
 import { Modal } from '../../ui/feedback/Modal.js';
 import { Button } from '../../ui/actions/Button.js';
 import { t as coreT } from '../../utils/i18n.js';
-import { ChatHint, ChatNodeListMirror, ChatOlderButton, ChatViewFrame } from './mirror/ChatView.js';
+import { ChatCallRow, ChatHint, ChatNodeListMirror, ChatOlderButton, ChatOpenError, ChatViewFrame } from './mirror/ChatView.js';
 import { GenericCommandCard } from './mirror/GenericCommandCard.js';
 import { CommandCard } from './mirror/CommandCard.js';
 import { MessageIconActionsMirror } from './mirror/MessageIconActions.js';
-import { AssistantMarkdown, CompactionItemMirror, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage } from './mirror/MessageItem.js';
+import { AssistantMarkdown, AssistantStoppedBadge, CompactionItemMirror, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage } from './mirror/MessageItem.js';
 import { BashRowMirror } from './mirror/BashRow.js';
 import { SkillRowMirror } from './mirror/SkillRow.js';
 import { ContextInjectionRowMirror } from './mirror/ContextInjectionRow.js';
@@ -257,6 +257,11 @@ tailFacts) {
                     ? contentBlocks.filter(block => block.kind !== 'reasoning')
                     : contentBlocks;
             const parts = assistantBlocks(visible, t, fileOpen?.mentions, streaming);
+            // 官方 AssistantMarkdown.stopped：被中断的整步末尾一枚「已停止」；只画思考块的组内不重复画。
+            const stopped = interrupted
+                && (groupPart !== 'reasoning' || !blocks.some(block => block.kind !== 'reasoning' && block.kind !== 'tool-call'));
+            if (stopped)
+                parts.push(h(AssistantStoppedBadge, { key: 'stopped', t }));
             return parts.length === 0 ? null : h('div', { className: 'dshpc-sv-assistant' }, parts);
         }
         case 'tool-call': {
@@ -280,7 +285,7 @@ tailFacts) {
             // 官方 CommandNodeView → GenericCommandCard（ui-chat/chat/GenericCommandCard.tsx 原样复刻）。
             // 斜杠命令生命周期节点（records.d.ts：name/args/outcome）；走 CommandCard：标题=裸命令名、
             // 摘要=outcome 落定 text、仅多行才展开。之前漏接 ⇒ 落 default 显示「未支持的节点类型： command」。
-            return h(CommandCard, { node: dataOf(node), t });
+            return h(ChatCallRow, null, h(CommandCard, { node: dataOf(node), t }));
         }
         case 'user':
         case 'steering': {
@@ -318,15 +323,18 @@ tailFacts) {
         // 决策 28：context（系统注入）/ unknown 仍默认过滤；
         // 0.2.x compaction 节点走官方 CompactionItem（此前漏渲染 ⇒ 压缩段整段消失）。
         case 'compaction':
-        case 'manual-compaction':
             return h(CompactionItemMirror, { node: dataOf(node), t });
+        case 'manual-compaction':
+            // 官方 ManualCompactionNodeView 同样套 callRow 外壳。
+            return h(ChatCallRow, null, h(CompactionItemMirror, { node: dataOf(node), t }));
         case 'context':
             return h(ContextInjectionRowMirror, { node: dataOf(node), t });
         case 'unknown':
             return null;
         default:
             // 决策 28：不认识的 kind 一律 fallback（折叠原文），升级不白屏。
-            return h('details', { className: 'dshpc-sv-tool' }, h('summary', { className: 'dshpc-sv-notice' }, `${t('sessionUnknownKind')} ${node.kind}`), h('pre', null, safeJson(node.data)));
+            // 外壳 = 官方 MessageItem.contextRow（官方 UnknownNodeView 的同一个容器类）。
+            return h('div', { className: officialClass('MessageItem', 'contextRow') ?? '' }, h('details', { className: 'dshpc-sv-tool' }, h('summary', { className: 'dshpc-sv-notice' }, `${t('sessionUnknownKind')} ${node.kind}`), h('pre', null, safeJson(node.data))));
     }
 }
 /**
@@ -729,6 +737,8 @@ export function SessionViewModal(props) {
     const [forkTarget, setForkTarget] = useState(null);
     const [forking, setForking] = useState(false);
     const [forkErr, setForkErr] = useState(null);
+    /** 官方 ChatView.modalAction（弹窗脚按钮 min-width 72px）；官方样式未注入时为 undefined。 */
+    const modalActionClass = officialClass('ChatView', 'modalAction') ?? undefined;
     const aliveRef = useRef(true);
     useEffect(() => () => { aliveRef.current = false; }, []);
     // 取消归档时收掉「因为归档才弹的」fork 确认框（atSeq 缺省 = 头部按钮触发）；
@@ -1036,12 +1046,13 @@ export function SessionViewModal(props) {
         : h(RunningStatusMirror, { key: 'running', startTime: runningStartTime, t: tt });
     const body = rendered.length === 0 && pendingRows.length === 0
         ? [
-            h(ChatHint, {
-                key: 'hint',
-                text: openState === 'error' ? tt('sessionFailed')
-                    : openState === 'loading' || openState === 'cold' ? tt('sessionLoading')
-                        : tt('sessionEmpty'),
-            }),
+            // 官方三态各走各的类：error = openError（错误色），loading / 空 = hint。
+            openState === 'error'
+                ? h(ChatOpenError, { key: 'hint', text: tt('sessionFailed') })
+                : h(ChatHint, {
+                    key: 'hint',
+                    text: openState === 'loading' || openState === 'cold' ? tt('sessionLoading') : tt('sessionEmpty'),
+                }),
             runningRow,
         ]
         : [
@@ -1127,9 +1138,10 @@ export function SessionViewModal(props) {
             setForkTarget(null); },
         title: tt('forkConfirmTitle'),
         translate: tt,
+        // 弹窗脚按钮宽度与官方对话框对齐（官方 ChatView.modalAction：min-width 72px）。
         footer: [
-            h(Button, { key: 'cancel', variant: 'outline', disabled: forking, onClick: () => { setForkTarget(null); } }, tt('cancel')),
-            h(Button, { key: 'accept', variant: 'primary', disabled: forking || !canFork, onClick: onForkAccept }, forking ? tt('forkWorking') : tt('forkConfirmAccept')),
+            h(Button, { key: 'cancel', variant: 'outline', className: modalActionClass, disabled: forking, onClick: () => { setForkTarget(null); } }, tt('cancel')),
+            h(Button, { key: 'accept', variant: 'primary', className: modalActionClass, disabled: forking || !canFork, onClick: onForkAccept }, forking ? tt('forkWorking') : tt('forkConfirmAccept')),
         ],
     }, h('p', { className: 'dshpc-sv-forktext' }, tt('forkConfirmText')), canFork ? null : h('p', { className: 'dshpc-sv-forkerr' }, tt('forkUnavailable')), forkErr !== null ? h('p', { className: 'dshpc-sv-forkerr' }, tt('forkFailed', { error: forkErr })) : null));
 }

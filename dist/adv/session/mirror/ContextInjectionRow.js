@@ -1,50 +1,78 @@
-// 官方对照：ui-chat@0.2.1-rc.5 lib/client.js:4967-5050（ContextInjectionRow）+ 4530-4540（OpaqueBody）。
-// 折叠行 = DisclosureRow（图标 + 标题「上下文注入」/「跨会话召回」+ producer 来源）；
-// 展开体 = 模型面向文本（content 里的 text 块拼成 pre[data-context-text]）。
-// shortcut: form 细分（instructions/catalog/snapshot/notice/relay/recall 各带 Body + source 解析）未复刻，
-//   一律走 opaque 文本；这些 form 低频，等确实需要精确还原时再补。
+// 官方对照：@deepseek-ai/dsh-client-ui-chat@0.2.2-rc.1
+//   lib/client.js:5715-5812（ContextInjectionRow）+ 5190-5713（ContextBody 各 form 体，见 ContextBody.ts）。
+// 折叠行 = DisclosureRow（图标 + 标题「上下文注入」/「跨会话召回」/「工具已更新」+ 分隔点 + 来源 / 摘要）；
+// 展开体 = 按 producer 声明的 form 分派（正文见 ContextBody.ts）；工具增删块（tool-addition /
+// tool-removal）单独一列，标题与展开体都换成人话的「已添加工具：x / 新增 N 个」。
 import { Fragment, createElement as h, useState } from 'react';
 import { DisclosureRow, IconBrowseOutlineRegular, IconContextInjectionOutlineRegular } from '../../../ui/official.js';
 import { officialClass } from '../official-classes.js';
-import { modelFacingRuns } from './TurnTriggerNodeView.js';
-/** 系统注入上下文行（官方 ContextInjectionRow 的 opaque 版）。 */
+import { contextBodyView } from './ContextBody.js';
+/** 官方 ContextInjectionRow 的标题与汇总口径（纯函数）。 */
+export function contextRowFacts(content, producerRole, t) {
+    const toolBlocks = content.length > 0 && content.every(block => {
+        const type = block?.type;
+        return type === 'tool-addition' || type === 'tool-removal';
+    })
+        ? content
+        : undefined;
+    const added = (toolBlocks ?? []).flatMap(block => (block.type === 'tool-addition' && typeof block.toolName === 'string' ? [block.toolName] : []));
+    const removed = (toolBlocks ?? []).flatMap(block => (block.type === 'tool-removal' && typeof block.toolName === 'string' ? [block.toolName] : []));
+    const single = toolBlocks?.length === 1 ? toolBlocks[0] : undefined;
+    // 官方 toolSummary：单条不带计数（标题已经说清是哪一个）；多条按增 / 删 / 双向给一行汇总。
+    const summary = toolBlocks === undefined || single !== undefined
+        ? null
+        : added.length > 0 && removed.length > 0
+            ? t('toolsChanged', { added: added.length, removed: removed.length })
+            : added.length > 0 ? t('toolsAddedCount', { count: added.length }) : t('toolsRemovedCount', { count: removed.length });
+    const title = single !== undefined
+        ? t(single.type === 'tool-addition' ? 'toolAdded' : 'toolRemoved', { name: single.toolName ?? '' })
+        : t(toolBlocks !== undefined ? 'toolsUpdated' : producerRole === 'recall' ? 'contextRecall' : 'contextInjection');
+    return { toolBlocks, added, removed, single, title, summary };
+}
+/** 系统注入上下文行（官方 ContextInjectionRow 镜像）。 */
 export function ContextInjectionRowMirror(props) {
     const { node, t } = props;
     const [open, setOpen] = useState(false);
     const content = Array.isArray(node.content) ? node.content : [];
     const producer = node.producer ?? null;
     const label = producer?.label ?? null;
-    const toolBlocks = content.length > 0 && content.every(block => {
-        const type = block?.type;
-        return type === 'tool-addition' || type === 'tool-removal';
-    });
-    return h(DisclosureRow, {
-        className: officialClass('ContextInjectionRow', 'root') ?? '',
-        icon: toolBlocks
-            ? h(IconBrowseOutlineRegular, { size: 14 })
-            : h(IconContextInjectionOutlineRegular, { size: 14 }),
-        chevronClassName: officialClass('ContextInjectionRow', 'chevron') ?? '',
-        title: t(producer?.role === 'recall' ? 'contextRecall' : 'contextInjection'),
-        collapsedContent: label === null
+    const { rendered, summary: bodySummary, body } = contextBodyView({ form: node.form, content, source: node.source, t });
+    const { toolBlocks, added, removed, single, title, summary } = contextRowFacts(content, producer?.role, t);
+    const sep = (key) => h('span', { key, className: officialClass('ContextInjectionRow', 'sep') ?? '', 'aria-hidden': true });
+    const collapsedContent = summary !== null
+        ? h(Fragment, null, sep('sep'), h('span', { className: officialClass('ContextInjectionRow', 'summary') ?? '' }, summary))
+        : toolBlocks !== undefined || label === null
             ? undefined
-            : h(Fragment, null, h('span', { className: officialClass('ContextInjectionRow', 'sep') ?? '', 'aria-hidden': true }), h('span', {
+            : h(Fragment, null, sep('sep'), h('span', {
                 className: officialClass('ContextInjectionRow', 'source') ?? '',
                 'data-context-source': true,
-            }, label)),
+            }, label), bodySummary === null
+                ? null
+                : h(Fragment, null, sep('sep2'), h('span', {
+                    className: officialClass('ContextInjectionRow', 'summary') ?? '',
+                    'data-context-summary': true,
+                }, bodySummary)));
+    return h(DisclosureRow, {
+        className: officialClass('ContextInjectionRow', 'root') ?? '',
+        icon: toolBlocks === undefined
+            ? h(IconContextInjectionOutlineRegular, { size: 14 })
+            : h(IconBrowseOutlineRegular, { size: 14 }),
+        chevronClassName: officialClass('ContextInjectionRow', 'chevron') ?? '',
+        title,
+        collapsedContent,
         keepContentWhenOpen: true,
-        open,
-        expandable: true,
+        // 单条工具变更没有展开体（官方 single !== undefined ⇒ expandable false）。
+        open: open && single === undefined,
+        expandable: single === undefined,
         expandOnRowClick: true,
         onToggle: () => { setOpen(value => !value); },
         children: h('div', {
             className: officialClass('ContextInjectionRow', 'body') ?? '',
             'data-context-injection-body': true,
-            'data-context-form': node.form ?? undefined,
-        }, modelFacingRuns(content, t).map((text, index) => h('pre', {
-            key: index,
-            className: officialClass('ContextBody', 'text') ?? '',
-            'data-context-text': true,
-        }, text))),
+            'data-context-form': rendered ?? undefined,
+        }, toolBlocks === undefined
+            ? body
+            : h('div', { className: officialClass('ContextInjectionRow', 'toolChanges') ?? '' }, added.length > 0 ? h('div', null, t('toolsAdded', { names: added.join(', ') })) : null, removed.length > 0 ? h('div', null, t('toolsRemoved', { names: removed.join(', ') })) : null)),
     });
 }
 //# sourceMappingURL=ContextInjectionRow.js.map

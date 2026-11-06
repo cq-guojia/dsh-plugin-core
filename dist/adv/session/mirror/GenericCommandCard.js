@@ -877,7 +877,9 @@ export function GenericCommandCard(props) {
             active: running,
         }, h('span', { className: officialClass('ToolRow', 'diffAdded') ?? '' }, `+${diffStatTotals.added}`), ' ', h('span', { className: officialClass('ToolRow', 'diffRemoved') ?? '' }, `-${diffStatTotals.removed}`))
         : null);
-    const expandedContent = open ? h('div', { className: officialClass('ToolRow', 'bodyWrap') ?? '' }, ask?.card !== undefined
+    // 官方 1733：详情族（ToolDetails）的展开体多挂 detailsBodyWrap（inspect 钮的定位上下文）。
+    const bodyWrapClass = `${officialClass('ToolRow', 'bodyWrap') ?? ''}${details !== null ? ` ${officialClass('ToolRow', 'detailsBodyWrap') ?? ''}` : ''}`;
+    const expandedContent = open ? h('div', { className: bodyWrapClass }, ask?.card !== undefined
         ? h(AskQuestionCardView, { card: ask.card })
         : terminal !== null
             ? h(TerminalBlock, {

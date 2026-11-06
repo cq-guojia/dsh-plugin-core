@@ -211,6 +211,7 @@ export type UtilMessageKey =
   | 'skillRowStopped'
   | 'skillRowInstructions'
   | 'toolInputLabel'
+  | 'toolCommandArguments'
   | 'toolPreparingContent'
   | 'compactionTitle'
   | 'compactionCompleted'
@@ -218,6 +219,24 @@ export type UtilMessageKey =
   | 'compactionUnavailable'
   | 'contextInjection'
   | 'contextRecall'
+  | 'contextInstrLoaded'
+  | 'contextInstrAdded'
+  | 'contextInstrUpdated'
+  | 'contextInstrRemoved'
+  | 'contextCatalogReplaced'
+  | 'contextCatalogMore'
+  | 'contextSnapshotSupersedes'
+  | 'contextRelayFrom'
+  | 'contextRecallCounts'
+  | 'contextRecallTruncated'
+  | 'toolAdded'
+  | 'toolRemoved'
+  | 'toolsAdded'
+  | 'toolsAddedCount'
+  | 'toolsChanged'
+  | 'toolsRemoved'
+  | 'toolsRemovedCount'
+  | 'toolsUpdated'
   | 'toolTitleTodo'
   | 'toolTitlePwsh'
   | 'toolTitleAsk'
@@ -735,6 +754,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     skillRowStopped: 'skill 加载已中止',
     skillRowInstructions: '说明',
     toolInputLabel: '输入',
+    toolCommandArguments: '命令参数',
     toolPreparingContent: '{kilobytes} KB',
     compactionTitle: '上下文已压缩',
     toolTitleTodo: '更新任务清单',
@@ -941,6 +961,24 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     compactionUnavailable: '压缩摘要不可用',
     contextInjection: '上下文注入',
     contextRecall: '跨会话召回',
+    contextInstrLoaded: '已载入',
+    contextInstrAdded: '已新增',
+    contextInstrUpdated: '已更新',
+    contextInstrRemoved: '已移除',
+    contextCatalogReplaced: '替换目录',
+    contextCatalogMore: '…还有 {count} 条',
+    contextSnapshotSupersedes: '取代先前的快照',
+    contextRelayFrom: '来自会话 {session}',
+    contextRecallCounts: '保留 {retained} 条 · 省略 {omitted} 条',
+    contextRecallTruncated: '已截断',
+    toolAdded: '已添加工具：{name}',
+    toolRemoved: '已移除工具：{name}',
+    toolsAdded: '新增：{names}',
+    toolsAddedCount: '新增 {count} 个',
+    toolsChanged: '新增 {added} 个，移除 {removed} 个',
+    toolsRemoved: '移除：{names}',
+    toolsRemovedCount: '移除 {count} 个',
+    toolsUpdated: '工具已更新',
     toolOutputLabel: '输出',
     rowPreparing: '正在准备调用',
     rowRunning: '运行中',
@@ -1252,6 +1290,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     skillRowStopped: 'Skill load stopped',
     skillRowInstructions: 'Instructions',
     toolInputLabel: 'IN',
+    toolCommandArguments: 'Command arguments',
     toolPreparingContent: '{kilobytes} KB',
     compactionTitle: 'Context compacted',
     toolTitleTodo: 'Update to-do list',
@@ -1458,6 +1497,24 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     compactionUnavailable: 'Compaction summary unavailable',
     contextInjection: 'Context injection',
     contextRecall: 'Cross-session recall',
+    contextInstrLoaded: 'loaded',
+    contextInstrAdded: 'added',
+    contextInstrUpdated: 'updated',
+    contextInstrRemoved: 'removed',
+    contextCatalogReplaced: 'Replacement catalog',
+    contextCatalogMore: '… {count} more',
+    contextSnapshotSupersedes: 'Supersedes earlier snapshots',
+    contextRelayFrom: 'From session {session}',
+    contextRecallCounts: '{retained} kept · {omitted} omitted',
+    contextRecallTruncated: 'truncated',
+    toolAdded: 'Added tool: {name}',
+    toolRemoved: 'Removed tool: {name}',
+    toolsAdded: 'Added: {names}',
+    toolsAddedCount: '{count} added',
+    toolsChanged: '{added} added, {removed} removed',
+    toolsRemoved: 'Removed: {names}',
+    toolsRemovedCount: '{count} removed',
+    toolsUpdated: 'Tools updated',
     toolOutputLabel: 'OUT',
     rowPreparing: 'Preparing tool call',
     rowRunning: 'Running',
