@@ -1,11 +1,29 @@
-import { createElement as h } from 'react';
+import { createElement as h, type ReactNode } from 'react';
 import { type Translate } from '../../utils/i18n.js';
 import type { SessionViewTarget } from './open-session-view.js';
 import { type ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js';
 export interface SessionViewModalProps {
     t?: Translate;
-    /** 弹窗标题：**会话自己的标题**（宿主 sessions.list 的 displayTitle）；缺省用「会话预览」。 */
+    /**
+     * 标题行（第一级）：核心画在标题位，下方 sessionId 副标题行与归档徽标不受影响。
+     * 想在标题后跟标签 / 按钮 / 自己的一段节点，塞进这里。
+     * 缺省 = `heading`，再缺省 =「会话预览」。
+     */
+    title?: ReactNode;
+    /** @deprecated 0.34 的旧名（只收字符串），等价 `title`；两者都给时以 `title` 为准。 */
     heading?: string;
+    /**
+     * 整块替换左侧标题区（第二级：标题行 + sessionId 行 + 归档徽标）。传了则 `title` / `heading` 不生效；
+     * 归档徽标改挂到右侧动作区最前（归档是数据事实，不能因为自定义标题就消失）。
+     * 右侧「继续对话」与关闭 ✕ 不受影响。
+     */
+    header?: ReactNode;
+    /** 头部右侧追加动作：排在核心「继续对话」之后、关闭 ✕ 之前。 */
+    headerActions?: ReactNode;
+    /** 会话内容最顶端（滚动容器内、所有节点与「加载更早」之前）；随会话一起滚。 */
+    bodyHeader?: ReactNode;
+    /** 会话内容最底端（滚动容器内、最后一条内容与运行中行之后）；随会话一起滚。 */
+    bodyFooter?: ReactNode;
     sessionId: string;
     view: SessionViewTarget;
     onClose: () => void;

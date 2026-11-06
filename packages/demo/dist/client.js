@@ -4172,7 +4172,7 @@ function MarqueeText(props) {
 var import_react8 = require("react");
 
 // dist/ui/infra/overlay-css.generated.js
-var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09/ \u9009\u6587\u4EF6\u5F39\u7A97\uFF08\u951A\u5B9A\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u5404\u5BB6\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002\n   \u5173\u95ED\u94AE\u7684\u76AE\u80A4\u5728 panel.css\uFF08.dshpc-panel__close\uFF0C\u65E7\u7C7B\u540D\u4F5C\u522B\u540D\uFF09\uFF0C\u4E0D\u5728\u8FD9\u91CC\u518D\u5199\u4E00\u4EFD\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u9501\u5B9A\u6001\uFF1A\u7981\u7528\u624B\u52BF\u6302\u5728\u906E\u7F69\u4E0A\uFF08\u9762\u677F\u5916\u90A3\u4E00\u5708\u4E5F\u8981\u4E00\u81F4\uFF09\u3002 */\n.dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}\n/* \u9501\u5B9A\u65F6\u7684\u900F\u660E\u70B9\u51FB\u5C42\uFF1A\u5403\u6307\u9488\u3001\u4E0D\u6539\u4EFB\u4F55\u5916\u89C2\uFF08\u53D8\u7070\u7531\u5404\u63A7\u4EF6\u81EA\u5DF1\u7684 :disabled \u8D1F\u8D23\uFF09\u3002\n   \u5168\u900F\u660E\u662F\u523B\u610F\u7684 \u2014\u2014 \u76D6\u4E00\u5C42\u7070\u4F1A\u8BA9\u4EBA\u4EE5\u4E3A\u754C\u9762\u574F\u4E86\u3002 */\n.dshpc-lock-catcher{position:absolute;inset:0;z-index:1;cursor:not-allowed}\n/* \u9501\u5B9A\u6001\uFF1A\u6D88\u8D39\u65B9\u81EA\u7ED8\u7684\u539F\u751F\u8868\u5355\u5143\u7D20\u4E5F\u300C\u770B\u8D77\u6765\u7981\u7528\u300D\u3002\n   \u6574\u6761\u9009\u62E9\u5668\u5305\u5728 :where() \u91CC = \u7279\u5F02\u6027 0 \u2014\u2014 \u6D88\u8D39\u65B9\u4EFB\u610F\u4E00\u6761\u81EA\u5DF1\u7684\u89C4\u5219\u90FD\u80FD\u76D6\u56DE\u6765\uFF0C\u6211\u4EEC\u53EA\u5F53\u9ED8\u8BA4\u503C\u3002\n   \u53EA\u5199 opacity / cursor \u4E24\u4E2A\u5C5E\u6027\uFF1B\u4E0D\u60F3\u88AB\u7070\u5C31\u5728\u81EA\u5DF1\u5143\u7D20\u4E0A\u5199 --dshpc-lock-dim: 1\u3002\n   \u89E3\u9501 = \u89C4\u5219\u4E0D\u518D\u5339\u914D\uFF0C\u4E0D\u5B58\u5728\u300C\u8FD8\u539F\u300D\uFF0C\u4E5F\u5C31\u4E0D\u4F1A\u51B2\u6389\u522B\u4EBA\u5199\u7684\u6837\u5F0F\u3002 */\n:where(.dshpc-locked button:not(:disabled),.dshpc-locked input:not(:disabled),.dshpc-locked select:not(:disabled),.dshpc-locked textarea:not(:disabled)){\n  opacity:var(--dshpc-lock-dim);cursor:not-allowed;\n}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n/* \u951A\u5B9A\u6863\uFF08\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\uFF1A\u906E\u7F69\u7167\u65E7\u538B\u6697 + \u70B9\u5916\u90E8\u5173\u95ED\uFF0C\u9762\u677F\u81EA\u5DF1 fixed \u8D34\u951A\u70B9\uFF0C\u8FD9\u91CC\u4E0D\u505A\u5E03\u5C40\u3002 */\n.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n";
+var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09/ \u9009\u6587\u4EF6\u5F39\u7A97\uFF08\u951A\u5B9A\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u5404\u5BB6\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002\n   \u5173\u95ED\u94AE\u7684\u76AE\u80A4\u5728 panel.css\uFF08.dshpc-panel__close\uFF0C\u65E7\u7C7B\u540D\u4F5C\u522B\u540D\uFF09\uFF0C\u4E0D\u5728\u8FD9\u91CC\u518D\u5199\u4E00\u4EFD\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u9501\u5B9A\u6001\uFF1A\u7981\u7528\u624B\u52BF\u6302\u5728\u906E\u7F69\u4E0A\uFF08\u9762\u677F\u5916\u90A3\u4E00\u5708\u4E5F\u8981\u4E00\u81F4\uFF09\u3002 */\n.dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}\n/* \u9501\u5B9A\u65F6\u7684\u900F\u660E\u70B9\u51FB\u5C42\uFF1A\u5403\u6307\u9488\u3001\u4E0D\u6539\u4EFB\u4F55\u5916\u89C2\uFF08\u53D8\u7070\u7531\u5404\u63A7\u4EF6\u81EA\u5DF1\u7684 :disabled \u8D1F\u8D23\uFF09\u3002\n   \u5168\u900F\u660E\u662F\u523B\u610F\u7684 \u2014\u2014 \u76D6\u4E00\u5C42\u7070\u4F1A\u8BA9\u4EBA\u4EE5\u4E3A\u754C\u9762\u574F\u4E86\u3002 */\n.dshpc-lock-catcher{position:absolute;inset:0;z-index:1;cursor:not-allowed}\n/* \u9501\u5B9A\u6001\uFF1A\u6D88\u8D39\u65B9\u81EA\u7ED8\u7684\u539F\u751F\u8868\u5355\u5143\u7D20\u4E5F\u300C\u770B\u8D77\u6765\u7981\u7528\u300D\u3002\n   \u6574\u6761\u9009\u62E9\u5668\u5305\u5728 :where() \u91CC = \u7279\u5F02\u6027 0 \u2014\u2014 \u6D88\u8D39\u65B9\u4EFB\u610F\u4E00\u6761\u81EA\u5DF1\u7684\u89C4\u5219\u90FD\u80FD\u76D6\u56DE\u6765\uFF0C\u6211\u4EEC\u53EA\u5F53\u9ED8\u8BA4\u503C\u3002\n   \u53EA\u5199 opacity / cursor \u4E24\u4E2A\u5C5E\u6027\uFF1B\u4E0D\u60F3\u88AB\u7070\u5C31\u5728\u81EA\u5DF1\u5143\u7D20\u4E0A\u5199 --dshpc-lock-dim: 1\u3002\n   \u89E3\u9501 = \u89C4\u5219\u4E0D\u518D\u5339\u914D\uFF0C\u4E0D\u5B58\u5728\u300C\u8FD8\u539F\u300D\uFF0C\u4E5F\u5C31\u4E0D\u4F1A\u51B2\u6389\u522B\u4EBA\u5199\u7684\u6837\u5F0F\u3002 */\n:where(.dshpc-locked button:not(:disabled),.dshpc-locked input:not(:disabled),.dshpc-locked select:not(:disabled),.dshpc-locked textarea:not(:disabled)){\n  opacity:var(--dshpc-lock-dim);cursor:not-allowed;\n}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n/* \u951A\u5B9A\u6863\uFF08\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\uFF1A\u906E\u7F69\u7167\u65E7\u538B\u6697 + \u70B9\u5916\u90E8\u5173\u95ED\uFF0C\u9762\u677F\u81EA\u5DF1 fixed \u8D34\u951A\u70B9\uFF0C\u8FD9\u91CC\u4E0D\u505A\u5E03\u5C40\u3002 */\n.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n/* \u8C03\u7528\u65B9\u6574\u5757\u81EA\u5B9A\u4E49\u7684\u6807\u9898\u533A\uFF1A\u5360\u6EE1\u5DE6\u4FA7\u53EF\u7528\u5BBD\u5EA6\u3001\u53EF\u6362\u884C\uFF08\u4E0D\u662F\u6807\u9898\u6587\u5B57\uFF0C\u522B\u5957\u6807\u9898\u5B57\u53F7\uFF09\u3002 */\n.dshpc-overlay-head__heading--custom{flex:1 1 auto;flex-wrap:wrap}\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n";
 
 // dist/ui/infra/panel-css.generated.js
 var PANEL_CSS = "/* \u6D6E\u5C42\u9762\u677F\u76AE\u80A4\uFF082026-11-03 \u7528\u6237\u5B9A\uFF1A\u76AE\u80A4\u7EDF\u4E00\uFF0C\u53EA\u6539\u6837\u5F0F\u4E0D\u52A8\u4EA4\u4E92\uFF09\u3002\n *\n * \u8FD9\u4EFD\u6587\u4EF6\u662F**\u6240\u6709\u300C\u6D6E\u8D77\u6765\u7684\u6846\u300D\u7684\u76AE\u80A4\u771F\u6E90**\u3002\u5B9A\u4F4D\uFF08fixed / absolute\u3001\u8D34\u8C01\u3001\u600E\u4E48\u7FFB\u8F6C\u3001\u591A\u5927\u7684\n * \u5C42\u5E8F\uFF09\u7559\u5728\u5404\u81EA\u63A7\u4EF6\u91CC\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u8868\u9762\u56DB\u4EF6\uFF1A\u5E95\u8272 / \u63CF\u8FB9\u5BBD / \u5706\u89D2 / \u9634\u5F71\u3002\n * \u26A0\uFE0F \u7EC4\u4EF6 CSS \u91CC\u4E0D\u8BB8\u518D\u5199\u8FD9\u56DB\u4E2A\u5B57\u9762\u503C \u2014\u2014 \u60F3\u6539\u5916\u89C2\u5C31\u6539\u8FD9\u91CC\uFF0C\u522B\u5728\u6D88\u8D39\u65B9\u53E6\u8D77\u4E00\u5957\u3002\n *\n * \u4E09\u6863\uFF08\u5DEE\u5F02\u53EA\u5728\u8FD9\u4E09\u6BB5\u5B9A\u4E49\uFF0C\u522B\u5904\u5206\u53C9\uFF09\uFF1A\n *   --modal    \u5C45\u4E2D\u6A21\u6001\uFF08Modal / ConfirmModal / AlertModal \u5BB6\u65CF\uFF09\n *   --popover  \u8D34\u951A\u70B9\u7684\u6D6E\u5C42\u9762\u677F\uFF08pickWorkspaceFile \u9009\u6587\u4EF6\u5F39\u7A97\u3001DateTimePicker \u5F39\u5C42\uFF09\n *   --menu     \u4E0B\u62C9\u83DC\u5355\uFF08\u6587\u4EF6\u6D4F\u89C8\u5668 \u25BE \u9009\u5C42\u3001Picker \u4E0B\u62C9\uFF09\n *\n * \u4E0D\u5E76\u5165\u4E09\u6863\u7684\uFF1APanelDock \u4E0E SideSheet \u662F**\u8D34\u8FB9\u5BB6\u65CF**\uFF08side-panel.css \u7684\n * .dshpc-side-surface\uFF0Csurface-base\u3001\u65E0\u5916\u63CF\u8FB9\uFF09\u2014\u2014 2026-11-02 \u62CD\u677F\u300C\u4E24\u8005\u76AE\u80A4\u4E00\u6A21\u4E00\u6837\u300D\uFF0C\n * \u4E00\u4E2A\u662F\u5E03\u5C40\u6210\u5458\u3001\u4E00\u4E2A\u662F\u8D34\u8FB9\u62BD\u5C49\uFF0C\u90FD\u4E0D\u662F\u6D6E\u5C42\u3002\n */\n.dshpc-panel{\n  background:var(--dshpc-panel-bg);color:var(--dshpc-fg);\n  border:var(--dshpc-panel-bw) solid var(--dshpc-border);\n  border-radius:var(--dshpc-panel-radius);box-shadow:var(--dshpc-panel-shadow);\n}\n.dshpc-panel--modal{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:3px;\n  --dshpc-panel-radius:var(--dshpc-radius-xl);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n}\n.dshpc-panel--popover{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  --dshpc-panel-radius:var(--dshpc-radius-lg);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n  /* \u4E0E menu \u540C\u53E3\u5F84\u7684\u52A0\u91CD\u63CF\u8FB9\uFF1B\u65E5\u671F\u5F39\u5C42\u4E0E\u9009\u6587\u4EF6\u5F39\u7A97\u5171\u7528\u8FD9\u4E00\u6863\uFF082026-11-06\uFF09\u3002 */\n  border-color:var(--dshpc-border-heavy);\n}\n.dshpc-panel--menu{\n  /* \u83DC\u5355\u5E95\u4E0E\u6A21\u6001\u540C\u4E00\u5C42\uFF08\u7528\u6237 2026-11-03\uFF1A\u522B\u7528\u9875\u9762\u5E95\u8272\uFF0C\u6697\u8272\u4E0B\u770B\u7740\u5168\u9ED1\uFF09\u3002 */\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  /* \u5706\u89D2\u4E0E popover \u6863\u7EDF\u4E00\u6210 lg\uFF082026-11-06 \u7528\u6237\uFF1A\u4E0B\u62C9\u6846\u4E5F\u6539\u6210 16\uFF09\u3002 */\n  --dshpc-panel-radius:var(--dshpc-radius-lg);\n  --dshpc-panel-shadow:var(--dshpc-shadow-1);\n  /* \u4E0B\u62C9\u83DC\u5355\u540C\u6837\u52A0\u91CD\u63CF\u8FB9\uFF1Bmodal \u7684 3px \u8FB9\u6846\u4E0D\u52A8\u3002 */\n  border-color:var(--dshpc-border-heavy);\n}\n\n/* \u6D6E\u5C42\u552F\u4E00\u7684\u5173\u95ED\u94AE\uFF0820\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF09\u3002\n   \u65E7\u7C7B\u540D .dshpc-overlay-head__close \u4FDD\u7559\u4E3A\u522B\u540D\uFF1A\u6D88\u8D39\u65B9\u5199\u5728\u65E7\u7C7B\u540D\u4E0A\u7684\u8986\u76D6\u4ECD\u751F\u6548\u3002 */\n.dshpc-panel__close,.dshpc-overlay-head__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-panel__close:hover,.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-panel__close:focus-visible,.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n\n/* \u7EC6\u7EBF\u6EDA\u52A8\u6761\uFF08opt-in\uFF09\uFF1A2026-11-06 \u7528\u6237\u8981\u300C\u6CA1\u5B58\u5728\u611F\u300D\u7684\u4E00\u6761\u7EBF\uFF0C\u7ED9\u6D6E\u5C42\u5185\u7684\u6EDA\u52A8\u533A\u7528\n   \uFF08Picker \u4E0B\u62C9\u3001\u65E5\u671F\u5FEB\u6377\u6863\u5217\uFF09\u3002\u5176\u4F59\u5BB9\u5668\u4ECD\u662F\u6D4F\u89C8\u5668\u539F\u751F\u6837\u5F0F\uFF08style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n/* \u53EA\u7528 ::-webkit-scrollbar\uFF1A\u4E00\u65E6\u5199 scrollbar-width\uFF0CChrome \u4F1A\u5207\u5230\u89C4\u8303\u5316\u6EDA\u52A8\u6761\u3001\u5FFD\u7565\u8FD9\u91CC\u7684 1px\n   \uFF082026-11-06 \u5B9E\u6D4B\uFF1A\u7559\u7740 scrollbar-width:thin \u65F6\u5BBD\u5EA6\u56DE\u5230 ~10px\uFF09\u3002\u5BBD\u5EA6 1px\uFF0C\u79BB\u8FB9\u4ECD 1px \u4E0D\u53D8\u3002 */\n.dshpc-scroll-thin::-webkit-scrollbar{width:1px}\n.dshpc-scroll-thin::-webkit-scrollbar-thumb{background:var(--dshpc-border-heavy)}\n.dshpc-scroll-thin::-webkit-scrollbar-track{background:transparent}\n";
@@ -4254,7 +4254,8 @@ function OverlayMask(props) {
 function OverlayHead(props) {
   ensureComponentStyles("overlay", OVERLAY_CSS);
   ensureComponentStyles("panel", PANEL_CSS);
-  return (0, import_react8.createElement)("div", { className: "dshpc-overlay-head" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__heading" }, props.icon === void 0 ? null : (0, import_react8.createElement)("span", { className: "dshpc-overlay-head__lead" }, props.icon), (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__titlegroup" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__titlerow" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__title" }, props.title ?? ""), props.extra === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__extra" }, props.extra)), props.subtitle === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__sid" }, props.subtitle))), (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__spacer" }), props.actions === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__actions" }, props.actions), props.onClose === void 0 ? null : (0, import_react8.createElement)(PanelClose, { label: props.closeLabel, onClick: props.onClose, className: "dshpc-overlay-head__close" }));
+  const heading2 = props.header === null ? null : props.header === void 0 ? (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__heading" }, props.icon === void 0 ? null : (0, import_react8.createElement)("span", { className: "dshpc-overlay-head__lead" }, props.icon), (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__titlegroup" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__titlerow" }, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__title" }, props.title ?? ""), props.extra === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__extra" }, props.extra)), props.subtitle === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__sid" }, props.subtitle))) : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__heading dshpc-overlay-head__heading--custom" }, props.header);
+  return (0, import_react8.createElement)("div", { className: "dshpc-overlay-head" }, heading2, (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__spacer" }), props.actions === void 0 ? null : (0, import_react8.createElement)("div", { className: "dshpc-overlay-head__actions" }, props.actions), props.onClose === void 0 ? null : (0, import_react8.createElement)(PanelClose, { label: props.closeLabel, onClick: props.onClose, className: "dshpc-overlay-head__close" }));
 }
 
 // dist/ui/inputs/picker-css.generated.js
@@ -5829,7 +5830,7 @@ function Modal(props) {
   };
   const s = sizeStyle[props.size ?? "md"];
   const showClose = props.closable !== false && props.onClose !== void 0 && !denyClose;
-  const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.headerActions !== void 0 || showClose);
+  const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.header !== void 0 || props.headerActions !== void 0 || showClose);
   return (0, import_react19.createElement)(OverlayMask, {
     kind: "center",
     closeOnMask,
@@ -5860,6 +5861,7 @@ function Modal(props) {
         title: props.title,
         subtitle: props.subtitle,
         extra: props.headerExtra,
+        header: props.header,
         actions: props.headerActions,
         closeLabel: tt("modalClose"),
         onClose: showClose ? props.onClose : void 0
@@ -56723,7 +56725,7 @@ function ChatGroupSeatMirror(props) {
 }
 
 // dist/adv/session/session-css.generated.js
-var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA\u7ED8\u6837\u5F0F\uFF1A\u53EA\u88C5\u672C\u5305\u81EA\u5DF1\u7684\u7EC4\u4EF6\uFF08\u6682\u5B58\u8F93\u5165\u533A / fork / \u63A2\u9488\u7B49\uFF09\n   + \u4E24\u4E2A\u7A33\u5B9A\u94A9\u5B50\u7C7B\uFF08dshpc-sv-frame / dshpc-sv-scroll\uFF09\u3002\n   \u5DF2\u5220\uFF1AChangedFiles \u5361\u4E0E FileDiff \u7684\u5168\u90E8\u81EA\u7ED8\u89C4\u5219\uFF082026-10-24\uFF09\u2014\u2014\u5B98\u65B9 ChangedFiles /\n   FileDiff \u6A21\u5757\u7C7B\u7531 officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\u5E76\u6302\u5728\u5143\u7D20\u4E0A\uFF0C\u672C\u5305\u4E0D\u518D\u6709\u4E00\u884C\u515C\u5E95\u3002\n   \u26A0\uFE0F 2026-10-23 \u8D77\u4E0D\u518D\u6709\u5B98\u65B9\u7C7B\u515C\u5E95\uFF1A\u955C\u50CF\u5B98\u65B9\u7EC4\u4EF6\u7684\u5143\u7D20\u4E00\u5F8B\u6302\u5B98\u65B9 CSS-module \u7C7B\u540D\n   \uFF08officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\uFF0C\u53D6\u4E0D\u5230 = \u7A7A\u7C7B\u3001\u88F8\u7ED3\u6784\u4E0D\u767D\u5C4F\uFF09\u2014\u2014\u672C\u5305\u53EA\u8DD1 DSH \u5BBF\u4E3B\u3001\u5B98\u65B9\u6837\u5F0F\u5FC5\u5728\u573A\uFF0C\n   \u81EA\u7ED8\u4E00\u4E00\u5BF9\u5E94\u662F\u6B7B\u4EE3\u7801\u3002\u8981\u6539\u5B98\u65B9\u89C2\u611F\u8D70 token \u8986\u76D6 / \u53CC\u7C7B\u540D\u94A9\u5B50\uFF08\u89C1 ChatView.ts \u5934\u6CE8\uFF09\uFF0C\u522B\u5728\u8FD9\u52A0\u515C\u5E95\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\u3002\n   \u5916\u58F3\uFF08\u906E\u7F69 / \u9762\u677F / \u5934\u90E8 / \u5173\u95ED\u94AE\uFF09= \u6838\u5FC3 Modal\uFF08size lg\uFF09\u3002 */\n/* \u4F1A\u8BDD\u533A = \u666E\u901A\u7EB5\u5411\u6D41\uFF1A\u4E0D\u8BBE\u9AD8\u5EA6\u3001\u4E0D\u81EA\u5DF1\u6EDA\uFF08\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3 Modal body\uFF0C\u7528\u6237 2026-10-22 \u53E3\u5F84\uFF09\u3002 */\n.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}\n\n/* \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\u65F6\u7684\u53EF\u89C1\u63A2\u9488\uFF08\u6302\u5728\u5934\u90E8\u526F\u6807\u9898\u884C\uFF0C\u4E0D\u5360\u6B63\u6587\uFF09\u3002 */\n.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning)}\n\n/* \u5934\u90E8\u5F52\u6863\u6807\u8BC6\uFF08\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\uFF09\u3002 */\n.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}\n\n/* \u5185\u8DDD\u4E0E\u6EDA\u52A8\u5168\u90E8\u8BA9\u7ED9\u6838\u5FC3 Modal body \u21D2 \u8FD9\u91CC\u628A\u5B98\u65B9 ChatView.frame / scroll \u7684\u5185\u8DDD\u3001\n   overflow\u3001\u9AD8\u5EA6\u4E00\u5F8B\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\u3002\n   \u26A0\uFE0F \u5FC5\u987B\u540C\u65F6\u628A flex \u6536\u6389\uFF1A\u5B98\u65B9 scroll \u662F flex:1\uFF08basis=0\uFF09\uFF0C\u5728**\u81EA\u52A8\u9AD8**\u7684\u5BB9\u5668\u91CC\u4F1A\u628A\n   \u4F1A\u8BDD\u533A\u538B\u6210 0 \u9AD8 \u2014\u2014 \u8FD9\u6B63\u662F\u300C\u5185\u5BB9\u81EA\u7BA1\u9AD8\u5EA6\u300D\u7684\u8001\u6BDB\u75C5\uFF0C\u522B\u518D\u653E\u56DE\u6765\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}\n\n/* \u5B98\u65B9\u7EC4\u4EF6\u62FF --dsw-alias-bg-base \u505A sticky \u906E\u6321\u5E95\uFF08\u601D\u8003\u884C\u5C55\u5F00\u5934\u7B49\uFF09\uFF0C\u53D6\u503C\u662F\u5BBF\u4E3B app\n   \u5168\u5C40\u57FA\u5E95\u8272\uFF0C\u4E0E\u5F39\u7A97\u9762\u677F\u5E95\u4E0D\u540C\u5C42 \u21D2 \u4F1A\u8BDD\u533A\u5185\u6539\u6307\u5411\u5F39\u7A97\u9762\u677F\u5E95\uFF08\u80CC\u666F\u4FDD\u7559\u3001\u989C\u8272\u8D34\u5408\uFF09\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{--dsw-alias-bg-base:var(--dshpc-surface-1);}\n\n.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}\n\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9AD8\u5EA6\u7531\u5185\u5BB9\u51B3\u5B9A\uFF08\u6491\u5F00\u7531 Modal body \u6EDA\uFF09\u3002 */\n.dshpc-sv-chat{flex:none;min-height:0;}\n\n\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);border:1px dashed var(--dshpc-border);border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n\n/* \u5DE5\u5177\u5361\u6839\uFF08SessionViewModal legacy \u515C\u5E95\u6E32\u67D3\u76F4\u63A5\u7528\uFF1B\u6B63\u5E38 keyed \u8DEF\u5F84\u4E00\u5F8B\u6302\u5B98\u65B9 ToolRow \u7C7B\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);padding:2px 8px;}\n\n\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger);word-break:break-word;}\n\n.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}\n\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}\n\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg);background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px;}\n\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);padding-bottom:10px;white-space:nowrap;}";
+var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA\u7ED8\u6837\u5F0F\uFF1A\u53EA\u88C5\u672C\u5305\u81EA\u5DF1\u7684\u7EC4\u4EF6\uFF08\u6682\u5B58\u8F93\u5165\u533A / fork / \u63A2\u9488\u7B49\uFF09\n   + \u4E24\u4E2A\u7A33\u5B9A\u94A9\u5B50\u7C7B\uFF08dshpc-sv-frame / dshpc-sv-scroll\uFF09\u3002\n   \u5DF2\u5220\uFF1AChangedFiles \u5361\u4E0E FileDiff \u7684\u5168\u90E8\u81EA\u7ED8\u89C4\u5219\uFF082026-10-24\uFF09\u2014\u2014\u5B98\u65B9 ChangedFiles /\n   FileDiff \u6A21\u5757\u7C7B\u7531 officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\u5E76\u6302\u5728\u5143\u7D20\u4E0A\uFF0C\u672C\u5305\u4E0D\u518D\u6709\u4E00\u884C\u515C\u5E95\u3002\n   \u26A0\uFE0F 2026-10-23 \u8D77\u4E0D\u518D\u6709\u5B98\u65B9\u7C7B\u515C\u5E95\uFF1A\u955C\u50CF\u5B98\u65B9\u7EC4\u4EF6\u7684\u5143\u7D20\u4E00\u5F8B\u6302\u5B98\u65B9 CSS-module \u7C7B\u540D\n   \uFF08officialClass() \u8FD0\u884C\u65F6\u53D1\u73B0\uFF0C\u53D6\u4E0D\u5230 = \u7A7A\u7C7B\u3001\u88F8\u7ED3\u6784\u4E0D\u767D\u5C4F\uFF09\u2014\u2014\u672C\u5305\u53EA\u8DD1 DSH \u5BBF\u4E3B\u3001\u5B98\u65B9\u6837\u5F0F\u5FC5\u5728\u573A\uFF0C\n   \u81EA\u7ED8\u4E00\u4E00\u5BF9\u5E94\u662F\u6B7B\u4EE3\u7801\u3002\u8981\u6539\u5B98\u65B9\u89C2\u611F\u8D70 token \u8986\u76D6 / \u53CC\u7C7B\u540D\u94A9\u5B50\uFF08\u89C1 ChatView.ts \u5934\u6CE8\uFF09\uFF0C\u522B\u5728\u8FD9\u52A0\u515C\u5E95\u3002\n   \u7C7B\u540D\u56FA\u5B9A dshpc-sv-*\uFF1B\u989C\u8272\u4E00\u5F8B\u8D70 --dshpc-* token\uFF08\u660E\u6697\u81EA\u9002\u5E94\uFF09\u3002\n   \u5916\u58F3\uFF08\u906E\u7F69 / \u9762\u677F / \u5934\u90E8 / \u5173\u95ED\u94AE\uFF09= \u6838\u5FC3 Modal\uFF08size lg\uFF09\u3002 */\n/* \u4F1A\u8BDD\u533A = \u666E\u901A\u7EB5\u5411\u6D41\uFF1A\u4E0D\u8BBE\u9AD8\u5EA6\u3001\u4E0D\u81EA\u5DF1\u6EDA\uFF08\u6EDA\u52A8\u4E0E\u5185\u8DDD\u5F52\u6838\u5FC3 Modal body\uFF0C\u7528\u6237 2026-10-22 \u53E3\u5F84\uFF09\u3002 */\n.dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}\n\n/* \u6B63\u6587\u4E24\u7AEF\u63D2\u69FD\uFF1A\u53EA\u7ED9\u5E03\u5C40\uFF08\u5BBD\u5EA6\u4E0D\u88AB\u5185\u5BB9\u6491\u7834\uFF09\uFF0C\u80CC\u666F / \u8FB9\u6846 / \u5706\u89D2 / \u9634\u5F71\u5F52\u8C03\u7528\u65B9\u81EA\u5DF1\u3002\n   \u4E0D\u4F20\u65F6\u4E0D\u6E32\u67D3\u5143\u7D20 \u21D2 \u4E0D\u4F1A\u591A\u51FA\u4E00\u4E2A 10px gap\u3002\n   \u9876\u7AEF\u69FD**\u81EA\u5E26\u56FA\u5B9A\u4E0B\u8FB9\u8DDD**\uFF1A\u76F8\u90BB\u9879\u81EA\u5DF1\u7684 margin \u5404\u4E0D\u76F8\u540C\uFF08turn-trigger / \u7528\u6237\u6C14\u6CE1 / \u63D0\u793A\u6761\uFF09\uFF0C\n   \u9760\u5B83\u7B97\u95F4\u8DDD\u4F1A\u6F02\uFF1B\u8FD9\u91CC\u4E00\u6761\u89C4\u5219\u5B9A\u6B7B\uFF0C\u8981\u8C03\u53EA\u52A8\u8FD9\u4E00\u4E2A\u503C\u3002\n   \u5E95\u7AEF\u69FD\u5728 TurnTailNodeView \u7684 tailSlot \u91CC\uFF0C\u4E0A\u4E0B\u95F4\u8DDD\u7531\u8BE5 root \u7684 gap \u8D1F\u8D23\u3002 */\n.dshpc-sv-body-header,.dshpc-sv-body-footer{min-width:0}\n\n.dshpc-sv-body-header{margin-bottom:var(--dshpc-space-3)}\n\n/* \u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\u65F6\u7684\u53EF\u89C1\u63A2\u9488\uFF08\u6302\u5728\u5934\u90E8\u526F\u6807\u9898\u884C\uFF0C\u4E0D\u5360\u6B63\u6587\uFF09\u3002 */\n.dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning)}\n\n/* \u5934\u90E8\u5F52\u6863\u6807\u8BC6\uFF08\u5B98\u65B9\u5F52\u6863\u56FE\u6807 + \u300C\u5DF2\u5F52\u6863\u300D\uFF09\u3002 */\n.dshpc-sv-archived{display:inline-flex;align-items:center;gap:4px;font-size:var(--dshpc-font-xs);font-weight:400;color:var(--dshpc-fg-3)}\n\n/* \u5185\u8DDD\u4E0E\u6EDA\u52A8\u5168\u90E8\u8BA9\u7ED9\u6838\u5FC3 Modal body \u21D2 \u8FD9\u91CC\u628A\u5B98\u65B9 ChatView.frame / scroll \u7684\u5185\u8DDD\u3001\n   overflow\u3001\u9AD8\u5EA6\u4E00\u5F8B\u5F52\u96F6\uFF08\u53CC\u7C7B\u540D 0,2,0 \u538B\u8FC7 CSS module\uFF0C\u4E0D\u9760\u6CE8\u5165\u987A\u5E8F\uFF09\u3002\n   \u26A0\uFE0F \u5FC5\u987B\u540C\u65F6\u628A flex \u6536\u6389\uFF1A\u5B98\u65B9 scroll \u662F flex:1\uFF08basis=0\uFF09\uFF0C\u5728**\u81EA\u52A8\u9AD8**\u7684\u5BB9\u5668\u91CC\u4F1A\u628A\n   \u4F1A\u8BDD\u533A\u538B\u6210 0 \u9AD8 \u2014\u2014 \u8FD9\u6B63\u662F\u300C\u5185\u5BB9\u81EA\u7BA1\u9AD8\u5EA6\u300D\u7684\u8001\u6BDB\u75C5\uFF0C\u522B\u518D\u653E\u56DE\u6765\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{padding-top:0;padding-bottom:0;}\n\n/* \u5B98\u65B9\u7EC4\u4EF6\u62FF --dsw-alias-bg-base \u505A sticky \u906E\u6321\u5E95\uFF08\u601D\u8003\u884C\u5C55\u5F00\u5934\u7B49\uFF09\uFF0C\u53D6\u503C\u662F\u5BBF\u4E3B app\n   \u5168\u5C40\u57FA\u5E95\u8272\uFF0C\u4E0E\u5F39\u7A97\u9762\u677F\u5E95\u4E0D\u540C\u5C42 \u21D2 \u4F1A\u8BDD\u533A\u5185\u6539\u6307\u5411\u5F39\u7A97\u9762\u677F\u5E95\uFF08\u80CC\u666F\u4FDD\u7559\u3001\u989C\u8272\u8D34\u5408\uFF09\u3002 */\n.dshpc-sv-frame.dshpc-sv-frame{--dsw-alias-bg-base:var(--dshpc-surface-1);}\n\n.dshpc-sv-scroll.dshpc-sv-scroll{padding:0;overflow:visible;height:auto;max-height:none;flex:none;}\n\n/* \u4F1A\u8BDD\u533A\u4FDD\u5E95\uFF1A\u9AD8\u5EA6\u7531\u5185\u5BB9\u51B3\u5B9A\uFF08\u6491\u5F00\u7531 Modal body \u6EDA\uFF09\u3002 */\n.dshpc-sv-chat{flex:none;min-height:0;}\n\n\n.dshpc-sv-assistant{align-self:stretch;font-size:var(--dshpc-font-lg);line-height:1.7;word-break:break-word;}\n\n.dshpc-sv-image{align-self:flex-start;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);border:1px dashed var(--dshpc-border);border-radius:var(--dshpc-radius-sm);padding:4px 10px;}\n\n/* \u5DE5\u5177\u5361\u6839\uFF08SessionViewModal legacy \u515C\u5E95\u6E32\u67D3\u76F4\u63A5\u7528\uFF1B\u6B63\u5E38 keyed \u8DEF\u5F84\u4E00\u5F8B\u6302\u5B98\u65B9 ToolRow \u7C7B\uFF09\u3002 */\n.dshpc-sv-tool{flex-direction:column;display:flex;}\n\n.dshpc-sv-notice{align-self:center;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3);padding:2px 8px;}\n\n\n.dshpc-sv-forkerr{margin:0;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-danger);word-break:break-word;}\n\n.dshpc-sv-forktext{margin:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);}\n\n/* \u2500\u2500 \u6682\u5B58\u8F93\u5165\u533A\uFF08\u671F4\uFF1A\u6253\u5B57 \u2192 \u786E\u5B9A \u2192 fork \u5E26\u8BDD\u8DF3\u5B98\u65B9\u89C6\u56FE\uFF09\u2500\u2500 */\n.dshpc-sv-composer{flex:1;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;}\n\n.dshpc-sv-composer textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);color:var(--dshpc-fg);background:var(--dshpc-surface-2);border:1px solid var(--dshpc-border);border-radius:var(--dshpc-radius-md);padding:8px 12px;min-height:40px;max-height:120px;}\n\n.dshpc-sv-composer textarea:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-1px;}\n\n.dshpc-sv-composer-hint{flex:none;font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);padding-bottom:10px;white-space:nowrap;}";
 
 // dist/adv/session/mirror/ChatView.js
 function ChatViewFrame(props) {
@@ -60909,7 +60911,7 @@ function presentFiles(root) {
     return [];
   }
 }
-function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, changesSeq, sessionId, onOpenReview, tailFacts, loadImage) {
+function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, changesSeq, sessionId, onOpenReview, tailFacts, loadImage, footerSlot, footerKey) {
   switch (node.kind) {
     case "turn-trigger":
       return (0, import_react85.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
@@ -60925,9 +60927,9 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const atLastTail = turn !== void 0 && lastTailTurn !== void 0 && turn === lastTailTurn;
       const showGrid = deliverFiles !== void 0 && deliverFiles.length > 0 && atLastTail;
       const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react85.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t: t4 }) : null;
-      const tailSlot = changesCard === null && !showGrid ? null : (0, import_react85.createElement)(import_react85.Fragment, null, changesCard, showGrid ? (0, import_react85.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null);
-      const tail = data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react85.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, facts: tailFacts, t: t4 });
-      return tail;
+      const atFooter = footerKey !== void 0 && node.key === footerKey;
+      const tailSlot = changesCard === null && !showGrid && !atFooter ? null : (0, import_react85.createElement)(import_react85.Fragment, null, changesCard, showGrid ? (0, import_react85.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null, atFooter ? footerSlot : null);
+      return data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react85.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, facts: tailFacts, t: t4 });
     }
     case "assistant-step": {
       const nodeData = dataOf(node);
@@ -61318,10 +61320,10 @@ function SessionViewModal(props) {
   const isArchived = (0, import_react85.useSyncExternalStore)(workspaceList.subscribe, archivedNow, NOT_ARCHIVED);
   const subscribe = (0, import_react85.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
   const getSnapshot = (0, import_react85.useMemo)(() => () => view.target.getSnapshot(), [view]);
-  const chat = (0, import_react85.useSyncExternalStore)(subscribe, getSnapshot);
+  const chat = (0, import_react85.useSyncExternalStore)(subscribe, getSnapshot, getSnapshot);
   const sessionSub = (0, import_react85.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
   const sessionGet = (0, import_react85.useMemo)(() => () => view.session.getSnapshot(), [view]);
-  const sessionSnap = (0, import_react85.useSyncExternalStore)(sessionSub, sessionGet);
+  const sessionSnap = (0, import_react85.useSyncExternalStore)(sessionSub, sessionGet, sessionGet);
   const inboxSub = (0, import_react85.useMemo)(() => (onChange) => view.inbox.subscribe(onChange), [view]);
   const inboxGet = (0, import_react85.useMemo)(() => () => view.inbox.getSnapshot(), [view]);
   const inboxSnap = (0, import_react85.useSyncExternalStore)(inboxSub, inboxGet, NO_INBOX);
@@ -61569,7 +61571,19 @@ function SessionViewModal(props) {
     console.log("[preview] turnsDetail", turnsDetail);
   }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store]);
   const tailFacts = (0, import_react85.useMemo)(() => keyed && store !== void 0 ? buildTurnTailFacts({ order, store, lastTurn: lastTailTurn }) : void 0, [keyed, order, store, lastTailTurn]);
-  const renderNode = (0, import_react85.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage]);
+  const footerAnchorKey = (0, import_react85.useMemo)(() => {
+    if (!keyed || store === void 0)
+      return void 0;
+    const lastKey = order[order.length - 1];
+    const last2 = lastKey === void 0 ? void 0 : store.get(lastKey);
+    if (last2?.kind !== "turn-tail")
+      return void 0;
+    const closing4 = last2.data?.closing;
+    return closing4 === null || closing4 === void 0 ? void 0 : lastKey;
+  }, [keyed, order, store]);
+  const bodyHeaderRow = props.bodyHeader === void 0 ? null : (0, import_react85.createElement)("div", { key: "bodyHeader", className: "dshpc-sv-body-header" }, props.bodyHeader);
+  const bodyFooterRow = props.bodyFooter === void 0 ? null : (0, import_react85.createElement)("div", { key: "bodyFooter", className: "dshpc-sv-body-footer" }, props.bodyFooter);
+  const renderNode = (0, import_react85.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey]);
   const isTurnClosed = (0, import_react85.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
   const groupedView = (0, import_react85.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed) : void 0, [keyed, order, store, isTurnClosed]);
   const runningStartTime = (0, import_react85.useMemo)(() => {
@@ -61606,55 +61620,64 @@ function SessionViewModal(props) {
   const showLoadOlder = sessionSnap?.hasMore !== false;
   const runningRow = sessionSnap?.running !== true ? null : (0, import_react85.createElement)(RunningStatusMirror, { key: "running", startTime: runningStartTime, t: tt });
   const body = rendered.length === 0 && pendingRows.length === 0 ? [
+    bodyHeaderRow,
     // 官方三态各走各的类：error = openError（错误色），loading / 空 = hint。
     openState === "error" ? (0, import_react85.createElement)(ChatOpenError, { key: "hint", text: tt("sessionFailed") }) : (0, import_react85.createElement)(ChatHint, {
       key: "hint",
       text: openState === "loading" || openState === "cold" ? tt("sessionLoading") : tt("sessionEmpty")
     }),
-    runningRow
+    runningRow,
+    // 已挂在最后一条 tail 上的话这里不再画（否则同一个槽出现两次）。
+    footerAnchorKey === void 0 ? bodyFooterRow : null
   ] : [
+    bodyHeaderRow,
     showLoadOlder ? (0, import_react85.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
       view.loadOlder();
     } }) : null,
     ...rendered,
     ...pendingRows,
-    runningRow
+    runningRow,
+    footerAnchorKey === void 0 ? bodyFooterRow : null
   ];
   const flowChildren = Array.isArray(body) ? body : [body];
+  const customHeader = props.header !== void 0;
+  const archivedBadge = isArchived ? (0, import_react85.createElement)("span", { className: "dshpc-sv-archived", title: tt("sessionArchived") }, (0, import_react85.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0;
+  const continueAction = showContinue ? (0, import_react85.createElement)(Button, {
+    variant: "outline",
+    size: "sm",
+    disabled: forking,
+    title: tt("continueBranch"),
+    icon: isArchived ? (0, import_react85.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react85.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
+    onClick: () => {
+      if (archivedNow()) {
+        setForkErr(null);
+        setForkTarget({});
+      } else if (openHostSession !== void 0) {
+        onClose();
+        openHostSession(sessionId);
+      }
+    }
+  }, tt("continueBranch")) : void 0;
+  const headActions = continueAction === void 0 && props.headerActions === void 0 && !(customHeader && archivedBadge !== void 0) ? void 0 : (0, import_react85.createElement)(import_react85.Fragment, null, customHeader ? archivedBadge : null, props.headerActions, continueAction);
   return (0, import_react85.createElement)(
     import_react85.Fragment,
     null,
     (0, import_react85.createElement)(Modal, {
       size: "lg",
-      // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
-      // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
-      title: heading2 ?? tt("sessionHeading"),
-      subtitle: (0, import_react85.createElement)(
+      // 二级：整块标题区交给调用方（含 sessionId 行）；一级：只换标题行，副标题仍由核心画。
+      // 会话 id 是**标识**，放标题下方副标题行，不占正文（用户 2026-10-22：一串 MD5 不该出现在正文里）。
+      header: props.header,
+      title: customHeader ? void 0 : props.title ?? heading2 ?? tt("sessionHeading"),
+      subtitle: customHeader ? void 0 : (0, import_react85.createElement)(
         import_react85.Fragment,
         null,
         (0, import_react85.createElement)("span", null, sessionId),
         // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
         officialCount === 0 ? (0, import_react85.createElement)("span", { className: "dshpc-sv-probe" }, " \u26A0 ", tt("sessionProbeStyle")) : null
       ),
-      // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块。
-      headerExtra: isArchived ? (0, import_react85.createElement)("span", { className: "dshpc-sv-archived", title: tt("sessionArchived") }, (0, import_react85.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0,
-      // 「继续对话」：已归档 = 开分支图标 + 确认框；未归档 = 会话图标直跳官方会话页。
-      headerActions: showContinue ? (0, import_react85.createElement)(Button, {
-        variant: "outline",
-        size: "sm",
-        disabled: forking,
-        title: tt("continueBranch"),
-        icon: isArchived ? (0, import_react85.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react85.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
-        onClick: () => {
-          if (archivedNow()) {
-            setForkErr(null);
-            setForkTarget({});
-          } else if (openHostSession !== void 0) {
-            onClose();
-            openHostSession(sessionId);
-          }
-        }
-      }, tt("continueBranch")) : void 0,
+      // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块；自定义标题区时改挂动作区最前。
+      headerExtra: customHeader ? void 0 : archivedBadge,
+      headerActions: headActions,
       onClose,
       translate: tt,
       // 底部暂存输入框走 footer（不随会话区滚动）：打字 → 确定 → onContinue 带话开分支跳官方视图。
@@ -62142,6 +62165,10 @@ var DICT2 = {
     sessionListEmpty: "\u5BBF\u4E3B\u5F53\u524D\u6CA1\u6709\u53EF\u663E\u793A\u7684\u4F1A\u8BDD",
     sessionListRunning: "\u8FD0\u884C\u4E2D",
     sessionListArchived: "\u5DF2\u5F52\u6863",
+    sessionSlotTitle: "\u63D2\u69FD\u793A\u4F8B",
+    sessionSlotAction: "\u793A\u4F8B\u52A8\u4F5C",
+    sessionSlotHeader: "\u9876\u7AEF\u69FD\uFF1A\u8C03\u7528\u65B9\u81EA\u5DF1\u7684\u5185\u5BB9\uFF08\u968F\u4F1A\u8BDD\u6EDA\u52A8\uFF09",
+    sessionSlotFooter: "\u5E95\u7AEF\u69FD\uFF1A\u672C\u6B21\u4F1A\u8BDD\u7684\u4EA7\u51FA\u6C47\u603B",
     dateHint: "\u89E3\u6790\u5931\u8D25\u7ED9\u515C\u5E95\uFF0C\u4E0D\u629B\u9519\u3001\u4E0D\u7F16\u9020",
     numberHint: "formatBytes 1024 \u8FDB\u5236\uFF1BformatCount \u5343\u5206\u4F4D",
     roadmapHint: "\u4E0B\u9762\u5217\u7684\u662F\u660E\u786E\u4E0D\u63D0\u4F9B\u7684\u80FD\u529B",
@@ -62402,6 +62429,10 @@ var DICT2 = {
     sessionListEmpty: "The host has no visible sessions right now",
     sessionListRunning: "Running",
     sessionListArchived: "Archived",
+    sessionSlotTitle: "slot demo",
+    sessionSlotAction: "Demo action",
+    sessionSlotHeader: "Top slot: your own content (scrolls with the session)",
+    sessionSlotFooter: "Bottom slot: summary of this session",
     dateHint: "Falls back instead of throwing or inventing",
     numberHint: "formatBytes in 1024; formatCount with separators",
     roadmapHint: "What is deliberately not provided",
@@ -63074,6 +63105,10 @@ var docData = {
         "en": "The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input\u2019s confirm goes through `onContinue` (fork + first turn + navigate)."
       },
       {
+        "zh": "**\u5185\u5BB9\u63D2\u69FD**\uFF08\u90FD\u53EF\u9009\uFF0C\u90FD\u662F `ReactNode`\uFF0C\u7F3A\u7701\u4E0D\u6E32\u67D3 \u2014\u2014 DOM \u4E0E\u4E0D\u4F20\u65F6\u9010\u5B57\u4E00\u81F4\uFF09\uFF1A`title` \u6362\u6807\u9898\u884C\uFF08sessionId \u526F\u6807\u9898\u884C\u4ECD\u5728\uFF09\uFF1B`header` \u6574\u5757\u6362\u5DE6\u4FA7\u6807\u9898\u533A\uFF08\u8FDE sessionId \u884C\u4E00\u8D77\uFF0C\u5F52\u6863\u5FBD\u6807\u6539\u6302\u52A8\u4F5C\u533A\u6700\u524D\uFF09\uFF1B`headerActions` \u8FFD\u52A0\u5728\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D**\u5DE6\u8FB9**\uFF08\u7EE7\u7EED\u5BF9\u8BDD\u4E0E \u2715 \u6052\u5C45\u53F3\uFF09\uFF1B`bodyHeader` \u843D\u5728\u4F1A\u8BDD\u6EDA\u52A8\u5BB9\u5668\u5185\u6700\u9876\uFF08\u81EA\u5E26\u56FA\u5B9A\u4E0B\u8FB9\u8DDD `--dshpc-space-3`\uFF0C\u4E0D\u8DDF\u968F\u76F8\u90BB\u9879\u7684 margin\uFF09\uFF1B`bodyFooter` \u843D\u5728\u6700\u540E\u4E00\u6761\u56DE\u590D\u4E0B\u65B9\u3001\u4EA4\u4ED8\u6587\u4EF6 / \u53D8\u66F4\u5361\u4E4B\u540E\u3001\u590D\u5236 / \u5206\u652F / \u7528\u91CF\u64CD\u4F5C\u884C\u4E4B\u4E0A\uFF08\u672B\u5C3E\u6CA1\u6709\u56DE\u590D\u65F6\u9000\u56DE\u6D41\u7684\u672B\u5C3E\uFF09\u3002\u4E24\u4E2A\u5185\u5BB9\u69FD\u90FD\u968F\u4F1A\u8BDD\u4E00\u8D77\u6EDA\uFF0C\u52A0\u8F7D\u4E2D / \u7A7A / \u51FA\u9519 / \u6B63\u5E38\u56DB\u6001\u90FD\u6E32\u67D3\u3002\u69FD\u5185\u5BB9\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u6E32\u67D3\uFF0C\u6838\u5FC3\u4E0D\u53D6\u6570\u3001\u4E0D\u505A\u6570\u636E\u6CE8\u5165\uFF1B\u5F39\u7A97\u4E0E\u8C03\u7528\u65B9\u5728\u540C\u4E00\u6587\u6863\u5185\uFF0C\u69FD\u91CC\u76F4\u63A5\u7528 `--dshpc-*` token \u4E0E\u6838\u5FC3\u6837\u5F0F\u5373\u53EF\u751F\u6548\u3002\u6807\u9898\u662F\u4E00\u6574\u5757 `ReactNode`\uFF0C\u653E\u94FE\u63A5 / \u6807\u7B7E / \u6309\u94AE\u90FD\u884C\uFF08\u70B9\u51FB\u4E0D\u4F1A\u5192\u6CE1\u5173\u7A97\uFF09\uFF1B\u6587\u5B57\u4E0E\u5FBD\u6807\u6DF7\u6392\u65F6\u7528 `inline-flex` + `align-items:center` \u5305\u4E00\u5C42\uFF0C\u5426\u5219\u5FBD\u6807\u4F1A\u8D34\u57FA\u7EBF\u663E\u5F97\u4E0B\u6C89\u3002",
+        "en": '**Content slots** (all optional `ReactNode`s; absent means nothing is rendered \u2014 the DOM stays byte-identical): `title` replaces the title row (the sessionId subtitle stays); `header` replaces the whole left title area (including the sessionId row, moving the archived badge to the front of the header actions); `headerActions` is appended after "Continue" and before the close button; `bodyHeader` / `bodyFooter` sit at the very top / bottom inside the session scroller, scroll with the session, and render in all four states (loading / empty / error / normal). Slot content belongs to the caller \u2014 core fetches nothing and injects no data; the dialog shares the document, so `--dshpc-*` tokens and core styles just work inside a slot.'
+      },
+      {
         "zh": "\u6587\u4EF6\u51FA\u53E3\u53EA\u6709\u4E00\u4E2A\uFF1A\u5DE5\u5177\u5361\u8DEF\u5F84\u3001\u884C\u5185\u5F15\u7528\u3001\u4EA4\u4ED8\u5361\u90FD\u8D70 `onOpenFile`\uFF1B\u4E0D\u4F20\u5219\u94FE\u63A5\u964D\u7EA7\u4E3A\u7EAF\u6587\u672C\uFF08\u53EF\u4EE5\u70B9\u4F46\u6CA1\u6709\u51FA\u53E3\uFF0C\u4E0D\u662F\u574F\u4E86\uFF09\u3002\u81EA\u5DF1\u5DF2\u6709\u9884\u89C8\u9762\u7684\uFF0C\u5728\u56DE\u8C03\u91CC\u8C03\u4F60\u81EA\u5DF1\u7684\uFF08\u6838\u5FC3\u4E00\u4E2A DOM \u90FD\u4E0D\u78B0\uFF09\uFF1B\u6CA1\u6709\u7684\uFF0C\u4E00\u884C\u63A5\u4E0A\u6838\u5FC3\u81EA\u5E26\u7684\u53F3\u4FA7\u5206\u680F\uFF1A`onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })`\u2014\u2014\u843D\u70B9\u7ED9\u5143\u7D20\u6216\u9009\u62E9\u5668\u90FD\u884C\uFF0C\u5F39\u7A97\u4E0D\u9700\u8981\u4EFB\u4F55\u906E\u7F69\u53C2\u6570\u3002",
         "en": "There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit \u2014 not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core\u2019s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })` \u2014 the mount takes an element or a selector, and the dialog needs no mask props."
       },
@@ -63181,13 +63216,63 @@ var docData = {
             }
           },
           {
-            "name": "heading",
-            "type": "string",
+            "name": "title",
+            "type": "ReactNode",
             "def": "\u300C\u4F1A\u8BDD\u9884\u89C8\u300D",
             "required": "\u5426",
             "desc": {
-              "zh": "\u5F39\u7A97\u6807\u9898\uFF0C\u901A\u5E38\u4F20\u5BBF\u4E3B sessions.list \u7684 displayTitle\uFF1B\u4F1A\u8BDD id \u663E\u793A\u5728\u6807\u9898\u4E0B\u65B9\u526F\u6807\u9898\u884C\uFF08\u7B49\u5BBD\u5C0F\u5B57\uFF09",
-              "en": "Dialog title, usually the displayTitle from the host sessions.list; the session id sits on the monospace subtitle line below it"
+              "zh": "\u6807\u9898\u884C\uFF1B\u901A\u5E38\u4F20\u5BBF\u4E3B sessions.list \u7684 displayTitle\uFF0C\u4E5F\u53EF\u653E\u4EFB\u610F\u8282\u70B9\uFF08\u540E\u9762\u8DDF\u6807\u7B7E / \u6309\u94AE\uFF09\u3002\u4F1A\u8BDD id \u4ECD\u5728\u4E0B\u65B9\u526F\u6807\u9898\u884C\uFF08\u7B49\u5BBD\u5C0F\u5B57\uFF09\uFF0C\u4E0D\u53D7\u5F71\u54CD",
+              "en": "Title row; usually the displayTitle from the host sessions.list, or any node (tags / buttons after it). The session id stays on the monospace subtitle line below, unaffected"
+            }
+          },
+          {
+            "name": "heading",
+            "type": "string",
+            "def": "\u2014",
+            "required": "\u5426",
+            "desc": {
+              "zh": "0.34 \u7684\u65E7\u540D\uFF0C\u7B49\u4EF7 `title`\uFF08\u53EA\u6536\u5B57\u7B26\u4E32\uFF09\uFF1B\u4E24\u8005\u90FD\u7ED9\u4EE5 `title` \u4E3A\u51C6",
+              "en": "Legacy name from 0.34, equal to `title` (string only); `title` wins when both are given"
+            }
+          },
+          {
+            "name": "header",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "required": "\u5426",
+            "desc": {
+              "zh": "\u6574\u5757\u66FF\u6362\u5DE6\u4FA7\u6807\u9898\u533A\uFF08\u6807\u9898\u884C + sessionId \u884C\uFF09\uFF1A\u4F20\u4E86\u5219 `title` / `heading` \u4E0D\u751F\u6548\uFF0C\u5F52\u6863\u5FBD\u6807\u6539\u6302\u5230\u53F3\u4FA7\u52A8\u4F5C\u533A\u6700\u524D\uFF1B\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u4E0E\u5173\u95ED \u2715 \u4E0D\u53D7\u5F71\u54CD",
+              "en": 'Replaces the whole left title area (title row + sessionId row): `title` / `heading` stop applying, and the archived badge moves to the front of the header actions; "Continue" and \u2715 are unaffected'
+            }
+          },
+          {
+            "name": "headerActions",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "required": "\u5426",
+            "desc": {
+              "zh": "\u5934\u90E8\u53F3\u4FA7\u8FFD\u52A0\u52A8\u4F5C\uFF1A\u6392\u5728\u6838\u5FC3\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D**\u5DE6\u8FB9**\uFF08\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u4E0E\u5173\u95ED \u2715 \u6052\u5C45\u6700\u53F3\uFF09",
+              "en": 'Extra header actions, placed to the **left** of core "Continue" (Continue and \u2715 always stay rightmost)'
+            }
+          },
+          {
+            "name": "bodyHeader",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "required": "\u5426",
+            "desc": {
+              "zh": "\u4F1A\u8BDD\u5185\u5BB9\u6700\u9876\u7AEF\uFF08\u6EDA\u52A8\u5BB9\u5668\u5185\u3001\u6240\u6709\u8282\u70B9\u4E0E\u300C\u52A0\u8F7D\u66F4\u65E9\u300D\u4E4B\u524D\uFF09\uFF0C\u81EA\u5E26\u56FA\u5B9A\u4E0B\u8FB9\u8DDD\uFF08`--dshpc-space-3`\uFF09\uFF1B\u968F\u4F1A\u8BDD\u4E00\u8D77\u6EDA\uFF0C\u52A0\u8F7D\u4E2D / \u7A7A / \u51FA\u9519 / \u6B63\u5E38\u56DB\u6001\u90FD\u6E32\u67D3",
+              "en": 'Very top of the session content (inside the scroller, before all nodes and "load earlier"), with a fixed bottom gap (`--dshpc-space-3`); scrolls with the session and renders in all four states (loading / empty / error / normal)'
+            }
+          },
+          {
+            "name": "bodyFooter",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "required": "\u5426",
+            "desc": {
+              "zh": "\u6700\u540E\u4E00\u6761\u56DE\u590D\u4E0B\u65B9\u3001\u4EA4\u4ED8\u6587\u4EF6 / \u53D8\u66F4\u5361**\u4E4B\u540E**\u3001\u590D\u5236 / \u5206\u652F / \u7528\u91CF\u64CD\u4F5C\u884C**\u4E4B\u4E0A**\uFF08\u672B\u5C3E\u6CA1\u6709\u56DE\u590D\u6216\u6CA1\u6709\u5C3E\u64CD\u4F5C\u884C\u65F6\u843D\u5728\u6D41\u7684\u672B\u5C3E\uFF09\uFF1B\u968F\u4F1A\u8BDD\u4E00\u8D77\u6EDA\uFF0C\u56DB\u6001\u90FD\u6E32\u67D3",
+              "en": "Below the last reply, after the delivered-files / changed-files cards and **above** the copy / branch / usage action row (falls to the end of the flow when there is no trailing reply or action row); scrolls with the session and renders in all four states"
             }
           },
           {
@@ -63251,7 +63336,7 @@ var docData = {
       {
         "id": "session-usage",
         "lang": "tsx",
-        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/adv/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    heading: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                    // \u6807\u9898\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u7F3A openHostSession \u624D\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    // \u5F52\u6863\u6001\u4E0D\u7528\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF08apply \u91CC connectHost \u63A5\u7EBF\u4E00\u6B21\u5373\u53EF\uFF09\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
+        "src": "import { openSessionView, openSessionReview, SessionViewModal } from 'dsh-plugin-core/adv/session'\n\n// \u5BBF\u4E3B\u670D\u52A1\u7531\u8C03\u7528\u65B9\u6CE8\u5165\uFF1Asessions \u2190 dsh-api-session-controller\u3001\n//   uiConversation \u2190 dsh-client-ui-conversation\nconst view = openSessionView(sessions, uiConversation, sessionId, 'dsh-task-reminder')\nif (view !== null) {\n  h(SessionViewModal, {\n    sessionId,\n    view,\n    title: '\u955C\u50CF\u5347\u7EA7\u65E5\u62A5',                      // \u6807\u9898\u884C\uFF0C\u7F3A\u7701\u300C\u4F1A\u8BDD\u9884\u89C8\u300D\n    // \u63D2\u69FD\uFF08\u90FD\u53EF\u9009\uFF0C\u7F3A\u7701\u4E0D\u6E32\u67D3 \u2014\u2014 DOM \u4E0E\u4E0D\u4F20\u65F6\u4E00\u81F4\uFF09\uFF1A\n    // \u6807\u9898\u884C\u52A0\u8282\u70B9\uFF0CsessionId \u884C\u4ECD\u5728\uFF1B\u6587\u5B57\u4E0E\u5FBD\u6807\u6DF7\u6392\u8981\u7528 inline-flex\uFF0C\u5426\u5219\u5FBD\u6807\u8D34\u57FA\u7EBF\u4F1A\u4E0B\u6C89\n    // title: h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },\n    //   '\u65E5\u62A5', h(Chip, { size: 'xs' }, '\u8FD0\u884C\u4E2D')),\n    // header: h(TaskHead, { taskId }),         // \u6574\u5757\u6362\u5DE6\u4FA7\u6807\u9898\u533A\uFF08\u542B sessionId \u884C\uFF1B\u5F52\u6863\u5FBD\u6807\u6539\u6302\u52A8\u4F5C\u533A\u6700\u524D\uFF09\n    // headerActions: h(Button, null, '\u5BFC\u51FA'),   // \u6392\u5728\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u5DE6\u8FB9\uFF08\u7EE7\u7EED\u5BF9\u8BDD\u4E0E \u2715 \u6052\u5C45\u53F3\uFF09\n    // bodyHeader: h(ContextBar),               // \u4F1A\u8BDD\u6EDA\u52A8\u5BB9\u5668\u5185\u6700\u9876\uFF0C\u968F\u4F1A\u8BDD\u6EDA\n    // bodyFooter: h(SessionSummary),           // \u4EA4\u4ED8\u6587\u4EF6\u4E4B\u540E\u3001\u590D\u5236/\u5206\u652F/\u7528\u91CF\u64CD\u4F5C\u884C\u4E4B\u4E0A\uFF1B\u6CA1\u56DE\u590D\u5219\u5728\u6700\u5E95\n    onClose: () => { view.dispose(); setOpen(false) },   // \u5173\u95ED\u5FC5\u987B dispose\n    // \u7EED\u804A\uFF08\u53EF\u9009\uFF09\uFF1Afork \u5F00\u5206\u652F \u2192 \u8DF3\u5B98\u65B9\u4F1A\u8BDD\u533A\uFF1B\u7F3A openHostSession \u624D\u4E0D\u6E32\u67D3\u8BE5\u5165\u53E3\n    forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),\n    openHostSession: (id) => uiWorkspace.openSession(id),\n    // \u6682\u5B58\u8F93\u5165\u6846\uFF08\u53EF\u9009\uFF09\uFF1A\u7531\u8C03\u7528\u65B9 fork + \u53D1\u9996\u8F6E + \u8DF3\u8F6C\n    onContinue: async (message) => {\n      const child = await forkSession(sessionId)\n      await hostContinue(child, message)\n      openHostSession(child)\n    },\n    // \u6587\u4EF6\u6253\u5F00\u51FA\u53E3\uFF1A\u7ED9\u4E00\u4E2A\u843D\u70B9\u5373\u53EF\uFF08\u5143\u7D20\u6216\u9009\u62E9\u5668\uFF09\uFF0C\u6838\u5FC3\u81EA\u5E26\u53F3\u4FA7\u5206\u680F\n    onOpenFile: (path, sid, opts) => openFilePreview({ mount: '#page-row', path, sessionId: sid, line: opts?.line }),\n    // \u53D8\u66F4\u6587\u4EF6\u5BA1\u9605\uFF1A\u4E00\u884C\u6253\u5F00\u90A3\u6B21\u6539\u52A8\u7684 diff\uFF08\u9762\u677F / \u5173\u95ED\u94AE\u5168\u5F52\u6838\u5FC3\uFF09\n    onOpenReview: (locator) => openSessionReview({ mount: '#page-row', locator }),\n    // \u5F52\u6863\u6001\u4E0D\u7528\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF08apply \u91CC connectHost \u63A5\u7EBF\u4E00\u6B21\u5373\u53EF\uFF09\n    t,                                          // \u53EF\u9009\uFF0C\u8986\u76D6\u6587\u6848\n  })\n}"
       },
       {
         "id": "session-data-chain",
@@ -69477,7 +69562,11 @@ const view = openRealSessionView(row.sessionId)   // retain \u2192 binding \u219
 h(SessionViewModal, {
   sessionId: row.sessionId,
   view,
-  heading: row.displayTitle,      // \u6807\u9898\u53EF\u81EA\u5B9A\u4E49\uFF1B\u4F1A\u8BDD id \u81EA\u52A8\u663E\u793A\u5728\u6807\u9898\u4E0B\u65B9\uFF08\u526F\u6807\u9898\u884C\uFF09
+  title: row.displayTitle,        // \u6807\u9898\u884C\u53EF\u81EA\u5B9A\u4E49\uFF08\u653E\u8282\u70B9\u4E5F\u884C\uFF09\uFF1B\u4F1A\u8BDD id \u81EA\u52A8\u663E\u793A\u5728\u4E0B\u65B9\u526F\u6807\u9898\u884C
+  // \u63D2\u69FD\uFF08\u53EF\u9009\uFF09\uFF1Aheader \u6574\u5757\u6362\u6807\u9898\u533A / headerActions \u8FFD\u52A0\u52A8\u4F5C / bodyHeader\xB7bodyFooter \u6B63\u6587\u4E24\u7AEF
+  headerActions: h(Button, null, '\u5BFC\u51FA'),
+  bodyHeader: h(ContextBar),      // \u4F1A\u8BDD\u6EDA\u52A8\u5BB9\u5668\u6700\u9876
+  bodyFooter: h(SessionSummary),  // \u4F1A\u8BDD\u6EDA\u52A8\u5BB9\u5668\u6700\u5E95
   // \u5F52\u6863\u6001\u4E0D\u4F20\uFF1A\u6838\u5FC3\u8BA2\u9605\u5B98\u65B9 workspaces \u5FEB\u7167\uFF0C\u5F39\u7A97\u5F00\u7740\u671F\u95F4\u5FBD\u6807\u4E0E\u300C\u7EE7\u7EED\u5BF9\u8BDD\u300D\u5B9E\u65F6\u8DDF\u968F
   onClose: () => { view.dispose(); setOpenId(null) },
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
@@ -69583,6 +69672,8 @@ function RealSessionListDemo() {
   const view = (0, import_react92.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles2 = files.workspaceFiles;
   const canOpenFile = workspaceFiles2 !== null && anchor !== null;
+  const displayTitle = openId === null ? void 0 : state.rows.find((row) => row.sessionId === openId)?.displayTitle;
+  const withSlots = openId !== null && openId === state.rows[0]?.sessionId;
   const openLinkedFile = (path, sessionId, options) => {
     console.log("[preview] openLinkedFile path=", JSON.stringify(path), "sessionId=", sessionId, "anchorSessionId=", anchor?.sessionId);
     const mount = pageRow.element;
@@ -69655,8 +69746,21 @@ function RealSessionListDemo() {
     openId !== null && view !== null ? (0, import_react92.createElement)(SessionViewModal, {
       sessionId: openId,
       view,
-      // 标题 = 会话自己的标题；归档态由核心订阅官方快照，不在这里传。
-      heading: state.rows.find((row) => row.sessionId === openId)?.displayTitle,
+      // 插槽示例只挂在列表**第一个**会话上；其它会话不传 = 与旧版默认形态一致，对比着看更直观。
+      // 标题行自定义（一级）：会话自己的标题 + 一枚标签；副标题 sessionId 仍由核心画。
+      // 混排文字与徽标要用 inline-flex + align-items:center，否则徽标会贴基线（看着往下沉）。
+      title: withSlots ? (0, import_react92.createElement)(
+        "span",
+        { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
+        displayTitle ?? "",
+        (0, import_react92.createElement)(Chip, { size: "xs", tone: "success" }, t3("sessionSlotTitle"))
+      ) : void 0,
+      heading: withSlots ? void 0 : displayTitle,
+      // 头部右侧追加动作：排在核心「继续对话」左边（继续对话与 ✕ 恒居右）。
+      headerActions: withSlots ? (0, import_react92.createElement)(Button, { variant: "outline", size: "sm" }, t3("sessionSlotAction")) : void 0,
+      // 正文顶端 / 底端插槽：都在会话滚动容器内，随会话一起滚。
+      bodyHeader: withSlots ? (0, import_react92.createElement)(Chip, { size: "sm", tone: "warning" }, t3("sessionSlotHeader")) : void 0,
+      bodyFooter: withSlots ? (0, import_react92.createElement)(Chip, { size: "sm", tone: "success" }, t3("sessionSlotFooter")) : void 0,
       onClose: () => {
         view.dispose();
         setOpenId(null);
@@ -70388,9 +70492,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.34.0"}`],
-            [t3("buildDemo"), `v${"0.34.0"}`],
-            [t3("buildStamp"), "261106-113033-561"]
+            [t3("buildCore"), `v${"0.35.0"}`],
+            [t3("buildDemo"), `v${"0.35.0"}`],
+            [t3("buildStamp"), "261106-133944-704"]
           ].map(
             ([label, value]) => (0, import_react97.createElement)(
               "tr",
@@ -70705,9 +70809,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react99.createElement)("span", null, `core v${"0.34.0"}`),
-          (0, import_react99.createElement)("span", null, `demo v${"0.34.0"}`),
-          (0, import_react99.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261106-113033-561")
+          (0, import_react99.createElement)("span", null, `core v${"0.35.0"}`),
+          (0, import_react99.createElement)("span", null, `demo v${"0.35.0"}`),
+          (0, import_react99.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261106-133944-704")
         )
       )
     ),

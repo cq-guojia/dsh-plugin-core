@@ -8,7 +8,7 @@
 //   · 新增：底部**暂存输入框**（期4 用户流程）——打字 → 确定 → onContinue(message)，
 //     由调用方完成 fork + host 侧 agent.send 起轮次 + 跳官方视图（官方能力，无歪门邪道）。
 //   · retain source 参数化在 open-session-view.ts。
-import { Fragment, createElement as h, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { Fragment, createElement as h, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { IconArchiveOutlineRegular, IconBranchOutlineRegular, IconNewChatOutlineRegular, MarkdownDelegateProvider } from '../../ui/official.js'
 import { Modal } from '../../ui/feedback/Modal.js'
 import { Button } from '../../ui/actions/Button.js'
@@ -252,6 +252,10 @@ function renderKeyedNode(
   tailFacts?: TurnTailFacts,
   /** 图片 loader（view.loadImage）；缺席 = 图片块退回「[图片]」文本。 */
   loadImage?: MessageImageLoader,
+  /** 底端插槽：挂在最后一条 tail 之前（复制 / 分支 / 用量操作行之上）。 */
+  footerSlot?: ReactNode,
+  /** 该挂到哪个节点的 key 上（最后一条带回复的 turn-tail；undefined = 不挂）。 */
+  footerKey?: string,
 ): ReturnType<typeof h> | null {
   switch (node.kind) {
     case 'turn-trigger':
@@ -278,18 +282,20 @@ function renderKeyedNode(
       const changesCard = atLastTail && changesSeq !== undefined && sessionId !== undefined
         ? h(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t })
         : null
-      const tailSlot = changesCard === null && !showGrid
+      // 底端插槽 = tailSlot 的最后一项 ⇒ 在交付文件 / 变更卡**下面**、复制/分支/用量操作行**上面**。
+      const atFooter = footerKey !== undefined && node.key === footerKey
+      const tailSlot = changesCard === null && !showGrid && !atFooter
         ? null
         : h(
             Fragment,
             null,
             changesCard,
             showGrid ? h(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t }) : null,
+            atFooter ? footerSlot : null,
           )
-      const tail = data === undefined || data.closing === null || data.closing === undefined
+      return data === undefined || data.closing === null || data.closing === undefined
         ? null
         : h(TurnTailNodeViewMirror, { data, onBranchAt, tailSlot, facts: tailFacts, t })
-      return tail
     }
     case 'assistant-step': {
       // 官方块渲染器（lib/client.js:5818-5871）：
@@ -773,8 +779,26 @@ function makeFileMentions(paths: readonly string[], open: (path: string) => void
 
 export interface SessionViewModalProps {
   t?: Translate
-  /** 弹窗标题：**会话自己的标题**（宿主 sessions.list 的 displayTitle）；缺省用「会话预览」。 */
+  /**
+   * 标题行（第一级）：核心画在标题位，下方 sessionId 副标题行与归档徽标不受影响。
+   * 想在标题后跟标签 / 按钮 / 自己的一段节点，塞进这里。
+   * 缺省 = `heading`，再缺省 =「会话预览」。
+   */
+  title?: ReactNode
+  /** @deprecated 0.34 的旧名（只收字符串），等价 `title`；两者都给时以 `title` 为准。 */
   heading?: string
+  /**
+   * 整块替换左侧标题区（第二级：标题行 + sessionId 行 + 归档徽标）。传了则 `title` / `heading` 不生效；
+   * 归档徽标改挂到右侧动作区最前（归档是数据事实，不能因为自定义标题就消失）。
+   * 右侧「继续对话」与关闭 ✕ 不受影响。
+   */
+  header?: ReactNode
+  /** 头部右侧追加动作：排在核心「继续对话」之后、关闭 ✕ 之前。 */
+  headerActions?: ReactNode
+  /** 会话内容最顶端（滚动容器内、所有节点与「加载更早」之前）；随会话一起滚。 */
+  bodyHeader?: ReactNode
+  /** 会话内容最底端（滚动容器内、最后一条内容与运行中行之后）；随会话一起滚。 */
+  bodyFooter?: ReactNode
   sessionId: string
   view: SessionViewTarget
   onClose: () => void
@@ -811,12 +835,14 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   const isArchived = useSyncExternalStore(workspaceList.subscribe, archivedNow, NOT_ARCHIVED)
   const subscribe = useMemo(() => (onChange: () => void): (() => void) => view.target.subscribe(onChange), [view])
   const getSnapshot = useMemo(() => (): ChatViewFace | undefined => view.target.getSnapshot(), [view])
-  const chat = useSyncExternalStore(subscribe, getSnapshot)
+  // 第三参 = 同一个快照函数：React 要求 SSR 必给，缺了直接抛错。这里的数据挂在 props 的 view 上
+  // （不是全局 store），服务端读同一个快照不会串数据；纯全局 store 才需要单独的空快照。
+  const chat = useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
 
   // 会话生命周期（加载态 / 向前翻页按钮），同样只读订阅。
   const sessionSub = useMemo(() => (onChange: () => void): (() => void) => view.session.subscribe(onChange), [view])
   const sessionGet = useMemo(() => (): SessionSnapshotFace => view.session.getSnapshot(), [view])
-  const sessionSnap = useSyncExternalStore(sessionSub, sessionGet)
+  const sessionSnap = useSyncExternalStore(sessionSub, sessionGet, sessionGet)
 
   // host `inbox` 投影（faceOf('inbox')）：首轮 durable 事件落盘前用户消息的权威来源，
   // 冷读 / 新打开预览时也拿得到；本地回显被 retire 后靠它继续画气泡。
@@ -1084,12 +1110,32 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   const tailFacts = useMemo(() => (keyed && store !== undefined
     ? buildTurnTailFacts({ order, store, lastTurn: lastTailTurn })
     : undefined), [keyed, order, store, lastTailTurn])
+  // 底端插槽挂点：末尾是**带回复的 turn-tail** 时挂在它之前（最后那条回复之后、复制 / 分支 /
+  // 用量操作行之上）；没有回复（closing 为空）或末尾不是 tail ⇒ 退回流的末尾。
+  const footerAnchorKey = useMemo(() => {
+    if (!keyed || store === undefined) return undefined
+    const lastKey = order[order.length - 1]
+    const last = lastKey === undefined ? undefined : store.get(lastKey)
+    if (last?.kind !== 'turn-tail') return undefined
+    const closing = (last.data as unknown as TurnTailDataFace | undefined)?.closing
+    return closing === null || closing === undefined ? undefined : lastKey
+  }, [keyed, order, store])
+  // 内容两端插槽（调用方自绘）：不传 = 不渲染元素（少一层空容器多吃一个 gap）；四态都渲染。
+  // 顶端槽的**下边距由自己的类固定**（见 session.css）：不依赖相邻项自己的 margin，
+  // 否则相邻项换一种（turn-trigger / 用户气泡 / 提示条）间距就跟着变。
+  const bodyHeaderRow = props.bodyHeader === undefined
+    ? null
+    : h('div', { key: 'bodyHeader', className: 'dshpc-sv-body-header' }, props.bodyHeader)
+  const bodyFooterRow = props.bodyFooter === undefined
+    ? null
+    : h('div', { key: 'bodyFooter', className: 'dshpc-sv-body-footer' }, props.bodyFooter)
   const renderNode = useCallback<NodeRenderer>(
     (node, turnProcess, groupPart) => renderKeyedNode(
       node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn,
       lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage,
+      bodyFooterRow, footerAnchorKey,
     ),
-    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage],
+    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey],
   )
   // 官方 grouped('chat')：把 keyed 流切成「独立条目 + 过程分组」（二级收折）。
   const isTurnClosed = useCallback((turn: number): boolean =>
@@ -1143,6 +1189,7 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
     : h(RunningStatusMirror, { key: 'running', startTime: runningStartTime, t: tt })
   const body = rendered.length === 0 && pendingRows.length === 0
     ? [
+        bodyHeaderRow,
         // 官方三态各走各的类：error = openError（错误色），loading / 空 = hint。
         openState === 'error'
           ? h(ChatOpenError, { key: 'hint', text: tt('sessionFailed') })
@@ -1151,16 +1198,52 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
               text: openState === 'loading' || openState === 'cold' ? tt('sessionLoading') : tt('sessionEmpty'),
             }),
         runningRow,
+        // 已挂在最后一条 tail 上的话这里不再画（否则同一个槽出现两次）。
+        footerAnchorKey === undefined ? bodyFooterRow : null,
       ]
     : [
+        bodyHeaderRow,
         showLoadOlder
           ? h(ChatOlderButton, { key: 'older', label: tt('sessionLoadOlder'), onClick: () => { view.loadOlder() } })
           : null,
         ...rendered,
         ...pendingRows,
         runningRow,
+        footerAnchorKey === undefined ? bodyFooterRow : null,
       ]
   const flowChildren = Array.isArray(body) ? body : [body]
+
+  // 头部两槽：标题区整块替换（`header`）与右侧动作追加（`headerActions`）。
+  // 自定义标题区时归档徽标挪到动作区最前 —— 归档是数据事实，不能因为自定义标题就消失。
+  const customHeader = props.header !== undefined
+  const archivedBadge = isArchived
+    ? h('span', { className: 'dshpc-sv-archived', title: tt('sessionArchived') },
+        h(IconArchiveOutlineRegular, { size: 12 }),
+        tt('sessionArchived'),
+      )
+    : undefined
+  // 「继续对话」：已归档 = 开分支图标 + 确认框；未归档 = 会话图标直跳官方会话页。
+  const continueAction = showContinue
+    ? h(Button, {
+        variant: 'outline',
+        size: 'sm',
+        disabled: forking,
+        title: tt('continueBranch'),
+        icon: isArchived
+          ? h(IconBranchOutlineRegular, { size: 14 })
+          : h(IconNewChatOutlineRegular, { size: 14 }),
+        onClick: () => {
+          // 官方 openForkSource 判据：动作前读权威快照（client 内存，零远端 IO），
+          // 避免渲染与快照之间的竞态把已归档会话直开。
+          if (archivedNow()) { setForkErr(null); setForkTarget({}) }
+          else if (openHostSession !== undefined) { onClose(); openHostSession(sessionId) }
+        },
+      }, tt('continueBranch'))
+    : undefined
+  // 动作区顺序（都靠右，「继续对话」与 ✕ 恒在最右）：归档徽标 → 调用方动作 → 继续对话 → ✕。
+  const headActions = continueAction === undefined && props.headerActions === undefined && !(customHeader && archivedBadge !== undefined)
+    ? undefined
+    : h(Fragment, null, customHeader ? archivedBadge : null, props.headerActions, continueAction)
 
   // 外壳 = **核心 Modal**（size lg：min(1120px,100vw-32px) × calc(100%-80px)，兄弟项目大弹窗同值）；
   // 「继续对话」与确认框按钮一律**核心 Button**，不就地自绘（用户 2026-10-22 拍板）。
@@ -1168,41 +1251,22 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   return h(Fragment, null,
     h(Modal, {
       size: 'lg',
-      // 标题 = 调用方给的人话标题（可自定义）；会话 id 是**标识**，放标题下方副标题行，不占正文
-      // （用户 2026-10-22：一串 MD5 不该出现在正文里）。
-      title: heading ?? tt('sessionHeading'),
-      subtitle: h(Fragment, null,
-        h('span', null, sessionId),
-        // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
-        officialCount === 0
-          ? h('span', { className: 'dshpc-sv-probe' }, ' ⚠ ', tt('sessionProbeStyle'))
-          : null,
-      ),
-      // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块。
-      headerExtra: isArchived
-        ? h('span', { className: 'dshpc-sv-archived', title: tt('sessionArchived') },
-            h(IconArchiveOutlineRegular, { size: 12 }),
-            tt('sessionArchived'),
-          )
-        : undefined,
-      // 「继续对话」：已归档 = 开分支图标 + 确认框；未归档 = 会话图标直跳官方会话页。
-      headerActions: showContinue
-        ? h(Button, {
-            variant: 'outline',
-            size: 'sm',
-            disabled: forking,
-            title: tt('continueBranch'),
-            icon: isArchived
-              ? h(IconBranchOutlineRegular, { size: 14 })
-              : h(IconNewChatOutlineRegular, { size: 14 }),
-            onClick: () => {
-              // 官方 openForkSource 判据：动作前读权威快照（client 内存，零远端 IO），
-              // 避免渲染与快照之间的竞态把已归档会话直开。
-              if (archivedNow()) { setForkErr(null); setForkTarget({}) }
-              else if (openHostSession !== undefined) { onClose(); openHostSession(sessionId) }
-            },
-          }, tt('continueBranch'))
-        : undefined,
+      // 二级：整块标题区交给调用方（含 sessionId 行）；一级：只换标题行，副标题仍由核心画。
+      // 会话 id 是**标识**，放标题下方副标题行，不占正文（用户 2026-10-22：一串 MD5 不该出现在正文里）。
+      header: props.header,
+      title: customHeader ? undefined : (props.title ?? heading ?? tt('sessionHeading')),
+      subtitle: customHeader
+        ? undefined
+        : h(Fragment, null,
+            h('span', null, sessionId),
+            // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
+            officialCount === 0
+              ? h('span', { className: 'dshpc-sv-probe' }, ' ⚠ ', tt('sessionProbeStyle'))
+              : null,
+          ),
+      // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块；自定义标题区时改挂动作区最前。
+      headerExtra: customHeader ? undefined : archivedBadge,
+      headerActions: headActions,
       onClose,
       translate: tt,
       // 底部暂存输入框走 footer（不随会话区滚动）：打字 → 确定 → onContinue 带话开分支跳官方视图。

@@ -30,6 +30,10 @@
 
 > EN: The snapshot is read-only, so you cannot type inside the dialog. Continuing means `forkSession` + `openHostSession`; the staging input’s confirm goes through `onContinue` (fork + first turn + navigate).
 
+**内容插槽**（都可选，都是 `ReactNode`，缺省不渲染 —— DOM 与不传时逐字一致）：`title` 换标题行（sessionId 副标题行仍在）；`header` 整块换左侧标题区（连 sessionId 行一起，归档徽标改挂动作区最前）；`headerActions` 追加在「继续对话」**左边**（继续对话与 ✕ 恒居右）；`bodyHeader` 落在会话滚动容器内最顶（自带固定下边距 `--dshpc-space-3`，不跟随相邻项的 margin）；`bodyFooter` 落在最后一条回复下方、交付文件 / 变更卡之后、复制 / 分支 / 用量操作行之上（末尾没有回复时退回流的末尾）。两个内容槽都随会话一起滚，加载中 / 空 / 出错 / 正常四态都渲染。槽内容由调用方自己渲染，核心不取数、不做数据注入；弹窗与调用方在同一文档内，槽里直接用 `--dshpc-*` token 与核心样式即可生效。标题是一整块 `ReactNode`，放链接 / 标签 / 按钮都行（点击不会冒泡关窗）；文字与徽标混排时用 `inline-flex` + `align-items:center` 包一层，否则徽标会贴基线显得下沉。
+
+> EN: **Content slots** (all optional `ReactNode`s; absent means nothing is rendered — the DOM stays byte-identical): `title` replaces the title row (the sessionId subtitle stays); `header` replaces the whole left title area (including the sessionId row, moving the archived badge to the front of the header actions); `headerActions` is appended after "Continue" and before the close button; `bodyHeader` / `bodyFooter` sit at the very top / bottom inside the session scroller, scroll with the session, and render in all four states (loading / empty / error / normal). Slot content belongs to the caller — core fetches nothing and injects no data; the dialog shares the document, so `--dshpc-*` tokens and core styles just work inside a slot.
+
 文件出口只有一个：工具卡路径、行内引用、交付卡都走 `onOpenFile`；不传则链接降级为纯文本（可以点但没有出口，不是坏了）。自己已有预览面的，在回调里调你自己的（核心一个 DOM 都不碰）；没有的，一行接上核心自带的右侧分栏：`onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })`——落点给元素或选择器都行，弹窗不需要任何遮罩参数。
 
 > EN: There is exactly one file exit: tool-card paths, inline mentions and delivered cards all go through `onOpenFile`; without it links degrade to plain text (clickable-looking but no exit — not a break). If you already own a preview surface, call yours inside the callback (core touches no DOM); otherwise wire core’s dock in one line: `onOpenFile: (path, sid) => openFilePreview({ mount: '#page-row', path, sessionId: sid })` — the mount takes an element or a selector, and the dialog needs no mask props.
@@ -56,7 +60,12 @@
 | `sessionId` | `string` | 是 | — | 要预览的会话 | The session to preview |
 | `view` | `SessionViewTarget` | 是 | — | openSessionView 的返回值 | What openSessionView returned |
 | `onClose` | `() => void` | 是 | — | 关闭回调；由调用方在里面调 view.dispose() | Close callback; the caller calls view.dispose() inside it |
-| `heading` | `string` | 否 | 「会话预览」 | 弹窗标题，通常传宿主 sessions.list 的 displayTitle；会话 id 显示在标题下方副标题行（等宽小字） | Dialog title, usually the displayTitle from the host sessions.list; the session id sits on the monospace subtitle line below it |
+| `title` | `ReactNode` | 否 | 「会话预览」 | 标题行；通常传宿主 sessions.list 的 displayTitle，也可放任意节点（后面跟标签 / 按钮）。会话 id 仍在下方副标题行（等宽小字），不受影响 | Title row; usually the displayTitle from the host sessions.list, or any node (tags / buttons after it). The session id stays on the monospace subtitle line below, unaffected |
+| `heading` | `string` | 否 | — | 0.34 的旧名，等价 `title`（只收字符串）；两者都给以 `title` 为准 | Legacy name from 0.34, equal to `title` (string only); `title` wins when both are given |
+| `header` | `ReactNode` | 否 | — | 整块替换左侧标题区（标题行 + sessionId 行）：传了则 `title` / `heading` 不生效，归档徽标改挂到右侧动作区最前；「继续对话」与关闭 ✕ 不受影响 | Replaces the whole left title area (title row + sessionId row): `title` / `heading` stop applying, and the archived badge moves to the front of the header actions; "Continue" and ✕ are unaffected |
+| `headerActions` | `ReactNode` | 否 | — | 头部右侧追加动作：排在核心「继续对话」**左边**（「继续对话」与关闭 ✕ 恒居最右） | Extra header actions, placed to the **left** of core "Continue" (Continue and ✕ always stay rightmost) |
+| `bodyHeader` | `ReactNode` | 否 | — | 会话内容最顶端（滚动容器内、所有节点与「加载更早」之前），自带固定下边距（`--dshpc-space-3`）；随会话一起滚，加载中 / 空 / 出错 / 正常四态都渲染 | Very top of the session content (inside the scroller, before all nodes and "load earlier"), with a fixed bottom gap (`--dshpc-space-3`); scrolls with the session and renders in all four states (loading / empty / error / normal) |
+| `bodyFooter` | `ReactNode` | 否 | — | 最后一条回复下方、交付文件 / 变更卡**之后**、复制 / 分支 / 用量操作行**之上**（末尾没有回复或没有尾操作行时落在流的末尾）；随会话一起滚，四态都渲染 | Below the last reply, after the delivered-files / changed-files cards and **above** the copy / branch / usage action row (falls to the end of the flow when there is no trailing reply or action row); scrolls with the session and renders in all four states |
 | `forkSession` | `(sessionId, atSeq?) => Promise<string>` | — | — | 开分支并返回子会话 id；已归档会话的「继续对话」始终渲染，缺它时确认框内如实说明能力未就位 | Fork and resolve the child session id; "Continue" stays rendered for archived sessions, and the dialog states plainly when this capability is missing |
 | `openHostSession` | `(sessionId: string) => void` | — | — | 跳官方会话区（uiWorkspace.openSession） | Jump into the official session area (uiWorkspace.openSession) |
 | `onContinue` | `(message: string) => Promise<void>` | — | — | 暂存输入框的确定：调用方完成 fork + 发首轮 + 跳转；缺省 = 不渲染输入框 | Staging input confirm: caller forks, sends the first turn, navigates; absent = no input rendered |
@@ -74,7 +83,15 @@ if (view !== null) {
   h(SessionViewModal, {
     sessionId,
     view,
-    heading: '镜像升级日报',                    // 标题，缺省「会话预览」
+    title: '镜像升级日报',                      // 标题行，缺省「会话预览」
+    // 插槽（都可选，缺省不渲染 —— DOM 与不传时一致）：
+    // 标题行加节点，sessionId 行仍在；文字与徽标混排要用 inline-flex，否则徽标贴基线会下沉
+    // title: h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
+    //   '日报', h(Chip, { size: 'xs' }, '运行中')),
+    // header: h(TaskHead, { taskId }),         // 整块换左侧标题区（含 sessionId 行；归档徽标改挂动作区最前）
+    // headerActions: h(Button, null, '导出'),   // 排在「继续对话」左边（继续对话与 ✕ 恒居右）
+    // bodyHeader: h(ContextBar),               // 会话滚动容器内最顶，随会话滚
+    // bodyFooter: h(SessionSummary),           // 交付文件之后、复制/分支/用量操作行之上；没回复则在最底
     onClose: () => { view.dispose(); setOpen(false) },   // 关闭必须 dispose
     // 续聊（可选）：fork 开分支 → 跳官方会话区；缺 openHostSession 才不渲染该入口
     forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),

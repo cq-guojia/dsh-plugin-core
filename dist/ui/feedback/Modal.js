@@ -38,6 +38,7 @@ export function Modal(props) {
             props.title !== undefined ||
             props.subtitle !== undefined ||
             props.headerExtra !== undefined ||
+            props.header !== undefined ||
             props.headerActions !== undefined ||
             showClose);
     return h(OverlayMask, {
@@ -67,6 +68,7 @@ export function Modal(props) {
             title: props.title,
             subtitle: props.subtitle,
             extra: props.headerExtra,
+            header: props.header,
             actions: props.headerActions,
             closeLabel: tt('modalClose'),
             onClose: showClose ? props.onClose : undefined,

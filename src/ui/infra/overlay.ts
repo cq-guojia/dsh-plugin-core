@@ -111,6 +111,13 @@ export interface OverlayHeadProps {
   subtitle?: ReactNode
   /** 标题**同一行**右侧的小块（徽标 / 计数）。 */
   extra?: ReactNode
+  /**
+   * 整块替换左侧标题区（`icon` + 标题组）：
+   *   · 不传 ⇒ 内置（`icon` + `title` + `subtitle` + `extra`）
+   *   · `null` ⇒ 不画标题区（右侧 `actions` 与关闭钮照旧）
+   *   · 其他 ReactNode ⇒ 你的标题区，库只给一层布局容器，不加内边距 / 字号 / 字重
+   */
+  header?: ReactNode | null
   /** 头部右侧动作区（关闭钮之外）。 */
   actions?: ReactNode
   /** 关闭钮的无障碍名（走调用方的内置字典）。 */
@@ -124,25 +131,34 @@ export function OverlayHead(props: OverlayHeadProps): ReactNode {
   ensureComponentStyles('overlay', OVERLAY_CSS)
   // 关闭钮的皮肤在 panel.css（浮层唯一那枚）；旧类名 `dshpc-overlay-head__close` 仍挂着做别名。
   ensureComponentStyles('panel', PANEL_CSS)
+  const heading = props.header === null
+    ? null
+    : props.header === undefined
+      ? h(
+          'div',
+          { className: 'dshpc-overlay-head__heading' },
+          props.icon === undefined ? null : h('span', { className: 'dshpc-overlay-head__lead' }, props.icon),
+          h(
+            'div',
+            { className: 'dshpc-overlay-head__titlegroup' },
+            h(
+              'div',
+              { className: 'dshpc-overlay-head__titlerow' },
+              h('div', { className: 'dshpc-overlay-head__title' }, props.title ?? ''),
+              props.extra === undefined ? null : h('div', { className: 'dshpc-overlay-head__extra' }, props.extra),
+            ),
+            props.subtitle === undefined ? null : h('div', { className: 'dshpc-overlay-head__sid' }, props.subtitle),
+          ),
+        )
+      : h(
+          'div',
+          { className: 'dshpc-overlay-head__heading dshpc-overlay-head__heading--custom' },
+          props.header,
+        )
   return h(
     'div',
     { className: 'dshpc-overlay-head' },
-    h(
-      'div',
-      { className: 'dshpc-overlay-head__heading' },
-      props.icon === undefined ? null : h('span', { className: 'dshpc-overlay-head__lead' }, props.icon),
-      h(
-        'div',
-        { className: 'dshpc-overlay-head__titlegroup' },
-        h(
-          'div',
-          { className: 'dshpc-overlay-head__titlerow' },
-          h('div', { className: 'dshpc-overlay-head__title' }, props.title ?? ''),
-          props.extra === undefined ? null : h('div', { className: 'dshpc-overlay-head__extra' }, props.extra),
-        ),
-        props.subtitle === undefined ? null : h('div', { className: 'dshpc-overlay-head__sid' }, props.subtitle),
-      ),
-    ),
+    heading,
     h('div', { className: 'dshpc-overlay-head__spacer' }),
     props.actions === undefined ? null : h('div', { className: 'dshpc-overlay-head__actions' }, props.actions),
     props.onClose === undefined

@@ -165,6 +165,10 @@ export type DemoMessageKey =
   | 'openedPath'
   | 'sessionRealTitle'
   | 'sessionRealHint'
+  | 'sessionSlotTitle'
+  | 'sessionSlotAction'
+  | 'sessionSlotHeader'
+  | 'sessionSlotFooter'
   // 示例框架的标题 / 说明（原来硬编码中文，切英文不变 ⇒ 必须走字典）
   | 'exModelPickerTitle'
   | 'exWorkspacePickerTitle'
@@ -517,6 +521,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sessionListEmpty: '宿主当前没有可显示的会话',
     sessionListRunning: '运行中',
     sessionListArchived: '已归档',
+    sessionSlotTitle: '插槽示例',
+    sessionSlotAction: '示例动作',
+    sessionSlotHeader: '顶端槽：调用方自己的内容（随会话滚动）',
+    sessionSlotFooter: '底端槽：本次会话的产出汇总',
 
     dateHint: '解析失败给兜底，不抛错、不编造',
     numberHint: 'formatBytes 1024 进制；formatCount 千分位',
@@ -823,6 +831,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sessionListEmpty: 'The host has no visible sessions right now',
     sessionListRunning: 'Running',
     sessionListArchived: 'Archived',
+    sessionSlotTitle: 'slot demo',
+    sessionSlotAction: 'Demo action',
+    sessionSlotHeader: 'Top slot: your own content (scrolls with the session)',
+    sessionSlotFooter: 'Bottom slot: summary of this session',
 
     dateHint: 'Falls back instead of throwing or inventing',
     numberHint: 'formatBytes in 1024; formatCount with separators',

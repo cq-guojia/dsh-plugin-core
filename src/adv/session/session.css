@@ -10,6 +10,15 @@
 /* 会话区 = 普通纵向流：不设高度、不自己滚（滚动与内距归核心 Modal body，用户 2026-10-22 口径）。 */
 .dshpc-sv{display:flex;flex-direction:column;min-width:0;gap:10px}
 
+/* 正文两端插槽：只给布局（宽度不被内容撑破），背景 / 边框 / 圆角 / 阴影归调用方自己。
+   不传时不渲染元素 ⇒ 不会多出一个 10px gap。
+   顶端槽**自带固定下边距**：相邻项自己的 margin 各不相同（turn-trigger / 用户气泡 / 提示条），
+   靠它算间距会漂；这里一条规则定死，要调只动这一个值。
+   底端槽在 TurnTailNodeView 的 tailSlot 里，上下间距由该 root 的 gap 负责。 */
+.dshpc-sv-body-header,.dshpc-sv-body-footer{min-width:0}
+
+.dshpc-sv-body-header{margin-bottom:var(--dshpc-space-3)}
+
 /* 官方样式未命中时的可见探针（挂在头部副标题行，不占正文）。 */
 .dshpc-sv-probe{font-size:var(--dshpc-font-xs);color:var(--dshpc-warning)}
 

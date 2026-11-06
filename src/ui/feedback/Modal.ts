@@ -20,6 +20,13 @@ export interface ModalProps {
   subtitle?: ReactNode
   /** 标题右侧小块：数字 / 标签（ReactNode；demo 用 Chip 演示）。 */
   headerExtra?: ReactNode
+  /**
+   * 整块替换头部**左侧标题区**（`icon` + `title` + `subtitle` + `headerExtra` 那一块）：
+   *   · 不传 ⇒ 内置标题区
+   *   · `null` ⇒ 不画标题区（`headerActions` 与 ✕ 照旧）
+   *   · 其他 ReactNode ⇒ 你的标题区，库只给一层布局容器，不加内边距 / 字号 / 字重
+   */
+  header?: ReactNode | null
   /** 头部右侧动作区：关闭钮之外的更多按钮（ReactNode）。 */
   headerActions?: ReactNode
   /** 关闭回调；不传则 ✕ 不显示（必须自己给关闭路径）。 */
@@ -107,6 +114,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
       props.title !== undefined ||
       props.subtitle !== undefined ||
       props.headerExtra !== undefined ||
+      props.header !== undefined ||
       props.headerActions !== undefined ||
       showClose)
 
@@ -144,6 +152,7 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
               title: props.title,
               subtitle: props.subtitle,
               extra: props.headerExtra,
+              header: props.header,
               actions: props.headerActions,
               closeLabel: tt('modalClose'),
               onClose: showClose ? props.onClose : undefined,

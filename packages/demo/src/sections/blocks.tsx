@@ -51,7 +51,11 @@ const view = openRealSessionView(row.sessionId)   // retain → binding → targ
 h(SessionViewModal, {
   sessionId: row.sessionId,
   view,
-  heading: row.displayTitle,      // 标题可自定义；会话 id 自动显示在标题下方（副标题行）
+  title: row.displayTitle,        // 标题行可自定义（放节点也行）；会话 id 自动显示在下方副标题行
+  // 插槽（可选）：header 整块换标题区 / headerActions 追加动作 / bodyHeader·bodyFooter 正文两端
+  headerActions: h(Button, null, '导出'),
+  bodyHeader: h(ContextBar),      // 会话滚动容器最顶
+  bodyFooter: h(SessionSummary),  // 会话滚动容器最底
   // 归档态不传：核心订阅官方 workspaces 快照，弹窗开着期间徽标与「继续对话」实时跟随
   onClose: () => { view.dispose(); setOpenId(null) },
   forkSession: (id, atSeq) => sessions.fork({ sessionId: id, increaseTitle: true, atSeq }),
@@ -183,6 +187,9 @@ function RealSessionListDemo(): ReturnType<typeof h> {
   const workspaceFiles = files.workspaceFiles
   // 链接只在「工作区文件服务就位 + 有可用会话锚点」时可点；否则保持纯文本，不假装能点。
   const canOpenFile = workspaceFiles !== null && anchor !== null
+  // 插槽示例只挂在列表**第一个**会话上（其余会话不传槽 ⇒ 默认形态，对比着看）。
+  const displayTitle = openId === null ? undefined : state.rows.find((row) => row.sessionId === openId)?.displayTitle
+  const withSlots = openId !== null && openId === state.rows[0]?.sessionId
 
   // 文件链接在**页面右侧**开核心文件预览 dock（不在弹窗里）。弹窗不用知道它的宽度：
   // dock 自己把占宽发布成 CSS 变量，遮罩让位、弹窗在左边剩余区域居中（用户 2026-10-22）。
@@ -247,8 +254,21 @@ function RealSessionListDemo(): ReturnType<typeof h> {
       ? h(SessionViewModal, {
           sessionId: openId,
           view,
-          // 标题 = 会话自己的标题；归档态由核心订阅官方快照，不在这里传。
-          heading: state.rows.find((row) => row.sessionId === openId)?.displayTitle,
+          // 插槽示例只挂在列表**第一个**会话上；其它会话不传 = 与旧版默认形态一致，对比着看更直观。
+          // 标题行自定义（一级）：会话自己的标题 + 一枚标签；副标题 sessionId 仍由核心画。
+          // 混排文字与徽标要用 inline-flex + align-items:center，否则徽标会贴基线（看着往下沉）。
+          title: withSlots
+            ? h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
+                displayTitle ?? '',
+                h(Chip, { size: 'xs', tone: 'success' }, t('sessionSlotTitle')),
+              )
+            : undefined,
+          heading: withSlots ? undefined : displayTitle,
+          // 头部右侧追加动作：排在核心「继续对话」左边（继续对话与 ✕ 恒居右）。
+          headerActions: withSlots ? h(Button, { variant: 'outline', size: 'sm' }, t('sessionSlotAction')) : undefined,
+          // 正文顶端 / 底端插槽：都在会话滚动容器内，随会话一起滚。
+          bodyHeader: withSlots ? h(Chip, { size: 'sm', tone: 'warning' }, t('sessionSlotHeader')) : undefined,
+          bodyFooter: withSlots ? h(Chip, { size: 'sm', tone: 'success' }, t('sessionSlotFooter')) : undefined,
           onClose: () => { view.dispose(); setOpenId(null) },
           // 真宿主服务：fork 与跳转都是官方口子（预览弹窗里不可打字续聊，走开分支）。
           forkSession: (id, atSeq) => {

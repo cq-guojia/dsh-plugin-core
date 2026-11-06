@@ -50,6 +50,13 @@ export interface OverlayHeadProps {
     subtitle?: ReactNode;
     /** 标题**同一行**右侧的小块（徽标 / 计数）。 */
     extra?: ReactNode;
+    /**
+     * 整块替换左侧标题区（`icon` + 标题组）：
+     *   · 不传 ⇒ 内置（`icon` + `title` + `subtitle` + `extra`）
+     *   · `null` ⇒ 不画标题区（右侧 `actions` 与关闭钮照旧）
+     *   · 其他 ReactNode ⇒ 你的标题区，库只给一层布局容器，不加内边距 / 字号 / 字重
+     */
+    header?: ReactNode | null;
     /** 头部右侧动作区（关闭钮之外）。 */
     actions?: ReactNode;
     /** 关闭钮的无障碍名（走调用方的内置字典）。 */
