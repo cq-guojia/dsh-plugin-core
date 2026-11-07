@@ -1,8 +1,9 @@
 # 20261107-1215-821b-card-stripcard-补齐整卡-hover-与底色开关: Card / StripCard 补齐整卡 hover 与底色开关
 
-- **Tags**: 卡片, 悬停变色, 底色
-- **Status**: doing · 2026-11-07 13:30:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Tags**: 卡片, 悬停变色, 底色, 发版
+- **Status**: done · 2026-11-07 13:30:53 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-07 12:15:45 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-07 13:30:53 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -76,3 +77,4 @@
 - 2026-11-07 12:24:09 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按拍板实现：Card/StripCard 加 hoverable(默认关,整卡变色)+filled(默认有底)，StripCard 底色 background 属性收敛成 --surface-bg 变量，hover 统一 --dshpc-card-hover；测试+3条(338 pass)、帮助文档/样式规范/demo 双语与示例同步；build/build:demo/typecheck/codelint(10) 全绿，stamp 261107-202133-796，产物核对旧 background ×0；待真机看效果，未提交未发版
 - 2026-11-07 12:39:32 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 返工收口：hoverable 打开即 cursor:pointer（src/ui/display/card.css:89），demo Card/StripCard 扩成带底/透明/hover/透明+hover 四档（packages/demo/src/sections/controls.tsx:1434,1510）；test/card.test.mjs 补手势断言、docs/help/ui.doc.ts 与 docs/design/style.md 与双语 hint 同步；build/build:demo/338 tests/typecheck/codelint(10) 全绿，stamp 261107-203124-607；代码与 dist 未提交未发版，doing 待真机验收
 - 2026-11-07 13:30:39 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户验收通过（行，可以了）并指令改 Tag 提交发版：两包 bump v0.35.4（package.json:3 / packages/demo/package.json:3），重跑 build/build:demo 让 demo bundle 带上新版本号；338 tests / typecheck / codelint(12 文件) 全绿；commit f11945d 推 main（含 dist），tag v0.35.4 已推触发 publish.yml + demo-publish.yml 双包发布；worklog 补发版事实与三处同号校验，下一步 close 结案
+- 2026-11-07 13:30:53 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: Card / StripCard 补齐 hoverable（整卡变色 + cursor:pointer，统一 --dshpc-card-hover）与 filled（底色）两轴，StripCard 底色收敛为 --surface-bg；demo 四档对照、帮助文档/样式规范/双语 hint/回归测试同步；338 tests / typecheck / codelint(12 文件) 全绿；bump v0.35.4，commit f11945d 推 main（含 dist），tag v0.35.4 已推触发双包发版
