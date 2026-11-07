@@ -247,6 +247,28 @@ test('Segmented 只有图标时必须是正方形（宽 = 段高，左右内距�
   }
 })
 
+// 2026-11-07 用户：多选方块（如星期）的固定 width 可能比段高还小 ⇒ 竖着一小溜，很难看。
+// 契约：多选每段 min-width = 该档段高 ⇒ 最窄正方形，文案更长自然撑成横向长方形。
+test('Segmented 多选每段最小宽 = 该档段高（不许出现比高还窄的竖条）', () => {
+  const css = controls.SEGMENTED_CSS
+  const dim = (decls) => {
+    const m = /calc\(var\(--dshpc-control-h-(\w+)\) - (\d+)px\)/.exec(decls ?? '')
+    return m === null ? null : { tier: m[1], sub: Number(m[2]) }
+  }
+  const baseItem = /^\.dshpc-seg__item\{([^}]*)\}/m.exec(css)?.[1]
+  const baseMulti = /^\.dshpc-seg--multiple \.dshpc-seg__item\{([^}]*)\}/m.exec(css)?.[1]
+  assert.ok(baseMulti !== undefined, '找不到多选段的最小宽规则')
+  assert.match(baseMulti, /min-width:/, '多选段写的是别的值，不是最小宽')
+  assert.deepEqual(dim(baseMulti), dim(baseItem), 'sm 档多选最小宽 ≠ 段高')
+  for (const tier of ['md', 'lg']) {
+    const item = new RegExp(`\\.dshpc-seg--${tier} \\.dshpc-seg__item\\{([^}]*)\\}`).exec(css)?.[1]
+    const multi = new RegExp(`\\.dshpc-seg--multiple\\.dshpc-seg--${tier} \\.dshpc-seg__item\\{([^}]*)\\}`).exec(css)?.[1]
+    assert.ok(multi !== undefined, `${tier} 档缺多选最小宽规则`)
+    assert.match(multi, /min-width:/, `${tier} 档多选段写的是别的值，不是最小宽`)
+    assert.deepEqual(dim(multi), dim(item), `${tier} 档多选最小宽 ≠ 段高`)
+  }
+})
+
 test('快速失败：注入文本不得含反引号 / 反斜杠', () => {
   const bad = ['`', '\\'].filter((ch) => INJECTED.includes(ch))
   assert.deepEqual(bad, [], `注入文本出现非法字符：${JSON.stringify(bad)}`)

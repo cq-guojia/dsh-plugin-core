@@ -113,6 +113,14 @@ the dark theme.
 
 尺寸类 props 承诺的数值必须有自检盯着（`test/css-contract.test.mjs`：`Segmented` 三档总高 = 24 / 28 / 32）。
 
+**多选段不许比高还窄**（2026-11-07）：`Segmented` 挂 `multiple` 时每段的 `min-width` = 该档段高
+（`calc(var(--dshpc-control-h-*) - 6px)`）—— 最窄正方形、文案更长则横向长方形，绝不出现竖着一小溜。
+固定 `width` 的 `weekday` / `--icon-only` 也由这条下限兜住；下限只作用多选，单选外观一个字节不变。
+由 `test/css-contract.test.mjs` 盯着。
+
+EN: In `multiple` mode every `Segmented` item has `min-width` equal to its own segment height: square at the
+narrowest, landscape when labels are longer, never taller than wide. Single-select rendering is unchanged.
+
 EN: Never ship a visually equivalent appearance tier. `Segmented`'s `variant` was removed on 2026-10-26: the two
 tiers differed by 1px of padding, and `default` rendered 2px shorter than `size` promised — downstream read it as
 "there is a choice", compared against the demo, and chased tokens/bundling instead. Any numeric size promise gets

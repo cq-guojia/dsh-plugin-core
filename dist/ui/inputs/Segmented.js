@@ -76,7 +76,7 @@ export function Segmented(props) {
         id: props.id,
         ref: rootRef,
         // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
-        className: `dshpc-seg dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${toneClass}${props.className !== undefined ? ` ${props.className}` : ''}`,
+        className: `dshpc-seg dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${multiple ? ' dshpc-seg--multiple' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${toneClass}${props.className !== undefined ? ` ${props.className}` : ''}`,
         style: toneStyle === undefined ? props.style : { ...toneStyle, ...props.style },
     }, [
         sliding && thumb !== null

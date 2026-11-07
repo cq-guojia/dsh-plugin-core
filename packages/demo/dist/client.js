@@ -3883,6 +3883,12 @@ var SEGMENTED_CSS = `
 .dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-sm) - 6px);padding:0;justify-content:center;}
 .dshpc-seg--md .dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-lg) - 6px);}
+/* \u591A\u9009\uFF082026-11-07 \u7528\u6237\uFF09\uFF1A\u6BCF\u6BB5\u6700\u5C0F\u5BBD = \u8BE5\u6863\u6BB5\u9AD8 \u21D2 \u6700\u7A84\u4E5F\u662F\u6B63\u65B9\u5F62\uFF0C\u7EDD\u4E0D\u4F1A\u51FA\u73B0\u6BD4\u9AD8\u8FD8\u7A84\u7684\u7AD6\u6761\uFF1B
+   \u6587\u6848\u66F4\u957F\u65F6\u7531\u5185\u5BB9\u81EA\u7136\u6491\u5BBD\u6210\u6A2A\u5411\u957F\u65B9\u5F62\u3002\u4E09\u6863\u5404\u8DDF\u81EA\u5DF1\u7684\u63A7\u5236\u9AD8\uFF0C\u4E0D\u5199\u6B7B px\u3002
+   weekday / icon-only \u90A3\u79CD\u56FA\u5B9A width \u82E5\u5C0F\u4E8E\u6BB5\u9AD8\uFF0C\u540C\u6837\u88AB min-width \u9876\u5230\u6B63\u65B9\u5F62\u3002 */
+.dshpc-seg--multiple .dshpc-seg__item{min-width:calc(var(--dshpc-control-h-sm) - 6px);}
+.dshpc-seg--multiple.dshpc-seg--md .dshpc-seg__item{min-width:calc(var(--dshpc-control-h-md) - 6px);}
+.dshpc-seg--multiple.dshpc-seg--lg .dshpc-seg__item{min-width:calc(var(--dshpc-control-h-lg) - 6px);}
 .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);}
 .dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--seg-on);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
@@ -8286,7 +8292,7 @@ function Segmented(props) {
     id: props.id,
     ref: rootRef,
     // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
-    className: `dshpc-seg dshpc-seg--${size4}${sliding ? " dshpc-seg--slide" : ""}${props.block === true ? " dshpc-seg--block" : ""}${props.bordered === true ? " dshpc-seg--bordered" : ""}${toneClass}${props.className !== void 0 ? ` ${props.className}` : ""}`,
+    className: `dshpc-seg dshpc-seg--${size4}${sliding ? " dshpc-seg--slide" : ""}${multiple ? " dshpc-seg--multiple" : ""}${props.block === true ? " dshpc-seg--block" : ""}${props.bordered === true ? " dshpc-seg--bordered" : ""}${toneClass}${props.className !== void 0 ? ` ${props.className}` : ""}`,
     style: toneStyle === void 0 ? props.style : { ...toneStyle, ...props.style }
   }, [
     sliding && thumb !== null ? (0, import_react34.createElement)("span", {
@@ -63951,6 +63957,10 @@ var docData = {
       {
         "zh": "Segmented\uFF1A`items`\uFF08\u5FC5\u586B\uFF09\u652F\u6301\u5355\u9009 / \u591A\u9009\uFF0C`size`\uFF08\u9ED8\u8BA4 lg\uFF1B\u4E09\u6863\u603B\u9AD8 24 / 28 / 32\uFF09\u3001`bordered`\uFF081px \u5916\u6846\uFF0C\u603B\u9AD8\u4E0D\u53D8\uFF09\u3001`multiple`\uFF08\u591A\u9009\uFF09\u3002\u5916\u89C2\u53EA\u6709\u4E00\u5957\uFF1A\u7070\u5E95\u8F68\u9053 + \u767D\u8272\u9009\u4E2D\u7247\uFF0C\u9009\u4E2D\u7247\u7684\u63CF\u8FB9\u73AF\u4E0E\u9634\u5F71\u7531\u5BBF\u4E3B elevation token \u63D0\u4F9B\uFF08\u79BB\u7EBF\u515C\u5E95\u503C\u6CA1\u6709\u90A3\u5708\u73AF\uFF09\u3002\u9009\u4E2D\u7247\u914D\u8272\u53EA\u7ECF `tone`\uFF1A\u4F20\u5185\u7F6E\u8272\u540D\uFF08\u4E0E Chip \u540C\u540D\u7684 business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate\uFF09\u65F6\u5E95\u4E0E\u5B57\u7531\u6838\u5FC3\u5B9A\u3001\u6DF1\u6D45\u4E24\u4E3B\u9898\u5404\u81EA\u6210\u7ACB\uFF1B\u4F20 `{ bg, fg }` \u65F6\u4E24\u4E2A\u4E3B\u9898\u90FD\u7528\u8C03\u7528\u65B9\u8FD9\u4E00\u5BF9\u989C\u8272\uFF08\u5BF9\u6BD4\u5EA6\u7531\u8C03\u7528\u65B9\u8D1F\u8D23\uFF09\u3002\u6BB5\u5185 `icon` \u662F\u524D\u7F6E\u56FE\u6807\u69FD\uFF08\u5B98\u65B9\u56FE\u6807\u7EC4\u4EF6 / \u6570\u7EC4 / \u81EA\u7ED8\u8282\u70B9\u5747\u53EF\uFF09\uFF0C`label` \u4E5F\u53EF\u4F20\u8282\u70B9\uFF1B\u987A\u5E8F\u56FA\u5B9A\u4E3A icon \u2192 label \u2192 count\u3002\u53EA\u6709\u56FE\u6807\uFF08\u65E0\u6587\u5B57 / \u8BA1\u6570 / \u89D2\u6807\uFF09\u65F6\u8BE5\u6BB5\u81EA\u52A8\u53D8\u6B63\u65B9\u5F62\uFF08\u5BBD = \u6BB5\u9AD8\uFF09\uFF0C\u8BFB\u5C4F\u540D\u7528 `ariaLabel`\uFF0C\u7F3A\u7701\u9000\u56DE `tooltip`\u3002\u6BB5\u5185 `count`\uFF08\u5F31\u5316\u7070\u5B57\uFF0C\u9009\u4E2D\u6BB5\u5185\u81EA\u52A8\u8DDF\u7740\u9009\u4E2D\u7247\u5B57\u8272\u63D0\u4EAE\uFF09/ `badge`\uFF08\u7EA2\u89D2\u6807\uFF09\u63A5\u53D7 `number | string`\uFF1A\u6570\u5B57 \u22640 \u4E0D\u663E\u793A\uFF0C\u5B57\u7B26\u4E32\u539F\u6837\u663E\u793A\uFF08\u5982 `1K` / `99+`\uFF09\u3002",
         "en": "Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). The selected pill\u2019s colors go through `tone` only: a built-in color name (business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate, same names as Chip) lets the core pick background and text per theme; `{ bg, fg }` uses that pair verbatim in both themes (contrast is the caller\u2019s call). An item\u2019s leading `icon` takes any node (official icon component, array, or custom); `label` also accepts a node; order is always icon \u2192 label \u2192 count. With only an icon (no label / count / badge) the segment squares itself (width = segment height), and the accessible name comes from `ariaLabel`, falling back to `tooltip`. An item\u2019s `count` (muted text; auto-lightened to follow the selected pill\u2019s text color while selected) and `badge` (red pill) take `number | string`: numbers \u22640 render nothing, strings render as given (e.g. `'1K'` / `'99+'`)."
+      },
+      {
+        "zh": "\u591A\u9009\uFF08`multiple`\uFF09\u65F6\u6BCF\u6BB5\u7684\u6700\u5C0F\u5BBD\u5EA6\u7B49\u4E8E\u8BE5\u6863\u6BB5\u9AD8\uFF1A\u6700\u7A84\u4E5F\u662F\u6B63\u65B9\u5F62\uFF0C\u6587\u6848\u66F4\u957F\u5219\u81EA\u7136\u6491\u6210\u6A2A\u5411\u957F\u65B9\u5F62\uFF0C\u4E0D\u4F1A\u51FA\u73B0\u5BBD\u6BD4\u9AD8\u8FD8\u5C0F\u7684\u7AD6\u6761\uFF1B`weekday` \u4E0E\u53EA\u6709\u56FE\u6807\u7684\u56FA\u5B9A\u65B9\u5757\u4E5F\u7531\u8FD9\u6761\u4E0B\u9650\u515C\u4F4F\u3002",
+        "en": "In `multiple` mode every segment has a minimum width equal to its own segment height: the narrowest case is a square, longer labels grow it into a landscape rectangle, and no segment is ever taller than it is wide. Fixed-width squares (`weekday`, icon-only) are clamped by this floor too."
       }
     ],
     "api": [
@@ -70934,9 +70944,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.4"}`],
-            [t3("buildDemo"), `v${"0.35.4"}`],
-            [t3("buildStamp"), "261107-212724-975"]
+            [t3("buildCore"), `v${"0.35.5"}`],
+            [t3("buildDemo"), `v${"0.35.5"}`],
+            [t3("buildStamp"), "261107-222601-584"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71252,9 +71262,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.4"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.4"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261107-212724-975")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.5"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.5"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261107-222601-584")
         )
       )
     ),

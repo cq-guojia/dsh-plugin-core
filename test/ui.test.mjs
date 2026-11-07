@@ -27,14 +27,16 @@ test('setStyleKit 覆盖默认 kit，getStyleKit 反映新值', () => {
   assert.equal(getStyleKit().id, 'probe')
 })
 
-test('Segmented 单选挂滑动块模式，多选保持逐段着色', () => {
+test('Segmented 单选挂滑动块模式，多选保持逐段着色且挂宽度下限类', () => {
   const items = [{ value: 'a', label: '甲' }, { value: 'b', label: '乙' }]
   const single = renderToStaticMarkup(createElement(Segmented, { items, value: 'a', onChange() {} }))
   assert.match(single, /dshpc-seg--slide/)
+  assert.ok(!single.includes('dshpc-seg--multiple'), '单选不该挂多选的宽度下限类')
   const multi = renderToStaticMarkup(
     createElement(Segmented, { multiple: true, items, value: ['a'], onChange() {} }),
   )
   assert.ok(!multi.includes('dshpc-seg--slide'), '多选不该有唯一下滑的选中块')
+  assert.match(multi, /dshpc-seg--multiple/, '多选没挂宽度下限类，CSS 那段规则不会生效')
 })
 
 test('SplitGroup 只包壳：根节点带 dshpc-split，两格顺序原样、className 追加', () => {

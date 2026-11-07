@@ -59,6 +59,10 @@ Segmented：`items`（必填）支持单选 / 多选，`size`（默认 lg；三�
 
 > EN: Segmented: `items` (required) supports single or multiple selection; `size` (default lg; totals 24 / 28 / 32), `bordered` (1px outer frame, same total height), `multiple` (multi-select). One look only: grey track + white selected pill; its stroke ring and shadow come from the host elevation token (the offline fallback has no ring). The selected pill’s colors go through `tone` only: a built-in color name (business / success / warning / danger / purple / pink / cyan / teal / orange / indigo / rose / slate, same names as Chip) lets the core pick background and text per theme; `{ bg, fg }` uses that pair verbatim in both themes (contrast is the caller’s call). An item’s leading `icon` takes any node (official icon component, array, or custom); `label` also accepts a node; order is always icon → label → count. With only an icon (no label / count / badge) the segment squares itself (width = segment height), and the accessible name comes from `ariaLabel`, falling back to `tooltip`. An item’s `count` (muted text; auto-lightened to follow the selected pill’s text color while selected) and `badge` (red pill) take `number | string`: numbers ≤0 render nothing, strings render as given (e.g. `'1K'` / `'99+'`).
 
+多选（`multiple`）时每段的最小宽度等于该档段高：最窄也是正方形，文案更长则自然撑成横向长方形，不会出现宽比高还小的竖条；`weekday` 与只有图标的固定方块也由这条下限兜住。
+
+> EN: In `multiple` mode every segment has a minimum width equal to its own segment height: the narrowest case is a square, longer labels grow it into a landscape rectangle, and no segment is ever taller than it is wide. Fixed-width squares (`weekday`, icon-only) are clamped by this floor too.
+
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `variant` | `上表 18 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）` | 'outline' | 外观档 | Appearance tier |

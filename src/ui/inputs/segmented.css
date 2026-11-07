@@ -23,6 +23,12 @@
 .dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-sm) - 6px);padding:0;justify-content:center;}
 .dshpc-seg--md .dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-md) - 6px);}
 .dshpc-seg--lg .dshpc-seg__item--icon-only{width:calc(var(--dshpc-control-h-lg) - 6px);}
+/* 多选（2026-11-07 用户）：每段最小宽 = 该档段高 ⇒ 最窄也是正方形，绝不会出现比高还窄的竖条；
+   文案更长时由内容自然撑宽成横向长方形。三档各跟自己的控制高，不写死 px。
+   weekday / icon-only 那种固定 width 若小于段高，同样被 min-width 顶到正方形。 */
+.dshpc-seg--multiple .dshpc-seg__item{min-width:calc(var(--dshpc-control-h-sm) - 6px);}
+.dshpc-seg--multiple.dshpc-seg--md .dshpc-seg__item{min-width:calc(var(--dshpc-control-h-md) - 6px);}
+.dshpc-seg--multiple.dshpc-seg--lg .dshpc-seg__item{min-width:calc(var(--dshpc-control-h-lg) - 6px);}
 .dshpc-seg__item:hover:not([aria-pressed='true']):not(:disabled){color:var(--dshpc-fg);}
 .dshpc-seg__item[aria-pressed='true']{background:var(--seg-thumb);box-shadow:var(--dshpc-shadow-raised);color:var(--seg-on);font-weight:600;}
 .dshpc-seg__item:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}
