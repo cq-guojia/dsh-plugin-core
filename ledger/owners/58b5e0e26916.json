@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261107-0945-e3dc-新增一行一条列表条目控件": {"category": "建设", "created": "2026-11-07 09:45:20", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-07 09:45:20", "status": "doing", "tags": ["列表条目", "展示控件", "外框复用", "样式收敛"], "title": "新增一行一条列表条目控件", "updated": "2026-11-07 10:44:23", "worklog": "worklog/202611/07-0945-e3dc-新增一行一条列表条目控件.md"}
+    "20261107-0945-e3dc-新增一行一条列表条目控件": {"category": "建设", "created": "2026-11-07 09:45:20", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-07 09:45:20", "status": "doing", "tags": ["列表条目", "展示控件", "外框复用", "样式收敛"], "title": "新增一行一条列表条目控件", "updated": "2026-11-07 10:51:04", "worklog": "worklog/202611/07-0945-e3dc-新增一行一条列表条目控件.md"}
   },
   "version": "20261022000000"
 }
