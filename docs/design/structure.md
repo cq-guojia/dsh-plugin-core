@@ -32,7 +32,7 @@
 |---|---|---|
 | **动作** `actions` | 点它触发一次操作，本身不产生值 | Button、IconButton |
 | **录入** `inputs` | 产生或修改一个值 | Input、NumberInput、PrefixedInput、Textarea、Checkbox、Segmented、Picker、DateTimePicker、WorkspacePicker、ModelPicker、InputGroup |
-| **展示** `display` | 只呈现内容，不改变状态 | Card、StripCard、Surface、Chip、Table、CodeViewer、MarqueeText、FlipText、LiveText、SectionHead、FieldHint |
+| **展示** `display` | 只呈现内容，不改变状态 | Card、StripCard、Surface、Chip、Table、ListRow、CodeViewer、MarqueeText、FlipText、LiveText、SectionHead、FieldHint |
 | **反馈** `feedback` | 表达「正在进行 / 刚完成 / 出错了」 | Modal、SideSheet、AlertModal、ConfirmModal、alertModal、confirmModal、Toast、host-toast、Loader、LoaderBar、Loading |
 | **布局** `layout` | 只决定内部元素怎么摆、怎么拼 | SplitGroup、PanelDock、QuickToolbar、resizer |
 | **导航** `navigation` | 在多个视图 / 页之间移动 | Pagination |
@@ -63,7 +63,7 @@ src/
 │   │                          Segmented · Picker（+ picker-logic / picker-icons）
 │   │                          DateTimePicker（+ datetime-logic）· InputGroup
 │   │                          WorkspacePicker · ModelPicker
-│   ├── display/               Card · StripCard · Surface · Chip · Table（+ table-logic / table-shared）
+│   ├── display/               Card · StripCard · Surface · Chip · Table · ListRow（+ table-logic / table-shared）
 │   │                          CodeViewer（+ code-viewer-lang / -theme）· MarqueeText · FlipText
 │   │                          LiveText · SectionHead · FieldHint
 │   ├── feedback/              Modal · SideSheet · AlertModal · ConfirmModal（+ modal-host）
@@ -132,7 +132,7 @@ utils（谁都不依赖，谁都可以用）
    ├─ 录入    inputs        Input · NumberInput · PrefixedInput · Textarea · Checkbox
    │                        Segmented · Picker · DateTimePicker · WorkspacePicker
    │                        ModelPicker · InputGroup
-   ├─ 展示    display       Card · StripCard · Surface · Chip · Table · CodeViewer
+   ├─ 展示    display       Card · StripCard · Surface · Chip · Table · ListRow · CodeViewer
    │                        MarqueeText · FlipText · LiveText · SectionHead · FieldHint
    ├─ 反馈    feedback      Modal · SideSheet · AlertModal · ConfirmModal
    │                        Toast · Loader · LoaderBar · Loading

@@ -19,6 +19,8 @@ export { alertModal, confirmModal, } from './feedback/modal-host.js';
 export { CARD_ACCENTS, Card, StripCard, } from './display/Card.js';
 export { Surface, surfaceClass, } from './display/Surface.js';
 export { Chip } from './display/Chip.js';
+// 一行一条的列表条目：外框复用 Surface，整行可点 + 右侧操作槽互不干扰。
+export { ListRow } from './display/ListRow.js';
 // 表格：第一档外观 = Table（后续 TableGrid / TableZebra 各自独立导出，引哪个打包哪个）。
 export { Table } from './display/Table.js';
 // 分页：独立控件；Table 也可通过 `pagination` 内建（切片 + 表下渲染）。

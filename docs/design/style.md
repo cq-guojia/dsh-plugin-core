@@ -274,3 +274,16 @@ checks all three, including inline `overflowY/X` in the demo.
 
 EN: No second `document.createElement('style')` — always go through the kit. No second style tag id — one kit
 per plugin. Rules inside a domain consume `var(--dshpc-*)` only; never hard-code colors, sizes or fonts.
+
+## 控件默认字号
+
+> EN: Default type scale for controls
+
+`Surface` 是纯容器，只给外框，`font:inherit` 刻意不接管内容排版；**但承载文字的控件必须在自己的域内给默认字号**
+（`font-size:var(--dshpc-font-md)` + `line-height:var(--dshpc-line-md)`，与 `Table` / `Input md` 同档）。
+不许把这件事推给每个消费者重复补一遍 —— 2026-11-07 用户拍板：`ListRow` 曾漏设，会话列表标题继承到宿主默认
+16px，消费者被迫自己写 `fontSize` 压回去。调用方仍可用内联 style 覆盖这一档。
+
+EN: `Surface` is a pure frame and deliberately inherits typography, but any control that renders text must set its
+own default `font-size` / `line-height` from tokens (same tier as `Table` / `Input md`). Do not make every consumer
+repeat it; callers can still override that tier inline.

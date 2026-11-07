@@ -15,6 +15,7 @@ export { alertModal, confirmModal, type AlertOptions, type ConfirmOptions, type 
 export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardBarOptions, type CardSharedProps, } from './display/Card.js';
 export { Surface, surfaceClass, type SurfaceBorder, type SurfacePadding, type SurfaceProps, type SurfaceRadius, type SurfaceTone, } from './display/Surface.js';
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './display/Chip.js';
+export { ListRow, type ListRowProps } from './display/ListRow.js';
 export { Table, type TableProps } from './display/Table.js';
 export { Pagination, type PaginationProps, type TablePaginationConfig, } from './navigation/Pagination.js';
 export { clampPage, pageCountOf, pageItems, pageRange, type PageItem, type PageTotalRenderer, type PaginationAlign, } from './navigation/pagination-logic.js';

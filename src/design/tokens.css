@@ -170,6 +170,11 @@ body{
      浅色主题下文字色是黑 ⇒ 选中面比常态底色**深一档**。深色分支见 body[data-ds-dark-theme]（朝背景色掺）。
      语义：标记「正在看的东西」，比常态明显、又不许盖住内容（不许用半透明叠状态色）。 */
   --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 88%,var(--dshpc-fg));
+  /* ListRow 选中面（2026-11-07 用户定）：slate 的**极浅蓝灰**，不用上面那条通用「选中面」。
+     通用值亮色是掺文字色的中性灰、暗色是两个深色面互掺 ⇒ 深色下选中行发黑（用户实测）。
+     这里从 --dshpc-slate 派生半透明浅色：亮色 14% 叠白 ≈ #e5e7ea，比常态 tone-sunken
+     深一档才看得出「选中」；暗色浓度见 body[data-ds-dark-theme] 段。 */
+  --dshpc-listrow-selected-bg:color-mix(in srgb,var(--dshpc-slate) 14%,transparent);
   /* 任务日程页本月格默认底（2026-10-06 → 续2）：浅色下给**淡蓝**（business 8% 透白底）——
      参照用户参考稿里未选中日程块 / Tuesday 列的那种蓝、再浅一点点；
      相邻月补位格仍走 --dshpc-surface-2（更灰），不受影响。
@@ -349,6 +354,9 @@ body[data-ds-dark-theme]{
      只比背景略深一点点（用户：深色下展开区压着任务透明绿会发灰，底色要尽量贴近背景才不显灰）。
      ⚠️ 深色下不能掺文字色 —— 那是白，会变亮，选中反而比本月日期浅。 */
   --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));
+  /* ListRow 选中面（暗色版）：slate 掺到 26% —— 深底上泛蓝灰，绝不退回接近背景的黑。
+     slate 是中明度蓝灰，暗底上要比亮色掺得更浓才看得出（亮色 14% / 暗色 26%）。 */
+  --dshpc-listrow-selected-bg:color-mix(in srgb,var(--dshpc-slate) 26%,transparent);
   /* 任务日程页本月格的默认底（深色版，2026-10-06）：深的、带点灰蓝的暗色（用户给的参考图 ≈ #23262e），
      比原来的卡片面更沉、更偏蓝灰；选中格仍走 --dshpc-selected-bg（更暗一档），层级不变。 */
   --dshpc-cal-cell-bg:#23262e;

@@ -57,6 +57,7 @@ const MAP = [
   ['src/ui/display/surface.css', 'src/ui/display/surface-css.generated.ts', 'SURFACE_CSS'],
   ['src/ui/display/card.css', 'src/ui/display/card-css.generated.ts', 'CARD_CSS'],
   ['src/ui/display/chip.css', 'src/ui/display/chip-css.generated.ts', 'CHIP_CSS'],
+  ['src/ui/display/list-row.css', 'src/ui/display/list-row-css.generated.ts', 'LIST_ROW_CSS'],
   ['src/ui/layout/panel-dock.css', 'src/ui/layout/panel-dock-css.generated.ts', 'PANEL_DOCK_CSS'],
   ['src/ui/display/code-viewer.css', 'src/ui/display/code-viewer-css.generated.ts', 'CODE_VIEWER_CSS'],
   ['src/adv/explorer/explorer.css', 'src/adv/explorer/explorer-css.generated.ts', 'EXPLORER_CSS'],

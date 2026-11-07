@@ -224,6 +224,8 @@ export type DemoMessageKey =
   | 'demoCardTitle'
   | 'demoStripTitle'
   | 'demoSurfaceTitle'
+  | 'demoListRowTitle'
+  | 'listRowHint'
   | 'demoBarTitle'
   | 'surfaceHint'
   | 'barHint'
@@ -449,6 +451,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     demoCardTitle: 'Card（边框 + 圆角 + 短色条）',
     demoStripTitle: 'StripCard（浅底 + 通高色条）',
     demoSurfaceTitle: 'Surface（区域容器）',
+    demoListRowTitle: 'ListRow（一行一条 · 整行可点）',
+    listRowHint: '常态带底 / 按钮灰态 hover / 带边 · 无边 / 选中浅蓝灰 slate / 右侧操作不连带',
     demoBarTitle: '色条方位：上下左右',
     surfaceHint: '一块面：底 / 边框 / 圆角 / 内距四轴',
     barHint: '色条换边、距边、间距、长度都可调',
@@ -520,7 +524,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exLoaderHint: '只画图标：背景与位置归调用方',
     exLoadingTitle: '加载提示 · 两种样式',
     exLoadingHint: 'showLoading 不自动消失，需句柄 close',
-    sessionRealHint: '宿主 sessions 快照 → 点开真预览',
+    sessionRealHint: '宿主 sessions 快照 → ListRow 一行一条（整行可点 / 选中浅蓝）→ 点开真预览',
     sessionListUnavailable: '宿主会话服务未就位（sessions / uiConversation / uiWorkspace 缺席）——在真实 dsh profile 里安装本插件即可读到本机会话',
     sessionListEmpty: '宿主当前没有可显示的会话',
     sessionListRunning: '运行中',
@@ -761,6 +765,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     demoCardTitle: 'Card (frame + radius + short rail)',
     demoStripTitle: 'StripCard (soft tint + full-height bar)',
     demoSurfaceTitle: 'Surface (region container)',
+    demoListRowTitle: 'ListRow (one item per line, clickable row)',
+    listRowHint: 'Resting fill / button-grey hover / bordered / pale slate selected / isolated right-side actions',
     demoBarTitle: 'Rail side: top / right / bottom / left',
     surfaceHint: 'A surface: fill, border, radius, padding',
     barHint: 'Bar side, inset, gap and length',
@@ -832,7 +838,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     exLoaderHint: 'Icon only; background and placement are yours',
     exLoadingTitle: 'Loading · two styles',
     exLoadingHint: 'showLoading stays until you close the handle',
-    sessionRealHint: 'Host sessions snapshot, then a real preview',
+    sessionRealHint: 'Host sessions snapshot → ListRow per session (clickable / pale slate selected) → real preview',
     sessionListUnavailable: 'Host session services not ready (sessions / uiConversation / uiWorkspace absent) — install this plugin into a real dsh profile to list and preview your sessions',
     sessionListEmpty: 'The host has no visible sessions right now',
     sessionListRunning: 'Running',

@@ -10,6 +10,7 @@ import {
   Input,
   InputGroup,
   LiveText,
+  ListRow,
   Loader,
   LoaderBar,
   LoadingBlock,
@@ -1294,6 +1295,23 @@ const CODE_SURFACE = `// Surface：底 / 边框 / 圆角 / 内距四根轴，圆
 // 虚线占位框也走它，不要自己写 1px dashed
 <Surface tone="sunken" border="dashed" padding="lg">还没做的东西</Surface>`
 
+const CODE_LIST_ROW = `// ListRow：常态带底、整行可点、右侧操作互不干扰
+h(ListRow, {
+  onClick: () => setCurrent(item),       // 点整行 = 选中 / 打开
+  selected: current === item,           // 选中态只改外观，状态调用方管
+  bordered: true,                       // 带边 / 无边同高（1px 透明占位）
+  actions: h(Button, { size: 'sm', variant: 'ghost', onClick: () => remove(item) }, '移除'),
+},
+  h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+    h(IconCopyOutlineRegular, { size: 14 }),
+    h('span', null, item.name),
+    h(Chip, null, 'TS'),
+  ),
+)
+
+// hoverable 默认跟随「整行可点」；纯展示行可显式关掉
+h(ListRow, { hoverable: false }, '只读的一行')`
+
 const CODE_BAR = `// 色条换边：side 之外还能单独调 size / inset（距卡片边）/ gap（距内容）/ length（上下时）
 <Card bar={{ side: 'right', inset: 10, gap: 8 }}>…</Card>
 <Card bar={{ side: 'top', size: 4, length: '40%' }}>…</Card>`
@@ -1326,6 +1344,7 @@ const CODE_SECTION_HEAD = `// 分区标题：标签（可选，画出来的短�
 export function CardPage(): ReturnType<typeof h> {
   const [seg, setSeg] = useState('all')
   const [kw, setKw] = useState('')
+  const [rowSel, setRowSel] = useState('b')
   return h(
     'div',
     null,
@@ -1340,6 +1359,37 @@ export function CardPage(): ReturnType<typeof h> {
             h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, `tone="${tone}"`),
             h('div', { style: { marginTop: '6px' } }, h(Button, { size: 'sm', variant: 'outline' }, 'Button')),
           ),
+        ),
+      ),
+    ),
+    h(
+      Example,
+      { title: t('demoListRowTitle'), hint: t('listRowHint'), code: CODE_LIST_ROW },
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px', maxWidth: '640px' } },
+        ...([
+          { key: 'a', name: 'README.md', bordered: false },
+          { key: 'b', name: 'src/ui/display/ListRow.ts', bordered: false },
+          { key: 'c', name: 'packages/demo/src/i18n.ts', bordered: true },
+        ] as const).map((item) =>
+          h(ListRow, {
+            key: item.key,
+            bordered: item.bordered,
+            selected: rowSel === item.key,
+            onClick: () => setRowSel(item.key),
+            actions: h(Button, {
+              size: 'sm', variant: 'ghost',
+              onClick: () => notify('右侧操作，不连带整行'),
+            }, '移除'),
+          },
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+              h(IconCopyOutlineRegular, { size: 14 }),
+              h('span', null, item.name),
+              h(Chip, null, item.bordered ? '带边' : '无边'),
+            ),
+          ),
+        ),
+        h(ListRow, { bordered: true, hoverable: false },
+          h('span', { style: { color: 'var(--dshpc-fg-3)' } }, '只读一行（不可点 · 关掉 hover）'),
         ),
       ),
     ),

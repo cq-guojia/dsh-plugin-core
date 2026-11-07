@@ -4,7 +4,7 @@
 
 > EN: ui — base controls
 
-导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Surface、Card、StripCard、Chip、Table、Pagination、Modal、SideSheet、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、FlipText、LiveText、QuickToolbar、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
+导出：Button、IconButton、Segmented、SplitGroup、Input、PrefixedInput、NumberInput、Textarea、Checkbox、fieldMetricsOf、Picker、WorkspacePicker、ModelPicker、DateTimePicker、Surface、Card、StripCard、Chip、Table、ListRow、Pagination、Modal、SideSheet、FieldHint、setTooltipRenderer、showToast、notify、showHostToast、Loader、LoaderBar、Loading、RunningBlocks、SectionHead、MarqueeText、FlipText、LiveText、QuickToolbar、startResizeLayoutWidth、PanelDock、createPanelDock、DockPanel、ensureControls、setStyleKit
 
 ## 概览
 
@@ -393,6 +393,53 @@ h(StripCard, {
   expanded: open, onToggle: () => setOpen(!open),
   panel: h('div', null, '展开详情'),
 }, h('div', null, '标题 + 元信息'))
+```
+
+## ListRow（一行一条）
+
+> EN: ListRow (one item per line)
+
+一行代表一个可选 / 可点的对象（文件、任务、候选项）：常态就带底色，鼠标移上去按 Button 灰色档加深一档；选中换成 slate 的极浅蓝灰单色背景，不描边、不画竖条。左主内容、右侧一组小操作，点右侧不连带触发整行。底 / 边 / 圆角复用 Surface，颜色全走 token，插件不写第二套皮肤。
+
+> EN: One line per selectable / clickable object (file, task, candidate): a visible background at rest that darkens one step on hover using the same grey tokens as Button; selected rows swap to a single pale slate-blue-grey background — no border, no rail. Main content on the left, a group of small actions on the right that never trigger the row. Background / border / radius come from Surface and colors from tokens, so plugins write no second skin.
+
+默认中号（min-height 28，与 Button md 同档），不设 size 轴；四边内距 8px 等距；默认字号 13px / 行高 20px 由核心给（`--dshpc-font-md` / `--dshpc-line-md`，与 Table 同档），调用方不必自己设、可用内联 style 覆盖。`bordered` 切带边 / 不带边，无边档仍是 1px 透明占位，两档同高。`selected` 只改外观，状态由调用方管。
+
+> EN: One medium tier by default (min-height 28, same as Button md); no size axis; equal 8px padding on all four sides. The core sets a default 13px / 20px type scale (`--dshpc-font-md` / `--dshpc-line-md`, same as Table) — callers need not set it and can override it inline. `bordered` switches the edge on/off — the borderless tier keeps a transparent 1px placeholder so heights stay equal. `selected` only changes appearance; the caller owns the state.
+
+`hoverable` 默认跟随「整行可点」（可点行开、纯展示行关，与 Table 的 hover 口径一致），可显式开关；hover / 选中色取 `--dshpc-active` / `--dshpc-listrow-selected-bg`（由 `--dshpc-slate` 派生，亮色 14% / 暗色 26% 两档，暗色不发黑）。整行不是 `<button>`：调用方要往里放 Button / IconButton，嵌 button 是非法 HTML；键盘走 Enter / Space，右侧操作槽挡住冒泡。
+
+> EN: `hoverable` follows row clickability by default (on for clickable rows, off for static ones, matching Table), and can be forced on/off; hover / selected use `--dshpc-active` / `--dshpc-listrow-selected-bg` (derived from `--dshpc-slate`, 14% light / 26% dark, so the dark theme never goes black). The row is not a `<button>`: callers put Buttons inside it and nested buttons are invalid HTML. Keyboard uses Enter / Space; the actions slot stops propagation.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `children` | `ReactNode` | — | 主内容：图标 / 名字 / 标签 / 左右分区自己排 | Main content: icons, labels, tags, left/right layout are yours |
+| `actions` | `ReactNode` | — | 右侧操作槽；核心挡住事件冒泡，不连带整行 | Right-side actions; the core stops propagation so the row is not triggered |
+| `onClick` | `() => void` | — | 给了才让整行可点（role=button / tabIndex / Enter·Space） | Only makes the row clickable when provided (role=button / tabIndex / Enter·Space) |
+| `selected` | `boolean` | 'false' | 选中态：slate 极浅蓝灰单色背景（明暗各一档），不描边 / 不画竖条，压在 hover 之上 | Selected: a single pale slate-blue-grey background (separate light / dark tiers), no border or rail, above hover |
+| `bordered` | `boolean` | 'false' | 带边 / 不带边，两档同高 | Bordered / borderless; both tiers share the same height |
+| `hoverable` | `boolean` | 自动 | hover 灰态加深开关；默认跟随整行可点 | Grey-state hover switch; defaults to row clickability |
+| `className / style` | `—` | — | 追加类 / 样式，只允许补布局 | Append class / style, layout patches only |
+
+```tsx id="ui-listrow-example"
+import { ListRow, Button, Chip } from 'dsh-plugin-core/ui'
+
+// 一行一条：常态带底，点整行打开 / 选中，右侧小操作不连带触发整行
+h(ListRow, {
+  onClick: () => openFile(entry),
+  selected: entry.path === currentPath,
+  actions: h(Button, {
+    size: 'sm', variant: 'ghost', onClick: () => removeEntry(entry),
+  }, '移除'),
+},
+  h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+    h(Chip, null, 'TS'),
+    h('span', null, entry.name),
+  ),
+)
+
+// 带边 / 关掉 hover / 纯展示（不可点）
+h(ListRow, { bordered: true, hoverable: false }, '只读的一行')
 ```
 
 ## Chip

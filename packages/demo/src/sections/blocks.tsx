@@ -8,7 +8,7 @@ import {
   type WorkspaceFilesFace,
 } from '../../../../dist/adv/explorer/index.js'
 import { workspaceList } from '../../../../dist/ui/index.js'
-import { Chip } from '../../../../dist/ui/index.js'
+import { Chip, ListRow } from '../../../../dist/ui/index.js'
 import { openSessionReview, SessionViewModal, type ChangedFileReviewLocator } from '../../../../dist/adv/session/index.js'
 import { formatDateTime } from '../../../../dist/utils/index.js'
 import { Button } from '../../../../dist/ui/index.js'
@@ -183,6 +183,8 @@ function RealSessionListDemo(): ReturnType<typeof h> {
   const archivedIds = useSyncExternalStore(workspaceList.subscribe, workspaceList.getArchiveSnapshot)
   const anchor = pickWorkspaceAnchor(wsItems)
   const [openId, setOpenId] = useState<string | null>(null)
+  // 关掉预览弹窗后仍保留「最后点开的那一行」：弹窗开着时列表被遮住，否则选中态根本看不到。
+  const [activeId, setActiveId] = useState<string | null>(null)
   const view = useMemo(() => (openId === null ? null : openRealSessionView(openId)), [openId])
   const workspaceFiles = files.workspaceFiles
   // 链接只在「工作区文件服务就位 + 有可用会话锚点」时可点；否则保持纯文本，不假装能点。
@@ -225,29 +227,28 @@ function RealSessionListDemo(): ReturnType<typeof h> {
   return h(
     'div',
     { style: { display: 'flex', flexDirection: 'column', gap: '6px', maxWidth: '720px' } },
+    // 底 / 边 / 圆角 / hover / 选中全交给 ListRow 的 token；内联 style 会盖掉 :hover
     ...state.rows.map((row) =>
-      h('button', {
+      h(ListRow, {
         key: row.sessionId,
-        type: 'button',
-        onClick: () => { setOpenId(row.sessionId) },
-        style: {
-          display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px',
-          border: '1px solid var(--dshpc-border-faint)', borderRadius: 'var(--dshpc-radius-sm)',
-          background: 'var(--dshpc-surface-2)', color: 'var(--dshpc-fg)',
-          font: 'inherit', fontSize: '13px', textAlign: 'left', cursor: 'pointer',
-        },
+        bordered: true,
+        selected: activeId === row.sessionId,
+        onClick: () => { setActiveId(row.sessionId); setOpenId(row.sessionId) },
+        actions: h('span', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-3)' } },
+          formatDateTime(new Date(row.updatedAt).toISOString())),
       },
-        h('span', { style: { flex: '1', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, row.displayTitle),
-        row.running ? h(Chip, { size: 'xs', tone: 'warning' }, t('sessionListRunning')) : null,
-        archivedIds.includes(row.sessionId)
-          ? h(Chip, { size: 'xs' },
-              h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '4px' } },
-                h(IconArchiveOutlineRegular, { size: 12 }),
-                t('sessionListArchived'),
-              ),
-            )
-          : null,
-        h('span', { style: { flex: 'none', fontSize: '12px', color: 'var(--dshpc-fg-3)' } }, formatDateTime(new Date(row.updatedAt).toISOString())),
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 } },
+          h('span', { style: { flex: '1 1 auto', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, row.displayTitle),
+          row.running ? h(Chip, { size: 'xs', tone: 'warning' }, t('sessionListRunning')) : null,
+          archivedIds.includes(row.sessionId)
+            ? h(Chip, { size: 'xs' },
+                h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '4px' } },
+                  h(IconArchiveOutlineRegular, { size: 12 }),
+                  t('sessionListArchived'),
+                ),
+              )
+            : null,
+        ),
       ),
     ),
     openId !== null && view !== null

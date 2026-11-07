@@ -1,0 +1,42 @@
+/* ── ListRow · 一行一条的列表条目 ───────────────────────────────────────────
+   外框（底 / 边 / 圆角 / 内距）全部由 Surface 提供：组件调 surfaceClass 拿
+   dshpc-surface + tone-sunken + border-none，本文件不写 background / border / border-radius。
+   所有轴只改 --surface-* 变量：无论 Surface 与本皮肤谁先注入，胜负都不依赖顺序
+   （surface.css:7-8 的既定契约）。本文件只管「行」独有的：默认字号、高度、两槽布局、行级 hover、选中态。 */
+
+/* 双类选择器压过 .dshpc-surface 基类，避免注入顺序影响变量覆盖。 */
+.dshpc-surface.dshpc-listrow{
+  /* 四边等距（8px，与 Surface 的 pad-sm 同档）：不写「上下 0 / 左右 12」那种横宽纵窄的值。 */
+  --surface-pad:var(--dshpc-space-2);
+  /* 具体控件自带默认字号：只有 Surface 这种纯容器才用 font:inherit，行内容不能继承宿主默认 16px。
+     与 Table(table.css:11) / Input md(field.css:22) 同口径；调用方仍可用内联 style 覆盖。 */
+  font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);
+  display:flex;align-items:center;gap:var(--dshpc-space-2);
+  min-height:var(--dshpc-control-h-md);width:100%;
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);
+}
+.dshpc-listrow__main{flex:1 1 auto;min-width:0;}
+.dshpc-listrow__actions{flex:none;display:flex;align-items:center;gap:4px;}
+
+/* 整行可点：光标 + 键盘焦点环（与 Button / Chip 同口径）。 */
+.dshpc-listrow--interactive{cursor:pointer;}
+.dshpc-listrow--interactive:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}
+
+/* 三态各只换一个 --surface-bg，颜色全取 Button 灰色档那一组 token：
+     常态     tone-sunken（淡底，由 surface.css 给，此处不重写）
+     hover    --dshpc-active = secondary 灰按钮的 hover 色（亮色黑 18% / 暗色白 24%）
+     selected --dshpc-listrow-selected-bg = slate 极浅蓝灰（双主题各自定义）
+   ⚠️ 亮色别用 --dshpc-plate-hover：它是 #f5f5f5 实色，常态 tone-sunken 是叠 6% 蓝灰
+   ≈ #f0f1f3，白底上几乎同色甚至更白 ⇒ 移上去看不出变化（真踩过，见 tokens.css:153）。
+   ⚠️ 选中别用通用 --dshpc-selected-bg：暗色它是两个深色面互掺 ⇒ 选中行发黑（2026-11-07 用户反馈）。
+   双类 + :hover 压得过单类 tone-sunken，不需要 !important。 */
+.dshpc-surface.dshpc-listrow--hoverable:not(.dshpc-listrow--selected):hover{
+  --surface-bg:var(--dshpc-active);
+}
+
+/* 选中只换一个背景色：slate 极浅蓝灰，不描边、不渐变、不竖条；状态仍由调用方管。 */
+.dshpc-surface.dshpc-listrow--selected{
+  --surface-bg:var(--dshpc-listrow-selected-bg);
+}
+
+@media (prefers-reduced-motion: reduce){.dshpc-listrow{transition:none}}
