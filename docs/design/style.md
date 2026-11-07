@@ -342,7 +342,11 @@ EN: Enabling `hoverable` also sets `cursor:pointer`. Cards without the axis keep
 `__body` 是「上面那一整块」，独立承担四边内距，是 head 作用域下唯一的 hover 目标；`__panel` 是它的
 兄弟节点，不铺任何背景、不参与 hover，自己承担左右 / 底部内距。**展开态不改 `__body` 内距**：
 上下两圈留白始终对称，色条上下才不会一长一短；两块之间的间隔就是 `__body` 的 `padding-bottom`，
-属于头部区、跟着一起变色，`__panel` 的 `margin-top` 归 0、从分隔线开始，中间不留不变色的带子。
+属于头部区、跟着一起变色，`__panel` 的 `margin-top` 归 0、紧接其后，中间不留不变色的带子。
+**核心不画任何分隔线**：展开区只负责把内容放到头部区下面；需要线时由消费端在 `panel` 内容里自绘
+（有时要、有时不要，消费端自己决定，2026-11-08 用户拍板）。曾经 `__panel` 自带 `border-top`，
+既和消费端自绘的线重复成「一实一虚两条」，又因位置耦合 `--card-pad-l/r` 而在色条内距为 0 的卡片上
+左贴边、右留白。
 `__body` 不许写 `border-radius` 裸值（圆角契约只认 Surface 一处），圆角由根节点裁切保证。
 
 `StripCard` 的 4px 色条相对根节点绝对定位（`top:0` / `bottom:0`），展开后仍通高贯穿整卡、
@@ -365,8 +369,9 @@ EN: The root keeps `padding:0` and paints one resting fill. `__body` is the head
 paddings, inherits the root radius, and is the only hover target under `hoverScope: 'head'`. `__panel` is its
 sibling: no background at all, never hovered, with its own horizontal / bottom padding. Expanding never
 rewrites the header padding: top and bottom stay symmetric, and the gap between the blocks is the header's
-own `padding-bottom`, so it changes color together with the header. `__panel` starts at the divider with
-`margin-top:0`. The StripCard rail is absolutely positioned against the root (`top:0` / `bottom:0`), so it
-stays full-height across the expanded area too. `:has()` and "paint a resting-fill snapshot over the
+own `padding-bottom`, so it changes color together with the header. `__panel` follows immediately with
+`margin-top:0` and draws no divider — the core only places the expanded content; callers who need a line
+draw it inside `panel` themselves. The StripCard rail is absolutely positioned against the root
+(`top:0` / `bottom:0`), so it stays full-height across the expanded area too. `:has()` and "paint a resting-fill snapshot over the
 expanded area" are forbidden — semi-transparent tokens stacked twice render darker. Callers must put
 expandable content in `panel`; `children` belongs to the header block.

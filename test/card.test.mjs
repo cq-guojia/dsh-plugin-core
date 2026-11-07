@@ -111,7 +111,11 @@ test('Card CSS：根节点零内距 + 头部区独立容器承载 hover', () => 
   assert.match(
     css,
     /\.dshpc-card__panel\{[^}]*margin:0 var\(--card-pad-r\) 0 var\(--card-pad-l\)/,
-    '分隔线紧贴头部区，两块之间的间隔归头部区、跟着一起变色',
+    '展开区紧跟头部区，两块之间的间隔归头部区、跟着一起变色',
+  )
+  assert.ok(
+    !/\.dshpc-card__panel\{[^}]*border/.test(css),
+    '核心不许画展开区分隔线：有时要有时不要，线归消费端自绘',
   )
   assert.match(
     css,

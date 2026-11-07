@@ -58,7 +58,7 @@
 .dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}
 /* 展开态不特殊处理内距：头部区上下留白始终对称，色条上下才不会一长一短。
    两块之间的间隔就是 __body 的 padding-bottom，属于头部区、跟着一起变色；
-   __panel 从分隔线开始，不在中间留一条不变色的带子。 */
+   __panel 紧接其后，不在中间留一条不变色的带子，也不画分隔线。 */
 
 /* 头部一行 = 主内容 + 右侧槽，**整体垂直居中**：调用方在 action 里裸放一个元素
    （按钮 / 文字 / 图标）不用自己套容器居中；一行两行、右边怎么放由调用方在框内自定。 */
@@ -126,10 +126,10 @@
 /* 箭头是 svg（Chevron），不是字形 ⇒ 不要 font-size；inline-flex 免掉 svg 的基线留白。 */
 .dshpc-card__caret{display:inline-flex;transition:transform .15s ease}
 .dshpc-card__caret.is-open{transform:rotate(180deg)}
-/* 展开区自己承担左右 / 底部内距：与头部内容对齐，并补上卡片底部留白。
-   margin-top 归 0：分隔线紧贴头部区下缘，上方那段间隔是 __body 的 padding-bottom，跟着 hover 一起变色。 */
+/* 展开区只负责「把展开内容放在头部区下面」：自己承担左右 / 底部内距，补上卡片底部留白。
+   margin-top 归 0 ⇒ 两块之间的间隔是 __body 的 padding-bottom，属于头部区、跟着 hover 一起变色。
+   核心不画任何分隔线：需要线由消费端在 panel 内容里自绘（有时要、有时不要，消费端自己决定）。 */
 .dshpc-card__panel{
   margin:0 var(--card-pad-r) 0 var(--card-pad-l);
   padding:8px 0 var(--card-pad-b);
-  border-top:1px solid var(--dshpc-border-faint);
 }

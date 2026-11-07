@@ -40,7 +40,7 @@ export interface CardSharedProps {
   action?: ReactNode
   /** 主内容：想写几行、左边右边随你。 */
   children?: ReactNode
-  /** 展开后才显示的额外内容。 */
+  /** 展开后才显示的额外内容；核心不画分隔线，需要线由调用方在内容里自绘。 */
   panel?: ReactNode
   className?: string
   style?: CSSProperties
