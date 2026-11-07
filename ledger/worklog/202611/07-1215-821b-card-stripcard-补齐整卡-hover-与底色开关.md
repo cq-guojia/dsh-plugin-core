@@ -1,7 +1,7 @@
 # 20261107-1215-821b-card-stripcard-补齐整卡-hover-与底色开关: Card / StripCard 补齐整卡 hover 与底色开关
 
 - **Tags**: 卡片, 悬停变色, 底色
-- **Status**: doing · 2026-11-07 12:39:32 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-07 13:30:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-07 12:15:45 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -32,12 +32,13 @@
 - [x] 文档：`docs/help/ui.doc.ts` Card section 的 prose / API / 示例；`docs/design/style.md` 新增「卡片整卡 hover 与底色轴」章节（含手势口径）。
 - [x] demo：`packages/demo/src/sections/controls.tsx` 四档示例，`packages/demo/src/i18n.ts` 中英 hint 同步。
 - [x] `build` / `build:demo` / `pnpm test`（338 pass）/ `typecheck` / codelint（10 文件 L0-L5 全过）全绿；产物核对通过，stamp `261107-203124-607`。
-- [ ] 待用户真机看效果；任务保持 doing，未提交 / 未发版。
+- [x] 用户 2026-11-07 验收（「行，可以了」）⇒ 按指令 bump `v0.35.4`、提交推送、打 tag 发版、close。
+- [x] 发版复核：两包 `version` 与 tag 同号 `0.35.4`；重跑 `build` / `build:demo` 后 demo bundle 内 `v0.35.4` ×4、无 `0.35.3` 残留；338 tests / typecheck / codelint（12 文件 L0-L5）全绿。
 - 范围外：不动 `Surface`（纯框容器四根轴、零业务语义）；不跨仓删兄弟项目那 2 条 CSS（发版后另开）。
 
 ## Next
 
-等用户刷新宿主看 demo「展示 → Card / StripCard」里的四档对照（本机装本机插件，stamp `261107-203124-607`）：带底 / 透明 / 整卡 hover + 手势 / 透明底也能 hover。若整卡变色浓度 / 色相不合，只调 `src/design/tokens.css:57,321` 的 `--dshpc-card-hover`；验收通过后再按用户指令提交 / 发版（兄弟项目装的是 npm `^0.35.3`，要发版才拿得到）。
+收尾动作（本轮执行）：补完正文 → 记一条 log → `close` 结案。发版之后单独另开的事：兄弟项目把依赖升到 npm `^0.35.4`，再删掉自己写的 2 条 hover CSS 并改用 `hoverable`（本任务不跨仓改它）。
 
 ## Process
 
@@ -54,14 +55,17 @@
 - 返工二（用户反馈「Card 没有带底色的演示」）：首版 demo 只摆了透明 / hover 两档，而 `filled` 默认 true 的带底形态反而没显式露出 ⇒ `packages/demo/src/sections/controls.tsx:1434,1510` 把 Card / StripCard 各扩成四档（`filled:true` 带底 / `filled:false` 透明 / `hoverable:true` / `hoverable + filled:false`），外层垫 `--dshpc-surface-sunken` 让白面与透明面分得开；`packages/demo/src/i18n.ts` 中英 hint 改成「四档 · hover 开启带手势」。
 - 文档同步：`docs/help/ui.doc.ts` 的 `hoverable` API 行补「整卡 hover 变色 + 光标变 pointer」、prose 补「透明底 + hover 也照常变色」；`docs/design/style.md`「卡片整卡 hover 与底色轴」章节补手势口径。
 - 返工回归：`pnpm run build` / `build:demo` / `pnpm test`（338 pass）/ `typecheck` / codelint（10 文件 L0-L5）全绿；`dist/ui/display/card-css.generated.js` 的 `cursor:pointer` ×1、`--surface-bg:var(--dshpc-card-hover)` ×1；demo bundle 里 `cursor=1` / `filledTrue=4` / `hoverPlusNoFill=3`；最终 stamp `261107-203124-607`。
+- 发版（用户指令「改 Tag 提交发版」）：发版前两包 `0.35.3`、最新 tag `v0.35.3`，纯新增兼容能力取 patch `v0.35.4`；改两处 `package.json:3` 后必须重跑 `build:demo`，因为 `packages/demo/dist/client.js:70937-70938,71255-71256` 把两包版本号打进了 bundle。同号三道闸：`.github/workflows/publish.yml:50-59`、`demo-publish.yml:48-57`、`test/version-sync.test.mjs:15-23`。
+- 提交与发版结果：`git commit` `f11945d`（21 文件，含 `dist/`）→ push `main` → `git tag v0.35.4` → push tag，触发两个 workflow 自动 `npm publish`；未做本地 `npm publish`，`v0.35.4` 指向 `f11945d`。
 
 ## Conclusion
 
 - 已完成：Card / StripCard 新增 `hoverable`（整卡变色，默认关）与 `filled`（底色，默认有底）两根轴；hover 统一 `--dshpc-card-hover`；StripCard 底色从 `background` 属性收敛为 `--surface-bg` 变量；测试 / 帮助文档 / 样式规范 / demo 双语同步；产物已生成，本机宿主刷新可见。
 - 返工完成：`hoverable` 打开即带 `cursor:pointer`（手势与变色同开关，透明底 hover 照常变色）；demo 补成四档对照，显式展示默认的带底色形态。
 - 定案：不新建控件、不动 Surface；hover 作用根节点（用户拍板「整卡变色」），与兄弟项目现在的「内部子行 / 头部变色」不同，迁移由消费方自行决定。
-- 留下的坑：未真机复验（本机无浏览器）；代码与 `dist/` 产物**未提交 / 未发版**；兄弟项目装的是 npm `^0.35.3`，要发版后才能在那个项目删掉自写的 2 条 hover CSS。
-- 台账状态：doing（交付待验收），未 close。
+- 发版：`v0.35.4` == 根 `package.json` == `packages/demo/package.json` 的 version；`f11945d` 已推 `main` 且含 `dist/`，tag 已推并触发双包发布；提交前 338 tests / typecheck / codelint（12 文件 L0-L5）全绿。
+- 留下的坑：本机无浏览器，真机效果以用户 2026-11-07 验收（「行，可以了」）为准；兄弟项目仍装 npm `^0.35.3`，需自行升到 `^0.35.4` 才能拿到新能力并删掉自写的 2 条 hover CSS（本仓不跨仓改）。
+- 台账状态：验收通过、已发版，按用户指令 close 结案。
 
 ## Execution Log
 
@@ -71,3 +75,4 @@
 - 2026-11-07 12:17:20 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 建单认领并写清 worklog 前五节：兄弟项目 Card/StripCard 自写 hover CSS 的现场证据、--dshpc-card-hover 零消费、card.css:67 的 background 属性必先收敛成 --surface-bg 变量；用户拍板整卡变色 + 统一 token，底色默认维持有底；下一步 card.css:64-68
 - 2026-11-07 12:24:09 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按拍板实现：Card/StripCard 加 hoverable(默认关,整卡变色)+filled(默认有底)，StripCard 底色 background 属性收敛成 --surface-bg 变量，hover 统一 --dshpc-card-hover；测试+3条(338 pass)、帮助文档/样式规范/demo 双语与示例同步；build/build:demo/typecheck/codelint(10) 全绿，stamp 261107-202133-796，产物核对旧 background ×0；待真机看效果，未提交未发版
 - 2026-11-07 12:39:32 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 返工收口：hoverable 打开即 cursor:pointer（src/ui/display/card.css:89），demo Card/StripCard 扩成带底/透明/hover/透明+hover 四档（packages/demo/src/sections/controls.tsx:1434,1510）；test/card.test.mjs 补手势断言、docs/help/ui.doc.ts 与 docs/design/style.md 与双语 hint 同步；build/build:demo/338 tests/typecheck/codelint(10) 全绿，stamp 261107-203124-607；代码与 dist 未提交未发版，doing 待真机验收
+- 2026-11-07 13:30:39 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 用户验收通过（行，可以了）并指令改 Tag 提交发版：两包 bump v0.35.4（package.json:3 / packages/demo/package.json:3），重跑 build/build:demo 让 demo bundle 带上新版本号；338 tests / typecheck / codelint(12 文件) 全绿；commit f11945d 推 main（含 dist），tag v0.35.4 已推触发 publish.yml + demo-publish.yml 双包发布；worklog 补发版事实与三处同号校验，下一步 close 结案
